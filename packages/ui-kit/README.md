@@ -1,4 +1,4 @@
-# @dais-ui/ui-kit - Библиотека компонентов
+# @daisforge/ui - Библиотека компонентов
 
 По большей части реэкспорт компонентов [SDDS](https://github.com/salute-developers/plasma)
 
@@ -21,7 +21,7 @@
 ```
 
 ```sh
-    npm install --save @dais-ui/ui-kit
+    npm install --save @daisforge/ui
 ```
 
 ## Настройка
@@ -29,7 +29,7 @@
 В корне приложения импортируйте готовый компонент GlobalStyle:
 
 ```js
-import { GlobalStyle } from '@dais-ui/ui-kit/styles';
+import { GlobalStyle } from '@daisforge/ui/styles';
 ```
 
 Подключите компонент GlobalStyle:
@@ -73,16 +73,16 @@ export const GlobalStyle = () => (
 Для корректной работы server side rendering приложение нужно обернуть SSRProvider
 
 ```js
-import { SSRProvider } from '@dais-ui/ui-kit';
+import { SSRProvider } from '@daisforge/ui';
 ```
 
 Все компоненты доступны из корня или из папки components:
 
 ```js
 // App.tsx
-import { Button } from '@dais-ui/ui-kit';
-// или import { Button } from '@dais-ui/ui-kit/components/Button';
-import { textAccent } from '@dais-ui/ui-kit/tokens';
+import { Button } from '@daisforge/ui';
+// или import { Button } from '@daisforge/ui/components/Button';
+import { textAccent } from '@daisforge/ui/tokens';
 
 export const App = () => {
     return (
@@ -99,7 +99,7 @@ export const App = () => {
 
 ```js
 // App.tsx
-import { IconClock } from '@dais-ui/ui-kit/icons';
+import { IconClock } from '@daisforge/ui/icons';
 
 export const App = () => {
   return (

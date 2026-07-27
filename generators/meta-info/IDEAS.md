@@ -56,7 +56,7 @@
 **Проблема:** В примерах часто используются иконки:
 
 ```tsx
-import { IconPlasma, IconDotsVerticalCenteredOutline } from '@dais-ui/ui-kit/icons';
+import { IconPlasma, IconDotsVerticalCenteredOutline } from '@daisforge/ui/icons';
 ```
 
 Но иконки как компоненты **не описаны** в `components`.
@@ -177,8 +177,8 @@ type BlockGradientScrollMixin = (options: { padding: number | { top?: number; le
 **Проблема:** В примерах используются токены:
 
 ```tsx
-import { s, br } from '@dais-ui/ui-kit/constants';
-import { textNegative, surfaceInfo } from '@dais-ui/ui-kit/tokens';
+import { s, br } from '@daisforge/ui/constants';
+import { textNegative, surfaceInfo } from '@daisforge/ui/tokens';
 ```
 
 Но токены **не описаны** в `components`.

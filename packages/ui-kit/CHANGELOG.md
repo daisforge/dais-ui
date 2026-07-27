@@ -67,15 +67,15 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [1.6.4](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v1.6.3...v1.6.4) (2026-07-02)
 
-**Note:** Version bump only for package @dais-ui/ui-kit
+**Note:** Version bump only for package @daisforge/ui
 
 ## [1.6.3](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v1.6.2...v1.6.3) (2026-07-01)
 
-**Note:** Version bump only for package @dais-ui/ui-kit
+**Note:** Version bump only for package @daisforge/ui
 
 ## [1.6.2](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v1.6.1...v1.6.2) (2026-07-01)
 
-**Note:** Version bump only for package @dais-ui/ui-kit
+**Note:** Version bump only for package @daisforge/ui
 
 ## [1.6.1](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v1.6.0...v1.6.1) (2026-06-29)
 
@@ -497,7 +497,7 @@ Date: Thu Apr 30 13:13:26 2026 +0300
 
 ## [0.0.113](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.112...v0.0.113) (2026-01-25)
 
-**Note:** Version bump only for package @dais-ui/ui-kit
+**Note:** Version bump only for package @daisforge/ui
 
 ## [0.0.112](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.111...v0.0.112) (2026-01-23)
 
@@ -612,7 +612,7 @@ Date: Thu Apr 30 13:13:26 2026 +0300
 
 ## [0.0.102](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.101...v0.0.102) (2025-10-31)
 
-**Note:** Version bump only for package @dais-ui/ui-kit
+**Note:** Version bump only for package @daisforge/ui
 
 ## [0.0.101](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.100...v0.0.101) (2025-10-31)
 
@@ -631,7 +631,7 @@ Date: Thu Apr 30 13:13:26 2026 +0300
 
 ## [0.0.100](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.99...v0.0.100) (2025-10-30)
 
-**Note:** Version bump only for package @dais-ui/ui-kit
+**Note:** Version bump only for package @daisforge/ui
 
 ## [0.0.99](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.98...v0.0.99) (2025-10-24)
 
@@ -958,11 +958,11 @@ Date: Thu Apr 30 13:13:26 2026 +0300
 
 ## [0.0.75](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.74...v0.0.75) (2025-07-02)
 
-**Note:** Version bump only for package @dais-ui/ui-kit
+**Note:** Version bump only for package @daisforge/ui
 
 ## [0.0.74](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.73...v0.0.74) (2025-06-27)
 
-**Note:** Version bump only for package @dais-ui/ui-kit
+**Note:** Version bump only for package @daisforge/ui
 
 ## [0.0.73](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.72...v0.0.73) (2025-06-24)
 
@@ -1077,11 +1077,11 @@ Date: Thu Apr 30 13:13:26 2026 +0300
 
 ## [0.0.66](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.65...v0.0.66) (2025-05-07)
 
-**Note:** Version bump only for package @dais-ui/ui-kit
+**Note:** Version bump only for package @daisforge/ui
 
 ## [0.0.65](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.64...v0.0.65) (2025-05-07)
 
-**Note:** Version bump only for package @dais-ui/ui-kit
+**Note:** Version bump only for package @daisforge/ui
 
 ## [0.0.64](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.63...v0.0.64) (2025-04-25)
 
@@ -1153,11 +1153,11 @@ Date: Thu Apr 30 13:13:26 2026 +0300
 
 ## [0.0.60](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.59...v0.0.60) (2025-03-25)
 
-**Note:** Version bump only for package @dais-ui/ui-kit
+**Note:** Version bump only for package @daisforge/ui
 
 ## [0.0.59](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.58...v0.0.59) (2025-03-21)
 
-**Note:** Version bump only for package @dais-ui/ui-kit
+**Note:** Version bump only for package @daisforge/ui
 
 ## [0.0.58](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.57...v0.0.58) (2025-03-19)
 
@@ -1170,7 +1170,7 @@ Date: Thu Apr 30 13:13:26 2026 +0300
 
 ## [0.0.57](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.56...v0.0.57) (2025-03-17)
 
-**Note:** Version bump only for package @dais-ui/ui-kit
+**Note:** Version bump only for package @daisforge/ui
 
 ## [0.0.56](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.55...v0.0.56) (2025-03-14)
 
@@ -1180,11 +1180,11 @@ Date: Thu Apr 30 13:13:26 2026 +0300
 
 ## [0.0.55](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.54...v0.0.55) (2025-03-07)
 
-**Note:** Version bump only for package @dais-ui/ui-kit
+**Note:** Version bump only for package @daisforge/ui
 
 ## [0.0.54](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.53...v0.0.54) (2025-03-05)
 
-**Note:** Version bump only for package @dais-ui/ui-kit
+**Note:** Version bump only for package @daisforge/ui
 
 ## [0.0.53](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.52...v0.0.53) (2025-02-21)
 
@@ -1206,35 +1206,35 @@ Date: Thu Apr 30 13:13:26 2026 +0300
 
 ## [0.0.50](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.49...v0.0.50) (2025-02-07)
 
-**Note:** Version bump only for package @dais-ui/ui-kit
+**Note:** Version bump only for package @daisforge/ui
 
 ## [0.0.49](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.48...v0.0.49) (2025-02-05)
 
-**Note:** Version bump only for package @dais-ui/ui-kit
+**Note:** Version bump only for package @daisforge/ui
 
 ## [0.0.48](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.47...v0.0.48) (2025-01-31)
 
-**Note:** Version bump only for package @dais-ui/ui-kit
+**Note:** Version bump only for package @daisforge/ui
 
 ## [0.0.47](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.46...v0.0.47) (2025-01-24)
 
-**Note:** Version bump only for package @dais-ui/ui-kit
+**Note:** Version bump only for package @daisforge/ui
 
 ## [0.0.46](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.45...v0.0.46) (2024-12-28)
 
-**Note:** Version bump only for package @dais-ui/ui-kit
+**Note:** Version bump only for package @daisforge/ui
 
 ## [0.0.45](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.44...v0.0.45) (2024-12-13)
 
-**Note:** Version bump only for package @dais-ui/ui-kit
+**Note:** Version bump only for package @daisforge/ui
 
 ## [0.0.44](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.43...v0.0.44) (2024-12-06)
 
-**Note:** Version bump only for package @dais-ui/ui-kit
+**Note:** Version bump only for package @daisforge/ui
 
 ## [0.0.43](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.42...v0.0.43) (2024-12-02)
 
-**Note:** Version bump only for package @dais-ui/ui-kit
+**Note:** Version bump only for package @daisforge/ui
 
 ## [0.0.42](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.41...v0.0.42) (2024-11-25)
 
@@ -1244,23 +1244,23 @@ Date: Thu Apr 30 13:13:26 2026 +0300
 
 ## [0.0.41](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.39...v0.0.41) (2024-11-20)
 
-**Note:** Version bump only for package @dais-ui/ui-kit
+**Note:** Version bump only for package @daisforge/ui
 
 ## [0.0.39](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.38...v0.0.39) (2024-11-15)
 
-**Note:** Version bump only for package @dais-ui/ui-kit
+**Note:** Version bump only for package @daisforge/ui
 
 ## [0.0.38](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.37...v0.0.38) (2024-11-08)
 
-**Note:** Version bump only for package @dais-ui/ui-kit
+**Note:** Version bump only for package @daisforge/ui
 
 ## [0.0.37](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.36...v0.0.37) (2024-11-05)
 
-**Note:** Version bump only for package @dais-ui/ui-kit
+**Note:** Version bump only for package @daisforge/ui
 
 ## [0.0.36](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.35...v0.0.36) (2024-10-21)
 
-**Note:** Version bump only for package @dais-ui/ui-kit
+**Note:** Version bump only for package @daisforge/ui
 
 ## [0.0.35](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.34...v0.0.35) (2024-10-16)
 
@@ -1276,35 +1276,35 @@ Date: Thu Apr 30 13:13:26 2026 +0300
 
 ## [0.0.33](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.32...v0.0.33) (2024-10-08)
 
-**Note:** Version bump only for package @dais-ui/ui-kit
+**Note:** Version bump only for package @daisforge/ui
 
 ## [0.0.32](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.31...v0.0.32) (2024-10-04)
 
-**Note:** Version bump only for package @dais-ui/ui-kit
+**Note:** Version bump only for package @daisforge/ui
 
 ## [0.0.31](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.30...v0.0.31) (2024-09-27)
 
-**Note:** Version bump only for package @dais-ui/ui-kit
+**Note:** Version bump only for package @daisforge/ui
 
 ## [0.0.30](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.29...v0.0.30) (2024-09-25)
 
-**Note:** Version bump only for package @dais-ui/ui-kit
+**Note:** Version bump only for package @daisforge/ui
 
 ## [0.0.29](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.28...v0.0.29) (2024-09-23)
 
-**Note:** Version bump only for package @dais-ui/ui-kit
+**Note:** Version bump only for package @daisforge/ui
 
 ## [0.0.28](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.27...v0.0.28) (2024-09-10)
 
-**Note:** Version bump only for package @dais-ui/ui-kit
+**Note:** Version bump only for package @daisforge/ui
 
 ## [0.0.27](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.26...v0.0.27) (2024-09-03)
 
-**Note:** Version bump only for package @dais-ui/ui-kit
+**Note:** Version bump only for package @daisforge/ui
 
 ## [0.0.26](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.25...v0.0.26) (2024-08-15)
 
-**Note:** Version bump only for package @dais-ui/ui-kit
+**Note:** Version bump only for package @daisforge/ui
 
 ## [0.0.25](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.24...v0.0.25) (2024-08-07)
 
@@ -1314,35 +1314,35 @@ Date: Thu Apr 30 13:13:26 2026 +0300
 
 ## [0.0.24](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.23...v0.0.24) (2024-08-06)
 
-**Note:** Version bump only for package @dais-ui/ui-kit
+**Note:** Version bump only for package @daisforge/ui
 
 ## [0.0.23](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.22...v0.0.23) (2024-08-06)
 
-**Note:** Version bump only for package @dais-ui/ui-kit
+**Note:** Version bump only for package @daisforge/ui
 
 ## [0.0.22](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.20...v0.0.22) (2024-08-06)
 
-**Note:** Version bump only for package @dais-ui/ui-kit
+**Note:** Version bump only for package @daisforge/ui
 
 ## [0.0.20](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.19...v0.0.20) (2024-08-05)
 
-**Note:** Version bump only for package @dais-ui/ui-kit
+**Note:** Version bump only for package @daisforge/ui
 
 ## [0.0.19](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.18...v0.0.19) (2024-07-24)
 
-**Note:** Version bump only for package @dais-ui/ui-kit
+**Note:** Version bump only for package @daisforge/ui
 
 ## [0.0.18](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.17...v0.0.18) (2024-07-23)
 
-**Note:** Version bump only for package @dais-ui/ui-kit
+**Note:** Version bump only for package @daisforge/ui
 
 ## [0.0.17](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.16...v0.0.17) (2024-07-11)
 
-**Note:** Version bump only for package @dais-ui/ui-kit
+**Note:** Version bump only for package @daisforge/ui
 
 ## [0.0.16](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.15...v0.0.16) (2024-07-04)
 
-**Note:** Version bump only for package @dais-ui/ui-kit
+**Note:** Version bump only for package @daisforge/ui
 
 ## [0.0.15](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.14...v0.0.15) (2024-06-13)
 
@@ -1400,11 +1400,11 @@ Date: Thu Apr 30 13:13:26 2026 +0300
 
 ## [0.0.6](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.5...v0.0.6) (2024-06-07)
 
-**Note:** Version bump only for package @dais-ui/ui-kit
+**Note:** Version bump only for package @daisforge/ui
 
 ## [0.0.5](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.4...v0.0.5) (2024-06-04)
 
-**Note:** Version bump only for package @dais-ui/ui-kit
+**Note:** Version bump only for package @daisforge/ui
 
 ## [0.0.4](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v0.0.3...v0.0.4) (2024-06-04)
 

@@ -150,7 +150,7 @@ import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
 import { getFuncAsString } from '@df-storybook/utils/getFuncAsString';
 
 // Вариант 1: preCode + render (самый частый)
-const preCode = `import { MyComponent } from '@dais-ui/ui-kit';`;
+const preCode = `import { MyComponent } from '@daisforge/ui';`;
 
 export const Basic: Story = {
   ...storySourceDoc({ preCode, previewSource: 'shown' }),
@@ -164,7 +164,7 @@ function ComplexExample() {
 }
 
 const complexCode = `
-import { MyComponent } from '@dais-ui/ui-kit';
+import { MyComponent } from '@daisforge/ui';
 import { useState } from 'react';
 
 ${getFuncAsString('packages/storybook/src/stories/MyComponent/MyComponent.stories.tsx', 'ComplexExample')}
@@ -190,7 +190,7 @@ export const Complex: Story = {
 
 ```tsx
 // ✅
-const preCode = `import { Button, DrawerDF } from '@dais-ui/ui-kit';`;
+const preCode = `import { Button, DrawerDF } from '@daisforge/ui';`;
 
 // ❌
 const preCode = `import { Button } from '@ui-kit/components/Button';`;
@@ -205,7 +205,7 @@ const preCode = `import { Button } from '@ui-kit/components/Button';`;
 - [ ] Есть `MyComponent.mdx` с секциями: заголовок, ключевые особенности, ссылка на API, `<Stories />`
 - [ ] Есть `MyComponentAPI.mdx` с `<TypeSourceViewer>` для каждого публичного типа
 - [ ] `storySourceDoc` с `preCode` или `code` во всех stories с render
-- [ ] Импорты в preCode из `@dais-ui/ui-kit`, а не из `@ui-kit/`
+- [ ] Импорты в preCode из `@daisforge/ui`, а не из `@ui-kit/`
 
 ---
 
@@ -270,7 +270,7 @@ const preCode = `import { Button } from '@ui-kit/components/Button';`;
 **Что делать:** добавить `...storySourceDoc({ preCode })` в каждую story. Для args-only stories достаточно:
 
 ```tsx
-const preCode = `import { EmptyState } from '@dais-ui/ui-kit';`;
+const preCode = `import { EmptyState } from '@daisforge/ui';`;
 
 export const Default: Story = {
   ...storySourceDoc({ preCode }),

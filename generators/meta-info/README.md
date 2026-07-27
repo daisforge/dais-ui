@@ -468,7 +468,7 @@ preCode — дополнительный код, который показыва
 ```tsx
 parameters: {
   storySourceDoc({
-    preCode: `import { useState } from 'react';\nimport { Button } from '@dais-ui/ui-kit';`,
+    preCode: `import { useState } from 'react';\nimport { Button } from '@daisforge/ui';`,
   });
 }
 ```
@@ -503,7 +503,7 @@ const myCode = `import { Button } from '...';\n\n${getFuncAsString('path/to/file
 Пример — PageLayout, где preCode используется в нескольких стори:
 
 ```tsx
-const preCode = `import { PageLayout } from '@dais-ui/ui-kit';`;
+const preCode = `import { PageLayout } from '@daisforge/ui';`;
 const pageLayoutCode = `${preCode}\n\n${getFuncAsString('path', 'PageLayoutExample')}`;
 ```
 
