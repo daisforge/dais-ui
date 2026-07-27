@@ -1,0 +1,26 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as TableFormatCellContentStories from './TableCanvas.formatCellContent.stories';
+
+<Meta of={TableFormatCellContentStories} name="Docs" />
+
+# FormatCellContent (TableCanvas)
+
+**columnConfig.contentFormat**
+
+Параметр `contentFormat` позволяет гибко настраивать отображение данных в ячейках таблицы. Поддерживается как на уровне колонки, так и для subRow (дочерних строк).
+
+## Ключевые особенности
+
+- Числовое форматирование с настройкой разделителей, локали, дробной части
+- Кастомное форматирование через `customFormat`
+- Выравнивание содержимого (`alignContent`)
+- Приоритет формата: `subRow.contentFormat` → родительский `contentFormat` → `column.contentFormat`
+
+## Особенности
+
+- Если используется `renderCell` или `renderSubRowCell`, кастомное форматирование не применяется
+- При редактировании с `component: inputNumber` параметры сепараторов и min/max дробной части берутся из `contentFormat`
+
+> Подробнее о типах и пропсах — [FormatCellContent API](?path=/docs/локальные-компоненты-tablecanvas-formatcellcontent-api--docs)
+
+<Stories />

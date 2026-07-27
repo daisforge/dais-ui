@@ -1,0 +1,22 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as TextFieldStories from './TextField.stories';
+
+<Meta of={TextFieldStories} name="Docs" />
+
+# TextField
+
+Однострочное текстовое поле ввода. Расширяет атомарный `TextField` из `@salutejs/sdds-finai`, добавляя кнопку очистки.
+
+## Ключевые особенности
+
+- Размеры: `s`, `xs`
+- Варианты отображения: `default`, `positive`, `warning`, `negative`
+- Размещение лейбла: `outer` (над полем) и `inner` (внутри)
+- Кнопка очистки через проп `onClear`
+- Поддержка слотов `contentLeft` и `contentRight` для иконок
+- Поддержка `leftHelper` для подсказок под полем
+- Состояния: `disabled`, `readOnly`, `required`, `optional`
+
+Описание типов — в разделе [API](/docs/локальные-компоненты-textfield-api--docs).
+
+<Stories />

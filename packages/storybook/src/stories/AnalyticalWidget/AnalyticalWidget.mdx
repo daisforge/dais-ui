@@ -1,0 +1,50 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as AnalyticalWidgetStories from './AnalyticalWidget.stories';
+import { AnalyticalWidgetInfoAboutAdaptive } from './components/AnalyticalWidgetInfoAboutAdaptive';
+
+<Meta of={AnalyticalWidgetStories} name="Docs" />
+
+# AnalyticalWidget
+
+Аналитический виджет с адаптивным поведением и слотами для контента.
+
+## Ключевые особенности
+
+- Три размера (`L`, `M`, `S`) с разными параметрами высоты, ширины, border-radius и padding
+- Слоты: `headerSlot`, `topSlot`, `middleSlot` (только для `L`), `contentSlot`
+- `middleSlot` видим только при размере `L`
+- Прокрутка контентной области (`scrollable`)
+- Кастомизация через `classes`, `$css` и CSS-переменные
+
+## Compound-компоненты
+
+```ts
+AnalyticalWidget.Header = AnalyticalWidgetHeader;
+AnalyticalWidget.FilterIconButton = IconButtonFilter;
+AnalyticalWidget.DotsIconButton = IconButtonDots;
+AnalyticalWidget.Chips = AnalyticalWidgetChipsGroup;
+```
+
+- `AnalyticalWidget.Header` — шапка виджета с заголовком и слотами для действий
+- `AnalyticalWidget.FilterIconButton` — кнопка-иконка для фильтров (с поддержкой Dropdown). Поддерживает красный индикатор применения фильтров
+- `AnalyticalWidget.DotsIconButton` — кнопка-иконка для дополнительных действий (с поддержкой Dropdown)
+- `AnalyticalWidget.Chips` — чипы для отображения применённых фильтров
+
+## CSS-переменные
+
+- `--analytical-widget-bg` — фон всего виджета
+- `--analytical-widget-padding` — внутренние отступы контейнера
+- `--analytical-widget-br` — радиус скругления углов
+- `--analytical-widget-min-height` — минимальная высота контентной области
+
+## Особенности
+
+- Все параметры можно переопределить через CSS-переменные, нативные/кастомные классы компонента или проп `$css` для основного контейнера. Объект `analyticalWidgetClassNames` доступен для импорта
+- Кнопка троеточия вставляется через микрофронт другой командой — место под неё зарезервировано. В stories показан пример через `position: absolute`
+- Высота, ширина, border-radius, padding зависят от размера и имеют фиксированные значения
+
+<AnalyticalWidgetInfoAboutAdaptive />
+
+Описание типов и compound-пропсов — в разделе [API](/docs/композиции-analyticalwidget-api--docs).
+
+<Stories />

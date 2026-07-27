@@ -1,0 +1,157 @@
+import { Meta, Canvas, Source, Stories } from '@storybook/blocks';
+import * as BlockGradientScrollStories from './BlockGradientScroll.stories';
+
+<Meta of={BlockGradientScrollStories} name="Docs" />
+
+# BlockGradientScroll
+
+Градиент-индикатор скролла — визуальная подсказка пользователю, что контент можно скроллить.
+
+## Ключевые особенности
+
+- Автоматически появляется при наличии скролла
+- Плавно исчезает при достижении конца
+- Доступен как компонент и как миксин для styled-components
+
+## Особенности
+
+- Основано на CSS `animation-timeline` — [поддержка браузеров](https://caniuse.com/?search=animation-timeline)
+- Тема определяется один раз в момент создания компонента/стилей (`getActiveTheme()`), при переключении темы градиент не обновится автоматически
+- Компонент автоматически получает padding через `getComputedStyle` — prop не нужен
+- Миксин принимает padding и сам применяет его к контейнеру — дублирование не требуется
+- Variant `white` (default) — белый/тёмный фон; `gray` — серый фон
+- `$css` позволяет передать дополнительные стили через styled-components
+
+## Экспорты
+
+### Компонент
+
+- `BlockGradientScroll` — React-компонент (`@dais-ui/ui-kit`)
+- `BlockGradientScrollProps` — Тип пропсов (`@dais-ui/ui-kit`)
+
+### Миксин
+
+- `BlockGradientScrollMixin` — Основной миксин (`@dais-ui/ui-kit/mixins`)
+- `BlockGradientScrollPadding` — Тип для padding (`@dais-ui/ui-kit/mixins`)
+- `BlockGradientScrollVariant` — Тип для variant (`@dais-ui/ui-kit/mixins`)
+- `BlockGradientScrollOptions` — Тип опций миксина (`@dais-ui/ui-kit/mixins`)
+
+### Внутренние (для кастомизации)
+
+- `blockGradientScrollContainerStyles` — Базовые стили контейнера
+- `blockGradientScrollAfterStyles` — Стили псевдоэлемента ::after
+- `blockGradientScrollKeyframes` — Keyframes анимации
+
+---
+
+## Использование
+
+### Компонент
+
+Компонент **автоматически** получает padding'и из ваших стилей — просто укажите их в `style`, `className` или `$css`:
+
+<Source
+  language="tsx"
+  code={`
+// Компонент сам определит padding из style
+<BlockGradientScroll
+  variant="white"
+  style={{
+    maxHeight: 300,
+    overflowY: 'auto',
+    padding: 24,
+    background: '#ffffff',
+  }}
+>
+  {children}
+</BlockGradientScroll>
+`}
+/>
+
+### Миксин
+
+Миксин **сам применяет padding** к контейнеру — не нужно дублировать:
+
+<Source language="tsx" code={`
+// Миксин сам применит padding: 24px ко всем сторонам
+const Box = styled.div\`
+  max-height: 300px;
+  overflow-y: auto;
+  background: #ffffff;
+
+\${BlockGradientScrollMixin({ padding: 24, variant: 'white' })}
+\`;
+`} />
+
+---
+
+## Примеры
+
+### 1. Базовый компонент
+
+<Source language="tsx" code={`
+import { BlockGradientScroll } from '@dais-ui/ui-kit';
+
+// Padding автоматически подхватывается из style
+
+<BlockGradientScroll
+  variant="white"
+  style={{
+    maxHeight: 300,
+    overflowY: 'auto',
+    padding: 24,
+    background: '#ffffff',
+  }}
+>
+  <Item />
+  <Item />
+  <Item />
+</BlockGradientScroll>
+`} />
+
+<Canvas of={BlockGradientScrollStories.Default} />
+
+### 2. Миксин (styled-components)
+
+<Source language="tsx" code={`
+import { BlockGradientScrollMixin } from '@dais-ui/ui-kit/mixins';
+import styled from 'styled-components';
+
+// Миксин сам применяет padding — дублирование не нужно
+const ScrollableBox = styled.div\`
+max-height: 300px;
+overflow-y: auto;
+background: #ffffff;
+
+\${BlockGradientScrollMixin({ padding: 24, variant: 'white' })}
+\`;
+
+<ScrollableBox>
+  <Item />
+  <Item />
+</ScrollableBox>
+`} />
+
+<Canvas of={BlockGradientScrollStories.MixinUsage} />
+
+### 3. Мало контента — градиент скрыт
+
+Если контент помещается без скролла, градиент автоматически скрыт (`opacity: 0`).
+
+<Canvas of={BlockGradientScrollStories.NoScroll} />
+
+### 4. Несколько контейнеров
+
+Каждый контейнер работает независимо благодаря `scroll-timeline`.
+
+<Canvas of={BlockGradientScrollStories.MultipleContainers} />
+
+### 5. Способы стилизации
+
+Компонент поддерживает три способа кастомизации: `style`, `className`, `$css`.
+
+<Canvas of={BlockGradientScrollStories.StylingMethods} />
+
+> Подробнее о типах и пропсах — [BlockGradientScroll API](?path=/docs/локальные-компоненты-blockgradientscroll-api--docs)
+
+<Stories />

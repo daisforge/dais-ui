@@ -1,0 +1,19 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as NumberFormatAmountStory from './NumberFormatAmount.stories';
+
+<Meta of={NumberFormatAmountStory} name="Docs" />
+
+# NumberFormatAmount
+
+Компонент NumberFormatAmount — обёртка компонента NumberFormat с жирным шрифтом (bold) и опциональной кнопкой очистки. С примерами реализации подробно можно ознакомиться ниже в stories.
+
+## Ключевые особенности
+
+- Жирная типографика: `xs` — bodySBold, `s` — bodyMBold
+- При передаче `onClear` автоматически появляется крестик очистки, если поле содержит значение
+- Если одновременно переданы `onClear` и `contentRight`, иконка contentRight отображается правее крестика
+- Доступные размеры: `s`, `xs`
+
+> Подробнее о типах и пропсах — [NumberFormatAmount API](?path=/docs/локальные-компоненты-numberformatamount-api--docs)
+
+<Stories />

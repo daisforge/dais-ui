@@ -1,0 +1,73 @@
+import { Meta, Stories, Story, Canvas } from '@storybook/blocks';
+import { AnalyticalWidget } from '@ui-kit/components/AnalyticalWidget';
+import { AnalyticalWidgetHeader } from '@ui-kit/components/AnalyticalWidget/components/AnalyticalWidgetHeader';
+import { AnalyticalWidgetChipsGroup } from '@ui-kit/components/AnalyticalWidget/components/AnalyticalWidgetChips';
+import {
+  IconButtonFilter,
+  IconButtonDots,
+} from '@ui-kit/components/IconButton';
+import { CustomArgTypes } from '@df-storybook/utils/CustomArgTypes';
+import * as AnalyticalWidgetStories from './AnalyticalWidget.stories';
+import { ArgTypes } from '@storybook/blocks';
+import { TypeSourceViewer } from '@df-storybook/utils/TypeSourceViewer';
+import {
+  StoryAnalyticalWidgetClassNamesComp,
+  StoryAnalyticalWidgetSizeComp,
+} from '@ui-kit/components/StoriesUtils/storiesUtils.AnalyticalWidget';
+
+<Meta of={AnalyticalWidgetStories} name="Docs for layout" />
+
+# Пример реализации сетки для AnalyticalWidget
+
+Данный пример демонстрирует **один из возможных вариантов** реализации адаптивной сетки для размещения аналитических виджетов.
+
+Важно понимать, что каждый проект может требовать свою собственную реализацию сетки в зависимости от дизайн-системы и требований к адаптивности.
+
+## Особенности данного примера
+
+1. **Адаптивность**:
+
+   - Сетка автоматически перестраивается при изменении ширины экрана
+   - Используются медиа-запросы для разных разрешений
+   - Адаптивность до 1280px
+   - Рекомендуется смотреть в отдельном окне
+
+2. **Размеры виджетов**:
+
+   - `S` (1x1) - маленький квадратный виджет
+   - `M` (2x1) - широкий виджет
+   - `L` (2x2) - большой квадратный виджет
+
+3. **Ограничения**:
+
+   - У виджетов есть минимальная высота (зависит от viewport)
+   - Есть ограничения по минимальной и максимальной ширине
+
+4. **Кастомизация**:
+   - В данном примере мои кастомные обертки `WidgetL`, `WidgetS` и `WidgetM` над `AnalyticalWidget` переопределяют стандартные стили:
+     - `height: 100%` - чтобы виджеты заполняли высоту ячейки сетки
+     - `max-width: unset` и `width: 100%` - для адаптации под сетку
+
+## Как использовать
+
+Вы можете:
+
+- Добавлять виджеты разных размеров кнопками
+- Удалять виджеты по клику на крестик (кнопка троеточия, пункт "Удалить")
+- Наблюдать как сетка адаптируется при изменении размера окна
+
+Подробнее с компонентом `AnalyticalWidget` можно ознакомиться [здесь](#) (вставьте актуальную ссылку на документацию).
+
+## Пример кода
+
+Ниже представлен живой пример, демонстрирующий работу сетки:
+ℹ️ Для просмотра примера нажми `Show code`
+
+<Canvas of={AnalyticalWidgetStories.DynamicGridCSS} name="DynamicGridCSS" />
+
+## Рекомендации по реализации
+
+1. Всегда учитывайте минимальные/максимальные размеры виджетов
+2. Тестируйте сетку на разных разрешениях экрана
+3. Учитывайте плотность информации в виджетах при выборе размеров
+4. Помните о доступности и читаемости контента при адаптации

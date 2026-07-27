@@ -1,0 +1,31 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="Локальные компоненты/TableCanvas/HighlightActiveType/API" />
+
+# HighlightActiveType / CellsSelectionMode API
+
+## CellsSelectionMode
+
+Режим фактического выделения ячеек. По нему работают copy/paste, рамка выделения,
+fill-handle, затемнение шапки/нумерации.
+
+```ts
+type CellsSelectionMode = 'cell' | 'range-cell' | 'disabled';
+```
+
+- **`'range-cell'`** — выделение диапазона ячеек (по умолчанию)
+- **`'cell'`** — выделение одной ячейки
+- **`'disabled'`** — выделение ячеек отключено
+
+## HighlightActiveType
+
+Чисто визуальная подсветка строки (не влияет на copy/paste).
+
+```ts
+type HighlightActiveType = 'cell' | 'row' | 'range-cell' | 'disabled';
+```
+
+- **`'row'`** — подсветка строки активной ячейки
+- **`'disabled'`** — без подсветки строки (по умолчанию)
+- **`'cell'`**, **`'range-cell'`** — `@deprecated`, режим выделения теперь задаётся
+  через `cellsSelection.mode`

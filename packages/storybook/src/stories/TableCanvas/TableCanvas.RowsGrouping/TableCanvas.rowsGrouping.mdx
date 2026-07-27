@@ -1,0 +1,29 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as TableRowsGroupingStories from './TableCanvas.rowsGrouping.stories';
+
+<Meta of={TableRowsGroupingStories} name="Docs" />
+
+# RowsGrouping (TableCanvas)
+
+**tableConfig.rowsGrouping + columnConfig.rowsGrouping**
+
+Группировка строк таблицы по значениям колонок с поддержкой вложенных группировок.
+
+## Ключевые особенности
+
+- Управляемое состояние группировки через `groupByState`
+- Кнопка с выпадающим списком для выбора группировок в controlBlock
+- Кастомный рендер сгруппированных строк через `renderGroupCell`
+- Кастомные элементы в выпадающем списке через `groupButton.defaultCustomItems`
+- Возможность замены данных группированных строк через `groupRowReplaceTo`
+
+## Особенности
+
+- `rowKeyGetter` должен возвращать уникальный идентификатор строки
+- `groupedColumnProps` позволяет настроить колонку с группировкой (ширину, рендер и т.д.)
+- В `columnConfig.rowsGrouping` можно указать `groupByColumn: false` для исключения колонки из группировки
+- `columnGroupLabel` переопределяет лейбл в выпадающем списке (default: `columnConfig.key`)
+
+> Подробнее о типах — [RowsGrouping API](?path=/docs/локальные-компоненты-tablecanvas-rowsgrouping-api--docs)
+
+<Stories />

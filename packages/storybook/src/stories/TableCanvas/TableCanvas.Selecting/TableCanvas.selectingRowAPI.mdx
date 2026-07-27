@@ -1,0 +1,62 @@
+import { Meta } from '@storybook/blocks';
+import { TypeSourceViewer } from '@df-storybook/utils/TypeSourceViewer';
+
+<Meta title="Локальные компоненты/TableCanvas/SelectingRow/API" />
+
+# SelectingRow API
+
+> **Важно:** `tableConfig.selecting` (этот раздел) — выбор строк **чекбоксами**.
+> Это отдельный механизм от `tableConfig.cellsSelection` (см. ниже) — выделения
+> колонок по клику на шапку.
+
+## SelectingRowConfig
+
+Конфиг чекбоксного выбора строк (`tableConfig.selecting`).
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/TableCanvas/feature-select-row/types.ts"
+  typeName="SelectingRowConfig"
+/>
+
+## CellsSelectionConfig
+
+Конфиг выделения **колонок** по клику на шапку — `tableConfig.cellsSelection`. Не
+зависит от `highlightActiveType`, по умолчанию включено. Поддерживает copy/paste
+по выделенным колонкам.
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/TableCanvas/types/table-config.type.ts"
+  typeName="CellsSelectionConfig"
+/>
+
+## RowGetStatesProps
+
+Аргумент функции `rowGetStates` — позволяет полностью переопределить поведение чекбоксов для каждой строки.
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/TableCanvas/feature-select-row/types.ts"
+  typeName="RowGetStatesProps"
+/>
+
+## RowGetStatesReturnType
+
+Возвращаемое значение `rowGetStates`.
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/TableCanvas/feature-select-row/types.ts"
+  typeName="RowGetStatesReturnType"
+/>
+
+## ChildrenInfo
+
+Информация о дочерних строках, доступная через `getRowChildrenInfo()`.
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/TableCanvas/feature-select-row/types.ts"
+  typeName="ChildrenInfo"
+/>

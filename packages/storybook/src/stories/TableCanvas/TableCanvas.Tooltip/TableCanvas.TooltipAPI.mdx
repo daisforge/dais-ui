@@ -1,0 +1,120 @@
+import { Meta } from '@storybook/blocks';
+import { TypeSourceViewer } from '@df-storybook/utils/TypeSourceViewer';
+
+<Meta title="Локальные компоненты/TableCanvas/Tooltip/API" />
+
+# Tooltip API
+
+## Источники конфига тултипа
+
+Тултип может быть задан на **трёх уровнях** (проверяются по приоритету, первый непустой побеждает):
+
+1. **Встроенный маппинг по `nodeId`** — внутренний словарь `TOOLTIP_TEXTS` (например, `HEADER_TOOLTIP_DRAG_ID` → «Перетащить колонку»). **Работает всегда.** Наивысший приоритет — колоночный конфиг не может перебить внутренние тултипы UI таблицы.
+2. **Проп `tooltip` на Canvas-элементе** — задаётся прямо на `Canvas.Container`, `Canvas.Button` и т.д. внутри `renderCell` / `renderHeaderCell`. Тип: `CanvasNodeTooltipConfig`. **Работает всегда.**
+3. **Поле `cellTooltip` / `headerCellTooltip` в `columnConfig`** — на уровне конфигурации колонки. Может быть строкой, объектом или функцией `(context) => config | null`. **Работает только при `tooltip.enabled: true`.**
+
+**Формат конфига:** строка (только текст) или объект с обязательным полем `text` и опциональными пропсами `Tooltip` (`placement`, `view` и т.д.; без `opened`, `target`, `style`), а также `mouseEnterDelay` / `mouseLeaveDelay` для per-node задержек.
+
+## Модуль tableConfig.tooltip
+
+Глобальные настройки тултипа вынесены в `tableConfig.tooltip` (тип `TableConfigTooltip`):
+
+- **tooltip.enabled** — включает колоночные/кастомные тултипы (`cellTooltip`, `headerCellTooltip`). По умолчанию `false`. Внутренние тултипы (проп `tooltip` на Canvas-элементе и маппинг по `nodeId`) работают всегда, независимо от `enabled`.
+- **tooltip.mouseEnterDelay** — глобальная задержка перед показом (мс, по умолчанию `500`). Per-node переопределяет.
+- **tooltip.mouseLeaveDelay** — глобальная задержка перед скрытием (мс, по умолчанию `0`). Per-node переопределяет.
+
+Пример:
+
+```tsx
+tableConfig={{
+  tooltip: {
+    enabled: true,
+    mouseEnterDelay: 300,
+  },
+}}
+```
+
+## Колоночные cellTooltip / headerCellTooltip
+
+Задаются в `columnConfig` на уровне колонки. Значение — строка, объект или функция. Требуют `tooltip.enabled: true` в `tableConfig`:
+
+```tsx
+const columnConfig = [
+  {
+    key: 'task',
+    name: 'Title',
+    // Строка — простой текст
+    headerCellTooltip: 'Название задачи',
+    // Функция — динамический конфиг
+    cellTooltip: ({ row, column }) => {
+      return `${column.name}: ${row.task}`;
+    },
+  },
+];
+```
+
+Контекст функции `cellTooltip` содержит: `row`, `column`, `ctxs`, `refTable`, `colInd`, `rowInd`, `theme`.
+Контекст функции `headerCellTooltip` содержит: `column`, `ctxs`, `refTable`, `colInd`, `theme`.
+
+---
+
+## Типы
+
+### CanvasNodeTooltipConfig
+
+Проп `tooltip` на Canvas-элементах и базовый формат конфига. Строка (текст) или объект с `text` и опциональными пропсами Tooltip.
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/TableGlide/lib/canvas/utils/portalHoverEvents.ts"
+  typeName="CanvasNodeTooltipConfig"
+/>
+
+### CanvasNodeTooltipProps
+
+Пропсы Tooltip, которые можно задать через объектную форму конфига. Управляемые внутренне поля (`opened`, `target`, `style`, `text`, `mouseEnterDelay`, `mouseLeaveDelay`, `hoverTimeout`, `trigger`) исключены.
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/TableGlide/lib/canvas/utils/portalHoverEvents.ts"
+  typeName="CanvasNodeTooltipProps"
+/>
+
+### TooltipConfigResult
+
+Алиас: `CanvasNodeTooltipConfig | null`. Используется как возвращаемый тип функциональной формы `cellTooltip` / `headerCellTooltip`.
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/TableCanvas/feature-tooltip/types.ts"
+  typeName="TooltipConfigResult"
+/>
+
+### TooltipData
+
+Внутренний результат резолвинга: текст, пропсы тултипа и per-node задержки. Возвращается из `resolveTooltipData` и передаётся в `usePortalHover`.
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/TableCanvas/feature-tooltip/types.ts"
+  typeName="TooltipData"
+/>
+### TableConfigTooltip
+
+Глобальные настройки тултипа в `tableConfig.tooltip`.
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/TableCanvas/types/table-config.type.ts"
+  typeName="TableConfigTooltip"
+/>
+
+### CanvasPortalHoverDetail
+
+Объект события hover по canvas-элементу. Содержит координаты, размеры, `nodeId`, `source` (`'header'` | `'cell'`), `tooltipFromNode` и `tooltipContext` (column, row, ctxs, refTable).
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/TableGlide/lib/canvas/utils/portalHoverEvents.ts"
+  typeName="CanvasPortalHoverDetail"
+/>

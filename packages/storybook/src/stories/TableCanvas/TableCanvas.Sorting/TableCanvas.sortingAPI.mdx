@@ -1,0 +1,55 @@
+import { Meta } from '@storybook/blocks';
+import { TypeSourceViewer } from '@df-storybook/utils/TypeSourceViewer';
+
+<Meta title="Локальные компоненты/TableCanvas/Sorting/API" />
+
+# Sorting API
+
+## SortColumn
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/TableCanvas/feature-sorting/types.ts"
+  typeName="SortColumn"
+/>
+
+## SortDirection
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/TableCanvas/feature-sorting/types.ts"
+  typeName="SortDirection"
+/>
+
+## Comparator
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/TableCanvas/types/column-config.type.ts"
+  typeName="Comparator"
+/>
+
+## sortingType (в ColumnConfig)
+
+```ts
+sortingType?: 'stringSort' | 'numberSort' | Comparator<Row>;
+```
+
+- **`'stringSort'`** — строковый компаратор. Локаль `'ru'`, `numeric: true`, `sensitivity: 'base'`. Пустые значения — внизу
+- **`'numberSort'`** — числовой компаратор. Поддержка запятых, пробелов-разделителей тысяч. Невалидные и пустые значения — внизу
+- **`Comparator<Row>`** — кастомная функция `(a: Row, b: Row) => number`. Направление (ASC/DESC) применяется автоматически
+
+## sorting (в TableConfig)
+
+```ts
+sorting?: {
+  state: [
+    readonly SortColumn[],
+    React.Dispatch<React.SetStateAction<readonly SortColumn[]>>
+  ];
+  manualSorting?: boolean;
+};
+```
+
+- **`state`** — стейт сортировки. Передать `useState<readonly SortColumn[]>([])`
+- **`manualSorting`** `boolean` — если `true`, таблица не сортирует данные — ожидается серверная сортировка (default: `false`)

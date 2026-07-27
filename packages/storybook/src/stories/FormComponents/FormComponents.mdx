@@ -1,0 +1,38 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as FormComponentsStories from './FormComponents.stories';
+
+<Meta of={FormComponentsStories} name="Docs" />
+
+# Компоненты формы
+
+Обёртки над атомарными компонентами, интегрированные с `react-hook-form` через `Controller`. Уменьшают boilerplate для управления значениями, валидацией и отображением ошибок.
+
+## Ключевые особенности
+
+- 14 компонентов-обёрток: `FormTextField`, `FormTextArea`, `FormMask`, `FormNumberFormat`, `FormCheckbox`, `FormSwitch`, `FormSelect`, `FormCombobox`, `FormAutocomplete`, `FormDatePicker`, `FormDatePickerRange`, `FormRadioGroup` + `FormRadiobox`, `FormSegmentGroup`
+- Интеграция с `react-hook-form` через `Controller` — автоматическое управление значениями и ошибками
+- Валидация через проп `options` (правила `react-hook-form`) или сторонние библиотеки (`zod`, `yup`)
+- Типизированные подсказки при вводе `name` через generic: `<FormCheckbox<FormValues> name="checkbox" />`
+
+## Использование
+
+Оберните форму в `FormProvider` и передайте каждому компоненту проп `name`:
+
+```tsx
+<FormProvider {...form}>
+  <FormTextField name="fieldName" label="Лейбл" />
+</FormProvider>
+```
+
+## Особенности
+
+- `value` не нужно передавать — управляется внутренне
+- `onChange` возвращает значение напрямую (не event)
+- `FormDatePicker`: при передаче `validate` в `options` внутренняя валидация отключается
+- `FormRadioGroup`: атрибут `name` указывается ТОЛЬКО у группы, дочерние `FormRadiobox` наследуют автоматически
+- `FormRadiobox` должны находиться на первом уровне вложенности внутри `FormRadioGroup` (не оборачивать в `div`)
+- `FormSelect`: ограничена максимальная ширина элемента, при 100% вложенные элементы могут не отобразиться
+
+Описание пропсов и валидации — в разделе [API](/docs/формы-компоненты-формы-api--docs).
+
+<Stories />

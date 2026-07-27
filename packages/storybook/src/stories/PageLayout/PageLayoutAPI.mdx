@@ -1,0 +1,35 @@
+import { Meta } from '@storybook/blocks';
+import { TypeSourceViewer } from '@df-storybook/utils/TypeSourceViewer';
+
+<Meta title="Композиции/PageLayout/API" />
+
+# PageLayout API
+
+## PageLayoutProps
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/layouts/PageLayout/PageLayout.types.ts"
+  typeName="PageLayoutProps"
+/>
+## CSS-переменные
+
+Компонент устанавливает CSS-переменные, которые можно переопределить или использовать в дочерних элементах:
+
+- `--global-header-height` — задаётся микрофронтом шапки (fallback 72px). PageLayout использует для `padding-top`
+- `--page-layout-padding-top` — верхний отступ. По умолчанию `var(--global-header-height, 72px)`
+- `--page-layout-padding-inline` — боковые отступы. &lt;= 1280px: `24px`, >1280px: `32px`
+- `--page-layout-padding-bottom` — нижний отступ. &lt;= 1280px: `24px`, >1280px: `32px`
+
+## Стили
+
+```css
+display: flex;
+max-width: 1920px;
+padding-top: var(--page-layout-padding-top);
+margin-inline: auto;
+min-height: calc(100dvh - var(--page-layout-padding-top));
+padding-inline: var(--page-layout-padding-inline);
+padding-bottom: var(--page-layout-padding-bottom);
+box-sizing: border-box;
+```

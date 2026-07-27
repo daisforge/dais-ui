@@ -1,0 +1,19 @@
+export const drawerDFClassNames = {
+  drawerPanelRoot: 'panel-root',
+  drawerCloseBox: 'drawer-close-box',
+  drawerHeaderContainer: 'drawer-header-container',
+  drawerHeader: 'drawer-header',
+  drawerHeaderTop: 'drawer-header-top',
+  drawerHeaderTitleBlock: 'drawer-header__title-block',
+  drawerHeaderRightBlock: 'drawer-header__right-block',
+  drawerHeaderFooterBlock: 'drawer-header__footer-block',
+  drawerHeaderBadge: 'drawer-header__badge',
+  drawerHeaderTitle: 'drawer-header__title',
+  drawerHeaderTitleContainer: 'drawer-header__title-container',
+  drawerHeaderSubtitle: 'drawer-header__subtitle',
+  drawerFooter: 'drawer-footer',
+  drawerContentContainer: 'drawer-content-container',
+  drawerContent: 'drawer-content',
+  drawerContentInner: 'drawer-content-inner',
+  drawerBackIconButton: 'drawer__back-icon'
+};

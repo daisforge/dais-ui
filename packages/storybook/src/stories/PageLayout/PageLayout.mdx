@@ -1,0 +1,77 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as PageLayoutStories from './PageLayout.stories';
+
+<Meta of={PageLayoutStories} name="Docs" />
+
+# PageLayout
+
+Обёртка страницы микрофронта. Управляет отступом под fixed-шапку (`padding-top`), боковыми/нижними паддингами по брейкпоинтам и центрированием контента.
+
+## Ключевые особенности
+
+- **Отступ под fixed-шапку** — `padding-top` по CSS-переменной `--global-header-height` (fallback 72px)
+- **Центрирование** — `max-width: 1920px` + `margin-inline: auto`
+- **Адаптивные паддинги** — боковые и нижние отступы меняются по брейкпоинтам
+- **min-height: 100dvh** — страница всегда занимает минимум один экран
+- **display: flex** — дочерний контент автоматически растягивается на всю высоту
+
+## Типичные композиции
+
+### PageLayout + Layout
+
+Базовый сценарий — обёртка страницы с сеткой контента:
+
+```tsx
+<PageLayout>
+  <Layout variant="V1_1" headerSlot={...} mainSlot={...} />
+</PageLayout>
+```
+
+### PageLayout + SplitView
+
+SplitView внутри PageLayout. Sidebar ограничен шириной контейнера, не прижимается к краю viewport:
+
+```tsx
+<PageLayout>
+  <SplitView
+    mainContent={
+      <Layout variant="V1_1" headerSlot={...} mainSlot={...} />
+    }
+    sidebar={{ content: ..., isOpened: sidebarOpen }}
+  />
+</PageLayout>
+```
+
+### PageLayout + SplitView + LeftPanel
+
+LeftPanel — часть `mainSlot` внутри Layout:
+
+```tsx
+<PageLayout>
+  <SplitView
+    mainContent={
+      <Layout
+        variant="V1_1"
+        headerSlot={...}
+        mainSlot={
+          <FlexContainer>
+            <LeftPanel ... />
+            <MainArea>контент</MainArea>
+          </FlexContainer>
+        }
+      />
+    }
+    sidebar={{ content: ..., isOpened: sidebarOpen }}
+  />
+</PageLayout>
+```
+
+## Особенности
+
+- `PageLayout` — это **viewport-level** обёртка. Используйте как корневой контейнер страницы, внутри которого размещается `Layout` и другие композиционные компоненты
+- **PageLayout** отвечает за отступы от шапки, padding краёв и центрирование (`max-width`). Используется 1 раз на страницу
+- **Layout** отвечает за колонки, гаттеры, хедер контента. Размещается внутри `PageLayout`
+
+Описание типов и CSS-переменных — в разделе [API](?path=/docs/композиции-pagelayout-api--docs).
+
+<Stories />

@@ -1,0 +1,21 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as Notification from './Notification.stories';
+
+<Meta of={Notification} name="Docs" />
+
+# Notification
+
+Компонент `Notification` с обновленным визуальным видом для каждого view. С документацией можно ознакомиться [по ссылке](https://plasma.sberdevices.ru/sdds-finai/components/notification/).
+
+## Ключевые особенности
+
+- Обновленный визуальный вид для каждого `view`
+- Поддержка градиента для значений `view`: `"positive"`, `"warning"`, `"negative"`, `"info"`
+
+## Особенности
+
+- Градиент будет применяться, если параметр `view` указан с одним из значений: `"positive"` | `"warning"` | `"negative"` | `"info"`
+
+> Подробнее о типах и пропсах — [Notification API](?path=/docs/локальные-компоненты-notification-api--docs)
+
+<Stories />

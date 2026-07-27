@@ -1,0 +1,49 @@
+import { Meta } from '@storybook/blocks';
+import { TypeSourceViewer } from '@df-storybook/utils/TypeSourceViewer';
+import { getTypeAsString } from '@df-storybook/utils/getTypeAsString';
+
+<Meta title="Локальные компоненты/Box/API" />
+
+# Box API
+
+Базовый контейнер-обёртка. Собственный компонент (не из `@salutejs/sdds-finai`). Принимает CSS-свойства как пропсы.
+
+## BoxProps
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/Box/Box.tsx"
+  typeName="BoxProps"
+  postSource={`
+  ${getTypeAsString(
+    'packages/ui-kit/src/components/Box/Box.tsx',
+    'BoxBaseProps',
+    true
+  )}
+${getTypeAsString(
+  'packages/ui-kit/src/components/Box/typeKeys.ts',
+  'BoxCSSProperties',
+  true
+)}
+`}
+/>
+
+## Основные пропсы
+
+- `$css` (`string | CSSObject`) — кастомные стили styled-components
+- `hidden` (`boolean`) — скрыть элемент (`display: none`)
+- `as` (`ElementType`) — HTML-тег или компонент для корневого узла (`div`, `li`, `section` и т.д.)
+
+## CSS-пропсы (передаются напрямую)
+
+Размеры: `width`, `maxWidth`, `minWidth`, `height`, `maxHeight`, `minHeight`
+
+Отступы: `margin`, `marginLeft/Right/Top/Bottom`, `padding`, `paddingLeft/Right/Top/Bottom`
+
+Flexbox: `display`, `flexDirection`, `justifyContent`, `justifyItems`, `justifySelf`, `flexGrow`, `flexWrap`, `flexShrink`, `gap`
+
+Позиционирование: `position`, `top`, `left`, `right`, `bottom`, `zIndex`
+
+Визуальные: `background`, `backgroundColor`, `opacity`, `border`, `borderWidth`, `borderColor`, `borderStyle`, `borderRadius`
+
+Прочие: `boxSizing`, `overflow`, `cursor`

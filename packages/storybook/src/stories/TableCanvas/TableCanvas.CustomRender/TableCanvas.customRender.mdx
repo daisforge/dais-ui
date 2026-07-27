@@ -1,0 +1,27 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as TableCustomRenderStories from './TableCanvas.customRenderCell.stories';
+
+<Meta of={TableCustomRenderStories} name="Docs" />
+
+# Custom Render
+
+**columnConfig.renderCell / renderHeaderCell / renderSummaryCell**
+
+Кастомный рендеринг ячеек таблицы через Canvas-компоненты.
+
+## Ключевые особенности
+
+- `renderCell` — кастомный рендер ячеек данных
+- `renderHeaderCell` — кастомный рендер заголовков колонок
+- `renderSummaryCell` — кастомный рендер итоговых строк
+- Доступ к `theme`, `column`, `row` и `ctxs` внутри рендер-функций
+
+## Особенности
+
+- Каждая ячейка должна учитывать `theme.cellHorizontalPadding` для корректных отступов
+- В качестве `name` колонки можно передать `Canvas.Element` для кастомного заголовка
+- Доступны все Canvas-компоненты: Badge, Button, Text, Container и др.
+
+> Подробнее о типах и пропсах — [Custom Render API](?path=/docs/локальные-компоненты-tablecanvas-customrender-api--docs)
+
+<Stories />

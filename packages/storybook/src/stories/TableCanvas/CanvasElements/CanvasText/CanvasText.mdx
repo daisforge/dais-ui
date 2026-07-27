@@ -1,0 +1,93 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as CanvasTextStories from './CanvasText.stories';
+
+<Meta of={CanvasTextStories} name="Docs" />
+
+# Canvas.Text
+
+Текстовый элемент для canvas-ячеек `TableCanvas` с поддержкой ellipsis и многострочного clamp.
+
+## Ключевые особенности
+
+- Однострочный ellipsis через `overflow="hidden"` + `textOverflow="ellipsis"`
+- Многострочный clamp через `wordWrap` + `maxLines`
+- Clip без маркера: `textOverflow="clip"`
+- Кастомный маркер обрезки через `ellipsis` (по умолчанию `…`)
+- Авто-тултип с полным текстом при обрезке через `autoTooltip`
+
+## Однострочный ellipsis
+
+```tsx
+<Canvas.Text overflow="hidden" textOverflow="ellipsis" style={{ flexGrow: 1 }}>
+  Очень длинный текст
+</Canvas.Text>
+```
+
+## Многострочный clamp
+
+```tsx
+<Canvas.Text
+  wordWrap
+  maxLines={2}
+  overflow="hidden"
+  textOverflow="ellipsis"
+  lineHeight={1.2}
+  style={{ flexGrow: 1 }}
+>
+  Длинный текст на несколько строк
+</Canvas.Text>
+```
+
+`maxLines` работает только при `wordWrap` и `overflow="hidden"`. `maxLines={1}` ведёт себя как однострочный ellipsis.
+
+## Высота строки
+
+Для многострочного текста высота строки таблицы должна оставлять место под нужное количество строк с учётом `lineHeight` и padding.
+
+## Авто-тултип при обрезке (`autoTooltip`)
+
+Если текст обрезается в многоточие, `Canvas.Text` может сам показывать тултип с полным текстом — без ручного `portalHoverEnabled` и `tooltip`:
+
+```tsx
+<Canvas.Text overflow="hidden" textOverflow="ellipsis" autoTooltip style={{ flexGrow: 1 }}>
+  {row.longText}
+</Canvas.Text>
+```
+
+Правила:
+
+- Тултип показывается **только когда текст реально обрезан в многоточие**. Если текст помещается целиком — тултипа нет.
+- Работает и для многострочного clamp (`wordWrap` + `maxLines`): тултип появляется, когда есть скрытые строки ниже `maxLines`.
+- При `textOverflow="clip"` (обрезка без маркера `…`) тултип не показывается.
+- `autoTooltip` сам делает ноду hover-таргетом (неявно включает `portalHoverEnabled`).
+- Явный проп `tooltip` приоритетнее: если заданы оба — показывается `tooltip` (always-on, без условия обрезки).
+- Обрезанность определяется по фактической ширине ноды после layout, поэтому при ресайзе колонки тултип автоматически появляется/исчезает вместе с многоточием.
+
+Кастомизация — объектом (тип `CanvasTextAutoTooltip`):
+
+```tsx
+<Canvas.Text
+  overflow="hidden"
+  textOverflow="ellipsis"
+  autoTooltip={{
+    placement: 'top',
+    mouseEnterDelay: 300,
+    // По умолчанию текст тултипа = полный текст ноды.
+    // Строка — заменить, функция — трансформировать, null из функции — не показывать.
+    text: (fullText) => `Полностью: ${fullText}`,
+  }}
+  style={{ flexGrow: 1 }}
+>
+  {row.longText}
+</Canvas.Text>
+```
+
+`autoTooltip={{ enabled: false }}` (или `autoTooltip={false}`) выключает авто-тултип. Доступные пропсы оформления — те же, что у обычного node-тултипа: `placement`, `view`, `minWidth`, `maxWidth`, `mouseEnterDelay`, `mouseLeaveDelay`.
+
+> Авто-тултип действует только на `Canvas.Text` внутри canvas-разметки (`renderCell` / `renderHeaderCell`, включая хедеры и групп-хедеры). Обычные текстовые ячейки таблицы (примитивные значения без `renderCell`) рисуются встроенным text-рендерером glide и в этой механике не участвуют.
+
+Общая механика тултипов таблицы описана в разделе [Tooltip](?path=/docs/локальные-компоненты-tablecanvas-tooltip--docs).
+
+Описание типов — в разделе [API](?path=/docs/локальные-компоненты-tablecanvas-canvaselements-canvastext-api--docs).
+
+<Stories />

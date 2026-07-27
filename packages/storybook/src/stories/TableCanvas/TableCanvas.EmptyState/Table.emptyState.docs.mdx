@@ -1,0 +1,20 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as EmptyStateStories from './Table.emptyState.stories';
+
+<Meta of={EmptyStateStories} name="Docs" />
+
+# TableCanvas Empty State
+
+**tableConfig.emptyState**
+
+Пустое состояние таблицы. Показывается после завершения загрузки, когда для текущих фильтров, поиска или ответа бэкенда нет строк для отображения.
+
+## Что показывают сценарии
+
+- `Default Empty State` показывает дефолтное состояние таблицы после загрузки.
+- `Custom Empty State` показывает, как переопределять `title`, `subtitle`, `variant` и `buttons`.
+- `Grouped Columns Empty State` демонстрирует, что grouped headers остаются видимыми.
+- `Full Content Empty State Without Headers` имитирует сценарий, когда схема колонок не пришла с бэкенда и state занимает всю content-область.
+- `Empty State With Control Block And Pagination` проверяет совместимость состояния с control block, pagination и настройкой размера строк.
+
+<Stories />

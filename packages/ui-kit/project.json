@@ -1,0 +1,34 @@
+{
+    "name": "ui-kit",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "packages/ui-kit/src",
+    "projectType": "library",
+    "tags": [],
+    "targets": {
+        "build": {
+            "executor": "@nx/vite:build",
+            "outputs": ["{options.outputPath}"],
+            "options": {
+                "outputPath": "dist/packages/ui-kit",
+                "project": "packages/ui-kit/package.json",
+                "rootDir": "packages/ui-kit/src",
+                "main": "packages/ui-kit/src/index.ts",
+                "tsConfig": "packages/ui-kit/tsconfig.lib.json",
+                "assets": ["packages/ui-kit/*.md"]
+            }
+        },
+        "lint": {
+            "executor": "@nx/eslint:lint",
+            "outputs": ["{options.outputFile}"]
+        },
+        "typecheck": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "packages/ui-kit",
+                "commands": ["tsc -p tsconfig.lib.json --noEmit"],
+                "forwardAllArgs": false,
+                "description": "Type check with tsc"
+            }
+        }
+    }
+}

@@ -1,0 +1,53 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as TableInfinityScrollStories from './TableCanvasInfinityScroll.stories';
+
+<Meta of={TableInfinityScrollStories} name="Docs" />
+
+# Infinity Scroll
+
+**tableConfig.infinityScroll**
+
+Бесконечная подгрузка данных при скролле. Для активации в `tableConfig` заполняется `infinityScroll`.
+
+## Принцип работы
+
+При приближении скролла к концу таблицы вызывается функция `onTrigger`, в этот момент можно подгружать новую пачку данных и управлять состоянием загрузки через `isLoading`.
+
+При активации `infinityScroll` **отключается дефолтная сортировка и фильтрация**. Предполагается, что если есть infinityScroll, то в таблице представлен не весь объем данных, по этой причине дефолтная сортировка и фильтрация не подходят и будут отображать некорректные данные. Нужно использовать версии данных фичей с ручным управлением (например, для отправки на бэкенд выбранных фильтров и сортировки).
+
+## Как работает определение позиции скролла
+
+Используется callback `onVisibleRegionChanged`. Работа ведётся на уровне индексов строк — триггер срабатывает, когда пользователь доскролливает до `rowThreshold` строк от конца (по умолчанию 5).
+
+```tsx
+tableConfig={{
+  infinityScroll: {
+    rowThreshold: 5,
+    onTrigger,
+    isLoading,
+    hasMore: rows.length < 300,
+  },
+}}
+```
+
+> **Примечание:** К значению `rowThreshold` автоматически прибавляется количество skeleton-строк, чтобы триггер загрузки срабатывал раньше и пользователь не видел скелетоны.
+
+## Конфигурация
+
+```tsx
+infinityScroll: {
+  onTrigger: (rows: RowType[]) => Promise<void> | void;
+  isLoading: boolean;
+  hasMore?: boolean;              // default: true
+  rowThreshold?: number;          // default: 5 (строк)
+}
+```
+
+- **`onTrigger`** — вызывается при достижении скроллом зоны подгрузки. Получает текущий массив строк.
+- **`isLoading`** — состояние загрузки. При `true` внизу таблицы отображаются skeleton-строки, повторные триггеры блокируются.
+- **`hasMore`** — когда все данные загружены, передать `false`. Скелетоны скроются, триггер перестанет вызываться.
+- **`rowThreshold`** — за сколько строк до конца стригерить загрузку. @default=5
+
+Подробное описание типов доступно в разделе [API](/docs/локальные-компоненты-tablecanvas-infinityscroll-api--docs).
+
+<Stories />

@@ -1,0 +1,18 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as CanvasButtonStories from './CanvasButton.stories';
+
+<Meta of={CanvasButtonStories} name="Docs" />
+
+# Canvas.Button
+
+Кнопка внутри canvas-ячейки `TableCanvas`.
+
+## Ключевые особенности
+
+- Несколько вариантов `view` и `size`
+- Поддержка `disabled`, `leftIcon` / `rightIcon`
+- `onClick` выполняется перед `tableConfig.onCellClicked` — используйте `event.stopPropagation()` для предотвращения всплытия
+
+Описание типов — в разделе [API](?path=/docs/локальные-компоненты-tablecanvas-canvaselements-canvasbutton-api--docs).
+
+<Stories />

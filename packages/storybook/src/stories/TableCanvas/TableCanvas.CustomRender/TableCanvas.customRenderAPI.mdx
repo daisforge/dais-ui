@@ -1,0 +1,28 @@
+import { Meta } from '@storybook/blocks';
+import { TypeSourceViewer } from '@df-storybook/utils/TypeSourceViewer';
+
+<Meta title="Локальные компоненты/TableCanvas/Custom renders/API" />
+
+# Custom Render API
+
+Кастомный рендеринг настраивается через свойства `columnConfig`.
+
+## CellInfo (renderCell)
+
+<TypeSourceViewer
+  filePath="packages/ui-kit/src/components/TableCanvas/types/column-config.type.ts"
+  typeName="CellInfo"
+  language="ts"
+/>
+
+## HeaderCellInfo (renderHeaderCell)
+
+<TypeSourceViewer
+  filePath="packages/ui-kit/src/components/TableCanvas/types/column-config.type.ts"
+  typeName="HeaderCellInfo"
+  language="ts"
+/>
+
+## name
+
+Свойство `name` в `columnConfig` принимает `string | ReactElement`. Для кастомного заголовка можно передать `Canvas.Element`.

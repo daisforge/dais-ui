@@ -1,0 +1,13 @@
+branch:
+  ignore_regex: "^master$|^release/.*$|^hotfix/.*$" #регулярное выражение для игнорирования пр-ов из ветки такой-то: PR branch_a->branch_b regex срабатывает для branch_a
+review_mode: # режим ревью: можно выбрать либо использовать одновременно
+  - SUGGESTIONS # предлагает изменение в коде
+  - REPORT # оставляет комментарий в формате единого отчета
+customer_instructions_file_name: "instructions.md" # имя файла с инструкциями
+ 
+# Если конфигурационный файл не указан, то используются следующие настройки
+#  ignore_regex: "release"
+#  customer_instructions_file_name: "instructions.md"
+#  review_mode:
+#    - "SUGGESTIONS"
+#    - "REPORT"

@@ -1,0 +1,102 @@
+import { Meta, Title, IconGallery, IconItem } from '@storybook/blocks';
+
+import { IconSvgSprite } from '@ui-kit/components/IconSvgSprite';
+import { CustomArgTypes } from '@df-storybook/utils/CustomArgTypes';
+import {
+  StoryColumnConfigTableCanvasComp,
+  StoryTableCanvasConfigComp,
+} from '@ui-kit/components/StoriesUtils/storiesUtils.TableCanvas.tsx';
+import { TableCanvas } from '@ui-kit/components/TableCanvas';
+
+<Meta
+  parameters={{ layout: 'centered' }}
+  title="Локальные компоненты/TableCanvas"
+/>
+
+<Title>TableCanvas</Title>
+
+### Компонент для отрисовки табличных данных
+
+Единый инструмент для отображения данных, имеющий набор фичей. Любой продукт сможет использовать таблицу для достижения своих целей.
+
+---
+
+#### В основе HTML-canvas
+
+В основе `TableCanvas` используется html `canvas` для обеспечения плавной непрерывной отрисовки контента.
+В связи с этим, необходимо учитывать особенности во время отрисовки canvas-ячеек. К canvas-ячейкам относятся ячейки шапки, основных данных, итоговых данных.
+
+---
+
+#### Миграция с Table
+
+Основа API TableCanvas унаследована от API Table для легкой миграции и переиспользования протестированных решений на основе Table.
+
+- `TableProps` и `TableProps.tableConfig` обратно совместимы на 95+% c API Table (на основе имеющихся в TableCanvas фичей)
+- `TableProps.columnConfig` - претерпел изменения в связи с особенностями рендера на `canvas`.
+
+В `TableProps.columnConfig` обновлены свойства `renderHeaderCell, renderCell, renderSummaryCell`, теперь:
+
+- они должны быть функциями, которые возвращают Canvas-элементы (импортировать из директории TableCanvas. Примеры: Canvas.Button,Canvas.Badge и тд.).
+- в них нельзя использовать компоненты, только Canvas-элементы.
+- В них нельзя вызывать хуки, это функции рендера - не компоненты.
+- если нужны данные для ячеек, то передаем данные либо в `headerContextValue`, либо в `rowContextValue`. И получаем через `args` функции.
+
+---
+
+_\*С более подробной документацией по фичам можно ознакомиться точечно в разделе каждой фичи (в боковом меню)_
+
+---
+
+#### Импорт
+
+Типы, хуки и компоненты, связанные с `TableCanvas`, необходимо импортировать из папки компонента:
+
+```ts
+import {
+  ColumnConfig,
+  TableCanvas,
+  useHeaderContext,
+  SIZES,
+} from '@dais-ui/ui-kit/components/TableCanvas';
+```
+
+Остальные компоненты (`Badge`, `Button`, `Switch` и т.д.) импортируются как обычно — из корня пакета:
+
+```ts
+import { Badge, Button, Switch } from '@dais-ui/ui-kit';
+```
+
+Иконки — из `/icons`:
+
+```ts
+import { IconSber, IconPlus } from '@dais-ui/ui-kit/icons';
+```
+
+---
+
+### API
+
+#### TableProps
+
+<CustomArgTypes hideColumnDefault hideHeader boxShadowNone of={TableCanvas} />
+<br />
+
+#### TableProps.tableConfig
+
+<CustomArgTypes
+  hideColumnDefault
+  hideHeader
+  boxShadowNone
+  of={StoryTableCanvasConfigComp}
+/>
+<br />
+
+#### TableProps.columnConfig
+
+<CustomArgTypes
+  hideColumnDefault
+  hideHeader
+  boxShadowNone
+  of={StoryColumnConfigTableCanvasComp}
+/>

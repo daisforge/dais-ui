@@ -1,0 +1,39 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as PopoverDFStories from './PopoverDF.stories';
+
+<Meta of={PopoverDFStories} name="Docs" />
+
+# PopoverDF
+
+`PopoverDF` — локальная DF-обёртка над [PopoverBeta](https://plasma.sberdevices.ru/sdds-finai/beta/popover/).
+
+## Ключевые особенности
+
+- крестик закрытия живёт в `PopoverDF.Header`
+- доступны `PopoverDF.Header`, `PopoverDF.Body`, `PopoverDF.Footer`
+- доступны размеры `size="m" | "s"`
+- `hasTail` можно отключить через `hasTail={false}`
+- при `resizable` иконка ресайза автоматически подстраивается под `placement`
+
+## Compound-компоненты
+
+```ts
+PopoverDF.Header; // Шапка
+PopoverDF.Body; // Контент
+PopoverDF.Footer; // Футер
+```
+
+## Особенности
+
+- если нужен крестик, используйте `PopoverDF.Header`; закрытие привязано к нему
+- для кастомного блока в шапке используйте `bottomBlock`
+- если нужен только контент без шапки и футера, можно оставить только `PopoverDF.Body`
+- `resizable` можно передавать как `true` или как объект конфигурации; по умолчанию `PopoverDF` использует свою resize-иконку с учётом `iconSize`, но пользовательские `icons` переопределяют её
+- для ручной смены угла ресайза используйте нативный `resizable.directions`, например `directions: ['bottom-right']`
+- если `hiddenIcons` не передан, `PopoverDF` автоматически скрывает угловые иконки, которые не входят в `directions`; для нестандартной видимости передайте `hiddenIcons` явно
+- в режиме `resizable` стартовый размер задаётся через `resizable.defaultSize`; фиксированный `style.width` на `PopoverDF` может разъехать видимый popover и resize-контейнер
+- `target` обязателен: `PopoverDF` всегда позиционируется относительно target-элемента
+
+Описание типов и compound-пропсов — в разделе [API](?path=/docs/локальные-компоненты-popoverdf-api--docs).
+
+<Stories />

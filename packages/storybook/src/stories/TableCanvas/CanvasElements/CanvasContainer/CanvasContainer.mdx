@@ -1,0 +1,20 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as CanvasContainerStories from './CanvasContainer.stories';
+
+<Meta of={CanvasContainerStories} name="Docs" />
+
+# Canvas.Container
+
+Flex-контейнер для компоновки canvas-элементов внутри ячейки `TableCanvas`.
+
+## Ключевые особенности
+
+- Flex-свойства: `direction`, `alignItems`, `justifyContent`, `gap`, `padding`
+- `backgroundColor` для визуального выделения
+- `position="relative"` / `position="absolute"` для абсолютного позиционирования
+- Поддержка `tooltip`, `onClick`, `onMouseEnter` / `onMouseLeave`
+- Вложенность: контейнеры можно комбинировать для сложных layout-ов
+
+Описание типов — в разделе [API](?path=/docs/локальные-компоненты-tablecanvas-canvaselements-canvascontainer-api--docs).
+
+<Stories />

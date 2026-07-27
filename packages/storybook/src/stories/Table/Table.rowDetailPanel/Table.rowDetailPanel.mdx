@@ -1,0 +1,28 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as TableRowDetailPanelStories from './Table.rowDetailPanel.stories';
+
+<Meta of={TableRowDetailPanelStories} name="Docs" />
+
+# Row Detail Panel
+
+**tableConfig.rowDetailPanel**
+
+Раскрывающиеся панели деталей для отдельных строк таблицы.
+
+## Ключевые особенности
+
+- Кастомный рендер содержимого через `renderRowDetail`
+- Контроль высоты панели: фиксированная или динамическая через функцию
+- Кастомные иконки раскрытия/закрытия
+- Совместимость с иерархическими таблицами (subRows)
+
+## Особенности
+
+- `expandButtonColumnKey` определяет, в какой колонке отображается кнопка раскрытия
+- `isRowWithDetail` позволяет включить панель только для определённых строк
+- `detailHeight` принимает число или функцию `(row) => number` для динамической высоты
+- Доступ к `useRefTableContext()` для программного управления выделением ячеек
+
+> Подробнее о типах и пропсах — [Row Detail Panel API](?path=/docs/локальные-компоненты-table-rowdetailpanel-api--docs)
+
+<Stories />

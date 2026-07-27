@@ -1,0 +1,24 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as TableRowInstrumentsStories from './Table.rowInstruments.stories';
+
+<Meta of={TableRowInstrumentsStories} name="Docs" />
+
+# RowInstruments
+
+Инструменты действий над строкой в legacy `Table`.
+
+## Ключевые особенности
+
+- Конфигурация действий через `getRowDropdownConfig`
+- Кнопка действий может быть открыта по умолчанию
+- Управление видимостью через control block
+- Поддержка внешнего состояния открытия
+- Доступ к данным строки и индексу строки
+
+## Особенности
+
+Row instruments подходят для действий над одной строкой. Для действий над выбранным набором строк используйте `controlBlock.massActionPanel`.
+
+Описание типов - в разделе [API](?path=/docs/локальные-компоненты-table-rowinstruments-api--docs).
+
+<Stories />

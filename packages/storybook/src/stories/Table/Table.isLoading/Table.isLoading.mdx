@@ -1,0 +1,23 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as TableIsLoadingStories from './Table.isLoading.stories';
+
+<Meta of={TableIsLoadingStories} name="Docs" />
+
+# IsLoading
+
+Состояние загрузки legacy `Table`.
+
+## Ключевые особенности
+
+- Простое состояние через `tableConfig.isLoading: true`
+- Настройка количества skeleton-строк
+- Overlay загрузки через `loadingOverlay`
+- Кастомизация заголовка, подзаголовка, задержки и спиннера overlay
+
+## Особенности
+
+Используйте skeleton-режим, когда нужно сохранить структуру таблицы во время загрузки. Overlay подходит для блокирующей загрузки поверх уже отображенных данных.
+
+Описание типов - в разделе [API](?path=/docs/локальные-компоненты-table-isloading-api--docs).
+
+<Stories />

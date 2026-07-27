@@ -1,0 +1,177 @@
+import { Meta } from '@storybook/blocks';
+import { TypeSourceViewer } from '@df-storybook/utils/TypeSourceViewer';
+
+<Meta title="Композиции/FiltersActions/API" />
+
+# FiltersActions API
+
+Компонент `FiltersActions` построен на основе **compound-паттерна**. Корневой компонент предоставляет набор вложенных компонентов для сборки панели фильтров.
+
+## FiltersActionsProps
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/layouts/FiltersActions/FiltersActions.tsx"
+  typeName="FiltersActionsProps"
+/>
+
+## FiltersActionsResizeDimensions
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/layouts/FiltersActions/FiltersActions.tsx"
+  typeName="FiltersActionsResizeDimensions"
+/>
+
+## Compound-компоненты
+
+### FiltersActions.FiltersButton
+
+Кнопка фильтра. Наследует пропсы `Button` из `@salutejs/sdds-finai`.
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/layouts/FiltersActions/components/FiltersButton.tsx"
+  typeName="FiltersActionsFiltersButtonProps"
+/>
+
+### FiltersActions.FiltersButtonWithPopover
+
+Кнопка с Popover для содержимого фильтра.
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/layouts/FiltersActions/components/FiltersButtonWithPopover.tsx"
+  typeName="FiltersActionsFiltersButtonWithPopoverProps"
+/>
+
+#### FilterTargetRenderApi
+
+Аргумент рендер-пропа `renderTarget` — «рычаги» для сборки собственного таргета Popover (иконки, кнопки, любого элемента) с сохранением логики открытия и красной точки-индикатора. Подробнее — в разделе Docs, «Кастомный таргет Popover».
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/layouts/FiltersActions/components/FiltersButtonWithPopover.tsx"
+  typeName="FilterTargetRenderApi"
+/>
+
+### FiltersActions.RedDot
+
+Красная точка-индикатор активных фильтров. Позиционируется абсолютно в правом верхнем углу контейнера с `position: relative`. Приходит в `renderTarget` (поле `RedDot`), но доступна и как `FiltersActions.RedDot` для использования на своём таргете.
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/layouts/FiltersActions/components/RedDot.tsx"
+  typeName="RedDotProps"
+/>
+
+### FiltersActions.DotsIconButton
+
+Кнопка-иконка «три точки» с выпадающим меню. Наследует пропсы `IconButton` из `@salutejs/sdds-finai`.
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/layouts/FiltersActions/components/DotsIconButton.tsx"
+  typeName="FiltersActionsDotsIconButtonProps"
+/>
+
+### FiltersActions.ListOfFilters
+
+Список применённых фильтров (чипы).
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/ListOfFilters/ListOfFilters.tsx"
+  typeName="ListOfFiltersProps"
+/>
+
+### FiltersActions.TextFieldSearch
+
+Поле поиска. Наследует пропсы `TextField` из `@salutejs/sdds-finai`.
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/TextField/TextFieldSearch.tsx"
+  typeName="TextFieldSearchProps"
+/>
+
+### FiltersActions.Tabs
+
+Контейнер табов. Наследует пропсы `Tabs` из `@salutejs/sdds-finai`. Размер по умолчанию: `xs`, вид: `filled`.
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/layouts/FiltersActions/components/Tabs.tsx"
+  typeName="FiltersActionsTabsProps"
+/>
+
+### FiltersActions.TabItem
+
+Элемент таба. Наследует пропсы `TabItem` из `@salutejs/sdds-finai`. Размер по умолчанию: `s`, вид: `default`.
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/layouts/FiltersActions/components/Tabs.tsx"
+  typeName="FiltersActionsTabItemProps"
+/>
+
+### FiltersActions.SegmentItem
+
+Элемент сегмента. Наследует пропсы `SegmentItem` из `@salutejs/sdds-finai`. Размер по умолчанию: `s`, вид: `default`.
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/layouts/FiltersActions/components/Segments.tsx"
+  typeName="FiltersActionsSegmentItemProps"
+/>
+
+### FiltersActions.TooltipList
+
+Тултип со списком элементов. Наследует пропсы `Tooltip` из `@salutejs/sdds-finai` (кроме `text` и `children`).
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/layouts/FiltersActions/components/Tooltip.tsx"
+  typeName="FiltersActionsTooltipProps"
+/>
+
+### FiltersActions.ResetAllFiltersButton
+
+Кнопка «Сбросить все фильтры». Наследует пропсы `LinkButton` из `@salutejs/sdds-finai`.
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/layouts/FiltersActions/components/ResetAllFiltersButton.tsx"
+  typeName="ResetAllFiltersButtonProps"
+/>
+
+### FiltersActions.SwitcherFilter
+
+Переключатель-фильтр. Наследует пропсы `Switch` из `@salutejs/sdds-finai`.
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/layouts/FiltersActions/components/SwitcherFilter.tsx"
+  typeName="SwitcherFilterProps"
+/>
+
+## Ренейминг
+
+В целях улучшения читаемости и единообразия именования некоторые compound-компоненты были переименованы.
+
+**Обратная совместимость сохранена** — старые имена продолжают работать. Оба варианта ссылаются на один и тот же компонент. Рекомендуем использовать новые имена:
+
+- `FiltersActions.FilterPopover` → `FiltersActions.FiltersButtonWithPopover`
+- `FiltersActions.Tooltip` → `FiltersActions.TooltipList`
+
+```diff
+- <FiltersActions.FilterPopover
++ <FiltersActions.FiltersButtonWithPopover
+    content={...}
+    footer={...}
+    buttonProps={{ hideLabel: true }}
+  />
+
+- <FiltersActions.Tooltip ... />
++ <FiltersActions.TooltipList ... />
+```

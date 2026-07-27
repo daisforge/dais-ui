@@ -1,0 +1,1 @@
+export { MassActionsInTable } from './MassActions';

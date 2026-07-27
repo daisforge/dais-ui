@@ -1,0 +1,207 @@
+import { Meta } from '@storybook/blocks';
+import { TypeSourceViewer } from '@df-storybook/utils/TypeSourceViewer';
+
+<Meta title="Локальные компоненты/TableCanvas/Copy-Paste-Fill/API" />
+
+# Cell Transfer API (Copy / Paste / Fill)
+
+## CellTransferConfig (в TableConfig)
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/TableCanvas/feature-cell-transfer/types.ts"
+  typeName="CellTransferConfig"
+/>
+
+## HotkeyConfig
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/TableCanvas/feature-cell-transfer/types.ts"
+  typeName="HotkeyConfig"
+/>
+
+Можно передать массив — сработает любая из комбинаций:
+
+```tsx
+hotkeys: {
+  copy: [
+    { code: 'KeyC', ctrl: true },
+    { code: 'Insert', ctrl: true },  // альтернативный хоткей
+  ],
+}
+```
+
+## PasteConfig
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/TableCanvas/feature-cell-transfer/types.ts"
+  typeName="PasteConfig"
+/>
+
+Поле `validation: 'type-check'` (default) автоматически проверяет:
+
+- **inputNumber / contentFormat.type='number'** — значение должно парситься в число через разделители из `contentFormat`. Невалидные ячейки пропускаются.
+- **select** — значение должно совпадать с одной из options (value или text). Невалидные пропускаются.
+- **inputString / остальное** — всегда валидно.
+
+Установите `validation: 'none'` чтобы вставлять сырые строки без проверок.
+
+## CellTransferCellInfo
+
+Информация об одной ячейке. Используется как элемент двумерного массива `cells` внутри
+всех meta-типов ниже (`CopyMeta`, `PasteMeta`, `FillMeta`).
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/TableCanvas/feature-cell-transfer/types.ts"
+  typeName="CellTransferCellInfo"
+/>
+
+## Метаданные колбэков (Meta-типы)
+
+Каждый колбэк (`onBeforeCopy`, `onBeforePaste`, `onBeforeFill`) получает вторым
+аргументом свой meta-объект с контекстом операции.
+
+### CopyMeta (`onBeforeCopy`)
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/TableCanvas/feature-cell-transfer/types.ts"
+  typeName="CopyMeta"
+/>
+
+### PasteMeta (`onBeforePaste`)
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/TableCanvas/feature-cell-transfer/types.ts"
+  typeName="PasteMeta"
+/>
+
+### FillMeta (`onBeforeFill`)
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/TableCanvas/feature-cell-transfer/types.ts"
+  typeName="FillMeta"
+/>
+
+## RowsChangeType
+
+Поле `type` в `onRowsChange` указывает источник изменения строк.
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/TableCanvas/feature-cell-transfer/types.ts"
+  typeName="RowsChangeType"
+/>
+
+## FillHandleConfig
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/TableCanvas/feature-cell-transfer/types.ts"
+  typeName="FillHandleConfig"
+/>
+
+## AllowedFillDirections / FillPatternEvent
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/TableCanvas/feature-cell-transfer/types.ts"
+  typeName="AllowedFillDirections"
+/>
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/TableCanvas/feature-cell-transfer/types.ts"
+  typeName="FillPatternEvent"
+/>
+
+## columnConfig.copyData
+
+Текстовое представление ячейки для копирования в буфер.
+
+```ts
+copyData?: string | ((row: Row) => string);
+```
+
+Если `copyData` не задан, используется `row[column.key]?.toString()`.
+
+## Примеры
+
+### Базовое использование (работает из коробки)
+
+```tsx
+<TableCanvas
+  tableConfig={{
+    editing: {
+      onRowsChange: setRows,
+      rowKeyGetter: (r) => r.id,
+      defaultEnabled: true,
+    },
+  }}
+  columnConfig={columnConfig}
+  rows={rows}
+/>
+```
+
+Copy (Ctrl+C) и Paste (Ctrl+V) работают автоматически в режиме редактирования.
+
+### Excel-like поведение paste
+
+```tsx
+tableConfig={{
+  cellTransfer: {
+    paste: {
+      readonlyBehavior: 'abort',  // как в Excel
+      broadcast: true,
+    },
+  },
+}}
+```
+
+### Кастомные хоткеи + перехват
+
+```tsx
+tableConfig={{
+  cellTransfer: {
+    hotkeys: {
+      copy: { code: 'KeyC', ctrl: true, alt: true },
+      paste: { code: 'KeyV', ctrl: true, alt: true },
+    },
+    onBeforeCopy: (data) => {
+      // логируем или модифицируем данные
+      console.log('Copying:', data);
+      return data;
+    },
+    onBeforePaste: (data) => {
+      if (data.length > 100) {
+        alert('Слишком много строк');
+        return false;
+      }
+      return data;
+    },
+  },
+}}
+```
+
+### Кастомный copyData для canvas-ячейки
+
+```tsx
+columnConfig={[
+  {
+    key: 'status',
+    name: 'Статус',
+    renderCell: ({ row }) => (
+      <Canvas.Badge
+        text={row.status}
+        view={row.status === 'Активный' ? 'positive' : 'warning'}
+      />
+    ),
+    copyData: (row) => row.status ?? '',  // копируем только текст
+  },
+]}
+```

@@ -1,0 +1,1 @@
+export { getContentRight } from './getContentRight';

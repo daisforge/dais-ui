@@ -1,0 +1,48 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as WidgetStories from './Widget.stories';
+
+<Meta of={WidgetStories} name="Docs" />
+
+# Widget
+
+Компонент-layout, который может быть использован как отдельно, так и в рамках ModalDF, DrawerDF.
+
+## Ключевые особенности
+
+- Compound-структура: Header, Footer, Content, Divider, ServiceButtons
+- Поддержка разных контекстов через `containerType`: `'default'`, `'modal'`, `'splitView'`
+- Кастомизация через `$css`, `classes` и `styled`-обёртки
+- Кнопки «назад» и «три точки» с поддержкой Dropdown
+
+## Compound-компоненты
+
+```ts
+Widget.Header = WidgetHeader;
+Widget.Footer = WidgetFooter;
+Widget.Content = StyledContent;
+Widget.Divider = WidgetDivider;
+Widget.ServiceButtons = WidgetServiceButtons;
+Widget.IconButtonDots = WidgetIconButtonDots;
+Widget.IconButtonBack = WidgetIconButtonBack;
+```
+
+- `Widget.Header` — шапка с заголовком, подзаголовком, бейджем, кнопкой «назад» и правым блоком действий
+- `Widget.Footer` — футер с левым и правым блоком
+- `Widget.Content` — контейнер контента, принимает `$css`
+- `Widget.Divider` — разделитель (реэкспорт стандартного Divider)
+- `Widget.ServiceButtons` — сервисные кнопки
+- `Widget.IconButtonDots` — кнопка-иконка «три точки» с поддержкой Dropdown
+- `Widget.IconButtonBack` — кнопка «назад»
+
+## Особенности
+
+- Объект `widgetClassNames` доступен для импорта и используется для обращения к подэлементам компонента. Также можно обернуть в `styled` или использовать `$css`
+- Проп `containerType` влияет на стили: `'default'` — стандартный виджет, `'modal'` — внутри модалки, `'splitView'` — внутри SplitView
+- Для выравнивания Badge в Header используйте `badgeMarginTop`:
+  - `titleSize='H3'` → `badgeMarginTop={5}`
+  - `titleSize='H4'` → `badgeMarginTop={2}` (по умолчанию)
+  - `titleSize='H5'` → `badgeMarginTop={1}`
+
+Описание типов и compound-пропсов — в разделе [API](/docs/композиции-widget-api--docs).
+
+<Stories />

@@ -1,0 +1,332 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as FiltersActionsStories from './FiltersActions.stories';
+
+<Meta of={FiltersActionsStories} name="Docs" />
+
+# FilterActions
+
+Композиция для создания панели фильтров и действий. Компонент предоставляет базовые строительные блоки (кнопки, поля поиска, Popover и т.д.), оставляя логику адаптивности и размещения за командой-пользователем.
+
+## Ключевые особенности
+
+- Набор строительных блоков: кнопки, поля поиска, Popover для фильтров
+- Compound-компоненты: `FiltersActions.FiltersButtonWithPopover`, `FiltersActions.ListOfFilters` и др.
+- Колбек `onResize` для отслеживания размеров контейнера
+- Хук `useFiltersList` для управления списком активных фильтров
+- Адаптивность опциональна — реализуется на стороне проекта через `useAdaptiveFilters`
+
+## Основная структура
+
+```tsx
+<FiltersActions
+  mainBlock={/* Основные фильтры, табы, сегменты */}
+  activeButtonsBlock={/* Блок действий справа */}
+  listOfFilters={/* Список примененных фильтров */}
+  onResize={(dimensions) => {
+    /* Отслеживание размеров */
+  }}
+/>
+```
+
+## Об адаптивности
+
+**Важно:** Адаптивность фильтров **не является обязательной частью** компонента FiltersActions. Решение о том, какие фильтры показывать, куда перемещать и в каком порядке располагать — полностью на стороне команды-пользователя.
+
+### Пример адаптивности (необязательно)
+
+В истории ниже показан **пример реализации адаптивности**, который можно взять за основу:
+
+#### 1. Колбек `onResize`
+
+Компонент FiltersActions предоставляет колбек `onResize`, который возвращает актуальные размеры:
+
+```tsx
+<FiltersActions
+  onResize={(dimensions) => {
+    // dimensions.containerWidth - полная ширина
+    // dimensions.mainBlockWidth - ширина левого блока
+    // dimensions.buttonsBlockWidth - ширина правого блока
+    // dimensions.availableMainBlockWidth - доступная ширина для фильтров
+  }}
+/>
+```
+
+#### 2. Хук `useAdaptiveFilters`
+
+Хук принимает массив элементов (`FilterItem[]`), текущую ширину и конфигурацию брейкпоинтов:
+
+```tsx
+const { visibleItems, overlayItems, modifications, customActions } =
+  useAdaptiveFilters({
+    items: allFilterItems, // Массив всех фильтров
+    width: dimensions.availableMainBlockWidth, // Доступная ширина
+    breakpoints: {
+      1920: {
+        visible: ['search', 'filter1', 'filter2'], // Видимые ID
+        inOverlay: ['filter3'], // ID в Popover
+        modifications: {
+          // Модификации стилей
+          search: { width: '300px' },
+        },
+      },
+      1400: {
+        visible: ['search'],
+        inOverlay: ['filter1', 'filter2', 'filter3'],
+      },
+    },
+  });
+```
+
+Хук определяет на основании ширины контейнера:
+
+- Какие элементы остаются видимыми (`visibleItems`)
+- Какие перемещаются в Popover (`overlayItems`)
+- Какие модификации применить (`modifications`)
+- Дополнительные действия (`customActions`)
+
+#### 3. Контент Popover
+
+**Контент Popover полностью контролируется использующей стороной:**
+
+```tsx
+<FiltersActions.FiltersButtonWithPopover
+  content={
+    // ВЫ решаете, что рендерить внутри
+    overlayItems.map((item) => (
+      <div key={item.id}>{item.element}</div>
+    ))
+  }
+  footer={
+    // ВЫ решаете, что показывать в footer
+    <Button onClick={resetAll}>Сбросить</Button>
+  }
+/>
+```
+
+### Кастомизация кнопки Popover
+
+По умолчанию кнопка-таргет `FiltersActions.FiltersButtonWithPopover` рендерится с текстом «Ещё фильтры» и иконкой размера `s`. Через проп `buttonProps` можно переопределить поведение кнопки:
+
+```tsx
+// Скрыть текст — останется только иконка
+<FiltersActions.FiltersButtonWithPopover
+  buttonProps={{ hideLabel: true }}
+/>
+
+// Поменять текст и размер иконки
+<FiltersActions.FiltersButtonWithPopover
+  buttonProps={{ text: 'Фильтры', iconSize: 'xs' }}
+/>
+
+// Заблокировать кнопку
+<FiltersActions.FiltersButtonWithPopover
+  buttonProps={{ disabled: true }}
+/>
+```
+
+Принимает любые пропсы `FiltersActionsFiltersButton`. `onClick` декорируется — сначала вызовется внешний, потом внутренний toggle Popover.
+
+### Кастомный таргет Popover — `renderTarget`
+
+Когда `buttonProps` недостаточно и нужно полностью заменить кнопку-таргет собственным элементом (иконкой, кнопкой, любым узлом) — используйте рендер-проп `renderTarget`. Он оставляет за компонентом логику открытия Popover и красную точку-индикатор, а разметку таргета отдаёт вам.
+
+`renderTarget` получает объект `FilterTargetRenderApi`:
+
+- **`onClick`** — обработчик открытия/закрытия Popover. **Обязательно** повесьте его на корневой кликабельный элемент таргета — иначе Popover не откроется.
+- **`isOpen`** — открыт ли Popover сейчас (например, чтобы подсветить активный таргет).
+- **`isRedDotVisible`** — нужно ли показывать красную точку (значение пропа `redSquare`).
+- **`RedDot`** — компонент точки-индикатора. Позиционируется в правый верхний угол ближайшего контейнера с `position: relative`.
+
+```tsx
+<FiltersActions.FiltersButtonWithPopover
+  title="Фильтры"
+  redSquare={hasActiveFilters}
+  renderTarget={({ onClick, isOpen, isRedDotVisible, RedDot }) => (
+    <IconButton
+      onClick={onClick}
+      size="s"
+      view={isOpen ? 'accent' : 'secondary'}
+      style={{ position: 'relative' }} // Важно — якорь для RedDot
+    >
+      <IconSettingsFilter size="s" />
+      <RedDot visible={isRedDotVisible} />
+    </IconButton>
+  )}
+  content={/* ... */}
+/>
+```
+
+Когда задан `renderTarget`, проп `buttonProps` и дефолтная кнопка «Ещё фильтры» игнорируются. Красную точку рисуете вы — компонент `RedDot` доступен и в API рендер-пропа, и как `FiltersActions.RedDot`, вид индикатора остаётся единым.
+
+Живой пример — в истории **«FiltersActions с кастомным таргетом Popover»** ниже.
+
+## Размещение фильтров внутри Popover
+
+**Контент Popover (`FiltersActions.FiltersButtonWithPopover`) полностью контролируется использующей стороной.** Компонент предоставляет layout (шапка, контент, футер) — всё остальное (логика, стили, компоненты) реализуется на стороне проекта.
+
+Ниже — рекомендации, которые помогут избежать типичных проблем с шириной и позиционированием элементов внутри Popover.
+
+### 1. Реф на Popover — `popoverRef`
+
+Создайте реф и передайте его в `popoverProps.ref`. Этот реф нужен дочерним компонентам внутри Popover:
+
+```tsx
+const popoverRef = useRef<HTMLDivElement>(null);
+
+<FiltersActions.FiltersButtonWithPopover
+  popoverProps={{ ref: popoverRef }} // Важно
+  content={...}
+/>
+```
+
+**Зачем:** Popover рендерится через портал (вне основного DOM-дерева). Без `popoverRef` выпадающие списки Combobox и тултипы будут рендериться в основном дереве — позади Popover или с обрезкой по `overflow`.
+
+### 2. Combobox: `portal` и `zIndex`
+
+Каждому Combobox внутри Popover передайте `portal={popoverRef}` и `zIndex="9001"`:
+
+```tsx
+<Combobox
+  portal={popoverRef}  // Важно — dropdown рендерится внутри Popover
+  zIndex="9001"         // Важно — dropdown поверх контента Popover
+  ...
+/>
+```
+
+### 3. TooltipList: `frame` и `fullWidth`
+
+Если Combobox обёрнут в `FiltersActions.TooltipList`, передайте `frame={popoverRef}` и `fullWidth`:
+
+```tsx
+<FiltersActions.TooltipList
+  groupLabel="Название фильтра"
+  fullWidth              // Важно — растягивает обёртки тултипа на 100% ширины
+  frame={popoverRef}     // Важно — тултип позиционируется внутри Popover
+  items={selectedLabels}
+  trigger={selectedValues.length > 0 ? 'hover' : 'none'}
+>
+  ...
+</FiltersActions.TooltipList>
+```
+
+Проп `fullWidth` устанавливает `width: 100%` на внутренние обёртки Tooltip (`.popover-target`, `.popover-wrapper`), чтобы дочерний элемент занял всю доступную ширину контента Popover.
+
+### 4. Combobox: обёртка `div` с `width: 100%`
+
+Combobox по умолчанию занимает ширину по содержимому. Оберните его в `div` с `width: 100%`:
+
+```tsx
+<div style={{ width: '100%' }}>
+  <Combobox
+    portal={popoverRef}
+    zIndex="9001"
+    ...
+  />
+</div>
+```
+
+### 5. Контейнер каждого фильтра
+
+Каждый элемент внутри `content` оберните в `div` с `width: 100%`:
+
+```tsx
+content={
+  <>
+    {overlayItems.map((item) => (
+      <div key={item.id} style={{ width: '100%' }}>
+        <BodyS style={{ marginBottom: '8px' }}>{item.label}</BodyS>
+        {item.element}
+      </div>
+    ))}
+  </>
+}
+```
+
+### Итого: полный пример фильтра в Popover
+
+```tsx
+const popoverRef = useRef<HTMLDivElement>(null);
+
+<FiltersActions.FiltersButtonWithPopover
+  popoverProps={{ ref: popoverRef }}
+  title="Фильтры"
+  content={
+    <div style={{ width: '100%' }}>
+      <BodyS style={{ marginBottom: '8px' }}>Блок</BodyS>
+      <FiltersActions.TooltipList
+        groupLabel="Блок"
+        fullWidth
+        frame={popoverRef}
+        items={selectedBlockLabels}
+        trigger={blocks.length > 0 ? 'hover' : 'none'}
+      >
+        <div style={{ width: '100%' }}>
+          <Combobox
+            size="s"
+            multiple
+            value={blocks}
+            onChange={setBlocks}
+            items={blockOptions}
+            portal={popoverRef}
+            zIndex="9001"
+          />
+        </div>
+      </FiltersActions.TooltipList>
+    </div>
+  }
+/>
+```
+
+## Хук `useFiltersList`
+
+Базовый хук для управления списком активных фильтров. Принимает текущие значения фильтров, метаинформацию и опции — возвращает готовый список для отображения в `FiltersActions.ListOfFilters`, а также функцию сброса.
+
+```tsx
+const { filterList, filterListOpened, clearAll } = useFiltersList({
+  filters,
+  filtersInfo: {
+    search: { label: 'Поиск', clearedValue: '' },
+    blocks: { label: 'Блок', clearedValue: [] },
+    tribes: { label: 'Трайб', clearedValue: [] },
+    allocation: { label: 'Аллокация', clearedValue: '' },
+  },
+  options: {
+    blocks: blocksOptions,
+    tribes: tribesOptions,
+    allocation: allocationOptions,
+  },
+  updateFilters: (key, newValue) => updateFilters({ [key]: newValue }),
+  order: ['switcher'], // опционально: порядок отображения групп
+});
+```
+
+**Параметры:**
+
+- **`filters`** — объект с текущими значениями фильтров (`Record<FilterKey, unknown>`)
+- **`filtersInfo`** — метаинформация: `label` (отображаемое имя группы) и `clearedValue` (значение при сбросе)
+- **`options`** — массивы `{ label, value }` для каждого фильтра (используются для маппинга value → label)
+- **`updateFilters`** — колбек для обновления конкретного фильтра
+- **`order`** — порядок отображения групп: массив ключей, функция сортировки или `'default'`
+
+**Возвращает:**
+
+- **`filterList`** — массив групп с элементами (для передачи в `ListOfFilters`)
+- **`filterListOpened`** — `true`, если есть хотя бы один активный фильтр
+- **`clearAll`** — функция сброса всех фильтров в `clearedValue`
+
+### Резюме
+
+- **FiltersActions** — набор строительных блоков
+- **`useFiltersList`** — хук для управления списком активных фильтров
+- **Адаптивность** — опциональная, реализуется на стороне проекта
+- **`onResize`** — для получения размеров контейнера
+- **`useAdaptiveFilters`** — пример хука для управления брейкпоинтами
+- **Контент Popover** — ответственность проекта
+- **`buttonProps`** — кастомизация кнопки-таргета Popover
+- **`renderTarget`** — полная замена таргета Popover своим элементом (с сохранением открытия и красной точки)
+
+---
+
+Описание compound-компонентов и информация о ренейминге — в разделе [API](/docs/композиции-filtersactions-api--docs).
+
+<Stories />

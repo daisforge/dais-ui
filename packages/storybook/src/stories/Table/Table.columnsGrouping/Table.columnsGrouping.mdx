@@ -1,0 +1,23 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as TableColumnsGroupingStories from './Table.columnsGroup.stories';
+
+<Meta of={TableColumnsGroupingStories} name="Docs" />
+
+# ColumnsGrouping
+
+Вложенная структура шапки таблицы через групповые колонки.
+
+## Ключевые особенности
+
+- `columnConfig` может содержать обычные колонки и группы колонок
+- Группа задается через `children`
+- Поддерживает несколько уровней вложенности шапки
+- Совместима с `columnsControl` и `resizableColumn`
+
+## Особенности
+
+У групповой колонки нет данных строки. Данные отображают leaf-колонки, которые находятся внутри `children`.
+
+Описание типов - в разделе [API](?path=/docs/локальные-компоненты-table-columnsgrouping-api--docs).
+
+<Stories />

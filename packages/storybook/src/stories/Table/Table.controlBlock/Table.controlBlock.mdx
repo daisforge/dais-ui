@@ -1,0 +1,104 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as TableControlBlockStories from './Table.controlBlock.stories';
+
+<Meta of={TableControlBlockStories} name="Docs" />
+
+# Control Block Configuration
+
+## Ключевые особенности
+
+- Верхняя панель инструментов таблицы
+- Кастомные фичи с отображением в controlBlock или sidebar
+- Компрессия и перенос фич при нехватке места
+
+В таблице присутствует возможность настраивать панель управления таблицы (верхний блок с кнопками).
+
+**tableConfig.controlBlock**
+
+## Breaking Changes (v2.0)
+
+### 1. Удалены устаревшие свойства:
+
+- `dropdown` - заменен на `details` для Sidebar-представления
+- `customDropdownItem` - больше не поддерживается
+
+### 2. Новые обязательные требования:
+
+- Для отображения в Sidebar необходимо указывать `details`
+
+### 3. Новые типы фич:
+
+- `button` - кнопка с иконкой и действием
+- `switch` - переключатель
+- `select` - выпадающий список
+- `custom` - кастомный рендер
+
+## Особенности работы ControlBlock
+
+### 1. Лимит отображения
+
+Не более 5 фич одновременно в ControlBlock
+
+### 2. Обязательные фичи
+
+С `mandatory: true` всегда остаются в ControlBlock, при включённой компрессии при минимально возможном размере таблицы они будут скрыты в кнопку-dropdown ... (многоточие). Если это ваша кастомная фича, то надо обязательно описать ее details (будет использоваться для отображения в кнопке-dropdown)
+
+### 3. Автоматическое распределение:
+
+- Фичи с `details` переносятся в Sidebar при превышении лимита (у которых mandatory: false)
+- Фичи без `details` скрываются при превышении лимита
+
+#### Пример миграции с v1 на v2:
+
+```ts
+  // Было (v1):
+  {
+    value: 'feature',
+    dropdown: { contentRight: <Component /> }
+  }
+  // Стало (v2):
+  {
+    value: 'feature',
+    onClick: () => {}, // обязательно
+    details: {
+    type: 'custom',
+    render: () => <Component />
+    }
+  }
+```
+
+#### Конфигурация таблицы (v2.0)
+
+```jsx
+const [rows] = useState(createRows);
+const [pinIsActive, setPinIsActive] = useState(false);
+
+const tableConfig = {
+  controlBlock: {
+    customFeatures: [
+      {
+        value: 'customPin',
+        label: pinIsActive ? 'Открепить' : 'Закрепить',
+        Icon: pinIsActive ? IconPinOutline : IconPinFill,
+        onClick: () => setPinIsActive(!pinIsActive),
+        details: {
+          type: 'switch',
+          label: 'Закрепление колонок',
+          checked: pinIsActive,
+          onChange: () => setPinIsActive(!pinIsActive),
+        },
+      },
+    ],
+  },
+};
+```
+
+### Правила использования:
+
+1. Для Sidebar-представления используйте `details`
+2. Фичи без `details` не попадают в Sidebar
+3. Используйте `mandatory: true` для важных фич
+
+Описание типов - в разделе [API](?path=/docs/локальные-компоненты-table-controlblock-api--docs).
+
+<Stories />

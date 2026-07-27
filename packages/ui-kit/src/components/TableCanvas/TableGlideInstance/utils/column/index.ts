@@ -1,0 +1,1 @@
+export { getColumnName } from './getColumnName';

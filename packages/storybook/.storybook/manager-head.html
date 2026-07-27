@@ -1,0 +1,32 @@
+<style>
+  a[id*='--docs'] svg {
+    color: unset;
+  }
+  /* Скрываем стандартную иконку документа у конкретной страницы */
+  #dais--docs svg {
+    display: none;
+  }
+
+  div[data-selected='true'] #dais--docs::before {
+    background-color: #ffffff;
+  }
+
+  /* Добавляем свою иконку */
+  #dais--docs::before {
+    content: '';
+    margin-left: -2px;
+    margin-right: -10px;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    vertical-align: middle; /* Выравнивание по центру текста */
+    background-color: rgb(11, 126, 203); /* text-primary Задаем цвет иконки */
+
+    -webkit-mask-image: url('/iconMagic.svg'); /* Подключаем SVG как маску */
+    mask-image: url('/iconMagic.svg'); /* Подключаем SVG как маску */
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    mask-position: center;
+  }
+</style>

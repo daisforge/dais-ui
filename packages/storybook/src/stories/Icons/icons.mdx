@@ -1,0 +1,38 @@
+import { Meta, Title, IconGallery, IconItem } from '@storybook/blocks';
+import { Suspense } from 'react';
+import { AllIconsStory } from './Icons';
+
+<Meta parameters={{ layout: 'centered' }} title="Images/Icons" />
+
+<Title>Icons</Title>
+
+### Более удобный поиск иконки в документации SDDS [(ссылка на документацию)](https://plasma.sberdevices.ru/icons/)
+
+---
+
+### Использование
+
+```js
+import { NeededIcon } from '@dais-ui/ui-kit/icons';
+```
+
+```jsx
+<NeededIcon size="s" color="inherit" />
+```
+
+---
+
+### Пропсы
+
+```js
+type Props = {
+  // размер иконки
+  size?: 'xs' | 's' | 'm',
+  // цвет иконки
+  color?: string,
+  // css класс
+  className?: string,
+};
+```
+
+<AllIconsStory />

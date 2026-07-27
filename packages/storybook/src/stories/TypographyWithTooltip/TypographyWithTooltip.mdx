@@ -1,0 +1,26 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as TypographyWithAutoTooltipStories from './TypographyWithAutoTooltip.stories';
+
+<Meta of={TypographyWithAutoTooltipStories} name="Docs" />
+
+# TypographyWithAutoTooltip
+
+Компонент для автоматического отображения подсказки (Tooltip) при обрезании текста. Является оберткой над [SDDS Tooltip](https://plasma.sberdevices.ru/sdds-finai/components/Tooltip/).
+
+## Ключевые особенности
+
+- Автоматически определяет, обрезан ли текст
+- Поддерживает как однострочное, так и многострочное обрезание
+- Показывает подсказку только при необходимости
+- Полностью совместим с Typography компонентом
+
+## Особенности
+
+1. Компонент измеряет размеры текстового блока
+2. При наведении проверяет, обрезан ли текст
+3. Если текст обрезан — показывает подсказку с полным текстом
+4. Если текст помещается — подсказка не показывается
+
+> Подробнее о типах и пропсах — [TypographyWithAutoTooltip API](?path=/docs/локальные-компоненты-typographywithautotooltip-api--docs)
+
+<Stories />

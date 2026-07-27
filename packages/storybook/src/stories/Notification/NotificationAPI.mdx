@@ -1,0 +1,44 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="Локальные компоненты/Notification/API" />
+
+# Notification API
+
+Компонент-обёртка над `Notification` из `@salutejs/sdds-finai`. Принимает все пропсы оригинального компонента.
+
+## Использование
+
+Для показа уведомлений используется `addNotification` из `NotificationsProvider`:
+
+```tsx
+import { addNotification } from '@salutejs/sdds-finai';
+
+addNotification({
+  title: 'Заголовок',
+  children: 'Текст уведомления',
+  view: 'positive',
+  timeout: 3000,
+});
+```
+
+## Пропсы addNotification
+
+- `id` (`string`) — уникальный идентификатор уведомления
+- `title` (`string`) — заголовок
+- `children` (`ReactNode`) — содержимое / текст уведомления
+- `view` (`'default' | 'positive' | 'negative' | 'warning' | 'info'`) — вид уведомления
+- `icon` (`ReactNode`) — иконка слева
+- `timeout` (`number`) — время автоскрытия (мс). `0` или `null` — не скрывать
+- `onTimeoutClose` (`() => void`) — колбэк при автоматическом закрытии
+- `titleColor` (`string`) — переопределение цвета заголовка
+- `textColor` (`string`) — переопределение цвета текста
+- `width` (`string`) — ширина компонента
+- `maxWidth` (`string`) — максимальная ширина
+
+## Пропсы NotificationsProvider
+
+- `placement` (`'center' | 'top' | 'bottom' | 'right' | 'left' | 'bottom-left' | 'top-right' | ...`) — позиция уведомлений
+- `frame` (`string | ref`) — контейнер для позиционирования (по умолчанию document)
+- `children` (`ReactNode`) — дочерние компоненты
+
+Полное описание — в документации `@salutejs/sdds-finai`: [Notification](https://plasma.sberdevices.ru/sdds-finai/components/notification/)

@@ -1,0 +1,84 @@
+import { Meta } from '@storybook/blocks';
+import { TypeSourceViewer } from '@df-storybook/utils/TypeSourceViewer';
+import { getTypeAsString } from '@df-storybook/utils/getTypeAsString';
+
+<Meta title="Локальные компоненты/TableCanvas/ControlBlock/API" />
+
+# ControlBlock API
+
+## ControlBlockConfig
+
+<TypeSourceViewer
+  filePath="packages/ui-kit/src/components/TableCanvas/types/table-config.type.ts"
+  typeName="ControlBlockConfig"
+  language="ts"
+/>
+
+## ControlBlockButtonProps
+
+```ts
+export const controlButtonDefaultProps = {
+  size: 's',
+  view: 'linkDefault',
+} as const;
+```
+
+<TypeSourceViewer
+  filePath="packages/ui-kit/src/components/TableCanvas/widgets/control-block/control-block-button.types.tsx"
+  typeName="ButtonProps"
+  language="ts"
+  postSource={`
+  ${getTypeAsString(
+    'packages\\ui-kit\\src\\components\\TableCanvas\\widgets\\control-block\\control-block-button.types.tsx',
+    'LinkButtonProps'
+  )} \n
+${getTypeAsString(
+  'packages\\ui-kit\\src\\components\\TableCanvas\\widgets\\control-block\\control-block-button.types.tsx',
+  'LinkButtonView'
+)} \n
+${getTypeAsString(
+  'packages\\ui-kit\\src\\components\\TableCanvas\\widgets\\control-block\\control-block-button.types.tsx',
+  'ControlBlockButtonProps'
+)} \n
+`}
+/>
+
+## FeatureItem (v2.0)
+
+Кастомная фича в `tableConfig.controlBlock.customFeatures`. Иконку в панели задают через `Icon` или `CustomIconRender`, поведение в дропдауне — через `details`. Флаги `mandatory` и `canBeCompressedInToolsMenu` ставятся здесь же, на фиче.
+
+<TypeSourceViewer
+  filePath="packages/ui-kit/src/components/TableCanvas/widgets/control-block/types.ts"
+  typeName="FeatureItem"
+  language="ts"
+/>
+
+## FeatureDetails
+
+Поле `details` у фичи (`customFeatures[].details`). Описывает, как фича выглядит в overflow-дропдауне (троеточие), куда она уезжает при компрессии. Раньше отвечал за правый сайдбар, имя сохранено для обратной совместимости.
+
+<TypeSourceViewer
+  filePath="packages/ui-kit/src/components/TableCanvas/widgets/control-block/types.ts"
+  typeName="FeatureDetails"
+  language="ts"
+/>
+
+## FeatureIconRender
+
+Тип иконки в `details.icon` (для `details` типа `button` и `select`). Либо готовый узел, либо функция от контекста рендера. Функция нужна, чтобы подстроить размер иконки в дропдауне.
+
+<TypeSourceViewer
+  filePath="packages/ui-kit/src/components/TableCanvas/widgets/control-block/types.ts"
+  typeName="FeatureIconRender"
+  language="ts"
+/>
+
+## DropdownRenderCtx
+
+Контекст, который получают кастомные рендеры иконок (`CustomIconRender`, `details.icon` как функция, `dropdownIconRender` у кнопок). По нему потребитель сам подбирает размер иконки.
+
+<TypeSourceViewer
+  filePath="packages/ui-kit/src/components/TableCanvas/widgets/control-block/types.ts"
+  typeName="DropdownRenderCtx"
+  language="ts"
+/>

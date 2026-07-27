@@ -1,0 +1,47 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as ModalDFStories from './ModalDF.stories';
+
+<Meta of={ModalDFStories} name="Docs" />
+
+# ModalDF
+
+Стилизованный модальный компонент дизайн-системы. Собирается из набора готовых блоков — от простого модального окна до двухколоночных сценариев с дополнительной панелью.
+
+## Ключевые особенности
+
+- Поддержка полноэкранного режима с сохранением состояния
+- Гибкая настройка контейнера контента через `contentContainerProps`
+- Наличие сервисных кнопок (fullscreen / close) даже без шапки
+- Набор compound-компонентов для построения консистентных шапок и футеров
+- Двухколоночная раскладка через `ModalDF.Left` и `ModalDF.Main`
+
+## Compound-компоненты
+
+```ts
+ModalDF.Left; // Левая колонка
+ModalDF.Main; // Основная колонка
+ModalDF.Header; // Шапка: заголовок, подзаголовок, бейдж, правый блок, кнопка «назад»
+ModalDF.Footer; // Футер: левый и правый блоки кнопок
+ModalDF.Content; // Контейнер контента
+ModalDF.Divider; // Разделитель
+ModalDF.ServiceButtons; // Кнопки fullscreen/close
+ModalDF.DotsIconButton; // Иконка «троеточие» с Dropdown
+ModalDF.BackIconButton; // Кнопка «назад»
+```
+
+- `ModalDF.Header` — заголовок, подзаголовок, бейдж, правый блок действий и кнопка «назад»
+- `ModalDF.Footer` — разделение кнопок и ссылок на левый и правый блоки
+- `ModalDF.ServiceButtons` — блок с кнопками fullscreen/close
+- `ModalDF.DotsIconButton` — иконка «троеточие» с поддержкой dropdown
+- `ModalDF.BackIconButton` — кнопка «назад», доступна для произвольного использования
+- `ModalDF.Left`, `ModalDF.Main`, `ModalDF.Content`, `ModalDF.Divider` — контейнеры, наследуют `BoxProps`, принимают `$css`
+
+## Особенности
+
+- `fullScreen` — включает встроенный менеджер полноэкранного режима. Можно передать callbacks и управлять сохранением состояния между открытиями
+- Ширину рекомендуется задавать через `contentContainerProps.css`
+- Базовые пропсы наследуются от `ModalCompProps` ([документация SDDS](https://plasma.sberdevices.ru/sdds-finai/components/modal/))
+
+Описание типов и compound-пропсов — в разделе [API](/docs/локальные-компоненты-modaldf-api--docs).
+
+<Stories />

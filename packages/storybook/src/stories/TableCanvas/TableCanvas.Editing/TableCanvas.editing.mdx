@@ -1,0 +1,60 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as TableEditingStories from './TableCanvas.editing.stories';
+
+<Meta of={TableEditingStories} name="Docs" />
+
+# Editing (TableCanvas)
+
+**tableConfig.editing + columnConfig.editingCell**
+
+Режим редактирования данных в ячейках таблицы. Условие активации — наличие свойства `editing` в `tableConfig`. Также необходимо сконфигурировать колонки через `editingCell`.
+
+## Ключевые особенности
+
+- Управление режимом редактирования через `enabled` / `defaultEnabled`
+- Callback-и при включении, сохранении и отмене (`onEnableEditing`, `onSave`, `onCancel`)
+- Контроль редактируемости строк через `rowEditable`
+- Поддержка дочерних строк через `subRowsKey`
+- Кнопки управления в controlBlock (`showButtons`)
+- `editingCell.component` рендерит React-компонент поверх таблицы; `Canvas.*` элементы используйте только в `renderCell`, `renderHeaderCell` и `renderSummaryCell`
+
+## Жизненный цикл
+
+1. Пользователь нажимает кнопку «Редактирование» → вызывается `onEnableEditing`
+2. При изменении ячейки → вызывается `onRowsChange` с данными об изменённых строках
+3. При нажатии «Сохранить» → вызывается `onSave`
+4. При нажатии «Отменить» → вызывается `onCancel`
+
+## Управление состоянием
+
+- **`defaultEnabled`** — начальное состояние (внутренний стейт)
+- **`enabled: boolean`** — полностью внешнее управление (без переключения в таблице)
+- **`enabled: [boolean, setState]`** — внешний стейт с возможностью переключения в таблице
+
+## Особенности
+
+- `onRowsChange` — обязательный callback, получает обновлённые строки и метаданные (индексы, колонка, before/after)
+- `subRowsKey` — обязателен, если дочерние строки хранятся не под ключом `subRows`. Поддерживает вложенность через точку (например, `'data.children'`)
+- `showButtons` — по умолчанию `true`, управляет видимостью кнопок в controlBlock
+
+## Управление кнопками (buttons)
+
+Через `editing.buttons` можно передать пропсы кнопкам `save`, `cancel` и `edit`. `onClick` исключён — обработчики задаются через `onSave` / `onCancel` / `onEnableEditing`.
+
+```tsx
+editing: {
+  buttons: {
+    save: { disabled: isSaving, isLoading: isSaving },
+    cancel: { disabled: isSaving },
+  },
+  onSave(disableEditorMode) {
+    setIsSaving(true);
+    api.save(rows).finally(() => {
+      setIsSaving(false);
+      disableEditorMode();
+    });
+  },
+}
+```
+
+<Stories />

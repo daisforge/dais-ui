@@ -1,0 +1,24 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as TableSubRowsStories from './Table.subRows.stories';
+
+<Meta of={TableSubRowsStories} name="Docs" />
+
+# SubRows
+
+Иерархичные строки legacy `Table`.
+
+## Ключевые особенности
+
+- Вложенные строки подключаются через `tableConfig.subRows`
+- `getSubRows` возвращает дочерние строки
+- `rowKeyGetter` задает уникальный ключ строки
+- `columnConfig.subRow` управляет отображением данных дочерних строк
+- Можно показать chevron раскрытия и кастомный render дочерней ячейки
+
+## Особенности
+
+Для вложенных строк важно иметь стабильный `rowKeyGetter`. Если нужно группировать плоский набор данных, используйте `rowsGrouping`, а не `subRows`.
+
+Описание типов - в разделе [API](?path=/docs/локальные-компоненты-table-subrows-api--docs).
+
+<Stories />

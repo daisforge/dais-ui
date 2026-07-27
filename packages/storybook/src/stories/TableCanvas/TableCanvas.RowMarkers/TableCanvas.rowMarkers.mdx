@@ -1,0 +1,41 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as TableRowMarkersStories from './TableCanvas.rowMarkers.stories';
+
+<Meta of={TableRowMarkersStories} name="Docs" />
+
+# RowMarkers (TableCanvas)
+
+**tableConfig.rowMarkers**
+
+Сервисный столбец с нумерацией строк. Frozen, вставляется первым, исключён из reorder/pin/hide/sort/grouping. Поддерживает плоский и древовидный (`subRows`) режимы любой глубины вложенности.
+
+## Быстрый старт
+
+```tsx
+<TableCanvas
+  tableConfig={{
+    rowMarkers: {
+      startIndex: 1,
+    },
+  }}
+  columnConfig={columnConfig}
+  rows={rows}
+/>
+```
+
+## `flatIndex` vs `rowIndex`
+
+Если ветка свернута, но нужно сохранить «сквозные» номера — используйте `flatIndex`.
+
+- полностью раскрыто: `1, 2, 3, 4, 5`
+- после сворачивания середины: `1, 2, 5` (а не `1, 2, 3`)
+
+`rowIndex` зависит только от видимых строк — номера будут «прыгать».
+
+## Частичная перерисовка
+
+`getRowMarker` должна быть чистой функцией. Вызывается не только при полной отрисовке таблицы, но и при ховере/скролле — для одной ячейки. Не используйте внешние переменные-счётчики — используйте аргументы (`siblingPath`, `flatIndex`, `siblingIndex`, `parentKey`), они всегда актуальны.
+
+> Подробнее о типах — [RowMarkers API](?path=/docs/локальные-компоненты-tablecanvas-rowmarkers-api--docs)
+
+<Stories />

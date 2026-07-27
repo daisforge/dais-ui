@@ -1,0 +1,29 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as TableRowsGrouping from './Table.rowsGrouping.simple.stories';
+
+<Meta
+  of={TableRowsGrouping}
+  name="tableRowsGrouping"
+  tags={['hideInSidebar']}
+/>
+
+# Группировка данных-строк
+
+## Ключевые особенности
+
+- Группировка строк по выбранным колонкам
+- Кастомизация grouped column и group button
+- Поддержка агрегированных значений в групповых строках
+
+Для активации фичи необходимо настроить `tableConfig?.rowsGrouping` и `columnConfig?.rowsGrouping` у нужных колонок.
+
+## Особенности
+
+- `tableConfig.rowsGrouping` хранит активные группировки, `rowKeyGetter` и настройки grouped column.
+- `columnConfig.rowsGrouping` включает колонку в список доступных группировок и позволяет переопределить рендер групповой строки.
+- `groupButton` настраивает элементы выпадающего списка и подсчёт активных группировок.
+- `groupRowReplaceTo` позволяет заменить данные сгруппированной строки в редких кастомных сценариях.
+
+Описание типов - в разделе [API](?path=/docs/локальные-компоненты-table-rowsgrouping-api--docs).
+
+<Stories />

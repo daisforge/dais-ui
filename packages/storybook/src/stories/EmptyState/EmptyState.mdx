@@ -1,0 +1,29 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as EmptyStateStories from './EmptyState.stories';
+
+<Meta of={EmptyStateStories} name="Docs" />
+
+# EmptyState
+
+Компонент для отображения состояния пустого контента с вариациями размеров и действий.
+
+## Ключевые особенности
+
+- Три размера: `s` (компактный, без иконки), `m`, `l` (с кнопками и доп. действиями)
+- Варианты: `loading`, `need-access`, `no-access`, `no-content`, `not-found`, `success`
+- Поддержка кнопок и ссылок через массив `buttons`
+- Дополнительная кнопка `extraButton` (только для размера `l`)
+- Кастомизация через `classes` и `$css`
+- Режим центрирования (`centered`)
+
+## Особенности
+
+- Картинки подставляются в зависимости от варианта на продуктовых сборках. В Storybook при смене вариантов картинка не меняется
+- Вариант `not-result` устарел (deprecated) — используйте `not-found`
+- Для размера `l` доступно до 2 кнопок в `buttons` и 1 `extraButton`
+- Для остальных размеров — максимум 1 кнопка
+- Пропсы `icon` и `iconProps` устарели — используйте `variant` для выбора картинки
+
+Описание типов — в разделе [API](/docs/композиции-emptystate-api--docs).
+
+<Stories />

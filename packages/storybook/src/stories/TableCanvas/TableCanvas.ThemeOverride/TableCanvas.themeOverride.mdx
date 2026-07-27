@@ -1,0 +1,53 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as ThemeOverrideStories from './TableCanvas.themeOverride.stories';
+
+<Meta of={ThemeOverrideStories} name="Docs" />
+
+# Theme Override
+
+**columnConfig.themeOverride**
+
+Переопределение визуальных свойств ячейки на уровне колоночного конфига. Колбэк вызывается для каждой ячейки колонки и возвращает частичный override темы (`Partial<Theme>`), либо `undefined`, если для ячейки переопределение не нужно.
+
+## Ключевые особенности
+
+- `bgCell` — цвет фона ячейки (рисуется нативно, закрашивает всю площадь ячейки, включая паддинги)
+- `cellHorizontalPadding` — горизонтальные отступы контента ячейки
+- `cellVerticalPadding` — вертикальные отступы контента ячейки
+- Колбэк получает `cellInfo` (row, column, ctxs, theme) и `lvl` — уровень вложенности subRow (0 для корневых строк, 1+ для дочерних)
+- Условное поведение: можно менять стили в зависимости от данных строки или уровня вложенности
+
+## Сигнатура
+
+```ts
+themeOverride?: (
+  cellInfo: CellInfo<Row, SummRow, CustomCtxs>,
+  lvl: number
+) => CellThemeOverrideResult | undefined;
+```
+
+## Особенности
+
+### Обычные колонки
+
+Для колонок без `subRow.isColumnWithArrow` `cellHorizontalPadding` через `themeOverride` применяется напрямую и одинаково на всех уровнях вложенности (root и subRows). Левый и правый паддинги получают точное значение из override.
+
+### Tree-колонки (с шевроном раскрытия)
+
+Для колонок с `subRow.isColumnWithArrow: true` левый край ячейки рассчитывается формулой `getPaddingLeftFinal(padding, lvl, hasChildrenAndArrow, isExpandable)`. Формула берёт `cellHorizontalPadding` как базу и прибавляет к нему отступ под шеврон + offset на уровень вложенности. Override влияет на левый край, но итоговое значение `= override + offsets`, а не ровно значение override. Правый край и `bgCell` для tree-колонок работают как обычно.
+
+### Кастомный renderCell
+
+Для колонок с `renderCell` системная обёртка с паддингом не добавляется. Разработчик сам управляет отступами через `theme.cellHorizontalPadding` внутри своего renderCell.
+
+### bgCell
+
+`bgCell` рисуется нативно на уровне самой таблицы. Фон закрашивает всю ячейку целиком, включая области паддингов и любых обёрток.
+
+## См. также
+
+- `getRowThemeOverride` — нативный API таблицы для переопределения темы **строки целиком** (по индексу строки, без cellInfo). Используется для подсветки summary-строк и selected-строк. Если нужен row-level эффект (например, "выделенная строка целиком") — используйте этот механизм, а не `themeOverride` на каждой ячейке.
+
+> Подробнее о типах — [Theme Override API](?path=/docs/локальные-компоненты-tablecanvas-themeoverride-api--docs)
+
+<Stories />

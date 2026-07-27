@@ -1,0 +1,26 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as TableEditingStories from './Table.editing.stories';
+
+<Meta of={TableEditingStories} name="Docs" />
+
+# TableEditing
+
+## Ключевые особенности
+
+- Редактирование ячеек через columnConfig.editing
+- Управление изменением строк через tableConfig.editing
+- Поддержка input, number и select editor-ов
+
+Таблица поддерживает редактирование.
+
+Условие активации - наличие свойства `editing` в `tableConfig` или, если есть `tableConfig.editing.defaultEnabled`, то значение `tableConfig.editing.defaultEnabled`.
+
+Помимо этого также необходимо сконфигурировать колонки.
+
+**tableConfig.editing**
+
+**columnConfig.editingCell**
+
+Описание типов - в разделе [API](?path=/docs/локальные-компоненты-table-editing-api--docs).
+
+<Stories />

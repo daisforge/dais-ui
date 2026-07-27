@@ -1,0 +1,26 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as TableSummaryRowsStories from './Table.summaryRows.stories';
+
+<Meta of={TableSummaryRowsStories} name="Docs" />
+
+# Summary Rows
+
+**tableConfig.summaryRows**
+
+Итоговые строки в верхней и/или нижней части таблицы.
+
+## Ключевые особенности
+
+- Отображение итогов через `topSummaryRows` и `bottomSummaryRows` пропсы
+- Кнопка переключения видимости в control block (`showInControl: true`)
+- Кастомный рендер через `renderSummaryCell` в `columnConfig`
+
+## Особенности
+
+- Количество элементов массива = количество итоговых строк
+- Пустой массив — итоговые строки не отображаются
+- `renderSummaryCell` получает `RenderSummaryCellProps` с данными итоговой строки
+
+> Подробнее о типах и пропсах — [Summary Rows API](?path=/docs/локальные-компоненты-table-summaryrows-api--docs)
+
+<Stories />

@@ -1,0 +1,108 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="Формы/Компоненты формы/API" />
+
+# Компоненты формы — API
+
+## Общие пропсы
+
+Все компоненты формы принимают те же пропсы, что и их атомарные аналоги (TextField, TextArea, Checkbox, Select и т.д.), с учётом следующих отличий:
+
+- `value` — не нужно передавать, управляется внутренне через `react-hook-form`
+- `onChange` — возвращает значение напрямую (не event). Используется для дополнительной логики
+- `onChangeInput` — у некоторых компонентов. Для дополнительной логики при изменении
+- `defaultValue` — переопределяется значениями `defaultValues` из `useForm`
+- `name` (`string`) — имя поля в форме. Обязательный проп
+
+## Проп options
+
+У каждого компонента есть проп `options` типа `RegisterOptions<FieldValues, string>` для настройки валидации:
+
+- `required` (`boolean | string`) — обязательность поля. Строка — текст ошибки
+- `minLength` (`{ value: number; message: string }`) — минимальная длина
+- `maxLength` (`number | { value: number; message: string }`) — максимальная длина
+- `min` / `max` — минимальное/максимальное значение (для DatePicker — timestamp)
+- `validate` (`(value) => boolean | string`) — кастомная функция валидации
+
+## Список компонентов
+
+Каждый Form-компонент оборачивает атомарный аналог из `@salutejs/sdds-finai`. Принимает все его пропсы, кроме `value`. Добавляет обязательный `name` и опциональный `options` для валидации. Полное описание пропсов атомарных компонентов — в документации `@salutejs/sdds-finai`.
+
+### FormTextField
+
+Обёртка над атомарным `TextField`. `onChange` возвращает `string`.
+
+### FormTextArea
+
+Обёртка над атомарным `TextArea`. `onChange` возвращает `string`.
+
+### FormMask
+
+Обёртка над атомарным `Mask` (`react-maskinput`). `onChange` возвращает `string`.
+
+### FormNumberFormat
+
+Обёртка над атомарным `NumberFormat`. `onChange` возвращает `string`.
+
+### FormCheckbox
+
+Обёртка над атомарным `Checkbox`. `onChange` возвращает `boolean`.
+
+### FormSwitch
+
+Обёртка над атомарным `Switch`. `onChange` возвращает `boolean`.
+
+### FormSelect
+
+Обёртка над атомарным `Select`. `onChange` возвращает выбранное значение. Ограничена максимальная ширина элемента — при 100% вложенные элементы могут не отобразиться.
+
+### FormCombobox
+
+Обёртка над атомарным `Combobox`. `onChange` возвращает массив выбранных значений.
+
+### FormAutocomplete
+
+Обёртка над атомарным `Autocomplete`. `onChange` возвращает `string`.
+
+### FormRadioGroup
+
+Обёртка над атомарным `RadioGroup`. Атрибут `name` указывается ТОЛЬКО у группы, дочерние `FormRadiobox` наследуют автоматически.
+
+- `label` (`string`) — лейбл группы
+- `titleCaption` (`string`) — подпись
+- `hintText` (`string`) — текст подсказки
+- `radioGroupMode` (`'column' | 'row'`) — направление расположения
+- `size` (`string`) — размер
+
+### FormRadiobox
+
+Дочерний элемент `FormRadioGroup`. Наследует `name` от группы. Должен находиться на первом уровне вложенности (не оборачивать в `div`).
+
+- `value` (`string | number`) — значение радиокнопки
+
+### FormSegmentGroup
+
+Обёртка над атомарным `SegmentGroup`.
+
+- `items` (`Array<{ label: string; value: string; view?: string; size?: string }>`) — элементы сегмента
+- `label` (`string`) — лейбл
+- `titleCaption` (`string`) — подпись
+- `hasBackground` (`boolean`) — фон
+- `stretch` (`boolean`) — растянуть на всю ширину
+- `pilled` (`boolean`) — скруглённые края
+
+### FormDatePicker
+
+Обёртка над атомарным `DatePicker`. Встроенная валидация по `min`/`max` из `options`.
+
+- Если заданы атомарные пропсы `min`/`max`, они переопределяют `options.min`/`options.max`
+- При передаче `validate` в `options` — внутренняя валидация отключается
+- `invalidFormatMessage` (`string`) — текст ошибки при некорректном формате даты
+
+### FormDatePickerRange
+
+Аналогично `FormDatePicker`, но для диапазона дат.
+
+- `portal` (`HTMLElement`) — портал для календаря
+- `format` (`string`) — формат даты
+- `invalidFormatMessage` (`string`) — текст ошибки при некорректном формате

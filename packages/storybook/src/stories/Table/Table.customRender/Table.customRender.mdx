@@ -1,0 +1,25 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as TableCustomRenderStories from './Table.customRenderCell.stories';
+
+<Meta of={TableCustomRenderStories} name="Docs" />
+
+# Custom Render
+
+Кастомный рендеринг ячеек таблицы.
+
+## Ключевые особенности
+
+- `renderCell` — кастомный рендер ячеек данных (доступны `row`, `rowIdx`, `column`)
+- `renderHeaderCell` — кастомный рендер заголовков (`name` принимает `string | ReactElement`)
+- `renderSummaryCell` — кастомный рендер итоговых строк
+- Контексты: `useRowContext` и `useHeaderContext` для передачи состояния без лишних ре-рендеров
+
+## Особенности
+
+- Контейнер ячейки должен использовать `width: '100%'` и `height: '100%'`
+- `headerContextValue` предоставляет доступ к состоянию фильтров, сортировки и размера строк
+- `rowContextValue` позволяет передавать кастомное состояние в ячейки без перерисовки таблицы
+
+> Подробнее о типах и пропсах — [Custom Render API](?path=/docs/локальные-компоненты-table-customrender-api--docs)
+
+<Stories />

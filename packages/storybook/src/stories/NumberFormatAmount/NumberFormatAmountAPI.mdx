@@ -1,0 +1,16 @@
+import { Meta } from '@storybook/blocks';
+import { TypeSourceViewer } from '@df-storybook/utils/TypeSourceViewer';
+
+<Meta title="Локальные компоненты/NumberFormatAmount/API" />
+
+# NumberFormatAmount API
+
+## NumberFormatAmountProps
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/NumberFormatAmount/NumberFormatAmount.types.ts"
+  typeName="NumberFormatAmountProps"
+/>
+
+Компонент наследует все пропсы атомарного [NumberFormat](https://plasma.sberdevices.ru/sdds-finai/components/number-format/) и добавляет `onClear?: () => void` — колбэк для кнопки очистки.

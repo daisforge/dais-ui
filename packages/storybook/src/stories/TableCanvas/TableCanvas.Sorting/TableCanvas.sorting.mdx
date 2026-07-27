@@ -1,0 +1,122 @@
+import { Meta, Stories } from '@storybook/blocks';
+
+import * as TableSortingStories from './TableCanvas.sorting.stories';
+
+<Meta of={TableSortingStories} name="Docs" />
+
+# Sorting
+
+**tableConfig.sorting + columnConfig.sortingType**
+
+Сортировка данных по колонкам.
+
+## Быстрый старт
+
+Для включения сортировки необходимо:
+
+1. Передать `sorting` в `tableConfig`
+2. Указать `sortingType` в конфигурации колонок
+
+```tsx
+const sortingState = useState<readonly SortColumn[]>([]);
+
+<TableCanvas
+  tableConfig={{
+    sorting: {
+      state: sortingState,
+    },
+  }}
+  columnConfig={[
+    { key: 'name', name: 'Название', sortingType: 'stringSort' },
+    { key: 'amount', name: 'Сумма', sortingType: 'numberSort' },
+  ]}
+  rows={rows}
+/>;
+```
+
+## Стратегии сортировки
+
+- **`'stringSort'`** — текстовые поля, названия, описания. Пример: `"Яблоко"`, `"Apple"`, `"100 дней"`
+- **`'numberSort'`** — числа, ID, коды (даже строковые). Пример: `"42"`, `"1 000"`, `"3,14"`
+- **`Comparator<Row>`** — кастомная логика (enum-приоритеты, даты, и т.д.). Пример: `Critical → High → Medium → Low`
+
+### stringSort
+
+Строковое сравнение с учётом русской локали.
+
+- Строковые числа сортируются как числа: `"2" < "10"` (не посимвольно)
+- Регистр не влияет: `"яблоко"` = `"Яблоко"`
+- Пустые значения всегда внизу
+
+Порядок символов при ASC (локаль `'ru'`):
+
+1. Спецсимволы — `"#tag"`, `"@user"`, `"-"`
+2. Цифры — `"31.10"`, `"100"`
+3. Кириллица — `"Авто"`, `"Яблоко"`
+4. Латиница — `"Apple"`, `"MYCHANGE"`
+5. Пустые — всегда внизу
+
+> Порядок между кириллицей и латиницей определяется русской локалью браузера — кириллица идёт первой.
+
+### numberSort
+
+Числовое сравнение с поддержкой локальных форматов.
+
+- `"42"` → `42`
+- `"1 000"` → `1000` (пробелы-разделители)
+- `"3,14"` → `3.14` (запятая как десятичный)
+- `"abc"`, `""` → уходят вниз
+
+### Кастомный компаратор
+
+Функция `(a: Row, b: Row) => number`. Направление (ASC/DESC) применяется автоматически.
+
+```tsx
+{
+  key: 'priority',
+  name: 'Приоритет',
+  sortingType: (a, b) => {
+    const order = { Critical: 0, High: 1, Medium: 2, Low: 3 };
+    return (order[a.priority] ?? 99) - (order[b.priority] ?? 99);
+  },
+}
+```
+
+## Направление сортировки
+
+Клик по заголовку переключает направление циклически:
+
+**нет сортировки → ASC (↓) → DESC (↑) → нет сортировки**
+
+- **↓ ASC** — по возрастанию (от меньшего к большему)
+- **↑ DESC** — по убыванию (от большего к меньшему)
+- **↕** — сортировка не активна
+
+Пустые значения (`null`, `undefined`, `""`, строка из пробелов) всегда остаются внизу, независимо от направления.
+
+## Серверная сортировка
+
+Если сортировка выполняется на бэкенде, включите `manualSorting`. Таблица не будет сортировать данные сама, но будет обновлять `state` при кликах по заголовкам.
+
+```tsx
+const [sortColumns, setSortColumns] = useState<readonly SortColumn[]>([]);
+
+// Реагируем на изменение sortColumns и делаем запрос на сервер
+useEffect(() => {
+  fetchData({ sort: sortColumns });
+}, [sortColumns]);
+
+<TableCanvas
+  tableConfig={{
+    sorting: {
+      state: [sortColumns, setSortColumns],
+      manualSorting: true,
+    },
+  }}
+  ...
+/>
+```
+
+> Подробнее о типах — [Sorting API](?path=/docs/локальные-компоненты-tablecanvas-sorting-api--docs)
+
+<Stories />

@@ -1,0 +1,46 @@
+import { Meta } from '@storybook/blocks';
+import { TypeSourceViewer } from '@df-storybook/utils/TypeSourceViewer';
+
+<Meta title="Локальные компоненты/TableCanvas/CellsSelection/API" />
+
+# CellsSelection API
+
+## CellsSelectionMode
+
+Режим фактического (нативного) выделения ячеек — `tableConfig.cellsSelection.mode`.
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/TableGlide/types.ts"
+  typeName="CellsSelectionMode"
+/>
+
+## Controlled-режим
+
+`tableConfig.cellsSelection.state` — внешний (controlled) контроль нативного выделения,
+`state`-кортеж `[GridSelection, setter]`:
+
+```ts
+cellsSelection?: {
+  state?: [
+    GridSelection,
+    React.Dispatch<React.SetStateAction<GridSelection>>
+  ];
+};
+```
+
+- Сброс: `setter({ current: undefined, rows: CompactSelection.empty(), columns: CompactSelection.empty() })`.
+- Контролирует нативное выделение (ячейки/диапазон/смежные строки и колонки).
+  Несмежный Ctrl-выбор колонок/строк — внутренний.
+- `CompactSelection` (значение) и `GridSelection` (тип) реэкспортируются из
+  `@dais-ui/ui-kit/components/TableCanvas`.
+
+## CellsSelectionConfig
+
+Конфиг выделения колонок (`tableConfig.cellsSelection`).
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/TableCanvas/types/table-config.type.ts"
+  typeName="CellsSelectionConfig"
+/>

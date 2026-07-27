@@ -1,0 +1,21 @@
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: {{ include "app.fullname" . }}-router
+  labels:
+    {{- include "app.labels" . | nindent 4 }}
+spec:
+  host: df-storybook.sh5.dev-gen1-ds.dddddd.ru
+  to:
+    kind: Service
+    name: {{ include "app.fullname" . }}
+    weight: 100
+  port:
+    targetPort: http
+  wildcardPolicy: None
+status:
+  ingress:
+    - host: df-storybook.sh5.dev-gen1-ds.dddddd.ru
+      routerName: default
+      wildcardPolicy: None
+      routerCanonicalHostname: router-default.apps.dev-gen1-ds.dddddd.ru

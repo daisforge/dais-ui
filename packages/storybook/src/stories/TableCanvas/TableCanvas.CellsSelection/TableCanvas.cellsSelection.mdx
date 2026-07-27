@@ -1,0 +1,116 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as CellsSelectionStories from './TableCanvas.cellsSelection.stories';
+
+<Meta of={CellsSelectionStories} name="Docs" />
+
+# CellsSelection
+
+Выделение в таблице задаётся пропом **`tableConfig.cellsSelection.mode`** — это
+фактическое нативное выделение ячеек. По нему работают copy/paste, рамка
+выделения, fill-handle и затемнение шапки/нумерации.
+
+> Это **отдельная ось** от `highlightActiveType` (визуальная подсветка строки) и
+> от `selecting` (выбор строк чекбоксами).
+
+## Значения cellsSelection.mode
+
+- `'range-cell'` — выделение диапазона ячеек (по умолчанию). Тянем мышкой.
+- `'multi-range-cell'` — как `range-cell`, но **Ctrl/Cmd** докидывает несколько
+  диапазонов (см. ниже).
+- `'cell'` — выделение одной ячейки.
+- `'disabled'` — выделение ячеек отключено.
+
+## Мультивыбор диапазонов (multi-range-cell)
+
+При `cellsSelection: { mode: 'multi-range-cell' }` можно выделить несколько прямоугольных
+диапазонов: тянем мышкой первый, затем **Ctrl/Cmd + клик/драг** докидываем
+остальные. Заливка и рамка — у всех выделенных.
+
+**Copy (Ctrl+C)** работает для разрозненного выбора, если все ячейки лежат:
+
+- в пределах **одной колонки** — значения копируются подряд, пустые промежутки
+  между ними схлопываются;
+- либо в пределах **одной строки** — аналогично по горизонтали.
+
+Разброс сразу **по строкам и колонкам** (2D) не переносится — copy/paste для него
+не срабатывают. Об этом таблица сообщает через модуль
+[Notifications](?path=/docs/локальные-компоненты-tablecanvas-notifications--docs)
+(`copy` / `paste`, code `multi-range-scattered`).
+
+**Paste (Ctrl+V)** зеркально: вставка идёт в выбранные ячейки подряд, схлопывая
+промежутки. Полный интерактивный пример copy/paste — в разделе
+**Copy-Paste-Fill**.
+
+## Оси выделения
+
+Выделение работает по трём независимым осям. Любая из них поддерживает
+copy/paste (**Ctrl+C / Ctrl+V**) по текущему выделению.
+
+- **Ячейки / диапазон** — мышью по области данных, зависит от `cellsSelection.mode`.
+- **Колонки** — клик по шапке колонки.
+- **Строки** — клик/драг по колонке нумерации (`rowMarkers`).
+
+### Выделение колонок
+
+Клик по шапке выделяет колонку целиком:
+
+- **Клик** — одна колонка.
+- **Shift + клик** — смежный диапазон колонок (рисуется нативно, с fill-handle).
+- **Ctrl/Cmd + клик** — несмежный выбор: добавить/убрать колонку.
+
+Клик по иконкам сортировки/фильтрации в шапке выделение **не** вызывает.
+Управляется флагом `cellsSelection.enableColumnSelection` (по умолчанию `true`).
+
+### Выделение строк
+
+Клик/драг по колонке нумерации выделяет строку(и):
+
+- **Клик / драг** — смежный диапазон строк (рисуется нативно, с fill-handle).
+- **Ctrl/Cmd + клик** — несмежный выбор отдельных строк.
+
+Требует включённой колонки нумерации (`rowMarkers`). Управляется флагом
+`cellsSelection.enableRowSelection` (по умолчанию `true`).
+
+## Включение / выключение осей
+
+Выделение колонок и строк можно выключать независимо через `tableConfig.cellsSelection`:
+
+```ts
+<TableCanvas
+  tableConfig={{
+    rowMarkers: { startIndex: 1 },
+    cellsSelection: {
+      enableColumnSelection: false, // клик по шапке не выделяет колонку
+      enableRowSelection: false, // клик по нумерации не выделяет строку
+    },
+  }}
+/>;
+```
+
+Оба флага по умолчанию `true`. Выделение ячеек/диапазона при этом продолжает
+работать — оно управляется отдельным `cellsSelection.mode`.
+
+## Controlled-режим
+
+Выделением можно управлять снаружи через `state`-кортеж:
+
+```ts
+const gridSelectionState = useState<GridSelection>(EMPTY_SELECTION);
+
+<TableCanvas
+  tableConfig={{
+    cellsSelection: { mode: 'range-cell', state: gridSelectionState }, // [value, setter]
+  }}
+/>;
+```
+
+Сброс: `setter({ current: undefined, rows: CompactSelection.empty(), columns: CompactSelection.empty() })`.
+Контролируется нативное выделение (ячейки/диапазон/смежные строки и колонки);
+несмежный Ctrl-выбор колонок/строк — внутренний (own-state), снаружи не задаётся.
+
+`CompactSelection` и тип `GridSelection` реэкспортируются из
+`@dais-ui/ui-kit/components/TableCanvas`.
+
+> Подробнее о типах — [CellsSelection API](?path=/docs/локальные-компоненты-tablecanvas-cellsselection-api--docs)
+
+<Stories />

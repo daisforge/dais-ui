@@ -1,0 +1,32 @@
+import { Meta, Stories } from '@storybook/blocks';
+
+import * as SplitIconButtonStories from './TableCanvas.splitIconButton.stories';
+
+<Meta of={SplitIconButtonStories} name="Docs" />
+
+# SplitIconButton (TableCanvas)
+
+Переиспользуемый компонент для кастомных слотов ControlBlock. Это пара кнопок-иконок рядом: основное действие слева и кнопка-шеврон справа, открывающая дропдаун (паттерн split button). Реэкспортируется из TableCanvas, импорт: `import { SplitIconButton } from '@dais-ui/ui-kit/components/TableCanvas'`.
+
+## Ключевые особенности
+
+- Две независимые кнопки: основная иконка (`onIconClick`) и кнопка-шеврон, открывающая дропдаун
+- Шеврон и анимация раскрытия идут от компонента, левую иконку и размеры задаёт разработчик
+- Дропдаун под капотом это TableDropdown, поэтому ширина и размер списка подхватывают `rowSize` таблицы автоматически
+- Пункты дропдауна (`items`) полностью на стороне разработчика: галочки, иконки или ничего, библиотека их только прокидывает
+- Если `items` не заданы, шеврон работает как обычная кнопка (`onChevronClick`)
+
+## Где использовать
+
+- `editing.editModeLeftSlot` это кастомный слот слева в режиме редактирования
+- `controlBlock.customFeatures[].CustomIconRender` это кастомная фича в правой части панели
+
+## Особенности
+
+- Работает только внутри контекста TableCanvas, потому что дропдаун использует контекст таблицы (`rowSize`, контейнер). Вне таблицы не используется.
+- Размеры задаёт потребитель: `size` для кнопок, `chevronSize` для иконки шеврона, размер своей иконки слева.
+- При компрессии фича уезжает в overflow-дропдаун. Её свёрнутый вид описывается через `details` самой фичи, а не через сам компонент. Например `details: { type: 'select' }` с галочкой активного пункта в `contentLeft` опций.
+
+Описание типов в разделе [SplitIconButton API](?path=/docs/локальные-компоненты-tablecanvas-controlblock-spliticonbutton-api--docs).
+
+<Stories />

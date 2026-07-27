@@ -1,0 +1,24 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as TableInfinityScrollStories from './Table.infinityScroll.stories';
+
+<Meta of={TableInfinityScrollStories} name="Docs" />
+
+# InfinityScroll
+
+Бесконечная подгрузка данных при прокрутке legacy `Table`.
+
+## Ключевые особенности
+
+- Включается наличием `tableConfig.infinityScroll`
+- `onTrigger` вызывается при достижении нижней границы
+- `isLoading` блокирует повторный вызов во время загрузки
+- `hasMore` управляет наличием следующей страницы
+- `scrollThreshold` задает расстояние до низа для раннего запуска
+
+## Особенности
+
+При активном infinity scroll таблица не применяет дефолтные сортировку и фильтрацию, потому что на клиенте обычно находится не весь набор данных.
+
+Описание типов - в разделе [API](?path=/docs/локальные-компоненты-table-infinityscroll-api--docs).
+
+<Stories />

@@ -1,0 +1,40 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as DrawerDFStories from './DrawerDF.stories';
+
+<Meta of={DrawerDFStories} name="Docs" />
+
+# DrawerDF
+
+Расширенный `Drawer` ([документация SDDS](https://plasma.sberdevices.ru/sdds-finai/components/drawer/)) с готовыми layout-ами для шапки/контента/футера, кнопкой «назад» и сервисными элементами. Из блоков можно собрать как простой выезжающий сайдбар, так и сложные многоколоночные сценарии.
+
+## Ключевые особенности
+
+- Набор compound-компонентов (`Header`, `Content`, `Footer`, `DotsIconButton`, `BackIconButton`)
+- Поддержка множественных контентных колонок с автоматическими отступами
+- Управление кнопкой «назад» на уровне родительского компонента (`showBackButton`, `onBackClick`)
+- Готовые стили для бейджей, правого блока действий и табов в шапке
+
+## Compound-компоненты
+
+```ts
+DrawerDF.Header; // Шапка: заголовок, подзаголовок, бейдж, правый блок, футер-блок (табы)
+DrawerDF.Content; // Контейнер контента с поддержкой фиксированной ширины
+DrawerDF.Footer; // Футер с преднастроенными отступами
+DrawerDF.DotsIconButton; // Иконка «три точки» с Dropdown
+DrawerDF.BackIconButton; // Кнопка «назад»
+```
+
+- `DrawerDF.Header` — автоматически выстраивает заголовок, подзаголовок, бейдж, правый блок и нижний блок (табы)
+- `DrawerDF.Content` — поддерживает `fixedWidth` для формирования колонок
+- `DrawerDF.Footer` — имеет преднастроенные отступы, принимает любые элементы управления
+- `DrawerDF.DotsIconButton` — иконка меню с `dropdownProps`
+- `DrawerDF.BackIconButton` — используется в кнопке «назад», доступен для произвольного использования
+
+## Особенности
+
+- `main` принимает одиночный `DrawerDF.Content` или массив — при массиве автоматически формируются колонки
+- `showBackButton` заменяет крестик закрытия на кнопку «назад»
+
+Описание типов и compound-пропсов — в разделе [API](/docs/локальные-компоненты-drawerdf-api--docs).
+
+<Stories />

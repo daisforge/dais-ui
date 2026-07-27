@@ -1,0 +1,194 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as AiAgentStories from './AiAgentPopover.stories';
+
+<Meta of={AiAgentStories} name="Docs" />
+
+# AiAgentPopover
+
+Обёртка над [SDDS Popover](https://plasma.sberdevices.ru/sdds-finai/components/popover/) — компонент для отображения контекстного попапа рядом с элементом.
+Используется, например, для показа AI-ассистента или справочной информации.
+
+## Ключевые особенности
+
+- Гибкое позиционирование с автоматической коррекцией (`calculatePlacement`, `calculateOffset`)
+- Режим перетаскивания (`draggable`) с порогом срабатывания и границами
+- Кастомные anchor-точки для точного размещения (`defaultPosition`)
+- Автосохранение позиции в localStorage (`useStorage`)
+- Resizable-режим с автоматическим позиционированием иконки ресайза
+- Контролируемый стейт видимости через `opened` / `onToggle`
+
+## Особенности
+
+**Режим перетаскивания (draggable)**
+
+```tsx
+<AiAgentPopover draggable dragBoundary={{ top: 20, bottom: 20 }}>
+  Контент попапа
+</AiAgentPopover>
+```
+
+Особенности работы:
+
+- Порог срабатывания (5px) - предотвращает случайные срабатывания при клике
+- Границы перемещения - ограничиваются областью окна с учетом dragBoundary
+- Игнор кликов - при активации ignoreToggleOnDrag не открывает popover после перетаскивания
+
+**Автоматические расчеты** `calculatePlacement` и `calculateOffset`
+
+```tsx
+<AiAgentPopover
+  calculatePlacement={false}
+  calculateOffset={false}
+  placement="bottom-right"
+>
+  Контент попапа с выключенными расчётами В данном примере, несмотря на
+  использования кастомного значения placement, корректировка offset работать не
+  будет, так как ее отключили. calculatePlacement также не будет работать,
+  потому сама опция выключена, к тому же нет draggable режима.
+</AiAgentPopover>
+```
+
+Особенности работы:
+
+- calculatePlacement и calculateOffset включены по умолчанию
+- calculatePlacement используется в режиме draggable. Процесс вычисления нужного значения placement происходит в момент перетаскивания target. Фича делит экран на 6 секторов. Для каждого сектора свой placement. 1 - bottom-left, 2 - bottom, 3 - bottom-right, 4 - top-right, 5 - top, 6 - top-left. Если в момент вычисления placement контент popover выходит за границы экрана, то будет применено значение auto, корректировки offset в таком случае не будет и popover будет вести себя стандартно, как ведет себя атомарный компонент.
+- calculateOffset необходим для вычисления правильного (с точки зрения дизайн-макетов) значения offset для каждого кастомного значения placement (bottom-left, bottom-right, top-left, top-right).
+
+**Кастомные позиции**
+
+```tsx
+// Вариант 1: Координаты
+<AiAgentPopover defaultPosition={{ x: 200, y: 200 }} />
+
+// Вариант 2: Кастомное размещение
+<AiAgentPopover defaultPosition="bottom-left" />
+
+// Вариант 3: Нужные кастомные значения, но чтобы popover открывался вниз со смещением влево
+<AiAgentPopover defaultPosition={{ x: 200, y: 200 }} placement="bottom-left" />
+```
+
+Логика расчёта:
+
+defaultPosition может быть как объектом с координатами, так и строковым значением (как кастомные placement). Если вы выбираете defaultPosition как строковую позицию (top-left, top-right, bottom-left, bottom-right), то target элемент popover встанет в нужную заранее подготовленную позицию. Такое поведение актуально, если НЕ активирован useStorage (иначе позиция берется из localStorage) и НЕ заданы значения dragBoundary, которые не позволяют ему там находиться и НЕ используется positionState (внешний [стейт, сеттер] позиции)
+
+**Resizable-режим**
+
+```tsx
+// Вариант 1: Дефолтная конфигурация — иконка ресайза позиционируется автоматически
+<AiAgentPopover draggable resizable>
+  Контент попапа
+</AiAgentPopover>
+
+// Вариант 2: Callback — получаем текущий placement, переопределяем нужные поля
+<AiAgentPopover
+  draggable
+  resizable={(placement) => ({
+    defaultSize: { width: 300, height: 200 },
+    minWidth: 250,
+    maxWidth: 600,
+  })}
+>
+  Контент попапа
+</AiAgentPopover>
+```
+
+Особенности работы:
+
+- Проп `resizable` принимает `boolean` или callback-функцию `(placement) => Partial<AiAgentPopoverResizableConfig>`
+- При `resizable={true}` иконка ресайза (`IconResizeCorneredFill`) автоматически позиционируется в угол, диагонально противоположный target-элементу, в зависимости от текущего placement:
+  - `bottom-right` / `bottom` → иконка в правом нижнем углу
+  - `bottom-left` → иконка в левом нижнем углу
+  - `top-right` / `top` → иконка в правом верхнем углу
+  - `top-left` → иконка в левом верхнем углу
+- Иконка автоматически отзеркаливается (`scaleX`/`scaleY`) для корректного визуального отображения в каждом углу
+- При передаче callback-функции результат мержится с дефолтной конфигурацией — можно переопределить только нужные поля (`defaultSize`, `minWidth`, `icons`, `hiddenIcons` и т.д.)
+- Свойства `onResizeStart` и `onResizeEnd` передаются отдельными пропсами, как и раньше
+
+**Рекомендации по использованию**
+
+Оптимальные параметры для AI-ассистента:
+
+```tsx
+<AiAgentPopover
+  draggable
+  useStorage="your-custom-key-for-local-storage"
+  defaultPosition="bottom-right"
+  dragBoundary={{ bottom: 10, right: 10, top: 10, left: 10 }}
+>
+ <div style={{ minWidth: '224px' }}>
+  <H3>AI Assistant</H3>
+  <BodyS style={{ margin: '8px 0', color: textSecondary }}>
+    Пример содержимого AI-ассистента
+  </BodyS>
+  <div style={{ display: 'flex', gap: '8px', width: '100%' }}>
+    <Button
+      size="s"
+      view="secondary"
+      onClick={onClose}
+      style={{ flexGrow: 1 }}
+    >
+      Отмена
+    </Button>
+    <Button size="s" view="accent" style={{ flexGrow: 1 }}>
+      Применить
+    </Button>
+  </div>
+  </div>
+<AiAgentPopover />
+```
+
+**Отключение автоматики:**
+
+```tsx
+<AiAgentPopover
+  calculatePlacement={false}
+  calculateOffset={false}
+  placement="right"
+  offset={[10, 20]}
+>
+ <div style={{ minWidth: '224px' }}>
+  <H3>AI Assistant</H3>
+  <BodyS style={{ margin: '8px 0', color: textSecondary }}>
+    Пример содержимого AI-ассистента
+  </BodyS>
+  <div style={{ display: 'flex', gap: '8px', width: '100%' }}>
+    <Button
+      size="s"
+      view="secondary"
+      onClick={onClose}
+      style={{ flexGrow: 1 }}
+    >
+      Отмена
+    </Button>
+    <Button size="s" view="accent" style={{ flexGrow: 1 }}>
+      Применить
+    </Button>
+  </div>
+  </div>
+<AiAgentPopover />
+```
+
+**Контролирование стейта видимости снаружи:**
+
+```tsx
+function Example() {
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <div style={{ display: 'flex', justifyContent: 'center', padding: '50px' }}>
+      <AiAgentPopover
+        draggable
+        opened={isOpen}
+        onToggle={setIsOpen}
+        defaultPosition="bottom-right"
+        useStorage="custom-key-for-local-storage"
+      >
+        <PopoverContent onClose={() => setIsOpen(false)} />
+      </AiAgentPopover>
+    </div>
+  );
+}
+```
+
+> Подробнее о типах и пропсах — [AiAgentPopover API](?path=/docs/локальные-компоненты-aiagentpopover-api--docs)
+
+<Stories />

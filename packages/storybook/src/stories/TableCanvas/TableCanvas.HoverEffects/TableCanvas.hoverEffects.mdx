@@ -1,0 +1,54 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as HoverEffectsStories from './TableCanvas.hoverEffects.stories';
+
+<Meta of={HoverEffectsStories} name="Docs" />
+
+# Hover Effects
+
+Эффекты при наведении — единый расширяемый конфиг `tableConfig.hoverEffects`.
+Сейчас поддерживается **подсветка строки под курсором** (`row`). Чисто визуальная фича, по умолчанию
+**выключена**. В будущем в этом же объекте появятся hover по ячейке, кастомные
+мапки цветов и т.д.
+
+## Как включить
+
+```tsx
+tableConfig={{ hoverEffects: { row: true } }}                   // цвета из темы
+tableConfig={{ hoverEffects: { row: { color: '#FFF6E5' } } }}   // свой цвет
+```
+
+## Цвета (уровень темы)
+
+- **data-ячейки** hovered-строки — серый `bgRowHovered` (или свой `color` из
+  конфига);
+- **служебные колонки** (нумерация / чекбокс / инструменты строк) hovered-строки
+  не сереют — темнеют голубым `bgServiceRowHovered`, тем же цветом, что
+  сервис-зона при селектинге;
+- строка, **отмеченная чекбоксом** (`selecting`), под курсором темнеет целиком —
+  `bgSelectedRowHovered` (как hover шапки), вместо серого.
+
+## Приоритеты слоёв (важно)
+
+Hover — **самый нижний визуальный слой**, он не конкурирует с выделением:
+
+- выделение ячеек/строк/колонок (`cellsSelection`) и «залипшая» активная строка
+  (`highlightActiveType='row'`) рисуются **поверх** и перекрывают hover;
+- после сброса выделения hover под курсором снова виден;
+- summary-строки hover не получают.
+
+## Особенности
+
+- Работает по всей строке: hover срабатывает над любой ячейкой строки,
+  включая нумерацию и чекбокс.
+- Уход мыши с таблицы (или на шапку/групп-хедер) сбрасывает подсветку.
+- Не требует `themeOverride` и не влияет на copy/paste и прочую логику
+  выделения — ось полностью независимая. Не путать с `highlightActiveType` —
+  тот подсвечивает строку по **клику** («залипает»), hover — по наведению.
+
+> Подробнее о типах — [HoverEffects API](?path=/docs/локальные-компоненты-tablecanvas-hovereffects-api--docs)
+
+> Внутреннее устройство и почему такие приоритеты — в доке
+> `packages/ui-kit/src/components/TableCanvas/docs/SelectionAndHighlighting.md`,
+> раздел 7.
+
+<Stories />

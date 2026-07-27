@@ -1,0 +1,261 @@
+import { Meta, Stories } from '@storybook/blocks';
+
+import * as TableSortingStories from './Table.sorting.stories';
+
+<Meta of={TableSortingStories} name="Docs" />
+
+# Sorting
+
+## Ключевые особенности
+
+- Сортировка по колонкам
+- Строковый, числовой и кастомный компаратор
+- Ручная сортировка для серверных сценариев
+
+Компонент `Table` поддерживает сортировку данных по колонкам.
+
+## Быстрый старт
+
+Для включения сортировки необходимо:
+
+1. Передать `sorting` в `tableConfig`
+2. Указать `sortingType` в конфигурации колонок
+
+```tsx
+const sortingState = useState<readonly SortColumn[]>([]);
+
+<Table
+  tableConfig={{
+    sorting: {
+      state: sortingState,
+    },
+  }}
+  columnConfig={[
+    { key: 'name', name: 'Название', sortingType: 'stringSort' },
+    { key: 'amount', name: 'Сумма', sortingType: 'numberSort' },
+  ]}
+  rows={rows}
+/>;
+```
+
+## Стратегии сортировки
+
+<table>
+  <thead>
+    <tr>
+      <th>sortingType</th>
+      <th>Когда использовать</th>
+      <th>Пример данных</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <code>stringSort</code>
+      </td>
+      <td>Текстовые поля, названия, описания</td>
+      <td>
+        <code>"Яблоко"</code>, <code>"Apple"</code>, <code>"100 дней"</code>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>numberSort</code>
+      </td>
+      <td>Числа, ID, коды (даже строковые)</td>
+      <td>
+        <code>"42"</code>, <code>"1 000"</code>, <code>"3,14"</code>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>Comparator&lt;Row&gt;</code>
+      </td>
+      <td>Кастомная логика (enum-приоритеты, даты, и т.д.)</td>
+      <td>
+        <code>Critical → High → Medium → Low</code>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+### stringSort
+
+Строковое сравнение с учётом русской локали.
+
+- Строковые числа сортируются как числа: `"2" < "10"` (не посимвольно)
+- Регистр не влияет: `"яблоко"` = `"Яблоко"`
+- Пустые значения всегда внизу
+
+Порядок символов при ASC (локаль `'ru'`):
+
+<table>
+  <thead>
+    <tr>
+      <th>Порядок</th>
+      <th>Категория</th>
+      <th>Пример</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>Спецсимволы</td>
+      <td>
+        <code>"#tag"</code>, <code>"@user"</code>, <code>"-"</code>
+      </td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>Цифры</td>
+      <td>
+        <code>"31.10"</code>, <code>"100"</code>
+      </td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>Кириллица</td>
+      <td>
+        <code>"Авто"</code>, <code>"Яблоко"</code>
+      </td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>Латиница</td>
+      <td>
+        <code>"Apple"</code>, <code>"MYCHANGE"</code>
+      </td>
+    </tr>
+    <tr>
+      <td>—</td>
+      <td>Пустые</td>
+      <td>Всегда внизу</td>
+    </tr>
+  </tbody>
+</table>
+> Порядок между кириллицей и латиницей определяется русской локалью браузера — кириллица
+идёт первой.
+
+### numberSort
+
+Числовое сравнение с поддержкой локальных форматов.
+
+<table>
+  <thead>
+    <tr>
+      <th>Входное значение</th>
+      <th>Результат</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <code>"42"</code>
+      </td>
+      <td>
+        <code>42</code>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>"1 000"</code>
+      </td>
+      <td>
+        <code>1000</code> (пробелы-разделители)
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>"3,14"</code>
+      </td>
+      <td>
+        <code>3.14</code> (запятая как десятичный)
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>"abc"</code>, <code>""</code>
+      </td>
+      <td>Уходят вниз</td>
+    </tr>
+  </tbody>
+</table>
+
+### Кастомный компаратор
+
+Функция `(a: Row, b: Row) => number`. Направление (ASC/DESC) применяется автоматически.
+
+```tsx
+{
+  key: 'priority',
+  name: 'Приоритет',
+  sortingType: (a, b) => {
+    const order = { Critical: 0, High: 1, Medium: 2, Low: 3 };
+    return (order[a.priority] ?? 99) - (order[b.priority] ?? 99);
+  },
+}
+```
+
+## Направление сортировки
+
+Клик по заголовку переключает направление циклически:
+
+**нет сортировки → ASC (↓) → DESC (↑) → нет сортировки**
+
+<table>
+  <thead>
+    <tr>
+      <th>Иконка</th>
+      <th>Направление</th>
+      <th>Описание</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>↓</td>
+      <td>ASC</td>
+      <td>По возрастанию (от меньшего к большему)</td>
+    </tr>
+    <tr>
+      <td>↑</td>
+      <td>DESC</td>
+      <td>По убыванию (от большего к меньшему)</td>
+    </tr>
+    <tr>
+      <td>↕</td>
+      <td>—</td>
+      <td>Сортировка не активна</td>
+    </tr>
+  </tbody>
+</table>
+
+Пустые значения (`null`, `undefined`, `""`, строка из пробелов) всегда остаются внизу, независимо от направления.
+
+## Серверная сортировка
+
+Если сортировка выполняется на бэкенде, включите `manualSorting`. Таблица не будет сортировать данные сама, но будет обновлять `state` при кликах по заголовкам.
+
+```tsx
+const [sortColumns, setSortColumns] = useState<readonly SortColumn[]>([]);
+
+// Реагируем на изменение sortColumns и делаем запрос на сервер
+useEffect(() => {
+  fetchData({ sort: sortColumns });
+}, [sortColumns]);
+
+<Table
+  tableConfig={{
+    sorting: {
+      state: [sortColumns, setSortColumns],
+      manualSorting: true,
+    },
+  }}
+  ...
+/>
+```
+
+## API
+
+Подробное описание типов доступно в разделе [API](?path=/docs/локальные-компоненты-table-sorting-api--docs).
+
+<Stories />

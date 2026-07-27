@@ -1,0 +1,101 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="Локальные компоненты/TableCanvas/CanvasElements/Docs" />
+
+# Canvas Elements
+
+Canvas-элементы — примитивы для отрисовки содержимого ячеек `TableCanvas`.
+Они используются внутри `renderCell` / `renderHeaderCell` / `renderSummaryCell` вместо обычных React-компонентов.
+
+---
+
+## Доступные элементы
+
+- [**Canvas.Container**](?path=/docs/локальные-компоненты-tablecanvas-canvaselements-canvascontainer--docs) — Flex-контейнер для расположения элементов
+- [**Canvas.Text**](?path=/docs/локальные-компоненты-tablecanvas-canvaselements-canvastext--docs) — Текст с ellipsis и multiline clamp
+- [**Canvas.Link**](?path=/docs/локальные-компоненты-tablecanvas-canvaselements-canvaslink--docs) — Ссылка с навигацией и underline
+- [**Canvas.Button**](?path=/docs/локальные-компоненты-tablecanvas-canvaselements-canvasbutton--docs) — Кнопка
+- [**Canvas.IconButton**](?path=/docs/локальные-компоненты-tablecanvas-canvaselements-canvasiconbutton--docs) — Кнопка-иконка
+- [**Canvas.Badge**](?path=/docs/локальные-компоненты-tablecanvas-canvaselements-canvasbadge--docs) — Бейдж
+- [**Canvas.Icon**](?path=/docs/локальные-компоненты-tablecanvas-canvaselements-canvasicon--docs) — Иконка
+- [**Canvas.Checkbox**](?path=/docs/локальные-компоненты-tablecanvas-canvaselements-canvascheckbox--docs) — Чекбокс
+- [**Canvas.Skeleton**](?path=/docs/локальные-компоненты-tablecanvas-canvaselements-canvasskeleton--docs) — Скелетон-заглушка
+
+---
+
+## Использование
+
+Canvas-элементы используются как JSX внутри функций рендера колонок:
+
+```tsx
+const columnConfig = [
+  {
+    key: 'name',
+    name: 'Имя',
+    width: 200,
+    renderCell: ({ row }) => (
+      <Canvas.Container direction="row" alignItems="center" padding={8} gap={8}>
+        <Canvas.Link view="accent" href={`/users/${row.id}`}>
+          {row.name}
+        </Canvas.Link>
+        <Canvas.Badge text={row.status} view="positive" size="s" />
+      </Canvas.Container>
+    ),
+  },
+];
+```
+
+---
+
+## `zIndex`
+
+`zIndex` управляет слоями между canvas-элементами внутри текущего canvas-root (например, одной ячейки). Это не DOM `z-index` — он не поднимает элемент поверх соседней ячейки или DOM-поповера.
+
+- По умолчанию: `0` — указывать явно не нужно
+- Используйте только положительные значения: `zIndex={1}`, `zIndex={2}`
+- При одинаковом `zIndex` выше будет элемент, описанный позже в JSX
+
+---
+
+## `position="absolute"`
+
+Используется для размещения элемента в конкретном месте внутри canvas-контейнера. Родитель должен быть `position="relative"` или `position="absolute"`.
+
+Не задавайте отрицательные `top`, `right`, `bottom`, `left` — увеличьте размер или padding родителя.
+
+```tsx
+renderCell={({ theme }) => (
+  <Canvas.Container position="relative" style={{ width: '100%', height: '100%' }}>
+    <Canvas.Text>Длинный текст</Canvas.Text>
+
+    <Canvas.Container
+      position="absolute"
+      top={0}
+      right={0}
+      bottom={0}
+      zIndex={1}
+      backgroundColor={theme.bgCell}
+      style={{ width: 40 }}
+    >
+      <Canvas.IconButton
+        icon={icon}
+        position="absolute"
+        top={8}
+        right={8}
+      />
+    </Canvas.Container>
+  </Canvas.Container>
+)}
+```
+
+---
+
+## Управление `onClick` и `tableConfig.onCellClicked`
+
+`Canvas.Button.onClick` / `Canvas.Link.onClick` выполняется перед `tableConfig.onCellClicked`.
+Если действие внутри canvas-элемента не должно вызывать `onCellClicked`, используйте `event.stopPropagation()`.
+Для отмены навигации `Canvas.Link` — `event.preventDefault()`.
+
+---
+
+> Описание типов доступно на странице API каждого элемента.

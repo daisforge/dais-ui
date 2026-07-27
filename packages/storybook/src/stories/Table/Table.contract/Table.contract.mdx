@@ -1,0 +1,25 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as TableContractStories from './Table.contract.stories';
+
+<Meta of={TableContractStories} name="Docs" tags={['hideInSidebar']} />
+
+# TableContract
+
+`TableContract` — стилизованный в рамках дизайн-системы компонент Table с возможностью конфигурировать отображение данными с бэкенда.
+
+## Ключевые особенности
+
+- Отображение данных по contract-response
+- Поиск, пагинация и сортировка
+- Иерархия строк
+- Изменение ширины колонок
+- Полноэкранный режим
+- Итоговые строки
+
+## Особенности
+
+`fetcher` получает query-параметры, которые таблица изменяет в зависимости от активированных фичей. Ответ должен содержать `data.main` и `meta.columns`; `meta.tableConfig`, `data.topSummary` и `data.bottomSummary` передаются опционально.
+
+Описание типов - в разделе [API](?path=/docs/локальные-компоненты-table-contract-api--docs).
+
+<Stories />

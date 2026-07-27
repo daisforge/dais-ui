@@ -1,0 +1,360 @@
+{
+  "outputDir": "_docs/meta",
+  "outputFile": "components-meta.json",
+  "componentsDir": "components",
+  "storiesBase": "packages/storybook/src/stories",
+  "instructionsFile": "config/instructions.md",
+  "storybookBaseUrl": "http://df-storybook.sh5.dev-gen1-ds.dddddd.ru",
+
+  "pages": [
+    {
+      "title": "Установка и использование",
+      "mdx": "packages/storybook/src/storybook-intro/intro.mdx",
+      "category": "Введение",
+      "description": "Установка пакета и использование компонентов, иконок и токенов."
+    }
+  ],
+
+  "components": [
+    {
+      "name": "DrawerDF",
+      "type": "wrapper",
+      "category": "Локальные компоненты",
+      "description": "Расширенный Drawer с layout-ами для шапки/контента/футера."
+    },
+    {
+      "name": "ModalDF",
+      "type": "wrapper",
+      "category": "Локальные компоненты",
+      "description": "Расширенный Modal с layout-ами и compound-компонентами."
+    },
+    {
+      "name": "ModalDFConfirmation",
+      "type": "wrapper",
+      "category": "Локальные компоненты",
+      "description": "Модальное окно подтверждения действия."
+    },
+    {
+      "name": "EmptyState",
+      "type": "composition",
+      "category": "Композиции",
+      "description": "Экран пустого состояния с вариациями размеров и действий."
+    },
+    {
+      "name": "ApprovalCenter",
+      "type": "standalone",
+      "category": "Локальные компоненты",
+      "description": "Компонент последовательных согласований между группами лиц."
+    },
+    {
+      "name": "ErrorPage",
+      "type": "composition",
+      "category": "Композиции",
+      "description": "Страница ошибки с кодом, описанием и действиями."
+    },
+    {
+      "name": "Collapse",
+      "type": "wrapper",
+      "category": "Локальные компоненты",
+      "description": "Сворачиваемый блок контента."
+    },
+    {
+      "name": "Container",
+      "type": "composition",
+      "category": "Композиции",
+      "description": "Контейнер с поддержкой split-режимов и адаптивности."
+    },
+    {
+      "name": "BlockTitle",
+      "type": "composition",
+      "category": "Композиции",
+      "description": "Заголовок блока с подзаголовком и действиями."
+    },
+    {
+      "name": "BlockGradientScroll",
+      "type": "standalone",
+      "category": "Локальные компоненты",
+      "description": "Блок с градиентной прокруткой контента."
+    },
+    {
+      "name": "PageLayout",
+      "type": "composition",
+      "category": "Композиции",
+      "description": "Layout страницы с header, sidebar, content."
+    },
+    {
+      "name": "PageTitle",
+      "type": "composition",
+      "category": "Композиции",
+      "description": "Заголовок страницы с breadcrumbs и действиями."
+    },
+    {
+      "name": "Layout",
+      "type": "composition",
+      "category": "Композиции",
+      "description": "Базовый layout с вариантами колонок (V1_1, V2_1, V2_2 и др.)."
+    },
+    {
+      "name": "LeftPanel",
+      "type": "composition",
+      "category": "Композиции",
+      "description": "Левая панель навигации."
+    },
+    {
+      "name": "MassActions",
+      "type": "composition",
+      "category": "Локальные компоненты",
+      "description": "Панель массовых действий с чекбоксом, счётчиком и кнопками."
+    },
+    {
+      "name": "FiltersActions",
+      "type": "composition",
+      "category": "Композиции",
+      "description": "Панель фильтров с compound-компонентами (кнопки, поиск, табы, сегменты)."
+    },
+    {
+      "name": "FormComponents",
+      "type": "wrapper",
+      "category": "Формы",
+      "description": "Обёртки атомарных компонентов для react-hook-form (FormTextField, FormSelect и др.)."
+    },
+    {
+      "name": "GridDND",
+      "type": "standalone",
+      "category": "Локальные компоненты",
+      "scope": "internal",
+      "scopeNote": "Создан для конкретной команды. Специализированный grid с drag-and-drop.",
+      "description": "Сетка карточек с drag-and-drop перетаскиванием."
+    },
+    {
+      "name": "PopoverDF",
+      "type": "wrapper",
+      "category": "Локальные компоненты",
+      "description": "Расширенный Popover с готовыми layout-ами.",
+      "hint": "Универсальный Popover. Не путать с AiAgentPopover (для конкретной команды)."
+    },
+    {
+      "name": "PopupDF",
+      "type": "wrapper",
+      "category": "Локальные компоненты",
+      "description": "Расширенный Popup с layout-ами и compound-компонентами."
+    },
+    {
+      "name": "Box",
+      "type": "standalone",
+      "category": "Локальные компоненты",
+      "description": "Базовый контейнер-обёртка с пропсами для размеров, отступов и фона."
+    },
+    {
+      "name": "AiAgentPopover",
+      "type": "wrapper",
+      "category": "Локальные компоненты",
+      "scope": "internal",
+      "scopeNote": "Создан для команды AI-агента. Не является универсальным Popover.",
+      "description": "Popover для AI-агента с потоковым выводом и управлением состоянием.",
+      "hint": "Не путать с PopoverDF — тот универсальный. AiAgentPopover только для команды AI-агента."
+    },
+    {
+      "name": "Autocomplete",
+      "type": "wrapper",
+      "category": "Локальные компоненты",
+      "description": "Поле ввода с автодополнением."
+    },
+    {
+      "name": "TextField",
+      "type": "wrapper",
+      "category": "Локальные компоненты",
+      "description": "Текстовое поле ввода."
+    },
+    {
+      "name": "TextFieldSearch",
+      "type": "wrapper",
+      "category": "Локальные компоненты",
+      "description": "Поле поиска с иконкой и кнопкой очистки."
+    },
+    {
+      "name": "TextArea",
+      "type": "wrapper",
+      "category": "Локальные компоненты",
+      "description": "Многострочное текстовое поле."
+    },
+    {
+      "name": "Switch",
+      "type": "wrapper",
+      "category": "Локальные компоненты",
+      "description": "Переключатель (toggle)."
+    },
+    {
+      "name": "Notification",
+      "type": "wrapper",
+      "category": "Локальные компоненты",
+      "description": "Уведомление (toast) с вариантами стилей."
+    },
+    {
+      "name": "TooltipList",
+      "type": "wrapper",
+      "category": "Локальные компоненты",
+      "description": "Тултип со списком элементов."
+    },
+    {
+      "name": "TableCanvas",
+      "type": "standalone",
+      "category": "Локальные компоненты",
+      "description": "Канвасная таблица на базе HTML Canvas и Glide Data Grid. Основной компонент для отображения табличных данных.",
+      "hint": "Основная таблица. Если пользователь спрашивает про 'таблицу' — скорее всего TableCanvas. Для табличных вкладок — TableTabs.",
+      "rootDocs": "TableCanvas/TableCanvas.Docs.mdx",
+      "api": {
+        "dir": "TableCanvas/API",
+        "argTypesMapping": {
+          "StoryTableCanvasConfigComp": {
+            "filePath": "packages/ui-kit/src/components/TableCanvas/types/table-config.type.ts",
+            "typeName": "TableConfig"
+          },
+          "StoryColumnConfigTableCanvasComp": {
+            "filePath": "packages/ui-kit/src/components/TableCanvas/types/column-config.type.ts",
+            "typeName": "ColumnConfig"
+          },
+          "TableCanvas": {
+            "filePath": "packages/ui-kit/src/components/TableCanvas/types/table.type.ts",
+            "typeName": "TableProps"
+          }
+        }
+      },
+      "features": [
+        "CanvasElements/CanvasBadge",
+        "CanvasElements/CanvasButton",
+        "CanvasElements/CanvasCheckbox",
+        "CanvasElements/CanvasContainer",
+        "CanvasElements/CanvasIcon",
+        "CanvasElements/CanvasIconButton",
+        "CanvasElements/CanvasLink",
+        "CanvasElements/CanvasSkeleton",
+        "CanvasElements/CanvasText",
+        "TableCanvas.ColumnResize",
+        "TableCanvas.Collapsing",
+        "TableCanvas.ColumnsControl",
+        "TableCanvas.ColumnsGrouping",
+        "TableCanvas.ContextMenu",
+        "TableCanvas.ControlBlock",
+        "TableCanvas.CopyPasteFill",
+        "TableCanvas.CustomRender",
+        "TableCanvas.DomMetadata",
+        "TableCanvas.Editing",
+        "TableCanvas.EmptyState",
+        "TableCanvas.ErrorState",
+        "TableCanvas.Filtering",
+        "TableCanvas.FormatCellContent",
+        "TableCanvas.FullScreenMode",
+        "TableCanvas.HighlightActiveType",
+        "TableCanvas.InfinityScroll",
+        "TableCanvas.IsLoading",
+        "TableCanvas.KeyText",
+        "TableCanvas.Notifications",
+        "TableCanvas.Pagination",
+        "TableCanvas.CellPreview",
+        "TableCanvas.RowHeight",
+        "TableCanvas.RowMarkers",
+        "TableCanvas.RowsGrouping",
+        "TableCanvas.Searching",
+        "TableCanvas.Selecting",
+        "TableCanvas.CellsSelection",
+        "TableCanvas.Sidebar",
+        "TableCanvas.Sorting",
+        "TableCanvas.SubRows",
+        "TableCanvas.SummaryRows",
+        "TableCanvas.ThemeOverride",
+        "TableCanvas.Tooltip",
+        "TableCanvas.UnstickyHeader"
+      ],
+      "exclude": ["TableCanvas.SimpleTable", "TableCanvas.MultipleFeatures"]
+    },
+    {
+      "name": "AnalyticalWidget",
+      "type": "composition",
+      "scope": "internal",
+      "scopeNote": "Создан для команды рабочих столов.",
+      "category": "Композиции",
+      "description": "Layout-контейнер с фиксированными размерами (L/M/S), слотами (header, top, middle, content) и отступами. Контент слотов — любой.",
+      "hint": "Это layout, не фильтрация. Compound-компоненты (Header, Chips, FilterIconButton) — это примеры наполнения, а не обязательная часть. Widget — универсальный аналог."
+    },
+    {
+      "name": "Widget",
+      "type": "composition",
+      "category": "Композиции",
+      "description": "Базовый виджет с header, content, footer.",
+      "hint": "Универсальный виджет. Для специализированного layout рабочих столов — AnalyticalWidget."
+    },
+    {
+      "name": "SplitView",
+      "type": "composition",
+      "category": "Композиции",
+      "description": "Разделённый вид с двумя панелями."
+    },
+    {
+      "name": "Table",
+      "type": "standalone",
+      "category": "Локальные компоненты",
+      "description": "HTML-таблица на базе react-table. Устаревшая, но поддерживается. Для новых проектов рекомендуется TableCanvas.",
+      "hint": "Устаревшая таблица. Если пользователь не уточняет — скорее всего ему нужна TableCanvas. Table — для legacy-проектов.",
+      "rootDocs": "Table/Table.Docs.mdx",
+      "api": {
+        "dir": "Table/API",
+        "argTypesMapping": {
+          "Table": {
+            "filePath": "packages/ui-kit/src/components/Table/types/table.type.ts",
+            "typeName": "TableProps"
+          },
+          "StoryTableConfigComp": {
+            "filePath": "packages/ui-kit/src/components/Table/types/table-config.type.ts",
+            "typeName": "TableConfig"
+          },
+          "StoryColumnConfigComp": {
+            "filePath": "packages/ui-kit/src/components/Table/types/column-config.type.ts",
+            "typeName": "ColumnConfig"
+          }
+        }
+      },
+      "features": [
+        "Table.simple",
+        "Table.columnResizing",
+        "Table.columnsControl",
+        "Table.columnsGrouping",
+        "Table.collapsing",
+        "Table.contextMenu",
+        "Table.controlBlock",
+        "Table.customRender",
+        "Table.domMetadata",
+        "Table.editing",
+        "Table.filtering",
+        "Table.formatCellContent",
+        "Table.fullScreenMode",
+        "Table.highlightActiveType",
+        "Table.infinityScroll",
+        "Table.isLoading",
+        "Table.keyText",
+        "Table.noRowsFallback",
+        "Table.pagination",
+        "Table.rowHeight",
+        "Table.rowDetailPanel",
+        "Table.rowInstruments",
+        "Table.rowsGrouping",
+        "Table.rowSize",
+        "Table.searching",
+        "Table.selecting",
+        "Table.sidebar",
+        "Table.sorting",
+        "Table.subRows",
+        "Table.virtualization",
+        "Table.summaryRows"
+      ],
+      "exclude": ["Table.contract", "Table.multipleFeatures"]
+    },
+    {
+      "name": "TableTabs",
+      "type": "standalone",
+      "category": "Локальные компоненты",
+      "description": "Табличные вкладки для переключения между наборами данных.",
+      "hint": "Не путать с TableCanvas — это вкладки для переключения между таблицами."
+    }
+  ]
+}

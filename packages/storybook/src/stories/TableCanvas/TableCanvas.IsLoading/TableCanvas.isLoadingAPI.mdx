@@ -1,0 +1,26 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="Локальные компоненты/TableCanvas/IsLoading/API" />
+
+# IsLoading API
+
+## tableConfig.isLoading
+
+```ts
+isLoading?: boolean | { boolean: boolean; skeletonRowsCount: number };
+```
+
+- **`boolean`** — простой флаг загрузки, количество skeleton-строк определяется автоматически
+- **`{ boolean, skeletonRowsCount }`** — загрузка с явным указанием количества skeleton-строк
+
+## tableConfig.loadingOverlay
+
+```ts
+loadingOverlay?: {
+  active?: boolean; // default: true
+  spinner?: ReactNode; // default: <Spinner view="secondary" size="36" />
+  title?: string; // default: 'Загрузка таблицы'
+  subtitle?: string; // default: ''
+  showSubtitleDelay?: number; // default: 10000 (10 секунд)
+};
+```

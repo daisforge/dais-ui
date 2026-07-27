@@ -1,0 +1,23 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as TableRowHeightStories from './Table.rowHeight.stories';
+
+<Meta of={TableRowHeightStories} name="Docs" />
+
+# RowHeight
+
+Настройка высоты строк legacy `Table`.
+
+## Ключевые особенности
+
+- Фиксированная высота через число
+- Динамическая высота через функцию `RowHeightFunc`
+- Доступ к текущему размеру строки при расчете высоты
+- Возможность подстраивать высоту под многострочный контент
+
+## Особенности
+
+Функция высоты вызывается для строк таблицы, поэтому держите вычисления легкими и мемоизируйте конфигурацию колонок.
+
+Описание типов - в разделе [API](?path=/docs/локальные-компоненты-table-rowheight-api--docs).
+
+<Stories />

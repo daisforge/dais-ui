@@ -1,0 +1,30 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as SelectingSimpleStories from './Table.selectingRow.simple.stories';
+
+<Meta of={SelectingSimpleStories} name="Docs" />
+
+# Selecting Row
+
+**tableConfig.selecting**
+
+Выбор строк таблицы с помощью чекбоксов.
+
+## Ключевые особенности
+
+- Управляемое состояние через `ReadonlySet<string | number>`
+- Кнопка переключения видимости в control block (`showInControl: true`)
+- Контроль на уровне строк: `rowCheckboxDisabled`, `rowShowCheckbox`
+- Поддержка иерархических таблиц через `selectingRules.levels`
+- Кастомизация summary-чекбокса через `summaryChecked`
+- Полное переопределение логики через `rowGetStates`
+
+## Особенности
+
+- `rowKeyGetter` должен возвращать уникальный идентификатор строки
+- В иерархических таблицах `selectingRules.levels` определяет, на каких уровнях доступен выбор
+- `summaryChecked` позволяет кастомизировать логику «Выбрать все»
+- `rowGetStates` переопределяет `checked`, `indeterminate`, `showCheckbox`, `checkboxDisabled` для каждой строки
+
+> Подробнее о типах и пропсах — [Selecting Row API](?path=/docs/локальные-компоненты-table-selectingrow-api--docs)
+
+<Stories />

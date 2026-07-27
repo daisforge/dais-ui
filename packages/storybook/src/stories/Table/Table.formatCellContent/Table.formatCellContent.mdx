@@ -1,0 +1,23 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as TableFormatCellContentStories from './Table.formatCellContent.stories';
+
+<Meta of={TableFormatCellContentStories} name="Docs" />
+
+# FormatCellContent
+
+Форматирование содержимого ячеек legacy `Table`.
+
+## Ключевые особенности
+
+- Форматирование чисел, дат и пользовательских значений
+- Настройка отображения через `columnConfig`
+- Совместимость с вложенными строками
+- Возможность вернуть React-компонент из render-функции ячейки
+
+## Особенности
+
+Форматирование не должно менять исходные `rows`. Если нужно редактирование значения, используйте конфигурацию `editing`, а формат оставляйте только слоем отображения.
+
+Описание типов - в разделе [API](?path=/docs/локальные-компоненты-table-formatcellcontent-api--docs).
+
+<Stories />

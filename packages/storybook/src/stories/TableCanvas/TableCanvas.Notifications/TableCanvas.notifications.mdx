@@ -1,0 +1,74 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as NotificationsStories from './TableCanvas.notifications.stories';
+
+<Meta of={NotificationsStories} name="Docs" />
+
+# Notifications
+
+Стандартизированный канал событий таблицы для внешних потребителей. Таблица
+**не рисует UI сама** — она вызывает `onNotification`, а тост/модалку/уведомление
+показывает потребитель на своей стороне. Задаётся через
+`tableConfig.notifications`.
+
+## Ключевые особенности
+
+- **Единый колбэк** `notifications.onNotification(event)` — вызывается на каждое
+  событие таблицы.
+- **Стандартизированные типы** событий: широкая категория `type` +
+  уточняющий машинный `code` + `level` (серьёзность) + дефолтный `message`.
+- **UI на стороне потребителя** — библиотека не навязывает вид уведомления,
+  отдаёт только данные (`message` можно игнорировать и показать свой текст).
+- **Расширяемость** — новые события добавляются в каталог, конвейер не меняется.
+
+## Каталог событий
+
+Сейчас эмитятся события copy / paste / fill и закрепления колонок (pin).
+Каждое событие — это `TableNotification` с полями `type` / `code` / `level`
+(см. [API](?path=/docs/локальные-компоненты-tablecanvas-notifications-api--docs)).
+Формат пункта ниже — `type` · `code` · `level`:
+
+- **`copy` · `multi-range-scattered` · `error`** — копирование при разрозненном
+  выборе сразу по разным строкам И колонкам (2D-разброс).
+- **`paste` · `multi-range-scattered` · `error`** — вставка при таком же
+  2D-разбросе выделения.
+- **`paste` · `readonly-abort` · `error`** — при `paste.readonlyBehavior:
+  'abort'` в области вставки оказалась нередактируемая ячейка.
+- **`paste` · `overflow-abort` · `error`** — при `paste.overflowBehavior:
+  'abort'` данные не поместились в границы таблицы.
+- **`paste` · `validation-skipped` · `warning`** — часть значений пропущена
+  проверкой типа ячеек (в `meta.count` — сколько).
+- **`fill` · `readonly-abort` · `error`** — при автозаполнении (fill handle) в
+  области заполнения оказалась нередактируемая ячейка.
+- **`fill` · `validation-skipped` · `warning`** — при автозаполнении часть
+  значений пропущена проверкой типа ячеек (в `meta.count` — сколько).
+- **`pin` · `no-selection` · `warning`** — попытка закрепить столбцы из меню
+  закрепления (контрл-блок) без выделенных колонок.
+
+## Как подписаться
+
+```tsx
+<TableCanvas
+  tableConfig={{
+    notifications: {
+      onNotification: (event) => {
+        // event: { type, code, level, message, meta? }
+        if (event.level === 'error') showToast(event.message, 'error');
+        // или ветвление по event.code для своих текстов
+      },
+    },
+  }}
+/>
+```
+
+## Особенности
+
+- Событие — это **данные**, а не рендер: показывать/скрывать/группировать
+  уведомления решает потребитель.
+- `meta` несёт детали события (например, `validation-skipped` → `{ count }`).
+- Наличие/отсутствие подписки не меняет поведение copy/paste — при ошибке
+  операция и так не выполняется, `onNotification` лишь дополнительно сообщает о
+  причине.
+
+> Подробнее о типах — [Notifications API](?path=/docs/локальные-компоненты-tablecanvas-notifications-api--docs)
+
+<Stories />

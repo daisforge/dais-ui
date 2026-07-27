@@ -1,0 +1,94 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as TableCanvasDomMetadataStories from './TableCanvas.domMetadata.stories';
+
+<Meta of={TableCanvasDomMetadataStories} name="Docs" />
+
+# DomMetadata
+
+**tableConfig.\*.domMetadata**
+
+Метки для автоматизированного тестирования, аналитики и онбординга.
+
+`DomMetadata` позволяет навешивать CSS-классы, data-атрибуты и обработчики кликов на интерактивные элементы таблицы.
+Это нужно для:
+
+- **Аналитики** — трекинг кликов по кнопкам таблицы
+- **Автотестов** — поиск элементов по `data-testid`
+- **Онбординга** — привязка подсказок к конкретным элементам
+
+## Поддерживаемые элементы (className, dataAttributes)
+
+Следующие элементы поддерживают `className` и `dataAttributes` через `domMetadata`:
+
+**Control Block (панель управления):**
+
+- **Редактирование** — `tableConfig.editing.domMetadata`
+- **Полноэкранный режим** — `tableConfig.fullScreenEnabled.domMetadata`
+- **Размер строки** — `tableConfig.rowSize.domMetadata`
+- **Переключение вида** (строки/карточки) — `tableConfig.view.domMetadata`
+- **Группировка строк** — `tableConfig.rowsGrouping.domMetadata`
+- **Поиск** — `tableConfig.searching.domMetadata`
+- **Итоговые строки** — `tableConfig.summaryRows.domMetadata`
+- **KeyText** (controlBlock) — `tableConfig.keyText.controlBlock.domMetadata`
+- **KeyText** (sidebar) — `tableConfig.keyText.sidebar.domMetadata`
+
+**Selecting (выбор строк):**
+
+- **Чекбокс "Выбрать все"** (controlBlock) — `tableConfig.selecting.controlBlock.domMetadata`
+- **Свитч в сайдбаре** — `tableConfig.selecting.sidebar.domMetadata`
+
+**Sidebar (правая панель):**
+
+- **Табы сайдбара** — `tableConfig.sidebarConfig.defaultTabs[].domMetadata`
+- **Подтабы настроек** (Фильтры, Столбцы) — `tableConfig.sidebarConfig.defaultTabs[{id:'filtering'|'columns'}].domMetadata`
+
+**Другие:**
+
+- **Кнопка сворачивания таблицы** — `tableConfig.collapse.domMetadata`
+
+## Элементы с расширенным onClick (className, dataAttributes, onClick + detail)
+
+В дополнение к `className` и `dataAttributes`, следующие элементы поддерживают `onClick` с контекстом `detail`:
+
+- **Группировать** (чекбоксы, сброс) — `tableConfig.rowsGrouping.domMetadata` — actions: `toggle-group`, `reset-groups`, `custom-item-select`
+- **Кнопка размера строки** — `tableConfig.rowSize.domMetadata` — action: `change-row-size`
+- **Шестеренка настроек** — `tableConfig.sidebarConfig.defaultTabs[{id:'tableSettings'}].domMetadata` — action: `toggle-sidebar-tab`
+- **Крестик закрыть сайдбар** — тот же `domMetadata` таба — action: `close-sidebar`
+- **Закрепить столбец** — `tableConfig.columnsControl.pinDomMetadata` — actions: `pin-column`, `unpin-column`
+- **Свитчер видимости столбца** — `tableConfig.columnsControl.switchDomMetadata` — actions: `show-column`, `hide-column`
+
+## onClick
+
+Обработчик `onClick` вызывается **после** основной логики элемента. Он не мешает работе кнопки и не вызывает `stopPropagation`.
+
+```tsx
+onClick?: (
+  e?: React.MouseEvent<HTMLElement>,  // MouseEvent (undefined для элементов внутри Dropdown)
+  detail?: Record<string, unknown>     // контекст: action, columnKey, size и др.
+) => void;
+```
+
+### Примеры detail
+
+```ts
+// Группировка
+{ action: 'toggle-group', columnKey: 'status' }
+{ action: 'reset-groups' }
+
+// Размер строки
+{ action: 'change-row-size', size: 'medium' }
+
+// Сайдбар
+{ action: 'toggle-sidebar-tab', tabId: 'tableSettings' }
+{ action: 'close-sidebar' }
+
+// Столбцы
+{ action: 'pin-column', columnKey: 'name' }
+{ action: 'unpin-column', columnKey: 'name' }
+{ action: 'hide-column', columnKey: 'name' }
+{ action: 'show-column', columnKey: 'name' }
+```
+
+Подробнее о типах — в разделе [API](?path=/docs/локальные-компоненты-tablecanvas-dommetadata-api--docs).
+
+<Stories />

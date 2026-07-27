@@ -1,0 +1,23 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as TableNoRowsFallbackStories from './Table.noRowsFallback.stories';
+
+<Meta of={TableNoRowsFallbackStories} name="Docs" />
+
+# No Rows Fallback
+
+**tableConfig.noRowsFallback**
+
+Отображение заглушки при отсутствии данных в таблице.
+
+## Ключевые особенности
+
+- `noRowsFallback: true` — стандартная заглушка «нет данных»
+- `noRowsFallback: { custom: ReactNode }` — кастомный компонент заглушки
+
+## Особенности
+
+- Кастомный элемент должен использовать `gridColumn: '1/-1'` для растягивания на всю ширину таблицы
+
+> Подробнее о типах и пропсах — [No Rows Fallback API](?path=/docs/локальные-компоненты-table-norowsfallback-api--docs)
+
+<Stories />

@@ -1,0 +1,75 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as BlockTitleStories from './BlockTitle.stories';
+
+<Meta of={BlockTitleStories} name="Docs" />
+
+# BlockTitle
+
+Компонент заголовка блока с поддержкой слотов для дополнительных элементов и кнопки «назад».
+
+## Ключевые особенности
+
+- Настраиваемый размер заголовка через вариант типографики (`titleSize`)
+- Описание под заголовком (`description`)
+- Слоты: `titleLeftSlot`, `titleRightSlot`, `topSlot`, `rightSlot`
+- Кнопка «назад» через `onBackButtonClick`
+- Кастомизация контейнера через `containerProps` (Box с `$css`)
+
+## Особенности
+
+- Компонент можно стилизовать: обернув в `styled`, используя `$css` в `containerProps`, или используя объект `blockTitleClassNames` для обращения к подэлементам
+- Слоты `titleLeftSlot`, `titleRightSlot`, `topSlot`, `rightSlot` принимают `ReactNode` или callback с размерами для адаптива
+- По умолчанию адаптив на viewport `<= 1280px` включен; временно отключить его можно через deprecated-проп `disableMediaAdaptive`
+
+## Использование адаптивных слотов
+
+Если слот не должен менять размеры, передавайте обычный `ReactNode`:
+
+```tsx
+<BlockTitle title="Title" titleRightSlot={<IconPlasma size="s" />} />
+```
+
+Если в слоте есть иконка, Badge или кнопки, передавайте callback и используйте размеры из аргумента:
+
+```tsx
+<BlockTitle
+  title="Страница"
+  titleSize="H4"
+  titleRightSlot={({ titleBadgeSize }) => (
+    <Badge size={titleBadgeSize} view="default" text="Label" />
+  )}
+  rightSlot={({ buttonSize, actionIconSize }) => (
+    <div style={{ display: 'flex', gap: s.x4 }}>
+      <IconButton size={buttonSize} view="secondary">
+        <IconDotsVerticalCenteredOutline
+          size={actionIconSize}
+          color="inherit"
+        />
+      </IconButton>
+      <Button size={buttonSize} view="secondary">
+        Label
+      </Button>
+      <Button size={buttonSize} view="accent">
+        Label
+      </Button>
+    </div>
+  )}
+/>
+```
+
+Размеры, которые приходят в callback (в зависимости от viewport):
+
+```
+| Поле                                         | <= 1280px | > 1280px |
+| -------------------------------------------- | --------- | -------- |
+| buttonSize                                   | xs        | s        |
+| actionIconSize                               | xs        | s        |
+| titleIconSize (для H4/H5)                    | xs        | s        |
+| titleBadgeSize (для H4/H5)                   | s         | m        |
+| titleIconSize (для остальных)                | s         | s        |
+| titleBadgeSize (для остальных)               | m         | m        |
+```
+
+> Подробнее о типах и пропсах — [BlockTitle API](?path=/docs/композиции-blocktitle-api--docs)
+
+<Stories />

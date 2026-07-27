@@ -1,0 +1,20 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as BoxStories from './Box.stories';
+
+<Meta of={BoxStories} name="Docs" />
+
+# Box
+
+Аналог компонента Box из [MUI](https://mui.com/material-ui/react-box/).
+Применяется для создания кастомных контейнеров.
+
+## Ключевые особенности
+
+- Принимает любые CSS-свойства напрямую как пропсы (display, padding, margin и т.д.)
+- Поддержка `$css` для кастомных стилей через styled-components
+- Полиморфный компонент — проп `as` позволяет менять HTML-элемент (`div`, `li`, `section` и т.д.)
+- Проп `hidden` для скрытия элемента
+
+> Подробнее о типах и пропсах — [Box API](?path=/docs/локальные-компоненты-box-api--docs)
+
+<Stories />

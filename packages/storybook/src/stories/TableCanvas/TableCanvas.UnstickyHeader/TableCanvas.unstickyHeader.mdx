@@ -1,0 +1,20 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as TableUnstickyHeaderStories from './TableCanvas.unstickyHeader.stories';
+
+<Meta of={TableUnstickyHeaderStories} name="Docs" />
+
+# UnstickyHeader (TableCanvas)
+
+**tableConfig.unstickyHeader**
+
+При активации `unstickyHeader: true` шапка таблицы перестаёт быть закреплённой и уезжает вверх вместе со скроллом контента.
+
+## Ключевые особенности
+
+- Открепление шапки от верхней границы при скролле
+- Работает с группировкой колонок (все уровни group headers уезжают)
+- Совместимость с многоуровневой вложенностью
+
+> Подробнее о типах — [UnstickyHeader API](?path=/docs/локальные-компоненты-tablecanvas-unstickyheader-api--docs)
+
+<Stories />

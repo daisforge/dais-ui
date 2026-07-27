@@ -1,0 +1,1 @@
+export { validateRequiredHoс } from './validateRequiredHoс';

@@ -1,0 +1,34 @@
+import { Meta } from '@storybook/blocks';
+import { TypeSourceViewer } from '@df-storybook/utils/TypeSourceViewer';
+
+<Meta title="Локальные компоненты/TableCanvas/ColumnsControl/API" />
+
+# ColumnsControl API
+
+## ColumnsControlConfig
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/TableCanvas/feature-column-control/types.ts"
+  typeName="ColumnsControlConfig"
+/>
+
+## PinningMenuConfig
+
+Меню закрепления в контрл-блоке (`controlBlock.pinningMenu`). Появляется, когда включено `columnsControl.pinning`.
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/TableCanvas/widgets/control-block/types.ts"
+  typeName="PinningMenuConfig"
+/>
+
+## PinningMenuItem
+
+Пункт меню закрепления — нативный или добавленный продуктом.
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/TableCanvas/widgets/control-block/types.ts"
+  typeName="PinningMenuItem"
+/>

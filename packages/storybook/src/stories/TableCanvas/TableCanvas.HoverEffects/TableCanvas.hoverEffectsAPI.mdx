@@ -1,0 +1,58 @@
+import { Meta } from '@storybook/blocks';
+import { TypeSourceViewer } from '@df-storybook/utils/TypeSourceViewer';
+
+<Meta title="Локальные компоненты/TableCanvas/HoverEffects/API" />
+
+# HoverEffects API
+
+## HoverEffectsConfig
+
+Единый конфиг эффектов при наведении — `tableConfig.hoverEffects`. Объект
+расширяемый: сейчас в нём подсветка строки (`row`), в будущем — hover по
+ячейке, мапки цветов и т.д.
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/TableGlide/types.ts"
+  typeName="HoverEffectsConfig"
+/>
+
+### hoverEffects.row
+
+- **не задан / `false`** — hover-подсветка строки выключена (по умолчанию).
+- **`true`** — включена, цвета из темы.
+- **`{ color: '#...' }`** — включена со своим цветом data-ячеек (любой валидный
+  CSS-цвет для canvas `fillStyle`). Цвета служебных колонок и checkbox-строк
+  (см. ниже) остаются из темы.
+
+```tsx
+tableConfig={{ hoverEffects: { row: true } }}
+tableConfig={{ hoverEffects: { row: { color: '#FFF6E5' } } }}
+```
+
+## Цвета темы
+
+| Токен темы             | Что красит                                          | light     |
+| ---------------------- | --------------------------------------------------- | --------- |
+| `bgRowHovered`         | data-ячейки hovered-строки                          | `#F7F9FB` |
+| `bgServiceRowHovered`  | служебные колонки hovered-строки (= при селектинге) | `#D4E7F2` |
+| `bgSelectedRowHovered` | checkbox-строка под курсором (вся строка)           | `#DEECF5` |
+
+## Приоритеты слоёв
+
+Hover рисуется в базовом слое фона ячеек (`bgCell`) и лежит **под** остальными
+состояниями:
+
+| Состояние                                     | Кто рисует        | Относительно hover       |
+| --------------------------------------------- | ----------------- | ------------------------ |
+| Выделение ячеек / строк / колонок             | highlightRegions  | поверх                   |
+| Активная строка (`highlightActiveType='row'`) | highlightRegions  | поверх                   |
+| Строка отмечена чекбоксом (`selecting`)       | bgCell            | свой hover-цвет (темнее) |
+| Summary-строки                                | bgCell (bgHeader) | hover не получают        |
+
+Тип реэкспортируется из
+`@dais-ui/ui-kit/components/TableCanvas`:
+
+```ts
+import type { HoverEffectsConfig } from '@dais-ui/ui-kit/components/TableCanvas';
+```

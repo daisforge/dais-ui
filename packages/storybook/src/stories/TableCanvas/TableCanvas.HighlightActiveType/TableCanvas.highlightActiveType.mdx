@@ -1,0 +1,39 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as TableHighlightStories from './TableCanvas.highlightActiveType.stories';
+
+<Meta of={TableHighlightStories} name="Docs" />
+
+# Highlight Active Type
+
+Две независимые оси:
+
+- **`tableConfig.cellsSelection.mode`** — режим фактического выделения ячеек. По нему
+  работают copy/paste, рамка, fill-handle, затемнение шапки/нумерации.
+- **`tableConfig.highlightActiveType`** — чисто визуальная подсветка строки.
+
+## cellsSelection.mode
+
+- `'range-cell'` — выделение диапазона ячеек (по умолчанию)
+- `'cell'` — выделение одной ячейки
+- `'disabled'` — выделение ячеек отключено
+
+## highlightActiveType
+
+- `'row'` — подсветка строки активной ячейки (залипает на строке клика; стрелки
+  двигают выделение, подсветка остаётся; перекрывается выделением на активной
+  ячейке)
+- `'disabled'` — без подсветки строки (по умолчанию)
+
+> **Deprecated:** значения `highlightActiveType` `'cell'` и `'range-cell'`
+> устарели — режим выделения теперь задаётся через `cellsSelection.mode`. Для
+> `highlightActiveType` используйте только `'row'` / `'disabled'`.
+
+## Особенности
+
+- Оси независимы: можно `cellsSelection.mode='range-cell'` + `highlightActiveType='row'`.
+- Работает совместно с row markers и различными размерами строк.
+- Режимы переключаются динамически.
+
+> Подробнее о типах и пропсах — [HighlightActiveType API](?path=/docs/локальные-компоненты-tablecanvas-highlightactivetype-api--docs)
+
+<Stories />

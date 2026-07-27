@@ -1,0 +1,66 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as TableFilteringStories from './TableCanvas.filtering.stories';
+
+<Meta of={TableFilteringStories} name="Docs" />
+
+# Filtering
+
+**tableConfig.filtering**
+
+Фильтрация данных таблицы с поддержкой автоматического и ручного режимов.
+
+## Ключевые особенности
+
+- Три типа фильтров: `input`, `select`, `custom`
+- Автоматическая фильтрация по умолчанию, ручная через `manualFiltering: true`
+- Отображение активных фильтров в виде chip-элементов
+- Поддержка фильтрации через sidebar с настройкой порядка и глобальных фильтров
+- Кастомизация chip-стилей и лейблов
+
+## Типы фильтров
+
+### Input
+
+Текстовый фильтр с режимами: `'includes'`, `'startWith'`, `'equal'` или кастомная функция.
+
+### Select
+
+Фильтр выбором из списка. Поддержка одиночного (`'single'`) и множественного (`'multiple'`) выбора.
+
+### Custom
+
+Полностью кастомный компонент фильтра через `customRender`.
+
+## Конфигурация FilteringConfig
+
+- **`state`** `[T, setState]` — стейт фильтров (обязательный)
+- **`manualFiltering`** `boolean` — ручная фильтрация (данные не фильтруются таблицей)
+- **`filtersInfo`** `Record<keyof T, { label, clearedValue }>` — метки и дефолтные значения фильтров
+- **`sidebarConfig`** `{ order?, items }` — конфигурация sidebar с фильтрами
+- **`chipStyle`** `(itemOrGroup, item) => CSSObject` — кастомные стили для chip-элементов
+- **`renderGroupLabel`** `(group) => string` — кастомный заголовок группы чипсов
+- **`renderChipLabel`** `(group, item) => string` — кастомный текст чипса
+
+## Кастомизация чипсов
+
+### chipStyle
+
+Позволяет динамически задавать стили для каждого чипа фильтра в зависимости от его типа и содержимого.
+
+### renderGroupLabel
+
+Форматтер заголовка группы чипсов. Полезен для i18n или добавления счётчика выбранных элементов.
+
+### renderChipLabel
+
+Форматтер текста внутри чипса. Полезен при серверной пагинации, когда в стейте хранится только `value`, а `label` подставляется из кэша.
+
+## Особенности
+
+- При `manualFiltering: true` таблица не фильтрует данные — ожидается внешняя логика (серверная)
+- `sidebarConfig` позволяет добавлять глобальные фильтры, не привязанные к колонкам
+- `filtersInfo` задаёт лейблы и значения по умолчанию для каждого фильтра
+
+> Подробнее о типах — [Filtering API](?path=/docs/локальные-компоненты-tablecanvas-filtering-api--docs)
+
+<Stories />

@@ -1,0 +1,36 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as TableSummaryRowsStories from './TableCanvas.summaryRows.stories';
+
+<Meta of={TableSummaryRowsStories} name="Docs" />
+
+# Summary Rows
+
+**tableConfig.summaryRows + пропс bottomSummaryRows**
+
+Итоговые строки в нижней части таблицы.
+
+Конфигурация состоит из двух частей:
+
+- **`tableConfig.summaryRows`** (`SummaryRowsConfig`) — настройка видимости и кнопки в control block
+- **Пропс `bottomSummaryRows`** (`SummaryRowType[]`) — массив данных для итоговых строк
+
+## tableConfig.summaryRows (SummaryRowsConfig)
+
+- **`showDefault`** `boolean` — показывать итоговые строки по умолчанию
+- **`showInControl`** `boolean` — кнопка переключения видимости в control block
+
+## Пропс bottomSummaryRows
+
+Массив объектов `SummaryRowType[]`, передаётся напрямую в компонент `TableCanvas`. Количество элементов массива = количество итоговых строк. Пустой массив — итоговые строки не отображаются.
+
+## Рендер в columnConfig
+
+Кастомный рендер через `renderSummaryCell` в конфигурации колонки. Данные итоговой строки доступны через `row`.
+
+## Особенности
+
+- Необходимо соблюдать отступы ячеек через `theme.cellHorizontalPadding`
+
+> Подробнее о типах — [Summary Rows API](?path=/docs/локальные-компоненты-tablecanvas-summaryrows-api--docs)
+
+<Stories />

@@ -1,0 +1,149 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as MassActionsPanelStories from './MassActions.stories';
+
+<Meta of={MassActionsPanelStories} name="Docs" />
+
+# MassActions
+
+Базовый адаптивный компонент панели массовых действий. Независим от таблицы - может использоваться с любым контейнером. Поддерживает автоматическую компрессию кнопок при нехватке места, сворачивание/разворачивание, удобное позиционирование и другие возможности.
+
+## Ключевые особенности
+
+- Автоматическая компрессия кнопок при нехватке места
+- Accent-кнопки всегда остаются видимыми
+- Автоцентрирование относительно контейнера
+- Поддержка двух типов кнопок: Button и LinkButton
+- Размеры кнопок подбираются автоматически — передавать `size` кнопкам не нужно (если задан, используется как есть)
+
+## Compound-компоненты
+
+### Counter
+
+`MassActions.Counter` — компонент счетчика выбранных элементов. Может отображать чекбокс, текст и анимированный badge с количеством.
+
+#### Логика работы чекбокса
+
+Чекбокс в Counter имеет три состояния:
+
+- **checked = true** — когда все элементы выбраны (`selectedCount === totalCount`)
+- **indeterminate = true** — когда выбрано частично (`0 < selectedCount < totalCount`)
+- **checked = false, indeterminate = false** — когда ничего не выбрано (`selectedCount === 0`)
+
+**Важно:** Состояние чекбокса должно вычисляться на основе `selectedCount` и общего количества элементов, а не храниться в отдельном состоянии. Это обеспечивает синхронизацию между ручным выделением элементов и состоянием чекбокса.
+
+```tsx
+// Правильная реализация логики чекбокса
+const items = [...]; // массив всех элементов
+const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set());
+
+// Вычисляем состояние на основе selectedItems
+const allSelected = selectedItems.size === items.length;
+const someSelected = selectedItems.size > 0 && selectedItems.size < items.length;
+const checked = allSelected;
+const indeterminate = someSelected;
+
+const handleCheckboxChange = (isChecked: boolean) => {
+  if (isChecked) {
+    // Выделяем все элементы
+    setSelectedItems(new Set(items.map((item) => item.id)));
+  } else {
+    // Снимаем выделение со всех элементов
+    setSelectedItems(new Set());
+  }
+};
+
+<MassActions.Counter
+  selectedCount={selectedItems.size}
+  showCheckbox
+  checked={checked}
+  indeterminate={indeterminate}
+  onCheckboxChange={(e) => handleCheckboxChange(e.target.checked)}
+/>
+```
+
+## MassActionsStatic
+
+Статический компонент панели действий без адаптивной компрессии. Предназначен для использования в местах, где не требуется автоматическое скрытие кнопок (например, в боковых панелях LeftPanel).
+
+В отличие от `MassActions`, `MassActionsStatic` не поддерживает компрессию кнопок и позиционирование относительно контейнера. Поддерживает блочное отображение через проп `position` (`static` или `relative`), что позволяет использовать компонент как обычный блок без абсолютного позиционирования.
+
+## Особенности
+
+### Компрессия кнопок
+
+При нехватке места кнопки автоматически скрываются в дропдауне скрытых действий:
+
+1. Все accent-кнопки всегда видимы
+2. Обычные кнопки добавляются по порядку, пока помещаются
+3. Остальные кнопки идут в дропдаун скрытых действий
+
+### Позиционирование
+
+Панель автоматически центрируется относительно переданного контейнера (`containerRef`). В большинстве сценариев достаточно просто передать корректный контейнер, дополнительная настройка через `sidebarConfig` нужна только для продвинутых кейсов.
+
+### Размеры кнопок
+
+Размеры кнопок и дропдаунов панель подбирает сама — по режиму отображения. В обычном режиме кнопки рендерятся размером `s`, в компактном (узкий вьюпорт, до 1280px включительно) — `xs`. Передавать `size` кнопкам отдельно **не нужно**. Если `size` всё же задан — он используется как есть.
+
+## Типы кнопок
+
+Каждый элемент массива `buttons` — это либо обычная кнопка (`type: 'button'`, компонент `Button`), либо кнопка-ссылка (`type: 'linkButton'`, компонент `LinkButton`). Кнопки с `view: 'accent'` никогда не скрываются в дропдауне скрытых действий.
+
+```tsx
+buttons={[
+  {
+    type: 'button',
+    text: 'Действие',
+    view: 'secondary', // 'accent' / 'critical' / 'primary' и т.д.
+    onClick: () => {},
+  },
+  {
+    type: 'linkButton',
+    text: 'Ссылка-действие',
+    view: 'linkSecondary', // link-стили: 'linkAccent' / 'linkDefault' и т.д.
+    onClick: () => {},
+  },
+]}
+```
+
+## Disabled-состояние
+
+Если у кнопки `disabled: true`, можно передать `disabledTooltipProps` — подсказку, которая покажется при наведении на неактивную кнопку:
+
+```tsx
+{
+  type: 'button',
+  text: 'Действие',
+  view: 'secondary',
+  disabled: true,
+  disabledTooltipProps: {
+    text: 'Выберите элементы для выполнения действия',
+  },
+  onClick: () => {},
+}
+```
+
+**Важно:** disabled-кнопка остаётся неактивной и после ухода в дропдаун скрытых действий — `disabled` пробрасывается на пункт меню. Подсказка `disabledTooltipProps` при этом показывается только у кнопок на самой панели, в меню её нет.
+
+## Dropdown в кнопках
+
+Кнопка может открывать вложенный dropdown:
+
+```tsx
+{
+  type: 'button',
+  text: 'Действие с меню',
+  view: 'secondary',
+  dropdown: {
+    items: [
+      { label: 'Опция 1', value: '1' },
+      { label: 'Опция 2', value: '2' },
+    ],
+    onItemSelect: (item) => {},
+  },
+}
+```
+
+> Подробнее о типах и пропсах — [MassActions API](?path=/docs/локальные-компоненты-massactions-api--docs)
+
+<Stories />

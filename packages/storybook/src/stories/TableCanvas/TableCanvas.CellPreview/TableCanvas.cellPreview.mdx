@@ -1,0 +1,27 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as CellPreviewStories from './TableCanvas.cellPreview.stories';
+
+<Meta of={CellPreviewStories} name="Docs" />
+
+# Cell Preview (renderCellPreview)
+
+Опциональное поле колоночного конфига (`columnConfig.renderCellPreview`). Управляет overlay при двойном клике на readonly-ячейку.
+
+## Ключевые особенности
+
+- Три режима: `'none'` (отключить превью), `'cellEditorAsPreview'` (стандартный текстовый), функция (кастомный рендер)
+- Работает как для canvas-ячеек (Badge, Icon, кнопки), так и для текстовых
+- Кастомная функция получает полный контекст ячейки: `row`, `column`, `theme`, `cellWidth`, `cellHeight`
+- Полный контроль над содержимым overlay — функция возвращает `ReactNode`
+
+## Особенности
+
+- По умолчанию (поле не задано) — текстовые ячейки показывают стандартный превью, canvas-ячейки — ничего
+- `'none'` — явно отключает превью, в том числе стандартный текстовый
+- `'cellEditorAsPreview'` — включает стандартный текстовый превью (`CellEditorTextArea` с `readOnly`). Полезно для canvas-ячеек, которым нужен текстовый overlay
+- Для текстового отображения рекомендуется `CellEditorTextArea` с активированным `readOnly` — этот компонент используется по умолчанию для отображения текста в ячейках
+- `theme` из аргумента можно использовать для стилизации (padding, цвета)
+
+Описание типов — в разделе [API](?path=/docs/локальные-компоненты-tablecanvas-cell-preview-api--docs).
+
+<Stories />

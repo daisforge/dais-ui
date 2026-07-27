@@ -1,0 +1,55 @@
+import { Meta } from '@storybook/blocks';
+import { TypeSourceViewer } from '@df-storybook/utils/TypeSourceViewer';
+
+<Meta title="Локальные компоненты/ModalDF/API" />
+
+# ModalDF API
+
+## ModalDFProps
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/ModalDF/types.ts"
+  typeName="ModalDFProps"
+/>
+
+## Compound types
+
+### ModalDF.Header
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/ModalDF/types.ts"
+  typeName="ModalDFHeaderProps"
+/>
+### ModalDF.Footer
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/ModalDF/types.ts"
+  typeName="ModalDFFooterProps"
+/>
+### ModalDF.ServiceButtons
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/ModalDF/components/ServiceButtons.tsx"
+  typeName="ModalDFServiceButtonsProps"
+/>
+### ModalDF.DotsIconButton
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/ModalDF/types.ts"
+  typeName="ModalDFDotsIconButtonProps"
+/>
+### ModalDF.BackIconButton
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/ModalDF/types.ts"
+  typeName="ModalDFBackIconButtonProps"
+/>
+### ModalDF.Left, ModalDF.Main, ModalDF.Content, ModalDF.Divider
+
+Контейнеры наследуют `BoxProps` и принимают `$css` для локальных правок.

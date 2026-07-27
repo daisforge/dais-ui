@@ -1,0 +1,377 @@
+import { ArgTypes, Meta, Story, Canvas } from '@storybook/blocks';
+import { Q_PARAMS } from '@ui-kit/components/TableContract/constants';
+import { Button } from '@ui-kit/components/Button';
+import { IconDocumentGlassOutline } from '@ui-kit/icons';
+import { h2 } from '@ui-kit/tokens/typography';
+import { Accordion, AccordionItem } from '@ui-kit/components/Accordion';
+import * as TableContractStories from './TableContract.stories';
+import ContractResponseSchema from './types.schema.json';
+import EXAMPLES from './examples.json';
+import { Source } from '@storybook/blocks';
+import { CustomArgTypes } from '@df-storybook/utils/CustomArgTypes';
+import { CopyButton } from '@df-storybook/utils/CopyButton';
+import { StoryCard } from '@df-storybook/utils/StoryCard';
+
+import {
+  StoryContractComp,
+  StoryContractColumnConfigComp,
+  StoryContractTableConfigComp,
+  StoryContractDataMain,
+  StoryContractQueryParamsComp,
+  StoryContractSubRowsComp,
+  StoryContractColumnSubRowsComp,
+  StoryContractSearchingComp,
+  StoryContractColumnSearchingComp,
+  StoryContractColumnSortingComp,
+  StoryContractColumnSummaryCellComp,
+} from '@ui-kit/components/StoriesUtils/storiesUtils.TableContract';
+
+<Meta of={TableContractStories} name="Docs for backend" />
+
+# TableContract
+
+Стилизованный в рамках дизайн-системы компонент Table c возможностью конфигурации отображения полностью на бэкенде. Имеет возможность гибко настраивать отображаемый вид.
+C примерами реализации подробно можно ознакомиться ниже в stories.
+
+- Работа для бэкенд-разработчика сводится к обработке конкретного endpoint-а.
+  Ответ по запросу по данному endpoint-у должен соответствовать [JSON-схеме ответа запроса](#json-схема-ответа-запроса)
+  В зависимости от фичей, которые необходимо активировать, может понадобится обработка [query-параметров запроса](#api-query-параметров-запроса).
+
+<div style={{border: '1px solid #ededed', padding: 16}}>
+
+### Быстрые ссылки
+
+- [API ответа запроса](#api-ответа-запроса)
+- [API query-параметров запроса](#api-query-параметров-запроса)
+- [JSON-схема ответа запроса](#json-схема-ответа-запроса)
+
+---
+
+##### Реализации конкретных фичей:
+
+- [Отображение данных](#отображение-данных)
+- [Поиск](#поиск)
+- [Пагинация](#пагинация)
+- [Сортировка](#сортировка)
+- [Иерархия](#иерархия)
+- [Изменение ширины колонки](#изменение-ширины-колонки)
+- [Полноэкранный режим](#полноэкранный-режим)
+- [Итоговые строки](#итоговые-строки)
+
+##### Перечень фичей, которые в разработке:
+
+- Редактирование
+- Группировка колонок - (актуальна ли данная фича ?)
+
+</div>
+
+<br />
+<br />
+
+---
+
+<br />
+
+# Примеры реализации:
+
+## Для просмотра запросов откройте Network в инструментах разработчика. (Сочетание клавиш Fn + F12)
+
+<br />
+
+<StoryCard>
+
+## Отображение данных
+
+Для отображения данных в теле ответа достаточно заполнить `data.main` и `meta.columns`.
+
+1. Заполнить `data.main` массивом любых объектов. Каждый объект будет считаться данными для определенной строки.
+
+2. Минимальное заполнение `meta.columns` ключами:
+   <CustomArgTypes
+     hideColumnDefault
+     hideHeader
+     boxShadowNone
+     include={['key', 'name']}
+     of={StoryContractColumnConfigComp}
+   />
+
+##### Пример ответа:
+
+<Source language="json" code={JSON.stringify(EXAMPLES['simple'], null, 2)} />
+
+##### Результат:
+
+    <Story  of={TableContractStories.Simple} />
+
+</StoryCard>
+
+<StoryCard style={{marginTop: 36}}>
+
+## Поиск
+
+Для активации поиска необходимо:
+
+1. В ответе запроса заполнить `data.main`,`meta.columns` и `meta.tableConfig.searching`
+
+   `meta.tableConfig.searching`:
+
+   <CustomArgTypes
+     hideColumnDefault
+     hideHeader
+     boxShadowNone
+     of={StoryContractSearchingComp}
+   />
+
+2. (Если тип фильтрации 'backend') В query-параметрах запроса обработать параметр <code>{Q_PARAMS.q}</code> и сделать фильтрацию данных (`response.data`) по данному параметру:
+
+   <CustomArgTypes
+     hideColumnDefault
+     hideColumnName
+     hideHeader
+     boxShadowNone
+     include={[Q_PARAMS.q]}
+     of={StoryContractQueryParamsComp}
+   />
+
+3. (Необязательно и если тип фильтрации 'frontend') Можно дополнительно настроить поиск в рамках каждой из колонок `meta.columns.[конкретная колонка].searching`:
+   <CustomArgTypes
+     hideColumnDefault
+     hideHeader
+     boxShadowNone
+     of={StoryContractColumnSearchingComp}
+   />
+
+#### Результат:
+
+    <Story  of={TableContractStories.Searching} />
+
+</StoryCard>
+
+<StoryCard style={{marginTop: 36}}>
+
+## Пагинация
+
+Для активации пагинации необходимо в ответе запроса заполнить `data.main`,`meta.columns` и `meta.tableConfig.pagination`.
+
+1. Заполнить конфигурацию пагинации в `meta.tableConfig.pagination`:
+
+   <CustomArgTypes
+     hideColumnDefault
+     hideColumnName
+     hideHeader
+     borderNone
+     boxShadowNone
+     include={'pagination'}
+     of={StoryContractTableConfigComp}
+   />
+
+2. В query-параметрах запроса обработать параметры:
+   <CustomArgTypes
+     hideColumnDefault
+     hideHeader
+     boxShadowNone
+     include={[Q_PARAMS.page, Q_PARAMS.size]}
+     of={StoryContractQueryParamsComp}
+   />
+
+#### Результат:
+
+    <Story  of={TableContractStories.Pagination} />
+
+</StoryCard>
+
+<StoryCard style={{marginTop: 36}}>
+
+## Сортировка
+
+Для активации сортировки необходимо:
+В ответе запроса заполнить `data.main`,`meta.columns` и `meta.tableConfig.sorting`
+
+1. Заполнить конфигурацию сортировки в `meta.tableConfig.sorting`:
+
+   <CustomArgTypes
+     hideColumnDefault
+     hideColumnName
+     hideHeader
+     borderNone
+     boxShadowNone
+     include={'sorting'}
+     of={StoryContractTableConfigComp}
+   />
+
+2. Заполнить тип сортировка для нужных колонок в `meta.columns.[конкретная колонка].sortingType`:
+   <CustomArgTypes
+     hideColumnDefault
+     hideColumnName
+     hideHeader
+     boxShadowNone
+     of={StoryContractColumnSortingComp}
+   />
+3. В query-параметрах запроса обработать параметр <code>{Q_PARAMS.sort}</code>:
+   <CustomArgTypes
+     hideColumnDefault
+     hideColumnName
+     hideHeader
+     boxShadowNone
+     include={[Q_PARAMS.sort]}
+     of={StoryContractQueryParamsComp}
+   />
+
+#### Результат:
+
+    <Story  of={TableContractStories.Sorting} />
+
+</StoryCard>
+
+<StoryCard style={{marginTop: 24}}>
+
+## Иерархия
+
+Для активации subRows необходимо в ответе запроса заполнить `data.main`,`meta.columns` и `meta.tableConfig.subRows`
+
+1. Заполнить обязательно `meta.tableConfig.subRows`
+
+   <CustomArgTypes
+     hideColumnDefault
+     hideColumnName
+     hideHeader
+     transparent
+     borderNone
+     paddingNone
+     include={'subRows'}
+     of={StoryContractTableConfigComp}
+   />
+   <CustomArgTypes
+     hideColumnName
+     hideColumnDefault
+     hideHeader
+     boxShadowNone
+     of={StoryContractSubRowsComp}
+   />
+
+2. Заполнить обязательно `meta.columns[конкретная строка]subRow`:
+   <CustomArgTypes
+     hideColumnDefault
+     hideHeader
+     boxShadowNone
+     of={StoryContractColumnSubRowsComp}
+   />
+
+#### Результат:
+
+    <Story  of={TableContractStories.SubRows} />
+
+</StoryCard>
+
+<StoryCard style={{marginTop: 36}}>
+
+## Изменение ширины колонки
+
+В ответе запроса необходимо заполнить `data.main`, `meta.tableConfig.resizableColumn`, `meta.columns.resizable`.
+
+1. Заполнение `meta.tableConfig.resizableColumn` значением `true`:
+   <CustomArgTypes
+     hideColumnDefault
+     hideHeader
+     boxShadowNone
+     include={['resizableColumn']}
+     of={StoryContractTableConfigComp}
+   />
+2. Минимальное заполнение `meta.columns` ключами:
+   <CustomArgTypes
+     hideColumnDefault
+     hideHeader
+     boxShadowNone
+     include={['key', 'name', 'resizable']}
+     of={StoryContractColumnConfigComp}
+   />
+
+</StoryCard>
+
+<StoryCard style={{marginTop: 36}}>
+
+## Полноэкранный режим
+
+В ответе запроса необходимо заполнить `data.main`, `meta.tableConfig.fullScreenEnabled`, `meta.columns`.
+
+Заполнение `meta.tableConfig.fullScreenEnabled` значением `true`:
+
+<CustomArgTypes
+  hideColumnDefault
+  hideColumnName
+  hideHeader
+  boxShadowNone
+  include={['fullScreenEnabled']}
+  of={StoryContractTableConfigComp}
+/>
+
+</StoryCard>
+
+<StoryCard style={{marginTop: 36}}>
+
+## Итоговые строки
+
+В ответе запроса необходимо заполнить `data.main`, `data.bottomSummary`/`data.topSummary`, `meta.columns.summaryCell`.
+
+1. Заполнить `data.main` массивом любых объектов. Каждый объект будет считаться данными для определенной строки.
+2. Заполнить `data.bottomSummary`/`data.topSummary` массивом любых объектов. Каждый объект будет считаться данными для определенной итоговой строки.
+3. Заполнение `meta.columns.summaryCell`:
+   <CustomArgTypes
+     hideColumnDefault
+     hideColumnName
+     hideHeader
+     boxShadowNone
+     include={['summaryCell']}
+     of={StoryContractColumnConfigComp}
+   />
+
+</StoryCard>
+
+<br />
+<br />
+<br />
+
+---
+
+# API query-параметров запроса:
+
+<CustomArgTypes hideColumnDefault of={StoryContractQueryParamsComp} />
+
+# API ответа запроса:
+
+<div className="sb-container">
+  <Accordion size="h2" view="clear" defaultActiveEventKey={[0, 1, 2]}>
+    {[
+      { comp: StoryContractComp, title: 'response' },
+      { comp: StoryContractTableConfigComp, title: 'meta.tableConfig' },
+      { comp: StoryContractColumnConfigComp, title: 'meta.columns' },
+    ].map(function (el, i) {
+      return (
+        <AccordionItem key={el.title} type="arrow" eventKey={i} title={<h3>{el.title}</h3>}>
+          <CustomArgTypes hideColumnDefault of={el.comp} />
+        </AccordionItem>
+      );
+    })}
+
+  </Accordion>
+</div>
+
+# JSON-схема ответа запроса
+
+<CopyButton
+  text="Скопировать схему"
+  copyText={JSON.stringify(ContractResponseSchema, null, 2)}
+/>
+
+<Accordion size="h2" view="clear">
+  <AccordionItem
+    type="clear"
+    title={
+      <Button view="secondary" contentLeft={<IconDocumentGlassOutline />}>
+        Ознакомиться со схемой
+      </Button>
+    }
+  >
+    <Source code={JSON.stringify(ContractResponseSchema, null, 2)} />
+  </AccordionItem>
+</Accordion>

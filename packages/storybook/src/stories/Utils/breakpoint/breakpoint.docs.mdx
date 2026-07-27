@@ -1,0 +1,144 @@
+import { Meta, Source } from '@storybook/blocks';
+
+<Meta title="Utils/breakpoint/Docs" />
+
+# breakpoint / media
+
+Набор утилит для адаптивной вёрстки и работы с медиазапросами.
+
+Используйте:
+
+- `media` — когда хотите написать адаптивные стили прямо внутри `styled-components`. Например: на маленьком экране уменьшить `padding`, а на мобильном поменять `display`.
+- `MediaProvider` — когда хотите получать те же медиазапросы не из прямого импорта `media`, а через `theme` внутри styled-компонентов. Это удобно, если в проекте принято брать такие утилиты из `theme`, например `theme.media.down('m')`.
+- `BreakpointProvider` + `useBreakpoint` — когда адаптивность нужна не только в CSS, но и в логике React-компонента. Например: если экран маленький, не рендерить боковую панель; если `m` и выше, показать другую кнопку; если mobile, упростить JSX.
+
+Если нужен свой набор брейкпоинтов, можно передать кастомный `breakpointConfig` в `MediaProvider` или `BreakpointProvider`.
+
+## import
+
+<Source
+  language="ts"
+  format="dedent"
+  code={`
+    import {
+      media,
+      MediaProvider,
+      BreakpointProvider,
+      useBreakpoint,
+    } from '@dais-ui/ui-kit/utils';
+  `}
+/>
+
+## Пример 1. media
+
+<Source
+  language="tsx"
+  format="dedent"
+  code={`
+    import styled from 'styled-components';
+    import { media } from '@dais-ui/ui-kit/utils';
+
+    const Card = styled.div\`
+      padding: 24px;
+
+      \${media.down('m')\`
+        padding: 16px;
+      \`}
+
+      \${media.only('xs')\`
+        padding: 8px;
+      \`}
+    \`;
+
+`}
+/>
+
+## Пример 2. MediaProvider
+
+<Source
+  language="tsx"
+  format="dedent"
+  code={`
+    import styled from 'styled-components';
+    import { MediaProvider } from '@dais-ui/ui-kit/utils';
+
+    const Card = styled.div\`
+      padding: 24px;
+
+      \${({ theme }) => theme.media.down('m')\`
+        padding: 12px;
+      \`}
+    \`;
+
+    export const App = () => (
+      <MediaProvider>
+        <Card>Responsive content</Card>
+      </MediaProvider>
+    );
+
+`}
+/>
+
+## Пример 3. BreakpointProvider + useBreakpoint
+
+<Source
+  language="tsx"
+  format="dedent"
+  code={`
+    import React from 'react';
+    import {
+      BreakpointProvider,
+      useBreakpoint,
+    } from '@dais-ui/ui-kit/utils';
+
+    const ResponsiveBlock = () => {
+      const { breakpoint, up, down, only, between } = useBreakpoint();
+
+      return (
+        <div>
+          <div>current breakpoint: {breakpoint}</div>
+          {up('m') && <div>Экран больше чем m</div>}
+          {down('l') && <div>Экран меньше чем l</div>}
+          {only('xs') && <div>Только mobile breakpoint</div>}
+          {between('s', 'xl') && <div>Ширина между s и xl</div>}
+        </div>
+      );
+    };
+
+    export const App = () => (
+      <BreakpointProvider>
+        <ResponsiveBlock />
+      </BreakpointProvider>
+    );
+
+`}
+/>
+
+## Пример 4. Кастомная конфигурация брейкпоинтов
+
+<Source
+  language="tsx"
+  format="dedent"
+  code={`
+    import {
+      BreakpointProvider,
+      type BreakpointConfig,
+    } from '@dais-ui/ui-kit/utils';
+
+    const customBreakpointConfig: BreakpointConfig = {
+      xs: 480,
+      s: 768,
+      m: 1024,
+      l: 1280,
+      xl: 1440,
+      xxl: 1920,
+    };
+
+    export const App = () => (
+      <BreakpointProvider breakpointConfig={customBreakpointConfig}>
+        <YourComponent />
+      </BreakpointProvider>
+    );
+
+`}
+/>

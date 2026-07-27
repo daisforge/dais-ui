@@ -1,0 +1,20 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as ErrorStateStories from './TableCanvas.errorState.stories';
+
+<Meta of={ErrorStateStories} name="Docs" />
+
+# TableCanvas Error State
+
+**tableConfig.errorState**
+
+Состояние ошибки таблицы. Показывается после завершения загрузки, если данные или схема таблицы не были получены корректно.
+
+## Что показывают сценарии
+
+- `Default Error State` показывает дефолтный `ErrorPage` после завершения loading.
+- `Custom Error State` показывает настройку через `statusCode`, `customStatuses` и `buttonHandler`.
+- `Grouped Columns Error State` демонстрирует overlay ниже grouped headers.
+- `Full Content Error State Without Headers` имитирует сценарий, когда схема колонок не пришла с бэкенда и error state занимает всю content-область.
+- `Error State With Control Block And Pagination` проверяет совместимость состояния с control block, pagination и настройкой размера строк.
+
+<Stories />

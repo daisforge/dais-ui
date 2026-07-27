@@ -1,0 +1,50 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as TableColumnsGroupingStories from './TableCanvas.columnsGrouping.stories';
+
+<Meta of={TableColumnsGroupingStories} name="Docs" />
+
+# ColumnsGrouping (TableCanvas)
+
+**columnConfig.children**
+
+Группировка колонок — вложенная структура шапки таблицы. Позволяет объединять несколько колонок под одним общим заголовком, создавая иерархию в шапке.
+
+## Ключевые особенности
+
+- Поддержка многоуровневой вложенности (2, 3+ уровня)
+- Совместимость с `columnsControl`, `resizableColumn`
+- Кастомизация `name` через `ReactNode`
+
+## Как работает
+
+Для создания группы колонок используется `ColumnGroupConfig` вместо обычного `ColumnConfig`. Группа определяется наличием ключа `children`, в котором перечисляются дочерние колонки или вложенные группы.
+
+```tsx
+const columnConfig = [
+  {
+    name: 'Основные данные',
+    children: [
+      { key: 'name', name: 'Имя' },
+      { key: 'age', name: 'Возраст' },
+    ],
+  },
+  {
+    name: 'Статистика',
+    children: [
+      { key: 'score', name: 'Баллы' },
+      { key: 'rank', name: 'Ранг' },
+    ],
+  },
+];
+```
+
+## Особенности
+
+- Группа не имеет собственного `key` — это чисто визуальный элемент шапки
+- `name` группы может быть строкой или `ReactNode` для кастомного рендера
+- При использовании с `columnsControl` скрытие/показ работает на уровне дочерних колонок, не на уровне группы
+- При `resizableColumn` ресайз работает на уровне дочерних колонок
+
+> Подробнее о типах и пропсах — [ColumnsGrouping API](?path=/docs/локальные-компоненты-tablecanvas-columnsgrouping-api--docs)
+
+<Stories />

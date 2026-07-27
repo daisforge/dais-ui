@@ -1,0 +1,44 @@
+{
+  "extends": ["plugin:@nx/react", "../../.eslintrc.json"],
+  "ignorePatterns": ["!**/*", ".storybook/*", "storybook-static"],
+  "overrides": [
+    {
+      "files": ["src/stories/**/*.{ts,tsx,mdx}"],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "paths": [
+              {
+                "name": "@ui-kit",
+                "message": "Импорт из корня @ui-kit запрещён. Используйте импорт из конкретного модуля, например @ui-kit/components/Button"
+              },
+              {
+                "name": "@ui-kit/index",
+                "message": "Импорт из корня @ui-kit запрещён. Используйте импорт из конкретного модуля, например @ui-kit/components/Button"
+              }
+            ],
+            "patterns": [
+              {
+                "group": ["@salutejs/*"],
+                "message": "Прямые импорты из @salutejs запрещены в stories. Используйте re-export из @ui-kit/*"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
+      "rules": {}
+    },
+    {
+      "files": ["*.ts", "*.tsx"],
+      "rules": {}
+    },
+    {
+      "files": ["*.js", "*.jsx"],
+      "rules": {}
+    }
+  ]
+}

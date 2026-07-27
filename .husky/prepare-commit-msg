@@ -1,0 +1,1 @@
+node scripts/husky-commit/prepare-commit-msg.js "$1"

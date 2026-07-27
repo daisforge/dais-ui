@@ -1,0 +1,74 @@
+import { Meta } from '@storybook/blocks';
+import { TypeSourceViewer } from '@df-storybook/utils/TypeSourceViewer';
+
+<Meta title="Локальные компоненты/TableCanvas/Searching/API" />
+
+# Searching API
+
+## SearchingProps
+
+<TypeSourceViewer
+  filePath="packages/ui-kit/src/components/TableCanvas/feature-searching/types.ts"
+  typeName="SearchingProps"
+  language="ts"
+/>
+
+## SearchAutocompleteConfig
+
+<TypeSourceViewer
+  filePath="packages/ui-kit/src/components/TableCanvas/feature-searching/types.ts"
+  typeName="SearchAutocompleteConfig"
+  language="ts"
+/>
+
+## Примеры конфигурации
+
+### Базовый поиск
+
+```tsx
+<TableCanvas
+  tableConfig={{
+    searching: {
+      enabled: true,
+    },
+  }}
+  columnConfig={columnConfig}
+  rows={rows}
+/>
+```
+
+### Серверный поиск
+
+```tsx
+<TableCanvas
+  tableConfig={{
+    searching: {
+      enabled: true,
+      manualSearching: true,
+      onDebouncedChange: (value) => fetchData({ search: value }),
+    },
+  }}
+  columnConfig={columnConfig}
+  rows={rows}
+/>
+```
+
+### Автокомплит с историей
+
+```tsx
+<TableCanvas
+  tableConfig={{
+    searching: {
+      enabled: true,
+      autocomplete: {
+        suggestions: [{ label: 'Запрос 1' }, { label: 'Запрос 2' }],
+        threshold: 0,
+        listMaxHeight: '200px',
+        onSuggestionSelect: (item) => console.log(item.label),
+      },
+    },
+  }}
+  columnConfig={columnConfig}
+  rows={rows}
+/>
+```

@@ -1,0 +1,23 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as TableHighlightActiveTypeStories from './Table.highlightActiveType.stories';
+
+<Meta of={TableHighlightActiveTypeStories} name="Docs" />
+
+# HighlightActiveType
+
+Настройка подсветки активной сущности в legacy `Table`.
+
+## Ключевые особенности
+
+- `cell` подсвечивает активную ячейку
+- `row` подсвечивает активную строку
+- `disabled` отключает подсветку
+- Работает с внешним `refTable` и выбором ячейки
+
+## Особенности
+
+Подсветка отражает активную сущность таблицы, а не состояние выбора строк. Для выбора строк используйте `tableConfig.selecting`.
+
+Описание типов - в разделе [API](?path=/docs/локальные-компоненты-table-highlightactivetype-api--docs).
+
+<Stories />

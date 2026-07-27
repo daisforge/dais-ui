@@ -1,0 +1,61 @@
+import { Meta } from '@storybook/blocks';
+import { TypeSourceViewer } from '@df-storybook/utils/TypeSourceViewer';
+
+<Meta title="Композиции/Widget/API" />
+
+# Widget API
+
+## WidgetProps
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/Widget/Widget.tsx"
+  typeName="WidgetProps"
+/>
+## Compound types
+
+### Widget.Header
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/Widget/components/WidgetHeader.tsx"
+  typeName="WidgetHeaderProps"
+/>
+- `titleSize` — размер заголовка. По умолчанию `'H4'` - `badgeMarginTop` — отступ
+сверху для Badge. По умолчанию `2`
+
+Рекомендуемые значения `badgeMarginTop` в зависимости от `titleSize`:
+
+- `H3` → `badgeMarginTop: 5`
+- `H4` → `badgeMarginTop: 2`
+- `H5` → `badgeMarginTop: 1`
+
+### Widget.Content
+
+Принимает `$css` для локальных правок стилей.
+
+### Widget.Footer
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/Widget/components/WidgetFooter.tsx"
+  typeName="WidgetFooterProps"
+/>
+### Widget.Divider
+
+Реэкспорт стандартного `Divider`.
+
+### Widget.IconButtonDots
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/IconButton/IconButtonDots.tsx"
+  typeName="IconButtonDotsProps"
+/>
+### Widget.IconButtonBack
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/Widget/components/WidgetIconButtonBack.tsx"
+  typeName="WidgetIconButtonBackProps"
+/>

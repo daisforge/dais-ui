@@ -1,0 +1,41 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as CanvasLinkStories from './CanvasLink.stories';
+
+<Meta of={CanvasLinkStories} name="Docs" />
+
+# Canvas.Link
+
+Ссылка с навигацией и underline внутри canvas-ячейки `TableCanvas`.
+
+## Ключевые особенности
+
+- Несколько вариантов `view`
+- `view="clear"` использует цвета `default` как fallback — canvas не поддерживает `inherit`
+- Поддержка `href`, `target`, `disabled`
+- Наследует текстовые свойства от `Canvas.Text`: `wordWrap`, `overflow`, `textOverflow`, `ellipsis`, `maxLines`
+
+## Перехват навигации
+
+По умолчанию `Canvas.Link` выполняет навигацию по `href` после вызова `onClick`.
+Для отмены навигации вызовите `event.preventDefault()`:
+
+```tsx
+<Canvas.Link
+  view="accent"
+  href="/some-page"
+  onClick={(event) => {
+    event.preventDefault();
+    openModal(row.id);
+  }}
+>
+  Открыть
+</Canvas.Link>
+```
+
+## Многострочный режим
+
+При многострочном переносе underline не рисуется, поэтому многострочные ссылки лучше использовать там, где underline не критичен.
+
+Описание типов — в разделе [API](?path=/docs/локальные-компоненты-tablecanvas-canvaselements-canvaslink-api--docs).
+
+<Stories />

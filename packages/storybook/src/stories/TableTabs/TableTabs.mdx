@@ -1,0 +1,90 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as TableTabsStories from './TableTabs.stories';
+
+<Meta of={TableTabsStories} name="Docs" />
+
+# TableTabs
+
+Компонент для организации нескольких таблиц (или произвольного контента) в табах. Работает как с `Table`, так и с `TableCanvas` — или с обоими одновременно.
+
+## Основные возможности
+
+- Единый контекст табов для `Table` и `TableCanvas`
+- Поддержка контролируемого и неконтролируемого режимов (`activeTabIdState`)
+- Кастомные табы через `custom` поле
+- `TabPanel` с возможностью unmount/hide при переключении
+- Автоматическое скрытие скругления `ControlBlock` у таблиц внутри табов
+- Опциональное ограничение ширины контейнера табов (`tabsContainerOptions.maxWidth`)
+
+## Использование
+
+```tsx
+import { TableTabs } from '@dais-ui/ui-kit/components/TableTabs';
+```
+
+Или из корневого экспорта:
+
+```tsx
+import { TableTabs } from '@dais-ui/ui-kit';
+```
+
+## Базовый пример
+
+```tsx
+const [activeTabId, setActiveTabId] = useState('tab1');
+
+<TableTabs
+  activeTabIdState={[activeTabId, setActiveTabId]}
+  tabs={[
+    { tabId: 'tab1', label: 'Первый таб' },
+    { tabId: 'tab2', label: 'Второй таб' },
+  ]}
+>
+  <TableTabs.TabPanel tabId="tab1">
+    <Table tableConfig={...} columnConfig={...} rows={...} />
+  </TableTabs.TabPanel>
+  <TableTabs.TabPanel tabId="tab2">
+    <TableCanvas tableConfig={...} columnConfig={...} rows={...} />
+  </TableTabs.TabPanel>
+</TableTabs>
+```
+
+## Размер
+
+`size` задаёт размер табов: `m`, `s` или `xs`. На `xs` уменьшаются и сами вкладки, и кнопка сворачивания над ними. Удобно вместе с `controlBlock.size: 'xs'` у таблицы внутри.
+
+## Слот справа
+
+`rightSlot` рисует свой контент справа от ряда табов: бейдж, кнопку, статус и подобное.
+
+## Сворачивание над табами
+
+`collapsing` добавляет над табами строку с кнопкой свернуть и развернуть таблицу. У неё свой `rightSlot` под контент справа от кнопки.
+
+```tsx
+<TableTabs
+  size="xs"
+  rightSlot={<Badge text="Online" />}
+  collapsing={{
+    enabled: true,
+    collapseText: 'Свернуть таблицу',
+    expandText: 'Развернуть таблицу',
+    rightSlot: <Badge view="warning" text="3 новых" />,
+  }}
+  tabs={[
+    { tabId: 'tab1', label: 'Основная' },
+    { tabId: 'tab2', label: 'Архив' },
+  ]}
+>
+  ...
+</TableTabs>
+```
+
+## TabPanel
+
+`TableTabs.TabPanel` — дочерний компонент для содержимого каждого таба.
+
+- `tabId` — идентификатор таба (должен совпадать с `tabId` в массиве `tabs`)
+- `unmountOnClose` — если `true` (по умолчанию), контент размонтируется при переключении. Если `false` — скрывается через `display: none`
+
+<Stories />

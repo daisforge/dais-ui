@@ -1,0 +1,39 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as PopupDFStories from './PopupDF.stories';
+
+<Meta of={PopupDFStories} name="Docs" />
+
+# PopupDF
+
+`PopupDF` — локальная DF-обёртка над [Popup](https://plasma.sberdevices.ru/sdds-finai/components/popup/).
+
+## Ключевые особенности
+
+- крестик закрытия живёт в `PopupDF.Header`
+- доступны `PopupDF.Header`, `PopupDF.Body`, `PopupDF.Footer`
+- доступны размеры `size="m" | "s"`
+- `title` и `description` ограничены двумя строками
+- в `Header` доступна кнопка назад через `onBackButtonClick`
+- иконка ресайза использует DF-иконку по умолчанию, учитывает `resizable.iconSize` и может быть переопределена через `resizable.icons`
+
+## Compound-компоненты
+
+```ts
+PopupDF.Header; // Шапка
+PopupDF.Body; // Контент
+PopupDF.Footer; // Футер
+```
+
+## Особенности
+
+- `Header` и `Footer` остаются опциональными и подключаются через композицию
+- `subHeader` подходит для кастомного контента, смыслово связанного с шапкой
+- если контента много, скролл должен жить внутри `PopupDF.Body`
+- по умолчанию угол иконки ресайза вычисляется из `placement` так, чтобы ресайз тянул popup внутрь доступной области
+- для ручной смены угла ресайза используйте нативный `resizable.directions`, например `directions: ['top-left']`
+- если `hiddenIcons` не передан, `PopupDF` автоматически скрывает угловые иконки, которые не входят в `directions`; для нестандартной видимости передайте `hiddenIcons` явно
+- если пользовательские `icons` не переданы, `PopupDF` заполняет угловые иконки своей `IconResizeCorneredFill`; `iconSize` влияет на DF-иконку по умолчанию
+
+Описание типов и compound-пропсов — в разделе [API](?path=/docs/локальные-компоненты-popupdf-api--docs).
+
+<Stories />

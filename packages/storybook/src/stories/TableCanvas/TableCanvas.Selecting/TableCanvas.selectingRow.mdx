@@ -1,0 +1,54 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as SelectingSimpleStories from './TableCanvas.selectingRow.simple.stories';
+
+<Meta of={SelectingSimpleStories} name="Docs" />
+
+# Selecting Row
+
+**tableConfig.selecting**
+
+Выбор строк таблицы с помощью чекбоксов.
+
+## Ключевые особенности
+
+- Управляемое состояние через `ReadonlySet<string | number>`
+- Кнопка переключения видимости в control block (`showInControl: true`)
+- Контроль на уровне строк: `rowCheckboxDisabled`, `rowShowCheckbox`
+- Поддержка иерархических таблиц через `selectingRules.levels`
+- Кастомизация summary-чекбокса через `summaryChecked`
+
+## Особенности
+
+- `rowKeyGetter` должен возвращать уникальный идентификатор строки
+- В иерархических таблицах `selectingRules.levels` определяет, на каких уровнях доступен выбор
+- `rowGetStates` позволяет полностью переопределить логику чекбоксов (checked, indeterminate, disabled)
+- Accent-кнопки в mass action panel всегда видимы при компрессии
+
+> Подробнее о типах и пропсах — [Selecting API](?path=/docs/локальные-компоненты-tablecanvas-selecting-api--docs)
+
+## Выделение колонок — `tableConfig.cellsSelection`
+
+Отдельный от чекбоксов механизм: выделение **колонок** кликом по шапке. Не зависит
+от `highlightActiveType` — самостоятельная ось взаимодействия. По умолчанию включено.
+
+- **`enableColumnSelection`** — клик по шапке выделяет колонку. Ctrl/Cmd —
+  добавить/убрать колонку, Shift — диапазон. Клик по иконкам сортировки/фильтрации
+  в шапке выделение не вызывает. Поддерживается copy/paste по выделенным колонкам.
+- **`enableSelectAll`** — клик по «нулевой» ячейке (шапка колонки нумерации, левый
+  верхний угол) выделяет всю таблицу целиком: все строки данных по всем колонкам.
+  Поддерживает copy/paste. Требует включённой нумерации (`rowMarkers`) и активного
+  `cellsSelection.mode`. По умолчанию включено.
+
+### Как читать состояние выделения
+
+Выделенные колонки приходят в обычный коллбэк
+`tableConfig.onGridSelectionChange(selection)` в поле `selection.columns`
+(`CompactSelection`, индексы колонок). Ячейки/диапазоны — там же в
+`selection.current`.
+
+Чекбоксный выбор строк (`tableConfig.selecting`) — независимый механизм со своим
+состоянием и коллбэками, с этим API не пересекается.
+
+> Типы — раздел `CellsSelectionConfig` в [Selecting API](?path=/docs/локальные-компоненты-tablecanvas-selecting-api--docs)
+
+<Stories />

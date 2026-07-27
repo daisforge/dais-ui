@@ -1,0 +1,42 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as TableRowHeightStories from './TableCanvas.rowHeight.stories';
+
+<Meta of={TableRowHeightStories} name="Docs" />
+
+# RowHeight (TableCanvas)
+
+**tableConfig.rowHeight + tableConfig.rowSize**
+
+Настройка высоты строк таблицы. Поддерживает фиксированную высоту, динамическое вычисление и переключение размера через UI.
+
+## Ключевые особенности
+
+- Фиксированная высота строки (`number`)
+- Динамическая высота через функцию (`RowHeightFunc`)
+- Доступ к данным строки и текущему размеру (`currentRowSize`)
+- Переключатель размера строк в controlBlock (`rowSize`)
+
+## tableConfig.rowHeight
+
+Определяет высоту каждой строки:
+
+- **`number`** — фиксированная высота в пикселях для всех строк
+- **`RowHeightFunc`** — функция, вычисляющая высоту на основе `row`, `currentRowSize` и `rowIndex`
+
+## tableConfig.rowSize
+
+Переключатель размера строк в controlBlock (кнопка с выпадающим списком):
+
+- **`showInControl`** — показывать ли кнопку в controlBlock
+- **`default`** — размер по умолчанию (`'s'`, `'m'`, `'l'`)
+- **`available`** — список доступных размеров
+- **`onRowSizeChange`** — callback при смене размера
+
+## Особенности
+
+- `RowHeightFunc` получает `currentRowSize` — объект с `rowSizeName` и `rowSizeValue`, что позволяет адаптировать высоту к текущему выбранному размеру
+- При использовании `rowHeight` как функции, рекомендуется мемоизировать её для производительности
+
+> Подробнее о типах и пропсах — [RowHeight API](?path=/docs/локальные-компоненты-tablecanvas-rowheight-api--docs)
+
+<Stories />

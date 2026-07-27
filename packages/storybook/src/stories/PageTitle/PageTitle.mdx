@@ -1,0 +1,69 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as PageTitleStories from './PageTitle.stories';
+
+<Meta of={PageTitleStories} name="Docs" />
+
+# PageTitle
+
+Компонент заголовка страницы с опциональными breadcrumbs, кнопкой «назад», подзаголовком и блоком действий.
+
+## Ключевые особенности
+
+- Опциональные breadcrumbs с настраиваемым размером (по умолчанию `size='m'`)
+- Кнопка «назад» слева от заголовка (`showBackButton`, `onBackClick`)
+- Заголовок и подзаголовок с автоматическим тултипом при обрезке текста
+- Кастомный слот правее заголовка (`titleSlot`)
+- Правый блок действий (`rightSlot`), прижатый к правому краю
+
+## Особенности
+
+- Компонент всегда использует `TypographyWithAutoTooltip` для `title` и `subtitle`
+- Если `tooltipText` не передан, текстом тултипа используется сам `title` или `subtitle`
+- Слоты `titleSlot` и `rightSlot` принимают `ReactNode` или callback с размерами для адаптива
+- По умолчанию адаптив на viewport `<= 1280px` включен; временно отключить его можно через deprecated-проп `disableMediaAdaptive`
+- Код примеров отображается через `storySourceDoc`, вкладка `Show code` синхронизирована с реализацией
+
+## Использование адаптивных слотов
+
+Если слот не должен менять размеры, передавайте обычный `ReactNode`:
+
+```tsx
+<PageTitle
+  title="Заголовок страницы"
+  titleSlot={
+    <Button size="xs" view="secondary">
+      Действие
+    </Button>
+  }
+/>
+```
+
+Если в слоте есть кнопки, которые должны уменьшаться на 1280px, передавайте callback и используйте `buttonSize` из аргумента:
+
+```tsx
+<PageTitle
+  title="Заголовок страницы"
+  rightSlot={({ buttonSize }) => (
+    <Flow mainAxisGap={8}>
+      <Button size={buttonSize} view="secondary">
+        Отмена
+      </Button>
+      <Button size={buttonSize} view="accent">
+        Сохранить
+      </Button>
+    </Flow>
+  )}
+/>
+```
+
+Размер, который приходит в callback:
+
+```
+buttonSize
+| viewport <= 1280px | viewport > 1280px |
+| xs                 | s                 |
+```
+
+> Подробнее о типах и пропсах — [PageTitle API](?path=/docs/композиции-pagetitle-api--docs)
+
+<Stories />

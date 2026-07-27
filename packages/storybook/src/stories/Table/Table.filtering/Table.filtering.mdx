@@ -1,0 +1,41 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as TableFilteringStories from './Table.filtering.stories';
+
+<Meta of={TableFilteringStories} name="Docs" />
+
+# Filtering
+
+**tableConfig.filtering**
+
+Фильтрация данных таблицы с поддержкой автоматического и ручного режимов.
+
+## Ключевые особенности
+
+- Три типа фильтров: `input`, `select`, `custom`
+- Автоматическая фильтрация по умолчанию, ручная через `manualFiltering: true`
+- Отображение активных фильтров в виде chip-элементов
+- Фильтрация через sidebar с настройкой порядка и глобальных фильтров
+
+## Типы фильтров
+
+### Input
+
+Текстовый фильтр с режимами: `'includes'`, `'startWith'`, `'equal'` или кастомная функция.
+
+### Select
+
+Фильтр выбором из списка. Поддержка одиночного и множественного выбора.
+
+### Custom
+
+Полностью кастомный компонент фильтра через `customRender`.
+
+## Особенности
+
+- При `manualFiltering: true` таблица не фильтрует данные — ожидается внешняя логика
+- `sidebarConfig` позволяет добавлять глобальные фильтры, не привязанные к колонкам
+- `filtersInfo` задаёт лейблы и значения по умолчанию для каждого фильтра
+
+> Подробнее о типах и пропсах — [Filtering API](?path=/docs/локальные-компоненты-table-filtering-api--docs)
+
+<Stories />

@@ -1,0 +1,84 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as SplitViewStories from './SplitView.stories';
+
+<Meta of={SplitViewStories} name="Docs" />
+
+# SplitView
+
+Контейнер с возможностью разделения основного контента и дополнительного в боковом меню.
+
+## Ключевые особенности
+
+- Resize через разделитель между контентами (зажатие и движение курсора)
+- Полноэкранный режим для sidebar
+- Скрытие sidebar полностью
+- Гибкая настройка ширины sidebar в процентах и пикселях
+- Колбек `onResize` для отслеживания размеров
+
+## CSS-переменные
+
+- `--main-width` — ширина основного блока
+- `--separator-width` — ширина разделителя
+- `--sidebar-width` — ширина sidebar
+- `--sidebar-width-in-px` — ширина sidebar в пикселях
+
+## Особенности
+
+- Объект `splitViewClassNames` доступен для импорта. Включает классы: `container`, `separator`, `separatorButton`, `mainBlock`, `sidebarBlock` и другие
+- Как контентный заполнитель для sidebar рекомендуется использовать компонент Widget с его compound-компонентами
+- При использовании внутри PageLayout установите `insidePageLayout={true}`
+- `sidebar.content` принимает `ReactNode` или callback с размерами для адаптива
+- По умолчанию адаптив на viewport `<= 1280px` включен; временно отключить его можно через deprecated-проп `disableMediaAdaptive`
+
+## Использование адаптивного sidebar.content
+
+Если контент sidebar не должен менять размеры, передавайте обычный `ReactNode`:
+
+```tsx
+<SplitView
+  mainContent={<Content />}
+  sidebar={{
+    isOpened: true,
+    content: <Widget />,
+  }}
+/>
+```
+
+Если внутри sidebar есть Avatar, который должен уменьшаться на 1280px, передавайте callback и используйте `avatarSize` из аргумента:
+
+```tsx
+<SplitView
+  mainContent={<Content />}
+  sidebar={{
+    isOpened: true,
+    content: ({ avatarSize }) => (
+      <Widget>
+        <Widget.Header
+          title="Заголовок"
+          titleLeftSlot={<Avatar size={avatarSize} name="User" />}
+        />
+      </Widget>
+    ),
+  }}
+/>
+```
+
+Размер, который приходит в callback:
+
+```
+avatarSize
+| viewport <= 1280px  | viewport > 1280px |
+| m                   | l                 |
+```
+
+Дефолтный min-width sidebar:
+
+```
+sidebar min-width
+| viewport <= 1280px | viewport > 1280px |
+| 440px              | 600px             |
+```
+
+Описание типов — в разделе [API](/docs/композиции-splitview-api--docs).
+
+<Stories />

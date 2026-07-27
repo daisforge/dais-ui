@@ -1,0 +1,85 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as LeftPanelStories from './LeftPanel.stories';
+
+<Meta of={LeftPanelStories} name="Docs" />
+
+# LeftPanel
+
+Выдвижная левая панель с анимацией открытия/закрытия и поддержкой ресайза.
+
+## Ключевые особенности
+
+- Анимация сворачивания/разворачивания
+- Ресайз через разделитель (`showResizeable`)
+- Кнопка сворачивания (`showToggleButton`)
+- Раздельный контент для развёрнутого и свёрнутого состояний
+- Управляемые состояния ширины и свёрнутости через пары из `useState`
+- Настраиваемые min/max ширина
+
+## Особенности
+
+- Для управления состоянием передайте `collapseState` и `widthState` — пары `[value, setter]` из `useState`
+- `expandedContent` отображается в развёрнутом состоянии, `collapsedContent` — в свёрнутом
+- `collapsedFooterContent` — дополнительный футер для свёрнутого состояния
+- Слоты `expandedContent`, `collapsedContent` и `collapsedFooterContent` принимают `ReactNode` или callback с размерами для адаптива
+- По умолчанию адаптив на viewport `<= 1280px` включен; временно отключить его можно через deprecated-проп `disableMediaAdaptive`
+
+## Использование адаптивных слотов
+
+Если слот не должен менять размеры, передавайте обычный `ReactNode`:
+
+```tsx
+<LeftPanel
+  expandedContent={<Widget />}
+  collapsedContent={<IconButton size="s" view="secondary" />}
+/>
+```
+
+Если внутри слота есть Button, IconButton, TextFieldSearch или Segment, которые должны уменьшаться на 1280px, передавайте callback и используйте `buttonSize` из аргумента:
+
+```tsx
+<LeftPanel
+  expandedContent={({ buttonSize }) => (
+    <Widget>
+      <Widget.Header
+        bottomBlock={
+          <>
+            <TextFieldSearch size={buttonSize} />
+            <SegmentGroup size={buttonSize}>
+              <SegmentItem size={buttonSize} label="Label" value="label" />
+            </SegmentGroup>
+          </>
+        }
+      />
+      <Widget.Footer>
+        <Button size={buttonSize} view="secondary">
+          Действие
+        </Button>
+      </Widget.Footer>
+    </Widget>
+  )}
+  collapsedContent={({ buttonSize }) => (
+    <IconButton size={buttonSize} view="secondary" />
+  )}
+/>
+```
+
+Размер, который приходит в callback:
+
+```
+buttonSize
+| viewport <= 1280px | viewport > 1280px |
+| xs                 | s                 |
+```
+
+Дефолтная ширина свёрнутой панели:
+
+```
+collapsed width
+| viewport <= 1280px  | viewport > 1280px |
+| 56px                | 72px              |
+```
+
+Описание типов — в разделе [API](/docs/композиции-leftpanel-api--docs).
+
+<Stories />

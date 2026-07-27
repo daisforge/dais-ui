@@ -1,0 +1,68 @@
+{
+  "extends": ["plugin:@nx/react"],
+  "ignorePatterns": ["!**/*", "**/TableGlide/*"],
+  "overrides": [
+    {
+      "files": ["src/components/**/*.{ts,tsx}", "src/shared/**/*.{ts,tsx}"],
+      "excludedFiles": [
+        "**/index.{ts,tsx}",
+        "**/DatePicker/*",
+        "**/IconButton/*",
+        "**/Typography/*",
+        "**/Tooltip/*",
+        "**/Notification/*",
+        "**/Autocomplete/*",
+        "**/Switch/*",
+        "**/TextArea/*",
+        "**/Combobox/*"
+      ],
+      "rules": {
+        "no-restricted-imports": [
+          "error",
+          {
+            "paths": [
+              {
+                "name": "@ui-kit",
+                "message": "Импорт из корня @ui-kit запрещён. Используйте импорт из конкретного модуля, например @ui-kit/components/Button"
+              },
+              {
+                "name": "@ui-kit/index",
+                "message": "Импорт из корня @ui-kit запрещён. Используйте импорт из конкретного модуля, например @ui-kit/components/Button"
+              }
+            ],
+            "patterns": [
+              {
+                "group": ["@salutejs/*"],
+                "message": "Прямые импорты из @salutejs запрещены в этой папке. Используйте re-export из @ui-kit/* или добавьте исключения в excludedFiles"
+              }
+            ]
+          }
+        ],
+        "@typescript-eslint/no-unused-vars": [
+          "error",
+          {
+            "args": "all",
+            "argsIgnorePattern": "^_",
+            "caughtErrors": "all",
+            "caughtErrorsIgnorePattern": "^_",
+            "destructuredArrayIgnorePattern": "^_",
+            "varsIgnorePattern": "^_",
+            "ignoreRestSiblings": true
+          }
+        ]
+      }
+    },
+    {
+      "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
+      "rules": {}
+    },
+    {
+      "files": ["*.ts", "*.tsx"],
+      "rules": {}
+    },
+    {
+      "files": ["*.js", "*.jsx"],
+      "rules": {}
+    }
+  ]
+}

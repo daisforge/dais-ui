@@ -1,0 +1,22 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as TextAreaStories from './TextArea.stories';
+
+<Meta of={TextAreaStories} name="Docs" />
+
+# TextArea
+
+Многострочное текстовое поле ввода. Расширяет атомарный `TextArea` из `@salutejs/sdds-finai`, добавляя кнопку очистки.
+
+## Ключевые особенности
+
+- Размеры: `s`
+- Варианты отображения: `default`, `positive`, `warning`, `negative`
+- Размещение лейбла: `outer` (над полем) и `inner` (внутри)
+- Автоматическое изменение высоты (`autoResize`)
+- Кнопка очистки через проп `onClear`
+- Поддержка `leftHelper` для подсказок под полем
+- Состояния: `disabled`, `readOnly`, `required`, `optional`
+
+Описание типов — в разделе [API](/docs/локальные-компоненты-textarea-api--docs).
+
+<Stories />

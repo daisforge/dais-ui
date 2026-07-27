@@ -1,0 +1,20 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as SwitchStory from './Switch.stories';
+
+<Meta of={SwitchStory} name="Docs" />
+
+# Switch
+
+Компонент Switch - обертка компонента Switch c добавлением подложки.
+
+## Ключевые особенности
+
+- При наличии `hasBackground`, `size` фиксированно будет равен `m`
+
+## Особенности
+
+- Размер `size` игнорируется и принудительно устанавливается в `m`, если передан проп `hasBackground`
+
+> Подробнее о типах и пропсах — [Switch API](?path=/docs/локальные-компоненты-switch-api--docs)
+
+<Stories />

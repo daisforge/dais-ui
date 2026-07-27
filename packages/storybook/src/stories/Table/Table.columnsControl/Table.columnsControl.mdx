@@ -1,0 +1,24 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as TableColumnsControlStories from './Table.columnsControl.stories';
+
+<Meta of={TableColumnsControlStories} name="Docs" />
+
+# ColumnsControl
+
+Пользовательская настройка колонок legacy `Table`.
+
+## Ключевые особенности
+
+- Включение через `tableConfig.columnsControl.enable`
+- Скрытие, закрепление и переупорядочивание колонок
+- Запрет скрытия или закрепления отдельных колонок
+- Дефолтные состояния `orderDefault`, `hiddenDefault`, `pinnedDefault`
+- Колбэк `onConfirm` для сохранения настроек вне таблицы
+
+## Особенности
+
+`columnsControl` может работать вместе с изменением ширины колонок и с `keyText`. Для группированных колонок проверяйте итоговый порядок leaf-колонок.
+
+Описание типов - в разделе [API](?path=/docs/локальные-компоненты-table-columnscontrol-api--docs).
+
+<Stories />

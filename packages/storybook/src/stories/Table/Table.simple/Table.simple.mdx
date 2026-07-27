@@ -1,0 +1,23 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as TableSimpleStories from './Table.simple.stories';
+
+<Meta of={TableSimpleStories} name="Docs" />
+
+# SimpleTable
+
+Базовые примеры legacy `Table`: минимальная HTML-таблица и нагрузочный пример с большим количеством ячеек.
+
+## Ключевые особенности
+
+- Минимальная связка `rows`, `columnConfig` и `tableConfig`
+- Кастомный заголовок колонки через React-разметку
+- Пример render-функции ячейки для большого набора строк и колонок
+- Управление размерами таблицы через `tableConfig.containerStyle`
+
+## Особенности
+
+`MillionCells` показывает сценарий проверки виртуализации и производительности. Для новых сценариев больших таблиц предпочтительнее `TableCanvas`.
+
+Описание типов - в разделе [API](?path=/docs/локальные-компоненты-table-simple-api--docs).
+
+<Stories />

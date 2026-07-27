@@ -1,0 +1,23 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as TableVirtualizationStories from './Table.virtualization.stories';
+
+<Meta of={TableVirtualizationStories} name="Docs" />
+
+# Virtualization
+
+Виртуализация строк и колонок legacy `Table`.
+
+## Ключевые особенности
+
+- Используется для больших списков строк
+- Управляется настройками underlying `DataGrid`
+- Может быть отключена через `enableVirtualization`
+- Работает вместе с высотой контейнера таблицы
+
+## Особенности
+
+Отключение виртуализации полезно только для небольших таблиц или специальных тестовых сценариев. Для больших наборов данных оставляйте виртуализацию включенной.
+
+Описание типов - в разделе [API](?path=/docs/локальные-компоненты-table-virtualization-api--docs).
+
+<Stories />

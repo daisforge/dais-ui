@@ -1,0 +1,19 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as AutocompleteStories from './Autocomplete.stories';
+
+<Meta of={AutocompleteStories} name="Docs" />
+
+# Autocomplete
+
+Компонент Autocomplete - обертка над `Autocomplete` из `@salutejs/sdds-finai` с добавлением логики отображения иконки замка при `disabled` или `readOnly`.
+
+## Ключевые особенности
+
+- Поле ввода с автодополнением на основе SDDS Autocomplete
+- Автоматическое отображение иконки замка при `disabled` или `readOnly`
+- Поддержка `onClear` с крестиком очистки
+- Доступные размеры: `s`, `xs`
+
+> Подробнее о типах и пропсах — [Autocomplete API](?path=/docs/локальные-компоненты-autocomplete-api--docs)
+
+<Stories />

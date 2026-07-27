@@ -1,0 +1,34 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as TableSubRowsStories from './TableCanvas.subRows.stories';
+
+<Meta of={TableSubRowsStories} name="Docs" />
+
+# SubRows (TableCanvas)
+
+**tableConfig.subRows + columnConfig.subRow**
+
+Иерархичное отображение данных с вложенными строками. Поддерживает произвольную глубину вложенности.
+
+Конфигурация состоит из двух частей:
+
+- **`tableConfig.subRows`** — дерево данных: функция получения дочерних строк, ключ строки, состояние раскрытия
+- **`columnConfig[].subRow`** — отображение на уровне колонки: маппинг ключей, рендер ячеек, стрелка раскрытия
+
+## tableConfig.subRows
+
+- **`getSubRows`** `(row) => RowType[] | undefined` — функция получения дочерних строк
+- **`rowKeyGetter`** `(row) => RowIdType` — уникальный ключ строки
+- **`expandedIdsState`** `[Set, setter]` — внешний стейт развёрнутых строк (опционально, иначе внутренний useState)
+
+## columnConfig.subRow
+
+- **`isColumnWithArrow`** `boolean | ((props) => boolean)` — стрелка раскрытия в этой колонке (default: `false`)
+- **`hideHeaderExpandAllArrow`** `boolean` — скрыть кнопку «развернуть все» в header (default: `false`)
+- **`parentKeyAsDefault`** `boolean` — использовать ключ родителя как fallback (default: `false`)
+- **`keyOfColumnInSubRow`** `string | number | ((lvl) => string | number)` — маппинг ключей колонок для каждого уровня
+- **`contentFormat`** `ContentFormat` — формат содержимого подстрок
+- **`renderSubRowCell`** `RenderSubRowCell` — кастомный рендер ячеек подстрок
+
+> Подробнее о типах — [SubRows API](?path=/docs/локальные-компоненты-tablecanvas-subrows-api--docs)
+
+<Stories />

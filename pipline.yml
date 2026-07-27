@@ -1,0 +1,22 @@
+fp:
+  groupId: CI00752881.KURSMOB.digital_finance_ui
+  artifactId: ci02918303
+  version: D-01.000.000
+  component_code: ci02918303
+
+docker:
+    nexus_url: ci00752881/ci02918303
+
+### Общая информация о приложении ###
+app:
+  # Конфигурационный элемент (КЭ) приложения / модуля ПО в Service Manager.
+  # !!! КЭ должен быть строкой, состоящей исключительно из цифр без лидирующих нулей !!!
+  sm_id: "2918303"
+  # название КЭ приложения / модуля ПО в Service Manager
+  sm_name: "digital_finance_ui"
+
+helm:
+  enable: true
+
+sap:
+    enable: false

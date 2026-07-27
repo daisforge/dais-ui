@@ -1,0 +1,27 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as TableIsLoadingStories from './TableCanvas.isLoading.stories';
+
+<Meta of={TableIsLoadingStories} name="Docs" />
+
+# IsLoading (TableCanvas)
+
+**tableConfig.isLoading / tableConfig.loadingOverlay**
+
+Состояние загрузки таблицы. Поддерживает скелетон-строки и полноэкранный оверлей.
+
+## Ключевые особенности
+
+- Скелетон-строки при загрузке данных (`isLoading`)
+- Настраиваемое количество скелетон-строк (`skeletonRowsCount`)
+- Полноэкранный оверлей с кастомным спиннером (`loadingOverlay`)
+- Задержка показа подзаголовка (`showSubtitleDelay`)
+
+## Когда использовать loadingOverlay
+
+- Динамическая загрузка схемы таблицы — колонки загружаются с бэкенда
+- Конфигурируемые таблицы — пользователь сам настраивает колонки
+- Ошибки загрузки структуры — не удалось загрузить метаданные
+
+> Подробнее о типах — [IsLoading API](?path=/docs/локальные-компоненты-tablecanvas-isloading-api--docs)
+
+<Stories />

@@ -1,0 +1,32 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as TableCollapsingStories from './TableCanvas.collapsing.stories';
+
+<Meta of={TableCollapsingStories} name="Docs" />
+
+# Collapsing (TableCanvas)
+
+**tableConfig.collapsing**
+
+Сворачивание/разворачивание тела таблицы. Кнопка управления отображается в controlBlock.
+
+## Ключевые особенности
+
+- Активация через `enableCollapse: true`
+- Внешнее управление состоянием через `collapsedState`
+- Два варианта размещения кнопки: `'inside'` (в controlBlock, участвует в компрессии) и `'above'` (отдельный блок сверху)
+- Кастомный слот справа от кнопки при `collapseButtonPlacement: 'above'`
+
+## Конфигурация
+
+- **`enableCollapse`** `boolean` — активация фичи (default: `false`)
+- **`defaultCollapsed`** `boolean` — начальное состояние (default: `false`)
+- **`collapseText`** `string` — текст кнопки при раскрытом состоянии (default: `'Свернуть'`)
+- **`expandText`** `string` — текст кнопки при закрытом состоянии (default: `'Развернуть'`)
+- **`onToggleCollapse`** `(isCollapsed: boolean) => void` — callback при изменении состояния
+- **`collapsedState`** `[boolean, setState]` — внешний стейт
+- **`collapseButtonPlacement`** `'inside' | 'above'` — размещение кнопки (default: `'inside'`)
+- **`collapseButtonAboveRightSlot`** `ReactNode` — кастомный слот справа (только при `'above'`)
+
+> Подробнее о типах — [Collapsing API](?path=/docs/локальные-компоненты-tablecanvas-collapsing-api--docs)
+
+<Stories />

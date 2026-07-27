@@ -1,0 +1,30 @@
+import { Meta, Canvas, Stories } from '@storybook/blocks';
+import * as TooltipListStories from './TooltipList.stories';
+
+<Meta of={TooltipListStories} name="Docs" />
+
+# TooltipList
+
+Компонент `TooltipList` является оберткой над [SDDS Tooltip](https://plasma.sberdevices.ru/sdds-finai/components/Tooltip/).
+Идеальное сочетание для работы с множественным выбором элементов.
+
+## Ключевые особенности
+
+- Обертка над SDDS Tooltip для отображения списка выбранных значений
+- Удобная комбинация с Combobox для множественного выбора
+- Подходит для фильтров, тегов и множественного выбора
+
+## Особенности
+
+- Комбинация `TooltipList` и `Combobox` особенно полезна когда нужно показать выбранные значения при наведении, поле ввода имеет ограниченную ширину или выбранных элементов может быть много
+- **Фильтры** — показать примененные фильтры
+- **Теги** — отображение выбранных тегов
+- **Множественный выбор** — видеть выбранные элементы без расширения интерфейса
+
+### Пример с Combobox
+
+<Canvas of={TooltipListStories.WithCombobox} />
+
+> Подробнее о типах и пропсах — [TooltipList API](?path=/docs/локальные-компоненты-tooltiplist-api--docs)
+
+<Stories />

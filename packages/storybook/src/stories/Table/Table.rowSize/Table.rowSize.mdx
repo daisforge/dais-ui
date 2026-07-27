@@ -1,0 +1,22 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as TableRowSizeStories from './Table.rowSize.stories';
+
+<Meta of={TableRowSizeStories} name="Docs" />
+
+# TableRowSize
+
+## Ключевые особенности
+
+- Настройка размера строк
+- Переключение размера через controlBlock
+- Дефолтный размер и список доступных размеров
+
+**tableConfig.rowSize**
+
+Доступно три варианта размера высоты строк `'small' | 'medium' | 'big'`. При включении флага `showInControl: true` появляется кнопка
+в блоке управления. С помощью `available` можно указать из каких вариантов пользователь будет переключать размер строк. Не обязательно пользователю
+давать выбирать размер строк, при этом можно задать значение по умолчанию `default`.
+
+Описание типов - в разделе [API](?path=/docs/локальные-компоненты-table-rowsize-api--docs).
+
+<Stories />

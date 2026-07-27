@@ -1,0 +1,65 @@
+import { Meta, Title, IconGallery, IconItem } from '@storybook/blocks';
+
+import { IconSvgSprite } from '@ui-kit/components/IconSvgSprite';
+
+<Meta parameters={{ layout: 'centered' }} title="Images/IconSvgSprite" />
+
+<Title>IconSvgSprite</Title>
+
+### Компонент для отрисовки SVG спрайтов
+
+---
+
+#### Использование
+
+В `iconUrl` передается url `https://cdn.dddd.ru/FileWithSprites.svg` на файл содержащий спрайты иконок и ссылка на необходимую иконку `#IconId`.
+Используется в finai-admin, finai-header, finai-platform.
+Для этих микрофронтов url к картинке приходит в формате `/pl/static-res/finai_icons/sprite-{size}-1.svg#IconAvatar-{size}`,
+в которых плейсхолдер `{size}` в компоненте заменяется пропсом `size`. При отсутствии плейсхолдеров будет использоваться исходный url к спрайту.
+
+```jsx
+import { IconSprite } from '@dais-ui/ui-kit';
+
+<IconSprite iconUrl="https://cdn.dddd.ru/FileWithSprites.svg#IconId" />;
+```
+
+### Пропсы
+
+```js
+type Props = {
+  // url иконки
+  iconUrl: string,
+  // размер иконки, default = 's'
+  size?: 'xs' | 's' | 'm',
+  // цвет иконки
+  color?: string,
+  // css класс
+  className?: string
+};
+```
+
+### Механизм работы SVG спрайтов
+
+Документация [\<symbol\>](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/symbol) [\<use\>](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/use)
+
+    - `<symbol id="Icon-1">` - определяем иконку внутри тэга `symbol`, атрибут `id` используется в качестве ссылки на иконку
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="display: none;" ... >
+  <symbol id="Icon1" width="100%" viewBox="0 0 24 24" ... >
+    <g><path ... </g>
+  </symbol>
+  <symbol id="Icon2" width="100%" viewBox="0 0 24 24" ... >
+     <g><path ... </g>
+  </symbol>
+</svg>
+```
+
+    - Используем иконку с помощью тэга `<use>`
+
+```svg
+<svg width="100%" viewBox="0 0 16 16" ... >
+  <use xlinkHref="https://cdn.dddd.ru/FileWithSprites.svg#Icon1" />
+</svg>
+
+```

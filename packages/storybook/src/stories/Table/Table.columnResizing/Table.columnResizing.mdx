@@ -1,0 +1,23 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as TableColumnResizingStories from './Table.columnResizing.stories';
+
+<Meta of={TableColumnResizingStories} name="Docs" />
+
+# ColumnResizing
+
+Изменение ширины колонок в legacy `Table`.
+
+## Ключевые особенности
+
+- Включается через `tableConfig.resizableColumn: true`
+- Для колонки можно задать `resizable`, `width`, `minWidth` и `maxWidth`
+- Совместимо с закреплением колонок через `columnsControl`
+- События изменения ширины доступны через `onColumnResize`
+
+## Особенности
+
+В старом API флаг `resizable` задается на колонках явно. Если используется `columnsControl`, учитывайте закрепленные колонки и дефолтные состояния.
+
+Описание типов - в разделе [API](?path=/docs/локальные-компоненты-table-columnresizing-api--docs).
+
+<Stories />

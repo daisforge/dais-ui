@@ -1,0 +1,88 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as TableTooltipStories from './TableCanvasTooltip.stories';
+
+<Meta of={TableTooltipStories} name="Docs" />
+
+# Tooltip на канвасной таблице
+
+**tableConfig.tooltip + columnConfig.cellTooltip / headerCellTooltip**
+
+Один общий тултип для элементов, отрисованных на канвасе (ячейки, заголовки, кнопки и т.д.). Тултип показывается при наведении на те канвас-элементы, которые явно участвуют в механике тултипа.
+
+## Принцип работы
+
+- На таблице работает **один тултип**: при наведении на разные элементы отображается один и тот же тултип-оверлей с нужным текстом/пропсами для текущего элемента.
+- Участие элемента в показе тултипа задаётся через проп **`portalHoverEnabled`** на Canvas-примитиве — без этого пропса наведение на элемент не будет передаваться в подсистему тултипа.
+
+## Три источника конфига (по приоритету)
+
+1. **Проп `tooltip` на Canvas-элементе** — задаётся прямо на `Canvas.Container`, `Canvas.Button` и т.д. Строка или объект с `text`. Самый высокий приоритет. **Работает всегда.**
+2. **Поле `cellTooltip` / `headerCellTooltip` в `columnConfig`** — конфиг на уровне колонки. Может быть строкой, объектом или функцией `(context) => config | null`. Для ячеек используется `cellTooltip`, для заголовков — `headerCellTooltip`. **Требует `tooltip.enabled: true` в `tableConfig`.**
+3. **Встроенный маппинг по `nodeId`** — внутренний словарь (например, иконка drag в заголовке → «Перетащить колонку»). **Работает всегда.**
+
+## Как включить тултип на элементе
+
+### Через `tooltip` на Canvas-примитиве
+
+В `renderCell` / `renderHeaderCell` задать `portalHoverEnabled` и `tooltip` на нужном элементе:
+
+```tsx
+renderCell: () => (
+  <Canvas.Button
+    portalHoverEnabled
+    tooltip="Нажмите для перехода"
+    onClick={() => {}}
+  >
+    Подробнее
+  </Canvas.Button>
+);
+```
+
+### Авто-тултип для обрезанного текста (`autoTooltip` на `Canvas.Text`)
+
+Частный случай node-тултипа: `Canvas.Text` с пропом `autoTooltip` показывает тултип с полным текстом **только когда текст реально обрезан в многоточие** (однострочный ellipsis или многострочный clamp). `portalHoverEnabled` включается автоматически, `tooltip.enabled: true` в `tableConfig` не требуется — работает всегда, как и остальные node-тултипы.
+
+```tsx
+renderCell: ({ row }) => (
+  <Canvas.Text
+    overflow="hidden"
+    textOverflow="ellipsis"
+    autoTooltip
+    style={{ flexGrow: 1 }}
+  >
+    {row.longText}
+  </Canvas.Text>
+);
+```
+
+Поведение настраивается объектом: `placement`, `view`, `mouseEnterDelay` / `mouseLeaveDelay`, трансформация текста через `text`, выключение через `enabled: false`. Подробности и правила — в [доке Canvas.Text](?path=/docs/локальные-компоненты-tablecanvas-canvaselements-canvastext--docs), тип — `CanvasTextAutoTooltip`.
+
+> Действует только на `Canvas.Text` в canvas-разметке (`renderCell` / `renderHeaderCell`). Обычные текстовые ячейки (примитивные значения без `renderCell`) рисуются встроенным text-рендерером glide — авто-тултип на них пока не распространяется.
+
+### Через `cellTooltip` / `headerCellTooltip` в `columnConfig`
+
+Задать на уровне колонки — строкой, объектом или функцией. Не забудьте включить `tooltip.enabled: true`:
+
+```tsx
+tableConfig={{
+  tooltip: { enabled: true },
+}}
+columnConfig={[
+  {
+    key: 'task',
+    name: 'Title',
+    headerCellTooltip: 'Название задачи',
+    cellTooltip: ({ row }) => `Задача: ${row.task}`,
+  },
+]}
+```
+
+## Формат конфига
+
+- **Строка** — используется как текст тултипа с дефолтными пропсами.
+- **Объект** `{ text: string, placement?, view?, mouseEnterDelay?, ... }` — текст и кастомные пропсы для `Tooltip`.
+- **`null`** — тултип для этого элемента не показывается (переход к следующему приоритету или без тултипа).
+
+Подробное описание типов и контракта — в разделе [API](/docs/локальные-компоненты-tablecanvas-tooltip-api--docs).
+
+<Stories />

@@ -1,0 +1,210 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as TourWidgetStories from './TourWidget.stories';
+
+<Meta of={TourWidgetStories} name="Docs" />
+
+# TourWidget
+
+`TourWidget` — локальная compound-обертка для карточки тура. Компонент отвечает за внешний вид, раскладку, фон, буллеты и пульсацию через mixin, но не управляет сценарием тура, переходами между шагами и позиционированием относительно target-элемента.
+
+## Ключевые особенности
+
+- Две ориентации: `vertical` и `horizontal`.
+- Compound API: `TourWidget.Header`, `TourWidget.Content`, `TourWidget.Footer`, `TourWidget.Bullets`, `TourWidget.Bullet`.
+- Активный шаг передается в `TourWidget` через `activeStepIndex`, а `Bullet` читает его автоматически.
+- `Content` не фиксирует размер вложенного элемента и дает ему занять `100%`.
+- `$css` есть у корневого компонента и compound-частей для локального переопределения стилей.
+- Пульсация вынесена в `tourPulseMixin` и применяется отдельно к target-элементу.
+
+## Использование
+
+```tsx
+import { ViewContainer } from '@dais-ui/ui-kit';
+import { Box, Button, TourWidget } from '@dais-ui/ui-kit';
+import { tourPulseMixin } from '@dais-ui/ui-kit/mixins';
+```
+
+Базовая схема работы:
+
+```tsx
+const [activeStepIndex, setActiveStepIndex] = useState(0);
+
+<ViewContainer view="onDark">
+  <TourWidget
+    activeStepIndex={activeStepIndex}
+    $css={{ width: '286px', height: '480px' }}
+  >
+    <TourWidget.Content>
+      <Box as="img" src={imageSrc} alt="" $css={{ width: '100%' }} />
+    </TourWidget.Content>
+    <TourWidget.Header title="Title" description="Description" />
+    <TourWidget.Footer>
+      <TourWidget.Bullets count={steps.length} />
+      <Button onClick={() => setActiveStepIndex((step) => step + 1)}>
+        Далее
+      </Button>
+    </TourWidget.Footer>
+  </TourWidget>
+</ViewContainer>;
+```
+
+## Compound-компоненты
+
+- `TourWidget.Header` — выводит `title`, `description` и дополнительные `children`.
+- `TourWidget.Content` — область под изображение, видео, иллюстрацию или любой ReactNode.
+- `TourWidget.Footer` — произвольная зона для кнопок, ссылки пропуска и буллетов.
+- `TourWidget.Bullets` — контейнер, который рисует массив буллетов по `count`; если буллетов больше семи, отображает окно максимум на 7 точек, прокручивает его по `activeStepIndex`, а крайние видимые точки уменьшаются до `6px`, когда за ними есть скрытые шаги.
+- `TourWidget.Bullet` — низкоуровневый визуальный индикатор шага. Активность считается как `active ?? index === activeStepIndex`.
+
+## Правильная композиция
+
+`TourWidget.Header`, `TourWidget.Content` и `TourWidget.Footer` нужно вкладывать напрямую в `TourWidget`. Компонент использует эти части как слоты: так он понимает, есть ли в туре медиа-зона, и выбирает корректную раскладку для `horizontal` и `vertical`.
+
+Правильно:
+
+```tsx
+<TourWidget orientation="horizontal">
+  <TourWidget.Content>
+    <Box as="img" src={imageSrc} alt="" $css={{ width: '100%' }} />
+  </TourWidget.Content>
+  <TourWidget.Header title="Title" description="Description" />
+  <TourWidget.Footer>
+    <TourWidget.Bullets count={steps.length} />
+  </TourWidget.Footer>
+</TourWidget>
+```
+
+Если нужен свой wrapper для картинки, кнопок или текста, размещайте его внутри соответствующего slot-компонента.
+
+```tsx
+<TourWidget orientation="horizontal">
+  <TourWidget.Content>
+    <MyImageWrapper>
+      <Box as="img" src={imageSrc} alt="" />
+    </MyImageWrapper>
+  </TourWidget.Content>
+  <TourWidget.Header>
+    <MyHeaderContent />
+  </TourWidget.Header>
+  <TourWidget.Footer>
+    <MyFooterContent />
+  </TourWidget.Footer>
+</TourWidget>
+```
+
+Не оборачивайте сам `TourWidget.Content` во внешний компонент. В таком случае `TourWidget` не сможет определить медиа-зону как свой прямой slot и горизонтальная раскладка будет работать как вариант без `Content`.
+
+```tsx
+<TourWidget orientation="horizontal">
+  <MyContentWrapper>
+    <TourWidget.Content>
+      <Box as="img" src={imageSrc} alt="" />
+    </TourWidget.Content>
+  </MyContentWrapper>
+  <TourWidget.Header title="Title" />
+  <TourWidget.Footer />
+</TourWidget>
+```
+
+## Активный шаг
+
+`activeStepIndex` хранится на корневом `TourWidget`. Внутри компонент создает локальный context, поэтому не нужно импортировать `Provider` или прокидывать `active` в каждый буллет.
+
+```tsx
+<TourWidget activeStepIndex={5}>
+  <TourWidget.Footer>
+    <TourWidget.Bullets count={10} />
+  </TourWidget.Footer>
+</TourWidget>
+```
+
+Для переключения шагов используйте свои кнопки или другой внешний контрол. `TourWidget.Bullets` не кликабельный и только отображает `activeStepIndex`.
+
+```tsx
+<TourWidget activeStepIndex={activeStepIndex}>
+  <TourWidget.Footer>
+    <TourWidget.Bullets count={10} />
+    <Button onClick={() => setActiveStepIndex((step) => step + 1)}>
+      Далее
+    </Button>
+  </TourWidget.Footer>
+</TourWidget>
+```
+
+Если нужна полностью ручная раскладка или состояние отдельной точки, используйте низкоуровневый `TourWidget.Bullet` и передайте `active`.
+
+## Content
+
+`TourWidget.Content` не задает жесткий размер медиа. Размер определяет вложенная нода или стиль самого `Content`.
+
+```tsx
+<TourWidget.Content>
+  <Box
+    as="img"
+    src={imageSrc}
+    alt=""
+    $css={{ width: '270px', height: '270px' }}
+  />
+</TourWidget.Content>
+```
+
+## Пульсация
+
+Пульсация не встроена в `TourWidget`, потому что target-элемент и позиционирование тура контролируются снаружи. Для target используется `tourPulseMixin`.
+
+```tsx
+import styled from 'styled-components';
+
+const Target = styled(Box)`
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    ${tourPulseMixin()}
+  }
+`;
+```
+
+По умолчанию `tourPulseMixin` сам задает `inset: -4px` и `border-radius: 16px` и не добавляет заливку на target.
+
+## Темная тема
+
+`TourWidget` всегда используется на темной поверхности. Если внутри футера есть SDDS-кнопки или ссылки, оборачивайте композицию в `ViewContainer view="onDark"`, чтобы вложенные controls взяли on-dark токены без ручных переопределений цвета.
+
+```tsx
+<ViewContainer view="onDark">
+  <TourWidget activeStepIndex={activeStepIndex}>
+    <TourWidget.Footer>
+      <Button view="secondary">Назад</Button>
+      <Button view="white">Далее</Button>
+    </TourWidget.Footer>
+  </TourWidget>
+</ViewContainer>
+```
+
+## CSS-переменные
+
+Корневой `$css` можно использовать для точечной настройки внешнего вида.
+
+```tsx
+<TourWidget
+  $css={{
+    '--tour-widget-min-width': '0',
+    '--tour-widget-border-radius': '16px',
+    '--tour-widget-gradient-frame-height': '34%',
+    '--tour-widget-gradient-frame-fade': '56%',
+  }}
+/>
+```
+
+## Особенности
+
+- `TourWidget` не содержит positioner и не добавляет зависимость на `floating-ui`.
+- Компонент не хранит шаги и не переключает их сам, только отображает `activeStepIndex`.
+- `TourWidget.Bullet` — это span-индикатор, а не интерактивная кнопка.
+- `TourWidget.Bullets` — это div-viewport со сдвигающимся треком точек; при `count > 7` видны максимум семь буллетов.
+
+Описание типов — в разделе [API](?path=/docs/локальные-компоненты-tourwidget-api--docs).
+
+<Stories />

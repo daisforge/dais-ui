@@ -1,0 +1,427 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as TableCopyPasteFillStories from './TableCanvas.CopyPasteFill.stories';
+
+<Meta of={TableCopyPasteFillStories} name="Docs" />
+
+# Clipboard — копирование, вставка, fill handle
+
+**tableConfig.cellTransfer**
+
+Фича реализует Copy (Ctrl+C), Paste (Ctrl+V) и Fill Handle (drag-to-fill) для TableCanvas.
+
+---
+
+## Формат данных
+
+Данные копируются и вставляются в формате **TSV (Tab-Separated Values)** — тот же
+формат, который использует Excel и Google Sheets. Значения разделяются `\t` (tab)
+между колонками и `\n` между строками.
+
+Благодаря этому:
+
+- Скопированное из TableCanvas можно вставить в Excel / Google Sheets
+- Скопированное из Excel можно вставить в TableCanvas
+
+---
+
+## Copy (Ctrl+C / Cmd+C)
+
+Копирование работает всегда — и в режиме редактирования, и без него.
+Отключить можно только явно через `cellTransfer: { enabled: false }`.
+
+Копируется ровно то, что сейчас выделено в таблице (`selection.current.range`).
+Фича не привязана к `highlightActiveType` — она работает с фактическим
+выделением, а не с тем, как оно визуально подсвечивается.
+
+### Что копируется из ячейки
+
+Для обычной ячейки: `row[column.key]?.toString()`.
+
+Для кастомной canvas-ячейки (Canvas.Badge, Canvas.Text и т.д.) текст из canvas
+автоматически извлечь нельзя. Поэтому используется `copyData` в конфиге
+колонки:
+
+```tsx
+{
+  key: 'status',
+  renderCell: ({ row }) => (
+    <Canvas.Badge text={row.status} view="positive" size="s" />
+  ),
+  // Указываем, что копировать — текстовое значение из row
+  copyData: (row) => row.status ?? '',
+}
+```
+
+Если `copyData` не указан, используется fallback на `row[column.key]?.toString()`.
+Для canvas-ячеек это может дать пустую строку или `[object Object]`, поэтому
+`copyData` рекомендуется всегда указывать для кастомных рендеров.
+
+### SubRows при копировании
+
+Для колонок с `subRow.keyOfColumnInSubRow` данные subrow-ячеек автоматически
+извлекаются из нужного поля:
+
+```tsx
+{
+  key: 'block',
+  subRow: {
+    keyOfColumnInSubRow: (lvl) => {
+      switch (lvl) {
+        case 1: return 'tribe';
+        case 2: return 'product';
+        default: return 'block';
+      }
+    },
+  },
+}
+// Для parent (lvl=0): копирует row.block
+// Для subrow lvl=1: копирует row.tribe
+// Для subrow lvl=2: копирует row.product
+```
+
+---
+
+## Paste (Ctrl+V / Cmd+V)
+
+Вставка работает только в режиме редактирования (`editing` активен).
+
+Порядок действий при вставке:
+
+1. Чтение TSV из clipboard (`navigator.clipboard.readText`)
+2. Парсинг в 2D-массив строк
+3. Определение целевой ячейки (из текущего selection)
+4. Применение значений начиная от целевой ячейки вправо и вниз
+
+### Валидация типов при вставке (type-check)
+
+По умолчанию включена проверка `paste.validation: 'type-check'`:
+
+- **`inputNumber` / `contentFormat: 'number'`** — значение должно парситься в число. Если нет, ячейка пропускается.
+- **`select` (ComboBox)** — значение должно совпадать с одной из `options` (по `value` или `text`). Если нет, ячейка пропускается.
+- **`inputString`** — всегда валидно, строка вставляется как есть.
+
+Невалидные ячейки пропускаются, остальные вставляются нормально.
+
+Отключить: `paste: { validation: 'none' }`.
+
+Разделители для парсинга чисел берутся из `column.contentFormat`
+(`decimalSeparator`, `thousandSeparator`), а не из локали.
+
+### Readonly-ячейки
+
+По умолчанию (`readonlyBehavior: 'skip'`) readonly-ячейки пропускаются,
+остальные вставляются нормально.
+
+При `readonlyBehavior: 'abort'` любая readonly-ячейка в зоне вставки отменяет
+всю вставку целиком (поведение Excel).
+
+### Выход за границы
+
+По умолчанию (`overflowBehavior: 'truncate'`) данные обрезаются по границе
+таблицы. То, что не влезло, теряется.
+
+При `overflowBehavior: 'abort'` вставка отменяется, если данные не влезают.
+
+### Вставка в кастомные ячейки (Canvas.Badge и т.д.)
+
+`writeCellValue` пишет строку в `row[column.key]`. Кастомный рендер на следующем
+цикле получает обновлённый `row` и отрисовывает новое значение.
+
+Если `renderCell` ожидает в `row[key]` не строку, а объект, вставка строки
+сломает рендер. В этом случае используйте `onBeforePaste` для трансформации:
+
+```tsx
+cellTransfer: {
+  onBeforePaste: (data, meta) => {
+    // Трансформировать строки в нужные объекты
+    return data.map((row, y) =>
+      row.map((value, x) => {
+        const cell = meta.targetCells[y]?.[x];
+        if (cell?.column.key === 'complexField') {
+          return JSON.stringify({ label: value, color: 'default' });
+        }
+        return value;
+      })
+    );
+  },
+}
+```
+
+### SubRows при вставке
+
+Работает аналогично копированию — через `keyOfColumnInSubRow`. Если у subrow
+данные в другом поле, `writeCellValue` запишет в правильный ключ.
+
+Отключить вставку в subrows: `paste: { allowSubRows: false }`.
+
+### Поток данных при вставке (pipeline)
+
+При Ctrl+V значения проходят через цепочку проверок. Каждый шаг может отменить
+операцию или пропустить отдельную ячейку:
+
+```
+Ctrl+V
+  │
+  ▼
+1. editModeEnabled?
+   └─ нет → СТОП (вставка только в editing)
+  │
+  ▼
+2. navigator.clipboard.readText() → parseTsv() → string[][]
+   └─ пустой clipboard → СТОП
+  │
+  ▼
+3. onBeforePaste(data, meta)?
+   └─ вернул false -> СТОП (пользователь отменил)
+   └─ вернул модифицированный data → используем его
+  │
+  ▼
+4. overflowBehavior: данные выходят за границы?
+   └─ 'abort' → СТОП
+   └─ 'truncate' → обрезаем (default)
+  │
+  ▼
+5. readonlyBehavior: есть readonly-ячейки в зоне вставки?
+   └─ 'abort' → СТОП (первый проход, до записи)
+   └─ 'skip' → пропускаем эти ячейки (default)
+  │
+  ▼
+6. Для каждой ячейки:
+   │
+   ├─ shouldSkipCell?
+   │  ├─ no-row / нет колонки → skip
+   │  ├─ service-column → skip
+   │  ├─ subrow + !allowSubRows → skip
+   │  └─ not-editable → skip
+   │
+   ├─ validation: 'type-check'?
+   │  ├─ inputNumber: не парсится в число → skip
+   │  ├─ select: значения нет в options → skip
+   │  └─ inputString: OK
+   │
+   └─ writeCellValue(row, column, lvl, value) → запись
+  │
+  ▼
+7. onRowsChange(newRows, { column, indexes })
+   tree update → setRows → re-render
+```
+
+Fill handle проходит тот же pipeline начиная с шага 6 (без clipboard, без
+overflow — TableCanvas сам ограничивает destination range). Перед записью вызывается
+`onBeforeFill(data, meta)` — аналог `onBeforePaste` для fill handle.
+
+---
+
+## Нотификации об ошибках
+
+Ошибки copy / paste / fill дополнительно сообщаются во внешний модуль
+[Notifications](?path=/docs/локальные-компоненты-tablecanvas-notifications--docs)
+через `tableConfig.notifications.onNotification` — таблица UI не рисует, тост
+показывает потребитель (`type` = операция):
+
+- `paste` / `readonly-abort` — при `readonlyBehavior: 'abort'` в зоне вставки
+  есть readonly-ячейка;
+- `paste` / `overflow-abort` — при `overflowBehavior: 'abort'` данные не влезли;
+- `paste` / `validation-skipped` (`warning`) — часть значений пропущена
+  type-check валидацией;
+- `fill` / `readonly-abort` и `fill` / `validation-skipped` — то же для
+  автозаполнения (fill handle);
+- `copy` / `paste` с code `multi-range-scattered` — 2D-разброс в
+  `multi-range-cell`.
+
+## Перехват данных — onBeforeCopy / onBeforePaste
+
+Колбэки вызываются перед операцией. Получают:
+
+- Первый аргумент: `data: string[][]` — 2D-массив значений (TSV-формат)
+- Второй аргумент: `meta` — информация о ячейках
+
+### onBeforeCopy
+
+```tsx
+cellTransfer: {
+  onBeforeCopy: (data, meta) => {
+    // data — string[][] (что будет в clipboard)
+    // meta.range — Rectangle выделения
+    // meta.cells — CellTransferCellInfo[][] (row, column, lvl, rawValue, formattedValue)
+
+    console.log('Копируем:', data);
+    console.log('Колонки:', meta.cells[0]?.map(c => c.column.key));
+
+    // Модифицировать данные:
+    return data.map(row => row.map(val => val.toUpperCase()));
+
+    // Или отменить копирование:
+    return false;
+  },
+}
+```
+
+### onBeforePaste
+
+```tsx
+cellTransfer: {
+  onBeforePaste: (data, meta) => {
+    // data — string[][] (что из clipboard)
+    // meta.target — { col, row } верхний-левый угол вставки
+    // meta.targetCells — CellTransferCellInfo[][] (инфа о ЦЕЛЕВЫХ ячейках)
+    // meta.selection — GridSelection
+
+    // Пример: ограничить кол-во строк
+    if (data.length > 100) {
+      alert('Слишком много строк для вставки');
+      return false;
+    }
+
+    // Пример: трансформировать данные
+    return data;
+  },
+}
+```
+
+---
+
+## Fill Handle (drag-to-fill)
+
+В правом-нижнем углу выделения появляется квадратик. Перетаскивая его мышью,
+можно размножить значения (как в Excel / Google Sheets).
+
+Квадратик и preview-рамку таблица рисует нативно — фича только применяет
+значения source range в destination range.
+
+### Поведение
+
+- **Одна ячейка** — значение дублируется во все target-ячейки
+- **Диапазон N×M** — значения повторяются циклически
+- **Type-check валидация** — та же, что при paste (числа, select-опции)
+- **Readonly-ячейки** в destination пропускаются
+- **Квадратик скрывается**, если source-ячейка non-editable
+
+### Направления
+
+По умолчанию `allowedDirections: 'orthogonal'` — snap к ближайшей оси
+(только строки или только колонки, не диагональ).
+
+Варианты: `'horizontal'`, `'vertical'`, `'orthogonal'`, `'any'`.
+
+### Перехват — onBeforeFill
+
+Колбэк `onBeforeFill` вызывается перед применением значений при fill handle.
+Получает `data: string[][]` и `meta: FillMeta` (см. API — структура meta
+отличается от `CopyMeta` / `PasteMeta`).
+
+```tsx
+cellTransfer: {
+  fillHandle: true,
+  onBeforeFill: (data, meta) => {
+    // data — string[][] (значения, которые будут вставлены)
+    // meta.sourceRange — Rectangle источника
+    // meta.destinationRange — Rectangle назначения
+    // meta.sourceCells — CellTransferCellInfo[][] (исходные ячейки, включая row)
+    // meta.targetCells — CellTransferCellInfo[][] (целевые ячейки до заполнения)
+
+    const sourceRow = meta.sourceCells[0]?.[0]?.row;
+    console.log('Исходная строка:', sourceRow);
+
+    // Модифицировать данные:
+    return data;
+
+    // Или отменить:
+    return false;
+  },
+}
+```
+
+**Типичный сценарий:** при перетаскивании одной колонки нужно скопировать
+и соседние колонки из исходной строки. Source row доступен через
+`meta.sourceCells[rowIndex][colIndex].row`.
+
+### type в onRowsChange
+
+Второй аргумент `onRowsChange` содержит поле `type` (`'edit'` | `'paste'` | `'fill'`),
+указывающее источник изменения строк. При `type === 'fill'` дополнительно
+передаются `fillMeta` (FillMeta) и `fillResult` (результат `onBeforeFill`,
+если он задан).
+
+---
+
+## Кастомные хоткеи
+
+По умолчанию: Ctrl+C (copy), Ctrl+V (paste). На Mac — Cmd вместо Ctrl.
+
+Хоткеи работают независимо от раскладки (RU/EN) — используется `event.code`
+(`'KeyC'`, `'KeyV'`), а не `event.key` (`'c'`, `'с'`).
+
+```tsx
+cellTransfer: {
+  hotkeys: {
+    copy: { code: 'KeyC', ctrl: true, alt: true },   // Ctrl+Alt+C
+    paste: [
+      { code: 'KeyV', ctrl: true },                   // Ctrl+V (дефолт сохраняем)
+      { code: 'Insert', shift: true },                // Shift+Insert (альтернатива)
+    ],
+  },
+}
+```
+
+Если задать только кастомный хоткей (без массива), дефолтный Ctrl+C / Ctrl+V
+перестаёт работать (replace-семантика). Чтобы сохранить оба варианта,
+передавайте массив, как в примере для `paste` выше.
+
+---
+
+## Конфигурация
+
+```tsx
+tableConfig={{
+  cellTransfer: {
+    // Явно включить/выключить (copy работает всегда по умолчанию)
+    enabled: true,
+
+    // Хоткеи
+    hotkeys: { copy: ..., paste: ... },
+
+    // Настройки paste
+    paste: {
+      readonlyBehavior: 'skip' | 'abort',     // default: 'skip'
+      allowSubRows: true | false,             // default: true
+      overflowBehavior: 'truncate' | 'abort', // default: 'truncate'
+      broadcast: true | false,                // default: false
+      validation: 'none' | 'type-check',      // default: 'type-check'
+    },
+
+    // Fill handle
+    fillHandle: true | false | {
+      shape: 'square' | 'circle',
+      size: number,
+      allowedDirections: 'horizontal' | 'vertical' | 'orthogonal' | 'any',
+      readonlyBehavior: 'skip' | 'abort',
+      allowSubRows: boolean,
+    },
+
+    // Перехваты
+    onBeforeCopy: (data, meta) => data | false,
+    onBeforePaste: (data, meta) => data | false,
+    onBeforeFill: (data, meta) => data | false,
+  },
+}}
+```
+
+---
+
+## Debug
+
+```js
+window.__TABLE_CANVAS_CLIPBOARD_DEBUG__ = true;
+```
+
+Включите уровень "Verbose" в DevTools. Префиксы логов:
+
+- `[TableCanvas/cellTransfer]` — перехват хоткеев
+- `[TableCanvas/copy]` — копирование
+- `[TableCanvas/paste]` — вставка (включая skipped by validation)
+- `[TableCanvas/fillHandle]` — fill handle (source, dest, affected rows)
+
+Полное описание API типов см. на странице **Clipboard / API**.
+
+<Stories />
