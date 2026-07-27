@@ -1,8 +1,8 @@
-# @dais-ui/ui-kit — Контекст для GIGACODE
+# @daisforge/ui — Контекст для GIGACODE
 
 ## Обзор проекта
 
-**Название**: `@dais-ui/ui-kit`
+**Название**: `@daisforge/ui`
 **Тип**: Моно-репозиторий (Lerna + Nx v19)
 **Назначение**: Комплексная библиотека React-компонентов для приложений Сбердиджитал Финанса, соответствующих дизайн-системе Plasma.
 
@@ -364,7 +364,7 @@ vi.mock('./components/DrawerX', () => ({
     <div data-testid="mock-drawer-x" data-props={JSON.stringify(props)}>
       {children}
     </div>
-  )),
+  ))
 }));
 
 import { DrawerDF } from './DrawerDF';
@@ -455,7 +455,7 @@ nfp-docs(DrawerDF): в story поправлены отступы между ос
 
 ### Информация о пакете
 
-- **Название**: `@dais-ui/ui-kit`
+- **Название**: `@daisforge/ui`
 
 - **Доступ**: Public
 - **Формат версии**: `1.0.0` (управляется Lerna)

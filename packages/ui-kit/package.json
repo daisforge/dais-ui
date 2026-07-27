@@ -1,5 +1,5 @@
 {
-  "name": "@dais-ui/ui-kit",
+  "name": "@daisforge/ui",
   "version": "1.10.0",
   "main": "./index.cjs",
   "module": "./index.mjs",

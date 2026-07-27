@@ -1,6 +1,6 @@
 ## Библиотека компонентов dais-ui/ui-kit
 
-**Название**: @dais-ui/ui-kit
+**Название**: @daisforge/ui
 **Тип**: Моно-репозиторий (Monorepo) на базе Lerna + Nx
 
 ---
@@ -33,7 +33,7 @@
 ### Структура моно-репозитория
 
 ```
-@dais-ui/ui-kit/
+@daisforge/ui/
 ├── packages/
 │   ├── ui-kit/           # Основной npm-пакет с компонентами
 │   ├── storybook/        # Storybook для документации и тестирования
@@ -651,6 +651,6 @@ npm run ui-kit:generate-tokens         # Генерация токенов
 ### Публикация
 
 1. Lerna version (conventional commits)
-2. Пакет: `@dais-ui/ui-kit`
+2. Пакет: `@daisforge/ui`
 3. Registry: `https://nexus-ci.dddddd.ru/repository/npm-release/`
 4. Access: `public`
