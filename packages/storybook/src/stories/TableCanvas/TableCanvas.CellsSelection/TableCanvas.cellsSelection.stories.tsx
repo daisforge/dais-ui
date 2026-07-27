@@ -60,7 +60,7 @@ import {
   type GridSelection,
   type CellsSelectionMode,
   TableCanvas,
-} from '@dais-ui/ui-kit/components/TableCanvas';
+} from '@daisforge/ui/components/TableCanvas';
 
 const SELECTION_MODE_OPTIONS: Array<{ label: string; value: CellsSelectionMode }> = [
   { label: 'range-cell', value: 'range-cell' },

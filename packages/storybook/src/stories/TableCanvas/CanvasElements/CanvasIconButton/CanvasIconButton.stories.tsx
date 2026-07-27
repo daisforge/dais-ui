@@ -37,8 +37,8 @@ const meta: Meta = {
 export default meta;
 
 const code = `
-import { Canvas, ColumnConfig, TableCanvas } from '@dais-ui/ui-kit/components/TableCanvas';
-import { IconSearch } from '@dais-ui/ui-kit/icons';
+import { Canvas, ColumnConfig, TableCanvas } from '@daisforge/ui/components/TableCanvas';
+import { IconSearch } from '@daisforge/ui/icons';
 
 const icon = Canvas.icon(<IconSearch />);
 

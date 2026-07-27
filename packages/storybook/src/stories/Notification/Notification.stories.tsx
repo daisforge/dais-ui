@@ -187,11 +187,11 @@ function VariantsExampleRender() {
 }
 
 const variantsPreCode = `
-import { Button, Notification, NotificationsProvider, addNotification } from '@dais-ui/ui-kit';
-import { Typography } from '@dais-ui/ui-kit';
-import { s } from '@dais-ui/ui-kit/constants';
-import { IconPlasma } from '@dais-ui/ui-kit/icons';
-import { textPrimary } from '@dais-ui/ui-kit/tokens';
+import { Button, Notification, NotificationsProvider, addNotification } from '@daisforge/ui';
+import { Typography } from '@daisforge/ui';
+import { s } from '@daisforge/ui/constants';
+import { IconPlasma } from '@daisforge/ui/icons';
+import { textPrimary } from '@daisforge/ui/tokens';
 import React from 'react';
 
 ${getFuncAsString(

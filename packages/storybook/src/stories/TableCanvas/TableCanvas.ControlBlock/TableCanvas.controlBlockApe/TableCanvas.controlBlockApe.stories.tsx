@@ -26,8 +26,8 @@ export default meta;
 type Story = StoryObj;
 
 const preCode = `
-import { ColumnConfig, TableCanvas } from '@dais-ui/ui-kit';
-import { TableTabs } from '@dais-ui/ui-kit';
+import { ColumnConfig, TableCanvas } from '@daisforge/ui';
+import { TableTabs } from '@daisforge/ui';
 `;
 
 const useBaseSetup = () => {

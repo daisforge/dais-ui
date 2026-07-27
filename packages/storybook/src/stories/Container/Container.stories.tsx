@@ -112,7 +112,7 @@ export const Default: Story = {
       source: {
         format: 'dedent',
         code: `
-                    import { BodyL, Box, Container } from '@dais-ui/ui-kit';
+                    import { BodyL, Box, Container } from '@daisforge/ui';
 
                     <Box height={200}>
                         <Container>
@@ -138,7 +138,7 @@ export const Stretch: Story = {
       source: {
         format: 'dedent',
         code: `
-                import { BodyL, Box, Container } from '@dais-ui/ui-kit';
+                import { BodyL, Box, Container } from '@daisforge/ui';
 
                 <Box height={200}>
                     <Container stretch>
@@ -167,7 +167,7 @@ export const Split: Story = {
       source: {
         format: 'dedent',
         code: `
-                import { Box, Container } from '@dais-ui/ui-kit';
+                import { Box, Container } from '@daisforge/ui';
 
                 <Box height={200}>
                     <Container stretch split view="30/70">
@@ -198,7 +198,7 @@ export const SplitThreeEqualColumns: Story = {
       source: {
         format: 'dedent',
         code: `
-                import { Box, Container } from '@dais-ui/ui-kit';
+                import { Box, Container } from '@daisforge/ui';
 
                 <Box height={200}>
                     <Container stretch split view="1/1/1">
@@ -230,7 +230,7 @@ export const SplitWideCenterColumn: Story = {
       source: {
         format: 'dedent',
         code: `
-                import { Box, Container } from '@dais-ui/ui-kit';
+                import { Box, Container } from '@daisforge/ui';
 
                 <Box height={400}>
                     <Container stretch split view="1/3/1">
@@ -262,7 +262,7 @@ export const SplitFixedFluid: Story = {
       source: {
         format: 'dedent',
         code: `
-                import { Box, Container } from '@dais-ui/ui-kit';
+                import { Box, Container } from '@daisforge/ui';
 
                 <Box height={200}>
                     <Container stretch split view="fixed-fluid" >

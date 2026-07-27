@@ -32,7 +32,7 @@ export default meta;
 type Story = StoryObj<typeof GridDND>;
 
 const preCode = `
-import { GridDND } from '@dais-ui/ui-kit';
+import { GridDND } from '@daisforge/ui';
 
 `;
 

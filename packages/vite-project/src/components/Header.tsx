@@ -1,4 +1,4 @@
-import type { GlobalStyleTheme } from '@dais-ui/ui-kit';
+import type { GlobalStyleTheme } from '@daisforge/ui';
 
 import { type PageKey, pageLabels, pinnedPages } from '../config/pages';
 

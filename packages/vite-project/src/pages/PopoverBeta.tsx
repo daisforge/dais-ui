@@ -1,4 +1,4 @@
-import { Button, PopoverBeta } from '@dais-ui/ui-kit';
+import { Button, PopoverBeta } from '@daisforge/ui';
 
 export const PopoverBetaExample = () => {
   return (

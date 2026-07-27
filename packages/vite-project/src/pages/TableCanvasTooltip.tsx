@@ -4,7 +4,7 @@ import {
   Canvas,
   TableCanvas,
   type ColumnConfig,
-} from '@dais-ui/ui-kit/components/TableCanvas';
+} from '@daisforge/ui/components/TableCanvas';
 
 import { createRows, type Row } from '../shared/tableData';
 

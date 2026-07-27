@@ -22,7 +22,7 @@ export default meta;
 type Story = StoryObj;
 
 const preCode = `
-import { ColumnConfig, Table } from '@dais-ui/ui-kit';
+import { ColumnConfig, Table } from '@daisforge/ui';
 import React, { useMemo, useState } from 'react';
 
 `;

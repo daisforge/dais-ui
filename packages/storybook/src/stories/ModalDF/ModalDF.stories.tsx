@@ -260,8 +260,8 @@ import {
   Link,
   ModalDF,
   TextS,
-} from '@dais-ui/ui-kit';
-import { s } from '@dais-ui/ui-kit/constants';
+} from '@daisforge/ui';
+import { s } from '@daisforge/ui/constants';
 import { longLorem } from '../DrawerDF/data';
 import React, { useState } from 'react';
 
@@ -278,8 +278,8 @@ import {
   Link,
   ModalDF,
   TextS,
-} from '@dais-ui/ui-kit';
-import { s } from '@dais-ui/ui-kit/constants';
+} from '@daisforge/ui';
+import { s } from '@daisforge/ui/constants';
 import { shortLorem } from '../DrawerDF/data';
 import React, { useState } from 'react';
 
@@ -296,8 +296,8 @@ import {
   Link,
   ModalDF,
   TextS,
-} from '@dais-ui/ui-kit';
-import { s } from '@dais-ui/ui-kit/constants';
+} from '@daisforge/ui';
+import { s } from '@daisforge/ui/constants';
 import { longLorem } from '../DrawerDF/data';
 import React, { useState } from 'react';
 
@@ -308,8 +308,8 @@ ${getFuncAsString(
 `;
 
 const modalDFEmptyPreCode = `
-import { Button, ModalDF } from '@dais-ui/ui-kit';
-import { s } from '@dais-ui/ui-kit/constants';
+import { Button, ModalDF } from '@daisforge/ui';
+import { s } from '@daisforge/ui/constants';
 import { longLorem } from '../DrawerDF/data';
 import React, { useState } from 'react';
 

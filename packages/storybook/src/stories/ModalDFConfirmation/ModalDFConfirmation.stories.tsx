@@ -176,8 +176,8 @@ function CustomFooterExampleRender() {
 }
 
 const savingExamplePreCode = `
-import { Button, ModalDFConfirmation } from '@dais-ui/ui-kit';
-import { s } from '@dais-ui/ui-kit/constants';
+import { Button, ModalDFConfirmation } from '@daisforge/ui';
+import { s } from '@daisforge/ui/constants';
 import React, { useState } from 'react';
 
 ${getFuncAsString(
@@ -187,7 +187,7 @@ ${getFuncAsString(
 `;
 
 const variantsExamplePreCode = `
-import { Button, ModalDFConfirmation } from '@dais-ui/ui-kit';
+import { Button, ModalDFConfirmation } from '@daisforge/ui';
 import React, { useState } from 'react';
 
 ${getFuncAsString(
@@ -197,8 +197,8 @@ ${getFuncAsString(
 `;
 
 const customFooterExamplePreCode = `
-import { Button, Flow, ModalDFConfirmation } from '@dais-ui/ui-kit';
-import { s } from '@dais-ui/ui-kit/constants';
+import { Button, Flow, ModalDFConfirmation } from '@daisforge/ui';
+import { s } from '@daisforge/ui/constants';
 import React, { useState } from 'react';
 
 ${getFuncAsString(

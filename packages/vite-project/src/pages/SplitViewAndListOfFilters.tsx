@@ -27,7 +27,7 @@
  */
 
 import { useCallback, useState } from 'react';
-import { SplitView, ListOfFilters, useFiltersList } from '@dais-ui/ui-kit';
+import { SplitView, ListOfFilters, useFiltersList } from '@daisforge/ui';
 
 // МОКОВЫЕ ДАННЫЕ
 type FilterKey = 'status' | 'priority' | 'category' | 'assignee';

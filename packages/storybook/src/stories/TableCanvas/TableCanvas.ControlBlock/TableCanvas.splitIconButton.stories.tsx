@@ -25,7 +25,7 @@ const preCode = `import {
   ColumnConfig,
   SplitIconButton,
   TableCanvas,
-} from '@dais-ui/ui-kit/components/TableCanvas';`;
+} from '@daisforge/ui/components/TableCanvas';`;
 
 /**
  * Несколько SplitIconButton как кастомные фичи ControlBlock. Включены поиск,

@@ -42,10 +42,10 @@ const StyledTooltipWrapper = styled.div`
 `;
 
 const preCode = `
-import { ColumnConfig, RenderSubRowCell, Switch, Table, SortColumn, TableConfig } from '@dais-ui/ui-kit';
-import { TextField } from '@dais-ui/ui-kit';
-import { Tooltip } from '@dais-ui/ui-kit';
-import { IconRefresh, IconResetOutline, IconSber } from '@dais-ui/ui-kit';
+import { ColumnConfig, RenderSubRowCell, Switch, Table, SortColumn, TableConfig } from '@daisforge/ui';
+import { TextField } from '@daisforge/ui';
+import { Tooltip } from '@daisforge/ui';
+import { IconRefresh, IconResetOutline, IconSber } from '@daisforge/ui';
 import React, { useCallback, useMemo, useState } from 'react';
 import { SortColumn } from 'react-data-grid';
 `;

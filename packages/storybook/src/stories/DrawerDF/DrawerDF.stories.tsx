@@ -185,8 +185,8 @@ function DrawerWithBackButtonExample() {
 }
 
 const drawerWithOneMainContentCode = `
-import { Button, DrawerDF, Flow } from '@dais-ui/ui-kit';
-import { s } from '@dais-ui/ui-kit/constants';
+import { Button, DrawerDF, Flow } from '@daisforge/ui';
+import { s } from '@daisforge/ui/constants';
 import { longLorem } from './data';
 import { TabsComp } from './Tabs';
 import React, { useState } from 'react';
@@ -198,8 +198,8 @@ ${getFuncAsString(
 `;
 
 const drawerWithMultipleContentCode = `
-import { Button, DrawerDF, Flow } from '@dais-ui/ui-kit';
-import { s } from '@dais-ui/ui-kit/constants';
+import { Button, DrawerDF, Flow } from '@daisforge/ui';
+import { s } from '@daisforge/ui/constants';
 import { longLorem, shortLorem } from './data';
 import { TabsComp } from './Tabs';
 import React, { useState } from 'react';
@@ -211,7 +211,7 @@ ${getFuncAsString(
 `;
 
 const drawerSingleContentNoHeaderCode = `
-import { Button, DrawerDF } from '@dais-ui/ui-kit';
+import { Button, DrawerDF } from '@daisforge/ui';
 import { longLorem } from './data';
 import React, { useState } from 'react';
 
@@ -222,8 +222,8 @@ ${getFuncAsString(
 `;
 
 const drawerWithBackButtonCode = `
-import { Button, DrawerDF, Flow } from '@dais-ui/ui-kit';
-import { s } from '@dais-ui/ui-kit/constants';
+import { Button, DrawerDF, Flow } from '@daisforge/ui';
+import { s } from '@daisforge/ui/constants';
 import { longLorem } from './data';
 import React, { useState } from 'react';
 

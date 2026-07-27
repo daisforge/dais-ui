@@ -5,13 +5,13 @@ import {
   TextField,
   Tooltip,
   Table,
-} from '@dais-ui/ui-kit';
-import { IconRefresh, IconResetOutline, IconSber } from '@dais-ui/ui-kit/icons';
+} from '@daisforge/ui';
+import { IconRefresh, IconResetOutline, IconSber } from '@daisforge/ui/icons';
 import type {
   ColumnConfig,
   RenderSubRowCell,
   SortColumn,
-} from '@dais-ui/ui-kit';
+} from '@daisforge/ui';
 
 import { useCallback, useMemo, useState } from 'react';
 

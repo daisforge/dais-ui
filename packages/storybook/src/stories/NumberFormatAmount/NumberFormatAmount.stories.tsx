@@ -45,7 +45,7 @@ export default meta;
 type Story = StoryObj<NumberFormatAmountProps>;
 
 const preCode = `
-import { NumberFormatAmount } from '@dais-ui/ui-kit';
+import { NumberFormatAmount } from '@daisforge/ui';
 `;
 
 /**

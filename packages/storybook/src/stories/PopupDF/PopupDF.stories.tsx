@@ -135,7 +135,7 @@ import {
   PopupDF,
   PopupProvider,
   SSRProvider,
-} from '@dais-ui/ui-kit';
+} from '@daisforge/ui';
 
 // Контент футера — обычные кнопки, которые вы кладёте в PopupDF.Footer
 function FooterActions() {

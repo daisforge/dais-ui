@@ -118,7 +118,7 @@ const simpleArgTypes = {
 };
 
 const preCode = `import { useState } from 'react';
-import { Button, Flow, PopoverDF } from '@dais-ui/ui-kit';
+import { Button, Flow, PopoverDF } from '@daisforge/ui';
 
 // Контент футера — обычные кнопки, которые вы кладёте в PopoverDF.Footer
 function FooterActions() {

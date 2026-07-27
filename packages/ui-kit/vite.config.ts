@@ -96,7 +96,7 @@ export default defineConfig(() => {
             }),
           );
         })(),
-        name: '@dais-ui/ui-kit',
+        name: '@daisforge/ui',
         fileName: (format, entryName) =>
           `${entryName}.${format === 'es' ? 'mjs' : 'cjs'}`,
         // Change this to the formats you want to support.

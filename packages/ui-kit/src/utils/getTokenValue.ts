@@ -3,12 +3,12 @@
  *
  * ```
  * Пример:
- * import { textAccent } from '@dais-ui/ui-kit/tokens/color';
+ * import { textAccent } from '@daisforge/ui/tokens/color';
  *
  * getTokenValue(textAccent) // #0B7ECB
  * ```
  *
- * @param token - токен из `@dais-ui/ui-kit/tokens`
+ * @param token - токен из `@daisforge/ui/tokens`
  * @returns значение токена, например HEX цвета
  */
 export const getTokenValue = (token: string) => {

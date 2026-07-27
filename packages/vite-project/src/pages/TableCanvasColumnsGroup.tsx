@@ -8,7 +8,7 @@ import {
   tableCanvasFonts,
   tableCanvasTheme,
   type ColumnOrColumnGroupConfig,
-} from '@dais-ui/ui-kit/components/TableCanvas';
+} from '@daisforge/ui/components/TableCanvas';
 
 export const TableCanvasColumnsGroup = ({
   headerTreeLvl = 'lvl3',

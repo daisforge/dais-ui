@@ -39,8 +39,8 @@ import {
   ColumnConfig,
   TableCanvas,
   tableCanvasTheme,
-} from '@dais-ui/ui-kit/components/TableCanvas';
-import { Badge } from '@dais-ui/ui-kit';
+} from '@daisforge/ui/components/TableCanvas';
+import { Badge } from '@daisforge/ui';
 import React, { ComponentProps, useMemo, useState } from 'react';
 `;
 
@@ -285,8 +285,8 @@ import {
   Canvas,
   ColumnConfig,
   TableCanvas,
-} from '@dais-ui/ui-kit/components/TableCanvas';
-import { IconSearch } from '@dais-ui/ui-kit/icons';
+} from '@daisforge/ui/components/TableCanvas';
+import { IconSearch } from '@daisforge/ui/icons';
 import React, { useMemo, useState } from 'react';
 
 ${getFuncAsString(
@@ -398,8 +398,8 @@ import {
   Canvas,
   ColumnConfig,
   TableCanvas,
-} from '@dais-ui/ui-kit/components/TableCanvas';
-import { IconSearch } from '@dais-ui/ui-kit/icons';
+} from '@daisforge/ui/components/TableCanvas';
+import { IconSearch } from '@daisforge/ui/icons';
 import React, { useMemo, useState } from 'react';
 
 ${getFuncAsString(

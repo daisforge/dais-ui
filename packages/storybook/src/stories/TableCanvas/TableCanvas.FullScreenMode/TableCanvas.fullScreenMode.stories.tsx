@@ -26,9 +26,9 @@ export default meta;
 
 const preCode = `
 import React, { useMemo, useState } from 'react';
-import { ColumnConfig, TableCanvas } from '@dais-ui/ui-kit/components/TableCanvas';
-import { Button } from '@dais-ui/ui-kit';
-import { IconSber } from '@dais-ui/ui-kit/icons';
+import { ColumnConfig, TableCanvas } from '@daisforge/ui/components/TableCanvas';
+import { Button } from '@daisforge/ui';
+import { IconSber } from '@daisforge/ui/icons';
 `;
 
 export const FullscreenEnabling: StoryObj = {

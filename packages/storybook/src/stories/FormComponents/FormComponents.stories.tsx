@@ -111,7 +111,7 @@ import {
   FormRadiobox,
   FormSegmentGroup,
   Button
-} from '@dais-ui/ui-kit';
+} from '@daisforge/ui';
 import { FormProvider, useForm } from 'react-hook-form';
 `;
 
@@ -429,7 +429,7 @@ import {
   FormRadiobox,
   FormSegmentGroup,
   Button
-} from '@dais-ui/ui-kit';
+} from '@daisforge/ui';
 import { FormProvider, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';

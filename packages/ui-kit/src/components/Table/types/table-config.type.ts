@@ -858,7 +858,7 @@ export type TableConfig<
    * Пример:
    *
    *```jsx
-   * import { Table } from '@dais-ui/ui-kit';
+   * import { Table } from '@daisforge/ui';
    *
    * <Table
    * tableConfig={{selecting: {stateAndSetter, rowKeyGetter}}}

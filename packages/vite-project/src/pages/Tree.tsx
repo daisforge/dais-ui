@@ -1,4 +1,4 @@
-import { Tree } from '@dais-ui/ui-kit';
+import { Tree } from '@daisforge/ui';
 
 export const TreeExample = () => {
   const treeData = [

@@ -1,6 +1,6 @@
 import { Suspense, useState } from 'react';
 
-import { GlobalStyle, type GlobalStyleTheme } from '@dais-ui/ui-kit';
+import { GlobalStyle, type GlobalStyleTheme } from '@daisforge/ui';
 
 import { Header } from './components/Header';
 import { pages, pageLabels, pageIcons, type PageKey } from './config/pages';

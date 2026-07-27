@@ -10,7 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@dais-ui/ui-kit": "file:ui-kit-tgz.tgz",
+    "@daisforge/ui": "file:ui-kit-tgz.tgz",
     "react": "18.3.1",
     "react-dom": "18.3.1"
   },

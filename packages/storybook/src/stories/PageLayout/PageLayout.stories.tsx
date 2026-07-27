@@ -169,7 +169,7 @@ const preCode = `
         IconGroupOutline,
         IconHierarchy,
         IconSearch,
-    } from '@dais-ui/ui-kit/icons';
+    } from '@daisforge/ui/icons';
     import {
         Button,
         Dropdown,
@@ -183,7 +183,7 @@ const preCode = `
         SplitView,
         TextFieldSearch,
         Widget,
-    } from '@dais-ui/ui-kit';
+    } from '@daisforge/ui';
     import styled from 'styled-components';
 
     const FlexContainer = styled.div\`

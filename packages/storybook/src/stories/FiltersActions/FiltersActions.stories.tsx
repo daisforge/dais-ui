@@ -260,7 +260,7 @@ export const FilterActionsStory: Story = {
       Table,
       Widget,
       useDebouncedValue
-    } from '@dais-ui/ui-kit';
+    } from '@daisforge/ui';
     import React, { useMemo, useState } from 'react';
 
     type Filters = {
@@ -1031,7 +1031,7 @@ export const SimpleFiltersActionsStory: Story = {
       s,
       Table,
       Widget,
-    } from '@dais-ui/ui-kit';
+    } from '@daisforge/ui';
     import React, { useMemo, useState } from 'react';
 
     type Filters = {
@@ -1469,7 +1469,7 @@ export const CustomTargetFiltersActionsStory: Story = {
       IconSettingsFilter,
       Combobox,
       BodyS,
-    } from '@dais-ui/ui-kit';
+    } from '@daisforge/ui';
     import React, { useRef, useState } from 'react';
 
     ${getFuncAsString(

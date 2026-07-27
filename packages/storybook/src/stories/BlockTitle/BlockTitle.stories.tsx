@@ -65,8 +65,8 @@ const preCodeSlots = `
         IconButton,
         BlockTitle,
         type BlockTitleSlotSizesProps
-    } from '@dais-ui/ui-kit';
-     import { br, s } from '@dais-ui/ui-kit/constants';
+    } from '@daisforge/ui';
+     import { br, s } from '@daisforge/ui/constants';
 `;
 
 export const BlockTitleSlots: Story = {
@@ -148,8 +148,8 @@ const preCodeExample = `
         IconButton,
         BlockTitle,
         type BlockTitleSlotSizesProps
-    } from '@dais-ui/ui-kit';
-     import { br, s } from '@dais-ui/ui-kit/constants';
+    } from '@daisforge/ui';
+     import { br, s } from '@daisforge/ui/constants';
 `;
 
 export const BlockTitleExample: Story = {

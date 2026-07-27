@@ -118,11 +118,11 @@ const meta: Meta = {
 export default meta;
 
 const preCode = `
-import type { EmptyStateProps } from '@dais-ui/ui-kit';
+import type { EmptyStateProps } from '@daisforge/ui';
 import {
   ColumnOrColumnGroupConfig,
   TableCanvas,
-} from '@dais-ui/ui-kit/components/TableCanvas';
+} from '@daisforge/ui/components/TableCanvas';
 import React, { ReactNode, useEffect, useState } from 'react';
 
 type Row = {

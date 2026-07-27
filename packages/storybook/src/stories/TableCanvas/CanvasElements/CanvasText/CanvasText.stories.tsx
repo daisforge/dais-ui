@@ -85,7 +85,7 @@ const meta: Meta = {
 export default meta;
 
 const canvasTextCode = `
-import { Canvas, ColumnConfig, TableCanvas } from '@dais-ui/ui-kit/components/TableCanvas';
+import { Canvas, ColumnConfig, TableCanvas } from '@daisforge/ui/components/TableCanvas';
 
 const columnConfig: ColumnConfig[] = [
   {
@@ -122,7 +122,7 @@ const columnConfig: ColumnConfig[] = [
 `;
 
 const treeChevronEllipsisPreCode = `
-import { Canvas, ColumnConfig, TableCanvas } from '@dais-ui/ui-kit/components/TableCanvas';
+import { Canvas, ColumnConfig, TableCanvas } from '@daisforge/ui/components/TableCanvas';
 
 `;
 

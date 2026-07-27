@@ -67,7 +67,7 @@ import {
   type CellsSelectionMode,
   type SIZE_GLIDE_INSTANCE as RowSize,
   TableCanvas,
-} from '@dais-ui/ui-kit/components/TableCanvas';
+} from '@daisforge/ui/components/TableCanvas';
 
 const HIGHLIGHT_ACTIVE_TYPE_OPTIONS: readonly HighlightActiveType[] = [
   'row',

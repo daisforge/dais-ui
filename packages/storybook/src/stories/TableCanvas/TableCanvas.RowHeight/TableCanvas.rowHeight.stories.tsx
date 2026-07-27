@@ -26,7 +26,7 @@ const meta: Meta = {
 
 export default meta;
 const preCode = `
-import { ColumnConfig, TableCanvas } from '@dais-ui/ui-kit/components/TableCanvas';
+import { ColumnConfig, TableCanvas } from '@daisforge/ui/components/TableCanvas';
 
 `;
 

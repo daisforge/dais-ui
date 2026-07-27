@@ -1,4 +1,4 @@
-import { PageTitle, Button, Flow } from '@dais-ui/ui-kit';
+import { PageTitle, Button, Flow } from '@daisforge/ui';
 
 const Section = ({
   label,

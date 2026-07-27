@@ -65,7 +65,7 @@ export default meta;
 type Story = StoryObj<AutocompleteProps>;
 
 const preCode = `
-import { Autocomplete } from '@dais-ui/ui-kit';
+import { Autocomplete } from '@daisforge/ui';
 `;
 
 /**

@@ -26,19 +26,19 @@ export default meta;
 
 type Story = StoryObj<typeof TourWidget>;
 
-const tourImports = `import { ViewContainer } from '@dais-ui/ui-kit';
-import { Box, Button, LinkButton, TourWidget } from '@dais-ui/ui-kit';
+const tourImports = `import { ViewContainer } from '@daisforge/ui';
+import { Box, Button, LinkButton, TourWidget } from '@daisforge/ui';
 import React, { useState } from 'react';`;
 
-const tourWithPulseImports = `import { ViewContainer } from '@dais-ui/ui-kit';
-import { Box, Button, LinkButton, TourWidget } from '@dais-ui/ui-kit';
-import { tourPulseMixin } from '@dais-ui/ui-kit/mixins';
+const tourWithPulseImports = `import { ViewContainer } from '@daisforge/ui';
+import { Box, Button, LinkButton, TourWidget } from '@daisforge/ui';
+import { tourPulseMixin } from '@daisforge/ui/mixins';
 import React, { useState } from 'react';
 import { css } from 'styled-components';`;
 
-const pulseImports = `import { ViewContainer } from '@dais-ui/ui-kit';
-import { Box } from '@dais-ui/ui-kit';
-import { tourPulseMixin } from '@dais-ui/ui-kit/mixins';
+const pulseImports = `import { ViewContainer } from '@daisforge/ui';
+import { Box } from '@daisforge/ui';
+import { tourPulseMixin } from '@daisforge/ui/mixins';
 import React from 'react';
 import { css } from 'styled-components';`;
 

@@ -22,7 +22,7 @@ const meta: Meta = {
 export default meta;
 
 const code = `
-import { Canvas, ColumnConfig, TableCanvas } from '@dais-ui/ui-kit/components/TableCanvas';
+import { Canvas, ColumnConfig, TableCanvas } from '@daisforge/ui/components/TableCanvas';
 
 const columnConfig: ColumnConfig[] = [
   {

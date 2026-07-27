@@ -52,7 +52,7 @@ import {
   IconButton,
   s,
   Widget,
-} from '@dais-ui/ui-kit';
+} from '@daisforge/ui';
 
     `
   }),
@@ -153,7 +153,7 @@ import {
   IconButton,
   s,
   Widget,
-} from '@dais-ui/ui-kit';
+} from '@daisforge/ui';
 
     `
   }),
@@ -254,7 +254,7 @@ import {
   Flow,
   s,
   Widget,
-} from '@dais-ui/ui-kit';
+} from '@daisforge/ui';
 
     `
   }),

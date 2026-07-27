@@ -35,7 +35,7 @@ import introImage from '../../assets/introImage.png';
       language='bash'
       dark
       format={false}
-      code={`npm install -S @dais-ui/ui-kit`}
+      code={`npm install -S @daisforge/ui`}
     />
 
   </div>
@@ -49,7 +49,7 @@ import introImage from '../../assets/introImage.png';
     ```jsx
     // index.tsx
 
-    import { GlobalStyle } from '@dais-ui/ui-kit/styles';
+    import { GlobalStyle } from '@daisforge/ui/styles';
     import { App } from './App';
 
     const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
@@ -73,8 +73,8 @@ import introImage from '../../assets/introImage.png';
     ```jsx
     // App.tsx
 
-    import { Button } from '@dais-ui/ui-kit';
-    // или import { Button } from '@dais-ui/ui-kit/components/Button
+    import { Button } from '@daisforge/ui';
+    // или import { Button } from '@daisforge/ui/components/Button
 
     export const App = () => {
         return (
@@ -94,7 +94,7 @@ import introImage from '../../assets/introImage.png';
     ```jsx
     // App.tsx
 
-    import { IconClock } from '@dais-ui/ui-kit/icons';
+    import { IconClock } from '@daisforge/ui/icons';
 
     export const App = () => {
         return (
@@ -114,8 +114,8 @@ import introImage from '../../assets/introImage.png';
     ```jsx
     // App.tsx
     import styled from 'styled-components';
-    import { backgroundPrimary, textAccent } from '@dais-ui/ui-kit/tokens';
-    import { getTokenValue } from '@dais-ui/ui-kit/utils';
+    import { backgroundPrimary, textAccent } from '@daisforge/ui/tokens';
+    import { getTokenValue } from '@daisforge/ui/utils';
 
     const accentTokenValue = getTokenValue(textAccent) // #0b7ecb
 

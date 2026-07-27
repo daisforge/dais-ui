@@ -37,7 +37,7 @@ export const Default: Story = {
       source: {
         format: 'dedent',
         code: `
-                    import { Box, Button, Collapse } from '@dais-ui/ui-kit';
+                    import { Box, Button, Collapse } from '@daisforge/ui';
 
                     const [isOpen, setIsOpen] = useState(false);
 
@@ -75,7 +75,7 @@ export const Horizontal: Story = {
       source: {
         format: 'dedent',
         code: `
-                    import { Box, Button, Collapse } from '@dais-ui/ui-kit';
+                    import { Box, Button, Collapse } from '@daisforge/ui';
 
                     const [isOpen, setIsOpen] = useState(false);
 
@@ -113,7 +113,7 @@ export const Unmount: Story = {
       source: {
         format: 'dedent',
         code: `
-                    import { Box, Button, Collapse } from '@dais-ui/ui-kit';
+                    import { Box, Button, Collapse } from '@daisforge/ui';
 
                     const [isOpen, setIsOpen] = useState(false);
 
@@ -152,7 +152,7 @@ export const Duration: Story = {
       source: {
         format: 'dedent',
         code: `
-                    import { Box, Button, Collapse } from '@dais-ui/ui-kit';
+                    import { Box, Button, Collapse } from '@daisforge/ui';
 
                     const [isOpen, setIsOpen] = useState(false);
 
@@ -198,7 +198,7 @@ export const Animation: Story = {
       source: {
         format: 'dedent',
         code: `
-                    import { Box, Button, Collapse } from '@dais-ui/ui-kit';
+                    import { Box, Button, Collapse } from '@daisforge/ui';
 
                     const [isOpen, setIsOpen] = useState(false);
 
@@ -246,7 +246,7 @@ export const OpenedSize: Story = {
       source: {
         format: 'dedent',
         code: `
-                    import { Box, Button, Collapse } from '@dais-ui/ui-kit';
+                    import { Box, Button, Collapse } from '@daisforge/ui';
 
                     const [isOpen, setIsOpen] = useState(false);
 
@@ -285,7 +285,7 @@ export const ClosedSize: Story = {
       source: {
         format: 'dedent',
         code: `
-                    import { Box, Button, Collapse } from '@dais-ui/ui-kit';
+                    import { Box, Button, Collapse } from '@daisforge/ui';
 
                     const [isOpen, setIsOpen] = useState(false);
 

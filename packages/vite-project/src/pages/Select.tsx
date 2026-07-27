@@ -1,4 +1,4 @@
-import { Select } from '@dais-ui/ui-kit';
+import { Select } from '@daisforge/ui';
 import { useState } from 'react';
 
 export const SelectExample = () => {

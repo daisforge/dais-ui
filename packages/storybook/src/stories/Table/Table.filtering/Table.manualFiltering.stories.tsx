@@ -33,8 +33,8 @@ import {
   Switch,
   Table,
   TextField,
-} from '@dais-ui/ui-kit';
-import { IconAddOutline, IconBoxOutline, IconSber } from '@dais-ui/ui-kit/icons';
+} from '@daisforge/ui';
+import { IconAddOutline, IconBoxOutline, IconSber } from '@daisforge/ui/icons';
 `;
 
 type Story = StoryObj;

@@ -73,7 +73,7 @@ import {
   type HighlightActiveType,
   type HoverEffectsConfig,
   TableCanvas,
-} from '@dais-ui/ui-kit/components/TableCanvas';
+} from '@daisforge/ui/components/TableCanvas';
 
 const COLUMN_CONFIG: readonly ColumnConfig<Row>[] = [
   { key: 'id', name: 'ID', width: 90 },

@@ -25,7 +25,7 @@ import { Meta, Source } from '@storybook/blocks';
       MediaProvider,
       BreakpointProvider,
       useBreakpoint,
-    } from '@dais-ui/ui-kit/utils';
+    } from '@daisforge/ui/utils';
   `}
 />
 
@@ -36,7 +36,7 @@ import { Meta, Source } from '@storybook/blocks';
   format="dedent"
   code={`
     import styled from 'styled-components';
-    import { media } from '@dais-ui/ui-kit/utils';
+    import { media } from '@daisforge/ui/utils';
 
     const Card = styled.div\`
       padding: 24px;
@@ -60,7 +60,7 @@ import { Meta, Source } from '@storybook/blocks';
   format="dedent"
   code={`
     import styled from 'styled-components';
-    import { MediaProvider } from '@dais-ui/ui-kit/utils';
+    import { MediaProvider } from '@daisforge/ui/utils';
 
     const Card = styled.div\`
       padding: 24px;
@@ -89,7 +89,7 @@ import { Meta, Source } from '@storybook/blocks';
     import {
       BreakpointProvider,
       useBreakpoint,
-    } from '@dais-ui/ui-kit/utils';
+    } from '@daisforge/ui/utils';
 
     const ResponsiveBlock = () => {
       const { breakpoint, up, down, only, between } = useBreakpoint();
@@ -123,7 +123,7 @@ import { Meta, Source } from '@storybook/blocks';
     import {
       BreakpointProvider,
       type BreakpointConfig,
-    } from '@dais-ui/ui-kit/utils';
+    } from '@daisforge/ui/utils';
 
     const customBreakpointConfig: BreakpointConfig = {
       xs: 480,

@@ -43,7 +43,7 @@ type TimeRange = 'day' | 'week' | 'month';
 type UserFilter = 'all' | 'my' | 'team';
 
 const preCode = `
-  import { ColumnConfig, Table } from '@dais-ui/ui-kit';
+  import { ColumnConfig, Table } from '@daisforge/ui';
   import {
   IconBell,
   IconBellActive,
@@ -59,8 +59,8 @@ const preCode = `
   IconReset,
   IconSettings,
   IconStar,
-  } from '@dais-ui/ui-kit/icons';
- import { IconButton } from '@dais-ui/ui-kit';
+  } from '@daisforge/ui/icons';
+ import { IconButton } from '@daisforge/ui';
  import React, { useMemo, useState } from 'react';
 
 type AnalyticsMode = 'basic' | 'advanced';

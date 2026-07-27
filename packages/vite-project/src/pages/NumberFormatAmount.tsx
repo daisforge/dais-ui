@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { NumberFormatAmount } from '@dais-ui/ui-kit';
-import { IconSb } from '@dais-ui/ui-kit/icons';
+import { NumberFormatAmount } from '@daisforge/ui';
+import { IconSb } from '@daisforge/ui/icons';
 
 export const NumberFormatAmountExample = () => {
   const [value1, setValue1] = useState('');

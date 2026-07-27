@@ -23,7 +23,7 @@ type Story = StoryObj;
 
 const preCode = `
 import React, { useMemo, useState } from 'react';
-import { Badge, ColumnConfig, Table } from '@dais-ui/ui-kit';
+import { Badge, ColumnConfig, Table } from '@daisforge/ui';
 `;
 
 export const SubRows: Story = {

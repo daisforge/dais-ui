@@ -42,7 +42,7 @@ export default meta;
 type Story = StoryObj<TextFieldSearchProps>;
 
 const preCode = `
-import { TextFieldSearch } from '@dais-ui/ui-kit';
+import { TextFieldSearch } from '@daisforge/ui';
 `;
 
 /**

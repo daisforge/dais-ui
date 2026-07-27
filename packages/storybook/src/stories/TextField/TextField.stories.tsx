@@ -57,7 +57,7 @@ export default meta;
 type Story = StoryObj<TextFieldProps>;
 
 const preCode = `
-import { TextField } from '@dais-ui/ui-kit';
+import { TextField } from '@daisforge/ui';
 `;
 
 /**

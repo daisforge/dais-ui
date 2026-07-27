@@ -20,7 +20,7 @@ export default meta;
 type Story = StoryObj<SwitchProps>;
 
 const preCodeSlots = `
-    import { Switch } from '@dais-ui/ui-kit';
+    import { Switch } from '@daisforge/ui';
 
 `;
 

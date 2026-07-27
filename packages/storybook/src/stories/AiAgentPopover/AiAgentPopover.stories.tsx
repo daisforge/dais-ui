@@ -63,7 +63,7 @@ function PopoverContent({ onClose }: { onClose?: () => void }) {
 }
 
 const preCode = `
-import { AiAgentPopover } from '@dais-ui/ui-kit';
+import { AiAgentPopover } from '@daisforge/ui';
 
 ${getFuncAsString(
   'packages/storybook/src/stories/AiAgentPopover/AiAgentPopover.stories.tsx',

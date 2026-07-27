@@ -49,7 +49,7 @@ export default meta;
 type Story = StoryObj<TextAreaProps>;
 
 const preCode = `
-import { TextArea } from '@dais-ui/ui-kit';
+import { TextArea } from '@daisforge/ui';
 `;
 
 /**

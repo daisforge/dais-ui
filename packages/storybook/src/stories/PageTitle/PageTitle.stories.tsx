@@ -21,10 +21,10 @@ export default meta;
 type Story = StoryObj<PageTitleProps>;
 
 const preCode = `
-import { PageTitle } from '@dais-ui/ui-kit';
-import { Button, Flow, IconButton } from '@dais-ui/ui-kit';
-import { IconPlus } from '@dais-ui/ui-kit/icons';
-import type { PageTitleSlotSizesProps } from '@dais-ui/ui-kit';
+import { PageTitle } from '@daisforge/ui';
+import { Button, Flow, IconButton } from '@daisforge/ui';
+import { IconPlus } from '@daisforge/ui/icons';
+import type { PageTitleSlotSizesProps } from '@daisforge/ui';
 
 `;
 

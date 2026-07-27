@@ -6,7 +6,7 @@ import { createRows, type Row } from '../shared/tableData';
 import {
   type ColumnConfig,
   TableCanvas,
-} from '@dais-ui/ui-kit/components/TableCanvas';
+} from '@daisforge/ui/components/TableCanvas';
 
 const Section = ({
   label,

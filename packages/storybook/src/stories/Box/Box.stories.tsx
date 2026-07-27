@@ -49,7 +49,7 @@ type Story = StoryObj<BoxProps>;
 /**
  *
  * ```ts
- * import { Box, BoxProps } from '@dais-ui/ui-kit';
+ * import { Box, BoxProps } from '@daisforge/ui';
  * ```
  *
  * #####ℹ️ Для просмотра примера нажми `Show code`.
@@ -59,7 +59,7 @@ export const Default: Story = {
   ...storySourceDoc({
     preCode: `
 // textAccent - токен акцентного цвета
-import { Box, textAccent, textNegative } from '@dais-ui/ui-kit';
+import { Box, textAccent, textNegative } from '@daisforge/ui';
 
 `,
     previewSource: 'shown'
@@ -95,7 +95,7 @@ import { Box, textAccent, textNegative } from '@dais-ui/ui-kit';
 export const CSSObject: Story = {
   name: 'Стилизация через CSS Object',
   ...storySourceDoc({
-    preCode: `import { Box, textAccent } from '@dais-ui/ui-kit';
+    preCode: `import { Box, textAccent } from '@daisforge/ui';
 
     `,
     previewSource: 'shown'
@@ -122,7 +122,7 @@ export const CSSObject: Story = {
 export const CSSString: Story = {
   name: 'Стилизация через CSS String',
   ...storySourceDoc({
-    preCode: `import { Box, textPositive } from '@dais-ui/ui-kit';
+    preCode: `import { Box, textPositive } from '@daisforge/ui';
 
     `,
     previewSource: 'shown'
@@ -151,7 +151,7 @@ export const CSSString: Story = {
 export const CSSProps: Story = {
   name: 'Стилизация через props',
   ...storySourceDoc({
-    preCode: `import { Box } from '@dais-ui/ui-kit';
+    preCode: `import { Box } from '@daisforge/ui';
 
     `,
     previewSource: 'shown'
@@ -176,7 +176,7 @@ export const CSSProps: Story = {
 export const BoxAnyComponent: Story = {
   name: 'React компонент корневого узла',
   ...storySourceDoc({
-    preCode: `import { Box, Button } from '@dais-ui/ui-kit';
+    preCode: `import { Box, Button } from '@daisforge/ui';
 
     `,
     previewSource: 'shown'
@@ -198,7 +198,7 @@ export const BoxAnyComponent: Story = {
 export const BoxHtmlComponent: Story = {
   name: 'HTML корневого узла',
   ...storySourceDoc({
-    preCode: `import { Box } from '@dais-ui/ui-kit';
+    preCode: `import { Box } from '@daisforge/ui';
 
     `,
     previewSource: 'shown'

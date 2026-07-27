@@ -56,8 +56,8 @@ import {
   SegmentItem,
   AnalyticalWidget,
   textInfo
-} from '@dais-ui/ui-kit';
-import type { ItemOrGroup } from '@dais-ui/ui-kit';
+} from '@daisforge/ui';
+import type { ItemOrGroup } from '@daisforge/ui';
 
 import React, { useMemo, useReducer, useState } from 'react';
 
@@ -143,8 +143,8 @@ import {
   SegmentItem,
   AnalyticalWidget,
   textInfo
-} from '@dais-ui/ui-kit';
-import type { ItemOrGroup } from '@dais-ui/ui-kit';
+} from '@daisforge/ui';
+import type { ItemOrGroup } from '@daisforge/ui';
 
 import React, { useMemo, useReducer, useState } from 'react';
 
@@ -230,8 +230,8 @@ import {
   SegmentItem,
   AnalyticalWidget,
   textInfo
-} from '@dais-ui/ui-kit';
-import type { ItemOrGroup } from '@dais-ui/ui-kit';
+} from '@daisforge/ui';
+import type { ItemOrGroup } from '@daisforge/ui';
 
 import React, { useMemo, useReducer, useState } from 'react';
 

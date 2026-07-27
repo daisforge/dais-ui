@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button } from '@dais-ui/ui-kit';
+import { Button } from '@daisforge/ui';
 
 export const ButtonExample = () => {
   const [count, setCount] = useState(0);

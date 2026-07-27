@@ -26,15 +26,15 @@ import * as BlockGradientScrollStories from './BlockGradientScroll.stories';
 
 ### Компонент
 
-- `BlockGradientScroll` — React-компонент (`@dais-ui/ui-kit`)
-- `BlockGradientScrollProps` — Тип пропсов (`@dais-ui/ui-kit`)
+- `BlockGradientScroll` — React-компонент (`@daisforge/ui`)
+- `BlockGradientScrollProps` — Тип пропсов (`@daisforge/ui`)
 
 ### Миксин
 
-- `BlockGradientScrollMixin` — Основной миксин (`@dais-ui/ui-kit/mixins`)
-- `BlockGradientScrollPadding` — Тип для padding (`@dais-ui/ui-kit/mixins`)
-- `BlockGradientScrollVariant` — Тип для variant (`@dais-ui/ui-kit/mixins`)
-- `BlockGradientScrollOptions` — Тип опций миксина (`@dais-ui/ui-kit/mixins`)
+- `BlockGradientScrollMixin` — Основной миксин (`@daisforge/ui/mixins`)
+- `BlockGradientScrollPadding` — Тип для padding (`@daisforge/ui/mixins`)
+- `BlockGradientScrollVariant` — Тип для variant (`@daisforge/ui/mixins`)
+- `BlockGradientScrollOptions` — Тип опций миксина (`@daisforge/ui/mixins`)
 
 ### Внутренние (для кастомизации)
 
@@ -90,7 +90,7 @@ const Box = styled.div\`
 ### 1. Базовый компонент
 
 <Source language="tsx" code={`
-import { BlockGradientScroll } from '@dais-ui/ui-kit';
+import { BlockGradientScroll } from '@daisforge/ui';
 
 // Padding автоматически подхватывается из style
 
@@ -114,7 +114,7 @@ import { BlockGradientScroll } from '@dais-ui/ui-kit';
 ### 2. Миксин (styled-components)
 
 <Source language="tsx" code={`
-import { BlockGradientScrollMixin } from '@dais-ui/ui-kit/mixins';
+import { BlockGradientScrollMixin } from '@daisforge/ui/mixins';
 import styled from 'styled-components';
 
 // Миксин сам применяет padding — дублирование не нужно

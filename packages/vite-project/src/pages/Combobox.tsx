@@ -1,4 +1,4 @@
-import { Combobox } from '@dais-ui/ui-kit';
+import { Combobox } from '@daisforge/ui';
 import { useState } from 'react';
 
 export const ComboboxExample = () => {

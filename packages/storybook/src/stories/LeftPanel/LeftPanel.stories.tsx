@@ -56,7 +56,7 @@ const preCodeSlots = `
     import { useState } from 'react';
     import {
         IconGroupOutline,
-    } from '@dais-ui/ui-kit/icons';
+    } from '@daisforge/ui/icons';
     import {
         Box,
         Button,
@@ -64,9 +64,9 @@ const preCodeSlots = `
         IconButton,
         LeftPanel,
         Widget,
-    } from '@dais-ui/ui-kit';
-    import type { LeftPanelSlotSizesProps } from '@dais-ui/ui-kit';
-     import { br, s } from '@dais-ui/ui-kit/constants';
+    } from '@daisforge/ui';
+    import type { LeftPanelSlotSizesProps } from '@daisforge/ui';
+     import { br, s } from '@daisforge/ui/constants';
 `;
 
 export const LeftPanelSlots: Story = {
@@ -265,7 +265,7 @@ const preCodeExample = `
     import {
         IconHierarchy,
         IconSearch,
-    } from '@dais-ui/ui-kit/icons';
+    } from '@daisforge/ui/icons';
     import {
         Box,
         Button,
@@ -281,9 +281,9 @@ const preCodeExample = `
         SegmentProvider,
         TextFieldSearch,
         Widget,
-    } from '@dais-ui/ui-kit';
-     import type { LeftPanelSlotSizesProps } from '@dais-ui/ui-kit';
-     import { br, s } from '@dais-ui/ui-kit/constants';
+    } from '@daisforge/ui';
+     import type { LeftPanelSlotSizesProps } from '@daisforge/ui';
+     import { br, s } from '@daisforge/ui/constants';
      import styled from 'styled-components';
 
 `;

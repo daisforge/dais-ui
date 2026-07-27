@@ -124,8 +124,8 @@ import {
   s,
   Table,
   Widget,
-} from '@dais-ui/ui-kit';
-import type { SplitViewSlotSizesProps } from '@dais-ui/ui-kit';
+} from '@daisforge/ui';
+import type { SplitViewSlotSizesProps } from '@daisforge/ui';
 import { useBreakpoint } from '@ui-kit/utils';
 import React, { useMemo, useState } from 'react';
 
@@ -306,9 +306,9 @@ import {
   Table,
   Tabs,
   Widget,
-} from '@dais-ui/ui-kit';
+} from '@daisforge/ui';
 import { IconPlasma } from '@ui-kit/icons';
-import type { SplitViewSlotSizesProps } from '@dais-ui/ui-kit';
+import type { SplitViewSlotSizesProps } from '@daisforge/ui';
 import { useBreakpoint } from '@ui-kit/utils';
 import React, { useMemo, useState } from 'react';
 
