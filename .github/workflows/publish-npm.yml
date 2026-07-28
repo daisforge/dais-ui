@@ -48,6 +48,8 @@ jobs:
       - name: Build ui-kit
         if: steps.before.outputs.sha != steps.after.outputs.sha
         run: npx nx build ui-kit
+        env:
+          NODE_OPTIONS: '--max_old_space_size=4096'
 
       - name: Publish to npm
         if: steps.before.outputs.sha != steps.after.outputs.sha
