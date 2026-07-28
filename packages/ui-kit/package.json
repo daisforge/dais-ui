@@ -10,7 +10,7 @@
   "publishConfig": {
     "access": "public",
     "directory": "../../dist/packages/ui-kit",
-    "registry": "https://nexus-ci.dddddd.ru/repository/npm-release/"
+    "registry": "https://registry.npmjs.org/"
   },
   "dependencies": {
     "@glideappsfinal/glide-data-grid": "^6.0.12",

@@ -299,17 +299,25 @@ trim_trailing_whitespace = true
 
 **Types (publishable)**:
 
-- `feat`, `fix`, `BREAKING CHANGE`, `refactor`, `test`, `docs`, `ci`
+- `feat`, `fix`, `refactor`, `test`, `docs`, `ci`
 
 **Types (nfp - not for publish)**:
 
-- `nfp-feat`, `nfp-fix`, `nfp-BREAKING CHANGE`, `nfp-refactor`, `nfp-test`, `nfp-docs`, `nfp-ci`
+- `nfp-feat`, `nfp-fix`, `nfp-refactor`, `nfp-test`, `nfp-docs`, `nfp-ci`
 
 **Примеры**:
 
 ```bash
 feat(Table): добавлен новый функционал MassActionPanel
 nfp-docs(DrawerDF): в story поправлены отступы между основными блоками
+```
+
+**BREAKING CHANGE** — не тип в заголовке, а отдельная строка в теле коммита (так её распознаёт lerna/conventional-commits при подсчёте major-версии):
+
+```bash
+feat(Table): убран deprecated-проп colorScheme
+
+BREAKING CHANGE: проп colorScheme больше не поддерживается, используйте theme
 ```
 
 ---

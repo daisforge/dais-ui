@@ -427,7 +427,6 @@ git checkout -b bugfix/имя-бага
 
 - `feat` — Новая функциональность
 - `fix` — Исправление ошибки
-- `BREAKING CHANGE` — Критические изменения
 - `refactor` — Рефакторинг кода
 - `test` — Изменения тестов
 - `docs` — Обновление документации
@@ -435,7 +434,15 @@ git checkout -b bugfix/имя-бага
 
 **Непубликуемые типы** (префикс `nfp-`, исключены из changelog):
 
-- `nfp-feat`, `nfp-fix`, `nfp-BREAKING CHANGE`, и др.
+- `nfp-feat`, `nfp-fix`, `nfp-refactor`, и др.
+
+**BREAKING CHANGE** — не тип в заголовке, а отдельная строка в теле коммита (иначе lerna не посчитает major-версию):
+
+```bash
+feat(Table): убран deprecated-проп colorScheme
+
+BREAKING CHANGE: проп colorScheme больше не поддерживается, используйте theme
+```
 
 **Примеры**:
 

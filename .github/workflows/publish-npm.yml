@@ -1,0 +1,61 @@
+name: Publish npm package
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    if: "!contains(github.event.head_commit.message, 'chore(release)')"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: 'https://registry.npmjs.org'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Configure git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Record HEAD before version bump
+        id: before
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Version bump (lerna conventional commits)
+        run: npx lerna version --conventional-commits --yes
+
+      - name: Record HEAD after version bump
+        id: after
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Push release commit and tag
+        if: steps.before.outputs.sha != steps.after.outputs.sha
+        run: git push --follow-tags origin main
+
+      - name: Build ui-kit
+        if: steps.before.outputs.sha != steps.after.outputs.sha
+        run: npx nx build ui-kit
+
+      - name: Publish to npm
+        if: steps.before.outputs.sha != steps.after.outputs.sha
+        working-directory: dist/packages/ui-kit
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
