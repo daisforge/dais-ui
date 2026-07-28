@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.10.1 (2026-07-28)
+
+**Note:** Version bump only for package @daisforge/ui
+
 # [1.10.0](https://stash.dddddd.ru:7999/uvhd-fiori/digital_finance_ui/compare/v1.9.0...v1.10.0) (2026-07-24)
 
 ### Bug Fixes
