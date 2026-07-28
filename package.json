@@ -155,11 +155,15 @@
   },
   "//": [
     "fix for storybook performance in dev mode",
-    "https://github.com/storybookjs/storybook/issues/28269 - TODO update storybook deps and remove override for vite-plugin-react-docgen-typescript"
+    "https://github.com/storybookjs/storybook/issues/28269 - TODO update storybook deps and remove override for vite-plugin-react-docgen-typescript",
+    "react-number-format - react-number-format@5.4.5 (нужен @glideappsfinal/glide-data-grid) против вложенного 5.4.3 (точный пин у plasma-new-hope) --- НУЖНО ПОТОМ В glideappsfinal снизить или",
+    "js-yaml — реальный конфликт точных версий у lerna/nx. plasma-new-hope — конфликт между sdds-finai (нужен 0.370.0) и sdds_finai_high_contrast (нужен canary), но мы у второго используем только статичные CSS-темы (TemplateStringsArray), которые вообще не трогают plasma-new-hope — риск проверен и минимален. react-number-format — тот же паттерн конфликта на уровень глубже, внутри самого plasma-new-hope; версии 5.4.3→5.4.5 патч-совместимы."
   ],
   "overrides": {
     "@joshwooding/vite-plugin-react-docgen-typescript": "0.3.0",
-    "js-yaml": "4.1.0"
+    "js-yaml": "4.1.0",
+    "@salutejs/plasma-new-hope": "0.370.0",
+    "react-number-format": "5.4.5"
   },
   "workspaces": [
     "packages/*"
