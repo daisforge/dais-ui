@@ -7,6 +7,14 @@
   "type": "module",
   "sideEffects": false,
   "description": "Reexport of react UI kit for SDDS finai web applications",
+  "keywords": [
+    "react",
+    "ui-kit",
+    "components",
+    "sdds",
+    "design-system",
+    "styled-components"
+  ],
   "publishConfig": {
     "access": "public",
     "directory": "../../dist/packages/ui-kit",
