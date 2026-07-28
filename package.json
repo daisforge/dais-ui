@@ -158,7 +158,8 @@
     "https://github.com/storybookjs/storybook/issues/28269 - TODO update storybook deps and remove override for vite-plugin-react-docgen-typescript"
   ],
   "overrides": {
-    "@joshwooding/vite-plugin-react-docgen-typescript": "0.3.0"
+    "@joshwooding/vite-plugin-react-docgen-typescript": "0.3.0",
+    "js-yaml": "4.1.0"
   },
   "workspaces": [
     "packages/*"
