@@ -6,7 +6,7 @@
   "types": "./index.d.ts",
   "type": "module",
   "sideEffects": false,
-  "description": "Reexport of react UI kit for SDDS finai web applications",
+  "description": "React UI component library for dais design system",
   "keywords": [
     "react",
     "ui-kit",
@@ -15,6 +15,16 @@
     "design-system",
     "styled-components"
   ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/daisforge/dais-ui.git",
+    "directory": "packages/ui-kit"
+  },
+  "homepage": "https://github.com/daisforge/dais-ui#readme",
+  "bugs": {
+    "url": "https://github.com/daisforge/dais-ui/issues"
+  },
   "publishConfig": {
     "access": "public",
     "directory": "../../dist/packages/ui-kit",
