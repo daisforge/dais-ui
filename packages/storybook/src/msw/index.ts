@@ -12,7 +12,14 @@ const initialRoutes = Object.values(routes)
  * to learn how to customize it
  */
 function mswInitialize() {
-  return initialize(undefined, initialRoutes);
+  return initialize(
+    {
+      serviceWorker: {
+        url: `${import.meta.env.BASE_URL}mockServiceWorker.js`,
+      },
+    },
+    initialRoutes,
+  );
 }
 
 export { mswInitialize, mswLoader };

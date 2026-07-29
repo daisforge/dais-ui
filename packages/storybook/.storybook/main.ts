@@ -171,7 +171,12 @@ const config: StorybookConfig = {
       } as typeof config);
     }
     if (configType === 'PRODUCTION') {
-      // Your production configuration goes here.
+      // GitHub Pages для project-страниц отдаёт сайт не с корня домена,
+      // а с поддиректории /<repo>/ — без base все ассеты (JS-чанки, MSW worker)
+      // резолвятся по неверным абсолютным путям и 404-ятся.
+      return mergeConfig(config, {
+        base: process.env.STORYBOOK_BASE_PATH || '/',
+      } as typeof config);
     }
     return mergeConfig(config, {
       // Your environment configuration here

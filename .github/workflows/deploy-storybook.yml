@@ -35,6 +35,8 @@ jobs:
         run: npm run storybook:build
         env:
           NODE_OPTIONS: '--max_old_space_size=4096'
+          # GitHub Pages для project-страниц отдаёт сайт с /<repo>/, а не с корня домена
+          STORYBOOK_BASE_PATH: '/${{ github.event.repository.name }}/'
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
