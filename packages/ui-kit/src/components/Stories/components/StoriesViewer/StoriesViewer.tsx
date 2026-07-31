@@ -104,7 +104,7 @@ export const StoriesViewer = (): JSX.Element | null => {
           >
             <IconButton
               size="s"
-              view="default"
+              view="white"
               pin="circle-circle"
               aria-label="Предыдущая группа"
               disabled={!hasPrev}
@@ -126,7 +126,7 @@ export const StoriesViewer = (): JSX.Element | null => {
           >
             <IconButton
               size="s"
-              view="default"
+              view="white"
               pin="circle-circle"
               aria-label="Следующая группа"
               disabled={!hasNext}
@@ -144,7 +144,7 @@ export const StoriesViewer = (): JSX.Element | null => {
         >
           <IconButton
             size="s"
-            view="default"
+            view="white"
             pin="circle-circle"
             aria-label="Закрыть"
             onClick={() => controller.close()}
