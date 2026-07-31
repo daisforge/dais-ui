@@ -158,7 +158,13 @@ export function resolveViewColors(
   return {
     bgColor: isHovered ? viewColors.bgColorHover : viewColors.bgColor,
     borderColor: viewColors.borderColor,
-    textColor: viewColors.textColor,
-    iconColor: viewColors.iconColor,
+    textColor:
+      isHovered && viewColors.textColorHover
+        ? viewColors.textColorHover
+        : viewColors.textColor,
+    iconColor:
+      isHovered && viewColors.iconColorHover
+        ? viewColors.iconColorHover
+        : viewColors.iconColor,
   };
 }
