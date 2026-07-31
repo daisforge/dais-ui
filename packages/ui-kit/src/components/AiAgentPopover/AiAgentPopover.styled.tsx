@@ -6,12 +6,12 @@ import styled from 'styled-components';
 
 import {
   AiAgentPopoverClassNames as cls,
-  popoverNativeClassNames
+  popoverNativeClassNames,
 } from './AiAgentPopover.classnames';
 import { COLORS } from './AiAgentPopover.constants';
 import {
   AiAgentPopoverCustomPlacement,
-  AiAgentPopoverPosition
+  AiAgentPopoverPosition,
 } from './AiAgentPopover.types';
 
 const arrowSelector = `${popoverNativeClassNames.arrow}:before`;
@@ -19,7 +19,7 @@ const arrowSelector = `${popoverNativeClassNames.arrow}:before`;
 const C = {
   spaceX4: () => s.x4,
   spaceX3: () => s.x3,
-  brS: () => borderRadius.s
+  brS: () => borderRadius.s,
 };
 
 export const AiAgentPopoverStyled = styled(Popover)<{

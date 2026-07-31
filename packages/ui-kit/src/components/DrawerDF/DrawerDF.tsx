@@ -10,7 +10,7 @@ import { drawerOffsetCloseBtn } from './components/styled';
 import {
   DrawerDFContent,
   DrawerDFFooter,
-  DrawerDFHeader
+  DrawerDFHeader,
 } from './DrawerDFCompounds';
 import { DrawerProps } from './types';
 
@@ -57,9 +57,11 @@ export const DrawerDF = ({
         multipleContents
           ? drawerOffsetCloseBtn.multiply // Используем смещение -64px если есть multipleContents
           : drawerOffsetCloseBtn.default // Иначе стандартное смещение -52px
-      }) - ${multipleContents ? leftPaddingDrawerX : 2 * leftPaddingDrawerX}px)`
+      }) - ${
+        multipleContents ? leftPaddingDrawerX : 2 * leftPaddingDrawerX
+      }px)`,
     }),
-    [multipleContents]
+    [multipleContents],
   );
 
   return (

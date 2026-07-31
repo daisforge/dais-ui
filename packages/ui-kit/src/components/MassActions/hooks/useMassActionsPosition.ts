@@ -10,7 +10,7 @@ import {
   PANEL_PADDING_COLLAPSED,
   PANEL_PADDING_EXPANDED,
   RESET_BUTTON_WIDTH_ESTIMATE,
-  TOGGLE_SIDEBAR_PANEL_WIDTH
+  TOGGLE_SIDEBAR_PANEL_WIDTH,
 } from '../constants';
 import type { MassActionsSidebarConfig } from '../types';
 
@@ -28,7 +28,7 @@ export const useMassActionsPosition = ({
   visibleButtonsCount,
   setTranslateX,
   minPadding = MIN_PANEL_PADDING,
-  enableDebugLogs = false
+  enableDebugLogs = false,
 }: {
   containerRef: React.RefObject<HTMLDivElement>;
   collapseButtonRef: React.RefObject<HTMLDivElement | null>;
@@ -123,8 +123,8 @@ export const useMassActionsPosition = ({
       sidebarWidth,
       toggleSidebarPanelWidth,
       visibleButtonsCount,
-      minPadding
-    ]
+      minPadding,
+    ],
   );
 
   // Упрощенная функция для расчета позиции панели
@@ -186,11 +186,11 @@ export const useMassActionsPosition = ({
             leftEdgePosition,
             minPadding,
             finalTranslateX: translateXValue,
-            adjusted: leftEdgePosition < MIN_PANEL_PADDING
+            adjusted: leftEdgePosition < MIN_PANEL_PADDING,
           },
           null,
-          2
-        )
+          2,
+        ),
       );
       console.groupEnd();
     }
@@ -212,12 +212,12 @@ export const useMassActionsPosition = ({
     isHaveSomeFeatureInSidebar,
     isSidebarOpen,
     setTranslateX,
-    minPadding
+    minPadding,
   ]);
 
   return {
     calculatePosition,
     calculatePositionForState,
-    shouldApplySidebarOffsetRef
+    shouldApplySidebarOffsetRef,
   };
 };

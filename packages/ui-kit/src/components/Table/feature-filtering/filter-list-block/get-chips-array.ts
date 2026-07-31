@@ -6,13 +6,13 @@ export const getChipsArray = <
   FilterStateType extends ObjectForExtending,
   RowType extends ObjectForExtending,
   HeaderContextValueType extends ObjectForExtending,
-  SummaryRowType = unknown
+  SummaryRowType = unknown,
 >({
   columnConfig,
   filters,
   setFilters,
   clearedFiltersStateValue,
-  headerContextValue
+  headerContextValue,
 }: {
   columnConfig: readonly ColumnConfig<RowType, SummaryRowType>[];
   filters: FilterStateType;
@@ -38,10 +38,10 @@ export const getChipsArray = <
         onClick: () => {
           setFilters({
             ...filters,
-            [keyInFilterState]: clearedValue
+            [keyInFilterState]: clearedValue,
           });
         },
-        label: currentValue
+        label: currentValue,
       });
 
       return acc;
@@ -58,10 +58,10 @@ export const getChipsArray = <
           onClick: () => {
             setFilters({
               ...filters,
-              [keyInFilterState]: clearedValue
+              [keyInFilterState]: clearedValue,
             });
           },
-          label: currentValue
+          label: currentValue,
         });
         return acc;
       }
@@ -83,7 +83,7 @@ export const getChipsArray = <
         optionsAll = headerContextValue?.[key] ?? [];
       }
       const selectedOptions = optionsAll.filter((o) =>
-        currentValueX.some((v) => v === o.value)
+        currentValueX.some((v) => v === o.value),
       );
 
       selectedOptions.forEach((o) => {
@@ -92,9 +92,9 @@ export const getChipsArray = <
           onClick: () => {
             setFilters({
               ...filters,
-              [keyInFilterState]: currentValueX.filter((v) => v !== o.value)
+              [keyInFilterState]: currentValueX.filter((v) => v !== o.value),
             });
-          }
+          },
         });
       });
       return acc;

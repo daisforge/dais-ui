@@ -7,7 +7,7 @@ import { Button } from '@ui-kit/components/Button';
 import {
   Canvas,
   type ColumnConfig,
-  TableCanvas
+  TableCanvas,
 } from '@ui-kit/components/TableCanvas';
 import { IconSber } from '@ui-kit/icons';
 import React, { useMemo, useState } from 'react';
@@ -17,9 +17,9 @@ const meta: Meta = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      page: DocStoryTemplate
-    }
-  }
+      page: DocStoryTemplate,
+    },
+  },
 };
 
 export default meta;
@@ -34,7 +34,7 @@ import { IconSber } from '@daisforge/ui/icons';
 export const FullscreenEnabling: StoryObj = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   name: 'Полноэкранный режим',
   render: () => {
@@ -53,45 +53,45 @@ export const FullscreenEnabling: StoryObj = {
               <Canvas.Text>id</Canvas.Text>
               <Canvas.Icon icon={<IconSber size="xs" color="inherit" />} />
             </Canvas.Container>
-          )
+          ),
         },
         {
           key: 'task',
-          name: 'Title'
+          name: 'Title',
         },
         {
           key: 'priority',
-          name: 'Priority'
+          name: 'Priority',
         },
         {
           key: 'issueType',
-          name: 'Issue Type'
+          name: 'Issue Type',
         },
         {
           key: 'complete',
-          name: '% Complete'
-        }
+          name: '% Complete',
+        },
       ],
-      []
+      [],
     );
 
     return (
       <TableCanvas
         tableConfig={{
           containerStyle: { height: 200 },
-          fullScreenEnabled: true
+          fullScreenEnabled: true,
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };
 
 export const FullscreenDefaultOpened: StoryObj = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   name: 'Включение по умолчанию полноэкранного режима',
   render: () => {
@@ -110,26 +110,26 @@ export const FullscreenDefaultOpened: StoryObj = {
               <Canvas.Text>id</Canvas.Text>
               <Canvas.Icon icon={<IconSber size="xs" color="inherit" />} />
             </Canvas.Container>
-          )
+          ),
         },
         {
           key: 'task',
-          name: 'Title'
+          name: 'Title',
         },
         {
           key: 'priority',
-          name: 'Priority'
+          name: 'Priority',
         },
         {
           key: 'issueType',
-          name: 'Issue Type'
+          name: 'Issue Type',
         },
         {
           key: 'complete',
-          name: '% Complete'
-        }
+          name: '% Complete',
+        },
       ],
-      []
+      [],
     );
 
     return (
@@ -137,20 +137,20 @@ export const FullscreenDefaultOpened: StoryObj = {
         <TableCanvas
           tableConfig={{
             containerStyle: { height: 200 },
-            fullScreenEnabled: { defaultOpened: true }
+            fullScreenEnabled: { defaultOpened: true },
           }}
           columnConfig={columnConfig}
           rows={rows}
         />
       </div>
     );
-  }
+  },
 };
 
 export const FullscreenCustomState: StoryObj = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   name: 'Полноэкранный режим c ручным управлением и контролем показа иконки в ControlBlock',
   render: () => {
@@ -169,26 +169,26 @@ export const FullscreenCustomState: StoryObj = {
               <Canvas.Text>id</Canvas.Text>
               <Canvas.Icon icon={<IconSber size="xs" color="inherit" />} />
             </Canvas.Container>
-          )
+          ),
         },
         {
           key: 'task',
-          name: 'Title'
+          name: 'Title',
         },
         {
           key: 'priority',
-          name: 'Priority'
+          name: 'Priority',
         },
         {
           key: 'issueType',
-          name: 'Issue Type'
+          name: 'Issue Type',
         },
         {
           key: 'complete',
-          name: '% Complete'
-        }
+          name: '% Complete',
+        },
       ],
-      []
+      [],
     );
     const [fullScreened, setFullScreened] = useState(false);
 
@@ -202,13 +202,13 @@ export const FullscreenCustomState: StoryObj = {
             containerStyle: { height: 200 },
             fullScreenEnabled: {
               state: [fullScreened, setFullScreened],
-              showInControl: fullScreened
-            }
+              showInControl: fullScreened,
+            },
           }}
           columnConfig={columnConfig}
           rows={rows}
         />
       </div>
     );
-  }
+  },
 };

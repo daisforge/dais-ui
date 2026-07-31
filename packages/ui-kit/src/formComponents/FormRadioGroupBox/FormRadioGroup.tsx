@@ -34,7 +34,7 @@ export const FormRadioGroup = <TFieldValues extends FieldValues>({
       {...remOptions}
       render={({
         field: { onChange, value, ...fieldRest },
-        fieldState: { error }
+        fieldState: { error },
       }) => (
         <FormRadioGroupStyled {...fieldRest} {...rest} $mode={radioGroupMode}>
           {(label || titleCaption) && (

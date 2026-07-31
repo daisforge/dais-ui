@@ -12,7 +12,7 @@ function removeEmptyPopoverRoots() {
 
   // Удаляем только контейнеры внутри специального контейнера
   const typographyContainer = document.getElementById(
-    TYPOGRAPHY_TOOLTIP_CONTAINER_ID
+    TYPOGRAPHY_TOOLTIP_CONTAINER_ID,
   );
   if (typographyContainer) {
     // Ищем popover-контейнеры внутри нашего контейнера
@@ -74,7 +74,7 @@ function createTypographyTooltipContainer(): (() => void) | undefined {
     // Удаляем контейнер только когда все экземпляры размонтированы И контейнер пустой
     if (containerInstanceCount === 0) {
       const container = document.getElementById(
-        TYPOGRAPHY_TOOLTIP_CONTAINER_ID
+        TYPOGRAPHY_TOOLTIP_CONTAINER_ID,
       );
       if (container) {
         // Проверяем, что контейнер пустой (нет активных popover-ов)
@@ -103,6 +103,6 @@ export function usePopoverCleanup() {
     flush: flushInternal,
     cancel: cancelInternal,
     getContainerId: () => TYPOGRAPHY_TOOLTIP_CONTAINER_ID,
-    createContainer: createTypographyTooltipContainer
+    createContainer: createTypographyTooltipContainer,
   };
 }

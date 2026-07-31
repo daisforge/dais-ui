@@ -8,7 +8,7 @@ export type DetailPanelRow<TRow extends ObjectForExtending> = {
   [DETAIL_PANEL_KEYS.ROW_DETAIL_RENDER]: RowDetailConfig<TRow>;
 };
 export const isDetailPanelRow = <TRow extends ObjectForExtending>(
-  r: TRow | DetailPanelRow<TRow>
+  r: TRow | DetailPanelRow<TRow>,
 ): r is Prettify<DetailPanelRow<TRow>> =>
   !!r?.[DETAIL_PANEL_KEYS.IS_DETAIL_PANEL_ROW];
 
@@ -19,6 +19,6 @@ export type RowWithDetailPanel<TRow extends ObjectForExtending> = {
 } & TRow;
 
 export const isRowWithDetailPanelRow = <TRow extends ObjectForExtending>(
-  r: TRow | RowWithDetailPanel<TRow>
+  r: TRow | RowWithDetailPanel<TRow>,
 ): r is Prettify<RowWithDetailPanel<TRow>> =>
   !!r?.[ROW_WITH_DETAIL_DETAIL_KEYS.IS_HAVE];

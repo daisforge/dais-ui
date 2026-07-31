@@ -9,7 +9,7 @@ import { StyledSortIconButton } from './styles';
 export const HeaderSortButton = ({
   columnKey,
   columnSorted,
-  setSortState
+  setSortState,
 }: {
   columnKey: string;
   columnSorted: SortColumn | undefined;
@@ -41,10 +41,10 @@ export const HeaderSortButton = ({
                 ? [
                     {
                       columnKey,
-                      direction: nextDirection
-                    }
+                      direction: nextDirection,
+                    },
                   ]
-                : []
+                : [],
             );
           }}
         >

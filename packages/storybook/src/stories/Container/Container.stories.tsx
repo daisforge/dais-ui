@@ -13,7 +13,7 @@ const meta: Meta<ContainerProps> = {
       <Box height={200}>
         <Story />
       </Box>
-    )
+    ),
   ],
   argTypes: {
     children: {
@@ -23,15 +23,15 @@ const meta: Meta<ContainerProps> = {
         defaultValue: { summary: 'undefined' },
         type: {
           summary:
-            'ReactNode | [ReactElement, ReactElement] | [ReactElement, ReactElement, ReactElement]'
-        }
-      }
+            'ReactNode | [ReactElement, ReactElement] | [ReactElement, ReactElement, ReactElement]',
+        },
+      },
     },
     stretch: {
       description: 'Растянуть контейнер на все доступное пространство',
       table: {
-        defaultValue: { summary: 'false' }
-      }
+        defaultValue: { summary: 'false' },
+      },
     },
     split: {
       description: `Разделить контейнер на колонки.
@@ -39,8 +39,8 @@ const meta: Meta<ContainerProps> = {
                 \n - 2 элемента для view: '30/70', '20/80', '70/30', '80/20', 'fixed-fluid'
                 \n - 3 элемента для view: '1/1/1', '1/3/1'`,
       table: {
-        defaultValue: { summary: 'false' }
-      }
+        defaultValue: { summary: 'false' },
+      },
     },
     view: {
       options: [
@@ -50,7 +50,7 @@ const meta: Meta<ContainerProps> = {
         '80/20',
         '1/1/1',
         '1/3/1',
-        'fixed-fluid'
+        'fixed-fluid',
       ],
       control: { type: 'select' },
       description: `Варианты отображения колонок:
@@ -60,38 +60,38 @@ const meta: Meta<ContainerProps> = {
             \n - 'fixed-fluid' - фиксированная левая колонка и гибкая правая
             \n Можно задать только когда \`split === true\``,
       table: {
-        defaultValue: { summary: '30/70' }
-      }
+        defaultValue: { summary: '30/70' },
+      },
     },
     className: {
       description: `prop для задания class-а`,
       table: {
         defaultValue: { summary: 'undefined' },
         type: {
-          summary: 'string | undefined'
-        }
-      }
+          summary: 'string | undefined',
+        },
+      },
     },
     css: {
       description: `prop для задания стилей`,
       table: {
         type: {
-          summary: 'CSSObject | string | undefined'
+          summary: 'CSSObject | string | undefined',
         },
-        defaultValue: { summary: 'undefined' }
-      }
+        defaultValue: { summary: 'undefined' },
+      },
     },
     fixedWidth: {
       description: `Ширина фиксированной колонки (только для view='fixed-fluid')`,
       table: {
         type: {
-          summary: 'string | undefined'
+          summary: 'string | undefined',
         },
-        defaultValue: { summary: '288px' }
+        defaultValue: { summary: '288px' },
       },
-      if: { arg: 'view', eq: 'fixed-fluid' }
-    }
-  }
+      if: { arg: 'view', eq: 'fixed-fluid' },
+    },
+  },
 };
 
 export default meta;
@@ -105,7 +105,7 @@ export const Default: Story = {
       <Box height="100%" background="#ffdfdf">
         <BodyL>Some content in container</BodyL>
       </Box>
-    )
+    ),
   },
   parameters: {
     docs: {
@@ -121,16 +121,16 @@ export const Default: Story = {
                             </Box>
                         </Container>
                     </Box>
-                `
-      }
-    }
-  }
+                `,
+      },
+    },
+  },
 };
 
 export const Stretch: Story = {
   args: {
     children: <Box height="100%" background="#ffdfdf" />,
-    stretch: true
+    stretch: true,
   },
   name: 'Растянуть',
   parameters: {
@@ -145,21 +145,21 @@ export const Stretch: Story = {
                         <Box height="100%" background="#ffdfdf" />
                     </Container>
                 </Box>
-            `
-      }
-    }
-  }
+            `,
+      },
+    },
+  },
 };
 
 export const Split: Story = {
   args: {
     children: [
       <Box height="100%" background="#ffdfdf" />,
-      <Box height="100%" background="#dfffdf" />
+      <Box height="100%" background="#dfffdf" />,
     ],
     stretch: true,
     split: true,
-    view: '30/70'
+    view: '30/70',
   },
   name: 'Сплит (30/70)',
   parameters: {
@@ -175,10 +175,10 @@ export const Split: Story = {
                         <Box height="100%" background="#dfffdf" />
                     </Container>
                 </Box>
-            `
-      }
-    }
-  }
+            `,
+      },
+    },
+  },
 };
 
 export const SplitThreeEqualColumns: Story = {
@@ -186,11 +186,11 @@ export const SplitThreeEqualColumns: Story = {
     children: [
       <Box key="left" height="100%" background="#ffdfdf" />,
       <Box key="center" height="100%" background="#dfffdf" />,
-      <Box key="right" height="100%" background="#dfdfff" />
+      <Box key="right" height="100%" background="#dfdfff" />,
     ],
     stretch: true,
     split: true,
-    view: '1/1/1'
+    view: '1/1/1',
   },
   name: 'Сплит (1/1/1)',
   parameters: {
@@ -207,10 +207,10 @@ export const SplitThreeEqualColumns: Story = {
                         <Box height="100%" background="#dfdfff" />
                     </Container>
                 </Box>
-            `
-      }
-    }
-  }
+            `,
+      },
+    },
+  },
 };
 
 export const SplitWideCenterColumn: Story = {
@@ -218,11 +218,11 @@ export const SplitWideCenterColumn: Story = {
     children: [
       <Box key="left" height="100%" background="#ffdfdf" />,
       <Box key="center" height="100%" background="#dfffdf" />,
-      <Box key="right" height="100%" background="#dfdfff" />
+      <Box key="right" height="100%" background="#dfdfff" />,
     ],
     stretch: true,
     split: true,
-    view: '1/3/1'
+    view: '1/3/1',
   },
   name: 'Сплит (1/3/1)',
   parameters: {
@@ -239,22 +239,22 @@ export const SplitWideCenterColumn: Story = {
                         <Box height="100%" background="#dfdfff" />
                     </Container>
                 </Box>
-            `
-      }
-    }
-  }
+            `,
+      },
+    },
+  },
 };
 
 export const SplitFixedFluid: Story = {
   args: {
     children: [
       <Box key="left" height="100%" background="#ffdfdf" />,
-      <Box key="right" height="100%" background="#dfffdf" />
+      <Box key="right" height="100%" background="#dfffdf" />,
     ],
     stretch: true,
     split: true,
     view: 'fixed-fluid',
-    fixedWidth: '300px'
+    fixedWidth: '300px',
   },
   name: 'Сплит (fixed-fluid)',
   parameters: {
@@ -270,8 +270,8 @@ export const SplitFixedFluid: Story = {
                         <Box height="100%" background="#dfffdf" />
                     </Container>
                 </Box>
-            `
-      }
-    }
-  }
+            `,
+      },
+    },
+  },
 };

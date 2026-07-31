@@ -2,29 +2,29 @@ import { PaginationSize, PaginationSlots } from './types';
 
 export const PAGINATION_PADDING: { [K in PaginationSize]: number } = {
   xs: 4,
-  s: 4
+  s: 4,
 };
 
 export const PAGINATION_HEIGHT: { [K in PaginationSize]: number } = {
   xs: 32,
-  s: 40
+  s: 40,
 };
 
 export const PAGINATION_TEXTS = {
   textQuickJump: 'Перейти к',
-  textPerPage: 'Показывать по'
+  textPerPage: 'Показывать по',
 };
 
 export const DEFAULT_PAGINATION_SIZE = 's';
 
 const PAGINATION_SLOT_WIDTH_BY_SIZE = {
   xs: 33,
-  s: 41
+  s: 41,
 };
 
 const PAGINATION_START_WIDTH_ADAPTIVE = {
   xs: 670,
-  s: 800
+  s: 800,
 };
 
 /**
@@ -43,7 +43,7 @@ export const PAGINATION_SLOTS_BREAKPOINTS: {
     {
       minWidth: PAGINATION_START_WIDTH_ADAPTIVE.xs - PAGINATION_PADDING.xs * 2,
       slots: 9,
-      hasQuickJump: true
+      hasQuickJump: true,
     },
     {
       minWidth:
@@ -51,7 +51,7 @@ export const PAGINATION_SLOTS_BREAKPOINTS: {
         PAGINATION_SLOT_WIDTH_BY_SIZE.xs -
         PAGINATION_PADDING.xs * 2,
       slots: 8,
-      hasQuickJump: true
+      hasQuickJump: true,
     },
     {
       minWidth:
@@ -59,7 +59,7 @@ export const PAGINATION_SLOTS_BREAKPOINTS: {
         PAGINATION_SLOT_WIDTH_BY_SIZE.xs * 2 -
         PAGINATION_PADDING.xs * 2,
       slots: 7,
-      hasQuickJump: true
+      hasQuickJump: true,
     },
     {
       minWidth:
@@ -67,7 +67,7 @@ export const PAGINATION_SLOTS_BREAKPOINTS: {
         PAGINATION_SLOT_WIDTH_BY_SIZE.xs * 3 -
         PAGINATION_PADDING.xs * 2,
       slots: 1,
-      hasQuickJump: true
+      hasQuickJump: true,
     },
     {
       minWidth:
@@ -75,7 +75,7 @@ export const PAGINATION_SLOTS_BREAKPOINTS: {
         PAGINATION_SLOT_WIDTH_BY_SIZE.xs * 6 -
         PAGINATION_PADDING.xs * 2,
       slots: 1,
-      hasQuickJump: true
+      hasQuickJump: true,
     },
     {
       minWidth:
@@ -83,7 +83,7 @@ export const PAGINATION_SLOTS_BREAKPOINTS: {
         PAGINATION_SLOT_WIDTH_BY_SIZE.xs * 7 -
         PAGINATION_PADDING.xs * 2,
       slots: 1,
-      hasQuickJump: false
+      hasQuickJump: false,
     },
     // {
     //   minWidth:
@@ -113,13 +113,13 @@ export const PAGINATION_SLOTS_BREAKPOINTS: {
     //     PAGINATION_PADDING.xs * 2,
     //   slots: 2,
     // },
-    { minWidth: 0, slots: 1 }
+    { minWidth: 0, slots: 1 },
   ],
   s: [
     {
       minWidth: PAGINATION_START_WIDTH_ADAPTIVE.s - PAGINATION_PADDING.s * 2,
       slots: 7,
-      hasQuickJump: true
+      hasQuickJump: true,
     },
     {
       minWidth:
@@ -127,7 +127,7 @@ export const PAGINATION_SLOTS_BREAKPOINTS: {
         PAGINATION_SLOT_WIDTH_BY_SIZE.s -
         PAGINATION_PADDING.s * 2,
       slots: 8,
-      hasQuickJump: true
+      hasQuickJump: true,
     },
     {
       minWidth:
@@ -135,7 +135,7 @@ export const PAGINATION_SLOTS_BREAKPOINTS: {
         PAGINATION_SLOT_WIDTH_BY_SIZE.s * 2 -
         PAGINATION_PADDING.s * 2,
       slots: 7,
-      hasQuickJump: true
+      hasQuickJump: true,
     },
     {
       minWidth:
@@ -143,7 +143,7 @@ export const PAGINATION_SLOTS_BREAKPOINTS: {
         PAGINATION_SLOT_WIDTH_BY_SIZE.s * 3 -
         PAGINATION_PADDING.s * 2,
       slots: 1,
-      hasQuickJump: true
+      hasQuickJump: true,
     },
     {
       minWidth:
@@ -151,7 +151,7 @@ export const PAGINATION_SLOTS_BREAKPOINTS: {
         PAGINATION_SLOT_WIDTH_BY_SIZE.s * 6 -
         PAGINATION_PADDING.s * 2,
       slots: 1,
-      hasQuickJump: true
+      hasQuickJump: true,
     },
     {
       minWidth:
@@ -159,7 +159,7 @@ export const PAGINATION_SLOTS_BREAKPOINTS: {
         PAGINATION_SLOT_WIDTH_BY_SIZE.s * 7 -
         PAGINATION_PADDING.s * 2,
       slots: 1,
-      hasQuickJump: false
+      hasQuickJump: false,
     },
     // {
     //   minWidth:
@@ -189,8 +189,8 @@ export const PAGINATION_SLOTS_BREAKPOINTS: {
     //     PAGINATION_PADDING.s * 2,
     //   slots: 2,
     // },
-    { minWidth: 0, slots: 1, hasQuickJump: false }
-  ]
+    { minWidth: 0, slots: 1, hasQuickJump: false },
+  ],
 };
 
 /**
@@ -201,7 +201,7 @@ export const PAGINATION_SLOTS_BREAKPOINTS: {
  */
 export const getPaginationSlotsAndStatusQuickJumpByWidth = (
   size: PaginationSize,
-  width: number
+  width: number,
 ): [PaginationSlots, boolean] => {
   const breakpoints = PAGINATION_SLOTS_BREAKPOINTS[size];
 

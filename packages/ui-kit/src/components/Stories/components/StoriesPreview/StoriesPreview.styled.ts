@@ -5,21 +5,21 @@ import styled, { css } from 'styled-components';
 import {
   STORIES_PREVIEW_FALLBACK_BG,
   STORIES_RING_GRADIENT,
-  STORIES_SIZES
+  STORIES_SIZES,
 } from '../../Stories.constants';
 import { StoriesShape } from '../../Stories.types';
 
 const C = {
   ring: () => STORIES_RING_GRADIENT,
   fallback: () => STORIES_PREVIEW_FALLBACK_BG,
-  boxShadow: () => shadowDownSoftL
+  boxShadow: () => shadowDownSoftL,
 };
 
 const radiusFor = (shape: StoriesShape, level: 'outer' | 'body'): string => {
   if (shape === 'circle') return '50%';
   const map = {
     outer: STORIES_SIZES.rectRadiusOuter,
-    body: STORIES_SIZES.rectRadiusBody
+    body: STORIES_SIZES.rectRadiusBody,
   };
   return `${map[level]}px`;
 };

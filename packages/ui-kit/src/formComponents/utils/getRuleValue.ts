@@ -4,7 +4,7 @@ import type { TGetRuleValueProps } from './types';
 
 export const getRuleValue = <T extends ValidationValue>({
   rule,
-  typeValue
+  typeValue,
 }: TGetRuleValueProps<T>): T | undefined => {
   if (rule) {
     // eslint-disable-next-line valid-typeof

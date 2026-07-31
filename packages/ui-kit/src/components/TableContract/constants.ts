@@ -5,59 +5,59 @@ export const Q_PARAMS = {
    * Количество строк на одной странице пагинации  (page_limit: 'page_limit', - старая версия, новая  - size)
    */
   pageSize: 'pageSize',
-  q: 'q'
+  q: 'q',
 } as const;
 
 export const TABLE_STYLES = {
-  height: '500px'
+  height: '500px',
 } as const;
 
 export const DATA_TYPES = [
   {
     ansiSqlType: 'Real',
     semanticType: 'FLOAT',
-    jsType: 'number'
+    jsType: 'number',
   },
   {
     ansiSqlType: 'Integer/Int/Int4',
     semanticType: 'INTEGER',
-    jsType: 'number'
+    jsType: 'number',
   },
   {
     ansiSqlType: 'Numeric/decimal',
     semanticType: 'DECIMAL',
-    jsType: 'number'
+    jsType: 'number',
   },
   {
     ansiSqlType: 'Text',
     semanticType: 'STRING',
-    jsType: 'string'
+    jsType: 'string',
   },
   {
     ansiSqlType: 'Date',
     semanticType: 'DATE',
-    jsType: 'Date'
+    jsType: 'Date',
   },
   {
     ansiSqlType: 'Time',
     semanticType: 'TIME',
-    jsType: 'Date'
+    jsType: 'Date',
   },
   {
     ansiSqlType: 'Timestamp without timezone',
     semanticType: 'DATETIME',
-    jsType: 'Date'
+    jsType: 'Date',
   },
   {
     ansiSqlType: 'Timestamp with timezone',
     semanticType: 'TIMESTAMP',
-    jsType: 'Date'
+    jsType: 'Date',
   },
   {
     ansiSqlType: 'Boolean',
     semanticType: 'BOOLEAN',
-    jsType: 'boolean'
-  }
+    jsType: 'boolean',
+  },
 ] as const;
 
 export type DataType = (typeof DATA_TYPES)[number];

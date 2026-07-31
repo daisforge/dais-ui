@@ -1,5 +1,5 @@
 export type { ModalDFConfirmationProps } from './ModalDFConfirmation';
 export {
   ModalDFConfirmation,
-  ModalDFConfirmationFooter
+  ModalDFConfirmationFooter,
 } from './ModalDFConfirmation';

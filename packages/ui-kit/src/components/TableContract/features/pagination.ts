@@ -6,13 +6,13 @@ import type {
   ContractTableConfig,
   InstanceTableConfig,
   PaginationParams,
-  UrlAction
+  UrlAction,
 } from '../types';
 
 export function usePagination({
   tableConfigBackendPagination,
   params,
-  dispatchParams
+  dispatchParams,
 }: {
   tableConfigBackendPagination: ContractTableConfig['pagination'] | undefined;
   params: URLSearchParams;
@@ -67,8 +67,8 @@ export function usePagination({
             // и вообще изменение страницы должно происходить после получения данных (тк данные могут не придти)
             scrollToTop();
           }
-        }
-      }
+        },
+      },
     };
     // не добавлен pageLimitList (данная переменная не должна меняться при взаимодействии с таблицей)
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -11,12 +11,12 @@ import {
   useEffect,
   useImperativeHandle,
   useRef,
-  useState
+  useState,
 } from 'react';
 
 import {
   StoriesPreview,
-  StoriesPreviewInternalProps
+  StoriesPreviewInternalProps,
 } from './components/StoriesPreview';
 import { StoriesViewerLazy } from './components/StoriesViewer/StoriesViewer.lazy';
 import { useAssetPreloader } from './hooks/useAssetPreloader';
@@ -30,7 +30,7 @@ import {
   StoriesController,
   StoriesGroupMeta,
   StoriesProps,
-  StoriesRef
+  StoriesRef,
 } from './Stories.types';
 
 type StoriesComponent = ForwardRefExoticComponent<
@@ -40,7 +40,7 @@ type StoriesComponent = ForwardRefExoticComponent<
 };
 
 const isPreviewElement = (
-  child: unknown
+  child: unknown,
 ): child is ReactElement<StoriesPreviewInternalProps> =>
   isValidElement(child) && child.type === StoriesPreview;
 
@@ -69,7 +69,7 @@ const ViewerGate = (): JSX.Element | null => {
 
 const StoriesRender = (
   props: StoriesProps,
-  ref: Ref<StoriesRef>
+  ref: Ref<StoriesRef>,
 ): JSX.Element => {
   const {
     children,
@@ -95,14 +95,14 @@ const StoriesRender = (
     groupTransition = 'slide',
     arrows = 'auto',
     mode,
-    className
+    className,
   } = props;
 
   // Нормализуем группы из компаунд-детей: props каждого Stories.Preview — это данные.
   const childArray = Children.toArray(children).filter(isPreviewElement);
   const groups: StoriesGroupMeta[] = childArray.map((child) => ({
     slides: child.props.slides ?? [],
-    defaultDuration: child.props.defaultDuration
+    defaultDuration: child.props.defaultDuration,
   }));
 
   // Стор и controller
@@ -122,7 +122,7 @@ const StoriesRender = (
     onSlideChange,
     onComplete,
     onGroupComplete,
-    onClose
+    onClose,
   });
   handlersRef.current = {
     onOpenChange,
@@ -130,7 +130,7 @@ const StoriesRender = (
     onSlideChange,
     onComplete,
     onGroupComplete,
-    onClose
+    onClose,
   };
 
   const controllerRef = useRef<StoriesController>();
@@ -141,7 +141,7 @@ const StoriesRender = (
     const setGroup = (
       gi: number,
       si: number,
-      direction: 'next' | 'prev'
+      direction: 'next' | 'prev',
     ): void =>
       runViewTransition(
         () =>
@@ -149,9 +149,9 @@ const StoriesRender = (
             groupIndex: gi,
             slideIndex: si,
             direction,
-            isPlaying: true
+            isPlaying: true,
           }),
-        { direction, enabled: configRef.current.groupTransition !== 'none' }
+        { direction, enabled: configRef.current.groupTransition !== 'none' },
       );
 
     const complete = (): void => {
@@ -167,7 +167,7 @@ const StoriesRender = (
           groupIndex: groupIndex ?? snap.groupIndex,
           slideIndex: slideIndex ?? 0,
           isPlaying: true,
-          direction: 'next'
+          direction: 'next',
         });
       },
       close: () => store.setState({ isOpen: false, isPlaying: false }),
@@ -214,7 +214,7 @@ const StoriesRender = (
         }
       },
       pause: () => store.setState({ isPlaying: false }),
-      resume: () => store.setState({ isPlaying: true })
+      resume: () => store.setState({ isPlaying: true }),
     };
   }
   const controller = controllerRef.current;
@@ -254,7 +254,7 @@ const StoriesRender = (
           }
         }
       }),
-    [store]
+    [store],
   );
 
   // Контролируемые пропсы зеркалим в стор.
@@ -280,11 +280,11 @@ const StoriesRender = (
           isOpen: snap.isOpen,
           groupIndex: snap.groupIndex,
           slideIndex: snap.slideIndex,
-          isPlaying: snap.isPlaying
+          isPlaying: snap.isPlaying,
         };
-      }
+      },
     }),
-    [controller, store]
+    [controller, store],
   );
 
   const contextValue = {
@@ -304,7 +304,7 @@ const StoriesRender = (
     arrows,
     mode,
     onError,
-    renderError
+    renderError,
   };
 
   return (
@@ -315,7 +315,7 @@ const StoriesRender = (
           .join(' ')}
       >
         {childArray.map((child, index) =>
-          cloneElement(child, { __index: index })
+          cloneElement(child, { __index: index }),
         )}
       </StyledStories>
       <ViewerGate />

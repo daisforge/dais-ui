@@ -4,13 +4,13 @@ import type { SIZE } from '../styles/styles.constants';
 import {
   Canvas,
   CellInfoGlideInstance,
-  createEmptyCellGlide
+  createEmptyCellGlide,
 } from '../TableGlideInstance';
 import { ObjectForExtending } from '../types';
 import { ColumnConfigInternal } from '../types/column-config-internal.type';
 import {
   getCheckboxMetricsByRowSize,
-  getCheckboxMetricsByTheme
+  getCheckboxMetricsByTheme,
 } from './checkbox-metrics';
 import { CHECKBOX_COLUMN_KEY } from './constants';
 import { getRowSelectingInfo } from './selecting-contexts';
@@ -22,7 +22,7 @@ function renderCell(props: CellInfoGlideInstance<ObjectForExtending>) {
     isRowSelected,
     isIndeterminate,
     isRowSelectionDisabled,
-    onChange
+    onChange,
   } = getRowSelectingInfo(props);
 
   if (!isHaveCheckbox) {
@@ -55,7 +55,7 @@ function renderCell(props: CellInfoGlideInstance<ObjectForExtending>) {
 }
 
 export const createCheckboxColumn = ({
-  rowSize
+  rowSize,
 }: {
   rowSize: SIZE;
 }): ColumnConfigInternal<
@@ -73,6 +73,6 @@ export const createCheckboxColumn = ({
     minWidth: columnWidth,
     frozen: true,
     renderCell,
-    renderHeaderCell: renderSummaryCheckbox
+    renderHeaderCell: renderSummaryCheckbox,
   };
 };

@@ -4,7 +4,7 @@ import {
   ProvideEditorCallback,
   TableGlide,
   TableGlideProps,
-  Theme
+  Theme,
 } from '@ui-kit/components/TableGlide';
 import { useCallback, useMemo } from 'react';
 
@@ -13,7 +13,7 @@ import {
   useColumnGroupContext,
   useExpandedRowsContext,
   useHeaderContext,
-  useRowContext
+  useRowContext,
 } from '../contexts';
 import { TableContentStateOverlay } from '../feature-content-state';
 import { useRowDetailHandlerContext } from '../feature-row-detail/ctx';
@@ -60,9 +60,9 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
         const {
           column: glideColumn,
           groupLength,
-          wasFrozen
+          wasFrozen,
         } = adaptColumn({
-          column
+          column,
         });
 
         // Обновляем максимальную длину группы
@@ -80,7 +80,7 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
 
         return acc;
       },
-      []
+      [],
     );
 
     columnsGlide.unshift(...frozenColumns);
@@ -88,7 +88,7 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
     return {
       frozenColsCount: frozenColumns.length,
       columnsGlide,
-      groupMaxLength
+      groupMaxLength,
     };
   }, [columns]);
 
@@ -104,7 +104,7 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
 
   const expandedRowsCtxMerged = useMemo(
     () => ({ ...expandedRowsCtx, ...rowDetailCtx }),
-    [expandedRowsCtx, rowDetailCtx]
+    [expandedRowsCtx, rowDetailCtx],
   );
 
   const ctxs: CtxsType = useMemo(
@@ -112,14 +112,14 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
       headerCtx,
       expandedRowsCtx: expandedRowsCtxMerged,
       selectingRowCtx,
-      rowCtx
+      rowCtx,
     }),
-    [headerCtx, expandedRowsCtxMerged, selectingRowCtx, rowCtx]
+    [headerCtx, expandedRowsCtxMerged, selectingRowCtx, rowCtx],
   );
 
   const groupHeaderHeightArr = useMemo(
     () => Array.from({ length: groupMaxLength }, () => headerHeight),
-    [groupMaxLength, headerHeight]
+    [groupMaxLength, headerHeight],
   );
   const shouldRenderFullContentState =
     contentStateOverlay?.displayMode === 'full-content';
@@ -129,7 +129,7 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
         ? 0
         : headerHeight +
           groupHeaderHeightArr.reduce((acc, item) => acc + item, 0),
-    [groupHeaderHeightArr, headerHeight, shouldRenderFullContentState]
+    [groupHeaderHeightArr, headerHeight, shouldRenderFullContentState],
   );
 
   const renderGroupHeader = useCallback<
@@ -147,7 +147,7 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
 
       return column?.name as CanvasEl;
     },
-    [allGroupsMap]
+    [allGroupsMap],
   );
 
   const handleHeaderContextMenu = useCallback<
@@ -159,11 +159,11 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
         onHeaderContextMenu?.(colIndex, event, {
           column: currentColumn,
           ctxs,
-          refTable
+          refTable,
         });
       }
     },
-    [columns, onHeaderContextMenu, ctxs, refTable]
+    [columns, onHeaderContextMenu, ctxs, refTable],
   );
 
   const handleCellContextMenu = useCallback<
@@ -177,11 +177,11 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
           column: currentColumn,
           row: currentRow,
           ctxs,
-          refTable
+          refTable,
         });
       }
     },
-    [columns, rows, onCellContextMenu, ctxs, refTable]
+    [columns, rows, onCellContextMenu, ctxs, refTable],
   );
 
   const handleCellClicked = useCallback<
@@ -196,11 +196,11 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
           column: currentColumn,
           row: currentRow,
           ctxs,
-          refTable
+          refTable,
         });
       }
     },
-    [columns, rows, onCellClickedExternal, ctxs, refTable]
+    [columns, rows, onCellClickedExternal, ctxs, refTable],
   );
 
   const onCellsEdited = useMemo<TableGlideProps<R, SR>['onCellsEdited']>(() => {
@@ -240,8 +240,8 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
         {
           column: firstChangedRowColumnColumn,
           indexes: [] as number[],
-          changedAllRows: [...rows] satisfies R[]
-        }
+          changedAllRows: [...rows] satisfies R[],
+        },
       );
 
       if (typeof indexes[0] === 'undefined') {
@@ -282,7 +282,7 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
                 target,
                 initialValue,
                 portalElementRef,
-                activation
+                activation,
               } = props;
 
               return (
@@ -303,7 +303,7 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
                 />
               );
             },
-            disablePadding: true
+            disablePadding: true,
           };
         }
 
@@ -316,7 +316,7 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
                 target,
                 initialValue,
                 portalElementRef,
-                activation
+                activation,
               } = props;
 
               return preview({
@@ -331,10 +331,10 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
                 portalElementRef,
                 ctxs,
                 row,
-                theme: theme as Theme
+                theme: theme as Theme,
               });
             },
-            disablePadding: true
+            disablePadding: true,
           };
         }
 
@@ -348,7 +348,7 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
               initialValue,
               portalElementRef,
 
-              activation
+              activation,
             } = props;
 
             const contentAlign = column.contentAlign ?? 'left';
@@ -377,7 +377,7 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
               />
             );
           },
-          disablePadding: true
+          disablePadding: true,
         };
       }
 
@@ -394,7 +394,7 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
               initialValue,
               portalElementRef,
 
-              activation
+              activation,
             } = props;
 
             return (
@@ -420,13 +420,13 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
               />
             );
           },
-          disablePadding: true
+          disablePadding: true,
         };
       }
 
       return undefined;
     },
-    [CellReadOnlyEditor, columns, ctxs, rows]
+    [CellReadOnlyEditor, columns, ctxs, rows],
   );
 
   const isOutsideClick = useMemo((): TableGlideProps<

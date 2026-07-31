@@ -8,14 +8,14 @@ import { MutableRefObject, useCallback, useEffect, useState } from 'react';
 export const useIsClosingClosedOpening = ({
   sidebarIsClosed,
   isResizingRef,
-  onTransitionEndExt
+  onTransitionEndExt,
 }: {
   sidebarIsClosed: boolean;
   isResizingRef: MutableRefObject<boolean>;
   onTransitionEndExt: React.TransitionEventHandler<HTMLDivElement> | undefined;
 }) => {
   const [isClosingOrClosedOrOpening, setIsClosingOrClosedOrOpening] = useState(
-    () => sidebarIsClosed
+    () => sidebarIsClosed,
   );
 
   useEffect(() => {
@@ -41,8 +41,8 @@ export const useIsClosingClosedOpening = ({
       isClosingOrClosedOrOpening,
       isResizingRef,
       onTransitionEndExt,
-      sidebarIsClosed
-    ]
+      sidebarIsClosed,
+    ],
   );
 
   return { isClosingOrClosedOrOpening, onTransitionEnd };

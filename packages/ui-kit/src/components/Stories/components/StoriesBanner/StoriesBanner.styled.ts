@@ -2,7 +2,7 @@ import styled, { keyframes } from 'styled-components';
 
 import {
   STORIES_SIZES,
-  STORIES_VIEW_TRANSITION_NAME
+  STORIES_VIEW_TRANSITION_NAME,
 } from '../../Stories.constants';
 
 const popIn = keyframes`

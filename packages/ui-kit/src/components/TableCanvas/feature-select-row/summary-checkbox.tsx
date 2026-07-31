@@ -10,7 +10,7 @@ import { AnimatedCounter } from '../components/AnimatedCounter';
 import {
   Canvas,
   CanvasEl,
-  HeaderCellInfoGlideInstance
+  HeaderCellInfoGlideInstance,
 } from '../TableGlideInstance';
 import { ObjectForExtending } from '../types';
 import { getCheckboxMetricsByTheme } from './checkbox-metrics';
@@ -20,7 +20,7 @@ import { ChildrenInfo } from './types';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const renderSummaryCheckbox = ({
   ctxs,
-  theme
+  theme,
 }: // eslint-disable-next-line @typescript-eslint/no-explicit-any
 HeaderCellInfoGlideInstance<any, unknown>): CanvasEl => {
   const {
@@ -29,7 +29,7 @@ HeaderCellInfoGlideInstance<any, unknown>): CanvasEl => {
     selectingRowConfig,
     selectedRows,
     setSelectedRows,
-    rowKeyGetter
+    rowKeyGetter,
   } = ctxs.selectingRowCtx;
 
   const {
@@ -40,7 +40,7 @@ HeaderCellInfoGlideInstance<any, unknown>): CanvasEl => {
     rowCheckboxDisabled = () => false,
     rowShowCheckbox = () => true,
     disableSummaryCheckboxInHeader,
-    hideSummaryCheckboxInHeader
+    hideSummaryCheckboxInHeader,
   } = selectingRowConfig;
 
   const callbackOnChange = summaryCheckedUncontrolled?.onChange;
@@ -68,7 +68,7 @@ HeaderCellInfoGlideInstance<any, unknown>): CanvasEl => {
         checkedAll:
           allRowsOnLevel.length > 0 &&
           selectedRows.size === allRowsOnLevel.length,
-        allRowsOnLevel
+        allRowsOnLevel,
       };
     }
 
@@ -78,7 +78,7 @@ HeaderCellInfoGlideInstance<any, unknown>): CanvasEl => {
         checkedAll:
           allRowsOnLevel.length > 0 &&
           selectedRows.size === allRowsOnLevel.length,
-        allRowsOnLevel
+        allRowsOnLevel,
       };
     }
 
@@ -98,7 +98,7 @@ HeaderCellInfoGlideInstance<any, unknown>): CanvasEl => {
       checkedAll:
         allRowsOnLevel.length > 0 &&
         allRowsOnLevel.length === selectedRows.size,
-      allRowsOnLevel
+      allRowsOnLevel,
     };
   })();
 
@@ -113,7 +113,7 @@ HeaderCellInfoGlideInstance<any, unknown>): CanvasEl => {
       notHidden: [],
       selected: [],
       notSelected: [],
-      someChildrenIsSelected: false
+      someChildrenIsSelected: false,
     };
 
     // находясь на каждой строке  проверяем и обновляем info
@@ -158,7 +158,7 @@ HeaderCellInfoGlideInstance<any, unknown>): CanvasEl => {
     rowCheckboxDisabled,
     rowShowCheckbox,
 
-    allRowsInLevels: allRowsOnLevel
+    allRowsInLevels: allRowsOnLevel,
   });
 
   const checkedAll = (() => {
@@ -168,7 +168,7 @@ HeaderCellInfoGlideInstance<any, unknown>): CanvasEl => {
         checkedAll = summaryChecked.checked;
       } else {
         checkedAll = summaryChecked.checked(
-          getSummaryCheckedFuncDefaultProps()
+          getSummaryCheckedFuncDefaultProps(),
         );
       }
 
@@ -184,7 +184,7 @@ HeaderCellInfoGlideInstance<any, unknown>): CanvasEl => {
       }
       return summaryChecked.indeterminate({
         checkedAll,
-        ...getSummaryCheckedFuncDefaultProps()
+        ...getSummaryCheckedFuncDefaultProps(),
       });
     }
     return selectedRows && selectedRows.size !== 0 && !checkedAll;
@@ -206,7 +206,7 @@ HeaderCellInfoGlideInstance<any, unknown>): CanvasEl => {
       alignItems="center"
       onClick={() => {
         callbackOnChange?.({
-          target: { value: !checkedAll }
+          target: { value: !checkedAll },
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } as any);
 
@@ -216,7 +216,7 @@ HeaderCellInfoGlideInstance<any, unknown>): CanvasEl => {
             checkedAll,
             setSelectedRowsIds:
               setSelectedRows ??
-              ((() => {}) as NonNullable<typeof setSelectedRows>)
+              ((() => {}) as NonNullable<typeof setSelectedRows>),
           });
           return;
         }
@@ -229,7 +229,7 @@ HeaderCellInfoGlideInstance<any, unknown>): CanvasEl => {
           return;
         }
         setSelectedRows(
-          new Set(allRowsOnLevel.map((row) => rowKeyGetter(row)))
+          new Set(allRowsOnLevel.map((row) => rowKeyGetter(row))),
         );
       }}
     >
@@ -242,7 +242,7 @@ export const SummaryCheckbox = ({
   isHaveRightDivider,
   hideCheckbox = false,
   renderOnlyCheckbox = false,
-  onChangeHandlerRef
+  onChangeHandlerRef,
 }: {
   isHaveRightDivider: boolean;
   hideCheckbox?: boolean;
@@ -263,7 +263,7 @@ export const SummaryCheckbox = ({
     rowKeyGetter,
     isSelectingRowLabelVisible,
     isSelectingRowCounterVisible,
-    controlBlock
+    controlBlock,
   } = useSelectingRowContext();
 
   const {
@@ -273,7 +273,7 @@ export const SummaryCheckbox = ({
     summaryCheckedUncontrolled,
     rowCheckboxDisabled = () => false,
     rowShowCheckbox = () => true,
-    hideSummaryCheckboxInHeader
+    hideSummaryCheckboxInHeader,
   } = selectingRowConfig;
 
   const callbackOnChange = summaryCheckedUncontrolled?.onChange;
@@ -307,7 +307,7 @@ export const SummaryCheckbox = ({
         checkedAll:
           allRowsOnLevel.length > 0 &&
           selectedRows.size === allRowsOnLevel.length,
-        allRowsOnLevel
+        allRowsOnLevel,
       };
     }
 
@@ -317,7 +317,7 @@ export const SummaryCheckbox = ({
         checkedAll:
           allRowsOnLevel.length > 0 &&
           selectedRows.size === allRowsOnLevel.length,
-        allRowsOnLevel
+        allRowsOnLevel,
       };
     }
 
@@ -337,7 +337,7 @@ export const SummaryCheckbox = ({
       checkedAll:
         allRowsOnLevel.length > 0 &&
         allRowsOnLevel.length === selectedRows.size,
-      allRowsOnLevel
+      allRowsOnLevel,
     };
   })();
 
@@ -352,7 +352,7 @@ export const SummaryCheckbox = ({
       notHidden: [],
       selected: [],
       notSelected: [],
-      someChildrenIsSelected: false
+      someChildrenIsSelected: false,
     };
 
     // находясь на каждой строке  проверяем и обновляем info
@@ -398,7 +398,7 @@ export const SummaryCheckbox = ({
     rowCheckboxDisabled,
     rowShowCheckbox,
     allRowsInLevels: allRowsOnLevel,
-    getAllRowsInfo
+    getAllRowsInfo,
   });
 
   const checkedAll = (() => {
@@ -408,7 +408,7 @@ export const SummaryCheckbox = ({
         checkedAll = summaryChecked.checked;
       } else {
         checkedAll = summaryChecked.checked(
-          getSummaryCheckedFuncDefaultProps()
+          getSummaryCheckedFuncDefaultProps(),
         );
       }
 
@@ -425,7 +425,7 @@ export const SummaryCheckbox = ({
       }
       return summaryChecked.indeterminate({
         checkedAll,
-        ...getSummaryCheckedFuncDefaultProps()
+        ...getSummaryCheckedFuncDefaultProps(),
       });
     }
     return selectedRows && selectedRows.size !== 0 && !checkedAll;
@@ -434,7 +434,7 @@ export const SummaryCheckbox = ({
   const { isHaveCounter, count } = (() => {
     if (summaryChecked) {
       const count = summaryChecked.getCountOfChecked(
-        getSummaryCheckedFuncDefaultProps()
+        getSummaryCheckedFuncDefaultProps(),
       );
       return { isHaveCounter: count > 0, count };
     }
@@ -474,7 +474,7 @@ export const SummaryCheckbox = ({
         setSelectedRowsIds:
           setSelectedRows ??
           ((() => {}) as NonNullable<typeof setSelectedRows>),
-        ...onChangeProps
+        ...onChangeProps,
       });
       return;
     }
@@ -518,8 +518,8 @@ export const SummaryCheckbox = ({
         alignItems: 'center',
         '& .divider': {
           paddingLeft: '1px',
-          marginLeft: '16px'
-        }
+          marginLeft: '16px',
+        },
       }}
       className={controlBlock?.domMetadata?.className}
       {...controlBlock?.domMetadata?.dataAttributes}
@@ -537,16 +537,16 @@ export const SummaryCheckbox = ({
         extContainerCss={{
           overflow: 'visible',
           display: 'flex',
-          justifyContent: 'flex-end'
+          justifyContent: 'flex-end',
         }}
         intContainerCss={{
           always: {
             opacity: '0',
-            transition: '.3s ease'
+            transition: '.3s ease',
           },
           onOpen: {
-            opacity: 1
-          }
+            opacity: 1,
+          },
         }}
       >
         {isHaveCounter && isSelectingRowCounterVisible && (
@@ -557,7 +557,7 @@ export const SummaryCheckbox = ({
             size="xs"
             count={count}
             style={{
-              marginBottom: '3px'
+              marginBottom: '3px',
             }}
           />
         )}

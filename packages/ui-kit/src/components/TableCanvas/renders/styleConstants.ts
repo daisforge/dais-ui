@@ -14,7 +14,7 @@ type EditingMode =
       rowSize: SIZE;
     };
 const getPaddingLeftForArrowColumnInEditingMode = (
-  editingMode: EditingMode
+  editingMode: EditingMode,
 ): number => {
   if (!editingMode) {
     return 0;
@@ -29,7 +29,7 @@ export const getPaddingLeftFinal = (
   defaultPadding: number,
   lvl: number,
   hasChildren: boolean,
-  editingMode: EditingMode
+  editingMode: EditingMode,
 ) =>
   defaultPadding +
   getPaddingLeft(lvl, hasChildren) +

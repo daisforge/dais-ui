@@ -5,19 +5,19 @@ import type { AnalyticalWidgetTitleProps } from './AnalyticalWidgetTitle.types';
 
 export const AnalyticalWidgetTitle = ({
   title,
-  titleTooltipProps
+  titleTooltipProps,
 }: AnalyticalWidgetTitleProps) => (
   <StyledTitleWithTooltip
     tooltipText={title}
     tooltipProps={{
       placement: 'top',
-      ...titleTooltipProps
+      ...titleTooltipProps,
     }}
     variant="BodyM"
     bold
     style={{
       color: textPrimary,
-      wordBreak: 'normal'
+      wordBreak: 'normal',
     }}
     lines={1}
   >

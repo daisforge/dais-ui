@@ -6,7 +6,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import {
   Canvas,
   ColumnConfig,
-  TableCanvas
+  TableCanvas,
 } from '@ui-kit/components/TableCanvas';
 import React, { useMemo, useState } from 'react';
 
@@ -14,9 +14,9 @@ const meta: Meta = {
   title: 'Локальные компоненты/TableCanvas/Tooltip',
   component: TableCanvas,
   parameters: {
-    docs: {}
+    docs: {},
   },
-  tags: ['!autodocs']
+  tags: ['!autodocs'],
 };
 
 export default meta;
@@ -31,15 +31,15 @@ function ExampleDefaultTooltip() {
       { key: 'priority', name: 'Priority' },
       { key: 'issueType', name: 'Issue Type' },
       { key: 'developer', name: 'Developer' },
-      { key: 'complete', name: '% Complete' }
+      { key: 'complete', name: '% Complete' },
     ],
-    []
+    [],
   );
 
   return (
     <TableCanvas
       tableConfig={{
-        columnsControl: { enable: true, reorderingHeader: true }
+        columnsControl: { enable: true, reorderingHeader: true },
       }}
       columnConfig={columnConfig}
       rows={rows}
@@ -57,7 +57,7 @@ function ExampleColumnTooltipString() {
         key: 'task',
         name: 'Title',
         headerCellTooltip: 'Колонка: Title',
-        cellTooltip: ({ row, column }) => `Ячейка: ${column.name} — ${row.id}`
+        cellTooltip: ({ row, column }) => `Ячейка: ${column.name} — ${row.id}`,
       },
       { key: 'priority', name: 'Priority' },
       { key: 'issueType', name: 'Issue Type' },
@@ -66,18 +66,18 @@ function ExampleColumnTooltipString() {
         name: 'Developer',
         headerCellTooltip: 'Колонка: Developer',
         cellTooltip: ({ row }) =>
-          row.developer ? `Разработчик: ${row.developer}` : null
+          row.developer ? `Разработчик: ${row.developer}` : null,
       },
-      { key: 'complete', name: '% Complete' }
+      { key: 'complete', name: '% Complete' },
     ],
-    []
+    [],
   );
 
   return (
     <TableCanvas
       tableConfig={{
         columnsControl: { enable: true, reorderingHeader: true },
-        tooltip: { enabled: true }
+        tooltip: { enabled: true },
       }}
       columnConfig={columnConfig}
       rows={rows}
@@ -104,19 +104,19 @@ function ExampleColumnTooltipObject() {
           return {
             text: isHigh ? `${pct}% — почти готово!` : `Прогресс: ${pct}%`,
             placement: isHigh ? ('top' as const) : ('bottom' as const),
-            minWidth: 15
+            minWidth: 15,
           };
-        }
-      }
+        },
+      },
     ],
-    []
+    [],
   );
 
   return (
     <TableCanvas
       tableConfig={{
         columnsControl: { enable: true, reorderingHeader: true },
-        tooltip: { enabled: true }
+        tooltip: { enabled: true },
       }}
       columnConfig={columnConfig}
       rows={rows}
@@ -145,10 +145,10 @@ function ExampleButtonWithTooltip() {
               Подробнее
             </Canvas.Button>
           </Canvas.Container>
-        )
-      }
+        ),
+      },
     ],
-    []
+    [],
   );
 
   return <TableCanvas columnConfig={columnConfig} rows={rows} />;
@@ -161,7 +161,7 @@ import React, { useMemo, useState } from 'react';
 
 ${getFuncAsString(
   'packages/storybook/src/stories/TableCanvas/TableCanvas.Tooltip/TableCanvasTooltip.stories.tsx',
-  'ExampleDefaultTooltip'
+  'ExampleDefaultTooltip',
 )}
 `;
 
@@ -172,7 +172,7 @@ import React, { useMemo, useState } from 'react';
 
 ${getFuncAsString(
   'packages/storybook/src/stories/TableCanvas/TableCanvas.Tooltip/TableCanvasTooltip.stories.tsx',
-  'ExampleColumnTooltipString'
+  'ExampleColumnTooltipString',
 )}
 `;
 
@@ -183,7 +183,7 @@ import React, { useMemo, useState } from 'react';
 
 ${getFuncAsString(
   'packages/storybook/src/stories/TableCanvas/TableCanvas.Tooltip/TableCanvasTooltip.stories.tsx',
-  'ExampleColumnTooltipObject'
+  'ExampleColumnTooltipObject',
 )}
 `;
 
@@ -194,7 +194,7 @@ import React, { useMemo, useState } from 'react';
 
 ${getFuncAsString(
   'packages/storybook/src/stories/TableCanvas/TableCanvas.Tooltip/TableCanvasTooltip.stories.tsx',
-  'ExampleButtonWithTooltip'
+  'ExampleButtonWithTooltip',
 )}
 `;
 
@@ -202,34 +202,34 @@ export const DefaultTooltipStory: StoryObj = {
   name: 'Встроенный тултип — hover на drag-иконку (⠿) в шапке колонки',
   ...storySourceDoc({
     previewSource: 'shown',
-    code: defaultTooltipPreCode
+    code: defaultTooltipPreCode,
   }),
-  render: ExampleDefaultTooltip
+  render: ExampleDefaultTooltip,
 };
 
 export const ColumnTooltipStringStory: StoryObj = {
   name: 'cellTooltip (строка) — hover на ячейки Title / Developer',
   ...storySourceDoc({
     previewSource: 'shown',
-    code: columnStringPreCode
+    code: columnStringPreCode,
   }),
-  render: ExampleColumnTooltipString
+  render: ExampleColumnTooltipString,
 };
 
 export const ColumnTooltipObjectStory: StoryObj = {
   name: 'cellTooltip (объект) — hover на ячейки % Complete',
   ...storySourceDoc({
     previewSource: 'shown',
-    code: columnObjectPreCode
+    code: columnObjectPreCode,
   }),
-  render: ExampleColumnTooltipObject
+  render: ExampleColumnTooltipObject,
 };
 
 export const ButtonWithTooltipStory: StoryObj = {
   name: 'Canvas.Button tooltip — hover на кнопку «Подробнее»',
   ...storySourceDoc({
     previewSource: 'shown',
-    code: buttonTooltipPreCode
+    code: buttonTooltipPreCode,
   }),
-  render: ExampleButtonWithTooltip
+  render: ExampleButtonWithTooltip,
 };

@@ -19,7 +19,7 @@ export type PinningActionCtx = {
  */
 export const expandKeyTextPairs = (
   keys: string[],
-  ctx: PinningActionCtx
+  ctx: PinningActionCtx,
 ): string[] => {
   if (!ctx.tableConfigKeyTextBoolean) {
     return keys;
@@ -43,12 +43,12 @@ export const expandKeyTextPairs = (
  */
 export const isPinningDisabled = (
   key: string,
-  ctx: PinningActionCtx
+  ctx: PinningActionCtx,
 ): boolean => {
   const corrected = correctedDisabled(ctx.disablePinningSet, {
     colsWithKeyTextMap: ctx.colsWithKeyTextMap,
     currentKey: key,
-    tableConfigKeyTextBoolean: ctx.tableConfigKeyTextBoolean
+    tableConfigKeyTextBoolean: ctx.tableConfigKeyTextBoolean,
   });
   return corrected ?? ctx.disablePinningSet.has(key);
 };
@@ -62,7 +62,7 @@ export const isPinningDisabled = (
 export function pinColumns(
   pinned: string[],
   selectedKeys: string[],
-  ctx: PinningActionCtx
+  ctx: PinningActionCtx,
 ): string[] {
   const pinnedSet = new Set(pinned);
   const toAdd: string[] = [];
@@ -85,7 +85,7 @@ export function pinColumns(
  */
 export function resetPinning(
   pinned: string[],
-  ctx: PinningActionCtx
+  ctx: PinningActionCtx,
 ): string[] {
   return pinned.filter((key) => isPinningDisabled(key, ctx));
 }
@@ -98,12 +98,12 @@ export function resetPinning(
 export function unpinColumns(
   pinned: string[],
   selectedKeys: string[],
-  ctx: PinningActionCtx
+  ctx: PinningActionCtx,
 ): string[] {
   const toRemove = new Set(
     expandKeyTextPairs(selectedKeys, ctx).filter(
-      (key) => !isPinningDisabled(key, ctx)
-    )
+      (key) => !isPinningDisabled(key, ctx),
+    ),
   );
   if (toRemove.size === 0) return pinned;
   const next = pinned.filter((key) => !toRemove.has(key));
@@ -121,7 +121,7 @@ export function getPinIconState({
   selectedKeys,
   pinnedCols,
   hiddenCols,
-  ctx
+  ctx,
 }: {
   selectedKeys: string[];
   pinnedCols: string[];
@@ -135,13 +135,13 @@ export function getPinIconState({
     return {
       colored,
       tooltip: 'Выберите, что закрепить',
-      action: 'none'
+      action: 'none',
     };
   }
 
   const pinnedSet = new Set(pinnedCols);
   const hasPinnable = selectedKeys.some(
-    (key) => !pinnedSet.has(key) && !isPinningDisabled(key, ctx)
+    (key) => !pinnedSet.has(key) && !isPinningDisabled(key, ctx),
   );
 
   return hasPinnable

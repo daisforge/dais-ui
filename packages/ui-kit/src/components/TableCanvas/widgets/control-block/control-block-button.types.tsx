@@ -13,7 +13,7 @@ import { DropdownRenderCtx } from './types';
  */
 export const controlButtonDefaultProps = {
   size: 's',
-  view: 'linkDefault'
+  view: 'linkDefault',
 } as const;
 type DefPropsKeys = keyof typeof controlButtonDefaultProps;
 

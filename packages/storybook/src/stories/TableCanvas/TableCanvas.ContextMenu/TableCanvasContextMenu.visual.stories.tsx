@@ -14,7 +14,7 @@ import React, { useMemo, useState } from 'react';
 
 const meta: Meta = {
   title: 'Локальные компоненты/TableCanvas/ContextMenu/Визуальные тесты',
-  tags: ['!autodocs']
+  tags: ['!autodocs'],
 };
 
 export default meta;
@@ -34,9 +34,9 @@ function ExampleAllFeatures() {
       { key: 'issueType', name: 'Issue Type' },
       { key: 'developer', name: 'Developer' },
       { key: 'tr1', name: 'TR' },
-      { key: 'complete', name: '% Complete' }
+      { key: 'complete', name: '% Complete' },
     ],
-    []
+    [],
   );
 
   return (
@@ -54,14 +54,14 @@ function ExampleAllFeatures() {
               items: [
                 {
                   value: `lvl1_inside ${column.name}`,
-                  label: `${column.name} lvl1 inside`
-                }
-              ]
+                  label: `${column.name} lvl1 inside`,
+                },
+              ],
             },
             {
               value: `lvl2 ${column.name}`,
-              label: `${column.name} lvl2`
-            }
+              label: `${column.name} lvl2`,
+            },
           ],
           onItemSelect: (item, context, event) => {
             console.group('onItemSelect for onCellContextMenuDropdown');
@@ -69,7 +69,7 @@ function ExampleAllFeatures() {
             console.debug(context, 'context');
             console.debug(event, 'event');
             console.groupEnd();
-          }
+          },
         },
         onHeaderContextMenu: (colIndex, event, context) =>
           console.debug(colIndex, event, context),
@@ -82,14 +82,14 @@ function ExampleAllFeatures() {
               items: [
                 {
                   value: `lvl1_inside ${column.name}`,
-                  label: `${column.name} lvl1 inside`
-                }
-              ]
+                  label: `${column.name} lvl1 inside`,
+                },
+              ],
             },
             {
               value: `lvl2 ${column.name}`,
-              label: `${column.name} lvl2`
-            }
+              label: `${column.name} lvl2`,
+            },
           ],
           onItemSelect: (item, context, event) => {
             console.group('onItemSelect for onHeaderContextMenuDropdown');
@@ -97,8 +97,8 @@ function ExampleAllFeatures() {
             console.debug(context, 'context');
             console.debug(event, 'event');
             console.groupEnd();
-          }
-        }
+          },
+        },
       }}
       columnConfig={columnConfig}
       rows={rows}
@@ -113,7 +113,7 @@ export const ContextMenuAllFeatures: Story = {
   play: async ({ canvasElement }) => {
     const gridCanvas = await waitFor(() => {
       const el = canvasElement.querySelector(
-        '[data-testid="data-grid-canvas"]'
+        '[data-testid="data-grid-canvas"]',
       ) as HTMLCanvasElement | null;
       if (!el) throw new Error('Data grid canvas not found');
       return el;
@@ -137,20 +137,20 @@ export const ContextMenuAllFeatures: Story = {
       clientY,
       button: 2,
       buttons: 2,
-      pointerType: 'mouse'
+      pointerType: 'mouse',
     });
     fireEvent.pointerUp(target, {
       clientX,
       clientY,
       button: 2,
       buttons: 0,
-      pointerType: 'mouse'
+      pointerType: 'mouse',
     });
     fireEvent.contextMenu(target, {
       clientX,
       clientY,
       button: 2,
-      buttons: 2
+      buttons: 2,
     });
 
     await waitFor(
@@ -159,7 +159,7 @@ export const ContextMenuAllFeatures: Story = {
           throw new Error('Context menu is not open');
         }
       },
-      { timeout: 3000 }
+      { timeout: 3000 },
     );
-  }
+  },
 };

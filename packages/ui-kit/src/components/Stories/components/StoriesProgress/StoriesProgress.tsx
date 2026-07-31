@@ -2,7 +2,7 @@ import {
   onDarkSurfaceTransparentDeep,
   onDarkSurfaceTransparentTertiary,
   onLightSurfaceTransparentDeep,
-  onLightSurfaceTransparentTertiary
+  onLightSurfaceTransparentTertiary,
 } from '@ui-kit/tokens/color';
 import { useActiveTheme } from '@ui-kit/utils/hooks';
 import { useRef } from 'react';
@@ -14,7 +14,7 @@ import { storiesClassNames } from '../../Stories.constants';
 import {
   StyledFill,
   StyledItem,
-  StyledProgress
+  StyledProgress,
 } from './StoriesProgress.styled';
 
 export interface StoriesProgressProps {
@@ -23,7 +23,7 @@ export interface StoriesProgressProps {
 }
 
 export const StoriesProgress = ({
-  isReady
+  isReady,
 }: StoriesProgressProps): JSX.Element => {
   const { store, controller, groups, defaultDuration, mode } =
     useStoriesContext();
@@ -55,7 +55,7 @@ export const StoriesProgress = ({
     isPlaying,
     isReady,
     resetKey: `${groupIndex}-${slideIndex}`,
-    onComplete: controller.next
+    onComplete: controller.next,
   });
 
   return (

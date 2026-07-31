@@ -4,7 +4,7 @@ import {
   AnimationEvent as ReactAnimationEvent,
   MouseEvent as ReactMouseEvent,
   useEffect,
-  useRef
+  useRef,
 } from 'react';
 
 import { useNavigation } from '../../hooks/useNavigation';
@@ -18,7 +18,7 @@ import {
   StyledBanner,
   StyledBottom,
   StyledTapLayer,
-  StyledTop
+  StyledTop,
 } from './StoriesBanner.styled';
 
 export interface StoriesBannerProps {
@@ -30,7 +30,7 @@ export interface StoriesBannerProps {
 
 export const StoriesBanner = ({
   closing,
-  onAnimationEnd
+  onAnimationEnd,
 }: StoriesBannerProps): JSX.Element | null => {
   const {
     store,
@@ -40,7 +40,7 @@ export const StoriesBanner = ({
     tapPrevZone,
     loadingDelay,
     onError,
-    renderError
+    renderError,
   } = useStoriesContext();
   const { groupIndex, slideIndex, isOpen } = useStoriesSnapshot(store);
 
@@ -52,7 +52,7 @@ export const StoriesBanner = ({
     controller,
     pauseHoldDelay,
     tapPrevZone,
-    isOpen
+    isOpen,
   });
 
   // Колбэк ошибки — не чаще одного раза на сегмент.
@@ -94,9 +94,9 @@ export const StoriesBanner = ({
           props: {
             text: 'Попробовать снова',
             view: 'secondary',
-            onClick: reload
-          }
-        }
+            onClick: reload,
+          },
+        },
       ]}
     />
   );

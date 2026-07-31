@@ -30,7 +30,7 @@ export const useNavigation = ({
   controller,
   pauseHoldDelay,
   tapPrevZone,
-  isOpen
+  isOpen,
 }: UseNavigationParams): TapHandlers => {
   const timerRef = useRef<ReturnType<typeof setTimeout>>();
   const pausedByHoldRef = useRef(false);
@@ -103,6 +103,6 @@ export const useNavigation = ({
     onPointerDown,
     onPointerUp,
     onPointerLeave,
-    onPointerCancel: onPointerLeave
+    onPointerCancel: onPointerLeave,
   };
 };

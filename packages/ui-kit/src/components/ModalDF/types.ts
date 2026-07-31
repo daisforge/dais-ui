@@ -5,7 +5,7 @@ import type { IconButton } from '@ui-kit/components/IconButton';
 import type { ModalCompProps } from '@ui-kit/components/Modal';
 import type {
   IconArrowLeft,
-  IconDotsVerticalCenteredOutline
+  IconDotsVerticalCenteredOutline,
 } from '@ui-kit/icons';
 import { ContainerProps } from '@ui-kit/layouts/Container';
 import type { ComponentProps, ReactNode } from 'react';

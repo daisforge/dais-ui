@@ -15,7 +15,7 @@ export const storiesClassNames = {
   action: 'df-stories-banner__action',
   arrowPrev: 'df-stories-viewer__arrow-prev',
   arrowNext: 'df-stories-viewer__arrow-next',
-  close: 'df-stories-viewer__close'
+  close: 'df-stories-viewer__close',
 } as const;
 
 /**
@@ -41,7 +41,7 @@ export const STORIES_DEFAULTS = {
   /** Цвет оверлея (тот же, что у ModalDF). */
   overlayColor: '#060a0c47',
   /** z-index оверлея; баннер получает zIndex + 1. */
-  zIndex: 9000
+  zIndex: 9000,
 } as const;
 
 export const STORIES_SIZES = {
@@ -66,7 +66,7 @@ export const STORIES_SIZES = {
   progressHeight: 4,
   progressRadius: 2,
   progressFillRadius: 6,
-  progressGap: 4
+  progressGap: 4,
 } as const;
 
 /** data-component на DOM-элементе триггера — для идентификации в разметке. */

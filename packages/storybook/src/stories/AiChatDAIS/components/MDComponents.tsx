@@ -48,18 +48,18 @@ export const MD_COMPONENTS = {
       padding: '12px',
       textAlign: 'left',
       borderBottom: `0.5px solid ${textTertiary}`,
-      borderRight: `0.5px solid ${textTertiary}`
+      borderRight: `0.5px solid ${textTertiary}`,
     },
     'th:last-child, td:last-child': {
-      borderRight: 'none'
+      borderRight: 'none',
     },
     'tr:last-child td': {
-      borderBottom: 'none'
+      borderBottom: 'none',
     },
     th: {
       backgroundColor: '#ECF6FC',
-      fontWeight: 'bold'
-    }
+      fontWeight: 'bold',
+    },
   }),
   code({ className, children, ...props }) {
     const match = /language-(\w+)/.exec(className || '');
@@ -78,7 +78,7 @@ export const MD_COMPONENTS = {
               padding: '12px 16px',
               borderRadius: '8px',
               fontSize: '13px',
-              lineHeight: '1.5'
+              lineHeight: '1.5',
             }}
           >
             {codeString}
@@ -95,12 +95,12 @@ export const MD_COMPONENTS = {
           background: 'rgba(0,0,0,0.08)',
           padding: '1px 5px',
           borderRadius: '4px',
-          fontSize: '13px'
+          fontSize: '13px',
         }}
         {...props}
       >
         {children}
       </code>
     );
-  }
+  },
 } satisfies Components;

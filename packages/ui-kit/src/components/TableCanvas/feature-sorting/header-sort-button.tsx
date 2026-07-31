@@ -26,7 +26,7 @@ export const renderHeaderSortButton = ({
   columnKey,
   columnSorted,
   setSortState,
-  accentColor
+  accentColor,
 }: HeaderSortButtonProps): CanvasEl => {
   // По просьбе дизайна стрелка «наоборот»: ASC — вверх, DESC — вниз.
   const SortIcon =
@@ -51,10 +51,10 @@ export const renderHeaderSortButton = ({
         ? [
             {
               columnKey,
-              direction: nextDirection
-            }
+              direction: nextDirection,
+            },
           ]
-        : []
+        : [],
     );
   };
 

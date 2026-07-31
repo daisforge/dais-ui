@@ -5,7 +5,7 @@ import type {
   CanvasEmbedIconButtonProps as InternalCanvasEmbedIconButtonProps,
   CanvasIconButtonProps as InternalCanvasIconButtonProps,
   CanvasIconProps as InternalCanvasIconProps,
-  CanvasTextProps as InternalCanvasTextProps
+  CanvasTextProps as InternalCanvasTextProps,
 } from './index';
 import { Canvas as InternalCanvas } from './index';
 
@@ -13,7 +13,7 @@ export type {
   CanvasNodeTooltipConfig,
   CanvasNodeTooltipProps,
   CanvasPortalHoverDetail,
-  CanvasPortalSource
+  CanvasPortalSource,
 } from '../../TableGlide';
 export {
   createEmptyCellGlide,
@@ -26,7 +26,7 @@ export {
   subscribeToPortalHoverLock,
   TABLE_GLIDE_SIZES,
   fontStyles as tableCanvasFonts,
-  THEME as tableCanvasTheme
+  THEME as tableCanvasTheme,
 } from '../../TableGlide';
 export { TableGlideInstance } from './TableGlideInstance';
 export type * from './type';

@@ -7,7 +7,7 @@ import { useState } from 'react';
 
 const meta: Meta<typeof TooltipList> = {
   title: 'Локальные компоненты/TooltipList',
-  tags: ['!autodocs']
+  tags: ['!autodocs'],
 };
 
 export default meta;
@@ -20,7 +20,7 @@ export const WithCombobox: Story = {
       { label: 'Блок 2', value: '2' },
       { label: 'Блок 3', value: '3' },
       { label: 'Блок 4', value: '4' },
-      { label: 'Блок 5', value: '5' }
+      { label: 'Блок 5', value: '5' },
     ];
 
     const [selectedValues, setSelectedValues] = useState<string[]>([]);
@@ -35,7 +35,7 @@ export const WithCombobox: Story = {
           display: 'flex',
           flexDirection: 'column',
           gap: 24,
-          maxWidth: 300
+          maxWidth: 300,
         }}
       >
         <Typography variant="BodyM" bold>
@@ -63,7 +63,7 @@ export const WithCombobox: Story = {
         </Typography>
         <ul
           style={{
-            marginTop: 0
+            marginTop: 0,
           }}
         >
           <li>
@@ -84,5 +84,5 @@ export const WithCombobox: Story = {
         </ul>
       </div>
     );
-  }
+  },
 };

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 const C = {
   surfaceSolidCard: () => surfaceSolidCard,
-  outlineSolidPrimary: () => outlineSolidPrimary
+  outlineSolidPrimary: () => outlineSolidPrimary,
 };
 
 export const StaticContainer = styled.div<{

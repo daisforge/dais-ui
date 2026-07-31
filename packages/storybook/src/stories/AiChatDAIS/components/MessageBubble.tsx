@@ -18,9 +18,9 @@ const customSchema: Options = {
     ...defaultSchema.attributes,
     code: [
       ...(defaultSchema.attributes?.code || []),
-      ['className', /^language-./]
-    ]
-  }
+      ['className', /^language-./],
+    ],
+  },
 };
 
 function isNoInfoResponse(text: string): boolean {
@@ -53,7 +53,7 @@ export function MessageBubble({
   message,
   contentType,
   onSwitchContentType,
-  send
+  send,
 }: MessageBubbleProps) {
   const isAssistant = message.role === 'assistant';
   const isTypingMessage = message.className?.includes?.(TYPING_CLASS);
@@ -61,8 +61,8 @@ export function MessageBubble({
   // Какие разделы доступны для переключения
   const [switchTypes, setSwitchType] = useState<ContentType[]>(
     FILTERS_ARRAY.filter((t) => t.value !== contentType && !t.disabled).map(
-      (t) => t.value as ContentType
-    )
+      (t) => t.value as ContentType,
+    ),
   );
 
   // Проверяем, что ответ — "не найдено" и у нас есть колбэк
@@ -103,7 +103,7 @@ export function MessageBubble({
             style={{
               display: 'flex',
               justifyContent: 'flex-end',
-              marginTop: '4px'
+              marginTop: '4px',
             }}
           >
             <CopyMessageButton text={message.text} />

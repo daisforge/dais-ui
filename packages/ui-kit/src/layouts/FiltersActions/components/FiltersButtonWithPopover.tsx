@@ -11,14 +11,14 @@ import {
   shadowDownHardS,
   surfaceSolidCard,
   textSecondary,
-  textTertiary
+  textTertiary,
 } from '@ui-kit/tokens';
 import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
 
 import {
   FiltersActionsFiltersButton,
-  type FiltersActionsFiltersButtonProps
+  type FiltersActionsFiltersButtonProps,
 } from './FiltersButton';
 import { RedDot } from './RedDot';
 
@@ -129,7 +129,7 @@ const C = {
   borderRadiusM: () => borderRadiusM,
   shadowDownHardS: () => shadowDownHardS,
   textTertiary: () => textTertiary,
-  surfaceSolidCard: () => surfaceSolidCard
+  surfaceSolidCard: () => surfaceSolidCard,
 };
 
 const StyledPopover = styled(Popover)`
@@ -212,9 +212,9 @@ const DEFAULT_RESIZABLE_CONFIG: CompPopoverProps['resizable'] = {
     topRight: null,
     bottomRight: <IconResizeCorneredFill color={textTertiary} />,
     bottomLeft: null,
-    topLeft: null
+    topLeft: null,
   },
-  hiddenIcons: ['bottom-left', 'top-left', 'top-right']
+  hiddenIcons: ['bottom-left', 'top-left', 'top-right'],
 };
 
 /**
@@ -242,7 +242,7 @@ export const FiltersActionsFiltersButtonWithPopover: React.FC<
   searchValue,
   onSearchChange,
   searchingProps,
-  emptySearchContent
+  emptySearchContent,
 }) => {
   const { resizable: externalResizable, ...restPopoverProps } = popoverProps;
 
@@ -270,7 +270,7 @@ export const FiltersActionsFiltersButtonWithPopover: React.FC<
   // Источник состояния
   const [isOpened, setIsOpened] = externalState ?? [
     internalState,
-    setInternalState
+    setInternalState,
   ];
 
   // Обработчик закрытия
@@ -287,7 +287,7 @@ export const FiltersActionsFiltersButtonWithPopover: React.FC<
         onClose?.();
       }
     },
-    [onClose, setIsOpened]
+    [onClose, setIsOpened],
   );
 
   // Клик по таргету — тоглит Popover. Используется и дефолтной кнопкой,
@@ -307,7 +307,7 @@ export const FiltersActionsFiltersButtonWithPopover: React.FC<
             onClick: handleTargetClick,
             isOpen: isOpened,
             isRedDotVisible: redSquare,
-            RedDot
+            RedDot,
           })
         ) : (
           <FiltersActionsFiltersButton
@@ -350,7 +350,7 @@ export const FiltersActionsFiltersButtonWithPopover: React.FC<
               pin="circle-circle"
               title="Закрыть"
               style={{
-                marginBottom: '8px'
+                marginBottom: '8px',
               }}
             >
               <IconClose size="xs" />

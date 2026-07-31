@@ -52,7 +52,7 @@ export type LeftPanelProps = {
    */
   widthState?: [
     number | undefined,
-    React.Dispatch<React.SetStateAction<number | undefined>>
+    React.Dispatch<React.SetStateAction<number | undefined>>,
   ];
   /**
    * Свойства для container элемента

@@ -12,12 +12,12 @@ const meta: Meta = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      page: DocStoryTemplate
+      page: DocStoryTemplate,
     },
     screenshot: {
-      skip: true
-    }
-  }
+      skip: true,
+    },
+  },
 };
 
 export default meta;
@@ -29,7 +29,7 @@ import { ColumnConfig, TableCanvas } from '@daisforge/ui/components/TableCanvas'
 export const IsLoading: StoryObj = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   name: 'IsLoading',
   render: () => {
@@ -40,18 +40,18 @@ export const IsLoading: StoryObj = {
       () => [
         {
           key: 'id',
-          name: 'ID'
+          name: 'ID',
         },
         {
           key: 'task',
-          name: 'Title'
+          name: 'Title',
         },
         {
           key: 'priority',
-          name: 'Priority'
-        }
+          name: 'Priority',
+        },
       ],
-      []
+      [],
     );
 
     return (
@@ -72,13 +72,13 @@ export const IsLoading: StoryObj = {
               active: isVisibleLoadingOverlay,
               showSubtitleDelay: 3000,
               subtitle:
-                'Данные обрабатываются, обычно это занимает не более 10 секунд'
-            }
+                'Данные обрабатываются, обычно это занимает не более 10 секунд',
+            },
           }}
           columnConfig={columnConfig}
           rows={rows}
         />
       </>
     );
-  }
+  },
 };

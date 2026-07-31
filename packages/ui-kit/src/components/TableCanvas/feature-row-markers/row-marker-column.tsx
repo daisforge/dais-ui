@@ -13,14 +13,14 @@ import { buildSiblingPath, getDefaultMarker } from './utils';
 const SIZE_TO_WIDTH: Record<string, number> = {
   xs: 20,
   s: 32,
-  m: 48
+  m: 48,
 };
 
 /** Маппинг глобального rowSize таблицы → width (px) для столбца нумерации. */
 const ROW_SIZE_TO_WIDTH: Record<SIZE, number> = {
   small: 20,
   medium: 32,
-  big: 48
+  big: 48,
 };
 
 /**
@@ -30,7 +30,7 @@ const ROW_SIZE_TO_WIDTH: Record<SIZE, number> = {
  * @see {@link RowMarkersTableConfig} — публичный тип в `table-config.type.ts`.
  */
 export type RowMarkersConfig<
-  RowType extends ObjectForExtending = ObjectForExtending
+  RowType extends ObjectForExtending = ObjectForExtending,
 > = {
   /**
    * Стартовый индекс нумерации (для дефолтной логики без getRowMarker).
@@ -91,7 +91,7 @@ export const createRowMarkerColumn = <RowType extends ObjectForExtending>(
     > | null>;
     /** Функция получения ключа строки (из tableConfig.subRows.rowKeyGetter). */
     rowKeyGetter?: (row: RowType) => string | number;
-  }
+  },
 ): ColumnConfigInternal<ObjectForExtending, unknown> => {
   const {
     startIndex = 1,
@@ -99,7 +99,7 @@ export const createRowMarkerColumn = <RowType extends ObjectForExtending>(
     allRowsMapRef,
     rowKeyGetter,
     getRowMarker,
-    rowSize
+    rowSize,
   } = config;
 
   // Приоритет ширины: size → width → rowSize → 28px (дефолт)
@@ -139,7 +139,7 @@ export const createRowMarkerColumn = <RowType extends ObjectForExtending>(
           siblingIndex: entry?.siblingIndex ?? 0,
           siblingPath,
           parentKey: entry?.parentKey ?? null,
-          rows
+          rows,
         })
       : getDefaultMarker(lvl, rowInd, entry, startIndex);
 
@@ -166,6 +166,6 @@ export const createRowMarkerColumn = <RowType extends ObjectForExtending>(
     width: resolvedWidth,
     minWidth: resolvedWidth,
     frozen: true,
-    renderCell
+    renderCell,
   };
 };

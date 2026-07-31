@@ -7,7 +7,7 @@ import type {
   FieldPath,
   FieldValues,
   Path,
-  RegisterOptions
+  RegisterOptions,
 } from 'react-hook-form';
 
 // ComponentProps потому что SegmentGroupProps и SegmentItemProps ругается на view?: string

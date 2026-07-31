@@ -14,11 +14,11 @@ const allCorners: ResizeCorner[] = [
   'top-left',
   'top-right',
   'bottom-left',
-  'bottom-right'
+  'bottom-right',
 ];
 
 const getResizableCornerFromPopupPlacement = (
-  placement?: ComponentProps<typeof Popup>['placement']
+  placement?: ComponentProps<typeof Popup>['placement'],
 ): ResizeCorner => {
   switch (placement) {
     case 'top-left':
@@ -41,12 +41,12 @@ const getResizableCornerFromPopupPlacement = (
 };
 
 const getDirectionsByCorner = (
-  corner: ResizeCorner
+  corner: ResizeCorner,
 ): NonNullable<PopupResizableConfig['directions']> => [corner];
 
 const getResizeIcon = (
   corner: ResizeCorner,
-  iconSize: PopupDFResizeIconSize = defaultResizeIconSize
+  iconSize: PopupDFResizeIconSize = defaultResizeIconSize,
 ) => {
   const style: CSSProperties = {};
 
@@ -69,17 +69,17 @@ const getResizeIcon = (
 
 const getResizeIcons = (
   icons?: PopupResizableConfig['icons'],
-  iconSize?: PopupResizableConfig['iconSize']
+  iconSize?: PopupResizableConfig['iconSize'],
 ): NonNullable<PopupResizableConfig['icons']> => ({
   topLeft: icons?.topLeft || getResizeIcon('top-left', iconSize),
   topRight: icons?.topRight || getResizeIcon('top-right', iconSize),
   bottomLeft: icons?.bottomLeft || getResizeIcon('bottom-left', iconSize),
-  bottomRight: icons?.bottomRight || getResizeIcon('bottom-right', iconSize)
+  bottomRight: icons?.bottomRight || getResizeIcon('bottom-right', iconSize),
 });
 
 export const getPopupDFResizableConfig = (
   resizable: PopupResizableProp,
-  placement?: ComponentProps<typeof Popup>['placement']
+  placement?: ComponentProps<typeof Popup>['placement'],
 ): PopupResizableProp => {
   if (!resizable) {
     return resizable;
@@ -92,7 +92,7 @@ export const getPopupDFResizableConfig = (
     hiddenIcons: allCorners.filter((item) => item !== corner),
     minWidth: 240,
     minHeight: 120,
-    iconSize: defaultResizeIconSize
+    iconSize: defaultResizeIconSize,
   });
 
   if (resizable === true) {
@@ -117,6 +117,6 @@ export const getPopupDFResizableConfig = (
     directions,
     icons: getResizeIcons(resizableConfig.icons, resizableConfig.iconSize),
     hiddenIcons,
-    iconSize: resizableConfig.iconSize ?? defaultConfig.iconSize
+    iconSize: resizableConfig.iconSize ?? defaultConfig.iconSize,
   };
 };

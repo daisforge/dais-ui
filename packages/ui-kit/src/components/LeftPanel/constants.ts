@@ -7,5 +7,5 @@ export const TRANSITION_TIME = 0.2;
 
 export const splitViewConstants = {
   separatorDefaultWidth: 1,
-  separatorButtonDefaultWidth: 8
+  separatorButtonDefaultWidth: 8,
 };

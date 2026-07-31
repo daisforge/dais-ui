@@ -3,7 +3,7 @@ import {
   surfaceTransparentSecondary,
   surfaceTransparentSecondaryActive,
   surfaceTransparentSecondaryHover,
-  textSecondary
+  textSecondary,
 } from '@ui-kit/tokens';
 import type { ComponentProps } from 'react';
 import React, { forwardRef } from 'react';
@@ -63,7 +63,7 @@ export const TextFieldSearch = forwardRef<
       readOnly,
       ...restProps
     },
-    ref
+    ref,
   ) => (
     <StyledTextField
       ref={ref}
@@ -77,7 +77,7 @@ export const TextFieldSearch = forwardRef<
       onClear={onClear ?? handlerClear}
       {...restProps}
     />
-  )
+  ),
 );
 
 TextFieldSearch.displayName = 'TextFieldSearch';

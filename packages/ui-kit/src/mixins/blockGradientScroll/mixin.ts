@@ -8,17 +8,17 @@ import {
   BLOCK_GRADIENT_SCROLL_TIMELINE,
   BLOCK_GRADIENT_VAR_BOTTOM,
   BLOCK_GRADIENT_VAR_LEFT,
-  BLOCK_GRADIENT_VAR_RIGHT
+  BLOCK_GRADIENT_VAR_RIGHT,
 } from './constants';
 import {
   BlockGradientScrollOptions,
   BlockGradientScrollPadding,
-  BlockGradientScrollVariant
+  BlockGradientScrollVariant,
 } from './types';
 import { getGradientColor, getResolvedPadding } from './utils';
 
 export const blockGradientScrollContainerStyles = (
-  padding: BlockGradientScrollPadding | undefined
+  padding: BlockGradientScrollPadding | undefined,
 ) => {
   /* Применяем реальные padding'и к контейнеру */
   const { left, right, bottom, top } = getResolvedPadding(padding);
@@ -34,7 +34,7 @@ export const blockGradientScrollContainerStyles = (
 
 export const blockGradientScrollAfterStyles = (
   padding: BlockGradientScrollPadding | undefined,
-  variant: BlockGradientScrollVariant
+  variant: BlockGradientScrollVariant,
 ) => {
   const { left, right, bottom } = getResolvedPadding(padding);
   const gradientColor = getGradientColor(variant);
@@ -63,7 +63,7 @@ export const blockGradientScrollAfterStyles = (
 
     ${media.exact(
       0,
-      1279
+      1279,
     )(`
       height: ${BLOCK_GRADIENT_SCROLL_HEIGHT_MOBILE}px;
       margin-top: -${BLOCK_GRADIENT_SCROLL_HEIGHT_MOBILE}px;
@@ -84,7 +84,7 @@ export const blockGradientScrollKeyframes = css`
 `;
 
 export const BlockGradientScrollMixin = (
-  options: BlockGradientScrollOptions
+  options: BlockGradientScrollOptions,
 ) => {
   const { variant = 'white', padding } = options;
 

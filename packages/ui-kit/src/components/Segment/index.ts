@@ -4,5 +4,5 @@ export {
   SegmentIconItem,
   SegmentItem,
   SegmentProvider,
-  useSegment
+  useSegment,
 } from '@salutejs/sdds-finai';

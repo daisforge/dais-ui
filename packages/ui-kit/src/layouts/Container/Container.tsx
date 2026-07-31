@@ -5,7 +5,7 @@ import { CONTAINER_CLASSES } from './Container.constants';
 import {
   StyledContainerWrapper,
   StyledSplitContainerInnerWrapper,
-  StyledSplitContainerWrapper
+  StyledSplitContainerWrapper,
 } from './Container.styles';
 import { ContainerProps, ISplitContainerProps } from './Container.types';
 
@@ -30,7 +30,7 @@ export const Container: FC<ContainerProps> = (props) => {
     className: containerClasses,
     $stretch: stretch,
     $css: cssProp,
-    $roundedInner: roundedInner
+    $roundedInner: roundedInner,
   };
 
   if (!split) {

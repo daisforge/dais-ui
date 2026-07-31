@@ -28,7 +28,7 @@ export const getContentRight = ({
   value,
   onClear,
   size,
-  contentRight
+  contentRight,
 }: GetContentRightOptions): ReactElement | undefined => {
   if (disabled) {
     return getLockIcon(size);
@@ -41,7 +41,7 @@ export const getContentRight = ({
   const clearIcon = getClearIcon({
     value,
     onClear,
-    size
+    size,
   });
 
   if (clearIcon && contentRight) {

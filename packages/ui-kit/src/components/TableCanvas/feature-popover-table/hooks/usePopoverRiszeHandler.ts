@@ -11,7 +11,7 @@ import { TablePopoverContextValue } from '../context';
  * - Гарантирует выполнение последнего вызова (точная итоговая позиция)
  */
 export const usePopoverResizeHandler = (
-  tablePopoverValue: TablePopoverContextValue
+  tablePopoverValue: TablePopoverContextValue,
 ) => {
   // Храним текущую ширину колонки для вычисления дельты
   const currentColumnWidthRef = useRef<Map<string, number>>(new Map());
@@ -21,9 +21,9 @@ export const usePopoverResizeHandler = (
     throttleWithLastCall((newX: number) => {
       tablePopoverValue.updatePosition({
         x: newX,
-        y: tablePopoverValue.state.position?.y ?? 0
+        y: tablePopoverValue.state.position?.y ?? 0,
       });
-    }, 100) // 100ms throttle для плавности
+    }, 100), // 100ms throttle для плавности
   );
 
   /**
@@ -63,7 +63,7 @@ export const usePopoverResizeHandler = (
       // Обновляем текущую ширину для следующего ресайза
       currentColumnWidthRef.current.set(columnId, newWidth);
     },
-    [tablePopoverValue]
+    [tablePopoverValue],
   );
 
   /**
@@ -74,7 +74,7 @@ export const usePopoverResizeHandler = (
     (columnId: string, initialWidth: number) => {
       currentColumnWidthRef.current.set(columnId, initialWidth);
     },
-    []
+    [],
   );
 
   /**
@@ -87,6 +87,6 @@ export const usePopoverResizeHandler = (
   return {
     handleColumnResize,
     saveInitialColumnWidth,
-    clearColumnWidths
+    clearColumnWidths,
   };
 };

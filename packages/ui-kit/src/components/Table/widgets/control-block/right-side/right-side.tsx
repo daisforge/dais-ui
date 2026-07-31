@@ -7,7 +7,7 @@ import { FeatureIconBtn } from './feature-icon-btn';
 
 export const RightSide = ({
   icons,
-  featureItems
+  featureItems,
 }: {
   icons: FeatureItem[];
   featureItems: FeatureItem[];

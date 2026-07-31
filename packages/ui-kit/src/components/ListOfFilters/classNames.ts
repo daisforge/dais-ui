@@ -7,5 +7,5 @@ export const listOfFiltersClassNames = {
   chip: `${constant}__chip`,
   clearButtonBlock: `${constant}__clear-button-block`,
   chipsContainer: `${constant}__chips-container`,
-  container: `${constant}__container`
+  container: `${constant}__container`,
 } as const;

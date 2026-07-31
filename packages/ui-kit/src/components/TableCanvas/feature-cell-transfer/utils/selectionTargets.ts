@@ -13,13 +13,13 @@ import type { TransferColumnConfig } from '../types';
 
 /** Выбраны только КОЛОНКИ (нет current, есть непустой columns). */
 export const hasColumnsOnlySelection = (
-  selection: GridSelection | null
+  selection: GridSelection | null,
 ): boolean =>
   !selection?.current && !!selection?.columns && selection.columns.length > 0;
 
 /** Выбраны только СТРОКИ (нет current, нет колонок, есть непустой rows). */
 export const hasRowsOnlySelection = (
-  selection: GridSelection | null
+  selection: GridSelection | null,
 ): boolean =>
   !selection?.current &&
   !hasColumnsOnlySelection(selection) &&
@@ -31,7 +31,7 @@ export const hasRowsOnlySelection = (
  */
 export const getSelectedDataColumnIndexes = (
   selection: GridSelection | null,
-  columns: readonly TransferColumnConfig[]
+  columns: readonly TransferColumnConfig[],
 ): number[] =>
   (selection?.columns?.toArray() ?? [])
     .filter((colInd) => !columns[colInd]?.isServiceColumn)
@@ -39,7 +39,7 @@ export const getSelectedDataColumnIndexes = (
 
 /** Индексы выделенных строк (по возрастанию). */
 export const getSelectedRowIndexes = (
-  selection: GridSelection | null
+  selection: GridSelection | null,
 ): number[] => (selection?.rows?.toArray() ?? []).sort((a, b) => a - b);
 
 /**

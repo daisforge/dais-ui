@@ -3,7 +3,7 @@ import { BoxProps } from '@ui-kit/components/Box';
 import type { IconButton } from '@ui-kit/components/IconButton';
 import {
   TypographyWithAutoTooltip,
-  type TypographyWithAutoTooltipProps
+  type TypographyWithAutoTooltipProps,
 } from '@ui-kit/components/Typography';
 import { TypographyVariant } from '@ui-kit/components/Typography/Typography';
 import { mergeClasses } from '@ui-kit/utils';

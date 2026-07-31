@@ -10,7 +10,7 @@
  */
 export function filterChangelog(
   markdown: string,
-  componentName: string
+  componentName: string,
 ): string {
   const lines = markdown.split('\n');
   const result: string[] = [];
@@ -23,7 +23,7 @@ export function filterChangelog(
 
   const namePattern = new RegExp(
     `\\*\\*[^*]*\\b${escapeRegex(componentName)}\\b[^*]*\\*\\*`,
-    'i'
+    'i',
   );
 
   for (let i = 0; i < lines.length; i++) {

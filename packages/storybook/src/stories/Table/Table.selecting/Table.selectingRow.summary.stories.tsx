@@ -11,9 +11,9 @@ const meta: Meta = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      page: DocStoryTemplate
-    }
-  }
+      page: DocStoryTemplate,
+    },
+  },
 };
 
 export default meta;
@@ -40,7 +40,7 @@ import { IconAddOutline, IconBoxOutline, IconSber } from '@daisforge/ui/icons';
 export const SelectingRowSummary: StoryObj = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   name: 'Общий Checkbox "Выбрано"',
   render: () => {
@@ -54,26 +54,26 @@ export const SelectingRowSummary: StoryObj = {
           resizable: true,
           subRow: {
             keyOfColumnInSubRow: 'id',
-            isColumnWithArrow: true
-          }
+            isColumnWithArrow: true,
+          },
         },
         {
           key: 'issueType',
           name: 'issue',
           subRow: {
-            keyOfColumnInSubRow: 'issueType'
-          }
+            keyOfColumnInSubRow: 'issueType',
+          },
         },
         {
           key: 'developer',
-          name: 'Developer'
-        }
+          name: 'Developer',
+        },
       ],
-      []
+      [],
     );
 
     const selectingRowStateAndSetter = useState(
-      (): ReadonlySet<string | number> => new Set()
+      (): ReadonlySet<string | number> => new Set(),
     );
     const [_, setSelectedRows] = selectingRowStateAndSetter;
     const rowShowCheckbox = (r: Row) => r.id !== 2;
@@ -85,7 +85,7 @@ export const SelectingRowSummary: StoryObj = {
           containerStyle: { height: '700px' },
           subRows: {
             getSubRows: (row) => row?.subRows,
-            rowKeyGetter: (row) => row.id
+            rowKeyGetter: (row) => row.id,
           },
           resizableColumn: true,
           selecting: {
@@ -116,13 +116,13 @@ export const SelectingRowSummary: StoryObj = {
               getCountOfChecked: ({ selectedRowsIds }) =>
                 // Любая логика для отображения количества выбранных строк
                 // ...
-                selectedRowsIds.size
-            }
-          }
+                selectedRowsIds.size,
+            },
+          },
         }}
         columnConfig={columns}
         rows={rows}
       />
     );
-  }
+  },
 };

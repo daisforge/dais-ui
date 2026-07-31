@@ -8,31 +8,31 @@ const getData = async () => {
   const columns: ContractResponse['meta']['columns'] = [
     {
       key: 'id',
-      name: 'ID'
+      name: 'ID',
     },
     {
       key: 'task',
-      name: 'Title'
+      name: 'Title',
     },
     {
       key: 'priority',
-      name: 'Priority'
+      name: 'Priority',
     },
     {
       key: 'issueType',
-      name: 'Issue Type'
+      name: 'Issue Type',
     },
     {
       key: 'complete',
-      name: '% Complete'
-    }
+      name: '% Complete',
+    },
   ];
 
   const resp: ContractResponse = {
     meta: {
-      columns
+      columns,
     },
-    data: { main: rows }
+    data: { main: rows },
   };
   return resp;
 };
@@ -45,5 +45,5 @@ export const simpleRoute = {
     await delay(2000);
     const response: ContractResponse = await getData();
     return HttpResponse.json(response);
-  })
+  }),
 };

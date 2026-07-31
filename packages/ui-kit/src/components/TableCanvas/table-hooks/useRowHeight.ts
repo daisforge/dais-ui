@@ -4,7 +4,7 @@ import { getRowHeightBySize } from '../../TableGlide/theming/size-tokens';
 import { hideRowServiceKeysHandler } from '../data/hideServiceKeysHanlder';
 import {
   getDetailPanelHeight,
-  isDetailPanelRow
+  isDetailPanelRow,
 } from '../feature-row-detail/handlers';
 import { SIZE } from '../styles';
 import { ObjectForExtending, TableConfig } from '../types';
@@ -13,11 +13,11 @@ export const useRowHeight = <
   FilterStateType extends ObjectForExtending,
   RowIdType extends string | number,
   RowType extends ObjectForExtending,
-  SummaryRowType = unknown
+  SummaryRowType = unknown,
 >({
   rowSize,
   rowDetailIsActiveInConfig,
-  tableConfig
+  tableConfig,
 }: {
   rowSize: SIZE;
   rowDetailIsActiveInConfig: boolean;
@@ -35,7 +35,7 @@ export const useRowHeight = <
     const baseRowHeight = getRowHeightBySize(rowSize);
     const rowSizeObj = {
       rowSizeName: rowSize,
-      rowSizeValue: baseRowHeight
+      rowSizeValue: baseRowHeight,
     };
 
     if (rowDetailIsActiveInConfig) {
@@ -77,7 +77,7 @@ export const useRowHeight = <
     rowDetailIsActiveInConfig,
     rowSize,
     // tableConfig.rowDetailPanel - заменен на rowDetailPanelBoolean для устранения ненужных перерендеров
-    rowDetailPanelBoolean
+    rowDetailPanelBoolean,
   ]);
 
   return { resultRowHeight };

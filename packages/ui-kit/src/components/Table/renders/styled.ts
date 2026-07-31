@@ -20,7 +20,7 @@ const cellContentStyles = css({
   whiteSpace: 'nowrap',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
-  display: 'inline-block'
+  display: 'inline-block',
 });
 
 const expandButtonStyles = css`
@@ -34,7 +34,7 @@ const getPaddingLeft = ({ $lvl, $hasChildren }: SubRowContainerProps) =>
   DEF_PADDING_LVL * $lvl + ($hasChildren ? 0 : WIDTH_ICON_AND_PADDINGRIGHT);
 
 const getPaddingLeftForArrowColumnInEditingMode = ({
-  $editingMode
+  $editingMode,
 }: SubRowContainerProps) => {
   if (!$editingMode) {
     return '0px';

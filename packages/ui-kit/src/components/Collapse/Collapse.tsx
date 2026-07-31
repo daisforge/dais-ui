@@ -59,7 +59,7 @@ export const Collapse = ({
   sizeOnOpen,
   unMountOnClose,
   intContainerCss,
-  extContainerCss
+  extContainerCss,
 }: CollapseProps) => {
   const refInnerContainer = useRef<HTMLDivElement | null>(null);
 
@@ -109,9 +109,9 @@ export const Collapse = ({
             animation !== null && typeof animation === 'object'
               ? animation.open
               : animation
-          }`
+          }`,
         }),
-        ...extContainerCss
+        ...extContainerCss,
       }}
     >
       <Box
@@ -121,7 +121,7 @@ export const Collapse = ({
           [size.reactCssKey]: 'fit-content',
 
           ...intContainerCss?.always,
-          ...(isOpenDebouncedForOpening && intContainerCss?.onOpen)
+          ...(isOpenDebouncedForOpening && intContainerCss?.onOpen),
         }}
       >
         {children}

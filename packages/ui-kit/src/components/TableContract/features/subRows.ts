@@ -7,7 +7,7 @@ import { ContractTableConfig, InstanceTableConfig } from '../types';
 type SubRowConfigProp = Pick<InstanceTableConfig, 'subRows'> | null;
 
 export function useSubRowsConfig(
-  tableConfigSubRows: ContractTableConfig['subRows']
+  tableConfigSubRows: ContractTableConfig['subRows'],
 ): SubRowConfigProp {
   const { subRowsKey, rowUniqIdKey } = tableConfigSubRows ?? {};
   const enabled = !!tableConfigSubRows;
@@ -26,8 +26,8 @@ export function useSubRowsConfig(
           const v = recursGetV(row, keys);
           return Array.isArray(v) ? v : undefined;
         },
-        rowKeyGetter: getRowKeyGetter(rowUniqIdKey)
-      }
+        rowKeyGetter: getRowKeyGetter(rowUniqIdKey),
+      },
     };
   }, [enabled, rowUniqIdKey, subRowsKey]);
 }

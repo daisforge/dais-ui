@@ -6,7 +6,7 @@ import { RenderCellProps } from 'react-data-grid';
 import {
   SKELETON_CELLS_KEY,
   SKELETON_ROW_KEY,
-  SkeletonCells
+  SkeletonCells,
 } from '../feature-infinity-scroll';
 import type { KeyText } from '../feature-key-text/types';
 import { ExpandDetailButton } from '../feature-row-detail';
@@ -16,7 +16,7 @@ import {
   getDetailPanelRowData,
   isDetailPanelRow,
   isEmptyDetailPanelCell,
-  rowIsHaveDetailPanel
+  rowIsHaveDetailPanel,
 } from '../feature-row-detail/handlers';
 import { RowDetailConfig } from '../feature-row-detail/types';
 import { ROW_I_COLUMN_KEY } from '../feature-row-instruments';
@@ -28,7 +28,7 @@ import {
   ColumnConfig,
   ContentFormat,
   ObjectForExtending,
-  TableConfig
+  TableConfig,
 } from '../types';
 import { CLASS } from './constants';
 import { FormattedContent } from './formatCell';
@@ -39,7 +39,7 @@ export const RenderCell = <
   FilterStateType extends ObjectForExtending,
   RowIdType extends string | number,
   RowType extends ObjectForExtending,
-  SummaryRowType = unknown
+  SummaryRowType = unknown,
 >({
   renderCellProps,
   column,
@@ -48,7 +48,7 @@ export const RenderCell = <
   indexZeroColKey,
   tableConfigRowDetailPanel,
   keyText,
-  editModeEnabled
+  editModeEnabled,
 }: {
   renderCellProps: RenderCellProps<RowType, SummaryRowType>;
   column: ColumnConfig<RowType, SummaryRowType>;
@@ -70,7 +70,7 @@ export const RenderCell = <
     tabIndex,
     onRowChange,
     column: { idx },
-    rowIdx
+    rowIdx,
   } = renderCellProps;
 
   const { handleExpandRowDetail, expandButtonColumnKey } =
@@ -95,7 +95,7 @@ export const RenderCell = <
     const { isEmptyCell } = isEmptyDetailPanelCell(
       renderCellProps.row,
       currIndex,
-      indexZeroColKey
+      indexZeroColKey,
     );
 
     if (isEmptyCell) {
@@ -111,7 +111,7 @@ export const RenderCell = <
           tabIndex,
           onRowChange,
           rowIdx,
-          colIdx: idx
+          colIdx: idx,
         }}
       />
     );
@@ -129,7 +129,7 @@ export const RenderCell = <
     return withSelectIcon(
       defaultLvl0RenderElement,
       isSelectColumn,
-      editModeEnabled
+      editModeEnabled,
     );
   }
   const cellIsHaveDetailExpandButton = () =>
@@ -140,7 +140,7 @@ export const RenderCell = <
       return withSelectIcon(
         defaultLvl0RenderElement,
         isSelectColumn,
-        editModeEnabled
+        editModeEnabled,
       );
     }
 
@@ -149,7 +149,7 @@ export const RenderCell = <
         {withSelectIcon(
           defaultLvl0RenderElement,
           isSelectColumn,
-          editModeEnabled
+          editModeEnabled,
         )}
 
         <ExpandDetailButton
@@ -176,7 +176,7 @@ export const RenderCell = <
       return withSelectIcon(
         defaultLvl0RenderElement,
         isSelectColumn,
-        editModeEnabled
+        editModeEnabled,
       );
     }
 
@@ -193,7 +193,7 @@ export const RenderCell = <
       return withSelectIcon(
         defaultLvl0RenderElement,
         isSelectColumn,
-        editModeEnabled
+        editModeEnabled,
       );
     }
 
@@ -203,7 +203,7 @@ export const RenderCell = <
           {withSelectIcon(
             defaultLvl0RenderElement,
             isSelectColumn,
-            editModeEnabled
+            editModeEnabled,
           )}
 
           <ExpandDetailButton
@@ -233,7 +233,7 @@ export const RenderCell = <
         {withSelectIcon(
           defaultLvl0RenderElement,
           isSelectColumn,
-          editModeEnabled
+          editModeEnabled,
         )}
         {hasExpandDetailButton && (
           <ExpandDetailButton
@@ -260,7 +260,7 @@ export const RenderCell = <
     if (column.subRow?.renderSubRowCell) {
       return column.subRow.renderSubRowCell(
         renderCellProps as RenderCellProps<ObjectForExtending, unknown>,
-        lvl
+        lvl,
       );
     }
 
@@ -293,7 +293,7 @@ export const RenderCell = <
     return withSelectIcon(
       defaultLvlNot0RenderElement,
       isSelectColumnForRow,
-      editModeEnabled
+      editModeEnabled,
     );
   }
 
@@ -303,7 +303,7 @@ export const RenderCell = <
         {withSelectIcon(
           defaultLvlNot0RenderElement,
           isSelectColumnForRow,
-          editModeEnabled
+          editModeEnabled,
         )}
 
         <ExpandDetailButton
@@ -343,7 +343,7 @@ export const RenderCell = <
           {defaultLvlNot0RenderElement}
         </span>,
         isSelectColumnForRow,
-        editModeEnabled
+        editModeEnabled,
       )}
 
       {columnHasExpandButton && (

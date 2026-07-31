@@ -2,7 +2,7 @@ import { type Layout } from 'react-grid-layout';
 
 export function layoutsShallowEqual(
   a: Layout[] | undefined,
-  b: Layout[] | undefined
+  b: Layout[] | undefined,
 ) {
   if (!a || !b) return false;
   if (a.length !== b.length) return false;

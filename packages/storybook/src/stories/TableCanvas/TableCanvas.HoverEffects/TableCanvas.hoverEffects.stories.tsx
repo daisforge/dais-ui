@@ -9,7 +9,7 @@ import {
   type ColumnConfig,
   type HighlightActiveType,
   type HoverEffectsConfig,
-  TableCanvas
+  TableCanvas,
 } from '@ui-kit/components/TableCanvas';
 import { useMemo, useState } from 'react';
 
@@ -17,10 +17,10 @@ const meta: Meta = {
   title: 'Локальные компоненты/TableCanvas/HoverEffects',
   parameters: {
     docs: {
-      page: DocStoryTemplate
-    }
+      page: DocStoryTemplate,
+    },
   },
-  tags: ['!autodocs']
+  tags: ['!autodocs'],
 };
 
 export default meta;
@@ -34,26 +34,26 @@ type HoverEffectsOption = 'disabled' | 'row' | 'row-custom-color';
 const HOVER_EFFECTS_OPTIONS: readonly HoverEffectsOption[] = [
   'row',
   'row-custom-color',
-  'disabled'
+  'disabled',
 ];
 
 const HOVER_EFFECTS_BY_OPTION: Record<HoverEffectsOption, HoverEffectsConfig> =
   {
     disabled: {},
     row: { row: true },
-    'row-custom-color': { row: { color: '#FFF6E5' } }
+    'row-custom-color': { row: { color: '#FFF6E5' } },
   };
 
 const HIGHLIGHT_ACTIVE_TYPE_OPTIONS: readonly HighlightActiveType[] = [
   'row',
-  'disabled'
+  'disabled',
 ];
 
 const SELECTION_MODE_OPTIONS: readonly CellsSelectionMode[] = [
   'range-cell',
   'multi-range-cell',
   'cell',
-  'disabled'
+  'disabled',
 ];
 
 const COLUMN_CONFIG: readonly ColumnConfig<TableRow>[] = [
@@ -61,7 +61,7 @@ const COLUMN_CONFIG: readonly ColumnConfig<TableRow>[] = [
   { key: 'task', name: 'Title', width: 260 },
   { key: 'priority', name: 'Priority', width: 180 },
   { key: 'issueType', name: 'Issue Type', width: 180 },
-  { key: 'complete', name: '% Complete', width: 160 }
+  { key: 'complete', name: '% Complete', width: 160 },
 ];
 
 const getRowSelectionKey = (row: TableRow) => row.id + row.issueType;
@@ -108,13 +108,13 @@ export const HoverEffectsPlayground: Story = {
         new Set(
           rows
             .filter((row) => [3, 5].includes(Number(row.id)))
-            .map(getRowSelectionKey)
-        )
+            .map(getRowSelectionKey),
+        ),
     );
 
     const columnConfig = useMemo<readonly ColumnConfig<TableRow>[]>(
       () => COLUMN_CONFIG,
-      []
+      [],
     );
 
     return (
@@ -129,7 +129,7 @@ export const HoverEffectsPlayground: Story = {
               onChange={(value) => setHoverOption(value as HoverEffectsOption)}
               items={HOVER_EFFECTS_OPTIONS.map((item) => ({
                 label: item,
-                value: item
+                value: item,
               }))}
             />
           </div>
@@ -143,7 +143,7 @@ export const HoverEffectsPlayground: Story = {
               }
               items={HIGHLIGHT_ACTIVE_TYPE_OPTIONS.map((item) => ({
                 label: item,
-                value: item
+                value: item,
               }))}
             />
           </div>
@@ -157,7 +157,7 @@ export const HoverEffectsPlayground: Story = {
               }
               items={SELECTION_MODE_OPTIONS.map((item) => ({
                 label: item,
-                value: item
+                value: item,
               }))}
             />
           </div>
@@ -181,15 +181,15 @@ export const HoverEffectsPlayground: Story = {
             rowMarkers: { startIndex: 1 },
             selecting: {
               state: selectingStateAndSetter,
-              rowKeyGetter: getRowSelectionKey
-            }
+              rowKeyGetter: getRowSelectionKey,
+            },
           }}
           columnConfig={columnConfig}
           rows={rows}
         />
       </>
     );
-  }
+  },
 };
 
 /**
@@ -203,18 +203,18 @@ export const HoverEffectsRowSimple: Story = {
     const [rows] = useState(createRows);
     const columnConfig = useMemo<readonly ColumnConfig<TableRow>[]>(
       () => COLUMN_CONFIG,
-      []
+      [],
     );
 
     return (
       <TableCanvas
         tableConfig={{
           containerStyle: { height: '600px' },
-          hoverEffects: { row: true }
+          hoverEffects: { row: true },
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };

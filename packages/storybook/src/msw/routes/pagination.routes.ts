@@ -3,7 +3,7 @@ import { getPaginationData } from '@df-storybook/data/tableData';
 import {
   type ContractQueryParams,
   type ContractResponse,
-  Q_PARAMS
+  Q_PARAMS,
 } from '@ui-kit/components/TableContract';
 import { http, HttpResponse } from 'msw';
 
@@ -18,35 +18,35 @@ const getData = async (params: ContractQueryParams) => {
   const rows = getPaginationData({
     page: Number(params.page ?? defaultPage),
     perPage: Number(params.pageSize ?? defaultPageSize),
-    total
+    total,
   });
 
   const columns: ContractResponse['meta']['columns'] = [
     {
       key: 'id',
       name: 'ID',
-      sortingType: 'numberSort'
+      sortingType: 'numberSort',
     },
     {
       key: 'task',
       name: 'Title',
-      sortingType: 'stringSort'
+      sortingType: 'stringSort',
     },
     {
       key: 'priority',
       name: 'Priority',
-      sortingType: 'stringSort'
+      sortingType: 'stringSort',
     },
     {
       key: 'issueType',
       name: 'Issue Type',
-      sortingType: 'stringSort'
+      sortingType: 'stringSort',
     },
     {
       key: 'complete',
       name: '% Complete',
-      sortingType: 'numberSort'
-    }
+      sortingType: 'numberSort',
+    },
   ];
   const tableConfig: ContractResponse['meta']['tableConfig'] = {
     sorting: { type: 'frontend' },
@@ -56,16 +56,16 @@ const getData = async (params: ContractQueryParams) => {
       defaultPage,
       defaultPageSize,
       page,
-      pageSize: perPage
-    }
+      pageSize: perPage,
+    },
   };
 
   const resp: ContractResponse = {
     meta: {
       columns,
-      tableConfig
+      tableConfig,
     },
-    data: { main: rows }
+    data: { main: rows },
   };
   return resp;
 };
@@ -82,8 +82,8 @@ export const paginationRoute = {
 
     const response: ContractResponse = await getData({
       page,
-      pageSize
+      pageSize,
     });
     return HttpResponse.json(response);
-  })
+  }),
 };

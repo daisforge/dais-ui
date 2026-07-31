@@ -13,7 +13,7 @@ interface UseCloseContextMenuOnScrollOptions {
  */
 export const useCloseContextMenuOnScroll = (
   contextMenu: { isOpen: boolean; close: () => void },
-  options: UseCloseContextMenuOnScrollOptions = {}
+  options: UseCloseContextMenuOnScrollOptions = {},
 ) => {
   const { scrollThreshold = 5 } = options;
 
@@ -45,6 +45,6 @@ export const useCloseContextMenuOnScroll = (
 
       lastScrollTopRef.current = scrollTop;
     },
-    [contextMenu, scrollThreshold]
+    [contextMenu, scrollThreshold],
   );
 };

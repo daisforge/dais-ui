@@ -21,11 +21,11 @@ const meta: Meta<typeof Widget> = {
   title: 'Композиции/Widget',
   parameters: {
     docs: {
-      toc: true // 👈 Enables the table of contents
-    }
+      toc: true, // 👈 Enables the table of contents
+    },
   },
   tags: ['!autodocs'],
-  component: Widget
+  component: Widget,
 };
 
 export default meta;
@@ -54,7 +54,7 @@ import {
   Widget,
 } from '@daisforge/ui';
 
-    `
+    `,
   }),
   render: () => (
     <div style={{ backgroundColor: backgroundPrimary }}>
@@ -72,8 +72,8 @@ import {
                 dropdownProps={{
                   items: [
                     { label: 'label 1', value: '1' },
-                    { label: 'label 2', value: '2' }
-                  ]
+                    { label: 'label 2', value: '2' },
+                  ],
                 }}
               />
               <Widget.Divider />
@@ -100,7 +100,7 @@ import {
           <div
             style={{
               height: '2000px',
-              backgroundColor: 'goldenrod'
+              backgroundColor: 'goldenrod',
             }}
           >
             <span
@@ -108,7 +108,7 @@ import {
                 position: 'absolute',
                 right: 0,
                 width: '4px',
-                backgroundColor: 'teal'
+                backgroundColor: 'teal',
               }}
             />
           </div>
@@ -130,7 +130,7 @@ import {
         />
       </Widget>
     </div>
-  )
+  ),
 };
 
 /**
@@ -155,7 +155,7 @@ import {
   Widget,
 } from '@daisforge/ui';
 
-    `
+    `,
   }),
   render: () => (
     <div style={{ backgroundColor: backgroundPrimary }}>
@@ -173,8 +173,8 @@ import {
                 dropdownProps={{
                   items: [
                     { label: 'label 1', value: '1' },
-                    { label: 'label 2', value: '2' }
-                  ]
+                    { label: 'label 2', value: '2' },
+                  ],
                 }}
               />
               <Widget.Divider />
@@ -200,7 +200,7 @@ import {
         <Widget.Content>
           <div
             style={{
-              height: '2000px'
+              height: '2000px',
             }}
           >
             <span>{longText()}</span>
@@ -209,7 +209,7 @@ import {
                 position: 'absolute',
                 right: 0,
                 width: '4px',
-                backgroundColor: 'teal'
+                backgroundColor: 'teal',
               }}
             />
           </div>
@@ -231,7 +231,7 @@ import {
         />
       </Widget>
     </div>
-  )
+  ),
 };
 
 /**
@@ -256,7 +256,7 @@ import {
   Widget,
 } from '@daisforge/ui';
 
-    `
+    `,
   }),
   render: () => (
     <div style={{ backgroundColor: backgroundPrimary }}>
@@ -294,5 +294,5 @@ import {
         />
       </Widget>
     </div>
-  )
+  ),
 };

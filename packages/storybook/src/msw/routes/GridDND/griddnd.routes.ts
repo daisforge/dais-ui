@@ -11,7 +11,7 @@ const DEFAULT_BREAKPOINTS: Breakpoints = {
   md: 1377,
   sm: 1145,
   xs: 913,
-  xxs: 0
+  xxs: 0,
 };
 
 // ——— In-memory состояние ———
@@ -26,7 +26,7 @@ let ITEMS: GridItemSpec[] = [
   { id: 'widget7', type: 's' },
   { id: 'widget8', type: 's' },
   { id: 'widget9', type: 'm' },
-  { id: 'widget10', type: 'l' }
+  { id: 'widget10', type: 'l' },
 ];
 
 // Утилиты
@@ -46,21 +46,21 @@ const routes = [
     if (!body?.items) {
       return HttpResponse.json(
         { message: 'items is required' },
-        { status: 400 }
+        { status: 400 },
       );
     }
     ITEMS = body.items;
     return json({ ok: true });
-  })
+  }),
 ];
 
 export const gridDndRoutes = {
   ENDPOINTS: {
     GET_BREAKPOINTS: `${BASE}/breakpoints`,
     GET_ITEMS: `${BASE}/items`,
-    PUT_ITEMS: `${BASE}/items`
+    PUT_ITEMS: `${BASE}/items`,
   },
 
   handlers: routes,
-  route: routes
+  route: routes,
 };

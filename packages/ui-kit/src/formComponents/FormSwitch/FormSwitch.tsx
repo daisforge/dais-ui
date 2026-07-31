@@ -24,7 +24,7 @@ export const FormSwitch = <TFieldValues extends FieldValues>({
     control,
     rules,
     remOptions,
-    formState: { defaultValues }
+    formState: { defaultValues },
   } = formCtx;
 
   return (

@@ -11,9 +11,9 @@ const meta: Meta<ErrorPageProps> = {
     size: {
       control: 'inline-radio',
       options: ['s', 'm', 'l'],
-      description: 'Размерная сетка (по умолчанию l)'
-    }
-  }
+      description: 'Размерная сетка (по умолчанию l)',
+    },
+  },
 };
 
 export default meta;
@@ -26,11 +26,11 @@ type Story = StoryObj<ErrorPageProps>;
 export const Default: Story = {
   name: '400',
   args: {
-    statusCode: 400
+    statusCode: 400,
   },
   render: (args) => (
     <ErrorPage {...args} containerProps={{ $css: { minHeight: 600 } }} />
-  )
+  ),
 };
 
 /**
@@ -39,23 +39,23 @@ export const Default: Story = {
 export const S401: Story = {
   name: '401',
   args: {
-    statusCode: 401
+    statusCode: 401,
   },
   render: (args) => (
     <ErrorPage {...args} containerProps={{ $css: { minHeight: 600 } }} />
-  )
+  ),
 };
 /**
  * ℹ️ Для просмотра примера нажми `Show code`.
  */
 export const S403: Story = {
   args: {
-    statusCode: 403
+    statusCode: 403,
   },
   name: '403',
   render: (args) => (
     <ErrorPage {...args} containerProps={{ $css: { minHeight: 600 } }} />
-  )
+  ),
 };
 
 /**
@@ -73,27 +73,27 @@ export const S403WithTwoButtons: Story = {
           // Используем buttons вместо button
           {
             label: 'Запросить доступ',
-            view: 'secondary'
+            view: 'secondary',
           },
           {
             label: 'Вернуться назад',
-            view: 'accent'
-          }
-        ]
-      }
+            view: 'accent',
+          },
+        ],
+      },
     },
     buttonHandler: (statusCode, statusObj, e) => {
       const buttonText = e.currentTarget.textContent;
       // eslint-disable-next-line no-alert
       alert(
-        `Нажата кнопка "${buttonText}" для статуса ${statusCode} info ${statusObj}`
+        `Нажата кнопка "${buttonText}" для статуса ${statusCode} info ${statusObj}`,
       );
-    }
+    },
   },
   name: '403 - Две кнопки',
   render: (args) => (
     <ErrorPage {...args} containerProps={{ $css: { minHeight: 600 } }} />
-  )
+  ),
 };
 
 /**
@@ -101,13 +101,13 @@ export const S403WithTwoButtons: Story = {
  */
 export const S404: Story = {
   args: {
-    statusCode: 404
+    statusCode: 404,
   },
   name: '404',
 
   render: (args) => (
     <ErrorPage {...args} containerProps={{ $css: { minHeight: 600 } }} />
-  )
+  ),
 };
 
 /**
@@ -115,52 +115,52 @@ export const S404: Story = {
  */
 export const S409: Story = {
   args: {
-    statusCode: 409
+    statusCode: 409,
   },
   name: '409',
 
   render: (args) => (
     <ErrorPage {...args} containerProps={{ $css: { minHeight: 600 } }} />
-  )
+  ),
 };
 /**
  * ℹ️ Для просмотра примера нажми `Show code`.
  */
 export const S500: Story = {
   args: {
-    statusCode: 500
+    statusCode: 500,
   },
   name: '500',
 
   render: (args) => (
     <ErrorPage {...args} containerProps={{ $css: { minHeight: 600 } }} />
-  )
+  ),
 };
 /**
  * ℹ️ Для просмотра примера нажми `Show code`.
  */
 export const S502: Story = {
   args: {
-    statusCode: 502
+    statusCode: 502,
   },
   name: '502',
 
   render: (args) => (
     <ErrorPage {...args} containerProps={{ $css: { minHeight: 600 } }} />
-  )
+  ),
 };
 /**
  * ℹ️ Для просмотра примера нажми `Show code`.
  */
 export const S503: Story = {
   args: {
-    statusCode: 503
+    statusCode: 503,
   },
   name: '503',
 
   render: (args) => (
     <ErrorPage {...args} containerProps={{ $css: { minHeight: 600 } }} />
-  )
+  ),
 };
 
 /**
@@ -183,27 +183,27 @@ export const S503WithStatusCode: Story = {
             Попробуйте зайти позже
           </>
         ),
-        description: 'Обновите страницу или зайдите позже'
-      }
-    }
+        description: 'Обновите страницу или зайдите позже',
+      },
+    },
   },
   name: '503 - с кодом ошибки',
   render: (args) => (
     <ErrorPage {...args} containerProps={{ $css: { minHeight: 600 } }} />
-  )
+  ),
 };
 /**
  * ℹ️ Для просмотра примера нажми `Show code`.
  */
 export const SUnknown: Story = {
   args: {
-    statusCode: 'unknown'
+    statusCode: 'unknown',
   },
   name: 'Неизвестная ошибка - заполнение по умолчанию',
 
   render: (args) => (
     <ErrorPage {...args} containerProps={{ $css: { minHeight: 600 } }} />
-  )
+  ),
 };
 /**
  * #### Описание неизвестной ошибки.
@@ -214,14 +214,14 @@ export const UnknownError: Story = {
   args: {
     unknownStatus: {
       title: 'Unknown Error',
-      description: 'Unknown Error description'
-    }
+      description: 'Unknown Error description',
+    },
   },
   name: 'Неизвестная ошибка - кастомное заполнение',
 
   render: (args) => (
     <ErrorPage {...args} containerProps={{ $css: { minHeight: 600 } }} />
-  )
+  ),
 };
 
 /**
@@ -236,42 +236,42 @@ export const CustomError: Story = {
         title: 'Метод запроса не поддерживается сервером',
         description:
           'Метод запроса не поддерживается сервером и поэтому он не может быть обработан.',
-        button: { label: 'На главную' }
+        button: { label: 'На главную' },
       },
       405: {
         title: 'Метод запроса известен серверу',
         description:
-          'Метод запроса известен серверу, но не поддерживается целевым ресурсом. Например, API может не разрешать вызов DELETE для удаления ресурса.'
-      }
-    }
+          'Метод запроса известен серверу, но не поддерживается целевым ресурсом. Например, API может не разрешать вызов DELETE для удаления ресурса.',
+      },
+    },
   },
   name: 'Дополнительные статусы и их заполнение',
 
   render: (args) => (
     <ErrorPage {...args} containerProps={{ $css: { minHeight: 600 } }} />
-  )
+  ),
 };
 
 export const WithErrorId: Story = {
   args: {
     statusCode: 500,
-    errorId: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890'
+    errorId: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
   },
   name: '500 - с идентификатором ошибки',
   render: (args) => (
     <ErrorPage {...args} containerProps={{ $css: { minHeight: 600 } }} />
-  )
+  ),
 };
 
 export const WithErrorIdNoButtons: Story = {
   args: {
     statusCode: 503,
-    errorId: 'err-timeout-xyz-9876'
+    errorId: 'err-timeout-xyz-9876',
   },
   name: '503 - идентификатор без кнопок',
   render: (args) => (
     <ErrorPage {...args} containerProps={{ $css: { minHeight: 600 } }} />
-  )
+  ),
 };
 
 /**
@@ -285,12 +285,12 @@ export const WithErrorIdNoButtons: Story = {
 export const SizeM: Story = {
   args: {
     statusCode: 404,
-    size: 'm'
+    size: 'm',
   },
   name: 'Размер m',
   render: (args) => (
     <ErrorPage {...args} containerProps={{ $css: { minHeight: 600 } }} />
-  )
+  ),
 };
 
 /**
@@ -301,10 +301,10 @@ export const SizeM: Story = {
 export const SizeS: Story = {
   args: {
     statusCode: 404,
-    size: 's'
+    size: 's',
   },
   name: 'Размер s',
   render: (args) => (
     <ErrorPage {...args} containerProps={{ $css: { minHeight: 600 } }} />
-  )
+  ),
 };

@@ -9,12 +9,12 @@ import {
   COLLAPSE_DECOR_FADE,
   COLORS,
   DURATION,
-  TABLE_BORDER_RADIUS
+  TABLE_BORDER_RADIUS,
 } from '../styles';
 import { ActiveViewModsType, ControlBlockSize } from '../types';
 import {
   getControlBlockHeight,
-  getControlBlockSizeMap
+  getControlBlockSizeMap,
 } from '../widgets/control-block/control-block.constants';
 import { CollapseTableButton } from './CollapseTableButton';
 
@@ -62,11 +62,11 @@ const CollapseBlockAboveStyled = styled(Box)<{
     css({
       ...($activeView === 'rows' && {
         backgroundColor: COLORS.white,
-        borderColor: COLORS.border
+        borderColor: COLORS.border,
       }),
       ...($activeView === 'cards' && {
-        borderColor: 'transparent'
-      })
+        borderColor: 'transparent',
+      }),
     })}
   border-bottom-color: ${({ $collapsedTable, $activeView }) =>
     $collapsedTable && $activeView === 'rows' ? COLORS.border : 'transparent'};
@@ -77,7 +77,7 @@ const CollapseBlockAboveStyled = styled(Box)<{
 const TITLE_TYPOGRAPHY: Record<ControlBlockSize, CSSObject> = {
   m: bodySBold as unknown as CSSObject,
   s: bodySBold as unknown as CSSObject,
-  xs: bodyXSBold as unknown as CSSObject
+  xs: bodyXSBold as unknown as CSSObject,
 };
 
 const TitleText = styled.div<{ $size: ControlBlockSize }>`
@@ -100,7 +100,7 @@ export const CollapseBlockAbove: FC<CollapseBlockAboveProps> = ({
   activeView,
   $borderTopRounded,
   rightSlot,
-  size = 'm'
+  size = 'm',
 }) => {
   const { isCollapsed, enableCollapse, titleText, titleRender } =
     useTableCollapse();

@@ -1,7 +1,7 @@
 import {
   ModalDF,
   modalDFClassNames,
-  ModalDFServiceButtons
+  ModalDFServiceButtons,
 } from '@ui-kit/components/ModalDF';
 import {
   dataInfoGradient,
@@ -12,7 +12,7 @@ import {
   textInfo,
   textNegative,
   textPositive,
-  textWarning
+  textWarning,
 } from '@ui-kit/tokens';
 import styled from 'styled-components';
 
@@ -21,14 +21,14 @@ export const colors = {
   warning: () => dataWarningGradient,
   info: () => dataInfoGradient,
   negative: () => dataNegativeGradient,
-  default: () => surfaceSolidCard
+  default: () => surfaceSolidCard,
 };
 
 export const iconColors = {
   positive: textPositive,
   warning: textWarning,
   info: textInfo,
-  negative: textNegative
+  negative: textNegative,
 };
 
 export const StyledModalDF = styled(ModalDF)<{

@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import {
   TableCanvasEmptyStateConfig,
   TableCanvasErrorStateConfig,
-  TableContentStateOverlay
+  TableContentStateOverlay,
 } from './types';
 
 export const useContentStateOverlay = ({
@@ -15,7 +15,7 @@ export const useContentStateOverlay = ({
   emptyStateConfig,
   hasRenderableHeaders,
   isLoadingTable,
-  rowsLength
+  rowsLength,
 }: {
   borderLeftBottomRadiusRounded: boolean;
   borderLeftTopRadiusRounded: boolean;
@@ -29,7 +29,7 @@ export const useContentStateOverlay = ({
 }) => {
   const showErrorState = useMemo(
     () => !isLoadingTable && Boolean(errorStateConfig?.enabled),
-    [errorStateConfig, isLoadingTable]
+    [errorStateConfig, isLoadingTable],
   );
 
   const showEmptyState = useMemo(() => {
@@ -58,7 +58,7 @@ export const useContentStateOverlay = ({
         borderLeftBottomRadiusRounded,
         borderRightBottomRadiusRounded,
         custom,
-        errorPageProps
+        errorPageProps,
       };
     }
 
@@ -77,7 +77,7 @@ export const useContentStateOverlay = ({
         borderLeftBottomRadiusRounded,
         borderRightBottomRadiusRounded,
         custom,
-        ...emptyStateProps
+        ...emptyStateProps,
       };
     }
 
@@ -91,12 +91,12 @@ export const useContentStateOverlay = ({
     borderRightBottomRadiusRounded,
     borderRightTopRadiusRounded,
     showEmptyState,
-    showErrorState
+    showErrorState,
   ]);
 
   return {
     showErrorState,
     showEmptyState,
-    contentStateOverlay
+    contentStateOverlay,
   };
 };

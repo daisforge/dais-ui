@@ -5,19 +5,19 @@ import { flattenCols, getDeepestChildren } from './fromTreeToLastLvl';
 
 export const useLastLvlColumnConfig = <
   RowType extends ObjectForExtending,
-  SummaryRowType
+  SummaryRowType,
 >(
   columnMaybeTreeConfig: readonly ColumnOrColumnGroupConfig<
     RowType,
     SummaryRowType
-  >[]
+  >[],
 ) =>
   useMemo(() => {
     const lastLvlColumnsConfig = getDeepestChildren(columnMaybeTreeConfig);
     const allColsFlattened = flattenCols(
       columnMaybeTreeConfig,
       (c) => (c as { children?: (typeof c)[] })?.children,
-      (c) => c
+      (c) => c,
     );
 
     const columnsGroupingIsActive =
@@ -26,6 +26,6 @@ export const useLastLvlColumnConfig = <
     return {
       columnConfig: lastLvlColumnsConfig,
       allColsFlattened,
-      columnsGroupingIsActive
+      columnsGroupingIsActive,
     };
   }, [columnMaybeTreeConfig]);

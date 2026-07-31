@@ -38,7 +38,7 @@ const cancelFrame = (id: number): void => {
 };
 
 export const createSafeResizeObserver = (
-  callback: ResizeObserverCallback
+  callback: ResizeObserverCallback,
 ): ResizeObserver => {
   let frameId: number | null = null;
 

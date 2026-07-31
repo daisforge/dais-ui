@@ -15,11 +15,11 @@ const meta: Meta<typeof DrawerDF> = {
   title: 'Локальные компоненты/DrawerDF',
   parameters: {
     docs: {
-      layout: 'fullscreen'
-    }
+      layout: 'fullscreen',
+    },
   },
   component: DrawerDF,
-  tags: ['!autodocs']
+  tags: ['!autodocs'],
 };
 
 export default meta;
@@ -112,7 +112,7 @@ function DrawerWithMultipleContentExample() {
             {longLorem}
           </DrawerDF.Content>,
           <DrawerDF.Content key="right-1">{shortLorem}</DrawerDF.Content>,
-          <DrawerDF.Content key="right-2">{shortLorem}</DrawerDF.Content>
+          <DrawerDF.Content key="right-2">{shortLorem}</DrawerDF.Content>,
         ]}
       />
     </>
@@ -193,7 +193,7 @@ import React, { useState } from 'react';
 
 ${getFuncAsString(
   'packages/storybook/src/stories/DrawerDF/DrawerDF.stories.tsx',
-  'DrawerWithOneMainContentExample'
+  'DrawerWithOneMainContentExample',
 )}
 `;
 
@@ -206,7 +206,7 @@ import React, { useState } from 'react';
 
 ${getFuncAsString(
   'packages/storybook/src/stories/DrawerDF/DrawerDF.stories.tsx',
-  'DrawerWithMultipleContentExample'
+  'DrawerWithMultipleContentExample',
 )}
 `;
 
@@ -217,7 +217,7 @@ import React, { useState } from 'react';
 
 ${getFuncAsString(
   'packages/storybook/src/stories/DrawerDF/DrawerDF.stories.tsx',
-  'DrawerSingleContentNoHeaderExample'
+  'DrawerSingleContentNoHeaderExample',
 )}
 `;
 
@@ -229,7 +229,7 @@ import React, { useState } from 'react';
 
 ${getFuncAsString(
   'packages/storybook/src/stories/DrawerDF/DrawerDF.stories.tsx',
-  'DrawerWithBackButtonExample'
+  'DrawerWithBackButtonExample',
 )}
 `;
 
@@ -237,34 +237,34 @@ export const DrawerWithOneMainContent: Story = {
   name: 'DrawerDF with one content',
   ...storySourceDoc({
     previewSource: 'shown',
-    code: drawerWithOneMainContentCode
+    code: drawerWithOneMainContentCode,
   }),
-  render: DrawerWithOneMainContentExample
+  render: DrawerWithOneMainContentExample,
 };
 
 export const DrawerDFWithMultipleMainContent: Story = {
   name: 'DrawerDF with multiple content',
   ...storySourceDoc({
     previewSource: 'shown',
-    code: drawerWithMultipleContentCode
+    code: drawerWithMultipleContentCode,
   }),
-  render: DrawerWithMultipleContentExample
+  render: DrawerWithMultipleContentExample,
 };
 
 export const DrawerWithSingleContentNoHeaderNoFooter: Story = {
   name: 'DrawerDF with single content (no header, no footer)',
   ...storySourceDoc({
     previewSource: 'shown',
-    code: drawerSingleContentNoHeaderCode
+    code: drawerSingleContentNoHeaderCode,
   }),
-  render: DrawerSingleContentNoHeaderExample
+  render: DrawerSingleContentNoHeaderExample,
 };
 
 export const DrawerWithBackButton: Story = {
   name: 'DrawerDF with back button',
   ...storySourceDoc({
     previewSource: 'shown',
-    code: drawerWithBackButtonCode
+    code: drawerWithBackButtonCode,
   }),
-  render: DrawerWithBackButtonExample
+  render: DrawerWithBackButtonExample,
 };

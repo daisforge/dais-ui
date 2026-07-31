@@ -12,9 +12,9 @@ const meta: Meta = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      page: DocStoryTemplate
-    }
-  }
+      page: DocStoryTemplate,
+    },
+  },
 };
 
 export default meta;
@@ -31,38 +31,38 @@ export const MassPanelActionBasic: Story = {
   name: 'Базовая панель массовых действий',
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     const [rows] = useState(createRows);
     const selectingRowStateAndSetter = useState(
-      (): ReadonlySet<string | number> => new Set()
+      (): ReadonlySet<string | number> => new Set(),
     );
 
     const columns = useMemo<readonly ColumnConfig<Row>[]>(
       () => [
         {
           key: 'id',
-          name: 'ID'
+          name: 'ID',
         },
         {
           key: 'task',
-          name: 'Title'
+          name: 'Title',
         },
         {
           key: 'priority',
-          name: 'Priority'
+          name: 'Priority',
         },
         {
           key: 'issueType',
-          name: 'Issue Type'
+          name: 'Issue Type',
         },
         {
           key: 'developer',
-          name: 'Developer'
-        }
+          name: 'Developer',
+        },
       ],
-      []
+      [],
     );
 
     return (
@@ -71,7 +71,7 @@ export const MassPanelActionBasic: Story = {
           containerStyle: { height: 700 },
           selecting: {
             state: selectingRowStateAndSetter,
-            rowKeyGetter: (row) => row.id
+            rowKeyGetter: (row) => row.id,
           },
           controlBlock: {
             massActionPanel: {
@@ -82,7 +82,7 @@ export const MassPanelActionBasic: Story = {
                   view: 'secondary',
                   onClick: () => {
                     alert('Экспорт выбранных строк');
-                  }
+                  },
                 },
 
                 {
@@ -91,7 +91,7 @@ export const MassPanelActionBasic: Story = {
                   view: 'secondary',
                   onClick: () => {
                     alert('Архивирование выбранных строк');
-                  }
+                  },
                 },
                 {
                   type: 'button',
@@ -99,7 +99,7 @@ export const MassPanelActionBasic: Story = {
                   view: 'secondary',
                   onClick: () => {
                     alert('Дублирование выбранных строк');
-                  }
+                  },
                 },
                 {
                   type: 'button',
@@ -107,51 +107,51 @@ export const MassPanelActionBasic: Story = {
                   view: 'accent',
                   onClick: () => {
                     alert('Accent click');
-                  }
-                }
-              ]
-            }
-          }
+                  },
+                },
+              ],
+            },
+          },
         }}
         columnConfig={columns}
         rows={rows}
       />
     );
-  }
+  },
 };
 
 export const MassPanelActionWithAccent: Story = {
   name: 'Панель с accent кнопками',
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     const [rows] = useState(createRows);
     const selectingRowStateAndSetter = useState(
-      (): ReadonlySet<string | number> => new Set()
+      (): ReadonlySet<string | number> => new Set(),
     );
 
     const columns = useMemo<readonly ColumnConfig<Row>[]>(
       () => [
         {
           key: 'id',
-          name: 'ID'
+          name: 'ID',
         },
         {
           key: 'task',
-          name: 'Title'
+          name: 'Title',
         },
         {
           key: 'priority',
-          name: 'Priority'
+          name: 'Priority',
         },
         {
           key: 'issueType',
-          name: 'Issue Type'
-        }
+          name: 'Issue Type',
+        },
       ],
-      []
+      [],
     );
 
     return (
@@ -160,7 +160,7 @@ export const MassPanelActionWithAccent: Story = {
           containerStyle: { height: 700 },
           selecting: {
             state: selectingRowStateAndSetter,
-            rowKeyGetter: (row) => row.id
+            rowKeyGetter: (row) => row.id,
           },
           controlBlock: {
             massActionPanel: {
@@ -169,72 +169,72 @@ export const MassPanelActionWithAccent: Story = {
                   type: 'button',
                   text: 'Обычная кнопка 1',
                   view: 'secondary',
-                  onClick: () => alert('Кнопка 1')
+                  onClick: () => alert('Кнопка 1'),
                 },
 
                 {
                   type: 'button',
                   text: 'Обычная кнопка 2',
                   view: 'secondary',
-                  onClick: () => alert('Кнопка 2')
+                  onClick: () => alert('Кнопка 2'),
                 },
                 {
                   type: 'button',
                   text: 'Еще одна кнопка',
                   view: 'secondary',
-                  onClick: () => alert('Accent Button')
+                  onClick: () => alert('Accent Button'),
                 },
                 {
                   type: 'button',
                   text: 'Обычная кнопка 3',
                   view: 'secondary',
-                  onClick: () => alert('Кнопка 3')
+                  onClick: () => alert('Кнопка 3'),
                 },
                 {
                   type: 'button',
                   text: 'Accent кнопка (всегда видима)',
                   view: 'accent',
-                  onClick: () => alert('Accent кнопка')
-                }
-              ]
-            }
-          }
+                  onClick: () => alert('Accent кнопка'),
+                },
+              ],
+            },
+          },
         }}
         columnConfig={columns}
         rows={rows}
       />
     );
-  }
+  },
 };
 
 export const MassPanelActionWithButton: Story = {
   name: 'Панель с кнопками типа Button',
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     const [rows] = useState(createRows);
     const selectingRowStateAndSetter = useState(
-      (): ReadonlySet<string | number> => new Set()
+      (): ReadonlySet<string | number> => new Set(),
     );
 
     const columns = useMemo<readonly ColumnConfig<Row>[]>(
       () => [
         {
           key: 'id',
-          name: 'ID'
+          name: 'ID',
         },
         {
           key: 'task',
-          name: 'Title'
+          name: 'Title',
         },
         {
           key: 'priority',
-          name: 'Priority'
-        }
+          name: 'Priority',
+        },
       ],
-      []
+      [],
     );
 
     return (
@@ -243,7 +243,7 @@ export const MassPanelActionWithButton: Story = {
           containerStyle: { height: 700 },
           selecting: {
             state: selectingRowStateAndSetter,
-            rowKeyGetter: (row) => row.id
+            rowKeyGetter: (row) => row.id,
           },
           controlBlock: {
             massActionPanel: {
@@ -252,41 +252,41 @@ export const MassPanelActionWithButton: Story = {
                   type: 'button',
                   text: 'Отменить',
                   view: 'secondary',
-                  onClick: () => alert('Отменить')
+                  onClick: () => alert('Отменить'),
                 },
                 {
                   type: 'button',
                   text: 'Действие',
                   view: 'secondary',
-                  onClick: () => alert('Действие')
+                  onClick: () => alert('Действие'),
                 },
                 {
                   type: 'button',
                   text: 'Сохранить',
                   view: 'accent',
-                  onClick: () => alert('Сохранить')
-                }
-              ]
-            }
-          }
+                  onClick: () => alert('Сохранить'),
+                },
+              ],
+            },
+          },
         }}
         columnConfig={columns}
         rows={rows}
       />
     );
-  }
+  },
 };
 
 export const MassPanelActionWithDisabled: Story = {
   name: 'Панель с disabled кнопками',
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     const [rows] = useState(createRows);
     const selectingRowStateAndSetter = useState(
-      (): ReadonlySet<string | number> => new Set()
+      (): ReadonlySet<string | number> => new Set(),
     );
     const [selectedCount] = selectingRowStateAndSetter;
 
@@ -294,18 +294,18 @@ export const MassPanelActionWithDisabled: Story = {
       () => [
         {
           key: 'id',
-          name: 'ID'
+          name: 'ID',
         },
         {
           key: 'task',
-          name: 'Title'
+          name: 'Title',
         },
         {
           key: 'priority',
-          name: 'Priority'
-        }
+          name: 'Priority',
+        },
       ],
-      []
+      [],
     );
 
     return (
@@ -314,7 +314,7 @@ export const MassPanelActionWithDisabled: Story = {
           containerStyle: { height: 700 },
           selecting: {
             state: selectingRowStateAndSetter,
-            rowKeyGetter: (row) => row.id
+            rowKeyGetter: (row) => row.id,
           },
           controlBlock: {
             massActionPanel: {
@@ -325,9 +325,9 @@ export const MassPanelActionWithDisabled: Story = {
                   view: 'secondary',
                   disabled: selectedCount.size === 0,
                   disabledTooltipProps: {
-                    text: 'Выберите хотя бы одну строку для экспорта'
+                    text: 'Выберите хотя бы одну строку для экспорта',
                   },
-                  onClick: () => alert('Экспорт')
+                  onClick: () => alert('Экспорт'),
                 },
 
                 {
@@ -336,9 +336,9 @@ export const MassPanelActionWithDisabled: Story = {
                   view: 'secondary',
                   disabled: selectedCount.size < 2,
                   disabledTooltipProps: {
-                    text: 'Выберите минимум 2 строки для архивирования'
+                    text: 'Выберите минимум 2 строки для архивирования',
                   },
-                  onClick: () => alert('Архивировать')
+                  onClick: () => alert('Архивировать'),
                 },
                 {
                   type: 'button',
@@ -346,26 +346,26 @@ export const MassPanelActionWithDisabled: Story = {
                   view: 'accent',
                   disabled: selectedCount.size === 0,
                   disabledTooltipProps: {
-                    text: 'Выберите строки для удаления'
+                    text: 'Выберите строки для удаления',
                   },
-                  onClick: () => alert('Accent')
-                }
-              ]
-            }
-          }
+                  onClick: () => alert('Accent'),
+                },
+              ],
+            },
+          },
         }}
         columnConfig={columns}
         rows={rows}
       />
     );
-  }
+  },
 };
 
 export const MassPanelActionForceShow: Story = {
   name: 'Панель без selecting (show: true)',
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     const [rows] = useState(createRows);
@@ -374,22 +374,22 @@ export const MassPanelActionForceShow: Story = {
       () => [
         {
           key: 'id',
-          name: 'ID'
+          name: 'ID',
         },
         {
           key: 'task',
-          name: 'Title'
+          name: 'Title',
         },
         {
           key: 'priority',
-          name: 'Priority'
+          name: 'Priority',
         },
         {
           key: 'issueType',
-          name: 'Issue Type'
-        }
+          name: 'Issue Type',
+        },
       ],
-      []
+      [],
     );
 
     return (
@@ -406,7 +406,7 @@ export const MassPanelActionForceShow: Story = {
                   view: 'secondary',
                   onClick: () => {
                     alert('Отменить');
-                  }
+                  },
                 },
                 {
                   type: 'button',
@@ -414,17 +414,17 @@ export const MassPanelActionForceShow: Story = {
                   view: 'accent',
                   onClick: () => {
                     alert('Сохранить');
-                  }
-                }
-              ]
-            }
-          }
+                  },
+                },
+              ],
+            },
+          },
         }}
         columnConfig={columns}
         rows={rows}
       />
     );
-  }
+  },
 };
 
 /**
@@ -438,13 +438,13 @@ export const MassPanelActionSizeXS: Story = {
   name: 'Уменьшенная панель (size XS)',
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     const [rows] = useState(createRows);
     // Предвыбираем несколько строк, чтобы панель сразу была видна (со счётчиком и «Сбросить всё»).
     const selectingRowStateAndSetter = useState<ReadonlySet<string | number>>(
-      () => new Set(rows.slice(0, 3).map((r) => r.id))
+      () => new Set(rows.slice(0, 3).map((r) => r.id)),
     );
 
     const columns = useMemo<readonly ColumnConfig<Row>[]>(
@@ -453,9 +453,9 @@ export const MassPanelActionSizeXS: Story = {
         { key: 'task', name: 'Title' },
         { key: 'priority', name: 'Priority' },
         { key: 'issueType', name: 'Issue Type' },
-        { key: 'developer', name: 'Developer' }
+        { key: 'developer', name: 'Developer' },
       ],
-      []
+      [],
     );
 
     return (
@@ -464,7 +464,7 @@ export const MassPanelActionSizeXS: Story = {
           containerStyle: { height: 700 },
           selecting: {
             state: selectingRowStateAndSetter,
-            rowKeyGetter: (row) => row.id
+            rowKeyGetter: (row) => row.id,
           },
           controlBlock: {
             massActionPanel: {
@@ -475,33 +475,33 @@ export const MassPanelActionSizeXS: Story = {
                   type: 'button',
                   text: 'Экспорт',
                   view: 'secondary',
-                  onClick: () => alert('Экспорт')
+                  onClick: () => alert('Экспорт'),
                 },
                 {
                   type: 'button',
                   text: 'Архивировать',
                   view: 'secondary',
-                  onClick: () => alert('Архивировать')
+                  onClick: () => alert('Архивировать'),
                 },
                 {
                   type: 'button',
                   text: 'Дублировать',
                   view: 'secondary',
-                  onClick: () => alert('Дублировать')
+                  onClick: () => alert('Дублировать'),
                 },
                 {
                   type: 'button',
                   text: 'Accent',
                   view: 'accent',
-                  onClick: () => alert('Accent')
-                }
-              ]
-            }
-          }
+                  onClick: () => alert('Accent'),
+                },
+              ],
+            },
+          },
         }}
         columnConfig={columns}
         rows={rows}
       />
     );
-  }
+  },
 };

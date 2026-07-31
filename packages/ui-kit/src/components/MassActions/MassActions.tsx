@@ -7,7 +7,7 @@ import { useEffect, useRef, useState } from 'react';
 import {
   DELAY_BEFORE_SHOW_PANEL,
   MORE_BUTTON_WIDTH_ESTIMATE,
-  PANEL_PADDING_EXPANDED
+  PANEL_PADDING_EXPANDED,
 } from './constants';
 import {
   useMassActionsButtons,
@@ -17,7 +17,7 @@ import {
   useMassActionsEffects,
   useMassActionsPosition,
   useMassActionsSidebar,
-  useMassActionsVisibility
+  useMassActionsVisibility,
 } from './hooks';
 import { MassActionsButton } from './MassActionsButton';
 import { MassActionsCounter } from './MassActionsCounter';
@@ -31,13 +31,13 @@ import {
   MassActionsContainer,
   MassActionsContent,
   StyledDivider,
-  VisibleButtonWrapper
+  VisibleButtonWrapper,
 } from './styled';
 import type {
   MassActionsButtonProps,
   MassActionsButtonPropsButton,
   MassActionsButtonPropsLinkButton,
-  MassActionsProps
+  MassActionsProps,
 } from './types';
 
 type AdaptiveButtonActionProps = {
@@ -51,7 +51,7 @@ const AdaptiveButtonAction = ({
   button,
   isCompact,
   compactSize = 'xs',
-  useTableDropdown = false
+  useTableDropdown = false,
 }: AdaptiveButtonActionProps) => {
   // Размер задан явно потребителем — используем как есть (любой). Не задан —
   // подбираем по дизайну: `s` в обычной панели, compactSize (`xs`/`xxs`) в компакте/xs.
@@ -78,7 +78,7 @@ const AdaptiveLinkAction = ({
   button,
   isCompact,
   compactSize = 'xs',
-  useTableDropdown = false
+  useTableDropdown = false,
 }: AdaptiveLinkActionProps) => {
   // Размер задан явно потребителем — используем как есть (любой). Не задан —
   // подбираем по дизайну: `s` в обычной панели, compactSize (`xs`/`xxs`) в компакте/xs.
@@ -98,7 +98,7 @@ const renderMassActionButton = (
   button: MassActionsButtonProps,
   isCompact: boolean,
   useTableDropdown = false,
-  compactSize: 'xs' | 'xxs' = 'xs'
+  compactSize: 'xs' | 'xxs' = 'xs',
 ) => {
   if (button.type === 'button') {
     return (
@@ -139,7 +139,7 @@ export const MassActions = ({
   enableDebugLogs = false,
   bottom = 16,
   minPadding = 16,
-  size
+  size,
 }: MassActionsProps) => {
   const { down } = useBreakpoint();
   // Внутри таблиц компактность задаётся статическим `size` (M/S = обычный, XS = уменьшенный),
@@ -160,7 +160,7 @@ export const MassActions = ({
 
   // Состояния для компрессии
   const [visibleButtonsCount, setVisibleButtonsCount] = useState(
-    buttons?.length ?? 0
+    buttons?.length ?? 0,
   );
   const [translateX, setTranslateX] = useState<number | undefined>(undefined);
 
@@ -180,7 +180,7 @@ export const MassActions = ({
   const {
     calculatePosition,
     calculatePositionForState,
-    shouldApplySidebarOffsetRef
+    shouldApplySidebarOffsetRef,
   } = useMassActionsPosition({
     containerRef: panelContainerRef,
     collapseButtonRef,
@@ -190,7 +190,7 @@ export const MassActions = ({
     sidebarConfig,
     visibleButtonsCount,
     setTranslateX,
-    minPadding
+    minPadding,
   });
 
   const { calculateCompression, measuredButtonWidthsRef } =
@@ -212,7 +212,7 @@ export const MassActions = ({
       minPadding,
       leftPadding: PANEL_PADDING_EXPANDED.left,
       rightPadding: PANEL_PADDING_EXPANDED.right,
-      moreButtonWidthEstimate: isCompact ? 32 : MORE_BUTTON_WIDTH_ESTIMATE
+      moreButtonWidthEstimate: isCompact ? 32 : MORE_BUTTON_WIDTH_ESTIMATE,
     });
 
   const { isSidebarOpen, wasAutoCollapsedRef } = useMassActionsSidebar({
@@ -223,7 +223,7 @@ export const MassActions = ({
     setTranslateX,
     shouldApplySidebarOffsetRef,
     sidebarConfig,
-    getContainerWidth
+    getContainerWidth,
   });
 
   const { handleToggleCollapse } = useMassActionsCollapse({
@@ -234,13 +234,13 @@ export const MassActions = ({
     calculatePosition,
     setTranslateX,
     shouldApplySidebarOffsetRef,
-    wasAutoCollapsedRef
+    wasAutoCollapsedRef,
   });
 
   const { visibleButtons, buttonsInDropdown, allButtons } =
     useMassActionsButtons({
       buttons,
-      visibleButtonsCount
+      visibleButtonsCount,
     });
 
   // Внизу файла оставил комментарий с лейаут эффектом при первичной инициализации.
@@ -248,7 +248,7 @@ export const MassActions = ({
   useEffect(() => {
     const timerId = setTimeout(
       () => setIsInitialCalculationComplete(true),
-      DELAY_BEFORE_SHOW_PANEL
+      DELAY_BEFORE_SHOW_PANEL,
     );
     return () => clearTimeout(timerId);
   }, []);
@@ -267,7 +267,7 @@ export const MassActions = ({
     calculatePosition,
     calculateCompression,
     measuredButtonWidthsRef,
-    containerWidth
+    containerWidth,
   });
 
   // Панель не показывается, если isVisible === false
@@ -308,7 +308,7 @@ export const MassActions = ({
                   button,
                   isCompact,
                   useTableDropdown,
-                  compactButtonSize
+                  compactButtonSize,
                 )}
               </ButtonMeasurementWrapper>
             );
@@ -341,7 +341,7 @@ export const MassActions = ({
                 useTableDropdown={useTableDropdown}
                 dropdownProps={{
                   placement: 'top',
-                  ...collapsedDropdownProps
+                  ...collapsedDropdownProps,
                 }}
                 triggerSlot={
                   <IconButton
@@ -368,7 +368,7 @@ export const MassActions = ({
                     button,
                     isCompact,
                     useTableDropdown,
-                    compactButtonSize
+                    compactButtonSize,
                   )}
                 </VisibleButtonWrapper>
               );
@@ -387,7 +387,7 @@ export const MassActions = ({
               }
 
               return buttonElement;
-            }
+            },
           )}
         </ActionsWrapper>
 

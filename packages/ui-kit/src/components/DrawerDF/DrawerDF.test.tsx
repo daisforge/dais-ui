@@ -16,7 +16,7 @@ afterEach(() => {
 vi.mock('@ui-kit/components/Popup', () => ({
   PopupProvider: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="mock-popup-provider">{children}</div>
-  )
+  ),
 }));
 
 // Мок DrawerX для проверки передаваемых пропсов
@@ -25,14 +25,14 @@ vi.mock('./components/DrawerX', () => ({
     <div data-testid="mock-drawer-x" data-props={JSON.stringify(props)}>
       {children}
     </div>
-  ))
+  )),
 }));
 
 // Мок всех дочерних компонентов для изоляции компонента
 vi.mock('./components/BackIconButton', () => ({
   DrawerDFBackIconButton: vi.fn(() => (
     <div data-testid="mock-back-icon">Назад</div>
-  ))
+  )),
 }));
 
 vi.mock('./components/CloseButton', () => ({
@@ -40,13 +40,13 @@ vi.mock('./components/CloseButton', () => ({
     <button type="button" data-testid="mock-close-button" onClick={onClose}>
       Закрыть
     </button>
-  ))
+  )),
 }));
 
 vi.mock('./components/DotsIconButton', () => ({
   DrawerDFDotsIconButton: vi.fn(() => (
     <div data-testid="mock-dots-icon">Меню</div>
-  ))
+  )),
 }));
 
 // Импорт после моков
@@ -56,7 +56,7 @@ import { DrawerDF } from './DrawerDF';
 describe('DrawerDF', () => {
   const baseProps = {
     opened: true,
-    onClose: vi.fn()
+    onClose: vi.fn(),
   };
 
   describe('обёртка PopupProvider', () => {
@@ -84,12 +84,12 @@ describe('DrawerDF', () => {
         <DrawerDF
           {...baseProps}
           main={<DrawerDF.Content>Контент</DrawerDF.Content>}
-        />
+        />,
       );
       const props = JSON_PARSE(
         container.querySelector<HTMLDivElement>(
-          '[data-testid="mock-drawer-x"]'
-        )!.dataset['props']
+          '[data-testid="mock-drawer-x"]',
+        )!.dataset['props'],
       );
       expect(props.$multipleContents).toBe(false);
     });
@@ -100,26 +100,26 @@ describe('DrawerDF', () => {
           {...baseProps}
           main={[
             <DrawerDF.Content key="1">Контент 1</DrawerDF.Content>,
-            <DrawerDF.Content key="2">Контент 2</DrawerDF.Content>
+            <DrawerDF.Content key="2">Контент 2</DrawerDF.Content>,
           ]}
-        />
+        />,
       );
       const props = JSON_PARSE(
         container.querySelector<HTMLDivElement>(
-          '[data-testid="mock-drawer-x"]'
-        )!.dataset['props']
+          '[data-testid="mock-drawer-x"]',
+        )!.dataset['props'],
       );
       expect(props.$multipleContents).toBe(true);
     });
 
     it('должен вычислять maxWidth по-разному для одиночного и множественного контента', () => {
       const { container: singleContainer } = render(
-        <DrawerDF {...baseProps} main={<DrawerDF.Content />} />
+        <DrawerDF {...baseProps} main={<DrawerDF.Content />} />,
       );
       const singleProps = JSON_PARSE(
         singleContainer.querySelector<HTMLDivElement>(
-          '[data-testid="mock-drawer-x"]'
-        )!.dataset['props']
+          '[data-testid="mock-drawer-x"]',
+        )!.dataset['props'],
       );
 
       const { container: multipleContainer } = render(
@@ -127,14 +127,14 @@ describe('DrawerDF', () => {
           {...baseProps}
           main={[
             <DrawerDF.Content key="1">Контент 1</DrawerDF.Content>,
-            <DrawerDF.Content key="2">Контент 2</DrawerDF.Content>
+            <DrawerDF.Content key="2">Контент 2</DrawerDF.Content>,
           ]}
-        />
+        />,
       );
       const multipleProps = JSON_PARSE(
         multipleContainer.querySelector<HTMLDivElement>(
-          '[data-testid="mock-drawer-x"]'
-        )!.dataset['props']
+          '[data-testid="mock-drawer-x"]',
+        )!.dataset['props'],
       );
 
       // Одиночный контент использует отступ -52px, множественный - -64px
@@ -151,7 +151,7 @@ describe('DrawerDF', () => {
           {...baseProps}
           main={<DrawerDF.Content>Контент</DrawerDF.Content>}
           footer={<DrawerDF.Footer>Футер</DrawerDF.Footer>}
-        />
+        />,
       );
       expect(getByText('Футер')).toBeDefined();
     });
@@ -162,10 +162,10 @@ describe('DrawerDF', () => {
           {...baseProps}
           main={[
             <DrawerDF.Content key="1">Контент 1</DrawerDF.Content>,
-            <DrawerDF.Content key="2">Контент 2</DrawerDF.Content>
+            <DrawerDF.Content key="2">Контент 2</DrawerDF.Content>,
           ]}
           footer={<DrawerDF.Footer>Футер</DrawerDF.Footer>}
-        />
+        />,
       );
       // Футер не должен рендериться при множественном контенте
       expect(queryByText('Футер')).toBeNull();
@@ -178,7 +178,7 @@ describe('DrawerDF', () => {
         <DrawerDF
           {...baseProps}
           header={<DrawerDF.Header title="Заголовок" />}
-        />
+        />,
       );
       expect(getByText('Заголовок')).toBeDefined();
     });
@@ -214,12 +214,12 @@ describe('DrawerDF', () => {
   describe('spread пропсов', () => {
     it('должен передавать дополнительные пропсы в DrawerX', () => {
       const { container } = render(
-        <DrawerDF {...baseProps} width="800px" placement="left" />
+        <DrawerDF {...baseProps} width="800px" placement="left" />,
       );
       const props = JSON_PARSE(
         container.querySelector<HTMLDivElement>(
-          '[data-testid="mock-drawer-x"]'
-        )!.dataset['props']
+          '[data-testid="mock-drawer-x"]',
+        )!.dataset['props'],
       );
       expect(props.width).toBe('800px');
       expect(props.placement).toBe('left');
@@ -231,12 +231,12 @@ describe('DrawerDF', () => {
           {...baseProps}
           header={<DrawerDF.Header title="Заголовок" />}
           footer={<DrawerDF.Footer>Футер</DrawerDF.Footer>}
-        />
+        />,
       );
       const props = JSON_PARSE(
         container.querySelector<HTMLDivElement>(
-          '[data-testid="mock-drawer-x"]'
-        )!.dataset['props']
+          '[data-testid="mock-drawer-x"]',
+        )!.dataset['props'],
       );
       expect(props.$header).toBe(true);
       expect(props.$footer).toBe(true);
@@ -246,8 +246,8 @@ describe('DrawerDF', () => {
       const { container } = render(<DrawerDF {...baseProps} />);
       const props = JSON_PARSE(
         container.querySelector<HTMLDivElement>(
-          '[data-testid="mock-drawer-x"]'
-        )!.dataset['props']
+          '[data-testid="mock-drawer-x"]',
+        )!.dataset['props'],
       );
       expect(props.$header).toBe(false);
       expect(props.$footer).toBe(false);
@@ -268,7 +268,7 @@ describe('DrawerDF', () => {
             {...baseProps}
             main={<DrawerDF.Content />}
             footer={undefined}
-          />
+          />,
         );
       }).not.toThrow();
     });
@@ -276,7 +276,7 @@ describe('DrawerDF', () => {
     it('должен обрабатывать пустой header без ошибок', () => {
       expect(() => {
         render(
-          <DrawerDF {...baseProps} header={<DrawerDF.Header title="" />} />
+          <DrawerDF {...baseProps} header={<DrawerDF.Header title="" />} />,
         );
       }).not.toThrow();
     });

@@ -3,7 +3,7 @@ import type { CanvasEl } from '@ui-kit/components/TableGlide';
 
 import type {
   ColumnGlideInstance,
-  HeaderCellInfoGlideInstance
+  HeaderCellInfoGlideInstance,
 } from '../../type';
 
 /**
@@ -12,7 +12,7 @@ import type {
  */
 export type AdaptedHeaderCellInfo<
   R extends ObjectForExtending,
-  SR = unknown
+  SR = unknown,
 > = Pick<HeaderCellInfoGlideInstance<R, SR>, 'column'>;
 
 /**
@@ -20,7 +20,7 @@ export type AdaptedHeaderCellInfo<
  * Принимает адаптированный формат данных (с key и name).
  */
 export type UserRenderHeaderCell<R extends ObjectForExtending, SR = unknown> = (
-  cellInfo: AdaptedHeaderCellInfo<R, SR>
+  cellInfo: AdaptedHeaderCellInfo<R, SR>,
 ) => CanvasEl;
 
 /**
@@ -28,7 +28,7 @@ export type UserRenderHeaderCell<R extends ObjectForExtending, SR = unknown> = (
  */
 export interface AdaptRenderHeaderCellInput<
   R extends ObjectForExtending,
-  SR = unknown
+  SR = unknown,
 > {
   column: ColumnGlideInstance<R, SR>;
 }

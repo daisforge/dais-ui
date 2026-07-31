@@ -7,7 +7,7 @@ export type {
   BreakpointReturn,
   MediaProviderProps,
   MediaQuery,
-  UppercaseBreakpoint
+  UppercaseBreakpoint,
 } from './types';
 export { useBreakpoint } from './useBreakpoint';
 export { media } from './utils';

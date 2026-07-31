@@ -6,13 +6,13 @@ import {
   COLORS,
   DURATION,
   HEIGHT_FILTERLIST_BLOCK,
-  TABLE_BORDER_RADIUS
+  TABLE_BORDER_RADIUS,
 } from '../../styles';
 import {
   ActiveViewModsType,
   ColumnConfig,
   ObjectForExtending,
-  TableConfig
+  TableConfig,
 } from '../../types';
 import { useFilterManagement } from '../hooks/use-filter-management';
 
@@ -26,7 +26,7 @@ export const FilterListBlock = <
   RowIdType extends string | number,
   RowType extends ObjectForExtending,
   HeaderContextValueType extends ObjectForExtending,
-  SummaryRowType = unknown
+  SummaryRowType = unknown,
 >({
   isOpened,
   activeView,
@@ -34,7 +34,7 @@ export const FilterListBlock = <
   tableConfig,
   headerContextValue,
   $borderLeftTopRadiusRounded,
-  $borderRightTopRadiusRounded
+  $borderRightTopRadiusRounded,
 }: {
   isOpened: boolean;
   activeView: ActiveViewModsType;
@@ -46,14 +46,14 @@ export const FilterListBlock = <
 }) => {
   const [filters, setFilters] = tableConfig.filtering?.state ?? [
     undefined,
-    undefined
+    undefined,
   ];
 
   const { options, filtersInfo, filtersOrder } = useFilterManagement({
     columnConfig,
     filters,
     tableConfig,
-    headerContextValue
+    headerContextValue,
   });
 
   const { filterList, clearAll } = useFiltersList({
@@ -65,7 +65,7 @@ export const FilterListBlock = <
       }
     },
     filtersInfo,
-    order: filtersOrder
+    order: filtersOrder,
   });
 
   if (!tableConfig.filtering) {
@@ -97,8 +97,8 @@ export const FilterListBlock = <
         transition: `all ${DURATION}s ease`,
         ...(activeView === 'cards' && {
           backgroundColor: 'transparent',
-          borderColor: 'transparent'
-        })
+          borderColor: 'transparent',
+        }),
       }}
       chipStyle={tableConfig.filtering.chipStyle}
       renderGroupLabel={tableConfig.filtering.renderGroupLabel}

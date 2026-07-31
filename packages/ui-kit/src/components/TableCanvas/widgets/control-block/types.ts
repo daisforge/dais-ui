@@ -1,7 +1,7 @@
 import { DropdownItemOption } from '@ui-kit/components/Dropdown';
 import {
   DataAttributes,
-  DefaultSidebarTabIds
+  DefaultSidebarTabIds,
 } from '@ui-kit/components/TableCanvas/types';
 import { IconProps } from '@ui-kit/icons';
 import { ChangeEvent, FC, ReactNode } from 'react';

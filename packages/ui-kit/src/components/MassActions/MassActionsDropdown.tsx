@@ -1,7 +1,7 @@
 import { Dropdown, DropdownItemOption } from '@ui-kit/components/Dropdown';
 import {
   processDropdownItems,
-  useDropdownItemClickHandler
+  useDropdownItemClickHandler,
 } from '@ui-kit/utils/dropdownUtils';
 import React, { ReactNode, useMemo, useState } from 'react';
 import { CSSObject } from 'styled-components';
@@ -11,7 +11,7 @@ import { TableDropdownConfigProps } from '../Table/components/TableDropdown/type
 import { MassActionsButtonProps } from './types';
 
 const useMassActionsButtonsToDropdownItems = (
-  buttons: MassActionsButtonProps[] = []
+  buttons: MassActionsButtonProps[] = [],
 ) =>
   useMemo(() => {
     const items: DropdownItemOption[] = [];
@@ -40,11 +40,11 @@ const useMassActionsButtonsToDropdownItems = (
 
         const [processedItems, itemHandlers] = processDropdownItems(
           dropdownItems,
-          onItemSelect
+          onItemSelect,
         );
 
         itemHandlers.forEach((handler, key) =>
-          globalHandlerMap.set(key, handler)
+          globalHandlerMap.set(key, handler),
         );
 
         if (button.dropdown?.$css) {
@@ -57,7 +57,7 @@ const useMassActionsButtonsToDropdownItems = (
           contentLeft: button.contentLeft,
           items: processedItems,
           className: button.className,
-          disabled: button.disabled
+          disabled: button.disabled,
         });
       } else {
         // Обработка обычных кнопок
@@ -66,7 +66,7 @@ const useMassActionsButtonsToDropdownItems = (
           label: button.text || 'Кнопка',
           value: value.toString(),
           disabled: button.disabled,
-          contentLeft: button.contentLeft
+          contentLeft: button.contentLeft,
         };
 
         if (button.onClick) {
@@ -77,11 +77,11 @@ const useMassActionsButtonsToDropdownItems = (
               preventDefault: event.preventDefault,
               stopPropagation: event.stopPropagation,
               target: event.target as EventTarget & HTMLElement,
-              currentTarget: event.currentTarget as EventTarget & HTMLElement
+              currentTarget: event.currentTarget as EventTarget & HTMLElement,
             } as unknown as React.MouseEvent<HTMLElement>;
 
             button.onClick?.(
-              mouseEvent as React.MouseEvent<HTMLAnchorElement, MouseEvent>
+              mouseEvent as React.MouseEvent<HTMLAnchorElement, MouseEvent>,
             );
           });
         }
@@ -93,7 +93,7 @@ const useMassActionsButtonsToDropdownItems = (
     return {
       dropdownItems: items,
       handlerMap: globalHandlerMap,
-      $summaryCSS
+      $summaryCSS,
     };
   }, [buttons]);
 
@@ -106,7 +106,7 @@ export const MassActionsDropdown = ({
   dividerIndexes = [],
   triggerSlot,
   dropdownProps,
-  useTableDropdown = false
+  useTableDropdown = false,
 }: {
   buttons: MassActionsButtonProps[];
   dividerIndexes?: Array<number>;
@@ -134,7 +134,7 @@ export const MassActionsDropdown = ({
     items,
     onToggle: (state: boolean) => setIsOpenDropDown(state),
     portal: 'document',
-    view: dropdownProps?.['view'] || 'default'
+    view: dropdownProps?.['view'] || 'default',
   };
 
   const { portal, ...forTable } = commonProps;

@@ -6,7 +6,7 @@ export const sizeToTextHint = {
   l: TextL,
   m: TextM,
   s: TextS,
-  xs: TextXS
+  xs: TextXS,
 };
 
 export const monthShortNames: TMouthNames = {
@@ -28,7 +28,7 @@ export const monthShortNames: TMouthNames = {
   'сен.': 8,
   'окт.': 9,
   'ноя.': 10,
-  'дек.': 11
+  'дек.': 11,
 };
 
 export const monthLongNames: TMouthNames = {
@@ -55,5 +55,5 @@ export const monthLongNames: TMouthNames = {
   ноября: 10,
   ноябрь: 10,
   декабря: 11,
-  декабрь: 11
+  декабрь: 11,
 };

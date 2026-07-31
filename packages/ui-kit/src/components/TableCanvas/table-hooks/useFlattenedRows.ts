@@ -4,7 +4,7 @@ import { AllRowsMapEntry } from '../feature-row-markers/types';
 import {
   SUBROWS_KEY,
   TREE_ID_KEY,
-  TREE_LVL_KEY
+  TREE_LVL_KEY,
 } from '../feature-tree/constants';
 import { getTreeIdAndLvlOfRow } from '../feature-tree/handlers';
 import { ObjectForExtending, TableConfig } from '../types';
@@ -18,7 +18,7 @@ const PARENT_ROW_KEY = '__parentRowKey';
 
 const getRecursivelyRowAndOpenedSubRows = <
   RowType,
-  RowIdType extends string | number
+  RowIdType extends string | number,
 >({
   r,
   parentId,
@@ -26,7 +26,7 @@ const getRecursivelyRowAndOpenedSubRows = <
   lvl = 0,
   getRowIsExpanded,
   rowKeyGetter,
-  getSubRows
+  getSubRows,
 }: {
   r: RowType;
   getRowIsExpanded: (key: string | number) => boolean;
@@ -45,20 +45,20 @@ const getRecursivelyRowAndOpenedSubRows = <
     {
       ...r,
       ...(parentId && {
-        [TREE_ID_KEY]: `${parentId}`
+        [TREE_ID_KEY]: `${parentId}`,
       }),
       // Записываем ключ родителя для вычисления parentKey в allRowsMap.
       // Для root-строк parentRowKey === undefined → поле не добавляется.
       ...(parentRowKey != null && {
-        [PARENT_ROW_KEY]: parentRowKey
+        [PARENT_ROW_KEY]: parentRowKey,
       }),
       // Кеш уровня вложенности. Записываем только для subRows (lvl > 0),
       // чтобы root-строки не мутировались. getTreeIdAndLvlOfRow для root
       // возвращает 0 без split, поэтому кеш на root не нужен.
       ...(lvl > 0 && {
-        [TREE_LVL_KEY]: lvl
-      })
-    }
+        [TREE_LVL_KEY]: lvl,
+      }),
+    },
   ] as RowType[];
 
   if (!hasChildren) {
@@ -91,7 +91,7 @@ const getRecursivelyRowAndOpenedSubRows = <
       lvl: lvl + 1,
       parentId: `${
         parentId ? `${parentId}` : `${keyOfRow.toString()}`
-      }.${SUBROWS_KEY}.${i}`
+      }.${SUBROWS_KEY}.${i}`,
     });
     rowAndAllOpenedSubRows.push(...arr2);
   });
@@ -103,11 +103,11 @@ export const useFlattenedRows = <
   FilterStateType extends ObjectForExtending,
   RowIdType extends string | number,
   RowType extends ObjectForExtending,
-  SummaryRowType = unknown
+  SummaryRowType = unknown,
 >({
   rows,
   tableConfig,
-  groupedCols
+  groupedCols,
 }: {
   rows: readonly RowType[];
 
@@ -115,7 +115,7 @@ export const useFlattenedRows = <
   groupedCols: string[] | undefined;
 }) => {
   const localExpandedRowsIdsStateAndSetter = useState(
-    new Set<string | number>()
+    new Set<string | number>(),
   );
   const expandedRowsIdsStateAndSetter =
     tableConfig.subRows?.expandedIdsState ?? localExpandedRowsIdsStateAndSetter;
@@ -154,7 +154,7 @@ export const useFlattenedRows = <
         r: currRow,
         getRowIsExpanded: () => true,
         rowKeyGetter,
-        getSubRows
+        getSubRows,
       });
 
       rowAndAllOpenedSubRows.forEach((r) => {
@@ -186,7 +186,7 @@ export const useFlattenedRows = <
           index,
           rootIndex: isRoot ? rootCount : null,
           siblingIndex: currentSiblingIndex,
-          parentKey
+          parentKey,
         });
 
         if (isRoot) {
@@ -213,7 +213,7 @@ export const useFlattenedRows = <
     rows,
     // tableConfig.subRows?.getSubRows, - вместо данного стейта вписан в зависимости tableConfigSubRowsBoolean
     // tableConfig.subRows?.rowKeyGetter, - вместо данного стейта вписан в зависимости tableConfigSubRowsBoolean
-    tableConfigSubRowsBoolean
+    tableConfigSubRowsBoolean,
   ]);
 
   const flattenedRows = useMemo(() => {
@@ -230,7 +230,7 @@ export const useFlattenedRows = <
           return expandedRowsIds.has(keyOfRow);
         },
         rowKeyGetter,
-        getSubRows
+        getSubRows,
       });
 
       acc.push(...rowAndAllOpenedSubRows);
@@ -243,7 +243,7 @@ export const useFlattenedRows = <
     rows,
     // tableConfig.subRows?.getSubRows, - вместо данного стейта вписан в зависимости tableConfigSubRowsBoolean
     // tableConfig.subRows?.rowKeyGetter, - вместо данного стейта вписан в зависимости tableConfigSubRowsBoolean
-    tableConfigSubRowsBoolean
+    tableConfigSubRowsBoolean,
   ]);
 
   const isExpandedAllRows =
@@ -259,14 +259,14 @@ export const useFlattenedRows = <
     return getExpandedAll({
       allRowsIds: expandedAllRowsIds,
       shownRows: flattenedRows,
-      expandedRowsIds
+      expandedRowsIds,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     expandedAllRowsIds,
     flattenedRows,
     // tableConfig.rowsGrouping?.expandAllBtn?.expandedAll, // функция должна быть чистой, поэтому ее можно не актуализировать
-    tableConfigSubRowsBoolean
+    tableConfigSubRowsBoolean,
   ]);
 
   const resultExpandedAll = externalIsExpandedAllRows ?? isExpandedAllRows;
@@ -288,6 +288,6 @@ export const useFlattenedRows = <
     expandedRowsIds,
     isExpandedAllRows: resultExpandedAll,
     toggleExpandAllButton,
-    allRowsMap
+    allRowsMap,
   };
 };

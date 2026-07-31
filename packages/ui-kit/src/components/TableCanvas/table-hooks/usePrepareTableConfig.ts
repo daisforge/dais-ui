@@ -5,9 +5,9 @@ export const usePrepareTableConfig = <
   FilterStateType extends ObjectForExtending,
   RowIdType extends string | number,
   RowType extends ObjectForExtending,
-  SummaryRowType = unknown
+  SummaryRowType = unknown,
 >({
-  tableConfigExternal
+  tableConfigExternal,
 }: {
   tableConfigExternal: TableConfig<
     RowType,
@@ -31,8 +31,8 @@ export const usePrepareTableConfig = <
     tableConfig: {
       ...tableConfigExternal,
       ...(rowsGrouping && {
-        subRows: getRowsGroupingSubrowsConfig(rowsGrouping)
-      })
-    } as typeof tableConfigExternal
+        subRows: getRowsGroupingSubrowsConfig(rowsGrouping),
+      }),
+    } as typeof tableConfigExternal,
   };
 };

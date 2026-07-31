@@ -9,7 +9,7 @@ type FullscreenWrapperProps = {
 export const SplitViewFullscreenWrapper = ({
   children,
   isFullScreened,
-  fullScreenedModalDFProps
+  fullScreenedModalDFProps,
 }: FullscreenWrapperProps) => {
   if (!isFullScreened) {
     return children;
@@ -26,7 +26,7 @@ export const SplitViewFullscreenWrapper = ({
       {...fullScreenedModalDFProps}
       fullScreen={{
         ...modalDFFullScreenPropsObj,
-        defaultEnabled: true
+        defaultEnabled: true,
       }}
     >
       {children}

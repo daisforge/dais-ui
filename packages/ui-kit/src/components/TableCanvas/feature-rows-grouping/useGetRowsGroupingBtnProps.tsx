@@ -12,7 +12,7 @@ import { ControlBlockButtonProps } from '../widgets/control-block/control-block-
 import { getDropdownIconSize } from '../widgets/control-block/use-buttons-to-dropdown';
 import {
   ITEM_ID_GROUPED_ROWS,
-  NAME_TRIGGER_DROPDOWN_GROUPED_ROWS
+  NAME_TRIGGER_DROPDOWN_GROUPED_ROWS,
 } from './constants';
 
 const resetOptionStyle = () => ({
@@ -21,10 +21,10 @@ const resetOptionStyle = () => ({
     '& > div': {
       maxWidth: 'fit-content',
       '& *': {
-        fontWeight: 600
-      }
-    }
-  }
+        fontWeight: 600,
+      },
+    },
+  },
 });
 const CheckBoxI = ({ checked }: { checked: boolean }) => (
   <Checkbox
@@ -48,20 +48,20 @@ const Counter = styled.span({
   marginLeft: '0.25rem',
   overflow: 'hidden',
   textOverflow: 'ellipsis',
-  whiteSpace: 'nowrap'
+  whiteSpace: 'nowrap',
 });
 
 export const useGetRowsGroupingBtnProps = <
   FilterStateType extends ObjectForExtending,
   RowType extends ObjectForExtending,
   RowIdType extends string | number,
-  SummaryRowType
+  SummaryRowType,
 >({
   isActivatedRowsGrouping,
   columnConfig,
   groupedCols,
   setGroupedCols,
-  tableConfig
+  tableConfig,
 }: {
   tableConfig: TableConfig<RowType, SummaryRowType, RowIdType, FilterStateType>;
   isActivatedRowsGrouping: boolean;
@@ -72,7 +72,7 @@ export const useGetRowsGroupingBtnProps = <
   const {
     getGroupedCount: getGroupedCountExternal,
     onItemSelect: onItemSelectExternal,
-    defaultCustomItems: defaultCustomItemsExternal
+    defaultCustomItems: defaultCustomItemsExternal,
   } = tableConfig?.rowsGrouping?.groupButton ?? {};
   const rowsGroupingDomMetadata = tableConfig?.rowsGrouping?.domMetadata;
   return useMemo(() => {
@@ -81,7 +81,7 @@ export const useGetRowsGroupingBtnProps = <
     }
     const columns = {
       visible: [] as string[],
-      hidden: [] as string[]
+      hidden: [] as string[],
     };
     const dropdownOptions: DropdownProps['items'] = columnConfig
       .filter((col) => {
@@ -105,8 +105,8 @@ export const useGetRowsGroupingBtnProps = <
           contentLeft: <CheckBoxI checked={checked} />,
 
           ...(checked && {
-            contentRight: <BadgeI text={indexInGrouped + 1} />
-          })
+            contentRight: <BadgeI text={indexInGrouped + 1} />,
+          }),
         };
       });
 
@@ -118,9 +118,9 @@ export const useGetRowsGroupingBtnProps = <
       return {
         contentLeft: <CheckBoxI checked={checked} />,
         ...(checked && {
-          contentRight: <BadgeI text={indexInGrouped + 1} />
+          contentRight: <BadgeI text={indexInGrouped + 1} />,
         }),
-        ...i
+        ...i,
       };
     });
 
@@ -131,14 +131,14 @@ export const useGetRowsGroupingBtnProps = <
       label: 'Сбросить все',
       value: 'reset',
       className: 'reset-groups-btn',
-      contentLeft: <IconClose color="inherit" />
+      contentLeft: <IconClose color="inherit" />,
     });
 
     const groupedCount = getGroupedCountExternal
       ? getGroupedCountExternal({
           currCount: groupedCols.length,
           groupedCols,
-          columns
+          columns,
         })
       : groupedCols.length;
 
@@ -166,14 +166,14 @@ export const useGetRowsGroupingBtnProps = <
               onItemSelectExternal({ item, setGroupedCols, columns });
               rowsGroupingDomMetadata?.onClick?.(undefined, {
                 action: DOM_METADATA_ACTIONS.CUSTOM_ITEM_SELECT,
-                columnKey: item.value
+                columnKey: item.value,
               });
               return;
             }
             if (item.value === 'reset') {
               setGroupedCols([]);
               rowsGroupingDomMetadata?.onClick?.(undefined, {
-                action: DOM_METADATA_ACTIONS.RESET_GROUPS
+                action: DOM_METADATA_ACTIONS.RESET_GROUPS,
               });
               return;
             }
@@ -194,7 +194,7 @@ export const useGetRowsGroupingBtnProps = <
               rowsGroupingDomMetadata?.onClick?.(undefined, {
                 action: DOM_METADATA_ACTIONS.TOGGLE_GROUP,
                 columnKey: item.value,
-                enabled: willBeEnabled
+                enabled: willBeEnabled,
               });
               return copy;
             });
@@ -202,11 +202,11 @@ export const useGetRowsGroupingBtnProps = <
         },
         items: dropdownOptions,
         closeOnSelect: false,
-        $css: resetOptionStyle()
+        $css: resetOptionStyle(),
       },
       itemID: ITEM_ID_GROUPED_ROWS, // Необходимо для идентификации фичи в useButtonsToDropdown. Для идентификации селекта кнопки Группировать
       className: rowsGroupingDomMetadata?.className,
-      ...rowsGroupingDomMetadata?.dataAttributes
+      ...rowsGroupingDomMetadata?.dataAttributes,
     };
     return { rowsGroupingButtonProps };
     // не включены getGroupedCountExternal, onItemSelectExternal, defaultCustomItemsExternal - достаточно проверить isActivatedRowsGrouping

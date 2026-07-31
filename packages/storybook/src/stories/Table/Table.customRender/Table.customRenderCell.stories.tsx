@@ -14,9 +14,9 @@ const meta: Meta = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      page: DocStoryTemplate
-    }
-  }
+      page: DocStoryTemplate,
+    },
+  },
 };
 
 export default meta;
@@ -55,7 +55,7 @@ const CellContainer: FC<PropsWithChildren> = ({ children }) => (
       justifyContent: 'center',
       alignItems: 'center',
       width: '100%',
-      height: '100%'
+      height: '100%',
     }}
   >
     {children}
@@ -65,7 +65,7 @@ const CellContainer: FC<PropsWithChildren> = ({ children }) => (
 export const CustomRenderCell: Story = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   name: 'Кастомизация рендера ячейки',
   args: {
@@ -78,7 +78,7 @@ export const CustomRenderCell: Story = {
           <CellContainer>
             <Chip text="Это чип" type="submit" tabIndex={tabIndex} />
           </CellContainer>
-        )
+        ),
       },
       {
         key: 'task',
@@ -98,7 +98,7 @@ export const CustomRenderCell: Story = {
               {row?.task}
             </Button>
           </CellContainer>
-        )
+        ),
       },
       {
         key: 'priority',
@@ -111,7 +111,7 @@ export const CustomRenderCell: Story = {
             High: 'accent',
             Medium: 'warning',
             Low: 'dark',
-            Critical: 'negative'
+            Critical: 'negative',
           };
           return (
             <CellContainer>
@@ -122,26 +122,26 @@ export const CustomRenderCell: Story = {
               />
             </CellContainer>
           );
-        }
+        },
       },
       {
         key: 'issueType',
-        name: 'Issue Type'
+        name: 'Issue Type',
       },
       {
         key: 'complete',
-        name: '% Complete'
-      }
-    ]
+        name: '% Complete',
+      },
+    ],
   },
   argTypes: {},
   render: ({ rows, columnConfig }) => (
     <Table
       tableConfig={{
-        containerStyle: { height: 700 }
+        containerStyle: { height: 700 },
       }}
       columnConfig={columnConfig}
       rows={rows}
     />
-  )
+  ),
 };

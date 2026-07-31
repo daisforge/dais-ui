@@ -12,9 +12,9 @@ const meta: Meta = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      page: DocStoryTemplate
-    }
-  }
+      page: DocStoryTemplate,
+    },
+  },
 };
 
 export default meta;
@@ -47,7 +47,7 @@ type Story = StoryObj<
 export const NoRowsFallback: Story = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   name: 'Нет данных',
   args: {
@@ -59,36 +59,36 @@ export const NoRowsFallback: Story = {
           <div
             style={{
               display: 'flex',
-              justifyContent: 'space-between'
+              justifyContent: 'space-between',
             }}
           >
             id
             <IconSber size="xs" color="inherit" />
           </div>
-        )
+        ),
       },
       {
         key: 'task',
-        name: 'Title'
+        name: 'Title',
       },
       {
         key: 'priority',
-        name: 'Priority'
+        name: 'Priority',
       },
       {
         key: 'issueType',
-        name: 'Issue Type'
+        name: 'Issue Type',
       },
       {
         key: 'complete',
-        name: '% Complete'
-      }
-    ]
+        name: '% Complete',
+      },
+    ],
   },
   argTypes: {
     noRowsFallback: {
-      control: 'boolean'
-    }
+      control: 'boolean',
+    },
   },
   render: ({ noRowsFallback, columnConfig }) => {
     const [rows] = useState<Row[]>([]);
@@ -97,11 +97,11 @@ export const NoRowsFallback: Story = {
       <Table
         tableConfig={{
           containerStyle: { height: 700 },
-          noRowsFallback
+          noRowsFallback,
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };

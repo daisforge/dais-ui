@@ -9,7 +9,7 @@ import type { FormSegmentGroupProps, TGroupPropsForStyled } from './types';
 import { toDefaultSelected } from './utils';
 
 export const FormSegmentGroup = <TFieldValues extends FieldValues>(
-  props: FormSegmentGroupProps<TFieldValues>
+  props: FormSegmentGroupProps<TFieldValues>,
 ) => {
   const {
     name,
@@ -34,7 +34,7 @@ export const FormSegmentGroup = <TFieldValues extends FieldValues>(
     hintText,
     hintTrigger,
     hintHasArrow,
-    showError = true
+    showError = true,
   } = props;
 
   const formCtx = useChangedFormContext(options);
@@ -56,7 +56,7 @@ export const FormSegmentGroup = <TFieldValues extends FieldValues>(
           name: fieldName,
           ...fieldRest
         },
-        fieldState: { error }
+        fieldState: { error },
       }) => {
         const groupProps: TGroupPropsForStyled<TFieldValues> = {
           ...fieldRest,
@@ -73,7 +73,7 @@ export const FormSegmentGroup = <TFieldValues extends FieldValues>(
           orientation: orientation === 'vertical' ? 'vertical' : undefined,
           $mode: orientation === 'vertical' ? 'column' : 'row',
           ref,
-          onBlur
+          onBlur,
         };
 
         // Создаём defaultSelected на основе текущего значения

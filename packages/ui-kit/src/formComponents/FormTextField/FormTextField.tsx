@@ -28,7 +28,7 @@ export const FormTextField = <TFieldValues extends FieldValues>({
     ...options,
     required: getPriorityRequired({ options, ruleName: 'required' })
       ? options?.required
-      : propsRequired
+      : propsRequired,
   };
 
   const [focusTextField, setFocusTextField] = useState(false);
@@ -43,7 +43,7 @@ export const FormTextField = <TFieldValues extends FieldValues>({
       rules={rules}
       render={({
         field: { name: _fieldName, value, onBlur, onChange, ...fieldRest },
-        fieldState: { error }
+        fieldState: { error },
       }) => (
         <TextField
           {...fieldRest}

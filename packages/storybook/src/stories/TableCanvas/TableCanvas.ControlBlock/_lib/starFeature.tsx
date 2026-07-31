@@ -18,7 +18,7 @@ import React, { useState } from 'react';
 export const STAR_OPTIONS = [
   { value: 'important', label: 'Важное' },
   { value: 'urgent', label: 'Срочное' },
-  { value: 'later', label: 'На потом' }
+  { value: 'later', label: 'На потом' },
 ];
 
 type RowSize = 'big' | 'medium' | 'small';
@@ -33,7 +33,7 @@ type RenderCtx = { rowSize: RowSize; isInDropdown: boolean };
  */
 export const useStarFeature = ({
   embedSize = 'm',
-  panelStarSize = 's'
+  panelStarSize = 's',
 }: {
   embedSize?: 's' | 'm';
   panelStarSize?: 'xs' | 's';
@@ -51,12 +51,12 @@ export const useStarFeature = ({
           display: 'inline-flex',
           alignItems: 'center',
           justifyContent: 'center',
-          visibility: selected === opt.value ? 'visible' : 'hidden'
+          visibility: selected === opt.value ? 'visible' : 'hidden',
         }}
       >
         <IconDone size="s" color={textInfo} />
       </Box>
-    )
+    ),
   }));
 
   return {
@@ -71,7 +71,7 @@ export const useStarFeature = ({
               display: 'inline-flex',
               alignItems: 'center',
               justifyContent: 'center',
-              visibility: selected === opt.value ? 'visible' : 'hidden'
+              visibility: selected === opt.value ? 'visible' : 'hidden',
             }}
           >
             <IconDone
@@ -79,7 +79,7 @@ export const useStarFeature = ({
               color={textInfo}
             />
           </Box>
-        )
+        ),
       }));
 
       return (
@@ -103,7 +103,7 @@ export const useStarFeature = ({
       onChange: (value: string) => setSelected(value),
       icon: ({ rowSize }: RenderCtx) => (
         <IconStar size={rowSize === 'small' ? 'xs' : 's'} />
-      )
-    }
+      ),
+    },
   };
 };

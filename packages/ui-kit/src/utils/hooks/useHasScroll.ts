@@ -19,11 +19,11 @@ interface ScrollState {
 export const useHasScroll = (
   ref: RefObject<HTMLElement>,
   direction: ScrollDirection = 'vertical',
-  observeResize = true
+  observeResize = true,
 ): ScrollState | boolean => {
   const [scrollState, setScrollState] = useState<ScrollState>({
     vertical: false,
-    horizontal: false
+    horizontal: false,
   });
 
   useEffect(() => {
@@ -39,7 +39,7 @@ export const useHasScroll = (
       setScrollState((prev) =>
         prev.vertical !== newVertical || prev.horizontal !== newHorizontal
           ? { vertical: newVertical, horizontal: newHorizontal }
-          : prev
+          : prev,
       );
     };
 

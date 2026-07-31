@@ -16,7 +16,7 @@ const mockData = [
   { label: 'Сергей Сидоров' },
   { label: 'Мария Кузнецова' },
   { label: 'Андрей Попов' },
-  { label: 'Анна Николаева' }
+  { label: 'Анна Николаева' },
 ];
 
 const meta: Meta<AutocompleteProps> = {
@@ -24,8 +24,8 @@ const meta: Meta<AutocompleteProps> = {
   component: Autocomplete,
   parameters: {
     docs: {
-      toc: true
-    }
+      toc: true,
+    },
   },
   tags: ['!autodocs'],
   args: {
@@ -36,28 +36,28 @@ const meta: Meta<AutocompleteProps> = {
     placeholder: 'Начните вводить',
     leftHelper: 'Подсказка к полю',
     disabled: false,
-    readOnly: false
+    readOnly: false,
   },
   argTypes: {
     size: {
       options: ['s', 'xs'],
-      control: { type: 'select' }
+      control: { type: 'select' },
     },
     view: {
       options: ['default', 'positive', 'warning', 'negative'],
-      control: { type: 'select' }
+      control: { type: 'select' },
     },
     labelPlacement: {
       options: ['outer', 'inner'],
-      control: { type: 'inline-radio' }
+      control: { type: 'inline-radio' },
     },
     disabled: {
-      control: { type: 'boolean' }
+      control: { type: 'boolean' },
     },
     readOnly: {
-      control: { type: 'boolean' }
-    }
-  }
+      control: { type: 'boolean' },
+    },
+  },
 };
 
 export default meta;
@@ -78,7 +78,7 @@ import { Autocomplete } from '@daisforge/ui';
 export const Default: Story = {
   name: 'Default',
   ...storySourceDoc({
-    preCode
+    preCode,
   }),
   render: (args: AutocompleteProps) => {
     const [value, setValue] = useState('');
@@ -96,7 +96,7 @@ export const Default: Story = {
         />
       </div>
     );
-  }
+  },
 };
 
 /**
@@ -107,7 +107,7 @@ export const Default: Story = {
 export const Sizes: Story = {
   name: 'Размеры',
   ...storySourceDoc({
-    preCode
+    preCode,
   }),
   render: (args: AutocompleteProps) => {
     const sizes = ['s', 'xs'] as const;
@@ -115,7 +115,7 @@ export const Sizes: Story = {
       l: '',
       m: '',
       s: '',
-      xs: ''
+      xs: '',
     });
 
     return (
@@ -125,7 +125,7 @@ export const Sizes: Story = {
           flexDirection: 'column',
           gap: '1rem',
           width: '400px',
-          minHeight: '300px'
+          minHeight: '300px',
         }}
       >
         {sizes.map((size) => (
@@ -147,7 +147,7 @@ export const Sizes: Story = {
         ))}
       </div>
     );
-  }
+  },
 };
 
 /**
@@ -162,7 +162,7 @@ export const Sizes: Story = {
 export const WithClear: Story = {
   name: 'Различные варианты',
   ...storySourceDoc({
-    preCode
+    preCode,
   }),
   render: (args: AutocompleteProps) => {
     const [value1, setValue1] = useState('Алексей');
@@ -177,7 +177,7 @@ export const WithClear: Story = {
           flexDirection: 'column',
           gap: '1rem',
           width: '400px',
-          minHeight: '300px'
+          minHeight: '300px',
         }}
       >
         {/* Сценарий 3: onClear + value → только крестик */}
@@ -257,5 +257,5 @@ export const WithClear: Story = {
         />
       </div>
     );
-  }
+  },
 };

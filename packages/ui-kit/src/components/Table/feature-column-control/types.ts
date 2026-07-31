@@ -53,7 +53,7 @@ export type ColumnsControlConfig = {
       setColumnsOrder: (value: React.SetStateAction<string[]>) => void;
       setPinnedCols: (value: React.SetStateAction<string[]>) => void;
       setHiddenCols: (value: React.SetStateAction<string[]>) => void;
-    }
+    },
   ) => void;
   /**
    * DomMetadata для кнопок закрепления столбцов

@@ -1137,5 +1137,5 @@ export {
   inverseDataBlueTransparentHover,
   inverseDataBlueTransparentActive,
   inverseDataRedTransparentHover,
-  inverseDataRedTransparentActive
+  inverseDataRedTransparentActive,
 } from '@salutejs/sdds-themes/tokens/sdds_finai';

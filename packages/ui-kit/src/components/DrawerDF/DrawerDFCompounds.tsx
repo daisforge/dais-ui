@@ -9,7 +9,7 @@ import { drawerDFClassNames as cls } from './classNames';
 import type {
   DrawerDFContentProps,
   DrawerDFFooterProps,
-  DrawerDFHeaderProps
+  DrawerDFHeaderProps,
 } from './types';
 
 export const DrawerDFHeader = ({
@@ -33,7 +33,7 @@ export const DrawerDFHeader = ({
         className={cls.drawerHeader}
         $css={{
           paddingTop: spacing.x12,
-          ...style
+          ...style,
         }}
         {...props}
       >
@@ -49,7 +49,7 @@ export const DrawerDFHeader = ({
       className={cls.drawerHeader}
       {...props}
       $css={{
-        ...style
+        ...style,
       }}
     >
       <div className={cls.drawerHeaderContainer}>
@@ -108,8 +108,8 @@ export const DrawerDFContent = ({
       ...(fixedWidth && {
         flexGrow: 0,
         flexShrink: 0,
-        flexBasis: fixedWidth
-      })
+        flexBasis: fixedWidth,
+      }),
     }}
     ref={refEl}
     className={cls.drawerContent}

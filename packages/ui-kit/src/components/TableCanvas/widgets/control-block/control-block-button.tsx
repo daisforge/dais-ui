@@ -8,22 +8,22 @@ import React, { useState } from 'react';
 import styled, {
   css,
   CSSObject,
-  FlattenSimpleInterpolation
+  FlattenSimpleInterpolation,
 } from 'styled-components';
 
 import { TableDropdown } from '../../components/TableDropdown/TableDropdown';
 import {
   ButtonProps,
   ControlBlockButtonProps,
-  controlButtonDefaultProps
+  controlButtonDefaultProps,
 } from './control-block-button.types';
 
 export const StyledLinkButton = styled(LinkButton)({
-  paddingInline: s.x8
+  paddingInline: s.x8,
 }) as typeof LinkButton;
 
 export const StyledDivider = styled(Divider)({
-  paddingLeft: '1px'
+  paddingLeft: '1px',
 });
 
 interface StyledButtonProps {
@@ -34,7 +34,7 @@ interface StyledButtonProps {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const StyledButton: React.FC<ButtonProps & StyledButtonProps> = styled(
-  Button
+  Button,
 )<StyledButtonProps>`
   ${({ $hasDropdown }) =>
     $hasDropdown &&
@@ -74,7 +74,7 @@ const StyledButton: React.FC<ButtonProps & StyledButtonProps> = styled(
  * @deprecated Link-views устарели — все кнопки controlBlock рендерятся как обычные.
  */
 const mapToButtonView = (
-  view: ControlBlockButtonProps['view']
+  view: ControlBlockButtonProps['view'],
 ): ButtonProps['view'] => {
   if (!view) return 'secondary';
   if (view.startsWith('link')) return 'secondary';
@@ -83,7 +83,7 @@ const mapToButtonView = (
 
 const resizeIcon = (
   icon: React.ReactNode,
-  iconSize?: string
+  iconSize?: string,
 ): React.ReactNode => {
   if (!iconSize || !React.isValidElement(icon)) return icon;
   // Уважаем явно заданный размер: если разработчик сам задал size на иконке
@@ -146,7 +146,7 @@ export const ControlBlockButton = ({
           display: 'inline-flex',
           alignItems: 'center',
           transform: isDropdownOpen ? 'scaleY(-1)' : 'scaleY(1)',
-          transition: 'transform 0.2s ease'
+          transition: 'transform 0.2s ease',
         }}
       >
         {node}
@@ -167,11 +167,11 @@ export const ControlBlockButton = ({
     ? {
         ...buttonProps,
         contentLeft: resizeIcon(buttonProps['contentLeft'], iconSize),
-        contentRight: wrapContentRight(resizeIcon(rawContentRight, iconSize))
+        contentRight: wrapContentRight(resizeIcon(rawContentRight, iconSize)),
       }
     : {
         ...buttonProps,
-        contentRight: wrapContentRight(rawContentRight)
+        contentRight: wrapContentRight(rawContentRight),
       };
 
   let btn = (

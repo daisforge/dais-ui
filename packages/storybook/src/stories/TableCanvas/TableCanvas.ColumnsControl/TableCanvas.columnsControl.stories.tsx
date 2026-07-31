@@ -7,7 +7,7 @@ import { Box } from '@ui-kit/components/Box';
 import {
   Canvas,
   ColumnConfig,
-  TableCanvas
+  TableCanvas,
 } from '@ui-kit/components/TableCanvas';
 import { IconDone, IconPinListOutline } from '@ui-kit/icons';
 import { textInfo } from '@ui-kit/tokens';
@@ -18,9 +18,9 @@ const meta: Meta = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      page: DocStoryTemplate
-    }
-  }
+      page: DocStoryTemplate,
+    },
+  },
 };
 
 export default meta;
@@ -34,7 +34,7 @@ type Story = StoryObj;
 export const ColumnsControl: Story = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     const [rows] = useState(createRows);
@@ -55,34 +55,34 @@ export const ColumnsControl: Story = {
                 123
               </Canvas.Button>
             );
-          }
+          },
         },
         {
           key: 'task',
-          name: 'Title'
+          name: 'Title',
         },
         {
           key: 'priority',
-          name: 'Priority'
+          name: 'Priority',
         },
         {
           key: 'issueType',
-          name: 'Issue Type'
+          name: 'Issue Type',
         },
         {
           key: 'developer',
-          name: 'Developer'
+          name: 'Developer',
         },
         {
           key: 'tr1',
-          name: 'TR'
+          name: 'TR',
         },
         {
           key: 'complete',
-          name: '% Complete'
-        }
+          name: '% Complete',
+        },
       ],
-      []
+      [],
     );
 
     return (
@@ -98,7 +98,7 @@ export const ColumnsControl: Story = {
             reorderingAside: true,
             reorderingHeader: true,
             columnsLabel: {
-              task: 'Задачи'
+              task: 'Задачи',
             },
             orderDefault: ['id', 'issueType', 'task'],
             hiddenDefault: ['tr1'],
@@ -110,14 +110,14 @@ export const ColumnsControl: Story = {
                                     pinned: ${pinned.join(', ')}
                                     hidden: ${hidden.join(', ')}
                                 `);
-            }
-          }
+            },
+          },
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };
 
 /**
@@ -135,7 +135,7 @@ export const ColumnsControl: Story = {
 export const ColumnsControlPinningMenu: Story = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   name: 'ColumnsControl: доп. пункты меню закрепления',
   render: () => {
@@ -151,9 +151,9 @@ export const ColumnsControlPinningMenu: Story = {
         { key: 'priority', name: 'Priority' },
         { key: 'issueType', name: 'Issue Type' },
         { key: 'developer', name: 'Developer' },
-        { key: 'complete', name: '% Complete' }
+        { key: 'complete', name: '% Complete' },
       ],
-      []
+      [],
     );
 
     return (
@@ -167,13 +167,13 @@ export const ColumnsControlPinningMenu: Story = {
             onNotification: (e) => {
               // eslint-disable-next-line no-alert
               alert(e.message);
-            }
+            },
           },
           columnsControl: {
             enable: true,
             pinning: true,
             disablePinning: ['developer'],
-            pinnedDefault: ['complete']
+            pinnedDefault: ['complete'],
           },
           controlBlock: {
             pinningMenu: {
@@ -192,7 +192,7 @@ export const ColumnsControlPinningMenu: Story = {
                       color={isRowsPinned ? textInfo : 'inherit'}
                     />
                   ),
-                  onClick: () => setIsRowsPinned((prev) => !prev)
+                  onClick: () => setIsRowsPinned((prev) => !prev),
                 },
                 {
                   value: 'pin-header',
@@ -204,7 +204,7 @@ export const ColumnsControlPinningMenu: Story = {
                         display: 'inline-flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        visibility: isHeaderPinned ? 'visible' : 'hidden'
+                        visibility: isHeaderPinned ? 'visible' : 'hidden',
                       }}
                     >
                       <IconDone
@@ -213,15 +213,15 @@ export const ColumnsControlPinningMenu: Story = {
                       />
                     </Box>
                   ),
-                  onClick: () => setIsHeaderPinned((prev) => !prev)
-                }
-              ]
-            }
-          }
+                  onClick: () => setIsHeaderPinned((prev) => !prev),
+                },
+              ],
+            },
+          },
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };

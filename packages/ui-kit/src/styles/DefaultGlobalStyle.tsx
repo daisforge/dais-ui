@@ -9,7 +9,7 @@ import {
   sdds_finai__light,
   sdds_finai_high_contrast__dark,
   sdds_finai_high_contrast__light,
-  standard_typo_theme
+  standard_typo_theme,
 } from '../themes';
 import { generateNotificationViewStyles } from './notificationClassNames';
 import { TOOLTIP_FULL_WIDTH_CLASS } from './tooltipClassNames';
@@ -69,7 +69,7 @@ export const DarkGlobalStyle = () => {
 
 export function scopeTheme(
   themeTokens: TemplateStringsArray,
-  selector: string
+  selector: string,
 ) {
   return themeTokens.join('\n').replace(/:root/g, selector);
 }
@@ -78,14 +78,14 @@ const sddsThemeMap = {
   light: sdds_finai__light,
   dark: sdds_finai__dark,
   highContrastLight: sdds_finai_high_contrast__light,
-  highContrastDark: sdds_finai_high_contrast__dark
+  highContrastDark: sdds_finai_high_contrast__dark,
 } as const;
 
 const sddsThemeCompMap = {
   light: SDDSTheme,
   dark: DarkSDDSTheme,
   highContrastLight: HCLightSDDSTheme,
-  highContrastDark: HCDarkSDDSTheme
+  highContrastDark: HCDarkSDDSTheme,
 } as const;
 
 // const sddsThemeModuleCssMap = {
@@ -98,7 +98,7 @@ const sddsThemeCompMap = {
 export type GlobalStyleTheme = keyof typeof sddsThemeMap;
 
 export const GlobalStyle = ({
-  theme = 'light'
+  theme = 'light',
 }: {
   theme?: GlobalStyleTheme;
 }) => {
@@ -127,7 +127,7 @@ export const GlobalStyle = ({
 
 export const TestGlobalIsolatedStyleWithReplace = ({
   theme = 'light',
-  scopeSelector
+  scopeSelector,
 }: {
   theme?: GlobalStyleTheme;
   /**
@@ -163,7 +163,7 @@ export const TestGlobalIsolatedStyleWithReplace = ({
 
 export const styledTestRootIsolatedThemeProviderLayoutMixin = ({
   isLightBase,
-  theme
+  theme,
 }: {
   isLightBase: boolean;
   theme: keyof typeof sddsThemeMap;
@@ -181,7 +181,7 @@ export const StyledTestRootIsolatedThemeProviderLayout = styled.div<{
   ${({ isLightBase, activeTheme }) =>
     styledTestRootIsolatedThemeProviderLayoutMixin({
       isLightBase,
-      theme: activeTheme
+      theme: activeTheme,
     })}
 `;
 

@@ -7,7 +7,7 @@ import { applyValuesToRows } from './applyValuesToRows';
 const numFormat = {
   type: 'number',
   decimalSeparator: ',',
-  thousandSeparator: ' '
+  thousandSeparator: ' ',
 } as const;
 
 /** Служебная колонка (нумерация) — всегда пропускается. */
@@ -15,21 +15,21 @@ const svc = (): TransferColumnConfig =>
   ({
     key: 'svc',
     isServiceColumn: true,
-    editable: false
+    editable: false,
   } as unknown as TransferColumnConfig);
 
 /** Data-колонка: editable управляет правом записи, extra — editingCell/contentFormat. */
 const dcol = (
   key: string,
   editable = true,
-  extra: Record<string, unknown> = {}
+  extra: Record<string, unknown> = {},
 ): TransferColumnConfig =>
   ({ key, editable, ...extra } as unknown as TransferColumnConfig);
 
 const numCol = (key: string): TransferColumnConfig =>
   dcol(key, true, {
     editingCell: { component: 'inputNumber' },
-    contentFormat: numFormat
+    contentFormat: numFormat,
   });
 
 /** Значение из буфера по смещениям (paste-стиль). */
@@ -41,7 +41,7 @@ const BASE = {
   allowSubRows: false,
   readonlyBehavior: 'skip' as const,
   validation: 'none' as const,
-  validateContexts: {}
+  validateContexts: {},
 };
 
 describe('applyValuesToRows — paste в прямоугольник', () => {
@@ -50,7 +50,7 @@ describe('applyValuesToRows — paste в прямоугольник', () => {
     const rows = [
       { a: '', b: '' },
       { a: '', b: '' },
-      { a: '', b: '' }
+      { a: '', b: '' },
     ];
 
     const res = applyValuesToRows({
@@ -61,8 +61,8 @@ describe('applyValuesToRows — paste в прямоугольник', () => {
       colTargets: [1, 2],
       getValue: fromBuffer([
         ['A0', 'B0'],
-        ['A1', 'B1']
-      ])
+        ['A1', 'B1'],
+      ]),
     });
 
     expect(res.newRows[0]).toEqual({ a: 'A0', b: 'B0' });
@@ -83,7 +83,7 @@ describe('applyValuesToRows — paste в прямоугольник', () => {
       columns,
       rowTargets: [0, 1, 2],
       colTargets: [1],
-      getValue: () => 'X' // одинаково для всех смещений
+      getValue: () => 'X', // одинаково для всех смещений
     });
 
     expect(res.newRows.map((r) => r.a)).toEqual(['X', 'X', 'X']);
@@ -101,7 +101,7 @@ describe('applyValuesToRows — paste в прямоугольник', () => {
       columns,
       rowTargets: [0],
       colTargets: [1],
-      getValue: () => 'new'
+      getValue: () => 'new',
     });
 
     expect(original.a).toBe('orig'); // исходный объект не тронут
@@ -121,7 +121,7 @@ describe('applyValuesToRows — служебные и readonly ячейки', ()
       columns,
       rowTargets: [0],
       colTargets: [0, 1], // 0 — служебная
-      getValue: () => 'V'
+      getValue: () => 'V',
     });
 
     expect(res.newRows[0]).toEqual({ a: 'V' });
@@ -138,7 +138,7 @@ describe('applyValuesToRows — служебные и readonly ячейки', ()
       columns,
       rowTargets: [0],
       colTargets: [1, 2],
-      getValue: () => 'V'
+      getValue: () => 'V',
     });
 
     expect(res.newRows[0]).toEqual({ a: 'V', ro: 'keep' });
@@ -157,7 +157,7 @@ describe('applyValuesToRows — служебные и readonly ячейки', ()
       columns,
       rowTargets: [0],
       colTargets: [1, 2],
-      getValue: () => 'V'
+      getValue: () => 'V',
     });
 
     expect(res.aborted).toBe(true);
@@ -178,7 +178,7 @@ describe('applyValuesToRows — валидация type-check', () => {
       columns,
       rowTargets: [0],
       colTargets: [1],
-      getValue: () => 'abc' // не число
+      getValue: () => 'abc', // не число
     });
 
     expect(res.affectedIndexes).toEqual([]);
@@ -188,7 +188,7 @@ describe('applyValuesToRows — валидация type-check', () => {
       col: 1,
       row: 0,
       value: 'abc',
-      columnKey: 'n'
+      columnKey: 'n',
     });
   });
 
@@ -203,7 +203,7 @@ describe('applyValuesToRows — валидация type-check', () => {
       columns,
       rowTargets: [0],
       colTargets: [1],
-      getValue: () => '1 234,56'
+      getValue: () => '1 234,56',
     });
 
     expect(res.newRows[0]?.n).toBe(1234.56);
@@ -224,7 +224,7 @@ describe('applyValuesToRows — fill handle (source range)', () => {
       colTargets: [1],
       getValue: () => 'F',
       // source = ячейка (col 1, row 0) — исходная, её не трогаем
-      source: { x: 1, y: 0, width: 1, height: 1 }
+      source: { x: 1, y: 0, width: 1, height: 1 },
     });
 
     expect(res.newRows[0]?.a).toBe('src'); // внутри source — пропущена

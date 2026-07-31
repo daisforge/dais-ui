@@ -23,7 +23,7 @@ export const FormMask = <TFieldValues extends FieldValues>({
     ...options,
     required: getPriorityRequired({ options, ruleName: 'required' })
       ? options?.required
-      : propsRequired
+      : propsRequired,
   };
 
   const formCtx = useChangedFormContext(newOptions);
@@ -37,7 +37,7 @@ export const FormMask = <TFieldValues extends FieldValues>({
       rules={rules}
       render={({
         field: { name: _fieldName, onBlur, onChange, ...fieldRest },
-        fieldState: { error }
+        fieldState: { error },
       }) => (
         <Mask
           {...fieldRest}

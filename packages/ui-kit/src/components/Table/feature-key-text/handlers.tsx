@@ -9,7 +9,7 @@ import { KEY_TEXT_KEY, KEY_TEXT_OPTIONS, KEY_TEXT_PARENT } from './constants';
 import type { KeyText, KeyTextConfig } from './types';
 
 export const showKeyText = (
-  tableConfigKeyText: boolean | KeyTextConfig | undefined
+  tableConfigKeyText: boolean | KeyTextConfig | undefined,
 ) => {
   if (!tableConfigKeyText) {
     return false;
@@ -22,16 +22,16 @@ export const showKeyText = (
 };
 export const getKeyTextCol = <
   ColumnObj extends { key: string },
-  Column extends ColumnObj | ((props: { keyText: KeyText }) => ColumnObj)
+  Column extends ColumnObj | ((props: { keyText: KeyText }) => ColumnObj),
 >(
   col: Column,
-  keyText: KeyText
+  keyText: KeyText,
 ) => (typeof col === 'function' ? col({ keyText }) : (col as ColumnObj));
 
 export const getCols = <K, T>({
   keyText,
   key,
-  text
+  text,
 }: {
   keyText: KeyText;
   key: K;
@@ -63,10 +63,10 @@ export const getColsWithKeyText = <
   Column extends {
     key: string;
     keyText?: Column | ((props: { keyText: KeyText }) => Column);
-  }
+  },
 >(
   cols: Column[],
-  keyText: KeyText
+  keyText: KeyText,
 ) =>
   cols.reduce((acc, curr) => {
     if (!curr.keyText) {
@@ -76,7 +76,7 @@ export const getColsWithKeyText = <
 
     const keyCol = {
       ...getKeyTextCol(curr.keyText, keyText),
-      [KEY_TEXT_PARENT]: curr.key
+      [KEY_TEXT_PARENT]: curr.key,
     } as Column;
 
     const current = { ...curr, keyText: keyCol };
@@ -91,7 +91,7 @@ export const getColsWithKeyText = <
 export const getKeyTextOptionsWithIcon = ({
   keyText,
   onItemSelect,
-  rowSize
+  rowSize,
 }: {
   keyText: KeyText;
   onItemSelect?: (item: KeyText) => void;
@@ -106,12 +106,12 @@ export const getKeyTextOptionsWithIcon = ({
           display: 'inline-flex',
           alignItems: 'center',
           justifyContent: 'center',
-          visibility: keyText === el.value ? 'visible' : 'hidden'
+          visibility: keyText === el.value ? 'visible' : 'hidden',
         }}
       >
         <IconDone size={rowSize ? SIZES[rowSize].icon : 's'} color={textInfo} />
       </Box>
     ),
 
-    ...(onItemSelect && { onItemSelect: () => onItemSelect(el.value) })
+    ...(onItemSelect && { onItemSelect: () => onItemSelect(el.value) }),
   }));

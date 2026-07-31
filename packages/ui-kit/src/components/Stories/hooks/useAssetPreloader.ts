@@ -10,7 +10,7 @@ import { StoriesGroupMeta } from '../Stories.types';
  * группы следующая уже частично готова. Дедупликация — на уровне кэша preloadImage.
  */
 export const useAssetPreloader = (
-  groups: StoriesGroupMeta[]
+  groups: StoriesGroupMeta[],
 ): ((index: number) => void) => {
   const groupsRef = useRef(groups);
   groupsRef.current = groups;

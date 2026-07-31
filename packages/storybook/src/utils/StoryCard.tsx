@@ -11,7 +11,7 @@ export const StoryCard = ({
       padding: 16,
       borderRadius: 16,
       background: '#ededed',
-      ...style
+      ...style,
     }}
     {...rest}
   >

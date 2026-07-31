@@ -13,7 +13,7 @@ import { TextField } from '@ui-kit/components/TextField';
 import {
   IconMinusSquareFill,
   IconPlusSquareFill,
-  IconSber
+  IconSber,
 } from '@ui-kit/icons';
 import React, { ComponentType, useMemo, useState } from 'react';
 
@@ -21,8 +21,8 @@ const ICONS_PROP = {
   closed: <IconPlusSquareFill color="inherit" />,
   opened: <IconMinusSquareFill color="inherit" />,
   iconButtonProps: {
-    view: 'success'
-  } as IconButtonProps
+    view: 'success',
+  } as IconButtonProps,
 };
 
 const meta: Meta = {
@@ -30,10 +30,10 @@ const meta: Meta = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      page: DocStoryTemplate
-    }
+      page: DocStoryTemplate,
+    },
   },
-  component: StoryTableConfigComp as ComponentType<unknown>
+  component: StoryTableConfigComp as ComponentType<unknown>,
 };
 
 export default meta;
@@ -60,7 +60,7 @@ import { IconAddOutline, IconBoxOutline, IconSber } from '@daisforge/ui/icons';
 export const RowDetailPanel: StoryObj = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   name: 'Row detail panel',
   render: () => {
@@ -74,32 +74,32 @@ export const RowDetailPanel: StoryObj = {
             <div
               style={{
                 display: 'flex',
-                justifyContent: 'space-between'
+                justifyContent: 'space-between',
               }}
             >
               id
               <IconSber size="xs" color="inherit" />
             </div>
-          )
+          ),
         },
         {
           key: 'task',
-          name: 'Title'
+          name: 'Title',
         },
         {
           key: 'priority',
-          name: 'Priority'
+          name: 'Priority',
         },
         {
           key: 'issueType',
-          name: 'Issue Type'
+          name: 'Issue Type',
         },
         {
           key: 'complete',
-          name: '% Complete'
-        }
+          name: '% Complete',
+        },
       ],
-      []
+      [],
     );
 
     return (
@@ -108,7 +108,7 @@ export const RowDetailPanel: StoryObj = {
           containerStyle: { height: 700 },
           editing: {
             onRowsChange: setRows,
-            rowKeyGetter: (r) => r.id
+            rowKeyGetter: (r) => r.id,
           },
 
           rowDetailPanel: {
@@ -121,13 +121,13 @@ export const RowDetailPanel: StoryObj = {
               const applyChanging = () => {
                 onRowChange({
                   ...row,
-                  complete: value
+                  complete: value,
                 });
 
                 if (tableRef) {
                   tableRef.current?.selectCell({
                     idx: 4,
-                    rowIdx: rowIdx - 1
+                    rowIdx: rowIdx - 1,
                   });
                 }
               };
@@ -150,13 +150,13 @@ export const RowDetailPanel: StoryObj = {
             },
             expandButtonColumnKey: 'issueType',
             detailHeight: 300,
-            icons: ICONS_PROP
+            icons: ICONS_PROP,
           },
-          enableVirtualization: false
+          enableVirtualization: false,
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };

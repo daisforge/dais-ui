@@ -27,7 +27,7 @@ export function calculateMinColumnWidth(options: {
     columnIsPinned,
     subRowIsActiveAndColumnWithArrow,
     reorderForColIsActive = false,
-    customMinWidth
+    customMinWidth,
   } = options;
 
   // Базовые константы
@@ -41,7 +41,7 @@ export function calculateMinColumnWidth(options: {
   const leftFeatures = [
     subRowIsActiveAndColumnWithArrow,
     reorderForColIsActive,
-    columnIsPinned
+    columnIsPinned,
   ].filter(Boolean).length;
 
   const leftWidth =

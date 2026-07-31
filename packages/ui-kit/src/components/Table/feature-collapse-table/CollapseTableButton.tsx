@@ -15,7 +15,7 @@ export const CollapseTableButton = forwardRef<
     collapseText,
     expandText,
     domMetadata,
-    collapseButtonPlacement
+    collapseButtonPlacement,
   } = useTableCollapse();
 
   if (!enableCollapse) return null;
@@ -33,7 +33,7 @@ export const CollapseTableButton = forwardRef<
             size="s"
             style={{
               transition: 'rotate 0.3s',
-              rotate: isCollapsed ? '0turn' : '0.25turn'
+              rotate: isCollapsed ? '0turn' : '0.25turn',
             }}
           />
         }

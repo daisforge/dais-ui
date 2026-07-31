@@ -7,7 +7,7 @@ import type {
   FilterItem,
   ItemModifications,
   UseAdaptiveFiltersParams,
-  UseAdaptiveFiltersResult
+  UseAdaptiveFiltersResult,
 } from './types';
 
 /**
@@ -16,14 +16,14 @@ import type {
 function buildResult(
   items: FilterItem[],
   activeBreakpoint: number,
-  config: AdaptiveFiltersBreakpointConfig
+  config: AdaptiveFiltersBreakpointConfig,
 ): Omit<UseAdaptiveFiltersResult, 'getItemStyle' | 'hasActiveFilters'> {
   const {
     visible = [],
     inOverlay = [],
     hidden = [],
     modifications = {},
-    customActions = {}
+    customActions = {},
   } = config;
 
   // Создаем Set'ы для быстрого поиска
@@ -59,7 +59,7 @@ function buildResult(
     actions.push({
       type: 'modify',
       targetId: id,
-      payload: mods
+      payload: mods,
     });
   });
 
@@ -72,7 +72,7 @@ function buildResult(
     activeBreakpoint,
     hasOverlayItems: overlayItems.length > 0,
     hasModifications: Object.keys(modifications).length > 0,
-    customActions
+    customActions,
   };
 }
 
@@ -119,7 +119,7 @@ function buildResult(
 export const useAdaptiveFilters = ({
   items,
   width,
-  breakpoints
+  breakpoints,
 }: UseAdaptiveFiltersParams): UseAdaptiveFiltersResult => {
   // Вычисляем состояние на основе брейкпоинтов
   const state = useMemo(() => {
@@ -130,7 +130,7 @@ export const useAdaptiveFilters = ({
 
     // Находим активный брейкпоинт
     const activeBreakpointData = sortedBreakpoints.find(
-      ({ breakpoint }) => width >= breakpoint
+      ({ breakpoint }) => width >= breakpoint,
     );
 
     if (!activeBreakpointData) {
@@ -143,15 +143,15 @@ export const useAdaptiveFilters = ({
         fallbackBreakpoint?.config || {
           visible: [],
           inOverlay: [],
-          hidden: []
-        }
+          hidden: [],
+        },
       );
     }
 
     return buildResult(
       items,
       activeBreakpointData.breakpoint,
-      activeBreakpointData.config
+      activeBreakpointData.config,
     );
   }, [items, width, breakpoints]);
 
@@ -159,7 +159,7 @@ export const useAdaptiveFilters = ({
   const getItemStyle = useCallback(
     (
       modifications: ItemModifications | undefined,
-      availableWidth?: number
+      availableWidth?: number,
     ): React.CSSProperties => {
       if (!modifications) return {};
 
@@ -178,7 +178,7 @@ export const useAdaptiveFilters = ({
 
       return style;
     },
-    []
+    [],
   );
 
   // Хелпер для проверки активных фильтров
@@ -204,12 +204,12 @@ export const useAdaptiveFilters = ({
 
         return Boolean(filterValue);
       }),
-    []
+    [],
   );
 
   return {
     ...state,
     getItemStyle,
-    hasActiveFilters
+    hasActiveFilters,
   };
 };

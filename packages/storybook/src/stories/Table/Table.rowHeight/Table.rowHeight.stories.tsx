@@ -9,7 +9,7 @@ import {
   ColumnConfig,
   RowHeightFunc,
   SIZES,
-  Table
+  Table,
 } from '@ui-kit/components/Table';
 import React, { ComponentType, useCallback, useMemo, useState } from 'react';
 
@@ -19,10 +19,10 @@ const meta: Meta = {
 
   parameters: {
     docs: {
-      page: DocStoryTemplate
-    }
+      page: DocStoryTemplate,
+    },
   },
-  component: StoryTableConfigComp as ComponentType<unknown>
+  component: StoryTableConfigComp as ComponentType<unknown>,
 };
 
 export default meta;
@@ -49,7 +49,7 @@ import { IconAddOutline, IconBoxOutline, IconSber } from '@daisforge/ui/icons';
 export const RowHeight: StoryObj = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   name: 'Row height',
   render: () => {
@@ -59,15 +59,15 @@ export const RowHeight: StoryObj = {
       () => [
         {
           key: 'id',
-          name: 'id'
+          name: 'id',
         },
         {
           key: 'task',
-          name: 'Title'
+          name: 'Title',
         },
         {
           key: 'priority',
-          name: 'Priority'
+          name: 'Priority',
         },
         {
           key: 'loremIpsum',
@@ -77,14 +77,14 @@ export const RowHeight: StoryObj = {
             <Box as="span" $css={{ textWrap: 'wrap' }}>
               {row.loremIpsum}
             </Box>
-          )
+          ),
         },
         {
           key: 'complete',
-          name: '% Complete'
-        }
+          name: '% Complete',
+        },
       ],
-      []
+      [],
     );
 
     const rowHeight: RowHeightFunc<Row> = useCallback((r, currenRowSize) => {
@@ -100,7 +100,7 @@ export const RowHeight: StoryObj = {
 
       const countOfLine = Math.ceil(allSymbols / symbolsInOneLine);
       const paddingBlock = Number(
-        SIZES[currenRowSize.rowSizeName].cell['padding-block'].slice(0, -2)
+        SIZES[currenRowSize.rowSizeName].cell['padding-block'].slice(0, -2),
       );
 
       const neededHeight = heightOfLine * countOfLine + paddingBlock * 2;
@@ -114,11 +114,11 @@ export const RowHeight: StoryObj = {
       <Table
         tableConfig={{
           containerStyle: { height: 700 },
-          rowHeight
+          rowHeight,
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };

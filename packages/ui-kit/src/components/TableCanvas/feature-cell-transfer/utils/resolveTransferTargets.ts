@@ -9,7 +9,7 @@ import {
   getSelectedRowIndexes,
   hasColumnsOnlySelection,
   hasRowsOnlySelection,
-  isContiguousIndexes
+  isContiguousIndexes,
 } from './selectionTargets';
 
 /** Какая ось выделения стала источником переноса данных. */
@@ -18,7 +18,7 @@ export type TransferTargetKind = 'cells' | 'cell-ranges' | 'columns' | 'rows';
 /** Клампит прямоугольник к data-колонкам (без сервисных). null — если пустой. */
 function clampRectToData(
   rect: Rectangle,
-  firstDataCol: number
+  firstDataCol: number,
 ): Rectangle | null {
   const x = Math.max(rect.x, firstDataCol);
   const width = rect.x + rect.width - x;
@@ -63,7 +63,7 @@ export type ResolveTransferResult =
 const EMPTY: ResolveTransferResult = { status: 'empty' };
 const ok = (targets: TransferTargets): ResolveTransferResult => ({
   status: 'ok',
-  targets
+  targets,
 });
 
 /**
@@ -72,7 +72,7 @@ const ok = (targets: TransferTargets): ResolveTransferResult => ({
 export function resolveTransferTargets(
   selection: GridSelection | null,
   columns: readonly TransferColumnConfig[],
-  rowCount: number
+  rowCount: number,
 ): ResolveTransferResult {
   if (!selection) return EMPTY;
 
@@ -112,7 +112,7 @@ export function resolveTransferTargets(
           rowTargets: rows,
           colTargets: cols,
           contiguousRows: isContiguousIndexes(rows),
-          contiguousCols: true
+          contiguousCols: true,
         });
       }
       if (rows.length === 1) {
@@ -123,7 +123,7 @@ export function resolveTransferTargets(
           rowTargets: rows,
           colTargets: cols,
           contiguousRows: true,
-          contiguousCols: isContiguousIndexes(cols)
+          contiguousCols: isContiguousIndexes(cols),
         });
       }
       // 2D-выбор: если объединение прямоугольников — СПЛОШНОЙ прямоугольник (все
@@ -148,7 +148,7 @@ export function resolveTransferTargets(
           rowTargets: rangeToIndexes(minRow, bboxHeight),
           colTargets: rangeToIndexes(minCol, bboxWidth),
           contiguousRows: true,
-          contiguousCols: true
+          contiguousCols: true,
         });
       }
 
@@ -164,7 +164,7 @@ export function resolveTransferTargets(
       rowTargets: rangeToIndexes(range.y, range.height),
       colTargets: rangeToIndexes(range.x, range.width),
       contiguousRows: true,
-      contiguousCols: true
+      contiguousCols: true,
     });
   }
 
@@ -180,7 +180,7 @@ export function resolveTransferTargets(
       rowTargets: rangeToIndexes(0, rowCount),
       colTargets: colIndexes,
       contiguousRows: true,
-      contiguousCols: isContiguousIndexes(colIndexes)
+      contiguousCols: isContiguousIndexes(colIndexes),
     });
   }
 
@@ -197,12 +197,12 @@ export function resolveTransferTargets(
         x: firstDataCol,
         y: firstRow,
         width: dataWidth,
-        height: rowIndexes.length
+        height: rowIndexes.length,
       },
       rowTargets: rowIndexes,
       colTargets: rangeToIndexes(firstDataCol, dataWidth),
       contiguousRows: isContiguousIndexes(rowIndexes),
-      contiguousCols: true
+      contiguousCols: true,
     });
   }
 

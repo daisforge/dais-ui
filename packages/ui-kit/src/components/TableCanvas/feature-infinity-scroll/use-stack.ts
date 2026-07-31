@@ -4,7 +4,7 @@ import { ObjectForExtending } from '../types';
 
 export const useStack = <RowType extends ObjectForExtending>({
   rows,
-  onTrigger
+  onTrigger,
 }: {
   rows: RowType[];
   onTrigger: ((rows: RowType[]) => Promise<void>) | undefined;
@@ -15,7 +15,7 @@ export const useStack = <RowType extends ObjectForExtending>({
     (prev: (prev: (typeof onTrigger)[]) => (typeof onTrigger)[]) => {
       stackRef.current = prev(stackRef.current);
     },
-    []
+    [],
   );
   const [fromEmptyToOne, setFromEmptyToOne] = useState(0);
   const [deletingCount, setDeletingCount] = useState(0);
@@ -47,6 +47,6 @@ export const useStack = <RowType extends ObjectForExtending>({
 
   return {
     setStackRef,
-    setFromEmptyToOne
+    setFromEmptyToOne,
   };
 };

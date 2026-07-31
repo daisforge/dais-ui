@@ -5,7 +5,7 @@ import React from 'react';
 
 export const Circle = ({
   visible,
-  topLeft
+  topLeft,
 }: {
   visible?: boolean | undefined;
   topLeft?: string | number;
@@ -24,8 +24,8 @@ export const Circle = ({
       transform: 'scale(0)',
       ...(visible && {
         backgroundColor: surfaceNegative,
-        transform: 'scale(1)'
-      })
+        transform: 'scale(1)',
+      }),
     }}
   />
 );

@@ -19,7 +19,7 @@ export function CopyCodeAbsoluteButton({ code }: { code: string }) {
       style={{
         position: 'absolute',
         bottom: '8px',
-        right: '8px'
+        right: '8px',
       }}
     >
       <IconButton

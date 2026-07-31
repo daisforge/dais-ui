@@ -17,21 +17,21 @@ export const CanvasTooltipOverlay: React.FC<CanvasTooltipOverlayProps> =
       containerRef,
       customEnabled = false,
       mouseEnterDelay,
-      mouseLeaveDelay
+      mouseLeaveDelay,
     }) => {
       const filter = useMemo(
         () =>
           (detail: CanvasPortalHoverDetail): TooltipData | null =>
             resolveTooltipData(detail, customEnabled),
-        [customEnabled]
+        [customEnabled],
       );
 
       const getDelays = useMemo(
         () => (data: TooltipData) => ({
           mouseEnterDelay: data.mouseEnterDelay,
-          mouseLeaveDelay: data.mouseLeaveDelay
+          mouseLeaveDelay: data.mouseLeaveDelay,
         }),
-        []
+        [],
       );
 
       const state = usePortalHover<TooltipData>({
@@ -40,7 +40,7 @@ export const CanvasTooltipOverlay: React.FC<CanvasTooltipOverlayProps> =
         containerRef,
         defaultMouseEnterDelay: mouseEnterDelay ?? DEFAULT_MOUSE_ENTER_DELAY,
         defaultMouseLeaveDelay: mouseLeaveDelay ?? 0,
-        getDelays
+        getDelays,
       });
 
       if (!state.visible) return null;
@@ -51,7 +51,7 @@ export const CanvasTooltipOverlay: React.FC<CanvasTooltipOverlayProps> =
       const displayPosition = viewportToContainerPosition(
         state.x,
         state.y,
-        containerEl
+        containerEl,
       );
 
       return createPortal(
@@ -63,7 +63,7 @@ export const CanvasTooltipOverlay: React.FC<CanvasTooltipOverlayProps> =
             width: Math.max(0, state.width),
             height: Math.max(0, state.height),
             pointerEvents: 'none',
-            boxSizing: 'border-box'
+            boxSizing: 'border-box',
           }}
         >
           <Tooltip
@@ -74,13 +74,13 @@ export const CanvasTooltipOverlay: React.FC<CanvasTooltipOverlayProps> =
             minWidth={state.data?.tooltipProps?.minWidth}
             maxWidth={state.data?.tooltipProps?.maxWidth}
             style={{
-              position: 'relative'
+              position: 'relative',
             }}
           />
         </StyledContainer>,
-        containerEl
+        containerEl,
       );
-    }
+    },
   );
 
 CanvasTooltipOverlay.displayName = 'CanvasTooltipOverlay';

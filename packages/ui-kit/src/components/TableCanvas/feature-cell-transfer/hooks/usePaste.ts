@@ -5,7 +5,7 @@ import { useCallback } from 'react';
 
 import {
   notifications,
-  type TableNotification
+  type TableNotification,
 } from '../../feature-notifications';
 import type { ObjectForExtending } from '../../types';
 import type {
@@ -13,7 +13,7 @@ import type {
   PasteConfig,
   PasteMeta,
   RowsChangeType,
-  TransferColumnConfig
+  TransferColumnConfig,
 } from '../types';
 import { applyValuesToRows } from '../utils/applyValuesToRows';
 import { collectTextMatrix } from '../utils/collectTextMatrix';
@@ -21,7 +21,7 @@ import { parseTsv } from '../utils/parseTsv';
 import { resolveTransferTargets } from '../utils/resolveTransferTargets';
 import {
   hasColumnsOnlySelection,
-  hasRowsOnlySelection
+  hasRowsOnlySelection,
 } from '../utils/selectionTargets';
 
 const clipboardDebug = createDebugLogger('TABLE_CANVAS_CLIPBOARD');
@@ -32,7 +32,7 @@ const DEFAULT_PASTE_CONFIG: Required<PasteConfig> = {
   allowSubRows: true,
   overflowBehavior: 'truncate',
   broadcast: false,
-  validation: 'type-check'
+  validation: 'type-check',
 };
 
 interface UsePasteParams<R extends ObjectForExtending> {
@@ -50,7 +50,7 @@ interface UsePasteParams<R extends ObjectForExtending> {
       column: TransferColumnConfig;
       rows?: { before: R; after: R }[];
       type: RowsChangeType;
-    }
+    },
   ) => void;
   onNotification?: (event: TableNotification) => void;
 }
@@ -64,7 +64,7 @@ export function usePaste<R extends ObjectForExtending>({
   rowContextValue,
   headerContextValue,
   onRowsChange,
-  onNotification
+  onNotification,
 }: UsePasteParams<R>) {
   const handlePaste = useCallback(
     async (clipboardText?: string) => {
@@ -92,7 +92,7 @@ export function usePaste<R extends ObjectForExtending>({
       let text: string;
       if (clipboardText !== undefined) {
         clipboardDebug(PFX, 'fallback: текст получен из paste event', {
-          length: clipboardText.length
+          length: clipboardText.length,
         });
         text = clipboardText;
       } else if (navigator.clipboard?.readText) {
@@ -106,7 +106,7 @@ export function usePaste<R extends ObjectForExtending>({
       } else {
         clipboardDebug(
           PFX,
-          'skip: clipboard API недоступен, ожидаем paste event'
+          'skip: clipboard API недоступен, ожидаем paste event',
         );
         return;
       }
@@ -125,13 +125,13 @@ export function usePaste<R extends ObjectForExtending>({
       clipboardDebug(PFX, 'TSV распарсен', {
         rows: data.length,
         cols: data[0].length,
-        data
+        data,
       });
 
       // Phase 2: тираж(broadcast) и проверка границ
       const pasteConfig: Required<PasteConfig> = {
         ...DEFAULT_PASTE_CONFIG,
-        ...cellTransferConfig?.paste
+        ...cellTransferConfig?.paste,
       };
 
       // Диапазон/таргеты вставки через единую классификацию выделения (ячейки /
@@ -142,7 +142,7 @@ export function usePaste<R extends ObjectForExtending>({
       const res = resolveTransferTargets(
         selection,
         columns,
-        flattenedRows.length
+        flattenedRows.length,
       );
       if (res.status === 'unsupported') {
         clipboardDebug(PFX, 'skip: перенос не поддержан', res.reason);
@@ -200,7 +200,7 @@ export function usePaste<R extends ObjectForExtending>({
           overflowsCol,
           overflowsRow,
           maxCol,
-          maxRow
+          maxRow,
         });
         onNotification?.(notifications.pasteOverflowAbort());
         return;
@@ -212,18 +212,18 @@ export function usePaste<R extends ObjectForExtending>({
           x: targetStartCol,
           y: targetStartRow,
           width: repeatCols,
-          height: repeatRows
+          height: repeatRows,
         };
         const { cells: targetCells } = collectTextMatrix(
           targetRange,
           columns,
           flattenedRows,
-          { withCells: true }
+          { withCells: true },
         );
         const meta: PasteMeta = {
           target: { col: targetStartCol, row: targetStartRow },
           targetCells,
-          selection
+          selection,
         };
         const result = cellTransferConfig.onBeforePaste(data, meta);
         if (result === false) {
@@ -243,7 +243,7 @@ export function usePaste<R extends ObjectForExtending>({
         affectedIndexes,
         firstAffectedColumn,
         skippedByValidation,
-        aborted
+        aborted,
       } = applyValuesToRows({
         rows: flattenedRows,
         columns,
@@ -254,7 +254,7 @@ export function usePaste<R extends ObjectForExtending>({
         allowSubRows: pasteConfig.allowSubRows,
         readonlyBehavior: pasteConfig.readonlyBehavior,
         validation: pasteConfig.validation,
-        validateContexts: cellContexts
+        validateContexts: cellContexts,
       });
 
       if (aborted) {
@@ -266,14 +266,14 @@ export function usePaste<R extends ObjectForExtending>({
       if (skippedByValidation.length > 0) {
         clipboardDebug(PFX, 'пропущено валидацией', skippedByValidation);
         onNotification?.(
-          notifications.pasteValidationSkipped(skippedByValidation.length)
+          notifications.pasteValidationSkipped(skippedByValidation.length),
         );
       }
 
       clipboardDebug(PFX, 'вставка завершена', {
         affectedIndexes,
         firstAffectedColumnKey: firstAffectedColumn?.key,
-        skippedByValidationCount: skippedByValidation.length
+        skippedByValidationCount: skippedByValidation.length,
       });
 
       if (affectedIndexes.length === 0 || !firstAffectedColumn) return;
@@ -281,7 +281,7 @@ export function usePaste<R extends ObjectForExtending>({
       onRowsChange(newRows, {
         column: firstAffectedColumn,
         indexes: affectedIndexes,
-        type: 'paste'
+        type: 'paste',
       });
     },
     [
@@ -293,8 +293,8 @@ export function usePaste<R extends ObjectForExtending>({
       rowContextValue,
       headerContextValue,
       onRowsChange,
-      onNotification
-    ]
+      onNotification,
+    ],
   );
 
   return { handlePaste };

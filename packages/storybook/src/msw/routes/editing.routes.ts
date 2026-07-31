@@ -3,7 +3,7 @@ import type {
   ContractDeleteOneBody,
   ContractResponse,
   ContractUpdateOneBody,
-  ObjectAny
+  ObjectAny,
 } from '@ui-kit/components/TableContract';
 import { delay, http, HttpResponse } from 'msw';
 
@@ -15,42 +15,42 @@ const getData = async () => {
       key: 'task',
       name: 'Task',
       columnType: 'Text',
-      title: 'tooltip Task'
+      title: 'tooltip Task',
     },
     {
       key: 'done',
       columnType: 'Boolean',
       name: 'Статус Завершенности',
-      title: 'tooltip Статус Завершенности'
+      title: 'tooltip Статус Завершенности',
     },
     {
       key: 'complete',
       name: 'Complete',
       columnType: 'Real',
-      title: 'tooltip Complete'
+      title: 'tooltip Complete',
     },
     {
       key: 'inspiredDay',
       columnType: 'Integer/Int/Int4',
       name: 'Дней с даты создания',
-      title: 'tooltip Дней с даты создания'
-    }
+      title: 'tooltip Дней с даты создания',
+    },
   ];
 
   const tableConfig: ContractResponse['meta']['tableConfig'] = {
     subRows: { subRowsKey: 'child', rowUniqIdKey: 'id' },
     editing: {
       rowUniqIdKey: 'id',
-      saving: { type: 'onRowChange' }
-    }
+      saving: { type: 'onRowChange' },
+    },
   };
 
   const resp: ContractResponse = {
     data: { main: rows },
     meta: {
       columns,
-      tableConfig
-    }
+      tableConfig,
+    },
   };
   return resp;
 };
@@ -64,7 +64,7 @@ export const editingExampleGetRoute = {
     await delay(2000);
 
     return HttpResponse.json(response);
-  })
+  }),
 };
 
 export const editingExampleUpdateOneRoute = {
@@ -77,9 +77,9 @@ export const editingExampleUpdateOneRoute = {
 
     return HttpResponse.json(
       { ...changeObject, fromBack: true },
-      { status: 200 }
+      { status: 200 },
     );
-  })
+  }),
 };
 
 export const editingExampleDeleteOneRoute = {
@@ -90,7 +90,7 @@ export const editingExampleDeleteOneRoute = {
       .json()) as ContractDeleteOneBody;
     await delay(2000);
     return HttpResponse.json(rowForDelete);
-  })
+  }),
 };
 export const editingExampleCreateOneRoute = {
   ENDPOINT,
@@ -99,5 +99,5 @@ export const editingExampleCreateOneRoute = {
     await delay(2000);
 
     return HttpResponse.json(newRowData);
-  })
+  }),
 };

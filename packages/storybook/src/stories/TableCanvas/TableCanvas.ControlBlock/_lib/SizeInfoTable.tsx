@@ -18,7 +18,7 @@ const sizeMap = {
     customFeatures: 'контролируется разработчиком',
     editModeLeftSlot: 'контролируется разработчиком',
     search: 's (TextField)',
-    tabs: 's (Tabs)'
+    tabs: 's (Tabs)',
   },
   xs: {
     controlBlock: 'xs',
@@ -29,15 +29,15 @@ const sizeMap = {
     customFeatures: 'контролируется разработчиком',
     editModeLeftSlot: 'контролируется разработчиком',
     search: 'xs (TextField)',
-    tabs: 'xs (Tabs)'
-  }
+    tabs: 'xs (Tabs)',
+  },
 };
 
 const cellStyle: React.CSSProperties = {
   padding: '2px 8px',
   borderBottom: '1px solid #e0e0e0',
   fontSize: 12,
-  lineHeight: '18px'
+  lineHeight: '18px',
 };
 
 export const SizeInfoTable = ({ size }: { size: 'm' | 'xs' }) => {
@@ -51,7 +51,7 @@ export const SizeInfoTable = ({ size }: { size: 'm' | 'xs' }) => {
     ['customFeatures (CustomIconRender)', info.customFeatures],
     ['editModeLeftSlot', info.editModeLeftSlot],
     ['Поле поиска', info.search],
-    ['Табы (TableTabs)', info.tabs]
+    ['Табы (TableTabs)', info.tabs],
   ];
 
   return (
@@ -60,7 +60,7 @@ export const SizeInfoTable = ({ size }: { size: 'm' | 'xs' }) => {
         borderCollapse: 'collapse',
         marginBottom: 12,
         border: '1px solid #e0e0e0',
-        width: 'auto'
+        width: 'auto',
       }}
     >
       <thead>

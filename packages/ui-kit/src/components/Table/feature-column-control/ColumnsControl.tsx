@@ -31,7 +31,7 @@ export const ColumnsControl = <Row extends ObjectForExtending, SummaryRow>({
       display: 'flex',
       flexDirection: 'column',
       height: '100%',
-      overflow: 'hidden'
+      overflow: 'hidden',
     }}
   >
     <ColumnsControlInner {...{ ...innerControlProps, onClose, opened }} />

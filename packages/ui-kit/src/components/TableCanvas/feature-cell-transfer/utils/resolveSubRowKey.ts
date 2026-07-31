@@ -7,7 +7,7 @@ import type { TransferColumnConfig } from '../types';
  */
 export function resolveSubRowKey(
   column: TransferColumnConfig,
-  lvl: number
+  lvl: number,
 ): string | number | undefined {
   if (lvl === 0 || !column.subRow) return undefined;
 

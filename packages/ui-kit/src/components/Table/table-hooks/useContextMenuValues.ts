@@ -4,7 +4,7 @@ import {
   CalculatedColumn,
   CellClickArgs,
   CellMouseEvent,
-  DataGridHandle
+  DataGridHandle,
 } from 'react-data-grid';
 
 import { ContextMenuDropdownItem } from '../feature-context-menu';
@@ -14,7 +14,7 @@ import { ObjectForExtending, TableConfig } from '../types';
 const HEADER_COLUMN_SELECTOR = `[role="columnheader"]`;
 const ATTR_NAMES = {
   row: 'aria-rowindex',
-  col: 'aria-colindex'
+  col: 'aria-colindex',
 };
 
 interface ContextMenuState<RowType, SummaryRowType> {
@@ -50,10 +50,10 @@ export const useContextMenuValues = <
   FilterStateType extends ObjectForExtending,
   RowIdType extends string | number,
   RowType extends ObjectForExtending,
-  SummaryRowType = unknown
+  SummaryRowType = unknown,
 >({
   tableConfig,
-  refTableX
+  refTableX,
 }: {
   tableConfig: TableConfig<RowType, SummaryRowType, RowIdType, FilterStateType>;
   refTableX: React.RefObject<DataGridHandle>;
@@ -62,7 +62,7 @@ export const useContextMenuValues = <
     onHeaderContextMenu,
     onHeaderContextMenuDropDown,
     onCellContextMenu,
-    onCellContextMenuDropDown
+    onCellContextMenuDropDown,
   } = tableConfig;
 
   const [state, setState] = useState<ContextMenuState<RowType, SummaryRowType>>(
@@ -70,8 +70,8 @@ export const useContextMenuValues = <
       isOpen: false,
       position: null,
       items: null,
-      targetElement: undefined
-    }
+      targetElement: undefined,
+    },
   );
 
   const open = useCallback(
@@ -80,7 +80,7 @@ export const useContextMenuValues = <
       items = null,
       asyncParams,
       targetElement = undefined,
-      context
+      context,
     }: {
       position: { x: number; y: number };
       items?: DropdownProps['items'] | null;
@@ -94,10 +94,10 @@ export const useContextMenuValues = <
         items,
         asyncParams,
         targetElement,
-        context
+        context,
       });
     },
-    []
+    [],
   );
 
   const close = useCallback(() => {
@@ -107,7 +107,7 @@ export const useContextMenuValues = <
       items: null,
       asyncParams: undefined,
       targetElement: undefined,
-      context: undefined
+      context: undefined,
     }));
   }, []);
 
@@ -118,7 +118,7 @@ export const useContextMenuValues = <
       if ('innerText' in columnHeader && columnHeader.innerText) {
         return {
           columnLabel: String(columnHeader.innerText),
-          columnHeader
+          columnHeader,
         };
       }
       return undefined;
@@ -129,9 +129,9 @@ export const useContextMenuValues = <
   const getCountRowsHeader = useCallback(
     () =>
       refTableX.current?.element?.querySelectorAll(
-        `.${tableClassNames.headerRow}`
+        `.${tableClassNames.headerRow}`,
       ).length || 0,
-    [refTableX]
+    [refTableX],
   );
 
   const getRowIdxAndIdxForHeaderCell = useCallback(
@@ -143,10 +143,10 @@ export const useContextMenuValues = <
       const rowIndex = parseInt(rowIndexAttr ?? '1', 10);
       return {
         rowIdx: -(countRowsHeader - rowIndex + 1),
-        idx: colIndex - 1
+        idx: colIndex - 1,
       };
     },
-    []
+    [],
   );
 
   const openHeaderContextMenu = useCallback(
@@ -164,7 +164,7 @@ export const useContextMenuValues = <
       if (!onHeaderContextMenuDropDown) return;
       const rect = targetElement?.getBoundingClientRect() ?? {
         left: 0,
-        top: 0
+        top: 0,
       };
       event.preventDefault();
 
@@ -173,18 +173,18 @@ export const useContextMenuValues = <
 
       const menuPosition = {
         x: event.clientX - rect.left,
-        y: event.clientY - rect.top
+        y: event.clientY - rect.top,
       };
       const context = {
         type: 'header' as const,
-        data: { header: { columnLabel } }
+        data: { header: { columnLabel } },
       };
 
       const selectHeaderCell = () => {
         if (columnHeader instanceof HTMLElement) {
           const position = getRowIdxAndIdxForHeaderCell(
             columnHeader,
-            getCountRowsHeader()
+            getCountRowsHeader(),
           );
           if (position) {
             refTableX.current?.selectCell(position);
@@ -197,7 +197,7 @@ export const useContextMenuValues = <
           position: menuPosition,
           items: itemsOptions,
           targetElement,
-          context
+          context,
         });
         selectHeaderCell();
       } else if (onHeaderContextMenuDropDown.onOpen) {
@@ -206,7 +206,7 @@ export const useContextMenuValues = <
           position: menuPosition,
           asyncParams: { type: 'header', params },
           targetElement,
-          context
+          context,
         });
         onHeaderContextMenuDropDown.onOpen(params);
         selectHeaderCell();
@@ -219,8 +219,8 @@ export const useContextMenuValues = <
       open,
       getRowIdxAndIdxForHeaderCell,
       getCountRowsHeader,
-      refTableX
-    ]
+      refTableX,
+    ],
   );
 
   const openCellContextMenu = useCallback(
@@ -230,7 +230,7 @@ export const useContextMenuValues = <
       event.preventDefault();
 
       const tableContainer = event.currentTarget.closest(
-        `.${tableClassNames.table}`
+        `.${tableClassNames.table}`,
       );
 
       const params = { row: args.row, column: args.column };
@@ -238,7 +238,7 @@ export const useContextMenuValues = <
 
       const menuPosition = {
         x: event.clientX - (tableContainer?.getBoundingClientRect().left || 0),
-        y: event.clientY - (tableContainer?.getBoundingClientRect().top || 0)
+        y: event.clientY - (tableContainer?.getBoundingClientRect().top || 0),
       };
       const context = {
         type: 'cell' as const,
@@ -246,9 +246,9 @@ export const useContextMenuValues = <
           cell: {
             row: args.row,
             column: args.column,
-            selectCell: args.selectCell
-          }
-        }
+            selectCell: args.selectCell,
+          },
+        },
       };
 
       if (itemsOptions && itemsOptions.length > 0) {
@@ -256,7 +256,7 @@ export const useContextMenuValues = <
           position: menuPosition,
           items: itemsOptions,
           targetElement: event.currentTarget as HTMLElement,
-          context
+          context,
         });
       } else if (onCellContextMenuDropDown.onOpen) {
         // Async-режим: открываем даже при пустых items, потребитель грузит сам
@@ -264,12 +264,12 @@ export const useContextMenuValues = <
           position: menuPosition,
           asyncParams: { type: 'cell', params },
           targetElement: event.currentTarget as HTMLElement,
-          context
+          context,
         });
         onCellContextMenuDropDown.onOpen(params);
       }
     },
-    [onCellContextMenu, onCellContextMenuDropDown, open]
+    [onCellContextMenu, onCellContextMenuDropDown, open],
   );
 
   // Пропсы Dropdown из конфига контекстного меню (всё кроме служебных полей),
@@ -319,7 +319,7 @@ export const useContextMenuValues = <
       getClosestColumn,
       onItemSelect: (
         item: ContextMenuDropdownItem,
-        event?: React.SyntheticEvent
+        event?: React.SyntheticEvent,
       ) => {
         // Если контекст меню не определен (не должно происходить в нормальной работе),
         // закрываем меню и выходим
@@ -336,7 +336,7 @@ export const useContextMenuValues = <
             onHeaderContextMenuDropDown?.onItemSelect?.(
               item,
               state.context.data.header,
-              event
+              event,
             );
             return;
           }
@@ -349,10 +349,10 @@ export const useContextMenuValues = <
           onCellContextMenuDropDown?.onItemSelect?.(
             item,
             state.context.data.cell,
-            event
+            event,
           );
         }
-      }
+      },
     }),
     [
       state,
@@ -366,7 +366,7 @@ export const useContextMenuValues = <
       onCellContextMenuDropDown,
       openHeaderContextMenu,
       openCellContextMenu,
-      getClosestColumn
-    ]
+      getClosestColumn,
+    ],
   );
 };

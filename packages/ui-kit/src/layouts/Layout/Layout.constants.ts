@@ -9,7 +9,7 @@ export const LAYOUT_VARIANTS = {
   V3_3: 'V3_3',
   V4_1: 'V4_1',
   V4_2: 'V4_2',
-  V5_1: 'V5_1'
+  V5_1: 'V5_1',
 } as const;
 
 export const LAYOUT_SPACING = {
@@ -17,19 +17,19 @@ export const LAYOUT_SPACING = {
     horizontal: 'auto',
     vertical: {
       top: spacing8x,
-      bottom: spacing16x
+      bottom: spacing16x,
     },
     gutter: spacing12x,
-    headerHeight: 'auto' // Ранее был фиксированной высотой 143px
+    headerHeight: 'auto', // Ранее был фиксированной высотой 143px
   },
   L: {
     horizontal: spacing16x,
     vertical: {
       top: spacing8x,
-      bottom: spacing12x
+      bottom: spacing12x,
     },
     gutter: spacing8x,
-    headerHeight: 'auto' // Ранее был фиксированной высотой 143px
-  }
+    headerHeight: 'auto', // Ранее был фиксированной высотой 143px
+  },
   /* TODO: Добавить другие breakpoints (L, M, S) когда понадобится */
 } as const;

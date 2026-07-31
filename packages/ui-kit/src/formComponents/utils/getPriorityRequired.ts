@@ -10,7 +10,7 @@ import { THasValidationRuleProps } from './types';
  */
 export const getPriorityRequired = <TFieldValues extends FieldValues>({
   options,
-  ruleName
+  ruleName,
 }: THasValidationRuleProps<TFieldValues>): boolean => {
   if (!options || options[ruleName] === undefined) {
     return false;

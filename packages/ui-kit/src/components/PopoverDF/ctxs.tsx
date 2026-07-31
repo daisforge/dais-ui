@@ -9,7 +9,7 @@ type PopoverDFContextValue = {
 
 export const PopoverDFContext = createContext<PopoverDFContextValue>({
   onClose: null,
-  size: 'm'
+  size: 'm',
 });
 
 export const usePopoverDFContext = () => useContext(PopoverDFContext);

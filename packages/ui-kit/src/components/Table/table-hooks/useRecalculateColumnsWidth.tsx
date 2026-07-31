@@ -3,7 +3,7 @@ import {
   useEffect,
   useLayoutEffect,
   useMemo,
-  useState
+  useState,
 } from 'react';
 
 import { TABLE_BUBBLES } from '../constants';
@@ -15,16 +15,16 @@ import { ColumnConfigInternal } from '../types/column-config-internal.type';
  * */
 export const useRecalculateColumnsWidth = <
   RowType extends ObjectForExtending,
-  SummaryRowType
+  SummaryRowType,
 >(
   reorderedColumns: readonly ColumnConfigInternal<RowType, SummaryRowType>[],
-  refTableContainer?: React.RefObject<HTMLElement>
+  refTableContainer?: React.RefObject<HTMLElement>,
 ) => {
   const [widthOfTable, setWidthOfTable] = useState<string | null>(null);
   // reorderedColumnsKeys - для отслеживания изменения порядка и количества колонок
   const reorderedColumnsKeys = useMemo(
     () => reorderedColumns.map((c) => c.key).join(','),
-    [reorderedColumns]
+    [reorderedColumns],
   );
 
   const recalculate = useCallback(() => {

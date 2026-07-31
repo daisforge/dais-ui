@@ -18,7 +18,7 @@ export const EmptyStateButtonVariant: FC<{
   const { key: propKey, ...propsWithoutKey } = variant.props || {};
   const baseProps = {
     ...propsWithoutKey,
-    size: defaultSize
+    size: defaultSize,
   } as ButtonCompProps | LinkButtonCompProps;
 
   if (isExtra) {

@@ -1,7 +1,7 @@
 /** Simple throttle util */
 export const throttle = <R, A extends unknown[]>(
   fn: (...args: A) => R,
-  delay = 200
+  delay = 200,
 ) => {
   let inThrottle: boolean;
 
@@ -21,7 +21,7 @@ export const throttle = <R, A extends unknown[]>(
 
 export const throttleWithLastCall = <R, A extends unknown[]>(
   fn: (...args: A) => R,
-  delay = 200
+  delay = 200,
 ) => {
   let lastArgs: A | null = null;
   let timeoutId: ReturnType<typeof setTimeout> | null = null;

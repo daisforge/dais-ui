@@ -4,7 +4,7 @@ import { KeyTextMap } from '../feature-key-text/types';
 import {
   isPinningDisabled,
   PinningActionCtx,
-  unpinColumns
+  unpinColumns,
 } from '../widgets/control-block/pinning-menu/pinning-actions';
 import { ColumnsControlConfig } from './types';
 
@@ -12,7 +12,7 @@ export const useColumnsControl = ({
   tableConfigColumnsControl,
   tableConfigKeyTextBoolean,
   colsWithKeyTextMap,
-  columnsGroupingIsActive
+  columnsGroupingIsActive,
 }: {
   tableConfigColumnsControl: ColumnsControlConfig | undefined;
   columnsGroupingIsActive: boolean;
@@ -27,9 +27,9 @@ export const useColumnsControl = ({
       reorderingAside: columnsControlEnable,
       reorderingHeader: columnsControlEnable,
       pinning: columnsControlEnable && !columnsGroupingIsActive,
-      hiding: columnsControlEnable
+      hiding: columnsControlEnable,
     },
-    ...tableConfigColumnsControl
+    ...tableConfigColumnsControl,
   };
 
   const columnsControlInControlBlockBoolean =
@@ -98,13 +98,13 @@ export const useColumnsControl = ({
     () => ({
       disablePinningSet: new Set(columnsControlConfig.disablePinning ?? []),
       colsWithKeyTextMap,
-      tableConfigKeyTextBoolean
+      tableConfigKeyTextBoolean,
     }),
     [
       columnsControlConfig.disablePinning,
       colsWithKeyTextMap,
-      tableConfigKeyTextBoolean
-    ]
+      tableConfigKeyTextBoolean,
+    ],
   );
 
   // Открепление одной колонки по клику на пин-иконку в шапке.
@@ -112,14 +112,14 @@ export const useColumnsControl = ({
     (key: string) => {
       setPinnedCols((prev) => unpinColumns(prev, [key], pinningActionCtx));
     },
-    [pinningActionCtx]
+    [pinningActionCtx],
   );
 
   // Закрепление колонки менять нельзя (напр. запинена по умолчанию и в
   // disablePinning) — в шапке рисуем индикатор без кнопки/действия.
   const getColumnPinningDisabled = useCallback(
     (key: string) => isPinningDisabled(key, pinningActionCtx),
-    [pinningActionCtx]
+    [pinningActionCtx],
   );
 
   return {
@@ -136,6 +136,6 @@ export const useColumnsControl = ({
     setOpenControlModal,
     colsWithKeyTextMap,
     onUnpinColumn,
-    getColumnPinningDisabled
+    getColumnPinningDisabled,
   };
 };

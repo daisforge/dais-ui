@@ -9,13 +9,13 @@ const Container = styled.div({
   flexGrow: 1,
   height: '100%',
   alignItems: 'center',
-  minWidth: 0
+  minWidth: 0,
 });
 
 export const withSelectIcon = (
   content: ReactNode,
   isSelect: boolean,
-  editModeEnabled: boolean
+  editModeEnabled: boolean,
 ) =>
   isSelect ? (
     <Container className={CLASS.selectArrowContainer}>

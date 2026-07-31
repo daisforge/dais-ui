@@ -14,7 +14,7 @@ export const ItemWrapper = ({
   item,
   actionsSlot,
   actionsSlotStyle,
-  children
+  children,
 }: GridDNDItemWrapperProps) => (
   <div
     style={{ height: '100%', position: 'relative' }}
@@ -27,7 +27,7 @@ export const ItemWrapper = ({
           position: 'absolute',
           right: 16,
           top: 16,
-          ...actionsSlotStyle
+          ...actionsSlotStyle,
         }}
         className={GridDNDClassNames.noDrag}
       >

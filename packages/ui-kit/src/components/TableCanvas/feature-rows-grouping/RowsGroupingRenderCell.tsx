@@ -1,7 +1,7 @@
 import { isCanvasContent, isGlideGridCellObj } from '../TableGlideInstance';
 import type {
   CellContent,
-  CellInfoGlideInstance
+  CellInfoGlideInstance,
 } from '../TableGlideInstance/type';
 import { ColumnConfig, ObjectForExtending } from '../types';
 import { KEY_GROUPED_COL } from './constants';
@@ -10,13 +10,13 @@ import { ColumnRowsGrouping, RowsGrouping } from './types';
 
 export const RowsGroupingRenderCell = <
   RowType extends ObjectForExtending,
-  SummaryRowType
+  SummaryRowType,
 >({
   rowsGrouping,
   renderCellProps,
   groupByArr,
   groupedColRenderers,
-  col
+  col,
 }: {
   col: ColumnConfig<RowType, SummaryRowType>;
   rowsGrouping:
@@ -49,7 +49,7 @@ export const RowsGroupingRenderCell = <
         const result = groupedColRenderers.rowsGrouping.renderGroupCell({
           ...groupRowData,
           column,
-          tabIndex: 0
+          tabIndex: 0,
         });
 
         if (isCanvasContent(result) || isGlideGridCellObj(result)) {
@@ -69,7 +69,7 @@ export const RowsGroupingRenderCell = <
       const result = groupedColRenderers.renderCell({
         ...renderCellProps,
         parentGroupKey: rowId,
-        groupByArr
+        groupByArr,
       } as never);
       if (isCanvasContent(result) || isGlideGridCellObj(result)) {
         return result;
@@ -95,7 +95,7 @@ export const RowsGroupingRenderCell = <
     const result = rowsGrouping.renderGroupCell({
       ...groupRowData,
       column,
-      tabIndex: 0
+      tabIndex: 0,
     });
     if (isCanvasContent(result) || isGlideGridCellObj(result)) {
       return result;

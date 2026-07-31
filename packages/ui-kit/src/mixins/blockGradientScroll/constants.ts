@@ -24,15 +24,15 @@ export const BLOCK_GRADIENT_VAR_BOTTOM = '--block-gradient-bottom';
 export const BlockGradientScrollColorMap = {
   light: {
     white: localWhiteLinearGradient,
-    gray: localGrayLinearGradient
+    gray: localGrayLinearGradient,
   },
   dark: {
     white: localonDarkWhiteLinearGradient,
-    gray: localonDarkGrayLinearGradient
+    gray: localonDarkGrayLinearGradient,
   },
   // TODO: (THEME) уточнить у дизайнера значения, пока используем значения light
   highContrastLight: {
     white: localWhiteLinearGradient,
-    gray: localGrayLinearGradient
-  }
+    gray: localGrayLinearGradient,
+  },
 };

@@ -9,20 +9,20 @@ import React, {
   useLayoutEffect,
   useMemo,
   useRef,
-  useState
+  useState,
 } from 'react';
 
 import { AiAgentPopoverClassNames as cls } from './AiAgentPopover.classnames';
 import { SAFETY_MARGIN, X_DEFAULT_OFFSET } from './AiAgentPopover.constants';
 import {
   AiAgentPopoverStyled,
-  MagicButtonStyled
+  MagicButtonStyled,
 } from './AiAgentPopover.styled';
 import {
   AiAgentPopoverCustomPlacement,
   AiAgentPopoverPlacement,
   AiAgentPopoverProps,
-  AiAgentPopoverResizableConfig
+  AiAgentPopoverResizableConfig,
 } from './AiAgentPopover.types';
 import {
   getCurrentSector,
@@ -32,7 +32,7 @@ import {
   isCustomPlacement,
   isOffsetsEqual,
   isVerticalPlacement,
-  normalizePlacement
+  normalizePlacement,
 } from './AiAgentPopover.utils';
 import { useDrag } from './hooks/useDrag';
 import { usePositionStorage } from './hooks/usePositionStorage';
@@ -89,7 +89,7 @@ export const AiAgentPopover = ({
       typeof defaultPosition === 'string'
         ? getPositionFromPlacement(defaultPosition, dragBoundary, elementSize)
         : defaultPosition,
-    [defaultPosition, dragBoundary, elementSize]
+    [defaultPosition, dragBoundary, elementSize],
   );
 
   // Подключаем логику localStorage
@@ -97,14 +97,14 @@ export const AiAgentPopover = ({
     useStorage,
     computedInitialPosition,
     elementSize,
-    dragBoundary
+    dragBoundary,
   );
 
   // Если передан externalPositionState - используем его, иначе - внутренний стейт
   const [internalPosition, setInternalPosition] = useState(savedPosition);
   const [position, setPosition] = externalPositionState || [
     internalPosition,
-    setInternalPosition
+    setInternalPosition,
   ];
 
   // Сохраняем позицию при изменении (только для внутреннего стейта)
@@ -170,7 +170,7 @@ export const AiAgentPopover = ({
         futureBottom <= window.innerHeight - SAFETY_MARGIN
       );
     },
-    [position]
+    [position],
   );
 
   // Функция обновления placement. Регулируется параметром calculatePlacement.
@@ -181,7 +181,7 @@ export const AiAgentPopover = ({
     const sector = getCurrentSector({
       position,
       size: { width: targetRect?.width ?? 0, height: targetRect?.height ?? 0 },
-      boundary: dragBoundary
+      boundary: dragBoundary,
     });
 
     const suggestedPlacement = getPlacementForSector(sector);
@@ -213,7 +213,7 @@ export const AiAgentPopover = ({
 
     if (currentPlacementValue === 'top' || currentPlacementValue === 'bottom') {
       setComputedOffset((prev) =>
-        isOffsetsEqual(prev, defaultOffset) ? prev : defaultOffset
+        isOffsetsEqual(prev, defaultOffset) ? prev : defaultOffset,
       );
       return;
     }
@@ -222,7 +222,7 @@ export const AiAgentPopover = ({
       const offsetDirection = currentPlacementValue.includes('left') ? 1 : -1;
       const newOffset = [
         offsetDirection * (-contentWidth / 2 + X_DEFAULT_OFFSET),
-        defaultOffset[1]
+        defaultOffset[1],
       ] as [number, number];
       setComputedOffset((prev: [number, number]) => {
         const nextOffset: [number, number] = [newOffset[0], newOffset[1]];
@@ -230,7 +230,7 @@ export const AiAgentPopover = ({
       });
     } else {
       setComputedOffset((prev) =>
-        isOffsetsEqual(prev, defaultOffset) ? prev : defaultOffset
+        isOffsetsEqual(prev, defaultOffset) ? prev : defaultOffset,
       );
     }
   }, [calculateOffset, isOpen, defaultOffset]);
@@ -243,8 +243,8 @@ export const AiAgentPopover = ({
           dragBoundary?.left || 0,
           Math.min(
             prev.x,
-            window.innerWidth - elementSize.width - (dragBoundary?.right || 0)
-          )
+            window.innerWidth - elementSize.width - (dragBoundary?.right || 0),
+          ),
         ),
         y: Math.max(
           dragBoundary?.top || 0,
@@ -252,9 +252,9 @@ export const AiAgentPopover = ({
             prev.y,
             window.innerHeight -
               elementSize.height -
-              (dragBoundary?.bottom || 0)
-          )
-        )
+              (dragBoundary?.bottom || 0),
+          ),
+        ),
       }));
     }, 200); // Задержка в 200 мс
 
@@ -313,7 +313,7 @@ export const AiAgentPopover = ({
     popoverRef,
     dragBoundary,
     onPositionChange,
-    updatePlacement
+    updatePlacement,
   );
 
   // Toggle handler
@@ -324,7 +324,7 @@ export const AiAgentPopover = ({
       }
       onToggle?.(newState, event);
     },
-    [externalOpened, onToggle]
+    [externalOpened, onToggle],
   );
 
   // Click handler
@@ -337,7 +337,7 @@ export const AiAgentPopover = ({
       }
       handleToggle(!isOpen, e);
     },
-    [draggable, wasDragged, isOpen, handleToggle, ignoreToggleOnDrag]
+    [draggable, wasDragged, isOpen, handleToggle, ignoreToggleOnDrag],
   );
 
   // Popover styles
@@ -347,9 +347,9 @@ export const AiAgentPopover = ({
       left: `${position.x}px`,
       top: `${position.y}px`,
       zIndex: 9999,
-      transform: 'none'
+      transform: 'none',
     }),
-    [position]
+    [position],
   );
 
   // ---------- Resizable ----------
@@ -363,7 +363,7 @@ export const AiAgentPopover = ({
       'top-left',
       'top-right',
       'bottom-left',
-      'bottom-right'
+      'bottom-right',
     ];
 
     const iconStyle: React.CSSProperties = {};
@@ -382,11 +382,11 @@ export const AiAgentPopover = ({
         topLeft: corner === 'top-left' ? resizeIcon : null,
         topRight: corner === 'top-right' ? resizeIcon : null,
         bottomLeft: corner === 'bottom-left' ? resizeIcon : null,
-        bottomRight: corner === 'bottom-right' ? resizeIcon : null
+        bottomRight: corner === 'bottom-right' ? resizeIcon : null,
       },
       hiddenIcons: allCorners.filter((c) => c !== corner),
       minHeight: 135,
-      minWidth: 235
+      minWidth: 235,
     };
 
     if (typeof resizable === 'function') {
@@ -396,7 +396,7 @@ export const AiAgentPopover = ({
         ...defaultConfig,
         ...userConfig,
         icons: { ...defaultConfig.icons, ...userConfig?.icons },
-        hiddenIcons: userConfig?.hiddenIcons ?? defaultConfig.hiddenIcons
+        hiddenIcons: userConfig?.hiddenIcons ?? defaultConfig.hiddenIcons,
       };
     }
 

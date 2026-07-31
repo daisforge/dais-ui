@@ -2,7 +2,7 @@ import { Box } from '@ui-kit/components/Box';
 import {
   BodyXS,
   // BodyXS,
-  TypographyWithAutoTooltip
+  TypographyWithAutoTooltip,
 } from '@ui-kit/components/Typography';
 import { IconDrag, IconPinFill } from '@ui-kit/icons';
 import { textSecondary, textTertiary } from '@ui-kit/tokens';
@@ -21,7 +21,7 @@ import { ColumnConfig, ObjectForExtending } from '../types';
 export function FilterSortHeader<
   FilterStateType extends ObjectForExtending,
   RowType extends ObjectForExtending,
-  SummaryRowType = unknown
+  SummaryRowType = unknown,
 >({
   columnConfig,
   tableConfigSorting,
@@ -46,7 +46,7 @@ export function FilterSortHeader<
   >();
 
   const columnSorted = contextState.sortState?.find(
-    (el) => el.columnKey === rest.column.key
+    (el) => el.columnKey === rest.column.key,
   );
 
   // contextState.filtersAreVisible
@@ -99,7 +99,7 @@ export function FilterSortHeader<
           className={tableClassNames.headerCellTextContent}
           variant="BodyXS"
           tooltipProps={{
-            placement: 'top'
+            placement: 'top',
           }}
         >
           {rest.column.name}

@@ -11,12 +11,12 @@ import { CheckBoxAllSelected } from './styled';
 export const useFilterRenderer = <
   FilterStateType extends ObjectForExtending,
   R extends ObjectForExtending,
-  SR
+  SR,
 >() => {
   const renderFilter = (
     props: FilterComponentInPopoverProps<FilterStateType, ColumnConfig<R, SR>>,
     customRenderFn?: () => React.ReactNode,
-    label?: string
+    label?: string,
   ): React.ReactNode => {
     const { columnConfig, headerContextState } = props;
     const { filters, setFilters, rowSize } = headerContextState;
@@ -37,7 +37,7 @@ export const useFilterRenderer = <
         props as FilterComponentInPopoverProps<
           ObjectForExtending,
           ColumnConfig<R, SR>
-        >
+        >,
       );
     }
 
@@ -59,7 +59,7 @@ export const useFilterRenderer = <
               if (prev[valueKeyInFilters] === newValue) return prev;
               return {
                 ...prev,
-                [valueKeyInFilters]: newValue
+                [valueKeyInFilters]: newValue,
               };
             });
           }}
@@ -91,7 +91,7 @@ export const useFilterRenderer = <
       // Конвертируем options в формат, ожидаемый Combobox
       const comboboxItems = options.map((option) => ({
         value: String(option.value), // Важно, что value - строка
-        label: String(option.text)
+        label: String(option.text),
       }));
 
       const BeforeList = columnConfigFiltering?.beforeList ?? (() => undefined);
@@ -115,12 +115,12 @@ export const useFilterRenderer = <
               if (allSelected) {
                 setFilters?.((prev) => ({
                   ...prev,
-                  [keyInFilterState]: []
+                  [keyInFilterState]: [],
                 }));
               } else {
                 setFilters?.((prev) => ({
                   ...prev,
-                  [keyInFilterState]: comboboxItems.map((item) => item.value)
+                  [keyInFilterState]: comboboxItems.map((item) => item.value),
                 }));
               }
             }}
@@ -140,7 +140,7 @@ export const useFilterRenderer = <
           onChange={(value: string[]) => {
             setFilters?.((prev) => ({
               ...prev,
-              [keyInFilterState]: value
+              [keyInFilterState]: value,
             }));
           }}
           beforeList={
@@ -164,7 +164,7 @@ export const useFilterRenderer = <
           onChange={(value: string) => {
             setFilters?.((prev) => ({
               ...prev,
-              [keyInFilterState]: value
+              [keyInFilterState]: value,
             }));
           }}
           beforeList={

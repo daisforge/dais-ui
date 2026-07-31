@@ -77,5 +77,5 @@ export {
   inverseDataNegativeGradientActive,
   inverseDataInfoGradient,
   inverseDataInfoGradientHover,
-  inverseDataInfoGradientActive
+  inverseDataInfoGradientActive,
 } from '@salutejs/sdds-themes/tokens/sdds_finai';

@@ -6,7 +6,7 @@ import { Controller } from 'react-hook-form';
 import {
   getPriorityRequired,
   getRuleValue,
-  useChangedFormContext
+  useChangedFormContext,
 } from '../utils';
 import { RightContent } from './components/RightContent';
 import type { FormTextAreaProps } from './types';
@@ -29,7 +29,7 @@ export const FormTextArea = <TFieldValues extends FieldValues>({
     ...options,
     required: getPriorityRequired({ options, ruleName: 'required' })
       ? options?.required
-      : propsRequired
+      : propsRequired,
   };
 
   const [isFocused, setIsFocused] = useState(false);
@@ -38,7 +38,7 @@ export const FormTextArea = <TFieldValues extends FieldValues>({
 
   const maxCount = getRuleValue<number>({
     rule: rules.maxLength,
-    typeValue: 'number'
+    typeValue: 'number',
   });
 
   return (
@@ -49,7 +49,7 @@ export const FormTextArea = <TFieldValues extends FieldValues>({
       rules={rules}
       render={({
         field: { name: _fieldName, onBlur, onChange, ...fieldRest },
-        fieldState: { error }
+        fieldState: { error },
       }) => (
         <TextAreaStyled
           {...fieldRest}
@@ -71,7 +71,7 @@ export const FormTextArea = <TFieldValues extends FieldValues>({
                 maxCount={maxCount as number}
                 onClear={() => {
                   setValue(name as string, '', {
-                    shouldDirty: true
+                    shouldDirty: true,
                   });
                   handleChange?.('', formCtx);
                 }}

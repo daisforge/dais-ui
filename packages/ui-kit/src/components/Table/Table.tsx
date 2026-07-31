@@ -10,12 +10,12 @@ import {
   RefTableContainerContext,
   RefTableContext,
   RefTableGlobalContainerContext,
-  TableResizeObserverProviderWrapper
+  TableResizeObserverProviderWrapper,
 } from './contexts';
 import { useColumnsControl } from './feature-column-control';
 import {
   useGetAllLvlColumnsConfig,
-  useLastLvlColumnConfig
+  useLastLvlColumnConfig,
 } from './feature-columns-grouping';
 import { getEditingEnabledState } from './feature-edit';
 import { FilterListBlock } from './feature-filtering';
@@ -52,7 +52,7 @@ import {
   useRowsWithSkeletonsOrNot,
   useSearchValues,
   useSidebarState,
-  useTableCollapseValues
+  useTableCollapseValues,
 } from './table-hooks';
 import { ActiveViewModsType, ObjectForExtending, TableProps } from './types';
 import { pasteOnlyKeysWithNotUndefinedValue } from './utils';
@@ -72,7 +72,7 @@ export function Table<
   HeaderContextValueType extends ObjectForExtending,
   RowContextValueType extends ObjectForExtending,
   RowType extends ObjectForExtending,
-  SummaryRowType = unknown
+  SummaryRowType = unknown,
 >({
   tableConfig: tableConfigExternal = {},
   columnConfig: colsOrGroupColsConfig,
@@ -82,7 +82,7 @@ export function Table<
   headerContextValue,
   rowContextValue,
   refTable,
-  refTableContainer: refTableContainerExternal // внешний ref (может быть RefObject или callback)
+  refTableContainer: refTableContainerExternal, // внешний ref (может быть RefObject или callback)
 }: TableProps<
   FilterStateType,
   RowIdType,
@@ -99,13 +99,13 @@ export function Table<
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const refTableContainerCombined = useMemo(
     () => mergeRefs(refTableContainerInternal, refTableContainerExternal),
-    [refTableContainerExternal]
+    [refTableContainerExternal],
   );
   const refTableX = useRef<DataGridHandle>(null);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const stableRefTable = useMemo(
     () => (refTable ? mergeRefs(refTable, refTableX) : refTableX),
-    [refTable]
+    [refTable],
   );
 
   // ------------------------------------------------  preparing TableConfig ------------------------------------------------
@@ -116,7 +116,7 @@ export function Table<
 
   // ------------------------------------------------  isLoadingTable ------------------------------------------------
   const { isLoadingTable, skeletonRowsCount } = useIsLoadingTable({
-    tableConfig
+    tableConfig,
   });
 
   // ------------------------------------------------  infinityScroll ------------------------------------------------
@@ -124,10 +124,10 @@ export function Table<
     infinityScrollHandler,
     infinityScrollHasMore,
     infinityScrollActiveInConfig,
-    isHaveActiveInfinityScroll
+    isHaveActiveInfinityScroll,
   } = useInfinityScroll({
     tableConfig,
-    rows
+    rows,
   });
 
   // ------------------------------------------------ pagination --------------------------------------------------------
@@ -140,7 +140,7 @@ export function Table<
   const colsWithKeyTextMap = useColsWithKeyTextMap({
     keyText,
     columnConfig,
-    tableConfigKeyTextBoolean
+    tableConfigKeyTextBoolean,
   });
 
   // ------------------------------------------------ rowInstruments -----------------------------------------
@@ -159,7 +159,7 @@ export function Table<
     isSelectingRowLabelVisible,
     setIsSelectingRowLabelVisible,
     controlBlock: selectRowDomMetadataControlBlock,
-    sidebar: selectRowDomMetadataSidebar
+    sidebar: selectRowDomMetadataSidebar,
   } = useSelectRow({ tableConfig, rows });
 
   // ------------------------------------------------ columns control (pinning, hiding, reorderingConfig) -----------------------------------------
@@ -173,22 +173,22 @@ export function Table<
     hiddenCols,
     setHiddenCols,
     openControlModal,
-    setOpenControlModal
+    setOpenControlModal,
   } = useColumnsControl({
     tableConfigColumnsControl: tableConfig.columnsControl,
     tableConfigKeyTextBoolean,
     colsWithKeyTextMap,
-    columnsGroupingIsActive
+    columnsGroupingIsActive,
   });
 
   // ------------------------------------------------ editing -----------------------------------------
   const innerState = useState(
-    !!tableConfig.editing && !!tableConfig?.editing?.defaultEnabled
+    !!tableConfig.editing && !!tableConfig?.editing?.defaultEnabled,
   );
 
   const [editModeEnabled, setEditModeEnabled] = getEditingEnabledState(
     tableConfig.editing?.enabled,
-    innerState
+    innerState,
   );
   // ------------------------------------------------ columns reConfig -----------------------------------------
   const {
@@ -197,7 +197,7 @@ export function Table<
     columnsOrder,
     getDefaultColumnsOrder,
     setColumnsOrder,
-    onColumnsReorder
+    onColumnsReorder,
   } = useColumns({
     tableConfig,
     columnConfig,
@@ -211,13 +211,13 @@ export function Table<
     keyText,
     tableConfigKeyTextBoolean,
     colsWithKeyTextMap,
-    editModeEnabled
+    editModeEnabled,
   });
 
   const { columnsWithParentGroups } = useGetAllLvlColumnsConfig(
     reorderedColumns,
     allColsFlattened,
-    columnsGroupingIsActive
+    columnsGroupingIsActive,
   );
 
   // ------------------------------------------------ view type -----------------------------------------
@@ -238,11 +238,11 @@ export function Table<
    * Но если передан tableConfig.rowHeight, tableConfig.rowHeight - будет приоритетнее
    * */
   const [rowSize, setRowSize] = useState<SIZE>(() =>
-    getDefuaultRowSize(tableConfig.rowSize)
+    getDefuaultRowSize(tableConfig.rowSize),
   );
   // ------------------------------------------------ summaryRowsIsActive -----------------------------------------
   const [summaryRowsIsActive, setSummaryRowsIsActive] = useState(
-    !!tableConfig.summaryRows?.showDefault
+    !!tableConfig.summaryRows?.showDefault,
   );
 
   // ------------------------------------------------ searching ------------------------------------------------
@@ -255,13 +255,13 @@ export function Table<
     showSearchBlock,
     setShowSearchBlock,
     placeholder: placeholderSearchBlock,
-    isManualSearching
+    isManualSearching,
   } = searchContextVal;
 
   // ------------------------------------------------ contextMenu ------------------------------------------------
   const contextMenuCtxVal = useContextMenuValues({
     tableConfig,
-    refTableX
+    refTableX,
   });
 
   // Закрываем контекстное меню при вертикальном скролле таблицы (по оси Y)
@@ -271,7 +271,7 @@ export function Table<
   // ------------------------------------------------ sideBar ------------------------------------------------
   const sideBarContextVal = useSidebarState({
     tableConfig,
-    refTableContainer: refTableContainerInternal
+    refTableContainer: refTableContainerInternal,
   });
 
   // ------------------------------------------------ collapsing table ------------------------------------------------
@@ -283,7 +283,7 @@ export function Table<
     setFilters,
     filteredRows,
     filtersAreVisible,
-    clearedFiltersValue
+    clearedFiltersValue,
   } = useFilteredRows({
     rows,
     tableConfig,
@@ -292,7 +292,7 @@ export function Table<
     paginationActiveInConfig,
     searchingActiveInConfig,
     searchQuery,
-    isManualSearching
+    isManualSearching,
   });
 
   // ------------------------------------------------ sorting ------------------------------------------------
@@ -301,13 +301,13 @@ export function Table<
     setSortColumns,
     sortedRows,
     sortIsVisible,
-    setSortIsVisible
+    setSortIsVisible,
   } = useSortedRows({
     rows: filteredRows,
     columns,
     tableConfig,
     infinityScrollActiveInConfig,
-    paginationActiveInConfig
+    paginationActiveInConfig,
   });
 
   // ------------------------------------------------ groupedRows ---------------------------------------------------
@@ -319,10 +319,10 @@ export function Table<
     isRowsGroupingCounterVisible,
     setIsRowsGroupingCounterVisible,
     isRowsGroupingLabelVisible,
-    setIsRowsGroupingLabelVisible
+    setIsRowsGroupingLabelVisible,
   } = useGroupedRows({
     tableConfig,
-    rows: sortedRows
+    rows: sortedRows,
   });
   // ------------------------------------------------ treeView ---------------------------------------------------
 
@@ -330,11 +330,11 @@ export function Table<
     flattenedRows,
     expandedRowsIdsStateAndSetter,
     isExpandedAllRows,
-    toggleExpandAllButton
+    toggleExpandAllButton,
   } = useFlattenedRows({
     rows: groupedRows as RowType[],
     tableConfig,
-    groupedCols
+    groupedCols,
   });
 
   // ------------------------------------------------ changing rows ------------------------------------------------
@@ -359,7 +359,7 @@ export function Table<
     onScroll: onScrollExternal,
     rowClass: rowClassExternal,
     // "data-testid"
-    headerRowHeight
+    headerRowHeight,
   } = tableConfig;
 
   // ------------------------------------------------  onCellClick ------------------------------------------------
@@ -372,24 +372,24 @@ export function Table<
     onScrollExternal,
     infinityScrollHandler,
     isHaveActiveInfinityScroll,
-    onScrollInternal: handleContextMenuScroll
+    onScrollInternal: handleContextMenuScroll,
   });
 
   // ------------------------------------------------  rowClass ------------------------------------------------
   const { rowClass } = useRowClass({
     rowClassExternal,
     tableConfigSubRowsBoolean: !!tableConfig.subRows,
-    tableConfigRowDetailBoolean: !!tableConfig.rowDetailPanel
+    tableConfigRowDetailBoolean: !!tableConfig.rowDetailPanel,
   });
 
   // ------------------------------------------------ row detail ------------------------------------------------
   const {
     rowsWithExpDetails,
     rowDetailContextValue,
-    rowDetailIsActiveInConfig
+    rowDetailIsActiveInConfig,
   } = useRowDetailPanel({
     tableConfigRowDetail: tableConfig.rowDetailPanel,
-    rows: flattenedRows
+    rows: flattenedRows,
   });
 
   // ------------------------------------------------  rows with skeletons or not ------------------------------------------------
@@ -399,7 +399,7 @@ export function Table<
     infinityScrollActiveInConfig,
     infinityScrollHasMore,
     skeletonRowsCount,
-    rows: rowsWithExpDetails
+    rows: rowsWithExpDetails,
   });
 
   // ------------------------------------------------ table in TableTabs ------------------------------------------------
@@ -408,7 +408,7 @@ export function Table<
   // ------------------------------------------------  fullScreen mode ------------------------------------------------
   const {
     state: [fullScreened, setFullScreened],
-    fullScreenPortal
+    fullScreenPortal,
   } = useFullScreenState(tableConfig.fullScreenEnabled);
 
   // ------------------------------------------------ compressing visibility state ------------------------------------------------
@@ -461,7 +461,7 @@ export function Table<
     tableConfigKeyTextBoolean,
     // CompressionVisibilityState
     compressionVisibility,
-    enableAdaptiveCompress
+    enableAdaptiveCompress,
   });
 
   // ------------------------------------------------ controlBlock ------------------------------------------------
@@ -469,8 +469,8 @@ export function Table<
     controlBlock = {
       show: true,
       leftSideDropdownProps: {},
-      rightSideDropdownProps: {}
-    }
+      rightSideDropdownProps: {},
+    },
   } = tableConfig;
 
   const isHaveCustomButtons =
@@ -485,7 +485,7 @@ export function Table<
   const {
     styleMemo,
     containerStyleResult,
-    tableAndSidebarContainerHeightStyle
+    tableAndSidebarContainerHeightStyle,
   } = useInlineStyle({
     style,
     tableConfig,
@@ -500,7 +500,7 @@ export function Table<
     tableCollapsingValue: tableCollapseContextVal,
     paginationHeight,
     refTableContainer: refTableContainerInternal,
-    collapseButtonPlacement: tableConfig.collapsing?.collapseButtonPlacement
+    collapseButtonPlacement: tableConfig.collapsing?.collapseButtonPlacement,
   });
 
   // ------------------------------------------------ rows height ------------------------------------------------
@@ -508,7 +508,7 @@ export function Table<
   const { resultRowHeight } = useRowHeight({
     rowDetailIsActiveInConfig,
     rowSize,
-    tableConfig
+    tableConfig,
   });
   // ------------------------------------------------ no rows fallback ------------------------------------------------
   const { noRowsFallback } = tableConfig;
@@ -530,7 +530,7 @@ export function Table<
     headerContextValue,
     rowContextValue,
     setActiveView,
-    activeView
+    activeView,
   });
 
   // для совместимости с типом провайдера
@@ -570,7 +570,7 @@ export function Table<
                   isSelectingRowLabelVisible,
                   setIsSelectingRowLabelVisible,
                   controlBlock: selectRowDomMetadataControlBlock,
-                  sidebar: selectRowDomMetadataSidebar
+                  sidebar: selectRowDomMetadataSidebar,
                 }}
               >
                 <RowDetailHandlerContextProvider value={rowDetailContextValue}>
@@ -655,7 +655,7 @@ export function Table<
                                 {...{
                                   tableConfig,
                                   columnConfig,
-                                  headerContextValue
+                                  headerContextValue,
                                 }}
                                 $borderLeftTopRadiusRounded={
                                   !isTableInTabs && !isHaveControlBlock
@@ -724,7 +724,7 @@ export function Table<
                           featuresObj.isHaveSomeFeatureInSidebar,
                         collapseButtonAboveRightSlot:
                           tableCollapseContextVal.collapseButtonAboveRightSlot,
-                        $borderTopRounded: !isTableInTabs || fullScreened
+                        $borderTopRounded: !isTableInTabs || fullScreened,
                       }}
                       dataGridProps={{
                         refTable: stableRefTable,
@@ -734,28 +734,28 @@ export function Table<
                         // rowSize and height
                         rowSize,
                         ...(resultRowHeight && {
-                          rowHeight: resultRowHeight
+                          rowHeight: resultRowHeight,
                         }),
 
                         headerRowHeight: headerRowHeight ?? 33,
 
                         ...(tableConfig.editing &&
                           !isLoadingTable && {
-                            onRowsChange: onRowsChangeLastVersion
+                            onRowsChange: onRowsChangeLastVersion,
                           }),
 
                         // --------- columns
                         columns: columnsWithParentGroups,
 
                         ...(reorderInHeaderIsActive && {
-                          onColumnsReorder
+                          onColumnsReorder,
                         }),
 
                         // --------- summaryRows
                         ...(summaryRowsIsActive &&
                           !isLoadingTable && {
                             topSummaryRows,
-                            bottomSummaryRows
+                            bottomSummaryRows,
                           }),
                         ...(noRowsFallback && {
                           renderers: {
@@ -763,8 +763,8 @@ export function Table<
                               noRowsFallback.custom
                             ) : (
                               <NoRowsFallback />
-                            )
-                          }
+                            ),
+                          },
                         }),
 
                         rowClass,
@@ -783,8 +783,8 @@ export function Table<
                           onCellKeyDown,
                           onSelectedCellChange,
                           onColumnResize,
-                          enableVirtualization
-                        })
+                          enableVirtualization,
+                        }),
                       }}
                       pagination={pagination}
                       setPaginationHeight={setPaginationHeight}

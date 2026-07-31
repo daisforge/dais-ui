@@ -1,7 +1,7 @@
 import { HistoryDay, HistoryItem } from './ApprovalCenter.types';
 
 export function isNotNullOrUndefined<T>(
-  value: T | null | undefined
+  value: T | null | undefined,
 ): value is T {
   return value !== null && value !== undefined;
 }
@@ -13,13 +13,13 @@ export function isNonEmptyArray<T>(value: unknown): value is [T, ...T[]] {
 export function groupByDay(items: HistoryItem[]): HistoryDay[] {
   const dayFormatter = new Intl.DateTimeFormat('ru-RU', {
     day: 'numeric',
-    month: 'long'
+    month: 'long',
   });
 
   const timeFormatter = new Intl.DateTimeFormat('ru-RU', {
     hour: '2-digit',
     minute: '2-digit',
-    hour12: false
+    hour12: false,
   });
 
   const now = new Date();
@@ -47,7 +47,7 @@ export function groupByDay(items: HistoryItem[]): HistoryDay[] {
     const formattedItem = {
       status: item.status,
       title: item.actionTitle,
-      time
+      time,
     };
 
     let actions = groups.get(day);
@@ -62,6 +62,6 @@ export function groupByDay(items: HistoryItem[]): HistoryDay[] {
 
   return Array.from(groups, ([date, actions]) => ({
     date,
-    actions
+    actions,
   }));
 }

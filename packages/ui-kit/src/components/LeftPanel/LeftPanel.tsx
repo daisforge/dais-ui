@@ -11,12 +11,12 @@ import {
   PanelContainer,
   PanelContent,
   PanelCrossfade,
-  PanelSeparator
+  PanelSeparator,
 } from './styled';
 import {
   getLeftPanelMinWidth,
   getLeftPanelSlotSizes,
-  renderLeftPanelSlot
+  renderLeftPanelSlot,
 } from './utils';
 
 export const LeftPanel = ({
@@ -34,31 +34,31 @@ export const LeftPanel = ({
   showToggleButton = true,
   showResizeable = true,
   onResize,
-  onToggleCollapse
+  onToggleCollapse,
 }: LeftPanelProps) => {
   const { down } = useBreakpoint();
   const isAdaptive1280 = !disableMediaAdaptive && down('xl');
   const minWidth = getLeftPanelMinWidth(isAdaptive1280, minWidthProp);
   const slotSizes = useMemo(
     () => getLeftPanelSlotSizes(isAdaptive1280),
-    [isAdaptive1280]
+    [isAdaptive1280],
   );
   const renderedExpandedContent = useMemo(
     () => renderLeftPanelSlot(expandedContent, slotSizes),
-    [expandedContent, slotSizes]
+    [expandedContent, slotSizes],
   );
   const renderedCollapsedContent = useMemo(
     () => renderLeftPanelSlot(collapsedContent, slotSizes),
-    [collapsedContent, slotSizes]
+    [collapsedContent, slotSizes],
   );
   const renderedCollapsedFooterContent = useMemo(
     () => renderLeftPanelSlot(collapsedFooterContent, slotSizes),
-    [collapsedFooterContent, slotSizes]
+    [collapsedFooterContent, slotSizes],
   );
   const innerState = useState(false);
   const [isCollapsed, setIsCollapsed] = collapseState ?? innerState;
   const innerWidthState = useState<number | undefined>(
-    isCollapsed ? Number(minWidth) : Number(maxWidth)
+    isCollapsed ? Number(minWidth) : Number(maxWidth),
   );
   const [width, setWidth] = widthState ?? innerWidthState;
   const panelRef = useRef<HTMLDivElement>(null);
@@ -77,7 +77,7 @@ export const LeftPanel = ({
     maxWidth,
     parentRef,
     isCollapsed,
-    onResize
+    onResize,
   });
 
   useEffect(() => {

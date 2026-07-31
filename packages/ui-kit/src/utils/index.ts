@@ -4,13 +4,13 @@ export type {
   BreakpointProviderProps,
   BreakpointReturn,
   MediaProviderProps,
-  MediaQuery
+  MediaQuery,
 } from './breakpoint';
 export {
   BreakpointProvider,
   media,
   MediaProvider,
-  useBreakpoint
+  useBreakpoint,
 } from './breakpoint';
 export { bubble } from './bubble';
 export * from './clickStream';
@@ -19,7 +19,7 @@ export { createSafeResizeObserver } from './createSafeResizeObserver';
 export { debounce } from './debounce';
 export {
   processDropdownItems,
-  useDropdownItemClickHandler
+  useDropdownItemClickHandler,
 } from './dropdownUtils';
 export * from './eventBus';
 export { generateB3Headers } from './generateTraceId';

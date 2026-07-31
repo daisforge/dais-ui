@@ -5,5 +5,5 @@ export type DebugNamespace = string;
 export type DebugLogger = (
   prefix: string,
   message: string,
-  data?: unknown
+  data?: unknown,
 ) => void;

@@ -4,7 +4,7 @@ import { ComponentProps, ReactNode } from 'react';
 import { DataAttributes } from '../../types/utils.type';
 import {
   TableDropdownConfigProps,
-  TableDropdownProps
+  TableDropdownProps,
 } from '../TableDropdown/types';
 
 export type SplitIconButtonProps = {

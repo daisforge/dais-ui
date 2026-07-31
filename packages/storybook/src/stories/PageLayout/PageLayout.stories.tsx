@@ -80,7 +80,7 @@ const SidebarContent = styled.div`
 const DefaultPageHeader = (
   <PageTitle
     breadcrumbs={{
-      items: [{ title: 'Главная', href: '#' }, { title: 'Раздел' }]
+      items: [{ title: 'Главная', href: '#' }, { title: 'Раздел' }],
     }}
     title="Заголовок страницы"
     subtitle="Описание страницы или подзаголовок"
@@ -110,7 +110,7 @@ const navItems = [
   { label: 'Журнал операций', value: 'journal' },
   { label: 'Пользователи', value: 'users' },
   { label: 'Роли и доступы', value: 'roles' },
-  { label: 'Настройки', value: 'settings' }
+  { label: 'Настройки', value: 'settings' },
 ];
 
 const LeftPanelExpandedContent = () => (
@@ -206,9 +206,9 @@ const meta: Meta<PageLayoutProps> = {
   parameters: {
     layout: 'fullscreen',
     docs: {
-      toc: true
-    }
-  }
+      toc: true,
+    },
+  },
 };
 
 export default meta;
@@ -246,7 +246,7 @@ export const Basic: Story = {
         />
       </PageLayout>
     </>
-  )
+  ),
 };
 
 // ─── 2. WithTwoColumns ──────────────────────────────────────────────
@@ -275,12 +275,12 @@ export const WithTwoColumns: Story = {
             </ContentBlock>,
             <ContentBlock key="right" $bg="#dfdfff">
               Правая колонка
-            </ContentBlock>
+            </ContentBlock>,
           ]}
         />
       </PageLayout>
     </>
-  )
+  ),
 };
 
 // ─── 3. WithLongContent ─────────────────────────────────────────────
@@ -308,7 +308,7 @@ export const WithLongContent: Story = {
         />
       </PageLayout>
     </>
-  )
+  ),
 };
 
 // ─── 4. WithSplitView ───────────────────────────────────────────────
@@ -381,7 +381,7 @@ function WithSplitViewTemplate() {
               </SidebarContent>
             ),
             isOpened: sidebarOpen,
-            defaultWidthPercent: 30
+            defaultWidthPercent: 30,
           }}
         />
       </PageLayout>
@@ -392,7 +392,7 @@ function WithSplitViewTemplate() {
 const withSplitViewCode = `${preCode}
 ${getFuncAsString(
   'packages/storybook/src/stories/PageLayout/PageLayout.stories.tsx',
-  'WithSplitViewTemplate'
+  'WithSplitViewTemplate',
 )}
 `;
 
@@ -400,9 +400,9 @@ export const WithSplitView: Story = {
   name: 'SplitView (toggle sidebar)',
   ...storySourceDoc({
     previewSource: 'shown',
-    code: withSplitViewCode
+    code: withSplitViewCode,
   }),
-  render: WithSplitViewTemplate
+  render: WithSplitViewTemplate,
 };
 
 // ─── 5. SplitViewWithLongContent ────────────────────────────────────
@@ -454,7 +454,7 @@ function SplitViewLongContentTemplate() {
               </SidebarContent>
             ),
             isOpened: sidebarOpen,
-            defaultWidthPercent: 25
+            defaultWidthPercent: 25,
           }}
         />
       </PageLayout>
@@ -465,7 +465,7 @@ function SplitViewLongContentTemplate() {
 const splitViewLongContentCode = `${preCode}
 ${getFuncAsString(
   'packages/storybook/src/stories/PageLayout/PageLayout.stories.tsx',
-  'SplitViewLongContentTemplate'
+  'SplitViewLongContentTemplate',
 )}
 `;
 
@@ -473,9 +473,9 @@ export const SplitViewWithLongContent: Story = {
   name: 'SplitView + длинный контент',
   ...storySourceDoc({
     previewSource: 'shown',
-    code: splitViewLongContentCode
+    code: splitViewLongContentCode,
   }),
-  render: SplitViewLongContentTemplate
+  render: SplitViewLongContentTemplate,
 };
 
 // ─── 6. WithLeftPanel ───────────────────────────────────────────────
@@ -539,7 +539,7 @@ function WithLeftPanelTemplate() {
 const withLeftPanelCode = `${preCode}
 ${getFuncAsString(
   'packages/storybook/src/stories/PageLayout/PageLayout.stories.tsx',
-  'WithLeftPanelTemplate'
+  'WithLeftPanelTemplate',
 )}
 `;
 
@@ -547,9 +547,9 @@ export const WithLeftPanel: Story = {
   name: 'LeftPanel + Layout',
   ...storySourceDoc({
     previewSource: 'shown',
-    code: withLeftPanelCode
+    code: withLeftPanelCode,
   }),
-  render: WithLeftPanelTemplate
+  render: WithLeftPanelTemplate,
 };
 
 // ─── 7. LeftPanel + SplitView ───────────────────────────────────────
@@ -590,7 +590,7 @@ function LeftPanelWithSplitViewTemplate() {
               marginBottom="0"
               paddingTop="16px"
               style={{
-                height: '100%'
+                height: '100%',
               }}
               headerSlot={DefaultPageHeader}
               mainSlot={
@@ -647,7 +647,7 @@ function LeftPanelWithSplitViewTemplate() {
               </SidebarContent>
             ),
             isOpened: sidebarOpen,
-            defaultWidthPercent: 30
+            defaultWidthPercent: 30,
           }}
         />
       </PageLayout>
@@ -658,7 +658,7 @@ function LeftPanelWithSplitViewTemplate() {
 const leftPanelWithSplitViewCode = `${preCode}
 ${getFuncAsString(
   'packages/storybook/src/stories/PageLayout/PageLayout.stories.tsx',
-  'LeftPanelWithSplitViewTemplate'
+  'LeftPanelWithSplitViewTemplate',
 )}
 `;
 
@@ -666,9 +666,9 @@ export const LeftPanelWithSplitView: Story = {
   name: 'LeftPanel + SplitView',
   ...storySourceDoc({
     previewSource: 'shown',
-    code: leftPanelWithSplitViewCode
+    code: leftPanelWithSplitViewCode,
   }),
-  render: LeftPanelWithSplitViewTemplate
+  render: LeftPanelWithSplitViewTemplate,
 };
 
 // ─── 8. LeftPanel + SplitView + длинный контент ─────────────────────
@@ -707,7 +707,7 @@ function FullComboLongTemplate() {
               marginBottom="0"
               paddingTop="16px"
               style={{
-                height: '100%'
+                height: '100%',
               }}
               headerSlot={DefaultPageHeader}
               mainSlot={
@@ -744,7 +744,7 @@ function FullComboLongTemplate() {
               </SidebarContent>
             ),
             isOpened: sidebarOpen,
-            defaultWidthPercent: 25
+            defaultWidthPercent: 25,
           }}
         />
       </PageLayout>
@@ -755,7 +755,7 @@ function FullComboLongTemplate() {
 const fullComboLongCode = `${preCode}
 ${getFuncAsString(
   'packages/storybook/src/stories/PageLayout/PageLayout.stories.tsx',
-  'FullComboLongTemplate'
+  'FullComboLongTemplate',
 )}
 `;
 
@@ -763,9 +763,9 @@ export const FullComboLongContent: Story = {
   name: 'LeftPanel + SplitView + скролл',
   ...storySourceDoc({
     previewSource: 'shown',
-    code: fullComboLongCode
+    code: fullComboLongCode,
   }),
-  render: FullComboLongTemplate
+  render: FullComboLongTemplate,
 };
 
 // ─── 9. PageLayout для шапки микрофронта ────────────────────────────
@@ -828,5 +828,5 @@ export const ForMicroFrontHeader: Story = {
         />
       </PageLayout>
     </>
-  )
+  ),
 };

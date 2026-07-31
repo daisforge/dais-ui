@@ -10,7 +10,7 @@ export const KEYS_ROW_GROUPED: {
   groupParents: 'groupParents',
   childRows: 'childRows',
   column: 'column',
-  tabIndex: 'tabIndex'
+  tabIndex: 'tabIndex',
 };
 /**
  * KEY_GROUPED_COL - ключ колонки, которая создается при группировке строк (при группировке данных).

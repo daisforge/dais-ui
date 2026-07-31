@@ -6,7 +6,7 @@ import React, {
   useContext,
   useEffect,
   useMemo,
-  useRef
+  useRef,
 } from 'react';
 
 type ResizeCallback = (entries: ResizeObserverEntry[]) => void;
@@ -23,7 +23,7 @@ export const useTableResizeObserver = (callback: ResizeCallback) => {
   const context = useContext(TableResizeObserverContext);
   if (!context) {
     throw new Error(
-      'useTableResizeObserver must be used within TableResizeObserverProvider'
+      'useTableResizeObserver must be used within TableResizeObserverProvider',
     );
   }
 
@@ -42,7 +42,7 @@ export const useTableResizeObserverWidth = () => {
   const context = useContext(TableResizeObserverContext);
   if (!context) {
     throw new Error(
-      'useTableResizeObserverWidth must be used within TableResizeObserverProvider'
+      'useTableResizeObserverWidth must be used within TableResizeObserverProvider',
     );
   }
   return context.getCurrentWidth;
@@ -50,7 +50,7 @@ export const useTableResizeObserverWidth = () => {
 
 export const TableResizeObserverProvider = ({
   children,
-  element
+  element,
 }: {
   children: React.ReactNode;
   element: HTMLElement | null;
@@ -99,8 +99,8 @@ export const TableResizeObserverProvider = ({
       currentWidthRef.current = initialWidth;
       const initialEntries = [
         {
-          contentRect: { width: initialWidth, height: 0 }
-        } as ResizeObserverEntry
+          contentRect: { width: initialWidth, height: 0 },
+        } as ResizeObserverEntry,
       ];
       callbacksRef.current.forEach((callback: ResizeCallback) => {
         try {
@@ -132,9 +132,9 @@ export const TableResizeObserverProvider = ({
   const value: TableResizeObserverContextValue = useMemo(
     () => ({
       subscribe,
-      getCurrentWidth
+      getCurrentWidth,
     }),
-    [subscribe, getCurrentWidth]
+    [subscribe, getCurrentWidth],
   );
 
   return (
@@ -147,13 +147,13 @@ export const TableResizeObserverProvider = ({
 // Компонент-обертка для TableResizeObserverProvider, который обновляется при изменении ref
 export const TableResizeObserverProviderWrapper = ({
   children,
-  refTableContainer
+  refTableContainer,
 }: {
   children: React.ReactNode;
   refTableContainer: React.MutableRefObject<HTMLDivElement | null>;
 }) => {
   const [element, setElement] = React.useState<HTMLElement | null>(
-    refTableContainer?.current ?? null
+    refTableContainer?.current ?? null,
   );
 
   React.useLayoutEffect(() => {

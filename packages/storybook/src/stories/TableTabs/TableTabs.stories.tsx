@@ -6,7 +6,7 @@ import { RectSkeleton } from '@ui-kit/components/Skeleton';
 import { ColumnConfig, Table } from '@ui-kit/components/Table';
 import {
   ColumnConfig as CanvasColumnConfig,
-  TableCanvas
+  TableCanvas,
 } from '@ui-kit/components/TableCanvas';
 import { TableTabs } from '@ui-kit/components/TableTabs';
 import { surfaceInfo, surfaceSolidCard } from '@ui-kit/tokens';
@@ -18,9 +18,9 @@ const meta: Meta = {
   parameters: {
     docs: {
       page: DocStoryTemplate,
-      toc: true
-    }
-  }
+      toc: true,
+    },
+  },
 };
 
 export default meta;
@@ -41,9 +41,9 @@ export const BasicWithTable: StoryObj = {
         { key: 'task', name: 'Title' },
         { key: 'priority', name: 'Priority' },
         { key: 'issueType', name: 'Issue Type' },
-        { key: 'complete', name: '% Complete' }
+        { key: 'complete', name: '% Complete' },
       ],
-      []
+      [],
     );
 
     const [activeTabId, setActiveTabId] = useState('1');
@@ -54,7 +54,7 @@ export const BasicWithTable: StoryObj = {
         tabs={[
           { tabId: '1', label: 'Таб 1' },
           { tabId: '2', label: 'Таб 2' },
-          { tabId: '3', label: 'Скелетон' }
+          { tabId: '3', label: 'Скелетон' },
         ]}
       >
         <TableTabs.TabPanel tabId="1">
@@ -76,7 +76,7 @@ export const BasicWithTable: StoryObj = {
         </TableTabs.TabPanel>
       </TableTabs>
     );
-  }
+  },
 };
 
 /**
@@ -95,9 +95,9 @@ export const BasicWithTableCanvas: StoryObj = {
         { key: 'task', name: 'Title' },
         { key: 'priority', name: 'Priority' },
         { key: 'issueType', name: 'Issue Type' },
-        { key: 'developer', name: 'Developer' }
+        { key: 'developer', name: 'Developer' },
       ],
-      []
+      [],
     );
 
     const [activeTabId, setActiveTabId] = useState('1');
@@ -108,14 +108,14 @@ export const BasicWithTableCanvas: StoryObj = {
         tabs={[
           { tabId: '1', label: 'Таб 1' },
           { tabId: '2', label: 'Таб 2' },
-          { tabId: '3', label: 'Скелетон' }
+          { tabId: '3', label: 'Скелетон' },
         ]}
       >
         <TableTabs.TabPanel tabId="1">
           <TableCanvas
             tableConfig={{
               containerStyle: { height: 700 },
-              fullScreenEnabled: true
+              fullScreenEnabled: true,
             }}
             columnConfig={columnConfig}
             rows={rows}
@@ -125,7 +125,7 @@ export const BasicWithTableCanvas: StoryObj = {
           <TableCanvas
             tableConfig={{
               containerStyle: { height: 700 },
-              fullScreenEnabled: true
+              fullScreenEnabled: true,
             }}
             columnConfig={columnConfig}
             rows={rows}
@@ -136,7 +136,7 @@ export const BasicWithTableCanvas: StoryObj = {
         </TableTabs.TabPanel>
       </TableTabs>
     );
-  }
+  },
 };
 
 /**
@@ -157,9 +157,9 @@ export const FillAvailableHeightWithTableCanvas: StoryObj = {
         { key: 'task', name: 'Title', width: 280 },
         { key: 'priority', name: 'Priority', width: 160 },
         { key: 'issueType', name: 'Issue Type', width: 160 },
-        { key: 'developer', name: 'Developer' }
+        { key: 'developer', name: 'Developer' },
       ],
-      []
+      [],
     );
 
     const [activeTabId, setActiveTabId] = useState('all');
@@ -174,7 +174,7 @@ export const FillAvailableHeightWithTableCanvas: StoryObj = {
           flexDirection: 'column',
           gap: 16,
           minHeight: 0,
-          background: surfaceInfo
+          background: surfaceInfo,
         }}
       >
         <div
@@ -182,7 +182,7 @@ export const FillAvailableHeightWithTableCanvas: StoryObj = {
             flexShrink: 0,
             display: 'flex',
             flexDirection: 'column',
-            gap: 8
+            gap: 8,
           }}
         >
           <div
@@ -190,7 +190,7 @@ export const FillAvailableHeightWithTableCanvas: StoryObj = {
               fontSize: 28,
               fontWeight: 600,
               lineHeight: '36px',
-              color: surfaceSolidCard
+              color: surfaceSolidCard,
             }}
           >
             Реестр документов
@@ -199,7 +199,7 @@ export const FillAvailableHeightWithTableCanvas: StoryObj = {
             style={{
               fontSize: 14,
               lineHeight: '20px',
-              color: surfaceSolidCard
+              color: surfaceSolidCard,
             }}
           >
             Пример композиции, в которой TableTabs занимает доступную высоту
@@ -211,7 +211,7 @@ export const FillAvailableHeightWithTableCanvas: StoryObj = {
           activeTabIdState={[activeTabId, setActiveTabId]}
           tabs={[
             { tabId: 'all', label: 'Все документы' },
-            { tabId: 'drafts', label: 'Черновики' }
+            { tabId: 'drafts', label: 'Черновики' },
           ]}
           tabsAndPanelsContainerCss={{
             display: 'flex',
@@ -221,7 +221,7 @@ export const FillAvailableHeightWithTableCanvas: StoryObj = {
             minWidth: 0,
             width: '100%',
             '& .rdg__tabs-container': {
-              flexShrink: 0
+              flexShrink: 0,
             },
             '& .rdg__tab-panel': {
               display: 'flex',
@@ -230,8 +230,8 @@ export const FillAvailableHeightWithTableCanvas: StoryObj = {
               minHeight: 0,
               minWidth: 0,
               width: '100%',
-              overflow: 'hidden'
-            }
+              overflow: 'hidden',
+            },
           }}
         >
           <TableTabs.TabPanel tabId="all" unmountOnClose={false}>
@@ -240,8 +240,8 @@ export const FillAvailableHeightWithTableCanvas: StoryObj = {
                 containerStyle: { height: '100%' },
                 fullScreenEnabled: true,
                 columnsControl: {
-                  enable: true
-                }
+                  enable: true,
+                },
               }}
               columnConfig={columnConfig}
               rows={rows}
@@ -254,8 +254,8 @@ export const FillAvailableHeightWithTableCanvas: StoryObj = {
                 containerStyle: { height: '100%' },
                 fullScreenEnabled: true,
                 columnsControl: {
-                  enable: true
-                }
+                  enable: true,
+                },
               }}
               columnConfig={columnConfig}
               rows={rows.slice(0, 40)}
@@ -264,7 +264,7 @@ export const FillAvailableHeightWithTableCanvas: StoryObj = {
         </TableTabs>
       </div>
     );
-  }
+  },
 };
 
 /**
@@ -285,9 +285,9 @@ export const MixedTableAndCanvas: StoryObj = {
         { key: 'task', name: 'Title' },
         { key: 'priority', name: 'Priority' },
         { key: 'issueType', name: 'Issue Type' },
-        { key: 'complete', name: '% Complete' }
+        { key: 'complete', name: '% Complete' },
       ],
-      []
+      [],
     );
 
     const canvasColumnConfig = useMemo<readonly CanvasColumnConfig<Row>[]>(
@@ -296,9 +296,9 @@ export const MixedTableAndCanvas: StoryObj = {
         { key: 'task', name: 'Title' },
         { key: 'priority', name: 'Priority' },
         { key: 'issueType', name: 'Issue Type' },
-        { key: 'developer', name: 'Developer' }
+        { key: 'developer', name: 'Developer' },
       ],
-      []
+      [],
     );
 
     const [activeTabId, setActiveTabId] = useState('table');
@@ -308,14 +308,14 @@ export const MixedTableAndCanvas: StoryObj = {
         activeTabIdState={[activeTabId, setActiveTabId]}
         tabs={[
           { tabId: 'table', label: 'Table (обычная)' },
-          { tabId: 'canvas', label: 'TableCanvas (канвасная)' }
+          { tabId: 'canvas', label: 'TableCanvas (канвасная)' },
         ]}
       >
         <TableTabs.TabPanel tabId="table">
           <Table
             tableConfig={{
               containerStyle: { height: 700 },
-              fullScreenEnabled: true
+              fullScreenEnabled: true,
             }}
             columnConfig={columnConfig}
             rows={rows}
@@ -325,7 +325,7 @@ export const MixedTableAndCanvas: StoryObj = {
           <TableCanvas
             tableConfig={{
               containerStyle: { height: 700 },
-              fullScreenEnabled: true
+              fullScreenEnabled: true,
             }}
             columnConfig={canvasColumnConfig}
             rows={rows}
@@ -336,5 +336,5 @@ export const MixedTableAndCanvas: StoryObj = {
         </TableTabs.TabPanel>
       </TableTabs>
     );
-  }
+  },
 };

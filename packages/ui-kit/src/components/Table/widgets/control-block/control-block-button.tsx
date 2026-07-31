@@ -6,7 +6,7 @@ import React from 'react';
 import styled, {
   css,
   CSSObject,
-  FlattenSimpleInterpolation
+  FlattenSimpleInterpolation,
 } from 'styled-components';
 
 import { TableDropdown } from '../../components/TableDropdown/TableDropdown';
@@ -15,15 +15,15 @@ import {
   controlButtonDefaultProps,
   EmbedIconButtonProps,
   LinkButtonProps,
-  LinkButtonView
+  LinkButtonView,
 } from './control-block-button.types';
 
 export const StyledLinkButton = styled(LinkButton)({
-  paddingInline: s.x8
+  paddingInline: s.x8,
 }) as typeof LinkButton;
 
 export const StyledDivider = styled(Divider)({
-  paddingLeft: '1px'
+  paddingLeft: '1px',
 });
 
 interface StyledButtonProps {
@@ -34,7 +34,7 @@ interface StyledButtonProps {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const StyledButton: React.FC<EmbedIconButtonProps & StyledButtonProps> = styled(
-  EmbedIconButton
+  EmbedIconButton,
 )<StyledButtonProps>`
   ${({ $hasDropdown }) =>
     $hasDropdown &&
@@ -70,7 +70,7 @@ const StyledLinkButtonWithDropdown: React.FC<
 `;
 
 const getLinkButtonView = (
-  view: ControlBlockButtonProps['view']
+  view: ControlBlockButtonProps['view'],
 ): LinkButtonView =>
   view?.split?.('link')?.[1]?.toLowerCase() as LinkButtonView;
 

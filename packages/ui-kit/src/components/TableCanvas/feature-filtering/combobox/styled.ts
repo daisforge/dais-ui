@@ -52,18 +52,18 @@ const listStylesMapper = {
   small: () => ({
     ...bodyXS,
     padding: '10px 12px',
-    borderRadius: '6px'
+    borderRadius: '6px',
   }),
   medium: () => ({
     ...bodyS,
     padding: '10px 12px',
-    borderRadius: '8px'
+    borderRadius: '8px',
   }),
   big: () => ({
     ...bodyM,
     padding: '10px 12px',
-    borderRadius: '10px'
-  })
+    borderRadius: '10px',
+  }),
 };
 export const StyledList = styled.ul<{ $maxHeight?: string }>`
   * {
@@ -87,13 +87,13 @@ export const StyledListItem = styled.li<{
     css({
       ...listStylesMapper[$size](),
       ...($selected && {
-        backgroundColor: COLORS.headerColor
+        backgroundColor: COLORS.headerColor,
       }),
       ...(!$selected && {
         '&:hover': {
-          backgroundColor: 'var(--surface-transparent-secondary-hover)'
-        }
-      })
+          backgroundColor: 'var(--surface-transparent-secondary-hover)',
+        },
+      }),
     })}
   ${({ $css }) => $css}
 `;

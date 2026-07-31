@@ -6,7 +6,7 @@ import {
   COLORS,
   DURATION,
   HEIGHT_CONTROL_BLOCK,
-  TABLE_BORDER_RADIUS
+  TABLE_BORDER_RADIUS,
 } from '../../styles';
 import { ActiveViewModsType } from '../../types';
 import { controlBlockClassNames as cls } from './control-block.classnames';
@@ -46,11 +46,11 @@ export const ControlBlockStyled = styled(Box)<{
     css({
       ...($activeView === 'rows' && {
         backgroundColor: COLORS.white,
-        borderColor: COLORS.border
+        borderColor: COLORS.border,
       }),
       ...($activeView === 'cards' && {
-        borderColor: 'transparent'
-      })
+        borderColor: 'transparent',
+      }),
       // ...($collapsedTable && {
       //   boxSizing: 'content-box',
       // }),
@@ -90,7 +90,7 @@ export const ControlBlockStyled = styled(Box)<{
     `}
 `;
 export const LefSideStyled = styled(Box).attrs({
-  className: cls.leftControlBlock
+  className: cls.leftControlBlock,
 })`
   display: flex;
 `;

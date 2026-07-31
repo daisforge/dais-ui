@@ -18,7 +18,7 @@ type IconButtonFilterProps = IconButtonProps & {
 };
 
 export const iconButtonFilterClassNames = {
-  root: 'IconButtonFilter__root'
+  root: 'IconButtonFilter__root',
 } as const;
 
 export const IconButtonFilter = ({

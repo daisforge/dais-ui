@@ -4,7 +4,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import {
   Canvas,
   ColumnConfig,
-  TableCanvas
+  TableCanvas,
 } from '@ui-kit/components/TableCanvas';
 import React, { useMemo } from 'react';
 
@@ -19,9 +19,9 @@ const meta: Meta = {
   tags: ['!autodocs'],
   parameters: {
     screenshot: {
-      skip: true
-    }
-  }
+      skip: true,
+    },
+  },
 };
 
 export default meta;
@@ -56,17 +56,17 @@ export const Default: StoryObj = {
     height: 16,
     roundness: 8,
     lighter: false,
-    animated: true
+    animated: true,
   },
   argTypes: {
     width: { control: { type: 'range', min: 40, max: 300, step: 10 } },
     height: { control: { type: 'range', min: 8, max: 40, step: 2 } },
     roundness: {
       control: 'select',
-      options: [0, 8, 12, 14, 16, 18, 20, 24, 28, 32, 250]
+      options: [0, 8, 12, 14, 16, 18, 20, 24, 28, 32, 250],
     },
     lighter: { control: 'boolean' },
-    animated: { control: 'boolean' }
+    animated: { control: 'boolean' },
   },
   render: (args) => {
     const { width, height, roundness, lighter, animated } = args as {
@@ -93,10 +93,10 @@ export const Default: StoryObj = {
                 animated={animated}
               />
             </Canvas.Container>
-          )
-        }
+          ),
+        },
       ],
-      [width, height, roundness, lighter, animated]
+      [width, height, roundness, lighter, animated],
     );
 
     return (
@@ -106,5 +106,5 @@ export const Default: StoryObj = {
         rows={rows}
       />
     );
-  }
+  },
 };

@@ -11,25 +11,25 @@ import {
   spacing8x,
   spacing16x,
   textPrimary,
-  textSecondary
+  textSecondary,
 } from '@ui-kit/tokens';
 import styled, {
   css,
   CSSObject,
-  FlattenSimpleInterpolation
+  FlattenSimpleInterpolation,
 } from 'styled-components';
 
 // Маппер для container
 const containerStylesMapper = {
   s: () => ({
-    maxWidth: 'unset'
+    maxWidth: 'unset',
   }),
   m: () => ({
-    maxWidth: '560px'
+    maxWidth: '560px',
   }),
   l: () => ({
-    maxWidth: '785px'
-  })
+    maxWidth: '785px',
+  }),
 };
 
 // Маппер для заголовков (Title)
@@ -39,22 +39,22 @@ const titleStylesMapper = {
     margin: 0,
     padding: 0,
     marginBottom: spacing4x,
-    color: textSecondary
+    color: textSecondary,
   }),
   m: () => ({
     ...h4Bold,
     margin: 0,
     padding: 0,
     marginBottom: spacing2x,
-    color: textPrimary
+    color: textPrimary,
   }),
   l: () => ({
     ...h2Bold,
     margin: 0,
     padding: 0,
     marginBottom: spacing8x,
-    color: textPrimary
-  })
+    color: textPrimary,
+  }),
 };
 
 // Маппер для подзаголовков (Subtitle)
@@ -64,22 +64,22 @@ const subtitleStylesMapper = {
     margin: 0,
     padding: 0,
     marginBottom: spacing4x,
-    color: textSecondary
+    color: textSecondary,
   }),
   m: () => ({
     ...bodyM,
     margin: 0,
     padding: 0,
     marginBottom: spacing6x,
-    color: textSecondary
+    color: textSecondary,
   }),
   l: () => ({
     ...bodyL,
     margin: 0,
     padding: 0,
     marginBottom: spacing16x,
-    color: textSecondary
-  })
+    color: textSecondary,
+  }),
 };
 
 export const EmptyStateContainer = styled.div<{
@@ -118,16 +118,16 @@ export const EmptyStateIcon = styled.div`
 const imageContainerStylesMapper = {
   s: () => ({
     width: '68px',
-    height: '55px'
+    height: '55px',
   }),
   m: () => ({
     width: '170px',
-    height: '150px'
+    height: '150px',
   }),
   l: () => ({
     width: '250px',
-    height: '230px'
-  })
+    height: '230px',
+  }),
 };
 
 export const EmptyStateImage = styled.div<{ size: 's' | 'm' | 'l' }>`

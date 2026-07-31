@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 export const SELECTING_KEYS = {
   level: 'level' as const,
-  parent: 'parent' as const
+  parent: 'parent' as const,
 };
 
 export const SELECTING_RULES_DEFAULT = {
   levels: 1,
   changeableDisabledRow: true,
-  changeableOfRowWithoutCheckbox: true
+  changeableOfRowWithoutCheckbox: true,
 };
 
 export const CHECKBOX_COLUMN_KEY = 'checkbox-row';

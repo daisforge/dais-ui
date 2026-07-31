@@ -65,7 +65,7 @@ export const generateB3Headers = () => {
     requestQueryParam: 'rq',
     headers: {
       'x-b3-traceid': traceId,
-      'x-b3-spanid': spanId
-    }
+      'x-b3-spanid': spanId,
+    },
   };
 };

@@ -10,7 +10,7 @@ export const useUpdateSidebarPxOnContainerResize = ({
   containerRef,
   sidebarMinWidthPx,
   sidebarMaxWidthPercent,
-  onResize
+  onResize,
 }: {
   containerRef: RefObject<HTMLDivElement | null>;
   setSizes: React.Dispatch<React.SetStateAction<SplVSizes>>;
@@ -27,18 +27,18 @@ export const useUpdateSidebarPxOnContainerResize = ({
         const calculatedSidebarPx = percentToPx(prev.sidebar, fullWidth);
         const sidebarMaxWidthPx = percentToPx(
           sidebarMaxWidthPercent,
-          fullWidth
+          fullWidth,
         );
 
         const calculatedSidebarPxLast = clamp(
           sidebarMinWidthPx,
           calculatedSidebarPx,
-          sidebarMaxWidthPx
+          sidebarMaxWidthPx,
         );
 
         const newSplSizes = {
           ...prev,
-          sidebarPx: calculatedSidebarPxLast
+          sidebarPx: calculatedSidebarPxLast,
         };
 
         onResize?.(newSplSizes);

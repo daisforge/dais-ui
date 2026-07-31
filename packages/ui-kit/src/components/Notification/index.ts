@@ -3,6 +3,6 @@ export { Notification } from './Notification';
 export type {
   NotificationIconPlacement,
   NotificationLayout,
-  NotificationProps
+  NotificationProps,
 } from '@salutejs/sdds-finai';
 export { closeNotification, NotificationsProvider } from '@salutejs/sdds-finai';

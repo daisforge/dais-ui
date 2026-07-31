@@ -7,7 +7,7 @@ import React, {
   useId,
   useMemo,
   useReducer,
-  useState
+  useState,
 } from 'react';
 import useSWR from 'swr';
 
@@ -26,13 +26,13 @@ import type {
   ContractTableConfig,
   FetcherFunc,
   InstanceTableConfig,
-  TableContractControlBlockButtonProps
+  TableContractControlBlockButtonProps,
 } from './types';
 
 export const TableContract = ({
   fetcher,
   stylesBeforeLoad,
-  onRowMutationError
+  onRowMutationError,
 }: {
   fetcher: FetcherFunc;
   stylesBeforeLoad?: CSSProperties;
@@ -42,7 +42,7 @@ export const TableContract = ({
   const [params, dispatchParams] = useReducer(
     paramsReducer,
     undefined,
-    () => new URLSearchParams()
+    () => new URLSearchParams(),
   );
 
   const paramsString = params.toString();
@@ -52,7 +52,7 @@ export const TableContract = ({
     data: mappedResult,
     isValidating,
     isLoading,
-    error
+    error,
   } = useSWR(
     () => id + paramsString,
     async () => {
@@ -62,8 +62,8 @@ export const TableContract = ({
     {
       keepPreviousData: true,
       staleTime: 3000,
-      revalidateOnFocus: false
-    }
+      revalidateOnFocus: false,
+    },
   );
 
   // const rows
@@ -99,7 +99,7 @@ export const TableContract = ({
     saveButton,
     createOneRowButton,
     getDeleteOneRowRowInstrument,
-    modalDeletePropsState
+    modalDeletePropsState,
   } = useEditing({
     tableConfigBackendSubRows: mappedResult?.tableConfigBackend?.subRows,
     tableConfigBackendEditing: mappedResult?.tableConfigBackend?.editing,
@@ -107,37 +107,37 @@ export const TableContract = ({
     setRowsState,
     rowsFromBackend: mappedResult?.rows ?? [],
     fetcher,
-    onRowMutationError
+    onRowMutationError,
   });
   // -------------------------------------------- SEARCHING
   const searchingConfig = useSearching({
     tableConfigBackendSearching: mappedResult?.tableConfigBackend?.searching,
-    dispatchParams
+    dispatchParams,
   });
   // -------------------------------------------- FILTERING
   const filtering = useFiltering({
     tableConfigBackendFiltering: mappedResult?.tableConfigBackend?.filtering,
     dispatchParams,
-    columnsConfig: mappedResult?.columnsConfig
+    columnsConfig: mappedResult?.columnsConfig,
   });
 
   // -------------------------------------------- PAGINATION
   const paginationConfig = usePagination({
     tableConfigBackendPagination: mappedResult?.tableConfigBackend?.pagination,
     params,
-    dispatchParams
+    dispatchParams,
   });
 
   // -------------------------------------------- SORTING
   const sortingConfig = useSorting({
     tableConfigBackendSorting: mappedResult?.tableConfigBackend?.sorting,
     params,
-    dispatchParams
+    dispatchParams,
   });
 
   // -------------------------------------------- SUB_ROWS
   const subRowsConfig = useSubRowsConfig(
-    mappedResult?.tableConfigBackend?.subRows
+    mappedResult?.tableConfigBackend?.subRows,
   );
 
   // -------------------------------------------- ROW INSTRUMENTS
@@ -150,10 +150,10 @@ export const TableContract = ({
     return {
       getRowDropdownConfig: (rowProps) => ({
         items: [getDeleteOneRowRowInstrument(rowProps)],
-        dropdownProps: { useItemContentAsButtonContent: true }
+        dropdownProps: { useItemContentAsButtonContent: true },
       }),
       showInControl: false,
-      openedState: [true, () => {}]
+      openedState: [true, () => {}],
     };
   }, [getDeleteOneRowRowInstrument]);
 
@@ -179,10 +179,10 @@ export const TableContract = ({
     );
   }
   const controlBlockRightSideInner: TableContractControlBlockButtonProps[] = [
-    ...(saveButton ? [saveButton] : [])
+    ...(saveButton ? [saveButton] : []),
   ];
   const controlBlockCustomFeatures: FeatureItem[] = [
-    ...(createOneRowButton ? [createOneRowButton] : [])
+    ...(createOneRowButton ? [createOneRowButton] : []),
   ];
 
   const isHaveControlBlockCustomFeatures =
@@ -198,14 +198,14 @@ export const TableContract = ({
     columnsConfig,
     tableConfigBackend,
     topSummaryRows,
-    bottomSummaryRows
+    bottomSummaryRows,
   } = mappedResult;
 
   const mappedContainerStyles = {
     containerStyle: {
       ...tableConfigBackend?.containerStyle,
-      height: tableConfigBackend?.height ?? TABLE_STYLES.height
-    }
+      height: tableConfigBackend?.height ?? TABLE_STYLES.height,
+    },
   };
 
   const mappedFeatures = {
@@ -216,14 +216,14 @@ export const TableContract = ({
     ...editing,
     ...filtering,
     // styles
-    ...mappedContainerStyles
+    ...mappedContainerStyles,
   };
   const restFeatures = (
     tableConfigBackend
       ? Object.fromEntries(
           Object.entries(tableConfigBackend).filter(
-            ([key]) => !mappedFeatures[key as keyof typeof mappedFeatures]
-          )
+            ([key]) => !mappedFeatures[key as keyof typeof mappedFeatures],
+          ),
         )
       : {}
   ) as Omit<ContractTableConfig, keyof typeof mappedFeatures>;
@@ -234,25 +234,25 @@ export const TableContract = ({
         tableConfig={{
           isLoading: {
             boolean: isValidating,
-            skeletonRowsCount: rows.length ?? 10
+            skeletonRowsCount: rows.length ?? 10,
           },
           ...(isHaveControlBlock && {
             controlBlock: {
               enableAdaptiveCompress: false,
               ...(isHaveControlBlockRightSideInner && {
-                rightSideInner: controlBlockRightSideInner
+                rightSideInner: controlBlockRightSideInner,
               }),
               ...(isHaveControlBlockCustomFeatures && {
-                customFeatures: controlBlockCustomFeatures
-              })
-            }
+                customFeatures: controlBlockCustomFeatures,
+              }),
+            },
           }),
 
           ...(rowInstruments && {
-            rowInstruments
+            rowInstruments,
           }),
           ...restFeatures,
-          ...mappedFeatures
+          ...mappedFeatures,
         }}
         columnConfig={columnsConfig}
         rows={editing ? rowsState : rows}
@@ -265,12 +265,12 @@ export const TableContract = ({
           ...DELETE_MODAL_CONTENT,
           mainButton: {
             ...DELETE_MODAL_CONTENT.mainButton,
-            onClick: modalDeletePropsState?.mainButtonOnClick
+            onClick: modalDeletePropsState?.mainButtonOnClick,
           },
           secondaryButton: {
             ...DELETE_MODAL_CONTENT.secondaryButton,
-            onClick: modalDeletePropsState?.secondaryButtonOnClick
-          }
+            onClick: modalDeletePropsState?.secondaryButtonOnClick,
+          },
         }}
       />
     </>

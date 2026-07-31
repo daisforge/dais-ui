@@ -12,5 +12,5 @@ export type {
   StageItem,
   StageStatus,
   StepStatus,
-  TabVariant
+  TabVariant,
 } from './ApprovalCenter.types';

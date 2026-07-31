@@ -8,11 +8,11 @@ const meta: Meta<SwitchProps> = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      toc: true
+      toc: true,
     },
-    layout: 'fullscreen'
+    layout: 'fullscreen',
   },
-  component: Switch
+  component: Switch,
 };
 
 export default meta;
@@ -27,17 +27,17 @@ const preCodeSlots = `
 export const SwitchStory: Story = {
   name: 'Example',
   ...storySourceDoc({
-    preCode: preCodeSlots
+    preCode: preCodeSlots,
   }),
   render: () => (
     <div
       style={{
         minHeight: '500px',
         padding: '20px',
-        display: 'flex'
+        display: 'flex',
       }}
     >
       <Switch label="Label" hasBackground />
     </div>
-  )
+  ),
 };

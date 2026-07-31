@@ -22,26 +22,26 @@ export type ErrorApiUpdateOne = ErrorApi & {
 export class EditingApi {
   static createOne = (
     rowForUpdate: ContractCreateOneBody,
-    fetcher: FetcherFunc
+    fetcher: FetcherFunc,
   ) =>
     fetcherWrapper<ContractCreateOneResponse>(fetcher, {
       method: 'POST',
-      body: JSON.stringify(rowForUpdate)
+      body: JSON.stringify(rowForUpdate),
     });
 
   static deleteOne = (
     rowForDelete: ContractDeleteOneBody,
-    fetcher: FetcherFunc
+    fetcher: FetcherFunc,
   ) =>
     fetcherWrapper<ContractDeleteOneResponse>(fetcher, {
       method: 'POST',
       body: JSON.stringify(rowForDelete),
-      pathParams: 'delete'
+      pathParams: 'delete',
     });
 
   static updateOne = (payload: ContractUpdateOneBody, fetcher: FetcherFunc) =>
     fetcherWrapper<ContractUpdateOneResponse>(fetcher, {
       method: 'PUT',
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
     });
 }

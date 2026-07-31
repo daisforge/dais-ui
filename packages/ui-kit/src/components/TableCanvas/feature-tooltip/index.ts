@@ -4,7 +4,7 @@ export { CanvasTooltipOverlay } from './components/CanvasTooltipOverlay';
 // Хуки
 export type {
   PortalHoverState,
-  UsePortalHoverOptions
+  UsePortalHoverOptions,
 } from './hooks/usePortalHover';
 export { usePortalHover } from './hooks/usePortalHover';
 
@@ -12,7 +12,7 @@ export { usePortalHover } from './hooks/usePortalHover';
 export type {
   CanvasTooltipOverlayProps,
   TooltipConfigResult,
-  TooltipData
+  TooltipData,
 } from './types';
 
 // Константы

@@ -17,7 +17,7 @@ import {
   StyledRightSlot,
   StyledTabsAndPanelsContainer,
   StyledTabsContainer,
-  StyledTabsRow
+  StyledTabsRow,
 } from './TableTabs.styled';
 import {
   isCustomTab,
@@ -26,7 +26,7 @@ import {
   TableTabsSize,
   TCustomOrNotTab,
   TTabsContainerOptions,
-  TTabsProps
+  TTabsProps,
 } from './TableTabs.types';
 
 const mapTabsSize = (size?: TableTabsSize): 'xs' | 's' | 'm' => {
@@ -49,7 +49,7 @@ const CollapseBlock = ({
   isCollapsed,
   onToggle,
   size = 's',
-  tabsSize
+  tabsSize,
 }: {
   config: TableTabsCollapseConfig;
   isCollapsed: boolean;
@@ -71,7 +71,7 @@ const CollapseBlock = ({
             size={size}
             style={{
               transition: 'rotate 0.3s',
-              rotate: isCollapsed ? '0turn' : '0.25turn'
+              rotate: isCollapsed ? '0turn' : '0.25turn',
             }}
           />
         }
@@ -94,7 +94,7 @@ export const TableTabs = <T extends TabId>({
   tabsContainerOptions,
   rightSlot,
   size,
-  collapsing
+  collapsing,
 }: PropsWithChildren & {
   tabs: TCustomOrNotTab<T>[];
   activeTabIdState?: [T, ((newV: T) => void) | ((oldV: T) => T)];
@@ -108,13 +108,13 @@ export const TableTabs = <T extends TabId>({
   const [activeTabId, setActiveTabId] = activeTabIdState ?? EMPTY_ARR;
 
   const [internalCollapsed, setInternalCollapsed] = useState(
-    collapsing?.defaultCollapsed ?? false
+    collapsing?.defaultCollapsed ?? false,
   );
 
   const isCollapsingEnabled = collapsing && collapsing?.enabled;
   const [isCollapsed, setIsCollapsed] = collapsing?.collapsedState ?? [
     internalCollapsed,
-    setInternalCollapsed
+    setInternalCollapsed,
   ];
 
   const handleToggleCollapse = () => {
@@ -174,7 +174,7 @@ export const TableTabs = <T extends TabId>({
                 style={{
                   width: rightSlot ? undefined : '100%',
                   flex: rightSlot ? '1 1 auto' : undefined,
-                  ...tabsProps?.style
+                  ...tabsProps?.style,
                 }}
               >
                 {tabs.map((tabProps, i) => {

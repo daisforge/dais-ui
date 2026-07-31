@@ -9,14 +9,14 @@ import { EmbedIconButton } from '@ui-kit/components/EmbedIconButton';
 import { IconButton } from '@ui-kit/components/IconButton';
 import type {
   LeftPanelProps,
-  LeftPanelSlotSizesProps
+  LeftPanelSlotSizesProps,
 } from '@ui-kit/components/LeftPanel';
 import { LeftPanel } from '@ui-kit/components/LeftPanel';
 import { List, ListItem } from '@ui-kit/components/List';
 import {
   SegmentGroup,
   SegmentItem,
-  SegmentProvider
+  SegmentProvider,
 } from '@ui-kit/components/Segment';
 import { TextFieldSearch } from '@ui-kit/components/TextField';
 import { BodyS, H2, H4, Typography } from '@ui-kit/components/Typography';
@@ -26,12 +26,12 @@ import {
   IconGroupOutline,
   IconHierarchy,
   IconPinFill,
-  IconSearch
+  IconSearch,
 } from '@ui-kit/icons';
 import {
   surfaceAccentMinor,
   surfaceInfo,
-  surfaceSolidCard
+  surfaceSolidCard,
 } from '@ui-kit/tokens';
 import { useRef, useState } from 'react';
 import styled from 'styled-components';
@@ -41,11 +41,11 @@ const meta: Meta<LeftPanelProps> = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      toc: true
+      toc: true,
     },
-    layout: 'fullscreen'
+    layout: 'fullscreen',
   },
-  component: LeftPanel
+  component: LeftPanel,
 };
 
 export default meta;
@@ -72,7 +72,7 @@ const preCodeSlots = `
 export const LeftPanelSlots: Story = {
   name: 'LeftPanel со слотами',
   ...storySourceDoc({
-    preCode: preCodeSlots
+    preCode: preCodeSlots,
   }),
   render: () => {
     // Состояние отвечает за открытие/закрытие панели
@@ -100,7 +100,7 @@ export const LeftPanelSlots: Story = {
           height: '100vh',
           padding: '20px',
           display: 'flex',
-          backgroundColor: '#f5f5f5'
+          backgroundColor: '#f5f5f5',
         }}
       >
         <LeftPanel
@@ -121,7 +121,7 @@ export const LeftPanelSlots: Story = {
               <Widget.Header
                 title="Title"
                 $css={{
-                  overflow: 'hidden'
+                  overflow: 'hidden',
                 }}
                 bottomBlock={
                   <Box
@@ -130,7 +130,7 @@ export const LeftPanelSlots: Story = {
                       borderRadius: br.s,
                       border: `1px solid ${surfaceInfo}`,
                       color: surfaceInfo,
-                      backgroundColor: surfaceAccentMinor
+                      backgroundColor: surfaceAccentMinor,
                     }}
                   >
                     <BodyS>Widget.Header bottomBlock</BodyS>
@@ -146,7 +146,7 @@ export const LeftPanelSlots: Story = {
                     border: `1px solid ${surfaceInfo}`,
                     color: surfaceInfo,
                     backgroundColor: surfaceAccentMinor,
-                    height: '800px'
+                    height: '800px',
                   }}
                 >
                   <BodyS>Widget.Content</BodyS>
@@ -161,7 +161,7 @@ export const LeftPanelSlots: Story = {
                     border: `1px solid ${surfaceInfo}`,
                     color: surfaceInfo,
                     width: '100%',
-                    backgroundColor: surfaceAccentMinor
+                    backgroundColor: surfaceAccentMinor,
                   }}
                 >
                   <BodyS>Widget.Footer</BodyS>
@@ -178,7 +178,7 @@ export const LeftPanelSlots: Story = {
                 style={{
                   border: `1px solid ${surfaceInfo}`,
                   backgroundColor: surfaceAccentMinor,
-                  color: surfaceInfo
+                  color: surfaceInfo,
                 }}
               >
                 <IconGroupOutline />
@@ -189,7 +189,7 @@ export const LeftPanelSlots: Story = {
                 style={{
                   border: `1px solid ${surfaceInfo}`,
                   backgroundColor: surfaceAccentMinor,
-                  color: surfaceInfo
+                  color: surfaceInfo,
                 }}
               >
                 <IconGroupOutline />
@@ -200,7 +200,7 @@ export const LeftPanelSlots: Story = {
                 style={{
                   border: `1px solid ${surfaceInfo}`,
                   backgroundColor: surfaceAccentMinor,
-                  color: surfaceInfo
+                  color: surfaceInfo,
                 }}
               >
                 <IconGroupOutline />
@@ -215,7 +215,7 @@ export const LeftPanelSlots: Story = {
               style={{
                 border: `1px solid ${surfaceInfo}`,
                 backgroundColor: surfaceAccentMinor,
-                color: surfaceInfo
+                color: surfaceInfo,
               }}
             >
               <IconGroupOutline />
@@ -229,14 +229,14 @@ export const LeftPanelSlots: Story = {
             boxShadow:
               'var(--shadow-down-soft-s, 0px 4px 14px -4px #08080814,0px 1px 4px -1px #0000000A)',
             backgroundColor: surfaceSolidCard,
-            borderRadius: s.x8
+            borderRadius: s.x8,
           }}
         >
           <div
             style={{
               display: 'flex',
               justifyContent: 'space-between',
-              alignItems: 'center'
+              alignItems: 'center',
             }}
           >
             <H2 style={{ marginBottom: s.x8 }}>Контент</H2>
@@ -245,7 +245,7 @@ export const LeftPanelSlots: Story = {
               style={{
                 display: 'flex',
                 justifyContent: 'space-between',
-                alignItems: 'center'
+                alignItems: 'center',
               }}
             >
               {width && <H4 style={{ marginRight: s.x8 }}>{width}px</H4>}
@@ -257,7 +257,7 @@ export const LeftPanelSlots: Story = {
         </div>
       </div>
     );
-  }
+  },
 };
 
 const preCodeExample = `
@@ -297,39 +297,39 @@ const FullWidthListItem = styled(ListItem)`
 export const LeftPanelExample: Story = {
   name: 'Example',
   ...storySourceDoc({
-    preCode: preCodeExample
+    preCode: preCodeExample,
   }),
   render: () => {
     // Данные для кнопок
     const items = [
       {
         label: 'label',
-        value: 'label1'
+        value: 'label1',
       },
       {
         label: 'label',
-        value: 'label2'
-      }
+        value: 'label2',
+      },
     ];
 
     // Данные для списка
     const contentItems = [
       {
         label: 'Основной план',
-        value: 'label1'
+        value: 'label1',
       },
       {
         label: 'План блока',
-        value: 'label2'
+        value: 'label2',
       },
       {
         label: 'Персональный план',
-        value: 'label3'
+        value: 'label3',
       },
       {
         label: 'Журнал публикаций',
-        value: 'label4'
-      }
+        value: 'label4',
+      },
     ];
 
     // Состояние отвечает за открытие/закрытие панели
@@ -364,7 +364,7 @@ export const LeftPanelExample: Story = {
           height: '100vh',
           padding: '20px',
           display: 'flex',
-          backgroundColor: '#f5f5f5'
+          backgroundColor: '#f5f5f5',
         }}
       >
         <LeftPanel
@@ -383,7 +383,7 @@ export const LeftPanelExample: Story = {
                 badge={{ text: 'badge', size: 's' }}
                 $css={{
                   overflow: 'hidden',
-                  columnGap: '56px !important'
+                  columnGap: '56px !important',
                 }}
                 subTitle={<BodyS>description</BodyS>}
                 bottomBlock={
@@ -412,7 +412,7 @@ export const LeftPanelExample: Story = {
                     <div
                       style={{
                         display: 'flex',
-                        gap: s.x4
+                        gap: s.x4,
                       }}
                     >
                       {/* Поле поиска и кнопки */}
@@ -444,13 +444,13 @@ export const LeftPanelExample: Story = {
                         style={{
                           display: 'flex',
                           flexDirection: 'column',
-                          flexGrow: 1
+                          flexGrow: 1,
                         }}
                       >
                         <div
                           style={{
                             display: 'flex',
-                            justifyContent: 'space-between'
+                            justifyContent: 'space-between',
                           }}
                         >
                           <Typography variant="BodyM">Текст</Typography>
@@ -526,14 +526,14 @@ export const LeftPanelExample: Story = {
             boxShadow:
               'var(--shadow-down-soft-s, 0px 4px 14px -4px #08080814,0px 1px 4px -1px #0000000A)',
             backgroundColor: surfaceSolidCard,
-            borderRadius: s.x8
+            borderRadius: s.x8,
           }}
         >
           <div
             style={{
               display: 'flex',
               justifyContent: 'space-between',
-              alignItems: 'center'
+              alignItems: 'center',
             }}
           >
             <H2 style={{ marginBottom: s.x8 }}>Контент</H2>
@@ -545,5 +545,5 @@ export const LeftPanelExample: Story = {
         </div>
       </div>
     );
-  }
+  },
 };

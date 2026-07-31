@@ -1,7 +1,7 @@
 /** Simple debounce util */
 export const debounce = <R, A extends unknown[]>(
   fn: (...args: A) => R,
-  delay = 200
+  delay = 200,
 ) => {
   let timeoutId: NodeJS.Timeout;
 

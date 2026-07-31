@@ -23,7 +23,7 @@ const StoryRender: FC<CollapseProps> = (args) => {
 const meta: Meta<CollapseProps> = {
   title: 'Локальные компоненты/Collapse',
   component: Collapse,
-  tags: ['!autodocs']
+  tags: ['!autodocs'],
 };
 
 export default meta;
@@ -53,11 +53,11 @@ export const Default: Story = {
                             </Collapse>
                         </Box>
                     );
-                `
-      }
-    }
+                `,
+      },
+    },
   },
-  render: (args) => <StoryRender {...args} />
+  render: (args) => <StoryRender {...args} />,
 };
 
 /**
@@ -67,7 +67,7 @@ export const Default: Story = {
  */
 export const Horizontal: Story = {
   args: {
-    orientation: 'horizontal'
+    orientation: 'horizontal',
   },
   name: 'Горизонтальная ориентация',
   parameters: {
@@ -91,11 +91,11 @@ export const Horizontal: Story = {
                             </Collapse>
                         </Box>
                     );
-                `
-      }
-    }
+                `,
+      },
+    },
   },
-  render: (args) => <StoryRender {...args} />
+  render: (args) => <StoryRender {...args} />,
 };
 
 /**
@@ -105,7 +105,7 @@ export const Horizontal: Story = {
  */
 export const Unmount: Story = {
   args: {
-    unMountOnClose: true
+    unMountOnClose: true,
   },
   name: 'Unmount',
   parameters: {
@@ -129,11 +129,11 @@ export const Unmount: Story = {
                             </Collapse>
                         </Box>
                     );
-                `
-      }
-    }
+                `,
+      },
+    },
   },
-  render: (args) => <StoryRender {...args} />
+  render: (args) => <StoryRender {...args} />,
 };
 
 /**
@@ -144,7 +144,7 @@ export const Unmount: Story = {
  */
 export const Duration: Story = {
   args: {
-    duration: 5
+    duration: 5,
   },
   name: 'Длительность анимации',
   parameters: {
@@ -168,11 +168,11 @@ export const Duration: Story = {
                             </Collapse>
                         </Box>
                     );
-                `
-      }
-    }
+                `,
+      },
+    },
   },
-  render: (args) => <StoryRender {...args} />
+  render: (args) => <StoryRender {...args} />,
 };
 
 /**
@@ -188,9 +188,9 @@ export const Animation: Story = {
   args: {
     animation: {
       open: 'steps(3)',
-      close: 'cubic-bezier(.29, 1.01, 1, -0.68)'
+      close: 'cubic-bezier(.29, 1.01, 1, -0.68)',
     },
-    duration: 2
+    duration: 2,
   },
   name: 'Тип анимации',
   parameters: {
@@ -221,11 +221,11 @@ export const Animation: Story = {
                             </Collapse>
                         </Box>
                     );
-                `
-      }
-    }
+                `,
+      },
+    },
   },
-  render: (args) => <StoryRender {...args} />
+  render: (args) => <StoryRender {...args} />,
 };
 
 /**
@@ -238,7 +238,7 @@ export const Animation: Story = {
  */
 export const OpenedSize: Story = {
   args: {
-    sizeOnOpen: 20
+    sizeOnOpen: 20,
   },
   name: 'Размер открытого контейнера',
   parameters: {
@@ -262,11 +262,11 @@ export const OpenedSize: Story = {
                             </Collapse>
                         </Box>
                     );
-                `
-      }
-    }
+                `,
+      },
+    },
   },
-  render: (args) => <StoryRender {...args} />
+  render: (args) => <StoryRender {...args} />,
 };
 
 /**
@@ -277,7 +277,7 @@ export const OpenedSize: Story = {
  */
 export const ClosedSize: Story = {
   args: {
-    sizeOnClose: 20
+    sizeOnClose: 20,
   },
   name: 'Размер закрытого контейнера',
   parameters: {
@@ -301,9 +301,9 @@ export const ClosedSize: Story = {
                             </Collapse>
                         </Box>
                     );
-                `
-      }
-    }
+                `,
+      },
+    },
   },
-  render: (args) => <StoryRender {...args} />
+  render: (args) => <StoryRender {...args} />,
 };

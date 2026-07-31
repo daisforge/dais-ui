@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import {
   type FetcherFunc,
-  TableContract
+  TableContract,
 } from '@ui-kit/components/TableContract';
 
 import TableContractDocsMdx from './Table.contract.mdx';
@@ -11,13 +11,13 @@ const meta: Meta = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      page: TableContractDocsMdx
+      page: TableContractDocsMdx,
     },
     screenshot: {
-      skip: true
-    }
+      skip: true,
+    },
   },
-  component: TableContract
+  component: TableContract,
 };
 
 export default meta;
@@ -25,7 +25,7 @@ export default meta;
 const createFetcher = (endpoint: string) =>
   (async ({ params, ...rest }) =>
     fetch(`${endpoint}${params ? `?${params}` : ''}`, rest).then((res) =>
-      res.json()
+      res.json(),
     )) as FetcherFunc;
 
 const fetcherSimple = createFetcher('api/simple');
@@ -35,17 +35,17 @@ const fetcherPagination = createFetcher('api/pagination');
 const fetcherSubRows = createFetcher('api/subRows');
 
 export const Simple: StoryObj<typeof TableContract> = {
-  args: { fetcher: fetcherSimple }
+  args: { fetcher: fetcherSimple },
 };
 export const Pagination: StoryObj<typeof TableContract> = {
-  args: { fetcher: fetcherPagination }
+  args: { fetcher: fetcherPagination },
 };
 export const Searching: StoryObj<typeof TableContract> = {
-  args: { fetcher: fetcherSearching }
+  args: { fetcher: fetcherSearching },
 };
 export const Sorting: StoryObj<typeof TableContract> = {
-  args: { fetcher: fetcherSorting }
+  args: { fetcher: fetcherSorting },
 };
 export const SubRows: StoryObj<typeof TableContract> = {
-  args: { fetcher: fetcherSubRows }
+  args: { fetcher: fetcherSubRows },
 };

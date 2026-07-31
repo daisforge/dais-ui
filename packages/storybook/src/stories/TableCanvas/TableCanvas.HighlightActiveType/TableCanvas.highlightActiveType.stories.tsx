@@ -10,7 +10,7 @@ import {
   type ColumnConfig,
   type HighlightActiveType,
   type SIZE_GLIDE_INSTANCE as RowSize,
-  TableCanvas
+  TableCanvas,
 } from '@ui-kit/components/TableCanvas';
 import { useMemo, useState } from 'react';
 
@@ -18,10 +18,10 @@ const meta: Meta = {
   title: 'Локальные компоненты/TableCanvas/HighlightActiveType',
   parameters: {
     docs: {
-      page: DocStoryTemplate
-    }
+      page: DocStoryTemplate,
+    },
   },
-  tags: ['!autodocs']
+  tags: ['!autodocs'],
 };
 
 export default meta;
@@ -32,14 +32,14 @@ type Story = StoryObj;
 // 'cell'/'range-cell' устарели (режим выделения задаёт cellsSelection.mode).
 const HIGHLIGHT_ACTIVE_TYPE_OPTIONS: readonly HighlightActiveType[] = [
   'row',
-  'disabled'
+  'disabled',
 ];
 
 const SELECTION_MODE_OPTIONS: readonly CellsSelectionMode[] = [
   'range-cell',
   'multi-range-cell',
   'cell',
-  'disabled'
+  'disabled',
 ];
 
 const ROW_SIZE_OPTIONS: readonly RowSize[] = ['big', 'medium', 'small'];
@@ -47,7 +47,7 @@ const ROW_SIZE_OPTIONS: readonly RowSize[] = ['big', 'medium', 'small'];
 const ROW_MARKER_WIDTH_BY_SIZE: Record<RowSize, number> = {
   big: 48,
   medium: 32,
-  small: 24
+  small: 24,
 };
 
 const COLUMN_CONFIG: readonly ColumnConfig<TableRow>[] = [
@@ -55,7 +55,7 @@ const COLUMN_CONFIG: readonly ColumnConfig<TableRow>[] = [
   { key: 'task', name: 'Title', width: 260 },
   { key: 'priority', name: 'Priority', width: 180 },
   { key: 'issueType', name: 'Issue Type', width: 180 },
-  { key: 'complete', name: '% Complete', width: 160 }
+  { key: 'complete', name: '% Complete', width: 160 },
 ];
 
 const getRowSelectionKey = (row: TableRow) => row.id + row.issueType;
@@ -116,13 +116,13 @@ export const HighlightActiveTypePlayground: Story = {
         new Set(
           rows
             .filter((row) => [3, 5].includes(Number(row.id)))
-            .map(getRowSelectionKey)
-        )
+            .map(getRowSelectionKey),
+        ),
     );
 
     const columnConfig = useMemo<readonly ColumnConfig<TableRow>[]>(
       () => COLUMN_CONFIG,
-      []
+      [],
     );
 
     return (
@@ -139,7 +139,7 @@ export const HighlightActiveTypePlayground: Story = {
               }
               items={SELECTION_MODE_OPTIONS.map((item) => ({
                 label: item,
-                value: item
+                value: item,
               }))}
             />
           </div>
@@ -153,7 +153,7 @@ export const HighlightActiveTypePlayground: Story = {
               }
               items={HIGHLIGHT_ACTIVE_TYPE_OPTIONS.map((item) => ({
                 label: item,
-                value: item
+                value: item,
               }))}
             />
           </div>
@@ -165,7 +165,7 @@ export const HighlightActiveTypePlayground: Story = {
               onChange={(value) => setRowSize(value as RowSize)}
               items={ROW_SIZE_OPTIONS.map((item) => ({
                 label: item,
-                value: item
+                value: item,
               }))}
             />
           </div>
@@ -177,31 +177,31 @@ export const HighlightActiveTypePlayground: Story = {
             selectionMode,
             rowSize,
             'row-markers',
-            'summary-checkbox'
+            'summary-checkbox',
           ].join('-')}
           tableConfig={{
             containerStyle: { height: '700px', maxWidth: 980 },
             rowSize: {
               default: rowSize,
-              showInControl: false
+              showInControl: false,
             },
             cellsSelection: { mode: selectionMode },
             highlightActiveType,
             rowMarkers: {
               startIndex: 1,
-              width: ROW_MARKER_WIDTH_BY_SIZE[rowSize]
+              width: ROW_MARKER_WIDTH_BY_SIZE[rowSize],
             },
             selecting: {
               state: selectingStateAndSetter,
-              rowKeyGetter: getRowSelectionKey
-            }
+              rowKeyGetter: getRowSelectionKey,
+            },
           }}
           columnConfig={columnConfig}
           rows={rows}
         />
       </>
     );
-  }
+  },
 };
 
 /**
@@ -216,7 +216,7 @@ export const HighlightActiveRowControlled: Story = {
     const [rows] = useState(createRows);
     const columnConfig = useMemo<readonly ColumnConfig<TableRow>[]>(
       () => COLUMN_CONFIG,
-      []
+      [],
     );
 
     const highlightActiveRowState = useState<number | undefined>(undefined);
@@ -229,7 +229,7 @@ export const HighlightActiveRowControlled: Story = {
             display: 'flex',
             gap: 8,
             flexWrap: 'wrap',
-            marginBottom: 12
+            marginBottom: 12,
           }}
         >
           <Button onClick={() => setHighlightActiveRow(2)}>
@@ -252,12 +252,12 @@ export const HighlightActiveRowControlled: Story = {
             containerStyle: { height: '600px' },
             highlightActiveType: 'row',
             rowMarkers: { startIndex: 1 },
-            highlightActiveRow: { state: highlightActiveRowState }
+            highlightActiveRow: { state: highlightActiveRowState },
           }}
           columnConfig={columnConfig}
           rows={rows}
         />
       </>
     );
-  }
+  },
 };

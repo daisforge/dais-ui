@@ -5,7 +5,7 @@ import type {
   ReadonlyBehavior,
   Rectangle,
   TransferColumnConfig,
-  ValidationMode
+  ValidationMode,
 } from '../types';
 import { shouldSkipCell } from './shouldSkipCell';
 import { normalizePasteValue, validatePasteValue } from './validatePasteValue';
@@ -54,13 +54,13 @@ interface ApplyValuesResult<R extends ObjectForExtending> {
 }
 
 const EMPTY_RESULT = <R extends ObjectForExtending>(
-  rows: readonly R[]
+  rows: readonly R[],
 ): ApplyValuesResult<R> => ({
   newRows: [...rows],
   affectedIndexes: [],
   firstAffectedColumn: undefined,
   skippedByValidation: [],
-  aborted: false
+  aborted: false,
 });
 
 /**
@@ -83,7 +83,7 @@ export function applyValuesToRows<R extends ObjectForExtending>({
   readonlyBehavior,
   validation,
   validateContexts,
-  source
+  source,
 }: ApplyValuesParams<R>): ApplyValuesResult<R> {
   // readonly-abort: первый проход без записи. Любая readonly-ячейка в зоне
   // отменяет операцию целиком (поведение Excel).
@@ -104,7 +104,7 @@ export function applyValuesToRows<R extends ObjectForExtending>({
           column,
           lvl,
           allowSubRows,
-          source
+          source,
         });
         if (skipReason === 'not-editable') {
           return { ...EMPTY_RESULT(rows), aborted: true };
@@ -139,7 +139,7 @@ export function applyValuesToRows<R extends ObjectForExtending>({
         column,
         lvl,
         allowSubRows,
-        source
+        source,
       });
       if (skipReason) continue;
       if (!column) continue;
@@ -152,7 +152,7 @@ export function applyValuesToRows<R extends ObjectForExtending>({
             col: colIndex,
             row: rowIndex,
             value,
-            columnKey: column.key
+            columnKey: column.key,
           });
           continue;
         }
@@ -176,6 +176,6 @@ export function applyValuesToRows<R extends ObjectForExtending>({
     affectedIndexes: Array.from(affected),
     firstAffectedColumn,
     skippedByValidation,
-    aborted: false
+    aborted: false,
   };
 }

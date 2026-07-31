@@ -20,28 +20,28 @@ const meta: Meta<TextAreaProps> = {
     placeholder: 'Заполните поле',
     leftHelper: 'Подсказка к полю',
     disabled: false,
-    readOnly: false
+    readOnly: false,
   },
   argTypes: {
     size: {
       options: ['s'],
-      control: { type: 'select' }
+      control: { type: 'select' },
     },
     view: {
       options: ['default', 'positive', 'warning', 'negative'],
-      control: { type: 'select' }
+      control: { type: 'select' },
     },
     labelPlacement: {
       options: ['outer', 'inner'],
-      control: { type: 'inline-radio' }
+      control: { type: 'inline-radio' },
     },
     disabled: {
-      control: { type: 'boolean' }
+      control: { type: 'boolean' },
     },
     readOnly: {
-      control: { type: 'boolean' }
-    }
-  }
+      control: { type: 'boolean' },
+    },
+  },
 };
 
 export default meta;
@@ -62,7 +62,7 @@ import { TextArea } from '@daisforge/ui';
 export const Default: Story = {
   name: 'Default',
   ...storySourceDoc({
-    preCode
+    preCode,
   }),
   render: (args: TextAreaProps) => {
     const [value, setValue] = useState('Значение поля');
@@ -78,7 +78,7 @@ export const Default: Story = {
         />
       </div>
     );
-  }
+  },
 };
 
 /**
@@ -89,7 +89,7 @@ export const Default: Story = {
 export const Sizes: Story = {
   name: 'Размеры',
   ...storySourceDoc({
-    preCode
+    preCode,
   }),
   render: (args: TextAreaProps) => {
     const sizes = ['s'] as const;
@@ -97,7 +97,7 @@ export const Sizes: Story = {
       l: '',
       m: '',
       s: '',
-      xs: ''
+      xs: '',
     });
 
     return (
@@ -106,7 +106,7 @@ export const Sizes: Story = {
           display: 'flex',
           flexDirection: 'column',
           gap: '1rem',
-          width: '400px'
+          width: '400px',
         }}
       >
         {sizes.map((size) => (
@@ -124,7 +124,7 @@ export const Sizes: Story = {
         ))}
       </div>
     );
-  }
+  },
 };
 
 /**
@@ -139,7 +139,7 @@ export const Sizes: Story = {
 export const WithClear: Story = {
   name: 'Различные варианты',
   ...storySourceDoc({
-    preCode
+    preCode,
   }),
   render: (args: TextAreaProps) => {
     const [value1, setValue1] = useState('Текст для очистки');
@@ -153,7 +153,7 @@ export const WithClear: Story = {
           display: 'flex',
           flexDirection: 'column',
           gap: '1rem',
-          width: '400px'
+          width: '400px',
         }}
       >
         <TextArea
@@ -217,5 +217,5 @@ export const WithClear: Story = {
         />
       </div>
     );
-  }
+  },
 };

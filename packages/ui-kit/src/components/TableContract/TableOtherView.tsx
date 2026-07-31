@@ -44,7 +44,7 @@ export const TableOtherView = ({
       <ErrorPage
         unknownStatus={{
           title: 'Похоже, таблица не загружается',
-          description: 'Попробуйте обновить страницу или зайдите позже'
+          description: 'Попробуйте обновить страницу или зайдите позже',
         }}
       />
     </StyledDiv>

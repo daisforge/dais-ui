@@ -9,7 +9,7 @@ interface IClickStreamProviderProps extends PropsWithChildren {
 
 export const ClickStreamProvider: FC<IClickStreamProviderProps> = ({
   children,
-  clickStreamInstance
+  clickStreamInstance,
 }) => (
   <ClickStreamContext.Provider value={clickStreamInstance}>
     {children}

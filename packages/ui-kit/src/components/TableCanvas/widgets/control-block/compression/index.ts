@@ -27,20 +27,20 @@ import {
   CompressionOptions,
   CompressionSpacing,
   InitialWidthsForToolsMenu,
-  ToolsMenuState
+  ToolsMenuState,
 } from '../types';
 import {
   addToCache,
   cloneState,
   findCachedState,
-  getOrCreateElementCache
+  getOrCreateElementCache,
 } from './cache';
 import {
   debugLogCompress,
   debugLogInit,
   debugResetInit,
   debugSkip,
-  DebugStep
+  DebugStep,
 } from './debug';
 import { getCompressionPipeline } from './steps';
 import { buildOverflowItems, calculateWidth } from './width-model';
@@ -52,7 +52,7 @@ export const useCompressionFeatures = (
   measuredWidths: InitialWidthsForToolsMenu | undefined,
   element: HTMLDivElement | null | undefined,
   spacing: CompressionSpacing,
-  options?: CompressionOptions
+  options?: CompressionOptions,
 ) => {
   const originalStateRef = useRef(initialState);
 
@@ -90,7 +90,7 @@ export const useCompressionFeatures = (
       originalStateRef.current,
       measuredWidths,
       spacingRef.current as unknown as Record<string, number>,
-      optionsRef.current as unknown as Record<string, unknown>
+      optionsRef.current as unknown as Record<string, unknown>,
     );
   }, [measuredWidths, element]);
 
@@ -101,15 +101,15 @@ export const useCompressionFeatures = (
         state: originalStateRef.current,
         measuredWidths,
         editModeEnabled: optionsRef.current?.editModeEnabled,
-        hasEditModeLeftSlot: optionsRef.current?.hasEditModeLeftSlot
+        hasEditModeLeftSlot: optionsRef.current?.hasEditModeLeftSlot,
       }),
-    [measuredWidths]
+    [measuredWidths],
   );
 
   const calculateCurrentWidth = useCallback(
     (state: ToolsMenuState, breakdown?: Record<string, number>): number =>
       calculateWidth(state, measuredWidths, spacingRef.current, breakdown),
-    [measuredWidths]
+    [measuredWidths],
   );
 
   const compress = useCallback(
@@ -137,7 +137,7 @@ export const useCompressionFeatures = (
       const cachedState = findCachedState(
         cacheRef.current,
         getCacheKey(),
-        availableWidth
+        availableWidth,
       );
       if (cachedState) {
         debugLogCompress({
@@ -146,7 +146,7 @@ export const useCompressionFeatures = (
           steps: [],
           finalState: cachedState,
           fromCache: true,
-          measuredWidths: measuredWidthsRef.current
+          measuredWidths: measuredWidthsRef.current,
         });
         setCompressedState(cachedState);
         return;
@@ -159,7 +159,7 @@ export const useCompressionFeatures = (
           availableWidth,
           state,
           stateWidth,
-          originalStateRef.current
+          originalStateRef.current,
         );
 
       setCompressedState(() => {
@@ -184,7 +184,7 @@ export const useCompressionFeatures = (
             finalState: state,
             fromCache: false,
             measuredWidths: measuredWidthsRef.current,
-            breakdown
+            breakdown,
           });
           saveToCache(state, currentWidth);
         };
@@ -193,7 +193,7 @@ export const useCompressionFeatures = (
           steps.push({
             step: '0: initial fits',
             widthAfter: currentWidth,
-            fits: true
+            fits: true,
           });
           logAndCache();
           return state;
@@ -202,7 +202,7 @@ export const useCompressionFeatures = (
         steps.push({
           step: '0: initial overflow',
           widthAfter: currentWidth,
-          fits: false
+          fits: false,
         });
 
         // Конвейер шагов (порядок и состав в steps.ts). В режиме
@@ -219,7 +219,7 @@ export const useCompressionFeatures = (
             (!!optionsRef.current?.editModeEnabled &&
               !!optionsRef.current?.hasEditModeLeftSlot) ||
             hasGroupingCounter,
-          hasGroupingCounter
+          hasGroupingCounter,
         };
 
         for (const step of getCompressionPipeline(ctx)) {
@@ -231,7 +231,7 @@ export const useCompressionFeatures = (
           steps.push({
             step: step.name,
             widthAfter: currentWidth,
-            fits
+            fits,
           });
           if (fits) {
             logAndCache();
@@ -259,7 +259,7 @@ export const useCompressionFeatures = (
           steps.push({
             step: `overflow: ${oi.sourceType}[${oi.sourceIndex}] to dropdown`,
             widthAfter: currentWidth,
-            fits
+            fits,
           });
           if (fits) {
             logAndCache();
@@ -272,13 +272,13 @@ export const useCompressionFeatures = (
         steps.push({
           step: 'MAX COMPRESSED, still overflows',
           widthAfter: currentWidth,
-          fits: false
+          fits: false,
         });
         logAndCache();
         return state;
       });
     },
-    [getCacheKey, calculateCurrentWidth]
+    [getCacheKey, calculateCurrentWidth],
   );
 
   const resetCompression = useCallback(() => {
@@ -290,6 +290,6 @@ export const useCompressionFeatures = (
     compressedState,
     compress,
     calculateCurrentWidth,
-    resetCompression
+    resetCompression,
   };
 };

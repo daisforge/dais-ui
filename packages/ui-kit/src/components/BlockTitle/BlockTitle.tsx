@@ -14,12 +14,12 @@ import {
   BlockTitleCustomBlock,
   BlockTitleDescription,
   BlockTitleLeftBlock,
-  BlockTitleRightBlock
+  BlockTitleRightBlock,
 } from './styled';
 import {
   getBlockTitleBackButtonSize,
   getBlockTitleSlotSizes,
-  renderBlockTitleSlot
+  renderBlockTitleSlot,
 } from './utils';
 
 export const BlockTitle = ({
@@ -32,7 +32,7 @@ export const BlockTitle = ({
   rightSlot,
   disableMediaAdaptive = false,
   containerProps,
-  onBackButtonClick
+  onBackButtonClick,
 }: BlockTitleProps) => {
   const { down } = useBreakpoint();
   const isAdaptive1280 = !disableMediaAdaptive && down('xl');

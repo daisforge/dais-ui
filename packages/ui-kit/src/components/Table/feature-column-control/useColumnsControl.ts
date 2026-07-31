@@ -7,7 +7,7 @@ export const useColumnsControl = ({
   tableConfigColumnsControl,
   tableConfigKeyTextBoolean,
   colsWithKeyTextMap,
-  columnsGroupingIsActive
+  columnsGroupingIsActive,
 }: {
   tableConfigColumnsControl: ColumnsControlConfig | undefined;
   columnsGroupingIsActive: boolean;
@@ -22,9 +22,9 @@ export const useColumnsControl = ({
       reorderingAside: columnsControlEnable,
       reorderingHeader: columnsControlEnable,
       pinning: columnsControlEnable && !columnsGroupingIsActive,
-      hiding: columnsControlEnable
+      hiding: columnsControlEnable,
     },
-    ...tableConfigColumnsControl
+    ...tableConfigColumnsControl,
   };
 
   const columnsControlInControlBlockBoolean =
@@ -99,6 +99,6 @@ export const useColumnsControl = ({
     setHiddenCols,
     openControlModal,
     setOpenControlModal,
-    colsWithKeyTextMap
+    colsWithKeyTextMap,
   };
 };

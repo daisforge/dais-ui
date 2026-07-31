@@ -2,7 +2,7 @@
 import type {
   Layout,
   ReactGridLayoutProps,
-  ResponsiveProps
+  ResponsiveProps,
 } from 'react-grid-layout';
 
 export type GridDNDItems = {
@@ -61,7 +61,7 @@ export type GridDNDProps = {
   onLayoutChange?: (
     layout: GridDNDLayout,
     allLayouts: Record<string, Layout[]>,
-    meta: GridDNDMeta
+    meta: GridDNDMeta,
   ) => void;
   onBreakpointChange?: (breakpoint: string, layout: GridDNDLayout) => void;
   onItemsChange?: (items: GridDNDItemConfig[]) => void;
@@ -79,7 +79,7 @@ export type GridDNDProps = {
     | ((
         item: GridDNDItemConfig,
         onRemove: () => void,
-        onResize: (type: 's' | 'm' | 'l') => void
+        onResize: (type: 's' | 'm' | 'l') => void,
       ) => React.ReactNode);
 
   /**

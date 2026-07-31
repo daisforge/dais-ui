@@ -2,7 +2,7 @@ import type { RefObject } from 'react';
 
 import type {
   CanvasNodeTooltipConfig,
-  CanvasNodeTooltipProps
+  CanvasNodeTooltipProps,
 } from '../TableGlideInstance';
 
 /** Строка или объект с полем text, или null. */

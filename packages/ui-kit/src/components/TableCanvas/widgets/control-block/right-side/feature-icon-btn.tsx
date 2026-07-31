@@ -9,7 +9,7 @@ import { FeatureItem } from '../types';
 
 export const FEATURE_ICON_SIZES = {
   s: { button: 32, icon: 'xs' as const },
-  m: { button: 40, icon: 's' as const }
+  m: { button: 40, icon: 's' as const },
 };
 
 export const FeatureIconBtn = ({
@@ -34,7 +34,7 @@ export const FeatureIconBtn = ({
         ref={measureRef}
         style={{
           display: 'flex',
-          alignItems: 'center'
+          alignItems: 'center',
         }}
       >
         {/* Здесь иконка рисуется в самом контрл-блоке, поэтому
@@ -68,7 +68,7 @@ export const FeatureIconBtn = ({
                 height: `${sizeConfig.button}px`,
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center'
+                justifyContent: 'center',
               }}
             >
               <Icon color="inherit" size={sizeConfig.icon} />

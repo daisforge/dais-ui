@@ -8,7 +8,7 @@ import {
   StyledContent,
   StyledErrorSlot,
   StyledImage,
-  StyledSpinner
+  StyledSpinner,
 } from './StoriesContent.styled';
 
 export interface StoriesContentProps {
@@ -26,7 +26,7 @@ export interface StoriesContentProps {
 export const StoriesContent = ({
   slide,
   status,
-  errorNode
+  errorNode,
 }: StoriesContentProps): JSX.Element => {
   const objectFit = slide.objectFit ?? 'cover';
   const loaded = status === 'loaded';

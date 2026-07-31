@@ -10,7 +10,7 @@ import type { ColumnGlideInstance } from '../../type';
  */
 export function adaptCellTooltip<R extends ObjectForExtending, SR>(
   cellTooltip: ColumnGlideInstance<R, SR>['cellTooltip'],
-  column: ColumnGlideInstance<R, SR>
+  column: ColumnGlideInstance<R, SR>,
 ): ColumnGlideLast<R, SR>['cellTooltip'] {
   if (!cellTooltip) return undefined;
 
@@ -26,7 +26,7 @@ export function adaptCellTooltip<R extends ObjectForExtending, SR>(
  */
 export function adaptHeaderCellTooltip<R extends ObjectForExtending, SR>(
   headerCellTooltip: ColumnGlideInstance<R, SR>['headerCellTooltip'],
-  column: ColumnGlideInstance<R, SR>
+  column: ColumnGlideInstance<R, SR>,
 ): ColumnGlideLast<R, SR>['headerCellTooltip'] {
   if (!headerCellTooltip) return undefined;
 
@@ -36,6 +36,6 @@ export function adaptHeaderCellTooltip<R extends ObjectForExtending, SR>(
     headerCellTooltip({
       ...context,
       column,
-      ctxs: context.ctxs as CtxsType
+      ctxs: context.ctxs as CtxsType,
     });
 }

@@ -49,7 +49,7 @@ export type RowsGrouping<RowType extends ObjectForExtending> = {
       props: RenderCellProps<RowType> & {
         parentGroupKey: string | undefined;
         groupByArr: string[];
-      }
+      },
     ) => ReactNode;
     rowsGrouping?: Pick<ColumnRowsGrouping<RowType>, 'renderGroupCell'>;
   };
@@ -124,7 +124,7 @@ export type RowsGrouping<RowType extends ObjectForExtending> = {
    * @returns измененная группировка или строка без группировки — строка, которые заменит groupRow
    */
   groupRowReplaceTo?: (
-    groupRow: GroupRow<RowType>
+    groupRow: GroupRow<RowType>,
   ) => GroupRow<RowType> | RowType;
   /**
    * Метки для автоматизированного тестирования и аналитики
@@ -149,6 +149,6 @@ export type ColumnRowsGrouping<RowType, SummaryRowType = unknown> = {
    */
   columnGroupLabel?: string;
   renderGroupCell?: (
-    props: RenderGroupCellProps<RowType, SummaryRowType>
+    props: RenderGroupCellProps<RowType, SummaryRowType>,
   ) => ReactNode;
 };

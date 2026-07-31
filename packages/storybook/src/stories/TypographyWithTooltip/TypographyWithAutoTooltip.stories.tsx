@@ -28,11 +28,11 @@ const meta: Meta<typeof TypographyWithAutoTooltip> = {
         'TextL',
         'TextM',
         'TextS',
-        'TextXS'
-      ] satisfies TypographyVariant[]
+        'TextXS',
+      ] satisfies TypographyVariant[],
     },
     bold: { control: 'boolean' },
-    lines: { control: { type: 'number', min: 1, max: 5, step: 1 } }
+    lines: { control: { type: 'number', min: 1, max: 5, step: 1 } },
   },
   args: {
     variant: 'BodyM',
@@ -40,8 +40,8 @@ const meta: Meta<typeof TypographyWithAutoTooltip> = {
     lines: 1,
     tooltipText: 'Это всплывающая подсказка для обрезанного текста',
     children:
-      'Очень длинный текст, который не помещается в отведённую ширину и будет обрезан с многоточием'
-  }
+      'Очень длинный текст, который не помещается в отведённую ширину и будет обрезан с многоточием',
+  },
 };
 
 export default meta;
@@ -52,7 +52,7 @@ export const Default: Story = {
     <div style={{ width: '200px' }}>
       <TypographyWithAutoTooltip {...args} />
     </div>
-  )
+  ),
 };
 
 export const InteractiveDemo: Story = {
@@ -66,7 +66,7 @@ export const InteractiveDemo: Story = {
             display: 'flex',
             flexDirection: 'column',
             gap: 8,
-            maxWidth: '400px'
+            maxWidth: '400px',
           }}
         >
           <label htmlFor="widthRange">Ширина контейнера: {width}px </label>
@@ -97,7 +97,7 @@ export const InteractiveDemo: Story = {
           style={{
             width: `${width}px`,
             border: '1px dashed #ccc',
-            padding: 8
+            padding: 8,
           }}
         >
           <TypographyWithAutoTooltip {...args} lines={lines}>
@@ -108,5 +108,5 @@ export const InteractiveDemo: Story = {
         </div>
       </div>
     );
-  }
+  },
 };

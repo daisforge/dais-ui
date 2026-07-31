@@ -7,7 +7,7 @@ export const DragButton = ({
   onMouseEnter,
   onMouseLeave,
   itemIsDragging,
-  itemIsHovered
+  itemIsHovered,
 }: {
   itemIsDragging: boolean;
   itemIsHovered: boolean;
@@ -27,14 +27,14 @@ export const DragButton = ({
       ...(itemIsDragging
         ? {
             color: textSecondary,
-            pointerEvents: 'none'
+            pointerEvents: 'none',
           }
         : {
             color: textTertiary,
             ...(itemIsHovered && {
-              color: textSecondary
-            })
-          })
+              color: textSecondary,
+            }),
+          }),
     }}
   >
     <IconDrag color="inherit" />

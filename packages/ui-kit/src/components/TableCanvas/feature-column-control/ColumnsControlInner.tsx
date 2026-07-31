@@ -1,7 +1,7 @@
 import { Box } from '@ui-kit/components/Box';
 import {
   ColumnConfig,
-  ObjectForExtending
+  ObjectForExtending,
 } from '@ui-kit/components/TableCanvas';
 import { IconClose, IconSearch } from '@ui-kit/icons';
 import { StyledClearBtn, StyledSearchBlock } from '@ui-kit/shared/ui/Search';
@@ -20,7 +20,7 @@ import { ColumnsControlConfig } from './types';
 
 export const ColumnsControlInner = <
   Row extends ObjectForExtending,
-  SummaryRow
+  SummaryRow,
 >({
   onClose,
   columnsOrder,
@@ -34,7 +34,7 @@ export const ColumnsControlInner = <
   columnsControlConfig,
   colsWithKeyTextMap,
   keyText,
-  tableConfigKeyTextBoolean
+  tableConfigKeyTextBoolean,
 }: {
   opened: boolean;
   onClose: () => void;
@@ -63,7 +63,7 @@ export const ColumnsControlInner = <
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setSearchQuery(e.target.value.toLowerCase());
     },
-    []
+    [],
   );
 
   const handleClear = useCallback(() => {
@@ -75,7 +75,7 @@ export const ColumnsControlInner = <
       const notCheckingKeysSet = new Set([
         ROW_MARKER_COLUMN_KEY,
         ROW_I_COLUMN_KEY,
-        CHECKBOX_COLUMN_KEY
+        CHECKBOX_COLUMN_KEY,
       ]);
       const global = getDefaultColumnsOrder()
         .filter((k) => !notCheckingKeysSet.has(k))
@@ -85,7 +85,7 @@ export const ColumnsControlInner = <
       return global === local;
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [localOrder]
+    [localOrder],
   );
 
   const onColumnsReorderLocal = useCallback(
@@ -98,9 +98,9 @@ export const ColumnsControlInner = <
         keyText,
         tableConfigKeyTextBoolean,
         colsWithKeyTextMap,
-        pinnedCols: localPinned
+        pinnedCols: localPinned,
       }),
-    [colsWithKeyTextMap, keyText, tableConfigKeyTextBoolean, localPinned]
+    [colsWithKeyTextMap, keyText, tableConfigKeyTextBoolean, localPinned],
   );
 
   const confirmOrResetHandlers = {
@@ -123,7 +123,7 @@ export const ColumnsControlInner = <
         const changed = {
           ...(pinnedIsChanged && { pinned: pinnedIsChanged }),
           ...(orderIsChanged && { order: orderIsChanged }),
-          ...(hiddenIsChanged && { hidden: hiddenIsChanged })
+          ...(hiddenIsChanged && { hidden: hiddenIsChanged }),
         };
 
         columnsControlConfig.onConfirm(
@@ -131,9 +131,9 @@ export const ColumnsControlInner = <
             order: localOrder,
             pinned: localPinned,
             hidden: localHiddens,
-            changed
+            changed,
           },
-          { setColumnsOrder, setHiddenCols, setPinnedCols }
+          { setColumnsOrder, setHiddenCols, setPinnedCols },
         );
       }
       onClose();
@@ -143,7 +143,7 @@ export const ColumnsControlInner = <
       setLocalPinned(pinnedCols);
       setLocalHiddens(hiddenCols);
       onClose();
-    }
+    },
   };
 
   // ------------------------------ hiding ------------------------------
@@ -166,13 +166,13 @@ export const ColumnsControlInner = <
     const correctedDisabledHidingKeyText = correctedDisabled(disableHidingSet, {
       colsWithKeyTextMap,
       currentKey: k,
-      tableConfigKeyTextBoolean
+      tableConfigKeyTextBoolean,
     });
     return !(correctedDisabledHidingKeyText ?? disableHidingSet.has(k));
   });
 
   const allNotDisabledHidingColsIsVisible = notDisabledHidingCols.every(
-    (k) => !hiddenColsSet.has(k)
+    (k) => !hiddenColsSet.has(k),
   );
 
   const columnsVisibilityProps = {
@@ -189,7 +189,7 @@ export const ColumnsControlInner = <
 
         return prev.filter((k) => !notDisabledColsSet.has(k));
       });
-    }
+    },
   };
   // ------------------------------ pinning ------------------------------
   const pinnedColsSet = useMemo(() => new Set(localPinned), [localPinned]);
@@ -212,11 +212,11 @@ export const ColumnsControlInner = <
         const correctedDisable = correctedDisabled(disablePinningSet, {
           colsWithKeyTextMap,
           currentKey: k,
-          tableConfigKeyTextBoolean
+          tableConfigKeyTextBoolean,
         });
 
         return correctedDisable ?? disablePinningSet.has(k);
-      })
+      }),
     );
 
   useEffect(() => {

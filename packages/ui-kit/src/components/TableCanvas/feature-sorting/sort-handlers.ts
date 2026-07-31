@@ -14,7 +14,7 @@ const LOCALE = 'ru';
  */
 const COLLATOR_OPTIONS: Intl.CollatorOptions = {
   numeric: true,
-  sensitivity: 'base'
+  sensitivity: 'base',
 };
 
 // ── helpers ──────────────────────────────────────────────────────

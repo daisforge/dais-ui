@@ -13,7 +13,7 @@ import {
   ROW_I_COLUMN_KEY,
   ROW_I_COLUMN_WIDTH,
   ROW_I_HEADER_COL_CLASS,
-  ROW_I_SUMMARY_COL_CLASS
+  ROW_I_SUMMARY_COL_CLASS,
 } from './constants';
 import { useRowInstrumentsCtx } from './ctx';
 import { RowInstrumentsDropdownItemOption } from './types';
@@ -22,7 +22,7 @@ const StyledIconButton = styled(IconButton)({ flexShrink: 0 });
 
 const dotsButtonProps = {
   title: 'Инструменты строки',
-  children: <IconDotsVerticalCenteredOutline size="xs" color="inherit" />
+  children: <IconDotsVerticalCenteredOutline size="xs" color="inherit" />,
 } satisfies IconButtonProps;
 
 const CustomIconButton = ({ children, ...props }: IconButtonProps) => (
@@ -34,7 +34,7 @@ const CustomIconButton = ({ children, ...props }: IconButtonProps) => (
 export function RowIRenderCell({
   row,
   rowIdx,
-  onRowChange
+  onRowChange,
 }: RenderCellProps<ObjectForExtending>) {
   const rowInstrumentsGetConfig = useRowInstrumentsCtx();
   const headerCtx = useHeaderContext();
@@ -50,7 +50,7 @@ export function RowIRenderCell({
     onRowChange: (r) => {
       onRowChange(hideRowServiceKeysHandler(r));
     },
-    additional: headerCtx
+    additional: headerCtx,
   });
 
   // Не ренедрим кнопку, если массив для items пустой
@@ -116,5 +116,5 @@ export const RowIColumn: Column<any, unknown> = {
   sortable: false,
   renderCell(props) {
     return <RowIRenderCell {...props} />;
-  }
+  },
 };

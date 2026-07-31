@@ -7,11 +7,11 @@ import { mediaUtils } from './utils';
 
 export const MediaProvider: FC<MediaProviderProps> = ({
   breakpointConfig = DEFAULT_BREAKPOINT_CONFIG,
-  children
+  children,
 }) => (
   <ThemeProvider
     theme={{
-      media: mediaUtils(breakpointConfig)
+      media: mediaUtils(breakpointConfig),
     }}
   >
     {children}

@@ -6,7 +6,7 @@ import { List, ListItem } from '@ui-kit/components/List';
 import {
   SegmentGroup,
   SegmentItem,
-  SegmentProvider
+  SegmentProvider,
 } from '@ui-kit/components/Segment';
 import { Widget } from '@ui-kit/components/Widget';
 import { IconGroupOutline, IconHierarchy, IconSearch } from '@ui-kit/icons';
@@ -16,32 +16,32 @@ export const LeftPanelBlock = () => {
   const items = [
     {
       label: 'label',
-      value: 'label1'
+      value: 'label1',
     },
     {
       label: 'label',
-      value: 'label2'
-    }
+      value: 'label2',
+    },
   ];
 
   // Данные для списка
   const contentItems = [
     {
       label: 'Основной план',
-      value: 'label1'
+      value: 'label1',
     },
     {
       label: 'План блока',
-      value: 'label2'
+      value: 'label2',
     },
     {
       label: 'Персональный план',
-      value: 'label3'
+      value: 'label3',
     },
     {
       label: 'Журнал публикаций',
-      value: 'label4'
-    }
+      value: 'label4',
+    },
   ];
 
   // Состояние отвечает за открытие/закрытие панели

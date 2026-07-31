@@ -1,6 +1,6 @@
 export type TGetValue<
   O,
-  K extends string
+  K extends string,
 > = K extends `${infer Key}.${infer Rest}`
   ? Key extends keyof O
     ? TGetValue<O[Key], Rest>
@@ -13,7 +13,7 @@ export type TGetValue<
 
 export const getValue = <O extends Record<string, unknown>, K extends string>(
   obj: O,
-  path: K
+  path: K,
 ): TGetValue<O, K> => {
   const keys = path.split('.') as Array<keyof O>;
   let currentObj: unknown = obj;

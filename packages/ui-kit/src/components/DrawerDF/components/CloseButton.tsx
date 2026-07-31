@@ -3,7 +3,7 @@ import { IconClose } from '@ui-kit/icons';
 import React from 'react';
 
 export const CloseButton = ({
-  onClose
+  onClose,
 }: {
   onClose: (() => void) | undefined;
 }) => (

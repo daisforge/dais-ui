@@ -16,7 +16,7 @@ const StyledIconButton = styled(IconButton)({ flexShrink: 0 });
 
 const dotsButtonProps = {
   title: 'Инструменты строки',
-  children: <IconDotsVerticalCenteredOutline size="xs" color="inherit" />
+  children: <IconDotsVerticalCenteredOutline size="xs" color="inherit" />,
 } satisfies IconButtonProps;
 
 const CustomIconButton = ({ children, ...props }: IconButtonProps) => (
@@ -27,7 +27,7 @@ const CustomIconButton = ({ children, ...props }: IconButtonProps) => (
 
 export function RowIRenderCell({
   row,
-  rowInd
+  rowInd,
 }: // onRowChange,
 CellInfoGlideInstance<ObjectForExtending>) {
   const rowInstrumentsGetConfig = useRowInstrumentsCtx();
@@ -44,7 +44,7 @@ CellInfoGlideInstance<ObjectForExtending>) {
     onRowChange: (_r: unknown) => {
       // onRowChange(hideRowServiceKeysHandler(r));
     },
-    additional: headerCtx
+    additional: headerCtx,
   });
 
   // Не ренедрим кнопку, если массив для items пустой
@@ -113,5 +113,5 @@ export const RowIColumn: ColumnConfigInternal<any, unknown> = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   renderCell(props: any) {
     return <RowIRenderCell {...props} />;
-  }
+  },
 };

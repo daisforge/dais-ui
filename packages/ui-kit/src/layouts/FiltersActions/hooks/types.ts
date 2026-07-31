@@ -80,12 +80,12 @@ export interface UseAdaptiveFiltersResult {
   /** Хелпер для создания стилей элемента */
   getItemStyle: (
     modifications: ItemModifications | undefined,
-    availableWidth?: number
+    availableWidth?: number,
   ) => React.CSSProperties;
   /** Хелпер для проверки активных фильтров */
   hasActiveFilters: (
     items: FilterItem[],
-    filters: Record<string, any>
+    filters: Record<string, any>,
   ) => boolean;
 }
 

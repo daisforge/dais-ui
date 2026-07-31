@@ -25,7 +25,7 @@ export const storySourceDoc = <Level extends 'lastLevel' | 'all'>(
   /**
    * @default 'all'
    */
-  getLevel?: Level
+  getLevel?: Level,
 ) => {
   if (getLevel === 'lastLevel') {
     return options;
@@ -37,10 +37,10 @@ export const storySourceDoc = <Level extends 'lastLevel' | 'all'>(
         source: options,
         ...(options?.previewSource && {
           canvas: {
-            sourceState: options.previewSource
-          }
-        })
-      }
-    }
+            sourceState: options.previewSource,
+          },
+        }),
+      },
+    },
   };
 };

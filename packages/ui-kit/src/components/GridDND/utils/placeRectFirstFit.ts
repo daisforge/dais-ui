@@ -29,7 +29,7 @@ export function placeRectFirstFit(
   w: number,
   h: number,
   startX = 0,
-  startY = 0
+  startY = 0,
 ) {
   // Находим максимальную Y координату среди существующих элементов
   const maxY = existing.reduce((m, l) => Math.max(m, l.y + l.h), 0);
@@ -38,7 +38,7 @@ export function placeRectFirstFit(
   // Размер: достаточное количество строк + буфер для нового элемента
   const rows: boolean[][] = Array.from(
     { length: Math.max(maxY, startY) + h + 1 },
-    () => Array(cols).fill(false)
+    () => Array(cols).fill(false),
   );
 
   // Помечаем все ячейки существующих элементов как занятые

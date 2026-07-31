@@ -7,5 +7,5 @@ export type {
   PopupDFFooterProps,
   PopupDFHeaderProps,
   PopupDFProps,
-  PopupDFResizableConfig
+  PopupDFResizableConfig,
 } from './types';

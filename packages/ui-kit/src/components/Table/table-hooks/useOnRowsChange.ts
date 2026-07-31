@@ -14,7 +14,7 @@ const getCopy = <T>(v: T): T => {
 
 function isFinded<R extends ObjectForExtending | undefined>(
   row: R,
-  index: number
+  index: number,
 ): row is NonNullable<R> {
   return index !== -1;
 }
@@ -23,10 +23,10 @@ export const useOnRowsChange = <
   FilterStateType extends ObjectForExtending,
   RowIdType extends string | number,
   RowType extends ObjectForExtending,
-  SummaryRowType = unknown
+  SummaryRowType = unknown,
 >({
   rows,
-  tableConfig
+  tableConfig,
 }: {
   rows: readonly RowType[];
   tableConfig: TableConfig<
@@ -60,7 +60,7 @@ export const useOnRowsChange = <
       } = {
         column: data.column,
         indexes: [],
-        rows: []
+        rows: [],
       };
 
       // для каждой измененной строки...
@@ -98,7 +98,7 @@ export const useOnRowsChange = <
 
           const indexOfParentInRows = copyOfRows.findIndex(
             (el) =>
-              tableConfigEditing.rowKeyGetter(el) === roadToChangedSubRow[0]
+              tableConfigEditing.rowKeyGetter(el) === roadToChangedSubRow[0],
           );
           const curr = copyOfRows[indexOfParentInRows];
 
@@ -120,7 +120,7 @@ export const useOnRowsChange = <
           (el) =>
             tableConfigEditing.rowKeyGetter(el) ===
             // changedRowPrev - важно, для случаев rowKeyGetter = (r) => r.task + r.complete. и каждый из ключей меняется
-            tableConfigEditing.rowKeyGetter(changedRowPrev)
+            tableConfigEditing.rowKeyGetter(changedRowPrev),
         );
 
         if (indexInRows >= 0) {

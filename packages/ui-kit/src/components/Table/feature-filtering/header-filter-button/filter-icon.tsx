@@ -20,7 +20,7 @@ export const FilterIcon = forwardRef<HTMLButtonElement, FilterIconProps>(
       style={{
         width: 16,
         height: 16,
-        position: 'relative'
+        position: 'relative',
       }}
       {...rest}
     >
@@ -38,12 +38,12 @@ export const FilterIcon = forwardRef<HTMLButtonElement, FilterIconProps>(
           transform: 'scale(0)',
           ...(redSquare && {
             backgroundColor: COLORS.red,
-            transform: 'scale(1)'
-          })
+            transform: 'scale(1)',
+          }),
         }}
       />
 
       <IconSettingsFilter size="xs" color={textSecondary} />
     </StyledFilterIconButton>
-  )
+  ),
 );

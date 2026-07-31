@@ -30,7 +30,7 @@ export type DropdownContextMenu = {
 export type HeaderContextMenuProps = (
   event: React.MouseEvent,
   columnLabel: string | undefined,
-  closestTargetElement: HTMLElement | undefined
+  closestTargetElement: HTMLElement | undefined,
 ) => void;
 
 export type CellContextMenuDropDownProps<RowType, SummaryRowType> = {
@@ -55,7 +55,7 @@ export type CellContextMenuDropDownProps<RowType, SummaryRowType> = {
       column: CalculatedColumn<RowType, SummaryRowType>;
       selectCell: (enableEditor?: boolean) => void;
     },
-    event?: React.SyntheticEvent
+    event?: React.SyntheticEvent,
   ) => void;
 } & ContextMenuDropDownProps;
 
@@ -73,6 +73,6 @@ export type HeaderContextMenuDropDownProps = {
   onItemSelect?: (
     item: ContextMenuDropdownItem,
     context: { columnLabel: string | undefined },
-    event?: React.SyntheticEvent
+    event?: React.SyntheticEvent,
   ) => void;
 } & ContextMenuDropDownProps;

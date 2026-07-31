@@ -6,11 +6,11 @@
 export function viewportToContainerPosition(
   viewportX: number,
   viewportY: number,
-  container: HTMLElement
+  container: HTMLElement,
 ): { x: number; y: number } {
   const rect = container.getBoundingClientRect();
   return {
     x: viewportX - rect.left + container.scrollLeft,
-    y: viewportY - rect.top + container.scrollTop
+    y: viewportY - rect.top + container.scrollTop,
   };
 }

@@ -14,7 +14,7 @@ import React, { useRef, useState } from 'react';
 const meta: Meta<typeof Stories> = {
   title: 'Локальные компоненты/Stories',
   component: Stories,
-  tags: ['!autodocs']
+  tags: ['!autodocs'],
 };
 export default meta;
 
@@ -23,7 +23,7 @@ type Story = StoryObj<typeof Stories>;
 // Демо-ассеты как inline SVG — работают офлайн, без внешних URL.
 const asset = (label: string, from: string, to: string): string =>
   `data:image/svg+xml,${encodeURIComponent(
-    `<svg xmlns="http://www.w3.org/2000/svg" width="430" height="760"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${from}"/><stop offset="1" stop-color="${to}"/></linearGradient></defs><rect width="430" height="760" fill="url(#g)"/><text x="215" y="380" font-family="sans-serif" font-size="34" fill="#ffffff" text-anchor="middle">${label}</text></svg>`
+    `<svg xmlns="http://www.w3.org/2000/svg" width="430" height="760"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${from}"/><stop offset="1" stop-color="${to}"/></linearGradient></defs><rect width="430" height="760" fill="url(#g)"/><text x="215" y="380" font-family="sans-serif" font-size="34" fill="#ffffff" text-anchor="middle">${label}</text></svg>`,
   )}`;
 
 // Индикатор «просмотрено» контролируется снаружи: гасим его по onGroupComplete.
@@ -54,13 +54,13 @@ function CircleStoriesExample() {
                 text="Подробнее"
                 onClick={() => undefined}
               />
-            )
+            ),
           },
           { src: asset('Слайд 2', '#7b61ff', '#99b0fe') },
           {
             src: asset('Слайд 3', '#00b3a4', '#08c6c9'),
-            objectFit: 'contain' as const
-          }
+            objectFit: 'contain' as const,
+          },
         ]}
       />
       <Stories.Preview
@@ -75,7 +75,7 @@ function CircleStoriesExample() {
         viewed={viewed[2]}
         slides={[
           { src: asset('Шаг 1', '#c471ed', '#f64f59') },
-          { src: asset('Шаг 2', '#12c2e9', '#c471ed') }
+          { src: asset('Шаг 2', '#12c2e9', '#c471ed') },
         ]}
       />
     </Stories>
@@ -88,14 +88,14 @@ import { useState } from 'react';
 
 ${getFuncAsString(
   'packages/storybook/src/stories/Stories/Stories.stories.tsx',
-  'CircleStoriesExample'
+  'CircleStoriesExample',
 )}
 `;
 
 export const Circle: Story = {
   name: 'Круглые триггеры',
   ...storySourceDoc({ code: circleCode, previewSource: 'shown' }),
-  render: CircleStoriesExample
+  render: CircleStoriesExample,
 };
 
 function RectStoriesExample() {
@@ -114,7 +114,7 @@ function RectStoriesExample() {
         viewed={viewed[0]}
         slides={[
           { src: asset('Новость 1', '#08c6c9', '#4f8ef7') },
-          { src: asset('Новость 2', '#4f8ef7', '#7b61ff') }
+          { src: asset('Новость 2', '#4f8ef7', '#7b61ff') },
         ]}
       />
       <Stories.Preview
@@ -134,8 +134,8 @@ function RectStoriesExample() {
                 href="#"
                 text="Открыть"
               />
-            )
-          }
+            ),
+          },
         ]}
       />
     </Stories>
@@ -147,14 +147,14 @@ import { Button, Stories } from '@sber-digital-finance-ui/ui-kit';
 
 ${getFuncAsString(
   'packages/storybook/src/stories/Stories/Stories.stories.tsx',
-  'RectStoriesExample'
+  'RectStoriesExample',
 )}
 `;
 
 export const Rect: Story = {
   name: 'Прямоугольные триггеры',
   ...storySourceDoc({ code: rectCode, previewSource: 'shown' }),
-  render: RectStoriesExample
+  render: RectStoriesExample,
 };
 
 function LoadingStoriesExample() {
@@ -173,7 +173,7 @@ function LoadingStoriesExample() {
         viewed={viewed[0]}
         slides={[
           { src: asset('Ассет 1', '#08c6c9', '#4f8ef7') },
-          { src: asset('Ассет 2', '#7b61ff', '#99b0fe') }
+          { src: asset('Ассет 2', '#7b61ff', '#99b0fe') },
         ]}
       />
     </Stories>
@@ -185,14 +185,14 @@ import { Stories } from '@sber-digital-finance-ui/ui-kit';
 
 ${getFuncAsString(
   'packages/storybook/src/stories/Stories/Stories.stories.tsx',
-  'LoadingStoriesExample'
+  'LoadingStoriesExample',
 )}
 `;
 
 export const Loading: Story = {
   name: 'Спиннер загрузки (эмуляция)',
   ...storySourceDoc({ code: loadingCode, previewSource: 'shown' }),
-  render: LoadingStoriesExample
+  render: LoadingStoriesExample,
 };
 
 function ErrorStateExample() {
@@ -212,14 +212,14 @@ import { Stories } from '@sber-digital-finance-ui/ui-kit';
 
 ${getFuncAsString(
   'packages/storybook/src/stories/Stories/Stories.stories.tsx',
-  'ErrorStateExample'
+  'ErrorStateExample',
 )}
 `;
 
 export const ErrorState: Story = {
   name: 'Ошибка: дефолтный EmptyState + ретрай',
   ...storySourceDoc({ code: errorCode, previewSource: 'shown' }),
-  render: ErrorStateExample
+  render: ErrorStateExample,
 };
 
 function ErrorCustomExample() {
@@ -241,7 +241,7 @@ function ErrorCustomExample() {
             border: `1px solid ${surfaceInfo}`,
             color: surfaceInfo,
             backgroundColor: surfaceAccentMinor,
-            textAlign: 'center'
+            textAlign: 'center',
           }}
         >
           <BodyS>Свой контент при ошибке загрузки</BodyS>
@@ -264,14 +264,14 @@ import { br, s } from '@sber-digital-finance-ui/ui-kit/constants';
 
 ${getFuncAsString(
   'packages/storybook/src/stories/Stories/Stories.stories.tsx',
-  'ErrorCustomExample'
+  'ErrorCustomExample',
 )}
 `;
 
 export const ErrorCustom: Story = {
   name: 'Ошибка: кастомный контент (renderError)',
   ...storySourceDoc({ code: errorCustomCode, previewSource: 'shown' }),
-  render: ErrorCustomExample
+  render: ErrorCustomExample,
 };
 
 function ImperativeControlExample() {
@@ -286,7 +286,7 @@ function ImperativeControlExample() {
           display: 'flex',
           gap: 8,
           alignItems: 'center',
-          flexWrap: 'wrap'
+          flexWrap: 'wrap',
         }}
       >
         <Button
@@ -321,7 +321,7 @@ function ImperativeControlExample() {
           viewed={viewed[0]}
           slides={[
             { src: asset('1.1', '#08c6c9', '#4f8ef7') },
-            { src: asset('1.2', '#4f8ef7', '#7b61ff') }
+            { src: asset('1.2', '#4f8ef7', '#7b61ff') },
           ]}
         />
         <Stories.Preview
@@ -331,7 +331,7 @@ function ImperativeControlExample() {
           slides={[
             { src: asset('2.1', '#f7971e', '#ffd200') },
             { src: asset('2.2', '#f64f59', '#c471ed') },
-            { src: asset('2.3', '#12c2e9', '#c471ed') }
+            { src: asset('2.3', '#12c2e9', '#c471ed') },
           ]}
         />
       </Stories>
@@ -345,14 +345,14 @@ import { useRef, useState } from 'react';
 
 ${getFuncAsString(
   'packages/storybook/src/stories/Stories/Stories.stories.tsx',
-  'ImperativeControlExample'
+  'ImperativeControlExample',
 )}
 `;
 
 export const ImperativeControl: Story = {
   name: 'Внешнее управление через ref',
   ...storySourceDoc({ code: imperativeCode, previewSource: 'shown' }),
-  render: ImperativeControlExample
+  render: ImperativeControlExample,
 };
 
 function InsideModalExample() {
@@ -381,7 +381,7 @@ function InsideModalExample() {
                 viewed={viewed[0]}
                 slides={[
                   { src: asset('Слайд 1', '#08c6c9', '#4f8ef7') },
-                  { src: asset('Слайд 2', '#7b61ff', '#99b0fe') }
+                  { src: asset('Слайд 2', '#7b61ff', '#99b0fe') },
                 ]}
               />
               <Stories.Preview
@@ -404,14 +404,14 @@ import { useState } from 'react';
 
 ${getFuncAsString(
   'packages/storybook/src/stories/Stories/Stories.stories.tsx',
-  'InsideModalExample'
+  'InsideModalExample',
 )}
 `;
 
 export const InsideModal: Story = {
   name: 'Триггеры внутри ModalDF',
   ...storySourceDoc({ code: insideModalCode, previewSource: 'shown' }),
-  render: InsideModalExample
+  render: InsideModalExample,
 };
 
 function HiddenArrowsExample() {
@@ -447,14 +447,14 @@ import { Stories } from '@sber-digital-finance-ui/ui-kit';
 
 ${getFuncAsString(
   'packages/storybook/src/stories/Stories/Stories.stories.tsx',
-  'HiddenArrowsExample'
+  'HiddenArrowsExample',
 )}
 `;
 
 export const HiddenArrows: Story = {
   name: 'Стрелки скрыты (arrows="never")',
   ...storySourceDoc({ code: hiddenArrowsCode, previewSource: 'shown' }),
-  render: HiddenArrowsExample
+  render: HiddenArrowsExample,
 };
 
 function TitlesExample() {
@@ -498,12 +498,12 @@ import { Stories } from '@sber-digital-finance-ui/ui-kit';
 
 ${getFuncAsString(
   'packages/storybook/src/stories/Stories/Stories.stories.tsx',
-  'TitlesExample'
+  'TitlesExample',
 )}
 `;
 
 export const Titles: Story = {
   name: 'Подписи: 2 строки, ellipsis, выравнивание',
   ...storySourceDoc({ code: titlesCode, previewSource: 'shown' }),
-  render: TitlesExample
+  render: TitlesExample,
 };

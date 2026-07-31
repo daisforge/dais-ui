@@ -4,7 +4,7 @@ import { IconCalendarOutline } from '@ui-kit/icons';
 
 // FIXME: marginRight: datePickerSize === 'xs' ? '10px' : '14px' - убрать, когда атомарная команда добавит отступ для contentRight слота в DatePickerRange
 export const DefaultRightIconButton = ({
-  datePickerSize
+  datePickerSize,
 }: {
   datePickerSize: DatePickerRangeCompProps['size'];
 }) => (
@@ -13,7 +13,7 @@ export const DefaultRightIconButton = ({
     view="secondary"
     style={{
       marginRight: datePickerSize === 'xs' ? '8px' : '12px',
-      marginTop: '2px'
+      marginTop: '2px',
     }}
   >
     <IconCalendarOutline

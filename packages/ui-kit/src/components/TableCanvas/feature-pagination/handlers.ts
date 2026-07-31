@@ -1,12 +1,12 @@
 import {
   DEFAULT_PAGINATION_SIZE,
   PAGINATION_HEIGHT,
-  PAGINATION_PADDING
+  PAGINATION_PADDING,
 } from './constants';
 
 export const getPaginationHeight = (
   paginationActiveInConfig: boolean,
-  customSize: keyof typeof PAGINATION_HEIGHT | undefined
+  customSize: keyof typeof PAGINATION_HEIGHT | undefined,
 ) => {
   if (!paginationActiveInConfig) {
     return 0;

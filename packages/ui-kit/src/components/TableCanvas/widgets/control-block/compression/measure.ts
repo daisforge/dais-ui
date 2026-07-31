@@ -34,7 +34,7 @@ import React, {
   useLayoutEffect,
   useMemo,
   useRef,
-  useState
+  useState,
 } from 'react';
 
 import { controlBlockClassNames as cls } from '../control-block.classnames';
@@ -45,7 +45,7 @@ import {
   InitialWidthsForToolsMenu,
   MeasuredArrayKey,
   MeasuredNumberKey,
-  ToolsMenuState
+  ToolsMenuState,
 } from '../types';
 import { isCompressionDebugEnabled } from './debug';
 
@@ -82,10 +82,10 @@ export const useControlBlockMeasurements = ({
   leftSideInner,
   rightButtons,
   featureLeftButtons,
-  icons
+  icons,
 }: MeasurementsParams) => {
   const [initialWidths, setInitialWidths] = useState<InitialWidthsForToolsMenu>(
-    {}
+    {},
   );
 
   // Рефы измеряемых элементов
@@ -126,7 +126,7 @@ export const useControlBlockMeasurements = ({
           break;
       }
     },
-    []
+    [],
   );
 
   // Константные ширины из пропсов, фоллбек до первого DOM замера.
@@ -143,7 +143,7 @@ export const useControlBlockMeasurements = ({
         const hasDivider =
           !isCustomRender && 'dividerLeft' in icon && icon.dividerLeft;
         return iconW + (hasDivider ? ITEM_DIVIDER : 0);
-      })
+      }),
     };
   }, [rightButtons, featureLeftButtons, icons]);
 
@@ -161,16 +161,16 @@ export const useControlBlockMeasurements = ({
       ...initialWidths,
       rightButtonsIcon: mergeArr(
         constantWidths.rightButtonsIcon,
-        initialWidths.rightButtonsIcon
+        initialWidths.rightButtonsIcon,
       ),
       featureLeftButtonsIcon: mergeArr(
         constantWidths.featureLeftButtonsIcon,
-        initialWidths.featureLeftButtonsIcon
+        initialWidths.featureLeftButtonsIcon,
       ),
       customFeatures: mergeArr(
         constantWidths.customFeatures,
-        initialWidths.customFeatures
-      )
+        initialWidths.customFeatures,
+      ),
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mergedKey]);
@@ -203,7 +203,7 @@ export const useControlBlockMeasurements = ({
       if (inlineTitleRef.current)
         setNum(
           'inlineTitle',
-          inlineTitleRef.current.getBoundingClientRect().width
+          inlineTitleRef.current.getBoundingClientRect().width,
         );
 
       const collapseEl = collapsingBlockRefs.current[0];
@@ -213,7 +213,7 @@ export const useControlBlockMeasurements = ({
       if (editModeLeftSlotRef.current)
         setNum(
           'editModeLeftSlot',
-          editModeLeftSlotRef.current.getBoundingClientRect().width
+          editModeLeftSlotRef.current.getBoundingClientRect().width,
         );
 
       // Кнопки правой зоны: с видимым лейблом пишем лейбл ширину,
@@ -249,7 +249,7 @@ export const useControlBlockMeasurements = ({
         setArrItem(
           'customFeatures',
           i,
-          el.getBoundingClientRect().width + divider
+          el.getBoundingClientRect().width + divider,
         );
       });
 
@@ -257,14 +257,14 @@ export const useControlBlockMeasurements = ({
       if (leftSideInnerBlockRef.current)
         setNum(
           'leftSideInnerBlock',
-          leftSideInnerBlockRef.current.getBoundingClientRect().width
+          leftSideInnerBlockRef.current.getBoundingClientRect().width,
         );
 
       // Триггер overflow дропдауна, появляется при сжатии
       if (overflowTriggerRef.current)
         setNum(
           'overflowTrigger',
-          overflowTriggerRef.current.getBoundingClientRect().width
+          overflowTriggerRef.current.getBoundingClientRect().width,
         );
 
       if (changed) {
@@ -275,11 +275,11 @@ export const useControlBlockMeasurements = ({
           featureLeftButtons: copyArr(store.featureLeftButtons),
           rightButtonsIcon: copyArr(store.rightButtonsIcon),
           featureLeftButtonsIcon: copyArr(store.featureLeftButtonsIcon),
-          customFeatures: copyArr(store.customFeatures)
+          customFeatures: copyArr(store.customFeatures),
         });
       }
     },
-    []
+    [],
   );
 
   // Дебаг лог реальных ширин DOM против расчёта модели. Зоны позволяют
@@ -294,8 +294,8 @@ export const useControlBlockMeasurements = ({
           .filter(([, node]) => node)
           .map(([i, node]) => [
             i,
-            Math.round((node as HTMLDivElement).getBoundingClientRect().width)
-          ])
+            Math.round((node as HTMLDivElement).getBoundingClientRect().width),
+          ]),
       );
 
     const zoneW = (node: Element | null | undefined) =>
@@ -314,7 +314,7 @@ export const useControlBlockMeasurements = ({
           search: zoneW(el.querySelector(`.${cls.searchControlBlock}`)),
           right: zoneW(rightZone),
           rightButtons: zoneW(rightZone?.firstElementChild),
-          rightIcons: zoneW(rightZone?.lastElementChild)
+          rightIcons: zoneW(rightZone?.lastElementChild),
         },
         live: {
           leftInner: liveWidths(leftSideInnerRefs),
@@ -323,11 +323,11 @@ export const useControlBlockMeasurements = ({
           custom: liveWidths(customFeaturesRefs),
           overflowTrigger: overflowTriggerRef.current
             ? Math.round(
-                overflowTriggerRef.current.getBoundingClientRect().width
+                overflowTriggerRef.current.getBoundingClientRect().width,
               )
-            : null
-        }
-      })}`
+            : null,
+        },
+      })}`,
     );
   }, []);
 
@@ -339,7 +339,7 @@ export const useControlBlockMeasurements = ({
     inlineTitleRef,
     editModeLeftSlotRef,
     overflowTriggerRef,
-    leftSideInnerBlockRef
+    leftSideInnerBlockRef,
   };
 };
 
@@ -370,8 +370,8 @@ export const useMeasurementEffects = (
     icons,
     fullScreened,
     editModeEnabled,
-    isCollapsed
-  }: MeasurementEffectsParams
+    isCollapsed,
+  }: MeasurementEffectsParams,
 ) => {
   const { measureAll, logDomZones } = measurements;
 
@@ -386,7 +386,7 @@ export const useMeasurementEffects = (
   // (скрыли или показали лейблы), по ней дозамеряются icon-only ширины
   const visSignature = JSON.stringify([
     visibilityState.leftSide.editRowFeature.isLabelVisible,
-    visibilityState.rightSide.buttons.map((b) => b.isLabelVisible)
+    visibilityState.rightSide.buttons.map((b) => b.isLabelVisible),
   ]);
 
   // Контент сигнатура icons: ссылка на массив нестабильна (новый каждый
@@ -397,8 +397,8 @@ export const useMeasurementEffects = (
     icons.map((ic) => [
       ic.value,
       'dividerLeft' in ic ? !!ic.dividerLeft : false,
-      'CustomIconRender' in ic
-    ])
+      'CustomIconRender' in ic,
+    ]),
   );
 
   // Счётчик группировки (contentRight кнопки "Группировать") намеренно НЕ
@@ -438,7 +438,7 @@ export const useMeasurementEffects = (
     featureLeftButtons.length,
     fullScreened,
     editModeEnabled,
-    isCollapsed
+    isCollapsed,
   ]);
 
   // Дебаг: реальные ширины DOM против расчёта модели

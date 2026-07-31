@@ -18,7 +18,7 @@ const mockData = [
   { label: 'Андрей Попов' },
   { label: 'Анна Николаева' },
   { label: 'Иван Федоров' },
-  { label: 'Наталья Морозова' }
+  { label: 'Наталья Морозова' },
 ];
 
 const meta: Meta<AutocompleteSearchProps> = {
@@ -26,28 +26,28 @@ const meta: Meta<AutocompleteSearchProps> = {
   component: AutocompleteSearch,
   parameters: {
     docs: {
-      toc: true
-    }
+      toc: true,
+    },
   },
   tags: ['!autodocs'],
   args: {
     size: 's',
     placeholder: 'Поиск',
     disabled: false,
-    readOnly: false
+    readOnly: false,
   },
   argTypes: {
     size: {
       options: ['s', 'xs'],
-      control: { type: 'select' }
+      control: { type: 'select' },
     },
     disabled: {
-      control: { type: 'boolean' }
+      control: { type: 'boolean' },
     },
     readOnly: {
-      control: { type: 'boolean' }
-    }
-  }
+      control: { type: 'boolean' },
+    },
+  },
 };
 
 export default meta;
@@ -66,7 +66,7 @@ import { AutocompleteSearch } from '@daisforge/ui';
 export const Default: Story = {
   name: 'Default',
   ...storySourceDoc({
-    preCode
+    preCode,
   }),
   render: (args: AutocompleteSearchProps) => {
     const [value, setValue] = useState('');
@@ -87,7 +87,7 @@ export const Default: Story = {
         />
       </div>
     );
-  }
+  },
 };
 
 /**
@@ -98,13 +98,13 @@ export const Default: Story = {
 export const Sizes: Story = {
   name: 'Размеры',
   ...storySourceDoc({
-    preCode
+    preCode,
   }),
   render: (args: AutocompleteSearchProps) => {
     const sizes = ['s', 'xs'] as const;
     const [values, setValues] = useState<Record<string, string>>({
       s: '',
-      xs: ''
+      xs: '',
     });
 
     return (
@@ -115,7 +115,7 @@ export const Sizes: Story = {
           flexDirection: 'column',
           gap: '1rem',
           width: '500px',
-          minHeight: '500px'
+          minHeight: '500px',
         }}
       >
         {sizes.map((size) => (
@@ -137,7 +137,7 @@ export const Sizes: Story = {
         ))}
       </div>
     );
-  }
+  },
 };
 
 /**
@@ -152,7 +152,7 @@ export const Sizes: Story = {
 export const WithClear: Story = {
   name: 'Различные варианты',
   ...storySourceDoc({
-    preCode
+    preCode,
   }),
   render: (args: AutocompleteSearchProps) => {
     const [value1, setValue1] = useState('Алексей');
@@ -168,7 +168,7 @@ export const WithClear: Story = {
           flexDirection: 'column',
           gap: '1rem',
           width: '500px',
-          minHeight: '500px'
+          minHeight: '500px',
         }}
       >
         {/* Сценарий 3: onClear + value → только крестик */}
@@ -248,5 +248,5 @@ export const WithClear: Story = {
         />
       </div>
     );
-  }
+  },
 };

@@ -8,7 +8,7 @@ export type TypographyWithAutoTooltipProps<T extends TypographyVariant> = {
 } & Omit<TypographyProps<T>, 'frame'>;
 
 export type TypographyWithAutoTooltipComp = <T extends TypographyVariant>(
-  props: TypographyWithAutoTooltipProps<T>
+  props: TypographyWithAutoTooltipProps<T>,
 ) => JSX.Element;
 export type TypographyWithAutoTooltipCompGeneric<T extends TypographyVariant> =
   (props: TypographyWithAutoTooltipProps<T>) => JSX.Element;

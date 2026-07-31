@@ -8,7 +8,7 @@ import { subRowsRoute } from '@df-storybook/msw/routes/subRows.routes';
 import type { Meta, StoryObj } from '@storybook/react';
 import {
   type FetcherFunc,
-  TableContract
+  TableContract,
 } from '@ui-kit/components/TableContract';
 
 const meta: Meta = {
@@ -16,11 +16,11 @@ const meta: Meta = {
   tags: ['!autodocs'],
   parameters: {
     screenshot: {
-      skip: true
-    }
+      skip: true,
+    },
   },
 
-  component: TableContract
+  component: TableContract,
 };
 
 export default meta;
@@ -32,35 +32,35 @@ const createFetcher: (endpoint: string) => FetcherFunc =
       `${endpoint}${pathParams ? `/${pathParams}` : ''}${
         params ? `?${params}` : ''
       }`,
-      rest
+      rest,
     );
 
 export const Simple: StoryObj<typeof TableContract> = {
-  args: { fetcher: createFetcher(simpleRoute.ENDPOINT) }
+  args: { fetcher: createFetcher(simpleRoute.ENDPOINT) },
 };
 
 export const Pagination: StoryObj<typeof TableContract> = {
-  args: { fetcher: createFetcher(paginationRoute.ENDPOINT) }
+  args: { fetcher: createFetcher(paginationRoute.ENDPOINT) },
 };
 
 export const Searching: StoryObj<typeof TableContract> = {
-  args: { fetcher: createFetcher(searchingRoute.ENDPOINT) }
+  args: { fetcher: createFetcher(searchingRoute.ENDPOINT) },
 };
 
 export const Sorting: StoryObj<typeof TableContract> = {
-  args: { fetcher: createFetcher(sortingRoute.ENDPOINT) }
+  args: { fetcher: createFetcher(sortingRoute.ENDPOINT) },
 };
 
 export const SubRows: StoryObj<typeof TableContract> = {
-  args: { fetcher: createFetcher(subRowsRoute.ENDPOINT) }
+  args: { fetcher: createFetcher(subRowsRoute.ENDPOINT) },
 };
 
 export const Editing: StoryObj<typeof TableContract> = {
-  args: { fetcher: createFetcher(editingExampleGetRoute.ENDPOINT) }
+  args: { fetcher: createFetcher(editingExampleGetRoute.ENDPOINT) },
 };
 
 export const AllFeats: StoryObj<typeof TableContract> = {
   args: {
-    fetcher: createFetcher(allFeatsExampleGetRoute.ENDPOINT)
-  }
+    fetcher: createFetcher(allFeatsExampleGetRoute.ENDPOINT),
+  },
 };

@@ -12,11 +12,11 @@ const meta: Meta = {
   title: 'Локальные компоненты/TableCanvas/API/columnConfig',
   parameters: {
     docs: {
-      page: DocArgsTemplate
-    }
+      page: DocArgsTemplate,
+    },
   },
   excludeStories: ['CANVAS'],
-  component: StoryColumnConfigTableCanvasComp as ComponentType<unknown>
+  component: StoryColumnConfigTableCanvasComp as ComponentType<unknown>,
 };
 
 export default meta;
@@ -24,5 +24,5 @@ export default meta;
 export const Docs: StoryObj = {
   name: 'API',
   // eslint-disable-next-line react/jsx-no-useless-fragment
-  render: () => <></>
+  render: () => <></>,
 };

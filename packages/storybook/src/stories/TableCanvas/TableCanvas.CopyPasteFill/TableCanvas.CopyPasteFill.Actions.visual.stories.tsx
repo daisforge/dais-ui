@@ -30,7 +30,7 @@ import { createRef, useState } from 'react';
 const meta: Meta = {
   title:
     'Локальные компоненты/TableCanvas/Copy-Paste-Fill/Визуальные тесты действий',
-  tags: ['!autodocs']
+  tags: ['!autodocs'],
 };
 export default meta;
 
@@ -53,7 +53,7 @@ const INITIAL_ROWS: ActionRow[] = [
   { id: 1, name: 'Alpha', qty: 10, status: 'open' },
   { id: 2, name: 'Beta', qty: 20, status: 'closed' },
   { id: 3, name: 'Gamma', qty: 30, status: 'open' },
-  { id: 4, name: 'Delta', qty: 40, status: 'closed' }
+  { id: 4, name: 'Delta', qty: 40, status: 'closed' },
 ];
 
 // Ширины — конфиг рендера грида (для читаемого скрина); в вычислении координат НЕ
@@ -64,26 +64,26 @@ const COLS: readonly ColumnConfig<ActionRow>[] = [
     key: 'name',
     name: 'Name',
     width: 180,
-    editingCell: { component: 'inputString' }
+    editingCell: { component: 'inputString' },
   },
   {
     key: 'qty',
     name: 'Qty',
     width: 120,
     editingCell: { component: 'inputNumber' },
-    contentFormat: 'number'
+    contentFormat: 'number',
   },
   {
     key: 'status',
     name: 'Status',
     width: 160,
-    editingCell: { component: 'inputString' }
-  }
+    editingCell: { component: 'inputString' },
+  },
 ];
 
 /** Редактируемый грид со стейтом строк — paste его меняет, он ререндерится. */
 function EditableActionsGrid({
-  withBroadcast = false
+  withBroadcast = false,
 }: {
   withBroadcast?: boolean;
 }) {
@@ -104,8 +104,8 @@ function EditableActionsGrid({
           editing: {
             defaultEnabled: true,
             onRowsChange: setRows,
-            rowKeyGetter: (r) => `${r.id}`
-          }
+            rowKeyGetter: (r) => `${r.id}`,
+          },
         }}
         columnConfig={COLS}
         rows={rows}
@@ -123,7 +123,7 @@ async function getGridTarget(canvasElement: HTMLElement): Promise<HTMLElement> {
     const el =
       canvasElement.querySelector<HTMLElement>('.dvn-scroller') ??
       canvasElement.querySelector<HTMLElement>(
-        '[data-testid="data-grid-canvas"]'
+        '[data-testid="data-grid-canvas"]',
       );
     if (!el) throw new Error('Grid canvas not found');
     return el;
@@ -160,7 +160,7 @@ async function ready(): Promise<void> {
 function click(
   el: HTMLElement,
   p: Point,
-  mods: { shiftKey?: boolean; ctrlKey?: boolean } = {}
+  mods: { shiftKey?: boolean; ctrlKey?: boolean } = {},
 ) {
   const base = { clientX: p.x, clientY: p.y, pointerType: 'mouse', ...mods };
   fireEvent.pointerDown(el, { ...base, button: 0, buttons: 1 });
@@ -195,7 +195,7 @@ export const CopyPasteCell: Story = {
     await settle();
     pressHotkey(el, 'KeyV');
     await settle();
-  }
+  },
 };
 
 export const CopyPasteBroadcastRange: Story = {
@@ -217,5 +217,5 @@ export const CopyPasteBroadcastRange: Story = {
     await settle();
     pressHotkey(el, 'KeyV');
     await settle();
-  }
+  },
 };

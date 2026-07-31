@@ -18,14 +18,14 @@ const getInputStyles = ({ $isFullHeight }: StyleProps) => css`
       ${$isFullHeight &&
       css({
         maxHeight: 'unset',
-        height: '100%'
+        height: '100%',
       })}
     }
 
     ${$isFullHeight &&
     css({
       maxHeight: 'unset',
-      height: '100%'
+      height: '100%',
     })}
   }
 `;

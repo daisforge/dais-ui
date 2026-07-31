@@ -4,12 +4,12 @@ import { media } from '@ui-kit/utils';
 import styled, {
   css,
   CSSObject,
-  FlattenSimpleInterpolation
+  FlattenSimpleInterpolation,
 } from 'styled-components';
 
 import {
   ANALYTICAL_WIDGET_STYLES,
-  analyticalWidgetClassNames as cls
+  analyticalWidgetClassNames as cls,
 } from './AnalyticalWidget.constants';
 import { AnalyticalWidgetSize } from './AnalyticalWidget.types';
 
@@ -61,7 +61,7 @@ const getSizeStyles = (size: AnalyticalWidgetSize) => {
       max-width: var(--analytical-widget-max-width);
       padding: var(--analytical-widget-padding);
       border-radius: var(--analytical-widget-br);
-    `
+    `,
   };
 };
 

@@ -19,10 +19,10 @@ const meta: Meta<MassActionsProps> = {
   component: MassActions,
   parameters: {
     docs: {
-      layout: 'fullscreen'
-    }
+      layout: 'fullscreen',
+    },
   },
-  tags: ['!autodocs']
+  tags: ['!autodocs'],
 };
 
 export default meta;
@@ -95,7 +95,7 @@ function StandaloneExample() {
     { id: 2, name: 'Документ 2' },
     { id: 3, name: 'Документ 3' },
     { id: 4, name: 'Документ 4' },
-    { id: 5, name: 'Документ 5' }
+    { id: 5, name: 'Документ 5' },
   ];
 
   // Вычисляем состояние чекбокса на основе selectedItems
@@ -176,20 +176,20 @@ function StandaloneExample() {
                 text: 'Экспорт',
                 onClick: handleExport,
                 type: 'button',
-                view: 'secondary'
+                view: 'secondary',
               },
               {
                 text: 'Архивировать',
                 onClick: handleArchive,
                 type: 'button',
-                view: 'secondary'
+                view: 'secondary',
               },
               {
                 view: 'accent',
                 onClick: handleSend,
                 type: 'button',
-                text: 'Отправить'
-              }
+                text: 'Отправить',
+              },
             ]}
           />
         )}
@@ -207,7 +207,7 @@ function ShowPropExample() {
   const items = [
     { id: 1, name: 'Документ 1' },
     { id: 2, name: 'Документ 2' },
-    { id: 3, name: 'Документ 3' }
+    { id: 3, name: 'Документ 3' },
   ];
 
   // Вычисляем состояние чекбокса на основе selectedItems
@@ -288,14 +288,14 @@ function ShowPropExample() {
               text: 'Действие 1',
               onClick: () => alert('Действие 1'),
               type: 'button',
-              view: 'secondary'
+              view: 'secondary',
             },
             {
               text: 'Действие 2',
               onClick: () => alert('Действие 2'),
               type: 'button',
-              view: 'secondary'
-            }
+              view: 'secondary',
+            },
           ]}
         />
       </ContentBox>
@@ -313,7 +313,7 @@ function NarrowContainerExample() {
     { id: 2, name: 'Документ 2' },
     { id: 3, name: 'Документ 3' },
     { id: 4, name: 'Документ 4' },
-    { id: 5, name: 'Документ 5' }
+    { id: 5, name: 'Документ 5' },
   ];
 
   // Вычисляем состояние чекбокса на основе selectedItems
@@ -350,7 +350,7 @@ function NarrowContainerExample() {
         style={{
           maxWidth: '600px',
           margin: '0 auto',
-          position: 'relative'
+          position: 'relative',
         }}
       >
         <Title>Узкий контейнер</Title>
@@ -391,38 +391,38 @@ function NarrowContainerExample() {
                 text: 'Экспорт',
                 onClick: () => alert('Экспорт'),
                 view: 'secondary',
-                type: 'button'
+                type: 'button',
               },
               {
                 text: 'Копировать',
                 onClick: () => alert('Копировать'),
                 view: 'secondary',
-                type: 'button'
+                type: 'button',
               },
               {
                 text: 'Переместить',
                 onClick: () => alert('Переместить'),
                 view: 'secondary',
-                type: 'button'
+                type: 'button',
               },
               {
                 text: 'Архивировать',
                 onClick: () => alert('Архивировать'),
                 view: 'secondary',
-                type: 'button'
+                type: 'button',
               },
               {
                 text: 'Заморозить',
                 onClick: () => alert('Заморозить'),
                 view: 'secondary',
-                type: 'button'
+                type: 'button',
               },
               {
                 type: 'button',
                 text: 'Отправить',
                 view: 'accent',
-                onClick: () => alert('Отправить')
-              }
+                onClick: () => alert('Отправить'),
+              },
             ]}
           />
         )}
@@ -443,7 +443,7 @@ function WithLeftPanelExample() {
     { id: 2, name: 'Документ 2' },
     { id: 3, name: 'Документ 3' },
     { id: 4, name: 'Документ 4' },
-    { id: 5, name: 'Документ 5' }
+    { id: 5, name: 'Документ 5' },
   ];
 
   // Вычисляем состояние чекбокса на основе selectedItems
@@ -483,7 +483,7 @@ function WithLeftPanelExample() {
         height: '100vh',
         padding: '20px',
         display: 'flex',
-        backgroundColor: '#f5f5f5'
+        backgroundColor: '#f5f5f5',
       }}
     >
       <LeftPanel
@@ -495,7 +495,7 @@ function WithLeftPanelExample() {
               padding: s.x8,
               height: '100%',
               display: 'flex',
-              flexDirection: 'column'
+              flexDirection: 'column',
             }}
           >
             <Title style={{ fontSize: '18px', marginBottom: s.x4 }}>
@@ -516,7 +516,7 @@ function WithLeftPanelExample() {
                 view="secondary"
                 onClick={() => alert('Label 1')}
                 style={{
-                  flexGrow: 1
+                  flexGrow: 1,
                 }}
               />
               <Button
@@ -526,7 +526,7 @@ function WithLeftPanelExample() {
                 view="secondary"
                 onClick={() => alert('Label 2')}
                 style={{
-                  flexGrow: 1
+                  flexGrow: 1,
                 }}
               />
             </MassActionsStatic>
@@ -555,7 +555,7 @@ function WithLeftPanelExample() {
           padding: s.x8,
           backgroundColor: surfaceSolidCard,
           borderRadius: s.x8,
-          position: 'relative'
+          position: 'relative',
         }}
       >
         <div
@@ -563,7 +563,7 @@ function WithLeftPanelExample() {
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            marginBottom: s.x8
+            marginBottom: s.x8,
           }}
         >
           <Title style={{ fontSize: '20px', margin: 0 }}>
@@ -578,7 +578,7 @@ function WithLeftPanelExample() {
           <div
             style={{
               display: 'flex',
-              gap: '16px'
+              gap: '16px',
             }}
           >
             <Button onClick={() => handleToggle(!isLeftPanelOpen)}>
@@ -622,32 +622,32 @@ function WithLeftPanelExample() {
                 text: 'Экспорт',
                 onClick: () => alert('Экспорт'),
                 type: 'button',
-                view: 'secondary'
+                view: 'secondary',
               },
               {
                 text: 'Архивировать',
                 onClick: () => alert('Архивировать'),
                 type: 'button',
-                view: 'secondary'
+                view: 'secondary',
               },
               {
                 text: 'Копировать',
                 onClick: () => alert('Копировать'),
                 type: 'button',
-                view: 'secondary'
+                view: 'secondary',
               },
               {
                 text: 'Переместить',
                 onClick: () => alert('Переместить'),
                 type: 'button',
-                view: 'secondary'
+                view: 'secondary',
               },
               {
                 view: 'accent',
                 onClick: () => alert('Отправить'),
                 type: 'button',
-                text: 'Отправить'
-              }
+                text: 'Отправить',
+              },
             ]}
           />
         )}
@@ -662,7 +662,7 @@ import { MassActions } from '@ui-kit/components/MassActions';
 
 ${getFuncAsString(
   'packages/storybook/src/stories/MassActions/MassActions.stories.tsx',
-  'StandaloneExample'
+  'StandaloneExample',
 )}
 `;
 
@@ -674,7 +674,7 @@ import { s } from '@ui-kit/constants';
 
 ${getFuncAsString(
   'packages/storybook/src/stories/MassActions/MassActions.stories.tsx',
-  'ShowPropExample'
+  'ShowPropExample',
 )}
 `;
 
@@ -684,7 +684,7 @@ import { MassActions } from '@ui-kit/components/MassActions';
 
 ${getFuncAsString(
   'packages/storybook/src/stories/MassActions/MassActions.stories.tsx',
-  'NarrowContainerExample'
+  'NarrowContainerExample',
 )}
 `;
 
@@ -701,7 +701,7 @@ import { surfaceSolidCard } from '@ui-kit/tokens';
 
 ${getFuncAsString(
   'packages/storybook/src/stories/MassActions/MassActions.stories.tsx',
-  'WithLeftPanelExample'
+  'WithLeftPanelExample',
 )}
 `;
 
@@ -711,7 +711,7 @@ import { MassActions } from '@ui-kit/components/MassActions';
 
 ${getFuncAsString(
   'packages/storybook/src/stories/MassActions/MassActions.stories.tsx',
-  'StandaloneExample'
+  'StandaloneExample',
 )}
 `;
 
@@ -722,9 +722,9 @@ export const Standalone: Story = {
   name: 'Standalone MassActions',
   ...storySourceDoc({
     previewSource: 'shown',
-    code: standalonePreCode
+    code: standalonePreCode,
   }),
-  render: StandaloneExample
+  render: StandaloneExample,
 };
 
 /**
@@ -734,9 +734,9 @@ export const WithShowProp: Story = {
   name: 'С явным контролем видимости (show)',
   ...storySourceDoc({
     previewSource: 'shown',
-    code: showPropPreCode
+    code: showPropPreCode,
   }),
-  render: ShowPropExample
+  render: ShowPropExample,
 };
 
 /**
@@ -746,9 +746,9 @@ export const NarrowContainer: Story = {
   name: 'Узкий контейнер (компрессия)',
   ...storySourceDoc({
     previewSource: 'shown',
-    code: narrowContainerPreCode
+    code: narrowContainerPreCode,
   }),
-  render: NarrowContainerExample
+  render: NarrowContainerExample,
 };
 
 /**
@@ -758,9 +758,9 @@ export const WithLeftPanel: Story = {
   name: 'В комбинации с LeftPanel',
   ...storySourceDoc({
     previewSource: 'shown',
-    code: withLeftPanelPreCode
+    code: withLeftPanelPreCode,
   }),
-  render: WithLeftPanelExample
+  render: WithLeftPanelExample,
 };
 
 /**
@@ -771,12 +771,12 @@ export const Adaptive1280: Story = {
   parameters: {
     layout: 'fullscreen',
     viewport: {
-      defaultViewport: 'mobile'
-    }
+      defaultViewport: 'mobile',
+    },
   },
   ...storySourceDoc({
     previewSource: 'shown',
-    code: adaptive1280PreCode
+    code: adaptive1280PreCode,
   }),
-  render: StandaloneExample
+  render: StandaloneExample,
 };

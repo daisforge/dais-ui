@@ -1,5 +1,5 @@
 export {
   InformationWrapper,
   informationWrapperClasses,
-  informationWrapperTokens
+  informationWrapperTokens,
 } from '@salutejs/sdds-finai';

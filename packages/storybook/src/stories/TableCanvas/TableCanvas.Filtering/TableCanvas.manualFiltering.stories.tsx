@@ -11,9 +11,9 @@ const meta: Meta = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      page: DocStoryTemplate
-    }
-  }
+      page: DocStoryTemplate,
+    },
+  },
 };
 
 export default meta;
@@ -27,7 +27,7 @@ type Story = StoryObj;
 export const ManualFiltering: Story = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     const columnConfig = useMemo<readonly ColumnConfig<Row>[]>(
@@ -41,8 +41,8 @@ export const ManualFiltering: Story = {
 
             valueInRow: (r) => r.task,
 
-            keyInFilterState: 'task'
-          }
+            keyInFilterState: 'task',
+          },
         },
         {
           key: 'priority',
@@ -56,17 +56,17 @@ export const ManualFiltering: Story = {
                 { value: 'High', text: 'High' },
                 { value: 'Critical', text: 'Critical' },
                 { value: 'Medium', text: 'Medium' },
-                { value: 'Low', text: 'Low' }
-              ]
+                { value: 'Low', text: 'Low' },
+              ],
             },
 
             keyInFilterState: 'priority',
             valueInRow: (r) => r.priority,
             filter: {
               typeOfValue: 'single',
-              filteringType: (fv, rv) => (fv !== 'All' ? rv === fv : true)
-            }
-          }
+              filteringType: (fv, rv) => (fv !== 'All' ? rv === fv : true),
+            },
+          },
         },
         {
           key: 'issueType',
@@ -75,16 +75,16 @@ export const ManualFiltering: Story = {
             component: 'select',
             selectOptions: {
               type: 'stateInHeaderContext',
-              optionsKeyInHeaderContext: 'issueTypeOptions'
+              optionsKeyInHeaderContext: 'issueTypeOptions',
             },
             keyInFilterState: 'issueType',
             valueInRow: (r) => r.issueType,
             filter: {
               typeOfValue: 'multiple',
               filteringType: (fv, rv) =>
-                !fv.length || fv.some((fvCurr) => fvCurr === rv)
-            }
-          }
+                !fv.length || fv.some((fvCurr) => fvCurr === rv),
+            },
+          },
         },
         {
           key: 'complete',
@@ -93,11 +93,11 @@ export const ManualFiltering: Story = {
             component: 'input',
             keyInFilterState: 'complete',
             valueInRow: (r) => r.complete,
-            filter: (fv, rv) => (+rv || 0) >= (+fv || 0)
-          }
-        }
+            filter: (fv, rv) => (+rv || 0) >= (+fv || 0),
+          },
+        },
       ],
-      []
+      [],
     );
 
     const rows = useMemo(() => createRows(), []);
@@ -113,14 +113,14 @@ export const ManualFiltering: Story = {
       task: '',
       priority: 'All',
       issueType: [],
-      complete: ''
+      complete: '',
     });
 
     const [state] = filteringStateAndSetter;
 
     useEffect(() => {
       const enabledFilters = Object.entries(state).filter((el) =>
-        Array.isArray(el[1]) ? !!el[1].length : !!el[1]
+        Array.isArray(el[1]) ? !!el[1].length : !!el[1],
       );
       const filterRows = rows.filter((row) =>
         enabledFilters.every((enabledFilter) => {
@@ -130,7 +130,7 @@ export const ManualFiltering: Story = {
             ? enabledFilter[1].includes(colValue)
             : enabledFilter[1] === colValue.toString() ||
                 enabledFilter[1] === 'All';
-        })
+        }),
       );
       setFilteredRows(filterRows);
       // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -142,10 +142,10 @@ export const ManualFiltering: Story = {
           { text: 'Bug', value: 'Bug' },
           { text: 'Improvement', value: 'Improvement' },
           { text: 'Epic', value: 'Epic' },
-          { text: 'Story', value: 'Story' }
-        ]
+          { text: 'Story', value: 'Story' },
+        ],
       }),
-      []
+      [],
     );
 
     return (
@@ -156,28 +156,28 @@ export const ManualFiltering: Story = {
             filtersInfo: {
               task: {
                 label: 'task',
-                clearedValue: ''
+                clearedValue: '',
               },
               priority: {
                 label: 'Some Label',
-                clearedValue: 'All'
+                clearedValue: 'All',
               },
               issueType: {
                 label: 'issueType',
-                clearedValue: []
+                clearedValue: [],
               },
               complete: {
                 label: 'complete',
-                clearedValue: ''
-              }
+                clearedValue: '',
+              },
             },
-            manualFiltering: true
-          }
+            manualFiltering: true,
+          },
         }}
         columnConfig={columnConfig}
         rows={filteredRows}
         headerContextValue={headerContextValue}
       />
     );
-  }
+  },
 };

@@ -5,5 +5,5 @@ export const SUBROWS_KEY = 'subRows';
 export const TREE_FLATTEN_KEYS = {
   level: 'level',
   parent: 'parent',
-  customProps: 'customProps'
+  customProps: 'customProps',
 } as const;

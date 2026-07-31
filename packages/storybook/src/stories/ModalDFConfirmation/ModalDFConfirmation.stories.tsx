@@ -14,11 +14,11 @@ const meta: Meta<typeof ModalDFConfirmation> = {
   title: 'Локальные компоненты/ModalDFConfirmation',
   parameters: {
     docs: {
-      layout: 'fullscreen'
-    }
+      layout: 'fullscreen',
+    },
   },
   tags: ['!autodocs'],
-  component: ModalDFConfirmation
+  component: ModalDFConfirmation,
 };
 
 export default meta;
@@ -34,7 +34,7 @@ function SavingExampleRender() {
         opened={opened}
         onClose={() => setOpened(false)}
         contentContainerProps={{
-          css: { maxWidth: '500px' }
+          css: { maxWidth: '500px' },
         }}
         content={{
           header: 'Сохранить изменения перед выходом?',
@@ -42,8 +42,8 @@ function SavingExampleRender() {
           bodyMarginBlock: s.x4,
           mainButton: { text: 'Сохранить' },
           secondaryButton: {
-            text: 'Выйти без сохранения'
-          }
+            text: 'Выйти без сохранения',
+          },
         }}
       />
     </>
@@ -77,13 +77,13 @@ function VariantsExampleRender() {
         opened={openedPositive}
         onClose={() => setOpenedPositive(false)}
         contentContainerProps={{
-          css: { maxWidth: '500px' }
+          css: { maxWidth: '500px' },
         }}
         content={{
           header: 'Изменения сохранены',
           body: 'Данные были сохранены. Можно закрыть форму и продолжить пользоваться услугами',
           bodyMarginBlock: s.x4,
-          mainButton: { text: 'Далее', view: 'positive' }
+          mainButton: { text: 'Далее', view: 'positive' },
         }}
       />
       <ModalDFConfirmation
@@ -92,7 +92,7 @@ function VariantsExampleRender() {
         opened={openedWarning}
         onClose={() => setOpenedWarning(false)}
         contentContainerProps={{
-          css: { maxWidth: '500px' }
+          css: { maxWidth: '500px' },
         }}
         content={{
           header: 'Что-то пошло не так',
@@ -100,8 +100,8 @@ function VariantsExampleRender() {
           bodyMarginBlock: s.x4,
           mainButton: { text: 'Сохранить', view: 'warning' },
           secondaryButton: {
-            text: 'Выйти без сохранения'
-          }
+            text: 'Выйти без сохранения',
+          },
         }}
       />
       <ModalDFConfirmation
@@ -110,7 +110,7 @@ function VariantsExampleRender() {
         opened={openedAccent}
         onClose={() => setOpenedAccent(false)}
         contentContainerProps={{
-          css: { maxWidth: '500px' }
+          css: { maxWidth: '500px' },
         }}
         content={{
           header: 'Сохранить изменения перед выходом?',
@@ -118,8 +118,8 @@ function VariantsExampleRender() {
           bodyMarginBlock: s.x4,
           mainButton: { text: 'Сохранить' },
           secondaryButton: {
-            text: 'Выйти без сохранения'
-          }
+            text: 'Выйти без сохранения',
+          },
         }}
       />
       <ModalDFConfirmation
@@ -128,7 +128,7 @@ function VariantsExampleRender() {
         opened={openedNegative}
         onClose={() => setOpenedNegative(false)}
         contentContainerProps={{
-          css: { maxWidth: '432px' }
+          css: { maxWidth: '432px' },
         }}
         content={{
           header: 'Удалить данные?',
@@ -136,8 +136,8 @@ function VariantsExampleRender() {
           mainButton: { text: 'Удалить', view: 'negative' },
           secondaryButton: {
             text: 'Отменить',
-            onClick: () => setOpenedNegative(false)
-          }
+            onClick: () => setOpenedNegative(false),
+          },
         }}
       />
     </>
@@ -168,7 +168,7 @@ function CustomFooterExampleRender() {
                 </Flow>
               }
             />
-          )
+          ),
         }}
       />
     </>
@@ -182,7 +182,7 @@ import React, { useState } from 'react';
 
 ${getFuncAsString(
   'packages/storybook/src/stories/ModalDFConfirmation/ModalDFConfirmation.stories.tsx',
-  'SavingExampleRender'
+  'SavingExampleRender',
 )}
 `;
 
@@ -192,7 +192,7 @@ import React, { useState } from 'react';
 
 ${getFuncAsString(
   'packages/storybook/src/stories/ModalDFConfirmation/ModalDFConfirmation.stories.tsx',
-  'VariantsExampleRender'
+  'VariantsExampleRender',
 )}
 `;
 
@@ -203,7 +203,7 @@ import React, { useState } from 'react';
 
 ${getFuncAsString(
   'packages/storybook/src/stories/ModalDFConfirmation/ModalDFConfirmation.stories.tsx',
-  'CustomFooterExampleRender'
+  'CustomFooterExampleRender',
 )}
 `;
 
@@ -214,9 +214,9 @@ export const SavingExample: Story = {
   name: 'Пример сохранения',
   ...storySourceDoc({
     previewSource: 'shown',
-    code: savingExamplePreCode
+    code: savingExamplePreCode,
   }),
-  render: SavingExampleRender
+  render: SavingExampleRender,
 };
 
 /**
@@ -226,9 +226,9 @@ export const VariantsExample: Story = {
   name: 'Примеры разных view и иконок',
   ...storySourceDoc({
     previewSource: 'shown',
-    code: variantsExamplePreCode
+    code: variantsExamplePreCode,
   }),
-  render: VariantsExampleRender
+  render: VariantsExampleRender,
 };
 
 /**
@@ -238,7 +238,7 @@ export const CustomFooterExample: Story = {
   name: 'Пример c кастомным footer-oм',
   ...storySourceDoc({
     previewSource: 'shown',
-    code: customFooterExamplePreCode
+    code: customFooterExamplePreCode,
   }),
-  render: CustomFooterExampleRender
+  render: CustomFooterExampleRender,
 };

@@ -12,7 +12,7 @@ export const StyledChip: typeof Chip = styled(Chip)`
 export const StyledChipGroup = styled(
   ChipGroup as React.ForwardRefExoticComponent<
     React.ComponentProps<typeof ChipGroup> & React.RefAttributes<HTMLDivElement>
-  >
+  >,
 )`
   --analytical-widget-chips-gap: 4px;
   gap: var(--analytical-widget-chips-gap);

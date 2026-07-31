@@ -4,7 +4,7 @@ import {
   RefObject,
   useCallback,
   useEffect,
-  useState
+  useState,
 } from 'react';
 
 /**
@@ -15,7 +15,7 @@ export const useMassActionsContainer = (
   containerRef:
     | RefObject<HTMLElement>
     | MutableRefObject<HTMLElement | null>
-    | (() => HTMLElement | null)
+    | (() => HTMLElement | null),
 ) => {
   const [containerWidth, setContainerWidth] = useState<number>(0);
 
@@ -64,6 +64,6 @@ export const useMassActionsContainer = (
   return {
     containerWidth,
     getContainerWidth,
-    getContainer
+    getContainer,
   };
 };

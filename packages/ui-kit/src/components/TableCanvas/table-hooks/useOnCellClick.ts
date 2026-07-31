@@ -3,18 +3,18 @@ import { useCallback } from 'react';
 import type { Maybe, ObjectForExtending } from '../types';
 // FIXME
 export const useOnCellClick = <_Row extends ObjectForExtending, _Summrow>({
-  onCellClickExternal
+  onCellClickExternal,
 }: {
   onCellClickExternal: Maybe<
     (
       args: unknown /* CellClickArgs<Row, Summrow> */,
-      event: unknown /* CellMouseEvent */
+      event: unknown /* CellMouseEvent */,
     ) => void
   >;
 }): Maybe<
   (
     args: unknown /* CellClickArgs<Row, Summrow> */,
-    event: unknown /* CellMouseEvent */
+    event: unknown /* CellMouseEvent */,
   ) => void
 > =>
   useCallback<NonNullable<typeof onCellClickExternal>>(
@@ -32,5 +32,5 @@ export const useOnCellClick = <_Row extends ObjectForExtending, _Summrow>({
       // }
     },
     // [onCellClickExternal]
-    []
+    [],
   );

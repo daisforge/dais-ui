@@ -8,14 +8,14 @@ import { FlattenedColumnOrColumnGroupConfig } from './types';
 
 export const getSeparatedColWithAllParents = <
   RowType extends ObjectForExtending,
-  SummaryRowType
+  SummaryRowType,
 >(
   col: ColumnConfigInternal<RowType, SummaryRowType>,
   allColsMap: Map<
     string,
     FlattenedColumnOrColumnGroupConfig<RowType, SummaryRowType>
   >,
-  lastLvlColsMap: Map<string, ColumnConfigInternal<RowType, SummaryRowType>>
+  lastLvlColsMap: Map<string, ColumnConfigInternal<RowType, SummaryRowType>>,
 ) => {
   if (
     isRowInstrumentsColumn(col.key) ||
@@ -72,9 +72,9 @@ export const getSeparatedColWithAllParents = <
 export const mergeSameCloselyLocatedCols = <
   RowType extends ObjectForExtending,
   SummaryRowType,
-  ColGroup extends ColumnGroupConfig<RowType, SummaryRowType>
+  ColGroup extends ColumnGroupConfig<RowType, SummaryRowType>,
 >(
-  array: (ColumnConfig<RowType, SummaryRowType> | ColGroup)[]
+  array: (ColumnConfig<RowType, SummaryRowType> | ColGroup)[],
 ) => {
   array.forEach((_, ind, arr) => {
     if (ind >= arr.length - 1) {
@@ -102,8 +102,8 @@ export const mergeSameCloselyLocatedCols = <
         ...nextCol,
         children: [
           ...((col as ColGroup)?.children ?? []),
-          ...((nextCol as ColGroup)?.children ?? [])
-        ]
+          ...((nextCol as ColGroup)?.children ?? []),
+        ],
       };
 
       if (newCol.children.length > 0) {

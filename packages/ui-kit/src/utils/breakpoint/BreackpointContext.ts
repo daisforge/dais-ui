@@ -5,5 +5,5 @@ import { IBreakpointContext } from './types';
 
 export const BreakpointContext = createContext<IBreakpointContext>({
   breakpoint: DEFAULT_BREAKPOINT,
-  breakpointConfig: DEFAULT_BREAKPOINT_CONFIG
+  breakpointConfig: DEFAULT_BREAKPOINT_CONFIG,
 });

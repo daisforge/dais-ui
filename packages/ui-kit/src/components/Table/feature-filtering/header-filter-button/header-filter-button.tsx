@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { TableTooltip } from '../../components/TableTooltip';
 import {
   HeaderContextValueTypeInstance,
-  useHeaderContext
+  useHeaderContext,
 } from '../../contexts';
 import { COLORS, tableClassNames } from '../../styles';
 import { ColumnConfig, ObjectForExtending } from '../../types';
@@ -16,10 +16,10 @@ import { FilterIcon } from './filter-icon';
 export const HeaderFilterButton = <
   FilterStateType extends ObjectForExtending,
   R extends ObjectForExtending,
-  SR
+  SR,
 >({
   columnConfig,
-  tabIndex
+  tabIndex,
 }: {
   columnConfig: ColumnConfig<R, SR>;
   tabIndex: number;

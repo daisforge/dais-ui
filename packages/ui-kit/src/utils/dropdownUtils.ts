@@ -14,12 +14,12 @@ export const processDropdownItems = (
   items: DropdownItemOption[],
   parentHandler?: (
     item: DropdownItemOption,
-    event: React.SyntheticEvent
+    event: React.SyntheticEvent,
   ) => void,
-  path = ''
+  path = '',
 ): [
   DropdownItemOption[],
-  Map<string, (item: DropdownItemOption, event: React.SyntheticEvent) => void>
+  Map<string, (item: DropdownItemOption, event: React.SyntheticEvent) => void>,
 ] => {
   const processedItems: DropdownItemOption[] = [];
   const handlerMap = new Map<
@@ -42,7 +42,7 @@ export const processDropdownItems = (
       const [nestedItems, nestedHandlers] = processDropdownItems(
         item.items,
         parentHandler,
-        itemPath
+        itemPath,
       );
 
       nestedHandlers.forEach((handler, key) => handlerMap.set(key, handler));
@@ -66,12 +66,12 @@ export const useDropdownItemClickHandler = (
   handlerMap: Map<
     string,
     (item: DropdownItemOption, event: React.SyntheticEvent) => void
-  >
+  >,
 ) =>
   useCallback(
     (item: DropdownItemOption, event: React.SyntheticEvent) => {
       const handler = handlerMap.get(item.value as string);
       handler?.(item, event);
     },
-    [handlerMap]
+    [handlerMap],
   );

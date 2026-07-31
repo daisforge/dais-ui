@@ -11,7 +11,7 @@ import type { TransferColumnConfig } from '../types';
  */
 export function isCellEditable<R extends ObjectForExtending>(
   column: TransferColumnConfig,
-  row: R
+  row: R,
 ): boolean {
   const { editable } = column;
   if (editable === undefined) return false;

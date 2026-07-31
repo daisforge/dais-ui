@@ -4,22 +4,22 @@ import { TableGlideInstanceProps } from '../TableGlideInstance/type';
 import { ObjectForExtending, TableConfig } from '../types';
 import {
   DEFAULT_ROW_THRESHOLD,
-  INFINITY_SCROLL_SKELETON_COUNT
+  INFINITY_SCROLL_SKELETON_COUNT,
 } from './constants';
 
 type VisibleRegionChangedHandler<
   R extends ObjectForExtending,
-  SR
+  SR,
 > = NonNullable<TableGlideInstanceProps<R, SR>['onVisibleRegionChanged']>;
 
 export const useInfinityScroll = <
   FilterStateType extends ObjectForExtending,
   RowIdType extends string | number,
   RowType extends ObjectForExtending,
-  SummaryRowType = unknown
+  SummaryRowType = unknown,
 >({
   tableConfig,
-  rows
+  rows,
 }: {
   tableConfig: TableConfig<RowType, SummaryRowType, RowIdType, FilterStateType>;
   rows: RowType[];
@@ -31,7 +31,7 @@ export const useInfinityScroll = <
     onTrigger,
     hasMore = true,
     rowThreshold = DEFAULT_ROW_THRESHOLD,
-    isLoading: isLoadingInfinityScroll = false
+    isLoading: isLoadingInfinityScroll = false,
   } = infinityScroll ?? {};
 
   const effectiveThreshold = rowThreshold + INFINITY_SCROLL_SKELETON_COUNT;
@@ -76,7 +76,7 @@ export const useInfinityScroll = <
         onTriggerRef.current?.(rowsRef.current);
       }
     },
-    [isHaveActiveInfinityScroll, isLoadingInfinityScroll, effectiveThreshold]
+    [isHaveActiveInfinityScroll, isLoadingInfinityScroll, effectiveThreshold],
   );
 
   return {
@@ -84,6 +84,6 @@ export const useInfinityScroll = <
     handleInfinityScrollRegionChange,
     infinityScrollActiveInConfig,
     isHaveActiveInfinityScroll,
-    infinityScrollHasMore: hasMore
+    infinityScrollHasMore: hasMore,
   };
 };

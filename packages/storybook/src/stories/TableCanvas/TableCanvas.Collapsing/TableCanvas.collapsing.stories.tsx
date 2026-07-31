@@ -12,9 +12,9 @@ const meta: Meta = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      page: DocStoryTemplate
-    }
-  }
+      page: DocStoryTemplate,
+    },
+  },
 };
 
 export default meta;
@@ -30,7 +30,7 @@ export const InternalStateCollapsing: Story = {
   name: 'Collapse тела таблицы (внутреннее состояние)',
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     const [rows] = useState(createRows);
@@ -41,18 +41,18 @@ export const InternalStateCollapsing: Story = {
           name: 'ID',
           minWidth: 200,
           width: 300,
-          maxWidth: 500
+          maxWidth: 500,
         },
         {
           key: 'task',
-          name: 'Title'
+          name: 'Title',
         },
         {
           key: 'priority',
-          name: 'Priority'
-        }
+          name: 'Priority',
+        },
       ],
-      []
+      [],
     );
 
     return (
@@ -63,21 +63,21 @@ export const InternalStateCollapsing: Story = {
             enableCollapse: true,
             defaultCollapsed: true,
             expandText: 'Развернуть информацию',
-            collapseText: 'Свернуть информацию'
-          }
+            collapseText: 'Свернуть информацию',
+          },
         }}
         columnConfig={columns}
         rows={rows}
       />
     );
-  }
+  },
 };
 
 export const ExternalStateCollapsing: Story = {
   name: 'Collapse тела таблицы (внешнее состояние)',
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     const [rows] = useState(createRows);
@@ -89,18 +89,18 @@ export const ExternalStateCollapsing: Story = {
           name: 'ID',
           minWidth: 200,
           width: 300,
-          maxWidth: 500
+          maxWidth: 500,
         },
         {
           key: 'task',
-          name: 'Title'
+          name: 'Title',
         },
         {
           key: 'priority',
-          name: 'Priority'
-        }
+          name: 'Priority',
+        },
       ],
-      []
+      [],
     );
 
     return (
@@ -117,18 +117,18 @@ export const ExternalStateCollapsing: Story = {
               domMetadata: {
                 className: 'testClassNameForCollapsing',
                 dataAttributes: {
-                  'data-test-collapsing': 'test-collapsing'
-                }
+                  'data-test-collapsing': 'test-collapsing',
+                },
               },
               onToggleCollapse: (collapsed) =>
                 // eslint-disable-next-line no-console
-                console.debug('Table collapsed:', collapsed)
-            }
+                console.debug('Table collapsed:', collapsed),
+            },
           }}
           columnConfig={columns}
           rows={rows}
         />
       </div>
     );
-  }
+  },
 };

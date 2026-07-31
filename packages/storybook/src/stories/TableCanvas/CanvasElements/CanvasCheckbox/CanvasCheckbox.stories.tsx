@@ -4,7 +4,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import {
   Canvas,
   ColumnConfig,
-  TableCanvas
+  TableCanvas,
 } from '@ui-kit/components/TableCanvas';
 import React, { useMemo } from 'react';
 
@@ -16,7 +16,7 @@ const rows: Row[] = [{ id: 1 }, { id: 2 }, { id: 3 }];
 
 const meta: Meta = {
   title: 'Локальные компоненты/TableCanvas/CanvasElements/CanvasCheckbox',
-  tags: ['!autodocs']
+  tags: ['!autodocs'],
 };
 
 export default meta;
@@ -49,12 +49,12 @@ export const Default: StoryObj = {
   args: {
     checked: false,
     indeterminate: false,
-    disabled: false
+    disabled: false,
   },
   argTypes: {
     checked: { control: 'boolean' },
     indeterminate: { control: 'boolean' },
-    disabled: { control: 'boolean' }
+    disabled: { control: 'boolean' },
   },
   render: (args) => {
     const { checked, indeterminate, disabled } = args as {
@@ -77,10 +77,10 @@ export const Default: StoryObj = {
                 disabled={disabled}
               />
             </Canvas.Container>
-          )
-        }
+          ),
+        },
       ],
-      [checked, indeterminate, disabled]
+      [checked, indeterminate, disabled],
     );
 
     return (
@@ -90,5 +90,5 @@ export const Default: StoryObj = {
         rows={rows}
       />
     );
-  }
+  },
 };

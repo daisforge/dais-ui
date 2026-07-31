@@ -7,7 +7,7 @@ import { Breakpoint, BreakpointProviderProps } from './types';
 
 export const BreakpointProvider: React.FC<BreakpointProviderProps> = ({
   children,
-  breakpointConfig = DEFAULT_BREAKPOINT_CONFIG
+  breakpointConfig = DEFAULT_BREAKPOINT_CONFIG,
 }) => {
   const [breakpoint, setBreakpoint] = useState<Breakpoint>(DEFAULT_BREAKPOINT);
 
@@ -16,8 +16,8 @@ export const BreakpointProvider: React.FC<BreakpointProviderProps> = ({
     const mediaQueryLists = Object.entries(breakpointConfig).map(
       ([key, value]) => ({
         key: key as Breakpoint,
-        mql: window.matchMedia(`(max-width: ${value}px)`)
-      })
+        mql: window.matchMedia(`(max-width: ${value}px)`),
+      }),
     );
 
     const handleBreakpointChange = () => {
@@ -43,7 +43,7 @@ export const BreakpointProvider: React.FC<BreakpointProviderProps> = ({
 
   const providerValue = useMemo(
     () => ({ breakpoint, breakpointConfig }),
-    [breakpoint, breakpointConfig]
+    [breakpoint, breakpointConfig],
   );
 
   return (

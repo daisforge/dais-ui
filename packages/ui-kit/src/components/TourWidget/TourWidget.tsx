@@ -17,13 +17,13 @@ const orientationClassNames: Record<
   string
 > = {
   horizontal: cls.horizontal,
-  vertical: cls.vertical
+  vertical: cls.vertical,
 };
 
 const TourWidgetWithRef = forwardRef<HTMLDivElement, TourWidgetProps>(
   (
     { children, orientation = 'vertical', activeStepIndex, className, ...rest },
-    ref
+    ref,
   ) => (
     <TourWidgetProvider value={{ activeStepIndex }}>
       <StyledContainer
@@ -36,7 +36,7 @@ const TourWidgetWithRef = forwardRef<HTMLDivElement, TourWidgetProps>(
         {children}
       </StyledContainer>
     </TourWidgetProvider>
-  )
+  ),
 );
 
 export const TourWidget = Object.assign(TourWidgetWithRef, {
@@ -44,7 +44,7 @@ export const TourWidget = Object.assign(TourWidgetWithRef, {
   Content: TourWidgetContent,
   Footer: TourWidgetFooter,
   Bullet: TourWidgetBullet,
-  Bullets: TourWidgetBullets
+  Bullets: TourWidgetBullets,
 });
 
 TourWidget.displayName = 'TourWidget';

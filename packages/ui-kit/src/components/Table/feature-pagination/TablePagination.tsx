@@ -2,7 +2,7 @@ import { IconButton } from '@ui-kit/components/IconButton';
 import { Pagination } from '@ui-kit/components/Pagination';
 import {
   IconDisclosureLeftOutline,
-  IconDisclosureRightOutline
+  IconDisclosureRightOutline,
 } from '@ui-kit/icons';
 import { createSafeResizeObserver } from '@ui-kit/utils';
 import React, {
@@ -10,7 +10,7 @@ import React, {
   useEffect,
   useMemo,
   useRef,
-  useState
+  useState,
 } from 'react';
 import styled, { css } from 'styled-components';
 
@@ -19,7 +19,7 @@ import { COLORS, TABLE_BORDER_RADIUS } from '../styles';
 import {
   DEFAULT_PAGINATION_SIZE,
   getPaginationSlotsAndStatusQuickJumpByWidth,
-  PAGINATION_TEXTS
+  PAGINATION_TEXTS,
 } from './constants';
 import { PaginationProps, PaginationSlots } from './types';
 
@@ -29,7 +29,7 @@ const StyledDiv = styled.div(() => ({
   borderBottomLeftRadius: `${TABLE_BORDER_RADIUS}px`,
   borderBottomRightRadius: `${TABLE_BORDER_RADIUS}px`,
   backgroundColor: COLORS.white,
-  padding: '4px'
+  padding: '4px',
 }));
 
 const StyledPagination = styled(Pagination)<{ $hideQuickJump?: boolean }>`
@@ -45,7 +45,7 @@ const StyledPagination = styled(Pagination)<{ $hideQuickJump?: boolean }>`
 export const TablePagination = (
   props: PaginationProps & {
     setPaginationHeight: React.Dispatch<React.SetStateAction<number>>;
-  }
+  },
 ) => {
   const {
     onChangePageValue,
@@ -77,7 +77,7 @@ export const TablePagination = (
   const scrollToTop = useCallback(() => {
     refTable?.current?.scrollToCell({
       rowIdx: 0,
-      idx: 0
+      idx: 0,
     });
   }, [refTable]);
 
@@ -86,7 +86,7 @@ export const TablePagination = (
     (page?: number, perPage?: number) => {
       onChangeTablePagination?.(page, perPage, scrollToTop);
     },
-    [onChangeTablePagination, scrollToTop]
+    [onChangeTablePagination, scrollToTop],
   );
 
   // Обработчик для onChangePageValue (без perPage)
@@ -94,7 +94,7 @@ export const TablePagination = (
     (page?: number) => {
       onChangePageValue?.(page, scrollToTop);
     },
-    [onChangePageValue, scrollToTop]
+    [onChangePageValue, scrollToTop],
   );
 
   // Обработчики для стрелок навигации
@@ -122,7 +122,7 @@ export const TablePagination = (
     perPage,
     onChangeTablePagination,
     onChangePageValue,
-    scrollToTop
+    scrollToTop,
   ]);
 
   // Стрелки для узких экранов (когда slots === 1)
@@ -138,7 +138,7 @@ export const TablePagination = (
           <IconDisclosureLeftOutline />
         </IconButton>
       ) : undefined,
-    [needsNavigationArrows, size, handlePrevPage, value]
+    [needsNavigationArrows, size, handlePrevPage, value],
   );
 
   const rightContent = useMemo(
@@ -153,7 +153,7 @@ export const TablePagination = (
           <IconDisclosureRightOutline />
         </IconButton>
       ) : undefined,
-    [needsNavigationArrows, size, handleNextPage, value, maxPage]
+    [needsNavigationArrows, size, handleNextPage, value, maxPage],
   );
 
   useEffect(() => {
@@ -165,7 +165,7 @@ export const TablePagination = (
       const entry = entries[0];
       if (entry) {
         const {
-          contentRect: { height, width }
+          contentRect: { height, width },
         } = entry;
         setPaginationHeight(height);
         onResize?.(width);

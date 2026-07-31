@@ -4,13 +4,13 @@ import { useCallback } from 'react';
 
 import {
   notifications,
-  type TableNotification
+  type TableNotification,
 } from '../../feature-notifications';
 import type { ObjectForExtending } from '../../types';
 import type {
   CellTransferConfig,
   CopyMeta,
-  TransferColumnConfig
+  TransferColumnConfig,
 } from '../types';
 import { collectMatrixFromTargets } from '../utils/collectMatrixFromTargets';
 import { resolveTransferTargets } from '../utils/resolveTransferTargets';
@@ -37,7 +37,7 @@ export function useCopy<R extends ObjectForExtending>({
   columns,
   flattenedRows,
   selectionRef,
-  onNotification
+  onNotification,
 }: UseCopyParams<R>) {
   const handleCopy = useCallback(() => {
     if (cellTransferConfig?.enabled === false) {
@@ -81,7 +81,7 @@ export function useCopy<R extends ObjectForExtending>({
     const res = resolveTransferTargets(
       selection,
       columns,
-      flattenedRows.length
+      flattenedRows.length,
     );
     if (res.status === 'unsupported') {
       clipboardDebug(PFX, 'skip: перенос не поддержан', res.reason);
@@ -103,7 +103,7 @@ export function useCopy<R extends ObjectForExtending>({
       targets.colTargets,
       columns,
       flattenedRows,
-      { withCells }
+      { withCells },
     );
 
     if (grid.length === 0) {
@@ -128,7 +128,7 @@ export function useCopy<R extends ObjectForExtending>({
     columns,
     flattenedRows,
     selectionRef,
-    onNotification
+    onNotification,
   ]);
 
   return { handleCopy };

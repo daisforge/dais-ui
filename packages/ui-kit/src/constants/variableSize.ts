@@ -20,7 +20,7 @@ import {
   spacing24x,
   spacing32x,
   spacing40x,
-  spacing60x
+  spacing60x,
 } from '@ui-kit/tokens';
 
 export const borderRadius = {
@@ -31,7 +31,7 @@ export const borderRadius = {
   m: borderRadiusM, // 16px
   l: borderRadiusL, // 20px
   xl: borderRadiusXl, // 24px
-  xxl: borderRadiusXxl // 32px
+  xxl: borderRadiusXxl, // 32px
 } as const;
 /**
  * br = borderRadiusSize
@@ -53,7 +53,7 @@ export const spacing = {
   x24: spacing24x,
   x32: spacing32x,
   x40: spacing40x,
-  x60: spacing60x
+  x60: spacing60x,
 } as const;
 /**
  * s = spacing

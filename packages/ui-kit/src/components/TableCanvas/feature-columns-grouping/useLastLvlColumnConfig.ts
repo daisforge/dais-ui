@@ -3,11 +3,11 @@ import { useMemo } from 'react';
 import type {
   ColumnGroupConfig,
   ColumnOrColumnGroupConfig,
-  ObjectForExtending
+  ObjectForExtending,
 } from '../types';
 import {
   COLUMN_GROUPS_MAP_SYMBOL,
-  COLUMN_GROUPS_SYMBOL
+  COLUMN_GROUPS_SYMBOL,
 } from './columnGroupSymbol';
 import { flattenCols, getDeepestChildren } from './fromTreeToLastLvl';
 
@@ -18,7 +18,7 @@ const pushAllParentsRecursive = <R extends ObjectForExtending, SR>(
   allColsParentsFlattenedMap: Map<
     string,
     ColumnGroupConfig<R, SR> | null | undefined
-  >
+  >,
 ) => {
   if (!parentCol) return;
 
@@ -32,31 +32,31 @@ const pushAllParentsRecursive = <R extends ObjectForExtending, SR>(
     allParentsArrForPush,
     allParentsMapForPush,
     nextLvlParentCol,
-    allColsParentsFlattenedMap
+    allColsParentsFlattenedMap,
   );
 };
 
 export const useLastLvlColumnConfig = <
   RowType extends ObjectForExtending,
-  SummaryRowType
+  SummaryRowType,
 >(
   columnMaybeTreeConfig: readonly ColumnOrColumnGroupConfig<
     RowType,
     SummaryRowType
-  >[]
+  >[],
 ) =>
   useMemo(() => {
     const lastLvlColumnsConfig = getDeepestChildren(columnMaybeTreeConfig);
     const allColsFlattened = flattenCols(
       columnMaybeTreeConfig,
       (c) => (c as { children?: (typeof c)[] })?.children,
-      (c) => c
+      (c) => c,
     );
     const allColsParentsFlattenedMap = new Map(
       allColsFlattened.map((el) => [
         el.key,
-        el?.parent as ColumnGroupConfig<RowType, SummaryRowType> | null
-      ])
+        el?.parent as ColumnGroupConfig<RowType, SummaryRowType> | null,
+      ]),
     );
     let maxLevelOfGroups = 0;
 
@@ -74,7 +74,7 @@ export const useLastLvlColumnConfig = <
           allParents,
           allGroupsMap,
           parentCol,
-          allColsParentsFlattenedMap
+          allColsParentsFlattenedMap,
         );
 
         if (maxLevelOfGroups < allParents.length) {
@@ -84,9 +84,9 @@ export const useLastLvlColumnConfig = <
         return {
           ...el,
           [COLUMN_GROUPS_SYMBOL]: allParents,
-          [COLUMN_GROUPS_MAP_SYMBOL]: allGroupsMap
+          [COLUMN_GROUPS_MAP_SYMBOL]: allGroupsMap,
         };
-      }
+      },
     );
 
     const columnsGroupingIsActive =
@@ -98,6 +98,6 @@ export const useLastLvlColumnConfig = <
       allColsFlattened,
       allGroupsMap,
       columnsGroupingIsActive,
-      maxLevelOfGroups
+      maxLevelOfGroups,
     };
   }, [columnMaybeTreeConfig]);

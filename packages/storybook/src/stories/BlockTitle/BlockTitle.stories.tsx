@@ -4,7 +4,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { Badge } from '@ui-kit/components/Badge';
 import type {
   BlockTitleProps,
-  BlockTitleSlotSizesProps
+  BlockTitleSlotSizesProps,
 } from '@ui-kit/components/BlockTitle';
 import { BlockTitle } from '@ui-kit/components/BlockTitle';
 import { Box } from '@ui-kit/components/Box';
@@ -19,7 +19,7 @@ import {
   shadowDownSoftS,
   surfaceAccentMinor,
   surfaceInfo,
-  surfaceSolidCard
+  surfaceSolidCard,
 } from '@ui-kit/tokens';
 
 import { LeftPanelBlock } from './components';
@@ -29,11 +29,11 @@ const meta: Meta<BlockTitleProps> = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      toc: true
+      toc: true,
     },
-    layout: 'fullscreen'
+    layout: 'fullscreen',
   },
-  component: BlockTitle
+  component: BlockTitle,
 };
 
 export default meta;
@@ -42,7 +42,7 @@ type Story = StoryObj<BlockTitleProps>;
 
 const renderRightActionsSlot = ({
   buttonSize,
-  actionIconSize
+  actionIconSize,
 }: BlockTitleSlotSizesProps) => (
   <div style={{ display: 'flex', gap: s.x4 }}>
     <IconButton size={buttonSize} view="secondary">
@@ -72,7 +72,7 @@ const preCodeSlots = `
 export const BlockTitleSlots: Story = {
   name: 'BlockTitle Slots',
   ...storySourceDoc({
-    preCode: preCodeSlots
+    preCode: preCodeSlots,
   }),
   render: () => (
     <div
@@ -80,7 +80,7 @@ export const BlockTitleSlots: Story = {
         height: '100vh',
         padding: '20px',
         display: 'flex',
-        backgroundColor: lightBackgroundPrimary
+        backgroundColor: lightBackgroundPrimary,
       }}
     >
       {/* Компонент левой панели */}
@@ -91,7 +91,7 @@ export const BlockTitleSlots: Story = {
           padding: s.x8,
           boxShadow: shadowDownSoftS,
           backgroundColor: surfaceSolidCard,
-          borderRadius: s.x8
+          borderRadius: s.x8,
         }}
       >
         <BlockTitle
@@ -113,7 +113,7 @@ export const BlockTitleSlots: Story = {
                 borderRadius: br.s,
                 border: `1px solid ${surfaceInfo}`,
                 color: surfaceInfo,
-                backgroundColor: surfaceAccentMinor
+                backgroundColor: surfaceAccentMinor,
               }}
             >
               <BodyS>BlockTitle topSlot</BodyS>
@@ -128,7 +128,7 @@ export const BlockTitleSlots: Story = {
                 border: `1px solid ${surfaceInfo}`,
                 color: surfaceInfo,
                 backgroundColor: surfaceAccentMinor,
-                width: '200px'
+                width: '200px',
               }}
             >
               <BodyS>BlockTitle rightSlot</BodyS>
@@ -137,7 +137,7 @@ export const BlockTitleSlots: Story = {
         />
       </div>
     </div>
-  )
+  ),
 };
 
 const preCodeExample = `
@@ -155,7 +155,7 @@ const preCodeExample = `
 export const BlockTitleExample: Story = {
   name: 'BlockTitle Example',
   ...storySourceDoc({
-    preCode: preCodeExample
+    preCode: preCodeExample,
   }),
   render: () => (
     <div
@@ -163,7 +163,7 @@ export const BlockTitleExample: Story = {
         height: '100vh',
         padding: '20px',
         display: 'flex',
-        backgroundColor: lightBackgroundPrimary
+        backgroundColor: lightBackgroundPrimary,
       }}
     >
       {/* Компонент левой панели */}
@@ -174,7 +174,7 @@ export const BlockTitleExample: Story = {
           padding: s.x8,
           boxShadow: shadowDownSoftS,
           backgroundColor: surfaceSolidCard,
-          borderRadius: s.x8
+          borderRadius: s.x8,
         }}
       >
         <BlockTitle
@@ -201,13 +201,13 @@ export const BlockTitleExample: Story = {
         />
       </div>
     </div>
-  )
+  ),
 };
 
 export const BlockTitleWithBadge: Story = {
   name: 'BlockTitle с Badge',
   ...storySourceDoc({
-    preCode: preCodeExample
+    preCode: preCodeExample,
   }),
   render: () => (
     <div
@@ -215,7 +215,7 @@ export const BlockTitleWithBadge: Story = {
         height: '100vh',
         padding: '20px',
         display: 'flex',
-        backgroundColor: lightBackgroundPrimary
+        backgroundColor: lightBackgroundPrimary,
       }}
     >
       <LeftPanelBlock />
@@ -225,7 +225,7 @@ export const BlockTitleWithBadge: Story = {
           padding: s.x8,
           boxShadow: shadowDownSoftS,
           backgroundColor: surfaceSolidCard,
-          borderRadius: s.x8
+          borderRadius: s.x8,
         }}
       >
         <BlockTitle
@@ -243,13 +243,13 @@ export const BlockTitleWithBadge: Story = {
         />
       </div>
     </div>
-  )
+  ),
 };
 
 export const BlockTitleWithBackButton: Story = {
   name: 'BlockTitle с кнопкой назад',
   ...storySourceDoc({
-    preCode: preCodeExample
+    preCode: preCodeExample,
   }),
   render: () => (
     <div
@@ -257,7 +257,7 @@ export const BlockTitleWithBackButton: Story = {
         height: '100vh',
         padding: '20px',
         display: 'flex',
-        backgroundColor: lightBackgroundPrimary
+        backgroundColor: lightBackgroundPrimary,
       }}
     >
       <LeftPanelBlock />
@@ -267,7 +267,7 @@ export const BlockTitleWithBackButton: Story = {
           padding: s.x8,
           boxShadow: shadowDownSoftS,
           backgroundColor: surfaceSolidCard,
-          borderRadius: s.x8
+          borderRadius: s.x8,
         }}
       >
         <BlockTitle
@@ -288,13 +288,13 @@ export const BlockTitleWithBackButton: Story = {
         />
       </div>
     </div>
-  )
+  ),
 };
 
 export const BlockTitleWithBackButtonAndIcon: Story = {
   name: 'BlockTitle с кнопкой назад и иконкой',
   ...storySourceDoc({
-    preCode: preCodeExample
+    preCode: preCodeExample,
   }),
   render: () => (
     <div
@@ -302,7 +302,7 @@ export const BlockTitleWithBackButtonAndIcon: Story = {
         height: '100vh',
         padding: '20px',
         display: 'flex',
-        backgroundColor: lightBackgroundPrimary
+        backgroundColor: lightBackgroundPrimary,
       }}
     >
       <LeftPanelBlock />
@@ -312,7 +312,7 @@ export const BlockTitleWithBackButtonAndIcon: Story = {
           padding: s.x8,
           boxShadow: shadowDownSoftS,
           backgroundColor: surfaceSolidCard,
-          borderRadius: s.x8
+          borderRadius: s.x8,
         }}
       >
         <BlockTitle
@@ -327,5 +327,5 @@ export const BlockTitleWithBackButtonAndIcon: Story = {
         />
       </div>
     </div>
-  )
+  ),
 };

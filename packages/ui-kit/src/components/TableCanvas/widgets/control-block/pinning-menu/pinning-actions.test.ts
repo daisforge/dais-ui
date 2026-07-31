@@ -5,14 +5,14 @@ import {
   pinColumns,
   PinningActionCtx,
   resetPinning,
-  unpinColumns
+  unpinColumns,
 } from './pinning-actions';
 
 /** Контекст без пар key/text: запрет закрепления = членство в disablePinningSet. */
 const ctx = (disabled: string[] = []): PinningActionCtx => ({
   disablePinningSet: new Set(disabled),
   colsWithKeyTextMap: new Map(),
-  tableConfigKeyTextBoolean: false
+  tableConfigKeyTextBoolean: false,
 });
 
 /**
@@ -23,9 +23,9 @@ const ctxKeyText = (disabled: string[] = []): PinningActionCtx => ({
   disablePinningSet: new Set(disabled),
   colsWithKeyTextMap: new Map([
     ['title', { keyKey: 'title', textKey: 'titleText' }],
-    ['titleText', { keyKey: 'title', textKey: 'titleText' }]
+    ['titleText', { keyKey: 'title', textKey: 'titleText' }],
   ]),
-  tableConfigKeyTextBoolean: true
+  tableConfigKeyTextBoolean: true,
 });
 
 describe('pinColumns', () => {
@@ -33,7 +33,7 @@ describe('pinColumns', () => {
     expect(pinColumns(['id'], ['title', 'issueType'], ctx())).toEqual([
       'id',
       'title',
-      'issueType'
+      'issueType',
     ]);
   });
 
@@ -41,13 +41,13 @@ describe('pinColumns', () => {
     expect(pinColumns(['id', 'title'], ['title', 'issueType'], ctx())).toEqual([
       'id',
       'title',
-      'issueType'
+      'issueType',
     ]);
   });
 
   it('пропускает запрещённые к закреплению', () => {
     expect(pinColumns([], ['title', 'issueType'], ctx(['issueType']))).toEqual([
-      'title'
+      'title',
     ]);
   });
 
@@ -65,7 +65,7 @@ describe('pinColumns', () => {
   it('key/text: закрепление одной половины закрепляет обе', () => {
     expect(pinColumns([], ['title'], ctxKeyText())).toEqual([
       'title',
-      'titleText'
+      'titleText',
     ]);
   });
 });
@@ -81,7 +81,7 @@ describe('resetPinning', () => {
 
   it('key/text: сохраняет пару, если запрещена любая её половина', () => {
     expect(resetPinning(['title', 'issueType'], ctxKeyText(['title']))).toEqual(
-      ['title']
+      ['title'],
     );
   });
 });
@@ -89,13 +89,13 @@ describe('resetPinning', () => {
 describe('unpinColumns', () => {
   it('снимает закрепление только с выбранных, невыбранные не трогает', () => {
     expect(
-      unpinColumns(['id', 'title', 'issueType'], ['title'], ctx())
+      unpinColumns(['id', 'title', 'issueType'], ['title'], ctx()),
     ).toEqual(['id', 'issueType']);
   });
 
   it('не снимает закрепление с запрещённых к изменению', () => {
     expect(unpinColumns(['id', 'title'], ['id', 'title'], ctx(['id']))).toEqual(
-      ['id']
+      ['id'],
     );
   });
 
@@ -109,19 +109,27 @@ describe('unpinColumns', () => {
 
   it('key/text: не снимает пару, если запрещена любая её половина', () => {
     expect(
-      unpinColumns(['title', 'issueType'], ['title'], ctxKeyText(['titleText']))
+      unpinColumns(
+        ['title', 'issueType'],
+        ['title'],
+        ctxKeyText(['titleText']),
+      ),
     ).toEqual(['title', 'issueType']);
   });
 
   it('key/text: открепление одной половины снимает обе (близнец не остаётся)', () => {
     expect(
-      unpinColumns(['title', 'titleText', 'issueType'], ['title'], ctxKeyText())
+      unpinColumns(
+        ['title', 'titleText', 'issueType'],
+        ['title'],
+        ctxKeyText(),
+      ),
     ).toEqual(['issueType']);
   });
 
   it('key/text: открепление по текстовой половине тоже снимает всю пару', () => {
     expect(
-      unpinColumns(['title', 'titleText'], ['titleText'], ctxKeyText())
+      unpinColumns(['title', 'titleText'], ['titleText'], ctxKeyText()),
     ).toEqual([]);
   });
 });
@@ -132,7 +140,7 @@ describe('getPinIconState', () => {
       selectedKeys: [],
       pinnedCols: [],
       hiddenCols: [],
-      ctx: ctx()
+      ctx: ctx(),
     });
     expect(state.action).toBe('none');
     expect(state.tooltip).toBe('Выберите, что закрепить');
@@ -144,8 +152,8 @@ describe('getPinIconState', () => {
         selectedKeys: [],
         pinnedCols: ['id'],
         hiddenCols: [],
-        ctx: ctx()
-      }).colored
+        ctx: ctx(),
+      }).colored,
     ).toBe(true);
   });
 
@@ -155,8 +163,8 @@ describe('getPinIconState', () => {
         selectedKeys: [],
         pinnedCols: ['id'],
         hiddenCols: ['id'],
-        ctx: ctx()
-      }).colored
+        ctx: ctx(),
+      }).colored,
     ).toBe(false);
   });
 
@@ -165,7 +173,7 @@ describe('getPinIconState', () => {
       selectedKeys: ['title', 'issueType'],
       pinnedCols: ['title'],
       hiddenCols: [],
-      ctx: ctx()
+      ctx: ctx(),
     });
     expect(state.action).toBe('pin');
     expect(state.tooltip).toBe('Закрепить');
@@ -176,7 +184,7 @@ describe('getPinIconState', () => {
       selectedKeys: ['title', 'issueType'],
       pinnedCols: ['title', 'issueType'],
       hiddenCols: [],
-      ctx: ctx()
+      ctx: ctx(),
     });
     expect(state.action).toBe('unpin');
     expect(state.tooltip).toBe('Открепить');
@@ -187,7 +195,7 @@ describe('getPinIconState', () => {
       selectedKeys: ['title'],
       pinnedCols: [],
       hiddenCols: [],
-      ctx: ctx(['title'])
+      ctx: ctx(['title']),
     });
     expect(state.action).toBe('unpin');
   });

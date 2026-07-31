@@ -11,9 +11,9 @@ const meta: Meta = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      page: DocStoryTemplate
-    }
-  }
+      page: DocStoryTemplate,
+    },
+  },
 };
 
 export default meta;
@@ -25,7 +25,7 @@ import { ColumnConfig, TableCanvas } from '@daisforge/ui/components/TableCanvas'
 export const BasicFormatting: StoryObj = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   name: 'Форматирование ячеек',
   render: () => {
@@ -37,7 +37,7 @@ export const BasicFormatting: StoryObj = {
           key: 'block',
           name: 'Блок / Трайб / Продукт',
           contentFormat: {
-            customFormat: (val) => `📝 ${val}`
+            customFormat: (val) => `📝 ${val}`,
           },
           subRow: {
             keyOfColumnInSubRow: (lvl) => {
@@ -53,17 +53,17 @@ export const BasicFormatting: StoryObj = {
               }
             },
             isColumnWithArrow: true,
-            hideHeaderExpandAllArrow: false
+            hideHeaderExpandAllArrow: false,
           },
-          resizable: true
+          resizable: true,
         },
         {
           key: 'blockActivity',
           name: 'Активность блока',
           title: '123',
           contentFormat: {
-            customFormat: (val) => `${val}!`
-          }
+            customFormat: (val) => `${val}!`,
+          },
         },
         {
           key: '',
@@ -75,8 +75,8 @@ export const BasicFormatting: StoryObj = {
                 return props.row?.tribeZone;
               }
               return null;
-            }
-          }
+            },
+          },
         },
         {
           key: 'q1',
@@ -86,9 +86,9 @@ export const BasicFormatting: StoryObj = {
             parentKeyAsDefault: true,
             /* Форматирование в подстроках */
             contentFormat: {
-              customFormat: (val) => `${val}%`
-            }
-          }
+              customFormat: (val) => `${val}%`,
+            },
+          },
         },
 
         {
@@ -100,7 +100,7 @@ export const BasicFormatting: StoryObj = {
             maximumFractionDigits: 3,
             decimalSeparator: '.',
             thousandSeparator: '_',
-            alignContent: 'center'
+            alignContent: 'center',
           },
           subRow: {
             keyOfColumnInSubRow: 'q1',
@@ -110,9 +110,9 @@ export const BasicFormatting: StoryObj = {
               maximumFractionDigits: 3,
               decimalSeparator: ',',
               thousandSeparator: '.',
-              alignContent: 'right'
-            }
-          }
+              alignContent: 'right',
+            },
+          },
         },
         {
           key: 'q3',
@@ -120,22 +120,22 @@ export const BasicFormatting: StoryObj = {
           contentFormat: {
             type: 'number',
             minimumFractionDigits: 2,
-            locales: ['en-US', 'fr-FR', 'ru-RU']
+            locales: ['en-US', 'fr-FR', 'ru-RU'],
           },
           subRow: {
-            keyOfColumnInSubRow: 'q1'
-          }
+            keyOfColumnInSubRow: 'q1',
+          },
         },
         {
           key: 'q4',
           name: 'Q4',
           contentFormat: 'number',
           subRow: {
-            keyOfColumnInSubRow: 'q1'
-          }
-        }
+            keyOfColumnInSubRow: 'q1',
+          },
+        },
       ],
-      []
+      [],
     );
 
     return (
@@ -144,13 +144,13 @@ export const BasicFormatting: StoryObj = {
           containerStyle: { height: '700px' },
           subRows: {
             getSubRows: (row) => row?.subRows,
-            rowKeyGetter: (row) => row.id
+            rowKeyGetter: (row) => row.id,
           },
-          resizableColumn: true
+          resizableColumn: true,
         }}
         columnConfig={columns}
         rows={rows}
       />
     );
-  }
+  },
 };

@@ -9,7 +9,7 @@ type FilterManagementParams<
   RowType extends Record<string, unknown>,
   SummaryRowType,
   RowIdType extends string | number,
-  HeaderContextValueType extends Record<string, unknown>
+  HeaderContextValueType extends Record<string, unknown>,
 > = {
   columnConfig: readonly ColumnConfig<RowType, SummaryRowType>[];
   filters: FilterStateType | undefined;
@@ -22,12 +22,12 @@ export const useFilterManagement = <
   RowType extends Record<string, unknown>,
   SummaryRowType,
   RowIdType extends string | number,
-  HeaderContextValueType extends Record<string, unknown>
+  HeaderContextValueType extends Record<string, unknown>,
 >({
   columnConfig,
   filters,
   tableConfig,
-  headerContextValue
+  headerContextValue,
 }: FilterManagementParams<
   FilterStateType,
   RowType,

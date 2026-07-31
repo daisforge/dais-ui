@@ -6,7 +6,7 @@ export const useEventBus = () => {
   const eventBus = useContext(EventBusContext);
   if (!eventBus) {
     throw new Error(
-      'Ошибка. Приложение необходимо обернуть в EventBusProvider'
+      'Ошибка. Приложение необходимо обернуть в EventBusProvider',
     );
   }
   return eventBus;

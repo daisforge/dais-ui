@@ -1,7 +1,7 @@
 import type {
   ActiveTheme,
   ActiveViewModsType,
-  HighlightActiveType
+  HighlightActiveType,
 } from '@ui-kit/components/Table';
 import {
   bodyXS,
@@ -9,7 +9,7 @@ import {
   inverseSurfaceSolidDefault,
   onDarkOverlayBlur,
   textSecondary,
-  textTertiary
+  textTertiary,
 } from '@ui-kit/tokens';
 import styled, { css, CSSObject } from 'styled-components';
 
@@ -20,24 +20,24 @@ import { PaginationSize } from '../feature-pagination/types';
 import {
   ROW_I_COL_ACTIVE,
   ROW_I_COL_CLASS,
-  ROW_I_HEADER_COL_CLASS
+  ROW_I_HEADER_COL_CLASS,
 } from '../feature-row-instruments/constants';
 import {
   CHECKBOX_COL_CLASS_CUSTOM,
-  CHECKBOX_HEADER_COL_CLASS_CUSTOM
+  CHECKBOX_HEADER_COL_CLASS_CUSTOM,
 } from '../feature-select-row';
 import { CLASS } from '../renders/constants';
 import {
   editableCellStyle,
   editedSuccessfullyCellStyle,
   editedWithErrorCellStyle,
-  selectionStyleForCell
+  selectionStyleForCell,
 } from './cellStyle';
 import { tableClassNames as cls, tableClassNames } from './classNames';
 import { headerCellDividerStyles } from './headerCellDivider';
 import {
   headerCellRightIconsBaseStyle,
-  headerCellRightIconsHoverStyle
+  headerCellRightIconsHoverStyle,
 } from './headerCellIconsStyle';
 import { selectionStyleForRow } from './rowStyle';
 import {
@@ -49,12 +49,12 @@ import {
   LVL_1_ROW_CLASS,
   SIZE,
   SIZES,
-  TABLE_BORDER_RADIUS
+  TABLE_BORDER_RADIUS,
 } from './styles.constants';
 import {
   cellZIndexStyles,
   headerCellZIndex,
-  sumRowCellZIndexStyles
+  sumRowCellZIndexStyles,
 } from './zIndexStyle';
 
 const FROZEN_BOX_SHADOW = (position: 'right' | 'left' = 'right') =>
@@ -72,7 +72,7 @@ export const tableBorderRadius = (
   borderTopLeftRadiusRounded: boolean | undefined,
   borderTopRightRadiusRounded: boolean | undefined,
   borderBottomLeftRadiusRounded: boolean | undefined,
-  borderBottomRightRadiusRounded: boolean | undefined
+  borderBottomRightRadiusRounded: boolean | undefined,
 ) => {
   const topLeftRadius = borderTopLeftRadiusRounded ? TABLE_BORDER_RADIUS : 0;
   const topRightRadius = borderTopRightRadiusRounded ? TABLE_BORDER_RADIUS : 0;
@@ -300,7 +300,7 @@ const pinnedRightCellStyles = {
 
       z-index: calc(var(--current-z-index) + 100);
     }
-  `
+  `,
 };
 
 export const fullScreenStyles = css`
@@ -403,7 +403,7 @@ export const ContainerStyled = styled.div<{
     $rowHeight,
     $highlightActiveType,
     $activeTheme,
-    $css
+    $css,
   }) => {
     if ($activeView === 'cards') {
       return css`
@@ -437,7 +437,7 @@ export const ContainerStyled = styled.div<{
           $borderLeftTopRadiusRounded,
           $borderRightTopRadiusRounded,
           $borderLeftBottomRadiusRounded,
-          $borderRightBottomRadiusRounded
+          $borderRightBottomRadiusRounded,
         )}
     
 
@@ -682,7 +682,7 @@ const getHeightOfTable = (
   paginationCustomSize: PaginationSize | undefined,
   isSearchingBellow: boolean,
   isCollapsed: boolean,
-  collapseButtonPlacement: 'inside' | 'above' = 'inside'
+  collapseButtonPlacement: 'inside' | 'above' = 'inside',
 ) => {
   // Если таблица свернута - высота 0 (кроме controlBlock)
   if (isCollapsed) {
@@ -743,7 +743,7 @@ export const getTableHeightStyles = (
   paginationCustomSize: PaginationSize | undefined,
   isSearchingBellow: boolean,
   isCollapsed: boolean,
-  collapseButtonPlacement: 'inside' | 'above' = 'inside'
+  collapseButtonPlacement: 'inside' | 'above' = 'inside',
 ) => {
   if (fullScreened) {
     const height = getHeightOfTable(
@@ -755,11 +755,11 @@ export const getTableHeightStyles = (
       paginationCustomSize,
       isSearchingBellow,
       isCollapsed,
-      collapseButtonPlacement
+      collapseButtonPlacement,
     );
     return {
       height,
-      maxHeight: height
+      maxHeight: height,
     };
   }
   const getH = (h: typeof tableContainerHeight) =>
@@ -772,7 +772,7 @@ export const getTableHeightStyles = (
       paginationCustomSize,
       isSearchingBellow,
       isCollapsed,
-      collapseButtonPlacement
+      collapseButtonPlacement,
     );
 
   const height = getH(tableContainerHeight);
@@ -784,6 +784,6 @@ export const getTableHeightStyles = (
 
   return {
     height,
-    maxHeight
+    maxHeight,
   };
 };

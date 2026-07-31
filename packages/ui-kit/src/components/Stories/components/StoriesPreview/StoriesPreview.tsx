@@ -1,6 +1,6 @@
 import {
   TypographyWithAutoTooltip,
-  TypographyWithAutoTooltipProps
+  TypographyWithAutoTooltipProps,
 } from '@ui-kit/components/Typography';
 import type { TypographyVariant } from '@ui-kit/components/Typography/Typography';
 import { textPrimary } from '@ui-kit/tokens/color';
@@ -12,19 +12,19 @@ import { useStoriesSnapshot } from '../../store/useStoriesSnapshot';
 import {
   STORIES_PREVIEW_DATA_COMPONENT,
   STORIES_SIZES,
-  storiesClassNames
+  storiesClassNames,
 } from '../../Stories.constants';
 import {
   StyledBody,
   StyledPreview,
   StyledRing,
   StyledTitle,
-  StyledTrigger
+  StyledTrigger,
 } from './StoriesPreview.styled';
 import { StoriesPreviewInternalProps } from './StoriesPreview.types';
 
 export const StoriesPreview = (
-  props: StoriesPreviewInternalProps
+  props: StoriesPreviewInternalProps,
 ): JSX.Element => {
   const {
     slides,
@@ -39,7 +39,7 @@ export const StoriesPreview = (
     renderTrigger,
     className,
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    __index = 0
+    __index = 0,
   } = props;
 
   const { store, controller, preloadOnHover } = useStoriesContext();
@@ -86,7 +86,7 @@ export const StoriesPreview = (
     tooltipText: title,
     color: textPrimary,
     ...titleProps,
-    children: title
+    children: title,
   };
   const titleAlign = titleProps?.style?.textAlign ?? 'center';
 

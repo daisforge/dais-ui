@@ -1,7 +1,7 @@
 import type {
   ExpandedRowsChangeContextV,
   ExpandedRowsContextV,
-  HeaderContextValueTypeInstance
+  HeaderContextValueTypeInstance,
 } from '../contexts';
 import { SelectingContextType } from '../feature-select-row/selecting-contexts';
 import { ObjectForExtending } from '../types/utils.type';

@@ -3,7 +3,7 @@ import React, { useEffect, useId, useMemo } from 'react';
 import {
   HeaderContextValueTypeInstance,
   useHeaderContext,
-  useTableResizeObserver
+  useTableResizeObserver,
 } from '../../contexts';
 import { FiltersVariables } from '../../feature-filtering/filtering.type';
 import { FilterComponentInPopover } from '../../feature-filtering/header-filter-button/filter-component-in-popover';
@@ -12,14 +12,14 @@ import { viewportToContainerPosition } from '../../utils';
 import {
   DATA_POPOVER_TRIGGER,
   POPOVER_OFFSET,
-  POPOVER_Z_INDEX
+  POPOVER_Z_INDEX,
 } from '../constants';
 import { useTablePopover } from '../context';
 import {
   HiddenTriggerButton,
   PopoverContent,
   StyledPopoverBeta,
-  StyledPopoverContainer
+  StyledPopoverContainer,
 } from './styled';
 
 /**
@@ -34,11 +34,11 @@ const FilterContent = React.memo(
   <
     FilterStateType extends ObjectForExtending,
     R extends ObjectForExtending,
-    SR
+    SR,
   >({
     columnConfig,
     onClose,
-    popoverIsOpen
+    popoverIsOpen,
   }: {
     columnConfig: ColumnConfig<R, SR>;
     onClose: () => void;
@@ -62,11 +62,11 @@ const FilterContent = React.memo(
         filterSource="header"
       />
     );
-  }
+  },
 ) as <
   _FilterStateType extends ObjectForExtending,
   R extends ObjectForExtending,
-  SR
+  SR,
 >(props: {
   columnConfig: ColumnConfig<R, SR>;
   onClose: () => void;
@@ -87,9 +87,9 @@ const FilterContent = React.memo(
 export const PopoverInTable = <
   FilterStateType extends ObjectForExtending = ObjectForExtending,
   R extends ObjectForExtending = ObjectForExtending,
-  SR = unknown
+  SR = unknown,
 >({
-  containerEl
+  containerEl,
 }: {
   /** Контейнер, в который рендерится поповер (тот же, что у renderInContainer). Нужен для перевода viewport -> container-relative и поиска trigger-кнопки. */
   containerEl?: HTMLElement | null;
@@ -139,7 +139,7 @@ export const PopoverInTable = <
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           const trigger = containerEl.querySelector<HTMLElement>(
-            `[${DATA_POPOVER_TRIGGER}="${triggerId}"]`
+            `[${DATA_POPOVER_TRIGGER}="${triggerId}"]`,
           );
           trigger?.click();
         });

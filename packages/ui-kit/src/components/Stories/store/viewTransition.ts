@@ -18,7 +18,7 @@ export const supportsViewTransition = (): boolean =>
  */
 export const runViewTransition = (
   update: () => void,
-  options?: { direction?: 'next' | 'prev'; enabled?: boolean }
+  options?: { direction?: 'next' | 'prev'; enabled?: boolean },
 ): void => {
   const { direction = 'next', enabled = true } = options ?? {};
 

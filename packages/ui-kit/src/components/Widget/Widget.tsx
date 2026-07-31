@@ -25,7 +25,7 @@ const containerTypeMapper: Record<
 > = {
   splitView: cls.containerTypeSplitView,
   modal: cls.containerTypeModal,
-  default: cls.containerTypeDefault
+  default: cls.containerTypeDefault,
 };
 
 const WidgetWithRef = forwardRef<HTMLDivElement, WidgetProps>(
@@ -39,7 +39,7 @@ const WidgetWithRef = forwardRef<HTMLDivElement, WidgetProps>(
         {children}
       </StyledContainer>
     </WidgetContainerTypeContext.Provider>
-  )
+  ),
 );
 
 export const Widget = Object.assign(WidgetWithRef, {
@@ -49,5 +49,5 @@ export const Widget = Object.assign(WidgetWithRef, {
   Divider: WidgetDivider,
   ServiceButtons: WidgetServiceButtons,
   IconButtonDots: WidgetIconButtonDots,
-  IconButtonBack: WidgetIconButtonBack
+  IconButtonBack: WidgetIconButtonBack,
 });

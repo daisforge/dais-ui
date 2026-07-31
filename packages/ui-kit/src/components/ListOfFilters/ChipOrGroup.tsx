@@ -4,7 +4,7 @@ import {
   bodyS,
   borderRadiusS,
   onLightTextSecondary,
-  textPrimary
+  textPrimary,
 } from '@ui-kit/tokens';
 import React from 'react';
 import styled, { css, CSSObject } from 'styled-components';
@@ -54,7 +54,7 @@ export const ChipOrGroup = ({
   ellipsisLabel = false,
   chipStyle,
   renderGroupLabel,
-  renderChipLabel
+  renderChipLabel,
 }: {
   itemOrGroup: ItemOrGroup;
   maxLengthInGroup?: number;
@@ -103,7 +103,7 @@ export const ChipOrGroup = ({
             style={{
               maxWidth: 180,
               ...overflowDotsStyle,
-              ...(chipStyle && chipStyle(group, currItem))
+              ...(chipStyle && chipStyle(group, currItem)),
             }}
             appearance="transparent"
           />
@@ -114,7 +114,7 @@ export const ChipOrGroup = ({
             items={group.items.map((item) =>
               renderChipLabel
                 ? renderChipLabel(group, item)
-                : item.label.toString()
+                : item.label.toString(),
             )}
           >
             <span className={cls.chipsGroupCount}>+{restLength}</span>
@@ -140,7 +140,7 @@ export const ChipOrGroup = ({
       style={{
         maxWidth: 150,
         ...overflowDotsStyle,
-        ...(chipStyle && chipStyle(itemOrGroup, undefined))
+        ...(chipStyle && chipStyle(itemOrGroup, undefined)),
       }}
       appearance="transparent"
     />

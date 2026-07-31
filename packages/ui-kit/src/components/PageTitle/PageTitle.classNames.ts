@@ -10,5 +10,5 @@ export const pageTitleClassNames = {
   subtitle: `${PRE}subtitle`,
   titleSlot: `${PRE}title-slot`,
   rightBlock: `${PRE}right-block`,
-  backIconButton: `${PRE}back-icon-block`
+  backIconButton: `${PRE}back-icon-block`,
 } as const;

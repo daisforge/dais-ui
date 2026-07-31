@@ -13,7 +13,7 @@ export const useInlineStyle = <
   FilterStateType extends ObjectForExtending,
   RowIdType extends string | number,
   RowType extends ObjectForExtending,
-  SummaryRowType = unknown
+  SummaryRowType = unknown,
 >({
   tableConfig,
   reorderedColumns,
@@ -27,7 +27,7 @@ export const useInlineStyle = <
   isSearchingBellow,
   tableCollapsingValue,
   refTableContainer,
-  collapseButtonPlacement = 'inside'
+  collapseButtonPlacement = 'inside',
 }: {
   tableConfig: TableConfig<
     RowType,
@@ -54,7 +54,7 @@ export const useInlineStyle = <
   // Реальная высота контрл-блока под его размер (m/s = 40, xs = 32).
   // Участвует в расчёте высоты таблицы и высоты свёрнутого контейнера.
   const controlBlockHeight = getControlBlockHeight(
-    tableConfig.controlBlock?.size
+    tableConfig.controlBlock?.size,
   );
 
   const isCollapsed =
@@ -65,7 +65,7 @@ export const useInlineStyle = <
       return {
         ...tableConfig.containerStyle,
         height: FULL_SCREEN.HEIGHT_TABLE_CONTAINER,
-        maxHeight: FULL_SCREEN.HEIGHT_TABLE_CONTAINER
+        maxHeight: FULL_SCREEN.HEIGHT_TABLE_CONTAINER,
       };
     }
 
@@ -73,7 +73,7 @@ export const useInlineStyle = <
     if (isCollapsed && controlBlockIsHave) {
       return {
         ...tableConfig.containerStyle,
-        height: `${controlBlockHeight}px`
+        height: `${controlBlockHeight}px`,
       };
     }
 
@@ -84,7 +84,7 @@ export const useInlineStyle = <
       return {
         height: `${HEIGHT_TABLE_DEFAULT}px`,
         maxHeight: `${HEIGHT_TABLE_DEFAULT}px`,
-        ...tableConfig.containerStyle
+        ...tableConfig.containerStyle,
       };
     }
 
@@ -93,7 +93,7 @@ export const useInlineStyle = <
 
   const { widthOfTable } = useRecalculateColumnsWidth(
     reorderedColumns,
-    refTableContainer
+    refTableContainer,
   );
 
   const { styleMemo, tableAndSidebarContainerHeightStyle } = useMemo(() => {
@@ -109,17 +109,17 @@ export const useInlineStyle = <
       isSearchingBellow,
       isCollapsed,
       collapseButtonPlacement,
-      controlBlockHeight
+      controlBlockHeight,
     );
 
     const tableAndSidebarContainerHeightStyle: CSSProperties = {
       height: sidebarContainerMaxHeightStyle.height,
-      maxHeight: sidebarContainerMaxHeightStyle.maxHeight
+      maxHeight: sidebarContainerMaxHeightStyle.maxHeight,
     };
 
     const tableHeightStyle: CSSProperties = {
       height: '100%',
-      maxHeight: '100%'
+      maxHeight: '100%',
     };
 
     const style = JSON.parse(styleString) as React.CSSProperties;
@@ -127,7 +127,7 @@ export const useInlineStyle = <
     const styleMemo = {
       ...style,
       ...tableHeightStyle,
-      ...(widthOfTable !== null && { width: widthOfTable })
+      ...(widthOfTable !== null && { width: widthOfTable }),
     };
 
     return { styleMemo, tableAndSidebarContainerHeightStyle };
@@ -145,12 +145,12 @@ export const useInlineStyle = <
     styleString,
     widthOfTable,
     collapseButtonPlacement,
-    controlBlockHeight
+    controlBlockHeight,
   ]);
 
   return {
     styleMemo,
     containerStyleResult,
-    tableAndSidebarContainerHeightStyle
+    tableAndSidebarContainerHeightStyle,
   };
 };

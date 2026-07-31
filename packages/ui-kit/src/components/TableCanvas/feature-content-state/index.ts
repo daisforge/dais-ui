@@ -1,6 +1,6 @@
 export { TableContentStateOverlay } from './TableContentStateOverlay';
 export type {
   TableContentStateEmptyOverlay,
-  TableContentStateErrorOverlay
+  TableContentStateErrorOverlay,
 } from './types';
 export { useContentStateOverlay } from './useContentStateOverlay';

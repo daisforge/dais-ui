@@ -16,5 +16,5 @@ export type {
   StoriesTriggerState,
   StoryAssetType,
   StoryErrorContext,
-  StorySlide
+  StorySlide,
 } from './Stories.types';

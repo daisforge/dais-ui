@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { TableCollapseConfig } from '../types';
 
 export const useTableCollapseValues = ({
-  tableConfig
+  tableConfig,
 }: {
   tableConfig: { collapsing?: TableCollapseConfig };
 }) => {
@@ -13,7 +13,7 @@ export const useTableCollapseValues = ({
     collapseText = 'Свернуть',
     expandText = 'Развернуть',
     onToggleCollapse,
-    collapsedState: externalState
+    collapsedState: externalState,
   } = tableConfig.collapsing || {};
 
   // Внутреннее состояние (используется если нет externalState)
@@ -22,7 +22,7 @@ export const useTableCollapseValues = ({
   // источник состояния
   const [isCollapsed, setIsCollapsed] = externalState ?? [
     internalState,
-    setInternalState
+    setInternalState,
   ];
 
   // Вызываем onToggleCollapse при изменении isCollapsed из любого источника
@@ -48,7 +48,7 @@ export const useTableCollapseValues = ({
       collapseButtonAboveRightSlot:
         tableConfig.collapsing?.collapseButtonAboveRightSlot,
       titleText: tableConfig.collapsing?.titleText,
-      titleRender: tableConfig.collapsing?.titleRender
+      titleRender: tableConfig.collapsing?.titleRender,
     }),
     [
       isCollapsed,
@@ -60,7 +60,7 @@ export const useTableCollapseValues = ({
       tableConfig.collapsing?.collapseButtonPlacement,
       tableConfig.collapsing?.collapseButtonAboveRightSlot,
       tableConfig.collapsing?.titleText,
-      tableConfig.collapsing?.titleRender
-    ]
+      tableConfig.collapsing?.titleRender,
+    ],
   );
 };

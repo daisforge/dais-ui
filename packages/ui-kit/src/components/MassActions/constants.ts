@@ -39,7 +39,7 @@ export const PANEL_PADDING_EXPANDED = {
   top: 12,
   right: 8,
   bottom: 12,
-  left: 24
+  left: 24,
 } as const;
 
 /**
@@ -50,7 +50,7 @@ export const PANEL_PADDING_COLLAPSED = {
   top: 0,
   right: 10,
   bottom: 0,
-  left: 24
+  left: 24,
 } as const;
 
 /**

@@ -9,7 +9,7 @@ import {
   COLORS,
   DURATION,
   HEIGHT_CONTROL_BLOCK,
-  TABLE_BORDER_RADIUS
+  TABLE_BORDER_RADIUS,
 } from '../../styles';
 import { ActiveViewModsType, ControlBlockSize } from '../../types';
 import { controlBlockClassNames as cls } from './control-block.classnames';
@@ -68,11 +68,11 @@ export const ControlBlockStyled = styled(Box)<{
     css({
       ...($activeView === 'rows' && {
         backgroundColor: COLORS.white,
-        borderColor: COLORS.border
+        borderColor: COLORS.border,
       }),
       ...($activeView === 'cards' && {
-        borderColor: 'transparent'
-      })
+        borderColor: 'transparent',
+      }),
     })}
   /* Нижний бордер виден только когда контрл-блок — нижняя кромка свёрнутой
      карточки (и только в rows-виде). В остальных случаях прозрачный, поэтому
@@ -115,7 +115,7 @@ export const ControlBlockStyled = styled(Box)<{
     `}
 `;
 export const LefSideStyled = styled(Box).attrs({
-  className: cls.leftControlBlock
+  className: cls.leftControlBlock,
 })<{
   $gap?: number;
   $paddingRight?: number;
@@ -136,7 +136,7 @@ export const CenteredItem = styled.div`
 const INLINE_TITLE_TYPOGRAPHY: Record<ControlBlockSize, CSSObject> = {
   m: bodySBold as unknown as CSSObject,
   s: bodySBold as unknown as CSSObject,
-  xs: bodyXSBold as unknown as CSSObject
+  xs: bodyXSBold as unknown as CSSObject,
 };
 
 export const InlineTitleText = styled.span<{ $size: ControlBlockSize }>`

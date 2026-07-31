@@ -5,7 +5,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import {
   Canvas,
   ColumnConfig,
-  TableCanvas
+  TableCanvas,
 } from '@ui-kit/components/TableCanvas';
 import { IconSearch } from '@ui-kit/icons';
 import React, { useMemo } from 'react';
@@ -20,7 +20,7 @@ const VIEWS = [
   'critical',
   'dark',
   'black',
-  'white'
+  'white',
 ] as const;
 
 const SIZES = ['xs', 's', 'm', 'l'] as const;
@@ -31,7 +31,7 @@ const rows: ViewRow[] = VIEWS.map((view) => ({ id: view, view }));
 
 const meta: Meta = {
   title: 'Локальные компоненты/TableCanvas/CanvasElements/CanvasIconButton',
-  tags: ['!autodocs']
+  tags: ['!autodocs'],
 };
 
 export default meta;
@@ -54,9 +54,9 @@ function Example(args: unknown) {
               disabled={disabled}
             />
           </Canvas.Container>
-        )
+        ),
       })),
-    [disabled]
+    [disabled],
   );
 
   return (
@@ -74,17 +74,17 @@ import { IconSearch } from '@sber-digital-finance-ui/ui-kit/icons';
 
 ${getFuncAsString(
   'packages/storybook/src/stories/TableCanvas/CanvasElements/CanvasIconButton/CanvasIconButton.stories.tsx',
-  'Example'
+  'Example',
 )}
 `;
 
 export const Default: StoryObj = {
   ...storySourceDoc({ code, previewSource: 'shown' }),
   args: {
-    disabled: false
+    disabled: false,
   },
   argTypes: {
-    disabled: { control: 'boolean' }
+    disabled: { control: 'boolean' },
   },
-  render: Example
+  render: Example,
 };

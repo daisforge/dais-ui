@@ -4,7 +4,7 @@ import type { CellMouseEvent, Maybe, ObjectForExtending } from '../types';
 import type { CellClickArgs } from '../types/data-grid.type';
 
 export const useOnCellClick = <Row extends ObjectForExtending, Summrow>({
-  onCellClickExternal
+  onCellClickExternal,
 }: {
   onCellClickExternal: Maybe<
     (args: CellClickArgs<Row, Summrow>, event: CellMouseEvent) => void
@@ -26,5 +26,5 @@ export const useOnCellClick = <Row extends ObjectForExtending, Summrow>({
         args.selectCell(true);
       }
     },
-    [onCellClickExternal]
+    [onCellClickExternal],
   );

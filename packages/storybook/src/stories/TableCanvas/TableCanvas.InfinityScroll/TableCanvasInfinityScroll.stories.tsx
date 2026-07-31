@@ -6,7 +6,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import {
   Canvas,
   ColumnConfig,
-  TableCanvas
+  TableCanvas,
 } from '@ui-kit/components/TableCanvas';
 import React, { useCallback, useState } from 'react';
 
@@ -16,10 +16,10 @@ const meta: Meta = {
   parameters: {
     docs: {},
     screenshot: {
-      skip: true
-    }
+      skip: true,
+    },
   },
-  tags: ['!autodocs']
+  tags: ['!autodocs'],
 };
 
 export default meta;
@@ -32,7 +32,7 @@ function loadMoreRows<RowType>(props?: {
   const {
     indexForStart = 0,
     countOfNewRows = 200,
-    timeout = 1000
+    timeout = 1000,
   } = props ?? {};
   return new Promise((resolve) => {
     const newRows = createRows(indexForStart, countOfNewRows) as RowType[];
@@ -44,28 +44,28 @@ function loadMoreRows<RowType>(props?: {
 const columns: readonly ColumnConfig<Row>[] = [
   {
     key: 'id',
-    name: 'ID'
+    name: 'ID',
   },
   {
     key: 'task',
     name: 'Title',
-    renderCell: ({ row }) => <Canvas.Text>{row.task ?? '—'}</Canvas.Text>
+    renderCell: ({ row }) => <Canvas.Text>{row.task ?? '—'}</Canvas.Text>,
   },
   {
     key: 'priority',
     name: 'Priority',
-    renderCell: ({ row }) => <Canvas.Text>{row.priority ?? '—'}</Canvas.Text>
+    renderCell: ({ row }) => <Canvas.Text>{row.priority ?? '—'}</Canvas.Text>,
   },
   {
     key: 'issueType',
     name: 'Issue Type',
-    renderCell: ({ row }) => <Canvas.Text>{row.issueType ?? '—'}</Canvas.Text>
+    renderCell: ({ row }) => <Canvas.Text>{row.issueType ?? '—'}</Canvas.Text>,
   },
   {
     key: 'developer',
     name: 'Developer',
-    renderCell: ({ row }) => <Canvas.Text>{row.developer ?? '—'}</Canvas.Text>
-  }
+    renderCell: ({ row }) => <Canvas.Text>{row.developer ?? '—'}</Canvas.Text>,
+  },
 ];
 
 function ExampleRegionMode() {
@@ -80,13 +80,13 @@ function ExampleRegionMode() {
       const newData = await loadMoreRows<Row>({
         indexForStart: currentRows.length,
         countOfNewRows: 50,
-        timeout: 2000
+        timeout: 2000,
       });
 
       setRows((prev) => [...prev, ...newData]);
       setIsLoading(false);
     },
-    [isLoading]
+    [isLoading],
   );
 
   return (
@@ -97,8 +97,8 @@ function ExampleRegionMode() {
           rowThreshold: 5,
           onTrigger,
           isLoading,
-          hasMore: rows.length < 6000
-        }
+          hasMore: rows.length < 6000,
+        },
       }}
       columnConfig={columns}
       rows={rows}
@@ -113,7 +113,7 @@ import React, { useCallback, useState } from 'react';
 
 ${getFuncAsString(
   'packages/storybook/src/stories/TableCanvas/TableCanvas.InfinityScroll/TableCanvasInfinityScroll.stories.tsx',
-  'ExampleRegionMode'
+  'ExampleRegionMode',
 )}
 `;
 
@@ -121,7 +121,7 @@ export const RegionModeStory: StoryObj = {
   name: 'Region Mode (default)',
   ...storySourceDoc({
     previewSource: 'shown',
-    code: regionModePreCode
+    code: regionModePreCode,
   }),
-  render: ExampleRegionMode
+  render: ExampleRegionMode,
 };

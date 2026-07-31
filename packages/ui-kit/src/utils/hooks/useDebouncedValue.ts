@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 export const useDebouncedValue = <T>(
   state: T,
   debounce = 500,
-  defValue?: T
+  defValue?: T,
 ) => {
   const [deb, setDeb] = useState(defValue ?? state);
 

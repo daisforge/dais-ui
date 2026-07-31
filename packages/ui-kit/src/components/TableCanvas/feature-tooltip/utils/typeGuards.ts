@@ -2,7 +2,7 @@ import type { CanvasNodeTooltipConfig } from '../../TableGlideInstance';
 
 /** Строка или объект с полем text. */
 export function isTooltipConfigFromNode(
-  value: unknown
+  value: unknown,
 ): value is CanvasNodeTooltipConfig {
   if (value == null) return false;
   if (typeof value === 'string') return true;

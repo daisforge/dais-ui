@@ -13,9 +13,9 @@ const meta: Meta = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      page: DocStoryTemplate
-    }
-  }
+      page: DocStoryTemplate,
+    },
+  },
 };
 
 export default meta;
@@ -38,7 +38,7 @@ export const SelectingRow: Story = {
   name: 'Пример кастомного выбора строк в группированной таблице',
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     const [rows] = useState(createRowsForGrouping);
@@ -51,32 +51,32 @@ export const SelectingRow: Story = {
           key: 'athlete',
           name: 'Athlete',
           rowsGrouping: {
-            columnGroupLabel: 'Athlete'
-          }
+            columnGroupLabel: 'Athlete',
+          },
         },
         {
           key: 'sport',
           name: 'Sport',
 
           rowsGrouping: {
-            columnGroupLabel: 'Sport'
-          }
+            columnGroupLabel: 'Sport',
+          },
         },
         {
           key: 'country',
           name: 'Country',
 
           rowsGrouping: {
-            columnGroupLabel: 'Country'
-          }
+            columnGroupLabel: 'Country',
+          },
         },
         {
           key: 'year',
           name: 'Year',
 
           rowsGrouping: {
-            columnGroupLabel: 'Year'
-          }
+            columnGroupLabel: 'Year',
+          },
         },
 
         {
@@ -87,14 +87,14 @@ export const SelectingRow: Story = {
             columnGroupLabel: 'Gold',
             renderGroupCell({ childRows }) {
               return childRows.reduce((prev, { gold }) => prev + gold, 0);
-            }
-          }
-        }
+            },
+          },
+        },
       ],
-      []
+      [],
     );
     const selectingRowStateAndSetter = useState(
-      (): ReadonlySet<string | number> => new Set()
+      (): ReadonlySet<string | number> => new Set(),
     );
 
     return (
@@ -109,7 +109,7 @@ export const SelectingRow: Story = {
                 if (row.groupByKey === 'country') {
                   return {
                     checked: selectedRows.has(row.groupKey),
-                    indeterminate: false
+                    indeterminate: false,
                   };
                 }
                 return null;
@@ -125,7 +125,7 @@ export const SelectingRow: Story = {
                       const copy = new Set(prev);
 
                       childGroupsX.forEach((groupRow) =>
-                        copy[checked ? 'delete' : 'add'](groupRow.groupKey)
+                        copy[checked ? 'delete' : 'add'](groupRow.groupKey),
                       );
                       return copy;
                     });
@@ -151,8 +151,8 @@ export const SelectingRow: Story = {
                 }
                 recursive(row, 'country');
                 defaultSetter();
-              }
-            }
+              },
+            },
           },
           rowsGrouping: {
             rowKeyGetter: (r) => r.id,
@@ -160,13 +160,13 @@ export const SelectingRow: Story = {
             expandAllBtn: {
               expandedAll({ allRowsIds, shownRows }) {
                 return allRowsIds?.size === shownRows.length;
-              }
-            }
-          }
+              },
+            },
+          },
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };

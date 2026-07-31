@@ -11,10 +11,10 @@ const meta: Meta = {
   title: 'Локальные компоненты/TableCanvas/API/tableConfig',
   parameters: {
     docs: {
-      page: DocArgsTemplate
-    }
+      page: DocArgsTemplate,
+    },
   },
-  component: StoryTableCanvasConfigComp as ComponentType<unknown>
+  component: StoryTableCanvasConfigComp as ComponentType<unknown>,
 };
 
 export default meta;
@@ -22,5 +22,5 @@ export default meta;
 export const Docs: StoryObj = {
   name: 'API',
   // eslint-disable-next-line react/jsx-no-useless-fragment
-  render: () => <></>
+  render: () => <></>,
 };

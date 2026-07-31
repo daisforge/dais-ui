@@ -3,7 +3,7 @@ import { useCallback, useMemo, useState } from 'react';
 
 import type {
   TablePopoverContextValue,
-  TablePopoverState
+  TablePopoverState,
 } from '../context/TablePopoverContext';
 
 /**
@@ -16,7 +16,7 @@ export const useTablePopoverState = (): TablePopoverContextValue => {
     position: null,
     contentType: null,
     contentData: undefined,
-    columnId: null
+    columnId: null,
   });
 
   const open = useCallback(
@@ -24,7 +24,7 @@ export const useTablePopoverState = (): TablePopoverContextValue => {
       position,
       contentType,
       contentData,
-      columnId
+      columnId,
     }: {
       position: { x: number; y: number };
       contentType: 'filter' | 'custom';
@@ -34,33 +34,33 @@ export const useTablePopoverState = (): TablePopoverContextValue => {
       console.debug('[useTablePopoverState] OPEN called', {
         position,
         contentType,
-        columnId
+        columnId,
       });
       setState({
         isOpen: true,
         position,
         contentType,
         contentData,
-        columnId: columnId ?? null
+        columnId: columnId ?? null,
       });
     },
-    []
+    [],
   );
 
   const close = useCallback(() => {
     setState((prev: TablePopoverState) => ({
       ...prev,
-      isOpen: false
+      isOpen: false,
     }));
   }, []);
 
   const updatePosition = useCallback((position: { x: number; y: number }) => {
     console.debug('[useTablePopoverState] UPDATE POSITION called', {
-      position
+      position,
     });
     setState((prev: TablePopoverState) => ({
       ...prev,
-      position
+      position,
     }));
   }, []);
 
@@ -69,8 +69,8 @@ export const useTablePopoverState = (): TablePopoverContextValue => {
       state,
       open,
       close,
-      updatePosition
+      updatePosition,
     }),
-    [state, open, close, updatePosition]
+    [state, open, close, updatePosition],
   );
 };

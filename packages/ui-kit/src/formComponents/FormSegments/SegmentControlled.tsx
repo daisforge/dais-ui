@@ -25,7 +25,7 @@ export function SegmentControlled<TFieldValues extends FieldValues>({
   errorMessage,
   items,
   singleSelectedRequired,
-  showError = true
+  showError = true,
 }: SegmentControlledProps<TFieldValues>) {
   const isMultiple = selectionMode === 'multiple';
   const { selectedSegmentItems } = useSegment();
@@ -35,7 +35,7 @@ export function SegmentControlled<TFieldValues extends FieldValues>({
     const currentFormValue = toArray(value, isMultiple);
     const areEqual = isEqual(
       [...currentFormValue].sort(),
-      [...selectedSegmentItems].sort()
+      [...selectedSegmentItems].sort(),
     );
     if (!areEqual) {
       // Важно! в mutiple режиме компонент атомарной либы при повторном клике на сегмент просто добавляет как дубликат выбранное значение в массив.

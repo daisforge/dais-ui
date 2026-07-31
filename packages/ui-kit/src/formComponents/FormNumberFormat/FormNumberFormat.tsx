@@ -21,7 +21,7 @@ export const FormNumberFormat = <TFieldValues extends FieldValues>({
     ...options,
     required: getPriorityRequired({ options, ruleName: 'required' })
       ? options?.required
-      : propsRequired
+      : propsRequired,
   };
 
   const formCtx = useChangedFormContext(newOptions);
@@ -35,7 +35,7 @@ export const FormNumberFormat = <TFieldValues extends FieldValues>({
       {...remOptions}
       render={({
         field: { value, ref: rhfRef, ...fieldRest },
-        fieldState: { error }
+        fieldState: { error },
       }) => (
         <NumberFormat
           {...fieldRest}

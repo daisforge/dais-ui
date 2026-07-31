@@ -21,7 +21,7 @@
 import { ToolsMenuState } from '../types';
 import {
   hasVisibleRightButtonLabels,
-  SEARCH_MIN_WIDTH_COMPRESSED
+  SEARCH_MIN_WIDTH_COMPRESSED,
 } from './width-model';
 
 /** Контекст, влияющий на состав и порядок шагов */
@@ -59,7 +59,7 @@ const hideEditRowLabels = {
     state.leftSide.editRowFeature.isLabelVisible,
   apply: (state: ToolsMenuState) => {
     state.leftSide.editRowFeature.isLabelVisible = false;
-  }
+  },
 };
 
 const shrinkSearch = {
@@ -69,7 +69,7 @@ const shrinkSearch = {
     state.middle.searchingFeature.minWidth > SEARCH_MIN_WIDTH_COMPRESSED,
   apply: (state: ToolsMenuState) => {
     state.middle.searchingFeature.minWidth = SEARCH_MIN_WIDTH_COMPRESSED;
-  }
+  },
 };
 
 const hideRightButtonLabels = {
@@ -77,9 +77,9 @@ const hideRightButtonLabels = {
   apply: (state: ToolsMenuState) => {
     state.rightSide.buttons = state.rightSide.buttons.map((btn) => ({
       ...btn,
-      isLabelVisible: false
+      isLabelVisible: false,
     }));
-  }
+  },
 };
 
 /**
@@ -87,7 +87,7 @@ const hideRightButtonLabels = {
  * Порядок в массиве это и есть порядок компрессии.
  */
 export const getCompressionPipeline = (
-  ctx: CompressionContext
+  ctx: CompressionContext,
 ): CompressionStep[] => {
   if (ctx.isEditMode) {
     return [
@@ -95,8 +95,8 @@ export const getCompressionPipeline = (
       { ...shrinkSearch, name: '2(edit): search 250 to 210' },
       {
         ...hideRightButtonLabels,
-        name: '3(edit): right buttons labels to icon-only'
-      }
+        name: '3(edit): right buttons labels to icon-only',
+      },
     ];
   }
 
@@ -107,14 +107,14 @@ export const getCompressionPipeline = (
       { ...shrinkSearch, name: '1(group): search 250 to 210' },
       {
         ...hideRightButtonLabels,
-        name: '2(group): right buttons labels to icon-only'
+        name: '2(group): right buttons labels to icon-only',
       },
-      { ...hideEditRowLabels, name: '3(group): editRow labels to icon-only' }
+      { ...hideEditRowLabels, name: '3(group): editRow labels to icon-only' },
     ];
   }
 
   return [
     { ...hideRightButtonLabels, name: '1: right buttons labels to icon-only' },
-    { ...hideEditRowLabels, name: '2: editRow labels to icon-only' }
+    { ...hideEditRowLabels, name: '2: editRow labels to icon-only' },
   ];
 };

@@ -68,7 +68,7 @@ export interface AdaptedColumn<R extends ObjectForExtending, SR> {
 export const adaptColumn = <R extends ObjectForExtending, SR = unknown>({
   column,
   group: _groupProp,
-  onFrozen
+  onFrozen,
 }: AdaptColumnInput<R, SR>): AdaptedColumn<R, SR> => {
   const {
     key,
@@ -90,7 +90,7 @@ export const adaptColumn = <R extends ObjectForExtending, SR = unknown>({
     maxAutoWidth,
     copyData,
     columnThemeOverride,
-    renderCellPreview
+    renderCellPreview,
   } = column;
 
   const isHaveExternalWidth = typeof width === 'number';
@@ -122,7 +122,7 @@ export const adaptColumn = <R extends ObjectForExtending, SR = unknown>({
   // Получаем группу из Symbol (как у разработчика)
   const group = getSymbolFromObj<string | string[]>(
     column,
-    COLUMN_GROUPS_SYMBOL
+    COLUMN_GROUPS_SYMBOL,
   );
 
   // Вычисляем длину группы для groupMaxLength
@@ -131,14 +131,14 @@ export const adaptColumn = <R extends ObjectForExtending, SR = unknown>({
   // Адаптируем renderHeaderCell (если есть)
   const adaptedRenderHeaderCell = renderHeaderCell
     ? adaptRenderHeaderCell({
-        column
+        column,
       })
     : undefined;
 
   const adaptedCellTooltip = adaptCellTooltip(cellTooltip, column);
   const adaptedHeaderCellTooltip = adaptHeaderCellTooltip(
     headerCellTooltip,
-    column
+    column,
   );
 
   type GlideCellInfo = Parameters<
@@ -146,11 +146,11 @@ export const adaptColumn = <R extends ObjectForExtending, SR = unknown>({
   >[0];
 
   const adaptCellInfo = (
-    cellInfo: GlideCellInfo
+    cellInfo: GlideCellInfo,
   ): CellInfoGlideInstance<R, SR> => ({
     ...cellInfo,
     column,
-    ctxs: cellInfo.ctxs as CtxsType
+    ctxs: cellInfo.ctxs as CtxsType,
   });
 
   // Формируем объект колонки для Glide
@@ -175,7 +175,7 @@ export const adaptColumn = <R extends ObjectForExtending, SR = unknown>({
           renderSummaryCell({
             ...summCellInfo,
             column,
-            ctxs: summCellInfo.ctxs as CtxsType
+            ctxs: summCellInfo.ctxs as CtxsType,
           })
       : undefined,
     renderCell: renderCell
@@ -183,11 +183,11 @@ export const adaptColumn = <R extends ObjectForExtending, SR = unknown>({
       : undefined,
     ...(adaptedCellTooltip && { cellTooltip: adaptedCellTooltip }),
     ...(adaptedHeaderCellTooltip && {
-      headerCellTooltip: adaptedHeaderCellTooltip
+      headerCellTooltip: adaptedHeaderCellTooltip,
     }),
     ...(renderCellPreview === 'none'
       ? { hasPreview: 'none' as const }
-      : renderCellPreview && { hasPreview: true })
+      : renderCellPreview && { hasPreview: true }),
   };
 
   // Если это делать выше, в объекте glideColumn, то будут ошибки ts с width и типами number | undefined из-за conditional spread похоже слишком сложный union стал
@@ -199,6 +199,6 @@ export const adaptColumn = <R extends ObjectForExtending, SR = unknown>({
   return {
     column: glideColumn,
     wasFrozen,
-    groupLength
+    groupLength,
   };
 };

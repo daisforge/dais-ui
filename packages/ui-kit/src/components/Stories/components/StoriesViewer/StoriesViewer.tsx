@@ -2,14 +2,14 @@ import { IconButton } from '@ui-kit/components/IconButton';
 import {
   IconClose,
   IconDisclosureLeftOutline,
-  IconDisclosureRightOutline
+  IconDisclosureRightOutline,
 } from '@ui-kit/icons';
 import {
   MouseEvent as ReactMouseEvent,
   useCallback,
   useEffect,
   useRef,
-  useState
+  useState,
 } from 'react';
 import { createPortal } from 'react-dom';
 
@@ -22,7 +22,7 @@ import {
   StyledClose,
   StyledOverlay,
   StyledRoot,
-  StyledStage
+  StyledStage,
 } from './StoriesViewer.styled';
 import { StoriesViewTransitionStyle } from './StoriesViewTransitionStyle';
 
@@ -36,7 +36,7 @@ export const StoriesViewer = (): JSX.Element | null => {
     zIndex,
     groupTransition,
     arrows,
-    preloadGroup
+    preloadGroup,
   } = useStoriesContext();
   const { isOpen, groupIndex } = useStoriesSnapshot(store);
   const [mounted, setMounted] = useState(isOpen);

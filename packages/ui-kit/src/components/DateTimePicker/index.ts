@@ -1,5 +1,5 @@
 export {
   DateTimePicker,
   dateTimePickerClasses,
-  dateTimePickerTokens
+  dateTimePickerTokens,
 } from '@salutejs/sdds-finai';

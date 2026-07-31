@@ -6,7 +6,7 @@ import { tableSidebarFilterBlockClassNames as cls } from './SideBarFilter.classn
 
 const C = {
   spaceX8: () => s.x8,
-  spaceX4: () => s.x4
+  spaceX4: () => s.x4,
 };
 
 export const SidebarFiltersStyled = styled.div<{ $isEmptySearch?: boolean }>`

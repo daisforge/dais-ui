@@ -4,7 +4,7 @@ import {
   outlineTransparentAccent,
   shadowDownHardS,
   shadowDownSoftS,
-  surfaceTransparentAccent
+  surfaceTransparentAccent,
 } from '@ui-kit/tokens';
 import styled from 'styled-components';
 
@@ -27,7 +27,7 @@ export const GridDNDContainer = styled.div`
 
 // FIXME (ПАША): белый цвет
 export const GridItem = styled.div.attrs(() => ({
-  className: cls.gridItem
+  className: cls.gridItem,
 }))<{ $isDraggable: boolean }>`
   // Стили в момент dragging
   &.react-draggable-dragging {

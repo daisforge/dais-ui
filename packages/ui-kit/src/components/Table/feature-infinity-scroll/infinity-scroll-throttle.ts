@@ -3,7 +3,7 @@
 export const infinityscrollThrottle = <R, A extends any[]>(
   fn: (...args: A) => R,
 
-  delay: number
+  delay: number,
 ): [(...args: A) => R | undefined, () => void] => {
   let lastArgs: any[] = [];
 
@@ -43,6 +43,6 @@ export const infinityscrollThrottle = <R, A extends any[]>(
       cancelled = true;
 
       clearTimeout(timeout);
-    }
+    },
   ];
 };

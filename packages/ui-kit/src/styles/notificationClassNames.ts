@@ -8,7 +8,7 @@ import {
   outlinePositive,
   outlineWarning,
   shadowDownHardS,
-  textPrimary
+  textPrimary,
 } from '@ui-kit/tokens';
 import { css } from 'styled-components';
 
@@ -25,26 +25,26 @@ export const cls = {
   info: `${PREFIX}notification--info`,
   hasBackground: `${PREFIX}notification--has-background`,
   hasTitleColor: `${PREFIX}notification--has-title-color`,
-  hasBorderColor: `${PREFIX}notification--has-border-color`
+  hasBorderColor: `${PREFIX}notification--has-border-color`,
 };
 
 const VIEW_STYLES = {
   positive: {
     background: dataPositiveGradient,
-    borderColor: outlinePositive
+    borderColor: outlinePositive,
   },
   negative: {
     background: dataNegativeGradient,
-    borderColor: outlineNegative
+    borderColor: outlineNegative,
   },
   warning: {
     background: dataWarningGradient,
-    borderColor: outlineWarning
+    borderColor: outlineWarning,
   },
   info: {
     background: dataInfoGradient,
-    borderColor: outlineInfo
-  }
+    borderColor: outlineInfo,
+  },
 } as const;
 
 export const generateNotificationViewStyles = () =>

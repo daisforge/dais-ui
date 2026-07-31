@@ -2,7 +2,7 @@ import { useRowContext } from '../contexts';
 import {
   CellEditorComboboxInternal,
   CellEditorNumberFormatInternal,
-  CellEditorTextAreaInternal
+  CellEditorTextAreaInternal,
 } from '../feature-edit';
 import type { KeyText } from '../feature-key-text/types';
 import { ExpandDetailButtonComponent } from '../feature-row-detail';
@@ -16,7 +16,7 @@ import {
   ColumnConfig,
   EditingCellInfo,
   ObjectForExtending,
-  TableConfig
+  TableConfig,
 } from '../types';
 import { CLASS } from './constants';
 import { StyledCellContainer, SubRowContainer } from './styled';
@@ -25,13 +25,13 @@ export const RenderEditCell = <
   FilterStateType extends ObjectForExtending,
   RowIdType extends string | number,
   RowType extends ObjectForExtending,
-  SummaryRowType = unknown
+  SummaryRowType = unknown,
 >({
   editingCellInfo,
   column,
   tableConfigSubRows,
   tableConfigRowDetailPanel,
-  keyText
+  keyText,
 }: {
   editingCellInfo: EditingCellInfo<RowType, SummaryRowType>;
   column: ColumnConfig<RowType, SummaryRowType>;
@@ -74,7 +74,7 @@ export const RenderEditCell = <
   // }
 
   const defaultLvl0RenderElement = (
-    disableLeftOffsetStr?: 'disableLeftOffset'
+    disableLeftOffsetStr?: 'disableLeftOffset',
   ) => {
     const disableLeftOffset = !!disableLeftOffsetStr;
     if (!column.editingCell) {
@@ -180,7 +180,7 @@ export const RenderEditCell = <
         $hasChildren={hasChildrenAndArrow}
         $editingMode={{
           $columnHasArrow: columnHasArrow,
-          $rowSize: rowSize
+          $rowSize: rowSize,
         }}
       >
         {hasChildrenAndArrow && (
@@ -207,7 +207,7 @@ export const RenderEditCell = <
   // ------------------------------- SUBROWS RENDER -------------------------------------
 
   const defaultLvlNot0RenderElement = (
-    disableLeftOffsetStr?: 'disableLeftOffset'
+    disableLeftOffsetStr?: 'disableLeftOffset',
   ) => {
     const disableLeftOffset = !!disableLeftOffsetStr;
 
@@ -238,16 +238,16 @@ export const RenderEditCell = <
       ...parentColumn,
       // для subRow переопределяем ключ
       ...(!parentKeyAsSubKey && {
-        key: getSubRowColumnKey()
+        key: getSubRowColumnKey(),
       }),
       // для subRow переопределяем editingCell
-      editingCell: column.subRow.editingCell
+      editingCell: column.subRow.editingCell,
     };
 
     const renderSubRowEditCellProps = {
       ...restRenderEditCellProps,
 
-      column: columnFinal as typeof parentColumn
+      column: columnFinal as typeof parentColumn,
     };
 
     if (column.subRow.editingCell.component === 'inputString') {
@@ -278,7 +278,7 @@ export const RenderEditCell = <
     return column.subRow.editingCell.component(
       renderSubRowEditCellProps,
       lvl,
-      disableLeftOffset
+      disableLeftOffset,
     );
   };
 
@@ -313,7 +313,7 @@ export const RenderEditCell = <
       $hasChildren={hasChildrenAndArrow}
       $editingMode={{
         $columnHasArrow: columnHasArrow,
-        $rowSize: rowSize
+        $rowSize: rowSize,
       }}
     >
       {hasChildrenAndArrow && (

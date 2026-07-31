@@ -6,9 +6,9 @@ export const useSearchValues = <
   FilterStateType extends ObjectForExtending,
   RowIdType extends string | number,
   RowType extends ObjectForExtending,
-  SummaryRowType = unknown
+  SummaryRowType = unknown,
 >({
-  tableConfig
+  tableConfig,
 }: {
   tableConfig: TableConfig<RowType, SummaryRowType, RowIdType, FilterStateType>;
 }) => {
@@ -17,18 +17,18 @@ export const useSearchValues = <
   const externalSearchState = tableConfig?.searching?.searchQueryState;
 
   const [showSearchBlock, setShowSearchBlock] = useState<boolean>(
-    tableConfig?.searching?.showSearchBlock ?? true
+    tableConfig?.searching?.showSearchBlock ?? true,
   );
 
   const internalSearchState = useState<string>(
-    tableConfig?.searching?.defaultSearchQuery ?? ''
+    tableConfig?.searching?.defaultSearchQuery ?? '',
   );
 
   const [searchQuery, setSearchQuery] =
     externalSearchState || internalSearchState;
 
   const [internalLocalValue, setInternalLocalValue] = useState(
-    searchQuery || ''
+    searchQuery || '',
   );
 
   const {
@@ -37,7 +37,7 @@ export const useSearchValues = <
     debounceDelay = 300,
     isDebounceActive = true,
     searchClasses,
-    placeholder = 'Поиск'
+    placeholder = 'Поиск',
   } = tableConfig?.searching || {};
 
   const searchContextValue = {
@@ -60,7 +60,7 @@ export const useSearchValues = <
     isManualSearching,
     domMetadata: tableConfig.searching?.domMetadata,
     searchOnType: tableConfig.searching?.searchOnType ?? true,
-    autocomplete: tableConfig.searching?.autocomplete
+    autocomplete: tableConfig.searching?.autocomplete,
   };
 
   return searchContextValue;

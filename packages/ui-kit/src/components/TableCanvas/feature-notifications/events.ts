@@ -11,7 +11,7 @@ export const notifications = {
     level: 'error',
     code: 'multi-range-scattered',
     message:
-      'Нельзя скопировать разрозненный выбор сразу по разным строкам и колонкам.'
+      'Нельзя скопировать разрозненный выбор сразу по разным строкам и колонкам.',
   }),
 
   pasteMultiRangeScattered: (): TableNotification => ({
@@ -19,21 +19,21 @@ export const notifications = {
     level: 'error',
     code: 'multi-range-scattered',
     message:
-      'Нельзя вставить в разрозненный выбор сразу по разным строкам и колонкам.'
+      'Нельзя вставить в разрозненный выбор сразу по разным строкам и колонкам.',
   }),
 
   pasteReadonlyAbort: (): TableNotification => ({
     type: 'paste',
     level: 'error',
     code: 'readonly-abort',
-    message: 'Вставка отменена: в области вставки есть нередактируемые ячейки.'
+    message: 'Вставка отменена: в области вставки есть нередактируемые ячейки.',
   }),
 
   pasteOverflowAbort: (): TableNotification => ({
     type: 'paste',
     level: 'error',
     code: 'overflow-abort',
-    message: 'Вставка отменена: данные не помещаются в границы таблицы.'
+    message: 'Вставка отменена: данные не помещаются в границы таблицы.',
   }),
 
   pasteValidationSkipped: (count: number): TableNotification => ({
@@ -41,7 +41,7 @@ export const notifications = {
     level: 'warning',
     code: 'validation-skipped',
     message: `Часть значений пропущена (${count}): не соответствуют типу ячеек.`,
-    meta: { count }
+    meta: { count },
   }),
 
   fillReadonlyAbort: (): TableNotification => ({
@@ -49,7 +49,7 @@ export const notifications = {
     level: 'error',
     code: 'readonly-abort',
     message:
-      'Автозаполнение отменено: в области заполнения есть нередактируемые ячейки.'
+      'Автозаполнение отменено: в области заполнения есть нередактируемые ячейки.',
   }),
 
   fillValidationSkipped: (count: number): TableNotification => ({
@@ -57,13 +57,13 @@ export const notifications = {
     level: 'warning',
     code: 'validation-skipped',
     message: `Часть значений пропущена (${count}): не соответствуют типу ячеек.`,
-    meta: { count }
+    meta: { count },
   }),
 
   pinNoSelection: (): TableNotification => ({
     type: 'pin',
     level: 'warning',
     code: 'no-selection',
-    message: 'Выберите, что закрепить'
-  })
+    message: 'Выберите, что закрепить',
+  }),
 };

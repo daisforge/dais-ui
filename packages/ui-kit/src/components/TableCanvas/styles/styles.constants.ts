@@ -5,13 +5,13 @@ import {
   surfaceSolidPrimary,
   textAccent,
   textPrimary,
-  textSecondary
+  textSecondary,
 } from '@ui-kit/tokens';
 
 import { TABLE_GLIDE_SIZES } from '../TableGlideInstance';
 import type {
   SIZE_GLIDE_INSTANCE as SIZE,
-  TableGlideSizeConfig
+  TableGlideSizeConfig,
 } from '../TableGlideInstance/type';
 import { getCustomColors } from './customColors';
 
@@ -21,16 +21,16 @@ export type { SIZE, TableGlideSizeConfig as TableCanvasSizeConfig };
 export const {
   customColorTokensKeys,
   customColorTokens,
-  customColorGlobalVars
+  customColorGlobalVars,
 } = getCustomColors();
 
 export const CUSTOM_TOKENS_KEYS = {
   ...customColorTokensKeys,
-  zIndexCell: '--zIndexCell'
+  zIndexCell: '--zIndexCell',
 } as const;
 export const CUSTOM_TOKENS = {
   ...customColorTokens,
-  zIndexCell: `var(${CUSTOM_TOKENS_KEYS.zIndexCell})`
+  zIndexCell: `var(${CUSTOM_TOKENS_KEYS.zIndexCell})`,
 } as const;
 
 export const COLORS = {
@@ -48,7 +48,7 @@ export const COLORS = {
     CUSTOM_TOKENS.editedSuccessfullyCellHoverColor,
   white: surfaceSolidCard,
   border: outlineSolidPrimary,
-  red: outlineNegative
+  red: outlineNegative,
 } as const;
 
 export const TABLE_BORDER_RADIUS = 8;
@@ -57,7 +57,7 @@ export {
   COLLAPSE_DECOR_DELAY,
   COLLAPSE_DECOR_FADE,
   COLLAPSE_DURATION,
-  DURATION
+  DURATION,
 } from '@ui-kit/components/TableCanvasSharedConstants';
 export const LVL_1_ROW_CLASS = 'lvl-1-row';
 export const DETAIL_PANEL_ROW_CLASS = 'detail-panel-row';
@@ -67,7 +67,7 @@ export const FIRST_ROW = `${ROW_IDX_START_CLASS}0`;
 export const LIST_WIDTH: Record<SIZE, string> = {
   small: '200px',
   medium: '240px',
-  big: '320px'
+  big: '320px',
 };
 
 export const DEFAULT_TABLE_TRANSITION_DELAY = '0.3s';

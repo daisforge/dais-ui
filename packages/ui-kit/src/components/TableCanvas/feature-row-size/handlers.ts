@@ -2,7 +2,7 @@
 import {
   IconRowHeightMaxOutline,
   IconRowHeightMinOutline,
-  IconRowHeightOutline
+  IconRowHeightOutline,
 } from '@ui-kit/icons';
 
 import { type SIZE, SIZES } from '../styles';
@@ -65,7 +65,7 @@ export const getDefuaultRowSize = (tableConfigRowSize: RowSize | undefined) => {
 
 export const setRowSizeCb = (
   prevCurrent: SIZE,
-  tableConfigRowSize: RowSize | undefined
+  tableConfigRowSize: RowSize | undefined,
 ) => {
   const availables = tableConfigRowSize?.available ?? All_SIZES_ARR;
   const firstAvailable = availables?.[0];
@@ -73,7 +73,7 @@ export const setRowSizeCb = (
 
   if (availablesIsHaveLength) {
     const prevIndex = availables.findIndex(
-      (variant) => variant === prevCurrent
+      (variant) => variant === prevCurrent,
     );
     const maxIndex = availables.length - 1;
 
@@ -88,16 +88,16 @@ export const setRowSizeCb = (
 const SIZES_OBJ = {
   small: {
     icon: IconRowHeightMinOutline,
-    tooltip: 'Размер строки - минимальный'
+    tooltip: 'Размер строки - минимальный',
   },
   medium: {
     icon: IconRowHeightOutline,
-    tooltip: 'Размер строки - средний'
+    tooltip: 'Размер строки - средний',
   },
   big: {
     icon: IconRowHeightMaxOutline,
-    tooltip: 'Размер строки - максимальный'
-  }
+    tooltip: 'Размер строки - максимальный',
+  },
 } as const;
 
 export const getCurrentSizeIcon = (currentSize: SIZE) =>

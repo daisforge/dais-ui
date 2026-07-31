@@ -21,11 +21,11 @@ describe('formatCellValue', () => {
       formatCellValue(1234.567, {
         type: 'number',
         thousandSeparator: ' ',
-        decimalSeparator: ','
-      })
+        decimalSeparator: ',',
+      }),
     ).toBe('1 234,57');
     expect(
-      formatCellValue(1000, { type: 'number', thousandSeparator: ' ' })
+      formatCellValue(1000, { type: 'number', thousandSeparator: ' ' }),
     ).toBe('1 000');
   });
 
@@ -33,7 +33,7 @@ describe('formatCellValue', () => {
   it('should pass raw value to customFormat', () => {
     const customFormat = vi.fn((val: string) => `$${val}`);
     const result = formatCellValue(1000, {
-      customFormat
+      customFormat,
     });
 
     // customFormat получает "1000" (без форматирования)
@@ -45,7 +45,7 @@ describe('formatCellValue', () => {
   it('should pass string value directly to customFormat', () => {
     const customFormat = vi.fn((val: string) => val.toUpperCase());
     const result = formatCellValue('hello', {
-      customFormat
+      customFormat,
     });
 
     expect(customFormat).toHaveBeenCalledWith('hello');
@@ -54,7 +54,7 @@ describe('formatCellValue', () => {
 
   it('should ignore invalid customFormat', () => {
     const result = formatCellValue(1000, {
-      customFormat: 'not-a-function'
+      customFormat: 'not-a-function',
     } as unknown as ContentFormat);
 
     expect(result).toBe('1000');
@@ -66,7 +66,7 @@ describe('formatCellValue', () => {
       const result = formatCellValue(1234.56, {
         type: 'number',
         thousandSeparator: ',',
-        decimalSeparator: '.'
+        decimalSeparator: '.',
       });
 
       expect(result).toBe('1,234.56');
@@ -78,7 +78,7 @@ describe('formatCellValue', () => {
         thousandSeparator: ' ',
         decimalSeparator: ',',
         minimumFractionDigits: 4,
-        maximumFractionDigits: 4
+        maximumFractionDigits: 4,
       });
 
       expect(result).toBe('1 234,5678');
@@ -87,7 +87,7 @@ describe('formatCellValue', () => {
     it('should disable grouping when useGrouping=false', () => {
       const result = formatCellValue(1234.56, {
         type: 'number',
-        useGrouping: false
+        useGrouping: false,
       });
 
       expect(result).toBe('1234,56');
@@ -120,7 +120,7 @@ describe('formatCellValue', () => {
     const customFormat = vi.fn((val: string) => val.toUpperCase());
     const result = formatCellValue('test', {
       type: 'string',
-      customFormat
+      customFormat,
     } as ContentFormat);
 
     expect(result).toBe('TEST');
@@ -131,7 +131,7 @@ describe('formatCellValue', () => {
   it('should respect different locales', () => {
     const result = formatCellValue(1234.56, {
       type: 'number',
-      locales: 'en-US'
+      locales: 'en-US',
     });
 
     // Ожидаемый результат зависит от среды выполнения,

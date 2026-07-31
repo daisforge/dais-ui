@@ -6,7 +6,7 @@ import {
   shadowDownHardS,
   surfaceSolidCard,
   textPrimary,
-  textSecondary
+  textSecondary,
 } from '@ui-kit/tokens';
 import styled from 'styled-components';
 
@@ -33,7 +33,7 @@ const sizeMap: Record<
     subHeaderBottomGap: '0',
     rightBlockGap: s.x3,
     rightBlockToCloseGap: s.x6,
-    rightBlockMaxHeight: '32px'
+    rightBlockMaxHeight: '32px',
   },
   s: {
     titleDescriptionGap: s.x1,
@@ -43,8 +43,8 @@ const sizeMap: Record<
     subHeaderBottomGap: '0',
     rightBlockGap: s.x2,
     rightBlockToCloseGap: s.x4,
-    rightBlockMaxHeight: '24px'
-  }
+    rightBlockMaxHeight: '24px',
+  },
 };
 
 const C = {
@@ -52,7 +52,7 @@ const C = {
   radius: () => br.m,
   shadow: () => shadowDownHardS,
   titleColor: () => textPrimary,
-  descriptionColor: () => textSecondary
+  descriptionColor: () => textSecondary,
 };
 
 export const StyledPopup = styled(Popup)`

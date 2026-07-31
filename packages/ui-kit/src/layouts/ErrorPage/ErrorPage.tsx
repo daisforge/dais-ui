@@ -30,7 +30,7 @@ export type ErrorPageProps = {
   buttonHandler?: (
     statusCode: StatusCode,
     statusObj: CustomStatusObj,
-    e: React.MouseEvent<HTMLElement, MouseEvent>
+    e: React.MouseEvent<HTMLElement, MouseEvent>,
   ) => void;
   /**
    * `customStatuses` - кастомные статусы и содержимое для их отображения.
@@ -74,7 +74,7 @@ export const ErrorPage = (props: ErrorPageProps) => {
     containerProps,
     showStatusCode = false,
     errorId,
-    size = 'l'
+    size = 'l',
   } = props;
   const statuses = { ...STATUSES, ...customStatuses } as Record<
     number,
@@ -89,7 +89,7 @@ export const ErrorPage = (props: ErrorPageProps) => {
   // Собираем все кнопки с проверкой наличия label
   const allButtons = [
     ...(button?.label ? [button] : []),
-    ...(buttons?.filter((btn) => btn.label) || [])
+    ...(buttons?.filter((btn) => btn.label) || []),
   ];
 
   const statusIsNumber = typeof statusCode === 'number';
@@ -108,7 +108,7 @@ export const ErrorPage = (props: ErrorPageProps) => {
         '409',
         '500',
         '502',
-        '503'
+        '503',
       ];
       if (validVariants.includes(statusCodeStr as ErrorPageVariant)) {
         return statusCodeStr as ErrorPageVariant;
@@ -159,13 +159,13 @@ export const ErrorPage = (props: ErrorPageProps) => {
               onClick: (e: React.MouseEvent<HTMLButtonElement>) =>
                 buttonHandler?.(statusCode, statusObj, e),
               children: btn.label,
-              key: index
-            }
+              key: index,
+            },
           }))}
           classes={{
             buttons: classNames['navigate-btn'],
             title: classNames.title,
-            subtitle: classNames.description
+            subtitle: classNames.description,
           }}
         />
         {errorId && (

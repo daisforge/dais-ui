@@ -16,7 +16,7 @@ const col = (opts: {
     editingCell: readonly
       ? undefined
       : { component, ...(options ? { options } : {}) },
-    contentFormat
+    contentFormat,
   } as unknown as TransferColumnConfig;
 };
 
@@ -26,13 +26,13 @@ const NO_CTX = {};
 const numFormat = {
   type: 'number',
   decimalSeparator: ',',
-  thousandSeparator: ' '
+  thousandSeparator: ' ',
 } as const;
 
 describe('validatePasteValue — readonly / прочие', () => {
   it('readonly-колонка (нет editingCell) → невалидно', () => {
     expect(validatePasteValue('x', col({ readonly: true }), NO_CTX)).toBe(
-      false
+      false,
     );
   });
 
@@ -73,8 +73,8 @@ describe('validatePasteValue — select (членство в опциях)', () 
     type: 'constant',
     options: [
       { value: 'High', text: 'Высокий' },
-      { value: 'Low', text: 'Низкий' }
-    ]
+      { value: 'Low', text: 'Низкий' },
+    ],
   };
 
   it('значение из опций (по value или text) валидно, чужое — нет', () => {
@@ -89,13 +89,13 @@ describe('validatePasteValue — select (членство в опциях)', () 
       component: 'select',
       options: {
         type: 'stateInRowContext',
-        optionsKeyInRowContext: 'tribeOptions'
-      }
+        optionsKeyInRowContext: 'tribeOptions',
+      },
     });
     const ctxs = {
       rowContextValue: {
-        tribeOptions: [{ value: 'T1', text: 'Трайб 1' }]
-      }
+        tribeOptions: [{ value: 'T1', text: 'Трайб 1' }],
+      },
     } as never;
     expect(validatePasteValue('T1', c, ctxs)).toBe(true);
     expect(validatePasteValue('T2', c, ctxs)).toBe(false);
@@ -104,7 +104,7 @@ describe('validatePasteValue — select (членство в опциях)', () 
   it('если опции достать не удалось — валидация не блокирует (true)', () => {
     const c = col({
       component: 'select',
-      options: { type: 'stateInRowContext', optionsKeyInRowContext: 'missing' }
+      options: { type: 'stateInRowContext', optionsKeyInRowContext: 'missing' },
     });
     expect(validatePasteValue('что угодно', c, {} as never)).toBe(true);
   });

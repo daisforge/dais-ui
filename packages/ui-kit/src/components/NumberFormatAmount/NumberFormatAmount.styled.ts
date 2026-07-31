@@ -6,7 +6,7 @@ type AmountSize = 'xs' | 's';
 
 const typographyMap: Record<AmountSize, Record<string, string>> = {
   xs: bodySBold,
-  s: bodyMBold
+  s: bodyMBold,
 };
 
 const getTypography = (size: AmountSize) => css(typographyMap[size]);

@@ -12,5 +12,5 @@ export {
   borderRadiusM,
   borderRadiusL,
   borderRadiusXl,
-  borderRadiusXxl
+  borderRadiusXxl,
 } from '@salutejs/sdds-themes/tokens/sdds_finai';

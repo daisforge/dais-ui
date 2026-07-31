@@ -14,7 +14,7 @@ import { Group, Item, ItemOrGroup } from './types';
 import { useUpdateSize } from './useUpdateSize';
 
 const SIZES = {
-  xs: { height: 32, paddingInline: 0 }
+  xs: { height: 32, paddingInline: 0 },
 };
 
 const BORDER_WIDTH = 1;
@@ -25,16 +25,16 @@ const BORDER = `${BORDER_WIDTH}px solid ${() => COLORS.border}`;
 const StyledTabs = styled(Tabs)({
   '&': {
     '& .tabs-clip-scroll': {
-      overflowY: 'hidden'
+      overflowY: 'hidden',
     },
     '& button.tab-item-animated': {
       marginLeft: '8px',
 
       '&:first-of-type': {
-        marginLeft: '0px'
-      }
-    }
-  }
+        marginLeft: '0px',
+      },
+    },
+  },
 });
 
 export type ListOfFiltersProps = {
@@ -83,7 +83,7 @@ const ListOfFiltersNotMemo = ({
   renderGroupLabel,
   renderChipLabel,
   showResetAllFiltersButton = true,
-  extraCss = {}
+  extraCss = {},
 }: ListOfFiltersProps) => {
   const SIZE = SIZES[size];
   const curPaddingInline = paddingInline ?? SIZE.paddingInline;
@@ -92,7 +92,7 @@ const ListOfFiltersNotMemo = ({
   const { refForContainer, maxWidthForCenterElement } = useUpdateSize(
     opened,
     curPaddingInline,
-    BORDER_WIDTH
+    BORDER_WIDTH,
   );
   // для перерисовки табов - табы без доп отложенного стейт-а не обновляет ui
   useDebouncedValue(opened, 200);
@@ -115,7 +115,7 @@ const ListOfFiltersNotMemo = ({
           marginTop: paddingTop,
           // transition: `all ${DURATION}s ease`,
           flexDirection: 'row-reverse',
-          ...extraCss
+          ...extraCss,
         }}
       >
         {/* нужен для корректной работы useUpdateSize */}
@@ -128,7 +128,7 @@ const ListOfFiltersNotMemo = ({
             height: curMaxHeight - BORDER_WIDTH,
             flex: 1, //  Добавляем стили вместо maxWidthForCenterElement
             minWidth: 0, // Добавляем стили вместо maxWidthForCenterElement
-            overflow: 'hidden' // Добавляем стили вместо maxWidthForCenterElement
+            overflow: 'hidden', // Добавляем стили вместо maxWidthForCenterElement
             // width: maxWidthForCenterElement, // убираем. в splitView вызывает "дерганье"
           }}
         >

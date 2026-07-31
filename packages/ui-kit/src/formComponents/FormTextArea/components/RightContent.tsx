@@ -10,7 +10,7 @@ export const RightContent = ({
   onClear,
   currentCount,
   maxCount,
-  showClearButton = true
+  showClearButton = true,
 }: TRightContentProps) => {
   let colorCurrentCount;
   if (maxCount) {

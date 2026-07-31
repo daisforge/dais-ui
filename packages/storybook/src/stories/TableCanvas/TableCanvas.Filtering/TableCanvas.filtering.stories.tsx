@@ -3,7 +3,7 @@
 import { createRows, type Row } from '@df-storybook/data/tableData';
 import {
   createSeededRandom,
-  FIXED_DATE_TIMESTAMP
+  FIXED_DATE_TIMESTAMP,
 } from '@df-storybook/data/tableData';
 import DocStoryTemplate from '@df-storybook/templates/DocStoryTemplate.mdx';
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
@@ -12,7 +12,7 @@ import { Calendar } from '@ui-kit/components/Calendar';
 import {
   ColumnConfig,
   TableCanvas,
-  TableFilterSelectListItem
+  TableFilterSelectListItem,
 } from '@ui-kit/components/TableCanvas';
 import { IconStar } from '@ui-kit/icons';
 import React, { useMemo, useState } from 'react';
@@ -22,9 +22,9 @@ const meta: Meta = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      page: DocStoryTemplate
-    }
-  }
+      page: DocStoryTemplate,
+    },
+  },
 };
 
 export default meta;
@@ -36,7 +36,7 @@ import { ColumnConfig, TableCanvas } from '@daisforge/ui';
 export const FilteringTable: StoryObj = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   name: 'Filtering Table',
   render: () => {
@@ -49,12 +49,12 @@ export const FilteringTable: StoryObj = {
         date: (() => {
           const date = new Date(
             FIXED_DATE_TIMESTAMP +
-              (Math.floor(seededRandom() * 61) - 30) * 86400000
+              (Math.floor(seededRandom() * 61) - 30) * 86400000,
           );
           return `${String(date.getDate()).padStart(2, '0')}.${String(
-            date.getMonth() + 1
+            date.getMonth() + 1,
           ).padStart(2, '0')}.${date.getFullYear()}`;
-        })()
+        })(),
       }));
     });
 
@@ -65,18 +65,18 @@ export const FilteringTable: StoryObj = {
       issueType: [],
       complete: '',
       globalFilter: '',
-      date: undefined as string | undefined
+      date: undefined as string | undefined,
     });
 
     const columnConfig = useMemo<readonly ColumnConfig<Row>[]>(
       () => [
         {
           key: 'id',
-          name: 'id'
+          name: 'id',
         },
         {
           key: 'task',
-          name: 'Title'
+          name: 'Title',
         },
         {
           key: 'date',
@@ -85,7 +85,7 @@ export const FilteringTable: StoryObj = {
             component: 'custom',
             customRender: (props) => {
               const {
-                headerContextState: { filters, setFilters }
+                headerContextState: { filters, setFilters },
               } = props;
               return (
                 <Calendar
@@ -94,7 +94,7 @@ export const FilteringTable: StoryObj = {
                     if (setFilters)
                       setFilters((prev) => ({
                         ...prev,
-                        date: v
+                        date: v,
                       }));
                   }}
                 />
@@ -105,8 +105,8 @@ export const FilteringTable: StoryObj = {
             valueInRow: (r) => (r as Row & { date: string })?.date,
             compareWithClearedValue: (clearedValue, currV) =>
               clearedValue === currV,
-            keyInFilterState: 'date'
-          }
+            keyInFilterState: 'date',
+          },
         },
 
         {
@@ -121,17 +121,17 @@ export const FilteringTable: StoryObj = {
                 { value: 'High', text: 'High' },
                 { value: 'Critical', text: 'Critical' },
                 { value: 'Medium', text: 'Medium' },
-                { value: 'Low', text: 'Low' }
-              ]
+                { value: 'Low', text: 'Low' },
+              ],
             },
 
             keyInFilterState: 'priority',
             valueInRow: (r) => r.priority,
             filter: {
               typeOfValue: 'single',
-              filteringType: (fv, rv) => (fv !== 'All' ? rv === fv : true)
-            }
-          }
+              filteringType: (fv, rv) => (fv !== 'All' ? rv === fv : true),
+            },
+          },
         },
         {
           key: 'issueType',
@@ -149,23 +149,23 @@ export const FilteringTable: StoryObj = {
             component: 'select',
             selectOptions: {
               type: 'stateInHeaderContext',
-              optionsKeyInHeaderContext: 'issueTypeOptions'
+              optionsKeyInHeaderContext: 'issueTypeOptions',
             },
             keyInFilterState: 'issueType',
             valueInRow: (r) => r.issueType,
             filter: {
               typeOfValue: 'multiple',
               filteringType: (fv, rv) =>
-                !fv.length || fv.some((fvCurr) => fvCurr === rv)
-            }
-          }
+                !fv.length || fv.some((fvCurr) => fvCurr === rv),
+            },
+          },
         },
         {
           key: 'complete',
-          name: '% Complete'
-        }
+          name: '% Complete',
+        },
       ],
-      []
+      [],
     );
 
     const headerContextValue = useMemo(
@@ -174,10 +174,10 @@ export const FilteringTable: StoryObj = {
           { text: 'Bug', value: 'Bug' },
           { text: 'Improvement', value: 'Improvement' },
           { text: 'Epic', value: 'Epic' },
-          { text: 'Story', value: 'Story' }
-        ]
+          { text: 'Story', value: 'Story' },
+        ],
       }),
-      []
+      [],
     );
 
     return (
@@ -186,7 +186,7 @@ export const FilteringTable: StoryObj = {
           containerStyle: { height: '60vh' },
           rowSize: {
             default: 'big',
-            showInControl: true
+            showInControl: true,
           },
           fullScreenEnabled: true,
           controlBlock: {
@@ -202,49 +202,49 @@ export const FilteringTable: StoryObj = {
                   type: 'switch',
                   label: 'В избранном',
                   checked: isFavorite,
-                  onChange: (e) => setIsFavorite(e.target.checked)
-                }
-              }
-            ]
+                  onChange: (e) => setIsFavorite(e.target.checked),
+                },
+              },
+            ],
           },
           filtering: {
             state: filteringStateAndSetter,
             filtersInfo: {
               id: {
                 label: 'id',
-                clearedValue: ''
+                clearedValue: '',
               },
               task: {
                 label: 'task',
-                clearedValue: ''
+                clearedValue: '',
               },
               priority: {
                 label: 'Some Label',
-                clearedValue: 'All'
+                clearedValue: 'All',
               },
               issueType: {
                 label: 'issueType',
-                clearedValue: []
+                clearedValue: [],
               },
               complete: {
                 label: 'complete',
-                clearedValue: ''
+                clearedValue: '',
               },
               date: {
                 label: 'Дата',
-                clearedValue: undefined
+                clearedValue: undefined,
               },
               globalFilter: {
                 label: 'Global filter',
-                clearedValue: ''
-              }
-            }
-          }
+                clearedValue: '',
+              },
+            },
+          },
         }}
         columnConfig={columnConfig}
         rows={rows}
         headerContextValue={headerContextValue}
       />
     );
-  }
+  },
 };

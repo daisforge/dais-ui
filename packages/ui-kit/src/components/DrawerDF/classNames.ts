@@ -15,5 +15,5 @@ export const drawerDFClassNames = {
   drawerContentContainer: 'drawer-content-container',
   drawerContent: 'drawer-content',
   drawerContentInner: 'drawer-content-inner',
-  drawerBackIconButton: 'drawer__back-icon'
+  drawerBackIconButton: 'drawer__back-icon',
 };

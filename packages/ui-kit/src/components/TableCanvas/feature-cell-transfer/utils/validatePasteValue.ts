@@ -23,7 +23,7 @@ type ValidationCtx = {
 export function validatePasteValue(
   value: string,
   column: TransferColumnConfig,
-  ctxs: ValidationCtx
+  ctxs: ValidationCtx,
 ): boolean {
   const { editingCell, contentFormat } = column;
   if (!editingCell) return false;
@@ -51,7 +51,7 @@ export function validatePasteValue(
     const options = resolveSelectOptions(editingCell.options, ctxs);
     if (!options) return true;
     return options.some(
-      (opt) => String(opt.value) === value || String(opt.text) === value
+      (opt) => String(opt.value) === value || String(opt.text) === value,
     );
   }
 
@@ -88,7 +88,7 @@ function getNumberSeparators(contentFormat?: ContentFormat): {
 function stripFormatting(
   value: string,
   decimalSep: string,
-  thousandSep: string
+  thousandSep: string,
 ): string {
   let normalized = value;
   if (thousandSep) normalized = normalized.split(thousandSep).join('');
@@ -103,7 +103,7 @@ function stripFormatting(
  */
 function isParsableNumber(
   value: string,
-  contentFormat?: ContentFormat
+  contentFormat?: ContentFormat,
 ): boolean {
   if (value.trim() === '') return false;
   const { decimalSep, thousandSep } = getNumberSeparators(contentFormat);
@@ -121,7 +121,7 @@ function isParsableNumber(
  */
 export function normalizePasteValue(
   value: string,
-  column: TransferColumnConfig
+  column: TransferColumnConfig,
 ): string | number {
   const { editingCell, contentFormat } = column;
   if (!editingCell) return value;
@@ -155,7 +155,7 @@ export function normalizePasteValue(
  */
 function resolveSelectOptions(
   config: unknown,
-  ctxs: ValidationCtx
+  ctxs: ValidationCtx,
 ): SelectOption[] | null {
   if (!config || typeof config !== 'object' || !('type' in config)) return null;
 

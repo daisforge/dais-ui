@@ -16,7 +16,7 @@ export const useRowInstrumentsCtx = () => {
 
 export const RowInstrumentsCtxProvider = <RowType extends ObjectForExtending>({
   children,
-  value
+  value,
 }: PropsWithChildren & { value: RowInstrumentsType<RowType> | null }) => (
   <RowInstrumentsCtx.Provider
     value={value as RowInstrumentsType<ObjectForExtending> | null}

@@ -4,7 +4,7 @@ import {
   outlineSolidSecondaryHover,
   shadowDownSoftS,
   surfaceSolidCard,
-  surfaceSolidSecondary
+  surfaceSolidSecondary,
 } from '@ui-kit/tokens';
 import { media } from '@ui-kit/utils';
 import { CSSProperties } from 'react';
@@ -12,21 +12,21 @@ import styled from 'styled-components';
 
 import {
   splitViewClassNames as cls,
-  splitViewConstants as c
+  splitViewConstants as c,
 } from './SplitView.constants';
 import type { SplitViewProps, SplVSizes } from './SplitView.type';
 
 const C = {
   spaceX4: () => s.x4,
   spaceX16: () => s.x16,
-  surfaceSolidSecondary: () => surfaceSolidSecondary
+  surfaceSolidSecondary: () => surfaceSolidSecondary,
 };
 
 export const cssVars = (
   sizes: SplVSizes,
   sidebarIsClosed: boolean,
   sidebarPaddingLeftOnClosed: number | undefined,
-  sidebarMinWidthPx: number = c.sidebarWidths.minWidthPx
+  sidebarMinWidthPx: number = c.sidebarWidths.minWidthPx,
 ) => {
   const sizesLast: SplVSizes & { separator: string; gap?: number } =
     sidebarIsClosed
@@ -34,7 +34,7 @@ export const cssVars = (
           ...sizes,
           main: 100,
           separator: `${sidebarPaddingLeftOnClosed ?? 0}px`,
-          sidebar: 0
+          sidebar: 0,
         }
       : { ...sizes, separator: `${c.separatorDefaultWidth}px` };
 
@@ -47,8 +47,8 @@ export const cssVars = (
         : `minmax(${sidebarMinWidthPx}px, ${sidebar}fr)`,
     [c.separatorWidthVar]: separator,
     ...(sidebarPx !== undefined && {
-      [c.sidebarWidthInPxVar]: `${sidebarPx}px`
-    })
+      [c.sidebarWidthInPxVar]: `${sidebarPx}px`,
+    }),
   } as CSSProperties;
 };
 const sidebarUp1920MediaStyles = `
@@ -57,7 +57,7 @@ const sidebarUp1920MediaStyles = `
       `;
 
 export const StyledDiv = styled.div.attrs({
-  className: cls.container as string
+  className: cls.container as string,
 })<{
   $css: SplitViewProps['$css'];
   $headerHeight?: number;

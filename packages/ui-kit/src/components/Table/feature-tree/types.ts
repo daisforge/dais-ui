@@ -6,7 +6,7 @@ export type SubRows<RowType, RowIdType> = {
     (
       newV:
         | Set<string | number>
-        | ((prev: Set<string | number>) => Set<string | number>)
-    ) => void
+        | ((prev: Set<string | number>) => Set<string | number>),
+    ) => void,
   ];
 };

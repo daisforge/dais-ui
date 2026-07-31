@@ -51,13 +51,13 @@ export type RowKeyGetter<RowType, RowIdType> = (row: RowType) => RowIdType;
 export type RowShowCheckbox<RowType> = (
   row: RowType,
   lvl?: number,
-  parent?: RowType | null
+  parent?: RowType | null,
 ) => boolean;
 
 export type RowCheckboxDisabled<RowType> = (
   row: RowType,
   lvl?: number,
-  parent?: RowType | null
+  parent?: RowType | null,
 ) => boolean;
 
 export type RowGetStatesProps<RowType, RowIdType> = {
@@ -142,7 +142,7 @@ export type RowGetStatesReturnType<RowType, RowIdType> = {
         getRowParentsInfo: () => {
           all: RowType[];
           getShouldBeSelectedInfo: (
-            actualSelecteds: ReadonlySet<RowIdType>
+            actualSelecteds: ReadonlySet<RowIdType>,
           ) => {
             shouldBeSelected: RowIdType[];
             shouldNotBeSelected: RowIdType[];
@@ -156,7 +156,7 @@ export type SummaryCheckedFunc<
   RowType,
   ReturnType,
   AdditionalPropsObj extends ObjectForExtending | void = void,
-  RowIdType extends string | number = string | number
+  RowIdType extends string | number = string | number,
 > = (
   props: {
     rows: RowType[];
@@ -177,7 +177,7 @@ export type SummaryCheckedFunc<
   } & (AdditionalPropsObj extends ObjectForExtending
     ? AdditionalPropsObj
     : // eslint-disable-next-line @typescript-eslint/ban-types
-      {})
+      {}),
 ) => ReturnType;
 
 export type SelectingRowConfig<RowType, RowIdType extends string | number> = {
@@ -253,7 +253,7 @@ export type SelectingRowConfig<RowType, RowIdType extends string | number> = {
    * Что будет возвращено функцией в объекте, то будет переопределено.
    */
   rowGetStates?: (
-    p: RowGetStatesProps<RowType, RowIdType>
+    p: RowGetStatesProps<RowType, RowIdType>,
   ) => RowGetStatesReturnType<RowType, RowIdType> | null;
   groupedRow?: {
     /**

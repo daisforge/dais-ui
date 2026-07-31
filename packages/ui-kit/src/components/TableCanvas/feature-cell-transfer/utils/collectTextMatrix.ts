@@ -2,7 +2,7 @@ import type { ObjectForExtending } from '../../types';
 import type {
   CellTransferCellInfo,
   Rectangle,
-  TransferColumnConfig
+  TransferColumnConfig,
 } from '../types';
 import { collectMatrixFromTargets } from './collectMatrixFromTargets';
 import { rangeToIndexes } from './rangeToIndexes';
@@ -20,13 +20,13 @@ export function collectTextMatrix<R extends ObjectForExtending>(
   range: Rectangle,
   columns: readonly TransferColumnConfig[],
   rows: readonly R[],
-  options: { withCells?: boolean } = {}
+  options: { withCells?: boolean } = {},
 ): { grid: string[][]; cells: CellTransferCellInfo[][] } {
   return collectMatrixFromTargets(
     rangeToIndexes(range.y, range.height),
     rangeToIndexes(range.x, range.width),
     columns,
     rows,
-    options
+    options,
   );
 }

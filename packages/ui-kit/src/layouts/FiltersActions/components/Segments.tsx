@@ -9,7 +9,7 @@ export type FiltersActionsSegmentItemProps = SegmentItemProps & {
 export const FiltersActionsSegmentItem = styled(SegmentItem).attrs((props) => ({
   size: 's' as typeof props.size,
   view: 'primary' as typeof props.view,
-  ...props
+  ...props,
 }))<{ $css?: CSSObject | TemplateStringsArray }>`
   & {
     ${({ $css }) => $css}

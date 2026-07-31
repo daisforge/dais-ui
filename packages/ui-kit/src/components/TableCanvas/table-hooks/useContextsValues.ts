@@ -8,7 +8,7 @@ import {
   ActiveViewModsType,
   ObjectForExtending,
   SortColumn,
-  TableConfig
+  TableConfig,
 } from '../types';
 
 export const useContextsValues = <
@@ -18,7 +18,7 @@ export const useContextsValues = <
   RowIdType extends string | number,
   RowType extends ObjectForExtending,
   // SubRowType extends ObjectForExtending,
-  SummaryRowType = unknown
+  SummaryRowType = unknown,
 >({
   filters,
   setFilters,
@@ -36,7 +36,7 @@ export const useContextsValues = <
   isExpandedAllRows,
   toggleExpandAllButton,
   activeView,
-  setActiveView
+  setActiveView,
 }: {
   filters: FilterStateType | undefined;
   headerContextValue: HeaderContextValueType | undefined;
@@ -65,7 +65,7 @@ export const useContextsValues = <
 }) => {
   const rowContextValueTotal = useMemo(
     () => ({ ...rowContextValue, rowSize }),
-    [rowContextValue, rowSize]
+    [rowContextValue, rowSize],
   );
 
   const headerContextValueTotal = useMemo(() => {
@@ -73,7 +73,7 @@ export const useContextsValues = <
       filters,
       setFilters,
       clearedFiltersValue: getClearedFilters<FilterStateType>(
-        tableConfig?.filtering
+        tableConfig?.filtering,
       ),
 
       sortState: sortColumns,
@@ -87,7 +87,7 @@ export const useContextsValues = <
       isExpandedAllRows,
       toggleExpandAllButton,
       activeView,
-      setActiveView
+      setActiveView,
     };
     return v as typeof v & HeaderContextValueType;
   }, [
@@ -105,7 +105,7 @@ export const useContextsValues = <
     isExpandedAllRows,
     toggleExpandAllButton,
     activeView,
-    setActiveView
+    setActiveView,
   ]);
 
   return { headerContextValueTotal, rowContextValueTotal };

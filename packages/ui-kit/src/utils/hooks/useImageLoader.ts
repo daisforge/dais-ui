@@ -51,7 +51,7 @@ export interface UseImageLoaderResult {
  */
 export const useImageLoader = (
   src?: string,
-  delayMs = 0
+  delayMs = 0,
 ): UseImageLoaderResult => {
   const [status, setStatus] = useState<ImageLoaderStatus>(() => {
     if (!src) return 'idle';
@@ -112,6 +112,6 @@ export const useImageLoader = (
     isLoading: status === 'loading',
     isLoaded: status === 'loaded',
     isError: status === 'error',
-    reload
+    reload,
   };
 };

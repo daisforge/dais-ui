@@ -6,12 +6,12 @@ import {
   outlineSolidPrimary,
   surfaceSolidCard,
   textPrimary,
-  textSecondary
+  textSecondary,
 } from '@ui-kit/tokens';
 import styled, {
   css,
   CSSObject,
-  FlattenSimpleInterpolation
+  FlattenSimpleInterpolation,
 } from 'styled-components';
 
 import { Box } from '../Box';
@@ -31,7 +31,7 @@ const C = {
   textSecondary: () => textSecondary,
   bodyS: () => bodyS,
   textPrimary: () => textPrimary,
-  h4Bold: () => h4Bold
+  h4Bold: () => h4Bold,
 };
 
 // const scrollbarStyles = (width = 8) => css`
@@ -70,7 +70,7 @@ const C = {
 //   }
 // `;
 export const StyledContainer = styled.div.attrs({
-  className: cls.container as string
+  className: cls.container as string,
 })<{ $css?: string | CSSObject | FlattenSimpleInterpolation }>`
   height: 100%;
 
@@ -106,7 +106,7 @@ export const StyledContainer = styled.div.attrs({
 `;
 
 export const StyledHeader: typeof Box = styled(Box).attrs({
-  className: cls.header as string
+  className: cls.header as string,
 })<{
   dividerBottom?: boolean;
 }>`
@@ -180,7 +180,7 @@ export const StyledHeader: typeof Box = styled(Box).attrs({
 
 // TODO ресерч переезда на getCustomScrollbar
 export const StyledContent: typeof Box = styled(Box).attrs({
-  className: cls.content as string
+  className: cls.content as string,
 })`
   & {
     flex-grow: 1;
@@ -198,7 +198,7 @@ export const StyledContent: typeof Box = styled(Box).attrs({
 `;
 
 export const StyledFooter: typeof Box = styled(Box).attrs({
-  className: cls.footer as string
+  className: cls.footer as string,
 })<{ dividerTop?: boolean }>`
   &.${cls.footer} {
     flex-shrink: 0;
@@ -240,7 +240,7 @@ export const StyledFooter: typeof Box = styled(Box).attrs({
 `;
 
 export const StyledBadge = styled(Badge).attrs({
-  view: 'default' as BadgeCompProps['view']
+  view: 'default' as BadgeCompProps['view'],
 })`
   align-self: flex-start;
   margin-top: ${(props: StyledBadgeProps) =>

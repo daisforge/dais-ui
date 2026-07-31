@@ -1,18 +1,18 @@
 import { splitViewConstants as c } from '../SplitView.constants';
 import type {
   SplitViewAdaptiveContent,
-  SplitViewSlotSizesProps
+  SplitViewSlotSizesProps,
 } from '../SplitView.type';
 
 export const getSplitViewSlotSizes = (
-  isAdaptive1280: boolean
+  isAdaptive1280: boolean,
 ): SplitViewSlotSizesProps => ({
-  avatarSize: isAdaptive1280 ? 'm' : 'l'
+  avatarSize: isAdaptive1280 ? 'm' : 'l',
 });
 
 export const getSplitViewSidebarMinWidthPx = (
   isAdaptive1280: boolean,
-  minWidthPx?: number
+  minWidthPx?: number,
 ): number =>
   minWidthPx ??
   (isAdaptive1280
@@ -21,5 +21,5 @@ export const getSplitViewSidebarMinWidthPx = (
 
 export const renderSplitViewContent = (
   content: SplitViewAdaptiveContent | undefined,
-  slotSizes: SplitViewSlotSizesProps
+  slotSizes: SplitViewSlotSizesProps,
 ) => (typeof content === 'function' ? content(slotSizes) : content);

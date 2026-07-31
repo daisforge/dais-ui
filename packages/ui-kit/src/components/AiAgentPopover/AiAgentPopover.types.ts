@@ -24,7 +24,7 @@ export type AiAgentPopoverPlacement =
 export type AiAgentPopoverPosition = { x: number; y: number };
 export type AiAgentPopoverPositionState = [
   AiAgentPopoverPosition,
-  Dispatch<SetStateAction<AiAgentPopoverPosition>>
+  Dispatch<SetStateAction<AiAgentPopoverPosition>>,
 ];
 
 /**
@@ -113,7 +113,7 @@ export type AiAgentPopoverProps = Omit<
   resizable?:
     | boolean
     | ((
-        placement: AiAgentPopoverPlacement
+        placement: AiAgentPopoverPlacement,
       ) => Partial<AiAgentPopoverResizableConfig>);
 
   /**

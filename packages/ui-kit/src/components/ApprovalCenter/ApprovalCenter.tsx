@@ -7,7 +7,7 @@ import { History, LifeCycle, Preview } from './components';
 import { tabNameByType } from './constants';
 import {
   ApprovalCenterContainer,
-  ApprovalCenterContentWrapper
+  ApprovalCenterContentWrapper,
 } from './styled';
 
 export const ApprovalCenter = (props: ApprovalCenterProps) => {

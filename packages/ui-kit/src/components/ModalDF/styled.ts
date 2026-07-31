@@ -6,7 +6,7 @@ import {
   shadowUpSoftL,
   surfaceSolidCard,
   textPrimary,
-  textSecondary
+  textSecondary,
 } from '@ui-kit/tokens';
 import styled, { css } from 'styled-components';
 
@@ -21,11 +21,11 @@ const C = {
   spaceX1: () => s.x1,
   spaceX12: () => s.x12,
   borderRadius: () => br.m,
-  bg: () => surfaceSolidCard
+  bg: () => surfaceSolidCard,
 };
 
 export const StyledContainer = styled(Container).attrs({
-  className: cls.root as string
+  className: cls.root as string,
 })<{ $fullScreened: boolean }>`
   &,
   & * {
@@ -85,7 +85,7 @@ const leftAndMainYStyles = css`
 `;
 
 export const StyledLeft: typeof Box = styled(Box).attrs({
-  className: cls.left as string
+  className: cls.left as string,
 })`
   &.${cls.left} {
     margin-left: ${C.spaceX};
@@ -106,7 +106,7 @@ export const StyledLeft: typeof Box = styled(Box).attrs({
 `;
 
 export const StyledMain: typeof Box = styled(Box).attrs({
-  className: cls.main as string
+  className: cls.main as string,
 })`
   &.${cls.main} {
     margin-right: ${C.spaceX};
@@ -121,7 +121,7 @@ export const StyledMain: typeof Box = styled(Box).attrs({
 `;
 
 export const StyledHeader: typeof Box = styled(Box).attrs({
-  className: cls.header as string
+  className: cls.header as string,
 })`
   &.${cls.header} {
     flex-shrink: 0;
@@ -174,7 +174,7 @@ export const StyledHeader: typeof Box = styled(Box).attrs({
 `;
 
 export const StyledContent: typeof Box = styled(Box).attrs({
-  className: cls.content as string
+  className: cls.content as string,
 })`
   & {
     flex-grow: 1;
@@ -184,7 +184,7 @@ export const StyledContent: typeof Box = styled(Box).attrs({
 `;
 
 export const StyledMainFooter: typeof Box = styled(Box).attrs({
-  className: cls.footer as string
+  className: cls.footer as string,
 })`
   &.${cls.footer} {
     flex-shrink: 0;

@@ -5,11 +5,11 @@ export type {
   TProperties,
   TPropertyItem,
   TSendClickStreamEvent,
-  TSendClickStreamEventParams
+  TSendClickStreamEventParams,
 } from './types';
 export { useClickStream } from './useClickStream';
 export {
   createClickStreamEventValue,
   transformClickStreamProperties,
-  transformClickStreamPropertyValuesToString
+  transformClickStreamPropertyValuesToString,
 } from './utils';

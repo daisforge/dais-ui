@@ -6,14 +6,14 @@ import { Button } from '@ui-kit/components/Button';
 import { Flow } from '@ui-kit/components/Flow';
 import type {
   PageTitleProps,
-  PageTitleSlotSizesProps
+  PageTitleSlotSizesProps,
 } from '@ui-kit/components/PageTitle';
 import { PageTitle } from '@ui-kit/components/PageTitle';
 
 const meta: Meta<PageTitleProps> = {
   title: 'Композиции/PageTitle',
   tags: ['!autodocs'],
-  component: PageTitle
+  component: PageTitle,
 };
 
 export default meta;
@@ -35,7 +35,7 @@ export const Default: Story = {
   name: 'PageTitle',
   ...storySourceDoc({
     previewSource: 'shown',
-    preCode
+    preCode,
   }),
   render: () => (
     <PageTitle
@@ -43,8 +43,8 @@ export const Default: Story = {
         items: [
           { title: 'Главная', href: '#' },
           { title: 'Раздел', href: '#' },
-          { title: 'Страница' }
-        ]
+          { title: 'Страница' },
+        ],
       }}
       showBackButton
       onBackClick={() => alert('onBackClick')}
@@ -61,19 +61,19 @@ export const Default: Story = {
         </Flow>
       )}
     />
-  )
+  ),
 };
 
 export const WithTitleSlot: Story = {
   name: 'PageTitle с кастомным слотом',
   ...storySourceDoc({
     previewSource: 'shown',
-    preCode
+    preCode,
   }),
   render: () => (
     <PageTitle
       breadcrumbs={{
-        items: [{ title: 'Главная', href: '#' }, { title: 'Раздел' }]
+        items: [{ title: 'Главная', href: '#' }, { title: 'Раздел' }],
       }}
       showBackButton
       onBackClick={() => alert('onBackClick')}
@@ -95,14 +95,14 @@ export const WithTitleSlot: Story = {
         </Flow>
       )}
     />
-  )
+  ),
 };
 
 export const WithoutBreadcrumbs: Story = {
   name: 'PageTitle без breadcrumbs',
   ...storySourceDoc({
     previewSource: 'shown',
-    preCode
+    preCode,
   }),
   render: () => (
     <PageTitle
@@ -119,14 +119,14 @@ export const WithoutBreadcrumbs: Story = {
         </Flow>
       )}
     />
-  )
+  ),
 };
 
 export const LongTitle: Story = {
   name: 'PageTitle с длинным заголовком',
   ...storySourceDoc({
     previewSource: 'shown',
-    preCode
+    preCode,
   }),
   render: () => (
     <PageTitle
@@ -134,8 +134,8 @@ export const LongTitle: Story = {
         items: [
           { title: 'Главная', href: '#' },
           { title: 'Раздел', href: '#' },
-          { title: 'Страница' }
-        ]
+          { title: 'Страница' },
+        ],
       }}
       title="Очень длинный заголовок страницы, который может не поместиться в одну строку и будет обрезан с помощью TypographyWithAutoTooltip"
       subtitle="Описание страницы или подзаголовок"
@@ -143,7 +143,7 @@ export const LongTitle: Story = {
         tooltipText:
           'Очень длинный заголовок страницы, который может не поместиться в одну строку и будет обрезан с помощью TypographyWithAutoTooltip',
         lines: 1,
-        bold: true
+        bold: true,
       }}
       rightSlot={({ buttonSize }: PageTitleSlotSizesProps) => (
         <Flow mainAxisGap={8}>
@@ -156,5 +156,5 @@ export const LongTitle: Story = {
         </Flow>
       )}
     />
-  )
+  ),
 };

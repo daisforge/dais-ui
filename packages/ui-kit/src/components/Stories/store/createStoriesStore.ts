@@ -22,7 +22,7 @@ const INITIAL: StoriesSnapshot = {
   groupIndex: 0,
   slideIndex: 0,
   isPlaying: true,
-  direction: 'next'
+  direction: 'next',
 };
 
 /**
@@ -31,7 +31,7 @@ const INITIAL: StoriesSnapshot = {
  * безопасно скармливать в `useSyncExternalStore` целиком.
  */
 export const createStoriesStore = (
-  initial?: Partial<StoriesSnapshot>
+  initial?: Partial<StoriesSnapshot>,
 ): StoriesStore => {
   let state: StoriesSnapshot = { ...INITIAL, ...initial };
   const listeners = new Set<() => void>();
@@ -51,6 +51,6 @@ export const createStoriesStore = (
 
       state = { ...state, ...patch };
       listeners.forEach((listener) => listener());
-    }
+    },
   };
 };

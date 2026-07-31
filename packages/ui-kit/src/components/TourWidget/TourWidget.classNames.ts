@@ -15,5 +15,5 @@ export const tourWidgetClassNames = {
   bulletsTrack: `${PRE}bullets-track`,
   bullet: `${PRE}bullet`,
   bulletActive: `${PRE}bullet-active`,
-  bulletEdge: `${PRE}bullet-edge`
+  bulletEdge: `${PRE}bullet-edge`,
 } as const;

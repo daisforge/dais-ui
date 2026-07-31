@@ -28,7 +28,7 @@ export const FormCombobox = <TFieldValues extends FieldValues>({
     ...options,
     required: getPriorityRequired({ options, ruleName: 'required' })
       ? options?.required
-      : propsRequired
+      : propsRequired,
   };
 
   const formCtx = useChangedFormContext(newOptions);
@@ -41,7 +41,7 @@ export const FormCombobox = <TFieldValues extends FieldValues>({
       {...remOptions}
       render={({
         field: { name: _fieldName, onBlur, ...fieldRest },
-        fieldState: { error }
+        fieldState: { error },
       }) => {
         const calcMultiple = (multiple
           ? true
@@ -72,7 +72,7 @@ export const FormCombobox = <TFieldValues extends FieldValues>({
                   undefined as unknown as React.FocusEvent<
                     HTMLInputElement,
                     Element
-                  >
+                  >,
                 );
               }
             }}

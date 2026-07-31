@@ -22,7 +22,7 @@ export function collectMatrixFromTargets<R extends ObjectForExtending>(
   colTargets: readonly number[],
   columns: readonly TransferColumnConfig[],
   rows: readonly R[],
-  options: { withCells?: boolean } = {}
+  options: { withCells?: boolean } = {},
 ): { grid: string[][]; cells: CellTransferCellInfo[][] } {
   const grid: string[][] = [];
   const cells: CellTransferCellInfo[][] = [];
@@ -50,7 +50,7 @@ export function collectMatrixFromTargets<R extends ObjectForExtending>(
           rowIndex,
           lvl,
           rawValue: row[column.key],
-          formattedValue
+          formattedValue,
         });
       }
     }

@@ -10,7 +10,7 @@ export const useRowsWithSkeletonsOrNot = <RowType extends ObjectForExtending>({
   skeletonRowsCount,
   rows,
   infinityScrollActiveInConfig,
-  infinityScrollHasMore
+  infinityScrollHasMore,
 }: {
   isLoadingTable: boolean;
   skeletonRowsCount: number;
@@ -21,7 +21,7 @@ export const useRowsWithSkeletonsOrNot = <RowType extends ObjectForExtending>({
   const rowsWithSkeletonsOrNot = useMemo(() => {
     if (isLoadingTable) {
       return arrWithLength(skeletonRowsCount).map(
-        () => SKELETON_ROW as unknown as RowType
+        () => SKELETON_ROW as unknown as RowType,
       );
     }
     const showInfinityScrollSkeleton =
@@ -31,8 +31,8 @@ export const useRowsWithSkeletonsOrNot = <RowType extends ObjectForExtending>({
       const rowsWithSkeletons = [
         ...rows,
         ...arrWithLength(INFINITY_SCROLL_SKELETON_COUNT).map(
-          () => SKELETON_ROW as unknown as RowType
-        )
+          () => SKELETON_ROW as unknown as RowType,
+        ),
       ];
       return rowsWithSkeletons;
     }
@@ -43,10 +43,10 @@ export const useRowsWithSkeletonsOrNot = <RowType extends ObjectForExtending>({
     rows,
     infinityScrollHasMore,
     infinityScrollActiveInConfig,
-    isLoadingTable
+    isLoadingTable,
   ]);
 
   return {
-    rowsWithSkeletonsOrNot
+    rowsWithSkeletonsOrNot,
   };
 };

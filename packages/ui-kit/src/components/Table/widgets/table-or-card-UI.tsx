@@ -3,7 +3,7 @@
 import { Box } from '@ui-kit/components/Box';
 import type {
   MassActionsButtonProps,
-  MassActionsSize
+  MassActionsSize,
 } from '@ui-kit/components/MassActions/types';
 import { useActiveTheme } from '@ui-kit/utils';
 import React, { ReactNode, Ref, useMemo } from 'react';
@@ -11,7 +11,7 @@ import DataGrid, {
   CellClickArgs,
   CellMouseEvent,
   DataGridHandle,
-  DataGridProps
+  DataGridProps,
 } from 'react-data-grid';
 import { createPortal } from 'react-dom';
 import { CSSObject, CSSProperties } from 'styled-components';
@@ -20,7 +20,7 @@ import { TableDropdownConfigProps } from '../components/TableDropdown/types';
 import { useContextMenu, useTableCollapse } from '../contexts';
 import {
   CollapseBlockAbove,
-  CollapseTableWrapper
+  CollapseTableWrapper,
 } from '../feature-collapse-table';
 import { ContextMenu } from '../feature-context-menu';
 import { TableLoadingOverlay } from '../feature-loading-overlay/TableLoadingOverlay';
@@ -32,14 +32,14 @@ import type {
   HighlightActiveType,
   Key,
   View,
-  ViewMods
+  ViewMods,
 } from '../types';
 import { MassActionsInTable } from './mass-actions';
 
 function activeViewIs<T extends 'cards' | 'rows'>(
   checkType: T,
   viewState: 'cards' | 'rows',
-  view: View
+  view: View,
 ): view is ViewMods[T] {
   return checkType === viewState;
 }
@@ -67,7 +67,7 @@ export const TableOrCardsUI = <RowType, SummRowType, K extends Key = Key>({
     collapseButtonPlacement,
     collapseButtonAboveRightSlot,
     $borderTopRounded,
-    isHaveSomeFeatureInSidebar
+    isHaveSomeFeatureInSidebar,
   },
 
   dataGridProps: {
@@ -81,7 +81,7 @@ export const TableOrCardsUI = <RowType, SummRowType, K extends Key = Key>({
   setPaginationHeight,
   loadingOverlayConfig,
   containerStyle,
-  massActionPanel
+  massActionPanel,
 }: {
   containerProps: {
     viewProp: {
@@ -136,7 +136,7 @@ export const TableOrCardsUI = <RowType, SummRowType, K extends Key = Key>({
     openHeaderContextMenu,
     enableHeaderContextMenu,
     enableCellContextMenu,
-    openCellContextMenu
+    openCellContextMenu,
   } = useContextMenu();
   const isCardViewActive = activeViewIs('cards', activeView, view);
   const isRowsViewActive = !isCardViewActive;
@@ -149,9 +149,9 @@ export const TableOrCardsUI = <RowType, SummRowType, K extends Key = Key>({
     () => ({
       maxHeight: 0,
       opacity: 0,
-      overflow: 'hidden'
+      overflow: 'hidden',
     }),
-    []
+    [],
   );
 
   const JSX = (
@@ -177,7 +177,7 @@ export const TableOrCardsUI = <RowType, SummRowType, K extends Key = Key>({
       {...(enableHeaderContextMenu && {
         onContextMenu: (event) => {
           openHeaderContextMenu(event);
-        }
+        },
       })}
       $isCollapsed={isCollapsed}
       $isEnabledCollapse={enableCollapse}
@@ -204,7 +204,7 @@ export const TableOrCardsUI = <RowType, SummRowType, K extends Key = Key>({
               className={`${cls.table} ${cls.tableCardsViewContainer}`}
               style={{
                 ...restDataGridProps.style,
-                ...(isCollapsed && collapsedStyles)
+                ...(isCollapsed && collapsedStyles),
               }}
             >
               {view.typeCardsRender}
@@ -215,7 +215,7 @@ export const TableOrCardsUI = <RowType, SummRowType, K extends Key = Key>({
               className={cls.tableSidebarLayout}
               style={{
                 ...$tableAndSidebarContainerHeightStyle,
-                ...(isCollapsed && collapsedStyles)
+                ...(isCollapsed && collapsedStyles),
               }}
             >
               <div
@@ -231,15 +231,15 @@ export const TableOrCardsUI = <RowType, SummRowType, K extends Key = Key>({
                   summaryRowHeight={SIZES[rowSize].rowHeight}
                   {...restDataGridProps}
                   style={{
-                    ...restDataGridProps.style
+                    ...restDataGridProps.style,
                   }}
                   {...(enableCellContextMenu && {
                     onCellContextMenu: (
                       args: CellClickArgs<RowType, SummRowType>,
-                      event: CellMouseEvent
+                      event: CellMouseEvent,
                     ) => {
                       openCellContextMenu(args, event);
-                    }
+                    },
                   })}
                 />
               </div>

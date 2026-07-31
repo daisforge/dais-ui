@@ -3,35 +3,35 @@ import {
   ObjectForExtending,
   SIZES,
   useRefTableGlobalContainerContext,
-  useRowContext
+  useRowContext,
 } from '@ui-kit/components/Table';
 import React, { useEffect, useRef } from 'react';
 import { RenderEditCellProps } from 'react-data-grid';
 
 const Bool = {
   true: true,
-  false: false
+  false: false,
 } as const;
 
 const items = [
   {
     value: true.toString(),
-    label: true.toString()
+    label: true.toString(),
   },
   {
     value: false.toString(),
-    label: false.toString()
-  }
+    label: false.toString(),
+  },
 ];
 
 export function SelectBooleanEditor<
   TRow extends ObjectForExtending,
-  TSummaryRow
+  TSummaryRow,
 >({
   row,
   column,
   // columnConfig,
-  onRowChange
+  onRowChange,
 }: RenderEditCellProps<TRow, TSummaryRow> & {
   // columnConfig: ColumnConfig<TRow, TSummaryRow>;
 }) {
@@ -67,7 +67,7 @@ export function SelectBooleanEditor<
         if (typeof value === 'string') {
           onRowChange(
             { ...row, [column.key]: Bool[value as keyof typeof Bool] },
-            true
+            true,
           );
         }
       }}

@@ -13,10 +13,10 @@ interface UseClosePopoverOnRegionChangeOptions {
 
 export function useClosePopoverOnRegionChange<
   RowType extends ObjectForExtending,
-  SummaryRowType
+  SummaryRowType,
 >(
   tablePopoverValue: TablePopoverContextValue,
-  options: UseClosePopoverOnRegionChangeOptions = {}
+  options: UseClosePopoverOnRegionChangeOptions = {},
 ) {
   const { scrollThreshold = 3, targetContentType = 'filter' } = options;
 
@@ -57,7 +57,7 @@ export function useClosePopoverOnRegionChange<
         lastTxRef.current = tx;
       }
     },
-    [tablePopoverValue, scrollThreshold, targetContentType]
+    [tablePopoverValue, scrollThreshold, targetContentType],
   );
 
   return handleVisibleRegionChange;

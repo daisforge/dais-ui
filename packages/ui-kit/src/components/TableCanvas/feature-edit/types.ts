@@ -1,6 +1,6 @@
 import type {
   ComboboxCompProps,
-  ComboboxItemOption
+  ComboboxItemOption,
 } from '@ui-kit/components/Combobox';
 import type { NumberFormatCompProps } from '@ui-kit/components/NumberFormat';
 import { ComponentProps } from 'react';

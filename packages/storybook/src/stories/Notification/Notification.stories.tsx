@@ -7,7 +7,7 @@ import { Button } from '@ui-kit/components/Button';
 import {
   addNotification,
   Notification,
-  NotificationsProvider
+  NotificationsProvider,
 } from '@ui-kit/components/Notification';
 import { Typography } from '@ui-kit/components/Typography';
 import { s } from '@ui-kit/constants';
@@ -18,7 +18,7 @@ import React from 'react';
 const meta: Meta<typeof Notification> = {
   title: 'Локальные компоненты/Notification',
   component: Notification,
-  tags: ['!autodocs']
+  tags: ['!autodocs'],
 };
 
 export default meta;
@@ -59,9 +59,9 @@ function VariantsExampleRender() {
                   </>
                 ),
                 layout: 'horizontal',
-                width: '459px'
+                width: '459px',
               },
-              null
+              null,
             )
           }
         >
@@ -97,9 +97,9 @@ function VariantsExampleRender() {
                   </>
                 ),
                 layout: 'horizontal',
-                width: '459px'
+                width: '459px',
               },
-              null
+              null,
             )
           }
         >
@@ -135,9 +135,9 @@ function VariantsExampleRender() {
                   </>
                 ),
                 layout: 'horizontal',
-                width: '459px'
+                width: '459px',
               },
-              null
+              null,
             )
           }
         >
@@ -173,9 +173,9 @@ function VariantsExampleRender() {
                   </>
                 ),
                 layout: 'horizontal',
-                width: '459px'
+                width: '459px',
               },
-              null
+              null,
             )
           }
         >
@@ -196,7 +196,7 @@ import React from 'react';
 
 ${getFuncAsString(
   'packages/storybook/src/stories/Notification/Notification.stories.tsx',
-  'VariantsExampleRender'
+  'VariantsExampleRender',
 )}
 `;
 
@@ -207,7 +207,7 @@ export const Variants: Story = {
   name: 'Примеры разных view',
   ...storySourceDoc({
     previewSource: 'shown',
-    code: variantsPreCode
+    code: variantsPreCode,
   }),
-  render: () => <VariantsExampleRender />
+  render: () => <VariantsExampleRender />,
 };

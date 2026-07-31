@@ -10,7 +10,7 @@ import { TTabsContainerOptions } from '../TableTabs.types';
  */
 export const useComputedMaxWidth = (
   maxWidth: TTabsContainerOptions['maxWidth'],
-  parentContainerWidth: number | null
+  parentContainerWidth: number | null,
 ) =>
   useMemo(() => {
     // Если maxWidth не задан - используем ширину родительского контейнера

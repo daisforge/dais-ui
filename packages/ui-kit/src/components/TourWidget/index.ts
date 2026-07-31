@@ -13,5 +13,5 @@ export type {
   TourWidgetFooterProps,
   TourWidgetHeaderProps,
   TourWidgetOrientation,
-  TourWidgetProps
+  TourWidgetProps,
 } from './types';

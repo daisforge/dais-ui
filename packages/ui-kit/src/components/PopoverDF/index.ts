@@ -7,5 +7,5 @@ export type {
   PopoverDFFooterProps,
   PopoverDFHeaderProps,
   PopoverDFProps,
-  PopoverDFResizableConfig
+  PopoverDFResizableConfig,
 } from './types';

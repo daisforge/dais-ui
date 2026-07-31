@@ -94,7 +94,7 @@ export type TabPanelProps<T extends TabId = TabId> = {
 } & BoxProps;
 
 export function isCustomTab<T extends TabId>(
-  tab: TCustomOrNotTab<T>
+  tab: TCustomOrNotTab<T>,
 ): tab is TCustomTabItem<T> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return (tab as any)?.custom !== undefined;

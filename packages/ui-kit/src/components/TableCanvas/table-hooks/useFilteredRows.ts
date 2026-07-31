@@ -7,7 +7,7 @@ export const useFilteredRows = <
   FilterStateType extends ObjectForExtending,
   RowIdType extends string | number,
   RowType extends ObjectForExtending,
-  SummaryRowType = unknown
+  SummaryRowType = unknown,
 >({
   columnConfig,
   tableConfig,
@@ -16,7 +16,7 @@ export const useFilteredRows = <
   paginationActiveInConfig,
   searchingActiveInConfig,
   searchQuery,
-  isManualSearching
+  isManualSearching,
 }: {
   rows: RowType[];
   columnConfig: readonly ColumnConfig<RowType, SummaryRowType>[];
@@ -70,7 +70,7 @@ export const useFilteredRows = <
 
         return true;
       }),
-    [clearedValues, filters, filtersInfo, tableConfigFilteringBoolean]
+    [clearedValues, filters, filtersInfo, tableConfigFilteringBoolean],
   );
 
   const filteredRows = useMemo(() => {
@@ -97,7 +97,7 @@ export const useFilteredRows = <
           // Иначе пытаемся получить значение через стандартный доступ (например, row[col.key])
           const rowValue: string = row[col.key]?.toString().toLowerCase() || '';
           return rowValue.includes(searchValue);
-        })
+        }),
       );
     }
 
@@ -109,10 +109,10 @@ export const useFilteredRows = <
     // 3. Фильтруем по колоночным фильтрам (если они есть)
     const columnsWithFiltering = columnConfig.filter(
       (
-        c
+        c,
       ): c is typeof c & {
         filtering: NonNullable<typeof c.filtering>;
-      } => !!c.filtering
+      } => !!c.filtering,
     );
 
     if (!columnsWithFiltering.length) {
@@ -166,12 +166,12 @@ export const useFilteredRows = <
           if (col.filtering.filter.typeOfValue === 'single') {
             return col.filtering.filter.filteringType(
               filterValue,
-              rowValue.toString()
+              rowValue.toString(),
             );
           }
           return col.filtering.filter.filteringType(
             filterValue as unknown as string[],
-            rowValue.toString()
+            rowValue.toString(),
           );
         }
 
@@ -192,11 +192,11 @@ export const useFilteredRows = <
     tableConfigFilteringBoolean,
     filters,
     manualFiltering,
-    columnConfig
+    columnConfig,
   ]);
 
   const clearedFiltersValue = getClearedFilters<FilterStateType>(
-    tableConfig?.filtering
+    tableConfig?.filtering,
   );
 
   return {
@@ -205,6 +205,6 @@ export const useFilteredRows = <
     filteredRows,
     filters,
     setFilters,
-    clearedFiltersValue
+    clearedFiltersValue,
   };
 };

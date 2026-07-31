@@ -13,9 +13,9 @@ const meta: Meta = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      page: DocStoryTemplate
-    }
-  }
+      page: DocStoryTemplate,
+    },
+  },
 };
 
 export default meta;
@@ -45,7 +45,7 @@ const CustomFallback = (
       gridColumn: '1/-1',
       display: 'flex',
       justifyContent: 'center',
-      alignItems: 'center'
+      alignItems: 'center',
     }}
   >
     Нет данных
@@ -61,7 +61,7 @@ type Story = StoryObj<
 export const NoRowsCustomFallback: Story = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   name: 'Кастомизация контента "Нет данных"',
   args: {
@@ -73,31 +73,31 @@ export const NoRowsCustomFallback: Story = {
           <div
             style={{
               display: 'flex',
-              justifyContent: 'space-between'
+              justifyContent: 'space-between',
             }}
           >
             id
             <IconSber size="xs" color="inherit" />
           </div>
-        )
+        ),
       },
       {
         key: 'task',
-        name: 'Title'
+        name: 'Title',
       },
       {
         key: 'priority',
-        name: 'Priority'
+        name: 'Priority',
       },
       {
         key: 'issueType',
-        name: 'Issue Type'
+        name: 'Issue Type',
       },
       {
         key: 'complete',
-        name: '% Complete'
-      }
-    ]
+        name: '% Complete',
+      },
+    ],
   },
   render: ({ columnConfig, noRowsFallback }) => {
     const [rows] = useState<Row[]>([]);
@@ -107,11 +107,11 @@ export const NoRowsCustomFallback: Story = {
         tableConfig={{
           noRowsFallback,
 
-          containerStyle: { height: 500 }
+          containerStyle: { height: 500 },
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };

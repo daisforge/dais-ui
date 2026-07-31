@@ -6,7 +6,7 @@ import {
   ObjectForExtending,
   Prettify,
   SelectingRowConfig,
-  TableConfig
+  TableConfig,
 } from '../types';
 import { flatten, getCustomOrDefaultSelectingRules } from './handlers';
 
@@ -18,11 +18,11 @@ export function useSelectRow<
   FilterStateType extends ObjectForExtending,
   RowIdType extends string | number,
   RowType extends ObjectForExtending,
-  SummaryRowType = unknown
+  SummaryRowType = unknown,
 >({
   tableConfig = {},
 
-  rows
+  rows,
 }: {
   rows: RowType[];
 
@@ -39,7 +39,7 @@ export function useSelectRow<
   const externalSelectingRowsIsActive = tableConfig.selecting?.showState;
   const innerSelectingRowsIsActive = useState(
     // TODO не готова иконка
-    !!tableConfig.selecting && (tableConfig.selecting?.showDefault ?? true)
+    !!tableConfig.selecting && (tableConfig.selecting?.showDefault ?? true),
   );
 
   const [selectingRowsIsActive, setSelectingRowsIsActive] =
@@ -60,7 +60,7 @@ export function useSelectRow<
       selectingRules: getCustomOrDefaultSelectingRules(selectingRules),
       selectingRowsIsActive,
 
-      ...rest
+      ...rest,
     } as SelectingRowConfig<RowType, RowIdType> & {
       selectingRowsIsActive: boolean;
     };
@@ -80,14 +80,14 @@ export function useSelectRow<
       rows,
       // eslint-disable-next-line @typescript-eslint/dot-notation
       (r) => r?.[SUBROWS_KEY],
-      (r) => r
+      (r) => r,
     );
 
     const mp = new Map(flattenedRowsArray.map((r) => [rowKeyGetter(r), r]));
 
     return {
       flattenedRows: flattenedRowsArray,
-      flattenedRowsMap: mp
+      flattenedRowsMap: mp,
     };
 
     // исключен - tableConfig.selecting?.rowKeyGetter - не должен меняться по смыслу
@@ -109,15 +109,15 @@ export function useSelectRow<
       domMetadata: {
         className: tableConfig.selecting?.controlBlock?.domMetadata?.className,
         dataAttributes:
-          tableConfig.selecting?.controlBlock?.domMetadata?.dataAttributes
-      }
+          tableConfig.selecting?.controlBlock?.domMetadata?.dataAttributes,
+      },
     },
     sidebar: {
       domMetadata: {
         className: tableConfig.selecting?.sidebar?.domMetadata?.className,
         dataAttributes:
-          tableConfig.selecting?.sidebar?.domMetadata?.dataAttributes
-      }
-    }
+          tableConfig.selecting?.sidebar?.domMetadata?.dataAttributes,
+      },
+    },
   };
 }

@@ -1,7 +1,7 @@
 import { IconButton } from '@ui-kit/components/IconButton';
 import {
   IconDisclosureDownOutline,
-  IconDisclosureRightOutline
+  IconDisclosureRightOutline,
 } from '@ui-kit/icons';
 import React from 'react';
 import styled from 'styled-components';
@@ -27,7 +27,7 @@ export function CellExpandFormatter({
   tabIndex,
   expanded,
   onCellExpand,
-  className
+  className,
 }: CellExpanderFormatterProps) {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLSpanElement>) => {
     if (e.key === ' ' || e.key === 'Enter') {

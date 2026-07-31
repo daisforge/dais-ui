@@ -4,13 +4,13 @@ import { CSSObject, FlattenSimpleInterpolation } from 'styled-components';
 import { TableDropdown } from '../../components/TableDropdown/TableDropdown';
 import {
   StyledButtonWithDropdown,
-  StyledLinkButtonWithDropdown
+  StyledLinkButtonWithDropdown,
 } from './styled';
 import {
   ButtonProps,
   LinkButtonProps,
   LinkButtonView,
-  MassActionButtonProps
+  MassActionButtonProps,
 } from './types';
 
 /**
@@ -31,7 +31,7 @@ const getLinkButtonView = (view: string | undefined): LinkButtonView => {
 // Дефолтные пропсы для MassActionButton (аналогично controlButtonDefaultProps)
 const massActionButtonDefaultProps = {
   size: 's',
-  view: 'linkDefault'
+  view: 'linkDefault',
 } as const;
 
 export const MassActionButton = ({

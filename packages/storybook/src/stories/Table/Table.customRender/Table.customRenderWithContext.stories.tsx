@@ -10,7 +10,7 @@ import {
   SIZE,
   Table,
   useHeaderContext,
-  useRowContext
+  useRowContext,
 } from '@ui-kit/components/Table';
 import { BodyS } from '@ui-kit/components/Typography';
 import React, {
@@ -18,7 +18,7 @@ import React, {
   FC,
   PropsWithChildren,
   useMemo,
-  useState
+  useState,
 } from 'react';
 
 const meta: Meta = {
@@ -26,9 +26,9 @@ const meta: Meta = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      page: DocStoryTemplate
-    }
-  }
+      page: DocStoryTemplate,
+    },
+  },
 };
 
 export default meta;
@@ -67,7 +67,7 @@ const CellContainer: FC<PropsWithChildren> = ({ children }) => (
       justifyContent: 'center',
       alignItems: 'center',
       width: '100%',
-      height: '100%'
+      height: '100%',
     }}
   >
     {children}
@@ -79,7 +79,7 @@ const HeaderComponent = () => {
   const sizeMap: Record<SIZE, SIZE> = {
     big: 'small',
     small: 'medium',
-    medium: 'big'
+    medium: 'big',
   };
   return (
     <Box
@@ -88,7 +88,7 @@ const HeaderComponent = () => {
         justifyContent: 'center',
         alignItems: 'center',
         width: '100%',
-        height: '100%'
+        height: '100%',
       }}
     >
       <Button
@@ -129,7 +129,7 @@ type ICheckboxCtx = { checkbox: [boolean, (value: boolean) => void] };
 export const CellContext: Story = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   name: 'Работа с контекстом в кастомных ячейках',
   args: {
@@ -138,23 +138,23 @@ export const CellContext: Story = {
       {
         key: 'id',
         name: <HeaderComponent />,
-        renderCell: ({ tabIndex }) => <CheckboxCell tabIndex={tabIndex} />
+        renderCell: ({ tabIndex }) => <CheckboxCell tabIndex={tabIndex} />,
       },
       {
         key: 'task',
         width: 200,
         name: 'Title',
-        renderCell: () => <TextCell />
+        renderCell: () => <TextCell />,
       },
       {
         key: 'priority',
-        name: 'Priority'
+        name: 'Priority',
       },
       {
         key: 'issueType',
-        name: 'Issue Type'
-      }
-    ]
+        name: 'Issue Type',
+      },
+    ],
   },
   argTypes: {},
   render: ({ rows, columnConfig }) => {
@@ -162,20 +162,20 @@ export const CellContext: Story = {
 
     const rowContextValue = useMemo<ICheckboxCtx>(
       () => ({
-        checkbox: [checked, setChecked]
+        checkbox: [checked, setChecked],
       }),
-      [checked, setChecked]
+      [checked, setChecked],
     );
 
     return (
       <Table
         tableConfig={{
-          containerStyle: { height: 700 }
+          containerStyle: { height: 700 },
         }}
         columnConfig={columnConfig}
         rows={rows}
         rowContextValue={rowContextValue}
       />
     );
-  }
+  },
 };

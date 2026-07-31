@@ -8,7 +8,7 @@ export const useMassActionsCollapse = ({
   calculatePosition,
   setTranslateX,
   shouldApplySidebarOffsetRef,
-  wasAutoCollapsedRef
+  wasAutoCollapsedRef,
 }: {
   isCollapsed: boolean;
   setIsCollapsed: React.Dispatch<React.SetStateAction<boolean>>;
@@ -55,10 +55,10 @@ export const useMassActionsCollapse = ({
     setTranslateX,
     shouldApplySidebarOffsetRef,
     wasAutoCollapsedRef,
-    setIsCollapsed
+    setIsCollapsed,
   ]);
 
   return {
-    handleToggleCollapse
+    handleToggleCollapse,
   };
 };

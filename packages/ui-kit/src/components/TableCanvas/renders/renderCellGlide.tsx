@@ -2,14 +2,14 @@ import {
   IconChevronDown,
   IconChevronRight,
   IconDisclosureDownOutline,
-  IconDisclosureRightOutline
+  IconDisclosureRightOutline,
 } from '@ui-kit/icons';
 
 import { Canvas } from '../../TableGlide';
 import {
   SKELETON_CELLS_KEY,
   SKELETON_ROW_KEY,
-  SkeletonCells
+  SkeletonCells,
 } from '../feature-infinity-scroll';
 import type { KeyText } from '../feature-key-text/types';
 import { ExpandDetailButton } from '../feature-row-detail/ExpandDetailButton';
@@ -28,7 +28,7 @@ import {
   isCanvasContent,
   isCanvasEl,
   isCanvasString,
-  isGlideGridCellObj
+  isGlideGridCellObj,
 } from '../TableGlideInstance';
 import { ContentFormat } from '../TableGlideInstance/type';
 import { ColumnConfig, ObjectForExtending, TableConfig } from '../types';
@@ -36,7 +36,7 @@ import { FormattedContent } from './formatCell';
 import { ROW_ICON_BUTTON_CONFIG } from './rowIconConfig';
 import {
   DEFAULT_CELL_PADDING_INLINE,
-  getPaddingLeftFinal
+  getPaddingLeftFinal,
 } from './styleConstants';
 import { withSelectIcon } from './withSelectIcon';
 
@@ -45,26 +45,26 @@ const TREE_BUTTON_CONFIG = {
     ...ROW_ICON_BUTTON_CONFIG.big,
     gap: 8,
     ExpandedIcon: IconDisclosureDownOutline,
-    CollapsedIcon: IconDisclosureRightOutline
+    CollapsedIcon: IconDisclosureRightOutline,
   },
   medium: {
     ...ROW_ICON_BUTTON_CONFIG.medium,
     gap: 2,
     ExpandedIcon: IconChevronDown,
-    CollapsedIcon: IconChevronRight
+    CollapsedIcon: IconChevronRight,
   },
   small: {
     ...ROW_ICON_BUTTON_CONFIG.small,
     gap: 0,
     ExpandedIcon: IconChevronDown,
-    CollapsedIcon: IconChevronRight
-  }
+    CollapsedIcon: IconChevronRight,
+  },
 };
 
 const getTreeButton = (
   expanded: boolean,
   toggleExpand: () => void,
-  rowSize: 'big' | 'medium' | 'small' = 'big'
+  rowSize: 'big' | 'medium' | 'small' = 'big',
 ) => {
   const { overrideSquareSize, overrideIconSize, ExpandedIcon, CollapsedIcon } =
     TREE_BUTTON_CONFIG[rowSize];
@@ -78,14 +78,14 @@ const getTreeButton = (
         selection: 'keep',
         cellClick: 'stop',
         editor: 'never',
-        contextMenu: 'keep-selection'
+        contextMenu: 'keep-selection',
       }}
       // buttonSize="xs"
       overrideSquareSize={overrideSquareSize}
       overrideIconSize={overrideIconSize}
       onClick={toggleExpand}
       style={{
-        flexShrink: 0
+        flexShrink: 0,
       }}
     />
   );
@@ -99,24 +99,24 @@ type CellPaddingInline =
     };
 
 const resolveCellPaddingInline = (
-  paddingInline: CellPaddingInline = DEFAULT_CELL_PADDING_INLINE
+  paddingInline: CellPaddingInline = DEFAULT_CELL_PADDING_INLINE,
 ) => {
   if (typeof paddingInline === 'number') {
     return {
       left: paddingInline,
-      right: paddingInline
+      right: paddingInline,
     };
   }
 
   return {
     left: paddingInline.left ?? DEFAULT_CELL_PADDING_INLINE,
-    right: paddingInline.right ?? DEFAULT_CELL_PADDING_INLINE
+    right: paddingInline.right ?? DEFAULT_CELL_PADDING_INLINE,
   };
 };
 
 const renderCenteredContainerWithPadding = (
   children: CanvasContent,
-  paddingInline: CellPaddingInline = DEFAULT_CELL_PADDING_INLINE
+  paddingInline: CellPaddingInline = DEFAULT_CELL_PADDING_INLINE,
 ) => {
   const padding = resolveCellPaddingInline(paddingInline);
 
@@ -133,7 +133,7 @@ const renderCenteredContainerWithPadding = (
 
 const renderCellInWrapper = (
   children: CanvasContent,
-  paddingInline: CellPaddingInline = DEFAULT_CELL_PADDING_INLINE
+  paddingInline: CellPaddingInline = DEFAULT_CELL_PADDING_INLINE,
 ) => {
   // return createTextCellGlide('LOADING CELL1');
   if (isCanvasString(children)) {
@@ -150,7 +150,7 @@ export const RenderCellGlide = <
   FilterStateType extends ObjectForExtending,
   RowIdType extends string | number,
   RowType extends ObjectForExtending,
-  SummaryRowType = unknown
+  SummaryRowType = unknown,
 >({
   renderCellProps,
   column,
@@ -159,7 +159,7 @@ export const RenderCellGlide = <
   // indexZeroColKey,
   tableConfigRowDetailPanel,
   editModeEnabled,
-  keyText
+  keyText,
 }: {
   renderCellProps: CellInfoGlideInstance<RowType, SummaryRowType>;
   column: ColumnConfig<RowType, SummaryRowType>;
@@ -186,13 +186,13 @@ export const RenderCellGlide = <
   const {
     row,
     ctxs: { expandedRowsCtx },
-    theme
+    theme,
   } = renderCellProps;
   const {
     expandedRowsIds,
     setExpandedRowsIds,
     handleExpandRowDetail,
-    expandButtonColumnKey
+    expandButtonColumnKey,
   } = expandedRowsCtx;
 
   const isSelectColumn =
@@ -203,11 +203,11 @@ export const RenderCellGlide = <
   const selectCellVisual = {
     rowSize,
     cellPaddingInline,
-    overlayRightOffset: 0
+    overlayRightOffset: 0,
   };
   const selectCellVisualInPaddedContainer = {
     ...selectCellVisual,
-    overlayRightOffset: cellPaddingInline
+    overlayRightOffset: cellPaddingInline,
   };
   // Select-trigger должен лежать внутри hit-bounds своего canvas-parent.
   // Поэтому правый padding wrapper-а отдаем overlay, а не выводим chevron за parent.
@@ -271,9 +271,9 @@ export const RenderCellGlide = <
       withSelectIcon(defaultLvl0RenderElement, {
         isSelect: isSelectColumn,
         editModeEnabled,
-        visual: getSelectAwareVisual(isSelectColumn)
+        visual: getSelectAwareVisual(isSelectColumn),
       }),
-      getSelectAwareWrapperPadding(isSelectColumn)
+      getSelectAwareWrapperPadding(isSelectColumn),
     );
   }
   const cellIsHaveDetailExpandButton = () =>
@@ -285,9 +285,9 @@ export const RenderCellGlide = <
         withSelectIcon(defaultLvl0RenderElement, {
           isSelect: isSelectColumn,
           editModeEnabled,
-          visual: getSelectAwareVisual(isSelectColumn)
+          visual: getSelectAwareVisual(isSelectColumn),
         }),
-        getSelectAwareWrapperPadding(isSelectColumn)
+        getSelectAwareWrapperPadding(isSelectColumn),
       );
     }
     return renderCenteredContainerWithPadding(
@@ -296,11 +296,11 @@ export const RenderCellGlide = <
           isSelect: isSelectColumn,
           editModeEnabled,
           textInCanvasText: 'textInCanvasText',
-          visual: selectCellVisualInPaddedContainer
+          visual: selectCellVisualInPaddedContainer,
         })}
         {ExpandDetailButton({ row, handleExpandRowDetail })}
       </>,
-      effectivePadding
+      effectivePadding,
     );
   }
   // ----------------------------------------------------------------------------------------------------------------------------
@@ -330,9 +330,9 @@ export const RenderCellGlide = <
         withSelectIcon(defaultLvl0RenderElement, {
           isSelect: isSelectColumn,
           editModeEnabled,
-          visual: getSelectAwareVisual(isSelectColumn)
+          visual: getSelectAwareVisual(isSelectColumn),
         }),
-        getSelectAwareWrapperPadding(isSelectColumn)
+        getSelectAwareWrapperPadding(isSelectColumn),
       );
     }
 
@@ -349,9 +349,9 @@ export const RenderCellGlide = <
         withSelectIcon(defaultLvl0RenderElement, {
           isSelect: isSelectColumn,
           editModeEnabled,
-          visual: getSelectAwareVisual(isSelectColumn)
+          visual: getSelectAwareVisual(isSelectColumn),
         }),
-        getSelectAwareWrapperPadding(isSelectColumn)
+        getSelectAwareWrapperPadding(isSelectColumn),
       );
     }
     if (!columnHasArrow && hasExpandDetailButton) {
@@ -361,11 +361,11 @@ export const RenderCellGlide = <
             isSelect: isSelectColumn,
             editModeEnabled,
             textInCanvasText: 'textInCanvasText',
-            visual: selectCellVisualInPaddedContainer
+            visual: selectCellVisualInPaddedContainer,
           })}
           {ExpandDetailButton({ row, handleExpandRowDetail })}
         </>,
-        effectivePadding
+        effectivePadding,
       );
     }
 
@@ -383,8 +383,8 @@ export const RenderCellGlide = <
             effectivePadding,
             lvl,
             hasChildrenAndArrow,
-            false
-          )
+            false,
+          ),
         }}
       >
         {hasChildrenAndArrow &&
@@ -393,7 +393,7 @@ export const RenderCellGlide = <
           isSelect: isSelectColumn,
           editModeEnabled,
           textInCanvasText: 'textInCanvasText',
-          visual: selectCellVisual
+          visual: selectCellVisual,
         })}
         {hasExpandDetailButton &&
           ExpandDetailButton({ row, handleExpandRowDetail })}
@@ -465,9 +465,9 @@ export const RenderCellGlide = <
       withSelectIcon(defaultLvlNot0RenderElement, {
         isSelect: isSubRowSelectColumn,
         editModeEnabled,
-        visual: getSelectAwareVisual(isSubRowSelectColumn)
+        visual: getSelectAwareVisual(isSubRowSelectColumn),
       }),
-      getSelectAwareWrapperPadding(isSubRowSelectColumn)
+      getSelectAwareWrapperPadding(isSubRowSelectColumn),
     );
   }
 
@@ -478,11 +478,11 @@ export const RenderCellGlide = <
           isSelect: isSubRowSelectColumn,
           editModeEnabled,
           textInCanvasText: 'textInCanvasText',
-          visual: selectCellVisualInPaddedContainer
+          visual: selectCellVisualInPaddedContainer,
         })}
         {ExpandDetailButton({ row, handleExpandRowDetail })}
       </>,
-      effectivePadding
+      effectivePadding,
     );
   }
   const treeGapSub = hasChildrenAndArrow
@@ -499,8 +499,8 @@ export const RenderCellGlide = <
           effectivePadding,
           lvl,
           hasChildrenAndArrow,
-          false
-        )
+          false,
+        ),
       }}
     >
       {hasChildrenAndArrow &&
@@ -509,7 +509,7 @@ export const RenderCellGlide = <
         isSelect: isSubRowSelectColumn,
         editModeEnabled,
         textInCanvasText: 'textInCanvasText',
-        visual: selectCellVisual
+        visual: selectCellVisual,
       })}
       {columnHasExpandButton &&
         ExpandDetailButton({ row, handleExpandRowDetail })}

@@ -64,13 +64,13 @@ export function getCharWidth(char: string, font: string): number {
 export function getTextWidthByCache(
   text: string,
   font: string,
-  letterSpacingPx = 0
+  letterSpacingPx = 0,
 ): number {
   if (!text) return 0;
 
   const totalCharsWidth = Array.from(text).reduce(
     (sum, char) => sum + getCharWidth(char, font),
-    0
+    0,
   );
 
   // Подсчет поправки на letter-spacing
@@ -84,7 +84,7 @@ export function getTextWidthByCache(
 function measureTextWidth(
   text: string,
   font: string,
-  letterSpacingPx = 0
+  letterSpacingPx = 0,
 ): number {
   const span = document.createElement('span');
   span.style.cssText = `
@@ -108,7 +108,7 @@ function measureTextWidth(
 export function getTextWidth(
   text: string,
   font: string,
-  letterSpacingPx = 0
+  letterSpacingPx = 0,
 ): number {
   if (!text) return 0;
 

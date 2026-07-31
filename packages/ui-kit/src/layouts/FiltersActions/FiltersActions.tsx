@@ -19,7 +19,7 @@ import {
   StyledButtonsBlock,
   StyledCard,
   StyledContainer,
-  StyledMainBlock
+  StyledMainBlock,
 } from './styled';
 
 /**
@@ -80,7 +80,7 @@ export const FiltersActions = ({
   mainBlockElementsWidth,
   containerProps,
   mainBlockProps: { $css, ref: externalRef, ...restMainBlockProps } = {},
-  onResize
+  onResize,
 }: FiltersActionsProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const mainBlockRef = useRef<HTMLDivElement>(null);
@@ -100,7 +100,7 @@ export const FiltersActions = ({
       containerWidth: 0,
       mainBlockWidth: 0,
       buttonsBlockWidth: 0,
-      availableMainBlockWidth: 0
+      availableMainBlockWidth: 0,
     };
 
     // Функция для вычисления и отправки размеров

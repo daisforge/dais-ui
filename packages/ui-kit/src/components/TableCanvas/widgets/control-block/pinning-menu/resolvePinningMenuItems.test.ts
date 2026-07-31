@@ -9,9 +9,9 @@ const nativeItems = (): PinningMenuItem[] => [
     value: 'reset-pinning',
     label: 'Открепить всё',
     order: 100,
-    dividerAfter: true
+    dividerAfter: true,
   },
-  { value: 'pin-columns', label: 'Закрепить столбцы', order: 200 }
+  { value: 'pin-columns', label: 'Закрепить столбцы', order: 200 },
 ];
 
 const values = (items: PinningMenuItem[]) => items.map((i) => i.value);
@@ -20,7 +20,7 @@ describe('resolvePinningMenuItems', () => {
   it('без продуктовых пунктов → нативные, отсортированные по order', () => {
     expect(values(resolvePinningMenuItems(nativeItems()))).toEqual([
       'reset-pinning',
-      'pin-columns'
+      'pin-columns',
     ]);
   });
 
@@ -30,8 +30,8 @@ describe('resolvePinningMenuItems', () => {
       {
         value: 'reset-pinning',
         label: 'Сбросить всё',
-        onClick: productOnClick
-      }
+        onClick: productOnClick,
+      },
     ]);
     const reset = result.find((i) => i.value === 'reset-pinning');
     expect(reset?.label).toBe('Сбросить всё');
@@ -42,7 +42,7 @@ describe('resolvePinningMenuItems', () => {
 
   it('отсутствующие у продукта поля не затирают нативные', () => {
     const result = resolvePinningMenuItems(nativeItems(), [
-      { value: 'reset-pinning', label: 'Сбросить всё' }
+      { value: 'reset-pinning', label: 'Сбросить всё' },
     ]);
     const reset = result.find((i) => i.value === 'reset-pinning');
     // order/dividerAfter продукт не передал → остаются нативные
@@ -52,25 +52,25 @@ describe('resolvePinningMenuItems', () => {
 
   it('новые продуктовые пункты добавляются и встают по order', () => {
     const result = resolvePinningMenuItems(nativeItems(), [
-      { value: 'pin-range', label: 'Закрепить область', order: 150 }
+      { value: 'pin-range', label: 'Закрепить область', order: 150 },
     ]);
     expect(values(result)).toEqual([
       'reset-pinning', // 100
       'pin-range', // 150
-      'pin-columns' // 200
+      'pin-columns', // 200
     ]);
   });
 
   it('пункты без order уходят в конец, сохраняя исходный порядок (стабильность)', () => {
     const result = resolvePinningMenuItems(nativeItems(), [
       { value: 'extra-a', label: 'A' },
-      { value: 'extra-b', label: 'B' }
+      { value: 'extra-b', label: 'B' },
     ]);
     expect(values(result)).toEqual([
       'reset-pinning',
       'pin-columns',
       'extra-a',
-      'extra-b'
+      'extra-b',
     ]);
   });
 
@@ -78,7 +78,7 @@ describe('resolvePinningMenuItems', () => {
     const native = nativeItems();
     const nativeSnapshot = JSON.stringify(native);
     const product: PinningMenuItem[] = [
-      { value: 'reset-pinning', label: 'Сбросить всё' }
+      { value: 'reset-pinning', label: 'Сбросить всё' },
     ];
     resolvePinningMenuItems(native, product);
     expect(JSON.stringify(native)).toBe(nativeSnapshot);

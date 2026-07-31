@@ -14,9 +14,9 @@ const meta: Meta = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      page: DocStoryTemplate
-    }
-  }
+      page: DocStoryTemplate,
+    },
+  },
 };
 
 export default meta;
@@ -43,7 +43,7 @@ import { IconAddOutline, IconBoxOutline, IconSber } from '@daisforge/ui/icons';
 export const SimpleTable: StoryObj = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   name: 'Simple Table',
   render: () => {
@@ -57,32 +57,32 @@ export const SimpleTable: StoryObj = {
             <div
               style={{
                 display: 'flex',
-                justifyContent: 'space-between'
+                justifyContent: 'space-between',
               }}
             >
               id
               <IconSber size="xs" color="inherit" />
             </div>
-          )
+          ),
         },
         {
           key: 'task',
-          name: 'Title'
+          name: 'Title',
         },
         {
           key: 'priority',
-          name: 'Priority'
+          name: 'Priority',
         },
         {
           key: 'issueType',
-          name: 'Issue Type'
+          name: 'Issue Type',
         },
         {
           key: 'complete',
-          name: '% Complete'
-        }
+          name: '% Complete',
+        },
       ],
-      []
+      [],
     );
 
     return (
@@ -92,7 +92,7 @@ export const SimpleTable: StoryObj = {
         rows={rows}
       />
     );
-  }
+  },
 };
 
 function renderCoordinates(props: RenderCellProps<number, any>) {
@@ -102,7 +102,7 @@ function renderCoordinates(props: RenderCellProps<number, any>) {
 export const MillionCells: StoryObj = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   name: 'MillionCells',
   render: () => {
@@ -110,7 +110,7 @@ export const MillionCells: StoryObj = {
     const [columnsCount, setColumnsCount] = useState(30);
     const rows: any[] = useMemo(
       () => Array.from({ length: rowsCount }, (_, i) => i),
-      [rowsCount]
+      [rowsCount],
     );
 
     const columns = useMemo(() => {
@@ -124,7 +124,7 @@ export const MillionCells: StoryObj = {
 
           width: 150,
           resizable: true,
-          renderCell: renderCoordinates
+          renderCell: renderCoordinates,
         });
       }
       return columns;
@@ -154,12 +154,12 @@ export const MillionCells: StoryObj = {
         <Table
           tableConfig={{
             containerStyle: { height: '80dvh' },
-            fullScreenEnabled: true
+            fullScreenEnabled: true,
           }}
           columnConfig={columns}
           rows={rows}
         />
       </>
     );
-  }
+  },
 };

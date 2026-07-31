@@ -10,12 +10,12 @@ import { CSSObject, CSSProperties } from 'styled-components';
 import type { TableDropdownConfigProps } from '../components/TableDropdown/types';
 import {
   DEFAULT_MAX_COLUMN_WIDTH,
-  DEFAULT_MIN_COLUMN_WIDTH
+  DEFAULT_MIN_COLUMN_WIDTH,
 } from '../constants';
 import { useContextMenu, useTableCollapse } from '../contexts';
 import {
   CollapseBlockAbove,
-  CollapseTableWrapper
+  CollapseTableWrapper,
 } from '../feature-collapse-table';
 import { ContextMenu } from '../feature-context-menu';
 import { TableLoadingOverlay } from '../feature-loading-overlay/TableLoadingOverlay';
@@ -29,7 +29,7 @@ import {
   type DataEditorRef,
   type HighlightActiveType,
   TableGlideInstance,
-  type TableGlideInstanceProps
+  type TableGlideInstanceProps,
 } from '../TableGlideInstance';
 import type {
   ActiveViewModsType,
@@ -38,14 +38,14 @@ import type {
   ObjectForExtending,
   TableConfigTooltip,
   View,
-  ViewMods
+  ViewMods,
 } from '../types';
 import { MassActionButtonProps, MassActions } from './mass-actions';
 
 function activeViewIs<T extends 'cards' | 'rows'>(
   checkType: T,
   viewState: 'cards' | 'rows',
-  view: View
+  view: View,
 ): view is ViewMods[T] {
   return checkType === viewState;
 }
@@ -54,7 +54,7 @@ export const TableOrCardsUI = <
   RowType extends ObjectForExtending,
   SummRowType,
   // FIXME
-  _K extends Key = Key
+  _K extends Key = Key,
 >({
   containerProps: {
     viewProp: { activeView, view },
@@ -79,7 +79,7 @@ export const TableOrCardsUI = <
     collapseButtonAboveRightSlot,
     $borderTopRounded,
     isHaveSomeFeatureInSidebar,
-    controlBlockSize
+    controlBlockSize,
   },
 
   dataGridProps: {
@@ -96,7 +96,7 @@ export const TableOrCardsUI = <
   containerStyle,
   massActionPanel,
   tooltip,
-  fullScreened
+  fullScreened,
 }: {
   containerProps: {
     viewProp: {
@@ -169,7 +169,7 @@ export const TableOrCardsUI = <
     openHeaderContextMenu,
     enableHeaderContextMenu,
     enableCellContextMenu,
-    openCellContextMenu
+    openCellContextMenu,
   } = useContextMenu();
   const isCardViewActive = activeViewIs('cards', activeView, view);
   const isRowsViewActive = !isCardViewActive;
@@ -182,9 +182,9 @@ export const TableOrCardsUI = <
     () => ({
       maxHeight: 0,
       opacity: 0,
-      overflow: 'hidden'
+      overflow: 'hidden',
     }),
-    []
+    [],
   );
 
   const isNeedRenderContextMenu =
@@ -236,7 +236,7 @@ export const TableOrCardsUI = <
             <Box
               className={`${cls.table} ${cls.tableCardsViewContainer}`}
               style={{
-                ...(isCollapsed && collapsedStyles)
+                ...(isCollapsed && collapsedStyles),
               }}
             >
               {view.typeCardsRender}
@@ -247,7 +247,7 @@ export const TableOrCardsUI = <
               className={cls.tableSidebarLayout}
               style={{
                 ...$tableAndSidebarContainerHeightStyle,
-                ...(isCollapsed && collapsedStyles)
+                ...(isCollapsed && collapsedStyles),
               }}
             >
               <TableGlideInstance<RowType, SummRowType>
@@ -317,15 +317,15 @@ export const TableOrCardsUI = <
                 CellReadOnlyEditor={CellReadOnlyEditor}
                 containerProps={{
                   className: cls.tableSidebarTableContainer,
-                  ref: refTableContainer
+                  ref: refTableContainer,
                 }}
                 renderOverlayFeatures={({
                   containerElement,
-                  renderInContainer
+                  renderInContainer,
                 }) => (
                   <>
                     {renderInContainer(
-                      <PopoverInTable containerEl={containerElement} />
+                      <PopoverInTable containerEl={containerElement} />,
                     )}
                     {renderInContainer(
                       <CanvasTooltipOverlay
@@ -333,23 +333,23 @@ export const TableOrCardsUI = <
                         customEnabled={tooltipCustomEnabled}
                         mouseEnterDelay={tooltip?.mouseEnterDelay}
                         mouseLeaveDelay={tooltip?.mouseLeaveDelay}
-                      />
+                      />,
                     )}
                     {isNeedRenderContextMenu &&
                       renderInContainer(
-                        <ContextMenu containerEl={containerElement} />
+                        <ContextMenu containerEl={containerElement} />,
                       )}
                   </>
                 )}
                 {...(enableHeaderContextMenu && {
                   onHeaderContextMenu: (colIndex, event, tableInfo) => {
                     openHeaderContextMenu?.(colIndex, event, tableInfo);
-                  }
+                  },
                 })}
                 {...(enableCellContextMenu && {
                   onCellContextMenu: (cell, event, tableInfo) => {
                     openCellContextMenu?.(cell, event, tableInfo);
-                  }
+                  },
                 })}
               />
               {sidebarBlock}

@@ -17,11 +17,11 @@ const meta: Meta<ModalDFProps> = {
   title: 'Локальные компоненты/ModalDF',
   parameters: {
     docs: {
-      layout: 'fullscreen'
-    }
+      layout: 'fullscreen',
+    },
   },
   tags: ['!autodocs'],
-  component: ModalDF
+  component: ModalDF,
 };
 
 export default meta;
@@ -99,7 +99,7 @@ function ModalDFWithLeftBlockExample() {
         onClose={() => setOpened(false)}
         fullScreen
         contentContainerProps={{
-          css: { '&&': { minWidth: '1000px' } }
+          css: { '&&': { minWidth: '1000px' } },
         }}
       >
         <ModalDF.Left>
@@ -169,7 +169,7 @@ function ModalDFWithBigContentsExample() {
         onClose={() => setOpened(false)}
         fullScreen
         contentContainerProps={{
-          css: { '&&': { minWidth: '1000px' } }
+          css: { '&&': { minWidth: '1000px' } },
         }}
       >
         <ModalDF.Left>
@@ -267,7 +267,7 @@ import React, { useState } from 'react';
 
 ${getFuncAsString(
   'packages/storybook/src/stories/ModalDF/ModalDF.stories.tsx',
-  'ModalDFWithOneContentExample'
+  'ModalDFWithOneContentExample',
 )}
 `;
 
@@ -285,7 +285,7 @@ import React, { useState } from 'react';
 
 ${getFuncAsString(
   'packages/storybook/src/stories/ModalDF/ModalDF.stories.tsx',
-  'ModalDFWithLeftBlockExample'
+  'ModalDFWithLeftBlockExample',
 )}
 `;
 
@@ -303,7 +303,7 @@ import React, { useState } from 'react';
 
 ${getFuncAsString(
   'packages/storybook/src/stories/ModalDF/ModalDF.stories.tsx',
-  'ModalDFWithBigContentsExample'
+  'ModalDFWithBigContentsExample',
 )}
 `;
 
@@ -315,7 +315,7 @@ import React, { useState } from 'react';
 
 ${getFuncAsString(
   'packages/storybook/src/stories/ModalDF/ModalDF.stories.tsx',
-  'ModalDFEmptyExample'
+  'ModalDFEmptyExample',
 )}
 `;
 
@@ -326,9 +326,9 @@ export const ModalDFWithOneContent: Story = {
   name: 'ModalDF',
   ...storySourceDoc({
     previewSource: 'shown',
-    code: modalDFWithOneContentPreCode
+    code: modalDFWithOneContentPreCode,
   }),
-  render: ModalDFWithOneContentExample
+  render: ModalDFWithOneContentExample,
 };
 
 /**
@@ -338,9 +338,9 @@ export const ModalDFWithLeftBlock: Story = {
   name: 'ModalDF с доп. блоком слева',
   ...storySourceDoc({
     previewSource: 'shown',
-    code: modalDFWithLeftBlockPreCode
+    code: modalDFWithLeftBlockPreCode,
   }),
-  render: ModalDFWithLeftBlockExample
+  render: ModalDFWithLeftBlockExample,
 };
 
 /**
@@ -350,9 +350,9 @@ export const ModalDFWithBigContents: Story = {
   name: 'ModalDF с большим количеством контента',
   ...storySourceDoc({
     previewSource: 'shown',
-    code: modalDFWithBigContentsPreCode
+    code: modalDFWithBigContentsPreCode,
   }),
-  render: ModalDFWithBigContentsExample
+  render: ModalDFWithBigContentsExample,
 };
 
 /**
@@ -362,7 +362,7 @@ export const ModalDFEmpty: Story = {
   name: 'ModalDF без шапки и футера',
   ...storySourceDoc({
     previewSource: 'shown',
-    code: modalDFEmptyPreCode
+    code: modalDFEmptyPreCode,
   }),
-  render: ModalDFEmptyExample
+  render: ModalDFEmptyExample,
 };

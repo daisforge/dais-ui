@@ -5,7 +5,7 @@ import {
   LayoutGridContainer,
   LayoutGridItem,
   LayoutHeader,
-  LayoutRoot
+  LayoutRoot,
 } from './Layout.styles';
 import { LayoutProps } from './Layout.types';
 import { mergeLayoutClasses } from './utils/mergeLayoutClasses';

@@ -11,7 +11,7 @@ const Switch = forwardRef<HTMLInputElement, Omit<BaseSwitchProps, 'ref'>>(
       size={hasBackground ? 'm' : size}
       {...rest}
     />
-  )
+  ),
 );
 
 export { Switch };

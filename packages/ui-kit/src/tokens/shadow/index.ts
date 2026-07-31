@@ -17,5 +17,5 @@ export {
   shadowUpSoftL,
   shadowUpHardS,
   shadowUpHardM,
-  shadowUpHardL
+  shadowUpHardL,
 } from '@salutejs/sdds-themes/tokens/sdds_finai';

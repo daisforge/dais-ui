@@ -13,7 +13,7 @@ export function writeCellValue<R extends ObjectForExtending>(
   row: R,
   column: TransferColumnConfig,
   lvl: number,
-  value: string | number
+  value: string | number,
 ): R {
   if (lvl > 0) {
     const subKey = resolveSubRowKey(column, lvl);

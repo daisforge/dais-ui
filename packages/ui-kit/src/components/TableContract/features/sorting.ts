@@ -8,14 +8,14 @@ export const SORT_PARAM_ORDER = 'sortOrder';
 
 export function sortFromParam(
   sortUrlParam: string | null,
-  sortOrder: string | null
+  sortOrder: string | null,
 ): SortColumn | null {
   if (!sortUrlParam) {
     return null;
   }
   return {
     columnKey: sortUrlParam,
-    direction: sortOrder ? (sortOrder.toUpperCase() as 'ASC') : 'ASC'
+    direction: sortOrder ? (sortOrder.toUpperCase() as 'ASC') : 'ASC',
   };
 }
 
@@ -39,7 +39,7 @@ export function sortFromParam(
 export function useSorting({
   params,
   dispatchParams,
-  tableConfigBackendSorting
+  tableConfigBackendSorting,
 }: {
   params: URLSearchParams;
   dispatchParams: React.Dispatch<UrlAction>;
@@ -67,7 +67,7 @@ export function useSorting({
             newV = v;
           }
           dispatchParams([SORT_PARAM, newV]);
-        }
+        },
       ];
     }, [dispatchParams, sortBackendParam, sortBackendParamOder]);
 
@@ -82,6 +82,6 @@ export function useSorting({
   }
 
   return {
-    sorting: { state: sortStateAndSetter, manualSorting: isSortOnBackend }
+    sorting: { state: sortStateAndSetter, manualSorting: isSortOnBackend },
   };
 }

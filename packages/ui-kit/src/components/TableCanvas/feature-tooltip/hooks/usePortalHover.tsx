@@ -3,11 +3,11 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 import type {
   CanvasPortalHoverDetail,
-  CanvasPortalSource
+  CanvasPortalSource,
 } from '../../TableGlideInstance';
 import {
   subscribeToCanvasPortalHover,
-  subscribeToPortalHoverLock
+  subscribeToPortalHoverLock,
 } from '../../TableGlideInstance';
 
 export interface PortalHoverState<T = unknown> {
@@ -52,12 +52,12 @@ function createInitialState<T>(): PortalHoverState<T> {
     width: 0,
     height: 0,
     nodeId: null,
-    data: null
+    data: null,
   };
 }
 
 export function usePortalHover<T = unknown>(
-  options: UsePortalHoverOptions<T>
+  options: UsePortalHoverOptions<T>,
 ): PortalHoverState<T> {
   const {
     source,
@@ -66,7 +66,7 @@ export function usePortalHover<T = unknown>(
     containerRef,
     defaultMouseEnterDelay = 0,
     defaultMouseLeaveDelay = 0,
-    getDelays
+    getDelays,
   } = options;
 
   const [state, setState] = useState<PortalHoverState<T>>(createInitialState);
@@ -217,7 +217,7 @@ export function usePortalHover<T = unknown>(
             width: detail.width,
             height: detail.height,
             nodeId: detail.nodeId ?? null,
-            data
+            data,
           });
         };
 
@@ -230,7 +230,7 @@ export function usePortalHover<T = unknown>(
           showNow();
         }
       },
-      eventTarget
+      eventTarget,
     );
 
     const unsubscribeLock = subscribeToPortalHoverLock((locked: boolean) => {
@@ -255,7 +255,7 @@ export function usePortalHover<T = unknown>(
     getDelays,
     clearAllTimers,
     hideImmediately,
-    startLeaveAnimation
+    startLeaveAnimation,
   ]);
 
   return state;

@@ -4,7 +4,7 @@ import React, {
   useContext,
   useEffect,
   useRef,
-  useState
+  useState,
 } from 'react';
 
 export function createStore<Store>(initialState: Store) {
@@ -32,7 +32,7 @@ export function createStore<Store>(initialState: Store) {
     return {
       get,
       set,
-      subscribe
+      subscribe,
     };
   }
 
@@ -49,7 +49,7 @@ export function createStore<Store>(initialState: Store) {
   }
 
   function useStore<SelectorOutput>(
-    selector: (store: Store) => SelectorOutput
+    selector: (store: Store) => SelectorOutput,
   ): [SelectorOutput, (value: Partial<Store>) => void] {
     const store = useContext(StoreContext);
     if (!store) {
@@ -99,7 +99,7 @@ export function createStore<Store>(initialState: Store) {
   }
 
   function useSelector<SelectorOutput>(
-    selector: (store: Store) => SelectorOutput
+    selector: (store: Store) => SelectorOutput,
   ): SelectorOutput {
     const store = useContext(StoreContext);
     if (!store) {
@@ -121,6 +121,6 @@ export function createStore<Store>(initialState: Store) {
     Provider,
     useStore,
     useSelector,
-    useDispatch
+    useDispatch,
   };
 }

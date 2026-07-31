@@ -5,7 +5,7 @@ import {
   forwardRef,
   ReactElement,
   useEffect,
-  useRef
+  useRef,
 } from 'react';
 import styled from 'styled-components';
 
@@ -16,7 +16,7 @@ import { CellEditorTextArea } from './CellEditorTextArea';
 import type {
   CellEditorComboboxProps,
   CustomCellStyleProps,
-  EmptyObj
+  EmptyObj,
 } from './types';
 
 /*
@@ -44,7 +44,7 @@ const StyledCombobox = styled(Combobox)<CustomCellStyleProps>`
     }
   }
 ` as <T extends ComboboxItemOption>(
-  p: Omit<CellEditorComboboxProps<T>, 'autoFocusType' | 'paddingInline'>
+  p: Omit<CellEditorComboboxProps<T>, 'autoFocusType' | 'paddingInline'>,
 ) => ReactElement;
 
 export const CellEditorCombobox = forwardRef(
@@ -62,7 +62,7 @@ export const CellEditorCombobox = forwardRef(
       paddingInline,
       ...restProps
     }: CellEditorComboboxProps<T>,
-    refExternal: ForwardedRef<HTMLInputElement>
+    refExternal: ForwardedRef<HTMLInputElement>,
   ) => {
     const ref = useRef<HTMLInputElement | null>(null);
     const { rowSize } = useRowContext();
@@ -123,14 +123,14 @@ export const CellEditorCombobox = forwardRef(
         {...(restProps as unknown as EmptyObj)}
       />
     );
-  }
+  },
 ) as <T extends ComboboxItemOption>(
-  p: CellEditorComboboxProps<T>
+  p: CellEditorComboboxProps<T>,
 ) => ReactElement;
 
 export function CellEditorComboboxInternal<
   TRow extends ObjectForExtending,
-  TSummaryRow
+  TSummaryRow,
 >({
   row,
   column,
@@ -139,7 +139,7 @@ export function CellEditorComboboxInternal<
   onRowChange,
   disableLeftOffset,
   readOnly,
-  theme
+  theme,
 }: EditingCellInfo<TRow, TSummaryRow> & {
   disableLeftOffset: boolean | undefined;
 }) {
@@ -176,8 +176,8 @@ export function CellEditorComboboxInternal<
   const items = [
     ...options.map((el) => ({
       value: el.value.toString(),
-      label: el.text.toString()
-    }))
+      label: el.text.toString(),
+    })),
   ];
 
   return (

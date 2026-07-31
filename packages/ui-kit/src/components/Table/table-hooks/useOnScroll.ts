@@ -7,7 +7,7 @@ export const useOnScroll = ({
   onScrollExternal,
   infinityScrollHandler,
   isHaveActiveInfinityScroll,
-  onScrollInternal
+  onScrollInternal,
 }: {
   onScrollExternal: Maybe<(event: React.UIEvent<HTMLDivElement>) => void>;
   infinityScrollHandler: (event: React.UIEvent<HTMLDivElement>) => void;
@@ -29,7 +29,7 @@ export const useOnScroll = ({
     infinityScrollHandler,
     isHaveActiveInfinityScroll,
     onScrollExternal,
-    onScrollInternal
+    onScrollInternal,
   ]);
   return { onScroll };
 };

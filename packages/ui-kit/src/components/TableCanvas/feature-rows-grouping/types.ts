@@ -1,6 +1,6 @@
 import {
   CanvasContent,
-  CellInfoGlideInstance
+  CellInfoGlideInstance,
 } from '../TableGlideInstance/type';
 import { DomMetadata, DropdownItemOption } from '../types/additional.type';
 import { ObjectForExtending } from '../types/utils.type';
@@ -18,7 +18,7 @@ type LocalColumnInstance = Record<'key' | 'name' | 'width' | string, unknown>;
 export type RowsGrouping<
   RowType extends ObjectForExtending,
   SummaryRowType = unknown,
-  ColumnConfig extends LocalColumnInstance = LocalColumnInstance
+  ColumnConfig extends LocalColumnInstance = LocalColumnInstance,
 > = {
   /**
    * массив группированных колонок и его setter
@@ -43,7 +43,7 @@ export type RowsGrouping<
       props: CellInfoGlideInstance<RowType, SummaryRowType> & {
         parentGroupKey: string | undefined;
         groupByArr: string[];
-      }
+      },
     ) => CanvasContent;
     rowsGrouping?: Pick<
       ColumnRowsGrouping<RowType, ColumnConfig>,
@@ -121,7 +121,7 @@ export type RowsGrouping<
    * @returns измененная группировка или строка без группировки — строка, которые заменит groupRow
    */
   groupRowReplaceTo?: (
-    groupRow: GroupRow<RowType>
+    groupRow: GroupRow<RowType>,
   ) => GroupRow<RowType> | RowType;
   /**
    * Метки для автоматизированного тестирования и аналитики
@@ -132,7 +132,7 @@ export type RowsGrouping<
 
 export type RenderGroupCellProps<
   RowType extends ObjectForExtending,
-  ColumnConfig extends LocalColumnInstance = LocalColumnInstance
+  ColumnConfig extends LocalColumnInstance = LocalColumnInstance,
 > = {
   column: ColumnConfig;
   tabIndex: number;
@@ -142,7 +142,7 @@ export type RenderGroupCellProps<
 
 export type ColumnRowsGrouping<
   RowType extends ObjectForExtending,
-  ColumnConfig extends LocalColumnInstance
+  ColumnConfig extends LocalColumnInstance,
 > = {
   /**
    * @default true - при наличии ColumnConfig.rowsGrouping
@@ -153,6 +153,6 @@ export type ColumnRowsGrouping<
    */
   columnGroupLabel?: string;
   renderGroupCell?: (
-    props: RenderGroupCellProps<RowType, ColumnConfig>
+    props: RenderGroupCellProps<RowType, ColumnConfig>,
   ) => CanvasContent;
 };

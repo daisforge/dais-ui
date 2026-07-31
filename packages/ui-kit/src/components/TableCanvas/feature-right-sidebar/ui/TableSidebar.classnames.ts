@@ -5,5 +5,5 @@ export const tableSidebarClassNames = {
   tableSidebarInner: 'rdg-table-sidebar-layout__sidebar-inner',
   tableSidebarContent: 'rdg-table-sidebar-layout__sidebar-content',
   tableSidebarToggleButton: 'rdg-table-sidebar-layout__toggle-button',
-  tableSidebarCloseButton: 'rdg-table-sidebar-layout__close-button'
+  tableSidebarCloseButton: 'rdg-table-sidebar-layout__close-button',
 } as const;

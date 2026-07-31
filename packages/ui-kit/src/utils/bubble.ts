@@ -27,14 +27,14 @@ export function bubble<T = unknown>(
     bubbles?: boolean;
     cancelable?: boolean;
     composed?: boolean;
-  } = {}
+  } = {},
 ): boolean {
   const eventParams: CustomEventInit<T> = {
     bubbles: true,
     cancelable: true,
     composed: true,
     ...params,
-    detail
+    detail,
   };
 
   const event = new CustomEvent(eventName, eventParams);

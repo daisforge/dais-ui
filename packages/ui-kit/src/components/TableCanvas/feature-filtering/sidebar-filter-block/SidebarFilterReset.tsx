@@ -3,7 +3,7 @@ import React, { FC } from 'react';
 
 import {
   SidebarFilterConfirmOrReset,
-  SidebarFilterConfirmOrResetRightSide
+  SidebarFilterConfirmOrResetRightSide,
 } from './styled';
 
 interface confirmOrResetProps {
@@ -18,7 +18,7 @@ export const ConfirmOrReset: FC<confirmOrResetProps> = ({
   apply,
   reset,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  isDirty
+  isDirty,
 }) => (
   <SidebarFilterConfirmOrReset>
     <Button size="xs" view="clear" onClick={() => clear()}>

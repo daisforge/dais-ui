@@ -24,8 +24,8 @@ export const useChangedFormContext: TUseChangedFormContext = (options) => {
       validate,
       min,
       max,
-      pattern
+      pattern,
     },
-    remOptions
+    remOptions,
   };
 };

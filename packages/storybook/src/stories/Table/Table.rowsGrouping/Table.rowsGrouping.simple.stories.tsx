@@ -20,9 +20,9 @@ const meta: Meta = {
           <TableRowsGroupingSimpleMdx />
           <Stories />
         </>
-      )
-    }
-  }
+      ),
+    },
+  },
 };
 
 export default meta;
@@ -49,7 +49,7 @@ import { IconAddOutline, IconBoxOutline, IconSber } from '@daisforge/ui/icons';
 export const SimpleTable: StoryObj = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   name: 'Группировка строк - Группировка данных - Агрегация данных',
 
@@ -64,32 +64,32 @@ export const SimpleTable: StoryObj = {
           key: 'athlete',
           name: 'Athlete',
           rowsGrouping: {
-            columnGroupLabel: 'Athlete'
-          }
+            columnGroupLabel: 'Athlete',
+          },
         },
         {
           key: 'sport',
           name: 'Sport',
 
           rowsGrouping: {
-            columnGroupLabel: 'Sport'
-          }
+            columnGroupLabel: 'Sport',
+          },
         },
         {
           key: 'country',
           name: 'Country',
 
           rowsGrouping: {
-            columnGroupLabel: 'Country'
-          }
+            columnGroupLabel: 'Country',
+          },
         },
         {
           key: 'year',
           name: 'Year',
 
           rowsGrouping: {
-            columnGroupLabel: 'Year'
-          }
+            columnGroupLabel: 'Year',
+          },
         },
 
         {
@@ -100,11 +100,11 @@ export const SimpleTable: StoryObj = {
             columnGroupLabel: 'Gold',
             renderGroupCell({ childRows }) {
               return childRows.reduce((prev, { gold }) => prev + gold, 0);
-            }
-          }
-        }
+            },
+          },
+        },
       ],
-      []
+      [],
     );
 
     return (
@@ -112,7 +112,7 @@ export const SimpleTable: StoryObj = {
         tableConfig={{
           containerStyle: { height: 700 },
           columnsControl: {
-            enable: true
+            enable: true,
           },
           rowsGrouping: {
             rowKeyGetter: (r) => r.id,
@@ -120,8 +120,8 @@ export const SimpleTable: StoryObj = {
 
             groupButton: {
               defaultCustomItems: [
-                { value: 'gold', label: 'Gold as custom option' }
-              ]
+                { value: 'gold', label: 'Gold as custom option' },
+              ],
             },
             groupedColumnProps: {
               maxWidth: 500,
@@ -139,9 +139,9 @@ export const SimpleTable: StoryObj = {
                     return 'Russia';
                   }
                   return props.groupKey;
-                }
-              }
-            }
+                },
+              },
+            },
             // groupRowReplaceTo(groupRow) {
             //   if (
             //     groupRow.groupKey === 'Russian Federation' &&
@@ -151,11 +151,11 @@ export const SimpleTable: StoryObj = {
             //   }
             //   return groupRow;
             // },
-          }
+          },
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };

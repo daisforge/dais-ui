@@ -9,7 +9,7 @@ type PopupDFContextValue = {
 
 export const PopupDFContext = createContext<PopupDFContextValue>({
   onClose: null,
-  size: 'm'
+  size: 'm',
 });
 
 export const usePopupDFContext = () => useContext(PopupDFContext);

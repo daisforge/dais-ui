@@ -20,7 +20,7 @@ export type AllRowsMapEntry<RowType> = {
  */
 
 export type RowMarkersConfig<
-  RowType extends ObjectForExtending = ObjectForExtending
+  RowType extends ObjectForExtending = ObjectForExtending,
 > = {
   /**
    * Стартовый индекс нумерации (для дефолтной логики без getRowMarker).

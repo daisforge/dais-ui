@@ -17,7 +17,7 @@ function TourView({ children }: React.PropsWithChildren) {
 
 function MediaPlaceholder({
   width,
-  height
+  height,
 }: {
   width: number;
   height: number;
@@ -32,7 +32,7 @@ function MediaPlaceholder({
         backgroundImage:
           'linear-gradient(45deg, #eeeeee 25%, transparent 25%), linear-gradient(-45deg, #eeeeee 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #eeeeee 75%), linear-gradient(-45deg, transparent 75%, #eeeeee 75%)',
         backgroundPosition: '0 0, 0 10px, 10px -10px, -10px 0',
-        backgroundSize: '20px 20px'
+        backgroundSize: '20px 20px',
       }}
     />
   );
@@ -50,7 +50,7 @@ function PulseTarget() {
         justifyContent: 'center',
         color: 'var(--text-primary)',
         background: 'var(--surface-solid-card)',
-        borderRadius: '12px'
+        borderRadius: '12px',
       }}
     >
       <Box
@@ -63,7 +63,7 @@ function PulseTarget() {
       <Box
         as="span"
         $css={{
-          position: 'relative'
+          position: 'relative',
         }}
       >
         Target
@@ -90,7 +90,7 @@ function VerticalExample() {
           <Box
             $css={{
               display: 'flex',
-              flexDirection: 'column'
+              flexDirection: 'column',
             }}
           >
             <TourWidget.Bullets
@@ -102,7 +102,7 @@ function VerticalExample() {
                 display: 'flex',
                 flexDirection: 'row',
                 gap: '4px',
-                marginTop: '20px'
+                marginTop: '20px',
               }}
             >
               <Button
@@ -111,7 +111,7 @@ function VerticalExample() {
                 view="secondary"
                 onClick={() =>
                   setActiveStepIndex((current) =>
-                    clampStep(current - 1, tourStepsCount)
+                    clampStep(current - 1, tourStepsCount),
                   )
                 }
               >
@@ -123,7 +123,7 @@ function VerticalExample() {
                 view="white"
                 onClick={() =>
                   setActiveStepIndex((current) =>
-                    clampStep(current + 1, tourStepsCount)
+                    clampStep(current + 1, tourStepsCount),
                   )
                 }
               >
@@ -166,7 +166,7 @@ function HorizontalExample() {
               alignItems: 'center',
               justifyContent: 'space-between',
               gap: '32px',
-              width: '100%'
+              width: '100%',
             }}
           >
             <Box
@@ -174,7 +174,7 @@ function HorizontalExample() {
                 display: 'flex',
                 alignItems: 'center',
                 gap: '32px',
-                minWidth: 0
+                minWidth: 0,
               }}
             >
               <LinkButton
@@ -190,7 +190,7 @@ function HorizontalExample() {
               $css={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: '4px'
+                gap: '4px',
               }}
             >
               <Button
@@ -198,7 +198,7 @@ function HorizontalExample() {
                 view="secondary"
                 onClick={() =>
                   setActiveStepIndex((current) =>
-                    clampStep(current - 1, tourStepsCount)
+                    clampStep(current - 1, tourStepsCount),
                   )
                 }
               >
@@ -209,7 +209,7 @@ function HorizontalExample() {
                 view="white"
                 onClick={() =>
                   setActiveStepIndex((current) =>
-                    clampStep(current + 1, tourStepsCount)
+                    clampStep(current + 1, tourStepsCount),
                   )
                 }
               >
@@ -234,7 +234,7 @@ function TourWithPulseExample() {
           display: 'grid',
           gridTemplateColumns: '220px minmax(0, max-content)',
           gap: '14px',
-          alignItems: 'center'
+          alignItems: 'center',
         }}
       >
         <Box
@@ -242,7 +242,7 @@ function TourWithPulseExample() {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            minHeight: '300px'
+            minHeight: '300px',
           }}
         >
           <PulseTarget />
@@ -263,7 +263,7 @@ function TourWithPulseExample() {
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 gap: '32px',
-                width: '100%'
+                width: '100%',
               }}
             >
               <Box
@@ -271,7 +271,7 @@ function TourWithPulseExample() {
                   display: 'flex',
                   alignItems: 'center',
                   gap: '32px',
-                  minWidth: 0
+                  minWidth: 0,
                 }}
               >
                 <LinkButton
@@ -287,7 +287,7 @@ function TourWithPulseExample() {
                 $css={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '4px'
+                  gap: '4px',
                 }}
               >
                 <Button
@@ -295,7 +295,7 @@ function TourWithPulseExample() {
                   view="secondary"
                   onClick={() =>
                     setActiveStepIndex((current) =>
-                      clampStep(current - 1, tourStepsCount)
+                      clampStep(current - 1, tourStepsCount),
                     )
                   }
                 >
@@ -306,7 +306,7 @@ function TourWithPulseExample() {
                   view="white"
                   onClick={() =>
                     setActiveStepIndex((current) =>
-                      clampStep(current + 1, tourStepsCount)
+                      clampStep(current + 1, tourStepsCount),
                     )
                   }
                 >
@@ -332,7 +332,7 @@ function TourWithoutContentExample() {
           display: 'grid',
           gridTemplateColumns: '220px minmax(0, max-content)',
           gap: '14px',
-          alignItems: 'center'
+          alignItems: 'center',
         }}
       >
         <Box
@@ -340,7 +340,7 @@ function TourWithoutContentExample() {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            minHeight: '300px'
+            minHeight: '300px',
           }}
         >
           <PulseTarget />
@@ -358,7 +358,7 @@ function TourWithoutContentExample() {
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 gap: '32px',
-                width: '100%'
+                width: '100%',
               }}
             >
               <Box
@@ -366,7 +366,7 @@ function TourWithoutContentExample() {
                   display: 'flex',
                   alignItems: 'center',
                   gap: '32px',
-                  minWidth: 0
+                  minWidth: 0,
                 }}
               >
                 <LinkButton
@@ -381,7 +381,7 @@ function TourWithoutContentExample() {
                 $css={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '4px'
+                  gap: '4px',
                 }}
               >
                 <Button
@@ -389,7 +389,7 @@ function TourWithoutContentExample() {
                   view="secondary"
                   onClick={() =>
                     setActiveStepIndex((current) =>
-                      clampStep(current - 1, tourStepsCount)
+                      clampStep(current - 1, tourStepsCount),
                     )
                   }
                 >
@@ -400,7 +400,7 @@ function TourWithoutContentExample() {
                   view="white"
                   onClick={() =>
                     setActiveStepIndex((current) =>
-                      clampStep(current + 1, tourStepsCount)
+                      clampStep(current + 1, tourStepsCount),
                     )
                   }
                 >
@@ -423,7 +423,7 @@ function PulseExample() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          minHeight: '300px'
+          minHeight: '300px',
         }}
       >
         <PulseTarget />
@@ -441,5 +441,5 @@ export {
   TourView,
   TourWithoutContentExample,
   TourWithPulseExample,
-  VerticalExample
+  VerticalExample,
 };

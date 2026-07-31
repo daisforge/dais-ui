@@ -3,7 +3,7 @@ import {
   createRows,
   createRowsTree,
   type Row,
-  type TreeRow
+  type TreeRow,
 } from '@df-storybook/data/tableData';
 import DocStoryTemplate from '@df-storybook/templates/DocStoryTemplate.mdx';
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
@@ -16,9 +16,9 @@ const meta: Meta = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      page: DocStoryTemplate
-    }
-  }
+      page: DocStoryTemplate,
+    },
+  },
 };
 
 export default meta;
@@ -27,7 +27,7 @@ type Story = StoryObj;
 
 const TREE_SUB_ROWS_CONFIG = {
   getSubRows: (row: TreeRow) => row?.subRows,
-  rowKeyGetter: (row: TreeRow) => row.id
+  rowKeyGetter: (row: TreeRow) => row.id,
 };
 
 function useFlatColumns(): readonly ColumnConfig<Row>[] {
@@ -36,9 +36,9 @@ function useFlatColumns(): readonly ColumnConfig<Row>[] {
       { key: 'id', name: 'ID' },
       { key: 'task', name: 'Task' },
       { key: 'priority', name: 'Priority' },
-      { key: 'complete', name: '% Complete' }
+      { key: 'complete', name: '% Complete' },
     ],
-    []
+    [],
   );
 }
 
@@ -61,12 +61,12 @@ function useTreeColumns(): readonly ColumnConfig<TreeRow>[] {
                 return 'block';
             }
           },
-          isColumnWithArrow: true
-        }
+          isColumnWithArrow: true,
+        },
       },
-      { key: 'blockActivity', name: 'Активность блока' }
+      { key: 'blockActivity', name: 'Активность блока' },
     ],
-    []
+    [],
   );
 }
 
@@ -125,14 +125,14 @@ export const SimpleRowMarkers: Story = {
         tableConfig={{
           containerStyle: { height: '60vh' },
           rowMarkers: {
-            startIndex: 1
-          }
+            startIndex: 1,
+          },
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };
 
 export const CustomStartIndex: Story = {
@@ -144,9 +144,9 @@ export const CustomStartIndex: Story = {
       () => [
         { key: 'id', name: 'ID' },
         { key: 'task', name: 'Task' },
-        { key: 'priority', name: 'Priority' }
+        { key: 'priority', name: 'Priority' },
       ],
-      []
+      [],
     );
 
     return (
@@ -155,14 +155,14 @@ export const CustomStartIndex: Story = {
           containerStyle: { height: '60vh' },
           rowMarkers: {
             startIndex: 100,
-            width: 60
-          }
+            width: 60,
+          },
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };
 
 export const WithSubRows: Story = {
@@ -177,15 +177,15 @@ export const WithSubRows: Story = {
         tableConfig={{
           containerStyle: { height: '60vh' },
           rowMarkers: {
-            startIndex: 1
+            startIndex: 1,
           },
-          subRows: TREE_SUB_ROWS_CONFIG
+          subRows: TREE_SUB_ROWS_CONFIG,
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };
 
 export const CustomGetRowMarkerRootDash: Story = {
@@ -206,15 +206,15 @@ export const CustomGetRowMarkerRootDash: Story = {
                 return '—';
               }
               return flatIndex + 1;
-            }
+            },
           },
-          subRows: TREE_SUB_ROWS_CONFIG
+          subRows: TREE_SUB_ROWS_CONFIG,
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };
 
 export const StableIndexWithCollapsed: Story = {
@@ -230,15 +230,15 @@ export const StableIndexWithCollapsed: Story = {
           containerStyle: { height: '60vh' },
           rowMarkers: {
             startIndex: 1,
-            getRowMarker: ({ flatIndex }) => flatIndex + 1
+            getRowMarker: ({ flatIndex }) => flatIndex + 1,
           },
-          subRows: TREE_SUB_ROWS_CONFIG
+          subRows: TREE_SUB_ROWS_CONFIG,
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };
 
 export const UnstableFlatIndex: Story = {
@@ -254,15 +254,15 @@ export const UnstableFlatIndex: Story = {
           containerStyle: { height: '60vh' },
           rowMarkers: {
             startIndex: 1,
-            getRowMarker: ({ rowIndex }) => rowIndex + 1
+            getRowMarker: ({ rowIndex }) => rowIndex + 1,
           },
-          subRows: TREE_SUB_ROWS_CONFIG
+          subRows: TREE_SUB_ROWS_CONFIG,
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };
 
 export const WithCheckboxes: Story = {
@@ -272,7 +272,7 @@ export const WithCheckboxes: Story = {
     const [rows] = useState(createRows);
     const columnConfig = useFlatColumns();
     const selectingRowStateAndSetter = useState(
-      (): ReadonlySet<string | number> => new Set()
+      (): ReadonlySet<string | number> => new Set(),
     );
 
     return (
@@ -280,18 +280,18 @@ export const WithCheckboxes: Story = {
         tableConfig={{
           containerStyle: { height: '60vh' },
           rowMarkers: {
-            startIndex: 1
+            startIndex: 1,
           },
           selecting: {
             state: selectingRowStateAndSetter,
-            rowKeyGetter: (r) => r.id
-          }
+            rowKeyGetter: (r) => r.id,
+          },
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };
 
 const RICH_TREE_ROWS: TreeRow[] = [
@@ -329,7 +329,7 @@ const RICH_TREE_ROWS: TreeRow[] = [
             q1: 10,
             q2: 20,
             q3: 30,
-            q4: 40
+            q4: 40,
           },
           {
             id: 'p2',
@@ -341,9 +341,9 @@ const RICH_TREE_ROWS: TreeRow[] = [
             q1: 5,
             q2: 15,
             q3: 25,
-            q4: 35
-          }
-        ]
+            q4: 35,
+          },
+        ],
       },
       {
         id: 't2',
@@ -367,11 +367,11 @@ const RICH_TREE_ROWS: TreeRow[] = [
             q1: 1,
             q2: 2,
             q3: 3,
-            q4: 4
-          }
-        ]
-      }
-    ]
+            q4: 4,
+          },
+        ],
+      },
+    ],
   } as TreeRow,
   {
     id: 'b2',
@@ -407,7 +407,7 @@ const RICH_TREE_ROWS: TreeRow[] = [
             q1: 100,
             q2: 200,
             q3: 300,
-            q4: 400
+            q4: 400,
           },
           {
             id: 'p5',
@@ -419,9 +419,9 @@ const RICH_TREE_ROWS: TreeRow[] = [
             q1: 50,
             q2: 60,
             q3: 70,
-            q4: 80
-          }
-        ]
+            q4: 80,
+          },
+        ],
       },
       {
         id: 't4',
@@ -445,7 +445,7 @@ const RICH_TREE_ROWS: TreeRow[] = [
             q1: 11,
             q2: 22,
             q3: 33,
-            q4: 44
+            q4: 44,
           },
           {
             id: 'p7',
@@ -457,11 +457,11 @@ const RICH_TREE_ROWS: TreeRow[] = [
             q1: 12,
             q2: 23,
             q3: 34,
-            q4: 45
-          }
-        ]
-      }
-    ]
+            q4: 45,
+          },
+        ],
+      },
+    ],
   } as TreeRow,
   {
     id: 'b3',
@@ -473,8 +473,8 @@ const RICH_TREE_ROWS: TreeRow[] = [
     q1: 0,
     q2: 0,
     q3: 0,
-    q4: 0
-  } as TreeRow
+    q4: 0,
+  } as TreeRow,
 ];
 
 export const TwoLevelNumbering: Story = {
@@ -492,15 +492,15 @@ export const TwoLevelNumbering: Story = {
             startIndex: 1,
             size: 'm',
             getRowMarker: ({ siblingPath }) =>
-              siblingPath.map((i) => i + 1).join('.')
+              siblingPath.map((i) => i + 1).join('.'),
           },
-          subRows: TREE_SUB_ROWS_CONFIG
+          subRows: TREE_SUB_ROWS_CONFIG,
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };
 
 export const HierarchicalNumberingRich: Story = {
@@ -518,13 +518,13 @@ export const HierarchicalNumberingRich: Story = {
             startIndex: 1,
             size: 'm',
             getRowMarker: ({ siblingPath }) =>
-              siblingPath.map((i) => i + 1).join('.')
+              siblingPath.map((i) => i + 1).join('.'),
           },
-          subRows: TREE_SUB_ROWS_CONFIG
+          subRows: TREE_SUB_ROWS_CONFIG,
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };

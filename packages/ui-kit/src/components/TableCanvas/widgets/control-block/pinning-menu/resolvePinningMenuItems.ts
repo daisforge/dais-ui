@@ -22,7 +22,7 @@ const DEFAULT_ORDER = Number.MAX_SAFE_INTEGER;
  */
 export function resolvePinningMenuItems(
   nativeItems: PinningMenuItem[],
-  productItems: PinningMenuItem[] = []
+  productItems: PinningMenuItem[] = [],
 ): PinningMenuItem[] {
   const merged: PinningMenuItem[] = nativeItems.map((item) => ({ ...item }));
   const indexByValue = new Map<string, number>();
@@ -44,7 +44,7 @@ export function resolvePinningMenuItems(
             (overridden[key] as PinningMenuItem[keyof PinningMenuItem]) =
               productItem[key];
           }
-        }
+        },
       );
       merged[existingIndex] = overridden;
       return;

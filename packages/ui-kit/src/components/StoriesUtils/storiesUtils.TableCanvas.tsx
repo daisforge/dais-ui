@@ -2,14 +2,14 @@ import {
   ColumnConfig,
   ObjectForExtending,
   Prettify,
-  TableConfig
+  TableConfig,
 } from '../TableCanvas/types';
 
 export function StoryTableCanvasConfigComp<
   FilterStateType extends ObjectForExtending,
   RowIdType extends string | number,
   RowType extends ObjectForExtending,
-  SummaryRowType = unknown
+  SummaryRowType = unknown,
 >(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   p: TableConfig<
@@ -18,7 +18,7 @@ export function StoryTableCanvasConfigComp<
     RowIdType,
     FilterStateType
     // SubRowType
-  >
+  >,
 ) {
   return null;
 }
@@ -36,10 +36,10 @@ export type StoryColumnConfigTableCanvasCompType = Prettify<
 
 export function StoryColumnConfigTableCanvasComp<
   RowType extends ObjectForExtending,
-  SummaryRowType = unknown
+  SummaryRowType = unknown,
 >(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  p: Prettify<ColumnConfig<RowType, SummaryRowType>>
+  p: Prettify<ColumnConfig<RowType, SummaryRowType>>,
 ) {
   return null;
 }

@@ -22,7 +22,7 @@ export const useMassActionsVisibility = (selectedCount: number) => {
       // Использую View Transition API если доступен
       if ((document as DocWithStartTransition).startViewTransition) {
         (document as DocWithStartTransition).startViewTransition?.(
-          updateVisibility
+          updateVisibility,
         );
       } else {
         updateVisibility();

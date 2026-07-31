@@ -3,7 +3,7 @@ import {
   spacing2x,
   spacing8x,
   spacing12x,
-  textSecondary
+  textSecondary,
 } from '@ui-kit/tokens';
 import styled from 'styled-components';
 

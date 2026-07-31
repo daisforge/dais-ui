@@ -3,7 +3,7 @@ import { useState } from 'react';
 import type { KeyText, KeyTextConfig } from './types';
 
 const getDefaultOption = (
-  config: boolean | KeyTextConfig | undefined
+  config: boolean | KeyTextConfig | undefined,
 ): KeyText => {
   const defaultO: KeyText = 'text';
   if (!config) return defaultO;
@@ -12,10 +12,10 @@ const getDefaultOption = (
 };
 
 export const useKeyTextState = (
-  keyTextTableConfig?: boolean | KeyTextConfig | undefined
+  keyTextTableConfig?: boolean | KeyTextConfig | undefined,
 ) => {
   const [keyText, setKeyText] = useState<KeyText>(() =>
-    getDefaultOption(keyTextTableConfig)
+    getDefaultOption(keyTextTableConfig),
   );
 
   return { keyText, setKeyText };

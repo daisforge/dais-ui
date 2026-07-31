@@ -2,7 +2,7 @@ import { Box } from '@ui-kit/components/Box';
 // Тайминги берём из общего чанка TableCanvasSharedConstants, а НЕ из TableCanvas
 import {
   COLLAPSE_DECOR_DELAY,
-  DURATION
+  DURATION,
 } from '@ui-kit/components/TableCanvasSharedConstants';
 import { outlineSolidPrimary, surfaceSolidCard } from '@ui-kit/tokens';
 import styled from 'styled-components';
@@ -11,7 +11,7 @@ import { tableTabsClassNames as cls } from './TableTabs.classNames';
 import {
   TABLE_BORDER_RADIUS,
   TABS_CONTAINER_PADDING,
-  TABS_HEIGHT_XS
+  TABS_HEIGHT_XS,
 } from './TableTabs.constants';
 import { TableTabsSize } from './TableTabs.types';
 
@@ -23,7 +23,7 @@ const fixedHeightXs = (size?: TableTabsSize) =>
     ? {
         boxSizing: 'border-box' as const,
         height: `${TABS_HEIGHT_XS}px`,
-        maxHeight: `${TABS_HEIGHT_XS}px`
+        maxHeight: `${TABS_HEIGHT_XS}px`,
       }
     : {};
 
@@ -49,14 +49,14 @@ export const StyledCollapseBlock = styled.div<{
       ? `${TABLE_BORDER_RADIUS}px`
       : `${TABLE_BORDER_RADIUS}px ${TABLE_BORDER_RADIUS}px 0px 0px`,
     transition: `border-radius 0s linear ${delay}s, border-bottom-width 0s linear ${delay}s`,
-    ...fixedHeightXs($size)
+    ...fixedHeightXs($size),
   };
 });
 
 export const StyledTabsRow = styled.div({
   display: 'flex',
   alignItems: 'center',
-  width: '100%'
+  width: '100%',
 });
 
 // Обёртка для rightSlot (в ряду табов и над табами в коллапсинге).
@@ -66,7 +66,7 @@ export const StyledRightSlot = styled.div({
   marginLeft: 'auto',
   alignSelf: 'stretch',
   display: 'flex',
-  alignItems: 'center'
+  alignItems: 'center',
 });
 
 export const StyledTabsContainer = styled.div<{
@@ -82,9 +82,9 @@ export const StyledTabsContainer = styled.div<{
   paddingInline: `${TABS_CONTAINER_PADDING}px`,
   '& [role="tablist"] > div': {
     marginBlock: 0,
-    paddingBlock: 0
+    paddingBlock: 0,
   },
-  ...fixedHeightXs($size)
+  ...fixedHeightXs($size),
 }));
 
 export const StyledTabsAndPanelsContainer = styled(Box)<{
@@ -108,6 +108,6 @@ export const StyledCollapsibleContent = styled.div<{
 export const StyledPanelContainer = styled(Box)({
   [`&.${cls.tabPanel}:not(:has(> .rdg-container-all))`]: {
     border: `1px solid ${outlineSolidPrimary}`,
-    borderRadius: '0px 0px 8px 8px'
-  }
+    borderRadius: '0px 0px 8px 8px',
+  },
 });

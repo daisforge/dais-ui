@@ -2,7 +2,7 @@ import {
   TabItem,
   type TabItemProps,
   Tabs,
-  type TabsProps
+  type TabsProps,
 } from '@ui-kit/components/Tabs';
 import styled, { CSSObject } from 'styled-components';
 
@@ -19,7 +19,7 @@ export type FiltersActionsTabItemProps = TabItemProps & {
 export const FiltersActionsTabs = styled(Tabs).attrs((props) => ({
   size: 'xs' as typeof props.size,
   view: 'filled' as typeof props.view,
-  ...props
+  ...props,
 }))<{ $css?: CSSObject | TemplateStringsArray }>`
   & {
     margin: -2px;
@@ -29,7 +29,7 @@ export const FiltersActionsTabs = styled(Tabs).attrs((props) => ({
 export const FiltersActionsTabItem = styled(TabItem).attrs((props) => ({
   size: 's' as typeof props.size,
   view: 'default' as typeof props.view,
-  ...props
+  ...props,
 }))<{ $css?: CSSObject | TemplateStringsArray }>`
   & {
     ${({ $css }) => $css}

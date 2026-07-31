@@ -5,14 +5,14 @@ import { TREE_ID_KEY } from '../feature-tree/constants';
 import {
   DETAIL_PANEL_ROW_CLASS,
   LVL_1_ROW_CLASS,
-  ROW_IDX_START_CLASS
+  ROW_IDX_START_CLASS,
 } from '../styles';
 import { Maybe, ObjectForExtending } from '../types';
 
 export const useRowClass = <RowType extends ObjectForExtending>({
   rowClassExternal,
   tableConfigSubRowsBoolean,
-  tableConfigRowDetailBoolean
+  tableConfigRowDetailBoolean,
 }: {
   rowClassExternal: Maybe<(row: RowType, rowIdx: number) => Maybe<string>>;
   tableConfigSubRowsBoolean: boolean;
@@ -43,7 +43,7 @@ export const useRowClass = <RowType extends ObjectForExtending>({
       return `${custom} ${rowIdxClass} ${resultClass}`;
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [rowClassExternal, tableConfigRowDetailBoolean, tableConfigSubRowsBoolean]
+    [rowClassExternal, tableConfigRowDetailBoolean, tableConfigSubRowsBoolean],
   );
   return { rowClass };
 };

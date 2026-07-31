@@ -15,14 +15,14 @@ const cls = {
   bottomBlock: `${AddRowsIconButtonWithPopoverCssId}_bottomBlock`,
   title: `${AddRowsIconButtonWithPopoverCssId}_title`,
   description: `${AddRowsIconButtonWithPopoverCssId}_description`,
-  arrowSelector: `${AddRowsIconButtonWithPopoverCssId}_popover-arrow:before`
+  arrowSelector: `${AddRowsIconButtonWithPopoverCssId}_popover-arrow:before`,
 };
 
 const C = {
   spaceX6: () => s.x6,
   spaceX8: () => s.x8,
   spaceX4: () => s.x4,
-  spaceX2: () => s.x2
+  spaceX2: () => s.x2,
 };
 
 const PopoverStyled = styled(Popover)`
@@ -48,7 +48,7 @@ const PopoverStyled = styled(Popover)`
 `;
 
 export const AddRowsIconButtonWithPopover = ({
-  onSubmit
+  onSubmit,
 }: {
   onSubmit: (countOfAddedRow: number) => void;
 }) => {

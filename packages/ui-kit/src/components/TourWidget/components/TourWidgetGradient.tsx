@@ -21,16 +21,16 @@ const tailGradientConfig = {
       middleOffset: '0.5',
       startOpacity: '0.56',
       middleOpacity: '0.62',
-      endOpacity: '0.74'
+      endOpacity: '0.74',
     },
     filter: {
       x: '-20%',
       y: '-30%',
       width: '140%',
       height: '170%',
-      blur: '18'
+      blur: '18',
     },
-    path: 'M0 318 C 34 420 138 454 286 426 L286 482 L0 482 Z'
+    path: 'M0 318 C 34 420 138 454 286 426 L286 482 L0 482 Z',
   },
   horizontal: {
     viewBox: '0 0 720 260',
@@ -42,21 +42,21 @@ const tailGradientConfig = {
       middleOffset: '0.55',
       startOpacity: '0.5',
       middleOpacity: '0.58',
-      endOpacity: '0.7'
+      endOpacity: '0.7',
     },
     filter: {
       x: '-12%',
       y: '-40%',
       width: '124%',
       height: '190%',
-      blur: '22'
+      blur: '22',
     },
-    path: 'M0 172 C 88 228 330 252 720 206 L720 262 L0 262 Z'
-  }
+    path: 'M0 172 C 88 228 330 252 720 206 L720 262 L0 262 Z',
+  },
 } as const;
 
 export const TourWidgetGradient = ({
-  orientation
+  orientation,
 }: TourWidgetGradientProps) => {
   const reactId = useId().replace(/[^a-zA-Z0-9_-]/g, '');
   const gradientId = `tour-widget-tail-gradient-${reactId}`;

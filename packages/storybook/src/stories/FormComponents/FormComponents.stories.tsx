@@ -9,13 +9,13 @@ import { FormCheckbox } from '@ui-kit/formComponents/FormCheckbox';
 import { FormCombobox } from '@ui-kit/formComponents/FormCombobox';
 import {
   FormDatePicker,
-  FormDatePickerRange
+  FormDatePickerRange,
 } from '@ui-kit/formComponents/FormDatePickers';
 import { FormMask } from '@ui-kit/formComponents/FormMask';
 import { FormNumberFormat } from '@ui-kit/formComponents/FormNumberFormat';
 import {
   FormRadiobox,
-  FormRadioGroup
+  FormRadioGroup,
 } from '@ui-kit/formComponents/FormRadioGroupBox';
 import { FormSegmentGroup } from '@ui-kit/formComponents/FormSegments';
 import { FormSelect } from '@ui-kit/formComponents/FormSelect';
@@ -31,7 +31,7 @@ import { items, mockData } from './data';
 const meta: Meta = {
   title: 'Формы/Компоненты формы',
   tags: ['!autodocs'],
-  component: () => null
+  component: () => null,
 };
 
 export default meta;
@@ -69,7 +69,7 @@ const SchemaForValues = z.object({
   dateRange: z
     .object({
       dateFrom: z.string().min(1, 'Укажите начальную дату'),
-      dateTo: z.string().min(1, 'Укажите конечную дату')
+      dateTo: z.string().min(1, 'Укажите конечную дату'),
     })
     .refine((data) => {
       if (!data.dateFrom || !data.dateTo) return true;
@@ -90,8 +90,8 @@ const SchemaForValues = z.object({
     .array(z.string())
     .min(1, { message: 'Заполните хотя бы одно поле.' })
     .refine((arr) => arr.every((str) => str.trim().length > 0), {
-      message: 'Значения не должны быть пустыми.'
-    })
+      message: 'Значения не должны быть пустыми.',
+    }),
 });
 type FormValues = z.infer<typeof SchemaForValues>;
 
@@ -119,7 +119,7 @@ export const ExampleWithoutValidator: Story = {
   name: 'Компоненты формы',
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     const form = useForm<FormValues>({
@@ -139,11 +139,11 @@ export const ExampleWithoutValidator: Story = {
         date: '',
         dateRange: {
           dateFrom: '05.05.2024',
-          dateTo: '07.05.2024'
+          dateTo: '07.05.2024',
         },
         gender: 'male',
-        status: ['ready']
-      }
+        status: ['ready'],
+      },
     });
 
     const onSubmit = (data: unknown) => {
@@ -157,7 +157,7 @@ export const ExampleWithoutValidator: Story = {
         style={{
           display: 'flex',
           flexDirection: 'column',
-          gap: 16
+          gap: 16,
         }}
       >
         <FormProvider {...form}>
@@ -167,9 +167,9 @@ export const ExampleWithoutValidator: Story = {
             options={{
               minLength: {
                 value: 3,
-                message: 'значение должно быть длиннее 3'
+                message: 'значение должно быть длиннее 3',
               },
-              required: true
+              required: true,
             }}
           />
           <FormMask
@@ -179,9 +179,9 @@ export const ExampleWithoutValidator: Story = {
             options={{
               minLength: {
                 value: 3,
-                message: 'значение должно быть длиннее 3'
+                message: 'значение должно быть длиннее 3',
               },
-              required: true
+              required: true,
             }}
           />
           <FormTextArea
@@ -196,7 +196,7 @@ export const ExampleWithoutValidator: Story = {
                 return true;
               },
               maxLength: 50,
-              required: 'Заполните обязательное поле'
+              required: 'Заполните обязательное поле',
             }}
           />
           <FormCheckbox<FormValues>
@@ -204,7 +204,7 @@ export const ExampleWithoutValidator: Story = {
             label="Checkbox"
             size="m"
             options={{
-              required: 'Заполните обязательное поле'
+              required: 'Заполните обязательное поле',
             }}
           />
           <FormSwitch
@@ -217,7 +217,7 @@ export const ExampleWithoutValidator: Story = {
                   return 'Заполните обязательное поле';
                 }
                 return true;
-              }
+              },
             }}
           />
 
@@ -228,9 +228,9 @@ export const ExampleWithoutValidator: Story = {
             options={{
               minLength: {
                 value: 2,
-                message: 'обязательное больше 2'
+                message: 'обязательное больше 2',
               },
-              required: 'Заполните обязательное поле'
+              required: 'Заполните обязательное поле',
             }}
           />
           <FormCombobox
@@ -238,7 +238,7 @@ export const ExampleWithoutValidator: Story = {
             label="FormCombobox"
             items={items}
             options={{
-              required: 'Заполните обязательное поле'
+              required: 'Заполните обязательное поле',
             }}
           />
           <FormCombobox
@@ -253,18 +253,18 @@ export const ExampleWithoutValidator: Story = {
                 }
                 return true;
               },
-              required: 'Заполните обязательное поле'
+              required: 'Заполните обязательное поле',
             }}
           />
           <FormSelect
             style={{
-              maxWidth: '50%'
+              maxWidth: '50%',
             }}
             label="FormSelect"
             name="select"
             items={items}
             options={{
-              required: 'Заполните обязательное поле'
+              required: 'Заполните обязательное поле',
             }}
           />
           <FormSelect
@@ -279,7 +279,7 @@ export const ExampleWithoutValidator: Story = {
                 }
                 return true;
               },
-              required: 'Заполните обязательное поле'
+              required: 'Заполните обязательное поле',
             }}
           />
           <FormNumberFormat
@@ -291,9 +291,9 @@ export const ExampleWithoutValidator: Story = {
             options={{
               minLength: {
                 value: 3,
-                message: 'значение должно быть длиннее 3'
+                message: 'значение должно быть длиннее 3',
               },
-              required: 'Заполните обязательное поле'
+              required: 'Заполните обязательное поле',
             }}
           />
           <FormDatePicker
@@ -305,12 +305,12 @@ export const ExampleWithoutValidator: Story = {
               required: 'обязательное поле',
               max: {
                 value: new Date().getTime(),
-                message: 'указанная дата за пределами максимально доступной'
+                message: 'указанная дата за пределами максимально доступной',
               },
               min: {
                 value: new Date().getTime() - 20 * 24 * 60 * 60 * 1000,
-                message: 'указанная дата за пределами минимально доступной'
-              }
+                message: 'указанная дата за пределами минимально доступной',
+              },
             }}
             placement={['left', 'top']}
             placeholder="выберите дату"
@@ -319,7 +319,7 @@ export const ExampleWithoutValidator: Story = {
               console.debug('FormDatePicker data', data);
             }}
             style={{
-              maxWidth: '559px'
+              maxWidth: '559px',
             }}
           />
           <FormDatePickerRange
@@ -332,20 +332,20 @@ export const ExampleWithoutValidator: Story = {
               required: 'обязательное поле',
               min: {
                 value: new Date(2024, 0, 1).getTime(),
-                message: 'мероприятия доступны с 2024 года'
+                message: 'мероприятия доступны с 2024 года',
               },
               max: {
                 value: new Date(2024, 11, 31).getTime(),
-                message: 'только события 2024 года'
+                message: 'только события 2024 года',
               },
               validate: {
                 minDuration: (value) => {
                   if (!value?.dateFrom || !value?.dateTo) return true;
                   const start = new Date(
-                    value.dateFrom.split('.').reverse().join('-')
+                    value.dateFrom.split('.').reverse().join('-'),
                   );
                   const end = new Date(
-                    value.dateTo.split('.').reverse().join('-')
+                    value.dateTo.split('.').reverse().join('-'),
                   );
                   if (
                     Number.isNaN(start.getTime()) ||
@@ -358,16 +358,16 @@ export const ExampleWithoutValidator: Story = {
                 },
                 noWeekends: (value) => {
                   const start = new Date(
-                    value.dateFrom.split('.').reverse().join('-')
+                    value.dateFrom.split('.').reverse().join('-'),
                   );
                   return [0, 6].includes(start.getDay())
                     ? 'Нельзя начинать в выходные'
                     : true;
-                }
-              }
+                },
+              },
             }}
             style={{
-              maxWidth: '559px'
+              maxWidth: '559px',
             }}
           />
           <FormRadioGroup
@@ -376,7 +376,7 @@ export const ExampleWithoutValidator: Story = {
             titleCaption="TitleCaption"
             name="gender"
             options={{
-              required: 'Заполните обязательное поле'
+              required: 'Заполните обязательное поле',
             }}
             size="s"
           >
@@ -388,7 +388,7 @@ export const ExampleWithoutValidator: Story = {
             label="Статус документа"
             titleCaption="Выберите один"
             options={{
-              required: 'Выберите статус'
+              required: 'Выберите статус',
             }}
             size="s"
             hasBackground
@@ -403,14 +403,14 @@ export const ExampleWithoutValidator: Story = {
             items={[
               { label: 'draft', value: 'draft', view: 'secondary' },
               { label: 'ready', value: 'ready', view: 'secondary' },
-              { label: 'signed', value: 'signed', view: 'secondary' }
+              { label: 'signed', value: 'signed', view: 'secondary' },
             ]}
           />
           <Button type="submit">Отправить</Button>
         </FormProvider>
       </form>
     );
-  }
+  },
 };
 
 const preCodeWithZod = `
@@ -439,7 +439,7 @@ export const WithZod: Story = {
   name: 'Пример формы заполнения c использованием библиотеки Zod для валидации',
   ...storySourceDoc({
     preCode: preCodeWithZod,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     const form = useForm<FormValues>({
@@ -458,12 +458,12 @@ export const WithZod: Story = {
         date: '',
         dateRange: {
           dateFrom: '',
-          dateTo: ''
+          dateTo: '',
         },
         gender: 'male',
-        status: ['ready']
+        status: ['ready'],
       },
-      resolver: zodResolver(SchemaForValues)
+      resolver: zodResolver(SchemaForValues),
     });
 
     const onSubmit = (data: unknown) => {
@@ -477,7 +477,7 @@ export const WithZod: Story = {
         style={{
           display: 'flex',
           flexDirection: 'column',
-          gap: 16
+          gap: 16,
         }}
       >
         <FormProvider {...form}>
@@ -502,7 +502,7 @@ export const WithZod: Story = {
           <FormSelect label="FormSelect" name="select" items={items} />
           <FormSelect
             style={{
-              maxWidth: '50%'
+              maxWidth: '50%',
             }}
             label="FormSelect multiple"
             name="selectMulti"
@@ -525,7 +525,7 @@ export const WithZod: Story = {
               console.debug('FormDatePicker data', data);
             }}
             style={{
-              maxWidth: '559px'
+              maxWidth: '559px',
             }}
           />
           <FormDatePickerRange
@@ -536,7 +536,7 @@ export const WithZod: Story = {
             max={new Date(new Date().setDate(new Date().getDate() + 2))}
             size="s"
             style={{
-              maxWidth: '559px'
+              maxWidth: '559px',
             }}
           />
           <FormRadioGroup
@@ -569,13 +569,13 @@ export const WithZod: Story = {
                 label: 'signed',
                 value: 'signed',
                 view: 'secondary',
-                size: 's'
-              }
+                size: 's',
+              },
             ]}
           />
           <Button type="submit">Отправить</Button>
         </FormProvider>
       </form>
     );
-  }
+  },
 };

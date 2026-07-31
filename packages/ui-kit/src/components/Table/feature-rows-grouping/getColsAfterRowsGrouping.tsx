@@ -8,13 +8,13 @@ import { RowsGrouping } from './types';
 
 export function getColsAfterRowsGrouping<
   RowType extends ObjectForExtending,
-  SummaryRowType = unknown
+  SummaryRowType = unknown,
 >({
   rowsGroupingIsActiveInConfig,
   groupByArr,
   columnConfig,
   tableConfigGroupedColumnProps,
-  pinnedCols
+  pinnedCols,
 }: {
   rowsGroupingIsActiveInConfig: boolean;
   groupByArr: string[];
@@ -35,12 +35,12 @@ export function getColsAfterRowsGrouping<
     frozen: pinnedCols.length > 0,
     dragable: false,
 
-    ...restTableConfigGroupedColumnProps
+    ...restTableConfigGroupedColumnProps,
   } as ColumnConfig<RowType, SummaryRowType>;
 
   // добавляем колонку с группировкой и удаляем все сгруппированные
   const cols = [groupCol, ...columnConfig].filter(
-    (c) => !groupByArr.some((k) => k === c.key)
+    (c) => !groupByArr.some((k) => k === c.key),
   );
 
   return cols.map((col) => {
@@ -59,7 +59,7 @@ export function getColsAfterRowsGrouping<
       subRow: {
         isColumnWithArrow: col.key === groupCol.key,
         renderSubRowCell: (
-          renderSubRowCellProps: RenderCellProps<RowType, SummaryRowType>
+          renderSubRowCellProps: RenderCellProps<RowType, SummaryRowType>,
         ) => (
           <RowsGroupingRenderCell
             renderCellProps={renderSubRowCellProps}
@@ -68,8 +68,8 @@ export function getColsAfterRowsGrouping<
             groupByArr={groupByArr}
             groupedColRenderers={groupedColRenderers}
           />
-        )
-      }
+        ),
+      },
     };
   }) as readonly ColumnConfig<RowType, SummaryRowType>[];
 }

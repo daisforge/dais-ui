@@ -26,11 +26,11 @@ const meta: Meta<typeof Typography> = {
         'TextL',
         'TextM',
         'TextS',
-        'TextXS'
-      ] satisfies TypographyVariant[]
+        'TextXS',
+      ] satisfies TypographyVariant[],
     },
-    bold: { control: 'boolean' }
-  }
+    bold: { control: 'boolean' },
+  },
 };
 
 export default meta;
@@ -58,7 +58,7 @@ export const AllVariants: Story = {
       <Typography variant="BodyXS">Body XS (BodyXS)</Typography>
       <Typography variant="BodyXXS">Body XXS (BodyXXS)</Typography>
     </div>
-  )
+  ),
 };
 
 export const WithStyles: Story = {
@@ -71,7 +71,7 @@ export const WithStyles: Story = {
         Жирный текст
       </Typography>
     </div>
-  )
+  ),
 };
 
 export const TextWithDifferentTags: Story = {
@@ -90,5 +90,5 @@ export const TextWithDifferentTags: Story = {
         Блочный текст
       </Typography>
     </div>
-  )
+  ),
 };

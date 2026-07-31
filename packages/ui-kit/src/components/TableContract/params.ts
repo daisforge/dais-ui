@@ -4,7 +4,7 @@ import { UrlAction } from './types';
 
 export function paramsReducer(
   state: URLSearchParams,
-  action: UrlAction
+  action: UrlAction,
 ): URLSearchParams {
   const [param, payload] = action;
 

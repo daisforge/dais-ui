@@ -7,7 +7,7 @@ import type { TransferColumnConfig } from '../types';
  * `columns.length` (пустой диапазон).
  */
 export function findFirstDataCol(
-  columns: readonly TransferColumnConfig[]
+  columns: readonly TransferColumnConfig[],
 ): number {
   const idx = columns.findIndex((col) => !col.isServiceColumn);
   return idx === -1 ? columns.length : idx;

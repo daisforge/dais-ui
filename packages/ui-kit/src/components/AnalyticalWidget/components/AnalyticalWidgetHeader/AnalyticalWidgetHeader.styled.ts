@@ -2,7 +2,7 @@ import { IconButton } from '@ui-kit/components/IconButton';
 import { Link } from '@ui-kit/components/Link';
 import {
   Typography,
-  TypographyWithAutoTooltip
+  TypographyWithAutoTooltip,
 } from '@ui-kit/components/Typography';
 import {
   bodyM,
@@ -11,7 +11,7 @@ import {
   surfaceSolidCard,
   textPrimary,
   textSecondary,
-  textTertiary
+  textTertiary,
 } from '@ui-kit/tokens';
 import styled, { css } from 'styled-components';
 
@@ -101,7 +101,7 @@ export const StyledActionsContainer = styled.div`
 `;
 
 export const StyledActionsWrapper = styled.div.attrs({
-  className: cls.headerActions as string
+  className: cls.headerActions as string,
 })<{ $translateX: number }>`
   position: absolute;
 

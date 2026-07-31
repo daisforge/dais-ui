@@ -5,7 +5,7 @@ describe('convertToISO', () => {
   test('should convert DD.MM.YYYY to ISO', () => {
     const result = convertToISO({
       date: '12.03.2023',
-      format: 'DD.MM.YYYY'
+      format: 'DD.MM.YYYY',
     });
     expect(result).toMatch(/2023-03-11T\d{2}:\d{2}:\d{2}\.\d{3}Z/);
   });
@@ -31,7 +31,7 @@ describe('convertToISO', () => {
     const currentYear = new Date().getFullYear().toString();
     const result = convertToISO({ date: '12 мар.', format: 'DD MMM' });
     expect(result).toMatch(
-      new RegExp(`${currentYear}-03-11T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z`)
+      new RegExp(`${currentYear}-03-11T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z`),
     );
   });
 
@@ -44,7 +44,7 @@ describe('convertToISO', () => {
     const currentYear = new Date().getFullYear().toString();
     const result = convertToISO({ date: '12 марта', format: 'DD MMM' });
     expect(result).toMatch(
-      new RegExp(`${currentYear}-03-11T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z`)
+      new RegExp(`${currentYear}-03-11T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z`),
     );
   });
 
@@ -52,7 +52,7 @@ describe('convertToISO', () => {
   test('should convert DD MMMM YYYY', () => {
     const result = convertToISO({
       date: '12 марта 2023',
-      format: 'DD MMMM YYYY'
+      format: 'DD MMMM YYYY',
     });
     expect(result).toMatch(/2023-03-11T\d{2}:\d{2}:\d{2}\.\d{3}Z/);
   });
@@ -60,7 +60,7 @@ describe('convertToISO', () => {
   test('should convert DD MMMM YYYY (nominative)', () => {
     const result = convertToISO({
       date: '12 март 2023',
-      format: 'DD MMMM YYYY'
+      format: 'DD MMMM YYYY',
     });
     expect(result).toMatch(/2023-03-11T\d{2}:\d{2}:\d{2}\.\d{3}Z/);
   });
@@ -68,7 +68,7 @@ describe('convertToISO', () => {
   test('should convert DD MMMM YYYY (июль)', () => {
     const result = convertToISO({
       date: '22 июль 2023',
-      format: 'DD MMMM YYYY'
+      format: 'DD MMMM YYYY',
     });
     expect(result).toMatch(/2023-07-21T\d{2}:\d{2}:\d{2}\.\d{3}Z/);
   });
@@ -77,7 +77,7 @@ describe('convertToISO', () => {
   test('should convert MM.YYYY', () => {
     const result = convertToISO({
       date: '03.2025',
-      format: 'MM.YYYY'
+      format: 'MM.YYYY',
     });
     expect(result).toMatch(/2025-02-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z/);
   });
@@ -85,7 +85,7 @@ describe('convertToISO', () => {
   test('should convert MM.YYYY (december)', () => {
     const result = convertToISO({
       date: '12.2023',
-      format: 'MM.YYYY'
+      format: 'MM.YYYY',
     });
     expect(result).toMatch(/2023-11-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z/);
   });
@@ -99,7 +99,7 @@ describe('convertToISO', () => {
   test('should convert MMMM YYYY', () => {
     const result = convertToISO({
       date: 'март 2025',
-      format: 'MMMM YYYY'
+      format: 'MMMM YYYY',
     });
     expect(result).toMatch(/2025-02-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z/);
   });
@@ -107,7 +107,7 @@ describe('convertToISO', () => {
   test('should convert MMMM YYYY (genitive)', () => {
     const result = convertToISO({
       date: 'марта 2025',
-      format: 'MMMM YYYY'
+      format: 'MMMM YYYY',
     });
     expect(result).toMatch(/2025-02-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z/);
   });
@@ -115,7 +115,7 @@ describe('convertToISO', () => {
   test('should convert MMMM YYYY (short name)', () => {
     const result = convertToISO({
       date: 'мар. 2025',
-      format: 'MMMM YYYY'
+      format: 'MMMM YYYY',
     });
     expect(result).toMatch(/2025-02-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z/);
   });
@@ -123,7 +123,7 @@ describe('convertToISO', () => {
   test('should return "" for invalid MMMM YYYY', () => {
     const result = convertToISO({
       date: 'невалидно 2025',
-      format: 'MMMM YYYY'
+      format: 'MMMM YYYY',
     });
     expect(result).toBe('');
   });
@@ -132,7 +132,7 @@ describe('convertToISO', () => {
   test('should convert DD-MM-YYYY', () => {
     const result = convertToISO({
       date: '15-06-2024',
-      format: 'DD-MM-YYYY'
+      format: 'DD-MM-YYYY',
     });
     expect(result).toMatch(/2024-06-14T\d{2}:\d{2}:\d{2}\.\d{3}Z/);
   });
@@ -140,7 +140,7 @@ describe('convertToISO', () => {
   test('should convert DD-MM-YY', () => {
     const result = convertToISO({
       date: '15-06-24',
-      format: 'DD-MM-YY'
+      format: 'DD-MM-YY',
     });
     expect(result).toMatch(/2024-06-14T\d{2}:\d{2}:\d{2}\.\d{3}Z/);
   });
@@ -148,7 +148,7 @@ describe('convertToISO', () => {
   test('should convert MM-YYYY', () => {
     const result = convertToISO({
       date: '06-2024',
-      format: 'MM-YYYY'
+      format: 'MM-YYYY',
     });
     expect(result).toMatch(/2024-05-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z/);
   });
@@ -156,7 +156,7 @@ describe('convertToISO', () => {
   test('should convert MMMM-YYYY', () => {
     const result = convertToISO({
       date: 'июнь-2024',
-      format: 'MMMM-YYYY'
+      format: 'MMMM-YYYY',
     });
     expect(result).toMatch(/2024-05-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z/);
   });
@@ -164,7 +164,7 @@ describe('convertToISO', () => {
   test('should return "" when delimiter does not match format', () => {
     const result = convertToISO({
       date: '15.06.2024',
-      format: 'DD-MM-YYYY'
+      format: 'DD-MM-YYYY',
     });
     expect(result).toBe('');
   });

@@ -8,7 +8,7 @@ import {
   PRODUCTS,
   type Row,
   type TreeRow,
-  TRIBES
+  TRIBES,
 } from '@df-storybook/data/tableData';
 import DocStoryTemplate from '@df-storybook/templates/DocStoryTemplate.mdx';
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
@@ -19,7 +19,7 @@ import {
   type CellsSelectionMode,
   type ColumnConfig,
   type HighlightActiveType,
-  TableCanvas
+  TableCanvas,
 } from '@ui-kit/components/TableCanvas';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
@@ -28,9 +28,9 @@ const meta: Meta = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      page: DocStoryTemplate
-    }
-  }
+      page: DocStoryTemplate,
+    },
+  },
 };
 
 export default meta;
@@ -44,7 +44,7 @@ const HIGHLIGHT_ACTIVE_TYPE_OPTIONS: Array<{
   value: HighlightActiveType;
 }> = [
   { label: 'row', value: 'row' },
-  { label: 'disabled', value: 'disabled' }
+  { label: 'disabled', value: 'disabled' },
 ];
 
 const SELECTION_MODE_OPTIONS: Array<{
@@ -54,13 +54,13 @@ const SELECTION_MODE_OPTIONS: Array<{
   { label: 'cell', value: 'cell' },
   { label: 'range-cell', value: 'range-cell' },
   { label: 'multi-range-cell', value: 'multi-range-cell' },
-  { label: 'disabled', value: 'disabled' }
+  { label: 'disabled', value: 'disabled' },
 ];
 
 export const ClipboardFullDemo: Story = {
   name: 'Полный пример (все возможности)',
   ...storySourceDoc({
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     useEffect(() => {
@@ -85,8 +85,8 @@ export const ClipboardFullDemo: Story = {
             component: 'select',
             options: {
               type: 'constant',
-              options: BLOCKS.map((i) => ({ text: i, value: i }))
-            }
+              options: BLOCKS.map((i) => ({ text: i, value: i })),
+            },
           },
           subRow: {
             keyOfColumnInSubRow: (lvl) => {
@@ -103,10 +103,10 @@ export const ClipboardFullDemo: Story = {
             },
             editingCell: {
               component: 'inputString',
-              inputProps: { placeholder: 'Введите значение' }
+              inputProps: { placeholder: 'Введите значение' },
             },
-            isColumnWithArrow: true
-          }
+            isColumnWithArrow: true,
+          },
         },
         {
           key: 'blockActivity',
@@ -124,8 +124,8 @@ export const ClipboardFullDemo: Story = {
           copyData: (row: TreeRow) => row.blockActivity ?? '',
           subRow: {
             keyOfColumnInSubRow: 'blockActivity',
-            editingCell: { component: 'inputString' }
-          }
+            editingCell: { component: 'inputString' },
+          },
         },
         {
           key: 'tribe',
@@ -134,8 +134,8 @@ export const ClipboardFullDemo: Story = {
             component: 'select',
             options: {
               type: 'stateInRowContext',
-              optionsKeyInRowContext: 'tribeOptions'
-            }
+              optionsKeyInRowContext: 'tribeOptions',
+            },
           },
           renderCell: ({ row, theme }) => (
             <Canvas.Container padding={8}>
@@ -145,8 +145,8 @@ export const ClipboardFullDemo: Story = {
           copyData: (row: TreeRow) => row.tribe ?? '',
           subRow: {
             keyOfColumnInSubRow: 'tribe',
-            editingCell: { component: 'inputString' }
-          }
+            editingCell: { component: 'inputString' },
+          },
         },
         {
           key: 'product',
@@ -155,13 +155,13 @@ export const ClipboardFullDemo: Story = {
             component: 'select',
             options: {
               type: 'stateInRowContext',
-              optionsKeyInRowContext: 'productOptions'
-            }
+              optionsKeyInRowContext: 'productOptions',
+            },
           },
           subRow: {
             keyOfColumnInSubRow: 'product',
-            editingCell: { component: 'inputString' }
-          }
+            editingCell: { component: 'inputString' },
+          },
         },
         {
           key: 'q1',
@@ -172,12 +172,12 @@ export const ClipboardFullDemo: Story = {
             decimalSeparator: ',',
             thousandSeparator: ' ',
             minimumFractionDigits: 2,
-            maximumFractionDigits: 2
+            maximumFractionDigits: 2,
           },
           subRow: {
             keyOfColumnInSubRow: 'q1',
-            editingCell: { component: 'inputNumber' }
-          }
+            editingCell: { component: 'inputNumber' },
+          },
         },
         {
           key: 'q2',
@@ -186,8 +186,8 @@ export const ClipboardFullDemo: Story = {
           editingCell: { component: 'inputNumber' },
           subRow: {
             keyOfColumnInSubRow: 'q2',
-            editingCell: { component: 'inputNumber' }
-          }
+            editingCell: { component: 'inputNumber' },
+          },
         },
         {
           key: 'q3',
@@ -196,8 +196,8 @@ export const ClipboardFullDemo: Story = {
           editingCell: { component: 'inputNumber' },
           subRow: {
             keyOfColumnInSubRow: 'q3',
-            editingCell: { component: 'inputNumber' }
-          }
+            editingCell: { component: 'inputNumber' },
+          },
         },
         {
           key: 'q4',
@@ -206,19 +206,19 @@ export const ClipboardFullDemo: Story = {
           editingCell: { component: 'inputNumber' },
           subRow: {
             keyOfColumnInSubRow: 'q4',
-            editingCell: { component: 'inputNumber' }
-          }
-        }
+            editingCell: { component: 'inputNumber' },
+          },
+        },
       ],
-      []
+      [],
     );
 
     const rowContextValue = useMemo(
       () => ({
         tribeOptions: TRIBES.map((i) => ({ text: i, value: i })),
-        productOptions: PRODUCTS.map((i) => ({ text: i, value: i }))
+        productOptions: PRODUCTS.map((i) => ({ text: i, value: i })),
       }),
-      []
+      [],
     );
 
     const savedRowsRef = useRef<null | typeof rows>(null);
@@ -274,7 +274,7 @@ export const ClipboardFullDemo: Story = {
             // Выделение колонок по клику на шапку (по умолчанию включено).
             cellsSelection: {
               mode: selectionMode,
-              enableColumnSelection: true
+              enableColumnSelection: true,
             },
             rowSize: { showInControl: true, default: 'big' },
             editing: {
@@ -292,13 +292,13 @@ export const ClipboardFullDemo: Story = {
               },
               onRowsChange: setRows,
               rowKeyGetter: (r) => `${r.id}`,
-              rowEditable: (r) => r.block !== BLOCKS[1]
+              rowEditable: (r) => r.block !== BLOCKS[1],
             },
             subRows: {
               getSubRows: (row) => row?.subRows,
-              rowKeyGetter: (row) => row.id
+              rowKeyGetter: (row) => row.id,
             },
-            resizableColumn: true
+            resizableColumn: true,
           }}
           columnConfig={columns}
           rows={rows}
@@ -306,13 +306,13 @@ export const ClipboardFullDemo: Story = {
         />
       </div>
     );
-  }
+  },
 };
 
 export const InterceptCopyPaste: Story = {
   name: 'Перехват onBeforeCopy / onBeforePaste',
   ...storySourceDoc({
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     const [rows, setRows] = useState(createRows);
@@ -323,34 +323,34 @@ export const InterceptCopyPaste: Story = {
           key: 'id',
           name: 'ID',
           width: 90,
-          editingCell: { component: 'inputNumber' }
+          editingCell: { component: 'inputNumber' },
         },
         {
           key: 'task',
           name: 'Title',
           width: 260,
-          editingCell: { component: 'inputString' }
+          editingCell: { component: 'inputString' },
         },
         {
           key: 'priority',
           name: 'Priority',
           width: 180,
-          editingCell: { component: 'inputString' }
+          editingCell: { component: 'inputString' },
         },
         {
           key: 'issueType',
           name: 'Issue Type',
           width: 180,
-          editingCell: { component: 'inputString' }
+          editingCell: { component: 'inputString' },
         },
         {
           key: 'complete',
           name: '% Complete',
           width: 160,
-          editingCell: { component: 'inputNumber' }
-        }
+          editingCell: { component: 'inputNumber' },
+        },
       ],
-      []
+      [],
     );
 
     return (
@@ -373,11 +373,11 @@ export const InterceptCopyPaste: Story = {
                 console.log('[onBeforeCopy] data:', data);
                 console.log(
                   '[onBeforeCopy] колонки:',
-                  meta.cells[0]?.map((c) => c.column.key)
+                  meta.cells[0]?.map((c) => c.column.key),
                 );
                 console.log(
                   '[onBeforeCopy] rawValues:',
-                  meta.cells.map((row) => row.map((c) => c.rawValue))
+                  meta.cells.map((row) => row.map((c) => c.rawValue)),
                 );
                 return data;
               },
@@ -391,36 +391,36 @@ export const InterceptCopyPaste: Story = {
                       (c) =>
                         `${c.column.key} (${
                           c.column.editingCell ? 'editable' : 'readonly'
-                        })`
-                    )
-                  )
+                        })`,
+                    ),
+                  ),
                 );
                 if (data.length > 5) {
                   console.warn('[onBeforePaste] Блокировка: больше 5 строк');
                   return false;
                 }
                 return data;
-              }
+              },
             },
             editing: {
               onRowsChange: setRows,
               rowKeyGetter: (r) => `${r.id}`,
-              defaultEnabled: true
+              defaultEnabled: true,
             },
-            resizableColumn: true
+            resizableColumn: true,
           }}
           columnConfig={columnConfig}
           rows={rows}
         />
       </div>
     );
-  }
+  },
 };
 
 export const CopyDataExample: Story = {
   name: 'copyData для кастомных ячеек',
   ...storySourceDoc({
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     const [rows, setRows] = useState(createRows);
@@ -431,13 +431,13 @@ export const CopyDataExample: Story = {
           key: 'id',
           name: 'ID',
           width: 80,
-          editingCell: { component: 'inputNumber' }
+          editingCell: { component: 'inputNumber' },
         },
         {
           key: 'task',
           name: 'Title',
           width: 240,
-          editingCell: { component: 'inputString' }
+          editingCell: { component: 'inputString' },
         },
         {
           key: 'priority',
@@ -453,7 +453,7 @@ export const CopyDataExample: Story = {
               />
             </Canvas.Container>
           ),
-          copyData: (row: Row) => row.priority ?? ''
+          copyData: (row: Row) => row.priority ?? '',
         },
         {
           key: 'issueType',
@@ -465,16 +465,16 @@ export const CopyDataExample: Story = {
               <Canvas.Text color={theme.textDark}>{row.issueType}</Canvas.Text>
             </Canvas.Container>
           ),
-          copyData: (row: Row) => row.issueType ?? ''
+          copyData: (row: Row) => row.issueType ?? '',
         },
         {
           key: 'complete',
           name: '% Complete',
           width: 140,
-          editingCell: { component: 'inputNumber' }
-        }
+          editingCell: { component: 'inputNumber' },
+        },
       ],
-      []
+      [],
     );
 
     return (
@@ -494,21 +494,21 @@ export const CopyDataExample: Story = {
             editing: {
               onRowsChange: setRows,
               rowKeyGetter: (r) => `${r.id}`,
-              defaultEnabled: true
-            }
+              defaultEnabled: true,
+            },
           }}
           columnConfig={columnConfig}
           rows={rows}
         />
       </div>
     );
-  }
+  },
 };
 
 export const TypeCheckValidation: Story = {
   name: 'Валидация типов при вставке',
   ...storySourceDoc({
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     useEffect(() => {
@@ -526,7 +526,7 @@ export const TypeCheckValidation: Story = {
           key: 'task',
           name: 'Title (строка)',
           width: 240,
-          editingCell: { component: 'inputString' }
+          editingCell: { component: 'inputString' },
         },
         {
           key: 'priority',
@@ -540,10 +540,10 @@ export const TypeCheckValidation: Story = {
                 { value: 'Critical', text: 'Critical' },
                 { value: 'High', text: 'High' },
                 { value: 'Medium', text: 'Medium' },
-                { value: 'Low', text: 'Low' }
-              ]
-            }
-          }
+                { value: 'Low', text: 'Low' },
+              ],
+            },
+          },
         },
         {
           key: 'complete',
@@ -553,11 +553,11 @@ export const TypeCheckValidation: Story = {
           contentFormat: {
             type: 'number',
             decimalSeparator: ',',
-            thousandSeparator: ' '
-          }
-        }
+            thousandSeparator: ' ',
+          },
+        },
       ],
-      []
+      [],
     );
 
     return (
@@ -581,21 +581,21 @@ export const TypeCheckValidation: Story = {
             editing: {
               onRowsChange: setRows,
               rowKeyGetter: (r) => `${r.id}`,
-              defaultEnabled: true
-            }
+              defaultEnabled: true,
+            },
           }}
           columnConfig={columnConfig}
           rows={rows}
         />
       </div>
     );
-  }
+  },
 };
 
 export const FillHandleWithSourceRow: Story = {
   name: 'Fill Handle — доступ к source row (onBeforeFill)',
   ...storySourceDoc({
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     const [rows, setRows] = useState(createRows);
@@ -607,34 +607,34 @@ export const FillHandleWithSourceRow: Story = {
           key: 'id',
           name: 'ID',
           width: 80,
-          editingCell: { component: 'inputNumber' }
+          editingCell: { component: 'inputNumber' },
         },
         {
           key: 'task',
           name: 'Title',
           width: 260,
-          editingCell: { component: 'inputString' }
+          editingCell: { component: 'inputString' },
         },
         {
           key: 'priority',
           name: 'Priority',
           width: 180,
-          editingCell: { component: 'inputString' }
+          editingCell: { component: 'inputString' },
         },
         {
           key: 'issueType',
           name: 'Issue Type',
           width: 180,
-          editingCell: { component: 'inputString' }
+          editingCell: { component: 'inputString' },
         },
         {
           key: 'complete',
           name: '% Complete',
           width: 160,
-          editingCell: { component: 'inputNumber' }
-        }
+          editingCell: { component: 'inputNumber' },
+        },
       ],
-      []
+      [],
     );
 
     return (
@@ -658,11 +658,11 @@ export const FillHandleWithSourceRow: Story = {
               onBeforeFill: (data, meta) => {
                 console.log(
                   '[onBeforeFill] source row:',
-                  meta.sourceCells[0]?.[0]?.row
+                  meta.sourceCells[0]?.[0]?.row,
                 );
                 console.log('[onBeforeFill] data:', data);
                 return data;
-              }
+              },
             },
             editing: {
               onEnableEditing(enableEditorMode) {
@@ -686,7 +686,7 @@ export const FillHandleWithSourceRow: Story = {
                     const updated = newRows.map((row, i) =>
                       indexes.includes(i)
                         ? { ...row, priority: sourceRow.priority }
-                        : row
+                        : row,
                     );
                     setRows(updated);
                     return;
@@ -696,22 +696,22 @@ export const FillHandleWithSourceRow: Story = {
                 setRows(newRows);
               },
               rowKeyGetter: (r) => `${r.id}`,
-              defaultEnabled: false
+              defaultEnabled: false,
             },
-            resizableColumn: true
+            resizableColumn: true,
           }}
           columnConfig={columnConfig}
           rows={rows}
         />
       </div>
     );
-  }
+  },
 };
 
 export const CustomHotkeys: Story = {
   name: 'Кастомные хоткеи',
   ...storySourceDoc({
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     const [rows, setRows] = useState(createRows);
@@ -722,28 +722,28 @@ export const CustomHotkeys: Story = {
           key: 'id',
           name: 'ID',
           width: 80,
-          editingCell: { component: 'inputNumber' }
+          editingCell: { component: 'inputNumber' },
         },
         {
           key: 'task',
           name: 'Title',
           width: 260,
-          editingCell: { component: 'inputString' }
+          editingCell: { component: 'inputString' },
         },
         {
           key: 'priority',
           name: 'Priority',
           width: 180,
-          editingCell: { component: 'inputString' }
+          editingCell: { component: 'inputString' },
         },
         {
           key: 'complete',
           name: '% Complete',
           width: 160,
-          editingCell: { component: 'inputNumber' }
-        }
+          editingCell: { component: 'inputNumber' },
+        },
       ],
-      []
+      [],
     );
 
     return (
@@ -762,19 +762,19 @@ export const CustomHotkeys: Story = {
             cellTransfer: {
               hotkeys: {
                 copy: { code: 'KeyC', ctrl: true, alt: true },
-                paste: { code: 'KeyV', ctrl: true, alt: true }
-              }
+                paste: { code: 'KeyV', ctrl: true, alt: true },
+              },
             },
             editing: {
               onRowsChange: setRows,
               rowKeyGetter: (r) => `${r.id}`,
-              defaultEnabled: true
-            }
+              defaultEnabled: true,
+            },
           }}
           columnConfig={columnConfig}
           rows={rows}
         />
       </div>
     );
-  }
+  },
 };

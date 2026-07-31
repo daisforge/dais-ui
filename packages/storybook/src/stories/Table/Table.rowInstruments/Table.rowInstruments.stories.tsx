@@ -11,7 +11,7 @@ import {
   type ColumnConfig,
   type RowInstrumentsDropdownItemOption,
   type RowInstrumentsType,
-  Table
+  Table,
 } from '@ui-kit/components/Table';
 import { TextM } from '@ui-kit/components/Typography';
 import { IconAddOutline, IconBoxOutline } from '@ui-kit/icons';
@@ -22,9 +22,9 @@ const meta: Meta = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      page: DocStoryTemplate
-    }
-  }
+      page: DocStoryTemplate,
+    },
+  },
 };
 
 export default meta;
@@ -51,7 +51,7 @@ import { IconAddOutline, IconBoxOutline, IconSber } from '@daisforge/ui/icons';
 export const RowInstruments: StoryObj = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   name: 'Инструменты строк',
   render: () => {
@@ -61,26 +61,26 @@ export const RowInstruments: StoryObj = {
       (): readonly ColumnConfig<Row>[] => [
         {
           key: 'id',
-          name: 'id'
+          name: 'id',
         },
         {
           key: 'task',
-          name: 'Title'
+          name: 'Title',
         },
         {
           key: 'priority',
-          name: 'Priority'
+          name: 'Priority',
         },
         {
           key: 'issueType',
-          name: 'Issue Type'
+          name: 'Issue Type',
         },
         {
           key: 'complete',
-          name: '% Complete'
-        }
+          name: '% Complete',
+        },
       ],
-      []
+      [],
     );
     const [value, setValue] = useState(1);
 
@@ -96,8 +96,8 @@ export const RowInstruments: StoryObj = {
                     e.preventDefault();
                     setValue((prev) => prev + (rowIdx || 1));
                   },
-                  dividerAfter: true
-                } as RowInstrumentsDropdownItemOption
+                  dividerAfter: true,
+                } as RowInstrumentsDropdownItemOption,
               ]
             : []),
           {
@@ -114,7 +114,7 @@ export const RowInstruments: StoryObj = {
                 });
               }
             },
-            contentLeft: <IconBoxOutline color="inherit" />
+            contentLeft: <IconBoxOutline color="inherit" />,
           },
           {
             label: 'Добавить строку вниз',
@@ -132,7 +132,7 @@ export const RowInstruments: StoryObj = {
                     developer: '',
                     complete: 0,
                     tr: '',
-                    loremIpsum: ''
+                    loremIpsum: '',
                   } as Row;
                   newV.splice(index + 1, 0, newRow);
 
@@ -140,11 +140,11 @@ export const RowInstruments: StoryObj = {
                 });
               }
             },
-            contentLeft: <IconAddOutline color="inherit" />
-          }
-        ]
+            contentLeft: <IconAddOutline color="inherit" />,
+          },
+        ],
       }),
-      [rows]
+      [rows],
     );
 
     return (
@@ -163,21 +163,21 @@ export const RowInstruments: StoryObj = {
             rowInstruments: {
               getRowDropdownConfig,
               showInControl: true,
-              defaultOpened: false
-            }
+              defaultOpened: false,
+            },
           }}
           columnConfig={columnConfig}
           rows={rows}
         />
       </>
     );
-  }
+  },
 };
 
 export const RowInstrumentsExternalVisibleState: StoryObj = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   name: 'Инструменты строк (внешнее управление)',
   render: () => {
@@ -188,26 +188,26 @@ export const RowInstrumentsExternalVisibleState: StoryObj = {
       (): readonly ColumnConfig<Row>[] => [
         {
           key: 'id',
-          name: 'id'
+          name: 'id',
         },
         {
           key: 'task',
-          name: 'Title'
+          name: 'Title',
         },
         {
           key: 'priority',
-          name: 'Priority'
+          name: 'Priority',
         },
         {
           key: 'issueType',
-          name: 'Issue Type'
+          name: 'Issue Type',
         },
         {
           key: 'complete',
-          name: '% Complete'
-        }
+          name: '% Complete',
+        },
       ],
-      []
+      [],
     );
     const [value, setValue] = useState(1);
 
@@ -223,8 +223,8 @@ export const RowInstrumentsExternalVisibleState: StoryObj = {
                     e.preventDefault();
                     setValue((prev) => prev + (rowIdx || 1));
                   },
-                  dividerAfter: true
-                } as RowInstrumentsDropdownItemOption
+                  dividerAfter: true,
+                } as RowInstrumentsDropdownItemOption,
               ]
             : []),
           {
@@ -241,7 +241,7 @@ export const RowInstrumentsExternalVisibleState: StoryObj = {
                 });
               }
             },
-            contentLeft: <IconBoxOutline color="inherit" />
+            contentLeft: <IconBoxOutline color="inherit" />,
           },
           {
             label: 'Добавить строку вниз',
@@ -259,7 +259,7 @@ export const RowInstrumentsExternalVisibleState: StoryObj = {
                     developer: '',
                     complete: 0,
                     tr: '',
-                    loremIpsum: ''
+                    loremIpsum: '',
                   } as Row;
                   newV.splice(index + 1, 0, newRow);
 
@@ -267,11 +267,11 @@ export const RowInstrumentsExternalVisibleState: StoryObj = {
                 });
               }
             },
-            contentLeft: <IconAddOutline color="inherit" />
-          }
-        ]
+            contentLeft: <IconAddOutline color="inherit" />,
+          },
+        ],
       }),
-      [rows]
+      [rows],
     );
 
     return (
@@ -281,7 +281,7 @@ export const RowInstrumentsExternalVisibleState: StoryObj = {
             display: 'flex',
             gap: '8px',
             alignItems: 'center',
-            marginBottom: '10px'
+            marginBottom: '10px',
           }}
         >
           <TextM>
@@ -303,13 +303,13 @@ export const RowInstrumentsExternalVisibleState: StoryObj = {
               getRowDropdownConfig,
               showInControl: true,
               defaultOpened: false,
-              openedState: [isVisibleRowInstrument, setIsVisibleRowInstrument]
-            }
+              openedState: [isVisibleRowInstrument, setIsVisibleRowInstrument],
+            },
           }}
           columnConfig={columnConfig}
           rows={rows}
         />
       </>
     );
-  }
+  },
 };

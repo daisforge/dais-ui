@@ -9,7 +9,7 @@ import {
   outlineSolidPrimary,
   shadowDownHardS,
   spacing10x,
-  surfaceSolidCard
+  surfaceSolidCard,
 } from '@ui-kit/tokens';
 import styled, { css } from 'styled-components';
 
@@ -20,16 +20,16 @@ const MASS_ACTIONS_VIEW_TRANSITION_NAME = 'mass-actions-panel';
 
 const C = {
   surfaceSolidCard: () => surfaceSolidCard,
-  outlineSolidPrimary: () => outlineSolidPrimary
+  outlineSolidPrimary: () => outlineSolidPrimary,
 };
 
 const StyledLinkButton = styled(LinkButton)({
-  paddingInline: s.x8
+  paddingInline: s.x8,
 }) as typeof LinkButton;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const getButtonWithDropdown = <T extends React.ComponentType<any>>(
-  BaseComponent: T
+  BaseComponent: T,
 ) => styled(BaseComponent)<StyledButtonProps>`
   ${({ $hasDropdown }: StyledButtonProps) =>
     $hasDropdown &&
@@ -48,10 +48,10 @@ const getButtonWithDropdown = <T extends React.ComponentType<any>>(
 
 // Стилизованные компоненты с поддержкой dropdown
 export const StyledButtonWithDropdown = getButtonWithDropdown(
-  Button
+  Button,
 ) as React.ComponentType<ButtonProps & StyledButtonProps>;
 export const StyledLinkButtonWithDropdown = getButtonWithDropdown(
-  StyledLinkButton
+  StyledLinkButton,
 ) as React.ComponentType<LinkButtonProps & StyledButtonProps>;
 
 export const MassActionsContainer = styled.div<{
@@ -138,7 +138,7 @@ export const ActionsWrapper = styled.div<{ $isCollapsed: boolean }>`
 
 export const ResetButtonWrapper = styled.div({
   display: 'flex',
-  alignItems: 'center'
+  alignItems: 'center',
 });
 
 export const ResetButton = styled(LinkButton)`

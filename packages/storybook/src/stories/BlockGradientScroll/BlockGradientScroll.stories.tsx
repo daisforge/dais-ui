@@ -11,7 +11,7 @@ import {
   textNegative,
   textPositive,
   textPrimary,
-  textWarningMinor
+  textWarningMinor,
 } from '@ui-kit/tokens';
 import React, { useState } from 'react';
 import styled from 'styled-components';
@@ -69,26 +69,26 @@ const meta: Meta<typeof BlockGradientScroll> = {
     variant: {
       description: 'Вариант цвета градиента (white/gray)',
       control: { type: 'select' },
-      options: ['white', 'gray']
+      options: ['white', 'gray'],
     },
     children: {
       description: 'Контент внутри scroll-контейнера',
-      control: false
+      control: false,
     },
     className: {
       description: 'CSS класс',
-      control: { type: 'text' }
+      control: { type: 'text' },
     },
     style: {
       description:
         'Inline стили (padding автоматически подхватывается для градиента)',
-      control: false
+      control: false,
     },
     $css: {
       description: 'Кастомные стили styled-components',
-      control: false
-    }
-  }
+      control: false,
+    },
+  },
 };
 
 export default meta;
@@ -108,10 +108,10 @@ export const Default: Story = {
       padding: 24,
       background: surfaceSolidCard,
       borderRadius: 8,
-      border: `1px solid ${outlineAccent}`
+      border: `1px solid ${outlineAccent}`,
     },
-    children: generateItems(8)
-  }
+    children: generateItems(8),
+  },
 };
 
 /**
@@ -123,7 +123,7 @@ export const Default: Story = {
 export const MixinUsage: Story = {
   name: '2. Миксин (styled-components)',
   parameters: {
-    controls: { disable: true }
+    controls: { disable: true },
   },
   render: () => (
     <DemoContainer>
@@ -138,7 +138,7 @@ export const MixinUsage: Story = {
         </div>
       </div>
     </DemoContainer>
-  )
+  ),
 };
 
 /**
@@ -153,10 +153,10 @@ export const NoScroll: Story = {
       overflowY: 'auto',
       padding: 24,
       borderRadius: 8,
-      border: `1px solid ${outlineAccent}`
+      border: `1px solid ${outlineAccent}`,
     },
-    children: generateItems(2)
-  }
+    children: generateItems(2),
+  },
 };
 
 /**
@@ -176,7 +176,7 @@ export const MultipleContainers: Story = {
             overflowY: 'auto',
             padding: 24,
             borderRadius: 8,
-            border: `1px solid ${outlineAccent}`
+            border: `1px solid ${outlineAccent}`,
           }}
         >
           {generateItems(6)}
@@ -191,7 +191,7 @@ export const MultipleContainers: Story = {
             padding: 24,
             background: surfaceSolidPrimary,
             borderRadius: 8,
-            border: `1px solid ${outlineAccent}`
+            border: `1px solid ${outlineAccent}`,
           }}
         >
           {generateItems(6)}
@@ -205,14 +205,14 @@ export const MultipleContainers: Story = {
             overflowY: 'auto',
             padding: '0 16px 32px',
             borderRadius: 8,
-            border: `1px solid ${outlineAccent}`
+            border: `1px solid ${outlineAccent}`,
           }}
         >
           {generateItems(6)}
         </BlockGradientScroll>
       </div>
     </DemoContainer>
-  )
+  ),
 };
 
 /**
@@ -246,7 +246,7 @@ export const DynamicContent: Story = {
               color: textPrimary,
               border: 'none',
               borderRadius: 4,
-              cursor: 'pointer'
+              cursor: 'pointer',
             }}
           >
             + Добавить
@@ -258,7 +258,7 @@ export const DynamicContent: Story = {
               color: textPrimary,
               border: 'none',
               borderRadius: 4,
-              cursor: 'pointer'
+              cursor: 'pointer',
             }}
           >
             − Удалить
@@ -270,7 +270,7 @@ export const DynamicContent: Story = {
               color: textPrimary,
               border: 'none',
               borderRadius: 4,
-              cursor: 'pointer'
+              cursor: 'pointer',
             }}
           >
             Сбросить
@@ -279,7 +279,7 @@ export const DynamicContent: Story = {
             style={{
               alignSelf: 'center',
               marginLeft: 8,
-              color: textWarningMinor
+              color: textWarningMinor,
             }}
           >
             Элементов: {items.length}
@@ -293,7 +293,7 @@ export const DynamicContent: Story = {
             overflowY: 'auto',
             padding: 24,
             borderRadius: 8,
-            border: `1px solid ${outlineAccent}`
+            border: `1px solid ${outlineAccent}`,
           }}
         >
           {items.map((id) => (
@@ -306,7 +306,7 @@ export const DynamicContent: Story = {
               style={{
                 color: textWarningMinor,
                 textAlign: 'center',
-                padding: 40
+                padding: 40,
               }}
             >
               Пусто. Добавь элементы.
@@ -315,7 +315,7 @@ export const DynamicContent: Story = {
         </BlockGradientScroll>
       </DemoContainer>
     );
-  }
+  },
 };
 
 /**
@@ -353,7 +353,7 @@ export const StylingMethods: Story = {
               borderRadius: 4,
               fontSize: 12,
               marginBottom: 8,
-              overflow: 'auto'
+              overflow: 'auto',
             }}
           >
             {`<BlockGradientScroll
@@ -377,7 +377,7 @@ export const StylingMethods: Story = {
               padding: 20,
               background: '#e8f5e9',
               borderRadius: 8,
-              border: '2px solid #4caf50'
+              border: '2px solid #4caf50',
             }}
           >
             {generateItems(5)}
@@ -395,7 +395,7 @@ export const StylingMethods: Story = {
               borderRadius: 4,
               fontSize: 12,
               marginBottom: 8,
-              overflow: 'auto'
+              overflow: 'auto',
             }}
           >
             {`.custom-gradient-box {
@@ -431,7 +431,7 @@ export const StylingMethods: Story = {
               borderRadius: 4,
               fontSize: 12,
               marginBottom: 8,
-              overflow: 'auto'
+              overflow: 'auto',
             }}
           >
             {`<BlockGradientScroll
@@ -463,15 +463,15 @@ export const StylingMethods: Story = {
         </div>
       </div>
     </DemoContainer>
-  )
+  ),
 };
 
 export const AdaptiveLessThan1280: Story = {
   name: '1280 Адаптив',
   parameters: {
     viewport: {
-      defaultViewport: 'mobile'
-    }
+      defaultViewport: 'mobile',
+    },
   },
   render: () => (
     <DemoContainer>
@@ -479,7 +479,7 @@ export const AdaptiveLessThan1280: Story = {
         style={{
           display: 'flex',
           gap: 20,
-          flexDirection: 'column'
+          flexDirection: 'column',
         }}
       >
         <div>
@@ -493,7 +493,7 @@ export const AdaptiveLessThan1280: Story = {
               overflowY: 'auto',
               padding: 24,
               borderRadius: 8,
-              border: `1px solid ${outlineAccent}`
+              border: `1px solid ${outlineAccent}`,
             }}
           >
             {generateItems(8)}
@@ -508,5 +508,5 @@ export const AdaptiveLessThan1280: Story = {
         </div>
       </div>
     </DemoContainer>
-  )
+  ),
 };

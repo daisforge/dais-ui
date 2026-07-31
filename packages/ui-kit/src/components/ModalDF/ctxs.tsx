@@ -8,7 +8,7 @@ export const CtxsProviders = ({
   children,
   fullScreened,
   toggleFullScreen,
-  onClose
+  onClose,
 }: {
   children: ReactNode;
 

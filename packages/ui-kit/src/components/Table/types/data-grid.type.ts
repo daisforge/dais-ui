@@ -18,7 +18,7 @@ import {
   RenderHeaderCellProps,
   RenderSummaryCellProps,
   RowsChangeData,
-  SortColumn
+  SortColumn,
 } from 'react-data-grid';
 
 import { Key, Maybe, ObjectForExtending } from './utils.type';
@@ -222,7 +222,7 @@ export type DefaultOmittedKeys =
 
 export type ColumnDefaultOmitted<
   Row extends ObjectForExtending,
-  SummRow = unknown
+  SummRow = unknown,
 > = Omit<ColumnDefault<Row, SummRow>, DefaultOmittedKeys>;
 
 export type { CellClickArgs };

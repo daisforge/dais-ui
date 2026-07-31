@@ -11,12 +11,12 @@ import { TableDropdownConfigProps } from '../components/TableDropdown/types';
 import type {
   CellTransferConfig,
   FillMeta,
-  RowsChangeType
+  RowsChangeType,
 } from '../feature-cell-transfer/types';
 import { ColumnsControlConfig } from '../feature-column-control/types';
 import {
   TableCanvasEmptyStateConfig,
-  TableCanvasErrorStateConfig
+  TableCanvasErrorStateConfig,
 } from '../feature-content-state/types';
 import { FullScreen } from '../feature-full-screen/types';
 import { KeyTextConfig } from '../feature-key-text/types';
@@ -26,7 +26,7 @@ import { RowsGrouping } from '../feature-rows-grouping/types';
 import { SearchingProps } from '../feature-searching/types';
 import {
   FlattenedRowsArrAndMap,
-  SelectingRowConfig
+  SelectingRowConfig,
 } from '../feature-select-row/types';
 import { SubRows } from '../feature-tree/types';
 import type {
@@ -36,20 +36,20 @@ import type {
   HoverEffectsConfig,
   TableGlideCustomProps,
   TableGlideInstanceProps,
-  TableInfoWithRow
+  TableInfoWithRow,
 } from '../TableGlideInstance/type';
 import { ControlBlockButtonProps } from '../widgets/control-block/control-block-button.types';
 import {
   FeatureItem,
   PinningMenuConfig,
-  SidebarTab
+  SidebarTab,
 } from '../widgets/control-block/types';
 import type { MassActionButtonProps } from '../widgets/mass-actions/types';
 import { DomMetadata } from './additional.type';
 import type {
   ColumnConfig,
   EditingCellInfo,
-  SortColumn
+  SortColumn,
 } from './column-config.type';
 import { Maybe, ObjectForExtending, Prettify } from './utils.type';
 /** @deprecated Свойство view не используется и будет удалено в следующей мажорной версии. */
@@ -127,7 +127,7 @@ export type RowSize = {
 export type RowHeightFunc<RowType> = (
   row: RowType,
   currentRowSize: { rowSizeName: SIZE; rowSizeValue: number },
-  rowIndex: number
+  rowIndex: number,
 ) => number;
 
 // Типы для конфигурации коллапса таблицы
@@ -303,7 +303,7 @@ export type FilteringConfig<T> = {
            */
           customRenderFn?: (
             filters: T,
-            setFilters: React.Dispatch<React.SetStateAction<T>>
+            setFilters: React.Dispatch<React.SetStateAction<T>>,
           ) => React.ReactNode;
         }
       >
@@ -463,7 +463,7 @@ export type SidebarConfig = {
    */
   activeTabState?: [
     string | null,
-    React.Dispatch<React.SetStateAction<string | null>>
+    React.Dispatch<React.SetStateAction<string | null>>,
   ];
   /**
    * Колбэк смены активной вкладки. Вызывается и в uncontrolled-режиме.
@@ -522,7 +522,7 @@ export type SidebarConfig = {
 export function activeViewIs<T extends 'cards' | 'rows'>(
   checkType: T,
   viewState: 'cards' | 'rows',
-  view: View
+  view: View,
 ): view is ViewMods[T] {
   return checkType === viewState;
 }
@@ -625,7 +625,7 @@ export type EditingButtonProps = Omit<
 export type EditingConfig<
   RowType extends ObjectForExtending,
   RowIdType,
-  SummaryRowType
+  SummaryRowType,
 > = {
   /**
    * Функция обработки изменений в редактируемой строке
@@ -830,7 +830,7 @@ export type TableConfig<
   RowType extends ObjectForExtending,
   SummaryRowType,
   RowIdType extends string | number,
-  FilterStateType extends ObjectForExtending
+  FilterStateType extends ObjectForExtending,
   // SubRowType
 > = {
   /**
@@ -855,7 +855,7 @@ export type TableConfig<
   highlightActiveRow?: {
     state?: [
       number | undefined,
-      React.Dispatch<React.SetStateAction<number | undefined>>
+      React.Dispatch<React.SetStateAction<number | undefined>>,
     ];
     /**
      * Колбэк смены подсвеченной строки: отдаёт её флэт-индекс и сам объект
@@ -905,7 +905,7 @@ export type TableConfig<
   sorting?: {
     state: [
       readonly SortColumn[],
-      React.Dispatch<React.SetStateAction<readonly SortColumn[]>>
+      React.Dispatch<React.SetStateAction<readonly SortColumn[]>>,
     ];
     /**
      * manualSorting - пропс, активирующий ручную-кастомную (или на стороне бэкенда) сортировку
@@ -946,7 +946,7 @@ export type TableConfig<
   selecting?: {
     state: [
       ReadonlySet<RowIdType>,
-      React.Dispatch<React.SetStateAction<ReadonlySet<RowIdType>>>
+      React.Dispatch<React.SetStateAction<ReadonlySet<RowIdType>>>,
     ];
     rowKeyGetter: (row: RowType) => RowIdType;
   } & Prettify<SelectingRowConfig<RowType, RowIdType>> & {
@@ -1217,13 +1217,13 @@ export type TableConfig<
    */
   onCellClicked?: (
     cell: readonly [number, number],
-    info: TableInfoWithRow<RowType, SummaryRowType>
+    info: TableInfoWithRow<RowType, SummaryRowType>,
   ) => void;
 } & GlideInstanceOmitted<RowType, SummaryRowType>;
 
 type GlideInstanceOmitted<
   RowType extends ObjectForExtending,
-  SummaryRowType
+  SummaryRowType,
 > = Pick<
   Omit<
     TableGlideInstanceProps<RowType, SummaryRowType>,
@@ -1246,7 +1246,7 @@ type GlideInstanceOmitted<
 >;
 export type CellReadOnlyEditorProps<
   RowType extends ObjectForExtending,
-  SummaryRowType
+  SummaryRowType,
 > = CellReadOnlyEditorGlideInstanceStaticProps &
   EditingCellInfo<RowType, SummaryRowType>;
 
@@ -1289,7 +1289,7 @@ export type CellReadOnlyEditorProps<
  * ```
  */
 export type RowMarkersTableConfig<
-  RowType extends ObjectForExtending = ObjectForExtending
+  RowType extends ObjectForExtending = ObjectForExtending,
 > = {
   /**
    * Стартовый индекс нумерации (для дефолтной логики без `getRowMarker`).

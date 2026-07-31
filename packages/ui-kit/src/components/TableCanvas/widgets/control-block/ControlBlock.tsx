@@ -15,14 +15,14 @@ import React, {
   useEffect,
   useLayoutEffect,
   useMemo,
-  useRef
+  useRef,
 } from 'react';
 
 import { TableDropdownConfigProps } from '../../components/TableDropdown/types';
 import {
   useRefTableContainerContext,
   useTableCollapse,
-  useTableResizeObserver
+  useTableResizeObserver,
 } from '../../contexts';
 import { CollapseTableButton } from '../../feature-collapse-table';
 import { ITEM_ID_GROUPED_ROWS } from '../../feature-rows-grouping/constants';
@@ -30,12 +30,12 @@ import { SearchBlock } from '../../feature-searching';
 import {
   useCompressionFeatures,
   useControlBlockMeasurements,
-  useMeasurementEffects
+  useMeasurementEffects,
 } from './compression';
 import { controlBlockClassNames as cls } from './control-block.classnames';
 import {
   getControlBlockSizeMap,
-  getControlBlockSpacingMap
+  getControlBlockSpacingMap,
 } from './control-block.constants';
 import { ControlBlockActions } from './control-block-actions';
 import { ControlBlockButton, StyledDivider } from './control-block-button';
@@ -46,7 +46,7 @@ import {
   ControlBlockStyled,
   InlineTitleText,
   LefSideStyled,
-  RightButtonsContainer
+  RightButtonsContainer,
 } from './styled';
 import { FeatureItem, ToolsMenuState } from './types';
 
@@ -84,15 +84,15 @@ export const ControlBlock = ({
       isActiveSearching,
       showSearchBlock,
       searchQueryLocalValue,
-      placeholderSearchBlock
-    }
+      placeholderSearchBlock,
+    },
   },
   $borderTopRounded,
   setCompressionVisibility,
   controlBlockLeftSideDropdownProps,
   controlBlockRightSideDropdownProps,
   collapseButtonPlacement = 'inside',
-  controlBlockSize
+  controlBlockSize,
 }: {
   leftSideInner: ControlBlockButtonProps[] | undefined;
   rightSideInner: ControlBlockButtonProps[] | undefined;
@@ -134,7 +134,7 @@ export const ControlBlock = ({
     isCollapsed,
     collapseButtonPlacement: ctxPlacement,
     titleText: ctxTitleText,
-    titleRender: ctxTitleRender
+    titleRender: ctxTitleRender,
   } = useTableCollapse();
   const hasInlineCollapse =
     enableCollapse && collapseButtonPlacement === 'inside';
@@ -146,7 +146,7 @@ export const ControlBlock = ({
   // и порядок отображения, и порядок ухода в дропдаун (с конца).
   const rightButtons = useMemo(
     () => [...(rightSideInner ?? []), ...featureRightButtons],
-    [rightSideInner, featureRightButtons]
+    [rightSideInner, featureRightButtons],
   );
 
   // У кнопки группировки появился счётчик выбранных колонок (contentRight).
@@ -156,9 +156,9 @@ export const ControlBlock = ({
   const hasGroupingCounter = useMemo(
     () =>
       rightButtons.some(
-        (btn) => btn.itemID === ITEM_ID_GROUPED_ROWS && !!btn.contentRight
+        (btn) => btn.itemID === ITEM_ID_GROUPED_ROWS && !!btn.contentRight,
       ),
-    [rightButtons]
+    [rightButtons],
   );
 
   // Замеры реальных ширин для модели компрессии. Все рефы, стор и
@@ -167,7 +167,7 @@ export const ControlBlock = ({
     leftSideInner,
     rightButtons,
     featureLeftButtons,
-    icons
+    icons,
   });
   const {
     mergedWidths,
@@ -175,7 +175,7 @@ export const ControlBlock = ({
     inlineTitleRef,
     editModeLeftSlotRef,
     overflowTriggerRef,
-    leftSideInnerBlockRef
+    leftSideInnerBlockRef,
   } = measurements;
 
   // ============ Initial visibility state (v2) ============
@@ -183,36 +183,36 @@ export const ControlBlock = ({
     () => ({
       leftSide: {
         collapsingBlock: {
-          isActive: hasInlineCollapse
+          isActive: hasInlineCollapse,
         },
         editRowFeature: {
           isActive: isActivated.editingMode,
           isLabelVisible: true,
-          editModeEnabled
+          editModeEnabled,
         },
         leftSideInner: [...(leftSideInner ?? [])].map(() => ({
-          isLabelVisible: true
-        }))
+          isLabelVisible: true,
+        })),
       },
       middle: {
         searchingFeature: {
           isActive: isActiveSearching && showSearchBlock,
-          minWidth: 250
-        }
+          minWidth: 250,
+        },
       },
       rightSide: {
         buttons: rightButtons.map(() => ({
-          isLabelVisible: true
+          isLabelVisible: true,
         })),
         customFeatures: icons.map((icon) => ({
           // По умолчанию фича может уезжать в overflow-дропдаун (true).
           // Обязательные фичи (fullScreen, rowSize) ставят false явно.
-          canBeCompressed: icon.canBeCompressedInToolsMenu ?? true
+          canBeCompressed: icon.canBeCompressedInToolsMenu ?? true,
         })),
         overflowItems: [],
         isOverflowTriggerVisible: false,
-        hasGroupingCounter
-      }
+        hasGroupingCounter,
+      },
     }),
     [
       hasInlineCollapse,
@@ -223,8 +223,8 @@ export const ControlBlock = ({
       showSearchBlock,
       rightButtons,
       hasGroupingCounter,
-      icons
-    ]
+      icons,
+    ],
   );
 
   // ============ Hook компрессии (v2) ============
@@ -239,13 +239,13 @@ export const ControlBlock = ({
         leftPartGap: spacing.leftPartGap,
         leftPartPaddingRight: spacing.leftPartPaddingRight,
         rightButtonsGap: spacing.rightButtonsGap,
-        rightButtonsPaddingInline: spacing.rightButtonsPaddingInline
+        rightButtonsPaddingInline: spacing.rightButtonsPaddingInline,
       },
       {
         editModeEnabled,
         hasEditModeLeftSlot: !!editModeLeftSlot,
-        buttonSize: sizeMap.sideInnerButton
-      }
+        buttonSize: sizeMap.sideInnerButton,
+      },
     );
 
   // Эффекты замеров: дозамер при смене видимости лейблов, перезамер
@@ -259,7 +259,7 @@ export const ControlBlock = ({
     icons,
     fullScreened,
     editModeEnabled,
-    isCollapsed
+    isCollapsed,
   });
 
   // ============ ResizeObserver ============
@@ -276,12 +276,12 @@ export const ControlBlock = ({
         }
       }
     },
-    [compress]
+    [compress],
   );
 
   const throttledHandleResize = useMemo(
     () => throttleWithLastCall(handleResize, 100),
-    [handleResize]
+    [handleResize],
   );
 
   useTableResizeObserver(throttledHandleResize);
@@ -324,9 +324,9 @@ export const ControlBlock = ({
         (oi) =>
           oi.sourceType === sourceType &&
           oi.sourceIndex === sourceIndex &&
-          oi.isInDropdown
+          oi.isInDropdown,
       ),
-    [overflowItems]
+    [overflowItems],
   );
 
   // leftSideInner: рендер по прежнему, если две и более то дропдаун "Действия"
@@ -335,12 +335,12 @@ export const ControlBlock = ({
 
   // Кнопки правой зоны, видимые (не в overflow дропдауне)
   const visibleRightButtons = rightButtons.filter(
-    (_, i) => !isItemInDropdown('button', i)
+    (_, i) => !isItemInDropdown('button', i),
   );
 
   // customFeatures (icons), видимые
   const visibleIcons = icons.filter(
-    (_, i) => !isItemInDropdown('customFeature', i)
+    (_, i) => !isItemInDropdown('customFeature', i),
   );
 
   // Системная связка (fullScreen/rowSize/viewMode) — всегда в начале массива
@@ -453,7 +453,7 @@ export const ControlBlock = ({
           <Flow
             alignment="center"
             style={{
-              flexWrap: 'nowrap'
+              flexWrap: 'nowrap',
             }}
           >
             {hasInlineCollapse && (
@@ -581,7 +581,7 @@ export const ControlBlock = ({
                           />
                         }
                         style={{
-                          paddingInline: '5px 8px'
+                          paddingInline: '5px 8px',
                         }}
                       />
                     }

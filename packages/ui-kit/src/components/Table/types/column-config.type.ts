@@ -7,7 +7,7 @@ import type {
   RenderCellProps,
   RenderEditCellProps,
   RenderSummaryCellProps,
-  SortColumn
+  SortColumn,
 } from 'react-data-grid';
 
 import { FilterComponentInPopoverProps } from '../feature-filtering/header-filter-button/types';
@@ -21,27 +21,27 @@ export type {
   RenderCellProps,
   RenderEditCellProps,
   RenderSummaryCellProps,
-  SortColumn
+  SortColumn,
 };
 
 export type Comparator<Row extends ObjectForExtending> = (
   a: Row,
-  b: Row
+  b: Row,
 ) => number;
 
 type FilterCb<Mode extends 'multiple' | 'single' | void = 'single'> = (
   filterV: Mode extends 'multiple' ? string[] : string,
-  rowValue: string
+  rowValue: string,
 ) => boolean;
 
 export type RenderSubRowCell<SubRowType extends ObjectForExtending> = (
   renderCellProps: RenderCellProps<SubRowType>,
-  lvl: number
+  lvl: number,
 ) => ReactNode;
 
 export type RenderSubRowEditCell<SubRowType extends ObjectForExtending> = (
   renderCellProps: RenderEditCellProps<SubRowType>,
-  lvl: number
+  lvl: number,
 ) => ReactNode;
 
 export type SelectOptions = {
@@ -163,14 +163,14 @@ export type ContentFormat =
  */
 export type KeyTextColumnConfig<
   Row extends ObjectForExtending,
-  SummRow = unknown
+  SummRow = unknown,
 > =
   | ((props: { keyText: KeyText }) => ColumnConfig<Row, SummRow>)
   | ColumnConfig<Row, SummRow>;
 
 export type ColumnConfig<
   Row extends ObjectForExtending,
-  SummRow = unknown
+  SummRow = unknown,
 > = ColumnDefaultOmitted<Row, SummRow> & {
   /**
    * Если в поле name был передан jsx, то нужно заполнить nameAsString для указания label в разделе Настройки столбцов, либо для отображения label в фильтрах в правом сайдбаре (но приоритет для фильтро будет ниже, чем то, что указали в filtering.sidebarConfig.items, там отдельно можно перезаписать label для фильтров сайдабара)
@@ -200,7 +200,7 @@ export type ColumnConfig<
           props: FilterComponentInPopoverProps<
             ObjectForExtending,
             ColumnConfig<Row, SummRow>
-          >
+          >,
         ) => ReactNode;
         filter:
           | {
@@ -247,12 +247,12 @@ export type ColumnConfig<
           props: FilterComponentInPopoverProps<
             ObjectForExtending,
             ColumnConfig<Row, SummRow>
-          >
+          >,
         ) => ReactNode;
         filter?: (filterValue: unknown, rowValue: unknown) => boolean;
         compareWithClearedValue?: (
           clearedValue: unknown,
-          currV: unknown
+          currV: unknown,
         ) => boolean;
       }
   );
@@ -309,12 +309,12 @@ export type ColumnConfig<
 
 export type ColumnOrColumnGroupConfig<
   R extends ObjectForExtending,
-  SR = unknown
+  SR = unknown,
 > = ColumnConfig<R, SR> | ColumnGroupConfig<R, SR>;
 
 export declare interface ColumnGroupConfig<
   R extends ObjectForExtending,
-  SR = unknown
+  SR = unknown,
 > {
   /** The name of the column group, it will be displayed in the header cell */
   /** A unique key to distinguish each column */

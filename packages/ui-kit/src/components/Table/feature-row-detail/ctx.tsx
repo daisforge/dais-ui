@@ -9,10 +9,10 @@ export const RowDetailHandlerContext = createContext<null | {
 }>(null);
 
 export const RowDetailHandlerContextProvider = <
-  RowType extends ObjectForExtending
+  RowType extends ObjectForExtending,
 >({
   children,
-  value
+  value,
 }: PropsWithChildren & {
   value: {
     handleExpandRowDetail: HandleExpandDetail<RowType>;
@@ -35,7 +35,7 @@ export const useRowDetailHandlerContext = () => {
   const ctx = useContext(RowDetailHandlerContext);
   if (!ctx) {
     throw new Error(
-      'useSelectingCheckBoxCellContext must be used within DataGrid cells'
+      'useSelectingCheckBoxCellContext must be used within DataGrid cells',
     );
   }
   return ctx;

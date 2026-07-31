@@ -8,7 +8,7 @@ import {
   spacing8x,
   spacing16x,
   surfaceSolidCard,
-  surfaceSolidSecondary
+  surfaceSolidSecondary,
 } from '@ui-kit/tokens';
 import styled, { css } from 'styled-components';
 

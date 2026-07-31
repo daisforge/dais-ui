@@ -12,7 +12,7 @@ import {
   StyledHeaderRightBlock,
   StyledHeaderSubHeader,
   StyledHeaderTitle,
-  StyledHeaderTop
+  StyledHeaderTop,
 } from '../styled';
 import type { PopupDFHeaderProps } from '../types';
 

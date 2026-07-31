@@ -6,7 +6,7 @@ import {
   StoriesGroupMeta,
   StoriesGroupTransition,
   StoriesMode,
-  StoryErrorContext
+  StoryErrorContext,
 } from '../Stories.types';
 import { StoriesStore } from './createStoriesStore';
 
@@ -49,7 +49,7 @@ export const useStoriesContext = (): StoriesContextValue => {
   const value = useContext(StoriesContext);
   if (!value) {
     throw new Error(
-      'Компоненты Stories должны использоваться внутри <Stories>.'
+      'Компоненты Stories должны использоваться внутри <Stories>.',
     );
   }
   return value;

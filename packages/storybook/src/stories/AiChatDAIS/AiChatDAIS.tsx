@@ -8,7 +8,7 @@ import { TextArea } from '@ui-kit/components/TextArea';
 import {
   IconMessageOutline,
   IconSendOutline,
-  IconTrashOutline
+  IconTrashOutline,
 } from '@ui-kit/icons';
 import { GlobalStyle } from '@ui-kit/styles';
 import {
@@ -17,14 +17,14 @@ import {
   inverseTextPrimary,
   lightBackgroundPrimary,
   textAccent,
-  textPrimary
+  textPrimary,
 } from '@ui-kit/tokens';
 import React, {
   CSSProperties,
   useCallback,
   useEffect,
   useRef,
-  useState
+  useState,
 } from 'react';
 import styled, { css } from 'styled-components';
 
@@ -36,14 +36,14 @@ import {
   PLACEHOLDER_MAP,
   QUICK_CHIPS_MAP,
   TITLE_MAP,
-  TYPING_CLASS
+  TYPING_CLASS,
 } from './constants';
 import {
   ChatHistory,
   ContentType,
   GlobalStore,
   Message,
-  Source
+  Source,
 } from './types';
 
 // ----------------------------------------------------------- Основной компонент -----------------------------------------------------------
@@ -51,7 +51,7 @@ export const AiChatDAIS = () => {
   const [clearModalOpened, setClearModalOpened] = useState(false);
   const [messages, _setMessages] = useState<Message[]>(GLOBAL_STORE.messages);
   const [chatHistory, _setChatHistory] = useState<ChatHistory[]>(
-    GLOBAL_STORE.chatHistory
+    GLOBAL_STORE.chatHistory,
   );
   const [inputValue, _setInputValue] = useState(GLOBAL_STORE.inputValue);
   const [contentType, _setContentType] = useState(GLOBAL_STORE.contentType);
@@ -71,7 +71,7 @@ export const AiChatDAIS = () => {
       }
 
       GLOBAL_STORE.messages = newMessages.filter(
-        (m) => !m.className?.includes(TYPING_CLASS)
+        (m) => !m.className?.includes(TYPING_CLASS),
       );
       return newMessages;
     });
@@ -115,7 +115,7 @@ export const AiChatDAIS = () => {
       GLOBAL_STORE.contentType = newContentType;
       localStorage.setItem(
         LOCAL_STORAGE_KEYS.contentType,
-        newContentType ?? ''
+        newContentType ?? '',
       );
       return newContentType;
     });
@@ -137,7 +137,7 @@ export const AiChatDAIS = () => {
       role: 'user' | 'assistant',
       text: string,
       userQuestion: string | null,
-      sources?: Source[]
+      sources?: Source[],
     ) => {
       setMessages((prev) => [
         ...prev,
@@ -146,11 +146,11 @@ export const AiChatDAIS = () => {
           role,
           text,
           sources,
-          userQuestion
-        }
+          userQuestion,
+        },
       ]);
     },
-    []
+    [],
   );
 
   // Добавление индикатора печати
@@ -164,8 +164,8 @@ export const AiChatDAIS = () => {
         role: 'assistant',
         text: '',
         sources: undefined,
-        userQuestion: null
-      }
+        userQuestion: null,
+      },
     ]);
     return typingId;
   }, []);
@@ -201,8 +201,8 @@ export const AiChatDAIS = () => {
           id: generateId(),
           message,
           chat_history: chatHistory,
-          content_type: contentType
-        })
+          content_type: contentType,
+        }),
       });
 
       const data = await res.json();
@@ -214,14 +214,14 @@ export const AiChatDAIS = () => {
         addMessage(
           'assistant',
           `⚠️ Ошибка: ${JSON.stringify(errorMessageFromBackend)}`,
-          null
+          null,
         );
       } else {
         addMessage('assistant', data.response, message, data.sources);
         setChatHistory((prev) => [
           ...prev,
           { role: 'human', content: message },
-          { role: 'ai', content: data.response }
+          { role: 'ai', content: data.response },
         ]);
       }
     } catch {
@@ -318,7 +318,7 @@ export const AiChatDAIS = () => {
                           hasClear={false}
                           onClick={() => handleQuickChipClick(chip.text)}
                         />
-                      )
+                      ),
                     )}
                   </div>
                 )}
@@ -387,7 +387,7 @@ export const AiChatDAIS = () => {
                 className="send-button-wrapper"
                 style={
                   {
-                    '--offsetBottom': textareaIsMultiline ? '6px' : '4.5px'
+                    '--offsetBottom': textareaIsMultiline ? '6px' : '4.5px',
                   } as CSSProperties
                 }
               >
@@ -417,12 +417,12 @@ export const AiChatDAIS = () => {
           mainButton: {
             text: 'Очистить',
             view: 'negative',
-            onClick: clearHistory
+            onClick: clearHistory,
           },
           secondaryButton: {
             text: 'Отменить',
-            onClick: () => setClearModalOpened(false)
-          }
+            onClick: () => setClearModalOpened(false),
+          },
         }}
       />
     </>

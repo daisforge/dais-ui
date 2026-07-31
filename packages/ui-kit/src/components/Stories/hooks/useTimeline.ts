@@ -36,7 +36,7 @@ export const useTimeline = ({
   isPlaying,
   isReady,
   resetKey,
-  onComplete
+  onComplete,
 }: UseTimelineParams): void => {
   const elapsedRef = useRef(0);
   const onCompleteRef = useRef(onComplete);

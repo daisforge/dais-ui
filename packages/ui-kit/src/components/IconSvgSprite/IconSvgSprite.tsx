@@ -9,16 +9,16 @@ export type IconSvgSpriteProps = {
 const sizeMap = {
   xs: {
     scale: 1,
-    size: 16
+    size: 16,
   }, // 16px
   s: {
     scale: 1.5,
-    size: 24
+    size: 24,
   }, // 24px
   m: {
     scale: 2.25,
-    size: 36
-  } // 36px
+    size: 36,
+  }, // 36px
 };
 
 const IconsRoot = styled.div`
@@ -33,14 +33,14 @@ export const IconSvgSprite = ({
   size = 's',
   color,
   style,
-  className
+  className,
 }: IconSvgSpriteProps) => (
   <IconsRoot
     aria-hidden
     style={
       {
         '--icon-size': `${sizeMap[size].scale}rem`,
-        ...style
+        ...style,
       } as CSSProperties
     }
     className={className || ''}

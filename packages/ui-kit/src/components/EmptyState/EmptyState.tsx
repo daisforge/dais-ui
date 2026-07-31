@@ -4,7 +4,7 @@ import React, { FC, useMemo } from 'react';
 import {
   EmptyStateButtonsGroup,
   EmptyStateExtraButtonWrapper,
-  EmptyStateImageRenderer
+  EmptyStateImageRenderer,
 } from './components';
 import { emptyStateClassNames as cls } from './EmptyState.constants';
 import { EmptyStateProps } from './EmptyState.types';
@@ -14,7 +14,7 @@ import {
   EmptyStateContentInner,
   EmptyStateIcon,
   EmptyStateSubtitle,
-  EmptyStateTitle
+  EmptyStateTitle,
 } from './styled';
 
 export const EmptyState: FC<EmptyStateProps> = ({
@@ -29,7 +29,7 @@ export const EmptyState: FC<EmptyStateProps> = ({
   className = '',
   classes = {},
   centered = false,
-  $css
+  $css,
 }) => {
   // Получаем CDN URL для изображения
   const imageData = useMemo(() => {

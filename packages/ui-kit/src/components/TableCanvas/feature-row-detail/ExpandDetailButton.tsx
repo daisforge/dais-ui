@@ -1,6 +1,6 @@
 import {
   IconChevronCircleDownFill,
-  IconChevronCircleUpFill
+  IconChevronCircleUpFill,
 } from '@ui-kit/icons';
 import React from 'react';
 
@@ -9,13 +9,13 @@ import { ObjectForExtending } from '../types';
 import {
   getExpandButtonIcon,
   getExpandButtonProps,
-  rowIsHaveExpandedDetailPanel
+  rowIsHaveExpandedDetailPanel,
 } from './handlers';
 import { HandleExpandDetail } from './types';
 
 export const ExpandDetailButton = <RowType extends ObjectForExtending>({
   handleExpandRowDetail,
-  row
+  row,
 }: {
   handleExpandRowDetail: HandleExpandDetail<RowType> | null;
   row: RowType;
@@ -39,7 +39,7 @@ export const ExpandDetailButton = <RowType extends ObjectForExtending>({
           selection: 'keep',
           cellClick: 'stop',
           editor: 'never',
-          contextMenu: 'keep-selection'
+          contextMenu: 'keep-selection',
         }}
         onClick={() => {
           handleExpandRowDetail?.(row);

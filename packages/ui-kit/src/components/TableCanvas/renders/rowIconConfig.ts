@@ -13,14 +13,14 @@ export const ROW_ICON_BUTTON_CONFIG: Record<
 > = {
   big: {
     overrideSquareSize: 24,
-    overrideIconSize: 24
+    overrideIconSize: 24,
   },
   medium: {
     overrideSquareSize: 24,
-    overrideIconSize: 16
+    overrideIconSize: 16,
   },
   small: {
     overrideSquareSize: 20,
-    overrideIconSize: 12
-  }
+    overrideIconSize: 12,
+  },
 };

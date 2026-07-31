@@ -10,7 +10,7 @@ import {
   backgroundPrimary,
   outlineAccent,
   surfaceAccentMinor,
-  surfaceInfo
+  surfaceInfo,
 } from '@ui-kit/tokens';
 import React, { useState } from 'react';
 
@@ -45,7 +45,7 @@ type PopoverDFStoryArgs = React.ComponentProps<typeof PopoverDF> & {
 
 const actionSizeByPopoverSize = {
   m: 'xs',
-  s: 'xxs'
+  s: 'xxs',
 } as const;
 
 const popoverPlacements = [
@@ -60,7 +60,7 @@ const popoverPlacements = [
   'bottom-end',
   'left',
   'left-start',
-  'left-end'
+  'left-end',
 ] as const;
 
 const resizeDirectionsOptions: ResizeDirection[] = [
@@ -71,19 +71,19 @@ const resizeDirectionsOptions: ResizeDirection[] = [
   'bottom',
   'bottom-left',
   'left',
-  'top-left'
+  'top-left',
 ];
 
 const resizeHiddenIconsOptions: ResizeCorner[] = [
   'top-left',
   'top-right',
   'bottom-left',
-  'bottom-right'
+  'bottom-right',
 ];
 
 const hiddenArgType = {
   control: false,
-  table: { disable: true }
+  table: { disable: true },
 } as const;
 
 const simpleArgTypes = {
@@ -114,7 +114,7 @@ const simpleArgTypes = {
   resizableMinHeight: hiddenArgType,
   resizableMaxWidth: hiddenArgType,
   resizableMaxHeight: hiddenArgType,
-  resizableIconSize: hiddenArgType
+  resizableIconSize: hiddenArgType,
 };
 
 const preCode = `import { useState } from 'react';
@@ -201,94 +201,94 @@ const meta: Meta<PopoverDFStoryArgs> = {
   component: PopoverDF,
   tags: ['!autodocs'],
   parameters: {
-    layout: 'fullscreen'
+    layout: 'fullscreen',
   },
   argTypes: {
     size: {
       options: ['m', 's'],
-      control: { type: 'inline-radio' }
+      control: { type: 'inline-radio' },
     },
     target: {
       control: false,
-      table: { disable: true }
+      table: { disable: true },
     },
     placement: {
       options: popoverPlacements,
-      control: { type: 'select' }
+      control: { type: 'select' },
     },
     trigger: {
       options: ['click', 'hover', 'focus'],
-      control: { type: 'select' }
+      control: { type: 'select' },
     },
     defaultOpened: {
-      control: 'boolean'
+      control: 'boolean',
     },
     hasTail: {
-      control: 'boolean'
+      control: 'boolean',
     },
     flip: {
-      control: 'boolean'
+      control: 'boolean',
     },
     shift: {
-      control: 'boolean'
+      control: 'boolean',
     },
     offset: {
-      control: 'number'
+      control: 'number',
     },
     outsideClick: {
-      control: 'boolean'
+      control: 'boolean',
     },
     delayOpen: {
-      control: 'number'
+      control: 'number',
     },
     delayClose: {
-      control: 'number'
+      control: 'number',
     },
     showCloseButton: {
-      control: 'boolean'
+      control: 'boolean',
     },
     withHeaderSlot: {
-      control: 'boolean'
+      control: 'boolean',
     },
     withBody: {
-      control: 'boolean'
+      control: 'boolean',
     },
     withFooter: {
-      control: 'boolean'
+      control: 'boolean',
     },
     resizable: {
-      control: 'boolean'
+      control: 'boolean',
     },
     resizableDisabled: {
-      control: 'boolean'
+      control: 'boolean',
     },
     resizableDirections: {
       control: 'check',
-      options: resizeDirectionsOptions
+      options: resizeDirectionsOptions,
     },
     resizableHiddenIcons: {
       control: 'check',
-      options: resizeHiddenIconsOptions
+      options: resizeHiddenIconsOptions,
     },
     resizableDefaultSize: {
-      control: 'object'
+      control: 'object',
     },
     resizableMinWidth: {
-      control: 'number'
+      control: 'number',
     },
     resizableMinHeight: {
-      control: 'number'
+      control: 'number',
     },
     resizableMaxWidth: {
-      control: 'number'
+      control: 'number',
     },
     resizableMaxHeight: {
-      control: 'number'
+      control: 'number',
     },
     resizableIconSize: {
       options: ['xs', 's', 'm'],
-      control: { type: 'select' }
-    }
+      control: { type: 'select' },
+    },
   },
   args: {
     size: 'm',
@@ -313,8 +313,8 @@ const meta: Meta<PopoverDFStoryArgs> = {
     resizableDefaultSize: { width: 320, height: 180 },
     resizableMinWidth: 240,
     resizableMinHeight: 120,
-    resizableIconSize: 's'
-  }
+    resizableIconSize: 's',
+  },
 };
 
 export default meta;
@@ -327,7 +327,7 @@ const playgroundStyle: React.CSSProperties = {
   alignItems: 'center',
   justifyContent: 'center',
   padding: s.x16,
-  backgroundColor: backgroundPrimary
+  backgroundColor: backgroundPrimary,
 };
 
 const slotBoxStyle: React.CSSProperties = {
@@ -337,7 +337,7 @@ const slotBoxStyle: React.CSSProperties = {
   display: 'flex',
   alignItems: 'center',
   color: surfaceInfo,
-  padding: '12px'
+  padding: '12px',
 };
 
 const bodyBoxStyle: React.CSSProperties = {
@@ -348,7 +348,7 @@ const bodyBoxStyle: React.CSSProperties = {
   alignItems: 'center',
   justifyContent: 'center',
   color: surfaceInfo,
-  padding: '12px'
+  padding: '12px',
 };
 
 function StoryStage({ children }: { children: React.ReactNode }) {
@@ -411,7 +411,7 @@ function PopoverDFPlaygroundExample({
   resizableMinHeight,
   resizableMaxWidth,
   resizableMaxHeight,
-  resizableIconSize
+  resizableIconSize,
 }: PopoverDFStoryArgs) {
   const content = (
     <>
@@ -444,7 +444,7 @@ function PopoverDFPlaygroundExample({
         minHeight: resizableMinHeight,
         maxWidth: resizableMaxWidth,
         maxHeight: resizableMaxHeight,
-        iconSize: resizableIconSize
+        iconSize: resizableIconSize,
       }
     : undefined;
 
@@ -507,20 +507,20 @@ export const Simple: Story = {
   parameters: {
     controls: {
       disable: true,
-      exclude: /.*/
+      exclude: /.*/,
     },
     docs: {
       controls: {
-        exclude: /.*/
-      }
-    }
+        exclude: /.*/,
+      },
+    },
   },
   ...storySourceDoc({ code: simpleCode, previewSource: 'shown' }),
-  render: () => renderInStage(<PopoverDFSimpleExample />)
+  render: () => renderInStage(<PopoverDFSimpleExample />),
 };
 
 export const Playground: Story = {
   name: 'Playground',
   ...storySourceDoc({ code: playgroundCode, previewSource: 'shown' }),
-  render: (args) => renderInStage(<PopoverDFPlaygroundExample {...args} />)
+  render: (args) => renderInStage(<PopoverDFPlaygroundExample {...args} />),
 };

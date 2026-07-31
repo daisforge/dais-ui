@@ -9,7 +9,7 @@ import { isTooltipConfigFromNode } from './typeGuards';
  * Все as-касты EventBus-границы сосредоточены здесь.
  */
 function resolveColumnTooltipConfig(
-  detail: CanvasPortalHoverDetail
+  detail: CanvasPortalHoverDetail,
 ): TooltipData | null {
   const column = detail.tooltipContext?.column;
   if (!column || typeof column !== 'object') return null;
@@ -29,7 +29,7 @@ function resolveColumnTooltipConfig(
       refTable: ctx?.refTable,
       colInd: ctx?.colInd as number | undefined,
       rowInd: ctx?.rowInd as number | undefined,
-      theme: ctx?.theme as unknown
+      theme: ctx?.theme as unknown,
     });
     if (result) {
       return normalizeTooltipConfig(result);
@@ -60,7 +60,7 @@ function resolveColumnTooltipConfig(
  */
 export function resolveTooltipData(
   detail: CanvasPortalHoverDetail,
-  customEnabled: boolean
+  customEnabled: boolean,
 ): TooltipData | null {
   // Приоритет 1: внутренний маппинг по nodeId (работает всегда)
   // Внутренние тултипы UI таблицы (drag-иконка и т.д.) имеют наивысший приоритет,

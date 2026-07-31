@@ -17,7 +17,7 @@ import {
   useMassActionsEffects,
   useMassActionsPosition,
   useMassActionsSidebar,
-  useMassActionsVisibility
+  useMassActionsVisibility,
 } from './hooks';
 import { MassActionButton } from './MassActionButton';
 import { MassActionsDropdown } from './MassActionsDropdown';
@@ -32,12 +32,12 @@ import {
   ResetButton,
   ResetButtonWrapper,
   StyledDivider,
-  VisibleButtonWrapper
+  VisibleButtonWrapper,
 } from './styled';
 import type {
   MassActionButtonProps,
   MassActionButtonPropsButton,
-  MassActionButtonPropsLinkButton
+  MassActionButtonPropsLinkButton,
 } from './types';
 
 type AdaptiveButtonActionProps = {
@@ -49,7 +49,7 @@ type AdaptiveButtonActionProps = {
 const AdaptiveButtonAction = ({
   button,
   isCompact,
-  compactSize = 'xs'
+  compactSize = 'xs',
 }: AdaptiveButtonActionProps) => {
   // Размер задан явно потребителем — используем как есть (любой). Не задан —
   // подбираем по дизайну: `s` в обычной панели, compactSize (`xs`/`xxs`) в компакте/xs.
@@ -67,7 +67,7 @@ type AdaptiveLinkActionProps = {
 const AdaptiveLinkAction = ({
   button,
   isCompact,
-  compactSize = 'xs'
+  compactSize = 'xs',
 }: AdaptiveLinkActionProps) => {
   // Размер задан явно потребителем — используем как есть (любой). Не задан —
   // подбираем по дизайну: `s` в обычной панели, compactSize (`xs`/`xxs`) в компакте/xs.
@@ -79,7 +79,7 @@ const AdaptiveLinkAction = ({
 const renderMassActionButton = (
   button: MassActionButtonProps,
   isCompact: boolean,
-  compactSize: 'xs' | 'xxs' = 'xs'
+  compactSize: 'xs' | 'xxs' = 'xs',
 ) => {
   if (button.type === 'button') {
     return (
@@ -106,7 +106,7 @@ export const MassActions = ({
   collapsedDropdownProps,
   bottom = 24,
   forceShow = false,
-  size = 's'
+  size = 's',
 }: {
   buttons?: MassActionButtonProps[];
   collapsedDropdownProps?: TableDropdownConfigProps;
@@ -137,7 +137,7 @@ export const MassActions = ({
 
   // Состояния для компрессии
   const [visibleButtonsCount, setVisibleButtonsCount] = useState(
-    buttons?.length ?? 0
+    buttons?.length ?? 0,
   );
   const [translateX, setTranslateX] = useState<number | undefined>(undefined);
 
@@ -147,7 +147,7 @@ export const MassActions = ({
   const {
     calculatePosition,
     calculatePositionForState,
-    shouldApplySidebarOffsetRef
+    shouldApplySidebarOffsetRef,
   } = useMassActionsPosition({
     containerRef,
     collapseButtonRef,
@@ -155,7 +155,7 @@ export const MassActions = ({
     isCompact,
     isHaveSomeFeatureInSidebar,
     visibleButtonsCount,
-    setTranslateX
+    setTranslateX,
   });
 
   const { calculateCompression, measuredButtonWidthsRef } =
@@ -170,7 +170,7 @@ export const MassActions = ({
       summaryCheckboxElRef,
       buttons,
       isHaveSomeFeatureInSidebar,
-      setVisibleButtonsCount
+      setVisibleButtonsCount,
     });
 
   const { isSidebarOpen, wasAutoCollapsedRef } = useMassActionsSidebar({
@@ -179,7 +179,7 @@ export const MassActions = ({
     calculatePositionForState,
     calculatePosition,
     setTranslateX,
-    shouldApplySidebarOffsetRef
+    shouldApplySidebarOffsetRef,
   });
 
   const { handleToggleCollapse } = useMassActionsCollapse({
@@ -190,13 +190,13 @@ export const MassActions = ({
     calculatePosition,
     setTranslateX,
     shouldApplySidebarOffsetRef,
-    wasAutoCollapsedRef
+    wasAutoCollapsedRef,
   });
 
   const { visibleButtons, buttonsInDropdown, allButtons } =
     useMassActionsButtons({
       buttons,
-      visibleButtonsCount
+      visibleButtonsCount,
     });
 
   // хук для всех эффектов
@@ -213,10 +213,10 @@ export const MassActions = ({
     setVisibleButtonsCount,
     calculatePosition,
     calculateCompression,
-    measuredButtonWidthsRef
+    measuredButtonWidthsRef,
   });
   const onChangeHandlerRef = useRef(
-    (_arg: { clearButtonClicked: true; checkedAll: true }) => {}
+    (_arg: { clearButtonClicked: true; checkedAll: true }) => {},
   );
 
   // Панель не показывается, если нет выбранных строк
@@ -280,7 +280,7 @@ export const MassActions = ({
                 onClick={() =>
                   onChangeHandlerRef.current({
                     clearButtonClicked: true,
-                    checkedAll: true
+                    checkedAll: true,
                   })
                 }
               />
@@ -302,7 +302,7 @@ export const MassActions = ({
                 buttons={buttonsInDropdown}
                 dropdownProps={{
                   placement: 'top',
-                  ...collapsedDropdownProps
+                  ...collapsedDropdownProps,
                 }}
                 triggerSlot={
                   <IconButton

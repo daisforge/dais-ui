@@ -4,7 +4,7 @@ import { LinkButton } from '@ui-kit/components/LinkButton';
 import {
   MassActions,
   MassActionsButtonProps,
-  MassActionsSize
+  MassActionsSize,
 } from '@ui-kit/components/MassActions';
 import React, { useMemo, useRef } from 'react';
 import styled from 'styled-components';
@@ -34,7 +34,7 @@ export const MassActionsInTable = ({
   collapsedDropdownProps,
   bottom = 24,
   forceShow = false,
-  size = 's'
+  size = 's',
 }: {
   buttons?: MassActionsButtonProps[];
   collapsedDropdownProps?: TableDropdownConfigProps;
@@ -58,12 +58,12 @@ export const MassActionsInTable = ({
     () => ({
       isOpen: sidebar.isOpen,
       width: sidebar.width,
-      togglePanelWidth: 44
+      togglePanelWidth: 44,
     }),
-    [sidebar.isOpen, sidebar.width]
+    [sidebar.isOpen, sidebar.width],
   );
   const onChangeHandlerRef = useRef(
-    (_arg: { clearButtonClicked: true; checkedAll: true }) => {}
+    (_arg: { clearButtonClicked: true; checkedAll: true }) => {},
   );
   const hasSelectingContext = selectingRowsIsActive && selectedCount > 0;
 
@@ -79,7 +79,7 @@ export const MassActionsInTable = ({
           />
         </div>
       ) : null,
-    [onChangeHandlerRef, hasSelectingContext]
+    [onChangeHandlerRef, hasSelectingContext],
   );
 
   // Средняя секция - кнопка "Сбросить всё" (только при активном selecting)
@@ -93,13 +93,13 @@ export const MassActionsInTable = ({
             onClick={() =>
               onChangeHandlerRef.current({
                 clearButtonClicked: true,
-                checkedAll: true
+                checkedAll: true,
               })
             }
           />
         </ResetButtonWrapper>
       ) : null,
-    [size, onChangeHandlerRef, hasSelectingContext]
+    [size, onChangeHandlerRef, hasSelectingContext],
   );
 
   // Панель не показывается, если нет выбранных строк или selecting неактивен

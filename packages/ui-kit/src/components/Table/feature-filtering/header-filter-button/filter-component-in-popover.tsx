@@ -11,16 +11,16 @@ import { FilterComponentInPopoverProps } from './types';
 export const FilterComponentInPopover = <
   FilterStateType extends ObjectForExtending,
   R extends ObjectForExtending,
-  SR
+  SR,
 >(
-  props: FilterComponentInPopoverProps<FilterStateType, ColumnConfig<R, SR>>
+  props: FilterComponentInPopoverProps<FilterStateType, ColumnConfig<R, SR>>,
 ) => {
   const {
     columnConfig,
     popoverIsOpen,
     setPopoverIsOpen,
     tabIndex,
-    headerContextState
+    headerContextState,
   } = props;
 
   const { filters, setFilters, rowSize } = headerContextState;
@@ -39,7 +39,7 @@ export const FilterComponentInPopover = <
       props as FilterComponentInPopoverProps<
         ObjectForExtending,
         ColumnConfig<R, SR>
-      >
+      >,
     );
   }
 
@@ -61,7 +61,7 @@ export const FilterComponentInPopover = <
         onChange={(e) => {
           setFilters?.((prev) => ({
             ...prev,
-            [valueKeyInFilters]: e.target.value
+            [valueKeyInFilters]: e.target.value,
           }));
         }}
         onClick={(e) => {
@@ -86,10 +86,10 @@ export const FilterComponentInPopover = <
         onChange: (v: string) => {
           setFilters?.((prev) => ({
             ...prev,
-            [keyInFilterState]: v
+            [keyInFilterState]: v,
           }));
           setPopoverIsOpen(false);
-        }
+        },
       };
     }
     return {
@@ -97,9 +97,9 @@ export const FilterComponentInPopover = <
       onChange: (v: string[]) => {
         setFilters?.((prev) => ({
           ...prev,
-          [keyInFilterState]: v
+          [keyInFilterState]: v,
         }));
-      }
+      },
     };
   })();
 
