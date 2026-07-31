@@ -348,8 +348,8 @@ function ExampleCustomDropdownProps() {
 }
 
 const headerDropdownPreCode = `
-import { createRows, type Row } from '@df-storybook/data/tableData';
-import { ColumnConfig, TableCanvas } from '@ui-kit/components/TableCanvas';
+import { createRows, type Row } from './data/tableData';
+import { ColumnConfig, TableCanvas } from '@sber-digital-finance-ui/ui-kit/components/TableCanvas';
 import React, { useMemo, useState } from 'react';
 
 ${getFuncAsString(
@@ -359,8 +359,8 @@ ${getFuncAsString(
 `;
 
 const headerHandlerPreCode = `
-import { createRows, type Row } from '@df-storybook/data/tableData';
-import { ColumnConfig, TableCanvas } from '@ui-kit/components/TableCanvas';
+import { createRows, type Row } from './data/tableData';
+import { ColumnConfig, TableCanvas } from '@sber-digital-finance-ui/ui-kit/components/TableCanvas';
 import React, { useMemo, useState } from 'react';
 
 ${getFuncAsString(
@@ -370,8 +370,8 @@ ${getFuncAsString(
 `;
 
 const cellDropdownPreCode = `
-import { createRows, type Row } from '@df-storybook/data/tableData';
-import { ColumnConfig, TableCanvas } from '@ui-kit/components/TableCanvas';
+import { createRows, type Row } from './data/tableData';
+import { ColumnConfig, TableCanvas } from '@sber-digital-finance-ui/ui-kit/components/TableCanvas';
 import React, { useMemo, useState } from 'react';
 
 ${getFuncAsString(
@@ -381,8 +381,8 @@ ${getFuncAsString(
 `;
 
 const cellHandlerPreCode = `
-import { createRows, type Row } from '@df-storybook/data/tableData';
-import { ColumnConfig, TableCanvas } from '@ui-kit/components/TableCanvas';
+import { createRows, type Row } from './data/tableData';
+import { ColumnConfig, TableCanvas } from '@sber-digital-finance-ui/ui-kit/components/TableCanvas';
 import React, { useMemo, useState } from 'react';
 
 ${getFuncAsString(
@@ -428,8 +428,8 @@ export const ContextOnCellMenuStory: StoryObj = {
 };
 
 const customDropdownPreCode = `
-import { createRows, type Row } from '@df-storybook/data/tableData';
-import { ColumnConfig, TableCanvas } from '@ui-kit/components/TableCanvas';
+import { createRows, type Row } from './data/tableData';
+import { ColumnConfig, TableCanvas } from '@sber-digital-finance-ui/ui-kit/components/TableCanvas';
 import React, { useMemo, useState } from 'react';
 
 ${getFuncAsString(
@@ -586,12 +586,30 @@ function AsyncCellDropdownExample({ shouldFail }: { shouldFail: boolean }) {
   );
 }
 
+const code = `
+import { createRows, type Row } from './data/tableData';
+import { ColumnConfig, TableCanvas } from '@sber-digital-finance-ui/ui-kit/components/TableCanvas';
+import React, { useMemo, useState } from 'react';
+
+${getFuncAsString(
+  'packages/storybook/src/stories/TableCanvas/TableCanvas.ContextMenu/TableCanvasContextMenu.stories.tsx',
+  'AsyncCellDropdownExample'
+)}`;
+
 export const ContextOnCellMenuAsyncSuccessStory: StoryObj = {
   name: 'Async-подгрузка пунктов (успех)',
+  ...storySourceDoc({
+    previewSource: 'hidden',
+    code
+  }),
   render: () => <AsyncCellDropdownExample shouldFail={false} />
 };
 
 export const ContextOnCellMenuAsyncErrorStory: StoryObj = {
   name: 'Async-подгрузка пунктов (ошибка + ретрай)',
+  ...storySourceDoc({
+    previewSource: 'hidden',
+    code
+  }),
   render: () => <AsyncCellDropdownExample shouldFail />
 };

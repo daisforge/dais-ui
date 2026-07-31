@@ -30,7 +30,8 @@ type ViewRow = { id: string; view: (typeof VIEWS)[number] };
 const rows: ViewRow[] = VIEWS.map((view) => ({ id: view, view }));
 
 const meta: Meta = {
-  title: 'Локальные компоненты/TableCanvas/CanvasElements/CanvasIconButton',
+  title:
+    'Локальные компоненты/TableCanvas/CanvasElements/CanvasEmbedIconButton',
   tags: ['!autodocs']
 };
 
@@ -47,7 +48,7 @@ function Example(args: unknown) {
         width: 80,
         renderCell: ({ row }) => (
           <Canvas.Container direction="row" alignItems="center" padding={8}>
-            <Canvas.IconButton
+            <Canvas.EmbedIconButton
               icon={<IconSearch />}
               view={row.view}
               buttonSize={size}
@@ -67,13 +68,12 @@ function Example(args: unknown) {
     />
   );
 }
-
 const code = `
 import { Canvas, ColumnConfig, TableCanvas } from '@sber-digital-finance-ui/ui-kit/components/TableCanvas';
 import { IconSearch } from '@sber-digital-finance-ui/ui-kit/icons';
 
 ${getFuncAsString(
-  'packages/storybook/src/stories/TableCanvas/CanvasElements/CanvasIconButton/CanvasIconButton.stories.tsx',
+  'packages/storybook/src/stories/TableCanvas/CanvasElements/CanvasEmbedIconButton/CanvasEmbedIconButton.stories.tsx',
   'Example'
 )}
 `;
