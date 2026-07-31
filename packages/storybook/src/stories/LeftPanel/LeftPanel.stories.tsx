@@ -33,7 +33,7 @@ import {
   surfaceInfo,
   surfaceSolidCard
 } from '@ui-kit/tokens';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import styled from 'styled-components';
 
 const meta: Meta<LeftPanelProps> = {
@@ -76,12 +76,12 @@ export const LeftPanelSlots: Story = {
   }),
   render: () => {
     // Состояние отвечает за открытие/закрытие панели
-    const [isShow, setIsShow] = useState(false);
+    const [isCollapsed, setIsCollapsed] = useState(false);
     const [width, setWidth] = useState<number | undefined>(360);
 
     // Вызывается при переключении панели
     const handleToggle = (next: boolean) => {
-      setIsShow(next);
+      setIsCollapsed(next);
       if (next) {
         setWidth(undefined);
       } else {
@@ -113,7 +113,7 @@ export const LeftPanelSlots: Story = {
           // Коллбэк, вызывается при смене состояния
           onToggleCollapse={handleToggle}
           // Управление состоянием панели
-          collapseState={[isShow, setIsShow]}
+          collapseState={[isCollapsed, setIsCollapsed]}
           // Slot для раскрытой панели (рекомендуется использовать widget)
           expandedContent={
             <Widget $css={{ overflow: 'hidden' }}>
@@ -249,7 +249,7 @@ export const LeftPanelSlots: Story = {
               }}
             >
               {width && <H4 style={{ marginRight: s.x8 }}>{width}px</H4>}
-              <Button onClick={() => handleToggle(!isShow)}>
+              <Button onClick={() => handleToggle(!isCollapsed)}>
                 Открыть/Закрыть
               </Button>
             </div>
@@ -333,17 +333,29 @@ export const LeftPanelExample: Story = {
     ];
 
     // Состояние отвечает за открытие/закрытие панели
-    const [isShow, setIsShow] = useState(false);
+    const [isCollapsed, setIsCollapsed] = useState(false);
     const [width, setWidth] = useState<number | undefined>(360);
+
+    // Реф для поля поиска
+    const searchRef = useRef<HTMLInputElement>(null);
 
     // Вызывается при переключении панели
     const handleToggle = (next: boolean) => {
-      setIsShow(next);
+      setIsCollapsed(next);
       if (next) {
         setWidth(undefined);
       } else {
         setWidth(360);
       }
+    };
+
+    // Открывает панель и фокусирует поле поиска
+    const handleSearchClick = () => {
+      handleToggle(false);
+
+      requestAnimationFrame(() => {
+        searchRef.current?.focus();
+      });
     };
 
     return (
@@ -362,7 +374,7 @@ export const LeftPanelExample: Story = {
           // Коллбэк, вызывается при смене состояния
           onToggleCollapse={handleToggle}
           // Управление состоянием панели
-          collapseState={[isShow, setIsShow]}
+          collapseState={[isCollapsed, setIsCollapsed]}
           // Slot для раскрытой панели (рекомендуется использовать widget)
           expandedContent={({ buttonSize }: LeftPanelSlotSizesProps) => (
             <Widget $css={{ overflow: 'hidden' }}>
@@ -404,7 +416,7 @@ export const LeftPanelExample: Story = {
                       }}
                     >
                       {/* Поле поиска и кнопки */}
-                      <TextFieldSearch size={buttonSize} />
+                      <TextFieldSearch size={buttonSize} ref={searchRef} />
                       <IconButton
                         size={buttonSize}
                         view="secondary"
@@ -480,7 +492,11 @@ export const LeftPanelExample: Story = {
           // Slot для контента закрытой панели
           collapsedContent={({ buttonSize }: LeftPanelSlotSizesProps) => (
             <>
-              <IconButton size={buttonSize} view="secondary">
+              <IconButton
+                size={buttonSize}
+                view="secondary"
+                onClick={handleSearchClick}
+              >
                 <IconSearch />
               </IconButton>
               <IconButton size={buttonSize} view="secondary">
@@ -522,7 +538,7 @@ export const LeftPanelExample: Story = {
           >
             <H2 style={{ marginBottom: s.x8 }}>Контент</H2>
             {/* Кнопка управления панелью */}
-            <Button onClick={() => handleToggle(!isShow)}>
+            <Button onClick={() => handleToggle(!isCollapsed)}>
               Открыть/Закрыть
             </Button>
           </div>
