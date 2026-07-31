@@ -6,6 +6,7 @@ import {
   textSecondary
 } from '@ui-kit/tokens';
 import type { ComponentProps } from 'react';
+import React, { forwardRef } from 'react';
 import styled from 'styled-components';
 
 import { TextField } from './TextField';
@@ -46,28 +47,37 @@ export const StyledTextField: typeof TextField = styled(TextField)`
   }
 `;
 
-export const TextFieldSearch = ({
-  placeholder = 'Поиск',
-  size = 's',
-  value,
-  onChange,
-  handlerClear,
-  onClear,
-  disabled,
-  readOnly,
-  ...restProps
-}: TextFieldSearchProps) => (
-  <StyledTextField
-    value={value}
-    placeholder={placeholder}
-    size={size}
-    onChange={onChange}
-    disabled={disabled}
-    readOnly={readOnly}
-    contentLeft={<IconSearch color={textSecondary} size={size} />}
-    onClear={onClear ?? handlerClear}
-    {...restProps}
-  />
+export const TextFieldSearch = forwardRef<
+  HTMLInputElement,
+  TextFieldSearchProps
+>(
+  (
+    {
+      placeholder = 'Поиск',
+      size = 's',
+      value,
+      onChange,
+      handlerClear,
+      onClear,
+      disabled,
+      readOnly,
+      ...restProps
+    },
+    ref
+  ) => (
+    <StyledTextField
+      ref={ref}
+      value={value}
+      placeholder={placeholder}
+      size={size}
+      onChange={onChange}
+      disabled={disabled}
+      readOnly={readOnly}
+      contentLeft={<IconSearch color={textSecondary} size={size} />}
+      onClear={onClear ?? handlerClear}
+      {...restProps}
+    />
+  )
 );
 
 TextFieldSearch.displayName = 'TextFieldSearch';
