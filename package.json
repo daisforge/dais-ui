@@ -13,6 +13,7 @@
     "mcp:build-index": "npm run build --prefix packages/mcp-server && node ./packages/mcp-server/dist/indexer/buildIndex.js",
     "mcp:vendor-atomic": "node ./packages/mcp-server/dist/indexer/vendorAtomicData.js",
     "mcp:start": "node ./packages/mcp-server/dist/server.js",
+    "mcp:inspect": "npm run mcp:build-index && npx @modelcontextprotocol/inspector node ./packages/mcp-server/dist/server.js",
     "update": "npm run ui-kit:update && npm install -d @salutejs/plasma-icons@x.x.0 @salutejs/plasma-typo@x.x.0 @salutejs/sdds-finai@x.x.0 @salutejs/sdds-themes@x.x.0 && npm run clean-after-update && npm run ui-kit:generate-tokens",
     "clean-after-update": "npm run ui-kit:delete-after-update && node ./scripts/clean--root--package-lock.js",
     "prestorybook": "npm run generate-storybook-docs-utils",

@@ -30,6 +30,18 @@ MCP-сервер для `@daisforge/ui` — даёт кодовому агент
 - `list_categories()`
 - `get_installation_guide()`
 
+## Ручное тестирование тулов (MCP Inspector)
+
+Чтобы точечно повызывать любой тул (`get_component`, `search_components` и т.д.) через UI, без настройки клиента:
+
+```bash
+npm run mcp:inspect
+```
+
+Команда собирает сервер (`tsc`) и поднимает [`@modelcontextprotocol/inspector`](https://github.com/modelcontextprotocol/inspector) (через `npx`, ничего не ставится в зависимости проекта) — откроется браузер со списком тулов, формой аргументов под каждый и живым JSON-ответом. Сервер запускается как stdio-процесс (`node ./dist/server.js`), сеть наружу не используется.
+
+Тот же скрипт есть и в корне монорепо: `npm run mcp:inspect` (пересобирает индекс перед запуском).
+
 ## Разработка
 
 ```bash

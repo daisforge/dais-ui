@@ -17,7 +17,8 @@
     "prepare": "npm run build",
     "mcp:build-index": "node ./dist/indexer/buildIndex.js",
     "mcp:vendor-atomic": "node ./dist/indexer/vendorAtomicData.js",
-    "mcp:start": "node ./dist/server.js"
+    "mcp:start": "node ./dist/server.js",
+    "mcp:inspect": "npm run build && npx @modelcontextprotocol/inspector node ./dist/server.js"
   },
   "license": "MIT",
   "publishConfig": {
@@ -28,6 +29,7 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
+    "@modelcontextprotocol/inspector": "^2.0.0",
     "ts-morph": "^24.0.0"
   }
 }
