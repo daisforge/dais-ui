@@ -1,0 +1,93 @@
+import { Meta, Source } from '@storybook/blocks';
+
+<Meta title="Как работать с MCP" />
+
+<div className="sb-container">
+  <div className='sb-section-title'>
+    # Как работать с MCP
+
+    `@daisforge/ui-mcp` — MCP-сервер для `@daisforge/ui`. Работает по stdio и даёт кодовому агенту точные пропсы, типы, категории (wrapper/composition/standalone/form), примеры кода и фичи (TableCanvas/Table) для 260+ компонентов библиотеки (атомарные и шаблонные). Работает полностью оффлайн, сеть в рантайме не используется.
+
+  </div>
+</div>
+
+<div className="sb-container">
+  <div className='sb-section-title'>
+    # Быстрый старт
+
+    Установите `@daisforge/ui` вместе с MCP-сервером:
+
+    <Source
+      language='bash'
+      dark
+      format={false}
+      code={`npm install @daisforge/ui @daisforge/ui-mcp`}
+    />
+
+    Если агент просит указать `command`/`args` отдельно, используйте такой конфиг (обычно `.mcp.json` в корне проекта):
+
+    <Source
+      language='json'
+      dark
+      format={'dedent'}
+      code={`
+        {
+          "mcpServers": {
+            "daisforge-ui": {
+              "command": "node",
+              "args": ["node_modules/@daisforge/ui-mcp/dist/server.js"]
+            }
+          }
+        }
+      `}
+    />
+
+  </div>
+</div>
+
+<div className="sb-container">
+  <div className='sb-section-title'>
+    # Какие инструменты доступны агенту
+
+    После подключения MCP-сервер отдаёт агенту следующие инструменты:
+
+    + `list_components` — список компонентов с фильтрами по типу (wrapper/composition/standalone/form), категории, scope.
+    + `search_components` — поиск компонентов и их фичей по свободному запросу (рус/англ), включая disambiguation-подсказки (например «таблица» → TableCanvas).
+    + `get_component` — компактная карточка компонента: тип, категория, hint, importStatement, имена пропсов, compound-части, список фичей.
+    + `get_component_props` — полные пропсы компонента (собственные + унаследованные от атомарного `@salutejs/sdds-finai` компонента).
+    + `get_component_examples` — примеры кода компонента.
+    + `list_features` — список фичей компонента (актуально для TableCanvas/Table — десятки фичей вроде Filtering/Sorting/CopyPasteFill).
+    + `get_feature` — документация и API конкретной фичи компонента.
+    + `get_feature_examples` — примеры кода конкретной фичи.
+    + `list_categories` — категории компонентов библиотеки с количеством по типам.
+    + `get_installation_guide` — гайд по установке и подключению библиотеки.
+
+  </div>
+</div>
+
+<div className="sb-container">
+  <div className='sb-section-title'>
+    # Что можно спрашивать у агента
+
+    После подключения MCP-сервера агенту можно задавать запросы в таком формате:
+
+    + Какие пропсы есть у DrawerDF?
+    + Покажи примеры использования TableCanvas
+    + Какие компоненты есть в категории "Локальные компоненты"?
+    + Какие фичи поддерживает TableCanvas и как включить Filtering?
+    + Как установить и подключить @daisforge/ui в проект?
+
+  </div>
+</div>
+
+<style>
+  {`
+  .sb-container {
+    margin-bottom: 48px;
+  }
+
+  .sb-section-title {
+    margin-bottom: 32px;
+  }
+  `}
+</style>
