@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "daisforge-ui": {
+      "command": "node",
+      "args": ["packages/mcp-server/src/server.js"]
+    }
+  }
+}
