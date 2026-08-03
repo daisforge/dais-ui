@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.11.0](https://github.com/daisforge/dais-ui/compare/v1.10.3...v1.11.0) (2026-08-03)
+
+### Bug Fixes
+
+- **FormTextArea:** leftHelperPlacement возвращён на значение inner ([c82f99f](https://github.com/daisforge/dais-ui/commit/c82f99f61a518d77c82196f9c35e2a5257ff91c1))
+- **TableCanvas:** восстановлена поддержка отдельных hover-цветов текста и иконки в кнопках ([e9556a7](https://github.com/daisforge/dais-ui/commit/e9556a71c5b4fde2648ceb9f915ea09b1fcf86a5))
+- **TextFieldSearch:** восстановлена передача ref через forwardRef ([70faa84](https://github.com/daisforge/dais-ui/commit/70faa844ab8a880985598319d6a08f78366a03a3))
+
+### Features
+
+- **Stories:** добавлен новый компонент Stories ([4c219a2](https://github.com/daisforge/dais-ui/commit/4c219a289634a2188709c34bd71382eb68178b2e))
+
 ## [1.10.3](https://github.com/daisforge/dais-ui/compare/v1.10.2...v1.10.3) (2026-07-28)
 
 **Note:** Version bump only for package @dais-ui/source
