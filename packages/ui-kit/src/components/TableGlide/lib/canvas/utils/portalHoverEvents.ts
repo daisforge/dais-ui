@@ -75,7 +75,10 @@ export interface TooltipContext<T = unknown> {
 export type CanvasNodeTooltipProps = Pick<
   TooltipProps,
   'placement' | 'view' | 'minWidth' | 'maxWidth'
->;
+> & {
+  /** Сохранять переносы строк (\n) в тексте тултипа через white-space: pre-line. @default false */
+  preserveLineBreaks?: boolean;
+};
 
 /**
  * Проп tooltip на Canvas-элементах: строка (текст) или объект с text и опциональными пропсами Tooltip.
