@@ -4,9 +4,9 @@ export const useIsLoadingTable = <
   FilterStateType extends ObjectForExtending,
   RowIdType extends string | number,
   RowType extends ObjectForExtending,
-  SummaryRowType = unknown
+  SummaryRowType = unknown,
 >({
-  tableConfig
+  tableConfig,
 }: {
   tableConfig: TableConfig<RowType, SummaryRowType, RowIdType, FilterStateType>;
 }) => {

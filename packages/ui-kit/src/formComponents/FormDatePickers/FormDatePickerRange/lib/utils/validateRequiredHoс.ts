@@ -5,7 +5,7 @@ import type {
   FieldPathValue,
   FieldValues,
   Validate,
-  ValidationRule
+  ValidationRule,
 } from 'react-hook-form';
 
 import { getIsRequired } from '../../../../utils';
@@ -15,7 +15,7 @@ export const validateRequiredHoс =
   ({
     required,
     validateRange,
-    externalValidates
+    externalValidates,
   }: {
     required?: ValidationRule<boolean> | string;
     validateRange: TValidateDatePickerRange;

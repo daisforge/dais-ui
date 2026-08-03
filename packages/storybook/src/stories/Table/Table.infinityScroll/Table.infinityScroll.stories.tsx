@@ -11,12 +11,12 @@ const meta: Meta = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      page: DocStoryTemplate
+      page: DocStoryTemplate,
     },
     screenshot: {
-      skip: true
-    }
-  }
+      skip: true,
+    },
+  },
 };
 
 export default meta;
@@ -48,7 +48,7 @@ function loadMoreRows<RowType>(props?: {
   const {
     indexForStart = 0,
     countOfNewRows = 200,
-    timeout = 1000
+    timeout = 1000,
   } = props ?? {};
   return new Promise((resolve) => {
     const newRows = createRows(indexForStart, countOfNewRows) as RowType[];
@@ -62,36 +62,36 @@ type Story = StoryObj;
 export const InfinityScroll: Story = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     const columns: readonly ColumnConfig<Row>[] = useMemo(
       () => [
         {
           key: 'id',
-          name: 'ID'
+          name: 'ID',
         },
 
         {
           key: 'task',
-          name: 'Title'
+          name: 'Title',
         },
 
         {
           key: 'priority',
-          name: 'Priority'
+          name: 'Priority',
         },
 
         {
           key: 'issueType',
-          name: 'Issue Type'
+          name: 'Issue Type',
         },
         {
           key: 'developer',
-          name: 'Developer'
-        }
+          name: 'Developer',
+        },
       ],
-      []
+      [],
     );
     const [rows, setRows] = useState(() => createRows(0, 50));
 
@@ -107,13 +107,13 @@ export const InfinityScroll: Story = {
         const newData = await loadMoreRows<Row>({
           indexForStart: rows.length,
           countOfNewRows: 50,
-          timeout: 2000
+          timeout: 2000,
         });
 
         setRows((prev) => [...prev, ...newData]);
         setIsLoading(false);
       },
-      [isLoading]
+      [isLoading],
     );
 
     return (
@@ -125,12 +125,12 @@ export const InfinityScroll: Story = {
             scrollThreshold: 50,
             onTrigger,
             isLoading,
-            hasMore: rows.length < 6000
-          }
+            hasMore: rows.length < 6000,
+          },
         }}
         columnConfig={columns}
         rows={rows}
       />
     );
-  }
+  },
 };

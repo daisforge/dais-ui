@@ -27,10 +27,10 @@ export const Preview = (props: PreviewProps) => {
                       text: button.text,
                       children: button.text,
                       view: 'accent',
-                      onClick: button.onClick
+                      onClick: button.onClick,
                     },
-                    type: 'link'
-                  }
+                    type: 'link',
+                  },
                 ]
               : undefined
           }

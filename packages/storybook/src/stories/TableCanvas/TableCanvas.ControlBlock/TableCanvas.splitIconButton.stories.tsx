@@ -6,7 +6,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import {
   ColumnConfig,
   SplitIconButton,
-  TableCanvas
+  TableCanvas,
 } from '@ui-kit/components/TableCanvas';
 import { IconDone, IconSb, IconStar } from '@ui-kit/icons';
 import { textInfo } from '@ui-kit/tokens';
@@ -14,7 +14,7 @@ import React, { useMemo, useState } from 'react';
 
 const meta: Meta = {
   title: 'Локальные компоненты/TableCanvas/ControlBlock/SplitIconButton',
-  tags: ['!autodocs']
+  tags: ['!autodocs'],
 };
 
 export default meta;
@@ -43,9 +43,9 @@ export const AsCustomFeatures: Story = {
         { key: 'id', name: 'ID', resizable: true },
         { key: 'task', name: 'Task', resizable: true },
         { key: 'priority', name: 'Priority', resizable: true },
-        { key: 'developer', name: 'Developer', resizable: true }
+        { key: 'developer', name: 'Developer', resizable: true },
       ],
-      []
+      [],
     );
 
     // Фича "Метка": один и тот же контент пунктов и в панели (items), и в
@@ -55,19 +55,19 @@ export const AsCustomFeatures: Story = {
     const LABELS = [
       { value: 'important', label: 'Важное' },
       { value: 'urgent', label: 'Срочное' },
-      { value: 'later', label: 'На потом' }
+      { value: 'later', label: 'На потом' },
     ];
     const withCheck = (value: string) => ({
       contentLeft: (
         <span
           style={{
             display: 'inline-flex',
-            visibility: label === value ? 'visible' : 'hidden'
+            visibility: label === value ? 'visible' : 'hidden',
           }}
         >
           <IconDone size="s" color={textInfo} />
         </span>
-      )
+      ),
     });
     const labelItems = LABELS.map((o) => ({ ...o, ...withCheck(o.value) }));
 
@@ -76,7 +76,7 @@ export const AsCustomFeatures: Story = {
     const FORMATS = [
       { value: 'csv', label: 'CSV' },
       { value: 'xlsx', label: 'Excel' },
-      { value: 'pdf', label: 'PDF' }
+      { value: 'pdf', label: 'PDF' },
     ];
 
     // Фича "Копирование": шеврон без дропдауна (items не заданы) —
@@ -115,8 +115,8 @@ export const AsCustomFeatures: Story = {
                   value: label,
                   options: labelItems,
                   onChange: setLabel,
-                  icon: () => <IconStar size="s" />
-                }
+                  icon: () => <IconStar size="s" />,
+                },
               },
               {
                 value: 'export',
@@ -137,8 +137,8 @@ export const AsCustomFeatures: Story = {
                   value: fmt,
                   options: FORMATS,
                   onChange: setFmt,
-                  icon: () => <IconSb size="s" />
-                }
+                  icon: () => <IconSb size="s" />,
+                },
               },
               {
                 value: 'copy',
@@ -151,14 +151,14 @@ export const AsCustomFeatures: Story = {
                     onIconClick={() => alert('Скопировать')}
                     onChevronClick={() => alert('Дополнительно')}
                   />
-                )
-              }
-            ]
-          }
+                ),
+              },
+            ],
+          },
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };

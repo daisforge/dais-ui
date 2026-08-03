@@ -4,7 +4,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import {
   Canvas,
   ColumnConfig,
-  TableCanvas
+  TableCanvas,
 } from '@ui-kit/components/TableCanvas';
 import React, { useMemo } from 'react';
 
@@ -20,7 +20,7 @@ const JUSTIFY = ['flex-start', 'center', 'flex-end', 'space-between'] as const;
 
 const meta: Meta = {
   title: 'Локальные компоненты/TableCanvas/CanvasElements/CanvasContainer',
-  tags: ['!autodocs']
+  tags: ['!autodocs'],
 };
 
 export default meta;
@@ -66,7 +66,7 @@ export const Default: StoryObj = {
     padding: 8,
     width: 0,
     height: 0,
-    backgroundColor: ''
+    backgroundColor: '',
   },
   argTypes: {
     direction: { control: 'select', options: DIRECTIONS },
@@ -76,7 +76,7 @@ export const Default: StoryObj = {
     padding: { control: { type: 'range', min: 0, max: 24, step: 2 } },
     width: { control: { type: 'range', min: 0, max: 500, step: 10 } },
     height: { control: { type: 'range', min: 0, max: 200, step: 10 } },
-    backgroundColor: { control: 'color' }
+    backgroundColor: { control: 'color' },
   },
   render: (args) => {
     const {
@@ -87,7 +87,7 @@ export const Default: StoryObj = {
       padding,
       width,
       height,
-      backgroundColor
+      backgroundColor,
     } = args as {
       direction: (typeof DIRECTIONS)[number];
       alignItems: (typeof ALIGN_ITEMS)[number];
@@ -114,7 +114,7 @@ export const Default: StoryObj = {
               padding={padding}
               style={{
                 ...(width > 0 ? { width } : {}),
-                ...(height > 0 ? { height } : {})
+                ...(height > 0 ? { height } : {}),
               }}
               backgroundColor={backgroundColor || 'gray'}
             >
@@ -124,8 +124,8 @@ export const Default: StoryObj = {
                 Button
               </Canvas.Button>
             </Canvas.Container>
-          )
-        }
+          ),
+        },
       ],
       [
         direction,
@@ -135,8 +135,8 @@ export const Default: StoryObj = {
         padding,
         width,
         height,
-        backgroundColor
-      ]
+        backgroundColor,
+      ],
     );
 
     return (
@@ -146,5 +146,5 @@ export const Default: StoryObj = {
         rows={rows}
       />
     );
-  }
+  },
 };

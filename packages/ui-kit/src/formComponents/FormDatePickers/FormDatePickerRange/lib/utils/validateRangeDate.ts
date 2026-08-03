@@ -2,7 +2,7 @@ import type { TValidateDateProps } from '../../../lib/utils/types';
 import { validateDate } from '../../../lib/utils/validateDate';
 import type {
   TDatePickerRangeData,
-  TValidateDatePickerRange
+  TValidateDatePickerRange,
 } from '../../types';
 
 export const validateRangeDate = ({
@@ -10,14 +10,14 @@ export const validateRangeDate = ({
   max,
   required,
   invalidFormatMessage,
-  format
+  format,
 }: TValidateDateProps): TValidateDatePickerRange => {
   const validatorRange = validateDate({
     min,
     max,
     required,
     invalidFormatMessage,
-    format
+    format,
   });
   return (value?: TDatePickerRangeData) => {
     const { dateFrom = undefined, dateTo = undefined } = value || {};

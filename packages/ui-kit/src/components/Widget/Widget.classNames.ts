@@ -20,5 +20,5 @@ export const widgetClassNames = {
   content: `${PRE}content`,
   containerTypeDefault: `${PRE}default`,
   containerTypeModal: `${PRE}modal`,
-  containerTypeSplitView: `${PRE}split-view`
+  containerTypeSplitView: `${PRE}split-view`,
 } as const;

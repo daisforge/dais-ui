@@ -6,7 +6,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import {
   Canvas,
   ColumnConfig,
-  TableCanvas
+  TableCanvas,
 } from '@ui-kit/components/TableCanvas';
 import React, { useCallback, useMemo, useState } from 'react';
 
@@ -16,9 +16,9 @@ const meta: Meta = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      page: DocStoryTemplate
-    }
-  }
+      page: DocStoryTemplate,
+    },
+  },
 };
 
 export default meta;
@@ -35,7 +35,7 @@ function loadMoreRows(props?: {
   const {
     indexForStart = 0,
     countOfNewRows = 30,
-    timeout = 1000
+    timeout = 1000,
   } = props ?? {};
   return new Promise((resolve) => {
     const newRows = createRows(indexForStart, countOfNewRows);
@@ -46,7 +46,7 @@ function loadMoreRows(props?: {
 export const SelectingWithInfinityScroll: StoryObj = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   name: 'SubRows + InfinityScroll + Selecting',
   render: () => {
@@ -62,13 +62,13 @@ export const SelectingWithInfinityScroll: StoryObj = {
         const newData = await loadMoreRows({
           indexForStart: currentRows.length,
           countOfNewRows: 30,
-          timeout: 1500
+          timeout: 1500,
         });
 
         setRows((prev) => [...prev, ...newData]);
         setIsLoading(false);
       },
-      [isLoading]
+      [isLoading],
     );
 
     const columns = useMemo<readonly ColumnConfig<Row>[]>(
@@ -78,36 +78,36 @@ export const SelectingWithInfinityScroll: StoryObj = {
           name: 'ID',
           subRow: {
             keyOfColumnInSubRow: 'id',
-            isColumnWithArrow: true
+            isColumnWithArrow: true,
           },
-          resizable: true
+          resizable: true,
         },
         {
           key: 'task',
           name: 'Task',
           subRow: { keyOfColumnInSubRow: 'task' },
-          renderCell: ({ row }) => <Canvas.Text>{row.task}</Canvas.Text>
+          renderCell: ({ row }) => <Canvas.Text>{row.task}</Canvas.Text>,
         },
         {
           key: 'priority',
           name: 'Priority',
           renderCell: ({ row }) => (
             <Canvas.Text>{row.priority ?? '—'}</Canvas.Text>
-          )
+          ),
         },
         {
           key: 'issueType',
           name: 'Issue Type',
           renderCell: ({ row }) => (
             <Canvas.Text>{row.issueType ?? '—'}</Canvas.Text>
-          )
-        }
+          ),
+        },
       ],
-      []
+      [],
     );
 
     const selectingState = useState(
-      (): ReadonlySet<string | number> => new Set()
+      (): ReadonlySet<string | number> => new Set(),
     );
 
     return (
@@ -117,13 +117,13 @@ export const SelectingWithInfinityScroll: StoryObj = {
           resizableColumn: true,
           subRows: {
             getSubRows: (row) => row?.subRows,
-            rowKeyGetter: (row) => row.id
+            rowKeyGetter: (row) => row.id,
           },
           selecting: {
             state: selectingState,
             rowKeyGetter: (r) => r.id,
             showDefault: true,
-            selectingRules: { levels: 'all' }
+            selectingRules: { levels: 'all' },
           },
           controlBlock: {
             show: true,
@@ -132,21 +132,21 @@ export const SelectingWithInfinityScroll: StoryObj = {
                 {
                   type: 'button' as const,
                   text: 'Действие',
-                  view: 'secondary' as const
-                }
-              ]
-            }
+                  view: 'secondary' as const,
+                },
+              ],
+            },
           },
           infinityScroll: {
             rowThreshold: 5,
             onTrigger,
             isLoading,
-            hasMore
-          }
+            hasMore,
+          },
         }}
         columnConfig={columns}
         rows={rows}
       />
     );
-  }
+  },
 };

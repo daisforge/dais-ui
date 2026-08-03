@@ -6,11 +6,11 @@ export const useFiltersInfo = <
   FilterStateType extends Record<string, unknown>,
   RowType extends Record<string, unknown>,
   SummaryRowType,
-  RowIdType extends string | number
+  RowIdType extends string | number,
 >(
   columnConfig: readonly ColumnConfig<RowType, SummaryRowType>[],
   filters: FilterStateType | undefined,
-  tableConfig: TableConfig<RowType, SummaryRowType, RowIdType, FilterStateType>
+  tableConfig: TableConfig<RowType, SummaryRowType, RowIdType, FilterStateType>,
 ) =>
   useMemo(() => {
     const allFilterKeys = new Set<string>();
@@ -29,7 +29,7 @@ export const useFiltersInfo = <
         clearedValue:
           tableConfig?.filtering?.filtersInfo?.[key]?.clearedValue ??
           tableConfig.filtering?.clearedValue?.[key] ??
-          undefined
+          undefined,
       };
       return acc;
     }, {} as Record<string, { label: string; clearedValue: unknown }>);
@@ -37,5 +37,5 @@ export const useFiltersInfo = <
     columnConfig,
     filters,
     tableConfig.filtering?.clearedValue,
-    tableConfig.filtering?.filtersInfo
+    tableConfig.filtering?.filtersInfo,
   ]);

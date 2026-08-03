@@ -15,15 +15,15 @@ const getData = async () => {
           0: 'block',
           1: 'tribe',
           2: 'product',
-          default: 'block'
+          default: 'block',
         },
-        isColumnWithArrow: true
-      }
+        isColumnWithArrow: true,
+      },
     },
     {
       key: 'blockActivity',
       name: 'Активность блока',
-      sortingType: 'stringSort'
+      sortingType: 'stringSort',
     },
     {
       key: '',
@@ -33,68 +33,68 @@ const getData = async () => {
       subRow: {
         keyOfColumnInSubRow: {
           0: 'tribeZone',
-          default: ''
-        }
-      }
+          default: '',
+        },
+      },
     },
     {
       key: 'q1',
       name: 'Q1',
       subRow: {
-        parentKeyAsDefault: true
+        parentKeyAsDefault: true,
       },
       sortingType: 'numberSort',
       contentFormat: {
-        type: 'number'
-      }
+        type: 'number',
+      },
     },
 
     {
       key: 'q2',
       name: 'Q2',
       subRow: {
-        keyOfColumnInSubRow: 'q1'
+        keyOfColumnInSubRow: 'q1',
       },
       sortingType: 'numberSort',
       contentFormat: {
-        type: 'number'
-      }
+        type: 'number',
+      },
     },
     {
       key: 'q3',
       name: 'Q3',
       subRow: {
-        keyOfColumnInSubRow: 'q1'
+        keyOfColumnInSubRow: 'q1',
       },
       sortingType: 'numberSort',
       contentFormat: {
-        type: 'number'
-      }
+        type: 'number',
+      },
     },
     {
       key: 'q4',
       name: 'Q4',
       subRow: {
-        keyOfColumnInSubRow: 'q1'
+        keyOfColumnInSubRow: 'q1',
       },
       sortingType: 'numberSort',
       contentFormat: {
-        type: 'number'
-      }
-    }
+        type: 'number',
+      },
+    },
   ];
 
   const tableConfig: ContractResponse['meta']['tableConfig'] = {
     sorting: { type: 'frontend' },
-    subRows: { subRowsKey: 'child', rowUniqIdKey: 'id' }
+    subRows: { subRowsKey: 'child', rowUniqIdKey: 'id' },
   };
 
   const resp: ContractResponse = {
     data: { main: treeRows },
     meta: {
       columns,
-      tableConfig
-    }
+      tableConfig,
+    },
   };
   return resp;
 };
@@ -106,5 +106,5 @@ export const subRowsRoute = {
   route: http.get(ENDPOINT, async () => {
     const response: ContractResponse = await getData();
     return HttpResponse.json(response);
-  })
+  }),
 };

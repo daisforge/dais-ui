@@ -8,7 +8,7 @@ import { Select } from '@ui-kit/components/Select';
 import {
   ColumnConfig,
   HighlightActiveType,
-  Table
+  Table,
 } from '@ui-kit/components/Table';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import type { DataGridHandle } from 'react-data-grid';
@@ -18,9 +18,9 @@ const meta: Meta = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      page: DocStoryTemplate
-    }
-  }
+      page: DocStoryTemplate,
+    },
+  },
 };
 
 export default meta;
@@ -47,7 +47,7 @@ import { IconAddOutline, IconBoxOutline, IconSber } from '@daisforge/ui/icons';
 export const HighlightActiveTypeTable: StoryObj = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'hidden'
+    previewSource: 'hidden',
   }),
   render: () => {
     const [rows] = useState(createRows);
@@ -61,31 +61,31 @@ export const HighlightActiveTypeTable: StoryObj = {
             <div
               style={{
                 display: 'flex',
-                justifyContent: 'space-between'
+                justifyContent: 'space-between',
               }}
             >
               id
             </div>
-          )
+          ),
         },
         {
           key: 'task',
-          name: 'Title'
+          name: 'Title',
         },
         {
           key: 'priority',
-          name: 'Priority'
+          name: 'Priority',
         },
         {
           key: 'issueType',
-          name: 'Issue Type'
+          name: 'Issue Type',
         },
         {
           key: 'complete',
-          name: '% Complete'
-        }
+          name: '% Complete',
+        },
       ],
-      []
+      [],
     );
     const refTable = useRef<DataGridHandle>(null);
 
@@ -103,14 +103,14 @@ export const HighlightActiveTypeTable: StoryObj = {
           onChange={(v) => setHighlightActiveType(v as HighlightActiveType)}
           items={['row', 'cell', 'disabled'].map((i) => ({
             label: i,
-            value: i
+            value: i,
           }))}
         />
         <br />
         <Table
           tableConfig={{
             containerStyle: { height: 700 },
-            highlightActiveType
+            highlightActiveType,
           }}
           refTable={refTable}
           columnConfig={columnConfig}
@@ -118,5 +118,5 @@ export const HighlightActiveTypeTable: StoryObj = {
         />
       </>
     );
-  }
+  },
 };

@@ -17,7 +17,7 @@ import {
   StyledRightSlot,
   StyledSubTitleWithTooltip,
   StyledTitleContainer,
-  StyledTitleLink
+  StyledTitleLink,
 } from './AnalyticalWidgetHeader.styled';
 import { AnalyticalWidgetHeaderProps } from './AnalyticalWidgetHeader.types';
 import { AnalyticalWidgetTitle } from './AnalyticalWidgetTitle';
@@ -35,7 +35,7 @@ export const AnalyticalWidgetHeader = ({
   hrefProps,
   rightSlot,
   className,
-  titleLinkProps
+  titleLinkProps,
 }: AnalyticalWidgetHeaderProps) => {
   const actionsContainerRef = useRef<HTMLDivElement>(null);
   const actionsWrapperRef = useRef<HTMLDivElement>(null);
@@ -106,7 +106,7 @@ export const AnalyticalWidgetHeader = ({
                         size="xs"
                         style={{
                           cursor: 'pointer',
-                          color: textSecondary
+                          color: textSecondary,
                         }}
                       />
                     </EmbedIconButton>
@@ -119,7 +119,7 @@ export const AnalyticalWidgetHeader = ({
                 <Link
                   href={href}
                   style={{
-                    flexShrink: 0
+                    flexShrink: 0,
                   }}
                   size="xs"
                   {...hrefProps}
@@ -138,11 +138,11 @@ export const AnalyticalWidgetHeader = ({
             tooltipText={subtitle}
             style={{
               color: textSecondary,
-              wordBreak: 'normal'
+              wordBreak: 'normal',
             }}
             tooltipProps={{
               placement: 'top',
-              ...subtitleTooltipProps
+              ...subtitleTooltipProps,
             }}
             lines={1}
           >

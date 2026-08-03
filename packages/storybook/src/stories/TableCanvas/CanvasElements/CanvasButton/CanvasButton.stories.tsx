@@ -4,7 +4,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import {
   Canvas,
   ColumnConfig,
-  TableCanvas
+  TableCanvas,
 } from '@ui-kit/components/TableCanvas';
 import React, { useMemo } from 'react';
 
@@ -19,7 +19,7 @@ const VIEWS = [
   'critical',
   'dark',
   'black',
-  'white'
+  'white',
 ] as const;
 
 const SIZES = ['xs', 's', 'm', 'l'] as const;
@@ -30,7 +30,7 @@ const rows: ViewRow[] = VIEWS.map((view) => ({ id: view, view }));
 
 const meta: Meta = {
   title: 'Локальные компоненты/TableCanvas/CanvasElements/CanvasButton',
-  tags: ['!autodocs']
+  tags: ['!autodocs'],
 };
 
 export default meta;
@@ -64,11 +64,11 @@ export const Default: StoryObj = {
   ...storySourceDoc({ code, previewSource: 'shown' }),
   args: {
     text: 'Click me',
-    disabled: false
+    disabled: false,
   },
   argTypes: {
     text: { control: 'text' },
-    disabled: { control: 'boolean' }
+    disabled: { control: 'boolean' },
   },
   render: (args) => {
     const { text, disabled } = args as {
@@ -88,9 +88,9 @@ export const Default: StoryObj = {
                 {text}
               </Canvas.Button>
             </Canvas.Container>
-          )
+          ),
         })),
-      [text, disabled]
+      [text, disabled],
     );
 
     return (
@@ -100,5 +100,5 @@ export const Default: StoryObj = {
         rows={rows}
       />
     );
-  }
+  },
 };

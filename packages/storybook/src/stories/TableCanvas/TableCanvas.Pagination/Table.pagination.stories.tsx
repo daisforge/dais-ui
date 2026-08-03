@@ -12,9 +12,9 @@ const meta: Meta = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      page: DocStoryTemplate
-    }
-  }
+      page: DocStoryTemplate,
+    },
+  },
 };
 
 export default meta;
@@ -30,7 +30,7 @@ export const PaginationTable: Story = {
   name: 'Таблица с пагинацией',
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     const total = 300;
@@ -43,22 +43,22 @@ export const PaginationTable: Story = {
       () => [
         {
           key: 'task',
-          name: 'Title'
+          name: 'Title',
         },
         {
           key: 'priority',
-          name: 'Priority'
+          name: 'Priority',
         },
         {
           key: 'issueType',
-          name: 'Issue Type'
+          name: 'Issue Type',
         },
         {
           key: 'complete',
-          name: '% Complete'
-        }
+          name: '% Complete',
+        },
       ],
-      []
+      [],
     );
 
     // Загрузка данных при монтировании и при изменении страницы/perPage
@@ -67,7 +67,7 @@ export const PaginationTable: Story = {
         const data = await getPaginationDataAsync({
           page: currentPage,
           perPage,
-          total
+          total,
         });
         setRows(data);
       };
@@ -80,7 +80,7 @@ export const PaginationTable: Story = {
         tableConfig={{
           containerStyle: { height: 700 },
           collapsing: {
-            enableCollapse: true
+            enableCollapse: true,
           },
           pagination: {
             count: total,
@@ -99,21 +99,21 @@ export const PaginationTable: Story = {
                 setPerPage(perPage);
                 scrollToTop();
               }
-            }
-          }
+            },
+          },
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };
 
 export const PaginationTableFixedSlots: Story = {
   name: 'Таблица с фиксированным количеством slots',
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     const total = 300;
@@ -126,22 +126,22 @@ export const PaginationTableFixedSlots: Story = {
       () => [
         {
           key: 'task',
-          name: 'Title'
+          name: 'Title',
         },
         {
           key: 'priority',
-          name: 'Priority'
+          name: 'Priority',
         },
         {
           key: 'issueType',
-          name: 'Issue Type'
+          name: 'Issue Type',
         },
         {
           key: 'complete',
-          name: '% Complete'
-        }
+          name: '% Complete',
+        },
       ],
-      []
+      [],
     );
 
     useEffect(() => {
@@ -149,7 +149,7 @@ export const PaginationTableFixedSlots: Story = {
         const data = await getPaginationDataAsync({
           page: currentPage,
           perPage,
-          total
+          total,
         });
         setRows(data);
       };
@@ -177,12 +177,12 @@ export const PaginationTableFixedSlots: Story = {
                 setPerPage(perPage);
                 scrollToTop();
               }
-            }
-          }
+            },
+          },
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };

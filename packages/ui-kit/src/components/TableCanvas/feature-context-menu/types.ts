@@ -3,5 +3,5 @@ export {
   ContextMenuDropdownItem,
   ContextMenuDropdownProps,
   DropdownContextMenu,
-  HeaderContextMenuDropdownProps
+  HeaderContextMenuDropdownProps,
 } from '../TableGlideInstance/type';

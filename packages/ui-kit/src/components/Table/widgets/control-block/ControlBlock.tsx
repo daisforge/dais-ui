@@ -15,14 +15,14 @@ import React, {
   useLayoutEffect,
   useMemo,
   useRef,
-  useState
+  useState,
 } from 'react';
 
 import { TableDropdownConfigProps } from '../../components/TableDropdown/types';
 import {
   useRefTableContext,
   useTableCollapse,
-  useTableResizeObserver
+  useTableResizeObserver,
 } from '../../contexts';
 import { CollapseTableButton } from '../../feature-collapse-table';
 import { SearchBlock, StyledSearchBlockBellow } from '../../feature-searching';
@@ -38,7 +38,7 @@ import { ControlBlockStyled, LefSideStyled } from './styled';
 import {
   FeatureItem,
   InitialWidthsForToolsMenu,
-  ToolsMenuState
+  ToolsMenuState,
 } from './types';
 import { useCompressionFeatures } from './use-compression-features';
 
@@ -59,7 +59,7 @@ type ActivatedFeatures = {
 
 const getDividerIndexes: ({
   visibleRightButtons,
-  featureRightButtons
+  featureRightButtons,
 }: {
   visibleRightButtons: ControlBlockButtonProps[];
   featureRightButtons: ControlBlockButtonProps[];
@@ -94,14 +94,14 @@ export const ControlBlock = ({
       isActiveSearching,
       showSearchBlock,
       searchQueryLocalValue,
-      placeholderSearchBlock
-    }
+      placeholderSearchBlock,
+    },
   },
   $borderTopRounded,
   setCompressionVisibility,
   controlBlockLeftSideDropdownProps,
   controlBlockRightSideDropdownProps,
-  collapseButtonPlacement = 'inside'
+  collapseButtonPlacement = 'inside',
 }: {
   leftSideInner: ControlBlockButtonProps[] | undefined;
   rightSideInner: ControlBlockButtonProps[] | undefined;
@@ -157,7 +157,7 @@ export const ControlBlock = ({
    *  Данный стейт передается в хук компрессии для более точного подсчёта (вместо использования заготовок в виде констант)
    */
   const [initialWidths, setInitialWidths] = useState<InitialWidthsForToolsMenu>(
-    {}
+    {},
   );
 
   /**
@@ -180,51 +180,51 @@ export const ControlBlock = ({
     () => ({
       leftSide: {
         collapsingBlock: {
-          isActive: enableCollapse && collapseButtonPlacement === 'inside'
+          isActive: enableCollapse && collapseButtonPlacement === 'inside',
         },
         // isActive: isActivated.selectingRows && selectingRowsIsActive.
         // Сейчас отключаем для компрессии, так как counter теперь в MassActions
         selectingRowFeature: {
           isActive: false,
           isLabelVisible: false,
-          isCounterVisible: false
+          isCounterVisible: false,
         },
         editRowFeature: {
           isActive: isActivated.editingMode,
           isLabelVisible: true,
-          editModeEnabled
+          editModeEnabled,
         },
         leftSideInner: [...(leftSideInner ?? [])].map((btn) => ({
           isLabelVisible: true,
           isTargetAction:
-            btn.isTargetAction || btn.view === 'linkAccent' || false // Целевые действие
+            btn.isTargetAction || btn.view === 'linkAccent' || false, // Целевые действие
         })),
-        isLeftSideInnerInsideDropdown: (leftSideInner ?? []).length >= 2 // Если 2 или более фичей в leftSideInner, то скроются в Dropdown
+        isLeftSideInnerInsideDropdown: (leftSideInner ?? []).length >= 2, // Если 2 или более фичей в leftSideInner, то скроются в Dropdown
       },
       middle: {
         searchingFeature: {
           isActive: isActiveSearching && showSearchBlock,
-          searchPosition: 'inline' // По умолчанию в одной строке
-        }
+          searchPosition: 'inline', // По умолчанию в одной строке
+        },
       },
       rightSide: {
         rightSideInner: [...(rightSideInner ?? [])].map((btn) => ({
           isLabelVisible: true,
           isTargetAction:
-            btn.isTargetAction || btn.view === 'linkAccent' || false // Целевые действие
+            btn.isTargetAction || btn.view === 'linkAccent' || false, // Целевые действие
         })),
         customFeatures: icons.map((icon) => ({
           isMovedToRightSidebar: false,
           isMandatory: icon.mandatory || false, // Обязательные фичи (не попадают в sidebar)
-          canBeCompressedInToolsMenu: icon.canBeCompressedInToolsMenu || false //
+          canBeCompressedInToolsMenu: icon.canBeCompressedInToolsMenu || false, //
         })),
         groupingRowsFeature: {
           isActive: isActivated.rowsGrouping,
           isVisibleLabel: true,
-          isCounterVisible: true // самый "длинный" вариант
+          isCounterVisible: true, // самый "длинный" вариант
         },
-        isRightSideInsideDropdown: false
-      }
+        isRightSideInsideDropdown: false,
+      },
     }),
     //
     [
@@ -237,8 +237,8 @@ export const ControlBlock = ({
       showSearchBlock,
       rightSideInner,
       icons,
-      collapseButtonPlacement
-    ]
+      collapseButtonPlacement,
+    ],
   );
 
   /**
@@ -292,7 +292,7 @@ export const ControlBlock = ({
     rightSideInner?.length,
     leftSideInner?.length,
     initialWidths,
-    fullScreened
+    fullScreened,
   ]);
 
   /**
@@ -304,7 +304,7 @@ export const ControlBlock = ({
     useCompressionFeatures(
       initialVisibilityState,
       initialWidths,
-      refTableContext?.current?.element
+      refTableContext?.current?.element,
     );
 
   /**
@@ -333,13 +333,13 @@ export const ControlBlock = ({
         }
       }
     },
-    [compress]
+    [compress],
   );
 
   // Обернутая в throttle handleResize
   const throttledHandleResize = useMemo(
     () => throttleWithLastCall(handleResize, 100),
-    [handleResize]
+    [handleResize],
   );
 
   useTableResizeObserver(throttledHandleResize);
@@ -394,7 +394,7 @@ export const ControlBlock = ({
         | 'rightSideInner'
         | 'leftSideInner'
         | 'customFeatures'
-        | 'collapsingBlock'
+        | 'collapsingBlock',
     ) => {
       switch (target) {
         case 'rightSideInner':
@@ -413,7 +413,7 @@ export const ControlBlock = ({
           break;
       }
     },
-    []
+    [],
   );
 
   // Должна ли скрыться правая часть в Dropdown
@@ -423,7 +423,7 @@ export const ControlBlock = ({
   const filteredLeftSideInner = (leftSideInner ?? []).filter(
     (_, index) =>
       compressionVisibilityState.leftSide.leftSideInner[index]
-        ?.isLabelVisible !== false
+        ?.isLabelVisible !== false,
   );
 
   // 2. rightSideInner
@@ -433,7 +433,7 @@ export const ControlBlock = ({
   const visibleIcons = icons.filter(
     (_, index) =>
       !compressionVisibilityState.rightSide.customFeatures[index]
-        ?.isMovedToRightSidebar
+        ?.isMovedToRightSidebar,
   );
 
   // 4. Фильтрация иконок для правой части (попали ли они в Dropdown скрытия)
@@ -482,7 +482,7 @@ export const ControlBlock = ({
       .filter((item) =>
         onlyTargetActions
           ? item.isTargetAction || item.view === 'linkAccent'
-          : item
+          : item,
       )
       .map((props, i, arr) => {
         const isLastButtonInnArray =
@@ -534,7 +534,7 @@ export const ControlBlock = ({
         <Flow
           alignment="center"
           style={{
-            flexWrap: 'nowrap'
+            flexWrap: 'nowrap',
           }}
         >
           {/* Collapsing block - рендерим только если размещение внутри  */}
@@ -587,23 +587,23 @@ export const ControlBlock = ({
           {isRightSideInsideDropdown ? (
             <>
               {renderRightSideInner({
-                onlyTargetActions: true
+                onlyTargetActions: true,
               })}
               <ControlBlockActions
                 buttons={visibleRightButtons
                   .concat(
-                    featureRightButtons.filter((item) => !item.isTargetAction)
+                    featureRightButtons.filter((item) => !item.isTargetAction),
                   )
                   .concat(
                     visibleIcons
                       .reverse() // меняем порядок местами, так как ранее эти фичи были в другом порядке и это компенсировалось row-reverse для flex контейнера, но в dropdown так сделать не получится.
-                      .filter((item) => item.canBeCompressedInToolsMenu)
+                      .filter((item) => item.canBeCompressedInToolsMenu),
                   )}
                 dividerIndexes={
                   visibleIcons.some((item) => item.canBeCompressedInToolsMenu)
                     ? getDividerIndexes({
                         visibleRightButtons,
-                        featureRightButtons
+                        featureRightButtons,
                       })
                     : []
                 }
@@ -612,7 +612,7 @@ export const ControlBlock = ({
                     size="s"
                     contentRight={<IconDotsHorizontalOutline size="s" />}
                     style={{
-                      paddingInline: '5px 8px'
+                      paddingInline: '5px 8px',
                     }}
                   />
                 }

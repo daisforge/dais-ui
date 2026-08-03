@@ -15,7 +15,7 @@ import {
   TextL,
   TextM,
   TextS,
-  TextXS
+  TextXS,
 } from '@salutejs/sdds-finai';
 import React, { ComponentProps, LegacyRef } from 'react';
 
@@ -36,7 +36,7 @@ const typographyComponents = {
   TextL,
   TextM,
   TextS,
-  TextXS
+  TextXS,
 } as const;
 
 export type TypographyVariant = keyof typeof typographyComponents;

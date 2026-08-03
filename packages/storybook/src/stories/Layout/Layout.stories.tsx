@@ -22,26 +22,26 @@ const meta: Meta<LayoutProps> = {
         type: {
           summary: 'LayoutVariant',
           detail: `type LayoutVariant = ${Object.keys(LAYOUT_VARIANTS).join(
-            ' | '
-          )}`
-        }
-      }
+            ' | ',
+          )}`,
+        },
+      },
     },
     headerSlot: {
       description: 'Контент для хедера страницы',
       table: {
         type: {
-          summary: 'ReactNode'
-        }
-      }
+          summary: 'ReactNode',
+        },
+      },
     },
     mainSlot: {
       description: 'Основной контент страницы',
       table: {
         type: {
-          summary: 'ReactNode | ReactNode[]'
-        }
-      }
+          summary: 'ReactNode | ReactNode[]',
+        },
+      },
     },
     customSpacing: {
       description: 'Кастомные отступы для раскладки',
@@ -53,9 +53,9 @@ const meta: Meta<LayoutProps> = {
   vertical?: string;
   gutter?: string;
   headerHeight?: string;
-}`
-        }
-      }
+}`,
+        },
+      },
     },
     classes: {
       description: 'Классы для стилизации компонента',
@@ -68,12 +68,12 @@ const meta: Meta<LayoutProps> = {
   main?: string;
   item?: string;
   centeredItem?: string;
-}`
-        }
-      }
-    }
+}`,
+        },
+      },
+    },
   },
-  tags: ['!autodocs']
+  tags: ['!autodocs'],
 };
 
 export default meta;
@@ -111,7 +111,7 @@ const DefaultContent = () => {
         $css={{
           display: 'grid',
           'grid-template-columns': 'repeat(auto-fit, minmax(100px, 1fr))',
-          gap: '10px'
+          gap: '10px',
         }}
       >
         <Box $css={{ background: '#dfffff ' }}>Текст</Box>
@@ -128,7 +128,7 @@ const DefaultHeader = (
   <Box width="100%" height="100%" background="#ffdfdf">
     <PageTitle
       breadcrumbs={{
-        items: [{ title: 'Главная', href: '#' }, { title: 'Раздел' }]
+        items: [{ title: 'Главная', href: '#' }, { title: 'Раздел' }],
       }}
       title="Заголовок страницы"
       subtitle="Описание страницы или подзаголовок"
@@ -161,16 +161,16 @@ export const V1_1: Story = {
       <Box width="100%" height="100%" background="#dfffdf">
         <DefaultContent />
       </Box>
-    )
+    ),
   },
   name: 'V1_1: Одноколоночная',
   parameters: {
     docs: {
       source: {
-        format: 'dedent'
-      }
-    }
-  }
+        format: 'dedent',
+      },
+    },
+  },
 };
 
 /**
@@ -186,17 +186,17 @@ export const V2_1: Story = {
       </Box>,
       <Box width="100%" height="100%" key="right" background="#dfdfff">
         <DefaultContent />
-      </Box>
-    ]
+      </Box>,
+    ],
   },
   name: 'V2_1: Две колонки (основная слева)',
   parameters: {
     docs: {
       source: {
-        format: 'dedent'
-      }
-    }
-  }
+        format: 'dedent',
+      },
+    },
+  },
 };
 
 /**
@@ -212,17 +212,17 @@ export const V2_2: Story = {
       </Box>,
       <Box key="right" background="#dfdfff" width="100%" height="100%">
         <DefaultContent />
-      </Box>
-    ]
+      </Box>,
+    ],
   },
   name: 'V2_2: Две колонки (основная справа)',
   parameters: {
     docs: {
       source: {
-        format: 'dedent'
-      }
-    }
-  }
+        format: 'dedent',
+      },
+    },
+  },
 };
 
 /**
@@ -238,17 +238,17 @@ export const V3_1: Story = {
       </Box>,
       <Box key="right" background="#dfdfff" width="100%" height="100%">
         <DefaultContent />
-      </Box>
-    ]
+      </Box>,
+    ],
   },
   name: 'V3_1: Две колонки справа узкая',
   parameters: {
     docs: {
       source: {
-        format: 'dedent'
-      }
-    }
-  }
+        format: 'dedent',
+      },
+    },
+  },
 };
 
 /**
@@ -264,17 +264,17 @@ export const V3_2: Story = {
       </Box>,
       <Box key="right" background="#dfdfff" width="100%" height="100%">
         <DefaultContent />
-      </Box>
-    ]
+      </Box>,
+    ],
   },
   name: 'V3_2: Две колонки слева узкая',
   parameters: {
     docs: {
       source: {
-        format: 'dedent'
-      }
-    }
-  }
+        format: 'dedent',
+      },
+    },
+  },
 };
 
 /**
@@ -293,17 +293,17 @@ export const V3_3: Story = {
       </Box>,
       <Box key="right" background="#dfdfff" width="100%" height="100%">
         <DefaultContent />
-      </Box>
-    ]
+      </Box>,
+    ],
   },
   name: 'V3_3: Три колонки (центр шире)',
   parameters: {
     docs: {
       source: {
-        format: 'dedent'
-      }
-    }
-  }
+        format: 'dedent',
+      },
+    },
+  },
 };
 
 /**
@@ -319,17 +319,17 @@ export const V4_1: Story = {
       </Box>,
       <Box key="right" background="#dfdfff" width="100%" height="100%">
         <DefaultContent />
-      </Box>
-    ]
+      </Box>,
+    ],
   },
   name: 'V4_1: Две равные колонки',
   parameters: {
     docs: {
       source: {
-        format: 'dedent'
-      }
-    }
-  }
+        format: 'dedent',
+      },
+    },
+  },
 };
 
 /**
@@ -348,17 +348,17 @@ export const V4_2: Story = {
       </Box>,
       <Box key="right" background="#dfdfff" width="100%" height="100%">
         <DefaultContent />
-      </Box>
-    ]
+      </Box>,
+    ],
   },
   name: 'V4_2: Три равные колонки',
   parameters: {
     docs: {
       source: {
-        format: 'dedent'
-      }
-    }
-  }
+        format: 'dedent',
+      },
+    },
+  },
 };
 
 /**
@@ -374,17 +374,17 @@ export const V5_1: Story = {
       </Box>,
       <Box key="right" background="#dfdfff" width="100%" height="100%">
         <DefaultContent />
-      </Box>
-    ]
+      </Box>,
+    ],
   },
   name: 'V5_1: Фиксир. слева + центрир.',
   parameters: {
     docs: {
       source: {
-        format: 'dedent'
-      }
-    }
-  }
+        format: 'dedent',
+      },
+    },
+  },
 };
 
 /**
@@ -405,17 +405,17 @@ export const CustomSpacing: Story = {
       horizontal: 'auto',
       vertical: '24px',
       gutter: '32px',
-      headerHeight: '250px'
-    }
+      headerHeight: '250px',
+    },
   },
   name: 'Кастомные отступы',
   parameters: {
     docs: {
       source: {
-        format: 'dedent'
-      }
-    }
-  }
+        format: 'dedent',
+      },
+    },
+  },
 };
 
 /**
@@ -435,15 +435,15 @@ export const CustomClasses: Story = {
     classes: {
       root: 'custom-root-class',
       header: 'custom-header-class',
-      main: 'custom-main-class'
-    }
+      main: 'custom-main-class',
+    },
   },
   name: 'Кастомные классы',
   parameters: {
     docs: {
       source: {
-        format: 'dedent'
-      }
-    }
-  }
+        format: 'dedent',
+      },
+    },
+  },
 };

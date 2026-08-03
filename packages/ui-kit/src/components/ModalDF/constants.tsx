@@ -23,6 +23,6 @@ export const defProps = (props: ModalDFProps) => {
       />
     ),
 
-    hasBody: false as true
+    hasBody: false as true,
   } as const;
 };

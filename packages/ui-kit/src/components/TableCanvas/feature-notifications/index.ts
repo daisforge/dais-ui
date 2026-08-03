@@ -4,5 +4,5 @@ export type {
   TableNotificationCode,
   TableNotificationLevel,
   TableNotificationsConfig,
-  TableNotificationType
+  TableNotificationType,
 } from './types';

@@ -13,7 +13,7 @@ import { CellEditorTextAreaProps } from './types';
 const mapperSizeToFont = {
   small: () => bodyXS,
   medium: () => bodyS,
-  big: () => bodyM
+  big: () => bodyM,
 };
 
 const TextAreaWrap = styled.div<
@@ -68,7 +68,7 @@ export const CellEditorTextArea = forwardRef<
       //
       ...props
     },
-    refExternal
+    refExternal,
   ) => {
     const { rowSize } = useRowContext();
 
@@ -97,12 +97,12 @@ export const CellEditorTextArea = forwardRef<
         />
       </TextAreaWrap>
     );
-  }
+  },
 );
 
 export function CellEditorTextAreaInternal<
   TRow extends ObjectForExtending,
-  TSummaryRow
+  TSummaryRow,
 >({
   row,
   column,
@@ -113,7 +113,7 @@ export function CellEditorTextAreaInternal<
   cellWidth,
   disableLeftOffset,
   theme,
-  contentAlign
+  contentAlign,
 }: EditingCellInfo<TRow, TSummaryRow> & {
   disableLeftOffset: boolean | undefined;
   contentAlign?: 'left' | 'right' | 'center';

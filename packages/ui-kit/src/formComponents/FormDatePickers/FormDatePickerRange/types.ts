@@ -4,7 +4,7 @@ import type {
   FieldValues,
   Message,
   Validate,
-  ValidationRule
+  ValidationRule,
 } from 'react-hook-form';
 
 import type { TMutationRegister } from '../../types';

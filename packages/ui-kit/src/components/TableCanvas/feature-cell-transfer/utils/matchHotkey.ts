@@ -11,7 +11,7 @@ import type { HotkeyConfig } from '../types';
  */
 export function matchHotkey(
   event: KeyboardEvent,
-  config: HotkeyConfig | HotkeyConfig[]
+  config: HotkeyConfig | HotkeyConfig[],
 ): boolean {
   const configs = Array.isArray(config) ? config : [config];
 

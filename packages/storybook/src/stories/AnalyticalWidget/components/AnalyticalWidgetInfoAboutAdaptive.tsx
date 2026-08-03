@@ -11,7 +11,7 @@ export const AnalyticalWidgetInfoAboutAdaptive = () => (
       style={{
         width: '100%',
         borderCollapse: 'collapse',
-        marginBottom: '24px'
+        marginBottom: '24px',
       }}
     >
       <thead>

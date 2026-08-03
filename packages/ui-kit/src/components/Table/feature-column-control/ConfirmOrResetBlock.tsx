@@ -4,7 +4,7 @@ import React from 'react';
 
 export const ConfirmOrResetBlock = ({
   confirmAllLocalChanging,
-  resetAllLocalChanging
+  resetAllLocalChanging,
 }: {
   confirmAllLocalChanging: () => void;
   resetAllLocalChanging: () => void;
@@ -15,7 +15,7 @@ export const ConfirmOrResetBlock = ({
       marginTop: 'auto',
       display: 'flex',
       justifyContent: 'end',
-      gap: '8px'
+      gap: '8px',
     }}
   >
     <Button size="xs" view="secondary" onClick={resetAllLocalChanging}>

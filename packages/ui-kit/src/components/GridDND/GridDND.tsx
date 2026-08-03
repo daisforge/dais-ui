@@ -12,7 +12,7 @@ import React, {
   useImperativeHandle,
   useMemo,
   useRef,
-  useState
+  useState,
 } from 'react';
 import { type Layout, type ReactGridLayoutProps } from 'react-grid-layout';
 
@@ -20,7 +20,7 @@ import { analyticalWidgetClassNames } from '../AnalyticalWidget/AnalyticalWidget
 import {
   fallbackCols,
   fallbackRowHeight,
-  GridDNDClassNames as cls
+  GridDNDClassNames as cls,
 } from './GridDND.constants';
 import { ItemWrapper } from './GridDND.ItemWrapper';
 import { MeasuredContainer as ResponsiveGridLayout } from './GridDND.MeasuredContainer';
@@ -28,14 +28,14 @@ import { GridDNDContainer, GridItem, GridItemContent } from './GridDND.styled';
 import type {
   GridDNDItemConfig,
   GridDNDProps,
-  GridDNDRef
+  GridDNDRef,
 } from './GridDND.types';
 import {
   initSizeByType,
   layoutsShallowEqual,
   packByItemsOrder,
   placeRectFirstFit,
-  readingOrder
+  readingOrder,
 } from './utils';
 
 const DefaultGridItemInner: FC<{
@@ -102,9 +102,9 @@ const GridDNDWithRef = forwardRef<GridDNDRef, GridDNDProps>(
       containerStyle,
       gridStyle,
 
-      enableLogs = false
+      enableLogs = false,
     },
-    ref
+    ref,
   ) => {
     // --------------------------------------------------------------------------------
     //  === Канонический порядок и размеры ===
@@ -112,12 +112,12 @@ const GridDNDWithRef = forwardRef<GridDNDRef, GridDNDProps>(
 
     // - itemsOrder: порядок id (единственная истина порядка)
     const [itemsOrder, setItemsOrder] = useState<string[]>(() =>
-      items.map((i) => i.id)
+      items.map((i) => i.id),
     );
 
     // - itemSizesRef: карта размеров по id (устойчива между рендерами)
     const itemSizesRef = useRef<Record<string, { w: number; h: number }>>(
-      Object.fromEntries(items.map((i) => [i.id, initSizeByType(i.type)]))
+      Object.fromEntries(items.map((i) => [i.id, initSizeByType(i.type)])),
     );
 
     // --------------------------------------------------------------------------------
@@ -133,7 +133,7 @@ const GridDNDWithRef = forwardRef<GridDNDRef, GridDNDProps>(
       md: [],
       sm: [],
       xs: [],
-      xxs: []
+      xxs: [],
     });
 
     // Текущий BP без гонок (быстрее, чем ждать state)
@@ -185,7 +185,7 @@ const GridDNDWithRef = forwardRef<GridDNDRef, GridDNDProps>(
     const [isDragDelayActive, setIsDragDelayActive] = useState(false);
     const [activeItemId, setActiveItemId] = useState<string | null>(null);
     const dragDelayTimerRef = useRef<ReturnType<typeof setTimeout> | null>(
-      null
+      null,
     );
     const isDraggingRef = useRef(false);
     const containerRef = useRef<HTMLDivElement>(null);
@@ -272,7 +272,7 @@ const GridDNDWithRef = forwardRef<GridDNDRef, GridDNDProps>(
         // draggableHandle элемент — именно на него нужно эмулировать mousedown,
         // потому что react-draggable проверяет target через matchesSelectorAndParentsTo
         const handleEl = gridItem?.querySelector(
-          `.${cls.dragHandle}`
+          `.${cls.dragHandle}`,
         ) as HTMLElement | null;
 
         setActiveItemId(itemId);
@@ -280,7 +280,7 @@ const GridDNDWithRef = forwardRef<GridDNDRef, GridDNDProps>(
         savedMouseRef.current = {
           clientX: e.clientX,
           clientY: e.clientY,
-          handleEl
+          handleEl,
         };
 
         // Запускаем отслеживание движения (pointermove — ловит и мышь, и тачпад)
@@ -306,7 +306,7 @@ const GridDNDWithRef = forwardRef<GridDNDRef, GridDNDProps>(
                 clientX: saved.clientX,
                 clientY: saved.clientY,
                 button: 0,
-                buttons: 1
+                buttons: 1,
               });
               // Помечаем событие чтобы наш handlePointerDown его проигнорировал
               // eslint-disable-next-line no-underscore-dangle
@@ -345,7 +345,7 @@ const GridDNDWithRef = forwardRef<GridDNDRef, GridDNDProps>(
       hasDragDelay,
       dragActivationDelay,
       clearDragDelayTimer,
-      deactivateDragDelay
+      deactivateDragDelay,
     ]);
 
     const effectiveIsDraggable = hasDragDelay
@@ -362,12 +362,12 @@ const GridDNDWithRef = forwardRef<GridDNDRef, GridDNDProps>(
       md: [],
       sm: [],
       xs: [],
-      xxs: []
+      xxs: [],
     });
 
     const [currentBreakpoint, setCurrentBreakpoint] = useState<string>('lg');
     const [currentRowHeight, setCurrentRowHeight] = useState<number>(
-      rowHeights['lg'] ?? fallbackRowHeight
+      rowHeights['lg'] ?? fallbackRowHeight,
     );
 
     // Текущее направление компактации (smart-compact)
@@ -383,19 +383,19 @@ const GridDNDWithRef = forwardRef<GridDNDRef, GridDNDProps>(
 
     const draggableClassName = useMemo(
       () => draggableHandle.split('.').join(' '),
-      [draggableHandle]
+      [draggableHandle],
     );
 
     const GridItemInner = useMemo(
       () => gridItemComponent ?? DefaultGridItemInner,
-      [gridItemComponent]
+      [gridItemComponent],
     );
 
     // Типы виджетов (s/m/l) из props.items — базовый источник.
     // Обновляется только при смене props.items.
     const propsTypeById = useMemo(
       () => new Map(items.map((i) => [i.id, i.type as 's' | 'm' | 'l'])),
-      [items]
+      [items],
     );
 
     // Рантайм-типы виджетов (s/m/l), добавленные/переопределённые через наше API.
@@ -412,12 +412,12 @@ const GridDNDWithRef = forwardRef<GridDNDRef, GridDNDProps>(
         runtimeTypeByIdRef.current.get(id) ??
         (propsTypeById.get(id) as 's' | 'm' | 'l' | undefined) ??
         's',
-      [propsTypeById]
+      [propsTypeById],
     );
 
     const asTypedOrder = useCallback(
       (order: string[]) => order.map((id) => ({ id, type: getType(id) })),
-      [getType]
+      [getType],
     );
 
     // Получить высоту строки для BP
@@ -426,7 +426,7 @@ const GridDNDWithRef = forwardRef<GridDNDRef, GridDNDProps>(
         rowHeights[bp as keyof typeof rowHeights] ??
         rowHeights['md'] ??
         fallbackRowHeight,
-      [rowHeights]
+      [rowHeights],
     );
 
     // Собрать GridDNDItemConfig[]
@@ -434,7 +434,7 @@ const GridDNDWithRef = forwardRef<GridDNDRef, GridDNDProps>(
       (
         bp: string,
         layoutsArg: Record<string, Layout[]>,
-        orderArg?: string[]
+        orderArg?: string[],
       ): GridDNDItemConfig[] => {
         const order = orderArg ?? itemsOrder;
         const lay = layoutsArg[bp] ?? [];
@@ -453,7 +453,7 @@ const GridDNDWithRef = forwardRef<GridDNDRef, GridDNDProps>(
           return { id, type, position: pos };
         });
       },
-      [itemsOrder, getType]
+      [itemsOrder, getType],
     );
 
     const getBaseLayoutForBp = useCallback(
@@ -462,7 +462,7 @@ const GridDNDWithRef = forwardRef<GridDNDRef, GridDNDProps>(
         if (target.length) return target;
         return layouts[bp] ?? [];
       },
-      [layouts]
+      [layouts],
     );
 
     const logDND = useCallback(
@@ -472,7 +472,7 @@ const GridDNDWithRef = forwardRef<GridDNDRef, GridDNDProps>(
           log(...args);
         }
       },
-      [enableLogs]
+      [enableLogs],
     );
 
     // --------------------------------------------------------------------------------
@@ -510,14 +510,14 @@ const GridDNDWithRef = forwardRef<GridDNDRef, GridDNDProps>(
             order,
             itemSizesRef.current,
             c,
-            isResizable
+            isResizable,
           );
         }
         logDND('reflowAllByOrder', { order, out });
         setLayoutsInternal(out);
         return out;
       },
-      [cols, isResizable, setLayoutsInternal, logDND]
+      [cols, isResizable, setLayoutsInternal, logDND],
     );
 
     // --------------------------------------------------------------------------------
@@ -531,7 +531,7 @@ const GridDNDWithRef = forwardRef<GridDNDRef, GridDNDProps>(
         const now = Date.now();
         dragHistoryRef.current.push({ x, y, timestamp: now });
         dragHistoryRef.current = dragHistoryRef.current.filter(
-          (p) => now - p.timestamp <= 300
+          (p) => now - p.timestamp <= 300,
         );
         if (dragHistoryRef.current.length < 2) return;
         let dx = 0;
@@ -548,7 +548,7 @@ const GridDNDWithRef = forwardRef<GridDNDRef, GridDNDProps>(
         if (dx > dy * 1.5) setCurrentCompactType('horizontal');
         else if (dy > dx * 1.5) setCurrentCompactType('vertical');
       },
-      [smartCompact]
+      [smartCompact],
     );
 
     // Переустановка тех же layouts с новыми ссылками,
@@ -611,14 +611,14 @@ const GridDNDWithRef = forwardRef<GridDNDRef, GridDNDProps>(
         newItem: Layout,
         placeholder: Layout,
         e: MouseEvent,
-        element: HTMLElement
+        element: HTMLElement,
       ) => {
         dragHistoryRef.current = [];
         setCurrentCompactType(compactType);
         if (hasDragDelay) isDraggingRef.current = true;
         onDragStart?.(layout, oldItem, newItem, placeholder, e, element);
       },
-      [compactType, onDragStart, hasDragDelay]
+      [compactType, onDragStart, hasDragDelay],
     );
 
     // smart-compact трекинг, проброс наружу
@@ -629,12 +629,12 @@ const GridDNDWithRef = forwardRef<GridDNDRef, GridDNDProps>(
         newItem: Layout,
         placeholder: Layout,
         e: MouseEvent,
-        element: HTMLElement
+        element: HTMLElement,
       ) => {
         detectDragDirection(e.clientX, e.clientY);
         onDrag?.(layout, oldItem, newItem, placeholder, e, element);
       },
-      [detectDragDirection, onDrag]
+      [detectDragDirection, onDrag],
     );
 
     // 1) readingOrder(layout) → nextOrder
@@ -648,7 +648,7 @@ const GridDNDWithRef = forwardRef<GridDNDRef, GridDNDProps>(
         newItem: Layout,
         placeholder: Layout,
         e: MouseEvent,
-        element: HTMLElement
+        element: HTMLElement,
       ) => {
         onDragStop?.(layout, oldItem, newItem, placeholder, e, element);
 
@@ -669,10 +669,10 @@ const GridDNDWithRef = forwardRef<GridDNDRef, GridDNDProps>(
             breakpoint: bp,
             cols: cols[bp] ?? fallbackCols,
             rowHeight: currentRowHeight,
-            items: widgets
+            items: widgets,
           },
           nextLayouts,
-          { itemsOrder: nextOrder, itemsOrderTyped: asTypedOrder(nextOrder) }
+          { itemsOrder: nextOrder, itemsOrderTyped: asTypedOrder(nextOrder) },
         );
 
         setCurrentCompactType(compactType);
@@ -682,7 +682,7 @@ const GridDNDWithRef = forwardRef<GridDNDRef, GridDNDProps>(
         const target = nextLayouts[bp];
         if (!layoutsShallowEqual(live, target)) {
           logDND(
-            '[GridDND] dragStop: live layout != target → forceSyncWithRgl()'
+            '[GridDND] dragStop: live layout != target → forceSyncWithRgl()',
           );
           forceSyncWithRgl();
         } else {
@@ -702,8 +702,8 @@ const GridDNDWithRef = forwardRef<GridDNDRef, GridDNDProps>(
         compactType,
         forceSyncWithRgl,
         logDND,
-        asTypedOrder
-      ]
+        asTypedOrder,
+      ],
     );
 
     // игнорируем в окне reflow; игнорим "подозрительные" maxW;
@@ -728,7 +728,7 @@ const GridDNDWithRef = forwardRef<GridDNDRef, GridDNDProps>(
         if (isApplyingReflowRef.current) {
           logDND('[GridDND] onLayoutChange[IGNORED: reflow-window]', {
             bp,
-            cur
+            cur,
           });
           return;
         }
@@ -736,7 +736,7 @@ const GridDNDWithRef = forwardRef<GridDNDRef, GridDNDProps>(
         // если пришёл layout с подозрительным maxW (часто RGL создает эхо из старого BP) — игнорируем
         const expectedCols = cols[bp] ?? fallbackCols;
         const suspiciousCols = cur.some(
-          (l) => typeof l.maxW === 'number' && l.maxW !== expectedCols
+          (l) => typeof l.maxW === 'number' && l.maxW !== expectedCols,
         );
         if (suspiciousCols) {
           return;
@@ -756,10 +756,10 @@ const GridDNDWithRef = forwardRef<GridDNDRef, GridDNDProps>(
             breakpoint: bp,
             cols: expectedCols,
             rowHeight: currentRowHeight,
-            items: widgets
+            items: widgets,
           },
           { ...layouts, [bp]: cur },
-          { itemsOrder }
+          { itemsOrder },
         );
       },
       [
@@ -769,8 +769,8 @@ const GridDNDWithRef = forwardRef<GridDNDRef, GridDNDProps>(
         cols,
         currentRowHeight,
         itemsOrder,
-        logDND
-      ]
+        logDND,
+      ],
     );
 
     const handleBreakpointChange = useCallback(
@@ -786,7 +786,7 @@ const GridDNDWithRef = forwardRef<GridDNDRef, GridDNDProps>(
           breakpoint: newBp,
           cols: cols[newBp] ?? fallbackCols,
           rowHeight: getRowHeight(newBp),
-          items: widgets
+          items: widgets,
         });
       },
       [
@@ -795,8 +795,8 @@ const GridDNDWithRef = forwardRef<GridDNDRef, GridDNDProps>(
         itemsOrder,
         buildWidgetsForBp,
         onBreakpointChange,
-        cols
-      ]
+        cols,
+      ],
     );
 
     const handleWidthChange = useCallback(
@@ -804,12 +804,12 @@ const GridDNDWithRef = forwardRef<GridDNDRef, GridDNDProps>(
         w: number,
         margin: [number, number],
         colsArg: number,
-        containerPaddingArg: [number, number]
+        containerPaddingArg: [number, number],
       ) => {
         onWidthChange?.(w, margin, colsArg, containerPaddingArg);
         // MeasuredContainer сам вызовет onBreakpointChange -> handleBreakpointChange выше
       },
-      [onWidthChange]
+      [onWidthChange],
     );
 
     // --------------------------------------------------------------------------------
@@ -833,10 +833,10 @@ const GridDNDWithRef = forwardRef<GridDNDRef, GridDNDProps>(
               breakpoint: bp,
               cols: cols[bp] ?? fallbackCols,
               rowHeight: currentRowHeight,
-              items: widgets
+              items: widgets,
             },
             nextLayouts,
-            { itemsOrder: next, itemsOrderTyped: asTypedOrder(next) }
+            { itemsOrder: next, itemsOrderTyped: asTypedOrder(next) },
           );
           return next;
         });
@@ -848,8 +848,8 @@ const GridDNDWithRef = forwardRef<GridDNDRef, GridDNDProps>(
         onLayoutChange,
         cols,
         currentRowHeight,
-        asTypedOrder
-      ]
+        asTypedOrder,
+      ],
     );
 
     // Изменить type (и, как следствие, размер) существующего виджета.
@@ -866,7 +866,7 @@ const GridDNDWithRef = forwardRef<GridDNDRef, GridDNDProps>(
         const size0 = initSizeByType(type);
         itemSizesRef.current[id] = {
           w: Math.max(1, Math.min(size0.w, gridCols)),
-          h: Math.max(1, size0.h)
+          h: Math.max(1, size0.h),
         };
 
         const nextLayouts = reflowAllByOrder(itemsOrder);
@@ -877,10 +877,10 @@ const GridDNDWithRef = forwardRef<GridDNDRef, GridDNDProps>(
             breakpoint: bp,
             cols: gridCols,
             rowHeight: currentRowHeight,
-            items: widgets
+            items: widgets,
           },
           nextLayouts,
-          { itemsOrder, itemsOrderTyped: asTypedOrder(itemsOrder) }
+          { itemsOrder, itemsOrderTyped: asTypedOrder(itemsOrder) },
         );
       },
       [
@@ -891,8 +891,8 @@ const GridDNDWithRef = forwardRef<GridDNDRef, GridDNDProps>(
         onItemsChange,
         onLayoutChange,
         currentRowHeight,
-        asTypedOrder
-      ]
+        asTypedOrder,
+      ],
     );
 
     // --------------------------------------------------------------------------------
@@ -916,24 +916,24 @@ const GridDNDWithRef = forwardRef<GridDNDRef, GridDNDProps>(
                 breakpoint: bp,
                 cols: cols[bp] ?? fallbackCols,
                 rowHeight: currentRowHeight,
-                items: widgets
+                items: widgets,
               },
               next,
-              { itemsOrder: order, itemsOrderTyped: asTypedOrder(order) }
+              { itemsOrder: order, itemsOrderTyped: asTypedOrder(order) },
             );
           },
           addItem: (spec, index) => {
             // 0) запоминаем тип и дефолтный размер
             runtimeTypeByIdRef.current.set(
               spec.id,
-              spec.type as 's' | 'm' | 'l'
+              spec.type as 's' | 'm' | 'l',
             );
             const size0 = initSizeByType(spec.type);
             const bp = activeBpRef.current;
             const gridCols = cols[bp] ?? fallbackCols;
             const size = {
               w: Math.max(1, Math.min(size0.w, gridCols)),
-              h: Math.max(1, size0.h)
+              h: Math.max(1, size0.h),
             };
             itemSizesRef.current[spec.id] = size;
 
@@ -944,7 +944,7 @@ const GridDNDWithRef = forwardRef<GridDNDRef, GridDNDProps>(
             if (index != null) {
               const prevIdx = Math.max(
                 0,
-                Math.min(index - 1, itemsOrder.length - 1)
+                Math.min(index - 1, itemsOrder.length - 1),
               );
               const prevId = itemsOrder[prevIdx];
               const prev = base.find((l) => l.i === prevId);
@@ -961,12 +961,12 @@ const GridDNDWithRef = forwardRef<GridDNDRef, GridDNDProps>(
               size.w,
               size.h,
               startX,
-              startY
+              startY,
             );
 
             // 3) временный лейаут с вставленным айтемом → читаем новый порядок
             const temp: Layout[] = base.concat([
-              { i: spec.id, x: spot.x, y: spot.y, w: size.w, h: size.h }
+              { i: spec.id, x: spot.x, y: spot.y, w: size.w, h: size.h },
             ]);
             const nextOrder = readingOrder(temp);
 
@@ -981,13 +981,13 @@ const GridDNDWithRef = forwardRef<GridDNDRef, GridDNDProps>(
                 breakpoint: bp,
                 cols: gridCols,
                 rowHeight: currentRowHeight,
-                items: widgets
+                items: widgets,
               },
               nextLayouts,
               {
                 itemsOrder: nextOrder,
-                itemsOrderTyped: asTypedOrder(nextOrder)
-              }
+                itemsOrderTyped: asTypedOrder(nextOrder),
+              },
             );
           },
           removeItem: removeItemById,
@@ -1000,10 +1000,10 @@ const GridDNDWithRef = forwardRef<GridDNDRef, GridDNDProps>(
               breakpoint: bp,
               cols: cols[bp] ?? fallbackCols,
               rowHeight: currentRowHeight,
-              items: widgets
+              items: widgets,
             };
-          }
-        }
+          },
+        },
       }),
       [
         removeItemById,
@@ -1017,8 +1017,8 @@ const GridDNDWithRef = forwardRef<GridDNDRef, GridDNDProps>(
         cols,
         currentRowHeight,
         getBaseLayoutForBp,
-        layouts
-      ]
+        layouts,
+      ],
     );
 
     // --------------------------------------------------------------------------------
@@ -1028,7 +1028,7 @@ const GridDNDWithRef = forwardRef<GridDNDRef, GridDNDProps>(
     // Готовим список виджетов для текущего BP (с фолбэками)
     const widgetsForCurrent = useMemo(
       () => buildWidgetsForBp(currentBreakpoint, layouts, itemsOrder),
-      [currentBreakpoint, layouts, itemsOrder, buildWidgetsForBp]
+      [currentBreakpoint, layouts, itemsOrder, buildWidgetsForBp],
     );
 
     return (
@@ -1038,7 +1038,7 @@ const GridDNDWithRef = forwardRef<GridDNDRef, GridDNDProps>(
           ...containerStyle,
           ...(hasDragDelay && isDragDelayActive
             ? { userSelect: 'none' as const, touchAction: 'none' as const }
-            : {})
+            : {}),
         }}
       >
         <ResponsiveGridLayout
@@ -1093,7 +1093,7 @@ const GridDNDWithRef = forwardRef<GridDNDRef, GridDNDProps>(
                   ? children(
                       cfg,
                       () => removeItemById(cfg.id),
-                      (type) => setItemTypeById(cfg.id, type)
+                      (type) => setItemTypeById(cfg.id, type),
                     )
                   : children}
               </GridItemInner>
@@ -1102,11 +1102,11 @@ const GridDNDWithRef = forwardRef<GridDNDRef, GridDNDProps>(
         </ResponsiveGridLayout>
       </GridDNDContainer>
     );
-  }
+  },
 );
 
 export const GridDND = Object.assign(GridDNDWithRef, {
-  ItemWrapper
+  ItemWrapper,
 });
 
 GridDND.displayName = 'GridDND';

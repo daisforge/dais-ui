@@ -7,7 +7,7 @@ import {
   spacing4x,
   surfaceSolidCard,
   textPrimary,
-  textSecondary
+  textSecondary,
 } from '@ui-kit/tokens';
 import { fadeIn } from '@ui-kit/utils/styles/animations';
 import React, { FC, ReactNode } from 'react';
@@ -88,19 +88,19 @@ const SpinnerContainer = styled.div`
 export const TableLoadingOverlay: FC<TableLoadingOverlayProps> = ({
   loadingOverlayConfig = {},
   containerStyle,
-  borderTopRounded = true
+  borderTopRounded = true,
 }) => {
   const {
     active = true,
     spinner = <Spinner view="secondary" size="l" />,
     title = 'Загрузка таблицы',
     subtitle = '',
-    showSubtitleDelay = 10000
+    showSubtitleDelay = 10000,
   } = loadingOverlayConfig;
 
   const { showOverlay, showSubtitle } = useLoadingOverlay({
     active,
-    showSubtitleDelay
+    showSubtitleDelay,
   });
 
   if (!showOverlay) return null;

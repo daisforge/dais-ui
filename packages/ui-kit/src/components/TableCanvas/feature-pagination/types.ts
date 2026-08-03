@@ -7,12 +7,12 @@ export type PaginationProps = Omit<
 > & {
   onChangePageValue?: (
     page: number | undefined,
-    scrollToTop: () => void
+    scrollToTop: () => void,
   ) => void;
   onChange?: (
     newPage: number | undefined,
     perPage: number | undefined,
-    scrollToTop: () => void
+    scrollToTop: () => void,
   ) => void;
   /**
    * Нужно ли активировать умную адаптацию изменения количества слотов в зависимости от ширины блока пагинации и от size

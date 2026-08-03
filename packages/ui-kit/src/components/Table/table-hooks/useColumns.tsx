@@ -11,17 +11,17 @@ import type { KeyText, KeyTextMap } from '../feature-key-text/types';
 import { useReorderDragable } from '../feature-reorder-columns/useReorderDragable';
 import {
   getDetailPanelColSpanFunc,
-  isDetailPanelRow
+  isDetailPanelRow,
 } from '../feature-row-detail/handlers';
 import {
   isRowInstrumentsColumn,
   ROW_I_COL_ACTIVE,
   ROW_I_COLUMN_KEY,
-  RowIColumn
+  RowIColumn,
 } from '../feature-row-instruments';
 import {
   getColsAfterRowsGrouping,
-  KEY_GROUPED_COL
+  KEY_GROUPED_COL,
 } from '../feature-rows-grouping';
 import { ChecboxColumn, CHECKBOX_COLUMN_KEY } from '../feature-select-row';
 import { SelectingCheckBoxCellContextProvider } from '../feature-select-row/selecting-contexts';
@@ -40,7 +40,7 @@ export const useColumns = <
   FilterStateType extends ObjectForExtending,
   RowIdType extends string | number,
   RowType extends ObjectForExtending,
-  SummaryRowType = unknown
+  SummaryRowType = unknown,
 >({
   columnConfig,
   tableConfig,
@@ -54,7 +54,7 @@ export const useColumns = <
   keyText,
   tableConfigKeyTextBoolean,
   colsWithKeyTextMap,
-  editModeEnabled
+  editModeEnabled,
 }: {
   columnConfig: readonly ColumnConfig<RowType, SummaryRowType>[];
   tableConfig: TableConfig<
@@ -96,7 +96,7 @@ export const useColumns = <
       columnConfig,
       tableConfigGroupedColumnProps:
         tableConfig.rowsGrouping?.groupedColumnProps,
-      pinnedCols
+      pinnedCols,
     });
 
     // Динамическое создание чекбокс колонки с дополнительным классом при активном rowInstruments
@@ -110,7 +110,7 @@ export const useColumns = <
             } ${ROW_I_COL_ACTIVE}`,
             summaryCellClass: `${
               ChecboxColumn?.summaryCellClass ?? ''
-            } ${ROW_I_COL_ACTIVE}`
+            } ${ROW_I_COL_ACTIVE}`,
           } as ColumnX)
         : (ChecboxColumn as ColumnX)
       : null;
@@ -118,7 +118,7 @@ export const useColumns = <
     const colsAfterSelectingCheck = [
       ...(selectingRowsIsActive ? [checkboxColumn as ColumnX] : []),
       ...(showRowInstruments ? [RowIColumn as ColumnX] : []),
-      ...colsAfterRowsGroupingCheck
+      ...colsAfterRowsGroupingCheck,
     ];
 
     const colsAfterKeyTextCheck = tableConfigKeyTextBoolean
@@ -291,7 +291,7 @@ export const useColumns = <
             indexZeroColKey,
             currIndex,
             arr,
-            columnColSpan: el.colSpan
+            columnColSpan: el.colSpan,
           })
         : el.colSpan;
 
@@ -323,7 +323,7 @@ export const useColumns = <
               : // если lvl !== 0, то смотрим только на конфиг дочерних строк
                 el.subRow?.editingCell?.editedSuccessfully?.value(
                   clearRow,
-                  lvl
+                  lvl,
                 )) && cls.editedSuccessfullyCell;
 
           if (editedSuccessfullyClass) {
@@ -357,7 +357,7 @@ export const useColumns = <
             isHaveSorting,
             columnIsPinned,
             subRowIsActiveAndColumnWithArrow,
-            reorderForColIsActive
+            reorderForColIsActive,
           }),
 
         renderCell,
@@ -368,7 +368,7 @@ export const useColumns = <
         draggable: reorderForColIsActive,
         cellClass,
         ...(columnIsPinned && { frozen: true }),
-        ...(colSpan && { colSpan })
+        ...(colSpan && { colSpan }),
       };
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -394,7 +394,7 @@ export const useColumns = <
     hiddenCols,
     showRowInstruments,
     keyText,
-    tableConfigKeyTextBoolean
+    tableConfigKeyTextBoolean,
   ]);
 
   const {
@@ -402,7 +402,7 @@ export const useColumns = <
     onColumnsReorder,
     setColumnsOrder,
     columnsOrder,
-    getDefaultColumnsOrder
+    getDefaultColumnsOrder,
   } = useReorderDragable({
     columns,
     reorderIsActive,
@@ -413,7 +413,7 @@ export const useColumns = <
     showRowInstruments,
     tableConfigKeyTextBoolean,
     keyText,
-    colsWithKeyTextMap
+    colsWithKeyTextMap,
   });
 
   return {
@@ -422,6 +422,6 @@ export const useColumns = <
     columnsOrder,
     getDefaultColumnsOrder,
     setColumnsOrder,
-    onColumnsReorder
+    onColumnsReorder,
   };
 };

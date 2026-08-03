@@ -14,7 +14,7 @@ export const useResize = ({
   maxWidth,
   parentRef,
   isCollapsed,
-  onResize
+  onResize,
 }: HookResizeProps) => {
   const startResizing = useCallback(() => {
     document.body.style.cursor = 'col-resize';
@@ -71,7 +71,7 @@ export const useResize = ({
     maxWidth,
     parentRef,
     isCollapsed,
-    onResize
+    onResize,
   ]);
   return { startResizing };
 };

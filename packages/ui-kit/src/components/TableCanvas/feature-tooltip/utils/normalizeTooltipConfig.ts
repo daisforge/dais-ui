@@ -4,14 +4,14 @@ export const LEAVE_ANIMATION_DURATION = 200;
 
 /** Приводит строку или объект с text к TooltipData. */
 export function normalizeTooltipConfig(
-  result: TooltipConfigResult
+  result: TooltipConfigResult,
 ): TooltipData | null {
   if (!result) return null;
 
   if (typeof result === 'string') {
     return {
       tooltipText: result,
-      tooltipProps: {}
+      tooltipProps: {},
     };
   }
 
@@ -20,6 +20,6 @@ export function normalizeTooltipConfig(
     tooltipText: text,
     tooltipProps: props,
     mouseEnterDelay,
-    mouseLeaveDelay
+    mouseLeaveDelay,
   };
 }

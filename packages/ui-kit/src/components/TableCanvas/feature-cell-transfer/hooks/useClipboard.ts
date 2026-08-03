@@ -7,12 +7,12 @@ import type { ObjectForExtending } from '../../types/utils.type';
 import type {
   CellTransferConfig,
   RowsChangeType,
-  TransferColumnConfig
+  TransferColumnConfig,
 } from '../types';
 import {
   DEFAULT_COPY_HOTKEY,
   DEFAULT_PASTE_HOTKEY,
-  matchHotkey
+  matchHotkey,
 } from '../utils/matchHotkey';
 import { useCopy } from './useCopy';
 import { usePaste } from './usePaste';
@@ -60,7 +60,7 @@ interface UseClipboardParams<R extends ObjectForExtending> {
       column: TransferColumnConfig;
       rows?: { before: R; after: R }[];
       type: RowsChangeType;
-    }
+    },
   ) => void;
   onNotification?: (event: TableNotification) => void;
 }
@@ -89,7 +89,7 @@ export function useClipboard<R extends ObjectForExtending>({
   rowContextValue,
   headerContextValue,
   onRowsChange,
-  onNotification
+  onNotification,
 }: UseClipboardParams<R>) {
   const selectionRef = useRef<GridSelection | null>(null);
 
@@ -102,7 +102,7 @@ export function useClipboard<R extends ObjectForExtending>({
     columns,
     flattenedRows,
     selectionRef,
-    onNotification
+    onNotification,
   });
 
   const { handlePaste } = usePaste({
@@ -114,7 +114,7 @@ export function useClipboard<R extends ObjectForExtending>({
     rowContextValue,
     headerContextValue,
     onRowsChange,
-    onNotification
+    onNotification,
   });
 
   useEffect(() => {
@@ -139,7 +139,7 @@ export function useClipboard<R extends ObjectForExtending>({
         clipboardDebug(PFX, 'хоткей копирования сработал', {
           code: event.code,
           ctrl: event.ctrlKey,
-          meta: event.metaKey
+          meta: event.metaKey,
         });
         event.preventDefault();
         handleCopy();
@@ -157,7 +157,7 @@ export function useClipboard<R extends ObjectForExtending>({
         clipboardDebug(PFX, 'хоткей вставки сработал', {
           code: event.code,
           ctrl: event.ctrlKey,
-          meta: event.metaKey
+          meta: event.metaKey,
         });
         if (hasClipboardApi) {
           event.preventDefault();
@@ -170,7 +170,7 @@ export function useClipboard<R extends ObjectForExtending>({
       if (userPasteHotkey && matchHotkey(event, DEFAULT_PASTE_HOTKEY)) {
         clipboardDebug(
           PFX,
-          'дефолтный paste подавлен (задан кастомный хоткей)'
+          'дефолтный paste подавлен (задан кастомный хоткей)',
         );
         event.preventDefault();
       }
@@ -201,6 +201,6 @@ export function useClipboard<R extends ObjectForExtending>({
   return {
     onGridSelectionChange,
     handleCopy,
-    handlePaste
+    handlePaste,
   };
 }

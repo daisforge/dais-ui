@@ -12,7 +12,7 @@ export const ControlBlockActions = ({
   buttons = [],
   dividerIndexes = [],
   triggerSlot,
-  dropdownProps
+  dropdownProps,
 }: {
   buttons: ControlBlockButtonProps[];
   dividerIndexes?: Array<number>;
@@ -46,7 +46,7 @@ export const ControlBlockActions = ({
               style={{
                 transform: isOpenDropDown ? 'rotate(180deg)' : `rotate(0deg)`,
                 display: 'inline-flex',
-                alignItems: 'center'
+                alignItems: 'center',
               }}
             >
               <IconDisclosureDownOutline size="s" />
@@ -54,7 +54,7 @@ export const ControlBlockActions = ({
           }
           style={{
             fontWeight: 500,
-            paddingInline: '16px'
+            paddingInline: '16px',
           }}
         />
       )}

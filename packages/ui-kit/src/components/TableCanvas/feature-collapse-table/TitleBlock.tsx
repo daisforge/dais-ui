@@ -33,11 +33,11 @@ const TitleBlockStyled = styled(Box)<{
     css({
       ...($activeView === 'rows' && {
         backgroundColor: COLORS.white,
-        borderColor: COLORS.border
+        borderColor: COLORS.border,
       }),
       ...($activeView === 'cards' && {
-        borderColor: 'transparent'
-      })
+        borderColor: 'transparent',
+      }),
     })}
 
   overflow-y: hidden;
@@ -46,7 +46,7 @@ const TitleBlockStyled = styled(Box)<{
 const TITLE_TYPOGRAPHY: Record<ControlBlockSize, CSSObject> = {
   m: bodySBold as unknown as CSSObject,
   s: bodySBold as unknown as CSSObject,
-  xs: bodyXSBold as unknown as CSSObject
+  xs: bodyXSBold as unknown as CSSObject,
 };
 
 const TitleText = styled.span<{ $size: ControlBlockSize }>`
@@ -66,7 +66,7 @@ export const TitleBlock: FC<TitleBlockProps> = ({
   $borderTopRounded,
   text,
   rightSlot,
-  size = 'm'
+  size = 'm',
 }) => (
   <TitleBlockStyled
     $activeView={activeView}

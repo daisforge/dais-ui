@@ -19,9 +19,9 @@ export const ResetAllFiltersButton = styled(LinkButton).attrs(
     style: {
       ...props.style,
       visibility: props.isVisible ? 'visible' : 'hidden',
-      pointerEvents: props.isVisible ? 'auto' : 'none'
-    }
-  })
+      pointerEvents: props.isVisible ? 'auto' : 'none',
+    },
+  }),
 )<
   LinkButtonCompProps & {
     isVisible?: boolean;

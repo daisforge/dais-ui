@@ -10,7 +10,7 @@ const getEmptyFilters = (columns: InstanceColumnConfig[]) =>
 export const useFiltering = ({
   tableConfigBackendFiltering,
   dispatchParams,
-  columnsConfig
+  columnsConfig,
 }: {
   tableConfigBackendFiltering: ContractTableConfig['filtering'] | undefined;
   dispatchParams: React.Dispatch<UrlAction>;
@@ -32,7 +32,7 @@ export const useFiltering = ({
     () => getEmptyFilters(columns),
     // удаления колонок нет - поэтому можно полагаться на длину - (ссылка меняется каждый раз после запроса)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [columns.length]
+    [columns.length],
   );
 
   /** state для отложенного изменения url-а query-параметров */
@@ -53,8 +53,8 @@ export const useFiltering = ({
       filtering: {
         state: [filters, setFilters],
         manualFiltering: true,
-        clearedValue: clearedFilters
-      } as InstanceTableConfig['filtering']
+        clearedValue: clearedFilters,
+      } as InstanceTableConfig['filtering'],
     };
   }, [clearedFilters, filters, isHaveFiltering]);
 };

@@ -10,10 +10,10 @@ export interface ErrorInstance<I = ErrorApi> extends Error {
 
 export const fetcherWrapper = async <
   RespType = unknown,
-  ErrorInfo extends ErrorApi = ErrorApi
+  ErrorInfo extends ErrorApi = ErrorApi,
 >(
   fetcher: FetcherFunc,
-  fetcherProps: FetcherProps
+  fetcherProps: FetcherProps,
 ) => {
   const res = await fetcher(fetcherProps);
 

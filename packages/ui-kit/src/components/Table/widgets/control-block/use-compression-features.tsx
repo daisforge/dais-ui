@@ -7,7 +7,7 @@ import {
   CompressionConfig,
   InitialWidthsForToolsMenu,
   RangeCache,
-  ToolsMenuState
+  ToolsMenuState,
 } from './types';
 
 const WIDTH = {
@@ -15,7 +15,7 @@ const WIDTH = {
   BUTTON_ICON_ONLY: 40, // Mandatory и нативные фичи-иконки в правой части таблицы
   RIGHT_SIDE_INNER: {
     BUTTON_WITH_LABEL: 100, //
-    BUTTON_ICON_ONLY: 60
+    BUTTON_ICON_ONLY: 60,
   },
   SEARCH_INLINE: 250 + 16, // Width + отступ
   SEARCH_COLLAPSED: 0,
@@ -23,21 +23,21 @@ const WIDTH = {
   FEATURE_EDITING: {
     EDIT_MODE_ENABLED: 155, // По факту 154.7
     EDIT_MODE_DISABLED: 168, // По факту 167.4
-    ICON: 60
+    ICON: 60,
   },
   SELECTING: {
     SELECTING_ROW: 122,
     SELECTING_ROW_COUNTER: 45,
-    SELECTING_ICON: 41
+    SELECTING_ICON: 41,
   },
   GROUPING: {
     ICON_WITH_COUNTER: 74, // По факту 46.35 со стилями и двузнаным числом в счетчике
     ICON_WITHOUT_COUNTER: 56,
     GROUPING_ROW: 157, //
-    GROUPING_ROW_WITH_COUNTER: 173
+    GROUPING_ROW_WITH_COUNTER: 173,
   },
   IS_LEFT_SIDE_INNER_INSIDE_DROPDOWN: 124, // По факту 123.73
-  COLLAPSING_LABEL: 200 // fallback, фича должна быть измерена
+  COLLAPSING_LABEL: 200, // fallback, фича должна быть измерена
 } as const;
 
 const ACCURACY = 10; // Погрешность
@@ -48,7 +48,7 @@ const elementCaches = new WeakMap<HTMLDivElement, CompressionCache>();
 export const useCompressionFeatures = (
   initialState: ToolsMenuState,
   measuredWidths?: InitialWidthsForToolsMenu,
-  element?: HTMLDivElement | null
+  element?: HTMLDivElement | null,
 ) => {
   const originalStateRef = useRef(initialState);
 
@@ -91,9 +91,9 @@ export const useCompressionFeatures = (
     () =>
       JSON.stringify({
         state: originalStateRef.current,
-        measuredWidths
+        measuredWidths,
       }),
-    [measuredWidths]
+    [measuredWidths],
   );
 
   const findCachedState = useCallback(
@@ -103,14 +103,14 @@ export const useCompressionFeatures = (
       if (!cacheEntry) return null;
       // Ищем точное попадание в диапазон
       const foundRange = cacheEntry.ranges.find(
-        (range) => width >= range.min && width <= range.max
+        (range) => width >= range.min && width <= range.max,
       );
       if (foundRange) {
         return foundRange.state;
       }
       return null; // Не нашли подходящего диапазона
     },
-    [getCacheKey]
+    [getCacheKey],
   );
 
   const addToCache = useCallback(
@@ -123,7 +123,7 @@ export const useCompressionFeatures = (
           originalState: isStructuredCloneSupported
             ? structuredClone(originalStateRef.current)
             : JSON.parse(JSON.stringify(originalStateRef.current)),
-          ranges: []
+          ranges: [],
         };
         cacheRef.current.cache.set(key, cacheEntry);
       }
@@ -134,12 +134,12 @@ export const useCompressionFeatures = (
         state: isStructuredCloneSupported
           ? structuredClone(state)
           : JSON.parse(JSON.stringify(state)),
-        stateWidth
+        stateWidth,
       };
 
       // Оптимизация: проверяем, не перекрывается ли новый диапазон существующими
       const isOverlapped = cacheEntry.ranges.some(
-        (range) => newRange.min >= range.min && newRange.max <= range.max
+        (range) => newRange.min >= range.min && newRange.max <= range.max,
       );
       if (isOverlapped) {
         return;
@@ -149,7 +149,7 @@ export const useCompressionFeatures = (
       // Сортируем по min для более эффективного поиска
       cacheEntry.ranges.sort((a, b) => a.min - b.min);
     },
-    [getCacheKey]
+    [getCacheKey],
   );
 
   // ============ Калькуляция ширин ==============
@@ -250,7 +250,7 @@ export const useCompressionFeatures = (
       }
       return width;
     },
-    [measuredWidths?.collapseBlock, measuredWidths?.leftSideInner]
+    [measuredWidths?.collapseBlock, measuredWidths?.leftSideInner],
   );
 
   /**
@@ -341,7 +341,7 @@ export const useCompressionFeatures = (
       }
       return width;
     },
-    [measuredWidths?.rightSideInner]
+    [measuredWidths?.rightSideInner],
   );
 
   const calculateCurrentWidth = useCallback(
@@ -357,7 +357,7 @@ export const useCompressionFeatures = (
       }
       return leftWidth + centerWidth + rightWidth + ACCURACY;
     },
-    [calculateLeftWidth, calculateRightWidth]
+    [calculateLeftWidth, calculateRightWidth],
   );
 
   // ============ Конфигурация компрессии ==============
@@ -371,11 +371,11 @@ export const useCompressionFeatures = (
           action: {
             type: 'remove-label',
             target: 'groupingRowFeature',
-            strategy: 'one'
+            strategy: 'one',
           },
           condition: (s) =>
             s.rightSide.groupingRowsFeature.isActive &&
-            s.rightSide.groupingRowsFeature.isVisibleLabel
+            s.rightSide.groupingRowsFeature.isVisibleLabel,
         },
         // Уровень 1: Скрываем лейблы у обычных кнопок справа (у всех сразу)
         // Генерируем уровни для каждой кнопки справа
@@ -385,14 +385,14 @@ export const useCompressionFeatures = (
           action: {
             type: 'remove-label' as const,
             target: 'action-buttons' as const,
-            strategy: 'all' as const
+            strategy: 'all' as const,
           },
           condition: (s: ToolsMenuState): boolean => {
             const hasVisibleButtons = s.rightSide.rightSideInner.some(
-              (btn) => !btn.isTargetAction && btn.isLabelVisible
+              (btn) => !btn.isTargetAction && btn.isLabelVisible,
             );
             return hasVisibleButtons;
-          }
+          },
         },
         // Данный код закомментировал, может быть полезен для случая, когда по одной надо скрывать
         // Уровень 1: Скрываем лейблы у обычных кнопок справа (по одной)
@@ -420,12 +420,12 @@ export const useCompressionFeatures = (
           target: 'right' as const,
           action: {
             type: 'hide-custom-features' as const,
-            strategy: 'all' as const // Добавляем стратегию (all), то есть скрываем сразу все
+            strategy: 'all' as const, // Добавляем стратегию (all), то есть скрываем сразу все
           },
           condition: (s: ToolsMenuState): boolean =>
             s.rightSide.customFeatures.some(
-              (f) => !f.isMandatory && !f.isMovedToRightSidebar
-            )
+              (f) => !f.isMandatory && !f.isMovedToRightSidebar,
+            ),
         },
         // Данный код закомментировал, может быть полезен для случая, когда кастомные фичи должны по порядку скрывать в правый сайдбар
         // Генерируем уровни для каждой фичи справа
@@ -450,7 +450,7 @@ export const useCompressionFeatures = (
           action: { type: 'remove-label', target: 'editRowFeature' },
           condition: (s) =>
             s.leftSide.editRowFeature.isActive &&
-            s.leftSide.editRowFeature.isLabelVisible
+            s.leftSide.editRowFeature.isLabelVisible,
         },
         // Уровень 4: Перенос поиска вниз
         {
@@ -458,7 +458,7 @@ export const useCompressionFeatures = (
           target: 'center',
           action: { type: 'move-search-down' },
           condition: (s) =>
-            s.middle.searchingFeature.searchPosition === 'inline'
+            s.middle.searchingFeature.searchPosition === 'inline',
         },
         // Уровень 6: Скрытие лейбла SelectingRow
         {
@@ -467,7 +467,7 @@ export const useCompressionFeatures = (
           action: { type: 'remove-label', target: 'selectingRowFeature' },
           condition: (s) =>
             s.leftSide.selectingRowFeature.isActive &&
-            s.leftSide.selectingRowFeature.isLabelVisible
+            s.leftSide.selectingRowFeature.isLabelVisible,
         },
         // Уровень 7: Скрытие counter-счетчика SelectingRow
         {
@@ -476,7 +476,7 @@ export const useCompressionFeatures = (
           action: { type: 'remove-counter', target: 'select' },
           condition: (s) =>
             s.leftSide.selectingRowFeature.isActive &&
-            s.leftSide.selectingRowFeature.isCounterVisible
+            s.leftSide.selectingRowFeature.isCounterVisible,
         },
         // Уровень 8: Фичи в правой части скрываются в дропдаун-кнопку ...
         {
@@ -487,36 +487,36 @@ export const useCompressionFeatures = (
             // Включена группировка и есть хотя бы одна не target кнопка в правой части
             (s.rightSide.groupingRowsFeature.isActive &&
               s.rightSide.rightSideInner.some(
-                (item) => !item.isTargetAction
+                (item) => !item.isTargetAction,
               )) ||
             // ИЛИ если включена группировка и есть хотя бы 1 кнопка из кастомных фичей, которая не может быть перенесена в блок настроек (isMandatory), но может быть сжата и оставаться в tools menu (canBeCompressedInToolsMenu) И 1 кнопка не target-action (в сумме будет две -> сформируется dropdown в правой части из троеточия)
             ((s.rightSide.customFeatures ?? []).some(
-              (item) => item.canBeCompressedInToolsMenu && item.isMandatory
+              (item) => item.canBeCompressedInToolsMenu && item.isMandatory,
             ) &&
               s.rightSide.groupingRowsFeature.isActive) ||
             // ИЛИ есть хотя бы 1 кнопка из кастомных фичей, которая не может быть перенесена в блок настроек (isMandatory), но может быть сжата и оставаться в tools menu (canBeCompressedInToolsMenu) И 1 кнопка не target-action (в сумме будет две -> сформируется dropdown в правой части из троеточия)
             ((s.rightSide.customFeatures ?? []).some(
-              (item) => item.canBeCompressedInToolsMenu && item.isMandatory
+              (item) => item.canBeCompressedInToolsMenu && item.isMandatory,
             ) &&
               s.rightSide.rightSideInner.some(
-                (item) => !item.isTargetAction
+                (item) => !item.isTargetAction,
               )) ||
             // ИЛИ  Есть более 2 НЕ target кнопок в правой части
             (s.rightSide.rightSideInner ?? []).filter(
-              (item) => !item.isTargetAction
+              (item) => !item.isTargetAction,
             ).length >= 2 ||
             // ИЛИ Есть более 2 каcтомных фичей, которые остаются в ToolsMenu и могут быть сжаты в Dropdown
             (s.rightSide.customFeatures ?? []).filter(
-              (item) => item.canBeCompressedInToolsMenu && item.isMandatory
-            ).length >= 2
-        }
-      ]
+              (item) => item.canBeCompressedInToolsMenu && item.isMandatory,
+            ).length >= 2,
+        },
+      ],
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       initialState.rightSide.rightSideInner.length,
-      initialState.rightSide.customFeatures.length
-    ] // Зависимость от динамически генерируемой части конфигурации
+      initialState.rightSide.customFeatures.length,
+    ], // Зависимость от динамически генерируемой части конфигурации
   );
 
   // ============ Компрессия ==============
@@ -524,7 +524,7 @@ export const useCompressionFeatures = (
     (
       currentState: ToolsMenuState,
       action: CompressionAction,
-      target: 'left' | 'center' | 'right'
+      target: 'left' | 'center' | 'right',
     ): ToolsMenuState => {
       const newState = { ...currentState };
 
@@ -630,7 +630,7 @@ export const useCompressionFeatures = (
 
         case 'hide-custom-features': {
           const nonMandatoryFeatures = newState.rightSide.customFeatures.filter(
-            (f) => !f.isMandatory && !f.isMovedToRightSidebar
+            (f) => !f.isMandatory && !f.isMovedToRightSidebar,
           );
 
           if (nonMandatoryFeatures.length === 0) break;
@@ -641,17 +641,17 @@ export const useCompressionFeatures = (
                 ...f,
                 isMovedToRightSidebar: !f.isMandatory
                   ? true
-                  : f.isMovedToRightSidebar
+                  : f.isMovedToRightSidebar,
               }));
           } else {
             const indexToMove = newState.rightSide.customFeatures.findIndex(
-              (f) => !f.isMandatory && !f.isMovedToRightSidebar
+              (f) => !f.isMandatory && !f.isMovedToRightSidebar,
             );
 
             if (indexToMove !== -1) {
               newState.rightSide.customFeatures =
                 newState.rightSide.customFeatures.map((f, i) =>
-                  i === indexToMove ? { ...f, isMovedToRightSidebar: true } : f
+                  i === indexToMove ? { ...f, isMovedToRightSidebar: true } : f,
                 );
             }
           }
@@ -683,7 +683,7 @@ export const useCompressionFeatures = (
 
       return newState;
     },
-    []
+    [],
   );
 
   // Альтернативный вариант, который можно использовать через метод проверки scroll у контейнера (не очень хорошо себя зарекомендовал)
@@ -744,7 +744,7 @@ export const useCompressionFeatures = (
 
         // Сортируем уровни по приоритету
         const sortedLevels = [...compressionConfig.compressionLevels].sort(
-          (a, b) => a.priority - b.priority
+          (a, b) => a.priority - b.priority,
         );
 
         // Последовательно применяем сжатие
@@ -761,7 +761,7 @@ export const useCompressionFeatures = (
           const newState = applyCompressionAction(
             currentState,
             level.action,
-            level.target
+            level.target,
           );
 
           const newWidth = calculateCurrentWidth(newState);
@@ -789,8 +789,8 @@ export const useCompressionFeatures = (
       applyCompressionAction,
       calculateCurrentWidth,
       compressionConfig.compressionLevels,
-      findCachedState
-    ]
+      findCachedState,
+    ],
   );
 
   const resetCompression = useCallback(() => {
@@ -803,6 +803,6 @@ export const useCompressionFeatures = (
     compress,
     calculateCurrentWidth,
     resetCompression,
-    maxLevel: compressionConfig.compressionLevels.length
+    maxLevel: compressionConfig.compressionLevels.length,
   };
 };

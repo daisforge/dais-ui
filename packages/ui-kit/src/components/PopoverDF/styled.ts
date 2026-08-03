@@ -6,7 +6,7 @@ import {
   shadowDownHardS,
   surfaceSolidCard,
   textPrimary,
-  textSecondary
+  textSecondary,
 } from '@ui-kit/tokens';
 import styled from 'styled-components';
 
@@ -27,15 +27,15 @@ const sizeMap: Record<
     sectionInnerGap: s.x4,
     sectionGap: s.x6,
     contentPaddingY: s.x6,
-    contentPaddingX: '14px'
+    contentPaddingX: '14px',
   },
   s: {
     titleDescriptionGap: s.x1,
     sectionInnerGap: s.x4,
     sectionGap: s.x4,
     contentPaddingY: s.x4,
-    contentPaddingX: '10px'
-  }
+    contentPaddingX: '10px',
+  },
 };
 
 const C = {
@@ -43,7 +43,7 @@ const C = {
   radius: () => br.l,
   titleColor: () => textPrimary,
   descriptionColor: () => textSecondary,
-  shadow: () => shadowDownHardS
+  shadow: () => shadowDownHardS,
 };
 
 export const StyledPopover = styled(PopoverBeta)`

@@ -16,10 +16,10 @@ export type Filters = {
 
 export const filtersReducer = (
   state: Filters,
-  newState: Partial<Filters>
+  newState: Partial<Filters>,
 ): Filters => ({
   ...state,
-  ...newState
+  ...newState,
 });
 
 export const DEFAULT_FILTERS: Filters = {
@@ -29,7 +29,7 @@ export const DEFAULT_FILTERS: Filters = {
   allocation: '',
   year: null,
   filterButton: '',
-  dotsButton: ''
+  dotsButton: '',
 };
 
 export const LABELS: { [key in keyof Filters]: string } = {
@@ -39,7 +39,7 @@ export const LABELS: { [key in keyof Filters]: string } = {
   allocation: 'Аллокация',
   year: 'Год',
   filterButton: 'Фильтры',
-  dotsButton: 'Меню'
+  dotsButton: 'Меню',
 };
 
 export const useFetch = (key: 'blocks' | 'tribes' | 'allocation', num = 10) =>
@@ -49,15 +49,15 @@ export const useFetch = (key: 'blocks' | 'tribes' | 'allocation', num = 10) =>
         .fill(0)
         .map((_, i) => ({
           label: `${LABELS[key]} ${i + 1}`,
-          value: i.toString()
+          value: i.toString(),
         })),
-    [key, num]
+    [key, num],
   );
 
 export function hasActiveFilterForButton(
   filters: ItemOrGroup[],
   buttonType: 'filterButton' | 'dotsButton',
-  value?: string
+  value?: string,
 ) {
   return filters.some(
     (item) =>
@@ -65,14 +65,14 @@ export function hasActiveFilterForButton(
       item.groupId === buttonType &&
       (value === undefined
         ? item.items.length > 0
-        : item.items.some((element) => element.id === value))
+        : item.items.some((element) => element.id === value)),
   );
 }
 
 export function generateButtonItems(
   buttonType: 'filterButton' | 'dotsButton',
   options: { value: string; label: string }[],
-  filters: ItemOrGroup[]
+  filters: ItemOrGroup[],
 ) {
   return options.map((option) => ({
     value: option.value,
@@ -83,31 +83,31 @@ export function generateButtonItems(
           visibility: hasActiveFilterForButton(
             filters,
             buttonType,
-            option.value
+            option.value,
           )
             ? 'visible'
-            : 'hidden'
+            : 'hidden',
         }}
       >
         <IconDone size="s" color={textInfo} />
       </Box>
-    )
+    ),
   }));
 }
 
 export const filterButtonOptions = [
   { value: '1', label: '1 label' },
-  { value: '2', label: '2 label' }
+  { value: '2', label: '2 label' },
 ];
 
 export const dotsButtonOptions = [
   { value: '1', label: '1 label' },
-  { value: '2', label: '2 label' }
+  { value: '2', label: '2 label' },
 ];
 
 export const dotsButtonOptionsWithRemove = [
   { value: 'Удалить', label: 'Удалить' },
-  { value: 'Some label', label: 'Some label' }
+  { value: 'Some label', label: 'Some label' },
 ];
 
 export const longText =

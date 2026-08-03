@@ -10,7 +10,7 @@ import { useWidgetContainerTypeContext } from '../Widget.ctx';
 
 /** компонент скрывается, если компонент вставлен внутрь [`StyledLeft`](../styled.ts) */
 export const StyledServiceButtons: typeof Box = styled(Box).attrs({
-  className: cls.serviceButtons
+  className: cls.serviceButtons,
 })`
   display: inline-flex;
   column-gap: ${() => s.x2};

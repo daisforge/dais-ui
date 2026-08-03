@@ -20,13 +20,13 @@ export const RenderEditCell = <
   FilterStateType extends ObjectForExtending,
   RowIdType extends string | number,
   RowType extends ObjectForExtending,
-  SummaryRowType = unknown
+  SummaryRowType = unknown,
 >({
   renderEditCellProps,
   column,
   tableConfigSubRows,
   tableConfigRowDetailPanel,
-  keyText
+  keyText,
 }: {
   renderEditCellProps: RenderEditCellProps<RowType, SummaryRowType>;
   column: ColumnConfig<RowType, SummaryRowType>;
@@ -88,7 +88,7 @@ export const RenderEditCell = <
     }
     return column.editingCell.component(
       renderEditCellProps as RenderEditCellProps<RowType, unknown>,
-      0
+      0,
     );
   })();
 
@@ -163,7 +163,7 @@ export const RenderEditCell = <
         $hasChildren={hasChildrenAndArrow}
         $editingMode={{
           $columnHasArrow: columnHasArrow,
-          $rowSize: rowSize
+          $rowSize: rowSize,
         }}
       >
         {hasChildrenAndArrow && (
@@ -217,16 +217,16 @@ export const RenderEditCell = <
       ...parentColumn,
       // для subRow переопределяем ключ
       ...(!parentKeyAsSubKey && {
-        key: getSubRowColumnKey()
+        key: getSubRowColumnKey(),
       }),
       // для subRow переопределяем editingCell
-      editingCell: column.subRow.editingCell
+      editingCell: column.subRow.editingCell,
     };
 
     const renderSubRowEditCellProps = {
       ...restRenderEditCellProps,
 
-      column: columnFinal as typeof parentColumn
+      column: columnFinal as typeof parentColumn,
     };
 
     if (column.subRow.editingCell.component === 'inputString') {
@@ -250,7 +250,7 @@ export const RenderEditCell = <
         ObjectForExtending,
         unknown
       >,
-      lvl
+      lvl,
     );
   })();
 
@@ -285,7 +285,7 @@ export const RenderEditCell = <
       $hasChildren={hasChildrenAndArrow}
       $editingMode={{
         $columnHasArrow: columnHasArrow,
-        $rowSize: rowSize
+        $rowSize: rowSize,
       }}
     >
       {hasChildrenAndArrow && (

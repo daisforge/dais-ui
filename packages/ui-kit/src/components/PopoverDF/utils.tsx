@@ -19,11 +19,11 @@ const allCorners: ResizeCorner[] = [
   'top-left',
   'top-right',
   'bottom-left',
-  'bottom-right'
+  'bottom-right',
 ];
 
 const getResizableCorner = (
-  placement?: ComponentProps<typeof PopoverBeta>['placement']
+  placement?: ComponentProps<typeof PopoverBeta>['placement'],
 ): ResizeCorner => {
   switch (placement) {
     case 'top-end':
@@ -53,12 +53,12 @@ const getResizableCorner = (
 };
 
 const getDirectionsByCorner = (
-  corner: ResizeCorner
+  corner: ResizeCorner,
 ): NonNullable<PopoverBetaResizableConfig['directions']> => [corner];
 
 const getResizeIcon = (
   corner: ResizeCorner,
-  iconSize: PopoverDFResizeIconSize = defaultResizeIconSize
+  iconSize: PopoverDFResizeIconSize = defaultResizeIconSize,
 ) => {
   const style: CSSProperties = {};
 
@@ -81,28 +81,28 @@ const getResizeIcon = (
 
 const getResizeIcons = (
   icons?: PopoverBetaResizableConfig['icons'],
-  iconSize?: PopoverBetaResizableConfig['iconSize']
+  iconSize?: PopoverBetaResizableConfig['iconSize'],
 ): NonNullable<PopoverBetaResizableConfig['icons']> => ({
   topLeft: icons?.topLeft || getResizeIcon('top-left', iconSize),
   topRight: icons?.topRight || getResizeIcon('top-right', iconSize),
   bottomLeft: icons?.bottomLeft || getResizeIcon('bottom-left', iconSize),
-  bottomRight: icons?.bottomRight || getResizeIcon('bottom-right', iconSize)
+  bottomRight: icons?.bottomRight || getResizeIcon('bottom-right', iconSize),
 });
 
 const getDefaultConfig = (
-  corner: ResizeCorner
+  corner: ResizeCorner,
 ): PopoverBetaResizableConfig => ({
   directions: getDirectionsByCorner(corner),
   icons: getResizeIcons(undefined, defaultResizeIconSize),
   hiddenIcons: allCorners.filter((item) => item !== corner),
   minWidth: 240,
   minHeight: 120,
-  iconSize: defaultResizeIconSize
+  iconSize: defaultResizeIconSize,
 });
 
 const mergeResizableConfig = (
   resizable: PopoverBetaResizableProp,
-  corner: ResizeCorner
+  corner: ResizeCorner,
 ): PopoverBetaResizableProp => {
   if (!resizable) {
     return resizable;
@@ -130,12 +130,12 @@ const mergeResizableConfig = (
     directions,
     icons: getResizeIcons(resizableConfig.icons, resizableConfig.iconSize),
     hiddenIcons,
-    iconSize: resizableConfig.iconSize ?? defaultConfig.iconSize
+    iconSize: resizableConfig.iconSize ?? defaultConfig.iconSize,
   };
 };
 
 export const getPopoverDFResizableConfig = (
   resizable: PopoverBetaResizableProp,
-  placement?: ComponentProps<typeof PopoverBeta>['placement']
+  placement?: ComponentProps<typeof PopoverBeta>['placement'],
 ): PopoverBetaResizableProp =>
   mergeResizableConfig(resizable, getResizableCorner(placement));

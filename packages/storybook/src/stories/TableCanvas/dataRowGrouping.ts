@@ -35,7 +35,7 @@ const sports = [
   'Weightlifting',
   'Waterpolo',
   'Wrestling',
-  'Weightlifting'
+  'Weightlifting',
 ];
 const countries = [
   'United States',
@@ -46,11 +46,11 @@ const countries = [
   'Germany',
   'China',
   'Japan',
-  'Korean'
+  'Korean',
 ];
 
 const athletes = sports.map(
-  (str) => ['Mr. ', 'Ms. '][randomNum({ max: 1 })] + str
+  (str) => ['Mr. ', 'Ms. '][randomNum({ max: 1 })] + str,
 );
 
 export interface RowForGrouping {
@@ -76,7 +76,7 @@ export function createRowsForGrouping(): RowForGrouping[] {
       athlete: athletes[randomNum({ max: athletes.length - 1 })] as string,
       gold: randomNum({ max: 5 }),
       silver: randomNum({ max: 5 }),
-      bronze: randomNum({ max: 5 })
+      bronze: randomNum({ max: 5 }),
     });
   }
 

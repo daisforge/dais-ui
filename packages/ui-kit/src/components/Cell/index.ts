@@ -3,6 +3,6 @@ export {
   CellTextbox,
   CellTextboxLabel,
   CellTextboxSubtitle,
-  CellTextboxTitle
+  CellTextboxTitle,
 } from '@salutejs/sdds-finai';
 export { Cell } from '@salutejs/sdds-finai';

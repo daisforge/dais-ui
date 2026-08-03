@@ -11,7 +11,7 @@ export const RightSide = ({
   featureIconSize,
   registerIconRef,
   triggerSlot,
-  triggerAfterCount = 0
+  triggerAfterCount = 0,
 }: {
   icons: FeatureItem[];
   featureItems: FeatureItem[];
@@ -30,7 +30,7 @@ export const RightSide = ({
   const renderIcon = (
     iconProps: FeatureItem,
     index: number,
-    iconsLength: number
+    iconsLength: number,
   ) => (
     <FeatureIconBtn
       key={iconProps.value}

@@ -8,7 +8,7 @@ export const PageLayout = ({
   paddingBottom,
   minHeight,
   children,
-  className
+  className,
 }: PageLayoutProps) => (
   <StyledPageLayout
     $paddingTop={paddingTop}

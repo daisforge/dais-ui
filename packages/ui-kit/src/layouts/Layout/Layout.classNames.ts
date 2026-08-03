@@ -3,5 +3,5 @@ export const cls = {
   header: 'layout__header',
   main: 'layout__main',
   item: 'layout__item',
-  centeredItem: 'layout__centeredItem'
+  centeredItem: 'layout__centeredItem',
 };

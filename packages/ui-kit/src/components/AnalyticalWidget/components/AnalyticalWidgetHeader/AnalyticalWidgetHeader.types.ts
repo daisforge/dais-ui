@@ -4,7 +4,7 @@ import type {
   CSSProperties,
   KeyboardEventHandler,
   MouseEventHandler,
-  ReactNode
+  ReactNode,
 } from 'react';
 
 export interface AnalyticalWidgetHeaderProps {

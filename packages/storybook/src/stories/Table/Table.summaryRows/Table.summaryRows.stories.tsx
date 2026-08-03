@@ -13,9 +13,9 @@ const meta: Meta = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      page: DocStoryTemplate
-    }
-  }
+      page: DocStoryTemplate,
+    },
+  },
 };
 
 export default meta;
@@ -49,7 +49,7 @@ type TSummaryRowData = {
 export const SummaryRows: Story = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     const [rows] = useState(createRows);
@@ -60,31 +60,31 @@ export const SummaryRows: Story = {
         values: [
           {
             columnId: 'id',
-            value: 'Итого'
+            value: 'Итого',
           },
           {
             columnId: 'priority',
             value: `Критичных приоритетов ${
               rows.filter((el) => el.priority === 'Critical').length
-            }`
-          }
-        ]
+            }`,
+          },
+        ],
       },
       {
         type: 'top',
         values: [
           {
             columnId: 'id',
-            value: 'Итого'
+            value: 'Итого',
           },
           {
             columnId: 'priority',
             value: `Высоких приоритетов ${
               rows.filter((el) => el.priority === 'High').length
-            }`
-          }
-        ]
-      }
+            }`,
+          },
+        ],
+      },
     ];
 
     const bottomSummaryRowsData: TSummaryRowData[] = [
@@ -97,18 +97,18 @@ export const SummaryRows: Story = {
             columnId: 'priority',
             value: `Средних приоритетов ${
               rows.filter((el) => el.priority === 'Medium').length
-            }`
-          }
-        ]
-      }
+            }`,
+          },
+        ],
+      },
     ];
 
     const renderCommonSummaryCell = useCallback(
       (props: RenderSummaryCellProps<unknown, Row>) =>
         (props.row as TSummaryRowData).values.find(
-          (el) => el.columnId === props.column.key
+          (el) => el.columnId === props.column.key,
         )?.value,
-      []
+      [],
     );
 
     const columnConfig = useMemo<readonly ColumnConfig<Row>[]>(
@@ -116,12 +116,12 @@ export const SummaryRows: Story = {
         {
           key: 'id',
           name: 'ID',
-          renderSummaryCell: renderCommonSummaryCell
+          renderSummaryCell: renderCommonSummaryCell,
         },
         {
           key: 'task',
           name: 'Title',
-          renderSummaryCell: renderCommonSummaryCell
+          renderSummaryCell: renderCommonSummaryCell,
         },
         {
           key: 'priority',
@@ -131,24 +131,24 @@ export const SummaryRows: Story = {
             return (
               <div
                 style={{
-                  color: rowData.type === 'top' ? textNegative : textWarning
+                  color: rowData.type === 'top' ? textNegative : textWarning,
                 }}
               >
                 {renderCommonSummaryCell(props)}
               </div>
             );
-          }
+          },
         },
         {
           key: 'issueType',
-          name: 'Issue Type'
+          name: 'Issue Type',
         },
         {
           key: 'complete',
-          name: '% Complete'
-        }
+          name: '% Complete',
+        },
       ],
-      [renderCommonSummaryCell]
+      [renderCommonSummaryCell],
     );
 
     return (
@@ -157,8 +157,8 @@ export const SummaryRows: Story = {
           containerStyle: { height: '700px' },
           summaryRows: {
             showDefault: true,
-            showInControl: true
-          }
+            showInControl: true,
+          },
         }}
         columnConfig={columnConfig}
         topSummaryRows={topSummaryRowsData}
@@ -166,5 +166,5 @@ export const SummaryRows: Story = {
         rows={rows}
       />
     );
-  }
+  },
 };

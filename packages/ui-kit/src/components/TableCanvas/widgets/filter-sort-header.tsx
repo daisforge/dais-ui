@@ -1,18 +1,18 @@
 import {
   CanvasEmbedIconButton,
-  CanvasEvent
+  CanvasEvent,
 } from '@ui-kit/components/TableGlide';
 import {
   IconDoubleDisclosureDown,
   IconDoubleDisclosureUp,
   IconDrag,
-  IconPinFill
+  IconPinFill,
 } from '@ui-kit/icons';
 import React from 'react';
 
 import {
   checkIsFilterActive,
-  renderHeaderFilterButton
+  renderHeaderFilterButton,
 } from '../feature-filtering/header-filter-button';
 import { renderHeaderSortButton } from '../feature-sorting';
 import {
@@ -20,26 +20,26 @@ import {
   HEADER_TOOLTIP_COLUMN_UNPIN_ID,
   HEADER_TOOLTIP_DRAG_ID,
   HEADER_TOOLTIP_EXPAND_ALL_ROWS_ID,
-  HEADER_TOOLTIP_HIDE_ALL_ROWS_ID
+  HEADER_TOOLTIP_HIDE_ALL_ROWS_ID,
 } from '../feature-tooltip/constants';
 import { tableClassNames } from '../styles';
 import {
   Canvas,
   HeaderCellInfoGlideInstance,
-  isCanvasContent
+  isCanvasContent,
 } from '../TableGlideInstance';
 import { ColumnConfig, ObjectForExtending } from '../types';
 
 const HEADER_LEFT_ICONS_CONFIG = {
   big: { squareSize: 24, iconSize: 16, gapToText: 8 },
   medium: { squareSize: 24, iconSize: 16, gapToText: 2 },
-  small: { squareSize: 20, iconSize: 12, gapToText: 0 }
+  small: { squareSize: 20, iconSize: 12, gapToText: 0 },
 };
 
 export function renderFilterSortHeader<
   _FilterStateType extends ObjectForExtending,
   RowType extends ObjectForExtending,
-  SummaryRowType = unknown
+  SummaryRowType = unknown,
 >({
   columnConfig,
   tableConfigSorting,
@@ -51,7 +51,7 @@ export function renderFilterSortHeader<
   subRowIsActiveAndColumnWithArrow,
   renderHeaderCellProps: rest,
   onOpenFilter,
-  onUnpinColumn
+  onUnpinColumn,
 }: {
   columnConfig: ColumnConfig<RowType, SummaryRowType>;
   tableConfigSorting: boolean;
@@ -71,7 +71,7 @@ export function renderFilterSortHeader<
    */
   onOpenFilter?: (
     columnConfig: ColumnConfig<RowType, SummaryRowType>,
-    event: CanvasEvent<CanvasEmbedIconButton>
+    event: CanvasEvent<CanvasEmbedIconButton>,
   ) => void;
   /** Открепить эту колонку по клику на пин-иконку в шапке. */
   onUnpinColumn: (key: string) => void;
@@ -81,7 +81,7 @@ export function renderFilterSortHeader<
   const contextState = rest.ctxs.headerCtx;
 
   const columnSorted = contextState.sortState?.find(
-    (el) => el.columnKey === rest.column.key
+    (el) => el.columnKey === rest.column.key,
   );
 
   // contextState.filtersAreVisible
@@ -109,7 +109,7 @@ export function renderFilterSortHeader<
       justifyContent="space-between"
       padding={{
         left: theme.cellHorizontalPadding,
-        right: theme.cellHorizontalPadding
+        right: theme.cellHorizontalPadding,
       }}
       style={{ width: '100%' }}
     >
@@ -180,7 +180,7 @@ export function renderFilterSortHeader<
                   style={{
                     width: headerIconsCfg.squareSize,
                     height: headerIconsCfg.squareSize,
-                    flexShrink: 0
+                    flexShrink: 0,
                   }}
                   alignItems="center"
                   justifyContent="center"
@@ -243,9 +243,9 @@ export function renderFilterSortHeader<
               isFilterActive: checkIsFilterActive(
                 columnConfig,
                 contextState.filters,
-                contextState.clearedFiltersValue
+                contextState.clearedFiltersValue,
               ),
-              onClick: (event) => onOpenFilter?.(columnConfig, event)
+              onClick: (event) => onOpenFilter?.(columnConfig, event),
             })}
           {sortIconIsVisible && (
             <Canvas.Container
@@ -260,7 +260,7 @@ export function renderFilterSortHeader<
                 columnSorted,
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 setSortState: contextState.setSortState!,
-                accentColor: theme.accentColor
+                accentColor: theme.accentColor,
               })}
             </Canvas.Container>
           )}

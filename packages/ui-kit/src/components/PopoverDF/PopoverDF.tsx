@@ -26,7 +26,7 @@ const PopoverDFWithRef = forwardRef<HTMLDivElement, PopoverDFProps>(
       target,
       ...rest
     },
-    ref
+    ref,
   ) => {
     const [openedInternal, setOpenedInternal] = useState(defaultOpened);
     const opened =
@@ -40,7 +40,7 @@ const PopoverDFWithRef = forwardRef<HTMLDivElement, PopoverDFProps>(
 
         onToggle?.(nextOpened);
       },
-      [onToggle, openedExternal]
+      [onToggle, openedExternal],
     );
 
     const handleClose = useCallback(() => {
@@ -52,14 +52,14 @@ const PopoverDFWithRef = forwardRef<HTMLDivElement, PopoverDFProps>(
 
     const computedResizable = useMemo(
       () => getPopoverDFResizableConfig(resizable, resolvedPlacement),
-      [resizable, resolvedPlacement]
+      [resizable, resolvedPlacement],
     );
 
     const contextOnClose =
       openedExternal === undefined || onToggle ? handleClose : null;
     const contextValue = useMemo(
       () => ({ onClose: contextOnClose, size }),
-      [contextOnClose, size]
+      [contextOnClose, size],
     );
 
     const content = <StyledContainer $size={size}>{children}</StyledContainer>;
@@ -81,13 +81,13 @@ const PopoverDFWithRef = forwardRef<HTMLDivElement, PopoverDFProps>(
         </StyledPopover>
       </PopoverDFContext.Provider>
     );
-  }
+  },
 );
 
 export const PopoverDF = Object.assign(PopoverDFWithRef, {
   Header,
   Body,
-  Footer
+  Footer,
 });
 
 PopoverDF.displayName = 'PopoverDF';

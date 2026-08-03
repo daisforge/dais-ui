@@ -3,5 +3,5 @@ export { DrawerDF, type DrawerDFProps } from './DrawerDF';
 export {
   DrawerDFContent,
   DrawerDFFooter,
-  DrawerDFHeader
+  DrawerDFHeader,
 } from './DrawerDFCompounds';

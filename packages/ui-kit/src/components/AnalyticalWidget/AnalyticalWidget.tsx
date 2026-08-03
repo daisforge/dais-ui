@@ -2,18 +2,18 @@ import { mergeClasses } from '@ui-kit/utils';
 
 import {
   analyticalWidgetClassNames as cls,
-  SLOT_VISIBILITY
+  SLOT_VISIBILITY,
 } from './AnalyticalWidget.constants';
 import {
   StyledContent,
   StyledMiddleSlot,
   StyledTopSlot,
-  StyledWidget
+  StyledWidget,
 } from './AnalyticalWidget.styled';
 import { AnalyticalWidgetProps } from './AnalyticalWidget.types';
 import {
   AnalyticalWidgetIconButtonDots,
-  AnalyticalWidgetIconButtonFilter
+  AnalyticalWidgetIconButtonFilter,
 } from './components/AnalyticalWidgetButtons';
 import { AnalyticalWidgetChipsGroup } from './components/AnalyticalWidgetChips';
 import { AnalyticalWidgetHeader } from './components/AnalyticalWidgetHeader';
@@ -26,7 +26,7 @@ export const AnalyticalWidget = ({
   middleSlot,
   contentSlot,
   classes,
-  $css
+  $css,
 }: AnalyticalWidgetProps) => {
   const slotVisibility = SLOT_VISIBILITY[size];
   return (
@@ -39,7 +39,7 @@ export const AnalyticalWidget = ({
       // Шапка не может быть меньше 32px, даже если ее нет, контейнер с данной высотой должен существовать, чтобы кнопка троеточия, внедряемые микрофронтендом другой команды с абсолютным позиционированием не ломала верстку */}
       <div
         style={{
-          minHeight: '32px'
+          minHeight: '32px',
         }}
       >
         {headerSlot}

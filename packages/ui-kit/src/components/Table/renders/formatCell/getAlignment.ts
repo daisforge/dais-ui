@@ -1,7 +1,7 @@
 import { ContentFormat } from '../../types/column-config.type';
 
 export const getAlignment = (
-  format?: ContentFormat
+  format?: ContentFormat,
 ): 'left' | 'right' | 'center' => {
   // Если явно задано выравнивание - используем его
   if (typeof format === 'object' && format.alignContent) {

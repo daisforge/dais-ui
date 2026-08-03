@@ -9,7 +9,7 @@ interface IEventBusProviderProps extends PropsWithChildren {
 
 export const EventBusProvider: FC<IEventBusProviderProps> = ({
   children,
-  busInstance
+  busInstance,
 }) => (
   <EventBusContext.Provider value={busInstance}>
     {children}

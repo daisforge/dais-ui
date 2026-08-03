@@ -15,10 +15,10 @@ export const getDefault = (fullScreenExternal: ModalDFProps['fullScreen']) => {
 
 export const useFullScreened = (
   fullScreenExternal: ModalDFProps['fullScreen'],
-  opened: boolean | undefined
+  opened: boolean | undefined,
 ) => {
   const [fullScreened, setFullScreened] = useState(() =>
-    getDefault(fullScreenExternal)
+    getDefault(fullScreenExternal),
   );
 
   // --------------- возврат к дефолтному состоянию полноэкранного режима при закрытии модального окна
@@ -61,6 +61,6 @@ export const useFullScreened = (
 
   return {
     fullScreened,
-    toggleFullScreen
+    toggleFullScreen,
   };
 };

@@ -3,7 +3,7 @@ import { GroupRow } from './types';
 
 export function objectGroupBy<T extends ObjectForExtending>(
   items: T[],
-  keyGetter: (item: T) => string
+  keyGetter: (item: T) => string,
 ) {
   const groups = items.reduce((acc, curr) => {
     const key = keyGetter(curr);
@@ -27,15 +27,15 @@ export function groupsToArr<T, V extends ObjectForExtending, X>(
     itemsKey?: string;
     additionalPropertiesForGroup?: (
       groupLabel: string,
-      items: readonly T[]
+      items: readonly T[],
     ) => V;
-  }
+  },
 ) {
   return Object.entries(groups).map(([groupLabel, items]) => {
     const groupRowObj = {
       ...{ [options?.labelKey ?? 'groupLabel']: groupLabel },
       ...{ [options?.itemsKey ?? 'childGroups']: items },
-      ...options?.additionalPropertiesForGroup?.(groupLabel, items)
+      ...options?.additionalPropertiesForGroup?.(groupLabel, items),
     };
     if (groupRowReplaceTo) {
       return groupRowReplaceTo(groupRowObj as GroupRow<X>);
@@ -47,7 +47,7 @@ export function groupsToArr<T, V extends ObjectForExtending, X>(
 
 export function rowGrouper<Row extends ObjectForExtending>(
   rows: readonly Row[],
-  columnKey: string
+  columnKey: string,
 ) {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-expect-error

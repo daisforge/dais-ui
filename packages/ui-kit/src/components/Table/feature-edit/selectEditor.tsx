@@ -11,7 +11,7 @@ export function SelectEditor<TRow extends ObjectForExtending, TSummaryRow>({
   row,
   column,
   columnConfig,
-  onRowChange
+  onRowChange,
 }: RenderEditCellProps<TRow, TSummaryRow> & {
   columnConfig: ColumnConfig<TRow, TSummaryRow>;
 }) {
@@ -58,8 +58,8 @@ export function SelectEditor<TRow extends ObjectForExtending, TSummaryRow>({
   const items = [
     ...options.map((el) => ({
       value: el.value.toString(),
-      label: el.text.toString()
-    }))
+      label: el.text.toString(),
+    })),
   ];
 
   return (

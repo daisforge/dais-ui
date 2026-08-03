@@ -6,7 +6,7 @@ export const emptyStateClassNames = {
   extraButton: 'emptyState__extraButton',
   icon: 'emptyState__icon ',
   title: 'emptyState__title',
-  subtitle: 'emptyState__subtitle'
+  subtitle: 'emptyState__subtitle',
 };
 
 // Список вариантов ErrorPage
@@ -19,7 +19,7 @@ export const ERROR_PAGE_VARIANTS: ErrorPageVariant[] = [
   '500',
   '502',
   '503',
-  'unidentified'
+  'unidentified',
 ];
 
 // Имена файлов изображений EmptyState
@@ -33,7 +33,7 @@ export const EMPTY_STATE_IMAGE_NAMES = {
     m3x: 'loading-m@3x',
     l: 'loading-l',
     l2x: 'loading-l@2x',
-    l3x: 'loading-l@3x'
+    l3x: 'loading-l@3x',
   },
   'life-circle': {
     s: 'life-circle-s',
@@ -44,7 +44,7 @@ export const EMPTY_STATE_IMAGE_NAMES = {
     m3x: 'life-circle-m@3x',
     l: 'life-circle-l',
     l2x: 'life-circle-l@2x',
-    l3x: 'life-circle-l@3x'
+    l3x: 'life-circle-l@3x',
   },
   'need-access': {
     s: 'need-access-s',
@@ -55,7 +55,7 @@ export const EMPTY_STATE_IMAGE_NAMES = {
     m3x: 'need-access-m@3x',
     l: 'need-access-l',
     l2x: 'need-access-l@2x',
-    l3x: 'need-access-l@3x'
+    l3x: 'need-access-l@3x',
   },
   'no-access': {
     s: 'no-access-s',
@@ -66,7 +66,7 @@ export const EMPTY_STATE_IMAGE_NAMES = {
     m3x: 'no-access-m@3x',
     l: 'no-access-l',
     l2x: 'no-access-l@2x',
-    l3x: 'no-access-l@3x'
+    l3x: 'no-access-l@3x',
   },
   'no-content': {
     s: 'no-content-s',
@@ -77,7 +77,7 @@ export const EMPTY_STATE_IMAGE_NAMES = {
     m3x: 'no-content-m@3x',
     l: 'no-content-l',
     l2x: 'no-content-l@2x',
-    l3x: 'no-content-l@3x'
+    l3x: 'no-content-l@3x',
   },
   'not-found': {
     s: 'not-found-s',
@@ -88,7 +88,7 @@ export const EMPTY_STATE_IMAGE_NAMES = {
     m3x: 'not-found-m@3x',
     l: 'not-found-l',
     l2x: 'not-found-l@2x',
-    l3x: 'not-found-l@3x'
+    l3x: 'not-found-l@3x',
   },
   'not-result': {
     s: 'not-result-s',
@@ -99,7 +99,7 @@ export const EMPTY_STATE_IMAGE_NAMES = {
     m3x: 'not-result-m@3x',
     l: 'not-result-l',
     l2x: 'not-result-l@2x',
-    l3x: 'not-result-l@3x'
+    l3x: 'not-result-l@3x',
   },
   success: {
     s: 'success-s',
@@ -110,8 +110,8 @@ export const EMPTY_STATE_IMAGE_NAMES = {
     m3x: 'success-m@3x',
     l: 'success-l',
     l2x: 'success-l@2x',
-    l3x: 'success-l@3x'
-  }
+    l3x: 'success-l@3x',
+  },
 } as const;
 
 // Имена файлов изображений ErrorPage по размерам.
@@ -129,6 +129,6 @@ export const ERROR_PAGE_IMAGE_NAMES = {
   unidentified: {
     s: 'unidentified-s@3x',
     m: 'unidentified-m@3x',
-    l: 'unidentified@3x'
-  }
+    l: 'unidentified@3x',
+  },
 } as const;

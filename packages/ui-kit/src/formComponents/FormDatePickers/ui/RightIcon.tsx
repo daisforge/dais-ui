@@ -2,7 +2,7 @@ import { IconDisclosureDownOutline } from '@ui-kit/icons';
 import styled from 'styled-components';
 
 export const RotatableIconDisclosureDownOutline = styled(
-  IconDisclosureDownOutline
+  IconDisclosureDownOutline,
 )<{
   opened: boolean;
 }>`

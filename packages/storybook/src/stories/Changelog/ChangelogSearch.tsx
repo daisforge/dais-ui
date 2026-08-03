@@ -10,7 +10,7 @@ import React, { ChangeEvent, memo, useMemo, useState } from 'react';
 import {
   searchChangelog,
   SERVICE_ID_START,
-  VersionBlock
+  VersionBlock,
 } from './searchChangelog';
 /**
  * Замена URL сравнения версий в CHANGELOG.md
@@ -24,14 +24,14 @@ import {
 const replaceChangelogLinkCompare = (text: string): string => {
   const result = text.replace(
     /https?:\/\/stash\.delta\.dddd\.ru:7999\/([^/]+)\/([^/]+)\/compare\/v([^)]+)\.\.\.v([^)]+)\)/g,
-    'https://stash.dddddd.ru/projects/$1/repos/$2/compare/diff?sourceBranch=refs%2Ftags%2Fv$4&targetRepoId=160675&targetBranch=refs%2Ftags%2Fv$3'
+    'https://stash.dddddd.ru/projects/$1/repos/$2/compare/diff?sourceBranch=refs%2Ftags%2Fv$4&targetRepoId=160675&targetBranch=refs%2Ftags%2Fv$3',
   );
   return result;
 };
 const replaceChangelogLinkDomain = (text: string): string => {
   const result = text.replace(
     /stash.dddddd.ru:7999\/uvhd-fiori/g,
-    'stash.dddddd.ru/projects/UVHD-FIORI/repos'
+    'stash.dddddd.ru/projects/UVHD-FIORI/repos',
   );
   return result;
 };
@@ -43,11 +43,11 @@ interface ChangelogSearchProps {
 }
 
 export const ChangelogSearch: React.FC<ChangelogSearchProps> = ({
-  changelog: changelogSource
+  changelog: changelogSource,
 }) => {
   const changelog = useMemo(
     () => replaceChangelogLinks(changelogSource),
-    [changelogSource]
+    [changelogSource],
   );
 
   const [query, setQuery] = useState('');
@@ -111,5 +111,5 @@ const BlocksMarkdown = memo(({ blocks }: { blocks: VersionBlock[] }) =>
         />
       </Box>
     );
-  })
+  }),
 );

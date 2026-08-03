@@ -33,7 +33,9 @@ export interface ViewColors {
   bgColorHover: string;
   borderColor: string;
   textColor: string;
+  textColorHover?: string;
   iconColor: string;
+  iconColorHover?: string;
 }
 
 // Resolved button colors

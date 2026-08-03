@@ -7,7 +7,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import {
   ColumnConfig,
   DOM_METADATA_ACTIONS,
-  Table
+  Table,
 } from '@ui-kit/components/Table';
 import React, { useMemo, useState } from 'react';
 
@@ -16,9 +16,9 @@ const meta: Meta = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      page: DocStoryTemplate
-    }
-  }
+      page: DocStoryTemplate,
+    },
+  },
 };
 
 export default meta;
@@ -48,7 +48,7 @@ export const DomMetadataOnClick: Story = {
   name: 'onClick для аналитики',
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     const [rows] = useState(createRows);
@@ -60,20 +60,20 @@ export const DomMetadataOnClick: Story = {
         {
           key: 'id',
           name: 'ID',
-          rowsGrouping: { columnGroupLabel: 'ID' }
+          rowsGrouping: { columnGroupLabel: 'ID' },
         },
         {
           key: 'task',
           name: 'Title',
-          rowsGrouping: { columnGroupLabel: 'Title' }
+          rowsGrouping: { columnGroupLabel: 'Title' },
         },
         {
           key: 'priority',
           name: 'Priority',
-          rowsGrouping: { columnGroupLabel: 'Priority' }
-        }
+          rowsGrouping: { columnGroupLabel: 'Priority' },
+        },
       ],
-      []
+      [],
     );
 
     // Общий обработчик для аналитики.
@@ -83,17 +83,17 @@ export const DomMetadataOnClick: Story = {
     const handleDomMetadataClick = (
       source: string,
       e?: React.MouseEvent<HTMLElement>,
-      detail?: Record<string, unknown>
+      detail?: Record<string, unknown>,
     ) => {
       // Пример: проверка конкретного действия через константу
       if (detail?.action === DOM_METADATA_ACTIONS.TOGGLE_GROUP) {
         console.debug(
-          `[DomMetadata] Группировка по столбцу: ${detail.columnKey}`
+          `[DomMetadata] Группировка по столбцу: ${detail.columnKey}`,
         );
       }
       console.debug(`[DomMetadata] ${source}:`, {
         detail,
-        target: e?.currentTarget
+        target: e?.currentTarget,
       });
     };
 
@@ -112,8 +112,8 @@ export const DomMetadataOnClick: Story = {
               className: 'analytics-grouping',
               dataAttributes: { 'data-feature': 'grouping' },
               onClick: (e, detail) =>
-                handleDomMetadataClick('rowsGrouping', e, detail)
-            }
+                handleDomMetadataClick('rowsGrouping', e, detail),
+            },
           },
 
           // 2. Кнопка размера строки
@@ -127,8 +127,8 @@ export const DomMetadataOnClick: Story = {
               className: 'analytics-row-size',
               dataAttributes: { 'data-feature': 'row-size' },
               onClick: (e, detail) =>
-                handleDomMetadataClick('rowSize', e, detail)
-            }
+                handleDomMetadataClick('rowSize', e, detail),
+            },
           },
 
           // 3. Настройки столбцов: закрепление и видимость
@@ -140,14 +140,14 @@ export const DomMetadataOnClick: Story = {
               className: 'analytics-pin',
               dataAttributes: { 'data-feature': 'pin-column' },
               onClick: (e, detail) =>
-                handleDomMetadataClick('pinColumn', e, detail)
+                handleDomMetadataClick('pinColumn', e, detail),
             },
             switchDomMetadata: {
               className: 'analytics-switch',
               dataAttributes: { 'data-feature': 'column-visibility' },
               onClick: (e, detail) =>
-                handleDomMetadataClick('columnVisibility', e, detail)
-            }
+                handleDomMetadataClick('columnVisibility', e, detail),
+            },
           },
 
           // 4. Таб настроек сайдбара (шестерёнка + крестик закрыть)
@@ -161,19 +161,19 @@ export const DomMetadataOnClick: Story = {
                   className: 'analytics-settings',
                   dataAttributes: { 'data-feature': 'settings' },
                   onClick: (e, detail) =>
-                    handleDomMetadataClick('settings', e, detail)
-                }
-              }
-            ]
+                    handleDomMetadataClick('settings', e, detail),
+                },
+              },
+            ],
           },
 
           filtering: {
-            state: [filters, setFilters]
-          }
+            state: [filters, setFilters],
+          },
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };

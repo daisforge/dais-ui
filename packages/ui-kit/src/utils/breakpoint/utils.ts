@@ -12,14 +12,14 @@ const createMediaQuery =
   `;
 
 const mapToRange = (
-  breakpoints: BreakpointConfig
+  breakpoints: BreakpointConfig,
 ): Record<Breakpoint, { min: number; max: number }> => ({
   xs: { min: 0, max: breakpoints.xs - 1 },
   s: { min: breakpoints.xs + 1, max: breakpoints.s },
   m: { min: breakpoints.s + 1, max: breakpoints.m },
   l: { min: breakpoints.m + 1, max: breakpoints.l },
   xl: { min: breakpoints.l + 1, max: breakpoints.xl },
-  xxl: { min: breakpoints.xl + 1, max: 100000 }
+  xxl: { min: breakpoints.xl + 1, max: 100000 },
 });
 
 export const mediaUtils = (breakpoints: BreakpointConfig) => {
@@ -31,21 +31,21 @@ export const mediaUtils = (breakpoints: BreakpointConfig) => {
       createMediaQuery(`(max-width: ${breakpointsRange[token].min - 1}px)`),
     only: (token: Breakpoint) =>
       createMediaQuery(
-        `(min-width: ${breakpointsRange[token].min}px) and (max-width: ${breakpointsRange[token].max}px)`
+        `(min-width: ${breakpointsRange[token].min}px) and (max-width: ${breakpointsRange[token].max}px)`,
       ),
     not: (token: Breakpoint) =>
       createMediaQuery(
         `(max-width: ${breakpointsRange[token].min - 1}px), (min-width: ${
           breakpointsRange[token].max + 1
-        }px)`
+        }px)`,
       ),
     between: (start: Breakpoint, end: Breakpoint) =>
       createMediaQuery(
-        `(min-width: ${breakpointsRange[start].min}px) and (max-width: ${breakpointsRange[end].max}px)`
+        `(min-width: ${breakpointsRange[start].min}px) and (max-width: ${breakpointsRange[end].max}px)`,
       ),
 
     exact: (min: number, max: number) =>
-      createMediaQuery(`(min-width: ${min}px) and (max-width: ${max}px)`)
+      createMediaQuery(`(min-width: ${min}px) and (max-width: ${max}px)`),
   };
 };
 

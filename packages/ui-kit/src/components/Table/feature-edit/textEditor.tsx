@@ -17,7 +17,7 @@ export function TextEditorString<TRow, TSummaryRow>({
   row,
   column,
   onRowChange,
-  onClose
+  onClose,
 }: RenderEditCellProps<TRow, TSummaryRow>) {
   const { rowSize } = useRowContext();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -43,7 +43,7 @@ export function TextEditorNumber<TRow, TSummaryRow>({
   column,
   onRowChange,
   onClose,
-  formatOptions
+  formatOptions,
 }: RenderEditCellProps<TRow, TSummaryRow> & {
   formatOptions?: ContentFormat;
 }) {
@@ -58,7 +58,7 @@ export function TextEditorNumber<TRow, TSummaryRow>({
       thousandSeparator: ' ',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
-      alignContent: 'left'
+      alignContent: 'left',
     };
 
     if (!formatOptions || formatOptions === 'number') {
@@ -77,7 +77,7 @@ export function TextEditorNumber<TRow, TSummaryRow>({
     thousandSeparator,
     minimumFractionDigits,
     maximumFractionDigits,
-    alignContent
+    alignContent,
   } = getNumberFormat();
 
   const handleChange = (
@@ -86,12 +86,12 @@ export function TextEditorNumber<TRow, TSummaryRow>({
       floatValue: number | undefined;
       formattedValue: string;
       value: string;
-    }
+    },
   ) => {
     if (values) {
       onRowChange({
         ...row,
-        [column.key]: values.floatValue ?? values.formattedValue
+        [column.key]: values.floatValue ?? values.formattedValue,
       });
     }
   };

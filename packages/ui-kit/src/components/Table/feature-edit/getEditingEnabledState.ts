@@ -9,7 +9,7 @@ export const getEditingEnabledState = (
     | undefined
     | boolean
     | [boolean, React.Dispatch<React.SetStateAction<boolean>>],
-  innerState: [boolean, React.Dispatch<React.SetStateAction<boolean>>]
+  innerState: [boolean, React.Dispatch<React.SetStateAction<boolean>>],
 ) => {
   if (typeof external === 'undefined') {
     return innerState;

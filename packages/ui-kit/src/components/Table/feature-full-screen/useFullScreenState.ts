@@ -4,7 +4,7 @@ import { RequiredOnly } from '../types';
 import { FullScreen, FullScreenObj } from './types';
 
 const isHaveExternalState = (
-  p: FullScreen | undefined
+  p: FullScreen | undefined,
 ): p is RequiredOnly<FullScreenObj, 'state'> =>
   typeof p !== 'boolean' && typeof p?.state !== 'undefined';
 
@@ -12,12 +12,12 @@ const isHaveExternalState = (
  * @default fullScreenPortal=document.body
  */
 export const useFullScreenState = (
-  fullScreenConfig: FullScreen | undefined
+  fullScreenConfig: FullScreen | undefined,
 ) => {
   const configIsObj = typeof fullScreenConfig !== 'boolean';
 
   const internalState = useState(
-    (configIsObj && fullScreenConfig?.defaultOpened) ?? false
+    (configIsObj && fullScreenConfig?.defaultOpened) ?? false,
   );
   const portal = (() => {
     if (configIsObj) {
@@ -30,6 +30,6 @@ export const useFullScreenState = (
     state: isHaveExternalState(fullScreenConfig)
       ? fullScreenConfig.state
       : internalState,
-    fullScreenPortal: portal
+    fullScreenPortal: portal,
   };
 };

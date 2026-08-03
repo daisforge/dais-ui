@@ -4,7 +4,7 @@ import { ReactNode } from 'react';
 import { ObjectForExtending, Prettify } from '../types/utils.type';
 
 export type HandleExpandDetail<RowType extends ObjectForExtending> = (
-  row: RowType
+  row: RowType,
 ) => void;
 
 export type IconsPropType = {

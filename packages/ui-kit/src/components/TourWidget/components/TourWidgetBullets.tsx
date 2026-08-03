@@ -44,7 +44,7 @@ export const TourWidgetBullets = forwardRef<
       ? clamp(
           activeIndex - Math.floor(MAX_VISIBLE_BULLETS / 2),
           0,
-          maxWindowStart
+          maxWindowStart,
         )
       : 0;
   const windowEnd = windowStart + visibleBulletsCount - 1;
@@ -53,7 +53,7 @@ export const TourWidgetBullets = forwardRef<
   const bulletsStyle: BulletsStyle = {
     ...style,
     '--tour-widget-bullets-offset': `-${windowStart * BULLET_STEP}px`,
-    '--tour-widget-bullets-width': `${getBulletsWidth(visibleBulletsCount)}px`
+    '--tour-widget-bullets-width': `${getBulletsWidth(visibleBulletsCount)}px`,
   };
 
   return (

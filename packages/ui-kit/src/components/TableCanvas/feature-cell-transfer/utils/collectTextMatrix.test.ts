@@ -6,7 +6,7 @@ import { collectTextMatrix } from './collectTextMatrix';
 
 const c = (
   key: string,
-  extra: Record<string, unknown> = {}
+  extra: Record<string, unknown> = {},
 ): TransferColumnConfig =>
   // eslint-disable-next-line prettier/prettier
   ({ key, ...extra } as unknown as TransferColumnConfig);
@@ -15,18 +15,18 @@ describe('collectTextMatrix — прямоугольный диапазон (cop
   const columns = [c('svc', { isServiceColumn: true }), c('a'), c('b')];
   const rows = [
     { a: 'a0', b: 'b0' },
-    { a: 'a1', b: 'b1' }
+    { a: 'a1', b: 'b1' },
   ];
 
   it('собирает матрицу текстов по диапазону data-колонок', () => {
     const { grid } = collectTextMatrix(
       { x: 1, y: 0, width: 2, height: 2 },
       columns,
-      rows
+      rows,
     );
     expect(grid).toEqual([
       ['a0', 'b0'],
-      ['a1', 'b1']
+      ['a1', 'b1'],
     ]);
   });
 
@@ -35,7 +35,7 @@ describe('collectTextMatrix — прямоугольный диапазон (cop
     const { grid } = collectTextMatrix(
       { x: 1, y: 0, width: 1, height: 1 },
       cols,
-      [{ n: 42 }]
+      [{ n: 42 }],
     );
     expect(grid).toEqual([['42']]);
   });
@@ -45,14 +45,14 @@ describe('collectTextMatrix — прямоугольный диапазон (cop
       { x: 1, y: 0, width: 1, height: 1 },
       columns,
       rows,
-      { withCells: true }
+      { withCells: true },
     );
     expect(grid).toEqual([['a0']]);
     expect(cells[0]?.[0]).toMatchObject({
       colIndex: 1,
       rowIndex: 0,
       rawValue: 'a0',
-      formattedValue: 'a0'
+      formattedValue: 'a0',
     });
   });
 });
@@ -62,13 +62,13 @@ describe('collectTextMatrix — copyData для кастомных ячеек', 
     const columns = [
       c('svc', { isServiceColumn: true }),
       c('priority', {
-        copyData: (r: { priority: string }) => `P-${r.priority}`
-      })
+        copyData: (r: { priority: string }) => `P-${r.priority}`,
+      }),
     ];
     const { grid } = collectTextMatrix(
       { x: 1, y: 0, width: 1, height: 2 },
       columns,
-      [{ priority: 'High' }, { priority: 'Low' }]
+      [{ priority: 'High' }, { priority: 'Low' }],
     );
     expect(grid).toEqual([['P-High'], ['P-Low']]);
   });
@@ -79,7 +79,7 @@ describe('collectMatrixFromTargets — несмежные индексы (Ctrl-�
   const rows = [
     { a: 'a0', b: 'b0', d: 'd0' },
     { a: 'a1', b: 'b1', d: 'd1' },
-    { a: 'a2', b: 'b2', d: 'd2' }
+    { a: 'a2', b: 'b2', d: 'd2' },
   ];
 
   it('берёт только указанные строки и колонки', () => {
@@ -87,7 +87,7 @@ describe('collectMatrixFromTargets — несмежные индексы (Ctrl-�
     const { grid } = collectMatrixFromTargets([0, 2], [1, 3], columns, rows);
     expect(grid).toEqual([
       ['a0', 'd0'],
-      ['a2', 'd2']
+      ['a2', 'd2'],
     ]);
   });
 

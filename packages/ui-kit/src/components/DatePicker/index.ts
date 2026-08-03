@@ -3,5 +3,5 @@ export * from './DatePicker.types';
 export {
   datePickerClasses,
   DatePickerRange,
-  datePickerTokens
+  datePickerTokens,
 } from '@salutejs/sdds-finai';

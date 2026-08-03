@@ -11,9 +11,9 @@ const meta: Meta = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      page: DocStoryTemplate
-    }
-  }
+      page: DocStoryTemplate,
+    },
+  },
 };
 
 export default meta;
@@ -40,7 +40,7 @@ import { IconAddOutline, IconBoxOutline, IconSber } from '@daisforge/ui/icons';
 export const Summary: StoryObj = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     const [rows] = useState(createRows);
@@ -49,41 +49,41 @@ export const Summary: StoryObj = {
       () => [
         {
           key: 'id',
-          name: 'ID'
+          name: 'ID',
         },
         {
           key: 'task',
-          name: 'Title'
+          name: 'Title',
         },
         {
           key: 'priority',
-          name: 'Priority'
+          name: 'Priority',
         },
         {
           key: 'issueType',
-          name: 'Issue Type'
+          name: 'Issue Type',
         },
         {
           key: 'complete',
-          name: '% Complete'
+          name: '% Complete',
         },
         {
           key: 'total',
           name: 'Сумма title и priority',
-          renderCell: ({ row }) => `${row.task} ${row.priority}`
-        }
+          renderCell: ({ row }) => `${row.task} ${row.priority}`,
+        },
       ],
-      []
+      [],
     );
 
     return (
       <Table
         tableConfig={{
-          enableVirtualization: false
+          enableVirtualization: false,
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };

@@ -2,7 +2,7 @@ import { Dropdown } from '@ui-kit/components/Dropdown';
 import {
   Icon,
   IconDotsHorizontalOutline,
-  IconDotsVerticalCenteredOutline
+  IconDotsVerticalCenteredOutline,
 } from '@ui-kit/icons';
 import React, { ComponentProps } from 'react';
 

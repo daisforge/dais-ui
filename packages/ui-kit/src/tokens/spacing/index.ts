@@ -20,5 +20,5 @@ export {
   spacing24x,
   spacing32x,
   spacing40x,
-  spacing60x
+  spacing60x,
 } from '@salutejs/sdds-themes/tokens/sdds_finai';

@@ -5,7 +5,7 @@ import { Collapse } from '@ui-kit/components/Collapse';
 import { Flow } from '@ui-kit/components/Flow';
 import {
   ActiveViewModsType,
-  ControlBlockSize
+  ControlBlockSize,
 } from '@ui-kit/components/TableCanvas/types';
 import React from 'react';
 
@@ -17,7 +17,7 @@ import { HEIGHT_CONTROL_BLOCK } from '../../styles';
 import { controlBlockClassNames as cls } from './control-block.classnames';
 import {
   getControlBlockSizeMap,
-  getControlBlockSpacingMap
+  getControlBlockSpacingMap,
 } from './control-block.constants';
 import { ControlBlockButton, StyledDivider } from './control-block-button';
 import { type ControlBlockButtonProps } from './control-block-button.types';
@@ -25,7 +25,7 @@ import { RightSide } from './right-side';
 import {
   ControlBlockStyled,
   LefSideStyled,
-  RightButtonsContainer
+  RightButtonsContainer,
 } from './styled';
 import { FeatureItem } from './types';
 
@@ -44,12 +44,12 @@ export const ControlBlockWithoutResize = ({
       isActiveSearching,
       showSearchBlock,
       searchQueryLocalValue,
-      placeholderSearchBlock
-    }
+      placeholderSearchBlock,
+    },
   },
   $borderTopRounded,
   collapseButtonPlacement = 'inside',
-  controlBlockSize
+  controlBlockSize,
 }: {
   leftSideInner: ControlBlockButtonProps[] | undefined;
   rightSideInner: ControlBlockButtonProps[] | undefined;
@@ -84,11 +84,11 @@ export const ControlBlockWithoutResize = ({
 
   const resultRightSightInner = [
     ...(rightSideInner ?? []),
-    ...featureRightButtons
+    ...featureRightButtons,
   ];
   const resultLeftSightInner = [
     ...featureLeftButtons,
-    ...(leftSideInner ?? [])
+    ...(leftSideInner ?? []),
   ];
 
   return (
@@ -112,7 +112,7 @@ export const ControlBlockWithoutResize = ({
         <Flow
           alignment="center"
           style={{
-            flexWrap: 'nowrap'
+            flexWrap: 'nowrap',
           }}
         >
           {collapseButtonPlacement === 'inside' && (

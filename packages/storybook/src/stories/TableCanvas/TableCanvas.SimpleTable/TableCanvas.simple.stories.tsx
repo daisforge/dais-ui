@@ -8,13 +8,13 @@ import {
   Canvas,
   ColumnConfig,
   SortColumn,
-  TableCanvas
+  TableCanvas,
 } from '@ui-kit/components/TableCanvas';
 import {
   IconAddOutline,
   IconBrightness0Fill,
   IconChevronCircleDownFill,
-  IconStar
+  IconStar,
 } from '@ui-kit/icons';
 import React, { useCallback, useMemo, useState } from 'react';
 
@@ -23,9 +23,9 @@ const meta: Meta = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      page: DocStoryTemplate
-    }
-  }
+      page: DocStoryTemplate,
+    },
+  },
 };
 
 export default meta;
@@ -37,7 +37,7 @@ import { ColumnConfig, TableCanvas } from '@daisforge/ui/components/TableCanvas'
 export const SimpleTable: StoryObj = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   name: 'Simple Table',
   render: () => {
@@ -51,7 +51,7 @@ export const SimpleTable: StoryObj = {
       issueType: [],
       complete: '',
       date: '',
-      globalFilter: ''
+      globalFilter: '',
     });
     const themeOverride = useCallback<
       NonNullable<ColumnConfig<Row>['themeOverride']>
@@ -75,7 +75,7 @@ export const SimpleTable: StoryObj = {
               gap={8}
               padding={{
                 left: theme.cellHorizontalPadding,
-                right: theme.cellHorizontalPadding
+                right: theme.cellHorizontalPadding,
               }}
             >
               <Canvas.Container position="relative">
@@ -106,7 +106,7 @@ export const SimpleTable: StoryObj = {
               gap={8}
               padding={{
                 left: theme.cellHorizontalPadding,
-                right: theme.cellHorizontalPadding
+                right: theme.cellHorizontalPadding,
               }}
             >
               <Canvas.Container position="relative">
@@ -128,7 +128,7 @@ export const SimpleTable: StoryObj = {
                 />
               </Canvas.Container>
             </Canvas.Container>
-          )
+          ),
         },
         {
           key: 'task',
@@ -145,7 +145,7 @@ export const SimpleTable: StoryObj = {
               wrap="wrap"
               padding={{
                 left: theme.cellHorizontalPadding,
-                right: theme.cellHorizontalPadding
+                right: theme.cellHorizontalPadding,
               }}
               style={{ width: '100%' }}
             >
@@ -176,7 +176,7 @@ export const SimpleTable: StoryObj = {
                 Подробнее
               </Canvas.Button>
             </Canvas.Container>
-          )
+          ),
         },
         {
           key: 'priority',
@@ -192,17 +192,17 @@ export const SimpleTable: StoryObj = {
                 { value: 'High', text: 'High' },
                 { value: 'Critical', text: 'Critical' },
                 { value: 'Medium', text: 'Medium' },
-                { value: 'Low', text: 'Low' }
-              ]
+                { value: 'Low', text: 'Low' },
+              ],
             },
 
             keyInFilterState: 'priority',
             valueInRow: (r) => r.priority,
             filter: {
               typeOfValue: 'single',
-              filteringType: (fv, rv) => (fv !== 'All' ? rv === fv : true)
-            }
-          }
+              filteringType: (fv, rv) => (fv !== 'All' ? rv === fv : true),
+            },
+          },
         },
         {
           key: 'issueType',
@@ -214,16 +214,16 @@ export const SimpleTable: StoryObj = {
 
             valueInRow: (r) => `${r.task} ${r.id}`,
 
-            keyInFilterState: 'task'
-          }
+            keyInFilterState: 'task',
+          },
         },
         {
           key: 'complete',
           name: '% Complete',
-          themeOverride
-        }
+          themeOverride,
+        },
       ],
-      [themeOverride]
+      [themeOverride],
     );
 
     const sortingStateAndSetter = useState<readonly SortColumn[]>([]);
@@ -234,7 +234,7 @@ export const SimpleTable: StoryObj = {
           containerStyle: { height: '60vh' },
           rowSize: {
             default: 'big',
-            showInControl: true
+            showInControl: true,
           },
           highlightActiveType: 'row',
 
@@ -252,51 +252,51 @@ export const SimpleTable: StoryObj = {
                   type: 'switch',
                   label: 'В избранном',
                   checked: isFavorite,
-                  onChange: (e) => setIsFavorite(e.target.checked)
-                }
-              }
-            ]
+                  onChange: (e) => setIsFavorite(e.target.checked),
+                },
+              },
+            ],
           },
           filtering: {
             state: filteringStateAndSetter,
             filtersInfo: {
               id: {
                 label: 'id',
-                clearedValue: ''
+                clearedValue: '',
               },
               task: {
                 label: 'task',
-                clearedValue: ''
+                clearedValue: '',
               },
               priority: {
                 label: 'Some Label',
-                clearedValue: 'All'
+                clearedValue: 'All',
               },
               issueType: {
                 label: 'issueType',
-                clearedValue: []
+                clearedValue: [],
               },
               complete: {
                 label: 'complete',
-                clearedValue: ''
+                clearedValue: '',
               },
               date: {
                 label: 'Дата',
-                clearedValue: ''
+                clearedValue: '',
               },
               globalFilter: {
                 label: 'Global filter',
-                clearedValue: ''
-              }
-            }
+                clearedValue: '',
+              },
+            },
           },
           sorting: {
-            state: sortingStateAndSetter
-          }
+            state: sortingStateAndSetter,
+          },
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };

@@ -16,7 +16,7 @@ import {
   SortColumn,
   SummaryCellInfoGlideInstance,
   TableCanvas,
-  TableFilterSelectListItem
+  TableFilterSelectListItem,
 } from '@ui-kit/components/TableCanvas';
 import { IconInfo, IconRefresh, IconSb, IconStar } from '@ui-kit/icons';
 import React, { useCallback, useMemo, useState } from 'react';
@@ -26,9 +26,9 @@ const meta: Meta = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      page: DocStoryTemplate
-    }
-  }
+      page: DocStoryTemplate,
+    },
+  },
 };
 
 export default meta;
@@ -51,7 +51,7 @@ const HIGHLIGHT_ACTIVE_TYPE_OPTIONS: Array<{
   value: HighlightActiveType;
 }> = [
   { label: 'row', value: 'row' },
-  { label: 'disabled', value: 'disabled' }
+  { label: 'disabled', value: 'disabled' },
 ];
 
 const SELECTION_MODE_OPTIONS: Array<{
@@ -61,13 +61,13 @@ const SELECTION_MODE_OPTIONS: Array<{
   { label: 'range-cell', value: 'range-cell' },
   { label: 'multi-range-cell', value: 'multi-range-cell' },
   { label: 'cell', value: 'cell' },
-  { label: 'disabled', value: 'disabled' }
+  { label: 'disabled', value: 'disabled' },
 ];
 
 export const MultipleFeatures: Story = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   name: 'Пример конфигурации с подключением множественных функциональных возможностей',
   render: () => {
@@ -81,7 +81,7 @@ export const MultipleFeatures: Story = {
       (props: SummaryCellInfoGlideInstance<Row, TSummaryRowData>) =>
         props.row.values.find((el) => el.columnId === props.column.key)
           ?.value ?? '',
-      []
+      [],
     );
 
     const columnConfig = useMemo<readonly ColumnConfig<Row, TSummaryRowData>[]>(
@@ -95,15 +95,15 @@ export const MultipleFeatures: Story = {
           keyText: {
             key: 'idKey',
             name: 'Ключ - ID',
-            renderCell: ({ row }) => `KEY-${row.id}`
-          }
+            renderCell: ({ row }) => `KEY-${row.id}`,
+          },
         },
         {
           key: 'task',
           name: 'Title',
           sortingType: 'stringSort',
           resizable: true,
-          renderSummaryCell: renderCommonSummaryCell
+          renderSummaryCell: renderCommonSummaryCell,
         },
         {
           key: 'priority',
@@ -116,7 +116,7 @@ export const MultipleFeatures: Story = {
               <Canvas.Container
                 padding={{
                   left: theme.cellHorizontalPadding,
-                  right: theme.cellHorizontalPadding
+                  right: theme.cellHorizontalPadding,
                 }}
               >
                 <Canvas.Text color={row.type === 'top' ? 'red' : 'orange'}>
@@ -134,16 +134,16 @@ export const MultipleFeatures: Story = {
                 { value: 'High', text: 'High' },
                 { value: 'Critical', text: 'Critical' },
                 { value: 'Medium', text: 'Medium' },
-                { value: 'Low', text: 'Low' }
-              ]
+                { value: 'Low', text: 'Low' },
+              ],
             },
             keyInFilterState: 'priority',
             valueInRow: (r) => r.priority,
             filter: {
               typeOfValue: 'single',
-              filteringType: (fv, rv) => (fv !== 'All' ? rv === fv : true)
-            }
-          }
+              filteringType: (fv, rv) => (fv !== 'All' ? rv === fv : true),
+            },
+          },
         },
         {
           key: 'issueType',
@@ -163,16 +163,16 @@ export const MultipleFeatures: Story = {
             component: 'select',
             selectOptions: {
               type: 'stateInHeaderContext',
-              optionsKeyInHeaderContext: 'issueTypeOptions'
+              optionsKeyInHeaderContext: 'issueTypeOptions',
             },
             keyInFilterState: 'issueType',
             valueInRow: (r) => r.issueType,
             filter: {
               typeOfValue: 'multiple',
               filteringType: (fv, rv) =>
-                !fv.length || fv.some((fvCurr) => fvCurr === rv)
-            }
-          }
+                !fv.length || fv.some((fvCurr) => fvCurr === rv),
+            },
+          },
         },
         {
           key: 'developer',
@@ -183,8 +183,8 @@ export const MultipleFeatures: Story = {
             component: 'input',
             keyInFilterState: 'developer',
             valueInRow: (r) => r.developer,
-            filter: 'startWith'
-          }
+            filter: 'startWith',
+          },
         },
         {
           key: 'complete',
@@ -195,11 +195,11 @@ export const MultipleFeatures: Story = {
             component: 'input',
             keyInFilterState: 'complete',
             valueInRow: (r) => r.complete,
-            filter: (fv, rv) => (+rv || 0) >= (+fv || 0)
-          }
-        }
+            filter: (fv, rv) => (+rv || 0) >= (+fv || 0),
+          },
+        },
       ],
-      [renderCommonSummaryCell]
+      [renderCommonSummaryCell],
     );
 
     const filteringStateAndSetter = useState({
@@ -207,13 +207,13 @@ export const MultipleFeatures: Story = {
       issueType: [],
       developer: '',
       complete: '',
-      globalFilter: ''
+      globalFilter: '',
     });
 
     const sortingStateAndSetter = useState<readonly SortColumn[]>([]);
 
     const selectingRowStateAndSetter = useState(
-      (): ReadonlySet<string | number> => new Set()
+      (): ReadonlySet<string | number> => new Set(),
     );
 
     const headerContextValue = useMemo(
@@ -222,10 +222,10 @@ export const MultipleFeatures: Story = {
           { text: 'Bug', value: 'Bug' },
           { text: 'Improvement', value: 'Improvement' },
           { text: 'Epic', value: 'Epic' },
-          { text: 'Story', value: 'Story' }
-        ]
+          { text: 'Story', value: 'Story' },
+        ],
       }),
-      []
+      [],
     );
 
     const rowKeyGetter = useCallback((r: Row) => `${r.id}`, []);
@@ -248,12 +248,12 @@ export const MultipleFeatures: Story = {
               columnId: 'priority',
               value: `Средних: ${
                 rows.filter((el) => el.priority === 'Medium').length
-              }`
-            }
-          ]
-        }
+              }`,
+            },
+          ],
+        },
       ],
-      [rows]
+      [rows],
     );
 
     const CustomInfoTab = () => (
@@ -314,26 +314,26 @@ export const MultipleFeatures: Story = {
               active: isVisibleLoadingOverlay,
               showSubtitleDelay: 5000,
               subtitle:
-                'Данные обрабатываются, обычно это занимает не более 10 секунд'
+                'Данные обрабатываются, обычно это занимает не более 10 секунд',
             },
             rowSize: {
               default: 'big',
-              showInControl: true
+              showInControl: true,
             },
             cellsSelection: { mode: selectionMode },
             highlightActiveType,
             searching: {
               enabled: true,
-              debounceDelay: 400
+              debounceDelay: 400,
             },
             keyText: {
               showInControl: true,
               controlBlock: {},
-              sidebar: {}
+              sidebar: {},
             },
             summaryRows: {
               showDefault: true,
-              showInControl: true
+              showInControl: true,
             },
             columnsControl: {
               enable: true,
@@ -344,12 +344,12 @@ export const MultipleFeatures: Story = {
               disableHiding: ['id'],
               disablePinning: ['developer'],
               columnsLabel: {
-                task: 'Задачи'
+                task: 'Задачи',
               },
-              pinnedDefault: ['id']
+              pinnedDefault: ['id'],
             },
             rowMarkers: {
-              startIndex: 1
+              startIndex: 1,
             },
             sidebarConfig: {
               customTabs: [
@@ -359,9 +359,9 @@ export const MultipleFeatures: Story = {
                   icon: <IconInfo size="s" />,
                   content: <CustomInfoTab />,
                   title: 'Информация',
-                  showInSidebar: true
-                }
-              ]
+                  showInSidebar: true,
+                },
+              ],
             },
             controlBlock: {
               show: controlBlock,
@@ -370,13 +370,13 @@ export const MultipleFeatures: Story = {
                   text: 'Label',
                   contentLeft: <IconSb color="inherit" />,
                   view: 'linkAccent',
-                  'data-test-id': 'Label right 1'
+                  'data-test-id': 'Label right 1',
                 },
                 {
                   text: 'Скачать',
                   contentLeft: <IconSb color="inherit" />,
-                  'data-test-id': 'store2'
-                }
+                  'data-test-id': 'store2',
+                },
               ],
               customFeatures: [
                 {
@@ -389,8 +389,8 @@ export const MultipleFeatures: Story = {
                     type: 'switch',
                     label: 'В избранном',
                     checked: isFavorite,
-                    onChange: (e) => setIsFavorite(e.target.checked)
-                  }
+                    onChange: (e) => setIsFavorite(e.target.checked),
+                  },
                 },
                 {
                   value: 'customFeatureRefresh',
@@ -405,7 +405,7 @@ export const MultipleFeatures: Story = {
                         height: '40px',
                         display: 'flex',
                         alignItems: 'center',
-                        justifyContent: 'center'
+                        justifyContent: 'center',
                       }}
                     >
                       <IconRefresh size="s" />
@@ -421,8 +421,8 @@ export const MultipleFeatures: Story = {
                       <IconRefresh
                         size={isInDropdown && rowSize === 'small' ? 'xs' : 's'}
                       />
-                    )
-                  }
+                    ),
+                  },
                 },
                 {
                   value: 'statusSelect',
@@ -438,7 +438,7 @@ export const MultipleFeatures: Story = {
                         height: '40px',
                         display: 'flex',
                         alignItems: 'center',
-                        justifyContent: 'center'
+                        justifyContent: 'center',
                       }}
                     >
                       <IconSb size="s" />
@@ -456,12 +456,12 @@ export const MultipleFeatures: Story = {
                     value: isCustomFeatureActive ? 'active' : 'inactive',
                     options: [
                       { value: 'active', label: 'Активный' },
-                      { value: 'inactive', label: 'Неактивный' }
+                      { value: 'inactive', label: 'Неактивный' },
                     ],
                     onChange: (value) =>
-                      setIsCustomFeatureActive(value === 'active')
-                  }
-                }
+                      setIsCustomFeatureActive(value === 'active'),
+                  },
+                },
               ],
               massActionPanel: {
                 buttons: [
@@ -479,17 +479,17 @@ export const MultipleFeatures: Story = {
                           items: [
                             {
                               value: 'some-inner-label1',
-                              label: 'some-inner-label1'
-                            }
-                          ]
+                              label: 'some-inner-label1',
+                            },
+                          ],
                         },
                         {
                           value: 'Some label 2',
-                          label: 'Some label 2'
-                        }
-                      ]
+                          label: 'Some label 2',
+                        },
+                      ],
                     },
-                    'data-test-id': 'Label left 1'
+                    'data-test-id': 'Label left 1',
                   },
                   {
                     type: 'button',
@@ -501,56 +501,56 @@ export const MultipleFeatures: Story = {
                       items: [
                         {
                           value: 'Some label 1',
-                          label: 'Some label 1'
+                          label: 'Some label 1',
                         },
                         {
                           value: 'Some label 2',
-                          label: 'Some label 2'
-                        }
-                      ]
+                          label: 'Some label 2',
+                        },
+                      ],
                     },
-                    'data-test-id': 'Label left 2'
-                  }
-                ]
-              }
+                    'data-test-id': 'Label left 2',
+                  },
+                ],
+              },
             },
             filtering: {
               state: filteringStateAndSetter,
               filtersInfo: {
                 priority: {
                   label: 'Priority',
-                  clearedValue: 'All'
+                  clearedValue: 'All',
                 },
                 issueType: {
                   label: 'Issue Type',
-                  clearedValue: []
+                  clearedValue: [],
                 },
                 developer: {
                   label: 'Developer',
-                  clearedValue: ''
+                  clearedValue: '',
                 },
                 complete: {
                   label: '% Complete',
-                  clearedValue: ''
+                  clearedValue: '',
                 },
                 globalFilter: {
                   label: 'Global filter',
-                  clearedValue: ''
-                }
-              }
+                  clearedValue: '',
+                },
+              },
             },
             selecting: {
               state: selectingRowStateAndSetter,
               rowKeyGetter,
-              showDefault: false
+              showDefault: false,
             },
             sorting: {
-              state: sortingStateAndSetter
+              state: sortingStateAndSetter,
             },
             onCellClicked: (cell, info) => {
               // eslint-disable-next-line no-console
               console.debug('[onCellClicked]', cell, info);
-            }
+            },
           }}
           columnConfig={columnConfig}
           rows={rows}
@@ -559,5 +559,5 @@ export const MultipleFeatures: Story = {
         />
       </div>
     );
-  }
+  },
 };

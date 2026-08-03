@@ -20,7 +20,7 @@ export const useMassActionsCompression = ({
   summaryCheckboxElRef,
   buttons,
   isHaveSomeFeatureInSidebar,
-  setVisibleButtonsCount
+  setVisibleButtonsCount,
 }: {
   isCollapsed: boolean;
   containerRef: React.RefObject<HTMLDivElement>;
@@ -84,7 +84,7 @@ export const useMassActionsCompression = ({
           if (ref) {
             // Пробуем измерить саму кнопку внутри обертки
             const buttonElement = ref.querySelector(
-              'button, a'
+              'button, a',
             ) as HTMLElement | null;
             const elementToMeasure = buttonElement || ref;
 
@@ -291,11 +291,11 @@ export const useMassActionsCompression = ({
     moreButtonRef,
     collapseButtonRef,
     summaryCheckboxElRef,
-    setVisibleButtonsCount
+    setVisibleButtonsCount,
   ]);
 
   return {
     calculateCompression,
-    measuredButtonWidthsRef
+    measuredButtonWidthsRef,
   };
 };

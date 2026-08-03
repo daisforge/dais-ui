@@ -1,4 +1,4 @@
 export {
   checkIsFilterActive,
-  renderHeaderFilterButton
+  renderHeaderFilterButton,
 } from './header-filter-button';

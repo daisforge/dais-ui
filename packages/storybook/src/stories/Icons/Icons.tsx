@@ -8,12 +8,12 @@ import {
   ReactNode,
   useEffect,
   useMemo,
-  useState
+  useState,
 } from 'react';
 
 type IconType = [
   string,
-  (p: { size?: 'xs' | 's' | 'm'; color?: string }) => ReactNode
+  (p: { size?: 'xs' | 's' | 'm'; color?: string }) => ReactNode,
 ];
 
 const StyledIconGallery = ({ children }: PropsWithChildren) => (
@@ -54,8 +54,8 @@ export const AllIconsStory = () => {
             'Icon',
             'iconSectionsSet',
             'iconOldSectionsSet',
-            'iconSectionsSetScalable'
-          ].includes(el[0]) && typeof el[1] === 'function'
+            'iconSectionsSetScalable',
+          ].includes(el[0]) && typeof el[1] === 'function',
       );
 
       setIcons(filteredModules);
@@ -71,7 +71,7 @@ export const AllIconsStory = () => {
     }
     const lowerSearchedStringDebounced = searchedStringDebounced.toLowerCase();
     return icons.filter(([iconName]) =>
-      iconName.toLowerCase().includes(lowerSearchedStringDebounced)
+      iconName.toLowerCase().includes(lowerSearchedStringDebounced),
     );
   }, [icons, searchedStringDebounced]);
 
@@ -90,16 +90,16 @@ export const AllIconsStory = () => {
             const i = [
               {
                 size: 'xs',
-                color: 'red'
+                color: 'red',
               },
               {
                 size: 's',
-                color: 'green'
+                color: 'green',
               },
               {
                 size: 'm',
-                color: 'blue'
-              }
+                color: 'blue',
+              },
             ];
             return (
               <div key={Icon[0]}>
@@ -126,7 +126,7 @@ export const AllIconsStory = () => {
             justifyContent: 'space-between',
             alignItems: 'center',
             textWrap: 'nowrap',
-            paddingBlock: 12
+            paddingBlock: 12,
           }}
         >
           Все иконки

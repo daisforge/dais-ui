@@ -9,7 +9,7 @@ describe('validateDate', () => {
     const result = validateDate({
       min,
       max,
-      invalidFormatMessage: DatePickerErrorEnum.DATE_FORMAT_IS_INVALID
+      invalidFormatMessage: DatePickerErrorEnum.DATE_FORMAT_IS_INVALID,
     })(value);
 
     expect(result).toBe(true);
@@ -22,7 +22,7 @@ describe('validateDate', () => {
     const result = validateDate({
       min: { value: min, message: DatePickerErrorEnum.DATE_IS_SMALLER },
       max,
-      invalidFormatMessage: DatePickerErrorEnum.DATE_FORMAT_IS_INVALID
+      invalidFormatMessage: DatePickerErrorEnum.DATE_FORMAT_IS_INVALID,
     })(value);
     expect(result).toBe(DatePickerErrorEnum.DATE_IS_SMALLER);
   });
@@ -34,7 +34,7 @@ describe('validateDate', () => {
     const result = validateDate({
       min,
       max: { value: max, message: DatePickerErrorEnum.DATE_IS_BIGGER },
-      invalidFormatMessage: DatePickerErrorEnum.DATE_FORMAT_IS_INVALID
+      invalidFormatMessage: DatePickerErrorEnum.DATE_FORMAT_IS_INVALID,
     })(value);
     expect(result).toBe(DatePickerErrorEnum.DATE_IS_BIGGER);
   });
@@ -48,9 +48,9 @@ describe('validateDate', () => {
       max,
       required: {
         value: true,
-        message: DatePickerErrorEnum.DATE_FORMAT_IS_INVALID
+        message: DatePickerErrorEnum.DATE_FORMAT_IS_INVALID,
       },
-      invalidFormatMessage: DatePickerErrorEnum.DATE_FORMAT_IS_INVALID
+      invalidFormatMessage: DatePickerErrorEnum.DATE_FORMAT_IS_INVALID,
     })(value);
     expect(result).toBe(DatePickerErrorEnum.DATE_FORMAT_IS_INVALID);
   });
@@ -58,7 +58,7 @@ describe('validateDate', () => {
   it('should return true if min and max are not provided', () => {
     const value = new Date('2020-06-01');
     const result = validateDate({
-      invalidFormatMessage: DatePickerErrorEnum.DATE_FORMAT_IS_INVALID
+      invalidFormatMessage: DatePickerErrorEnum.DATE_FORMAT_IS_INVALID,
     })(value);
     expect(result).toBe(true);
   });
@@ -71,9 +71,9 @@ describe('validateDate', () => {
       max,
       required: {
         value: true,
-        message: DatePickerErrorEnum.DATE_IS_REQUIRED
+        message: DatePickerErrorEnum.DATE_IS_REQUIRED,
       },
-      invalidFormatMessage: DatePickerErrorEnum.DATE_FORMAT_IS_INVALID
+      invalidFormatMessage: DatePickerErrorEnum.DATE_FORMAT_IS_INVALID,
     })();
     expect(result).toBe(DatePickerErrorEnum.DATE_IS_REQUIRED);
   });
@@ -84,9 +84,9 @@ describe('validateDate', () => {
     const result = validateDate({
       min: {
         value: min,
-        message: DatePickerErrorEnum.DATE_IS_SMALLER
+        message: DatePickerErrorEnum.DATE_IS_SMALLER,
       },
-      invalidFormatMessage: DatePickerErrorEnum.DATE_FORMAT_IS_INVALID
+      invalidFormatMessage: DatePickerErrorEnum.DATE_FORMAT_IS_INVALID,
     })(value);
 
     expect(result).toBe(DatePickerErrorEnum.DATE_IS_SMALLER);

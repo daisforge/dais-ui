@@ -12,7 +12,7 @@ export const TableTabsContext = createContext<TabId | null | undefined>(null);
  * null - значит таблица используется без TableTabs
  */
 export const useTableTabsContext = <T extends TabId | void = undefined>(
-  component: 'table' | 'notTable' = 'table'
+  component: 'table' | 'notTable' = 'table',
 ) => {
   const ctx = useContext(TableTabsContext);
 
@@ -22,6 +22,6 @@ export const useTableTabsContext = <T extends TabId | void = undefined>(
 
   return {
     activeTabId: ctx as T extends undefined ? typeof ctx : T,
-    isInTabs: ctx !== null
+    isInTabs: ctx !== null,
   };
 };

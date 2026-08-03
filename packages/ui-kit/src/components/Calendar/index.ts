@@ -2,12 +2,12 @@ export type {
   CalendarBaseProps,
   CalendarDoubleProps,
   CalendarProps,
-  CalendarStateType
+  CalendarStateType,
 } from '@salutejs/sdds-finai';
 export {
   Calendar,
   CalendarBase,
   CalendarBaseRange,
   CalendarDouble,
-  CalendarDoubleRange
+  CalendarDoubleRange,
 } from '@salutejs/sdds-finai';

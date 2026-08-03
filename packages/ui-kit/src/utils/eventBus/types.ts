@@ -9,13 +9,13 @@ export abstract class EventBus {
   abstract emit(
     channelName: string,
     topic?: string,
-    payload?: EventBusEventPayload
+    payload?: EventBusEventPayload,
   ): void;
 
   abstract subscribe(
     channelName: string,
     topic?: string,
-    handler?: EventBusEventHandler
+    handler?: EventBusEventHandler,
   ): EventBusSubscription;
 
   abstract removeChannel(channelName: string): void;

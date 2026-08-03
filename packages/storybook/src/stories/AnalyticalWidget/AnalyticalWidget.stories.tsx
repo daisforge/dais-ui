@@ -14,7 +14,7 @@ import { useFiltersList } from '@ui-kit/components/ListOfFilters';
 import {
   SegmentGroup,
   SegmentItem,
-  SegmentProvider
+  SegmentProvider,
 } from '@ui-kit/components/Segment';
 import { TabItem, Tabs } from '@ui-kit/components/Tabs';
 import React, { useReducer, useState } from 'react';
@@ -28,17 +28,17 @@ import {
   filtersReducer,
   generateButtonItems,
   longText,
-  useFetch
+  useFetch,
 } from './lib/utils';
 
 const meta: Meta<AnalyticalWidgetProps> = {
   title: 'Композиции/AnalyticalWidget',
   tags: ['!autodocs'],
   parameters: {
-    docs: {}
+    docs: {},
   },
   excludeStories: ['CANVAS'],
-  component: AnalyticalWidget
+  component: AnalyticalWidget,
 };
 
 const preCodeL = `
@@ -105,12 +105,12 @@ const useFetch = (key: 'blocks' | 'tribes' | 'allocation', num = 10) =>
 
   ${getFuncAsString(
     'packages/storybook/src/stories/AnalyticalWidget/lib/utils.tsx',
-    'hasActiveFilterForButton'
+    'hasActiveFilterForButton',
   )}
 
   ${getFuncAsString(
     'packages/storybook/src/stories/AnalyticalWidget/lib/utils.tsx',
-    'generateButtonItems'
+    'generateButtonItems',
   )}
 
   const GridContainerL = styled.div\`
@@ -192,12 +192,12 @@ const useFetch = (key: 'blocks' | 'tribes' | 'allocation', num = 10) =>
 
   ${getFuncAsString(
     'packages/storybook/src/stories/AnalyticalWidget/lib/utils.tsx',
-    'hasActiveFilterForButton'
+    'hasActiveFilterForButton',
   )}
 
   ${getFuncAsString(
     'packages/storybook/src/stories/AnalyticalWidget/lib/utils.tsx',
-    'generateButtonItems'
+    'generateButtonItems',
   )}
 
   const GridContainerL = styled.div\`
@@ -279,12 +279,12 @@ const useFetch = (key: 'blocks' | 'tribes' | 'allocation', num = 10) =>
 
   ${getFuncAsString(
     'packages/storybook/src/stories/AnalyticalWidget/lib/utils.tsx',
-    'hasActiveFilterForButton'
+    'hasActiveFilterForButton',
   )}
 
   ${getFuncAsString(
     'packages/storybook/src/stories/AnalyticalWidget/lib/utils.tsx',
-    'generateButtonItems'
+    'generateButtonItems',
   )}
 
   const GridContainerL = styled.div\`
@@ -336,12 +336,12 @@ const GridContainerL = styled.div`
  */
 export const AnalyticalWidgetL: Story = {
   ...storySourceDoc({
-    preCode: preCodeL
+    preCode: preCodeL,
   }),
   render: () => {
     const [filters, updateFilters] = useReducer(
       filtersReducer,
-      DEFAULT_FILTERS
+      DEFAULT_FILTERS,
     );
     const filtersBlocksOption = useFetch('blocks', 10);
     const filtersTribesOption = useFetch('tribes', 15);
@@ -357,7 +357,7 @@ export const AnalyticalWidgetL: Story = {
         tribes: filtersTribesOption,
         allocation: filtersAllocationOption,
         filterButton: filterButtonOptions,
-        dotsButton: dotsButtonOptions
+        dotsButton: dotsButtonOptions,
       } as Record<keyof Filters, { label: string; value: string }[]>,
       updateFilters: (key, newV) => updateFilters({ [key]: newV }),
       filtersInfo: {
@@ -367,8 +367,8 @@ export const AnalyticalWidgetL: Story = {
         allocation: { label: 'Аллокация', clearedValue: '' },
         year: { label: 'Год', clearedValue: null },
         filterButton: { label: 'Фильтр', clearedValue: '' },
-        dotsButton: { label: 'Меню', clearedValue: '' }
-      }
+        dotsButton: { label: 'Меню', clearedValue: '' },
+      },
     });
 
     return (
@@ -377,7 +377,7 @@ export const AnalyticalWidgetL: Story = {
           <div
             style={{
               position: 'relative',
-              width: 'min-content'
+              width: 'min-content',
             }}
           >
             <AnalyticalWidget
@@ -392,7 +392,7 @@ export const AnalyticalWidgetL: Story = {
                       alignment="center"
                       mainAxisGap="8px"
                       style={{
-                        flexWrap: 'nowrap'
+                        flexWrap: 'nowrap',
                       }}
                     >
                       <SegmentGroup hasBackground size="xs">
@@ -427,14 +427,14 @@ export const AnalyticalWidgetL: Story = {
                             text: String(innerItem.label),
                             view: 'default' as const,
                             hasClear: false as const,
-                            onClick: innerItem.onClick
+                            onClick: innerItem.onClick,
                           }));
                         }
                         return {
                           text: String(item.label),
                           view: 'default' as const,
                           hasClear: false as const,
-                          onClick: item.onClick
+                          onClick: item.onClick,
                         };
                       })
                       .flat()}
@@ -444,7 +444,7 @@ export const AnalyticalWidgetL: Story = {
               middleSlot={
                 <Tabs
                   style={{
-                    width: '100%'
+                    width: '100%',
                   }}
                   view="divider"
                   orientation="horizontal"
@@ -471,7 +471,7 @@ export const AnalyticalWidgetL: Story = {
               contentSlot={
                 <div
                   style={{
-                    minHeight: 'fit-content'
+                    minHeight: 'fit-content',
                   }}
                 >
                   {longText()}
@@ -481,14 +481,14 @@ export const AnalyticalWidgetL: Story = {
                 topSlot: 'myCustomClassForTopSlot',
                 middleSlot: 'myCustomClassForMiddleSlot',
                 contentSlot: 'myCustomClassForContentSlot',
-                root: 'myCustomClassForRoot'
+                root: 'myCustomClassForRoot',
               }}
             />
             <div
               style={{
                 position: 'absolute',
                 top: '16px',
-                right: '16px'
+                right: '16px',
               }}
             >
               <AnalyticalWidget.DotsIconButton
@@ -498,16 +498,16 @@ export const AnalyticalWidgetL: Story = {
                   items: generateButtonItems(
                     'dotsButton',
                     dotsButtonOptions,
-                    filterList
+                    filterList,
                   ),
                   onItemSelect(item) {
                     updateFilters({
                       dotsButton:
                         filters.dotsButton === item.value?.toString()
                           ? ''
-                          : item.value?.toString() ?? ''
+                          : item.value?.toString() ?? '',
                     });
-                  }
+                  },
                 }}
               />
             </div>
@@ -515,7 +515,7 @@ export const AnalyticalWidgetL: Story = {
         </SegmentProvider>
       </GridContainerL>
     );
-  }
+  },
 };
 
 // Пример контейнера для виджета размером M
@@ -548,12 +548,12 @@ const GridContainerM = styled.div`
  */
 export const AnalyticalWidgetM: Story = {
   ...storySourceDoc({
-    preCode: preCodeM
+    preCode: preCodeM,
   }),
   render: () => {
     const [filters, updateFilters] = useReducer(
       filtersReducer,
-      DEFAULT_FILTERS
+      DEFAULT_FILTERS,
     );
     const filtersBlocksOption = useFetch('blocks', 10);
     const filtersTribesOption = useFetch('tribes', 15);
@@ -567,7 +567,7 @@ export const AnalyticalWidgetM: Story = {
         tribes: filtersTribesOption,
         allocation: filtersAllocationOption,
         filterButton: filterButtonOptions,
-        dotsButton: dotsButtonOptions
+        dotsButton: dotsButtonOptions,
       } as Record<keyof Filters, { label: string; value: string }[]>,
       updateFilters: (key, newV) => updateFilters({ [key]: newV }),
       filtersInfo: {
@@ -577,8 +577,8 @@ export const AnalyticalWidgetM: Story = {
         allocation: { label: 'Аллокация', clearedValue: '' },
         year: { label: 'Год', clearedValue: null },
         filterButton: { label: 'Фильтр', clearedValue: '' },
-        dotsButton: { label: 'Меню', clearedValue: '' }
-      }
+        dotsButton: { label: 'Меню', clearedValue: '' },
+      },
     });
 
     return (
@@ -587,7 +587,7 @@ export const AnalyticalWidgetM: Story = {
           <div
             style={{
               position: 'relative',
-              width: 'min-content'
+              width: 'min-content',
             }}
           >
             <AnalyticalWidget
@@ -602,7 +602,7 @@ export const AnalyticalWidgetM: Story = {
                       alignment="center"
                       mainAxisGap="8px"
                       style={{
-                        flexWrap: 'nowrap'
+                        flexWrap: 'nowrap',
                       }}
                     >
                       <SegmentGroup hasBackground size="xs">
@@ -638,7 +638,7 @@ export const AnalyticalWidgetM: Story = {
                             view: 'default' as const,
                             hasClear: false as const,
                             onClick: innerItem.onClick,
-                            key: `chip-key${index}-${innerIdex}-${innerItem.label}`
+                            key: `chip-key${index}-${innerIdex}-${innerItem.label}`,
                           }));
                         }
                         return {
@@ -646,7 +646,7 @@ export const AnalyticalWidgetM: Story = {
                           view: 'default' as const,
                           hasClear: false as const,
                           onClick: item.onClick,
-                          key: `chip-key-${index}-${item.label}`
+                          key: `chip-key-${index}-${item.label}`,
                         };
                       })
                       .flat()}
@@ -656,7 +656,7 @@ export const AnalyticalWidgetM: Story = {
               contentSlot={
                 <div
                   style={{
-                    minHeight: 'fit-content'
+                    minHeight: 'fit-content',
                   }}
                 >
                   {longText()}
@@ -666,14 +666,14 @@ export const AnalyticalWidgetM: Story = {
                 topSlot: 'myCustomClassForTopSlot',
                 middleSlot: 'myCustomClassForMiddleSlot',
                 contentSlot: 'myCustomClassForContentSlot',
-                root: 'myCustomClassForRoot'
+                root: 'myCustomClassForRoot',
               }}
             />
             <div
               style={{
                 position: 'absolute',
                 top: '16px',
-                right: '16px'
+                right: '16px',
               }}
             >
               <AnalyticalWidget.DotsIconButton
@@ -683,16 +683,16 @@ export const AnalyticalWidgetM: Story = {
                   items: generateButtonItems(
                     'dotsButton',
                     dotsButtonOptions,
-                    filterList
+                    filterList,
                   ),
                   onItemSelect(item) {
                     updateFilters({
                       dotsButton:
                         filters.dotsButton === item.value?.toString()
                           ? ''
-                          : item.value?.toString() ?? ''
+                          : item.value?.toString() ?? '',
                     });
-                  }
+                  },
                 }}
               />
             </div>
@@ -700,7 +700,7 @@ export const AnalyticalWidgetM: Story = {
         </SegmentProvider>
       </GridContainerM>
     );
-  }
+  },
 };
 
 // Пример контейнера для виджета размером S
@@ -733,12 +733,12 @@ const GridContainerS = styled.div`
  */
 export const AnalyticalWidgetS: Story = {
   ...storySourceDoc({
-    preCode: preCodeS
+    preCode: preCodeS,
   }),
   render: () => {
     const [filters, updateFilters] = useReducer(
       filtersReducer,
-      DEFAULT_FILTERS
+      DEFAULT_FILTERS,
     );
     const filtersBlocksOption = useFetch('blocks', 10);
     const filtersTribesOption = useFetch('tribes', 15);
@@ -751,7 +751,7 @@ export const AnalyticalWidgetS: Story = {
         tribes: filtersTribesOption,
         allocation: filtersAllocationOption,
         filterButton: filterButtonOptions,
-        dotsButton: dotsButtonOptions
+        dotsButton: dotsButtonOptions,
       } as Record<keyof Filters, { label: string; value: string }[]>,
       updateFilters: (key, newV) => updateFilters({ [key]: newV }),
       filtersInfo: {
@@ -761,8 +761,8 @@ export const AnalyticalWidgetS: Story = {
         allocation: { label: 'Аллокация', clearedValue: '' },
         year: { label: 'Год', clearedValue: null },
         filterButton: { label: 'Фильтр', clearedValue: '' },
-        dotsButton: { label: 'Меню', clearedValue: '' }
-      }
+        dotsButton: { label: 'Меню', clearedValue: '' },
+      },
     });
 
     const chipsList = filterList
@@ -772,14 +772,14 @@ export const AnalyticalWidgetS: Story = {
             text: String(innerItem.label),
             view: 'default' as const,
             hasClear: false as const,
-            onClick: innerItem.onClick
+            onClick: innerItem.onClick,
           }));
         }
         return {
           text: String(item.label),
           view: 'default' as const,
           hasClear: false as const,
-          onClick: item.onClick
+          onClick: item.onClick,
         };
       })
       .flat();
@@ -792,7 +792,7 @@ export const AnalyticalWidgetS: Story = {
           <div
             style={{
               position: 'relative',
-              width: 'min-content'
+              width: 'min-content',
             }}
           >
             <AnalyticalWidget
@@ -822,7 +822,7 @@ export const AnalyticalWidgetS: Story = {
               contentSlot={
                 <div
                   style={{
-                    minHeight: 'fit-content'
+                    minHeight: 'fit-content',
                   }}
                 >
                   {longText()}
@@ -832,14 +832,14 @@ export const AnalyticalWidgetS: Story = {
                 topSlot: 'myCustomClassForTopSlot',
                 middleSlot: 'myCustomClassForMiddleSlot',
                 contentSlot: 'myCustomClassForContentSlot',
-                root: 'myCustomClassForRoot'
+                root: 'myCustomClassForRoot',
               }}
             />
             <div
               style={{
                 position: 'absolute',
                 top: '16px',
-                right: '16px'
+                right: '16px',
               }}
             >
               <AnalyticalWidget.DotsIconButton
@@ -849,16 +849,16 @@ export const AnalyticalWidgetS: Story = {
                   items: generateButtonItems(
                     'dotsButton',
                     dotsButtonOptions,
-                    filterList
+                    filterList,
                   ),
                   onItemSelect(item) {
                     updateFilters({
                       dotsButton:
                         filters.dotsButton === item.value?.toString()
                           ? ''
-                          : item.value?.toString() ?? ''
+                          : item.value?.toString() ?? '',
                     });
-                  }
+                  },
                 }}
               />
             </div>
@@ -866,5 +866,5 @@ export const AnalyticalWidgetS: Story = {
         </SegmentProvider>
       </GridContainerS>
     );
-  }
+  },
 };

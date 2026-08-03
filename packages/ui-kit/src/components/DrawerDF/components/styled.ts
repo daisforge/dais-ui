@@ -7,7 +7,7 @@ import {
   borderRadiusXl,
   borderRadiusXs,
   surfaceSolidCard,
-  surfaceTransparentSecondary
+  surfaceTransparentSecondary,
 } from '@ui-kit/tokens';
 import styled, { css } from 'styled-components';
 
@@ -32,12 +32,12 @@ export const c = {
   brContent: ({ $header, $footer }: { $header: boolean; $footer: boolean }) =>
     `${$header ? '0px' : c.brM()} ${$header ? '0px' : c.brM()} ${
       $footer ? '0px' : c.brM()
-    } ${$footer ? '0px' : c.brM()}`
+    } ${$footer ? '0px' : c.brM()}`,
 };
 
 export const drawerOffsetCloseBtn = {
   multiply: '-64px',
-  default: '-52px'
+  default: '-52px',
 };
 
 export const StyledDrawer = styled(Drawer)<DrawerDFPropsForStyles>`

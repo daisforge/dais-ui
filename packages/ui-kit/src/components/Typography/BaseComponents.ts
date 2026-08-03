@@ -16,5 +16,5 @@ export {
   TextL,
   TextM,
   TextS,
-  TextXS
+  TextXS,
 } from '@salutejs/sdds-finai';

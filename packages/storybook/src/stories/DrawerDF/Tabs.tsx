@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 
 export function TabsComp({
   stretch = false,
-  view = 'divider'
+  view = 'divider',
 }: {
   stretch?: boolean;
   view?: 'divider' | 'clear';
@@ -16,7 +16,7 @@ export function TabsComp({
       style={{
         marginBlock: -2,
         flexShrink: 0,
-        ...(stretch && { width: '100%' })
+        ...(stretch && { width: '100%' }),
       }}
     >
       <Tabs {...{ stretch, view }} size="m" index={index}>

@@ -3,5 +3,5 @@ export {
   type TablePopoverContextValue,
   TablePopoverProvider,
   type TablePopoverState,
-  useTablePopover
+  useTablePopover,
 } from './TablePopoverContext';

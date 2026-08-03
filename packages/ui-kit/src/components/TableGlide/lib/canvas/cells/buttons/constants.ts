@@ -94,36 +94,52 @@ export function buildButtonViewColors(
   };
 }
 
+const BLACK: ViewColors = {
+  bgColor: '#060A0C',
+  bgColorHover: '#13181B',
+  borderColor: 'transparent',
+  textColor: '#FFFFFF',
+  /**
+   *#F2F5F893 --on-dark-text-primary-hover
+   */
+  textColorHover: '#F2F5F893',
+  iconColor: '#FFFFFF',
+  /**
+   *#F2F5F893 --on-dark-text-primary-hover
+   */
+  iconColorHover: '#F2F5F893',
+};
+
 /**
  * @deprecated Use buildButtonViewColors(tokens) instead.
  * Kept for backward compatibility with drawIconButton/drawEmbedIconButton.
  */
 export const VIEW_COLORS: Record<ButtonView, ViewColors> = {
-  default: {
-    bgColor: '#060A0C',
-    bgColorHover: '#111C22',
-    borderColor: '#060A0C',
-    textColor: '#FFFFFF',
-    iconColor: '#FFFFFF',
-  },
+  default: BLACK,
   primary: {
     bgColor: '#060A0C',
     bgColorHover: '#111C22',
-    borderColor: '#060A0C',
+    borderColor: 'transparent',
     textColor: '#FFFFFF',
     iconColor: '#FFFFFF',
   },
   accent: {
     bgColor: '#118CDF',
     bgColorHover: '#1798EE',
-    borderColor: '#118CDF',
+    borderColor: 'transparent',
     textColor: '#FFFFFF',
     iconColor: '#FFFFFF',
   },
   secondary: {
-    bgColor: 'transparent',
-    bgColorHover: 'rgba(6, 10, 12, 0.08)',
-    borderColor: '#060A0C',
+    /**
+     * surface transparent secondary
+     */
+    bgColor: '#ADB9C238',
+    /**
+     * surface transparent secondary hover
+     */
+    bgColorHover: '#ADB9C247',
+    borderColor: 'transparent',
     textColor: '#060A0C',
     iconColor: '#060A0C',
   },
@@ -137,44 +153,51 @@ export const VIEW_COLORS: Record<ButtonView, ViewColors> = {
   success: {
     bgColor: '#1A9E32',
     bgColorHover: '#1EB83A',
-    borderColor: '#1A9E32',
+    borderColor: 'transparent',
     textColor: '#FFFFFF',
     iconColor: '#FFFFFF',
   },
   warning: {
     bgColor: '#FA5F05',
     bgColorHover: '#FB782D',
-    borderColor: '#FA5F05',
+    borderColor: 'transparent',
     textColor: '#FFFFFF',
     iconColor: '#FFFFFF',
   },
   critical: {
     bgColor: '#FF293E',
     bgColorHover: '#FF5263',
-    borderColor: '#FF293E',
+    borderColor: 'transparent',
     textColor: '#FFFFFF',
     iconColor: '#FFFFFF',
   },
   dark: {
-    bgColor: '#13181B',
-    bgColorHover: '#23292D',
-    borderColor: '#13181B',
+    /**
+     * #30373CC7 --on-light-surface-transparent-deep
+     */
+    bgColor: '#30373CC7',
+    bgColorHover: '#30373CC7',
+    borderColor: 'transparent',
     textColor: '#FFFFFF',
+    textColorHover: '#F2F5F893',
     iconColor: '#FFFFFF',
+    iconColorHover: '#F2F5F893',
   },
-  black: {
-    bgColor: '#060A0C',
-    bgColorHover: '#13181B',
-    borderColor: '#060A0C',
-    textColor: '#FFFFFF',
-    iconColor: '#FFFFFF',
-  },
+  black: BLACK,
   white: {
     bgColor: '#FFFFFF',
-    bgColorHover: '#F2F5F8',
-    borderColor: '#D5DFE6',
+    bgColorHover: '#FFFFFF',
+    borderColor: 'transparent',
     textColor: '#060A0C',
+    /**
+     * #13181B93 --on-light-text-primary-hover
+     */
+    textColorHover: '#13181B93',
     iconColor: '#060A0C',
+    /**
+     * #13181B93 --on-light-text-primary-hover
+     */
+    iconColorHover: '#13181B93',
   },
 };
 

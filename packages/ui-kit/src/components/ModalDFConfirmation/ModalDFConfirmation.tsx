@@ -9,14 +9,14 @@ import React, {
   cloneElement,
   type ForwardedRef,
   forwardRef,
-  ReactNode
+  ReactNode,
 } from 'react';
 
 import {
   iconColors,
   StyledIconBlock,
   StyledModalDF,
-  StyledServiceButtons
+  StyledServiceButtons,
 } from './ModalDFConfirmation.styled';
 
 export type ModalDFConfirmationContent = {
@@ -69,7 +69,7 @@ const ModalDFConfirmationWithRef = forwardRef<
 >(
   (
     { content, view, icon, ...restProps }: ModalDFConfirmationProps,
-    ref: ForwardedRef<HTMLDivElement>
+    ref: ForwardedRef<HTMLDivElement>,
   ) => {
     const {
       header,
@@ -77,7 +77,7 @@ const ModalDFConfirmationWithRef = forwardRef<
       bodyMarginBlock,
       mainButton,
       secondaryButton,
-      footer
+      footer,
     } = content ?? {};
     const isHaveButtons = !!(mainButton || secondaryButton);
     const bodyMbl =
@@ -87,7 +87,7 @@ const ModalDFConfirmationWithRef = forwardRef<
       if (React.isValidElement<IconProps>(child)) {
         return cloneElement<IconProps>(child, {
           size: 'm',
-          color: view ? iconColors[view] : ''
+          color: view ? iconColors[view] : '',
         });
       }
       return undefined;
@@ -124,12 +124,12 @@ const ModalDFConfirmationWithRef = forwardRef<
         )}
       </StyledModalDF>
     );
-  }
+  },
 );
 export const ModalDFConfirmationFooter = ModalDF.Footer;
 
 export const ModalDFConfirmation = Object.assign(ModalDFConfirmationWithRef, {
-  Footer: ModalDFConfirmationFooter
+  Footer: ModalDFConfirmationFooter,
 });
 
 ModalDFConfirmation.displayName = 'ModalDFConfirmation';

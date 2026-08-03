@@ -5,7 +5,7 @@ export const getDefaultMarker = <RowType extends ObjectForExtending>(
   lvl: number,
   rowInd: number,
   entry: AllRowsMapEntry<RowType> | undefined,
-  startIndex: number
+  startIndex: number,
 ): string | number => {
   if (lvl > 0) return '';
   if (!entry) return rowInd + startIndex;
@@ -14,7 +14,7 @@ export const getDefaultMarker = <RowType extends ObjectForExtending>(
 
 export const buildSiblingPath = <RowType extends ObjectForExtending>(
   entry: AllRowsMapEntry<RowType>,
-  map: Map<string | number, AllRowsMapEntry<RowType>>
+  map: Map<string | number, AllRowsMapEntry<RowType>>,
 ): number[] => {
   const parent = entry.parentKey != null ? map.get(entry.parentKey) : undefined;
   const prefix = parent ? buildSiblingPath(parent, map) : [];

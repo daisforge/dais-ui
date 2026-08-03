@@ -11,7 +11,7 @@ import type { Rectangle } from '../types';
  */
 export function buildActiveDataRange(
   selection: GridSelection,
-  firstDataColumnIndex: number
+  firstDataColumnIndex: number,
 ): Rectangle | undefined {
   const { current } = selection;
   if (!current) return undefined;
@@ -26,6 +26,6 @@ export function buildActiveDataRange(
     x: clampedX,
     y: current.range.y,
     width: clampedWidth,
-    height: current.range.height
+    height: current.range.height,
   };
 }

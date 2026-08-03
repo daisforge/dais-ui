@@ -12,9 +12,9 @@ const meta: Meta = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      page: DocStoryTemplate
-    }
-  }
+      page: DocStoryTemplate,
+    },
+  },
 };
 
 export default meta;
@@ -26,7 +26,7 @@ import { ColumnConfig, TableCanvas } from '@daisforge/ui/components/TableCanvas'
 export const CustomRowSelection: StoryObj = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   name: 'Независимый выбор строк в иерархии',
   render: () => {
@@ -39,27 +39,27 @@ export const CustomRowSelection: StoryObj = {
           name: 'ID',
           subRow: {
             keyOfColumnInSubRow: 'id',
-            isColumnWithArrow: true
+            isColumnWithArrow: true,
           },
-          resizable: true
+          resizable: true,
         },
         {
           key: 'issueType',
           name: 'issue',
           subRow: {
-            keyOfColumnInSubRow: 'issueType'
-          }
+            keyOfColumnInSubRow: 'issueType',
+          },
         },
         {
           key: 'developer',
-          name: 'Developer'
-        }
+          name: 'Developer',
+        },
       ],
-      []
+      [],
     );
 
     const selectingRowStateAndSetter = useState(
-      (): ReadonlySet<string | number> => new Set()
+      (): ReadonlySet<string | number> => new Set(),
     );
 
     return (
@@ -69,13 +69,13 @@ export const CustomRowSelection: StoryObj = {
           resizableColumn: true,
           subRows: {
             getSubRows: (row) => row?.subRows,
-            rowKeyGetter: (row) => row.id
+            rowKeyGetter: (row) => row.id,
           },
           selecting: {
             state: selectingRowStateAndSetter,
             rowKeyGetter: (r) => r.id,
             selectingRules: {
-              levels: [1, 2]
+              levels: [1, 2],
             },
             showDefault: true,
             summaryChecked: {
@@ -101,16 +101,16 @@ export const CustomRowSelection: StoryObj = {
 
                 setSelectedRowsIds,
                 allRowsInLevels,
-                rowKeyGetter
+                rowKeyGetter,
               }) {
                 if (!checkedAll) {
                   setSelectedRowsIds(
-                    new Set(...[allRowsInLevels.map((r) => rowKeyGetter(r))])
+                    new Set(...[allRowsInLevels.map((r) => rowKeyGetter(r))]),
                   );
                 } else {
                   setSelectedRowsIds(new Set());
                 }
-              }
+              },
             },
             rowGetStates({
               row,
@@ -118,7 +118,7 @@ export const CustomRowSelection: StoryObj = {
 
               rowKeyGetter,
               setSelectedRows,
-              isRowSelectedCalculated
+              isRowSelectedCalculated,
             }) {
               return {
                 checked: selectedRows.has(rowKeyGetter(row)),
@@ -127,26 +127,26 @@ export const CustomRowSelection: StoryObj = {
                   setSelectedRows((prev) => {
                     const newV = new Set(prev);
                     newV[isRowSelectedCalculated ? 'delete' : 'add'](
-                      rowKeyGetter(row)
+                      rowKeyGetter(row),
                     );
                     return newV;
                   });
-                }
+                },
               };
-            }
-          }
+            },
+          },
         }}
         columnConfig={columns}
         rows={rows}
       />
     );
-  }
+  },
 };
 
 export const CustomRowSelectionWithDisabledAndHidden: StoryObj = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   name: 'Ручная настройка выбора строк с учетом disabled, hidden строк',
   render: () => {
@@ -159,27 +159,27 @@ export const CustomRowSelectionWithDisabledAndHidden: StoryObj = {
           name: 'ID',
           subRow: {
             keyOfColumnInSubRow: 'id',
-            isColumnWithArrow: true
+            isColumnWithArrow: true,
           },
-          resizable: true
+          resizable: true,
         },
         {
           key: 'issueType',
           name: 'issue',
           subRow: {
-            keyOfColumnInSubRow: 'issueType'
-          }
+            keyOfColumnInSubRow: 'issueType',
+          },
         },
         {
           key: 'developer',
-          name: 'Developer'
-        }
+          name: 'Developer',
+        },
       ],
-      []
+      [],
     );
 
     const selectingRowStateAndSetter = useState(
-      (): ReadonlySet<string | number> => new Set()
+      (): ReadonlySet<string | number> => new Set(),
     );
     const rowShowCheckbox = (r: Row) => r.id !== 2;
     const rowCheckboxDisabled = (r: Row) => r.id.toString().endsWith('0001');
@@ -191,13 +191,13 @@ export const CustomRowSelectionWithDisabledAndHidden: StoryObj = {
           resizableColumn: true,
           subRows: {
             getSubRows: (row) => row?.subRows,
-            rowKeyGetter: (row) => row.id
+            rowKeyGetter: (row) => row.id,
           },
           selecting: {
             state: selectingRowStateAndSetter,
             rowKeyGetter: (r) => r.id + r.issueType,
             selectingRules: {
-              levels: [1, 2, 3]
+              levels: [1, 2, 3],
             },
             showDefault: true,
             summaryChecked: {
@@ -224,14 +224,14 @@ export const CustomRowSelectionWithDisabledAndHidden: StoryObj = {
                 clearButtonClicked,
                 setSelectedRowsIds,
 
-                getAllRowsInfo
+                getAllRowsInfo,
               }) {
                 // eslint-disable-next-line no-console
                 console.log('========clearButtonClicked:', clearButtonClicked);
 
                 const {
                   notDisabledAndNotHidden,
-                  notDisabledAndNotHiddenAreSelected
+                  notDisabledAndNotHiddenAreSelected,
                 } = getAllRowsInfo();
 
                 if (checkedAll) {
@@ -247,7 +247,7 @@ export const CustomRowSelectionWithDisabledAndHidden: StoryObj = {
                   });
                   return newSelecteds;
                 });
-              }
+              },
             },
 
             rowGetStates({
@@ -257,7 +257,7 @@ export const CustomRowSelectionWithDisabledAndHidden: StoryObj = {
               rowKeyGetter,
               selectedRows,
               row,
-              setSelectedRows
+              setSelectedRows,
             }) {
               if (!isHaveCheckboxCalculated) return { showCheckbox: false };
 
@@ -280,7 +280,7 @@ export const CustomRowSelectionWithDisabledAndHidden: StoryObj = {
                     selected,
                     notDisabledAndNotHidden,
                     notHidden,
-                    someChildrenIsSelected
+                    someChildrenIsSelected,
                   } = getRowChildrenInfo();
 
                   const rowKey = rowKeyGetter(row);
@@ -298,13 +298,13 @@ export const CustomRowSelectionWithDisabledAndHidden: StoryObj = {
                     // обработка самой строки если она без дочерних строк
                     if (!hasChildren) {
                       newSelecteds[checked ? 'delete' : 'add'](
-                        rowKeyGetter(row)
+                        rowKeyGetter(row),
                       );
                     } else {
                       // обработка дочерних строк
                       // не полагаемся на checked, чтобы обработать логику выбора сразу при checked и indeterminate
                       const needToAdd = notDisabledAndNotHidden.every((rKey) =>
-                        prevSelecteds.has(rKey)
+                        prevSelecteds.has(rKey),
                       );
 
                       notDisabledAndNotHidden.forEach((rKey) => {
@@ -313,11 +313,11 @@ export const CustomRowSelectionWithDisabledAndHidden: StoryObj = {
 
                       // обработка самой строки. Проверка всех детей для того, чтобы определить выбирать ли текущую строку
                       const rowChidlrenSelectedAll = notHidden.every((rKey) =>
-                        newSelecteds.has(rKey)
+                        newSelecteds.has(rKey),
                       );
 
                       newSelecteds[rowChidlrenSelectedAll ? 'add' : 'delete'](
-                        rowKey
+                        rowKey,
                       );
                     }
 
@@ -327,21 +327,21 @@ export const CustomRowSelectionWithDisabledAndHidden: StoryObj = {
 
                     shouldBeSelected.forEach((rKey) => newSelecteds.add(rKey));
                     shouldNotBeSelected.forEach((rKey) =>
-                      newSelecteds.delete(rKey)
+                      newSelecteds.delete(rKey),
                     );
                     return newSelecteds;
                   });
-                }
+                },
               };
             },
 
             rowCheckboxDisabled,
-            rowShowCheckbox
-          }
+            rowShowCheckbox,
+          },
         }}
         columnConfig={columns}
         rows={rows}
       />
     );
-  }
+  },
 };

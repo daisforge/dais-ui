@@ -8,30 +8,30 @@ import { DETAIL_KEYS } from './constants';
 import { RowDetailConfig } from './types';
 
 export const rowIsHaveDetailPanel = <RowType extends ObjectForExtending>(
-  row: RowType
+  row: RowType,
 ) => !!(row as ObjectForExtending)?.[DETAIL_KEYS.IS_HAVE];
 
 export const rowIsHaveExpandedDetailPanel = <
-  RowType extends ObjectForExtending
+  RowType extends ObjectForExtending,
 >(
-  row: RowType
+  row: RowType,
 ) => !!(row as ObjectForExtending)?.[DETAIL_KEYS.IS_HAVE_EXPANDED];
 
 // checkers
 export const isDetailPanelRow = <RowType extends ObjectForExtending>(
-  row: RowType
+  row: RowType,
 ): row is RowType & { [DETAIL_KEYS.ROW_DATA]: RowType } =>
   !!(row as ObjectForExtending)?.[DETAIL_KEYS.IS_DETAIL_PANEL_ROW];
 
 export const isEditableDetailPanel = <RowType extends ObjectForExtending>(
-  row: RowType
+  row: RowType,
 ) =>
   (row as ObjectForExtending)?.[DETAIL_KEYS.ROW_DETAIL_IS_EDITABLE] as boolean;
 
 export const isEmptyDetailPanelCell = <RowType extends ObjectForExtending>(
   row: RowType,
   currIndex: number,
-  indexZeroColKey: string | undefined
+  indexZeroColKey: string | undefined,
 ) => {
   const isDetailPanel = isDetailPanelRow(row);
 
@@ -46,10 +46,10 @@ export const isEmptyDetailPanelCell = <RowType extends ObjectForExtending>(
 
 // getters
 export const getDetailPanelRowData = <RowType extends ObjectForExtending>(
-  row: RowType
+  row: RowType,
 ) => (row as ObjectForExtending)?.[DETAIL_KEYS.ROW_DATA] as RowType;
 export const getDetailPanelRender = <RowType extends ObjectForExtending>(
-  row: RowType
+  row: RowType,
 ) =>
   (row as ObjectForExtending)?.[
     DETAIL_KEYS.ROW_DETAIL_RENDER
@@ -66,7 +66,7 @@ export const getDetailPanelRender = <RowType extends ObjectForExtending>(
 export const getDetailPanelColSpan = ({
   indexZeroColKey,
   currIndex,
-  arrOfCols
+  arrOfCols,
 }: {
   indexZeroColKey: string | undefined;
   currIndex: number;
@@ -88,7 +88,7 @@ export const getDetailPanelColSpan = ({
 
 export const getDetailPanelHeight = <RowType>(
   row: RowType,
-  rowDetailConfig: RowDetailConfig<RowType> | undefined
+  rowDetailConfig: RowDetailConfig<RowType> | undefined,
 ) => {
   if (!rowDetailConfig) {
     return 200;
@@ -99,7 +99,7 @@ export const getDetailPanelHeight = <RowType>(
   return rowDetailConfig.detailHeight;
 };
 export const deleteDetailPanelServiceKeys = <Row extends ObjectForExtending>(
-  r: Row
+  r: Row,
 ) => {
   Object.values(DETAIL_KEYS).forEach((key) => {
     delete r[key];
@@ -111,7 +111,7 @@ export const getDetailPanelColSpanFunc =
     indexZeroColKey,
     currIndex,
     arr,
-    columnColSpan
+    columnColSpan,
   }: {
     indexZeroColKey: string | undefined;
     currIndex: number;
@@ -127,7 +127,7 @@ export const getDetailPanelColSpanFunc =
       return getDetailPanelColSpan({
         indexZeroColKey,
         currIndex,
-        arrOfCols: arr
+        arrOfCols: arr,
       });
     }
 
@@ -136,7 +136,7 @@ export const getDetailPanelColSpanFunc =
 
 export const getExpandButtonIcon = <RowType extends ObjectForExtending>(
   row: RowType,
-  type: 'closed' | 'opened'
+  type: 'closed' | 'opened',
 ) =>
   (row as ObjectForExtending)?.[
     type === 'closed'
@@ -144,7 +144,7 @@ export const getExpandButtonIcon = <RowType extends ObjectForExtending>(
       : DETAIL_KEYS.EXPAND_ICON_OPENED
   ] as ReactNode;
 export const getExpandButtonProps = <RowType extends ObjectForExtending>(
-  row: RowType
+  row: RowType,
 ) =>
   (row as ObjectForExtending)?.[DETAIL_KEYS.EXPAND_ICON_BUTTON_PROPS] as
     | IconButtonProps

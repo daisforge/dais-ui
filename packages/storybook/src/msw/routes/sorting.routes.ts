@@ -2,7 +2,7 @@ import { createRows } from '@df-storybook/data/tableData';
 import {
   type ContractQueryParams,
   type ContractResponse,
-  Q_PARAMS
+  Q_PARAMS,
 } from '@ui-kit/components/TableContract';
 import { http, HttpResponse } from 'msw';
 
@@ -10,7 +10,7 @@ const rows = createRows(1, 1000);
 const getSortedData = (
   sort: string | undefined | null,
   sortingType: ContractResponse['meta']['columns'][number]['sortingType'],
-  key: string | undefined
+  key: string | undefined,
 ) =>
   sort && sortingType && key
     ? [...rows].sort((a, b) => {
@@ -57,43 +57,43 @@ const getData = async (params: ContractQueryParams) => {
     {
       key: 'id',
       name: 'ID',
-      sortingType: 'numberSort'
+      sortingType: 'numberSort',
     },
     {
       key: 'task',
       name: 'Title',
-      sortingType: 'stringSort'
+      sortingType: 'stringSort',
     },
     {
       key: 'priority',
       name: 'Priority',
-      sortingType: 'stringSort'
+      sortingType: 'stringSort',
     },
     {
       key: 'issueType',
       name: 'Issue Type',
-      sortingType: 'stringSort'
+      sortingType: 'stringSort',
     },
     {
       key: 'complete',
       name: '% Complete',
-      sortingType: 'numberSort'
-    }
+      sortingType: 'numberSort',
+    },
   ];
   const tableConfig: ContractResponse['meta']['tableConfig'] = {
-    sorting: { type: 'backend' }
+    sorting: { type: 'backend' },
   };
   const sortColumn = columns.find(
-    (c) => c.key === sort || `-${c.key}` === sort
+    (c) => c.key === sort || `-${c.key}` === sort,
   );
   const { sortingType, key } = sortColumn ?? {};
   const sortedRows = getSortedData(sort, sortingType, key);
   const resp: ContractResponse = {
     meta: {
       columns,
-      tableConfig
+      tableConfig,
     },
-    data: { main: sortedRows }
+    data: { main: sortedRows },
   };
   return resp;
 };
@@ -109,5 +109,5 @@ export const sortingRoute = {
 
     const response: ContractResponse = await getData({ sort });
     return HttpResponse.json(response);
-  })
+  }),
 };

@@ -2,7 +2,7 @@ export type {
   CanvasNodeTooltipConfig,
   CanvasNodeTooltipProps,
   CanvasPortalHoverDetail,
-  CanvasPortalSource
+  CanvasPortalSource,
 } from '../../TableGlide';
 export {
   Canvas,
@@ -16,7 +16,7 @@ export {
   subscribeToPortalHoverLock,
   TABLE_GLIDE_SIZES,
   fontStyles as tableCanvasFonts,
-  THEME as tableCanvasTheme
+  THEME as tableCanvasTheme,
 } from '../../TableGlide';
 export { TableGlideInstance } from './TableGlideInstance';
 export type * from './type';

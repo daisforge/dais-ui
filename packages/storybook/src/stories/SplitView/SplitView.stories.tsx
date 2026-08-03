@@ -12,7 +12,7 @@ import { Flow } from '@ui-kit/components/Flow';
 import { IconButton } from '@ui-kit/components/IconButton';
 import type {
   SplitViewProps,
-  SplitViewSlotSizesProps
+  SplitViewSlotSizesProps,
 } from '@ui-kit/components/SplitView';
 import { SplitView } from '@ui-kit/components/SplitView';
 import { ColumnConfig, Table } from '@ui-kit/components/Table';
@@ -40,11 +40,11 @@ const meta: Meta<SplitViewProps> = {
   title: 'Композиции/SplitView',
   parameters: {
     docs: {
-      toc: true // 👈 Enables the table of contents
-    }
+      toc: true, // 👈 Enables the table of contents
+    },
   },
   tags: ['!autodocs'],
-  component: SplitView
+  component: SplitView,
 };
 
 export default meta;
@@ -53,7 +53,7 @@ type Story = StoryObj<SplitViewProps>;
 
 function SplitViewTableComponent({
   rows,
-  setOpenedTask
+  setOpenedTask,
 }: {
   rows: Row[];
   setOpenedTask: (row: Row) => void;
@@ -62,26 +62,26 @@ function SplitViewTableComponent({
     () => [
       {
         key: 'id',
-        name: 'id'
+        name: 'id',
       },
       {
         key: 'task',
-        name: 'Title'
+        name: 'Title',
       },
       {
         key: 'priority',
-        name: 'Priority'
+        name: 'Priority',
       },
       {
         key: 'issueType',
-        name: 'Issue Type'
+        name: 'Issue Type',
       },
       {
         key: 'complete',
-        name: '% Complete'
-      }
+        name: '% Complete',
+      },
     ],
-    []
+    [],
   );
 
   return (
@@ -90,7 +90,7 @@ function SplitViewTableComponent({
         containerStyle: { height: 700 },
         onCellClick({ row }) {
           setOpenedTask(row);
-        }
+        },
       }}
       columnConfig={columnConfig}
       rows={rows}
@@ -132,11 +132,11 @@ import React, { useMemo, useState } from 'react';
 
 ${getFuncAsString(
   'packages/storybook/src/stories/SplitView/SplitView.stories.tsx',
-  'SplitViewTableComponent'
+  'SplitViewTableComponent',
 )}
 
 
-    `
+    `,
   }),
   render: () => {
     const [rows] = useState(createRows);
@@ -203,8 +203,8 @@ ${getFuncAsString(
                         dropdownProps={{
                           items: [
                             { label: 'label 1', value: '1' },
-                            { label: 'label 2', value: '2' }
-                          ]
+                            { label: 'label 2', value: '2' },
+                          ],
                         }}
                       />
                       <Widget.Divider />
@@ -246,7 +246,7 @@ ${getFuncAsString(
                         position: 'absolute',
                         right: 0,
                         width: '4px',
-                        backgroundColor: 'teal'
+                        backgroundColor: 'teal',
                       }}
                     />
                   </div>
@@ -267,12 +267,12 @@ ${getFuncAsString(
                   }
                 />
               </Widget>
-            )
+            ),
           }}
         />
       </div>
     );
-  }
+  },
 };
 
 /**
@@ -315,11 +315,11 @@ import React, { useMemo, useState } from 'react';
 
 ${getFuncAsString(
   'packages/storybook/src/stories/SplitView/SplitView.stories.tsx',
-  'SplitViewTableComponent'
+  'SplitViewTableComponent',
 )}
 
 
-    `
+    `,
   }),
   render: () => {
     const [rows] = useState(createRows);
@@ -417,8 +417,8 @@ ${getFuncAsString(
                           dropdownProps={{
                             items: [
                               { label: 'label 1', value: '1' },
-                              { label: 'label 2', value: '2' }
-                            ]
+                              { label: 'label 2', value: '2' },
+                            ],
                           }}
                         />
                         <Widget.Divider />
@@ -455,7 +455,7 @@ ${getFuncAsString(
                     <div
                       style={{
                         height: '2000px',
-                        backgroundColor: 'goldenrod'
+                        backgroundColor: 'goldenrod',
                       }}
                     >
                       Кастомный слот — Tab {activeTab + 1}
@@ -478,10 +478,10 @@ ${getFuncAsString(
                   />
                 </Widget>
               </div>
-            )
+            ),
           }}
         />
       </div>
     );
-  }
+  },
 };

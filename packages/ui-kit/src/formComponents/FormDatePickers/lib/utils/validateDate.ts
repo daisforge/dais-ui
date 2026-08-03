@@ -7,7 +7,7 @@ export const validateDate = ({
   max,
   required,
   invalidFormatMessage,
-  format
+  format,
 }: TValidateDateProps) => {
   const maxDate = max && getRuleValue({ rule: max, typeValue: 'number' });
   const minDate = min && getRuleValue({ rule: min, typeValue: 'number' });

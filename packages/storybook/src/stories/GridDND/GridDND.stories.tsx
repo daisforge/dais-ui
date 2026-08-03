@@ -10,7 +10,7 @@ import {
   GridDND,
   GridDNDItemConfig,
   GridDNDItems,
-  GridDNDRef
+  GridDNDRef,
 } from '@ui-kit/components/GridDND';
 import { Switch } from '@ui-kit/components/Switch';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
@@ -25,8 +25,8 @@ const meta: Meta<typeof GridDND> = {
   tags: ['!autodocs'],
   parameters: {
     layout: 'fullscreen',
-    msw: { handlers: [...gridDndRoutes.handlers] }
-  }
+    msw: { handlers: [...gridDndRoutes.handlers] },
+  },
 };
 export default meta;
 type Story = StoryObj<typeof GridDND>;
@@ -47,7 +47,7 @@ export const DragDelay: Story = {
       { id: 'w2', type: 's' },
       { id: 'w3', type: 's' },
       { id: 'w4', type: 'm' },
-      { id: 'w5', type: 's' }
+      { id: 'w5', type: 's' },
     ]);
 
     const renderItem = useCallback(
@@ -57,7 +57,7 @@ export const DragDelay: Story = {
           {item.type === 'm' && <WidgetM id={item.id} onRemove={onRemove} />}
         </GridDND.ItemWrapper>
       ),
-      []
+      [],
     );
 
     return (
@@ -82,13 +82,13 @@ export const DragDelay: Story = {
         </div>
       </div>
     );
-  }
+  },
 };
 
 export const GridDNDClassic: Story = {
   name: 'GridDND Classic',
   ...storySourceDoc({
-    preCode
+    preCode,
   }),
   render() {
     const gridRef = useRef<GridDNDRef>(null);
@@ -114,7 +114,7 @@ export const GridDNDClassic: Story = {
                 onItemSelect(m) {
                   if (m.value?.toString().toLowerCase() === 'удалить')
                     onRemove();
-                }
+                },
               }}
             />
           }
@@ -124,7 +124,7 @@ export const GridDNDClassic: Story = {
           {item.type === 'l' && <WidgetL id={item.id} onRemove={onRemove} />}
         </GridDND.ItemWrapper>
       ),
-      []
+      [],
     );
 
     const handleReorder = () => {
@@ -139,7 +139,7 @@ export const GridDNDClassic: Story = {
         await fetch(gridDndRoutes.ENDPOINTS.PUT_ITEMS, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ items: newItems })
+          body: JSON.stringify({ items: newItems }),
         });
         console.log('✅ Items saved successfully');
       } catch (error) {
@@ -152,7 +152,7 @@ export const GridDNDClassic: Story = {
       debounce((newItems: GridDNDItems[]) => {
         saveItems(newItems);
       }, 800),
-      [saveItems]
+      [saveItems],
     );
 
     // Загрузка initial items с сервера
@@ -183,7 +183,7 @@ export const GridDNDClassic: Story = {
             display: 'flex',
             gap: 8,
             alignItems: 'center',
-            marginBottom: 12
+            marginBottom: 12,
           }}
         >
           <span>Width: {width}px</span>
@@ -224,7 +224,7 @@ export const GridDNDClassic: Story = {
           style={{
             marginBottom: '30px',
             display: 'flex',
-            gap: '8px'
+            gap: '8px',
           }}
         >
           <Button
@@ -245,7 +245,7 @@ export const GridDNDClassic: Story = {
             onClick={() =>
               console.debug(
                 'Current template area:',
-                gridRef.current?.api.getCurrentLayout()
+                gridRef.current?.api.getCurrentLayout(),
               )
             }
           >
@@ -255,7 +255,7 @@ export const GridDNDClassic: Story = {
             onClick={() =>
               console.debug(
                 'All template areas:',
-                gridRef.current?.api.getAllLayouts()
+                gridRef.current?.api.getAllLayouts(),
               )
             }
           >
@@ -274,7 +274,7 @@ export const GridDNDClassic: Story = {
                 return;
               gridRef.current?.api.addItem({
                 id,
-                type
+                type,
               });
             }}
           >
@@ -316,7 +316,7 @@ export const GridDNDClassic: Story = {
         </div>
       </div>
     );
-  }
+  },
 };
 
 // Самоизменение размера: виджет вызывает onResize (3-й аргумент render-prop,
@@ -336,7 +336,7 @@ const ResizableAnalyticalWidget: React.FC<{
       $css={{
         height: '100%',
         maxWidth: 'unset !important',
-        width: '100% !important'
+        width: '100% !important',
       }}
       size={type}
       headerSlot={
@@ -354,7 +354,7 @@ const ResizableAnalyticalWidget: React.FC<{
             display: 'flex',
             flexDirection: 'column',
             gap: 12,
-            height: 'fit-content'
+            height: 'fit-content',
           }}
         >
           <div
@@ -409,14 +409,14 @@ export const SelfResize: Story = {
       { id: 'w3', type: 'm' },
       { id: 'w4', type: 's' },
       { id: 'w5', type: 's' },
-      { id: 'w6', type: 's' }
+      { id: 'w6', type: 's' },
     ]);
 
     const renderItem = useCallback(
       (
         item: GridDNDItemConfig,
         onRemove: () => void,
-        onResize: (type: 's' | 'm' | 'l') => void
+        onResize: (type: 's' | 'm' | 'l') => void,
       ) => (
         <GridDND.ItemWrapper item={item}>
           <ResizableAnalyticalWidget
@@ -427,7 +427,7 @@ export const SelfResize: Story = {
           />
         </GridDND.ItemWrapper>
       ),
-      []
+      [],
     );
 
     return (
@@ -456,5 +456,5 @@ export const SelfResize: Story = {
         </div>
       </div>
     );
-  }
+  },
 };

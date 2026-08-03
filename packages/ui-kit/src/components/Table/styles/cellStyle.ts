@@ -6,7 +6,7 @@ import { COLORS } from './styles.constants';
 
 export const selectionCellBeforeEl = (
   customColor?: string,
-  pos?: 'left' | 'right' | 'block' | 'top' | 'bottom'
+  pos?: 'left' | 'right' | 'block' | 'top' | 'bottom',
 ) => css`
   &::before {
     content: '';

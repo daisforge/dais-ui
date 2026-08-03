@@ -1,26 +1,26 @@
 import { SIZE } from '@ui-kit/components/TableCanvas/styles/styles.constants';
 import {
   DataEditorRef,
-  TableGlideInstanceProps
+  TableGlideInstanceProps,
 } from '@ui-kit/components/TableCanvas/TableGlideInstance/type';
 import {
   ActiveViewModsType,
   ColumnGroupConfig,
   ObjectForExtending,
-  SortColumn
+  SortColumn,
 } from '@ui-kit/components/TableCanvas/types';
 import React, {
   createContext,
   MutableRefObject,
   PropsWithChildren,
   RefObject,
-  useContext
+  useContext,
 } from 'react';
 
 import { DropdownProps } from '../Dropdown';
 import type {
   ContextMenuDropdownItem,
-  ContextMenuDropdownProps
+  ContextMenuDropdownProps,
 } from './feature-context-menu/types';
 import type { SearchingProps } from './feature-searching/types';
 import { DomMetadata } from './types/additional.type';
@@ -31,11 +31,11 @@ import { DomMetadata } from './types/additional.type';
  */
 type RowContextV = { rowSize: SIZE };
 const RowContext = createContext<RowContextV>({
-  rowSize: 'big' as SIZE
+  rowSize: 'big' as SIZE,
 });
 
 export const useRowContext = <
-  CustomType extends ObjectForExtending | void = undefined
+  CustomType extends ObjectForExtending | void = undefined,
 >() => {
   const ctx = useContext(RowContext);
   if (!ctx) {
@@ -70,7 +70,7 @@ export const useExpandedRowsContext = () => {
 // ----------------------------------------------------------------
 
 export type HeaderContextValueTypeInstance<
-  FilterStateType extends Record<string | number, unknown>
+  FilterStateType extends Record<string | number, unknown>,
 > = {
   filters: FilterStateType | undefined;
   setFilters: React.Dispatch<React.SetStateAction<FilterStateType>> | undefined;
@@ -97,7 +97,7 @@ export const HeaderContext = createContext<
 >({} as HeaderContextValueTypeInstance<ObjectForExtending>);
 
 export const useHeaderContext = <
-  CustomType extends ObjectForExtending | void = undefined
+  CustomType extends ObjectForExtending | void = undefined,
 >() => {
   const ctx = useContext(HeaderContext);
   if (!ctx) {
@@ -124,7 +124,7 @@ type CommonContextMenuProps = {
 // ContextMenu
 export type ContextMenuContextV<
   RowType extends ObjectForExtending,
-  SummaryRowType = unknown
+  SummaryRowType = unknown,
 > = CommonContextMenuProps &
   ContextMenuDropdownProps & {
     enableHeaderContextMenu: boolean;
@@ -135,7 +135,7 @@ export type ContextMenuContextV<
     >['onHeaderContextMenu'];
     onItemSelect?: (
       item: ContextMenuDropdownItem,
-      event?: React.SyntheticEvent
+      event?: React.SyntheticEvent,
     ) => void;
     openCellContextMenu: TableGlideInstanceProps<
       RowType,
@@ -145,7 +145,7 @@ export type ContextMenuContextV<
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const ContextMenuContext = createContext<ContextMenuContextV<any, any> | null>(
-  null
+  null,
 );
 
 export const useContextMenu = () => {
@@ -212,7 +212,7 @@ export type TableCollapseContextValue = {
 };
 
 const TableCollapseContext = createContext<TableCollapseContextValue | null>(
-  null
+  null,
 );
 
 export const useTableCollapse = () => {
@@ -223,7 +223,7 @@ export const useTableCollapse = () => {
 
 export const ContextProviders = <
   RowType extends ObjectForExtending,
-  SummaryRowType = unknown
+  SummaryRowType = unknown,
 >({
   children,
   headerCtxV,
@@ -232,7 +232,7 @@ export const ContextProviders = <
   searchCtxV,
   contextMenuCtxV,
   sideBarCtxV,
-  tableCollapseCtxV
+  tableCollapseCtxV,
 }: PropsWithChildren & {
   headerCtxV: HeaderContextValueTypeInstance<ObjectForExtending>;
   rowCtxV: RowContextV;
@@ -262,7 +262,7 @@ export const ContextProviders = <
 );
 
 export const RefTableContext = createContext<RefObject<DataEditorRef> | null>(
-  null
+  null,
 );
 export const useRefTableContext = () => {
   const ctx = useContext(RefTableContext);
@@ -308,7 +308,7 @@ export const ColumnGroupContext = createContext<{
 }>({
   maxLevelOfGroups: 0,
   columnsGroupingIsActive: false,
-  allGroupsMap: new Map() as AllGroupsMap
+  allGroupsMap: new Map() as AllGroupsMap,
 });
 
 export const useColumnGroupContext = () => {
@@ -324,5 +324,5 @@ export {
   TableResizeObserverProvider,
   TableResizeObserverProviderWrapper,
   useTableResizeObserver,
-  useTableResizeObserverWidth
+  useTableResizeObserverWidth,
 } from './resize-observer-context';

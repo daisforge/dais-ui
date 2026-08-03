@@ -10,7 +10,7 @@ import {
   StyledList,
   StyledListItem,
   StyledSearchBlockFilter,
-  StyledTotalListItemContainer
+  StyledTotalListItemContainer,
 } from './styled';
 
 type Single = {
@@ -26,13 +26,13 @@ type Multiple = {
 
 function isSingle(
   m: 'single' | 'multiple',
-  onChange: ((v: string[]) => void) | ((v: string) => void)
+  onChange: ((v: string[]) => void) | ((v: string) => void),
 ): onChange is (v: string) => void;
 
 // eslint-disable-next-line no-redeclare
 function isSingle(
   m: 'single' | 'multiple',
-  value: string | string[]
+  value: string | string[],
 ): value is string;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-redeclare
@@ -43,7 +43,7 @@ function isSingle(m: 'single' | 'multiple', valueOrOnChange: unknown) {
 const getItemIsSelected = (
   o: { text: string; value: string },
   mode: 'multiple' | 'single',
-  value: string | string[]
+  value: string | string[],
 ) => {
   if (isSingle(mode, value)) {
     return o.value === value;
@@ -60,7 +60,7 @@ export const ComboboxX = ({
   beforeList,
   size = 'medium',
   listMaxHeight = '360px',
-  width
+  width,
 }: (Single | Multiple) & {
   options: { text: string; value: string }[];
   tabIndex?: number | undefined;
@@ -70,12 +70,12 @@ export const ComboboxX = ({
   width?: string;
 }) => {
   const [inputValue, setInputValue] = useState(
-    options.find((o) => o.value === value)?.text ?? ''
+    options.find((o) => o.value === value)?.text ?? '',
   );
 
   const optionsLabelMap = useMemo(
     () => new Map(options.map((el) => [el.value, el.text])),
-    [options]
+    [options],
   );
 
   const filteredOptions = useMemo(() => {
@@ -84,7 +84,7 @@ export const ComboboxX = ({
         return options;
       }
       return options.filter((o) =>
-        o.text.toLowerCase().includes(inputValue.toLowerCase())
+        o.text.toLowerCase().includes(inputValue.toLowerCase()),
       );
     }
 
@@ -92,20 +92,20 @@ export const ComboboxX = ({
       return options;
     }
     return options.filter((o) =>
-      o.text.toLowerCase().includes(inputValue.toLowerCase())
+      o.text.toLowerCase().includes(inputValue.toLowerCase()),
     );
   }, [inputValue, mode, options, optionsLabelMap, value]);
 
   const checkAllStates = {
     indeterminate: value?.length !== 0 && value?.length !== options.length,
     checked: value?.length !== 0 && value?.length === options.length,
-    onChange: () => {}
+    onChange: () => {},
   };
 
   return (
     <Box
       $css={{
-        width: width ?? 'unset'
+        width: width ?? 'unset',
       }}
     >
       <StyledSearchBlockFilter
@@ -148,7 +148,7 @@ export const ComboboxX = ({
                 size="s"
                 style={{
                   pointerEvents: 'none',
-                  marginRight: '8px'
+                  marginRight: '8px',
                 }}
               />
               Выбрать всё
@@ -190,7 +190,7 @@ export const ComboboxX = ({
                       justifyContent: 'center',
                       alignItems: 'center',
                       marginRight: '8px',
-                      visibility: itemIsSelected ? 'visible' : 'hidden'
+                      visibility: itemIsSelected ? 'visible' : 'hidden',
                     }}
                   >
                     <IconDone size="s" color="var(--text-accent)" />
@@ -203,7 +203,7 @@ export const ComboboxX = ({
                     size="s"
                     style={{
                       pointerEvents: 'none',
-                      marginRight: '8px'
+                      marginRight: '8px',
                     }}
                   />
                 )}

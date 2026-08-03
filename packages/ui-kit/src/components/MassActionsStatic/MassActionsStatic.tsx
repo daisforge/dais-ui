@@ -9,7 +9,7 @@ export const MassActionsStatic: FC<MassActionsStaticProps> = ({
   style,
   position = 'absolute',
   show,
-  animate = true
+  animate = true,
 }: MassActionsStaticProps) => {
   // show === undefined означает, что компонент всегда виден
   const isVisible = show !== undefined ? show : true;

@@ -5,7 +5,7 @@ import styled, { CSSProperties, keyframes } from 'styled-components';
 export const truncateText = (): CSSProperties => ({
   whiteSpace: 'nowrap',
   overflow: 'hidden',
-  textOverflow: 'ellipsis'
+  textOverflow: 'ellipsis',
 });
 
 export const CheckboxWithTitle = styled(Box)({
@@ -20,9 +20,9 @@ export const CheckboxWithTitle = styled(Box)({
   '& label': {
     width: '100%',
     '& *': {
-      fontSize: '14px'
-    }
-  }
+      fontSize: '14px',
+    },
+  },
 });
 
 export const DropdownWithTitle = styled(Box)({
@@ -37,7 +37,7 @@ export const DropdownWithTitle = styled(Box)({
   width: '100%',
   padding: '8px 12px',
   borderRadius: '8px',
-  flexWrap: 'nowrap'
+  flexWrap: 'nowrap',
 });
 
 interface FeatureTableDropdownContainerProps {
@@ -45,7 +45,7 @@ interface FeatureTableDropdownContainerProps {
 }
 
 export const FeatureTableDropdownContainer = styled(
-  Box
+  Box,
 )<FeatureTableDropdownContainerProps>(({ $isFullWidthTarget = false }) => ({
   cursor: 'pointer',
   flexGrow: 1,
@@ -54,8 +54,8 @@ export const FeatureTableDropdownContainer = styled(
   marginLeft: 'auto',
   ...truncateText(),
   '& > div': {
-    width: $isFullWidthTarget ? '100%' : 'auto'
-  }
+    width: $isFullWidthTarget ? '100%' : 'auto',
+  },
 }));
 
 export const FeatureTableDropdownTargetButton = styled.button({
@@ -68,14 +68,14 @@ export const FeatureTableDropdownTargetButton = styled.button({
   paddingInline: '0',
   cursor: 'pointer',
   color: textSecondary,
-  ...truncateText()
+  ...truncateText(),
 });
 
 export const Title = styled(Box)({
   fontSize: '14px',
   fontWeight: '400',
   lineHeight: '20px',
-  letterSpacing: '-2%'
+  letterSpacing: '-2%',
 });
 
 export const SettingsContainer = styled(Box)({
@@ -84,7 +84,7 @@ export const SettingsContainer = styled(Box)({
   gap: '8px',
   overflowY: 'auto',
   overflowX: 'hidden',
-  height: '100%'
+  height: '100%',
 });
 
 export const ButtonFeaturesGridContainer = styled.div<{ $count: number }>`
@@ -104,7 +104,7 @@ export const ButtonFeaturesGridContainer = styled.div<{ $count: number }>`
 
 export const TabsContainer = styled(Box)({
   marginBottom: '16px',
-  width: '100%'
+  width: '100%',
 });
 
 // Анимация переключения табов (аналогично сайдбару)

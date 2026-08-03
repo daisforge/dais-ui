@@ -3,7 +3,7 @@ import { Button } from '@ui-kit/components/Button';
 import { surfaceSolidCard } from '@ui-kit/tokens';
 import styled, {
   CSSObject,
-  FlattenSimpleInterpolation
+  FlattenSimpleInterpolation,
 } from 'styled-components';
 
 export const ApprovalCenterContainer = styled.div<{

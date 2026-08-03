@@ -11,9 +11,9 @@ const meta: Meta = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      page: DocStoryTemplate
-    }
-  }
+      page: DocStoryTemplate,
+    },
+  },
 };
 
 export default meta;
@@ -23,7 +23,7 @@ type Story = StoryObj;
 export const MinMaxWidth: Story = {
   name: 'minWidth / maxWidth',
   ...storySourceDoc({
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     const [rows] = useState(createRows);
@@ -33,53 +33,53 @@ export const MinMaxWidth: Story = {
         {
           key: 'id',
           name: 'ID',
-          width: 80
+          width: 80,
         },
         {
           key: 'task',
           name: 'Title (min 150, max 400)',
           width: 250,
           minWidth: 150,
-          maxWidth: 400
+          maxWidth: 400,
         },
         {
           key: 'priority',
           name: 'Priority (min 120, max 300)',
           width: 200,
           minWidth: 120,
-          maxWidth: 300
+          maxWidth: 300,
         },
         {
           key: 'loremIpsum',
           name: 'Issue Type (max 200)',
           width: 150,
-          maxWidth: 200
+          maxWidth: 200,
         },
         {
           key: 'complete',
           name: '% Complete',
-          width: 150
-        }
+          width: 150,
+        },
       ],
-      []
+      [],
     );
 
     return (
       <TableCanvas
         tableConfig={{
-          containerStyle: { height: '60vh' }
+          containerStyle: { height: '60vh' },
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };
 
 export const MaxAutoWidthBasic: Story = {
   name: 'maxAutoWidth — базовый',
   ...storySourceDoc({
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     const [rows] = useState(createRows);
@@ -89,48 +89,48 @@ export const MaxAutoWidthBasic: Story = {
         {
           key: 'id',
           name: 'ID (maxAutoWidth: 120)',
-          maxAutoWidth: 120
+          maxAutoWidth: 120,
         },
         {
           key: 'task',
           name: 'Task (maxAutoWidth: 400)',
-          maxAutoWidth: 400
+          maxAutoWidth: 400,
         },
         {
           key: 'priority',
-          name: 'Priority (без ограничений)'
+          name: 'Priority (без ограничений)',
         },
         {
           key: 'loremIpsum',
           name: 'Issue Type (maxAutoWidth: 200)',
-          maxAutoWidth: 200
+          maxAutoWidth: 200,
         },
         {
           key: 'complete',
           name: '% Complete (фикс 130px)',
-          width: 130
-        }
+          width: 130,
+        },
       ],
-      []
+      [],
     );
 
     return (
       <TableCanvas
         tableConfig={{
           containerStyle: { height: '60vh' },
-          resizableColumn: true
+          resizableColumn: true,
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };
 
 export const MaxAutoWidthVsMaxWidth: Story = {
   name: 'maxAutoWidth + maxWidth (комбинация)',
   ...storySourceDoc({
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     const [rows] = useState(createRows);
@@ -141,49 +141,49 @@ export const MaxAutoWidthVsMaxWidth: Story = {
           key: 'id',
           name: 'ID (maxAutoWidth: 150, maxWidth: 200)',
           maxAutoWidth: 150,
-          maxWidth: 200
+          maxWidth: 200,
         },
         {
           key: 'task',
           name: 'Task (maxAutoWidth: 400)',
-          maxAutoWidth: 400
+          maxAutoWidth: 400,
         },
         {
           key: 'priority',
           name: 'Priority (maxAutoWidth: 180, maxWidth: 180)',
           maxAutoWidth: 180,
-          maxWidth: 180
+          maxWidth: 180,
         },
         {
           key: 'loremIpsum',
-          name: 'Issue (без ограничений)'
+          name: 'Issue (без ограничений)',
         },
         {
           key: 'complete',
           name: '% Complete (фикс 130px)',
-          width: 130
-        }
+          width: 130,
+        },
       ],
-      []
+      [],
     );
 
     return (
       <TableCanvas
         tableConfig={{
           containerStyle: { height: '60vh' },
-          resizableColumn: true
+          resizableColumn: true,
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };
 
 export const MaxAutoWidthGlobal: Story = {
   name: 'maxColumnAutoWidth (глобальный)',
   ...storySourceDoc({
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     const [rows] = useState(createRows);
@@ -192,27 +192,27 @@ export const MaxAutoWidthGlobal: Story = {
       () => [
         {
           key: 'id',
-          name: 'ID'
+          name: 'ID',
         },
         {
           key: 'task',
-          name: 'Task'
+          name: 'Task',
         },
         {
           key: 'priority',
           name: 'Priority (maxAutoWidth: 250 — перебивает глобальный)',
-          maxAutoWidth: 250
+          maxAutoWidth: 250,
         },
         {
           key: 'loremIpsum',
-          name: 'Issue Type'
+          name: 'Issue Type',
         },
         {
           key: 'complete',
-          name: '% Complete'
-        }
+          name: '% Complete',
+        },
       ],
-      []
+      [],
     );
 
     return (
@@ -220,19 +220,19 @@ export const MaxAutoWidthGlobal: Story = {
         tableConfig={{
           containerStyle: { height: '60vh' },
           resizableColumn: true,
-          maxColumnAutoWidth: 300
+          maxColumnAutoWidth: 300,
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };
 
 export const ManualResizeBypassesMaxAutoWidth: Story = {
   name: 'maxAutoWidth не ограничивает ручной ресайз',
   ...storySourceDoc({
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     const [rows] = useState(createRows);
@@ -242,41 +242,41 @@ export const ManualResizeBypassesMaxAutoWidth: Story = {
         {
           key: 'id',
           name: 'ID (maxAutoWidth: 100)',
-          maxAutoWidth: 100
+          maxAutoWidth: 100,
         },
         {
           key: 'task',
           name: 'Task (maxAutoWidth: 250, maxWidth: 500)',
           maxAutoWidth: 250,
-          maxWidth: 500
+          maxWidth: 500,
         },
         {
           key: 'priority',
           name: 'Priority (maxAutoWidth: 200)',
-          maxAutoWidth: 200
+          maxAutoWidth: 200,
         },
         {
           key: 'loremIpsum',
-          name: 'Issue Type'
+          name: 'Issue Type',
         },
         {
           key: 'complete',
           name: '% Complete (фикс 150px)',
-          width: 150
-        }
+          width: 150,
+        },
       ],
-      []
+      [],
     );
 
     return (
       <TableCanvas
         tableConfig={{
           containerStyle: { height: '60vh' },
-          resizableColumn: true
+          resizableColumn: true,
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };

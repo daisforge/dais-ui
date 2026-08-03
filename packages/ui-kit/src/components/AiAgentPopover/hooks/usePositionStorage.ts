@@ -12,8 +12,8 @@ export const usePositionStorage = (
     top: 0,
     bottom: 0,
     left: 0,
-    right: 0
-  }
+    right: 0,
+  },
 ) => {
   // Загрузка позиции из localStorage (только при монтировании)
   const loadPosition = useCallback(() => {
@@ -29,7 +29,7 @@ export const usePositionStorage = (
         top: dragBoundary.top ?? 0,
         right: dragBoundary.right ?? 0,
         bottom: dragBoundary.bottom ?? 0,
-        left: dragBoundary.left ?? 0
+        left: dragBoundary.left ?? 0,
       });
     } catch (e) {
       // eslint-disable-next-line no-console
@@ -51,7 +51,7 @@ export const usePositionStorage = (
         console.error('Failed to save position:', e);
       }
     },
-    [useStorage]
+    [useStorage],
   );
 
   // Загружаем позицию только один раз при инициализации
@@ -59,6 +59,6 @@ export const usePositionStorage = (
 
   return {
     savedPosition: savedPosition || initialPosition, // Fallback на initialPosition
-    savePosition
+    savePosition,
   };
 };

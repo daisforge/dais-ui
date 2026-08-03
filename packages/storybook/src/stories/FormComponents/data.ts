@@ -48,13 +48,13 @@ export const mockData = [
   { label: 'Федор Жуков' },
   { label: 'Елизавета Логинова' },
   { label: 'Виктор Рыбаков' },
-  { label: 'Лилия Макарова' }
+  { label: 'Лилия Макарова' },
 ];
 
 export const items = [
   {
     value: 'north_america',
-    label: 'Северная Америка'
+    label: 'Северная Америка',
   },
   {
     value: 'south_america',
@@ -66,13 +66,13 @@ export const items = [
         items: [
           {
             value: 'rio_de_janeiro',
-            label: 'Рио-де-Жанейро'
+            label: 'Рио-де-Жанейро',
           },
           {
             value: 'sao_paulo',
-            label: 'Сан-Паулу'
-          }
-        ]
+            label: 'Сан-Паулу',
+          },
+        ],
       },
       {
         value: 'argentina',
@@ -80,13 +80,13 @@ export const items = [
         items: [
           {
             value: 'buenos_aires',
-            label: 'Буэнос-Айрес'
+            label: 'Буэнос-Айрес',
           },
           {
             value: 'cordoba',
-            label: 'Кордова'
-          }
-        ]
+            label: 'Кордова',
+          },
+        ],
       },
       {
         value: 'colombia',
@@ -94,15 +94,15 @@ export const items = [
         items: [
           {
             value: 'bogota',
-            label: 'Богота'
+            label: 'Богота',
           },
           {
             value: 'medellin',
-            label: 'Медельин'
-          }
-        ]
-      }
-    ]
+            label: 'Медельин',
+          },
+        ],
+      },
+    ],
   },
   {
     value: 'europe',
@@ -114,13 +114,13 @@ export const items = [
         items: [
           {
             value: 'paris',
-            label: 'Париж'
+            label: 'Париж',
           },
           {
             value: 'lyon',
-            label: 'Лион'
-          }
-        ]
+            label: 'Лион',
+          },
+        ],
       },
       {
         value: 'germany',
@@ -128,13 +128,13 @@ export const items = [
         items: [
           {
             value: 'berlin',
-            label: 'Берлин'
+            label: 'Берлин',
           },
           {
             value: 'munich',
-            label: 'Мюнхен'
-          }
-        ]
+            label: 'Мюнхен',
+          },
+        ],
       },
       {
         value: 'italy',
@@ -142,13 +142,13 @@ export const items = [
         items: [
           {
             value: 'rome',
-            label: 'Рим'
+            label: 'Рим',
           },
           {
             value: 'milan',
-            label: 'Милан'
-          }
-        ]
+            label: 'Милан',
+          },
+        ],
       },
       {
         value: 'spain',
@@ -156,13 +156,13 @@ export const items = [
         items: [
           {
             value: 'madrid',
-            label: 'Мадрид'
+            label: 'Мадрид',
           },
           {
             value: 'barcelona',
-            label: 'Барселона'
-          }
-        ]
+            label: 'Барселона',
+          },
+        ],
       },
       {
         value: 'united_kingdom',
@@ -170,15 +170,15 @@ export const items = [
         items: [
           {
             value: 'london',
-            label: 'Лондон'
+            label: 'Лондон',
           },
           {
             value: 'manchester',
-            label: 'Манчестер'
-          }
-        ]
-      }
-    ]
+            label: 'Манчестер',
+          },
+        ],
+      },
+    ],
   },
   {
     value: 'asia',
@@ -190,13 +190,13 @@ export const items = [
         items: [
           {
             value: 'beijing',
-            label: 'Пекин'
+            label: 'Пекин',
           },
           {
             value: 'shanghai',
-            label: 'Шанхай'
-          }
-        ]
+            label: 'Шанхай',
+          },
+        ],
       },
       {
         value: 'japan',
@@ -204,13 +204,13 @@ export const items = [
         items: [
           {
             value: 'tokyo',
-            label: 'Токио'
+            label: 'Токио',
           },
           {
             value: 'osaka',
-            label: 'Осака'
-          }
-        ]
+            label: 'Осака',
+          },
+        ],
       },
       {
         value: 'india',
@@ -218,13 +218,13 @@ export const items = [
         items: [
           {
             value: 'delhi',
-            label: 'Дели'
+            label: 'Дели',
           },
           {
             value: 'mumbai',
-            label: 'Мумбаи'
-          }
-        ]
+            label: 'Мумбаи',
+          },
+        ],
       },
       {
         value: 'south_korea',
@@ -232,13 +232,13 @@ export const items = [
         items: [
           {
             value: 'seoul',
-            label: 'Сеул'
+            label: 'Сеул',
           },
           {
             value: 'busan',
-            label: 'Пусан'
-          }
-        ]
+            label: 'Пусан',
+          },
+        ],
       },
       {
         value: 'thailand',
@@ -246,19 +246,19 @@ export const items = [
         items: [
           {
             value: 'bangkok',
-            label: 'Бангкок'
+            label: 'Бангкок',
           },
           {
             value: 'phuket',
-            label: 'Пхукет'
-          }
-        ]
-      }
-    ]
+            label: 'Пхукет',
+          },
+        ],
+      },
+    ],
   },
   {
     value: 'africa',
     label: 'Африка',
-    isDisabled: true
-  }
+    isDisabled: true,
+  },
 ];

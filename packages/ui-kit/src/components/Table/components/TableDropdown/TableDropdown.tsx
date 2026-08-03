@@ -4,16 +4,16 @@ import styled, { CSSObject } from 'styled-components';
 
 import {
   useHeaderContext,
-  useRefTableGlobalContainerContext
+  useRefTableGlobalContainerContext,
 } from '../../contexts';
 import { LIST_WIDTH, SIZES } from '../../styles/styles.constants';
 import { TableDropdownProps } from './types';
 
 const StyledDropdown = styled(Dropdown)<{ $css?: CSSObject }>(
-  ({ $css }) => $css
+  ({ $css }) => $css,
 ) as typeof Dropdown;
 export const TableDropdown = (
-  props: TableDropdownProps & { isOpen?: boolean }
+  props: TableDropdownProps & { isOpen?: boolean },
 ) => {
   const refTableGlobalContainer = useRefTableGlobalContainerContext();
   const { rowSize } = useHeaderContext();

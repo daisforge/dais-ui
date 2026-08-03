@@ -12,13 +12,13 @@ type SelectCellVisual = {
 };
 
 const openSelectEditorInteraction = {
-  editor: 'open-on-click'
+  editor: 'open-on-click',
 } as const;
 
 const SELECT_TRIGGER_LEFT_GAP_BY_SIZE: Record<RowSize, number> = {
   big: 10,
   medium: 8,
-  small: 6
+  small: 6,
 };
 
 const SELECT_TRIGGER_VERTICAL_INSET = 1;
@@ -26,13 +26,13 @@ const SELECT_TRIGGER_VERTICAL_INSET = 1;
 const selectOverlayBackgroundProps = {
   // Цвет выбранной/активной ячейки появляется только в draw-фазе как cellFillColor.
   // Поэтому select overlay использует приватный resolver, не расширяя публичный backgroundColor API.
-  __backgroundColorResolver: (theme: { bgCell: string }) => theme.bgCell
+  __backgroundColorResolver: (theme: { bgCell: string }) => theme.bgCell,
 };
 
 const SELECT_ARROW_ICON_BY_ROW_SIZE = {
   big: IconDisclosureDownOutline,
   medium: IconChevronDown,
-  small: IconChevronDown
+  small: IconChevronDown,
 } as const;
 
 export const withSelectIcon = (
@@ -41,13 +41,13 @@ export const withSelectIcon = (
     isSelect,
     editModeEnabled,
     textInCanvasText,
-    visual
+    visual,
   }: {
     isSelect: boolean;
     editModeEnabled: boolean;
     textInCanvasText?: 'textInCanvasText';
     visual: SelectCellVisual;
-  }
+  },
 ): CanvasContent => {
   if (isSelect) {
     const changedContent = isCanvasString(content) ? (
@@ -89,7 +89,7 @@ export const withSelectIcon = (
               event.stopPropagation();
             }}
             style={{
-              width: triggerWidth
+              width: triggerWidth,
             }}
           >
             <Canvas.EmbedIconButton

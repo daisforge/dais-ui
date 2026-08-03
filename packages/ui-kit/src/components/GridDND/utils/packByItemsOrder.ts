@@ -20,7 +20,7 @@ function firstFreeInRow(
   rows: boolean[][],
   y: number,
   cols: number,
-  fromX = 0
+  fromX = 0,
 ): number {
   ensureRows(rows, y + 1, cols);
   const row = rows[y];
@@ -38,7 +38,7 @@ function fits(
   y: number,
   w: number,
   h: number,
-  cols: number
+  cols: number,
 ) {
   ensureRows(rows, y + h, cols);
   for (let yy = y; yy < y + h; yy++) {
@@ -57,7 +57,7 @@ function occupy(
   y: number,
   w: number,
   h: number,
-  cols: number
+  cols: number,
 ) {
   ensureRows(rows, y + h, cols);
   for (let yy = y; yy < y + h; yy++) {
@@ -87,7 +87,7 @@ export function packByItemsOrder(
   order: string[],
   sizes: Record<string, Size>,
   cols: number,
-  isResizable: boolean
+  isResizable: boolean,
 ): Layout[] {
   const placed: Layout[] = [];
   const grid: boolean[][] = [];
@@ -144,7 +144,7 @@ export function packByItemsOrder(
       maxW: cols,
       minH: 1,
       isResizable,
-      static: false
+      static: false,
     });
 
     // === Обновляем "границу"

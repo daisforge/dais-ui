@@ -2,7 +2,7 @@ import { createRows } from '@df-storybook/data/tableData';
 import {
   type ContractQueryParams,
   type ContractResponse,
-  Q_PARAMS
+  Q_PARAMS,
 } from '@ui-kit/components/TableContract';
 import { http, HttpResponse } from 'msw';
 
@@ -10,27 +10,27 @@ const getData = async (params: ContractQueryParams) => {
   const columns: ContractResponse['meta']['columns'] = [
     {
       key: 'id',
-      name: 'ID'
+      name: 'ID',
     },
     {
       key: 'task',
-      name: 'Title'
+      name: 'Title',
     },
     {
       key: 'priority',
-      name: 'Priority'
+      name: 'Priority',
     },
     {
       key: 'issueType',
-      name: 'Issue Type'
+      name: 'Issue Type',
     },
     {
       key: 'complete',
-      name: '% Complete'
-    }
+      name: '% Complete',
+    },
   ];
   const tableConfig: ContractResponse['meta']['tableConfig'] = {
-    searching: { enabled: true, type: 'backend' }
+    searching: { enabled: true, type: 'backend' },
   };
 
   const rows = createRows();
@@ -40,17 +40,17 @@ const getData = async (params: ContractQueryParams) => {
           r?.[col.key as keyof typeof r]
             ?.toString()
             ?.toLowerCase()
-            ?.includes?.(params.q?.toLowerCase() ?? '')
-        )
+            ?.includes?.(params.q?.toLowerCase() ?? ''),
+        ),
       )
     : rows;
 
   const resp: ContractResponse = {
     meta: {
       columns,
-      tableConfig
+      tableConfig,
     },
-    data: { main: filteredRows }
+    data: { main: filteredRows },
   };
   return resp;
 };
@@ -66,5 +66,5 @@ export const searchingRoute = {
 
     const response: ContractResponse = await getData({ q });
     return HttpResponse.json(response);
-  })
+  }),
 };

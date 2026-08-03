@@ -6,7 +6,7 @@ import { FiltersVariables } from '../filtering.type';
 
 export type FilterComponentInPopoverProps<
   FilterStateType extends ObjectForExtending,
-  ColumnConfig
+  ColumnConfig,
 > = {
   popoverIsOpen: boolean;
   setPopoverIsOpen: React.Dispatch<React.SetStateAction<boolean>>;

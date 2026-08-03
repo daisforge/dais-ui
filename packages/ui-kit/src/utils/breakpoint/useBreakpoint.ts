@@ -18,9 +18,9 @@ export const useBreakpoint = (): BreakpointReturn => {
         breakpointConfig[breakpoint] !== breakpointConfig[token],
       between: (start: Breakpoint, end: Breakpoint) =>
         breakpointConfig[breakpoint] > breakpointConfig[start] &&
-        breakpointConfig[breakpoint] < breakpointConfig[end]
+        breakpointConfig[breakpoint] < breakpointConfig[end],
     }),
-    [breakpoint, breakpointConfig]
+    [breakpoint, breakpointConfig],
   );
 
   return { breakpoint, ...methods };

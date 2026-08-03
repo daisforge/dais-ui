@@ -2,7 +2,7 @@ import { ColumnConfig, ObjectForExtending } from '../types';
 import { FilteringConfig, TableConfig } from '../types/table-config.type';
 
 export function inputStopPropagation(
-  event: React.KeyboardEvent<HTMLInputElement>
+  event: React.KeyboardEvent<HTMLInputElement>,
 ) {
   if (['ArrowLeft', 'ArrowRight'].includes(event.key)) {
     event.stopPropagation();
@@ -10,7 +10,7 @@ export function inputStopPropagation(
 }
 
 export function selectStopPropagation(
-  event: React.KeyboardEvent<HTMLInputElement>
+  event: React.KeyboardEvent<HTMLInputElement>,
 ) {
   if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) {
     event.stopPropagation();
@@ -19,7 +19,7 @@ export function selectStopPropagation(
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getTypedEntries<T extends Record<string, any>>(
-  obj: T
+  obj: T,
 ): Array<[keyof T, T[keyof T]]> {
   return Object.entries(obj) as Array<[keyof T, T[keyof T]]>;
 }
@@ -31,7 +31,7 @@ function getTypedEntries<T extends Record<string, any>>(
  * @returns T | undefined - Очищенные значения фильтров или undefined, если filtering не передан
  */
 export function getClearedFilters<T>(
-  filtering?: FilteringConfig<T>
+  filtering?: FilteringConfig<T>,
 ): T | undefined {
   if (!filtering) return undefined;
 
@@ -41,7 +41,7 @@ export function getClearedFilters<T>(
         acc[key] = value.clearedValue;
         return acc;
       },
-      {} as T
+      {} as T,
     );
   }
 
@@ -79,7 +79,7 @@ export type HasFiltersParams<
   RowType extends ObjectForExtending,
   SummaryRowType,
   RowIdType extends string | number,
-  FilterStateType extends ObjectForExtending
+  FilterStateType extends ObjectForExtending,
 > = {
   tableConfig: TableConfig<RowType, SummaryRowType, RowIdType, FilterStateType>;
   columnConfig: readonly ColumnConfig<RowType, SummaryRowType>[];
@@ -89,9 +89,9 @@ export const isHasFilters = <
   RowType extends ObjectForExtending,
   SummaryRowType,
   RowIdType extends string | number,
-  FilterStateType extends ObjectForExtending
+  FilterStateType extends ObjectForExtending,
 >(
-  params: HasFiltersParams<RowType, SummaryRowType, RowIdType, FilterStateType>
+  params: HasFiltersParams<RowType, SummaryRowType, RowIdType, FilterStateType>,
 ): boolean => {
   const { tableConfig, columnConfig } = params;
 
@@ -102,7 +102,7 @@ export const isHasFilters = <
   const hasGlobalFilters =
     tableConfig.filtering?.sidebarConfig?.items &&
     Object.values(tableConfig.filtering.sidebarConfig.items).some(
-      (value) => !!value?.customRenderFn
+      (value) => !!value?.customRenderFn,
     );
 
   return (hasColumnFilters || hasGlobalFilters) ?? false;

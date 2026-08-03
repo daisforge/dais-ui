@@ -8,13 +8,13 @@ const EmbedIconButtonAndIconSizeMap = {
   l: 'm',
   m: 'm',
   s: 'm',
-  xs: 's'
+  xs: 's',
 } as const;
 
 // Размер иконки в зависимости от EmbedIconButton
 const IconSizeMap = {
   s: 'xs',
-  m: 's'
+  m: 's',
 } as const;
 
 type GetClearIconOptions = {
@@ -26,7 +26,7 @@ type GetClearIconOptions = {
 export const getClearIcon = ({
   value,
   onClear,
-  size = 's'
+  size = 's',
 }: GetClearIconOptions): ReactElement | undefined => {
   if (!value || !onClear) return undefined;
 

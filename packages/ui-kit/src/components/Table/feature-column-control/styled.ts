@@ -9,7 +9,7 @@ export const StyledTitleBox = styled(Box)({
   display: 'flex',
   alignItems: 'center',
   paddingInline: '8px',
-  marginBottom: '12px'
+  marginBottom: '12px',
 });
 export const StyledChangeAllButtonsBox = styled(Box)({
   height: '112px',
@@ -20,7 +20,7 @@ export const StyledChangeAllButtonsBox = styled(Box)({
   display: 'flex',
   alignItems: 'center',
   flexWrap: 'wrap',
-  gap: '8px'
+  gap: '8px',
 });
 
 export const StyledSearchBlock = styled(TextField)`

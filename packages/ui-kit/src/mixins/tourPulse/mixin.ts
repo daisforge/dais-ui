@@ -27,7 +27,7 @@ const tourPulseKeyframes = keyframes`
 const getTourPulseAnimation = ({
   duration,
   timingFunction,
-  iterationCount
+  iterationCount,
 }: TourPulseAnimationOptions) => css`
   animation-name: ${tourPulseKeyframes};
   animation-duration: ${duration};
@@ -46,7 +46,7 @@ export const tourPulseMixin = ({
   duration = '1.4s',
   timingFunction = 'ease-in-out',
   iterationCount = 'infinite',
-  pointerEventsNone = true
+  pointerEventsNone = true,
 }: TourPulseMixinOptions = {}) =>
   css`
     ${css({
@@ -57,7 +57,7 @@ export const tourPulseMixin = ({
       inset,
       borderRadius,
       background: backgroundColor,
-      ...(pointerEventsNone ? { pointerEvents: 'none' } : {})
+      ...(pointerEventsNone ? { pointerEvents: 'none' } : {}),
     } as CSSObject)}
     ${getTourPulseAnimation({ duration, timingFunction, iterationCount })}
   `;

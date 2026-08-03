@@ -13,10 +13,10 @@ const meta: Meta = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      page: DocStoryTemplate
-    }
+      page: DocStoryTemplate,
+    },
   },
-  component: StoryTableConfigComp as ComponentType<unknown>
+  component: StoryTableConfigComp as ComponentType<unknown>,
 };
 
 export default meta;
@@ -45,7 +45,7 @@ type Story = StoryObj;
 export const RowDetailAndSubRows: Story = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   name: 'RowDetailAndSubRows',
 
@@ -70,9 +70,9 @@ export const RowDetailAndSubRows: Story = {
                 default:
                   return 'block';
               }
-            }
+            },
           },
-          resizable: true
+          resizable: true,
         },
         {
           key: 'blockActivity',
@@ -80,8 +80,8 @@ export const RowDetailAndSubRows: Story = {
 
           title: '123',
           subRow: {
-            isColumnWithArrow: true
-          }
+            isColumnWithArrow: true,
+          },
         },
         {
           key: '',
@@ -98,41 +98,41 @@ export const RowDetailAndSubRows: Story = {
                 );
               }
               return null;
-            }
-          }
+            },
+          },
         },
         {
           key: 'q1',
           name: 'Q1',
 
           subRow: {
-            keyOfColumnInSubRow: 'q1'
-          }
+            keyOfColumnInSubRow: 'q1',
+          },
         },
 
         {
           key: 'q2',
           name: 'Q2',
           subRow: {
-            keyOfColumnInSubRow: 'q1'
-          }
+            keyOfColumnInSubRow: 'q1',
+          },
         },
         {
           key: 'q3',
           name: 'Q3',
           subRow: {
-            keyOfColumnInSubRow: 'q1'
-          }
+            keyOfColumnInSubRow: 'q1',
+          },
         },
         {
           key: 'q4',
           name: 'Q4',
           subRow: {
-            keyOfColumnInSubRow: 'q1'
-          }
-        }
+            keyOfColumnInSubRow: 'q1',
+          },
+        },
       ],
-      []
+      [],
     );
 
     return (
@@ -141,7 +141,7 @@ export const RowDetailAndSubRows: Story = {
           containerStyle: { height: '700px' },
           subRows: {
             getSubRows: (row) => row?.subRows,
-            rowKeyGetter: (row) => row.id
+            rowKeyGetter: (row) => row.id,
           },
 
           rowDetailPanel: {
@@ -153,13 +153,13 @@ export const RowDetailAndSubRows: Story = {
               r.id === 3,
             renderRowDetail: ({ row }) => <div>rowDetail {row.id}</div>,
             expandButtonColumnKey: 'blockActivity',
-            detailHeight: 500
+            detailHeight: 500,
           },
-          resizableColumn: true
+          resizableColumn: true,
         }}
         columnConfig={columns}
         rows={rows}
       />
     );
-  }
+  },
 };

@@ -2,7 +2,7 @@ export enum DatePickerErrorEnum {
   DATE_IS_SMALLER = 'Дата меньше минимальной',
   DATE_IS_BIGGER = 'Дата больше максимальной',
   DATE_FORMAT_IS_INVALID = 'Формат даты указан не верно',
-  DATE_IS_REQUIRED = 'Выбор даты обязателен'
+  DATE_IS_REQUIRED = 'Выбор даты обязателен',
 }
 
 type DayToken = 'DD';

@@ -8,7 +8,7 @@ export function hasLeftAndMainHandler(children: ReactNode) {
     !!children &&
     Array.isArray(children) &&
     arr.every((className) =>
-      children.some((c) => c?.type?.attrs?.[1].className?.includes(className))
+      children.some((c) => c?.type?.attrs?.[1].className?.includes(className)),
     )
   );
 }

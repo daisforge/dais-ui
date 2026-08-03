@@ -6,5 +6,5 @@ export const CLASS = {
   selectArrow: 'cell-select-arrow',
   subRowCell: 'cell-subrow',
   editableCellWithExpandButton: 'cell-edit-with-expand-button',
-  cellWithExpandButton: 'cell-with-expand-button'
+  cellWithExpandButton: 'cell-with-expand-button',
 } as const;

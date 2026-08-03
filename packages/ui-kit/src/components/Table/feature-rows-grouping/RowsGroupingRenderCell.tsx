@@ -8,7 +8,7 @@ import { isGroupRow } from './typeGuards';
 import {
   ColumnRowsGrouping,
   RenderGroupCellProps,
-  RowsGrouping
+  RowsGrouping,
 } from './types';
 
 const SpanWithTooltip = ({ text }: { text: string }) => (
@@ -19,13 +19,13 @@ const SpanWithTooltip = ({ text }: { text: string }) => (
 
 export const RowsGroupingRenderCell = <
   RowType extends ObjectForExtending,
-  SummaryRowType
+  SummaryRowType,
 >({
   rowsGrouping,
   renderCellProps,
   groupByArr,
   groupedColRenderers,
-  col
+  col,
 }: {
   col: ColumnConfig<RowType, SummaryRowType>;
   rowsGrouping: ColumnRowsGrouping<RowType, SummaryRowType> | undefined;
@@ -49,7 +49,7 @@ export const RowsGroupingRenderCell = <
         return groupedColRenderers?.rowsGrouping?.renderGroupCell({
           ...groupRowData,
           column,
-          tabIndex
+          tabIndex,
         } as unknown as RenderGroupCellProps<RowType>);
       }
       if (typeof groupKey !== 'undefined') {
@@ -63,7 +63,7 @@ export const RowsGroupingRenderCell = <
       return groupedColRenderers.renderCell({
         ...renderCellProps,
         parentGroupKey: rowId,
-        groupByArr
+        groupByArr,
       } as never);
     }
     if (typeof rowId !== 'undefined') {
@@ -85,7 +85,7 @@ export const RowsGroupingRenderCell = <
     return rowsGrouping.renderGroupCell({
       ...groupRowData,
       column,
-      tabIndex
+      tabIndex,
     });
   }
 

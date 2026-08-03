@@ -19,7 +19,7 @@ const deepCloneRow = <T>(v: T): T =>
 
 function isFinded<R extends ObjectForExtending | undefined>(
   row: R,
-  index: number
+  index: number,
 ): row is NonNullable<R> {
   return index !== -1;
 }
@@ -28,11 +28,11 @@ export const useOnRowsChange = <
   FilterStateType extends ObjectForExtending,
   RowIdType extends string | number,
   RowType extends ObjectForExtending,
-  SummaryRowType = unknown
+  SummaryRowType = unknown,
 >({
   rows,
   tableConfig,
-  flattenedRowsRef
+  flattenedRowsRef,
 }: {
   rows: readonly RowType[];
   flattenedRowsRef: React.MutableRefObject<readonly RowType[]>;
@@ -63,7 +63,7 @@ export const useOnRowsChange = <
 
     return ((
       rowsFromCb: RowType[],
-      data: RowsChangeData<RowType, SummaryRowType>
+      data: RowsChangeData<RowType, SummaryRowType>,
     ) => {
       const copyOfRows = [...rows];
 
@@ -75,7 +75,7 @@ export const useOnRowsChange = <
         rows: [],
         type: data.type ?? 'edit',
         ...(data.fillMeta !== undefined && { fillMeta: data.fillMeta }),
-        ...(data.fillResult !== undefined && { fillResult: data.fillResult })
+        ...(data.fillResult !== undefined && { fillResult: data.fillResult }),
       };
 
       // для каждой измененной строки...
@@ -119,7 +119,7 @@ export const useOnRowsChange = <
           const indexOfParentInRows = copyOfRows.findIndex(
             (el) =>
               String(tableConfigEditing.rowKeyGetter(el)) ===
-              String(roadToChangedSubRow[0])
+              String(roadToChangedSubRow[0]),
           );
           const curr = copyOfRows[indexOfParentInRows];
 
@@ -150,7 +150,7 @@ export const useOnRowsChange = <
           (el) =>
             tableConfigEditing.rowKeyGetter(el) ===
             // changedRowPrev - важно, для случаев rowKeyGetter = (r) => r.task + r.complete. и каждый из ключей меняется
-            tableConfigEditing.rowKeyGetter(changedRowPrev)
+            tableConfigEditing.rowKeyGetter(changedRowPrev),
         );
 
         if (indexInRows >= 0) {
@@ -176,7 +176,7 @@ export const useOnRowsChange = <
     tableConfigEditingBoolean,
     flattenedRowsRef,
     tableConfigOnRowsChange,
-    deepCloneRows
+    deepCloneRows,
   ]);
 
   return { onRowsChangeLastVersion };

@@ -17,5 +17,5 @@ export type DefaultOmittedKeys = Extract<
 export type ColumnDefaultOmitted<
   Row extends ObjectForExtending,
   SummRow = unknown,
-  CustomCtxs extends ObjectForExtending = {}
+  CustomCtxs extends ObjectForExtending = {},
 > = Omit<ColumnGlideInstance<Row, SummRow, CustomCtxs>, DefaultOmittedKeys>;

@@ -7,14 +7,14 @@ import { useResize } from './hooks/useResize';
 import { useUpdateSidebarPxOnContainerResize } from './hooks/useUpdateSidebarPxOnContainerResize';
 import {
   splitViewClassNames as cls,
-  splitViewConstants as c
+  splitViewConstants as c,
 } from './SplitView.constants';
 import { cssVars, StyledDiv } from './SplitView.styled';
 import type { SplitViewProps, SplVSizes } from './SplitView.type';
 import {
   getSplitViewSidebarMinWidthPx,
   getSplitViewSlotSizes,
-  renderSplitViewContent
+  renderSplitViewContent,
 } from './utils';
 
 export const SplitView = ({
@@ -39,27 +39,27 @@ export const SplitView = ({
     minWidthPx: sidebarMinWidthPxProp,
     maxWidthPercent: sidebarMaxWidthPercent = c.sidebarWidths.maxWidthPercent,
     defaultWidthPercent: sidebarDefaultWidthPercent = c.sidebarWidths
-      .defaultWidthPercent
+      .defaultWidthPercent,
   } = sidebar ?? {};
   const sidebarContent = sidebar?.content;
   const sidebarMinWidthPx = getSplitViewSidebarMinWidthPx(
     isAdaptive1280,
-    sidebarMinWidthPxProp
+    sidebarMinWidthPxProp,
   );
   const slotSizes = useMemo(
     () => getSplitViewSlotSizes(isAdaptive1280),
-    [isAdaptive1280]
+    [isAdaptive1280],
   );
   const renderedSidebarContent = useMemo(
     () => renderSplitViewContent(sidebarContent, slotSizes),
-    [sidebarContent, slotSizes]
+    [sidebarContent, slotSizes],
   );
 
   const [sizes, setSizes] = useState<SplVSizes>(() => {
     const sidebarDefWidth = clamp(
       0,
       sidebarDefaultWidthPercent,
-      Math.min(sidebarMaxWidthPercent, 100)
+      Math.min(sidebarMaxWidthPercent, 100),
     );
     const mainWidth = 100 - sidebarDefWidth;
     return { main: mainWidth, sidebar: sidebarDefWidth };
@@ -73,7 +73,7 @@ export const SplitView = ({
     isResizingRef,
     sidebarMaxWidthPercent,
     sidebarMinWidthPx,
-    onResize
+    onResize,
   });
 
   useUpdateSidebarPxOnContainerResize({
@@ -81,14 +81,14 @@ export const SplitView = ({
     containerRef,
     sidebarMaxWidthPercent,
     sidebarMinWidthPx,
-    onResize
+    onResize,
   });
 
   const { isClosingOrClosedOrOpening, onTransitionEnd } =
     useIsClosingClosedOpening({
       sidebarIsClosed,
       isResizingRef,
-      onTransitionEndExt
+      onTransitionEndExt,
     });
 
   return (
@@ -99,9 +99,9 @@ export const SplitView = ({
           sizes,
           sidebarIsClosed,
           sidebar?.paddingLeftOnClosed,
-          sidebarMinWidthPx
+          sidebarMinWidthPx,
         ),
-        ...style
+        ...style,
       }}
       $css={$css}
       $headerHeight={headerHeight}
@@ -125,7 +125,7 @@ export const SplitView = ({
         className={mCls(
           cls.sidebarBlock,
           isClosingOrClosedOrOpening && cls.sidebarIsClosingOrClosedOrOpening,
-          sidebar?.isFullScreened && cls.sidebarBlockInModal
+          sidebar?.isFullScreened && cls.sidebarBlockInModal,
         )}
       >
         <SplitViewFullscreenWrapper

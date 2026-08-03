@@ -3,5 +3,5 @@ export { analyticalWidgetClassNames } from './AnalyticalWidget.constants';
 export type {
   AnalyticalWidgetClasses,
   AnalyticalWidgetProps,
-  AnalyticalWidgetSize
+  AnalyticalWidgetSize,
 } from './AnalyticalWidget.types';

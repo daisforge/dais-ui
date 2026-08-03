@@ -13,7 +13,7 @@ export const FilterIcon = ({ redSquare }: { redSquare?: boolean }) => (
     style={{
       width: 16,
       height: 16,
-      position: 'relative'
+      position: 'relative',
     }}
   >
     <Box
@@ -30,8 +30,8 @@ export const FilterIcon = ({ redSquare }: { redSquare?: boolean }) => (
         transform: 'scale(0)',
         ...(redSquare && {
           backgroundColor: COLORS.red,
-          transform: 'scale(1)'
-        })
+          transform: 'scale(1)',
+        }),
       }}
     />
 

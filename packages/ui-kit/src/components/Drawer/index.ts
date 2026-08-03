@@ -3,11 +3,11 @@ export type {
   DrawerContentProps,
   DrawerFooterProps,
   DrawerHeaderProps,
-  DrawerProps
+  DrawerProps,
 } from '@salutejs/sdds-finai';
 export {
   Drawer,
   DrawerContent,
   DrawerFooter,
-  DrawerHeader
+  DrawerHeader,
 } from '@salutejs/sdds-finai';

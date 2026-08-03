@@ -4,7 +4,7 @@ import { useFiltersList } from '@ui-kit/components/ListOfFilters';
 import {
   SegmentGroup,
   SegmentItem,
-  SegmentProvider
+  SegmentProvider,
 } from '@ui-kit/components/Segment';
 import React, { useReducer } from 'react';
 
@@ -15,13 +15,13 @@ import {
   Filters,
   filtersReducer,
   longText,
-  useFetch
+  useFetch,
 } from '../lib/utils';
 
 export const WidgetM = ({
   id,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  onRemove
+  onRemove,
 }: {
   id: number | string;
   onRemove: () => void;
@@ -39,7 +39,7 @@ export const WidgetM = ({
       tribes: filtersTribesOption,
       allocation: filtersAllocationOption,
       filterButton: filterButtonOptions,
-      dotsButton: dotsButtonOptionsWithRemove
+      dotsButton: dotsButtonOptionsWithRemove,
     } as Record<keyof Filters, { label: string; value: string }[]>,
     updateFilters: (key, newV) => updateFilters({ [key]: newV }),
     filtersInfo: {
@@ -49,8 +49,8 @@ export const WidgetM = ({
       allocation: { label: 'Аллокация', clearedValue: '' },
       year: { label: 'Год', clearedValue: null },
       filterButton: { label: 'Фильтр', clearedValue: '' },
-      dotsButton: { label: 'Меню', clearedValue: '' }
-    }
+      dotsButton: { label: 'Меню', clearedValue: '' },
+    },
   });
 
   const chipsList = filterList
@@ -61,7 +61,7 @@ export const WidgetM = ({
           view: 'default' as const,
           hasClear: false as const,
           onClick: innerItem.onClick,
-          key: `chip-key${index}-${innerIdex}-${innerItem.label}`
+          key: `chip-key${index}-${innerIdex}-${innerItem.label}`,
         }));
       }
       return {
@@ -69,7 +69,7 @@ export const WidgetM = ({
         view: 'default' as const,
         hasClear: false as const,
         onClick: item.onClick,
-        key: `chip-key-${index}-${item.label}`
+        key: `chip-key-${index}-${item.label}`,
       };
     })
     .flat();
@@ -80,7 +80,7 @@ export const WidgetM = ({
         $css={{
           height: '100%',
           maxWidth: 'unset !important',
-          width: '100% !important'
+          width: '100% !important',
         }}
         size="m"
         headerSlot={
@@ -98,7 +98,7 @@ export const WidgetM = ({
                 alignment="center"
                 mainAxisGap="8px"
                 style={{
-                  flexWrap: 'nowrap'
+                  flexWrap: 'nowrap',
                 }}
               >
                 <SegmentGroup hasBackground size="xs">
@@ -135,7 +135,7 @@ export const WidgetM = ({
         contentSlot={
           <div
             style={{
-              height: 'fit-content'
+              height: 'fit-content',
             }}
           >
             {longText()}
@@ -145,7 +145,7 @@ export const WidgetM = ({
           topSlot: 'myCustomClassForTopSlot',
           middleSlot: 'myCustomClassForMiddleSlot',
           contentSlot: 'myCustomClassForContentSlot',
-          root: 'myCustomClassForRoot'
+          root: 'myCustomClassForRoot',
         }}
       />
     </SegmentProvider>

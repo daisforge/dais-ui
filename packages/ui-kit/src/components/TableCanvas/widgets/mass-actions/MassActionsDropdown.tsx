@@ -10,12 +10,12 @@ const getProcessDropdownItems = (
   items: DropdownItemOption[],
   parentHandler?: (
     item: DropdownItemOption,
-    event: React.SyntheticEvent
+    event: React.SyntheticEvent,
   ) => void,
-  path = ''
+  path = '',
 ): [
   DropdownItemOption[],
-  Map<string, (item: DropdownItemOption, event: React.SyntheticEvent) => void>
+  Map<string, (item: DropdownItemOption, event: React.SyntheticEvent) => void>,
 ] => {
   const processedItems: DropdownItemOption[] = [];
   const handlerMap = new Map<
@@ -38,7 +38,7 @@ const getProcessDropdownItems = (
       const [nestedItems, nestedHandlers] = getProcessDropdownItems(
         item.items,
         parentHandler,
-        itemPath
+        itemPath,
       );
 
       nestedHandlers.forEach((handler, key) => handlerMap.set(key, handler));
@@ -52,7 +52,7 @@ const getProcessDropdownItems = (
 };
 
 const useMassActionsButtonsToDropdownItems = (
-  buttons: MassActionButtonProps[] = []
+  buttons: MassActionButtonProps[] = [],
 ) =>
   useMemo(() => {
     const items: DropdownItemOption[] = [];
@@ -70,17 +70,17 @@ const useMassActionsButtonsToDropdownItems = (
         if (button.dropdown.onItemSelect) {
           globalHandlerMap.set(
             groupValue.toString(),
-            button.dropdown.onItemSelect
+            button.dropdown.onItemSelect,
           );
         }
 
         const [processedItems, itemHandlers] = getProcessDropdownItems(
           button.dropdown.items || [],
-          button.dropdown.onItemSelect
+          button.dropdown.onItemSelect,
         );
 
         itemHandlers.forEach((handler, key) =>
-          globalHandlerMap.set(key, handler)
+          globalHandlerMap.set(key, handler),
         );
 
         if (button.dropdown?.$css) {
@@ -93,7 +93,7 @@ const useMassActionsButtonsToDropdownItems = (
           contentLeft: button.contentLeft,
           items: processedItems,
           className: button.className,
-          disabled: button.disabled
+          disabled: button.disabled,
         });
       } else {
         // Обработка обычных кнопок
@@ -102,7 +102,7 @@ const useMassActionsButtonsToDropdownItems = (
           label: button.text || 'Кнопка',
           value: value.toString(),
           disabled: button.disabled,
-          contentLeft: button.contentLeft
+          contentLeft: button.contentLeft,
         };
 
         if (button.onClick) {
@@ -113,11 +113,11 @@ const useMassActionsButtonsToDropdownItems = (
               preventDefault: event.preventDefault,
               stopPropagation: event.stopPropagation,
               target: event.target as EventTarget & HTMLElement,
-              currentTarget: event.currentTarget as EventTarget & HTMLElement
+              currentTarget: event.currentTarget as EventTarget & HTMLElement,
             } as unknown as React.MouseEvent<HTMLElement>;
 
             button.onClick?.(
-              mouseEvent as React.MouseEvent<HTMLAnchorElement, MouseEvent>
+              mouseEvent as React.MouseEvent<HTMLAnchorElement, MouseEvent>,
             );
           });
         }
@@ -129,7 +129,7 @@ const useMassActionsButtonsToDropdownItems = (
     return {
       dropdownItems: items,
       handlerMap: globalHandlerMap,
-      $summaryCSS
+      $summaryCSS,
     };
   }, [buttons]);
 
@@ -137,21 +137,21 @@ const useDropdownItemClickHandler = (
   handlerMap: Map<
     string,
     (item: DropdownItemOption, event: React.SyntheticEvent) => void
-  >
+  >,
 ) =>
   useCallback(
     (item: DropdownItemOption, event: React.SyntheticEvent) => {
       const handler = handlerMap.get(item.value as string);
       handler?.(item, event);
     },
-    [handlerMap]
+    [handlerMap],
   );
 
 export const MassActionsDropdown = ({
   buttons = [],
   dividerIndexes = [],
   triggerSlot,
-  dropdownProps
+  dropdownProps,
 }: {
   buttons: MassActionButtonProps[];
   dividerIndexes?: Array<number>;

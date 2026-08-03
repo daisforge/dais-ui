@@ -19,7 +19,7 @@ export const useActiveTheme = () => {
       childList: false,
       attributes: true,
       attributeFilter: ['data-theme'],
-      subtree: false
+      subtree: false,
     });
 
     return () => observer?.disconnect?.();

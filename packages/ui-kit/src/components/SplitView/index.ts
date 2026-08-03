@@ -4,5 +4,5 @@ export type {
   SplitViewAdaptiveContent,
   SplitViewProps,
   SplitViewSlotSizesProps,
-  SplVSizes
+  SplVSizes,
 } from './SplitView.type';

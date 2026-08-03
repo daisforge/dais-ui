@@ -3,7 +3,7 @@ import {
   BLOCK_GRADIENT_VAR_LEFT,
   BLOCK_GRADIENT_VAR_RIGHT,
   BlockGradientScrollMixin,
-  type BlockGradientScrollVariant
+  type BlockGradientScrollVariant,
 } from '@ui-kit/mixins/blockGradientScroll';
 import { mergeClasses } from '@ui-kit/utils';
 import React, {
@@ -11,11 +11,11 @@ import React, {
   forwardRef,
   type ReactNode,
   useLayoutEffect,
-  useRef
+  useRef,
 } from 'react';
 import styled, {
   type CSSObject,
-  type FlattenSimpleInterpolation
+  type FlattenSimpleInterpolation,
 } from 'styled-components';
 
 import { cls } from './constans';
@@ -55,7 +55,7 @@ const Container = styled.div<{
   ${({ $css }) => $css}
   ${({ $variant }) =>
     BlockGradientScrollMixin({
-      variant: $variant
+      variant: $variant,
     })}
 `;
 
@@ -65,7 +65,7 @@ export const BlockGradientScroll = forwardRef<
 >(
   (
     { children, $css, className, style, variant = 'white', ...restProps },
-    ref
+    ref,
   ) => {
     const internalRef = useRef<HTMLDivElement>(null);
 
@@ -105,5 +105,5 @@ export const BlockGradientScroll = forwardRef<
         {children}
       </Container>
     );
-  }
+  },
 );

@@ -1,7 +1,7 @@
 import { IconButton } from '@ui-kit/components/IconButton';
 import {
   IconDoubleDisclosureDown,
-  IconDoubleDisclosureUp
+  IconDoubleDisclosureUp,
 } from '@ui-kit/icons';
 import { textSecondary } from '@ui-kit/tokens';
 import React from 'react';
@@ -19,7 +19,7 @@ export const ExpandAllButton = () => {
   return (
     <div
       style={{
-        display: 'inline-block'
+        display: 'inline-block',
       }}
     >
       <TableTooltip
@@ -34,7 +34,7 @@ export const ExpandAllButton = () => {
             view="clear"
             style={{
               width: 16,
-              height: 16
+              height: 16,
             }}
             onClick={toggleExpandAllButton}
           >

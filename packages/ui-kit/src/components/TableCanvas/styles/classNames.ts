@@ -39,5 +39,5 @@ export const tableClassNames = {
   ...tableTabsClassNames,
   ...controlBlockClassNames,
   ...tableSidebarClassNames,
-  ...tableSidebarFilterBlockClassNames
+  ...tableSidebarFilterBlockClassNames,
 } as const;

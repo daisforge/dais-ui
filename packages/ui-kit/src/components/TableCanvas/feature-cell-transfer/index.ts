@@ -10,7 +10,7 @@ export { iterateCellRange } from './utils/iterateCellRange';
 export {
   DEFAULT_COPY_HOTKEY,
   DEFAULT_PASTE_HOTKEY,
-  matchHotkey
+  matchHotkey,
 } from './utils/matchHotkey';
 export { parseTsv } from './utils/parseTsv';
 export { rangeToIndexes } from './utils/rangeToIndexes';
@@ -18,12 +18,12 @@ export { resolveSubRowKey } from './utils/resolveSubRowKey';
 export {
   resolveTransferTargets,
   type TransferTargetKind,
-  type TransferTargets
+  type TransferTargets,
 } from './utils/resolveTransferTargets';
 export { shouldSkipCell, type SkipReason } from './utils/shouldSkipCell';
 export {
   normalizePasteValue,
-  validatePasteValue
+  validatePasteValue,
 } from './utils/validatePasteValue';
 export { writeCellValue } from './utils/writeCellValue';
 
@@ -45,7 +45,7 @@ export type {
   Rectangle,
   RowsChangeType,
   TransferColumnConfig,
-  ValidationMode
+  ValidationMode,
 } from './types';
 
 // Hooks

@@ -87,6 +87,6 @@ export type DomMetadata = {
    */
   onClick?: (
     e?: React.MouseEvent<HTMLElement>,
-    detail?: Record<string, unknown>
+    detail?: Record<string, unknown>,
   ) => void;
 };

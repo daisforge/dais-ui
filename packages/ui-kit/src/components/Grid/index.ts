@@ -6,6 +6,6 @@ export type {
   GridProps,
   ScreenConfig,
   ScreenMap,
-  ScreenVariant
+  ScreenVariant,
 } from '@salutejs/sdds-finai';
 export { Col, Grid, Row } from '@salutejs/sdds-finai';

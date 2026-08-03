@@ -2,11 +2,11 @@ import { TPropertyItem } from './types';
 
 export const createClickStreamEventValue = (
   values: string[],
-  userAction?: string
+  userAction?: string,
 ): string => values.join('/').concat(userAction ? `_${userAction}` : '');
 
 export const transformClickStreamProperties = (
-  props: Record<string, string>
+  props: Record<string, string>,
 ): Array<TPropertyItem> =>
   Object.entries(props).reduce((acc, curr) => {
     if (!!curr[0] && !!curr[1]) {
@@ -17,7 +17,7 @@ export const transformClickStreamProperties = (
   }, [] as TPropertyItem[]);
 
 export const transformClickStreamPropertyValuesToString = (
-  values: string | string[] | boolean
+  values: string | string[] | boolean,
 ): string => {
   if (Array.isArray(values)) {
     return values.join(';');

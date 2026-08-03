@@ -16,7 +16,7 @@ export const TableSidebar: React.FC<{
   defaultActiveTabId?: string;
   activeTabState?: [
     string | null,
-    React.Dispatch<React.SetStateAction<string | null>>
+    React.Dispatch<React.SetStateAction<string | null>>,
   ];
   onActiveTabChange?: (tabId: string | null, tab?: SidebarTab) => void;
 }> = ({
@@ -27,20 +27,20 @@ export const TableSidebar: React.FC<{
   activeTabState,
   onActiveTabChange,
   $borderRightBottomRadiusRounded,
-  $borderRightTopRadiusRounded
+  $borderRightTopRadiusRounded,
 }) => {
   const { isOpen, toggle, width } = useSidebar();
 
   const validDefaultTabId =
     defaultActiveTabId &&
     sidebarTabs.some(
-      (tab) => tab.id === defaultActiveTabId && tab.showInSidebar
+      (tab) => tab.id === defaultActiveTabId && tab.showInSidebar,
     )
       ? defaultActiveTabId
       : null;
 
   const [internalTab, setInternalTab] = useState<string | null>(
-    validDefaultTabId ?? (isOpen ? activeTabId : null)
+    validDefaultTabId ?? (isOpen ? activeTabId : null),
   );
 
   const setActiveExternally = activeTabState?.[1];
@@ -54,7 +54,7 @@ export const TableSidebar: React.FC<{
     }
     onActiveTabChange?.(
       next,
-      next ? sidebarTabs.find((tab) => tab.id === next) : undefined
+      next ? sidebarTabs.find((tab) => tab.id === next) : undefined,
     );
   };
 

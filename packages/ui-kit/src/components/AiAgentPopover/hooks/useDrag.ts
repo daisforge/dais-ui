@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { DRAG_THRESHOLD } from '../AiAgentPopover.constants';
 import {
   AiAgentPopoverDragBoundary,
-  AiAgentPopoverPositionState
+  AiAgentPopoverPositionState,
 } from '../AiAgentPopover.types';
 
 export const useDrag = (
@@ -11,7 +11,7 @@ export const useDrag = (
   elementRef?: React.RefObject<HTMLElement | null>,
   dragBoundary?: AiAgentPopoverDragBoundary,
   onPositionChange?: (pos: { x: number; y: number }) => void,
-  checkOverflow?: () => void
+  checkOverflow?: () => void,
 ) => {
   const [position, setPosition] = positionState;
   const [isDragging, setIsDragging] = useState(false);
@@ -32,12 +32,12 @@ export const useDrag = (
       const rect = elementRef.current.getBoundingClientRect();
       dragOffset.current = {
         x: clientX - rect.left,
-        y: clientY - rect.top
+        y: clientY - rect.top,
       };
 
       setIsDragging(true);
     },
-    [elementRef, position]
+    [elementRef, position],
   );
 
   // Обработчик мыши
@@ -47,7 +47,7 @@ export const useDrag = (
       e.stopPropagation();
       startDrag(e.clientX, e.clientY);
     },
-    [startDrag]
+    [startDrag],
   );
 
   // Обработчик касания (версия без идентификаторов)
@@ -58,7 +58,7 @@ export const useDrag = (
         startDrag(touch.clientX, touch.clientY);
       }
     },
-    [startDrag]
+    [startDrag],
   );
 
   // Общая функция перемещения
@@ -83,15 +83,15 @@ export const useDrag = (
         left,
         Math.min(
           clientX - dragOffset.current.x,
-          innerWidth - offsetWidth - right
-        )
+          innerWidth - offsetWidth - right,
+        ),
       );
       const newY = Math.max(
         top,
         Math.min(
           clientY - dragOffset.current.y,
-          innerHeight - offsetHeight - bottom
-        )
+          innerHeight - offsetHeight - bottom,
+        ),
       );
 
       const newPosition = { x: newX, y: newY };
@@ -105,8 +105,8 @@ export const useDrag = (
       dragBoundary,
       setPosition,
       onPositionChange,
-      checkOverflow
-    ]
+      checkOverflow,
+    ],
   );
 
   // Обработчики событий
@@ -114,7 +114,7 @@ export const useDrag = (
     (e: MouseEvent) => {
       handleMove(e.clientX, e.clientY);
     },
-    [handleMove]
+    [handleMove],
   );
 
   const handleTouchMove = useCallback(
@@ -125,7 +125,7 @@ export const useDrag = (
 
       handleMove(touch.clientX, touch.clientY);
     },
-    [handleMove]
+    [handleMove],
   );
 
   const endDrag = useCallback(() => {
@@ -152,7 +152,7 @@ export const useDrag = (
     touchHandlers: {
       onTouchStart: handleTouchStart,
       onTouchMove: handleTouchMove as unknown as React.TouchEventHandler,
-      onTouchEnd: endDrag as unknown as React.TouchEventHandler
-    }
+      onTouchEnd: endDrag as unknown as React.TouchEventHandler,
+    },
   };
 };

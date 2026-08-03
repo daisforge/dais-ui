@@ -60,5 +60,5 @@ export {
   textMMedium,
   textSMedium,
   textXSMedium,
-  viewContainer
+  viewContainer,
 } from '@salutejs/sdds-themes/tokens/sdds_finai';

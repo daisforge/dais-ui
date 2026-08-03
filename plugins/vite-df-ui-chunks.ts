@@ -46,6 +46,10 @@ export const MANUAL_UIKIT_COMP_CHUNKS = [
     modulePaths: ['packages/ui-kit/src/components/StoriesUtils/'],
   },
   {
+    chunkName: 'Stories',
+    modulePaths: ['packages/ui-kit/src/components/Stories/'],
+  },
+  {
     chunkName: 'Box',
     modulePaths: ['packages/ui-kit/src/components/Box/'],
   },

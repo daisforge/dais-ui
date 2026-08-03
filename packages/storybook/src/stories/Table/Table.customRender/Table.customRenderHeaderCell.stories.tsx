@@ -15,9 +15,9 @@ const meta: Meta = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      page: DocStoryTemplate
-    }
-  }
+      page: DocStoryTemplate,
+    },
+  },
 };
 
 export default meta;
@@ -56,7 +56,7 @@ const CellContainer: FC<PropsWithChildren> = ({ children }) => (
       justifyContent: 'center',
       alignItems: 'center',
       width: '100%',
-      height: '100%'
+      height: '100%',
     }}
   >
     {children}
@@ -66,7 +66,7 @@ const CellContainer: FC<PropsWithChildren> = ({ children }) => (
 export const CustomRenderHeaderCell: Story = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   name: 'Кастомизация рендера заголовка колонки',
   args: {
@@ -78,7 +78,7 @@ export const CustomRenderHeaderCell: Story = {
           <CellContainer>
             <Chip text="ID" type="submit" size="xs" />
           </CellContainer>
-        )
+        ),
       },
       {
         key: 'task',
@@ -97,7 +97,7 @@ export const CustomRenderHeaderCell: Story = {
               Кнопка Title
             </Button>
           </CellContainer>
-        )
+        ),
       },
       {
         key: 'priority',
@@ -105,7 +105,7 @@ export const CustomRenderHeaderCell: Story = {
           <CellContainer>
             <Badge text="Бейдж Priority" view="negative" />
           </CellContainer>
-        )
+        ),
       },
       {
         key: 'issueType',
@@ -113,22 +113,22 @@ export const CustomRenderHeaderCell: Story = {
           <CellContainer>
             <Checkbox checked />
           </CellContainer>
-        )
+        ),
       },
       {
         key: 'complete',
-        name: '% Complete'
-      }
-    ]
+        name: '% Complete',
+      },
+    ],
   },
   argTypes: {},
   render: ({ rows, columnConfig }) => (
     <Table
       tableConfig={{
-        containerStyle: { height: 700 }
+        containerStyle: { height: 700 },
       }}
       columnConfig={columnConfig}
       rows={rows}
     />
-  )
+  ),
 };

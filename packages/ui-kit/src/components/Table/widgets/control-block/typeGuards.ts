@@ -2,7 +2,7 @@ import { ControlBlockButtonProps } from './control-block-button.types';
 import { FeatureItem } from './types';
 
 export function isFeatureItem(
-  button: ControlBlockButtonProps | FeatureItem
+  button: ControlBlockButtonProps | FeatureItem,
 ): button is FeatureItem {
   // FeatureItem всегда имеет поле value
   if (!('value' in button)) return false;

@@ -20,7 +20,7 @@ import styled from 'styled-components';
 
 const meta: Meta = {
   title: 'Локальные компоненты/TableCanvas/HighlightActiveType/SplitView',
-  tags: ['!autodocs']
+  tags: ['!autodocs'],
 };
 
 export default meta;
@@ -47,14 +47,14 @@ const TREE_COLUMNS: readonly ColumnConfig<TreeRow>[] = [
       keyOfColumnInSubRow: (lvl) =>
         lvl === 0 ? 'block' : lvl === 1 ? 'tribe' : 'product',
       isColumnWithArrow: true,
-      hideHeaderExpandAllArrow: false
-    }
+      hideHeaderExpandAllArrow: false,
+    },
   },
   { key: 'blockActivity', name: 'Активность', width: 160 },
   { key: 'q1', name: 'Q1', width: 90, subRow: { parentKeyAsDefault: true } },
   { key: 'q2', name: 'Q2', width: 90, subRow: { parentKeyAsDefault: true } },
   { key: 'q3', name: 'Q3', width: 90, subRow: { parentKeyAsDefault: true } },
-  { key: 'q4', name: 'Q4', width: 90, subRow: { parentKeyAsDefault: true } }
+  { key: 'q4', name: 'Q4', width: 90, subRow: { parentKeyAsDefault: true } },
 ];
 
 // Уровень узла дерева определяем по id (block=number, tribe/product — суффикс).
@@ -67,7 +67,7 @@ const getNodeLevel = (row: TreeRow): 0 | 1 | 2 => {
 const LEVEL_LABEL: Record<0 | 1 | 2, string> = {
   0: 'Блок',
   1: 'Трайб',
-  2: 'Продукт'
+  2: 'Продукт',
 };
 
 const fieldRowStyle: React.CSSProperties = {
@@ -76,7 +76,7 @@ const fieldRowStyle: React.CSSProperties = {
   gap: 16,
   padding: '10px 0',
   borderBottom: '1px solid #eef1f5',
-  fontSize: 13
+  fontSize: 13,
 };
 
 function Field({ label, value }: { label: string; value: React.ReactNode }) {
@@ -95,7 +95,7 @@ function RowDetailsWidget({
   avatarSize,
   fullScreened,
   onClose,
-  onToggleFullScreen
+  onToggleFullScreen,
 }: {
   row: TreeRow | null;
   avatarSize: 'l' | 'm';
@@ -127,8 +127,8 @@ function RowDetailsWidget({
               dropdownProps={{
                 items: [
                   { label: 'Открыть карточку', value: '1' },
-                  { label: 'Скопировать ссылку', value: '2' }
-                ]
+                  { label: 'Скопировать ссылку', value: '2' },
+                ],
               }}
             />
             <Widget.Divider />
@@ -236,15 +236,15 @@ export const HighlightActiveTypeSplitView: Story = {
                 containerStyle: { height: '70vh' },
                 subRows: {
                   getSubRows: (row) => row?.subRows,
-                  rowKeyGetter: (row) => row.id
+                  rowKeyGetter: (row) => row.id,
                 },
                 cellsSelection: { mode: 'range-cell' },
                 highlightActiveType: 'row',
                 highlightActiveRow: {
                   state: activeRowState,
                   // И индекс, и сам узел дерева приходят сюда — без onCellClicked.
-                  onChange: ({ row }) => setActiveRowData(row ?? null)
-                }
+                  onChange: ({ row }) => setActiveRowData(row ?? null),
+                },
               }}
               columnConfig={TREE_COLUMNS}
               rows={rows}
@@ -262,10 +262,10 @@ export const HighlightActiveTypeSplitView: Story = {
                 onClose={closePanel}
                 onToggleFullScreen={() => setFullScreened((prev) => !prev)}
               />
-            )
+            ),
           }}
         />
       </div>
     );
-  }
+  },
 };

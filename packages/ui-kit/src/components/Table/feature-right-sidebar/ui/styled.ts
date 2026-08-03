@@ -5,7 +5,7 @@ import {
   spacing4x,
   spacing6x,
   spacing8x,
-  surfaceSolidCard
+  surfaceSolidCard,
 } from '@ui-kit/tokens';
 import styled, { css, keyframes } from 'styled-components';
 
@@ -22,7 +22,7 @@ export const tabAnimation = keyframes`
 
 const SidebarContainerRadius = (
   borderTopRightRadiusRounded: boolean | undefined,
-  borderBottomRightRadiusRounded: boolean | undefined
+  borderBottomRightRadiusRounded: boolean | undefined,
 ) => {
   const topRightRadius = borderTopRightRadiusRounded ? TABLE_BORDER_RADIUS : 0;
   const bottomRightRadius = borderBottomRightRadiusRounded
@@ -44,7 +44,7 @@ export const StyledTitleBox = styled(Box)({
   letterSpacing: '0px',
   gap: '16px',
   minWidth: '0px',
-  marginRight: '16px'
+  marginRight: '16px',
 });
 
 export const SidebarContainer = styled(Box)<{
@@ -93,7 +93,7 @@ export const SidebarContainer = styled(Box)<{
   ${({ $borderRightTopRadiusRounded, $borderRightBottomRadiusRounded }) =>
     SidebarContainerRadius(
       $borderRightTopRadiusRounded,
-      $borderRightBottomRadiusRounded
+      $borderRightBottomRadiusRounded,
     )}
 `;
 

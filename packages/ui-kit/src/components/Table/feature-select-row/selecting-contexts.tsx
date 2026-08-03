@@ -4,7 +4,7 @@ import React, {
   PropsWithChildren,
   useCallback,
   useContext,
-  useMemo
+  useMemo,
 } from 'react';
 import { RenderCellProps } from 'react-data-grid';
 
@@ -15,7 +15,7 @@ import { SUBROWS_KEY } from '../feature-tree/constants';
 import {
   FlattenedRowsArrAndMap,
   ObjectForExtending,
-  SelectingRowConfig
+  SelectingRowConfig,
 } from '../types';
 import { DomMetadata } from '../types/additional.type';
 import { SELECTING_KEYS } from './constants';
@@ -23,7 +23,7 @@ import {
   flatten,
   getAllParents,
   getCustomOrDefaultSelectingRules,
-  ObjectWithParentAndId
+  ObjectWithParentAndId,
 } from './handlers';
 import type { ChildrenInfo } from './types';
 
@@ -91,7 +91,7 @@ const SelectingContext = createContext<
 
 export const SelectingContextProvider = <
   RowIdType extends string | number,
-  RowType extends ObjectForExtending
+  RowType extends ObjectForExtending,
 >({
   children,
   ...rest
@@ -140,7 +140,7 @@ export function useSelectingRowContext() {
 
   if (selectingContext === undefined) {
     throw new Error(
-      'useSelectingRowContext must be used within DataGrid cells'
+      'useSelectingRowContext must be used within DataGrid cells',
     );
   }
 
@@ -164,7 +164,7 @@ const isLevelInLevels = (
     NonNullable<
       SelectingRowConfig<ObjectForExtending, string | number>['selectingRules']
     >['levels']
-  >
+  >,
 ) => {
   if (typeof levelsX === 'number') {
     return level === levelsX;
@@ -180,7 +180,7 @@ const isLevelInLevels = (
 
 export const SelectingCheckBoxCellContextProvider = <
   RowType extends ObjectForExtending,
-  SummaryRowType = unknown
+  SummaryRowType = unknown,
 >({
   children,
   ...renderCellProps
@@ -191,7 +191,7 @@ export const SelectingCheckBoxCellContextProvider = <
     selectedRows,
     setSelectedRows,
     rowKeyGetter,
-    rowsGroupingIsActive
+    rowsGroupingIsActive,
   } = useSelectingRowContext();
 
   const { flattenedRows, flattenedRowsMap } = flattenedRowsArrAndMap ?? {};
@@ -203,7 +203,7 @@ export const SelectingCheckBoxCellContextProvider = <
     selectingRowsIsActive,
     selectingRules,
     rowCheckboxDisabled,
-    rowShowCheckbox
+    rowShowCheckbox,
   } = selectingRowConfig;
 
   const selectingRulesAfterCheck =
@@ -216,7 +216,7 @@ export const SelectingCheckBoxCellContextProvider = <
     isIndeterminate,
     isRowSelectionDisabled,
     isHaveCheckbox,
-    onChange: onChangeExternal
+    onChange: onChangeExternal,
   } = (() => {
     if (
       !selectingRowsIsActive ||
@@ -232,14 +232,14 @@ export const SelectingCheckBoxCellContextProvider = <
         isIndeterminate: false,
         isRowSelectionDisabled: false,
         isHaveCheckbox: false,
-        onChange: null
+        onChange: null,
       };
     }
 
     if (rowsGroupingIsActive && isGroupRow(row)) {
       const selectedChildCount = row.childRows.reduce((acc, childRow) => {
         const childRowIsSelected = selectedRows?.has(
-          rowKeyGetter(hideRowServiceKeysHandler(childRow))
+          rowKeyGetter(hideRowServiceKeysHandler(childRow)),
         );
 
         return acc + (childRowIsSelected ? 1 : 0);
@@ -255,7 +255,7 @@ export const SelectingCheckBoxCellContextProvider = <
         row,
         selectedRows,
         selectedChildCount,
-        childCount: row.childRows.length
+        childCount: row.childRows.length,
       });
 
       return {
@@ -263,7 +263,7 @@ export const SelectingCheckBoxCellContextProvider = <
         isRowSelected: customs?.checked ?? isRowSelected,
         isIndeterminate: customs?.indeterminate ?? isIndeterminate,
         isRowSelectionDisabled: customs?.checkboxDisabled ?? false,
-        onChange: null
+        onChange: null,
       };
     }
 
@@ -277,7 +277,7 @@ export const SelectingCheckBoxCellContextProvider = <
     const rowWithoutServiceKeys = hideRowServiceKeysHandler(row);
 
     const isRowSelected = !!selectedRows?.has(
-      rowKeyGetter(rowWithoutServiceKeys)
+      rowKeyGetter(rowWithoutServiceKeys),
     );
 
     const getRowChildrenInfo = () => {
@@ -291,7 +291,7 @@ export const SelectingCheckBoxCellContextProvider = <
         notHidden: [],
         selected: [],
         notSelected: [],
-        someChildrenIsSelected: false
+        someChildrenIsSelected: false,
       };
       if (!isInLevels) return info;
 
@@ -299,7 +299,7 @@ export const SelectingCheckBoxCellContextProvider = <
       const rowCb = (
         levelFromRow: number,
         row: RowType,
-        parent: RowType | null
+        parent: RowType | null,
       ) => {
         if (levelFromRow === 1) return false; // не включаем саму строку
 
@@ -313,7 +313,7 @@ export const SelectingCheckBoxCellContextProvider = <
 
         const isSelected = selectedRows.has(rowKey);
         info[selectedRows.has(rowKey) ? 'selected' : 'notSelected'].push(
-          rowKey
+          rowKey,
         );
 
         const isShowed = rowShowCheckbox?.(row, level, parent) ?? true;
@@ -344,7 +344,7 @@ export const SelectingCheckBoxCellContextProvider = <
         undefined,
         undefined,
         (_l, r) => ({ rowKey: rowKeyGetter(r) }),
-        rowCb
+        rowCb,
       );
 
       if (info.selected.length) {
@@ -355,7 +355,7 @@ export const SelectingCheckBoxCellContextProvider = <
     };
 
     const getSomeChildrenIsSelected = (
-      rowAllChildrenFlattenedExt?: ObjectForExtending[]
+      rowAllChildrenFlattenedExt?: ObjectForExtending[],
     ) => {
       const rowChildrenFlattened =
         rowAllChildrenFlattenedExt ?? getRowChildrenInfo().all;
@@ -363,7 +363,7 @@ export const SelectingCheckBoxCellContextProvider = <
       const someChildrenIsSelected =
         !!rowChildrenFlattened.length &&
         rowChildrenFlattened.some(
-          (curChildren) => !!selectedRows?.has(rowKeyGetter(curChildren))
+          (curChildren) => !!selectedRows?.has(rowKeyGetter(curChildren)),
         );
       return someChildrenIsSelected;
     };
@@ -404,7 +404,7 @@ export const SelectingCheckBoxCellContextProvider = <
       getRowChildrenInfo,
       rowShowCheckbox,
       rowCheckboxDisabled,
-      setSelectedRows
+      setSelectedRows,
     });
 
     return {
@@ -413,7 +413,7 @@ export const SelectingCheckBoxCellContextProvider = <
       isIndeterminate: customs?.indeterminate ?? isIndeterminate,
       isRowSelectionDisabled:
         customs?.checkboxDisabled ?? isRowSelectionDisabled,
-      onChange: customs?.onChange ?? null
+      onChange: customs?.onChange ?? null,
     };
   })();
 
@@ -434,8 +434,8 @@ export const SelectingCheckBoxCellContextProvider = <
           const copy = new Set(prev);
           row.childRows.forEach((row) =>
             copy[isRowSelected ? 'delete' : 'add'](
-              rowKeyGetter(hideRowServiceKeysHandler(row))
-            )
+              rowKeyGetter(hideRowServiceKeysHandler(row)),
+            ),
           );
           return copy;
         });
@@ -447,7 +447,7 @@ export const SelectingCheckBoxCellContextProvider = <
           indeterminate: isIndeterminate,
           checkboxDisabled: isRowSelectionDisabled,
           showCheckbox: isHaveCheckbox,
-          defaultSetter
+          defaultSetter,
         });
         return;
       }
@@ -462,12 +462,12 @@ export const SelectingCheckBoxCellContextProvider = <
 
     const { allParents } = isDefaultLevels
       ? {
-          allParents: new Map<string | number, ObjectForExtending>()
+          allParents: new Map<string | number, ObjectForExtending>(),
         }
       : getAllParents(
           currentRowInFlattened as unknown as ObjectWithParentAndId,
           flattenedRows as unknown as ObjectWithParentAndId[],
-          rowKeyGetter
+          rowKeyGetter,
         );
 
     const getRowParentsInfo = () => {
@@ -491,7 +491,7 @@ export const SelectingCheckBoxCellContextProvider = <
             const subRows = parent?.[SUBROWS_KEY] as ObjectForExtending[];
 
             const parentIsShouldBeSelected = subRows.every((subRow) =>
-              actualSelecteds?.has(rowKeyGetter(subRow))
+              actualSelecteds?.has(rowKeyGetter(subRow)),
             );
 
             if (parentIsShouldBeSelected && isCurrLevelInLevels) {
@@ -502,11 +502,11 @@ export const SelectingCheckBoxCellContextProvider = <
             acc.shouldNotBeSelected.push(keyOfParent);
             return acc;
           },
-          { shouldBeSelected: [], shouldNotBeSelected: [] }
+          { shouldBeSelected: [], shouldNotBeSelected: [] },
         );
       return {
         all: allParentsEntries.map(([_, v]) => v),
-        getShouldBeSelectedInfo
+        getShouldBeSelectedInfo,
       };
     };
 
@@ -519,7 +519,7 @@ export const SelectingCheckBoxCellContextProvider = <
       : flatten(
           [row],
           (r) => r?.[SUBROWS_KEY],
-          (r) => r
+          (r) => r,
         );
 
     const isRowInLevels = (row: ObjectForExtending) => {
@@ -566,7 +566,7 @@ export const SelectingCheckBoxCellContextProvider = <
         allParentsMap: allParents,
         isRowInLevels,
         defaultSetter,
-        getRowParentsInfo
+        getRowParentsInfo,
       });
       return;
     }
@@ -588,7 +588,7 @@ export const SelectingCheckBoxCellContextProvider = <
     isRowSelected,
     isIndeterminate,
     isRowSelectionDisabled,
-    isHaveCheckbox
+    isHaveCheckbox,
   ]);
 
   const value = useMemo(
@@ -597,15 +597,15 @@ export const SelectingCheckBoxCellContextProvider = <
       isIndeterminate,
       isRowSelectionDisabled,
       isHaveCheckbox,
-      onChange
+      onChange,
     }),
     [
       isHaveCheckbox,
       isRowSelected,
       isIndeterminate,
       isRowSelectionDisabled,
-      onChange
-    ]
+      onChange,
+    ],
   );
 
   return (
@@ -619,7 +619,7 @@ export const useSelectingCheckBoxCellContext = () => {
   const ctx = useContext(SelectingContextForCheckBoxCell);
   if (ctx === undefined) {
     throw new Error(
-      'useSelectingCheckBoxCellContext must be used within DataGrid cells'
+      'useSelectingCheckBoxCellContext must be used within DataGrid cells',
     );
   }
 

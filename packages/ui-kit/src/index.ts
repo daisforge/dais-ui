@@ -85,6 +85,7 @@ export * from './components/Spinner';
 export * from './components/SplitView';
 export * from './components/SSRProvider';
 export * from './components/Steps';
+export * from './components/Stories';
 export * from './components/Switch';
 export * from './components/Table';
 export { TableCanvas } from './components/TableCanvas';

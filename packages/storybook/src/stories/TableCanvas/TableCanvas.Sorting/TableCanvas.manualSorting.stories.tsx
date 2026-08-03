@@ -6,7 +6,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import {
   ColumnConfig,
   SortColumn,
-  TableCanvas
+  TableCanvas,
 } from '@ui-kit/components/TableCanvas';
 import React, { useEffect, useMemo, useState } from 'react';
 
@@ -15,9 +15,9 @@ const meta: Meta = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      page: DocStoryTemplate
-    }
-  }
+      page: DocStoryTemplate,
+    },
+  },
 };
 
 export default meta;
@@ -31,7 +31,7 @@ type Story = StoryObj;
 export const ManualSorting: Story = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     const rows = useMemo(() => createRows(), []);
@@ -42,30 +42,30 @@ export const ManualSorting: Story = {
         {
           key: 'id',
           name: 'ID',
-          sortingType: 'numberSort'
+          sortingType: 'numberSort',
         },
         {
           key: 'task',
           name: 'Title',
-          sortingType: 'stringSort'
+          sortingType: 'stringSort',
         },
         {
           key: 'priority',
           name: 'Priority',
-          sortingType: 'stringSort'
+          sortingType: 'stringSort',
         },
         {
           key: 'issueType',
           name: 'Issue Type',
-          sortingType: 'stringSort'
+          sortingType: 'stringSort',
         },
         {
           key: 'complete',
           name: '% Complete',
-          sortingType: 'numberSort'
-        }
+          sortingType: 'numberSort',
+        },
       ],
-      []
+      [],
     );
 
     const sortingStateAndSetter = useState<readonly SortColumn[]>([]);
@@ -112,12 +112,12 @@ export const ManualSorting: Story = {
           containerStyle: { height: '700px' },
           sorting: {
             state: sortingStateAndSetter,
-            manualSorting: true
-          }
+            manualSorting: true,
+          },
         }}
         columnConfig={columnConfig}
         rows={sortedRows}
       />
     );
-  }
+  },
 };

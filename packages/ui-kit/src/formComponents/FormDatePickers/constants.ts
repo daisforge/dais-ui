@@ -1,3 +1,3 @@
 export const datePickersClasses = {
-  rightIcon: 'rangeDatePicker__right-slot'
+  rightIcon: 'rangeDatePicker__right-slot',
 };

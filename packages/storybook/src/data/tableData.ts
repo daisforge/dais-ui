@@ -100,11 +100,11 @@ export function createRows(indexForStart?: number, count?: number) {
                   inspiredDay: Math.floor(random() * 100),
                   developer: `${random() * i * 100}asdf${random() * 100}`,
                   tr: `tr${i + 30000}`,
-                  loremIpsum: getRandomLorem(random)
-                }
-              ]
-            }
-          ]
+                  loremIpsum: getRandomLorem(random),
+                },
+              ],
+            },
+          ],
         },
         {
           id: `${`${i + 10000}additional`}`,
@@ -152,13 +152,13 @@ export function createRows(indexForStart?: number, count?: number) {
                   inspiredDay: Math.floor(random() * 100),
                   developer: `${random() * i * 100}asdf${random() * 100}`,
                   tr: `tr${i + 30000}`,
-                  loremIpsum: getRandomLorem(random)
-                }
-              ]
-            }
-          ]
-        }
-      ]
+                  loremIpsum: getRandomLorem(random),
+                },
+              ],
+            },
+          ],
+        },
+      ],
     });
   }
   return rows;
@@ -198,7 +198,7 @@ export const BLOCKS = [
   'Стратегия',
   'Юридический',
   'Комплаенс',
-  'Риски'
+  'Риски',
 ] as const;
 
 export const TRIBES = [
@@ -216,7 +216,7 @@ export const TRIBES = [
   'Infrastructure and Cloud Operations',
   'Security',
   'Architecture',
-  'Customer support and Service Management'
+  'Customer support and Service Management',
 ] as const;
 export const PRODUCTS = [
   'Инициативы',
@@ -233,7 +233,7 @@ export const PRODUCTS = [
   'Интеграционная шина корпоративных сервисов',
   'Личный кабинет',
   'Платежный шлюз',
-  'Биллинг'
+  'Биллинг',
 ] as const;
 
 export function createRowsTree<T extends string = 'subRows'>(childsKeyX?: T) {
@@ -284,17 +284,17 @@ export function createRowsTree<T extends string = 'subRows'>(childsKeyX?: T) {
                 'Москва',
                 'Самара',
                 'Екатеринбург',
-                'Московская область'
+                'Московская область',
               ][Math.floor(random() * 4)]!,
               product: PRODUCTS[Math.floor(random() * PRODUCTS.length)]!,
               q1: Math.min(10000, Math.round(random() * 11000)),
               q2: Math.min(10000, Math.round(random() * 11000)),
               q3: Math.min(10000, Math.round(random() * 11000)),
-              q4: Math.min(10000, Math.round(random() * 11000))
-            }
-          ]
-        }
-      ]
+              q4: Math.min(10000, Math.round(random() * 11000)),
+            },
+          ],
+        },
+      ],
     });
   }
   return rows as TreeRow<T extends string ? T : 'subRows'>[];
@@ -314,14 +314,14 @@ const lvl3 = [
           {
             key: 'id',
             name: 'id',
-            resizable: true
+            resizable: true,
           },
           {
             key: 'task',
             name: 'Title',
-            resizable: true
-          }
-        ]
+            resizable: true,
+          },
+        ],
       },
       {
         key: 'priority and issueType',
@@ -330,16 +330,16 @@ const lvl3 = [
           {
             key: 'priority',
             name: 'Priority',
-            resizable: true
+            resizable: true,
           },
           {
             key: 'issueType',
             name: 'Issue',
-            resizable: true
-          }
-        ]
-      }
-    ]
+            resizable: true,
+          },
+        ],
+      },
+    ],
   },
   {
     key: 'pppp',
@@ -348,10 +348,10 @@ const lvl3 = [
       {
         key: 'complete',
         name: '% Complete',
-        resizable: true
-      }
-    ]
-  }
+        resizable: true,
+      },
+    ],
+  },
 ];
 
 const lvl2 = [
@@ -362,14 +362,14 @@ const lvl2 = [
       {
         key: 'id',
         name: 'Id',
-        resizable: true
+        resizable: true,
       },
       {
         key: 'task',
         name: 'Title',
-        resizable: true
-      }
-    ]
+        resizable: true,
+      },
+    ],
   },
   {
     key: 'priority and issueType',
@@ -378,14 +378,14 @@ const lvl2 = [
       {
         key: 'priority',
         name: 'Priority',
-        resizable: true
+        resizable: true,
       },
       {
         key: 'issueType',
         name: 'Issue',
-        resizable: true
-      }
-    ]
+        resizable: true,
+      },
+    ],
   },
   {
     key: 'pppp',
@@ -394,36 +394,36 @@ const lvl2 = [
       {
         key: 'complete',
         name: '% Complete',
-        resizable: true
-      }
-    ]
+        resizable: true,
+      },
+    ],
   },
   {
     key: 'developer',
-    name: 'developer'
-  }
+    name: 'developer',
+  },
 ];
 
 const lvl2v2 = [
   {
     key: 'id',
     name: 'Id',
-    resizable: true
+    resizable: true,
   },
   {
     key: 'task',
     name: 'Title',
-    resizable: true
+    resizable: true,
   },
   {
     key: 'priority',
     name: 'Priority',
-    resizable: true
+    resizable: true,
   },
   {
     key: 'issueType',
     name: 'Issue',
-    resizable: true
+    resizable: true,
   },
   {
     key: 'pppp',
@@ -432,59 +432,59 @@ const lvl2v2 = [
       {
         key: 'complete',
         name: '% Complete',
-        resizable: true
-      }
-    ]
+        resizable: true,
+      },
+    ],
   },
   {
     key: 'developer',
-    name: 'developer'
-  }
+    name: 'developer',
+  },
 ];
 
 const lvl1 = [
   {
     key: 'id',
     name: 'Id',
-    resizable: true
+    resizable: true,
   },
   {
     key: 'task',
     name: 'Title',
-    resizable: true
+    resizable: true,
   },
   {
     key: 'priority',
     name: 'Priority',
-    resizable: true
+    resizable: true,
   },
   {
     key: 'issueType',
     name: 'Issue',
-    resizable: true
+    resizable: true,
   },
   {
     key: 'complete',
     name: '% Complete',
-    resizable: true
+    resizable: true,
   },
   {
     key: 'developer',
-    name: 'developer'
-  }
+    name: 'developer',
+  },
 ];
 
 export const dataObj = {
   lvl1,
   lvl2,
   lvl2v2,
-  lvl3
+  lvl3,
 };
 
 export function getPaginationData({
   page,
   perPage,
-  total
+  total,
 }: {
   page: number;
   perPage: number;
@@ -504,7 +504,7 @@ export function getPaginationData({
 export async function getPaginationDataAsync({
   page,
   perPage,
-  total
+  total,
 }: {
   page: number;
   perPage: number;

@@ -11,11 +11,11 @@ const meta: Meta = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      page: DocArgsTemplate
-    }
+      page: DocArgsTemplate,
+    },
   },
   // excludeStories: ['CANVAS'],
-  component: StoryTableConfigComp as ComponentType<unknown>
+  component: StoryTableConfigComp as ComponentType<unknown>,
 };
 
 export default meta;
@@ -42,9 +42,9 @@ import { IconAddOutline, IconBoxOutline, IconSber } from '@daisforge/ui/icons';
 export const Docs: StoryObj = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   name: 'API',
   // eslint-disable-next-line react/jsx-no-useless-fragment
-  render: () => <></>
+  render: () => <></>,
 };

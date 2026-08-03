@@ -41,7 +41,7 @@ export interface TablePopoverContextValue {
 }
 
 const TablePopoverContext = createContext<TablePopoverContextValue | null>(
-  null
+  null,
 );
 
 /**

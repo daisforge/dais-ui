@@ -7,7 +7,7 @@ import {
   getPriorityRequired,
   getRuleValue,
   hasValidationRule,
-  useChangedFormContext
+  useChangedFormContext,
 } from '../../utils';
 // import { convertToISO } from '../lib/utils/convertToISO';
 import type { TValidateDateProps } from '../lib/utils/types';
@@ -70,7 +70,7 @@ export const FormDatePicker = <TFieldValues extends FieldValues>({
     ...options,
     required: getPriorityRequired({ options, ruleName: 'required' })
       ? options?.required
-      : propsRequired
+      : propsRequired,
   };
 
   // Так как у DatePicker можно задать пропсы min и max, то нужно учитывать их в случаях, когда
@@ -105,7 +105,7 @@ export const FormDatePicker = <TFieldValues extends FieldValues>({
     })(),
     required: newOptions?.required,
     invalidFormatMessage,
-    format
+    format,
   };
 
   const validateRange = validateDate(validateArgs);
@@ -124,7 +124,7 @@ export const FormDatePicker = <TFieldValues extends FieldValues>({
       const rangeValidation = validateRange(value);
       if (rangeValidation !== true) return rangeValidation;
       return true;
-    }
+    },
   });
 
   const { control, rules, remOptions, clearErrors } = formCtx;
@@ -151,7 +151,7 @@ export const FormDatePicker = <TFieldValues extends FieldValues>({
           onChange: onChangeRhf,
           ...fieldRest
         },
-        fieldState: { error }
+        fieldState: { error },
       }) => {
         // Используем defaultDate только при первом рендере, когда value еще не задан
         // При form.reset() value станет undefined - не используем defaultDate
@@ -190,8 +190,8 @@ export const FormDatePicker = <TFieldValues extends FieldValues>({
                     value: datePickerEvent.target.value,
                     name: datePickerEvent.target.name,
                     originalDate: datePickerEvent.target.originalDate,
-                    isoDate: datePickerEvent.target.isoDate
-                  }
+                    isoDate: datePickerEvent.target.isoDate,
+                  },
                 };
                 handleChange?.(eventLike);
                 onChangeRhf(eventLike);

@@ -5,7 +5,7 @@ import {
   type ContractResponse,
   type ContractUpdateOneBody,
   type ObjectAny,
-  Q_PARAMS
+  Q_PARAMS,
 } from '@ui-kit/components/TableContract';
 import { delay, http, HttpResponse } from 'msw';
 
@@ -19,7 +19,7 @@ const getDataWithPagination = async (params: ContractQueryParams) => {
   const rows = getPaginationData({
     page,
     perPage,
-    total
+    total,
   });
 
   const columns: ContractResponse['meta']['columns'] = [
@@ -28,34 +28,34 @@ const getDataWithPagination = async (params: ContractQueryParams) => {
       name: 'Task',
       columnType: 'Text',
       title: 'tooltip Task',
-      sortingType: 'stringSort'
+      sortingType: 'stringSort',
     },
     {
       key: 'done',
       columnType: 'Boolean',
       name: 'Статус Завершенности',
       title: 'tooltip Статус Завершенности',
-      sortingType: 'stringSort'
+      sortingType: 'stringSort',
     },
     {
       key: 'complete',
       name: 'Complete',
       columnType: 'Real',
       title: 'tooltip Complete',
-      sortingType: 'stringSort'
+      sortingType: 'stringSort',
     },
     {
       key: 'inspiredDay',
       columnType: 'Integer/Int/Int4',
       name: 'Дней с даты создания',
       title: 'tooltip Дней с даты создания',
-      sortingType: 'stringSort'
-    }
+      sortingType: 'stringSort',
+    },
   ];
   const tableConfig: ContractResponse['meta']['tableConfig'] = {
     editing: {
       rowUniqIdKey: 'task,done,complete,inspiredDay',
-      saving: { type: 'onRowChange' }
+      saving: { type: 'onRowChange' },
     },
     sorting: { type: 'backend' },
     filtering: { type: 'backend' },
@@ -65,16 +65,16 @@ const getDataWithPagination = async (params: ContractQueryParams) => {
       defaultPage,
       defaultPageSize,
       page,
-      pageSize: perPage
-    }
+      pageSize: perPage,
+    },
   };
 
   const resp: ContractResponse = {
     meta: {
       columns,
-      tableConfig
+      tableConfig,
     },
-    data: { main: rows }
+    data: { main: rows },
   };
   return resp;
 };
@@ -90,13 +90,13 @@ export const allFeatsExampleGetRoute = {
     const pageSize = searchParams.get(Q_PARAMS.pageSize);
     const response: ContractResponse = await getDataWithPagination({
       page,
-      pageSize
+      pageSize,
     });
 
     await delay(500);
 
     return HttpResponse.json(response);
-  })
+  }),
 };
 
 export const allFeatsExampleUpdateOneRoute = {
@@ -109,9 +109,9 @@ export const allFeatsExampleUpdateOneRoute = {
 
     return HttpResponse.json(
       { ...changeObject, fromBack: true },
-      { status: 200 }
+      { status: 200 },
     );
-  })
+  }),
 };
 
 export const allFeatsExampleDeleteOneRoute = {
@@ -123,7 +123,7 @@ export const allFeatsExampleDeleteOneRoute = {
     await delay(500);
 
     return HttpResponse.json(rowForDelete);
-  })
+  }),
 };
 export const allFeatsExampleCreateOneRoute = {
   ENDPOINT,
@@ -132,5 +132,5 @@ export const allFeatsExampleCreateOneRoute = {
     await delay(500);
 
     return HttpResponse.json(newRowData);
-  })
+  }),
 };

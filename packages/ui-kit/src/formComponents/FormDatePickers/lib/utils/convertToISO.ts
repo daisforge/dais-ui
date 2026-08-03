@@ -26,7 +26,7 @@ const TOKEN_DEFS: [string, string, TokenType][] = [
   ['YYYY', '(\\d{4})', 'year'],
   ['DD', '(\\d{2})', 'day'],
   ['YY', '(\\d{2})', 'year'],
-  ['MM', '(\\d{2})', 'month-num']
+  ['MM', '(\\d{2})', 'month-num'],
 ];
 
 /** Экранирует спецсимволы regex (точка, тире и т.д.) для использования как литерал */
@@ -96,7 +96,7 @@ const getFullYear = (year: number): number => (year < 100 ? 2000 + year : year);
  */
 export const convertToISO = ({
   date,
-  format
+  format,
 }: {
   date: string;
   format: TDatePickerFormat;

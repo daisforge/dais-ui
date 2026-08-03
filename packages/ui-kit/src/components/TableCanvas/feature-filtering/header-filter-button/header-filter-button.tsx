@@ -7,7 +7,7 @@ import { HEADER_TOOLTIP_FILTER_ID } from '../../feature-tooltip/constants';
 import {
   Canvas,
   CanvasEl,
-  CanvasEmbedIconButtonProps
+  CanvasEmbedIconButtonProps,
 } from '../../TableGlideInstance';
 import { ColumnConfig, ObjectForExtending } from '../../types';
 
@@ -18,11 +18,11 @@ import { ColumnConfig, ObjectForExtending } from '../../types';
 export const checkIsFilterActive = <
   FilterStateType extends ObjectForExtending,
   R extends ObjectForExtending,
-  SR
+  SR,
 >(
   columnConfig: ColumnConfig<R, SR>,
   filters: HeaderContextValueTypeInstance<FilterStateType>['filters'],
-  clearedFiltersValue: HeaderContextValueTypeInstance<FilterStateType>['clearedFiltersValue']
+  clearedFiltersValue: HeaderContextValueTypeInstance<FilterStateType>['clearedFiltersValue'],
 ): boolean => {
   const keyInFiltersState = columnConfig.filtering?.keyInFilterState;
 
@@ -75,7 +75,7 @@ export const checkIsFilterActive = <
  */
 export const renderHeaderFilterButton = ({
   isFilterActive,
-  onClick
+  onClick,
 }: {
   isFilterActive: boolean;
   onClick: NonNullable<CanvasEmbedIconButtonProps['onClick']>;

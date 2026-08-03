@@ -3,7 +3,7 @@ import { IconButton } from '@ui-kit/components/IconButton';
 import { Switch } from '@ui-kit/components/Switch';
 import {
   ColumnConfig,
-  ObjectForExtending
+  ObjectForExtending,
 } from '@ui-kit/components/TableCanvas';
 import { TypographyWithAutoTooltip } from '@ui-kit/components/Typography';
 import { IconPinFill, IconPinListOutline, IconPinOutline } from '@ui-kit/icons';
@@ -15,7 +15,7 @@ import React, { useMemo, useRef } from 'react';
 import { KeyText, KeyTextMap } from '../../feature-key-text/types';
 import {
   getKeyTextCorrectedBorderPlacement,
-  getKeyTextCorrectedIsOvered
+  getKeyTextCorrectedIsOvered,
 } from '../../feature-reorder-columns/handlers';
 import { isRowInstrumentsColumn } from '../../feature-row-instruments';
 import { ROW_MARKER_COLUMN_KEY } from '../../feature-row-markers';
@@ -43,7 +43,7 @@ export const ColumnsList = <Row extends ObjectForExtending, SummaryRow>({
   disablePinningSet,
   disableHidingSet,
   pinnedColsSet,
-  hiddenColsSet
+  hiddenColsSet,
 }: {
   searchQuery: string;
   columnsOrder: string[];
@@ -70,15 +70,15 @@ export const ColumnsList = <Row extends ObjectForExtending, SummaryRow>({
           c !== ROW_MARKER_COLUMN_KEY &&
           c !== CHECKBOX_COLUMN_KEY &&
           c !== KEY_GROUPED_COL &&
-          !isRowInstrumentsColumn(c)
+          !isRowInstrumentsColumn(c),
       ),
-    [columnsOrder]
+    [columnsOrder],
   );
   const {
     hoveredId,
     setDroppedAsHovered,
     onDragIconHoverStart,
-    onDragIconHoverEnd
+    onDragIconHoverEnd,
   } = useHovering();
 
   const {
@@ -88,16 +88,16 @@ export const ColumnsList = <Row extends ObjectForExtending, SummaryRow>({
     handleDragStart,
     handleDragEnd,
     handleDragOver,
-    handleDrop
+    handleDrop,
   } = useDragAndDrop({
     columnsOrder: columnsOrderWithoutServiceColumns,
     onColumnsReorder,
-    setDroppedAsHovered
+    setDroppedAsHovered,
   });
 
   const columnsConfigMap = useMemo(
     () => new Map(columnConfig.map((c) => [c.key, c])),
-    [columnConfig]
+    [columnConfig],
   );
 
   const scrollState = useHasScroll(containerRef, 'vertical');
@@ -121,7 +121,7 @@ export const ColumnsList = <Row extends ObjectForExtending, SummaryRow>({
         key,
         isKeyText,
         keyText,
-        tableConfigKeyTextBoolean
+        tableConfigKeyTextBoolean,
       });
       return String(label).toLowerCase().includes(searchQuery.toLowerCase());
     });
@@ -134,7 +134,7 @@ export const ColumnsList = <Row extends ObjectForExtending, SummaryRow>({
     hiddenColsSet,
     pinnedColsSet,
     keyText,
-    tableConfigKeyTextBoolean
+    tableConfigKeyTextBoolean,
   ]);
 
   const isEmptySearch = !!(filteredColumns.length === 0 && searchQuery);
@@ -167,7 +167,7 @@ export const ColumnsList = <Row extends ObjectForExtending, SummaryRow>({
           key,
           isKeyText,
           keyText,
-          tableConfigKeyTextBoolean
+          tableConfigKeyTextBoolean,
         });
 
         const onClickPinBtn = () => {
@@ -184,7 +184,7 @@ export const ColumnsList = <Row extends ObjectForExtending, SummaryRow>({
                   );
                 }
                 return colKey !== key;
-              })
+              }),
             );
           } else {
             setPinnedCols((prev) => {
@@ -209,7 +209,7 @@ export const ColumnsList = <Row extends ObjectForExtending, SummaryRow>({
                   );
                 }
                 return colKey !== key;
-              })
+              }),
             );
           } else {
             setHiddenCols((prev) => {
@@ -226,7 +226,7 @@ export const ColumnsList = <Row extends ObjectForExtending, SummaryRow>({
           colsWithKeyTextMap,
           currentId: key,
           borderPlacement,
-          tableConfigKeyTextBoolean
+          tableConfigKeyTextBoolean,
         });
 
         const isOvered = draggingOverId === key;
@@ -236,21 +236,21 @@ export const ColumnsList = <Row extends ObjectForExtending, SummaryRow>({
           draggingId,
           currentId: key,
           currentIsDraggingOver: isOvered,
-          tableConfigKeyTextBoolean
+          tableConfigKeyTextBoolean,
         });
 
         const correctedIsDisabledHiding = correctedDisabled(disableHidingSet, {
           colsWithKeyTextMap,
           currentKey: key,
-          tableConfigKeyTextBoolean
+          tableConfigKeyTextBoolean,
         });
         const correctedIsDisabledPinning = correctedDisabled(
           disablePinningSet,
           {
             colsWithKeyTextMap,
             currentKey: key,
-            tableConfigKeyTextBoolean
-          }
+            tableConfigKeyTextBoolean,
+          },
         );
 
         return (
@@ -264,7 +264,7 @@ export const ColumnsList = <Row extends ObjectForExtending, SummaryRow>({
               onDragEnd: handleDragEnd,
               $isOvered: correctedIsOvered ?? isOvered,
               $borderPlacement: correctedBorderPlacement ?? borderPlacement,
-              title: 'Перетащить колонку'
+              title: 'Перетащить колонку',
             })}
           >
             {reorderingIsActive && (
@@ -290,7 +290,7 @@ export const ColumnsList = <Row extends ObjectForExtending, SummaryRow>({
                       ? DOM_METADATA_ACTIONS.UNPIN_COLUMN
                       : DOM_METADATA_ACTIONS.PIN_COLUMN,
                     columnKey: key,
-                    enabled: !isPinnedColumn
+                    enabled: !isPinnedColumn,
                   });
                 }}
                 className={columnsControlConfig?.pinDomMetadata?.className}
@@ -328,8 +328,8 @@ export const ColumnsList = <Row extends ObjectForExtending, SummaryRow>({
                           ? DOM_METADATA_ACTIONS.SHOW_COLUMN
                           : DOM_METADATA_ACTIONS.HIDE_COLUMN,
                         columnKey: key,
-                        enabled: isHiddenColumn
-                      }
+                        enabled: isHiddenColumn,
+                      },
                     );
                   }}
                   toggleSize="s"

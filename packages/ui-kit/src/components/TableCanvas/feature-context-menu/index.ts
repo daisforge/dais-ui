@@ -3,6 +3,6 @@ export type {
   CellContextMenuDropdownProps,
   ContextMenuDropdownItem,
   DropdownContextMenu,
-  HeaderContextMenuDropdownProps
+  HeaderContextMenuDropdownProps,
 } from './types';
 export * from './ui/ContextMenu';

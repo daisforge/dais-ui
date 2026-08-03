@@ -20,7 +20,7 @@ export const FeatureIconBtn = ({
           height: '40px',
           display: 'flex',
           justifyContent: 'center',
-          alignItems: 'center'
+          alignItems: 'center',
         }}
       >
         <CustomIconRender key={item.value} />
@@ -47,7 +47,7 @@ export const FeatureIconBtn = ({
                 height: '40px',
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center'
+                justifyContent: 'center',
               }}
             >
               <Icon color="inherit" />

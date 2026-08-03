@@ -6,13 +6,13 @@ import { RowDetailConfig } from './types';
 
 export const useRowDetailPanel = <RowType extends ObjectForExtending>({
   rows,
-  tableConfigRowDetail
+  tableConfigRowDetail,
 }: {
   rows: readonly RowType[];
   tableConfigRowDetail: RowDetailConfig<RowType> | undefined;
 }) => {
   const [rowIdsWithExpDetails, setRowIdsWithExpDetails] = useState(
-    new Set<string | number>()
+    new Set<string | number>(),
   );
 
   const rowDetailIsActiveInConfig = !!tableConfigRowDetail;
@@ -44,7 +44,7 @@ export const useRowDetailPanel = <RowType extends ObjectForExtending>({
       return { handleExpandRowDetail, expandButtonColumnKey };
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [rowDetailIsActiveInConfig]
+    [rowDetailIsActiveInConfig],
   );
 
   const rowsWithExpDetails = useMemo(() => {
@@ -69,15 +69,15 @@ export const useRowDetailPanel = <RowType extends ObjectForExtending>({
           [DETAIL_KEYS.IS_HAVE_EXPANDED]: isHaveExpandedDetail,
 
           ...(!!icons?.closed && {
-            [DETAIL_KEYS.EXPAND_ICON_CLOSED]: icons.closed
+            [DETAIL_KEYS.EXPAND_ICON_CLOSED]: icons.closed,
           }),
           ...(!!icons?.opened && {
-            [DETAIL_KEYS.EXPAND_ICON_OPENED]: icons.opened
+            [DETAIL_KEYS.EXPAND_ICON_OPENED]: icons.opened,
           }),
           ...(!!icons?.iconButtonProps && {
-            [DETAIL_KEYS.EXPAND_ICON_BUTTON_PROPS]: icons.iconButtonProps
-          })
-        })
+            [DETAIL_KEYS.EXPAND_ICON_BUTTON_PROPS]: icons.iconButtonProps,
+          }),
+        }),
       });
       // 2 - adding rowDetail
       // TODO  режим редактирования detailPanel  - выключен и убран из типов, если будет потребность, нужно доработать
@@ -92,7 +92,7 @@ export const useRowDetailPanel = <RowType extends ObjectForExtending>({
         acc.push({
           [DETAIL_KEYS.IS_DETAIL_PANEL_ROW]: true,
           [DETAIL_KEYS.ROW_DATA]: curr,
-          [DETAIL_KEYS.ROW_DETAIL_RENDER]: renderRowDetail
+          [DETAIL_KEYS.ROW_DETAIL_RENDER]: renderRowDetail,
           // TODO  режим редактирования detailPanel  - выключен и убран из типов, если будет потребность, нужно доработать
           // [DETAIL_KEYS.ROW_DETAIL_IS_EDITABLE]: detailIsEditable,
           // [DETAIL_KEYS.ROW_DETAIL_RENDER_EDITING]:
@@ -108,6 +108,6 @@ export const useRowDetailPanel = <RowType extends ObjectForExtending>({
   return {
     rowDetailContextValue,
     rowsWithExpDetails,
-    rowDetailIsActiveInConfig
+    rowDetailIsActiveInConfig,
   };
 };

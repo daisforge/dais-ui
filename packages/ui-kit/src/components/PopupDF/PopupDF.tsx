@@ -20,7 +20,7 @@ const PopupDFWithRef = forwardRef<HTMLDivElement, PopupDFProps>(
       resizable,
       ...rest
     },
-    ref
+    ref,
   ) => {
     const [openedInternal, setOpenedInternal] = useState(defaultOpened);
     const opened =
@@ -34,7 +34,7 @@ const PopupDFWithRef = forwardRef<HTMLDivElement, PopupDFProps>(
 
         onToggle?.(nextOpened);
       },
-      [onToggle, openedExternal]
+      [onToggle, openedExternal],
     );
 
     const handleClose = useCallback(() => {
@@ -43,14 +43,14 @@ const PopupDFWithRef = forwardRef<HTMLDivElement, PopupDFProps>(
 
     const computedResizable = useMemo(
       () => getPopupDFResizableConfig(resizable, placement),
-      [placement, resizable]
+      [placement, resizable],
     );
 
     const contextOnClose =
       openedExternal === undefined || onToggle ? handleClose : null;
     const contextValue = useMemo(
       () => ({ onClose: contextOnClose, size }),
-      [contextOnClose, size]
+      [contextOnClose, size],
     );
 
     return (
@@ -67,13 +67,13 @@ const PopupDFWithRef = forwardRef<HTMLDivElement, PopupDFProps>(
         </StyledPopup>
       </PopupDFContext.Provider>
     );
-  }
+  },
 );
 
 export const PopupDF = Object.assign(PopupDFWithRef, {
   Header,
   Body,
-  Footer
+  Footer,
 });
 
 PopupDF.displayName = 'PopupDF';

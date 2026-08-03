@@ -11,9 +11,9 @@ const meta: Meta = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      page: DocStoryTemplate
-    }
-  }
+      page: DocStoryTemplate,
+    },
+  },
 };
 
 export default meta;
@@ -40,7 +40,7 @@ import { IconAddOutline, IconBoxOutline, IconSber } from '@daisforge/ui/icons';
 export const KeyTextTable: StoryObj = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   name: 'Ключ текст',
   render: () => {
@@ -54,34 +54,34 @@ export const KeyTextTable: StoryObj = {
           keyText: {
             key: 'kek',
             name: 'Ключ - Title',
-            renderCell: ({ row }) => row.id
-          }
+            renderCell: ({ row }) => row.id,
+          },
         },
         {
           key: 'priority',
-          name: 'Priority'
+          name: 'Priority',
         },
         {
           key: 'issueType',
-          name: 'Issue Type'
+          name: 'Issue Type',
         },
         {
           key: 'complete',
-          name: '% Complete'
-        }
+          name: '% Complete',
+        },
       ],
-      []
+      [],
     );
 
     return (
       <Table
         tableConfig={{
           containerStyle: { height: 700 },
-          keyText: true
+          keyText: true,
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };

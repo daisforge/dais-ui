@@ -11,9 +11,9 @@ const meta: Meta = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      page: DocStoryTemplate
-    }
-  }
+      page: DocStoryTemplate,
+    },
+  },
 };
 
 export default meta;
@@ -43,7 +43,7 @@ export const RowSize: Story = {
   name: 'Высота строк',
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     const [rows] = useState(createRows);
@@ -52,18 +52,18 @@ export const RowSize: Story = {
       () => [
         {
           key: 'id',
-          name: 'ID'
+          name: 'ID',
         },
         {
           key: 'task',
-          name: 'Title'
+          name: 'Title',
         },
         {
           key: 'priority',
-          name: 'Priority'
-        }
+          name: 'Priority',
+        },
       ],
-      []
+      [],
     );
 
     return (
@@ -77,12 +77,12 @@ export const RowSize: Story = {
             onRowSizeChange: (size) => {
               // eslint-disable-next-line no-console
               console.debug('rowSize changed:', size);
-            }
-          }
+            },
+          },
         }}
         columnConfig={columns}
         rows={rows}
       />
     );
-  }
+  },
 };

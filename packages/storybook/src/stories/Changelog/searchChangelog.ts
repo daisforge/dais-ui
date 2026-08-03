@@ -17,7 +17,7 @@ export const SERVICE_ID_START = 'service:';
  */
 export function searchChangelog(
   markdown: string,
-  query: string
+  query: string,
 ): VersionBlock[] {
   const queryTrimmed = query.trim();
   if (!queryTrimmed || queryTrimmed.length < 2)
@@ -28,21 +28,21 @@ export function searchChangelog(
   const searchLower = query.toLowerCase();
 
   const matched = blocks.filter((block) =>
-    block.content.toLowerCase().includes(searchLower)
+    block.content.toLowerCase().includes(searchLower),
   );
 
   if (matched.length === 0) {
     return [
       {
         id: `${SERVICE_ID_START}not found`,
-        content: `Ничего не найдено по запросу **«${query}»** .`
-      }
+        content: `Ничего не найдено по запросу **«${query}»** .`,
+      },
     ];
   }
 
   const highlighted = matched.map((block) => ({
     id: block.id,
-    content: highlightText(block.content, query)
+    content: highlightText(block.content, query),
   }));
   return highlighted;
 }

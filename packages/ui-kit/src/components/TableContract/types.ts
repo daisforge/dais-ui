@@ -4,7 +4,7 @@ import type {
   ObjectForExtending,
   SortColumn,
   TableConfig,
-  TableProps
+  TableProps,
 } from '@ui-kit/components/Table';
 
 import { PaginationParams } from './types.contractQueryParams';

@@ -12,7 +12,7 @@ describe('validateRequiredHoс', () => {
     const result = validateRequiredHoс({
       required,
       validateRange,
-      externalValidates
+      externalValidates,
     })(value, formValues);
     expect(result).toEqual('required');
   });
@@ -26,7 +26,7 @@ describe('validateRequiredHoс', () => {
     const result = validateRequiredHoс({
       required,
       validateRange,
-      externalValidates
+      externalValidates,
     })(value, formValues);
     expect(result).toEqual('resultRange');
   });
@@ -40,7 +40,7 @@ describe('validateRequiredHoс', () => {
     const result = validateRequiredHoс({
       required,
       validateRange,
-      externalValidates
+      externalValidates,
     })(value, formValues);
     expect(result).toEqual('externalValidateResult');
   });
@@ -49,14 +49,14 @@ describe('validateRequiredHoс', () => {
     const required = 'required';
     const validateRange = vi.fn().mockReturnValue(true);
     const externalValidates = {
-      key: vi.fn().mockReturnValue('externalValidateResult')
+      key: vi.fn().mockReturnValue('externalValidateResult'),
     };
     const value = { dateFrom: '2020-01-01', dateTo: '2020-12-31' };
     const formValues = {};
     const result = validateRequiredHoс({
       required,
       validateRange,
-      externalValidates
+      externalValidates,
     })(value, formValues);
     expect(result).toEqual('externalValidateResult');
   });
@@ -70,7 +70,7 @@ describe('validateRequiredHoс', () => {
     const result = validateRequiredHoс({
       required,
       validateRange,
-      externalValidates
+      externalValidates,
     })(value, formValues);
     expect(result).toBe(true);
   });

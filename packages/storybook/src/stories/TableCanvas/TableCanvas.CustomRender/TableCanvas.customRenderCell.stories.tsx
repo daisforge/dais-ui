@@ -9,7 +9,7 @@ import {
   Canvas,
   ColumnConfig,
   TableCanvas,
-  tableCanvasTheme
+  tableCanvasTheme,
 } from '@ui-kit/components/TableCanvas';
 import { IconSearch } from '@ui-kit/icons';
 import React, { ComponentProps, useMemo, useState } from 'react';
@@ -18,10 +18,10 @@ const meta: Meta = {
   title: 'Локальные компоненты/TableCanvas/Custom renders',
   parameters: {
     docs: {
-      page: DocStoryTemplate
-    }
+      page: DocStoryTemplate,
+    },
   },
-  tags: ['!autodocs']
+  tags: ['!autodocs'],
 };
 
 export default meta;
@@ -48,7 +48,7 @@ export const CustomRenderCell: Story = {
   name: 'Кастомизация рендера ячеек шапки, данных, итоговых данных',
   ...storySourceDoc({
     preCode: customRenderCellPreCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     const [rows] = useState<Row[]>(createRows(0, 20));
@@ -62,7 +62,7 @@ export const CustomRenderCell: Story = {
               <Canvas.Container
                 padding={{
                   left: theme.cellHorizontalPadding,
-                  right: theme.cellHorizontalPadding
+                  right: theme.cellHorizontalPadding,
                 }}
                 alignItems="center"
               >
@@ -79,7 +79,7 @@ export const CustomRenderCell: Story = {
             <Canvas.Container
               padding={{
                 left: theme.cellHorizontalPadding,
-                right: theme.cellHorizontalPadding
+                right: theme.cellHorizontalPadding,
               }}
               alignItems="center"
             >
@@ -93,7 +93,7 @@ export const CustomRenderCell: Story = {
             <Canvas.Container
               padding={{
                 left: theme.cellHorizontalPadding,
-                right: theme.cellHorizontalPadding
+                right: theme.cellHorizontalPadding,
               }}
               alignItems="center"
             >
@@ -101,7 +101,7 @@ export const CustomRenderCell: Story = {
                 Итого {summ?.toString() ?? ''} - кастомный renderSummaryCell
               </Canvas.Text>
             </Canvas.Container>
-          )
+          ),
         },
         {
           key: 'task',
@@ -123,7 +123,7 @@ export const CustomRenderCell: Story = {
             <Canvas.Container
               padding={{
                 left: theme.cellHorizontalPadding,
-                right: theme.cellHorizontalPadding
+                right: theme.cellHorizontalPadding,
               }}
               alignItems="center"
             >
@@ -138,7 +138,7 @@ export const CustomRenderCell: Story = {
                 {`${row?.task} кликните`}
               </Canvas.Button>
             </Canvas.Container>
-          )
+          ),
         },
         {
           key: 'priority',
@@ -151,13 +151,13 @@ export const CustomRenderCell: Story = {
               High: 'accent',
               Medium: 'warning',
               Low: 'dark',
-              Critical: 'negative'
+              Critical: 'negative',
             };
             return (
               <Canvas.Container
                 padding={{
                   left: theme.cellHorizontalPadding,
-                  right: theme.cellHorizontalPadding
+                  right: theme.cellHorizontalPadding,
                 }}
                 alignItems="center"
               >
@@ -168,18 +168,18 @@ export const CustomRenderCell: Story = {
                 />
               </Canvas.Container>
             );
-          }
+          },
         },
         {
           key: 'issueType',
-          name: 'Issue Type'
+          name: 'Issue Type',
         },
         {
           key: 'complete',
-          name: '% Complete'
-        }
+          name: '% Complete',
+        },
       ],
-      []
+      [],
     );
 
     return (
@@ -188,19 +188,19 @@ export const CustomRenderCell: Story = {
           containerStyle: { height: 700 },
           summaryRows: {
             showDefault: true,
-            showInControl: false
-          }
+            showInControl: false,
+          },
         }}
         columnConfig={columnConfig}
         rows={rows}
         bottomSummaryRows={[rows.length]}
       />
     );
-  }
+  },
 };
 
 function renderCellWithHoverIcon(
-  getValue: (row: Row) => React.ReactNode
+  getValue: (row: Row) => React.ReactNode,
 ): NonNullable<ColumnConfig<Row>['renderCell']> {
   return ({ row, theme, hovered }) => (
     <Canvas.Container
@@ -209,7 +209,7 @@ function renderCellWithHoverIcon(
       columnGap={8}
       padding={{
         left: theme.cellHorizontalPadding,
-        right: theme.cellHorizontalPadding
+        right: theme.cellHorizontalPadding,
       }}
       style={{ width: '100%' }}
     >
@@ -241,33 +241,33 @@ function HoveredCellIconExample() {
         key: 'id',
         name: 'ID',
         width: 80,
-        renderCell: renderCellWithHoverIcon((row) => row.id)
+        renderCell: renderCellWithHoverIcon((row) => row.id),
       },
       {
         key: 'task',
         name: 'Task',
         width: 320,
-        renderCell: renderCellWithHoverIcon((row) => row.task)
+        renderCell: renderCellWithHoverIcon((row) => row.task),
       },
       {
         key: 'priority',
         name: 'Priority',
         width: 140,
-        renderCell: renderCellWithHoverIcon((row) => row.priority)
+        renderCell: renderCellWithHoverIcon((row) => row.priority),
       },
       {
         key: 'issueType',
         name: 'Issue Type',
         width: 160,
-        renderCell: renderCellWithHoverIcon((row) => row.issueType)
+        renderCell: renderCellWithHoverIcon((row) => row.issueType),
       },
       {
         key: 'complete',
         name: '% Complete',
-        renderCell: renderCellWithHoverIcon((row) => `${row.complete}%`)
-      }
+        renderCell: renderCellWithHoverIcon((row) => `${row.complete}%`),
+      },
     ],
-    []
+    [],
   );
 
   return (
@@ -291,12 +291,12 @@ import React, { useMemo, useState } from 'react';
 
 ${getFuncAsString(
   'packages/storybook/src/stories/TableCanvas/TableCanvas.CustomRender/TableCanvas.customRenderCell.stories.tsx',
-  'renderCellWithHoverIcon'
+  'renderCellWithHoverIcon',
 )}
 
 ${getFuncAsString(
   'packages/storybook/src/stories/TableCanvas/TableCanvas.CustomRender/TableCanvas.customRenderCell.stories.tsx',
-  'HoveredCellIconExample'
+  'HoveredCellIconExample',
 )}
 `;
 
@@ -304,13 +304,13 @@ export const HoveredCellIcon: Story = {
   name: 'Иконка при наведении на ячейку',
   ...storySourceDoc({
     code: hoverIconCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
-  render: HoveredCellIconExample
+  render: HoveredCellIconExample,
 };
 
 function renderCellWithActiveIcon(
-  getValue: (row: Row) => React.ReactNode
+  getValue: (row: Row) => React.ReactNode,
 ): NonNullable<ColumnConfig<Row>['renderCell']> {
   return ({ row, theme, active }) => (
     <Canvas.Container
@@ -319,7 +319,7 @@ function renderCellWithActiveIcon(
       columnGap={8}
       padding={{
         left: theme.cellHorizontalPadding,
-        right: theme.cellHorizontalPadding
+        right: theme.cellHorizontalPadding,
       }}
       style={{ width: '100%' }}
     >
@@ -351,40 +351,40 @@ function ActiveCellIconExample() {
         key: 'id',
         name: 'ID',
         width: 80,
-        renderCell: renderCellWithActiveIcon((row) => row.id)
+        renderCell: renderCellWithActiveIcon((row) => row.id),
       },
       {
         key: 'task',
         name: 'Task',
         width: 320,
-        renderCell: renderCellWithActiveIcon((row) => row.task)
+        renderCell: renderCellWithActiveIcon((row) => row.task),
       },
       {
         key: 'priority',
         name: 'Priority',
         width: 140,
-        renderCell: renderCellWithActiveIcon((row) => row.priority)
+        renderCell: renderCellWithActiveIcon((row) => row.priority),
       },
       {
         key: 'issueType',
         name: 'Issue Type',
         width: 160,
-        renderCell: renderCellWithActiveIcon((row) => row.issueType)
+        renderCell: renderCellWithActiveIcon((row) => row.issueType),
       },
       {
         key: 'complete',
         name: '% Complete',
-        renderCell: renderCellWithActiveIcon((row) => `${row.complete}%`)
-      }
+        renderCell: renderCellWithActiveIcon((row) => `${row.complete}%`),
+      },
     ],
-    []
+    [],
   );
 
   return (
     <TableCanvas
       tableConfig={{
         containerStyle: { height: 500 },
-        highlightActiveType: 'cell'
+        highlightActiveType: 'cell',
       }}
       columnConfig={columnConfig}
       rows={rows}
@@ -404,12 +404,12 @@ import React, { useMemo, useState } from 'react';
 
 ${getFuncAsString(
   'packages/storybook/src/stories/TableCanvas/TableCanvas.CustomRender/TableCanvas.customRenderCell.stories.tsx',
-  'renderCellWithActiveIcon'
+  'renderCellWithActiveIcon',
 )}
 
 ${getFuncAsString(
   'packages/storybook/src/stories/TableCanvas/TableCanvas.CustomRender/TableCanvas.customRenderCell.stories.tsx',
-  'ActiveCellIconExample'
+  'ActiveCellIconExample',
 )}
 `;
 
@@ -417,7 +417,7 @@ export const ActiveCellIcon: Story = {
   name: 'Иконка активной ячейки',
   ...storySourceDoc({
     code: activeIconCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
-  render: ActiveCellIconExample
+  render: ActiveCellIconExample,
 };

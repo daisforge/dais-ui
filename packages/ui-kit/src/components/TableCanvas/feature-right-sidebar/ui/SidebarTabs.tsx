@@ -15,7 +15,7 @@ interface SidebarTabsProps {
 export const SidebarTabs = ({
   tabs,
   activeTabId,
-  onTabChange
+  onTabChange,
 }: SidebarTabsProps) => (
   <TabsStyled view="divider" orientation="vertical" size="xs">
     {tabs
@@ -41,7 +41,7 @@ export const SidebarTabs = ({
               onTabChange(tab.id);
               tab.domMetadata?.onClick?.(e, {
                 action: DOM_METADATA_ACTIONS.TOGGLE_SIDEBAR_TAB,
-                tabId: tab.id
+                tabId: tab.id,
               });
             }}
             style={{ justifyContent: 'center' }}

@@ -2,7 +2,7 @@ import type { AnalyticalWidgetSize } from '../AnalyticalWidget';
 import { analyticalWidgetClassNames } from '../AnalyticalWidget';
 
 export function StoryAnalyticalWidgetClassNamesComp(
-  _p: typeof analyticalWidgetClassNames
+  _p: typeof analyticalWidgetClassNames,
 ) {
   return null;
 }

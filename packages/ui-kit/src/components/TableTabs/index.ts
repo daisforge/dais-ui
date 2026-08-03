@@ -11,5 +11,5 @@ export type {
   TCustomTabItem,
   TTabItem,
   TTabsContainerOptions,
-  TTabsProps
+  TTabsProps,
 } from './TableTabs.types';

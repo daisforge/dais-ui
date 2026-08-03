@@ -7,7 +7,7 @@ import {
   getPriorityRequired,
   getRuleValue,
   hasValidationRule,
-  useChangedFormContext
+  useChangedFormContext,
 } from '../../utils';
 import { DefaultRightIconButton } from '../lib/ui/RightIconButton';
 import { convertToISO } from '../lib/utils/convertToISO';
@@ -110,7 +110,7 @@ export const FormDatePickerRange = <TFieldValues extends FieldValues>({
     ...options,
     required: getPriorityRequired({ options, ruleName: 'required' })
       ? options?.required
-      : propsRequired
+      : propsRequired,
   };
 
   // Обработка min/max из пропсов и options
@@ -140,14 +140,14 @@ export const FormDatePickerRange = <TFieldValues extends FieldValues>({
         : undefined;
     })(),
     required: newOptions?.required,
-    invalidFormatMessage
+    invalidFormatMessage,
   };
 
   const validateRange = validateRangeDate({ ...validateArgs, format });
   const validators = validateRequiredHoс({
     required: newOptions?.required,
     validateRange,
-    externalValidates: newOptions?.validate
+    externalValidates: newOptions?.validate,
   });
 
   const formCtx = useChangedFormContext({
@@ -156,11 +156,11 @@ export const FormDatePickerRange = <TFieldValues extends FieldValues>({
       const safeValue = value
         ? {
             dateFrom: (value as any).dateFrom,
-            dateTo: (value as any).dateTo
+            dateTo: (value as any).dateTo,
           }
         : { dateFrom: undefined, dateTo: undefined };
       return validators(safeValue, formCtx.getValues());
-    }
+    },
   });
 
   const { control, rules, remOptions, clearErrors } = formCtx;
@@ -176,14 +176,14 @@ export const FormDatePickerRange = <TFieldValues extends FieldValues>({
     value: string | Date,
     error: boolean | undefined,
     changeCb: (...event: any[]) => void,
-    fieldName: 'dateFrom' | 'dateTo'
+    fieldName: 'dateFrom' | 'dateTo',
   ) => {
     if (!value) return;
 
     if (error) {
       formCtx.setError(`${name}`, {
         type: 'custom',
-        message: `Ошибка значения`
+        message: `Ошибка значения`,
       });
       setOpened(false);
       return;
@@ -192,13 +192,13 @@ export const FormDatePickerRange = <TFieldValues extends FieldValues>({
     const currentValue = formCtx.getValues(name) || {};
     const updatedDate = convertToISO({
       date: typeof value === 'string' ? value : value.toDateString(),
-      format
+      format,
     });
 
     if (updatedDate) {
       changeCb({
         ...currentValue,
-        [fieldName]: value
+        [fieldName]: value,
       });
     }
   };
@@ -206,13 +206,13 @@ export const FormDatePickerRange = <TFieldValues extends FieldValues>({
   const onCommitFirstDateHandler = (
     value: string | Date,
     error: boolean | undefined,
-    changeCb: (...event: any[]) => void
+    changeCb: (...event: any[]) => void,
   ) => handleDateCommit(value, error, changeCb, 'dateFrom');
 
   const onCommitSecondDateHandler = (
     value: string | Date,
     error: boolean | undefined,
-    changeCb: (...event: any[]) => void
+    changeCb: (...event: any[]) => void,
   ) => handleDateCommit(value, error, changeCb, 'dateTo');
 
   return (
@@ -223,7 +223,7 @@ export const FormDatePickerRange = <TFieldValues extends FieldValues>({
       {...remOptions}
       render={({
         field: { value, ref: rhfRef, ...fieldRest },
-        fieldState: { error }
+        fieldState: { error },
       }) => {
         // При form.reset() value станет undefined - не используем defaultDate
         // DatePickerRange ожидает пустую строку для очистки, а не undefined
@@ -283,7 +283,7 @@ export const FormDatePickerRange = <TFieldValues extends FieldValues>({
               // const updatedDate = convertToISO({ date, format });
               const newValue = {
                 ...currentValue,
-                dateFrom: date
+                dateFrom: date,
               };
               fieldRest.onChange(newValue);
               onChangeFirstValue?.(e);
@@ -293,7 +293,7 @@ export const FormDatePickerRange = <TFieldValues extends FieldValues>({
               // const updatedDate = convertToISO({ date, format });
               const newValue = {
                 ...currentValue,
-                dateTo: date
+                dateTo: date,
               };
               fieldRest.onChange(newValue);
               onChangeSecondValue?.(e);

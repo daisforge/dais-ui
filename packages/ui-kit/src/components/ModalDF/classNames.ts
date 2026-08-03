@@ -15,5 +15,5 @@ export const cls = {
   footer: 'modalDF_footer',
   mainFooterLeft: 'modalDF_footer-left',
   mainFooterRight: 'modalDF_footer-right',
-  content: 'modalDF_content'
+  content: 'modalDF_content',
 } as const;

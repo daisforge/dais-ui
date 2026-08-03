@@ -11,10 +11,10 @@ const meta: Meta = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      page: DocStoryTemplate
+      page: DocStoryTemplate,
     },
-    screenshot: { skip: true }
-  }
+    screenshot: { skip: true },
+  },
 };
 
 export default meta;
@@ -43,7 +43,7 @@ type Story = StoryObj;
 export const ColumnsControl: Story = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     const [rows] = useState(createRows);
@@ -52,34 +52,34 @@ export const ColumnsControl: Story = {
       () => [
         {
           key: 'id',
-          name: 'ID'
+          name: 'ID',
         },
         {
           key: 'task',
-          name: 'Title'
+          name: 'Title',
         },
         {
           key: 'priority',
-          name: 'Priority'
+          name: 'Priority',
         },
         {
           key: 'issueType',
-          name: 'Issue Type'
+          name: 'Issue Type',
         },
         {
           key: 'developer',
-          name: 'Developer'
+          name: 'Developer',
         },
         {
           key: 'tr1',
-          name: 'TR'
+          name: 'TR',
         },
         {
           key: 'complete',
-          name: '% Complete'
-        }
+          name: '% Complete',
+        },
       ],
-      []
+      [],
     );
 
     return (
@@ -95,7 +95,7 @@ export const ColumnsControl: Story = {
             reorderingAside: true,
             reorderingHeader: true,
             columnsLabel: {
-              task: 'Задачи'
+              task: 'Задачи',
             },
             orderDefault: ['id', 'issueType', 'task'],
             hiddenDefault: ['tr1'],
@@ -107,12 +107,12 @@ export const ColumnsControl: Story = {
                                     pinned: ${pinned.join(', ')}
                                     hidden: ${hidden.join(', ')}
                                 `);
-            }
-          }
+            },
+          },
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };

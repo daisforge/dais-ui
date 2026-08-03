@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-restricted-imports
 import {
   NumberFormat as BaseNumberFormat,
-  numberFormatter
+  numberFormatter,
 } from '@salutejs/sdds-finai';
 import { getContentRight } from '@ui-kit/shared/utils/inputs';
 import type { ComponentProps } from 'react';
@@ -18,7 +18,7 @@ export type NumberFormatCompProps = NumberFormatBaseProps & {
 export const NumberFormat = forwardRef<HTMLInputElement, NumberFormatCompProps>(
   (
     { disabled, readOnly, contentRight, size = 'xs', value, onClear, ...rest },
-    ref
+    ref,
   ) => (
     <BaseNumberFormat
       {...rest}
@@ -33,10 +33,10 @@ export const NumberFormat = forwardRef<HTMLInputElement, NumberFormatCompProps>(
         value,
         onClear,
         size,
-        contentRight
+        contentRight,
       })}
     />
-  )
+  ),
 );
 
 NumberFormat.displayName = 'NumberFormat';

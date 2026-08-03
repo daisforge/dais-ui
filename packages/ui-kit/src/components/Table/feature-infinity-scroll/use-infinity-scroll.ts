@@ -8,10 +8,10 @@ export const useInfinityScroll = <
   FilterStateType extends ObjectForExtending,
   RowIdType extends string | number,
   RowType extends ObjectForExtending,
-  SummaryRowType = unknown
+  SummaryRowType = unknown,
 >({
   tableConfig,
-  rows
+  rows,
 }: {
   tableConfig: TableConfig<
     RowType,
@@ -29,7 +29,7 @@ export const useInfinityScroll = <
     onTrigger,
     hasMore = true,
     scrollThreshold = 100,
-    isLoading: isLoadingInfinityScroll = false
+    isLoading: isLoadingInfinityScroll = false,
   } = infinityScroll ?? {};
 
   const isHaveActiveInfinityScroll =
@@ -46,7 +46,7 @@ export const useInfinityScroll = <
 
       const isAtBotom = isAtBottom({
         event,
-        scrollThreshold
+        scrollThreshold,
       });
 
       if (isAtBotom && !isLoadingInfinityScroll) {
@@ -66,14 +66,14 @@ export const useInfinityScroll = <
       isLoadingInfinityScroll,
       onTrigger,
       rows,
-      scrollThreshold
-    ]
+      scrollThreshold,
+    ],
   );
 
   return {
     infinityScrollHandler,
     infinityScrollActiveInConfig,
     isHaveActiveInfinityScroll,
-    infinityScrollHasMore: hasMore
+    infinityScrollHasMore: hasMore,
   };
 };

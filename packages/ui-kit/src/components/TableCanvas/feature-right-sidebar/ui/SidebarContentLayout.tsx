@@ -10,7 +10,7 @@ import {
   SidebarLayout,
   SidebarLayoutContent,
   SidebarLayoutHeader,
-  StyledTitleBox
+  StyledTitleBox,
 } from './styled';
 import { tableSidebarClassNames as cls } from './TableSidebar.classnames';
 
@@ -32,7 +32,7 @@ export const SidebarContentLayout: FC<
             lines={1}
             tooltipText={title}
             tooltipProps={{
-              placement: 'top'
+              placement: 'top',
             }}
           >
             {title}
@@ -44,7 +44,7 @@ export const SidebarContentLayout: FC<
             onClick={(e: React.MouseEvent<HTMLElement>) => {
               toggle();
               domMetadata?.onClick?.(e, {
-                action: DOM_METADATA_ACTIONS.CLOSE_SIDEBAR
+                action: DOM_METADATA_ACTIONS.CLOSE_SIDEBAR,
               });
             }}
             size="xs"

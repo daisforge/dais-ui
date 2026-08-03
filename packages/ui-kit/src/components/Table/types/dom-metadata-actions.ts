@@ -32,7 +32,7 @@ export const DOM_METADATA_ACTIONS = {
   /** Скрытие столбца. detail.columnKey — ключ столбца */
   HIDE_COLUMN: 'hide-column',
   /** Показ столбца. detail.columnKey — ключ столбца */
-  SHOW_COLUMN: 'show-column'
+  SHOW_COLUMN: 'show-column',
 } as const;
 
 export type DomMetadataAction =

@@ -12,12 +12,12 @@ import {
   flatten,
   getAllParents,
   getCustomOrDefaultSelectingRules,
-  ObjectWithParentAndId
+  ObjectWithParentAndId,
 } from './handlers';
 import {
   ChildrenInfo,
   FlattenedRowsArrAndMap,
-  SelectingRowConfig
+  SelectingRowConfig,
 } from './types';
 
 export interface RowSelectionContextValue {
@@ -27,7 +27,7 @@ export interface RowSelectionContextValue {
 type RowIdTypeInstance = string | number;
 export type SelectingContextType<
   RowType extends ObjectForExtending = ObjectForExtending,
-  RowIdType extends RowIdTypeInstance = RowIdTypeInstance
+  RowIdType extends RowIdTypeInstance = RowIdTypeInstance,
 > = {
   rows: RowType[];
   selectingRowConfig: SelectingRowConfig<RowType, RowIdType> & {
@@ -60,12 +60,12 @@ export type SelectingContextType<
   };
 };
 const SelectingContext = createContext<SelectingContextType | undefined>(
-  undefined
+  undefined,
 );
 
 export const SelectingContextProvider = <
   RowIdType extends string | number,
-  RowType extends ObjectForExtending
+  RowType extends ObjectForExtending,
 >({
   children,
   ...rest
@@ -109,13 +109,13 @@ export const SelectingContextProvider = <
   </SelectingContext.Provider>
 );
 export function useSelectingRowContext<
-  R extends ObjectForExtending = ObjectForExtending
+  R extends ObjectForExtending = ObjectForExtending,
 >() {
   const selectingContext = useContext(SelectingContext);
 
   if (selectingContext === undefined) {
     throw new Error(
-      'useSelectingRowContext must be used within DataGrid cells'
+      'useSelectingRowContext must be used within DataGrid cells',
     );
   }
 
@@ -131,7 +131,7 @@ const isLevelInLevels = (
         RowIdTypeInstance
       >['selectingRules']
     >['levels']
-  >
+  >,
 ) => {
   if (typeof levelsX === 'number') {
     return level === levelsX;
@@ -146,7 +146,7 @@ const isLevelInLevels = (
 };
 
 export const getRowSelectingInfo = <RowType extends ObjectForExtending>(
-  renderCellProps: CellInfoGlideInstance<RowType>
+  renderCellProps: CellInfoGlideInstance<RowType>,
 ) => {
   const {
     flattenedRowsArrAndMap,
@@ -154,7 +154,7 @@ export const getRowSelectingInfo = <RowType extends ObjectForExtending>(
     selectedRows,
     setSelectedRows,
     rowKeyGetter,
-    rowsGroupingIsActive
+    rowsGroupingIsActive,
   } = renderCellProps.ctxs.selectingRowCtx;
 
   const { flattenedRows, flattenedRowsMap } = flattenedRowsArrAndMap ?? {};
@@ -166,7 +166,7 @@ export const getRowSelectingInfo = <RowType extends ObjectForExtending>(
     selectingRowsIsActive,
     selectingRules,
     rowCheckboxDisabled,
-    rowShowCheckbox
+    rowShowCheckbox,
   } = selectingRowConfig;
 
   const selectingRulesAfterCheck =
@@ -179,7 +179,7 @@ export const getRowSelectingInfo = <RowType extends ObjectForExtending>(
     isIndeterminate,
     isRowSelectionDisabled,
     isHaveCheckbox,
-    onChange: onChangeExternal
+    onChange: onChangeExternal,
   } = (() => {
     if (
       !selectingRowsIsActive ||
@@ -195,14 +195,14 @@ export const getRowSelectingInfo = <RowType extends ObjectForExtending>(
         isIndeterminate: false,
         isRowSelectionDisabled: false,
         isHaveCheckbox: false,
-        onChange: null
+        onChange: null,
       };
     }
 
     if (rowsGroupingIsActive && isGroupRow(row)) {
       const selectedChildCount = row.childRows.reduce((acc, childRow) => {
         const childRowIsSelected = selectedRows?.has(
-          rowKeyGetter(hideRowServiceKeysHandler(childRow))
+          rowKeyGetter(hideRowServiceKeysHandler(childRow)),
         );
 
         return acc + (childRowIsSelected ? 1 : 0);
@@ -218,7 +218,7 @@ export const getRowSelectingInfo = <RowType extends ObjectForExtending>(
         row,
         selectedRows,
         selectedChildCount,
-        childCount: row.childRows.length
+        childCount: row.childRows.length,
       });
 
       return {
@@ -226,7 +226,7 @@ export const getRowSelectingInfo = <RowType extends ObjectForExtending>(
         isRowSelected: customs?.checked ?? isRowSelected,
         isIndeterminate: customs?.indeterminate ?? isIndeterminate,
         isRowSelectionDisabled: customs?.checkboxDisabled ?? false,
-        onChange: null
+        onChange: null,
       };
     }
 
@@ -240,7 +240,7 @@ export const getRowSelectingInfo = <RowType extends ObjectForExtending>(
     const rowWithoutServiceKeys = hideRowServiceKeysHandler(row);
 
     const isRowSelected = !!selectedRows?.has(
-      rowKeyGetter(rowWithoutServiceKeys)
+      rowKeyGetter(rowWithoutServiceKeys),
     );
     const getRowChildrenInfo = () => {
       const info: ChildrenInfo<RowType, string | number> = {
@@ -253,7 +253,7 @@ export const getRowSelectingInfo = <RowType extends ObjectForExtending>(
         notHidden: [],
         selected: [],
         notSelected: [],
-        someChildrenIsSelected: false
+        someChildrenIsSelected: false,
       };
       if (!isInLevels) return info;
 
@@ -261,7 +261,7 @@ export const getRowSelectingInfo = <RowType extends ObjectForExtending>(
       const rowCb = (
         levelFromRow: number,
         row: RowType,
-        parent: RowType | null
+        parent: RowType | null,
       ) => {
         if (levelFromRow === 1) return false; // не включаем саму строку
 
@@ -275,7 +275,7 @@ export const getRowSelectingInfo = <RowType extends ObjectForExtending>(
 
         const isSelected = selectedRows.has(rowKey);
         info[selectedRows.has(rowKey) ? 'selected' : 'notSelected'].push(
-          rowKey
+          rowKey,
         );
 
         const isShowed = rowShowCheckbox?.(row, level, parent) ?? true;
@@ -306,7 +306,7 @@ export const getRowSelectingInfo = <RowType extends ObjectForExtending>(
         undefined,
         undefined,
         (_l, r) => ({ rowKey: rowKeyGetter(r) }),
-        rowCb
+        rowCb,
       );
 
       if (info.selected.length) {
@@ -317,7 +317,7 @@ export const getRowSelectingInfo = <RowType extends ObjectForExtending>(
     };
 
     const getSomeChildrenIsSelected = (
-      rowAllChildrenFlattenedExt?: ObjectForExtending[]
+      rowAllChildrenFlattenedExt?: ObjectForExtending[],
     ) => {
       const rowChildrenFlattened =
         rowAllChildrenFlattenedExt ?? getRowChildrenInfo().all;
@@ -325,7 +325,7 @@ export const getRowSelectingInfo = <RowType extends ObjectForExtending>(
       const someChildrenIsSelected =
         !!rowChildrenFlattened.length &&
         rowChildrenFlattened.some(
-          (curChildren) => !!selectedRows?.has(rowKeyGetter(curChildren))
+          (curChildren) => !!selectedRows?.has(rowKeyGetter(curChildren)),
         );
       return someChildrenIsSelected;
     };
@@ -364,7 +364,7 @@ export const getRowSelectingInfo = <RowType extends ObjectForExtending>(
       getRowChildrenInfo,
       rowShowCheckbox,
       rowCheckboxDisabled,
-      setSelectedRows
+      setSelectedRows,
     });
     return {
       isHaveCheckbox: customs?.showCheckbox ?? isHaveCheckbox,
@@ -372,7 +372,7 @@ export const getRowSelectingInfo = <RowType extends ObjectForExtending>(
       isIndeterminate: customs?.indeterminate ?? isIndeterminate,
       isRowSelectionDisabled:
         customs?.checkboxDisabled ?? isRowSelectionDisabled,
-      onChange: customs?.onChange ?? null
+      onChange: customs?.onChange ?? null,
     };
   })();
 
@@ -391,8 +391,8 @@ export const getRowSelectingInfo = <RowType extends ObjectForExtending>(
           const copy = new Set(prev);
           row.childRows.forEach((row) =>
             copy[isRowSelected ? 'delete' : 'add'](
-              rowKeyGetter(hideRowServiceKeysHandler(row))
-            )
+              rowKeyGetter(hideRowServiceKeysHandler(row)),
+            ),
           );
           return copy;
         });
@@ -404,7 +404,7 @@ export const getRowSelectingInfo = <RowType extends ObjectForExtending>(
           indeterminate: isIndeterminate,
           checkboxDisabled: isRowSelectionDisabled,
           showCheckbox: isHaveCheckbox,
-          defaultSetter
+          defaultSetter,
         });
         return;
       }
@@ -419,12 +419,12 @@ export const getRowSelectingInfo = <RowType extends ObjectForExtending>(
 
     const { allParents } = isDefaultLevels
       ? {
-          allParents: new Map<string | number, ObjectForExtending>()
+          allParents: new Map<string | number, ObjectForExtending>(),
         }
       : getAllParents(
           currentRowInFlattened as unknown as ObjectWithParentAndId,
           flattenedRows as unknown as ObjectWithParentAndId[],
-          rowKeyGetter
+          rowKeyGetter,
         );
     const getRowParentsInfo = () => {
       const allParentsEntries = Array.from(allParents);
@@ -447,7 +447,7 @@ export const getRowSelectingInfo = <RowType extends ObjectForExtending>(
             const subRows = parent?.[SUBROWS_KEY] as ObjectForExtending[];
 
             const parentIsShouldBeSelected = subRows.every((subRow) =>
-              actualSelecteds?.has(rowKeyGetter(subRow))
+              actualSelecteds?.has(rowKeyGetter(subRow)),
             );
 
             if (parentIsShouldBeSelected && isCurrLevelInLevels) {
@@ -458,11 +458,11 @@ export const getRowSelectingInfo = <RowType extends ObjectForExtending>(
             acc.shouldNotBeSelected.push(keyOfParent);
             return acc;
           },
-          { shouldBeSelected: [], shouldNotBeSelected: [] }
+          { shouldBeSelected: [], shouldNotBeSelected: [] },
         );
       return {
         all: allParentsEntries.map(([_, v]) => v),
-        getShouldBeSelectedInfo
+        getShouldBeSelectedInfo,
       };
     };
 
@@ -475,7 +475,7 @@ export const getRowSelectingInfo = <RowType extends ObjectForExtending>(
       : flatten(
           [row],
           (r) => r?.[SUBROWS_KEY],
-          (r) => r
+          (r) => r,
         );
     const isRowInLevels = (row: ObjectForExtending) => {
       const keyOfRow = rowKeyGetter(row);
@@ -520,7 +520,7 @@ export const getRowSelectingInfo = <RowType extends ObjectForExtending>(
         allParentsMap: allParents,
         isRowInLevels,
         defaultSetter,
-        getRowParentsInfo
+        getRowParentsInfo,
       });
       return;
     }
@@ -533,7 +533,7 @@ export const getRowSelectingInfo = <RowType extends ObjectForExtending>(
     isIndeterminate,
     isRowSelectionDisabled,
     isHaveCheckbox,
-    onChange
+    onChange,
   };
 
   return value;

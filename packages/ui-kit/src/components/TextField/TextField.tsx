@@ -17,7 +17,7 @@ export type TextFieldProps = TextFieldBaseProps & {
 export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
   (
     { disabled, readOnly, contentRight, size = 's', value, onClear, ...rest },
-    ref
+    ref,
   ) => (
     <BaseTextField
       {...rest}
@@ -32,10 +32,10 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
         value,
         onClear,
         size,
-        contentRight
+        contentRight,
       })}
     />
-  )
+  ),
 );
 
 TextField.displayName = 'TextField';

@@ -7,7 +7,7 @@ import { keyTextUpdateAfterReorder } from './handlers';
 const toSpliced = <T>(
   array: Array<T>,
   indexToStart: number,
-  counntForDelete: number
+  counntForDelete: number,
 ) => {
   const result = [...array];
   result.splice(indexToStart, counntForDelete);
@@ -24,7 +24,7 @@ export const reorderHandler = ({
   tableConfigKeyTextBoolean,
   keyText,
   colsWithKeyTextMap,
-  pinnedCols
+  pinnedCols,
 }: {
   sourceKey: string;
   targetKey: string;
@@ -58,10 +58,10 @@ export const reorderHandler = ({
 
   setColumnsOrder((columnsOrder) => {
     const sourceColumnOrderIndex = columnsOrder.findIndex(
-      (key) => key === sourceKey
+      (key) => key === sourceKey,
     );
     const targetColumnOrderIndex = columnsOrder.findIndex(
-      (key) => key === targetKey
+      (key) => key === targetKey,
     );
 
     const newColumnsOrder = toSpliced(columnsOrder, sourceColumnOrderIndex, 1);
@@ -76,7 +76,7 @@ export const reorderHandler = ({
         colsWithKeyTextMap,
         sourceColumnOrderIndex,
         targetColumnOrderIndex,
-        orderArrayForChanging: newColumnsOrder
+        orderArrayForChanging: newColumnsOrder,
       });
     }
 
@@ -84,7 +84,7 @@ export const reorderHandler = ({
       onReorderingHeader({
         newOrder: newColumnsOrder,
         sourceKey,
-        targetKey
+        targetKey,
       });
     }
 

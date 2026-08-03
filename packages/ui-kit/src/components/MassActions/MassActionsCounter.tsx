@@ -19,7 +19,7 @@ export const MassActionsCounter: React.FC<MassActionsCounterProps> = ({
   checked = false,
   onCheckboxChange,
   className,
-  indeterminate
+  indeterminate,
 }) => {
   const { down } = useBreakpoint();
   const isCompact = down('xl');
@@ -47,7 +47,7 @@ export const MassActionsCounter: React.FC<MassActionsCounterProps> = ({
       $css={{
         display: 'flex',
         alignItems: 'center',
-        gap: '4px'
+        gap: '4px',
       }}
     >
       <Checkbox
@@ -67,7 +67,7 @@ export const MassActionsCounter: React.FC<MassActionsCounterProps> = ({
       className={className}
       $css={{
         display: 'flex',
-        alignItems: 'center'
+        alignItems: 'center',
       }}
     >
       {checkboxElement}
@@ -80,16 +80,16 @@ export const MassActionsCounter: React.FC<MassActionsCounterProps> = ({
         extContainerCss={{
           overflow: 'visible',
           display: 'flex',
-          justifyContent: 'flex-end'
+          justifyContent: 'flex-end',
         }}
         intContainerCss={{
           always: {
             opacity: '0',
-            transition: '.3s ease'
+            transition: '.3s ease',
           },
           onOpen: {
-            opacity: 1
-          }
+            opacity: 1,
+          },
         }}
       >
         {isHaveCounter && (
@@ -100,7 +100,7 @@ export const MassActionsCounter: React.FC<MassActionsCounterProps> = ({
             size="xs"
             view="accent"
             style={{
-              marginBottom: '3px'
+              marginBottom: '3px',
             }}
           />
         )}

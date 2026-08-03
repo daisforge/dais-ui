@@ -8,7 +8,7 @@ import {
   textPrimary,
   textSecondary,
   textTertiary,
-  textWarning
+  textWarning,
 } from '@ui-kit/tokens';
 
 import type { TViewColors } from '../types';
@@ -23,5 +23,5 @@ export const viewColors: TViewColors = {
   tertiary: textTertiary,
   accent: textAccent,
   paragraph: textParagraph,
-  outlinesSolidPrimary: outlineSolidPrimary
+  outlinesSolidPrimary: outlineSolidPrimary,
 };

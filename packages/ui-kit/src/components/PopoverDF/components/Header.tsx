@@ -9,7 +9,7 @@ import {
   StyledHeaderBottom,
   StyledHeaderContent,
   StyledHeaderDescription,
-  StyledHeaderTitle
+  StyledHeaderTitle,
 } from '../styled';
 import type { PopoverDFHeaderProps } from '../types';
 

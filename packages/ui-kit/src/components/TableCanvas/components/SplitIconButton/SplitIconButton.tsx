@@ -32,7 +32,7 @@ export const SplitIconButton = ({
   dropdownProps,
   domMetadata,
   iconDomMetadata,
-  chevronDomMetadata
+  chevronDomMetadata,
 }: SplitIconButtonProps) => {
   const [isOpen, setIsOpen] = useState(false);
 

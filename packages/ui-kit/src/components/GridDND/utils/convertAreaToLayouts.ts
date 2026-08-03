@@ -33,7 +33,7 @@ export function convertAreaToLayoutsInit(
   areas: string[][],
   breakpoint: string,
   colsMap: Record<string, number>,
-  isResizable: boolean
+  isResizable: boolean,
 ): Layout[] {
   const newLayouts: Layout[] = [];
   const columns = colsMap[breakpoint];
@@ -90,7 +90,7 @@ export function convertAreaToLayoutsInit(
         maxW: columns, // Максимальная ширина (ограничена количеством колонок)
         minH: 1, // Минимальная высота
         isResizable, // Можно ли изменять размер
-        static: false // Элемент не статичный (можно перемещать)
+        static: false, // Элемент не статичный (можно перемещать)
       });
     }
   }

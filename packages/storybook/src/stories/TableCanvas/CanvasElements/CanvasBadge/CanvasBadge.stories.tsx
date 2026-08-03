@@ -4,7 +4,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import {
   Canvas,
   ColumnConfig,
-  TableCanvas
+  TableCanvas,
 } from '@ui-kit/components/TableCanvas';
 import React, { useMemo } from 'react';
 
@@ -15,7 +15,7 @@ const VIEWS = [
   'warning',
   'negative',
   'dark',
-  'light'
+  'light',
 ] as const;
 
 const SIZES = ['xs', 's', 'm', 'l'] as const;
@@ -26,7 +26,7 @@ const rows: ViewRow[] = VIEWS.map((view) => ({ id: view, view }));
 
 const meta: Meta = {
   title: 'Локальные компоненты/TableCanvas/CanvasElements/CanvasBadge',
-  tags: ['!autodocs']
+  tags: ['!autodocs'],
 };
 
 export default meta;
@@ -95,10 +95,10 @@ export const CustomColors: StoryObj = {
         id: '3',
         label: 'Transparent custom',
         bg: 'rgba(11, 126, 203, 0.12)',
-        text: '#0B7ECB'
+        text: '#0B7ECB',
       },
       { id: '4', label: 'Orange', bg: '#FA5F05', text: '#FFFFFF' },
-      { id: '5', label: 'Default view', bg: '', text: '' }
+      { id: '5', label: 'Default view', bg: '', text: '' },
     ];
 
     const columnConfig = useMemo<readonly ColumnConfig<CustomRow>[]>(
@@ -117,7 +117,7 @@ export const CustomColors: StoryObj = {
                 customBackgroundColor={row.bg || undefined}
               />
             </Canvas.Container>
-          )
+          ),
         },
         {
           key: 'pilled',
@@ -133,7 +133,7 @@ export const CustomColors: StoryObj = {
                 customBackgroundColor={row.bg || undefined}
               />
             </Canvas.Container>
-          )
+          ),
         },
         {
           key: 'transparent',
@@ -149,10 +149,10 @@ export const CustomColors: StoryObj = {
                 customBackgroundColor={row.bg || undefined}
               />
             </Canvas.Container>
-          )
-        }
+          ),
+        },
       ],
-      []
+      [],
     );
 
     return (
@@ -162,7 +162,7 @@ export const CustomColors: StoryObj = {
         rows={customRows}
       />
     );
-  }
+  },
 };
 
 export const Default: StoryObj = {
@@ -171,13 +171,13 @@ export const Default: StoryObj = {
     text: 'Badge',
     transparent: false,
     clear: false,
-    pilled: false
+    pilled: false,
   },
   argTypes: {
     text: { control: 'text' },
     transparent: { control: 'boolean' },
     clear: { control: 'boolean' },
-    pilled: { control: 'boolean' }
+    pilled: { control: 'boolean' },
   },
   render: (args) => {
     const { text, transparent, clear, pilled } = args as {
@@ -204,9 +204,9 @@ export const Default: StoryObj = {
                 pilled={pilled}
               />
             </Canvas.Container>
-          )
+          ),
         })),
-      [text, transparent, clear, pilled]
+      [text, transparent, clear, pilled],
     );
 
     return (
@@ -216,5 +216,5 @@ export const Default: StoryObj = {
         rows={rows}
       />
     );
-  }
+  },
 };

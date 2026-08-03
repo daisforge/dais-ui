@@ -5,7 +5,7 @@ import type {
   CellEditorComboboxProps,
   CellEditorNumberFormatProps,
   CellEditorTextAreaProps,
-  ComboboxItemOption
+  ComboboxItemOption,
 } from '../feature-edit/types';
 import { FilterComponentInPopoverProps } from '../feature-filtering/header-filter-button/types';
 import { KeyText } from '../feature-key-text/types';
@@ -20,7 +20,7 @@ import type {
   ContentFormat,
   EditingCellInfoGlideInstance,
   HeaderCellInfoGlideInstance,
-  PreviewCellInfoGlideInstance
+  PreviewCellInfoGlideInstance,
 } from '../TableGlideInstance/type';
 import { CtxsType } from './ctxs.type';
 import type { ColumnDefaultOmitted } from './glide-type';
@@ -31,7 +31,7 @@ export type { SortColumn, SortDirection };
 export type HeaderCellInfo<
   R extends ObjectForExtending,
   SR = unknown,
-  CustomCtxs extends ObjectForExtending = {}
+  CustomCtxs extends ObjectForExtending = {},
 > = Omit<HeaderCellInfoGlideInstance<R, SR, CustomCtxs>, 'column' | 'ctxs'> & {
   column: ColumnConfig<R, SR, CustomCtxs>;
   ctxs: CtxsType<CustomCtxs>;
@@ -39,7 +39,7 @@ export type HeaderCellInfo<
 export type CellInfo<
   R extends ObjectForExtending,
   SR = unknown,
-  CustomCtxs extends ObjectForExtending = {}
+  CustomCtxs extends ObjectForExtending = {},
 > = Omit<
   CellInfoGlideInstance<R, SR, CustomCtxs>,
   'column' | 'ctxs' | 'hovered' | 'active'
@@ -62,7 +62,7 @@ export type { CellInfo as RenderCellProps };
 export type EditingCellInfo<
   R extends ObjectForExtending,
   SR = unknown,
-  CustomCtxs extends ObjectForExtending = ObjectForExtending
+  CustomCtxs extends ObjectForExtending = ObjectForExtending,
 > = Omit<EditingCellInfoGlideInstance<R, SR, CustomCtxs>, 'column'> & {
   column: ColumnConfig<R, SR, CustomCtxs>;
 };
@@ -70,38 +70,38 @@ export type EditingCellInfo<
 export type PreviewCellInfo<
   R extends ObjectForExtending,
   SR = unknown,
-  CustomCtxs extends ObjectForExtending = ObjectForExtending
+  CustomCtxs extends ObjectForExtending = ObjectForExtending,
 > = Omit<PreviewCellInfoGlideInstance<R, SR, CustomCtxs>, 'column'> & {
   column: ColumnConfig<R, SR, CustomCtxs>;
 };
 
 export type Comparator<Row extends ObjectForExtending> = (
   a: Row,
-  b: Row
+  b: Row,
 ) => number;
 
 type FilterCb<Mode extends 'multiple' | 'single' | void = 'single'> = (
   filterV: Mode extends 'multiple' ? string[] : string,
-  rowValue: string
+  rowValue: string,
 ) => boolean;
 
 export type RenderSubRowCell<
   SubRowType extends ObjectForExtending,
   SummaryRowType = unknown,
-  CustomCtxs extends ObjectForExtending = {}
+  CustomCtxs extends ObjectForExtending = {},
 > = (
   renderCellProps: CellInfo<SubRowType, SummaryRowType, CustomCtxs>,
-  lvl: number
+  lvl: number,
 ) => CellContent;
 
 export type RenderRowCustomEditCell<
   SubRowType extends ObjectForExtending,
   SummaryRowType = unknown,
-  CustomCtxs extends ObjectForExtending = {}
+  CustomCtxs extends ObjectForExtending = {},
 > = (
   renderCellProps: EditingCellInfo<SubRowType, SummaryRowType, CustomCtxs>,
   lvl: number,
-  disableLeftOffset: boolean | undefined
+  disableLeftOffset: boolean | undefined,
 ) => ReactNode;
 
 export type SelectOptions = {
@@ -194,7 +194,7 @@ export type Editing<RowType extends ObjectForExtending, SummaryRowType> = {
  */
 export type KeyTextColumnConfig<
   Row extends ObjectForExtending,
-  SummRow = unknown
+  SummRow = unknown,
 > =
   | ((props: { keyText: KeyText }) => ColumnConfig<Row, SummRow>)
   | ColumnConfig<Row, SummRow>;
@@ -208,7 +208,7 @@ export type KeyTextColumnConfig<
 export type RenderCellPreview<
   Row extends ObjectForExtending,
   SummRow = unknown,
-  CustomCtxs extends ObjectForExtending = {}
+  CustomCtxs extends ObjectForExtending = {},
 > =
   | 'none'
   | 'cellEditorAsPreview'
@@ -217,7 +217,7 @@ export type RenderCellPreview<
 export type ColumnConfig<
   Row extends ObjectForExtending,
   SummRow = unknown,
-  CustomCtxs extends ObjectForExtending = {}
+  CustomCtxs extends ObjectForExtending = {},
 > = ColumnDefaultOmitted<Row, SummRow, CustomCtxs> & {
   renderCell?: (cellInfo: CellInfo<Row, SummRow, CustomCtxs>) => CellContent;
   renderCellPreview?: RenderCellPreview<Row, SummRow, CustomCtxs>;
@@ -255,7 +255,7 @@ export type ColumnConfig<
           props: FilterComponentInPopoverProps<
             ObjectForExtending,
             ColumnConfig<Row, SummRow>
-          >
+          >,
         ) => ReactNode;
         filter:
           | {
@@ -302,12 +302,12 @@ export type ColumnConfig<
           props: FilterComponentInPopoverProps<
             ObjectForExtending,
             ColumnConfig<Row, SummRow>
-          >
+          >,
         ) => ReactNode;
         filter?: (filterValue: unknown, rowValue: unknown) => boolean;
         compareWithClearedValue?: (
           clearedValue: unknown,
-          currV: unknown
+          currV: unknown,
         ) => boolean;
       }
   );
@@ -362,7 +362,7 @@ export type ColumnConfig<
    */
   themeOverride?: (
     cellInfo: CellInfo<Row, SummRow, CustomCtxs>,
-    lvl: number
+    lvl: number,
   ) => CellThemeOverrideResult | undefined;
 };
 
@@ -373,12 +373,12 @@ export type ColumnConfig<
 
 export type ColumnOrColumnGroupConfig<
   R extends ObjectForExtending,
-  SR = unknown
+  SR = unknown,
 > = ColumnConfig<R, SR> | ColumnGroupConfig<R, SR>;
 
 export declare interface ColumnGroupConfig<
   R extends ObjectForExtending,
-  SR = unknown
+  SR = unknown,
 > {
   /** The name of the column group, it will be displayed in the header cell */
   /** A unique key to distinguish each column */

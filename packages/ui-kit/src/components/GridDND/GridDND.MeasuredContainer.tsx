@@ -12,7 +12,7 @@ import { useContainerWidth } from './hooks/useContainerWidth';
  * @returns - Responsive с измеренной шириной
  */
 export function MeasuredContainer(
-  props: React.ComponentProps<typeof Responsive>
+  props: React.ComponentProps<typeof Responsive>,
 ) {
   const { onWidthChange, margin, cols, containerPadding } = props;
   const { ref, width } = useContainerWidth<HTMLDivElement>();
@@ -24,7 +24,7 @@ export function MeasuredContainer(
         width,
         margin as [number, number],
         cols as unknown as number,
-        containerPadding as [number, number]
+        containerPadding as [number, number],
       );
       prevWidthRef.current = width;
     }

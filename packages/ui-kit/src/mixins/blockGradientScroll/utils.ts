@@ -4,7 +4,7 @@ import { BlockGradientScrollColorMap } from './constants';
 import {
   BlockGradientScrollPadding,
   BlockGradientScrollResolvedPadding,
-  BlockGradientScrollVariant
+  BlockGradientScrollVariant,
 } from './types';
 
 export const getGradientColor = (variant: BlockGradientScrollVariant) => {
@@ -14,7 +14,7 @@ export const getGradientColor = (variant: BlockGradientScrollVariant) => {
 };
 
 export const getResolvedPadding = (
-  padding?: BlockGradientScrollPadding
+  padding?: BlockGradientScrollPadding,
 ): BlockGradientScrollResolvedPadding => {
   if (padding === undefined) {
     return { top: 0, left: 0, right: 0, bottom: 0 };
@@ -30,6 +30,6 @@ export const getResolvedPadding = (
     top: top ?? 0,
     left: left ?? inline ?? 0,
     right: right ?? inline ?? 0,
-    bottom: bottom ?? 0
+    bottom: bottom ?? 0,
   };
 };

@@ -11,7 +11,7 @@ const getComponent = (isNumberPreview: boolean) =>
 // type ComponentPropsType = ComponentProps<ComponentType>;
 
 export const CellReadOnlyEditor = <R extends ObjectForExtending, SR>(
-  props: CellReadOnlyEditorProps<R, SR>
+  props: CellReadOnlyEditorProps<R, SR>,
 ) => {
   // eslint-disable-next-line react/destructuring-assignment
   const { contentFormat, contentAlign = 'left' } = props?.column ?? {};
@@ -22,7 +22,7 @@ export const CellReadOnlyEditor = <R extends ObjectForExtending, SR>(
 
   const Component = useMemo(
     () => getComponent(isNumberPreview),
-    [isNumberPreview]
+    [isNumberPreview],
   );
 
   return (

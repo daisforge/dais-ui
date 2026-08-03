@@ -9,14 +9,14 @@ import styled, { css } from 'styled-components';
 
 import {
   useRefTableGlobalContainerContext,
-  useSearchContext
+  useSearchContext,
 } from '../contexts';
 import { COLORS, HEIGHT_CONTROL_BLOCK } from '../styles';
 import { ActiveViewModsType } from '../types';
 import {
   StyledAutocompleteBlock,
   StyledClearBtn,
-  StyledSearchBlock
+  StyledSearchBlock,
 } from './styled';
 import type { SearchBlockProps } from './types';
 
@@ -24,7 +24,7 @@ export const SearchBlock: FC<SearchBlockProps> = ({
   isVisible = false,
   size = 's',
   iconSize = 's',
-  $isFullHeight = false
+  $isFullHeight = false,
 }) => {
   const refTableGlobalContainer = useRefTableGlobalContainerContext();
   const context = useSearchContext();
@@ -47,7 +47,7 @@ export const SearchBlock: FC<SearchBlockProps> = ({
     setInternalLocalValue: setLocalValue,
     domMetadata,
     searchOnType,
-    autocomplete
+    autocomplete,
   } = context;
 
   const isManualSearchMode = !searchOnType;
@@ -59,7 +59,7 @@ export const SearchBlock: FC<SearchBlockProps> = ({
 
   const debouncedValue = useDebouncedValue(
     localValue,
-    isDebounceActive ? debounceDelay : 0
+    isDebounceActive ? debounceDelay : 0,
   );
 
   // Синхронизация internalLocalValue с searchQuery при изменении извне
@@ -90,7 +90,7 @@ export const SearchBlock: FC<SearchBlockProps> = ({
     setLocalValue,
     isManualSearchMode,
     isDebounceActive,
-    onDebouncedChange
+    onDebouncedChange,
   ]);
 
   useEffect(() => {
@@ -138,7 +138,7 @@ export const SearchBlock: FC<SearchBlockProps> = ({
     isDebounceActive,
     localValue,
     onChange,
-    isManualSearchMode
+    isManualSearchMode,
   ]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -201,7 +201,7 @@ export const SearchBlock: FC<SearchBlockProps> = ({
         contentLeft={
           <span
             style={{
-              marginRight: '4px'
+              marginRight: '4px',
             }}
           >
             <IconSearch size={iconSize} color={textSecondary} />
@@ -228,7 +228,7 @@ export const SearchBlock: FC<SearchBlockProps> = ({
       contentLeft={
         <span
           style={{
-            marginRight: '2px'
+            marginRight: '2px',
           }}
         >
           <IconSearch size={iconSize} />
@@ -263,16 +263,16 @@ export const StyledSearchBlockBellow = styled(Box)<{
     css({
       ...($activeView === 'rows' && {
         backgroundColor: COLORS.white,
-        borderColor: COLORS.border
+        borderColor: COLORS.border,
       }),
       ...($activeView === 'cards' && {
-        borderColor: 'transparent'
+        borderColor: 'transparent',
       }),
       ...($isCollapsed && {
         maxHeight: 0,
         overflow: 'hidden',
         borderTop: 'none',
-        transitionDelay: '0.3s'
-      })
+        transitionDelay: '0.3s',
+      }),
     })}
 `;

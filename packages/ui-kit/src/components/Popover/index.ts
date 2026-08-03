@@ -4,7 +4,7 @@ import { ComponentProps } from 'react';
 export type {
   PopoverPlacement,
   PopoverProps,
-  PopoverTrigger
+  PopoverTrigger,
 } from '@salutejs/sdds-finai';
 
 type PopoverCompProps = ComponentProps<typeof Popover>;

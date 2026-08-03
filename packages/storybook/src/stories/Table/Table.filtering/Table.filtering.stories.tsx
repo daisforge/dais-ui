@@ -2,7 +2,7 @@
 import { createRows, type Row } from '@df-storybook/data/tableData';
 import {
   createSeededRandom,
-  FIXED_DATE_TIMESTAMP
+  FIXED_DATE_TIMESTAMP,
 } from '@df-storybook/data/tableData';
 import DocStoryTemplate from '@df-storybook/templates/DocStoryTemplate.mdx';
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
@@ -14,7 +14,7 @@ import {
   ColumnConfig,
   ColumnOrColumnGroupConfig,
   Table,
-  TableFilterSelectListItem
+  TableFilterSelectListItem,
 } from '@ui-kit/components/Table';
 import { TextField } from '@ui-kit/components/TextField';
 import React, { useMemo, useState } from 'react';
@@ -24,9 +24,9 @@ const meta: Meta = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      page: DocStoryTemplate
-    }
-  }
+      page: DocStoryTemplate,
+    },
+  },
 };
 
 export default meta;
@@ -55,7 +55,7 @@ type Story = StoryObj;
 export const Filtering: Story = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     const [rows] = useState(() => {
@@ -66,12 +66,12 @@ export const Filtering: Story = {
         date: (() => {
           const date = new Date(
             FIXED_DATE_TIMESTAMP +
-              (Math.floor(seededRandom() * 61) - 30) * 86400000
+              (Math.floor(seededRandom() * 61) - 30) * 86400000,
           );
           return `${String(date.getDate()).padStart(2, '0')}.${String(
-            date.getMonth() + 1
+            date.getMonth() + 1,
           ).padStart(2, '0')}.${date.getFullYear()}`;
-        })()
+        })(),
       }));
     });
 
@@ -87,8 +87,8 @@ export const Filtering: Story = {
             filter: 'startWith',
 
             valueInRow: (r) => r.id,
-            keyInFilterState: 'id'
-          }
+            keyInFilterState: 'id',
+          },
         },
         {
           key: 'date',
@@ -97,7 +97,7 @@ export const Filtering: Story = {
             component: 'custom',
             customRender: (props) => {
               const {
-                headerContextState: { filters, setFilters }
+                headerContextState: { filters, setFilters },
               } = props;
               return (
                 <Calendar
@@ -106,7 +106,7 @@ export const Filtering: Story = {
                     if (setFilters)
                       setFilters((prev) => ({
                         ...prev,
-                        date: v
+                        date: v,
                       }));
                   }}
                 />
@@ -117,8 +117,8 @@ export const Filtering: Story = {
             valueInRow: (r) => r.date,
             compareWithClearedValue: (clearedValue, currV) =>
               clearedValue === currV,
-            keyInFilterState: 'date'
-          }
+            keyInFilterState: 'date',
+          },
         },
         {
           key: 'task',
@@ -129,8 +129,8 @@ export const Filtering: Story = {
 
             valueInRow: (r) => `${r.task} ${r.id}`,
 
-            keyInFilterState: 'task'
-          }
+            keyInFilterState: 'task',
+          },
         },
         {
           key: 'priority',
@@ -144,17 +144,17 @@ export const Filtering: Story = {
                 { value: 'High', text: 'High' },
                 { value: 'Critical', text: 'Critical' },
                 { value: 'Medium', text: 'Medium' },
-                { value: 'Low', text: 'Low' }
-              ]
+                { value: 'Low', text: 'Low' },
+              ],
             },
 
             keyInFilterState: 'priority',
             valueInRow: (r) => r.priority,
             filter: {
               typeOfValue: 'single',
-              filteringType: (fv, rv) => (fv !== 'All' ? rv === fv : true)
-            }
-          }
+              filteringType: (fv, rv) => (fv !== 'All' ? rv === fv : true),
+            },
+          },
         },
         {
           key: 'issueType',
@@ -172,16 +172,16 @@ export const Filtering: Story = {
             component: 'select',
             selectOptions: {
               type: 'stateInHeaderContext',
-              optionsKeyInHeaderContext: 'issueTypeOptions'
+              optionsKeyInHeaderContext: 'issueTypeOptions',
             },
             keyInFilterState: 'issueType',
             valueInRow: (r) => r.issueType,
             filter: {
               typeOfValue: 'multiple',
               filteringType: (fv, rv) =>
-                !fv.length || fv.some((fvCurr) => fvCurr === rv)
-            }
-          }
+                !fv.length || fv.some((fvCurr) => fvCurr === rv),
+            },
+          },
         },
         {
           key: 'complete',
@@ -190,11 +190,11 @@ export const Filtering: Story = {
             component: 'input',
             keyInFilterState: 'complete',
             valueInRow: (r) => r.complete,
-            filter: (fv, rv) => (+rv || 0) >= (+fv || 0)
-          }
-        }
+            filter: (fv, rv) => (+rv || 0) >= (+fv || 0),
+          },
+        },
       ],
-      []
+      [],
     );
 
     const filteringStateAndSetter = useState({
@@ -204,7 +204,7 @@ export const Filtering: Story = {
       issueType: [],
       complete: '',
       date: '',
-      globalFilter: ''
+      globalFilter: '',
     });
 
     const headerContextValue = useMemo(
@@ -213,10 +213,10 @@ export const Filtering: Story = {
           { text: 'Bug', value: 'Bug' },
           { text: 'Improvement', value: 'Improvement' },
           { text: 'Epic', value: 'Epic' },
-          { text: 'Story', value: 'Story' }
-        ]
+          { text: 'Story', value: 'Story' },
+        ],
       }),
-      []
+      [],
     );
 
     return (
@@ -228,32 +228,32 @@ export const Filtering: Story = {
             filtersInfo: {
               id: {
                 label: 'id',
-                clearedValue: ''
+                clearedValue: '',
               },
               task: {
                 label: 'task',
-                clearedValue: ''
+                clearedValue: '',
               },
               priority: {
                 label: 'Some Label',
-                clearedValue: 'All'
+                clearedValue: 'All',
               },
               issueType: {
                 label: 'issueType',
-                clearedValue: []
+                clearedValue: [],
               },
               complete: {
                 label: 'complete',
-                clearedValue: ''
+                clearedValue: '',
               },
               date: {
                 label: 'Дата',
-                clearedValue: ''
+                clearedValue: '',
               },
               globalFilter: {
                 label: 'Global filter',
-                clearedValue: ''
-              }
+                clearedValue: '',
+              },
             },
             sidebarConfig: {
               order: ['globalFilter', 'date'],
@@ -267,18 +267,18 @@ export const Filtering: Story = {
                         if (setFilters && !(v instanceof Date))
                           setFilters((prev) => ({
                             ...prev,
-                            date: v
+                            date: v,
                           }));
                       }}
                       size="s"
                       style={{
-                        width: '100%'
+                        width: '100%',
                       }}
                     />
-                  )
+                  ),
                 },
                 task: {
-                  label: 'Some label for task'
+                  label: 'Some label for task',
                 },
                 globalFilter: {
                   label: 'Some global filter',
@@ -288,28 +288,28 @@ export const Filtering: Story = {
                       onChange={(e) => {
                         setFilters((prev) => ({
                           ...prev,
-                          globalFilter: e.target.value
+                          globalFilter: e.target.value,
                         }));
                       }}
                     />
-                  )
-                }
-              }
-            }
-          }
+                  ),
+                },
+              },
+            },
+          },
         }}
         columnConfig={columnConfig}
         rows={rows}
         headerContextValue={headerContextValue}
       />
     );
-  }
+  },
 };
 
 export const FilteringInModal: Story = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     const [rows] = useState(() => {
@@ -320,12 +320,12 @@ export const FilteringInModal: Story = {
         date: (() => {
           const date = new Date(
             FIXED_DATE_TIMESTAMP +
-              (Math.floor(seededRandom() * 61) - 30) * 86400000
+              (Math.floor(seededRandom() * 61) - 30) * 86400000,
           );
           return `${String(date.getDate()).padStart(2, '0')}.${String(
-            date.getMonth() + 1
+            date.getMonth() + 1,
           ).padStart(2, '0')}.${date.getFullYear()}`;
-        })()
+        })(),
       }));
     });
 
@@ -339,8 +339,8 @@ export const FilteringInModal: Story = {
             filter: 'startWith',
 
             valueInRow: (r) => r.id,
-            keyInFilterState: 'id'
-          }
+            keyInFilterState: 'id',
+          },
         },
         {
           key: 'date',
@@ -349,7 +349,7 @@ export const FilteringInModal: Story = {
             component: 'custom',
             customRender: (props) => {
               const {
-                headerContextState: { filters, setFilters }
+                headerContextState: { filters, setFilters },
               } = props;
               return (
                 <Calendar
@@ -358,7 +358,7 @@ export const FilteringInModal: Story = {
                     if (setFilters)
                       setFilters((prev) => ({
                         ...prev,
-                        date: v
+                        date: v,
                       }));
                   }}
                 />
@@ -369,8 +369,8 @@ export const FilteringInModal: Story = {
             valueInRow: (r) => r.date,
             compareWithClearedValue: (clearedValue, currV) =>
               clearedValue === currV,
-            keyInFilterState: 'date'
-          }
+            keyInFilterState: 'date',
+          },
         },
         {
           key: 'taskParent',
@@ -385,8 +385,8 @@ export const FilteringInModal: Story = {
 
                 valueInRow: (r) => `${r.task} ${r.id}`,
 
-                keyInFilterState: 'task'
-              }
+                keyInFilterState: 'task',
+              },
             },
             {
               key: 'priority',
@@ -400,19 +400,19 @@ export const FilteringInModal: Story = {
                     { value: 'High', text: 'High' },
                     { value: 'Critical', text: 'Critical' },
                     { value: 'Medium', text: 'Medium' },
-                    { value: 'Low', text: 'Low' }
-                  ]
+                    { value: 'Low', text: 'Low' },
+                  ],
                 },
 
                 keyInFilterState: 'priority',
                 valueInRow: (r) => r.priority,
                 filter: {
                   typeOfValue: 'single',
-                  filteringType: (fv, rv) => (fv !== 'All' ? rv === fv : true)
-                }
-              }
-            }
-          ]
+                  filteringType: (fv, rv) => (fv !== 'All' ? rv === fv : true),
+                },
+              },
+            },
+          ],
         },
         {
           key: 'issueType',
@@ -430,16 +430,16 @@ export const FilteringInModal: Story = {
             component: 'select',
             selectOptions: {
               type: 'stateInHeaderContext',
-              optionsKeyInHeaderContext: 'issueTypeOptions'
+              optionsKeyInHeaderContext: 'issueTypeOptions',
             },
             keyInFilterState: 'issueType',
             valueInRow: (r) => r.issueType,
             filter: {
               typeOfValue: 'multiple',
               filteringType: (fv, rv) =>
-                !fv.length || fv.some((fvCurr) => fvCurr === rv)
-            }
-          }
+                !fv.length || fv.some((fvCurr) => fvCurr === rv),
+            },
+          },
         },
         {
           key: 'complete',
@@ -448,11 +448,11 @@ export const FilteringInModal: Story = {
             component: 'input',
             keyInFilterState: 'complete',
             valueInRow: (r) => r.complete,
-            filter: (fv, rv) => (+rv || 0) >= (+fv || 0)
-          }
-        }
+            filter: (fv, rv) => (+rv || 0) >= (+fv || 0),
+          },
+        },
       ],
-      []
+      [],
     );
 
     const filteringStateAndSetter = useState({
@@ -462,7 +462,7 @@ export const FilteringInModal: Story = {
       issueType: [],
       complete: '',
       date: '',
-      globalFilter: ''
+      globalFilter: '',
     });
 
     const headerContextValue = useMemo(
@@ -471,10 +471,10 @@ export const FilteringInModal: Story = {
           { text: 'Bug', value: 'Bug' },
           { text: 'Improvement', value: 'Improvement' },
           { text: 'Epic', value: 'Epic' },
-          { text: 'Story', value: 'Story' }
-        ]
+          { text: 'Story', value: 'Story' },
+        ],
       }),
-      []
+      [],
     );
 
     const tableJsx = (
@@ -486,32 +486,32 @@ export const FilteringInModal: Story = {
             filtersInfo: {
               id: {
                 label: 'id',
-                clearedValue: ''
+                clearedValue: '',
               },
               task: {
                 label: 'task',
-                clearedValue: ''
+                clearedValue: '',
               },
               priority: {
                 label: 'Some Label',
-                clearedValue: 'All'
+                clearedValue: 'All',
               },
               issueType: {
                 label: 'issueType',
-                clearedValue: []
+                clearedValue: [],
               },
               complete: {
                 label: 'complete',
-                clearedValue: ''
+                clearedValue: '',
               },
               date: {
                 label: 'Дата',
-                clearedValue: ''
+                clearedValue: '',
               },
               globalFilter: {
                 label: 'Global filter',
-                clearedValue: ''
-              }
+                clearedValue: '',
+              },
             },
             sidebarConfig: {
               order: ['globalFilter', 'date'],
@@ -525,18 +525,18 @@ export const FilteringInModal: Story = {
                         if (setFilters && !(v instanceof Date))
                           setFilters((prev) => ({
                             ...prev,
-                            date: v
+                            date: v,
                           }));
                       }}
                       size="s"
                       style={{
-                        width: '100%'
+                        width: '100%',
                       }}
                     />
-                  )
+                  ),
                 },
                 task: {
-                  label: 'Some label for task'
+                  label: 'Some label for task',
                 },
                 globalFilter: {
                   label: 'Some global filter',
@@ -546,15 +546,15 @@ export const FilteringInModal: Story = {
                       onChange={(e) => {
                         setFilters((prev) => ({
                           ...prev,
-                          globalFilter: e.target.value
+                          globalFilter: e.target.value,
                         }));
                       }}
                     />
-                  )
-                }
-              }
-            }
-          }
+                  ),
+                },
+              },
+            },
+          },
         }}
         columnConfig={columnConfig}
         rows={rows}
@@ -575,8 +575,8 @@ export const FilteringInModal: Story = {
           <ModalDF.Content
             $css={{
               '&&': {
-                overflow: 'visible'
-              }
+                overflow: 'visible',
+              },
             }}
           >
             {tableJsx}
@@ -584,5 +584,5 @@ export const FilteringInModal: Story = {
         </ModalDF.Main>
       </ModalDF>
     );
-  }
+  },
 };

@@ -13,8 +13,8 @@ const meta: Meta<NumberFormatAmountProps> = {
   component: NumberFormatAmount,
   parameters: {
     docs: {
-      toc: true
-    }
+      toc: true,
+    },
   },
   tags: ['!autodocs'],
   args: {
@@ -24,20 +24,20 @@ const meta: Meta<NumberFormatAmountProps> = {
     readOnly: false,
     thousandSeparator: ' ',
     decimalSeparator: '.',
-    decimalScale: 2
+    decimalScale: 2,
   },
   argTypes: {
     size: {
       options: ['s', 'xs'],
-      control: { type: 'select' }
+      control: { type: 'select' },
     },
     disabled: {
-      control: { type: 'boolean' }
+      control: { type: 'boolean' },
     },
     readOnly: {
-      control: { type: 'boolean' }
-    }
-  }
+      control: { type: 'boolean' },
+    },
+  },
 };
 
 export default meta;
@@ -56,7 +56,7 @@ import { NumberFormatAmount } from '@daisforge/ui';
 export const Default: Story = {
   name: 'Default',
   ...storySourceDoc({
-    preCode
+    preCode,
   }),
   render: (args: NumberFormatAmountProps) => {
     const [value, setValue] = useState('');
@@ -71,7 +71,7 @@ export const Default: Story = {
         />
       </div>
     );
-  }
+  },
 };
 
 /**
@@ -80,13 +80,13 @@ export const Default: Story = {
 export const Sizes: Story = {
   name: 'Размеры',
   ...storySourceDoc({
-    preCode
+    preCode,
   }),
   render: (args: NumberFormatAmountProps) => {
     const sizes = ['s', 'xs'] as const;
     const [values, setValues] = useState<Record<string, string>>({
       s: '123456.78',
-      xs: '123456.78'
+      xs: '123456.78',
     });
 
     return (
@@ -96,7 +96,7 @@ export const Sizes: Story = {
           display: 'flex',
           flexDirection: 'column',
           gap: '1rem',
-          width: '500px'
+          width: '500px',
         }}
       >
         {sizes.map((size) => (
@@ -109,7 +109,7 @@ export const Sizes: Story = {
             onChange={(e) =>
               setValues((prev) => ({
                 ...prev,
-                [size]: e?.target?.value ?? ''
+                [size]: e?.target?.value ?? '',
               }))
             }
             onClear={() => setValues((prev) => ({ ...prev, [size]: '' }))}
@@ -117,7 +117,7 @@ export const Sizes: Story = {
         ))}
       </div>
     );
-  }
+  },
 };
 
 /**
@@ -129,7 +129,7 @@ export const Sizes: Story = {
 export const WithClear: Story = {
   name: 'Различные варианты',
   ...storySourceDoc({
-    preCode
+    preCode,
   }),
   render: (args: NumberFormatAmountProps) => {
     const [value1, setValue1] = useState('123456.78');
@@ -144,7 +144,7 @@ export const WithClear: Story = {
           display: 'flex',
           flexDirection: 'column',
           gap: '1rem',
-          width: '500px'
+          width: '500px',
         }}
       >
         <NumberFormatAmount
@@ -200,5 +200,5 @@ export const WithClear: Story = {
         />
       </div>
     );
-  }
+  },
 };

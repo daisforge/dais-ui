@@ -1,3 +1,3 @@
 export const cls = {
-  container: 'blockGradientScroll_container'
+  container: 'blockGradientScroll_container',
 };

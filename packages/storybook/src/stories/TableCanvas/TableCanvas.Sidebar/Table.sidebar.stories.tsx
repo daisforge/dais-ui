@@ -13,10 +13,10 @@ const meta: Meta = {
   title: 'Локальные компоненты/TableCanvas/Sidebar',
   parameters: {
     docs: {
-      page: DocStoryTemplate
-    }
+      page: DocStoryTemplate,
+    },
   },
-  tags: ['!autodocs']
+  tags: ['!autodocs'],
 };
 
 export default meta;
@@ -24,12 +24,12 @@ export default meta;
 export const WithCustomTab: StoryObj = {
   name: 'С кастомной вкладкой',
   ...storySourceDoc({
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     const [rows] = useState(createRows);
     const [selectedRows, setSelectedRows] = useState<ReadonlySet<string>>(
-      new Set()
+      new Set(),
     );
     const [filters, setFilters] = useState({});
 
@@ -37,9 +37,9 @@ export const WithCustomTab: StoryObj = {
       () => [
         { key: 'id', name: 'ID' },
         { key: 'task', name: 'Title' },
-        { key: 'priority', name: 'Priority' }
+        { key: 'priority', name: 'Priority' },
       ],
-      []
+      [],
     );
 
     const CustomInfoTab = () => (
@@ -60,29 +60,29 @@ export const WithCustomTab: StoryObj = {
                 icon: <IconInfo size="s" />,
                 content: <CustomInfoTab />,
                 title: 'Информация',
-                showInSidebar: true
-              }
-            ]
+                showInSidebar: true,
+              },
+            ],
           },
           selecting: {
             state: [selectedRows, setSelectedRows],
-            rowKeyGetter: (row) => row.id.toString()
+            rowKeyGetter: (row) => row.id.toString(),
           },
           filtering: {
-            state: [filters, setFilters]
-          }
+            state: [filters, setFilters],
+          },
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };
 
 export const DefaultOpen: StoryObj = {
   name: 'Открыт по умолчанию на кастомной вкладке',
   ...storySourceDoc({
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     const [rows] = useState(createRows);
@@ -91,9 +91,9 @@ export const DefaultOpen: StoryObj = {
       () => [
         { key: 'id', name: 'ID' },
         { key: 'task', name: 'Title' },
-        { key: 'priority', name: 'Priority' }
+        { key: 'priority', name: 'Priority' },
       ],
-      []
+      [],
     );
 
     return (
@@ -109,22 +109,22 @@ export const DefaultOpen: StoryObj = {
                 icon: <IconInfo size="s" />,
                 content: <p>Эта вкладка открыта сразу при первом рендере.</p>,
                 title: 'Информация',
-                showInSidebar: true
-              }
-            ]
-          }
+                showInSidebar: true,
+              },
+            ],
+          },
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };
 
 export const ControlledActiveTab: StoryObj = {
   name: 'Внешнее управление активной вкладкой',
   ...storySourceDoc({
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     const [rows] = useState(createRows);
@@ -135,9 +135,9 @@ export const ControlledActiveTab: StoryObj = {
       () => [
         { key: 'id', name: 'ID' },
         { key: 'task', name: 'Title' },
-        { key: 'priority', name: 'Priority' }
+        { key: 'priority', name: 'Priority' },
       ],
-      []
+      [],
     );
 
     const openTab = (id: string) => {
@@ -164,7 +164,7 @@ export const ControlledActiveTab: StoryObj = {
                   icon: <IconInfo size="s" />,
                   content: <p>Вкладка «Информация».</p>,
                   title: 'Информация',
-                  showInSidebar: true
+                  showInSidebar: true,
                 },
                 {
                   id: 'customSettings',
@@ -172,23 +172,23 @@ export const ControlledActiveTab: StoryObj = {
                   icon: <IconSettings size="s" />,
                   content: <p>Вкладка «Настройки».</p>,
                   title: 'Настройки',
-                  showInSidebar: true
-                }
-              ]
-            }
+                  showInSidebar: true,
+                },
+              ],
+            },
           }}
           columnConfig={columnConfig}
           rows={rows}
         />
       </>
     );
-  }
+  },
 };
 
 export const ActiveTabCallback: StoryObj = {
   name: 'Колбэк активной вкладки',
   ...storySourceDoc({
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     const [rows] = useState(createRows);
@@ -198,9 +198,9 @@ export const ActiveTabCallback: StoryObj = {
       () => [
         { key: 'id', name: 'ID' },
         { key: 'task', name: 'Title' },
-        { key: 'priority', name: 'Priority' }
+        { key: 'priority', name: 'Priority' },
       ],
-      []
+      [],
     );
 
     return (
@@ -220,7 +220,7 @@ export const ActiveTabCallback: StoryObj = {
                   icon: <IconInfo size="s" />,
                   content: <p>Вкладка «Информация».</p>,
                   title: 'Информация',
-                  showInSidebar: true
+                  showInSidebar: true,
                 },
                 {
                   id: 'customSettings',
@@ -228,15 +228,15 @@ export const ActiveTabCallback: StoryObj = {
                   icon: <IconSettings size="s" />,
                   content: <p>Вкладка «Настройки».</p>,
                   title: 'Настройки',
-                  showInSidebar: true
-                }
-              ]
-            }
+                  showInSidebar: true,
+                },
+              ],
+            },
           }}
           columnConfig={columnConfig}
           rows={rows}
         />
       </>
     );
-  }
+  },
 };

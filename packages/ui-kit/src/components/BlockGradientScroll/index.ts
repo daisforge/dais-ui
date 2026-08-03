@@ -1,4 +1,4 @@
 export {
   BlockGradientScroll,
-  type BlockGradientScrollProps
+  type BlockGradientScrollProps,
 } from './BlockGradientScroll';

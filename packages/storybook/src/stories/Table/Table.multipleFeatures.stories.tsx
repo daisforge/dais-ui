@@ -10,7 +10,7 @@ import { Switch } from '@ui-kit/components/Switch';
 import {
   ColumnConfig,
   RenderSubRowCell,
-  Table
+  Table,
 } from '@ui-kit/components/Table';
 import { TextField } from '@ui-kit/components/TextField';
 import { Tooltip } from '@ui-kit/components/Tooltip';
@@ -24,9 +24,9 @@ const meta: Meta = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      page: DocStoryTemplate
-    }
-  }
+      page: DocStoryTemplate,
+    },
+  },
 };
 
 export default meta;
@@ -54,7 +54,7 @@ export const MultipleFeatures: Story = {
   name: 'Пример конфигурации с подключением множественных функциональных возможностей',
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     const [bool, setBool] = useState(false);
@@ -71,7 +71,7 @@ export const MultipleFeatures: Story = {
           renderSummaryCell: () => 'Итого',
           editingCell: {
             component: 'inputString',
-            editedSuccessfully: { value: (row) => row.done }
+            editedSuccessfully: { value: (row) => row.done },
           },
           subRow: {
             isColumnWithArrow: ({ keyText }) => {
@@ -86,7 +86,7 @@ export const MultipleFeatures: Story = {
                 style={{
                   overflow: 'hidden',
                   whiteSpace: 'nowrap',
-                  textOverflow: 'ellipsis'
+                  textOverflow: 'ellipsis',
                 }}
               >
                 {renderCellProps.row.task}
@@ -99,10 +99,10 @@ export const MultipleFeatures: Story = {
                 type: 'constant',
                 options: [
                   { text: 'kek', value: 'kek' },
-                  { text: 'mek', value: 'mek' }
-                ]
-              }
-            }
+                  { text: 'mek', value: 'mek' },
+                ],
+              },
+            },
           },
 
           keyText: {
@@ -116,12 +116,12 @@ export const MultipleFeatures: Story = {
                   return true;
                 }
                 return false;
-              }
-            }
+              },
+            },
           },
           rowsGrouping: {
-            columnGroupLabel: 'Task'
-          }
+            columnGroupLabel: 'Task',
+          },
         },
         ...(bool
           ? ([
@@ -132,7 +132,7 @@ export const MultipleFeatures: Story = {
                 sortingType: 'stringSort',
                 subRow: {
                   keyOfColumnInSubRow: 'issueType',
-                  editingCell: { component: 'inputString' }
+                  editingCell: { component: 'inputString' },
                 },
                 filtering: {
                   component: 'select',
@@ -140,7 +140,8 @@ export const MultipleFeatures: Story = {
                   valueInRow: (r) => r.priority,
                   filter: {
                     typeOfValue: 'single',
-                    filteringType: (fv, rv) => (fv !== 'All' ? rv === fv : true)
+                    filteringType: (fv, rv) =>
+                      fv !== 'All' ? rv === fv : true,
                   },
                   selectOptions: {
                     type: 'constant',
@@ -149,12 +150,12 @@ export const MultipleFeatures: Story = {
                       { value: 'High', text: 'High' },
                       {
                         value: 'Critical',
-                        text: 'Critical'
+                        text: 'Critical',
                       },
                       { value: 'Medium', text: 'Medium' },
-                      { value: 'Low', text: 'Low' }
-                    ]
-                  }
+                      { value: 'Low', text: 'Low' },
+                    ],
+                  },
                 },
                 editingCell: {
                   component: 'select',
@@ -164,14 +165,14 @@ export const MultipleFeatures: Story = {
                       { value: 'High', text: 'High' },
                       {
                         value: 'Critical',
-                        text: 'Critical'
+                        text: 'Critical',
                       },
                       { value: 'Medium', text: 'Medium' },
-                      { value: 'Low', text: 'Low' }
-                    ]
-                  }
-                }
-              }
+                      { value: 'Low', text: 'Low' },
+                    ],
+                  },
+                },
+              },
             ] as readonly ColumnConfig<Row>[])
           : []),
 
@@ -184,30 +185,30 @@ export const MultipleFeatures: Story = {
             component: 'select',
             selectOptions: {
               type: 'stateInHeaderContext',
-              optionsKeyInHeaderContext: 'issueTypeOptions'
+              optionsKeyInHeaderContext: 'issueTypeOptions',
             },
             keyInFilterState: 'issueType',
             valueInRow: (r) => r.issueType,
             filter: {
               typeOfValue: 'multiple',
               filteringType: (fv, rv) =>
-                !fv.length || fv.some((fvCurr) => fvCurr === rv)
-            }
+                !fv.length || fv.some((fvCurr) => fvCurr === rv),
+            },
           },
           editingCell: {
             component: 'select',
             options: {
               type: 'stateInRowContext',
-              optionsKeyInRowContext: 'issueTypeOptions'
-            }
+              optionsKeyInRowContext: 'issueTypeOptions',
+            },
           },
           subRow: {
             keyOfColumnInSubRow: 'issueType',
-            editingCell: { component: 'inputString' }
+            editingCell: { component: 'inputString' },
           },
           rowsGrouping: {
-            columnGroupLabel: 'issueType'
-          }
+            columnGroupLabel: 'issueType',
+          },
         },
         {
           key: 'developer',
@@ -218,9 +219,9 @@ export const MultipleFeatures: Story = {
             component: 'input',
             keyInFilterState: 'developer',
             valueInRow: (r) => r.developer,
-            filter: 'startWith'
+            filter: 'startWith',
           },
-          editingCell: { component: 'inputString' }
+          editingCell: { component: 'inputString' },
         },
         {
           key: 'complete',
@@ -231,26 +232,26 @@ export const MultipleFeatures: Story = {
             component: 'input',
             keyInFilterState: 'complete',
             valueInRow: (r) => r.complete,
-            filter: (fv, rv) => (+rv || 0) >= (+fv || 0)
+            filter: (fv, rv) => (+rv || 0) >= (+fv || 0),
           },
           editingCell: {
             component: 'inputNumber',
-            error: { value: (row) => row.done }
+            error: { value: (row) => row.done },
           },
           subRow: {
             keyOfColumnInSubRow: 'complete',
-            editingCell: { component: 'inputNumber' }
-          }
+            editingCell: { component: 'inputNumber' },
+          },
         },
         {
           key: 'tr',
           resizable: true,
           name: 'tr.kkk',
-          sortingType: 'stringSort'
+          sortingType: 'stringSort',
           // editingCell: { component: 'inputString' },
-        }
+        },
       ],
-      [bool]
+      [bool],
     );
     const [rows, setRows] = useState(createRows);
     const [groupByArr, setGroupByArr] = useState<string[]>([]);
@@ -261,13 +262,13 @@ export const MultipleFeatures: Story = {
       issueType: [],
       developer: '',
       complete: undefined,
-      globalTask: ''
+      globalTask: '',
     });
 
     const sortingStateAndSetter = useState<readonly SortColumn[]>([]);
 
     const selectingRowStateAndSetter = useState(
-      (): ReadonlySet<string> => new Set()
+      (): ReadonlySet<string> => new Set(),
     );
 
     const headerContextValue = useMemo(
@@ -278,11 +279,11 @@ export const MultipleFeatures: Story = {
           { text: 'Epic', value: 'Epic' },
           {
             text: 'Story',
-            value: 'Story'
-          }
-        ]
+            value: 'Story',
+          },
+        ],
       }),
-      []
+      [],
     );
     const rowContextValue = useMemo(
       () => ({
@@ -290,10 +291,10 @@ export const MultipleFeatures: Story = {
           { text: 'Bug', value: 'Bug' },
           { text: 'Improvement', value: 'Improvement' },
           { text: 'Epic', value: 'Epic' },
-          { text: 'Story', value: 'Story' }
-        ]
+          { text: 'Story', value: 'Story' },
+        ],
       }),
-      []
+      [],
     );
     const [controlBlock, setControlBlock] = useState(true);
     const [isCustomFeatureActive, setIsCustomFeatureActive] = useState(false);
@@ -305,9 +306,9 @@ export const MultipleFeatures: Story = {
     const tableConfigSubRows = useMemo(
       () => ({
         rowKeyGetter,
-        getSubRows: (r: Row) => r.subRows
+        getSubRows: (r: Row) => r.subRows,
       }),
-      [rowKeyGetter]
+      [rowKeyGetter],
     );
 
     return (
@@ -344,7 +345,7 @@ export const MultipleFeatures: Story = {
               active: isVisibleLoadingOverlay,
               showSubtitleDelay: 5000,
               subtitle:
-                'Данные обрабатываются, обычно это занимает не более 10 секунд'
+                'Данные обрабатываются, обычно это занимает не более 10 секунд',
             },
             containerStyle: { height: 700 },
             fullScreenEnabled: {
@@ -352,22 +353,22 @@ export const MultipleFeatures: Story = {
               domMetadata: {
                 className: 'someClassForFullScreenEnabled',
                 dataAttributes: {
-                  'data-test-fullscreen-enabled': 'test-fullscreen-enabled'
-                }
-              }
+                  'data-test-fullscreen-enabled': 'test-fullscreen-enabled',
+                },
+              },
             },
             columnsControl: {
               enable: true,
-              pinnedDefault: ['task', 'developer']
+              pinnedDefault: ['task', 'developer'],
             },
             rowSize: {
               showInControl: true,
               domMetadata: {
                 className: 'someTestClassForRowSize',
                 dataAttributes: {
-                  'data-test-row-size': 'test-row-size'
-                }
-              }
+                  'data-test-row-size': 'test-row-size',
+                },
+              },
             },
             keyText: {
               showInControl: true,
@@ -376,18 +377,18 @@ export const MultipleFeatures: Story = {
                   className: 'someTestClassForKeyTextInControlBlock',
                   dataAttributes: {
                     'data-test-key-text-control-block':
-                      'test-key-text-control-block'
-                  }
-                }
+                      'test-key-text-control-block',
+                  },
+                },
               },
               sidebar: {
                 domMetadata: {
                   className: 'someTestClassForKeyTextInSidebar',
                   dataAttributes: {
-                    'data-test-key-text-sidebar': 'test-key-text-sidebar'
-                  }
-                }
-              }
+                    'data-test-key-text-sidebar': 'test-key-text-sidebar',
+                  },
+                },
+              },
             },
             summaryRows: {
               showDefault: true,
@@ -395,9 +396,9 @@ export const MultipleFeatures: Story = {
               domMetadata: {
                 className: 'someTestClassForSummaryRows',
                 dataAttributes: {
-                  'data-test-summary-rows': 'test-summary-rows'
-                }
-              }
+                  'data-test-summary-rows': 'test-summary-rows',
+                },
+              },
             },
             searching: {
               enabled: true,
@@ -406,9 +407,9 @@ export const MultipleFeatures: Story = {
               domMetadata: {
                 className: 'someTestClassForSearch',
                 dataAttributes: {
-                  'data-test-searching': 'test-searching'
-                }
-              }
+                  'data-test-searching': 'test-searching',
+                },
+              },
             },
             controlBlock: {
               show: controlBlock,
@@ -418,18 +419,18 @@ export const MultipleFeatures: Story = {
                   contentLeft: <IconSber color="inherit" />,
                   view: 'linkAccent',
                   className: 'test',
-                  'data-test-id': 'Label right 1'
+                  'data-test-id': 'Label right 1',
                 },
                 {
                   text: 'Скачать',
                   contentLeft: <IconSber color="inherit" />,
                   className: 'test2',
-                  'data-test-id': 'store2'
+                  'data-test-id': 'store2',
                 },
                 {
                   text: 'Выгрузить',
-                  contentLeft: <IconSber color="inherit" />
-                }
+                  contentLeft: <IconSber color="inherit" />,
+                },
               ],
               customFeatures: [
                 {
@@ -448,7 +449,7 @@ export const MultipleFeatures: Story = {
                             onClick={() => {
                               // eslint-disable-next-line no-alert
                               alert(
-                                'Click on customFeatureRefresh in ControlBlock'
+                                'Click on customFeatureRefresh in ControlBlock',
                               );
                             }}
                             style={{
@@ -456,7 +457,7 @@ export const MultipleFeatures: Story = {
                               height: '40px',
                               display: 'flex',
                               alignItems: 'center',
-                              justifyContent: 'center'
+                              justifyContent: 'center',
                             }}
                           >
                             <IconRefresh size="s" />
@@ -472,8 +473,8 @@ export const MultipleFeatures: Story = {
                       // eslint-disable-next-line no-alert
                       alert('Click for customFeatureRefresh in Sidebar'),
                     icon: <IconRefresh size="s" />,
-                    'data-test-id': 'store3'
-                  }
+                    'data-test-id': 'store3',
+                  },
                 },
                 {
                   value: 'customFeature1',
@@ -489,7 +490,7 @@ export const MultipleFeatures: Story = {
                         height: '40px',
                         display: 'flex',
                         alignItems: 'center',
-                        justifyContent: 'center'
+                        justifyContent: 'center',
                       }}
                     >
                       <IconSber size="s" />
@@ -501,8 +502,8 @@ export const MultipleFeatures: Story = {
                     onClick: () =>
                       // eslint-disable-next-line no-alert
                       alert('Click for customFeature1 in Sidebar'),
-                    icon: <IconSber size="s" />
-                  }
+                    icon: <IconSber size="s" />,
+                  },
                 },
                 {
                   value: 'Label2',
@@ -520,7 +521,7 @@ export const MultipleFeatures: Story = {
                         height: '40px',
                         display: 'flex',
                         alignItems: 'center',
-                        justifyContent: 'center'
+                        justifyContent: 'center',
                       }}
                     >
                       <IconSber size="s" />
@@ -532,8 +533,8 @@ export const MultipleFeatures: Story = {
                     onClick: () =>
                       // eslint-disable-next-line no-alert
                       alert('Click for customFeatureLabel2 in sidebar'),
-                    icon: <IconSber size="s" />
-                  }
+                    icon: <IconSber size="s" />,
+                  },
                 },
                 {
                   value: 'Label3',
@@ -551,7 +552,7 @@ export const MultipleFeatures: Story = {
                         height: '40px',
                         display: 'flex',
                         alignItems: 'center',
-                        justifyContent: 'center'
+                        justifyContent: 'center',
                       }}
                     >
                       <IconSber size="s" />
@@ -563,8 +564,8 @@ export const MultipleFeatures: Story = {
                     onClick: () =>
                       // eslint-disable-next-line no-alert
                       alert('Click for customFeatureLabel3 in Sidebar'),
-                    icon: <IconSber size="s" />
-                  }
+                    icon: <IconSber size="s" />,
+                  },
                 },
                 {
                   value: 'statusSelect',
@@ -581,7 +582,7 @@ export const MultipleFeatures: Story = {
                         height: '40px',
                         display: 'flex',
                         alignItems: 'center',
-                        justifyContent: 'center'
+                        justifyContent: 'center',
                       }}
                     >
                       <IconSber size="s" />
@@ -594,13 +595,13 @@ export const MultipleFeatures: Story = {
                     value: isCustomFeatureActive ? 'active' : 'inactive',
                     options: [
                       { value: 'active', label: 'Активный' },
-                      { value: 'inactive', label: 'Неактивный Неактивный' }
+                      { value: 'inactive', label: 'Неактивный Неактивный' },
                     ],
                     onChange: (value) =>
                       setIsCustomFeatureActive(value === 'active'),
-                    'data-test-id': 'store4'
-                  }
-                }
+                    'data-test-id': 'store4',
+                  },
+                },
               ],
               massActionPanel: {
                 buttons: [
@@ -613,7 +614,7 @@ export const MultipleFeatures: Story = {
                     disabledTooltipProps: {
                       text: 'Tooltip for long text',
                       placement: 'top',
-                      mouseEnterDelay: 750
+                      mouseEnterDelay: 750,
                     },
                     dropdown: {
                       onItemSelect: (item, _) => alert(item.value),
@@ -624,17 +625,17 @@ export const MultipleFeatures: Story = {
                           items: [
                             {
                               value: 'some-inner-label1',
-                              label: 'some-inner-label1'
-                            }
-                          ]
+                              label: 'some-inner-label1',
+                            },
+                          ],
                         },
                         {
                           value: 'Some label 2',
-                          label: 'Some label 2'
-                        }
-                      ]
+                          label: 'Some label 2',
+                        },
+                      ],
                     },
-                    'data-test-id': 'Label left 1'
+                    'data-test-id': 'Label left 1',
                   },
                   {
                     type: 'button',
@@ -650,17 +651,17 @@ export const MultipleFeatures: Story = {
                           items: [
                             {
                               value: 'some-inner-label1',
-                              label: 'some-inner-label1'
-                            }
-                          ]
+                              label: 'some-inner-label1',
+                            },
+                          ],
                         },
                         {
                           value: 'Some label 2',
-                          label: 'Some label 2'
-                        }
-                      ]
+                          label: 'Some label 2',
+                        },
+                      ],
                     },
-                    'data-test-id': 'Label left 1'
+                    'data-test-id': 'Label left 1',
                   },
                   {
                     type: 'button',
@@ -676,17 +677,17 @@ export const MultipleFeatures: Story = {
                           items: [
                             {
                               value: 'some-inner-label1',
-                              label: 'some-inner-label1'
-                            }
-                          ]
+                              label: 'some-inner-label1',
+                            },
+                          ],
                         },
                         {
                           value: 'Some label 2',
-                          label: 'Some label 2'
-                        }
-                      ]
+                          label: 'Some label 2',
+                        },
+                      ],
                     },
-                    'data-test-id': 'Label left 1'
+                    'data-test-id': 'Label left 1',
                   },
                   {
                     type: 'button',
@@ -702,62 +703,62 @@ export const MultipleFeatures: Story = {
                           items: [
                             {
                               value: 'some-inner-label1',
-                              label: 'some-inner-label1'
-                            }
-                          ]
+                              label: 'some-inner-label1',
+                            },
+                          ],
                         },
                         {
                           value: 'Some label 2',
-                          label: 'Some label 2'
-                        }
-                      ]
+                          label: 'Some label 2',
+                        },
+                      ],
                     },
-                    'data-test-id': 'Label left 1'
-                  }
-                ]
-              }
+                    'data-test-id': 'Label left 1',
+                  },
+                ],
+              },
             },
             rowsGrouping: {
               rowKeyGetter: (r) => r.id,
               groupByState: [groupByArr, setGroupByArr],
               groupedColumnProps: {
                 name: <>моя группировка</>,
-                resizable: true
+                resizable: true,
               },
               domMetadata: {
                 className: 'someTestClassForRowsGroupingButton',
                 dataAttributes: {
                   // 'data-test-rows-grouping': 'test-rows-grouping',
-                }
-              }
+                },
+              },
             },
             filtering: {
               state: filteringStateAndSetter,
               filtersInfo: {
                 task: {
                   label: 'task',
-                  clearedValue: ''
+                  clearedValue: '',
                 },
                 priority: {
                   label: 'Some Label',
-                  clearedValue: 'All'
+                  clearedValue: 'All',
                 },
                 issueType: {
                   label: 'issueType',
-                  clearedValue: []
+                  clearedValue: [],
                 },
                 complete: {
                   label: 'complete',
-                  clearedValue: undefined
+                  clearedValue: undefined,
                 },
                 developer: {
                   label: 'Developer',
-                  clearedValue: ''
+                  clearedValue: '',
                 },
                 globalTask: {
                   label: 'Global',
-                  clearedValue: ''
-                }
+                  clearedValue: '',
+                },
               },
               sidebarConfig: {
                 items: {
@@ -769,13 +770,13 @@ export const MultipleFeatures: Story = {
                         onChange={(e) => {
                           setFilters((prev) => ({
                             ...prev,
-                            globalTask: e.target.value
+                            globalTask: e.target.value,
                           }));
                         }}
                       />
-                    )
-                  }
-                }
+                    ),
+                  },
+                },
               },
               chipStyle: (group, item) => {
                 if (
@@ -785,7 +786,7 @@ export const MultipleFeatures: Story = {
                   item.label === 'Bug'
                 ) {
                   return {
-                    background: 'red'
+                    background: 'red',
                   };
                 }
                 return {};
@@ -803,34 +804,34 @@ export const MultipleFeatures: Story = {
                   }
                 }
                 return item.label.toString();
-              }
+              },
             },
             selecting: {
               state: selectingRowStateAndSetter,
               rowKeyGetter,
               selectingRules: {
-                levels: 'all'
+                levels: 'all',
               },
               showDefault: false,
               controlBlock: {
                 domMetadata: {
                   className: 'customClassForSelectingInControlBlock',
                   dataAttributes: {
-                    'data-test-selecting': 'test-selecting'
-                  }
-                }
+                    'data-test-selecting': 'test-selecting',
+                  },
+                },
               },
               sidebar: {
                 domMetadata: {
                   className: 'customClassForSelectingInSidebar',
                   dataAttributes: {
-                    'data-test-selecting-sidebar': 'test-selecting-sidebar'
-                  }
-                }
-              }
+                    'data-test-selecting-sidebar': 'test-selecting-sidebar',
+                  },
+                },
+              },
             },
             sorting: {
-              state: sortingStateAndSetter
+              state: sortingStateAndSetter,
             },
             editing: {
               onRowsChange: setRows,
@@ -838,9 +839,9 @@ export const MultipleFeatures: Story = {
               domMetadata: {
                 className: 'editingCustomClass',
                 dataAttributes: {
-                  'data-test-editing': 'test-editing'
-                }
-              }
+                  'data-test-editing': 'test-editing',
+                },
+              },
             },
             subRows: tableConfigSubRows,
             resizableColumn: true,
@@ -851,8 +852,8 @@ export const MultipleFeatures: Story = {
                   domMetadata: {
                     className: 'someClassForTableSettingsInSidebar',
                     dataAttributes: {
-                      'data-test-table-settings': 'test-table-setting'
-                    }
+                      'data-test-table-settings': 'test-table-setting',
+                    },
                   },
                   customGeneralSettingsSlot: (
                     <div>Some custom render for tableSettings</div>
@@ -866,28 +867,28 @@ export const MultipleFeatures: Story = {
                     >
                       Вид по умолчанию
                     </LinkButton>
-                  )
+                  ),
                 },
                 {
                   id: 'filtering',
                   domMetadata: {
                     className: 'someClassForTableFilteringInSidebar',
                     dataAttributes: {
-                      'data-test-table-filtering': 'test-table-filtering'
-                    }
-                  }
+                      'data-test-table-filtering': 'test-table-filtering',
+                    },
+                  },
                 },
                 {
                   id: 'columns',
                   domMetadata: {
                     className: 'someClassForTableColumnsInSidebar',
                     dataAttributes: {
-                      'data-test-table-columns': 'test-table-columns'
-                    }
-                  }
-                }
-              ]
-            }
+                      'data-test-table-columns': 'test-table-columns',
+                    },
+                  },
+                },
+              ],
+            },
           }}
           columnConfig={columnsCC}
           rows={rows}
@@ -898,5 +899,5 @@ export const MultipleFeatures: Story = {
         />
       </div>
     );
-  }
+  },
 };

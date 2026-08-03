@@ -24,7 +24,7 @@ export const sortingMock = {
       UVE0499: '',
       UVE0499_TEXT: '',
       UVE0500: '',
-      UVE0500_TEXT: ''
+      UVE0500_TEXT: '',
     },
     {
       EDIT: 'X',
@@ -50,7 +50,7 @@ export const sortingMock = {
       UVE0499: '01',
       UVE0499_TEXT: 'Без AI',
       UVE0500: '20',
-      UVE0500_TEXT: 'Выделен ресурс из Страт. резерва'
+      UVE0500_TEXT: 'Выделен ресурс из Страт. резерва',
     },
     {
       EDIT: 'X',
@@ -77,7 +77,7 @@ export const sortingMock = {
       UVE0499: '01',
       UVE0499_TEXT: 'Без AI',
       UVE0500: '18',
-      UVE0500_TEXT: 'прочее'
+      UVE0500_TEXT: 'прочее',
     },
     {
       EDIT: 'X',
@@ -103,7 +103,7 @@ export const sortingMock = {
       UVE0499: '01',
       UVE0499_TEXT: 'Без AI',
       UVE0500: '20',
-      UVE0500_TEXT: 'Выделен ресурс из Страт. резерва'
+      UVE0500_TEXT: 'Выделен ресурс из Страт. резерва',
     },
     {
       EDIT: 'X',
@@ -130,7 +130,7 @@ export const sortingMock = {
       UVE0499: '01',
       UVE0499_TEXT: 'Без AI',
       UVE0500: '18',
-      UVE0500_TEXT: 'прочее'
+      UVE0500_TEXT: 'прочее',
     },
     {
       EDIT: 'X',
@@ -156,7 +156,7 @@ export const sortingMock = {
       UVE0499: '01',
       UVE0499_TEXT: 'Без AI',
       UVE0500: '18',
-      UVE0500_TEXT: 'прочее'
+      UVE0500_TEXT: 'прочее',
     },
     {
       EDIT: 'X',
@@ -182,7 +182,7 @@ export const sortingMock = {
       UVE0499: '01',
       UVE0499_TEXT: 'Без AI',
       UVE0500: '20',
-      UVE0500_TEXT: 'Выделен ресурс из Страт. резерва'
+      UVE0500_TEXT: 'Выделен ресурс из Страт. резерва',
     },
     {
       EDIT: 'X',
@@ -209,7 +209,7 @@ export const sortingMock = {
       UVE0499: '04',
       UVE0499_TEXT: 'Non-agile',
       UVE0500: '18',
-      UVE0500_TEXT: 'прочее'
+      UVE0500_TEXT: 'прочее',
     },
     {
       EDIT: 'X',
@@ -236,7 +236,7 @@ export const sortingMock = {
       UVE0499: '01',
       UVE0499_TEXT: 'Без AI',
       UVE0500: '18',
-      UVE0500_TEXT: 'прочее'
+      UVE0500_TEXT: 'прочее',
     },
     {
       EDIT: 'X',
@@ -263,7 +263,7 @@ export const sortingMock = {
       UVE0499: '04',
       UVE0499_TEXT: 'Non-agile',
       UVE0500: '18',
-      UVE0500_TEXT: 'прочее'
+      UVE0500_TEXT: 'прочее',
     },
     {
       EDIT: 'X',
@@ -289,7 +289,7 @@ export const sortingMock = {
       UVE0499: '01',
       UVE0499_TEXT: 'Без AI',
       UVE0500: '18',
-      UVE0500_TEXT: 'прочее'
+      UVE0500_TEXT: 'прочее',
     },
     {
       EDIT: 'X',
@@ -315,7 +315,7 @@ export const sortingMock = {
       UVE0499: '01',
       UVE0499_TEXT: 'Без AI',
       UVE0500: '18',
-      UVE0500_TEXT: 'прочее'
+      UVE0500_TEXT: 'прочее',
     },
     {
       EDIT: 'X',
@@ -342,7 +342,7 @@ export const sortingMock = {
       UVE0499: '01',
       UVE0499_TEXT: 'Без AI',
       UVE0500: '18',
-      UVE0500_TEXT: 'прочее'
+      UVE0500_TEXT: 'прочее',
     },
     {
       EDIT: 'X',
@@ -368,7 +368,7 @@ export const sortingMock = {
       UVE0499: '04',
       UVE0499_TEXT: 'Non-agile',
       UVE0500: '21',
-      UVE0500_TEXT: '20% поддержание продукта'
+      UVE0500_TEXT: '20% поддержание продукта',
     },
     {
       EDIT: 'X',
@@ -394,7 +394,7 @@ export const sortingMock = {
       UVE0499: '01',
       UVE0499_TEXT: 'Без AI',
       UVE0500: '18',
-      UVE0500_TEXT: 'прочее'
+      UVE0500_TEXT: 'прочее',
     },
     {
       EDIT: 'X',
@@ -420,7 +420,7 @@ export const sortingMock = {
       UVE0499: '01',
       UVE0499_TEXT: 'Без AI',
       UVE0500: '18',
-      UVE0500_TEXT: 'прочее'
+      UVE0500_TEXT: 'прочее',
     },
     {
       EDIT: 'X',
@@ -446,7 +446,7 @@ export const sortingMock = {
       UVE0499: '01',
       UVE0499_TEXT: 'Без AI',
       UVE0500: '20',
-      UVE0500_TEXT: 'Выделен ресурс из Страт. резерва'
+      UVE0500_TEXT: 'Выделен ресурс из Страт. резерва',
     },
     {
       EDIT: 'X',
@@ -473,7 +473,7 @@ export const sortingMock = {
       UVE0499: '01',
       UVE0499_TEXT: 'Без AI',
       UVE0500: '18',
-      UVE0500_TEXT: 'прочее'
+      UVE0500_TEXT: 'прочее',
     },
     {
       EDIT: 'X',
@@ -499,7 +499,7 @@ export const sortingMock = {
       UVE0499: '01',
       UVE0499_TEXT: 'Без AI',
       UVE0500: '18',
-      UVE0500_TEXT: 'прочее'
+      UVE0500_TEXT: 'прочее',
     },
     {
       EDIT: 'X',
@@ -525,7 +525,7 @@ export const sortingMock = {
       UVE0499: '01',
       UVE0499_TEXT: 'Без AI',
       UVE0500: '20',
-      UVE0500_TEXT: 'Выделен ресурс из Страт. резерва'
-    }
-  ]
+      UVE0500_TEXT: 'Выделен ресурс из Страт. резерва',
+    },
+  ],
 };

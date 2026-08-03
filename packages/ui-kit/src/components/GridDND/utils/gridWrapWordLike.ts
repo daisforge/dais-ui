@@ -12,10 +12,10 @@ import type { Layout } from 'react-grid-layout';
  * // возвращает: ['lg', 'md', 'sm']
  */
 export function orderBreakpointsDesc(
-  breakpoints: Record<string, number>
+  breakpoints: Record<string, number>,
 ): string[] {
   return Object.keys(breakpoints).sort(
-    (a, b) => (breakpoints[b] || 0) - (breakpoints[a] || 0)
+    (a, b) => (breakpoints[b] || 0) - (breakpoints[a] || 0),
   );
 }
 
@@ -30,7 +30,7 @@ export function orderBreakpointsDesc(
  */
 export function getBreakpointFromWidth(
   bps: Record<string, number>,
-  width: number
+  width: number,
 ) {
   const ordered = Object.keys(bps).sort((a, b) => {
     const valA = bps[a] || 0;
@@ -60,7 +60,7 @@ export function getBreakpointFromWidth(
 export function findNearestSourceBp(
   target: string,
   allLayouts: Record<string, Layout[] | undefined>,
-  ordered: string[]
+  ordered: string[],
 ): string | null {
   const idx = ordered.indexOf(target);
   if (idx === -1) return null;
@@ -101,7 +101,7 @@ export function findNearestSourceBp(
  */
 export function gridWrapWordLike(
   source: Layout[],
-  targetCols: number
+  targetCols: number,
 ): Layout[] {
   type L = Layout;
 
@@ -110,7 +110,7 @@ export function gridWrapWordLike(
     .map((it) => ({
       ...it,
       // Ограничиваем ширину элемента количеством колонок
-      w: Math.max(1, Math.min(it.w, targetCols))
+      w: Math.max(1, Math.min(it.w, targetCols)),
       // Старые координаты не важны - будем раскладывать заново
     }))
     .sort((a, b) => a.y - b.y || a.x - b.x); // Сортируем в порядке чтения (сверху вниз, слева направо)

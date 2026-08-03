@@ -1,13 +1,13 @@
 import { s } from '@ui-kit/constants';
 import styled, {
   CSSObject,
-  FlattenSimpleInterpolation
+  FlattenSimpleInterpolation,
 } from 'styled-components';
 
 import { pageTitleClassNames as cls } from './PageTitle.classNames';
 
 export const StyledRoot = styled.div.attrs({
-  className: cls.root as string
+  className: cls.root as string,
 })<{ $css?: string | CSSObject | FlattenSimpleInterpolation }>`
   width: 100%;
   display: flex;
@@ -16,11 +16,11 @@ export const StyledRoot = styled.div.attrs({
 `;
 
 export const StyledBreadcrumbs = styled.div.attrs({
-  className: cls.breadcrumbs as string
+  className: cls.breadcrumbs as string,
 })``;
 
 export const StyledContent = styled.div.attrs({
-  className: cls.content as string
+  className: cls.content as string,
 })`
   display: flex;
   justify-content: space-between;
@@ -29,7 +29,7 @@ export const StyledContent = styled.div.attrs({
 `;
 
 export const StyledLeftBlock = styled.div.attrs({
-  className: cls.leftBlock as string
+  className: cls.leftBlock as string,
 })`
   display: flex;
   align-items: flex-start;
@@ -39,7 +39,7 @@ export const StyledLeftBlock = styled.div.attrs({
 `;
 
 export const StyledTitleBlock = styled.div.attrs({
-  className: cls.titleBlock as string
+  className: cls.titleBlock as string,
 })`
   display: flex;
   flex-direction: column;
@@ -49,28 +49,28 @@ export const StyledTitleBlock = styled.div.attrs({
 `;
 
 export const StyledBackButtonContainer = styled.div.attrs({
-  className: cls.backIconButton as string
+  className: cls.backIconButton as string,
 })<{ $isAdaptive1280: boolean }>`
   margin-top: ${({ $isAdaptive1280 }) => ($isAdaptive1280 ? '1px' : '6px')};
 `;
 
 export const StyledTitle = styled.div.attrs({
-  className: cls.title as string
+  className: cls.title as string,
 })``;
 
 export const StyledSubtitle = styled.div.attrs({
-  className: cls.subtitle as string
+  className: cls.subtitle as string,
 })``;
 
 /* Кастомный слот правее заголовка */
 export const StyledTitleSlot = styled.div.attrs({
-  className: cls.titleSlot as string
+  className: cls.titleSlot as string,
 })`
   margin-top: 3px;
 `;
 
 export const StyledRightBlock = styled.div.attrs({
-  className: cls.rightBlock as string
+  className: cls.rightBlock as string,
 })`
   display: flex;
   align-items: flex-end;

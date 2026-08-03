@@ -4,7 +4,7 @@ import { formatCellValue } from './formatCellContent';
 
 export const FormattedContent = (
   value: unknown,
-  format?: ContentFormat
+  format?: ContentFormat,
 ): CanvasContent => {
   if (isCanvasEl(value)) {
     return value;

@@ -8,7 +8,7 @@ import {
   CHECKBOX_COL_CLASS_CUSTOM,
   CHECKBOX_COLUMN_KEY,
   CHECKBOX_HEADER_COL_CLASS_CUSTOM,
-  CHECKBOX_SUMMARY_COL_CLASS_CUSTOM
+  CHECKBOX_SUMMARY_COL_CLASS_CUSTOM,
 } from './constants';
 import { useSelectingCheckBoxCellContext } from './selecting-contexts';
 
@@ -26,7 +26,7 @@ export function CheckboxFormatter(_props: RenderCellProps<ObjectForExtending>) {
     isRowSelected,
     isIndeterminate,
     isRowSelectionDisabled,
-    onChange
+    onChange,
   } = useSelectingCheckBoxCellContext();
 
   if (!isHaveCheckbox) {
@@ -63,5 +63,5 @@ export const ChecboxColumn: Column<any, unknown> = {
   },
   renderHeaderCell(props) {
     return <CheckboxHeaderCell {...props} />;
-  }
+  },
 };

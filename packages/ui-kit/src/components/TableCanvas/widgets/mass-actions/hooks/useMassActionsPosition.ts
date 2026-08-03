@@ -14,7 +14,7 @@ export const useMassActionsPosition = ({
   isCompact,
   isHaveSomeFeatureInSidebar,
   visibleButtonsCount,
-  setTranslateX
+  setTranslateX,
 }: {
   containerRef: React.RefObject<HTMLDivElement>;
   collapseButtonRef: React.RefObject<HTMLDivElement | null>;
@@ -115,8 +115,8 @@ export const useMassActionsPosition = ({
       containerRef,
       summaryCheckboxElRef,
       collapseButtonRef,
-      isCompact
-    ]
+      isCompact,
+    ],
   );
 
   // Функция для расчета позиции панели
@@ -176,12 +176,12 @@ export const useMassActionsPosition = ({
     isSidebarOpen,
     sidebarWidth,
     containerRef,
-    setTranslateX
+    setTranslateX,
   ]);
 
   return {
     calculatePosition,
     calculatePositionForState,
-    shouldApplySidebarOffsetRef
+    shouldApplySidebarOffsetRef,
   };
 };

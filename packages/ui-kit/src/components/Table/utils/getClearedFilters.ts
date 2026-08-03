@@ -2,7 +2,7 @@ import { FilteringConfig } from '../types/table-config.type';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getTypedEntries<T extends Record<string, any>>(
-  obj: T
+  obj: T,
 ): Array<[keyof T, T[keyof T]]> {
   return Object.entries(obj) as Array<[keyof T, T[keyof T]]>;
 }
@@ -14,7 +14,7 @@ function getTypedEntries<T extends Record<string, any>>(
  * @returns T | undefined - Очищенные значения фильтров или undefined, если filtering не передан
  */
 export function getClearedFilters<T>(
-  filtering?: FilteringConfig<T>
+  filtering?: FilteringConfig<T>,
 ): T | undefined {
   if (!filtering) return undefined;
 
@@ -24,7 +24,7 @@ export function getClearedFilters<T>(
         acc[key] = value.clearedValue;
         return acc;
       },
-      {} as T
+      {} as T,
     );
   }
 

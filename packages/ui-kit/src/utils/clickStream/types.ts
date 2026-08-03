@@ -24,7 +24,7 @@ export type TSendClickStreamEventParams = IClickStreamBaseItem &
   TSendClickStreamCategoryParam;
 
 export type TSendClickStreamEvent = (
-  params: TSendClickStreamEventParams
+  params: TSendClickStreamEventParams,
 ) => void;
 
 export abstract class ClickStream {

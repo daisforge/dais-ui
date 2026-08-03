@@ -7,7 +7,7 @@ import ALL_TYPES_OBJ from '../types.string.json';
 export const getTypeAsString = (
   filePath: string,
   typeName: string,
-  spaces?: boolean
+  spaces?: boolean,
 ) => {
   if (!filePath || !typeName) {
     return '';

@@ -45,13 +45,13 @@ export type RowKeyGetter<RowType, RowIdType> = (row: RowType) => RowIdType;
 export type RowShowCheckbox<RowType> = (
   row: RowType,
   lvl?: number,
-  parent?: RowType | null
+  parent?: RowType | null,
 ) => boolean;
 
 export type RowCheckboxDisabled<RowType> = (
   row: RowType,
   lvl?: number,
-  parent?: RowType | null
+  parent?: RowType | null,
 ) => boolean;
 
 export type RowGetStatesProps<RowType, RowIdType> = {
@@ -136,7 +136,7 @@ export type RowGetStatesReturnType<RowType, RowIdType> = {
         getRowParentsInfo: () => {
           all: RowType[];
           getShouldBeSelectedInfo: (
-            actualSelecteds: ReadonlySet<RowIdType>
+            actualSelecteds: ReadonlySet<RowIdType>,
           ) => {
             shouldBeSelected: RowIdType[];
             shouldNotBeSelected: RowIdType[];

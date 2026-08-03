@@ -5,7 +5,7 @@ import React, { forwardRef, useState } from 'react';
 import type { DatePickerCompProps } from './DatePicker.types';
 
 const DefaultRightIcon = ({
-  datePickerSize
+  datePickerSize,
 }: {
   datePickerSize: DatePickerCompProps['size'];
 }) => (
@@ -25,7 +25,7 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerCompProps>(
       size,
       ...props
     },
-    ref
+    ref,
   ) => {
     const [internalOpened, setInternalOpened] = useState(false);
     const opened = propOpened !== undefined ? propOpened : internalOpened;
@@ -47,7 +47,7 @@ export const DatePicker = forwardRef<HTMLInputElement, DatePickerCompProps>(
         {...props}
       />
     );
-  }
+  },
 );
 
 DatePicker.displayName = 'DatePicker';

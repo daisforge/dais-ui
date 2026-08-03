@@ -1,6 +1,6 @@
 import {
   DataAttributes,
-  DefaultSidebarTabIds
+  DefaultSidebarTabIds,
 } from '@ui-kit/components/Table/types';
 import { IconProps } from '@ui-kit/icons';
 import { ChangeEvent, FC, ReactNode } from 'react';

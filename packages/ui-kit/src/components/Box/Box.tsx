@@ -1,7 +1,7 @@
 import { ComponentProps } from 'react';
 import styled, {
   type CSSObject,
-  FlattenSimpleInterpolation
+  FlattenSimpleInterpolation,
 } from 'styled-components';
 
 import { boxCSSKeys, BoxCSSProperties, keyBoxCSSProperties } from './typeKeys';
@@ -33,7 +33,7 @@ const filterCSSProperties = (cssProperties: BoxBaseProps) =>
 
 export const Box = styled.div.attrs(({ className, ...rest }) => ({
   className: `Box-root` as typeof className,
-  ...rest
+  ...rest,
 }))<BoxBaseProps>`
   box-sizing: border-box;
   ${({ $css, hidden, ...cssProperties }) => filterCSSProperties(cssProperties)}

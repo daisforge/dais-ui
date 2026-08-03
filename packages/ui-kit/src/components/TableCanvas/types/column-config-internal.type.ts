@@ -7,5 +7,5 @@ import { ObjectForExtending } from './utils.type';
  */
 export type ColumnConfigInternal<
   R extends ObjectForExtending,
-  SR = unknown
+  SR = unknown,
 > = ColumnConfig<R, SR> & Pick<ColumnGlideInstance<R, SR>, DefaultOmittedKeys>;

@@ -11,7 +11,7 @@ export const getColumnLabel = <RowType extends ObjectForExtending, SummaryRow>({
   columnsConfigMap,
   isKeyText,
   keyText,
-  tableConfigKeyTextBoolean
+  tableConfigKeyTextBoolean,
 }: {
   columnsControlConfig: ColumnsControlConfig | undefined;
   key: string;
@@ -66,12 +66,12 @@ export const correctedDisabled = (
   {
     currentKey,
     colsWithKeyTextMap,
-    tableConfigKeyTextBoolean
+    tableConfigKeyTextBoolean,
   }: {
     currentKey: string;
     colsWithKeyTextMap: KeyTextMap;
     tableConfigKeyTextBoolean: boolean;
-  }
+  },
 ) => {
   if (!tableConfigKeyTextBoolean) {
     return null;

@@ -25,7 +25,7 @@ export const FormAutocomplete = <TFieldValues extends FieldValues>({
     ...options,
     required: getPriorityRequired({ options, ruleName: 'required' })
       ? options?.required
-      : propsRequired
+      : propsRequired,
   };
 
   const formCtx = useChangedFormContext(newOptions);
@@ -39,7 +39,7 @@ export const FormAutocomplete = <TFieldValues extends FieldValues>({
       {...remOptions}
       render={({
         field: { name: _fieldName, onBlur, onChange, ...fieldRest },
-        fieldState: { error }
+        fieldState: { error },
       }) => (
         <Autocomplete
           {...fieldRest}

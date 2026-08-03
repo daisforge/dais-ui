@@ -4,7 +4,7 @@ import type { ObjectForExtending } from '../../types';
 import type {
   CellIterationItem,
   Rectangle,
-  TransferColumnConfig
+  TransferColumnConfig,
 } from '../types';
 
 /**
@@ -16,7 +16,7 @@ import type {
 export function* iterateCellRange<R extends ObjectForExtending>(
   range: Rectangle,
   columns: readonly TransferColumnConfig[],
-  flatRows: readonly R[]
+  flatRows: readonly R[],
 ): Generator<CellIterationItem<R>> {
   for (
     let rowIndex = range.y;

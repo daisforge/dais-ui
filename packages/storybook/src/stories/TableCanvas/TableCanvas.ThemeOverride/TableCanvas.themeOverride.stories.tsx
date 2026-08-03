@@ -4,14 +4,14 @@ import {
   createRows,
   createRowsTree,
   Row,
-  TreeRow
+  TreeRow,
 } from '@df-storybook/data/tableData';
 import DocStoryTemplate from '@df-storybook/templates/DocStoryTemplate.mdx';
 import type { Meta, StoryObj } from '@storybook/react';
 import {
   Canvas,
   ColumnConfig,
-  TableCanvas
+  TableCanvas,
 } from '@ui-kit/components/TableCanvas';
 import React, { ComponentProps, useMemo, useState } from 'react';
 
@@ -19,10 +19,10 @@ const meta: Meta = {
   title: 'Локальные компоненты/TableCanvas/Theme Override',
   parameters: {
     docs: {
-      page: DocStoryTemplate
-    }
+      page: DocStoryTemplate,
+    },
   },
-  tags: ['!autodocs']
+  tags: ['!autodocs'],
 };
 
 export default meta;
@@ -46,25 +46,25 @@ export const ThemeOverrideBgCell: Story = {
               return { bgCell: 'rgba(46, 170, 220, 0.15)' };
             }
             return undefined;
-          }
+          },
         },
         { key: 'priority', name: 'Приоритет' },
-        { key: 'developer', name: 'Разработчик' }
+        { key: 'developer', name: 'Разработчик' },
       ],
-      []
+      [],
     );
 
     return (
       <TableCanvas
         tableConfig={{
           containerStyle: { height: '400px' },
-          rowSize: { default: 'medium', showInControl: false }
+          rowSize: { default: 'medium', showInControl: false },
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };
 
 export const ThemeOverridePadding: Story = {
@@ -78,32 +78,32 @@ export const ThemeOverridePadding: Story = {
         {
           key: 'task',
           name: 'Задача (padding 32px)',
-          themeOverride: () => ({ cellHorizontalPadding: 32 })
+          themeOverride: () => ({ cellHorizontalPadding: 32 }),
         },
         {
           key: 'priority',
-          name: 'Приоритет (стандартный)'
+          name: 'Приоритет (стандартный)',
         },
         {
           key: 'developer',
           name: 'Разработчик (padding 4px)',
-          themeOverride: () => ({ cellHorizontalPadding: 4 })
-        }
+          themeOverride: () => ({ cellHorizontalPadding: 4 }),
+        },
       ],
-      []
+      [],
     );
 
     return (
       <TableCanvas
         tableConfig={{
           containerStyle: { height: '400px' },
-          rowSize: { default: 'medium', showInControl: false }
+          rowSize: { default: 'medium', showInControl: false },
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };
 
 export const ThemeOverrideCustomRenderNoPadding: Story = {
@@ -114,7 +114,7 @@ export const ThemeOverrideCustomRenderNoPadding: Story = {
     const render: ColumnConfig<Row>['renderCell'] = ({
       column,
       row,
-      theme
+      theme,
     }) => {
       const value = String(row[column.key as keyof Row] ?? '');
 
@@ -122,7 +122,7 @@ export const ThemeOverrideCustomRenderNoPadding: Story = {
         <Canvas.Container
           padding={{
             left: theme.cellHorizontalPadding,
-            right: theme.cellHorizontalPadding
+            right: theme.cellHorizontalPadding,
           }}
           alignItems="center"
         >
@@ -138,24 +138,24 @@ export const ThemeOverrideCustomRenderNoPadding: Story = {
         {
           key: 'priority',
           name: 'Приоритет (renderCell)',
-          renderCell: render
+          renderCell: render,
         },
-        { key: 'developer', name: 'Разработчик (дефолт)' }
+        { key: 'developer', name: 'Разработчик (дефолт)' },
       ],
-      []
+      [],
     );
 
     return (
       <TableCanvas
         tableConfig={{
           containerStyle: { height: '400px' },
-          rowSize: { default: 'small', showInControl: true }
+          rowSize: { default: 'small', showInControl: true },
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };
 
 export const ThemeOverrideSubRowsLvl: Story = {
@@ -181,14 +181,14 @@ export const ThemeOverrideSubRowsLvl: Story = {
                   return 'block';
               }
             },
-            isColumnWithArrow: true
+            isColumnWithArrow: true,
           },
           // На tree-колонке левый край считается формулой: padding + offset шеврона + offset по lvl.
           themeOverride: (_cellInfo, lvl) => {
             if (lvl === 1) return { bgCell: 'rgba(46, 170, 220, 0.12)' };
             if (lvl === 2) return { bgCell: 'rgba(255, 170, 60, 0.18)' };
             return undefined;
-          }
+          },
         },
         {
           key: 'q1',
@@ -203,17 +203,17 @@ export const ThemeOverrideSubRowsLvl: Story = {
                 : lvl === 1
                 ? 'rgba(120, 200, 120, 0.20)'
                 : 'rgba(120, 200, 120, 0.30)',
-            cellHorizontalPadding: 64
-          })
+            cellHorizontalPadding: 64,
+          }),
         },
         {
           key: 'q2',
           name: 'Q2',
           contentFormat: 'number',
-          subRow: { keyOfColumnInSubRow: 'q2' }
-        }
+          subRow: { keyOfColumnInSubRow: 'q2' },
+        },
       ],
-      []
+      [],
     );
 
     return (
@@ -222,15 +222,15 @@ export const ThemeOverrideSubRowsLvl: Story = {
           containerStyle: { height: '500px' },
           subRows: {
             getSubRows: (row) => row?.subRows,
-            rowKeyGetter: (row) => row.id
+            rowKeyGetter: (row) => row.id,
           },
-          rowSize: { default: 'medium', showInControl: false }
+          rowSize: { default: 'medium', showInControl: false },
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };
 
 export const ThemeOverrideBgAndCustomRender: Story = {
@@ -260,29 +260,29 @@ export const ThemeOverrideBgAndCustomRender: Story = {
               <Canvas.Container
                 padding={{
                   left: theme.cellHorizontalPadding,
-                  right: theme.cellHorizontalPadding
+                  right: theme.cellHorizontalPadding,
                 }}
                 alignItems="center"
               >
                 <Canvas.Badge view="accent" text={value} />
               </Canvas.Container>
             );
-          }
+          },
         },
-        { key: 'priority', name: 'Приоритет' }
+        { key: 'priority', name: 'Приоритет' },
       ],
-      []
+      [],
     );
 
     return (
       <TableCanvas
         tableConfig={{
           containerStyle: { height: '400px' },
-          rowSize: { default: 'medium', showInControl: false }
+          rowSize: { default: 'medium', showInControl: false },
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };

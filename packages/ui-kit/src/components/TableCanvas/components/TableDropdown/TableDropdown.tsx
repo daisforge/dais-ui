@@ -5,13 +5,13 @@ import styled, { CSSObject } from 'styled-components';
 
 import {
   useHeaderContext,
-  useRefTableGlobalContainerContext
+  useRefTableGlobalContainerContext,
 } from '../../contexts';
 import { LIST_WIDTH, SIZES } from '../../styles/styles.constants';
 import { TableDropdownProps } from './types';
 
 const StyledDropdown: typeof Dropdown = styled(Dropdown)<{ $css?: CSSObject }>(
-  ({ $css }) => $css
+  ({ $css }) => $css,
 );
 
 // Закрываем неуправляемый Plasma-дропдаун его же путём: диспатчим mousedown на
@@ -30,7 +30,7 @@ export const TableDropdown = (
     // пункты, на которых предикат вернул true. Так можно держать меню открытым
     // на части пунктов (например тоггл колонок группировки).
     shouldCloseOnItemSelect?: (item: DropdownItemOption) => boolean;
-  }
+  },
 ) => {
   const refTableGlobalContainer = useRefTableGlobalContainerContext();
   const { rowSize } = useHeaderContext();
@@ -68,11 +68,11 @@ export const TableDropdown = (
     };
 
     document.addEventListener('pointerdown', handlePointerDownCapture, {
-      capture: true
+      capture: true,
     });
     return () =>
       document.removeEventListener('pointerdown', handlePointerDownCapture, {
-        capture: true
+        capture: true,
       });
   }, []);
 
@@ -132,7 +132,7 @@ export const TableDropdownWithCustomClickOutside = ({
         // Это решает проблему дублирующихся ID, если таблиц несколько
         if (refTableGlobalContainer?.current) {
           menuElement = refTableGlobalContainer.current.querySelector(
-            `[id="${portal}"]`
+            `[id="${portal}"]`,
           ) as HTMLElement;
         }
 
@@ -158,13 +158,13 @@ export const TableDropdownWithCustomClickOutside = ({
     };
 
     document.addEventListener('pointerdown', handleClickOutside, {
-      capture: true
+      capture: true,
     });
     document.addEventListener('keydown', handleKeyDown);
 
     return () => {
       document.removeEventListener('pointerdown', handleClickOutside, {
-        capture: true
+        capture: true,
       });
       document.removeEventListener('keydown', handleKeyDown);
     };

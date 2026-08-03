@@ -20,7 +20,7 @@ import type {
   SummaryCellInfo,
   TableGlideCustomProps,
   TableGlideProps,
-  Theme
+  Theme,
 } from '@ui-kit/components/TableGlide';
 import { ReactNode } from 'react';
 
@@ -43,7 +43,7 @@ export type {
   ProvideEditorCallbackResult,
   ProvideEditorComponent,
   SIZE as SIZE_GLIDE_INSTANCE,
-  TableGlideSizeConfig
+  TableGlideSizeConfig,
 } from '@ui-kit/components/TableGlide';
 
 export type {
@@ -59,12 +59,12 @@ export type {
   HighlightActiveType,
   HoverEffectsConfig,
   Justify,
-  TableGlideCustomProps
+  TableGlideCustomProps,
 };
 export interface RowsChangeDataGlideInstance<
   R extends ObjectForExtending,
   SR = unknown,
-  CustomCtxs extends ObjectForExtending = {}
+  CustomCtxs extends ObjectForExtending = {},
 > {
   indexes: number[];
   column: ColumnGlideInstance<R, SR, CustomCtxs>;
@@ -79,7 +79,7 @@ export interface RowsChangeDataGlideInstance<
 export type HeaderCellInfoGlideInstance<
   R extends ObjectForExtending,
   SR,
-  CustomCtxs extends ObjectForExtending = {}
+  CustomCtxs extends ObjectForExtending = {},
 > = Omit<HeaderCellInfoGlide<R, SR>, 'column' | 'ctxs'> & {
   column: ColumnGlideInstance<R, SR, CustomCtxs>;
   ctxs: CtxsType<CustomCtxs>;
@@ -88,7 +88,7 @@ export type HeaderCellInfoGlideInstance<
 export type CellInfoGlideInstance<
   R extends ObjectForExtending,
   SR = unknown,
-  CustomCtxs extends ObjectForExtending = {}
+  CustomCtxs extends ObjectForExtending = {},
 > = Omit<CellInfo<R, SR>, 'column' | 'ctxs'> & {
   column: ColumnGlideInstance<R, SR, CustomCtxs>;
   ctxs: CtxsType<CustomCtxs>;
@@ -97,7 +97,7 @@ export type CellInfoGlideInstance<
 export type EditingCellInfoGlideInstance<
   R extends ObjectForExtending,
   SR = unknown,
-  CustomCtxs extends ObjectForExtending = {}
+  CustomCtxs extends ObjectForExtending = {},
 > = Omit<CellInfoGlideInstance<R, SR, CustomCtxs>, 'hovered' | 'active'> & {
   onRowChange: (newV: R, closeEditor?: boolean) => void;
   /** initialValue - введенное значение, если редактор ячейки откроется не по двойному клику а при попытке ввода любой буквы */
@@ -114,12 +114,12 @@ export type EditingCellInfoGlideInstance<
 export type PreviewCellInfoGlideInstance<
   R extends ObjectForExtending,
   SR = unknown,
-  CustomCtxs extends ObjectForExtending = {}
+  CustomCtxs extends ObjectForExtending = {},
 > = Omit<EditingCellInfoGlideInstance<R, SR, CustomCtxs>, 'onRowChange'>;
 export type SummaryCellInfoGlideInstance<
   R extends ObjectForExtending,
   SR = unknown,
-  CustomCtxs extends ObjectForExtending = {}
+  CustomCtxs extends ObjectForExtending = {},
 > = Omit<SummaryCellInfo<R, SR>, 'column' | 'ctxs'> & {
   column: ColumnGlideInstance<R, SR, CustomCtxs>;
   ctxs: CtxsType<CustomCtxs>;
@@ -128,7 +128,7 @@ export type SummaryCellInfoGlideInstance<
 export type ColumnGlideInstance<
   R extends ObjectForExtending,
   SR,
-  CustomCtxs extends ObjectForExtending = {}
+  CustomCtxs extends ObjectForExtending = {},
 > = {
   key: string;
   name: string | CanvasEl;
@@ -144,16 +144,16 @@ export type ColumnGlideInstance<
   /** Максимальная ширина колонки при auto-sizing и grow-распределении (px). Не ограничивает ручной ресайз. */
   maxAutoWidth?: number;
   renderHeaderCell?: (
-    cellInfo: HeaderCellInfoGlideInstance<R, SR, CustomCtxs>
+    cellInfo: HeaderCellInfoGlideInstance<R, SR, CustomCtxs>,
   ) => CanvasContent;
   renderCell?: (
-    cellInfo: CellInfoGlideInstance<R, SR, CustomCtxs>
+    cellInfo: CellInfoGlideInstance<R, SR, CustomCtxs>,
   ) => CellContent;
   contentAlign?: 'left' | 'right' | 'center';
   copyData?: string | ((row: R) => string);
   editable?: boolean | ((row: R) => boolean);
   renderEditCell?: (
-    cellInfo: EditingCellInfoGlideInstance<R, SR, CustomCtxs>
+    cellInfo: EditingCellInfoGlideInstance<R, SR, CustomCtxs>,
   ) => ReactNode;
   /**
    * Кастомный рендер preview-ячейки (при двойном клике на readonly-ячейку).
@@ -164,10 +164,10 @@ export type ColumnGlideInstance<
     | 'none'
     | 'cellEditorAsPreview'
     | ((
-        cellInfo: PreviewCellInfoGlideInstance<R, SR, CustomCtxs>
+        cellInfo: PreviewCellInfoGlideInstance<R, SR, CustomCtxs>,
       ) => ReactNode);
   renderSummaryCell?: (
-    cellInfo: SummaryCellInfoGlideInstance<R, SR, CustomCtxs>
+    cellInfo: SummaryCellInfoGlideInstance<R, SR, CustomCtxs>,
   ) => CellContent;
   colSpan?:
     | number
@@ -195,14 +195,14 @@ export type ColumnGlideInstance<
         theme?: Theme;
       }) => CanvasNodeTooltipConfig | null);
   columnThemeOverride?: (
-    cellInfo: CellInfoGlideInstance<R, SR, CustomCtxs>
+    cellInfo: CellInfoGlideInstance<R, SR, CustomCtxs>,
   ) => CellThemeOverrideResult | undefined;
 };
 
 export type ColumnOrColumnGroupGlideInstance<
   R extends ObjectForExtending,
   SR = unknown,
-  CustomCtxs extends ObjectForExtending = {}
+  CustomCtxs extends ObjectForExtending = {},
 > =
   | ColumnGlideInstance<R, SR, CustomCtxs>
   | ColumnGroupGlideInstance<R, SR, CustomCtxs>;
@@ -210,7 +210,7 @@ export type ColumnOrColumnGroupGlideInstance<
 export type ColumnGroupGlideInstance<
   R extends ObjectForExtending,
   SR = unknown,
-  CustomCtxs extends ObjectForExtending = {}
+  CustomCtxs extends ObjectForExtending = {},
 > = {
   readonly key: string;
   readonly name: CanvasEl;
@@ -225,7 +225,7 @@ export type ColumnGroupGlideInstance<
 export type TableInfoBase<
   R extends ObjectForExtending,
   SR = unknown,
-  CustomCtxs extends ObjectForExtending = {}
+  CustomCtxs extends ObjectForExtending = {},
 > = {
   column: ColumnOrColumnGroupGlideInstance<R, SR, CustomCtxs>;
   ctxs: CustomCtxs;
@@ -236,24 +236,24 @@ export type TableInfoBase<
 export type TableInfoWithRow<
   R extends ObjectForExtending,
   SR = unknown,
-  CustomCtxs extends ObjectForExtending = {}
+  CustomCtxs extends ObjectForExtending = {},
 > = TableInfoBase<R, SR, CustomCtxs> & { row: R };
 
 export type TableGlideInstanceContextMenu<
   R extends ObjectForExtending,
   SR = unknown,
-  CustomCtxs extends ObjectForExtending = {}
+  CustomCtxs extends ObjectForExtending = {},
 > = {
   onHeaderContextMenu?: (
     ...args: [
       ...Parameters<NonNullable<TableGlideProps<R, SR>['onHeaderContextMenu']>>,
-      TableInfoBase<R, SR, CustomCtxs>
+      TableInfoBase<R, SR, CustomCtxs>,
     ]
   ) => void;
   onCellContextMenu?: (
     ...args: [
       ...Parameters<NonNullable<TableGlideProps<R, SR>['onCellContextMenu']>>,
-      TableInfoWithRow<R, SR, CustomCtxs>
+      TableInfoWithRow<R, SR, CustomCtxs>,
     ]
   ) => void;
 };
@@ -264,14 +264,14 @@ export type CellReadOnlyEditorGlideInstanceStaticProps = {
 };
 export type CellReadOnlyEditorGlideInstanceProps<
   R extends ObjectForExtending,
-  SR
+  SR,
 > = EditingCellInfoGlideInstance<R, SR> &
   CellReadOnlyEditorGlideInstanceStaticProps;
 
 export type TableGlideInstanceProps<
   R extends ObjectForExtending,
   SR = unknown,
-  CustomCtxs extends ObjectForExtending = {}
+  CustomCtxs extends ObjectForExtending = {},
 > = Omit<
   TableGlideProps<R, SR>,
   'columns' | 'onHeaderContextMenu' | 'onCellContextMenu'
@@ -294,15 +294,15 @@ export type TableGlideInstanceProps<
     renderInContainer: (children: React.ReactNode) => React.ReactPortal | null;
   }) => React.ReactNode;
   CellReadOnlyEditor: (
-    props: CellReadOnlyEditorGlideInstanceProps<R, SR>
+    props: CellReadOnlyEditorGlideInstanceProps<R, SR>,
   ) => ReactNode;
   onRowsChange?: (
     rows: R[],
-    data: RowsChangeDataGlideInstance<R, SR, CustomCtxs>
+    data: RowsChangeDataGlideInstance<R, SR, CustomCtxs>,
   ) => void;
   onCellClicked?: (
     cell: readonly [number, number],
-    info: TableInfoWithRow<R, SR, CustomCtxs>
+    info: TableInfoWithRow<R, SR, CustomCtxs>,
   ) => void;
 } & TableGlideInstanceContextMenu<R, SR, CustomCtxs>;
 
@@ -371,7 +371,7 @@ export type DropdownContextMenu = {
 export type CellContextMenuDropdownProps<
   RowType extends ObjectForExtending,
   SummaryRowType,
-  CustomCtxs extends ObjectForExtending = ObjectForExtending
+  CustomCtxs extends ObjectForExtending = ObjectForExtending,
 > = ContextMenuDropdownProps & {
   /** Тип конфигурации (всегда 'dropdown') */
   type: 'dropdown';
@@ -381,7 +381,7 @@ export type CellContextMenuDropdownProps<
    * открыто: верните скелетон-пункты во время загрузки и реальные — после.
    */
   getDropdownItems: (
-    params: TableInfoWithRow<RowType, SummaryRowType, CustomCtxs>
+    params: TableInfoWithRow<RowType, SummaryRowType, CustomCtxs>,
   ) => DropdownProps['items'];
   /**
    * Колбэк открытия меню для асинхронной подгрузки. Если getDropdownItems
@@ -389,13 +389,13 @@ export type CellContextMenuDropdownProps<
    * здесь стартует запрос и хранит своё состояние (loading/error/items).
    */
   onOpen?: (
-    params: TableInfoWithRow<RowType, SummaryRowType, CustomCtxs>
+    params: TableInfoWithRow<RowType, SummaryRowType, CustomCtxs>,
   ) => void;
   /** Обработчик выбора пункта меню */
   onItemSelect?: (
     item: ContextMenuDropdownItem,
     context: TableInfoWithRow<RowType, SummaryRowType, CustomCtxs>,
-    event?: React.SyntheticEvent
+    event?: React.SyntheticEvent,
   ) => void;
 };
 
@@ -403,7 +403,7 @@ export type CellContextMenuDropdownProps<
 export type HeaderContextMenuDropdownProps<
   RowType extends ObjectForExtending,
   SummaryRowType = unknown,
-  CustomCtxs extends ObjectForExtending = ObjectForExtending
+  CustomCtxs extends ObjectForExtending = ObjectForExtending,
 > = ContextMenuDropdownProps & {
   /** Тип конфигурации (всегда 'dropdown') */
   type: 'dropdown';
@@ -413,7 +413,7 @@ export type HeaderContextMenuDropdownProps<
    * открыто: верните скелетон-пункты во время загрузки и реальные — после.
    */
   getDropdownItems: (
-    params: TableInfoBase<RowType, SummaryRowType, CustomCtxs>
+    params: TableInfoBase<RowType, SummaryRowType, CustomCtxs>,
   ) => DropdownProps['items'];
   /**
    * Колбэк открытия меню для асинхронной подгрузки. Если getDropdownItems
@@ -425,6 +425,6 @@ export type HeaderContextMenuDropdownProps<
   onItemSelect?: (
     item: ContextMenuDropdownItem,
     context: TableInfoBase<RowType, SummaryRowType, CustomCtxs>,
-    event?: React.SyntheticEvent
+    event?: React.SyntheticEvent,
   ) => void;
 };

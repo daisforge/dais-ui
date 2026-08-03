@@ -17,7 +17,7 @@ import {
   DropdownWithTitle,
   FeatureTableDropdownContainer,
   FeatureTableDropdownTargetButton,
-  truncateText
+  truncateText,
 } from './styled';
 
 const tableDropdownOffset = [0, 5] as [number, number];
@@ -96,14 +96,14 @@ const FeatureRenderer: React.FC<{ feature: FeatureItem }> = ({ feature }) => {
             style={{
               maxWidth: '230px',
               flexShrink: 0,
-              flexWrap: 'nowrap'
+              flexWrap: 'nowrap',
             }}
           >
             <Flow alignment="center">{selectDetails.icon}</Flow>
             <BodyS
               style={{
                 marginLeft: 'auto',
-                ...truncateText()
+                ...truncateText(),
               }}
             >
               {feature.details.label}
@@ -124,7 +124,7 @@ const FeatureRenderer: React.FC<{ feature: FeatureItem }> = ({ feature }) => {
                       visibility:
                         option.value === selectDetails.value
                           ? 'visible'
-                          : 'hidden'
+                          : 'hidden',
                     }}
                   >
                     <IconDone
@@ -132,7 +132,7 @@ const FeatureRenderer: React.FC<{ feature: FeatureItem }> = ({ feature }) => {
                       color={textInfo}
                     />
                   </Box>
-                )
+                ),
               }))}
               onItemSelect={(item) =>
                 'details' in feature &&
@@ -147,19 +147,19 @@ const FeatureRenderer: React.FC<{ feature: FeatureItem }> = ({ feature }) => {
                 orientation="horizontal"
                 alignment="center"
                 style={{
-                  flexWrap: 'nowrap'
+                  flexWrap: 'nowrap',
                 }}
               >
                 <FeatureTableDropdownTargetButton>
                   <BodyXS
                     style={{
-                      ...truncateText()
+                      ...truncateText(),
                     }}
                     ref={selectedTextContainer}
                   >
                     {`${
                       feature.details.options.find(
-                        (opt) => opt.value === selectDetails?.value
+                        (opt) => opt.value === selectDetails?.value,
                       )?.label
                     }`}
                   </BodyXS>
@@ -183,7 +183,7 @@ const FeatureRenderer: React.FC<{ feature: FeatureItem }> = ({ feature }) => {
 };
 
 export const FeaturesSidebarBlock: React.FC<{ features: FeatureItem[] }> = ({
-  features
+  features,
 }) => (
   <>
     {features.map((feature, index) => (

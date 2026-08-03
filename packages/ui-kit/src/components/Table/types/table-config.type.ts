@@ -1,7 +1,7 @@
 import { Group, Item, ItemOrGroup } from '@ui-kit/components/ListOfFilters';
 import type {
   MassActionsButtonProps,
-  MassActionsSize
+  MassActionsSize,
 } from '@ui-kit/components/MassActions/types';
 import { RowInstrumentsType, SIZE } from '@ui-kit/components/Table';
 import { ChangeEvent, CSSProperties, ReactNode } from 'react';
@@ -13,7 +13,7 @@ import { ColumnsControlConfig } from '../feature-column-control/types';
 import {
   CellContextMenuDropDownProps,
   HeaderContextMenuDropDownProps,
-  HeaderContextMenuProps
+  HeaderContextMenuProps,
 } from '../feature-context-menu';
 import { FullScreen } from '../feature-full-screen/types';
 import { KeyTextConfig } from '../feature-key-text/types';
@@ -27,7 +27,7 @@ import {
   RowCheckboxDisabled,
   RowGetStatesProps,
   RowGetStatesReturnType,
-  RowShowCheckbox
+  RowShowCheckbox,
 } from '../feature-select-row/types';
 import { SubRows } from '../feature-tree/types';
 import { ControlBlockButtonProps } from '../widgets/control-block/control-block-button.types';
@@ -106,14 +106,14 @@ export type RowSize = {
 };
 export type RowHeightFunc<RowType> = (
   row: RowType,
-  currentRowSize: { rowSizeName: SIZE; rowSizeValue: number }
+  currentRowSize: { rowSizeName: SIZE; rowSizeValue: number },
 ) => number;
 
 type SummaryCheckedFunc<
   RowType,
   ReturnType,
   AdditionalPropsObj extends ObjectForExtending | void = void,
-  RowIdType extends string | number = string | number
+  RowIdType extends string | number = string | number,
 > = (
   props: {
     rows: RowType[];
@@ -136,7 +136,7 @@ type SummaryCheckedFunc<
   } & (AdditionalPropsObj extends ObjectForExtending
     ? AdditionalPropsObj
     : // eslint-disable-next-line @typescript-eslint/ban-types
-      {})
+      {}),
 ) => ReturnType;
 
 // Типы для конфигурации коллапса таблицы
@@ -202,7 +202,7 @@ export type FlattenedRowsArrAndMap<RowType, RowIdType> = {
 
 export type SelectingRowConfig<
   RowType,
-  RowIdType extends string | number = string | number
+  RowIdType extends string | number = string | number,
 > = {
   rowKeyGetter: (row: RowType) => RowIdType;
   /**
@@ -285,7 +285,7 @@ export type SelectingRowConfig<
    * Что будет возвращено функцией в объекте, то будет переопределено.
    */
   rowGetStates?: (
-    p: RowGetStatesProps<RowType, RowIdType>
+    p: RowGetStatesProps<RowType, RowIdType>,
   ) => RowGetStatesReturnType<RowType, RowIdType> | null;
 
   groupedRow?: {
@@ -434,7 +434,7 @@ export type FilteringConfig<T> = {
            */
           customRenderFn?: (
             filters: T,
-            setFilters: React.Dispatch<React.SetStateAction<T>>
+            setFilters: React.Dispatch<React.SetStateAction<T>>,
           ) => React.ReactNode;
         }
       >
@@ -594,7 +594,7 @@ type SidebarConfig = {
    */
   activeTabState?: [
     string | null,
-    React.Dispatch<React.SetStateAction<string | null>>
+    React.Dispatch<React.SetStateAction<string | null>>,
   ];
   /**
    * Колбэк смены активной вкладки. Вызывается и в uncontrolled-режиме.
@@ -653,7 +653,7 @@ type SidebarConfig = {
 export function activeViewIs<T extends 'cards' | 'rows'>(
   checkType: T,
   viewState: 'cards' | 'rows',
-  view: View
+  view: View,
 ): view is ViewMods[T] {
   return checkType === viewState;
 }
@@ -800,7 +800,7 @@ export type TableConfig<
   RowType extends ObjectForExtending,
   SummaryRowType,
   RowIdType extends string | number,
-  FilterStateType extends ObjectForExtending
+  FilterStateType extends ObjectForExtending,
   // SubRowType
 > = {
   /**
@@ -828,7 +828,7 @@ export type TableConfig<
   sorting?: {
     state: [
       readonly SortColumn[],
-      React.Dispatch<React.SetStateAction<readonly SortColumn[]>>
+      React.Dispatch<React.SetStateAction<readonly SortColumn[]>>,
     ];
     /**
      * manualSorting - пропс, активирующий ручную-кастомную (или на стороне бэкенда) сортировку
@@ -869,7 +869,7 @@ export type TableConfig<
   selecting?: {
     state: [
       ReadonlySet<RowIdType>,
-      React.Dispatch<React.SetStateAction<ReadonlySet<RowIdType>>>
+      React.Dispatch<React.SetStateAction<ReadonlySet<RowIdType>>>,
     ];
   } & Prettify<SelectingRowConfig<RowType, RowIdType>> & {
       /**

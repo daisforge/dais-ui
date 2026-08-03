@@ -39,6 +39,6 @@ export const useHovering = () => {
     hoveredId,
     setDroppedAsHovered,
     onDragIconHoverStart,
-    onDragIconHoverEnd
+    onDragIconHoverEnd,
   };
 };

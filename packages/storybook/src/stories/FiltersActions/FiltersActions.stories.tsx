@@ -13,7 +13,7 @@ import { useFiltersList } from '@ui-kit/components/ListOfFilters';
 import {
   SegmentGroup,
   SegmentProvider,
-  useSegment
+  useSegment,
 } from '@ui-kit/components/Segment';
 import { TextFieldSearch } from '@ui-kit/components/TextField';
 import { BodyS, H3 } from '@ui-kit/components/Typography';
@@ -24,7 +24,7 @@ import {
   FiltersActions,
   type FiltersActionsProps,
   type FiltersActionsResizeDimensions,
-  useAdaptiveFilters
+  useAdaptiveFilters,
 } from '@ui-kit/layouts/FiltersActions';
 import { borderRadiusS } from '@ui-kit/tokens';
 import { useDebouncedValue } from '@ui-kit/utils';
@@ -33,7 +33,7 @@ import React, {
   useMemo,
   useReducer,
   useRef,
-  useState
+  useState,
 } from 'react';
 import styled from 'styled-components';
 
@@ -42,10 +42,10 @@ const meta: Meta<FiltersActionsProps> = {
   component: FiltersActions,
   parameters: {
     docs: {
-      toc: true // 👈 Enables the table of contents
-    }
+      toc: true, // 👈 Enables the table of contents
+    },
   },
-  tags: ['!autodocs']
+  tags: ['!autodocs'],
 };
 
 export default meta;
@@ -63,10 +63,10 @@ type Filters = {
 
 const filtersReducer = (
   state: Filters,
-  newState: Partial<Filters>
+  newState: Partial<Filters>,
 ): Filters => ({
   ...state,
-  ...newState
+  ...newState,
 });
 
 const DEFAULT_FILTERS: Filters = {
@@ -75,7 +75,7 @@ const DEFAULT_FILTERS: Filters = {
   blocks: [],
   tribes: [],
   allocation: '',
-  brics: []
+  brics: [],
 };
 
 const LABELS: { [key in keyof Filters]: string } = {
@@ -84,12 +84,12 @@ const LABELS: { [key in keyof Filters]: string } = {
   tribes: 'Трайб',
   allocation: 'Аллокация',
   switcher: 'Switcher filter',
-  brics: 'Брикс'
+  brics: 'Брикс',
 };
 
 const useFetch = (
   key: 'blocks' | 'tribes' | 'allocation' | 'brics',
-  num = 10
+  num = 10,
 ) =>
   useMemo(
     () =>
@@ -97,16 +97,16 @@ const useFetch = (
         .fill(0)
         .map((_, i) => ({
           label: `${LABELS[key]} ${i + 1}`,
-          value: i.toString()
+          value: i.toString(),
         })),
-    [key, num]
+    [key, num],
   );
 
 const COMBOBOX_MODIFICATION = {
   width: '168px',
   style: {
-    flexShrink: 0 // Чтобы блок combobox не сжимался
-  }
+    flexShrink: 0, // Чтобы блок combobox не сжимался
+  },
 };
 
 const SEARCH_MODIFICATION = {
@@ -114,8 +114,8 @@ const SEARCH_MODIFICATION = {
   style: {
     minWidth: '168px',
     maxWidth: '700px',
-    flex: 1
-  }
+    flex: 1,
+  },
 };
 
 const SegmentContentStyled = styled.div({
@@ -123,7 +123,7 @@ const SegmentContentStyled = styled.div({
   borderRadius: borderRadiusS,
   minHeight: 400,
   padding: 16,
-  marginTop: 16
+  marginTop: 16,
 });
 
 // Пример кастомного таргета Popover через renderTarget: вместо дефолтной кнопки
@@ -137,12 +137,12 @@ function CustomTargetFiltersExample() {
   const blocksOptions = [
     { label: 'Блок 1', value: '1' },
     { label: 'Блок 2', value: '2' },
-    { label: 'Блок 3', value: '3' }
+    { label: 'Блок 3', value: '3' },
   ];
   const tribesOptions = [
     { label: 'Трайб 1', value: '1' },
     { label: 'Трайб 2', value: '2' },
-    { label: 'Трайб 3', value: '3' }
+    { label: 'Трайб 3', value: '3' },
   ];
 
   // Активны ли фильтры — от этого зависит красная точка на таргете
@@ -218,7 +218,7 @@ function SegmentContentWrapper() {
   const tabs = [
     { id: 'item_0', bg: 'pink', content: 'Контент сегмента 1' },
     { id: 'item_1', bg: 'brown', content: 'Контент сегмента 2' },
-    { id: 'item_2', bg: 'darkgrey', content: 'Контент сегмента 3' }
+    { id: 'item_2', bg: 'darkgrey', content: 'Контент сегмента 3' },
   ];
 
   const activeTab = tabs.find((tab) => tab.id === activeTabId) || tabs[0];
@@ -226,7 +226,7 @@ function SegmentContentWrapper() {
   return (
     <SegmentContentStyled
       style={{
-        backgroundColor: activeTab ? activeTab.bg : 'white'
+        backgroundColor: activeTab ? activeTab.bg : 'white',
       }}
     >
       <H3>Segment {activeTab?.id?.split('_')[1]} </H3>
@@ -325,29 +325,29 @@ export const FilterActionsStory: Story = {
 
     ${getFuncAsString(
       'packages/storybook/src/stories/FiltersActions/FiltersActions.stories.tsx',
-      'SegmentContentWrapper'
+      'SegmentContentWrapper',
     )}
 
 
-        `
+        `,
   }),
   render: () => {
     const [filters, updateFilters] = useReducer(
       filtersReducer,
-      DEFAULT_FILTERS
+      DEFAULT_FILTERS,
     );
     const [dimensions, setDimensions] =
       useState<FiltersActionsResizeDimensions>({
         containerWidth: 0,
         mainBlockWidth: 0,
         buttonsBlockWidth: 0,
-        availableMainBlockWidth: 0
+        availableMainBlockWidth: 0,
       });
     const stateAndSetterPopoverFilterOpened = useState(false);
     const [searchQueryInPopover, setSearchQueryInPopover] = useState('');
     const debouncedSearchQueryInPopover = useDebouncedValue(
       searchQueryInPopover,
-      300
+      300,
     );
 
     /**
@@ -367,7 +367,7 @@ export const FilterActionsStory: Story = {
       (newDimensions: FiltersActionsResizeDimensions) => {
         setDimensions(newDimensions);
       },
-      [setDimensions]
+      [setDimensions],
     );
 
     // Работа с фильтрами
@@ -377,7 +377,7 @@ export const FilterActionsStory: Story = {
         blocks: blocksOptions,
         tribes: tribesOptions,
         allocation: allocationOptions,
-        brics: bricsOptions
+        brics: bricsOptions,
       } as Record<keyof Filters, { label: string; value: string }[]>,
       updateFilters: (key, newV) => updateFilters({ [key]: newV }),
       filtersInfo: {
@@ -386,9 +386,9 @@ export const FilterActionsStory: Story = {
         blocks: { label: 'Блок', clearedValue: [] },
         tribes: { label: 'Трайб', clearedValue: [] },
         allocation: { label: 'Аллокация', clearedValue: '' },
-        brics: { label: 'Брикс', clearedValue: [] }
+        brics: { label: 'Брикс', clearedValue: [] },
       },
-      order: ['switcher'] // Первым отображаются switch кнопки
+      order: ['switcher'], // Первым отображаются switch кнопки
     });
 
     // Массив элементов левой части
@@ -413,7 +413,7 @@ export const FilterActionsStory: Story = {
                   />
                 ))}
             </SegmentGroup>
-          )
+          ),
         },
 
         // 2. Поиск
@@ -426,7 +426,7 @@ export const FilterActionsStory: Story = {
               autoComplete="off"
               style={{ marginRight: '8px' }}
             />
-          )
+          ),
         },
 
         // 3. Чекбокс/Switcher
@@ -441,8 +441,8 @@ export const FilterActionsStory: Story = {
           ),
           metadata: {
             // Можно использовать для поиска элемента в массиве overlayItems при включенном поиске в Popover
-            labelForSearchingInPopover: 'switcher'
-          }
+            labelForSearchingInPopover: 'switcher',
+          },
         },
 
         // 4. Combobox 1 (множественный выбор)
@@ -455,7 +455,7 @@ export const FilterActionsStory: Story = {
               items={filters.blocks
                 .map((item) => {
                   const option = blocksOptions.find(
-                    (opt) => opt.value === item
+                    (opt) => opt.value === item,
                   );
                   return option?.label;
                 })
@@ -466,7 +466,7 @@ export const FilterActionsStory: Story = {
             >
               <div
                 style={{
-                  width: '100%'
+                  width: '100%',
                 }}
               >
                 <Combobox
@@ -488,8 +488,8 @@ export const FilterActionsStory: Story = {
             // Можно использовать для заголовков фильтров в Popover
             labelInPopoverFilter: 'Blocks',
             // Можно использовать для поиска элемента в массиве overlayItems при включенном поиске в Popover
-            labelForSearchingInPopover: 'blocks'
-          }
+            labelForSearchingInPopover: 'blocks',
+          },
         },
 
         // 5. Combobox 2 (множественный выбор)
@@ -502,7 +502,7 @@ export const FilterActionsStory: Story = {
               items={filters.tribes
                 .map((item) => {
                   const option = tribesOptions.find(
-                    (opt) => opt.value === item
+                    (opt) => opt.value === item,
                   );
                   return option?.label;
                 })
@@ -514,7 +514,7 @@ export const FilterActionsStory: Story = {
               {/* Важно делать обертку для регулирования ширины Combobox. Подробнее: https://plasma.sberdevices.ru/sdds-finai/components/combobox/ */}
               <div
                 style={{
-                  width: '100%'
+                  width: '100%',
                 }}
               >
                 <Combobox
@@ -536,8 +536,8 @@ export const FilterActionsStory: Story = {
           metadata: {
             labelInPopoverFilter: 'Tribes',
             // Можно использовать для поиска элемента в массиве overlayItems при включенном поиске в Popover
-            labelForSearchingInPopover: 'tribes'
-          }
+            labelForSearchingInPopover: 'tribes',
+          },
         },
 
         // 6. Combobox 3 (одиночный выбор)
@@ -559,8 +559,8 @@ export const FilterActionsStory: Story = {
           metadata: {
             labelInPopoverFilter: 'Allocation',
             // Можно использовать для поиска элемента в массиве overlayItems при включенном поиске в Popover
-            labelForSearchingInPopover: 'allocation'
-          }
+            labelForSearchingInPopover: 'allocation',
+          },
         },
 
         // 5. Combobox 4 (множественный выбор)
@@ -583,7 +583,7 @@ export const FilterActionsStory: Story = {
               {/* Важно делать обертку дл регулирования ширины Combobox. Подробнее: https://plasma.sberdevices.ru/sdds-finai/components/combobox/ */}
               <div
                 style={{
-                  width: '100%'
+                  width: '100%',
                 }}
               >
                 <Combobox
@@ -605,8 +605,8 @@ export const FilterActionsStory: Story = {
           metadata: {
             labelInPopoverFilter: 'Brics',
             // Можно использовать для поиска элемента в массиве overlayItems при включенном поиске в Popover
-            labelForSearchingInPopover: 'brics'
-          }
+            labelForSearchingInPopover: 'brics',
+          },
         },
 
         // 7. Кнопка "Сбросить все"
@@ -618,8 +618,8 @@ export const FilterActionsStory: Story = {
               onClick={clearAll}
               disabled={filterList.length === 0}
             />
-          )
-        }
+          ),
+        },
       ],
       [
         filters.searchedV,
@@ -633,8 +633,8 @@ export const FilterActionsStory: Story = {
         tribesOptions,
         allocationOptions,
         filterList.length,
-        clearAll
-      ]
+        clearAll,
+      ],
     );
 
     // Конфигурация брейкпоинтов для адаптивности
@@ -650,7 +650,7 @@ export const FilterActionsStory: Story = {
               'blocks',
               'tribes',
               'allocation',
-              'resetButton'
+              'resetButton',
             ],
             inOverlay: ['brics'],
             modifications: {
@@ -658,12 +658,12 @@ export const FilterActionsStory: Story = {
               search: SEARCH_MODIFICATION,
               blocks: COMBOBOX_MODIFICATION,
               tribes: COMBOBOX_MODIFICATION,
-              allocation: COMBOBOX_MODIFICATION
+              allocation: COMBOBOX_MODIFICATION,
             },
             customActions: {
               secondaryButtonVisible: true,
-              resetInPopoverFooter: false
-            }
+              resetInPopoverFooter: false,
+            },
           },
 
           // >= 1578px: allocation в popup
@@ -674,7 +674,7 @@ export const FilterActionsStory: Story = {
               'switcher',
               'blocks',
               'tribes',
-              'resetButton'
+              'resetButton',
             ],
             inOverlay: ['brics', 'allocation'],
             modifications: {
@@ -682,12 +682,12 @@ export const FilterActionsStory: Story = {
               search: SEARCH_MODIFICATION,
               blocks: COMBOBOX_MODIFICATION,
               tribes: COMBOBOX_MODIFICATION,
-              allocation: COMBOBOX_MODIFICATION
+              allocation: COMBOBOX_MODIFICATION,
             },
             customActions: {
               secondaryButtonVisible: true,
-              resetInPopoverFooter: false
-            }
+              resetInPopoverFooter: false,
+            },
           },
 
           // >= 1486px: tribes в popup
@@ -697,7 +697,7 @@ export const FilterActionsStory: Story = {
               'search',
               'switcher',
               'blocks',
-              'resetButton'
+              'resetButton',
             ],
             inOverlay: ['tribes', 'allocation', 'brics'],
             modifications: {
@@ -705,12 +705,12 @@ export const FilterActionsStory: Story = {
               search: SEARCH_MODIFICATION,
               blocks: COMBOBOX_MODIFICATION,
               tribes: COMBOBOX_MODIFICATION,
-              allocation: COMBOBOX_MODIFICATION
+              allocation: COMBOBOX_MODIFICATION,
             },
             customActions: {
               secondaryButtonVisible: true,
-              resetInPopoverFooter: false
-            }
+              resetInPopoverFooter: false,
+            },
           },
 
           // >= 1260px: blocks в popup
@@ -722,12 +722,12 @@ export const FilterActionsStory: Story = {
               search: SEARCH_MODIFICATION,
               blocks: COMBOBOX_MODIFICATION,
               tribes: COMBOBOX_MODIFICATION,
-              allocation: COMBOBOX_MODIFICATION
+              allocation: COMBOBOX_MODIFICATION,
             },
             customActions: {
               secondaryButtonVisible: true,
-              resetInPopoverFooter: false
-            }
+              resetInPopoverFooter: false,
+            },
           },
 
           // >= 1068px: switcher в popup
@@ -739,12 +739,12 @@ export const FilterActionsStory: Story = {
               search: SEARCH_MODIFICATION,
               blocks: COMBOBOX_MODIFICATION,
               tribes: COMBOBOX_MODIFICATION,
-              allocation: COMBOBOX_MODIFICATION
+              allocation: COMBOBOX_MODIFICATION,
             },
             customActions: {
               secondaryButtonVisible: true,
-              resetInPopoverFooter: false
-            }
+              resetInPopoverFooter: false,
+            },
           },
 
           // >= 960px: ResetButton в footer popover
@@ -757,12 +757,12 @@ export const FilterActionsStory: Story = {
               search: SEARCH_MODIFICATION,
               blocks: COMBOBOX_MODIFICATION,
               tribes: COMBOBOX_MODIFICATION,
-              allocation: COMBOBOX_MODIFICATION
+              allocation: COMBOBOX_MODIFICATION,
             },
             customActions: {
               secondaryButtonVisible: true,
-              resetInPopoverFooter: true // ← ResetButton в footer popover
-            }
+              resetInPopoverFooter: true, // ← ResetButton в footer popover
+            },
           },
 
           // >= 960px: Вторая secondary кнопка cкрывается в dropdown
@@ -775,15 +775,15 @@ export const FilterActionsStory: Story = {
               search: SEARCH_MODIFICATION,
               blocks: COMBOBOX_MODIFICATION,
               tribes: COMBOBOX_MODIFICATION,
-              allocation: COMBOBOX_MODIFICATION
+              allocation: COMBOBOX_MODIFICATION,
             },
             customActions: {
               secondaryButtonVisible: false,
-              resetInPopoverFooter: true // ← ResetButton в footer popover
-            }
-          }
+              resetInPopoverFooter: true, // ← ResetButton в footer popover
+            },
+          },
         }),
-        []
+        [],
       );
 
     // Адаптивность
@@ -794,11 +794,11 @@ export const FilterActionsStory: Story = {
       customActions,
       hiddenItems,
       getItemStyle,
-      hasActiveFilters
+      hasActiveFilters,
     } = useAdaptiveFilters({
       items: allLeftItems,
       width: dimensions.availableMainBlockWidth,
-      breakpoints: breakpointsConfig
+      breakpoints: breakpointsConfig,
     });
 
     // Проверяем активные фильтры в popup
@@ -813,7 +813,7 @@ export const FilterActionsStory: Story = {
       : visibleItems.find((item) => item.id === 'resetButton');
 
     const visibleItemsWithoutResetFilterButton = visibleItems.filter(
-      (item) => item.id !== 'resetButton'
+      (item) => item.id !== 'resetButton',
     );
 
     // Фильтрация элементов по поиску в Popover
@@ -823,7 +823,7 @@ export const FilterActionsStory: Story = {
       return overlayItems.filter((item) =>
         item?.metadata?.labelForSearchingInPopover
           ?.toLowerCase()
-          ?.includes(query)
+          ?.includes(query),
       );
     }, [overlayItems, debouncedSearchQueryInPopover]);
 
@@ -831,14 +831,14 @@ export const FilterActionsStory: Story = {
     const dropdownItems = useMemo(() => {
       const items = [
         { value: 'action1', label: 'Действие 1' },
-        { value: 'action2', label: 'Действие 2' }
+        { value: 'action2', label: 'Действие 2' },
       ];
 
       // Если второстепенная кнопка скрыта - добавляем в dropdown
       if (!secondaryButtonVisible) {
         items.push({
           value: 'secondary',
-          label: 'Согласовать (второстепенное)'
+          label: 'Согласовать (второстепенное)',
         });
       }
 
@@ -851,7 +851,7 @@ export const FilterActionsStory: Story = {
           {/* Кнопка с троеточием */}
           <FiltersActions.DotsIconButton
             dropdownProps={{
-              items: dropdownItems
+              items: dropdownItems,
             }}
             iconOrientation="vertical"
           />
@@ -869,7 +869,7 @@ export const FilterActionsStory: Story = {
           </Button>
         </>
       ),
-      [secondaryButtonVisible, dropdownItems]
+      [secondaryButtonVisible, dropdownItems],
     );
 
     return (
@@ -883,7 +883,7 @@ export const FilterActionsStory: Story = {
             borderRadius: 8,
             fontFamily: 'monospace',
             fontSize: '12px',
-            minHeight: '146px'
+            minHeight: '146px',
           }}
         >
           <div>
@@ -925,7 +925,7 @@ export const FilterActionsStory: Story = {
                 const itemMods = modifications[item.id];
                 const style = getItemStyle(
                   itemMods,
-                  dimensions.availableMainBlockWidth
+                  dimensions.availableMainBlockWidth,
                 );
 
                 return (
@@ -939,7 +939,7 @@ export const FilterActionsStory: Story = {
               <FiltersActions.FiltersButtonWithPopover
                 popoverProps={{
                   // Передаем ref, чтобы Tooltip и Combobox, которые будут в Popover, передать frame и portal
-                  ref: popoverRef
+                  ref: popoverRef,
                 }}
                 state={stateAndSetterPopoverFilterOpened}
                 title="Ещё фильтры"
@@ -975,7 +975,7 @@ export const FilterActionsStory: Story = {
                       style={{
                         display: 'flex',
                         width: '100%',
-                        justifyContent: 'end'
+                        justifyContent: 'end',
                       }}
                     >
                       {resetButtonItem.element}
@@ -1002,7 +1002,7 @@ export const FilterActionsStory: Story = {
         <SegmentContentWrapper />
       </SegmentProvider>
     );
-  }
+  },
 };
 
 /**
@@ -1086,14 +1086,14 @@ export const SimpleFiltersActionsStory: Story = {
 
     ${getFuncAsString(
       'packages/storybook/src/stories/FiltersActions/FiltersActions.stories.tsx',
-      'SegmentContentWrapper'
+      'SegmentContentWrapper',
     )}
-        `
+        `,
   }),
   render: () => {
     const [filters, updateFilters] = useReducer(
       filtersReducer,
-      DEFAULT_FILTERS
+      DEFAULT_FILTERS,
     );
     const [popupFilterOpened, setPopupFilterOpened] = useState(false);
 
@@ -1116,7 +1116,7 @@ export const SimpleFiltersActionsStory: Story = {
         blocks: blocksOptions,
         tribes: tribesOptions,
         allocation: allocationOptions,
-        brics: bricsOptions
+        brics: bricsOptions,
       } as Record<keyof Filters, { label: string; value: string }[]>,
       updateFilters: (key, newV) => updateFilters({ [key]: newV }),
       filtersInfo: {
@@ -1125,9 +1125,9 @@ export const SimpleFiltersActionsStory: Story = {
         blocks: { label: 'Блок', clearedValue: [] },
         tribes: { label: 'Трайб', clearedValue: [] },
         allocation: { label: 'Аллокация', clearedValue: '' },
-        brics: { label: 'Брикс', clearedValue: [] }
+        brics: { label: 'Брикс', clearedValue: [] },
       },
-      order: ['switcher'] // Первым отображаются switch кнопки
+      order: ['switcher'], // Первым отображаются switch кнопки
     });
 
     // Элементы, которые будут видны статически
@@ -1152,7 +1152,7 @@ export const SimpleFiltersActionsStory: Story = {
                   />
                 ))}
             </SegmentGroup>
-          )
+          ),
         },
 
         // 2. Поиск
@@ -1166,7 +1166,7 @@ export const SimpleFiltersActionsStory: Story = {
               placeholder="Поиск"
               style={{ marginRight: '8px' }}
             />
-          )
+          ),
         },
 
         // 3. Чекбокс/Switcher
@@ -1178,7 +1178,7 @@ export const SimpleFiltersActionsStory: Story = {
               label="Активные"
               onChange={(e) => updateFilters({ switcher: e.target.checked })}
             />
-          )
+          ),
         },
 
         // 4. Combobox 3 (одиночный выбор)
@@ -1195,15 +1195,15 @@ export const SimpleFiltersActionsStory: Story = {
               portal={popoverRef}
               zIndex="9001"
             />
-          )
-        }
+          ),
+        },
       ],
       [
         filters.searchedV,
         filters.switcher,
         filters.allocation,
-        allocationOptions
-      ]
+        allocationOptions,
+      ],
     );
 
     // Элементы, которые будут в Popover (последние 3 чекбокса)
@@ -1219,7 +1219,7 @@ export const SimpleFiltersActionsStory: Story = {
               items={filters.blocks
                 .map((item) => {
                   const option = blocksOptions.find(
-                    (opt) => opt.value === item
+                    (opt) => opt.value === item,
                   );
                   return option?.label;
                 })
@@ -1231,7 +1231,7 @@ export const SimpleFiltersActionsStory: Story = {
               {/* Важно делать обертку дл регулирования ширины Combobox. Подробнее: https://plasma.sberdevices.ru/sdds-finai/components/combobox/ */}
               <div
                 style={{
-                  width: '100%'
+                  width: '100%',
                 }}
               >
                 <Combobox
@@ -1249,8 +1249,8 @@ export const SimpleFiltersActionsStory: Story = {
             </FiltersActions.TooltipList>
           ),
           metadata: {
-            labelInPopoverFilter: 'Blocks'
-          }
+            labelInPopoverFilter: 'Blocks',
+          },
         },
 
         // 2. Combobox 2 (множественный выбор) - tribes
@@ -1263,7 +1263,7 @@ export const SimpleFiltersActionsStory: Story = {
               items={filters.tribes
                 .map((item) => {
                   const option = tribesOptions.find(
-                    (opt) => opt.value === item
+                    (opt) => opt.value === item,
                   );
                   return option?.label;
                 })
@@ -1275,7 +1275,7 @@ export const SimpleFiltersActionsStory: Story = {
               {/* Важно делать обертку дл регулирования ширины Combobox. Подробнее: https://plasma.sberdevices.ru/sdds-finai/components/combobox/ */}
               <div
                 style={{
-                  width: '100%'
+                  width: '100%',
                 }}
               >
                 <Combobox
@@ -1293,8 +1293,8 @@ export const SimpleFiltersActionsStory: Story = {
             </FiltersActions.TooltipList>
           ),
           metadata: {
-            labelInPopoverFilter: 'Tribes'
-          }
+            labelInPopoverFilter: 'Tribes',
+          },
         },
 
         // 3. Combobox 4 (множественный выбор) - brics
@@ -1317,7 +1317,7 @@ export const SimpleFiltersActionsStory: Story = {
               {/* Важно делать обертку дл регулирования ширины Combobox. Подробнее: https://plasma.sberdevices.ru/sdds-finai/components/combobox/ */}
               <div
                 style={{
-                  width: '100%'
+                  width: '100%',
                 }}
               >
                 <Combobox
@@ -1335,9 +1335,9 @@ export const SimpleFiltersActionsStory: Story = {
             </FiltersActions.TooltipList>
           ),
           metadata: {
-            labelInPopoverFilter: 'Brics'
-          }
-        }
+            labelInPopoverFilter: 'Brics',
+          },
+        },
       ],
       [
         filters.blocks,
@@ -1345,8 +1345,8 @@ export const SimpleFiltersActionsStory: Story = {
         filters.brics,
         bricsOptions,
         blocksOptions,
-        tribesOptions
-      ]
+        tribesOptions,
+      ],
     );
 
     // Проверяем активные фильтры в popover
@@ -1361,9 +1361,9 @@ export const SimpleFiltersActionsStory: Story = {
     const dropdownItems = useMemo(
       () => [
         { value: 'action1', label: 'Действие 1' },
-        { value: 'action2', label: 'Действие 2' }
+        { value: 'action2', label: 'Действие 2' },
       ],
-      []
+      [],
     );
 
     const renderActiveButtonsBlock = useCallback(
@@ -1372,7 +1372,7 @@ export const SimpleFiltersActionsStory: Story = {
           {/* Кнопка с троеточием */}
           <FiltersActions.DotsIconButton
             dropdownProps={{
-              items: dropdownItems
+              items: dropdownItems,
             }}
             iconOrientation="vertical"
           />
@@ -1388,7 +1388,7 @@ export const SimpleFiltersActionsStory: Story = {
           </Button>
         </>
       ),
-      [dropdownItems]
+      [dropdownItems],
     );
 
     return (
@@ -1405,7 +1405,7 @@ export const SimpleFiltersActionsStory: Story = {
               <FiltersActions.FilterPopover
                 popoverProps={{
                   // Передаем ref, чтобы Tooltip и Combobox, которые будут в Popover, передать frame и portal
-                  ref: popoverRef
+                  ref: popoverRef,
                 }}
                 state={[popupFilterOpened, setPopupFilterOpened]}
                 title="Дополнительные фильтры"
@@ -1449,7 +1449,7 @@ export const SimpleFiltersActionsStory: Story = {
         <SegmentContentWrapper />
       </SegmentProvider>
     );
-  }
+  },
 };
 
 /**
@@ -1474,9 +1474,9 @@ export const CustomTargetFiltersActionsStory: Story = {
 
     ${getFuncAsString(
       'packages/storybook/src/stories/FiltersActions/FiltersActions.stories.tsx',
-      'CustomTargetFiltersExample'
+      'CustomTargetFiltersExample',
     )}
-        `
+        `,
   }),
-  render: () => <CustomTargetFiltersExample />
+  render: () => <CustomTargetFiltersExample />,
 };

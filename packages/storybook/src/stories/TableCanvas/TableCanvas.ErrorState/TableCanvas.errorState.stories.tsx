@@ -3,7 +3,7 @@ import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
 import type { Meta, StoryObj } from '@storybook/react';
 import {
   ColumnOrColumnGroupConfig,
-  TableCanvas
+  TableCanvas,
 } from '@ui-kit/components/TableCanvas';
 import type { ErrorPageProps } from '@ui-kit/layouts/ErrorPage';
 import React, { ReactNode, useEffect, useState } from 'react';
@@ -29,20 +29,20 @@ const EMPTY_ROWS: Row[] = [];
 const flatColumnConfig: readonly ColumnOrColumnGroupConfig<Row>[] = [
   {
     key: 'id',
-    name: 'ID'
+    name: 'ID',
   },
   {
     key: 'name',
-    name: 'Сотрудник'
+    name: 'Сотрудник',
   },
   {
     key: 'status',
-    name: 'Статус'
+    name: 'Статус',
   },
   {
     key: 'team',
-    name: 'Команда'
-  }
+    name: 'Команда',
+  },
 ];
 
 const groupedColumnConfig: readonly ColumnOrColumnGroupConfig<Row>[] = [
@@ -52,13 +52,13 @@ const groupedColumnConfig: readonly ColumnOrColumnGroupConfig<Row>[] = [
     children: [
       {
         key: 'id',
-        name: 'ID'
+        name: 'ID',
       },
       {
         key: 'name',
-        name: 'ФИО'
-      }
-    ]
+        name: 'ФИО',
+      },
+    ],
   },
   {
     key: 'meta-group',
@@ -66,21 +66,21 @@ const groupedColumnConfig: readonly ColumnOrColumnGroupConfig<Row>[] = [
     children: [
       {
         key: 'status',
-        name: 'Статус'
+        name: 'Статус',
       },
       {
         key: 'team',
-        name: 'Команда'
-      }
-    ]
-  }
+        name: 'Команда',
+      },
+    ],
+  },
 ];
 
 const emptyColumns: readonly ColumnOrColumnGroupConfig<Row>[] = [];
 
 function useLoadingColumns(
   initialColumns: readonly ColumnOrColumnGroupConfig<Row>[],
-  finalColumns: readonly ColumnOrColumnGroupConfig<Row>[]
+  finalColumns: readonly ColumnOrColumnGroupConfig<Row>[],
 ) {
   const [isLoading, setIsLoading] = useState(true);
   const [columnConfig, setColumnConfig] = useState(initialColumns);
@@ -109,10 +109,10 @@ const meta: Meta = {
     docs: {
       description: {
         component:
-          'Все demo-сценарии специально проходят через loading, чтобы в Storybook не было промежуточного broken-image кадра у ErrorPage/EmptyState.'
-      }
-    }
-  }
+          'Все demo-сценарии специально проходят через loading, чтобы в Storybook не было промежуточного broken-image кадра у ErrorPage/EmptyState.',
+      },
+    },
+  },
 };
 
 export default meta;
@@ -197,12 +197,12 @@ export const DefaultErrorState: Story = {
   name: 'Default Error State',
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     const { columnConfig, isLoading } = useLoadingColumns(
       flatColumnConfig,
-      flatColumnConfig
+      flatColumnConfig,
     );
 
     return (
@@ -211,31 +211,31 @@ export const DefaultErrorState: Story = {
           containerStyle: { height: TABLE_HEIGHT },
           isLoading: {
             boolean: isLoading,
-            skeletonRowsCount: 5
+            skeletonRowsCount: 5,
           },
           loadingOverlay: {
             active: isLoading,
-            subtitle: 'Имитируем запрос перед переходом к errorState.'
+            subtitle: 'Имитируем запрос перед переходом к errorState.',
           },
-          errorState: isLoading ? undefined : { enabled: true }
+          errorState: isLoading ? undefined : { enabled: true },
         }}
         columnConfig={columnConfig}
         rows={EMPTY_ROWS}
       />
     );
-  }
+  },
 };
 
 export const CustomErrorState: Story = {
   name: 'Custom Error State',
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     const { columnConfig, isLoading } = useLoadingColumns(
       flatColumnConfig,
-      flatColumnConfig
+      flatColumnConfig,
     );
 
     const errorState: ErrorStateStoryConfig = {
@@ -247,11 +247,11 @@ export const CustomErrorState: Story = {
           description: 'Проверьте подключение или повторите попытку позже.',
           button: {
             label: 'Повторить',
-            view: 'accent'
-          }
-        }
+            view: 'accent',
+          },
+        },
       },
-      buttonHandler: () => undefined
+      buttonHandler: () => undefined,
     };
 
     return (
@@ -260,31 +260,31 @@ export const CustomErrorState: Story = {
           containerStyle: { height: TABLE_HEIGHT },
           isLoading: {
             boolean: isLoading,
-            skeletonRowsCount: 5
+            skeletonRowsCount: 5,
           },
           loadingOverlay: {
             active: isLoading,
-            subtitle: 'Сначала показываем loading, затем кастомный errorState.'
+            subtitle: 'Сначала показываем loading, затем кастомный errorState.',
           },
-          errorState: isLoading ? undefined : errorState
+          errorState: isLoading ? undefined : errorState,
         }}
         columnConfig={columnConfig}
         rows={EMPTY_ROWS}
       />
     );
-  }
+  },
 };
 
 export const GroupedColumnsErrorState: Story = {
   name: 'Grouped Columns Error State',
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     const { columnConfig, isLoading } = useLoadingColumns(
       groupedColumnConfig,
-      groupedColumnConfig
+      groupedColumnConfig,
     );
 
     const errorState: ErrorStateStoryConfig = {
@@ -294,9 +294,9 @@ export const GroupedColumnsErrorState: Story = {
         502: {
           title: 'Сервис временно недоступен',
           description:
-            'Grouped headers остаются на месте, а ошибка показывается только в контентной области.'
-        }
-      }
+            'Grouped headers остаются на месте, а ошибка показывается только в контентной области.',
+        },
+      },
     };
 
     return (
@@ -305,32 +305,32 @@ export const GroupedColumnsErrorState: Story = {
           containerStyle: { height: TABLE_HEIGHT },
           isLoading: {
             boolean: isLoading,
-            skeletonRowsCount: 5
+            skeletonRowsCount: 5,
           },
           loadingOverlay: {
             active: isLoading,
             subtitle:
-              'Проверяем переход loading -> errorState при группировке колонок.'
+              'Проверяем переход loading -> errorState при группировке колонок.',
           },
-          errorState: isLoading ? undefined : errorState
+          errorState: isLoading ? undefined : errorState,
         }}
         columnConfig={columnConfig}
         rows={EMPTY_ROWS}
       />
     );
-  }
+  },
 };
 
 export const FullContentErrorStateWithoutHeaders: Story = {
   name: 'Full Content Error State Without Headers',
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     const { columnConfig, isLoading } = useLoadingColumns(
       emptyColumns,
-      emptyColumns
+      emptyColumns,
     );
 
     const errorState: ErrorStateStoryConfig = {
@@ -338,8 +338,8 @@ export const FullContentErrorStateWithoutHeaders: Story = {
       unknownStatus: {
         title: 'Не удалось получить схему таблицы',
         description:
-          'Колонки не пришли с бэкенда, поэтому после loading errorState занимает всю content-область без заголовков.'
-      }
+          'Колонки не пришли с бэкенда, поэтому после loading errorState занимает всю content-область без заголовков.',
+      },
     };
 
     return (
@@ -348,32 +348,32 @@ export const FullContentErrorStateWithoutHeaders: Story = {
           containerStyle: { height: TABLE_HEIGHT },
           isLoading: {
             boolean: isLoading,
-            skeletonRowsCount: 5
+            skeletonRowsCount: 5,
           },
           loadingOverlay: {
             active: isLoading,
             subtitle:
-              'Сначала ждём схему колонок с бэкенда, затем показываем full-content errorState.'
+              'Сначала ждём схему колонок с бэкенда, затем показываем full-content errorState.',
           },
-          errorState: isLoading ? undefined : errorState
+          errorState: isLoading ? undefined : errorState,
         }}
         columnConfig={columnConfig}
         rows={EMPTY_ROWS}
       />
     );
-  }
+  },
 };
 
 export const ErrorStateWithControlBlockAndPagination: Story = {
   name: 'Error State With Control Block And Pagination',
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     const { columnConfig, isLoading } = useLoadingColumns(
       flatColumnConfig,
-      flatColumnConfig
+      flatColumnConfig,
     );
     const [currentPage, setCurrentPage] = useState(1);
     const [perPage, setPerPage] = useState(20);
@@ -388,11 +388,11 @@ export const ErrorStateWithControlBlockAndPagination: Story = {
             'Проверяем, что errorState не ломает control block, пагинацию и настройку размера строк.',
           button: {
             label: 'Повторить',
-            view: 'accent'
-          }
-        }
+            view: 'accent',
+          },
+        },
       },
-      buttonHandler: () => undefined
+      buttonHandler: () => undefined,
     };
 
     return (
@@ -401,16 +401,16 @@ export const ErrorStateWithControlBlockAndPagination: Story = {
           containerStyle: { height: TABLE_HEIGHT },
           rowSize: {
             default: 'big',
-            showInControl: true
+            showInControl: true,
           },
           controlBlock: {
             rightSideInner: [
               {
                 text: 'Экспорт',
                 view: 'linkAccent',
-                onClick: () => undefined
-              }
-            ]
+                onClick: () => undefined,
+              },
+            ],
           },
           pagination: {
             count: 48,
@@ -429,22 +429,22 @@ export const ErrorStateWithControlBlockAndPagination: Story = {
                 setPerPage(nextPerPage);
                 scrollToTop();
               }
-            }
+            },
           },
           isLoading: {
             boolean: isLoading,
-            skeletonRowsCount: 5
+            skeletonRowsCount: 5,
           },
           loadingOverlay: {
             active: isLoading,
             subtitle:
-              'Сначала показываем loading, затем проверяем errorState в окружении control block и pagination.'
+              'Сначала показываем loading, затем проверяем errorState в окружении control block и pagination.',
           },
-          errorState: isLoading ? undefined : errorState
+          errorState: isLoading ? undefined : errorState,
         }}
         columnConfig={columnConfig}
         rows={EMPTY_ROWS}
       />
     );
-  }
+  },
 };

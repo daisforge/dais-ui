@@ -4,7 +4,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import type { EmptyStateProps } from '@ui-kit/components/EmptyState';
 import {
   ColumnOrColumnGroupConfig,
-  TableCanvas
+  TableCanvas,
 } from '@ui-kit/components/TableCanvas';
 import React, { ReactNode, useEffect, useState } from 'react';
 
@@ -29,20 +29,20 @@ const EMPTY_ROWS: Row[] = [];
 const flatColumnConfig: readonly ColumnOrColumnGroupConfig<Row>[] = [
   {
     key: 'id',
-    name: 'ID'
+    name: 'ID',
   },
   {
     key: 'name',
-    name: 'Сотрудник'
+    name: 'Сотрудник',
   },
   {
     key: 'status',
-    name: 'Статус'
+    name: 'Статус',
   },
   {
     key: 'team',
-    name: 'Команда'
-  }
+    name: 'Команда',
+  },
 ];
 
 const groupedColumnConfig: readonly ColumnOrColumnGroupConfig<Row>[] = [
@@ -52,13 +52,13 @@ const groupedColumnConfig: readonly ColumnOrColumnGroupConfig<Row>[] = [
     children: [
       {
         key: 'id',
-        name: 'ID'
+        name: 'ID',
       },
       {
         key: 'name',
-        name: 'ФИО'
-      }
-    ]
+        name: 'ФИО',
+      },
+    ],
   },
   {
     key: 'meta-group',
@@ -66,21 +66,21 @@ const groupedColumnConfig: readonly ColumnOrColumnGroupConfig<Row>[] = [
     children: [
       {
         key: 'status',
-        name: 'Статус'
+        name: 'Статус',
       },
       {
         key: 'team',
-        name: 'Команда'
-      }
-    ]
-  }
+        name: 'Команда',
+      },
+    ],
+  },
 ];
 
 const emptyColumns: readonly ColumnOrColumnGroupConfig<Row>[] = [];
 
 function useLoadingColumns(
   initialColumns: readonly ColumnOrColumnGroupConfig<Row>[],
-  finalColumns: readonly ColumnOrColumnGroupConfig<Row>[]
+  finalColumns: readonly ColumnOrColumnGroupConfig<Row>[],
 ) {
   const [isLoading, setIsLoading] = useState(true);
   const [columnConfig, setColumnConfig] = useState(initialColumns);
@@ -109,10 +109,10 @@ const meta: Meta = {
     docs: {
       description: {
         component:
-          'Все demo-сценарии специально проходят через loading, чтобы в Storybook не было промежуточного broken-image кадра у EmptyState.'
-      }
-    }
-  }
+          'Все demo-сценарии специально проходят через loading, чтобы в Storybook не было промежуточного broken-image кадра у EmptyState.',
+      },
+    },
+  },
 };
 
 export default meta;
@@ -197,12 +197,12 @@ export const DefaultEmptyState: Story = {
   name: 'Default Empty State',
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     const { columnConfig, isLoading } = useLoadingColumns(
       flatColumnConfig,
-      flatColumnConfig
+      flatColumnConfig,
     );
 
     return (
@@ -211,31 +211,31 @@ export const DefaultEmptyState: Story = {
           containerStyle: { height: TABLE_HEIGHT },
           isLoading: {
             boolean: isLoading,
-            skeletonRowsCount: 5
+            skeletonRowsCount: 5,
           },
           loadingOverlay: {
             active: isLoading,
-            subtitle: 'Имитируем загрузку перед переходом к emptyState.'
+            subtitle: 'Имитируем загрузку перед переходом к emptyState.',
           },
-          emptyState: isLoading ? undefined : { enabled: true }
+          emptyState: isLoading ? undefined : { enabled: true },
         }}
         columnConfig={columnConfig}
         rows={EMPTY_ROWS}
       />
     );
-  }
+  },
 };
 
 export const CustomEmptyState: Story = {
   name: 'Custom Empty State',
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     const { columnConfig, isLoading } = useLoadingColumns(
       flatColumnConfig,
-      flatColumnConfig
+      flatColumnConfig,
     );
 
     const emptyState: EmptyStateStoryConfig = {
@@ -249,10 +249,10 @@ export const CustomEmptyState: Story = {
           props: {
             children: 'Создать заявку',
             view: 'accent',
-            onClick: () => undefined
-          }
-        }
-      ]
+            onClick: () => undefined,
+          },
+        },
+      ],
     };
 
     return (
@@ -261,31 +261,31 @@ export const CustomEmptyState: Story = {
           containerStyle: { height: TABLE_HEIGHT },
           isLoading: {
             boolean: isLoading,
-            skeletonRowsCount: 5
+            skeletonRowsCount: 5,
           },
           loadingOverlay: {
             active: isLoading,
-            subtitle: 'Сначала показываем loading, затем кастомный emptyState.'
+            subtitle: 'Сначала показываем loading, затем кастомный emptyState.',
           },
-          emptyState: isLoading ? undefined : emptyState
+          emptyState: isLoading ? undefined : emptyState,
         }}
         columnConfig={columnConfig}
         rows={EMPTY_ROWS}
       />
     );
-  }
+  },
 };
 
 export const GroupedColumnsEmptyState: Story = {
   name: 'Grouped Columns Empty State',
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     const { columnConfig, isLoading } = useLoadingColumns(
       groupedColumnConfig,
-      groupedColumnConfig
+      groupedColumnConfig,
     );
 
     const emptyState: EmptyStateStoryConfig = {
@@ -293,7 +293,7 @@ export const GroupedColumnsEmptyState: Story = {
       title: 'Нет результатов по выбранным фильтрам',
       subtitle:
         'Grouped headers остаются видимыми, а empty state отображается ниже шапки таблицы.',
-      variant: 'not-result'
+      variant: 'not-result',
     };
 
     return (
@@ -302,32 +302,32 @@ export const GroupedColumnsEmptyState: Story = {
           containerStyle: { height: TABLE_HEIGHT },
           isLoading: {
             boolean: isLoading,
-            skeletonRowsCount: 5
+            skeletonRowsCount: 5,
           },
           loadingOverlay: {
             active: isLoading,
             subtitle:
-              'Проверяем переход loading -> emptyState при группировке колонок.'
+              'Проверяем переход loading -> emptyState при группировке колонок.',
           },
-          emptyState: isLoading ? undefined : emptyState
+          emptyState: isLoading ? undefined : emptyState,
         }}
         columnConfig={columnConfig}
         rows={EMPTY_ROWS}
       />
     );
-  }
+  },
 };
 
 export const FullContentEmptyStateWithoutHeaders: Story = {
   name: 'Full Content Empty State Without Headers',
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     const { columnConfig, isLoading } = useLoadingColumns(
       emptyColumns,
-      emptyColumns
+      emptyColumns,
     );
 
     const emptyState: EmptyStateStoryConfig = {
@@ -335,7 +335,7 @@ export const FullContentEmptyStateWithoutHeaders: Story = {
       title: 'Не удалось получить схему таблицы',
       subtitle:
         'Колонки не пришли с бэкенда, поэтому после loading emptyState занимает всю content-область без заголовков.',
-      variant: 'not-result'
+      variant: 'not-result',
     };
 
     return (
@@ -344,32 +344,32 @@ export const FullContentEmptyStateWithoutHeaders: Story = {
           containerStyle: { height: TABLE_HEIGHT },
           isLoading: {
             boolean: isLoading,
-            skeletonRowsCount: 5
+            skeletonRowsCount: 5,
           },
           loadingOverlay: {
             active: isLoading,
             subtitle:
-              'Сначала ждём схему колонок с бэкенда, затем показываем full-content emptyState.'
+              'Сначала ждём схему колонок с бэкенда, затем показываем full-content emptyState.',
           },
-          emptyState: isLoading ? undefined : emptyState
+          emptyState: isLoading ? undefined : emptyState,
         }}
         columnConfig={columnConfig}
         rows={EMPTY_ROWS}
       />
     );
-  }
+  },
 };
 
 export const EmptyStateWithControlBlockAndPagination: Story = {
   name: 'Empty State With Control Block And Pagination',
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     const { columnConfig, isLoading } = useLoadingColumns(
       flatColumnConfig,
-      flatColumnConfig
+      flatColumnConfig,
     );
     const [currentPage, setCurrentPage] = useState(1);
     const [perPage, setPerPage] = useState(20);
@@ -379,7 +379,7 @@ export const EmptyStateWithControlBlockAndPagination: Story = {
       title: 'Нет записей на текущей странице',
       subtitle:
         'Проверяем, что состояние не ломает control block, пагинацию и настройку размера строк.',
-      variant: 'not-result'
+      variant: 'not-result',
     };
 
     return (
@@ -388,16 +388,16 @@ export const EmptyStateWithControlBlockAndPagination: Story = {
           containerStyle: { height: TABLE_HEIGHT },
           rowSize: {
             default: 'big',
-            showInControl: true
+            showInControl: true,
           },
           controlBlock: {
             rightSideInner: [
               {
                 text: 'Экспорт',
                 view: 'linkAccent',
-                onClick: () => undefined
-              }
-            ]
+                onClick: () => undefined,
+              },
+            ],
           },
           pagination: {
             count: 48,
@@ -416,22 +416,22 @@ export const EmptyStateWithControlBlockAndPagination: Story = {
                 setPerPage(nextPerPage);
                 scrollToTop();
               }
-            }
+            },
           },
           isLoading: {
             boolean: isLoading,
-            skeletonRowsCount: 5
+            skeletonRowsCount: 5,
           },
           loadingOverlay: {
             active: isLoading,
             subtitle:
-              'Сначала показываем loading, затем проверяем emptyState в окружении control block и pagination.'
+              'Сначала показываем loading, затем проверяем emptyState в окружении control block и pagination.',
           },
-          emptyState: isLoading ? undefined : emptyState
+          emptyState: isLoading ? undefined : emptyState,
         }}
         columnConfig={columnConfig}
         rows={EMPTY_ROWS}
       />
     );
-  }
+  },
 };

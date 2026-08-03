@@ -13,7 +13,7 @@ import { FilterComponentInPopoverProps } from './types';
 const FILTER_POPOVER_WIDTH = {
   small: '192px',
   medium: '232px',
-  big: '232px'
+  big: '232px',
 };
 
 /**
@@ -23,9 +23,9 @@ const FILTER_POPOVER_WIDTH = {
 const FilterComponentInPopoverInner = <
   FilterStateType extends ObjectForExtending,
   R extends ObjectForExtending,
-  SR
+  SR,
 >(
-  props: FilterComponentInPopoverProps<FilterStateType, ColumnConfig<R, SR>>
+  props: FilterComponentInPopoverProps<FilterStateType, ColumnConfig<R, SR>>,
 ) => {
   const { columnConfig, popoverIsOpen, setPopoverIsOpen, headerContextState } =
     props;
@@ -34,7 +34,7 @@ const FilterComponentInPopoverInner = <
   console.debug('[FilterComponentInPopover] Render', {
     popoverIsOpen,
     columnConfig,
-    filters
+    filters,
   });
 
   const columnConfigFiltering = columnConfig.filtering;
@@ -51,7 +51,7 @@ const FilterComponentInPopoverInner = <
       props as FilterComponentInPopoverProps<
         ObjectForExtending,
         ColumnConfig<R, SR>
-      >
+      >,
     );
   }
 
@@ -66,7 +66,7 @@ const FilterComponentInPopoverInner = <
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setFilters?.((prev: FilterStateType) => ({
         ...prev,
-        [valueKeyInFilters]: e.target.value
+        [valueKeyInFilters]: e.target.value,
       }));
     };
 
@@ -96,7 +96,7 @@ const FilterComponentInPopoverInner = <
     console.debug('[handleSingleChange] CALLED', { v, keyInFilterState });
     setFilters?.((prev: FilterStateType) => ({
       ...prev,
-      [keyInFilterState]: v
+      [keyInFilterState]: v,
     }));
     setPopoverIsOpen(false);
   };
@@ -105,7 +105,7 @@ const FilterComponentInPopoverInner = <
     console.debug('[handleMultiChange] CALLED', { v, keyInFilterState });
     setFilters?.((prev: FilterStateType) => ({
       ...prev,
-      [keyInFilterState]: v
+      [keyInFilterState]: v,
     }));
   };
 
@@ -113,12 +113,12 @@ const FilterComponentInPopoverInner = <
     if (mode === 'single') {
       return {
         value: valueX,
-        onChange: handleSingleChange
+        onChange: handleSingleChange,
       };
     }
     return {
       value: valueX as unknown as string[],
-      onChange: handleMultiChange
+      onChange: handleMultiChange,
     };
   })();
 
@@ -159,5 +159,5 @@ const FilterComponentInPopoverInner = <
  * Мемоизированная версию компонента.
  */
 export const FilterComponentInPopover = React.memo(
-  FilterComponentInPopoverInner
+  FilterComponentInPopoverInner,
 ) as typeof FilterComponentInPopoverInner;

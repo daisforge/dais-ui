@@ -4,7 +4,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import {
   Canvas,
   ColumnConfig,
-  TableCanvas
+  TableCanvas,
 } from '@ui-kit/components/TableCanvas';
 import React, { useMemo } from 'react';
 
@@ -17,7 +17,7 @@ const VIEWS = [
   'positive',
   'warning',
   'negative',
-  'clear'
+  'clear',
 ] as const;
 
 type ViewRow = { id: string; view: (typeof VIEWS)[number] };
@@ -26,7 +26,7 @@ const rows: ViewRow[] = VIEWS.map((view) => ({ id: view, view }));
 
 const meta: Meta = {
   title: 'Локальные компоненты/TableCanvas/CanvasElements/CanvasLink',
-  tags: ['!autodocs']
+  tags: ['!autodocs'],
 };
 
 export default meta;
@@ -61,12 +61,12 @@ export const Default: StoryObj = {
   args: {
     text: 'Link text',
     href: 'https://example.com',
-    disabled: false
+    disabled: false,
   },
   argTypes: {
     text: { control: 'text' },
     href: { control: 'text' },
-    disabled: { control: 'boolean' }
+    disabled: { control: 'boolean' },
   },
   render: (args) => {
     const { text, href, disabled } = args as {
@@ -85,7 +85,7 @@ export const Default: StoryObj = {
             <Canvas.Container padding={8} alignItems="center">
               <Canvas.Text>{row.view}</Canvas.Text>
             </Canvas.Container>
-          )
+          ),
         },
         {
           key: 'link',
@@ -102,10 +102,10 @@ export const Default: StoryObj = {
                 {text}
               </Canvas.Link>
             </Canvas.Container>
-          )
-        }
+          ),
+        },
       ],
-      [text, href, disabled]
+      [text, href, disabled],
     );
 
     return (
@@ -115,5 +115,5 @@ export const Default: StoryObj = {
         rows={rows}
       />
     );
-  }
+  },
 };

@@ -5,9 +5,9 @@ export const CONTROL_BLOCK = {
     font: '16px SB Sans Text, sans-serif',
     indent: 68,
     letterSpacing: -0.32,
-    baseIndent: 88
+    baseIndent: 88,
   },
-  paddingInline: 8 // px
+  paddingInline: 8, // px
 };
 
 const SIZE_MAP = {
@@ -23,7 +23,7 @@ const SIZE_MAP = {
     searchField: 's' as const,
     searchIcon: 's' as const,
     overflowTriggerButton: 's' as const,
-    overflowTriggerIcon: 's' as const
+    overflowTriggerIcon: 's' as const,
   },
   s: {
     collapsingButton: 's' as const,
@@ -34,7 +34,7 @@ const SIZE_MAP = {
     searchField: 's' as const,
     searchIcon: 's' as const,
     overflowTriggerButton: 's' as const,
-    overflowTriggerIcon: 's' as const
+    overflowTriggerIcon: 's' as const,
   },
   xs: {
     collapsingButton: 'xs' as const,
@@ -47,8 +47,8 @@ const SIZE_MAP = {
     // Триггер overflow дропдауна на ступень меньше, иначе в xs контрл-блоке
     // (высота 32) он выше остальных иконок и ломает вертикальное выравнивание
     overflowTriggerButton: 'xs' as const,
-    overflowTriggerIcon: 'xs' as const
-  }
+    overflowTriggerIcon: 'xs' as const,
+  },
 };
 
 export type ControlBlockSizeMap = (typeof SIZE_MAP)['m'];
@@ -65,7 +65,7 @@ const SPACING_MAP = {
     leftPartPaddingRight: 8,
     rightButtonsGap: 4,
     rightButtonsPaddingInline: 8,
-    rightFeaturesGap: 0
+    rightFeaturesGap: 0,
   },
   s: {
     // containerHeight: было 41, аналогично m — возвращаемся к 40
@@ -75,7 +75,7 @@ const SPACING_MAP = {
     leftPartPaddingRight: 8,
     rightButtonsGap: 4,
     rightButtonsPaddingInline: 8,
-    rightFeaturesGap: 0
+    rightFeaturesGap: 0,
   },
   xs: {
     // containerHeight: именно 32, а не 33, как по макетам
@@ -85,8 +85,8 @@ const SPACING_MAP = {
     leftPartPaddingRight: 8,
     rightButtonsGap: 4,
     rightButtonsPaddingInline: 8,
-    rightFeaturesGap: 0
-  }
+    rightFeaturesGap: 0,
+  },
 };
 
 export type ControlBlockSpacingMap = (typeof SPACING_MAP)['m'];

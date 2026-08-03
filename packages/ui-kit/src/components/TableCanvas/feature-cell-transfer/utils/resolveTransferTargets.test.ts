@@ -7,7 +7,7 @@ import { resolveTransferTargets } from './resolveTransferTargets';
 /** Колонки: первые `serviceCount` — служебные (firstDataCol === serviceCount). */
 const cols = (serviceCount = 1, total = 6): readonly TransferColumnConfig[] =>
   Array.from({ length: total }, (_, i) => ({
-    isServiceColumn: i < serviceCount
+    isServiceColumn: i < serviceCount,
   })) as unknown as readonly TransferColumnConfig[];
 
 /** Мок GridSelection с нативным current.range (+ опционально rangeStack). */
@@ -16,23 +16,23 @@ const sel = (range: Rectangle, stack: Rectangle[] = []): GridSelection =>
     current: {
       cell: [range.x, range.y],
       range,
-      rangeStack: stack
+      rangeStack: stack,
     },
     columns: undefined,
-    rows: undefined
+    rows: undefined,
   } as unknown as GridSelection);
 
 const rect = (x: number, y: number, width = 1, height = 1): Rectangle => ({
   x,
   y,
   width,
-  height
+  height,
 });
 
 describe('resolveTransferTargets — нет выделения', () => {
   it('null → empty', () => {
     expect(resolveTransferTargets(null, cols(), 10)).toEqual({
-      status: 'empty'
+      status: 'empty',
     });
   });
 });
@@ -73,7 +73,7 @@ describe('resolveTransferTargets — multi-range (Ctrl, rangeStack)', () => {
     const res = resolveTransferTargets(
       sel(rect(1, 0), [rect(1, 2)]),
       cols(1),
-      10
+      10,
     );
     expect(res.status).toBe('ok');
     if (res.status !== 'ok') return;
@@ -88,7 +88,7 @@ describe('resolveTransferTargets — multi-range (Ctrl, rangeStack)', () => {
     const res = resolveTransferTargets(
       sel(rect(1, 0), [rect(3, 0)]),
       cols(1),
-      10
+      10,
     );
     expect(res.status).toBe('ok');
     if (res.status !== 'ok') return;
@@ -102,7 +102,7 @@ describe('resolveTransferTargets — multi-range (Ctrl, rangeStack)', () => {
     const res = resolveTransferTargets(
       sel(rect(1, 0), [rect(2, 1)]),
       cols(1),
-      10
+      10,
     );
     expect(res).toEqual({ status: 'unsupported', reason: 'scattered-2d' });
   });
@@ -112,7 +112,7 @@ describe('resolveTransferTargets — multi-range (Ctrl, rangeStack)', () => {
     const res = resolveTransferTargets(
       sel(rect(1, 0), [rect(2, 0), rect(1, 1), rect(2, 1)]),
       cols(1),
-      10
+      10,
     );
     expect(res.status).toBe('ok');
     if (res.status !== 'ok') return;

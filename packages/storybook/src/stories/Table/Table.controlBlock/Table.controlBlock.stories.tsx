@@ -20,7 +20,7 @@ import {
   IconRefresh,
   IconReset,
   IconSettings,
-  IconStar
+  IconStar,
 } from '@ui-kit/icons';
 import React, { useMemo, useState } from 'react';
 
@@ -29,9 +29,9 @@ const meta: Meta = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      page: DocStoryTemplate
-    }
-  }
+      page: DocStoryTemplate,
+    },
+  },
 };
 
 export default meta;
@@ -72,7 +72,7 @@ type UserFilter = 'all' | 'my' | 'team';
 export const ControlBlockWithCustomFeatures: Story = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     const columns: readonly ColumnConfig<Row>[] = useMemo(
@@ -81,9 +81,9 @@ export const ControlBlockWithCustomFeatures: Story = {
         { key: 'task', name: 'Title' },
         { key: 'priority', name: 'Priority' },
         { key: 'issueType', name: 'Issue Type' },
-        { key: 'developer', name: 'Developer' }
+        { key: 'developer', name: 'Developer' },
       ],
-      []
+      [],
     );
 
     const [rows] = useState(createRows);
@@ -102,7 +102,7 @@ export const ControlBlockWithCustomFeatures: Story = {
     const filterLabels = {
       all: 'Все',
       my: 'Мои',
-      team: 'Команда'
+      team: 'Команда',
     };
 
     return (
@@ -123,8 +123,8 @@ export const ControlBlockWithCustomFeatures: Story = {
                   type: 'switch',
                   label: 'В избранном',
                   checked: isFavorite,
-                  onChange: () => setIsFavorite(!isFavorite)
-                }
+                  onChange: () => setIsFavorite(!isFavorite),
+                },
               },
               {
                 value: 'refresh-feature',
@@ -140,7 +140,7 @@ export const ControlBlockWithCustomFeatures: Story = {
                       height: '40px',
                       display: 'flex',
                       alignItems: 'center',
-                      justifyContent: 'center'
+                      justifyContent: 'center',
                     }}
                   >
                     <IconRefresh size="s" />
@@ -152,8 +152,8 @@ export const ControlBlockWithCustomFeatures: Story = {
                   onClick: () =>
                     // eslint-disable-next-line no-alert
                     alert('Click for customFeatureRefresh2 in Sidebar'),
-                  icon: <IconRefresh size="s" />
-                }
+                  icon: <IconRefresh size="s" />,
+                },
               },
 
               // Кастомные фичи
@@ -168,8 +168,9 @@ export const ControlBlockWithCustomFeatures: Story = {
                   type: 'switch',
                   label: 'Уведомления',
                   checked: notificationsEnabled,
-                  onChange: () => setNotificationsEnabled(!notificationsEnabled)
-                }
+                  onChange: () =>
+                    setNotificationsEnabled(!notificationsEnabled),
+                },
               },
               {
                 value: 'analytics-mode',
@@ -185,10 +186,10 @@ export const ControlBlockWithCustomFeatures: Story = {
                   value: analyticsMode,
                   options: [
                     { value: 'basic', label: 'Базовая' },
-                    { value: 'advanced', label: 'Расширенная' }
+                    { value: 'advanced', label: 'Расширенная' },
                   ],
-                  onChange: (val) => setAnalyticsMode(val as AnalyticsMode)
-                }
+                  onChange: (val) => setAnalyticsMode(val as AnalyticsMode),
+                },
               },
               {
                 value: 'lock-table',
@@ -199,8 +200,8 @@ export const ControlBlockWithCustomFeatures: Story = {
                   type: 'button',
                   label: isLocked ? 'Разблокировать' : 'Заблокировать',
                   onClick: () => setIsLocked(!isLocked),
-                  icon: <IconLock />
-                }
+                  icon: <IconLock />,
+                },
               },
               {
                 value: 'time-range',
@@ -215,10 +216,10 @@ export const ControlBlockWithCustomFeatures: Story = {
                   options: [
                     { value: 'day', label: 'День' },
                     { value: 'week', label: 'Неделя' },
-                    { value: 'month', label: 'Месяц' }
+                    { value: 'month', label: 'Месяц' },
                   ],
-                  onChange: (val) => setTimeRange(val as TimeRange)
-                }
+                  onChange: (val) => setTimeRange(val as TimeRange),
+                },
               },
               {
                 value: 'user-filter',
@@ -233,10 +234,10 @@ export const ControlBlockWithCustomFeatures: Story = {
                   options: [
                     { value: 'all', label: 'Все' },
                     { value: 'my', label: 'Мои' },
-                    { value: 'team', label: 'Команда' }
+                    { value: 'team', label: 'Команда' },
                   ],
-                  onChange: (val) => setUserFilter(val as UserFilter)
-                }
+                  onChange: (val) => setUserFilter(val as UserFilter),
+                },
               },
               {
                 value: 'favorites-only',
@@ -247,8 +248,8 @@ export const ControlBlockWithCustomFeatures: Story = {
                   type: 'switch',
                   label: 'Только избранные',
                   checked: favoritesOnly,
-                  onChange: () => setFavoritesOnly(!favoritesOnly)
-                }
+                  onChange: () => setFavoritesOnly(!favoritesOnly),
+                },
               },
               {
                 value: 'auto-refresh',
@@ -261,8 +262,8 @@ export const ControlBlockWithCustomFeatures: Story = {
                   type: 'switch',
                   label: 'Автообновление',
                   checked: autoRefresh,
-                  onChange: () => setAutoRefresh(!autoRefresh)
-                }
+                  onChange: () => setAutoRefresh(!autoRefresh),
+                },
               },
               {
                 value: 'dark-mode',
@@ -273,8 +274,8 @@ export const ControlBlockWithCustomFeatures: Story = {
                   type: 'switch',
                   label: 'Темная тема',
                   checked: darkMode,
-                  onChange: () => setDarkMode(!darkMode)
-                }
+                  onChange: () => setDarkMode(!darkMode),
+                },
               },
               {
                 value: 'time-tracker',
@@ -283,15 +284,15 @@ export const ControlBlockWithCustomFeatures: Story = {
                 onClick: () => {}, // Добавлен обязательный onClick
                 details: {
                   type: 'custom',
-                  render: () => <div>Кастомный компонент таймера</div>
-                }
-              }
-            ]
-          }
+                  render: () => <div>Кастомный компонент таймера</div>,
+                },
+              },
+            ],
+          },
         }}
         columnConfig={columns}
         rows={rows}
       />
     );
-  }
+  },
 };

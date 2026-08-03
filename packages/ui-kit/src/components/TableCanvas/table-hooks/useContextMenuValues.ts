@@ -7,7 +7,7 @@ import {
   ColumnOrColumnGroupGlideInstance,
   TableGlideInstanceProps,
   TableInfoBase,
-  TableInfoWithRow
+  TableInfoWithRow,
 } from '../TableGlideInstance/type';
 import { ColumnConfig, ObjectForExtending, TableConfig } from '../types';
 
@@ -16,7 +16,7 @@ interface ContextMenuState<
   SummaryRowType,
   /* eslint-disable @typescript-eslint/ban-types */
 
-  CustomCtxs extends ObjectForExtending = {}
+  CustomCtxs extends ObjectForExtending = {},
 > {
   isOpen: boolean;
   items: DropdownProps['items'] | null;
@@ -67,10 +67,10 @@ export const useContextMenuValues = <
   FilterStateType extends ObjectForExtending,
   RowIdType extends string | number,
   RowType extends ObjectForExtending,
-  SummaryRowType = unknown
+  SummaryRowType = unknown,
 >({
   tableConfig,
-  popover
+  popover,
 }: {
   tableConfig: TableConfig<RowType, SummaryRowType, RowIdType, FilterStateType>;
   popover: TablePopoverContextValue;
@@ -79,15 +79,15 @@ export const useContextMenuValues = <
     onHeaderContextMenu,
     onHeaderContextMenuDropdown,
     onCellContextMenu,
-    onCellContextMenuDropdown
+    onCellContextMenuDropdown,
   } = tableConfig;
 
   const [state, setState] = useState<ContextMenuState<RowType, SummaryRowType>>(
     {
       isOpen: false,
       position: null,
-      items: null
-    }
+      items: null,
+    },
   );
 
   // Блокировка открытия контекстного меню, если открыт поповер (или был открыт только что)
@@ -124,7 +124,7 @@ export const useContextMenuValues = <
       position,
       items = null,
       asyncParams,
-      context
+      context,
     }: {
       position: { x: number; y: number };
       items?: DropdownProps['items'] | null;
@@ -136,10 +136,10 @@ export const useContextMenuValues = <
         position,
         items,
         asyncParams,
-        context
+        context,
       });
     },
-    []
+    [],
   );
 
   const close = useCallback(() => {
@@ -148,7 +148,7 @@ export const useContextMenuValues = <
       isOpen: false,
       items: null,
       asyncParams: undefined,
-      context: undefined
+      context: undefined,
     }));
   }, []);
 
@@ -176,11 +176,11 @@ export const useContextMenuValues = <
 
       const position = {
         x: event.bounds.x + event.localEventX,
-        y: event.bounds.y + event.localEventY
+        y: event.bounds.y + event.localEventY,
       };
       const context = {
         type: 'header' as const,
-        data: { header: { column, ctxs } }
+        data: { header: { column, ctxs } },
       };
 
       if (itemsOptions && itemsOptions.length > 0) {
@@ -193,7 +193,7 @@ export const useContextMenuValues = <
         onHeaderContextMenuDropdown.onOpen(params);
       }
     },
-    [onHeaderContextMenu, onHeaderContextMenuDropdown, open]
+    [onHeaderContextMenu, onHeaderContextMenuDropdown, open],
   );
 
   const openCellContextMenu = useCallback<
@@ -217,11 +217,11 @@ export const useContextMenuValues = <
 
       const position = {
         x: event.bounds.x + event.localEventX,
-        y: event.bounds.y + event.localEventY
+        y: event.bounds.y + event.localEventY,
       };
       const context = {
         type: 'cell' as const,
-        data: { cell: { row, column, ctxs } }
+        data: { cell: { row, column, ctxs } },
       };
 
       if (itemsOptions && itemsOptions.length > 0) {
@@ -234,7 +234,7 @@ export const useContextMenuValues = <
         onCellContextMenuDropdown.onOpen(params);
       }
     },
-    [onCellContextMenu, onCellContextMenuDropdown, open]
+    [onCellContextMenu, onCellContextMenuDropdown, open],
   );
 
   // Извлекаем пропсы для Dropdown из конфигов контекстного меню
@@ -282,7 +282,7 @@ export const useContextMenuValues = <
       openCellContextMenu,
       onItemSelect: (
         item: ContextMenuDropdownItem,
-        event?: React.SyntheticEvent
+        event?: React.SyntheticEvent,
       ) => {
         // Если контекст меню не определен (не должно происходить в нормальной работе),
         // закрываем меню и выходим
@@ -320,7 +320,7 @@ export const useContextMenuValues = <
             onHeaderContextMenuDropdown?.onItemSelect?.(
               item,
               state.context.data.header,
-              event
+              event,
             );
             closeIfNeeded(onHeaderContextMenuDropdown?.closeOnSelect);
             return;
@@ -334,11 +334,11 @@ export const useContextMenuValues = <
           onCellContextMenuDropdown?.onItemSelect?.(
             item,
             state.context.data.cell,
-            event
+            event,
           );
           closeIfNeeded(onCellContextMenuDropdown?.closeOnSelect);
         }
-      }
+      },
     }),
     [
       state,
@@ -351,7 +351,7 @@ export const useContextMenuValues = <
       onCellContextMenu,
       onCellContextMenuDropdown,
       openHeaderContextMenu,
-      openCellContextMenu
-    ]
+      openCellContextMenu,
+    ],
   );
 };

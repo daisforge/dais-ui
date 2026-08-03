@@ -13,28 +13,28 @@ const meta: Meta<TextFieldSearchProps> = {
   component: TextFieldSearch,
   parameters: {
     docs: {
-      toc: true
-    }
+      toc: true,
+    },
   },
   tags: ['!autodocs'],
   args: {
     size: 's',
     placeholder: 'Поиск',
     disabled: false,
-    readOnly: false
+    readOnly: false,
   },
   argTypes: {
     size: {
       options: ['s', 'xs'],
-      control: { type: 'select' }
+      control: { type: 'select' },
     },
     disabled: {
-      control: { type: 'boolean' }
+      control: { type: 'boolean' },
     },
     readOnly: {
-      control: { type: 'boolean' }
-    }
-  }
+      control: { type: 'boolean' },
+    },
+  },
 };
 
 export default meta;
@@ -53,7 +53,7 @@ import { TextFieldSearch } from '@daisforge/ui';
 export const Default: Story = {
   name: 'Default',
   ...storySourceDoc({
-    preCode
+    preCode,
   }),
   render: (args: TextFieldSearchProps) => {
     const [value, setValue] = useState('');
@@ -70,7 +70,7 @@ export const Default: Story = {
         />
       </div>
     );
-  }
+  },
 };
 
 /**
@@ -81,13 +81,13 @@ export const Default: Story = {
 export const Sizes: Story = {
   name: 'Размеры',
   ...storySourceDoc({
-    preCode
+    preCode,
   }),
   render: (args: TextFieldSearchProps) => {
     const sizes = ['s', 'xs'] as const;
     const [values, setValues] = useState<Record<string, string>>({
       s: '',
-      xs: ''
+      xs: '',
     });
 
     return (
@@ -97,7 +97,7 @@ export const Sizes: Story = {
           display: 'flex',
           flexDirection: 'column',
           gap: '1rem',
-          width: '500px'
+          width: '500px',
         }}
       >
         {sizes.map((size) => (
@@ -115,7 +115,7 @@ export const Sizes: Story = {
         ))}
       </div>
     );
-  }
+  },
 };
 
 /**
@@ -130,7 +130,7 @@ export const Sizes: Story = {
 export const WithClear: Story = {
   name: 'Различные варианты',
   ...storySourceDoc({
-    preCode
+    preCode,
   }),
   render: (args: TextFieldSearchProps) => {
     const [value1, setValue1] = useState('Поисковый запрос');
@@ -145,7 +145,7 @@ export const WithClear: Story = {
           display: 'flex',
           flexDirection: 'column',
           gap: '1rem',
-          width: '500px'
+          width: '500px',
         }}
       >
         <TextFieldSearch
@@ -209,5 +209,5 @@ export const WithClear: Story = {
         />
       </div>
     );
-  }
+  },
 };

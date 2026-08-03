@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 export const useUpdateSize = (
   isOpened: boolean,
   paddingInlineOfContainer: number,
-  borderInlineOfContainer: number
+  borderInlineOfContainer: number,
 ) => {
   const ref = useRef<HTMLDivElement | null>(null);
   const refIsActive = !!ref.current;
@@ -51,6 +51,6 @@ export const useUpdateSize = (
 
   return {
     refForContainer: ref,
-    maxWidthForCenterElement
+    maxWidthForCenterElement,
   };
 };

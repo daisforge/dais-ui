@@ -5,7 +5,7 @@ import {
   // ControlBlockSwitch,
   ObjectForExtending,
   SIZE,
-  TableConfig
+  TableConfig,
 } from '@ui-kit/components/TableCanvas';
 import {
   IconClose,
@@ -16,7 +16,7 @@ import {
   IconMessageDraftFill,
   IconSettingsOutline,
   IconViewScreen4Outline,
-  IconViewSplit4Outline
+  IconViewSplit4Outline,
 } from '@ui-kit/icons';
 import { mergeClasses } from '@ui-kit/utils';
 import React, { useCallback, useMemo, useState } from 'react';
@@ -29,7 +29,7 @@ import { FullScreenObj } from '../../feature-full-screen/types';
 import {
   getKeyTextOptionsWithIcon,
   KEY_TEXT_OPTIONS,
-  showKeyText
+  showKeyText,
 } from '../../feature-key-text';
 import type { KeyText, KeyTextMap } from '../../feature-key-text/types';
 import { notifications } from '../../feature-notifications';
@@ -37,7 +37,7 @@ import {
   getCurrentSizeIcon,
   getCurrentSizeLabel,
   isActivatedRowSize,
-  setRowSizeCb
+  setRowSizeCb,
 } from '../../feature-row-size';
 import { useGetRowsGroupingBtnProps } from '../../feature-rows-grouping';
 import { TableSettingsWithTabs } from '../../feature-table-settings';
@@ -50,7 +50,7 @@ import {
   getPinIconState,
   pinColumns,
   resetPinning,
-  unpinColumns
+  unpinColumns,
 } from './pinning-menu/pinning-actions';
 import { buildPinningFeature } from './pinning-menu/PinningFeature';
 import { FeatureItem, SidebarTab } from './types';
@@ -60,14 +60,14 @@ const ifTrue = <T extends FeatureItem>(reason: boolean, value: T) =>
   reason ? [value] : [];
 const ifTrueBtn = <T extends ControlBlockButtonProps>(
   reason: boolean,
-  value: T
+  value: T,
 ) => (reason ? [value] : []);
 
 export const useFeatureArray = <
   FilterStateType extends ObjectForExtending,
   RowType extends ObjectForExtending,
   RowIdType extends string | number,
-  SummaryRowType = unknown
+  SummaryRowType = unknown,
 >({
   tableConfig,
   activeView,
@@ -110,7 +110,7 @@ export const useFeatureArray = <
   tableConfigKeyTextBoolean,
   enableAdaptiveCompress,
   selectedColumnKeys,
-  setPendingSelectKeys
+  setPendingSelectKeys,
 }: {
   tableConfig: TableConfig<
     RowType,
@@ -168,7 +168,7 @@ export const useFeatureArray = <
   // Состояние активного settings таба (внутренние табы в сайдбаре: Общие. Фильтры. Столбцы)
   // По умолчанию Общие
   const [activeSettingsTabId, setActiveSettingsTabId] = useState<string | null>(
-    'general'
+    'general',
   );
 
   const isActivated = {
@@ -212,7 +212,7 @@ export const useFeatureArray = <
 
     searching: activeViewIsRows && !!tableConfig?.searching?.enabled,
     filtering: isHasFilters({ tableConfig, columnConfig }),
-    collapsing: tableConfig.collapsing?.enableCollapse
+    collapsing: tableConfig.collapsing?.enableCollapse,
   };
 
   // Нативные экшены закрепления столбцов для контрл-блока (SplitIconButton +
@@ -222,9 +222,9 @@ export const useFeatureArray = <
     () => ({
       disablePinningSet: new Set(columnsControlConfig?.disablePinning ?? []),
       colsWithKeyTextMap,
-      tableConfigKeyTextBoolean
+      tableConfigKeyTextBoolean,
     }),
-    [columnsControlConfig, colsWithKeyTextMap, tableConfigKeyTextBoolean]
+    [columnsControlConfig, colsWithKeyTextMap, tableConfigKeyTextBoolean],
   );
 
   // Follow: сохранить текущее выделение по ключам — перевыделим после реордера.
@@ -242,7 +242,7 @@ export const useFeatureArray = <
       return;
     }
     setPinnedCols((prev) =>
-      pinColumns(prev, selectedColumnKeys, pinningActionCtx)
+      pinColumns(prev, selectedColumnKeys, pinningActionCtx),
     );
     followSelection();
   }, [
@@ -250,12 +250,12 @@ export const useFeatureArray = <
     selectedColumnKeys,
     pinningActionCtx,
     tableConfig.notifications,
-    followSelection
+    followSelection,
   ]);
 
   const onUnpinSelectedColumns = useCallback(() => {
     setPinnedCols((prev) =>
-      unpinColumns(prev, selectedColumnKeys, pinningActionCtx)
+      unpinColumns(prev, selectedColumnKeys, pinningActionCtx),
     );
     followSelection();
   }, [setPinnedCols, selectedColumnKeys, pinningActionCtx, followSelection]);
@@ -269,7 +269,7 @@ export const useFeatureArray = <
     selectedKeys: selectedColumnKeys,
     pinnedCols,
     hiddenCols,
-    ctx: pinningActionCtx
+    ctx: pinningActionCtx,
   });
 
   const onPinIconClick = useCallback(() => {
@@ -285,7 +285,7 @@ export const useFeatureArray = <
     columnConfig,
     groupedCols,
     setGroupedCols,
-    isActivatedRowsGrouping: isActivated.rowsGrouping
+    isActivatedRowsGrouping: isActivated.rowsGrouping,
   });
 
   const enableEditMode = () => setEditModeEnabled?.(true);
@@ -310,9 +310,9 @@ export const useFeatureArray = <
         EDIT_BUTTON_CLASS,
         EDIT_BUTTON_CANCEL_CLASS,
         tableConfig?.editing?.domMetadata?.cancelButton?.className,
-        editingButtons?.cancel?.['className']
+        editingButtons?.cancel?.['className'],
       ),
-      ...tableConfig.editing?.domMetadata?.cancelButton?.dataAttributes
+      ...tableConfig.editing?.domMetadata?.cancelButton?.dataAttributes,
     }),
     ...ifTrueBtn(isActivated.editingMode && editModeEnabled, {
       text: 'Сохранить',
@@ -329,9 +329,9 @@ export const useFeatureArray = <
       className: mergeClasses(
         EDIT_BUTTON_CLASS,
         tableConfig?.editing?.domMetadata?.saveButton?.className,
-        editingButtons?.save?.['className']
+        editingButtons?.save?.['className'],
       ),
-      ...tableConfig.editing?.domMetadata?.saveButton?.dataAttributes
+      ...tableConfig.editing?.domMetadata?.saveButton?.dataAttributes,
     }),
     ...ifTrueBtn(isActivated.editingMode && !editModeEnabled, {
       text: 'Редактировать',
@@ -348,10 +348,10 @@ export const useFeatureArray = <
       className: mergeClasses(
         EDIT_BUTTON_CLASS,
         tableConfig?.editing?.domMetadata?.enableButton?.className,
-        editingButtons?.edit?.['className']
+        editingButtons?.edit?.['className'],
       ),
-      ...tableConfig.editing?.domMetadata?.enableButton?.dataAttributes
-    })
+      ...tableConfig.editing?.domMetadata?.enableButton?.dataAttributes,
+    }),
   ];
 
   const featureRightButtons: ControlBlockButtonProps[] = [
@@ -371,18 +371,18 @@ export const useFeatureArray = <
       ),
       dropdown: {
         onItemSelect: (i) => setKeyText(i.value as KeyText),
-        items: getKeyTextOptionsWithIcon({ keyText, rowSize })
+        items: getKeyTextOptionsWithIcon({ keyText, rowSize }),
       },
       ...(typeof tableConfig?.keyText !== 'boolean'
         ? {
             className:
               tableConfig.keyText?.controlBlock?.domMetadata?.className,
             ...(tableConfig.keyText?.controlBlock?.domMetadata
-              ?.dataAttributes || {})
+              ?.dataAttributes || {}),
           }
-        : {})
+        : {}),
     }),
-    ...ifTrueBtn(isActivated.rowsGrouping, rowsGroupingButtonProps)
+    ...ifTrueBtn(isActivated.rowsGrouping, rowsGroupingButtonProps),
   ];
 
   const featureSearching = {
@@ -390,7 +390,7 @@ export const useFeatureArray = <
     showSearchBlock,
     setShowSearchBlock,
     searchQueryLocalValue,
-    placeholderSearchBlock
+    placeholderSearchBlock,
   };
 
   const { all, icons, featureItems } = (() => {
@@ -419,7 +419,7 @@ export const useFeatureArray = <
         // data-атрибуты
         ...(typeof tableConfig?.fullScreenEnabled !== 'boolean'
           ? tableConfig.fullScreenEnabled?.domMetadata?.dataAttributes || {}
-          : {})
+          : {}),
       }),
       ...ifTrue(isActivated.rowSize, {
         value: 'rowSize',
@@ -434,7 +434,7 @@ export const useFeatureArray = <
           });
           tableConfig.rowSize?.domMetadata?.onClick?.(undefined, {
             action: DOM_METADATA_ACTIONS.CHANGE_ROW_SIZE,
-            size: newSize
+            size: newSize,
           });
         },
 
@@ -447,7 +447,7 @@ export const useFeatureArray = <
         dividerLeft: true,
         // DomMetadata
         className: tableConfig.rowSize?.domMetadata?.className,
-        ...tableConfig?.rowSize?.domMetadata?.dataAttributes
+        ...tableConfig?.rowSize?.domMetadata?.dataAttributes,
       }),
       // @deprecated viewMode — переключение карточки/таблица. Сохранено для обратной совместимости.
       ...ifTrue(isActivated.viewChanging, {
@@ -466,7 +466,7 @@ export const useFeatureArray = <
           tableConfig.controlBlock?.customFeatures?.length > 0,
         // DomMetadata
         className: tableConfig?.view?.domMetadata?.className,
-        ...tableConfig?.view?.domMetadata?.dataAttributes
+        ...tableConfig?.view?.domMetadata?.dataAttributes,
       }),
       // Нативная фича закрепления столбцов. mandatory (не уходит в сайдбар) +
       // canBeCompressedInToolsMenu (может уйти в overflow «…»), как view-mode.
@@ -483,9 +483,9 @@ export const useFeatureArray = <
             .featureIcon,
           iconColored: pinIconState.colored,
           iconTooltip: pinIconState.tooltip,
-          onIconClick: onPinIconClick
-        })
-      )
+          onIconClick: onPinIconClick,
+        }),
+      ),
     ];
 
     // Затем собираем остальные фичи
@@ -543,8 +543,8 @@ export const useFeatureArray = <
       ...(tableConfig.controlBlock?.customFeatures ?? []).map((feature) => ({
         ...feature,
         mandatory: feature.mandatory || false,
-        canBeCompressedInToolsMenu: feature.canBeCompressedInToolsMenu ?? true
-      }))
+        canBeCompressedInToolsMenu: feature.canBeCompressedInToolsMenu ?? true,
+      })),
     ];
 
     // Sidebar-only фичи: НЕ рендерятся в controlBlock (не попадают в icons
@@ -568,15 +568,15 @@ export const useFeatureArray = <
               : '',
           ...(typeof tableConfig?.keyText !== 'boolean'
             ? tableConfig.keyText?.sidebar.domMetadata?.dataAttributes || {}
-            : {})
-        }
-      })
+            : {}),
+        },
+      }),
     ];
 
     // Разделяем все фичи на mandatory и optional
     const allMandatoryFeatures = [
       ...mandatoryFeatures,
-      ...optionalFeatures.filter((f) => f.mandatory)
+      ...optionalFeatures.filter((f) => f.mandatory),
     ];
     const allOptionalFeatures = optionalFeatures.filter((f) => !f.mandatory);
 
@@ -591,10 +591,10 @@ export const useFeatureArray = <
       all: [
         ...allMandatoryFeatures,
         ...allOptionalFeatures,
-        ...sidebarOnlyFeatures
+        ...sidebarOnlyFeatures,
       ],
       icons: visibleIcons,
-      featureItems
+      featureItems,
     };
   })();
 
@@ -615,7 +615,7 @@ export const useFeatureArray = <
     // С компрессией v2 sidebar не зависит от состояния компрессии —
     // фичи с details для sidebar всегда показываются там
     return featureItems.some(
-      (item) => 'details' in item && item.details != null
+      (item) => 'details' in item && item.details != null,
     );
   })();
 
@@ -623,7 +623,7 @@ export const useFeatureArray = <
   const findInDefaultTabs = useCallback(
     (id: string) =>
       tableConfig?.sidebarConfig?.defaultTabs?.find((item) => item.id === id),
-    [tableConfig?.sidebarConfig?.defaultTabs]
+    [tableConfig?.sidebarConfig?.defaultTabs],
   );
 
   const tableSettingsTabFromConfig = findInDefaultTabs('tableSettings');
@@ -646,9 +646,9 @@ export const useFeatureArray = <
               className: tableConfig.summaryRows?.domMetadata?.className,
               onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
                 setSummaryRowsIsActive(e.target.checked),
-              ...tableConfig.summaryRows?.domMetadata?.dataAttributes
-            }
-          }
+              ...tableConfig.summaryRows?.domMetadata?.dataAttributes,
+            },
+          },
         ]
       : []),
     ...(isActivated.selectingRows
@@ -665,9 +665,9 @@ export const useFeatureArray = <
               onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
                 setSelectingRowsIsActive(e.target.checked),
               className: tableConfig.selecting?.sidebar?.domMetadata?.className,
-              ...tableConfig.selecting?.sidebar?.domMetadata?.dataAttributes
-            }
-          }
+              ...tableConfig.selecting?.sidebar?.domMetadata?.dataAttributes,
+            },
+          },
         ]
       : []),
     ...(isActivated.rowInstruments
@@ -682,11 +682,11 @@ export const useFeatureArray = <
               label: 'Инструменты в строках',
               checked: showRowInstruments,
               onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
-                setShowRowInstruments(e.target.checked)
-            }
-          }
+                setShowRowInstruments(e.target.checked),
+            },
+          },
         ]
-      : [])
+      : []),
   ];
 
   // Кастомный слот для блока общих настроек в правом сайдбаре таблицы
@@ -704,7 +704,7 @@ export const useFeatureArray = <
   const hasColumnsControl = isActivated.columnsControl;
 
   const activeSections = [hasGeneral, hasFiltering, hasColumnsControl].filter(
-    Boolean
+    Boolean,
   ).length;
 
   // Если активен только один раздел - используем его название в качестве title
@@ -773,8 +773,8 @@ export const useFeatureArray = <
           }
         />
       ),
-      domMetadata: tableSettingsTabFromConfig?.domMetadata
-    }
+      domMetadata: tableSettingsTabFromConfig?.domMetadata,
+    },
   ];
 
   const sidebarTabs: SidebarTab[] = (() => {
@@ -792,7 +792,7 @@ export const useFeatureArray = <
           .filter(Boolean) as SidebarTab[];
 
         const remainingTabs = customTabs.filter(
-          (tab) => !customTabsOrder.includes(tab.id)
+          (tab) => !customTabsOrder.includes(tab.id),
         );
         resultTabs.push(...orderedTabs, ...remainingTabs);
       } else {
@@ -822,6 +822,6 @@ export const useFeatureArray = <
       sidebarTabs.some((tab) => tab.showInSidebar),
     activeSidebarTabId,
     sidebarTabs,
-    isActivated
+    isActivated,
   };
 };

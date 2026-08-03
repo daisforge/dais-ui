@@ -7,7 +7,7 @@ import { AutocompleteProps } from './Autocomplete.types';
 export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
   (
     { disabled, readOnly, contentRight, size = 's', value, onClear, ...rest },
-    ref
+    ref,
   ) => (
     <BaseAutocomplete
       {...rest}
@@ -22,10 +22,10 @@ export const Autocomplete = forwardRef<HTMLInputElement, AutocompleteProps>(
         value,
         onClear,
         size,
-        contentRight
+        contentRight,
       })}
     />
-  )
+  ),
 );
 
 Autocomplete.displayName = 'Autocomplete';

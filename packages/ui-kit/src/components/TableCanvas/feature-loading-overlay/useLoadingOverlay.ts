@@ -15,7 +15,7 @@ export const useLoadingOverlay = (config: {
   const [state, setState] = useState<LoadingOverlayState>({
     showOverlay: false,
     showSubtitle: false,
-    elapsedTime: 0
+    elapsedTime: 0,
   });
 
   useEffect(() => {
@@ -23,7 +23,7 @@ export const useLoadingOverlay = (config: {
       setState({
         showOverlay: false,
         showSubtitle: false,
-        elapsedTime: 0
+        elapsedTime: 0,
       });
       return undefined;
     }
@@ -32,7 +32,7 @@ export const useLoadingOverlay = (config: {
     setState({
       showOverlay: true,
       showSubtitle: false,
-      elapsedTime: 0
+      elapsedTime: 0,
     });
 
     const startTime = Date.now();
@@ -41,7 +41,7 @@ export const useLoadingOverlay = (config: {
     const subtitleTimeout = setTimeout(() => {
       setState((prev) => ({
         ...prev,
-        showSubtitle: true
+        showSubtitle: true,
       }));
     }, showSubtitleDelay);
 
@@ -49,7 +49,7 @@ export const useLoadingOverlay = (config: {
     const intervalId = setInterval(() => {
       setState((prev) => ({
         ...prev,
-        elapsedTime: Math.floor((Date.now() - startTime) / 1000)
+        elapsedTime: Math.floor((Date.now() - startTime) / 1000),
       }));
     }, 1000);
 

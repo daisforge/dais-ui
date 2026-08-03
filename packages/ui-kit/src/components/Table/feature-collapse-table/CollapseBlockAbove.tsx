@@ -7,7 +7,7 @@ import {
   COLORS,
   DURATION,
   HEIGHT_CONTROL_BLOCK,
-  TABLE_BORDER_RADIUS
+  TABLE_BORDER_RADIUS,
 } from '../styles';
 import { ActiveViewModsType } from '../types';
 import { CollapseTableButton } from './CollapseTableButton';
@@ -49,11 +49,11 @@ const CollapseBlockAboveStyled = styled(Box)<{
     css({
       ...($activeView === 'rows' && {
         backgroundColor: COLORS.white,
-        borderColor: COLORS.border
+        borderColor: COLORS.border,
       }),
       ...($activeView === 'cards' && {
-        borderColor: 'transparent'
-      })
+        borderColor: 'transparent',
+      }),
     })}
 
   overflow-y: hidden;
@@ -72,7 +72,7 @@ export type CollapseBlockAboveProps = {
 export const CollapseBlockAbove: FC<CollapseBlockAboveProps> = ({
   activeView,
   $borderTopRounded,
-  rightSlot
+  rightSlot,
 }) => {
   const { isCollapsed, enableCollapse } = useTableCollapse();
 

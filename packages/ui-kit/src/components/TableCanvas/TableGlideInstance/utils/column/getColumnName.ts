@@ -5,7 +5,7 @@
 export const getColumnName = ({
   name,
   nameAsString,
-  fallback
+  fallback,
 }: {
   name: string | unknown;
   nameAsString?: string;

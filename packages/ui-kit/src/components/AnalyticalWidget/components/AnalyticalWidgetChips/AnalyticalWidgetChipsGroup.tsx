@@ -5,7 +5,7 @@ import React from 'react';
 
 import {
   StyledChip,
-  StyledChipGroup
+  StyledChipGroup,
 } from './AnalyticalWidgetChipsGroup.styled';
 import { AnalyticalWidgetChipsGroupProps } from './AnalyticalWidgetChipsGroup.types';
 

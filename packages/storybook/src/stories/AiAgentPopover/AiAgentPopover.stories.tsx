@@ -16,8 +16,8 @@ const meta: Meta<typeof AiAgentPopover> = {
   component: AiAgentPopover,
   tags: ['!autodocs'],
   parameters: {
-    layout: 'fullscreen'
-  }
+    layout: 'fullscreen',
+  },
 };
 
 export default meta;
@@ -31,7 +31,7 @@ function PopoverContent({ onClose }: { onClose?: () => void }) {
         minWidth: '224px',
         display: 'flex',
         flexDirection: 'column',
-        height: '100%'
+        height: '100%',
       }}
     >
       <H3>AI Assistant</H3>
@@ -43,7 +43,7 @@ function PopoverContent({ onClose }: { onClose?: () => void }) {
           display: 'flex',
           gap: '8px',
           width: '100%',
-          marginTop: 'auto'
+          marginTop: 'auto',
         }}
       >
         <Button
@@ -67,7 +67,7 @@ import { AiAgentPopover } from '@daisforge/ui';
 
 ${getFuncAsString(
   'packages/storybook/src/stories/AiAgentPopover/AiAgentPopover.stories.tsx',
-  'PopoverContent'
+  'PopoverContent',
 )}
 
 `;
@@ -79,13 +79,13 @@ export const Resizable: Story = {
   name: 'Resizable',
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render() {
     return (
       <div
         style={{
-          height: '100vh'
+          height: '100vh',
         }}
       >
         <AiAgentPopover
@@ -95,7 +95,7 @@ export const Resizable: Story = {
             bottom: 10,
             top: 10,
             left: 10,
-            right: 10
+            right: 10,
           }}
           resizable={() => ({ minWidth: 250 })}
           onResizeStart={() => {
@@ -108,14 +108,14 @@ export const Resizable: Story = {
           }}
           useStorage
           targetDataAttributes={{
-            'data-testid': 'aiAgentPopover'
+            'data-testid': 'aiAgentPopover',
           }}
         >
           <PopoverContent onClose={() => alert('close')} />
         </AiAgentPopover>
       </div>
     );
-  }
+  },
 };
 
 /**
@@ -125,13 +125,13 @@ export const Uncontrolled: Story = {
   name: 'Example',
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render() {
     return (
       <div
         style={{
-          height: '100vh'
+          height: '100vh',
         }}
       >
         <AiAgentPopover
@@ -141,7 +141,7 @@ export const Uncontrolled: Story = {
             bottom: 10,
             top: 10,
             left: 10,
-            right: 10
+            right: 10,
           }}
           onPositionChange={(pos) => {
             // eslint-disable-next-line no-console
@@ -149,12 +149,12 @@ export const Uncontrolled: Story = {
           }}
           useStorage
           targetDataAttributes={{
-            'data-testid': 'aiAgentPopover'
+            'data-testid': 'aiAgentPopover',
           }}
         >
           <PopoverContent onClose={() => alert('close')} />
         </AiAgentPopover>
       </div>
     );
-  }
+  },
 };

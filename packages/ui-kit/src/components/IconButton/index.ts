@@ -2,5 +2,5 @@ export { IconButton, type IconButtonProps } from './IconButton';
 export { IconButtonDots } from './IconButtonDots';
 export {
   IconButtonFilter,
-  iconButtonFilterClassNames
+  iconButtonFilterClassNames,
 } from './IconButtonFilter/IconButtonFilter';

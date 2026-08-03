@@ -16,7 +16,7 @@ import {
   CompressionSpacing,
   InitialWidthsForToolsMenu,
   OverflowItem,
-  ToolsMenuState
+  ToolsMenuState,
 } from '../types';
 
 /** Минимальная ширина поиска после сжатия (обычная 250) */
@@ -57,7 +57,7 @@ export const calculateWidth = (
   state: ToolsMenuState,
   measuredWidths: InitialWidthsForToolsMenu | undefined,
   spacing: CompressionSpacing,
-  breakdown?: Record<string, number>
+  breakdown?: Record<string, number>,
 ): number => {
   const sp = spacing;
   let width = 0;
@@ -130,12 +130,12 @@ export const calculateWidth = (
       if (state.leftSide.editRowFeature.isLabelVisible) {
         add(
           `featureLeftBtn[${i}]`,
-          measuredWidths?.featureLeftButtons?.[i] ?? 0
+          measuredWidths?.featureLeftButtons?.[i] ?? 0,
         );
       } else {
         add(
           `featureLeftBtn[${i}]icon`,
-          measuredWidths?.featureLeftButtonsIcon?.[i] ?? ICON_ONLY_BUTTON
+          measuredWidths?.featureLeftButtonsIcon?.[i] ?? ICON_ONLY_BUTTON,
         );
       }
     }
@@ -145,7 +145,7 @@ export const calculateWidth = (
   if (hasLeftSideInner) {
     add(
       'leftSideInnerBlock',
-      measuredWidths?.leftSideInnerBlock ?? LEFT_SIDE_INNER_BLOCK_FALLBACK
+      measuredWidths?.leftSideInnerBlock ?? LEFT_SIDE_INNER_BLOCK_FALLBACK,
     );
   }
 
@@ -162,7 +162,7 @@ export const calculateWidth = (
   state.rightSide.buttons.forEach((btn, i) => {
     const isInDropdown = state.rightSide.overflowItems.some(
       (oi) =>
-        oi.sourceType === 'button' && oi.sourceIndex === i && oi.isInDropdown
+        oi.sourceType === 'button' && oi.sourceIndex === i && oi.isInDropdown,
     );
     if (isInDropdown) return;
     rightBtnCount += 1;
@@ -171,7 +171,7 @@ export const calculateWidth = (
     } else {
       add(
         `rightBtn[${i}]icon`,
-        measuredWidths?.rightButtonsIcon?.[i] ?? ICON_ONLY_BUTTON
+        measuredWidths?.rightButtonsIcon?.[i] ?? ICON_ONLY_BUTTON,
       );
     }
   });
@@ -184,13 +184,13 @@ export const calculateWidth = (
       (oi) =>
         oi.sourceType === 'customFeature' &&
         oi.sourceIndex === i &&
-        oi.isInDropdown
+        oi.isInDropdown,
     );
     if (!isInDropdown) {
       visibleFeatureIconCount += 1;
       add(
         `customFeature[${i}]`,
-        measuredWidths?.customFeatures?.[i] ?? CUSTOM_FEATURE_ICON_WIDTH
+        measuredWidths?.customFeatures?.[i] ?? CUSTOM_FEATURE_ICON_WIDTH,
       );
     }
   });
@@ -222,7 +222,7 @@ export const calculateWidth = (
   if (state.rightSide.isOverflowTriggerVisible) {
     add(
       'overflowTrigger',
-      measuredWidths?.overflowTrigger ?? OVERFLOW_TRIGGER_FALLBACK
+      measuredWidths?.overflowTrigger ?? OVERFLOW_TRIGGER_FALLBACK,
     );
   }
 
@@ -242,7 +242,7 @@ export const buildOverflowItems = (state: ToolsMenuState): OverflowItem[] => {
     items.push({
       sourceType: 'button',
       sourceIndex: i,
-      isInDropdown: false
+      isInDropdown: false,
     });
   });
 
@@ -253,7 +253,7 @@ export const buildOverflowItems = (state: ToolsMenuState): OverflowItem[] => {
       items.push({
         sourceType: 'customFeature',
         sourceIndex: i,
-        isInDropdown: false
+        isInDropdown: false,
       });
     }
   });

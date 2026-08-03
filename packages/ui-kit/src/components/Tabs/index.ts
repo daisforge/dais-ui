@@ -3,12 +3,12 @@ export type {
   TabItemProps,
   TabItemRefs,
   TabsControllerProps,
-  TabsProps
+  TabsProps,
 } from '@salutejs/sdds-finai';
 export {
   IconTabItem,
   TabItem,
   Tabs,
   TabsContext,
-  TabsController
+  TabsController,
 } from '@salutejs/sdds-finai';

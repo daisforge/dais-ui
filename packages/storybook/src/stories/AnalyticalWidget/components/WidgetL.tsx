@@ -4,7 +4,7 @@ import { useFiltersList } from '@ui-kit/components/ListOfFilters';
 import {
   SegmentGroup,
   SegmentItem,
-  SegmentProvider
+  SegmentProvider,
 } from '@ui-kit/components/Segment';
 import { TabItem, Tabs } from '@ui-kit/components/Tabs';
 import React, { useReducer, useState } from 'react';
@@ -16,13 +16,13 @@ import {
   Filters,
   filtersReducer,
   longText,
-  useFetch
+  useFetch,
 } from '../lib/utils';
 
 export const WidgetL = ({
   id,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  onRemove
+  onRemove,
 }: {
   id: number | string;
   onRemove: () => void;
@@ -42,7 +42,7 @@ export const WidgetL = ({
       tribes: filtersTribesOption,
       allocation: filtersAllocationOption,
       filterButton: filterButtonOptions,
-      dotsButton: dotsButtonOptionsWithRemove
+      dotsButton: dotsButtonOptionsWithRemove,
     } as Record<keyof Filters, { label: string; value: string }[]>,
     updateFilters: (key, newV) => updateFilters({ [key]: newV }),
     filtersInfo: {
@@ -52,8 +52,8 @@ export const WidgetL = ({
       allocation: { label: 'Аллокация', clearedValue: '' },
       year: { label: 'Год', clearedValue: null },
       filterButton: { label: 'Фильтр', clearedValue: '' },
-      dotsButton: { label: 'Меню', clearedValue: '' }
-    }
+      dotsButton: { label: 'Меню', clearedValue: '' },
+    },
   });
 
   const chipsList = filterList
@@ -64,7 +64,7 @@ export const WidgetL = ({
           view: 'default' as const,
           hasClear: false as const,
           onClick: innerItem.onClick,
-          key: `chip-key${index}-${innerIndex}-${innerItem.label}`
+          key: `chip-key${index}-${innerIndex}-${innerItem.label}`,
         }));
       }
       return {
@@ -72,7 +72,7 @@ export const WidgetL = ({
         view: 'default' as const,
         hasClear: false as const,
         onClick: item.onClick,
-        key: `chip-key${index}-${item.label}`
+        key: `chip-key${index}-${item.label}`,
       };
     })
     .flat();
@@ -83,7 +83,7 @@ export const WidgetL = ({
         $css={{
           height: '100%',
           maxWidth: 'unset !important',
-          width: '100% !important'
+          width: '100% !important',
         }}
         size="l"
         headerSlot={
@@ -102,7 +102,7 @@ export const WidgetL = ({
                 alignment="center"
                 mainAxisGap="8px"
                 style={{
-                  flexWrap: 'nowrap'
+                  flexWrap: 'nowrap',
                 }}
               >
                 <SegmentGroup hasBackground size="xs">

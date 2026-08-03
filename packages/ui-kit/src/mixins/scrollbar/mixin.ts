@@ -3,7 +3,7 @@ import {
   onDarkSurfaceSolidTertiary,
   onDarkSurfaceSolidTertiaryHover,
   surfaceSolidTertiary,
-  surfaceSolidTertiaryHover
+  surfaceSolidTertiaryHover,
 } from '@ui-kit/tokens';
 import { css } from 'styled-components';
 
@@ -14,7 +14,7 @@ const DEFAULTS = {
   height: '10px',
   borderRadius: `calc(${borderRadiusXxs}/1)`,
   isThin: true,
-  theme: 'light' as 'light' | 'dark'
+  theme: 'light' as 'light' | 'dark',
 };
 
 const resolveColors = ({
@@ -22,7 +22,7 @@ const resolveColors = ({
   thumbColorHover,
   trackColor,
   trackColorHover,
-  theme = DEFAULTS.theme
+  theme = DEFAULTS.theme,
 }: Pick<
   ScrollbarStylesProps,
   'thumbColor' | 'thumbColorHover' | 'trackColor' | 'trackColorHover' | 'theme'
@@ -50,7 +50,7 @@ const buildScrollbarCss = ({
   thumb,
   thumbHover,
   track,
-  trackHover
+  trackHover,
 }: {
   width?: string;
   height?: string;
@@ -132,14 +132,14 @@ export const getCustomScrollbar = ({
   thumbColorHover,
   trackColor,
   trackColorHover,
-  theme
+  theme,
 }: ScrollbarStylesProps = {}) => {
   const colors = resolveColors({
     thumbColor,
     thumbColorHover,
     trackColor,
     trackColorHover,
-    theme
+    theme,
   });
 
   return buildScrollbarCss({
@@ -147,6 +147,6 @@ export const getCustomScrollbar = ({
     height,
     borderRadius,
     isThin,
-    ...colors
+    ...colors,
   });
 };

@@ -11,7 +11,7 @@ import {
   MIN_PANEL_PADDING,
   MORE_BUTTON_WIDTH_ESTIMATE,
   PANEL_PADDING_EXPANDED,
-  TOGGLE_SIDEBAR_PANEL_WIDTH
+  TOGGLE_SIDEBAR_PANEL_WIDTH,
 } from '../constants';
 import { MassActionsButtonProps } from '../types';
 
@@ -37,7 +37,7 @@ export const useMassActionsCompression = ({
   leftPadding = PANEL_PADDING_EXPANDED.left,
   rightPadding = PANEL_PADDING_EXPANDED.right,
   moreButtonWidthEstimate = MORE_BUTTON_WIDTH_ESTIMATE,
-  enableDebugLogs = false
+  enableDebugLogs = false,
 }: {
   isCollapsed: boolean;
   containerRef: React.RefObject<HTMLDivElement>;
@@ -71,7 +71,7 @@ export const useMassActionsCompression = ({
     if (!tableWidth || tableWidth === 0 || !buttons || buttons.length === 0) {
       if (enableDebugLogs) {
         console.debug(
-          '❌ calculateInitialCompression: нет tableWidth или buttons'
+          '❌ calculateInitialCompression: нет tableWidth или buttons',
         );
       }
       return false; // Возвращаем false если не можем выполнить расчет
@@ -80,7 +80,7 @@ export const useMassActionsCompression = ({
     // Проверяем что все ref'ы установлены
     const allRefsSet = buttons.every(
       (_, i) =>
-        buttonRefs.current[i] !== null && buttonRefs.current[i] !== undefined
+        buttonRefs.current[i] !== null && buttonRefs.current[i] !== undefined,
     );
 
     if (!allRefsSet) {
@@ -93,10 +93,10 @@ export const useMassActionsCompression = ({
             refs: buttonRefs.current.map(
               (r: HTMLDivElement | null, i: number) => ({
                 index: i,
-                hasRef: !!r
-              })
-            )
-          }
+                hasRef: !!r,
+              }),
+            ),
+          },
         );
       }
       return false; // Ref'ы еще не установлены
@@ -150,7 +150,7 @@ export const useMassActionsCompression = ({
       }
 
       const buttonElement = ref.querySelector(
-        'button, a'
+        'button, a',
       ) as HTMLElement | null;
       const elementToMeasure = buttonElement || ref;
 
@@ -180,8 +180,8 @@ export const useMassActionsCompression = ({
             text: buttons[i]?.text,
             width,
             isConnected: elementToMeasure.isConnected,
-            rect
-          }
+            rect,
+          },
         );
         allButtonsMeasured = false;
         break;
@@ -196,8 +196,8 @@ export const useMassActionsCompression = ({
           {
             allButtonsMeasured,
             buttonWidthsLength: buttonWidths.length,
-            buttonsLength: buttons.length
-          }
+            buttonsLength: buttons.length,
+          },
         );
       }
       return false;
@@ -278,7 +278,7 @@ export const useMassActionsCompression = ({
       buttonWidths,
       visibleCount,
       accentCount: accentButtonIndices.length,
-      regularVisibleCount: visibleRegularCount
+      regularVisibleCount: visibleRegularCount,
     });
 
     return true; // Успешно выполнен расчет
@@ -297,7 +297,7 @@ export const useMassActionsCompression = ({
     minPadding,
     leftPadding,
     rightPadding,
-    moreButtonWidthEstimate
+    moreButtonWidthEstimate,
   ]);
 
   // Функция для расчета компрессии кнопок
@@ -332,11 +332,11 @@ export const useMassActionsCompression = ({
                   : 0,
                 availableWidth,
                 minPaddingRequired: minPadding * 2,
-                maxPanelWidthAllowed: availableWidth - minPadding * 2
+                maxPanelWidthAllowed: availableWidth - minPadding * 2,
               },
               null,
-              2
-            )
+              2,
+            ),
           );
         }
 
@@ -396,7 +396,7 @@ export const useMassActionsCompression = ({
                 tagName: child.tagName,
                 className: child.className,
                 width: rect.width,
-                height: rect.height
+                height: rect.height,
               });
             }
           }
@@ -406,8 +406,8 @@ export const useMassActionsCompression = ({
             children: leftSectionChildren,
             childrenTotalWidth: leftSectionChildren.reduce(
               (sum, child) => sum + child.width,
-              0
-            )
+              0,
+            ),
           };
         }
 
@@ -438,18 +438,18 @@ export const useMassActionsCompression = ({
                   wrapperWidth: dividerWrapperWidth,
                   gapLeft: dividerGapLeft,
                   gapRight: dividerGapRight,
-                  totalWidth: dividerTotalWidth
+                  totalWidth: dividerTotalWidth,
                 },
                 collapseButtonWidth:
                   collapseButtonRef.current?.getBoundingClientRect().width ??
                   COLLAPSE_BUTTON_WIDTH,
                 containerPadding: leftPadding + rightPadding,
                 gapsBetweenFixedElements,
-                fixedElementsTotal: fixedElementsWidth
+                fixedElementsTotal: fixedElementsWidth,
               },
               null,
-              2
-            )
+              2,
+            ),
           );
         }
 
@@ -461,7 +461,7 @@ export const useMassActionsCompression = ({
           const ref = buttonRefs.current[i];
           if (ref) {
             const buttonElement = ref.querySelector(
-              'button, a'
+              'button, a',
             ) as HTMLElement | null;
             const elementToMeasure = buttonElement || ref;
 
@@ -479,7 +479,7 @@ export const useMassActionsCompression = ({
               if (measuredButtonWidthsRef.current[i] !== undefined) {
                 buttonWidths.push(
                   measuredButtonWidthsRef.current[i] ??
-                    ACTION_BUTTON_WIDTH_ESTIMATE
+                    ACTION_BUTTON_WIDTH_ESTIMATE,
                 );
               } else {
                 allButtonsMeasured = false;
@@ -490,7 +490,7 @@ export const useMassActionsCompression = ({
             if (measuredButtonWidthsRef.current[i] !== undefined) {
               buttonWidths.push(
                 measuredButtonWidthsRef.current[i] ??
-                  ACTION_BUTTON_WIDTH_ESTIMATE
+                  ACTION_BUTTON_WIDTH_ESTIMATE,
               );
             } else {
               allButtonsMeasured = false;
@@ -528,20 +528,20 @@ export const useMassActionsCompression = ({
                   availableWidth,
                   minPaddingEach: minPadding,
                   minPaddingTotal: minPadding * 2,
-                  maxPanelWidth
+                  maxPanelWidth,
                 },
                 currentPanel: {
                   width: currentPanelWidth,
                   exceedsMax: currentPanelWidth > maxPanelWidth,
                   exceedsAvailable: currentPanelWidth > availableWidth,
                   leftPadding: minPadding,
-                  rightPadding: minPadding
+                  rightPadding: minPadding,
                 },
-                moreButtonWidth
+                moreButtonWidth,
               },
               null,
-              2
-            )
+              2,
+            ),
           );
 
           console.debug(
@@ -553,18 +553,18 @@ export const useMassActionsCompression = ({
                   text: btn.text,
                   view: btn.view,
                   isAccent: btn.view === 'accent',
-                  width: buttonWidths[i]
+                  width: buttonWidths[i],
                 })),
                 totalButtonsWidth: buttonWidths.reduce((sum, w) => sum + w, 0),
                 averageButtonWidth:
                   buttonWidths.length > 0
                     ? buttonWidths.reduce((sum, w) => sum + w, 0) /
                       buttonWidths.length
-                    : 0
+                    : 0,
               },
               null,
-              2
-            )
+              2,
+            ),
           );
         }
 
@@ -593,8 +593,8 @@ export const useMassActionsCompression = ({
             accentButtons: accentButtonIndices.map((i) => ({
               index: i,
               text: allButtons[i]?.text,
-              width: buttonWidths[i]
-            }))
+              width: buttonWidths[i],
+            })),
           });
         }
 
@@ -659,7 +659,7 @@ export const useMassActionsCompression = ({
               testWithBuffer,
               maxPanelWidth,
               fits: testPanelWidth <= maxPanelWidth,
-              fitsWithBuffer: testWithBuffer <= maxPanelWidth
+              fitsWithBuffer: testWithBuffer <= maxPanelWidth,
             });
           }
 
@@ -716,7 +716,7 @@ export const useMassActionsCompression = ({
             collapseButton: COLLAPSE_BUTTON_WIDTH,
             containerPadding: leftPadding + rightPadding,
             gapsBetweenFixedElements,
-            total: fixedElementsWidth
+            total: fixedElementsWidth,
           },
           buttons: {
             accentButtonsWidth,
@@ -725,13 +725,13 @@ export const useMassActionsCompression = ({
             gapsBetweenVisibleButtons,
             buttonsAreaWidth, // С учетом gaps
             visibleButtonsCount: finalVisibleCount,
-            hiddenButtonsCount: hiddenButtons.length
+            hiddenButtonsCount: hiddenButtons.length,
           },
           moreButton: hasMoreButtons
             ? {
                 width: moreButtonWidth,
                 gap: ELEMENTS_GAP,
-                total: moreButtonWidth + ELEMENTS_GAP
+                total: moreButtonWidth + ELEMENTS_GAP,
               }
             : null,
           final: {
@@ -752,8 +752,8 @@ export const useMassActionsCompression = ({
                 : 0,
             leftPaddingRequired: minPadding,
             rightPaddingRequired: minPadding,
-            totalPaddingRequired: minPadding * 2
-          }
+            totalPaddingRequired: minPadding * 2,
+          },
         };
 
         if (enableDebugLogs) {
@@ -770,28 +770,28 @@ export const useMassActionsCompression = ({
                   finalPanelWidth,
                   maxPanelWidth,
                   fits: finalPanelWidth <= maxPanelWidth,
-                  hasMoreButton: hasMoreButtons
+                  hasMoreButton: hasMoreButtons,
                 },
-                breakdown: compressionBreakdown
+                breakdown: compressionBreakdown,
               },
               null,
-              2
-            )
+              2,
+            ),
           );
 
           console.debug('👁️ Видимые кнопки:', {
             buttons: visibleButtons.map((btn) => ({
               text: btn.text,
               view: btn.view,
-              isAccent: btn.view === 'accent'
-            }))
+              isAccent: btn.view === 'accent',
+            })),
           });
 
           console.debug('📦 Кнопки в dropdown:', {
             buttons: hiddenButtons.map((btn) => ({
               text: btn.text,
-              view: btn.view
-            }))
+              view: btn.view,
+            })),
           });
           console.groupEnd();
         }
@@ -817,12 +817,12 @@ export const useMassActionsCompression = ({
     rightPadding,
     moreButtonWidthEstimate,
     setVisibleButtonsCount,
-    buttonRefs
+    buttonRefs,
   ]);
 
   return {
     calculateCompression,
     calculateInitialCompression,
-    measuredButtonWidthsRef
+    measuredButtonWidthsRef,
   };
 };

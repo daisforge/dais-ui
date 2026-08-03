@@ -6,5 +6,5 @@ export const blockTitleClassNames = {
   topBlock: 'block-title__top-block',
   rightBlock: 'block-title__right-block',
   title: 'block-title__title',
-  titleBlock: 'block-title__title-block'
+  titleBlock: 'block-title__title-block',
 };

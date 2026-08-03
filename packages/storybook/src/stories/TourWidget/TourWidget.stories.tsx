@@ -8,7 +8,7 @@ import {
   PulseExample,
   TourWithoutContentExample,
   TourWithPulseExample,
-  VerticalExample
+  VerticalExample,
 } from './TourWidget.examples';
 
 const meta: Meta<typeof TourWidget> = {
@@ -17,9 +17,9 @@ const meta: Meta<typeof TourWidget> = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      toc: true
-    }
-  }
+      toc: true,
+    },
+  },
 };
 
 export default meta;
@@ -45,27 +45,27 @@ import { css } from 'styled-components';`;
 const tourHelpersCode = [
   getFuncAsString(
     'packages/storybook/src/stories/TourWidget/TourWidget.examples.tsx',
-    'clampStep'
+    'clampStep',
   ),
   getFuncAsString(
     'packages/storybook/src/stories/TourWidget/TourWidget.examples.tsx',
-    'TourView'
+    'TourView',
   ),
   getFuncAsString(
     'packages/storybook/src/stories/TourWidget/TourWidget.examples.tsx',
-    'MediaPlaceholder'
-  )
+    'MediaPlaceholder',
+  ),
 ].join('\n\n');
 
 const pulseHelpersCode = [
   getFuncAsString(
     'packages/storybook/src/stories/TourWidget/TourWidget.examples.tsx',
-    'TourView'
+    'TourView',
   ),
   getFuncAsString(
     'packages/storybook/src/stories/TourWidget/TourWidget.examples.tsx',
-    'PulseTarget'
-  )
+    'PulseTarget',
+  ),
 ].join('\n\n');
 
 const verticalCode = [
@@ -73,8 +73,8 @@ const verticalCode = [
   tourHelpersCode,
   getFuncAsString(
     'packages/storybook/src/stories/TourWidget/TourWidget.examples.tsx',
-    'VerticalExample'
-  )
+    'VerticalExample',
+  ),
 ].join('\n\n');
 
 const horizontalCode = [
@@ -82,8 +82,8 @@ const horizontalCode = [
   tourHelpersCode,
   getFuncAsString(
     'packages/storybook/src/stories/TourWidget/TourWidget.examples.tsx',
-    'HorizontalExample'
-  )
+    'HorizontalExample',
+  ),
 ].join('\n\n');
 
 const tourWithPulseCode = [
@@ -91,12 +91,12 @@ const tourWithPulseCode = [
   tourHelpersCode,
   getFuncAsString(
     'packages/storybook/src/stories/TourWidget/TourWidget.examples.tsx',
-    'PulseTarget'
+    'PulseTarget',
   ),
   getFuncAsString(
     'packages/storybook/src/stories/TourWidget/TourWidget.examples.tsx',
-    'TourWithPulseExample'
-  )
+    'TourWithPulseExample',
+  ),
 ].join('\n\n');
 
 const pulseCode = [
@@ -104,8 +104,8 @@ const pulseCode = [
   pulseHelpersCode,
   getFuncAsString(
     'packages/storybook/src/stories/TourWidget/TourWidget.examples.tsx',
-    'PulseExample'
-  )
+    'PulseExample',
+  ),
 ].join('\n\n');
 
 const tourWithoutContentCode = [
@@ -113,40 +113,40 @@ const tourWithoutContentCode = [
   tourHelpersCode,
   getFuncAsString(
     'packages/storybook/src/stories/TourWidget/TourWidget.examples.tsx',
-    'PulseTarget'
+    'PulseTarget',
   ),
   getFuncAsString(
     'packages/storybook/src/stories/TourWidget/TourWidget.examples.tsx',
-    'TourWithoutContentExample'
-  )
+    'TourWithoutContentExample',
+  ),
 ].join('\n\n');
 
 export const Vertical: Story = {
   name: 'Вертикальный тур',
   ...storySourceDoc({ code: verticalCode, previewSource: 'shown' }),
-  render: VerticalExample
+  render: VerticalExample,
 };
 
 export const Horizontal: Story = {
   name: 'Горизонтальный тур',
   ...storySourceDoc({ code: horizontalCode, previewSource: 'shown' }),
-  render: HorizontalExample
+  render: HorizontalExample,
 };
 
 export const TourWithPulse: Story = {
   name: 'Тур рядом с пульсацией',
   ...storySourceDoc({ code: tourWithPulseCode, previewSource: 'shown' }),
-  render: TourWithPulseExample
+  render: TourWithPulseExample,
 };
 
 export const Pulse: Story = {
   name: 'Пульсация',
   ...storySourceDoc({ code: pulseCode, previewSource: 'shown' }),
-  render: PulseExample
+  render: PulseExample,
 };
 
 export const TourWithoutContent: Story = {
   name: 'Тур без контента',
   ...storySourceDoc({ code: tourWithoutContentCode, previewSource: 'shown' }),
-  render: TourWithoutContentExample
+  render: TourWithoutContentExample,
 };

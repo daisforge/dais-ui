@@ -7,13 +7,13 @@ export const useSortedRows = <
   RowType extends ObjectForExtending,
   SummaryRowType,
   FilterStateType extends ObjectForExtending,
-  RowIdType extends string | number
+  RowIdType extends string | number,
 >({
   rows,
   columns,
   tableConfig,
   infinityScrollActiveInConfig,
-  paginationActiveInConfig
+  paginationActiveInConfig,
 }: {
   rows: RowType[];
   columns: readonly ColumnConfig<RowType, SummaryRowType>[];
@@ -42,7 +42,7 @@ export const useSortedRows = <
       // eslint-disable-next-line no-restricted-syntax
       for (const sort of sortColumns) {
         const currColumnConfig = columnsWithSorting.find(
-          (c) => c.key === sort.columnKey
+          (c) => c.key === sort.columnKey,
         );
 
         if (!currColumnConfig || !currColumnConfig.sortingType) {
@@ -85,14 +85,14 @@ export const useSortedRows = <
     manualSorting,
     infinityScrollActiveInConfig,
     paginationActiveInConfig,
-    tableConfigSortingBoolean
+    tableConfigSortingBoolean,
   ]);
   return {
     sortColumns,
     setSortColumns,
     sortedRows,
     sortIsVisible,
-    setSortIsVisible
+    setSortIsVisible,
   };
 };
 

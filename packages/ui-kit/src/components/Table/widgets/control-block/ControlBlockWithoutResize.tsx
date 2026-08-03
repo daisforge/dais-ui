@@ -33,11 +33,11 @@ export const ControlBlockWithoutResize = ({
       isActiveSearching,
       showSearchBlock,
       searchQueryLocalValue,
-      placeholderSearchBlock
-    }
+      placeholderSearchBlock,
+    },
   },
   $borderTopRounded,
-  collapseButtonPlacement = 'inside'
+  collapseButtonPlacement = 'inside',
 }: {
   leftSideInner: ControlBlockButtonProps[] | undefined;
   rightSideInner: ControlBlockButtonProps[] | undefined;
@@ -65,11 +65,11 @@ export const ControlBlockWithoutResize = ({
 
   const resultRightSightInner = [
     ...(rightSideInner ?? []),
-    ...featureRightButtons
+    ...featureRightButtons,
   ];
   const resultLeftSightInner = [
     ...featureLeftButtons,
-    ...(leftSideInner ?? [])
+    ...(leftSideInner ?? []),
   ];
 
   return (
@@ -91,7 +91,7 @@ export const ControlBlockWithoutResize = ({
         <Flow
           alignment="center"
           style={{
-            flexWrap: 'nowrap'
+            flexWrap: 'nowrap',
           }}
         >
           {collapseButtonPlacement === 'inside' && <CollapseTableButton />}

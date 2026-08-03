@@ -2,5 +2,5 @@ export {
   LineSkeleton,
   RectSkeleton,
   TextSkeleton,
-  withSkeleton
+  withSkeleton,
 } from '@salutejs/sdds-finai';

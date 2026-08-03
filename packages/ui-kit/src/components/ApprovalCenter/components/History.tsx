@@ -8,7 +8,7 @@ import {
   HistoryActions,
   HistoryContainer,
   HistoryDate,
-  HistoryDay
+  HistoryDay,
 } from '../styled';
 
 const History = (props: HistoryProps) => {

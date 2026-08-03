@@ -3,12 +3,12 @@ import {
   onDarkSurfaceSolidCardBrightness,
   onDarkSurfaceTransparentTertiary,
   onDarkTextPrimary,
-  onDarkTextSecondary
+  onDarkTextSecondary,
 } from '@ui-kit/tokens';
 import styled, {
   css,
   CSSObject,
-  FlattenSimpleInterpolation
+  FlattenSimpleInterpolation,
 } from 'styled-components';
 
 import { tourWidgetClassNames as cls } from './TourWidget.classNames';
@@ -34,7 +34,7 @@ const GRADIENT_COLORS = {
   periwinkle: '153, 176, 254',
   slateBlue: '90, 117, 207',
   green: '#56ff71',
-  greenTransparent: 'rgba(86, 255, 113, 0)'
+  greenTransparent: 'rgba(86, 255, 113, 0)',
 } as const;
 
 const TOUR_WIDGET_GRADIENT = {
@@ -62,7 +62,7 @@ const TOUR_WIDGET_GRADIENT = {
     180deg,
     ${GRADIENT_COLORS.green} 0%,
     ${GRADIENT_COLORS.greenTransparent} 100%
-  )`
+  )`,
 } as const;
 
 const C = {
@@ -70,7 +70,7 @@ const C = {
   contentRadius: '6px',
   cardBg: () => onDarkSurfaceSolidCardBrightness,
   titleColor: () => onDarkTextPrimary,
-  descriptionColor: () => onDarkTextSecondary
+  descriptionColor: () => onDarkTextSecondary,
 };
 
 const verticalGradientPreset = css`
@@ -195,7 +195,7 @@ const getContainerLayoutStyles = ({ $orientation }: StyledContainerProps) => {
 };
 
 export const StyledContainer = styled.div.attrs({
-  className: cls.root as string
+  className: cls.root as string,
 })<StyledContainerProps>`
   position: relative;
   isolation: isolate;
@@ -219,7 +219,7 @@ export const StyledContainer = styled.div.attrs({
 export const StyledShapeGradient = styled.svg.attrs({
   className: cls.shapeGradient as string,
   focusable: 'false',
-  preserveAspectRatio: 'none'
+  preserveAspectRatio: 'none',
 })`
   position: absolute;
   inset: 0;
@@ -250,7 +250,7 @@ export const StyledShapeGradient = styled.svg.attrs({
 `;
 
 export const StyledGradient = styled.div.attrs({
-  className: cls.gradient as string
+  className: cls.gradient as string,
 })`
   position: absolute;
   z-index: 0;
@@ -314,7 +314,7 @@ export const StyledGradient = styled.div.attrs({
 `;
 
 export const StyledHeader = styled.div.attrs({
-  className: cls.header as string
+  className: cls.header as string,
 })<{ $css?: CssProp }>`
   min-width: 0;
   display: flex;
@@ -325,21 +325,21 @@ export const StyledHeader = styled.div.attrs({
 `;
 
 export const StyledHeaderTitle = styled(Typography).attrs({
-  className: cls.headerTitle as string
+  className: cls.headerTitle as string,
 })`
   min-width: 0;
   color: ${C.titleColor};
 `;
 
 export const StyledHeaderDescription = styled(Typography).attrs({
-  className: cls.headerDescription as string
+  className: cls.headerDescription as string,
 })`
   min-width: 0;
   color: ${C.descriptionColor};
 `;
 
 export const StyledContent = styled.div.attrs({
-  className: cls.content as string
+  className: cls.content as string,
 })<{ $css?: CssProp }>`
   & img,
   & picture,
@@ -355,7 +355,7 @@ export const StyledContent = styled.div.attrs({
 `;
 
 export const StyledFooter = styled.div.attrs({
-  className: cls.footer as string
+  className: cls.footer as string,
 })<{ $css?: CssProp }>`
   min-width: 0;
 
@@ -363,7 +363,7 @@ export const StyledFooter = styled.div.attrs({
 `;
 
 export const StyledBullets = styled.div.attrs({
-  className: cls.bullets as string
+  className: cls.bullets as string,
 })<{ $css?: CssProp }>`
   display: inline-block;
   width: var(--tour-widget-bullets-width, auto);
@@ -374,7 +374,7 @@ export const StyledBullets = styled.div.attrs({
 `;
 
 export const StyledBulletsTrack = styled.div.attrs({
-  className: cls.bulletsTrack as string
+  className: cls.bulletsTrack as string,
 })`
   display: flex;
   align-items: center;
@@ -385,7 +385,7 @@ export const StyledBulletsTrack = styled.div.attrs({
 `;
 
 export const StyledBullet = styled.span.attrs({
-  className: cls.bullet as string
+  className: cls.bullet as string,
 })<{ $css?: CssProp }>`
   display: block;
   flex: 0 0 8px;

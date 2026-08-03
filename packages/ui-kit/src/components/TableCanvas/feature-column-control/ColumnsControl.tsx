@@ -1,7 +1,7 @@
 import { Box } from '@ui-kit/components/Box';
 import {
   ColumnConfig,
-  ObjectForExtending
+  ObjectForExtending,
 } from '@ui-kit/components/TableCanvas';
 import React, { PropsWithChildren } from 'react';
 
@@ -34,7 +34,7 @@ export const ColumnsControl = <Row extends ObjectForExtending, SummaryRow>({
       display: 'flex',
       flexDirection: 'column',
       height: '100%',
-      overflow: 'hidden'
+      overflow: 'hidden',
     }}
   >
     <ColumnsControlInner {...{ ...innerControlProps, onClose, opened }} />

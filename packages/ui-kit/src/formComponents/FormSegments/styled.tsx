@@ -2,7 +2,7 @@ import { TextField } from '@ui-kit/components/TextField';
 import styled from 'styled-components';
 
 export const cls = {
-  hiddenInput: 'form-segment__hidden-input'
+  hiddenInput: 'form-segment__hidden-input',
 } as const;
 
 /** Внешний контейнер для layout. НЕ стилизуем сам SegmentGroup! */

@@ -4,7 +4,7 @@ import {
   createRowsTree,
   PRODUCTS,
   TreeRow,
-  TRIBES
+  TRIBES,
 } from '@df-storybook/data/tableData';
 import DocStoryTemplate from '@df-storybook/templates/DocStoryTemplate.mdx';
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
@@ -14,7 +14,7 @@ import { ModalDF } from '@ui-kit/components/ModalDF';
 import {
   CellEditorNumberFormat,
   ColumnConfig,
-  TableCanvas
+  TableCanvas,
 } from '@ui-kit/components/TableCanvas';
 import { useMemo, useRef, useState } from 'react';
 
@@ -23,9 +23,9 @@ const meta: Meta = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      page: DocStoryTemplate
-    }
-  }
+      page: DocStoryTemplate,
+    },
+  },
 };
 
 export default meta;
@@ -34,7 +34,7 @@ type Story = StoryObj;
 
 export const Editing: Story = {
   ...storySourceDoc({
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     const [rows, setRows] = useState(() => createRowsTree());
@@ -46,13 +46,13 @@ export const Editing: Story = {
           editingCell: {
             editable: (r) => r.block === BLOCKS[1],
             error: {
-              value: (r) => r.block === BLOCKS[0]
+              value: (r) => r.block === BLOCKS[0],
             },
             component: 'select',
             options: {
               type: 'constant',
-              options: BLOCKS.map((i) => ({ text: i, value: i }))
-            }
+              options: BLOCKS.map((i) => ({ text: i, value: i })),
+            },
           },
           subRow: {
             keyOfColumnInSubRow: (lvl) => {
@@ -70,18 +70,18 @@ export const Editing: Story = {
             editingCell: {
               component: 'inputString',
               inputProps: {
-                placeholder: 'Введите значение'
-              }
+                placeholder: 'Введите значение',
+              },
             },
 
             isColumnWithArrow: true,
-            hideHeaderExpandAllArrow: false
-          }
+            hideHeaderExpandAllArrow: false,
+          },
         },
         {
           key: 'blockActivity',
           name: 'Активность блока',
-          editingCell: { component: 'inputString' }
+          editingCell: { component: 'inputString' },
         },
         {
           key: 'tribe',
@@ -90,12 +90,12 @@ export const Editing: Story = {
             component: 'select',
             options: {
               type: 'stateInRowContext',
-              optionsKeyInRowContext: 'tribeOptions'
+              optionsKeyInRowContext: 'tribeOptions',
             },
             selectProps: {
-              listMaxHeight: '210px'
-            }
-          }
+              listMaxHeight: '210px',
+            },
+          },
         },
         {
           key: 'product',
@@ -104,9 +104,9 @@ export const Editing: Story = {
             component: 'select',
             options: {
               type: 'stateInRowContext',
-              optionsKeyInRowContext: 'productOptions'
-            }
-          }
+              optionsKeyInRowContext: 'productOptions',
+            },
+          },
         },
         {
           key: 'q1',
@@ -115,8 +115,8 @@ export const Editing: Story = {
           editingCell: {
             component: 'inputNumber',
             inputProps: {
-              placeholder: 'Введите значение'
-            }
+              placeholder: 'Введите значение',
+            },
           },
           contentFormat: {
             type: 'number',
@@ -124,12 +124,12 @@ export const Editing: Story = {
             thousandSeparator: ' ',
             alignContent: 'right',
             minimumFractionDigits: 2,
-            maximumFractionDigits: 2
+            maximumFractionDigits: 2,
           },
           subRow: {
             keyOfColumnInSubRow: 'q1',
-            editingCell: { component: 'inputNumber' }
-          }
+            editingCell: { component: 'inputNumber' },
+          },
         },
         {
           key: 'q2',
@@ -142,7 +142,7 @@ export const Editing: Story = {
               column,
               cellHeight,
               cellWidth,
-              initialValue
+              initialValue,
             }) => {
               const initialValueAsNumber =
                 initialValue && !Number.isNaN(+initialValue)
@@ -151,7 +151,7 @@ export const Editing: Story = {
 
               const [v, setV] = useState<string | number>(
                 initialValueAsNumber ??
-                  (row?.[column.key as keyof typeof row] as unknown as number)
+                  (row?.[column.key as keyof typeof row] as unknown as number),
               );
 
               const handleChange = (
@@ -160,7 +160,7 @@ export const Editing: Story = {
                   floatValue: number | undefined;
                   formattedValue: string;
                   value: string;
-                }
+                },
               ) => {
                 if (values) {
                   const resultValue =
@@ -168,7 +168,7 @@ export const Editing: Story = {
                   setV(resultValue);
                   onRowChange({
                     ...row,
-                    [column.key]: resultValue
+                    [column.key]: resultValue,
                   });
                 }
               };
@@ -185,12 +185,12 @@ export const Editing: Story = {
                   onChange={handleChange}
                 />
               );
-            }
+            },
           },
           subRow: {
             keyOfColumnInSubRow: 'q2',
-            editingCell: { component: 'inputNumber' }
-          }
+            editingCell: { component: 'inputNumber' },
+          },
         },
         {
           key: 'q3',
@@ -206,10 +206,10 @@ export const Editing: Story = {
               error: {
                 value(_row, _treeLvl) {
                   return true;
-                }
-              }
-            }
-          }
+                },
+              },
+            },
+          },
         },
         {
           key: 'q4',
@@ -219,19 +219,19 @@ export const Editing: Story = {
           editingCell: { component: 'inputNumber' },
           subRow: {
             keyOfColumnInSubRow: 'q4',
-            editingCell: { component: 'inputNumber' }
-          }
-        }
+            editingCell: { component: 'inputNumber' },
+          },
+        },
       ],
-      []
+      [],
     );
 
     const rowContextValue = useMemo(
       () => ({
         tribeOptions: TRIBES.map((i) => ({ text: i, value: i })),
-        productOptions: PRODUCTS.map((i) => ({ text: i, value: i }))
+        productOptions: PRODUCTS.map((i) => ({ text: i, value: i })),
       }),
-      []
+      [],
     );
     const savedRowsRef = useRef<null | typeof rows>(null);
 
@@ -242,7 +242,7 @@ export const Editing: Story = {
           containerStyle: { height: '700px' },
           rowSize: {
             showInControl: true,
-            default: 'big'
+            default: 'big',
           },
           editing: {
             onEnableEditing(enableEditorMode) {
@@ -261,34 +261,34 @@ export const Editing: Story = {
             },
             onRowsChange: setRows,
             rowKeyGetter: (r) => `${r.id}`,
-            rowEditable: (r) => r.block !== BLOCKS[1]
+            rowEditable: (r) => r.block !== BLOCKS[1],
           },
           subRows: {
             getSubRows: (row) => row?.subRows,
-            rowKeyGetter: (row) => row.id
+            rowKeyGetter: (row) => row.id,
           },
-          resizableColumn: true
+          resizableColumn: true,
         }}
         columnConfig={columns}
         rows={rows}
         rowContextValue={rowContextValue}
       />
     );
-  }
+  },
 };
 
 type SimpleRow = { id: string; name: string; value: number };
 
 export const EditingButtonsControl: Story = {
   ...storySourceDoc({
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   name: 'Buttons Control (disabled, isLoading)',
   render: () => {
     const [rows, setRows] = useState<SimpleRow[]>([
       { id: '1', name: 'Альфа', value: 100 },
       { id: '2', name: 'Бета', value: 200 },
-      { id: '3', name: 'Гамма', value: 300 }
+      { id: '3', name: 'Гамма', value: 300 },
     ]);
     const [isSaving, setIsSaving] = useState(false);
     const savedRowsRef = useRef<SimpleRow[] | null>(null);
@@ -298,16 +298,16 @@ export const EditingButtonsControl: Story = {
         {
           key: 'name',
           name: 'Название',
-          editingCell: { component: 'inputString' }
+          editingCell: { component: 'inputString' },
         },
         {
           key: 'value',
           name: 'Значение',
           contentFormat: 'number',
-          editingCell: { component: 'inputNumber' }
-        }
+          editingCell: { component: 'inputNumber' },
+        },
       ],
-      []
+      [],
     );
 
     return (
@@ -320,11 +320,11 @@ export const EditingButtonsControl: Story = {
             buttons: {
               save: {
                 disabled: isSaving,
-                isLoading: isSaving
+                isLoading: isSaving,
               },
               cancel: {
-                disabled: isSaving
-              }
+                disabled: isSaving,
+              },
             },
             onEnableEditing(enableEditorMode) {
               savedRowsRef.current = [...rows];
@@ -343,19 +343,19 @@ export const EditingButtonsControl: Story = {
                 setRows(savedRowsRef.current);
               }
               disableEditorMode();
-            }
-          }
+            },
+          },
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };
 
 export const EditingInModal: Story = {
   ...storySourceDoc({
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     const [rows, setRows] = useState(() => createRowsTree());
@@ -367,13 +367,13 @@ export const EditingInModal: Story = {
           editingCell: {
             editable: (r) => r.block === BLOCKS[1],
             error: {
-              value: (r) => r.block === BLOCKS[0]
+              value: (r) => r.block === BLOCKS[0],
             },
             component: 'select',
             options: {
               type: 'constant',
-              options: BLOCKS.map((i) => ({ text: i, value: i }))
-            }
+              options: BLOCKS.map((i) => ({ text: i, value: i })),
+            },
           },
           subRow: {
             keyOfColumnInSubRow: (lvl) => {
@@ -391,18 +391,18 @@ export const EditingInModal: Story = {
             editingCell: {
               component: 'inputString',
               inputProps: {
-                placeholder: 'Введите значение'
-              }
+                placeholder: 'Введите значение',
+              },
             },
 
             isColumnWithArrow: true,
-            hideHeaderExpandAllArrow: false
-          }
+            hideHeaderExpandAllArrow: false,
+          },
         },
         {
           key: 'blockActivity',
           name: 'Активность блока',
-          editingCell: { component: 'inputString' }
+          editingCell: { component: 'inputString' },
         },
         {
           key: 'tribe',
@@ -411,12 +411,12 @@ export const EditingInModal: Story = {
             component: 'select',
             options: {
               type: 'stateInRowContext',
-              optionsKeyInRowContext: 'tribeOptions'
+              optionsKeyInRowContext: 'tribeOptions',
             },
             selectProps: {
-              listMaxHeight: '210px'
-            }
-          }
+              listMaxHeight: '210px',
+            },
+          },
         },
         {
           key: 'product',
@@ -425,9 +425,9 @@ export const EditingInModal: Story = {
             component: 'select',
             options: {
               type: 'stateInRowContext',
-              optionsKeyInRowContext: 'productOptions'
-            }
-          }
+              optionsKeyInRowContext: 'productOptions',
+            },
+          },
         },
         {
           key: 'q1',
@@ -436,8 +436,8 @@ export const EditingInModal: Story = {
           editingCell: {
             component: 'inputNumber',
             inputProps: {
-              placeholder: 'Введите значение'
-            }
+              placeholder: 'Введите значение',
+            },
           },
           contentFormat: {
             type: 'number',
@@ -445,12 +445,12 @@ export const EditingInModal: Story = {
             thousandSeparator: ' ',
             alignContent: 'right',
             minimumFractionDigits: 2,
-            maximumFractionDigits: 2
+            maximumFractionDigits: 2,
           },
           subRow: {
             keyOfColumnInSubRow: 'q1',
-            editingCell: { component: 'inputNumber' }
-          }
+            editingCell: { component: 'inputNumber' },
+          },
         },
         {
           key: 'q2',
@@ -463,7 +463,7 @@ export const EditingInModal: Story = {
               column,
               cellHeight,
               cellWidth,
-              initialValue
+              initialValue,
             }) => {
               const initialValueAsNumber =
                 initialValue && !Number.isNaN(+initialValue)
@@ -472,7 +472,7 @@ export const EditingInModal: Story = {
 
               const [v, setV] = useState<string | number>(
                 initialValueAsNumber ??
-                  (row?.[column.key as keyof typeof row] as unknown as number)
+                  (row?.[column.key as keyof typeof row] as unknown as number),
               );
 
               const handleChange = (
@@ -481,7 +481,7 @@ export const EditingInModal: Story = {
                   floatValue: number | undefined;
                   formattedValue: string;
                   value: string;
-                }
+                },
               ) => {
                 if (values) {
                   const resultValue =
@@ -489,7 +489,7 @@ export const EditingInModal: Story = {
                   setV(resultValue);
                   onRowChange({
                     ...row,
-                    [column.key]: resultValue
+                    [column.key]: resultValue,
                   });
                 }
               };
@@ -506,12 +506,12 @@ export const EditingInModal: Story = {
                   onChange={handleChange}
                 />
               );
-            }
+            },
           },
           subRow: {
             keyOfColumnInSubRow: 'q2',
-            editingCell: { component: 'inputNumber' }
-          }
+            editingCell: { component: 'inputNumber' },
+          },
         },
         {
           key: 'q3',
@@ -527,10 +527,10 @@ export const EditingInModal: Story = {
               error: {
                 value(_row, _treeLvl) {
                   return true;
-                }
-              }
-            }
-          }
+                },
+              },
+            },
+          },
         },
         {
           key: 'q4',
@@ -540,19 +540,19 @@ export const EditingInModal: Story = {
           editingCell: { component: 'inputNumber' },
           subRow: {
             keyOfColumnInSubRow: 'q4',
-            editingCell: { component: 'inputNumber' }
-          }
-        }
+            editingCell: { component: 'inputNumber' },
+          },
+        },
       ],
-      []
+      [],
     );
 
     const rowContextValue = useMemo(
       () => ({
         tribeOptions: TRIBES.map((i) => ({ text: i, value: i })),
-        productOptions: PRODUCTS.map((i) => ({ text: i, value: i }))
+        productOptions: PRODUCTS.map((i) => ({ text: i, value: i })),
       }),
-      []
+      [],
     );
     const savedRowsRef = useRef<null | typeof rows>(null);
     const [opened, setOpened] = useState(false);
@@ -575,11 +575,11 @@ export const EditingInModal: Story = {
                   //
                   containerStyle: {
                     height: '60vh',
-                    width: '80vw'
+                    width: '80vw',
                   },
                   rowSize: {
                     showInControl: true,
-                    default: 'big'
+                    default: 'big',
                   },
                   editing: {
                     defaultEnabled: true,
@@ -599,13 +599,13 @@ export const EditingInModal: Story = {
                     },
                     onRowsChange: setRows,
                     rowKeyGetter: (r) => `${r.id}`,
-                    rowEditable: (r) => r.block !== BLOCKS[1]
+                    rowEditable: (r) => r.block !== BLOCKS[1],
                   },
                   subRows: {
                     getSubRows: (row) => row?.subRows,
-                    rowKeyGetter: (row) => row.id
+                    rowKeyGetter: (row) => row.id,
                   },
-                  resizableColumn: true
+                  resizableColumn: true,
                 }}
                 columnConfig={columns}
                 rows={rows}
@@ -616,5 +616,5 @@ export const EditingInModal: Story = {
         </ModalDF>
       </>
     );
-  }
+  },
 };

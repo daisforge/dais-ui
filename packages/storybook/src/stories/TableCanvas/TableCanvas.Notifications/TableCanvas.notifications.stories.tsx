@@ -7,7 +7,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import {
   type ColumnConfig,
   TableCanvas,
-  type TableNotification
+  type TableNotification,
 } from '@ui-kit/components/TableCanvas';
 import { useMemo, useState } from 'react';
 
@@ -16,9 +16,9 @@ const meta: Meta = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      page: DocStoryTemplate
-    }
-  }
+      page: DocStoryTemplate,
+    },
+  },
 };
 
 export default meta;
@@ -31,26 +31,26 @@ const COLUMNS: readonly ColumnConfig<Row>[] = [
     key: 'task',
     name: 'Задача',
     width: 260,
-    editingCell: { editable: true, component: 'inputString' }
+    editingCell: { editable: true, component: 'inputString' },
   },
   {
     key: 'priority',
     name: 'Приоритет',
     width: 160,
-    editingCell: { editable: true, component: 'inputString' }
+    editingCell: { editable: true, component: 'inputString' },
   },
   {
     key: 'complete',
     name: '% (число)',
     width: 140,
-    editingCell: { editable: true, component: 'inputNumber' }
-  }
+    editingCell: { editable: true, component: 'inputNumber' },
+  },
 ];
 
 const LEVEL_COLOR: Record<TableNotification['level'], string> = {
   error: '#d64545',
   warning: '#c98a00',
-  info: '#3b7dd8'
+  info: '#3b7dd8',
 };
 
 export const Notifications: Story = {
@@ -90,18 +90,18 @@ export const Notifications: Story = {
                   enabled: true,
                   paste: {
                     readonlyBehavior: 'abort',
-                    overflowBehavior: 'abort'
-                  }
+                    overflowBehavior: 'abort',
+                  },
                 },
                 editing: {
                   onRowsChange: setRows,
                   rowKeyGetter: (r) => `${r.id}`,
-                  defaultEnabled: true
+                  defaultEnabled: true,
                 },
                 notifications: {
                   onNotification: (event) =>
-                    setLog((prev) => [event, ...prev].slice(0, 20))
-                }
+                    setLog((prev) => [event, ...prev].slice(0, 20)),
+                },
               }}
               columnConfig={columnConfig}
               rows={rows}
@@ -114,7 +114,7 @@ export const Notifications: Story = {
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                marginBottom: 8
+                marginBottom: 8,
               }}
             >
               <b>Полученные события ({log.length})</b>
@@ -126,7 +126,7 @@ export const Notifications: Story = {
                   borderRadius: 8,
                   border: '1px solid #c7d2e0',
                   background: '#fff',
-                  cursor: 'pointer'
+                  cursor: 'pointer',
                 }}
               >
                 Очистить
@@ -142,7 +142,7 @@ export const Notifications: Story = {
                   borderLeft: `3px solid ${LEVEL_COLOR[event.level]}`,
                   padding: '6px 10px',
                   marginBottom: 6,
-                  background: '#fafbfc'
+                  background: '#fafbfc',
                 }}
               >
                 <div
@@ -157,5 +157,5 @@ export const Notifications: Story = {
         </div>
       </div>
     );
-  }
+  },
 };

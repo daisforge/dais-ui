@@ -10,7 +10,7 @@ import { getRowSelectingInfo } from './selecting-contexts';
  */
 function collectRowIndexes<R>(
   rows: readonly R[],
-  predicate: (row: R, index: number) => boolean
+  predicate: (row: R, index: number) => boolean,
 ): Set<number> | undefined {
   const indexes = new Set<number>();
   rows.forEach((row, index) => {
@@ -25,7 +25,7 @@ function collectRowIndexes<R>(
 
 interface UseCheckboxRowIndexesParams<
   RowType,
-  RowIdType extends string | number
+  RowIdType extends string | number,
 > {
   /** Отображаемые строки грида (их позиции = row-индексы glide). */
   rows: readonly RowType[];
@@ -57,7 +57,7 @@ interface UseCheckboxRowIndexesParams<
  */
 export function useCheckboxRowIndexes<
   RowType,
-  RowIdType extends string | number
+  RowIdType extends string | number,
 >({
   rows,
   rowKeyGetter,
@@ -65,7 +65,7 @@ export function useCheckboxRowIndexes<
   selectingRowConfig,
   flattenedRowsArrAndMap,
   setSelectedRows,
-  isRowsGroupingActive
+  isRowsGroupingActive,
 }: UseCheckboxRowIndexesParams<RowType, RowIdType>) {
   const checkboxSelectedRowIndexes = useMemo(() => {
     if (!rowKeyGetter || !selectedRows?.size || !rows.length) {
@@ -74,7 +74,7 @@ export function useCheckboxRowIndexes<
 
     // Подсвечиваем только реально отображаемые строки грида.
     return collectRowIndexes(rows, (row) =>
-      selectedRows.has(rowKeyGetter(row))
+      selectedRows.has(rowKeyGetter(row)),
     );
   }, [rows, selectedRows, rowKeyGetter]);
 
@@ -93,13 +93,13 @@ export function useCheckboxRowIndexes<
       selectedRows,
       setSelectedRows,
       rowKeyGetter,
-      rowsGroupingIsActive: isRowsGroupingActive
+      rowsGroupingIsActive: isRowsGroupingActive,
     };
 
     return collectRowIndexes(rows, (row) => {
       const { isHaveCheckbox } = getRowSelectingInfo({
         row,
-        ctxs: { selectingRowCtx }
+        ctxs: { selectingRowCtx },
       } as unknown as Parameters<typeof getRowSelectingInfo>[0]);
 
       return isHaveCheckbox;
@@ -111,7 +111,7 @@ export function useCheckboxRowIndexes<
     setSelectedRows,
     flattenedRowsArrAndMap,
     rowKeyGetter,
-    isRowsGroupingActive
+    isRowsGroupingActive,
   ]);
 
   return { checkboxSelectedRowIndexes, checkboxVisibleRowIndexes };

@@ -6,7 +6,7 @@ export type {
   DatePickerPlacementBasic,
   DatePickerProps,
   DatePickerRangePlacement,
-  DatePickerRangeProps
+  DatePickerRangeProps,
 } from '@salutejs/sdds-finai';
 
 export type DatePickerCompProps = ComponentProps<typeof DatePicker>;

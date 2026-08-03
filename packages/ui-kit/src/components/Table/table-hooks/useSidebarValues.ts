@@ -11,17 +11,17 @@ export const useSidebarState = <
   FilterStateType extends ObjectForExtending,
   RowIdType extends string | number,
   RowType extends ObjectForExtending,
-  SummaryRowType = unknown
+  SummaryRowType = unknown,
 >({
   tableConfig,
-  refTableContainer
+  refTableContainer,
 }: {
   tableConfig: TableConfig<RowType, SummaryRowType, RowIdType, FilterStateType>;
   refTableContainer?: React.RefObject<HTMLElement>;
 }) => {
   // FIXME: ширину пока не выносим в конфиг — по дизайну она фиксированная. Открытие управляется через sidebarConfig.
   const internalOpenState = useState(
-    tableConfig.sidebarConfig?.defaultOpen ?? false
+    tableConfig.sidebarConfig?.defaultOpen ?? false,
   );
   const [isOpen, setIsOpen] =
     tableConfig.sidebarConfig?.openState ?? internalOpenState;
@@ -40,6 +40,6 @@ export const useSidebarState = <
     isOpen,
     width,
     toggle,
-    setWidth
+    setWidth,
   };
 };

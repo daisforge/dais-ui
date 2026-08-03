@@ -6,5 +6,5 @@ export { TypographyWithAutoTooltip } from './TypographyWithAutoTooltip';
 export type {
   TypographyWithAutoTooltipComp,
   TypographyWithAutoTooltipCompGeneric,
-  TypographyWithAutoTooltipProps
+  TypographyWithAutoTooltipProps,
 } from './TypographyWithAutoTooltip.types';

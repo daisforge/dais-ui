@@ -1,6 +1,6 @@
 import {
   Breadcrumbs,
-  type BreadcrumbsPropsComp
+  type BreadcrumbsPropsComp,
 } from '@ui-kit/components/Breadcrumbs';
 import { IconButton } from '@ui-kit/components/IconButton';
 import { TypographyWithAutoTooltip } from '@ui-kit/components/Typography';
@@ -20,11 +20,11 @@ import {
   StyledSubtitle,
   StyledTitle,
   StyledTitleBlock,
-  StyledTitleSlot
+  StyledTitleSlot,
 } from './PageTitle.styled';
 import type {
   PageTitleIconButtonProps,
-  PageTitleProps
+  PageTitleProps,
 } from './PageTitle.types';
 import { getPageTitleSlotSizes, renderPageTitleSlot } from './utils';
 
@@ -50,7 +50,7 @@ const PageTitleBackIconButton = ({
 );
 
 const PageTitleBreadcrumbs = ({
-  breadcrumbs
+  breadcrumbs,
 }: {
   breadcrumbs: PageTitleProps['breadcrumbs'];
 }) => {
@@ -58,7 +58,7 @@ const PageTitleBreadcrumbs = ({
 
   const breadcrumbsProps: BreadcrumbsPropsComp = {
     size: 'm',
-    ...breadcrumbs
+    ...breadcrumbs,
   };
 
   return (
@@ -70,7 +70,7 @@ const PageTitleBreadcrumbs = ({
 
 const PageTitleHeading = ({
   title,
-  titleTypographyProps
+  titleTypographyProps,
 }: {
   title: PageTitleProps['title'];
   titleTypographyProps?: PageTitleProps['titleTypographyProps'];
@@ -97,7 +97,7 @@ const PageTitleHeading = ({
 
 const PageTitleSubtitle = ({
   subtitle,
-  subtitleTypographyProps
+  subtitleTypographyProps,
 }: {
   subtitle: PageTitleProps['subtitle'];
   subtitleTypographyProps?: PageTitleProps['subtitleTypographyProps'];
@@ -153,7 +153,7 @@ export const PageTitle = forwardRef<
       onBackClick,
       ...rest
     },
-    ref
+    ref,
   ) => {
     const { down } = useBreakpoint();
     const isAdaptive1280 = !disableMediaAdaptive && down('xl');
@@ -201,7 +201,7 @@ export const PageTitle = forwardRef<
         </StyledContent>
       </StyledRoot>
     );
-  }
+  },
 );
 
 PageTitle.displayName = 'PageTitle';

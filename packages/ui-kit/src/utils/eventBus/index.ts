@@ -4,6 +4,6 @@ export type {
   EventBusEvent,
   EventBusEventHandler,
   EventBusEventPayload,
-  EventBusSubscription
+  EventBusSubscription,
 } from './types';
 export { useEventBus } from './useEventBus';

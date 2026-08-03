@@ -6,7 +6,7 @@ import styled, { css } from 'styled-components';
 import { CONTAINER_CLASSES, CONTAINER_DEFAULTS } from './Container.constants';
 import {
   IStyledContainerWrapperProps,
-  IStyledSplitContainerWrapperProps
+  IStyledSplitContainerWrapperProps,
 } from './Container.types';
 import { getGridTemplate } from './lib/utils';
 
@@ -29,7 +29,7 @@ export const StyledContainerWrapper = styled(Box)<IStyledContainerWrapperProps>`
  * Стили для split-контейнера
  */
 export const StyledSplitContainerWrapper = styled(
-  Box
+  Box,
 )<IStyledSplitContainerWrapperProps>`
   --container-min-col-width: ${({ $minColWidth }) =>
     $minColWidth ?? CONTAINER_DEFAULTS.MIN_COL_WIDTH};

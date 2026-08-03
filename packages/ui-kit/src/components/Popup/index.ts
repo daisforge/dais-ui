@@ -1,11 +1,11 @@
 export type {
   PopupInfo,
   PopupPlacement,
-  PopupProps
+  PopupProps,
 } from '@salutejs/sdds-finai';
 export {
   popupClasses,
   PopupProvider,
-  usePopupContext
+  usePopupContext,
 } from '@salutejs/sdds-finai';
 export { Popup } from '@salutejs/sdds-finai';

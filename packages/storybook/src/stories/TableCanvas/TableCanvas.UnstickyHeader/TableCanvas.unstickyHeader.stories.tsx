@@ -6,7 +6,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import {
   ColumnConfig,
   ColumnOrColumnGroupConfig,
-  TableCanvas
+  TableCanvas,
 } from '@ui-kit/components/TableCanvas';
 import React, { useMemo, useState } from 'react';
 
@@ -15,9 +15,9 @@ const meta: Meta = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      page: DocStoryTemplate
-    }
-  }
+      page: DocStoryTemplate,
+    },
+  },
 };
 
 export default meta;
@@ -29,7 +29,7 @@ import { ColumnConfig, TableCanvas } from '@daisforge/ui/components/TableCanvas'
 export const SimpleUnstickyHeader: StoryObj = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   name: 'Simple (без группировки)',
   render: () => {
@@ -39,45 +39,45 @@ export const SimpleUnstickyHeader: StoryObj = {
       () => [
         {
           key: 'id',
-          name: 'ID'
+          name: 'ID',
         },
         {
           key: 'task',
-          name: 'Title'
+          name: 'Title',
         },
         {
           key: 'priority',
-          name: 'Priority'
+          name: 'Priority',
         },
         {
           key: 'issueType',
-          name: 'Issue Type'
+          name: 'Issue Type',
         },
         {
           key: 'complete',
-          name: '% Complete'
-        }
+          name: '% Complete',
+        },
       ],
-      []
+      [],
     );
 
     return (
       <TableCanvas
         tableConfig={{
           unstickyHeader: true,
-          containerStyle: { height: '70vh' }
+          containerStyle: { height: '70vh' },
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };
 
 export const WithColumnGroups: StoryObj = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   name: 'С группировкой колонок',
   render: () => {
@@ -91,13 +91,13 @@ export const WithColumnGroups: StoryObj = {
           children: [
             {
               key: 'id',
-              name: 'ID'
+              name: 'ID',
             },
             {
               key: 'task',
-              name: 'Title'
-            }
-          ]
+              name: 'Title',
+            },
+          ],
         },
         {
           key: 'group-details',
@@ -105,33 +105,33 @@ export const WithColumnGroups: StoryObj = {
           children: [
             {
               key: 'priority',
-              name: 'Priority'
+              name: 'Priority',
             },
             {
               key: 'issueType',
-              name: 'Issue Type'
+              name: 'Issue Type',
             },
             {
               key: 'complete',
-              name: '% Complete'
-            }
-          ]
-        }
+              name: '% Complete',
+            },
+          ],
+        },
       ],
-      []
+      [],
     );
 
     return (
       <TableCanvas
         tableConfig={{
           unstickyHeader: true,
-          containerStyle: { height: '70vh' }
+          containerStyle: { height: '70vh' },
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };
 
 export const WithMultiLevelGroups: StoryObj<{
@@ -139,25 +139,25 @@ export const WithMultiLevelGroups: StoryObj<{
 }> = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   name: 'Многоуровневая группировка',
   args: {
-    headerTreeLvl: 'lvl3'
+    headerTreeLvl: 'lvl3',
   },
   argTypes: {
     headerTreeLvl: {
       description: 'Уровни вложенности шапки таблицы',
       control: { type: 'radio' },
-      options: Object.keys(dataObj)
-    }
+      options: Object.keys(dataObj),
+    },
   },
   render: ({ headerTreeLvl }) => {
     const [rows] = useState(createRows);
 
     const columnConfig = useMemo<readonly ColumnOrColumnGroupConfig<Row>[]>(
       () => [...(dataObj[headerTreeLvl] ?? [])],
-      [headerTreeLvl]
+      [headerTreeLvl],
     );
 
     return (
@@ -165,19 +165,19 @@ export const WithMultiLevelGroups: StoryObj<{
         key={headerTreeLvl}
         tableConfig={{
           unstickyHeader: true,
-          containerStyle: { height: '70vh' }
+          containerStyle: { height: '70vh' },
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };
 
 export const StickyVsUnstickyComparison: StoryObj = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   name: 'Сравнение sticky vs unsticky',
   render: () => {
@@ -191,13 +191,13 @@ export const StickyVsUnstickyComparison: StoryObj = {
           children: [
             {
               key: 'id',
-              name: 'ID'
+              name: 'ID',
             },
             {
               key: 'task',
-              name: 'Title'
-            }
-          ]
+              name: 'Title',
+            },
+          ],
         },
         {
           key: 'group-details',
@@ -205,16 +205,16 @@ export const StickyVsUnstickyComparison: StoryObj = {
           children: [
             {
               key: 'priority',
-              name: 'Priority'
+              name: 'Priority',
             },
             {
               key: 'complete',
-              name: '% Complete'
-            }
-          ]
-        }
+              name: '% Complete',
+            },
+          ],
+        },
       ],
-      []
+      [],
     );
 
     return (
@@ -223,7 +223,7 @@ export const StickyVsUnstickyComparison: StoryObj = {
           <h3 style={{ marginBottom: 8 }}>Sticky (по умолчанию)</h3>
           <TableCanvas
             tableConfig={{
-              containerStyle: { height: '60vh' }
+              containerStyle: { height: '60vh' },
             }}
             columnConfig={columnConfig}
             rows={rows}
@@ -234,7 +234,7 @@ export const StickyVsUnstickyComparison: StoryObj = {
           <TableCanvas
             tableConfig={{
               unstickyHeader: true,
-              containerStyle: { height: '60vh' }
+              containerStyle: { height: '60vh' },
             }}
             columnConfig={columnConfig}
             rows={rows}
@@ -242,5 +242,5 @@ export const StickyVsUnstickyComparison: StoryObj = {
         </div>
       </div>
     );
-  }
+  },
 };

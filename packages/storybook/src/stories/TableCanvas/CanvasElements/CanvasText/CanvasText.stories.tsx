@@ -4,7 +4,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import {
   Canvas,
   ColumnConfig,
-  TableCanvas
+  TableCanvas,
 } from '@ui-kit/components/TableCanvas';
 import { IconSearch } from '@ui-kit/icons';
 import React, { useMemo } from 'react';
@@ -37,49 +37,49 @@ const rows: CanvasTextRow[] = [
     id: 1,
     longText: [
       'Очень длинный русский текст переносится на несколько строк внутри узкой canvas-ячейки.',
-      'При maxLines нужно показать только разрешенное количество строк и поставить многоточие в конце последней видимой строки.'
+      'При maxLines нужно показать только разрешенное количество строк и поставить многоточие в конце последней видимой строки.',
     ].join(' '),
     iconText: [
       'Длинное значение рядом с иконкой поиска должно занимать оставшееся место',
-      'и не налезать на правый графический элемент.'
+      'и не налезать на правый графический элемент.',
     ].join(' '),
     shortText: 'Короткий текст помещается полностью',
     unicode: [
       'Unicode и emoji 👨‍👩‍👧‍👦 🇷🇺 café должны обрезаться без разрыва видимых символов.',
-      'Последняя строка получает аккуратный ellipsis.'
-    ].join(' ')
+      'Последняя строка получает аккуратный ellipsis.',
+    ].join(' '),
   },
   {
     id: 2,
     longText: [
       'Табличная ячейка может содержать длинное описание на русском языке,',
-      'которое пользователь ожидает увидеть в одну или две строки без налезания на соседние колонки.'
+      'которое пользователь ожидает увидеть в одну или две строки без налезания на соседние колонки.',
     ].join(' '),
     iconText: [
       'Значение статуса операции длиннее доступной области,',
-      'но иконка справа должна оставаться видимой.'
+      'но иконка справа должна оставаться видимой.',
     ].join(' '),
     shortText: 'Две короткие строки',
-    unicode: 'Короткий Unicode 👋 помещается'
+    unicode: 'Короткий Unicode 👋 помещается',
   },
   {
     id: 3,
     longText: [
       'Select-like trigger оставляет справа место под управляющие элементы.',
-      'Текст переносится и clamp-ится внутри своей области, не уходя под иконку.'
+      'Текст переносится и clamp-ится внутри своей области, не уходя под иконку.',
     ].join(' '),
     iconText: [
       'Поиск по контрагентам возвращает длинное название,',
-      'которое нужно показать рядом с иконкой без визуального конфликта.'
+      'которое нужно показать рядом с иконкой без визуального конфликта.',
     ].join(' '),
     shortText: 'Без обрезки',
-    unicode: 'Комбинируемые символы: З͑͗͒ӓ́͐м̈́͋е͑͝т́͗к͂̈́а͆͝ проверяют grapheme split'
-  }
+    unicode: 'Комбинируемые символы: З͑͗͒ӓ́͐м̈́͋е͑͝т́͗к͂̈́а͆͝ проверяют grapheme split',
+  },
 ];
 
 const meta: Meta = {
   title: 'Локальные компоненты/TableCanvas/CanvasElements/CanvasText',
-  tags: ['!autodocs']
+  tags: ['!autodocs'],
 };
 
 export default meta;
@@ -137,7 +137,7 @@ export const Default: StoryObj = {
     textOverflow: 'ellipsis',
     ellipsis: '…',
     maxLines: 2,
-    lineHeight: 1.2
+    lineHeight: 1.2,
   },
   argTypes: {
     text: { control: 'text' },
@@ -146,19 +146,19 @@ export const Default: StoryObj = {
     wordWrap: { control: 'boolean' },
     overflow: {
       control: 'radio',
-      options: ['visible', 'hidden']
+      options: ['visible', 'hidden'],
     },
     textOverflow: {
       control: 'radio',
-      options: ['ellipsis', 'clip']
+      options: ['ellipsis', 'clip'],
     },
     ellipsis: { control: 'text' },
     maxLines: {
-      control: { type: 'number', min: 0, step: 1 }
+      control: { type: 'number', min: 0, step: 1 },
     },
     lineHeight: {
-      control: { type: 'number', min: 1, max: 2, step: 0.1 }
-    }
+      control: { type: 'number', min: 1, max: 2, step: 0.1 },
+    },
   },
   ...storySourceDoc({ code: canvasTextCode, previewSource: 'shown' }),
   render: (args) => {
@@ -171,7 +171,7 @@ export const Default: StoryObj = {
       textOverflow,
       ellipsis,
       maxLines,
-      lineHeight
+      lineHeight,
     } = args as CanvasTextStoryArgs;
     const resolvedMaxLines = maxLines > 0 ? maxLines : undefined;
 
@@ -194,13 +194,13 @@ export const Default: StoryObj = {
                 lineHeight={lineHeight}
                 style={{ flexGrow: 1 }}
                 autoTooltip={{
-                  enabled: true
+                  enabled: true,
                 }}
               >
                 {row.id === 1 ? text : row.longText}
               </Canvas.Text>
             </Canvas.Container>
-          )
+          ),
         },
         {
           key: 'iconText',
@@ -234,7 +234,7 @@ export const Default: StoryObj = {
                 style={{ flexShrink: 0 }}
               />
             </Canvas.Container>
-          )
+          ),
         },
         {
           key: 'shortText',
@@ -256,7 +256,7 @@ export const Default: StoryObj = {
                 {row.shortText}
               </Canvas.Text>
             </Canvas.Container>
-          )
+          ),
         },
         {
           key: 'unicode',
@@ -278,8 +278,8 @@ export const Default: StoryObj = {
                 {row.unicode}
               </Canvas.Text>
             </Canvas.Container>
-          )
-        }
+          ),
+        },
       ],
       [
         text,
@@ -290,21 +290,21 @@ export const Default: StoryObj = {
         textOverflow,
         ellipsis,
         resolvedMaxLines,
-        lineHeight
-      ]
+        lineHeight,
+      ],
     );
 
     return (
       <TableCanvas
         tableConfig={{
           containerStyle: { height: '320px' },
-          rowHeight: () => 72
+          rowHeight: () => 72,
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };
 
 type CanvasTextTreeRow = {
@@ -333,9 +333,9 @@ const treeEllipsisRows: CanvasTextTreeRow[] = [
         id: '1-1',
         shortName: 'Дочерняя роль',
         departPath:
-          'Территориальный банк / ГОСБ / ВСП / Еще одно очень длинное подразделение для проверки ellipsis / Финальный отдел сопровождения'
-      }
-    ]
+          'Территориальный банк / ГОСБ / ВСП / Еще одно очень длинное подразделение для проверки ellipsis / Финальный отдел сопровождения',
+      },
+    ],
   },
   {
     id: '2',
@@ -347,17 +347,17 @@ const treeEllipsisRows: CanvasTextTreeRow[] = [
         id: '2-1',
         shortName: 'Заместитель руководителя',
         departPath:
-          'Территориальный банк / Аппарат ТБ / Еще более длинная организационная цепочка / Подразделение методологии и контроля'
-      }
-    ]
-  }
+          'Территориальный банк / Аппарат ТБ / Еще более длинная организационная цепочка / Подразделение методологии и контроля',
+      },
+    ],
+  },
 ];
 
 // Регрессия: встроенный шеврон не должен ломать ellipsis.
 export const BuiltInTreeChevronEllipsisRegression: StoryObj = {
   ...storySourceDoc({
     preCode: treeChevronEllipsisPreCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   name: 'Canvas.Text / built-in tree chevron ellipsis',
   render: () => {
@@ -366,14 +366,14 @@ export const BuiltInTreeChevronEllipsisRegression: StoryObj = {
     >(() => {
       const renderCellContent = (
         row: CanvasTextTreeRow,
-        theme: CanvasTextTreeCellTheme
+        theme: CanvasTextTreeCellTheme,
       ) => (
         <Canvas.Container
           direction="column"
           gap={10}
           padding={{ top: theme.cellVerticalPadding }}
           style={{
-            width: '100%'
+            width: '100%',
           }}
         >
           <Canvas.Link>{row.shortName}</Canvas.Link>
@@ -396,11 +396,11 @@ export const BuiltInTreeChevronEllipsisRegression: StoryObj = {
 
       const renderSubRowCell: CanvasTextTreeSubRowRenderCell = ({
         row,
-        theme
+        theme,
       }) =>
         renderCellContent(
           row as CanvasTextTreeRow,
-          theme as CanvasTextTreeCellTheme
+          theme as CanvasTextTreeCellTheme,
         );
 
       return [
@@ -411,9 +411,9 @@ export const BuiltInTreeChevronEllipsisRegression: StoryObj = {
           renderCell,
           subRow: {
             isColumnWithArrow: true,
-            renderSubRowCell
-          }
-        }
+            renderSubRowCell,
+          },
+        },
       ];
     }, []);
 
@@ -424,21 +424,21 @@ export const BuiltInTreeChevronEllipsisRegression: StoryObj = {
           rowHeight: () => 72,
           subRows: {
             getSubRows: (row) => row.subRows,
-            rowKeyGetter: (row) => row.id
-          }
+            rowKeyGetter: (row) => row.id,
+          },
         }}
         columnConfig={columnConfig}
         rows={treeEllipsisRows}
       />
     );
-  }
+  },
 };
 
 // Регрессия: две строки тоже должны ограничиваться шириной после шеврона.
 export const BuiltInTreeChevronTwoLineEllipsisRegression: StoryObj = {
   ...storySourceDoc({
     preCode: treeChevronEllipsisPreCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   name: 'Canvas.Text / built-in tree chevron two-line ellipsis',
   render: () => {
@@ -447,14 +447,14 @@ export const BuiltInTreeChevronTwoLineEllipsisRegression: StoryObj = {
     >(() => {
       const renderCellContent = (
         row: CanvasTextTreeRow,
-        theme: CanvasTextTreeCellTheme
+        theme: CanvasTextTreeCellTheme,
       ) => (
         <Canvas.Container
           direction="column"
           gap={10}
           padding={{ top: theme.cellVerticalPadding }}
           style={{
-            width: '100%'
+            width: '100%',
           }}
         >
           <Canvas.Link>{row.shortName}</Canvas.Link>
@@ -477,11 +477,11 @@ export const BuiltInTreeChevronTwoLineEllipsisRegression: StoryObj = {
 
       const renderSubRowCell: CanvasTextTreeSubRowRenderCell = ({
         row,
-        theme
+        theme,
       }) =>
         renderCellContent(
           row as CanvasTextTreeRow,
-          theme as CanvasTextTreeCellTheme
+          theme as CanvasTextTreeCellTheme,
         );
 
       return [
@@ -492,9 +492,9 @@ export const BuiltInTreeChevronTwoLineEllipsisRegression: StoryObj = {
           renderCell,
           subRow: {
             isColumnWithArrow: true,
-            renderSubRowCell
-          }
-        }
+            renderSubRowCell,
+          },
+        },
       ];
     }, []);
 
@@ -505,12 +505,12 @@ export const BuiltInTreeChevronTwoLineEllipsisRegression: StoryObj = {
           rowHeight: () => 96,
           subRows: {
             getSubRows: (row) => row.subRows,
-            rowKeyGetter: (row) => row.id
-          }
+            rowKeyGetter: (row) => row.id,
+          },
         }}
         columnConfig={columnConfig}
         rows={treeEllipsisRows}
       />
     );
-  }
+  },
 };

@@ -11,10 +11,10 @@ const meta: Meta = {
   title: 'Локальные компоненты/Table/Sorting/Simple',
   parameters: {
     docs: {
-      page: DocStoryTemplate
-    }
+      page: DocStoryTemplate,
+    },
   },
-  tags: ['!autodocs']
+  tags: ['!autodocs'],
 };
 
 export default meta;
@@ -43,7 +43,7 @@ type Story = StoryObj;
 export const Sorting: Story = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     const [rows] = useState(createRows);
@@ -54,12 +54,12 @@ export const Sorting: Story = {
           key: 'id',
           name: 'ID',
 
-          sortingType: 'numberSort'
+          sortingType: 'numberSort',
         },
         {
           key: 'task',
           name: 'Title',
-          sortingType: 'stringSort'
+          sortingType: 'stringSort',
         },
         {
           key: 'priority',
@@ -70,26 +70,26 @@ export const Sorting: Story = {
               Critical: 2,
               High: 3,
               Medium: 4,
-              Low: 5
+              Low: 5,
             };
             const aValue = values[a.priority as keyof typeof values] ?? 0;
             const bValue = values[b.priority as keyof typeof values] ?? 0;
             return aValue - bValue;
-          }
+          },
         },
         {
           key: 'issueType',
           name: 'Issue Type',
-          sortingType: 'stringSort'
+          sortingType: 'stringSort',
         },
         {
           key: 'complete',
           name: '% Complete',
 
-          sortingType: 'numberSort'
-        }
+          sortingType: 'numberSort',
+        },
       ],
-      []
+      [],
     );
 
     const sortingStateAndSetter = useState<readonly SortColumn[]>([]);
@@ -99,12 +99,12 @@ export const Sorting: Story = {
         tableConfig={{
           containerStyle: { height: '700px' },
           sorting: {
-            state: sortingStateAndSetter
-          }
+            state: sortingStateAndSetter,
+          },
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };

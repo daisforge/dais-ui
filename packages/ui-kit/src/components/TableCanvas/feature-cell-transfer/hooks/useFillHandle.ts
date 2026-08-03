@@ -5,7 +5,7 @@ import { useCallback, useMemo, useState } from 'react';
 
 import {
   notifications,
-  type TableNotification
+  type TableNotification,
 } from '../../feature-notifications';
 import type { ObjectForExtending } from '../../types/utils.type';
 import type {
@@ -15,7 +15,7 @@ import type {
   FillMeta,
   FillPatternEvent,
   RowsChangeType,
-  TransferColumnConfig
+  TransferColumnConfig,
 } from '../types';
 import { applyValuesToRows } from '../utils/applyValuesToRows';
 import { collectTextMatrix } from '../utils/collectTextMatrix';
@@ -33,7 +33,7 @@ const DEFAULT_FILL_CONFIG: Required<
 > = {
   allowedDirections: 'orthogonal',
   readonlyBehavior: 'skip',
-  allowSubRows: true
+  allowSubRows: true,
 };
 
 interface UseFillHandleParams<R extends ObjectForExtending> {
@@ -52,7 +52,7 @@ interface UseFillHandleParams<R extends ObjectForExtending> {
       type: RowsChangeType;
       fillMeta?: FillMeta;
       fillResult?: string[][];
-    }
+    },
   ) => void;
   onNotification?: (event: TableNotification) => void;
 }
@@ -78,7 +78,7 @@ export function useFillHandle<R extends ObjectForExtending>({
   rowContextValue,
   headerContextValue,
   onRowsChange,
-  onNotification
+  onNotification,
 }: UseFillHandleParams<R>) {
   const [sourceCellEditable, setSourceCellEditable] = useState(true);
 
@@ -98,7 +98,7 @@ export function useFillHandle<R extends ObjectForExtending>({
       }
       setSourceCellEditable(isCellEditable(column, row));
     },
-    [columns, flattenedRows]
+    [columns, flattenedRows],
   );
 
   const { enabled, fillHandleStyle, resolvedConfig } = useMemo(() => {
@@ -111,7 +111,7 @@ export function useFillHandle<R extends ObjectForExtending>({
         fillHandleStyle: false as
           | boolean
           | Pick<FillHandleConfig, 'shape' | 'size' | 'outline'>,
-        resolvedConfig: DEFAULT_FILL_CONFIG
+        resolvedConfig: DEFAULT_FILL_CONFIG,
       };
     }
 
@@ -121,7 +121,7 @@ export function useFillHandle<R extends ObjectForExtending>({
         fillHandleStyle: true as
           | boolean
           | Pick<FillHandleConfig, 'shape' | 'size' | 'outline'>,
-        resolvedConfig: DEFAULT_FILL_CONFIG
+        resolvedConfig: DEFAULT_FILL_CONFIG,
       };
     }
 
@@ -131,7 +131,7 @@ export function useFillHandle<R extends ObjectForExtending>({
         fillHandleStyle: false as
           | boolean
           | Pick<FillHandleConfig, 'shape' | 'size' | 'outline'>,
-        resolvedConfig: DEFAULT_FILL_CONFIG
+        resolvedConfig: DEFAULT_FILL_CONFIG,
       };
     }
 
@@ -151,8 +151,8 @@ export function useFillHandle<R extends ObjectForExtending>({
           raw.allowedDirections ?? DEFAULT_FILL_CONFIG.allowedDirections,
         readonlyBehavior:
           raw.readonlyBehavior ?? DEFAULT_FILL_CONFIG.readonlyBehavior,
-        allowSubRows: raw.allowSubRows ?? DEFAULT_FILL_CONFIG.allowSubRows
-      }
+        allowSubRows: raw.allowSubRows ?? DEFAULT_FILL_CONFIG.allowSubRows,
+      },
     };
   }, [cellTransferConfig, editModeEnabled]);
 
@@ -175,7 +175,7 @@ export function useFillHandle<R extends ObjectForExtending>({
         source,
         columns,
         flattenedRows,
-        { withCells: true }
+        { withCells: true },
       );
 
       if (sourceValues.length === 0 || sourceValues[0]?.length === 0) {
@@ -187,14 +187,14 @@ export function useFillHandle<R extends ObjectForExtending>({
         dest,
         columns,
         flattenedRows,
-        { withCells: true }
+        { withCells: true },
       );
 
       const fillMeta: FillMeta = {
         sourceRange: source,
         destinationRange: dest,
         sourceCells,
-        targetCells
+        targetCells,
       };
 
       let fillValues = sourceValues;
@@ -224,7 +224,7 @@ export function useFillHandle<R extends ObjectForExtending>({
         affectedIndexes,
         firstAffectedColumn,
         skippedByValidation,
-        aborted
+        aborted,
       } = applyValuesToRows({
         rows: flattenedRows,
         columns,
@@ -243,7 +243,7 @@ export function useFillHandle<R extends ObjectForExtending>({
         // Fill всегда валидирует значения по типу колонки.
         validation: 'type-check',
         validateContexts: cellContexts,
-        source
+        source,
       });
 
       if (aborted) {
@@ -255,13 +255,13 @@ export function useFillHandle<R extends ObjectForExtending>({
       if (skippedByValidation.length > 0) {
         clipboardDebug(PFX, 'пропущено валидацией', skippedByValidation);
         onNotification?.(
-          notifications.fillValidationSkipped(skippedByValidation.length)
+          notifications.fillValidationSkipped(skippedByValidation.length),
         );
       }
 
       clipboardDebug(PFX, 'заполнение завершено', {
         affectedIndexes,
-        firstAffectedColumnKey: firstAffectedColumn?.key
+        firstAffectedColumnKey: firstAffectedColumn?.key,
       });
 
       if (affectedIndexes.length === 0 || !firstAffectedColumn) return;
@@ -271,7 +271,7 @@ export function useFillHandle<R extends ObjectForExtending>({
         indexes: affectedIndexes,
         type: 'fill',
         fillMeta,
-        fillResult
+        fillResult,
       });
     },
     [
@@ -283,8 +283,8 @@ export function useFillHandle<R extends ObjectForExtending>({
       rowContextValue,
       headerContextValue,
       cellTransferConfig,
-      onNotification
-    ]
+      onNotification,
+    ],
   );
 
   const fillHandleProps = useMemo(() => {
@@ -298,14 +298,14 @@ export function useFillHandle<R extends ObjectForExtending>({
       fillHandle: effectiveFillHandle,
       allowedFillDirections:
         resolvedConfig.allowedDirections as AllowedFillDirections,
-      onFillPattern: handleFillPattern
+      onFillPattern: handleFillPattern,
     };
   }, [
     enabled,
     fillHandleStyle,
     resolvedConfig,
     handleFillPattern,
-    sourceCellEditable
+    sourceCellEditable,
   ]);
 
   return { fillHandleProps, onSelectionChangeForFill };

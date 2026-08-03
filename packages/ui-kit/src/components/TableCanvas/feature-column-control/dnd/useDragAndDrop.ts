@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 export const useDragAndDrop = ({
   columnsOrder,
   onColumnsReorder,
-  setDroppedAsHovered
+  setDroppedAsHovered,
 }: {
   columnsOrder: string[];
   onColumnsReorder: (sourceKey: string, targetKey: string) => void;
@@ -13,7 +13,7 @@ export const useDragAndDrop = ({
 
   const [draggingOverId, setDraggingOverId] = useState('');
   const [borderPlacement, setBorderPlacement] = useState<'top' | 'bottom'>(
-    'bottom'
+    'bottom',
   );
 
   const handleDragging = (draggingId: string) => setDraggingId(draggingId);
@@ -73,6 +73,6 @@ export const useDragAndDrop = ({
     handleDragStart,
     handleDragEnd,
     handleDragOver,
-    handleDrop
+    handleDrop,
   };
 };

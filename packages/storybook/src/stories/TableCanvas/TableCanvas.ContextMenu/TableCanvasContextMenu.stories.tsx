@@ -15,9 +15,9 @@ const meta: Meta = {
   parameters: {
     docs: {
       // page is not needed here as we will link it via autodocs or mdx
-    }
+    },
   },
-  tags: ['!autodocs']
+  tags: ['!autodocs'],
 };
 
 export default meta;
@@ -33,9 +33,9 @@ function ExampleHeaderDropdown() {
       { key: 'issueType', name: 'Issue Type' },
       { key: 'developer', name: 'Developer' },
       { key: 'tr1', name: 'TR' },
-      { key: 'complete', name: '% Complete' }
+      { key: 'complete', name: '% Complete' },
     ],
-    []
+    [],
   );
 
   return (
@@ -50,14 +50,14 @@ function ExampleHeaderDropdown() {
               items: [
                 {
                   value: `lvl1_inside ${column.key}`,
-                  label: `${column.key} lvl1 inside`
-                }
-              ]
+                  label: `${column.key} lvl1 inside`,
+                },
+              ],
             },
             {
               value: `lvl2 ${column.key}`,
-              label: `${column.key} lvl2`
-            }
+              label: `${column.key} lvl2`,
+            },
           ],
           onItemSelect: (item, context, event) => {
             console.group('onItemSelect for onHeaderContextMenuDropdown');
@@ -65,16 +65,16 @@ function ExampleHeaderDropdown() {
             console.debug(context, 'context');
             console.debug(event, 'event');
             console.groupEnd();
-          }
+          },
         },
         onHeaderContextMenu: (colIndex, event, tableInfo) => {
           console.debug(
             'Логика внешнего onHeaderContextMenu',
             colIndex,
             event,
-            tableInfo
+            tableInfo,
           );
-        }
+        },
       }}
       columnConfig={columnConfig}
       rows={rows}
@@ -93,16 +93,16 @@ function ExampleHeaderHandler() {
       { key: 'issueType', name: 'Issue Type' },
       { key: 'developer', name: 'Developer' },
       { key: 'tr1', name: 'TR' },
-      { key: 'complete', name: '% Complete' }
+      { key: 'complete', name: '% Complete' },
     ],
-    []
+    [],
   );
 
   return (
     <TableCanvas
       tableConfig={{
         onHeaderContextMenu: (colIndex, event, context) =>
-          console.debug(colIndex, event, context)
+          console.debug(colIndex, event, context),
       }}
       columnConfig={columnConfig}
       rows={rows}
@@ -121,9 +121,9 @@ function ExampleCellDropdown() {
       { key: 'issueType', name: 'Issue Type' },
       { key: 'developer', name: 'Developer' },
       { key: 'tr1', name: 'TR' },
-      { key: 'complete', name: '% Complete' }
+      { key: 'complete', name: '% Complete' },
     ],
-    []
+    [],
   );
 
   return (
@@ -135,7 +135,7 @@ function ExampleCellDropdown() {
             console.debug(
               column,
               row,
-              'getDropdownItems for onCellContextMenuDropdown'
+              'getDropdownItems for onCellContextMenuDropdown',
             );
             return [
               {
@@ -144,14 +144,14 @@ function ExampleCellDropdown() {
                 items: [
                   {
                     value: `lvl1_inside ${column.name}`,
-                    label: `${column.name} lvl1 inside`
-                  }
-                ]
+                    label: `${column.name} lvl1 inside`,
+                  },
+                ],
               },
               {
                 value: `lvl2 ${column.name}`,
-                label: `${column.name} lvl2`
-              }
+                label: `${column.name} lvl2`,
+              },
             ];
           },
           onItemSelect: (item, context, event) => {
@@ -163,8 +163,8 @@ function ExampleCellDropdown() {
             // Пример вызова каких-то действий
             // eslint-disable-next-line no-alert
             alert(`Selected ${item.label} for row ${context.row.id}`);
-          }
-        }
+          },
+        },
       }}
       columnConfig={columnConfig}
       rows={rows}
@@ -183,9 +183,9 @@ function ExampleCellHandler() {
       { key: 'issueType', name: 'Issue Type' },
       { key: 'developer', name: 'Developer' },
       { key: 'tr1', name: 'TR' },
-      { key: 'complete', name: '% Complete' }
+      { key: 'complete', name: '% Complete' },
     ],
-    []
+    [],
   );
 
   return (
@@ -193,7 +193,7 @@ function ExampleCellHandler() {
       tableConfig={{
         onCellContextMenu: (args, event, context) => {
           console.debug(args, event, context, 'onCellContextMenu');
-        }
+        },
       }}
       columnConfig={columnConfig}
       rows={rows}
@@ -212,9 +212,9 @@ function ExampleAllFeatures() {
       { key: 'issueType', name: 'Issue Type' },
       { key: 'developer', name: 'Developer' },
       { key: 'tr1', name: 'TR' },
-      { key: 'complete', name: '% Complete' }
+      { key: 'complete', name: '% Complete' },
     ],
-    []
+    [],
   );
 
   return (
@@ -232,14 +232,14 @@ function ExampleAllFeatures() {
               items: [
                 {
                   value: `lvl1_inside ${column.name}`,
-                  label: `${column.name} lvl1 inside`
-                }
-              ]
+                  label: `${column.name} lvl1 inside`,
+                },
+              ],
             },
             {
               value: `lvl2 ${column.name}`,
-              label: `${column.name} lvl2`
-            }
+              label: `${column.name} lvl2`,
+            },
           ],
           onItemSelect: (item, context, event) => {
             console.group('onItemSelect for onCellContextMenuDropdown');
@@ -247,7 +247,7 @@ function ExampleAllFeatures() {
             console.debug(context, 'context');
             console.debug(event, 'event');
             console.groupEnd();
-          }
+          },
         },
         onHeaderContextMenu: (colIndex, event, context) =>
           console.debug(colIndex, event, context),
@@ -260,14 +260,14 @@ function ExampleAllFeatures() {
               items: [
                 {
                   value: `lvl1_inside ${column.name}`,
-                  label: `${column.name} lvl1 inside`
-                }
-              ]
+                  label: `${column.name} lvl1 inside`,
+                },
+              ],
             },
             {
               value: `lvl2 ${column.name}`,
-              label: `${column.name} lvl2`
-            }
+              label: `${column.name} lvl2`,
+            },
           ],
           onItemSelect: (item, context, event) => {
             console.group('onItemSelect for onHeaderContextMenuDropdown');
@@ -275,8 +275,8 @@ function ExampleAllFeatures() {
             console.debug(context, 'context');
             console.debug(event, 'event');
             console.groupEnd();
-          }
-        }
+          },
+        },
       }}
       columnConfig={columnConfig}
       rows={rows}
@@ -296,9 +296,9 @@ function ExampleCustomDropdownProps() {
       { key: 'issueType', name: 'Issue Type' },
       { key: 'developer', name: 'Developer' },
       { key: 'tr1', name: 'TR' },
-      { key: 'complete', name: '% Complete' }
+      { key: 'complete', name: '% Complete' },
     ],
-    []
+    [],
   );
 
   return (
@@ -313,24 +313,24 @@ function ExampleCustomDropdownProps() {
           getDropdownItems: ({ column, row }) => [
             {
               value: 'clone',
-              label: `Клонировать "${row.task}"`
+              label: `Клонировать "${row.task}"`,
             },
             {
               value: 'edit',
-              label: 'Редактировать'
+              label: 'Редактировать',
             },
             {
               value: 'nested',
               label: 'Вложенные действия',
               items: [
                 { value: 'nested_1', label: 'Действие 1' },
-                { value: 'nested_2', label: 'Действие 2' }
-              ]
+                { value: 'nested_2', label: 'Действие 2' },
+              ],
             },
             {
               value: 'delete',
-              label: 'Удалить'
-            }
+              label: 'Удалить',
+            },
           ],
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           onItemSelect: (item, context, event) => {
@@ -338,8 +338,8 @@ function ExampleCustomDropdownProps() {
             console.debug('item:', item);
             console.debug('row:', context.row);
             console.groupEnd();
-          }
-        }
+          },
+        },
       }}
       columnConfig={columnConfig}
       rows={rows}
@@ -348,46 +348,46 @@ function ExampleCustomDropdownProps() {
 }
 
 const headerDropdownPreCode = `
-import { createRows, type Row } from '@df-storybook/data/tableData';
-import { ColumnConfig, TableCanvas } from '@ui-kit/components/TableCanvas';
+import { createRows, type Row } from './data/tableData';
+import { ColumnConfig, TableCanvas } from '@sber-digital-finance-ui/ui-kit/components/TableCanvas';
 import React, { useMemo, useState } from 'react';
 
 ${getFuncAsString(
   'packages/storybook/src/stories/TableCanvas/TableCanvas.ContextMenu/TableCanvasContextMenu.stories.tsx',
-  'ExampleHeaderDropdown'
+  'ExampleHeaderDropdown',
 )}
 `;
 
 const headerHandlerPreCode = `
-import { createRows, type Row } from '@df-storybook/data/tableData';
-import { ColumnConfig, TableCanvas } from '@ui-kit/components/TableCanvas';
+import { createRows, type Row } from './data/tableData';
+import { ColumnConfig, TableCanvas } from '@sber-digital-finance-ui/ui-kit/components/TableCanvas';
 import React, { useMemo, useState } from 'react';
 
 ${getFuncAsString(
   'packages/storybook/src/stories/TableCanvas/TableCanvas.ContextMenu/TableCanvasContextMenu.stories.tsx',
-  'ExampleHeaderHandler'
+  'ExampleHeaderHandler',
 )}
 `;
 
 const cellDropdownPreCode = `
-import { createRows, type Row } from '@df-storybook/data/tableData';
-import { ColumnConfig, TableCanvas } from '@ui-kit/components/TableCanvas';
+import { createRows, type Row } from './data/tableData';
+import { ColumnConfig, TableCanvas } from '@sber-digital-finance-ui/ui-kit/components/TableCanvas';
 import React, { useMemo, useState } from 'react';
 
 ${getFuncAsString(
   'packages/storybook/src/stories/TableCanvas/TableCanvas.ContextMenu/TableCanvasContextMenu.stories.tsx',
-  'ExampleCellDropdown'
+  'ExampleCellDropdown',
 )}
 `;
 
 const cellHandlerPreCode = `
-import { createRows, type Row } from '@df-storybook/data/tableData';
-import { ColumnConfig, TableCanvas } from '@ui-kit/components/TableCanvas';
+import { createRows, type Row } from './data/tableData';
+import { ColumnConfig, TableCanvas } from '@sber-digital-finance-ui/ui-kit/components/TableCanvas';
 import React, { useMemo, useState } from 'react';
 
 ${getFuncAsString(
   'packages/storybook/src/stories/TableCanvas/TableCanvas.ContextMenu/TableCanvasContextMenu.stories.tsx',
-  'ExampleCellHandler'
+  'ExampleCellHandler',
 )}
 `;
 
@@ -395,46 +395,46 @@ export const ContextOnHeaderMenuDropdownStory: StoryObj = {
   name: 'Контекстное меню Dropdown (шапка таблицы)',
   ...storySourceDoc({
     previewSource: 'shown',
-    code: headerDropdownPreCode
+    code: headerDropdownPreCode,
   }),
-  render: ExampleHeaderDropdown
+  render: ExampleHeaderDropdown,
 };
 
 export const ContextOnHeaderMenuStory: StoryObj = {
   name: 'Контекстное меню, функция обработчик (шапка таблицы)',
   ...storySourceDoc({
     previewSource: 'shown',
-    code: headerHandlerPreCode
+    code: headerHandlerPreCode,
   }),
-  render: ExampleHeaderHandler
+  render: ExampleHeaderHandler,
 };
 
 export const ContextOnCellMenuDropdownStory: StoryObj = {
   name: 'Контекстное меню Dropdown (cell таблицы)',
   ...storySourceDoc({
     previewSource: 'shown',
-    code: cellDropdownPreCode
+    code: cellDropdownPreCode,
   }),
-  render: ExampleCellDropdown
+  render: ExampleCellDropdown,
 };
 
 export const ContextOnCellMenuStory: StoryObj = {
   name: 'Контекстное меню, функция обработчик (cell таблицы)',
   ...storySourceDoc({
     previewSource: 'shown',
-    code: cellHandlerPreCode
+    code: cellHandlerPreCode,
   }),
-  render: ExampleCellHandler
+  render: ExampleCellHandler,
 };
 
 const customDropdownPreCode = `
-import { createRows, type Row } from '@df-storybook/data/tableData';
-import { ColumnConfig, TableCanvas } from '@ui-kit/components/TableCanvas';
+import { createRows, type Row } from './data/tableData';
+import { ColumnConfig, TableCanvas } from '@sber-digital-finance-ui/ui-kit/components/TableCanvas';
 import React, { useMemo, useState } from 'react';
 
 ${getFuncAsString(
   'packages/storybook/src/stories/TableCanvas/TableCanvas.ContextMenu/TableCanvasContextMenu.stories.tsx',
-  'ExampleCustomDropdownProps'
+  'ExampleCustomDropdownProps',
 )}
 `;
 
@@ -442,15 +442,15 @@ export const ContextMenuCustomDropdownPropsStory: StoryObj = {
   name: 'Кастомные свойства Dropdown (size, listWidth, closeOnSelect)',
   ...storySourceDoc({
     previewSource: 'shown',
-    code: customDropdownPreCode
+    code: customDropdownPreCode,
   }),
-  render: ExampleCustomDropdownProps
+  render: ExampleCustomDropdownProps,
 };
 
 // Демо «все возможности» (без play — визуальный тест вынесен в *.visual.stories).
 export const ContextOnCellAndOnHeaderMenuStory: StoryObj = {
   name: 'Контекстное меню (все возможности)',
-  render: ExampleAllFeatures
+  render: ExampleAllFeatures,
 };
 
 // --- Асинхронная подгрузка пунктов меню ----------------------------------
@@ -459,7 +459,7 @@ export const ContextOnCellAndOnHeaderMenuStory: StoryObj = {
 
 const SKELETON_ITEMS = [0, 1, 2, 3].map((i) => ({
   value: `__skeleton_${i}`,
-  label: ''
+  label: '',
 }));
 
 const SkeletonRow = () => (
@@ -468,7 +468,7 @@ const SkeletonRow = () => (
       display: 'flex',
       alignItems: 'center',
       gap: 8,
-      padding: '6px 12px'
+      padding: '6px 12px',
     }}
   >
     <RectSkeleton width={16} height={16} roundness={4} />
@@ -491,7 +491,7 @@ function AsyncCellDropdownExample({ shouldFail }: { shouldFail: boolean }) {
     status: 'idle',
     items: [],
     key: null,
-    row: null
+    row: null,
   });
   // В демо-режиме ошибки: падаем на первой попытке, на «Обновить» отдаём успех
   const attempts = useRef(0);
@@ -501,9 +501,9 @@ function AsyncCellDropdownExample({ shouldFail }: { shouldFail: boolean }) {
       { key: 'id', name: 'ID' },
       { key: 'task', name: 'Title' },
       { key: 'priority', name: 'Priority' },
-      { key: 'developer', name: 'Developer' }
+      { key: 'developer', name: 'Developer' },
     ],
-    []
+    [],
   );
 
   const load = useCallback(
@@ -521,21 +521,21 @@ function AsyncCellDropdownExample({ shouldFail }: { shouldFail: boolean }) {
           resolve([
             { value: 'copy', label: `Копировать «${row.task}»` },
             { value: 'edit', label: 'Редактировать' },
-            { value: 'delete', label: 'Удалить' }
+            { value: 'delete', label: 'Удалить' },
           ]);
         }, 1200);
       }).then(
         (items) =>
           setMenu((prev) =>
-            prev.key === key ? { ...prev, status: 'success', items } : prev
+            prev.key === key ? { ...prev, status: 'success', items } : prev,
           ),
         () =>
           setMenu((prev) =>
-            prev.key === key ? { ...prev, status: 'error', items: [] } : prev
-          )
+            prev.key === key ? { ...prev, status: 'error', items: [] } : prev,
+          ),
       );
     },
-    [shouldFail]
+    [shouldFail],
   );
 
   return (
@@ -566,9 +566,9 @@ function AsyncCellDropdownExample({ shouldFail }: { shouldFail: boolean }) {
                         text: 'Обновить',
                         view: 'secondary',
                         onClick: () =>
-                          menu.row && menu.key && load(menu.row, menu.key)
-                      }
-                    }
+                          menu.row && menu.key && load(menu.row, menu.key),
+                      },
+                    },
                   ]}
                 />
               </div>
@@ -577,8 +577,8 @@ function AsyncCellDropdownExample({ shouldFail }: { shouldFail: boolean }) {
             if (String(item.value).startsWith('__skeleton')) return;
             // eslint-disable-next-line no-alert
             alert(`Выбрано: ${item.label}`);
-          }
-        }
+          },
+        },
       }}
       columnConfig={columnConfig}
       rows={rows}
@@ -586,12 +586,30 @@ function AsyncCellDropdownExample({ shouldFail }: { shouldFail: boolean }) {
   );
 }
 
+const code = `
+import { createRows, type Row } from './data/tableData';
+import { ColumnConfig, TableCanvas } from '@sber-digital-finance-ui/ui-kit/components/TableCanvas';
+import React, { useMemo, useState } from 'react';
+
+${getFuncAsString(
+  'packages/storybook/src/stories/TableCanvas/TableCanvas.ContextMenu/TableCanvasContextMenu.stories.tsx',
+  'AsyncCellDropdownExample',
+)}`;
+
 export const ContextOnCellMenuAsyncSuccessStory: StoryObj = {
   name: 'Async-подгрузка пунктов (успех)',
-  render: () => <AsyncCellDropdownExample shouldFail={false} />
+  ...storySourceDoc({
+    previewSource: 'hidden',
+    code,
+  }),
+  render: () => <AsyncCellDropdownExample shouldFail={false} />,
 };
 
 export const ContextOnCellMenuAsyncErrorStory: StoryObj = {
   name: 'Async-подгрузка пунктов (ошибка + ретрай)',
-  render: () => <AsyncCellDropdownExample shouldFail />
+  ...storySourceDoc({
+    previewSource: 'hidden',
+    code,
+  }),
+  render: () => <AsyncCellDropdownExample shouldFail />,
 };

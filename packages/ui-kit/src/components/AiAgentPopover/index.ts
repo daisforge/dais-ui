@@ -1,5 +1,5 @@
 export { AiAgentPopover } from './AiAgentPopover';
 export type {
   AiAgentPopoverCustomPlacement,
-  AiAgentPopoverProps
+  AiAgentPopoverProps,
 } from './AiAgentPopover.types';

@@ -28,14 +28,14 @@ export const truncateText = (options?: TruncateTextOptions): CSSObject => {
       WebkitBoxOrient: 'vertical',
       overflow: 'hidden',
       textOverflow: 'ellipsis',
-      whiteSpace: 'normal'
+      whiteSpace: 'normal',
     };
   }
 
   return {
     whiteSpace: 'nowrap',
     overflow: 'hidden',
-    textOverflow: 'ellipsis'
+    textOverflow: 'ellipsis',
   };
 };
 

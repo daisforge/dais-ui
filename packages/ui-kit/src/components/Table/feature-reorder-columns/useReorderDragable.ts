@@ -7,7 +7,7 @@ import { ColumnConfigInternal } from '../types/column-config-internal.type';
 import {
   orderWithUpdatedDefaultColsDeleteDuplicates,
   sortedInOrder,
-  updateOrderWithKeyText
+  updateOrderWithKeyText,
 } from './handlers';
 import { reorderHandler } from './reorderHandler';
 
@@ -18,7 +18,7 @@ import { reorderHandler } from './reorderHandler';
  */
 export const useReorderDragable = <
   RowType extends ObjectForExtending,
-  SummaryRowType
+  SummaryRowType,
 >({
   columns,
   reorderIsActive,
@@ -29,7 +29,7 @@ export const useReorderDragable = <
   showRowInstruments,
   tableConfigKeyTextBoolean,
   keyText,
-  colsWithKeyTextMap
+  colsWithKeyTextMap,
 }: {
   columns: readonly ColumnConfigInternal<RowType, SummaryRowType>[];
   reorderIsActive: boolean;
@@ -53,9 +53,9 @@ export const useReorderDragable = <
           colsWithKeyTextMap,
           keyText,
           rowsGroupingIsActive,
-          showRowInstruments
+          showRowInstruments,
         })
-      : []
+      : [],
   );
 
   const getDefaultColumnsOrder = () =>
@@ -66,7 +66,7 @@ export const useReorderDragable = <
       rowsGroupingIsActive,
       colsWithKeyTextMap,
       keyText,
-      showRowInstruments
+      showRowInstruments,
     });
 
   // обновление columnsOrder при обновлении columns
@@ -87,12 +87,12 @@ export const useReorderDragable = <
       updateOrderWithKeyText({
         keyText,
         orderArrayForChanging: copyOfPrev,
-        colsWithKeyTextMap
+        colsWithKeyTextMap,
       });
 
       const resultСopyOfPrevWithoutDouble =
         orderWithUpdatedDefaultColsDeleteDuplicates({
-          orderArrayForChanging: copyOfPrev
+          orderArrayForChanging: copyOfPrev,
         });
 
       return resultСopyOfPrevWithoutDouble;
@@ -134,7 +134,7 @@ export const useReorderDragable = <
         onReorderingHeader: tableConfigColumnsControl?.onReorderingHeader,
         tableConfigKeyTextBoolean,
         keyText,
-        colsWithKeyTextMap
+        colsWithKeyTextMap,
       });
     },
     [
@@ -142,8 +142,8 @@ export const useReorderDragable = <
       keyText,
       reorderIsActive,
       tableConfigColumnsControl?.onReorderingHeader,
-      tableConfigKeyTextBoolean
-    ]
+      tableConfigKeyTextBoolean,
+    ],
   );
 
   return {
@@ -152,6 +152,6 @@ export const useReorderDragable = <
     columnsOrder,
     setColumnsOrder,
     onColumnsReorder,
-    getDefaultColumnsOrder
+    getDefaultColumnsOrder,
   };
 };

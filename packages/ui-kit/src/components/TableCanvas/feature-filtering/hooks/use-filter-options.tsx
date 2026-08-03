@@ -5,10 +5,10 @@ import { ColumnConfig, SelectOptions } from '../../types';
 export const useFilterOptions = <
   HeaderContextValueType extends Record<string, unknown>,
   RowType extends Record<string, unknown>,
-  SummaryRowType
+  SummaryRowType,
 >(
   columnConfig: readonly ColumnConfig<RowType, SummaryRowType>[],
-  headerContextValue?: HeaderContextValueType
+  headerContextValue?: HeaderContextValueType,
 ) =>
   useMemo(() => {
     const result: Record<
@@ -25,7 +25,7 @@ export const useFilterOptions = <
           optionsArray =
             col.filtering.selectOptions.options?.map((opt) => ({
               label: opt.text?.toString() ?? opt.value.toString(),
-              value: opt.value
+              value: opt.value,
             })) ?? [];
         } else if (headerContextValue) {
           const contextKey =
@@ -40,13 +40,13 @@ export const useFilterOptions = <
               : undefined
           )?.filter(
             (opt): opt is SelectOptions =>
-              opt && typeof opt.value !== 'undefined'
+              opt && typeof opt.value !== 'undefined',
           );
 
           optionsArray =
             (contextOptions ?? []).map((opt) => ({
               label: opt.text?.toString() ?? opt.value.toString(),
-              value: opt.value
+              value: opt.value,
             })) ?? [];
         }
 

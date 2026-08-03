@@ -49,7 +49,7 @@ export const debugLogInit = (
   initialState: ToolsMenuState,
   measuredWidths: InitialWidthsForToolsMenu | undefined,
   spacing: Record<string, number>,
-  options: Record<string, unknown> | undefined
+  options: Record<string, unknown> | undefined,
 ) => {
   if (!isCompressionDebugEnabled() || initLogged) return;
   initLogged = true;
@@ -67,11 +67,11 @@ export const debugLogInit = (
       custom: initialState.rightSide.customFeatures.length,
       canBeCompressed: initialState.rightSide.customFeatures
         .map((cf, i) => (cf.canBeCompressed ? i : null))
-        .filter((x) => x !== null)
+        .filter((x) => x !== null),
     },
     measuredWidths,
     spacing,
-    options
+    options,
   });
 };
 
@@ -93,7 +93,7 @@ export const debugLogCompress = (data: {
     finalState,
     fromCache,
     measuredWidths,
-    breakdown
+    breakdown,
   } = data;
   const dir =
     prevAvailWidth > 0
@@ -116,13 +116,13 @@ export const debugLogCompress = (data: {
       : steps.map((s) => ({
           s: s.step,
           w: round(s.widthAfter),
-          fits: s.fits
+          fits: s.fits,
         })),
     result: {
       editRowLabel: finalState.leftSide.editRowFeature.isLabelVisible,
       buttonLabels: finalState.rightSide.buttons.map((b) => b.isLabelVisible),
       leftInnerLabels: finalState.leftSide.leftSideInner.map(
-        (b) => b.isLabelVisible
+        (b) => b.isLabelVisible,
       ),
       search: finalState.middle.searchingFeature.isActive,
       searchMin: finalState.middle.searchingFeature.minWidth,
@@ -130,11 +130,11 @@ export const debugLogCompress = (data: {
       inDropdown: finalState.rightSide.overflowItems
         .filter((oi) => oi.isInDropdown)
         .map((oi) => `${oi.sourceType}[${oi.sourceIndex}]`),
-      totalOverflow: finalState.rightSide.overflowItems.length
+      totalOverflow: finalState.rightSide.overflowItems.length,
     },
     breakdown: breakdown
       ? Object.fromEntries(
-          Object.entries(breakdown).map(([k, v]) => [k, round(v)])
+          Object.entries(breakdown).map(([k, v]) => [k, round(v)]),
         )
       : undefined,
     measuredWidths: mw
@@ -148,9 +148,9 @@ export const debugLogCompress = (data: {
           overflowTrigger: mw.overflowTrigger,
           inlineTitle: mw.inlineTitle,
           collapseBlock: mw.collapseBlock,
-          editModeLeftSlot: mw.editModeLeftSlot
+          editModeLeftSlot: mw.editModeLeftSlot,
         }
-      : undefined
+      : undefined,
   });
 };
 

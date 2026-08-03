@@ -20,7 +20,7 @@ export const useMassActionsEffects = ({
   calculatePosition,
   calculateCompression,
   measuredButtonWidthsRef,
-  containerWidth
+  containerWidth,
 }: {
   containerRef: React.RefObject<HTMLDivElement>;
   buttonRefs: React.MutableRefObject<(HTMLDivElement | null)[]>;
@@ -74,7 +74,7 @@ export const useMassActionsEffects = ({
     buttons?.length,
     buttonRefs,
     setVisibleButtonsCount,
-    measuredButtonWidthsRef
+    measuredButtonWidthsRef,
   ]);
 
   // Вызываем компрессию при первом появлении панели
@@ -113,6 +113,6 @@ export const useMassActionsEffects = ({
         setIsCollapsed(false);
       }
     },
-    [isVisible, selectedCount, setIsCollapsed]
+    [isVisible, selectedCount, setIsCollapsed],
   );
 };

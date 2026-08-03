@@ -9,7 +9,7 @@ import { useHeaderContext } from '../../contexts';
 import { getCurrentSizeIcon } from '../../feature-row-size/handlers';
 import {
   ITEM_ID_GROUPED_ROWS,
-  NAME_TRIGGER_DROPDOWN_GROUPED_ROWS
+  NAME_TRIGGER_DROPDOWN_GROUPED_ROWS,
 } from '../../feature-rows-grouping/constants';
 import { ControlBlockButtonProps } from './control-block-button.types';
 import { isFeatureItem } from './typeGuards';
@@ -20,7 +20,7 @@ const proceedFeatureItem = (
   handlerMap: Map<
     string,
     (item: DropdownItemOption, event: React.SyntheticEvent) => void
-  >
+  >,
 ): DropdownItemOption | null => {
   if (!('details' in featureItem) || !featureItem.details) {
     return null;
@@ -29,7 +29,7 @@ const proceedFeatureItem = (
   const { details } = featureItem;
   const baseItem: DropdownItemOption = {
     value: featureItem.value,
-    label: 'label' in details ? details.label : featureItem.value
+    label: 'label' in details ? details.label : featureItem.value,
   };
 
   switch (details.type) {
@@ -44,7 +44,7 @@ const proceedFeatureItem = (
       });
       return {
         ...baseItem,
-        contentLeft: buttonDetails.icon
+        contentLeft: buttonDetails.icon,
       };
     }
 
@@ -60,7 +60,7 @@ const proceedFeatureItem = (
             checked={switchDetails.checked}
             onChange={switchDetails.onChange}
           />
-        )
+        ),
       };
     }
 
@@ -74,12 +74,12 @@ const proceedFeatureItem = (
       const [processedItems, itemHandlers] = processDropdownItems(
         selectDetails.options.map((option) => ({
           label: option.label,
-          value: option.value
+          value: option.value,
         })),
         (item, e) => {
           e.preventDefault();
           selectDetails.onChange(item.value as string);
-        }
+        },
       );
 
       // Регистрируем обработчики для всех опций
@@ -88,7 +88,7 @@ const proceedFeatureItem = (
       return {
         ...baseItem,
         contentLeft: selectDetails.icon,
-        items: processedItems
+        items: processedItems,
       };
     }
 
@@ -99,7 +99,7 @@ const proceedFeatureItem = (
       >;
       return {
         ...baseItem,
-        contentLeft: customDetails.render()
+        contentLeft: customDetails.render(),
       };
     }
 
@@ -109,7 +109,7 @@ const proceedFeatureItem = (
 };
 
 export const useButtonsToDropdownItems = (
-  buttons: Array<ControlBlockButtonProps | FeatureItem> = []
+  buttons: Array<ControlBlockButtonProps | FeatureItem> = [],
 ) => {
   const { rowSize, setRowSize, activeView, setActiveView, onRowSizeChange } =
     useHeaderContext();
@@ -128,21 +128,21 @@ export const useButtonsToDropdownItems = (
         const rowSizeOptions = [
           { label: 'Максимальная', value: 'big' },
           { label: 'Средняя', value: 'medium' },
-          { label: 'Минимальная', value: 'small' }
+          { label: 'Минимальная', value: 'small' },
         ];
 
         items.push({
           label: button['text'] || 'Высота строк',
           value: 'row-size-group',
           contentLeft: getCurrentSizeIcon(
-            rowSize as 'big' | 'medium' | 'small'
+            rowSize as 'big' | 'medium' | 'small',
           )({}),
           items: rowSizeOptions.map((option) => ({
             ...option,
             contentLeft: getCurrentSizeIcon(
-              option.value as 'big' | 'medium' | 'small'
-            )({})
-          }))
+              option.value as 'big' | 'medium' | 'small',
+            )({}),
+          })),
         });
 
         rowSizeOptions.forEach((option) => {
@@ -168,7 +168,7 @@ export const useButtonsToDropdownItems = (
       } else if (button['value'] === 'view-mode') {
         const viewModeOptions = [
           { label: 'Таблица', value: 'rows' },
-          { label: 'Карточки', value: 'cards' }
+          { label: 'Карточки', value: 'cards' },
         ];
 
         items.push({
@@ -187,8 +187,8 @@ export const useButtonsToDropdownItems = (
                 <IconViewSplit4Outline />
               ) : (
                 <IconViewScreen4Outline />
-              )
-          }))
+              ),
+          })),
         });
 
         viewModeOptions.forEach((option) => {
@@ -217,17 +217,17 @@ export const useButtonsToDropdownItems = (
         if (button.dropdown['onItemSelect']) {
           globalHandlerMap.set(
             groupValue.toString(),
-            button.dropdown['onItemSelect']
+            button.dropdown['onItemSelect'],
           );
         }
 
         const [processedItems, itemHandlers] = processDropdownItems(
           button.dropdown['items'] || [],
-          button.dropdown['onItemSelect']
+          button.dropdown['onItemSelect'],
         );
 
         itemHandlers.forEach((handler, key) =>
-          globalHandlerMap.set(key, handler)
+          globalHandlerMap.set(key, handler),
         );
 
         if (button.dropdown?.$css) {
@@ -239,7 +239,7 @@ export const useButtonsToDropdownItems = (
           value: groupValue,
           contentLeft: button['contentLeft'],
           items: processedItems,
-          className: button['className']
+          className: button['className'],
         });
       } else {
         // Обработка обычных кнопок остается без изменений
@@ -248,7 +248,7 @@ export const useButtonsToDropdownItems = (
           label: button['text'] || 'Кнопка',
           value: value.toString(),
           disabled: button['disabled'],
-          contentLeft: button['contentLeft']
+          contentLeft: button['contentLeft'],
         };
 
         if (button['onClick']) {
@@ -259,7 +259,7 @@ export const useButtonsToDropdownItems = (
               preventDefault: event.preventDefault,
               stopPropagation: event.stopPropagation,
               target: event.target as EventTarget & HTMLElement,
-              currentTarget: event.currentTarget as EventTarget & HTMLElement
+              currentTarget: event.currentTarget as EventTarget & HTMLElement,
             } as unknown as React.MouseEvent<HTMLElement>;
 
             button['onClick']?.(mouseEvent);
@@ -273,7 +273,7 @@ export const useButtonsToDropdownItems = (
     return {
       dropdownItems: items,
       handlerMap: globalHandlerMap,
-      $summaryCSS
+      $summaryCSS,
     };
 
     // TODO Паша - проверить зависимости onRowSizeChange - должен ли быть в массиве или нет ? [Не должен быть]

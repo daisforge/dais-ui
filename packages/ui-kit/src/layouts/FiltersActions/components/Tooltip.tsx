@@ -34,7 +34,7 @@ const StyledTooltipContent = styled.div`
 
 const TooltipContent: FC<{ groupLabel?: string; items: string[] }> = ({
   groupLabel,
-  items
+  items,
 }) => (
   <StyledTooltipContent>
     <span>{groupLabel}</span>

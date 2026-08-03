@@ -13,7 +13,7 @@ import { resolveSubRowKey } from './resolveSubRowKey';
 export function getCellText<R extends ObjectForExtending>(
   row: R,
   column: TransferColumnConfig,
-  lvl: number
+  lvl: number,
 ): string {
   if (column.copyData !== undefined) {
     return typeof column.copyData === 'function'

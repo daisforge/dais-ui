@@ -10,12 +10,12 @@ type Props = {
 export const getClassName = ({
   backgroundColor,
   titleColor,
-  view
+  view,
 }: Props): string =>
   mCls(
     cls.wrapper,
     !!backgroundColor && cls.hasBackground,
     !!titleColor && cls.hasTitleColor,
     cls.hasBorderColor,
-    view && view in cls && cls[view as keyof typeof cls]
+    view && view in cls && cls[view as keyof typeof cls],
   );

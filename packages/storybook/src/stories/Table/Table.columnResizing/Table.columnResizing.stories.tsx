@@ -11,9 +11,9 @@ const meta: Meta = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      page: DocStoryTemplate
-    }
-  }
+      page: DocStoryTemplate,
+    },
+  },
 };
 
 export default meta;
@@ -42,7 +42,7 @@ type Story = StoryObj;
 export const ColumnResizing: Story = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   name: 'Изменение ширины колонки',
   render: () => {
@@ -59,29 +59,29 @@ export const ColumnResizing: Story = {
           minWidth: 200,
           width: 300,
           maxWidth: 500,
-          sortingType: 'stringSort'
+          sortingType: 'stringSort',
         },
         {
           key: 'task',
           name: 'Title',
           resizable: true,
           minWidth: 200,
-          sortingType: 'stringSort'
+          sortingType: 'stringSort',
         },
         {
           key: 'issueType',
           name: 'Issue Type',
           sortingType: 'stringSort',
-          resizable: true
+          resizable: true,
         },
         {
           key: 'priority',
           name: 'Priority',
           sortingType: 'stringSort',
-          resizable: false
-        }
+          resizable: false,
+        },
       ],
-      []
+      [],
     );
 
     return (
@@ -90,16 +90,16 @@ export const ColumnResizing: Story = {
           containerStyle: { height: '700px' },
           columnsControl: {
             enable: true,
-            pinnedDefault: ['task']
+            pinnedDefault: ['task'],
           },
           resizableColumn: true,
           sorting: {
-            state: sortingStateAndSetter
-          }
+            state: sortingStateAndSetter,
+          },
         }}
         columnConfig={columns}
         rows={rows}
       />
     );
-  }
+  },
 };

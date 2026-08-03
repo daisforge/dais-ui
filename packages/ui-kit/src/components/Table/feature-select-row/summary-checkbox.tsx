@@ -15,7 +15,7 @@ export const SummaryCheckbox = ({
   isHaveRightDivider,
   hideCheckbox = false,
   renderOnlyCheckbox = false,
-  onChangeHandlerRef
+  onChangeHandlerRef,
 }: {
   isHaveRightDivider: boolean;
   hideCheckbox?: boolean;
@@ -36,7 +36,7 @@ export const SummaryCheckbox = ({
     rowKeyGetter,
     isSelectingRowLabelVisible,
     isSelectingRowCounterVisible,
-    controlBlock
+    controlBlock,
   } = useSelectingRowContext();
 
   const {
@@ -47,7 +47,7 @@ export const SummaryCheckbox = ({
     rowCheckboxDisabled,
     rowShowCheckbox,
     disableSummaryCheckboxInHeader,
-    hideSummaryCheckboxInHeader
+    hideSummaryCheckboxInHeader,
   } = selectingRowConfig;
 
   const callbackOnChange = summaryCheckedUncontrolled?.onChange;
@@ -81,7 +81,7 @@ export const SummaryCheckbox = ({
         checkedAll:
           allRowsOnLevel.length > 0 &&
           selectedRows.size === allRowsOnLevel.length,
-        allRowsOnLevel
+        allRowsOnLevel,
       };
     }
 
@@ -91,7 +91,7 @@ export const SummaryCheckbox = ({
         checkedAll:
           allRowsOnLevel.length > 0 &&
           selectedRows.size === allRowsOnLevel.length,
-        allRowsOnLevel
+        allRowsOnLevel,
       };
     }
 
@@ -111,7 +111,7 @@ export const SummaryCheckbox = ({
       checkedAll:
         allRowsOnLevel.length > 0 &&
         allRowsOnLevel.length === selectedRows.size,
-      allRowsOnLevel
+      allRowsOnLevel,
     };
   })();
 
@@ -126,7 +126,7 @@ export const SummaryCheckbox = ({
       notHidden: [],
       selected: [],
       notSelected: [],
-      someChildrenIsSelected: false
+      someChildrenIsSelected: false,
     };
 
     // находясь на каждой строке  проверяем и обновляем info
@@ -172,7 +172,7 @@ export const SummaryCheckbox = ({
     rowCheckboxDisabled,
     rowShowCheckbox,
     allRowsInLevels: allRowsOnLevel,
-    getAllRowsInfo
+    getAllRowsInfo,
   });
 
   const checkedAll = (() => {
@@ -182,7 +182,7 @@ export const SummaryCheckbox = ({
         checkedAll = summaryChecked.checked;
       } else {
         checkedAll = summaryChecked.checked(
-          getSummaryCheckedFuncDefaultProps()
+          getSummaryCheckedFuncDefaultProps(),
         );
       }
 
@@ -199,7 +199,7 @@ export const SummaryCheckbox = ({
       }
       return summaryChecked.indeterminate({
         checkedAll,
-        ...getSummaryCheckedFuncDefaultProps()
+        ...getSummaryCheckedFuncDefaultProps(),
       });
     }
     return selectedRows && selectedRows.size !== 0 && !checkedAll;
@@ -208,7 +208,7 @@ export const SummaryCheckbox = ({
   const { isHaveCounter, count } = (() => {
     if (summaryChecked) {
       const count = summaryChecked.getCountOfChecked(
-        getSummaryCheckedFuncDefaultProps()
+        getSummaryCheckedFuncDefaultProps(),
       );
       return { isHaveCounter: count > 0, count };
     }
@@ -248,7 +248,7 @@ export const SummaryCheckbox = ({
         setSelectedRowsIds:
           setSelectedRows ??
           ((() => {}) as NonNullable<typeof setSelectedRows>),
-        ...onChangeProps
+        ...onChangeProps,
       });
       return;
     }
@@ -293,8 +293,8 @@ export const SummaryCheckbox = ({
         alignItems: 'center',
         '& .divider': {
           paddingLeft: '1px',
-          marginLeft: '16px'
-        }
+          marginLeft: '16px',
+        },
       }}
       className={controlBlock?.domMetadata?.className}
       {...controlBlock?.domMetadata?.dataAttributes}
@@ -312,16 +312,16 @@ export const SummaryCheckbox = ({
         extContainerCss={{
           overflow: 'visible',
           display: 'flex',
-          justifyContent: 'flex-end'
+          justifyContent: 'flex-end',
         }}
         intContainerCss={{
           always: {
             opacity: '0',
-            transition: '.3s ease'
+            transition: '.3s ease',
           },
           onOpen: {
-            opacity: 1
-          }
+            opacity: 1,
+          },
         }}
       >
         {isHaveCounter && isSelectingRowCounterVisible && (
@@ -332,7 +332,7 @@ export const SummaryCheckbox = ({
             size="xs"
             count={count}
             style={{
-              marginBottom: '3px'
+              marginBottom: '3px',
             }}
           />
         )}

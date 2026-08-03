@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { COLORS } from '../../styles';
 import {
   POPOVER_CONTENT_BORDER_RADIUS,
-  POPOVER_CONTENT_PADDING
+  POPOVER_CONTENT_PADDING,
 } from '../constants';
 
 /**

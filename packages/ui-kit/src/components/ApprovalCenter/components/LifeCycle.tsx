@@ -11,7 +11,7 @@ import { isNonEmptyArray, isNotNullOrUndefined } from '../ApprovalCenter.utils';
 import {
   iconByStageStatus,
   itemViewByLifeCycleStatus,
-  stepStatusByLifeCycleStatus
+  stepStatusByLifeCycleStatus,
 } from '../constants';
 import {
   LifeCycleAccordionTitle,
@@ -20,7 +20,7 @@ import {
   LifeCycleContainer,
   LifeCycleStageButtonsWrapper,
   LifeCycleStageContent,
-  LifeCycleStyledButton
+  LifeCycleStyledButton,
 } from '../styled';
 
 const LifeCycle = (props: LifeCycleProps) => {
@@ -43,7 +43,7 @@ const LifeCycle = (props: LifeCycleProps) => {
 
               return accumulator;
             },
-            []
+            [],
           )}
         >
           {item.stages.map((stage, stageIndex) => (
@@ -166,7 +166,7 @@ const LifeCycle = (props: LifeCycleProps) => {
           </LifeCycleButtonsWrapper>
         )}
       </LifeCycleStageContent>
-    )
+    ),
   }));
 
   return (
@@ -174,7 +174,7 @@ const LifeCycle = (props: LifeCycleProps) => {
       <Steps
         style={{
           paddingTop: '1px',
-          height: 'auto'
+          height: 'auto',
         }}
         items={lifeCycleItems}
         orientation="vertical"

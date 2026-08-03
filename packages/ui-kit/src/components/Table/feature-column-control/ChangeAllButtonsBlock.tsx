@@ -15,7 +15,7 @@ export const ChangeAllButtonsBlock = ({
   disableResetToDefaultOrderButton,
   allColumnsIsVisible,
   allColumnsVisibilityChanger,
-  columnsControlConfig
+  columnsControlConfig,
 }: {
   clearLocalPinned: () => void;
   disabledClearPinnedButton: boolean;
@@ -55,7 +55,7 @@ export const ChangeAllButtonsBlock = ({
           width: '100%',
           padding: '10px 12px',
           backgroundColor: surfaceTransparentPrimary,
-          borderRadius: '8px'
+          borderRadius: '8px',
         }}
       >
         <Switch

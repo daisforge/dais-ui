@@ -12,13 +12,13 @@ interface EmptySearchFallbackProps {
 export const EmptySearchFallback: React.FC<EmptySearchFallbackProps> = ({
   icon,
   title = 'Ничего не нашлось',
-  subTitle = 'Попробуйте изменить запрос'
+  subTitle = 'Попробуйте изменить запрос',
 }) => (
   <Box
     $css={{
       display: 'flex',
       flexDirection: 'column',
-      alignItems: 'center'
+      alignItems: 'center',
     }}
   >
     {icon && <Box $css={{ marginBottom: '8px' }}>{icon}</Box>}

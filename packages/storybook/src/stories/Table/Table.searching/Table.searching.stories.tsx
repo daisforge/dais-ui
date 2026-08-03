@@ -12,9 +12,9 @@ const meta: Meta = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      page: DocStoryTemplate
-    }
-  }
+      page: DocStoryTemplate,
+    },
+  },
 };
 
 export default meta;
@@ -41,7 +41,7 @@ import { IconAddOutline, IconBoxOutline, IconSber } from '@daisforge/ui/icons';
 export const ControlSearching: StoryObj = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   name: 'Контролируемый поиск',
   render: () => {
@@ -52,34 +52,34 @@ export const ControlSearching: StoryObj = {
       () => [
         {
           key: 'id',
-          name: 'ID'
+          name: 'ID',
         },
         {
           key: 'task',
-          name: 'Title'
+          name: 'Title',
         },
         {
           key: 'priority',
-          name: 'Priority'
+          name: 'Priority',
         },
         {
           key: 'issueType',
-          name: 'Issue Type'
+          name: 'Issue Type',
         },
         {
           key: 'developer',
-          name: 'Developer'
+          name: 'Developer',
         },
         {
           key: 'tr1',
-          name: 'TR'
+          name: 'TR',
         },
         {
           key: 'complete',
-          name: '% Complete'
-        }
+          name: '% Complete',
+        },
       ],
-      []
+      [],
     );
 
     return (
@@ -95,20 +95,20 @@ export const ControlSearching: StoryObj = {
             searchQueryState: [query, setQuery],
             debounceDelay: 350,
             placeholder: 'Введите сумму',
-            searchClasses: 'someClassForSearch'
-          }
+            searchClasses: 'someClassForSearch',
+          },
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };
 
 export const UncontrolledSearching: StoryObj = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   name: 'Неконтролируемый поиск',
   render: () => {
@@ -118,34 +118,34 @@ export const UncontrolledSearching: StoryObj = {
       () => [
         {
           key: 'id',
-          name: 'ID'
+          name: 'ID',
         },
         {
           key: 'task',
-          name: 'Title'
+          name: 'Title',
         },
         {
           key: 'priority',
-          name: 'Priority'
+          name: 'Priority',
         },
         {
           key: 'issueType',
-          name: 'Issue Type'
+          name: 'Issue Type',
         },
         {
           key: 'developer',
-          name: 'Developer'
+          name: 'Developer',
         },
         {
           key: 'tr1',
-          name: 'TR'
+          name: 'TR',
         },
         {
           key: 'complete',
-          name: '% Complete'
-        }
+          name: '% Complete',
+        },
       ],
-      []
+      [],
     );
 
     return (
@@ -158,20 +158,20 @@ export const UncontrolledSearching: StoryObj = {
             onChange: (value) => console.debug('onChange searching', value),
             onDebouncedChange: (value) =>
               console.debug('onDebouncedChange searching', value),
-            debounceDelay: 550
-          }
+            debounceDelay: 550,
+          },
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };
 
 export const ManualSearching: StoryObj = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   name: 'Manual поиск',
   render: () => {
@@ -181,34 +181,34 @@ export const ManualSearching: StoryObj = {
       () => [
         {
           key: 'id',
-          name: 'ID'
+          name: 'ID',
         },
         {
           key: 'task',
-          name: 'Title'
+          name: 'Title',
         },
         {
           key: 'priority',
-          name: 'Priority'
+          name: 'Priority',
         },
         {
           key: 'issueType',
-          name: 'Issue Type'
+          name: 'Issue Type',
         },
         {
           key: 'developer',
-          name: 'Developer'
+          name: 'Developer',
         },
         {
           key: 'tr1',
-          name: 'TR'
+          name: 'TR',
         },
         {
           key: 'complete',
-          name: '% Complete'
-        }
+          name: '% Complete',
+        },
       ],
-      []
+      [],
     );
 
     return (
@@ -225,21 +225,21 @@ export const ManualSearching: StoryObj = {
               // fetchData from server => then setRows for example
               setRows(createRows(0, 10));
             },
-            debounceDelay: 550
+            debounceDelay: 550,
           },
-          containerStyle: { height: 700 }
+          containerStyle: { height: 700 },
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };
 
 export const AutocompleteHistory: StoryObj = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   name: 'Autocomplete (история поиска)',
   render: () => {
@@ -252,7 +252,7 @@ export const AutocompleteHistory: StoryObj = {
       'Critical',
       'High',
       'Story',
-      'Task'
+      'Task',
     ]);
     const lastSubmittedRef = useRef('');
 
@@ -262,9 +262,9 @@ export const AutocompleteHistory: StoryObj = {
         { key: 'task', name: 'Title' },
         { key: 'priority', name: 'Priority' },
         { key: 'issueType', name: 'Issue Type' },
-        { key: 'developer', name: 'Developer' }
+        { key: 'developer', name: 'Developer' },
       ],
-      []
+      [],
     );
 
     const addToHistory = useCallback((value: string) => {
@@ -278,7 +278,7 @@ export const AutocompleteHistory: StoryObj = {
 
     const suggestions = useMemo(
       () => searchHistory.map((label) => ({ label })),
-      [searchHistory]
+      [searchHistory],
     );
 
     return (
@@ -300,13 +300,13 @@ export const AutocompleteHistory: StoryObj = {
 
               onSuggestionSelect: (suggestion) => {
                 console.debug('selected:', suggestion.label);
-              }
-            }
-          }
+              },
+            },
+          },
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };

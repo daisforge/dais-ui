@@ -1,6 +1,6 @@
 import {
   NumberFormat,
-  type NumberFormatCompProps
+  type NumberFormatCompProps,
 } from '@ui-kit/components/NumberFormat';
 import { mergeRefs } from '@ui-kit/utils';
 import React, { forwardRef, ReactElement, useState } from 'react';
@@ -13,12 +13,12 @@ import type { EditingCellInfo, ObjectForExtending } from '../types';
 import type {
   CellEditorNumberFormatProps,
   CustomCellStyleNumberFormatProps,
-  EmptyObj
+  EmptyObj,
 } from './types';
 import { autoFocus, autoFocusAndSelect } from './utils';
 
 const StyledNumberFormat: (
-  props: NumberFormatCompProps & CustomCellStyleNumberFormatProps
+  props: NumberFormatCompProps & CustomCellStyleNumberFormatProps,
 ) => ReactElement = styled(NumberFormat)<CustomCellStyleNumberFormatProps>`
   ${({ align }) =>
     align &&
@@ -53,7 +53,7 @@ const StyledNumberFormat: (
 const autofocusMapper = {
   autoFocusAndSelect,
   autoFocus,
-  none: undefined
+  none: undefined,
 };
 
 export const CellEditorNumberFormat = forwardRef<
@@ -70,7 +70,7 @@ export const CellEditorNumberFormat = forwardRef<
 
       ...props
     },
-    refExternal
+    refExternal,
   ) => {
     const { rowSize } = useRowContext();
 
@@ -84,7 +84,7 @@ export const CellEditorNumberFormat = forwardRef<
         ref={
           mergeRefs(
             autofocusMapper[autoFocusType],
-            refExternal
+            refExternal,
           ) as React.Ref<HTMLInputElement>
         }
         size={SIZES[rowSize].input}
@@ -98,12 +98,12 @@ export const CellEditorNumberFormat = forwardRef<
         {...(props as unknown as EmptyObj)}
       />
     );
-  }
+  },
 );
 
 export function CellEditorNumberFormatInternal<
   TRow extends ObjectForExtending,
-  TSummaryRow
+  TSummaryRow,
 >({
   row,
   column,
@@ -113,7 +113,7 @@ export function CellEditorNumberFormatInternal<
   cellHeight,
   initialValue,
   formatOptions,
-  disableLeftOffset
+  disableLeftOffset,
 }: EditingCellInfo<TRow, TSummaryRow> & {
   formatOptions: ContentFormat | undefined;
   disableLeftOffset: boolean | undefined;
@@ -128,7 +128,7 @@ export function CellEditorNumberFormatInternal<
       thousandSeparator: ' ',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
-      alignContent: 'right'
+      alignContent: 'right',
     };
 
     if (!formatOptions || formatOptions === 'number') {
@@ -147,14 +147,15 @@ export function CellEditorNumberFormatInternal<
     thousandSeparator,
     minimumFractionDigits,
     maximumFractionDigits,
-    alignContent
+    alignContent,
   } = getNumberFormat();
 
   const initialValueAsNumber =
     initialValue && !isNaN(+initialValue) ? +initialValue : null;
 
   const [v, setV] = useState<string | number>(
-    initialValueAsNumber ?? (row[column.key as keyof TRow] as unknown as number)
+    initialValueAsNumber ??
+      (row[column.key as keyof TRow] as unknown as number),
   );
 
   const handleChange = (
@@ -163,14 +164,14 @@ export function CellEditorNumberFormatInternal<
       floatValue: number | undefined;
       formattedValue: string;
       value: string;
-    }
+    },
   ) => {
     if (values) {
       const resultValue = values.floatValue ?? values.formattedValue;
       setV(resultValue);
       onRowChange({
         ...row,
-        [column.key]: resultValue
+        [column.key]: resultValue,
       });
     }
   };

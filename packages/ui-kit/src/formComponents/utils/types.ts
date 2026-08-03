@@ -4,7 +4,7 @@ import type {
   RegisterOptions,
   UseFormReturn,
   ValidationValue,
-  ValidationValueMessage
+  ValidationValueMessage,
 } from 'react-hook-form';
 
 type TRules = {
@@ -25,7 +25,7 @@ export type TReturnUseChangedFormContext = UseFormReturn<FieldValues> &
   TOptions;
 
 export type TUseChangedFormContext = (
-  options?: RegisterOptions<FieldValues, Path<FieldValues>>
+  options?: RegisterOptions<FieldValues, Path<FieldValues>>,
 ) => TReturnUseChangedFormContext;
 
 export type TGetRuleValueProps<T extends ValidationValue> = {

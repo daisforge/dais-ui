@@ -8,10 +8,10 @@ export function useGroupedRows<
   FilterStateType extends ObjectForExtending,
   RowIdType extends string | number,
   RowType extends ObjectForExtending,
-  SummaryRowType = unknown
+  SummaryRowType = unknown,
 >({
   tableConfig = {},
-  rows
+  rows,
 }: {
   tableConfig?: TableConfig<
     RowType,
@@ -47,7 +47,7 @@ export function useGroupedRows<
       rows: readonly RowType[],
       [groupByKey, ...remainingGroupByKeys]: readonly string[],
       startRowIndex: number,
-      groupParents: string
+      groupParents: string,
     ): [ReturnRows, number] => {
       if (typeof groupByKey === 'undefined') return [rows, rows.length];
 
@@ -67,7 +67,7 @@ export function useGroupedRows<
                 childRows,
                 remainingGroupByKeys,
                 startRowIndex + groupRowsCount + 1, // 1 for parent row
-                `${groupParents ? `${groupParents}-$$$-` : ''}${key}`
+                `${groupParents ? `${groupParents}-$$$-` : ''}${key}`,
               );
 
         groups[key] = childGroups;
@@ -82,10 +82,10 @@ export function useGroupedRows<
             groupKey: key,
             groupByKey,
             childRows: groupsChildRows?.[key] as RowType[],
-            groupParents
-          })
+            groupParents,
+          }),
         }) as unknown as ReturnRows,
-        groupRowsCount
+        groupRowsCount,
       ];
     };
 
@@ -101,6 +101,6 @@ export function useGroupedRows<
     isRowsGroupingLabelVisible,
     setIsRowsGroupingLabelVisible,
     isRowsGroupingCounterVisible,
-    setIsRowsGroupingCounterVisible
+    setIsRowsGroupingCounterVisible,
   };
 }

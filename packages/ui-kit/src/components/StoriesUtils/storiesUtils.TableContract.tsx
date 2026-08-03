@@ -5,11 +5,11 @@ import type { ContractQueryParams } from '../TableContract/types.contractQueryPa
 import type {
   ContractColumnConfig,
   ContractResponse,
-  ContractTableConfig
+  ContractTableConfig,
 } from '../TableContract/types.contractResponse';
 
 export function StoryContractDataMain(
-  _p: Pick<ContractResponse['data'], 'main'>
+  _p: Pick<ContractResponse['data'], 'main'>,
 ) {
   return null;
 }
@@ -31,23 +31,23 @@ type ContractQueryParamsForBackend = {
   >;
 };
 export function StoryContractQueryParamsComp(
-  _p: ContractQueryParamsForBackend
+  _p: ContractQueryParamsForBackend,
 ) {
   return null;
 }
 
 export function StoryContractColumnSortingComp(
-  _p: NonNullable<Pick<ContractColumnConfig, 'sortingType'>>
+  _p: NonNullable<Pick<ContractColumnConfig, 'sortingType'>>,
 ) {
   return null;
 }
 export function StoryContractSearchingComp(
-  _p: ContractTableConfig['searching']
+  _p: ContractTableConfig['searching'],
 ) {
   return null;
 }
 export function StoryContractColumnSearchingComp(
-  _p: ContractColumnConfig['searching']
+  _p: ContractColumnConfig['searching'],
 ) {
   return null;
 }
@@ -55,12 +55,12 @@ export function StoryContractSubRowsComp(_p: ContractTableConfig['subRows']) {
   return null;
 }
 export function StoryContractColumnSubRowsComp(
-  _p: NonNullable<ContractColumnConfig['subRow']>
+  _p: NonNullable<ContractColumnConfig['subRow']>,
 ) {
   return null;
 }
 export function StoryContractColumnSummaryCellComp(
-  _p: NonNullable<ContractColumnConfig['summaryCell']>
+  _p: NonNullable<ContractColumnConfig['summaryCell']>,
 ) {
   return null;
 }

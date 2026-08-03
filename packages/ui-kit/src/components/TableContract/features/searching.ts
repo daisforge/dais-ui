@@ -3,16 +3,16 @@ import { useMemo } from 'react';
 import type {
   ContractTableConfig,
   InstanceTableConfig,
-  UrlAction
+  UrlAction,
 } from '../types';
 
 const SEARCHING = {
-  debounceDelay: 1000
+  debounceDelay: 1000,
 };
 
 export function useSearching({
   tableConfigBackendSearching,
-  dispatchParams
+  dispatchParams,
 }: {
   tableConfigBackendSearching: ContractTableConfig['searching'] | undefined;
   dispatchParams: React.Dispatch<UrlAction>;
@@ -26,7 +26,7 @@ export function useSearching({
     debounceDelay,
     isDebounceActive,
     searchClasses,
-    placeholder
+    placeholder,
   } = tableConfigBackendSearching ?? {};
 
   return useMemo((): Pick<InstanceTableConfig, 'searching'> | null => {
@@ -40,15 +40,15 @@ export function useSearching({
       debounceDelay,
       isDebounceActive,
       searchClasses,
-      placeholder
+      placeholder,
     };
     if (type === 'frontend') {
       return {
         searching: {
           enabled: true,
           manualSearching: false,
-          ...rest
-        }
+          ...rest,
+        },
       };
     }
 
@@ -60,8 +60,8 @@ export function useSearching({
           dispatchParams(['q', value]);
         },
         ...rest,
-        debounceDelay: rest.debounceDelay ?? SEARCHING.debounceDelay
-      }
+        debounceDelay: rest.debounceDelay ?? SEARCHING.debounceDelay,
+      },
     };
   }, [
     enabled,
@@ -72,6 +72,6 @@ export function useSearching({
     searchClasses,
     placeholder,
     type,
-    dispatchParams
+    dispatchParams,
   ]);
 }

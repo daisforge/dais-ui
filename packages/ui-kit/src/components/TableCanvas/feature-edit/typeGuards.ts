@@ -3,20 +3,20 @@ import type { ColumnConfigInternal } from '../types/column-config-internal.type'
 
 export const isServiceEditableColumn = <
   RowType extends ObjectForExtending,
-  SummaryRowType
+  SummaryRowType,
 >(
-  col: ColumnConfig<RowType, SummaryRowType>
+  col: ColumnConfig<RowType, SummaryRowType>,
 ): col is ColumnConfigInternal<RowType, SummaryRowType> => {
   const colX = col as ColumnConfigInternal<RowType, SummaryRowType>;
   return typeof colX?.editable === 'boolean' && !!colX.editable;
 };
 export const isEditableCell = <
   RowType extends ObjectForExtending,
-  SummaryRowType
+  SummaryRowType,
 >(
   editingCellConfig: ColumnConfig<RowType, SummaryRowType>['editingCell'],
   row: RowType,
-  tableConfigRowEditable: ((r: RowType) => boolean) | undefined
+  tableConfigRowEditable: ((r: RowType) => boolean) | undefined,
 ) => {
   if (!editingCellConfig) {
     return false;

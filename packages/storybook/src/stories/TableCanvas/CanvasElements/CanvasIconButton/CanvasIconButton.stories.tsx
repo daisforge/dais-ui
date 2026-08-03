@@ -1,17 +1,17 @@
 /* eslint-disable react-hooks/rules-of-hooks */
+import { getFuncAsString } from '@df-storybook/utils/getFuncAsString';
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
 import type { Meta, StoryObj } from '@storybook/react';
 import {
   Canvas,
   ColumnConfig,
-  TableCanvas
+  TableCanvas,
 } from '@ui-kit/components/TableCanvas';
 import { IconSearch } from '@ui-kit/icons';
 import React, { useMemo } from 'react';
 
 const VIEWS = [
   'default',
-  'primary',
   'accent',
   'secondary',
   'clear',
@@ -20,7 +20,7 @@ const VIEWS = [
   'critical',
   'dark',
   'black',
-  'white'
+  'white',
 ] as const;
 
 const SIZES = ['xs', 's', 'm', 'l'] as const;
@@ -31,75 +31,60 @@ const rows: ViewRow[] = VIEWS.map((view) => ({ id: view, view }));
 
 const meta: Meta = {
   title: 'Локальные компоненты/TableCanvas/CanvasElements/CanvasIconButton',
-  tags: ['!autodocs']
+  tags: ['!autodocs'],
 };
 
 export default meta;
 
+function Example(args: unknown) {
+  const { disabled } = args as { disabled: boolean };
+
+  const columnConfig = useMemo<readonly ColumnConfig<ViewRow>[]>(
+    () =>
+      SIZES.map((size) => ({
+        key: size,
+        name: size,
+        width: 80,
+        renderCell: ({ row }) => (
+          <Canvas.Container direction="row" alignItems="center" padding={8}>
+            <Canvas.IconButton
+              icon={<IconSearch />}
+              view={row.view}
+              buttonSize={size}
+              disabled={disabled}
+            />
+          </Canvas.Container>
+        ),
+      })),
+    [disabled],
+  );
+
+  return (
+    <TableCanvas
+      tableConfig={{ containerStyle: { height: '800px' }, rowHeight: 80 }}
+      columnConfig={columnConfig}
+      rows={rows}
+    />
+  );
+}
+
 const code = `
-import { Canvas, ColumnConfig, TableCanvas } from '@daisforge/ui/components/TableCanvas';
-import { IconSearch } from '@daisforge/ui/icons';
+import { Canvas, ColumnConfig, TableCanvas } from '@sber-digital-finance-ui/ui-kit/components/TableCanvas';
+import { IconSearch } from '@sber-digital-finance-ui/ui-kit/icons';
 
-const icon = Canvas.icon(<IconSearch />);
-
-const columnConfig: ColumnConfig[] = [
-  {
-    key: 'action',
-    name: '',
-    width: 80,
-    renderCell: () => (
-      <Canvas.Container direction="row" alignItems="center" padding={8}>
-        <Canvas.IconButton icon={icon} view="accent" buttonSize="m" />
-      </Canvas.Container>
-    ),
-  },
-];
-
-<TableCanvas
-  tableConfig={{ containerStyle: { height: '700px' } }}
-  columnConfig={columnConfig}
-  rows={rows}
-/>
+${getFuncAsString(
+  'packages/storybook/src/stories/TableCanvas/CanvasElements/CanvasIconButton/CanvasIconButton.stories.tsx',
+  'Example',
+)}
 `;
 
 export const Default: StoryObj = {
   ...storySourceDoc({ code, previewSource: 'shown' }),
   args: {
-    disabled: false
+    disabled: false,
   },
   argTypes: {
-    disabled: { control: 'boolean' }
+    disabled: { control: 'boolean' },
   },
-  render: (args) => {
-    const { disabled } = args as { disabled: boolean };
-    const icon = Canvas.icon(<IconSearch />);
-
-    const columnConfig = useMemo<readonly ColumnConfig<ViewRow>[]>(
-      () =>
-        SIZES.map((size) => ({
-          key: size,
-          name: size,
-          width: 80,
-          renderCell: ({ row }) => (
-            <Canvas.Container direction="row" alignItems="center" padding={8}>
-              <Canvas.IconButton
-                icon={icon}
-                view={row.view}
-                buttonSize={size}
-                disabled={disabled}
-              />
-            </Canvas.Container>
-          )
-        })),
-      [disabled, icon]
-    );
-
-    return (
-      <TableCanvas
-        tableConfig={{ containerStyle: { height: '700px' } }}
-        columnConfig={columnConfig}
-        rows={rows}
-      />
-    );
-  }
+  render: Example,
 };

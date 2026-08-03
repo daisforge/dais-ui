@@ -44,7 +44,7 @@ export const KeyTextIconWithDropdown: React.FC<
               height: '40px',
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'center'
+              justifyContent: 'center',
             }}
             {...rest}
           >

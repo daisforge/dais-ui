@@ -1,6 +1,6 @@
 export function removeAllFromArray<T>(
   arr: T[],
-  isDeleteItem: (item: T) => boolean
+  isDeleteItem: (item: T) => boolean,
 ) {
   let i = 0;
   while (i < arr.length) {
@@ -15,7 +15,7 @@ export function removeAllFromArray<T>(
 export function replaceAllFromArray<T>(
   arr: T[],
   isDeleteItem: (item: T) => boolean,
-  add: T[]
+  add: T[],
 ) {
   let i = 0;
   while (i < arr.length) {

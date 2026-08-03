@@ -2,7 +2,7 @@ import { useCallback, useRef, useState } from 'react';
 
 export const useDebouncedFn = <F, A extends unknown[]>(
   fn: (this: F, ...args: A) => unknown,
-  delay: number
+  delay: number,
 ) => {
   // debounce state
   const [debouncing, setIsDebouncing] = useState(false);
@@ -28,7 +28,7 @@ export const useDebouncedFn = <F, A extends unknown[]>(
         setIsDebouncing(false);
       }, delay);
     },
-    [delay, fn]
+    [delay, fn],
   );
   return [debounceFn, { debouncing }] as const;
 };

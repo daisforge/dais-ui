@@ -9,7 +9,7 @@ export const useMassActionsSidebar = ({
   calculatePositionForState,
   calculatePosition,
   setTranslateX,
-  shouldApplySidebarOffsetRef
+  shouldApplySidebarOffsetRef,
 }: {
   isCollapsed: boolean;
   setIsCollapsed: React.Dispatch<React.SetStateAction<boolean>>;
@@ -84,6 +84,6 @@ export const useMassActionsSidebar = ({
   return {
     isSidebarOpen,
     sidebarWidth,
-    wasAutoCollapsedRef
+    wasAutoCollapsedRef,
   };
 };

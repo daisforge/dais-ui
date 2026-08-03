@@ -11,9 +11,9 @@ export const flatten = <RowType extends ObjectForExtending>(
   customProps?: (
     level: number,
     row: RowType,
-    parent: RowType | null
+    parent: RowType | null,
   ) => ObjectForExtending,
-  filterCb?: (level: number, row: RowType, parent: RowType | null) => boolean
+  filterCb?: (level: number, row: RowType, parent: RowType | null) => boolean,
 ): Array<
   RowType & {
     [SELECTING_KEYS.level]: number;
@@ -32,7 +32,7 @@ export const flatten = <RowType extends ObjectForExtending>(
         ...x,
         [SELECTING_KEYS.level]: l,
         [SELECTING_KEYS.parent]: p,
-        customProps: customProps?.(l, x, p) ?? {}
+        customProps: customProps?.(l, x, p) ?? {},
       };
 
       acc.push(rowObj);
@@ -46,9 +46,9 @@ export const flatten = <RowType extends ObjectForExtending>(
         (level || 1) + 1,
         getParent(x),
         customProps,
-        filterCb
-      )
-    )
+        filterCb,
+      ),
+    ),
   );
 
 export interface ObjectWithParentAndId {
@@ -61,13 +61,13 @@ export interface ObjectWithParentAndId {
 export const getAllParents = <T extends ObjectWithParentAndId>(
   item: T,
   flattenedOptions: T[],
-  rowKeyGetter: (row: ObjectForExtending) => string | number
+  rowKeyGetter: (row: ObjectForExtending) => string | number,
 ) => {
   const allParents = new Map<string | number, ObjectForExtending>();
 
   if (!item) {
     return {
-      allParents
+      allParents,
     };
   }
 
@@ -76,7 +76,7 @@ export const getAllParents = <T extends ObjectWithParentAndId>(
     // allParents.set(key, getterItem);  // ---- если понадобится current and allParents
 
     const parenElement = flattenedOptions.find(
-      (el) => rowKeyGetter(el) === key
+      (el) => rowKeyGetter(el) === key,
     )?.parent;
 
     if (!parenElement) {
@@ -94,11 +94,11 @@ export const getAllParents = <T extends ObjectWithParentAndId>(
 
 export const getCustomOrDefaultSelectingRules = <
   RowType,
-  RowIdType extends string | number
+  RowIdType extends string | number,
 >(
-  selectingRules: SelectingRowConfig<RowType, RowIdType>['selectingRules']
+  selectingRules: SelectingRowConfig<RowType, RowIdType>['selectingRules'],
 ) => ({
-  levels: selectingRules?.levels ?? SELECTING_RULES_DEFAULT.levels
+  levels: selectingRules?.levels ?? SELECTING_RULES_DEFAULT.levels,
   // TODO доработать логику
   // changebleDisabledRow:
   //     selectingRules?.changebleDisabledRow ??

@@ -2,7 +2,7 @@ export {
   useHeaderContext,
   useRefTableGlobalContainerContext,
   useRowContext,
-  useSidebar
+  useSidebar,
 } from './contexts';
 export { hideRowServiceKeysHandler as getRowWithoutServiceKeys } from './data/hideServiceKeysHanlder';
 export { autoFocusAndSelect } from './feature-edit';
@@ -12,11 +12,11 @@ export {
   type DetailPanelRow,
   isDetailPanelRow,
   isRowWithDetailPanelRow,
-  type RowWithDetailPanel
+  type RowWithDetailPanel,
 } from './feature-row-detail/typeGuards';
 export type {
   RowInstrumentsDropdownItemOption,
-  RowInstrumentsType
+  RowInstrumentsType,
 } from './feature-row-instruments/types';
 export { isGroupRow, isNotGroupRow } from './feature-rows-grouping/typeGuards';
 export { type GroupRow } from './feature-rows-grouping/types';

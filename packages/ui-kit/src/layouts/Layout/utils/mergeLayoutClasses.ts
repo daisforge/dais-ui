@@ -7,7 +7,7 @@ import { LayoutClasses } from '../Layout.types';
  */
 export const mergeLayoutClasses = (
   defaultClasses: LayoutClasses,
-  className?: string | LayoutClasses
+  className?: string | LayoutClasses,
 ): LayoutClasses => {
   const isClassNameObj = typeof className === 'object';
 
@@ -26,6 +26,6 @@ export const mergeLayoutClasses = (
     }`.trim(),
     centeredItem: `${defaultClasses.centeredItem} ${
       isClassNameObj ? className?.centeredItem ?? '' : ''
-    }`.trim()
+    }`.trim(),
   };
 };

@@ -3,7 +3,7 @@ import { RefObject, useCallback, useEffect } from 'react';
 
 import {
   splitViewClassNames as cls,
-  splitViewConstants as c
+  splitViewConstants as c,
 } from '../SplitView.constants';
 import { pxToPercent } from '../SplitView.handlers';
 import { SplVSizes } from '../SplitView.type';
@@ -14,7 +14,7 @@ export const useResize = ({
   containerRef,
   sidebarMinWidthPx,
   sidebarMaxWidthPercent,
-  onResize
+  onResize,
 }: {
   setSizes: React.Dispatch<React.SetStateAction<SplVSizes>>;
   isResizingRef: React.MutableRefObject<boolean>;
@@ -64,7 +64,7 @@ export const useResize = ({
         main: mainWidthPercent,
         mainPx: mainWidthPx,
         sidebar: sidebarWidthPercent,
-        sidebarPx: sidebarWidthPx
+        sidebarPx: sidebarWidthPx,
       };
 
       setSizes(splValues);
@@ -86,7 +86,7 @@ export const useResize = ({
     onResize,
     setSizes,
     sidebarMaxWidthPercent,
-    sidebarMinWidthPx
+    sidebarMinWidthPx,
   ]);
   return { startResizing };
 };

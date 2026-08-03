@@ -2,7 +2,7 @@ import { getCols } from '../feature-key-text';
 import { KeyText, KeyTextMap } from '../feature-key-text/types';
 import {
   isRowInstrumentsColumn,
-  ROW_I_COLUMN_KEY
+  ROW_I_COLUMN_KEY,
 } from '../feature-row-instruments';
 import { ROW_MARKER_COLUMN_KEY } from '../feature-row-markers';
 import { KEY_GROUPED_COL } from '../feature-rows-grouping';
@@ -11,13 +11,13 @@ import { ColumnConfig, ObjectForExtending } from '../types';
 import {
   removeAllFromArray,
   replaceAllFromArray,
-  swapItemsByIndex
+  swapItemsByIndex,
 } from '../utils/arrayMutationHandlers';
 /**
  * Функция для добавления вперед колонок CHECKBOX_COLUMN_KEY, KEY_GROUPED_COL, для удаления дубликатов
  */
 export const orderWithUpdatedDefaultColsDeleteDuplicates = ({
-  orderArrayForChanging
+  orderArrayForChanging,
 }: {
   orderArrayForChanging: string[];
 }): Array<string> => {
@@ -27,7 +27,7 @@ export const orderWithUpdatedDefaultColsDeleteDuplicates = ({
     ROW_MARKER_COLUMN_KEY,
     CHECKBOX_COLUMN_KEY,
     ROW_I_COLUMN_KEY,
-    KEY_GROUPED_COL
+    KEY_GROUPED_COL,
   ].forEach((k) => {
     if (set.has(k)) {
       set.delete(k);
@@ -45,7 +45,7 @@ export const orderWithUpdatedDefaultColsDeleteDuplicates = ({
 export const updateOrderWithKeyText = ({
   keyText,
   orderArrayForChanging,
-  colsWithKeyTextMap
+  colsWithKeyTextMap,
 }: {
   orderArrayForChanging: string[];
   keyText: KeyText;
@@ -101,7 +101,7 @@ export const updateOrderWithKeyText = ({
       const correct = getCols({
         keyText,
         key: keyKey,
-        text: textKey
+        text: textKey,
       });
 
       replaceObj[id] = (arr) => {
@@ -116,7 +116,7 @@ export const updateOrderWithKeyText = ({
     const correctVersion = getCols({
       keyText,
       key: keyKey,
-      text: textKey
+      text: textKey,
     });
 
     const isShouldHaveOnlyOne = keyText === 'key' || keyText === 'text';
@@ -137,7 +137,7 @@ export const updateOrderWithKeyText = ({
 
     const current = [
       orderArrayForChanging[minInd] as string,
-      orderArrayForChanging[maxInd] as string
+      orderArrayForChanging[maxInd] as string,
     ];
     const isAlreadyCorrect = correctVersion.every((el, i) => el === current[i]);
 
@@ -203,7 +203,7 @@ export const sortedInOrder = <T extends ObjectForExtending, V>({
   rowsGroupingIsActive,
   showRowInstruments,
   colsWithKeyTextMap,
-  keyText
+  keyText,
 }: {
   columnConfig: readonly ColumnConfig<T, V>[];
   tableConfigDefaultOrder: string[] | undefined;
@@ -269,7 +269,7 @@ export const sortedInOrder = <T extends ObjectForExtending, V>({
   updateOrderWithKeyText({
     keyText,
     orderArrayForChanging: resultOrder,
-    colsWithKeyTextMap
+    colsWithKeyTextMap,
   });
 
   // СТАРАЯ ЛОГИКА, КОГДА ROW_INSTRUMENTS был в конце
@@ -285,7 +285,7 @@ export const sortedInOrder = <T extends ObjectForExtending, V>({
 
   // const resultOrderWithoutDouble = Array.from(setForRemovingDoubles);
   const resultOrderWithoutDouble = orderWithUpdatedDefaultColsDeleteDuplicates({
-    orderArrayForChanging: resultOrder
+    orderArrayForChanging: resultOrder,
   });
 
   return resultOrderWithoutDouble;
@@ -303,7 +303,7 @@ export function keyTextUpdateAfterReorder({
   orderArrayForChanging: newColumnsOrder,
   keyText,
   sourceColumnOrderIndex,
-  targetColumnOrderIndex
+  targetColumnOrderIndex,
 }: {
   sourceKey: string;
   targetKey: string;
@@ -337,7 +337,7 @@ export function keyTextUpdateAfterReorder({
     const correct = getCols({
       keyText,
       key: keyKey,
-      text: textKey
+      text: textKey,
     });
 
     newColumnsOrder.splice(pastedIndex, 1, ...correct);
@@ -430,12 +430,12 @@ export function keyTextUpdateAfterReorder({
     const correctSourceKeyText = getCols({
       keyText,
       key: sourceKeyKey,
-      text: sourceTextKey
+      text: sourceTextKey,
     });
     const correctTargetKeyText = getCols({
       keyText,
       key: targetKeyKey,
-      text: targetTextKey
+      text: targetTextKey,
     });
 
     const pastedFromLeftToRight =
@@ -475,7 +475,7 @@ export function getKeyTextCorrectedBorderPlacement({
   keyText,
   currentId,
   borderPlacement,
-  tableConfigKeyTextBoolean
+  tableConfigKeyTextBoolean,
 }: {
   colsWithKeyTextMap: KeyTextMap;
   keyText: KeyText;
@@ -500,7 +500,7 @@ export function getKeyTextCorrectedBorderPlacement({
   const currentKeyTextPlacement = getCols({
     keyText,
     key: keyKey,
-    text: textKey
+    text: textKey,
   });
 
   if (draggingIsHaveLowerIndex) {
@@ -519,7 +519,7 @@ export function getKeyTextCorrectedIsOvered({
   draggingId,
   currentIsDraggingOver,
   currentId,
-  tableConfigKeyTextBoolean
+  tableConfigKeyTextBoolean,
 }: {
   colsWithKeyTextMap: KeyTextMap;
   draggingId: string;

@@ -27,7 +27,7 @@ export type FieldValues = Record<string, any>;
 export const setValueInObj = (
   object: FieldValues,
   path: string,
-  value?: unknown
+  value?: unknown,
 ) => {
   let index = -1;
   const tempPath = isKey(path) ? [path] : stringToPath(path);

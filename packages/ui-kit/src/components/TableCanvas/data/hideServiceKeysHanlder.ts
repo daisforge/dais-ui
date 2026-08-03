@@ -1,13 +1,13 @@
 import {
   deleteDetailPanelServiceKeys,
   isDetailPanelRow,
-  rowIsHaveDetailPanel
+  rowIsHaveDetailPanel,
 } from '../feature-row-detail/handlers';
 import {
   deleteSubRowKeys,
   deleteTreeFlattenKeys,
   isSubRow,
-  isTreeFlattenRow
+  isTreeFlattenRow,
 } from '../feature-tree/handlers';
 import { ObjectForExtending } from '../types/utils.type';
 
@@ -15,7 +15,7 @@ import { ObjectForExtending } from '../types/utils.type';
  * @returns возвращает новую строку (объект типа Row) без сервисных
  */
 export function hideRowServiceKeysHandler<Row extends ObjectForExtending>(
-  r: Row
+  r: Row,
 ) {
   // detail panel checking 1
   if (isDetailPanelRow(r)) {

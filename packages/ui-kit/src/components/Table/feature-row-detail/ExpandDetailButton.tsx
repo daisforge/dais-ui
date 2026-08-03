@@ -2,7 +2,7 @@ import { Box } from '@ui-kit/components/Box';
 import { IconButton } from '@ui-kit/components/IconButton';
 import {
   IconChevronCircleDownFill,
-  IconChevronCircleUpFill
+  IconChevronCircleUpFill,
 } from '@ui-kit/icons';
 import React from 'react';
 
@@ -10,14 +10,14 @@ import { ObjectForExtending } from '../types/utils.type';
 import {
   getExpandButtonIcon,
   getExpandButtonProps,
-  rowIsHaveExpandedDetailPanel
+  rowIsHaveExpandedDetailPanel,
 } from './handlers';
 import { HandleExpandDetail } from './types';
 
 export const ExpandDetailButton = <RowType extends ObjectForExtending>({
   handleExpandRowDetail,
   row,
-  className
+  className,
 }: {
   handleExpandRowDetail: HandleExpandDetail<RowType> | null;
   row: RowType;

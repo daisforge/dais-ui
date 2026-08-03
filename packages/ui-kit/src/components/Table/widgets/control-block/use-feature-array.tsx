@@ -5,7 +5,7 @@ import {
   // ControlBlockSwitch,
   ObjectForExtending,
   SIZE,
-  TableConfig
+  TableConfig,
 } from '@ui-kit/components/Table';
 import {
   IconEditOutline,
@@ -17,7 +17,7 @@ import {
   IconSettingsOutline,
   IconViewScreen4Outline,
   // IconListView,
-  IconViewSplit4Outline
+  IconViewSplit4Outline,
 } from '@ui-kit/icons';
 import React, { useCallback, useState } from 'react';
 
@@ -29,14 +29,14 @@ import { FullScreenObj } from '../../feature-full-screen/types';
 import {
   KEY_TEXT_OPTIONS,
   KeyTextIconWithDropdown,
-  showKeyText
+  showKeyText,
 } from '../../feature-key-text';
 import type { KeyText, KeyTextMap } from '../../feature-key-text/types';
 import {
   getCurrentSizeIcon,
   getCurrentSizeLabel,
   isActivatedRowSize,
-  setRowSizeCb
+  setRowSizeCb,
 } from '../../feature-row-size';
 import { useGetRowsGroupingBtnProps } from '../../feature-rows-grouping';
 import { TableSettingsWithTabs } from '../../feature-table-settings';
@@ -49,14 +49,14 @@ const ifTrue = <T extends FeatureItem>(reason: boolean, value: T) =>
   reason ? [value] : [];
 const ifTrueBtn = <T extends ControlBlockButtonProps>(
   reason: boolean,
-  value: T
+  value: T,
 ) => (reason ? [value] : []);
 
 export const useFeatureArray = <
   FilterStateType extends ObjectForExtending,
   RowType extends ObjectForExtending,
   RowIdType extends string | number,
-  SummaryRowType = unknown
+  SummaryRowType = unknown,
 >({
   tableConfig,
   activeView,
@@ -98,7 +98,7 @@ export const useFeatureArray = <
   colsWithKeyTextMap,
   tableConfigKeyTextBoolean,
   compressionVisibility,
-  enableAdaptiveCompress
+  enableAdaptiveCompress,
 }: {
   tableConfig: TableConfig<
     RowType,
@@ -153,7 +153,7 @@ export const useFeatureArray = <
   // Состояние активного settings таба (внутренние табы в сайдбаре: Общие. Фильтры. Столбцы)
   // По умолчанию Общие
   const [activeSettingsTabId, setActiveSettingsTabId] = useState<string | null>(
-    'general'
+    'general',
   );
 
   const isActivated = {
@@ -189,7 +189,7 @@ export const useFeatureArray = <
 
     searching: activeViewIsRows && !!tableConfig?.searching?.enabled,
     filtering: isHasFilters({ tableConfig, columnConfig }),
-    collapsing: tableConfig.collapsing?.enableCollapse
+    collapsing: tableConfig.collapsing?.enableCollapse,
   };
 
   const { rowsGroupingButtonProps } = useGetRowsGroupingBtnProps({
@@ -197,7 +197,7 @@ export const useFeatureArray = <
     columnConfig,
     groupedCols,
     setGroupedCols,
-    isActivatedRowsGrouping: isActivated.rowsGrouping
+    isActivatedRowsGrouping: isActivated.rowsGrouping,
   });
 
   const featureLeftButtons: ControlBlockButtonProps[] = [
@@ -215,12 +215,12 @@ export const useFeatureArray = <
         });
       },
       className: tableConfig?.editing?.domMetadata?.className,
-      ...tableConfig.editing?.domMetadata?.dataAttributes
-    })
+      ...tableConfig.editing?.domMetadata?.dataAttributes,
+    }),
   ];
 
   const featureRightButtons: ControlBlockButtonProps[] = [
-    ...ifTrueBtn(isActivated.rowsGrouping, rowsGroupingButtonProps)
+    ...ifTrueBtn(isActivated.rowsGrouping, rowsGroupingButtonProps),
   ];
 
   const featureSearching = {
@@ -228,7 +228,7 @@ export const useFeatureArray = <
     showSearchBlock,
     setShowSearchBlock,
     searchQueryLocalValue,
-    placeholderSearchBlock
+    placeholderSearchBlock,
   };
 
   const { all, icons, featureItems, mandatoryFeatures } = (() => {
@@ -254,7 +254,7 @@ export const useFeatureArray = <
         // data-атрибуты
         ...(typeof tableConfig?.fullScreenEnabled !== 'boolean'
           ? tableConfig.fullScreenEnabled?.domMetadata?.dataAttributes || {}
-          : {})
+          : {}),
       }),
       ...ifTrue(isActivated.rowSize, {
         value: 'rowSize',
@@ -269,7 +269,7 @@ export const useFeatureArray = <
           });
           tableConfig.rowSize?.domMetadata?.onClick?.(undefined, {
             action: DOM_METADATA_ACTIONS.CHANGE_ROW_SIZE,
-            size: newSize
+            size: newSize,
           });
         },
 
@@ -282,7 +282,7 @@ export const useFeatureArray = <
           tableConfig.controlBlock?.customFeatures?.length > 0,
         // DomMetadata
         className: tableConfig.rowSize?.domMetadata?.className,
-        ...tableConfig?.rowSize?.domMetadata?.dataAttributes
+        ...tableConfig?.rowSize?.domMetadata?.dataAttributes,
       }),
       ...ifTrue(isActivated.viewChanging, {
         value: 'view-mode',
@@ -300,8 +300,8 @@ export const useFeatureArray = <
           tableConfig.controlBlock?.customFeatures?.length > 0,
         // DomMetadata
         className: tableConfig?.view?.domMetadata?.className,
-        ...tableConfig?.view?.domMetadata?.dataAttributes
-      })
+        ...tableConfig?.view?.domMetadata?.dataAttributes,
+      }),
     ];
 
     // Затем собираем остальные фичи
@@ -388,21 +388,21 @@ export const useFeatureArray = <
           // Data-атрибуты
           ...(typeof tableConfig?.keyText !== 'boolean'
             ? tableConfig.keyText?.sidebar.domMetadata?.dataAttributes || {}
-            : {})
-        }
+            : {}),
+        },
       }),
       ...(tableConfig.controlBlock?.customFeatures ?? []).map((feature) => ({
         ...feature,
         // Помечаем кастомные фичи как optional, если явно не указано mandatory
         mandatory: feature.mandatory || false,
-        canBeCompressedInToolsMenu: true // любые кастомные фичи могут быть сжаты в ...
-      }))
+        canBeCompressedInToolsMenu: true, // любые кастомные фичи могут быть сжаты в ...
+      })),
     ];
 
     // Разделяем все фичи на mandatory и optional
     const allMandatoryFeatures = [
       ...mandatoryFeatures,
-      ...optionalFeatures.filter((f) => f.mandatory)
+      ...optionalFeatures.filter((f) => f.mandatory),
     ];
     const allOptionalFeatures = optionalFeatures.filter((f) => !f.mandatory);
 
@@ -417,11 +417,11 @@ export const useFeatureArray = <
       // Иначе добавляем optional фичи до достижения лимита в 5
       const optionalToShow = Math.min(
         allOptionalFeatures.length,
-        maxMandatoryFeatures - allMandatoryFeatures.length
+        maxMandatoryFeatures - allMandatoryFeatures.length,
       );
       visibleIcons = [
         ...allMandatoryFeatures,
-        ...allOptionalFeatures.slice(0, optionalToShow)
+        ...allOptionalFeatures.slice(0, optionalToShow),
       ];
     }
 
@@ -434,7 +434,7 @@ export const useFeatureArray = <
             // 2. ИЛИ система компрессии пометила ее как isMovedToRightSidebar
 
             const isVisible = visibleIcons.some(
-              (v) => v.value === feature.value
+              (v) => v.value === feature.value,
             );
             const globalIndex = allMandatoryFeatures.length + index;
             const isMovedByCompression =
@@ -444,14 +444,14 @@ export const useFeatureArray = <
             return !isVisible || isMovedByCompression;
           })
         : allOptionalFeatures.filter(
-            (f) => !visibleIcons.some((v) => v.value === f.value)
+            (f) => !visibleIcons.some((v) => v.value === f.value),
           );
 
     return {
       all: [...allMandatoryFeatures, ...allOptionalFeatures],
       icons: visibleIcons,
       featureItems,
-      mandatoryFeatures: allMandatoryFeatures
+      mandatoryFeatures: allMandatoryFeatures,
     };
   })();
 
@@ -483,7 +483,7 @@ export const useFeatureArray = <
   const findInDefaultTabs = useCallback(
     (id: string) =>
       tableConfig?.sidebarConfig?.defaultTabs?.find((item) => item.id === id),
-    [tableConfig?.sidebarConfig?.defaultTabs]
+    [tableConfig?.sidebarConfig?.defaultTabs],
   );
 
   const tableSettingsTabFromConfig = findInDefaultTabs('tableSettings');
@@ -506,9 +506,9 @@ export const useFeatureArray = <
               className: tableConfig.summaryRows?.domMetadata?.className,
               onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
                 setSummaryRowsIsActive(e.target.checked),
-              ...tableConfig.summaryRows?.domMetadata?.dataAttributes
-            }
-          }
+              ...tableConfig.summaryRows?.domMetadata?.dataAttributes,
+            },
+          },
         ]
       : []),
     ...(isActivated.selectingRows
@@ -525,9 +525,9 @@ export const useFeatureArray = <
               onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
                 setSelectingRowsIsActive(e.target.checked),
               className: tableConfig.selecting?.sidebar?.domMetadata?.className,
-              ...tableConfig.selecting?.sidebar?.domMetadata?.dataAttributes
-            }
-          }
+              ...tableConfig.selecting?.sidebar?.domMetadata?.dataAttributes,
+            },
+          },
         ]
       : []),
     ...(isActivated.rowInstruments
@@ -542,11 +542,11 @@ export const useFeatureArray = <
               label: 'Инструменты в строках',
               checked: showRowInstruments,
               onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
-                setShowRowInstruments(e.target.checked)
-            }
-          }
+                setShowRowInstruments(e.target.checked),
+            },
+          },
         ]
-      : [])
+      : []),
   ];
 
   // Кастомный слот для блока общих настроек в правом сайдбаре таблицы
@@ -564,7 +564,7 @@ export const useFeatureArray = <
   const hasColumnsControl = isActivated.columnsControl;
 
   const activeSections = [hasGeneral, hasFiltering, hasColumnsControl].filter(
-    Boolean
+    Boolean,
   ).length;
 
   // Если активен только один раздел - используем его название в качестве title
@@ -633,8 +633,8 @@ export const useFeatureArray = <
           }
         />
       ),
-      domMetadata: tableSettingsTabFromConfig?.domMetadata
-    }
+      domMetadata: tableSettingsTabFromConfig?.domMetadata,
+    },
   ];
 
   const sidebarTabs: SidebarTab[] = (() => {
@@ -652,7 +652,7 @@ export const useFeatureArray = <
           .filter(Boolean) as SidebarTab[];
 
         const remainingTabs = customTabs.filter(
-          (tab) => !customTabsOrder.includes(tab.id)
+          (tab) => !customTabsOrder.includes(tab.id),
         );
         resultTabs.push(...orderedTabs, ...remainingTabs);
       } else {
@@ -681,6 +681,6 @@ export const useFeatureArray = <
       sidebarTabs.some((tab) => tab.showInSidebar),
     activeSidebarTabId,
     sidebarTabs,
-    isActivated
+    isActivated,
   };
 };

@@ -3,7 +3,7 @@ import { ObjectForExtending } from '../types';
 /* eslint-disable @typescript-eslint/naming-convention */
 export function isAtBottom({
   event: { currentTarget, target },
-  scrollThreshold = 100
+  scrollThreshold = 100,
 }: {
   event: React.UIEvent<HTMLElement>;
   scrollThreshold: number | undefined;
@@ -19,10 +19,10 @@ export const SKELETON_CELLS_KEY = 'SKELETON_CELLS_XXXXXXXXX';
 export const SKELETON_ROW = { [SKELETON_ROW_KEY]: true } as const;
 export type SkeletonCells = Set<string>;
 export const addSkeletonToCellInRow = <
-  RowType extends ObjectForExtending = ObjectForExtending
+  RowType extends ObjectForExtending = ObjectForExtending,
 >(
   row: RowType,
-  columnKeyForSkeleton: string
+  columnKeyForSkeleton: string,
 ) => {
   const currentSkeletonCells = row?.[SKELETON_CELLS_KEY] as
     | Set<string>
@@ -36,10 +36,10 @@ export const addSkeletonToCellInRow = <
 };
 
 export const deleteSkeletonCellFromRow = <
-  RowType extends ObjectForExtending = ObjectForExtending
+  RowType extends ObjectForExtending = ObjectForExtending,
 >(
   row: RowType,
-  columnKeyWithSkeleton: string
+  columnKeyWithSkeleton: string,
 ) => {
   const currentSkeletonCells = row?.[SKELETON_CELLS_KEY] as
     | Set<string>
@@ -59,14 +59,14 @@ export const deleteSkeletonCellFromRow = <
 };
 
 export const addSkeletonToRow = <
-  RowType extends ObjectForExtending = ObjectForExtending
+  RowType extends ObjectForExtending = ObjectForExtending,
 >(
-  row: RowType
+  row: RowType,
 ) => ({ ...row, [SKELETON_ROW_KEY]: true });
 export const deleteSkeletonFromRow = <
-  RowType extends ObjectForExtending = ObjectForExtending
+  RowType extends ObjectForExtending = ObjectForExtending,
 >(
-  row: RowType
+  row: RowType,
 ) => {
   const newRow = { ...row };
   delete newRow?.[SKELETON_ROW_KEY];

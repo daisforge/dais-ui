@@ -6,7 +6,7 @@ import type {
   ContractResponse,
   ContractTableConfig,
   InstanceColumnConfig,
-  ObjectAny
+  ObjectAny,
 } from './types';
 import { SelectBooleanEditor } from './ui/selectBooleanEditor';
 
@@ -17,7 +17,7 @@ export const ANSI_SQL_TO_UI_EDITING: Record<
   Boolean: {
     component: (renderEditCellProps) => (
       <SelectBooleanEditor {...renderEditCellProps} />
-    )
+    ),
   },
   Text: { component: 'inputString' },
   // Numbers
@@ -28,12 +28,12 @@ export const ANSI_SQL_TO_UI_EDITING: Record<
   Date: { component: 'inputString' },
   Time: { component: 'inputString' },
   'Timestamp with timezone': { component: 'inputString' },
-  'Timestamp without timezone': { component: 'inputString' }
+  'Timestamp without timezone': { component: 'inputString' },
 };
 
 const getEditingCellFront = (
   backValue: ContractColumnConfig['editingCell'],
-  columnType: ColumnAnsiSqlType | undefined
+  columnType: ColumnAnsiSqlType | undefined,
 ): InstanceColumnConfig['editingCell'] => {
   if (!backValue) {
     if (!columnType) return undefined;
@@ -43,7 +43,7 @@ const getEditingCellFront = (
     const frontValue: InstanceColumnConfig['editingCell'] = {
       ...uiConfig,
       error: { value: () => false },
-      editable: true
+      editable: true,
     };
     return frontValue;
   }
@@ -57,7 +57,7 @@ const getEditingCellFront = (
             const rowErrorValue = keyGetter(row);
 
             return rowErrorValue === errorBack.value.errorValue;
-          }
+          },
         }
       : undefined;
 
@@ -78,7 +78,7 @@ const getEditingCellFront = (
     ...(error && { error }),
     ...(editable && { editable }),
 
-    ...rest
+    ...rest,
   };
 
   return frontValue;
@@ -86,7 +86,7 @@ const getEditingCellFront = (
 
 export const columnsConfigMapper = (
   columnsConfigBackend: ContractColumnConfig[],
-  tableConfigBackend: ContractTableConfig | undefined
+  tableConfigBackend: ContractTableConfig | undefined,
 ): InstanceColumnConfig[] =>
   columnsConfigBackend.map((columnBackend) => {
     const { columnType } = columnBackend;
@@ -95,7 +95,7 @@ export const columnsConfigMapper = (
     // по умолчанию включено
     const columnAdditionalEntries: [
       KeyOfInstance,
-      InstanceColumnConfig[KeyOfInstance]
+      InstanceColumnConfig[KeyOfInstance],
     ][] = [];
 
     if (tableConfigBackend?.filtering) {
@@ -104,8 +104,8 @@ export const columnsConfigMapper = (
         {
           component: 'input',
           filter: 'includes',
-          keyInFilterState: columnBackend.key
-        } as InstanceColumnConfig['filtering']
+          keyInFilterState: columnBackend.key,
+        } as InstanceColumnConfig['filtering'],
       ]);
     }
 
@@ -136,10 +136,10 @@ export const columnsConfigMapper = (
           newValue = {
             ...restValue,
             ...(contentFormat && {
-              contentFormat: contentFormat as ContentFormat
+              contentFormat: contentFormat as ContentFormat,
             }),
             ...(editingCell && {
-              editingCell: editingCell as unknown as undefined
+              editingCell: editingCell as unknown as undefined,
             }),
             ...(keyOfColumnInSubRow && {
               keyOfColumnInSubRow: (lvl) => {
@@ -151,8 +151,8 @@ export const columnsConfigMapper = (
 
                 const key = backValue.keyOfColumnInSubRow?.[lvl];
                 return key ?? backValue.keyOfColumnInSubRow?.['default'] ?? '';
-              }
-            })
+              },
+            }),
           };
           return [key, newValue];
         }
@@ -164,7 +164,7 @@ export const columnsConfigMapper = (
           const frontValue: NonNullable<InstanceColumnConfig['searching']> = {
             valueInRow(row) {
               return row?.[backValue.keyInRow];
-            }
+            },
           };
 
           return [key, frontValue];
@@ -204,7 +204,7 @@ export const columnsConfigMapper = (
           const editingCellKey = 'editingCell';
           const editingCellFront = getEditingCellFront(
             editingBackValue,
-            columnType
+            columnType,
           );
 
           columnAdditionalEntries.push([editingCellKey, editingCellFront]);
@@ -224,7 +224,7 @@ export const columnsConfigMapper = (
 
     const columnConfig: InstanceColumnConfig = Object.fromEntries([
       ...columnAdditionalEntries,
-      ...columnEntries
+      ...columnEntries,
     ]);
 
     return columnConfig;
@@ -235,14 +235,14 @@ export const responseMapper = (resp: ContractResponse) => {
     data: {
       main: rows,
       topSummary: topSummaryRows,
-      bottomSummary: bottomSummaryRows
+      bottomSummary: bottomSummaryRows,
     },
-    meta: { tableConfig: tableConfigBackend, columns: columnsConfigBackend }
+    meta: { tableConfig: tableConfigBackend, columns: columnsConfigBackend },
   } = resp;
 
   const columnsConfig = columnsConfigMapper(
     columnsConfigBackend,
-    tableConfigBackend
+    tableConfigBackend,
   );
 
   return {
@@ -250,6 +250,6 @@ export const responseMapper = (resp: ContractResponse) => {
     columnsConfig,
     tableConfigBackend,
     topSummaryRows,
-    bottomSummaryRows
+    bottomSummaryRows,
   };
 };

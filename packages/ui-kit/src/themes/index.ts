@@ -3,7 +3,7 @@ export type { ThemeModule };
 
 export {
   compatible as compatible_typo_theme,
-  standard as standard_typo_theme
+  standard as standard_typo_theme,
 } from '@salutejs/plasma-typo';
 export { sdds_finai__dark, sdds_finai__light } from '@salutejs/sdds-themes';
 // themes sdds-finai high contrast

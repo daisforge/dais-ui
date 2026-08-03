@@ -10,36 +10,36 @@ const meta: Meta<BoxProps> = {
   title: 'Локальные компоненты/Box',
   component: Box,
   args: {
-    hidden: false
+    hidden: false,
   },
   argTypes: {
     $css: {
-      description: 'Кастомные стили styled-components для корневого узла'
+      description: 'Кастомные стили styled-components для корневого узла',
     },
     as: {
       description:
         'Компонент, используемый для корневого узла. Либо строка для использования элемента HTML, либо компонента. (Например: `li`, `p`, `button` и т.д.)',
 
       control: {
-        type: 'text'
+        type: 'text',
       },
       table: {
         defaultValue: { summary: 'div' },
-        type: { summary: 'string' }
-      }
+        type: { summary: 'string' },
+      },
     },
     hidden: {
       description: 'Скрытие элемента',
       table: {
         defaultValue: { summary: 'false' },
-        type: { summary: 'boolean' }
+        type: { summary: 'boolean' },
       },
       control: {
-        type: 'boolean'
-      }
-    }
+        type: 'boolean',
+      },
+    },
   },
-  tags: ['!autodocs']
+  tags: ['!autodocs'],
 };
 
 export default meta;
@@ -62,7 +62,7 @@ export const Default: Story = {
 import { Box, textAccent, textNegative } from '@daisforge/ui';
 
 `,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => (
     <Box
@@ -75,7 +75,7 @@ import { Box, textAccent, textNegative } from '@daisforge/ui';
         gap: 16,
         background: textAccent,
         borderRadius: 16,
-        color: 'white'
+        color: 'white',
       }}
     >
       Box №1
@@ -83,7 +83,7 @@ import { Box, textAccent, textNegative } from '@daisforge/ui';
         Box №2
       </Box>
     </Box>
-  )
+  ),
 };
 
 /**
@@ -98,7 +98,7 @@ export const CSSObject: Story = {
     preCode: `import { Box, textAccent } from '@daisforge/ui';
 
     `,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
 
   render: () => (
@@ -108,10 +108,10 @@ export const CSSObject: Story = {
         width: '500px',
         background: textAccent,
         borderRadius: 16,
-        color: 'white'
+        color: 'white',
       }}
     />
-  )
+  ),
 };
 
 /**
@@ -125,7 +125,7 @@ export const CSSString: Story = {
     preCode: `import { Box, textPositive } from '@daisforge/ui';
 
     `,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
 
   render: () => (
@@ -137,7 +137,7 @@ export const CSSString: Story = {
             border-radius: 8px;
         `}
     />
-  )
+  ),
 };
 
 /**
@@ -154,7 +154,7 @@ export const CSSProps: Story = {
     preCode: `import { Box } from '@daisforge/ui';
 
     `,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
 
   render: () => (
@@ -164,7 +164,7 @@ export const CSSProps: Story = {
       background="yellow"
       border="8px solid green"
     />
-  )
+  ),
 };
 
 /**
@@ -179,14 +179,14 @@ export const BoxAnyComponent: Story = {
     preCode: `import { Box, Button } from '@daisforge/ui';
 
     `,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
 
   render: () => (
     <Box as={Link} onClick={() => alert('Я кнопка')}>
       Теперь это кнопка (нажми на меня)
     </Box>
-  )
+  ),
 };
 
 /**
@@ -201,8 +201,8 @@ export const BoxHtmlComponent: Story = {
     preCode: `import { Box } from '@daisforge/ui';
 
     `,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
 
-  render: () => <Box as="input" placeholder="Теперь это Input" />
+  render: () => <Box as="input" placeholder="Теперь это Input" />,
 };

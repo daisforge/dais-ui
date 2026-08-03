@@ -1,9 +1,9 @@
 import {
   IconButtonDots,
-  IconButtonFilter
+  IconButtonFilter,
 } from '@ui-kit/components/IconButton';
 
 export {
   IconButtonDots as AnalyticalWidgetIconButtonDots,
-  IconButtonFilter as AnalyticalWidgetIconButtonFilter
+  IconButtonFilter as AnalyticalWidgetIconButtonFilter,
 };

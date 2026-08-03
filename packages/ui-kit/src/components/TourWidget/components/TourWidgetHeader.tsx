@@ -3,7 +3,7 @@ import { forwardRef } from 'react';
 import {
   StyledHeader,
   StyledHeaderDescription,
-  StyledHeaderTitle
+  StyledHeaderTitle,
 } from '../TourWidget.styled';
 import type { TourWidgetHeaderProps } from '../types';
 

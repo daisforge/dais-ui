@@ -9,7 +9,7 @@ export const splitViewClassNames = {
   sidebarBlockIsResizing: `${PRE}sidebar-block-is-resizing`,
   sidebarIsClosingOrClosedOrOpening: `${PRE}sidebar-is-closing-closed-opening`,
   sidebarBlockFullScreenContentContainer: `${PRE}sidebar-block__full-screen-content-container`,
-  sidebarBlockInModal: `${PRE}sidebar-block-in-modal`
+  sidebarBlockInModal: `${PRE}sidebar-block-in-modal`,
 } as const;
 
 const gapBetweenBlocksDefaultWidth = 32;
@@ -28,6 +28,6 @@ export const splitViewConstants = {
     minWidthPx: 600,
     adaptive1280MinWidthPx: 440,
     maxWidthPercent: 70,
-    defaultWidthPercent: 30
-  }
+    defaultWidthPercent: 30,
+  },
 } as const;

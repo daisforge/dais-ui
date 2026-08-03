@@ -2,7 +2,7 @@ import type {
   FieldValues,
   Path,
   RegisterOptions,
-  ValidationRule
+  ValidationRule,
 } from 'react-hook-form';
 
 import { TDatePickerFormat } from '../../types';

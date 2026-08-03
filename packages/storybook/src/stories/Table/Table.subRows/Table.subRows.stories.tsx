@@ -12,9 +12,9 @@ const meta: Meta = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      page: DocStoryTemplate
-    }
-  }
+      page: DocStoryTemplate,
+    },
+  },
 };
 
 export default meta;
@@ -29,7 +29,7 @@ import { Badge, ColumnConfig, Table } from '@daisforge/ui';
 export const SubRows: Story = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   name: 'Иерархичный вид',
   render: () => {
@@ -56,13 +56,13 @@ export const SubRows: Story = {
             },
 
             isColumnWithArrow: true,
-            hideHeaderExpandAllArrow: false
+            hideHeaderExpandAllArrow: false,
           },
-          resizable: true
+          resizable: true,
         },
         {
           key: 'blockActivity',
-          name: 'Активность блока'
+          name: 'Активность блока',
         },
         {
           key: '',
@@ -79,41 +79,41 @@ export const SubRows: Story = {
                 );
               }
               return null;
-            }
-          }
+            },
+          },
         },
         {
           key: 'q1',
           name: 'Q1',
 
           subRow: {
-            parentKeyAsDefault: true
-          }
+            parentKeyAsDefault: true,
+          },
         },
 
         {
           key: 'q2',
           name: 'Q2',
           subRow: {
-            keyOfColumnInSubRow: 'q1'
-          }
+            keyOfColumnInSubRow: 'q1',
+          },
         },
         {
           key: 'q3',
           name: 'Q3',
           subRow: {
-            keyOfColumnInSubRow: 'q1'
-          }
+            keyOfColumnInSubRow: 'q1',
+          },
         },
         {
           key: 'q4',
           name: 'Q4',
           subRow: {
-            keyOfColumnInSubRow: 'q1'
-          }
-        }
+            keyOfColumnInSubRow: 'q1',
+          },
+        },
       ],
-      []
+      [],
     );
 
     return (
@@ -122,13 +122,13 @@ export const SubRows: Story = {
           containerStyle: { height: '700px' },
           subRows: {
             getSubRows: (row) => row?.subRows,
-            rowKeyGetter: (row) => row.id
+            rowKeyGetter: (row) => row.id,
           },
-          resizableColumn: true
+          resizableColumn: true,
         }}
         columnConfig={columns}
         rows={rows}
       />
     );
-  }
+  },
 };

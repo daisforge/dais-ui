@@ -1,7 +1,7 @@
 import {
   borderRadiusXs,
   outlineSolidPrimary,
-  surfaceSolidCard
+  surfaceSolidCard,
 } from '@ui-kit/tokens';
 import { fadeIn } from '@ui-kit/utils/styles/animations';
 import styled, { css, keyframes } from 'styled-components';
@@ -62,14 +62,14 @@ export const OverlayContainer = styled.div<{
     $borderLeftTopRadiusRounded,
     $borderRightTopRadiusRounded,
     $borderLeftBottomRadiusRounded,
-    $borderRightBottomRadiusRounded
+    $borderRightBottomRadiusRounded,
   }) =>
     css`
       border-radius: ${getBorderRadiusValue(
-          $displayMode === 'full-content' && $borderLeftTopRadiusRounded
+          $displayMode === 'full-content' && $borderLeftTopRadiusRounded,
         )}
         ${getBorderRadiusValue(
-          $displayMode === 'full-content' && $borderRightTopRadiusRounded
+          $displayMode === 'full-content' && $borderRightTopRadiusRounded,
         )}
         ${getBorderRadiusValue($borderRightBottomRadiusRounded)}
         ${getBorderRadiusValue($borderLeftBottomRadiusRounded)};

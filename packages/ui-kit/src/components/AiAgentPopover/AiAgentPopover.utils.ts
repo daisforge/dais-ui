@@ -3,18 +3,18 @@ import type { PopoverProps } from '@ui-kit/components/Popover';
 
 import {
   DEFAULT_POSITION,
-  ELEMENT_INDENTATION
+  ELEMENT_INDENTATION,
 } from './AiAgentPopover.constants';
 import {
   AiAgentPopoverCustomPlacement,
   AiAgentPopoverDragBoundary,
   AiAgentPopoverDragSector,
-  AiAgentPopoverPlacement
+  AiAgentPopoverPlacement,
 } from './AiAgentPopover.types';
 
 // Проверяем, является ли placement кастомным
 export const isCustomPlacement = (
-  placement?: AiAgentPopoverPlacement
+  placement?: AiAgentPopoverPlacement,
 ): placement is AiAgentPopoverCustomPlacement => {
   if (!placement) return false;
   return (
@@ -27,7 +27,7 @@ export const isCustomPlacement = (
  *Преобразует кастомные placement в стандартные
  */
 export const normalizePlacement = (
-  placement: AiAgentPopoverPlacement
+  placement: AiAgentPopoverPlacement,
 ): PopoverProps['placement'] => {
   if (!isCustomPlacement(placement))
     return placement as PopoverProps['placement'];
@@ -56,7 +56,7 @@ export const getCurrentSector = ({
   position,
   size = { width: 0, height: 0 },
   boundary = {},
-  enableLogs = false
+  enableLogs = false,
 }: GetCurrentSectorParams): AiAgentPopoverDragSector => {
   const { innerWidth, innerHeight } = window;
   const { left = 0, right = 0, top = 0, bottom = 0 } = boundary;
@@ -92,7 +92,7 @@ export const getCurrentSector = ({
     3: 0,
     4: 0,
     5: 0,
-    6: 0
+    6: 0,
   };
 
   // Проверяем пересечение элемента с каждым сектором
@@ -109,11 +109,11 @@ export const getCurrentSector = ({
     // Вычисляем площадь пересечения
     const overlapX = Math.max(
       0,
-      Math.min(elemRight, sectorRight) - Math.max(x, sectorX)
+      Math.min(elemRight, sectorRight) - Math.max(x, sectorX),
     );
     const overlapY = Math.max(
       0,
-      Math.min(elemBottom, sectorBottom) - Math.max(y, sectorY)
+      Math.min(elemBottom, sectorBottom) - Math.max(y, sectorY),
     );
     const overlapArea = overlapX * overlapY;
 
@@ -142,7 +142,7 @@ export const getCurrentSector = ({
 
 // Определение placement по сектору
 export const getPlacementForSector = (
-  sector: AiAgentPopoverDragSector
+  sector: AiAgentPopoverDragSector,
 ): AiAgentPopoverPlacement => {
   switch (sector) {
     case 1:
@@ -165,7 +165,7 @@ export const getPlacementForSector = (
 export const getPositionFromPlacement = (
   placement: AiAgentPopoverCustomPlacement,
   boundary?: AiAgentPopoverDragBoundary,
-  elementSize: { width: number; height: number } = { width: 0, height: 0 }
+  elementSize: { width: number; height: number } = { width: 0, height: 0 },
 ): { x: number; y: number } => {
   const windowWidth = window.innerWidth;
   const windowHeight = window.innerHeight;
@@ -174,7 +174,7 @@ export const getPositionFromPlacement = (
     top: marginTop = 0,
     right: marginRight = 0,
     bottom: marginBottom = 0,
-    left: marginLeft = 0
+    left: marginLeft = 0,
   } = boundary || {};
 
   const offset = ELEMENT_INDENTATION;
@@ -194,7 +194,7 @@ export const getPositionFromPlacement = (
     top: effectiveTop,
     right: windowWidth - effectiveRight,
     bottom: windowHeight - effectiveBottom,
-    left: effectiveLeft
+    left: effectiveLeft,
   };
 
   // Может быть полезно для debug в будущем
@@ -217,26 +217,26 @@ export const getPositionFromPlacement = (
         x: Math.min(safeArea.left, windowWidth - elementWidth - effectiveRight),
         y: Math.min(
           safeArea.top,
-          windowHeight - elementHeight - effectiveBottom
-        )
+          windowHeight - elementHeight - effectiveBottom,
+        ),
       };
     case 'top-right':
       return {
         x: Math.max(safeArea.right - elementWidth, effectiveLeft),
         y: Math.min(
           safeArea.top,
-          windowHeight - elementHeight - effectiveBottom
-        )
+          windowHeight - elementHeight - effectiveBottom,
+        ),
       };
     case 'bottom-left':
       return {
         x: Math.min(safeArea.left, windowWidth - elementWidth - effectiveRight),
-        y: Math.max(safeArea.bottom - elementHeight, effectiveTop)
+        y: Math.max(safeArea.bottom - elementHeight, effectiveTop),
       };
     case 'bottom-right':
       return {
         x: Math.max(safeArea.right - elementWidth, effectiveLeft),
-        y: Math.max(safeArea.bottom - elementHeight, effectiveTop)
+        y: Math.max(safeArea.bottom - elementHeight, effectiveTop),
       };
     default:
       return DEFAULT_POSITION;
@@ -255,7 +255,7 @@ export const getPositionFromPlacement = (
  * - top          → top-right    (сектор 5, контент раскрывается вверх)
  */
 export const getResizableCorner = (
-  placement: AiAgentPopoverPlacement | undefined
+  placement: AiAgentPopoverPlacement | undefined,
 ): AiAgentPopoverCustomPlacement => {
   if (!placement || typeof placement !== 'string') return 'bottom-right';
 
@@ -281,7 +281,7 @@ export const isOffsetsEqual = (a: [number, number], b: [number, number]) =>
   a[0] === b[0] && a[1] === b[1];
 
 export const isVerticalPlacement = (
-  placement: AiAgentPopoverPlacement | string
+  placement: AiAgentPopoverPlacement | string,
 ): placement is
   | 'top'
   | 'bottom'
@@ -296,23 +296,23 @@ export const isVerticalPlacement = (
     'top-left',
     'top-right',
     'bottom-left',
-    'bottom-right'
+    'bottom-right',
   ].includes(placement);
 
 export const validatePosition = (
   position: { x: number; y: number },
   elementSize = { width: 0, height: 0 },
-  boundary = { top: 0, right: 0, bottom: 0, left: 0 }
+  boundary = { top: 0, right: 0, bottom: 0, left: 0 },
 ) => {
   const { innerWidth, innerHeight } = window;
   return {
     x: Math.max(
       boundary.left,
-      Math.min(position.x, innerWidth - elementSize.width - boundary.right)
+      Math.min(position.x, innerWidth - elementSize.width - boundary.right),
     ),
     y: Math.max(
       boundary.top,
-      Math.min(position.y, innerHeight - elementSize.height - boundary.bottom)
-    )
+      Math.min(position.y, innerHeight - elementSize.height - boundary.bottom),
+    ),
   };
 };

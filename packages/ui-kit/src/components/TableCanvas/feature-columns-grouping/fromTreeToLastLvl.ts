@@ -1,19 +1,19 @@
 import {
   ColumnConfig,
   ColumnOrColumnGroupConfig,
-  ObjectForExtending
+  ObjectForExtending,
 } from '../types';
 import { FlattenedColumnOrColumnGroupConfig } from './types';
 
 export function isNotGroupColumn<Row extends ObjectForExtending, SummRow>(
-  column: ColumnOrColumnGroupConfig<Row, SummRow>
+  column: ColumnOrColumnGroupConfig<Row, SummRow>,
 ): column is ColumnConfig<Row, SummRow> {
   return (column as { children: unknown }).children === undefined;
 }
 
 const addOnlyDeepest = <Row extends ObjectForExtending, SummRow>(
   col: ColumnOrColumnGroupConfig<Row, SummRow>,
-  arrForPush: ColumnConfig<Row, SummRow>[]
+  arrForPush: ColumnConfig<Row, SummRow>[],
 ) => {
   if (isNotGroupColumn(col)) {
     arrForPush.push({ ...col });
@@ -25,7 +25,7 @@ const addOnlyDeepest = <Row extends ObjectForExtending, SummRow>(
 };
 
 export function getDeepestChildren<Row extends ObjectForExtending, SummRow>(
-  cols: readonly ColumnOrColumnGroupConfig<Row, SummRow>[]
+  cols: readonly ColumnOrColumnGroupConfig<Row, SummRow>[],
 ): readonly ColumnConfig<Row, SummRow>[] {
   if (!cols.length) {
     return cols as ColumnConfig<Row, SummRow>[];
@@ -42,13 +42,13 @@ export function getDeepestChildren<Row extends ObjectForExtending, SummRow>(
 export const flattenCols = <RowType extends ObjectForExtending, SummaryRowType>(
   arr: readonly ColumnOrColumnGroupConfig<RowType, SummaryRowType>[],
   getChildren: (
-    col: ColumnOrColumnGroupConfig<RowType, SummaryRowType>
+    col: ColumnOrColumnGroupConfig<RowType, SummaryRowType>,
   ) => ColumnOrColumnGroupConfig<RowType, SummaryRowType>[] | undefined,
   getParent: (
-    item: ColumnOrColumnGroupConfig<RowType, SummaryRowType>
+    item: ColumnOrColumnGroupConfig<RowType, SummaryRowType>,
   ) => ColumnOrColumnGroupConfig<RowType, SummaryRowType> | null,
   level?: number,
-  parent?: ColumnOrColumnGroupConfig<RowType, SummaryRowType> | null
+  parent?: ColumnOrColumnGroupConfig<RowType, SummaryRowType> | null,
 ): Array<FlattenedColumnOrColumnGroupConfig<RowType, SummaryRowType>> =>
   Array.prototype.concat.apply(
     arr?.map((x) => {
@@ -57,7 +57,7 @@ export const flattenCols = <RowType extends ObjectForExtending, SummaryRowType>(
       return {
         ...x,
         level: l,
-        parent: p
+        parent: p,
       };
     }),
     arr?.map((x) =>
@@ -66,7 +66,7 @@ export const flattenCols = <RowType extends ObjectForExtending, SummaryRowType>(
         getChildren,
         getParent,
         (level || 1) + 1,
-        getParent(x) ?? null
-      )
-    )
+        getParent(x) ?? null,
+      ),
+    ),
   );

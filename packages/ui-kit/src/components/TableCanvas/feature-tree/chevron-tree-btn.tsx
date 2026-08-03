@@ -9,12 +9,12 @@ export function ChevronTreeBtn<
   RowType extends ObjectForExtending,
   FilterStateType extends ObjectForExtending,
   RowIdType extends string | number,
-  SummaryRowType = unknown
+  SummaryRowType = unknown,
 >({
   tabIndex,
   tableConfigSubRows,
   row,
-  className
+  className,
 }: {
   tabIndex: number | undefined;
   tableConfigSubRows: TableConfig<

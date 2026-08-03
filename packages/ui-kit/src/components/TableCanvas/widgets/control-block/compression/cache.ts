@@ -28,7 +28,7 @@ export const cloneState = (state: ToolsMenuState): ToolsMenuState =>
  * Без элемента возвращает свежий изолированный кэш.
  */
 export const getOrCreateElementCache = (
-  element: HTMLDivElement | null | undefined
+  element: HTMLDivElement | null | undefined,
 ): CompressionCache => {
   if (!element) return { cache: new Map() };
   let elementCache = elementCaches.get(element);
@@ -43,12 +43,12 @@ export const getOrCreateElementCache = (
 export const findCachedState = (
   cache: CompressionCache,
   key: string,
-  width: number
+  width: number,
 ): ToolsMenuState | null => {
   const cacheEntry = cache.cache.get(key);
   if (!cacheEntry) return null;
   const foundRange = cacheEntry.ranges.find(
-    (range) => width >= range.min && width <= range.max
+    (range) => width >= range.min && width <= range.max,
   );
   return foundRange?.state ?? null;
 };
@@ -60,14 +60,14 @@ export const addToCache = (
   width: number,
   state: ToolsMenuState,
   stateWidth: number,
-  originalState: ToolsMenuState
+  originalState: ToolsMenuState,
 ) => {
   let cacheEntry = cache.cache.get(key);
 
   if (!cacheEntry) {
     cacheEntry = {
       originalState: cloneState(originalState),
-      ranges: []
+      ranges: [],
     };
     cache.cache.set(key, cacheEntry);
   }
@@ -76,12 +76,12 @@ export const addToCache = (
     min: stateWidth,
     max: width,
     state: cloneState(state),
-    stateWidth
+    stateWidth,
   };
 
   // Диапазон, целиком накрытый существующим, не добавляем
   const isOverlapped = cacheEntry.ranges.some(
-    (range) => newRange.min >= range.min && newRange.max <= range.max
+    (range) => newRange.min >= range.min && newRange.max <= range.max,
   );
   if (isOverlapped) return;
 

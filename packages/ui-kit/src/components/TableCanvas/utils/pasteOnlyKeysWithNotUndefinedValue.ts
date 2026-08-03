@@ -1,9 +1,9 @@
 import type { ObjectForExtending } from '../types/utils.type';
 
 export const pasteOnlyKeysWithNotUndefinedValue = <
-  T extends ObjectForExtending
+  T extends ObjectForExtending,
 >(
-  v: T
+  v: T,
 ) => {
   const arrV = Object.entries(v);
   const notUndandNullV = arrV.filter((x) => x[1] !== undefined);

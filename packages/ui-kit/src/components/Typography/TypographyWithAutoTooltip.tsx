@@ -5,7 +5,7 @@ import { usePopoverCleanup } from './hooks/usePopoverCleanup';
 import { Typography, TypographyProps } from './Typography';
 import {
   StyledTooltip,
-  StyleTooltipWrapper
+  StyleTooltipWrapper,
 } from './TypographyWithAutoTooltip.styled';
 import type { TypographyWithAutoTooltipComp } from './TypographyWithAutoTooltip.types';
 
@@ -89,10 +89,10 @@ export const TypographyWithAutoTooltip: TypographyWithAutoTooltipComp = ({
   const typographyComponentProps: TypographyProps<'BodyM'> = {
     variant: variant as TypographyProps<'BodyM'>['variant'],
     ...(bold !== undefined && {
-      bold: bold as unknown as undefined
+      bold: bold as unknown as undefined,
     }),
     ...(size !== undefined && {
-      size: size as TypographyProps<'BodyM'>['size']
+      size: size as TypographyProps<'BodyM'>['size'],
     }),
     ...(restTypographyProps as Partial<TypographyProps<'BodyM'>>),
     refTypography: textRef,
@@ -104,9 +104,9 @@ export const TypographyWithAutoTooltip: TypographyWithAutoTooltipComp = ({
     },
     style: {
       ...truncateText({ lines }),
-      ...(restTypographyProps['style'] || {})
+      ...(restTypographyProps['style'] || {}),
     },
-    children
+    children,
   };
 
   const textElement = (
@@ -123,7 +123,7 @@ export const TypographyWithAutoTooltip: TypographyWithAutoTooltipComp = ({
       clearTimeout(timerBeforeShow.current);
       schedule();
     },
-    [schedule]
+    [schedule],
   );
 
   return (

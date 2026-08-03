@@ -18,7 +18,7 @@ import {
   StyledContainer,
   StyledContent,
   StyledLeft,
-  StyledMain
+  StyledMain,
 } from './styled';
 import type { ModalDFProps } from './types';
 
@@ -28,7 +28,7 @@ const ModalDFWithRef = forwardRef<HTMLDivElement, ModalDFProps>(
 
     const { fullScreened, toggleFullScreen } = useFullScreened(
       fullScreen,
-      rest.opened
+      rest.opened,
     );
 
     const hasLeftAndMain = hasLeftAndMainHandler(children);
@@ -46,7 +46,7 @@ const ModalDFWithRef = forwardRef<HTMLDivElement, ModalDFProps>(
           {...{
             onClose: rest.onClose,
             fullScreened,
-            toggleFullScreen
+            toggleFullScreen,
           }}
         >
           <Modal ref={ref} {...{ ...defProps(props), ...rest }}>
@@ -64,7 +64,7 @@ const ModalDFWithRef = forwardRef<HTMLDivElement, ModalDFProps>(
         </CtxsProviders>
       </PopupProvider>
     );
-  }
+  },
 );
 
 export const ModalDF = Object.assign(ModalDFWithRef, {
@@ -76,7 +76,7 @@ export const ModalDF = Object.assign(ModalDFWithRef, {
   Divider,
   ServiceButtons,
   DotsIconButton,
-  BackIconButton
+  BackIconButton,
 });
 
 ModalDF.displayName = 'ModalDF';

@@ -3,13 +3,13 @@ import { IconSearch } from '@ui-kit/icons';
 import {
   shadowDownSoftS,
   surfaceSolidCard,
-  textSecondary
+  textSecondary,
 } from '@ui-kit/tokens';
 import { useRef } from 'react';
 
 import {
   StyledAutocomplete,
-  StyledBeforeList
+  StyledBeforeList,
 } from './AutocompleteSearch.styled';
 import { AutocompleteSearchProps } from './AutocompleteSearch.types';
 
@@ -59,7 +59,7 @@ export const AutocompleteSearch = ({
               background: surfaceSolidCard,
               borderRadius: '10px',
               boxShadow: shadowDownSoftS,
-              padding: '16px 0'
+              padding: '16px 0',
             }}
           />
         ) : undefined;

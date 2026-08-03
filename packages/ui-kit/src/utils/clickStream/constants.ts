@@ -2,9 +2,9 @@ export enum EClickStreamStatusProcess {
   START = 'Start',
   END = 'End',
   SUCCESS = 'Success',
-  FAILED = 'Failed'
+  FAILED = 'Failed',
 }
 
 export enum EClickStreamErrorType {
-  BUISINESS = 'business'
+  BUISINESS = 'business',
 }

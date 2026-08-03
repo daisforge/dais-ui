@@ -2,7 +2,7 @@ import type { DataAttributes } from '../types/utils.type';
 import type { FeatureItem } from '../widgets/control-block/types';
 
 export const getDataAttributes = (
-  obj: FeatureItem['details'] | FeatureItem
+  obj: FeatureItem['details'] | FeatureItem,
 ): DataAttributes => {
   const result: DataAttributes = {};
 

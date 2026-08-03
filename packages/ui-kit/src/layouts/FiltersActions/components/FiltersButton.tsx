@@ -31,8 +31,8 @@ export const FiltersActionsFiltersButton = styled(Button).attrs(
         <Circle visible={redSquare} />
       </>
     ),
-    ...props
-  })
+    ...props,
+  }),
 )<{
   redSquare?: boolean;
 }>`

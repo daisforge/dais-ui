@@ -3,5 +3,5 @@ export type {
   TComponentColor,
   TComponentSize,
   TViewColor,
-  TViewColors
+  TViewColors,
 } from './component';

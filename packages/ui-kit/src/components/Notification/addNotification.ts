@@ -1,13 +1,13 @@
 import {
   addNotification as addNotificationNative,
-  NotificationProps
+  NotificationProps,
 } from '@salutejs/sdds-finai';
 
 import { getClassName } from './utils/getClassName';
 
 export function addNotification(
   { id: externalId, ...rest }: NotificationProps,
-  timeout?: number | null
+  timeout?: number | null,
 ): string {
   const className = getClassName(rest);
 
@@ -15,8 +15,8 @@ export function addNotification(
     {
       id: externalId,
       ...rest,
-      className
+      className,
     },
-    timeout
+    timeout,
   );
 }

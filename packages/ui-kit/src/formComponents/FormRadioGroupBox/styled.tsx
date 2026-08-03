@@ -9,7 +9,7 @@ import type { NativeRadioboxProps } from './types';
 
 const C = {
   spaceX8: () => s.x8,
-  spaceX12: () => s.x12
+  spaceX12: () => s.x12,
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

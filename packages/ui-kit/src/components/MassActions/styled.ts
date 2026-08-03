@@ -9,14 +9,14 @@ import {
   outlineSolidPrimary,
   shadowDownHardS,
   spacing10x,
-  surfaceSolidCard
+  surfaceSolidCard,
 } from '@ui-kit/tokens';
 import styled, { css } from 'styled-components';
 
 import type {
   LinkButtonProps,
   MassActionsSize,
-  StyledButtonProps
+  StyledButtonProps,
 } from './types';
 
 // Имя для View Transition API
@@ -24,16 +24,16 @@ const MASS_ACTIONS_VIEW_TRANSITION_NAME = 'mass-actions-panel';
 
 const C = {
   surfaceSolidCard: () => surfaceSolidCard,
-  outlineSolidPrimary: () => outlineSolidPrimary
+  outlineSolidPrimary: () => outlineSolidPrimary,
 };
 
 const StyledLinkButton = styled(LinkButton)({
-  paddingInline: s.x8
+  paddingInline: s.x8,
 }) as typeof LinkButton;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const getButtonWithDropdown = <T extends React.ComponentType<any>>(
-  BaseComponent: T
+  BaseComponent: T,
 ) => styled(BaseComponent)<StyledButtonProps>`
   ${({ $hasDropdown }: StyledButtonProps) =>
     $hasDropdown &&
@@ -52,10 +52,10 @@ const getButtonWithDropdown = <T extends React.ComponentType<any>>(
 
 // Стилизованные компоненты с поддержкой dropdown
 export const StyledButtonWithDropdown = getButtonWithDropdown(
-  Button
+  Button,
 ) as React.ComponentType<ButtonCompProps & StyledButtonProps>;
 export const StyledLinkButtonWithDropdown = getButtonWithDropdown(
-  StyledLinkButton
+  StyledLinkButton,
 ) as React.ComponentType<LinkButtonProps & StyledButtonProps>;
 
 export const MassActionsContainer = styled.div<{

@@ -3,7 +3,7 @@ import { Switch } from '@ui-kit/components/Switch';
 import {
   IconSb,
   IconViewScreen4Outline,
-  IconViewSplit4Outline
+  IconViewSplit4Outline,
 } from '@ui-kit/icons';
 import { ReactNode, useCallback, useMemo } from 'react';
 import { CSSObject } from 'styled-components';
@@ -13,7 +13,7 @@ import { useHeaderContext } from '../../contexts';
 // import { getCurrentSizeIcon } from '../../feature-row-size/handlers';
 import {
   ITEM_ID_GROUPED_ROWS,
-  NAME_TRIGGER_DROPDOWN_GROUPED_ROWS
+  NAME_TRIGGER_DROPDOWN_GROUPED_ROWS,
 } from '../../feature-rows-grouping/constants';
 import { ControlBlockButtonProps } from './control-block-button.types';
 import { isFeatureItem } from './typeGuards';
@@ -21,7 +21,7 @@ import {
   DropdownRenderCtx,
   FeatureDetails,
   FeatureItem,
-  FeatureItemWithIcon
+  FeatureItemWithIcon,
 } from './types';
 
 // Размер иконки пункта дропдауна под текущий rowSize. На маленьком rowSize
@@ -36,7 +36,7 @@ export const getDropdownIconSize = (rowSize: DropdownRenderCtx['rowSize']) =>
 // как есть. Используется и в дропдауне, и в панели фич (FeaturesSidebarBlock).
 export const resolveFeatureIcon = (
   icon: ReactNode | ((ctx: DropdownRenderCtx) => ReactNode),
-  ctx: DropdownRenderCtx
+  ctx: DropdownRenderCtx,
 ): ReactNode => (typeof icon === 'function' ? icon(ctx) : icon);
 
 // Плейсхолдер-иконка (opacity 0): держит левый отступ, чтобы тексты пунктов
@@ -53,12 +53,12 @@ const processDropdownItems = (
   items: DropdownItemOption[],
   parentHandler?: (
     item: DropdownItemOption,
-    event: React.SyntheticEvent
+    event: React.SyntheticEvent,
   ) => void,
-  path = ''
+  path = '',
 ): [
   DropdownItemOption[],
-  Map<string, (item: DropdownItemOption, event: React.SyntheticEvent) => void>
+  Map<string, (item: DropdownItemOption, event: React.SyntheticEvent) => void>,
 ] => {
   const processedItems: DropdownItemOption[] = [];
   const handlerMap = new Map<
@@ -81,7 +81,7 @@ const processDropdownItems = (
       const [nestedItems, nestedHandlers] = processDropdownItems(
         item.items,
         parentHandler,
-        itemPath
+        itemPath,
       );
 
       nestedHandlers.forEach((handler, key) => handlerMap.set(key, handler));
@@ -99,7 +99,7 @@ const processDropdownItems = (
 // закрывать по ним дропдаун.
 const collectItemValues = (
   items: DropdownItemOption[],
-  acc: Set<string>
+  acc: Set<string>,
 ): void => {
   items.forEach((item) => {
     if (item.value !== undefined && item.value !== null) {
@@ -117,7 +117,7 @@ const proceedFeatureItem = (
     string,
     (item: DropdownItemOption, event: React.SyntheticEvent) => void
   >,
-  ctx: DropdownRenderCtx
+  ctx: DropdownRenderCtx,
 ): DropdownItemOption | null => {
   if (!('details' in featureItem) || !featureItem.details) {
     return null;
@@ -126,7 +126,7 @@ const proceedFeatureItem = (
   const { details } = featureItem;
   const baseItem: DropdownItemOption = {
     value: featureItem.value,
-    label: 'label' in details ? details.label : featureItem.value
+    label: 'label' in details ? details.label : featureItem.value,
   };
 
   switch (details.type) {
@@ -141,7 +141,7 @@ const proceedFeatureItem = (
       });
       return {
         ...baseItem,
-        contentLeft: resolveFeatureIcon(buttonDetails.icon, ctx)
+        contentLeft: resolveFeatureIcon(buttonDetails.icon, ctx),
       };
     }
 
@@ -158,7 +158,7 @@ const proceedFeatureItem = (
             checked={switchDetails.checked}
             onChange={switchDetails.onChange}
           />
-        )
+        ),
       };
     }
 
@@ -178,12 +178,12 @@ const proceedFeatureItem = (
           contentLeft: option.contentLeft,
           contentRight: option.contentRight,
           disabled: option.disabled,
-          dividerAfter: option.dividerAfter
+          dividerAfter: option.dividerAfter,
         })),
         (item, e) => {
           e.preventDefault();
           selectDetails.onChange(item.value as string);
-        }
+        },
       );
 
       // Регистрируем обработчики для всех опций
@@ -192,7 +192,7 @@ const proceedFeatureItem = (
       return {
         ...baseItem,
         contentLeft: resolveFeatureIcon(selectDetails.icon, ctx),
-        items: processedItems
+        items: processedItems,
       };
     }
 
@@ -203,7 +203,7 @@ const proceedFeatureItem = (
       >;
       return {
         ...baseItem,
-        contentLeft: customDetails.render(ctx)
+        contentLeft: customDetails.render(ctx),
       };
     }
 
@@ -213,7 +213,7 @@ const proceedFeatureItem = (
 };
 
 export const useButtonsToDropdownItems = (
-  buttons: Array<ControlBlockButtonProps | FeatureItem> = []
+  buttons: Array<ControlBlockButtonProps | FeatureItem> = [],
 ) => {
   // setRowSize и onRowSizeChange нужны только закомментированной ветке
   // rowSize ниже, вернуть в деструктуризацию вместе с ней
@@ -301,7 +301,7 @@ export const useButtonsToDropdownItems = (
       } else if (button['value'] === 'view-mode') {
         const viewModeOptions = [
           { label: 'Таблица', value: 'rows' },
-          { label: 'Карточки', value: 'cards' }
+          { label: 'Карточки', value: 'cards' },
         ];
 
         items.push({
@@ -320,8 +320,8 @@ export const useButtonsToDropdownItems = (
                 <IconViewSplit4Outline size={dropdownIconSize} />
               ) : (
                 <IconViewScreen4Outline size={dropdownIconSize} />
-              )
-          }))
+              ),
+          })),
         });
 
         viewModeOptions.forEach((option) => {
@@ -356,17 +356,17 @@ export const useButtonsToDropdownItems = (
         if (button.dropdown.onItemSelect && !hasNestedItems) {
           globalHandlerMap.set(
             groupValue.toString(),
-            button.dropdown.onItemSelect
+            button.dropdown.onItemSelect,
           );
         }
 
         const [processedItems, itemHandlers] = processDropdownItems(
           button.dropdown.items || [],
-          button.dropdown.onItemSelect
+          button.dropdown.onItemSelect,
         );
 
         itemHandlers.forEach((handler, key) =>
-          globalHandlerMap.set(key, handler)
+          globalHandlerMap.set(key, handler),
         );
 
         // Листы группировки помечаем keep-open: выбор колонки не закрывает
@@ -388,7 +388,7 @@ export const useButtonsToDropdownItems = (
             ? button.dropdownIconRender(ctx)
             : button['contentLeft'],
           items: processedItems,
-          className: button['className']
+          className: button['className'],
         });
       } else {
         // Обычные кнопки + фичи-иконки без details (value/label/Icon/onClick).
@@ -419,7 +419,7 @@ export const useButtonsToDropdownItems = (
           label: button['text'] || f.label || 'Кнопка',
           value: value.toString(),
           disabled: button['disabled'],
-          contentLeft: dropdownContentLeft
+          contentLeft: dropdownContentLeft,
         };
 
         if (button['onClick']) {
@@ -430,7 +430,7 @@ export const useButtonsToDropdownItems = (
               preventDefault: event.preventDefault,
               stopPropagation: event.stopPropagation,
               target: event.target as EventTarget & HTMLElement,
-              currentTarget: event.currentTarget as EventTarget & HTMLElement
+              currentTarget: event.currentTarget as EventTarget & HTMLElement,
             } as unknown as React.MouseEvent<HTMLElement>;
 
             button['onClick']?.(mouseEvent);
@@ -478,14 +478,14 @@ export const useButtonsToDropdownItems = (
     const iconPlaceholder = getIconPlaceholder(dropdownIconSize);
     const dropdownItems = items.map((item) => ({
       ...item,
-      contentLeft: item.contentLeft ?? iconPlaceholder
+      contentLeft: item.contentLeft ?? iconPlaceholder,
     }));
 
     return {
       dropdownItems,
       handlerMap: globalHandlerMap,
       $summaryCSS,
-      keepOpenItemValues
+      keepOpenItemValues,
     };
 
     // setRowSize вернётся в зависимости вместе с веткой rowSize
@@ -497,12 +497,12 @@ export const useDropdownItemClickHandler = (
   handlerMap: Map<
     string,
     (item: DropdownItemOption, event: React.SyntheticEvent) => void
-  >
+  >,
 ) =>
   useCallback(
     (item: DropdownItemOption, event: React.SyntheticEvent) => {
       const handler = handlerMap.get(item.value as string);
       handler?.(item, event);
     },
-    [handlerMap]
+    [handlerMap],
   );

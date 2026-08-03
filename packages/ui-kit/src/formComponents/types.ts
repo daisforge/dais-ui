@@ -9,7 +9,7 @@ export type TMutationRegister<TFieldValues extends FieldValues> = {
 
 export type THandleChange<T> = (
   newValue: T,
-  formCtx: TReturnUseChangedFormContext
+  formCtx: TReturnUseChangedFormContext,
 ) => void;
 
 export type TDefKeys = 'size' | 'view' | 'style';

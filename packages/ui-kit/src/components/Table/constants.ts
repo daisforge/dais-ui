@@ -2,7 +2,7 @@
  * Кастомные события используемые таблицей.
  */
 export const TABLE_BUBBLES = {
-  recalculateWidth: 'Table::recalculateWidth'
+  recalculateWidth: 'Table::recalculateWidth',
 } as const;
 
 /**

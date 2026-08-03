@@ -10,7 +10,7 @@ const getLabelForValue = (value: unknown): string => {
   if (Array.isArray(value)) {
     return value
       .map((v) =>
-        v instanceof Date ? v.toLocaleDateString() : String(v ?? '')
+        v instanceof Date ? v.toLocaleDateString() : String(v ?? ''),
       )
       .join(', ');
   }
@@ -19,13 +19,13 @@ const getLabelForValue = (value: unknown): string => {
 
 export const useFiltersList = <
   FilterKey extends string,
-  OrderKey extends string = FilterKey
+  OrderKey extends string = FilterKey,
 >({
   filters,
   filtersInfo,
   options,
   updateFilters,
-  order
+  order,
 }: {
   filters: Record<FilterKey, unknown>;
   filtersInfo: Record<
@@ -49,7 +49,7 @@ export const useFiltersList = <
     for (const option of Object.entries(options)) {
       const [key, value] = option as [FilterKey, Option[]];
       labelFromValueMaps[key] = new Map(
-        value.map((el) => [String(el.value), el.label])
+        value.map((el) => [String(el.value), el.label]),
       );
     }
     return { labelFromValueMaps };
@@ -58,7 +58,7 @@ export const useFiltersList = <
   const clearAll = useCallback(() => {
     // eslint-disable-next-line no-restricted-syntax
     for (const option of Object.entries<(typeof filtersInfo)[FilterKey]>(
-      filtersInfo
+      filtersInfo,
     )) {
       const [key, value] = option;
       updateFilters(key as FilterKey, value.clearedValue);
@@ -94,7 +94,7 @@ export const useFiltersList = <
             label: filtersInfo[currKey].label,
             onClick: () => {
               updateFilters(currKey, filtersInfo[currKey].clearedValue);
-            }
+            },
           };
           acc.push(item);
           return acc;
@@ -103,7 +103,7 @@ export const useFiltersList = <
         const groupObj: Group = {
           groupId: currKey,
           groupLabel: filtersInfo[currKey].label,
-          items: []
+          items: [],
         };
         if (currVIsArray) {
           groupObj.items = currV.map((elValue) => ({
@@ -114,9 +114,9 @@ export const useFiltersList = <
             onClick: () => {
               updateFilters(
                 currKey,
-                currV.filter((fElV) => fElV !== elValue)
+                currV.filter((fElV) => fElV !== elValue),
               );
-            }
+            },
           }));
         } else {
           const otherLabelOptions = labelFromValueMaps?.[currKey];
@@ -134,10 +134,10 @@ export const useFiltersList = <
                   currKey,
                   'clearedValue' in filtersInfo[currKey]
                     ? filtersInfo[currKey].clearedValue
-                    : ''
+                    : '',
                 );
-              }
-            }
+              },
+            },
           ];
         }
         acc.push(groupObj);
@@ -145,7 +145,7 @@ export const useFiltersList = <
         return acc;
       },
 
-      [] as ItemOrGroup[]
+      [] as ItemOrGroup[],
     );
 
     // --- УНИВЕРСАЛЬНАЯ СОРТИРОВКА ДЛЯ ItemOrGroup ---
@@ -194,7 +194,7 @@ export const useFiltersList = <
 
     return {
       filterListOpened: filterList.length > 0,
-      filterList: orderedFilterList
+      filterList: orderedFilterList,
     };
   }, [filters, filtersInfo, labelFromValueMaps, updateFilters, order]);
 

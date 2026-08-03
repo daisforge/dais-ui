@@ -2,12 +2,12 @@
 import { ModalDFConfirmationProps } from '@ui-kit/components/ModalDFConfirmation';
 import {
   addSkeletonToRow,
-  deleteSkeletonFromRow
+  deleteSkeletonFromRow,
 } from '@ui-kit/components/Table/feature-infinity-scroll';
 import { RowInstrumentsType } from '@ui-kit/components/Table/feature-row-instruments/types';
 import type {
   FeatureItem,
-  FeatureItemWithCustomIcon
+  FeatureItemWithCustomIcon,
 } from '@ui-kit/components/Table/widgets/control-block/types';
 import { IconTrashOutline } from '@ui-kit/icons';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -21,7 +21,7 @@ import type {
   InstanceColumnConfig,
   InstanceTableConfig,
   ObjectAny,
-  TableContractControlBlockButtonProps
+  TableContractControlBlockButtonProps,
 } from '../types';
 import { AddRowsIconButtonWithPopover } from '../ui/AddRowsIconButtonWithPopover';
 
@@ -29,13 +29,13 @@ export const DELETE_MODAL_CONTENT = {
   header: 'Удалить строку?',
   body: 'Если удалить строку, восстановить ее и продолжить с ней работу будет невозможно.',
   mainButton: { view: 'negative', text: 'Удалить' },
-  secondaryButton: { view: 'secondary', text: 'Отменить' }
+  secondaryButton: { view: 'secondary', text: 'Отменить' },
 } satisfies ModalDFConfirmationProps['content'];
 
 const defaultModalDeleteState = {
   opened: false,
   mainButtonOnClick: () => {},
-  secondaryButtonOnClick: () => {}
+  secondaryButtonOnClick: () => {},
 };
 
 export type RowInstrProps = Parameters<RowInstrumentsType<ObjectAny>>[0];
@@ -45,7 +45,7 @@ export type RowInstrItem = ReturnType<
 >['items'][number];
 
 export type GetDeleteOneRowRowInstrItem = (
-  props: RowInstrProps
+  props: RowInstrProps,
 ) => RowInstrItem;
 
 type EditingReturnType = {
@@ -74,7 +74,7 @@ export function useEditing({
   tableConfigColumnsConfig,
   setRowsState,
   fetcher,
-  onRowMutationError
+  onRowMutationError,
 }: {
   rowsFromBackend: ObjectAny[];
   tableConfigBackendSubRows: ContractTableConfig['subRows'] | undefined;
@@ -89,7 +89,7 @@ export function useEditing({
     rowEditable,
     defaultEnabled,
     showToggleEnabledButton,
-    saving
+    saving,
   } = tableConfigBackendEditing ?? {};
   const savingType = saving?.type ?? 'onRowChange';
 
@@ -99,17 +99,17 @@ export function useEditing({
   // const [newRows, setNewRows] = useState<ObjectAny[]>([]);
   const [changedRows, _setChangedRows] = useState<ObjectAny[]>([]);
   const [editingModeEnabled, setEditingModeEnabled] = useState(
-    !!tableConfigBackendEditing?.defaultEnabled
+    !!tableConfigBackendEditing?.defaultEnabled,
   );
 
   const [modalDeletePropsState, setModalDeletePropsState] = useState(
-    defaultModalDeleteState
+    defaultModalDeleteState,
   );
 
   const updateRowInState = useCallback(
     (
       findIndexCb: (row: ObjectAny) => boolean,
-      newValueOfRow: ObjectAny | ((prev: ObjectAny) => ObjectAny)
+      newValueOfRow: ObjectAny | ((prev: ObjectAny) => ObjectAny),
     ) => {
       const getNewV = (prev: ObjectAny) =>
         typeof newValueOfRow === 'function'
@@ -130,7 +130,7 @@ export function useEditing({
         return copy;
       });
     },
-    [setRowsState]
+    [setRowsState],
   );
 
   useEffect(() => {
@@ -160,7 +160,7 @@ export function useEditing({
             const keyGetter = getRowKeyGetter(rowEditableObj.keyInRow);
             const rowEditableValue = keyGetter(row);
             return rowEditableValue === rowEditableObj.editableValue;
-          }
+          },
         }),
 
         async onRowsChange(_, changingInfo) {
@@ -174,7 +174,7 @@ export function useEditing({
 
             if (isNewRow(newVOfChangedRow)) {
               const everyCellIsFilled = tableConfigColumnsConfig?.every(
-                (col) => newVOfChangedRow?.[col.key] !== undefined
+                (col) => newVOfChangedRow?.[col.key] !== undefined,
               );
 
               const findNewRowCb = (r: ObjectAny) =>
@@ -188,18 +188,18 @@ export function useEditing({
 
               try {
                 updateRowInState(findNewRowCb, (prev) =>
-                  addSkeletonToRow(prev)
+                  addSkeletonToRow(prev),
                 );
 
                 const dataFromBack = await EditingApi.createOne(
                   clearedRow(newVOfChangedRow),
-                  fetcher
+                  fetcher,
                 );
 
                 updateRowInState(findNewRowCb, clearedRow(dataFromBack)); // очищается флаг новой строки и флаг скелетона
               } catch (error) {
                 updateRowInState(findNewRowCb, (prev) =>
-                  deleteSkeletonFromRow(prev)
+                  deleteSkeletonFromRow(prev),
                 );
                 onRowMutationError?.(error as ErrorInstance);
               }
@@ -214,17 +214,17 @@ export function useEditing({
               updateRowInState(findCb, (prev) => addSkeletonToRow(prev));
               const clearedChangedObj: typeof changedObj = {
                 before: clearedRow(prevVOfChangedRow),
-                after: clearedRow(newVOfChangedRow)
+                after: clearedRow(newVOfChangedRow),
               };
 
               const dataFromBack = await EditingApi.updateOne(
                 clearedChangedObj,
-                fetcher
+                fetcher,
               );
 
               updateRowInState(
                 findCb,
-                deleteSkeletonFromRow(dataFromBack.after)
+                deleteSkeletonFromRow(dataFromBack.after),
               ); // очищается  флаг скелетона
             } catch (error) {
               updateRowInState(findCb, (prev) => deleteSkeletonFromRow(prev));
@@ -245,8 +245,8 @@ export function useEditing({
             setRowsState((prev) => prev.filter((r) => !r[NEW_ROW_KEY]));
           }
           setEditingModeEnabled(editingIsActive);
-        }
-      }
+        },
+      },
     };
   }, [
     defaultEnabled,
@@ -260,13 +260,13 @@ export function useEditing({
     showToggleEnabledButton,
     subRowsKey,
     tableConfigColumnsConfig,
-    updateRowInState
+    updateRowInState,
   ]);
 
   const { isMutating, trigger } = useSWRMutation(
     'saving',
     async () => fetcher({ method: 'PUT', body: JSON.stringify(changedRows) }),
-    { onError(_err, _key, _config) {}, onSuccess(_data, _key, _config) {} }
+    { onError(_err, _key, _config) {}, onSuccess(_data, _key, _config) {} },
   );
 
   const saveButton: EditingReturnType['saveButton'] =
@@ -277,7 +277,7 @@ export function useEditing({
           disabled: changedRows.length === 0,
           onClick: () => {
             trigger();
-          }
+          },
         } as TableContractControlBlockButtonProps)
       : null;
 
@@ -297,11 +297,11 @@ export function useEditing({
           }
         }}
       />
-    )
+    ),
   };
 
   const getDeleteOneRowRowInstrument: GetDeleteOneRowRowInstrItem = ({
-    row: rowForDelete
+    row: rowForDelete,
   }: RowInstrProps) => ({
     value: 'delete',
     label: 'Удалить строку',
@@ -313,7 +313,7 @@ export function useEditing({
       const deleteRowFunc = async () => {
         if (isNewRow(rowForDelete)) {
           setRowsState((prev) =>
-            prev.filter((r) => r[NEW_ROW_KEY] !== rowForDelete[NEW_ROW_KEY])
+            prev.filter((r) => r[NEW_ROW_KEY] !== rowForDelete[NEW_ROW_KEY]),
           );
           return;
         }
@@ -339,9 +339,9 @@ export function useEditing({
         },
         secondaryButtonOnClick: () => {
           setModalDeletePropsState(defaultModalDeleteState);
-        }
+        },
       });
-    }
+    },
   });
 
   return {
@@ -349,8 +349,8 @@ export function useEditing({
     saveButton,
     ...(editingModeEnabled && {
       createOneRowButton,
-      getDeleteOneRowRowInstrument
+      getDeleteOneRowRowInstrument,
     }),
-    modalDeletePropsState
+    modalDeletePropsState,
   };
 }

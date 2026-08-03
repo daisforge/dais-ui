@@ -4,7 +4,7 @@ import { IconClose, IconSearch, IconSettingsFilter } from '@ui-kit/icons';
 import {
   EmptySearchFallback,
   StyledClearBtn,
-  StyledSearchBlock
+  StyledSearchBlock,
 } from '@ui-kit/shared/ui/Search';
 import { textPrimary } from '@ui-kit/tokens';
 import isEqual from 'lodash.isequal';
@@ -12,7 +12,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
   HeaderContextValueTypeInstance,
-  useHeaderContext
+  useHeaderContext,
 } from '../../contexts';
 import { ColumnConfig, ObjectForExtending, TableConfig } from '../../types';
 import { FiltersVariables } from '../filtering.type';
@@ -28,7 +28,7 @@ type SidebarFiltersProps<
   FilterStateType extends ObjectForExtending,
   RowType extends ObjectForExtending,
   SummaryRowType,
-  RowIdType extends string | number
+  RowIdType extends string | number,
 > = {
   tableConfig: TableConfig<RowType, SummaryRowType, RowIdType, FilterStateType>;
   columnConfig: readonly ColumnConfig<RowType, SummaryRowType>[];
@@ -38,10 +38,10 @@ export const SidebarFilters = <
   FilterStateType extends ObjectForExtending,
   RowType extends ObjectForExtending,
   SummaryRowType,
-  RowIdType extends string | number
+  RowIdType extends string | number,
 >({
   tableConfig,
-  columnConfig
+  columnConfig,
 }: SidebarFiltersProps<
   FilterStateType,
   RowType,
@@ -52,7 +52,7 @@ export const SidebarFilters = <
     HeaderContextValueTypeInstance<FilterStateType> & FiltersVariables
   >();
   const [localFilters, setLocalFilters] = useState<FilterStateType>(
-    headerContextState.filters || (EMPTY_OBJ as FilterStateType)
+    headerContextState.filters || (EMPTY_OBJ as FilterStateType),
   );
 
   const wrappedSetFilters = useCallback(
@@ -60,13 +60,13 @@ export const SidebarFilters = <
       value:
         | FilterStateType
         | ObjectForExtending
-        | ((prev: FilterStateType) => FilterStateType)
+        | ((prev: FilterStateType) => FilterStateType),
     ) => {
       setLocalFilters((prev) => {
         // Если value - функция, вызываем её с предыдущим состоянием
         if (typeof value === 'function') {
           const result = (value as (prev: FilterStateType) => FilterStateType)(
-            prev
+            prev,
           );
           return result;
         }
@@ -75,12 +75,12 @@ export const SidebarFilters = <
         return value as FilterStateType;
       });
     },
-    []
+    [],
   );
 
   useEffect(() => {
     setLocalFilters(
-      headerContextState.filters || (EMPTY_OBJ as FilterStateType)
+      headerContextState.filters || (EMPTY_OBJ as FilterStateType),
     );
   }, [headerContextState.filters]);
 
@@ -100,7 +100,7 @@ export const SidebarFilters = <
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setSearchQuery(e.target.value.toLowerCase());
     },
-    []
+    [],
   );
   const handleClear = useCallback(() => {
     setSearchQuery('');
@@ -144,16 +144,16 @@ export const SidebarFilters = <
               headerContextState: {
                 ...headerContextState,
                 filters: localFilters,
-                setFilters: wrappedSetFilters
+                setFilters: wrappedSetFilters,
               },
               popoverIsOpen: true,
               setPopoverIsOpen: () => {},
               tabIndex: 0,
-              filterSource: 'sidebar'
+              filterSource: 'sidebar',
             },
             customRender?.bind(this, localFilters, setLocalFilters),
-            fallbackLabel
-          )
+            fallbackLabel,
+          ),
       });
     });
 
@@ -167,7 +167,7 @@ export const SidebarFilters = <
           key,
           label: config?.label || key,
           render: () =>
-            config?.customRenderFn?.(localFilters, setLocalFilters) || null
+            config?.customRenderFn?.(localFilters, setLocalFilters) || null,
         });
       });
     }
@@ -179,7 +179,7 @@ export const SidebarFilters = <
     renderFilter,
     headerContextState,
     localFilters,
-    wrappedSetFilters
+    wrappedSetFilters,
   ]);
 
   // Получаем опции из headerContext и информацию по значениям фильтров
@@ -187,7 +187,7 @@ export const SidebarFilters = <
     columnConfig,
     filters: localFilters,
     tableConfig,
-    headerContextValue: headerContextState
+    headerContextValue: headerContextState,
   });
 
   // сортировка по filtersOrder
@@ -223,24 +223,24 @@ export const SidebarFilters = <
       if (setLocalFilters) {
         setLocalFilters((prev) => ({
           ...(prev ?? EMPTY_OBJ),
-          [key]: newValue
+          [key]: newValue,
         }));
       }
     },
-    filtersInfo
+    filtersInfo,
   });
 
   // Функция для сброса к глобальному состоянию
   const handleReset = useCallback(() => {
     setLocalFilters(
-      headerContextState.filters || (EMPTY_OBJ as FilterStateType)
+      headerContextState.filters || (EMPTY_OBJ as FilterStateType),
     );
   }, [headerContextState.filters]);
 
   // Проверяем, есть ли различия между локальным и глобальным состоянием
   const isDirty = useMemo(
     () => !isEqual(localFilters, headerContextState.filters || EMPTY_OBJ),
-    [localFilters, headerContextState.filters]
+    [localFilters, headerContextState.filters],
   );
 
   const isEmptySearch = !!(orderedFilters.length === 0 && searchQuery);

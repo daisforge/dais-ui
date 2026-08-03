@@ -1,6 +1,6 @@
 import {
   ContentFormat,
-  NumberFormatOptions
+  NumberFormatOptions,
 } from '../../TableGlideInstance/type';
 
 /**
@@ -25,7 +25,7 @@ function safeStringFormat(value: unknown): string {
  */
 function formatNumber(
   value: unknown,
-  options: Partial<NumberFormatOptions> = {}
+  options: Partial<NumberFormatOptions> = {},
 ): string {
   if (value === null || value === undefined) return '';
 
@@ -35,7 +35,7 @@ function formatNumber(
   const formatter = new Intl.NumberFormat(options.locales ?? 'ru-RU', {
     minimumFractionDigits: options.minimumFractionDigits ?? 0,
     maximumFractionDigits: options.maximumFractionDigits ?? 2,
-    useGrouping: options.useGrouping ?? true
+    useGrouping: options.useGrouping ?? true,
   });
 
   // Если не нужно заменять разделители - возвращаем как есть
@@ -67,7 +67,7 @@ function formatNumber(
  */
 export const formatCellValue = (
   value: unknown,
-  format?: ContentFormat
+  format?: ContentFormat,
 ): string => {
   if (format === undefined) return safeStringFormat(value);
 
@@ -90,7 +90,7 @@ export const formatCellValue = (
     return formatNumber(value, {
       locales: 'ru-RU',
       thousandSeparator: ' ',
-      decimalSeparator: ','
+      decimalSeparator: ',',
     });
 
   // Расширенные варианты форматирования
@@ -102,7 +102,7 @@ export const formatCellValue = (
         locales: format.locales,
         minimumFractionDigits: format.minimumFractionDigits,
         maximumFractionDigits: format.maximumFractionDigits,
-        useGrouping: format.useGrouping
+        useGrouping: format.useGrouping,
       });
     }
   }

@@ -7,14 +7,14 @@ import { TableDropdownConfigProps } from '../../components/TableDropdown/types';
 import { ControlBlockButtonProps } from './control-block-button.types';
 import {
   useButtonsToDropdownItems,
-  useDropdownItemClickHandler
+  useDropdownItemClickHandler,
 } from './use-buttons-to-dropdown';
 
 export const ControlBlockActions = ({
   buttons = [],
   dividerIndexes = [],
   triggerSlot,
-  dropdownProps
+  dropdownProps,
 }: {
   buttons: ControlBlockButtonProps[];
   dividerIndexes?: Array<number>;
@@ -54,7 +54,7 @@ export const ControlBlockActions = ({
                 transform: isOpenDropDown ? 'scaleY(-1)' : 'scaleY(1)',
                 transition: 'transform 0.2s ease',
                 display: 'inline-flex',
-                alignItems: 'center'
+                alignItems: 'center',
               }}
             >
               <IconDisclosureDownOutline size="s" />
@@ -62,7 +62,7 @@ export const ControlBlockActions = ({
           }
           style={{
             fontWeight: 500,
-            paddingInline: '16px'
+            paddingInline: '16px',
           }}
         />
       )}

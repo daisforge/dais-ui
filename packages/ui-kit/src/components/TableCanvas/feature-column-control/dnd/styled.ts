@@ -15,26 +15,26 @@ export const StyledDragContainer = styled(Box)<{
   minHeight: '40px',
 
   '& .drag-button': {
-    cursor: 'grabbing'
+    cursor: 'grabbing',
   },
 
   '.drag-item': {
     marginTop: '8px',
     '&:first-of-type': {
-      marginTop: '0px'
-    }
+      marginTop: '0px',
+    },
   },
   '&, & *': {
-    transition: `margin ${DEFAULT_TABLE_TRANSITION_DELAY} ease-in-out`
+    transition: `margin ${DEFAULT_TABLE_TRANSITION_DELAY} ease-in-out`,
   },
 
   ...(props.$isEmptySearch
     ? {
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'center'
+        justifyContent: 'center',
       }
-    : {})
+    : {}),
 }));
 export const StyledDragItem = styled(Box)<{
   $isOvered?: boolean;
@@ -51,7 +51,7 @@ export const StyledDragItem = styled(Box)<{
   ...(draggable && {
     cursor: 'grab',
     '&:active': {
-      cursor: 'grabbing'
+      cursor: 'grabbing',
     },
     position: 'relative',
 
@@ -68,8 +68,8 @@ export const StyledDragItem = styled(Box)<{
                 width: '100%',
                 backgroundColor: outlineAccent,
                 height: '2px',
-                borderRadius: '12px 12px 2px 2px'
-              }
+                borderRadius: '12px 12px 2px 2px',
+              },
             }
           : {
               marginBottom: '6px',
@@ -81,10 +81,10 @@ export const StyledDragItem = styled(Box)<{
                 width: '100%',
                 backgroundColor: outlineAccent,
                 height: '2px',
-                borderRadius: '12px 12px 2px 2px'
-              }
-            })
-      })
-    }
-  })
+                borderRadius: '12px 12px 2px 2px',
+              },
+            }),
+      }),
+    },
+  }),
 }));

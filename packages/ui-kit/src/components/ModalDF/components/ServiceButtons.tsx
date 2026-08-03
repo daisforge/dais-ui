@@ -11,7 +11,7 @@ import { FullScreenedCtx, FullScreenedToggleCtx, OnCloseCtx } from '../ctxs';
 
 /** компонент скрывается, если компонент вставлен внутрь [`StyledLeft`](../styled.ts) */
 export const StyledServiceButtons = styled(Box).attrs({
-  className: cls.serviceButtons
+  className: cls.serviceButtons,
 })<{ hasBackground?: boolean }>`
   display: inline-flex;
   column-gap: ${s.x2};

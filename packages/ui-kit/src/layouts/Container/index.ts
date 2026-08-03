@@ -2,5 +2,5 @@ export { Container } from './Container';
 export type {
   ContainerProps,
   INotSplitContainerProps,
-  ISplitContainerProps
+  ISplitContainerProps,
 } from './Container.types';

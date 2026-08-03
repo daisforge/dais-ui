@@ -6,11 +6,11 @@ import { KeyText, KeyTextMap } from './types';
 
 export const useColsWithKeyTextMap = <
   RowType extends ObjectForExtending,
-  SummaryRowType
+  SummaryRowType,
 >({
   tableConfigKeyTextBoolean,
   columnConfig,
-  keyText
+  keyText,
 }: {
   tableConfigKeyTextBoolean: boolean;
   columnConfig: readonly ColumnConfig<RowType, SummaryRowType>[];
@@ -25,7 +25,7 @@ export const useColsWithKeyTextMap = <
       if (curr.keyText) {
         const newLocal = {
           keyKey: getKeyTextCol(curr.keyText, keyText).key,
-          textKey: curr.key
+          textKey: curr.key,
         };
         acc.set(newLocal.keyKey, newLocal);
         acc.set(newLocal.textKey, newLocal);

@@ -7,7 +7,7 @@ import {
   Canvas,
   ColumnConfig,
   SummaryCellInfoGlideInstance,
-  TableCanvas
+  TableCanvas,
 } from '@ui-kit/components/TableCanvas';
 import React, { useCallback, useMemo, useState } from 'react';
 
@@ -15,10 +15,10 @@ const meta: Meta = {
   title: 'Локальные компоненты/TableCanvas/SummaryRows',
   parameters: {
     docs: {
-      page: DocStoryTemplate
-    }
+      page: DocStoryTemplate,
+    },
   },
-  tags: ['!autodocs']
+  tags: ['!autodocs'],
 };
 
 export default meta;
@@ -37,7 +37,7 @@ type TSummaryRowData = {
 export const SummaryRows: Story = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   render: () => {
     const [rows] = useState(createRows);
@@ -52,17 +52,17 @@ export const SummaryRows: Story = {
             columnId: 'priority',
             value: `Средних приоритетов ${
               rows.filter((el) => el.priority === 'Medium').length
-            }`
-          }
-        ]
-      }
+            }`,
+          },
+        ],
+      },
     ];
 
     const renderCommonSummaryCell = useCallback(
       (props: SummaryCellInfoGlideInstance<Row, TSummaryRowData>) =>
         props.row.values.find((el) => el.columnId === props.column.key)
           ?.value ?? '',
-      []
+      [],
     );
 
     const columnConfig = useMemo<readonly ColumnConfig<Row, TSummaryRowData>[]>(
@@ -70,12 +70,12 @@ export const SummaryRows: Story = {
         {
           key: 'id',
           name: 'ID',
-          renderSummaryCell: renderCommonSummaryCell
+          renderSummaryCell: renderCommonSummaryCell,
         },
         {
           key: 'task',
           name: 'Title',
-          renderSummaryCell: renderCommonSummaryCell
+          renderSummaryCell: renderCommonSummaryCell,
         },
         {
           key: 'priority',
@@ -87,7 +87,7 @@ export const SummaryRows: Story = {
               <Canvas.Container
                 padding={{
                   left: theme.cellHorizontalPadding,
-                  right: theme.cellHorizontalPadding
+                  right: theme.cellHorizontalPadding,
                 }}
               >
                 <Canvas.Text color={row.type === 'top' ? 'red' : 'orange'}>
@@ -95,18 +95,18 @@ export const SummaryRows: Story = {
                 </Canvas.Text>
               </Canvas.Container>
             );
-          }
+          },
         },
         {
           key: 'issueType',
-          name: 'Issue Type'
+          name: 'Issue Type',
         },
         {
           key: 'complete',
-          name: '% Complete'
-        }
+          name: '% Complete',
+        },
       ],
-      [renderCommonSummaryCell]
+      [renderCommonSummaryCell],
     );
 
     return (
@@ -115,13 +115,13 @@ export const SummaryRows: Story = {
           containerStyle: { height: '700px' },
           summaryRows: {
             showDefault: true,
-            showInControl: true
-          }
+            showInControl: true,
+          },
         }}
         columnConfig={columnConfig}
         bottomSummaryRows={bottomSummaryRowsData}
         rows={rows}
       />
     );
-  }
+  },
 };

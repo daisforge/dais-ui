@@ -9,8 +9,8 @@ const DEFAULTS = {
   empty: {
     title: 'Нет данных по заданным параметрам',
     subtitle: undefined,
-    variant: 'not-result'
-  }
+    variant: 'not-result',
+  },
 } as const;
 
 type TableContentStateOverlayProps = {
@@ -20,7 +20,7 @@ type TableContentStateOverlayProps = {
 
 export const TableContentStateOverlay = ({
   overlay,
-  topOffset
+  topOffset,
 }: TableContentStateOverlayProps) => {
   const displayMode = overlay.displayMode ?? 'body-overlay';
   const content: ReactNode =
@@ -32,7 +32,7 @@ export const TableContentStateOverlay = ({
             unknownStatus={{
               title: 'Не удалось загрузить данные',
               description: 'Попробуйте обновить страницу или зайдите позже',
-              ...(overlay.errorPageProps?.unknownStatus ?? {})
+              ...(overlay.errorPageProps?.unknownStatus ?? {}),
             }}
             {...overlay.errorPageProps}
           />

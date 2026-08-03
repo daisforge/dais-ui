@@ -98,5 +98,5 @@ export const boxCSSKeys: Set<keyBoxCSSProperties> = new Set([
   'borderWidth',
   'borderColor',
   'borderStyle',
-  'borderRadius'
+  'borderRadius',
 ]);

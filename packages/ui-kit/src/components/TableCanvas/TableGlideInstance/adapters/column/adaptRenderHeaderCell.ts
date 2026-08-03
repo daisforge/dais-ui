@@ -1,6 +1,6 @@
 import type {
   ColumnGlideLast,
-  HeaderCellInfo
+  HeaderCellInfo,
 } from '@ui-kit/components/TableGlide';
 
 import type { ObjectForExtending } from '../../../types/utils.type';
@@ -12,7 +12,7 @@ import type { AdaptRenderHeaderCellInput } from './types';
  */
 export const adaptRenderHeaderCell =
   <R extends ObjectForExtending, SR = unknown>({
-    column
+    column,
   }: AdaptRenderHeaderCellInput<R, SR>): ColumnGlideLast<
     R,
     SR
@@ -28,7 +28,7 @@ export const adaptRenderHeaderCell =
       ...cellInfo,
       column,
       // ctxs уже есть в cellInfo и имеет правильный тип
-      ctxs: cellInfo.ctxs as HeaderCellInfoGlideInstance<R, SR>['ctxs']
+      ctxs: cellInfo.ctxs as HeaderCellInfoGlideInstance<R, SR>['ctxs'],
     };
 
     return column.renderHeaderCell(adaptedHeaderCellInfo);

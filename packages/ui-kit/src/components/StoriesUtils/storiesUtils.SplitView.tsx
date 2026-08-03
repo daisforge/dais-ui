@@ -1,7 +1,7 @@
 import type {
   splitViewClassNames,
   SplitViewProps,
-  SplVSizes
+  SplVSizes,
 } from '../SplitView';
 
 export function StorySplitViewSidebarPropComp(_p: SplitViewProps['sidebar']) {

@@ -1,26 +1,26 @@
 import {
   ActiveViewModsType,
   ObjectForExtending,
-  SIZE
+  SIZE,
 } from '@ui-kit/components/Table';
 import React, {
   createContext,
   MutableRefObject,
   PropsWithChildren,
   RefObject,
-  useContext
+  useContext,
 } from 'react';
 import {
   CellClickArgs,
   CellMouseEvent,
   DataGridHandle,
-  SortColumn
+  SortColumn,
 } from 'react-data-grid';
 
 import { DropdownProps } from '../Dropdown';
 import type {
   ContextMenuDropdownItem,
-  ContextMenuDropDownProps
+  ContextMenuDropDownProps,
 } from './feature-context-menu/types';
 import type { SearchingProps } from './feature-searching/types';
 import { DomMetadata } from './types/additional.type';
@@ -31,11 +31,11 @@ import { DomMetadata } from './types/additional.type';
  */
 type RowContextV = { rowSize: SIZE };
 const RowContext = createContext<RowContextV>({
-  rowSize: 'big' as SIZE
+  rowSize: 'big' as SIZE,
 });
 
 export const useRowContext = <
-  CustomType extends ObjectForExtending | void = undefined
+  CustomType extends ObjectForExtending | void = undefined,
 >() => {
   const ctx = useContext(RowContext);
   if (!ctx) {
@@ -70,7 +70,7 @@ export const useExpandedRowsContext = () => {
 // ----------------------------------------------------------------
 
 export type HeaderContextValueTypeInstance<
-  FilterStateType extends Record<string | number, unknown>
+  FilterStateType extends Record<string | number, unknown>,
 > = {
   filters: FilterStateType | undefined;
   setFilters: React.Dispatch<React.SetStateAction<FilterStateType>> | undefined;
@@ -97,7 +97,7 @@ export const HeaderContext = createContext<
 >({} as HeaderContextValueTypeInstance<ObjectForExtending>);
 
 export const useHeaderContext = <
-  CustomType extends ObjectForExtending | void = undefined
+  CustomType extends ObjectForExtending | void = undefined,
 >() => {
   const ctx = useContext(HeaderContext);
   if (!ctx) {
@@ -126,28 +126,28 @@ type CommonContextMenuProps = {
 // ContextMenu
 export type ContextMenuContextV<
   RowType extends ObjectForExtending,
-  SummaryRowType = unknown
+  SummaryRowType = unknown,
 > = CommonContextMenuProps &
   ContextMenuDropDownProps & {
     enableHeaderContextMenu: boolean;
     enableCellContextMenu: boolean;
     openHeaderContextMenu: (event: React.MouseEvent) => void;
     getClosestColumn: (
-      event: React.MouseEvent
+      event: React.MouseEvent,
     ) => { columnLabel: string } | undefined;
     onItemSelect?: (
       item: ContextMenuDropdownItem,
-      event?: React.SyntheticEvent
+      event?: React.SyntheticEvent,
     ) => void;
     openCellContextMenu: (
       args: CellClickArgs<RowType, SummaryRowType>,
-      event: CellMouseEvent
+      event: CellMouseEvent,
     ) => void;
   };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const ContextMenuContext = createContext<ContextMenuContextV<any, any> | null>(
-  null
+  null,
 );
 
 export const useContextMenu = () => {
@@ -212,7 +212,7 @@ export type TableCollapseContextValue = {
 };
 
 const TableCollapseContext = createContext<TableCollapseContextValue | null>(
-  null
+  null,
 );
 
 export const useTableCollapse = () => {
@@ -223,7 +223,7 @@ export const useTableCollapse = () => {
 
 export const ContextProviders = <
   RowType extends ObjectForExtending,
-  SummaryRowType = unknown
+  SummaryRowType = unknown,
 >({
   children,
   headerCtxV,
@@ -232,7 +232,7 @@ export const ContextProviders = <
   searchCtxV,
   contextMenuCtxV,
   sideBarCtxV,
-  tableCollapseCtxV
+  tableCollapseCtxV,
 }: PropsWithChildren & {
   headerCtxV: HeaderContextValueTypeInstance<ObjectForExtending>;
   rowCtxV: RowContextV;
@@ -262,7 +262,7 @@ export const ContextProviders = <
 );
 
 export const RefTableContext = createContext<RefObject<DataGridHandle> | null>(
-  null
+  null,
 );
 export const useRefTableContext = () => {
   const ctx = useContext(RefTableContext);
@@ -299,5 +299,5 @@ export {
   TableResizeObserverProvider,
   TableResizeObserverProviderWrapper,
   useTableResizeObserver,
-  useTableResizeObserverWidth
+  useTableResizeObserverWidth,
 } from './resize-observer-context';

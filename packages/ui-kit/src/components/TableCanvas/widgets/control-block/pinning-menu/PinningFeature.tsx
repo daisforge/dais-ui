@@ -1,7 +1,7 @@
 import {
   IconPinDashOutline,
   IconPinOutline,
-  IconTableColumnPin
+  IconTableColumnPin,
 } from '@ui-kit/icons';
 import { textInfo } from '@ui-kit/tokens/color';
 import React from 'react';
@@ -12,11 +12,11 @@ import {
   DropdownRenderCtx,
   FeatureItemWithCustomIcon,
   PinningMenuConfig,
-  PinningMenuItem
+  PinningMenuItem,
 } from '../types';
 import {
   getDropdownIconSize,
-  resolveFeatureIcon
+  resolveFeatureIcon,
 } from '../use-buttons-to-dropdown';
 import { resolvePinningMenuItems } from './resolvePinningMenuItems';
 
@@ -26,7 +26,7 @@ export const PINNING_MENU_VALUE = 'pinning-menu';
 /** value нативных пунктов меню (совпадение = override со стороны продукта). */
 export const PINNING_MENU_NATIVE_VALUES = {
   reset: 'reset-pinning',
-  pinColumns: 'pin-columns'
+  pinColumns: 'pin-columns',
 } as const;
 
 type BuildPinningFeatureParams = {
@@ -66,7 +66,7 @@ export function buildPinningFeature({
   embedSize,
   iconColored,
   iconTooltip,
-  onIconClick
+  onIconClick,
 }: BuildPinningFeatureParams): FeatureItemWithCustomIcon {
   const iconSize = FEATURE_ICON_SIZES[embedSize].icon;
   const nativeItems: PinningMenuItem[] = [
@@ -81,7 +81,7 @@ export function buildPinningFeature({
       ),
       onClick: onResetPinning,
       order: 100,
-      dividerAfter: true
+      dividerAfter: true,
     },
     {
       value: PINNING_MENU_NATIVE_VALUES.pinColumns,
@@ -93,13 +93,13 @@ export function buildPinningFeature({
         />
       ),
       onClick: onPinSelectedColumns,
-      order: 200
-    }
+      order: 200,
+    },
   ];
 
   const resolvedItems = resolvePinningMenuItems(
     nativeItems,
-    pinningMenuConfig?.items
+    pinningMenuConfig?.items,
   );
 
   const handleSelect = (value: string) => {
@@ -113,7 +113,7 @@ export function buildPinningFeature({
       label: item.label,
       contentLeft: resolveFeatureIcon(item.icon, ctx),
       dividerAfter: item.dividerAfter,
-      disabled: item.disabled
+      disabled: item.disabled,
     }));
 
   return {
@@ -135,7 +135,7 @@ export function buildPinningFeature({
         iconDomMetadata={pinningMenuConfig?.iconDomMetadata?.dataAttributes}
         items={buildDropdownItems({
           rowSize: ctxRowSize,
-          isInDropdown: true
+          isInDropdown: true,
         })}
         onItemSelect={(item) => handleSelect(item.value as string)}
       />
@@ -156,12 +156,12 @@ export function buildPinningFeature({
         label: item.label,
         contentLeft: resolveFeatureIcon(item.icon, {
           rowSize,
-          isInDropdown: true
+          isInDropdown: true,
         }),
         dividerAfter: item.dividerAfter,
-        disabled: item.disabled
+        disabled: item.disabled,
       })),
-      onChange: handleSelect
-    }
+      onChange: handleSelect,
+    },
   };
 }

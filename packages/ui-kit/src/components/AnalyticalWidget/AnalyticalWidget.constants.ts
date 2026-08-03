@@ -90,7 +90,7 @@ export const ANALYTICAL_WIDGET_STYLES = {
       width: '100%',
       minHeight: '512px',
       padding: '16px',
-      borderRadius: '16px'
+      borderRadius: '16px',
     },
     lg: {
       minWidth: '448px',
@@ -98,7 +98,7 @@ export const ANALYTICAL_WIDGET_STYLES = {
       width: '100%',
       minHeight: '512px', // 432px
       padding: '16px',
-      borderRadius: '16px'
+      borderRadius: '16px',
     },
     md: {
       minWidth: '448px',
@@ -106,8 +106,8 @@ export const ANALYTICAL_WIDGET_STYLES = {
       width: '100%',
       minHeight: '512px', // 344px
       padding: '16px',
-      borderRadius: '16px'
-    }
+      borderRadius: '16px',
+    },
   },
   m: {
     xl: {
@@ -116,7 +116,7 @@ export const ANALYTICAL_WIDGET_STYLES = {
       width: '100%',
       minHeight: '248px',
       padding: '16px',
-      borderRadius: '16px'
+      borderRadius: '16px',
     },
     lg: {
       minWidth: '448px',
@@ -124,7 +124,7 @@ export const ANALYTICAL_WIDGET_STYLES = {
       width: '100%',
       minHeight: '248px', // 208px
       padding: '16px',
-      borderRadius: '16px'
+      borderRadius: '16px',
     },
     md: {
       minWidth: '448px',
@@ -132,8 +132,8 @@ export const ANALYTICAL_WIDGET_STYLES = {
       width: '100%',
       minHeight: '248px', // 172px
       padding: '16px',
-      borderRadius: '16px'
-    }
+      borderRadius: '16px',
+    },
   },
   s: {
     xl: {
@@ -142,7 +142,7 @@ export const ANALYTICAL_WIDGET_STYLES = {
       width: '100%',
       minHeight: '248px',
       padding: '16px',
-      borderRadius: '16px'
+      borderRadius: '16px',
     },
     lg: {
       minWidth: '216px',
@@ -150,7 +150,7 @@ export const ANALYTICAL_WIDGET_STYLES = {
       width: '100%',
       minHeight: '248px', // 208px
       padding: '16px',
-      borderRadius: '16px'
+      borderRadius: '16px',
     },
     md: {
       minWidth: '216px',
@@ -158,9 +158,9 @@ export const ANALYTICAL_WIDGET_STYLES = {
       width: '100%',
       minHeight: '248px', // 172px
       padding: '16px',
-      borderRadius: '16px'
-    }
-  }
+      borderRadius: '16px',
+    },
+  },
 };
 
 export const SLOT_VISIBILITY: {
@@ -171,16 +171,16 @@ export const SLOT_VISIBILITY: {
 } = {
   l: {
     topSlot: true, // Filters + chips
-    middleSlot: true // Tabs
+    middleSlot: true, // Tabs
   },
   m: {
     topSlot: true, // Filters + chips
-    middleSlot: false // Tabs
+    middleSlot: false, // Tabs
   },
   s: {
     topSlot: true, // Filters + chips
-    middleSlot: false // Tabs
-  }
+    middleSlot: false, // Tabs
+  },
 };
 
 export const analyticalWidgetClassNames = {
@@ -190,5 +190,5 @@ export const analyticalWidgetClassNames = {
   topSlot: 'analytical-widget__top-slot',
   middleSlot: 'analytical-widget__middle-slot',
   contentSlot: 'analytical-widget__content',
-  headerActions: 'analytical-widget__header-actions'
+  headerActions: 'analytical-widget__header-actions',
 } as const;

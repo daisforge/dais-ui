@@ -5,7 +5,7 @@ export {
   type TablePopoverContextValue,
   TablePopoverProvider,
   type TablePopoverState,
-  useTablePopover
+  useTablePopover,
 } from './context';
 export * from './hooks';
 export * from './utils';

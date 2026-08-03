@@ -11,9 +11,9 @@ const meta: Meta = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      page: DocStoryTemplate
-    }
-  }
+      page: DocStoryTemplate,
+    },
+  },
 };
 
 export default meta;
@@ -40,7 +40,7 @@ import { IconAddOutline, IconBoxOutline, IconSber } from '@daisforge/ui/icons';
 export const SelectingRow: StoryObj = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   name: 'Многоуровневая таблица',
   render: () => {
@@ -53,27 +53,27 @@ export const SelectingRow: StoryObj = {
           name: 'ID',
           subRow: {
             keyOfColumnInSubRow: 'id',
-            isColumnWithArrow: true
+            isColumnWithArrow: true,
           },
-          resizable: true
+          resizable: true,
         },
         {
           key: 'issueType',
           name: 'issue',
           subRow: {
-            keyOfColumnInSubRow: 'issueType'
-          }
+            keyOfColumnInSubRow: 'issueType',
+          },
         },
         {
           key: 'developer',
-          name: 'Developer'
-        }
+          name: 'Developer',
+        },
       ],
-      []
+      [],
     );
 
     const selectingRowStateAndSetter = useState(
-      (): ReadonlySet<string | number> => new Set()
+      (): ReadonlySet<string | number> => new Set(),
     );
     const rowShowCheckbox = (r: Row) => r.id !== 2;
     const rowCheckboxDisabled = (r: Row) => r.id === '10001';
@@ -85,7 +85,7 @@ export const SelectingRow: StoryObj = {
           resizableColumn: true,
           subRows: {
             getSubRows: (row) => row?.subRows,
-            rowKeyGetter: (row) => row.id
+            rowKeyGetter: (row) => row.id,
           },
           selecting: {
             state: selectingRowStateAndSetter,
@@ -93,12 +93,12 @@ export const SelectingRow: StoryObj = {
             showDefault: true,
             selectingRules: { levels: [1, 2] },
             rowCheckboxDisabled,
-            rowShowCheckbox
-          }
+            rowShowCheckbox,
+          },
         }}
         columnConfig={columns}
         rows={rows}
       />
     );
-  }
+  },
 };

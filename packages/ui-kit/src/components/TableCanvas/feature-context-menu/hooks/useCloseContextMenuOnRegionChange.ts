@@ -17,10 +17,10 @@ interface UseCloseContextMenuOnRegionChangeOptions {
  */
 export function useCloseContextMenuOnRegionChange<
   RowType extends ObjectForExtending,
-  SummaryRowType
+  SummaryRowType,
 >(
   contextMenu: { isOpen: boolean; close: () => void },
-  options: UseCloseContextMenuOnRegionChangeOptions = {}
+  options: UseCloseContextMenuOnRegionChangeOptions = {},
 ) {
   const { scrollThreshold = 5 } = options;
 
@@ -59,6 +59,6 @@ export function useCloseContextMenuOnRegionChange<
 
       lastTyRef.current = ty;
     },
-    [contextMenu, scrollThreshold]
+    [contextMenu, scrollThreshold],
   );
 }

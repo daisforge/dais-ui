@@ -14,5 +14,5 @@ export const Notification = forwardRef<NotificationRef, NotificationProps>(
 
     // @ts-expect-error ref поддерживается, но типы не выводятся корректно
     return <NotificationNative {...props} ref={ref} className={className} />;
-  }
+  },
 );

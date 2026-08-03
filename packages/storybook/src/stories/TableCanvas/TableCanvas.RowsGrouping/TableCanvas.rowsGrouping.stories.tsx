@@ -5,7 +5,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import {
   ColumnConfig,
   SortColumn,
-  TableCanvas
+  TableCanvas,
 } from '@ui-kit/components/TableCanvas';
 import React, { useMemo, useState } from 'react';
 
@@ -16,9 +16,9 @@ const meta: Meta = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      page: DocStoryTemplate
-    }
-  }
+      page: DocStoryTemplate,
+    },
+  },
 };
 
 export default meta;
@@ -30,7 +30,7 @@ import { ColumnConfig, TableCanvas } from '@daisforge/ui/components/TableCanvas'
 export const SimpleTable: StoryObj = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   name: 'Простая группировка',
   render: () => {
@@ -44,32 +44,32 @@ export const SimpleTable: StoryObj = {
           key: 'athlete',
           name: 'Athlete',
           rowsGrouping: {
-            columnGroupLabel: 'Athlete'
-          }
+            columnGroupLabel: 'Athlete',
+          },
         },
         {
           key: 'sport',
           name: 'Sport',
 
           rowsGrouping: {
-            columnGroupLabel: 'Sport'
-          }
+            columnGroupLabel: 'Sport',
+          },
         },
         {
           key: 'country',
           name: 'Country',
 
           rowsGrouping: {
-            columnGroupLabel: 'Country'
-          }
+            columnGroupLabel: 'Country',
+          },
         },
         {
           key: 'year',
           name: 'Year',
 
           rowsGrouping: {
-            columnGroupLabel: 'Year'
-          }
+            columnGroupLabel: 'Year',
+          },
         },
 
         {
@@ -82,11 +82,11 @@ export const SimpleTable: StoryObj = {
               return childRows
                 .reduce((prev, { gold }) => prev + gold, 0)
                 .toString();
-            }
-          }
-        }
+            },
+          },
+        },
       ],
-      []
+      [],
     );
 
     return (
@@ -94,7 +94,7 @@ export const SimpleTable: StoryObj = {
         tableConfig={{
           containerStyle: { height: 700 },
           columnsControl: {
-            enable: true
+            enable: true,
           },
           rowsGrouping: {
             rowKeyGetter: (r) => r.id,
@@ -102,8 +102,8 @@ export const SimpleTable: StoryObj = {
 
             groupButton: {
               defaultCustomItems: [
-                { value: 'gold', label: 'Gold as custom option' }
-              ]
+                { value: 'gold', label: 'Gold as custom option' },
+              ],
             },
             groupedColumnProps: {
               width: 350,
@@ -119,22 +119,22 @@ export const SimpleTable: StoryObj = {
                     return 'Russia';
                   }
                   return props.groupKey;
-                }
-              }
-            }
-          }
+                },
+              },
+            },
+          },
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };
 
 export const MultipleFeaturesTable: StoryObj = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   name: 'Комбинация с другими фичами',
   render: () => {
@@ -149,56 +149,56 @@ export const MultipleFeaturesTable: StoryObj = {
           name: 'Athlete',
           sortingType: 'stringSort',
           rowsGrouping: {
-            columnGroupLabel: 'Athlete'
+            columnGroupLabel: 'Athlete',
           },
           filtering: {
             component: 'input',
             filter: 'includes',
             valueInRow: (r) => r.athlete,
-            keyInFilterState: 'athlete'
-          }
+            keyInFilterState: 'athlete',
+          },
         },
         {
           key: 'sport',
           name: 'Sport',
           sortingType: 'stringSort',
           rowsGrouping: {
-            columnGroupLabel: 'Sport'
+            columnGroupLabel: 'Sport',
           },
           filtering: {
             component: 'input',
             filter: 'includes',
             valueInRow: (r) => r.sport,
-            keyInFilterState: 'sport'
-          }
+            keyInFilterState: 'sport',
+          },
         },
         {
           key: 'country',
           name: 'Country',
           sortingType: 'stringSort',
           rowsGrouping: {
-            columnGroupLabel: 'Country'
+            columnGroupLabel: 'Country',
           },
           filtering: {
             component: 'input',
             filter: 'startWith',
             valueInRow: (r) => r.country,
-            keyInFilterState: 'country'
-          }
+            keyInFilterState: 'country',
+          },
         },
         {
           key: 'year',
           name: 'Year',
           sortingType: 'numberSort',
           rowsGrouping: {
-            columnGroupLabel: 'Year'
+            columnGroupLabel: 'Year',
           },
           filtering: {
             component: 'input',
             filter: 'startWith',
             valueInRow: (r) => r.year,
-            keyInFilterState: 'year'
-          }
+            keyInFilterState: 'year',
+          },
         },
 
         {
@@ -209,13 +209,13 @@ export const MultipleFeaturesTable: StoryObj = {
             columnGroupLabel: 'Gold',
             renderGroupCell({ childRows }) {
               return String(
-                childRows.reduce((prev, { gold }) => prev + gold, 0)
+                childRows.reduce((prev, { gold }) => prev + gold, 0),
               );
-            }
-          }
-        }
+            },
+          },
+        },
       ],
-      []
+      [],
     );
     const sortingStateAndSetter = useState<readonly SortColumn[]>([]);
 
@@ -224,11 +224,11 @@ export const MultipleFeaturesTable: StoryObj = {
       sport: '',
       gold: '',
       country: '',
-      year: ''
+      year: '',
     });
 
     const selectingRowStateAndSetter = useState(
-      (): ReadonlySet<string | number> => new Set()
+      (): ReadonlySet<string | number> => new Set(),
     );
     const rowCheckboxDisabled = (r: RowForGrouping) => r.id === 1;
 
@@ -236,22 +236,22 @@ export const MultipleFeaturesTable: StoryObj = {
       <TableCanvas
         tableConfig={{
           rowMarkers: {
-            startIndex: 1
+            startIndex: 1,
           },
           columnsControl: {
-            enable: true
+            enable: true,
           },
           containerStyle: { height: 700 },
           rowsGrouping: {
             rowKeyGetter: (r) => r.id,
             groupByState: [groupByArr, setGroupByArr],
             groupedColumnProps: {
-              name: <>моя группировка</>
-            }
+              name: <>моя группировка</>,
+            },
           },
           resizableColumn: true,
           sorting: {
-            state: sortingStateAndSetter
+            state: sortingStateAndSetter,
           },
           filtering: {
             state: filteringStateAndSetter,
@@ -260,19 +260,19 @@ export const MultipleFeaturesTable: StoryObj = {
               sport: '',
               gold: '',
               country: '',
-              year: ''
-            }
+              year: '',
+            },
           },
           selecting: {
             state: selectingRowStateAndSetter,
             rowKeyGetter: (r) => r.id,
             showDefault: true,
-            rowCheckboxDisabled
-          }
+            rowCheckboxDisabled,
+          },
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };

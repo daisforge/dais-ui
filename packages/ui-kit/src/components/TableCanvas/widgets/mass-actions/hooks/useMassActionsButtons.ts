@@ -4,7 +4,7 @@ import { MassActionButtonProps } from '../types';
 
 export const useMassActionsButtons = ({
   buttons,
-  visibleButtonsCount
+  visibleButtonsCount,
 }: {
   buttons?: MassActionButtonProps[];
   visibleButtonsCount: number;
@@ -31,12 +31,12 @@ export const useMassActionsButtons = ({
     const accentCount = accentButtonIndexes.size;
     const nonAccentVisibleCount = Math.max(
       0,
-      visibleButtonsCount - accentCount
+      visibleButtonsCount - accentCount,
     );
 
     // Индексы видимых не-accent кнопок (первые nonAccentVisibleCount)
     const visibleNonAccentIndexes = new Set(
-      nonAccentButtonIndexes.slice(0, nonAccentVisibleCount)
+      nonAccentButtonIndexes.slice(0, nonAccentVisibleCount),
     );
 
     // Формируем массив видимых кнопок, сохраняя оригинальный порядок
@@ -59,13 +59,13 @@ export const useMassActionsButtons = ({
 
     return {
       visibleButtons: visible,
-      buttonsInDropdown: inDropdown
+      buttonsInDropdown: inDropdown,
     };
   }, [buttons, visibleButtonsCount]);
 
   return {
     visibleButtons,
     buttonsInDropdown,
-    allButtons: buttons ?? []
+    allButtons: buttons ?? [],
   };
 };

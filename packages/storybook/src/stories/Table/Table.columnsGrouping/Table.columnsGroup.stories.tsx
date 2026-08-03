@@ -11,19 +11,19 @@ const meta: Meta = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      page: DocStoryTemplate
-    }
+      page: DocStoryTemplate,
+    },
   },
   args: {
-    headerTreeLvl: Object.keys(dataObj)[0]
+    headerTreeLvl: Object.keys(dataObj)[0],
   },
   argTypes: {
     headerTreeLvl: {
       description: 'Уровни вложенности шапки таблицы',
       control: { type: 'radio' },
-      options: Object.keys(dataObj)
-    }
-  }
+      options: Object.keys(dataObj),
+    },
+  },
 };
 
 export default meta;
@@ -50,10 +50,10 @@ import { IconAddOutline, IconBoxOutline, IconSber } from '@daisforge/ui/icons';
 export const SimpleTable: StoryObj<{ headerTreeLvl: keyof typeof dataObj }> = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   args: {
-    headerTreeLvl: 'lvl3'
+    headerTreeLvl: 'lvl3',
   },
 
   name: 'Columns grouping',
@@ -63,7 +63,7 @@ export const SimpleTable: StoryObj<{ headerTreeLvl: keyof typeof dataObj }> = {
 
     const columnConfig = useMemo<readonly ColumnOrColumnGroupConfig<Row>[]>(
       () => [...(dataObj[headerTreeLvl] ?? [])],
-      [headerTreeLvl]
+      [headerTreeLvl],
     );
 
     return (
@@ -72,11 +72,11 @@ export const SimpleTable: StoryObj<{ headerTreeLvl: keyof typeof dataObj }> = {
         tableConfig={{
           containerStyle: { height: 700 },
           columnsControl: { enable: true },
-          resizableColumn: true
+          resizableColumn: true,
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };

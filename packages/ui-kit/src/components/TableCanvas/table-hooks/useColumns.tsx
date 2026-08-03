@@ -13,26 +13,26 @@ import type { KeyText, KeyTextMap } from '../feature-key-text/types';
 import {
   calculateFilterPopoverPositionX,
   calculateFilterPopoverPositionY,
-  TablePopoverContextValue
+  TablePopoverContextValue,
 } from '../feature-popover-table';
 import { useReorderDragable } from '../feature-reorder-columns/useReorderDragable';
 import {
   getDetailPanelColSpanFunc,
-  isDetailPanelRow
+  isDetailPanelRow,
 } from '../feature-row-detail/handlers';
 import { ROW_I_COLUMN_KEY, RowIColumn } from '../feature-row-instruments';
 import {
   createRowMarkerColumn,
-  ROW_MARKER_COLUMN_KEY
+  ROW_MARKER_COLUMN_KEY,
 } from '../feature-row-markers';
 import type { AllRowsMapEntry } from '../feature-row-markers/types';
 import {
   getColsAfterRowsGrouping,
-  KEY_GROUPED_COL
+  KEY_GROUPED_COL,
 } from '../feature-rows-grouping';
 import {
   CHECKBOX_COLUMN_KEY,
-  createCheckboxColumn
+  createCheckboxColumn,
 } from '../feature-select-row';
 import { getHasArrow, getTreeIdAndLvlOfRow } from '../feature-tree/handlers';
 import { getAlignment } from '../renders/formatCell/getAlignment';
@@ -49,7 +49,7 @@ export const useColumns = <
   FilterStateType extends ObjectForExtending,
   RowIdType extends string | number,
   RowType extends ObjectForExtending,
-  SummaryRowType = unknown
+  SummaryRowType = unknown,
 >({
   columnConfig,
   tableConfig,
@@ -69,7 +69,7 @@ export const useColumns = <
   getColumnPinningDisabled,
   rowsRef,
   allRowsMapRef,
-  rowSize
+  rowSize,
 }: {
   columnConfig: readonly ColumnConfig<RowType, SummaryRowType>[];
   tableConfig: TableConfig<
@@ -107,30 +107,30 @@ export const useColumns = <
 }) => {
   type ColumnX = ColumnConfigInternal<RowType, SummaryRowType>;
   const getColumnIsService = (
-    column: ColumnConfig<RowType, SummaryRowType> | ColumnX
+    column: ColumnConfig<RowType, SummaryRowType> | ColumnX,
   ) => 'isServiceColumn' in column && column.isServiceColumn === true;
 
   // -------------- onOpenFilter callback -----------------
   const onOpenFilter = useCallback(
     (
       columnConfig: ColumnConfig<RowType, SummaryRowType>,
-      event: CanvasEvent
+      event: CanvasEvent,
     ) => {
       tablePopoverValue.open({
         // Формируем координату через координату ячейки + смещение таргета (иконка фильтра)
         position: {
           x: calculateFilterPopoverPositionX(event),
-          y: calculateFilterPopoverPositionY(event)
+          y: calculateFilterPopoverPositionY(event),
         },
         contentType: 'filter',
         contentData: {
-          columnConfig
+          columnConfig,
         },
         // Передаем ID колонки для отслеживания ресайза
-        columnId: columnConfig.key
+        columnId: columnConfig.key,
       });
     },
-    [tablePopoverValue]
+    [tablePopoverValue],
   );
 
   const tableConfigFiltering = !!tableConfig.filtering;
@@ -153,12 +153,12 @@ export const useColumns = <
       columnConfig,
       tableConfigGroupedColumnProps:
         tableConfig.rowsGrouping?.groupedColumnProps,
-      pinnedCols
+      pinnedCols,
     });
 
     const checkboxColumn = selectingRowsIsActive
       ? (createCheckboxColumn({
-          rowSize
+          rowSize,
         }) as ColumnX)
       : null;
 
@@ -171,14 +171,14 @@ export const useColumns = <
           rowSize,
           getRowMarker: tableConfig.rowMarkers?.getRowMarker,
           allRowsMapRef,
-          rowKeyGetter: tableConfig.subRows?.rowKeyGetter
+          rowKeyGetter: tableConfig.subRows?.rowKeyGetter,
         }) as ColumnX)
       : null;
     const colsAfterSelectingCheck = [
       ...(rowMarkersIsActive ? [rowMarkerColumn as ColumnX] : []),
       ...(selectingRowsIsActive ? [checkboxColumn as ColumnX] : []),
       ...(showRowInstruments ? [RowIColumn as ColumnX] : []),
-      ...colsAfterRowsGroupingCheck
+      ...colsAfterRowsGroupingCheck,
     ];
 
     const colsAfterKeyTextCheck = tableConfigKeyTextBoolean
@@ -297,7 +297,7 @@ export const useColumns = <
             <Canvas.Container
               padding={{
                 left: theme.cellHorizontalPadding,
-                right: theme.cellHorizontalPadding
+                right: theme.cellHorizontalPadding,
               }}
               style={{ width: '100%' }}
               alignItems="center"
@@ -319,7 +319,7 @@ export const useColumns = <
             subRowIsActiveAndColumnWithArrow,
             renderHeaderCellProps: p,
             onOpenFilter,
-            onUnpinColumn
+            onUnpinColumn,
           });
       })();
 
@@ -333,7 +333,7 @@ export const useColumns = <
           // currIndex,
           // indexZeroColKey,
           keyText,
-          editModeEnabled: editable(renderCellProps.row)
+          editModeEnabled: editable(renderCellProps.row),
         });
 
       const isErrorCell: ColumnX['isErrorCell'] = (row) => {
@@ -386,7 +386,7 @@ export const useColumns = <
             indexZeroColKey,
             currIndex,
             arr,
-            columnColSpan: el.colSpan
+            columnColSpan: el.colSpan,
           })
         : el.colSpan;
 
@@ -461,10 +461,10 @@ export const useColumns = <
             isHaveSorting,
             columnIsPinned,
             subRowIsActiveAndColumnWithArrow,
-            reorderForColIsActive
+            reorderForColIsActive,
           }),
         ...(el.maxAutoWidth !== undefined && {
-          maxAutoWidth: el.maxAutoWidth
+          maxAutoWidth: el.maxAutoWidth,
         }),
 
         renderCell,
@@ -476,7 +476,7 @@ export const useColumns = <
         // TODO
         // cellClass,
         ...(columnIsPinned && { frozen: true }),
-        ...(colSpan && { colSpan })
+        ...(colSpan && { colSpan }),
       };
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -506,7 +506,7 @@ export const useColumns = <
     onOpenFilter,
     onUnpinColumn,
     getColumnPinningDisabled,
-    rowSize
+    rowSize,
   ]);
 
   const {
@@ -514,7 +514,7 @@ export const useColumns = <
     onColumnsReorder,
     setColumnsOrder,
     columnsOrder,
-    getDefaultColumnsOrder
+    getDefaultColumnsOrder,
   } = useReorderDragable({
     columns,
     reorderIsActive,
@@ -527,7 +527,7 @@ export const useColumns = <
     tableConfigKeyTextBoolean,
     keyText,
     colsWithKeyTextMap,
-    pinnedCols
+    pinnedCols,
   });
 
   return {
@@ -536,6 +536,6 @@ export const useColumns = <
     columnsOrder,
     getDefaultColumnsOrder,
     setColumnsOrder,
-    onColumnsReorder
+    onColumnsReorder,
   };
 };

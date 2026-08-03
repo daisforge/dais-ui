@@ -23,7 +23,7 @@ import {
   type CellsSelectionMode,
   type ColumnConfig,
   type HighlightActiveType,
-  TableCanvas
+  TableCanvas,
 } from '@ui-kit/components/TableCanvas';
 import type { DataEditorRef } from '@ui-kit/components/TableCanvas/TableGlideInstance/type';
 import { createRef } from 'react';
@@ -31,7 +31,7 @@ import { createRef } from 'react';
 const meta: Meta = {
   title:
     'Локальные компоненты/TableCanvas/Copy-Paste-Fill/Визуальные тесты выделения',
-  tags: ['!autodocs']
+  tags: ['!autodocs'],
 };
 export default meta;
 
@@ -53,14 +53,14 @@ const COLS: readonly ColumnConfig<Row>[] = [
   { key: 'task', name: 'Title', width: COL_W },
   { key: 'priority', name: 'Priority', width: COL_W },
   { key: 'issueType', name: 'Type', width: COL_W },
-  { key: 'complete', name: '%', width: COL_W }
+  { key: 'complete', name: '%', width: COL_W },
 ];
 
 /** Общий рендер: фиксированный грид, режимы задаются на сценарий. */
 const renderGrid =
   (
     selectionMode: CellsSelectionMode,
-    highlightActiveType: HighlightActiveType = 'disabled'
+    highlightActiveType: HighlightActiveType = 'disabled',
   ) =>
   () =>
     (
@@ -75,9 +75,9 @@ const renderGrid =
               mode: selectionMode,
               enableColumnSelection: true,
               enableRowSelection: true,
-              enableSelectAll: true
+              enableSelectAll: true,
             },
-            highlightActiveType
+            highlightActiveType,
           }}
           columnConfig={COLS}
           rows={ROWS}
@@ -94,7 +94,7 @@ async function getGridTarget(canvasElement: HTMLElement): Promise<HTMLElement> {
     const el =
       canvasElement.querySelector<HTMLElement>('.dvn-scroller') ??
       canvasElement.querySelector<HTMLElement>(
-        '[data-testid="data-grid-canvas"]'
+        '[data-testid="data-grid-canvas"]',
       );
     if (!el) throw new Error('Grid canvas not found');
     return el;
@@ -125,7 +125,7 @@ function refCenter(dataCol: number, row: number): Point | undefined {
 async function ready(el: HTMLElement): Promise<void> {
   await settle();
   await waitFor(() => refCenter(0, 0) !== undefined, { timeout: 1500 }).catch(
-    () => undefined
+    () => undefined,
   );
   // eslint-disable-next-line no-void
   void el;
@@ -150,10 +150,10 @@ function points(target: HTMLElement) {
     // Колонка нумерации: ref её не адресует — только раскладка.
     numbering: (row: number): Point => ({
       x: r.left + NUM_W / 2,
-      y: rowCenterY(row)
+      y: rowCenterY(row),
     }),
     cell: (col: number, row: number): Point =>
-      refCenter(col, row) ?? { x: dataColCenterX(col), y: rowCenterY(row) }
+      refCenter(col, row) ?? { x: dataColCenterX(col), y: rowCenterY(row) },
   };
 }
 
@@ -172,20 +172,20 @@ function drag(el: HTMLElement, from: Point, to: Point, mods: Mods = {}) {
     clientX: from.x,
     clientY: from.y,
     button: 0,
-    buttons: 1
+    buttons: 1,
   });
   fireEvent.pointerMove(el, {
     ...base,
     clientX: to.x,
     clientY: to.y,
-    buttons: 1
+    buttons: 1,
   });
   fireEvent.pointerUp(el, {
     ...base,
     clientX: to.x,
     clientY: to.y,
     button: 0,
-    buttons: 0
+    buttons: 0,
   });
 }
 
@@ -202,7 +202,7 @@ export const ColumnSingle: Story = {
     await ready(el);
     click(el, points(el).columnHeader(1));
     await settle();
-  }
+  },
 };
 
 export const ColumnShiftRange: Story = {
@@ -217,7 +217,7 @@ export const ColumnShiftRange: Story = {
     await settle();
     click(el, p.columnHeader(3), { shiftKey: true });
     await settle();
-  }
+  },
 };
 
 export const ColumnCtrlMulti: Story = {
@@ -232,7 +232,7 @@ export const ColumnCtrlMulti: Story = {
     await settle();
     click(el, p.columnHeader(3), { ctrlKey: true });
     await settle();
-  }
+  },
 };
 
 export const SelectAll: Story = {
@@ -244,7 +244,7 @@ export const SelectAll: Story = {
     await ready(el);
     click(el, points(el).corner());
     await settle();
-  }
+  },
 };
 
 // --- Сценарии: СТРОКИ ---------------------------------------------------------
@@ -258,7 +258,7 @@ export const RowSingle: Story = {
     await ready(el);
     click(el, points(el).numbering(2));
     await settle();
-  }
+  },
 };
 
 export const RowDragRange: Story = {
@@ -271,7 +271,7 @@ export const RowDragRange: Story = {
     const p = points(el);
     drag(el, p.numbering(1), p.numbering(3));
     await settle();
-  }
+  },
 };
 
 export const RowCtrlMulti: Story = {
@@ -286,7 +286,7 @@ export const RowCtrlMulti: Story = {
     await settle();
     click(el, p.numbering(2), { ctrlKey: true });
     await settle();
-  }
+  },
 };
 
 // --- Сценарии: ЯЧЕЙКИ / ПОДСВЕТКА --------------------------------------------
@@ -305,7 +305,7 @@ export const MultiRangeCells: Story = {
     // + ещё одна ячейка через Ctrl (становится активной)
     click(el, p.cell(3, 3), { ctrlKey: true });
     await settle();
-  }
+  },
 };
 
 export const ActiveRowHighlight: Story = {
@@ -317,5 +317,5 @@ export const ActiveRowHighlight: Story = {
     await ready(el);
     click(el, points(el).cell(1, 2));
     await settle();
-  }
+  },
 };

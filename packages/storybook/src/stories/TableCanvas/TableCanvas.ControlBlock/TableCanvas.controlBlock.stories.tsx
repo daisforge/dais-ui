@@ -7,7 +7,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import {
   ColumnConfig,
   SplitIconButton,
-  TableCanvas
+  TableCanvas,
 } from '@ui-kit/components/TableCanvas';
 import { TableTabs } from '@ui-kit/components/TableTabs';
 import { IconPlus, IconRefresh, IconSb, IconStar } from '@ui-kit/icons';
@@ -18,7 +18,7 @@ import { useStarFeature } from './_lib/starFeature';
 
 const meta: Meta = {
   title: 'Локальные компоненты/TableCanvas/ControlBlock',
-  tags: ['!autodocs']
+  tags: ['!autodocs'],
 };
 
 export default meta;
@@ -44,44 +44,44 @@ const useBaseSetup = () => {
         keyText: {
           key: 'idKey',
           name: 'Ключ - ID',
-          renderCell: ({ row }) => `KEY-${row.id}`
-        }
+          renderCell: ({ row }) => `KEY-${row.id}`,
+        },
       },
       {
         key: 'task',
         name: 'Task',
         sortingType: 'stringSort',
         resizable: true,
-        rowsGrouping: { columnGroupLabel: 'Task' }
+        rowsGrouping: { columnGroupLabel: 'Task' },
       },
       {
         key: 'priority',
         name: 'Priority',
         sortingType: 'stringSort',
         resizable: true,
-        rowsGrouping: { columnGroupLabel: 'Priority' }
+        rowsGrouping: { columnGroupLabel: 'Priority' },
       },
       {
         key: 'issueType',
         name: 'Issue Type',
         resizable: true,
-        rowsGrouping: { columnGroupLabel: 'Issue Type' }
+        rowsGrouping: { columnGroupLabel: 'Issue Type' },
       },
       {
         key: 'developer',
         name: 'Developer',
         resizable: true,
-        rowsGrouping: { columnGroupLabel: 'Developer' }
+        rowsGrouping: { columnGroupLabel: 'Developer' },
       },
       {
         key: 'complete',
         name: '% Complete',
         sortingType: 'numberSort',
         resizable: true,
-        rowsGrouping: { groupByColumn: false, columnGroupLabel: '% Complete' }
-      }
+        rowsGrouping: { groupByColumn: false, columnGroupLabel: '% Complete' },
+      },
     ],
-    []
+    [],
   );
 
   return { rows, setRows, rowKeyGetter, columnConfig };
@@ -102,7 +102,7 @@ const CustomRightSlot = () => (
       padding: '0 8px',
       fontSize: 12,
       lineHeight: '18px',
-      whiteSpace: 'nowrap'
+      whiteSpace: 'nowrap',
     }}
   >
     кастомный слот
@@ -120,7 +120,7 @@ const EditModeLeftPanel = () => (
       onIconClick={() => alert('Icon click')}
       items={[
         { value: 'copy', label: 'Копировать' },
-        { value: 'paste', label: 'Вставить' }
+        { value: 'paste', label: 'Вставить' },
       ]}
       onItemSelect={(item) => alert(`Edit: ${item.label}`)}
       domMetadata={{ 'data-test-id': 'edit-mode-compound-btn' }}
@@ -132,7 +132,7 @@ const EditModeLeftPanel = () => (
       onIconClick={() => alert('Icon click 2')}
       items={[
         { value: 'copy', label: 'Копировать' },
-        { value: 'paste', label: 'Вставить' }
+        { value: 'paste', label: 'Вставить' },
       ]}
       onItemSelect={(item) => alert(`Edit 2: ${item.label}`)}
       domMetadata={{ 'data-test-id': 'edit-mode-compound-btn-2' }}
@@ -156,7 +156,7 @@ export const AllFeaturesWithTabs: Story = {
     const { rows, setRows, rowKeyGetter, columnConfig } = useBaseSetup();
     const [groupByArr, setGroupByArr] = useState<string[]>([]);
     const selectingState = useState(
-      (): ReadonlySet<string | number> => new Set()
+      (): ReadonlySet<string | number> => new Set(),
     );
     const editingEnabled = useState(false);
     const activeTabState = useState<string | number>('tab1');
@@ -168,7 +168,7 @@ export const AllFeaturesWithTabs: Story = {
         tabs={[
           { tabId: 'tab1', label: 'Основная' },
           { tabId: 'tab2', label: 'Архив' },
-          { tabId: 'tab3', label: 'Аналитика' }
+          { tabId: 'tab3', label: 'Аналитика' },
         ]}
         activeTabIdState={activeTabState}
         rightSlot={<CustomRightSlot />}
@@ -176,7 +176,7 @@ export const AllFeaturesWithTabs: Story = {
           enabled: true,
           collapseText: 'Свернуть таблицу',
           expandText: 'Развернуть таблицу',
-          rightSlot: <CustomRightSlot />
+          rightSlot: <CustomRightSlot />,
         }}
       >
         <TableTabs.TabPanel tabId="tab1">
@@ -190,18 +190,18 @@ export const AllFeaturesWithTabs: Story = {
               keyText: { showInControl: true, controlBlock: {}, sidebar: {} },
               rowsGrouping: {
                 rowKeyGetter,
-                groupByState: [groupByArr, setGroupByArr]
+                groupByState: [groupByArr, setGroupByArr],
               },
               selecting: {
                 state: selectingState,
-                rowKeyGetter
+                rowKeyGetter,
               },
               editing: {
                 onRowsChange: (newRows) => setRows(newRows as Row[]),
                 rowKeyGetter,
                 enabled: editingEnabled,
                 showButtons: true,
-                editModeLeftSlot: <EditModeLeftPanel />
+                editModeLeftSlot: <EditModeLeftPanel />,
               },
               controlBlock: {
                 show: true,
@@ -218,7 +218,7 @@ export const AllFeaturesWithTabs: Story = {
                         color="inherit"
                         size={ctx.rowSize === 'small' ? 'xs' : 's'}
                       />
-                    )
+                    ),
                   },
                   {
                     text: 'Выгрузить',
@@ -228,7 +228,7 @@ export const AllFeaturesWithTabs: Story = {
                         color="inherit"
                         size={ctx.rowSize === 'small' ? 'xs' : 's'}
                       />
-                    )
+                    ),
                   },
                   {
                     text: 'Экспорт',
@@ -243,12 +243,12 @@ export const AllFeaturesWithTabs: Story = {
                       items: [
                         { value: 'csv', label: 'CSV' },
                         { value: 'xlsx', label: 'Excel' },
-                        { value: 'pdf', label: 'PDF' }
+                        { value: 'pdf', label: 'PDF' },
                       ],
                       onItemSelect: (item: any) =>
-                        alert(`Экспорт: ${item.label}`)
-                    }
-                  }
+                        alert(`Экспорт: ${item.label}`),
+                    },
+                  },
                 ],
                 customFeatures: [
                   {
@@ -256,7 +256,7 @@ export const AllFeaturesWithTabs: Story = {
                     label: 'Обновить',
                     Icon: IconRefresh,
                     onClick: () => alert('Обновить'),
-                    dividerLeft: true
+                    dividerLeft: true,
                   },
                   {
                     value: 'favorite',
@@ -268,8 +268,8 @@ export const AllFeaturesWithTabs: Story = {
                       type: 'switch',
                       label: 'В избранном',
                       checked: isFavorite,
-                      onChange: (e) => setIsFavorite(e.target.checked)
-                    }
+                      onChange: (e) => setIsFavorite(e.target.checked),
+                    },
                   },
                   {
                     value: 'add-row',
@@ -279,11 +279,11 @@ export const AllFeaturesWithTabs: Story = {
                     dividerLeft: true,
                     // Pinned-фича: НЕ уходит в overflow-дропдаун при сжатии,
                     // всегда остаётся видимой в правой части
-                    canBeCompressedInToolsMenu: false
+                    canBeCompressedInToolsMenu: false,
                   },
-                  starFeature
-                ]
-              }
+                  starFeature,
+                ],
+              },
             }}
             columnConfig={columnConfig}
             rows={rows}
@@ -297,7 +297,7 @@ export const AllFeaturesWithTabs: Story = {
         </TableTabs.TabPanel>
       </TableTabs>
     );
-  }
+  },
 };
 
 /**
@@ -317,7 +317,7 @@ export const TabsWithoutCollapsing: Story = {
       <TableTabs
         tabs={[
           { tabId: 'tab1', label: 'Данные' },
-          { tabId: 'tab2', label: 'Настройки' }
+          { tabId: 'tab2', label: 'Настройки' },
         ]}
         activeTabIdState={activeTabState}
         rightSlot={<CustomRightSlot />}
@@ -347,23 +347,23 @@ export const TabsWithoutCollapsing: Story = {
                       items: [
                         { value: 'csv', label: 'CSV' },
                         { value: 'xlsx', label: 'Excel' },
-                        { value: 'pdf', label: 'PDF' }
+                        { value: 'pdf', label: 'PDF' },
                       ],
                       onItemSelect: (item: any) =>
-                        alert(`Экспорт: ${item.label}`)
-                    }
-                  }
+                        alert(`Экспорт: ${item.label}`),
+                    },
+                  },
                 ],
                 customFeatures: [
                   {
                     value: 'refresh',
                     label: 'Обновить',
                     Icon: IconRefresh,
-                    onClick: () => alert('Обновить')
+                    onClick: () => alert('Обновить'),
                   },
-                  starFeature
-                ]
-              }
+                  starFeature,
+                ],
+              },
             }}
             columnConfig={columnConfig}
             rows={rows}
@@ -374,7 +374,7 @@ export const TabsWithoutCollapsing: Story = {
         </TableTabs.TabPanel>
       </TableTabs>
     );
-  }
+  },
 };
 
 /**
@@ -409,7 +409,7 @@ export const CollapsingAboveNoTabs: Story = {
                     color="inherit"
                     size={ctx.rowSize === 'small' ? 'xs' : 's'}
                   />
-                )
+                ),
               },
               {
                 text: 'Экспорт',
@@ -424,25 +424,25 @@ export const CollapsingAboveNoTabs: Story = {
                   items: [
                     { value: 'csv', label: 'CSV' },
                     { value: 'xlsx', label: 'Excel' },
-                    { value: 'pdf', label: 'PDF' }
+                    { value: 'pdf', label: 'PDF' },
                   ],
-                  onItemSelect: (item: any) => alert(`Экспорт: ${item.label}`)
-                }
-              }
+                  onItemSelect: (item: any) => alert(`Экспорт: ${item.label}`),
+                },
+              },
             ],
-            customFeatures: [starFeature]
+            customFeatures: [starFeature],
           },
           collapsing: {
             enableCollapse: true,
             collapseButtonPlacement: 'above',
-            collapseButtonAboveRightSlot: <CustomRightSlot />
-          }
+            collapseButtonAboveRightSlot: <CustomRightSlot />,
+          },
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };
 
 /**
@@ -468,7 +468,7 @@ export const InlineCollapsing: Story = {
           keyText: { showInControl: true, controlBlock: {}, sidebar: {} },
           rowsGrouping: {
             rowKeyGetter,
-            groupByState: [groupByArr, setGroupByArr]
+            groupByState: [groupByArr, setGroupByArr],
           },
           controlBlock: {
             show: true,
@@ -482,7 +482,7 @@ export const InlineCollapsing: Story = {
                     color="inherit"
                     size={ctx.rowSize === 'small' ? 'xs' : 's'}
                   />
-                )
+                ),
               },
               {
                 text: 'Экспорт',
@@ -497,24 +497,24 @@ export const InlineCollapsing: Story = {
                   items: [
                     { value: 'csv', label: 'CSV' },
                     { value: 'xlsx', label: 'Excel' },
-                    { value: 'pdf', label: 'PDF' }
+                    { value: 'pdf', label: 'PDF' },
                   ],
-                  onItemSelect: (item: any) => alert(`Экспорт: ${item.label}`)
-                }
-              }
+                  onItemSelect: (item: any) => alert(`Экспорт: ${item.label}`),
+                },
+              },
             ],
-            customFeatures: [starFeature]
+            customFeatures: [starFeature],
           },
           collapsing: {
             enableCollapse: true,
-            collapseButtonPlacement: 'inside'
-          }
+            collapseButtonPlacement: 'inside',
+          },
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };
 
 /**
@@ -539,7 +539,7 @@ export const TitleBlockStory: Story = {
           collapsing: {
             collapseButtonPlacement: 'above',
             titleText: 'Реестр задач',
-            collapseButtonAboveRightSlot: <CustomRightSlot />
+            collapseButtonAboveRightSlot: <CustomRightSlot />,
           },
           controlBlock: {
             show: true,
@@ -558,20 +558,20 @@ export const TitleBlockStory: Story = {
                   items: [
                     { value: 'csv', label: 'CSV' },
                     { value: 'xlsx', label: 'Excel' },
-                    { value: 'pdf', label: 'PDF' }
+                    { value: 'pdf', label: 'PDF' },
                   ],
-                  onItemSelect: (item: any) => alert(`Экспорт: ${item.label}`)
-                }
-              }
+                  onItemSelect: (item: any) => alert(`Экспорт: ${item.label}`),
+                },
+              },
             ],
-            customFeatures: [starFeature]
-          }
+            customFeatures: [starFeature],
+          },
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };
 
 /**
@@ -594,7 +594,7 @@ export const TitleBlockInline: Story = {
           rowSize: { default: 'big', showInControl: true },
           searching: { enabled: true },
           collapsing: {
-            titleText: 'Реестр задач'
+            titleText: 'Реестр задач',
           },
           controlBlock: {
             show: true,
@@ -613,18 +613,18 @@ export const TitleBlockInline: Story = {
                   items: [
                     { value: 'csv', label: 'CSV' },
                     { value: 'xlsx', label: 'Excel' },
-                    { value: 'pdf', label: 'PDF' }
+                    { value: 'pdf', label: 'PDF' },
                   ],
-                  onItemSelect: (item: any) => alert(`Экспорт: ${item.label}`)
-                }
-              }
+                  onItemSelect: (item: any) => alert(`Экспорт: ${item.label}`),
+                },
+              },
             ],
-            customFeatures: [starFeature]
-          }
+            customFeatures: [starFeature],
+          },
         }}
         columnConfig={columnConfig}
         rows={rows}
       />
     );
-  }
+  },
 };

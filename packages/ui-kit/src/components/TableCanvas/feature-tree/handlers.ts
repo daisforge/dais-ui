@@ -4,7 +4,7 @@ import {
   SUBROWS_KEY,
   TREE_FLATTEN_KEYS,
   TREE_ID_KEY,
-  TREE_LVL_KEY
+  TREE_LVL_KEY,
 } from './constants';
 
 export function getLvlFromTreeId(treeId: string | undefined) {
@@ -12,7 +12,7 @@ export function getLvlFromTreeId(treeId: string | undefined) {
 }
 
 export function getTreeIdAndLvlOfRow<RowType extends ObjectForExtending>(
-  row: RowType
+  row: RowType,
 ) {
   const treeId = (row as { [TREE_ID_KEY]?: string })?.[TREE_ID_KEY] as
     | string
@@ -32,7 +32,7 @@ export function getHasArrow(
     | boolean
     | ((props: { keyText: KeyText }) => boolean)
     | undefined,
-  keyText: KeyText
+  keyText: KeyText,
 ) {
   if (!isColumnWithArrow) {
     return false;
@@ -80,7 +80,7 @@ export const deleteSubRowKeys = <Row extends ObjectForExtending>(r: Row) => {
   });
 };
 export const deleteTreeFlattenKeys = <Row extends ObjectForExtending>(
-  r: Row
+  r: Row,
 ) => {
   Object.values(TREE_FLATTEN_KEYS).forEach((key) => {
     delete r[key];

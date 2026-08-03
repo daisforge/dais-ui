@@ -11,7 +11,7 @@ export type TableProps<
   HeaderContextValueType extends ObjectForExtending,
   RowContextValueType extends ObjectForExtending,
   RowType extends ObjectForExtending,
-  SummaryRowType = unknown
+  SummaryRowType = unknown,
 > = {
   /**
    * columnConfig - Конфигурация колонок.

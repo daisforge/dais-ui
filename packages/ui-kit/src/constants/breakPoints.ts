@@ -4,7 +4,7 @@ export const breakPoints = {
   m: 960,
   l: 1280,
   xl: 1920,
-  xxl: 2560
+  xxl: 2560,
 } as const;
 export const breakP = breakPoints;
 export type BreakPointsKeys = keyof typeof breakP;

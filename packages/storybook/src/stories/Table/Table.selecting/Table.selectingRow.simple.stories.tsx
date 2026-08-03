@@ -11,9 +11,9 @@ const meta: Meta = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      page: DocStoryTemplate
-    }
-  }
+      page: DocStoryTemplate,
+    },
+  },
 };
 
 export default meta;
@@ -40,7 +40,7 @@ import { IconAddOutline, IconBoxOutline, IconSber } from '@daisforge/ui/icons';
 export const SelectingRow: StoryObj = {
   ...storySourceDoc({
     preCode,
-    previewSource: 'shown'
+    previewSource: 'shown',
   }),
   name: 'Простой пример',
   render: () => {
@@ -50,22 +50,22 @@ export const SelectingRow: StoryObj = {
       () => [
         {
           key: 'id',
-          name: 'ID'
+          name: 'ID',
         },
         {
           key: 'issueType',
-          name: 'issue'
+          name: 'issue',
         },
         {
           key: 'developer',
-          name: 'Developer'
-        }
+          name: 'Developer',
+        },
       ],
-      []
+      [],
     );
 
     const selectingRowStateAndSetter = useState(
-      (): ReadonlySet<string | number> => new Set()
+      (): ReadonlySet<string | number> => new Set(),
     );
 
     return (
@@ -76,12 +76,12 @@ export const SelectingRow: StoryObj = {
             rowCheckboxDisabled: (row) => row.id === 2,
             rowShowCheckbox: (row) => row.id !== 3,
             state: selectingRowStateAndSetter,
-            rowKeyGetter: (r) => r.id + r.issueType
-          }
+            rowKeyGetter: (r) => r.id + r.issueType,
+          },
         }}
         columnConfig={columns}
         rows={rows}
       />
     );
-  }
+  },
 };

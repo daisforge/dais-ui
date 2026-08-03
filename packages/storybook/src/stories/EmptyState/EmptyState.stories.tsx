@@ -5,7 +5,7 @@ import type { EmptyStateProps } from '@ui-kit/components/EmptyState/EmptyState.t
 const meta: Meta<EmptyStateProps> = {
   title: 'Композиции/EmptyState',
   component: EmptyState,
-  tags: ['!autodocs']
+  tags: ['!autodocs'],
 };
 
 export default meta;
@@ -26,12 +26,12 @@ export const SizeS: Story = {
         type: 'link',
         props: {
           text: 'Сбросить фильтры',
-          view: 'accent'
-        }
-      }
-    ]
+          view: 'accent',
+        },
+      },
+    ],
   },
-  name: 'Small (s)'
+  name: 'Small (s)',
 };
 
 /**
@@ -48,12 +48,12 @@ export const SizeM: Story = {
         type: 'button',
         props: {
           text: 'Сбросить фильтры',
-          view: 'secondary' // Кнопка secondary
-        }
-      }
-    ]
+          view: 'secondary', // Кнопка secondary
+        },
+      },
+    ],
   },
-  name: 'Medium (m)'
+  name: 'Medium (m)',
 };
 
 /**
@@ -70,24 +70,24 @@ export const SizeL: Story = {
         type: 'button',
         props: {
           text: 'Обновить',
-          view: 'secondary' // Первая кнопка secondary
-        }
+          view: 'secondary', // Первая кнопка secondary
+        },
       },
       {
         type: 'button',
         props: {
           text: 'Создать отчёт',
-          view: 'accent' // Вторая кнопка accent
-        }
-      }
+          view: 'accent', // Вторая кнопка accent
+        },
+      },
     ],
     extraButton: {
       type: 'link',
       props: {
         text: 'Справка',
-        view: 'default'
-      }
-    }
+        view: 'default',
+      },
+    },
   },
-  name: 'Large (l)'
+  name: 'Large (l)',
 };

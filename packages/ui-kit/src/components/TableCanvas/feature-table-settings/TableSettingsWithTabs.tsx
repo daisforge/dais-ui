@@ -38,7 +38,7 @@ export const TableSettingsWithTabs: FC<{
   columnsDomMetadata,
   customGeneralSettingsSlot,
   activeSettingsTabId: externalActiveTabId,
-  setActiveSettingsTabId: externalSetActiveTabId
+  setActiveSettingsTabId: externalSetActiveTabId,
 }) => {
   // Формируем массив табов
   const tabs: TabConfig[] = [
@@ -55,27 +55,27 @@ export const TableSettingsWithTabs: FC<{
       show:
         generalSettings.length > 0 ||
         customFeatures.length > 0 ||
-        !!customGeneralSettingsSlot
+        !!customGeneralSettingsSlot,
     },
     {
       id: 'filtering',
       label: 'Фильтры',
       content: filteringContent,
       show: showFiltering,
-      domMetadata: filteringDomMetadata
+      domMetadata: filteringDomMetadata,
     },
     {
       id: 'columns',
       label: 'Столбцы',
       content: columnsContent,
       show: showColumns,
-      domMetadata: columnsDomMetadata
-    }
+      domMetadata: columnsDomMetadata,
+    },
   ].filter((tab) => tab.show);
 
   const [activeTabId, setActiveTabId] = [
     externalActiveTabId,
-    externalSetActiveTabId
+    externalSetActiveTabId,
   ];
 
   // Проверяем, существует ли активный таб, если нет - выбираем первый доступный
@@ -125,7 +125,7 @@ export const TableSettingsWithTabs: FC<{
               onClick={() => setActiveTabId(tab.id)}
               tabIndex={0}
               style={{
-                flexGrow: '1'
+                flexGrow: '1',
               }}
               className={tab?.domMetadata?.className}
               {...(tab?.domMetadata?.dataAttributes || {})}

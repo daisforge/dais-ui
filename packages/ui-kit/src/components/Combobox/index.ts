@@ -1,7 +1,7 @@
 import type {
   Combobox as ComboboxSDDS,
   ComboboxItemOption,
-  ComboboxProps
+  ComboboxProps,
 } from '@salutejs/sdds-finai';
 import type { ComponentProps } from 'react';
 

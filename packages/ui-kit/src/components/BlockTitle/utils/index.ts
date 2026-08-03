@@ -1,7 +1,7 @@
 import type {
   BlockTitleAdaptiveSlot,
   BlockTitleProps,
-  BlockTitleSlotSizesProps
+  BlockTitleSlotSizesProps,
 } from '../BlockTitle.types';
 
 type TitleSlotSizes = Pick<
@@ -11,16 +11,16 @@ type TitleSlotSizes = Pick<
 
 const DEFAULT_TITLE_SLOT_SIZES: TitleSlotSizes = {
   titleBadgeSize: 'm',
-  titleIconSize: 's'
+  titleIconSize: 's',
 };
 
 const getAdaptive1280TitleSlotSizes = (
-  titleSize: BlockTitleProps['titleSize']
+  titleSize: BlockTitleProps['titleSize'],
 ): TitleSlotSizes => {
   if (titleSize === 'H4' || titleSize === 'H5') {
     return {
       titleBadgeSize: 's',
-      titleIconSize: 'xs'
+      titleIconSize: 'xs',
     };
   }
 
@@ -29,7 +29,7 @@ const getAdaptive1280TitleSlotSizes = (
 
 export const getBlockTitleSlotSizes = (
   titleSize: BlockTitleProps['titleSize'],
-  isAdaptive1280: boolean
+  isAdaptive1280: boolean,
 ): BlockTitleSlotSizesProps => {
   const titleSlotSizes = isAdaptive1280
     ? getAdaptive1280TitleSlotSizes(titleSize)
@@ -43,15 +43,15 @@ export const getBlockTitleSlotSizes = (
   return {
     ...titleSlotSizes,
     buttonSize,
-    actionIconSize
+    actionIconSize,
   };
 };
 
 export const getBlockTitleBackButtonSize = (
-  isAdaptive1280: boolean
+  isAdaptive1280: boolean,
 ): 'xxs' | 'xs' => (isAdaptive1280 ? 'xxs' : 'xs');
 
 export const renderBlockTitleSlot = (
   slot: BlockTitleAdaptiveSlot | undefined,
-  slotSizes: BlockTitleSlotSizesProps
+  slotSizes: BlockTitleSlotSizesProps,
 ) => (typeof slot === 'function' ? slot(slotSizes) : slot);

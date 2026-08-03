@@ -4,14 +4,14 @@ import { RowInstrumentsType } from '../feature-row-instruments/types';
 import { ObjectForExtending } from '../types';
 
 export const useRowInstruments = <
-  RowType extends ObjectForExtending
+  RowType extends ObjectForExtending,
 >(rowInstrumentsConfig?: {
   getRowDropdownConfig?: RowInstrumentsType<RowType>;
   defaultOpened?: boolean;
   openedState?: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
 }) => {
   const [internalShowRowInstruments, setInternalShowRowInstruments] = useState(
-    rowInstrumentsConfig?.defaultOpened ?? false
+    rowInstrumentsConfig?.defaultOpened ?? false,
   );
 
   const showRowInstruments =
@@ -20,7 +20,7 @@ export const useRowInstruments = <
       : internalShowRowInstruments;
 
   const setShowRowInstruments: React.Dispatch<React.SetStateAction<boolean>> = (
-    value
+    value,
   ) => {
     if (rowInstrumentsConfig?.openedState?.[1]) {
       return rowInstrumentsConfig.openedState?.[1](value);
@@ -31,6 +31,6 @@ export const useRowInstruments = <
   return {
     showRowInstruments,
     setShowRowInstruments,
-    getRowDropdownConfig: rowInstrumentsConfig?.getRowDropdownConfig ?? null
+    getRowDropdownConfig: rowInstrumentsConfig?.getRowDropdownConfig ?? null,
   };
 };

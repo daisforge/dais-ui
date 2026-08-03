@@ -7,5 +7,5 @@ export type {
   EmptyStateProps,
   EmptyStateSize,
   EmptyStateVariant,
-  ErrorPageVariant
+  ErrorPageVariant,
 } from './EmptyState.types';

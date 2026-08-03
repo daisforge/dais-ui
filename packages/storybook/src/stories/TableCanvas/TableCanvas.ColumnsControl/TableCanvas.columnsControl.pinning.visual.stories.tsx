@@ -34,7 +34,7 @@ import { createRef } from 'react';
 const meta: Meta = {
   title:
     'Локальные компоненты/TableCanvas/ColumnsControl/Визуальные тесты закрепления',
-  tags: ['!autodocs']
+  tags: ['!autodocs'],
 };
 export default meta;
 
@@ -60,7 +60,7 @@ const COLS: readonly ColumnConfig<Row>[] = [
   { key: 'task', name: 'Title', width: 140 },
   { key: 'priority', name: 'Priority', width: 140 },
   { key: 'issueType', name: 'Type', width: 140 },
-  { key: 'complete', name: '%', width: 140 }
+  { key: 'complete', name: '%', width: 140 },
 ];
 
 /** Общий рендер: фиксированный грид, закрепление + выделение столбцов. */
@@ -79,20 +79,20 @@ const renderGrid =
               mode: 'range-cell',
               enableColumnSelection: true,
               enableRowSelection: true,
-              enableSelectAll: true
+              enableSelectAll: true,
             },
             columnsControl: {
               enable: true,
               pinning: true,
-              pinnedDefault
+              pinnedDefault,
             },
             controlBlock: {
               pinningMenu: {
                 iconDomMetadata: {
-                  dataAttributes: { 'data-testid': PIN_TESTID }
-                }
-              }
-            }
+                  dataAttributes: { 'data-testid': PIN_TESTID },
+                },
+              },
+            },
           }}
           columnConfig={COLS}
           rows={ROWS}
@@ -109,7 +109,7 @@ async function getGridTarget(canvasElement: HTMLElement): Promise<HTMLElement> {
     const el =
       canvasElement.querySelector<HTMLElement>('.dvn-scroller') ??
       canvasElement.querySelector<HTMLElement>(
-        '[data-testid="data-grid-canvas"]'
+        '[data-testid="data-grid-canvas"]',
       );
     if (!el) throw new Error('Grid canvas not found');
     return el;
@@ -145,7 +145,7 @@ async function ready(): Promise<void> {
  */
 function visualIndex(key: string, pinned: string[]): number {
   const pin = pinned.filter((k) =>
-    (DATA_KEYS as readonly string[]).includes(k)
+    (DATA_KEYS as readonly string[]).includes(k),
   );
   const rest = DATA_KEYS.filter((k) => !pin.includes(k));
   return [...pin, ...rest].indexOf(key);
@@ -172,7 +172,7 @@ function click(el: HTMLElement, p: Point, mods: Mods = {}) {
 async function selectColumn(
   el: HTMLElement,
   key: string,
-  pinned: string[] = []
+  pinned: string[] = [],
 ): Promise<void> {
   click(el, headerPointByKey(key, pinned));
   await settle();
@@ -182,7 +182,7 @@ async function selectColumn(
 async function shiftSelectTo(
   el: HTMLElement,
   key: string,
-  pinned: string[] = []
+  pinned: string[] = [],
 ): Promise<void> {
   click(el, headerPointByKey(key, pinned), { shiftKey: true });
   await settle();
@@ -195,12 +195,12 @@ async function findPinIcon(): Promise<HTMLElement> {
   return waitFor(
     () => {
       const el = document.querySelector<HTMLElement>(
-        `[data-testid="${PIN_TESTID}"]`
+        `[data-testid="${PIN_TESTID}"]`,
       );
       if (!el) throw new Error('Кнопка закрепления не найдена (data-testid)');
       return el;
     },
-    { timeout: 3000 }
+    { timeout: 3000 },
   );
 }
 
@@ -258,7 +258,7 @@ export const DropdownOpens: Story = {
       try {
         // eslint-disable-next-line no-await-in-loop
         await within(document.body).findByText('Закрепить столбцы', undefined, {
-          timeout: 1500
+          timeout: 1500,
         });
         // eslint-disable-next-line no-await-in-loop
         await within(document.body).findByText('Открепить всё');
@@ -269,7 +269,7 @@ export const DropdownOpens: Story = {
       }
     }
     throw new Error('Меню закрепления не открылось с пунктами (3 попытки)');
-  }
+  },
 };
 
 /** 2. Один столбец → «Закрепить столбцы» через дропдаун. */
@@ -283,7 +283,7 @@ export const PinSingleViaDropdown: Story = {
     await selectColumn(el, 'task');
     await openPinningMenu();
     await clickMenuItem('Закрепить столбцы');
-  }
+  },
 };
 
 /** 3. Один столбец → закрепить кликом по ЛЕВОЙ иконке (не через дропдаун). */
@@ -296,7 +296,7 @@ export const PinViaLeftIcon: Story = {
     await ready();
     await selectColumn(el, 'task');
     await clickPinIcon();
-  }
+  },
 };
 
 /** 4. Диапазон столбцов (Shift) → «Закрепить столбцы»; выделение сохраняется. */
@@ -312,7 +312,7 @@ export const PinRangeViaDropdown: Story = {
     await shiftSelectTo(el, 'issueType');
     await openPinningMenu();
     await clickMenuItem('Закрепить столбцы');
-  }
+  },
 };
 
 /** 5. Закрепили левой иконкой, затем ей же открепили (тоглер pin→unpin). */
@@ -326,7 +326,7 @@ export const UnpinViaLeftIcon: Story = {
     await selectColumn(el, 'task');
     await clickPinIcon(); // action=pin → Title закреплён
     await clickPinIcon(); // тот же выбор уже закреплён → action=unpin → откреплён
-  }
+  },
 };
 
 /** 6. «Открепить всё» через дропдаун — снимает закрепление со всех. */
@@ -339,7 +339,7 @@ export const UnpinAllViaDropdown: Story = {
     await ready();
     await openPinningMenu();
     await clickMenuItem('Открепить всё');
-  }
+  },
 };
 
 /** 7. Добавление к уже закреплённому: task закреплён, выделяем Type и закрепляем — оба. */
@@ -354,7 +354,7 @@ export const AddPinToExisting: Story = {
     await selectColumn(el, 'issueType', ['task']);
     await openPinningMenu();
     await clickMenuItem('Закрепить столбцы');
-  }
+  },
 };
 
 /** 8. Выборочное открепление: из двух закреплённых открепляем только выбранный. */
@@ -368,5 +368,5 @@ export const UnpinSelectedKeepsOthers: Story = {
     // Оба закреплены → task на визуальной позиции 0.
     await selectColumn(el, 'task', ['task', 'issueType']);
     await clickPinIcon(); // выбран закреплённый → action=unpin → откреплён только task
-  }
+  },
 };

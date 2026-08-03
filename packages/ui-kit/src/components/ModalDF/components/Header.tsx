@@ -10,7 +10,7 @@ import { Divider } from './Divider';
 import { ServiceButtons } from './ServiceButtons';
 
 const StyledBadge: typeof Badge = styled(Badge).attrs({
-  view: 'light' as BadgeCompProps['view']
+  view: 'light' as BadgeCompProps['view'],
 })`
   // margin-left: ${s.x8};
 `;

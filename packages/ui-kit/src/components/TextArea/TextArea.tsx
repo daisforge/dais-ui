@@ -7,7 +7,7 @@ import { TextAreaProps } from './TextArea.types';
 export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
   (
     { disabled, readOnly, contentRight, size = 's', value, onClear, ...rest },
-    ref
+    ref,
   ) => (
     <StyledTextArea
       {...rest}
@@ -22,11 +22,11 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
         value,
         onClear,
         size,
-        contentRight
+        contentRight,
       })}
       hasManyIcons={Boolean(contentRight && onClear)}
     />
-  )
+  ),
 );
 
 TextArea.displayName = 'TextArea';

@@ -11,7 +11,7 @@ import {
   type ColumnConfig,
   CompactSelection,
   type GridSelection,
-  TableCanvas
+  TableCanvas,
 } from '@ui-kit/components/TableCanvas';
 import { useMemo, useState } from 'react';
 
@@ -20,9 +20,9 @@ const meta: Meta = {
   tags: ['!autodocs'],
   parameters: {
     docs: {
-      page: DocStoryTemplate
-    }
-  }
+      page: DocStoryTemplate,
+    },
+  },
 };
 
 export default meta;
@@ -36,13 +36,13 @@ const SELECTION_MODE_OPTIONS: Array<{
   { label: 'range-cell', value: 'range-cell' },
   { label: 'multi-range-cell', value: 'multi-range-cell' },
   { label: 'cell', value: 'cell' },
-  { label: 'disabled', value: 'disabled' }
+  { label: 'disabled', value: 'disabled' },
 ];
 
 const EMPTY_SELECTION: GridSelection = {
   current: undefined,
   rows: CompactSelection.empty(),
-  columns: CompactSelection.empty()
+  columns: CompactSelection.empty(),
 };
 
 const COLUMN_CONFIG: readonly ColumnConfig<Row>[] = [
@@ -50,7 +50,7 @@ const COLUMN_CONFIG: readonly ColumnConfig<Row>[] = [
   { key: 'task', name: 'Title', width: 260 },
   { key: 'priority', name: 'Priority', width: 180 },
   { key: 'issueType', name: 'Issue Type', width: 180 },
-  { key: 'complete', name: '% Complete', width: 160 }
+  { key: 'complete', name: '% Complete', width: 160 },
 ];
 
 const preCode = `
@@ -129,15 +129,15 @@ export const SelectionModes: Story = {
             editing: {
               onRowsChange: () => undefined,
               rowKeyGetter: (r) => `${r.id}`,
-              defaultEnabled: true
-            }
+              defaultEnabled: true,
+            },
           }}
           columnConfig={columnConfig}
           rows={rows}
         />
       </div>
     );
-  }
+  },
 };
 
 /**
@@ -165,7 +165,7 @@ export const Controlled: Story = {
             display: 'flex',
             gap: 8,
             flexWrap: 'wrap',
-            marginBottom: 12
+            marginBottom: 12,
           }}
         >
           <Button onClick={() => setGridSelection(EMPTY_SELECTION)}>
@@ -177,10 +177,10 @@ export const Controlled: Story = {
                 current: {
                   cell: [1, 0],
                   range: { x: 1, y: 0, width: 2, height: 3 },
-                  rangeStack: []
+                  rangeStack: [],
                 },
                 rows: CompactSelection.empty(),
-                columns: CompactSelection.empty()
+                columns: CompactSelection.empty(),
               })
             }
           >
@@ -202,14 +202,14 @@ export const Controlled: Story = {
           tableConfig={{
             containerStyle: { height: '600px' },
             cellsSelection: { mode: 'range-cell', state: gridSelectionState },
-            rowMarkers: { startIndex: 1 }
+            rowMarkers: { startIndex: 1 },
           }}
           columnConfig={columnConfig}
           rows={rows}
         />
       </div>
     );
-  }
+  },
 };
 
 /**
@@ -244,14 +244,14 @@ export const MultiRangeSelect: Story = {
           tableConfig={{
             containerStyle: { height: '600px' },
             cellsSelection: { mode: 'multi-range-cell' },
-            rowMarkers: { startIndex: 1 }
+            rowMarkers: { startIndex: 1 },
           }}
           columnConfig={columnConfig}
           rows={rows}
         />
       </div>
     );
-  }
+  },
 };
 
 /**
@@ -295,14 +295,14 @@ export const EnableToggles: Story = {
             cellsSelection: {
               mode: 'range-cell',
               enableColumnSelection,
-              enableRowSelection
+              enableRowSelection,
             },
-            rowMarkers: { startIndex: 1 }
+            rowMarkers: { startIndex: 1 },
           }}
           columnConfig={columnConfig}
           rows={rows}
         />
       </div>
     );
-  }
+  },
 };
