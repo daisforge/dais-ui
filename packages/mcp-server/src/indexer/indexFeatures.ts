@@ -1,22 +1,27 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
+import type {
+  FeatureRecord,
+  MetaJson,
+  WorkingComponentRecord,
+} from '../types.js';
 import { REPO_ROOT } from './tsProject.js';
 
 const META_JSON_PATH = path.join(REPO_ROOT, '_docs/meta/components-meta.json');
 
-let cachedMeta;
-function loadMetaJson() {
+let cachedMeta: MetaJson | null | undefined;
+function loadMetaJson(): MetaJson | null {
   if (cachedMeta === undefined) {
     cachedMeta = fs.existsSync(META_JSON_PATH)
-      ? JSON.parse(fs.readFileSync(META_JSON_PATH, 'utf8'))
+      ? (JSON.parse(fs.readFileSync(META_JSON_PATH, 'utf8')) as MetaJson)
       : null;
   }
   return cachedMeta;
 }
 
 /** Первая содержательная строка — пропускаем markdown-заголовки ("# Editing"), это не summary. */
-function firstMeaningfulLine(text) {
+function firstMeaningfulLine(text: string | undefined): string {
   const line = (text || '')
     .split('\n')
     .map((l) => l.trim())
@@ -35,28 +40,35 @@ function firstMeaningfulLine(text) {
  * ключи вроде "CanvasElements/CanvasText" — на деле обычная строка с "/"),
  * рекурсия не нужна.
  */
-export function buildFeatureIndex(records) {
+export function buildFeatureIndex(
+  records: WorkingComponentRecord[],
+): FeatureRecord[] {
   const meta = loadMetaJson();
   if (!meta) return [];
 
   const legacyByName = new Map(records.map((r) => [r.name, Boolean(r.legacy)]));
 
-  return Object.entries(meta.components).flatMap(([componentName, componentMeta]) => {
-    const features = componentMeta.features;
-    if (!features) return [];
+  return Object.entries(meta.components).flatMap(
+    ([componentName, componentMeta]): FeatureRecord[] => {
+      const { features } = componentMeta;
+      if (!features) return [];
 
-    const legacy = legacyByName.get(componentName) ?? false;
+      const legacy = legacyByName.get(componentName) ?? false;
 
-    return Object.entries(features).map(([featureName, featureMeta]) => ({
-      component: componentName,
-      feature: featureName,
-      legacy,
-      summary:
-        firstMeaningfulLine(featureMeta.docs) || firstMeaningfulLine(featureMeta.apiDocs),
-      docs: featureMeta.docs,
-      apiDocs: featureMeta.apiDocs,
-      api: featureMeta.api || [],
-      stories: featureMeta.stories || [],
-    }));
-  });
+      return Object.entries(features).map(
+        ([featureName, featureMeta]): FeatureRecord => ({
+          component: componentName,
+          feature: featureName,
+          legacy,
+          summary:
+            firstMeaningfulLine(featureMeta.docs) ||
+            firstMeaningfulLine(featureMeta.apiDocs),
+          docs: featureMeta.docs,
+          apiDocs: featureMeta.apiDocs,
+          api: featureMeta.api || [],
+          stories: featureMeta.stories || [],
+        }),
+      );
+    },
+  );
 }

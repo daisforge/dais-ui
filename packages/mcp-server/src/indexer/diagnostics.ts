@@ -1,3 +1,7 @@
+/* eslint-disable no-console */
+import type { FeatureRecord, IndexedComponent } from '../types.js';
+import { isOkComponent } from '../types.js';
+
 const YELLOW = '\x1b[33m';
 const RED = '\x1b[31m';
 const GREEN = '\x1b[32m';
@@ -6,40 +10,54 @@ const BOLD = '\x1b[1m';
 
 const RESPONSE_BUDGET_CHARS = 25000;
 
+export interface DiagnosticsResult {
+  errors: string[];
+  warnings: string[];
+}
+
 /**
  * Диагностика по аналогии с generate-meta.js: без неё деградация индекса
  * (недопарсенный компонент, сломанный compound-парсинг, атом без вендоренных
  * данных) остаётся незаметной до первой жалобы пользователя MCP.
  */
-export function printDiagnostics(records, features) {
-  const errors = [];
-  const warnings = [];
+export function printDiagnostics(
+  records: IndexedComponent[],
+  features: FeatureRecord[],
+): DiagnosticsResult {
+  const errors: string[] = [];
+  const warnings: string[] = [];
 
   records.forEach((r) => {
-    if (r.error) {
+    if (!isOkComponent(r)) {
       errors.push(`${r.name}: ${r.error}`);
       return;
     }
     if (r.atomicDataMissing) {
-      warnings.push(`${r.name}: atomicBase "${r.atomicBase}" не найден в вендоренных данных`);
+      warnings.push(
+        `${r.name}: atomicBase "${r.atomicBase}" не найден в вендоренных данных`,
+      );
     }
     if (!r.props?.length && !r.inheritedProps?.length && !r.isGeneric) {
       warnings.push(`${r.name}: пустой список пропсов`);
     }
     const size = JSON.stringify(r).length;
     if (size > RESPONSE_BUDGET_CHARS * 4) {
-      warnings.push(`${r.name}: запись ${size} символов — сильно больше бюджета ответа`);
+      warnings.push(
+        `${r.name}: запись ${size} символов — сильно больше бюджета ответа`,
+      );
     }
   });
 
-  const byType = {};
-  records.forEach((r) => {
+  const okRecords = records.filter(isOkComponent);
+
+  const byType: Record<string, number> = {};
+  okRecords.forEach((r) => {
     byType[r.type] = (byType[r.type] || 0) + 1;
   });
 
-  const withCuratedMeta = records.filter((r) => r.hasCuratedMeta).length;
-  const withAtomicBase = records.filter((r) => r.atomicBase).length;
-  const withFormVariant = records.filter((r) => r.formVariant).length;
+  const withCuratedMeta = okRecords.filter((r) => r.hasCuratedMeta).length;
+  const withAtomicBase = okRecords.filter((r) => r.atomicBase).length;
+  const withFormVariant = okRecords.filter((r) => r.formVariant).length;
 
   console.log(`\n${BOLD}═══ Диагностика mcp-server индексера ═══${RESET}`);
   console.log(
@@ -54,8 +72,12 @@ export function printDiagnostics(records, features) {
   }
 
   if (warnings.length > 0) {
-    console.log(`\n${YELLOW}${BOLD}ПРЕДУПРЕЖДЕНИЯ (${warnings.length})${RESET}`);
-    warnings.slice(0, 30).forEach((w) => console.log(`${YELLOW}  ⚠ ${w}${RESET}`));
+    console.log(
+      `\n${YELLOW}${BOLD}ПРЕДУПРЕЖДЕНИЯ (${warnings.length})${RESET}`,
+    );
+    warnings
+      .slice(0, 30)
+      .forEach((w) => console.log(`${YELLOW}  ⚠ ${w}${RESET}`));
     if (warnings.length > 30) {
       console.log(`${YELLOW}  ... и ещё ${warnings.length - 30}${RESET}`);
     }

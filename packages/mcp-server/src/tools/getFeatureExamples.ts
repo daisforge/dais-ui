@@ -1,6 +1,29 @@
+import type { ExampleRecord, RuntimeIndex, ToolError } from '../types.js';
 import { findFeature } from './shared.js';
 
-export function getFeatureExamples(index, { component, feature, title } = {}) {
+export interface GetFeatureExamplesArgs {
+  component?: string;
+  feature?: string;
+  title?: string;
+}
+
+interface FeatureExamplesListPayload {
+  component: string;
+  feature: string;
+  titles: string[];
+  example: ExampleRecord | undefined;
+}
+
+interface FeatureExamplePayload {
+  component: string;
+  feature: string;
+  example: ExampleRecord;
+}
+
+export function getFeatureExamples(
+  index: RuntimeIndex,
+  { component, feature, title }: GetFeatureExamplesArgs = {},
+): FeatureExamplesListPayload | FeatureExamplePayload | ToolError {
   const found = findFeature(index, component, feature);
   if (!found) {
     return {

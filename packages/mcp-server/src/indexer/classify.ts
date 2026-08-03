@@ -1,4 +1,19 @@
+import type { ComponentType, WorkingComponentRecord } from '../types.js';
+import type { ComponentEntry } from './discoverComponents.js';
 import { getProject } from './tsProject.js';
+
+/** Минимальный контракт того, что classify реально читает из parseComponent(). */
+export interface ClassifyParsedInput {
+  pureAtomicReExport: boolean;
+  declaredInUiKit: boolean;
+  declarationFile: string;
+}
+
+export interface ClassifyResult {
+  type: ComponentType;
+  atomicBase?: string;
+  internalComponentImports?: string[];
+}
 
 /**
  * Ищет импорты из '@salutejs/sdds-finai' в исходном файле локального
@@ -7,14 +22,19 @@ import { getProject } from './tsProject.js';
  * оборачивает конкретный атом, импортированный по имени (иногда с алиасом:
  * `import { TextField as BaseTextField }`).
  */
-function findAtomicImportNames(sourceFile) {
+function findAtomicImportNames(
+  sourceFile: ReturnType<ReturnType<typeof getProject>['getSourceFileOrThrow']>,
+): string[] {
   return sourceFile
     .getImportDeclarations()
     .filter((imp) => imp.getModuleSpecifierValue() === '@salutejs/sdds-finai')
     .flatMap((imp) => imp.getNamedImports().map((named) => named.getName()));
 }
 
-function pickAtomicBase(names, componentName) {
+function pickAtomicBase(
+  names: string[],
+  componentName: string,
+): string | undefined {
   if (names.length === 0) return undefined;
   if (names.length === 1) return names[0];
 
@@ -24,7 +44,9 @@ function pickAtomicBase(names, componentName) {
 }
 
 /** Имена, реально импортированные (как значения) из соседних ui-kit компонентов. */
-function findInternalComponentImportNames(sourceFile) {
+function findInternalComponentImportNames(
+  sourceFile: ReturnType<ReturnType<typeof getProject>['getSourceFileOrThrow']>,
+): string[] {
   return sourceFile
     .getImportDeclarations()
     .filter((imp) => {
@@ -40,7 +62,10 @@ function findInternalComponentImportNames(sourceFile) {
  * Классифицирует компонент: wrapper / composition / standalone / form,
  * плюс atomicBase (имя атома @salutejs/sdds-finai, если это обёртка).
  */
-export function classify(entry, parsed) {
+export function classify(
+  entry: ComponentEntry,
+  parsed: ClassifyParsedInput,
+): ClassifyResult {
   if (entry.group === 'formComponents') {
     return { type: 'form', atomicBase: undefined };
   }
@@ -55,10 +80,14 @@ export function classify(entry, parsed) {
     const atomicNames = findAtomicImportNames(sourceFile);
 
     if (atomicNames.length > 0) {
-      return { type: 'wrapper', atomicBase: pickAtomicBase(atomicNames, entry.name) };
+      return {
+        type: 'wrapper',
+        atomicBase: pickAtomicBase(atomicNames, entry.name),
+      };
     }
 
-    const internalComponentImports = findInternalComponentImportNames(sourceFile);
+    const internalComponentImports =
+      findInternalComponentImportNames(sourceFile);
     if (internalComponentImports.length > 0) {
       return {
         type: 'composition',
@@ -72,9 +101,12 @@ export function classify(entry, parsed) {
 }
 
 /** Ищет среди внутренних импортов composition-компонента подходящего wrapper-кандидата на "повышение". */
-function findPromotionCandidate(record, byName) {
+function findPromotionCandidate(
+  record: WorkingComponentRecord,
+  byName: Map<string, WorkingComponentRecord>,
+): string | undefined {
   const lower = record.name.toLowerCase();
-  return record.internalComponentImports.find((importedName) => {
+  return (record.internalComponentImports || []).find((importedName) => {
     const imported = byName.get(importedName);
     return (
       imported &&
@@ -94,7 +126,9 @@ function findPromotionCandidate(record, byName) {
  * повышаем текущую запись до wrapper. Совпадение имени — чтобы не хватать
  * первый попавшийся импорт (ModalDF импортирует и Modal, и PopupProvider).
  */
-export function promoteCompositionToWrapper(records) {
+export function promoteCompositionToWrapper(
+  records: WorkingComponentRecord[],
+): void {
   const byName = new Map(records.map((r) => [r.name, r]));
 
   records
@@ -103,9 +137,11 @@ export function promoteCompositionToWrapper(records) {
       const candidateName = findPromotionCandidate(record, byName);
       if (candidateName) {
         const candidate = byName.get(candidateName);
-        record.type = 'wrapper';
-        record.atomicBase = candidate.atomicBase;
-        record.wrapsInternal = candidateName;
+        if (candidate) {
+          record.type = 'wrapper';
+          record.atomicBase = candidate.atomicBase;
+          record.wrapsInternal = candidateName;
+        }
       }
       delete record.internalComponentImports;
     });
@@ -117,7 +153,7 @@ export function promoteCompositionToWrapper(records) {
  * Мутирует записи на месте — простая и понятная схема для однопроходного
  * построения индекса.
  */
-export function linkFormVariants(records) {
+export function linkFormVariants(records: WorkingComponentRecord[]): void {
   const byName = new Map(records.map((r) => [r.name, r]));
 
   records

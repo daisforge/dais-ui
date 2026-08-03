@@ -1,23 +1,29 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
+import type {
+  ComponentMeta,
+  InstallationGuide,
+  MetaJson,
+  WorkingComponentRecord,
+} from '../types.js';
 import { REPO_ROOT } from './tsProject.js';
 
 const META_JSON_PATH = path.join(REPO_ROOT, '_docs/meta/components-meta.json');
 const INSTALLATION_PAGE_TITLE = 'Установка и использование';
 
-let cachedMeta;
+let cachedMeta: MetaJson | null | undefined;
 
-function loadMetaJson() {
+function loadMetaJson(): MetaJson | null {
   if (cachedMeta !== undefined) return cachedMeta;
   cachedMeta = fs.existsSync(META_JSON_PATH)
-    ? JSON.parse(fs.readFileSync(META_JSON_PATH, 'utf8'))
+    ? (JSON.parse(fs.readFileSync(META_JSON_PATH, 'utf8')) as MetaJson)
     : null;
   return cachedMeta;
 }
 
 /** Убирает крупные <style>...</style>-блоки из сырого MDX — чистый шум для агента. */
-function stripStyleBlocks(text) {
+function stripStyleBlocks(text: string | undefined): string | undefined {
   return text ? text.replace(/<style>[\s\S]*?<\/style>/g, '').trim() : text;
 }
 
@@ -28,7 +34,7 @@ function stripStyleBlocks(text) {
  * (Table — "устаревшая, но поддерживается"), но это принципиальная проверка
  * по смыслу текста, а не хардкод конкретного имени компонента.
  */
-function detectLegacy(componentMeta) {
+function detectLegacy(componentMeta: ComponentMeta): boolean {
   const text = `${componentMeta.description || ''} ${componentMeta.hint || ''}`;
   return /устаревш/i.test(text);
 }
@@ -40,7 +46,9 @@ function detectLegacy(componentMeta) {
  * Мета покрывает только 36 из 265+ найденных компонентов — для остальных
  * просто ничего не меняется.
  */
-export function mergeMeta(record) {
+export function mergeMeta(
+  record: WorkingComponentRecord,
+): WorkingComponentRecord {
   const meta = loadMetaJson();
   const componentMeta = meta?.components?.[record.name];
   if (!componentMeta) return record;
@@ -49,19 +57,23 @@ export function mergeMeta(record) {
     ...record,
     ...(componentMeta.category ? { category: componentMeta.category } : {}),
     ...(componentMeta.type ? { type: componentMeta.type } : {}),
-    ...(componentMeta.description ? { description: componentMeta.description } : {}),
+    ...(componentMeta.description
+      ? { description: componentMeta.description }
+      : {}),
     ...(componentMeta.hint ? { hint: componentMeta.hint } : {}),
     ...(componentMeta.scope ? { scope: componentMeta.scope } : {}),
     ...(componentMeta.docs ? { docs: componentMeta.docs } : {}),
     ...(componentMeta.apiDocs ? { apiDocs: componentMeta.apiDocs } : {}),
-    ...(componentMeta.stories?.length ? { curatedStories: componentMeta.stories } : {}),
-    ...(detectLegacy(componentMeta) ? { legacy: true } : {}),
-    hasCuratedMeta: true,
+    ...(componentMeta.stories?.length
+      ? { curatedStories: componentMeta.stories }
+      : {}),
+    ...(detectLegacy(componentMeta) ? { legacy: true as const } : {}),
+    hasCuratedMeta: true as const,
   };
 }
 
 /** Гайд по установке (`guides.installation`) — то же поле, что уже генерирует meta-info, без нового парсинга. */
-export function getInstallationGuide() {
+export function getInstallationGuide(): InstallationGuide | undefined {
   const meta = loadMetaJson();
   const page = meta?.pages?.[INSTALLATION_PAGE_TITLE];
   if (!page) return undefined;

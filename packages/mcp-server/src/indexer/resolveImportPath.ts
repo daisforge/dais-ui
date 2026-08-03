@@ -9,7 +9,10 @@
  */
 const ROOT_IMPORT_PATH = '@daisforge/ui';
 
-export function resolveImportPath(record) {
+export function resolveImportPath(record: { name: string }): {
+  importPath: string;
+  importStatement: string;
+} {
   return {
     importPath: ROOT_IMPORT_PATH,
     importStatement: `import { ${record.name} } from '${ROOT_IMPORT_PATH}';`,

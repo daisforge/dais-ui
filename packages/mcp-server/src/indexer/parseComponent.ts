@@ -1,32 +1,110 @@
-import { Node, SyntaxKind, SymbolFlags, ts } from 'ts-morph';
+/* eslint-disable no-continue */
+/* eslint-disable no-bitwise */
+import type {
+  ArrowFunction,
+  ExportedDeclarations,
+  FunctionDeclaration,
+  FunctionExpression,
+  JSDoc,
+  ParameterDeclaration,
+  SourceFile,
+  Symbol as TsSymbol,
+  Type,
+  TypeParameterDeclaration,
+} from 'ts-morph';
+import { Node, SymbolFlags, SyntaxKind, ts } from 'ts-morph';
 
-import { getProject } from './tsProject.js';
+import type { CompoundPart, PropRecord } from '../types.js';
+import type { ComponentEntry } from './discoverComponents.js';
 import { isNoiseProp } from './htmlAttributeDenylist.js';
+import { getProject } from './tsProject.js';
 
 const MAX_PROP_TYPE_CHARS = 400;
 const MAX_RAW_TYPE_CHARS = 6000;
 
+type RenderFunction = FunctionDeclaration | ArrowFunction | FunctionExpression;
+
+/** Найденный по имени тип пропсов — resolvePropsType умеет откатываться на сырой текст узла. */
+interface NamedPropsRef {
+  name: string;
+  decl: ExportedDeclarations;
+  inlineParamNode?: undefined;
+}
+/** Инлайновый тип первого параметра render-функции — именованной декларации нет. */
+interface InlinePropsRef {
+  name: string;
+  decl?: undefined;
+  inlineParamNode: ParameterDeclaration;
+}
+type PropsRef = NamedPropsRef | InlinePropsRef;
+
+interface ResolvedPropsType {
+  typeName?: string;
+  props: PropRecord[];
+  rawType?: string;
+  isGeneric?: true;
+}
+
+interface CompoundAssignment {
+  subName: string;
+  localName: string;
+}
+
+export interface ParsedComponent {
+  error?: undefined;
+  name: string;
+  description: string;
+  deprecated: boolean;
+  deprecationReason?: string;
+  pureAtomicReExport: boolean;
+  declaredInUiKit: boolean;
+  declarationFile: string;
+  props: PropRecord[];
+  propsTypeName?: string;
+  rawType?: string;
+  isGeneric?: true;
+  compoundParts?: CompoundPart[];
+}
+
+export interface ParseFailure {
+  error: string;
+  name: string;
+}
+
+/** Сужающий guard для ParsedComponent | ParseFailure — тот же приём, что isOkComponent в types.ts. */
+export function isParsedComponent(
+  p: ParsedComponent | ParseFailure,
+): p is ParsedComponent {
+  return p.error === undefined;
+}
+
 /** Обрезает строку с явным маркером — не молча теряет данные. */
-function clip(text, max) {
+function clip(text: string | undefined, max: number): string | undefined {
   if (!text) return text;
   return text.length > max ? `${text.slice(0, max)}…` : text;
 }
 
-function getJsDocDescription(jsDocable) {
-  const docs = jsDocable.getJsDocs?.() ?? [];
+function getJsDocs(node: Node): JSDoc[] {
+  return Node.isJSDocable(node) ? node.getJsDocs() : [];
+}
+
+function getJsDocDescription(jsDocable: Node): string {
+  const docs = getJsDocs(jsDocable);
   return docs
     .map((d) => d.getDescription().trim())
     .filter(Boolean)
     .join('\n');
 }
 
-function isDeprecated(jsDocable) {
-  const docs = jsDocable.getJsDocs?.() ?? [];
-  return docs.some((d) => d.getTags().some((t) => t.getTagName() === 'deprecated'));
+function isDeprecated(jsDocable: Node): boolean {
+  const docs = getJsDocs(jsDocable);
+  return docs.some((d) =>
+    d.getTags().some((t) => t.getTagName() === 'deprecated'),
+  );
 }
 
-function getDeprecatedReason(jsDocable) {
-  const docs = jsDocable.getJsDocs?.() ?? [];
+function getDeprecatedReason(jsDocable: Node): string | undefined {
+  const docs = getJsDocs(jsDocable);
   for (const d of docs) {
     for (const t of d.getTags()) {
       if (t.getTagName() === 'deprecated') {
@@ -42,13 +120,14 @@ function getDeprecatedReason(jsDocable) {
  * (следуя через re-export цепочки — в этом и ценность getExportedDeclarations
  * вместо ручного парсинга import/export specifiers).
  */
-function resolveExportedDeclaration(barrelSourceFile, name) {
-  const map = barrelSourceFile.getExportedDeclarations();
-  const decls = map.get(name);
-  return decls && decls.length > 0 ? decls[0] : undefined;
+function resolveExportedDeclaration(
+  barrelSourceFile: SourceFile,
+  name: string,
+): ExportedDeclarations | undefined {
+  return barrelSourceFile.getExportedDeclarations().get(name)?.[0];
 }
 
-function isInPackage(sourceFile, pkgName) {
+function isInPackage(sourceFile: SourceFile, pkgName: string): boolean {
   const filePath = sourceFile.getFilePath();
   return filePath.includes(`/node_modules/${pkgName}/`);
 }
@@ -58,19 +137,24 @@ function isInPackage(sourceFile, pkgName) {
  * соглашению имени (`${Name}Props`, `${Name}CompProps`) либо — если не
  * нашли — среди всех экспортов, заканчивающихся на "Props".
  */
-function findPropsDeclaration(barrelSourceFile, componentName) {
+function findPropsDeclaration(
+  barrelSourceFile: SourceFile,
+  componentName: string,
+): NamedPropsRef | undefined {
   const map = barrelSourceFile.getExportedDeclarations();
   const candidates = [`${componentName}Props`, `${componentName}CompProps`];
 
   for (const candidate of candidates) {
-    const decls = map.get(candidate);
-    if (decls && decls.length > 0) {
-      return { name: candidate, decl: decls[0] };
-    }
+    const decl = map.get(candidate)?.[0];
+    if (decl) return { name: candidate, decl };
   }
 
   for (const [name, decls] of map.entries()) {
-    if (name.endsWith('Props') && name.toLowerCase().includes(componentName.toLowerCase())) {
+    if (
+      name.endsWith('Props') &&
+      name.toLowerCase().includes(componentName.toLowerCase()) &&
+      decls[0]
+    ) {
       return { name, decl: decls[0] };
     }
   }
@@ -78,23 +162,27 @@ function findPropsDeclaration(barrelSourceFile, componentName) {
   return undefined;
 }
 
+function isInlineRenderFunction(
+  node: Node,
+): node is ArrowFunction | FunctionExpression {
+  return Node.isArrowFunction(node) || Node.isFunctionExpression(node);
+}
+
 /**
  * Разворачивает forwardRef(...)/memo(...) обёртку до самой render-функции.
  */
-function unwrapToRenderFunction(node) {
-  if (Node.isFunctionDeclaration(node) || Node.isArrowFunction(node) || Node.isFunctionExpression(node)) {
+function unwrapToRenderFunction(
+  node: ExportedDeclarations,
+): RenderFunction | undefined {
+  if (Node.isFunctionDeclaration(node) || isInlineRenderFunction(node)) {
     return node;
   }
   if (Node.isVariableDeclaration(node)) {
     const init = node.getInitializer();
     if (!init) return undefined;
-    if (Node.isArrowFunction(init) || Node.isFunctionExpression(init)) return init;
+    if (isInlineRenderFunction(init)) return init;
     if (Node.isCallExpression(init)) {
-      const args = init.getArguments();
-      const fnArg = args.find(
-        (a) => Node.isArrowFunction(a) || Node.isFunctionExpression(a),
-      );
-      return fnArg;
+      return init.getArguments().find(isInlineRenderFunction);
     }
   }
   return undefined;
@@ -107,16 +195,22 @@ function unwrapToRenderFunction(node) {
  * Если это ссылка на именованный alias/interface — переиспользуем ту же
  * логику (и тот же generic-фолбек), что и для найденных по имени пропсов.
  */
-function findPropsDeclFromSignature(mainDecl, componentName) {
+function findPropsDeclFromSignature(
+  mainDecl: ExportedDeclarations,
+  componentName: string,
+): PropsRef | undefined {
   const fn = unwrapToRenderFunction(mainDecl);
-  const param = fn?.getParameters()?.[0];
+  const param = fn?.getParameters()[0];
   const typeNode = param?.getTypeNode();
-  if (!typeNode) return undefined;
+  if (!param || !typeNode) return undefined;
 
   if (Node.isTypeReference(typeNode)) {
     const symbol = typeNode.getTypeName().getSymbol();
-    const decl = symbol?.getDeclarations()?.[0];
-    if (decl && (Node.isTypeAliasDeclaration(decl) || Node.isInterfaceDeclaration(decl))) {
+    const decl = symbol?.getDeclarations()[0];
+    if (
+      decl &&
+      (Node.isTypeAliasDeclaration(decl) || Node.isInterfaceDeclaration(decl))
+    ) {
       return { name: decl.getName(), decl };
     }
   }
@@ -125,12 +219,13 @@ function findPropsDeclFromSignature(mainDecl, componentName) {
   // просто извлекаем свойства прямо из типа параметра.
   return {
     name: `${componentName}Props`,
-    decl: undefined,
     inlineParamNode: param,
   };
 }
 
-function getTypeParameters(decl) {
+function getTypeParameters(
+  decl: ExportedDeclarations,
+): TypeParameterDeclaration[] {
   if (Node.isTypeAliasDeclaration(decl) || Node.isInterfaceDeclaration(decl)) {
     return decl.getTypeParameters();
   }
@@ -138,7 +233,7 @@ function getTypeParameters(decl) {
 }
 
 /** Свойство `type` в резолве через checker может отсутствовать у mapped/computed членов. */
-function safeGetPropertyType(prop, node) {
+function safeGetPropertyType(prop: TsSymbol, node: Node): Type | undefined {
   try {
     return prop.getTypeAtLocation(node);
   } catch {
@@ -146,10 +241,11 @@ function safeGetPropertyType(prop, node) {
   }
 }
 
-function extractPropsFromType(type, atLocationNode) {
-  const props = [];
+function extractPropsFromType(type: Type, atLocationNode: Node): PropRecord[] {
+  const props: PropRecord[] = [];
   for (const symbol of type.getProperties()) {
-    const decl = symbol.getValueDeclaration() ?? symbol.getDeclarations()[0];
+    const decl: Node | undefined =
+      symbol.getValueDeclaration() ?? symbol.getDeclarations()[0];
     const propType = safeGetPropertyType(symbol, decl ?? atLocationNode);
     const fullTypeText = propType ? propType.getText() : 'unknown';
     const name = symbol.getName();
@@ -175,16 +271,17 @@ function extractPropsFromType(type, atLocationNode) {
     }
 
     const deprecated =
-      decl && (Node.isPropertySignature(decl) || Node.isPropertyDeclaration(decl))
+      decl !== undefined &&
+      (Node.isPropertySignature(decl) || Node.isPropertyDeclaration(decl))
         ? isDeprecated(decl)
         : false;
 
     props.push({
       name,
-      type: clip(fullTypeText, MAX_PROP_TYPE_CHARS),
+      type: clip(fullTypeText, MAX_PROP_TYPE_CHARS) as string,
       required: !optional,
       description,
-      ...(deprecated ? { deprecated: true } : {}),
+      ...(deprecated ? { deprecated: true as const } : {}),
     });
   }
   return props;
@@ -196,18 +293,20 @@ function extractPropsFromType(type, atLocationNode) {
  * приём, что copyTypeAsStringSync в generators/meta-info, только проще:
  * у нас уже есть AST-узел, поэтому просто берём node.getText().
  */
-function resolvePropsType(propsDecl) {
-  const { name, decl, inlineParamNode } = propsDecl;
-
-  if (!decl && inlineParamNode) {
+function resolvePropsType(propsRef: PropsRef): ResolvedPropsType {
+  if (propsRef.decl === undefined) {
+    const { name, inlineParamNode } = propsRef;
     try {
-      const props = extractPropsFromType(inlineParamNode.getType(), inlineParamNode);
-      return { typeName: name, props };
+      return {
+        typeName: name,
+        props: extractPropsFromType(inlineParamNode.getType(), inlineParamNode),
+      };
     } catch {
       return { typeName: name, props: [] };
     }
   }
 
+  const { name, decl } = propsRef;
   const typeParams = getTypeParameters(decl);
 
   if (typeParams.length > 0) {
@@ -220,29 +319,41 @@ function resolvePropsType(propsDecl) {
   }
 
   try {
-    const type = Node.isTypeAliasDeclaration(decl)
-      ? decl.getType()
-      : Node.isInterfaceDeclaration(decl)
+    const type =
+      Node.isTypeAliasDeclaration(decl) || Node.isInterfaceDeclaration(decl)
         ? decl.getType()
         : undefined;
 
     if (!type) {
-      return { typeName: name, rawType: clip(decl.getText(), MAX_RAW_TYPE_CHARS), props: [] };
+      return {
+        typeName: name,
+        rawType: clip(decl.getText(), MAX_RAW_TYPE_CHARS),
+        props: [],
+      };
     }
 
     const props = extractPropsFromType(type, decl);
     return { typeName: name, props };
   } catch {
-    return { typeName: name, rawType: clip(decl.getText(), MAX_RAW_TYPE_CHARS), props: [] };
+    return {
+      typeName: name,
+      rawType: clip(decl.getText(), MAX_RAW_TYPE_CHARS),
+      props: [],
+    };
   }
 }
 
 /** Ищет паттерн `Component.Sub = LocalName;` — compound-компоненты (DrawerDF.Header и т.п.). */
-function findCompoundAssignments(mainSourceFile, componentName) {
+function findCompoundAssignments(
+  mainSourceFile: SourceFile | undefined,
+  componentName: string,
+): CompoundAssignment[] {
   if (!mainSourceFile) return [];
 
-  const assignments = [];
-  const binaryExprs = mainSourceFile.getDescendantsOfKind(SyntaxKind.BinaryExpression);
+  const assignments: CompoundAssignment[] = [];
+  const binaryExprs = mainSourceFile.getDescendantsOfKind(
+    SyntaxKind.BinaryExpression,
+  );
 
   for (const expr of binaryExprs) {
     if (expr.getOperatorToken().getText() !== '=') continue;
@@ -266,31 +377,42 @@ function findCompoundAssignments(mainSourceFile, componentName) {
  * `DrawerDFHeaderProps` в types.ts). Ищем такие декларации напрямую в файлах
  * папки компонента, не только среди экспортов barrel-файла.
  */
-function findLocalTypeDeclaration(compDir, typeName) {
+function findLocalTypeDeclaration(
+  compDir: string | undefined,
+  typeName: string,
+): NamedPropsRef | undefined {
   if (!compDir) return undefined;
   for (const sourceFile of getProject().getSourceFiles()) {
     if (!sourceFile.getFilePath().startsWith(compDir)) continue;
-    const decl = sourceFile.getTypeAlias(typeName) ?? sourceFile.getInterface(typeName);
+    const decl =
+      sourceFile.getTypeAlias(typeName) ?? sourceFile.getInterface(typeName);
     if (decl) return { name: typeName, decl };
   }
   return undefined;
 }
 
-function resolveCompoundPart(barrelSourceFile, componentName, subName, localName, compDir) {
-  const propsDecl =
+function resolveCompoundPart(
+  barrelSourceFile: SourceFile,
+  componentName: string,
+  subName: string,
+  localName: string,
+  compDir: string | undefined,
+): CompoundPart {
+  const propsRef =
     findPropsDeclaration(barrelSourceFile, localName) ??
     findPropsDeclaration(barrelSourceFile, subName) ??
     findLocalTypeDeclaration(compDir, `${componentName}${subName}Props`) ??
     findLocalTypeDeclaration(compDir, `${localName}Props`);
 
-  if (propsDecl) {
-    return { name: subName, ...resolvePropsType(propsDecl) };
+  if (propsRef) {
+    return { name: subName, ...resolvePropsType(propsRef) };
   }
 
   const localDecl = resolveExportedDeclaration(barrelSourceFile, localName);
-  const sigPropsDecl = localDecl && findPropsDeclFromSignature(localDecl, localName);
-  if (sigPropsDecl) {
-    return { name: subName, ...resolvePropsType(sigPropsDecl) };
+  const sigPropsRef =
+    localDecl && findPropsDeclFromSignature(localDecl, localName);
+  if (sigPropsRef) {
+    return { name: subName, ...resolvePropsType(sigPropsRef) };
   }
 
   return { name: subName, props: [] };
@@ -300,7 +422,11 @@ function resolveCompoundPart(barrelSourceFile, componentName, subName, localName
  * Разбирает один компонент: где реально объявлен (локально/через реэкспорт
  * из @salutejs/sdds-finai), его пропсы, compound-части, deprecated.
  */
-export function parseComponent({ name, barrelPath, dir }) {
+export function parseComponent({
+  name,
+  barrelPath,
+  dir,
+}: ComponentEntry): ParsedComponent | ParseFailure {
   const project = getProject();
   const barrelSourceFile = project.getSourceFileOrThrow(barrelPath);
 
@@ -310,8 +436,13 @@ export function parseComponent({ name, barrelPath, dir }) {
   }
 
   const mainSourceFile = mainDecl.getSourceFile();
-  const pureAtomicReExport = isInPackage(mainSourceFile, '@salutejs/sdds-finai');
-  const declaredInUiKit = mainSourceFile.getFilePath().includes('/packages/ui-kit/src/');
+  const pureAtomicReExport = isInPackage(
+    mainSourceFile,
+    '@salutejs/sdds-finai',
+  );
+  const declaredInUiKit = mainSourceFile
+    .getFilePath()
+    .includes('/packages/ui-kit/src/');
 
   const jsDocable = Node.isVariableDeclaration(mainDecl)
     ? mainDecl.getVariableStatementOrThrow()
@@ -319,14 +450,16 @@ export function parseComponent({ name, barrelPath, dir }) {
 
   const description = getJsDocDescription(jsDocable);
   const deprecated = isDeprecated(jsDocable);
-  const deprecationReason = deprecated ? getDeprecatedReason(jsDocable) : undefined;
+  const deprecationReason = deprecated
+    ? getDeprecatedReason(jsDocable)
+    : undefined;
 
-  const propsDecl =
+  const propsRef =
     findPropsDeclaration(barrelSourceFile, name) ??
     findPropsDeclFromSignature(mainDecl, name);
-  const propsResolved = propsDecl
-    ? resolvePropsType(propsDecl)
-    : { typeName: undefined, props: [] };
+  const propsResolved: ResolvedPropsType = propsRef
+    ? resolvePropsType(propsRef)
+    : { props: [] };
 
   const localMainFile = declaredInUiKit ? mainSourceFile : undefined;
   const compoundAssignments = findCompoundAssignments(localMainFile, name);

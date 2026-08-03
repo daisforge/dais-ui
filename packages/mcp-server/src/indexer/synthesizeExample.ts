@@ -1,5 +1,11 @@
+import type {
+  ExampleRecord,
+  InheritedPropRecord,
+  PropRecord,
+} from '../types.js';
+
 /** Грубая эвристика значения-заглушки по тексту типа — не точный резолвер, а стартовая точка для агента. */
-function placeholderForType(typeText) {
+function placeholderForType(typeText: string | undefined): string {
   const t = (typeText || '').replace(/\s*\|\s*undefined/g, '').trim();
 
   const literalMatch = t.match(/^"([^"]*)"/);
@@ -20,7 +26,11 @@ function placeholderForType(typeText) {
  * компонентов). Явно помечается type: "synthesized", чтобы агент не путал
  * его с проверенным примером из Storybook.
  */
-export function synthesizeExample(record) {
+export function synthesizeExample(record: {
+  name: string;
+  props?: PropRecord[];
+  inheritedProps?: InheritedPropRecord[];
+}): ExampleRecord {
   const requiredProps = [
     ...(record.props || []),
     ...(record.inheritedProps || []),

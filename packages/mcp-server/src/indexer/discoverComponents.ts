@@ -1,10 +1,23 @@
+/* eslint-disable no-continue */
+/* eslint-disable no-bitwise */
 import fs from 'node:fs';
 import path from 'node:path';
+
+import type { Symbol as TsSymbol } from 'ts-morph';
 import { SymbolFlags } from 'ts-morph';
 
+import type { ComponentGroup } from '../types.js';
 import { getProject, UI_KIT_SRC } from './tsProject.js';
 
-const GROUPS = [
+export interface ComponentEntry {
+  name: string;
+  dir: string;
+  group: ComponentGroup;
+  barrelPath: string;
+  folderName: string;
+}
+
+const GROUPS: { dir: string; group: ComponentGroup }[] = [
   { dir: 'components', group: 'components' },
   { dir: 'formComponents', group: 'formComponents' },
   { dir: 'layouts', group: 'layouts' },
@@ -16,18 +29,28 @@ const GROUPS = [
 // компонентов по одним только флагам символа.
 const EXCLUDED_DIRS = new Set(['StoriesUtils']);
 
-function isAllCaps(name) {
+function isAllCaps(name: string): boolean {
   return /^[A-Z0-9_]+$/.test(name);
 }
 
+function findBarrelPath(compDir: string): string | undefined {
+  const indexTs = path.join(compDir, 'index.ts');
+  if (fs.existsSync(indexTs)) return indexTs;
+  const indexTsx = path.join(compDir, 'index.tsx');
+  if (fs.existsSync(indexTsx)) return indexTsx;
+  return undefined;
+}
+
 /** PascalCase-значение (не тип, не хук, не ALL_CAPS-константа, не enum). */
-function isComponentLikeSymbol(symbol) {
+function isComponentLikeSymbol(symbol: TsSymbol): boolean {
   const name = symbol.getName();
   if (!/^[A-Z]/.test(name) || isAllCaps(name)) return false;
 
-  const real = symbol.getFlags() & SymbolFlags.Alias ? symbol.getAliasedSymbol() : symbol;
+  const real = symbol.isAlias() ? symbol.getAliasedSymbol() ?? symbol : symbol;
   const flags = real.getFlags();
-  const isValueLike = Boolean(flags & (SymbolFlags.Variable | SymbolFlags.Function | SymbolFlags.Class));
+  const isValueLike = Boolean(
+    flags & (SymbolFlags.Variable | SymbolFlags.Function | SymbolFlags.Class),
+  );
   const isEnum = Boolean(flags & SymbolFlags.Enum);
 
   return isValueLike && !isEnum;
@@ -42,9 +65,9 @@ function isComponentLikeSymbol(symbol) {
  * совпадение "имя папки == имя компонента", а перечисляем реальные
  * PascalCase value-экспорты barrel-файла.
  */
-export function discoverComponents() {
+export function discoverComponents(): ComponentEntry[] {
   const project = getProject();
-  const entries = [];
+  const entries: ComponentEntry[] = [];
 
   for (const { dir, group } of GROUPS) {
     const groupDir = path.join(UI_KIT_SRC, dir);
@@ -56,17 +79,11 @@ export function discoverComponents() {
       const compDir = path.join(groupDir, folderName);
       if (!fs.statSync(compDir).isDirectory()) continue;
 
-      const indexTs = path.join(compDir, 'index.ts');
-      const indexTsx = path.join(compDir, 'index.tsx');
-      const barrelPath = fs.existsSync(indexTs)
-        ? indexTs
-        : fs.existsSync(indexTsx)
-          ? indexTsx
-          : null;
+      const barrelPath = findBarrelPath(compDir);
       if (!barrelPath) continue;
 
       const barrelSourceFile = project.getSourceFileOrThrow(barrelPath);
-      const seen = new Set();
+      const seen = new Set<string>();
 
       for (const symbol of barrelSourceFile.getExportSymbols()) {
         const name = symbol.getName();

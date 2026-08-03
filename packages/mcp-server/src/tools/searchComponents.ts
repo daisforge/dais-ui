@@ -1,3 +1,11 @@
+import type { ComponentRecord, FeatureRecord, RuntimeIndex } from '../types.js';
+import { isOkComponent } from '../types.js';
+
+export interface SearchComponentsArgs {
+  query?: string;
+  limit?: number;
+}
+
 const LEGACY_PENALTY_FACTOR = 0.6;
 
 // Короткие предлоги/союзы — как токены почти ничего не значат, но как
@@ -27,7 +35,7 @@ const STOPWORDS = new Set([
   'to',
 ]);
 
-function tokenize(query) {
+function tokenize(query: string | undefined): string[] {
   return (query || '')
     .toLowerCase()
     .split(/[\s,.;:!?()[\]{}'"«»]+/)
@@ -41,14 +49,14 @@ function tokenize(query) {
  * позитивный сигнал ровно наоборот. Проверяем, не стоит ли перед совпадением
  * "не " — если да, не начисляем очки за это вхождение.
  */
-function includesPositively(text, word) {
+function includesPositively(text: string, word: string): boolean {
   const idx = text.indexOf(word);
   if (idx === -1) return false;
   const before = text.slice(Math.max(0, idx - 4), idx);
   return !/не\s*$/.test(before);
 }
 
-function scoreComponent(component, words) {
+function scoreComponent(component: ComponentRecord, words: string[]): number {
   const name = component.name.toLowerCase();
   const hint = (component.hint || '').toLowerCase();
   const description = (component.description || '').toLowerCase();
@@ -73,7 +81,7 @@ function scoreComponent(component, words) {
   return score;
 }
 
-function scoreFeature(feature, words) {
+function scoreFeature(feature: FeatureRecord, words: string[]): number {
   const featureName = feature.feature.toLowerCase();
   const componentName = feature.component.toLowerCase();
   const summary = (feature.summary || '').toLowerCase();
@@ -94,6 +102,40 @@ function scoreFeature(feature, words) {
   return score;
 }
 
+interface ComponentHit {
+  kind: 'component';
+  score: number;
+  record: ComponentRecord;
+}
+
+interface FeatureHit {
+  kind: 'feature';
+  score: number;
+  record: FeatureRecord;
+}
+
+type SearchHit = ComponentHit | FeatureHit;
+
+interface ComponentResult {
+  kind: 'component';
+  score: number;
+  name: string;
+  type: string;
+  category?: string;
+  description?: string;
+  hint?: string;
+  legacy?: true;
+}
+
+interface FeatureResult {
+  kind: 'feature';
+  score: number;
+  component: string;
+  feature: string;
+  summary: string;
+  legacy?: true;
+}
+
 /**
  * Простой скоринг по имени/description/docs/hint (без внешних NLP-зависимостей),
  * плюс поиск по фичам наравне с компонентами — запрос "фильтрация в таблице"
@@ -102,44 +144,60 @@ function scoreFeature(feature, words) {
  * совпадение слова, +100) перевешивает штраф, так что "Table сортировка"
  * всё равно ставит Table выше TableCanvas.
  */
-export function searchComponents(index, { query, limit = 15 } = {}) {
+export function searchComponents(
+  index: RuntimeIndex,
+  { query, limit = 15 }: SearchComponentsArgs = {},
+): { results: (ComponentResult | FeatureResult)[] } {
   const words = tokenize(query);
   if (words.length === 0) return { results: [] };
 
-  const componentResults = Object.values(index.components)
-    .filter((c) => !c.error)
-    .map((c) => ({ kind: 'component', score: scoreComponent(c, words), record: c }))
+  const componentResults: ComponentHit[] = Object.values(index.components)
+    .filter(isOkComponent)
+    .map(
+      (c): ComponentHit => ({
+        kind: 'component',
+        score: scoreComponent(c, words),
+        record: c,
+      }),
+    )
     .filter((r) => r.score > 0);
 
-  const featureResults = index.features
-    .map((f) => ({ kind: 'feature', score: scoreFeature(f, words), record: f }))
+  const featureResults: FeatureHit[] = index.features
+    .map(
+      (f): FeatureHit => ({
+        kind: 'feature',
+        score: scoreFeature(f, words),
+        record: f,
+      }),
+    )
     .filter((r) => r.score > 0);
 
-  const results = [...componentResults, ...featureResults]
+  const hits: SearchHit[] = [...componentResults, ...featureResults]
     .sort((a, b) => b.score - a.score)
-    .slice(0, limit)
-    .map(({ kind, score, record }) => {
-      if (kind === 'component') {
-        return {
-          kind,
-          score,
-          name: record.name,
-          type: record.type,
-          category: record.category,
-          description: record.description,
-          hint: record.hint,
-          legacy: record.legacy || undefined,
-        };
-      }
+    .slice(0, limit);
+
+  const results = hits.map((hit): ComponentResult | FeatureResult => {
+    if (hit.kind === 'component') {
       return {
-        kind,
-        score,
-        component: record.component,
-        feature: record.feature,
-        summary: record.summary,
-        legacy: record.legacy || undefined,
+        kind: hit.kind,
+        score: hit.score,
+        name: hit.record.name,
+        type: hit.record.type,
+        category: hit.record.category,
+        description: hit.record.description,
+        hint: hit.record.hint,
+        legacy: hit.record.legacy || undefined,
       };
-    });
+    }
+    return {
+      kind: hit.kind,
+      score: hit.score,
+      component: hit.record.component,
+      feature: hit.record.feature,
+      summary: hit.record.summary,
+      legacy: hit.record.legacy || undefined,
+    };
+  });
 
   return { results };
 }

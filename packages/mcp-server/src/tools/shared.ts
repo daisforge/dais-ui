@@ -1,11 +1,23 @@
+import type {
+  FeatureRecord,
+  IndexedComponent,
+  PropRecord,
+  RuntimeIndex,
+} from '../types.js';
+
 /** Точное совпадение имени, а с фолбеком на регистронезависимое — компонентов мало кто угадывает точно по регистру. */
-export function findComponent(index, name) {
+export function findComponent(
+  index: RuntimeIndex,
+  name: string | undefined,
+): IndexedComponent | undefined {
   if (!name) return undefined;
   const direct = index.components[name];
   if (direct) return direct;
 
   const lower = name.toLowerCase();
-  return Object.values(index.components).find((c) => c.name.toLowerCase() === lower);
+  return Object.values(index.components).find(
+    (c) => c.name.toLowerCase() === lower,
+  );
 }
 
 /**
@@ -13,7 +25,11 @@ export function findComponent(index, name) {
  * (CanvasElements/CanvasText у TableCanvas против filtering/Filtering
  * разного регистра у Table/TableCanvas).
  */
-export function findFeature(index, component, feature) {
+export function findFeature(
+  index: RuntimeIndex,
+  component: string | undefined,
+  feature: string | undefined,
+): FeatureRecord | undefined {
   if (!component || !feature) return undefined;
   const componentLower = component.toLowerCase();
   const featureLower = feature.toLowerCase();
@@ -25,12 +41,17 @@ export function findFeature(index, component, feature) {
   );
 }
 
-export function listComponentFeatures(index, component) {
+export function listComponentFeatures(
+  index: RuntimeIndex,
+  component: string,
+): FeatureRecord[] {
   const componentLower = component.toLowerCase();
-  return index.features.filter((f) => f.component.toLowerCase() === componentLower);
+  return index.features.filter(
+    (f) => f.component.toLowerCase() === componentLower,
+  );
 }
 
 /** Компактная сводка пропса — без description, для "лёгких" списков (get_component). */
-export function summarizeProp(prop) {
+export function summarizeProp(prop: PropRecord): string {
   return `${prop.name}${prop.required ? '' : '?'}: ${prop.type}`;
 }

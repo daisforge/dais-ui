@@ -8,6 +8,8 @@
 
 `@daisforge/ui-mcp` решает именно вторую задачу: даёт агенту, который пишет код, точные пропсы/типы для ЛЮБОГО компонента, явную категорию (wrapper/composition/standalone/form), disambiguation-подсказки, примеры кода и унаследованные пропсы от атомарной библиотеки `@salutejs/sdds-finai` — полностью оффлайн, без обращений к сети или чужим процессам в рантайме.
 
+Пакет написан на TypeScript (`tsc` → `dist/`, публикуется собранным). Доменная модель, разделяемая всем пайплайном и рантаймом (`PropRecord`, `ComponentRecord`, `FeatureRecord`, `ResolvedIndex` и т.д.), живёт в `src/types.ts` — рассинхрон полей между этапами индексера (6 файлов последовательно мутируют одну и ту же запись компонента) ловится компилятором, а не только прогоном.
+
 ## Общая схема
 
 ```
@@ -16,27 +18,27 @@
 │  packages/ui-kit/src/{components,formComponents,layouts}/*                                  │
 │                        │                                                                     │
 │                        ▼                                                                     │
-│              discoverComponents.js  (ts-morph: перечисляет реальные PascalCase-экспорты      │
+│              discoverComponents.ts  (ts-morph: перечисляет реальные PascalCase-экспорты      │
 │                        │             barrel-файлов — одна папка может дать НЕСКОЛЬКО записей)│
 │                        ▼                                                                     │
-│              parseComponent.js  (пропсы через тайпчекер + денылист DOM-шума,                 │
+│              parseComponent.ts  (пропсы через тайпчекер + денылист DOM-шума,                 │
 │                        │          raw-fallback для дженериков, compound-части)               │
 │                        ▼                                                                     │
-│              classify.js  (type: wrapper/composition/standalone/form, atomicBase,            │
+│              classify.ts  (type: wrapper/composition/standalone/form, atomicBase,            │
 │                        │    formVariant↔wrappedBy, composition→wrapper promotion)             │
 │                        ▼                                                                     │
-│              mergeMeta.js  (обогащение из _docs/meta/components-meta.json: hint/category/     │
+│              mergeMeta.ts  (обогащение из _docs/meta/components-meta.json: hint/category/     │
 │                        │     docs/stories, curated wins over heuristic; + legacy-детект)      │
 │                        ▼                                                                     │
-│              mergeAtomicData.js  (inheritedProps[] из vendor/atomic-mcp-data/,                │
+│              mergeAtomicData.ts  (inheritedProps[] из vendor/atomic-mcp-data/,                │
 │                        │           дедуп с own props[], atomicDataMissing если атома нет)     │
 │                        ▼                                                                     │
-│              resolveImportPath.js + synthesizeExample.js (importStatement; синтетический     │
+│              resolveImportPath.ts + synthesizeExample.ts (importStatement; синтетический     │
 │                        │           пример из required-пропсов, если нет curated-стори)        │
 │                        ▼                                                                     │
-│              indexFeatures.js  (фичи TableCanvas/Table как плоский параллельный список)       │
+│              indexFeatures.ts  (фичи TableCanvas/Table как плоский параллельный список)       │
 │                        ▼                                                                     │
-│              diagnostics.js  (терминальная сводка: ошибки/предупреждения/по типам)            │
+│              diagnostics.ts  (терминальная сводка: ошибки/предупреждения/по типам)            │
 │                        ▼                                                                     │
 │         ┌──────────────────────────────┬────────────────────────────────────────┐            │
 │         ▼                              ▼                                        │            │
@@ -49,7 +51,7 @@
 
 ┌─────────────────────────── RUNTIME (npm run mcp:start / .mcp.json) ────────────────────────┐
 │                                                                                              │
-│   resolveIndex.js — три уровня, от точного к запасному:                                     │
+│   resolveIndex.ts — три уровня, от точного к запасному:                                     │
 │     1. workspace  — рядом physически лежит packages/ui-kit → свежий локальный индекс         │
 │     2. installed  — у потребителя есть @daisforge/ui с уже собранным mcp-data                │
 │     3. bundled    — запасной индекс внутри самого @daisforge/ui-mcp (старые версии           │
@@ -57,73 +59,73 @@
 │                      → dataVersionNotice / libNotInstalled в ответах инструментов            │
 │                        │                                                                     │
 │                        ▼                                                                     │
-│                  server.js  (@modelcontextprotocol/sdk, stdio transport)                     │
+│                  server.ts  (@modelcontextprotocol/sdk, stdio transport)                     │
 │                        │                                                                     │
 │                        ▼                                                                     │
-│         src/tools/*.js  →  truncate.js (бюджет ~25k символов на ответ, последний рубеж)       │
+│         src/tools/*.ts  →  truncate.ts (бюджет ~25k символов на ответ, последний рубеж)       │
 └──────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ## 1. Индексер (`src/indexer/`)
 
-Весь пайплайн запускается одной командой и оркестрируется `buildIndex.js`.
+Весь пайплайн запускается одной командой и оркестрируется `buildIndex.ts`.
 
-### 1.1 `tsProject.js`
+### 1.1 `tsProject.ts`
 
 Общий `ts-morph`-проект на весь прогон (`packages/ui-kit/tsconfig.lib.json` — там уже резолвятся алиасы `@ui-kit/*`). Пересоздание Project на каждый компонент стоило бы секунды на компонент; общий проект грузит 1344 файла за ~2.3с один раз.
 
-### 1.2 `discoverComponents.js`
+### 1.2 `discoverComponents.ts`
 
 Обходит `packages/ui-kit/src/{components,formComponents,layouts}/*`. Ключевое отличие от наивного подхода "имя папки = имя компонента": одна папка может экспортировать несколько реальных компонентов (`FormDatePickers/` → `FormDatePicker` + `FormDatePickerRange`; `Segment/` → `SegmentGroup`/`SegmentItem`/`SegmentIconItem`/`SegmentProvider`; `IconButton/` → `IconButton`/`IconButtonDots`/`IconButtonFilter`). Поэтому вместо предположения о совпадении имён — перечисляются реальные экспорты barrel-файла (`index.ts`/`index.tsx`) через `getExportSymbols()`, отфильтрованные эвристикой "PascalCase-значение, не ALL_CAPS-константа, не enum, не хук (`use*`)". Это подняло покрытие со 128 до 265 найденных компонентов и закрыло 7 ошибок парсинга (в т.ч. все 3 "потерянных" form-компонента).
 
 Явный список исключений (`EXCLUDED_DIRS`) — только для `StoriesUtils` (Storybook-хелперы, неотличимые от компонентов по одним флагам символа).
 
-### 1.3 `parseComponent.js`
+### 1.3 `parseComponent.ts`
 
 Для каждого компонента резолвит:
 
 - **Где реально объявлен** — через `getExportedDeclarations()` barrel-файла, которое следует через re-export цепочки до конечной декларации. Если декларация лежит в `node_modules/@salutejs/sdds-finai` → это чистый реэкспорт (`pureAtomicReExport`), собственных пропсов ноль, всё придёт из `inheritedProps` позже.
 - **Пропсы** — резолвятся через тайпчекер (`type.getProperties()`), а не текстовым парсингом. Источник типа ищется в три захода: (1) экспортированный `${Name}Props`/`${Name}CompProps` из barrel; (2) фолбек на сигнатуру самой render-функции (`findPropsDeclFromSignature` — критично для `TableCanvas`/`Table`, у которых `TableProps` вообще не реэкспортирован из barrel); (3) для compound-частей — ещё и прямой поиск объявления типа внутри файлов папки компонента (`findLocalTypeDeclaration`), не только среди barrel-экспортов.
-- **Фильтр DOM-шума** (`htmlAttributeDenylist.js`) — `ComponentProps<typeof X>` тянет ~300 унаследованных DOM/ARIA атрибутов вперемешку с реальными пропсами. Фильтрация идёт не по имени (иначе потеряли бы переопределённые `Switch.size: "s"|"m"|"l"`), а по паре имя+текст типа, с нормализацией конкретного HTML-элемента (`HTMLInputElement`/`HTMLDivElement` → `HTMLElement`) — иначе `onChange`/`onFocus` не матчились бы из-за разного элемента-параметра. Плюс небольшой список React-статиков (`propTypes`, `defaultProps`, `displayName`...) и styled-components-шума (`theme`, `forwardedAs`). Эффект: DrawerDF 206→46 пропсов, TextField 208→49, без потери значимых полей.
+- **Фильтр DOM-шума** (`htmlAttributeDenylist.ts`) — `ComponentProps<typeof X>` тянет ~300 унаследованных DOM/ARIA атрибутов вперемешку с реальными пропсами. Фильтрация идёт не по имени (иначе потеряли бы переопределённые `Switch.size: "s"|"m"|"l"`), а по паре имя+текст типа, с нормализацией конкретного HTML-элемента (`HTMLInputElement`/`HTMLDivElement` → `HTMLElement`) — иначе `onChange`/`onFocus` не матчились бы из-за разного элемента-параметра. Плюс небольшой список React-статиков (`propTypes`, `defaultProps`, `displayName`...) и styled-components-шума (`theme`, `forwardedAs`). Эффект: DrawerDF 206→46 пропсов, TextField 208→49, без потери значимых полей.
 - **Фолбек на сырой текст типа** — если тип генерик (`TableProps<FilterStateType, RowIdType, ...>`, 6 параметров), вместо попытки развернуть его через тайпчекер (нечитаемая простыня) берётся сырой текст AST-узла декларации (`decl.getText()`) — проще, чем ручной подсчёт скобок в старом `generators/meta-info`, потому что AST уже даёт точные границы.
 - **Compound-части** — ищутся статические присваивания `Component.Sub = LocalName;` (`DrawerDF.Content = DrawerDFContent`) через AST (`BinaryExpression` + `PropertyAccessExpression`), а не по документации CLAUDE.md напрямую (реальный код иногда расходится с упрощённым описанием — например, `ModalDF.Header` в CLAUDE.md не подтверждается кодом, реальный паттерн статик-присваивания есть только у `DrawerDF`/`AnalyticalWidget`/`LeftPanel`/`MassActions`/`TableTabs`/`Stories`).
 - **JSDoc** — описание, `@deprecated`/причина — с самой декларации компонента.
 
-### 1.4 `classify.js`
+### 1.4 `classify.ts`
 
 - `type`: `formComponents/*` → `form`; чистый реэкспорт из sdds-finai → `wrapper` (atomicBase = то же имя); импорт из `@salutejs/sdds-finai` в локальном файле → `wrapper` (atomicBase = импортированное имя, с приоритетом на совпадение с именем компонента, если импортов несколько); импорт других ui-kit компонентов → `composition`; иначе → `standalone`.
 - **`promoteCompositionToWrapper`** — второй проход: некоторые компоненты оборачивают атом не напрямую, а через ДРУГОЙ ui-kit компонент (`ModalDF` → внутренний `Modal` → атом `Modal` из sdds-finai). Если среди внутренних импортов composition-компонента есть уже классифицированный wrapper с совпадающим по имени atomicBase — повышаем до wrapper.
 - **`linkFormVariants`** — по соглашению именования `Form${Name}` связывает `TextField ↔ FormTextField` и т.д. (`formVariant`/`wrappedBy`), для всех 14 форм-компонентов.
 
-### 1.5 `mergeMeta.js`
+### 1.5 `mergeMeta.ts`
 
 Читает `_docs/meta/components-meta.json`. Там, где компонент присутствует (36 из 265), поля `category`/`type`/`description`/`hint`/`scope`/`docs`/`apiDocs`/`stories` **перекрывают** эвристику индексера (curated wins over heuristic). Также:
 
 - переносит `pages["Установка и использование"]` как есть в `guides.installation` (без нового парсинга — переиспользование уже сгенерированного контента);
 - детектит `legacy: true` по вхождению "устаревш" в hint/description curated-текста — принципиальная проверка по смыслу, а не хардкод конкретного имени компонента (сейчас единственный кейс — `Table`).
 
-### 1.6 Атомарные данные — вендоринг (`vendorAtomicData.js` + `mergeAtomicData.js`)
+### 1.6 Атомарные данные — вендоринг (`vendorAtomicData.ts` + `mergeAtomicData.ts`)
 
 Их MCP (`@salutejs/sdds-mcp`) сам работает поверх статического JSON-бандла, который генерирует скрипт `generate-mcp-data` в репозитории `plasma/website/sdds-finai-docs` (схема на компонент: `{name, package, category, summary, api:{props}, examples}`). Вместо подключения к их MCP как к живому процессу — **разово вендорим тот же JSON** к себе:
 
-- `vendorAtomicData.js --source <путь-к-их-mcpData>` копирует `manifest.json` + `components/*.json` в `packages/mcp-server/vendor/atomic-mcp-data/` (закоммиченный снэпшот, обновляется вручную).
-- `mergeAtomicData.js` — для каждого компонента с `atomicBase` ищет соответствующий файл в снэпшоте, кладёт его `api.props` как `inheritedProps[]` (с `inheritedFrom`/`inheritedPackage`), и убирает из собственных `props[]` те поля, что уже есть в `inheritedProps` (дедуп — иначе у чистых реэкспортов типа `Button`/`Accordion` весь список пропсов дублировался бы дважды). Если снэпшота для конкретного атома нет — `atomicDataMissing: true`, без падения сборки (часть compound-частей вроде `DrawerHeader`/`DrawerFooter` не имеет отдельной страницы в их доках — API организовано внутри родительской `Drawer`).
+- `vendorAtomicData.ts --source <путь-к-их-mcpData>` копирует `manifest.json` + `components/*.json` в `packages/mcp-server/vendor/atomic-mcp-data/` (закоммиченный снэпшот, обновляется вручную).
+- `mergeAtomicData.ts` — для каждого компонента с `atomicBase` ищет соответствующий файл в снэпшоте, кладёт его `api.props` как `inheritedProps[]` (с `inheritedFrom`/`inheritedPackage`), и убирает из собственных `props[]` те поля, что уже есть в `inheritedProps` (дедуп — иначе у чистых реэкспортов типа `Button`/`Accordion` весь список пропсов дублировался бы дважды). Если снэпшота для конкретного атома нет — `atomicDataMissing: true`, без падения сборки (часть compound-частей вроде `DrawerHeader`/`DrawerFooter` не имеет отдельной страницы в их доках — API организовано внутри родительской `Drawer`).
 
-### 1.7 `resolveImportPath.js`
+### 1.7 `resolveImportPath.ts`
 
 `packages/ui-kit/src/index.ts` реэкспортирует ВСЁ (components/formComponents/layouts) единым плоским барелем — проверено напрямую по файлу. Для v1-скоупа путь импорта всегда `@daisforge/ui`, независимо от группы. Сабпасы (`/icons`, `/tokens`) понадобятся только в v1.1.
 
-### 1.8 `synthesizeExample.js`
+### 1.8 `synthesizeExample.ts`
 
 Если у компонента нет ни одной curated-стори (большинство из 265) — генерирует `<Component requiredProp={placeholder} />` из обязательных пропсов, помечено `type: "synthesized"` (в отличие от `"full-code"`/`"args-only"` из Storybook), чтобы агент не путал с проверенным примером.
 
-### 1.9 `indexFeatures.js`
+### 1.9 `indexFeatures.ts`
 
 Фичи `TableCanvas`/`Table` (46 + 31 шт.) — не вложенный подобъект компонента, а **отдельный плоский список**, доступный поиску наравне с компонентами. Причина: у `TableCanvas` фичи составляют 98.5% payload'а компонента (682 511 из 682 511 символов сырой записи против 9 784 в "корне"), а имена не угадываются (`massPanelAction`, `CanvasElements/CanvasText`). `legacy` пробрасывается с родительского компонента (все фичи `Table` — legacy).
 
-### 1.10 `diagnostics.js` + `buildIndex.js`
+### 1.10 `diagnostics.ts` + `buildIndex.ts`
 
-`diagnostics.js` печатает терминальную сводку (по аналогии с `generate-meta.js`): количество компонентов/фичей, разбивку по типам, ошибки парсинга, предупреждения (`atomicDataMissing`, пустой `props[]` без `isGeneric`, записи сильно больше бюджета ответа). `buildIndex.js` — оркестратор: вызывает весь пайплайн по порядку, пишет итоговый `component-index.json` в оба места (bundled + package-режим, если `dist/packages/ui-kit` уже собран).
+`diagnostics.ts` печатает терминальную сводку (по аналогии с `generate-meta.js`): количество компонентов/фичей, разбивку по типам, ошибки парсинга, предупреждения (`atomicDataMissing`, пустой `props[]` без `isGeneric`, записи сильно больше бюджета ответа). `buildIndex.ts` — оркестратор: вызывает весь пайплайн по порядку, пишет итоговый `component-index.json` в оба места (bundled + package-режим, если `dist/packages/ui-kit` уже собран).
 
 ## 2. Итоговый `component-index.json`
 
@@ -155,19 +157,19 @@
 
 Файл целиком (~МБ, наравне со старым `components-meta.json`) читается один раз при старте сервера — размер на диске не проблема, проблема только в том, что реально уходит в ответ агенту. Этим занимается уровень инструментов (см. ниже).
 
-## 3. Распространение индекса и рантайм-резолв (`resolveIndex.js`)
+## 3. Распространение индекса и рантайм-резолв (`resolveIndex.ts`)
 
 Сервер обязан работать у любого потребителя, включая тех, кто сидит на версии `@daisforge/ui`, опубликованной **до** появления mcp-data (то есть сейчас — все версии). Три уровня, от точного к запасному:
 
-1. **workspace** — если физически рядом (`../ui-kit/package.json` относительно самого `resolveIndex.js`) лежит `packages/ui-kit` → мы внутри монорепо dais/ui, читаем свежесобранный локальный индекс.
+1. **workspace** — если физически рядом (`../ui-kit/package.json` относительно самого `resolveIndex.ts`) лежит `packages/ui-kit` → мы внутри монорепо dais/ui, читаем свежесобранный локальный индекс.
 2. **installed** — `require.resolve('@daisforge/ui/mcp-data/component-index.json')` относительно `process.cwd()` потребителя (не относительно нашего пакета!). Сработает только для версий `@daisforge/ui`, уже содержащих `mcp-data` (появится после первой публикации с этим MCP).
 3. **bundled** — запасной индекс, вшитый в сам `@daisforge/ui-mcp` (`data/component-index.json`, тот же файл, что и workspace-режим, но семантически означает "библиотека либо старая, либо не установлена"). Сравнивает `libVersion` из индекса с реально установленной версией `@daisforge/ui` (если есть) — при несовпадении или отсутствии добавляет `dataVersionNotice`/`libNotInstalled` в каждый ответ инструмента.
 
 Все три уровня протестированы вживую (см. историю сессии): реальный сценарий "`@daisforge/ui` не установлен вовсе" — сервер не падает, отдаёт `bundled`-индекс и корректно предупреждает агента, что стоит вызвать `get_installation_guide`.
 
-## 4. MCP-сервер и инструменты (`server.js` + `src/tools/`)
+## 4. MCP-сервер и инструменты (`server.ts` + `src/tools/`)
 
-Транспорт — stdio (`@modelcontextprotocol/sdk`). Каждый инструмент — чистая функция `(index, args) → payload`, сервер оборачивает результат через `truncate.js` перед отправкой.
+Транспорт — stdio (`@modelcontextprotocol/sdk`). Каждый инструмент — чистая функция `(index, args) → payload`, сервер оборачивает результат через `truncate.ts` перед отправкой.
 
 | Инструмент | Назначение |
 |---|---|
@@ -182,9 +184,9 @@
 | `list_categories()` | категории с разбивкой по типам |
 | `get_installation_guide()` | гайд по установке из `guides.installation` |
 
-`shared.js` — общие хелперы резолва (`findComponent`, `findFeature` — регистронезависимо, с поддержкой вложенных путей вроде `CanvasElements/CanvasText`).
+`shared.ts` — общие хелперы резолва (`findComponent`, `findFeature` — регистронезависимо, с поддержкой вложенных путей вроде `CanvasElements/CanvasText`).
 
-### 4.1 Бюджет ответа (`truncate.js`)
+### 4.1 Бюджет ответа (`truncate.ts`)
 
 Замер: сырая запись `TableCanvas` в старом `components-meta.json` — 682 511 символов (~170k токенов), при медиане ~11k. Поэтому:
 
@@ -192,7 +194,7 @@
 - фичи не инлайнятся в карточку компонента вообще — отдельные инструменты;
 - `truncateForResponse` — последний рубеж: если конкретный ответ всё равно превышает ~25k символов, обрезает с явным маркером и подсказкой, каким параметром (`part`/`title`/`feature`) сузить запрос.
 
-### 4.2 Поиск (`searchComponents.js`)
+### 4.2 Поиск (`searchComponents.ts`)
 
 Простой substring-скоринг (без embeddings/NLP), но с двумя нетривиальными поправками, найденными вживую при тестировании:
 

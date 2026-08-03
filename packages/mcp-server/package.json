@@ -4,17 +4,20 @@
   "description": "MCP server for @daisforge/ui — component discovery, props and examples for coding agents",
   "type": "module",
   "bin": {
-    "daisforge-ui-mcp": "./src/server.js"
+    "daisforge-ui-mcp": "./dist/server.js"
   },
-  "main": "./src/server.js",
+  "main": "./dist/server.js",
   "files": [
-    "src",
+    "dist",
     "data"
   ],
   "scripts": {
-    "mcp:build-index": "node ./src/indexer/buildIndex.js",
-    "mcp:vendor-atomic": "node ./src/indexer/vendorAtomicData.js",
-    "mcp:start": "node ./src/server.js"
+    "build": "tsc -p tsconfig.lib.json",
+    "typecheck": "tsc -p tsconfig.lib.json --noEmit",
+    "prepare": "npm run build",
+    "mcp:build-index": "node ./dist/indexer/buildIndex.js",
+    "mcp:vendor-atomic": "node ./dist/indexer/vendorAtomicData.js",
+    "mcp:start": "node ./dist/server.js"
   },
   "license": "MIT",
   "publishConfig": {

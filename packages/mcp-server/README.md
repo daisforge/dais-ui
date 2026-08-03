@@ -13,7 +13,7 @@ MCP-сервер для `@daisforge/ui` — даёт кодовому агент
   "mcpServers": {
     "daisforge-ui": {
       "command": "node",
-      "args": ["node_modules/@daisforge/ui-mcp/src/server.js"]
+      "args": ["node_modules/@daisforge/ui-mcp/dist/server.js"]
     }
   }
 }
@@ -29,6 +29,16 @@ MCP-сервер для `@daisforge/ui` — даёт кодовому агент
 - `list_features({ component })`, `get_feature({ component, feature })`, `get_feature_examples({ component, feature, title? })`
 - `list_categories()`
 - `get_installation_guide()`
+
+## Разработка
+
+```bash
+npx nx typecheck @daisforge/ui-mcp   # tsc --noEmit
+npx nx lint @daisforge/ui-mcp        # eslint (тот же конфиг, что и у остальных пакетов монорепо)
+npx nx build @daisforge/ui-mcp       # tsc -p tsconfig.lib.json → dist/
+```
+
+`ts-morph` — devDependency (нужна только индексеру на этапе сборки индекса, не публикуется в рантайме MCP-сервера); соответствующее исключение для `import/no-extraneous-dependencies` настроено в `.eslintrc.json` только для `src/indexer/**`.
 
 ## Сборка индекса
 
