@@ -288,6 +288,72 @@ function extractPropsFromType(type: Type, atLocationNode: Node): PropRecord[] {
 }
 
 /**
+ * Порог "нечитаемой простыни" для generic-пропсов (см. resolvePropsType).
+ * Число пропсов само по себе не сигнал плохого резолва — среди обычных
+ * (не-generic) компонентов легитимно встречается 96-190 своих пропсов
+ * (замер на текущем индексе), так что MAX_GENERIC_PROPS — не порог
+ * качества, а чисто защитный потолок на случай патологического взрыва
+ * членов (рекурсивный mapped-тип и т.п.), с запасом выше макс. легитимного.
+ * Настоящий сигнал мусора — доля пропсов с нерезолвящимся ("unknown")
+ * типом: если она большая, значит type-параметры генерика не подставились
+ * и типы не резолвятся осмысленно — тогда откатываемся на сырой текст типа.
+ */
+const MAX_GENERIC_PROPS = 300;
+const MAX_UNKNOWN_PROP_RATIO = 0.3;
+
+/**
+ * Когда своя типовая декларация не резолвлена (unresolved type parameter),
+ * тайпчекер печатает доступ к её полям как есть — `SomeProps<T>["autoFocus"]`
+ * — вместо конкретного типа. Обнаружено вживую на TypographyWithAutoTooltip:
+ * из-за этого проваливается денылист DOM-шума в isNoiseProp (сравнение идёт
+ * по точному тексту типа, а `boolean | undefined` != `X<T>["autoFocus"]`),
+ * и ~280 унаследованных DOM/ARIA-атрибутов просачиваются как "настоящие"
+ * пропсы. Текст-то не буквально "unknown", но так же бесполезен — считаем
+ * его мусором наравне с unknown при оценке доли шума.
+ */
+const UNRESOLVED_GENERIC_ACCESS_RE =
+  /\w+<[^<>]*>\["[^"]+"\](\s*\|\s*undefined)?$/;
+
+function isUselessResolvedType(typeText: string): boolean {
+  return typeText === 'unknown' || UNRESOLVED_GENERIC_ACCESS_RE.test(typeText);
+}
+
+/**
+ * Структурный резолв пропсов дженерика через тайпчекер — работает для
+ * простых пересечений вроде `TMutationRegister<T> & TPropsFromMask & TProps`
+ * (один type-параметр, все члены пересечения резолвятся структурно
+ * независимо от того, что T не подставлен). Возвращает undefined, если
+ * результат похож на "нечитаемую простыню" — тогда resolvePropsType
+ * откатывается на сырой текст типа, как раньше.
+ */
+function tryExtractGenericProps(
+  decl: NamedPropsRef['decl'],
+): PropRecord[] | undefined {
+  if (
+    !Node.isTypeAliasDeclaration(decl) &&
+    !Node.isInterfaceDeclaration(decl)
+  ) {
+    return undefined;
+  }
+
+  let props: PropRecord[];
+  try {
+    props = extractPropsFromType(decl.getType(), decl);
+  } catch {
+    return undefined;
+  }
+
+  if (props.length === 0 || props.length > MAX_GENERIC_PROPS) return undefined;
+
+  const uselessCount = props.filter((p) =>
+    isUselessResolvedType(p.type),
+  ).length;
+  if (uselessCount / props.length > MAX_UNKNOWN_PROP_RATIO) return undefined;
+
+  return props.filter((p) => !isUselessResolvedType(p.type));
+}
+
+/**
  * Пропсы компонента: обычный резолв через тайпчекер, но с фолбеком на сырой
  * текст типа для сложных дженериков (TableProps<...> и подобные) — тот же
  * приём, что copyTypeAsStringSync в generators/meta-info, только проще:
@@ -310,10 +376,11 @@ function resolvePropsType(propsRef: PropsRef): ResolvedPropsType {
   const typeParams = getTypeParameters(decl);
 
   if (typeParams.length > 0) {
+    const structuralProps = tryExtractGenericProps(decl);
     return {
       typeName: name,
       rawType: clip(decl.getText(), MAX_RAW_TYPE_CHARS),
-      props: [],
+      props: structuralProps ?? [],
       isGeneric: true,
     };
   }
