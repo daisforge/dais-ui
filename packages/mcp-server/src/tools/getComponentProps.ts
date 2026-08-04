@@ -19,6 +19,7 @@ interface CompoundPartPropsPayload {
   rawType?: string;
   isGeneric?: true;
   props: PropRecord[];
+  warning?: string;
 }
 
 interface ComponentPropsPayload {
@@ -31,6 +32,28 @@ interface ComponentPropsPayload {
   atomicBase?: string;
   atomicDataMissing?: true;
   dataVersionNotice?: string;
+  warning?: string;
+}
+
+/**
+ * Пустой props[] у generic-типа — не факт "у компонента нет пропсов", а
+ * иногда деградация индексера (структурный резолв генерика не прошёл
+ * эвристики безопасности, см. tryExtractGenericProps в parseComponent.ts,
+ * и откатился на сырой текст типа). Без явного сигнала агент, полагающийся
+ * только на MCP, не может отличить одно от другого и рискует придумать
+ * пропсы по общему паттерну (реальный кейс — FormMask до фикса индексера).
+ */
+function genericEmptyPropsWarning(
+  isGeneric: boolean | undefined,
+  propsLength: number,
+): string | undefined {
+  if (!isGeneric || propsLength > 0) return undefined;
+  return (
+    'Пропсы не резолвлены (сложный generic-тип) — пустой props[] не значит, ' +
+    'что у компонента их нет. Проверь rawType в этом же ответе, попробуй ' +
+    'get_component_examples, а для компонентов с wrappedBy/atomicBase — ' +
+    'get_component_props по этому имени.'
+  );
 }
 
 export function getComponentProps(
@@ -58,25 +81,32 @@ export function getComponentProps(
         }`,
       };
     }
+    const compoundPartProps = compoundPart.props || [];
     return {
       name: record.name,
       part: compoundPart.name,
       propsTypeName: compoundPart.typeName,
       rawType: compoundPart.rawType,
       isGeneric: compoundPart.isGeneric || undefined,
-      props: compoundPart.props || [],
+      props: compoundPartProps,
+      warning: genericEmptyPropsWarning(
+        compoundPart.isGeneric,
+        compoundPartProps.length,
+      ),
     };
   }
 
+  const props = record.props || [];
   return {
     name: record.name,
     propsTypeName: record.propsTypeName,
     rawType: record.rawType,
     isGeneric: record.isGeneric || undefined,
-    props: record.props || [],
+    props,
     inheritedProps: record.inheritedProps || [],
     atomicBase: record.atomicBase,
     atomicDataMissing: record.atomicDataMissing || undefined,
     dataVersionNotice: index.dataVersionNotice,
+    warning: genericEmptyPropsWarning(record.isGeneric, props.length),
   };
 }
