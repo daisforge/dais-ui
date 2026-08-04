@@ -13,6 +13,7 @@ import type { FormAutocompleteProps } from './types';
 export const FormAutocomplete = <TFieldValues extends FieldValues>({
   name,
   options,
+  label,
   onChange: handleChange,
   onChangeInput: handleChangeInput,
   leftHelper = '',
@@ -43,12 +44,11 @@ export const FormAutocomplete = <TFieldValues extends FieldValues>({
       }) => (
         <Autocomplete
           {...fieldRest}
+          label={label}
           leftHelper={error?.message || leftHelper}
-          required={(rest.label && !!newOptions.required) || undefined}
+          required={!!newOptions.required || undefined}
           requiredPlacement="right"
-          hasRequiredIndicator={
-            (rest.label && !!newOptions.required) || undefined
-          }
+          hasRequiredIndicator={!!newOptions.required || undefined}
           view={error?.type ? 'negative' : view ?? 'default'}
           onChange={async ({ target: { value } }) => {
             await onChange(value);

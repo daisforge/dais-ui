@@ -47,6 +47,7 @@ export const FormDatePicker = <TFieldValues extends FieldValues>({
   name,
   options,
   portal,
+  label,
   onChange: handleChange,
   textHint,
   format = 'DD.MM.YYYY',
@@ -163,6 +164,7 @@ export const FormDatePicker = <TFieldValues extends FieldValues>({
         return (
           <DatePickerStyled
             {...fieldRest}
+            label={label}
             ref={rhfRef}
             maskWithFormat={maskWithFormat}
             value={dateValue}
@@ -172,11 +174,9 @@ export const FormDatePicker = <TFieldValues extends FieldValues>({
             min={(minTime && new Date(minTime)) || undefined}
             offset={offset}
             opened={opened}
-            required={(rest.label && !!newOptions.required) || undefined}
+            required={!!newOptions.required || undefined}
             requiredPlacement={requiredPlacement}
-            hasRequiredIndicator={
-              (rest.label && !!newOptions.required) || undefined
-            }
+            hasRequiredIndicator={!!newOptions.required || undefined}
             includeEdgeDates
             size={size}
             usePortal={!!portal}
