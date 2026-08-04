@@ -1,6 +1,6 @@
 {
   "name": "@daisforge/ui",
-  "version": "1.11.0",
+  "version": "1.12.0",
   "main": "./index.cjs",
   "module": "./index.mjs",
   "types": "./index.d.ts",
