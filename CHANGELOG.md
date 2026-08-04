@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.12.0](https://github.com/daisforge/dais-ui/compare/v1.11.0...v1.12.0) (2026-08-04)
+
+### Bug Fixes
+
+- **FormComponents:** исправлен индикатор required ([1e36669](https://github.com/daisforge/dais-ui/commit/1e36669a7f4fe7cf399443f3ef779e687740ccb7))
+- **FormTextArea:** убрано скрытие счётчика символов при потере фокуса ([0ac8d42](https://github.com/daisforge/dais-ui/commit/0ac8d428aec4b47ee049b1407ba7d566ec325f25))
+
+### Features
+
+- **TableCanvas:** tableConfig.tooltip. Добавлен preserveLineBreaks для сохранения переносов строк в tooltip ([8b47ce8](https://github.com/daisforge/dais-ui/commit/8b47ce82b82e60ee95d7ef248fd87e3140eb9c29))
+
 # [1.11.0](https://github.com/daisforge/dais-ui/compare/v1.10.3...v1.11.0) (2026-08-03)
 
 ### Bug Fixes

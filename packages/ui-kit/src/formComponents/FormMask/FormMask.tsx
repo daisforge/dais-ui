@@ -14,6 +14,7 @@ export const FormMask = <TFieldValues extends FieldValues>({
   options,
   leftHelper = '',
   view,
+  label,
   onChange: handleChange,
   onBlur: handleBlur,
   required: propsRequired,
@@ -41,13 +42,12 @@ export const FormMask = <TFieldValues extends FieldValues>({
       }) => (
         <Mask
           {...fieldRest}
+          label={label}
           leftHelper={error?.message ?? leftHelper}
           name={name}
-          required={(rest.label && !!newOptions.required) || undefined}
+          required={!!newOptions.required || undefined}
           requiredPlacement="right"
-          hasRequiredIndicator={
-            (rest.label && !!newOptions.required) || undefined
-          }
+          hasRequiredIndicator={!!newOptions.required || undefined}
           size="s"
           view={error?.type ? 'negative' : view ?? 'default'}
           onValueChange={({ value }) => {

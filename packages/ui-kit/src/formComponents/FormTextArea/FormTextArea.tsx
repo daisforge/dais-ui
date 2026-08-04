@@ -1,5 +1,5 @@
 import type { TextArea } from '@ui-kit/components/TextArea';
-import React, { useState } from 'react';
+import React from 'react';
 import type { FieldValues } from 'react-hook-form';
 import { Controller } from 'react-hook-form';
 
@@ -31,8 +31,8 @@ export const FormTextArea = <TFieldValues extends FieldValues>({
       ? options?.required
       : propsRequired,
   };
-
-  const [isFocused, setIsFocused] = useState(false);
+  // мб понадобится позже состояние фокуса в стейте
+  // const [isFocused, setIsFocused] = useState(false);
   const formCtx = useChangedFormContext(newOptions);
   const { control, rules, remOptions, setValue } = formCtx;
 
@@ -58,11 +58,10 @@ export const FormTextArea = <TFieldValues extends FieldValues>({
           leftHelper={error?.message || leftHelper}
           leftHelperPlacement="inner"
           name={name}
-          required={(label && !!newOptions.required) || undefined}
+          required={!!newOptions.required || undefined}
           requiredPlacement="right"
-          hasRequiredIndicator={(label && !!newOptions.required) || undefined}
+          hasRequiredIndicator={!!newOptions.required || undefined}
           rightHelper={
-            isFocused &&
             !fieldRest.disabled &&
             !rest.disabled &&
             !rest.readOnly && (
@@ -87,14 +86,14 @@ export const FormTextArea = <TFieldValues extends FieldValues>({
             }
             onBlur();
             handleBlur?.(e);
-            setIsFocused(false);
+            // setIsFocused(false);
           }}
           onChange={(e) => {
             onChange(e.target.value);
             handleChange?.(e.target.value, formCtx);
           }}
           onFocus={(e) => {
-            setIsFocused(true);
+            // setIsFocused(true);
             handleBlur?.(e);
           }}
           {...(maxCount !== undefined && { maxLength: maxCount })}

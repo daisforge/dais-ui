@@ -6,20 +6,23 @@ import {
   shadowDownSoftS,
   surfaceTransparentAccent,
 } from '@ui-kit/tokens';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import { analyticalWidgetClassNames } from '../AnalyticalWidget/AnalyticalWidget.constants';
 import { GridDNDClassNames as cls } from './GridDND.constants';
 
+export const gridItemPlaceholderMixin = css`
+  background-color: ${() => surfaceTransparentAccent};
+  border-radius: 16px;
+  outline: 1px solid ${() => outlineAccent};
+`;
 export const GridDNDContainer = styled.div`
   width: 100%;
   min-height: 400px;
   max-width: 1890px;
   &:has(.react-grid-placeholder) {
     & .react-grid-item.react-grid-placeholder {
-      background-color: ${() => surfaceTransparentAccent};
-      border-radius: 16px;
-      outline: 1px solid ${() => outlineAccent};
+      ${gridItemPlaceholderMixin}
       opacity: 1;
     }
   }

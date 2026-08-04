@@ -56,9 +56,9 @@ export const FormCombobox = <TFieldValues extends FieldValues>({
             items={items}
             label={label}
             placeholder={placeholder}
-            required={(label && !!newOptions.required) || undefined}
+            required={!!newOptions.required || undefined}
             requiredPlacement="right"
-            hasRequiredIndicator={(label && !!newOptions.required) || undefined}
+            hasRequiredIndicator={!!newOptions.required || undefined}
             size="s"
             view={error?.type ? 'negative' : view ?? 'default'}
             onChange={(valueList: string | string[]) => {
