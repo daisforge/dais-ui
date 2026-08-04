@@ -241,8 +241,37 @@ function safeGetPropertyType(prop: TsSymbol, node: Node): Type | undefined {
   }
 }
 
+/**
+ * true — свойство объявлено в том же файле, что и сам тип пропсов (значит,
+ * это поле, которое компонент реально описал сам), а не унаследовано через
+ * spread другого типа вроде `BoxProps & { title?: ... }` (объявлен в файле
+ * Box, а не DrawerDF). Используется для сортировки — см. extractPropsFromType.
+ */
+function isOwnFileDeclaration(
+  decl: Node | undefined,
+  ownFilePath: string,
+): boolean {
+  return (
+    decl !== undefined && decl.getSourceFile().getFilePath() === ownFilePath
+  );
+}
+
+/**
+ * truncateForResponse (см. tools/truncate.ts) режет большие ответы по
+ * символам без учёта структуры — если пропсы компонента идут в порядке
+ * "как отдал тайпчекер", содержательные поля могут не дожить до конца
+ * бюджета. На практике пересечения вида `BoxProps & { title?: ...}`
+ * (DrawerDF.Header и подобные) отдают CSS/layout-пропсы из BoxProps первыми
+ * — они и съедали лимит раньше собственных `title`/`subTitle`/`rightBlock`.
+ * Стабильно сортируем: поля, объявленные в том же файле, что и сам тип
+ * пропсов (собственные), — в начало; всё остальное (унаследованное через
+ * spread чужого типа) — в конец, каждая группа в исходном порядке.
+ */
 function extractPropsFromType(type: Type, atLocationNode: Node): PropRecord[] {
-  const props: PropRecord[] = [];
+  const ownFilePath = atLocationNode.getSourceFile().getFilePath();
+  const own: PropRecord[] = [];
+  const rest: PropRecord[] = [];
+
   for (const symbol of type.getProperties()) {
     const decl: Node | undefined =
       symbol.getValueDeclaration() ?? symbol.getDeclarations()[0];
@@ -276,15 +305,18 @@ function extractPropsFromType(type: Type, atLocationNode: Node): PropRecord[] {
         ? isDeprecated(decl)
         : false;
 
-    props.push({
+    const record: PropRecord = {
       name,
       type: clip(fullTypeText, MAX_PROP_TYPE_CHARS) as string,
       required: !optional,
       description,
       ...(deprecated ? { deprecated: true as const } : {}),
-    });
+    };
+
+    (isOwnFileDeclaration(decl, ownFilePath) ? own : rest).push(record);
   }
-  return props;
+
+  return [...own, ...rest];
 }
 
 /**

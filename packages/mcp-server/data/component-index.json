@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-04T14:06:00.552Z",
+  "generatedAt": "2026-08-04T14:23:05.885Z",
   "libVersion": "1.12.0",
   "components": {
     "Accordion": {
@@ -116,6 +116,78 @@
           "type": "false | true | undefined",
           "required": false,
           "description": "Включить / Выключить перетаскивание"
+        },
+        {
+          "name": "contentContainerClassNames",
+          "type": "string | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "calculateOffset",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Включить / Выключить перерасчёт offset для кастомных значений placement. top-right, top-left, bottom-right, bottom-left, чтобы стрелка popover была в центре target элемента, а контент пропорционально смещен в зависимости от placement."
+        },
+        {
+          "name": "calculatePlacement",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Включить / Выключить перерасчёт placement в режиме draggable."
+        },
+        {
+          "name": "placement",
+          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/AiAgentPopover/AiAgentPopover.types\").AiAgentPopoverPlacement",
+          "required": false,
+          "description": "Позиция отображения popover."
+        },
+        {
+          "name": "positionState",
+          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/AiAgentPopover/AiAgentPopover.types\").AiAgentPopoverPositionState | undefined",
+          "required": false,
+          "description": "Внешний стейт позиции [position, setPosition].\nЕсли не передан, будет использован внутренний стейт. Не используется для интеграции с localStorage. Данное поле отвечает за полное внешнее управление позицией"
+        },
+        {
+          "name": "defaultPosition",
+          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/AiAgentPopover/AiAgentPopover.types\").AiAgentPopoverCustomPlacement | import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/AiAgentPopover/AiAgentPopover.types\").AiAgentPopoverPosition | undefined",
+          "required": false,
+          "description": "Начальная позиция при первом рендере (используется только если НЕ передан positionState и НЕ используется useStorage)"
+        },
+        {
+          "name": "dragBoundary",
+          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/AiAgentPopover/AiAgentPopover.types\").AiAgentPopoverDragBoundary | undefined",
+          "required": false,
+          "description": "Ограничение области в рамках которой можно перемещать элемент"
+        },
+        {
+          "name": "ignoreToggleOnDrag",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "В момент драга сохранять текущий стейт видимости popover. При перетаскивании закрытого popover в момент завершения перетаскивания popover не откроется, если этот пропс активен. Аналогично с открытым состоянием."
+        },
+        {
+          "name": "onPositionChange",
+          "type": "((pos: { x: number; y: number; }) => void) | undefined",
+          "required": false,
+          "description": "Callback смены позиции в draggable режиме в момент перетаскивания"
+        },
+        {
+          "name": "useStorage",
+          "type": "string | boolean | undefined",
+          "required": false,
+          "description": "Сохранять ли позицию в localStorage.\n- `true`: автосохранение с ключом `ai-agent-popover-position`.\n- `string`: кастомный ключ (например, `my-popover-position`).\n- `false`: отключено."
+        },
+        {
+          "name": "resizable",
+          "type": "boolean | ((placement: import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/AiAgentPopover/AiAgentPopover.types\").AiAgentPopoverPlacement) => Partial<{ disabled?: boolean | undefined; directions?: import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/_Resizable/Resizable.types\").ResizeDirections | undefined; defaultSize?: { width?…",
+          "required": false,
+          "description": "Включить / настроить resizable-режим.\n- `true`: включить с дефолтной конфигурацией (иконка ресайза автоматически позиционируется в зависимости от placement).\n- `(placement: AiAgentPopoverPlacement) => config`: функция для кастомной конфигурации. Принимает текущий placement,\n  возвращает частичную конфигурацию, которая мержится с дефолтной."
+        },
+        {
+          "name": "targetDataAttributes",
+          "type": "DataAttributes | undefined",
+          "required": false,
+          "description": "Data-атрибуты для target-кнопки (MagicButton). Например: data-onboarding-id, data-testid"
         },
         {
           "name": "onCopy",
@@ -1181,78 +1253,6 @@
           "type": "boolean | undefined",
           "required": false,
           "description": "Анимированное появление Popover"
-        },
-        {
-          "name": "contentContainerClassNames",
-          "type": "string | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "calculateOffset",
-          "type": "boolean | undefined",
-          "required": false,
-          "description": "Включить / Выключить перерасчёт offset для кастомных значений placement. top-right, top-left, bottom-right, bottom-left, чтобы стрелка popover была в центре target элемента, а контент пропорционально смещен в зависимости от placement."
-        },
-        {
-          "name": "calculatePlacement",
-          "type": "boolean | undefined",
-          "required": false,
-          "description": "Включить / Выключить перерасчёт placement в режиме draggable."
-        },
-        {
-          "name": "placement",
-          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/AiAgentPopover/AiAgentPopover.types\").AiAgentPopoverPlacement",
-          "required": false,
-          "description": "Позиция отображения popover."
-        },
-        {
-          "name": "positionState",
-          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/AiAgentPopover/AiAgentPopover.types\").AiAgentPopoverPositionState | undefined",
-          "required": false,
-          "description": "Внешний стейт позиции [position, setPosition].\nЕсли не передан, будет использован внутренний стейт. Не используется для интеграции с localStorage. Данное поле отвечает за полное внешнее управление позицией"
-        },
-        {
-          "name": "defaultPosition",
-          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/AiAgentPopover/AiAgentPopover.types\").AiAgentPopoverCustomPlacement | import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/AiAgentPopover/AiAgentPopover.types\").AiAgentPopoverPosition | undefined",
-          "required": false,
-          "description": "Начальная позиция при первом рендере (используется только если НЕ передан positionState и НЕ используется useStorage)"
-        },
-        {
-          "name": "dragBoundary",
-          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/AiAgentPopover/AiAgentPopover.types\").AiAgentPopoverDragBoundary | undefined",
-          "required": false,
-          "description": "Ограничение области в рамках которой можно перемещать элемент"
-        },
-        {
-          "name": "ignoreToggleOnDrag",
-          "type": "boolean | undefined",
-          "required": false,
-          "description": "В момент драга сохранять текущий стейт видимости popover. При перетаскивании закрытого popover в момент завершения перетаскивания popover не откроется, если этот пропс активен. Аналогично с открытым состоянием."
-        },
-        {
-          "name": "onPositionChange",
-          "type": "((pos: { x: number; y: number; }) => void) | undefined",
-          "required": false,
-          "description": "Callback смены позиции в draggable режиме в момент перетаскивания"
-        },
-        {
-          "name": "useStorage",
-          "type": "string | boolean | undefined",
-          "required": false,
-          "description": "Сохранять ли позицию в localStorage.\n- `true`: автосохранение с ключом `ai-agent-popover-position`.\n- `string`: кастомный ключ (например, `my-popover-position`).\n- `false`: отключено."
-        },
-        {
-          "name": "resizable",
-          "type": "boolean | ((placement: import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/AiAgentPopover/AiAgentPopover.types\").AiAgentPopoverPlacement) => Partial<{ disabled?: boolean | undefined; directions?: import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/_Resizable/Resizable.types\").ResizeDirections | undefined; defaultSize?: { width?…",
-          "required": false,
-          "description": "Включить / настроить resizable-режим.\n- `true`: включить с дефолтной конфигурацией (иконка ресайза автоматически позиционируется в зависимости от placement).\n- `(placement: AiAgentPopoverPlacement) => config`: функция для кастомной конфигурации. Принимает текущий placement,\n  возвращает частичную конфигурацию, которая мержится с дефолтной."
-        },
-        {
-          "name": "targetDataAttributes",
-          "type": "DataAttributes | undefined",
-          "required": false,
-          "description": "Data-атрибуты для target-кнопки (MagicButton). Например: data-onboarding-id, data-testid"
         }
       ],
       "propsTypeName": "AiAgentPopoverProps",
@@ -1918,6 +1918,12 @@
       "description": "Поле ввода с автодополнением.",
       "props": [
         {
+          "name": "onClear",
+          "type": "(() => void) | undefined",
+          "required": false,
+          "description": "Callback при нажатии на кнопку очистки поля ввода."
+        },
+        {
           "name": "onChange",
           "type": "React.ChangeEventHandler<HTMLInputElement> | undefined",
           "required": false,
@@ -1970,12 +1976,6 @@
           "type": "React.Key | null | undefined",
           "required": false,
           "description": ""
-        },
-        {
-          "name": "onClear",
-          "type": "(() => void) | undefined",
-          "required": false,
-          "description": "Callback при нажатии на кнопку очистки поля ввода."
         }
       ],
       "propsTypeName": "AutocompleteProps",
@@ -3301,12 +3301,6 @@
       "description": "Блок с градиентной прокруткой контента.",
       "props": [
         {
-          "name": "key",
-          "type": "React.Key | null | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
           "name": "$css",
           "type": "string | import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@types/styled-components/index\").CSSObject | import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@types/styled-components/index\").FlattenSimpleInterpolation | undefined",
           "required": false,
@@ -3317,6 +3311,12 @@
           "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/mixins/blockGradientScroll/types\").BlockGradientScrollVariant | undefined",
           "required": false,
           "description": "Варианты отображения градиента, white | gray. По умолчанию white"
+        },
+        {
+          "name": "key",
+          "type": "React.Key | null | undefined",
+          "required": false,
+          "description": ""
         }
       ],
       "propsTypeName": "BlockGradientScrollProps",
@@ -3559,6 +3559,12 @@
       "group": "components",
       "description": "Базовый контейнер-обёртка с пропсами для размеров, отступов и фона.",
       "props": [
+        {
+          "name": "$css",
+          "type": "string | import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@types/styled-components/index\").CSSObject | import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@types/styled-components/index\").FlattenSimpleInterpolation | undefined",
+          "required": false,
+          "description": "Кастомные стили styled-components для Box-контейнера"
+        },
         {
           "name": "as",
           "type": "((string | React.ComponentType<any>) & (\"symbol\" | \"object\" | \"article\" | \"button\" | \"dialog\" | \"figure\" | \"form\" | \"img\" | \"link\" | \"main\" | \"menu\" | \"menuitem\" | \"option\" | \"search\" | \"switch\" | \"table\" | \"text\" | \"time\" | \"s\" | \"view\" | \"slot\" | \"style\" | \"title\" | \"a\" | \"abbr\" | \"address\" | \"area\" | \"aside\" | \"audio\" | \"b\" | \"base\" | \"bdi\" | \"bdo\" | \"big\" | \"blockquote\" | \"body\" | \"br\" | \"canv…",
@@ -3816,12 +3822,6 @@
           "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.BorderRadius<string | number> | undefined",
           "required": false,
           "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<length-percentage [0,∞]>{1,4} [ / <length-percentage [0,∞]>{1,4} ]?`\n\n| Chrome  | Firefox | Safari  |  Edge  |  IE   |\n| :-----: | :-----: | :-----: | :----: | :---: |\n|  **4**  |  **4**  |  **5**  | **12** | **9** |\n| 1 _-x-_ |         | 3 _-x-_ |        |       |"
-        },
-        {
-          "name": "$css",
-          "type": "string | import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@types/styled-components/index\").CSSObject | import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@types/styled-components/index\").FlattenSimpleInterpolation | undefined",
-          "required": false,
-          "description": "Кастомные стили styled-components для Box-контейнера"
         }
       ],
       "propsTypeName": "BoxProps",
@@ -6351,6 +6351,12 @@
       "description": "",
       "props": [
         {
+          "name": "appearance",
+          "type": "\"default\" | \"viewMode\" | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
           "name": "type",
           "type": "React.HTMLInputTypeAttribute | undefined",
           "required": false,
@@ -6373,12 +6379,6 @@
           "type": "string | React.RefObject<HTMLElement | null> | undefined",
           "required": false,
           "description": "Портал для окна подсказки. Принимает id контейнера или ref."
-        },
-        {
-          "name": "appearance",
-          "type": "\"default\" | \"viewMode\" | undefined",
-          "required": false,
-          "description": ""
         }
       ],
       "propsTypeName": "ComboboxProps",
@@ -7782,30 +7782,6 @@
       "description": "",
       "props": [
         {
-          "name": "appearance",
-          "type": "\"default\" | \"clear\" | undefined",
-          "required": false,
-          "description": "Вид компонента\nСтиль для UI конфигурации\nВлияет на выбор предустановленого набора токенов"
-        },
-        {
-          "name": "hasClearDivider",
-          "type": "boolean | undefined",
-          "required": false,
-          "description": "Флаг наличия разделителя для clear appearance\nОтображение разделителя для `appearance='clear'`"
-        },
-        {
-          "name": "size",
-          "type": "string | undefined",
-          "required": false,
-          "description": "Размер контрола.\nРазмер компонента"
-        },
-        {
-          "name": "view",
-          "type": "string | undefined",
-          "required": false,
-          "description": "Вид контрола.\nВариант отображения"
-        },
-        {
           "name": "requiredPlacement",
           "type": "\"right\" | \"left\" | undefined",
           "required": false,
@@ -7871,6 +7847,48 @@
           "required": false,
           "description": "Свойство устарело, используется формой. Вместо используйте onCommitFirstDate и onCommitSecondDate",
           "deprecated": true
+        },
+        {
+          "name": "placement",
+          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/DatePicker/RangeDate/RangeDate.types\").DatePickerRangePlacement | import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/DatePicker/RangeDate/RangeDate.types\").DatePickerRangePlacementBasic[] | undefined",
+          "required": false,
+          "description": "Сторона открытия календаря относительно поля ввода."
+        },
+        {
+          "name": "isDoubleCalendar",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Отобразить двойной календарь"
+        },
+        {
+          "name": "dateShortcuts",
+          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/DatePicker/RangeDate/RangeDate.types\").DateShortcutItem[] | undefined",
+          "required": false,
+          "description": "Список предустановленных дат,\nкоторые можно выбрать в выпадающем календаре"
+        },
+        {
+          "name": "appearance",
+          "type": "\"default\" | \"clear\" | undefined",
+          "required": false,
+          "description": "Вид компонента\nСтиль для UI конфигурации\nВлияет на выбор предустановленого набора токенов"
+        },
+        {
+          "name": "hasClearDivider",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Флаг наличия разделителя для clear appearance\nОтображение разделителя для `appearance='clear'`"
+        },
+        {
+          "name": "size",
+          "type": "string | undefined",
+          "required": false,
+          "description": "Размер контрола.\nРазмер компонента"
+        },
+        {
+          "name": "view",
+          "type": "string | undefined",
+          "required": false,
+          "description": "Вид контрола.\nВариант отображения"
         },
         {
           "name": "contentLeft",
@@ -8298,24 +8316,6 @@
           "type": "boolean | undefined",
           "required": false,
           "description": "Отключить автоматическое переворачивание дропдауна при нехватке места"
-        },
-        {
-          "name": "placement",
-          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/DatePicker/RangeDate/RangeDate.types\").DatePickerRangePlacement | import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/DatePicker/RangeDate/RangeDate.types\").DatePickerRangePlacementBasic[] | undefined",
-          "required": false,
-          "description": "Сторона открытия календаря относительно поля ввода."
-        },
-        {
-          "name": "isDoubleCalendar",
-          "type": "boolean | undefined",
-          "required": false,
-          "description": "Отобразить двойной календарь"
-        },
-        {
-          "name": "dateShortcuts",
-          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/DatePicker/RangeDate/RangeDate.types\").DateShortcutItem[] | undefined",
-          "required": false,
-          "description": "Список предустановленных дат,\nкоторые можно выбрать в выпадающем календаре"
         }
       ],
       "propsTypeName": "DatePickerRangeProps",
@@ -9694,270 +9694,6 @@
           "typeName": "DrawerDFContentProps",
           "props": [
             {
-              "name": "as",
-              "type": "((string | React.ComponentType<any>) & (\"symbol\" | \"object\" | \"article\" | \"button\" | \"dialog\" | \"figure\" | \"form\" | \"img\" | \"link\" | \"main\" | \"menu\" | \"menuitem\" | \"option\" | \"search\" | \"switch\" | \"table\" | \"text\" | \"time\" | \"s\" | \"view\" | \"slot\" | \"style\" | \"title\" | \"a\" | \"abbr\" | \"address\" | \"area\" | \"aside\" | \"audio\" | \"b\" | \"base\" | \"bdi\" | \"bdo\" | \"big\" | \"blockquote\" | \"body\" | \"br\" | \"canv…",
-              "required": false,
-              "description": "Компонент, используемый для корневого узла. Либо строка для использования элемента HTML, либо компонента. (Например: `li`, `p`, `button` и т.д.)"
-            },
-            {
-              "name": "top",
-              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.Top<string | number> | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `auto | <length-percentage> | <anchor()> | <anchor-size()>`\n\n**Initial value**: `auto`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **5** |"
-            },
-            {
-              "name": "bottom",
-              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.Bottom<string | number> | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `auto | <length-percentage> | <anchor()> | <anchor-size()>`\n\n**Initial value**: `auto`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **5** |"
-            },
-            {
-              "name": "right",
-              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.Right<string | number> | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `auto | <length-percentage> | <anchor()> | <anchor-size()>`\n\n**Initial value**: `auto`\n\n| Chrome | Firefox | Safari |  Edge  |   IE    |\n| :----: | :-----: | :----: | :----: | :-----: |\n| **1**  |  **1**  | **1**  | **12** | **5.5** |"
-            },
-            {
-              "name": "left",
-              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.Left<string | number> | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `auto | <length-percentage> | <anchor()> | <anchor-size()>`\n\n**Initial value**: `auto`\n\n| Chrome | Firefox | Safari |  Edge  |   IE    |\n| :----: | :-----: | :----: | :----: | :-----: |\n| **1**  |  **1**  | **1**  | **12** | **5.5** |"
-            },
-            {
-              "name": "minWidth",
-              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.MinWidth<string | number> | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `auto | <length-percentage [0,∞]> | min-content | max-content | fit-content | fit-content(<length-percentage [0,∞]>) | <calc-size()> | <anchor-size()>`\n\n**Initial value**: `auto`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **7** |"
-            },
-            {
-              "name": "maxWidth",
-              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.MaxWidth<string | number> | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `none | <length-percentage [0,∞]> | min-content | max-content | fit-content | fit-content(<length-percentage [0,∞]>) | <calc-size()> | <anchor-size()>`\n\n**Initial value**: `none`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **7** |"
-            },
-            {
-              "name": "zIndex",
-              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.ZIndex | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `auto | <integer>`\n\n**Initial value**: `auto`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
-            },
-            {
-              "name": "height",
-              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.Height<string | number> | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `auto | <length-percentage [0,∞]> | min-content | max-content | fit-content | fit-content(<length-percentage [0,∞]>) | <calc-size()> | <anchor-size()>`\n\n**Initial value**: `auto`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
-            },
-            {
-              "name": "width",
-              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.Width<string | number> | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `auto | <length-percentage [0,∞]> | min-content | max-content | fit-content | fit-content(<length-percentage [0,∞]>) | <calc-size()> | <anchor-size()>`\n\n**Initial value**: `auto`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
-            },
-            {
-              "name": "cursor",
-              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.Cursor | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since December 2021.\n\n**Syntax**: `[ [ <url> [ <x> <y> ]? , ]* <cursor-predefined> ]`\n\n**Initial value**: `auto`\n\n| Chrome | Firefox | Safari  |  Edge  |  IE   |\n| :----: | :-----: | :-----: | :----: | :---: |\n| **1**  |  **1**  | **1.2** | **12** | **4** |"
-            },
-            {
-              "name": "display",
-              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.Display | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `[ <display-outside> || <display-inside> ] | <display-listitem> | <display-internal> | <display-box> | <display-legacy>`\n\n**Initial value**: `inline`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
-            },
-            {
-              "name": "opacity",
-              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.Opacity | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<opacity-value>`\n\n**Initial value**: `1`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **2**  | **12** | **9** |"
-            },
-            {
-              "name": "overflow",
-              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.Overflow | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `[ visible | hidden | clip | scroll | auto ]{1,2}`\n\n**Initial value**: `visible`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
-            },
-            {
-              "name": "border",
-              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.Border<string | number> | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<line-width> || <line-style> || <color>`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
-            },
-            {
-              "name": "gap",
-              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.Gap<string | number> | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since October 2017.\n\n**Syntax**: `<'row-gap'> <'column-gap'>?`\n\n| Chrome | Firefox |  Safari  |  Edge  | IE  |\n| :----: | :-----: | :------: | :----: | :-: |\n| **57** | **52**  | **10.1** | **16** | No  |"
-            },
-            {
-              "name": "maxHeight",
-              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.MaxHeight<string | number> | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `none | <length-percentage [0,∞]> | min-content | max-content | fit-content | fit-content(<length-percentage [0,∞]>) | <calc-size()> | <anchor-size()>`\n\n**Initial value**: `none`\n\n| Chrome | Firefox | Safari  |  Edge  |  IE   |\n| :----: | :-----: | :-----: | :----: | :---: |\n| **1**  |  **1**  | **1.3** | **12** | **7** |"
-            },
-            {
-              "name": "minHeight",
-              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.MinHeight<string | number> | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `auto | <length-percentage [0,∞]> | min-content | max-content | fit-content | fit-content(<length-percentage [0,∞]>) | <calc-size()> | <anchor-size()>`\n\n**Initial value**: `auto`\n\n| Chrome | Firefox | Safari  |  Edge  |  IE   |\n| :----: | :-----: | :-----: | :----: | :---: |\n| **1**  |  **3**  | **1.3** | **12** | **7** |"
-            },
-            {
-              "name": "margin",
-              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.Margin<string | number> | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<'margin-top'>{1,4}`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **3** |"
-            },
-            {
-              "name": "marginLeft",
-              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.MarginLeft<string | number> | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<length-percentage> | auto | <anchor-size()>`\n\n**Initial value**: `0`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **3** |"
-            },
-            {
-              "name": "marginRight",
-              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.MarginRight<string | number> | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<length-percentage> | auto | <anchor-size()>`\n\n**Initial value**: `0`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **3** |"
-            },
-            {
-              "name": "marginTop",
-              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.MarginTop<string | number> | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<length-percentage> | auto | <anchor-size()>`\n\n**Initial value**: `0`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **3** |"
-            },
-            {
-              "name": "marginBottom",
-              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.MarginBottom<string | number> | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<length-percentage> | auto | <anchor-size()>`\n\n**Initial value**: `0`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **3** |"
-            },
-            {
-              "name": "padding",
-              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.Padding<string | number> | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<'padding-top'>{1,4}`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
-            },
-            {
-              "name": "paddingLeft",
-              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.PaddingLeft<string | number> | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<length-percentage [0,∞]>`\n\n**Initial value**: `0`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
-            },
-            {
-              "name": "paddingRight",
-              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.PaddingRight<string | number> | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<length-percentage [0,∞]>`\n\n**Initial value**: `0`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
-            },
-            {
-              "name": "paddingTop",
-              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.PaddingTop<string | number> | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<length-percentage [0,∞]>`\n\n**Initial value**: `0`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
-            },
-            {
-              "name": "paddingBottom",
-              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.PaddingBottom<string | number> | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<length-percentage [0,∞]>`\n\n**Initial value**: `0`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
-            },
-            {
-              "name": "flexDirection",
-              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.FlexDirection | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2015.\n\n**Syntax**: `row | row-reverse | column | column-reverse`\n\n**Initial value**: `row`\n\n|  Chrome  | Firefox | Safari  |  Edge  |    IE    |\n| :------: | :-----: | :-----: | :----: | :------: |\n|  **29**  | **22**  |  **9**  | **12** |  **11**  |\n| 21 _-x-_ |         | 7 _-x-_ |        | 10 _-x-_ |"
-            },
-            {
-              "name": "justifyContent",
-              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.JustifyContent | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2015.\n\n**Syntax**: `normal | <content-distribution> | <overflow-position>? [ <content-position> | left | right ]`\n\n**Initial value**: `normal`\n\n|  Chrome  | Firefox | Safari  |  Edge  |   IE   |\n| :------: | :-----: | :-----: | :----: | :----: |\n|  **29**  | **20**  |  **9**  | **12** | **11** |\n| 21 _-x-_ |         | 7 _-x-_ |        |        |"
-            },
-            {
-              "name": "justifyItems",
-              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.JustifyItems | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2016.\n\n**Syntax**: `normal | stretch | <baseline-position> | <overflow-position>? [ <self-position> | left | right ] | legacy | legacy && [ left | right | center ] | anchor-center`\n\n**Initial value**: `legacy`\n\n| Chrome | Firefox | Safari |  Edge  |   IE   |\n| :----: | :-----: | :----: | :----: | :----: |\n| **52** | **20**  | **9**  | **12** | **11** |"
-            },
-            {
-              "name": "justifySelf",
-              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.JustifySelf | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since October 2017.\n\n**Syntax**: `auto | normal | stretch | <baseline-position> | <overflow-position>? [ <self-position> | left | right ] | anchor-center`\n\n**Initial value**: `auto`\n\n| Chrome | Firefox |  Safari  |  Edge  |   IE   |\n| :----: | :-----: | :------: | :----: | :----: |\n| **57** | **45**  | **10.1** | **16** | **10** |"
-            },
-            {
-              "name": "flexGrow",
-              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.FlexGrow | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2015.\n\n**Syntax**: `<number>`\n\n**Initial value**: `0`\n\n|  Chrome  | Firefox | Safari  |  Edge  |            IE            |\n| :------: | :-----: | :-----: | :----: | :----------------------: |\n|  **29**  | **20**  |  **9**  | **12** |          **11**          |\n| 22 _-x-_ |         | 7 _-x-_ |        | 10 _(-ms-flex-positive)_ |"
-            },
-            {
-              "name": "flexWrap",
-              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.FlexWrap | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2015.\n\n**Syntax**: `nowrap | wrap | wrap-reverse`\n\n**Initial value**: `nowrap`\n\n|  Chrome  | Firefox | Safari  |  Edge  |   IE   |\n| :------: | :-----: | :-----: | :----: | :----: |\n|  **29**  | **28**  |  **9**  | **12** | **11** |\n| 21 _-x-_ |         | 7 _-x-_ |        |        |"
-            },
-            {
-              "name": "flexShrink",
-              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.FlexShrink | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2015.\n\n**Syntax**: `<number>`\n\n**Initial value**: `1`\n\n|  Chrome  | Firefox | Safari  |  Edge  |   IE   |\n| :------: | :-----: | :-----: | :----: | :----: |\n|  **29**  | **20**  |  **9**  | **12** | **10** |\n| 22 _-x-_ |         | 8 _-x-_ |        |        |"
-            },
-            {
-              "name": "position",
-              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.Position | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `static | relative | absolute | sticky | fixed`\n\n**Initial value**: `static`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
-            },
-            {
-              "name": "boxSizing",
-              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.BoxSizing | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `content-box | border-box`\n\n**Initial value**: `content-box`\n\n| Chrome  | Firefox | Safari  |  Edge  |  IE   |\n| :-----: | :-----: | :-----: | :----: | :---: |\n| **10**  | **29**  | **5.1** | **12** | **8** |\n| 1 _-x-_ | 1 _-x-_ | 3 _-x-_ |        |       |"
-            },
-            {
-              "name": "background",
-              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.Background<string | number> | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<bg-layer>#? , <final-bg-layer>`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
-            },
-            {
-              "name": "backgroundColor",
-              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.BackgroundColor | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<color>`\n\n**Initial value**: `transparent`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
-            },
-            {
-              "name": "borderWidth",
-              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.BorderWidth<string | number> | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<line-width>{1,4}`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
-            },
-            {
-              "name": "borderColor",
-              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.BorderColor | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<color>{1,4}`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
-            },
-            {
-              "name": "borderStyle",
-              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.BorderStyle | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<line-style>{1,4}`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
-            },
-            {
-              "name": "borderRadius",
-              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.BorderRadius<string | number> | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<length-percentage [0,∞]>{1,4} [ / <length-percentage [0,∞]>{1,4} ]?`\n\n| Chrome  | Firefox | Safari  |  Edge  |  IE   |\n| :-----: | :-----: | :-----: | :----: | :---: |\n|  **4**  |  **4**  |  **5**  | **12** | **9** |\n| 1 _-x-_ |         | 3 _-x-_ |        |       |"
-            },
-            {
-              "name": "$css",
-              "type": "string | import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@types/styled-components/index\").CSSObject | import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@types/styled-components/index\").FlattenSimpleInterpolation | undefined",
-              "required": false,
-              "description": "Кастомные стили styled-components для Box-контейнера"
-            },
-            {
               "name": "fixedWidth",
               "type": "string | undefined",
               "required": false,
@@ -9980,13 +9716,7 @@
               "type": "boolean | undefined",
               "required": false,
               "description": ""
-            }
-          ]
-        },
-        {
-          "name": "Header",
-          "typeName": "DrawerDFHeaderProps",
-          "props": [
+            },
             {
               "name": "as",
               "type": "((string | React.ComponentType<any>) & (\"symbol\" | \"object\" | \"article\" | \"button\" | \"dialog\" | \"figure\" | \"form\" | \"img\" | \"link\" | \"main\" | \"menu\" | \"menuitem\" | \"option\" | \"search\" | \"switch\" | \"table\" | \"text\" | \"time\" | \"s\" | \"view\" | \"slot\" | \"style\" | \"title\" | \"a\" | \"abbr\" | \"address\" | \"area\" | \"aside\" | \"audio\" | \"b\" | \"base\" | \"bdi\" | \"bdo\" | \"big\" | \"blockquote\" | \"body\" | \"br\" | \"canv…",
@@ -10250,7 +9980,13 @@
               "type": "string | import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@types/styled-components/index\").CSSObject | import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@types/styled-components/index\").FlattenSimpleInterpolation | undefined",
               "required": false,
               "description": "Кастомные стили styled-components для Box-контейнера"
-            },
+            }
+          ]
+        },
+        {
+          "name": "Header",
+          "typeName": "DrawerDFHeaderProps",
+          "props": [
             {
               "name": "refEl",
               "type": "React.LegacyRef<HTMLDivElement> | undefined",
@@ -10286,6 +10022,270 @@
               "type": "React.ReactNode",
               "required": false,
               "description": ""
+            },
+            {
+              "name": "as",
+              "type": "((string | React.ComponentType<any>) & (\"symbol\" | \"object\" | \"article\" | \"button\" | \"dialog\" | \"figure\" | \"form\" | \"img\" | \"link\" | \"main\" | \"menu\" | \"menuitem\" | \"option\" | \"search\" | \"switch\" | \"table\" | \"text\" | \"time\" | \"s\" | \"view\" | \"slot\" | \"style\" | \"title\" | \"a\" | \"abbr\" | \"address\" | \"area\" | \"aside\" | \"audio\" | \"b\" | \"base\" | \"bdi\" | \"bdo\" | \"big\" | \"blockquote\" | \"body\" | \"br\" | \"canv…",
+              "required": false,
+              "description": "Компонент, используемый для корневого узла. Либо строка для использования элемента HTML, либо компонента. (Например: `li`, `p`, `button` и т.д.)"
+            },
+            {
+              "name": "top",
+              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.Top<string | number> | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `auto | <length-percentage> | <anchor()> | <anchor-size()>`\n\n**Initial value**: `auto`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **5** |"
+            },
+            {
+              "name": "bottom",
+              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.Bottom<string | number> | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `auto | <length-percentage> | <anchor()> | <anchor-size()>`\n\n**Initial value**: `auto`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **5** |"
+            },
+            {
+              "name": "right",
+              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.Right<string | number> | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `auto | <length-percentage> | <anchor()> | <anchor-size()>`\n\n**Initial value**: `auto`\n\n| Chrome | Firefox | Safari |  Edge  |   IE    |\n| :----: | :-----: | :----: | :----: | :-----: |\n| **1**  |  **1**  | **1**  | **12** | **5.5** |"
+            },
+            {
+              "name": "left",
+              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.Left<string | number> | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `auto | <length-percentage> | <anchor()> | <anchor-size()>`\n\n**Initial value**: `auto`\n\n| Chrome | Firefox | Safari |  Edge  |   IE    |\n| :----: | :-----: | :----: | :----: | :-----: |\n| **1**  |  **1**  | **1**  | **12** | **5.5** |"
+            },
+            {
+              "name": "minWidth",
+              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.MinWidth<string | number> | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `auto | <length-percentage [0,∞]> | min-content | max-content | fit-content | fit-content(<length-percentage [0,∞]>) | <calc-size()> | <anchor-size()>`\n\n**Initial value**: `auto`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **7** |"
+            },
+            {
+              "name": "maxWidth",
+              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.MaxWidth<string | number> | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `none | <length-percentage [0,∞]> | min-content | max-content | fit-content | fit-content(<length-percentage [0,∞]>) | <calc-size()> | <anchor-size()>`\n\n**Initial value**: `none`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **7** |"
+            },
+            {
+              "name": "zIndex",
+              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.ZIndex | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `auto | <integer>`\n\n**Initial value**: `auto`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
+            },
+            {
+              "name": "height",
+              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.Height<string | number> | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `auto | <length-percentage [0,∞]> | min-content | max-content | fit-content | fit-content(<length-percentage [0,∞]>) | <calc-size()> | <anchor-size()>`\n\n**Initial value**: `auto`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
+            },
+            {
+              "name": "width",
+              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.Width<string | number> | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `auto | <length-percentage [0,∞]> | min-content | max-content | fit-content | fit-content(<length-percentage [0,∞]>) | <calc-size()> | <anchor-size()>`\n\n**Initial value**: `auto`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
+            },
+            {
+              "name": "cursor",
+              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.Cursor | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since December 2021.\n\n**Syntax**: `[ [ <url> [ <x> <y> ]? , ]* <cursor-predefined> ]`\n\n**Initial value**: `auto`\n\n| Chrome | Firefox | Safari  |  Edge  |  IE   |\n| :----: | :-----: | :-----: | :----: | :---: |\n| **1**  |  **1**  | **1.2** | **12** | **4** |"
+            },
+            {
+              "name": "display",
+              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.Display | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `[ <display-outside> || <display-inside> ] | <display-listitem> | <display-internal> | <display-box> | <display-legacy>`\n\n**Initial value**: `inline`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
+            },
+            {
+              "name": "opacity",
+              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.Opacity | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<opacity-value>`\n\n**Initial value**: `1`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **2**  | **12** | **9** |"
+            },
+            {
+              "name": "overflow",
+              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.Overflow | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `[ visible | hidden | clip | scroll | auto ]{1,2}`\n\n**Initial value**: `visible`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
+            },
+            {
+              "name": "border",
+              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.Border<string | number> | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<line-width> || <line-style> || <color>`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
+            },
+            {
+              "name": "gap",
+              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.Gap<string | number> | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since October 2017.\n\n**Syntax**: `<'row-gap'> <'column-gap'>?`\n\n| Chrome | Firefox |  Safari  |  Edge  | IE  |\n| :----: | :-----: | :------: | :----: | :-: |\n| **57** | **52**  | **10.1** | **16** | No  |"
+            },
+            {
+              "name": "maxHeight",
+              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.MaxHeight<string | number> | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `none | <length-percentage [0,∞]> | min-content | max-content | fit-content | fit-content(<length-percentage [0,∞]>) | <calc-size()> | <anchor-size()>`\n\n**Initial value**: `none`\n\n| Chrome | Firefox | Safari  |  Edge  |  IE   |\n| :----: | :-----: | :-----: | :----: | :---: |\n| **1**  |  **1**  | **1.3** | **12** | **7** |"
+            },
+            {
+              "name": "minHeight",
+              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.MinHeight<string | number> | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `auto | <length-percentage [0,∞]> | min-content | max-content | fit-content | fit-content(<length-percentage [0,∞]>) | <calc-size()> | <anchor-size()>`\n\n**Initial value**: `auto`\n\n| Chrome | Firefox | Safari  |  Edge  |  IE   |\n| :----: | :-----: | :-----: | :----: | :---: |\n| **1**  |  **3**  | **1.3** | **12** | **7** |"
+            },
+            {
+              "name": "margin",
+              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.Margin<string | number> | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<'margin-top'>{1,4}`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **3** |"
+            },
+            {
+              "name": "marginLeft",
+              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.MarginLeft<string | number> | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<length-percentage> | auto | <anchor-size()>`\n\n**Initial value**: `0`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **3** |"
+            },
+            {
+              "name": "marginRight",
+              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.MarginRight<string | number> | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<length-percentage> | auto | <anchor-size()>`\n\n**Initial value**: `0`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **3** |"
+            },
+            {
+              "name": "marginTop",
+              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.MarginTop<string | number> | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<length-percentage> | auto | <anchor-size()>`\n\n**Initial value**: `0`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **3** |"
+            },
+            {
+              "name": "marginBottom",
+              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.MarginBottom<string | number> | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<length-percentage> | auto | <anchor-size()>`\n\n**Initial value**: `0`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **3** |"
+            },
+            {
+              "name": "padding",
+              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.Padding<string | number> | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<'padding-top'>{1,4}`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
+            },
+            {
+              "name": "paddingLeft",
+              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.PaddingLeft<string | number> | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<length-percentage [0,∞]>`\n\n**Initial value**: `0`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
+            },
+            {
+              "name": "paddingRight",
+              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.PaddingRight<string | number> | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<length-percentage [0,∞]>`\n\n**Initial value**: `0`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
+            },
+            {
+              "name": "paddingTop",
+              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.PaddingTop<string | number> | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<length-percentage [0,∞]>`\n\n**Initial value**: `0`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
+            },
+            {
+              "name": "paddingBottom",
+              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.PaddingBottom<string | number> | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<length-percentage [0,∞]>`\n\n**Initial value**: `0`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
+            },
+            {
+              "name": "flexDirection",
+              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.FlexDirection | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2015.\n\n**Syntax**: `row | row-reverse | column | column-reverse`\n\n**Initial value**: `row`\n\n|  Chrome  | Firefox | Safari  |  Edge  |    IE    |\n| :------: | :-----: | :-----: | :----: | :------: |\n|  **29**  | **22**  |  **9**  | **12** |  **11**  |\n| 21 _-x-_ |         | 7 _-x-_ |        | 10 _-x-_ |"
+            },
+            {
+              "name": "justifyContent",
+              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.JustifyContent | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2015.\n\n**Syntax**: `normal | <content-distribution> | <overflow-position>? [ <content-position> | left | right ]`\n\n**Initial value**: `normal`\n\n|  Chrome  | Firefox | Safari  |  Edge  |   IE   |\n| :------: | :-----: | :-----: | :----: | :----: |\n|  **29**  | **20**  |  **9**  | **12** | **11** |\n| 21 _-x-_ |         | 7 _-x-_ |        |        |"
+            },
+            {
+              "name": "justifyItems",
+              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.JustifyItems | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2016.\n\n**Syntax**: `normal | stretch | <baseline-position> | <overflow-position>? [ <self-position> | left | right ] | legacy | legacy && [ left | right | center ] | anchor-center`\n\n**Initial value**: `legacy`\n\n| Chrome | Firefox | Safari |  Edge  |   IE   |\n| :----: | :-----: | :----: | :----: | :----: |\n| **52** | **20**  | **9**  | **12** | **11** |"
+            },
+            {
+              "name": "justifySelf",
+              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.JustifySelf | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since October 2017.\n\n**Syntax**: `auto | normal | stretch | <baseline-position> | <overflow-position>? [ <self-position> | left | right ] | anchor-center`\n\n**Initial value**: `auto`\n\n| Chrome | Firefox |  Safari  |  Edge  |   IE   |\n| :----: | :-----: | :------: | :----: | :----: |\n| **57** | **45**  | **10.1** | **16** | **10** |"
+            },
+            {
+              "name": "flexGrow",
+              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.FlexGrow | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2015.\n\n**Syntax**: `<number>`\n\n**Initial value**: `0`\n\n|  Chrome  | Firefox | Safari  |  Edge  |            IE            |\n| :------: | :-----: | :-----: | :----: | :----------------------: |\n|  **29**  | **20**  |  **9**  | **12** |          **11**          |\n| 22 _-x-_ |         | 7 _-x-_ |        | 10 _(-ms-flex-positive)_ |"
+            },
+            {
+              "name": "flexWrap",
+              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.FlexWrap | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2015.\n\n**Syntax**: `nowrap | wrap | wrap-reverse`\n\n**Initial value**: `nowrap`\n\n|  Chrome  | Firefox | Safari  |  Edge  |   IE   |\n| :------: | :-----: | :-----: | :----: | :----: |\n|  **29**  | **28**  |  **9**  | **12** | **11** |\n| 21 _-x-_ |         | 7 _-x-_ |        |        |"
+            },
+            {
+              "name": "flexShrink",
+              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.FlexShrink | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2015.\n\n**Syntax**: `<number>`\n\n**Initial value**: `1`\n\n|  Chrome  | Firefox | Safari  |  Edge  |   IE   |\n| :------: | :-----: | :-----: | :----: | :----: |\n|  **29**  | **20**  |  **9**  | **12** | **10** |\n| 22 _-x-_ |         | 8 _-x-_ |        |        |"
+            },
+            {
+              "name": "position",
+              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.Position | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `static | relative | absolute | sticky | fixed`\n\n**Initial value**: `static`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
+            },
+            {
+              "name": "boxSizing",
+              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.BoxSizing | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `content-box | border-box`\n\n**Initial value**: `content-box`\n\n| Chrome  | Firefox | Safari  |  Edge  |  IE   |\n| :-----: | :-----: | :-----: | :----: | :---: |\n| **10**  | **29**  | **5.1** | **12** | **8** |\n| 1 _-x-_ | 1 _-x-_ | 3 _-x-_ |        |       |"
+            },
+            {
+              "name": "background",
+              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.Background<string | number> | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<bg-layer>#? , <final-bg-layer>`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
+            },
+            {
+              "name": "backgroundColor",
+              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.BackgroundColor | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<color>`\n\n**Initial value**: `transparent`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
+            },
+            {
+              "name": "borderWidth",
+              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.BorderWidth<string | number> | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<line-width>{1,4}`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
+            },
+            {
+              "name": "borderColor",
+              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.BorderColor | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<color>{1,4}`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
+            },
+            {
+              "name": "borderStyle",
+              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.BorderStyle | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<line-style>{1,4}`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
+            },
+            {
+              "name": "borderRadius",
+              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.BorderRadius<string | number> | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<length-percentage [0,∞]>{1,4} [ / <length-percentage [0,∞]>{1,4} ]?`\n\n| Chrome  | Firefox | Safari  |  Edge  |  IE   |\n| :-----: | :-----: | :-----: | :----: | :---: |\n|  **4**  |  **4**  |  **5**  | **12** | **9** |\n| 1 _-x-_ |         | 3 _-x-_ |        |       |"
+            },
+            {
+              "name": "$css",
+              "type": "string | import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@types/styled-components/index\").CSSObject | import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@types/styled-components/index\").FlattenSimpleInterpolation | undefined",
+              "required": false,
+              "description": "Кастомные стили styled-components для Box-контейнера"
             }
           ]
         },
@@ -10293,6 +10293,18 @@
           "name": "DotsIconButton",
           "typeName": "DrawerDFDotsIconButtonProps",
           "props": [
+            {
+              "name": "dropdownProps",
+              "type": "(Omit<import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Dropdown/Dropdown.types\").DropdownProps<import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Dropdown/Dropdown.types\").ItemOption>, \"size\" | \"view\"> & Pick<import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/en…",
+              "required": false,
+              "description": ""
+            },
+            {
+              "name": "iconSize",
+              "type": "\"xs\" | \"s\" | \"m\" | undefined",
+              "required": false,
+              "description": ""
+            },
             {
               "name": "view",
               "type": "\"default\" | \"secondary\" | \"accent\" | \"positive\" | \"warning\" | \"negative\" | \"clear\" | \"white\" | \"black\" | \"dark\" | undefined",
@@ -10436,18 +10448,6 @@
               "type": "React.Key | null | undefined",
               "required": false,
               "description": ""
-            },
-            {
-              "name": "dropdownProps",
-              "type": "(Omit<import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Dropdown/Dropdown.types\").DropdownProps<import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Dropdown/Dropdown.types\").ItemOption>, \"size\" | \"view\"> & Pick<import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/en…",
-              "required": false,
-              "description": ""
-            },
-            {
-              "name": "iconSize",
-              "type": "\"xs\" | \"s\" | \"m\" | undefined",
-              "required": false,
-              "description": ""
             }
           ]
         },
@@ -10455,6 +10455,12 @@
           "name": "Footer",
           "typeName": "DrawerDFFooterProps",
           "props": [
+            {
+              "name": "refEl",
+              "type": "React.LegacyRef<HTMLDivElement> | undefined",
+              "required": false,
+              "description": ""
+            },
             {
               "name": "as",
               "type": "((string | React.ComponentType<any>) & (\"symbol\" | \"object\" | \"article\" | \"button\" | \"dialog\" | \"figure\" | \"form\" | \"img\" | \"link\" | \"main\" | \"menu\" | \"menuitem\" | \"option\" | \"search\" | \"switch\" | \"table\" | \"text\" | \"time\" | \"s\" | \"view\" | \"slot\" | \"style\" | \"title\" | \"a\" | \"abbr\" | \"address\" | \"area\" | \"aside\" | \"audio\" | \"b\" | \"base\" | \"bdi\" | \"bdo\" | \"big\" | \"blockquote\" | \"body\" | \"br\" | \"canv…",
@@ -10718,12 +10724,6 @@
               "type": "string | import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@types/styled-components/index\").CSSObject | import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@types/styled-components/index\").FlattenSimpleInterpolation | undefined",
               "required": false,
               "description": "Кастомные стили styled-components для Box-контейнера"
-            },
-            {
-              "name": "refEl",
-              "type": "React.LegacyRef<HTMLDivElement> | undefined",
-              "required": false,
-              "description": ""
             }
           ]
         }
@@ -12676,6 +12676,76 @@
           "description": "Отступ ячейки, сдвинет ее на n ячеек вправо.\nБудет применен на всех вьюпортах, если не задать адаптивные отступы.\nНапример через smallM={{offset: 2}} или offsetS={2}"
         },
         {
+          "name": "offsetS",
+          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Grid/ui/Col/Col.types\").ColCount | undefined",
+          "required": false,
+          "description": "Отступ ячейки при разрешении S",
+          "deprecated": true
+        },
+        {
+          "name": "offsetM",
+          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Grid/ui/Col/Col.types\").ColCount | undefined",
+          "required": false,
+          "description": "Отступ ячейки при разрешении M",
+          "deprecated": true
+        },
+        {
+          "name": "offsetL",
+          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Grid/ui/Col/Col.types\").ColCount | undefined",
+          "required": false,
+          "description": "Отступ ячейки при разрешении L",
+          "deprecated": true
+        },
+        {
+          "name": "offsetXL",
+          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Grid/ui/Col/Col.types\").ColCount | undefined",
+          "required": false,
+          "description": "Отступ ячейки при разрешении XL",
+          "deprecated": true
+        },
+        {
+          "name": "offsetXXL",
+          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Grid/ui/Col/Col.types\").ColCount | undefined",
+          "required": false,
+          "description": "Отступ ячейки при разрешении XXL",
+          "deprecated": true
+        },
+        {
+          "name": "sizeS",
+          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Grid/ui/Col/Col.types\").ColCount | undefined",
+          "required": false,
+          "description": "Размер ячейки при разрешении S",
+          "deprecated": true
+        },
+        {
+          "name": "sizeM",
+          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Grid/ui/Col/Col.types\").ColCount | undefined",
+          "required": false,
+          "description": "Размер ячейки при разрешении M",
+          "deprecated": true
+        },
+        {
+          "name": "sizeL",
+          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Grid/ui/Col/Col.types\").ColCount | undefined",
+          "required": false,
+          "description": "Размер ячейки при разрешении L",
+          "deprecated": true
+        },
+        {
+          "name": "sizeXL",
+          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Grid/ui/Col/Col.types\").ColCount | undefined",
+          "required": false,
+          "description": "Размер ячейки при разрешении XL",
+          "deprecated": true
+        },
+        {
+          "name": "sizeXXL",
+          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Grid/ui/Col/Col.types\").ColCount | undefined",
+          "required": false,
+          "description": "Размер ячейки при разрешении XXL",
+          "deprecated": true
+        },
+        {
           "name": "smallXXS",
           "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Grid/ui/Col/Col.types\").ScreenConfig | undefined",
           "required": false,
@@ -12800,76 +12870,6 @@
           "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Grid/ui/Col/Col.types\").ScreenConfig | undefined",
           "required": false,
           "description": ""
-        },
-        {
-          "name": "offsetS",
-          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Grid/ui/Col/Col.types\").ColCount | undefined",
-          "required": false,
-          "description": "Отступ ячейки при разрешении S",
-          "deprecated": true
-        },
-        {
-          "name": "offsetM",
-          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Grid/ui/Col/Col.types\").ColCount | undefined",
-          "required": false,
-          "description": "Отступ ячейки при разрешении M",
-          "deprecated": true
-        },
-        {
-          "name": "offsetL",
-          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Grid/ui/Col/Col.types\").ColCount | undefined",
-          "required": false,
-          "description": "Отступ ячейки при разрешении L",
-          "deprecated": true
-        },
-        {
-          "name": "offsetXL",
-          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Grid/ui/Col/Col.types\").ColCount | undefined",
-          "required": false,
-          "description": "Отступ ячейки при разрешении XL",
-          "deprecated": true
-        },
-        {
-          "name": "offsetXXL",
-          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Grid/ui/Col/Col.types\").ColCount | undefined",
-          "required": false,
-          "description": "Отступ ячейки при разрешении XXL",
-          "deprecated": true
-        },
-        {
-          "name": "sizeS",
-          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Grid/ui/Col/Col.types\").ColCount | undefined",
-          "required": false,
-          "description": "Размер ячейки при разрешении S",
-          "deprecated": true
-        },
-        {
-          "name": "sizeM",
-          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Grid/ui/Col/Col.types\").ColCount | undefined",
-          "required": false,
-          "description": "Размер ячейки при разрешении M",
-          "deprecated": true
-        },
-        {
-          "name": "sizeL",
-          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Grid/ui/Col/Col.types\").ColCount | undefined",
-          "required": false,
-          "description": "Размер ячейки при разрешении L",
-          "deprecated": true
-        },
-        {
-          "name": "sizeXL",
-          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Grid/ui/Col/Col.types\").ColCount | undefined",
-          "required": false,
-          "description": "Размер ячейки при разрешении XL",
-          "deprecated": true
-        },
-        {
-          "name": "sizeXXL",
-          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Grid/ui/Col/Col.types\").ColCount | undefined",
-          "required": false,
-          "description": "Размер ячейки при разрешении XXL",
-          "deprecated": true
         }
       ],
       "propsTypeName": "ColProps",
@@ -13483,6 +13483,24 @@
       "description": "",
       "props": [
         {
+          "name": "dropdownProps",
+          "type": "(Omit<import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Dropdown/Dropdown.types\").DropdownProps<import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Dropdown/Dropdown.types\").ItemOption>, \"size\" | \"view\"> & Pick<import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/en…",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "iconSize",
+          "type": "\"xs\" | \"s\" | \"m\" | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "iconOrientation",
+          "type": "\"horizontal\" | \"vertical\" | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
           "name": "view",
           "type": "\"default\" | \"secondary\" | \"accent\" | \"positive\" | \"warning\" | \"negative\" | \"clear\" | \"white\" | \"black\" | \"dark\" | undefined",
           "required": false,
@@ -13623,24 +13641,6 @@
         {
           "name": "key",
           "type": "React.Key | null | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "dropdownProps",
-          "type": "(Omit<import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Dropdown/Dropdown.types\").DropdownProps<import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Dropdown/Dropdown.types\").ItemOption>, \"size\" | \"view\"> & Pick<import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/en…",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "iconSize",
-          "type": "\"xs\" | \"s\" | \"m\" | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "iconOrientation",
-          "type": "\"horizontal\" | \"vertical\" | undefined",
           "required": false,
           "description": ""
         }
@@ -13666,6 +13666,24 @@
       "description": "",
       "props": [
         {
+          "name": "redSquare",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "dropdownProps",
+          "type": "(Omit<import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Dropdown/Dropdown.types\").DropdownProps<import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Dropdown/Dropdown.types\").ItemOption>, \"size\" | \"view\"> & Pick<import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/en…",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "iconSize",
+          "type": "\"xs\" | \"s\" | \"m\" | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
           "name": "view",
           "type": "\"default\" | \"secondary\" | \"accent\" | \"positive\" | \"warning\" | \"negative\" | \"clear\" | \"white\" | \"black\" | \"dark\" | undefined",
           "required": false,
@@ -13806,24 +13824,6 @@
         {
           "name": "key",
           "type": "React.Key | null | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "redSquare",
-          "type": "boolean | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "dropdownProps",
-          "type": "(Omit<import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Dropdown/Dropdown.types\").DropdownProps<import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Dropdown/Dropdown.types\").ItemOption>, \"size\" | \"view\"> & Pick<import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/en…",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "iconSize",
-          "type": "\"xs\" | \"s\" | \"m\" | undefined",
           "required": false,
           "description": ""
         }
@@ -15904,6 +15904,18 @@
       "description": "",
       "props": [
         {
+          "name": "dropdown",
+          "type": "(Omit<import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Dropdown/Dropdown.types\").DropdownProps<import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Dropdown/Dropdown.types\").ItemOption>, \"size\" | \"view\"> & Pick<import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/en…",
+          "required": false,
+          "description": "Dropdown для кнопки.\nИспользуется универсальный DropdownProps, который работает и с обычным Dropdown, и с TableDropdown"
+        },
+        {
+          "name": "disabledTooltipProps",
+          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Tooltip/Tooltip.types\").TooltipProps | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
           "name": "text",
           "type": "string | undefined",
           "required": false,
@@ -16930,18 +16942,6 @@
           "type": "((instance: HTMLButtonElement | null) => void) | React.RefObject<HTMLButtonElement> | React.LegacyRef<HTMLAnchorElement> | undefined",
           "required": false,
           "description": "Allows getting a ref to the component instance.\nOnce the component unmounts, React will set `ref.current` to `null`\n(or call the ref with `null` if you passed a callback ref)."
-        },
-        {
-          "name": "dropdown",
-          "type": "(Omit<import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Dropdown/Dropdown.types\").DropdownProps<import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Dropdown/Dropdown.types\").ItemOption>, \"size\" | \"view\"> & Pick<import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/en…",
-          "required": false,
-          "description": "Dropdown для кнопки.\nИспользуется универсальный DropdownProps, который работает и с обычным Dropdown, и с TableDropdown"
-        },
-        {
-          "name": "disabledTooltipProps",
-          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Tooltip/Tooltip.types\").TooltipProps | undefined",
-          "required": false,
-          "description": ""
         }
       ],
       "propsTypeName": "MassActionsButtonProps",
@@ -19265,6 +19265,12 @@
       "description": "",
       "props": [
         {
+          "name": "onClear",
+          "type": "(() => void) | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
           "name": "autoComplete",
           "type": "React.HTMLInputAutoCompleteAttribute | undefined",
           "required": false,
@@ -19299,12 +19305,6 @@
           "type": "React.LegacyRef<HTMLInputElement> | undefined",
           "required": false,
           "description": "Allows getting a ref to the component instance.\nOnce the component unmounts, React will set `ref.current` to `null`\n(or call the ref with `null` if you passed a callback ref)."
-        },
-        {
-          "name": "onClear",
-          "type": "(() => void) | undefined",
-          "required": false,
-          "description": ""
         }
       ],
       "propsTypeName": "NumberFormatCompProps",
@@ -21812,6 +21812,12 @@
       "description": "Расширенный Popover с готовыми layout-ами.",
       "props": [
         {
+          "name": "size",
+          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/PopoverDF/types\").PopoverDFSize | undefined",
+          "required": false,
+          "description": "Размер PopoverDF.\nВлияет на внутренние отступы и типографику header."
+        },
+        {
           "name": "onResizeStart",
           "type": "((resizableContainer?: React.RefObject<import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/re-resizable/lib/index\").Resizable> | undefined) => void) | undefined",
           "required": false,
@@ -21936,12 +21942,6 @@
           "type": "boolean | undefined",
           "required": false,
           "description": "Закрывать окно при нажатии вне области окна. (При trigger === 'click')"
-        },
-        {
-          "name": "size",
-          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/PopoverDF/types\").PopoverDFSize | undefined",
-          "required": false,
-          "description": "Размер PopoverDF.\nВлияет на внутренние отступы и типографику header."
         }
       ],
       "propsTypeName": "PopoverDFProps",
@@ -22782,6 +22782,24 @@
       "description": "Расширенный Popup с layout-ами и compound-компонентами.",
       "props": [
         {
+          "name": "defaultOpened",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Начальное состояние открытия в uncontrolled-режиме."
+        },
+        {
+          "name": "onToggle",
+          "type": "((opened: boolean) => void) | undefined",
+          "required": false,
+          "description": "Коллбэк смены состояния открытия."
+        },
+        {
+          "name": "size",
+          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/PopupDF/types\").PopupDFSize | undefined",
+          "required": false,
+          "description": "Размер PopupDF.\nВлияет на внутренние отступы и типографику header."
+        },
+        {
           "name": "placement",
           "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Popup/Popup.types\").PopupPlacement | undefined",
           "required": false,
@@ -22858,24 +22876,6 @@
           "type": "boolean | undefined",
           "required": false,
           "description": "Использовать ли анимацию."
-        },
-        {
-          "name": "defaultOpened",
-          "type": "boolean | undefined",
-          "required": false,
-          "description": "Начальное состояние открытия в uncontrolled-режиме."
-        },
-        {
-          "name": "onToggle",
-          "type": "((opened: boolean) => void) | undefined",
-          "required": false,
-          "description": "Коллбэк смены состояния открытия."
-        },
-        {
-          "name": "size",
-          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/PopupDF/types\").PopupDFSize | undefined",
-          "required": false,
-          "description": "Размер PopupDF.\nВлияет на внутренние отступы и типографику header."
         }
       ],
       "propsTypeName": "PopupDFProps",
@@ -24176,18 +24176,6 @@
       "description": "Компонент сегмента.",
       "props": [
         {
-          "name": "type",
-          "type": "\"button\" | \"reset\" | \"submit\" | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "value",
-          "type": "string | (readonly string[] & string)",
-          "required": true,
-          "description": "Значение сегмента"
-        },
-        {
           "name": "label",
           "type": "React.ReactNode",
           "required": false,
@@ -24234,6 +24222,18 @@
           "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.Width<string | number> | undefined",
           "required": false,
           "description": "Обрезает контент по максимальной ширине и добавляет ..."
+        },
+        {
+          "name": "type",
+          "type": "\"button\" | \"reset\" | \"submit\" | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "value",
+          "type": "string | (readonly string[] & string)",
+          "required": true,
+          "description": "Значение сегмента"
         }
       ],
       "propsTypeName": "SegmentItemProps",
@@ -25507,12 +25507,6 @@
       "description": "Разделённый вид с двумя панелями.",
       "props": [
         {
-          "name": "key",
-          "type": "React.Key | null | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
           "name": "mainContent",
           "type": "React.ReactNode",
           "required": true,
@@ -25560,6 +25554,12 @@
           "type": "boolean | undefined",
           "required": false,
           "description": "Компенсация padding-inline от PageLayout.\nПри true контейнер SplitView получает отрицательный margin-right,\nчтобы sidebar прижимался к правому краю viewport."
+        },
+        {
+          "name": "key",
+          "type": "React.Key | null | undefined",
+          "required": false,
+          "description": ""
         }
       ],
       "propsTypeName": "SplitViewProps",
@@ -26672,6 +26672,36 @@
       "description": "",
       "props": [
         {
+          "name": "cellWidth",
+          "type": "number",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "cellHeight",
+          "type": "number",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "disableLeftOffset",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "autoFocusType",
+          "type": "\"none\" | \"autoFocus\"",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "paddingInline",
+          "type": "number",
+          "required": true,
+          "description": ""
+        },
+        {
           "name": "type",
           "type": "React.HTMLInputTypeAttribute | undefined",
           "required": false,
@@ -26711,36 +26741,6 @@
           "name": "key",
           "type": "React.Key | null | undefined",
           "required": false,
-          "description": ""
-        },
-        {
-          "name": "cellWidth",
-          "type": "number",
-          "required": true,
-          "description": ""
-        },
-        {
-          "name": "cellHeight",
-          "type": "number",
-          "required": true,
-          "description": ""
-        },
-        {
-          "name": "disableLeftOffset",
-          "type": "boolean | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "autoFocusType",
-          "type": "\"none\" | \"autoFocus\"",
-          "required": true,
-          "description": ""
-        },
-        {
-          "name": "paddingInline",
-          "type": "number",
-          "required": true,
           "description": ""
         }
       ],
@@ -27365,6 +27365,36 @@
       "description": "",
       "props": [
         {
+          "name": "align",
+          "type": "\"right\" | \"left\" | \"center\" | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "autoFocusType",
+          "type": "\"none\" | \"autoFocus\" | \"autoFocusAndSelect\"",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "cellWidth",
+          "type": "number",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "cellHeight",
+          "type": "number",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "disableLeftOffset",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
           "name": "ref",
           "type": "React.LegacyRef<HTMLInputElement> | undefined",
           "required": false,
@@ -27403,36 +27433,6 @@
         {
           "name": "hintPortal",
           "type": "string | React.RefObject<HTMLElement | null> | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "align",
-          "type": "\"right\" | \"left\" | \"center\" | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "autoFocusType",
-          "type": "\"none\" | \"autoFocus\" | \"autoFocusAndSelect\"",
-          "required": true,
-          "description": ""
-        },
-        {
-          "name": "cellWidth",
-          "type": "number",
-          "required": true,
-          "description": ""
-        },
-        {
-          "name": "cellHeight",
-          "type": "number",
-          "required": true,
-          "description": ""
-        },
-        {
-          "name": "disableLeftOffset",
-          "type": "boolean | undefined",
           "required": false,
           "description": ""
         }
@@ -27894,42 +27894,6 @@
       "description": "",
       "props": [
         {
-          "name": "onChange",
-          "type": "React.ChangeEventHandler<HTMLTextAreaElement> | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "ref",
-          "type": "React.LegacyRef<HTMLTextAreaElement> | undefined",
-          "required": false,
-          "description": "Allows getting a ref to the component instance.\nOnce the component unmounts, React will set `ref.current` to `null`\n(or call the ref with `null` if you passed a callback ref)."
-        },
-        {
-          "name": "key",
-          "type": "React.Key | null | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "dirName",
-          "type": "string | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "altNewline",
-          "type": "boolean | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "validatedSelection",
-          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@glideappsfinal/glide-data-grid/dist/dts/internal/data-grid/data-grid-types\").SelectionRange | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
           "name": "autoFocusType",
           "type": "\"none\" | \"autoFocus\" | \"autoFocusAndSelect\" | undefined",
           "required": false,
@@ -27962,6 +27926,42 @@
         {
           "name": "disableLeftOffset",
           "type": "boolean | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "onChange",
+          "type": "React.ChangeEventHandler<HTMLTextAreaElement> | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "ref",
+          "type": "React.LegacyRef<HTMLTextAreaElement> | undefined",
+          "required": false,
+          "description": "Allows getting a ref to the component instance.\nOnce the component unmounts, React will set `ref.current` to `null`\n(or call the ref with `null` if you passed a callback ref)."
+        },
+        {
+          "name": "key",
+          "type": "React.Key | null | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "dirName",
+          "type": "string | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "altNewline",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "validatedSelection",
+          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@glideappsfinal/glide-data-grid/dist/dts/internal/data-grid/data-grid-types\").SelectionRange | undefined",
           "required": false,
           "description": ""
         }
@@ -28078,6 +28078,72 @@
       "group": "components",
       "description": "",
       "props": [
+        {
+          "name": "renderOverlayFeatures",
+          "type": "(((ctx: { containerElement: HTMLDivElement; renderInContainer: (children: React.ReactNode) => React.ReactPortal | null; }) => React.ReactNode) & ((ctx: { containerElement: HTMLDivElement; renderInContainer: (children: React.ReactNode) => React.ReactPortal | null; }) => React.ReactNode)) | undefined",
+          "required": false,
+          "description": "Рендер overlay-фич (tooltip, contextMenu, popover) внутри wrapper-div когда DOM готов"
+        },
+        {
+          "name": "onCellClicked",
+          "type": "(((cell: import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@glideappsfinal/glide-data-grid/dist/dts/internal/data-grid/data-grid-types\").Item, event: import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@glideappsfinal/glide-data-grid/dist/dts/internal/data-grid/event-args\").CellClickedEventArgs) => void) & ((cell: readonly [number, number], info: import(\"/Users/ramil_hk/Desktop/ram/dai…",
+          "required": false,
+          "description": "Emitted when a cell is clicked."
+        },
+        {
+          "name": "columns",
+          "type": "readonly import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableCanvas/TableGlideInstance/type\").ColumnGlideInstance<R, SR, CustomCtxs>[]",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "onHeaderContextMenuDropdown",
+          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableCanvas/TableGlideInstance/type\").HeaderContextMenuDropdownProps<R, SR, CustomCtxs> | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "onCellContextMenuDropdown",
+          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableCanvas/TableGlideInstance/type\").CellContextMenuDropdownProps<R, SR, import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableCanvas/types/utils.type\").ObjectForExtending> | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "containerProps",
+          "type": "{ className?: string | undefined; style?: React.CSSProperties | undefined; ref?: React.Ref<HTMLDivElement> | undefined; } | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "contentStateOverlay",
+          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableCanvas/feature-content-state/types\").TableContentStateOverlay | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "CellReadOnlyEditor",
+          "type": "(props: import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableCanvas/TableGlideInstance/type\").CellReadOnlyEditorGlideInstanceProps<R, SR>) => React.ReactNode",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "onRowsChange",
+          "type": "((rows: R[], data: import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableCanvas/TableGlideInstance/type\").RowsChangeDataGlideInstance<R, SR, CustomCtxs>) => void) | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "onHeaderContextMenu",
+          "type": "((colIndex: number, event: import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@glideappsfinal/glide-data-grid/dist/dts/internal/data-grid/event-args\").HeaderClickedEventArgs, args_2: import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableCanvas/TableGlideInstance/type\").TableInfoBase<R, SR, CustomCtxs>) => void) | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "onCellContextMenu",
+          "type": "((cell: import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@glideappsfinal/glide-data-grid/dist/dts/internal/data-grid/data-grid-types\").Item, event: import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@glideappsfinal/glide-data-grid/dist/dts/internal/data-grid/event-args\").CellClickedEventArgs, args_2: import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableCanv…",
+          "required": false,
+          "description": ""
+        },
         {
           "name": "onPaste",
           "type": "boolean | ((target: import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@glideappsfinal/glide-data-grid/dist/dts/internal/data-grid/data-grid-types\").Item, values: readonly (readonly string[])[]) => boolean) | undefined",
@@ -28221,12 +28287,6 @@
           "type": "string | undefined",
           "required": false,
           "description": "className для wrapper-div"
-        },
-        {
-          "name": "renderOverlayFeatures",
-          "type": "(((ctx: { containerElement: HTMLDivElement; renderInContainer: (children: React.ReactNode) => React.ReactPortal | null; }) => React.ReactNode) & ((ctx: { containerElement: HTMLDivElement; renderInContainer: (children: React.ReactNode) => React.ReactPortal | null; }) => React.ReactNode)) | undefined",
-          "required": false,
-          "description": "Рендер overlay-фич (tooltip, contextMenu, popover) внутри wrapper-div когда DOM готов"
         },
         {
           "name": "hideGrid",
@@ -28673,12 +28733,6 @@
           "description": "Emitted whe the user wishes to rename a group."
         },
         {
-          "name": "onCellClicked",
-          "type": "(((cell: import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@glideappsfinal/glide-data-grid/dist/dts/internal/data-grid/data-grid-types\").Item, event: import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@glideappsfinal/glide-data-grid/dist/dts/internal/data-grid/event-args\").CellClickedEventArgs) => void) & ((cell: readonly [number, number], info: import(\"/Users/ramil_hk/Desktop/ram/dai…",
-          "required": false,
-          "description": "Emitted when a cell is clicked."
-        },
-        {
           "name": "onCellActivated",
           "type": "((cell: import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@glideappsfinal/glide-data-grid/dist/dts/internal/data-grid/data-grid-types\").Item, event: import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@glideappsfinal/glide-data-grid/dist/dts/internal/data-grid/event-args\").CellActivatedEventArgs) => void) | undefined",
           "required": false,
@@ -28944,60 +28998,6 @@
           "type": "React.RefObject<HTMLElement> | undefined",
           "required": false,
           "description": "Allows overriding the default portal element."
-        },
-        {
-          "name": "columns",
-          "type": "readonly import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableCanvas/TableGlideInstance/type\").ColumnGlideInstance<R, SR, CustomCtxs>[]",
-          "required": true,
-          "description": ""
-        },
-        {
-          "name": "onHeaderContextMenuDropdown",
-          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableCanvas/TableGlideInstance/type\").HeaderContextMenuDropdownProps<R, SR, CustomCtxs> | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "onCellContextMenuDropdown",
-          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableCanvas/TableGlideInstance/type\").CellContextMenuDropdownProps<R, SR, import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableCanvas/types/utils.type\").ObjectForExtending> | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "containerProps",
-          "type": "{ className?: string | undefined; style?: React.CSSProperties | undefined; ref?: React.Ref<HTMLDivElement> | undefined; } | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "contentStateOverlay",
-          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableCanvas/feature-content-state/types\").TableContentStateOverlay | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "CellReadOnlyEditor",
-          "type": "(props: import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableCanvas/TableGlideInstance/type\").CellReadOnlyEditorGlideInstanceProps<R, SR>) => React.ReactNode",
-          "required": true,
-          "description": ""
-        },
-        {
-          "name": "onRowsChange",
-          "type": "((rows: R[], data: import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableCanvas/TableGlideInstance/type\").RowsChangeDataGlideInstance<R, SR, CustomCtxs>) => void) | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "onHeaderContextMenu",
-          "type": "((colIndex: number, event: import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@glideappsfinal/glide-data-grid/dist/dts/internal/data-grid/event-args\").HeaderClickedEventArgs, args_2: import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableCanvas/TableGlideInstance/type\").TableInfoBase<R, SR, CustomCtxs>) => void) | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "onCellContextMenu",
-          "type": "((cell: import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@glideappsfinal/glide-data-grid/dist/dts/internal/data-grid/data-grid-types\").Item, event: import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@glideappsfinal/glide-data-grid/dist/dts/internal/data-grid/event-args\").CellClickedEventArgs, args_2: import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableCanv…",
-          "required": false,
-          "description": ""
         }
       ],
       "propsTypeName": "TableGlideInstanceProps",
@@ -29013,7 +29013,7 @@
           "exportName": "Synthesized",
           "displayName": "Минимальный пример",
           "type": "synthesized",
-          "code": "<TableGlideInstance rows={[]} columns={[]} CellReadOnlyEditor={() => {}} />"
+          "code": "<TableGlideInstance columns={[]} CellReadOnlyEditor={() => {}} rows={[]} />"
         }
       ]
     },
@@ -29042,6 +29042,12 @@
       "description": "",
       "props": [
         {
+          "name": "preserveLineBreaks",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Сохранять переносы строк (\\n) в тексте тултипа через white-space: pre-line."
+        },
+        {
           "name": "placement",
           "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@popperjs/core/lib/enums\").Placement | import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@popperjs/core/lib/enums\").ComputedPlacement[] | undefined",
           "required": false,
@@ -29064,12 +29070,6 @@
           "type": "string | undefined",
           "required": false,
           "description": "Вид тултипа."
-        },
-        {
-          "name": "preserveLineBreaks",
-          "type": "boolean | undefined",
-          "required": false,
-          "description": "Сохранять переносы строк (\\n) в тексте тултипа через white-space: pre-line."
         }
       ],
       "propsTypeName": "CanvasNodeTooltipProps",
@@ -29111,6 +29111,24 @@
       "group": "components",
       "description": "",
       "props": [
+        {
+          "name": "view",
+          "type": "\"default\" | \"secondary\" | \"accent\" | \"positive\" | \"warning\" | \"negative\" | \"clear\" | \"white\" | \"black\" | \"dark\" | \"linkDefault\" | \"linkSecondary\" | \"linkAccent\" | \"linkPositive\" | \"linkWarning\" | \"linkNegative\" | \"linkInfo\" | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "dropdown",
+          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/Table/components/TableDropdown/types\").TableDropdownProps | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "isTargetAction",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": ""
+        },
         {
           "name": "text",
           "type": "string | undefined",
@@ -29242,24 +29260,6 @@
           "type": "\"small\" | \"medium\" | \"large\" | undefined",
           "required": false,
           "description": ""
-        },
-        {
-          "name": "view",
-          "type": "\"default\" | \"secondary\" | \"accent\" | \"positive\" | \"warning\" | \"negative\" | \"clear\" | \"white\" | \"black\" | \"dark\" | \"linkDefault\" | \"linkSecondary\" | \"linkAccent\" | \"linkPositive\" | \"linkWarning\" | \"linkNegative\" | \"linkInfo\" | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "dropdown",
-          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/Table/components/TableDropdown/types\").TableDropdownProps | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "isTargetAction",
-          "type": "boolean | undefined",
-          "required": false,
-          "description": ""
         }
       ],
       "propsTypeName": "TableContractControlBlockButtonProps",
@@ -29320,6 +29320,228 @@
       "group": "components",
       "description": "",
       "props": [
+        {
+          "name": "columns",
+          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableGlide/types\").ColumnGlideLast<R, SR>[]",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "rows",
+          "type": "readonly R[]",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "bottomSummaryRows",
+          "type": "readonly SR[] | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "rowSize",
+          "type": "\"big\" | \"small\" | \"medium\" | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "rowHeight",
+          "type": "number | ((row: R, currentRowSize: { rowSizeName: \"big\" | \"small\" | \"medium\"; rowSizeValue: number; }, rowIndex: number) => number) | null | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "ctxs",
+          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableGlide/types\").ObjectForExtending | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "renderGroupHeader",
+          "type": "((args: { ctx: CanvasRenderingContext2D; groupName: string; level: number; span: readonly [start: number, end: number]; theme: import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@glideappsfinal/glide-data-grid/dist/dts/common/styles\").Theme; rect: import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@glideappsfinal/glide-data-grid/dist/dts/internal/data-grid/data-grid-types\").Rectangle; …",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "refTable",
+          "type": "React.Ref<import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@glideappsfinal/glide-data-grid/dist/dts/data-editor/data-editor\").DataEditorRef> | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "onColumnsReorder",
+          "type": "((sourceKey: string, targetKey: string) => void) | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "portalEventTargetRef",
+          "type": "React.RefObject<HTMLElement | null> | undefined",
+          "required": false,
+          "description": "Ref на контейнер таблицы — события portal hover диспатчатся на него, чтобы несколько таблиц не перехватывали чужие тултипы"
+        },
+        {
+          "name": "unstickyHeader",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Откреплённая шапка — header уезжает вместе со скроллом"
+        },
+        {
+          "name": "resizableColumn",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "containerRef",
+          "type": "React.Ref<HTMLDivElement> | undefined",
+          "required": false,
+          "description": "Внешний ref на wrapper-div (для TableCanvas - refTableContainer)"
+        },
+        {
+          "name": "containerClassName",
+          "type": "string | undefined",
+          "required": false,
+          "description": "className для wrapper-div"
+        },
+        {
+          "name": "containerStyle",
+          "type": "React.CSSProperties | undefined",
+          "required": false,
+          "description": "inline-style для wrapper-div"
+        },
+        {
+          "name": "renderOverlayFeatures",
+          "type": "((ctx: { containerElement: HTMLDivElement; renderInContainer: (children: React.ReactNode) => React.ReactPortal | null; }) => React.ReactNode) | undefined",
+          "required": false,
+          "description": "Рендер overlay-фич (tooltip, contextMenu, popover) внутри wrapper-div когда DOM готов"
+        },
+        {
+          "name": "hideGrid",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Не рендерить canvas-grid, оставив только overlay-content внутри wrapper."
+        },
+        {
+          "name": "contentStateNode",
+          "type": "React.ReactNode",
+          "required": false,
+          "description": "DOM-узел content-state (empty/error), рендерится как прямой child контейнера."
+        },
+        {
+          "name": "fullScreened",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Флаг fullscreen - пересканирование DOM при переключении"
+        },
+        {
+          "name": "editorOverlayPortal",
+          "type": "\"inside\" | undefined",
+          "required": false,
+          "description": "Переносит editor overlay внутрь контейнера (вместо document.body). Для модалок с CSS transform."
+        },
+        {
+          "name": "groupHeaderHeight",
+          "type": "number[] | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "highlightActiveType",
+          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableGlide/types\").HighlightActiveType | undefined",
+          "required": false,
+          "description": "Управляет canvas-подсветкой активной сущности поверх glide selection."
+        },
+        {
+          "name": "cellsSelectionMode",
+          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableGlide/types\").CellsSelectionMode | undefined",
+          "required": false,
+          "description": "Режим выделения ячеек (нативный glide selection). По умолчанию 'range-cell'."
+        },
+        {
+          "name": "onSelectionEmit",
+          "type": "((selection: import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@glideappsfinal/glide-data-grid/dist/dts/internal/data-grid/data-grid-types\").GridSelection) => void) | undefined",
+          "required": false,
+          "description": "Канал для copy/paste (selectionRef потребителя), отдельно от controlled gridSelection."
+        },
+        {
+          "name": "onColumnSelectionChange",
+          "type": "((selectedColumnKeys: string[]) => void) | undefined",
+          "required": false,
+          "description": "Ключи выделенных КОЛОНОК (объединение: одиночный клик/Shift/select-all +\nCtrl-мультивыбор), без сервисных колонок. Канал наверх для контрл-блока\n(например «Закрепить столбцы»). Обычное выделение ячеек сюда не попадает."
+        },
+        {
+          "name": "pendingColumnSelectionKeys",
+          "type": "string[] | null | undefined",
+          "required": false,
+          "description": "Follow-выделение: после реордера (закрепление колонок) заново выделить эти\nключи. Пустой массив → снять выделение. null/undefined → не трогать."
+        },
+        {
+          "name": "onColumnSelectionApplied",
+          "type": "(() => void) | undefined",
+          "required": false,
+          "description": "Вызывается после применения pendingColumnSelectionKeys (сброс pending)."
+        },
+        {
+          "name": "highlightActiveRow",
+          "type": "number | undefined",
+          "required": false,
+          "description": "Controlled-значение подсвеченной строки (highlightActiveType='row')."
+        },
+        {
+          "name": "onHighlightActiveRowChange",
+          "type": "((row: number | undefined, rowData?: R | undefined) => void) | undefined",
+          "required": false,
+          "description": "Controlled-сеттер подсвеченной строки. Вторым аргументом отдаёт сам объект\nстроки (`rows[index]`) — чтобы потребитель получал узел без onCellClicked."
+        },
+        {
+          "name": "highlightActiveRowControlled",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Режим подсветки строки controlled (значением владеют снаружи). Если не\nзадан — таблица крутит подсветку внутренним стейтом, но колбэк всё равно\nвызывается (подписка без владения)."
+        },
+        {
+          "name": "enableColumnSelection",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Выделение колонок по клику на шапку (независимо от highlightActiveType). По умолчанию true."
+        },
+        {
+          "name": "enableRowSelection",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Выделение строк по клику/драгу на колонке нумерации. По умолчанию true."
+        },
+        {
+          "name": "enableSelectAll",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Выделение всей таблицы кликом по шапке колонки нумерации. По умолчанию true."
+        },
+        {
+          "name": "checkboxSelectedRowIndexes",
+          "type": "ReadonlySet<number> | undefined",
+          "required": false,
+          "description": "Индексы строк, выбранных через checkbox selection."
+        },
+        {
+          "name": "checkboxVisibleRowIndexes",
+          "type": "ReadonlySet<number> | undefined",
+          "required": false,
+          "description": "Индексы строк, у которых ЕСТЬ (виден) чекбокс — для тёмной подсветки highlightActiveType='row'."
+        },
+        {
+          "name": "hoverEffects",
+          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableGlide/types\").HoverEffectsConfig | undefined",
+          "required": false,
+          "description": "Эффекты при наведении. `hoverEffects.row` — подсветка строки под курсором:\nрисуется через bgCell (getRowThemeOverride), т.е. лежит ПОД селектингом и\nhighlightActiveType — они рисуются поверх (highlightRegions) и визуально\nперекрывают hover. По умолчанию выключено."
+        },
+        {
+          "name": "enableLowDprHairline",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Включает компенсацию тонких canvas-линий при browser zoom ниже 100% / DPR < 1."
+        },
         {
           "name": "onPaste",
           "type": "boolean | ((target: import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@glideappsfinal/glide-data-grid/dist/dts/internal/data-grid/data-grid-types\").Item, values: readonly (readonly string[])[]) => boolean) | undefined",
@@ -29982,228 +30204,6 @@
           "type": "React.RefObject<HTMLElement> | undefined",
           "required": false,
           "description": "Allows overriding the default portal element."
-        },
-        {
-          "name": "columns",
-          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableGlide/types\").ColumnGlideLast<R, SR>[]",
-          "required": true,
-          "description": ""
-        },
-        {
-          "name": "rows",
-          "type": "readonly R[]",
-          "required": true,
-          "description": ""
-        },
-        {
-          "name": "bottomSummaryRows",
-          "type": "readonly SR[] | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "rowSize",
-          "type": "\"big\" | \"small\" | \"medium\" | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "rowHeight",
-          "type": "number | ((row: R, currentRowSize: { rowSizeName: \"big\" | \"small\" | \"medium\"; rowSizeValue: number; }, rowIndex: number) => number) | null | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "ctxs",
-          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableGlide/types\").ObjectForExtending | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "renderGroupHeader",
-          "type": "((args: { ctx: CanvasRenderingContext2D; groupName: string; level: number; span: readonly [start: number, end: number]; theme: import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@glideappsfinal/glide-data-grid/dist/dts/common/styles\").Theme; rect: import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@glideappsfinal/glide-data-grid/dist/dts/internal/data-grid/data-grid-types\").Rectangle; …",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "refTable",
-          "type": "React.Ref<import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@glideappsfinal/glide-data-grid/dist/dts/data-editor/data-editor\").DataEditorRef> | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "onColumnsReorder",
-          "type": "((sourceKey: string, targetKey: string) => void) | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "portalEventTargetRef",
-          "type": "React.RefObject<HTMLElement | null> | undefined",
-          "required": false,
-          "description": "Ref на контейнер таблицы — события portal hover диспатчатся на него, чтобы несколько таблиц не перехватывали чужие тултипы"
-        },
-        {
-          "name": "unstickyHeader",
-          "type": "boolean | undefined",
-          "required": false,
-          "description": "Откреплённая шапка — header уезжает вместе со скроллом"
-        },
-        {
-          "name": "resizableColumn",
-          "type": "boolean | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "containerRef",
-          "type": "React.Ref<HTMLDivElement> | undefined",
-          "required": false,
-          "description": "Внешний ref на wrapper-div (для TableCanvas - refTableContainer)"
-        },
-        {
-          "name": "containerClassName",
-          "type": "string | undefined",
-          "required": false,
-          "description": "className для wrapper-div"
-        },
-        {
-          "name": "containerStyle",
-          "type": "React.CSSProperties | undefined",
-          "required": false,
-          "description": "inline-style для wrapper-div"
-        },
-        {
-          "name": "renderOverlayFeatures",
-          "type": "((ctx: { containerElement: HTMLDivElement; renderInContainer: (children: React.ReactNode) => React.ReactPortal | null; }) => React.ReactNode) | undefined",
-          "required": false,
-          "description": "Рендер overlay-фич (tooltip, contextMenu, popover) внутри wrapper-div когда DOM готов"
-        },
-        {
-          "name": "hideGrid",
-          "type": "boolean | undefined",
-          "required": false,
-          "description": "Не рендерить canvas-grid, оставив только overlay-content внутри wrapper."
-        },
-        {
-          "name": "contentStateNode",
-          "type": "React.ReactNode",
-          "required": false,
-          "description": "DOM-узел content-state (empty/error), рендерится как прямой child контейнера."
-        },
-        {
-          "name": "fullScreened",
-          "type": "boolean | undefined",
-          "required": false,
-          "description": "Флаг fullscreen - пересканирование DOM при переключении"
-        },
-        {
-          "name": "editorOverlayPortal",
-          "type": "\"inside\" | undefined",
-          "required": false,
-          "description": "Переносит editor overlay внутрь контейнера (вместо document.body). Для модалок с CSS transform."
-        },
-        {
-          "name": "groupHeaderHeight",
-          "type": "number[] | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "highlightActiveType",
-          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableGlide/types\").HighlightActiveType | undefined",
-          "required": false,
-          "description": "Управляет canvas-подсветкой активной сущности поверх glide selection."
-        },
-        {
-          "name": "cellsSelectionMode",
-          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableGlide/types\").CellsSelectionMode | undefined",
-          "required": false,
-          "description": "Режим выделения ячеек (нативный glide selection). По умолчанию 'range-cell'."
-        },
-        {
-          "name": "onSelectionEmit",
-          "type": "((selection: import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@glideappsfinal/glide-data-grid/dist/dts/internal/data-grid/data-grid-types\").GridSelection) => void) | undefined",
-          "required": false,
-          "description": "Канал для copy/paste (selectionRef потребителя), отдельно от controlled gridSelection."
-        },
-        {
-          "name": "onColumnSelectionChange",
-          "type": "((selectedColumnKeys: string[]) => void) | undefined",
-          "required": false,
-          "description": "Ключи выделенных КОЛОНОК (объединение: одиночный клик/Shift/select-all +\nCtrl-мультивыбор), без сервисных колонок. Канал наверх для контрл-блока\n(например «Закрепить столбцы»). Обычное выделение ячеек сюда не попадает."
-        },
-        {
-          "name": "pendingColumnSelectionKeys",
-          "type": "string[] | null | undefined",
-          "required": false,
-          "description": "Follow-выделение: после реордера (закрепление колонок) заново выделить эти\nключи. Пустой массив → снять выделение. null/undefined → не трогать."
-        },
-        {
-          "name": "onColumnSelectionApplied",
-          "type": "(() => void) | undefined",
-          "required": false,
-          "description": "Вызывается после применения pendingColumnSelectionKeys (сброс pending)."
-        },
-        {
-          "name": "highlightActiveRow",
-          "type": "number | undefined",
-          "required": false,
-          "description": "Controlled-значение подсвеченной строки (highlightActiveType='row')."
-        },
-        {
-          "name": "onHighlightActiveRowChange",
-          "type": "((row: number | undefined, rowData?: R | undefined) => void) | undefined",
-          "required": false,
-          "description": "Controlled-сеттер подсвеченной строки. Вторым аргументом отдаёт сам объект\nстроки (`rows[index]`) — чтобы потребитель получал узел без onCellClicked."
-        },
-        {
-          "name": "highlightActiveRowControlled",
-          "type": "boolean | undefined",
-          "required": false,
-          "description": "Режим подсветки строки controlled (значением владеют снаружи). Если не\nзадан — таблица крутит подсветку внутренним стейтом, но колбэк всё равно\nвызывается (подписка без владения)."
-        },
-        {
-          "name": "enableColumnSelection",
-          "type": "boolean | undefined",
-          "required": false,
-          "description": "Выделение колонок по клику на шапку (независимо от highlightActiveType). По умолчанию true."
-        },
-        {
-          "name": "enableRowSelection",
-          "type": "boolean | undefined",
-          "required": false,
-          "description": "Выделение строк по клику/драгу на колонке нумерации. По умолчанию true."
-        },
-        {
-          "name": "enableSelectAll",
-          "type": "boolean | undefined",
-          "required": false,
-          "description": "Выделение всей таблицы кликом по шапке колонки нумерации. По умолчанию true."
-        },
-        {
-          "name": "checkboxSelectedRowIndexes",
-          "type": "ReadonlySet<number> | undefined",
-          "required": false,
-          "description": "Индексы строк, выбранных через checkbox selection."
-        },
-        {
-          "name": "checkboxVisibleRowIndexes",
-          "type": "ReadonlySet<number> | undefined",
-          "required": false,
-          "description": "Индексы строк, у которых ЕСТЬ (виден) чекбокс — для тёмной подсветки highlightActiveType='row'."
-        },
-        {
-          "name": "hoverEffects",
-          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableGlide/types\").HoverEffectsConfig | undefined",
-          "required": false,
-          "description": "Эффекты при наведении. `hoverEffects.row` — подсветка строки под курсором:\nрисуется через bgCell (getRowThemeOverride), т.е. лежит ПОД селектингом и\nhighlightActiveType — они рисуются поверх (highlightRegions) и визуально\nперекрывают hover. По умолчанию выключено."
-        },
-        {
-          "name": "enableLowDprHairline",
-          "type": "boolean | undefined",
-          "required": false,
-          "description": "Включает компенсацию тонких canvas-линий при browser zoom ниже 100% / DPR < 1."
         }
       ],
       "propsTypeName": "TableGlideProps",
@@ -30451,6 +30451,12 @@
       "description": "",
       "props": [
         {
+          "name": "preserveLineBreaks",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Сохранять переносы строк (\\n) в тексте тултипа через white-space: pre-line."
+        },
+        {
           "name": "placement",
           "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@popperjs/core/lib/enums\").Placement | import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@popperjs/core/lib/enums\").ComputedPlacement[] | undefined",
           "required": false,
@@ -30473,12 +30479,6 @@
           "type": "string | undefined",
           "required": false,
           "description": "Вид тултипа."
-        },
-        {
-          "name": "preserveLineBreaks",
-          "type": "boolean | undefined",
-          "required": false,
-          "description": "Сохранять переносы строк (\\n) в тексте тултипа через white-space: pre-line."
         }
       ],
       "propsTypeName": "CanvasNodeTooltipProps",
@@ -32527,6 +32527,24 @@
           "description": ""
         },
         {
+          "name": "orientation",
+          "type": "\"horizontal\" | \"vertical\" | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "contentLeft",
+          "type": "React.ReactNode",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "value",
+          "type": "string | number | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
           "name": "contentRight",
           "type": "React.ReactNode",
           "required": false,
@@ -32567,24 +32585,6 @@
           "type": "keyof JSX.IntrinsicElements | React.ComponentType<any> | undefined",
           "required": false,
           "description": "Сменить рендер на другой тип компонента."
-        },
-        {
-          "name": "orientation",
-          "type": "\"horizontal\" | \"vertical\" | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "contentLeft",
-          "type": "React.ReactNode",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "value",
-          "type": "string | number | undefined",
-          "required": false,
-          "description": ""
         },
         {
           "name": "ref",
@@ -32868,6 +32868,12 @@
       "description": "Многострочное текстовое поле.",
       "props": [
         {
+          "name": "onClear",
+          "type": "(() => void) | undefined",
+          "required": false,
+          "description": "Callback при нажатии на кнопку очистки поля ввода."
+        },
+        {
           "name": "status",
           "type": "\"\" | \"warning\" | \"success\" | \"error\" | undefined",
           "required": false,
@@ -33100,12 +33106,6 @@
           "type": "React.LegacyRef<HTMLTextAreaElement> | undefined",
           "required": false,
           "description": "Allows getting a ref to the component instance.\nOnce the component unmounts, React will set `ref.current` to `null`\n(or call the ref with `null` if you passed a callback ref)."
-        },
-        {
-          "name": "onClear",
-          "type": "(() => void) | undefined",
-          "required": false,
-          "description": "Callback при нажатии на кнопку очистки поля ввода."
         }
       ],
       "propsTypeName": "TextAreaProps",
@@ -33166,6 +33166,12 @@
       "description": "Текстовое поле ввода.",
       "props": [
         {
+          "name": "onClear",
+          "type": "(() => void) | undefined",
+          "required": false,
+          "description": "Callback при нажатии на кнопку очистки поля ввода.\nПри наличии value и onClear справа отображается крестик."
+        },
+        {
           "name": "key",
           "type": "React.Key | null | undefined",
           "required": false,
@@ -33200,12 +33206,6 @@
           "type": "React.LegacyRef<HTMLInputElement> | undefined",
           "required": false,
           "description": "Allows getting a ref to the component instance.\nOnce the component unmounts, React will set `ref.current` to `null`\n(or call the ref with `null` if you passed a callback ref)."
-        },
-        {
-          "name": "onClear",
-          "type": "(() => void) | undefined",
-          "required": false,
-          "description": "Callback при нажатии на кнопку очистки поля ввода.\nПри наличии value и onClear справа отображается крестик."
         }
       ],
       "propsTypeName": "TextFieldProps",
@@ -33710,16 +33710,29 @@
       "description": "Поле поиска с иконкой и кнопкой очистки.",
       "props": [
         {
-          "name": "contentLeft",
-          "type": "React.ReactElement<any, string | React.JSXElementConstructor<any>> | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
           "name": "size",
           "type": "\"xs\" | \"s\" | undefined",
           "required": false,
           "description": "Размер Поля ввода"
+        },
+        {
+          "name": "onClear",
+          "type": "((() => void) & (() => void)) | undefined",
+          "required": false,
+          "description": "Callback при нажатии на кнопку очистки поля ввода.\nПри наличии value и onClear справа отображается крестик.\nДействие при выполнении нажатия на кнопку очистки поля ввода"
+        },
+        {
+          "name": "handlerClear",
+          "type": "(() => void) | undefined",
+          "required": false,
+          "description": "Действие при выполнении нажатия на кнопку очистки поля ввода",
+          "deprecated": true
+        },
+        {
+          "name": "contentLeft",
+          "type": "React.ReactElement<any, string | React.JSXElementConstructor<any>> | undefined",
+          "required": false,
+          "description": ""
         },
         {
           "name": "view",
@@ -33762,12 +33775,6 @@
           "type": "React.ReactElement<any, string | React.JSXElementConstructor<any>> | undefined",
           "required": false,
           "description": ""
-        },
-        {
-          "name": "onClear",
-          "type": "((() => void) & (() => void)) | undefined",
-          "required": false,
-          "description": "Callback при нажатии на кнопку очистки поля ввода.\nПри наличии value и onClear справа отображается крестик.\nДействие при выполнении нажатия на кнопку очистки поля ввода"
         },
         {
           "name": "appearance",
@@ -33966,13 +33973,6 @@
           "type": "React.LegacyRef<HTMLInputElement> | undefined",
           "required": false,
           "description": "Allows getting a ref to the component instance.\nOnce the component unmounts, React will set `ref.current` to `null`\n(or call the ref with `null` if you passed a callback ref)."
-        },
-        {
-          "name": "handlerClear",
-          "type": "(() => void) | undefined",
-          "required": false,
-          "description": "Действие при выполнении нажатия на кнопку очистки поля ввода",
-          "deprecated": true
         }
       ],
       "propsTypeName": "TextFieldSearchProps",
@@ -35700,12 +35700,6 @@
       "description": "",
       "props": [
         {
-          "name": "key",
-          "type": "React.Key | null | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
           "name": "index",
           "type": "number | undefined",
           "required": false,
@@ -35720,6 +35714,12 @@
         {
           "name": "$css",
           "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TourWidget/types\").TourWidgetCss | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "key",
+          "type": "React.Key | null | undefined",
           "required": false,
           "description": ""
         }
@@ -35745,12 +35745,6 @@
       "description": "",
       "props": [
         {
-          "name": "key",
-          "type": "React.Key | null | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
           "name": "count",
           "type": "number",
           "required": true,
@@ -35759,6 +35753,12 @@
         {
           "name": "$css",
           "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TourWidget/types\").TourWidgetCss | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "key",
+          "type": "React.Key | null | undefined",
           "required": false,
           "description": ""
         }
@@ -35784,14 +35784,14 @@
       "description": "",
       "props": [
         {
-          "name": "key",
-          "type": "React.Key | null | undefined",
+          "name": "$css",
+          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TourWidget/types\").TourWidgetCss | undefined",
           "required": false,
           "description": ""
         },
         {
-          "name": "$css",
-          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TourWidget/types\").TourWidgetCss | undefined",
+          "name": "key",
+          "type": "React.Key | null | undefined",
           "required": false,
           "description": ""
         }
@@ -35817,14 +35817,14 @@
       "description": "",
       "props": [
         {
-          "name": "key",
-          "type": "React.Key | null | undefined",
+          "name": "$css",
+          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TourWidget/types\").TourWidgetCss | undefined",
           "required": false,
           "description": ""
         },
         {
-          "name": "$css",
-          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TourWidget/types\").TourWidgetCss | undefined",
+          "name": "key",
+          "type": "React.Key | null | undefined",
           "required": false,
           "description": ""
         }
@@ -35850,12 +35850,6 @@
       "description": "",
       "props": [
         {
-          "name": "key",
-          "type": "React.Key | null | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
           "name": "title",
           "type": "React.ReactNode",
           "required": false,
@@ -35870,6 +35864,12 @@
         {
           "name": "$css",
           "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TourWidget/types\").TourWidgetCss | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "key",
+          "type": "React.Key | null | undefined",
           "required": false,
           "description": ""
         }
@@ -35895,12 +35895,6 @@
       "description": "",
       "props": [
         {
-          "name": "key",
-          "type": "React.Key | null | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
           "name": "orientation",
           "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TourWidget/types\").TourWidgetOrientation | undefined",
           "required": false,
@@ -35915,6 +35909,12 @@
         {
           "name": "$css",
           "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TourWidget/types\").TourWidgetCss | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "key",
+          "type": "React.Key | null | undefined",
           "required": false,
           "description": ""
         }
@@ -37237,6 +37237,12 @@
       "description": "",
       "props": [
         {
+          "name": "iconSize",
+          "type": "\"xs\" | \"s\" | \"m\" | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
           "name": "type",
           "type": "\"button\" | \"reset\" | \"submit\" | undefined",
           "required": false,
@@ -37257,12 +37263,6 @@
         {
           "name": "key",
           "type": "React.Key | null | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "iconSize",
-          "type": "\"xs\" | \"s\" | \"m\" | undefined",
           "required": false,
           "description": ""
         }
@@ -37499,6 +37499,30 @@
       "group": "components",
       "description": "",
       "props": [
+        {
+          "name": "iconButtonsPin",
+          "type": "\"square-square\" | \"square-clear\" | \"clear-square\" | \"clear-clear\" | \"clear-circle\" | \"circle-clear\" | \"circle-circle\" | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "fullScreened",
+          "type": "boolean | null | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "toggleFullScreened",
+          "type": "(() => void) | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "onClose",
+          "type": "(() => void) | undefined",
+          "required": false,
+          "description": ""
+        },
         {
           "name": "as",
           "type": "((string | React.ComponentType<any>) & (\"symbol\" | \"object\" | \"article\" | \"button\" | \"dialog\" | \"figure\" | \"form\" | \"img\" | \"link\" | \"main\" | \"menu\" | \"menuitem\" | \"option\" | \"search\" | \"switch\" | \"table\" | \"text\" | \"time\" | \"s\" | \"view\" | \"slot\" | \"style\" | \"title\" | \"a\" | \"abbr\" | \"address\" | \"area\" | \"aside\" | \"audio\" | \"b\" | \"base\" | \"bdi\" | \"bdo\" | \"big\" | \"blockquote\" | \"body\" | \"br\" | \"canv…",
@@ -37762,30 +37786,6 @@
           "type": "string | import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@types/styled-components/index\").CSSObject | import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@types/styled-components/index\").FlattenSimpleInterpolation | undefined",
           "required": false,
           "description": "Кастомные стили styled-components для Box-контейнера"
-        },
-        {
-          "name": "iconButtonsPin",
-          "type": "\"square-square\" | \"square-clear\" | \"clear-square\" | \"clear-clear\" | \"clear-circle\" | \"circle-clear\" | \"circle-circle\" | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "fullScreened",
-          "type": "boolean | null | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "toggleFullScreened",
-          "type": "(() => void) | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "onClose",
-          "type": "(() => void) | undefined",
-          "required": false,
-          "description": ""
         }
       ],
       "propsTypeName": "WidgetServiceButtonsProps",
@@ -37883,6 +37883,18 @@
       "group": "formComponents",
       "description": "FormAutocomplete относится к группе mutation-form элементов. Он расширяет возможности\n компонента Autocomplete",
       "props": [
+        {
+          "name": "onChange",
+          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/formComponents/types\").THandleChange<string> | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "onChangeInput",
+          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/formComponents/types\").THandleChange<string> | undefined",
+          "required": false,
+          "description": ""
+        },
         {
           "name": "name",
           "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/react-hook-form/dist/types/path/eager\").Path<TFieldValues>",
@@ -38225,18 +38237,6 @@
           "type": "React.CSSProperties | undefined",
           "required": false,
           "description": "Style для внешней обертки компонента."
-        },
-        {
-          "name": "onChange",
-          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/formComponents/types\").THandleChange<string> | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "onChangeInput",
-          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/formComponents/types\").THandleChange<string> | undefined",
-          "required": false,
-          "description": ""
         }
       ],
       "propsTypeName": "FormAutocompleteProps",
@@ -38262,6 +38262,12 @@
       "group": "formComponents",
       "description": "FormCheckbox относится к группе mutation-form элементов. Он расширяет возможности\n компонента [Checkbox] для использования в формах.\n\n **Обратите внимание, что компонент FormCheckbox не валидируется.**",
       "props": [
+        {
+          "name": "onChange",
+          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/formComponents/types\").THandleChange<boolean> | undefined",
+          "required": false,
+          "description": ""
+        },
         {
           "name": "name",
           "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/react-hook-form/dist/types/path/eager\").Path<TFieldValues>",
@@ -38357,12 +38363,6 @@
           "type": "React.ReactNode",
           "required": false,
           "description": "Кастомная иконка indeterminate-состояния."
-        },
-        {
-          "name": "onChange",
-          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/formComponents/types\").THandleChange<boolean> | undefined",
-          "required": false,
-          "description": ""
         }
       ],
       "propsTypeName": "FormCheckboxProps",
@@ -38388,6 +38388,18 @@
       "group": "formComponents",
       "description": "FormAutocomplete относится к группе mutation-form элементов. Он расширяет возможности\n компонента [Combobox]  для использования в формах.",
       "props": [
+        {
+          "name": "multiselect",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "onChange",
+          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/formComponents/types\").THandleChange<string> | import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/formComponents/types\").THandleChange<string[]> | undefined",
+          "required": false,
+          "description": ""
+        },
         {
           "name": "name",
           "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/react-hook-form/dist/types/path/eager\").Path<TFieldValues>",
@@ -38789,18 +38801,6 @@
           "type": "[number, number] | undefined",
           "required": false,
           "description": ""
-        },
-        {
-          "name": "multiselect",
-          "type": "boolean | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "onChange",
-          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/formComponents/types\").THandleChange<string> | import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/formComponents/types\").THandleChange<string[]> | undefined",
-          "required": false,
-          "description": ""
         }
       ],
       "propsTypeName": "FormComboboxProps",
@@ -38826,6 +38826,30 @@
       "group": "formComponents",
       "description": "[FormDatePicker](url) относится к группе mutation-form элементов. Он расширяет возможности\n компонента [DatePicker](https://plasma.sberdevices.ru/sdds-finai/components/datepicker/)\n библиотеки [sdds-finai](https://plasma.sberdevices.ru/sdds-finai/) для использования в формах.\n Компонент имеет встроенную валидацию введенных данных как значения даты, сообщение, которое будет показано\n пользователю в случае ошибки, задается через параметр `invalidFormatMesssage`.\n\n Умеет контролировать пользовательский ввод в разрешенном диапазоне дат, для ограничения выбора дат надо указать в `options.min/max`, либо передать пропсы `min/max` (type Date) которые перебивают `options.min/max`.\nзначения дат выраженные в миллисекундах, например:\n```\n...\noptions: {\n max: {\n     value: new Date().getTime(),\n     message: \"Указанная дата за пределами максимально доступной\"\n }\n}\n```",
       "props": [
+        {
+          "name": "portal",
+          "type": "string | React.RefObject<HTMLElement> | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "textHint",
+          "type": "string | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "format",
+          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/formComponents/FormDatePickers/types\").TDatePickerFormat | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "invalidFormatMessage",
+          "type": "string | undefined",
+          "required": false,
+          "description": ""
+        },
         {
           "name": "name",
           "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/react-hook-form/dist/types/path/eager\").Path<TFieldValues>",
@@ -39264,30 +39288,6 @@
           "type": "\"right\" | \"left\" | undefined",
           "required": false,
           "description": "Положение списка предустановленных дат"
-        },
-        {
-          "name": "portal",
-          "type": "string | React.RefObject<HTMLElement> | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "textHint",
-          "type": "string | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "format",
-          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/formComponents/FormDatePickers/types\").TDatePickerFormat | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "invalidFormatMessage",
-          "type": "string | undefined",
-          "required": false,
-          "description": ""
         }
       ],
       "propsTypeName": "FormDatePickerProps",
@@ -39913,6 +39913,18 @@
       "description": "[FormMask] относится к группе mutation-form элементов. Он расширяет возможности\n компонента [Mask] для использования в формах",
       "props": [
         {
+          "name": "onChange",
+          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/formComponents/types\").THandleChange<string> | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "mask",
+          "type": "string",
+          "required": true,
+          "description": ""
+        },
+        {
           "name": "name",
           "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/react-hook-form/dist/types/path/eager\").Path<TFieldValues>",
           "required": true,
@@ -40223,18 +40235,6 @@
           "type": "((params: { maskedValue: string; value: string; }) => void) | undefined",
           "required": false,
           "description": "Callback при изменении значения маски с дополнительной информацией."
-        },
-        {
-          "name": "onChange",
-          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/formComponents/types\").THandleChange<string> | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "mask",
-          "type": "string",
-          "required": true,
-          "description": ""
         }
       ],
       "propsTypeName": "FormMaskProps",
@@ -40251,7 +40251,7 @@
           "exportName": "Synthesized",
           "displayName": "Минимальный пример",
           "type": "synthesized",
-          "code": "<FormMask name={{}} mask={'значение'} />"
+          "code": "<FormMask mask={'значение'} name={{}} />"
         }
       ]
     },
@@ -40260,6 +40260,12 @@
       "group": "formComponents",
       "description": "",
       "props": [
+        {
+          "name": "onChange",
+          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/formComponents/types\").THandleChange<string> | undefined",
+          "required": false,
+          "description": ""
+        },
         {
           "name": "name",
           "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/react-hook-form/dist/types/path/eager\").Path<TFieldValues>",
@@ -40571,12 +40577,6 @@
           "type": "((values: import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/react-number-format/types/types\").NumberFormatValues) => boolean) | undefined",
           "required": false,
           "description": "Функция для валидации входного значения.\nЕсли эта функция возвращает false, метод onChange не будет вызван, и значение ввода не изменится."
-        },
-        {
-          "name": "onChange",
-          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/formComponents/types\").THandleChange<string> | undefined",
-          "required": false,
-          "description": ""
         }
       ],
       "propsTypeName": "FormNumberFormatProps",
@@ -40709,18 +40709,6 @@
       "description": "",
       "props": [
         {
-          "name": "name",
-          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/react-hook-form/dist/types/path/eager\").Path<TFieldValues> & import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/react-hook-form/dist/types/path/eager\").Path<TFieldValues>",
-          "required": true,
-          "description": ""
-        },
-        {
-          "name": "options",
-          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/react-hook-form/dist/types/validator\").RegisterOptions<import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/react-hook-form/dist/types/fields\").FieldValues, import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/react-hook-form/dist/types/path/eager\").Path<TFieldValues>> | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
           "name": "onChange",
           "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/formComponents/types\").THandleChange<string | number> | undefined",
           "required": false,
@@ -40735,6 +40723,18 @@
         {
           "name": "size",
           "type": "\"xs\" | \"s\" | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "name",
+          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/react-hook-form/dist/types/path/eager\").Path<TFieldValues> & import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/react-hook-form/dist/types/path/eager\").Path<TFieldValues>",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "options",
+          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/react-hook-form/dist/types/validator\").RegisterOptions<import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/react-hook-form/dist/types/fields\").FieldValues, import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/react-hook-form/dist/types/path/eager\").Path<TFieldValues>> | undefined",
           "required": false,
           "description": ""
         },
@@ -40804,6 +40804,36 @@
       "group": "formComponents",
       "description": "",
       "props": [
+        {
+          "name": "selectionMode",
+          "type": "\"multiple\" | \"single\" | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "onChange",
+          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/formComponents/types\").THandleChange<string[]> | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "singleSelectedRequired",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "items",
+          "type": "(import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/engines/types\").PropsType<{ view: { none: import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/engines/types\").PolymorphicClassName; secondary: import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/engines/types\").PolymorphicClassName; pri…",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "showError",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": ""
+        },
         {
           "name": "name",
           "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/react-hook-form/dist/types/path/eager\").Path<TFieldValues>",
@@ -40884,18 +40914,6 @@
           "description": "Группа сегментов c фоном, используйте свойство hasBackground"
         },
         {
-          "name": "selectionMode",
-          "type": "\"multiple\" | \"single\" | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "onChange",
-          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/formComponents/types\").THandleChange<string[]> | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
           "name": "titleCaption",
           "type": "React.ReactNode",
           "required": false,
@@ -40918,24 +40936,6 @@
           "type": "boolean | undefined",
           "required": false,
           "description": ""
-        },
-        {
-          "name": "singleSelectedRequired",
-          "type": "boolean | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "items",
-          "type": "(import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/engines/types\").PropsType<{ view: { none: import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/engines/types\").PolymorphicClassName; secondary: import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/engines/types\").PolymorphicClassName; pri…",
-          "required": true,
-          "description": ""
-        },
-        {
-          "name": "showError",
-          "type": "boolean | undefined",
-          "required": false,
-          "description": ""
         }
       ],
       "propsTypeName": "FormSegmentGroupProps",
@@ -40952,7 +40952,7 @@
           "exportName": "Synthesized",
           "displayName": "Минимальный пример",
           "type": "synthesized",
-          "code": "<FormSegmentGroup name={{}} items={{}} />"
+          "code": "<FormSegmentGroup items={{}} name={{}} />"
         }
       ]
     },
@@ -40961,6 +40961,18 @@
       "group": "formComponents",
       "description": "MutationSelect относится к группе mutation-form элементов. Он расширяет возможности\n компонента [Select] для использования в формах",
       "props": [
+        {
+          "name": "multiselect",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "onChange",
+          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/formComponents/types\").THandleChange<string> | import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/formComponents/types\").THandleChange<string[]> | undefined",
+          "required": false,
+          "description": ""
+        },
         {
           "name": "name",
           "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/react-hook-form/dist/types/path/eager\").Path<TFieldValues>",
@@ -41332,18 +41344,6 @@
           "type": "string | undefined",
           "required": false,
           "description": ""
-        },
-        {
-          "name": "multiselect",
-          "type": "boolean | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "onChange",
-          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/formComponents/types\").THandleChange<string> | import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/formComponents/types\").THandleChange<string[]> | undefined",
-          "required": false,
-          "description": ""
         }
       ],
       "propsTypeName": "FormSelectProps",
@@ -41369,6 +41369,12 @@
       "group": "formComponents",
       "description": "FormSwitch относится к группе mutation-form элементов. Он расширяет возможности\n компонента [Switch] для использования в формах.\n\n **Обратите внимание, что компонент FormSwitch не валидируется.**",
       "props": [
+        {
+          "name": "onChange",
+          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/formComponents/types\").THandleChange<boolean> | undefined",
+          "required": false,
+          "description": ""
+        },
         {
           "name": "name",
           "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/react-hook-form/dist/types/path/eager\").Path<TFieldValues>",
@@ -41472,12 +41478,6 @@
           "required": false,
           "description": "Нажатие на компонент",
           "deprecated": true
-        },
-        {
-          "name": "onChange",
-          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/formComponents/types\").THandleChange<boolean> | undefined",
-          "required": false,
-          "description": ""
         }
       ],
       "propsTypeName": "FormSwitchProps",
@@ -41503,6 +41503,18 @@
       "group": "formComponents",
       "description": "",
       "props": [
+        {
+          "name": "showClearButton",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "onChange",
+          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/formComponents/types\").THandleChange<string> | undefined",
+          "required": false,
+          "description": ""
+        },
         {
           "name": "name",
           "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/react-hook-form/dist/types/path/eager\").Path<TFieldValues>",
@@ -41748,18 +41760,6 @@
           "type": "boolean | undefined",
           "required": false,
           "description": ""
-        },
-        {
-          "name": "showClearButton",
-          "type": "boolean | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "onChange",
-          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/formComponents/types\").THandleChange<string> | undefined",
-          "required": false,
-          "description": ""
         }
       ],
       "propsTypeName": "FormTextAreaProps",
@@ -41785,6 +41785,12 @@
       "group": "formComponents",
       "description": "FormTextField относится к группе form элементов. Он расширяет возможности\n компонента [TextField] для использования в формах",
       "props": [
+        {
+          "name": "onChange",
+          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/formComponents/types\").THandleChange<string> | undefined",
+          "required": false,
+          "description": ""
+        },
         {
           "name": "name",
           "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/react-hook-form/dist/types/path/eager\").Path<TFieldValues>",
@@ -42046,12 +42052,6 @@
         {
           "name": "hintPortal",
           "type": "string | React.RefObject<HTMLElement | null> | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "onChange",
-          "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/formComponents/types\").THandleChange<string> | undefined",
           "required": false,
           "description": ""
         }
@@ -42476,6 +42476,18 @@
       "description": "",
       "props": [
         {
+          "name": "dropdownProps",
+          "type": "(Omit<import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Dropdown/Dropdown.types\").DropdownProps<import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Dropdown/Dropdown.types\").ItemOption>, \"size\" | \"view\"> & Pick<import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/en…",
+          "required": false,
+          "description": "Пропсы выпадающего меню"
+        },
+        {
+          "name": "iconSize",
+          "type": "\"xs\" | \"s\" | \"m\" | undefined",
+          "required": false,
+          "description": "Размер иконки"
+        },
+        {
           "name": "type",
           "type": "\"button\" | \"reset\" | \"submit\" | undefined",
           "required": false,
@@ -42498,18 +42510,6 @@
           "type": "React.Key | null | undefined",
           "required": false,
           "description": ""
-        },
-        {
-          "name": "dropdownProps",
-          "type": "(Omit<import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Dropdown/Dropdown.types\").DropdownProps<import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Dropdown/Dropdown.types\").ItemOption>, \"size\" | \"view\"> & Pick<import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/en…",
-          "required": false,
-          "description": "Пропсы выпадающего меню"
-        },
-        {
-          "name": "iconSize",
-          "type": "\"xs\" | \"s\" | \"m\" | undefined",
-          "required": false,
-          "description": "Размер иконки"
         }
       ],
       "propsTypeName": "FiltersActionsDotsIconButtonProps",
@@ -43361,6 +43361,18 @@
           "typeName": "FiltersActionsDotsIconButtonProps",
           "props": [
             {
+              "name": "dropdownProps",
+              "type": "(Omit<import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Dropdown/Dropdown.types\").DropdownProps<import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Dropdown/Dropdown.types\").ItemOption>, \"size\" | \"view\"> & Pick<import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/en…",
+              "required": false,
+              "description": "Пропсы выпадающего меню"
+            },
+            {
+              "name": "iconSize",
+              "type": "\"xs\" | \"s\" | \"m\" | undefined",
+              "required": false,
+              "description": "Размер иконки"
+            },
+            {
               "name": "view",
               "type": "\"default\" | \"secondary\" | \"accent\" | \"positive\" | \"warning\" | \"negative\" | \"clear\" | \"white\" | \"black\" | \"dark\" | undefined",
               "required": false,
@@ -43503,18 +43515,6 @@
               "type": "React.Key | null | undefined",
               "required": false,
               "description": ""
-            },
-            {
-              "name": "dropdownProps",
-              "type": "(Omit<import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Dropdown/Dropdown.types\").DropdownProps<import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Dropdown/Dropdown.types\").ItemOption>, \"size\" | \"view\"> & Pick<import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/en…",
-              "required": false,
-              "description": "Пропсы выпадающего меню"
-            },
-            {
-              "name": "iconSize",
-              "type": "\"xs\" | \"s\" | \"m\" | undefined",
-              "required": false,
-              "description": "Размер иконки"
             }
           ]
         },
@@ -43530,6 +43530,12 @@
           "name": "Tabs",
           "typeName": "FiltersActionsTabsProps",
           "props": [
+            {
+              "name": "$css",
+              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@types/styled-components/index\").CSSObject | TemplateStringsArray | undefined",
+              "required": false,
+              "description": "Кастомные стили"
+            },
             {
               "name": "clip",
               "type": "\"scroll\" | \"showAll\" | undefined",
@@ -43571,12 +43577,6 @@
               "type": "string | undefined",
               "required": false,
               "description": "Размер табов"
-            },
-            {
-              "name": "$css",
-              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@types/styled-components/index\").CSSObject | TemplateStringsArray | undefined",
-              "required": false,
-              "description": "Кастомные стили"
             }
           ]
         },
@@ -43584,6 +43584,12 @@
           "name": "TabItem",
           "typeName": "FiltersActionsTabItemProps",
           "props": [
+            {
+              "name": "$css",
+              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@types/styled-components/index\").CSSObject | TemplateStringsArray | undefined",
+              "required": false,
+              "description": "Кастомные стили"
+            },
             {
               "name": "view",
               "type": "\"default\" | \"secondary\" | \"clear\" | \"divider\" | undefined",
@@ -43673,12 +43679,6 @@
               "type": "React.Key | null | undefined",
               "required": false,
               "description": ""
-            },
-            {
-              "name": "$css",
-              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@types/styled-components/index\").CSSObject | TemplateStringsArray | undefined",
-              "required": false,
-              "description": "Кастомные стили"
             }
           ]
         },
@@ -43686,6 +43686,12 @@
           "name": "SegmentItem",
           "typeName": "FiltersActionsSegmentItemProps",
           "props": [
+            {
+              "name": "$css",
+              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@types/styled-components/index\").CSSObject | TemplateStringsArray | undefined",
+              "required": false,
+              "description": "Кастомные стили"
+            },
             {
               "name": "type",
               "type": "\"button\" | \"reset\" | \"submit\" | undefined",
@@ -43745,12 +43751,6 @@
               "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/csstype/index\").Property.Width<string | number> | undefined",
               "required": false,
               "description": "Обрезает контент по максимальной ширине и добавляет ..."
-            },
-            {
-              "name": "$css",
-              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@types/styled-components/index\").CSSObject | TemplateStringsArray | undefined",
-              "required": false,
-              "description": "Кастомные стили"
             }
           ]
         },
@@ -44109,6 +44109,18 @@
           "typeName": "ResetAllFiltersButtonProps",
           "props": [
             {
+              "name": "isVisible",
+              "type": "boolean | undefined",
+              "required": false,
+              "description": "Видимость кнопки"
+            },
+            {
+              "name": "$css",
+              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@types/styled-components/index\").CSSObject | TemplateStringsArray | undefined",
+              "required": false,
+              "description": "Кастомные стили"
+            },
+            {
               "name": "view",
               "type": "\"default\" | \"secondary\" | \"accent\" | \"positive\" | \"warning\" | \"negative\" | \"info\" | undefined",
               "required": false,
@@ -44185,18 +44197,6 @@
               "type": "React.Key | null | undefined",
               "required": false,
               "description": ""
-            },
-            {
-              "name": "isVisible",
-              "type": "boolean | undefined",
-              "required": false,
-              "description": "Видимость кнопки"
-            },
-            {
-              "name": "$css",
-              "type": "import(\"/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@types/styled-components/index\").CSSObject | TemplateStringsArray | undefined",
-              "required": false,
-              "description": "Кастомные стили"
             }
           ]
         },
