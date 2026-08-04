@@ -7,6 +7,7 @@ import type { FormNumberFormatProps } from './types';
 
 export const FormNumberFormat = <TFieldValues extends FieldValues>({
   name,
+  label,
   options,
   onChange: handleChange,
   onBlur: handleBlur,
@@ -39,6 +40,7 @@ export const FormNumberFormat = <TFieldValues extends FieldValues>({
       }) => (
         <NumberFormat
           {...fieldRest}
+          label={label}
           ref={rhfRef}
           value={value as string}
           isAllowed={(values) => {
@@ -56,10 +58,8 @@ export const FormNumberFormat = <TFieldValues extends FieldValues>({
           }}
           leftHelper={error?.message || leftHelper}
           view={error?.message ? 'negative' : view ?? 'default'}
-          required={(rest.label && !!newOptions.required) || undefined}
-          hasRequiredIndicator={
-            (rest.label && !!newOptions.required) || undefined
-          }
+          required={!!newOptions.required || undefined}
+          hasRequiredIndicator={!!newOptions.required || undefined}
           // типы конфликтуют из-за Omit<> и тп., хотя идентичны
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           {...(rest as any)}

@@ -124,6 +124,40 @@ function ExampleColumnTooltipObject() {
   );
 }
 
+function ExampleColumnTooltipMultiline() {
+  const [rows] = useState(createRows);
+
+  const columnConfig = useMemo<readonly ColumnConfig<Row>[]>(
+    () => [
+      { key: 'id', name: 'ID' },
+      {
+        key: 'task',
+        name: 'Title',
+        cellTooltip: ({ row, column }) => ({
+          text: `Колонка: ${column.name}\nЗадача: ${row.task}\nID: ${row.id}`,
+          preserveLineBreaks: true,
+        }),
+      },
+      { key: 'priority', name: 'Priority' },
+      { key: 'issueType', name: 'Issue Type' },
+      { key: 'developer', name: 'Developer' },
+      { key: 'complete', name: '% Complete' },
+    ],
+    [],
+  );
+
+  return (
+    <TableCanvas
+      tableConfig={{
+        columnsControl: { enable: true, reorderingHeader: true },
+        tooltip: { enabled: true },
+      }}
+      columnConfig={columnConfig}
+      rows={rows}
+    />
+  );
+}
+
 function ExampleButtonWithTooltip() {
   const [rows] = useState(createRows);
 
@@ -187,6 +221,17 @@ ${getFuncAsString(
 )}
 `;
 
+const columnMultilinePreCode = `
+import { createRows, type Row } from '@df-storybook/data/tableData';
+import { ColumnConfig, TableCanvas } from '@ui-kit/components/TableCanvas';
+import React, { useMemo, useState } from 'react';
+
+${getFuncAsString(
+  'packages/storybook/src/stories/TableCanvas/TableCanvas.Tooltip/TableCanvasTooltip.stories.tsx',
+  'ExampleColumnTooltipMultiline',
+)}
+`;
+
 const buttonTooltipPreCode = `
 import { createRows, type Row } from '@df-storybook/data/tableData';
 import { Canvas, ColumnConfig, TableCanvas } from '@ui-kit/components/TableCanvas';
@@ -223,6 +268,15 @@ export const ColumnTooltipObjectStory: StoryObj = {
     code: columnObjectPreCode,
   }),
   render: ExampleColumnTooltipObject,
+};
+
+export const ColumnTooltipMultilineStory: StoryObj = {
+  name: 'cellTooltip (preserveLineBreaks) — hover на ячейки Title',
+  ...storySourceDoc({
+    previewSource: 'shown',
+    code: columnMultilinePreCode,
+  }),
+  render: ExampleColumnTooltipMultiline,
 };
 
 export const ButtonWithTooltipStory: StoryObj = {

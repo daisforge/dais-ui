@@ -90,6 +90,7 @@ export const FormDatePickerRange = <TFieldValues extends FieldValues>({
   name,
   options,
   portal,
+  label,
   onChange: handleChange,
   textHint,
   format = 'DD.MM.YYYY',
@@ -255,7 +256,7 @@ export const FormDatePickerRange = <TFieldValues extends FieldValues>({
             firstValueError={!!error}
             format={format}
             frame={portal}
-            label={rest.label}
+            label={label}
             max={(maxTime && new Date(maxTime)) || undefined}
             min={(minTime && new Date(minTime)) || undefined}
             name={name}
@@ -265,11 +266,9 @@ export const FormDatePickerRange = <TFieldValues extends FieldValues>({
             // placement="top"
             opened={opened}
             maskWithFormat
-            required={(rest.label && !!newOptions.required) || undefined}
+            required={!!newOptions.required || undefined}
             requiredPlacement="right"
-            hasRequiredIndicator={
-              (rest.label && !!newOptions.required) || undefined
-            }
+            hasRequiredIndicator={!!newOptions.required || undefined}
             secondValueError={!!error}
             usePortal={!!portal}
             onChange={({ target }) => {

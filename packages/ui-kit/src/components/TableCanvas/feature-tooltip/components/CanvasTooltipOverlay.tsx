@@ -75,6 +75,9 @@ export const CanvasTooltipOverlay: React.FC<CanvasTooltipOverlayProps> =
             maxWidth={state.data?.tooltipProps?.maxWidth}
             style={{
               position: 'relative',
+              ...(state.data?.tooltipProps?.preserveLineBreaks && {
+                whiteSpace: 'pre-line',
+              }),
             }}
           />
         </StyledContainer>,

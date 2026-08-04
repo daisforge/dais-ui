@@ -15,6 +15,8 @@ import { TypeSourceViewer } from '@df-storybook/utils/TypeSourceViewer';
 
 **Формат конфига:** строка (только текст) или объект с обязательным полем `text` и опциональными пропсами `Tooltip` (`placement`, `view` и т.д.; без `opened`, `target`, `style`), а также `mouseEnterDelay` / `mouseLeaveDelay` для per-node задержек.
 
+По умолчанию текст рендерится с `white-space: normal` — переносы строк (`\n`) в `text` схлопываются в пробел. Чтобы сохранить переносы (например, в многострочных подсказках), добавьте в объектную форму конфига `preserveLineBreaks: true` — тогда к тексту тултипа применится `white-space: pre-line`. Флаг выключен по умолчанию и не меняет поведение существующих строковых тултипов.
+
 ## Модуль tableConfig.tooltip
 
 Глобальные настройки тултипа вынесены в `tableConfig.tooltip` (тип `TableConfigTooltip`):

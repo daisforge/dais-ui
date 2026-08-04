@@ -77,9 +77,9 @@ export const FormSelect = <TFieldValues extends FieldValues>({
               onBlur();
               handleBlur?.(e);
             }}
-            required={(label && !!newOptions.required) || false}
+            required={!!newOptions.required || false}
             requiredPlacement="right"
-            hasRequiredIndicator={(label && !!newOptions.required) || false}
+            hasRequiredIndicator={!!newOptions.required || false}
             // типы конфликтуют из-за Omit<> и тп., хотя идентичны
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             {...(rest as any)}
