@@ -20,6 +20,9 @@ packages/webpack-project-finalheader/package-lock.json
 packages/vite-project/package.json
 packages/vite-project/package-lock.json
 
+# mcp-server — сгенерированный пробник для валидации индекса и A/B-тестов
+packages/mcp-server/.probe/
+
 # webpack-finportal-platform
 packages/webpack-finportal-platform/package.json
 packages/webpack-finportal-platform/package-lock.json

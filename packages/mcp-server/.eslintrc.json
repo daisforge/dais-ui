@@ -1,6 +1,6 @@
 {
   "extends": ["plugin:@nx/react"],
-  "ignorePatterns": ["!**/*", "dist"],
+  "ignorePatterns": ["!**/*", "dist", ".probe"],
   "rules": {
     "import/no-extraneous-dependencies": [
       "error",
