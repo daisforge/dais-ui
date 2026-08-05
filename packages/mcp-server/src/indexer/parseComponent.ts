@@ -1,5 +1,7 @@
 /* eslint-disable no-continue */
 /* eslint-disable no-bitwise */
+import path from 'node:path';
+
 import type {
   ArrowFunction,
   ExportedDeclarations,
@@ -17,7 +19,7 @@ import { Node, SymbolFlags, SyntaxKind, ts } from 'ts-morph';
 import type { CompoundPart, PropRecord } from '../types.js';
 import type { ComponentEntry } from './discoverComponents.js';
 import { isNoiseProp } from './htmlAttributeDenylist.js';
-import { getProject } from './tsProject.js';
+import { getProject, UI_KIT_SRC } from './tsProject.js';
 
 const MAX_PROP_TYPE_CHARS = 400;
 export const MAX_RAW_TYPE_CHARS = 6000;
@@ -564,6 +566,83 @@ function resolvePropsType(propsRef: PropsRef): ResolvedPropsType {
   }
 }
 
+/**
+ * Виртуальный файл-пробник для семантического фолбэка (см.
+ * tryExtractViaComponentProps) — один на весь прогон индексера, содержимое
+ * целиком перезаписывается на каждый вызов. Лежит внутри UI_KIT_SRC (а не,
+ * скажем, в mcp-server), чтобы `import type { ComponentProps } from 'react'`
+ * резолвился ровно так же, как для настоящих файлов ui-kit — react там уже
+ * гарантированно резолвится через тот же tsconfig/node_modules.
+ */
+let probeSourceFile: SourceFile | undefined;
+function getProbeSourceFile(): SourceFile {
+  if (!probeSourceFile) {
+    const probePath = path.join(UI_KIT_SRC, '__mcp_component_props_probe__.ts');
+    probeSourceFile = getProject().createSourceFile(probePath, '', {
+      overwrite: true,
+    });
+  }
+  return probeSourceFile;
+}
+
+let probeCounter = 0;
+
+/**
+ * Финальный фолбэк, когда ни именованный Props-тип (findPropsDeclaration),
+ * ни render-функция с параметром (findPropsDeclFromSignature) не найдены —
+ * типичный случай для чистых реэкспортов из @salutejs/plasma-new-hope
+ * (AccordionItem, ButtonBase, CellTextbox...): в .d.ts они объявлены как
+ * `export declare const X: ForwardRefExoticComponent<Props & RefAttributes>`
+ * БЕЗ инициализатора, поэтому unwrapToRenderFunction не может дойти до тела
+ * функции — там его просто нет, .d.ts не содержит реализации. Тот же провал
+ * и для styled-компонентов с инлайновым дженериком (`styled.div<{...}>`) —
+ * `styled.div<T>` это TaggedTemplateExpression, не render-функция.
+ *
+ * Вместо разбора AST берём у тайпчекера тип самого экспорта (он есть всегда
+ * — это тип объявления, а не тип инициализатора) и прогоняем его через
+ * ComponentProps<T> — тот же паттерн, которым уже пользуется .probe/
+ * validate.ts для проверки индекса против реальных типов. ComponentProps
+ * сама умеет разворачивать ForwardRefExoticComponent/FunctionComponent/
+ * class-компоненты/styled-components — не нужно вручную разбирать эти формы.
+ */
+function tryExtractViaComponentProps(
+  mainDecl: ExportedDeclarations,
+): PropRecord[] | undefined {
+  let declType: Type;
+  try {
+    declType = mainDecl.getType();
+  } catch {
+    return undefined;
+  }
+
+  // Без enclosing-node — иначе принтер печатает типы "как в исходном файле"
+  // (короткие локальные имена вроде голого `CellTextboxProps`, доступные
+  // только там благодаря его собственным импортам), а не как
+  // `import("...").CellTextboxProps` — в файле-пробнике таких импортов нет,
+  // и голое имя не резолвится (тихо ловится catch ниже как несуществующий
+  // тип). Без enclosing-node тайпчекер всегда квалифицирует типы полным
+  // путём — тем же приёмом, который потом снимает stripImportPaths.
+  const rawTypeText = declType.getText();
+  if (!rawTypeText || rawTypeText === 'any' || rawTypeText === 'unknown') {
+    return undefined;
+  }
+
+  probeCounter += 1;
+  const aliasName = `__MCPProbe${probeCounter}`;
+  const file = getProbeSourceFile();
+
+  try {
+    file.replaceWithText(
+      `import type { ComponentProps } from 'react';\ntype ${aliasName} = ComponentProps<${rawTypeText}>;\n`,
+    );
+    const alias = file.getTypeAliasOrThrow(aliasName);
+    const props = extractPropsFromType(alias.getType(), alias);
+    return props.length > 0 ? props : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 /** Ищет паттерн `Component.Sub = LocalName;` — compound-компоненты (DrawerDF.Header и т.п.). */
 function findCompoundAssignments(
   mainSourceFile: SourceFile | undefined,
@@ -678,9 +757,19 @@ export function parseComponent({
   const propsRef =
     findPropsDeclaration(barrelSourceFile, name) ??
     findPropsDeclFromSignature(mainDecl, name);
-  const propsResolved: ResolvedPropsType = propsRef
+  let propsResolved: ResolvedPropsType = propsRef
     ? resolvePropsType(propsRef)
     : { props: [] };
+
+  if (propsResolved.props.length === 0 && !propsResolved.isGeneric) {
+    const viaComponentProps = tryExtractViaComponentProps(mainDecl);
+    if (viaComponentProps) {
+      propsResolved = {
+        typeName: propsResolved.typeName ?? `ComponentProps<typeof ${name}>`,
+        props: viaComponentProps,
+      };
+    }
+  }
 
   const localMainFile = declaredInUiKit ? mainSourceFile : undefined;
   const compoundAssignments = findCompoundAssignments(localMainFile, name);
