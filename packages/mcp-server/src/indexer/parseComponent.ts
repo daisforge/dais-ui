@@ -20,7 +20,7 @@ import { isNoiseProp } from './htmlAttributeDenylist.js';
 import { getProject } from './tsProject.js';
 
 const MAX_PROP_TYPE_CHARS = 400;
-const MAX_RAW_TYPE_CHARS = 6000;
+export const MAX_RAW_TYPE_CHARS = 6000;
 
 type RenderFunction = FunctionDeclaration | ArrowFunction | FunctionExpression;
 
@@ -79,9 +79,129 @@ export function isParsedComponent(
 }
 
 /** Обрезает строку с явным маркером — не молча теряет данные. */
-function clip(text: string | undefined, max: number): string | undefined {
+export function clip(
+  text: string | undefined,
+  max: number,
+): string | undefined {
   if (!text) return text;
   return text.length > max ? `${text.slice(0, max)}…` : text;
+}
+
+const IMPORT_PATH_PREFIX_RE = /import\("[^"]*"\)\./g;
+
+/**
+ * Тайпчекер печатает ссылки на типы из других файлов как
+ * `import("/абсолютный/путь/к/модулю").TypeName` — путь конкретной машины
+ * утекает в текст пропса (1029 пропсов в 99 компонентах на момент находки)
+ * и впустую жрёт бюджет ответа. Оставляем только `TypeName`.
+ */
+export function stripImportPaths(text: string): string {
+  return text.replace(IMPORT_PATH_PREFIX_RE, '');
+}
+
+/** Именованный тип, структурно найденный среди типов пропсов — вход для indexTypes.ts. */
+export interface CollectedTypeDecl {
+  name: string;
+  decl: Node;
+}
+
+/**
+ * Типы пропсов, собранные за весь прогон индексера (module-level, как
+ * cachedProject в tsProject.ts или cachedDenylistMap в
+ * htmlAttributeDenylist.ts) — buildIndex.ts вызывает parseComponent для
+ * каждого компонента синхронно в один процесс, поэтому один общий Map
+ * корректно копит находки по всему прогону. Значение — МАССИВ, а не
+ * одна декларация: TableCanvas активно переиспользует общие имена типов
+ * (свой `ColumnConfig`, отдельный от легаси-`Table.ColumnConfig`), и первое
+ * найденное молча маскировало бы остальные при обычном dedup-by-name. Каждая
+ * РАЗНАЯ по файлу декларация под одним именем сохраняется отдельно —
+ * indexTypes.ts решает, как их различить в итоговых ключах индекса.
+ */
+const collectedTypeDecls = new Map<string, CollectedTypeDecl[]>();
+
+export function getCollectedTypeDecls(): CollectedTypeDecl[][] {
+  return [...collectedTypeDecls.values()];
+}
+
+/**
+ * Записывает символ как найденный тип, если его декларация — type alias/
+ * interface внутри самого ui-kit. Дедуп — по паре (имя, файл декларации):
+ * разные типы с одинаковым именем в разных файлах сохраняются оба (см.
+ * collectedTypeDecls), но повторные ссылки на ОДИН И ТОТ ЖЕ тип из разных
+ * пропсов не плодят дубликаты. true, если что-то записано (или уже было) —
+ * вызывающий код использует это, чтобы решить, надо ли ещё разворачивать
+ * структуру типа (см. collectNamedTypeRefs).
+ */
+function recordTypeSymbol(symbol: TsSymbol): boolean {
+  const decl = symbol.getDeclarations()[0];
+  if (!decl) return false;
+  if (
+    !Node.isTypeAliasDeclaration(decl) &&
+    !Node.isInterfaceDeclaration(decl)
+  ) {
+    return false;
+  }
+  if (!decl.getSourceFile().getFilePath().includes('/packages/ui-kit/src/')) {
+    return false;
+  }
+
+  const name = symbol.getName();
+  const filePath = decl.getSourceFile().getFilePath();
+  const existing = collectedTypeDecls.get(name) ?? [];
+  if (
+    !existing.some((e) => e.decl.getSourceFile().getFilePath() === filePath)
+  ) {
+    existing.push({ name, decl });
+    collectedTypeDecls.set(name, existing);
+  }
+  return true;
+}
+
+/**
+ * Структурно (не по тексту типа — там мусор вроде React.ReactNode/Omit и
+ * коллизии имён) находит именованные типы, на которые реально ссылается
+ * проп, и копит их для индексации. Раскрывает обёртки массива/union/
+ * intersection (`MassActionsButtonProps[] | undefined` сам по себе не имеет
+ * alias-символа — он есть только у элемента массива), останавливаясь, как
+ * только находит именованную декларацию — без рекурсии в её собственное
+ * тело (агент при необходимости запросит её отдельным вызовом get_type).
+ * Индексируем только типы, объявленные в самом ui-kit — типы React/DOM и
+ * @salutejs/* уже приходят как inheritedProps/готовые примитивы.
+ */
+function collectNamedTypeRefs(type: Type, seen: Set<Type>): void {
+  if (seen.has(type)) return;
+  seen.add(type);
+
+  // Alias-символ проверяем ПЕРВЫМ, до любого структурного разбора: у типа,
+  // объявленного как `type X = A | B`, одновременно isUnion() === true И
+  // getAliasSymbol() === X — если сначала развернуть union, имя X (то,
+  // что реально написано в проп-типе, `X[]`/`X | undefined`) потеряется,
+  // а вместо него найдутся A/B по отдельности. Раскрываем union/intersection/
+  // array только когда у типа НЕТ собственного имени — иначе останавливаемся
+  // на найденном алиасе (агент при необходимости заглянет глубже вторым
+  // вызовом get_type, как и для обычных вложенных ссылок).
+  const aliasSymbol = type.getAliasSymbol();
+  if (aliasSymbol) {
+    recordTypeSymbol(aliasSymbol);
+    return;
+  }
+
+  if (type.isArray()) {
+    const elementType = type.getArrayElementType();
+    if (elementType) collectNamedTypeRefs(elementType, seen);
+    return;
+  }
+  if (type.isUnion()) {
+    type.getUnionTypes().forEach((t) => collectNamedTypeRefs(t, seen));
+    return;
+  }
+  if (type.isIntersection()) {
+    type.getIntersectionTypes().forEach((t) => collectNamedTypeRefs(t, seen));
+    return;
+  }
+
+  const symbol = type.getSymbol();
+  if (symbol) recordTypeSymbol(symbol);
 }
 
 function getJsDocs(node: Node): JSDoc[] {
@@ -284,6 +404,8 @@ function extractPropsFromType(type: Type, atLocationNode: Node): PropRecord[] {
     // потеряли бы реально переопределённые пропсы вроде Switch.size: "s"|"m"|"l".
     if (isNoiseProp(name, fullTypeText)) continue;
 
+    if (propType) collectNamedTypeRefs(propType, new Set());
+
     // SymbolFlags.Optional — сигнал от самого тайпчекера после резолва
     // union/intersection, надёжнее чем questionToken на одной из деклараций
     // (при пересечении типов может быть несколько деклараций одного символа).
@@ -307,7 +429,7 @@ function extractPropsFromType(type: Type, atLocationNode: Node): PropRecord[] {
 
     const record: PropRecord = {
       name,
-      type: clip(fullTypeText, MAX_PROP_TYPE_CHARS) as string,
+      type: clip(stripImportPaths(fullTypeText), MAX_PROP_TYPE_CHARS) as string,
       required: !optional,
       description,
       ...(deprecated ? { deprecated: true as const } : {}),
@@ -411,7 +533,7 @@ function resolvePropsType(propsRef: PropsRef): ResolvedPropsType {
     const structuralProps = tryExtractGenericProps(decl);
     return {
       typeName: name,
-      rawType: clip(decl.getText(), MAX_RAW_TYPE_CHARS),
+      rawType: clip(stripImportPaths(decl.getText()), MAX_RAW_TYPE_CHARS),
       props: structuralProps ?? [],
       isGeneric: true,
     };
@@ -426,7 +548,7 @@ function resolvePropsType(propsRef: PropsRef): ResolvedPropsType {
     if (!type) {
       return {
         typeName: name,
-        rawType: clip(decl.getText(), MAX_RAW_TYPE_CHARS),
+        rawType: clip(stripImportPaths(decl.getText()), MAX_RAW_TYPE_CHARS),
         props: [],
       };
     }
@@ -436,7 +558,7 @@ function resolvePropsType(propsRef: PropsRef): ResolvedPropsType {
   } catch {
     return {
       typeName: name,
-      rawType: clip(decl.getText(), MAX_RAW_TYPE_CHARS),
+      rawType: clip(stripImportPaths(decl.getText()), MAX_RAW_TYPE_CHARS),
       props: [],
     };
   }

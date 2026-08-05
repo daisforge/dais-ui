@@ -17,6 +17,7 @@ import { getComponentProps } from './tools/getComponentProps.js';
 import { getFeature } from './tools/getFeature.js';
 import { getFeatureExamples } from './tools/getFeatureExamples.js';
 import { getInstallationGuide } from './tools/getInstallationGuide.js';
+import { getType } from './tools/getType.js';
 import { listCategories } from './tools/listCategories.js';
 import { listComponents } from './tools/listComponents.js';
 import { listFeatures } from './tools/listFeatures.js';
@@ -133,6 +134,15 @@ function main(): void {
     'Примеры кода компонента. Без title — список заголовков + первый пример; с title — конкретный пример.',
     { name: z.string(), title: z.string().optional() },
     getComponentExamples,
+  );
+
+  registerJsonTool(
+    server,
+    index,
+    'get_type',
+    'Разворачивает именованный тип, встреченный в тексте пропса (например columnConfig: readonly ColumnConfig<Row>[] — get_component_props покажет только имя ColumnConfig, этот тул отдаёт само определение и готовый import). Некоторые имена неоднозначны (TableCanvas переиспользует общие имена типов) — тогда тул вернёт список квалифицированных ключей вида "TableCanvas.ColumnConfig" для уточнения.',
+    { name: z.string() },
+    getType,
   );
 
   registerJsonTool(

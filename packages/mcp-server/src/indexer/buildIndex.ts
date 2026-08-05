@@ -16,6 +16,7 @@ import {
 import { printDiagnostics } from './diagnostics.js';
 import { discoverComponents } from './discoverComponents.js';
 import { buildFeatureIndex } from './indexFeatures.js';
+import { buildTypeIndex } from './indexTypes.js';
 import { mergeAtomicData } from './mergeAtomicData.js';
 import { getInstallationGuide, mergeMeta } from './mergeMeta.js';
 import { isParsedComponent, parseComponent } from './parseComponent.js';
@@ -90,7 +91,10 @@ function buildComponentRecords(): WorkingComponentRecord[] {
 
   records = records.map((r) => {
     if (r.error) return r;
-    const { importPath, importStatement } = resolveImportPath(r);
+    const { importPath, importStatement } = resolveImportPath(
+      r.name,
+      r.sourceFile ?? '',
+    );
     return { ...r, importPath, importStatement };
   });
 
@@ -114,6 +118,9 @@ function main(): void {
   const records = buildComponentRecords();
   const features = buildFeatureIndex(records.filter((r) => !r.error));
   const installationGuide = getInstallationGuide();
+  // Читает module-level Map, которую parseComponent наполнял по ходу разбора
+  // каждого компонента в buildComponentRecords() выше — обязательно после неё.
+  const types = buildTypeIndex();
 
   const index: ComponentIndex = {
     generatedAt: new Date().toISOString(),
@@ -127,6 +134,7 @@ function main(): void {
       records.map((r) => [r.name, r]),
     ) as unknown as Record<string, IndexedComponent>,
     features,
+    types,
     guides: installationGuide ? { installation: installationGuide } : {},
   };
 

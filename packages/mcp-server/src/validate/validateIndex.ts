@@ -31,6 +31,19 @@ function sanitize(id: string): string {
 }
 
 /**
+ * Индекс отдаёт importPath как реальный публикуемый путь ('@daisforge/ui'
+ * или '@daisforge/ui/components/TableCanvas') — внутри монорепо он не
+ * резолвится по типам (в node_modules лежит symlink без собранного .d.ts).
+ * Переводим на алиас '@ui-kit/*' из tsconfig.base.json, который ведёт на
+ * реальные исходники и типизируется корректно — так пробник проверяет
+ * именно то, что реально вычислил resolveImportPath, а не всегда корень.
+ */
+function toInternalImportSource(importPath: string): string {
+  if (importPath === '@daisforge/ui') return '@ui-kit/index';
+  return `@ui-kit/${importPath.replace(/^@daisforge\/ui\//, '')}`;
+}
+
+/**
  * Генерирует .ts-пробник: для каждого компонента — реальный value-импорт из
  * `@ui-kit/index` + type-level проверки на существование и required каждого
  * пропа через настоящий тайпчекер, без единого сгенерированного значения
@@ -112,7 +125,8 @@ function generateProbe(components: Record<string, ComponentRecord>): {
     const isGeneric = Boolean(record.isGeneric);
     const varName = `C_${sanitize(name)}`;
 
-    push(`import { ${name} as ${varName} } from '@ui-kit/index';`, {
+    const importSource = toInternalImportSource(record.importPath);
+    push(`import { ${name} as ${varName} } from '${importSource}';`, {
       kind: 'import',
       component: name,
       prop: '',

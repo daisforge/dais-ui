@@ -65,6 +65,23 @@ export interface FeatureRecord {
   stories: ExampleRecord[];
 }
 
+/* ─────────────── Именованные типы ─────────────── */
+
+/**
+ * Именованный тип, структурно найденный среди типов пропсов (см.
+ * indexer/parseComponent.ts, collectNamedTypeRefs) — раскрывает то, что в
+ * props[].type видно только как ссылка по имени (`ColumnConfig<T>[]`,
+ * `MassActionsButtonProps[] | undefined`). Только типы, объявленные в самом
+ * ui-kit — типы React/DOM и @salutejs/* уже приходят как inheritedProps.
+ */
+export interface TypeRecord {
+  name: string;
+  definition: string;
+  importPath: string;
+  importStatement: string;
+  sourceFile: string;
+}
+
 /* ─────────────── Компонент ─────────────── */
 
 export type ComponentType = 'wrapper' | 'composition' | 'standalone' | 'form';
@@ -146,6 +163,7 @@ export interface ComponentIndex {
   libVersion: string;
   components: Record<string, IndexedComponent>;
   features: FeatureRecord[];
+  types: Record<string, TypeRecord>;
   guides: { installation?: InstallationGuide };
 }
 
