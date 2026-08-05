@@ -21,7 +21,7 @@ MCP-сервер для `@daisforge/ui` — даёт кодовому агент
 
 ## Инструменты
 
-- `list_components({ type?, category?, scope? })`
+- `list_components({ type?, category?, scope?, limit?, offset? })` — ответ `{ items, shown, total, hasMore?, truncationNotice? }`. Без `limit` список сам бюджетируется под лимит ответа: если не влезли все компоненты, `truncationNotice` объясняет, чем добрать остаток (фильтры или `limit`/`offset`)
 - `search_components({ query })` — ищет и по компонентам, и по фичам (TableCanvas/Filtering и т.п.)
 - `get_component({ name })` — компактная карточка
 - `get_component_props({ name, part? })` — полные пропсы (собственные + унаследованные от атома)

@@ -88,11 +88,13 @@ function main(): void {
     server,
     index,
     'list_components',
-    'Список компонентов @daisforge/ui с фильтрами по типу (wrapper/composition/standalone/form), категории, scope.',
+    'Список компонентов @daisforge/ui с фильтрами по типу (wrapper/composition/standalone/form), категории, scope. Без limit список бюджетируется автоматически (см. shown/total/truncationNotice в ответе); limit/offset — явная пагинация.',
     {
       type: z.string().optional(),
       category: z.string().optional(),
       scope: z.string().optional(),
+      limit: z.number().int().positive().optional(),
+      offset: z.number().int().nonnegative().optional(),
     },
     listComponents,
   );
