@@ -5,6 +5,8 @@ import { getProject } from './tsProject.js';
 /** Минимальный контракт того, что classify реально читает из parseComponent(). */
 export interface ClassifyParsedInput {
   pureAtomicReExport: boolean;
+  atomicName?: string;
+  atomicSubpath?: 'beta';
   declaredInUiKit: boolean;
   declarationFile: string;
 }
@@ -12,6 +14,7 @@ export interface ClassifyParsedInput {
 export interface ClassifyResult {
   type: ComponentType;
   atomicBase?: string;
+  atomicSubpath?: 'beta';
   internalComponentImports?: string[];
 }
 
@@ -71,7 +74,13 @@ export function classify(
   }
 
   if (parsed.pureAtomicReExport) {
-    return { type: 'wrapper', atomicBase: entry.name };
+    // atomicName — реальное имя в sdds-finai; entry.name — фолбэк на случай,
+    // если резолв символа не удался (не должно происходить в норме).
+    return {
+      type: 'wrapper',
+      atomicBase: parsed.atomicName ?? entry.name,
+      atomicSubpath: parsed.atomicSubpath,
+    };
   }
 
   if (parsed.declaredInUiKit) {
@@ -140,6 +149,7 @@ export function promoteCompositionToWrapper(
         if (candidate) {
           record.type = 'wrapper';
           record.atomicBase = candidate.atomicBase;
+          record.atomicSubpath = candidate.atomicSubpath;
           record.wrapsInternal = candidateName;
         }
       }

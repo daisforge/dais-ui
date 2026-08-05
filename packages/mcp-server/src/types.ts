@@ -108,6 +108,8 @@ export interface ComponentRecord {
 
   // из classify
   atomicBase?: string;
+  /** Атом из @salutejs/sdds-finai/beta, а не из основного пакета — влияет на то, в какой папке вендоренного снэпшота искать atomicBase. */
+  atomicSubpath?: 'beta';
   wrapsInternal?: string;
   formVariant?: string;
   wrappedBy?: string;

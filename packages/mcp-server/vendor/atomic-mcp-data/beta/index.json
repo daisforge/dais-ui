@@ -1,0 +1,20 @@
+[
+  {
+    "name": "EmbeddedButton",
+    "href": "EmbeddedButton.json",
+    "summary": "EmbeddedButton Свойство size управляет радиусом скругления кнопки.",
+    "category": "beta"
+  },
+  {
+    "name": "Popover",
+    "href": "Popover.json",
+    "summary": "Popover Содержимое самого окна нужно класть в children .",
+    "category": "beta"
+  },
+  {
+    "name": "Tooltip",
+    "href": "Tooltip.json",
+    "summary": "Tooltip В отличие от более универсального Popover , Tooltip предназначен исключительно для поясняющих сообщений, меток или коротких инструкций.",
+    "category": "beta"
+  }
+]

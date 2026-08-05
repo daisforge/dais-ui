@@ -32,6 +32,7 @@ function main(): void {
 
   const manifestPath = path.join(sourceDir, 'manifest.json');
   const componentsDir = path.join(sourceDir, 'components');
+  const betaDir = path.join(sourceDir, 'beta');
 
   if (!fs.existsSync(manifestPath) || !fs.existsSync(componentsDir)) {
     throw new Error(
@@ -54,11 +55,26 @@ function main(): void {
     );
   });
 
+  // beta-атомы (например Popover, EmbeddedButton, Tooltip) документированы
+  // отдельно от основного пакета и у части из них есть тёзки в components/ с
+  // другими пропсами — кладём в отдельную папку, чтобы merge-шаг не перепутал.
+  let betaFiles: string[] = [];
+  if (fs.existsSync(betaDir)) {
+    fs.mkdirSync(path.join(VENDOR_DIR, 'beta'), { recursive: true });
+    betaFiles = fs.readdirSync(betaDir).filter((f) => f.endsWith('.json'));
+    betaFiles.forEach((file) => {
+      fs.copyFileSync(
+        path.join(betaDir, file),
+        path.join(VENDOR_DIR, 'beta', file),
+      );
+    });
+  }
+
   const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8')) as {
     version?: string;
   };
   console.log(
-    `Вендоринг готов: ${files.length} компонентов из @salutejs/sdds-finai@${manifest.version} → ${VENDOR_DIR}`,
+    `Вендоринг готов: ${files.length} компонентов + ${betaFiles.length} beta из @salutejs/sdds-finai@${manifest.version} → ${VENDOR_DIR}`,
   );
 }
 

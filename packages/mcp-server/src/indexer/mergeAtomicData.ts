@@ -11,6 +11,10 @@ const VENDOR_COMPONENTS_DIR = path.resolve(
   __dirname,
   '../../vendor/atomic-mcp-data/components',
 );
+const VENDOR_BETA_DIR = path.resolve(
+  __dirname,
+  '../../vendor/atomic-mcp-data/beta',
+);
 const MANIFEST_PATH = path.resolve(
   __dirname,
   '../../vendor/atomic-mcp-data/manifest.json',
@@ -36,8 +40,14 @@ function getManifest(): AtomicManifest | null {
 
 function loadAtomicComponent(
   atomicBase: string,
+  atomicSubpath: 'beta' | undefined,
 ): AtomicComponentJson | undefined {
-  const filePath = path.join(VENDOR_COMPONENTS_DIR, `${atomicBase}.json`);
+  // beta и основной пакет — разные директории вендоренного снэпшота: у части
+  // атомов есть тёзки в обеих категориях с разными пропсами (Popover,
+  // Tooltip), поэтому важно не перепутать и не подмешать пропсы не того атома.
+  const dir =
+    atomicSubpath === 'beta' ? VENDOR_BETA_DIR : VENDOR_COMPONENTS_DIR;
+  const filePath = path.join(dir, `${atomicBase}.json`);
   if (!fs.existsSync(filePath)) return undefined;
   return JSON.parse(fs.readFileSync(filePath, 'utf8')) as AtomicComponentJson;
 }
@@ -56,7 +66,10 @@ export function mergeAtomicData(
     return { ...record, atomicMcpVersion: getManifest()?.version };
   }
 
-  const atomicComponent = loadAtomicComponent(record.atomicBase);
+  const atomicComponent = loadAtomicComponent(
+    record.atomicBase,
+    record.atomicSubpath,
+  );
   if (!atomicComponent) {
     return { ...record, atomicDataMissing: true };
   }

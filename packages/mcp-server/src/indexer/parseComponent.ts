@@ -59,6 +59,15 @@ export interface ParsedComponent {
   deprecated: boolean;
   deprecationReason?: string;
   pureAtomicReExport: boolean;
+  /**
+   * Реальное имя символа в @salutejs/sdds-finai (может отличаться от `name`,
+   * если ui-kit реэкспортирует атом под другим локальным именем — например
+   * `import { Popover as PopoverBeta } from '@salutejs/sdds-finai/beta'`).
+   * Заполняется только при pureAtomicReExport.
+   */
+  atomicName?: string;
+  /** Атом импортирован из @salutejs/sdds-finai/beta, а не из основного пакета. */
+  atomicSubpath?: 'beta';
   declaredInUiKit: boolean;
   declarationFile: string;
   props: PropRecord[];
@@ -740,6 +749,21 @@ export function parseComponent({
     mainSourceFile,
     '@salutejs/sdds-finai',
   );
+  // Для чистого реэкспорта берём имя символа там, где он реально объявлен
+  // в sdds-finai — не `name` (локальное имя в barrel-файле ui-kit), которое
+  // может быть алиасом (`import { Popover as PopoverBeta } from '.../beta'`).
+  const atomicName = pureAtomicReExport
+    ? mainDecl.getSymbol()?.getName()
+    : undefined;
+  // Типы beta-пакета резолвятся из @salutejs/sdds-finai/dist/beta/... (см.
+  // subpath-export "./beta" в package.json), в отличие от основного пакета
+  // (@salutejs/sdds-finai/types/...) — по этому и различаем. Важно: у
+  // части атомов есть тёзки в основном пакете (Popover, Tooltip) с ДРУГИМИ
+  // пропсами, поэтому подмешивать данные не глядя на subpath нельзя.
+  const isBetaAtom =
+    pureAtomicReExport &&
+    mainSourceFile.getFilePath().includes('/sdds-finai/dist/beta/');
+  const atomicSubpath = isBetaAtom ? ('beta' as const) : undefined;
   const declaredInUiKit = mainSourceFile
     .getFilePath()
     .includes('/packages/ui-kit/src/');
@@ -783,6 +807,8 @@ export function parseComponent({
     deprecated,
     deprecationReason,
     pureAtomicReExport,
+    atomicName,
+    atomicSubpath,
     declaredInUiKit,
     declarationFile: mainSourceFile.getFilePath(),
     props: propsResolved.props,

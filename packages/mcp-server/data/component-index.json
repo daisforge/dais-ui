@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-05T18:44:04.223Z",
+  "generatedAt": "2026-08-05T19:21:52.104Z",
   "libVersion": "1.12.0",
   "components": {
     "Accordion": {
@@ -14702,8 +14702,10 @@
       "propsTypeName": "EmbeddedButtonBetaCompProps",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/dist/beta/types/EmbeddedButton/EmbeddedButton.d.ts",
       "type": "wrapper",
-      "atomicBase": "EmbeddedButtonBeta",
-      "atomicDataMissing": true,
+      "atomicBase": "EmbeddedButton",
+      "atomicSubpath": "beta",
+      "inheritedProps": [],
+      "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { EmbeddedButtonBeta } from '@daisforge/ui';",
       "examples": [
@@ -23950,8 +23952,10 @@
       "propsTypeName": "PopoverBetaCompProps",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/dist/beta/types/Popover/Popover.d.ts",
       "type": "wrapper",
-      "atomicBase": "PopoverBeta",
-      "atomicDataMissing": true,
+      "atomicBase": "Popover",
+      "atomicSubpath": "beta",
+      "inheritedProps": [],
+      "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { PopoverBeta } from '@daisforge/ui';",
       "examples": [
@@ -35706,120 +35710,6 @@
       "description": "Таблица.",
       "props": [
         {
-          "name": "data",
-          "type": "TableRowData[]",
-          "required": true,
-          "description": "Основной контент"
-        },
-        {
-          "name": "columns",
-          "type": "TableColumnData[]",
-          "required": true,
-          "description": "Настройка колонок"
-        },
-        {
-          "name": "onChange",
-          "type": "((data: { selected: RowSelectionState | undefined; filtered: { id: string; value: unknown; }[] | undefined; sorted: { id: string; desc: boolean; }[] | undefined; }) => void) | undefined",
-          "required": false,
-          "description": "Обработчик изменения состояния"
-        },
-        {
-          "name": "borderVariant",
-          "type": "\"rows\" | \"header\" | \"all\" | undefined",
-          "required": false,
-          "description": "Вариант отображения border"
-        },
-        {
-          "name": "enableSelection",
-          "type": "boolean | undefined",
-          "required": false,
-          "description": "Включение функционала выбора строк"
-        },
-        {
-          "name": "selected",
-          "type": "RowSelectionState | undefined",
-          "required": false,
-          "description": "Состояние параметров выбранных строк"
-        },
-        {
-          "name": "filtered",
-          "type": "{ id: string; value: unknown; }[] | undefined",
-          "required": false,
-          "description": "Состояние параметров фильтрации"
-        },
-        {
-          "name": "sorted",
-          "type": "{ id: string; desc: boolean; }[] | undefined",
-          "required": false,
-          "description": "Состояние параметров сортировки"
-        },
-        {
-          "name": "maxHeight",
-          "type": "Property.MaxHeight<string | number> | undefined",
-          "required": false,
-          "description": "Максимальная высота таблицы"
-        },
-        {
-          "name": "stickyHeader",
-          "type": "boolean | undefined",
-          "required": false,
-          "description": "Прилипание шапки при скролле"
-        },
-        {
-          "name": "onCellUpdate",
-          "type": "((rowId: string, columnId: string, value: unknown) => void) | undefined",
-          "required": false,
-          "description": "Обработчик обновления контента ячейки"
-        },
-        {
-          "name": "setRowProps",
-          "type": "((row: TableRowData) => React.HTMLAttributes<any> & React.ThHTMLAttributes<any>) | undefined",
-          "required": false,
-          "description": "Сеттер свойств для строки"
-        },
-        {
-          "name": "topContent",
-          "type": "React.ReactNode",
-          "required": false,
-          "description": "Слот для контента над таблицей."
-        },
-        {
-          "name": "bottomContent",
-          "type": "React.ReactNode",
-          "required": false,
-          "description": "Слот для контента под таблицей."
-        },
-        {
-          "name": "loadingSlot",
-          "type": "React.ReactNode",
-          "required": false,
-          "description": "Слот для лоадинга под контентом."
-        },
-        {
-          "name": "onScroll",
-          "type": "((e: React.UIEvent<HTMLElement, UIEvent>) => void) | undefined",
-          "required": false,
-          "description": "Обработчик сколла контента."
-        },
-        {
-          "name": "classNames",
-          "type": "{ root?: string | undefined; table?: string | undefined; header?: { wrapper?: string | undefined; row?: string | undefined; cell?: string | undefined; } | undefined; body?: { wrapper?: string | undefined; row?: string | undefined; cell?: string | undefined; } | undefined; } | undefined",
-          "required": false,
-          "description": "Возможность указать className для различных семантических узлов внутри компонента."
-        },
-        {
-          "name": "size",
-          "type": "string | undefined",
-          "required": false,
-          "description": "Размер таблицы"
-        },
-        {
-          "name": "view",
-          "type": "string | undefined",
-          "required": false,
-          "description": "Внешний вид таблицы"
-        },
-        {
           "name": "contentEditable",
           "type": "\"inherit\" | Booleanish | \"plaintext-only\" | undefined",
           "required": false,
@@ -35860,8 +35750,181 @@
       "propsTypeName": "TableSDDSProps",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Table/Table.d.ts",
       "type": "wrapper",
-      "atomicBase": "TableSDDS",
-      "atomicDataMissing": true,
+      "atomicBase": "Table",
+      "inheritedProps": [
+        {
+          "name": "view",
+          "type": "\"default\" | \"clear\"",
+          "required": false,
+          "default": "",
+          "description": "",
+          "inheritedFrom": "Table",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "size",
+          "type": "\"s\" | \"l\" | \"m\"",
+          "required": false,
+          "default": "",
+          "description": "",
+          "inheritedFrom": "Table",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "data",
+          "type": "TableRowData[]",
+          "required": false,
+          "default": "",
+          "description": "",
+          "inheritedFrom": "Table",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "columns",
+          "type": "TableColumnData[]",
+          "required": false,
+          "default": "",
+          "description": "",
+          "inheritedFrom": "Table",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "onChange",
+          "type": "((data: { selected: RowSelectionState; filtered: { id: string; value: unknown; }[]; sorted: { id: string; desc: boolean; }[] | undefined; }) => void) | undefined",
+          "required": false,
+          "default": "",
+          "description": "",
+          "inheritedFrom": "Table",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "borderVariant",
+          "type": "\"all\" | \"header\" | \"rows\"",
+          "required": false,
+          "default": "",
+          "description": "",
+          "inheritedFrom": "Table",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "enableSelection",
+          "type": "boolean",
+          "required": false,
+          "default": "",
+          "description": "",
+          "inheritedFrom": "Table",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "selected",
+          "type": "RowSelectionState",
+          "required": false,
+          "default": "",
+          "description": "",
+          "inheritedFrom": "Table",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "filtered",
+          "type": "{ id: string; value: unknown; }[]",
+          "required": false,
+          "default": "",
+          "description": "",
+          "inheritedFrom": "Table",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "sorted",
+          "type": "{ id: string; desc: boolean; }[]",
+          "required": false,
+          "default": "",
+          "description": "",
+          "inheritedFrom": "Table",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "maxHeight",
+          "type": "MaxHeight<string | number>",
+          "required": false,
+          "default": "",
+          "description": "",
+          "inheritedFrom": "Table",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "stickyHeader",
+          "type": "boolean",
+          "required": false,
+          "default": "",
+          "description": "",
+          "inheritedFrom": "Table",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "onCellUpdate",
+          "type": "((rowId: string, columnId: string, value: unknown) => void)",
+          "required": false,
+          "default": "",
+          "description": "",
+          "inheritedFrom": "Table",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "setRowProps",
+          "type": "((row: TableRowData) => HTMLAttributes<any> & ThHTMLAttributes<any>)",
+          "required": false,
+          "default": "",
+          "description": "",
+          "inheritedFrom": "Table",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "topContent",
+          "type": "ReactNode",
+          "required": false,
+          "default": "",
+          "description": "",
+          "inheritedFrom": "Table",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "bottomContent",
+          "type": "ReactNode",
+          "required": false,
+          "default": "",
+          "description": "",
+          "inheritedFrom": "Table",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "loadingSlot",
+          "type": "ReactNode",
+          "required": false,
+          "default": "",
+          "description": "",
+          "inheritedFrom": "Table",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "onScroll",
+          "type": "((e: UIEvent<HTMLElement, UIEvent>) => void)",
+          "required": false,
+          "default": "",
+          "description": "",
+          "inheritedFrom": "Table",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "classNames",
+          "type": "{ root?: string; table?: string; header?: { wrapper?: string | undefined; row?: string | undefined; cell?: string | undefined; } | undefined; body?: { wrapper?: string | undefined; row?: string | undefined; cell?: string | undefined; } | undefined; } | undefined",
+          "required": false,
+          "default": "",
+          "description": "",
+          "inheritedFrom": "Table",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        }
+      ],
+      "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { TableSDDS } from '@daisforge/ui';",
       "examples": [
@@ -35869,7 +35932,7 @@
           "exportName": "Synthesized",
           "displayName": "Минимальный пример",
           "type": "synthesized",
-          "code": "<TableSDDS data={[]} columns={[]} />"
+          "code": "<TableSDDS />"
         }
       ]
     },
@@ -39754,8 +39817,10 @@
       "propsTypeName": "TooltipBetaCompProps",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/dist/beta/types/Tooltip/Tooltip.d.ts",
       "type": "wrapper",
-      "atomicBase": "TooltipBeta",
-      "atomicDataMissing": true,
+      "atomicBase": "Tooltip",
+      "atomicSubpath": "beta",
+      "inheritedProps": [],
+      "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { TooltipBeta } from '@daisforge/ui';",
       "examples": [
