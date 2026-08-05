@@ -6,6 +6,7 @@
     "jsx": "react-jsx"
   },
   "include": [
-    ".probe/**/*.ts"
+    ".probe/**/*.ts",
+    ".probe/**/*.tsx"
   ]
 }
