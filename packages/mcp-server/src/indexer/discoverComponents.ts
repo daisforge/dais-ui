@@ -29,6 +29,46 @@ const GROUPS: { dir: string; group: ComponentGroup }[] = [
 // компонентов по одним только флагам символа.
 const EXCLUDED_DIRS = new Set(['StoriesUtils']);
 
+/**
+ * Отдельные PascalCase value-экспорты внутри иначе легитимных барреля
+ * компонентов, которые сами компонентами не являются — внутренние классы
+ * canvas-рендеринга (TableGlide), API-классы (TableContract), React.Context/
+ * внутренний класс-держатель рефов (Tabs, TableTabs) и объекты с именами
+ * CSS-классов (GridDND, Layout). Они случайно удовлетворяют тем же флагам
+ * символа (Variable/Function/Class), что и настоящие компоненты — по
+ * аналогии с EXCLUDED_DIRS, явный список, а не эвристика: попытка отличить
+ * их структурно через `T extends JSXElementConstructor<any>` дала 80+
+ * ложных срабатываний на настоящих компонентах (FormTextField, Select,
+ * PageLayout...) — тайпчекер слишком часто не резолвит такую форму для
+ * generic/forwardRef-обёрток, так что как сигнал она непригодна.
+ */
+const EXCLUDED_NAMES = new Set([
+  // TableGlide/lib/canvas — внутренние примитивы canvas-рендеринга
+  'CanvasAbsoluteContainer',
+  'CanvasHoverController',
+  'CanvasLeaf',
+  'CanvasRegistry',
+  'CanvasRoot',
+  'DrawBatcher',
+  'CanvasChevron',
+  'CellCanvasRoot',
+  'FlexBox',
+  'FlexElement',
+  'RootFlexBox',
+  // TableContract/api — API-классы, не компоненты
+  'DataViewApi',
+  'EditingApi',
+  // React.Context и внутренний класс-держатель рефов, а не компоненты
+  'TableTabsContext',
+  'TabsContext',
+  'TabItemRefs',
+  // Объекты с именами CSS-классов
+  'GridDNDClassNames',
+  'LayoutDfClassNames',
+  // Класс диапазона выделения из glide-data-grid, не компонент
+  'CompactSelection',
+]);
+
 function isAllCaps(name: string): boolean {
   return /^[A-Z0-9_]+$/.test(name);
 }
@@ -87,7 +127,8 @@ export function discoverComponents(): ComponentEntry[] {
 
       for (const symbol of barrelSourceFile.getExportSymbols()) {
         const name = symbol.getName();
-        if (seen.has(name) || !isComponentLikeSymbol(symbol)) continue;
+        if (seen.has(name) || EXCLUDED_NAMES.has(name)) continue;
+        if (!isComponentLikeSymbol(symbol)) continue;
         seen.add(name);
         entries.push({ name, dir: compDir, group, barrelPath, folderName });
       }

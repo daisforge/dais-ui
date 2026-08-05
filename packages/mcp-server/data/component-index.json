@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-05T18:31:26.875Z",
+  "generatedAt": "2026-08-05T18:44:04.223Z",
   "libVersion": "1.12.0",
   "components": {
     "Accordion": {
@@ -15525,25 +15525,6 @@
         }
       ]
     },
-    "GridDNDClassNames": {
-      "name": "GridDNDClassNames",
-      "group": "components",
-      "description": "",
-      "props": [],
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/GridDND/GridDND.constants.ts",
-      "type": "standalone",
-      "atomicMcpVersion": "0.349.0",
-      "importPath": "@daisforge/ui",
-      "importStatement": "import { GridDNDClassNames } from '@daisforge/ui';",
-      "examples": [
-        {
-          "exportName": "Synthesized",
-          "displayName": "Минимальный пример",
-          "type": "synthesized",
-          "code": "<GridDNDClassNames />"
-        }
-      ]
-    },
     "IconButton": {
       "name": "IconButton",
       "group": "components",
@@ -15554,24 +15535,6 @@
           "type": "\"button\" | \"submit\" | \"reset\" | undefined",
           "required": false,
           "description": ""
-        },
-        {
-          "name": "inputMode",
-          "type": "\"search\" | \"text\" | \"none\" | \"tel\" | \"url\" | \"email\" | \"numeric\" | \"decimal\" | undefined",
-          "required": false,
-          "description": "Hints at the type of data that might be entered by the user while editing the element or its contents"
-        },
-        {
-          "name": "aria-current",
-          "type": "boolean | \"time\" | \"true\" | \"false\" | \"page\" | \"step\" | \"location\" | \"date\" | undefined",
-          "required": false,
-          "description": "Indicates the element that represents the current item within a container or set of related elements."
-        },
-        {
-          "name": "aria-haspopup",
-          "type": "boolean | \"dialog\" | \"menu\" | \"true\" | \"false\" | \"grid\" | \"listbox\" | \"tree\" | undefined",
-          "required": false,
-          "description": "Indicates the availability and type of interactive popup element, such as menu or dialog, that can be triggered by an element."
         },
         {
           "name": "as",
@@ -15812,7 +15775,7 @@
         },
         {
           "name": "iconSize",
-          "type": "\"s\" | \"xs\" | \"m\" | undefined",
+          "type": "\"s\" | \"m\" | \"xs\" | undefined",
           "required": false,
           "description": ""
         },
@@ -15845,24 +15808,6 @@
           "type": "\"button\" | \"submit\" | \"reset\" | undefined",
           "required": false,
           "description": ""
-        },
-        {
-          "name": "inputMode",
-          "type": "\"search\" | \"text\" | \"none\" | \"tel\" | \"url\" | \"email\" | \"numeric\" | \"decimal\" | undefined",
-          "required": false,
-          "description": "Hints at the type of data that might be entered by the user while editing the element or its contents"
-        },
-        {
-          "name": "aria-current",
-          "type": "boolean | \"time\" | \"true\" | \"false\" | \"page\" | \"step\" | \"location\" | \"date\" | undefined",
-          "required": false,
-          "description": "Indicates the element that represents the current item within a container or set of related elements."
-        },
-        {
-          "name": "aria-haspopup",
-          "type": "boolean | \"dialog\" | \"menu\" | \"true\" | \"false\" | \"grid\" | \"listbox\" | \"tree\" | undefined",
-          "required": false,
-          "description": "Indicates the availability and type of interactive popup element, such as menu or dialog, that can be triggered by an element."
         },
         {
           "name": "as",
@@ -16019,7 +15964,7 @@
         },
         {
           "name": "iconSize",
-          "type": "\"s\" | \"xs\" | \"m\" | undefined",
+          "type": "\"s\" | \"m\" | \"xs\" | undefined",
           "required": false,
           "description": ""
         },
@@ -16046,24 +15991,6 @@
           "type": "\"button\" | \"submit\" | \"reset\" | undefined",
           "required": false,
           "description": ""
-        },
-        {
-          "name": "inputMode",
-          "type": "\"search\" | \"text\" | \"none\" | \"tel\" | \"url\" | \"email\" | \"numeric\" | \"decimal\" | undefined",
-          "required": false,
-          "description": "Hints at the type of data that might be entered by the user while editing the element or its contents"
-        },
-        {
-          "name": "aria-current",
-          "type": "boolean | \"time\" | \"true\" | \"false\" | \"page\" | \"step\" | \"location\" | \"date\" | undefined",
-          "required": false,
-          "description": "Indicates the element that represents the current item within a container or set of related elements."
-        },
-        {
-          "name": "aria-haspopup",
-          "type": "boolean | \"dialog\" | \"menu\" | \"true\" | \"false\" | \"grid\" | \"listbox\" | \"tree\" | undefined",
-          "required": false,
-          "description": "Indicates the availability and type of interactive popup element, such as menu or dialog, that can be triggered by an element."
         },
         {
           "name": "as",
@@ -16214,7 +16141,7 @@
         },
         {
           "name": "size",
-          "type": "\"s\" | \"xs\" | \"m\" | undefined",
+          "type": "\"s\" | \"m\" | \"xs\" | undefined",
           "required": false,
           "description": ""
         }
@@ -16262,24 +16189,6 @@
           "type": "React.HTMLAttributeReferrerPolicy | undefined",
           "required": false,
           "description": ""
-        },
-        {
-          "name": "inputMode",
-          "type": "\"search\" | \"text\" | \"none\" | \"tel\" | \"url\" | \"email\" | \"numeric\" | \"decimal\" | undefined",
-          "required": false,
-          "description": "Hints at the type of data that might be entered by the user while editing the element or its contents"
-        },
-        {
-          "name": "aria-current",
-          "type": "boolean | \"time\" | \"true\" | \"false\" | \"page\" | \"step\" | \"location\" | \"date\" | undefined",
-          "required": false,
-          "description": "Indicates the element that represents the current item within a container or set of related elements."
-        },
-        {
-          "name": "aria-haspopup",
-          "type": "boolean | \"dialog\" | \"menu\" | \"true\" | \"false\" | \"grid\" | \"listbox\" | \"tree\" | undefined",
-          "required": false,
-          "description": "Indicates the availability and type of interactive popup element, such as menu or dialog, that can be triggered by an element."
         }
       ],
       "propsTypeName": "ImageProps",
@@ -16331,26 +16240,7 @@
       "name": "Indicator",
       "group": "components",
       "description": "",
-      "props": [
-        {
-          "name": "inputMode",
-          "type": "\"search\" | \"text\" | \"none\" | \"tel\" | \"url\" | \"email\" | \"numeric\" | \"decimal\" | undefined",
-          "required": false,
-          "description": "Hints at the type of data that might be entered by the user while editing the element or its contents"
-        },
-        {
-          "name": "aria-current",
-          "type": "boolean | \"time\" | \"true\" | \"false\" | \"page\" | \"step\" | \"location\" | \"date\" | undefined",
-          "required": false,
-          "description": "Indicates the element that represents the current item within a container or set of related elements."
-        },
-        {
-          "name": "aria-haspopup",
-          "type": "boolean | \"dialog\" | \"menu\" | \"true\" | \"false\" | \"grid\" | \"listbox\" | \"tree\" | undefined",
-          "required": false,
-          "description": "Indicates the availability and type of interactive popup element, such as menu or dialog, that can be triggered by an element."
-        }
-      ],
+      "props": [],
       "propsTypeName": "IndicatorProps",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Indicator/Indicator.d.ts",
       "type": "wrapper",
@@ -31640,25 +31530,6 @@
         }
       ]
     },
-    "CompactSelection": {
-      "name": "CompactSelection",
-      "group": "components",
-      "description": "",
-      "props": [],
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@glideappsfinal/glide-data-grid/dist/dts/internal/data-grid/data-grid-types.d.ts",
-      "type": "standalone",
-      "atomicMcpVersion": "0.349.0",
-      "importPath": "@daisforge/ui",
-      "importStatement": "import { CompactSelection } from '@daisforge/ui';",
-      "examples": [
-        {
-          "exportName": "Synthesized",
-          "displayName": "Минимальный пример",
-          "type": "synthesized",
-          "code": "<CompactSelection />"
-        }
-      ]
-    },
     "TableGlideInstance": {
       "name": "TableGlideInstance",
       "group": "components",
@@ -32893,44 +32764,6 @@
         }
       ]
     },
-    "DataViewApi": {
-      "name": "DataViewApi",
-      "group": "components",
-      "description": "",
-      "props": [],
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableContract/api/data-view.api.ts",
-      "type": "standalone",
-      "atomicMcpVersion": "0.349.0",
-      "importPath": "@daisforge/ui",
-      "importStatement": "import { DataViewApi } from '@daisforge/ui';",
-      "examples": [
-        {
-          "exportName": "Synthesized",
-          "displayName": "Минимальный пример",
-          "type": "synthesized",
-          "code": "<DataViewApi />"
-        }
-      ]
-    },
-    "EditingApi": {
-      "name": "EditingApi",
-      "group": "components",
-      "description": "",
-      "props": [],
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableContract/api/editing.api.ts",
-      "type": "standalone",
-      "atomicMcpVersion": "0.349.0",
-      "importPath": "@daisforge/ui",
-      "importStatement": "import { EditingApi } from '@daisforge/ui';",
-      "examples": [
-        {
-          "exportName": "Synthesized",
-          "displayName": "Минимальный пример",
-          "type": "synthesized",
-          "code": "<EditingApi />"
-        }
-      ]
-    },
     "TableGlide": {
       "name": "TableGlide",
       "group": "components",
@@ -33159,6 +32992,54 @@
           "description": "Включает компенсацию тонких canvas-линий при browser zoom ниже 100% / DPR < 1."
         },
         {
+          "name": "onPaste",
+          "type": "boolean | ((target: Item, values: readonly (readonly string[])[]) => boolean) | undefined",
+          "required": false,
+          "description": "Called when data is pasted into the grid. If left undefined, the `DataEditor` will operate in a\nfallback mode and attempt to paste the text buffer into the current cell assuming the current cell is not\nreadonly and can accept the data type. If `onPaste` is set to false or the function returns false, the grid will\nsimply ignore paste. If `onPaste` evaluates to true the grid will attempt to split the data by tabs and newlines\nand paste into available cells.\n\nThe grid will not attempt to add additional rows if more data is pasted then can fit. In that case it is\nadvisable to simply return false from onPaste and handle the paste manually."
+        },
+        {
+          "name": "onKeyDown",
+          "type": "((event: GridKeyEventArgs) => void) | undefined",
+          "required": false,
+          "description": "Emitted when the canvas receives a key down event."
+        },
+        {
+          "name": "onKeyUp",
+          "type": "((event: GridKeyEventArgs) => void) | undefined",
+          "required": false,
+          "description": "Emitted when the canvas receives a key up event."
+        },
+        {
+          "name": "onDragLeave",
+          "type": "(() => void) | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "onDragStart",
+          "type": "((args: GridDragEventArgs) => void) | undefined",
+          "required": false,
+          "description": "If `isDraggable` is set, the grid becomes HTML draggable, and `onDragStart` will be called when dragging starts.\nYou can use this to build a UI where the user can drag the Grid around."
+        },
+        {
+          "name": "onDrop",
+          "type": "((cell: Item, dataTransfer: DataTransfer | null) => void) | undefined",
+          "required": false,
+          "description": "Called when a HTML Drag and Drop event is ended on the data grid."
+        },
+        {
+          "name": "onMouseMove",
+          "type": "((args: GridMouseEventArgs) => void) | undefined",
+          "required": false,
+          "description": "Fires whenever the mouse moves"
+        },
+        {
+          "name": "key",
+          "type": "React.Key | null | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
           "name": "imageWindowLoader",
           "type": "ImageWindowLoader | undefined",
           "required": false,
@@ -33205,12 +33086,6 @@
           "type": "number | undefined",
           "required": false,
           "description": "The minimum width a column can be resized to."
-        },
-        {
-          "name": "onMouseMove",
-          "type": "((args: GridMouseEventArgs) => void) | undefined",
-          "required": false,
-          "description": "Fires whenever the mouse moves"
         },
         {
           "name": "onVisibleRegionChanged",
@@ -33279,46 +33154,16 @@
           "description": "Emitted when an item is hovered."
         },
         {
-          "name": "onKeyDown",
-          "type": "((event: GridKeyEventArgs) => void) | undefined",
-          "required": false,
-          "description": "Emitted when the canvas receives a key down event."
-        },
-        {
-          "name": "onKeyUp",
-          "type": "((event: GridKeyEventArgs) => void) | undefined",
-          "required": false,
-          "description": "Emitted when the canvas receives a key up event."
-        },
-        {
           "name": "isDraggable",
           "type": "boolean | \"header\" | \"cell\" | undefined",
           "required": false,
           "description": "Determines what can be dragged using HTML drag and drop"
         },
         {
-          "name": "onDragStart",
-          "type": "((args: GridDragEventArgs) => void) | undefined",
-          "required": false,
-          "description": "If `isDraggable` is set, the grid becomes HTML draggable, and `onDragStart` will be called when dragging starts.\nYou can use this to build a UI where the user can drag the Grid around."
-        },
-        {
           "name": "onDragOverCell",
           "type": "((cell: Item, dataTransfer: DataTransfer | null) => void) | undefined",
           "required": false,
           "description": ""
-        },
-        {
-          "name": "onDragLeave",
-          "type": "(() => void) | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "onDrop",
-          "type": "((cell: Item, dataTransfer: DataTransfer | null) => void) | undefined",
-          "required": false,
-          "description": "Called when a HTML Drag and Drop event is ended on the data grid."
         },
         {
           "name": "drawHeader",
@@ -33358,7 +33203,7 @@
         },
         {
           "name": "resizeIndicator",
-          "type": "\"header\" | \"full\" | \"none\" | undefined",
+          "type": "\"header\" | \"none\" | \"full\" | undefined",
           "required": false,
           "description": "Controls the resize indicator behavior.\n\n- `full` will show the resize indicator on the full height.\n- `header` will show the resize indicator only on the header.\n- `none` will not show the resize indicator."
         },
@@ -33580,7 +33425,7 @@
         },
         {
           "name": "rowMarkers",
-          "type": "\"number\" | \"none\" | RowMarkerOptions | \"checkbox\" | \"clickable-number\" | \"checkbox-visible\" | \"both\" | undefined",
+          "type": "\"number\" | \"checkbox\" | \"none\" | \"both\" | RowMarkerOptions | \"clickable-number\" | \"checkbox-visible\" | undefined",
           "required": false,
           "description": "Determines if row markers should be automatically added to the grid.\nInteractive row markers allow the user to select a row.\n\n- \"clickable-number\" renders a number that can be clicked to\n select the row\n- \"both\" causes the row marker to show up as a number but\n reveal a checkbox when the marker is hovered."
         },
@@ -33715,13 +33560,13 @@
         },
         {
           "name": "rowSelectionMode",
-          "type": "\"multi\" | \"auto\" | undefined",
+          "type": "\"auto\" | \"multi\" | undefined",
           "required": false,
           "description": "Determines if row selection requires a modifier key to enable multi-selection or not. In auto mode it adapts to\ntouch or mouse environments automatically, in multi-mode it always acts as if the multi key (Ctrl) is pressed."
         },
         {
           "name": "columnSelectionMode",
-          "type": "\"multi\" | \"auto\" | undefined",
+          "type": "\"auto\" | \"multi\" | undefined",
           "required": false,
           "description": "Determines if column selection requires a modifier key to enable multi-selection or not. In auto mode it adapts to\ntouch or mouse environments automatically, in multi-mode it always acts as if the multi key (Ctrl) is pressed."
         },
@@ -33748,12 +33593,6 @@
           "type": "RowGroupingOptions | undefined",
           "required": false,
           "description": "Controls the grouping of rows to be drawn in the grid."
-        },
-        {
-          "name": "onPaste",
-          "type": "boolean | ((target: Item, values: readonly (readonly string[])[]) => boolean) | undefined",
-          "required": false,
-          "description": "Called when data is pasted into the grid. If left undefined, the `DataEditor` will operate in a\nfallback mode and attempt to paste the text buffer into the current cell assuming the current cell is not\nreadonly and can accept the data type. If `onPaste` is set to false or the function returns false, the grid will\nsimply ignore paste. If `onPaste` evaluates to true the grid will attempt to split the data by tabs and newlines\nand paste into available cells.\n\nThe grid will not attempt to add additional rows if more data is pasted then can fit. In that case it is\nadvisable to simply return false from onPaste and handle the paste manually."
         },
         {
           "name": "renderers",
@@ -33814,12 +33653,6 @@
           "type": "React.RefObject<HTMLElement> | undefined",
           "required": false,
           "description": "Allows overriding the default portal element."
-        },
-        {
-          "name": "key",
-          "type": "React.Key | null | undefined",
-          "required": false,
-          "description": ""
         }
       ],
       "propsTypeName": "TableGlideProps",
@@ -33836,25 +33669,6 @@
           "displayName": "Минимальный пример",
           "type": "synthesized",
           "code": "<TableGlide columns={[]} rows={[]} />"
-        }
-      ]
-    },
-    "CanvasAbsoluteContainer": {
-      "name": "CanvasAbsoluteContainer",
-      "group": "components",
-      "description": "",
-      "props": [],
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableGlide/lib/canvas/core/CanvasAbsoluteContainer.ts",
-      "type": "standalone",
-      "atomicMcpVersion": "0.349.0",
-      "importPath": "@daisforge/ui/components/TableGlide",
-      "importStatement": "import { CanvasAbsoluteContainer } from '@daisforge/ui/components/TableGlide';",
-      "examples": [
-        {
-          "exportName": "Synthesized",
-          "displayName": "Минимальный пример",
-          "type": "synthesized",
-          "code": "<CanvasAbsoluteContainer />"
         }
       ]
     },
@@ -34023,44 +33837,6 @@
         }
       ]
     },
-    "CanvasHoverController": {
-      "name": "CanvasHoverController",
-      "group": "components",
-      "description": "",
-      "props": [],
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableGlide/lib/canvas/core/CanvasHoverController.ts",
-      "type": "standalone",
-      "atomicMcpVersion": "0.349.0",
-      "importPath": "@daisforge/ui/components/TableGlide",
-      "importStatement": "import { CanvasHoverController } from '@daisforge/ui/components/TableGlide';",
-      "examples": [
-        {
-          "exportName": "Synthesized",
-          "displayName": "Минимальный пример",
-          "type": "synthesized",
-          "code": "<CanvasHoverController />"
-        }
-      ]
-    },
-    "CanvasLeaf": {
-      "name": "CanvasLeaf",
-      "group": "components",
-      "description": "",
-      "props": [],
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableGlide/lib/canvas/core/CanvasLeaf.ts",
-      "type": "standalone",
-      "atomicMcpVersion": "0.349.0",
-      "importPath": "@daisforge/ui/components/TableGlide",
-      "importStatement": "import { CanvasLeaf } from '@daisforge/ui/components/TableGlide';",
-      "examples": [
-        {
-          "exportName": "Synthesized",
-          "displayName": "Минимальный пример",
-          "type": "synthesized",
-          "code": "<CanvasLeaf />"
-        }
-      ]
-    },
     "CanvasNode": {
       "name": "CanvasNode",
       "group": "components",
@@ -34109,63 +33885,6 @@
           "displayName": "Минимальный пример",
           "type": "synthesized",
           "code": "<CanvasNode />"
-        }
-      ]
-    },
-    "CanvasRegistry": {
-      "name": "CanvasRegistry",
-      "group": "components",
-      "description": "",
-      "props": [],
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableGlide/lib/canvas/core/CanvasRegistry.ts",
-      "type": "standalone",
-      "atomicMcpVersion": "0.349.0",
-      "importPath": "@daisforge/ui/components/TableGlide",
-      "importStatement": "import { CanvasRegistry } from '@daisforge/ui/components/TableGlide';",
-      "examples": [
-        {
-          "exportName": "Synthesized",
-          "displayName": "Минимальный пример",
-          "type": "synthesized",
-          "code": "<CanvasRegistry />"
-        }
-      ]
-    },
-    "CanvasRoot": {
-      "name": "CanvasRoot",
-      "group": "components",
-      "description": "",
-      "props": [],
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableGlide/lib/canvas/core/CanvasRoot.ts",
-      "type": "standalone",
-      "atomicMcpVersion": "0.349.0",
-      "importPath": "@daisforge/ui/components/TableGlide",
-      "importStatement": "import { CanvasRoot } from '@daisforge/ui/components/TableGlide';",
-      "examples": [
-        {
-          "exportName": "Synthesized",
-          "displayName": "Минимальный пример",
-          "type": "synthesized",
-          "code": "<CanvasRoot />"
-        }
-      ]
-    },
-    "DrawBatcher": {
-      "name": "DrawBatcher",
-      "group": "components",
-      "description": "",
-      "props": [],
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableGlide/lib/canvas/core/DrawBatcher.ts",
-      "type": "standalone",
-      "atomicMcpVersion": "0.349.0",
-      "importPath": "@daisforge/ui/components/TableGlide",
-      "importStatement": "import { DrawBatcher } from '@daisforge/ui/components/TableGlide';",
-      "examples": [
-        {
-          "exportName": "Synthesized",
-          "displayName": "Минимальный пример",
-          "type": "synthesized",
-          "code": "<DrawBatcher />"
         }
       ]
     },
@@ -34323,7 +34042,7 @@
         },
         {
           "name": "variant",
-          "type": "\"primary\" | \"secondary\" | \"danger\" | undefined",
+          "type": "\"secondary\" | \"primary\" | \"danger\" | undefined",
           "required": false,
           "description": "",
           "deprecated": true
@@ -34434,25 +34153,6 @@
         }
       ]
     },
-    "CanvasChevron": {
-      "name": "CanvasChevron",
-      "group": "components",
-      "description": "",
-      "props": [],
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableGlide/lib/canvas/primitives/CanvasChevron.ts",
-      "type": "standalone",
-      "atomicMcpVersion": "0.349.0",
-      "importPath": "@daisforge/ui/components/TableGlide",
-      "importStatement": "import { CanvasChevron } from '@daisforge/ui/components/TableGlide';",
-      "examples": [
-        {
-          "exportName": "Synthesized",
-          "displayName": "Минимальный пример",
-          "type": "synthesized",
-          "code": "<CanvasChevron />"
-        }
-      ]
-    },
     "CanvasEmbedIconButton": {
       "name": "CanvasEmbedIconButton",
       "group": "components",
@@ -34473,7 +34173,7 @@
         },
         {
           "name": "variant",
-          "type": "\"primary\" | \"secondary\" | \"danger\" | undefined",
+          "type": "\"secondary\" | \"primary\" | \"danger\" | undefined",
           "required": false,
           "description": "",
           "deprecated": true
@@ -34733,7 +34433,7 @@
         },
         {
           "name": "variant",
-          "type": "\"primary\" | \"secondary\" | \"danger\" | undefined",
+          "type": "\"secondary\" | \"primary\" | \"danger\" | undefined",
           "required": false,
           "description": "",
           "deprecated": true
@@ -35226,82 +34926,6 @@
           "displayName": "Минимальный пример",
           "type": "synthesized",
           "code": "<CanvasLink />"
-        }
-      ]
-    },
-    "CellCanvasRoot": {
-      "name": "CellCanvasRoot",
-      "group": "components",
-      "description": "",
-      "props": [],
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableGlide/lib/canvas/cells/CellCanvasRoot.ts",
-      "type": "standalone",
-      "atomicMcpVersion": "0.349.0",
-      "importPath": "@daisforge/ui/components/TableGlide",
-      "importStatement": "import { CellCanvasRoot } from '@daisforge/ui/components/TableGlide';",
-      "examples": [
-        {
-          "exportName": "Synthesized",
-          "displayName": "Минимальный пример",
-          "type": "synthesized",
-          "code": "<CellCanvasRoot />"
-        }
-      ]
-    },
-    "FlexBox": {
-      "name": "FlexBox",
-      "group": "components",
-      "description": "",
-      "props": [],
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableGlide/lib/canvas/miniflex/minimal-flexbox.ts",
-      "type": "standalone",
-      "atomicMcpVersion": "0.349.0",
-      "importPath": "@daisforge/ui/components/TableGlide",
-      "importStatement": "import { FlexBox } from '@daisforge/ui/components/TableGlide';",
-      "examples": [
-        {
-          "exportName": "Synthesized",
-          "displayName": "Минимальный пример",
-          "type": "synthesized",
-          "code": "<FlexBox />"
-        }
-      ]
-    },
-    "FlexElement": {
-      "name": "FlexElement",
-      "group": "components",
-      "description": "",
-      "props": [],
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableGlide/lib/canvas/miniflex/minimal-flexbox.ts",
-      "type": "standalone",
-      "atomicMcpVersion": "0.349.0",
-      "importPath": "@daisforge/ui/components/TableGlide",
-      "importStatement": "import { FlexElement } from '@daisforge/ui/components/TableGlide';",
-      "examples": [
-        {
-          "exportName": "Synthesized",
-          "displayName": "Минимальный пример",
-          "type": "synthesized",
-          "code": "<FlexElement />"
-        }
-      ]
-    },
-    "RootFlexBox": {
-      "name": "RootFlexBox",
-      "group": "components",
-      "description": "",
-      "props": [],
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableGlide/lib/canvas/miniflex/minimal-flexbox.ts",
-      "type": "standalone",
-      "atomicMcpVersion": "0.349.0",
-      "importPath": "@daisforge/ui/components/TableGlide",
-      "importStatement": "import { RootFlexBox } from '@daisforge/ui/components/TableGlide';",
-      "examples": [
-        {
-          "exportName": "Synthesized",
-          "displayName": "Минимальный пример",
-          "type": "synthesized",
-          "code": "<RootFlexBox />"
         }
       ]
     },
@@ -36743,44 +36367,6 @@
         }
       ]
     },
-    "TableTabsContext": {
-      "name": "TableTabsContext",
-      "group": "components",
-      "description": "",
-      "props": [],
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableTabs/TableTabs.context.ts",
-      "type": "standalone",
-      "atomicMcpVersion": "0.349.0",
-      "importPath": "@daisforge/ui",
-      "importStatement": "import { TableTabsContext } from '@daisforge/ui';",
-      "examples": [
-        {
-          "exportName": "Synthesized",
-          "displayName": "Минимальный пример",
-          "type": "synthesized",
-          "code": "<TableTabsContext />"
-        }
-      ]
-    },
-    "TabItemRefs": {
-      "name": "TabItemRefs",
-      "group": "components",
-      "description": "",
-      "props": [],
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Tabs/TabsContext.d.ts",
-      "type": "standalone",
-      "atomicMcpVersion": "0.349.0",
-      "importPath": "@daisforge/ui",
-      "importStatement": "import { TabItemRefs } from '@daisforge/ui';",
-      "examples": [
-        {
-          "exportName": "Synthesized",
-          "displayName": "Минимальный пример",
-          "type": "synthesized",
-          "code": "<TabItemRefs />"
-        }
-      ]
-    },
     "IconTabItem": {
       "name": "IconTabItem",
       "group": "components",
@@ -36788,15 +36374,52 @@
       "props": [
         {
           "name": "view",
-          "type": "\"clear\" | \"secondary\" | \"divider\" | \"default\" | undefined",
+          "type": "\"default\" | \"clear\" | \"secondary\" | \"divider\" | undefined",
           "required": false,
           "description": "Вид TabItem"
         },
         {
           "name": "size",
-          "type": "\"h1\" | \"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\" | \"s\" | \"xs\" | \"m\" | \"l\" | undefined",
+          "type": "\"xs\" | \"s\" | \"m\" | \"l\" | \"h6\" | \"h5\" | \"h4\" | \"h3\" | \"h2\" | \"h1\" | undefined",
           "required": false,
           "description": "Размер TabItem"
+        },
+        {
+          "name": "contentEditable",
+          "type": "\"inherit\" | Booleanish | \"plaintext-only\" | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "aria-autocomplete",
+          "type": "\"none\" | \"both\" | \"list\" | \"inline\" | undefined",
+          "required": false,
+          "description": "Indicates whether inputting text could trigger display of one or more predictions of the user's intended value for an input and specifies how predictions would be\npresented if they are made."
+        },
+        {
+          "name": "aria-checked",
+          "type": "boolean | \"mixed\" | \"true\" | \"false\" | undefined",
+          "required": false,
+          "description": "Indicates the current \"checked\" state of checkboxes, radio buttons, and other widgets."
+        },
+        {
+          "name": "aria-dropeffect",
+          "type": "\"none\" | \"link\" | \"copy\" | \"execute\" | \"move\" | \"popup\" | undefined",
+          "required": false,
+          "description": "Indicates what functions can be performed when a dragged object is released on the drop target.",
+          "deprecated": true
+        },
+        {
+          "name": "aria-pressed",
+          "type": "boolean | \"mixed\" | \"true\" | \"false\" | undefined",
+          "required": false,
+          "description": "Indicates the current \"pressed\" state of toggle buttons."
+        },
+        {
+          "name": "aria-relevant",
+          "type": "\"all\" | \"text\" | \"additions\" | \"additions removals\" | \"additions text\" | \"removals\" | \"removals additions\" | \"removals text\" | \"text additions\" | \"text removals\" | undefined",
+          "required": false,
+          "description": "Indicates what notifications the user agent will trigger when the accessibility tree within a live region is modified."
         },
         {
           "name": "type",
@@ -36805,22 +36428,10 @@
           "description": ""
         },
         {
-          "name": "inputMode",
-          "type": "\"search\" | \"text\" | \"none\" | \"tel\" | \"url\" | \"email\" | \"numeric\" | \"decimal\" | undefined",
+          "name": "as",
+          "type": "keyof JSX.IntrinsicElements | React.ComponentType<any> | undefined",
           "required": false,
-          "description": "Hints at the type of data that might be entered by the user while editing the element or its contents"
-        },
-        {
-          "name": "aria-current",
-          "type": "boolean | \"time\" | \"true\" | \"false\" | \"page\" | \"step\" | \"location\" | \"date\" | undefined",
-          "required": false,
-          "description": "Indicates the element that represents the current item within a container or set of related elements."
-        },
-        {
-          "name": "aria-haspopup",
-          "type": "boolean | \"dialog\" | \"menu\" | \"true\" | \"false\" | \"grid\" | \"listbox\" | \"tree\" | undefined",
-          "required": false,
-          "description": "Indicates the availability and type of interactive popup element, such as menu or dialog, that can be triggered by an element."
+          "description": "Сменить рендер на другой тип компонента."
         },
         {
           "name": "actionContent",
@@ -36839,12 +36450,6 @@
           "type": "number | undefined",
           "required": false,
           "description": "Индекс TabItem внутри Tabs - необходим для клавиатурной навигации"
-        },
-        {
-          "name": "as",
-          "type": "keyof JSX.IntrinsicElements | React.ComponentType<any> | undefined",
-          "required": false,
-          "description": "Сменить рендер на другой тип компонента."
         },
         {
           "name": "orientation",
@@ -36888,13 +36493,13 @@
       "props": [
         {
           "name": "view",
-          "type": "\"clear\" | \"secondary\" | \"divider\" | \"default\" | undefined",
+          "type": "\"default\" | \"clear\" | \"secondary\" | \"divider\" | undefined",
           "required": false,
           "description": ""
         },
         {
           "name": "size",
-          "type": "\"h1\" | \"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\" | \"s\" | \"xs\" | \"m\" | \"l\" | undefined",
+          "type": "\"xs\" | \"s\" | \"m\" | \"l\" | \"h6\" | \"h5\" | \"h4\" | \"h3\" | \"h2\" | \"h1\" | undefined",
           "required": false,
           "description": ""
         },
@@ -36953,28 +36558,47 @@
           "description": "Обрезает контент по максимальной ширине и добавляет ..."
         },
         {
-          "name": "type",
-          "type": "\"button\" | \"submit\" | \"reset\" | undefined",
+          "name": "contentEditable",
+          "type": "\"inherit\" | Booleanish | \"plaintext-only\" | undefined",
           "required": false,
           "description": ""
         },
         {
-          "name": "inputMode",
-          "type": "\"search\" | \"text\" | \"none\" | \"tel\" | \"url\" | \"email\" | \"numeric\" | \"decimal\" | undefined",
+          "name": "aria-autocomplete",
+          "type": "\"none\" | \"both\" | \"list\" | \"inline\" | undefined",
           "required": false,
-          "description": "Hints at the type of data that might be entered by the user while editing the element or its contents"
+          "description": "Indicates whether inputting text could trigger display of one or more predictions of the user's intended value for an input and specifies how predictions would be\npresented if they are made."
         },
         {
-          "name": "aria-current",
-          "type": "boolean | \"time\" | \"true\" | \"false\" | \"page\" | \"step\" | \"location\" | \"date\" | undefined",
+          "name": "aria-checked",
+          "type": "boolean | \"mixed\" | \"true\" | \"false\" | undefined",
           "required": false,
-          "description": "Indicates the element that represents the current item within a container or set of related elements."
+          "description": "Indicates the current \"checked\" state of checkboxes, radio buttons, and other widgets."
         },
         {
-          "name": "aria-haspopup",
-          "type": "boolean | \"dialog\" | \"menu\" | \"true\" | \"false\" | \"grid\" | \"listbox\" | \"tree\" | undefined",
+          "name": "aria-dropeffect",
+          "type": "\"none\" | \"link\" | \"copy\" | \"execute\" | \"move\" | \"popup\" | undefined",
           "required": false,
-          "description": "Indicates the availability and type of interactive popup element, such as menu or dialog, that can be triggered by an element."
+          "description": "Indicates what functions can be performed when a dragged object is released on the drop target.",
+          "deprecated": true
+        },
+        {
+          "name": "aria-pressed",
+          "type": "boolean | \"mixed\" | \"true\" | \"false\" | undefined",
+          "required": false,
+          "description": "Indicates the current \"pressed\" state of toggle buttons."
+        },
+        {
+          "name": "aria-relevant",
+          "type": "\"all\" | \"text\" | \"additions\" | \"additions removals\" | \"additions text\" | \"removals\" | \"removals additions\" | \"removals text\" | \"text additions\" | \"text removals\" | undefined",
+          "required": false,
+          "description": "Indicates what notifications the user agent will trigger when the accessibility tree within a live region is modified."
+        },
+        {
+          "name": "type",
+          "type": "\"button\" | \"submit\" | \"reset\" | undefined",
+          "required": false,
+          "description": ""
         },
         {
           "name": "as",
@@ -37017,22 +36641,41 @@
       "description": "Контейнер вкладок, основной компонент для пользовательской сборки вкладок.",
       "props": [
         {
-          "name": "inputMode",
-          "type": "\"search\" | \"text\" | \"none\" | \"tel\" | \"url\" | \"email\" | \"numeric\" | \"decimal\" | undefined",
+          "name": "contentEditable",
+          "type": "\"inherit\" | Booleanish | \"plaintext-only\" | undefined",
           "required": false,
-          "description": "Hints at the type of data that might be entered by the user while editing the element or its contents"
+          "description": ""
         },
         {
-          "name": "aria-current",
-          "type": "boolean | \"time\" | \"true\" | \"false\" | \"page\" | \"step\" | \"location\" | \"date\" | undefined",
+          "name": "aria-autocomplete",
+          "type": "\"none\" | \"both\" | \"list\" | \"inline\" | undefined",
           "required": false,
-          "description": "Indicates the element that represents the current item within a container or set of related elements."
+          "description": "Indicates whether inputting text could trigger display of one or more predictions of the user's intended value for an input and specifies how predictions would be\npresented if they are made."
         },
         {
-          "name": "aria-haspopup",
-          "type": "boolean | \"dialog\" | \"menu\" | \"true\" | \"false\" | \"grid\" | \"listbox\" | \"tree\" | undefined",
+          "name": "aria-checked",
+          "type": "boolean | \"mixed\" | \"true\" | \"false\" | undefined",
           "required": false,
-          "description": "Indicates the availability and type of interactive popup element, such as menu or dialog, that can be triggered by an element."
+          "description": "Indicates the current \"checked\" state of checkboxes, radio buttons, and other widgets."
+        },
+        {
+          "name": "aria-dropeffect",
+          "type": "\"none\" | \"link\" | \"copy\" | \"execute\" | \"move\" | \"popup\" | undefined",
+          "required": false,
+          "description": "Indicates what functions can be performed when a dragged object is released on the drop target.",
+          "deprecated": true
+        },
+        {
+          "name": "aria-pressed",
+          "type": "boolean | \"mixed\" | \"true\" | \"false\" | undefined",
+          "required": false,
+          "description": "Indicates the current \"pressed\" state of toggle buttons."
+        },
+        {
+          "name": "aria-relevant",
+          "type": "\"all\" | \"text\" | \"additions\" | \"additions removals\" | \"additions text\" | \"removals\" | \"removals additions\" | \"removals text\" | \"text additions\" | \"text removals\" | undefined",
+          "required": false,
+          "description": "Indicates what notifications the user agent will trigger when the accessibility tree within a live region is modified."
         },
         {
           "name": "as",
@@ -37149,25 +36792,6 @@
         }
       ]
     },
-    "TabsContext": {
-      "name": "TabsContext",
-      "group": "components",
-      "description": "",
-      "props": [],
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Tabs/TabsContext.d.ts",
-      "type": "standalone",
-      "atomicMcpVersion": "0.349.0",
-      "importPath": "@daisforge/ui",
-      "importStatement": "import { TabsContext } from '@daisforge/ui';",
-      "examples": [
-        {
-          "exportName": "Synthesized",
-          "displayName": "Минимальный пример",
-          "type": "synthesized",
-          "code": "<TabsContext />"
-        }
-      ]
-    },
     "TabsController": {
       "name": "TabsController",
       "group": "components",
@@ -37210,22 +36834,41 @@
           "description": "Как ведет себя компонент при ограничении ширины"
         },
         {
-          "name": "inputMode",
-          "type": "\"search\" | \"text\" | \"none\" | \"tel\" | \"url\" | \"email\" | \"numeric\" | \"decimal\" | undefined",
+          "name": "contentEditable",
+          "type": "\"inherit\" | Booleanish | \"plaintext-only\" | undefined",
           "required": false,
-          "description": "Hints at the type of data that might be entered by the user while editing the element or its contents"
+          "description": ""
         },
         {
-          "name": "aria-current",
-          "type": "boolean | \"time\" | \"true\" | \"false\" | \"page\" | \"step\" | \"location\" | \"date\" | undefined",
+          "name": "aria-autocomplete",
+          "type": "\"none\" | \"both\" | \"list\" | \"inline\" | undefined",
           "required": false,
-          "description": "Indicates the element that represents the current item within a container or set of related elements."
+          "description": "Indicates whether inputting text could trigger display of one or more predictions of the user's intended value for an input and specifies how predictions would be\npresented if they are made."
         },
         {
-          "name": "aria-haspopup",
-          "type": "boolean | \"dialog\" | \"menu\" | \"true\" | \"false\" | \"grid\" | \"listbox\" | \"tree\" | undefined",
+          "name": "aria-checked",
+          "type": "boolean | \"mixed\" | \"true\" | \"false\" | undefined",
           "required": false,
-          "description": "Indicates the availability and type of interactive popup element, such as menu or dialog, that can be triggered by an element."
+          "description": "Indicates the current \"checked\" state of checkboxes, radio buttons, and other widgets."
+        },
+        {
+          "name": "aria-dropeffect",
+          "type": "\"none\" | \"link\" | \"copy\" | \"execute\" | \"move\" | \"popup\" | undefined",
+          "required": false,
+          "description": "Indicates what functions can be performed when a dragged object is released on the drop target.",
+          "deprecated": true
+        },
+        {
+          "name": "aria-pressed",
+          "type": "boolean | \"mixed\" | \"true\" | \"false\" | undefined",
+          "required": false,
+          "description": "Indicates the current \"pressed\" state of toggle buttons."
+        },
+        {
+          "name": "aria-relevant",
+          "type": "\"all\" | \"text\" | \"additions\" | \"additions removals\" | \"additions text\" | \"removals\" | \"removals additions\" | \"removals text\" | \"text additions\" | \"text removals\" | undefined",
+          "required": false,
+          "description": "Indicates what notifications the user agent will trigger when the accessibility tree within a live region is modified."
         },
         {
           "name": "as",
@@ -37266,7 +36909,7 @@
         },
         {
           "name": "size",
-          "type": "\"s\" | \"xs\" | \"m\" | \"l\" | undefined",
+          "type": "\"xs\" | \"s\" | \"m\" | \"l\" | undefined",
           "required": false,
           "description": "Размер табов"
         },
@@ -37306,38 +36949,75 @@
           "description": "Callback при нажатии на кнопку очистки поля ввода."
         },
         {
-          "name": "view",
-          "type": "\"default\" | \"positive\" | \"warning\" | \"negative\" | \"edited\" | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "inputMode",
-          "type": "\"search\" | \"text\" | \"none\" | \"tel\" | \"url\" | \"email\" | \"numeric\" | \"decimal\" | undefined",
-          "required": false,
-          "description": "Hints at the type of data that might be entered by the user while editing the element or its contents"
-        },
-        {
-          "name": "aria-current",
-          "type": "boolean | \"time\" | \"true\" | \"false\" | \"page\" | \"step\" | \"location\" | \"date\" | undefined",
-          "required": false,
-          "description": "Indicates the element that represents the current item within a container or set of related elements."
-        },
-        {
-          "name": "aria-haspopup",
-          "type": "boolean | \"dialog\" | \"menu\" | \"true\" | \"false\" | \"grid\" | \"listbox\" | \"tree\" | undefined",
-          "required": false,
-          "description": "Indicates the availability and type of interactive popup element, such as menu or dialog, that can be triggered by an element."
-        },
-        {
           "name": "onChange",
           "type": "React.ChangeEventHandler<HTMLTextAreaElement> | undefined",
           "required": false,
           "description": "Обработчик изменения элемента формы"
         },
         {
+          "name": "contentEditable",
+          "type": "\"inherit\" | Booleanish | \"plaintext-only\" | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "aria-autocomplete",
+          "type": "\"none\" | \"both\" | \"list\" | \"inline\" | undefined",
+          "required": false,
+          "description": "Indicates whether inputting text could trigger display of one or more predictions of the user's intended value for an input and specifies how predictions would be\npresented if they are made."
+        },
+        {
+          "name": "aria-checked",
+          "type": "boolean | \"mixed\" | \"true\" | \"false\" | undefined",
+          "required": false,
+          "description": "Indicates the current \"checked\" state of checkboxes, radio buttons, and other widgets."
+        },
+        {
+          "name": "aria-dropeffect",
+          "type": "\"none\" | \"link\" | \"copy\" | \"execute\" | \"move\" | \"popup\" | undefined",
+          "required": false,
+          "description": "Indicates what functions can be performed when a dragged object is released on the drop target.",
+          "deprecated": true
+        },
+        {
+          "name": "aria-pressed",
+          "type": "boolean | \"mixed\" | \"true\" | \"false\" | undefined",
+          "required": false,
+          "description": "Indicates the current \"pressed\" state of toggle buttons."
+        },
+        {
+          "name": "aria-relevant",
+          "type": "\"all\" | \"text\" | \"additions\" | \"additions removals\" | \"additions text\" | \"removals\" | \"removals additions\" | \"removals text\" | \"text additions\" | \"text removals\" | undefined",
+          "required": false,
+          "description": "Indicates what notifications the user agent will trigger when the accessibility tree within a live region is modified."
+        },
+        {
           "name": "status",
           "type": "\"\" | \"warning\" | \"success\" | \"error\" | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "view",
+          "type": "\"default\" | \"positive\" | \"warning\" | \"negative\" | \"edited\" | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "size",
+          "type": "\"s\" | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "clear",
+          "type": "true | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "key",
+          "type": "React.Key | null | undefined",
           "required": false,
           "description": ""
         },
@@ -37348,8 +37028,8 @@
           "description": ""
         },
         {
-          "name": "size",
-          "type": "\"s\" | undefined",
+          "name": "contentRight",
+          "type": "React.ReactElement<any, string | React.JSXElementConstructor<any>> | undefined",
           "required": false,
           "description": ""
         },
@@ -37380,12 +37060,6 @@
         {
           "name": "headerSlot",
           "type": "React.ReactNode",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "contentRight",
-          "type": "React.ReactElement<any, string | React.JSXElementConstructor<any>> | undefined",
           "required": false,
           "description": ""
         },
@@ -37522,12 +37196,6 @@
           "description": ""
         },
         {
-          "name": "clear",
-          "type": "true | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
           "name": "hasDivider",
           "type": "boolean | undefined",
           "required": false,
@@ -37536,12 +37204,6 @@
         {
           "name": "labelAriaHidden",
           "type": "boolean | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "key",
-          "type": "React.Key | null | undefined",
           "required": false,
           "description": ""
         },
@@ -37622,34 +37284,41 @@
           "description": "Callback при нажатии на кнопку очистки поля ввода.\nПри наличии value и onClear справа отображается крестик."
         },
         {
-          "name": "inputMode",
-          "type": "\"search\" | \"text\" | \"none\" | \"tel\" | \"url\" | \"email\" | \"numeric\" | \"decimal\" | undefined",
-          "required": false,
-          "description": "Hints at the type of data that might be entered by the user while editing the element or its contents"
-        },
-        {
-          "name": "aria-current",
-          "type": "boolean | \"time\" | \"true\" | \"false\" | \"page\" | \"step\" | \"location\" | \"date\" | undefined",
-          "required": false,
-          "description": "Indicates the element that represents the current item within a container or set of related elements."
-        },
-        {
-          "name": "aria-haspopup",
-          "type": "boolean | \"dialog\" | \"menu\" | \"true\" | \"false\" | \"grid\" | \"listbox\" | \"tree\" | undefined",
-          "required": false,
-          "description": "Indicates the availability and type of interactive popup element, such as menu or dialog, that can be triggered by an element."
-        },
-        {
-          "name": "autoComplete",
-          "type": "React.HTMLInputAutoCompleteAttribute | undefined",
+          "name": "contentEditable",
+          "type": "\"inherit\" | Booleanish | \"plaintext-only\" | undefined",
           "required": false,
           "description": ""
         },
         {
-          "name": "rightHelper",
-          "type": "React.ReactNode",
+          "name": "aria-autocomplete",
+          "type": "\"none\" | \"both\" | \"list\" | \"inline\" | undefined",
           "required": false,
-          "description": ""
+          "description": "Indicates whether inputting text could trigger display of one or more predictions of the user's intended value for an input and specifies how predictions would be\npresented if they are made."
+        },
+        {
+          "name": "aria-checked",
+          "type": "boolean | \"mixed\" | \"true\" | \"false\" | undefined",
+          "required": false,
+          "description": "Indicates the current \"checked\" state of checkboxes, radio buttons, and other widgets."
+        },
+        {
+          "name": "aria-dropeffect",
+          "type": "\"none\" | \"link\" | \"copy\" | \"execute\" | \"move\" | \"popup\" | undefined",
+          "required": false,
+          "description": "Indicates what functions can be performed when a dragged object is released on the drop target.",
+          "deprecated": true
+        },
+        {
+          "name": "aria-pressed",
+          "type": "boolean | \"mixed\" | \"true\" | \"false\" | undefined",
+          "required": false,
+          "description": "Indicates the current \"pressed\" state of toggle buttons."
+        },
+        {
+          "name": "aria-relevant",
+          "type": "\"all\" | \"text\" | \"additions\" | \"additions removals\" | \"additions text\" | \"removals\" | \"removals additions\" | \"removals text\" | \"text additions\" | \"text removals\" | undefined",
+          "required": false,
+          "description": "Indicates what notifications the user agent will trigger when the accessibility tree within a live region is modified."
         },
         {
           "name": "key",
@@ -37658,8 +37327,20 @@
           "description": ""
         },
         {
+          "name": "autoComplete",
+          "type": "React.HTMLInputAutoCompleteAttribute | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
           "name": "enterKeyHint",
           "type": "\"search\" | \"enter\" | \"done\" | \"go\" | \"next\" | \"previous\" | \"send\" | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "rightHelper",
+          "type": "React.ReactNode",
           "required": false,
           "description": ""
         },
@@ -38179,7 +37860,7 @@
       "props": [
         {
           "name": "size",
-          "type": "\"s\" | \"xs\" | undefined",
+          "type": "\"xs\" | \"s\" | undefined",
           "required": false,
           "description": "Размер Поля ввода"
         },
@@ -38197,38 +37878,81 @@
           "deprecated": true
         },
         {
-          "name": "view",
-          "type": "\"default\" | \"positive\" | \"warning\" | \"negative\" | \"edited\" | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "inputMode",
-          "type": "\"search\" | \"text\" | \"none\" | \"tel\" | \"url\" | \"email\" | \"numeric\" | \"decimal\" | undefined",
-          "required": false,
-          "description": "Hints at the type of data that might be entered by the user while editing the element or its contents"
-        },
-        {
-          "name": "aria-current",
-          "type": "boolean | \"time\" | \"true\" | \"false\" | \"page\" | \"step\" | \"location\" | \"date\" | undefined",
-          "required": false,
-          "description": "Indicates the element that represents the current item within a container or set of related elements."
-        },
-        {
-          "name": "aria-haspopup",
-          "type": "boolean | \"dialog\" | \"menu\" | \"true\" | \"false\" | \"grid\" | \"listbox\" | \"tree\" | undefined",
-          "required": false,
-          "description": "Indicates the availability and type of interactive popup element, such as menu or dialog, that can be triggered by an element."
-        },
-        {
           "name": "onChange",
           "type": "React.ChangeEventHandler<HTMLInputElement> | undefined",
           "required": false,
           "description": "Обработчик изменения элемента формы"
         },
         {
+          "name": "contentEditable",
+          "type": "\"inherit\" | Booleanish | \"plaintext-only\" | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "aria-autocomplete",
+          "type": "\"none\" | \"both\" | \"list\" | \"inline\" | undefined",
+          "required": false,
+          "description": "Indicates whether inputting text could trigger display of one or more predictions of the user's intended value for an input and specifies how predictions would be\npresented if they are made."
+        },
+        {
+          "name": "aria-checked",
+          "type": "boolean | \"mixed\" | \"true\" | \"false\" | undefined",
+          "required": false,
+          "description": "Indicates the current \"checked\" state of checkboxes, radio buttons, and other widgets."
+        },
+        {
+          "name": "aria-dropeffect",
+          "type": "\"none\" | \"link\" | \"copy\" | \"execute\" | \"move\" | \"popup\" | undefined",
+          "required": false,
+          "description": "Indicates what functions can be performed when a dragged object is released on the drop target.",
+          "deprecated": true
+        },
+        {
+          "name": "aria-pressed",
+          "type": "boolean | \"mixed\" | \"true\" | \"false\" | undefined",
+          "required": false,
+          "description": "Indicates the current \"pressed\" state of toggle buttons."
+        },
+        {
+          "name": "aria-relevant",
+          "type": "\"all\" | \"text\" | \"additions\" | \"additions removals\" | \"additions text\" | \"removals\" | \"removals additions\" | \"removals text\" | \"text additions\" | \"text removals\" | undefined",
+          "required": false,
+          "description": "Indicates what notifications the user agent will trigger when the accessibility tree within a live region is modified."
+        },
+        {
+          "name": "view",
+          "type": "\"default\" | \"positive\" | \"warning\" | \"negative\" | \"edited\" | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "clear",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "key",
+          "type": "React.Key | null | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
           "name": "autoComplete",
           "type": "React.HTMLInputAutoCompleteAttribute | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "enterKeyHint",
+          "type": "\"search\" | \"enter\" | \"done\" | \"go\" | \"next\" | \"previous\" | \"send\" | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "contentRight",
+          "type": "React.ReactElement<any, string | React.JSXElementConstructor<any>> | undefined",
           "required": false,
           "description": ""
         },
@@ -38253,12 +37977,6 @@
         {
           "name": "titleCaption",
           "type": "React.ReactNode",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "contentRight",
-          "type": "React.ReactElement<any, string | React.JSXElementConstructor<any>> | undefined",
           "required": false,
           "description": ""
         },
@@ -38353,32 +38071,14 @@
           "description": ""
         },
         {
-          "name": "clear",
-          "type": "boolean | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
           "name": "hasDivider",
           "type": "boolean | undefined",
           "required": false,
           "description": ""
         },
         {
-          "name": "key",
-          "type": "React.Key | null | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "enterKeyHint",
-          "type": "\"search\" | \"enter\" | \"done\" | \"go\" | \"next\" | \"previous\" | \"send\" | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
           "name": "chipView",
-          "type": "\"default\" | \"positive\" | \"warning\" | \"negative\" | \"secondary\" | \"accent\" | undefined",
+          "type": "\"default\" | \"secondary\" | \"positive\" | \"warning\" | \"negative\" | \"accent\" | undefined",
           "required": false,
           "description": ""
         },
@@ -38444,7 +38144,7 @@
         },
         {
           "name": "chipType",
-          "type": "\"text\" | \"default\" | undefined",
+          "type": "\"default\" | \"text\" | undefined",
           "required": false,
           "description": ""
         },
@@ -51991,25 +51691,6 @@
           "displayName": "Кастомные классы",
           "type": "args-only",
           "code": "{\n    variant: 'V1_1',\n    headerSlot: DefaultHeader,\n    mainSlot: (\n      <Box width=\"100%\" height=\"100%\" background=\"#dfffdf\">\n        <DefaultContent />\n      </Box>\n    ),\n    classes: {\n      root: 'custom-root-class',\n      header: 'custom-header-class',\n      main: 'custom-main-class',\n    },\n  }"
-        }
-      ]
-    },
-    "LayoutDfClassNames": {
-      "name": "LayoutDfClassNames",
-      "group": "layouts",
-      "description": "",
-      "props": [],
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/layouts/Layout/Layout.classNames.ts",
-      "type": "standalone",
-      "atomicMcpVersion": "0.349.0",
-      "importPath": "@daisforge/ui",
-      "importStatement": "import { LayoutDfClassNames } from '@daisforge/ui';",
-      "examples": [
-        {
-          "exportName": "Synthesized",
-          "displayName": "Минимальный пример",
-          "type": "synthesized",
-          "code": "<LayoutDfClassNames />"
         }
       ]
     },
