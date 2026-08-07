@@ -10,12 +10,18 @@ export interface PropRecord {
   deprecated?: true;
 }
 
-/** Пропс из вендоренного снэпшота @salutejs/sdds-finai (vendor/atomic-mcp-data). */
+/**
+ * Пропс из вендоренного снэпшота @salutejs/sdds-finai (vendor/atomic-mcp-data).
+ * `description`/`default` опциональны: в снэпшоте они систематически приходят
+ * пустой строкой (вендор не несёт ни описаний, ни дефолтов — см. mergeAtomicData
+ * и ARCHITECTURE.md §1.6), и mergeAtomicData такие поля не сохраняет вовсе —
+ * пустая строка в ответе тула читалась бы агентом как содержательное значение.
+ */
 export interface AtomicPropRecord {
   name: string;
   type: string;
   required: boolean;
-  description: string;
+  description?: string;
   default?: string;
 }
 

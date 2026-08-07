@@ -4,7 +4,11 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import type { AtomicPropRecord, WorkingComponentRecord } from '../types.js';
+import type {
+  AtomicPropRecord,
+  PropRecord,
+  WorkingComponentRecord,
+} from '../types.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const VENDOR_COMPONENTS_DIR = path.resolve(
@@ -53,11 +57,49 @@ function loadAtomicComponent(
 }
 
 /**
+ * Вендорный снэпшот систематически кладёт "" в description/default (генератор
+ * PropsTable у атомарной команды пишет только {name, type} — см.
+ * ARCHITECTURE.md §1.6) — пустая строка не то же самое, что "поле
+ * отсутствует", и агент читает "" как содержательный (пустой) дефолт.
+ * Не сохраняем такие поля вовсе.
+ */
+function dropEmptyStrings(p: AtomicPropRecord): AtomicPropRecord {
+  const cleaned = { ...p };
+  if (cleaned.description === '') delete cleaned.description;
+  if (cleaned.default === '') delete cleaned.default;
+  return cleaned;
+}
+
+/**
+ * Вендор беднее собственного резолва ts-morph: замер на 40 wrapper-компонентах
+ * — 0 описаний, 0 default, 0 required:true во всём снэпшоте, при 454 реальных
+ * русских описаниях и 8 required:true, потерянных прежним "own минус
+ * inherited"-дедупом (см. TASKS.md T14). Поэтому там, где имя совпало,
+ * описание и required берём из own (ts-morph — источник точнее), а текст типа
+ * и сам факт наличия пропса — из вендора (он ближе к тому, как атом реально
+ * типизирован публично, без внутренних деталей ui-kit-обёртки).
+ */
+function mergeWithOwn(
+  vendorProp: AtomicPropRecord,
+  ownProp: PropRecord | undefined,
+): AtomicPropRecord {
+  if (!ownProp) return vendorProp;
+  return {
+    ...vendorProp,
+    required: ownProp.required,
+    description: ownProp.description || vendorProp.description,
+  };
+}
+
+/**
  * Для каждого компонента с atomicBase (wrapper/form) подмешивает пропсы из
  * вендоренного снэпшота атомарной команды как inheritedProps[] — отдельно от
- * собственных props[]. Из собственных props[] убираем то, что и так есть в
- * inheritedProps (по имени) — иначе для "чистых" реэкспортов (Button,
- * Accordion) получили бы дублирование всего списка пропсов дважды.
+ * собственных props[]. Пропсы, совпавшие по имени с собственными (own),
+ * пополевым мёрджем объединяются в единственную inheritedProps-запись — own
+ * при этом убирается из props[], иначе для "чистых" реэкспортов (Button,
+ * Accordion) получили бы дублирование всего списка пропсов дважды. Own не
+ * теряется бесследно — description/required из него побеждают, см.
+ * mergeWithOwn.
  */
 export function mergeAtomicData(
   record: WorkingComponentRecord,
@@ -74,8 +116,10 @@ export function mergeAtomicData(
     return { ...record, atomicDataMissing: true };
   }
 
+  const ownByName = new Map((record.props || []).map((p) => [p.name, p]));
+
   const inheritedProps = (atomicComponent.api?.props || []).map((p) => ({
-    ...p,
+    ...mergeWithOwn(dropEmptyStrings(p), ownByName.get(p.name)),
     inheritedFrom: record.atomicBase as string,
     inheritedPackage: '@salutejs/sdds-finai',
   }));
