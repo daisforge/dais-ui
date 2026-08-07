@@ -51,7 +51,16 @@ export function listComponentFeatures(
   );
 }
 
+/** Текст типа в компактных списках не должен весить как get_component_props — длинные union-литералы там не нужны. */
+const COMPACT_PROP_TYPE_MAX_CHARS = 80;
+
+function clipType(type: string): string {
+  return type.length > COMPACT_PROP_TYPE_MAX_CHARS
+    ? `${type.slice(0, COMPACT_PROP_TYPE_MAX_CHARS)}…`
+    : type;
+}
+
 /** Компактная сводка пропса — без description, для "лёгких" списков (get_component). */
 export function summarizeProp(prop: PropRecord): string {
-  return `${prop.name}${prop.required ? '' : '?'}: ${prop.type}`;
+  return `${prop.name}${prop.required ? '' : '?'}: ${clipType(prop.type)}`;
 }
