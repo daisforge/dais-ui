@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-07T12:00:27.838Z",
+  "generatedAt": "2026-08-07T12:02:23.268Z",
   "libVersion": "1.12.0",
   "components": {
     "Accordion": {
@@ -41689,7 +41689,105 @@
         },
         {
           "name": "ListOfFilters",
-          "props": []
+          "typeName": "ComponentProps<typeof FiltersActionsListOfFilters>",
+          "props": [
+            {
+              "name": "opened",
+              "type": "boolean",
+              "required": true,
+              "description": ""
+            },
+            {
+              "name": "clearAll",
+              "type": "() => void",
+              "required": true,
+              "description": ""
+            },
+            {
+              "name": "items",
+              "type": "ItemOrGroup[]",
+              "required": true,
+              "description": ""
+            },
+            {
+              "name": "size",
+              "type": "\"xs\" | undefined",
+              "required": false,
+              "description": ""
+            },
+            {
+              "name": "paddingTop",
+              "type": "number | undefined",
+              "required": false,
+              "description": ""
+            },
+            {
+              "name": "maxLengthInGroup",
+              "type": "number | undefined",
+              "required": false,
+              "description": ""
+            },
+            {
+              "name": "ellipsisLabel",
+              "type": "boolean | undefined",
+              "required": false,
+              "description": "Обрезает название группы фильтров в одну строку с троеточием."
+            },
+            {
+              "name": "sizeOnOpen",
+              "type": "number | undefined",
+              "required": false,
+              "description": ""
+            },
+            {
+              "name": "leftSlot",
+              "type": "React.ReactNode",
+              "required": false,
+              "description": ""
+            },
+            {
+              "name": "paddingInline",
+              "type": "number | undefined",
+              "required": false,
+              "description": ""
+            },
+            {
+              "name": "maxHeight",
+              "type": "number | undefined",
+              "required": false,
+              "description": ""
+            },
+            {
+              "name": "extraCss",
+              "type": "React.CSSProperties | undefined",
+              "required": false,
+              "description": ""
+            },
+            {
+              "name": "chipStyle",
+              "type": "((itemOrGroup: ItemOrGroup, item: Item | undefined) => CSSObject) | undefined",
+              "required": false,
+              "description": ""
+            },
+            {
+              "name": "renderGroupLabel",
+              "type": "((group: Group) => string) | undefined",
+              "required": false,
+              "description": ""
+            },
+            {
+              "name": "renderChipLabel",
+              "type": "((group: Group | null, item: Item) => string) | undefined",
+              "required": false,
+              "description": ""
+            },
+            {
+              "name": "showResetAllFiltersButton",
+              "type": "boolean | undefined",
+              "required": false,
+              "description": "Показывать ли кнопку \"Сбросить все\" в блоке примененных фильтров"
+            }
+          ]
         },
         {
           "name": "TextFieldSearch",
@@ -41701,7 +41799,7 @@
           "props": [
             {
               "name": "$css",
-              "type": "TemplateStringsArray | CSSObject | undefined",
+              "type": "CSSObject | TemplateStringsArray | undefined",
               "required": false,
               "description": "Кастомные стили"
             },
@@ -41719,7 +41817,7 @@
             },
             {
               "name": "as",
-              "type": "React.ComponentType<any> | keyof JSX.IntrinsicElements | undefined",
+              "type": "keyof JSX.IntrinsicElements | React.ComponentType<any> | undefined",
               "required": false,
               "description": "Сменить рендер на другой тип компонента."
             },
@@ -41755,13 +41853,13 @@
           "props": [
             {
               "name": "$css",
-              "type": "TemplateStringsArray | CSSObject | undefined",
+              "type": "CSSObject | TemplateStringsArray | undefined",
               "required": false,
               "description": "Кастомные стили"
             },
             {
               "name": "view",
-              "type": "\"default\" | \"clear\" | \"divider\" | \"secondary\" | undefined",
+              "type": "\"clear\" | \"secondary\" | \"divider\" | \"default\" | undefined",
               "required": false,
               "description": ""
             },
@@ -41815,7 +41913,7 @@
             },
             {
               "name": "as",
-              "type": "React.ComponentType<any> | keyof JSX.IntrinsicElements | undefined",
+              "type": "keyof JSX.IntrinsicElements | React.ComponentType<any> | undefined",
               "required": false,
               "description": "Сменить рендер на другой тип компонента."
             },
@@ -41845,7 +41943,7 @@
           "props": [
             {
               "name": "$css",
-              "type": "TemplateStringsArray | CSSObject | undefined",
+              "type": "CSSObject | TemplateStringsArray | undefined",
               "required": false,
               "description": "Кастомные стили"
             },
@@ -41928,10 +42026,10 @@
               "description": ""
             },
             {
-              "name": "view",
-              "type": "string | undefined",
+              "name": "opened",
+              "type": "boolean | undefined",
               "required": false,
-              "description": "Вид тултипа."
+              "description": "Видимость тултипа."
             },
             {
               "name": "size",
@@ -41940,65 +42038,22 @@
               "description": "Размер тултипа."
             },
             {
+              "name": "view",
+              "type": "string | undefined",
+              "required": false,
+              "description": "Вид тултипа."
+            },
+            {
+              "name": "animated",
+              "type": "boolean | undefined",
+              "required": false,
+              "description": "Анимированное появление/сокрытие."
+            },
+            {
               "name": "target",
               "type": "string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | ((instance: HTMLElement | null) => void) | React.RefObject<HTMLElement> | null | undefined",
               "required": false,
               "description": "Элемент, рядом с которым произойдет вызов всплывающего окна."
-            },
-            {
-              "name": "offset",
-              "type": "[number, number] | undefined",
-              "required": false,
-              "description": "Отступ окна относительно элемента, у которого оно вызвано."
-            },
-            {
-              "name": "frame",
-              "type": "string | React.RefObject<HTMLElement> | undefined",
-              "required": false,
-              "description": "В каком контейнере позиционируется(по умолчанию document), можно также указать id элемента или ref для него."
-            },
-            {
-              "name": "maxWidth",
-              "type": "string | number | undefined",
-              "required": false,
-              "description": "Максимальная ширина окна (в rem)."
-            },
-            {
-              "name": "minWidth",
-              "type": "string | number | undefined",
-              "required": false,
-              "description": "Минимальная ширина окна (в rem)."
-            },
-            {
-              "name": "zIndex",
-              "type": "string | undefined",
-              "required": false,
-              "description": "Значение z-index для Tooltip."
-            },
-            {
-              "name": "contentLeft",
-              "type": "React.ReactNode",
-              "required": false,
-              "description": "Слот для контента слева, например `Icon`."
-            },
-            {
-              "name": "opened",
-              "type": "boolean | undefined",
-              "required": false,
-              "description": "Видимость тултипа."
-            },
-            {
-              "name": "isOpen",
-              "type": "boolean | undefined",
-              "required": false,
-              "description": "Видимость тултипа.",
-              "deprecated": true
-            },
-            {
-              "name": "trigger",
-              "type": "\"none\" | \"hover\" | \"click\" | undefined",
-              "required": false,
-              "description": "Действие по target для отображения тултипа"
             },
             {
               "name": "placement",
@@ -42013,22 +42068,58 @@
               "description": "Видимость стрелки (хвоста)."
             },
             {
+              "name": "offset",
+              "type": "[number, number] | undefined",
+              "required": false,
+              "description": "Отступ окна относительно элемента, у которого оно вызвано."
+            },
+            {
+              "name": "frame",
+              "type": "string | React.RefObject<HTMLElement> | undefined",
+              "required": false,
+              "description": "В каком контейнере позиционируется(по умолчанию document), можно также указать id элемента или ref для него."
+            },
+            {
               "name": "usePortal",
               "type": "boolean | undefined",
               "required": false,
               "description": "Находится ли в портале."
             },
             {
-              "name": "animated",
-              "type": "boolean | undefined",
+              "name": "minWidth",
+              "type": "string | number | undefined",
               "required": false,
-              "description": "Анимированное появление/сокрытие."
+              "description": "Минимальная ширина окна (в rem)."
+            },
+            {
+              "name": "maxWidth",
+              "type": "string | number | undefined",
+              "required": false,
+              "description": "Максимальная ширина окна (в rem)."
             },
             {
               "name": "onDismiss",
               "type": "(() => void) | undefined",
               "required": false,
               "description": "Событие закрытия тултипа по кнопке Esc."
+            },
+            {
+              "name": "contentLeft",
+              "type": "React.ReactNode",
+              "required": false,
+              "description": "Слот для контента слева, например `Icon`."
+            },
+            {
+              "name": "zIndex",
+              "type": "string | undefined",
+              "required": false,
+              "description": "Значение z-index для Tooltip."
+            },
+            {
+              "name": "trigger",
+              "type": "\"none\" | \"click\" | \"hover\" | undefined",
+              "required": false,
+              "description": "Действие по target для отображения тултипа"
             },
             {
               "name": "mouseEnterDelay",
@@ -42058,6 +42149,13 @@
             },
             {
               "name": "isVisible",
+              "type": "boolean | undefined",
+              "required": false,
+              "description": "Видимость тултипа.",
+              "deprecated": true
+            },
+            {
+              "name": "isOpen",
               "type": "boolean | undefined",
               "required": false,
               "description": "Видимость тултипа.",
@@ -42129,7 +42227,7 @@
             },
             {
               "name": "searchingProps",
-              "type": "Pick<TextFieldProps, \"type\" | \"onFocus\" | \"onBlur\" | \"name\" | \"maxLength\" | \"minLength\" | \"placeholder\" | \"contentLeft\" | \"contentRight\" | \"textBefore\" | \"textAfter\"> | undefined",
+              "type": "Pick<TextFieldProps, \"name\" | \"type\" | \"onFocus\" | \"onBlur\" | \"contentLeft\" | \"placeholder\" | \"minLength\" | \"maxLength\" | \"contentRight\" | \"textBefore\" | \"textAfter\"> | undefined",
               "required": false,
               "description": "Пропсы для поля поиска"
             },
@@ -42141,7 +42239,7 @@
             },
             {
               "name": "popoverProps",
-              "type": "Omit<PropsType<{ view: { default: PolymorphicClassName; }; }> & React.HTMLAttributes<HTMLDivElement> & CustomPopoverProps & React.RefAttributes<HTMLDivElement>, \"target\" | \"onToggle\" | \"opened\"> | undefined",
+              "type": "Omit<PropsType<{ view: { default: PolymorphicClassName; }; }> & React.HTMLAttributes<HTMLDivElement> & CustomPopoverProps & React.RefAttributes<HTMLDivElement>, \"opened\" | \"target\" | \"onToggle\"> | undefined",
               "required": false,
               "description": "Пропсы для popover"
             },
@@ -42219,7 +42317,7 @@
             },
             {
               "name": "searchingProps",
-              "type": "Pick<TextFieldProps, \"type\" | \"onFocus\" | \"onBlur\" | \"name\" | \"maxLength\" | \"minLength\" | \"placeholder\" | \"contentLeft\" | \"contentRight\" | \"textBefore\" | \"textAfter\"> | undefined",
+              "type": "Pick<TextFieldProps, \"name\" | \"type\" | \"onFocus\" | \"onBlur\" | \"contentLeft\" | \"placeholder\" | \"minLength\" | \"maxLength\" | \"contentRight\" | \"textBefore\" | \"textAfter\"> | undefined",
               "required": false,
               "description": "Пропсы для поля поиска"
             },
@@ -42231,7 +42329,7 @@
             },
             {
               "name": "popoverProps",
-              "type": "Omit<PropsType<{ view: { default: PolymorphicClassName; }; }> & React.HTMLAttributes<HTMLDivElement> & CustomPopoverProps & React.RefAttributes<HTMLDivElement>, \"target\" | \"onToggle\" | \"opened\"> | undefined",
+              "type": "Omit<PropsType<{ view: { default: PolymorphicClassName; }; }> & React.HTMLAttributes<HTMLDivElement> & CustomPopoverProps & React.RefAttributes<HTMLDivElement>, \"opened\" | \"target\" | \"onToggle\"> | undefined",
               "required": false,
               "description": "Пропсы для popover"
             },
@@ -42261,13 +42359,13 @@
             },
             {
               "name": "$css",
-              "type": "TemplateStringsArray | CSSObject | undefined",
+              "type": "CSSObject | TemplateStringsArray | undefined",
               "required": false,
               "description": "Кастомные стили"
             },
             {
               "name": "view",
-              "type": "\"default\" | \"positive\" | \"warning\" | \"negative\" | \"secondary\" | \"accent\" | \"info\" | undefined",
+              "type": "\"secondary\" | \"default\" | \"positive\" | \"warning\" | \"negative\" | \"accent\" | \"info\" | undefined",
               "required": false,
               "description": ""
             },

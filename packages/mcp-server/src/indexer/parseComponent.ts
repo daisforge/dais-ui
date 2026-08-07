@@ -713,18 +713,36 @@ function resolveCompoundPart(
     findLocalTypeDeclaration(compDir, `${componentName}${subName}Props`) ??
     findLocalTypeDeclaration(compDir, `${localName}Props`);
 
-  if (propsRef) {
-    return { name: subName, ...resolvePropsType(propsRef) };
-  }
-
   const localDecl = resolveExportedDeclaration(barrelSourceFile, localName);
-  const sigPropsRef =
-    localDecl && findPropsDeclFromSignature(localDecl, localName);
-  if (sigPropsRef) {
-    return { name: subName, ...resolvePropsType(sigPropsRef) };
+
+  let resolved: ResolvedPropsType | undefined;
+  if (propsRef) {
+    resolved = resolvePropsType(propsRef);
+  } else {
+    const sigPropsRef =
+      localDecl && findPropsDeclFromSignature(localDecl, localName);
+    if (sigPropsRef) resolved = resolvePropsType(sigPropsRef);
   }
 
-  return { name: subName, props: [] };
+  // Тот же финальный фолбэк, что и у parseComponent для top-level компонента
+  // (см. вызов ниже, ~строка 788): без него для compound-частей без своего
+  // именованного Props-типа и без параметра render-функции (реэкспорт из
+  // @salutejs/sdds-finai без инициализатора) остаётся только сырой текст
+  // типа — до 400 символов нечитаемых вложенных Omit<...>, см. TASKS.md T13.
+  if (
+    (!resolved || (resolved.props.length === 0 && !resolved.isGeneric)) &&
+    localDecl
+  ) {
+    const viaComponentProps = tryExtractViaComponentProps(localDecl);
+    if (viaComponentProps) {
+      resolved = {
+        typeName: resolved?.typeName ?? `ComponentProps<typeof ${localName}>`,
+        props: viaComponentProps,
+      };
+    }
+  }
+
+  return { name: subName, ...(resolved ?? { props: [] }) };
 }
 
 /**
