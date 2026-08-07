@@ -21,9 +21,9 @@ MCP-сервер для `@daisforge/ui` — даёт кодовому агент
 
 ## Инструменты
 
-- `list_components({ type?, category?, scope?, limit?, offset? })` — ответ `{ items, shown, total, hasMore?, truncationNotice? }`. Без `limit` список сам бюджетируется под лимит ответа: если не влезли все компоненты, `truncationNotice` объясняет, чем добрать остаток (фильтры или `limit`/`offset`)
-- `search_components({ query })` — ищет и по компонентам, и по фичам (TableCanvas/Filtering и т.п.)
-- `get_component({ name })` — компактная карточка
+- `list_components({ type?, category?, scope?, role?, limit?, offset? })` — ответ `{ items, shown, total, hasMore?, truncationNotice? }`. По умолчанию отдаёт только `role: "primary"` (~177 из 243 компонентов) — слоты вроде `DrawerDFHeader` и служебные примитивы вроде `CanvasRect` скрыты; `role: "all"` снимает фильтр. Без `limit` список сам бюджетируется под лимит ответа: если не влезли все компоненты, `truncationNotice` объясняет, чем добрать остаток (фильтры или `limit`/`offset`)
+- `search_components({ query })` — ищет и по компонентам, и по фичам (TableCanvas/Filtering и т.п.); `role: "internal"` понижается штрафом, но не исключается
+- `get_component({ name })` — компактная карточка. У `part`/`internal`-записей — `parentComponent` (куда идти за деталями); у владельца папки — `relatedExports` (какие части/внутренние примитивы у него есть, раз их не видно в `list_components` по умолчанию); у записей, дублирующих compound-часть родителя (`compoundPartOf`), пропсы не повторяются — карточка сразу отсылает к `get_component_props({ name: parent, part })`
 - `get_component_props({ name, part? })` — полные пропсы (собственные + унаследованные от атома)
 - `get_component_examples({ name, title? })`
 - `list_features({ component })`, `get_feature({ component, feature })`, `get_feature_examples({ component, feature, title? })`

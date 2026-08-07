@@ -31,6 +31,8 @@ interface ComponentPropsPayload {
   inheritedProps: InheritedPropRecord[];
   atomicBase?: string;
   atomicDataMissing?: true;
+  /** Эта запись — ещё и compound-часть другого компонента (см. TASKS.md T12); props здесь и у get_component_props({name: component, part}) синхронизированы. */
+  compoundPartOf?: { component: string; part: string };
   dataVersionNotice?: string;
   warning?: string;
 }
@@ -106,6 +108,7 @@ export function getComponentProps(
     inheritedProps: record.inheritedProps || [],
     atomicBase: record.atomicBase,
     atomicDataMissing: record.atomicDataMissing || undefined,
+    compoundPartOf: record.compoundPartOf,
     dataVersionNotice: index.dataVersionNotice,
     warning: genericEmptyPropsWarning(record.isGeneric, props.length),
   };

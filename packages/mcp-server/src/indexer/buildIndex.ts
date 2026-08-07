@@ -13,6 +13,7 @@ import {
   linkFormVariants,
   promoteCompositionToWrapper,
 } from './classify.js';
+import { classifyRole } from './classifyRole.js';
 import { printDiagnostics } from './diagnostics.js';
 import { discoverComponents } from './discoverComponents.js';
 import { getDenylistMap } from './htmlAttributeDenylist.js';
@@ -57,6 +58,82 @@ function finalizeExamples(record: WorkingComponentRecord): ExampleRecord[] {
   return [synthesizeExample(record)];
 }
 
+/**
+ * Проставляет parentComponent у part/internal-записей (имя владельца папки —
+ * обычно primary-запись с name === folderName, но пять папок такого владельца
+ * не имеют, см. TASKS.md T11 — тогда используется само имя папки) и
+ * relatedExports у primary-записей той же папки, чтобы part/internal не
+ * стали недостижимы после того, как list_components по умолчанию скрывает
+ * их. Мутирует records на месте — тот же приём, что promoteCompositionToWrapper.
+ */
+function linkFolderRoles(records: WorkingComponentRecord[]): void {
+  const byFolder = new Map<string, WorkingComponentRecord[]>();
+  records.forEach((r) => {
+    if (r.error || !r.folderName) return;
+    const group = byFolder.get(r.folderName) ?? [];
+    group.push(r);
+    byFolder.set(r.folderName, group);
+  });
+
+  [...byFolder.values()]
+    .filter((group) => group.some((r) => r.role !== 'primary'))
+    .forEach((group) => {
+      const nonPrimary = group.filter((r) => r.role !== 'primary');
+      const owner = group.find((r) => r.name === r.folderName);
+      nonPrimary.forEach((r) => {
+        r.parentComponent = owner?.name ?? r.folderName;
+      });
+
+      const nonPrimaryNames = nonPrimary.map((r) => r.name);
+      group
+        .filter((r) => r.role === 'primary')
+        .forEach((r) => {
+          r.relatedExports = nonPrimaryNames;
+        });
+    });
+}
+
+/**
+ * 10 записей в индексе присутствуют одновременно и как top-level компонент,
+ * и как элемент compoundParts родителя (DrawerDF/{Content,Header,Footer},
+ * MassActions/Counter, Stories/Preview, FiltersActions/{FiltersButton,
+ * DotsIconButton,ListOfFilters,Tabs,TabItem}, см. TASKS.md T12) — два
+ * независимых пути резолва одного и того же типа (parseComponent для
+ * top-level записи, resolveCompoundPart для части родителя), дающих РАЗНЫЙ
+ * результат и вдвое расходующих бюджет ответа. Проставляет top-level записи
+ * compoundPartOf и синхронизирует props в обе стороны — источником истины
+ * становится тот путь резолва, что дал больше пропсов (полнее прошёл цепочку
+ * фолбэков), а не оба сразу.
+ */
+function linkCompoundPartDuplicates(records: WorkingComponentRecord[]): void {
+  const byName = new Map(records.map((r) => [r.name, r]));
+
+  records.forEach((parent) => {
+    if (parent.error || !parent.compoundParts) return;
+
+    parent.compoundParts.forEach((part) => {
+      const dup = byName.get(`${parent.name}${part.name}`);
+      if (!dup || dup === parent || dup.error) return;
+
+      dup.compoundPartOf = { component: parent.name, part: part.name };
+
+      const dupProps = dup.props || [];
+      const partProps = part.props || [];
+      if (dupProps.length >= partProps.length) {
+        part.props = dupProps;
+        part.typeName = part.typeName ?? dup.propsTypeName;
+        part.rawType = part.rawType ?? dup.rawType;
+        part.isGeneric = part.isGeneric ?? dup.isGeneric;
+      } else {
+        dup.props = partProps;
+        dup.propsTypeName = dup.propsTypeName ?? part.typeName;
+        dup.rawType = dup.rawType ?? part.rawType;
+        dup.isGeneric = dup.isGeneric ?? part.isGeneric;
+      }
+    });
+  });
+}
+
 function buildComponentRecords(): WorkingComponentRecord[] {
   const entries = discoverComponents();
 
@@ -83,6 +160,8 @@ function buildComponentRecords(): WorkingComponentRecord[] {
       return {
         name: entry.name,
         group: entry.group,
+        folderName: entry.folderName,
+        role: classifyRole(entry.name, entry.folderName),
         description: parsed.description,
         deprecated: parsed.deprecated || undefined,
         deprecationReason: parsed.deprecationReason,
@@ -101,7 +180,15 @@ function buildComponentRecords(): WorkingComponentRecord[] {
   linkFormVariants(records);
 
   records = records.map((r) => (r.error ? r : mergeMeta(r)));
+  // После mergeMeta — курированный role-оверрайд (curated wins over
+  // heuristic) уже применён, parentComponent/relatedExports должны считаться
+  // от финальной роли, а не от эвристики classifyRole в исходном виде.
+  linkFolderRoles(records);
   records = records.map((r) => (r.error ? r : mergeAtomicData(r)));
+  // После mergeAtomicData — top-level путь резолва уже обогащён атомарными
+  // описаниями/required (T14) и расщеплён на own/inherited, поэтому именно
+  // в этот момент справедливо сравнивать полноту с compoundParts-путём.
+  linkCompoundPartDuplicates(records);
 
   records = records.map((r) => {
     if (r.error) return r;

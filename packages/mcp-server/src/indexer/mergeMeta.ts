@@ -57,6 +57,7 @@ export function mergeMeta(
     ...record,
     ...(componentMeta.category ? { category: componentMeta.category } : {}),
     ...(componentMeta.type ? { type: componentMeta.type } : {}),
+    ...(componentMeta.role ? { role: componentMeta.role } : {}),
     ...(componentMeta.description
       ? { description: componentMeta.description }
       : {}),

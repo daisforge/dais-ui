@@ -1,10 +1,12 @@
 {
-  "generatedAt": "2026-08-07T12:02:23.268Z",
+  "generatedAt": "2026-08-07T12:04:07.829Z",
   "libVersion": "1.12.0",
   "components": {
     "Accordion": {
       "name": "Accordion",
       "group": "components",
+      "folderName": "Accordion",
+      "role": "primary",
       "description": "",
       "props": [],
       "propsTypeName": "ComponentProps<typeof Accordion>",
@@ -77,6 +79,8 @@
     "AccordionItem": {
       "name": "AccordionItem",
       "group": "components",
+      "folderName": "Accordion",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -188,6 +192,8 @@
     "AiAgentPopover": {
       "name": "AiAgentPopover",
       "group": "components",
+      "folderName": "AiAgentPopover",
+      "role": "primary",
       "description": "Popover для AI-агента с потоковым выводом и управлением состоянием.",
       "props": [
         {
@@ -416,6 +422,8 @@
     "AnalyticalWidget": {
       "name": "AnalyticalWidget",
       "group": "components",
+      "folderName": "AnalyticalWidget",
+      "role": "primary",
       "description": "Layout-контейнер с фиксированными размерами (L/M/S), слотами (header, top, middle, content) и отступами. Контент слотов — любой.",
       "props": [
         {
@@ -629,6 +637,8 @@
     "ApprovalCenter": {
       "name": "ApprovalCenter",
       "group": "components",
+      "folderName": "ApprovalCenter",
+      "role": "primary",
       "description": "Компонент последовательных согласований между группами лиц.",
       "props": [
         {
@@ -740,6 +750,8 @@
     "Attach": {
       "name": "Attach",
       "group": "components",
+      "folderName": "Attach",
+      "role": "primary",
       "description": "Компонент, позволяющий прикрепить локальный файл",
       "props": [
         {
@@ -1016,6 +1028,8 @@
     "Autocomplete": {
       "name": "Autocomplete",
       "group": "components",
+      "folderName": "Autocomplete",
+      "role": "primary",
       "description": "Поле ввода с автодополнением.",
       "props": [
         {
@@ -1532,6 +1546,8 @@
     "AutocompleteSearch": {
       "name": "AutocompleteSearch",
       "group": "components",
+      "folderName": "AutocompleteSearch",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -1909,6 +1925,8 @@
     "Avatar": {
       "name": "Avatar",
       "group": "components",
+      "folderName": "Avatar",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -2136,6 +2154,8 @@
     "AvatarGroup": {
       "name": "AvatarGroup",
       "group": "components",
+      "folderName": "AvatarGroup",
+      "role": "primary",
       "description": "",
       "props": [],
       "propsTypeName": "AvatarGroupProps",
@@ -2158,6 +2178,8 @@
     "Badge": {
       "name": "Badge",
       "group": "components",
+      "folderName": "Badge",
+      "role": "primary",
       "description": "Компонент Badge.",
       "props": [
         {
@@ -2274,6 +2296,8 @@
     "BlockGradientScroll": {
       "name": "BlockGradientScroll",
       "group": "components",
+      "folderName": "BlockGradientScroll",
+      "role": "primary",
       "description": "Блок с градиентной прокруткой контента.",
       "props": [
         {
@@ -2391,6 +2415,8 @@
     "BlockTitle": {
       "name": "BlockTitle",
       "group": "components",
+      "folderName": "BlockTitle",
+      "role": "primary",
       "description": "Заголовок блока с подзаголовком и действиями.",
       "props": [
         {
@@ -2527,6 +2553,8 @@
     "Box": {
       "name": "Box",
       "group": "components",
+      "folderName": "Box",
+      "role": "primary",
       "description": "Базовый контейнер-обёртка с пропсами для размеров, отступов и фона.",
       "props": [
         {
@@ -2884,6 +2912,8 @@
     "Breadcrumbs": {
       "name": "Breadcrumbs",
       "group": "components",
+      "folderName": "Breadcrumbs",
+      "role": "primary",
       "description": "Breadcrumbs",
       "props": [],
       "propsTypeName": "BreadcrumbsProps",
@@ -2946,6 +2976,8 @@
     "Button": {
       "name": "Button",
       "group": "components",
+      "folderName": "Button",
+      "role": "primary",
       "description": "Кнопка.",
       "props": [
         {
@@ -3129,6 +3161,8 @@
     "ButtonBase": {
       "name": "ButtonBase",
       "group": "components",
+      "folderName": "ButtonBase",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -3156,6 +3190,8 @@
     "ButtonGroup": {
       "name": "ButtonGroup",
       "group": "components",
+      "folderName": "ButtonGroup",
+      "role": "primary",
       "description": "Группа кнопок.",
       "props": [],
       "propsTypeName": "ButtonGroupProps",
@@ -3235,6 +3271,8 @@
     "Calendar": {
       "name": "Calendar",
       "group": "components",
+      "folderName": "Calendar",
+      "role": "primary",
       "description": "",
       "props": [],
       "propsTypeName": "CalendarProps",
@@ -3464,6 +3502,8 @@
     "CalendarBase": {
       "name": "CalendarBase",
       "group": "components",
+      "folderName": "Calendar",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -3618,6 +3658,8 @@
     "CalendarBaseRange": {
       "name": "CalendarBaseRange",
       "group": "components",
+      "folderName": "Calendar",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -3784,6 +3826,8 @@
     "CalendarDouble": {
       "name": "CalendarDouble",
       "group": "components",
+      "folderName": "Calendar",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -3938,6 +3982,8 @@
     "CalendarDoubleRange": {
       "name": "CalendarDoubleRange",
       "group": "components",
+      "folderName": "Calendar",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -4104,12 +4150,17 @@
     "Card": {
       "name": "Card",
       "group": "components",
+      "folderName": "Card",
+      "role": "primary",
       "description": "Компонент Card.",
       "props": [],
       "propsTypeName": "CardProps",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Card/Card.d.ts",
       "type": "wrapper",
       "atomicBase": "Card",
+      "relatedExports": [
+        "CardContent"
+      ],
       "inheritedProps": [
         {
           "name": "view",
@@ -4166,6 +4217,8 @@
     "CardContent": {
       "name": "CardContent",
       "group": "components",
+      "folderName": "Card",
+      "role": "part",
       "description": "",
       "props": [
         {
@@ -4178,6 +4231,7 @@
       "propsTypeName": "ComponentProps<typeof CardContent>",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Card/Card.styles.d.ts",
       "type": "standalone",
+      "parentComponent": "Card",
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { CardContent } from '@daisforge/ui';",
@@ -4193,6 +4247,8 @@
     "CardInnerContent": {
       "name": "CardInnerContent",
       "group": "components",
+      "folderName": "Card",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -4205,6 +4261,9 @@
       "propsTypeName": "ComponentProps<typeof CardInnerContent>",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Card/Card.styles.d.ts",
       "type": "standalone",
+      "relatedExports": [
+        "CardContent"
+      ],
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { CardInnerContent } from '@daisforge/ui';",
@@ -4220,6 +4279,8 @@
     "Carousel": {
       "name": "Carousel",
       "group": "components",
+      "folderName": "Carousel",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -4315,6 +4376,8 @@
     "CarouselItem": {
       "name": "CarouselItem",
       "group": "components",
+      "folderName": "Carousel",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -4354,6 +4417,8 @@
     "CellTextbox": {
       "name": "CellTextbox",
       "group": "components",
+      "folderName": "Cell",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -4381,6 +4446,8 @@
     "CellTextboxLabel": {
       "name": "CellTextboxLabel",
       "group": "components",
+      "folderName": "Cell",
+      "role": "primary",
       "description": "",
       "props": [],
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Cell/ui/CellTextboxLabel/CellTextboxLabel.d.ts",
@@ -4400,6 +4467,8 @@
     "CellTextboxSubtitle": {
       "name": "CellTextboxSubtitle",
       "group": "components",
+      "folderName": "Cell",
+      "role": "primary",
       "description": "",
       "props": [],
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Cell/ui/CellTextboxSubtitle/CellTextboxSubtitle.d.ts",
@@ -4419,6 +4488,8 @@
     "CellTextboxTitle": {
       "name": "CellTextboxTitle",
       "group": "components",
+      "folderName": "Cell",
+      "role": "primary",
       "description": "",
       "props": [],
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Cell/ui/CellTextboxTitle/CellTextboxTitle.d.ts",
@@ -4438,6 +4509,8 @@
     "Cell": {
       "name": "Cell",
       "group": "components",
+      "folderName": "Cell",
+      "role": "primary",
       "description": "Кнопка.",
       "props": [],
       "propsTypeName": "CellProps",
@@ -4548,6 +4621,8 @@
     "Checkbox": {
       "name": "Checkbox",
       "group": "components",
+      "folderName": "Checkbox",
+      "role": "primary",
       "description": "Флажок или чекбокс. Позволяет пользователю управлять параметром с двумя состояниями — ☑ включено и ☐ отключено.",
       "props": [
         {
@@ -4762,6 +4837,8 @@
     "Chip": {
       "name": "Chip",
       "group": "components",
+      "folderName": "Chip",
+      "role": "primary",
       "description": "Компонент chip.",
       "props": [
         {
@@ -4893,6 +4970,8 @@
     "ChipGroup": {
       "name": "ChipGroup",
       "group": "components",
+      "folderName": "ChipGroup",
+      "role": "primary",
       "description": "",
       "props": [],
       "propsTypeName": "ComponentProps<typeof ChipGroup>",
@@ -4956,6 +5035,8 @@
     "CodeField": {
       "name": "CodeField",
       "group": "components",
+      "folderName": "CodeField",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -5112,6 +5193,8 @@
     "CodeInput": {
       "name": "CodeInput",
       "group": "components",
+      "folderName": "CodeInput",
+      "role": "primary",
       "description": "CodeInput",
       "props": [
         {
@@ -5261,6 +5344,8 @@
     "Collapse": {
       "name": "Collapse",
       "group": "components",
+      "folderName": "Collapse",
+      "role": "primary",
       "description": "Сворачиваемый блок контента.",
       "props": [
         {
@@ -5420,6 +5505,8 @@
     "Combobox": {
       "name": "Combobox",
       "group": "components",
+      "folderName": "Combobox",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -5985,6 +6072,8 @@
     "Counter": {
       "name": "Counter",
       "group": "components",
+      "folderName": "Counter",
+      "role": "primary",
       "description": "Компонент Counter.",
       "props": [],
       "propsTypeName": "CounterProps",
@@ -6040,6 +6129,8 @@
     "DatePicker": {
       "name": "DatePicker",
       "group": "components",
+      "folderName": "DatePicker",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -6677,6 +6768,8 @@
     "DatePickerRange": {
       "name": "DatePickerRange",
       "group": "components",
+      "folderName": "DatePicker",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -7236,6 +7329,8 @@
     "DateTimePicker": {
       "name": "DateTimePicker",
       "group": "components",
+      "folderName": "DateTimePicker",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -7876,6 +7971,8 @@
     "Divider": {
       "name": "Divider",
       "group": "components",
+      "folderName": "Divider",
+      "role": "primary",
       "description": "Компонент Divider.",
       "props": [
         {
@@ -7922,12 +8019,19 @@
     "Drawer": {
       "name": "Drawer",
       "group": "components",
+      "folderName": "Drawer",
+      "role": "primary",
       "description": "Компонент Drawer.",
       "props": [],
       "propsTypeName": "DrawerProps",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Drawer/Drawer.d.ts",
       "type": "wrapper",
       "atomicBase": "Drawer",
+      "relatedExports": [
+        "DrawerContent",
+        "DrawerFooter",
+        "DrawerHeader"
+      ],
       "inheritedProps": [
         {
           "name": "view",
@@ -8165,6 +8269,8 @@
     "DrawerContent": {
       "name": "DrawerContent",
       "group": "components",
+      "folderName": "Drawer",
+      "role": "part",
       "description": "Компонент части контента Drawer.",
       "props": [
         {
@@ -8178,6 +8284,7 @@
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Drawer/Drawer.d.ts",
       "type": "wrapper",
       "atomicBase": "DrawerContent",
+      "parentComponent": "Drawer",
       "atomicDataMissing": true,
       "importPath": "@daisforge/ui",
       "importStatement": "import { DrawerContent } from '@daisforge/ui';",
@@ -8193,6 +8300,8 @@
     "DrawerFooter": {
       "name": "DrawerFooter",
       "group": "components",
+      "folderName": "Drawer",
+      "role": "part",
       "description": "Компонент нижней контента Drawer.",
       "props": [
         {
@@ -8206,6 +8315,7 @@
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Drawer/Drawer.d.ts",
       "type": "wrapper",
       "atomicBase": "DrawerFooter",
+      "parentComponent": "Drawer",
       "atomicDataMissing": true,
       "importPath": "@daisforge/ui",
       "importStatement": "import { DrawerFooter } from '@daisforge/ui';",
@@ -8221,6 +8331,8 @@
     "DrawerHeader": {
       "name": "DrawerHeader",
       "group": "components",
+      "folderName": "Drawer",
+      "role": "part",
       "description": "Компонент верхней части Drawer.",
       "props": [
         {
@@ -8258,6 +8370,7 @@
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Drawer/Drawer.d.ts",
       "type": "wrapper",
       "atomicBase": "DrawerHeader",
+      "parentComponent": "Drawer",
       "atomicDataMissing": true,
       "importPath": "@daisforge/ui",
       "importStatement": "import { DrawerHeader } from '@daisforge/ui';",
@@ -8273,6 +8386,8 @@
     "DrawerDF": {
       "name": "DrawerDF",
       "group": "components",
+      "folderName": "DrawerDF",
+      "role": "primary",
       "description": "Расширенный Drawer с layout-ами для шапки/контента/футера.",
       "props": [
         {
@@ -8464,6 +8579,270 @@
           "typeName": "DrawerDFContentProps",
           "props": [
             {
+              "name": "as",
+              "type": "((string | React.ComponentType<any>) & (\"symbol\" | \"object\" | \"label\" | \"form\" | \"pattern\" | \"slot\" | \"style\" | \"title\" | \"view\" | \"s\" | \"button\" | \"image\" | \"search\" | \"text\" | \"time\" | \"article\" | \"dialog\" | \"figure\" | \"img\" | \"link\" | \"main\" | \"menu\" | \"menuitem\" | \"option\" | \"switch\" | \"table\" | \"center\" | \"a\" | \"abbr\" | \"address\" | \"area\" | \"aside\" | \"audio\" | \"b\" | \"base\" | \"bdi\" | \"bdo\" | \"…",
+              "required": false,
+              "description": "Компонент, используемый для корневого узла. Либо строка для использования элемента HTML, либо компонента. (Например: `li`, `p`, `button` и т.д.)"
+            },
+            {
+              "name": "zIndex",
+              "type": "Property.ZIndex | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `auto | <integer>`\n\n**Initial value**: `auto`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
+            },
+            {
+              "name": "height",
+              "type": "Property.Height<string | number> | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `auto | <length-percentage [0,∞]> | min-content | max-content | fit-content | fit-content(<length-percentage [0,∞]>) | <calc-size()> | <anchor-size()>`\n\n**Initial value**: `auto`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
+            },
+            {
+              "name": "width",
+              "type": "Property.Width<string | number> | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `auto | <length-percentage [0,∞]> | min-content | max-content | fit-content | fit-content(<length-percentage [0,∞]>) | <calc-size()> | <anchor-size()>`\n\n**Initial value**: `auto`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
+            },
+            {
+              "name": "left",
+              "type": "Property.Left<string | number> | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `auto | <length-percentage> | <anchor()> | <anchor-size()>`\n\n**Initial value**: `auto`\n\n| Chrome | Firefox | Safari |  Edge  |   IE    |\n| :----: | :-----: | :----: | :----: | :-----: |\n| **1**  |  **1**  | **1**  | **12** | **5.5** |"
+            },
+            {
+              "name": "right",
+              "type": "Property.Right<string | number> | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `auto | <length-percentage> | <anchor()> | <anchor-size()>`\n\n**Initial value**: `auto`\n\n| Chrome | Firefox | Safari |  Edge  |   IE    |\n| :----: | :-----: | :----: | :----: | :-----: |\n| **1**  |  **1**  | **1**  | **12** | **5.5** |"
+            },
+            {
+              "name": "top",
+              "type": "Property.Top<string | number> | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `auto | <length-percentage> | <anchor()> | <anchor-size()>`\n\n**Initial value**: `auto`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **5** |"
+            },
+            {
+              "name": "bottom",
+              "type": "Property.Bottom<string | number> | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `auto | <length-percentage> | <anchor()> | <anchor-size()>`\n\n**Initial value**: `auto`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **5** |"
+            },
+            {
+              "name": "borderRadius",
+              "type": "Property.BorderRadius<string | number> | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<length-percentage [0,∞]>{1,4} [ / <length-percentage [0,∞]>{1,4} ]?`\n\n| Chrome  | Firefox | Safari  |  Edge  |  IE   |\n| :-----: | :-----: | :-----: | :----: | :---: |\n|  **4**  |  **4**  |  **5**  | **12** | **9** |\n| 1 _-x-_ |         | 3 _-x-_ |        |       |"
+            },
+            {
+              "name": "cursor",
+              "type": "Property.Cursor | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since December 2021.\n\n**Syntax**: `[ [ <url> [ <x> <y> ]? , ]* <cursor-predefined> ]`\n\n**Initial value**: `auto`\n\n| Chrome | Firefox | Safari  |  Edge  |  IE   |\n| :----: | :-----: | :-----: | :----: | :---: |\n| **1**  |  **1**  | **1.2** | **12** | **4** |"
+            },
+            {
+              "name": "display",
+              "type": "Property.Display | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `[ <display-outside> || <display-inside> ] | <display-listitem> | <display-internal> | <display-box> | <display-legacy>`\n\n**Initial value**: `inline`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
+            },
+            {
+              "name": "opacity",
+              "type": "Property.Opacity | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<opacity-value>`\n\n**Initial value**: `1`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **2**  | **12** | **9** |"
+            },
+            {
+              "name": "overflow",
+              "type": "Property.Overflow | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `[ visible | hidden | clip | scroll | auto ]{1,2}`\n\n**Initial value**: `visible`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
+            },
+            {
+              "name": "border",
+              "type": "Property.Border<string | number> | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<line-width> || <line-style> || <color>`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
+            },
+            {
+              "name": "maxWidth",
+              "type": "Property.MaxWidth<string | number> | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `none | <length-percentage [0,∞]> | min-content | max-content | fit-content | fit-content(<length-percentage [0,∞]>) | <calc-size()> | <anchor-size()>`\n\n**Initial value**: `none`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **7** |"
+            },
+            {
+              "name": "minWidth",
+              "type": "Property.MinWidth<string | number> | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `auto | <length-percentage [0,∞]> | min-content | max-content | fit-content | fit-content(<length-percentage [0,∞]>) | <calc-size()> | <anchor-size()>`\n\n**Initial value**: `auto`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **7** |"
+            },
+            {
+              "name": "maxHeight",
+              "type": "Property.MaxHeight<string | number> | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `none | <length-percentage [0,∞]> | min-content | max-content | fit-content | fit-content(<length-percentage [0,∞]>) | <calc-size()> | <anchor-size()>`\n\n**Initial value**: `none`\n\n| Chrome | Firefox | Safari  |  Edge  |  IE   |\n| :----: | :-----: | :-----: | :----: | :---: |\n| **1**  |  **1**  | **1.3** | **12** | **7** |"
+            },
+            {
+              "name": "minHeight",
+              "type": "Property.MinHeight<string | number> | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `auto | <length-percentage [0,∞]> | min-content | max-content | fit-content | fit-content(<length-percentage [0,∞]>) | <calc-size()> | <anchor-size()>`\n\n**Initial value**: `auto`\n\n| Chrome | Firefox | Safari  |  Edge  |  IE   |\n| :----: | :-----: | :-----: | :----: | :---: |\n| **1**  |  **3**  | **1.3** | **12** | **7** |"
+            },
+            {
+              "name": "margin",
+              "type": "Property.Margin<string | number> | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<'margin-top'>{1,4}`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **3** |"
+            },
+            {
+              "name": "marginLeft",
+              "type": "Property.MarginLeft<string | number> | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<length-percentage> | auto | <anchor-size()>`\n\n**Initial value**: `0`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **3** |"
+            },
+            {
+              "name": "marginRight",
+              "type": "Property.MarginRight<string | number> | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<length-percentage> | auto | <anchor-size()>`\n\n**Initial value**: `0`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **3** |"
+            },
+            {
+              "name": "marginTop",
+              "type": "Property.MarginTop<string | number> | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<length-percentage> | auto | <anchor-size()>`\n\n**Initial value**: `0`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **3** |"
+            },
+            {
+              "name": "marginBottom",
+              "type": "Property.MarginBottom<string | number> | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<length-percentage> | auto | <anchor-size()>`\n\n**Initial value**: `0`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **3** |"
+            },
+            {
+              "name": "padding",
+              "type": "Property.Padding<string | number> | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<'padding-top'>{1,4}`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
+            },
+            {
+              "name": "paddingLeft",
+              "type": "Property.PaddingLeft<string | number> | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<length-percentage [0,∞]>`\n\n**Initial value**: `0`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
+            },
+            {
+              "name": "paddingRight",
+              "type": "Property.PaddingRight<string | number> | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<length-percentage [0,∞]>`\n\n**Initial value**: `0`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
+            },
+            {
+              "name": "paddingTop",
+              "type": "Property.PaddingTop<string | number> | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<length-percentage [0,∞]>`\n\n**Initial value**: `0`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
+            },
+            {
+              "name": "paddingBottom",
+              "type": "Property.PaddingBottom<string | number> | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<length-percentage [0,∞]>`\n\n**Initial value**: `0`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
+            },
+            {
+              "name": "flexDirection",
+              "type": "Property.FlexDirection | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2015.\n\n**Syntax**: `row | row-reverse | column | column-reverse`\n\n**Initial value**: `row`\n\n|  Chrome  | Firefox | Safari  |  Edge  |    IE    |\n| :------: | :-----: | :-----: | :----: | :------: |\n|  **29**  | **22**  |  **9**  | **12** |  **11**  |\n| 21 _-x-_ |         | 7 _-x-_ |        | 10 _-x-_ |"
+            },
+            {
+              "name": "justifyContent",
+              "type": "Property.JustifyContent | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2015.\n\n**Syntax**: `normal | <content-distribution> | <overflow-position>? [ <content-position> | left | right ]`\n\n**Initial value**: `normal`\n\n|  Chrome  | Firefox | Safari  |  Edge  |   IE   |\n| :------: | :-----: | :-----: | :----: | :----: |\n|  **29**  | **20**  |  **9**  | **12** | **11** |\n| 21 _-x-_ |         | 7 _-x-_ |        |        |"
+            },
+            {
+              "name": "justifyItems",
+              "type": "Property.JustifyItems | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2016.\n\n**Syntax**: `normal | stretch | <baseline-position> | <overflow-position>? [ <self-position> | left | right ] | legacy | legacy && [ left | right | center ] | anchor-center`\n\n**Initial value**: `legacy`\n\n| Chrome | Firefox | Safari |  Edge  |   IE   |\n| :----: | :-----: | :----: | :----: | :----: |\n| **52** | **20**  | **9**  | **12** | **11** |"
+            },
+            {
+              "name": "justifySelf",
+              "type": "Property.JustifySelf | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since October 2017.\n\n**Syntax**: `auto | normal | stretch | <baseline-position> | <overflow-position>? [ <self-position> | left | right ] | anchor-center`\n\n**Initial value**: `auto`\n\n| Chrome | Firefox |  Safari  |  Edge  |   IE   |\n| :----: | :-----: | :------: | :----: | :----: |\n| **57** | **45**  | **10.1** | **16** | **10** |"
+            },
+            {
+              "name": "flexGrow",
+              "type": "Property.FlexGrow | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2015.\n\n**Syntax**: `<number>`\n\n**Initial value**: `0`\n\n|  Chrome  | Firefox | Safari  |  Edge  |            IE            |\n| :------: | :-----: | :-----: | :----: | :----------------------: |\n|  **29**  | **20**  |  **9**  | **12** |          **11**          |\n| 22 _-x-_ |         | 7 _-x-_ |        | 10 _(-ms-flex-positive)_ |"
+            },
+            {
+              "name": "flexWrap",
+              "type": "Property.FlexWrap | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2015.\n\n**Syntax**: `nowrap | wrap | wrap-reverse`\n\n**Initial value**: `nowrap`\n\n|  Chrome  | Firefox | Safari  |  Edge  |   IE   |\n| :------: | :-----: | :-----: | :----: | :----: |\n|  **29**  | **28**  |  **9**  | **12** | **11** |\n| 21 _-x-_ |         | 7 _-x-_ |        |        |"
+            },
+            {
+              "name": "flexShrink",
+              "type": "Property.FlexShrink | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2015.\n\n**Syntax**: `<number>`\n\n**Initial value**: `1`\n\n|  Chrome  | Firefox | Safari  |  Edge  |   IE   |\n| :------: | :-----: | :-----: | :----: | :----: |\n|  **29**  | **20**  |  **9**  | **12** | **10** |\n| 22 _-x-_ |         | 8 _-x-_ |        |        |"
+            },
+            {
+              "name": "gap",
+              "type": "Property.Gap<string | number> | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since October 2017.\n\n**Syntax**: `<'row-gap'> <'column-gap'>?`\n\n| Chrome | Firefox |  Safari  |  Edge  | IE  |\n| :----: | :-----: | :------: | :----: | :-: |\n| **57** | **52**  | **10.1** | **16** | No  |"
+            },
+            {
+              "name": "position",
+              "type": "Property.Position | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `static | relative | absolute | sticky | fixed`\n\n**Initial value**: `static`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
+            },
+            {
+              "name": "boxSizing",
+              "type": "Property.BoxSizing | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `content-box | border-box`\n\n**Initial value**: `content-box`\n\n| Chrome  | Firefox | Safari  |  Edge  |  IE   |\n| :-----: | :-----: | :-----: | :----: | :---: |\n| **10**  | **29**  | **5.1** | **12** | **8** |\n| 1 _-x-_ | 1 _-x-_ | 3 _-x-_ |        |       |"
+            },
+            {
+              "name": "background",
+              "type": "Property.Background<string | number> | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<bg-layer>#? , <final-bg-layer>`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
+            },
+            {
+              "name": "backgroundColor",
+              "type": "Property.BackgroundColor | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<color>`\n\n**Initial value**: `transparent`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
+            },
+            {
+              "name": "borderWidth",
+              "type": "Property.BorderWidth<string | number> | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<line-width>{1,4}`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
+            },
+            {
+              "name": "borderColor",
+              "type": "Property.BorderColor | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<color>{1,4}`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
+            },
+            {
+              "name": "borderStyle",
+              "type": "Property.BorderStyle | undefined",
+              "required": false,
+              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<line-style>{1,4}`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
+            },
+            {
+              "name": "$css",
+              "type": "string | CSSObject | FlattenSimpleInterpolation | undefined",
+              "required": false,
+              "description": "Кастомные стили styled-components для Box-контейнера"
+            },
+            {
               "name": "fixedWidth",
               "type": "string | undefined",
               "required": false,
@@ -8486,7 +8865,13 @@
               "type": "boolean | undefined",
               "required": false,
               "description": ""
-            },
+            }
+          ]
+        },
+        {
+          "name": "Header",
+          "typeName": "DrawerDFHeaderProps",
+          "props": [
             {
               "name": "as",
               "type": "((string | React.ComponentType<any>) & (\"symbol\" | \"object\" | \"label\" | \"form\" | \"pattern\" | \"slot\" | \"style\" | \"title\" | \"view\" | \"s\" | \"button\" | \"image\" | \"search\" | \"text\" | \"time\" | \"article\" | \"dialog\" | \"figure\" | \"img\" | \"link\" | \"main\" | \"menu\" | \"menuitem\" | \"option\" | \"switch\" | \"table\" | \"center\" | \"a\" | \"abbr\" | \"address\" | \"area\" | \"aside\" | \"audio\" | \"b\" | \"base\" | \"bdi\" | \"bdo\" | \"…",
@@ -8750,13 +9135,7 @@
               "type": "string | CSSObject | FlattenSimpleInterpolation | undefined",
               "required": false,
               "description": "Кастомные стили styled-components для Box-контейнера"
-            }
-          ]
-        },
-        {
-          "name": "Header",
-          "typeName": "DrawerDFHeaderProps",
-          "props": [
+            },
             {
               "name": "refEl",
               "type": "React.LegacyRef<HTMLDivElement> | undefined",
@@ -8792,270 +9171,6 @@
               "type": "React.ReactNode",
               "required": false,
               "description": ""
-            },
-            {
-              "name": "as",
-              "type": "((string | React.ComponentType<any>) & (\"symbol\" | \"object\" | \"label\" | \"form\" | \"pattern\" | \"slot\" | \"style\" | \"title\" | \"view\" | \"s\" | \"button\" | \"image\" | \"search\" | \"text\" | \"time\" | \"article\" | \"dialog\" | \"figure\" | \"img\" | \"link\" | \"main\" | \"menu\" | \"menuitem\" | \"option\" | \"switch\" | \"table\" | \"center\" | \"a\" | \"abbr\" | \"address\" | \"area\" | \"aside\" | \"audio\" | \"b\" | \"base\" | \"bdi\" | \"bdo\" | \"…",
-              "required": false,
-              "description": "Компонент, используемый для корневого узла. Либо строка для использования элемента HTML, либо компонента. (Например: `li`, `p`, `button` и т.д.)"
-            },
-            {
-              "name": "zIndex",
-              "type": "Property.ZIndex | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `auto | <integer>`\n\n**Initial value**: `auto`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
-            },
-            {
-              "name": "height",
-              "type": "Property.Height<string | number> | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `auto | <length-percentage [0,∞]> | min-content | max-content | fit-content | fit-content(<length-percentage [0,∞]>) | <calc-size()> | <anchor-size()>`\n\n**Initial value**: `auto`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
-            },
-            {
-              "name": "width",
-              "type": "Property.Width<string | number> | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `auto | <length-percentage [0,∞]> | min-content | max-content | fit-content | fit-content(<length-percentage [0,∞]>) | <calc-size()> | <anchor-size()>`\n\n**Initial value**: `auto`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
-            },
-            {
-              "name": "left",
-              "type": "Property.Left<string | number> | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `auto | <length-percentage> | <anchor()> | <anchor-size()>`\n\n**Initial value**: `auto`\n\n| Chrome | Firefox | Safari |  Edge  |   IE    |\n| :----: | :-----: | :----: | :----: | :-----: |\n| **1**  |  **1**  | **1**  | **12** | **5.5** |"
-            },
-            {
-              "name": "right",
-              "type": "Property.Right<string | number> | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `auto | <length-percentage> | <anchor()> | <anchor-size()>`\n\n**Initial value**: `auto`\n\n| Chrome | Firefox | Safari |  Edge  |   IE    |\n| :----: | :-----: | :----: | :----: | :-----: |\n| **1**  |  **1**  | **1**  | **12** | **5.5** |"
-            },
-            {
-              "name": "top",
-              "type": "Property.Top<string | number> | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `auto | <length-percentage> | <anchor()> | <anchor-size()>`\n\n**Initial value**: `auto`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **5** |"
-            },
-            {
-              "name": "bottom",
-              "type": "Property.Bottom<string | number> | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `auto | <length-percentage> | <anchor()> | <anchor-size()>`\n\n**Initial value**: `auto`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **5** |"
-            },
-            {
-              "name": "borderRadius",
-              "type": "Property.BorderRadius<string | number> | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<length-percentage [0,∞]>{1,4} [ / <length-percentage [0,∞]>{1,4} ]?`\n\n| Chrome  | Firefox | Safari  |  Edge  |  IE   |\n| :-----: | :-----: | :-----: | :----: | :---: |\n|  **4**  |  **4**  |  **5**  | **12** | **9** |\n| 1 _-x-_ |         | 3 _-x-_ |        |       |"
-            },
-            {
-              "name": "cursor",
-              "type": "Property.Cursor | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since December 2021.\n\n**Syntax**: `[ [ <url> [ <x> <y> ]? , ]* <cursor-predefined> ]`\n\n**Initial value**: `auto`\n\n| Chrome | Firefox | Safari  |  Edge  |  IE   |\n| :----: | :-----: | :-----: | :----: | :---: |\n| **1**  |  **1**  | **1.2** | **12** | **4** |"
-            },
-            {
-              "name": "display",
-              "type": "Property.Display | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `[ <display-outside> || <display-inside> ] | <display-listitem> | <display-internal> | <display-box> | <display-legacy>`\n\n**Initial value**: `inline`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
-            },
-            {
-              "name": "opacity",
-              "type": "Property.Opacity | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<opacity-value>`\n\n**Initial value**: `1`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **2**  | **12** | **9** |"
-            },
-            {
-              "name": "overflow",
-              "type": "Property.Overflow | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `[ visible | hidden | clip | scroll | auto ]{1,2}`\n\n**Initial value**: `visible`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
-            },
-            {
-              "name": "border",
-              "type": "Property.Border<string | number> | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<line-width> || <line-style> || <color>`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
-            },
-            {
-              "name": "maxWidth",
-              "type": "Property.MaxWidth<string | number> | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `none | <length-percentage [0,∞]> | min-content | max-content | fit-content | fit-content(<length-percentage [0,∞]>) | <calc-size()> | <anchor-size()>`\n\n**Initial value**: `none`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **7** |"
-            },
-            {
-              "name": "minWidth",
-              "type": "Property.MinWidth<string | number> | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `auto | <length-percentage [0,∞]> | min-content | max-content | fit-content | fit-content(<length-percentage [0,∞]>) | <calc-size()> | <anchor-size()>`\n\n**Initial value**: `auto`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **7** |"
-            },
-            {
-              "name": "maxHeight",
-              "type": "Property.MaxHeight<string | number> | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `none | <length-percentage [0,∞]> | min-content | max-content | fit-content | fit-content(<length-percentage [0,∞]>) | <calc-size()> | <anchor-size()>`\n\n**Initial value**: `none`\n\n| Chrome | Firefox | Safari  |  Edge  |  IE   |\n| :----: | :-----: | :-----: | :----: | :---: |\n| **1**  |  **1**  | **1.3** | **12** | **7** |"
-            },
-            {
-              "name": "minHeight",
-              "type": "Property.MinHeight<string | number> | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `auto | <length-percentage [0,∞]> | min-content | max-content | fit-content | fit-content(<length-percentage [0,∞]>) | <calc-size()> | <anchor-size()>`\n\n**Initial value**: `auto`\n\n| Chrome | Firefox | Safari  |  Edge  |  IE   |\n| :----: | :-----: | :-----: | :----: | :---: |\n| **1**  |  **3**  | **1.3** | **12** | **7** |"
-            },
-            {
-              "name": "margin",
-              "type": "Property.Margin<string | number> | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<'margin-top'>{1,4}`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **3** |"
-            },
-            {
-              "name": "marginLeft",
-              "type": "Property.MarginLeft<string | number> | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<length-percentage> | auto | <anchor-size()>`\n\n**Initial value**: `0`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **3** |"
-            },
-            {
-              "name": "marginRight",
-              "type": "Property.MarginRight<string | number> | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<length-percentage> | auto | <anchor-size()>`\n\n**Initial value**: `0`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **3** |"
-            },
-            {
-              "name": "marginTop",
-              "type": "Property.MarginTop<string | number> | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<length-percentage> | auto | <anchor-size()>`\n\n**Initial value**: `0`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **3** |"
-            },
-            {
-              "name": "marginBottom",
-              "type": "Property.MarginBottom<string | number> | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<length-percentage> | auto | <anchor-size()>`\n\n**Initial value**: `0`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **3** |"
-            },
-            {
-              "name": "padding",
-              "type": "Property.Padding<string | number> | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<'padding-top'>{1,4}`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
-            },
-            {
-              "name": "paddingLeft",
-              "type": "Property.PaddingLeft<string | number> | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<length-percentage [0,∞]>`\n\n**Initial value**: `0`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
-            },
-            {
-              "name": "paddingRight",
-              "type": "Property.PaddingRight<string | number> | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<length-percentage [0,∞]>`\n\n**Initial value**: `0`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
-            },
-            {
-              "name": "paddingTop",
-              "type": "Property.PaddingTop<string | number> | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<length-percentage [0,∞]>`\n\n**Initial value**: `0`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
-            },
-            {
-              "name": "paddingBottom",
-              "type": "Property.PaddingBottom<string | number> | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<length-percentage [0,∞]>`\n\n**Initial value**: `0`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
-            },
-            {
-              "name": "flexDirection",
-              "type": "Property.FlexDirection | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2015.\n\n**Syntax**: `row | row-reverse | column | column-reverse`\n\n**Initial value**: `row`\n\n|  Chrome  | Firefox | Safari  |  Edge  |    IE    |\n| :------: | :-----: | :-----: | :----: | :------: |\n|  **29**  | **22**  |  **9**  | **12** |  **11**  |\n| 21 _-x-_ |         | 7 _-x-_ |        | 10 _-x-_ |"
-            },
-            {
-              "name": "justifyContent",
-              "type": "Property.JustifyContent | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2015.\n\n**Syntax**: `normal | <content-distribution> | <overflow-position>? [ <content-position> | left | right ]`\n\n**Initial value**: `normal`\n\n|  Chrome  | Firefox | Safari  |  Edge  |   IE   |\n| :------: | :-----: | :-----: | :----: | :----: |\n|  **29**  | **20**  |  **9**  | **12** | **11** |\n| 21 _-x-_ |         | 7 _-x-_ |        |        |"
-            },
-            {
-              "name": "justifyItems",
-              "type": "Property.JustifyItems | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2016.\n\n**Syntax**: `normal | stretch | <baseline-position> | <overflow-position>? [ <self-position> | left | right ] | legacy | legacy && [ left | right | center ] | anchor-center`\n\n**Initial value**: `legacy`\n\n| Chrome | Firefox | Safari |  Edge  |   IE   |\n| :----: | :-----: | :----: | :----: | :----: |\n| **52** | **20**  | **9**  | **12** | **11** |"
-            },
-            {
-              "name": "justifySelf",
-              "type": "Property.JustifySelf | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since October 2017.\n\n**Syntax**: `auto | normal | stretch | <baseline-position> | <overflow-position>? [ <self-position> | left | right ] | anchor-center`\n\n**Initial value**: `auto`\n\n| Chrome | Firefox |  Safari  |  Edge  |   IE   |\n| :----: | :-----: | :------: | :----: | :----: |\n| **57** | **45**  | **10.1** | **16** | **10** |"
-            },
-            {
-              "name": "flexGrow",
-              "type": "Property.FlexGrow | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2015.\n\n**Syntax**: `<number>`\n\n**Initial value**: `0`\n\n|  Chrome  | Firefox | Safari  |  Edge  |            IE            |\n| :------: | :-----: | :-----: | :----: | :----------------------: |\n|  **29**  | **20**  |  **9**  | **12** |          **11**          |\n| 22 _-x-_ |         | 7 _-x-_ |        | 10 _(-ms-flex-positive)_ |"
-            },
-            {
-              "name": "flexWrap",
-              "type": "Property.FlexWrap | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2015.\n\n**Syntax**: `nowrap | wrap | wrap-reverse`\n\n**Initial value**: `nowrap`\n\n|  Chrome  | Firefox | Safari  |  Edge  |   IE   |\n| :------: | :-----: | :-----: | :----: | :----: |\n|  **29**  | **28**  |  **9**  | **12** | **11** |\n| 21 _-x-_ |         | 7 _-x-_ |        |        |"
-            },
-            {
-              "name": "flexShrink",
-              "type": "Property.FlexShrink | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since September 2015.\n\n**Syntax**: `<number>`\n\n**Initial value**: `1`\n\n|  Chrome  | Firefox | Safari  |  Edge  |   IE   |\n| :------: | :-----: | :-----: | :----: | :----: |\n|  **29**  | **20**  |  **9**  | **12** | **10** |\n| 22 _-x-_ |         | 8 _-x-_ |        |        |"
-            },
-            {
-              "name": "gap",
-              "type": "Property.Gap<string | number> | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since October 2017.\n\n**Syntax**: `<'row-gap'> <'column-gap'>?`\n\n| Chrome | Firefox |  Safari  |  Edge  | IE  |\n| :----: | :-----: | :------: | :----: | :-: |\n| **57** | **52**  | **10.1** | **16** | No  |"
-            },
-            {
-              "name": "position",
-              "type": "Property.Position | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `static | relative | absolute | sticky | fixed`\n\n**Initial value**: `static`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
-            },
-            {
-              "name": "boxSizing",
-              "type": "Property.BoxSizing | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `content-box | border-box`\n\n**Initial value**: `content-box`\n\n| Chrome  | Firefox | Safari  |  Edge  |  IE   |\n| :-----: | :-----: | :-----: | :----: | :---: |\n| **10**  | **29**  | **5.1** | **12** | **8** |\n| 1 _-x-_ | 1 _-x-_ | 3 _-x-_ |        |       |"
-            },
-            {
-              "name": "background",
-              "type": "Property.Background<string | number> | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<bg-layer>#? , <final-bg-layer>`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
-            },
-            {
-              "name": "backgroundColor",
-              "type": "Property.BackgroundColor | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<color>`\n\n**Initial value**: `transparent`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
-            },
-            {
-              "name": "borderWidth",
-              "type": "Property.BorderWidth<string | number> | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<line-width>{1,4}`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
-            },
-            {
-              "name": "borderColor",
-              "type": "Property.BorderColor | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<color>{1,4}`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
-            },
-            {
-              "name": "borderStyle",
-              "type": "Property.BorderStyle | undefined",
-              "required": false,
-              "description": "This feature is well established and works across many devices and browser versions. It’s been available across browsers since July 2015.\n\n**Syntax**: `<line-style>{1,4}`\n\n| Chrome | Firefox | Safari |  Edge  |  IE   |\n| :----: | :-----: | :----: | :----: | :---: |\n| **1**  |  **1**  | **1**  | **12** | **4** |"
-            },
-            {
-              "name": "$css",
-              "type": "string | CSSObject | FlattenSimpleInterpolation | undefined",
-              "required": false,
-              "description": "Кастомные стили styled-components для Box-контейнера"
             }
           ]
         },
@@ -9214,12 +9329,6 @@
           "typeName": "DrawerDFFooterProps",
           "props": [
             {
-              "name": "refEl",
-              "type": "React.LegacyRef<HTMLDivElement> | undefined",
-              "required": false,
-              "description": ""
-            },
-            {
               "name": "as",
               "type": "((string | React.ComponentType<any>) & (\"symbol\" | \"object\" | \"label\" | \"form\" | \"pattern\" | \"slot\" | \"style\" | \"title\" | \"view\" | \"s\" | \"button\" | \"image\" | \"search\" | \"text\" | \"time\" | \"article\" | \"dialog\" | \"figure\" | \"img\" | \"link\" | \"main\" | \"menu\" | \"menuitem\" | \"option\" | \"switch\" | \"table\" | \"center\" | \"a\" | \"abbr\" | \"address\" | \"area\" | \"aside\" | \"audio\" | \"b\" | \"base\" | \"bdi\" | \"bdo\" | \"…",
               "required": false,
@@ -9482,6 +9591,12 @@
               "type": "string | CSSObject | FlattenSimpleInterpolation | undefined",
               "required": false,
               "description": "Кастомные стили styled-components для Box-контейнера"
+            },
+            {
+              "name": "refEl",
+              "type": "React.LegacyRef<HTMLDivElement> | undefined",
+              "required": false,
+              "description": ""
             }
           ]
         }
@@ -9518,6 +9633,11 @@
         }
       ],
       "hasCuratedMeta": true,
+      "relatedExports": [
+        "DrawerDFContent",
+        "DrawerDFFooter",
+        "DrawerDFHeader"
+      ],
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { DrawerDF } from '@daisforge/ui';",
@@ -9551,6 +9671,8 @@
     "DrawerDFContent": {
       "name": "DrawerDFContent",
       "group": "components",
+      "folderName": "DrawerDF",
+      "role": "part",
       "description": "",
       "props": [
         {
@@ -9845,7 +9967,12 @@
       "propsTypeName": "DrawerDFContentProps",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/DrawerDF/DrawerDFCompounds.tsx",
       "type": "composition",
+      "parentComponent": "DrawerDF",
       "atomicMcpVersion": "0.349.0",
+      "compoundPartOf": {
+        "component": "DrawerDF",
+        "part": "Content"
+      },
       "importPath": "@daisforge/ui",
       "importStatement": "import { DrawerDFContent } from '@daisforge/ui';",
       "examples": [
@@ -9860,6 +9987,8 @@
     "DrawerDFFooter": {
       "name": "DrawerDFFooter",
       "group": "components",
+      "folderName": "DrawerDF",
+      "role": "part",
       "description": "",
       "props": [
         {
@@ -10136,7 +10265,12 @@
       "propsTypeName": "DrawerDFFooterProps",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/DrawerDF/DrawerDFCompounds.tsx",
       "type": "composition",
+      "parentComponent": "DrawerDF",
       "atomicMcpVersion": "0.349.0",
+      "compoundPartOf": {
+        "component": "DrawerDF",
+        "part": "Footer"
+      },
       "importPath": "@daisforge/ui",
       "importStatement": "import { DrawerDFFooter } from '@daisforge/ui';",
       "examples": [
@@ -10151,6 +10285,8 @@
     "DrawerDFHeader": {
       "name": "DrawerDFHeader",
       "group": "components",
+      "folderName": "DrawerDF",
+      "role": "part",
       "description": "",
       "props": [
         {
@@ -10457,7 +10593,12 @@
       "propsTypeName": "DrawerDFHeaderProps",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/DrawerDF/DrawerDFCompounds.tsx",
       "type": "composition",
+      "parentComponent": "DrawerDF",
       "atomicMcpVersion": "0.349.0",
+      "compoundPartOf": {
+        "component": "DrawerDF",
+        "part": "Header"
+      },
       "importPath": "@daisforge/ui",
       "importStatement": "import { DrawerDFHeader } from '@daisforge/ui';",
       "examples": [
@@ -10472,6 +10613,8 @@
     "Dropdown": {
       "name": "Dropdown",
       "group": "components",
+      "folderName": "Dropdown",
+      "role": "primary",
       "description": "",
       "props": [],
       "propsTypeName": "DropdownProps",
@@ -10683,6 +10826,8 @@
     "Dropzone": {
       "name": "Dropzone",
       "group": "components",
+      "folderName": "Dropzone",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -10836,6 +10981,8 @@
     "EmbedIconButton": {
       "name": "EmbedIconButton",
       "group": "components",
+      "folderName": "EmbedIconButton",
+      "role": "primary",
       "description": "Кнопка с иконкой.",
       "props": [
         {
@@ -11019,6 +11166,8 @@
     "EmbeddedButtonBeta": {
       "name": "EmbeddedButtonBeta",
       "group": "components",
+      "folderName": "EmbeddedButtonBeta",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -11085,6 +11234,8 @@
     "EmptyState": {
       "name": "EmptyState",
       "group": "components",
+      "folderName": "EmptyState",
+      "role": "primary",
       "description": "Экран пустого состояния с вариациями размеров и действий.",
       "props": [
         {
@@ -11210,6 +11361,8 @@
     "Flow": {
       "name": "Flow",
       "group": "components",
+      "folderName": "Flow",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -11302,6 +11455,8 @@
     "Col": {
       "name": "Col",
       "group": "components",
+      "folderName": "Grid",
+      "role": "primary",
       "description": "Блок для размещения контента внутри себя.\nПо дефолту доступные пропсы для задания позиционирования:\nsmallM, mediumS, mediumM, largeS, largeM",
       "props": [
         {
@@ -11525,6 +11680,8 @@
     "Grid": {
       "name": "Grid",
       "group": "components",
+      "folderName": "Grid",
+      "role": "primary",
       "description": "",
       "props": [],
       "propsTypeName": "GridProps",
@@ -11563,6 +11720,8 @@
     "Row": {
       "name": "Row",
       "group": "components",
+      "folderName": "Grid",
+      "role": "primary",
       "description": "Блок для размещения колонок (``<Col />``) по горизонтали.\nБлок нельзя вкладывать сам в себя, но можно чередовать далее по дереву с использованием ``Col``.\nСтилизованный компонент, обладающий всеми свойствами ``div``.",
       "props": [],
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Grid/ui/Row/Row.d.ts",
@@ -11582,6 +11741,8 @@
     "GridDND": {
       "name": "GridDND",
       "group": "components",
+      "folderName": "GridDND",
+      "role": "primary",
       "description": "Сетка карточек с drag-and-drop перетаскиванием.",
       "props": [
         {
@@ -11856,6 +12017,8 @@
     "IconButton": {
       "name": "IconButton",
       "group": "components",
+      "folderName": "IconButton",
+      "role": "primary",
       "description": "Кнопка с иконкой.",
       "props": [
         {
@@ -12039,6 +12202,8 @@
     "IconButtonDots": {
       "name": "IconButtonDots",
       "group": "components",
+      "folderName": "IconButton",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -12210,6 +12375,8 @@
     "IconButtonFilter": {
       "name": "IconButtonFilter",
       "group": "components",
+      "folderName": "IconButton",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -12381,6 +12548,8 @@
     "IconSvgSprite": {
       "name": "IconSvgSprite",
       "group": "components",
+      "folderName": "IconSvgSprite",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -12414,6 +12583,8 @@
     "Image": {
       "name": "Image",
       "group": "components",
+      "folderName": "Image",
+      "role": "primary",
       "description": "Компонент Image.",
       "props": [
         {
@@ -12483,6 +12654,8 @@
     "Indicator": {
       "name": "Indicator",
       "group": "components",
+      "folderName": "Indicator",
+      "role": "primary",
       "description": "",
       "props": [],
       "propsTypeName": "IndicatorProps",
@@ -12522,6 +12695,8 @@
     "InformationWrapper": {
       "name": "InformationWrapper",
       "group": "components",
+      "folderName": "InformationWrapper",
+      "role": "primary",
       "description": "",
       "props": [],
       "propsTypeName": "ComponentProps<typeof InformationWrapper>",
@@ -12720,6 +12895,8 @@
     "LeftPanel": {
       "name": "LeftPanel",
       "group": "components",
+      "folderName": "LeftPanel",
+      "role": "primary",
       "description": "Левая панель навигации.",
       "props": [
         {
@@ -12999,6 +13176,9 @@
         }
       ],
       "hasCuratedMeta": true,
+      "relatedExports": [
+        "LeftPanelToggleButton"
+      ],
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { LeftPanel } from '@daisforge/ui';",
@@ -13020,6 +13200,8 @@
     "LeftPanelToggleButton": {
       "name": "LeftPanelToggleButton",
       "group": "components",
+      "folderName": "LeftPanel",
+      "role": "part",
       "description": "",
       "props": [
         {
@@ -13182,6 +13364,7 @@
       "propsTypeName": "LeftPanelToggleButtonProps",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/LeftPanel/components/LeftPanelToggleButton.tsx",
       "type": "standalone",
+      "parentComponent": "LeftPanel",
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { LeftPanelToggleButton } from '@daisforge/ui';",
@@ -13197,6 +13380,8 @@
     "Link": {
       "name": "Link",
       "group": "components",
+      "folderName": "Link",
+      "role": "primary",
       "description": "Ссылка.",
       "props": [
         {
@@ -13276,6 +13461,8 @@
     "LinkButton": {
       "name": "LinkButton",
       "group": "components",
+      "folderName": "LinkButton",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -13381,6 +13568,8 @@
     "List": {
       "name": "List",
       "group": "components",
+      "folderName": "List",
+      "role": "primary",
       "description": "Список.",
       "props": [],
       "propsTypeName": "ListProps",
@@ -13459,6 +13648,8 @@
     "ListItem": {
       "name": "ListItem",
       "group": "components",
+      "folderName": "List",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -13492,6 +13683,8 @@
     "ListOfFilters": {
       "name": "ListOfFilters",
       "group": "components",
+      "folderName": "ListOfFilters",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -13609,6 +13802,8 @@
     "Mask": {
       "name": "Mask",
       "group": "components",
+      "folderName": "Mask",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -14086,6 +14281,8 @@
     "MassActions": {
       "name": "MassActions",
       "group": "components",
+      "folderName": "MassActions",
+      "role": "primary",
       "description": "Панель массовых действий с чекбоксом, счётчиком и кнопками.",
       "props": [
         {
@@ -14283,6 +14480,8 @@
     "MassActionsButton": {
       "name": "MassActionsButton",
       "group": "components",
+      "folderName": "MassActions",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -14370,6 +14569,8 @@
     "MassActionsCounter": {
       "name": "MassActionsCounter",
       "group": "components",
+      "folderName": "MassActions",
+      "role": "primary",
       "description": "Компонент счетчика для MassActions\nСтилизован аналогично SummaryCheckbox из таблицы",
       "props": [
         {
@@ -14401,6 +14602,10 @@
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/MassActions/MassActionsCounter.tsx",
       "type": "composition",
       "atomicMcpVersion": "0.349.0",
+      "compoundPartOf": {
+        "component": "MassActions",
+        "part": "Counter"
+      },
       "importPath": "@daisforge/ui",
       "importStatement": "import { MassActionsCounter } from '@daisforge/ui';",
       "examples": [
@@ -14415,6 +14620,8 @@
     "MassActionsStatic": {
       "name": "MassActionsStatic",
       "group": "components",
+      "folderName": "MassActionsStatic",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -14454,6 +14661,8 @@
     "Modal": {
       "name": "Modal",
       "group": "components",
+      "folderName": "Modal",
+      "role": "primary",
       "description": "Модальное окно.",
       "props": [],
       "propsTypeName": "ModalProps",
@@ -14674,6 +14883,8 @@
     "ModalDFBackIconButton": {
       "name": "ModalDFBackIconButton",
       "group": "components",
+      "folderName": "ModalDF",
+      "role": "part",
       "description": "",
       "props": [
         {
@@ -14700,6 +14911,7 @@
       "type": "wrapper",
       "atomicBase": "IconButton",
       "wrapsInternal": "IconButton",
+      "parentComponent": "ModalDF",
       "inheritedProps": [
         {
           "name": "view",
@@ -14864,6 +15076,8 @@
     "ModalDFDivider": {
       "name": "ModalDFDivider",
       "group": "components",
+      "folderName": "ModalDF",
+      "role": "part",
       "description": "",
       "props": [
         {
@@ -14896,6 +15110,7 @@
       "type": "wrapper",
       "atomicBase": "Divider",
       "wrapsInternal": "Divider",
+      "parentComponent": "ModalDF",
       "atomicDataMissing": true,
       "importPath": "@daisforge/ui",
       "importStatement": "import { ModalDFDivider } from '@daisforge/ui';",
@@ -14911,6 +15126,8 @@
     "ModalDFDotsIconButton": {
       "name": "ModalDFDotsIconButton",
       "group": "components",
+      "folderName": "ModalDF",
+      "role": "part",
       "description": "",
       "props": [
         {
@@ -14943,6 +15160,7 @@
       "type": "wrapper",
       "atomicBase": "IconButton",
       "wrapsInternal": "IconButton",
+      "parentComponent": "ModalDF",
       "inheritedProps": [
         {
           "name": "view",
@@ -15107,6 +15325,8 @@
     "ModalDFFooter": {
       "name": "ModalDFFooter",
       "group": "components",
+      "folderName": "ModalDF",
+      "role": "part",
       "description": "",
       "props": [
         {
@@ -15125,6 +15345,7 @@
       "propsTypeName": "ModalDFFooterProps",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/ModalDF/components/Footer.tsx",
       "type": "standalone",
+      "parentComponent": "ModalDF",
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { ModalDFFooter } from '@daisforge/ui';",
@@ -15140,6 +15361,8 @@
     "ModalDFHeader": {
       "name": "ModalDFHeader",
       "group": "components",
+      "folderName": "ModalDF",
+      "role": "part",
       "description": "",
       "props": [
         {
@@ -15182,6 +15405,7 @@
       "propsTypeName": "ModalDFHeaderProps",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/ModalDF/components/Header.tsx",
       "type": "composition",
+      "parentComponent": "ModalDF",
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { ModalDFHeader } from '@daisforge/ui';",
@@ -15197,6 +15421,8 @@
     "ModalDFServiceButtons": {
       "name": "ModalDFServiceButtons",
       "group": "components",
+      "folderName": "ModalDF",
+      "role": "part",
       "description": "",
       "props": [
         {
@@ -15209,6 +15435,7 @@
       "propsTypeName": "ModalDFServiceButtonsProps",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/ModalDF/components/ServiceButtons.tsx",
       "type": "composition",
+      "parentComponent": "ModalDF",
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { ModalDFServiceButtons } from '@daisforge/ui';",
@@ -15224,6 +15451,8 @@
     "ModalDF": {
       "name": "ModalDF",
       "group": "components",
+      "folderName": "ModalDF",
+      "role": "primary",
       "description": "Расширенный Modal с layout-ами и compound-компонентами.",
       "props": [
         {
@@ -15280,6 +15509,17 @@
         }
       ],
       "hasCuratedMeta": true,
+      "relatedExports": [
+        "ModalDFBackIconButton",
+        "ModalDFDivider",
+        "ModalDFDotsIconButton",
+        "ModalDFFooter",
+        "ModalDFHeader",
+        "ModalDFServiceButtons",
+        "ModalDFLeft",
+        "ModalDFMain",
+        "ModalDFContent"
+      ],
       "inheritedProps": [
         {
           "name": "withBlur",
@@ -15511,6 +15751,8 @@
     "ModalDFLeft": {
       "name": "ModalDFLeft",
       "group": "components",
+      "folderName": "ModalDF",
+      "role": "part",
       "description": "",
       "props": [
         {
@@ -15523,6 +15765,7 @@
       "propsTypeName": "ComponentProps<typeof ModalDFLeft>",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/ModalDF/styled.ts",
       "type": "standalone",
+      "parentComponent": "ModalDF",
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { ModalDFLeft } from '@daisforge/ui';",
@@ -15538,6 +15781,8 @@
     "ModalDFMain": {
       "name": "ModalDFMain",
       "group": "components",
+      "folderName": "ModalDF",
+      "role": "part",
       "description": "",
       "props": [
         {
@@ -15550,6 +15795,7 @@
       "propsTypeName": "ComponentProps<typeof ModalDFMain>",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/ModalDF/styled.ts",
       "type": "standalone",
+      "parentComponent": "ModalDF",
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { ModalDFMain } from '@daisforge/ui';",
@@ -15565,6 +15811,8 @@
     "ModalDFContent": {
       "name": "ModalDFContent",
       "group": "components",
+      "folderName": "ModalDF",
+      "role": "part",
       "description": "",
       "props": [
         {
@@ -15577,6 +15825,7 @@
       "propsTypeName": "ComponentProps<typeof ModalDFContent>",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/ModalDF/styled.ts",
       "type": "standalone",
+      "parentComponent": "ModalDF",
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { ModalDFContent } from '@daisforge/ui';",
@@ -15592,6 +15841,8 @@
     "ModalDFConfirmation": {
       "name": "ModalDFConfirmation",
       "group": "components",
+      "folderName": "ModalDFConfirmation",
+      "role": "primary",
       "description": "Модальное окно подтверждения действия.",
       "props": [
         {
@@ -15654,6 +15905,9 @@
         }
       ],
       "hasCuratedMeta": true,
+      "relatedExports": [
+        "ModalDFConfirmationFooter"
+      ],
       "inheritedProps": [
         {
           "name": "withBlur",
@@ -15880,6 +16134,8 @@
     "ModalDFConfirmationFooter": {
       "name": "ModalDFConfirmationFooter",
       "group": "components",
+      "folderName": "ModalDFConfirmation",
+      "role": "part",
       "description": "",
       "props": [
         {
@@ -15900,6 +16156,7 @@
       "type": "wrapper",
       "atomicBase": "Modal",
       "wrapsInternal": "ModalDF",
+      "parentComponent": "ModalDFConfirmation",
       "inheritedProps": [
         {
           "name": "withBlur",
@@ -16092,6 +16349,8 @@
     "Note": {
       "name": "Note",
       "group": "components",
+      "folderName": "Note",
+      "role": "primary",
       "description": "",
       "props": [],
       "propsTypeName": "ComponentProps<typeof Note>",
@@ -16206,6 +16465,8 @@
     "Notification": {
       "name": "Notification",
       "group": "components",
+      "folderName": "Notification",
+      "role": "primary",
       "description": "Уведомление (toast) с вариантами стилей.",
       "props": [
         {
@@ -16405,6 +16666,8 @@
     "NotificationsProvider": {
       "name": "NotificationsProvider",
       "group": "components",
+      "folderName": "Notification",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -16445,6 +16708,8 @@
     "NumberFormat": {
       "name": "NumberFormat",
       "group": "components",
+      "folderName": "NumberFormat",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -16851,6 +17116,8 @@
     "NumberFormatAmount": {
       "name": "NumberFormatAmount",
       "group": "components",
+      "folderName": "NumberFormatAmount",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -17166,6 +17433,8 @@
     "NumberInput": {
       "name": "NumberInput",
       "group": "components",
+      "folderName": "NumberInput",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -17390,6 +17659,8 @@
     "Overlay": {
       "name": "Overlay",
       "group": "components",
+      "folderName": "Overlay",
+      "role": "primary",
       "description": "Overlay - подложка для всплывающих компонент (Modal, Toast и т.д.).",
       "props": [
         {
@@ -17447,6 +17718,8 @@
     "PageTitle": {
       "name": "PageTitle",
       "group": "components",
+      "folderName": "PageTitle",
+      "role": "primary",
       "description": "Заголовок страницы с breadcrumbs и действиями.",
       "props": [
         {
@@ -17577,6 +17850,8 @@
     "Pagination": {
       "name": "Pagination",
       "group": "components",
+      "folderName": "Pagination",
+      "role": "primary",
       "description": "Пагинация",
       "props": [
         {
@@ -17844,6 +18119,8 @@
     "Popover": {
       "name": "Popover",
       "group": "components",
+      "folderName": "Popover",
+      "role": "primary",
       "description": "",
       "props": [],
       "propsTypeName": "PopoverProps",
@@ -18025,6 +18302,8 @@
     "PopoverBeta": {
       "name": "PopoverBeta",
       "group": "components",
+      "folderName": "PopoverBeta",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -18175,6 +18454,8 @@
     "PopoverDFBody": {
       "name": "PopoverDFBody",
       "group": "components",
+      "folderName": "PopoverDF",
+      "role": "part",
       "description": "",
       "props": [
         {
@@ -18445,6 +18726,7 @@
       "propsTypeName": "PopoverDFBodyProps",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/PopoverDF/components/Body.tsx",
       "type": "standalone",
+      "parentComponent": "PopoverDF",
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { PopoverDFBody } from '@daisforge/ui';",
@@ -18460,6 +18742,8 @@
     "PopoverDFFooter": {
       "name": "PopoverDFFooter",
       "group": "components",
+      "folderName": "PopoverDF",
+      "role": "part",
       "description": "",
       "props": [
         {
@@ -18730,6 +19014,7 @@
       "propsTypeName": "PopoverDFFooterProps",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/PopoverDF/components/Footer.tsx",
       "type": "standalone",
+      "parentComponent": "PopoverDF",
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { PopoverDFFooter } from '@daisforge/ui';",
@@ -18745,6 +19030,8 @@
     "PopoverDFHeader": {
       "name": "PopoverDFHeader",
       "group": "components",
+      "folderName": "PopoverDF",
+      "role": "part",
       "description": "",
       "props": [
         {
@@ -18781,6 +19068,7 @@
       "propsTypeName": "PopoverDFHeaderProps",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/PopoverDF/components/Header.tsx",
       "type": "composition",
+      "parentComponent": "PopoverDF",
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { PopoverDFHeader } from '@daisforge/ui';",
@@ -18796,6 +19084,8 @@
     "PopoverDF": {
       "name": "PopoverDF",
       "group": "components",
+      "folderName": "PopoverDF",
+      "role": "primary",
       "description": "Расширенный Popover с готовыми layout-ами.",
       "props": [
         {
@@ -18941,6 +19231,11 @@
         }
       ],
       "hasCuratedMeta": true,
+      "relatedExports": [
+        "PopoverDFBody",
+        "PopoverDFFooter",
+        "PopoverDFHeader"
+      ],
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { PopoverDF } from '@daisforge/ui';",
@@ -18962,6 +19257,8 @@
     "PopupProvider": {
       "name": "PopupProvider",
       "group": "components",
+      "folderName": "Popup",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -18995,6 +19292,8 @@
     "Popup": {
       "name": "Popup",
       "group": "components",
+      "folderName": "Popup",
+      "role": "primary",
       "description": "Базовый компонент Popup.",
       "props": [],
       "propsTypeName": "PopupProps",
@@ -19120,6 +19419,8 @@
     "PopupDFBody": {
       "name": "PopupDFBody",
       "group": "components",
+      "folderName": "PopupDF",
+      "role": "part",
       "description": "",
       "props": [
         {
@@ -19390,6 +19691,7 @@
       "propsTypeName": "PopupDFBodyProps",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/PopupDF/components/Body.tsx",
       "type": "standalone",
+      "parentComponent": "PopupDF",
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { PopupDFBody } from '@daisforge/ui';",
@@ -19405,6 +19707,8 @@
     "PopupDFFooter": {
       "name": "PopupDFFooter",
       "group": "components",
+      "folderName": "PopupDF",
+      "role": "part",
       "description": "",
       "props": [
         {
@@ -19675,6 +19979,7 @@
       "propsTypeName": "PopupDFFooterProps",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/PopupDF/components/Footer.tsx",
       "type": "standalone",
+      "parentComponent": "PopupDF",
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { PopupDFFooter } from '@daisforge/ui';",
@@ -19690,6 +19995,8 @@
     "PopupDFHeader": {
       "name": "PopupDFHeader",
       "group": "components",
+      "folderName": "PopupDF",
+      "role": "part",
       "description": "",
       "props": [
         {
@@ -19738,6 +20045,7 @@
       "propsTypeName": "PopupDFHeaderProps",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/PopupDF/components/Header.tsx",
       "type": "composition",
+      "parentComponent": "PopupDF",
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { PopupDFHeader } from '@daisforge/ui';",
@@ -19753,6 +20061,8 @@
     "PopupDF": {
       "name": "PopupDF",
       "group": "components",
+      "folderName": "PopupDF",
+      "role": "primary",
       "description": "Расширенный Popup с layout-ами и compound-компонентами.",
       "props": [
         {
@@ -19861,6 +20171,11 @@
         }
       ],
       "hasCuratedMeta": true,
+      "relatedExports": [
+        "PopupDFBody",
+        "PopupDFFooter",
+        "PopupDFHeader"
+      ],
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { PopupDF } from '@daisforge/ui';",
@@ -19882,6 +20197,8 @@
     "Portal": {
       "name": "Portal",
       "group": "components",
+      "folderName": "Portal",
+      "role": "primary",
       "description": "Вспомогательный компонент. Используется в Popup, Popover.\nПредставляет собой ReactDOM.createPortal() в форме компонента.",
       "props": [
         {
@@ -19909,6 +20226,8 @@
     "Price": {
       "name": "Price",
       "group": "components",
+      "folderName": "Price",
+      "role": "primary",
       "description": "Компонент для отображения цены / стоимости / суммы.",
       "props": [
         {
@@ -20002,6 +20321,8 @@
     "Progress": {
       "name": "Progress",
       "group": "components",
+      "folderName": "Progress",
+      "role": "primary",
       "description": "",
       "props": [],
       "propsTypeName": "ProgressProps",
@@ -20135,6 +20456,8 @@
     "ProgressBarCircular": {
       "name": "ProgressBarCircular",
       "group": "components",
+      "folderName": "Progress",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -20213,6 +20536,8 @@
     "Radiobox": {
       "name": "Radiobox",
       "group": "components",
+      "folderName": "Radiobox",
+      "role": "primary",
       "description": "Переключатель, или *радиокнопка*.",
       "props": [
         {
@@ -20411,6 +20736,8 @@
     "RadioGroup": {
       "name": "RadioGroup",
       "group": "components",
+      "folderName": "Radiobox",
+      "role": "primary",
       "description": "",
       "props": [],
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Radiobox/RadioGroup.d.ts",
@@ -20431,6 +20758,8 @@
     "Range": {
       "name": "Range",
       "group": "components",
+      "folderName": "Range",
+      "role": "primary",
       "description": "Компонент Range.",
       "props": [
         {
@@ -20870,6 +21199,8 @@
     "Rating": {
       "name": "Rating",
       "group": "components",
+      "folderName": "Rating",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -20976,6 +21307,8 @@
     "SSRProvider": {
       "name": "SSRProvider",
       "group": "components",
+      "folderName": "SSRProvider",
+      "role": "primary",
       "description": "Провайдер обязателен для использования, необходимо обернуть в него все приложение.\n\nИспользуется для корректного озвучивания скринридерами Radiobox и Checkbox компонент.",
       "props": [],
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/SSRProvider/SSRProvider.d.ts",
@@ -20995,6 +21328,8 @@
     "SegmentGroup": {
       "name": "SegmentGroup",
       "group": "components",
+      "folderName": "Segment",
+      "role": "primary",
       "description": "Компонент группы сегментов.",
       "props": [
         {
@@ -21081,6 +21416,8 @@
     "SegmentIconItem": {
       "name": "SegmentIconItem",
       "group": "components",
+      "folderName": "Segment",
+      "role": "primary",
       "description": "Компонент сегмента с иконкой.",
       "props": [
         {
@@ -21145,6 +21482,8 @@
     "SegmentItem": {
       "name": "SegmentItem",
       "group": "components",
+      "folderName": "Segment",
+      "role": "primary",
       "description": "Компонент сегмента.",
       "props": [
         {
@@ -21227,6 +21566,8 @@
     "SegmentProvider": {
       "name": "SegmentProvider",
       "group": "components",
+      "folderName": "Segment",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -21272,6 +21613,8 @@
     "Select": {
       "name": "Select",
       "group": "components",
+      "folderName": "Select",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -21807,6 +22150,8 @@
     "Sheet": {
       "name": "Sheet",
       "group": "components",
+      "folderName": "Sheet",
+      "role": "primary",
       "description": "Открывает окно-шторку поверх основного экрана.",
       "props": [],
       "propsTypeName": "SheetProps",
@@ -21941,6 +22286,8 @@
     "LineSkeleton": {
       "name": "LineSkeleton",
       "group": "components",
+      "folderName": "Skeleton",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -22011,6 +22358,8 @@
     "RectSkeleton": {
       "name": "RectSkeleton",
       "group": "components",
+      "folderName": "Skeleton",
+      "role": "primary",
       "description": "Компонент для создания прямоугольного плейсхолдера.",
       "props": [
         {
@@ -22068,6 +22417,8 @@
     "TextSkeleton": {
       "name": "TextSkeleton",
       "group": "components",
+      "folderName": "Skeleton",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -22144,6 +22495,8 @@
     "Slider": {
       "name": "Slider",
       "group": "components",
+      "folderName": "Slider",
+      "role": "primary",
       "description": "Слайдер позволяет определить числовое значение в пределах указанного промежутка.\nМожно указать два значения.",
       "props": [],
       "propsTypeName": "SliderProps",
@@ -22450,6 +22803,8 @@
     "Spinner": {
       "name": "Spinner",
       "group": "components",
+      "folderName": "Spinner",
+      "role": "primary",
       "description": "Компонент для отображения индикатора загрузки.",
       "props": [
         {
@@ -22511,6 +22866,8 @@
     "SplitView": {
       "name": "SplitView",
       "group": "components",
+      "folderName": "SplitView",
+      "role": "primary",
       "description": "Разделённый вид с двумя панелями.",
       "props": [
         {
@@ -22605,6 +22962,8 @@
     "Steps": {
       "name": "Steps",
       "group": "components",
+      "folderName": "Steps",
+      "role": "primary",
       "description": "",
       "props": [],
       "propsTypeName": "ComponentProps<typeof Steps>",
@@ -22724,6 +23083,8 @@
     "StoriesPreview": {
       "name": "StoriesPreview",
       "group": "components",
+      "folderName": "Stories",
+      "role": "part",
       "description": "",
       "props": [
         {
@@ -22784,7 +23145,12 @@
       "propsTypeName": "StoriesPreviewProps",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/Stories/components/StoriesPreview/StoriesPreview.tsx",
       "type": "composition",
+      "parentComponent": "Stories",
       "atomicMcpVersion": "0.349.0",
+      "compoundPartOf": {
+        "component": "Stories",
+        "part": "Preview"
+      },
       "importPath": "@daisforge/ui",
       "importStatement": "import { StoriesPreview } from '@daisforge/ui';",
       "examples": [
@@ -22799,6 +23165,8 @@
     "Stories": {
       "name": "Stories",
       "group": "components",
+      "folderName": "Stories",
+      "role": "primary",
       "description": "Шаблонный движок сторей (как в Instagram): триггеры-превью (circle/rect), полноэкранный вьюер с индикаторами, тап-навигацией, паузой по удержанию и предзагрузкой ассетов.",
       "props": [
         {
@@ -23054,6 +23422,9 @@
         }
       ],
       "hasCuratedMeta": true,
+      "relatedExports": [
+        "StoriesPreview"
+      ],
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Stories } from '@daisforge/ui';",
@@ -23117,6 +23488,8 @@
     "Switch": {
       "name": "Switch",
       "group": "components",
+      "folderName": "Switch",
+      "role": "primary",
       "description": "Переключатель (toggle).",
       "props": [
         {
@@ -23237,6 +23610,8 @@
     "TableFilterSelectListItem": {
       "name": "TableFilterSelectListItem",
       "group": "components",
+      "folderName": "TableCanvas",
+      "role": "internal",
       "description": "",
       "props": [
         {
@@ -23249,6 +23624,7 @@
       "propsTypeName": "ComponentProps<typeof TableFilterSelectListItem>",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableCanvas/feature-filtering/combobox/styled.ts",
       "type": "composition",
+      "parentComponent": "TableCanvas",
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { TableFilterSelectListItem } from '@daisforge/ui/components/TableCanvas';",
@@ -23264,6 +23640,8 @@
     "Table": {
       "name": "Table",
       "group": "components",
+      "folderName": "Table",
+      "role": "primary",
       "description": "HTML-таблица на базе react-table. Устаревшая, но поддерживается. Для новых проектов рекомендуется TableCanvas.",
       "props": [
         {
@@ -23352,6 +23730,12 @@
       ],
       "legacy": true,
       "hasCuratedMeta": true,
+      "relatedExports": [
+        "TableFilterSelectListItem",
+        "ControlBlockSwitch",
+        "NoRowsFallback",
+        "ContainerStyled"
+      ],
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Table } from '@daisforge/ui';",
@@ -23379,6 +23763,8 @@
     "ControlBlockSwitch": {
       "name": "ControlBlockSwitch",
       "group": "components",
+      "folderName": "Table",
+      "role": "internal",
       "description": "",
       "props": [
         {
@@ -23471,6 +23857,7 @@
       "propsTypeName": "ControlBlockSwitchProps",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/Table/widgets/control-block/control-block-switch.tsx",
       "type": "composition",
+      "parentComponent": "Table",
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { ControlBlockSwitch } from '@daisforge/ui';",
@@ -23486,6 +23873,8 @@
     "NoRowsFallback": {
       "name": "NoRowsFallback",
       "group": "components",
+      "folderName": "Table",
+      "role": "internal",
       "description": "",
       "props": [
         {
@@ -23498,6 +23887,7 @@
       "propsTypeName": "NoRowsFallbackProps",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/Table/widgets/no-rows-fallback.tsx",
       "type": "composition",
+      "parentComponent": "Table",
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { NoRowsFallback } from '@daisforge/ui';",
@@ -23513,6 +23903,8 @@
     "ContainerStyled": {
       "name": "ContainerStyled",
       "group": "components",
+      "folderName": "TableCanvas",
+      "role": "internal",
       "description": "",
       "props": [
         {
@@ -23525,6 +23917,7 @@
       "propsTypeName": "ComponentProps<typeof ContainerStyled>",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableCanvas/styles/styles.ts",
       "type": "composition",
+      "parentComponent": "TableCanvas",
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { ContainerStyled } from '@daisforge/ui/components/TableCanvas';",
@@ -23540,6 +23933,8 @@
     "SplitIconButton": {
       "name": "SplitIconButton",
       "group": "components",
+      "folderName": "TableCanvas",
+      "role": "internal",
       "description": "SplitIconButton — пара кнопок-иконок: основное действие слева и кнопка-шеврон\nсправа, открывающая дропдаун (паттерн split button). Клики по каждой\nобрабатываются отдельно (onIconClick / onChevronClick), шеврон с items\nоткрывает дропдаун. Предназначен для кастомных слотов контрл-блока таблицы:\neditModeLeftSlot и customFeatures.\n\nДропдаун под капотом — TableDropdown, поэтому компонент работает внутри\nконтекста TableCanvas и подхватывает rowSize таблицы автоматически (ширина и\nразмер списка). Размеры иконок задаёт потребитель снаружи.",
       "props": [
         {
@@ -23630,6 +24025,7 @@
       "propsTypeName": "SplitIconButtonProps",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableCanvas/components/SplitIconButton/SplitIconButton.tsx",
       "type": "composition",
+      "parentComponent": "TableCanvas",
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { SplitIconButton } from '@daisforge/ui/components/TableCanvas';",
@@ -23645,6 +24041,8 @@
     "CellEditorCombobox": {
       "name": "CellEditorCombobox",
       "group": "components",
+      "folderName": "TableCanvas",
+      "role": "internal",
       "description": "",
       "props": [
         {
@@ -23715,6 +24113,7 @@
       "type": "wrapper",
       "atomicBase": "Combobox",
       "wrapsInternal": "Combobox",
+      "parentComponent": "TableCanvas",
       "inheritedProps": [
         {
           "name": "contentLeft",
@@ -24240,6 +24639,8 @@
     "CellEditorNumberFormat": {
       "name": "CellEditorNumberFormat",
       "group": "components",
+      "folderName": "TableCanvas",
+      "role": "internal",
       "description": "",
       "props": [
         {
@@ -24308,6 +24709,7 @@
       "type": "wrapper",
       "atomicBase": "NumberFormat",
       "wrapsInternal": "NumberFormat",
+      "parentComponent": "TableCanvas",
       "inheritedProps": [
         {
           "name": "thousandSeparator",
@@ -24676,6 +25078,8 @@
     "CellEditorTextArea": {
       "name": "CellEditorTextArea",
       "group": "components",
+      "folderName": "TableCanvas",
+      "role": "internal",
       "description": "",
       "props": [
         {
@@ -24742,6 +25146,7 @@
       "propsTypeName": "CellEditorTextAreaProps",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableCanvas/feature-edit/CellEditorTextArea.tsx",
       "type": "standalone",
+      "parentComponent": "TableCanvas",
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { CellEditorTextArea } from '@daisforge/ui/components/TableCanvas';",
@@ -24757,6 +25162,8 @@
     "TableCanvas": {
       "name": "TableCanvas",
       "group": "components",
+      "folderName": "TableCanvas",
+      "role": "primary",
       "description": "Канвасная таблица на базе HTML Canvas и Glide Data Grid. Основной компонент для отображения табличных данных.",
       "props": [
         {
@@ -24815,6 +25222,17 @@
       "hint": "Основная таблица. Если пользователь спрашивает про 'таблицу' — скорее всего TableCanvas. Для табличных вкладок — TableTabs.",
       "docs": "# TableCanvas\n\n### Компонент для отрисовки табличных данных\n\nЕдиный инструмент для отображения данных, имеющий набор фичей. Любой продукт сможет использовать таблицу для достижения своих целей.\n\n---\n\n#### В основе HTML-canvas\n\nВ основе `TableCanvas` используется html `canvas` для обеспечения плавной непрерывной отрисовки контента.\nВ связи с этим, необходимо учитывать особенности во время отрисовки canvas-ячеек. К canvas-ячейкам относятся ячейки шапки, основных данных, итоговых данных.\n\n---\n\n#### Миграция с Table\n\nОснова API TableCanvas унаследована от API Table для легкой миграции и переиспользования протестированных решений на основе Table.\n\n- `TableProps` и `TableProps.tableConfig` обратно совместимы на 95+% c API Table (на основе имеющихся в TableCanvas фичей)\n- `TableProps.columnConfig` - претерпел изменения в связи с особенностями рендера на `canvas`.\n\nВ `TableProps.columnConfig` обновлены свойства `renderHeaderCell, renderCell, renderSummaryCell`, теперь:\n\n- они должны быть функциями, которые возвращают Canvas-элементы (импортировать из директории TableCanvas. Примеры: Canvas.Button,Canvas.Badge и тд.).\n- в них нельзя использовать компоненты, только Canvas-элементы.\n- В них нельзя вызывать хуки, это функции рендера - не компоненты.\n- если нужны данные для ячеек, то передаем данные либо в `headerContextValue`, либо в `rowContextValue`. И получаем через `args` функции.\n\n---\n\n_\\*С более подробной документацией по фичам можно ознакомиться точечно в разделе каждой фичи (в боковом меню)_\n\n---\n\n#### Импорт\n\nТипы, хуки и компоненты, связанные с `TableCanvas`, необходимо импортировать из папки компонента:\n\n```ts\n\n```\n\nОстальные компоненты (`Badge`, `Button`, `Switch` и т.д.) импортируются как обычно — из корня пакета:\n\n```ts\n\n```\n\nИконки — из `/icons`:\n\n```ts\n\n```\n\n---\n\n### API\n\n#### TableProps\n\n<!-- CustomArgTypes: TableCanvas -> TableProps (не найден в types.string.json) -->\n\n<br />\n\n#### TableProps.tableConfig\n\n<!-- CustomArgTypes: StoryTableCanvasConfigComp -> TableConfig (не найден в types.string.json) -->\n\n<br />\n\n#### TableProps.columnConfig\n\n<!-- CustomArgTypes: StoryColumnConfigTableCanvasComp -> ColumnConfig (не найден в types.string.json) -->",
       "hasCuratedMeta": true,
+      "relatedExports": [
+        "SplitIconButton",
+        "CellEditorCombobox",
+        "CellEditorNumberFormat",
+        "CellEditorTextArea",
+        "TableFilterSelectListItem",
+        "ContainerStyled",
+        "TextCellEntry",
+        "Canvas",
+        "TextCellEntryType"
+      ],
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { TableCanvas } from '@daisforge/ui';",
@@ -24830,6 +25248,8 @@
     "TableGlideInstance": {
       "name": "TableGlideInstance",
       "group": "components",
+      "folderName": "TableCanvas",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -25753,6 +26173,17 @@
       "isGeneric": true,
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableCanvas/TableGlideInstance/TableGlideInstance.tsx",
       "type": "composition",
+      "relatedExports": [
+        "SplitIconButton",
+        "CellEditorCombobox",
+        "CellEditorNumberFormat",
+        "CellEditorTextArea",
+        "TableFilterSelectListItem",
+        "ContainerStyled",
+        "TextCellEntry",
+        "Canvas",
+        "TextCellEntryType"
+      ],
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { TableGlideInstance } from '@daisforge/ui/components/TableCanvas';",
@@ -25768,10 +26199,13 @@
     "TextCellEntry": {
       "name": "TextCellEntry",
       "group": "components",
+      "folderName": "TableCanvas",
+      "role": "internal",
       "description": "",
       "props": [],
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@glideappsfinal/glide-data-grid/dist/dts/internal/growing-entry/growing-entry.d.ts",
       "type": "standalone",
+      "parentComponent": "TableCanvas",
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { TextCellEntry } from '@daisforge/ui';",
@@ -25787,6 +26221,8 @@
     "Canvas": {
       "name": "Canvas",
       "group": "components",
+      "folderName": "TableGlide",
+      "role": "internal",
       "description": "",
       "props": [
         {
@@ -25823,6 +26259,7 @@
       "propsTypeName": "CanvasNodeTooltipProps",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableGlide/lib/canvas/components/index.tsx",
       "type": "standalone",
+      "parentComponent": "TableGlide",
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui/components/TableGlide",
       "importStatement": "import { Canvas } from '@daisforge/ui/components/TableGlide';",
@@ -25838,10 +26275,13 @@
     "TextCellEntryType": {
       "name": "TextCellEntryType",
       "group": "components",
+      "folderName": "TableCanvas",
+      "role": "internal",
       "description": "",
       "props": [],
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@glideappsfinal/glide-data-grid/dist/dts/internal/growing-entry/growing-entry.d.ts",
       "type": "standalone",
+      "parentComponent": "TableCanvas",
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { TextCellEntryType } from '@daisforge/ui';",
@@ -25857,6 +26297,8 @@
     "TableContract": {
       "name": "TableContract",
       "group": "components",
+      "folderName": "TableContract",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -26016,6 +26458,8 @@
     "TableGlide": {
       "name": "TableGlide",
       "group": "components",
+      "folderName": "TableGlide",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -26903,6 +27347,20 @@
       "isGeneric": true,
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableGlide/TableGlide.tsx",
       "type": "standalone",
+      "relatedExports": [
+        "CanvasContainer",
+        "CanvasNode",
+        "CanvasBadge",
+        "CanvasButton",
+        "CanvasEmbedIconButton",
+        "CanvasIcon",
+        "CanvasIconButton",
+        "CanvasRect",
+        "CanvasText",
+        "CanvasLink",
+        "Canvas",
+        "RootBridge"
+      ],
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui/components/TableGlide",
       "importStatement": "import { TableGlide } from '@daisforge/ui/components/TableGlide';",
@@ -26918,6 +27376,8 @@
     "CanvasContainer": {
       "name": "CanvasContainer",
       "group": "components",
+      "folderName": "TableGlide",
+      "role": "internal",
       "description": "",
       "props": [
         {
@@ -27068,6 +27528,7 @@
       "propsTypeName": "CanvasContainerProps",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableGlide/lib/canvas/core/CanvasContainer.ts",
       "type": "standalone",
+      "parentComponent": "TableGlide",
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui/components/TableGlide",
       "importStatement": "import { CanvasContainer } from '@daisforge/ui/components/TableGlide';",
@@ -27083,6 +27544,8 @@
     "CanvasNode": {
       "name": "CanvasNode",
       "group": "components",
+      "folderName": "TableGlide",
+      "role": "internal",
       "description": "",
       "props": [
         {
@@ -27119,6 +27582,7 @@
       "propsTypeName": "CanvasNodeTooltipProps",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableGlide/lib/canvas/core/CanvasNode.ts",
       "type": "standalone",
+      "parentComponent": "TableGlide",
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui/components/TableGlide",
       "importStatement": "import { CanvasNode } from '@daisforge/ui/components/TableGlide';",
@@ -27134,6 +27598,8 @@
     "CanvasBadge": {
       "name": "CanvasBadge",
       "group": "components",
+      "folderName": "TableGlide",
+      "role": "internal",
       "description": "",
       "props": [
         {
@@ -27260,6 +27726,7 @@
       "propsTypeName": "CanvasBadgeProps",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableGlide/lib/canvas/primitives/CanvasBadge.ts",
       "type": "standalone",
+      "parentComponent": "TableGlide",
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui/components/TableGlide",
       "importStatement": "import { CanvasBadge } from '@daisforge/ui/components/TableGlide';",
@@ -27275,6 +27742,8 @@
     "CanvasButton": {
       "name": "CanvasButton",
       "group": "components",
+      "folderName": "TableGlide",
+      "role": "internal",
       "description": "",
       "props": [
         {
@@ -27384,6 +27853,7 @@
       "propsTypeName": "CanvasButtonProps",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableGlide/lib/canvas/primitives/CanvasButton.ts",
       "type": "standalone",
+      "parentComponent": "TableGlide",
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui/components/TableGlide",
       "importStatement": "import { CanvasButton } from '@daisforge/ui/components/TableGlide';",
@@ -27399,6 +27869,8 @@
     "CanvasEmbedIconButton": {
       "name": "CanvasEmbedIconButton",
       "group": "components",
+      "folderName": "TableGlide",
+      "role": "internal",
       "description": "",
       "props": [
         {
@@ -27527,6 +27999,7 @@
       "propsTypeName": "CanvasEmbedIconButtonProps",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableGlide/lib/canvas/primitives/CanvasEmbedIconButton.ts",
       "type": "standalone",
+      "parentComponent": "TableGlide",
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui/components/TableGlide",
       "importStatement": "import { CanvasEmbedIconButton } from '@daisforge/ui/components/TableGlide';",
@@ -27542,6 +28015,8 @@
     "CanvasIcon": {
       "name": "CanvasIcon",
       "group": "components",
+      "folderName": "TableGlide",
+      "role": "internal",
       "description": "",
       "props": [
         {
@@ -27644,6 +28119,7 @@
       "propsTypeName": "CanvasIconProps",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableGlide/lib/canvas/primitives/CanvasIcon.ts",
       "type": "standalone",
+      "parentComponent": "TableGlide",
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui/components/TableGlide",
       "importStatement": "import { CanvasIcon } from '@daisforge/ui/components/TableGlide';",
@@ -27659,6 +28135,8 @@
     "CanvasIconButton": {
       "name": "CanvasIconButton",
       "group": "components",
+      "folderName": "TableGlide",
+      "role": "internal",
       "description": "",
       "props": [
         {
@@ -27763,6 +28241,7 @@
       "propsTypeName": "CanvasIconButtonProps",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableGlide/lib/canvas/primitives/CanvasIconButton.ts",
       "type": "standalone",
+      "parentComponent": "TableGlide",
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui/components/TableGlide",
       "importStatement": "import { CanvasIconButton } from '@daisforge/ui/components/TableGlide';",
@@ -27778,6 +28257,8 @@
     "CanvasRect": {
       "name": "CanvasRect",
       "group": "components",
+      "folderName": "TableGlide",
+      "role": "internal",
       "description": "",
       "props": [
         {
@@ -27856,6 +28337,7 @@
       "propsTypeName": "CanvasRectProps",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableGlide/lib/canvas/primitives/CanvasRect.ts",
       "type": "standalone",
+      "parentComponent": "TableGlide",
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui/components/TableGlide",
       "importStatement": "import { CanvasRect } from '@daisforge/ui/components/TableGlide';",
@@ -27871,6 +28353,8 @@
     "CanvasText": {
       "name": "CanvasText",
       "group": "components",
+      "folderName": "TableGlide",
+      "role": "internal",
       "description": "",
       "props": [
         {
@@ -27985,6 +28469,7 @@
       "propsTypeName": "CanvasTextProps",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableGlide/lib/canvas/primitives/CanvasText.ts",
       "type": "standalone",
+      "parentComponent": "TableGlide",
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui/components/TableGlide",
       "importStatement": "import { CanvasText } from '@daisforge/ui/components/TableGlide';",
@@ -28000,6 +28485,8 @@
     "CanvasLink": {
       "name": "CanvasLink",
       "group": "components",
+      "folderName": "TableGlide",
+      "role": "internal",
       "description": "",
       "props": [
         {
@@ -28122,6 +28609,7 @@
       "type": "wrapper",
       "atomicBase": "Link",
       "wrapsInternal": "Link",
+      "parentComponent": "TableGlide",
       "inheritedProps": [
         {
           "name": "view",
@@ -28167,6 +28655,8 @@
     "RootBridge": {
       "name": "RootBridge",
       "group": "components",
+      "folderName": "TableGlide",
+      "role": "internal",
       "description": "",
       "props": [
         {
@@ -28197,6 +28687,7 @@
       "propsTypeName": "RootBridgeProps",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableGlide/lib/canvas/components/index.tsx",
       "type": "standalone",
+      "parentComponent": "TableGlide",
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui/components/TableGlide",
       "importStatement": "import { RootBridge } from '@daisforge/ui/components/TableGlide';",
@@ -28212,6 +28703,8 @@
     "DataEditor": {
       "name": "DataEditor",
       "group": "components",
+      "folderName": "TableGlide",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -28905,6 +29398,20 @@
       "propsTypeName": "ComponentProps<typeof DataEditor>",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@glideappsfinal/glide-data-grid/dist/dts/data-editor-all.d.ts",
       "type": "standalone",
+      "relatedExports": [
+        "CanvasContainer",
+        "CanvasNode",
+        "CanvasBadge",
+        "CanvasButton",
+        "CanvasEmbedIconButton",
+        "CanvasIcon",
+        "CanvasIconButton",
+        "CanvasRect",
+        "CanvasText",
+        "CanvasLink",
+        "Canvas",
+        "RootBridge"
+      ],
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { DataEditor } from '@daisforge/ui';",
@@ -28920,6 +29427,8 @@
     "TableSDDS": {
       "name": "TableSDDS",
       "group": "components",
+      "folderName": "TableSDDS",
+      "role": "primary",
       "description": "Таблица.",
       "props": [],
       "propsTypeName": "TableSDDSProps",
@@ -29095,6 +29604,8 @@
     "TableTabs": {
       "name": "TableTabs",
       "group": "components",
+      "folderName": "TableTabs",
+      "role": "primary",
       "description": "Табличные вкладки для переключения между наборами данных.",
       "props": [
         {
@@ -29570,6 +30081,8 @@
     "IconTabItem": {
       "name": "IconTabItem",
       "group": "components",
+      "folderName": "Tabs",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -29640,6 +30153,8 @@
     "TabItem": {
       "name": "TabItem",
       "group": "components",
+      "folderName": "Tabs",
+      "role": "primary",
       "description": "Элемент списка, недопустимо использовать вне компонента Tabs.",
       "props": [
         {
@@ -29740,6 +30255,8 @@
     "Tabs": {
       "name": "Tabs",
       "group": "components",
+      "folderName": "Tabs",
+      "role": "primary",
       "description": "Контейнер вкладок, основной компонент для пользовательской сборки вкладок.",
       "props": [
         {
@@ -29846,6 +30363,8 @@
     "TabsController": {
       "name": "TabsController",
       "group": "components",
+      "folderName": "Tabs",
+      "role": "primary",
       "description": "Контроллер вкладок.\nПозволяет использовать клавиши ArrowLeft, ArrowRight, Home, End для навигации по вкладкам.",
       "props": [
         {
@@ -29954,6 +30473,8 @@
     "TextArea": {
       "name": "TextArea",
       "group": "components",
+      "folderName": "TextArea",
+      "role": "primary",
       "description": "Многострочное текстовое поле.",
       "props": [
         {
@@ -30240,6 +30761,8 @@
     "TextField": {
       "name": "TextField",
       "group": "components",
+      "folderName": "TextField",
+      "role": "primary",
       "description": "Текстовое поле ввода.",
       "props": [
         {
@@ -30681,6 +31204,8 @@
     "TextFieldSearch": {
       "name": "TextFieldSearch",
       "group": "components",
+      "folderName": "TextField",
+      "role": "primary",
       "description": "Поле поиска с иконкой и кнопкой очистки.",
       "props": [
         {
@@ -30991,6 +31516,8 @@
     "TextFieldGroup": {
       "name": "TextFieldGroup",
       "group": "components",
+      "folderName": "TextFieldGroup",
+      "role": "primary",
       "description": "Группа TextField.",
       "props": [],
       "propsTypeName": "ComponentProps<typeof TextFieldGroup>",
@@ -31056,6 +31583,8 @@
     "TimePicker": {
       "name": "TimePicker",
       "group": "components",
+      "folderName": "TimePicker",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -31480,6 +32009,8 @@
     "Toast": {
       "name": "Toast",
       "group": "components",
+      "folderName": "Toast",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -31589,6 +32120,8 @@
     "ToastProvider": {
       "name": "ToastProvider",
       "group": "components",
+      "folderName": "Toast",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -31617,12 +32150,17 @@
     "Toolbar": {
       "name": "Toolbar",
       "group": "components",
+      "folderName": "Toolbar",
+      "role": "primary",
       "description": "Компонент Toolbar.",
       "props": [],
       "propsTypeName": "ToolbarProps",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Toolbar/Toolbar.d.ts",
       "type": "wrapper",
       "atomicBase": "Toolbar",
+      "relatedExports": [
+        "ToolbarDivider"
+      ],
       "inheritedProps": [
         {
           "name": "view",
@@ -31672,6 +32210,8 @@
     "ToolbarDivider": {
       "name": "ToolbarDivider",
       "group": "components",
+      "folderName": "Toolbar",
+      "role": "part",
       "description": "",
       "props": [
         {
@@ -31703,6 +32243,7 @@
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Toolbar/Toolbar.d.ts",
       "type": "wrapper",
       "atomicBase": "ToolbarDivider",
+      "parentComponent": "Toolbar",
       "atomicDataMissing": true,
       "importPath": "@daisforge/ui",
       "importStatement": "import { ToolbarDivider } from '@daisforge/ui';",
@@ -31718,6 +32259,8 @@
     "TooltipList": {
       "name": "TooltipList",
       "group": "components",
+      "folderName": "Tooltip",
+      "role": "primary",
       "description": "Тултип со списком элементов.",
       "props": [
         {
@@ -31962,6 +32505,8 @@
     "Tooltip": {
       "name": "Tooltip",
       "group": "components",
+      "folderName": "Tooltip",
+      "role": "primary",
       "description": "",
       "props": [],
       "propsTypeName": "TooltipProps",
@@ -32176,6 +32721,8 @@
     "TooltipBeta": {
       "name": "TooltipBeta",
       "group": "components",
+      "folderName": "TooltipBeta",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -32290,6 +32837,8 @@
     "Tour": {
       "name": "Tour",
       "group": "components",
+      "folderName": "Tour",
+      "role": "primary",
       "description": "",
       "props": [],
       "propsTypeName": "TourProps",
@@ -32480,6 +33029,8 @@
     "TourWidgetBullet": {
       "name": "TourWidgetBullet",
       "group": "components",
+      "folderName": "TourWidget",
+      "role": "part",
       "description": "",
       "props": [
         {
@@ -32504,6 +33055,7 @@
       "propsTypeName": "TourWidgetBulletProps",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TourWidget/components/TourWidgetBullet.tsx",
       "type": "standalone",
+      "parentComponent": "TourWidget",
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { TourWidgetBullet } from '@daisforge/ui';",
@@ -32519,6 +33071,8 @@
     "TourWidgetBullets": {
       "name": "TourWidgetBullets",
       "group": "components",
+      "folderName": "TourWidget",
+      "role": "part",
       "description": "",
       "props": [
         {
@@ -32537,6 +33091,7 @@
       "propsTypeName": "TourWidgetBulletsProps",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TourWidget/components/TourWidgetBullets.tsx",
       "type": "standalone",
+      "parentComponent": "TourWidget",
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { TourWidgetBullets } from '@daisforge/ui';",
@@ -32552,6 +33107,8 @@
     "TourWidgetContent": {
       "name": "TourWidgetContent",
       "group": "components",
+      "folderName": "TourWidget",
+      "role": "part",
       "description": "",
       "props": [
         {
@@ -32564,6 +33121,7 @@
       "propsTypeName": "TourWidgetContentProps",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TourWidget/components/TourWidgetContent.tsx",
       "type": "standalone",
+      "parentComponent": "TourWidget",
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { TourWidgetContent } from '@daisforge/ui';",
@@ -32579,6 +33137,8 @@
     "TourWidgetFooter": {
       "name": "TourWidgetFooter",
       "group": "components",
+      "folderName": "TourWidget",
+      "role": "part",
       "description": "",
       "props": [
         {
@@ -32591,6 +33151,7 @@
       "propsTypeName": "TourWidgetFooterProps",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TourWidget/components/TourWidgetFooter.tsx",
       "type": "standalone",
+      "parentComponent": "TourWidget",
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { TourWidgetFooter } from '@daisforge/ui';",
@@ -32606,6 +33167,8 @@
     "TourWidgetHeader": {
       "name": "TourWidgetHeader",
       "group": "components",
+      "folderName": "TourWidget",
+      "role": "part",
       "description": "",
       "props": [
         {
@@ -32630,6 +33193,7 @@
       "propsTypeName": "TourWidgetHeaderProps",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TourWidget/components/TourWidgetHeader.tsx",
       "type": "standalone",
+      "parentComponent": "TourWidget",
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { TourWidgetHeader } from '@daisforge/ui';",
@@ -32645,6 +33209,8 @@
     "TourWidget": {
       "name": "TourWidget",
       "group": "components",
+      "folderName": "TourWidget",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -32669,6 +33235,13 @@
       "propsTypeName": "TourWidgetProps",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TourWidget/TourWidget.tsx",
       "type": "composition",
+      "relatedExports": [
+        "TourWidgetBullet",
+        "TourWidgetBullets",
+        "TourWidgetContent",
+        "TourWidgetFooter",
+        "TourWidgetHeader"
+      ],
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { TourWidget } from '@daisforge/ui';",
@@ -32684,6 +33257,8 @@
     "Tree": {
       "name": "Tree",
       "group": "components",
+      "folderName": "Tree",
+      "role": "primary",
       "description": "",
       "props": [],
       "propsTypeName": "TreeProps",
@@ -33009,6 +33584,8 @@
     "Typography": {
       "name": "Typography",
       "group": "components",
+      "folderName": "Typography",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -33183,6 +33760,8 @@
     "TypographyWithAutoTooltip": {
       "name": "TypographyWithAutoTooltip",
       "group": "components",
+      "folderName": "Typography",
+      "role": "primary",
       "description": "",
       "props": [],
       "propsTypeName": "TypographyWithAutoTooltipProps",
@@ -33205,6 +33784,8 @@
     "BodyL": {
       "name": "BodyL",
       "group": "components",
+      "folderName": "Typography",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -33365,6 +33946,8 @@
     "BodyM": {
       "name": "BodyM",
       "group": "components",
+      "folderName": "Typography",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -33525,6 +34108,8 @@
     "BodyS": {
       "name": "BodyS",
       "group": "components",
+      "folderName": "Typography",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -33685,6 +34270,8 @@
     "BodyXS": {
       "name": "BodyXS",
       "group": "components",
+      "folderName": "Typography",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -33845,6 +34432,8 @@
     "BodyXXS": {
       "name": "BodyXXS",
       "group": "components",
+      "folderName": "Typography",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -34005,6 +34594,8 @@
     "DsplL": {
       "name": "DsplL",
       "group": "components",
+      "folderName": "Typography",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -34165,6 +34756,8 @@
     "DsplM": {
       "name": "DsplM",
       "group": "components",
+      "folderName": "Typography",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -34325,6 +34918,8 @@
     "DsplS": {
       "name": "DsplS",
       "group": "components",
+      "folderName": "Typography",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -34485,6 +35080,8 @@
     "TextL": {
       "name": "TextL",
       "group": "components",
+      "folderName": "Typography",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -34645,6 +35242,8 @@
     "TextM": {
       "name": "TextM",
       "group": "components",
+      "folderName": "Typography",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -34805,6 +35404,8 @@
     "TextS": {
       "name": "TextS",
       "group": "components",
+      "folderName": "Typography",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -34965,6 +35566,8 @@
     "TextXS": {
       "name": "TextXS",
       "group": "components",
+      "folderName": "Typography",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -35125,6 +35728,8 @@
     "ViewContainer": {
       "name": "ViewContainer",
       "group": "components",
+      "folderName": "ViewContainer",
+      "role": "primary",
       "description": "",
       "props": [],
       "propsTypeName": "ComponentProps<typeof ViewContainer>",
@@ -35156,6 +35761,8 @@
     "WidgetDivider": {
       "name": "WidgetDivider",
       "group": "components",
+      "folderName": "Widget",
+      "role": "part",
       "description": "",
       "props": [
         {
@@ -35188,6 +35795,7 @@
       "type": "wrapper",
       "atomicBase": "Divider",
       "wrapsInternal": "Divider",
+      "parentComponent": "Widget",
       "atomicDataMissing": true,
       "importPath": "@daisforge/ui",
       "importStatement": "import { WidgetDivider } from '@daisforge/ui';",
@@ -35203,6 +35811,8 @@
     "WidgetFooter": {
       "name": "WidgetFooter",
       "group": "components",
+      "folderName": "Widget",
+      "role": "part",
       "description": "",
       "props": [
         {
@@ -35497,6 +36107,7 @@
       "propsTypeName": "WidgetFooterProps",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/Widget/components/WidgetFooter.tsx",
       "type": "composition",
+      "parentComponent": "Widget",
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { WidgetFooter } from '@daisforge/ui';",
@@ -35512,6 +36123,8 @@
     "WidgetHeader": {
       "name": "WidgetHeader",
       "group": "components",
+      "folderName": "Widget",
+      "role": "part",
       "description": "",
       "props": [
         {
@@ -35620,6 +36233,7 @@
       "propsTypeName": "WidgetHeaderProps",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/Widget/components/WidgetHeader.tsx",
       "type": "composition",
+      "parentComponent": "Widget",
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { WidgetHeader } from '@daisforge/ui';",
@@ -35635,6 +36249,8 @@
     "WidgetIconButtonBack": {
       "name": "WidgetIconButtonBack",
       "group": "components",
+      "folderName": "Widget",
+      "role": "part",
       "description": "",
       "props": [
         {
@@ -35661,6 +36277,7 @@
       "type": "wrapper",
       "atomicBase": "IconButton",
       "wrapsInternal": "IconButton",
+      "parentComponent": "Widget",
       "inheritedProps": [
         {
           "name": "view",
@@ -35825,10 +36442,13 @@
     "WidgetIconButtonDots": {
       "name": "WidgetIconButtonDots",
       "group": "components",
+      "folderName": "Widget",
+      "role": "part",
       "description": "",
       "props": [],
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/Widget/components/WidgetIconButtonDots.tsx",
       "type": "composition",
+      "parentComponent": "Widget",
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { WidgetIconButtonDots } from '@daisforge/ui';",
@@ -35844,6 +36464,8 @@
     "WidgetServiceButtons": {
       "name": "WidgetServiceButtons",
       "group": "components",
+      "folderName": "Widget",
+      "role": "part",
       "description": "",
       "props": [
         {
@@ -36138,6 +36760,7 @@
       "propsTypeName": "WidgetServiceButtonsProps",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/Widget/components/WidgetServiceButtons.tsx",
       "type": "composition",
+      "parentComponent": "Widget",
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { WidgetServiceButtons } from '@daisforge/ui';",
@@ -36153,6 +36776,8 @@
     "WidgetContent": {
       "name": "WidgetContent",
       "group": "components",
+      "folderName": "Widget",
+      "role": "part",
       "description": "",
       "props": [
         {
@@ -36165,6 +36790,7 @@
       "propsTypeName": "ComponentProps<typeof WidgetContent>",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/Widget/Widget.styled.ts",
       "type": "composition",
+      "parentComponent": "Widget",
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { WidgetContent } from '@daisforge/ui';",
@@ -36180,6 +36806,8 @@
     "Widget": {
       "name": "Widget",
       "group": "components",
+      "folderName": "Widget",
+      "role": "primary",
       "description": "Базовый виджет с header, content, footer.",
       "props": [],
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/Widget/Widget.tsx",
@@ -36209,6 +36837,15 @@
         }
       ],
       "hasCuratedMeta": true,
+      "relatedExports": [
+        "WidgetDivider",
+        "WidgetFooter",
+        "WidgetHeader",
+        "WidgetIconButtonBack",
+        "WidgetIconButtonDots",
+        "WidgetServiceButtons",
+        "WidgetContent"
+      ],
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Widget } from '@daisforge/ui';",
@@ -36236,6 +36873,8 @@
     "FormAutocomplete": {
       "name": "FormAutocomplete",
       "group": "formComponents",
+      "folderName": "FormAutocomplete",
+      "role": "primary",
       "description": "FormAutocomplete относится к группе mutation-form элементов. Он расширяет возможности\n компонента Autocomplete",
       "props": [
         {
@@ -36603,6 +37242,8 @@
     "FormCheckbox": {
       "name": "FormCheckbox",
       "group": "formComponents",
+      "folderName": "FormCheckbox",
+      "role": "primary",
       "description": "FormCheckbox относится к группе mutation-form элементов. Он расширяет возможности\n компонента [Checkbox] для использования в формах.\n\n **Обратите внимание, что компонент FormCheckbox не валидируется.**",
       "props": [
         {
@@ -36717,6 +37358,8 @@
     "FormCombobox": {
       "name": "FormCombobox",
       "group": "formComponents",
+      "folderName": "FormCombobox",
+      "role": "primary",
       "description": "FormAutocomplete относится к группе mutation-form элементов. Он расширяет возможности\n компонента [Combobox]  для использования в формах.",
       "props": [
         {
@@ -37143,6 +37786,8 @@
     "FormDatePicker": {
       "name": "FormDatePicker",
       "group": "formComponents",
+      "folderName": "FormDatePickers",
+      "role": "primary",
       "description": "[FormDatePicker](url) относится к группе mutation-form элементов. Он расширяет возможности\n компонента [DatePicker](https://plasma.sberdevices.ru/sdds-finai/components/datepicker/)\n библиотеки [sdds-finai](https://plasma.sberdevices.ru/sdds-finai/) для использования в формах.\n Компонент имеет встроенную валидацию введенных данных как значения даты, сообщение, которое будет показано\n пользователю в случае ошибки, задается через параметр `invalidFormatMesssage`.\n\n Умеет контролировать пользовательский ввод в разрешенном диапазоне дат, для ограничения выбора дат надо указать в `options.min/max`, либо передать пропсы `min/max` (type Date) которые перебивают `options.min/max`.\nзначения дат выраженные в миллисекундах, например:\n```\n...\noptions: {\n max: {\n     value: new Date().getTime(),\n     message: \"Указанная дата за пределами максимально доступной\"\n }\n}\n```",
       "props": [
         {
@@ -37618,6 +38263,8 @@
     "FormDatePickerRange": {
       "name": "FormDatePickerRange",
       "group": "formComponents",
+      "folderName": "FormDatePickers",
+      "role": "primary",
       "description": "[FormDatePickerRange](url) относится к группе mutation-form элементов. Он расширяет возможности\nкомпонента [DatePicker.Range](https://plasma.sberdevices.ru/sdds-finai/components/datepicker/)\nбиблиотеки [sdds-finai](https://plasma.sberdevices.ru/sdds-finai/) для работы с диапазонами дат в формах.\n\n### Основные особенности:\n- Встроенная валидация формата дат (сообщение через `invalidFormatMessage`)\n- Поддержка обязательного заполнения (`required`)\n- Контроль допустимых диапазонов дат\n- Интеграция с react-hook-form\n\n### Валидация диапазонов:\nДля ограничения выбора дат используйте:\n```tsx\n<FormDatePickerRange\n  options={{\n    min: {\n      value: new Date(2024, 0, 1).getTime(),\n      message: \"Минимальная дата - 1 января 2024\"\n    },\n    max: {\n      value: new Date(2024, 11, 31).getTime(),\n      message: \"Максимальная дата - 31 декабря 2024\"\n    }\n  }}\n/>\n```\n\n### Обязательное поле:\n```tsx\n// Простое указание обязательности\n<FormDatePickerRange options={{ required: true }} />\n\n// С кастомным сообщением\n<FormDatePickerRange\n  options={{\n    required: \"Пожалуйста, укажите диапазон дат\"\n  }}\n/>\n```\n\n### Кастомная валидация:\n```tsx\n<FormDatePickerRange\n  options={{\n    validate: {\n      minDuration: (value) =>\n        (new Date(value.dateTo) - new Date(value.dateFrom)) < 7 * 86400000\n          ? \"Минимальный период - 7 дней\"\n          : true,\n      noWeekends: (value) =>\n        [0, 6].includes(new Date(value.dateFrom).getDay())\n          ? \"Нельзя начинать в выходные\"\n          : true\n    }\n  }}\n/>\n```\n\n### Приоритеты валидации:\n1. Проверка обязательности заполнения\n2. Валидация формата дат\n3. Проверка минимальных/максимальных значений\n4. Кастомные валидаторы",
       "props": [
         {
@@ -38205,6 +38852,8 @@
     "FormMask": {
       "name": "FormMask",
       "group": "formComponents",
+      "folderName": "FormMask",
+      "role": "primary",
       "description": "[FormMask] относится к группе mutation-form элементов. Он расширяет возможности\n компонента [Mask] для использования в формах",
       "props": [
         {
@@ -38541,6 +39190,8 @@
     "FormNumberFormat": {
       "name": "FormNumberFormat",
       "group": "formComponents",
+      "folderName": "FormNumberFormat",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -38871,6 +39522,8 @@
     "FormRadiobox": {
       "name": "FormRadiobox",
       "group": "formComponents",
+      "folderName": "FormRadioGroupBox",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -38971,6 +39624,8 @@
     "FormRadioGroup": {
       "name": "FormRadioGroup",
       "group": "formComponents",
+      "folderName": "FormRadioGroupBox",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -39055,6 +39710,8 @@
     "FormSegmentGroup": {
       "name": "FormSegmentGroup",
       "group": "formComponents",
+      "folderName": "FormSegments",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -39200,6 +39857,8 @@
     "FormSelect": {
       "name": "FormSelect",
       "group": "formComponents",
+      "folderName": "FormSelect",
+      "role": "primary",
       "description": "MutationSelect относится к группе mutation-form элементов. Он расширяет возможности\n компонента [Select] для использования в формах",
       "props": [
         {
@@ -39596,6 +40255,8 @@
     "FormSwitch": {
       "name": "FormSwitch",
       "group": "formComponents",
+      "folderName": "FormSwitch",
+      "role": "primary",
       "description": "FormSwitch относится к группе mutation-form элементов. Он расширяет возможности\n компонента [Switch] для использования в формах.\n\n **Обратите внимание, что компонент FormSwitch не валидируется.**",
       "props": [
         {
@@ -39718,6 +40379,8 @@
     "FormTextArea": {
       "name": "FormTextArea",
       "group": "formComponents",
+      "folderName": "FormTextArea",
+      "role": "primary",
       "description": "",
       "props": [
         {
@@ -39988,6 +40651,8 @@
     "FormTextField": {
       "name": "FormTextField",
       "group": "formComponents",
+      "folderName": "FormTextField",
+      "role": "primary",
       "description": "FormTextField относится к группе form элементов. Он расширяет возможности\n компонента [TextField] для использования в формах",
       "props": [
         {
@@ -40270,6 +40935,8 @@
     "Container": {
       "name": "Container",
       "group": "layouts",
+      "folderName": "Container",
+      "role": "primary",
       "description": "Контейнер с поддержкой split-режимов и адаптивности.",
       "props": [
         {
@@ -40393,6 +41060,8 @@
     "ErrorPage": {
       "name": "ErrorPage",
       "group": "layouts",
+      "folderName": "ErrorPage",
+      "role": "primary",
       "description": "Страница ошибки с кодом, описанием и действиями.",
       "props": [
         {
@@ -40666,31 +41335,153 @@
     "FiltersActionsDotsIconButton": {
       "name": "FiltersActionsDotsIconButton",
       "group": "layouts",
+      "folderName": "FiltersActions",
+      "role": "part",
       "description": "",
       "props": [
         {
           "name": "dropdownProps",
-          "type": "(Omit<DropdownProps<ItemOption>, \"size\" | \"view\"> & Pick<PropsType<{ size: { m: PolymorphicClassName; s: PolymorphicClassName; xs: PolymorphicClassName; }; view: { default: PolymorphicClassName; }; }> & { items: ItemOption[]; trigger?: DropdownTrigger | undefined; placement?: DropdownPlacement | undefined; children?: React.ReactNode; variant?: \"normal\" | \"tight\" | undefined; zIndex?: Property.ZInd…",
+          "type": "(Omit<DropdownProps<ItemOption>, \"view\" | \"size\"> & Pick<PropsType<{ size: { m: PolymorphicClassName; s: PolymorphicClassName; xs: PolymorphicClassName; }; view: { default: PolymorphicClassName; }; }> & { items: ItemOption[]; trigger?: DropdownTrigger | undefined; placement?: DropdownPlacement | undefined; children?: React.ReactNode; variant?: \"normal\" | \"tight\" | undefined; zIndex?: Property.ZInd…",
           "required": false,
           "description": "Пропсы выпадающего меню"
         },
         {
           "name": "iconSize",
-          "type": "\"s\" | \"xs\" | \"m\" | undefined",
+          "type": "\"xs\" | \"s\" | \"m\" | undefined",
           "required": false,
           "description": "Размер иконки"
         },
         {
+          "name": "view",
+          "type": "\"default\" | \"clear\" | \"black\" | \"white\" | \"positive\" | \"warning\" | \"negative\" | \"secondary\" | \"accent\" | \"dark\" | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "size",
+          "type": "\"xs\" | \"s\" | \"xxs\" | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "focused",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
           "name": "type",
-          "type": "\"button\" | \"reset\" | \"submit\" | undefined",
+          "type": "\"button\" | \"submit\" | \"reset\" | undefined",
           "required": false,
           "description": ""
         },
         {
           "name": "as",
-          "type": "keyof JSX.IntrinsicElements | React.ComponentType<any> | undefined",
+          "type": "React.ComponentType<any> | keyof JSX.IntrinsicElements | undefined",
           "required": false,
           "description": "Сменить рендер на другой тип компонента."
+        },
+        {
+          "name": "text",
+          "type": "string | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "contentLeft",
+          "type": "React.ReactNode",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "contentPlacing",
+          "type": "\"default\" | \"relaxed\" | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "additionalContent",
+          "type": "React.ReactNode",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "isLoading",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "loader",
+          "type": "React.ReactNode",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "stretch",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "stretching",
+          "type": "\"filled\" | \"fixed\" | \"auto\" | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "square",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "pin",
+          "type": "\"square-square\" | \"square-clear\" | \"clear-square\" | \"clear-clear\" | \"clear-circle\" | \"circle-clear\" | \"circle-circle\" | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "appearance",
+          "type": "\"default\" | \"outline\" | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "outlined",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "shiftLeft",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "shiftRight",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "blur",
+          "type": "\"small\" | \"medium\" | \"large\" | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "value",
+          "type": "string | number | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "contentRight",
+          "type": "React.ReactNode",
+          "required": false,
+          "description": ""
         }
       ],
       "propsTypeName": "FiltersActionsDotsIconButtonProps",
@@ -40698,6 +41489,7 @@
       "type": "wrapper",
       "atomicBase": "IconButton",
       "wrapsInternal": "IconButton",
+      "parentComponent": "FiltersActions",
       "inheritedProps": [
         {
           "name": "view",
@@ -40848,6 +41640,10 @@
         }
       ],
       "atomicMcpVersion": "0.349.0",
+      "compoundPartOf": {
+        "component": "FiltersActions",
+        "part": "DotsIconButton"
+      },
       "importPath": "@daisforge/ui",
       "importStatement": "import { FiltersActionsDotsIconButton } from '@daisforge/ui';",
       "examples": [
@@ -40862,6 +41658,8 @@
     "FiltersActionsFiltersButton": {
       "name": "FiltersActionsFiltersButton",
       "group": "layouts",
+      "folderName": "FiltersActions",
+      "role": "part",
       "description": "",
       "props": [
         {
@@ -40954,6 +41752,7 @@
       "type": "wrapper",
       "atomicBase": "Button",
       "wrapsInternal": "Button",
+      "parentComponent": "FiltersActions",
       "inheritedProps": [
         {
           "name": "size",
@@ -41104,6 +41903,10 @@
         }
       ],
       "atomicMcpVersion": "0.349.0",
+      "compoundPartOf": {
+        "component": "FiltersActions",
+        "part": "FiltersButton"
+      },
       "importPath": "@daisforge/ui",
       "importStatement": "import { FiltersActionsFiltersButton } from '@daisforge/ui';",
       "examples": [
@@ -41118,6 +41921,8 @@
     "FiltersActionsListOfFilters": {
       "name": "FiltersActionsListOfFilters",
       "group": "layouts",
+      "folderName": "FiltersActions",
+      "role": "part",
       "description": "",
       "props": [
         {
@@ -41220,7 +42025,12 @@
       "propsTypeName": "ComponentProps<typeof FiltersActionsListOfFilters>",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/layouts/FiltersActions/components/ListOfFilters.ts",
       "type": "standalone",
+      "parentComponent": "FiltersActions",
       "atomicMcpVersion": "0.349.0",
+      "compoundPartOf": {
+        "component": "FiltersActions",
+        "part": "ListOfFilters"
+      },
       "importPath": "@daisforge/ui",
       "importStatement": "import { FiltersActionsListOfFilters } from '@daisforge/ui';",
       "examples": [
@@ -41235,6 +42045,8 @@
     "RedDot": {
       "name": "RedDot",
       "group": "layouts",
+      "folderName": "FiltersActions",
+      "role": "internal",
       "description": "Красная точка-индикатор («есть активные фильтры»).\n\nПозиционируется абсолютно в правом верхнем углу, поэтому контейнер-родитель\nдолжен иметь `position: relative`. Экспортируется публично, чтобы её можно\nбыло использовать на кастомном таргете `FiltersActions.FiltersButtonWithPopover`\n(проп `renderTarget`) и сохранить единый вид индикатора.",
       "props": [
         {
@@ -41253,6 +42065,7 @@
       "propsTypeName": "RedDotProps",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/layouts/FiltersActions/components/RedDot.tsx",
       "type": "standalone",
+      "parentComponent": "FiltersActions",
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { RedDot } from '@daisforge/ui';",
@@ -41268,11 +42081,91 @@
     "FiltersActionsTabItem": {
       "name": "FiltersActionsTabItem",
       "group": "layouts",
+      "folderName": "FiltersActions",
+      "role": "part",
       "description": "",
       "props": [
         {
+          "name": "$css",
+          "type": "CSSObject | TemplateStringsArray | undefined",
+          "required": false,
+          "description": "Кастомные стили"
+        },
+        {
+          "name": "view",
+          "type": "\"clear\" | \"secondary\" | \"divider\" | \"default\" | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "size",
+          "type": "\"xs\" | \"s\" | \"m\" | \"l\" | \"h6\" | \"h5\" | \"h4\" | \"h3\" | \"h2\" | \"h1\" | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "truncate",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "contentRight",
+          "type": "React.ReactNode",
+          "required": false,
+          "description": "Контент справа"
+        },
+        {
+          "name": "actionContent",
+          "type": "React.ReactNode",
+          "required": false,
+          "description": "Слот для интерактивных элементов (крестик)"
+        },
+        {
+          "name": "onIndexChange",
+          "type": "((index: number) => void) | undefined",
+          "required": false,
+          "description": "Callback, необходимый для клавиатурной навигации"
+        },
+        {
+          "name": "itemIndex",
+          "type": "number | undefined",
+          "required": false,
+          "description": "Индекс TabItem внутри Tabs - необходим для клавиатурной навигации"
+        },
+        {
+          "name": "maxItemWidth",
+          "type": "Property.Width<string | number> | undefined",
+          "required": false,
+          "description": "Обрезает контент по максимальной ширине и добавляет ..."
+        },
+        {
+          "name": "type",
+          "type": "\"button\" | \"submit\" | \"reset\" | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
           "name": "as",
-          "type": "string | React.ComponentType<any> | undefined",
+          "type": "keyof JSX.IntrinsicElements | React.ComponentType<any> | undefined",
+          "required": false,
+          "description": "Сменить рендер на другой тип компонента."
+        },
+        {
+          "name": "orientation",
+          "type": "\"horizontal\" | \"vertical\" | undefined",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "contentLeft",
+          "type": "React.ReactNode",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "value",
+          "type": "string | number | undefined",
           "required": false,
           "description": ""
         }
@@ -41283,7 +42176,12 @@
       "atomicBase": "TabItem",
       "wrapsInternal": "TabItem",
       "hasCuratedMeta": true,
+      "parentComponent": "FiltersActions",
       "atomicDataMissing": true,
+      "compoundPartOf": {
+        "component": "FiltersActions",
+        "part": "TabItem"
+      },
       "importPath": "@daisforge/ui",
       "importStatement": "import { FiltersActionsTabItem } from '@daisforge/ui';",
       "examples": [
@@ -41298,13 +42196,57 @@
     "FiltersActionsTabs": {
       "name": "FiltersActionsTabs",
       "group": "layouts",
+      "folderName": "FiltersActions",
+      "role": "part",
       "description": "",
       "props": [
         {
-          "name": "as",
-          "type": "string | React.ComponentType<any> | undefined",
+          "name": "$css",
+          "type": "CSSObject | TemplateStringsArray | undefined",
           "required": false,
-          "description": ""
+          "description": "Кастомные стили"
+        },
+        {
+          "name": "clip",
+          "type": "\"scroll\" | \"showAll\" | undefined",
+          "required": false,
+          "description": "Как ведет себя компонент при ограничении ширины"
+        },
+        {
+          "name": "index",
+          "type": "number | undefined",
+          "required": false,
+          "description": "Индекс активного элемента, необходим для клавиатурной навигации"
+        },
+        {
+          "name": "as",
+          "type": "keyof JSX.IntrinsicElements | React.ComponentType<any> | undefined",
+          "required": false,
+          "description": "Сменить рендер на другой тип компонента."
+        },
+        {
+          "name": "orientation",
+          "type": "\"horizontal\" | \"vertical\" | undefined",
+          "required": false,
+          "description": "Расположение табов"
+        },
+        {
+          "name": "hasDivider",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Наличие divider"
+        },
+        {
+          "name": "view",
+          "type": "string | undefined",
+          "required": false,
+          "description": "Вид табов"
+        },
+        {
+          "name": "size",
+          "type": "string | undefined",
+          "required": false,
+          "description": "Размер табов"
         }
       ],
       "propsTypeName": "ComponentProps<typeof FiltersActionsTabs>",
@@ -41313,6 +42255,7 @@
       "atomicBase": "Tabs",
       "wrapsInternal": "Tabs",
       "hasCuratedMeta": true,
+      "parentComponent": "FiltersActions",
       "inheritedProps": [
         {
           "name": "view",
@@ -41386,6 +42329,10 @@
         }
       ],
       "atomicMcpVersion": "0.349.0",
+      "compoundPartOf": {
+        "component": "FiltersActions",
+        "part": "Tabs"
+      },
       "importPath": "@daisforge/ui",
       "importStatement": "import { FiltersActionsTabs } from '@daisforge/ui';",
       "examples": [
@@ -41400,6 +42347,8 @@
     "FiltersActions": {
       "name": "FiltersActions",
       "group": "layouts",
+      "folderName": "FiltersActions",
+      "role": "primary",
       "description": "Панель фильтров с compound-компонентами (кнопки, поиск, табы, сегменты).",
       "props": [
         {
@@ -41507,7 +42456,7 @@
             },
             {
               "name": "searchingProps",
-              "type": "Pick<TextFieldProps, \"type\" | \"onFocus\" | \"onBlur\" | \"name\" | \"maxLength\" | \"minLength\" | \"placeholder\" | \"contentLeft\" | \"contentRight\" | \"textBefore\" | \"textAfter\"> | undefined",
+              "type": "Pick<TextFieldProps, \"contentLeft\" | \"contentRight\" | \"textBefore\" | \"textAfter\" | \"maxLength\" | \"minLength\" | \"name\" | \"placeholder\" | \"type\" | \"onFocus\" | \"onBlur\"> | undefined",
               "required": false,
               "description": "Пропсы для поля поиска"
             },
@@ -41519,7 +42468,7 @@
             },
             {
               "name": "popoverProps",
-              "type": "Omit<PropsType<{ view: { default: PolymorphicClassName; }; }> & React.HTMLAttributes<HTMLDivElement> & CustomPopoverProps & React.RefAttributes<HTMLDivElement>, \"target\" | \"onToggle\" | \"opened\"> | undefined",
+              "type": "Omit<PropsType<{ view: { default: PolymorphicClassName; }; }> & React.HTMLAttributes<HTMLDivElement> & CustomPopoverProps & React.RefAttributes<HTMLDivElement>, \"onToggle\" | \"opened\" | \"target\"> | undefined",
               "required": false,
               "description": "Пропсы для popover"
             },
@@ -42568,6 +43517,14 @@
         }
       ],
       "hasCuratedMeta": true,
+      "relatedExports": [
+        "FiltersActionsDotsIconButton",
+        "FiltersActionsFiltersButton",
+        "FiltersActionsListOfFilters",
+        "RedDot",
+        "FiltersActionsTabItem",
+        "FiltersActionsTabs"
+      ],
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { FiltersActions } from '@daisforge/ui';",
@@ -42595,6 +43552,8 @@
     "Layout": {
       "name": "Layout",
       "group": "layouts",
+      "folderName": "Layout",
+      "role": "primary",
       "description": "Базовый layout с вариантами колонок (V1_1, V2_1, V2_2 и др.).",
       "props": [
         {
@@ -42827,6 +43786,8 @@
     "PageLayout": {
       "name": "PageLayout",
       "group": "layouts",
+      "folderName": "PageLayout",
+      "role": "primary",
       "description": "Layout страницы с header, sidebar, content.",
       "props": [
         {

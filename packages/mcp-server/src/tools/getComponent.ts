@@ -23,12 +23,25 @@ interface GetComponentPayload {
   scope?: string;
   formVariant?: string;
   wrappedBy?: string;
+  /** Только когда не 'primary' — самостоятельные компоненты (большинство карточек) этот флаг не несут. */
+  role?: 'part' | 'internal';
+  /** У role: 'part'/'internal' — где реально смотреть компонент целиком. */
+  parentComponent?: string;
+  /** У owner-компонента папки — part/internal-экспорты той же папки, иначе недостижимы после фильтрации list_components по умолчанию. */
+  relatedExports?: string[];
+  /**
+   * Эта запись — одновременно top-level компонент и compound-часть другого
+   * (см. TASKS.md T12) — вместо повторной выдачи пропсов здесь ссылка на
+   * канонический запрос; сами пропсы (own/ownPropsCount/inheritedPropsCount)
+   * в карточке такой записи не дублируются.
+   */
+  compoundPartOf?: { component: string; part: string };
   atomicBase?: string;
   atomicDataMissing?: true;
-  ownProps: string[];
+  ownProps?: string[];
   /** Всего своих пропсов у компонента — может быть больше, чем элементов в ownProps (см. selectOwnProps). */
-  ownPropsCount: number;
-  inheritedPropsCount: number;
+  ownPropsCount?: number;
+  inheritedPropsCount?: number;
   compoundParts: string[];
   exampleTitles: string[];
   features: { feature: string; legacy?: true }[];
@@ -91,6 +104,25 @@ export function getComponent(
   const allOwnProps = record.props || [];
   const shownOwnProps = selectOwnProps(allOwnProps);
   const hiddenOwnPropsCount = allOwnProps.length - shownOwnProps.length;
+  const { compoundPartOf } = record;
+
+  const nextSteps = compoundPartOf
+    ? `Это одновременно compound-часть "${compoundPartOf.part}" у "${
+        compoundPartOf.component
+      }" — за пропсами идите туда: get_component_props({name: ${JSON.stringify(
+        compoundPartOf.component,
+      )}, part: ${JSON.stringify(
+        compoundPartOf.part,
+      )}}); get_component_examples({name}) — примеры кода${
+        features.length ? '; list_features({component}) — фичи компонента' : ''
+      }`
+    : `get_component_props({name}) — полные пропсы${
+        hiddenOwnPropsCount > 0
+          ? ` (в карточке показано ${shownOwnProps.length} из ${allOwnProps.length})`
+          : ''
+      }; get_component_examples({name}) — примеры кода${
+        features.length ? '; list_features({component}) — фичи компонента' : ''
+      }`;
 
   return {
     name: record.name,
@@ -105,11 +137,19 @@ export function getComponent(
     scope: record.scope,
     formVariant: record.formVariant,
     wrappedBy: record.wrappedBy,
+    role: record.role !== 'primary' ? record.role : undefined,
+    parentComponent: record.parentComponent,
+    relatedExports: record.relatedExports,
+    compoundPartOf,
     atomicBase: record.atomicBase,
     atomicDataMissing: record.atomicDataMissing || undefined,
-    ownProps: shownOwnProps.map(summarizeProp),
-    ownPropsCount: allOwnProps.length,
-    inheritedPropsCount: (record.inheritedProps || []).length,
+    ...(compoundPartOf
+      ? {}
+      : {
+          ownProps: shownOwnProps.map(summarizeProp),
+          ownPropsCount: allOwnProps.length,
+          inheritedPropsCount: (record.inheritedProps || []).length,
+        }),
     compoundParts: (record.compoundParts || []).map((p) => p.name),
     exampleTitles,
     features: features.map((f) => ({
@@ -117,12 +157,6 @@ export function getComponent(
       legacy: f.legacy || undefined,
     })),
     dataVersionNotice: index.dataVersionNotice,
-    nextSteps: `get_component_props({name}) — полные пропсы${
-      hiddenOwnPropsCount > 0
-        ? ` (в карточке показано ${shownOwnProps.length} из ${allOwnProps.length})`
-        : ''
-    }; get_component_examples({name}) — примеры кода${
-      features.length ? '; list_features({component}) — фичи компонента' : ''
-    }`,
+    nextSteps,
   };
 }

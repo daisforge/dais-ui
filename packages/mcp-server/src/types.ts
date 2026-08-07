@@ -93,6 +93,9 @@ export interface TypeRecord {
 export type ComponentType = 'wrapper' | 'composition' | 'standalone' | 'form';
 export type ComponentGroup = 'components' | 'formComponents' | 'layouts';
 
+/** Роль экспорта относительно его папки — см. src/indexer/classifyRole.ts. */
+export type ComponentRole = 'primary' | 'part' | 'internal';
+
 export interface ComponentRecord {
   /** Дискриминант: у успешной записи ошибки нет. Позволяет `if (record.error)` сужать тип. */
   error?: undefined;
@@ -101,6 +104,24 @@ export interface ComponentRecord {
   group: ComponentGroup;
   type: ComponentType;
   sourceFile: string;
+
+  // из discoverComponents / classifyRole
+  /** Имя папки, из барреля которой найден экспорт (см. discoverComponents.ts). */
+  folderName: string;
+  role: ComponentRole;
+  /** У part/internal — имя владельца папки (обычно primary-компонент с name === folderName). */
+  parentComponent?: string;
+  /** У primary-компонента, владеющего папкой, — part/internal-экспорты той же папки (иначе они недостижимы после фильтрации list_components по умолчанию). */
+  relatedExports?: string[];
+  /**
+   * Эта запись — одновременно top-level компонент И compound-часть другого
+   * (`${component}.${part}`, например DrawerDFHeader === DrawerDF.Header) —
+   * два независимых пути резолва одного типа (см. TASKS.md T12).
+   * mergeCompoundPartDuplicates синхронизирует props между обоими путями,
+   * так что расхождений в данных нет, но ссылка остаётся — она подсказывает
+   * агенту не тратить второй вызов get_component_props на то же самое.
+   */
+  compoundPartOf?: { component: string; part: string };
 
   // из parseComponent
   description?: string;
@@ -219,6 +240,8 @@ export interface FeatureMeta {
 export interface ComponentMeta {
   category?: string;
   type?: ComponentType;
+  /** Оверрайд эвристики classifyRole для спорных случаев — curated wins over heuristic (см. TASKS.md T11). */
+  role?: ComponentRole;
   description?: string;
   hint?: string;
   scope?: string;

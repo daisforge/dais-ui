@@ -88,11 +88,12 @@ function main(): void {
     server,
     index,
     'list_components',
-    'Список компонентов @daisforge/ui с фильтрами по типу (wrapper/composition/standalone/form), категории, scope. Без limit список бюджетируется автоматически (см. shown/total/truncationNotice в ответе); limit/offset — явная пагинация.',
+    'Список компонентов @daisforge/ui с фильтрами по типу (wrapper/composition/standalone/form), категории, scope. По умолчанию — только самостоятельные компоненты (role: "primary", ~177 из 243): слоты вроде DrawerDFHeader и служебные примитивы вроде CanvasRect скрыты, они видны через relatedExports в карточке владельца (get_component) или напрямую по имени; role: "all" снимает фильтр. Без limit список бюджетируется автоматически (см. shown/total/truncationNotice в ответе); limit/offset — явная пагинация.',
     {
       type: z.string().optional(),
       category: z.string().optional(),
       scope: z.string().optional(),
+      role: z.enum(['primary', 'part', 'internal', 'all']).optional(),
       limit: z.number().int().positive().optional(),
       offset: z.number().int().nonnegative().optional(),
     },

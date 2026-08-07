@@ -97,6 +97,21 @@
 - **`promoteCompositionToWrapper`** — второй проход: некоторые компоненты оборачивают атом не напрямую, а через ДРУГОЙ ui-kit компонент (`ModalDF` → внутренний `Modal` → атом `Modal` из sdds-finai). Если среди внутренних импортов composition-компонента есть уже классифицированный wrapper с совпадающим по имени atomicBase — повышаем до wrapper.
 - **`linkFormVariants`** — по соглашению именования `Form${Name}` связывает `TextField ↔ FormTextField` и т.д. (`formVariant`/`wrappedBy`), для всех 14 форм-компонентов.
 
+### 1.4a `classifyRole.ts` + `linkFolderRoles` (роль экспорта: primary/part/internal)
+
+Из 246 обнаруженных экспортов (126 папок с barrel-файлом) только часть — самостоятельные единицы выбора; остальное — слоты внутри них (`ModalDFHeader` — часть `ModalDF`) или служебные примитивы рендеринга (`CanvasRect` внутри `TableGlide`), в прикладном коде не встречающиеся никогда. Наивное правило "оставить только `name === folderName`" неверное — вырезало бы легитимные `Col`, `Row`, всю типографику (`BodyM`...), `AccordionItem`, `DatePickerRange`. Вместо этого — трёхролевая эвристика (`classifyRole(name, folderName)`):
+
+1. `name === folderName` → `primary`.
+2. иначе имя из явного списка внутренних примитивов (`/^Canvas/`, `/^CellEditor/`, `/^TextCellEntry/`, `/Styled$/`, плюс точные имена вроде `RootBridge`/`RedDot`) → `internal`.
+3. иначе имя начинается с `folderName`, а остаток совпадает со структурным слотом (`Header|Footer|Content|...`) → `part`.
+4. иначе → `primary`.
+
+Курируемый оверрайд — `role` в `_docs/meta/components-meta.json` (curated wins over heuristic, тот же принцип, что и у остальных полей `mergeMeta.ts`); применяется до `linkFolderRoles`, так что оверрайд учитывается при расчёте `parentComponent`/`relatedExports`. Используется для случаев, не покрытых механическим списком слотов (`FiltersActionsTabs`/`FiltersActionsTabItem` — реальные compound-присваивания `FiltersActions.Tabs`/`FiltersActions.TabItem` в коде, но суффиксы `Tabs`/`TabItem` намеренно не входят в общий список слотов, чтобы не расширять его вслепую под один кейс).
+
+`linkFolderRoles` (в `buildIndex.ts`, выполняется после `mergeMeta`) группирует записи по `folderName` и проставляет: `parentComponent` — у каждой `part`/`internal`-записи (имя владельца папки, `name === folderName`; если такого владельца нет — само имя папки, у пяти папок его действительно нет: `Segment`, `Skeleton`, `FormDatePickers`, `FormRadioGroupBox`, `FormSegments`); `relatedExports` — у каждой `primary`-записи той же папки (имена скрытых `part`/`internal`-соседей, иначе они недостижимы после того, как `list_components` по умолчанию показывает только `primary`).
+
+`list_components` фильтрует по `role` (по умолчанию `primary`, `role: "all"` снимает фильтр). `search_components` по роли НЕ фильтрует (агент может целенаправленно искать `ModalDFHeader`) — только понижает `internal` тем же мультипликативным приёмом, что и `legacy`.
+
 ### 1.5 `mergeMeta.ts`
 
 Читает `_docs/meta/components-meta.json`. Там, где компонент присутствует (36 из 265), поля `category`/`type`/`description`/`hint`/`scope`/`docs`/`apiDocs`/`stories` **перекрывают** эвристику индексера (curated wins over heuristic). Также:
@@ -112,6 +127,12 @@
 - `mergeAtomicData.ts` — для каждого компонента с `atomicBase` ищет соответствующий файл в снэпшоте, кладёт его `api.props` как `inheritedProps[]` (с `inheritedFrom`/`inheritedPackage`), и убирает из собственных `props[]` те поля, что уже есть в `inheritedProps` (дедуп — иначе у чистых реэкспортов типа `Button`/`Accordion` весь список пропсов дублировался бы дважды). Если снэпшота для конкретного атома нет — `atomicDataMissing: true`, без падения сборки (часть compound-частей вроде `DrawerHeader`/`DrawerFooter` не имеет отдельной страницы в их доках — API организовано внутри родительской `Drawer`).
 
 **Вендор — источник списка пропсов и чистых текстов типов, не источник описаний.** Замер на снэпшоте: `description`/`default` заполнены пустой строкой у 100% вендоренных пропсов, `required: true` не встречается вовсе — их `PropsTable`-генератор кладёт в текст только `{name, type}` (см. `generateIndexFiles.mjs` в `plasma/website/sdds-finai-docs`). Собственный резолв через ts-morph (own `props[]`, до дедупа) при этом часто ЗНАЕТ описание и настоящий `required` — тот же тип уже резолвился при разборе wrapper-компонента. Поэтому дедуп при совпадении имени — не "own проигрывает и выкидывается", а пополевой мёрдж (`mergeWithOwn`): `description`/`required` берёт own (непустое значение побеждает), список пропсов и текст типа — вендор. Пустые `description: ""`/`default: ""` из вендора не сохраняются вовсе (`dropEmptyStrings`) — оба поля в `AtomicPropRecord`/`InheritedPropRecord` опциональны именно из-за этого: отсутствие поля ≠ пустая строка, которую агент читал бы как содержательный (пустой) дефолт.
+
+### 1.6a `linkCompoundPartDuplicates` (дедуп compound-частей)
+
+10 записей в индексе присутствуют одновременно и как top-level компонент, и как элемент `compoundParts` родителя: `DrawerDF/{Content,Header,Footer}`, `MassActions/Counter`, `Stories/Preview`, `FiltersActions/{FiltersButton,DotsIconButton,ListOfFilters,Tabs,TabItem}`. Это два независимых пути резолва одного и того же типа (`parseComponent` для top-level записи, `resolveCompoundPart` для части родителя) — до этой правки они могли дать разный результат и вдвое расходовали бюджет ответа.
+
+`linkCompoundPartDuplicates` (в `buildIndex.ts`, выполняется после `mergeAtomicData` — сравнивать полноту нужно по уже обогащённому top-level пути) для каждой пары `${parent.name}${part.name}`, совпадающей с top-level именем: проставляет top-level записи `compoundPartOf: {component, part}` и синхронизирует `props` в обе стороны — источником истины становится тот путь резолва, что дал больше пропсов (обычно top-level, он полнее проходит цепочку фолбэков, но не всегда — сравнение по факту, не предположение). `get_component` для такой записи не повторяет пропсы — карточка отсылает к `get_component_props({name: parent, part})`; сам `get_component_props` по top-level имени по-прежнему работает и возвращает те же (синхронизированные) данные, плюс `own`/`inherited` разделение, которого нет у compound-part пути.
 
 ### 1.7 `resolveImportPath.ts`
 
@@ -138,6 +159,9 @@
   "components": {
     "<Name>": {
       "name", "group", "type", "category", "description", "hint",
+      "folderName", "role",              // primary | part | internal, см. §1.4a
+      "parentComponent", "relatedExports", // part/internal ↔ владелец папки
+      "compoundPartOf",                  // { component, part } — см. §1.6a
       "importPath", "importStatement",
       "deprecated", "deprecationReason", "legacy", "scope",
       "atomicBase", "atomicMcpVersion", "atomicDataMissing",
@@ -175,9 +199,9 @@
 
 | Инструмент | Назначение |
 |---|---|
-| `list_components({type?, category?, scope?, limit?, offset?})` | список с фильтрами; ответ `{items, shown, total, hasMore?, truncationNotice?}` |
-| `search_components({query, limit?})` | скоринг по компонентам И фичам, legacy-демоушен, negation-aware матчинг (см. ниже) |
-| `get_component({name})` | **компактная** карточка — без полных доков, без тел примеров |
+| `list_components({type?, category?, scope?, role?, limit?, offset?})` | список с фильтрами; по умолчанию `role: "primary"` (~177 из 243, см. §1.4a), `role: "all"` снимает фильтр; ответ `{items, shown, total, hasMore?, truncationNotice?}` |
+| `search_components({query, limit?})` | скоринг по компонентам И фичам, legacy- и internal-демоушен, negation-aware матчинг (см. ниже) |
+| `get_component({name})` | **компактная** карточка — без полных доков, без тел примеров; у `part`/`internal` — `parentComponent`; у владельца папки — `relatedExports`; у compound-part дубликатов (§1.6a) — `compoundPartOf` вместо повторных пропсов |
 | `get_component_props({name, part?})` | полные пропсы: own + inheritedProps; `part` — для compound-частей |
 | `get_component_examples({name, title?})` | примеры кода |
 | `list_features({component})` | список фичей компонента |
@@ -201,7 +225,7 @@
 
 Простой substring-скоринг (без embeddings/NLP), но с двумя нетривиальными поправками, найденными вживую при тестировании:
 
-- **Мультипликативный, а не аддитивный legacy-штраф** (`score *= 0.6`, не `score -= 12`) — иначе единственное совпадение по редкому термину (`"react-data-grid"` встречается только у `Table`) гасилось штрафом до нуля, и legacy-компонент, который единственно верный ответ, исчезал из выдачи целиком.
+- **Мультипликативный, а не аддитивный legacy-штраф** (`score *= 0.6`, не `score -= 12`) — иначе единственное совпадение по редкому термину (`"react-data-grid"` встречается только у `Table`) гасилось штрафом до нуля, и legacy-компонент, который единственно верный ответ, исчезал из выдачи целиком. Тот же приём и с тем же коэффициентом — для `role: "internal"` (см. §1.4a): по роли не фильтруем (агент может целенаправленно искать `ModalDFHeader`), но `CanvasRect` не должен обгонять реальные кандидаты при равном текстовом совпадении.
 - **Negation-aware матчинг** для `hint`/`description` — курированные тексты иногда пишутся как явное опровержение (`AnalyticalWidget.hint`: "Это layout, **не** фильтрация"). Наивное совпадение подстроки засчитало бы запрос "фильтрация" как позитивный сигнал ровно наоборот. Проверяется, не стоит ли "не " непосредственно перед совпадением.
 - Точное совпадение слова с именем компонента даёт +100 (перевешивает legacy-штраф) — поэтому `"Table сортировка"` всё равно ставит `Table` выше `TableCanvas`, несмотря на то, что оба имени содержат подстроку "table".
 
@@ -212,6 +236,8 @@
 - Три пары внутренних sub-компонентов с одинаковым именем в разных папках таблиц (`TableFilterSelectListItem`, `ContainerStyled`, `Canvas`) — при коллизии в индекс попадает только последняя обработанная запись.
 - Поиск слабее на общих словах, которые встречаются во многих фичах одновременно (например "ячеек").
 - `atomicDataMissing: true` — часть compound-частей атомарных компонентов не имеет отдельной записи в вендоренном снэпшоте (их доки организованы по родительской странице, не по каждому именованному экспорту).
+- У 3 compound-частей (`DrawerDF.Header.badge`, `DrawerDF.DotsIconButton.dropdownProps`, `FiltersActions.DotsIconButton.dropdownProps`) текст типа — нечитаемый вложенный `Omit<Omit<PropsType<...`. Это не провал резолва (`resolveCompoundPart` находит декларацию штатно, `tryExtractViaComponentProps`-фолбэк из T13 тут не участвует) — сам исходный тип поля (`badge?: (BadgeCompProps & { text: string }) | undefined`) генуинно сложный, и принтер TypeScript теряет имя вложенного алиаса при печати вычисленного типа intersection. Требует отдельной правки печати типа (например `type.getText(node, ts.TypeFormatFlags.UseAliasDefinedOutsideCurrentScope)`), не относится к T13.
+- `src/validate/validateIndex.ts` на текущем индексе **не проходит начисто** и до T11–T14 (baseline: 1 import-missing + 226 prop-not-found + 195 required-mismatch, не считая generic best-effort) — большинство расхождений сосредоточено в нескольких компонентах со сложными полиморфными типами (`Box`, `ModalDFConfirmationFooter`, `Spinner`, `TooltipList`, семья `FiltersActions.*`), где `required`-флаг, вычисленный при разборе объявленного типа, расходится с тем, что вычисляет тайпчекер для `ComponentProps<typeof X>` реального экспорта. T14 сократил REQUIRED-MISMATCH на 19 (195→176); T12 (синхронизация compound-part дублей) распространяет уже существующую неточность `resolveCompoundPart`-пути на 1 дополнительную пару (`FiltersActionsTabs`/`FiltersActionsTabItem`, +20) — сознательный компромисс: пропсы стали полнее и консистентнее между обоими путями резолва, а `required`-неточность для этой конкретной пары была в индексе и раньше (просто непроверяемой на top-level имени). Устранение самой неточности — отдельная задача, не T11–T14.
 
 ## 6. Как обновлять
 

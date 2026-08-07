@@ -7,6 +7,15 @@ export interface SearchComponentsArgs {
 }
 
 const LEGACY_PENALTY_FACTOR = 0.6;
+/**
+ * По роли (см. classifyRole.ts) НЕ фильтруем — агент может целенаправленно
+ * искать именно "ModalDFHeader" или служебный примитив. Но 'internal'
+ * (CanvasRect и подобные — в прикладном коде не встречаются никогда)
+ * понижаем тем же приёмом, что и legacy: множительный штраф, а не
+ * исключение, иначе единственное точное совпадение по имени пропадёт из
+ * выдачи.
+ */
+const INTERNAL_PENALTY_FACTOR = 0.6;
 
 // Короткие предлоги/союзы — как токены почти ничего не значат, но как
 // подстрока встречаются почти везде ("в" входит в половину слов) и без
@@ -78,6 +87,8 @@ function scoreComponent(component: ComponentRecord, words: string[]): number {
   // гасится штрафом до нуля и компонент пропадает из выдачи, хотя это ровно
   // тот случай, где он единственно верный ответ.
   if (component.legacy && score > 0) score *= LEGACY_PENALTY_FACTOR;
+  if (component.role === 'internal' && score > 0)
+    score *= INTERNAL_PENALTY_FACTOR;
   return score;
 }
 
@@ -125,6 +136,9 @@ interface ComponentResult {
   description?: string;
   hint?: string;
   legacy?: true;
+  /** Только для 'part'/'internal' — 'primary' (подавляющее большинство хитов) не несёт поля. */
+  role?: 'part' | 'internal';
+  parentComponent?: string;
 }
 
 interface FeatureResult {
@@ -187,6 +201,8 @@ export function searchComponents(
         description: hit.record.description,
         hint: hit.record.hint,
         legacy: hit.record.legacy || undefined,
+        role: hit.record.role !== 'primary' ? hit.record.role : undefined,
+        parentComponent: hit.record.parentComponent,
       };
     }
     return {
