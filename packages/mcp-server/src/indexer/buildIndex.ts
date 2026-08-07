@@ -15,6 +15,7 @@ import {
 } from './classify.js';
 import { printDiagnostics } from './diagnostics.js';
 import { discoverComponents } from './discoverComponents.js';
+import { getDenylistMap } from './htmlAttributeDenylist.js';
 import { buildFeatureIndex } from './indexFeatures.js';
 import { buildTypeIndex } from './indexTypes.js';
 import { mergeAtomicData } from './mergeAtomicData.js';
@@ -58,6 +59,19 @@ function finalizeExamples(record: WorkingComponentRecord): ExampleRecord[] {
 
 function buildComponentRecords(): WorkingComponentRecord[] {
   const entries = discoverComponents();
+
+  // Денылист строится лениво при первом обращении (см. getDenylistMap) и
+  // внутри создаёт/забывает служебный source file в общем ts-morph
+  // проекте. Если это происходит НЕ здесь, а лениво посреди
+  // extractPropsFromType первого же компонента, forget() успевает
+  // выполниться в разгар чужой итерации type.getProperties() и портит уже
+  // резолвнутые дженерики для СЛЕДУЮЩИХ пропсов этого же компонента —
+  // тайпчекер начинает печатать неподставленный параметр типа (`T`) вместо
+  // конкретного `HTMLDivElement` и т.п. Живой пример до фикса: Accordion
+  // (первый в discoverComponents()) терял все свои пропсы. Прогреваем кэш
+  // до начала разбора, чтобы забывание source file никогда не пересекалось
+  // с обращением к чужим типам.
+  getDenylistMap();
 
   let records: WorkingComponentRecord[] = entries.map(
     (entry): WorkingComponentRecord => {
