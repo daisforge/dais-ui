@@ -41,8 +41,14 @@ export const StyledStage = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: min(${STORIES_SIZES.stageWidth}px, 100vw);
+  box-sizing: border-box;
+  /* Ширина подстраивается под баннер (он ведётся высотой), чтобы стрелки
+     оставались вплотную к нему при уменьшении вьюпорта. По бокам — просветы
+     под стрелки: (stageWidth - bannerMaxWidth) / 2. */
+  width: fit-content;
+  max-width: min(${STORIES_SIZES.stageWidth}px, 100vw);
   height: min(${STORIES_SIZES.bannerMaxHeight}px, calc(100vh - 32px));
+  padding: 0 ${(STORIES_SIZES.stageWidth - STORIES_SIZES.bannerMaxWidth) / 2}px;
   outline: none;
 `;
 

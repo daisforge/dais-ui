@@ -92,7 +92,9 @@ export const StyledBody = styled.div<{
   ${({ $image }) =>
     $image &&
     css`
-      background-image: url(${$image});
+      /* Кавычки обязательны: без них data-URI и URL со спецсимволами
+         (%, запятые, скобки) ломают парсинг url() и превью не отрисовывается. */
+      background-image: url('${$image}');
     `}
   border-radius: ${({ $shape, $viewed }) =>
     radiusFor($shape, $viewed ? 'outer' : 'body')};

@@ -26,7 +26,10 @@ const asset = (label: string, from: string, to: string): string =>
     `<svg xmlns="http://www.w3.org/2000/svg" width="430" height="760"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${from}"/><stop offset="1" stop-color="${to}"/></linearGradient></defs><rect width="430" height="760" fill="url(#g)"/><text x="215" y="380" font-family="sans-serif" font-size="34" fill="#ffffff" text-anchor="middle">${label}</text></svg>`,
   )}`;
 
-// Индикатор «просмотрено» контролируется снаружи: гасим его по onGroupComplete.
+// Индикатор «просмотрено» контролируется снаружи. Гасим обводку сразу при
+// ПЕРВОМ открытии группы — по onGroupChange (он срабатывает и в момент открытия),
+// не дожидаясь просмотра всех сегментов. Если нужно гасить только после полного
+// просмотра группы — используйте onGroupComplete вместо onGroupChange.
 function useViewed() {
   const [viewed, setViewed] = useState<Record<number, boolean>>({});
   const markViewed = (index: number) =>
@@ -38,7 +41,7 @@ function CircleStoriesExample() {
   const { viewed, markViewed } = useViewed();
 
   return (
-    <Stories defaultDuration={5000} onGroupComplete={markViewed}>
+    <Stories defaultDuration={5000} onGroupChange={markViewed}>
       <Stories.Preview
         title="Обновления"
         image={asset('1', '#08c6c9', '#99b0fe')}
@@ -105,7 +108,7 @@ function RectStoriesExample() {
     <Stories
       defaultDuration={4000}
       groupTransition="slide"
-      onGroupComplete={markViewed}
+      onGroupChange={markViewed}
     >
       <Stories.Preview
         shape="rect"
@@ -165,7 +168,7 @@ function LoadingStoriesExample() {
     <Stories
       loadingDelay={2000}
       preloadOnHover={false}
-      onGroupComplete={markViewed}
+      onGroupChange={markViewed}
     >
       <Stories.Preview
         title="Загрузка"
@@ -307,7 +310,7 @@ function ImperativeControlExample() {
       </div>
       <Stories
         ref={ref}
-        onGroupComplete={markViewed}
+        onGroupChange={markViewed}
         onOpenChange={(open, groupMeta) =>
           setState((prev) => ({ ...prev, open, group: groupMeta.groupIndex }))
         }
@@ -374,7 +377,7 @@ function InsideModalExample() {
           />
           <ModalDF.Content>
             {/* zIndex выше оверлея ModalDF, чтобы вьюер перекрыл модалку */}
-            <Stories zIndex={10000} onGroupComplete={markViewed}>
+            <Stories zIndex={10000} onGroupChange={markViewed}>
               <Stories.Preview
                 title="Промо"
                 image={asset('1', '#08c6c9', '#99b0fe')}
@@ -417,9 +420,9 @@ export const InsideModal: Story = {
 function HiddenArrowsExample() {
   const { viewed, markViewed } = useViewed();
 
-  // arrows="never" — стрелки переключения групп скрыты; группы листаются тапом/клавишами.
+  // arrows="never" — стрелки навигации скрыты; сегменты и группы листаются тапом/клавишами ←/→.
   return (
-    <Stories arrows="never" onGroupComplete={markViewed}>
+    <Stories arrows="never" onGroupChange={markViewed}>
       <Stories.Preview
         title="Группа 1"
         image={asset('1', '#08c6c9', '#99b0fe')}
@@ -461,7 +464,7 @@ function TitlesExample() {
   const { viewed, markViewed } = useViewed();
 
   return (
-    <Stories onGroupComplete={markViewed}>
+    <Stories onGroupChange={markViewed}>
       <Stories.Preview
         title="Очень длинное название сторис, которое не помещается в две строки и уходит в троеточие с тултипом"
         image={asset('L', '#08c6c9', '#99b0fe')}
