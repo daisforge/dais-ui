@@ -40,7 +40,11 @@ import {
   setRowSizeCb,
 } from '../../feature-row-size';
 import { useGetRowsGroupingBtnProps } from '../../feature-rows-grouping';
-import { TableSettingsWithTabs } from '../../feature-table-settings';
+import {
+  DEFAULT_TABS_INFO,
+  type DefaultTabInfo,
+  TableSettingsWithTabs,
+} from '../../feature-table-settings';
 import { ActiveViewModsType } from '../../types';
 import { DOM_METADATA_ACTIONS } from '../../types/dom-metadata-actions';
 import { EDIT_BUTTON_CANCEL_CLASS, EDIT_BUTTON_CLASS } from './constants';
@@ -58,10 +62,10 @@ import { getDropdownIconSize } from './use-buttons-to-dropdown';
 
 const ifTrue = <T extends FeatureItem>(reason: boolean, value: T) =>
   reason ? [value] : [];
-const ifTrueBtn = <T extends ControlBlockButtonProps>(
+const ifTrueBtn = ifTrue as unknown as <T extends ControlBlockButtonProps>(
   reason: boolean,
   value: T,
-) => (reason ? [value] : []);
+) => T[];
 
 export const useFeatureArray = <
   FilterStateType extends ObjectForExtending,
@@ -626,9 +630,11 @@ export const useFeatureArray = <
     [tableConfig?.sidebarConfig?.defaultTabs],
   );
 
-  const tableSettingsTabFromConfig = findInDefaultTabs('tableSettings');
-  const tableFilteringTabFromConfig = findInDefaultTabs('filtering');
-  const tableColumnsTabFromConfig = findInDefaultTabs('columns');
+  const customizedDefaultTabs = {
+    general: findInDefaultTabs('tableSettings'),
+    filtering: findInDefaultTabs('filtering'),
+    columns: findInDefaultTabs('columns'),
+  };
 
   // Определяем общие настройки для таба "Общие"
   const generalSettings: FeatureItem[] = [
@@ -691,51 +697,97 @@ export const useFeatureArray = <
 
   // Кастомный слот для блока общих настроек в правом сайдбаре таблицы
   const hasGeneralSettingsCustomSlot =
-    tableSettingsTabFromConfig &&
-    'customGeneralSettingsSlot' in tableSettingsTabFromConfig &&
-    !!tableSettingsTabFromConfig?.customGeneralSettingsSlot;
+    !!customizedDefaultTabs.general &&
+    'customGeneralSettingsSlot' in customizedDefaultTabs.general &&
+    !!customizedDefaultTabs.general?.customGeneralSettingsSlot;
 
-  // Определяем активные разделы для динамического title
-  const hasGeneral =
-    generalSettings.length > 0 ||
-    featureItems.length > 0 ||
-    hasGeneralSettingsCustomSlot;
-  const hasFiltering = isActivated.filtering;
-  const hasColumnsControl = isActivated.columnsControl;
+  const defaultTabsInfo = {
+    general: {
+      id: 'general',
+      title:
+        customizedDefaultTabs.general?.title ?? DEFAULT_TABS_INFO.general.title,
+      titleRightSlot: customizedDefaultTabs.general?.titleRightSlot,
+      label:
+        customizedDefaultTabs.general?.label ?? DEFAULT_TABS_INFO.general.label,
+      iconTooltipText:
+        customizedDefaultTabs.general?.iconTooltipText ??
+        DEFAULT_TABS_INFO.general.iconTooltipText,
+      show:
+        (generalSettings.length > 0 ||
+          featureItems.length > 0 ||
+          hasGeneralSettingsCustomSlot ||
+          isHaveSomeCustomFeatureInSidebar) &&
+        (customizedDefaultTabs.general?.showInSidebar ?? true),
+    },
 
-  const activeSections = [hasGeneral, hasFiltering, hasColumnsControl].filter(
-    Boolean,
-  ).length;
+    filtering: {
+      id: 'filtering',
+      title:
+        customizedDefaultTabs.filtering?.title ??
+        DEFAULT_TABS_INFO.filtering.title,
+      label:
+        customizedDefaultTabs.filtering?.label ??
+        DEFAULT_TABS_INFO.filtering.label,
 
-  // Если активен только один раздел - используем его название в качестве title
-  let titleForSettings = tableSettingsTabFromConfig?.title ?? 'Настройки';
-  if (activeSections === 1) {
-    if (hasGeneral) titleForSettings = 'Общие настройки';
-    else if (hasFiltering) titleForSettings = 'Фильтры';
-    else if (hasColumnsControl) titleForSettings = 'Настройки столбцов';
-  }
+      titleRightSlot: customizedDefaultTabs.filtering?.titleRightSlot,
+      show:
+        isActivated.filtering &&
+        (customizedDefaultTabs.filtering?.showInSidebar ?? true),
+    },
+
+    columns: {
+      id: 'columns',
+      title:
+        customizedDefaultTabs.columns?.title ?? DEFAULT_TABS_INFO.columns.title,
+      label:
+        customizedDefaultTabs.columns?.label ?? DEFAULT_TABS_INFO.columns.label,
+      titleRightSlot: customizedDefaultTabs.columns?.titleRightSlot,
+      show:
+        isActivated.columnsControl &&
+        (customizedDefaultTabs.columns?.showInSidebar ?? true),
+    },
+  } as const satisfies Record<string, DefaultTabInfo>;
+
+  const enabledDefaultTabs = Object.values(defaultTabsInfo).filter(
+    (i) => i.show,
+  );
+
+  const enabledMainDefaultTabTexts = ((): DefaultTabInfo => {
+    // Если активен только один раздел - используем его название в качестве title
+    if (enabledDefaultTabs.length === 1 && enabledDefaultTabs[0]) {
+      return enabledDefaultTabs[0];
+    }
+
+    return defaultTabsInfo.general;
+  })();
 
   // Объединенный таб настроек с горизонтальными подтабами
   const defaultSidebarTabs: SidebarTab[] = [
     {
       id: 'tableSettings',
-      label: tableSettingsTabFromConfig?.label ?? 'Настройки',
       icon: <IconSettingsOutline size="s" />,
-      // Показываем таб если есть хотя бы одно из условий
-      showInSidebar:
-        isActivated.summaryRows ||
-        isActivated.selectingRows ||
-        isActivated.rowInstruments ||
-        isHaveSomeCustomFeatureInSidebar ||
-        isActivated.filtering ||
-        isActivated.columnsControl ||
-        hasGeneralSettingsCustomSlot,
-      title: titleForSettings,
-      titleRightSlot: tableSettingsTabFromConfig?.titleRightSlot,
+      // Показываем таб если
+      showInSidebar: enabledDefaultTabs.length > 0,
+      title: enabledMainDefaultTabTexts.title,
+      titleRightSlot: enabledMainDefaultTabTexts.titleRightSlot,
+      /** ` label:` - в рамках таба с id: 'tableSettings' - это текст для тултипа иконки шестеренки */
+      label: defaultTabsInfo.general.iconTooltipText,
+      domMetadata: customizedDefaultTabs.general?.domMetadata,
       content: (
         <TableSettingsWithTabs
           generalSettings={generalSettings}
           customFeatures={featureItems}
+          defaultTabsInfo={defaultTabsInfo}
+          activeSettingsTabId={activeSettingsTabId}
+          setActiveSettingsTabId={setActiveSettingsTabId}
+          filteringDomMetadata={customizedDefaultTabs.filtering?.domMetadata}
+          columnsDomMetadata={customizedDefaultTabs.columns?.domMetadata}
+          customGeneralSettingsSlot={
+            hasGeneralSettingsCustomSlot &&
+            customizedDefaultTabs?.general?.id === 'tableSettings' // доп проверка только для типов
+              ? customizedDefaultTabs.general?.customGeneralSettingsSlot
+              : null
+          }
           filteringContent={
             <SidebarFilters
               tableConfig={tableConfig}
@@ -760,20 +812,8 @@ export const useFeatureArray = <
               tableConfigKeyTextBoolean={tableConfigKeyTextBoolean}
             />
           }
-          showFiltering={isActivated.filtering}
-          showColumns={isActivated.columnsControl}
-          activeSettingsTabId={activeSettingsTabId}
-          setActiveSettingsTabId={setActiveSettingsTabId}
-          filteringDomMetadata={tableFilteringTabFromConfig?.domMetadata}
-          columnsDomMetadata={tableColumnsTabFromConfig?.domMetadata}
-          customGeneralSettingsSlot={
-            hasGeneralSettingsCustomSlot
-              ? tableSettingsTabFromConfig?.customGeneralSettingsSlot
-              : null
-          }
         />
       ),
-      domMetadata: tableSettingsTabFromConfig?.domMetadata,
     },
   ];
 
