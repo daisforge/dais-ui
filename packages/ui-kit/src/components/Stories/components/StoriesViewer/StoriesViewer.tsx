@@ -36,9 +36,10 @@ export const StoriesViewer = (): JSX.Element | null => {
     zIndex,
     groupTransition,
     arrows,
+    hideDisabledArrows,
     preloadGroup,
   } = useStoriesContext();
-  const { isOpen, groupIndex } = useStoriesSnapshot(store);
+  const { isOpen, groupIndex, slideIndex } = useStoriesSnapshot(store);
   const [mounted, setMounted] = useState(isOpen);
   const stageRef = useRef<HTMLDivElement>(null);
 
@@ -66,10 +67,20 @@ export const StoriesViewer = (): JSX.Element | null => {
     return null;
   }
 
-  const hasPrev = groupIndex > 0;
-  const hasNext = groupIndex < groups.length - 1;
+  // Навигация сквозная: сначала сегменты внутри группы, на границе — соседняя группа.
+  const slidesInGroup = groups[groupIndex]?.slides.length ?? 0;
+  const canPrev = groupIndex > 0 || slideIndex > 0;
+  const canNext =
+    slideIndex + 1 < slidesInGroup || groupIndex + 1 < groups.length;
+  const totalSlides = groups.reduce(
+    (sum, group) => sum + group.slides.length,
+    0,
+  );
   const showArrows =
-    arrows === 'always' || (arrows === 'auto' && groups.length > 1);
+    arrows === 'always' || (arrows === 'auto' && totalSlides > 1);
+  // Прятать недоступную стрелку (по умолчанию) либо показывать её disabled.
+  const showPrev = showArrows && (canPrev || !hideDisabledArrows);
+  const showNext = showArrows && (canNext || !hideDisabledArrows);
 
   // Клики по стрелкам/крестику не должны закрывать вьюер (включая disabled-стрелки).
   const stopClick = (event: ReactMouseEvent): void => event.stopPropagation();
@@ -95,7 +106,7 @@ export const StoriesViewer = (): JSX.Element | null => {
         tabIndex={-1}
         className={storiesClassNames.stage}
       >
-        {showArrows ? (
+        {showPrev ? (
           <StyledArrow
             className={storiesClassNames.arrowPrev}
             $side="prev"
@@ -106,9 +117,9 @@ export const StoriesViewer = (): JSX.Element | null => {
               size="s"
               view="white"
               pin="circle-circle"
-              aria-label="Предыдущая группа"
-              disabled={!hasPrev}
-              onClick={() => controller.prevGroup()}
+              aria-label="Назад"
+              disabled={!canPrev}
+              onClick={() => controller.prev()}
             >
               <IconDisclosureLeftOutline size="s" />
             </IconButton>
@@ -117,7 +128,7 @@ export const StoriesViewer = (): JSX.Element | null => {
 
         <StoriesBanner closing={closing} onAnimationEnd={handleAnimationEnd} />
 
-        {showArrows ? (
+        {showNext ? (
           <StyledArrow
             className={storiesClassNames.arrowNext}
             $side="next"
@@ -128,9 +139,9 @@ export const StoriesViewer = (): JSX.Element | null => {
               size="s"
               view="white"
               pin="circle-circle"
-              aria-label="Следующая группа"
-              disabled={!hasNext}
-              onClick={() => controller.nextGroup()}
+              aria-label="Вперёд"
+              disabled={!canNext}
+              onClick={() => controller.next()}
             >
               <IconDisclosureRightOutline size="s" />
             </IconButton>

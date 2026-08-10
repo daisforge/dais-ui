@@ -84,16 +84,15 @@ export const StoriesBanner = ({
   ) : (
     <EmptyState
       size="s"
-      variant="not-found"
+      variant="loading"
       title="Не удалось загрузить"
-      subtitle="Проверьте соединение и попробуйте снова"
       centered
       buttons={[
         {
-          type: 'button',
+          type: 'link',
           props: {
-            text: 'Попробовать снова',
-            view: 'secondary',
+            text: 'Обновить',
+            view: 'accent',
             onClick: reload,
           },
         },
