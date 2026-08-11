@@ -485,7 +485,9 @@ export type SidebarConfig = {
   defaultTabs?: Array<
     | {
         id: 'filtering' | 'columns';
+        /** название таба в рамках горизонтального табов внутри таба настройки */
         label?: string;
+        /** название таба в рамках вертикальных табов сайдбара (если данный таб окажется единственным табом в настройках) */
         title?: string;
         /**
          * Метки для автоматизированного тестирования и аналитики
@@ -496,11 +498,18 @@ export type SidebarConfig = {
          * Кастомный элемент справа от title в шапке сайдбара
          */
         titleRightSlot?: React.ReactNode;
+        /** @default true */
+        showInSidebar?: boolean;
+        /** тултип иконки шестеренки (для табов с id = filtering и columns - недоступен. Настраивается через таб с id='tableSettings') */
+        iconTooltipText?: undefined;
       }
     | {
         id: 'tableSettings';
+        /** название таба в рамках горизонтального табов внутри таба настройки */
         label?: string;
+        /** название таба в рамках вертикальных табов сайдбара */
         title?: string;
+
         /**
          * Метки для автоматизированного тестирования и аналитики
          * Добавляет data-атрибуты и CSS-классы к элементам controlBlock
@@ -515,6 +524,10 @@ export type SidebarConfig = {
          * Кастомный элемент справа от title в шапке сайдбара
          */
         titleRightSlot?: React.ReactNode;
+        /** @default true */
+        showInSidebar?: boolean;
+        /** тултип иконки шестеренки @default 'Настройки' */
+        iconTooltipText?: string;
       }
   >;
 };

@@ -71,7 +71,7 @@ export const MultipleFeatures: Story = {
   }),
   name: 'Пример конфигурации с подключением множественных функциональных возможностей',
   render: () => {
-    const [rows] = useState(createRows);
+    const [rows, setRows] = useState(createRows);
     const [highlightActiveType, setHighlightActiveType] =
       useState<HighlightActiveType>('row');
     const [selectionMode, setSelectionMode] =
@@ -179,6 +179,9 @@ export const MultipleFeatures: Story = {
           name: 'Developer',
           sortingType: 'stringSort',
           resizable: true,
+          editingCell: {
+            component: 'inputString',
+          },
           filtering: {
             component: 'input',
             keyInFilterState: 'developer',
@@ -306,6 +309,10 @@ export const MultipleFeatures: Story = {
         />
         <TableCanvas
           tableConfig={{
+            editing: {
+              onRowsChange: setRows,
+              rowKeyGetter: (r) => `${r.id}`,
+            },
             containerStyle: { height: '80vh' },
             unstickyHeader,
             fullScreenEnabled: true,

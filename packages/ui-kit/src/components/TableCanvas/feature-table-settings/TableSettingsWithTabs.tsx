@@ -7,6 +7,25 @@ import { FeatureItem } from '../widgets/control-block/types';
 import { TabContentWrapper, TabsContainer } from './styled';
 import { TableSettingsBlock } from './TableSettingsBlock';
 
+export const DEFAULT_TABS_INFO = {
+  general: {
+    /** title - название каждого вертикального таба в рамках основного таба настроек */
+    title: 'Настройки',
+    /** label - название каждого горизонтального таба в рамках основного таба настроек */
+    label: 'Общие',
+    /** тултип иконки шестеренки */
+    iconTooltipText: 'Настройки',
+  },
+  filtering: {
+    title: 'Фильтры',
+    label: 'Фильтры',
+  },
+  columns: {
+    title: 'Настройки столбцов',
+    label: 'Столбцы',
+  },
+};
+
 type TabConfig = {
   id: string;
   label: string;
@@ -14,14 +33,22 @@ type TabConfig = {
   show: boolean;
   domMetadata?: DomMetadata;
 };
+export type DefaultTabId = 'general' | 'columns' | 'filtering';
+export type DefaultTabInfo = {
+  id: string;
+  show: boolean;
+  title: string;
+  label: string;
+  titleRightSlot: ReactNode;
+  iconTooltipText?: string;
+};
 
 export const TableSettingsWithTabs: FC<{
   generalSettings?: FeatureItem[];
   customFeatures?: FeatureItem[];
+  defaultTabsInfo: Record<DefaultTabId, DefaultTabInfo>;
   filteringContent?: ReactNode;
   columnsContent?: ReactNode;
-  showFiltering: boolean;
-  showColumns: boolean;
   filteringDomMetadata?: DomMetadata;
   columnsDomMetadata?: DomMetadata;
   customGeneralSettingsSlot?: ReactNode;
@@ -30,10 +57,9 @@ export const TableSettingsWithTabs: FC<{
 }> = ({
   generalSettings = [],
   customFeatures = [],
+  defaultTabsInfo,
   filteringContent,
   columnsContent,
-  showFiltering,
-  showColumns,
   filteringDomMetadata,
   columnsDomMetadata,
   customGeneralSettingsSlot,
@@ -44,7 +70,7 @@ export const TableSettingsWithTabs: FC<{
   const tabs: TabConfig[] = [
     {
       id: 'general',
-      label: 'Общие',
+      label: defaultTabsInfo.general.label,
       content: (
         <TableSettingsBlock
           defaultSettings={generalSettings}
@@ -52,23 +78,20 @@ export const TableSettingsWithTabs: FC<{
           customGeneralSettingsSlot={customGeneralSettingsSlot}
         />
       ),
-      show:
-        generalSettings.length > 0 ||
-        customFeatures.length > 0 ||
-        !!customGeneralSettingsSlot,
+      show: defaultTabsInfo.general.show,
     },
     {
       id: 'filtering',
-      label: 'Фильтры',
+      label: defaultTabsInfo.filtering.label,
       content: filteringContent,
-      show: showFiltering,
+      show: defaultTabsInfo.filtering.show,
       domMetadata: filteringDomMetadata,
     },
     {
       id: 'columns',
-      label: 'Столбцы',
+      label: defaultTabsInfo.columns.label,
       content: columnsContent,
-      show: showColumns,
+      show: defaultTabsInfo.columns.show,
       domMetadata: columnsDomMetadata,
     },
   ].filter((tab) => tab.show);

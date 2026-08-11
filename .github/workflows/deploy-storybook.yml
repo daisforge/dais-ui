@@ -4,19 +4,20 @@ on:
   push:
     branches:
       - develop
+    paths:
+      - 'packages/storybook/**'
+      - 'packages/ui-kit/**'
   workflow_dispatch: {}
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
   group: pages
   cancel-in-progress: false
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -38,18 +39,20 @@ jobs:
           # GitHub Pages для project-страниц отдаёт сайт с /<repo>/, а не с корня домена
           STORYBOOK_BASE_PATH: '/${{ github.event.repository.name }}/'
 
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: dist/storybook
+      - name: Preserve active PR previews 🔒
+        run: |
+          git fetch origin gh-pages --depth=1 2>/dev/null || true
+          if git rev-parse --verify origin/gh-pages >/dev/null 2>&1 && \
+             git cat-file -e origin/gh-pages:pr-preview 2>/dev/null; then
+              git archive origin/gh-pages -- pr-preview | tar -x -C dist/storybook
+          fi
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
+      - name: Add .nojekyll
+        run: touch dist/storybook/.nojekyll
+
       - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: dist/storybook
+          publish_branch: gh-pages

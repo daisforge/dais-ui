@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.12.1](https://github.com/daisforge/dais-ui/compare/v1.12.0...v1.12.1) (2026-08-10)
+
+### Bug Fixes
+
+- **TableCanvas:** tableConfig.sidebar.defaultTabs. исправлена видимость и настройка дефолтных вкладок сайдбара настроек таблицы ([37aaff7](https://github.com/daisforge/dais-ui/commit/37aaff70879ea572a535efc6d425dc667b09c73e))
+
 # [1.12.0](https://github.com/daisforge/dais-ui/compare/v1.11.0...v1.12.0) (2026-08-04)
 
 ### Bug Fixes

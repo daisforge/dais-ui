@@ -31,8 +31,10 @@ export interface StoriesContextValue {
   overlayColor: string;
   zIndex: number;
   groupTransition: StoriesGroupTransition;
-  /** Режим стрелок переключения групп. */
+  /** Режим видимости стрелок навигации. */
   arrows: StoriesArrows;
+  /** Прятать недоступную по направлению стрелку вместо disabled-состояния. */
+  hideDisabledArrows: boolean;
   /** Явный режим темы; если не задан — читается из useActiveTheme. */
   mode?: StoriesMode;
   /** Колбэк ошибки загрузки ассета. */

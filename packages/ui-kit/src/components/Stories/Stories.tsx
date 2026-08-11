@@ -94,6 +94,7 @@ const StoriesRender = (
     pauseHoldDelay = STORIES_DEFAULTS.pauseHoldDelay,
     groupTransition = 'slide',
     arrows = 'auto',
+    hideDisabledArrows = true,
     mode,
     className,
   } = props;
@@ -302,6 +303,7 @@ const StoriesRender = (
     zIndex,
     groupTransition,
     arrows,
+    hideDisabledArrows,
     mode,
     onError,
     renderError,

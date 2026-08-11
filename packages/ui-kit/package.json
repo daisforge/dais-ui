@@ -1,6 +1,6 @@
 {
   "name": "@daisforge/ui",
-  "version": "1.12.0",
+  "version": "1.12.1",
   "main": "./index.cjs",
   "module": "./index.mjs",
   "types": "./index.d.ts",
@@ -32,10 +32,10 @@
   },
   "dependencies": {
     "@glideappsfinal/glide-data-grid": "^6.0.12",
-    "@salutejs/plasma-icons": "^1.243.0",
-    "@salutejs/plasma-typo": "^0.47.0",
-    "@salutejs/sdds-finai": "^0.349.0",
-    "@salutejs/sdds-themes": "^0.71.0",
+    "@salutejs/plasma-icons": "^1.244.0",
+    "@salutejs/plasma-typo": "^0.48.0",
+    "@salutejs/sdds-finai": "^0.351.0",
+    "@salutejs/sdds-themes": "^0.73.0",
     "canvas-hypertxt": "^1.0.3",
     "lodash.clonedeep": "^4.5.0",
     "lodash.isequal": "^4.5.0",
