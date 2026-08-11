@@ -1,0 +1,20 @@
+import{j as e}from"./react-D2T61mpp.js";import{c2 as o,c3 as l,bY as c}from"./vendor-DVRMjF5Y.js";import{C as d}from"./TableCanvas.cellPreview.stories-Ek4chaxg.js";import"./react-is-Clcustum.js";import"./styled-components-CxmyZpOq.js";import"./tslib-De9GV7Vy.js";import"./tableData-UCfjiBCh.js";import"./DocStoryTemplate-BNfNA-EK.js";import"./storySourceDoc-tVKyHcEN.js";import"./TableCanvas-BZWzZoRR.js";import"./FiltersActions-ClKnGZJR.js";import"./IconButton-lG_x1Y6v.js";import"./@salutejs/plasma-icons-BzUkoeZa.js";import"./@salutejs/sdds-finai-DgM3hqau.js";import"./@salutejs/sdds-themes-DMMPng_c.js";import"./utils-ClPviZ8C.js";import"./constants-B3b49qmU.js";import"./sharedUtilsDebug-BX_KjCjW.js";import"./Box-DO61MbXY.js";import"./TextField-CO736GyT.js";import"./sharedUtilsInputs-BneVZrJe.js";import"./AnalyticalWidget-DOemauGu.js";import"./Collapse-CKvxbWvA.js";import"./Table-D7hgb8Sc.js";import"./react-data-grid-C1XVGHD_.js";import"./TableTabs-Bn4XpWMz.js";import"./TableCanvasSharedConstants-D5ZJAqGq.js";import"./sharedUiSearch-Dk9K9QFo.js";import"./ListOfFilters-Cy_KAVuJ.js";import"./lodash.isequal-DD0Lfcik.js";import"./NumberFormat-BlTr3jyf.js";import"./EmptyState-Czyro0NP.js";import"./MassActions-Doz9zJsu.js";import"./Autocomplete-DZ85hFAn.js";import"./TableGlide-LnsznrGu.js";import"./@glideappsfinal/glide-data-grid-z8SkcK6U.js";import"./canvas-hypertxt-DsokSIOX.js";import"./ErrorPage-DRfYIyib.js";function n(i){const r={a:"a",code:"code",h1:"h1",h2:"h2",li:"li",p:"p",ul:"ul",...o(),...i.components};return e.jsxs(e.Fragment,{children:[e.jsx(l,{of:d,name:"Docs"}),`
+`,e.jsx(r.h1,{id:"cell-preview-rendercellpreview",children:"Cell Preview (renderCellPreview)"}),`
+`,e.jsxs(r.p,{children:["Опциональное поле колоночного конфига (",e.jsx(r.code,{children:"columnConfig.renderCellPreview"}),"). Управляет overlay при двойном клике на readonly-ячейку."]}),`
+`,e.jsx(r.h2,{id:"ключевые-особенности",children:"Ключевые особенности"}),`
+`,e.jsxs(r.ul,{children:[`
+`,e.jsxs(r.li,{children:["Три режима: ",e.jsx(r.code,{children:"'none'"})," (отключить превью), ",e.jsx(r.code,{children:"'cellEditorAsPreview'"})," (стандартный текстовый), функция (кастомный рендер)"]}),`
+`,e.jsx(r.li,{children:"Работает как для canvas-ячеек (Badge, Icon, кнопки), так и для текстовых"}),`
+`,e.jsxs(r.li,{children:["Кастомная функция получает полный контекст ячейки: ",e.jsx(r.code,{children:"row"}),", ",e.jsx(r.code,{children:"column"}),", ",e.jsx(r.code,{children:"theme"}),", ",e.jsx(r.code,{children:"cellWidth"}),", ",e.jsx(r.code,{children:"cellHeight"})]}),`
+`,e.jsxs(r.li,{children:["Полный контроль над содержимым overlay — функция возвращает ",e.jsx(r.code,{children:"ReactNode"})]}),`
+`]}),`
+`,e.jsx(r.h2,{id:"особенности",children:"Особенности"}),`
+`,e.jsxs(r.ul,{children:[`
+`,e.jsx(r.li,{children:"По умолчанию (поле не задано) — текстовые ячейки показывают стандартный превью, canvas-ячейки — ничего"}),`
+`,e.jsxs(r.li,{children:[e.jsx(r.code,{children:"'none'"})," — явно отключает превью, в том числе стандартный текстовый"]}),`
+`,e.jsxs(r.li,{children:[e.jsx(r.code,{children:"'cellEditorAsPreview'"})," — включает стандартный текстовый превью (",e.jsx(r.code,{children:"CellEditorTextArea"})," с ",e.jsx(r.code,{children:"readOnly"}),"). Полезно для canvas-ячеек, которым нужен текстовый overlay"]}),`
+`,e.jsxs(r.li,{children:["Для текстового отображения рекомендуется ",e.jsx(r.code,{children:"CellEditorTextArea"})," с активированным ",e.jsx(r.code,{children:"readOnly"})," — этот компонент используется по умолчанию для отображения текста в ячейках"]}),`
+`,e.jsxs(r.li,{children:[e.jsx(r.code,{children:"theme"})," из аргумента можно использовать для стилизации (padding, цвета)"]}),`
+`]}),`
+`,e.jsxs(r.p,{children:["Описание типов — в разделе ",e.jsx(r.a,{href:"?path=/docs/%D0%BB%D0%BE%D0%BA%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D1%8B-tablecanvas-cell-preview-api--docs",children:"API"}),"."]}),`
+`,e.jsx(c,{})]})}function G(i={}){const{wrapper:r}={...o(),...i.components};return r?e.jsx(r,{...i,children:e.jsx(n,{...i})}):n(i)}export{G as default};
