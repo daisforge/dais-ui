@@ -366,5 +366,3 @@ export const ModalDFEmpty: Story = {
   }),
   render: ModalDFEmptyExample,
 };
-
-// test: gh-pages no-accumulation check, revert after verifying
