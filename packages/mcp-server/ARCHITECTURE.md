@@ -28,7 +28,12 @@
 │                        │    formVariant↔wrappedBy, composition→wrapper promotion)             │
 │                        ▼                                                                     │
 │              mergeMeta.ts  (обогащение из _docs/meta/components-meta.json: hint/category/     │
-│                        │     docs/stories, curated wins over heuristic; + legacy-детект)      │
+│                        │     description/keywords/docs/stories, curated wins over heuristic;  │
+│                        │     + legacy-детект)                                                │
+│                        ▼                                                                     │
+│              mergeAtomicCuratedMeta.ts  (description/category/keywords из                    │
+│                        │     vendor/atomic-curated-meta.json — второй curated-источник,       │
+│                        │     для компонентов БЕЗ своего кода в ui-kit, T2)                    │
 │                        ▼                                                                     │
 │              mergeAtomicData.ts  (inheritedProps[] из vendor/atomic-mcp-data/,                │
 │                        │           дедуп с own props[], atomicDataMissing если атома нет)     │
@@ -108,16 +113,32 @@
 
 Курируемый оверрайд — `role` в `_docs/meta/components-meta.json` (curated wins over heuristic, тот же принцип, что и у остальных полей `mergeMeta.ts`); применяется до `linkFolderRoles`, так что оверрайд учитывается при расчёте `parentComponent`/`relatedExports`. Используется для случаев, не покрытых механическим списком слотов (`FiltersActionsTabs`/`FiltersActionsTabItem` — реальные compound-присваивания `FiltersActions.Tabs`/`FiltersActions.TabItem` в коде, но суффиксы `Tabs`/`TabItem` намеренно не входят в общий список слотов, чтобы не расширять его вслепую под один кейс).
 
+**Регенерация-безопасность (T2)**: до T2 `role` для `FiltersActionsTabs`/`FiltersActionsTabItem` был вписан только в сгенерированный `_docs/meta/components-meta.json` вручную — `generate-meta.js` вообще не читал/не писал поле `role`, а значит любой `npm run meta` тихо стирал оба оверрайда. T2 добавил `role` в схему конфига (`meta-config.types.ts`) и в `processSimpleComponent`/`processComplexComponent` (`generate-meta.js`), а сами оверрайды перенесены в `generators/meta-info/config/meta-config.json` — теперь они переживают регенерацию.
+
 `linkFolderRoles` (в `buildIndex.ts`, выполняется после `mergeMeta`) группирует записи по `folderName` и проставляет: `parentComponent` — у каждой `part`/`internal`-записи (имя владельца папки, `name === folderName`; если такого владельца нет — само имя папки, у пяти папок его действительно нет: `Segment`, `Skeleton`, `FormDatePickers`, `FormRadioGroupBox`, `FormSegments`); `relatedExports` — у каждой `primary`-записи той же папки (имена скрытых `part`/`internal`-соседей, иначе они недостижимы после того, как `list_components` по умолчанию показывает только `primary`).
 
 `list_components` фильтрует по `role` (по умолчанию `primary`, `role: "all"` снимает фильтр). `search_components` по роли НЕ фильтрует (агент может целенаправленно искать `ModalDFHeader`) — только понижает `internal` тем же мультипликативным приёмом, что и `legacy`.
 
 ### 1.5 `mergeMeta.ts`
 
-Читает `_docs/meta/components-meta.json`. Там, где компонент присутствует (36 из 265), поля `category`/`type`/`description`/`hint`/`scope`/`docs`/`apiDocs`/`stories` **перекрывают** эвристику индексера (curated wins over heuristic). Также:
+Читает `_docs/meta/components-meta.json`. Там, где компонент присутствует, поля `category`/`type`/`description`/`hint`/`keywords`/`scope`/`docs`/`apiDocs`/`stories` **перекрывают** эвристику индексера (curated wins over heuristic). Также:
 
 - переносит `pages["Установка и использование"]` как есть в `guides.installation` (без нового парсинга — переиспользование уже сгенерированного контента);
 - детектит `legacy: true` по вхождению "устаревш" в hint/description curated-текста — принципиальная проверка по смыслу, а не хардкод конкретного имени компонента (сейчас единственный кейс — `Table`).
+
+**`_docs/meta/components-meta.json` — build-артефакт, не редактируемый файл.** Он полностью перезаписывается скриптом `generators/meta-info/generate-meta.js` (`npm run meta`) из конфига `generators/meta-info/config/meta-config.json` (поле `components`). Ручные правки в `_docs/meta/components-meta.json` теряются при следующем `npm run meta` — это едва не привело к порче T11-оверрайдов `role` (см. §1.4a); правки нужно вносить **только** в `meta-config.json`.
+
+До T2 `meta-config.json` покрывал 36 из 265+ компонентов — только те, у кого есть собственный код в `ui-kit` и (в целевом сценарии) страница в Storybook. T2 расширил покрытие до 126 (все компоненты с собственной реализацией, включая ~85 без Storybook-страницы) и добавил в схему `keywords`/`role`. Резолвер `resolveComponent.js` до T2 требовал папку `packages/storybook/src/stories/<Name>/` — при её отсутствии компонент тихо выпадал из вывода (скрытый баг: `resolveSimpleComponent`/`resolveComplexComponent` возвращали `null`, но `{type: 'simple', ...null}` в `resolveComponent()` даёт truthy `{type: 'simple'}`, `processSimpleComponent` падал на `for (const mdxPath of resolved.docsMdx)` — TypeError гасился try/catch в главном цикле генератора). T2 поменял `null` на минимальную запись с пустыми `docsMdx/apiMdx/storyFiles` — компонент без Storybook-страницы теперь получает `category`/`description`/`keywords` из конфига, но пустой `docs`/`api`/`stories` (только `console.warn`, не потеря записи).
+
+### 1.5a `mergeAtomicCuratedMeta.ts` — второй curated-источник (T2)
+
+117 из 243 компонентов — чистые реэкспорты атомов `@salutejs/sdds-finai` (`export { X } from '@salutejs/sdds-finai'`), без единой строчки собственного кода и без Storybook-страницы. `meta-config.json`/`generate-meta.js` для них принципиально бесполезны — резолвятся по папке в `ui-kit`/Storybook, которой у чистых реэкспортов просто нет что описывать помимо самого факта реэкспорта.
+
+Для этих 117 — отдельный курируемый файл **`packages/mcp-server/vendor/atomic-curated-meta.json`** (`{ components: { <Name>: { description, category, keywords } } }`), НЕ проходящий через `generators/meta-info` вообще. `mergeAtomicCuratedMeta.ts` читает его напрямую (аналогично `mergeMeta.ts`, тот же паттерн `curated wins`) и выполняется в `buildIndex.ts` сразу после `mergeMeta`, до `linkFolderRoles`.
+
+Единственный практический источник контента при курировании этого файла — вендоренный снэпшот атомарки (`vendor/atomic-mcp-data/**/*.json`, поле `summary`) и `inheritedProps`; сам `summary` неровный (то голое имя компонента без содержания — `"Switch"`, `"Tooltip"` — то избыточный технический текст за 100-символьный лимит) и не годится как автоматический фолбэк в коде — описания в `atomic-curated-meta.json` написаны вручную по этому материалу, не скопированы напрямую.
+
+Название файла (`atomic-curated-meta.json`) намеренно похоже на `atomic-mcp-data/` — оба про атомарные компоненты — но это два независимых по происхождению файла: `atomic-mcp-data/` — вендоренный (внешний) снэпшот пропсов, обновляется через `mcp:vendor-atomic --source`; `atomic-curated-meta.json` — наш собственный курированный текст, правится вручную и не перезаписывается никаким внешним генератором.
 
 ### 1.6 Атомарные данные — вендоринг (`vendorAtomicData.ts` + `mergeAtomicData.ts`)
 
@@ -158,7 +179,7 @@
   "libVersion": "1.11.0",           // версия ui-kit на момент сборки — для version-mismatch проверки в рантайме
   "components": {
     "<Name>": {
-      "name", "group", "type", "category", "description", "hint",
+      "name", "group", "type", "category", "description", "hint", "keywords",
       "folderName", "role",              // primary | part | internal, см. §1.4a
       "parentComponent", "relatedExports", // part/internal ↔ владелец папки
       "compoundPartOf",                  // { component, part } — см. §1.6a
@@ -220,6 +241,7 @@
 - фичи не инлайнятся в карточку компонента вообще — отдельные инструменты;
 - списочные ответы (сейчас — `list_components`) бюджетируются **поэлементно** через `truncateList(items, budget)`: сериализует кандидатов один за другим и добирает элементы, пока итоговый JSON помещается в бюджет, возвращая `{items, shown, total, truncationNotice?}` — никогда не режет элемент пополам. Раньше `truncateForResponse` резал уже сериализованную строку по символу, из-за чего `list_components({})` отдавал синтаксически битый JSON (терялось до 20 из 243 компонентов без предупреждения);
 - `truncateForResponse` остался последним рубежом для остальных (нелистовых) payload'ов: если конкретный ответ всё равно превышает ~25k символов, оборачивает в `{truncated, totalChars, notice, raw}` и обрезает бинарным поиском **значение поля `raw`**, а не готовую JSON-строку, — экранирование спецсимволов внутри `raw` может раздуть длину сильнее одного вычитания overhead, поэтому размер результата подбирается, а не считается заранее. Итог всегда валиден и укладывается в бюджет.
+- **T2 (заполнение description/category у 100% каталога) заметно подняло давление на этот бюджет.** До T2 `list_components({})` укладывал почти весь отфильтрованный список в один ответ (у большинства компонентов `description`/`category` были пустыми). После T2 (все 177 `primary`-записей несут непустые `description`+`category`) полный список весит ~36k символов при бюджете 25k — `truncateList` показывает ~120 из 177 за один вызов без фильтров, честно сообщая `total`/`hasMore`/`truncationNotice`. Это ожидаемое поведение спроектированного в T1 механизма деградации, не регрессия: `keywords` в `ComponentSummary` намеренно НЕ включены (в отличие от `get_component`/`search_components`) именно чтобы не давить на бюджет ещё сильнее — они не несут дополнительной пользы для беглого просмотра списка (description уже человекочитаемо описывает то же самое), а нужны только скорингу `search_components`.
 
 ### 4.2 Поиск (`searchComponents.ts`)
 
@@ -228,6 +250,7 @@
 - **Мультипликативный, а не аддитивный legacy-штраф** (`score *= 0.6`, не `score -= 12`) — иначе единственное совпадение по редкому термину (`"react-data-grid"` встречается только у `Table`) гасилось штрафом до нуля, и legacy-компонент, который единственно верный ответ, исчезал из выдачи целиком. Тот же приём и с тем же коэффициентом — для `role: "internal"` (см. §1.4a): по роли не фильтруем (агент может целенаправленно искать `ModalDFHeader`), но `CanvasRect` не должен обгонять реальные кандидаты при равном текстовом совпадении.
 - **Negation-aware матчинг** для `hint`/`description` — курированные тексты иногда пишутся как явное опровержение (`AnalyticalWidget.hint`: "Это layout, **не** фильтрация"). Наивное совпадение подстроки засчитало бы запрос "фильтрация" как позитивный сигнал ровно наоборот. Проверяется, не стоит ли "не " непосредственно перед совпадением.
 - Точное совпадение слова с именем компонента даёт +100 (перевешивает legacy-штраф) — поэтому `"Table сортировка"` всё равно ставит `Table` выше `TableCanvas`, несмотря на то, что оба имени содержат подстроку "table".
+- **`keywords`** (T2, 2-4 синонима задачи на компонент) скорятся тем же `includesPositively` весом, что и `hint` (+20) — они и покрывают именно тот разрыв, из-за которого до T2 поиск по русским словам-заменителям имени работал плохо (`"тултип"` для `Tooltip`, `"автокомплит"` для `Autocomplete`, `"пагинация"` для `Pagination` — ни разу не встречались в самом имени компонента латиницей). Даже с `keywords` совпадение по точному имени (+100) может перевешивать: запрос `"date range"` ставит атом `Range` (числовой диапазон "от-до", точное совпадение слова "range") выше `DatePickerRange` (только частичное совпадение имени + keywords) — оба в топ-3, но не в ожидаемом порядке; это ограничение модели скоринга, не контента, и не within T2 scope чинить веса.
 
 ## 5. Известные ограничения (см. также README.md)
 
@@ -237,14 +260,16 @@
 - Поиск слабее на общих словах, которые встречаются во многих фичах одновременно (например "ячеек").
 - `atomicDataMissing: true` — часть compound-частей атомарных компонентов не имеет отдельной записи в вендоренном снэпшоте (их доки организованы по родительской странице, не по каждому именованному экспорту).
 - У 3 compound-частей (`DrawerDF.Header.badge`, `DrawerDF.DotsIconButton.dropdownProps`, `FiltersActions.DotsIconButton.dropdownProps`) текст типа — нечитаемый вложенный `Omit<Omit<PropsType<...`. Это не провал резолва (`resolveCompoundPart` находит декларацию штатно, `tryExtractViaComponentProps`-фолбэк из T13 тут не участвует) — сам исходный тип поля (`badge?: (BadgeCompProps & { text: string }) | undefined`) генуинно сложный, и принтер TypeScript теряет имя вложенного алиаса при печати вычисленного типа intersection. Требует отдельной правки печати типа (например `type.getText(node, ts.TypeFormatFlags.UseAliasDefinedOutsideCurrentScope)`), не относится к T13.
-- `src/validate/validateIndex.ts` на текущем индексе **не проходит начисто** и до T11–T14 (baseline: 1 import-missing + 226 prop-not-found + 195 required-mismatch, не считая generic best-effort) — большинство расхождений сосредоточено в нескольких компонентах со сложными полиморфными типами (`Box`, `ModalDFConfirmationFooter`, `Spinner`, `TooltipList`, семья `FiltersActions.*`), где `required`-флаг, вычисленный при разборе объявленного типа, расходится с тем, что вычисляет тайпчекер для `ComponentProps<typeof X>` реального экспорта. T14 сократил REQUIRED-MISMATCH на 19 (195→176); T12 (синхронизация compound-part дублей) распространяет уже существующую неточность `resolveCompoundPart`-пути на 1 дополнительную пару (`FiltersActionsTabs`/`FiltersActionsTabItem`, +20) — сознательный компромисс: пропсы стали полнее и консистентнее между обоими путями резолва, а `required`-неточность для этой конкретной пары была в индексе и раньше (просто непроверяемой на top-level имени). Устранение самой неточности — отдельная задача, не T11–T14.
+- `src/validate/validateIndex.ts` на текущем индексе **не проходит начисто** и до T11–T14 (baseline: 1 import-missing + 226 prop-not-found + 195 required-mismatch, не считая generic best-effort) — большинство расхождений сосредоточено в нескольких компонентах со сложными полиморфными типами (`Box`, `ModalDFConfirmationFooter`, `Spinner`, `TooltipList`, семья `FiltersActions.*`), где `required`-флаг, вычисленный при разборе объявленного типа, расходится с тем, что вычисляет тайпчекер для `ComponentProps<typeof X>` реального экспорта. T14 сократил REQUIRED-MISMATCH на 19 (195→176); T12 (синхронизация compound-part дублей) распространяет уже существующую неточность `resolveCompoundPart`-пути на 1 дополнительную пару (`FiltersActionsTabs`/`FiltersActionsTabItem`, +20) — сознательный компромисс: пропсы стали полнее и консистентнее между обоими путями резолва, а `required`-неточность для этой конкретной пары была в индексе и раньше (просто непроверяемой на top-level имени). Устранение самой неточности — отдельная задача, не T11–T14. T2 (description/category/keywords) props не трогает — baseline после T2 не изменился по существу (196 required-mismatch, разница в 1 от естественного дрейфа исходников ui-kit между прогонами).
+- **`list_components({})` без фильтров показывает ~120 из 177 `primary`-компонентов, не все** — прямое следствие T2 (см. §4.1): с непустыми `description`+`category` у 100% каталога полный список не помещается в бюджет ответа за один вызов. Не баг — `truncationNotice`/`hasMore` явно сообщают остаток и путь пагинации (`limit`/`offset`), это тот самый механизм, который T1 спроектировал для этого случая.
 
 ## 6. Как обновлять
 
 ```bash
+npm run meta                 # regenerate _docs/meta/components-meta.json из meta-config.json (только если правили meta-config.json)
 npm run mcp:build-index      # пересобрать индекс из текущего исходника ui-kit
 npm run mcp:vendor-atomic -- --source <путь-к-их-mcpData>   # обновить снэпшот атомарных пропсов
 npm run mcp:start            # запустить сервер локально (stdio)
 ```
 
-`mcp:build-index` автоматически входит в корневой `postbuild` (после `npm run build`).
+`mcp:build-index` автоматически входит в корневой `postbuild` (после `npm run build`). `npm run meta` — отдельный шаг, руками, только когда менялся `generators/meta-info/config/meta-config.json` (правки в `packages/mcp-server/vendor/atomic-curated-meta.json`, наоборот, читаются напрямую и `npm run meta` не касаются).

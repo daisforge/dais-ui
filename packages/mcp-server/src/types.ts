@@ -144,6 +144,8 @@ export interface ComponentRecord {
   // из mergeMeta (курированный _docs/meta/components-meta.json)
   category?: string;
   hint?: string;
+  /** 2-4 синонима задачи (ru/en) — скорится в search_components наравне с hint. */
+  keywords?: string[];
   scope?: string;
   docs?: string;
   apiDocs?: string;
@@ -244,6 +246,8 @@ export interface ComponentMeta {
   role?: ComponentRole;
   description?: string;
   hint?: string;
+  /** 2-4 синонима задачи (ru/en) — формулировка задачи, не имени компонента. См. TASKS.md T2. */
+  keywords?: string[];
   scope?: string;
   docs?: string;
   apiDocs?: string;
@@ -260,6 +264,23 @@ export interface PageMeta {
 export interface MetaJson {
   components: Record<string, ComponentMeta>;
   pages?: Record<string, PageMeta>;
+}
+
+/* ─────────────── Внешний контракт: vendor/atomic-curated-meta.json ─────────────── */
+/* Курированные description/category/keywords для компонентов без собственного
+   кода в ui-kit — чистых реэкспортов атомов @salutejs/sdds-finai (Accordion,
+   Col, Row, Divider и т.п.). У них нет ни JSDoc (нет своего файла с логикой),
+   ни Storybook-страницы — mergeMeta.ts (_docs/meta/components-meta.json) их
+   не покрывает. См. TASKS.md T2 и mergeAtomicCuratedMeta.ts. */
+
+export interface AtomicCuratedMetaEntry {
+  description?: string;
+  category?: string;
+  keywords?: string[];
+}
+
+export interface AtomicCuratedMeta {
+  components: Record<string, AtomicCuratedMetaEntry>;
 }
 
 /* ─────────────── Build-time мутабельная запись ─────────────── */

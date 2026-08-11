@@ -5,7 +5,6 @@
   "storiesBase": "packages/storybook/src/stories",
   "instructionsFile": "config/instructions.md",
   "storybookBaseUrl": "http://df-storybook.sh5.dev-gen1-ds.dddddd.ru",
-
   "pages": [
     {
       "title": "Установка и использование",
@@ -14,103 +13,184 @@
       "description": "Установка пакета и использование компонентов, иконок и токенов."
     }
   ],
-
   "components": [
     {
       "name": "DrawerDF",
       "type": "wrapper",
       "category": "Локальные компоненты",
-      "description": "Расширенный Drawer с layout-ами для шапки/контента/футера."
+      "description": "Боковая панель с готовыми слотами шапки, контента, футера и кнопкой назад",
+      "keywords": [
+        "боковая панель с разметкой",
+        "side panel layout",
+        "шторка с шапкой и футером"
+      ]
     },
     {
       "name": "ModalDF",
       "type": "wrapper",
       "category": "Локальные компоненты",
-      "description": "Расширенный Modal с layout-ами и compound-компонентами."
+      "description": "Расширенное модальное окно с compound-слотами: шапка, контент, футер, Left/Main",
+      "keywords": [
+        "составное модальное окно",
+        "modal с слотами",
+        "шапка и футер диалога"
+      ]
     },
     {
       "name": "ModalDFConfirmation",
       "type": "wrapper",
       "category": "Локальные компоненты",
-      "description": "Модальное окно подтверждения действия."
+      "description": "Модалка подтверждения действия с иконкой и кнопками подтвердить/отменить",
+      "keywords": [
+        "подтверждение действия",
+        "confirm dialog",
+        "диалог да/нет"
+      ]
     },
     {
       "name": "EmptyState",
       "type": "composition",
       "category": "Композиции",
-      "description": "Экран пустого состояния с вариациями размеров и действий."
+      "description": "Экран-заглушка с иллюстрацией, заголовком и кнопками для пустых или ошибочных состояний",
+      "keywords": [
+        "пустое состояние",
+        "no data placeholder",
+        "заглушка контента"
+      ]
     },
     {
       "name": "ApprovalCenter",
       "type": "standalone",
       "category": "Локальные компоненты",
-      "description": "Компонент последовательных согласований между группами лиц."
+      "description": "Панель согласования с превью, историей действий и жизненным циклом стадий по вкладкам",
+      "keywords": [
+        "согласование заявки",
+        "workflow approval",
+        "история действий"
+      ]
     },
     {
       "name": "ErrorPage",
       "type": "composition",
       "category": "Композиции",
-      "description": "Страница ошибки с кодом, описанием и действиями."
+      "description": "Готовая страница ошибки (400-503): иллюстрация, текст и кнопки по коду статуса",
+      "keywords": [
+        "error page",
+        "404 страница",
+        "страница недоступности сервиса"
+      ]
     },
     {
       "name": "Collapse",
       "type": "wrapper",
       "category": "Локальные компоненты",
-      "description": "Сворачиваемый блок контента."
+      "description": "Сворачиваемый блок с анимацией высоты/ширины для скрытия контента",
+      "keywords": [
+        "сворачиваемый блок",
+        "показать/скрыть",
+        "аккордеон-анимация"
+      ]
     },
     {
       "name": "Container",
       "type": "composition",
       "category": "Композиции",
-      "description": "Контейнер с поддержкой split-режимов и адаптивности."
+      "description": "Контейнер страницы с режимами разделения на колонки и адаптивностью",
+      "keywords": [
+        "сетка страницы",
+        "split layout",
+        "две колонки"
+      ]
     },
     {
       "name": "BlockTitle",
       "type": "composition",
       "category": "Композиции",
-      "description": "Заголовок блока с подзаголовком и действиями."
+      "description": "Заголовок раздела страницы с подзаголовком, кнопкой назад и слотами для действий",
+      "keywords": [
+        "заголовок раздела",
+        "page heading",
+        "шапка блока"
+      ]
     },
     {
       "name": "BlockGradientScroll",
       "type": "standalone",
       "category": "Локальные компоненты",
-      "description": "Блок с градиентной прокруткой контента."
+      "description": "Прокручиваемый блок с градиентной тенью у краёв, сигнализирующей о скрытом контенте",
+      "keywords": [
+        "скролл с тенью",
+        "fade scroll",
+        "индикатор прокрутки"
+      ]
     },
     {
       "name": "PageLayout",
       "type": "composition",
       "category": "Композиции",
-      "description": "Layout страницы с header, sidebar, content."
+      "description": "Обёртка страницы: отступ под fixed-шапку, центрирование, адаптивные паддинги",
+      "keywords": [
+        "макет страницы",
+        "page wrapper",
+        "отступ под шапку"
+      ]
     },
     {
       "name": "PageTitle",
       "type": "composition",
       "category": "Композиции",
-      "description": "Заголовок страницы с breadcrumbs и действиями."
+      "description": "Заголовок страницы с хлебными крошками, кнопкой назад и блоком действий справа",
+      "keywords": [
+        "заголовок страницы",
+        "breadcrumbs",
+        "page header"
+      ]
     },
     {
       "name": "Layout",
       "type": "composition",
       "category": "Композиции",
-      "description": "Базовый layout с вариантами колонок (V1_1, V2_1, V2_2 и др.)."
+      "description": "Готовый layout страницы с шапкой и вариантами колоночной сетки",
+      "keywords": [
+        "сетка страницы",
+        "page layout",
+        "колонки страницы",
+        "шаблон разметки"
+      ]
     },
     {
       "name": "LeftPanel",
       "type": "composition",
       "category": "Композиции",
-      "description": "Левая панель навигации."
+      "description": "Сворачиваемая и растягиваемая боковая панель навигации с ресайзом",
+      "keywords": [
+        "боковая панель",
+        "sidebar",
+        "сворачиваемое меню",
+        "ресайз панели"
+      ]
     },
     {
       "name": "MassActions",
       "type": "composition",
       "category": "Локальные компоненты",
-      "description": "Панель массовых действий с чекбоксом, счётчиком и кнопками."
+      "description": "Панель массовых действий с чекбоксом, счётчиком и кнопками",
+      "keywords": [
+        "массовые действия",
+        "bulk actions",
+        "панель выбора строк"
+      ]
     },
     {
       "name": "FiltersActions",
       "type": "composition",
       "category": "Композиции",
-      "description": "Панель фильтров с compound-компонентами (кнопки, поиск, табы, сегменты)."
+      "description": "Панель фильтров и действий над списком: табы, кнопки, поиск, применённые фильтры",
+      "keywords": [
+        "панель фильтров",
+        "toolbar",
+        "filter bar"
+      ]
     },
     {
       "name": "FormComponents",
@@ -124,26 +204,46 @@
       "category": "Локальные компоненты",
       "scope": "internal",
       "scopeNote": "Создан для конкретной команды. Специализированный grid с drag-and-drop.",
-      "description": "Сетка карточек с drag-and-drop перетаскиванием."
+      "description": "Адаптивная сетка карточек-виджетов с drag-and-drop и изменением порядка/размера",
+      "keywords": [
+        "drag and drop grid",
+        "перетаскивание карточек",
+        "dashboard widgets"
+      ]
     },
     {
       "name": "PopoverDF",
       "type": "wrapper",
       "category": "Локальные компоненты",
-      "description": "Расширенный Popover с готовыми layout-ами.",
-      "hint": "Универсальный Popover. Не путать с AiAgentPopover (для конкретной команды)."
+      "description": "Popover с готовыми Header/Body/Footer и управлением состоянием открытия",
+      "hint": "Универсальный Popover. Не путать с AiAgentPopover (для конкретной команды).",
+      "keywords": [
+        "составной popover",
+        "попап с шапкой",
+        "compound popover"
+      ]
     },
     {
       "name": "PopupDF",
       "type": "wrapper",
       "category": "Локальные компоненты",
-      "description": "Расширенный Popup с layout-ами и compound-компонентами."
+      "description": "Popup с готовыми Header/Body/Footer, управлением открытием и ресайзом",
+      "keywords": [
+        "составной popup",
+        "модальное окно с шапкой",
+        "compound popup"
+      ]
     },
     {
       "name": "Box",
       "type": "standalone",
       "category": "Локальные компоненты",
-      "description": "Базовый контейнер-обёртка с пропсами для размеров, отступов и фона."
+      "description": "Базовый div-контейнер с пропсами отступов, размеров и рамки вместо инлайн-стилей",
+      "keywords": [
+        "контейнер-обёртка",
+        "layout box",
+        "утилитарный div"
+      ]
     },
     {
       "name": "AiAgentPopover",
@@ -151,63 +251,110 @@
       "category": "Локальные компоненты",
       "scope": "internal",
       "scopeNote": "Создан для команды AI-агента. Не является универсальным Popover.",
-      "description": "Popover для AI-агента с потоковым выводом и управлением состоянием.",
-      "hint": "Не путать с PopoverDF — тот универсальный. AiAgentPopover только для команды AI-агента."
+      "description": "Плавающий перетаскиваемый и изменяемый по размеру popover для AI-ассистента поверх экрана",
+      "hint": "Не путать с PopoverDF — тот универсальный. AiAgentPopover только для команды AI-агента.",
+      "keywords": [
+        "ai-ассистент",
+        "draggable popover",
+        "плавающее окно"
+      ]
     },
     {
       "name": "Autocomplete",
       "type": "wrapper",
       "category": "Локальные компоненты",
-      "description": "Поле ввода с автодополнением."
+      "description": "Поле ввода с подсказками из выпадающего списка и кнопкой очистки значения",
+      "keywords": [
+        "поле с подсказками",
+        "search input",
+        "выбор из списка при вводе",
+        "автокомплит"
+      ]
     },
     {
       "name": "TextField",
       "type": "wrapper",
       "category": "Локальные компоненты",
-      "description": "Текстовое поле ввода."
+      "description": "Однострочное поле ввода текста с кнопкой очистки значения.",
+      "keywords": [
+        "ввод текста",
+        "input поле",
+        "форма ввода"
+      ]
     },
     {
       "name": "TextFieldSearch",
       "type": "wrapper",
       "category": "Локальные компоненты",
-      "description": "Поле поиска с иконкой и кнопкой очистки."
+      "description": "Поле поиска на основе TextField: иконка лупы, плейсхолдер и кнопка очистки.",
+      "keywords": [
+        "поиск по списку",
+        "search input",
+        "фильтр по тексту"
+      ]
     },
     {
       "name": "TextArea",
       "type": "wrapper",
       "category": "Локальные компоненты",
-      "description": "Многострочное текстовое поле."
+      "description": "Многострочное текстовое поле с кнопкой очистки содержимого.",
+      "keywords": [
+        "многострочный ввод",
+        "поле для комментария",
+        "длинный текст"
+      ]
     },
     {
       "name": "Switch",
       "type": "wrapper",
       "category": "Локальные компоненты",
-      "description": "Переключатель (toggle)."
+      "description": "Тумблер для мгновенного переключения состояния вкл/выкл в интерфейсе.",
+      "keywords": [
+        "toggle",
+        "переключатель настройки",
+        "вкл выкл"
+      ]
     },
     {
       "name": "Notification",
       "type": "wrapper",
       "category": "Локальные компоненты",
-      "description": "Уведомление (toast) с вариантами стилей."
+      "description": "Всплывающее toast-уведомление со статусами и действиями",
+      "keywords": [
+        "toast",
+        "всплывающее уведомление",
+        "статус операции"
+      ]
     },
     {
       "name": "TooltipList",
       "type": "wrapper",
       "category": "Локальные компоненты",
-      "description": "Тултип со списком элементов."
+      "description": "Тултип-подсказка со списком значений — для фильтров, тегов, мультивыбора.",
+      "keywords": [
+        "список значений",
+        "фильтры",
+        "теги",
+        "multiselect"
+      ]
     },
     {
       "name": "Stories",
       "type": "standalone",
       "category": "Локальные компоненты",
-      "description": "Шаблонный движок сторей (как в Instagram): триггеры-превью (circle/rect), полноэкранный вьюер с индикаторами, тап-навигацией, паузой по удержанию и предзагрузкой ассетов.",
-      "hint": "Переиспользуемый компонент сторей для разных команд. Триггеры — Stories.Preview, слайды передаются данными."
+      "description": "Полноэкранные истории (как в Instagram) с превью-триггерами и автопрогрессом слайдов.",
+      "hint": "Переиспользуемый компонент сторей для разных команд. Триггеры — Stories.Preview, слайды передаются данными.",
+      "keywords": [
+        "instagram-истории",
+        "полноэкранный слайдер",
+        "автопроигрывание слайдов"
+      ]
     },
     {
       "name": "TableCanvas",
       "type": "standalone",
       "category": "Локальные компоненты",
-      "description": "Канвасная таблица на базе HTML Canvas и Glide Data Grid. Основной компонент для отображения табличных данных.",
+      "description": "Основная канвасная таблица: сортировка, фильтры, группировка, редактирование ячеек.",
       "hint": "Основная таблица. Если пользователь спрашивает про 'таблицу' — скорее всего TableCanvas. Для табличных вкладок — TableTabs.",
       "rootDocs": "TableCanvas/TableCanvas.Docs.mdx",
       "api": {
@@ -273,7 +420,15 @@
         "TableCanvas.Tooltip",
         "TableCanvas.UnstickyHeader"
       ],
-      "exclude": ["TableCanvas.SimpleTable", "TableCanvas.MultipleFeatures"]
+      "exclude": [
+        "TableCanvas.SimpleTable",
+        "TableCanvas.MultipleFeatures"
+      ],
+      "keywords": [
+        "excel-like таблица",
+        "canvas grid",
+        "редактируемая таблица"
+      ]
     },
     {
       "name": "AnalyticalWidget",
@@ -281,27 +436,42 @@
       "scope": "internal",
       "scopeNote": "Создан для команды рабочих столов.",
       "category": "Композиции",
-      "description": "Layout-контейнер с фиксированными размерами (L/M/S), слотами (header, top, middle, content) и отступами. Контент слотов — любой.",
-      "hint": "Это layout, не фильтрация. Compound-компоненты (Header, Chips, FilterIconButton) — это примеры наполнения, а не обязательная часть. Widget — универсальный аналог."
+      "description": "Карточка-виджет фиксированного размера со слотами шапки, фильтров, табов и контента",
+      "hint": "Это layout, не фильтрация. Compound-компоненты (Header, Chips, FilterIconButton) — это примеры наполнения, а не обязательная часть. Widget — универсальный аналог.",
+      "keywords": [
+        "дашборд-виджет",
+        "аналитическая карточка",
+        "панель с фильтрами"
+      ]
     },
     {
       "name": "Widget",
       "type": "composition",
       "category": "Композиции",
-      "description": "Базовый виджет с header, content, footer.",
-      "hint": "Универсальный виджет. Для специализированного layout рабочих столов — AnalyticalWidget."
+      "description": "Карточка-виджет с шапкой, контентом и футером — для панелей дашборда.",
+      "hint": "Универсальный виджет. Для специализированного layout рабочих столов — AnalyticalWidget.",
+      "keywords": [
+        "карточка дашборда",
+        "панель виджета",
+        "compound-компонент"
+      ]
     },
     {
       "name": "SplitView",
       "type": "composition",
       "category": "Композиции",
-      "description": "Разделённый вид с двумя панелями."
+      "description": "Двухпанельный layout с изменяемой шириной боковой панели и её fullscreen-режимом.",
+      "keywords": [
+        "split screen",
+        "resizable панель",
+        "мастер-детейл layout"
+      ]
     },
     {
       "name": "Table",
       "type": "standalone",
       "category": "Локальные компоненты",
-      "description": "HTML-таблица на базе react-table. Устаревшая, но поддерживается. Для новых проектов рекомендуется TableCanvas.",
+      "description": "Устаревшая HTML-таблица (react-data-grid); для новых проектов используйте TableCanvas.",
       "hint": "Устаревшая таблица. Если пользователь не уточняет — скорее всего ему нужна TableCanvas. Table — для legacy-проектов.",
       "rootDocs": "Table/Table.Docs.mdx",
       "api": {
@@ -354,14 +524,1029 @@
         "Table.virtualization",
         "Table.summaryRows"
       ],
-      "exclude": ["Table.contract", "Table.multipleFeatures"]
+      "exclude": [
+        "Table.contract",
+        "Table.multipleFeatures"
+      ],
+      "keywords": [
+        "табличные данные",
+        "деприкейтед таблица",
+        "react-data-grid"
+      ]
     },
     {
       "name": "TableTabs",
       "type": "standalone",
       "category": "Локальные компоненты",
-      "description": "Табличные вкладки для переключения между наборами данных.",
-      "hint": "Не путать с TableCanvas — это вкладки для переключения между таблицами."
+      "description": "Вкладки над таблицей для переключения между разными наборами табличных данных.",
+      "hint": "Не путать с TableCanvas — это вкладки для переключения между таблицами.",
+      "keywords": [
+        "табы для таблиц",
+        "переключение датасетов",
+        "tabs panel"
+      ]
+    },
+    {
+      "name": "AutocompleteSearch",
+      "type": "composition",
+      "category": "Композиции",
+      "description": "Поле поиска на основе Autocomplete с иконкой лупы, счётчиком найденного и пустым состоянием",
+      "keywords": [
+        "строка поиска",
+        "search field",
+        "поиск с автодополнением"
+      ]
+    },
+    {
+      "name": "Combobox",
+      "type": "wrapper",
+      "category": "Локальные компоненты",
+      "description": "Выпадающий список с поиском и мультивыбором значений в виде чипов",
+      "keywords": [
+        "автокомплит",
+        "мультиselect",
+        "поиск по списку"
+      ]
+    },
+    {
+      "name": "DatePicker",
+      "type": "wrapper",
+      "category": "Локальные компоненты",
+      "description": "Поле выбора одной даты со встроенным календарём и иконкой",
+      "keywords": [
+        "выбор даты",
+        "календарь",
+        "date input"
+      ]
+    },
+    {
+      "name": "FormAutocomplete",
+      "type": "form",
+      "category": "Формы",
+      "description": "Поле автодополнения с поиском по вариантам для форм на react-hook-form",
+      "keywords": [
+        "autocomplete",
+        "поиск по списку",
+        "подсказки ввода"
+      ]
+    },
+    {
+      "name": "FormCheckbox",
+      "type": "form",
+      "category": "Формы",
+      "description": "Чекбокс (одиночный или группа) для react-hook-form, без встроенной валидации",
+      "keywords": [
+        "флажок",
+        "checkbox group",
+        "выбор нескольких вариантов"
+      ]
+    },
+    {
+      "name": "FormCombobox",
+      "type": "form",
+      "category": "Формы",
+      "description": "Комбобокс с поиском и мультивыбором опций, интегрированный с react-hook-form",
+      "keywords": [
+        "combobox",
+        "мультиселект",
+        "поиск и выбор"
+      ]
+    },
+    {
+      "name": "FormDatePicker",
+      "type": "form",
+      "category": "Формы",
+      "description": "Выбор одной даты с валидацией формата и диапазона min/max для форм",
+      "keywords": [
+        "date picker",
+        "выбор даты",
+        "календарь в форме"
+      ]
+    },
+    {
+      "name": "FormDatePickerRange",
+      "type": "form",
+      "category": "Формы",
+      "description": "Выбор диапазона дат (от-до) с валидацией периода для react-hook-form",
+      "keywords": [
+        "date range",
+        "диапазон дат",
+        "период дат"
+      ]
+    },
+    {
+      "name": "FormMask",
+      "type": "form",
+      "category": "Формы",
+      "description": "Поле ввода по маске (телефон, карта и т.п.) с поддержкой чипов для форм",
+      "keywords": [
+        "маска ввода",
+        "input mask",
+        "форматированный ввод"
+      ]
+    },
+    {
+      "name": "FormNumberFormat",
+      "type": "form",
+      "category": "Формы",
+      "description": "Поле ввода чисел с форматированием (разряды, валюта) для react-hook-form",
+      "keywords": [
+        "числовой формат",
+        "number input",
+        "денежный ввод"
+      ]
+    },
+    {
+      "name": "FormRadiobox",
+      "type": "form",
+      "category": "Формы",
+      "description": "Одна радио-кнопка — элемент внутри группы FormRadioGroup для форм",
+      "keywords": [
+        "radio item",
+        "переключатель варианта",
+        "одиночный радио"
+      ]
+    },
+    {
+      "name": "FormRadioGroup",
+      "type": "form",
+      "category": "Формы",
+      "description": "Группа радио-кнопок с валидацией и подсказкой для форм react-hook-form",
+      "keywords": [
+        "radio group",
+        "выбор одного варианта",
+        "группа переключателей"
+      ]
+    },
+    {
+      "name": "FormSegmentGroup",
+      "type": "form",
+      "category": "Формы",
+      "description": "Сегментированный переключатель с одиночным или множественным выбором для форм",
+      "keywords": [
+        "segmented control",
+        "переключатель вкладок",
+        "выбор сегмента"
+      ]
+    },
+    {
+      "name": "FormSelect",
+      "type": "form",
+      "category": "Формы",
+      "description": "Выпадающий список с одиночным или множественным выбором для react-hook-form",
+      "keywords": [
+        "select",
+        "выпадающий список",
+        "мультиселект"
+      ]
+    },
+    {
+      "name": "FormSwitch",
+      "type": "form",
+      "category": "Формы",
+      "description": "Переключатель вкл/выкл для форм на react-hook-form, без встроенной валидации",
+      "keywords": [
+        "switch",
+        "тумблер",
+        "toggle"
+      ]
+    },
+    {
+      "name": "FormTextArea",
+      "type": "form",
+      "category": "Формы",
+      "description": "Многострочное текстовое поле со счётчиком символов и кнопкой очистки",
+      "keywords": [
+        "textarea",
+        "многострочный ввод",
+        "счётчик символов"
+      ]
+    },
+    {
+      "name": "FormTextField",
+      "type": "form",
+      "category": "Формы",
+      "description": "Однострочное текстовое поле с кнопкой очистки и выводом ошибки валидации",
+      "keywords": [
+        "text input",
+        "поле ввода текста",
+        "инпут с очисткой"
+      ]
+    },
+    {
+      "name": "IconButtonDots",
+      "type": "composition",
+      "category": "Локальные компоненты",
+      "description": "Кнопка с троеточием, открывающая выпадающее меню действий (Dropdown)",
+      "keywords": [
+        "меню действий",
+        "context menu button",
+        "dropdown trigger"
+      ]
+    },
+    {
+      "name": "IconButtonFilter",
+      "type": "composition",
+      "category": "Локальные компоненты",
+      "description": "Кнопка-иконка фильтра с индикатором активности и выпадающим меню фильтров",
+      "keywords": [
+        "filter button",
+        "кнопка фильтра",
+        "индикатор активных фильтров"
+      ]
+    },
+    {
+      "name": "IconSvgSprite",
+      "type": "standalone",
+      "category": "Локальные компоненты",
+      "description": "Иконка из SVG-спрайта по URL с поддержкой размеров xs/s/m",
+      "keywords": [
+        "иконка из спрайта",
+        "svg sprite icon",
+        "кастомная иконка"
+      ]
+    },
+    {
+      "name": "ListOfFilters",
+      "type": "composition",
+      "category": "Композиции",
+      "description": "Панель применённых фильтров в виде чипов с сворачиванием и сбросом",
+      "keywords": [
+        "применённые фильтры",
+        "filter chips",
+        "сброс фильтров"
+      ]
+    },
+    {
+      "name": "MassActionsButton",
+      "type": "composition",
+      "category": "Локальные компоненты",
+      "description": "Кнопка действия для панели MassActions с поддержкой выпадающего меню",
+      "keywords": [
+        "кнопка массового действия",
+        "action button dropdown"
+      ]
+    },
+    {
+      "name": "MassActionsCounter",
+      "type": "composition",
+      "category": "Локальные компоненты",
+      "description": "Счётчик выбранных строк с чекбоксом для панели MassActions",
+      "keywords": [
+        "счётчик выбранных",
+        "selection counter",
+        "чекбокс выбора всех"
+      ]
+    },
+    {
+      "name": "MassActionsStatic",
+      "type": "standalone",
+      "category": "Локальные компоненты",
+      "description": "Фиксированный контейнер для закрепления MassActions при скролле",
+      "keywords": [
+        "закрепление панели",
+        "sticky container",
+        "fixed position"
+      ]
+    },
+    {
+      "name": "NumberFormat",
+      "type": "wrapper",
+      "category": "Локальные компоненты",
+      "description": "Поле ввода с форматированием чисел (разделители, десятичные) и кнопкой очистки",
+      "keywords": [
+        "форматированное число",
+        "разделители разрядов",
+        "числовая маска"
+      ]
+    },
+    {
+      "name": "NumberFormatAmount",
+      "type": "standalone",
+      "category": "Локальные компоненты",
+      "description": "Поле ввода денежной суммы с крупным стилизованным шрифтом",
+      "keywords": [
+        "ввод суммы",
+        "amount input",
+        "денежное поле"
+      ]
+    },
+    {
+      "name": "TableGlideInstance",
+      "type": "composition",
+      "category": "Локальные компоненты",
+      "description": "Внутренний адаптер TableGlide под контексты Table/TableCanvas: колонки, меню, оверлеи.",
+      "keywords": [
+        "интеграция таблицы",
+        "canvas grid adapter",
+        "колонки таблицы"
+      ]
+    },
+    {
+      "name": "TableContract",
+      "type": "composition",
+      "category": "Композиции",
+      "description": "Таблица с автозагрузкой данных с бэкенда, поиском, фильтрами и редактированием строк.",
+      "keywords": [
+        "серверные данные",
+        "SWR таблица",
+        "API-таблица"
+      ]
+    },
+    {
+      "name": "TableGlide",
+      "type": "standalone",
+      "category": "Локальные компоненты",
+      "description": "Кастомный canvas-грид на Glide Data Grid: выделение, контекстное меню, редактирование.",
+      "keywords": [
+        "canvas-таблица",
+        "glide grid",
+        "низкоуровневая таблица"
+      ]
+    },
+    {
+      "name": "TourWidget",
+      "type": "composition",
+      "category": "Композиции",
+      "description": "Карточка шага тура: шапка, контент, буллеты — без логики сценария.",
+      "keywords": [
+        "карточка тура",
+        "онбординг",
+        "степ-виджет"
+      ]
+    },
+    {
+      "name": "Typography",
+      "type": "wrapper",
+      "category": "Локальные компоненты",
+      "description": "Универсальная обёртка над всеми размерами шрифтов SDDS через проп variant.",
+      "keywords": [
+        "типографика",
+        "шрифты",
+        "текстовые стили"
+      ]
+    },
+    {
+      "name": "TypographyWithAutoTooltip",
+      "type": "standalone",
+      "category": "Локальные компоненты",
+      "description": "Текст с автопоказом тултипа при обрезке — удобно для длинных значений.",
+      "keywords": [
+        "обрезанный текст",
+        "text overflow",
+        "ellipsis"
+      ]
+    },
+    {
+      "name": "DrawerDFContent",
+      "type": "composition",
+      "category": "Локальные компоненты",
+      "description": "Прокручиваемая область содержимого DrawerDF с отступами и фиксированной шириной блока",
+      "keywords": [
+        "контент шторки",
+        "scrollable content",
+        "тело drawer"
+      ]
+    },
+    {
+      "name": "DrawerDFFooter",
+      "type": "composition",
+      "category": "Локальные компоненты",
+      "description": "Нижний блок DrawerDF для кнопок и действий, закреплённый под содержимым",
+      "keywords": [
+        "футер шторки",
+        "кнопки внизу панели",
+        "drawer footer"
+      ]
+    },
+    {
+      "name": "DrawerDFHeader",
+      "type": "composition",
+      "category": "Локальные компоненты",
+      "description": "Шапка DrawerDF: заголовок, подзаголовок, бейдж и дополнительный блок справа",
+      "keywords": [
+        "шапка шторки",
+        "заголовок панели",
+        "drawer header"
+      ]
+    },
+    {
+      "name": "FiltersActionsDotsIconButton",
+      "type": "wrapper",
+      "category": "Локальные компоненты",
+      "description": "Кнопка с иконкой троеточия и выпадающим меню доп. действий в панели фильтров",
+      "keywords": [
+        "доп действия",
+        "кнопка меню",
+        "overflow menu"
+      ]
+    },
+    {
+      "name": "FiltersActionsFiltersButton",
+      "type": "wrapper",
+      "category": "Локальные компоненты",
+      "description": "Кнопка «Ещё фильтры» с индикатором активных условий для панели фильтров и действий",
+      "keywords": [
+        "ещё фильтры",
+        "открыть панель фильтров",
+        "filter button"
+      ]
+    },
+    {
+      "name": "FiltersActionsListOfFilters",
+      "type": "standalone",
+      "category": "Локальные компоненты",
+      "description": "Список выбранных фильтров в виде чипов с группировкой, подгружается лениво",
+      "keywords": [
+        "чипы фильтров",
+        "активные фильтры",
+        "filter chips"
+      ]
+    },
+    {
+      "name": "FiltersActionsTabItem",
+      "type": "wrapper",
+      "category": "Локальные компоненты",
+      "description": "Пункт вкладки для переключения наборов фильтров в панели фильтров и действий",
+      "keywords": [
+        "пункт вкладки",
+        "переключатель фильтров",
+        "tab item"
+      ],
+      "role": "part"
+    },
+    {
+      "name": "FiltersActionsTabs",
+      "type": "wrapper",
+      "category": "Локальные компоненты",
+      "description": "Контейнер вкладок для переключения между наборами фильтров и действий",
+      "keywords": [
+        "вкладки фильтров",
+        "переключение наборов",
+        "filter tabs"
+      ],
+      "role": "part"
+    },
+    {
+      "name": "LeftPanelToggleButton",
+      "type": "standalone",
+      "category": "Локальные компоненты",
+      "description": "Кнопка сворачивания и разворачивания бокового меню LeftPanel",
+      "keywords": [
+        "свернуть меню",
+        "collapse sidebar",
+        "кнопка сворачивания"
+      ]
+    },
+    {
+      "name": "ModalDFBackIconButton",
+      "type": "wrapper",
+      "category": "Локальные компоненты",
+      "description": "Круглая кнопка «Назад» в шапке ModalDF для возврата на предыдущий шаг",
+      "keywords": [
+        "кнопка назад",
+        "навигация в модалке",
+        "back button"
+      ]
+    },
+    {
+      "name": "ModalDFContent",
+      "type": "standalone",
+      "category": "Локальные компоненты",
+      "description": "Прокручиваемая область основного содержимого ModalDF",
+      "keywords": [
+        "тело модалки",
+        "скролл содержимого",
+        "modal content"
+      ]
+    },
+    {
+      "name": "ModalDFDivider",
+      "type": "wrapper",
+      "category": "Локальные компоненты",
+      "description": "Вертикальный разделитель между дополнительным блоком и служебными кнопками шапки ModalDF",
+      "keywords": [
+        "разделитель шапки",
+        "vertical divider",
+        "разделитель кнопок"
+      ]
+    },
+    {
+      "name": "ModalDFDotsIconButton",
+      "type": "wrapper",
+      "category": "Локальные компоненты",
+      "description": "Кнопка с иконкой троеточия и выпадающим меню доп. действий в шапке ModalDF",
+      "keywords": [
+        "доп меню модалки",
+        "overflow menu",
+        "кнопка троеточие"
+      ]
+    },
+    {
+      "name": "ModalDFFooter",
+      "type": "standalone",
+      "category": "Локальные компоненты",
+      "description": "Нижняя панель ModalDF с раздельными зонами для левой и правой групп кнопок",
+      "keywords": [
+        "футер модалки",
+        "кнопки подтверждения",
+        "modal footer"
+      ]
+    },
+    {
+      "name": "ModalDFHeader",
+      "type": "composition",
+      "category": "Локальные компоненты",
+      "description": "Шапка ModalDF: заголовок, бейдж, кнопка назад и кнопки закрытия/полноэкрана",
+      "keywords": [
+        "шапка модалки",
+        "заголовок окна",
+        "modal header"
+      ]
+    },
+    {
+      "name": "ModalDFLeft",
+      "type": "standalone",
+      "category": "Локальные компоненты",
+      "description": "Левая боковая колонка двухпанельного макета ModalDF, например для меню шагов",
+      "keywords": [
+        "боковая панель модалки",
+        "sidebar",
+        "левая колонка"
+      ]
+    },
+    {
+      "name": "ModalDFMain",
+      "type": "standalone",
+      "category": "Локальные компоненты",
+      "description": "Основная колонка ModalDF со своим скроллом, вмещает шапку, контент и футер",
+      "keywords": [
+        "основная область модалки",
+        "правая колонка",
+        "main panel"
+      ]
+    },
+    {
+      "name": "ModalDFServiceButtons",
+      "type": "composition",
+      "category": "Локальные компоненты",
+      "description": "Группа служебных кнопок ModalDF: переключение полноэкранного режима и закрытие",
+      "keywords": [
+        "полноэкранный режим",
+        "кнопка закрытия окна",
+        "service buttons"
+      ]
+    },
+    {
+      "name": "ModalDFConfirmationFooter",
+      "type": "wrapper",
+      "category": "Локальные компоненты",
+      "description": "Нижняя панель кнопок подтверждающего модального окна ModalDFConfirmation",
+      "keywords": [
+        "кнопки подтверждения",
+        "footer диалога",
+        "confirm dialog buttons"
+      ]
+    },
+    {
+      "name": "PopoverDFBody",
+      "type": "standalone",
+      "category": "Локальные компоненты",
+      "description": "Область содержимого всплывающего окна PopoverDF с настройкой размеров и отступов",
+      "keywords": [
+        "тело поповера",
+        "содержимое всплывающего окна",
+        "popover content"
+      ]
+    },
+    {
+      "name": "PopoverDFFooter",
+      "type": "standalone",
+      "category": "Локальные компоненты",
+      "description": "Нижний блок всплывающего окна PopoverDF для кнопок и действий",
+      "keywords": [
+        "футер поповера",
+        "кнопки в поповере",
+        "popover footer"
+      ]
+    },
+    {
+      "name": "PopoverDFHeader",
+      "type": "composition",
+      "category": "Локальные компоненты",
+      "description": "Шапка PopoverDF: заголовок, описание, кнопка закрытия и нижний доп. блок",
+      "keywords": [
+        "шапка поповера",
+        "заголовок всплывающего окна",
+        "popover header"
+      ]
+    },
+    {
+      "name": "PopupDFBody",
+      "type": "standalone",
+      "category": "Локальные компоненты",
+      "description": "Область содержимого всплывающего окна PopupDF с настройкой размеров и отступов",
+      "keywords": [
+        "тело попапа",
+        "содержимое всплывающего окна",
+        "popup content"
+      ]
+    },
+    {
+      "name": "PopupDFFooter",
+      "type": "standalone",
+      "category": "Локальные компоненты",
+      "description": "Нижний блок всплывающего окна PopupDF для кнопок и действий",
+      "keywords": [
+        "футер попапа",
+        "кнопки в попапе",
+        "popup footer"
+      ]
+    },
+    {
+      "name": "PopupDFHeader",
+      "type": "composition",
+      "category": "Локальные компоненты",
+      "description": "Шапка PopupDF: заголовок, описание, кнопка назад, доп. блок и кнопка закрытия",
+      "keywords": [
+        "шапка попапа",
+        "заголовок с кнопкой назад",
+        "popup header"
+      ]
+    },
+    {
+      "name": "StoriesPreview",
+      "type": "composition",
+      "category": "Локальные компоненты",
+      "description": "Превью-аватар одной истории с кольцом непрочитанного и подписью, открывает просмотр",
+      "keywords": [
+        "аватар истории",
+        "preview триггер",
+        "открыть сторис",
+        "кольцо просмотра"
+      ]
+    },
+    {
+      "name": "TourWidgetBullet",
+      "type": "standalone",
+      "category": "Локальные компоненты",
+      "description": "Одна точка-индикатор шага степпера TourWidget, подсвечивается при активном шаге",
+      "keywords": [
+        "точка степпера",
+        "step indicator",
+        "активный шаг"
+      ]
+    },
+    {
+      "name": "TourWidgetBullets",
+      "type": "standalone",
+      "category": "Локальные компоненты",
+      "description": "Ряд точек-пагинации шагов TourWidget с прокруткой окна вокруг активного шага",
+      "keywords": [
+        "пагинация шагов",
+        "carousel dots",
+        "прогресс тура"
+      ]
+    },
+    {
+      "name": "TourWidgetContent",
+      "type": "standalone",
+      "category": "Локальные компоненты",
+      "description": "Слот основного контента карточки-подсказки TourWidget (текст, медиа)",
+      "keywords": [
+        "контент подсказки",
+        "слот описания",
+        "onboarding content"
+      ]
+    },
+    {
+      "name": "TourWidgetFooter",
+      "type": "standalone",
+      "category": "Локальные компоненты",
+      "description": "Слот футера карточки TourWidget, обычно с кнопками навигации по туру",
+      "keywords": [
+        "кнопки навигации",
+        "footer тура",
+        "onboarding actions"
+      ]
+    },
+    {
+      "name": "TourWidgetHeader",
+      "type": "standalone",
+      "category": "Локальные компоненты",
+      "description": "Заголовок и описание карточки-подсказки TourWidget",
+      "keywords": [
+        "заголовок подсказки",
+        "onboarding title",
+        "описание шага"
+      ]
+    },
+    {
+      "name": "WidgetContent",
+      "type": "composition",
+      "category": "Локальные компоненты",
+      "description": "Прокручиваемая центральная область контента внутри карточки Widget",
+      "keywords": [
+        "скролл контента",
+        "тело карточки",
+        "widget body"
+      ]
+    },
+    {
+      "name": "WidgetDivider",
+      "type": "wrapper",
+      "category": "Локальные компоненты",
+      "description": "Вертикальный разделитель 16px между блоками в шапке карточки Widget",
+      "keywords": [
+        "разделитель шапки",
+        "vertical divider",
+        "header widget"
+      ]
+    },
+    {
+      "name": "WidgetFooter",
+      "type": "composition",
+      "category": "Локальные компоненты",
+      "description": "Футер карточки Widget со слотами left/right/top блоков и верхним разделителем",
+      "keywords": [
+        "футер карточки",
+        "action slots",
+        "widget actions"
+      ]
+    },
+    {
+      "name": "WidgetHeader",
+      "type": "composition",
+      "category": "Локальные компоненты",
+      "description": "Шапка Widget: заголовок, бейдж, кнопка назад, разворот на весь экран, закрытие",
+      "keywords": [
+        "шапка карточки",
+        "заголовок с бейджем",
+        "fullscreen toggle"
+      ]
+    },
+    {
+      "name": "WidgetIconButtonBack",
+      "type": "wrapper",
+      "category": "Локальные компоненты",
+      "description": "Кнопка «назад» (стрелка) в шапке Widget для возврата к предыдущему экрану",
+      "keywords": [
+        "кнопка назад",
+        "back navigation",
+        "возврат на экран"
+      ]
+    },
+    {
+      "name": "WidgetIconButtonDots",
+      "type": "composition",
+      "category": "Локальные компоненты",
+      "description": "Кнопка-«три точки» для вызова контекстного меню в шапке Widget",
+      "keywords": [
+        "контекстное меню",
+        "три точки",
+        "dots menu"
+      ]
+    },
+    {
+      "name": "WidgetServiceButtons",
+      "type": "composition",
+      "category": "Локальные компоненты",
+      "description": "Группа сервисных кнопок Widget: разворот на весь экран и закрытие окна",
+      "keywords": [
+        "сервисные кнопки",
+        "закрыть окно",
+        "fullscreen controls"
+      ]
+    },
+    {
+      "name": "RedDot",
+      "type": "standalone",
+      "category": "Локальные компоненты",
+      "description": "Красная точка-индикатор активных фильтров, позиционируется в углу кнопки",
+      "keywords": [
+        "индикатор фильтров",
+        "активный фильтр",
+        "красная метка"
+      ]
+    },
+    {
+      "name": "ControlBlockSwitch",
+      "type": "composition",
+      "category": "Локальные компоненты",
+      "description": "Неактивный переключатель-индикатор состояния в управляющем блоке строки Table",
+      "keywords": [
+        "индикатор переключателя",
+        "readonly switch",
+        "статус строки"
+      ]
+    },
+    {
+      "name": "NoRowsFallback",
+      "type": "composition",
+      "category": "Локальные компоненты",
+      "description": "Заглушка «нет данных» с картинкой и текстом для пустой таблицы Table",
+      "keywords": [
+        "пустое состояние",
+        "нет данных",
+        "empty state таблицы"
+      ]
+    },
+    {
+      "name": "CellEditorCombobox",
+      "type": "wrapper",
+      "category": "Локальные компоненты",
+      "description": "Редактор ячейки TableCanvas на основе Combobox — выбор значения из списка",
+      "keywords": [
+        "редактирование ячейки",
+        "выбор из списка",
+        "inline editing"
+      ]
+    },
+    {
+      "name": "CellEditorNumberFormat",
+      "type": "wrapper",
+      "category": "Локальные компоненты",
+      "description": "Редактор ячейки TableCanvas для чисел с маской формата и разделителями",
+      "keywords": [
+        "ввод чисел",
+        "маска формата",
+        "числовой редактор"
+      ]
+    },
+    {
+      "name": "CellEditorTextArea",
+      "type": "standalone",
+      "category": "Локальные компоненты",
+      "description": "Редактор ячейки TableCanvas на основе автоувеличивающегося текстового поля",
+      "keywords": [
+        "текстовый редактор ячейки",
+        "многострочный ввод",
+        "inline text edit"
+      ]
+    },
+    {
+      "name": "ContainerStyled",
+      "type": "composition",
+      "category": "Локальные компоненты",
+      "description": "Корневой контейнер TableCanvas: полноэкранный режим, сворачивание, скругления углов",
+      "keywords": [
+        "контейнер таблицы",
+        "fullscreen режим",
+        "сворачивание таблицы"
+      ]
+    },
+    {
+      "name": "SplitIconButton",
+      "type": "composition",
+      "category": "Локальные компоненты",
+      "description": "Сплит-кнопка: иконка основного действия и шеврон с дропдауном для слотов TableCanvas",
+      "keywords": [
+        "сплит-кнопка",
+        "split button",
+        "иконка с дропдауном"
+      ]
+    },
+    {
+      "name": "TableFilterSelectListItem",
+      "type": "composition",
+      "category": "Локальные компоненты",
+      "description": "Пункт списка выпадающего фильтра колонки TableCanvas для выбора значения",
+      "keywords": [
+        "пункт фильтра",
+        "элемент списка",
+        "выбор значения колонки"
+      ]
+    },
+    {
+      "name": "Canvas",
+      "type": "standalone",
+      "category": "Локальные компоненты",
+      "description": "JSX-набор примитивов (Container, Text, Icon, Button…) для кастомного контента ячеек TableGlide",
+      "keywords": [
+        "кастомная ячейка",
+        "canvas rendering",
+        "custom cell content"
+      ]
+    },
+    {
+      "name": "CanvasBadge",
+      "type": "standalone",
+      "category": "Локальные компоненты",
+      "description": "Значок-бейдж (текст+иконки) для отрисовки в canvas-ячейках TableGlide",
+      "keywords": [
+        "метка статуса",
+        "лейбл",
+        "status label"
+      ]
+    },
+    {
+      "name": "CanvasButton",
+      "type": "standalone",
+      "category": "Локальные компоненты",
+      "description": "Кнопка с текстом и иконками для canvas-ячеек TableGlide (аналог Button)",
+      "keywords": [
+        "кнопка в ячейке",
+        "canvas action button",
+        "интерактивная ячейка"
+      ]
+    },
+    {
+      "name": "CanvasContainer",
+      "type": "standalone",
+      "category": "Локальные компоненты",
+      "description": "Flex-контейнер сцены canvas TableGlide: layout, отступы, фон, клики по ячейке",
+      "keywords": [
+        "флекс-layout",
+        "canvas flexbox",
+        "верстка ячейки"
+      ]
+    },
+    {
+      "name": "CanvasEmbedIconButton",
+      "type": "standalone",
+      "category": "Локальные компоненты",
+      "description": "Квадратная icon-кнопка (embed-стиль) для canvas-ячеек TableGlide с кастомными цветами",
+      "keywords": [
+        "встроенная кнопка",
+        "icon action",
+        "квадратная кнопка"
+      ]
+    },
+    {
+      "name": "CanvasIcon",
+      "type": "standalone",
+      "category": "Локальные компоненты",
+      "description": "Отрисовка иконки заданного размера и цвета в canvas-ячейке TableGlide",
+      "keywords": [
+        "иконка в ячейке",
+        "canvas icon",
+        "пиктограмма"
+      ]
+    },
+    {
+      "name": "CanvasIconButton",
+      "type": "standalone",
+      "category": "Локальные компоненты",
+      "description": "Icon-кнопка с hover/click для canvas-ячеек TableGlide (аналог IconButton)",
+      "keywords": [
+        "кнопка-иконка",
+        "icon action button"
+      ]
+    },
+    {
+      "name": "CanvasLink",
+      "type": "wrapper",
+      "category": "Локальные компоненты",
+      "description": "Ссылка с подчёркиванием и переходом по href внутри canvas-ячейки TableGlide",
+      "keywords": [
+        "гиперссылка",
+        "переход по клику",
+        "canvas hyperlink"
+      ]
+    },
+    {
+      "name": "CanvasNode",
+      "type": "standalone",
+      "category": "Локальные компоненты",
+      "description": "Базовый класс узла canvas-сцены TableGlide: layout, hit-test, отрисовка, события",
+      "keywords": [
+        "сцена рендеринга",
+        "scene graph",
+        "хит-тест"
+      ]
+    },
+    {
+      "name": "CanvasRect",
+      "type": "standalone",
+      "category": "Локальные компоненты",
+      "description": "Прямоугольник с заливкой и рамкой — примитив фона/разделителя в canvas-ячейке",
+      "keywords": [
+        "фон ячейки",
+        "разделитель",
+        "прямоугольник"
+      ]
+    },
+    {
+      "name": "CanvasText",
+      "type": "standalone",
+      "category": "Локальные компоненты",
+      "description": "Текстовый узел canvas TableGlide: перенос строк, ellipsis, авто-тултип при обрезке",
+      "keywords": [
+        "перенос текста",
+        "обрезка текста",
+        "многострочный текст"
+      ]
+    },
+    {
+      "name": "RootBridge",
+      "type": "standalone",
+      "category": "Локальные компоненты",
+      "description": "Служебный мост React→registry контента ячеек для canvas-рендерера TableGlide",
+      "keywords": [
+        "реестр контента ячеек",
+        "cell registry",
+        "рендер моста"
+      ]
     }
   ]
 }

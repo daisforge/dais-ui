@@ -66,6 +66,20 @@ export interface SimpleComponentConfig {
 
   /** Подсказка агенту: чем отличается от похожих компонентов */
   hint?: string;
+
+  /**
+   * 2-4 синонима задачи (ru/en) для поиска в search_components — формулировка
+   * задачи, а не имени компонента: Calendar -> ["выбор даты", "date range", "календарь"].
+   */
+  keywords?: string[];
+
+  /**
+   * Оверрайд роли экспорта относительно папки (primary/part/internal) —
+   * curated wins over heuristic, см. packages/mcp-server/src/indexer/classifyRole.ts
+   * (TASKS.md T11). Нужен только для случаев, не покрытых механическим
+   * списком структурных слотов (например FiltersActionsTabs/FiltersActionsTabItem).
+   */
+  role?: 'primary' | 'part' | 'internal';
 }
 
 /** Конфигурация сложного компонента (TableCanvas и подобные) */

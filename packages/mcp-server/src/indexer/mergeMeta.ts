@@ -62,6 +62,9 @@ export function mergeMeta(
       ? { description: componentMeta.description }
       : {}),
     ...(componentMeta.hint ? { hint: componentMeta.hint } : {}),
+    ...(componentMeta.keywords?.length
+      ? { keywords: componentMeta.keywords }
+      : {}),
     ...(componentMeta.scope ? { scope: componentMeta.scope } : {}),
     ...(componentMeta.docs ? { docs: componentMeta.docs } : {}),
     ...(componentMeta.apiDocs ? { apiDocs: componentMeta.apiDocs } : {}),

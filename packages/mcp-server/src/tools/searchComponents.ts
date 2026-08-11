@@ -69,6 +69,7 @@ function scoreComponent(component: ComponentRecord, words: string[]): number {
   const name = component.name.toLowerCase();
   const hint = (component.hint || '').toLowerCase();
   const description = (component.description || '').toLowerCase();
+  const keywords = (component.keywords || []).join(' ').toLowerCase();
   const docs = (component.docs || '').toLowerCase();
   const category = (component.category || '').toLowerCase();
 
@@ -77,6 +78,7 @@ function scoreComponent(component: ComponentRecord, words: string[]): number {
     if (name === w) score += 100;
     else if (name.includes(w)) score += 15;
     if (includesPositively(hint, w)) score += 20;
+    if (includesPositively(keywords, w)) score += 20;
     if (includesPositively(description, w)) score += 10;
     if (docs.includes(w)) score += 4;
     if (category.includes(w)) score += 2;
@@ -135,6 +137,7 @@ interface ComponentResult {
   category?: string;
   description?: string;
   hint?: string;
+  keywords?: string[];
   legacy?: true;
   /** Только для 'part'/'internal' — 'primary' (подавляющее большинство хитов) не несёт поля. */
   role?: 'part' | 'internal';
@@ -200,6 +203,7 @@ export function searchComponents(
         category: hit.record.category,
         description: hit.record.description,
         hint: hit.record.hint,
+        keywords: hit.record.keywords,
         legacy: hit.record.legacy || undefined,
         role: hit.record.role !== 'primary' ? hit.record.role : undefined,
         parentComponent: hit.record.parentComponent,

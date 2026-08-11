@@ -1,6 +1,6 @@
 # @daisforge/ui-mcp
 
-MCP-сервер для `@daisforge/ui` — даёт кодовому агенту точные пропсы, типы, категории (wrapper/composition/standalone/form) и примеры для 260+ компонентов библиотеки, а не только для 36 задокументированных в Storybook.
+MCP-сервер для `@daisforge/ui` — даёт кодовому агенту точные пропсы, типы, категории (wrapper/composition/standalone/form) и примеры для 260+ компонентов библиотеки, а не только для ~40 задокументированных в Storybook. `description`/`category`/`keywords` для выбора компонента под задачу заполнены у всех 243 неошибочных записей индекса (T2), не только у тех, что описаны в Storybook.
 
 ## Быстрый старт
 
@@ -21,9 +21,9 @@ MCP-сервер для `@daisforge/ui` — даёт кодовому агент
 
 ## Инструменты
 
-- `list_components({ type?, category?, scope?, role?, limit?, offset? })` — ответ `{ items, shown, total, hasMore?, truncationNotice? }`. По умолчанию отдаёт только `role: "primary"` (~177 из 243 компонентов) — слоты вроде `DrawerDFHeader` и служебные примитивы вроде `CanvasRect` скрыты; `role: "all"` снимает фильтр. Без `limit` список сам бюджетируется под лимит ответа: если не влезли все компоненты, `truncationNotice` объясняет, чем добрать остаток (фильтры или `limit`/`offset`)
-- `search_components({ query })` — ищет и по компонентам, и по фичам (TableCanvas/Filtering и т.п.); `role: "internal"` понижается штрафом, но не исключается
-- `get_component({ name })` — компактная карточка. У `part`/`internal`-записей — `parentComponent` (куда идти за деталями); у владельца папки — `relatedExports` (какие части/внутренние примитивы у него есть, раз их не видно в `list_components` по умолчанию); у записей, дублирующих compound-часть родителя (`compoundPartOf`), пропсы не повторяются — карточка сразу отсылает к `get_component_props({ name: parent, part })`
+- `list_components({ type?, category?, scope?, role?, limit?, offset? })` — ответ `{ items, shown, total, hasMore?, truncationNotice? }`. По умолчанию отдаёт только `role: "primary"` (~177 из 243 компонентов) — слоты вроде `DrawerDFHeader` и служебные примитивы вроде `CanvasRect` скрыты; `role: "all"` снимает фильтр. Каждый элемент несёт `description`/`category` (100% покрытие, см. T2 в `TASKS.MD`); `keywords` в этом компактном списке **не** дублируются — они участвуют в скоринге `search_components`, а не в беглом обзоре. Без `limit` список сам бюджетируется под лимит ответа: с полными description/category у всех 177 primary-компонентов за один вызов без фильтров помещается ~120 из них — это ожидаемо (не баг), `truncationNotice` объясняет, чем добрать остаток (фильтры или `limit`/`offset`)
+- `search_components({ query })` — ищет и по компонентам, и по фичам (TableCanvas/Filtering и т.п.); скорит `hint`, `keywords` (2-4 синонима задачи на ru/en на компонент) и `description` — `keywords` весят наравне с `hint` (+20); `role: "internal"` понижается штрафом, но не исключается
+- `get_component({ name })` — компактная карточка, несёт `description`/`category`/`keywords`. У `part`/`internal`-записей — `parentComponent` (куда идти за деталями); у владельца папки — `relatedExports` (какие части/внутренние примитивы у него есть, раз их не видно в `list_components` по умолчанию); у записей, дублирующих compound-часть родителя (`compoundPartOf`), пропсы не повторяются — карточка сразу отсылает к `get_component_props({ name: parent, part })`
 - `get_component_props({ name, part? })` — полные пропсы (собственные + унаследованные от атома)
 - `get_component_examples({ name, title? })`
 - `list_features({ component })`, `get_feature({ component, feature })`, `get_feature_examples({ component, feature, title? })`
@@ -81,6 +81,15 @@ npm run generate-mcp-data
 # в dais/ui
 npm run mcp:vendor-atomic -- --source /путь/к/plasma/website/sdds-finai-docs/mcpData
 ```
+
+## Курированные данные каталога (description/category/keywords)
+
+Индексер сам находит компоненты, пропсы и типы из исходников, но `description`/`category`/`keywords` — курированный контент, у которого два независимых редактируемых источника (оба читаются на этапе `mcp:build-index`, сами по себе НЕ индексер):
+
+1. **`generators/meta-info/config/meta-config.json`** (поле `components`) — для компонентов с собственным кодом в `ui-kit` (wrapper/composition/standalone с реальной логикой поверх атома или самостоятельной реализацией). Этот файл — вход генератора `npm run meta` (`generators/meta-info/generate-meta.js`), который пишет `_docs/meta/components-meta.json`. **`_docs/meta/components-meta.json` — build-артефакт, полностью перезаписывается при каждом `npm run meta` — редактировать его руками нельзя**, правки делаются только в `meta-config.json`. `mergeMeta.ts` читает уже сгенерированный `_docs/meta/components-meta.json`.
+2. **`packages/mcp-server/vendor/atomic-curated-meta.json`** — для компонентов без единой строчки собственного кода: чистых реэкспортов атомов `@salutejs/sdds-finai` (`export { X } from '@salutejs/sdds-finai'`). У них нет ни JSDoc, ни своей Storybook-страницы, поэтому `generators/meta-info` их не видит в принципе (резолвит по папке в `packages/storybook/src/stories/<Name>/`, которой у реэкспортов нет). Читается напрямую через `mergeAtomicCuratedMeta.ts`, идёт сразу за `mergeMeta` в пайплайне `buildIndex.ts` — независимый источник, не проходит через генератор `npm run meta`.
+
+Оба источника — "curated wins": непустое значение перекрывает то, что нашёл индексер сам (JSDoc-описание, эвристику `category`).
 
 ## Известные ограничения v1
 

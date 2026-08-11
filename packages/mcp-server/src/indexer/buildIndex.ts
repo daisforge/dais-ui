@@ -19,6 +19,7 @@ import { discoverComponents } from './discoverComponents.js';
 import { getDenylistMap } from './htmlAttributeDenylist.js';
 import { buildFeatureIndex } from './indexFeatures.js';
 import { buildTypeIndex } from './indexTypes.js';
+import { mergeAtomicCuratedMeta } from './mergeAtomicCuratedMeta.js';
 import { mergeAtomicData } from './mergeAtomicData.js';
 import { getInstallationGuide, mergeMeta } from './mergeMeta.js';
 import { isParsedComponent, parseComponent } from './parseComponent.js';
@@ -180,6 +181,11 @@ function buildComponentRecords(): WorkingComponentRecord[] {
   linkFormVariants(records);
 
   records = records.map((r) => (r.error ? r : mergeMeta(r)));
+  // mergeAtomicCuratedMeta — второй, независимый curated-источник: покрывает
+  // компоненты без собственного кода в ui-kit (чистые реэкспорты атомов),
+  // которых mergeMeta (_docs/meta/components-meta.json) не видит вообще —
+  // см. TASKS.md T2 и комментарий в mergeAtomicCuratedMeta.ts.
+  records = records.map((r) => (r.error ? r : mergeAtomicCuratedMeta(r)));
   // После mergeMeta — курированный role-оверрайд (curated wins over
   // heuristic) уже применён, parentComponent/relatedExports должны считаться
   // от финальной роли, а не от эвристики classifyRole в исходном виде.

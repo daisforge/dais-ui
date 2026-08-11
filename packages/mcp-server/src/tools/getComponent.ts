@@ -16,6 +16,7 @@ interface GetComponentPayload {
   category?: string;
   description?: string;
   hint?: string;
+  keywords?: string[];
   importStatement: string;
   deprecated?: true;
   deprecationReason?: string;
@@ -130,6 +131,7 @@ export function getComponent(
     category: record.category,
     description: record.description || undefined,
     hint: record.hint || undefined,
+    keywords: record.keywords,
     importStatement: record.importStatement,
     deprecated: record.deprecated || undefined,
     deprecationReason: record.deprecationReason,
