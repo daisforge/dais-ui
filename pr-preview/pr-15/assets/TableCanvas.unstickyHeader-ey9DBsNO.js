@@ -1,0 +1,14 @@
+import{j as t}from"./react-D2T61mpp.js";import{c2 as n,c3 as e,bY as s}from"./vendor-CV0MVVDJ.js";import{T as m}from"./TableCanvas.unstickyHeader.stories-Dn4nokyy.js";import"./react-is-Clcustum.js";import"./styled-components-hCehVAWp.js";import"./tslib-De9GV7Vy.js";import"./tableData-UCfjiBCh.js";import"./DocStoryTemplate-CiJvtnff.js";import"./storySourceDoc-tVKyHcEN.js";import"./TableCanvas-CGowkKdM.js";import"./FiltersActions-DAuoKCPb.js";import"./IconButton-CODpfw5D.js";import"./@salutejs/plasma-icons-DZ_o-Gth.js";import"./@salutejs/sdds-finai-B-0ptCmf.js";import"./@salutejs/sdds-themes-DMMPng_c.js";import"./utils-C0WMdwDu.js";import"./constants-B3b49qmU.js";import"./sharedUtilsDebug-BX_KjCjW.js";import"./Box-DsmSYh_i.js";import"./TextField--fwN14Bg.js";import"./sharedUtilsInputs-GU7HwQ4Q.js";import"./AnalyticalWidget-D-6CFbtI.js";import"./Collapse-DhcWvyuO.js";import"./Table-DNt0LgGn.js";import"./react-data-grid-D7tRzmcy.js";import"./TableTabs-CIYAJ1UT.js";import"./TableCanvasSharedConstants-D5ZJAqGq.js";import"./sharedUiSearch-B7Cebhwz.js";import"./ListOfFilters-C27o4A3x.js";import"./lodash.isequal-DD0Lfcik.js";import"./NumberFormat-CusDtrAa.js";import"./EmptyState-DhMxOtV6.js";import"./MassActions-B3g5ldSI.js";import"./Autocomplete-BQFFOFMH.js";import"./TableGlide-eXKr1WHE.js";import"./@glideappsfinal/glide-data-grid-CJFuPjDQ.js";import"./canvas-hypertxt-DsokSIOX.js";import"./ErrorPage-CNJabVJT.js";function i(o){const r={a:"a",blockquote:"blockquote",code:"code",h1:"h1",h2:"h2",li:"li",p:"p",strong:"strong",ul:"ul",...n(),...o.components};return t.jsxs(t.Fragment,{children:[t.jsx(e,{of:m,name:"Docs"}),`
+`,t.jsx(r.h1,{id:"unstickyheader-tablecanvas",children:"UnstickyHeader (TableCanvas)"}),`
+`,t.jsx(r.p,{children:t.jsx(r.strong,{children:"tableConfig.unstickyHeader"})}),`
+`,t.jsxs(r.p,{children:["При активации ",t.jsx(r.code,{children:"unstickyHeader: true"})," шапка таблицы перестаёт быть закреплённой и уезжает вверх вместе со скроллом контента."]}),`
+`,t.jsx(r.h2,{id:"ключевые-особенности",children:"Ключевые особенности"}),`
+`,t.jsxs(r.ul,{children:[`
+`,t.jsx(r.li,{children:"Открепление шапки от верхней границы при скролле"}),`
+`,t.jsx(r.li,{children:"Работает с группировкой колонок (все уровни group headers уезжают)"}),`
+`,t.jsx(r.li,{children:"Совместимость с многоуровневой вложенностью"}),`
+`]}),`
+`,t.jsxs(r.blockquote,{children:[`
+`,t.jsxs(r.p,{children:["Подробнее о типах — ",t.jsx(r.a,{href:"?path=/docs/%D0%BB%D0%BE%D0%BA%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D1%8B-tablecanvas-unstickyheader-api--docs",children:"UnstickyHeader API"})]}),`
+`]}),`
+`,t.jsx(s,{})]})}function K(o={}){const{wrapper:r}={...n(),...o.components};return r?t.jsx(r,{...o,children:t.jsx(i,{...o})}):i(o)}export{K as default};
