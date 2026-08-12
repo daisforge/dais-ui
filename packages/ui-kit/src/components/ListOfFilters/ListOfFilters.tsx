@@ -11,6 +11,7 @@ import styled, { CSSObject } from 'styled-components';
 import { ChipOrGroup } from './ChipOrGroup';
 import { listOfFiltersClassNames as cls } from './classNames';
 import { Group, Item, ItemOrGroup } from './types';
+import { useSyncTabsScrollArrows } from './useSyncTabsScrollArrows';
 import { useUpdateSize } from './useUpdateSize';
 
 const SIZES = {
@@ -96,6 +97,9 @@ const ListOfFiltersNotMemo = ({
   );
   // для перерисовки табов - табы без доп отложенного стейт-а не обновляет ui
   useDebouncedValue(opened, 200);
+  // Tabs пересчитывает стрелки-скролл только по scroll-событию/при монтировании,
+  // но не при изменении списка чипов или ширины контейнера - форсируем пересчёт
+  useSyncTabsScrollArrows(refForContainer, opened);
 
   return (
     <Collapse
