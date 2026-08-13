@@ -18,7 +18,7 @@ import { Node, SymbolFlags, SyntaxKind, ts } from 'ts-morph';
 
 import type { CompoundPart, PropRecord } from '../types.js';
 import type { ComponentEntry } from './discoverComponents.js';
-import { isNoiseProp } from './htmlAttributeDenylist.js';
+import { isNoiseProp, isReactDomDescription } from './htmlAttributeDenylist.js';
 import { getProject, UI_KIT_SRC } from './tsProject.js';
 
 const MAX_PROP_TYPE_CHARS = 400;
@@ -247,6 +247,55 @@ function getDeprecatedReason(jsDocable: Node): string | undefined {
 }
 
 /**
+ * Второй, более редкий источник дефолта (TASKS.md T6) — тег `@default` в
+ * JSDoc самого пропса (`/** @default 'm' *\/ size?: Size`). Применяется как
+ * фолбэк в extractPropsFromType, только если деструктуризация параметра
+ * (collectDestructuringDefaults) не дала значения для этого имени.
+ */
+function getJsDocDefault(jsDocable: Node): string | undefined {
+  const docs = getJsDocs(jsDocable);
+  for (const d of docs) {
+    for (const t of d.getTags()) {
+      if (t.getTagName() === 'default') {
+        return t.getCommentText()?.trim() || undefined;
+      }
+    }
+  }
+  return undefined;
+}
+
+const MAX_DEFAULT_CHARS = 60;
+
+/**
+ * Основной источник дефолтов (TASKS.md T6) — деструктуризация первого
+ * параметра render-функции: `({ size = 'm', view = 'default', ...rest })` —
+ * самый распространённый в кодовой базе паттерн. Ключ — имя ПРОПСА (левая
+ * часть `propertyName: localName`, если есть переименование; иначе то же имя,
+ * что и локальная переменная), не локальное имя переменной — иначе
+ * `{ size: sizeProp = 'm' }` не смэтчился бы с пропсом `size`. Rest-элемент
+ * (`...rest`) пропускается — у него нет содержательного имени пропса.
+ */
+function collectDestructuringDefaults(
+  fn: RenderFunction | undefined,
+): Map<string, string> {
+  const map = new Map<string, string>();
+  const nameNode = fn?.getParameters()[0]?.getNameNode();
+  if (!nameNode || !Node.isObjectBindingPattern(nameNode)) return map;
+
+  for (const element of nameNode.getElements()) {
+    if (element.getDotDotDotToken()) continue; // ...rest
+    const init = element.getInitializer();
+    if (!init) continue;
+    const propName =
+      element.getPropertyNameNode()?.getText() ?? element.getName();
+    const text = clip(init.getText(), MAX_DEFAULT_CHARS);
+    if (text) map.set(propName, text);
+  }
+
+  return map;
+}
+
+/**
  * Резолвит имя, экспортируемое из barrel-файла, до его конечной декларации
  * (следуя через re-export цепочки — в этом и ценность getExportedDeclarations
  * вместо ручного парсинга import/export specifiers).
@@ -388,20 +437,45 @@ function isOwnFileDeclaration(
 }
 
 /**
- * truncateForResponse (см. tools/truncate.ts) режет большие ответы по
- * символам без учёта структуры — если пропсы компонента идут в порядке
- * "как отдал тайпчекер", содержательные поля могут не дожить до конца
- * бюджета. На практике пересечения вида `BoxProps & { title?: ...}`
- * (DrawerDF.Header и подобные) отдают CSS/layout-пропсы из BoxProps первыми
- * — они и съедали лимит раньше собственных `title`/`subTitle`/`rightBlock`.
- * Стабильно сортируем: поля, объявленные в том же файле, что и сам тип
- * пропсов (собственные), — в начало; всё остальное (унаследованное через
- * spread чужого типа) — в конец, каждая группа в исходном порядке.
+ * Итоговый порядок пропсов (TASKS.md T7): `required` → с описанием → без
+ * описания → `deprecated` в самый конец (переопределяет required — устаревший
+ * обязательный пропс всё равно уходит в хвост). При обрезке по бюджету
+ * (truncateForResponse режет большие ответы по символам без учёта структуры,
+ * см. tools/truncate.ts) теряется наименее нужное подмножество, а не
+ * случайное. Внутри яруса — сперва поля, объявленные в том же файле, что и
+ * сам тип пропсов (собственные, не унаследованные через spread чужого типа
+ * вроде `BoxProps & { title?: ... }` — тот приём, что раньше решал проблему
+ * DrawerDF.Header, где CSS/layout-пропсы BoxProps съедали лимит раньше
+ * `title`/`subTitle`/`rightBlock`), затем — по алфавиту, для стабильности
+ * диффов индекса.
  */
-function extractPropsFromType(type: Type, atLocationNode: Node): PropRecord[] {
+function propTier(record: PropRecord): number {
+  if (record.deprecated) return 3;
+  if (record.required) return 0;
+  return record.description ? 1 : 2;
+}
+
+function sortProps(
+  entries: { record: PropRecord; ownFile: boolean }[],
+): PropRecord[] {
+  return entries
+    .slice()
+    .sort((a, b) => {
+      const tierDiff = propTier(a.record) - propTier(b.record);
+      if (tierDiff !== 0) return tierDiff;
+      if (a.ownFile !== b.ownFile) return a.ownFile ? -1 : 1;
+      return a.record.name.localeCompare(b.record.name);
+    })
+    .map((e) => e.record);
+}
+
+function extractPropsFromType(
+  type: Type,
+  atLocationNode: Node,
+  defaultsMap?: Map<string, string>,
+): PropRecord[] {
   const ownFilePath = atLocationNode.getSourceFile().getFilePath();
-  const own: PropRecord[] = [];
-  const rest: PropRecord[] = [];
+  const entries: { record: PropRecord; ownFile: boolean }[] = [];
 
   for (const symbol of type.getProperties()) {
     const decl: Node | undefined =
@@ -432,11 +506,26 @@ function extractPropsFromType(type: Type, atLocationNode: Node): PropRecord[] {
       // no doc comment resolvable — не критично
     }
 
+    // TASKS.md T7, п.2: пропсы вроде `role`/`tabIndex`/`color` дизайн-система
+    // переопределяет по ТИПУ (проходят isNoiseProp выше), но их описание
+    // может остаться нетронутым унаследованным React DOM-текстом
+    // ("Indicates the current…") — токены на ветер, дословно совпадающие с
+    // денылистом. Не проп-шум (тип-то осмысленный), а описание-шум.
+    if (description && isReactDomDescription(name, description)) {
+      description = '';
+    }
+
     const deprecated =
       decl !== undefined &&
       (Node.isPropertySignature(decl) || Node.isPropertyDeclaration(decl))
         ? isDeprecated(decl)
         : false;
+    const defaultValue =
+      defaultsMap?.get(name) ??
+      (decl !== undefined &&
+      (Node.isPropertySignature(decl) || Node.isPropertyDeclaration(decl))
+        ? getJsDocDefault(decl)
+        : undefined);
 
     const record: PropRecord = {
       name,
@@ -444,12 +533,13 @@ function extractPropsFromType(type: Type, atLocationNode: Node): PropRecord[] {
       required: !optional,
       description,
       ...(deprecated ? { deprecated: true as const } : {}),
+      ...(defaultValue ? { default: defaultValue } : {}),
     };
 
-    (isOwnFileDeclaration(decl, ownFilePath) ? own : rest).push(record);
+    entries.push({ record, ownFile: isOwnFileDeclaration(decl, ownFilePath) });
   }
 
-  return [...own, ...rest];
+  return sortProps(entries);
 }
 
 /**
@@ -493,6 +583,7 @@ function isUselessResolvedType(typeText: string): boolean {
  */
 function tryExtractGenericProps(
   decl: NamedPropsRef['decl'],
+  defaultsMap: Map<string, string>,
 ): PropRecord[] | undefined {
   if (
     !Node.isTypeAliasDeclaration(decl) &&
@@ -503,7 +594,7 @@ function tryExtractGenericProps(
 
   let props: PropRecord[];
   try {
-    props = extractPropsFromType(decl.getType(), decl);
+    props = extractPropsFromType(decl.getType(), decl, defaultsMap);
   } catch {
     return undefined;
   }
@@ -524,13 +615,20 @@ function tryExtractGenericProps(
  * приём, что copyTypeAsStringSync в generators/meta-info, только проще:
  * у нас уже есть AST-узел, поэтому просто берём node.getText().
  */
-function resolvePropsType(propsRef: PropsRef): ResolvedPropsType {
+function resolvePropsType(
+  propsRef: PropsRef,
+  defaultsMap: Map<string, string>,
+): ResolvedPropsType {
   if (propsRef.decl === undefined) {
     const { name, inlineParamNode } = propsRef;
     try {
       return {
         typeName: name,
-        props: extractPropsFromType(inlineParamNode.getType(), inlineParamNode),
+        props: extractPropsFromType(
+          inlineParamNode.getType(),
+          inlineParamNode,
+          defaultsMap,
+        ),
       };
     } catch {
       return { typeName: name, props: [] };
@@ -541,7 +639,7 @@ function resolvePropsType(propsRef: PropsRef): ResolvedPropsType {
   const typeParams = getTypeParameters(decl);
 
   if (typeParams.length > 0) {
-    const structuralProps = tryExtractGenericProps(decl);
+    const structuralProps = tryExtractGenericProps(decl, defaultsMap);
     return {
       typeName: name,
       rawType: clip(stripImportPaths(decl.getText()), MAX_RAW_TYPE_CHARS),
@@ -564,7 +662,7 @@ function resolvePropsType(propsRef: PropsRef): ResolvedPropsType {
       };
     }
 
-    const props = extractPropsFromType(type, decl);
+    const props = extractPropsFromType(type, decl, defaultsMap);
     return { typeName: name, props };
   } catch {
     return {
@@ -616,6 +714,7 @@ let probeCounter = 0;
  */
 function tryExtractViaComponentProps(
   mainDecl: ExportedDeclarations,
+  defaultsMap: Map<string, string>,
 ): PropRecord[] | undefined {
   let declType: Type;
   try {
@@ -645,7 +744,7 @@ function tryExtractViaComponentProps(
       `import type { ComponentProps } from 'react';\ntype ${aliasName} = ComponentProps<${rawTypeText}>;\n`,
     );
     const alias = file.getTypeAliasOrThrow(aliasName);
-    const props = extractPropsFromType(alias.getType(), alias);
+    const props = extractPropsFromType(alias.getType(), alias, defaultsMap);
     return props.length > 0 ? props : undefined;
   } catch {
     return undefined;
@@ -714,14 +813,20 @@ function resolveCompoundPart(
     findLocalTypeDeclaration(compDir, `${localName}Props`);
 
   const localDecl = resolveExportedDeclaration(barrelSourceFile, localName);
+  // Дефолты compound-части читаются из её СОБСТВЕННОЙ render-функции
+  // (localDecl), не из render-функции родителя — `DrawerDF.Header`
+  // деструктурирует свои пропсы независимо от `DrawerDF` (TASKS.md T6).
+  const defaultsMap = collectDestructuringDefaults(
+    localDecl && unwrapToRenderFunction(localDecl),
+  );
 
   let resolved: ResolvedPropsType | undefined;
   if (propsRef) {
-    resolved = resolvePropsType(propsRef);
+    resolved = resolvePropsType(propsRef, defaultsMap);
   } else {
     const sigPropsRef =
       localDecl && findPropsDeclFromSignature(localDecl, localName);
-    if (sigPropsRef) resolved = resolvePropsType(sigPropsRef);
+    if (sigPropsRef) resolved = resolvePropsType(sigPropsRef, defaultsMap);
   }
 
   // Тот же финальный фолбэк, что и у parseComponent для top-level компонента
@@ -733,7 +838,10 @@ function resolveCompoundPart(
     (!resolved || (resolved.props.length === 0 && !resolved.isGeneric)) &&
     localDecl
   ) {
-    const viaComponentProps = tryExtractViaComponentProps(localDecl);
+    const viaComponentProps = tryExtractViaComponentProps(
+      localDecl,
+      defaultsMap,
+    );
     if (viaComponentProps) {
       resolved = {
         typeName: resolved?.typeName ?? `ComponentProps<typeof ${localName}>`,
@@ -796,15 +904,26 @@ export function parseComponent({
     ? getDeprecatedReason(jsDocable)
     : undefined;
 
+  // Дефолты из деструктуризации первого параметра самой render-функции
+  // компонента — `({ size = 'm', ...rest }: TextFieldProps) => ...`
+  // (TASKS.md T6). unwrapToRenderFunction здесь безопасен даже для чистых
+  // реэкспортов без инициализатора — вернёт undefined, defaultsMap пустая.
+  const defaultsMap = collectDestructuringDefaults(
+    unwrapToRenderFunction(mainDecl),
+  );
+
   const propsRef =
     findPropsDeclaration(barrelSourceFile, name) ??
     findPropsDeclFromSignature(mainDecl, name);
   let propsResolved: ResolvedPropsType = propsRef
-    ? resolvePropsType(propsRef)
+    ? resolvePropsType(propsRef, defaultsMap)
     : { props: [] };
 
   if (propsResolved.props.length === 0 && !propsResolved.isGeneric) {
-    const viaComponentProps = tryExtractViaComponentProps(mainDecl);
+    const viaComponentProps = tryExtractViaComponentProps(
+      mainDecl,
+      defaultsMap,
+    );
     if (viaComponentProps) {
       propsResolved = {
         typeName: propsResolved.typeName ?? `ComponentProps<typeof ${name}>`,

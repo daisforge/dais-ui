@@ -8,6 +8,15 @@ export interface PropRecord {
   description: string;
   /** Ставится только когда true — в JSON поле просто отсутствует. */
   deprecated?: true;
+  /**
+   * Значение по умолчанию — если проставлено. Два источника (см. TASKS.md
+   * T6, extractPropsFromType/collectDestructuringDefaults в parseComponent.ts):
+   * деструктуризация параметра render-функции (`{ size = 'm' }`, приоритетный
+   * источник — реальный рантайм-дефолт) и тег `@default` в JSDoc пропса
+   * (фолбэк, если деструктуризации нет). Пустая строка не сохраняется —
+   * поле либо отсутствует, либо несёт содержательное значение.
+   */
+  default?: string;
 }
 
 /**

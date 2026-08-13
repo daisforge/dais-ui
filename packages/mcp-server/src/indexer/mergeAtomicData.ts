@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 
 import type {
   AtomicPropRecord,
+  InheritedPropRecord,
   PropRecord,
   WorkingComponentRecord,
 } from '../types.js';
@@ -79,7 +80,9 @@ function dropEmptyStrings(p: AtomicPropRecord): AtomicPropRecord {
  * inherited"-дедупом (см. TASKS.md T14). Поэтому там, где имя совпало,
  * описание и required берём из own (ts-morph — источник точнее), а текст типа
  * и сам факт наличия пропса — из вендора (он ближе к тому, как атом реально
- * типизирован публично, без внутренних деталей ui-kit-обёртки).
+ * типизирован публично, без внутренних деталей ui-kit-обёртки). `default`
+ * (TASKS.md T6) вендор не несёт вовсе (см. dropEmptyStrings) — own всегда
+ * побеждает, если он его резолвил (деструктуризация/`@default`).
  */
 function mergeWithOwn(
   vendorProp: AtomicPropRecord,
@@ -90,7 +93,27 @@ function mergeWithOwn(
     ...vendorProp,
     required: ownProp.required,
     description: ownProp.description || vendorProp.description,
+    default: ownProp.default ?? vendorProp.default,
   };
+}
+
+/**
+ * Тот же порядок, что и у own props[] (см. propTier/sortProps в
+ * parseComponent.ts, TASKS.md T7, п.3) — required → с описанием → без
+ * описания, по алфавиту внутри яруса. У AtomicPropRecord нет `deprecated`,
+ * поэтому последнего яруса (deprecated в конец) здесь просто не существует.
+ */
+function sortInheritedProps(
+  props: InheritedPropRecord[],
+): InheritedPropRecord[] {
+  const tier = (p: InheritedPropRecord) => {
+    if (p.required) return 0;
+    return p.description ? 1 : 2;
+  };
+  return [...props].sort((a, b) => {
+    const tierDiff = tier(a) - tier(b);
+    return tierDiff !== 0 ? tierDiff : a.name.localeCompare(b.name);
+  });
 }
 
 /**
@@ -120,11 +143,13 @@ export function mergeAtomicData(
 
   const ownByName = new Map((record.props || []).map((p) => [p.name, p]));
 
-  const inheritedProps = (atomicComponent.api?.props || []).map((p) => ({
-    ...mergeWithOwn(dropEmptyStrings(p), ownByName.get(p.name)),
-    inheritedFrom: record.atomicBase as string,
-    inheritedPackage: '@salutejs/sdds-finai',
-  }));
+  const inheritedProps = sortInheritedProps(
+    (atomicComponent.api?.props || []).map((p) => ({
+      ...mergeWithOwn(dropEmptyStrings(p), ownByName.get(p.name)),
+      inheritedFrom: record.atomicBase as string,
+      inheritedPackage: '@salutejs/sdds-finai',
+    })),
+  );
 
   const inheritedNames = new Set(inheritedProps.map((p) => p.name));
   const ownProps = (record.props || []).filter(

@@ -1,4 +1,6 @@
 /* eslint-disable no-continue */
+import { ts } from 'ts-morph';
+
 import { getProject } from './tsProject.js';
 
 /**
@@ -63,7 +65,14 @@ export const UNCONDITIONAL_NOISE_NAMES = new Set([
 /** Безусловные паттерны имени: aria-*, data-*, обработчики *Capture. */
 const UNCONDITIONAL_NOISE_PATTERNS = [/^aria-/, /^data-/, /^on[A-Z].*Capture$/];
 
-let cachedDenylistMap: Map<string, string> | undefined;
+interface DenylistData {
+  /** имя → текст типа, для isNoiseProp. */
+  types: Map<string, string>;
+  /** имя → JSDoc-описание React DOM-типизации, для isReactDomDescription (T7). */
+  descriptions: Map<string, string>;
+}
+
+let cachedDenylist: DenylistData | undefined;
 
 /**
  * Пропсы `ComponentProps<typeof X>` почти всегда содержат ~300 унаследованных
@@ -73,9 +82,12 @@ let cachedDenylistMap: Map<string, string> | undefined;
  * тип совпадает с "чистым" HTML-атрибутом дословно — значит дизайн-система
  * его не переопределяла, это шум. Если тип уже, чем в HTML (например
  * `size: "s" | "m" | "l"` вместо HTML `size: number`) — это осмысленный
- * пропс, оставляем.
+ * пропс, оставляем. Заодно копим JSDoc-описания того же пробника — источник
+ * для isReactDomDescription (T7): пропсы вроде `role`/`tabIndex`/`color`
+ * дизайн-система переопределяет по типу (проходят isNoiseProp), но их
+ * описание иногда остаётся нетронутым унаследованным React DOM-текстом.
  */
-function buildDenylistMap(): Map<string, string> {
+function buildDenylist(): DenylistData {
   const project = getProject();
   const tmp = project.createSourceFile(
     'packages/ui-kit/src/__mcp_denylist_probe.ts',
@@ -87,26 +99,56 @@ function buildDenylistMap(): Map<string, string> {
   );
 
   const alias = tmp.getTypeAliasOrThrow('__Denylist');
-  const map = new Map<string, string>();
+  const types = new Map<string, string>();
+  const descriptions = new Map<string, string>();
+  const checker = project.getTypeChecker().compilerObject;
+
   for (const symbol of alias.getType().getProperties()) {
     const decl = symbol.getValueDeclaration() ?? symbol.getDeclarations()[0];
     if (!decl) continue;
     try {
-      map.set(symbol.getName(), symbol.getTypeAtLocation(decl).getText());
+      types.set(symbol.getName(), symbol.getTypeAtLocation(decl).getText());
     } catch {
       // пропускаем нерезолвящиеся члены — не критично для денылиста
+    }
+    try {
+      const parts = symbol.compilerSymbol.getDocumentationComment(checker);
+      const text = ts.displayPartsToString(parts).trim();
+      if (text) descriptions.set(symbol.getName(), text);
+    } catch {
+      // doc comment недоступен — не критично
     }
   }
 
   tmp.forget();
-  return map;
+  return { types, descriptions };
+}
+
+function getDenylist(): DenylistData {
+  if (!cachedDenylist) {
+    cachedDenylist = buildDenylist();
+  }
+  return cachedDenylist;
 }
 
 export function getDenylistMap(): Map<string, string> {
-  if (!cachedDenylistMap) {
-    cachedDenylistMap = buildDenylistMap();
-  }
-  return cachedDenylistMap;
+  return getDenylist().types;
+}
+
+/**
+ * true — описание пропса дословно совпадает с JSDoc React DOM-типизации того
+ * же имени (TASKS.md T7, п.2) — переписанный React-текст ("Indicates the
+ * current \"checked\" state of checkboxes…"), а не осмысленное описание
+ * дизайн-системы. Применяется ПОСЛЕ isNoiseProp — сам пропс мог пройти
+ * фильтр шума по типу (`role`/`tabIndex`/`color` дизайн-система
+ * переопределяет), но унаследовать чужое описание отдельно от типа.
+ */
+export function isReactDomDescription(
+  name: string,
+  description: string,
+): boolean {
+  if (!description) return false;
+  return getDenylist().descriptions.get(name) === description;
 }
 
 /**
