@@ -50,6 +50,7 @@ jobs:
         run: npx nx build ui-kit
         env:
           NODE_OPTIONS: '--max_old_space_size=4096'
+          NODE_ENV: production
 
       - name: Publish to npm
         if: steps.before.outputs.sha != steps.after.outputs.sha
