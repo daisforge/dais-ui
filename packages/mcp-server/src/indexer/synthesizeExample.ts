@@ -1,8 +1,4 @@
-import type {
-  ExampleRecord,
-  InheritedPropRecord,
-  PropRecord,
-} from '../types.js';
+import type { InheritedPropRecord, PropRecord } from '../types.js';
 
 /** Грубая эвристика значения-заглушки по тексту типа — не точный резолвер, а стартовая точка для агента. */
 function placeholderForType(typeText: string | undefined): string {
@@ -21,16 +17,20 @@ function placeholderForType(typeText: string | undefined): string {
 }
 
 /**
- * Синтетический пример `<Component requiredProp={...} />` из обязательных
- * пропсов — только когда нет ни одной curated-стори (большинство из 265+
- * компонентов). Явно помечается type: "synthesized", чтобы агент не путал
- * его с проверенным примером из Storybook.
+ * Синтетический `<Component requiredProp={...} />` из обязательных пропсов —
+ * дешёвая заглушка, не проверенный пример. Вычисляется для КАЖДОГО
+ * компонента (в отличие от examples[], которые есть только там, где нашлась
+ * curated-стори или реальное JSX-вхождение — см. collectUsageExamples.ts и
+ * TASKS.md T3) и кладётся в отдельное поле ComponentRecord.minimalUsage, а не
+ * в examples[], чтобы агент не путал плейсхолдер с проверенным кодом и не
+ * тратил вызов get_component_examples на строку, уже выводимую из
+ * importStatement.
  */
-export function synthesizeExample(record: {
+export function synthesizeMinimalUsage(record: {
   name: string;
   props?: PropRecord[];
   inheritedProps?: InheritedPropRecord[];
-}): ExampleRecord {
+}): string {
   const requiredProps = [
     ...(record.props || []),
     ...(record.inheritedProps || []),
@@ -40,12 +40,5 @@ export function synthesizeExample(record: {
     .map((p) => `${p.name}={${placeholderForType(p.type)}}`)
     .join(' ');
 
-  const jsx = attrs ? `<${record.name} ${attrs} />` : `<${record.name} />`;
-
-  return {
-    exportName: 'Synthesized',
-    displayName: 'Минимальный пример',
-    type: 'synthesized',
-    code: jsx,
-  };
+  return attrs ? `<${record.name} ${attrs} />` : `<${record.name} />`;
 }

@@ -14,6 +14,7 @@ import {
   promoteCompositionToWrapper,
 } from './classify.js';
 import { classifyRole } from './classifyRole.js';
+import { buildUsageExamples } from './collectUsageExamples.js';
 import { printDiagnostics } from './diagnostics.js';
 import { discoverComponents } from './discoverComponents.js';
 import { getDenylistMap } from './htmlAttributeDenylist.js';
@@ -24,8 +25,10 @@ import { mergeAtomicData } from './mergeAtomicData.js';
 import { getInstallationGuide, mergeMeta } from './mergeMeta.js';
 import { isParsedComponent, parseComponent } from './parseComponent.js';
 import { resolveImportPath } from './resolveImportPath.js';
-import { synthesizeExample } from './synthesizeExample.js';
+import { synthesizeMinimalUsage } from './synthesizeExample.js';
 import { REPO_ROOT } from './tsProject.js';
+import { finalizeVendorExamples } from './vendorExamples.js';
+import { buildVendorUsageIndex } from './vendorUsageExamples.js';
 
 const UI_KIT_PACKAGE_JSON = path.join(
   REPO_ROOT,
@@ -52,11 +55,49 @@ function mapCuratedStories(
   }));
 }
 
-function finalizeExamples(record: WorkingComponentRecord): ExampleRecord[] {
-  if (record.curatedStories?.length) {
-    return mapCuratedStories(record.curatedStories);
-  }
-  return [synthesizeExample(record)];
+/** full-code (Storybook) → usage (реальное JSX-вхождение) → vendor (curated-снэпшот атома) → args-only — см. TASKS.md T3 п.3. */
+const EXAMPLE_TYPE_ORDER: Record<ExampleRecord['type'], number> = {
+  'full-code': 0,
+  usage: 1,
+  vendor: 2,
+  'args-only': 3,
+};
+
+/** Три источника разом редко нужны — режем итог, чтобы карточка не раздувалась без пользы для агента. */
+const MAX_TOTAL_EXAMPLES = 4;
+
+function sortExamples(examples: ExampleRecord[]): ExampleRecord[] {
+  return [...examples].sort(
+    (a, b) => EXAMPLE_TYPE_ORDER[a.type] - EXAMPLE_TYPE_ORDER[b.type],
+  );
+}
+
+/**
+ * Настоящие примеры собираются из ВСЕХ доступных источников разом, не по
+ * цепочке "первый найденный побеждает": curated-стори из Storybook (часть
+ * каталога), реальное JSX-вхождение из collectUsageExamples (грep по
+ * монорепо) и curated-примеры вендоренного снэпшота атома (finalizeVendorExamples,
+ * см. TASKS.md T3). Каждый источник видит свою часть каталога — компонент с
+ * только args-only Storybook-стори вполне может иметь хороший vendor-пример,
+ * и наоборот. Результат сортируется по типу и режется до MAX_TOTAL_EXAMPLES.
+ * Если ни один источник ничего не дал — пустой массив: exampleTitles: []
+ * честно говорит "примеров нет", вместо синтетической заглушки под видом
+ * примера (та всегда доступна отдельно в record.minimalUsage).
+ */
+function finalizeExamples(
+  record: WorkingComponentRecord,
+  usageExamples: ReadonlyMap<string, ExampleRecord[]>,
+): ExampleRecord[] {
+  const curated = mapCuratedStories(record.curatedStories);
+  const usage = usageExamples.get(record.name) ?? [];
+  const vendor = finalizeVendorExamples(
+    record.vendorExampleSnippets,
+    record.importPath ?? '@daisforge/ui',
+  );
+  return sortExamples([...curated, ...usage, ...vendor]).slice(
+    0,
+    MAX_TOTAL_EXAMPLES,
+  );
 }
 
 /**
@@ -202,12 +243,51 @@ function buildComponentRecords(): WorkingComponentRecord[] {
       r.name,
       r.sourceFile ?? '',
     );
-    return { ...r, importPath, importStatement };
+    return {
+      ...r,
+      importPath,
+      importStatement,
+      minimalUsage: synthesizeMinimalUsage(r),
+    };
   });
 
-  records = records.map((r) =>
-    r.error ? r : { ...r, examples: finalizeExamples(r) },
+  // Однопроходный грep по монорепо — считается один раз для ВСЕХ имён разом
+  // (не по разу на компонент), поэтому вынесен из finalizeExamples наружу.
+  const usageExamples = buildUsageExamples(
+    records.filter((r) => !r.error).map((r) => r.name),
   );
+  // Кросс-файловый скан вендорного снэпшота: у compound-частей вроде
+  // AccordionItem нет своего файла в vendor/atomic-mcp-data (mergeAtomicData
+  // никогда не резолвит для них atomicBase), но их реальное использование
+  // почти всегда показано ВНУТРИ примеров родителя (<AccordionItem> внутри
+  // examples[] Accordion.json). Домешиваем такие "чужие" сниппеты в
+  // vendorExampleSnippets ДО finalizeExamples — дальше их обрабатывает тот
+  // же finalizeVendorExamples, что и "свои", без отдельной ветки.
+  const vendorUsageIndex = buildVendorUsageIndex(
+    records.filter((r) => !r.error).map((r) => r.name),
+  );
+  records = records.map((r) => {
+    if (r.error) return r;
+    const crossVendor = vendorUsageIndex.get(r.name);
+    return crossVendor?.length
+      ? {
+          ...r,
+          vendorExampleSnippets: [
+            ...(r.vendorExampleSnippets || []),
+            ...crossVendor,
+          ],
+        }
+      : r;
+  });
+  records = records.map((r) => {
+    if (r.error) return r;
+    const examples = finalizeExamples(r, usageExamples);
+    // vendorExampleSnippets — промежуточное поле (см. types.ts), уже
+    // потрачено в finalizeExamples выше; сырой вендорный формат не должен
+    // уйти наружу в публикуемый индекс.
+    const { vendorExampleSnippets, ...rest } = r;
+    return { ...rest, examples };
+  });
 
   return records;
 }

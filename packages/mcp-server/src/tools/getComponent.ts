@@ -44,6 +44,9 @@ interface GetComponentPayload {
   ownPropsCount?: number;
   inheritedPropsCount?: number;
   compoundParts: string[];
+  /** Синтетическая заглушка из обязательных пропсов — есть всегда, в отличие от exampleTitles (см. TASKS.md T3). */
+  minimalUsage: string;
+  /** Настоящие примеры (full-code/usage/args-only) — [] честно значит "нет", не тратьте вызов get_component_examples. */
   exampleTitles: string[];
   features: { feature: string; legacy?: true }[];
   dataVersionNotice?: string;
@@ -107,21 +110,25 @@ export function getComponent(
   const hiddenOwnPropsCount = allOwnProps.length - shownOwnProps.length;
   const { compoundPartOf } = record;
 
+  // Настоящих примеров нет (exampleTitles: []) — незачем звать инструмент,
+  // который вернёт то же самое, что уже есть в minimalUsage этой карточки.
+  const examplesHint = exampleTitles.length
+    ? '; get_component_examples({name}) — примеры кода'
+    : '';
+
   const nextSteps = compoundPartOf
     ? `Это одновременно compound-часть "${compoundPartOf.part}" у "${
         compoundPartOf.component
       }" — за пропсами идите туда: get_component_props({name: ${JSON.stringify(
         compoundPartOf.component,
-      )}, part: ${JSON.stringify(
-        compoundPartOf.part,
-      )}}); get_component_examples({name}) — примеры кода${
+      )}, part: ${JSON.stringify(compoundPartOf.part)}})${examplesHint}${
         features.length ? '; list_features({component}) — фичи компонента' : ''
       }`
     : `get_component_props({name}) — полные пропсы${
         hiddenOwnPropsCount > 0
           ? ` (в карточке показано ${shownOwnProps.length} из ${allOwnProps.length})`
           : ''
-      }; get_component_examples({name}) — примеры кода${
+      }${examplesHint}${
         features.length ? '; list_features({component}) — фичи компонента' : ''
       }`;
 
@@ -153,6 +160,7 @@ export function getComponent(
           inheritedPropsCount: (record.inheritedProps || []).length,
         }),
     compoundParts: (record.compoundParts || []).map((p) => p.name),
+    minimalUsage: record.minimalUsage,
     exampleTitles,
     features: features.map((f) => ({
       feature: f.feature,

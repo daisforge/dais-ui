@@ -43,14 +43,25 @@ export interface CompoundPart {
 
 /* ─────────────── Примеры ─────────────── */
 
-/** 'args-only'/'full-code' приходят из generators/meta-info, 'synthesized' — из synthesizeExample. */
-export type ExampleKind = 'args-only' | 'full-code' | 'synthesized';
+/**
+ * 'args-only'/'full-code' приходят из generators/meta-info (curated Storybook
+ * стори), 'usage' — из collectUsageExamples (реальное JSX-вхождение,
+ * найденное грепом по монорепо, см. TASKS.md T3), 'vendor' — из
+ * vendor/atomic-mcp-data (curated-примеры атомарной команды `@salutejs/sdds-finai`,
+ * см. mergeAtomicData.ts/vendorExamples.ts). Плейсхолдерный синтетический
+ * пример (было 'synthesized') больше не попадает в examples[] вовсе — он
+ * вынесен в отдельное поле `minimalUsage` ComponentRecord, чтобы
+ * `exampleTitles: []` честно означало «настоящих примеров нет».
+ */
+export type ExampleKind = 'args-only' | 'full-code' | 'usage' | 'vendor';
 
 export interface ExampleRecord {
   exportName: string;
   displayName?: string;
   type: ExampleKind;
   code: string;
+  /** Только у type: 'usage' — путь (относительно корня монорепо) к файлу, где найдено вхождение. */
+  sourceFile?: string;
 }
 
 /* ─────────────── Фичи ─────────────── */
@@ -162,6 +173,15 @@ export interface ComponentRecord {
   importPath: string;
   importStatement: string;
   examples: ExampleRecord[];
+  /**
+   * Синтетический `<Component requiredProp={placeholder} />` из обязательных
+   * пропсов — всегда вычислен, независимо от того, есть ли реальные examples.
+   * Раньше это был единственный "пример" (type: 'synthesized') внутри
+   * examples[] — вынесен в отдельное поле (TASKS.md T3), чтобы
+   * exampleTitles: [] честно означало «настоящих примеров нет», а не тратило
+   * вызов get_component_examples на строку, уже известную из importStatement.
+   */
+  minimalUsage: string;
 }
 
 /** Компонент, который индексер не смог разобрать. */
@@ -296,4 +316,13 @@ export interface WorkingComponentRecord
   error?: string;
   /** Промежуточное поле classify — удаляется в promoteCompositionToWrapper. */
   internalComponentImports?: string[];
+  /**
+   * Промежуточное поле mergeAtomicData — сырые examples[] вендоренного JSON
+   * (`vendor/atomic-mcp-data/**\/<atomicBase>.json`), ещё без переписанного на
+   * `@daisforge/ui` импорта (importPath на этом шаге пайплайна ещё не
+   * посчитан). Превращается в `ExampleRecord[]` в finalizeVendorExamples
+   * (vendorExamples.ts) и удаляется в buildIndex.ts перед финальной сборкой
+   * записи — наружу не должен уйти сырой снэпшот-формат, см. TASKS.md T3.
+   */
+  vendorExampleSnippets?: { title?: string; snippet: string }[];
 }

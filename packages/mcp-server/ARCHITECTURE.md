@@ -159,9 +159,48 @@
 
 `packages/ui-kit/src/index.ts` реэкспортирует ВСЁ (components/formComponents/layouts) единым плоским барелем — проверено напрямую по файлу. Для v1-скоупа путь импорта всегда `@daisforge/ui`, независимо от группы. Сабпасы (`/icons`, `/tokens`) понадобятся только в v1.1.
 
-### 1.8 `synthesizeExample.ts`
+### 1.8 `synthesizeExample.ts` — `minimalUsage` (T3)
 
-Если у компонента нет ни одной curated-стори (большинство из 265) — генерирует `<Component requiredProp={placeholder} />` из обязательных пропсов, помечено `type: "synthesized"` (в отличие от `"full-code"`/`"args-only"` из Storybook), чтобы агент не путал с проверенным примером.
+`synthesizeMinimalUsage` генерирует `<Component requiredProp={placeholder} />` из обязательных пропсов — для КАЖДОГО компонента, независимо от того, есть ли у него настоящие примеры. Результат кладётся в отдельное поле записи `minimalUsage`, а не в `examples[]` (до T3 это был единственный "пример" внутри `examples[]` с `type: "synthesized"`). Вынесено намеренно: `exampleTitles: []` в ответе `get_component` теперь честно означает «настоящих примеров нет», а не тратит вызов `get_component_examples` на строку, и так выводимую из `importStatement`.
+
+### 1.8a `collectUsageExamples.ts` — реальные примеры из монорепо (T3)
+
+`ExampleKind` — `'full-code' | 'usage' | 'vendor' | 'args-only'`. `'full-code'`/`'args-only'` приходят из curated Storybook-стори (`mergeMeta.curatedStories`, покрывают часть каталога — Storybook пишут не для всех компонентов). `'usage'` — второй источник: однопроходный грep по остальным пакетам монорепо за реальными JSX-вхождениями, хорош именно потому, что это код, который заведомо компилируется и отражает то, как компонент используют на практике, а не синтетическая заглушка и не изолированная демонстрация. `'vendor'` — третий источник (свои и кросс-файловые сниппеты вендорного снэпшота), см. §1.8b.
+
+Как работает `buildUsageExamples(componentNames)`:
+
+1. **Поисковые корни** — "apps/\*\*, packages/\*\* кроме ui-kit" из формулировки задачи считаются динамически (`fs.readdirSync` по `apps/` и `packages/`, минус `ui-kit` и сам `mcp-server`), не хардкодятся. В этом чекауте физически есть только `packages/storybook` и `packages/vite-project` — `webpack-finportal-platform`/`webpack-project-finalheader` из CLAUDE.md сюда не выкачаны; появятся новые пакеты-потребители — попадут в поиск сами, без правки кода.
+2. **Разбор** — сырой TypeScript-компилятор (`ts.createSourceFile`, тот же `ts` из `ts-morph`, что и в `parseComponent.ts`), не общий типизированный `Project` из `tsProject.ts`: нужен только синтаксис (найти JSX), не типы — заводить сотни файлов вне `tsconfig.lib.json` ui-kit в типизированный проект дорого и не нужно для этой задачи.
+3. **Фильтр по импортам, не по тексту тега** — для каждого файла сначала собираются его импорты из ui-kit (`@daisforge/ui`, `@daisforge/ui/*`, `@ui-kit/*`, включая alias `import { X as Y }` и `import * as UI from ...`); JSX-тег засчитывается как usage, только если он реально пришёл из такого импорта. Без этого шага `<Container>`/`<Card>`/`<Toast>` — частые имена локальных styled-components в самих Storybook-стори — засчитались бы как использование одноимённых компонентов ui-kit: пример выглядел бы как настоящий, но к пропсам реального компонента отношения не имел бы — шум хуже, чем `synthesized`-заглушка.
+4. **Compound-части через dot-notation** — в реальном коде их пишут `<DrawerDF.Content>`/`<ModalDF.Header>`, а не плоским именем `DrawerDFContent`. Если `DrawerDF` импортирован из ui-kit, `<DrawerDF.Content>` резолвится в `DrawerDFContent` — то самое плоское имя, под которым эта compound-часть лежит в индексе как отдельная top-level запись (10 пар, см. §1.6a/T12). Без этой ветки все 10 таких записей были бы обречены на `exampleTitles: []` навсегда — их плоское имя в реальном коде никто не пишет. `<Widget.Header>` (Widget не входит в T12-пары) даёт `WidgetHeader` — не находит совпадения среди известных имён компонента и просто отбрасывается, без ложного срабатывания.
+5. **Отбор** — до 2 самых "богатых" (по числу разных атрибутов JSX-тега) вхождений на компонент, по возможности из разных файлов; длинные блоки обрезаются до ~700 символов. `sourceFile` (путь относительно корня монорепо, не абсолютный — абсолютный путь окружения сборки не должен попадать в публикуемый индекс) сохраняется в `ExampleRecord.sourceFile`.
+
+### 1.8b `vendorExamples.ts` — curated-примеры вендоренного снэпшота (T3)
+
+Третий источник, найденный уже после первого прохода T3 — вендоренный снэпшот атомарной команды (`vendor/atomic-mcp-data/**/<atomicBase>.json`, см. §1.6) несёт не только `api.props`, но и собственное поле `examples[]: {title, snippet}` — готовый, curated JSX-код, которым атомарная команда документирует сам атом. 71 из 77 вендоренных файлов (92%) несут непустой `examples[]`, суммарно 440 сниппетов — источник, который `mergeAtomicData.ts` до этой правки читал только частично (`api.props`), полностью игнорируя `examples`.
+
+Пайплайн:
+
+1. `mergeAtomicData.ts` при подмешивании `inheritedProps` заодно копирует `atomicComponent.examples` (без снятых пустых `snippet`) в промежуточное поле `WorkingComponentRecord.vendorExampleSnippets` — сырыми, без переписанного импорта (importPath на этом шаге пайплайна ещё не посчитан, см. §2/`resolveImportPath.ts` выполняется позже).
+2. `finalizeVendorExamples(snippets, importPath)` (новый модуль `vendorExamples.ts`) вызывается позже, в `finalizeExamples` (`buildIndex.ts`), когда `importPath` уже известен:
+   - **Переписывает импорт** — снэпшот импортирует атом из его настоящего пакета (`from '@salutejs/sdds-finai'`, реже `.../beta`), не из `@daisforge/ui`; без переписывания агент получил бы рабочий на вид, но не собирающийся в контексте ui-kit пример.
+   - **Отбор** — до 2 сниппетов, разных по заголовку (снэпшот часто несёт почти дублирующие друг друга вариации — "Пример 1"/"Пример 2" с минимальными отличиями) и по возможности компактных (сортировка по длине текста снизу вверх — длинные "простыни" из десятка склеенных вариаций одного пропса, типичный кейс для `Accordion`, после обрезки менее читаемы, чем короткий сфокусированный пример).
+   - Обрезка до ~900 символов (снэпшот — цельные демо-приложения `import ...; export function App() {...}`, чуть длиннее usage-сниппетов).
+3. `buildIndex.ts` удаляет `vendorExampleSnippets` из финальной записи после того, как `finalizeExamples` его потребил (по аналогии с `delete record.internalComponentImports` в `classify.ts`, см. `types.ts`) — сырой вендорный формат не должен уйти в публикуемый индекс.
+
+#### `vendorUsageExamples.ts` — кросс-файловый скан того же снэпшота
+
+У части атомов нет собственного файла в `vendor/atomic-mcp-data` вовсе — `mergeAtomicData` для них никогда не резолвит `atomicBase`, значит основной путь выше их не видит в принципе. Типичный случай — compound-части: у `AccordionItem` нет `AccordionItem.json`, зато `Accordion.json` (примеры самого `Accordion`) почти целиком построен вокруг `<AccordionItem>` — все 10 examples в файле его содержат. Реальное использование подкомпонента записано в "чужом" файле — файле его родителя.
+
+`buildVendorUsageIndex(componentNames)` сканирует `examples[].snippet` ВСЕХ вендорных файлов разом (`components/` + `beta/`) тем же приёмом, что `collectUsageExamples.ts` применяет к реальному коду монорепо: разбор через сырой `ts.createSourceFile`, резолв JSX-тега по импортам из `@salutejs/sdds-finai(/beta)` этого же сниппета (включая dot-notation), а не по тексту тега — так `SvgBackground`, локальная функция внутри демо `Card`, не спутается с настоящим компонентом. Сниппеты "родного" файла компонента исключаются (`skipName`) — их уже даёт основной путь выше, дублировать незачем.
+
+`buildIndex.ts` вызывает оба построителя (`buildUsageExamples` из репозитория, `buildVendorUsageIndex` из вендора) один раз на всю сборку и домешивает результат `buildVendorUsageIndex` в `vendorExampleSnippets` ДО `finalizeExamples` — дальше "свои" и "чужие" вендорные сниппеты неотличимы, проходят один и тот же `finalizeVendorExamples` (переписывание импорта, отбор, обрезка).
+
+### Сведение источников и итоговый замер T3
+
+`finalizeExamples` в `buildIndex.ts` не выбирает ОДИН источник по приоритету — собирает примеры из ВСЕХ трёх сразу (curated + usage + vendor, причём `vendor` уже включает и "свои", и кросс-файловые сниппеты), сортирует `full-code → usage → vendor → args-only` (единая точка сортировки — используется и в `get_component.exampleTitles`, и в `get_component_examples`, отдельно сортировать в тулах не нужно) и режет до 4 суммарно (`MAX_TOTAL_EXAMPLES`) — компонент с args-only Storybook-стори вполне может иметь хороший vendor-пример, и наоборот, источники видят разные части каталога.
+
+Замер по проходам (один и тот же прогон индексера, T3 целиком): только `collectUsageExamples` — 56.0% (136/243), ниже целевых 60%. + `vendorExamples.ts` ("свои" вендорные файлы) — 75.3% (183/243), выше цели. + `vendorUsageExamples.ts` (кросс-файловый скан) — **86.0% (209/243)**. `usage`: 207 примеров, `vendor`: 210 (свои + кросс-файловые вместе), `full-code`: 104, `args-only`: 16. Разрыв первого прохода был структурным (нет `webpack-finportal-platform`/`webpack-project-finalheader` из CLAUDE.md в этом чекауте, часть примитивов вроде `Row`/`Card`/`Toast` там реально не используется по имени), а не багом сканера — но вендоренный снэпшот атомов оказался прямо в репозитории, не требовал грепа вообще, и закрыл разрыв с запасом. `.mdx`-документацию (263 файла, 9 импортируют `@daisforge/ui`) по-прежнему не сканируем: `ts.createSourceFile` в recovery-режиме путает JSX в markdown-прозе с настоящими примерами (проверено на `IconSvgSprite/iconSvgSprite.mdx`) — с двумя вендорными источниками в игре необходимость в этом источнике отпала.
 
 ### 1.9 `indexFeatures.ts`
 
@@ -190,7 +229,8 @@
       "props": [...], "inheritedProps": [...],
       "propsTypeName", "rawType", "isGeneric",
       "compoundParts": [{ "name", "props", ... }],
-      "examples": [{ "exportName", "displayName", "type", "code" }],
+      "examples": [{ "exportName", "displayName", "type", "code", "sourceFile" }], // type: full-code|usage|vendor|args-only, до 4 суммарно; sourceFile только у usage (T3)
+      "minimalUsage",                    // синтетическая заглушка из required-пропсов, есть всегда (T3, §1.8)
       "hasCuratedMeta", "curatedStories", "docs", "apiDocs",
       "sourceFile"
     }
@@ -262,6 +302,7 @@
 - У 3 compound-частей (`DrawerDF.Header.badge`, `DrawerDF.DotsIconButton.dropdownProps`, `FiltersActions.DotsIconButton.dropdownProps`) текст типа — нечитаемый вложенный `Omit<Omit<PropsType<...`. Это не провал резолва (`resolveCompoundPart` находит декларацию штатно, `tryExtractViaComponentProps`-фолбэк из T13 тут не участвует) — сам исходный тип поля (`badge?: (BadgeCompProps & { text: string }) | undefined`) генуинно сложный, и принтер TypeScript теряет имя вложенного алиаса при печати вычисленного типа intersection. Требует отдельной правки печати типа (например `type.getText(node, ts.TypeFormatFlags.UseAliasDefinedOutsideCurrentScope)`), не относится к T13.
 - `src/validate/validateIndex.ts` на текущем индексе **не проходит начисто** и до T11–T14 (baseline: 1 import-missing + 226 prop-not-found + 195 required-mismatch, не считая generic best-effort) — большинство расхождений сосредоточено в нескольких компонентах со сложными полиморфными типами (`Box`, `ModalDFConfirmationFooter`, `Spinner`, `TooltipList`, семья `FiltersActions.*`), где `required`-флаг, вычисленный при разборе объявленного типа, расходится с тем, что вычисляет тайпчекер для `ComponentProps<typeof X>` реального экспорта. T14 сократил REQUIRED-MISMATCH на 19 (195→176); T12 (синхронизация compound-part дублей) распространяет уже существующую неточность `resolveCompoundPart`-пути на 1 дополнительную пару (`FiltersActionsTabs`/`FiltersActionsTabItem`, +20) — сознательный компромисс: пропсы стали полнее и консистентнее между обоими путями резолва, а `required`-неточность для этой конкретной пары была в индексе и раньше (просто непроверяемой на top-level имени). Устранение самой неточности — отдельная задача, не T11–T14. T2 (description/category/keywords) props не трогает — baseline после T2 не изменился по существу (196 required-mismatch, разница в 1 от естественного дрейфа исходников ui-kit между прогонами).
 - **`list_components({})` без фильтров показывает ~120 из 177 `primary`-компонентов, не все** — прямое следствие T2 (см. §4.1): с непустыми `description`+`category` у 100% каталога полный список не помещается в бюджет ответа за один вызов. Не баг — `truncationNotice`/`hasMore` явно сообщают остаток и путь пагинации (`limit`/`offset`), это тот самый механизм, который T1 спроектировал для этого случая.
+- **`usage`-примеры (T3) сами по себе ограничены составом чекаута** — `collectUsageExamples.ts` (§1.8a) находит реальные JSX-вхождения только в `packages/storybook` и `packages/vite-project`; `webpack-finportal-platform`/`webpack-project-finalheader` из CLAUDE.md сюда не выкачаны. В одиночку этот источник даёт 56.0% (136/243) — ниже целевых 60% из TASKS.md T3. Итоговая доля после подключения вендорных источников (`vendorExamples.ts` + `vendorUsageExamples.ts`, §1.8b) — **86.0% (209/243)**, выше цели; ограничение осталось только у `usage` как источника самого по себе, не у T3 в целом.
 
 ## 6. Как обновлять
 

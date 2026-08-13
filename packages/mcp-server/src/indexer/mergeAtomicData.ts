@@ -30,6 +30,8 @@ interface AtomicManifest {
 
 interface AtomicComponentJson {
   api?: { props?: AtomicPropRecord[] };
+  /** Curated-примеры атомарной команды — источник ExampleKind 'vendor', см. vendorExamples.ts и TASKS.md T3. */
+  examples?: { title?: string; snippet?: string }[];
 }
 
 let cachedManifest: AtomicManifest | null | undefined;
@@ -129,10 +131,15 @@ export function mergeAtomicData(
     (p) => !inheritedNames.has(p.name),
   );
 
+  const vendorExampleSnippets = (atomicComponent.examples || [])
+    .filter((e): e is { title?: string; snippet: string } => Boolean(e.snippet))
+    .map((e) => ({ title: e.title, snippet: e.snippet }));
+
   return {
     ...record,
     props: ownProps,
     inheritedProps,
     atomicMcpVersion: getManifest()?.version,
+    ...(vendorExampleSnippets.length ? { vendorExampleSnippets } : {}),
   };
 }
