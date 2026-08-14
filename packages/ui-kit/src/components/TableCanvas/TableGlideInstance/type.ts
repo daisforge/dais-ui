@@ -17,7 +17,6 @@ import type {
   HighlightActiveType,
   HoverEffectsConfig,
   Justify,
-  SpanAlignment,
   SummaryCellInfo,
   TableGlideCustomProps,
   TableGlideProps,
@@ -27,6 +26,7 @@ import { ReactNode } from 'react';
 
 import type { FillMeta, RowsChangeType } from '../feature-cell-transfer/types';
 import type { TableContentStateOverlay } from '../feature-content-state/types';
+import { HeaderAlignment } from '../types/columns-grouping.type';
 import type { CtxsType } from '../types/ctxs.type';
 import type { ObjectForExtending } from '../types/utils.type';
 
@@ -173,15 +173,8 @@ export type ColumnGlideInstance<
   colSpan?:
     | number
     | ((cellInfo: CellInfoGlideInstance<R, SR, CustomCtxs>) => number);
-  /**
-   * Слитная шапка листовой колонки: заголовок колонки БЕЗ группы рисуется одной
-   * ячейкой на всю высоту шапки (групп-ряды + ряд колонки) — без пустой полосы
-   * сверху и без горизонтального шва. Перекрывает табличный дефолт `spanGroupHeader`.
-   * Для колонок внутри группы игнорируется.
-   */
-  spanGroupHeader?: boolean;
-  /** Выравнивание заголовка в слитной ячейке. Действует только при `spanGroupHeader: true`. */
-  spanGroupHeaderAlign?: SpanAlignment;
+  /** Выравнивание в слитой шапке; в adaptColumn → glide `spanGroupHeaderAlign`. */
+  squashedHeaderAlign?: HeaderAlignment;
   /** Тултип для ячеек этой колонки. Строка, объект или функция (context) => config | null. */
   cellTooltip?:
     | CanvasNodeTooltipConfig

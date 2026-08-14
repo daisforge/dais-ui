@@ -51,7 +51,7 @@ import type {
   EditingCellInfo,
   SortColumn,
 } from './column-config.type';
-import { SpanTableConfig } from './span-config.type';
+import { ColumnsGroupingConfig } from './columns-grouping.type';
 import { Maybe, ObjectForExtending, Prettify } from './utils.type';
 /** @deprecated Свойство view не используется и будет удалено в следующей мажорной версии. */
 export type ViewMods = {
@@ -846,7 +846,13 @@ export type TableConfig<
   RowIdType extends string | number,
   FilterStateType extends ObjectForExtending,
   // SubRowType
-> = SpanTableConfig & {
+> = {
+  /**
+   * Группировка колонок (многоуровневая шапка через `columnConfig.children`):
+   * слияние пустых ячеек шапки (`squashEmptyCells`, по умолчанию включено) и
+   * дефолт выравнивания в слитых ячейках (`squashedHeaderAlign`).
+   */
+  columnsGrouping?: ColumnsGroupingConfig;
   /**
    * Подсветка активной сущности в canvas-таблице.
    * @deprecated Значения `'cell'`/`'range-cell'` устарели — используйте

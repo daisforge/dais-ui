@@ -1005,9 +1005,15 @@ export function TableCanvas<
                               maxColumnAutoWidth:
                                 tableConfig.maxColumnAutoWidth,
                               resizableColumn: tableConfig.resizableColumn,
-                              spanGroupHeader: tableConfig.spanGroupHeader,
-                              spanShallowGroups: tableConfig.spanShallowGroups,
-                              spanAlign: tableConfig.spanAlign,
+                              spanGroupHeader:
+                                tableConfig.columnsGrouping?.squashEmptyCells ??
+                                true,
+                              spanShallowGroups:
+                                tableConfig.columnsGrouping?.squashEmptyCells ??
+                                true,
+                              spanAlign:
+                                tableConfig.columnsGrouping
+                                  ?.squashedHeaderAlign,
                               editorOverlayPortal:
                                 tableConfig.editorOverlayPortal,
                               checkboxSelectedRowIndexes,

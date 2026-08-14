@@ -22,9 +22,9 @@ import type {
   HeaderCellInfoGlideInstance,
   PreviewCellInfoGlideInstance,
 } from '../TableGlideInstance/type';
+import { HeaderAlignment } from './columns-grouping.type';
 import { CtxsType } from './ctxs.type';
 import type { ColumnDefaultOmitted } from './glide-type';
-import { SpanColumnConfig } from './span-config.type';
 import { ObjectForExtending } from './utils.type';
 
 export type { SortColumn, SortDirection };
@@ -365,7 +365,13 @@ export type ColumnConfig<
     cellInfo: CellInfo<Row, SummRow, CustomCtxs>,
     lvl: number,
   ) => CellThemeOverrideResult | undefined;
-} & SpanColumnConfig;
+  /**
+   * Выравнивание текста в слитой шапке этой колонки. Действует, когда шапка колонки
+   * слита (`tableConfig.columnsGrouping.squashEmptyCells`); перекрывает табличный
+   * `columnsGrouping.squashedHeaderAlign`.
+   */
+  squashedHeaderAlign?: HeaderAlignment;
+};
 
 export type ColumnOrColumnGroupConfig<
   R extends ObjectForExtending,
@@ -378,9 +384,11 @@ export declare interface ColumnGroupConfig<
 > {
   /** Уникальный ключ группы. */
   readonly key: string;
-  /** Название группы — отображается в ячейке шапки. Строка или JSX. */
+  /** Название группы, отображается в ячейке шапки. Строка или JSX. */
   readonly name: string | ReactElement;
   // readonly headerCellClass?: Maybe<string>;
   /** Вложенные колонки и подгруппы этой группы. */
   readonly children: readonly ColumnOrColumnGroupConfig<R, SR>[];
+  /** Выравнивание текста в слитой шапке группы. Действует при squashEmptyCells. */
+  readonly squashedHeaderAlign?: HeaderAlignment;
 }

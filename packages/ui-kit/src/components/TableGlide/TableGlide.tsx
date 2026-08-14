@@ -123,6 +123,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   freezeColumns,
   onColumnResize,
   renderGroupHeader,
+  groupAlignMap,
   refTable,
   onColumnsReorder,
   portalEventTargetRef,
@@ -173,7 +174,8 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   onCellClicked: onCellClickedExternal,
   onCellContextMenu: onCellContextMenuExternal,
   onGroupHeaderClicked: onGroupHeaderClickedExternal,
-  getGroupDetails: getGroupDetailsExternal,
+  // TODO: внешний getGroupDetails пока не прокидываем (см. композицию ниже).
+  // getGroupDetails: getGroupDetailsExternal,
   onMouseMove: onMouseMoveExternal,
   portalElementRef: _portalElementRef, // на всякий вытащили, чтобы в составе resProps не перезаписал внутреннюю логику.
   ...restProps
@@ -1115,19 +1117,21 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     NonNullable<GlideProps['getGroupDetails']>
   >(
     (groupName) => {
-      const base = getGroupDetailsExternal?.(groupName) ?? { name: groupName };
+      // TODO: при пробросе внешнего getGroupDetails вернуть композицию
+      // `getGroupDetailsExternal?.(name) ?? base` и `...base.overrideTheme` ниже.
+      const align = groupAlignMap?.get(groupName);
+      const base = { name: groupName, ...(align && { spanAlign: align }) };
       if (!fullySelectedGroupNames.has(groupName)) return base;
       return {
         ...base,
         overrideTheme: {
-          ...base.overrideTheme,
           bgGroupHeader: theme.selectionServiceActiveBg,
           bgGroupHeaderHovered: theme.bgHeaderHovered,
         },
       };
     },
     [
-      getGroupDetailsExternal,
+      groupAlignMap,
       fullySelectedGroupNames,
       theme.selectionServiceActiveBg,
       theme.bgHeaderHovered,
