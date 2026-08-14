@@ -31,7 +31,7 @@
     "registry": "https://registry.npmjs.org/"
   },
   "dependencies": {
-    "@glideappsfinal/glide-data-grid": "^6.0.12",
+    "@glideappsfinal/glide-data-grid": "^6.1.6",
     "@salutejs/plasma-icons": "^1.244.0",
     "@salutejs/plasma-typo": "^0.48.0",
     "@salutejs/sdds-finai": "^0.351.0",

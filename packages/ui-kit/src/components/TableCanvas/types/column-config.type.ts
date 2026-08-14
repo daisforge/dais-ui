@@ -24,6 +24,7 @@ import type {
 } from '../TableGlideInstance/type';
 import { CtxsType } from './ctxs.type';
 import type { ColumnDefaultOmitted } from './glide-type';
+import { SpanColumnConfig } from './span-config.type';
 import { ObjectForExtending } from './utils.type';
 
 export type { SortColumn, SortDirection };
@@ -364,12 +365,7 @@ export type ColumnConfig<
     cellInfo: CellInfo<Row, SummRow, CustomCtxs>,
     lvl: number,
   ) => CellThemeOverrideResult | undefined;
-};
-
-// export type ColumnGroupConfig<R extends ObjectForExtending, SR> = ColumnGroup<
-//     R,
-//     SR
-// >;
+} & SpanColumnConfig;
 
 export type ColumnOrColumnGroupConfig<
   R extends ObjectForExtending,
@@ -380,10 +376,11 @@ export declare interface ColumnGroupConfig<
   R extends ObjectForExtending,
   SR = unknown,
 > {
-  /** The name of the column group, it will be displayed in the header cell */
-  /** A unique key to distinguish each column */
+  /** Уникальный ключ группы. */
   readonly key: string;
+  /** Название группы — отображается в ячейке шапки. Строка или JSX. */
   readonly name: string | ReactElement;
   // readonly headerCellClass?: Maybe<string>;
+  /** Вложенные колонки и подгруппы этой группы. */
   readonly children: readonly ColumnOrColumnGroupConfig<R, SR>[];
 }

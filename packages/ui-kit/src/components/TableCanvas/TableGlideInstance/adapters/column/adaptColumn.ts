@@ -82,6 +82,8 @@ export const adaptColumn = <R extends ObjectForExtending, SR = unknown>({
     isServiceColumn,
     isErrorCell,
     colSpan,
+    spanGroupHeader,
+    spanGroupHeaderAlign,
     minWidth,
     maxWidth,
     cellTooltip,
@@ -169,6 +171,8 @@ export const adaptColumn = <R extends ObjectForExtending, SR = unknown>({
     ...(maxAutoWidth !== undefined && { maxAutoWidth }),
     grow: isHaveExternalWidth ? 0 : 1,
     colSpan: colSpan as ColumnGlideLast<R, SR>['colSpan'],
+    ...(spanGroupHeader !== undefined && { spanGroupHeader }),
+    ...(spanGroupHeaderAlign && { spanGroupHeaderAlign }),
     renderHeaderCell: adaptedRenderHeaderCell,
     renderSummaryCell: renderSummaryCell
       ? (summCellInfo) =>

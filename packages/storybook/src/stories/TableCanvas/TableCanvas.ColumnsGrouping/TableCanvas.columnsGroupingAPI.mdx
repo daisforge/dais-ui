@@ -20,3 +20,32 @@ import { TypeSourceViewer } from '@df-storybook/utils/TypeSourceViewer';
   filePath="packages/ui-kit/src/components/TableCanvas/types/column-config.type.ts"
   typeName="ColumnOrColumnGroupConfig"
 />
+
+## SpanColumnConfig
+
+Слитные шапки на уровне колонки (`ColumnConfig`).
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/TableCanvas/types/span-config.type.ts"
+  typeName="SpanColumnConfig"
+/>
+
+## SpanTableConfig
+
+Слитные шапки на уровне таблицы (`tableConfig`).
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/TableCanvas/types/span-config.type.ts"
+  typeName="SpanTableConfig"
+/>
+
+## SpanAlignment
+
+```ts
+interface SpanAlignment {
+  horizontal?: 'left' | 'center' | 'right';
+  vertical?: 'top' | 'center' | 'bottom';
+}
+```

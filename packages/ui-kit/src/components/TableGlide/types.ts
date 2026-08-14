@@ -7,6 +7,7 @@ import type {
   ProvideEditorCallback,
   ProvideEditorCallbackResult,
   ProvideEditorComponent,
+  SpanAlignment,
 } from '@glideappsfinal/glide-data-grid';
 // THEME
 import type {
@@ -35,6 +36,7 @@ export type {
   ProvideEditorCallback,
   ProvideEditorCallbackResult,
   ProvideEditorComponent,
+  SpanAlignment,
 };
 export type ThemeDynamicCustoms = {
   rowSize: SIZE;

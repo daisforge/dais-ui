@@ -97,6 +97,14 @@ export class CellContentCache {
 
 const CTXS_EMPTY = {};
 
+// Путь групп колонки: string → [string], string[] → как есть, иначе [].
+const getColumnGroupPath = (group: unknown): string[] =>
+  Array.isArray(group)
+    ? group.filter((g): g is string => typeof g === 'string')
+    : typeof group === 'string'
+      ? [group]
+      : [];
+
 type CanvasCacheKey = string | number | boolean | null;
 
 interface CanvasCellCacheEntry {
@@ -164,6 +172,8 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   hoverEffects,
   onCellClicked: onCellClickedExternal,
   onCellContextMenu: onCellContextMenuExternal,
+  onGroupHeaderClicked: onGroupHeaderClickedExternal,
+  getGroupDetails: getGroupDetailsExternal,
   onMouseMove: onMouseMoveExternal,
   portalElementRef: _portalElementRef, // на всякий вытащили, чтобы в составе resProps не перезаписал внутреннюю логику.
   ...restProps
@@ -992,6 +1002,138 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     selectColumnFromHeader,
   ]);
 
+  // Клик по шапке группы выделяет все листовые колонки этой группы.
+  //
+  // У каждой колонки есть group-путь — имена групп сверху вниз (напр.
+  // ['Метрики','Продажи']). Берём путь кликнутой колонки, обрезаем до уровня, по
+  // которому кликнули, — это префикс, однозначно задающий группу. Колонки одной
+  // группы всегда идут в ряд, поэтому от кликнутой расширяем диапазон влево и
+  // вправо, пока у соседа тот же префикс; листья диапазона выделяем разом.
+  //
+  // Префикс сравниваем как строку — путь склеиваем через '\0' (символ NUL). NUL
+  // взят разделителем, потому что он не может встретиться в имени группы, и склейка
+  // получается без коллизий: пути ['A','B'] и ['AB'] дают разные ключи ('A\0B' и
+  // 'AB'), тогда как join('/') или join('') их бы схлопнули в один.
+  const onGroupHeaderClicked = useCallback<
+    NonNullable<GlideProps['onGroupHeaderClicked']>
+  >(
+    (colIndex, event) => {
+      const clickedColumn = columnsForRender[colIndex];
+      if (!enableColumnSelection || !clickedColumn) {
+        onGroupHeaderClickedExternal?.(colIndex, event);
+        return;
+      }
+
+      // нормализуем group колонки в плоский путь имён групп
+      // (glide хранит group как string | string[] | undefined)
+      const toGroupPath = (group: unknown): string[] =>
+        Array.isArray(group)
+          ? group.filter((g): g is string => typeof g === 'string')
+          : typeof group === 'string'
+            ? [group]
+            : [];
+
+      // путь кликнутой колонки и уровень клика
+      const clickedPath = toGroupPath(clickedColumn.group);
+      const clickedLevel = Math.max(0, clickedPath.indexOf(event.group));
+      // ключ группы — префикс пути до уровня клика (про '\0' см. выше)
+      const prefixKey = clickedPath.slice(0, clickedLevel + 1).join('\0');
+
+      // у колонки тот же префикс, что у кликнутой?
+      const hasSamePrefix = (index: number): boolean => {
+        const column = columnsForRender[index];
+        return (
+          column !== undefined &&
+          toGroupPath(column.group)
+            .slice(0, clickedLevel + 1)
+            .join('\0') === prefixKey
+        );
+      };
+
+      // растим диапазон влево и вправо, пока префикс совпадает
+      let start = colIndex;
+      let end = colIndex;
+      while (start - 1 >= 0 && hasSamePrefix(start - 1)) start -= 1;
+      while (end + 1 < columnsForRender.length && hasSamePrefix(end + 1))
+        end += 1;
+
+      // ключи листьев диапазона (без служебных) → выделяем
+      const keys: string[] = [];
+      for (let i = start; i <= end; i += 1) {
+        const column = columnsForRender[i];
+        if (column && !column.isServiceColumn) keys.push(column.id);
+      }
+      if (keys.length > 0) selectColumnsByKeys(keys);
+
+      onGroupHeaderClickedExternal?.(colIndex, event);
+    },
+    [
+      enableColumnSelection,
+      columnsForRender,
+      selectColumnsByKeys,
+      onGroupHeaderClickedExternal,
+    ]
+  );
+
+  // Групп-ячейка подсвечивается, если ВСЕ её листья выделены (транзитивно вверх —
+  // имя верхней группы есть в group-пути всех её листьев). «Лист выделен» —
+  // ровно те же условия, что затемняют bgHeader листовой колонки в
+  // columnsForRender: активный диапазон ячеек, column-select, rangeStack,
+  // выделение строк. Поэтому подсветка группы симметрична подсветке её шапок.
+  const fullySelectedGroupNames = useMemo(() => {
+    const groupAllSelected = new Map<string, boolean>();
+    columnsForRender.forEach((column, columnIndex) => {
+      if (column.isServiceColumn) return;
+      const leafSelected =
+        selectionVisualState.isActiveHeaderColumn(columnIndex) ||
+        selectedColumnSet.has(columnIndex) ||
+        rangeStackColumnSet.has(columnIndex) ||
+        hasSelectedRows;
+      getColumnGroupPath(column.group).forEach((name) => {
+        if (name === '') return;
+        const prev = groupAllSelected.get(name);
+        groupAllSelected.set(name, (prev ?? true) && leafSelected);
+      });
+    });
+
+    const result = new Set<string>();
+    groupAllSelected.forEach((allSelected, name) => {
+      if (allSelected) result.add(name);
+    });
+    return result;
+  }, [
+    columnsForRender,
+    selectionVisualState,
+    selectedColumnSet,
+    rangeStackColumnSet,
+    hasSelectedRows,
+  ]);
+
+  // Фон полностью выделенной группы повторяет выделенную листовую шапку:
+  // idle — тёмный selected (selectionServiceActiveBg), ховер — штатный (светлее).
+  const getGroupDetails = useCallback<
+    NonNullable<GlideProps['getGroupDetails']>
+  >(
+    (groupName) => {
+      const base = getGroupDetailsExternal?.(groupName) ?? { name: groupName };
+      if (!fullySelectedGroupNames.has(groupName)) return base;
+      return {
+        ...base,
+        overrideTheme: {
+          ...base.overrideTheme,
+          bgGroupHeader: theme.selectionServiceActiveBg,
+          bgGroupHeaderHovered: theme.bgHeaderHovered,
+        },
+      };
+    },
+    [
+      getGroupDetailsExternal,
+      fullySelectedGroupNames,
+      theme.selectionServiceActiveBg,
+      theme.bgHeaderHovered,
+    ]
+  );
+
   // useGlideElements: поиск DOM-элементов Glide
   const {
     glideContainer: glideContainerEl,
@@ -1453,9 +1595,11 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
           theme={theme}
           getRowThemeOverride={getRowThemeOverride}
           onHeaderClicked={onHeaderClicked}
+          onGroupHeaderClicked={onGroupHeaderClicked}
           onMouseMove={onMouseMove}
           drawHeader={drawHeader}
           drawGroupHeader={drawGroupHeader}
+          getGroupDetails={getGroupDetails}
           getCellContent={getCellContentGlide as GlideProps['getCellContent']}
           columns={columnsForRender}
           rows={rows.length + summaryRowsLength}
