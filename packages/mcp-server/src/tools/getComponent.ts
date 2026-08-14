@@ -21,6 +21,12 @@ interface GetComponentPayload {
   deprecated?: true;
   deprecationReason?: string;
   legacy?: true;
+  /** У `legacy: true` — что брать вместо этого компонента в новом коде. */
+  supersededBy?: string;
+  /** При каких условиях брать именно этот компонент из группы конкурирующих (Table/TableCanvas, Select/FormSelect и т.п.). */
+  chooseWhen?: string;
+  /** Частые антипаттерны — заполнено не у всех, только там, где ошибка реально частая. */
+  gotchas?: string[];
   scope?: string;
   formVariant?: string;
   wrappedBy?: string;
@@ -143,6 +149,9 @@ export function getComponent(
     deprecated: record.deprecated || undefined,
     deprecationReason: record.deprecationReason,
     legacy: record.legacy || undefined,
+    supersededBy: record.supersededBy,
+    chooseWhen: record.chooseWhen,
+    gotchas: record.gotchas,
     scope: record.scope,
     formVariant: record.formVariant,
     wrappedBy: record.wrappedBy,

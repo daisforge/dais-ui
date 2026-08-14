@@ -72,6 +72,15 @@ export function mergeMeta(
       ? { curatedStories: componentMeta.stories }
       : {}),
     ...(detectLegacy(componentMeta) ? { legacy: true as const } : {}),
+    ...(componentMeta.supersededBy
+      ? { supersededBy: componentMeta.supersededBy }
+      : {}),
+    ...(componentMeta.chooseWhen
+      ? { chooseWhen: componentMeta.chooseWhen }
+      : {}),
+    ...(componentMeta.gotchas?.length
+      ? { gotchas: componentMeta.gotchas }
+      : {}),
     hasCuratedMeta: true as const,
   };
 }

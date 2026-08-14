@@ -139,6 +139,10 @@ interface ComponentResult {
   hint?: string;
   keywords?: string[];
   legacy?: true;
+  /** У `legacy: true` — что брать вместо этого компонента в новом коде. */
+  supersededBy?: string;
+  /** При каких условиях брать именно этот компонент из группы конкурирующих. */
+  chooseWhen?: string;
   /** Только для 'part'/'internal' — 'primary' (подавляющее большинство хитов) не несёт поля. */
   role?: 'part' | 'internal';
   parentComponent?: string;
@@ -205,6 +209,8 @@ export function searchComponents(
         hint: hit.record.hint,
         keywords: hit.record.keywords,
         legacy: hit.record.legacy || undefined,
+        supersededBy: hit.record.supersededBy,
+        chooseWhen: hit.record.chooseWhen,
         role: hit.record.role !== 'primary' ? hit.record.role : undefined,
         parentComponent: hit.record.parentComponent,
       };

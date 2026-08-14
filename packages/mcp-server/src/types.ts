@@ -172,6 +172,12 @@ export interface ComponentRecord {
   curatedStories?: ExampleRecord[];
   legacy?: true;
   hasCuratedMeta?: true;
+  /** У `legacy: true` — имя компонента, который берут вместо него в новом коде (TASKS.md T9). */
+  supersededBy?: string;
+  /** Одна строка: при каких условиях брать именно этот компонент из группы конкурирующих (TASKS.md T9). */
+  chooseWhen?: string;
+  /** 1-3 строки частых антипаттернов — только там, где ошибка реально частая (TASKS.md T9). */
+  gotchas?: string[];
 
   // из mergeAtomicData
   inheritedProps?: InheritedPropRecord[];
@@ -282,6 +288,10 @@ export interface ComponentMeta {
   apiDocs?: string;
   stories?: ExampleRecord[];
   features?: Record<string, FeatureMeta>;
+  /** См. одноимённые поля ComponentRecord — TASKS.md T9. */
+  supersededBy?: string;
+  chooseWhen?: string;
+  gotchas?: string[];
 }
 
 export interface PageMeta {
@@ -306,6 +316,10 @@ export interface AtomicCuratedMetaEntry {
   description?: string;
   category?: string;
   keywords?: string[];
+  /** См. одноимённые поля ComponentRecord — TASKS.md T9. */
+  supersededBy?: string;
+  chooseWhen?: string;
+  gotchas?: string[];
 }
 
 export interface AtomicCuratedMeta {

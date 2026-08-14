@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-13T12:25:44.571Z",
+  "generatedAt": "2026-08-13T14:46:01.601Z",
   "libVersion": "1.12.1",
   "components": {
     "Accordion": {
@@ -1220,6 +1220,7 @@
           "code": "import { Autocomplete } from '@daisforge/ui';\n\n(args: AutocompleteProps) => {\n    const [value1, setValue1] = useState('Алексей');\n    const [value2, setValue2] = useState('Екатерина');\n    const [value3, setValue3] = useState('');\n    const [value4, setValue4] = useState('Дмитрий');\n\n    return (\n      <div\n        style={{\n          display: 'flex',\n          flexDirection: 'column',\n          gap: '1rem',\n          width: '400px',\n          minHeight: '300px',\n        }}\n      >\n        {/* Сценарий 3: onClear + value → только крестик */}\n        <Autocomplete\n          {...args}\n          label=\"onClear + value → крестик\"\n          value={value1}\n          onChange={(e: ChangeEvent<HTMLInputElement>) =>\n            setValue1(e.target.value)\n          }\n          onSuggestionSelect={(item) => setValue1(item.label)}\n          onClear={() => setValue1('')}\n          suggestions={mockData}\n        />\n\n        {/* Сценарий 2: onClear + value + contentRight → [крестик | иконка] рядом */}\n        <Autocomplete\n          {...args}\n          label=\"onClear + value + contentRight → рядом\"\n          value={value2}\n          contentRight={<IconCalendarOutline size=\"s\" />}\n          onChange={(e: ChangeEvent<HTMLInputElement>) =>\n            setValue2(e.target.value)\n          }\n          onSuggestionSelect={(item) => setValue2(item.label)}\n          onClear={() => setValue2('')}\n          suggestions={mockData}\n        />\n\n        {/* Сценарий 4: onClear без value → крестик скрыт, contentRight как есть */}\n        <Autocomplete\n          {...args}\n          label=\"Пустое значение — крестик скрыт\"\n          value={value3}\n          contentRight={<IconCalendarOutline size=\"s\" />}\n          onChange={(e: ChangeEvent<HTMLInputElement>) =>\n            setValue3(e.target.value)\n          }\n          onSuggestionSelect={(item) => setValue3(item.label)}\n          onClear={() => setValue3('')}\n          suggestions={mockData}\n        />\n\n        {/* Сценарий 1: readOnly → замок (заменяет всё) */}\n        <Autocomplete\n          {...args}\n          label=\"ReadOnly — замок вместо крестика и contentRight\"\n          value=\"Только для чтения\"\n          readOnly\n          contentRight={<IconCalendarOutline size=\"s\" />}\n          onClear={() => {}}\n          suggestions={mockData}\n        />\n\n        {/* Сценарий 1: disabled → замок (заменяет всё) */}\n        <Autocomplete\n          {...args}\n          label=\"Disabled — замок вместо крестика и contentRight\"\n          value=\"Заблокировано\"\n          disabled\n          contentRight={<IconCalendarOutline size=\"s\" />}\n          onClear={() => {}}\n          suggestions={mockData}\n        />\n\n        {/* Сценарий 4: только contentRight, без onClear */}\n        <Autocomplete\n          {...args}\n          label=\"Только contentRight, без onClear\"\n          value={value4}\n          contentRight={<IconCalendarOutline size=\"s\" />}\n          onChange={(e: ChangeEvent<HTMLInputElement>) =>\n            setValue4(e.target.value)\n          }\n          onSuggestionSelect={(item) => setValue4(item.label)}\n          suggestions={mockData}\n        />\n      </div>\n    );\n  }"
         }
       ],
+      "chooseWhen": "Вне react-hook-form — самостоятельное поле с value/onChange, без встроенной интеграции с формой.",
       "hasCuratedMeta": true,
       "inheritedProps": [
         {
@@ -5125,6 +5126,7 @@
         "чекбокс",
         "toggle параметра"
       ],
+      "chooseWhen": "Вне react-hook-form — одиночный флажок с value/onChange напрямую.",
       "hasCuratedMeta": true,
       "inheritedProps": [
         {
@@ -6127,6 +6129,7 @@
         "мультиselect",
         "поиск по списку"
       ],
+      "chooseWhen": "Вне react-hook-form — самостоятельный компонент с value/onChange для мультивыбора с поиском.",
       "hasCuratedMeta": true,
       "inheritedProps": [
         {
@@ -6797,6 +6800,7 @@
         "календарь",
         "date input"
       ],
+      "chooseWhen": "Вне react-hook-form — самостоятельный выбор даты с value/onChange.",
       "hasCuratedMeta": true,
       "inheritedProps": [
         {
@@ -8006,6 +8010,7 @@
         "date range",
         "период от и до"
       ],
+      "chooseWhen": "Вне react-hook-form — самостоятельный выбор диапазона дат с value/onChange.",
       "hasCuratedMeta": true,
       "atomicDataMissing": true,
       "importPath": "@daisforge/ui",
@@ -15120,6 +15125,7 @@
         "input mask",
         "форматированное поле"
       ],
+      "chooseWhen": "Вне react-hook-form — поле с маской ввода на value/onChange напрямую.",
       "hasCuratedMeta": true,
       "inheritedProps": [
         {
@@ -18335,6 +18341,7 @@
         "разделители разрядов",
         "числовая маска"
       ],
+      "chooseWhen": "Вне react-hook-form — форматированное числовое поле с value/onChange напрямую.",
       "hasCuratedMeta": true,
       "inheritedProps": [
         {
@@ -19828,6 +19835,7 @@
         "dropdown контент",
         "всплывающая подсказка"
       ],
+      "chooseWhen": "Стабильная версия по умолчанию — без ресайза и явного выбора триггера hover/click/focus. Нужен ресайз или гибкие триггеры — PopoverBeta.",
       "hasCuratedMeta": true,
       "inheritedProps": [
         {
@@ -20172,6 +20180,7 @@
         "resizable popup",
         "триггер наведения"
       ],
+      "chooseWhen": "Нужен изменяемый размер попапа, явный выбор триггера (hover/click/focus) или рендер в портал — иначе берите стабильный Popover.",
       "hasCuratedMeta": true,
       "inheritedProps": [],
       "atomicMcpVersion": "0.349.0",
@@ -22558,6 +22567,7 @@
         "radio button",
         "выбор одного варианта"
       ],
+      "chooseWhen": "Одиночная радиокнопка вне react-hook-form — обычно используется внутри RadioGroup, а не сама по себе.",
       "hasCuratedMeta": true,
       "inheritedProps": [
         {
@@ -22751,6 +22761,7 @@
         "radio group",
         "набор радиокнопок"
       ],
+      "chooseWhen": "Вне react-hook-form — группа радиокнопок с value/onChange напрямую.",
       "hasCuratedMeta": true,
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
@@ -23447,6 +23458,7 @@
         "segmented control",
         "переключатель вкладок"
       ],
+      "chooseWhen": "Вне react-hook-form — сегментированный переключатель с value/onChange напрямую.",
       "hasCuratedMeta": true,
       "atomicDataMissing": true,
       "importPath": "@daisforge/ui",
@@ -23781,6 +23793,7 @@
         "dropdown select",
         "выбор из списка"
       ],
+      "chooseWhen": "Вне react-hook-form — самостоятельный выпадающий список с value/onChange напрямую.",
       "hasCuratedMeta": true,
       "inheritedProps": [
         {
@@ -25925,6 +25938,7 @@
           "code": "import { Switch } from '@daisforge/ui';\n\n() => (\n    <div\n      style={{\n        minHeight: '500px',\n        padding: '20px',\n        display: 'flex',\n      }}\n    >\n      <Switch label=\"Label\" hasBackground />\n    </div>\n  )"
         }
       ],
+      "chooseWhen": "Вне react-hook-form — тумблер вкл/выкл с value/onChange напрямую.",
       "hasCuratedMeta": true,
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
@@ -26096,6 +26110,8 @@
         }
       ],
       "legacy": true,
+      "supersededBy": "TableCanvas",
+      "chooseWhen": "Практически никогда для нового кода — только для доработки уже существующих экранов на react-data-grid, где миграция на TableCanvas не входит в задачу.",
       "hasCuratedMeta": true,
       "relatedExports": [
         "TableFilterSelectListItem",
@@ -27681,6 +27697,7 @@
         "редактируемая таблица"
       ],
       "docs": "# TableCanvas\n\n### Компонент для отрисовки табличных данных\n\nЕдиный инструмент для отображения данных, имеющий набор фичей. Любой продукт сможет использовать таблицу для достижения своих целей.\n\n---\n\n#### В основе HTML-canvas\n\nВ основе `TableCanvas` используется html `canvas` для обеспечения плавной непрерывной отрисовки контента.\nВ связи с этим, необходимо учитывать особенности во время отрисовки canvas-ячеек. К canvas-ячейкам относятся ячейки шапки, основных данных, итоговых данных.\n\n---\n\n#### Миграция с Table\n\nОснова API TableCanvas унаследована от API Table для легкой миграции и переиспользования протестированных решений на основе Table.\n\n- `TableProps` и `TableProps.tableConfig` обратно совместимы на 95+% c API Table (на основе имеющихся в TableCanvas фичей)\n- `TableProps.columnConfig` - претерпел изменения в связи с особенностями рендера на `canvas`.\n\nВ `TableProps.columnConfig` обновлены свойства `renderHeaderCell, renderCell, renderSummaryCell`, теперь:\n\n- они должны быть функциями, которые возвращают Canvas-элементы (импортировать из директории TableCanvas. Примеры: Canvas.Button,Canvas.Badge и тд.).\n- в них нельзя использовать компоненты, только Canvas-элементы.\n- В них нельзя вызывать хуки, это функции рендера - не компоненты.\n- если нужны данные для ячеек, то передаем данные либо в `headerContextValue`, либо в `rowContextValue`. И получаем через `args` функции.\n\n---\n\n_\\*С более подробной документацией по фичам можно ознакомиться точечно в разделе каждой фичи (в боковом меню)_\n\n---\n\n#### Импорт\n\nТипы, хуки и компоненты, связанные с `TableCanvas`, необходимо импортировать из папки компонента:\n\n```ts\n\n```\n\nОстальные компоненты (`Badge`, `Button`, `Switch` и т.д.) импортируются как обычно — из корня пакета:\n\n```ts\n\n```\n\nИконки — из `/icons`:\n\n```ts\n\n```\n\n---\n\n### API\n\n#### TableProps\n\n<!-- CustomArgTypes: TableCanvas -> TableProps (не найден в types.string.json) -->\n\n<br />\n\n#### TableProps.tableConfig\n\n<!-- CustomArgTypes: StoryTableCanvasConfigComp -> TableConfig (не найден в types.string.json) -->\n\n<br />\n\n#### TableProps.columnConfig\n\n<!-- CustomArgTypes: StoryColumnConfigTableCanvasComp -> ColumnConfig (не найден в types.string.json) -->",
+      "chooseWhen": "Таблица по умолчанию для нового кода: нужны сортировка/фильтры/группировка/массовые действия/редактирование ячеек из коробки, без ручной сборки.",
       "hasCuratedMeta": true,
       "relatedExports": [
         "SplitIconButton",
@@ -33523,6 +33540,7 @@
           "code": "import { TextArea } from '@daisforge/ui';\n\n(args: TextAreaProps) => {\n    const [value1, setValue1] = useState('Текст для очистки');\n    const [value2, setValue2] = useState('Текст с иконкой');\n    const [value3, setValue3] = useState('');\n    const [value4, setValue4] = useState('Текст');\n\n    return (\n      <div\n        style={{\n          display: 'flex',\n          flexDirection: 'column',\n          gap: '1rem',\n          width: '400px',\n        }}\n      >\n        <TextArea\n          {...args}\n          label=\"onClear + value → крестик\"\n          value={value1}\n          onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>\n            setValue1(e.target.value)\n          }\n          onClear={() => setValue1('')}\n        />\n\n        <TextArea\n          {...args}\n          label=\"onClear + value + contentRight → рядом\"\n          value={value2}\n          contentRight={<IconSb size=\"s\" />}\n          onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>\n            setValue2(e.target.value)\n          }\n          onClear={() => setValue2('')}\n        />\n\n        <TextArea\n          {...args}\n          label=\"Пустое значение — крестик скрыт\"\n          value={value3}\n          contentRight={<IconSb size=\"s\" />}\n          onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>\n            setValue3(e.target.value)\n          }\n          onClear={() => setValue3('')}\n        />\n\n        <TextArea\n          {...args}\n          label=\"ReadOnly — замок вместо крестика и contentRight\"\n          value=\"Только для чтения\"\n          readOnly\n          contentRight={<IconSb size=\"s\" />}\n          onClear={() => {}}\n        />\n\n        <TextArea\n          {...args}\n          label=\"Disabled — замок вместо крестика и contentRight\"\n          value=\"Заблокировано\"\n          disabled\n          contentRight={<IconSb size=\"s\" />}\n          onClear={() => {}}\n        />\n\n        <TextArea\n          {...args}\n          label=\"Только contentRight, без onClear\"\n          value={value4}\n          contentRight={<IconSb size=\"s\" />}\n          onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>\n            setValue4(e.target.value)\n          }\n        />\n      </div>\n    );\n  }"
         }
       ],
+      "chooseWhen": "Вне react-hook-form — многострочное поле с value/onChange напрямую.",
       "hasCuratedMeta": true,
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
@@ -33627,6 +33645,7 @@
           "code": "import { TextField } from '@daisforge/ui';\n\n(args: TextFieldProps) => {\n    const [value1, setValue1] = useState('Текст для очистки');\n    const [value2, setValue2] = useState('Текст с иконкой');\n    const [value3, setValue3] = useState('');\n    const [value4, setValue4] = useState('Текст');\n\n    return (\n      <div\n        style={{\n          display: 'flex',\n          flexDirection: 'column',\n          gap: '1rem',\n          width: '400px',\n        }}\n      >\n        {/* Сценарий 3: onClear + value → только крестик */}\n        <TextField\n          {...args}\n          label=\"onClear + value → крестик\"\n          value={value1}\n          onChange={(e: ChangeEvent<HTMLInputElement>) =>\n            setValue1(e.target.value)\n          }\n          onClear={() => setValue1('')}\n        />\n\n        {/* Сценарий 2: onClear + value + contentRight → [крестик | иконка] рядом */}\n        <TextField\n          {...args}\n          label=\"onClear + value + contentRight → рядом\"\n          value={value2}\n          contentRight={<IconCalendarOutline size=\"s\" />}\n          onChange={(e: ChangeEvent<HTMLInputElement>) =>\n            setValue2(e.target.value)\n          }\n          onClear={() => setValue2('')}\n        />\n\n        {/* Сценарий 4: onClear без value → крестик скрыт, contentRight как есть */}\n        <TextField\n          {...args}\n          label=\"Пустое значение — крестик скрыт\"\n          value={value3}\n          contentRight={<IconCalendarOutline size=\"s\" />}\n          onChange={(e: ChangeEvent<HTMLInputElement>) =>\n            setValue3(e.target.value)\n          }\n          onClear={() => setValue3('')}\n        />\n\n        {/* Сценарий 1: readOnly → замок (заменяет всё) */}\n        <TextField\n          {...args}\n          label=\"ReadOnly — замок вместо крестика и contentRight\"\n          value=\"Только для чтения\"\n          readOnly\n          contentRight={<IconCalendarOutline size=\"s\" />}\n          onClear={() => {}}\n        />\n\n        {/* Сценарий 1: disabled → замок (заменяет всё) */}\n        <TextField\n          {...args}\n          label=\"Disabled — замок вместо крестика и contentRight\"\n          value=\"Заблокировано\"\n          disabled\n          contentRight={<IconCalendarOutline size=\"s\" />}\n          onClear={() => {}}\n        />\n\n        {/* Сценарий 4: только contentRight, без onClear */}\n        <TextField\n          {...args}\n          label=\"Только contentRight, без onClear\"\n          value={value4}\n          contentRight={<IconCalendarOutline size=\"s\" />}\n          onChange={(e: ChangeEvent<HTMLInputElement>) =>\n            setValue4(e.target.value)\n          }\n        />\n      </div>\n    );\n  }"
         }
       ],
+      "chooseWhen": "Вне react-hook-form — однострочное поле с value/onChange напрямую.",
       "hasCuratedMeta": true,
       "inheritedProps": [
         {
@@ -35475,6 +35494,7 @@
         "hover",
         "тултип"
       ],
+      "chooseWhen": "Стабильная версия по умолчанию — показ по наведению/фокусу. Нужен явный выбор триггера, включая клик — TooltipBeta.",
       "hasCuratedMeta": true,
       "inheritedProps": [
         {
@@ -35828,6 +35848,7 @@
         "hover click focus",
         "тултип"
       ],
+      "chooseWhen": "Нужен явный выбор триггера (клик/hover/фокус) — иначе берите стабильный Tooltip.",
       "hasCuratedMeta": true,
       "inheritedProps": [],
       "atomicMcpVersion": "0.349.0",
@@ -40784,6 +40805,7 @@
         "поиск по списку",
         "подсказки ввода"
       ],
+      "chooseWhen": "Внутри формы на react-hook-form — принимает name/control/rules вместо value/onChange.",
       "hasCuratedMeta": true,
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
@@ -40917,6 +40939,7 @@
         "checkbox group",
         "выбор нескольких вариантов"
       ],
+      "chooseWhen": "Внутри формы на react-hook-form — одиночный чекбокс или группа через name/control, правила — через rules.",
       "hasCuratedMeta": true,
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
@@ -41377,6 +41400,7 @@
         "мультиселект",
         "поиск и выбор"
       ],
+      "chooseWhen": "Внутри формы на react-hook-form — тот же мультивыбор с поиском через name/control/rules.",
       "hasCuratedMeta": true,
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
@@ -41882,6 +41906,7 @@
         "выбор даты",
         "календарь в форме"
       ],
+      "chooseWhen": "Внутри формы на react-hook-form — добавляет валидацию формата и диапазона min/max через rules.",
       "hasCuratedMeta": true,
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
@@ -42495,6 +42520,7 @@
         "диапазон дат",
         "период дат"
       ],
+      "chooseWhen": "Внутри формы на react-hook-form — тот же диапазон дат с валидацией периода через rules.",
       "hasCuratedMeta": true,
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
@@ -42852,6 +42878,7 @@
         "input mask",
         "форматированный ввод"
       ],
+      "chooseWhen": "Внутри формы на react-hook-form — то же поле с маской, плюс поддержка чипов, через name/control.",
       "hasCuratedMeta": true,
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
@@ -43205,6 +43232,7 @@
         "number input",
         "денежный ввод"
       ],
+      "chooseWhen": "Внутри формы на react-hook-form — то же форматирование чисел через name/control/rules.",
       "hasCuratedMeta": true,
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
@@ -43323,6 +43351,7 @@
         "переключатель варианта",
         "одиночный радио"
       ],
+      "chooseWhen": "Только как элемент внутри FormRadioGroup для форм на react-hook-form — не используется отдельно от группы.",
       "hasCuratedMeta": true,
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
@@ -43428,6 +43457,7 @@
         "выбор одного варианта",
         "группа переключателей"
       ],
+      "chooseWhen": "Внутри формы на react-hook-form — та же группа радиокнопок с валидацией и подсказкой через name/control/rules.",
       "hasCuratedMeta": true,
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
@@ -43592,6 +43622,7 @@
         "переключатель вкладок",
         "выбор сегмента"
       ],
+      "chooseWhen": "Внутри формы на react-hook-form — тот же переключатель через name/control.",
       "hasCuratedMeta": true,
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
@@ -44026,6 +44057,7 @@
         "выпадающий список",
         "мультиселект"
       ],
+      "chooseWhen": "Внутри формы на react-hook-form — тот же список через name/control/rules.",
       "hasCuratedMeta": true,
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
@@ -44167,6 +44199,7 @@
         "тумблер",
         "toggle"
       ],
+      "chooseWhen": "Внутри формы на react-hook-form — тот же тумблер через name/control.",
       "hasCuratedMeta": true,
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
@@ -44457,6 +44490,7 @@
         "многострочный ввод",
         "счётчик символов"
       ],
+      "chooseWhen": "Внутри формы на react-hook-form — то же поле со счётчиком символов через name/control/rules.",
       "hasCuratedMeta": true,
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
@@ -44760,6 +44794,7 @@
         "поле ввода текста",
         "инпут с очисткой"
       ],
+      "chooseWhen": "Внутри формы на react-hook-form — то же поле с выводом ошибки валидации через name/control/rules.",
       "hasCuratedMeta": true,
       "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",

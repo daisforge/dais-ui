@@ -317,6 +317,9 @@ function processSimpleComponent(resolved, entry) {
     if (entry.hint) result.hint = entry.hint;
     if (entry.keywords?.length) result.keywords = entry.keywords;
     if (entry.role) result.role = entry.role;
+    if (entry.supersededBy) result.supersededBy = entry.supersededBy;
+    if (entry.chooseWhen) result.chooseWhen = entry.chooseWhen;
+    if (entry.gotchas?.length) result.gotchas = entry.gotchas;
   }
 
   for (const mdxPath of resolved.docsMdx) {
@@ -386,6 +389,9 @@ function processComplexComponent(resolved, entry) {
   if (entry.hint) result.hint = entry.hint;
   if (entry.keywords?.length) result.keywords = entry.keywords;
   if (entry.role) result.role = entry.role;
+  if (entry.supersededBy) result.supersededBy = entry.supersededBy;
+  if (entry.chooseWhen) result.chooseWhen = entry.chooseWhen;
+  if (entry.gotchas?.length) result.gotchas = entry.gotchas;
 
   const argTypesMapping = entry.api?.argTypesMapping || null;
 

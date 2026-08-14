@@ -124,7 +124,7 @@
 
 ### 1.5 `mergeMeta.ts`
 
-Читает `_docs/meta/components-meta.json`. Там, где компонент присутствует, поля `category`/`type`/`description`/`hint`/`keywords`/`scope`/`docs`/`apiDocs`/`stories` **перекрывают** эвристику индексера (curated wins over heuristic). Также:
+Читает `_docs/meta/components-meta.json`. Там, где компонент присутствует, поля `category`/`type`/`description`/`hint`/`keywords`/`scope`/`docs`/`apiDocs`/`stories`/`supersededBy`/`chooseWhen`/`gotchas` (T9) **перекрывают** эвристику индексера (curated wins over heuristic). Также:
 
 - переносит `pages["Установка и использование"]` как есть в `guides.installation` (без нового парсинга — переиспользование уже сгенерированного контента);
 - детектит `legacy: true` по вхождению "устаревш" в hint/description curated-текста — принципиальная проверка по смыслу, а не хардкод конкретного имени компонента (сейчас единственный кейс — `Table`).
@@ -137,11 +137,25 @@
 
 117 из 243 компонентов — чистые реэкспорты атомов `@salutejs/sdds-finai` (`export { X } from '@salutejs/sdds-finai'`), без единой строчки собственного кода и без Storybook-страницы. `meta-config.json`/`generate-meta.js` для них принципиально бесполезны — резолвятся по папке в `ui-kit`/Storybook, которой у чистых реэкспортов просто нет что описывать помимо самого факта реэкспорта.
 
-Для этих 117 — отдельный курируемый файл **`packages/mcp-server/vendor/atomic-curated-meta.json`** (`{ components: { <Name>: { description, category, keywords } } }`), НЕ проходящий через `generators/meta-info` вообще. `mergeAtomicCuratedMeta.ts` читает его напрямую (аналогично `mergeMeta.ts`, тот же паттерн `curated wins`) и выполняется в `buildIndex.ts` сразу после `mergeMeta`, до `linkFolderRoles`.
+Для этих 117 — отдельный курируемый файл **`packages/mcp-server/vendor/atomic-curated-meta.json`** (`{ components: { <Name>: { description, category, keywords, supersededBy?, chooseWhen?, gotchas? } } }`), НЕ проходящий через `generators/meta-info` вообще. `mergeAtomicCuratedMeta.ts` читает его напрямую (аналогично `mergeMeta.ts`, тот же паттерн `curated wins`) и выполняется в `buildIndex.ts` сразу после `mergeMeta`, до `linkFolderRoles`.
 
 Единственный практический источник контента при курировании этого файла — вендоренный снэпшот атомарки (`vendor/atomic-mcp-data/**/*.json`, поле `summary`) и `inheritedProps`; сам `summary` неровный (то голое имя компонента без содержания — `"Switch"`, `"Tooltip"` — то избыточный технический текст за 100-символьный лимит) и не годится как автоматический фолбэк в коде — описания в `atomic-curated-meta.json` написаны вручную по этому материалу, не скопированы напрямую.
 
 Название файла (`atomic-curated-meta.json`) намеренно похоже на `atomic-mcp-data/` — оба про атомарные компоненты — но это два независимых по происхождению файла: `atomic-mcp-data/` — вендоренный (внешний) снэпшот пропсов, обновляется через `mcp:vendor-atomic --source`; `atomic-curated-meta.json` — наш собственный курированный текст, правится вручную и не перезаписывается никаким внешним генератором.
+
+### 1.5b `supersededBy`/`chooseWhen`/`gotchas` — правила выбора между конкурирующими компонентами (T9)
+
+Библиотека держит несколько компонентов на одну задачу одновременно (legacy vs актуальный, wrapper vs form-обвязка, stable vs beta) — `legacy: true` (T2, `detectLegacy`) говорит только «этот не бери», не говорит «а бери вот этот». `supersededBy?: string` и `chooseWhen?: string` добавлены в `ComponentMeta`/`AtomicCuratedMetaEntry`/`ComponentRecord` (курируются точно так же, как `hint`/`keywords` — в `meta-config.json` для компонентов с собственным кодом, в `atomic-curated-meta.json` для чистых реэкспортов) и отдаются в `get_component` и `search_components` — именно там агент выбирает.
+
+Заполнено для трёх реальных конкурирующих групп (34 компонента), проверенных на факте импорта из `packages/ui-kit/src/index.ts`, а не по названию/описанию:
+
+- **`Table` (legacy) → `TableCanvas`** — `supersededBy` у `Table`, `chooseWhen` у обоих.
+- **14 form-пар** (`Autocomplete`/`FormAutocomplete`, `Select`/`FormSelect` и т.д., 28 компонентов) — `chooseWhen` формулирует единый для всех пар критерий: вне react-hook-form (value/onChange) vs внутри формы на react-hook-form (name/control/rules), см. CLAUDE.md §5.
+- **2 stable/beta-пары** (`Popover`/`PopoverBeta`, `Tooltip`/`TooltipBeta`) — `chooseWhen` разводит по конкретной возможности (ресайз/портал/явный триггер), а не просто «beta новее».
+
+**Важная поправка, обнаруженная при исполнении**: изначальный список кандидатов из постановки задачи (`Table`, `TableCanvas`, `TableGlide`, `TableGlideInstance`, `DataEditor`) — неполный и частично неверный. Проверка `packages/ui-kit/src/index.ts` показала: `DataEditor` не экспортируется из ui-kit вообще (это тип из `@glideappsfinal/glide-data-grid`, используется только для тайпинга рефов внутри `TableGlide`/`TableCanvas` — то, что индекс до этой находки показывал ему `importPath: '@daisforge/ui'`, оказалось ложным срабатыванием `resolveImportPath` на несуществующем экспорте, отдельный баг индексера, не входящий в T9); `TableGlideInstance` — тоже не экспортируется из корня, только глубоко внутри `TableCanvas` как адаптер/тип рефа; `TableGlide` технически достижим глубоким импортом (`@daisforge/ui/components/TableGlide`), но не из корневого barrel. `TableContract` и `TableSDDS` из корня реально экспортируются, но по итоговому решению не включены в группу выбора — не целевые для типового выбора агента компоненты. В группу остались только `Table`/`TableCanvas` — оба фигурируют в CLAUDE.md как явная рекомендация команды.
+
+**`gotchas?: string[]`** (T9, п.4) в схему добавлен (типы/мёрдж/выдача готовы), но контентом сознательно не заполнен в этом заходе — это самый нестрогий пункт постановки («не для всех, а только там, где ошибка реально частая», не входит в критерий приёмки), и после находки про `DataEditor`/`TableGlideInstance` каждое утверждение здесь требует такой же проверки по коду, что кратно дороже `chooseWhen`. Задел для будущего заполнения.
 
 ### 1.6 Атомарные данные — вендоринг (`vendorAtomicData.ts` + `mergeAtomicData.ts`)
 
@@ -300,6 +314,7 @@
 - Иконки/токены/миксины/утилиты не проиндексированы — сознательная граница v1.
 - `get_installation_guide` содержит устаревшее имя пакета (`@sber-digital-finance-ui/ui-kit`) — проблема в самом курированном `_docs/meta/components-meta.json`, не в индексере.
 - Три пары внутренних sub-компонентов с одинаковым именем в разных папках таблиц (`TableFilterSelectListItem`, `ContainerStyled`, `Canvas`) — при коллизии в индекс попадает только последняя обработанная запись.
+- **`resolveImportPath` даёт ложный `importPath` для `DataEditor`** (`@daisforge/ui`) и, вероятно, для других находок `discoverComponents`, которые технически резолвятся тайпчекером, но не реально не экспортируются ни одним публичным barrel-файлом ui-kit (обнаружено при T9 — см. §1.5b). `DataEditor` — тип из `@glideappsfinal/glide-data-grid`, используется только для тайпинга рефов внутри `TableGlide`/`TableCanvas`, значением из `@daisforge/ui` никогда не был. Требует отдельной проверки: сверять найденный `importPath` с реальным содержимым `packages/ui-kit/src/index.ts`/папочного barrel, а не доверять резолву тайпчекера вслепую. Не входит в T9 — предмет отдельной задачи.
 - Поиск слабее на общих словах, которые встречаются во многих фичах одновременно (например "ячеек").
 - `atomicDataMissing: true` — часть compound-частей атомарных компонентов не имеет отдельной записи в вендоренном снэпшоте (их доки организованы по родительской странице, не по каждому именованному экспорту).
 - У 3 compound-частей (`DrawerDF.Header.badge`, `DrawerDF.DotsIconButton.dropdownProps`, `FiltersActions.DotsIconButton.dropdownProps`) текст типа — нечитаемый вложенный `Omit<Omit<PropsType<...`. Это не провал резолва (`resolveCompoundPart` находит декларацию штатно, `tryExtractViaComponentProps`-фолбэк из T13 тут не участвует) — сам исходный тип поля (`badge?: (BadgeCompProps & { text: string }) | undefined`) генуинно сложный, и принтер TypeScript теряет имя вложенного алиаса при печати вычисленного типа intersection. Требует отдельной правки печати типа (например `type.getText(node, ts.TypeFormatFlags.UseAliasDefinedOutsideCurrentScope)`), не относится к T13.

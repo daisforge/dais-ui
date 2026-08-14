@@ -264,6 +264,7 @@
       "type": "wrapper",
       "category": "Локальные компоненты",
       "description": "Поле ввода с подсказками из выпадающего списка и кнопкой очистки значения",
+      "chooseWhen": "Вне react-hook-form — самостоятельное поле с value/onChange, без встроенной интеграции с формой.",
       "keywords": [
         "поле с подсказками",
         "search input",
@@ -276,6 +277,7 @@
       "type": "wrapper",
       "category": "Локальные компоненты",
       "description": "Однострочное поле ввода текста с кнопкой очистки значения.",
+      "chooseWhen": "Вне react-hook-form — однострочное поле с value/onChange напрямую.",
       "keywords": [
         "ввод текста",
         "input поле",
@@ -298,6 +300,7 @@
       "type": "wrapper",
       "category": "Локальные компоненты",
       "description": "Многострочное текстовое поле с кнопкой очистки содержимого.",
+      "chooseWhen": "Вне react-hook-form — многострочное поле с value/onChange напрямую.",
       "keywords": [
         "многострочный ввод",
         "поле для комментария",
@@ -309,6 +312,7 @@
       "type": "wrapper",
       "category": "Локальные компоненты",
       "description": "Тумблер для мгновенного переключения состояния вкл/выкл в интерфейсе.",
+      "chooseWhen": "Вне react-hook-form — тумблер вкл/выкл с value/onChange напрямую.",
       "keywords": [
         "toggle",
         "переключатель настройки",
@@ -356,6 +360,7 @@
       "category": "Локальные компоненты",
       "description": "Основная канвасная таблица: сортировка, фильтры, группировка, редактирование ячеек.",
       "hint": "Основная таблица. Если пользователь спрашивает про 'таблицу' — скорее всего TableCanvas. Для табличных вкладок — TableTabs.",
+      "chooseWhen": "Таблица по умолчанию для нового кода: нужны сортировка/фильтры/группировка/массовые действия/редактирование ячеек из коробки, без ручной сборки.",
       "rootDocs": "TableCanvas/TableCanvas.Docs.mdx",
       "api": {
         "dir": "TableCanvas/API",
@@ -473,6 +478,8 @@
       "category": "Локальные компоненты",
       "description": "Устаревшая HTML-таблица (react-data-grid); для новых проектов используйте TableCanvas.",
       "hint": "Устаревшая таблица. Если пользователь не уточняет — скорее всего ему нужна TableCanvas. Table — для legacy-проектов.",
+      "supersededBy": "TableCanvas",
+      "chooseWhen": "Практически никогда для нового кода — только для доработки уже существующих экранов на react-data-grid, где миграция на TableCanvas не входит в задачу.",
       "rootDocs": "Table/Table.Docs.mdx",
       "api": {
         "dir": "Table/API",
@@ -562,6 +569,7 @@
       "type": "wrapper",
       "category": "Локальные компоненты",
       "description": "Выпадающий список с поиском и мультивыбором значений в виде чипов",
+      "chooseWhen": "Вне react-hook-form — самостоятельный компонент с value/onChange для мультивыбора с поиском.",
       "keywords": [
         "автокомплит",
         "мультиselect",
@@ -573,6 +581,7 @@
       "type": "wrapper",
       "category": "Локальные компоненты",
       "description": "Поле выбора одной даты со встроенным календарём и иконкой",
+      "chooseWhen": "Вне react-hook-form — самостоятельный выбор даты с value/onChange.",
       "keywords": [
         "выбор даты",
         "календарь",
@@ -584,6 +593,7 @@
       "type": "form",
       "category": "Формы",
       "description": "Поле автодополнения с поиском по вариантам для форм на react-hook-form",
+      "chooseWhen": "Внутри формы на react-hook-form — принимает name/control/rules вместо value/onChange.",
       "keywords": [
         "autocomplete",
         "поиск по списку",
@@ -595,6 +605,7 @@
       "type": "form",
       "category": "Формы",
       "description": "Чекбокс (одиночный или группа) для react-hook-form, без встроенной валидации",
+      "chooseWhen": "Внутри формы на react-hook-form — одиночный чекбокс или группа через name/control, правила — через rules.",
       "keywords": [
         "флажок",
         "checkbox group",
@@ -606,6 +617,7 @@
       "type": "form",
       "category": "Формы",
       "description": "Комбобокс с поиском и мультивыбором опций, интегрированный с react-hook-form",
+      "chooseWhen": "Внутри формы на react-hook-form — тот же мультивыбор с поиском через name/control/rules.",
       "keywords": [
         "combobox",
         "мультиселект",
@@ -617,6 +629,7 @@
       "type": "form",
       "category": "Формы",
       "description": "Выбор одной даты с валидацией формата и диапазона min/max для форм",
+      "chooseWhen": "Внутри формы на react-hook-form — добавляет валидацию формата и диапазона min/max через rules.",
       "keywords": [
         "date picker",
         "выбор даты",
@@ -628,6 +641,7 @@
       "type": "form",
       "category": "Формы",
       "description": "Выбор диапазона дат (от-до) с валидацией периода для react-hook-form",
+      "chooseWhen": "Внутри формы на react-hook-form — тот же диапазон дат с валидацией периода через rules.",
       "keywords": [
         "date range",
         "диапазон дат",
@@ -639,6 +653,7 @@
       "type": "form",
       "category": "Формы",
       "description": "Поле ввода по маске (телефон, карта и т.п.) с поддержкой чипов для форм",
+      "chooseWhen": "Внутри формы на react-hook-form — то же поле с маской, плюс поддержка чипов, через name/control.",
       "keywords": [
         "маска ввода",
         "input mask",
@@ -650,6 +665,7 @@
       "type": "form",
       "category": "Формы",
       "description": "Поле ввода чисел с форматированием (разряды, валюта) для react-hook-form",
+      "chooseWhen": "Внутри формы на react-hook-form — то же форматирование чисел через name/control/rules.",
       "keywords": [
         "числовой формат",
         "number input",
@@ -661,6 +677,7 @@
       "type": "form",
       "category": "Формы",
       "description": "Одна радио-кнопка — элемент внутри группы FormRadioGroup для форм",
+      "chooseWhen": "Только как элемент внутри FormRadioGroup для форм на react-hook-form — не используется отдельно от группы.",
       "keywords": [
         "radio item",
         "переключатель варианта",
@@ -672,6 +689,7 @@
       "type": "form",
       "category": "Формы",
       "description": "Группа радио-кнопок с валидацией и подсказкой для форм react-hook-form",
+      "chooseWhen": "Внутри формы на react-hook-form — та же группа радиокнопок с валидацией и подсказкой через name/control/rules.",
       "keywords": [
         "radio group",
         "выбор одного варианта",
@@ -683,6 +701,7 @@
       "type": "form",
       "category": "Формы",
       "description": "Сегментированный переключатель с одиночным или множественным выбором для форм",
+      "chooseWhen": "Внутри формы на react-hook-form — тот же переключатель через name/control.",
       "keywords": [
         "segmented control",
         "переключатель вкладок",
@@ -694,6 +713,7 @@
       "type": "form",
       "category": "Формы",
       "description": "Выпадающий список с одиночным или множественным выбором для react-hook-form",
+      "chooseWhen": "Внутри формы на react-hook-form — тот же список через name/control/rules.",
       "keywords": [
         "select",
         "выпадающий список",
@@ -705,6 +725,7 @@
       "type": "form",
       "category": "Формы",
       "description": "Переключатель вкл/выкл для форм на react-hook-form, без встроенной валидации",
+      "chooseWhen": "Внутри формы на react-hook-form — тот же тумблер через name/control.",
       "keywords": [
         "switch",
         "тумблер",
@@ -716,6 +737,7 @@
       "type": "form",
       "category": "Формы",
       "description": "Многострочное текстовое поле со счётчиком символов и кнопкой очистки",
+      "chooseWhen": "Внутри формы на react-hook-form — то же поле со счётчиком символов через name/control/rules.",
       "keywords": [
         "textarea",
         "многострочный ввод",
@@ -727,6 +749,7 @@
       "type": "form",
       "category": "Формы",
       "description": "Однострочное текстовое поле с кнопкой очистки и выводом ошибки валидации",
+      "chooseWhen": "Внутри формы на react-hook-form — то же поле с выводом ошибки валидации через name/control/rules.",
       "keywords": [
         "text input",
         "поле ввода текста",
@@ -814,6 +837,7 @@
       "type": "wrapper",
       "category": "Локальные компоненты",
       "description": "Поле ввода с форматированием чисел (разделители, десятичные) и кнопкой очистки",
+      "chooseWhen": "Вне react-hook-form — форматированное числовое поле с value/onChange напрямую.",
       "keywords": [
         "форматированное число",
         "разделители разрядов",

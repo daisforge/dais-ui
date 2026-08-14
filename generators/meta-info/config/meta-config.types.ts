@@ -80,6 +80,28 @@ export interface SimpleComponentConfig {
    * списком структурных слотов (например FiltersActionsTabs/FiltersActionsTabItem).
    */
   role?: 'primary' | 'part' | 'internal';
+
+  /**
+   * Имя компонента, который заменяет этот при `hint`/`description`,
+   * детектящихся как `legacy` (см. detectLegacy в mergeMeta.ts). Обязателен
+   * для каждого legacy-компонента (TASKS.md T9).
+   */
+  supersededBy?: string;
+
+  /**
+   * Одна строка: при каких условиях брать именно ЭТОТ компонент из группы
+   * конкурирующих (Table/TableCanvas/TableGlide/..., Select/FormSelect и
+   * т.п.) — заполняется у КАЖДОГО члена группы, не только у рекомендуемого
+   * (TASKS.md T9).
+   */
+  chooseWhen?: string;
+
+  /**
+   * 1-3 строки антипаттернов — только там, где ошибка реально частая
+   * (обязательные пары компонентов, взаимоисключающие пропсы, компонент вне
+   * Portal и т.п.). Не заполняется для всех подряд (TASKS.md T9).
+   */
+  gotchas?: string[];
 }
 
 /** Конфигурация сложного компонента (TableCanvas и подобные) */

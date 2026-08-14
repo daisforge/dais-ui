@@ -48,6 +48,9 @@ export function mergeAtomicCuratedMeta(
     ...(entry.category ? { category: entry.category } : {}),
     ...(entry.description ? { description: entry.description } : {}),
     ...(entry.keywords?.length ? { keywords: entry.keywords } : {}),
+    ...(entry.supersededBy ? { supersededBy: entry.supersededBy } : {}),
+    ...(entry.chooseWhen ? { chooseWhen: entry.chooseWhen } : {}),
+    ...(entry.gotchas?.length ? { gotchas: entry.gotchas } : {}),
     hasCuratedMeta: true as const,
   };
 }
