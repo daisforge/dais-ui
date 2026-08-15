@@ -581,7 +581,7 @@ function AsyncCellDropdownExample({ shouldFail }: { shouldFail: boolean }) {
 
 const code = `
 import { createRows, type Row } from './data/tableData';
-import { ColumnConfig, Table } from '@sber-digital-finance-ui/ui-kit';
+import { ColumnConfig, Table } from '@daisforge/ui';
 import React, { useMemo, useState } from 'react';
 
 ${getFuncAsString(

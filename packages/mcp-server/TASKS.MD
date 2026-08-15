@@ -28,18 +28,21 @@
 | _(не закоммичено)_ | **T6** — значения по умолчанию у own-пропсов | ⚠️ оба источника (деструктуризация параметра, `@default` JSDoc) работают корректно; доля own-пропсов с непустым `default` — **8.3% (279/3358)** при цели ≥25% (структурная причина, не баг — см. ARCHITECTURE.md §5); 0 записей с `default: ""` |
 | _(не закоммичено)_ | **T7** — порядок и качество описаний пропсов | ⚠️ сортировка (`required` → с описанием → без → `deprecated`, алфавит внутри яруса) и фильтр React DOM-описаний работают; `validateIndex`/`probe.tsconfig.json` — те же 555/432 диагностик, что и baseline (проверено `git stash`), регрессий нет; первые 5 пропсов — осмысленные у `Select`/`Button`/`DrawerDF` (3 из 4 контрольных), у `TextField` 2 из 5 (`autoComplete`/`enterKeyHint`) остаются DOM-подобными — не регрессия сортировки, а следствие того, что у `TextField` всего 5 own-пропсов (остальное ушло в `inheritedProps` при мёрдже с вендором, T14), и оба поля намеренно защищены T4 от денылиста; 0 описаний, дословно совпадающих с React DOM |
 | _(не закоммичено)_ | **T9** — правила выбора между конкурирующими компонентами | ✅ `supersededBy` заполнен у 1/1 `legacy`-компонента (`Table` → `TableCanvas`); `chooseWhen` заполнен у 34 компонентов трёх проверенных по факту экспорта групп (`Table`/`TableCanvas`; 14 form-пар, 28 компонентов; `Popover`/`PopoverBeta`, `Tooltip`/`TooltipBeta`); оба поля отдаются в `get_component` и `search_components`; ⚠️ `gotchas` — сознательно не заполнен (см. пояснение ниже) |
+| _(не закоммичено)_ | **T8** — схлопнуть одноразовые тулы в ресурсы | ✅ `list_categories`/`get_installation_guide` переведены в MCP-ресурсы (`daisforge-ui://catalog/categories`, `daisforge-ui://catalog/installation-guide`), проверено живым stdio-смоук-тестом (`resources/list`+`resources/read`); тулов 11 → **9**; значения `category` продублированы в описание `list_components`; ⚠️ пункт 1 постановки («почини имя пакета в `_docs/meta/components-meta.json`») оказался уже неактуален для `get_installation_guide` конкретно (см. поправка ниже), но то же старое имя пакета жило в 6 файлах Storybook-примеров (`Stories`, `TableCanvas.ContextMenu`, `CanvasIconButton`, `CanvasEmbedIconButton`, `Table.contextMenu`) — почищено там же, `npm run meta`+`npm run mcp:build-index` перегенерированы, `validateIndex` — те же 555/432 диагностики, регрессий нет |
 
 Побочный критерий T4 перепроверен после T13/T14 — без изменений: **12** компонентов с >50 собственными пропсами (было 16 → 12 после T4; T13/T14 не рассчитаны на сокращение этого числа, прогноз в предыдущей версии этого файла не подтвердился). Нужна отдельная работа — не входит в T13/T14.
 
-Не начаты: **T8**, **T15**, **T10** (замер после всего). T2 (`hint`) отдельно не трогали — T2 просила только description/category/keywords; `hint` остаётся 8/243, T9 закрыла именно эту потребность отдельными полями `supersededBy`/`chooseWhen`, не через `hint`.
+Не начаты: **T15**, **T10** (замер после всего). T2 (`hint`) отдельно не трогали — T2 просила только description/category/keywords; `hint` остаётся 8/243, T9 закрыла именно эту потребность отдельными полями `supersededBy`/`chooseWhen`, не через `hint`.
 
 **Важная поправка по T3, обнаруженная при исполнении**: изначальная постановка называла источниками только curated Storybook-стори и грep по монорепо (`collectUsageExamples.ts`). Этого хватило на 56.0% (136/243) — ниже цели, разрыв структурный: этот чекаут не содержит `webpack-finportal-platform`/`webpack-project-finalheader` из CLAUDE.md, часть примитивов (`Row`, `Col`, `Card`, `Toast`) реально нигде не используется в имеющихся `packages/storybook`+`packages/vite-project`. Третий, изначально не учтённый источник — сам вендоренный снэпшот `vendor/atomic-mcp-data/**/<atomicBase>.json` (уже читается `mergeAtomicData.ts` ради `api.props`, см. T14) несёт собственное поле `examples[]: {title, snippet}` — готовый curated-код от атомарной команды, 71 из 77 файлов (92%) непустые. Подключение этого источника (`vendorExamples.ts`, с переписыванием импорта `@salutejs/sdds-finai` → `@daisforge/ui`) подняло итог до 75.3% — выше цели без единого нового грепа. Четвёртый источник, предложенный по ходу ревью: у compound-частей (`AccordionItem` и т.п.) нет своего файла в вендорном снэпшоте — `mergeAtomicData` для них не резолвит `atomicBase` вовсе, — но их реальное использование почти всегда показано ВНУТРИ примеров родителя (`Accordion.json` целиком построен вокруг `<AccordionItem>`). `vendorUsageExamples.ts` сканирует `examples[]` ВСЕХ вендорных файлов разом за такими "чужими" вхождениями — подняло итог до 86.0%. Подробности — `ARCHITECTURE.md` §1.8b.
 
-**Остановились здесь**: T14 → T13 → T11 → T12 → T2 → T3 → T6 → T7 → T9 выполнены и закоммичены. Следующий шаг по порядку исполнения — **T8** (можно параллельно с T15).
+**Остановились здесь**: T14 → T13 → T11 → T12 → T2 → T3 → T6 → T7 → T9 → T8 выполнены (T8 — не закоммичено). Следующий шаг по порядку исполнения — **T15** (T10 — финальный замер после всего).
 
 **Важная поправка по T9, обнаруженная при исполнении**: исходный список кандидатов в Table-группу (`Table`, `TableCanvas`, `TableGlide`, `TableGlideInstance`, `DataEditor`) оказался неполным и частично неверным — проверка `packages/ui-kit/src/index.ts` (по прямому указанию в ревью, до этого код полагался на данные индекса) показала, что `DataEditor`/`TableGlideInstance` не экспортируются из ui-kit НИКАК (то, что индекс давал `DataEditor` `importPath: '@daisforge/ui'` — отдельный баг `resolveImportPath`, зафиксирован в ARCHITECTURE.md §5, не входит в T9), а `TableGlide` — только глубоким импортом, не из корневого barrel. `TableContract`/`TableSDDS` экспортируются реально, но по решению не включены как не целевые для типового выбора. Итоговая группа — только `Table`/`TableCanvas` (оба явно упомянуты в CLAUDE.md). Подробности — `ARCHITECTURE.md` §1.5b.
 
 **Важная поправка по T2, обнаруженная при исполнении**: `_docs/meta/components-meta.json` (изначально названный целевым файлом для правок) — генерируемый build-артефакт (`npm run meta` из `generators/meta-info/generate-meta.js`), редактировать его напрямую нельзя — правки теряются при регенерации. Реальных редактируемых источника — два: `generators/meta-info/config/meta-config.json` (126 компонентов с собственным кодом в `ui-kit`) и новый `packages/mcp-server/vendor/atomic-curated-meta.json` (117 чистых реэкспортов атомов `@salutejs/sdds-finai`, у которых нет ни своего кода, ни Storybook-страницы — `generators/meta-info` их принципиально не видит). Подробности — `ARCHITECTURE.md` §1.5/§1.5a.
+
+**Важная поправка по T8, обнаруженная при исполнении**: пункт 1 постановки («почини имя пакета в `_docs/meta/components-meta.json`, это делается первым») исходил из README/ARCHITECTURE-заметки «`get_installation_guide` содержит `@sber-digital-finance-ui/ui-kit`» — на момент старта T8 эта заметка оказалась уже неактуальной: живой прогон `get_installation_guide` (до перевода в ресурс) показал `guides.installation.docs` без единого упоминания старого имени (кто-то независимо перегенерировал `components-meta.json` после переименования пакета в `@daisforge/ui`, не отражённого в TASKS.MD). Но то же старое имя пакета оказалось живо в другом месте — `_docs/meta/components-meta.json` целиком (**не** только страница установки) содержал 15 вхождений `@sber-digital-finance-ui/ui-kit` в `code`-сниппетах `pages`/`stories`, извлекаемых `generators/meta-info/parsers/parseStories.js` буквально из текста импорта в исходниках 6 файлов Storybook (`Stories.mdx`, `Stories.stories.tsx`, `TableCanvasContextMenu.stories.tsx`, `CanvasIconButton.stories.tsx`, `CanvasEmbedIconButton.stories.tsx`, `Table.contextMenu.stories.tsx`) — это утекало в `get_component_examples`/`get_feature_examples` (T3: `vendorExamples`/`curatedStories`), не в `get_installation_guide`. Почищено в первоисточнике (сами `.stories.tsx`/`.mdx`), не в сгенерированном JSON — по тому же принципу «curated wins over heuristic» источник правды не build-артефакт. Побочный эффект перевода в ресурс: `dataVersionNotice` в `resolveIndex.ts` содержал текст «вызовите `get_installation_guide`» — тул, которого после T8 больше нет; поправлено на «прочитайте ресурс `daisforge-ui://catalog/installation-guide`».
 
 ---
 
@@ -299,7 +302,7 @@ const idx=require('./data/component-index.json');
 
 ---
 
-## T8. Схлопнуть одноразовые тулы в ресурсы
+## T8. Схлопнуть одноразовые тулы в ресурсы ✅ Выполнено
 
 **Приоритет: низкий. Тип: код. Меняет публичный контракт.**
 
@@ -307,13 +310,27 @@ const idx=require('./data/component-index.json');
 
 Дополнительно: `get_installation_guide` содержит устаревшее имя пакета `@sber-digital-finance-ui/ui-kit` (проблема в курированном `components-meta.json`, известна и зафиксирована в `ARCHITECTURE.md`).
 
-Что сделать:
+Файлы — по факту (см. поправку в «Статус»): `src/server.ts`, `src/resolveIndex.ts`, `packages/storybook/src/stories/Stories/{Stories.mdx,Stories.stories.tsx}`, `packages/storybook/src/stories/TableCanvas/**/*.stories.tsx`, `packages/storybook/src/stories/Table/Table.contextMenu/Table.contextMenu.stories.tsx`.
 
-1. Починить имя пакета в `_docs/meta/components-meta.json` — это делается независимо от остального и первым.
-2. Перевести оба на MCP resources (`server.registerResource`). Список категорий продублировать в описание тула `list_components` — он там нужен как значения параметра `category`.
-3. Итог: 11 тулов → 9.
+Что сделано:
 
-Приёмка: `get_installation_guide` не упоминает `@sber-digital-finance-ui`; ресурсы читаются через MCP Inspector.
+1. Пункт 1 постановки («почини имя пакета в `components-meta.json`») на момент начала T8 оказался уже неактуален конкретно для `get_installation_guide` — но то же старое имя жило в 6 файлах Storybook-примеров (не в самом `components-meta.json` — он лишь извлекает их текст) и утекало в `get_component_examples`/`get_feature_examples`. Почищено в первоисточнике, `npm run meta`+`npm run mcp:build-index` перегенерированы. Подробности — поправка в «Статус».
+2. `list_categories`/`get_installation_guide` переведены на `server.registerResource` — `daisforge-ui://catalog/categories` и `daisforge-ui://catalog/installation-guide`, контент тот же JSON, что раньше отдавали тулы (обёрнут тем же `truncateForResponse`, что и тулы, через новый `toResourceResult`).
+3. Значения `category` (три: `"Локальные компоненты"`/`"Композиции"`/`"Формы"`) продублированы прямо в описание тула `list_components` — агенту не нужен отдельный вызов ради значений параметра фильтра.
+4. Побочная находка: `dataVersionNotice` (`resolveIndex.ts`) советовал агенту «вызвать `get_installation_guide`» — тула с таким именем после перевода в ресурс больше нет. Поправлено на «прочитать ресурс `daisforge-ui://catalog/installation-guide`».
+5. `README.md`/`ARCHITECTURE.md` — таблицы тулов/ресурсов обновлены, стале-заметка про имя пакета в `get_installation_guide` снята (проблема закрыта).
+
+Приёмка:
+
+```bash
+node /tmp/mcp-smoke.mjs   # initialize → tools/list → resources/list → resources/read обоих ресурсов
+```
+
+- ✅ `tools/list` — 9 тулов (было 11), `list_categories`/`get_installation_guide` среди них нет.
+- ✅ `resources/list` — оба ресурса присутствуют с `title`/`description`/`mimeType`.
+- ✅ `resources/read('daisforge-ui://catalog/installation-guide')` не упоминает `@sber-digital-finance-ui` (проверено вживую через stdio-смоук, не только по индексу).
+- ✅ `resources/read('daisforge-ui://catalog/categories')` — тот же JSON, что раньше отдавал `list_categories()`.
+- ✅ `validateIndex` — те же 555/432 диагностики tsc, что и baseline, регрессий нет.
 
 ---
 
@@ -509,14 +526,15 @@ console.log('  с default:\"\":',all.filter(p=>p.default==='').length);
 
 ## Порядок исполнения
 
-~~T1~~ → ~~T4~~ → ~~T5~~ → ~~T14~~ → ~~T13~~ → ~~T11~~ → ~~T12~~ → ~~T2~~ → ~~T3~~ (86.0% при цели 60%, см. «Статус») → ~~T6~~ (8.3% при цели 25%, см. «Статус») → ~~T7~~ (3 из 4 контрольных компонентов, см. «Статус») → ~~T9~~ (34 компонента, `gotchas` не заполнен, см. «Статус») → **T8** → T15 → T10 (замер после всего).
+~~T1~~ → ~~T4~~ → ~~T5~~ → ~~T14~~ → ~~T13~~ → ~~T11~~ → ~~T12~~ → ~~T2~~ → ~~T3~~ (86.0% при цели 60%, см. «Статус») → ~~T6~~ (8.3% при цели 25%, см. «Статус») → ~~T7~~ (3 из 4 контрольных компонентов, см. «Статус») → ~~T9~~ (34 компонента, `gotchas` не заполнен, см. «Статус») → ~~T8~~ (11 тулов → 9, см. «Статус») → **T15** → T10 (замер после всего).
 
-Двенадцать выполнены (см. «Статус»). Остаток начинается с T8. Пояснение к порядку:
+Тринадцать выполнены (см. «Статус»). Остаток начинается с T15. Пояснение к порядку:
 
 - **T14 и T13 шли первыми**: чистый код, немедленный эффект на качество пропсов, не зависели от контентных задач. Побочный критерий T4 перепроверен после них — без изменений (12, см. «Статус»), нужна отдельная работа.
 - **T11 стоит перед T2**: контентная вычитка описаний должна идти уже по разделённому каталогу, чтобы не тратить усилия на 23 `internal`-записи. Сами по себе T11 и T2 дали эффект только вместе — 177 голых имён были бы немногим лучше 243 голых имён.
 - **T3 — после T11/T12/T2**: compound-dot-notation в usage-примерах опирается на T12-пары (какие плоские имена вообще искать), а сама формулировка задачи («лучший доступный источник примеров») предполагала уже разделённый по ролям и описанный каталог, не сырой список.
 - **T9 — после T2/T11**: `chooseWhen`/`supersededBy` — тот же curated-механизм (`meta-config.json`/`atomic-curated-meta.json`), что и `description`/`hint`/`role`, логично вести по уже размеченному каталогу.
+- **T8 — последней из контентно-независимых кодовых задач**: не зависит ни от одной другой задачи (публичный контракт тулов), но и не блокирует ничего — низкий приоритет, поэтому шла после всех задач с более высоким приоритетом.
 - **T15** — перед финальным замером T10.
 
 Контентная часть T11 (оверрайды `role`) — контентная, её можно вести параллельно с кодовыми задачами: она правит `generators/meta-info/config/meta-config.json`/`packages/mcp-server/vendor/atomic-curated-meta.json` (см. поправку в T2), а не `src/`.

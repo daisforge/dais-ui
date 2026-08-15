@@ -269,9 +269,9 @@
 2. **installed** — `require.resolve('@daisforge/ui/mcp-data/component-index.json')` относительно `process.cwd()` потребителя (не относительно нашего пакета!). Сработает только для версий `@daisforge/ui`, уже содержащих `mcp-data` (появится после первой публикации с этим MCP).
 3. **bundled** — запасной индекс, вшитый в сам `@daisforge/ui-mcp` (`data/component-index.json`, тот же файл, что и workspace-режим, но семантически означает "библиотека либо старая, либо не установлена"). Сравнивает `libVersion` из индекса с реально установленной версией `@daisforge/ui` (если есть) — при несовпадении или отсутствии добавляет `dataVersionNotice`/`libNotInstalled` в каждый ответ инструмента.
 
-Все три уровня протестированы вживую (см. историю сессии): реальный сценарий "`@daisforge/ui` не установлен вовсе" — сервер не падает, отдаёт `bundled`-индекс и корректно предупреждает агента, что стоит вызвать `get_installation_guide`.
+Все три уровня протестированы вживую (см. историю сессии): реальный сценарий "`@daisforge/ui` не установлен вовсе" — сервер не падает, отдаёт `bundled`-индекс и корректно предупреждает агента, что стоит прочитать ресурс `daisforge-ui://catalog/installation-guide` (T8: раньше это был тул `get_installation_guide`, см. §4).
 
-## 4. MCP-сервер и инструменты (`server.ts` + `src/tools/`)
+## 4. MCP-сервер, инструменты и ресурсы (`server.ts` + `src/tools/`)
 
 Транспорт — stdio (`@modelcontextprotocol/sdk`). Каждый инструмент — чистая функция `(index, args) → payload`, сервер оборачивает результат через `truncate.ts` перед отправкой.
 
@@ -285,8 +285,15 @@
 | `list_features({component})` | список фичей компонента |
 | `get_feature({component, feature})` | доки+API одной фичи (без тел примеров) |
 | `get_feature_examples({component, feature, title?})` | примеры кода конкретной фичи |
-| `list_categories()` | категории с разбивкой по типам |
-| `get_installation_guide()` | гайд по установке из `guides.installation` |
+
+Девять инструментов (T8, было 11) — `list_categories`/`get_installation_guide` не принимали аргументов и отдавали контент, не зависящий от вызова: типовой признак MCP-ресурса, а не тула-с-параметрами. Переведены в ресурсы, чтобы не занимать слот в списке тулов, который агент читает при каждом запросе:
+
+| Ресурс | Назначение |
+|---|---|
+| `daisforge-ui://catalog/categories` | категории с разбивкой по типам (бывший `list_categories()`) |
+| `daisforge-ui://catalog/installation-guide` | гайд по установке из `guides.installation` (бывший `get_installation_guide()`) |
+
+Значения `category` (три: `"Локальные компоненты"`/`"Композиции"`/`"Формы"`), которые раньше приходилось узнавать вызовом `list_categories`, теперь прямо в описании тула `list_components` — агенту не нужен отдельный вызов ради значений параметра фильтра. Читаются оба ресурса через `resources/read`; `toResourceResult` в `server.ts` оборачивает тот же `truncateForResponse`, что и тулы, — формат контента `{ uri, mimeType: 'application/json', text }` вместо `{ type: 'text', text }` у тулов (диктуется схемой `ReadResourceResult` SDK), сам JSON внутри `text` не меняется.
 
 `shared.ts` — общие хелперы резолва (`findComponent`, `findFeature` — регистронезависимо, с поддержкой вложенных путей вроде `CanvasElements/CanvasText`).
 
@@ -312,7 +319,6 @@
 ## 5. Известные ограничения (см. также README.md)
 
 - Иконки/токены/миксины/утилиты не проиндексированы — сознательная граница v1.
-- `get_installation_guide` содержит устаревшее имя пакета (`@sber-digital-finance-ui/ui-kit`) — проблема в самом курированном `_docs/meta/components-meta.json`, не в индексере.
 - Три пары внутренних sub-компонентов с одинаковым именем в разных папках таблиц (`TableFilterSelectListItem`, `ContainerStyled`, `Canvas`) — при коллизии в индекс попадает только последняя обработанная запись.
 - **`resolveImportPath` даёт ложный `importPath` для `DataEditor`** (`@daisforge/ui`) и, вероятно, для других находок `discoverComponents`, которые технически резолвятся тайпчекером, но не реально не экспортируются ни одним публичным barrel-файлом ui-kit (обнаружено при T9 — см. §1.5b). `DataEditor` — тип из `@glideappsfinal/glide-data-grid`, используется только для тайпинга рефов внутри `TableGlide`/`TableCanvas`, значением из `@daisforge/ui` никогда не был. Требует отдельной проверки: сверять найденный `importPath` с реальным содержимым `packages/ui-kit/src/index.ts`/папочного barrel, а не доверять резолву тайпчекера вслепую. Не входит в T9 — предмет отдельной задачи.
 - Поиск слабее на общих словах, которые встречаются во многих фичах одновременно (например "ячеек").

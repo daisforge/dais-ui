@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-13T14:46:01.601Z",
+  "generatedAt": "2026-08-15T11:35:00.466Z",
   "libVersion": "1.12.1",
   "components": {
     "Accordion": {
@@ -19835,7 +19835,7 @@
         "dropdown контент",
         "всплывающая подсказка"
       ],
-      "chooseWhen": "Стабильная версия по умолчанию — без ресайза и явного выбора триггера hover/click/focus. Нужен ресайз или гибкие триггеры — PopoverBeta.",
+      "chooseWhen": "Стабильная версия на текуший момент — без ресайза и явного выбора триггера hover/click/focus. Нужен ресайз или гибкие триггеры — PopoverBeta. В новых проектах - PopoverBeta. Если не устроил Popover, то PopoverBeta",
       "hasCuratedMeta": true,
       "inheritedProps": [
         {
@@ -20180,7 +20180,7 @@
         "resizable popup",
         "триггер наведения"
       ],
-      "chooseWhen": "Нужен изменяемый размер попапа, явный выбор триггера (hover/click/focus) или рендер в портал — иначе берите стабильный Popover.",
+      "chooseWhen": "Новая проработанная версия — нужен изменяемый размер попапа, явный выбор триггера (hover/click/focus) или рендер в портал — иначе берите стабильный Popover.",
       "hasCuratedMeta": true,
       "inheritedProps": [],
       "atomicMcpVersion": "0.349.0",
@@ -25737,55 +25737,55 @@
           "exportName": "Circle",
           "displayName": "Круглые триггеры",
           "type": "full-code",
-          "code": "import { Button, Stories } from '@sber-digital-finance-ui/ui-kit';\nimport { useState } from 'react';\n\n${getFuncAsString(\n  'packages/storybook/src/stories/Stories/Stories.stories.tsx',\n  'CircleStoriesExample',\n)}"
+          "code": "import { Button, Stories } from '@daisforge/ui';\nimport { useState } from 'react';\n\n${getFuncAsString(\n  'packages/storybook/src/stories/Stories/Stories.stories.tsx',\n  'CircleStoriesExample',\n)}"
         },
         {
           "exportName": "Rect",
           "displayName": "Прямоугольные триггеры",
           "type": "full-code",
-          "code": "import { Button, Stories } from '@sber-digital-finance-ui/ui-kit';\n\n${getFuncAsString(\n  'packages/storybook/src/stories/Stories/Stories.stories.tsx',\n  'RectStoriesExample',\n)}"
+          "code": "import { Button, Stories } from '@daisforge/ui';\n\n${getFuncAsString(\n  'packages/storybook/src/stories/Stories/Stories.stories.tsx',\n  'RectStoriesExample',\n)}"
         },
         {
           "exportName": "Loading",
           "displayName": "Спиннер загрузки (эмуляция)",
           "type": "full-code",
-          "code": "import { Stories } from '@sber-digital-finance-ui/ui-kit';\n\n${getFuncAsString(\n  'packages/storybook/src/stories/Stories/Stories.stories.tsx',\n  'LoadingStoriesExample',\n)}"
+          "code": "import { Stories } from '@daisforge/ui';\n\n${getFuncAsString(\n  'packages/storybook/src/stories/Stories/Stories.stories.tsx',\n  'LoadingStoriesExample',\n)}"
         },
         {
           "exportName": "ErrorState",
           "displayName": "Ошибка: дефолтный EmptyState + ретрай",
           "type": "full-code",
-          "code": "import { Stories } from '@sber-digital-finance-ui/ui-kit';\n\n${getFuncAsString(\n  'packages/storybook/src/stories/Stories/Stories.stories.tsx',\n  'ErrorStateExample',\n)}"
+          "code": "import { Stories } from '@daisforge/ui';\n\n${getFuncAsString(\n  'packages/storybook/src/stories/Stories/Stories.stories.tsx',\n  'ErrorStateExample',\n)}"
         },
         {
           "exportName": "ErrorCustom",
           "displayName": "Ошибка: кастомный контент (renderError)",
           "type": "full-code",
-          "code": "import { BodyS, Button, Stories, surfaceAccentMinor, surfaceInfo } from '@sber-digital-finance-ui/ui-kit';\nimport { br, s } from '@sber-digital-finance-ui/ui-kit/constants';\n\n${getFuncAsString(\n  'packages/storybook/src/stories/Stories/Stories.stories.tsx',\n  'ErrorCustomExample',\n)}"
+          "code": "import { BodyS, Button, Stories, surfaceAccentMinor, surfaceInfo } from '@daisforge/ui';\nimport { br, s } from '@daisforge/ui/constants';\n\n${getFuncAsString(\n  'packages/storybook/src/stories/Stories/Stories.stories.tsx',\n  'ErrorCustomExample',\n)}"
         },
         {
           "exportName": "ImperativeControl",
           "displayName": "Внешнее управление через ref",
           "type": "full-code",
-          "code": "import { Button, Stories, StoriesRef } from '@sber-digital-finance-ui/ui-kit';\nimport { useRef, useState } from 'react';\n\n${getFuncAsString(\n  'packages/storybook/src/stories/Stories/Stories.stories.tsx',\n  'ImperativeControlExample',\n)}"
+          "code": "import { Button, Stories, StoriesRef } from '@daisforge/ui';\nimport { useRef, useState } from 'react';\n\n${getFuncAsString(\n  'packages/storybook/src/stories/Stories/Stories.stories.tsx',\n  'ImperativeControlExample',\n)}"
         },
         {
           "exportName": "InsideModal",
           "displayName": "Триггеры внутри ModalDF",
           "type": "full-code",
-          "code": "import { Button, ModalDF, Stories } from '@sber-digital-finance-ui/ui-kit';\nimport { useState } from 'react';\n\n${getFuncAsString(\n  'packages/storybook/src/stories/Stories/Stories.stories.tsx',\n  'InsideModalExample',\n)}"
+          "code": "import { Button, ModalDF, Stories } from '@daisforge/ui';\nimport { useState } from 'react';\n\n${getFuncAsString(\n  'packages/storybook/src/stories/Stories/Stories.stories.tsx',\n  'InsideModalExample',\n)}"
         },
         {
           "exportName": "HiddenArrows",
           "displayName": "Стрелки скрыты (arrows=",
           "type": "full-code",
-          "code": "import { Stories } from '@sber-digital-finance-ui/ui-kit';\n\n${getFuncAsString(\n  'packages/storybook/src/stories/Stories/Stories.stories.tsx',\n  'HiddenArrowsExample',\n)}"
+          "code": "import { Stories } from '@daisforge/ui';\n\n${getFuncAsString(\n  'packages/storybook/src/stories/Stories/Stories.stories.tsx',\n  'HiddenArrowsExample',\n)}"
         },
         {
           "exportName": "Titles",
           "displayName": "Подписи: 2 строки, ellipsis, выравнивание",
           "type": "full-code",
-          "code": "import { Stories } from '@sber-digital-finance-ui/ui-kit';\n\n${getFuncAsString(\n  'packages/storybook/src/stories/Stories/Stories.stories.tsx',\n  'TitlesExample',\n)}"
+          "code": "import { Stories } from '@daisforge/ui';\n\n${getFuncAsString(\n  'packages/storybook/src/stories/Stories/Stories.stories.tsx',\n  'TitlesExample',\n)}"
         }
       ],
       "hasCuratedMeta": true,
@@ -25801,25 +25801,25 @@
           "exportName": "Circle",
           "displayName": "Круглые триггеры",
           "type": "full-code",
-          "code": "import { Button, Stories } from '@sber-digital-finance-ui/ui-kit';\nimport { useState } from 'react';\n\n${getFuncAsString(\n  'packages/storybook/src/stories/Stories/Stories.stories.tsx',\n  'CircleStoriesExample',\n)}"
+          "code": "import { Button, Stories } from '@daisforge/ui';\nimport { useState } from 'react';\n\n${getFuncAsString(\n  'packages/storybook/src/stories/Stories/Stories.stories.tsx',\n  'CircleStoriesExample',\n)}"
         },
         {
           "exportName": "Rect",
           "displayName": "Прямоугольные триггеры",
           "type": "full-code",
-          "code": "import { Button, Stories } from '@sber-digital-finance-ui/ui-kit';\n\n${getFuncAsString(\n  'packages/storybook/src/stories/Stories/Stories.stories.tsx',\n  'RectStoriesExample',\n)}"
+          "code": "import { Button, Stories } from '@daisforge/ui';\n\n${getFuncAsString(\n  'packages/storybook/src/stories/Stories/Stories.stories.tsx',\n  'RectStoriesExample',\n)}"
         },
         {
           "exportName": "Loading",
           "displayName": "Спиннер загрузки (эмуляция)",
           "type": "full-code",
-          "code": "import { Stories } from '@sber-digital-finance-ui/ui-kit';\n\n${getFuncAsString(\n  'packages/storybook/src/stories/Stories/Stories.stories.tsx',\n  'LoadingStoriesExample',\n)}"
+          "code": "import { Stories } from '@daisforge/ui';\n\n${getFuncAsString(\n  'packages/storybook/src/stories/Stories/Stories.stories.tsx',\n  'LoadingStoriesExample',\n)}"
         },
         {
           "exportName": "ErrorState",
           "displayName": "Ошибка: дефолтный EmptyState + ретрай",
           "type": "full-code",
-          "code": "import { Stories } from '@sber-digital-finance-ui/ui-kit';\n\n${getFuncAsString(\n  'packages/storybook/src/stories/Stories/Stories.stories.tsx',\n  'ErrorStateExample',\n)}"
+          "code": "import { Stories } from '@daisforge/ui';\n\n${getFuncAsString(\n  'packages/storybook/src/stories/Stories/Stories.stories.tsx',\n  'ErrorStateExample',\n)}"
         }
       ]
     },
@@ -35494,7 +35494,7 @@
         "hover",
         "тултип"
       ],
-      "chooseWhen": "Стабильная версия по умолчанию — показ по наведению/фокусу. Нужен явный выбор триггера, включая клик — TooltipBeta.",
+      "chooseWhen": "Стабильная версия на текущий момент — показ по наведению/фокусу. Нужен явный выбор триггера, включая клик — TooltipBeta. Новый проект - TooltipBeta.",
       "hasCuratedMeta": true,
       "inheritedProps": [
         {
@@ -35848,7 +35848,7 @@
         "hover click focus",
         "тултип"
       ],
-      "chooseWhen": "Нужен явный выбор триггера (клик/hover/фокус) — иначе берите стабильный Tooltip.",
+      "chooseWhen": "Новая версия с лучшей логикой работы слоев. Точно в новых проектах использовать его. Или в старых проектах, если не устроил обычный Tooltip. И точно если Нужен явный выбор триггера (клик/hover/фокус)",
       "hasCuratedMeta": true,
       "inheritedProps": [],
       "atomicMcpVersion": "0.349.0",
@@ -47949,7 +47949,7 @@
           "exportName": "Default",
           "displayName": "Default",
           "type": "full-code",
-          "code": "import { Canvas, ColumnConfig, TableCanvas } from '@sber-digital-finance-ui/ui-kit/components/TableCanvas';\nimport { IconSearch } from '@sber-digital-finance-ui/ui-kit/icons';"
+          "code": "import { Canvas, ColumnConfig, TableCanvas } from '@daisforge/ui/components/TableCanvas';\nimport { IconSearch } from '@daisforge/ui/icons';"
         }
       ]
     },
@@ -48212,31 +48212,31 @@
           "exportName": "ContextOnHeaderMenuDropdownStory",
           "displayName": "Контекстное меню Dropdown (шапка таблицы)",
           "type": "full-code",
-          "code": "import { createRows, type Row } from './data/tableData';\nimport { ColumnConfig, TableCanvas } from '@sber-digital-finance-ui/ui-kit/components/TableCanvas';\nimport React, { useMemo, useState } from 'react';\n\n${getFuncAsString(\n  'packages/storybook/src/stories/TableCanvas/TableCanvas.ContextMenu/TableCanvasContextMenu.stories.tsx',\n  'ExampleHeaderDropdown',\n)}"
+          "code": "import { createRows, type Row } from './data/tableData';\nimport { ColumnConfig, TableCanvas } from '@daisforge/ui/components/TableCanvas';\nimport React, { useMemo, useState } from 'react';\n\n${getFuncAsString(\n  'packages/storybook/src/stories/TableCanvas/TableCanvas.ContextMenu/TableCanvasContextMenu.stories.tsx',\n  'ExampleHeaderDropdown',\n)}"
         },
         {
           "exportName": "ContextOnHeaderMenuStory",
           "displayName": "Контекстное меню, функция обработчик (шапка таблицы)",
           "type": "full-code",
-          "code": "import { createRows, type Row } from './data/tableData';\nimport { ColumnConfig, TableCanvas } from '@sber-digital-finance-ui/ui-kit/components/TableCanvas';\nimport React, { useMemo, useState } from 'react';\n\n${getFuncAsString(\n  'packages/storybook/src/stories/TableCanvas/TableCanvas.ContextMenu/TableCanvasContextMenu.stories.tsx',\n  'ExampleHeaderHandler',\n)}"
+          "code": "import { createRows, type Row } from './data/tableData';\nimport { ColumnConfig, TableCanvas } from '@daisforge/ui/components/TableCanvas';\nimport React, { useMemo, useState } from 'react';\n\n${getFuncAsString(\n  'packages/storybook/src/stories/TableCanvas/TableCanvas.ContextMenu/TableCanvasContextMenu.stories.tsx',\n  'ExampleHeaderHandler',\n)}"
         },
         {
           "exportName": "ContextOnCellMenuDropdownStory",
           "displayName": "Контекстное меню Dropdown (cell таблицы)",
           "type": "full-code",
-          "code": "import { createRows, type Row } from './data/tableData';\nimport { ColumnConfig, TableCanvas } from '@sber-digital-finance-ui/ui-kit/components/TableCanvas';\nimport React, { useMemo, useState } from 'react';\n\n${getFuncAsString(\n  'packages/storybook/src/stories/TableCanvas/TableCanvas.ContextMenu/TableCanvasContextMenu.stories.tsx',\n  'ExampleCellDropdown',\n)}"
+          "code": "import { createRows, type Row } from './data/tableData';\nimport { ColumnConfig, TableCanvas } from '@daisforge/ui/components/TableCanvas';\nimport React, { useMemo, useState } from 'react';\n\n${getFuncAsString(\n  'packages/storybook/src/stories/TableCanvas/TableCanvas.ContextMenu/TableCanvasContextMenu.stories.tsx',\n  'ExampleCellDropdown',\n)}"
         },
         {
           "exportName": "ContextOnCellMenuStory",
           "displayName": "Контекстное меню, функция обработчик (cell таблицы)",
           "type": "full-code",
-          "code": "import { createRows, type Row } from './data/tableData';\nimport { ColumnConfig, TableCanvas } from '@sber-digital-finance-ui/ui-kit/components/TableCanvas';\nimport React, { useMemo, useState } from 'react';\n\n${getFuncAsString(\n  'packages/storybook/src/stories/TableCanvas/TableCanvas.ContextMenu/TableCanvasContextMenu.stories.tsx',\n  'ExampleCellHandler',\n)}"
+          "code": "import { createRows, type Row } from './data/tableData';\nimport { ColumnConfig, TableCanvas } from '@daisforge/ui/components/TableCanvas';\nimport React, { useMemo, useState } from 'react';\n\n${getFuncAsString(\n  'packages/storybook/src/stories/TableCanvas/TableCanvas.ContextMenu/TableCanvasContextMenu.stories.tsx',\n  'ExampleCellHandler',\n)}"
         },
         {
           "exportName": "ContextMenuCustomDropdownPropsStory",
           "displayName": "Кастомные свойства Dropdown (size, listWidth, closeOnSelect)",
           "type": "full-code",
-          "code": "import { createRows, type Row } from './data/tableData';\nimport { ColumnConfig, TableCanvas } from '@sber-digital-finance-ui/ui-kit/components/TableCanvas';\nimport React, { useMemo, useState } from 'react';\n\n${getFuncAsString(\n  'packages/storybook/src/stories/TableCanvas/TableCanvas.ContextMenu/TableCanvasContextMenu.stories.tsx',\n  'ExampleCustomDropdownProps',\n)}"
+          "code": "import { createRows, type Row } from './data/tableData';\nimport { ColumnConfig, TableCanvas } from '@daisforge/ui/components/TableCanvas';\nimport React, { useMemo, useState } from 'react';\n\n${getFuncAsString(\n  'packages/storybook/src/stories/TableCanvas/TableCanvas.ContextMenu/TableCanvasContextMenu.stories.tsx',\n  'ExampleCustomDropdownProps',\n)}"
         },
         {
           "exportName": "ContextOnCellAndOnHeaderMenuStory",

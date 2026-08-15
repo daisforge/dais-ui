@@ -45,7 +45,7 @@ function buildDataVersionNotice(
   installedLibVersion: string | undefined,
 ): string | undefined {
   if (libNotInstalled) {
-    return `@daisforge/ui не установлен в этом проекте. Данные MCP соответствуют версии ${libVersion} — вызовите get_installation_guide, чтобы подключить библиотеку.`;
+    return `@daisforge/ui не установлен в этом проекте. Данные MCP соответствуют версии ${libVersion} — прочитайте ресурс daisforge-ui://catalog/installation-guide, чтобы подключить библиотеку.`;
   }
   if (versionMismatch) {
     return `Данные MCP соответствуют @daisforge/ui@${libVersion}, у вас установлена ${installedLibVersion} — возможны расхождения в пропсах. Обновите @daisforge/ui для точных данных.`;

@@ -7,7 +7,10 @@ import type {
   ShapeOutput,
   ZodRawShapeCompat,
 } from '@modelcontextprotocol/sdk/server/zod-compat.js';
-import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js';
+import type {
+  CallToolResult,
+  ReadResourceResult,
+} from '@modelcontextprotocol/sdk/types.js';
 import { z } from 'zod';
 
 import { resolveIndex } from './resolveIndex.js';
@@ -44,6 +47,19 @@ function loadIndex(): RuntimeIndex {
  */
 function toToolResult(payload: unknown): CallToolResult {
   return { content: [{ type: 'text', text: truncateForResponse(payload) }] };
+}
+
+/** То же самое для ресурсов (T8): один текстовый content-блок с тем же JSON-форматом, что и у тулов. */
+function toResourceResult(uri: URL, payload: unknown): ReadResourceResult {
+  return {
+    contents: [
+      {
+        uri: uri.href,
+        mimeType: 'application/json',
+        text: truncateForResponse(payload),
+      },
+    ],
+  };
 }
 
 /** Хендлер тулза: индекс + args, выведенные из той же zod-схемы, что уходит в SDK. */
@@ -88,7 +104,7 @@ function main(): void {
     server,
     index,
     'list_components',
-    'Список компонентов @daisforge/ui с фильтрами по типу (wrapper/composition/standalone/form), категории, scope. По умолчанию — только самостоятельные компоненты (role: "primary", ~177 из 243): слоты вроде DrawerDFHeader и служебные примитивы вроде CanvasRect скрыты, они видны через relatedExports в карточке владельца (get_component) или напрямую по имени; role: "all" снимает фильтр. Без limit список бюджетируется автоматически (см. shown/total/truncationNotice в ответе); limit/offset — явная пагинация.',
+    'Список компонентов @daisforge/ui с фильтрами по типу (wrapper/composition/standalone/form), категории ("Локальные компоненты" / "Композиции" / "Формы" — количество по типам см. в ресурсе daisforge-ui://catalog/categories), scope. По умолчанию — только самостоятельные компоненты (role: "primary", ~177 из 243): слоты вроде DrawerDFHeader и служебные примитивы вроде CanvasRect скрыты, они видны через relatedExports в карточке владельца (get_component) или напрямую по имени; role: "all" снимает фильтр. Без limit список бюджетируется автоматически (см. shown/total/truncationNotice в ответе); limit/offset — явная пагинация.',
     {
       type: z.string().optional(),
       category: z.string().optional(),
@@ -179,22 +195,36 @@ function main(): void {
     getFeatureExamples,
   );
 
-  registerJsonTool(
-    server,
-    index,
-    'list_categories',
-    'Категории компонентов библиотеки с количеством по типам.',
-    {},
-    listCategories,
+  /**
+   * list_categories и get_installation_guide не принимают аргументов и не
+   * зависят от них — это статический контент за один вызов на сессию, а не
+   * тул с параметрами выбора. Ресурсы (T8) не занимают слот в списке тулов,
+   * который агент читает при каждом запросе; значения category, которые
+   * раньше приходилось узнавать через list_categories(), теперь прямо в
+   * описании list_components (см. ниже).
+   */
+  server.registerResource(
+    'categories',
+    'daisforge-ui://catalog/categories',
+    {
+      title: 'Категории компонентов @daisforge/ui',
+      description:
+        'Категории каталога с количеством компонентов по типам (wrapper/composition/standalone/form).',
+      mimeType: 'application/json',
+    },
+    async (uri) => toResourceResult(uri, listCategories(index)),
   );
 
-  registerJsonTool(
-    server,
-    index,
-    'get_installation_guide',
-    'Гайд по установке и подключению @daisforge/ui (пакет, стили/токены, использование компонентов/иконок).',
-    {},
-    getInstallationGuide,
+  server.registerResource(
+    'installation-guide',
+    'daisforge-ui://catalog/installation-guide',
+    {
+      title: 'Гайд по установке @daisforge/ui',
+      description:
+        'Установка пакета и подключение стилей/токенов, использование компонентов и иконок.',
+      mimeType: 'application/json',
+    },
+    async (uri) => toResourceResult(uri, getInstallationGuide(index)),
   );
 
   const transport = new StdioServerTransport();
