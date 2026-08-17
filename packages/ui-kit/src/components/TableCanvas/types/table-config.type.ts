@@ -53,6 +53,11 @@ import type {
 } from './column-config.type';
 import { ColumnsGroupingConfig } from './columns-grouping.type';
 import { Maybe, ObjectForExtending, Prettify } from './utils.type';
+
+export type {
+  ColumnsGroupingConfig,
+  HeaderAlignment,
+} from './columns-grouping.type';
 /** @deprecated Свойство view не используется и будет удалено в следующей мажорной версии. */
 export type ViewMods = {
   rows: {
