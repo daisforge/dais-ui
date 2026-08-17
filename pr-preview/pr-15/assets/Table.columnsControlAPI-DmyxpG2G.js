@@ -1,4 +1,0 @@
-import{j as o}from"./react-D2T61mpp.js";import{c2 as r,c3 as s}from"./vendor-CV0MVVDJ.js";import{T as c}from"./TypeSourceViewer-CyVu8kcm.js";import"./react-is-Clcustum.js";import"./styled-components-hCehVAWp.js";import"./tslib-De9GV7Vy.js";function e(n){const t={h1:"h1",h2:"h2",...r(),...n.components};return o.jsxs(o.Fragment,{children:[o.jsx(s,{title:"Локальные компоненты/Table/ColumnsControl/API"}),`
-`,o.jsx(t.h1,{id:"columns-control-api",children:"Columns Control API"}),`
-`,o.jsx(t.h2,{id:"columnscontrolconfig",children:"ColumnsControlConfig"}),`
-`,o.jsx(c,{language:"ts",filePath:"packages/ui-kit/src/components/Table/feature-column-control/types.ts",typeName:"ColumnsControlConfig"})]})}function C(n={}){const{wrapper:t}={...r(),...n.components};return t?o.jsx(t,{...n,children:o.jsx(e,{...n})}):e(n)}export{C as default};
