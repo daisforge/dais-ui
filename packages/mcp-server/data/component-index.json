@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-15T11:35:00.466Z",
+  "generatedAt": "2026-08-17T11:29:30.126Z",
   "libVersion": "1.12.1",
   "components": {
     "Accordion": {
@@ -23383,68 +23383,10 @@
       "description": "Контейнер сегментированного переключателя (segmented control) из кнопок-вкладок",
       "props": [
         {
-          "name": "hasBackground",
-          "type": "boolean | undefined",
-          "required": false,
-          "description": "Группа сегментов c фоном"
-        },
-        {
           "name": "hasDivider",
           "type": "boolean | undefined",
           "required": false,
           "description": "Отображать разделители между элементами сегмента"
-        },
-        {
-          "name": "orientation",
-          "type": "\"horizontal\" | \"vertical\" | undefined",
-          "required": false,
-          "description": "Ориентация группы сегментов"
-        },
-        {
-          "name": "pilled",
-          "type": "boolean | undefined",
-          "required": false,
-          "description": "Группа сегментов c округлым border-radius"
-        },
-        {
-          "name": "size",
-          "type": "string | undefined",
-          "required": false,
-          "description": "Размер группы сегментов"
-        },
-        {
-          "name": "stretch",
-          "type": "boolean | undefined",
-          "required": false,
-          "description": "Группа сегментов растянута на доступную область, только в горизонтальном режиме"
-        },
-        {
-          "name": "view",
-          "type": "string | undefined",
-          "required": false,
-          "description": "Вид группы сегментов"
-        },
-        {
-          "name": "clip",
-          "type": "boolean | undefined",
-          "required": false,
-          "description": "При ограничении ширины разрешает скролл и отображает дополнительные элементы со стрелками",
-          "deprecated": true,
-          "default": "true"
-        },
-        {
-          "name": "filledBackground",
-          "type": "boolean | undefined",
-          "required": false,
-          "description": "Группа сегментов c фоном, используйте свойство hasBackground",
-          "deprecated": true
-        },
-        {
-          "name": "selectionMode",
-          "type": "\"multiple\" | \"single\" | undefined",
-          "required": false,
-          "description": "Сегмент множественного или одиночного выбора",
-          "deprecated": true
         }
       ],
       "propsTypeName": "SegmentGroupProps",
@@ -23460,7 +23402,89 @@
       ],
       "chooseWhen": "Вне react-hook-form — сегментированный переключатель с value/onChange напрямую.",
       "hasCuratedMeta": true,
-      "atomicDataMissing": true,
+      "inheritedProps": [
+        {
+          "name": "clip",
+          "type": "boolean",
+          "required": false,
+          "description": "При ограничении ширины разрешает скролл и отображает дополнительные элементы со стрелками",
+          "default": "true",
+          "inheritedFrom": "SegmentGroup",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "filledBackground",
+          "type": "boolean",
+          "required": false,
+          "description": "Группа сегментов c фоном, используйте свойство hasBackground",
+          "inheritedFrom": "SegmentGroup",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "hasBackground",
+          "type": "boolean",
+          "required": false,
+          "description": "Группа сегментов c фоном",
+          "inheritedFrom": "SegmentGroup",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "orientation",
+          "type": "\"vertical\"",
+          "required": false,
+          "description": "Ориентация группы сегментов",
+          "inheritedFrom": "SegmentGroup",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "pilled",
+          "type": "boolean",
+          "required": false,
+          "description": "Группа сегментов c округлым border-radius",
+          "inheritedFrom": "SegmentGroup",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "selectionMode",
+          "type": "\"multiple\" | \"single\"",
+          "required": false,
+          "description": "Сегмент множественного или одиночного выбора",
+          "inheritedFrom": "SegmentGroup",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "size",
+          "type": "\"s\" | \"xs\"",
+          "required": false,
+          "description": "Размер группы сегментов",
+          "inheritedFrom": "SegmentGroup",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "stretch",
+          "type": "boolean",
+          "required": false,
+          "description": "Группа сегментов растянута на доступную область, только в горизонтальном режиме",
+          "inheritedFrom": "SegmentGroup",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "view",
+          "type": "\"clear\" | \"filled\"",
+          "required": false,
+          "description": "Вид группы сегментов",
+          "inheritedFrom": "SegmentGroup",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "required": false,
+          "inheritedFrom": "SegmentGroup",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        }
+      ],
+      "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { SegmentGroup } from '@daisforge/ui';",
       "minimalUsage": "<SegmentGroup />",
@@ -24503,56 +24527,7 @@
       "folderName": "Skeleton",
       "role": "primary",
       "description": "Плейсхолдер-линия для имитации загрузки текстовой строки",
-      "props": [
-        {
-          "name": "animationType",
-          "type": "\"shimmer\" | \"pulse\" | undefined",
-          "required": false,
-          "description": "Скругленность"
-        },
-        {
-          "name": "customFadeInColor",
-          "type": "string | undefined",
-          "required": false,
-          "description": "Значение цвета фона начала анимации `pulse`"
-        },
-        {
-          "name": "customFadeOutColor",
-          "type": "string | undefined",
-          "required": false,
-          "description": "Значение цвета фона в кл=онце анимации `pulse`"
-        },
-        {
-          "name": "customGradientColor",
-          "type": "string | undefined",
-          "required": false,
-          "description": "Значение градиента скелетона для анимации `shimmer`"
-        },
-        {
-          "name": "roundness",
-          "type": "0 | 250 | 32 | 28 | 24 | 20 | 18 | 16 | 14 | 12 | 8 | 4 | undefined",
-          "required": false,
-          "description": "Скругленность"
-        },
-        {
-          "name": "lighter",
-          "type": "boolean | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "size",
-          "type": "\"bodyL\" | \"bodyM\" | \"bodyS\" | \"bodyXS\" | \"bodyXXS\" | \"dsplL\" | \"dsplM\" | \"dsplS\" | \"h1\" | \"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\" | \"textL\" | \"textM\" | \"textS\" | \"textXS\" | undefined",
-          "required": false,
-          "description": ""
-        },
-        {
-          "name": "view",
-          "type": "\"default\" | \"lighter\" | undefined",
-          "required": false,
-          "description": ""
-        }
-      ],
+      "props": [],
       "propsTypeName": "ComponentProps<typeof LineSkeleton>",
       "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Skeleton/Skeleton.d.ts",
       "type": "wrapper",
@@ -24564,7 +24539,70 @@
         "заглушка строки"
       ],
       "hasCuratedMeta": true,
-      "atomicDataMissing": true,
+      "inheritedProps": [
+        {
+          "name": "animationType",
+          "type": "\"shimmer\" | \"pulse\"",
+          "required": false,
+          "description": "Скругленность",
+          "inheritedFrom": "LineSkeleton",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "customFadeInColor",
+          "type": "string",
+          "required": false,
+          "description": "Значение цвета фона начала анимации `pulse`",
+          "inheritedFrom": "LineSkeleton",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "customFadeOutColor",
+          "type": "string",
+          "required": false,
+          "description": "Значение цвета фона в кл=онце анимации `pulse`",
+          "inheritedFrom": "LineSkeleton",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "customGradientColor",
+          "type": "string",
+          "required": false,
+          "description": "Значение градиента скелетона для анимации `shimmer`",
+          "inheritedFrom": "LineSkeleton",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "roundness",
+          "type": "0 | 4 | 8 | 12 | 14 | 16 | 18 | 20 | 24 | 28 | 32 | 250",
+          "required": false,
+          "description": "Скругленность",
+          "inheritedFrom": "LineSkeleton",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "lighter",
+          "type": "boolean",
+          "required": false,
+          "inheritedFrom": "LineSkeleton",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "size",
+          "type": "\"h1\" | \"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\" | \"bodyM\" | \"bodyL\" | \"bodyS\" | \"bodyXS\" | \"bodyXXS\" | \"dsplL\" | \"dsplM\" | \"dsplS\" | \"textL\" | \"textM\" | \"textS\" | \"textXS\"",
+          "required": false,
+          "inheritedFrom": "LineSkeleton",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "view",
+          "type": "\"default\" | \"lighter\"",
+          "required": false,
+          "inheritedFrom": "LineSkeleton",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        }
+      ],
+      "atomicMcpVersion": "0.349.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { LineSkeleton } from '@daisforge/ui';",
       "minimalUsage": "<LineSkeleton />",

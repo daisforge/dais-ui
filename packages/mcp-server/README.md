@@ -89,6 +89,11 @@ npm run generate-mcp-data
 npm run mcp:vendor-atomic -- --source /путь/к/plasma/website/sdds-finai-docs/mcpData
 ```
 
+Перед обновлением стоит знать две особенности снэпшота (подробно — `ARCHITECTURE.md` §1.6b):
+
+- **`generate-mcp-data` даёт один файл на СТРАНИЦУ доков, не на атом**, и берёт со страницы только первую таблицу пропсов. В доках 87 таблиц `<PropsTable>` на 74 страницы — 14 таблиц (`AccordionItem`, `CalendarBase`, `Col`, `DatePickerRange`, `ListItem`, `NotificationsProvider`, `SegmentItem`, `RectSkeleton`/`TextSkeleton`, `TabItem`/`TabsController` и др.) в снэпшот не попадают вовсе. Прирост от перевендоринга будет заметным только вместе с исправлением их `extractProps`.
+- **Проверяйте версию**: `vendor/atomic-mcp-data/manifest.json` содержит версию `@salutejs/sdds-finai`, из которой собран текущий снэпшот (сейчас `0.349.0`). Прогон на более старом чекауте plasma перезапишет снэпшот более бедным — `vendorAtomicData.ts` сносит папку целиком и не сверяет версии.
+
 ## Курированные данные каталога (description/category/keywords)
 
 Индексер сам находит компоненты, пропсы и типы из исходников, но `description`/`category`/`keywords` — курированный контент, у которого два независимых редактируемых источника (оба читаются на этапе `mcp:build-index`, сами по себе НЕ индексер):
@@ -103,4 +108,4 @@ npm run mcp:vendor-atomic -- --source /путь/к/plasma/website/sdds-finai-doc
 - **Иконки, токены, миксины, утилиты не проиндексированы** — сознательная граница v1 (см. план). Следующий шаг.
 - **Три пары внутренних sub-компонентов с одинаковым именем** в разных папках (`TableFilterSelectListItem`, `ContainerStyled`, `Canvas` — есть и в `Table`/`TableCanvas`/`TableGlide`) — при коллизии имён в индекс попадает только последняя обработанная запись. Не влияет на публичные компоненты, только на внутренние helper-подкомпоненты таблиц.
 - **Поиск (`search_components`) — простой substring-скоринг**, без embeddings/NLP. Хорошо работает на прямых терминах и на курированных `hint`, слабее — на общих словах, которые встречаются во многих фичах одновременно (например "ячеек" — общее слово почти для всех табличных фич).
-- **`atomicDataMissing: true`** — у части compound-частей атомарных компонентов (`DrawerHeader`/`DrawerFooter`/`DrawerContent`, `Divider` и т.п.) нет отдельной записи в вендоренном снэпшоте атомарной команды — их API организовано в исходной документации как часть родительской страницы (`Drawer`), а не отдельными файлами. Обнажается прозрачно, сборка не падает.
+- **`atomicDataMissing: true` у 35 записей из 243** — вендорных пропсов нет по двум причинам: у 11 таблица в доках атомарной команды есть, но не первая на своей странице, и снэпшот её теряет (`CalendarBase*`, `DatePickerRange`, `NotificationsProvider`, `SegmentItem`, `TextSkeleton`, `TabItem`, `TabsController`); у 24 таблицы нет в доках вовсе (`Divider` и его обёртки, compound-части `DrawerHeader`/`DrawerContent`/`DrawerFooter`, `Rating`, `SegmentIconItem`, `IconTabItem`, `ToastProvider`, `Typography` + 13 атомов типографики). Пропсы у всех 35 есть — из собственного резолва ts-morph, причём с описаниями и `required`, которых вендор не несёт вовсе. Сборка не падает, диагностика индексера помечает каждую дыру её причиной. Подробности — `ARCHITECTURE.md` §1.6b.

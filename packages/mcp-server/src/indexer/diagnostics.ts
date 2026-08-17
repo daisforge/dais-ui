@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import type { FeatureRecord, IndexedComponent } from '../types.js';
 import { isOkComponent } from '../types.js';
+import { ATOMIC_TABLE_ON_PARENT_PAGE } from './mergeAtomicData.js';
 
 const YELLOW = '\x1b[33m';
 const RED = '\x1b[31m';
@@ -13,6 +14,26 @@ const RESPONSE_BUDGET_CHARS = 25000;
 export interface DiagnosticsResult {
   errors: string[];
   warnings: string[];
+}
+
+/**
+ * Дыры вендоренного снэпшота бывают трёх сортов (T15, ARCHITECTURE.md §1.6b), и
+ * без пометки они выглядят в логе одинаково — а лечатся по-разному: одни
+ * закроются перегенерацией снэпшота у атомарной команды, другие не закроются
+ * никогда (атома нет в их доках вовсе), третьи означают новую, ещё не
+ * разобранную дыру, появившуюся после очередного перевендоринга.
+ */
+function describeAtomicGap(atomicBase: string | undefined): string {
+  if (!atomicBase) return 'atomicBase не резолвился';
+  const parentPage = ATOMIC_TABLE_ON_PARENT_PAGE[atomicBase];
+  if (parentPage) {
+    return `таблица есть на странице ${parentPage}, но снэпшот берёт со страницы только первую (ожидаемо, T15)`;
+  }
+  // Отличить «страницы нет в доках вовсе» (Divider, Rating, типографика,
+  // compound-части Drawer) от «страница появилась, а снэпшот устарел» по самому
+  // снэпшоту невозможно — сверка идёт по докам атомарной команды при
+  // перевендоринге, см. ARCHITECTURE.md §1.6b/§6.
+  return 'страницы атома нет в снэпшоте — пропсы только из собственного резолва ts-morph';
 }
 
 /**
@@ -34,7 +55,8 @@ export function printDiagnostics(
     }
     if (r.atomicDataMissing) {
       warnings.push(
-        `${r.name}: atomicBase "${r.atomicBase}" не найден в вендоренных данных`,
+        `${r.name}: atomicBase "${r.atomicBase}" не найден в вендоренных данных` +
+          ` — ${describeAtomicGap(r.atomicBase)}`,
       );
     }
     if (!r.props?.length && !r.inheritedProps?.length && !r.isGeneric) {

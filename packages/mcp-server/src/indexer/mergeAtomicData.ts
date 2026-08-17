@@ -45,6 +45,71 @@ function getManifest(): AtomicManifest | null {
   return cachedManifest;
 }
 
+/**
+ * Снэпшот — один файл на СТРАНИЦУ документации, не на атом (T15, см.
+ * ARCHITECTURE.md §1.6b): файл называется по странице, а в `api.props` попадает
+ * только ПЕРВАЯ таблица пропсов этой страницы. У двух страниц первая таблица
+ * документирует атом с другим именем — файл, названный по странице, несёт
+ * пропсы этого атома, а не одноимённого с файлом:
+ *
+ * - `Segment.json` — пропсы `SegmentGroup` (у страницы `Segment.mdx` вообще нет
+ *   таблицы `Segment`: `<PropsTable name="SegmentGroup">`, затем `SegmentItem`);
+ * - `Skeleton.json` — пропсы `LineSkeleton` (страница `Skeleton.mdx`:
+ *   `LineSkeleton`, `RectSkeleton`, `TextSkeleton`).
+ *
+ * Сверено 1:1 с собственным резолвом ts-morph: 8 из 8 пропсов `Skeleton.json`
+ * совпадают с own-пропсами `LineSkeleton`, 9 из 10 пропсов `Segment.json` — с
+ * own-пропсами `SegmentGroup` (десятый, `disabled`, — реальная вариация
+ * `SegmentGroup` в установленном `@salutejs/sdds-finai`, которую own-резолв не
+ * находит).
+ */
+const ATOMIC_PAGE_FILE_BY_BASE: Record<string, string> = {
+  SegmentGroup: 'Segment',
+  LineSkeleton: 'Skeleton',
+};
+
+/**
+ * Обратная сторона той же находки: имена файлов из ATOMIC_PAGE_FILE_BY_BASE
+ * нельзя резолвить по совпадению с `atomicBase`. Сейчас ui-kit не экспортирует
+ * ни `Segment`, ни `Skeleton` — но если начнёт, эти записи молча получили бы
+ * пропсы чужого атома (`SegmentGroup`/`LineSkeleton`) как свои. Отдаём
+ * `atomicDataMissing`: отсутствие вендорных данных честнее подмешанных чужих.
+ */
+const PAGE_FILES_OF_OTHER_ATOM = new Set(
+  Object.values(ATOMIC_PAGE_FILE_BY_BASE),
+);
+
+/**
+ * Атомы, чья таблица пропсов в доках атомарной команды ЕСТЬ, но не первая на
+ * своей странице, — и потому в снэпшот не попадает вовсе (их `extractProps`
+ * берёт только первый JSON-массив пропсов со страницы, см. ARCHITECTURE.md
+ * §1.6b). Размечено по исходным `docs/components/*.mdx` в
+ * `plasma/website/sdds-finai-docs`: 87 таблиц `<PropsTable name="…">` на 72
+ * страницы `components/` + 2 `beta/` — 14 таблиц (этот список) снэпшот теряет.
+ *
+ * Единственный способ их получить — перегенерировать снэпшот у атомарной
+ * команды с исправленным `extractProps` (T15, задача открыта); наш код
+ * подмешать их не может — в вендоренном JSON этих данных физически нет.
+ * Список нужен диагностике: отличает известную дыру снэпшота от новой,
+ * появившейся после очередного перевендоринга.
+ */
+export const ATOMIC_TABLE_ON_PARENT_PAGE: Record<string, string> = {
+  AccordionItem: 'Accordion',
+  CalendarBase: 'Calendar',
+  CalendarBaseRange: 'Calendar',
+  CalendarDouble: 'Calendar',
+  CalendarDoubleRange: 'Calendar',
+  Col: 'Grid',
+  DatePickerRange: 'DatePicker',
+  ListItem: 'List',
+  NotificationsProvider: 'Notification',
+  RectSkeleton: 'Skeleton',
+  SegmentItem: 'Segment',
+  TabItem: 'Tabs',
+  TabsController: 'Tabs',
+  TextSkeleton: 'Skeleton',
+};
+
 function loadAtomicComponent(
   atomicBase: string,
   atomicSubpath: 'beta' | undefined,
@@ -52,9 +117,18 @@ function loadAtomicComponent(
   // beta и основной пакет — разные директории вендоренного снэпшота: у части
   // атомов есть тёзки в обеих категориях с разными пропсами (Popover,
   // Tooltip), поэтому важно не перепутать и не подмешать пропсы не того атома.
-  const dir =
-    atomicSubpath === 'beta' ? VENDOR_BETA_DIR : VENDOR_COMPONENTS_DIR;
-  const filePath = path.join(dir, `${atomicBase}.json`);
+  const isBeta = atomicSubpath === 'beta';
+  const dir = isBeta ? VENDOR_BETA_DIR : VENDOR_COMPONENTS_DIR;
+
+  // Разметка страниц выше — про основной каталог: в beta первая таблица
+  // страницы (`PopoverBeta`/`TooltipBeta` в docgen) документирует ровно тот
+  // атом, что beta-пакет экспортирует под именем страницы, путаницы нет.
+  if (!isBeta && PAGE_FILES_OF_OTHER_ATOM.has(atomicBase)) return undefined;
+  const fileBase = isBeta
+    ? atomicBase
+    : ATOMIC_PAGE_FILE_BY_BASE[atomicBase] ?? atomicBase;
+
+  const filePath = path.join(dir, `${fileBase}.json`);
   if (!fs.existsSync(filePath)) return undefined;
   return JSON.parse(fs.readFileSync(filePath, 'utf8')) as AtomicComponentJson;
 }
