@@ -1026,17 +1026,8 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         return;
       }
 
-      // нормализуем group колонки в плоский путь имён групп
-      // (glide хранит group как string | string[] | undefined)
-      const toGroupPath = (group: unknown): string[] =>
-        Array.isArray(group)
-          ? group.filter((g): g is string => typeof g === 'string')
-          : typeof group === 'string'
-            ? [group]
-            : [];
-
       // путь кликнутой колонки и уровень клика
-      const clickedPath = toGroupPath(clickedColumn.group);
+      const clickedPath = getColumnGroupPath(clickedColumn.group);
       const clickedLevel = Math.max(0, clickedPath.indexOf(event.group));
       // ключ группы — префикс пути до уровня клика (про '\0' см. выше)
       const prefixKey = clickedPath.slice(0, clickedLevel + 1).join('\0');
@@ -1046,7 +1037,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         const column = columnsForRender[index];
         return (
           column !== undefined &&
-          toGroupPath(column.group)
+          getColumnGroupPath(column.group)
             .slice(0, clickedLevel + 1)
             .join('\0') === prefixKey
         );

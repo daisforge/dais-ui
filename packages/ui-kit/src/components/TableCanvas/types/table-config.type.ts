@@ -849,8 +849,8 @@ export type TableConfig<
 > = {
   /**
    * Группировка колонок (многоуровневая шапка через `columnConfig.children`):
-   * слияние пустых ячеек шапки (`squashEmptyCells`, по умолчанию включено) и
-   * дефолт выравнивания в слитых ячейках (`squashedHeaderAlign`).
+   * объединение пустых ячеек шапки (`squashEmptyCells`, по умолчанию включено) и
+   * дефолт выравнивания в объединённых ячейках (`squashedHeaderAlign`).
    */
   columnsGrouping?: ColumnsGroupingConfig;
   /**

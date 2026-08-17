@@ -293,7 +293,7 @@ export type TableGlideCustomProps<
   renderGroupHeader?: (
     args: RenderGroupHeaderArgs
   ) => 'default' | { defaultWithCustomGroupName: string } | CanvasEl;
-  /** Выравнивание текста в слитой шапке по ключу группы (ColumnGroupConfig.key). */
+  /** Выравнивание текста в объединённой шапке по ключу группы (ColumnGroupConfig.key). */
   groupAlignMap?: Map<string, SpanAlignment>;
   refTable?: Ref<DataEditorRef>;
   onColumnsReorder?: (sourceKey: string, targetKey: string) => void;
