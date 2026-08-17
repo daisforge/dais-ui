@@ -29,9 +29,16 @@ const popOut = keyframes`
 
 export const StyledBanner = styled.div<{ $closing: boolean }>`
   position: relative;
-  width: min(${STORIES_SIZES.bannerMaxWidth}px, calc(100vw - 100px));
+  /* Высота ведущая (ограничена вьюпортом в StyledStage), ширина следует за ней
+     по фиксированной пропорции — компонент ужимается пропорционально при
+     уменьшении высоты вьюпорта. */
   height: 100%;
-  max-height: ${STORIES_SIZES.bannerMaxHeight}px;
+  width: auto;
+  aspect-ratio: ${STORIES_SIZES.bannerMaxWidth} /
+    ${STORIES_SIZES.bannerMaxHeight};
+  max-width: calc(
+    100vw - ${STORIES_SIZES.stageWidth - STORIES_SIZES.bannerMaxWidth}px
+  );
   border-radius: ${STORIES_SIZES.bannerRadius}px;
   overflow: hidden;
   view-transition-name: ${STORIES_VIEW_TRANSITION_NAME};

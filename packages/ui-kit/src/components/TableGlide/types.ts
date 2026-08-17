@@ -7,6 +7,7 @@ import type {
   ProvideEditorCallback,
   ProvideEditorCallbackResult,
   ProvideEditorComponent,
+  SpanAlignment,
 } from '@glideappsfinal/glide-data-grid';
 // THEME
 import type {
@@ -35,6 +36,7 @@ export type {
   ProvideEditorCallback,
   ProvideEditorCallbackResult,
   ProvideEditorComponent,
+  SpanAlignment,
 };
 export type ThemeDynamicCustoms = {
   rowSize: SIZE;
@@ -291,6 +293,8 @@ export type TableGlideCustomProps<
   renderGroupHeader?: (
     args: RenderGroupHeaderArgs
   ) => 'default' | { defaultWithCustomGroupName: string } | CanvasEl;
+  /** Выравнивание текста в объединённой шапке по ключу группы (ColumnGroupConfig.key). */
+  groupAlignMap?: Map<string, SpanAlignment>;
   refTable?: Ref<DataEditorRef>;
   onColumnsReorder?: (sourceKey: string, targetKey: string) => void;
   /** Ref на контейнер таблицы — события portal hover диспатчатся на него, чтобы несколько таблиц не перехватывали чужие тултипы */
