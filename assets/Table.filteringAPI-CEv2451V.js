@@ -1,5 +1,0 @@
-import{j as e}from"./react-D2T61mpp.js";import{c2 as r,c3 as i}from"./vendor-B0ELcGbr.js";import{T as s}from"./TypeSourceViewer-DFrYUQlB.js";import"./react-is-Clcustum.js";import"./styled-components-C8vPRKee.js";import"./tslib-De9GV7Vy.js";function o(n){const t={code:"code",h1:"h1",h2:"h2",p:"p",...r(),...n.components};return e.jsxs(e.Fragment,{children:[e.jsx(i,{title:"Локальные компоненты/Table/Filtering/API"}),`
-`,e.jsx(t.h1,{id:"filtering-api",children:"Filtering API"}),`
-`,e.jsx(t.h2,{id:"filtercomponentinpopoverprops",children:"FilterComponentInPopoverProps"}),`
-`,e.jsxs(t.p,{children:["Пропсы, доступные в кастомном компоненте фильтра (",e.jsx(t.code,{children:"component: 'custom'"}),")."]}),`
-`,e.jsx(s,{language:"ts",filePath:"packages/ui-kit/src/components/Table/feature-filtering/header-filter-button/types.ts",typeName:"FilterComponentInPopoverProps"})]})}function h(n={}){const{wrapper:t}={...r(),...n.components};return t?e.jsx(t,{...n,children:e.jsx(o,{...n})}):o(n)}export{h as default};
