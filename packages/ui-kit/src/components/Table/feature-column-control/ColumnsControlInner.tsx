@@ -7,12 +7,21 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { KeyText, KeyTextMap } from '../feature-key-text/types';
 import { reorderHandler } from '../feature-reorder-columns/reorderHandler';
 import { ROW_I_COLUMN_KEY } from '../feature-row-instruments';
+import { KEY_GROUPED_COL } from '../feature-rows-grouping';
 import { CHECKBOX_COLUMN_KEY } from '../feature-select-row';
 import { ChangeAllButtonsBlock } from './ChangeAllButtonsBlock';
 import { ColumnsList } from './ColumnsList';
 import { correctedDisabled } from './ColumnsList/handlers';
 import { ConfirmOrResetBlock } from './ConfirmOrResetBlock';
 import { ColumnsControlConfig } from './types';
+
+const SERVICE_COLS_SET = new Set([
+  ROW_I_COLUMN_KEY,
+  CHECKBOX_COLUMN_KEY,
+  KEY_GROUPED_COL,
+]);
+const withoutServiceCols = (cols: string[]) =>
+  cols.filter((cKey) => !SERVICE_COLS_SET.has(cKey));
 
 export const ColumnsControlInner = <
   Row extends ObjectForExtending,
@@ -68,10 +77,7 @@ export const ColumnsControlInner = <
 
   const orderIsNotChanged = useMemo(
     () => {
-      const notCheckingKeysSet = new Set([
-        ROW_I_COLUMN_KEY,
-        CHECKBOX_COLUMN_KEY,
-      ]);
+      const notCheckingKeysSet = SERVICE_COLS_SET;
       const global = getDefaultColumnsOrder()
         .filter((k) => !notCheckingKeysSet.has(k))
         .join();
@@ -122,9 +128,9 @@ export const ColumnsControlInner = <
 
         columnsControlConfig.onConfirm(
           {
-            order: localOrder,
-            pinned: localPinned,
-            hidden: localHiddens,
+            order: withoutServiceCols(localOrder),
+            pinned: withoutServiceCols(localPinned),
+            hidden: withoutServiceCols(localHiddens),
             changed,
           },
           { setColumnsOrder, setHiddenCols, setPinnedCols },
@@ -149,7 +155,7 @@ export const ColumnsControlInner = <
     // Служебные колонки (чекбокс выбора строк, row-instruments) не показываются в
     // списке колонок, поэтому не должны попадать в «скрыть все». Иначе, например,
     // чекбокс-колонка выбора застревает в hiddenCols — и выбор строк ломается.
-    if (k === CHECKBOX_COLUMN_KEY || k === ROW_I_COLUMN_KEY) {
+    if (SERVICE_COLS_SET.has(k)) {
       return false;
     }
     const correctedDisabledHidingKeyText = correctedDisabled(disableHidingSet, {

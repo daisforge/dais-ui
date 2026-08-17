@@ -1,5 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable react-hooks/rules-of-hooks */
+import { getFuncAsString } from '@df-storybook/utils/getFuncAsString';
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Button } from '@ui-kit/components/Button';
@@ -12,7 +13,8 @@ import {
   surfaceAccentMinor,
   surfaceInfo,
 } from '@ui-kit/tokens';
-import React, { useState } from 'react';
+import type { ButtonHTMLAttributes, ForwardedRef } from 'react';
+import React, { forwardRef, useState } from 'react';
 
 type ResizeDirection =
   | 'top'
@@ -500,6 +502,56 @@ function PopoverDFSimpleExample() {
   );
 }
 
+function PopoverTargetRender(
+  { children, ...props }: ButtonHTMLAttributes<HTMLButtonElement>,
+  ref: ForwardedRef<HTMLButtonElement>,
+) {
+  return (
+    <button ref={ref} type="button" {...props}>
+      {children}
+    </button>
+  );
+}
+
+const PopoverTarget = forwardRef(PopoverTargetRender);
+
+function PopoverDFCustomTargetExample() {
+  const [opened, setOpened] = useState(false);
+
+  return (
+    <PopoverDF
+      target={<PopoverTarget>Открыть PopoverDF</PopoverTarget>}
+      opened={opened}
+      onToggle={setOpened}
+      placement="bottom"
+      hasTail
+      flip
+      shift
+      offset={8}
+    >
+      <PopoverDF.Body>Контент всплывающего окна.</PopoverDF.Body>
+    </PopoverDF>
+  );
+}
+
+const customTargetPreCode = `import { forwardRef, useState } from 'react';
+import type { ButtonHTMLAttributes, ForwardedRef } from 'react';
+
+import { PopoverDF } from '@daisforge/ui';
+
+const PopoverTarget = forwardRef(PopoverTargetRender);
+`;
+
+const customTargetCode = `${customTargetPreCode}
+${getFuncAsString(
+  'packages/storybook/src/stories/PopoverDF/PopoverDF.stories.tsx',
+  'PopoverTargetRender',
+)}
+${getFuncAsString(
+  'packages/storybook/src/stories/PopoverDF/PopoverDF.stories.tsx',
+  'PopoverDFCustomTargetExample',
+)}`;
+
 export const Simple: Story = {
   name: 'Simple',
   argTypes: simpleArgTypes,
@@ -523,4 +575,10 @@ export const Playground: Story = {
   name: 'Playground',
   ...storySourceDoc({ code: playgroundCode, previewSource: 'shown' }),
   render: (args) => renderInStage(<PopoverDFPlaygroundExample {...args} />),
+};
+
+export const CustomTarget: Story = {
+  name: 'Кастомный target',
+  ...storySourceDoc({ code: customTargetCode, previewSource: 'shown' }),
+  render: () => renderInStage(<PopoverDFCustomTargetExample />),
 };
