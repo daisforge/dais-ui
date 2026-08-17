@@ -268,6 +268,9 @@ export const TableOrCardsUI = <
                 portalEventTargetRef={refTableGlobalContainer}
                 onColumnsReorder={restDataGridProps?.onColumnsReorder}
                 unstickyHeader={restDataGridProps?.unstickyHeader}
+                spanGroupHeader={restDataGridProps.spanGroupHeader}
+                spanShallowGroups={restDataGridProps.spanShallowGroups}
+                spanAlign={restDataGridProps.spanAlign}
                 minColumnWidth={
                   restDataGridProps.minColumnWidth ?? DEFAULT_MIN_COLUMN_WIDTH
                 }

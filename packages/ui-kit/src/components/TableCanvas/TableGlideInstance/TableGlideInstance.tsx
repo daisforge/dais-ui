@@ -2,6 +2,7 @@ import {
   type ColumnGlideLast,
   GridCell,
   ProvideEditorCallback,
+  SpanAlignment,
   TableGlide,
   TableGlideProps,
   Theme,
@@ -101,6 +102,17 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
   const selectingRowCtx = useSelectingRowContext();
 
   const { allGroupsMap } = useColumnGroupContext();
+
+  // Выравнивание слитой шапки по ключу группы для getGroupDetails в TableGlide.
+  const groupAlignMap = useMemo(() => {
+    const map = new Map<string, SpanAlignment>();
+    allGroupsMap.forEach((groupCfg, groupKey) => {
+      if (groupCfg?.squashedHeaderAlign) {
+        map.set(groupKey, groupCfg.squashedHeaderAlign);
+      }
+    });
+    return map;
+  }, [allGroupsMap]);
 
   const expandedRowsCtxMerged = useMemo(
     () => ({ ...expandedRowsCtx, ...rowDetailCtx }),
@@ -470,6 +482,7 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
       ctxs={ctxs}
       groupHeaderHeight={groupHeaderHeightArr}
       renderGroupHeader={renderGroupHeader}
+      groupAlignMap={groupAlignMap}
       onColumnResize={onColumnResize}
       onVisibleRegionChanged={onVisibleRegionChanged}
       refTable={refTable}

@@ -5,6 +5,26 @@ import { TypeSourceViewer } from '@df-storybook/utils/TypeSourceViewer';
 
 # ColumnsGrouping API
 
+## ColumnsGroupingConfig
+
+Конфиг группировки на уровне таблицы — `tableConfig.columnsGrouping`.
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/TableCanvas/types/columns-grouping.type.ts"
+  typeName="ColumnsGroupingConfig"
+/>
+
+## HeaderAlignment
+
+`squashedHeaderAlign` задаёт выравнивание текста в слитой ячейке шапки. Доступно на трёх уровнях: `tableConfig.columnsGrouping.squashedHeaderAlign` (дефолт для таблицы), на колонке `columnConfig[].squashedHeaderAlign` (лист) и на группе `ColumnGroupConfig.squashedHeaderAlign`.
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/TableCanvas/types/columns-grouping.type.ts"
+  typeName="HeaderAlignment"
+/>
+
 ## ColumnGroupConfig
 
 <TypeSourceViewer
