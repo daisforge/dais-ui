@@ -6,10 +6,11 @@
 import { getFuncAsString } from '@df-storybook/utils/getFuncAsString';
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
 import type { Meta, StoryObj } from '@storybook/react';
+import { userEvent, waitFor, within } from '@storybook/test';
 import { Button } from '@ui-kit/components/Button';
 import { Combobox } from '@ui-kit/components/Combobox';
 import { IconButton } from '@ui-kit/components/IconButton';
-import { useFiltersList } from '@ui-kit/components/ListOfFilters';
+import { type Item, useFiltersList } from '@ui-kit/components/ListOfFilters';
 import {
   SegmentGroup,
   SegmentProvider,
@@ -1479,4 +1480,161 @@ export const CustomTargetFiltersActionsStory: Story = {
         `,
   }),
   render: () => <CustomTargetFiltersExample />,
+};
+
+// --- DOM-тест: стрелки-скролл в списке применённых фильтров -------------------
+
+// Ширина контейнера подобрана так, чтобы переполнение (и его исчезновение)
+// было предсказуемым: у чипа-Item maxWidth = 150px (см. ChipOrGroup), поэтому
+// 6 активных чипов гарантированно переполняют 500px, а 2 - гарантированно нет.
+const ARROWS_TEST_CONTAINER_WIDTH = '500px !important';
+
+const ARROWS_TEST_FILTER_LABELS = [
+  'Активный фильтр номер один',
+  'Активный фильтр номер два',
+  'Активный фильтр номер три',
+  'Активный фильтр номер четыре',
+  'Активный фильтр номер пять',
+  'Активный фильтр номер шесть',
+];
+
+function useArrowsTestFilters() {
+  const [activeFilters, setActiveFilters] = useState<boolean[]>(() =>
+    ARROWS_TEST_FILTER_LABELS.map(() => false),
+  );
+
+  const toggleFilter = useCallback((index: number) => {
+    setActiveFilters((prev) =>
+      prev.map((value, i) => (i === index ? !value : value)),
+    );
+  }, []);
+
+  const clearAll = useCallback(() => {
+    setActiveFilters(ARROWS_TEST_FILTER_LABELS.map(() => false));
+  }, []);
+
+  // Чипы - обычные boolean-фильтры (как в useFiltersList), без групп -
+  // это упрощает и делает предсказуемой ширину каждого чипа
+  const items: Item[] = useMemo(
+    () =>
+      ARROWS_TEST_FILTER_LABELS.reduce<Item[]>((acc, label, index) => {
+        if (activeFilters[index]) {
+          acc.push({ id: index, label, onClick: () => toggleFilter(index) });
+        }
+        return acc;
+      }, []),
+    [activeFilters, toggleFilter],
+  );
+
+  return { activeFilters, toggleFilter, clearAll, items };
+}
+
+// Кнопки-тогглеры фильтров вынесены отдельным простым HTML-контролом (а не
+// через Combobox/Switch), чтобы тест бил точно в цель - в поведение стрелок
+// ListOfFilters/Tabs, а не завязывался на DOM стороннего виджета выбора.
+function ScrollArrowsExample() {
+  const { activeFilters, toggleFilter, clearAll, items } =
+    useArrowsTestFilters();
+
+  return (
+    <div style={{ padding: 16 }}>
+      <FiltersActions
+        containerProps={{ $css: { width: ARROWS_TEST_CONTAINER_WIDTH } }}
+        mainBlock={
+          <>
+            {ARROWS_TEST_FILTER_LABELS.map((label, index) => (
+              <Button
+                size="xs"
+                view="secondary"
+                key={label}
+                type="button"
+                data-testid={`arrows-test-toggle-filter-${index}`}
+                onClick={() => toggleFilter(index)}
+              >
+                {activeFilters[index] ? '✓' : '-'}
+                {activeFilters[index] ?? 0 + 1}
+              </Button>
+            ))}
+          </>
+        }
+        listOfFilters={
+          <FiltersActions.ListOfFilters
+            clearAll={clearAll}
+            opened={items.length > 0}
+            items={items}
+            showResetAllFiltersButton={false}
+          />
+        }
+      />
+    </div>
+  );
+}
+
+/**
+ * Регрессионный DOM-тест (без скриншотов): стрелки-скролл в блоке применённых
+ * фильтров должны появляться сами - без ручного скролла пользователем мышью/
+ * трекпадом - как только чипы перестают помещаться по ширине, и пропадать
+ * обратно, когда чипов снова становится мало.
+ *
+ * Компонент маунтится без активных фильтров в контейнере фиксированной ширины
+ * (500px - для предсказуемого переполнения). Затем через play включается
+ * несколько фильтров: чипы переполняют список -> должна появиться стрелка
+ * «Следующий таб». После часть фильтров выключается обратно: переполнение
+ * исчезает -> стрелка должна пропасть - тоже сама, без скролла.
+ */
+export const ScrollArrowsAppearWithoutManualScrollStory: Story = {
+  name: 'Список применённых фильтров: стрелки-скролл появляются сами при переполнении',
+  parameters: { screenshot: { skip: true } },
+  render: () => <ScrollArrowsExample />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const getNextArrow = () => canvas.queryByLabelText('Следующий таб');
+
+    // 1. Без активных фильтров стрелок нет
+    await waitFor(() => {
+      if (getNextArrow()) {
+        throw new Error(
+          'Стрелка «Следующий таб» не должна быть видна без активных фильтров',
+        );
+      }
+    });
+
+    // 2. Активируем несколько фильтров - список чипов переполняется.
+    // Стрелка должна появиться САМА, без имитации скролла пользователем
+    await userEvent.click(canvas.getByTestId('arrows-test-toggle-filter-0'));
+    await userEvent.click(canvas.getByTestId('arrows-test-toggle-filter-1'));
+    await userEvent.click(canvas.getByTestId('arrows-test-toggle-filter-2'));
+    await userEvent.click(canvas.getByTestId('arrows-test-toggle-filter-3'));
+    await userEvent.click(canvas.getByTestId('arrows-test-toggle-filter-4'));
+    await userEvent.click(canvas.getByTestId('arrows-test-toggle-filter-5'));
+
+    await waitFor(
+      () => {
+        if (!getNextArrow()) {
+          throw new Error(
+            'Стрелка «Следующий таб» не появилась сама после переполнения списка чипов активных фильтров',
+          );
+        }
+      },
+      { timeout: 3000 },
+    );
+
+    // 3. Выключаем часть фильтров обратно - чипов снова мало, переполнения нет.
+    // Стрелка должна пропасть САМА, без имитации скролла
+    await userEvent.click(canvas.getByTestId('arrows-test-toggle-filter-2'));
+    await userEvent.click(canvas.getByTestId('arrows-test-toggle-filter-3'));
+    await userEvent.click(canvas.getByTestId('arrows-test-toggle-filter-4'));
+    await userEvent.click(canvas.getByTestId('arrows-test-toggle-filter-5'));
+
+    await waitFor(
+      () => {
+        if (getNextArrow()) {
+          throw new Error(
+            'Стрелка «Следующий таб» осталась видна, хотя переполнения списка чипов больше нет',
+          );
+        }
+      },
+      { timeout: 3000 },
+    );
+  },
 };
