@@ -489,3 +489,77 @@ export const DerivedGroupingSortFilter: Story = {
     );
   },
 };
+
+// spanBy + редактирование: правка значения ячейки перестраивает блоки (объединение
+// derived из значения). Отредактируй «Регион» у origin-строки блока → блок разъедется.
+// Больше данных (6 регионов × 4 строки) — виден масштаб и вложенность region/team.
+export const SpanByWithEditing: Story = {
+  name: 'spanBy + редактирование (правка перестраивает блоки)',
+  render: () => {
+    type ERow = { id: number; region: string; team: string; person: string };
+    const REGIONS = ['Север', 'Юг', 'Запад', 'Восток', 'Центр', 'Урал'];
+    const initial: ERow[] = [];
+    let c = 1;
+    for (const region of REGIONS) {
+      for (let t = 0; t < 4; t += 1) {
+        initial.push({
+          id: c,
+          region,
+          team: `Команда ${Math.floor(t / 2) + 1}`,
+          person: `Сотрудник ${c}`,
+        });
+        c += 1;
+      }
+    }
+
+    const [rows, setRows] = useState<ERow[]>(initial);
+
+    const columns: readonly ColumnConfig<ERow>[] = [
+      {
+        key: 'region',
+        name: 'Регион (spanBy)',
+        width: 220,
+        editingCell: { component: 'inputString' },
+      },
+      {
+        key: 'team',
+        name: 'Команда (spanBy)',
+        width: 220,
+        editingCell: { component: 'inputString' },
+      },
+      {
+        key: 'person',
+        name: 'Сотрудник',
+        width: 220,
+        editingCell: { component: 'inputString' },
+      },
+    ];
+
+    return (
+      <div>
+        <p style={{ fontSize: 13, color: '#888', marginBottom: 8 }}>
+          <code>spanBy: [&apos;region&apos;, &apos;team&apos;]</code>. Регион слит
+          блоками по 4 строки, команда — по 2 (вложенно). Отредактируй значение
+          «Регион» у верхней строки блока → блок разъедется, объединения
+          пересоберутся из новых значений. Данные обычные, merge — только визуал.
+        </p>
+        <TableCanvas
+          tableConfig={{
+            containerStyle: { height: '600px' },
+            rowMarkers: { startIndex: 1 },
+            columnsControl: { enable: true },
+            spanCells: { spanBy: ['region', 'team'] },
+            cellsSelection: { mode: 'range-cell' },
+            editing: {
+              onRowsChange: setRows,
+              rowKeyGetter: (r) => `${r.id}`,
+              defaultEnabled: true,
+            },
+          }}
+          columnConfig={columns}
+          rows={rows}
+        />
+      </div>
+    );
+  },
+};
