@@ -280,6 +280,18 @@ function main() {
   fs.rmSync(SANDBOX, { recursive: true, force: true });
   fs.mkdirSync(SANDBOX, { recursive: true });
 
+  // Клоны по слотам параллельности (`<песочница>-w0`, `-w1`, …) создаёт раннер
+  // и переиспользует, пока они есть. Пересобрали песочницу — старые клоны
+  // обязаны уйти вместе с ней, иначе прогон молча пойдёт по прошлой версии
+  // пакета и прошлому серверу.
+  const parent = path.dirname(SANDBOX);
+  const prefix = `${path.basename(SANDBOX)}-w`;
+  for (const entry of fs.readdirSync(parent)) {
+    if (!entry.startsWith(prefix)) continue;
+    fs.rmSync(path.join(parent, entry), { recursive: true, force: true });
+    console.log(`   удалён устаревший клон: ${entry}`);
+  }
+
   for (const f of [
     'index.html',
     'vite.config.ts',
