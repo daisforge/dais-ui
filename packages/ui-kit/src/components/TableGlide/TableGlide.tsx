@@ -61,6 +61,7 @@ import {
   TextCellOptions,
 } from './utils/createCell';
 import { getSpan } from './utils/getSpan';
+import { getRowSpan } from './utils/getRowSpan';
 import { isCanvasContent, isPrimitive } from './utils/typeGuards';
 
 /** Функция-болванка. Ничего не делает */
@@ -595,6 +596,67 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       if (!row) {
         return createEmptyCellGlide();
       }
+
+      // Резолв покрытых colspan-колонок к origin блока. По API обёртки colSpan
+      // объявляется только на origin-колонке — покрытые колонки его не несут,
+      // поэтому находим origin блока сами и возвращаем ЕГО контент. Тогда покрытые
+      // ячейки несут тот же span/spanRows/значение, форк дедупит блок и нормализует
+      // клик/навигацию/редактирование к origin. Иначе covered-ячейки рисуются как
+      // самостоятельные (налезание, отдельное выделение, свои данные под блоком).
+      const resolveBlockOrigin = (
+        colFrom: number,
+        rowFrom: number
+      ): [number, number] => {
+        const lightInfo = (
+          col: (typeof columnsForRender)[number],
+          c: number,
+          r: number
+        ): CellInfo<R, SR> =>
+          ({
+            row: rows[r],
+            column: col,
+            colInd: c,
+            rowInd: r,
+            ctxs,
+            theme,
+            hovered: { cellHover: false, rowHover: false },
+            active: { cellActive: false, rowActive: false },
+          } as CellInfo<R, SR>);
+
+        // Горизонталь: слева ищем колонку, чей colSpan накрывает colFrom.
+        let originCol = colFrom;
+        for (let c = colFrom; c >= 0; c -= 1) {
+          const col = columnsForRender[c];
+          if (col?.colSpan) {
+            const span = getSpan(col.colSpan, lightInfo(col, c, rowFrom));
+            if (span && span[0] <= colFrom && span[1] >= colFrom) {
+              originCol = span[0];
+              break;
+            }
+          }
+        }
+        // Вертикаль: на origin-колонке берём верх строки блока по rowSpan.
+        let originRow = rowFrom;
+        const originColCfg = columnsForRender[originCol];
+        if (originColCfg?.rowSpan) {
+          const spanRows = getRowSpan(
+            originColCfg.rowSpan,
+            lightInfo(originColCfg, originCol, rowFrom)
+          );
+          if (spanRows) originRow = spanRows[0];
+        }
+        return [originCol, originRow];
+      };
+
+      const [originColInd, originRowInd] = resolveBlockOrigin(colInd, rowInd);
+      if (originColInd !== colInd || originRowInd !== rowInd) {
+        // eslint-disable-next-line no-use-before-define
+        return getCellContentGlide(
+          [originColInd, originRowInd],
+          getCellContentOptions
+        );
+      }
+
       const hoveredPosition = hoveredPositionRef.current;
       // Эти флаги считаются для каждой рендеримой ячейки с данными.
       // Так пользователь renderCell не зависит от координат курсора и внутренней модели выделения.
@@ -622,6 +684,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         renderCell,
         id,
         colSpan,
+        rowSpan,
         editable,
         contentAlign,
         columnThemeOverride,
@@ -629,6 +692,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       const displayData = row[id]?.toString?.() ?? 'NOT FOUND';
 
       const span = getSpan(colSpan, cellInfo);
+      const spanRows = getRowSpan(rowSpan, cellInfo);
 
       const cellIsEditable = (() => {
         if (!editable) {
@@ -664,6 +728,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         },
         contentAlign,
         ...(span && { span }),
+        ...(spanRows && { spanRows }),
       } satisfies TextCellOptions;
 
       if (!renderCell) {

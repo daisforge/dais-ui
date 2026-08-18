@@ -19,6 +19,7 @@ import type {
 } from '../types';
 import { applyValuesToRows } from '../utils/applyValuesToRows';
 import { collectTextMatrix } from '../utils/collectTextMatrix';
+import { snapDestToRowBlocks } from '../utils/snapDestToRowBlocks';
 import { isCellEditable } from '../utils/isCellEditable';
 import { rangeToIndexes } from '../utils/rangeToIndexes';
 
@@ -165,9 +166,12 @@ export function useFillHandle<R extends ObjectForExtending>({
       if (!enabled || !onRowsChange) return;
 
       const source = event.patternSource;
-      const dest = event.fillDestination;
+      const rawDest = event.fillDestination;
+      // Снап destination к целым rowSpan-блокам: при протяжке нельзя залить пол-блока.
+      // Дальше весь downstream (targetCells, applyValuesToRows, тайлинг) работает по dest.
+      const dest = snapDestToRowBlocks(rawDest, columns, flattenedRows);
 
-      clipboardDebug(PFX, 'обработка fill-паттерна', { source, dest });
+      clipboardDebug(PFX, 'обработка fill-паттерна', { source, rawDest, dest });
 
       const onBeforeFill = cellTransferConfig?.onBeforeFill;
 

@@ -173,6 +173,10 @@ export type ColumnGlideInstance<
   colSpan?:
     | number
     | ((cellInfo: CellInfoGlideInstance<R, SR, CustomCtxs>) => number);
+  /** Вертикальное объединение: (cellInfo) => [startRow, endRow] | null (см. TableGlide RowSpan). */
+  rowSpan?: (
+    cellInfo: CellInfoGlideInstance<R, SR, CustomCtxs>
+  ) => readonly [number, number] | null;
   /** Выравнивание в слитой шапке; в adaptColumn → glide `spanGroupHeaderAlign`. */
   squashedHeaderAlign?: HeaderAlignment;
   /** Тултип для ячеек этой колонки. Строка, объект или функция (context) => config | null. */

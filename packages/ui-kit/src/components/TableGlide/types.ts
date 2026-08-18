@@ -204,6 +204,12 @@ export type ColSpan<R extends ObjectForExtending, SR> =
   | number
   | ((cellInfo: CellInfo<R, SR>) => number);
 
+// Вертикальное объединение: функция возвращает ЯВНЫЙ диапазон строк блока
+// [startRow, endRow] (одинаковый для всех ячеек блока) либо null, если ячейка не слита.
+export type RowSpan<R extends ObjectForExtending, SR> = (
+  cellInfo: CellInfo<R, SR>
+) => readonly [number, number] | null;
+
 export type ColumnGlideGetCellContent<R extends ObjectForExtending, SR> = (
   cellInfo: CellInfo<R, SR>
 ) => CellContent;
@@ -227,6 +233,7 @@ export type ColumnGlideCustoms<R extends ObjectForExtending, SR = unknown> = {
   renderEditCell?: (cellInfo: EditingCellInfoGlide<R, SR>) => CellContent;
   renderSummaryCell?: (summaryCellInfo: SummaryCellInfo<R, SR>) => CellContent;
   colSpan?: ColSpan<R, SR>;
+  rowSpan?: RowSpan<R, SR>;
   /** Тултип для ячеек этой колонки. Строка, объект или функция (context) => config | null. */
   cellTooltip?:
     | CanvasNodeTooltipConfig

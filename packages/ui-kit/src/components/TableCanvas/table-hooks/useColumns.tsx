@@ -390,6 +390,8 @@ export const useColumns = <
           })
         : el.colSpan;
 
+      const rowSpan = el.rowSpan;
+
       // const cellClass: typeof el.cellClass = (() => {
       //   if (!el?.cellClass && (!editModeEnabled || !el.editingCell)) {
       //     return undefined;
@@ -477,6 +479,7 @@ export const useColumns = <
         // cellClass,
         ...(columnIsPinned && { frozen: true }),
         ...(colSpan && { colSpan }),
+        ...(rowSpan && { rowSpan }),
       };
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
