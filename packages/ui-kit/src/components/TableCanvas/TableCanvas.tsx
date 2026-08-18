@@ -941,14 +941,14 @@ export function TableCanvas<
                             onHighlightActiveRowChange:
                               handleHighlightActiveRowChange,
 
+                            // glide требует для чтения source range
+                            getCellsForSelection: true as const,
                             // --------- fill handle (drag-to-fill)
                             ...(fillHandleProps && {
                               fillHandle: fillHandleProps.fillHandle,
                               allowedFillDirections:
                                 fillHandleProps.allowedFillDirections,
                               onFillPattern: fillHandleProps.onFillPattern,
-                              // glide требует для чтения source range
-                              getCellsForSelection: true as const,
                             }),
 
                             // --------- columns
