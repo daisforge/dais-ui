@@ -393,14 +393,13 @@ export const Rectangular: Story = {
   },
 };
 
-// Derived-объединение: rowSpan ВЫВОДИТСЯ из значения на ТЕКУЩЕМ видимом порядке
-// (слить подряд идущие строки с одинаковым role/dept). Через manualSorting стори
-// сама владеет отсортированным/отфильтрованным массивом, поэтому rowInd совпадает с
-// позицией в нём, и функция может посчитать «пробеги» одинаковых значений. Так
-// объединения САМИ пересобираются при сортировке/фильтре (в отличие от позиционного
-// rowSpan в RowSpanBasic, который слил бы по индексу и сломался бы при сортировке).
+// Авто-объединение через tableConfig.spanCells.spanBy: обёртка САМА объединяет
+// колонки role/dept по подряд идущим одинаковым значениям в текущем видимом
+// порядке (run-map O(n) на смену данных, lookup O(1)). Sort/filter — ВСТРОЕННЫЕ,
+// и блоки пересобираются сами. Никакого ручного предпосчёта и manualSorting: в
+// колонках role/dept НЕТ rowSpan, всё делает spanBy. Данные не мутируются.
 export const DerivedGroupingSortFilter: Story = {
-  name: 'Derived-объединение + сортировка/фильтр',
+  name: 'spanBy: авто-объединение по значению + сортировка/фильтр',
   render: () => {
     type GRow = {
       id: number;
@@ -430,59 +429,13 @@ export const DerivedGroupingSortFilter: Story = {
       }
     }
 
-    const [sort, setSort] = useState<readonly SortColumn[]>([]);
-    // Фильтрация обёртки (feature filtering). manualFiltering — фильтруем сами в
-    // visible, чтобы стори владела итоговым порядком (нужно для derived-merge).
+    const sortState = useState<readonly SortColumn[]>([]);
     const filteringState = useState<{ role: string }>({ role: 'Все' });
-    const [filterValue] = filteringState;
-
-    // Manual sort+filter: стори владеет видимым порядком (rowInd = индекс здесь).
-    const visible = useMemo<GRow[]>(() => {
-      const roleFilter = filterValue.role;
-      let rows =
-        roleFilter === 'Все'
-          ? ALL.slice()
-          : ALL.filter((r) => r.role === roleFilter);
-      const s = sort[0];
-      if (s) {
-        const dir = s.direction === 'ASC' ? 1 : -1;
-        rows = rows.slice().sort((a, b) => {
-          const av = a[s.columnKey as keyof GRow];
-          const bv = b[s.columnKey as keyof GRow];
-          if (typeof av === 'number' && typeof bv === 'number') {
-            return (av - bv) * dir;
-          }
-          return String(av).localeCompare(String(bv)) * dir;
-        });
-      }
-      return rows;
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [sort, filterValue]);
-
-    // Пробеги одинаковых значений колонки в текущем порядке: индекс → [start,end].
-    const runsFor = (
-      key: keyof GRow,
-    ): Map<number, readonly [number, number]> => {
-      const map = new Map<number, readonly [number, number]>();
-      let i = 0;
-      while (i < visible.length) {
-        const val = visible[i]?.[key];
-        let j = i;
-        while (j + 1 < visible.length && visible[j + 1]?.[key] === val) {
-          j += 1;
-        }
-        for (let k = i; k <= j; k += 1) map.set(k, [i, j]);
-        i = j + 1;
-      }
-      return map;
-    };
-    const roleRuns = useMemo(() => runsFor('role'), [visible]);
-    const deptRuns = useMemo(() => runsFor('dept'), [visible]);
 
     const columns: readonly ColumnConfig<GRow>[] = [
       {
         key: 'role',
-        name: 'Роль (merge)',
+        name: 'Роль (spanBy)',
         width: 260,
         sortingType: 'stringSort',
         filtering: {
@@ -501,15 +454,8 @@ export const DerivedGroupingSortFilter: Story = {
             filteringType: (fv, rv) => fv === 'Все' || rv === fv,
           },
         },
-        rowSpan: (ci) => roleRuns.get(ci.rowInd) ?? [ci.rowInd, ci.rowInd],
       },
-      {
-        key: 'dept',
-        name: 'Отдел (merge)',
-        width: 260,
-        sortingType: 'stringSort',
-        rowSpan: (ci) => deptRuns.get(ci.rowInd) ?? [ci.rowInd, ci.rowInd],
-      },
+      { key: 'dept', name: 'Отдел (spanBy)', width: 260, sortingType: 'stringSort' },
       { key: 'person', name: 'Сотрудник', width: 170 },
       { key: 'plan', name: 'План', width: 110, sortingType: 'numberSort' },
     ];
@@ -517,26 +463,27 @@ export const DerivedGroupingSortFilter: Story = {
     return (
       <div>
         <p style={{ fontSize: 13, color: '#888', marginBottom: 8 }}>
-          Объединение <b>выводится из значения</b> на текущем порядке (пробеги
-          одинаковых role/dept). Отсортируй по <b>Роль</b> → блоки соберутся; по{' '}
-          <b>План</b> → роли перемешаются и блоки распадутся; фильтр по роли
-          (в шапке колонки «Роль») → блоки сожмутся. Всё пересобирается САМО (в
-          отличие от позиционного rowSpan в «Базовом rowSpan»).
+          <code>spanCells.spanBy: [&apos;role&apos;, &apos;dept&apos;]</code> —
+          обёртка сама объединяет эти колонки по подряд идущим одинаковым
+          значениям. Отсортируй по <b>Роль</b> → блоки соберутся; по <b>План</b> →
+          роли перемешаются и блоки распадутся; фильтр по роли (в шапке колонки
+          «Роль») → блоки сожмутся. Всё пересобирается САМО, без ручного кода в
+          стори.
         </p>
         <TableCanvas
           tableConfig={{
             containerStyle: { height: '520px' },
             rowMarkers: { startIndex: 1 },
             columnsControl: { enable: true },
-            sorting: { state: [sort, setSort], manualSorting: true },
+            spanCells: { spanBy: ['role', 'dept'] },
+            sorting: { state: sortState },
             filtering: {
               state: filteringState,
-              manualFiltering: true,
               filtersInfo: { role: { label: 'Роль', clearedValue: 'Все' } },
             },
           }}
           columnConfig={columns}
-          rows={visible}
+          rows={ALL}
         />
       </div>
     );

@@ -44,6 +44,7 @@ import { ColumnConfigInternal } from '../types/column-config-internal.type';
 import { TableConfig } from '../types/table-config.type';
 import { calculateMinColumnWidth } from '../utils';
 import { renderFilterSortHeader } from '../widgets/filter-sort-header';
+import { createSpanByRowSpan } from './createSpanByRowSpan';
 
 export const useColumns = <
   FilterStateType extends ObjectForExtending,
@@ -192,6 +193,17 @@ export const useColumns = <
       : colsAfterKeyTextCheck;
 
     const pinnedColsSet = new Set(pinnedCols);
+
+    // spanCells.spanBy: карта colKey → функция значения для авто-объединения
+    // колонки по подряд идущим одинаковым значениям (см. createSpanByRowSpan).
+    const spanByValue = new Map<string, (row: RowType) => unknown>();
+    (tableConfig.spanCells?.spanBy ?? []).forEach((item) => {
+      if (typeof item === 'string') {
+        spanByValue.set(item, (row) => (row as ObjectForExtending)[item]);
+      } else {
+        spanByValue.set(item.colKey, item.value);
+      }
+    });
 
     return colsAfterHideCheck.map((el, currIndex, arr) => {
       const columnIsPinned = pinnedColsSet.has(el.key);
@@ -390,7 +402,11 @@ export const useColumns = <
           })
         : el.colSpan;
 
-      const rowSpan = el.rowSpan;
+      // spanCells.spanBy имеет приоритет: синтезируем rowSpan из run-map по значению.
+      const spanByValueOf = spanByValue.get(el.key);
+      const rowSpan = spanByValueOf
+        ? createSpanByRowSpan(spanByValueOf, rowsRef)
+        : el.rowSpan;
 
       // const cellClass: typeof el.cellClass = (() => {
       //   if (!el?.cellClass && (!editModeEnabled || !el.editingCell)) {
@@ -486,6 +502,7 @@ export const useColumns = <
   }, [
     columnConfig,
     tableConfig.resizableColumn,
+    tableConfig.spanCells,
 
     selectingRowsIsActive,
     isLoadingTable,
