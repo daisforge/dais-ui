@@ -18,6 +18,13 @@
     "mcp:build-index": "node ./dist/indexer/buildIndex.js",
     "mcp:vendor-atomic": "node ./dist/indexer/vendorAtomicData.js",
     "mcp:start": "node ./dist/server.js",
+    "mcp:ab": "node ./ab/run.mjs && node ./ab/score.mjs",
+    "mcp:ab:consumer": "node ./ab/prepare-consumer.mjs",
+    "mcp:ab:drift": "node ./ab/drift.mjs",
+    "mcp:ab:score": "node ./ab/score.mjs",
+    "mcp:ab:app": "node ./ab/assemble-app.mjs",
+    "mcp:ab:selfcheck": "node ./ab/selfcheck.mjs",
+    "mcp:ab:prepare-before": "node ./ab/prepare-before.mjs",
     "mcp:inspect": "npm run build && npx @modelcontextprotocol/inspector node ./dist/server.js"
   },
   "license": "MIT",
