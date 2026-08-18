@@ -292,10 +292,49 @@ function buildComponentRecords(): WorkingComponentRecord[] {
   return records;
 }
 
+/**
+ * Абсолютные пути в индексе — это путь машины сборщика: они шумят в диффе
+ * закоммиченного `data/component-index.json` и ничего не значат ни у другого
+ * разработчика, ни у потребителя, куда индекс уезжает внутри пакета.
+ *
+ * Резать их можно только на выходе: по ходу сборки `sourceFile` разбирают
+ * `resolveImportPath` и `deriveGroupAndFolder`, и им нужен настоящий
+ * абсолютный путь. Поэтому нормализация — один проход перед сериализацией, по
+ * всем строкам сразу (а не по известным полям): так новое поле с путём не
+ * протащит абсолютный путь мимо нас.
+ */
+function toPortablePath(value: string): string {
+  if (value.startsWith(`${REPO_ROOT}/`))
+    return value.slice(REPO_ROOT.length + 1);
+  // Зависимости могут лежать и вне корня (симлинки, общий store) — тогда
+  // устойчивая часть пути начинается с node_modules.
+  const nm = value.lastIndexOf('/node_modules/');
+  if (nm !== -1) return value.slice(nm + 1);
+  return value;
+}
+
+function relativizePaths<T>(value: T): T {
+  if (typeof value === 'string') {
+    return (value.startsWith('/')
+      ? toPortablePath(value)
+      : value) as unknown as T;
+  }
+  if (Array.isArray(value)) return value.map(relativizePaths) as unknown as T;
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(
+      Object.entries(value as Record<string, unknown>).map(([k, v]) => [
+        k,
+        relativizePaths(v),
+      ]),
+    ) as unknown as T;
+  }
+  return value;
+}
+
 function writeIndexFile(outputDir: string, index: ComponentIndex): string {
   fs.mkdirSync(outputDir, { recursive: true });
   const outPath = path.join(outputDir, 'component-index.json');
-  fs.writeFileSync(outPath, JSON.stringify(index, null, 2));
+  fs.writeFileSync(outPath, JSON.stringify(relativizePaths(index), null, 2));
   return outPath;
 }
 

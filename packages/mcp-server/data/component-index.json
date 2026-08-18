@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-17T11:29:30.126Z",
+  "generatedAt": "2026-08-18T15:06:36.553Z",
   "libVersion": "1.12.1",
   "components": {
     "Accordion": {
@@ -10,7 +10,7 @@
       "description": "Список сворачиваемых секций с заголовками — для скрытия объёмного контента до клика",
       "props": [],
       "propsTypeName": "ComponentProps<typeof Accordion>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Accordion/Accordion.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Accordion/Accordion.d.ts",
       "type": "wrapper",
       "atomicBase": "Accordion",
       "category": "Локальные компоненты",
@@ -196,7 +196,7 @@
         }
       ],
       "propsTypeName": "ComponentProps<typeof AccordionItem>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Accordion/ui/AccordionItem/AccordionItem.d.ts",
+      "sourceFile": "node_modules/@salutejs/plasma-new-hope/types/components/Accordion/ui/AccordionItem/AccordionItem.d.ts",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -434,7 +434,7 @@
         }
       ],
       "propsTypeName": "AiAgentPopoverProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/AiAgentPopover/AiAgentPopover.tsx",
+      "sourceFile": "packages/ui-kit/src/components/AiAgentPopover/AiAgentPopover.tsx",
       "type": "wrapper",
       "category": "Локальные компоненты",
       "hint": "Не путать с PopoverDF — тот универсальный. AiAgentPopover только для команды AI-агента.",
@@ -660,7 +660,7 @@
           ]
         }
       ],
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/AnalyticalWidget/AnalyticalWidget.tsx",
+      "sourceFile": "packages/ui-kit/src/components/AnalyticalWidget/AnalyticalWidget.tsx",
       "type": "composition",
       "category": "Композиции",
       "hint": "Это layout, не фильтрация. Compound-компоненты (Header, Chips, FilterIconButton) — это примеры наполнения, а не обязательная часть. Widget — универсальный аналог.",
@@ -764,7 +764,7 @@
         }
       ],
       "propsTypeName": "ApprovalCenterProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/ApprovalCenter/ApprovalCenter.tsx",
+      "sourceFile": "packages/ui-kit/src/components/ApprovalCenter/ApprovalCenter.tsx",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -889,7 +889,7 @@
         }
       ],
       "propsTypeName": "ComponentProps<typeof Attach>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Attach/Attach.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Attach/Attach.d.ts",
       "type": "wrapper",
       "atomicBase": "Attach",
       "category": "Локальные компоненты",
@@ -1187,7 +1187,7 @@
         }
       ],
       "propsTypeName": "AutocompleteProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/Autocomplete/Autocomplete.tsx",
+      "sourceFile": "packages/ui-kit/src/components/Autocomplete/Autocomplete.tsx",
       "type": "wrapper",
       "atomicBase": "Autocomplete",
       "formVariant": "FormAutocomplete",
@@ -2046,7 +2046,7 @@
         }
       ],
       "propsTypeName": "AutocompleteSearchProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/AutocompleteSearch/AutocompleteSearch.tsx",
+      "sourceFile": "packages/ui-kit/src/components/AutocompleteSearch/AutocompleteSearch.tsx",
       "type": "composition",
       "category": "Композиции",
       "keywords": [
@@ -2132,7 +2132,7 @@
         }
       ],
       "propsTypeName": "AvatarProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Avatar/Avatar.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Avatar/Avatar.d.ts",
       "type": "wrapper",
       "atomicBase": "Avatar",
       "category": "Локальные компоненты",
@@ -2377,7 +2377,7 @@
       "description": "Группа перекрывающихся аватаров для отображения нескольких участников компактно",
       "props": [],
       "propsTypeName": "AvatarGroupProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/AvatarGroup/AvatarGroup.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/AvatarGroup/AvatarGroup.d.ts",
       "type": "wrapper",
       "atomicBase": "AvatarGroup",
       "category": "Локальные компоненты",
@@ -2417,7 +2417,7 @@
         }
       ],
       "propsTypeName": "BadgeProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Badge/Badge.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Badge/Badge.d.ts",
       "type": "wrapper",
       "atomicBase": "Badge",
       "category": "Локальные компоненты",
@@ -2574,7 +2574,7 @@
         }
       ],
       "propsTypeName": "BlockGradientScrollProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/BlockGradientScroll/BlockGradientScroll.tsx",
+      "sourceFile": "packages/ui-kit/src/components/BlockGradientScroll/BlockGradientScroll.tsx",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -2726,7 +2726,7 @@
         }
       ],
       "propsTypeName": "BlockTitleProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/BlockTitle/BlockTitle.tsx",
+      "sourceFile": "packages/ui-kit/src/components/BlockTitle/BlockTitle.tsx",
       "type": "composition",
       "category": "Композиции",
       "keywords": [
@@ -3073,7 +3073,7 @@
         }
       ],
       "propsTypeName": "BoxProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/Box/Box.tsx",
+      "sourceFile": "packages/ui-kit/src/components/Box/Box.tsx",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -3161,7 +3161,7 @@
       "description": "Цепочка навигационных ссылок, показывающая путь пользователя по разделам",
       "props": [],
       "propsTypeName": "BreadcrumbsProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Breadcrumbs/Breadcrumbs.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Breadcrumbs/Breadcrumbs.d.ts",
       "type": "wrapper",
       "atomicBase": "Breadcrumbs",
       "category": "Локальные компоненты",
@@ -3252,7 +3252,7 @@
         }
       ],
       "propsTypeName": "ButtonProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Button/Button.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Button/Button.d.ts",
       "type": "wrapper",
       "atomicBase": "Button",
       "category": "Локальные компоненты",
@@ -3459,7 +3459,7 @@
         }
       ],
       "propsTypeName": "ComponentProps<typeof ButtonBase>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/ButtonBase/index.d.ts",
+      "sourceFile": "node_modules/@salutejs/plasma-new-hope/types/components/ButtonBase/index.d.ts",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -3482,7 +3482,7 @@
       "description": "Группа связанных кнопок с общим отступом, формой и ориентацией расположения",
       "props": [],
       "propsTypeName": "ButtonGroupProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/ButtonGroup/ButtonGroup.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/ButtonGroup/ButtonGroup.d.ts",
       "type": "wrapper",
       "atomicBase": "ButtonGroup",
       "category": "Локальные компоненты",
@@ -3582,7 +3582,7 @@
       "description": "Календарь для выбора одной даты или диапазона дат с отметкой событий",
       "props": [],
       "propsTypeName": "CalendarProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Calendar/Calendar.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Calendar/Calendar.d.ts",
       "type": "wrapper",
       "atomicBase": "Calendar",
       "category": "Локальные компоненты",
@@ -3967,7 +3967,7 @@
         }
       ],
       "propsTypeName": "CalendarBaseProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Calendar/Calendar.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Calendar/Calendar.d.ts",
       "type": "wrapper",
       "atomicBase": "CalendarBase",
       "category": "Локальные компоненты",
@@ -4149,7 +4149,7 @@
         }
       ],
       "propsTypeName": "ComponentProps<typeof CalendarBaseRange>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Calendar/Calendar.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Calendar/Calendar.d.ts",
       "type": "wrapper",
       "atomicBase": "CalendarBaseRange",
       "category": "Локальные компоненты",
@@ -4313,7 +4313,7 @@
         }
       ],
       "propsTypeName": "CalendarDoubleProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Calendar/Calendar.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Calendar/Calendar.d.ts",
       "type": "wrapper",
       "atomicBase": "CalendarDouble",
       "category": "Локальные компоненты",
@@ -4489,7 +4489,7 @@
         }
       ],
       "propsTypeName": "ComponentProps<typeof CalendarDoubleRange>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Calendar/Calendar.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Calendar/Calendar.d.ts",
       "type": "wrapper",
       "atomicBase": "CalendarDoubleRange",
       "category": "Локальные компоненты",
@@ -4520,7 +4520,7 @@
       "description": "Визуальный контейнер-карточка, объединяющий изображение, текст и действия в один блок",
       "props": [],
       "propsTypeName": "CardProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Card/Card.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Card/Card.d.ts",
       "type": "wrapper",
       "atomicBase": "Card",
       "category": "Локальные компоненты",
@@ -4608,7 +4608,7 @@
         }
       ],
       "propsTypeName": "ComponentProps<typeof CardContent>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Card/Card.styles.d.ts",
+      "sourceFile": "node_modules/@salutejs/plasma-new-hope/types/components/Card/Card.styles.d.ts",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -4652,7 +4652,7 @@
         }
       ],
       "propsTypeName": "ComponentProps<typeof CardInnerContent>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Card/Card.styles.d.ts",
+      "sourceFile": "node_modules/@salutejs/plasma-new-hope/types/components/Card/Card.styles.d.ts",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -4766,7 +4766,7 @@
         }
       ],
       "propsTypeName": "CarouselCompProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Carousel/Carousel.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Carousel/Carousel.d.ts",
       "type": "wrapper",
       "atomicBase": "Carousel",
       "category": "Локальные компоненты",
@@ -4824,7 +4824,7 @@
         }
       ],
       "propsTypeName": "CarouselItemCompProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Carousel/CarouselOld/CarouselItem.d.ts",
+      "sourceFile": "node_modules/@salutejs/plasma-new-hope/types/components/Carousel/CarouselOld/CarouselItem.d.ts",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -4854,7 +4854,7 @@
         }
       ],
       "propsTypeName": "ComponentProps<typeof CellTextbox>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Cell/ui/CellTextbox/CellTextbox.d.ts",
+      "sourceFile": "node_modules/@salutejs/plasma-new-hope/types/components/Cell/ui/CellTextbox/CellTextbox.d.ts",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -4883,7 +4883,7 @@
       "role": "primary",
       "description": "Надпись-лейбл внутри текстового блока ячейки Cell",
       "props": [],
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Cell/ui/CellTextboxLabel/CellTextboxLabel.d.ts",
+      "sourceFile": "node_modules/@salutejs/plasma-new-hope/types/components/Cell/ui/CellTextboxLabel/CellTextboxLabel.d.ts",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -4912,7 +4912,7 @@
       "role": "primary",
       "description": "Подзаголовок внутри текстового блока ячейки Cell",
       "props": [],
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Cell/ui/CellTextboxSubtitle/CellTextboxSubtitle.d.ts",
+      "sourceFile": "node_modules/@salutejs/plasma-new-hope/types/components/Cell/ui/CellTextboxSubtitle/CellTextboxSubtitle.d.ts",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -4941,7 +4941,7 @@
       "role": "primary",
       "description": "Заголовок внутри текстового блока ячейки Cell",
       "props": [],
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Cell/ui/CellTextboxTitle/CellTextboxTitle.d.ts",
+      "sourceFile": "node_modules/@salutejs/plasma-new-hope/types/components/Cell/ui/CellTextboxTitle/CellTextboxTitle.d.ts",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -4971,7 +4971,7 @@
       "description": "Строка списка со слотами слева/справа, заголовком и подписью",
       "props": [],
       "propsTypeName": "CellProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Cell/Cell.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Cell/Cell.d.ts",
       "type": "wrapper",
       "atomicBase": "Cell",
       "category": "Локальные компоненты",
@@ -5116,7 +5116,7 @@
         }
       ],
       "propsTypeName": "CheckboxProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Checkbox/Checkbox.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Checkbox/Checkbox.d.ts",
       "type": "wrapper",
       "atomicBase": "Checkbox",
       "formVariant": "FormCheckbox",
@@ -5350,7 +5350,7 @@
         }
       ],
       "propsTypeName": "ChipProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Chip/Chip.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Chip/Chip.d.ts",
       "type": "wrapper",
       "atomicBase": "Chip",
       "category": "Локальные компоненты",
@@ -5515,7 +5515,7 @@
         }
       ],
       "propsTypeName": "ComponentProps<typeof ChipGroup>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/ChipGroup/ChipGroup.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/ChipGroup/ChipGroup.d.ts",
       "type": "wrapper",
       "atomicBase": "ChipGroup",
       "category": "Локальные компоненты",
@@ -5603,7 +5603,7 @@
         }
       ],
       "propsTypeName": "ComponentProps<typeof CodeField>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/CodeField/CodeField.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/CodeField/CodeField.d.ts",
       "type": "wrapper",
       "atomicBase": "CodeField",
       "category": "Локальные компоненты",
@@ -5775,7 +5775,7 @@
         }
       ],
       "propsTypeName": "ComponentProps<typeof CodeInput>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/CodeInput/CodeInput.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/CodeInput/CodeInput.d.ts",
       "type": "wrapper",
       "atomicBase": "CodeInput",
       "category": "Локальные компоненты",
@@ -5992,7 +5992,7 @@
         }
       ],
       "propsTypeName": "CollapseProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/Collapse/Collapse.tsx",
+      "sourceFile": "packages/ui-kit/src/components/Collapse/Collapse.tsx",
       "type": "wrapper",
       "category": "Локальные компоненты",
       "keywords": [
@@ -6119,7 +6119,7 @@
       "propsTypeName": "ComboboxProps",
       "rawType": "export type Props<T extends ComboboxItemOption> = DistributiveOmit<ComboboxProps<T>, PropsFromConfig> & DistributivePick<ComponentProps<typeof ComboboxDefault>, PropsFromConfig> & {\n    appearance?: 'default' | 'viewMode';\n};",
       "isGeneric": true,
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/Combobox/Combobox.tsx",
+      "sourceFile": "packages/ui-kit/src/components/Combobox/Combobox.tsx",
       "type": "wrapper",
       "atomicBase": "Combobox",
       "formVariant": "FormCombobox",
@@ -6697,7 +6697,7 @@
       "description": "Числовой бейдж для отображения количества (например, уведомлений)",
       "props": [],
       "propsTypeName": "CounterProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Counter/Counter.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Counter/Counter.d.ts",
       "type": "wrapper",
       "atomicBase": "Counter",
       "category": "Локальные компоненты",
@@ -6790,7 +6790,7 @@
         }
       ],
       "propsTypeName": "DatePickerProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/DatePicker/DatePicker.tsx",
+      "sourceFile": "packages/ui-kit/src/components/DatePicker/DatePicker.tsx",
       "type": "wrapper",
       "atomicBase": "DatePicker",
       "formVariant": "FormDatePicker",
@@ -8000,7 +8000,7 @@
         }
       ],
       "propsTypeName": "DatePickerRangeProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/DatePicker/DatePicker.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/DatePicker/DatePicker.d.ts",
       "type": "wrapper",
       "atomicBase": "DatePickerRange",
       "formVariant": "FormDatePickerRange",
@@ -8064,7 +8064,7 @@
         }
       ],
       "propsTypeName": "ComponentProps<typeof DateTimePicker>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/DateTimePicker/DateTimePicker.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/DateTimePicker/DateTimePicker.d.ts",
       "type": "wrapper",
       "atomicBase": "DateTimePicker",
       "category": "Локальные компоненты",
@@ -8731,7 +8731,7 @@
         }
       ],
       "propsTypeName": "DividerProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Divider/Divider.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Divider/Divider.d.ts",
       "type": "wrapper",
       "atomicBase": "Divider",
       "category": "Локальные компоненты",
@@ -8776,7 +8776,7 @@
       "description": "Базовая выезжающая боковая панель поверх контента страницы",
       "props": [],
       "propsTypeName": "DrawerProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Drawer/Drawer.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Drawer/Drawer.d.ts",
       "type": "wrapper",
       "atomicBase": "Drawer",
       "category": "Локальные компоненты",
@@ -9053,7 +9053,7 @@
         }
       ],
       "propsTypeName": "DrawerContentProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Drawer/Drawer.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Drawer/Drawer.d.ts",
       "type": "wrapper",
       "atomicBase": "DrawerContent",
       "category": "Локальные компоненты",
@@ -9098,7 +9098,7 @@
         }
       ],
       "propsTypeName": "DrawerFooterProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Drawer/Drawer.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Drawer/Drawer.d.ts",
       "type": "wrapper",
       "atomicBase": "DrawerFooter",
       "category": "Локальные компоненты",
@@ -9167,7 +9167,7 @@
         }
       ],
       "propsTypeName": "DrawerHeaderProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Drawer/Drawer.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Drawer/Drawer.d.ts",
       "type": "wrapper",
       "atomicBase": "DrawerHeader",
       "category": "Локальные компоненты",
@@ -10416,7 +10416,7 @@
           ]
         }
       ],
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/DrawerDF/DrawerDF.tsx",
+      "sourceFile": "packages/ui-kit/src/components/DrawerDF/DrawerDF.tsx",
       "type": "wrapper",
       "category": "Локальные компоненты",
       "keywords": [
@@ -10786,7 +10786,7 @@
         }
       ],
       "propsTypeName": "DrawerDFContentProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/DrawerDF/DrawerDFCompounds.tsx",
+      "sourceFile": "packages/ui-kit/src/components/DrawerDF/DrawerDFCompounds.tsx",
       "type": "composition",
       "category": "Локальные компоненты",
       "keywords": [
@@ -11100,7 +11100,7 @@
         }
       ],
       "propsTypeName": "DrawerDFFooterProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/DrawerDF/DrawerDFCompounds.tsx",
+      "sourceFile": "packages/ui-kit/src/components/DrawerDF/DrawerDFCompounds.tsx",
       "type": "composition",
       "category": "Локальные компоненты",
       "keywords": [
@@ -11444,7 +11444,7 @@
         }
       ],
       "propsTypeName": "DrawerDFHeaderProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/DrawerDF/DrawerDFCompounds.tsx",
+      "sourceFile": "packages/ui-kit/src/components/DrawerDF/DrawerDFCompounds.tsx",
       "type": "composition",
       "category": "Локальные компоненты",
       "keywords": [
@@ -11487,7 +11487,7 @@
       "description": "Выпадающее меню с многоуровневым списком пунктов",
       "props": [],
       "propsTypeName": "DropdownProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Dropdown/Dropdown.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Dropdown/Dropdown.d.ts",
       "type": "wrapper",
       "atomicBase": "Dropdown",
       "category": "Локальные компоненты",
@@ -11763,7 +11763,7 @@
         }
       ],
       "propsTypeName": "DropzoneProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Dropzone/Dropzone.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Dropzone/Dropzone.d.ts",
       "type": "wrapper",
       "atomicBase": "Dropzone",
       "category": "Локальные компоненты",
@@ -11920,7 +11920,7 @@
         }
       ],
       "propsTypeName": "ComponentProps<typeof EmbedIconButton>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/EmbedIconButton/EmbedIconButton.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/EmbedIconButton/EmbedIconButton.d.ts",
       "type": "wrapper",
       "atomicBase": "EmbedIconButton",
       "category": "Локальные компоненты",
@@ -12163,7 +12163,7 @@
         }
       ],
       "propsTypeName": "EmbeddedButtonBetaCompProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/dist/beta/types/EmbeddedButton/EmbeddedButton.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/dist/beta/types/EmbeddedButton/EmbeddedButton.d.ts",
       "type": "wrapper",
       "atomicBase": "EmbeddedButton",
       "atomicSubpath": "beta",
@@ -12261,7 +12261,7 @@
         }
       ],
       "propsTypeName": "EmptyStateProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/EmptyState/EmptyState.tsx",
+      "sourceFile": "packages/ui-kit/src/components/EmptyState/EmptyState.tsx",
       "type": "composition",
       "category": "Композиции",
       "keywords": [
@@ -12339,7 +12339,7 @@
         }
       ],
       "propsTypeName": "ComponentProps<typeof Flow>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Flow/Flow.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Flow/Flow.d.ts",
       "type": "wrapper",
       "atomicBase": "Flow",
       "category": "Локальные компоненты",
@@ -12658,7 +12658,7 @@
         }
       ],
       "propsTypeName": "ColProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Grid/ui/Col/Col.d.ts",
+      "sourceFile": "node_modules/@salutejs/plasma-new-hope/types/components/Grid/ui/Col/Col.d.ts",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -12694,7 +12694,7 @@
       "description": "Контейнер сетки (Row/Col) для построения адаптивных раскладок страницы",
       "props": [],
       "propsTypeName": "GridProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Grid/Grid.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Grid/Grid.d.ts",
       "type": "wrapper",
       "atomicBase": "Grid",
       "category": "Локальные компоненты",
@@ -12747,7 +12747,7 @@
       "role": "primary",
       "description": "Строка сетки для горизонтального размещения колонок внутри Grid",
       "props": [],
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Grid/ui/Row/Row.d.ts",
+      "sourceFile": "node_modules/@salutejs/plasma-new-hope/types/components/Grid/ui/Row/Row.d.ts",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -13001,7 +13001,7 @@
         }
       ],
       "propsTypeName": "GridDNDProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/GridDND/GridDND.tsx",
+      "sourceFile": "packages/ui-kit/src/components/GridDND/GridDND.tsx",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -13086,7 +13086,7 @@
         }
       ],
       "propsTypeName": "IconButtonProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/IconButton/IconButton.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/IconButton/IconButton.d.ts",
       "type": "wrapper",
       "atomicBase": "IconButton",
       "category": "Локальные компоненты",
@@ -13438,7 +13438,7 @@
         }
       ],
       "propsTypeName": "IconButtonDotsProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/IconButton/IconButtonDots.tsx",
+      "sourceFile": "packages/ui-kit/src/components/IconButton/IconButtonDots.tsx",
       "type": "composition",
       "category": "Локальные компоненты",
       "keywords": [
@@ -13612,7 +13612,7 @@
         }
       ],
       "propsTypeName": "IconButtonFilterProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/IconButton/IconButtonFilter/IconButtonFilter.tsx",
+      "sourceFile": "packages/ui-kit/src/components/IconButton/IconButtonFilter/IconButtonFilter.tsx",
       "type": "composition",
       "category": "Локальные компоненты",
       "keywords": [
@@ -13649,7 +13649,7 @@
         }
       ],
       "propsTypeName": "IconSvgSpriteProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/IconSvgSprite/IconSvgSprite.tsx",
+      "sourceFile": "packages/ui-kit/src/components/IconSvgSprite/IconSvgSprite.tsx",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -13698,7 +13698,7 @@
         }
       ],
       "propsTypeName": "ImageProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Image/Image.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Image/Image.d.ts",
       "type": "wrapper",
       "atomicBase": "Image",
       "category": "Локальные компоненты",
@@ -13753,7 +13753,7 @@
       "description": "Маленький цветной индикатор статуса разных размеров и цветов",
       "props": [],
       "propsTypeName": "IndicatorProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Indicator/Indicator.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Indicator/Indicator.d.ts",
       "type": "wrapper",
       "atomicBase": "Indicator",
       "category": "Локальные компоненты",
@@ -13804,7 +13804,7 @@
       "description": "Обёртка для поля формы: лейбл, подсказка, признак обязательности",
       "props": [],
       "propsTypeName": "ComponentProps<typeof InformationWrapper>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/InformationWrapper/InformationWrapper.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/InformationWrapper/InformationWrapper.d.ts",
       "type": "wrapper",
       "atomicBase": "InformationWrapper",
       "category": "Локальные компоненты",
@@ -14283,7 +14283,7 @@
           ]
         }
       ],
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/LeftPanel/LeftPanel.tsx",
+      "sourceFile": "packages/ui-kit/src/components/LeftPanel/LeftPanel.tsx",
       "type": "composition",
       "category": "Композиции",
       "keywords": [
@@ -14513,7 +14513,7 @@
         }
       ],
       "propsTypeName": "LeftPanelToggleButtonProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/LeftPanel/components/LeftPanelToggleButton.tsx",
+      "sourceFile": "packages/ui-kit/src/components/LeftPanel/components/LeftPanelToggleButton.tsx",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -14562,7 +14562,7 @@
         }
       ],
       "propsTypeName": "LinkProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Link/Link.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Link/Link.d.ts",
       "type": "wrapper",
       "atomicBase": "Link",
       "category": "Локальные компоненты",
@@ -14666,7 +14666,7 @@
         }
       ],
       "propsTypeName": "LinkButtonCompProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/LinkButton/LinkButton.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/LinkButton/LinkButton.d.ts",
       "type": "wrapper",
       "atomicBase": "LinkButton",
       "category": "Локальные компоненты",
@@ -14782,7 +14782,7 @@
       "description": "Список элементов с фоном, разделителями и вариантами отображения",
       "props": [],
       "propsTypeName": "ListProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/List/List.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/List/List.d.ts",
       "type": "wrapper",
       "atomicBase": "List",
       "category": "Локальные компоненты",
@@ -14903,7 +14903,7 @@
         }
       ],
       "propsTypeName": "ComponentProps<typeof ListItem>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/List/ui/ListItem.d.ts",
+      "sourceFile": "node_modules/@salutejs/plasma-new-hope/types/components/List/ui/ListItem.d.ts",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -15053,7 +15053,7 @@
         }
       ],
       "propsTypeName": "ListOfFiltersProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/ListOfFilters/ListOfFilters.tsx",
+      "sourceFile": "packages/ui-kit/src/components/ListOfFilters/ListOfFilters.tsx",
       "type": "composition",
       "category": "Композиции",
       "keywords": [
@@ -15115,7 +15115,7 @@
         }
       ],
       "propsTypeName": "ComponentProps<typeof Mask>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Mask/Mask.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Mask/Mask.d.ts",
       "type": "wrapper",
       "atomicBase": "Mask",
       "formVariant": "FormMask",
@@ -15703,7 +15703,7 @@
           ]
         }
       ],
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/MassActions/MassActions.tsx",
+      "sourceFile": "packages/ui-kit/src/components/MassActions/MassActions.tsx",
       "type": "composition",
       "category": "Локальные компоненты",
       "keywords": [
@@ -15852,7 +15852,7 @@
         }
       ],
       "propsTypeName": "MassActionsButtonProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/MassActions/MassActionsButton.tsx",
+      "sourceFile": "packages/ui-kit/src/components/MassActions/MassActionsButton.tsx",
       "type": "composition",
       "category": "Локальные компоненты",
       "keywords": [
@@ -15900,7 +15900,7 @@
         }
       ],
       "propsTypeName": "MassActionsCounterProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/MassActions/MassActionsCounter.tsx",
+      "sourceFile": "packages/ui-kit/src/components/MassActions/MassActionsCounter.tsx",
       "type": "composition",
       "category": "Локальные компоненты",
       "keywords": [
@@ -15963,7 +15963,7 @@
         }
       ],
       "propsTypeName": "MassActionsStaticProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/MassActionsStatic/MassActionsStatic.tsx",
+      "sourceFile": "packages/ui-kit/src/components/MassActionsStatic/MassActionsStatic.tsx",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -15994,7 +15994,7 @@
       "description": "Базовое модальное окно поверх контента без готовых layout-слотов",
       "props": [],
       "propsTypeName": "ModalProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Modal/Modal.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Modal/Modal.d.ts",
       "type": "wrapper",
       "atomicBase": "Modal",
       "category": "Локальные компоненты",
@@ -16251,7 +16251,7 @@
         }
       ],
       "propsTypeName": "ModalDFBackIconButtonProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/ModalDF/components/BackIconButton.tsx",
+      "sourceFile": "packages/ui-kit/src/components/ModalDF/components/BackIconButton.tsx",
       "type": "wrapper",
       "atomicBase": "IconButton",
       "wrapsInternal": "IconButton",
@@ -16468,7 +16468,7 @@
         }
       ],
       "propsTypeName": "ComponentProps<typeof ModalDFDivider>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/ModalDF/components/Divider.tsx",
+      "sourceFile": "packages/ui-kit/src/components/ModalDF/components/Divider.tsx",
       "type": "wrapper",
       "atomicBase": "Divider",
       "wrapsInternal": "Divider",
@@ -16527,7 +16527,7 @@
         }
       ],
       "propsTypeName": "ModalDFDotsIconButtonProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/ModalDF/components/DotsIconButton.tsx",
+      "sourceFile": "packages/ui-kit/src/components/ModalDF/components/DotsIconButton.tsx",
       "type": "wrapper",
       "atomicBase": "IconButton",
       "wrapsInternal": "IconButton",
@@ -16742,7 +16742,7 @@
         }
       ],
       "propsTypeName": "ModalDFFooterProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/ModalDF/components/Footer.tsx",
+      "sourceFile": "packages/ui-kit/src/components/ModalDF/components/Footer.tsx",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -16819,7 +16819,7 @@
         }
       ],
       "propsTypeName": "ModalDFHeaderProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/ModalDF/components/Header.tsx",
+      "sourceFile": "packages/ui-kit/src/components/ModalDF/components/Header.tsx",
       "type": "composition",
       "category": "Локальные компоненты",
       "keywords": [
@@ -16865,7 +16865,7 @@
         }
       ],
       "propsTypeName": "ModalDFServiceButtonsProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/ModalDF/components/ServiceButtons.tsx",
+      "sourceFile": "packages/ui-kit/src/components/ModalDF/components/ServiceButtons.tsx",
       "type": "composition",
       "category": "Локальные компоненты",
       "keywords": [
@@ -16916,7 +16916,7 @@
         }
       ],
       "propsTypeName": "ModalDFProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/ModalDF/ModalDF.tsx",
+      "sourceFile": "packages/ui-kit/src/components/ModalDF/ModalDF.tsx",
       "type": "wrapper",
       "atomicBase": "Modal",
       "wrapsInternal": "Modal",
@@ -17212,7 +17212,7 @@
         }
       ],
       "propsTypeName": "ComponentProps<typeof ModalDFLeft>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/ModalDF/styled.ts",
+      "sourceFile": "packages/ui-kit/src/components/ModalDF/styled.ts",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -17258,7 +17258,7 @@
         }
       ],
       "propsTypeName": "ComponentProps<typeof ModalDFMain>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/ModalDF/styled.ts",
+      "sourceFile": "packages/ui-kit/src/components/ModalDF/styled.ts",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -17304,7 +17304,7 @@
         }
       ],
       "propsTypeName": "ComponentProps<typeof ModalDFContent>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/ModalDF/styled.ts",
+      "sourceFile": "packages/ui-kit/src/components/ModalDF/styled.ts",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -17374,7 +17374,7 @@
         }
       ],
       "propsTypeName": "ModalDFConfirmationProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/ModalDFConfirmation/ModalDFConfirmation.tsx",
+      "sourceFile": "packages/ui-kit/src/components/ModalDFConfirmation/ModalDFConfirmation.tsx",
       "type": "wrapper",
       "atomicBase": "Modal",
       "wrapsInternal": "ModalDF",
@@ -17664,7 +17664,7 @@
         }
       ],
       "propsTypeName": "ComponentProps<typeof ModalDFConfirmationFooter>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/ModalDFConfirmation/ModalDFConfirmation.tsx",
+      "sourceFile": "packages/ui-kit/src/components/ModalDFConfirmation/ModalDFConfirmation.tsx",
       "type": "wrapper",
       "atomicBase": "Modal",
       "wrapsInternal": "ModalDF",
@@ -17887,7 +17887,7 @@
       "description": "Блок с информационным, предупреждающим или обычным текстовым примечанием",
       "props": [],
       "propsTypeName": "ComponentProps<typeof Note>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Note/Note.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Note/Note.d.ts",
       "type": "wrapper",
       "atomicBase": "Note",
       "category": "Локальные компоненты",
@@ -18024,7 +18024,7 @@
         }
       ],
       "propsTypeName": "NotificationProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/Notification/Notification.tsx",
+      "sourceFile": "packages/ui-kit/src/components/Notification/Notification.tsx",
       "type": "wrapper",
       "atomicBase": "Notification",
       "category": "Локальные компоненты",
@@ -18256,7 +18256,7 @@
         }
       ],
       "propsTypeName": "ComponentProps<typeof NotificationsProvider>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Notification/Notification.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Notification/Notification.d.ts",
       "type": "wrapper",
       "atomicBase": "NotificationsProvider",
       "category": "Локальные компоненты",
@@ -18331,7 +18331,7 @@
         }
       ],
       "propsTypeName": "NumberFormatCompProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/NumberFormat/NumberFormat.tsx",
+      "sourceFile": "packages/ui-kit/src/components/NumberFormat/NumberFormat.tsx",
       "type": "wrapper",
       "atomicBase": "NumberFormat",
       "formVariant": "FormNumberFormat",
@@ -19030,7 +19030,7 @@
         }
       ],
       "propsTypeName": "NumberFormatAmountProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/NumberFormatAmount/NumberFormatAmount.tsx",
+      "sourceFile": "packages/ui-kit/src/components/NumberFormatAmount/NumberFormatAmount.tsx",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -19120,7 +19120,7 @@
         }
       ],
       "propsTypeName": "ComponentProps<typeof NumberInput>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/NumberInput/NumberInput.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/NumberInput/NumberInput.d.ts",
       "type": "wrapper",
       "atomicBase": "NumberInput",
       "category": "Локальные компоненты",
@@ -19379,7 +19379,7 @@
         }
       ],
       "propsTypeName": "OverlayProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Overlay/Overlay.d.ts",
+      "sourceFile": "node_modules/@salutejs/plasma-new-hope/types/components/Overlay/Overlay.d.ts",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -19465,7 +19465,7 @@
         }
       ],
       "propsTypeName": "PageTitleProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/PageTitle/PageTitle.tsx",
+      "sourceFile": "packages/ui-kit/src/components/PageTitle/PageTitle.tsx",
       "type": "composition",
       "category": "Композиции",
       "keywords": [
@@ -19548,7 +19548,7 @@
         }
       ],
       "propsTypeName": "PaginationProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Pagination/Pagination.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Pagination/Pagination.d.ts",
       "type": "wrapper",
       "atomicBase": "Pagination",
       "category": "Локальные компоненты",
@@ -19826,7 +19826,7 @@
       "description": "Всплывающая панель у элемента-триггера для доп. контента, меню или подсказок",
       "props": [],
       "propsTypeName": "PopoverProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Popover/Popover.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Popover/Popover.d.ts",
       "type": "wrapper",
       "atomicBase": "Popover",
       "category": "Локальные компоненты",
@@ -20170,7 +20170,7 @@
         }
       ],
       "propsTypeName": "PopoverBetaCompProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/dist/beta/types/Popover/Popover.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/dist/beta/types/Popover/Popover.d.ts",
       "type": "wrapper",
       "atomicBase": "Popover",
       "atomicSubpath": "beta",
@@ -20470,7 +20470,7 @@
         }
       ],
       "propsTypeName": "PopoverDFBodyProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/PopoverDF/components/Body.tsx",
+      "sourceFile": "packages/ui-kit/src/components/PopoverDF/components/Body.tsx",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -20774,7 +20774,7 @@
         }
       ],
       "propsTypeName": "PopoverDFFooterProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/PopoverDF/components/Footer.tsx",
+      "sourceFile": "packages/ui-kit/src/components/PopoverDF/components/Footer.tsx",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -20845,7 +20845,7 @@
         }
       ],
       "propsTypeName": "PopoverDFHeaderProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/PopoverDF/components/Header.tsx",
+      "sourceFile": "packages/ui-kit/src/components/PopoverDF/components/Header.tsx",
       "type": "composition",
       "category": "Локальные компоненты",
       "keywords": [
@@ -21019,7 +21019,7 @@
         }
       ],
       "propsTypeName": "PopoverDFProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/PopoverDF/PopoverDF.tsx",
+      "sourceFile": "packages/ui-kit/src/components/PopoverDF/PopoverDF.tsx",
       "type": "wrapper",
       "category": "Локальные компоненты",
       "hint": "Универсальный Popover. Не путать с AiAgentPopover (для конкретной команды).",
@@ -21104,7 +21104,7 @@
         }
       ],
       "propsTypeName": "ComponentProps<typeof PopupProvider>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Popup/PopupContext.d.ts",
+      "sourceFile": "node_modules/@salutejs/plasma-new-hope/types/components/Popup/PopupContext.d.ts",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -21154,7 +21154,7 @@
       "description": "Базовое всплывающее окно с оверлеем, перетаскиванием и изменением размера",
       "props": [],
       "propsTypeName": "PopupProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Popup/Popup.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Popup/Popup.d.ts",
       "type": "wrapper",
       "atomicBase": "Popup",
       "category": "Локальные компоненты",
@@ -21561,7 +21561,7 @@
         }
       ],
       "propsTypeName": "PopupDFBodyProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/PopupDF/components/Body.tsx",
+      "sourceFile": "packages/ui-kit/src/components/PopupDF/components/Body.tsx",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -21865,7 +21865,7 @@
         }
       ],
       "propsTypeName": "PopupDFFooterProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/PopupDF/components/Footer.tsx",
+      "sourceFile": "packages/ui-kit/src/components/PopupDF/components/Footer.tsx",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -21948,7 +21948,7 @@
         }
       ],
       "propsTypeName": "PopupDFHeaderProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/PopupDF/components/Header.tsx",
+      "sourceFile": "packages/ui-kit/src/components/PopupDF/components/Header.tsx",
       "type": "composition",
       "category": "Локальные компоненты",
       "keywords": [
@@ -22075,7 +22075,7 @@
         }
       ],
       "propsTypeName": "PopupDFProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/PopupDF/PopupDF.tsx",
+      "sourceFile": "packages/ui-kit/src/components/PopupDF/PopupDF.tsx",
       "type": "wrapper",
       "category": "Локальные компоненты",
       "keywords": [
@@ -22153,7 +22153,7 @@
         }
       ],
       "propsTypeName": "PortalProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Portal/Portal.d.ts",
+      "sourceFile": "node_modules/@salutejs/plasma-new-hope/types/components/Portal/Portal.d.ts",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -22183,7 +22183,7 @@
         }
       ],
       "propsTypeName": "ComponentProps<typeof Price>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Price/Price.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Price/Price.d.ts",
       "type": "wrapper",
       "atomicBase": "Price",
       "category": "Локальные компоненты",
@@ -22284,7 +22284,7 @@
       "description": "Линейный индикатор прогресса выполнения задачи или загрузки данных",
       "props": [],
       "propsTypeName": "ProgressProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Progress/Progress.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Progress/Progress.d.ts",
       "type": "wrapper",
       "atomicBase": "Progress",
       "category": "Локальные компоненты",
@@ -22448,7 +22448,7 @@
         }
       ],
       "propsTypeName": "ComponentProps<typeof ProgressBarCircular>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/ProgressBarCircular/ProgressBarCircular.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/ProgressBarCircular/ProgressBarCircular.d.ts",
       "type": "wrapper",
       "atomicBase": "ProgressBarCircular",
       "category": "Локальные компоненты",
@@ -22557,7 +22557,7 @@
         }
       ],
       "propsTypeName": "RadioboxProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Radiobox/Radiobox.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Radiobox/Radiobox.d.ts",
       "type": "wrapper",
       "atomicBase": "Radiobox",
       "formVariant": "FormRadiobox",
@@ -22752,7 +22752,7 @@
       "role": "primary",
       "description": "Группировка Radiobox с общим управлением выбранным значением",
       "props": [],
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Radiobox/RadioGroup.d.ts",
+      "sourceFile": "node_modules/@salutejs/plasma-new-hope/types/components/Radiobox/RadioGroup.d.ts",
       "type": "standalone",
       "formVariant": "FormRadioGroup",
       "category": "Локальные компоненты",
@@ -22803,7 +22803,7 @@
         }
       ],
       "propsTypeName": "RangeProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Range/Range.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Range/Range.d.ts",
       "type": "wrapper",
       "atomicBase": "Range",
       "category": "Локальные компоненты",
@@ -23322,7 +23322,7 @@
         }
       ],
       "propsTypeName": "ComponentProps<typeof Rating>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Rating/Rating.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Rating/Rating.d.ts",
       "type": "wrapper",
       "atomicBase": "Rating",
       "category": "Локальные компоненты",
@@ -23345,7 +23345,7 @@
       "role": "primary",
       "description": "Оборачивает приложение для SSR и корректной озвучки Checkbox/Radiobox скринридерами.",
       "props": [],
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/SSRProvider/SSRProvider.d.ts",
+      "sourceFile": "node_modules/@salutejs/plasma-new-hope/types/components/SSRProvider/SSRProvider.d.ts",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -23390,7 +23390,7 @@
         }
       ],
       "propsTypeName": "SegmentGroupProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Segment/Segment.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Segment/Segment.d.ts",
       "type": "wrapper",
       "atomicBase": "SegmentGroup",
       "formVariant": "FormSegmentGroup",
@@ -23568,7 +23568,7 @@
         }
       ],
       "propsTypeName": "ComponentProps<typeof SegmentIconItem>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Segment/Segment.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Segment/Segment.d.ts",
       "type": "wrapper",
       "atomicBase": "SegmentIconItem",
       "category": "Локальные компоненты",
@@ -23662,7 +23662,7 @@
         }
       ],
       "propsTypeName": "SegmentItemProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Segment/Segment.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Segment/Segment.d.ts",
       "type": "wrapper",
       "atomicBase": "SegmentItem",
       "category": "Локальные компоненты",
@@ -23738,7 +23738,7 @@
         }
       ],
       "propsTypeName": "ComponentProps<typeof SegmentProvider>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Segment/SegmentProvider/SegmentProvider.d.ts",
+      "sourceFile": "node_modules/@salutejs/plasma-new-hope/types/components/Segment/SegmentProvider/SegmentProvider.d.ts",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -23807,7 +23807,7 @@
         }
       ],
       "propsTypeName": "ComponentProps<typeof Select>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Select/Select.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Select/Select.d.ts",
       "type": "wrapper",
       "atomicBase": "Select",
       "formVariant": "FormSelect",
@@ -24372,7 +24372,7 @@
       "description": "Шторка (bottom sheet), выезжающая поверх экрана снизу с шапкой и футером",
       "props": [],
       "propsTypeName": "SheetProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Sheet/Sheet.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Sheet/Sheet.d.ts",
       "type": "wrapper",
       "atomicBase": "Sheet",
       "category": "Локальные компоненты",
@@ -24529,7 +24529,7 @@
       "description": "Плейсхолдер-линия для имитации загрузки текстовой строки",
       "props": [],
       "propsTypeName": "ComponentProps<typeof LineSkeleton>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Skeleton/Skeleton.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Skeleton/Skeleton.d.ts",
       "type": "wrapper",
       "atomicBase": "LineSkeleton",
       "category": "Локальные компоненты",
@@ -24673,7 +24673,7 @@
         }
       ],
       "propsTypeName": "ComponentProps<typeof RectSkeleton>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/plasma-new-hope/types/components/Skeleton/RectSkeleton/RectSkeleton.d.ts",
+      "sourceFile": "node_modules/@salutejs/plasma-new-hope/types/components/Skeleton/RectSkeleton/RectSkeleton.d.ts",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -24772,7 +24772,7 @@
         }
       ],
       "propsTypeName": "ComponentProps<typeof TextSkeleton>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Skeleton/Skeleton.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Skeleton/Skeleton.d.ts",
       "type": "wrapper",
       "atomicBase": "TextSkeleton",
       "category": "Локальные компоненты",
@@ -24803,7 +24803,7 @@
       "description": "Ползунок для выбора числа или диапазона чисел в заданных границах (min/max).",
       "props": [],
       "propsTypeName": "SliderProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Slider/Slider.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Slider/Slider.d.ts",
       "type": "wrapper",
       "atomicBase": "Slider",
       "category": "Локальные компоненты",
@@ -25137,7 +25137,7 @@
         }
       ],
       "propsTypeName": "SpinnerProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Spinner/Spinner.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Spinner/Spinner.d.ts",
       "type": "wrapper",
       "atomicBase": "Spinner",
       "category": "Локальные компоненты",
@@ -25258,7 +25258,7 @@
         }
       ],
       "propsTypeName": "SplitViewProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/SplitView/SplitView.tsx",
+      "sourceFile": "packages/ui-kit/src/components/SplitView/SplitView.tsx",
       "type": "composition",
       "category": "Композиции",
       "keywords": [
@@ -25324,7 +25324,7 @@
       "description": "Пошаговый индикатор прогресса (степпер) для многошаговых процессов и визардов.",
       "props": [],
       "propsTypeName": "ComponentProps<typeof Steps>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Steps/Steps.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Steps/Steps.d.ts",
       "type": "wrapper",
       "atomicBase": "Steps",
       "category": "Локальные компоненты",
@@ -25520,7 +25520,7 @@
         }
       ],
       "propsTypeName": "StoriesPreviewProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/Stories/components/StoriesPreview/StoriesPreview.tsx",
+      "sourceFile": "packages/ui-kit/src/components/Stories/components/StoriesPreview/StoriesPreview.tsx",
       "type": "composition",
       "category": "Локальные компоненты",
       "keywords": [
@@ -25759,7 +25759,7 @@
           ]
         }
       ],
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/Stories/Stories.tsx",
+      "sourceFile": "packages/ui-kit/src/components/Stories/Stories.tsx",
       "type": "standalone",
       "category": "Локальные компоненты",
       "hint": "Переиспользуемый компонент сторей для разных команд. Триггеры — Stories.Preview, слайды передаются данными.",
@@ -25957,7 +25957,7 @@
         }
       ],
       "propsTypeName": "SwitchProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/Switch/Switch.tsx",
+      "sourceFile": "packages/ui-kit/src/components/Switch/Switch.tsx",
       "type": "wrapper",
       "formVariant": "FormSwitch",
       "category": "Локальные компоненты",
@@ -26026,7 +26026,7 @@
         }
       ],
       "propsTypeName": "ComponentProps<typeof TableFilterSelectListItem>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableCanvas/feature-filtering/combobox/styled.ts",
+      "sourceFile": "packages/ui-kit/src/components/TableCanvas/feature-filtering/combobox/styled.ts",
       "type": "composition",
       "category": "Локальные компоненты",
       "keywords": [
@@ -26116,7 +26116,7 @@
       "propsTypeName": "TableProps",
       "rawType": "export type TableProps<\n  FilterStateType extends ObjectForExtending,\n  RowIdType extends string | number,\n  HeaderContextValueType extends ObjectForExtending,\n  RowContextValueType extends ObjectForExtending,\n  RowType extends ObjectForExtending,\n  SummaryRowType = unknown,\n> = {\n  /**\n   * columnConfig - Конфигурация колонок.\n   *\n   * (рекомендуется минимальное количество зависимостей для данной сущности - в идеале, чтобы не пересоздавался)\n   */\n  columnConfig: readonly ColumnConfig<RowType, SummaryRowType>[];\n  /**\n   * rows - данные для таблицы. ```RowType extends Record<string | number, any>```\n   */\n  rows: RowType[];\n  /**\n   * topSummaryRows - данные для итоговой строки в верхней части таблицы. ```SummaryRowType[]```\n   */\n  topSummaryRows?: SummaryRowType[];\n  /**\n   * rows - данные для итоговой строки в нижней части таблицы. ```SummaryRowType[]```\n   */\n  bottomSummaryRows?: SummaryRowType[];\n  /**\n   * tableConfig - Конфигурация фичей таблицы (их активация и отключение)\n   */\n  tableConfig?: Prettify<\n    TableConfig<RowType, SummaryRowType, RowIdType, FilterStateType>\n  >;\n  /**\n   * headerContextValue:  любые стейты, которые нужны в headerCell - кладем в headerContextValue. И получаем доступ с помощью useHeaderContext.\n   */\n  headerContextValue?: HeaderContextValueType;\n  /**\n   * rowContextValue:  любые стейты, которые нужны в cell - кладем в rowContextValue.  И получаем доступ с помощью useRowContext.\n   */\n  rowContextValue?: RowContextValueType;\n  refTable?: Ref<DataGridHandle>;\n  refTableContainer?: React.Ref<HTMLDivElement>;\n};",
       "isGeneric": true,
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/Table/Table.tsx",
+      "sourceFile": "packages/ui-kit/src/components/Table/Table.tsx",
       "type": "standalone",
       "category": "Локальные компоненты",
       "hint": "Устаревшая таблица. Если пользователь не уточняет — скорее всего ему нужна TableCanvas. Table — для legacy-проектов.",
@@ -26285,7 +26285,7 @@
         }
       ],
       "propsTypeName": "ControlBlockSwitchProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/Table/widgets/control-block/control-block-switch.tsx",
+      "sourceFile": "packages/ui-kit/src/components/Table/widgets/control-block/control-block-switch.tsx",
       "type": "composition",
       "category": "Локальные компоненты",
       "keywords": [
@@ -26316,7 +26316,7 @@
         }
       ],
       "propsTypeName": "NoRowsFallbackProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/Table/widgets/no-rows-fallback.tsx",
+      "sourceFile": "packages/ui-kit/src/components/Table/widgets/no-rows-fallback.tsx",
       "type": "composition",
       "category": "Локальные компоненты",
       "keywords": [
@@ -26347,7 +26347,7 @@
         }
       ],
       "propsTypeName": "ComponentProps<typeof ContainerStyled>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableCanvas/styles/styles.ts",
+      "sourceFile": "packages/ui-kit/src/components/TableCanvas/styles/styles.ts",
       "type": "composition",
       "category": "Локальные компоненты",
       "keywords": [
@@ -26458,7 +26458,7 @@
         }
       ],
       "propsTypeName": "SplitIconButtonProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableCanvas/components/SplitIconButton/SplitIconButton.tsx",
+      "sourceFile": "packages/ui-kit/src/components/TableCanvas/components/SplitIconButton/SplitIconButton.tsx",
       "type": "composition",
       "category": "Локальные компоненты",
       "keywords": [
@@ -26560,7 +26560,7 @@
       "propsTypeName": "CellEditorComboboxProps",
       "rawType": "export type CellEditorComboboxProps<T extends ComboboxItemOption> =\n  ComboboxCompProps<T> &\n    CustomCellStyleProps & {\n      autoFocusType: 'autoFocus' | 'none';\n      paddingInline: number;\n    };",
       "isGeneric": true,
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableCanvas/feature-edit/CellEditorCombobox.tsx",
+      "sourceFile": "packages/ui-kit/src/components/TableCanvas/feature-edit/CellEditorCombobox.tsx",
       "type": "wrapper",
       "atomicBase": "Combobox",
       "wrapsInternal": "Combobox",
@@ -27186,7 +27186,7 @@
         }
       ],
       "propsTypeName": "CellEditorNumberFormatProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableCanvas/feature-edit/CellEditorNumberFormat.tsx",
+      "sourceFile": "packages/ui-kit/src/components/TableCanvas/feature-edit/CellEditorNumberFormat.tsx",
       "type": "wrapper",
       "atomicBase": "NumberFormat",
       "wrapsInternal": "NumberFormat",
@@ -27651,7 +27651,7 @@
         }
       ],
       "propsTypeName": "CellEditorTextAreaProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableCanvas/feature-edit/CellEditorTextArea.tsx",
+      "sourceFile": "packages/ui-kit/src/components/TableCanvas/feature-edit/CellEditorTextArea.tsx",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -27725,7 +27725,7 @@
         }
       ],
       "propsTypeName": "TableCanvasProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableCanvas/TableCanvas.tsx",
+      "sourceFile": "packages/ui-kit/src/components/TableCanvas/TableCanvas.tsx",
       "type": "standalone",
       "category": "Локальные компоненты",
       "hint": "Основная таблица. Если пользователь спрашивает про 'таблицу' — скорее всего TableCanvas. Для табличных вкладок — TableTabs.",
@@ -28696,7 +28696,7 @@
       "propsTypeName": "TableGlideInstanceProps",
       "rawType": "export type TableGlideInstanceProps<\n  R extends ObjectForExtending,\n  SR = unknown,\n  CustomCtxs extends ObjectForExtending = {},\n> = Omit<\n  TableGlideProps<R, SR>,\n  'columns' | 'onHeaderContextMenu' | 'onCellContextMenu'\n> & {\n  columns: readonly ColumnGlideInstance<R, SR, CustomCtxs>[];\n  onHeaderContextMenuDropdown?: HeaderContextMenuDropdownProps<\n    R,\n    SR,\n    CustomCtxs\n  >;\n  onCellContextMenuDropdown?: CellContextMenuDropdownProps<R, SR>;\n  containerProps?: {\n    className?: string;\n    style?: React.CSSProperties;\n    ref?: React.Ref<HTMLDivElement>;\n  };\n  contentStateOverlay?: TableContentStateOverlay;\n  renderOverlayFeatures?: (ctx: {\n    containerElement: HTMLDivElement;\n    renderInContainer: (children: React.ReactNode) => React.ReactPortal | null;\n  }) => React.ReactNode;\n  CellReadOnlyEditor: (\n    props: CellReadOnlyEditorGlideInstanceProps<R, SR>,\n  ) => ReactNode;\n  onRowsChange?: (\n    rows: R[],\n    data: RowsChangeDataGlideInstance<R, SR, CustomCtxs>,\n  ) => void;\n  onCellClicked?: (\n    cell: readonly [number, number],\n    info: TableInfoWithRow<R, SR, CustomCtxs>,\n  ) => void;\n} & TableGlideInstanceContextMenu<R, SR, CustomCtxs>;",
       "isGeneric": true,
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableCanvas/TableGlideInstance/TableGlideInstance.tsx",
+      "sourceFile": "packages/ui-kit/src/components/TableCanvas/TableGlideInstance/TableGlideInstance.tsx",
       "type": "composition",
       "category": "Локальные компоненты",
       "keywords": [
@@ -28729,7 +28729,7 @@
       "role": "internal",
       "description": "Базовое автоувеличивающееся текстовое поле Glide Data Grid для редактирования ячейки",
       "props": [],
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@glideappsfinal/glide-data-grid/dist/dts/internal/growing-entry/growing-entry.d.ts",
+      "sourceFile": "node_modules/@glideappsfinal/glide-data-grid/dist/dts/internal/growing-entry/growing-entry.d.ts",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -28785,7 +28785,7 @@
         }
       ],
       "propsTypeName": "CanvasNodeTooltipProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableGlide/lib/canvas/components/index.tsx",
+      "sourceFile": "packages/ui-kit/src/components/TableGlide/lib/canvas/components/index.tsx",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -28808,7 +28808,7 @@
       "role": "internal",
       "description": "TypeScript-тип пропсов текстового поля-редактора ячейки Glide Data Grid",
       "props": [],
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@glideappsfinal/glide-data-grid/dist/dts/internal/growing-entry/growing-entry.d.ts",
+      "sourceFile": "node_modules/@glideappsfinal/glide-data-grid/dist/dts/internal/growing-entry/growing-entry.d.ts",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -28971,7 +28971,7 @@
         }
       ],
       "propsTypeName": "TableContractControlBlockButtonProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableContract/TableContract.tsx",
+      "sourceFile": "packages/ui-kit/src/components/TableContract/TableContract.tsx",
       "type": "composition",
       "category": "Композиции",
       "keywords": [
@@ -29955,7 +29955,7 @@
       "propsTypeName": "TableGlideProps",
       "rawType": "export type TableGlideProps<R extends ObjectForExtending, SR> = Omit<\n  GlideProps,\n  | keyof TableGlideCustomProps<R, SR>\n  | 'getCellContent'\n  | 'drawGroupHeader'\n  | 'ref'\n  | 'groupHeaderHeight'\n> &\n  TableGlideCustomProps<R, SR>;",
       "isGeneric": true,
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableGlide/TableGlide.tsx",
+      "sourceFile": "packages/ui-kit/src/components/TableGlide/TableGlide.tsx",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -30137,7 +30137,7 @@
         }
       ],
       "propsTypeName": "CanvasContainerProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableGlide/lib/canvas/core/CanvasContainer.ts",
+      "sourceFile": "packages/ui-kit/src/components/TableGlide/lib/canvas/core/CanvasContainer.ts",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -30208,7 +30208,7 @@
         }
       ],
       "propsTypeName": "CanvasNodeTooltipProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableGlide/lib/canvas/core/CanvasNode.ts",
+      "sourceFile": "packages/ui-kit/src/components/TableGlide/lib/canvas/core/CanvasNode.ts",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -30353,7 +30353,7 @@
         }
       ],
       "propsTypeName": "CanvasBadgeProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableGlide/lib/canvas/primitives/CanvasBadge.ts",
+      "sourceFile": "packages/ui-kit/src/components/TableGlide/lib/canvas/primitives/CanvasBadge.ts",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -30496,7 +30496,7 @@
         }
       ],
       "propsTypeName": "CanvasButtonProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableGlide/lib/canvas/primitives/CanvasButton.ts",
+      "sourceFile": "packages/ui-kit/src/components/TableGlide/lib/canvas/primitives/CanvasButton.ts",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -30658,7 +30658,7 @@
         }
       ],
       "propsTypeName": "CanvasEmbedIconButtonProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableGlide/lib/canvas/primitives/CanvasEmbedIconButton.ts",
+      "sourceFile": "packages/ui-kit/src/components/TableGlide/lib/canvas/primitives/CanvasEmbedIconButton.ts",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -30787,7 +30787,7 @@
         }
       ],
       "propsTypeName": "CanvasIconProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableGlide/lib/canvas/primitives/CanvasIcon.ts",
+      "sourceFile": "packages/ui-kit/src/components/TableGlide/lib/canvas/primitives/CanvasIcon.ts",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -30925,7 +30925,7 @@
         }
       ],
       "propsTypeName": "CanvasIconButtonProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableGlide/lib/canvas/primitives/CanvasIconButton.ts",
+      "sourceFile": "packages/ui-kit/src/components/TableGlide/lib/canvas/primitives/CanvasIconButton.ts",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -31029,7 +31029,7 @@
         }
       ],
       "propsTypeName": "CanvasRectProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableGlide/lib/canvas/primitives/CanvasRect.ts",
+      "sourceFile": "packages/ui-kit/src/components/TableGlide/lib/canvas/primitives/CanvasRect.ts",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -31162,7 +31162,7 @@
         }
       ],
       "propsTypeName": "CanvasTextProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableGlide/lib/canvas/primitives/CanvasText.ts",
+      "sourceFile": "packages/ui-kit/src/components/TableGlide/lib/canvas/primitives/CanvasText.ts",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -31316,7 +31316,7 @@
         }
       ],
       "propsTypeName": "CanvasLinkProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableGlide/lib/canvas/primitives/CanvasLink.ts",
+      "sourceFile": "packages/ui-kit/src/components/TableGlide/lib/canvas/primitives/CanvasLink.ts",
       "type": "wrapper",
       "atomicBase": "Link",
       "wrapsInternal": "Link",
@@ -31424,7 +31424,7 @@
         }
       ],
       "propsTypeName": "RootBridgeProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableGlide/lib/canvas/components/index.tsx",
+      "sourceFile": "packages/ui-kit/src/components/TableGlide/lib/canvas/components/index.tsx",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -32136,7 +32136,7 @@
         }
       ],
       "propsTypeName": "ComponentProps<typeof DataEditor>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@glideappsfinal/glide-data-grid/dist/dts/data-editor-all.d.ts",
+      "sourceFile": "node_modules/@glideappsfinal/glide-data-grid/dist/dts/data-editor-all.d.ts",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -32173,7 +32173,7 @@
       "description": "Базовая таблица дизайн-системы: сортировка, фильтры, выбор строк без логики ui-kit.",
       "props": [],
       "propsTypeName": "TableSDDSProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Table/Table.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Table/Table.d.ts",
       "type": "wrapper",
       "atomicBase": "Table",
       "category": "Локальные компоненты",
@@ -32699,7 +32699,7 @@
           "isGeneric": true
         }
       ],
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableTabs/TableTabs.tsx",
+      "sourceFile": "packages/ui-kit/src/components/TableTabs/TableTabs.tsx",
       "type": "standalone",
       "atomicBase": "Tabs",
       "wrapsInternal": "Tabs",
@@ -32901,7 +32901,7 @@
         }
       ],
       "propsTypeName": "IconTabItemProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Tabs/TabItem.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Tabs/TabItem.d.ts",
       "type": "wrapper",
       "atomicBase": "IconTabItem",
       "category": "Локальные компоненты",
@@ -33013,7 +33013,7 @@
         }
       ],
       "propsTypeName": "TabItemProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Tabs/TabItem.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Tabs/TabItem.d.ts",
       "type": "wrapper",
       "atomicBase": "TabItem",
       "category": "Локальные компоненты",
@@ -33071,7 +33071,7 @@
         }
       ],
       "propsTypeName": "TabsProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Tabs/Tabs.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Tabs/Tabs.d.ts",
       "type": "wrapper",
       "atomicBase": "Tabs",
       "category": "Локальные компоненты",
@@ -33293,7 +33293,7 @@
         }
       ],
       "propsTypeName": "TabsControllerProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Tabs/TabsController.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Tabs/TabsController.d.ts",
       "type": "wrapper",
       "atomicBase": "TabsController",
       "category": "Локальные компоненты",
@@ -33547,7 +33547,7 @@
         }
       ],
       "propsTypeName": "TextAreaProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TextArea/TextArea.tsx",
+      "sourceFile": "packages/ui-kit/src/components/TextArea/TextArea.tsx",
       "type": "wrapper",
       "formVariant": "FormTextArea",
       "category": "Локальные компоненты",
@@ -33651,7 +33651,7 @@
         }
       ],
       "propsTypeName": "TextFieldProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TextField/TextField.tsx",
+      "sourceFile": "packages/ui-kit/src/components/TextField/TextField.tsx",
       "type": "wrapper",
       "atomicBase": "TextField",
       "formVariant": "FormTextField",
@@ -34337,7 +34337,7 @@
         }
       ],
       "propsTypeName": "TextFieldSearchProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TextField/TextFieldSearch.tsx",
+      "sourceFile": "packages/ui-kit/src/components/TextField/TextFieldSearch.tsx",
       "type": "wrapper",
       "category": "Локальные компоненты",
       "keywords": [
@@ -34408,7 +34408,7 @@
       "description": "Группировка нескольких TextField в единый визуальный блок (например, код и телефон).",
       "props": [],
       "propsTypeName": "ComponentProps<typeof TextFieldGroup>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/TextFieldGroup/TextFieldGroup.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/TextFieldGroup/TextFieldGroup.d.ts",
       "type": "wrapper",
       "atomicBase": "TextFieldGroup",
       "category": "Локальные компоненты",
@@ -34514,7 +34514,7 @@
         }
       ],
       "propsTypeName": "TimePickerProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/TimePicker/TimePicker.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/TimePicker/TimePicker.d.ts",
       "type": "wrapper",
       "atomicBase": "TimePicker",
       "category": "Локальные компоненты",
@@ -34938,7 +34938,7 @@
         }
       ],
       "propsTypeName": "ToastProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Toast/Toast.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Toast/Toast.d.ts",
       "type": "wrapper",
       "atomicBase": "Toast",
       "category": "Локальные компоненты",
@@ -35063,7 +35063,7 @@
         }
       ],
       "propsTypeName": "ComponentProps<typeof ToastProvider>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Toast/Toast.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Toast/Toast.d.ts",
       "type": "wrapper",
       "atomicBase": "ToastProvider",
       "category": "Локальные компоненты",
@@ -35100,7 +35100,7 @@
       "description": "Панель инструментов с набором действий, горизонтальная или вертикальная.",
       "props": [],
       "propsTypeName": "ToolbarProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Toolbar/Toolbar.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Toolbar/Toolbar.d.ts",
       "type": "wrapper",
       "atomicBase": "Toolbar",
       "category": "Локальные компоненты",
@@ -35206,7 +35206,7 @@
         }
       ],
       "propsTypeName": "ComponentProps<typeof ToolbarDivider>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Toolbar/Toolbar.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Toolbar/Toolbar.d.ts",
       "type": "wrapper",
       "atomicBase": "ToolbarDivider",
       "category": "Локальные компоненты",
@@ -35263,7 +35263,7 @@
         }
       ],
       "propsTypeName": "TooltipListProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/Tooltip/TooltipList.tsx",
+      "sourceFile": "packages/ui-kit/src/components/Tooltip/TooltipList.tsx",
       "type": "wrapper",
       "atomicBase": "Tooltip",
       "category": "Локальные компоненты",
@@ -35522,7 +35522,7 @@
       "description": "Всплывающая подсказка у элемента при наведении или фокусе.",
       "props": [],
       "propsTypeName": "TooltipProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Tooltip/Tooltip.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Tooltip/Tooltip.d.ts",
       "type": "wrapper",
       "atomicBase": "Tooltip",
       "category": "Локальные компоненты",
@@ -35875,7 +35875,7 @@
         }
       ],
       "propsTypeName": "TooltipBetaCompProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/dist/beta/types/Tooltip/Tooltip.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/dist/beta/types/Tooltip/Tooltip.d.ts",
       "type": "wrapper",
       "atomicBase": "Tooltip",
       "atomicSubpath": "beta",
@@ -35903,7 +35903,7 @@
       "description": "Пошаговый онбординг-тур с подсветкой целевых элементов интерфейса.",
       "props": [],
       "propsTypeName": "TourProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Tour/Tour.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Tour/Tour.d.ts",
       "type": "wrapper",
       "atomicBase": "Tour",
       "category": "Локальные компоненты",
@@ -36133,7 +36133,7 @@
         }
       ],
       "propsTypeName": "TourWidgetBulletProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TourWidget/components/TourWidgetBullet.tsx",
+      "sourceFile": "packages/ui-kit/src/components/TourWidget/components/TourWidgetBullet.tsx",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -36170,7 +36170,7 @@
         }
       ],
       "propsTypeName": "TourWidgetBulletsProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TourWidget/components/TourWidgetBullets.tsx",
+      "sourceFile": "packages/ui-kit/src/components/TourWidget/components/TourWidgetBullets.tsx",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -36216,7 +36216,7 @@
         }
       ],
       "propsTypeName": "TourWidgetContentProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TourWidget/components/TourWidgetContent.tsx",
+      "sourceFile": "packages/ui-kit/src/components/TourWidget/components/TourWidgetContent.tsx",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -36262,7 +36262,7 @@
         }
       ],
       "propsTypeName": "TourWidgetFooterProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TourWidget/components/TourWidgetFooter.tsx",
+      "sourceFile": "packages/ui-kit/src/components/TourWidget/components/TourWidgetFooter.tsx",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -36320,7 +36320,7 @@
         }
       ],
       "propsTypeName": "TourWidgetHeaderProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TourWidget/components/TourWidgetHeader.tsx",
+      "sourceFile": "packages/ui-kit/src/components/TourWidget/components/TourWidgetHeader.tsx",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -36379,7 +36379,7 @@
         }
       ],
       "propsTypeName": "TourWidgetProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TourWidget/TourWidget.tsx",
+      "sourceFile": "packages/ui-kit/src/components/TourWidget/TourWidget.tsx",
       "type": "composition",
       "category": "Композиции",
       "keywords": [
@@ -36468,7 +36468,7 @@
       "description": "Иерархический список с раскрытием узлов, выбором и чекбоксами.",
       "props": [],
       "propsTypeName": "TreeProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Tree/Tree.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Tree/Tree.d.ts",
       "type": "wrapper",
       "atomicBase": "Tree",
       "category": "Локальные компоненты",
@@ -36980,7 +36980,7 @@
       "propsTypeName": "TypographyProps",
       "rawType": "export type TypographyProps<T extends TypographyVariant> = {\n  variant: T;\n  children: React.ReactNode;\n  refTypography?: LegacyRef<HTMLDivElement> | undefined;\n} & PropsForVariant<T>;",
       "isGeneric": true,
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/Typography/Typography.tsx",
+      "sourceFile": "packages/ui-kit/src/components/Typography/Typography.tsx",
       "type": "wrapper",
       "atomicBase": "BodyL",
       "category": "Локальные компоненты",
@@ -37054,7 +37054,7 @@
       "propsTypeName": "TypographyWithAutoTooltipProps",
       "rawType": "export type TypographyWithAutoTooltipProps<T extends TypographyVariant> = {\n  tooltipText?: React.ReactNode;\n  tooltipProps?: Omit<TooltipProps, 'text' | 'target' | 'trigger' | 'opened'>;\n  lines?: number;\n} & Omit<TypographyProps<T>, 'frame'>;",
       "isGeneric": true,
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/Typography/TypographyWithAutoTooltip.tsx",
+      "sourceFile": "packages/ui-kit/src/components/Typography/TypographyWithAutoTooltip.tsx",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -37231,7 +37231,7 @@
         }
       ],
       "propsTypeName": "ComponentProps<typeof BodyL>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Typography/Typography.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Typography/Typography.d.ts",
       "type": "wrapper",
       "atomicBase": "BodyL",
       "category": "Локальные компоненты",
@@ -37408,7 +37408,7 @@
         }
       ],
       "propsTypeName": "ComponentProps<typeof BodyM>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Typography/Typography.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Typography/Typography.d.ts",
       "type": "wrapper",
       "atomicBase": "BodyM",
       "category": "Локальные компоненты",
@@ -37591,7 +37591,7 @@
         }
       ],
       "propsTypeName": "ComponentProps<typeof BodyS>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Typography/Typography.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Typography/Typography.d.ts",
       "type": "wrapper",
       "atomicBase": "BodyS",
       "category": "Локальные компоненты",
@@ -37775,7 +37775,7 @@
         }
       ],
       "propsTypeName": "ComponentProps<typeof BodyXS>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Typography/Typography.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Typography/Typography.d.ts",
       "type": "wrapper",
       "atomicBase": "BodyXS",
       "category": "Локальные компоненты",
@@ -37959,7 +37959,7 @@
         }
       ],
       "propsTypeName": "ComponentProps<typeof BodyXXS>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Typography/Typography.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Typography/Typography.d.ts",
       "type": "wrapper",
       "atomicBase": "BodyXXS",
       "category": "Локальные компоненты",
@@ -38129,7 +38129,7 @@
         }
       ],
       "propsTypeName": "ComponentProps<typeof DsplL>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Typography/Typography.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Typography/Typography.d.ts",
       "type": "wrapper",
       "atomicBase": "DsplL",
       "category": "Локальные компоненты",
@@ -38299,7 +38299,7 @@
         }
       ],
       "propsTypeName": "ComponentProps<typeof DsplM>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Typography/Typography.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Typography/Typography.d.ts",
       "type": "wrapper",
       "atomicBase": "DsplM",
       "category": "Локальные компоненты",
@@ -38469,7 +38469,7 @@
         }
       ],
       "propsTypeName": "ComponentProps<typeof DsplS>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Typography/Typography.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Typography/Typography.d.ts",
       "type": "wrapper",
       "atomicBase": "DsplS",
       "category": "Локальные компоненты",
@@ -38639,7 +38639,7 @@
         }
       ],
       "propsTypeName": "ComponentProps<typeof TextL>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Typography/Typography.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Typography/Typography.d.ts",
       "type": "wrapper",
       "atomicBase": "TextL",
       "category": "Локальные компоненты",
@@ -38809,7 +38809,7 @@
         }
       ],
       "propsTypeName": "ComponentProps<typeof TextM>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Typography/Typography.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Typography/Typography.d.ts",
       "type": "wrapper",
       "atomicBase": "TextM",
       "category": "Локальные компоненты",
@@ -38986,7 +38986,7 @@
         }
       ],
       "propsTypeName": "ComponentProps<typeof TextS>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Typography/Typography.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Typography/Typography.d.ts",
       "type": "wrapper",
       "atomicBase": "TextS",
       "category": "Локальные компоненты",
@@ -39169,7 +39169,7 @@
         }
       ],
       "propsTypeName": "ComponentProps<typeof TextXS>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/Typography/Typography.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Typography/Typography.d.ts",
       "type": "wrapper",
       "atomicBase": "TextXS",
       "category": "Локальные компоненты",
@@ -39200,7 +39200,7 @@
       "description": "Контейнер, задающий тему оформления (onDark/onLight) вложенному контенту.",
       "props": [],
       "propsTypeName": "ComponentProps<typeof ViewContainer>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/node_modules/@salutejs/sdds-finai/types/components/ViewContainer/ViewContainer.d.ts",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/ViewContainer/ViewContainer.d.ts",
       "type": "wrapper",
       "atomicBase": "ViewContainer",
       "category": "Локальные компоненты",
@@ -39290,7 +39290,7 @@
         }
       ],
       "propsTypeName": "ComponentProps<typeof WidgetDivider>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/Widget/components/WidgetDivider.tsx",
+      "sourceFile": "packages/ui-kit/src/components/Widget/components/WidgetDivider.tsx",
       "type": "wrapper",
       "atomicBase": "Divider",
       "wrapsInternal": "Divider",
@@ -39613,7 +39613,7 @@
         }
       ],
       "propsTypeName": "WidgetFooterProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/Widget/components/WidgetFooter.tsx",
+      "sourceFile": "packages/ui-kit/src/components/Widget/components/WidgetFooter.tsx",
       "type": "composition",
       "category": "Локальные компоненты",
       "keywords": [
@@ -39756,7 +39756,7 @@
         }
       ],
       "propsTypeName": "WidgetHeaderProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/Widget/components/WidgetHeader.tsx",
+      "sourceFile": "packages/ui-kit/src/components/Widget/components/WidgetHeader.tsx",
       "type": "composition",
       "category": "Локальные компоненты",
       "keywords": [
@@ -39814,7 +39814,7 @@
         }
       ],
       "propsTypeName": "WidgetIconButtonBackProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/Widget/components/WidgetIconButtonBack.tsx",
+      "sourceFile": "packages/ui-kit/src/components/Widget/components/WidgetIconButtonBack.tsx",
       "type": "wrapper",
       "atomicBase": "IconButton",
       "wrapsInternal": "IconButton",
@@ -40001,7 +40001,7 @@
       "role": "part",
       "description": "Кнопка-«три точки» для вызова контекстного меню в шапке Widget",
       "props": [],
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/Widget/components/WidgetIconButtonDots.tsx",
+      "sourceFile": "packages/ui-kit/src/components/Widget/components/WidgetIconButtonDots.tsx",
       "type": "composition",
       "category": "Локальные компоненты",
       "keywords": [
@@ -40329,7 +40329,7 @@
         }
       ],
       "propsTypeName": "WidgetServiceButtonsProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/Widget/components/WidgetServiceButtons.tsx",
+      "sourceFile": "packages/ui-kit/src/components/Widget/components/WidgetServiceButtons.tsx",
       "type": "composition",
       "category": "Локальные компоненты",
       "keywords": [
@@ -40360,7 +40360,7 @@
         }
       ],
       "propsTypeName": "ComponentProps<typeof WidgetContent>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/Widget/Widget.styled.ts",
+      "sourceFile": "packages/ui-kit/src/components/Widget/Widget.styled.ts",
       "type": "composition",
       "category": "Локальные компоненты",
       "keywords": [
@@ -40398,7 +40398,7 @@
       "role": "primary",
       "description": "Карточка-виджет с шапкой, контентом и футером — для панелей дашборда.",
       "props": [],
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/Widget/Widget.tsx",
+      "sourceFile": "packages/ui-kit/src/components/Widget/Widget.tsx",
       "type": "composition",
       "category": "Композиции",
       "hint": "Универсальный виджет. Для специализированного layout рабочих столов — AnalyticalWidget.",
@@ -40834,7 +40834,7 @@
       "propsTypeName": "FormAutocompleteProps",
       "rawType": "export type FormAutocompleteProps<TFieldValues extends FieldValues> =\n  TMutationRegister<TFieldValues> & TPropsFromAutocomplete & TProps;",
       "isGeneric": true,
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/formComponents/FormAutocomplete/FormAutocomplete.tsx",
+      "sourceFile": "packages/ui-kit/src/formComponents/FormAutocomplete/FormAutocomplete.tsx",
       "type": "form",
       "wrappedBy": "Autocomplete",
       "category": "Формы",
@@ -40968,7 +40968,7 @@
       "propsTypeName": "FormCheckboxProps",
       "rawType": "export type FormCheckboxProps<TFieldValues extends FieldValues> =\n  TMutationRegister<TFieldValues> & TPropsFromCheckbox & TProps;",
       "isGeneric": true,
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/formComponents/FormCheckbox/FormCheckbox.tsx",
+      "sourceFile": "packages/ui-kit/src/formComponents/FormCheckbox/FormCheckbox.tsx",
       "type": "form",
       "wrappedBy": "Checkbox",
       "category": "Формы",
@@ -41429,7 +41429,7 @@
       "propsTypeName": "FormComboboxProps",
       "rawType": "export type FormComboboxProps<TFieldValues extends FieldValues> =\n  TMutationRegister<TFieldValues> & TPropsFromCombobox & TProps;",
       "isGeneric": true,
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/formComponents/FormCombobox/FormCombobox.tsx",
+      "sourceFile": "packages/ui-kit/src/formComponents/FormCombobox/FormCombobox.tsx",
       "type": "form",
       "wrappedBy": "Combobox",
       "category": "Формы",
@@ -41935,7 +41935,7 @@
       "propsTypeName": "FormDatePickerProps",
       "rawType": "export type FormDatePickerProps<TFieldValues extends FieldValues> =\n  TMutationRegister<TFieldValues> & TPropsFromDatePicker & TProps;",
       "isGeneric": true,
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/formComponents/FormDatePickers/FormDatePicker/FormDatePicker.tsx",
+      "sourceFile": "packages/ui-kit/src/formComponents/FormDatePickers/FormDatePicker/FormDatePicker.tsx",
       "type": "form",
       "wrappedBy": "DatePicker",
       "category": "Формы",
@@ -42549,7 +42549,7 @@
         }
       ],
       "propsTypeName": "FormDatePickerRangeProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/formComponents/FormDatePickers/FormDatePickerRange/FormDatePickerRange.tsx",
+      "sourceFile": "packages/ui-kit/src/formComponents/FormDatePickers/FormDatePickerRange/FormDatePickerRange.tsx",
       "type": "form",
       "wrappedBy": "DatePickerRange",
       "category": "Формы",
@@ -42907,7 +42907,7 @@
       "propsTypeName": "FormMaskProps",
       "rawType": "export type FormMaskProps<TFieldValues extends FieldValues> =\n  TMutationRegister<TFieldValues> & TPropsFromMask & TProps;",
       "isGeneric": true,
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/formComponents/FormMask/FormMask.tsx",
+      "sourceFile": "packages/ui-kit/src/formComponents/FormMask/FormMask.tsx",
       "type": "form",
       "wrappedBy": "Mask",
       "category": "Формы",
@@ -43261,7 +43261,7 @@
       "propsTypeName": "FormNumberFormatProps",
       "rawType": "export type FormNumberFormatProps<TFieldValues extends FieldValues> =\n  TMutationRegister<TFieldValues> & TPropsFromNumberFormat & TProps;",
       "isGeneric": true,
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/formComponents/FormNumberFormat/FormNumberFormat.tsx",
+      "sourceFile": "packages/ui-kit/src/formComponents/FormNumberFormat/FormNumberFormat.tsx",
       "type": "form",
       "wrappedBy": "NumberFormat",
       "category": "Формы",
@@ -43380,7 +43380,7 @@
         }
       ],
       "propsTypeName": "FormRadioboxProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/formComponents/FormRadioGroupBox/FormRadiobox.tsx",
+      "sourceFile": "packages/ui-kit/src/formComponents/FormRadioGroupBox/FormRadiobox.tsx",
       "type": "form",
       "wrappedBy": "Radiobox",
       "category": "Формы",
@@ -43486,7 +43486,7 @@
       "propsTypeName": "FormRadioGroupProps",
       "rawType": "export type FormRadioGroupProps<TFieldValues extends FieldValues> =\n  TMutationRegister<TFieldValues> & {\n    name: Path<TFieldValues>;\n    children: ReactNode;\n    onChange?: THandleChange<string | number>;\n    radioGroupMode?: 'column' | 'row';\n    size?: 'xs' | 's' | 'm' | 'l';\n  } & Omit<NativeRadioGroupProps, 'onChange' | 'name' | 'children'> &\n    Pick<\n      TextFieldProps,\n      | 'label'\n      | 'hintText'\n      | 'hintHasArrow'\n      | 'titleCaption'\n      | 'hintTrigger'\n      | 'titleCaption'\n      | 'size'\n      | 'hintSize'\n    >;",
       "isGeneric": true,
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/formComponents/FormRadioGroupBox/FormRadioGroup.tsx",
+      "sourceFile": "packages/ui-kit/src/formComponents/FormRadioGroupBox/FormRadioGroup.tsx",
       "type": "form",
       "wrappedBy": "RadioGroup",
       "category": "Формы",
@@ -43651,7 +43651,7 @@
       "propsTypeName": "FormSegmentGroupProps",
       "rawType": "export type FormSegmentGroupProps<TFieldValues extends FieldValues> =\n  TMutationRegister<TFieldValues> &\n    TPropsFromSegmentGroup &\n    TProps &\n    TLabelBlockProps & {\n      singleSelectedRequired?: boolean;\n    } & { items: TSegmentItemNativeProps[] } & { showError?: boolean };",
       "isGeneric": true,
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/formComponents/FormSegments/FormSegmentGroup.tsx",
+      "sourceFile": "packages/ui-kit/src/formComponents/FormSegments/FormSegmentGroup.tsx",
       "type": "form",
       "wrappedBy": "SegmentGroup",
       "category": "Формы",
@@ -44086,7 +44086,7 @@
       "propsTypeName": "FormSelectProps",
       "rawType": "export type FormSelectProps<TFieldValues extends FieldValues> =\n  TMutationRegister<TFieldValues> &\n    TPropsFromSelect &\n    TProps & { required?: boolean };",
       "isGeneric": true,
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/formComponents/FormSelect/FormSelect.tsx",
+      "sourceFile": "packages/ui-kit/src/formComponents/FormSelect/FormSelect.tsx",
       "type": "form",
       "wrappedBy": "Select",
       "category": "Формы",
@@ -44228,7 +44228,7 @@
       "propsTypeName": "FormSwitchProps",
       "rawType": "export type FormSwitchProps<TFieldValues extends FieldValues> =\n  TMutationRegister<TFieldValues> & TPropsFromSwitch & TProps;",
       "isGeneric": true,
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/formComponents/FormSwitch/FormSwitch.tsx",
+      "sourceFile": "packages/ui-kit/src/formComponents/FormSwitch/FormSwitch.tsx",
       "type": "form",
       "wrappedBy": "Switch",
       "category": "Формы",
@@ -44519,7 +44519,7 @@
       "propsTypeName": "FormTextAreaProps",
       "rawType": "export type FormTextAreaProps<TFieldValues extends FieldValues> =\n  TMutationRegister<TFieldValues> & TPropsFromTextArea & TProps;",
       "isGeneric": true,
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/formComponents/FormTextArea/FormTextArea.tsx",
+      "sourceFile": "packages/ui-kit/src/formComponents/FormTextArea/FormTextArea.tsx",
       "type": "form",
       "wrappedBy": "TextArea",
       "category": "Формы",
@@ -44823,7 +44823,7 @@
       "propsTypeName": "FormTextFieldProps",
       "rawType": "export type FormTextFieldProps<TFieldValues extends FieldValues> =\n  TMutationRegister<TFieldValues> & TPropsFromTextField & TProps;",
       "isGeneric": true,
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/formComponents/FormTextField/FormTextField.tsx",
+      "sourceFile": "packages/ui-kit/src/formComponents/FormTextField/FormTextField.tsx",
       "type": "form",
       "wrappedBy": "TextField",
       "category": "Формы",
@@ -44896,7 +44896,7 @@
         }
       ],
       "propsTypeName": "ContainerProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/layouts/Container/Container.tsx",
+      "sourceFile": "packages/ui-kit/src/layouts/Container/Container.tsx",
       "type": "composition",
       "category": "Композиции",
       "keywords": [
@@ -45035,7 +45035,7 @@
         }
       ],
       "propsTypeName": "ErrorPageProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/layouts/ErrorPage/ErrorPage.tsx",
+      "sourceFile": "packages/ui-kit/src/layouts/ErrorPage/ErrorPage.tsx",
       "type": "composition",
       "category": "Композиции",
       "keywords": [
@@ -45334,7 +45334,7 @@
         }
       ],
       "propsTypeName": "FiltersActionsDotsIconButtonProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/layouts/FiltersActions/components/DotsIconButton.tsx",
+      "sourceFile": "packages/ui-kit/src/layouts/FiltersActions/components/DotsIconButton.tsx",
       "type": "wrapper",
       "atomicBase": "IconButton",
       "wrapsInternal": "IconButton",
@@ -45618,7 +45618,7 @@
         }
       ],
       "propsTypeName": "FiltersActionsFiltersButtonWithPopoverProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/layouts/FiltersActions/components/FiltersButton.tsx",
+      "sourceFile": "packages/ui-kit/src/layouts/FiltersActions/components/FiltersButton.tsx",
       "type": "wrapper",
       "atomicBase": "Button",
       "wrapsInternal": "Button",
@@ -45910,7 +45910,7 @@
         }
       ],
       "propsTypeName": "ComponentProps<typeof FiltersActionsListOfFilters>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/layouts/FiltersActions/components/ListOfFilters.ts",
+      "sourceFile": "packages/ui-kit/src/layouts/FiltersActions/components/ListOfFilters.ts",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -45959,7 +45959,7 @@
         }
       ],
       "propsTypeName": "RedDotProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/layouts/FiltersActions/components/RedDot.tsx",
+      "sourceFile": "packages/ui-kit/src/layouts/FiltersActions/components/RedDot.tsx",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -46069,7 +46069,7 @@
         }
       ],
       "propsTypeName": "ComponentProps<typeof FiltersActionsTabItem>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/layouts/FiltersActions/components/Tabs.tsx",
+      "sourceFile": "packages/ui-kit/src/layouts/FiltersActions/components/Tabs.tsx",
       "type": "wrapper",
       "atomicBase": "TabItem",
       "wrapsInternal": "TabItem",
@@ -46150,7 +46150,7 @@
         }
       ],
       "propsTypeName": "ComponentProps<typeof FiltersActionsTabs>",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/layouts/FiltersActions/components/Tabs.tsx",
+      "sourceFile": "packages/ui-kit/src/layouts/FiltersActions/components/Tabs.tsx",
       "type": "wrapper",
       "atomicBase": "Tabs",
       "wrapsInternal": "Tabs",
@@ -47420,7 +47420,7 @@
           ]
         }
       ],
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/layouts/FiltersActions/FiltersActions.tsx",
+      "sourceFile": "packages/ui-kit/src/layouts/FiltersActions/FiltersActions.tsx",
       "type": "composition",
       "category": "Композиции",
       "keywords": [
@@ -47581,7 +47581,7 @@
         }
       ],
       "propsTypeName": "LayoutProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/layouts/Layout/Layout.tsx",
+      "sourceFile": "packages/ui-kit/src/layouts/Layout/Layout.tsx",
       "type": "composition",
       "category": "Композиции",
       "keywords": [
@@ -47721,7 +47721,7 @@
         }
       ],
       "propsTypeName": "PageLayoutProps",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/layouts/PageLayout/PageLayout.tsx",
+      "sourceFile": "packages/ui-kit/src/layouts/PageLayout/PageLayout.tsx",
       "type": "composition",
       "category": "Композиции",
       "keywords": [
@@ -50753,357 +50753,357 @@
       "definition": "export type AiAgentPopoverPlacement =\n  | PopoverProps['placement']\n  | AiAgentPopoverCustomPlacement;",
       "importPath": "@daisforge/ui/components/AiAgentPopover",
       "importStatement": "import { AiAgentPopoverPlacement } from '@daisforge/ui/components/AiAgentPopover';",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/AiAgentPopover/AiAgentPopover.types.ts"
+      "sourceFile": "packages/ui-kit/src/components/AiAgentPopover/AiAgentPopover.types.ts"
     },
     "AiAgentPopoverPositionState": {
       "name": "AiAgentPopoverPositionState",
       "definition": "export type AiAgentPopoverPositionState = [\n  AiAgentPopoverPosition,\n  Dispatch<SetStateAction<AiAgentPopoverPosition>>,\n];",
       "importPath": "@daisforge/ui/components/AiAgentPopover",
       "importStatement": "import { AiAgentPopoverPositionState } from '@daisforge/ui/components/AiAgentPopover';",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/AiAgentPopover/AiAgentPopover.types.ts"
+      "sourceFile": "packages/ui-kit/src/components/AiAgentPopover/AiAgentPopover.types.ts"
     },
     "AiAgentPopoverPosition": {
       "name": "AiAgentPopoverPosition",
       "definition": "export type AiAgentPopoverPosition = { x: number; y: number };",
       "importPath": "@daisforge/ui/components/AiAgentPopover",
       "importStatement": "import { AiAgentPopoverPosition } from '@daisforge/ui/components/AiAgentPopover';",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/AiAgentPopover/AiAgentPopover.types.ts"
+      "sourceFile": "packages/ui-kit/src/components/AiAgentPopover/AiAgentPopover.types.ts"
     },
     "AiAgentPopoverDragBoundary": {
       "name": "AiAgentPopoverDragBoundary",
       "definition": "export type AiAgentPopoverDragBoundary = {\n  top?: number;\n  right?: number;\n  bottom?: number;\n  left?: number;\n};",
       "importPath": "@daisforge/ui/components/AiAgentPopover",
       "importStatement": "import { AiAgentPopoverDragBoundary } from '@daisforge/ui/components/AiAgentPopover';",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/AiAgentPopover/AiAgentPopover.types.ts"
+      "sourceFile": "packages/ui-kit/src/components/AiAgentPopover/AiAgentPopover.types.ts"
     },
     "AiAgentPopover.DataAttributes": {
       "name": "DataAttributes",
       "definition": "type DataAttributes = {\n  [K in `data-${string}`]?: string;\n};",
       "importPath": "@daisforge/ui/components/AiAgentPopover",
       "importStatement": "import { DataAttributes } from '@daisforge/ui/components/AiAgentPopover';",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/AiAgentPopover/AiAgentPopover.types.ts"
+      "sourceFile": "packages/ui-kit/src/components/AiAgentPopover/AiAgentPopover.types.ts"
     },
     "TableCanvas.DataAttributes": {
       "name": "DataAttributes",
       "definition": "export type DataAttributes = {\n  [K in `data-${string}`]?: string;\n};",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { DataAttributes } from '@daisforge/ui/components/TableCanvas';",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableCanvas/types/utils.type.ts"
+      "sourceFile": "packages/ui-kit/src/components/TableCanvas/types/utils.type.ts"
     },
     "AnalyticalWidgetSize": {
       "name": "AnalyticalWidgetSize",
       "definition": "export type AnalyticalWidgetSize = 'l' | 'm' | 's';",
       "importPath": "@daisforge/ui",
       "importStatement": "import { AnalyticalWidgetSize } from '@daisforge/ui';",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/AnalyticalWidget/AnalyticalWidget.types.ts"
+      "sourceFile": "packages/ui-kit/src/components/AnalyticalWidget/AnalyticalWidget.types.ts"
     },
     "AnalyticalWidgetClasses": {
       "name": "AnalyticalWidgetClasses",
       "definition": "export type AnalyticalWidgetClasses = {\n  /**\n   * Кастомный класс для root элемента\n   */\n  root?: string;\n  /**\n   * Кастомный класс для topSlot элемента\n   */\n  topSlot?: string;\n  /**\n   * Кастомный класс для middleSlot элемента\n   */\n  middleSlot?: string;\n  /**\n   * Кастомный класс для contentSlot элемента\n   */\n  contentSlot?: string;\n};",
       "importPath": "@daisforge/ui",
       "importStatement": "import { AnalyticalWidgetClasses } from '@daisforge/ui';",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/AnalyticalWidget/AnalyticalWidget.types.ts"
+      "sourceFile": "packages/ui-kit/src/components/AnalyticalWidget/AnalyticalWidget.types.ts"
     },
     "AnalyticalWidgetFixedChipProps": {
       "name": "AnalyticalWidgetFixedChipProps",
       "definition": "export type AnalyticalWidgetFixedChipProps = ChipCompProps & {\n  key?: string | number;\n};",
       "importPath": "@daisforge/ui/components/AnalyticalWidget",
       "importStatement": "import { AnalyticalWidgetFixedChipProps } from '@daisforge/ui/components/AnalyticalWidget';",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/AnalyticalWidget/components/AnalyticalWidgetChips/AnalyticalWidgetChipsGroup.types.ts"
+      "sourceFile": "packages/ui-kit/src/components/AnalyticalWidget/components/AnalyticalWidgetChips/AnalyticalWidgetChipsGroup.types.ts"
     },
     "ApprovalCenterPreview": {
       "name": "ApprovalCenterPreview",
       "definition": "export type ApprovalCenterPreview = {\n  /**\n   * Параметры кнопки превью\n   */\n  button?: PreviewButton;\n  /**\n   * Переключить превью в режим загрузки\n   */\n  loading?: boolean;\n};",
       "importPath": "@daisforge/ui/components/ApprovalCenter",
       "importStatement": "import { ApprovalCenterPreview } from '@daisforge/ui/components/ApprovalCenter';",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/ApprovalCenter/ApprovalCenter.types.ts"
+      "sourceFile": "packages/ui-kit/src/components/ApprovalCenter/ApprovalCenter.types.ts"
     },
     "ApprovalCenterTabs": {
       "name": "ApprovalCenterTabs",
       "definition": "export type ApprovalCenterTabs = {\n  /**\n   * Текущая открытая вкладка\n   */\n  active: 'LIFE_CYCLE';\n  /**\n   * Список доступных вкладок\n   */\n  available:\n    | ['LIFE_CYCLE', 'HISTORY']\n    | ['HISTORY', 'LIFE_CYCLE']\n    | ['HISTORY']\n    | ['LIFE_CYCLE'];\n};",
       "importPath": "@daisforge/ui/components/ApprovalCenter",
       "importStatement": "import { ApprovalCenterTabs } from '@daisforge/ui/components/ApprovalCenter';",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/ApprovalCenter/ApprovalCenter.types.ts"
+      "sourceFile": "packages/ui-kit/src/components/ApprovalCenter/ApprovalCenter.types.ts"
     },
     "LifeCycleItem": {
       "name": "LifeCycleItem",
       "definition": "export type LifeCycleItem = {\n  /**\n   * Статус\n   */\n  status: LifeCycleStatus;\n  /**\n   * Заголовок\n   */\n  title: string;\n  /**\n   * Заголовок выполненного действия\n   */\n  actionTitle?: string;\n  /**\n   * Дата выполненного действия\n   */\n  actionDate?: string;\n  /**\n   * Этапы (аккордеон)\n   */\n  stages?: StageItem[];\n  /**\n   * Вспомогательные кнопки\n   */\n  buttons?: LifeCycleButton[];\n};",
       "importPath": "@daisforge/ui",
       "importStatement": "import { LifeCycleItem } from '@daisforge/ui';",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/ApprovalCenter/ApprovalCenter.types.ts"
+      "sourceFile": "packages/ui-kit/src/components/ApprovalCenter/ApprovalCenter.types.ts"
     },
     "HistoryItem": {
       "name": "HistoryItem",
       "definition": "export type HistoryItem = {\n  /**\n   * Статус\n   */\n  status: HistoryItemStatus;\n  /**\n   * Заголовок действия\n   */\n  actionTitle: string;\n  /**\n   * Дата действия\n   */\n  actionDate: string;\n};",
       "importPath": "@daisforge/ui",
       "importStatement": "import { HistoryItem } from '@daisforge/ui';",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/ApprovalCenter/ApprovalCenter.types.ts"
+      "sourceFile": "packages/ui-kit/src/components/ApprovalCenter/ApprovalCenter.types.ts"
     },
     "BlockTitleAdaptiveSlot": {
       "name": "BlockTitleAdaptiveSlot",
       "definition": "export type BlockTitleAdaptiveSlot =\n  | ReactNode\n  | ((props: BlockTitleSlotSizesProps) => ReactNode);",
       "importPath": "@daisforge/ui",
       "importStatement": "import { BlockTitleAdaptiveSlot } from '@daisforge/ui';",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/BlockTitle/BlockTitle.types.ts"
+      "sourceFile": "packages/ui-kit/src/components/BlockTitle/BlockTitle.types.ts"
     },
     "EmptyStateButtonProps": {
       "name": "EmptyStateButtonProps",
       "definition": "export type EmptyStateButtonProps = ButtonVariant | LinkButtonVariant;",
       "importPath": "@daisforge/ui",
       "importStatement": "import { EmptyStateButtonProps } from '@daisforge/ui';",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/EmptyState/EmptyState.types.ts"
+      "sourceFile": "packages/ui-kit/src/components/EmptyState/EmptyState.types.ts"
     },
     "ButtonVariant": {
       "name": "ButtonVariant",
       "definition": "type ButtonVariant = {\n  type: 'button';\n  props: Omit<ButtonCompProps, 'size'>;\n};",
       "importPath": "@daisforge/ui/components/EmptyState",
       "importStatement": "import { ButtonVariant } from '@daisforge/ui/components/EmptyState';",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/EmptyState/EmptyState.types.ts"
+      "sourceFile": "packages/ui-kit/src/components/EmptyState/EmptyState.types.ts"
     },
     "LinkButtonVariant": {
       "name": "LinkButtonVariant",
       "definition": "type LinkButtonVariant = {\n  type: 'link';\n  props: Omit<LinkButtonCompProps, 'size'>;\n};",
       "importPath": "@daisforge/ui/components/EmptyState",
       "importStatement": "import { LinkButtonVariant } from '@daisforge/ui/components/EmptyState';",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/EmptyState/EmptyState.types.ts"
+      "sourceFile": "packages/ui-kit/src/components/EmptyState/EmptyState.types.ts"
     },
     "EmptyStateClasses": {
       "name": "EmptyStateClasses",
       "definition": "export type EmptyStateClasses = {\n  root?: string;\n  icon?: string;\n  title?: string;\n  subtitle?: string;\n  buttons?: string;\n  extraButton?: string;\n};",
       "importPath": "@daisforge/ui",
       "importStatement": "import { EmptyStateClasses } from '@daisforge/ui';",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/EmptyState/EmptyState.types.ts"
+      "sourceFile": "packages/ui-kit/src/components/EmptyState/EmptyState.types.ts"
     },
     "GridDNDItems": {
       "name": "GridDNDItems",
       "definition": "export type GridDNDItems = {\n  id: string;\n  /** Размер по типу: s(1x1), m(2x1), l(2x2) */\n  type: 's' | 'm' | 'l';\n};",
       "importPath": "@daisforge/ui",
       "importStatement": "import { GridDNDItems } from '@daisforge/ui';",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/GridDND/GridDND.types.ts"
+      "sourceFile": "packages/ui-kit/src/components/GridDND/GridDND.types.ts"
     },
     "PanelCollapsedContentProps": {
       "name": "PanelCollapsedContentProps",
       "definition": "type PanelCollapsedContentProps = Omit<\n  ComponentProps<typeof PanelCollapsedContent>,\n  '$isAdaptive1280' | 'showResizeable' | '$active'\n>;",
       "importPath": "@daisforge/ui/components/LeftPanel",
       "importStatement": "import { PanelCollapsedContentProps } from '@daisforge/ui/components/LeftPanel';",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/LeftPanel/LeftPanel.types.ts"
+      "sourceFile": "packages/ui-kit/src/components/LeftPanel/LeftPanel.types.ts"
     },
     "LeftPanelAdaptiveSlot": {
       "name": "LeftPanelAdaptiveSlot",
       "definition": "export type LeftPanelAdaptiveSlot =\n  | ReactNode\n  | ((props: LeftPanelSlotSizesProps) => ReactNode);",
       "importPath": "@daisforge/ui",
       "importStatement": "import { LeftPanelAdaptiveSlot } from '@daisforge/ui';",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/LeftPanel/LeftPanel.types.ts"
+      "sourceFile": "packages/ui-kit/src/components/LeftPanel/LeftPanel.types.ts"
     },
     "ItemOrGroup": {
       "name": "ItemOrGroup",
       "definition": "export type ItemOrGroup = Item | Group;",
       "importPath": "@daisforge/ui",
       "importStatement": "import { ItemOrGroup } from '@daisforge/ui';",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/ListOfFilters/types.ts"
+      "sourceFile": "packages/ui-kit/src/components/ListOfFilters/types.ts"
     },
     "MassActionsButtonProps": {
       "name": "MassActionsButtonProps",
       "definition": "export type MassActionsButtonProps =\n  | MassActionsButtonPropsButton\n  | MassActionsButtonPropsLinkButton;",
       "importPath": "@daisforge/ui",
       "importStatement": "import { MassActionsButtonProps } from '@daisforge/ui';",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/MassActions/types.ts"
+      "sourceFile": "packages/ui-kit/src/components/MassActions/types.ts"
     },
     "MassActionsSidebarConfig": {
       "name": "MassActionsSidebarConfig",
       "definition": "export type MassActionsSidebarConfig = {\n  /** Открыт ли сайдбар */\n  isOpen: boolean;\n  /** Ширина сайдбара */\n  width: number;\n  /** Ширина тогл-панели сайдбара (по умолчанию 44px) */\n  togglePanelWidth?: number;\n};",
       "importPath": "@daisforge/ui",
       "importStatement": "import { MassActionsSidebarConfig } from '@daisforge/ui';",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/MassActions/types.ts"
+      "sourceFile": "packages/ui-kit/src/components/MassActions/types.ts"
     },
     "Table.TableDropdownConfigProps": {
       "name": "TableDropdownConfigProps",
       "definition": "export type TableDropdownConfigProps = Omit<\n  TableDropdownProps,\n  'onItemSelect' | 'items' | 'onToggle' | 'size' | 'portal'\n>;",
       "importPath": "@daisforge/ui/components/Table",
       "importStatement": "import { TableDropdownConfigProps } from '@daisforge/ui/components/Table';",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/Table/components/TableDropdown/types.ts"
+      "sourceFile": "packages/ui-kit/src/components/Table/components/TableDropdown/types.ts"
     },
     "TableCanvas.TableDropdownConfigProps": {
       "name": "TableDropdownConfigProps",
       "definition": "export type TableDropdownConfigProps = Omit<\n  TableDropdownProps,\n  'onItemSelect' | 'items' | 'onToggle' | 'size' | 'portal'\n>;",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { TableDropdownConfigProps } from '@daisforge/ui/components/TableCanvas';",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableCanvas/components/TableDropdown/types.ts"
+      "sourceFile": "packages/ui-kit/src/components/TableCanvas/components/TableDropdown/types.ts"
     },
     "ModalDFConfirmationContent": {
       "name": "ModalDFConfirmationContent",
       "definition": "export type ModalDFConfirmationContent = {\n  /**\n   * заголовок\n   */\n  header?: ReactNode;\n  /**\n   * информационный текст\n   */\n  body?: ReactNode;\n  /**\n   * отступы сверху и снизу информационного текста (по умолчанию: `bodyMarginBlock ?? (typeof body === 'string' ? s.x4 : undefined);`)\n   */\n  bodyMarginBlock?: string;\n  /**\n   * пропсы для самой правой главной кнопки, по умолчанию `view=\"accent\"`\n   */\n  mainButton?: ButtonCompProps;\n  /**\n   * пропсы для вторичной кнопки, по умолчанию `view=\"secondary\"`\n   */\n  secondaryButton?: ButtonCompProps;\n  /**\n   * если `mainButton` или `secondaryButton` не подходят, то можно полностью заменить footer на кастомный\n   */\n  footer?: ReactNode;\n};",
       "importPath": "@daisforge/ui/components/ModalDFConfirmation",
       "importStatement": "import { ModalDFConfirmationContent } from '@daisforge/ui/components/ModalDFConfirmation';",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/ModalDFConfirmation/ModalDFConfirmation.tsx"
+      "sourceFile": "packages/ui-kit/src/components/ModalDFConfirmation/ModalDFConfirmation.tsx"
     },
     "PageTitleAdaptiveSlot": {
       "name": "PageTitleAdaptiveSlot",
       "definition": "export type PageTitleAdaptiveSlot =\n  | ReactNode\n  | ((props: PageTitleSlotSizesProps) => ReactNode);",
       "importPath": "@daisforge/ui",
       "importStatement": "import { PageTitleAdaptiveSlot } from '@daisforge/ui';",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/PageTitle/PageTitle.types.ts"
+      "sourceFile": "packages/ui-kit/src/components/PageTitle/PageTitle.types.ts"
     },
     "StorySlide": {
       "name": "StorySlide",
       "definition": "export interface StorySlide {\n  /** Стабильный идентификатор сегмента (ключи, внешняя адресация). */\n  id?: string;\n  /** URL ассета (картинка или GIF). */\n  src: string;\n  /** Тип ассета. По умолчанию `image` (video пока не реализован). */\n  type?: StoryAssetType;\n  /** Длительность показа сегмента, мс. Переопределяет дефолт группы и компонента. */\n  duration?: number;\n  /** Способ вписывания ассета. По умолчанию `cover`. */\n  objectFit?: StoriesObjectFit;\n  /** Слот внизу баннера (любой ReactNode). Может отличаться на каждом сегменте. */\n  footer?: ReactNode;\n}",
       "importPath": "@daisforge/ui",
       "importStatement": "import { StorySlide } from '@daisforge/ui';",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/Stories/Stories.types.ts"
+      "sourceFile": "packages/ui-kit/src/components/Stories/Stories.types.ts"
     },
     "Table.ColumnConfig": {
       "name": "ColumnConfig",
       "definition": "export type ColumnConfig<\n  Row extends ObjectForExtending,\n  SummRow = unknown,\n> = ColumnDefaultOmitted<Row, SummRow> & {\n  /**\n   * Если в поле name был передан jsx, то нужно заполнить nameAsString для указания label в разделе Настройки столбцов, либо для отображения label в фильтрах в правом сайдбаре (но приоритет для фильтро будет ниже, чем то, что указали в filtering.sidebarConfig.items, там отдельно можно перезаписать label для фильтров сайдабара)\n   */\n  nameAsString?: string;\n  sortingType?: 'stringSort' | 'numberSort' | Comparator<Row>;\n  searching?: {\n    valueInRow: (row: Row) => string | number;\n  };\n  filtering?: {\n    keyInFilterState: string;\n    /**\n     * Обязательно передать в случае НЕ ручной фильтрации. Если на уровне tableConfig.manualFiltering = false или не задан. Иначе фильтрация не отработает.\n     */\n    valueInRow?: (row: Row) => string | number;\n    /**\n     * ```FilterCb - (filterValue: string, rowValue: string) => boolean```\n     */\n  } & (\n    | {\n        component: 'input';\n        filter: 'includes' | 'startWith' | 'equal' | FilterCb<'single'>;\n      }\n    | {\n        component: 'select';\n        beforeList?: (\n          props: FilterComponentInPopoverProps<\n            ObjectForExtending,\n            ColumnConfig<Row, SummRow>\n          >,\n        ) => ReactNode;\n        filter:\n          | {\n              typeOfValue: 'single';\n              /**\n               * Обязательно передать в случае НЕ ручной фильтрации. Если на уровне tableConfig.manualFiltering = false или не задан. Иначе фильтрация не отработает.\n               */\n              filteringType?: FilterCb<'single'>;\n            }\n          | {\n              typeOfValue: 'multiple';\n              /**\n               * Обязательно передать в случае НЕ ручной фильтрации. Если на уровне tableConfig.manualFiltering = false или не задан. Иначе фильтрация не отработает.\n               */\n              filteringType?: FilterCb<'multiple'>;\n            };\n        selectOptions:\n          | {\n              type: 'constant';\n              options: SelectOptions[];\n            }\n          | {\n              type: 'stateInHeaderContext';\n              /**\n               * тип optionsState, который будет в HeaderContext:\n               * ```ts\n               * {\n               * value: string | number;\n               * text: string | number;\n               * }[];\n               * ```\n               */\n              optionsKeyInHeaderContext: string;\n            };\n        /**\n         * Максимальна высота выпадающего списка в фильтрах колонок / правом сайдбаре.\n         * @default \"360px\"\n         */\n        listMaxHeight?: string;\n      }\n    | {\n        component: 'custom';\n        customRender: (\n          props: FilterComponentInPopoverProps<\n            ObjectForExtending,\n            ColumnConfig<Row, SummRow>\n          >,\n        ) => ReactNode;\n        filter?: (filterValue: unknown, rowValue: unknown) => boolean;\n        compareWithClearedValue?: (\n          clearedValue: unknown,\n          currV: unknown,\n        ) => boolean;\n      }\n  );\n\n  contentFormat?: ContentFormat;\n\n  editingCell?: Editing<Row>;\n\n  subRow?: {\n    /**\n     * @default false\n     */\n    isColumnWithArrow?: boolean | ((props: { keyText: KeyText }) => boolean);\n    /**\n     * @default false\n     */\n    hideHeaderExpandAllArrow?: boolean;\n    /**\n     * @default false\n     */\n    parentKeyAsDefault?: boolean;\n    /**\n     * @default undefined\n     */\n    contentFormat?: ContentFormat;\n\n    // eslint-disable-next-line @typescript-eslint/no-explicit-any\n    renderSubRowCell?: RenderSubRowCell<any>;\n  } & (\n    | {\n        keyOfColumnInSubRow:\n          | string\n          | number\n          | ((lvl: number) => string | number);\n        // eslint-disable-next-line @typescript-eslint/no-explicit-any\n        editingCell: Editing<any>;\n      }\n    | {\n        editingCell?: undefined;\n        keyOfColumnInSubRow?:\n          | string\n          | number\n          | ((lvl: number) => string | number);\n      }\n  );\n  rowsGrouping?: ColumnRowsGrouping<Row, SummRow>;\n  keyText?: KeyTextColumnConfig<Row, SummRow>;\n};",
       "importPath": "@daisforge/ui",
       "importStatement": "import { ColumnConfig } from '@daisforge/ui';",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/Table/types/column-config.type.ts"
+      "sourceFile": "packages/ui-kit/src/components/Table/types/column-config.type.ts"
     },
     "TableCanvas.ColumnConfig": {
       "name": "ColumnConfig",
       "definition": "export type ColumnConfig<\n  Row extends ObjectForExtending,\n  SummRow = unknown,\n  CustomCtxs extends ObjectForExtending = {},\n> = ColumnDefaultOmitted<Row, SummRow, CustomCtxs> & {\n  renderCell?: (cellInfo: CellInfo<Row, SummRow, CustomCtxs>) => CellContent;\n  renderCellPreview?: RenderCellPreview<Row, SummRow, CustomCtxs>;\n  /**\n   * Если в поле name был передан jsx, то нужно заполнить nameAsString для указания label в разделе Настройки столбцов, либо для отображения label в фильтрах в правом сайдбаре (но приоритет для фильтро будет ниже, чем то, что указали в filtering.sidebarConfig.items, там отдельно можно перезаписать label для фильтров сайдабара)\n   */\n  nameAsString?: string;\n  /**\n   * Текстовое представление ячейки для копирования в clipboard (Ctrl+C).\n   * Если не задан, используется `row[column.key]?.toString()`.\n   * Для кастомных canvas-ячеек (бейджи, кнопки) рекомендуется указывать явно.\n   */\n  copyData?: string | ((row: Row) => string);\n  sortingType?: 'stringSort' | 'numberSort' | Comparator<Row>;\n  searching?: {\n    valueInRow: (row: Row) => string | number;\n  };\n  filtering?: {\n    keyInFilterState: string;\n    /**\n     * Обязательно передать в случае НЕ ручной фильтрации. Если на уровне tableConfig.manualFiltering = false или не задан. Иначе фильтрация не отработает.\n     */\n    valueInRow?: (row: Row) => string | number;\n    /**\n     * ```FilterCb - (filterValue: string, rowValue: string) => boolean```\n     */\n  } & (\n    | {\n        component: 'input';\n        filter: 'includes' | 'startWith' | 'equal' | FilterCb<'single'>;\n      }\n    | {\n        component: 'select';\n        beforeList?: (\n          props: FilterComponentInPopoverProps<\n            ObjectForExtending,\n            ColumnConfig<Row, SummRow>\n          >,\n        ) => ReactNode;\n        filter:\n          | {\n              typeOfValue: 'single';\n              /**\n               * Обязательно передать в случае НЕ ручной фильтрации. Если на уровне tableConfig.manualFiltering = false или не задан. Иначе фильтрация не отработает.\n               */\n              filteringType?: FilterCb<'single'>;\n            }\n          | {\n              typeOfValue: 'multiple';\n              /**\n               * Обязательно передать в случае НЕ ручной фильтрации. Если на уровне tableConfig.manualFiltering = false или не задан. Иначе фильтрация не отработает.\n               */\n              filteringType?: FilterCb<'multiple'>;\n            };\n        selectOptions:\n          | {\n              type: 'constant';\n              options: SelectOptions[];\n            }\n          | {\n              type: 'stateInHeaderContext';\n              /**\n               * тип optionsState, который будет в HeaderContext:\n               * ```ts\n               * {\n               * value: string | number;\n               * text: string | number;\n               * }[];\n               * ```\n               */\n              optionsKeyInHeaderContext: string;\n            };\n        /**\n         * Максимальна высота выпадающего списка в фильтрах колонок / правом сайдбаре.\n         * @default \"360px\"\n         */\n        listMaxHeight?: string;\n      }\n    | {\n        component: 'custom';\n        customRender: (\n          props: FilterComponentInPopoverProps<\n            ObjectForExtending,\n            ColumnConfig<Row, SummRow>\n          >,\n        ) => ReactNode;\n        filter?: (filterValue: unknown, rowValue: unknown) => boolean;\n        compareWithClearedValue?: (\n          clearedValue: unknown,\n          currV: unknown,\n        ) => boolean;\n      }\n  );\n\n  contentFormat?: ContentFormat;\n\n  editingCell?: Editing<Row, SummRow>;\n\n  subRow?: {\n    /**\n     * @default false\n     */\n    isColumnWithArrow?: boolean | ((props: { keyText: KeyText }) => boolean);\n    /**\n     * @default false\n     */\n    hideHeaderExpandAllArrow?: boolean;\n    /**\n     * @default false\n     */\n    parentKeyAsDefault?: boolean;\n    /**\n     * @default undefined\n     */\n    contentFormat?: ContentFormat;\n\n    renderSubRowCell?: RenderSubRowCell<ObjectForExtending>;\n  } & (\n    | {\n        keyOfColumnInSubRow:\n          | string\n          | number\n          | ((lvl: number) => string | number);\n        // eslint-disable-next-line @typescript-eslint/no-explicit-any\n        editingCell: Editing<any, any>;\n      }\n    | {\n        editingCell?: undefined;\n        keyOfColumnInSubRow?:\n          | string\n          | number\n          | ((lvl: number) => string | number);\n      }\n  );\n  rowsGrouping?: ColumnRowsGrouping<Row, ColumnConfig<Row, SummRow>>;\n  keyText?: KeyTextColumnConfig<Row, SummRow>;\n  /**\n   * Переопределение темы на уровне ячейки. Позволяет менять фон и паддинги для конкретных ячеек.\n   * @param cellInfo — информация о ячейке (row, column, ctxs, theme)\n   * @param lvl — уровень вложенности (0 для обычных строк, 1+ для subRows)\n   * @returns Partial<Theme> — объект переопределений (bgCell, cellHorizontalPadding и др.)\n   */\n  themeOverride?: (\n    cellInfo: CellInfo<Row, SummRow, CustomCtxs>,\n    lvl: number,\n  ) => CellThemeOverrideResult | undefined;\n};",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { ColumnConfig } from '@daisforge/ui/components/TableCanvas';",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableCanvas/types/column-config.type.ts"
+      "sourceFile": "packages/ui-kit/src/components/TableCanvas/types/column-config.type.ts"
     },
     "ObjectForExtending": {
       "name": "ObjectForExtending",
       "definition": "export type ObjectForExtending = Record<string, any>;",
       "importPath": "@daisforge/ui/components/TableGlide",
       "importStatement": "import { ObjectForExtending } from '@daisforge/ui/components/TableGlide';",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableGlide/types.ts"
+      "sourceFile": "packages/ui-kit/src/components/TableGlide/types.ts"
     },
     "HoverEffectsConfig": {
       "name": "HoverEffectsConfig",
       "definition": "export type HoverEffectsConfig = {\n  /**\n   * Подсветка строки под курсором.\n   * `true` — цвет data-ячеек из темы (`bgRowHovered`); объект — свой цвет.\n   * Служебные колонки темнеют `bgServiceRowHovered`, checkbox-строки —\n   * `bgSelectedRowHovered` (всегда из темы, `color` их не переопределяет).\n   */\n  row?: boolean | { color?: string };\n};",
       "importPath": "@daisforge/ui/components/TableGlide",
       "importStatement": "import { HoverEffectsConfig } from '@daisforge/ui/components/TableGlide';",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableGlide/types.ts"
+      "sourceFile": "packages/ui-kit/src/components/TableGlide/types.ts"
     },
     "ColumnGlideInstance": {
       "name": "ColumnGlideInstance",
       "definition": "export type ColumnGlideInstance<\n  R extends ObjectForExtending,\n  SR,\n  CustomCtxs extends ObjectForExtending = {},\n> = {\n  key: string;\n  name: string | CanvasEl;\n  nameAsString?: string;\n  readonly width?: number;\n  isServiceColumn?: boolean;\n  isErrorCell?: (row: R) => boolean;\n  frozen?: boolean;\n  /** Минимальная ширина колонки (px). Ограничивает ресайз и начальную ширину снизу. */\n  minWidth?: number;\n  /** Максимальная ширина колонки (px). Ограничивает ресайз и начальную ширину сверху. */\n  maxWidth?: number;\n  /** Максимальная ширина колонки при auto-sizing и grow-распределении (px). Не ограничивает ручной ресайз. */\n  maxAutoWidth?: number;\n  renderHeaderCell?: (\n    cellInfo: HeaderCellInfoGlideInstance<R, SR, CustomCtxs>,\n  ) => CanvasContent;\n  renderCell?: (\n    cellInfo: CellInfoGlideInstance<R, SR, CustomCtxs>,\n  ) => CellContent;\n  contentAlign?: 'left' | 'right' | 'center';\n  copyData?: string | ((row: R) => string);\n  editable?: boolean | ((row: R) => boolean);\n  renderEditCell?: (\n    cellInfo: EditingCellInfoGlideInstance<R, SR, CustomCtxs>,\n  ) => ReactNode;\n  /**\n   * Кастомный рендер preview-ячейки (при двойном клике на readonly-ячейку).\n   * 'none' — отключает превью. 'cellEditorAsPreview' — стандартный текстовый превью.\n   * Функция — полностью кастомный рендер.\n   */\n  renderCellPreview?:\n    | 'none'\n    | 'cellEditorAsPreview'\n    | ((\n        cellInfo: PreviewCellInfoGlideInstance<R, SR, CustomCtxs>,\n      ) => ReactNode);\n  renderSummaryCell?: (\n    cellInfo: SummaryCellInfoGlideInstance<R, SR, CustomCtxs>,\n  ) => CellContent;\n  colSpan?:\n    | number\n    | ((cellInfo: CellInfoGlideInstance<R, SR, CustomCtxs>) => number);\n  /** Тултип для ячеек этой колонки. Строка, объект или функция (context) => config | null. */\n  cellTooltip?:\n    | CanvasNodeTooltipConfig\n    | ((context: {\n        row: R;\n        column: ColumnGlideInstance<R, SR, CustomCtxs>;\n        ctxs: CtxsType<CustomCtxs>;\n        refTable?: React.Ref<DataEditorRef>;\n        colInd?: number;\n        rowInd?: number;\n        theme?: Theme;\n      }) => CanvasNodeTooltipConfig | null);\n  /** Тултип для шапки колонки. Строка, объект или функция (context) => config | null. */\n  headerCellTooltip?:\n    | CanvasNodeTooltipConfig\n    | ((context: {\n        column: ColumnGlideInstance<R, SR, CustomCtxs>;\n        ctxs: CtxsType<CustomCtxs>;\n        refTable?: React.Ref<DataEditorRef>;\n        colInd?: number;\n        theme?: Theme;\n      }) => CanvasNodeTooltipConfig | null);\n  columnThemeOverride?: (\n    cellInfo: CellInfoGlideInstance<R, SR, CustomCtxs>,\n  ) => CellThemeOverrideResult | undefined;\n};",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { ColumnGlideInstance } from '@daisforge/ui/components/TableCanvas';",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableCanvas/TableGlideInstance/type.ts"
+      "sourceFile": "packages/ui-kit/src/components/TableCanvas/TableGlideInstance/type.ts"
     },
     "HeaderContextMenuDropdownProps": {
       "name": "HeaderContextMenuDropdownProps",
       "definition": "export type HeaderContextMenuDropdownProps<\n  RowType extends ObjectForExtending,\n  SummaryRowType = unknown,\n  CustomCtxs extends ObjectForExtending = ObjectForExtending,\n> = ContextMenuDropdownProps & {\n  /** Тип конфигурации (всегда 'dropdown') */\n  type: 'dropdown';\n  /**\n   * Функция, возвращающая массив пунктов меню для конкретного заголовка.\n   * В асинхронном режиме (задан onOpen) перечитывается реактивно, пока меню\n   * открыто: верните скелетон-пункты во время загрузки и реальные — после.\n   */\n  getDropdownItems: (\n    params: TableInfoBase<RowType, SummaryRowType, CustomCtxs>,\n  ) => DropdownProps['items'];\n  /**\n   * Колбэк открытия меню для асинхронной подгрузки. Если getDropdownItems\n   * вернул пусто, но onOpen задан — меню всё равно открывается, а потребитель\n   * здесь стартует запрос и хранит своё состояние (loading/error/items).\n   */\n  onOpen?: (params: TableInfoBase<RowType, SummaryRowType, CustomCtxs>) => void;\n  /** Обработчик выбора пункта меню */\n  onItemSelect?: (\n    item: ContextMenuDropdownItem,\n    context: TableInfoBase<RowType, SummaryRowType, CustomCtxs>,\n    event?: React.SyntheticEvent,\n  ) => void;\n};",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { HeaderContextMenuDropdownProps } from '@daisforge/ui/components/TableCanvas';",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableCanvas/TableGlideInstance/type.ts"
+      "sourceFile": "packages/ui-kit/src/components/TableCanvas/TableGlideInstance/type.ts"
     },
     "CellContextMenuDropdownProps": {
       "name": "CellContextMenuDropdownProps",
       "definition": "export type CellContextMenuDropdownProps<\n  RowType extends ObjectForExtending,\n  SummaryRowType,\n  CustomCtxs extends ObjectForExtending = ObjectForExtending,\n> = ContextMenuDropdownProps & {\n  /** Тип конфигурации (всегда 'dropdown') */\n  type: 'dropdown';\n  /**\n   * Функция, возвращающая массив пунктов меню для конкретной ячейки.\n   * В асинхронном режиме (задан onOpen) перечитывается реактивно, пока меню\n   * открыто: верните скелетон-пункты во время загрузки и реальные — после.\n   */\n  getDropdownItems: (\n    params: TableInfoWithRow<RowType, SummaryRowType, CustomCtxs>,\n  ) => DropdownProps['items'];\n  /**\n   * Колбэк открытия меню для асинхронной подгрузки. Если getDropdownItems\n   * вернул пусто, но onOpen задан — меню всё равно открывается, а потребитель\n   * здесь стартует запрос и хранит своё состояние (loading/error/items).\n   */\n  onOpen?: (\n    params: TableInfoWithRow<RowType, SummaryRowType, CustomCtxs>,\n  ) => void;\n  /** Обработчик выбора пункта меню */\n  onItemSelect?: (\n    item: ContextMenuDropdownItem,\n    context: TableInfoWithRow<RowType, SummaryRowType, CustomCtxs>,\n    event?: React.SyntheticEvent,\n  ) => void;\n};",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { CellContextMenuDropdownProps } from '@daisforge/ui/components/TableCanvas';",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableCanvas/TableGlideInstance/type.ts"
+      "sourceFile": "packages/ui-kit/src/components/TableCanvas/TableGlideInstance/type.ts"
     },
     "TableContentStateEmptyOverlay": {
       "name": "TableContentStateEmptyOverlay",
       "definition": "export type TableContentStateEmptyOverlay = {\n  kind: 'empty';\n} & TableContentStateFrame &\n  Partial<EmptyStateProps>;",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { TableContentStateEmptyOverlay } from '@daisforge/ui/components/TableCanvas';",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableCanvas/feature-content-state/types.ts"
+      "sourceFile": "packages/ui-kit/src/components/TableCanvas/feature-content-state/types.ts"
     },
     "TableContentStateErrorOverlay": {
       "name": "TableContentStateErrorOverlay",
       "definition": "export type TableContentStateErrorOverlay = {\n  kind: 'error';\n  errorPageProps?: Partial<ErrorPageProps>;\n} & TableContentStateFrame;",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { TableContentStateErrorOverlay } from '@daisforge/ui/components/TableCanvas';",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableCanvas/feature-content-state/types.ts"
+      "sourceFile": "packages/ui-kit/src/components/TableCanvas/feature-content-state/types.ts"
     },
     "TableDropdownProps": {
       "name": "TableDropdownProps",
       "definition": "export type TableDropdownProps = DropdownProps & { $css?: CSSObject };",
       "importPath": "@daisforge/ui/components/Table",
       "importStatement": "import { TableDropdownProps } from '@daisforge/ui/components/Table';",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/Table/components/TableDropdown/types.ts"
+      "sourceFile": "packages/ui-kit/src/components/Table/components/TableDropdown/types.ts"
     },
     "ColumnGlideLast": {
       "name": "ColumnGlideLast",
       "definition": "export type ColumnGlideLast<R extends ObjectForExtending, SR> = СolumnGlide &\n  ColumnGlideCustoms<R, SR>;",
       "importPath": "@daisforge/ui/components/TableGlide",
       "importStatement": "import { ColumnGlideLast } from '@daisforge/ui/components/TableGlide';",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableGlide/types.ts"
+      "sourceFile": "packages/ui-kit/src/components/TableGlide/types.ts"
     },
     "CanvasInteractionOptions": {
       "name": "CanvasInteractionOptions",
       "definition": "export interface CanvasInteractionOptions {\n  /**\n   * Как клик по этой зоне влияет на выделение таблицы.\n   *\n   * `normal` — таблица ведет себя обычно: клик может сделать ячейку активной.\n   *\n   * `keep` — текущее выделение сохраняется: клик по этой зоне не переключает\n   * active cell. Это основной режим для кнопок действия внутри ячейки.\n   */\n  selection?: 'normal' | 'keep';\n\n  /**\n   * Дойдет ли клик до `tableConfig.onCellClicked`.\n   *\n   * `normal` — после canvas `onClick` таблица получит обычный `onCellClicked`.\n   *\n   * `stop` — клик остается внутри canvas-элемента, внешний\n   * `tableConfig.onCellClicked` не вызывается.\n   */\n  cellClick?: 'normal' | 'stop';\n\n  /**\n   * Как клик по этой зоне влияет на editor ячейки.\n   *\n   * `normal` — не вмешиваться: таблица ведет себя как обычно для этой ячейки.\n   *\n   * `never` — клик по этой зоне не должен открывать editor.\n   *\n   * `open-on-click` — клик по этой зоне должен открыть editor этой же ячейки.\n   * В текущей реализации поддерживается только текущая ячейка, потому что\n   * editor открывается через штатный click-путь таблицы.\n   */\n  editor?: 'normal' | 'never' | 'open-on-click';\n\n  /**\n   * Как правый клик / context menu ведет себя на этой зоне.\n   *\n   * `normal` — обычное поведение таблицы.\n   *\n   * `keep-selection` — context menu разрешен, но текущее выделение не меняется.\n   *\n   * `none` — context menu для этой зоны не открывается.\n   */\n  contextMenu?: 'normal' | 'keep-selection' | 'none';\n}",
       "importPath": "@daisforge/ui/components/TableGlide",
       "importStatement": "import { CanvasInteractionOptions } from '@daisforge/ui/components/TableGlide';",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableGlide/lib/canvas/core/canvasInteraction.ts"
+      "sourceFile": "packages/ui-kit/src/components/TableGlide/lib/canvas/core/canvasInteraction.ts"
     },
     "ButtonIcon": {
       "name": "ButtonIcon",
       "definition": "export type ButtonIcon =\n  | string\n  | HTMLImageElement\n  | ReactElement\n  | null\n  | undefined;",
       "importPath": "@daisforge/ui/components/TableGlide",
       "importStatement": "import { ButtonIcon } from '@daisforge/ui/components/TableGlide';",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableGlide/lib/canvas/cells/iconSprites/types.ts"
+      "sourceFile": "packages/ui-kit/src/components/TableGlide/lib/canvas/cells/iconSprites/types.ts"
     },
     "TCustomOrNotTab": {
       "name": "TCustomOrNotTab",
       "definition": "export type TCustomOrNotTab<T extends TabId> = TTabItem<T> | TCustomTabItem<T>;",
       "importPath": "@daisforge/ui",
       "importStatement": "import { TCustomOrNotTab } from '@daisforge/ui';",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableTabs/TableTabs.types.ts"
+      "sourceFile": "packages/ui-kit/src/components/TableTabs/TableTabs.types.ts"
     },
     "TTabsContainerOptions": {
       "name": "TTabsContainerOptions",
       "definition": "export type TTabsContainerOptions = {\n  /**\n   * Максимальная ширина контейнера табов.\n   * Если установлено, контейнер будет иметь ограничение ширины и стрелки прокрутки при переполнении.\n   * Может быть числом (пиксели) или строкой (CSS значение, например '250px', '50%').\n   * Если не указано, ограничения ширины не будет.\n   */\n  maxWidth?: number | string;\n};",
       "importPath": "@daisforge/ui",
       "importStatement": "import { TTabsContainerOptions } from '@daisforge/ui';",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableTabs/TableTabs.types.ts"
+      "sourceFile": "packages/ui-kit/src/components/TableTabs/TableTabs.types.ts"
     },
     "TableTabsCollapseConfig": {
       "name": "TableTabsCollapseConfig",
       "definition": "export type TableTabsCollapseConfig = Pick<\n  TableCollapseConfig,\n  | 'defaultCollapsed'\n  | 'collapseText'\n  | 'expandText'\n  | 'onToggleCollapse'\n  | 'collapsedState'\n  | 'domMetadata'\n> & {\n  /** Включить коллапсинг над табами (аналог enableCollapse в TableCollapseConfig) */\n  enabled?: boolean;\n  /** Кастомный слот справа от кнопки коллапсинга */\n  rightSlot?: ReactNode;\n};",
       "importPath": "@daisforge/ui",
       "importStatement": "import { TableTabsCollapseConfig } from '@daisforge/ui';",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/TableTabs/TableTabs.types.ts"
+      "sourceFile": "packages/ui-kit/src/components/TableTabs/TableTabs.types.ts"
     },
     "THandleChange": {
       "name": "THandleChange",
       "definition": "export type THandleChange<T> = (\n  newValue: T,\n  formCtx: TReturnUseChangedFormContext,\n) => void;",
       "importPath": "@daisforge/ui/formComponents/types.ts",
       "importStatement": "import { THandleChange } from '@daisforge/ui/formComponents/types.ts';",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/formComponents/types.ts"
+      "sourceFile": "packages/ui-kit/src/formComponents/types.ts"
     },
     "StatusCode": {
       "name": "StatusCode",
       "definition": "export type StatusCode = number | 'unknown' | undefined;",
       "importPath": "@daisforge/ui/layouts/ErrorPage",
       "importStatement": "import { StatusCode } from '@daisforge/ui/layouts/ErrorPage';",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/layouts/ErrorPage/ErrorPage.tsx"
+      "sourceFile": "packages/ui-kit/src/layouts/ErrorPage/ErrorPage.tsx"
     },
     "CustomStatusObj": {
       "name": "CustomStatusObj",
       "definition": "export type CustomStatusObj = {\n  title: ReactNode;\n  description: ReactNode;\n  button?: StatusButton;\n  buttons?: StatusButton[];\n};",
       "importPath": "@daisforge/ui",
       "importStatement": "import { CustomStatusObj } from '@daisforge/ui';",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/layouts/ErrorPage/ErrorPage.tsx"
+      "sourceFile": "packages/ui-kit/src/layouts/ErrorPage/ErrorPage.tsx"
     },
     "BoxProps": {
       "name": "BoxProps",
       "definition": "export type BoxProps = ComponentProps<typeof Box> & BoxBaseProps;",
       "importPath": "@daisforge/ui",
       "importStatement": "import { BoxProps } from '@daisforge/ui';",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/components/Box/Box.tsx"
+      "sourceFile": "packages/ui-kit/src/components/Box/Box.tsx"
     },
     "LayoutSpacing": {
       "name": "LayoutSpacing",
       "definition": "export type LayoutSpacing = {\n  horizontal?: string;\n  vertical?: string | { top?: string; bottom?: string };\n  gutter?: string;\n  headerHeight?: string;\n};",
       "importPath": "@daisforge/ui",
       "importStatement": "import { LayoutSpacing } from '@daisforge/ui';",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/layouts/Layout/Layout.types.ts"
+      "sourceFile": "packages/ui-kit/src/layouts/Layout/Layout.types.ts"
     },
     "LayoutClasses": {
       "name": "LayoutClasses",
       "definition": "export type LayoutClasses = {\n  root?: string;\n  header?: string;\n  main?: string;\n  item?: string;\n  centeredItem?: string;\n};",
       "importPath": "@daisforge/ui",
       "importStatement": "import { LayoutClasses } from '@daisforge/ui';",
-      "sourceFile": "/Users/ramil_hk/Desktop/ram/dais/ui/packages/ui-kit/src/layouts/Layout/Layout.types.ts"
+      "sourceFile": "packages/ui-kit/src/layouts/Layout/Layout.types.ts"
     }
   },
   "guides": {
