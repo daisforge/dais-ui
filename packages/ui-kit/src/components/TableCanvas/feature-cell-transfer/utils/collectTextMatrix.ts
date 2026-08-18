@@ -20,7 +20,7 @@ export function collectTextMatrix<R extends ObjectForExtending>(
   range: Rectangle,
   columns: readonly TransferColumnConfig[],
   rows: readonly R[],
-  options: { withCells?: boolean } = {},
+  options: { withCells?: boolean; resolveOrigin?: boolean } = {},
 ): { grid: string[][]; cells: CellTransferCellInfo[][] } {
   return collectMatrixFromTargets(
     rangeToIndexes(range.y, range.height),

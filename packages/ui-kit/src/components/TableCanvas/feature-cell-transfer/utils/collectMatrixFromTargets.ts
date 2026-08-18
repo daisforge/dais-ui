@@ -3,6 +3,7 @@ import { getTreeIdAndLvlOfRow } from '../../feature-tree/handlers';
 import type { ObjectForExtending } from '../../types';
 import type { CellTransferCellInfo, TransferColumnConfig } from '../types';
 import { getCellText } from './getCellText';
+import { resolveBlockOrigin } from './resolveBlockOrigin';
 
 /**
  * Собирает двумерную матрицу текстов по ЯВНЫМ спискам целевых строк и колонок
@@ -22,7 +23,7 @@ export function collectMatrixFromTargets<R extends ObjectForExtending>(
   colTargets: readonly number[],
   columns: readonly TransferColumnConfig[],
   rows: readonly R[],
-  options: { withCells?: boolean } = {},
+  options: { withCells?: boolean; resolveOrigin?: boolean } = {},
 ): { grid: string[][]; cells: CellTransferCellInfo[][] } {
   const grid: string[][] = [];
   const cells: CellTransferCellInfo[][] = [];
@@ -39,17 +40,44 @@ export function collectMatrixFromTargets<R extends ObjectForExtending>(
       const column = columns[colIndex];
       if (!column) continue;
 
-      const formattedValue = getCellText(row, column, lvl);
+      // Покрытую позицию блока читаем как значение origin — то, что видно на
+      // экране (broadcast). Без резолва читаем ячейку как есть.
+      let srcRow = row;
+      let srcCol = column;
+      let srcLvl = lvl;
+      let srcRowIndex = rowIndex;
+      let srcColIndex = colIndex;
+      if (options.resolveOrigin) {
+        const [oCol, oRow] = resolveBlockOrigin(
+          colIndex,
+          rowIndex,
+          columns,
+          rows,
+        );
+        if (oCol !== colIndex || oRow !== rowIndex) {
+          const originRow = rows[oRow];
+          const originCol = columns[oCol];
+          if (originRow && originCol) {
+            srcRow = originRow;
+            srcCol = originCol;
+            srcLvl = getTreeIdAndLvlOfRow(originRow).lvl;
+            srcRowIndex = oRow;
+            srcColIndex = oCol;
+          }
+        }
+      }
+
+      const formattedValue = getCellText(srcRow, srcCol, srcLvl);
       gridRow.push(formattedValue);
 
       if (options.withCells) {
         cellsRow.push({
-          row: row as ObjectForExtending,
-          column,
-          colIndex,
-          rowIndex,
-          lvl,
-          rawValue: row[column.key],
+          row: srcRow as ObjectForExtending,
+          column: srcCol,
+          colIndex: srcColIndex,
+          rowIndex: srcRowIndex,
+          lvl: srcLvl,
+          rawValue: srcRow[srcCol.key],
           formattedValue,
         });
       }

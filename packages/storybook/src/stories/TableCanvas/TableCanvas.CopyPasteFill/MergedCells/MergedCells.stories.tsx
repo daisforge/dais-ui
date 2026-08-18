@@ -7,7 +7,7 @@ import {
   type HighlightActiveType,
   TableCanvas,
 } from '@ui-kit/components/TableCanvas';
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 
 const meta: Meta = {
   title: 'Локальные компоненты/TableCanvas/Copy-Paste-Fill/Объединение ячеек',
@@ -300,6 +300,8 @@ export const Rectangular: Story = {
     }));
 
     const [rows, setRows] = useState<MRow[]>(initialRows);
+    // Снимок «сохранённого» состояния: отмена = потребитель откатывает свой стейт.
+    const savedRef = useRef<MRow[]>(initialRows);
 
     // Блок 2×3: колонки A,B × строки 1..3. На origin-колонке 'a' для этих строк:
     // colSpan=1 (2 колонки A,B) + rowSpan=[1,3] (3 строки).
@@ -313,14 +315,14 @@ export const Rectangular: Story = {
         colSpan: (ci) => (inBlock(ci.rowInd) ? 1 : 0),
         rowSpan: (ci) => (inBlock(ci.rowInd) ? [1, 3] : null),
         editingCell: { component: 'inputString' },
-        renderCell: ({ rowInd, theme }) => (
+        renderCell: ({ row, rowInd, theme }) => (
           <Canvas.Container
             padding={8}
             alignItems="center"
             justifyContent={inBlock(rowInd) ? 'center' : 'flex-start'}
           >
             <Canvas.Text color={theme.textDark}>
-              {inBlock(rowInd) ? 'Блок 2×3' : `A·${rowInd}`}
+              {inBlock(rowInd) ? 'Блок 2×3' : row.a}
             </Canvas.Text>
           </Canvas.Container>
         ),
@@ -363,6 +365,20 @@ export const Rectangular: Story = {
               onRowsChange: setRows,
               rowKeyGetter: (r) => `${r.id}`,
               defaultEnabled: true,
+              // Отмена/сохранение данных — на стороне потребителя: снимок при
+              // входе, восстановление по «Отменить», фиксация по «Сохранить».
+              onEnableEditing: (enable) => {
+                savedRef.current = rows;
+                enable();
+              },
+              onCancel: (disable) => {
+                setRows(savedRef.current);
+                disable();
+              },
+              onSave: (disable) => {
+                savedRef.current = rows;
+                disable();
+              },
             },
           }}
           columnConfig={columns}

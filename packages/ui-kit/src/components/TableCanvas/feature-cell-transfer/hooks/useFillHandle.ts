@@ -179,7 +179,8 @@ export function useFillHandle<R extends ObjectForExtending>({
         source,
         columns,
         flattenedRows,
-        { withCells: true },
+        // Если source задел блок, тянем значение origin, а не покрытых ячеек.
+        { withCells: true, resolveOrigin: true },
       );
 
       if (sourceValues.length === 0 || sourceValues[0]?.length === 0) {
@@ -248,6 +249,8 @@ export function useFillHandle<R extends ObjectForExtending>({
         validation: 'type-check',
         validateContexts: cellContexts,
         source,
+        // Объединение: заливка в блок пишет весь блок (нормализация к origin).
+        resolveBlocks: true,
       });
 
       if (aborted) {

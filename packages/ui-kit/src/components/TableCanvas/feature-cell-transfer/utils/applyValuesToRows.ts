@@ -7,6 +7,7 @@ import type {
   TransferColumnConfig,
   ValidationMode,
 } from '../types';
+import { resolveBlock } from './resolveBlockOrigin';
 import { shouldSkipCell } from './shouldSkipCell';
 import { normalizePasteValue, validatePasteValue } from './validatePasteValue';
 import { writeCellValue } from './writeCellValue';
@@ -31,6 +32,12 @@ interface ApplyValuesParams<R extends ObjectForExtending> {
   validateContexts: ValidateContexts;
   /** Source-диапазон (только fill handle): ячейки внутри него пропускаются. */
   source?: Rectangle;
+  /**
+   * Объединение ячеек: если целевая ячейка попала в блок, нормализуем к origin
+   * и пишем значение во ВСЕ ячейки блока (данные остаются повторяющимися). Блок
+   * записывается один раз (дедуп по origin). По умолчанию выключено.
+   */
+  resolveBlocks?: boolean;
 }
 
 interface SkippedByValidation {
@@ -84,6 +91,7 @@ export function applyValuesToRows<R extends ObjectForExtending>({
   validation,
   validateContexts,
   source,
+  resolveBlocks,
 }: ApplyValuesParams<R>): ApplyValuesResult<R> {
   // readonly-abort: первый проход без записи. Любая readonly-ячейка в зоне
   // отменяет операцию целиком (поведение Excel).
@@ -117,16 +125,15 @@ export function applyValuesToRows<R extends ObjectForExtending>({
   const affected = new Set<number>();
   let firstAffectedColumn: TransferColumnConfig | undefined;
   const skippedByValidation: SkippedByValidation[] = [];
+  // Объединение ячеек: блок пишем один раз (ключ — origin `${startCol},${startRow}`).
+  const writtenBlocks = new Set<string>();
 
   for (let rowOffset = 0; rowOffset < rowTargets.length; rowOffset += 1) {
     const rowIndex = rowTargets[rowOffset];
     if (rowIndex === undefined) continue;
-    const row = newRows[rowIndex];
-    if (!row) continue;
-    const { lvl } = getTreeIdAndLvlOfRow(row);
-
-    let updatedRow = row;
-    let rowChanged = false;
+    const rowAtStart = newRows[rowIndex];
+    if (!rowAtStart) continue;
+    const { lvl } = getTreeIdAndLvlOfRow(rowAtStart);
 
     for (let colOffset = 0; colOffset < colTargets.length; colOffset += 1) {
       const colIndex = colTargets[colOffset];
@@ -135,7 +142,7 @@ export function applyValuesToRows<R extends ObjectForExtending>({
       const skipReason = shouldSkipCell({
         rowIndex,
         colIndex,
-        row: updatedRow,
+        row: newRows[rowIndex],
         column,
         lvl,
         allowSubRows,
@@ -146,28 +153,67 @@ export function applyValuesToRows<R extends ObjectForExtending>({
 
       const value = getValue(rowOffset, colOffset);
 
-      if (validation === 'type-check') {
-        if (!validatePasteValue(value, column, validateContexts)) {
+      // Ячейка в объединённом блоке: пишем значение во весь блок один раз,
+      // валидируем/нормализуем по origin-колонке.
+      const block = resolveBlocks
+        ? resolveBlock(colIndex, rowIndex, columns, newRows)
+        : null;
+      if (block) {
+        const blockKey = `${block.startCol},${block.startRow}`;
+        if (writtenBlocks.has(blockKey)) continue;
+        const originColumn = columns[block.startCol];
+        if (!originColumn) continue;
+        if (
+          validation === 'type-check' &&
+          !validatePasteValue(value, originColumn, validateContexts)
+        ) {
           skippedByValidation.push({
-            col: colIndex,
-            row: rowIndex,
+            col: block.startCol,
+            row: block.startRow,
             value,
-            columnKey: column.key,
+            columnKey: originColumn.key,
           });
           continue;
         }
+        const normalizedValue = normalizePasteValue(value, originColumn);
+        for (let r = block.startRow; r <= block.endRow; r += 1) {
+          let workRow = newRows[r];
+          if (!workRow) continue;
+          const rLvl = getTreeIdAndLvlOfRow(workRow).lvl;
+          for (let c = block.startCol; c <= block.endCol; c += 1) {
+            const cc = columns[c];
+            if (cc) {
+              workRow = writeCellValue(workRow, cc, rLvl, normalizedValue);
+            }
+          }
+          newRows[r] = workRow;
+          affected.add(r);
+        }
+        writtenBlocks.add(blockKey);
+        if (!firstAffectedColumn) firstAffectedColumn = originColumn;
+        continue;
       }
 
+      if (
+        validation === 'type-check' &&
+        !validatePasteValue(value, column, validateContexts)
+      ) {
+        skippedByValidation.push({
+          col: colIndex,
+          row: rowIndex,
+          value,
+          columnKey: column.key,
+        });
+        continue;
+      }
+
+      const target = newRows[rowIndex];
+      if (!target) continue;
       const normalizedValue = normalizePasteValue(value, column);
-      updatedRow = writeCellValue(updatedRow, column, lvl, normalizedValue);
-      rowChanged = true;
+      newRows[rowIndex] = writeCellValue(target, column, lvl, normalizedValue);
+      affected.add(rowIndex);
 
       if (!firstAffectedColumn) firstAffectedColumn = column;
-    }
-
-    if (rowChanged) {
-      newRows[rowIndex] = updatedRow;
-      affected.add(rowIndex);
     }
   }
 

@@ -255,6 +255,8 @@ export function usePaste<R extends ObjectForExtending>({
         readonlyBehavior: pasteConfig.readonlyBehavior,
         validation: pasteConfig.validation,
         validateContexts: cellContexts,
+        // Объединение: вставка в блок нормализуется к origin и пишет весь блок.
+        resolveBlocks: true,
       });
 
       if (aborted) {

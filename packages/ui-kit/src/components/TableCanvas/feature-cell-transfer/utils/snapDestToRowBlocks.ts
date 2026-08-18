@@ -1,5 +1,6 @@
 import type { ObjectForExtending } from '../../types';
 import type { Rectangle, TransferColumnConfig } from '../types';
+import { readRowSpanBlock } from './resolveBlockOrigin';
 
 /**
  * Снап fill-destination к целым rowSpan-блокам по ВЕРТИКАЛИ.
@@ -34,16 +35,19 @@ export function snapDestToRowBlocks<R extends ObjectForExtending>(
     guard -= 1;
 
     for (let c = dest.x; c < dest.x + dest.width; c += 1) {
-      const rowSpan = columns[c]?.rowSpan;
-      if (typeof rowSpan !== 'function') continue;
-
-      const topBlock = resolveRowSpan(rowSpan, rows, top, c);
+      const topBlock =
+        top >= 0 && top < rows.length
+          ? readRowSpanBlock(columns[c], rows, c, top)
+          : null;
       if (topBlock && topBlock[0] < top) {
         top = topBlock[0];
         changed = true;
       }
 
-      const bottomBlock = resolveRowSpan(rowSpan, rows, bottom, c);
+      const bottomBlock =
+        bottom >= 0 && bottom < rows.length
+          ? readRowSpanBlock(columns[c], rows, c, bottom)
+          : null;
       if (bottomBlock && bottomBlock[1] > bottom) {
         bottom = bottomBlock[1];
         changed = true;
@@ -52,16 +56,4 @@ export function snapDestToRowBlocks<R extends ObjectForExtending>(
   }
 
   return { x: dest.x, y: top, width: dest.width, height: bottom - top + 1 };
-}
-
-function resolveRowSpan<R extends ObjectForExtending>(
-  rowSpan: NonNullable<TransferColumnConfig['rowSpan']>,
-  rows: readonly R[],
-  rowInd: number,
-  colInd: number,
-): readonly [number, number] | null {
-  if (rowInd < 0 || rowInd >= rows.length) return null;
-  // rowSpan ждёт CellInfo; для резолва блока достаточно rowInd/colInd/row.
-  const cellInfo = { rowInd, colInd, row: rows[rowInd] };
-  return rowSpan(cellInfo as unknown as Parameters<typeof rowSpan>[0]) ?? null;
 }
