@@ -14,7 +14,7 @@ import { readRowSpanBlock } from './resolveBlockOrigin';
  * Координаты те же, что у `applyValuesToRows`: `dest.x` — прямой индекс в `columns`
  * (форк уже снял rowMarkerOffset), `dest.y` — индекс в `rows` (flattenedRows).
  *
- * Горизонтальный (colSpan) снап пока не делаем — он завязан на резолв colspan по
+ * TODO(merged-cells): горизонтальный (colSpan) снап не делаем — завязан на резолв по
  * ключам под видимость/реордер колонок (отдельный под-таск фичи объединения).
  */
 export function snapDestToRowBlocks<R extends ObjectForExtending>(

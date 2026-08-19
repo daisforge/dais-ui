@@ -1,3 +1,4 @@
+import { findBlockOrigin } from '../../../TableGlide/utils/findBlockOrigin';
 import type { ObjectForExtending } from '../../types';
 import type { TransferColumnConfig } from '../types';
 
@@ -50,35 +51,22 @@ export function readRowSpanBlock<R extends ObjectForExtending>(
   return rowSpan(info as unknown as Parameters<typeof rowSpan>[0]) ?? null;
 }
 
-/**
- * Резолв ячейки к origin её блока (левый верхний угол видимой части). colSpan
- * объявлен только на origin-колонке, поэтому покрытые колонки ищем сканированием
- * влево; вертикаль берём по rowSpan origin-колонки.
- */
+/** Резолв ячейки к origin её блока (общая геометрия — findBlockOrigin). */
 export function resolveBlockOrigin<R extends ObjectForExtending>(
   colIndex: number,
   rowIndex: number,
   columns: readonly TransferColumnConfig[],
   rows: readonly R[],
 ): readonly [number, number] {
-  // Горизонталь: слева ищем колонку, ОБЪЯВИВШУЮ colSpan, который накрывает colIndex.
-  let originCol = colIndex;
-  for (let c = colIndex; c >= 0; c -= 1) {
-    const declaresColSpan = columns[c]?.colSpan != null;
-    if (
-      declaresColSpan &&
-      c + readColSpanExtra(columns[c], rows, c, rowIndex) >= colIndex
-    ) {
-      originCol = c;
-      break;
-    }
-  }
-
-  // Вертикаль: на origin-колонке берём верх блока по rowSpan.
-  const rowBlock = readRowSpanBlock(columns[originCol], rows, originCol, rowIndex);
-  const originRow = rowBlock ? rowBlock[0] : rowIndex;
-
-  return [originCol, originRow];
+  return findBlockOrigin(
+    colIndex,
+    rowIndex,
+    (c, r) => {
+      const extra = readColSpanExtra(columns[c], rows, c, r);
+      return extra > 0 ? ([c, c + extra] as const) : null;
+    },
+    (c, r) => readRowSpanBlock(columns[c], rows, c, r),
+  );
 }
 
 /** Прямоугольник объединённого блока в индексах columns/rows. */
