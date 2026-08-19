@@ -1,9 +1,4 @@
-import type { ObjectForExtending } from '../types';
-
-interface SpanRegion {
-  rowIds: Array<string | number>;
-  colKeys: string[];
-}
+import type { MergedCellsRegion, ObjectForExtending } from '../types';
 
 interface OriginEntry {
   colExtra: number;
@@ -15,27 +10,15 @@ const isContiguous = (sorted: readonly number[]): boolean =>
   sorted.every((v, i) => i === 0 || v === (sorted[i - 1] as number) + 1);
 
 /**
- * Controlled-объединения (`spanCells.spans`): структурные merge по стабильным
- * идентификаторам (id строк + ключи колонок). Резолвим их в ТЕКУЩИЙ ВИДИМЫЙ
- * порядок колонок и синтезируем colSpan/rowSpan на origin-колонке каждого региона.
- *
- * Порядок колонок читаем на RENDER-time из `renderColKeysRef` (финальный порядок
- * после reorder/pin/hide), а НЕ на build-time. Иначе `colExtra` (число-смещение
- * блока) считается по старым индексам, а `getSpan` применяет его на новых —
- * блок «уезжает» и covered-ячейки резолвятся в чужую колонку (превью/клик берут
- * не то значение). origin — ЛЕВЕЙШАЯ колонка региона в render-порядке; если после
- * перестановки колонки региона перестали быть СМЕЖНЫМИ, регион не рисуем (блок
- * распадается — как ограничения sort в Excel).
- *
- * Резолвер вешается на ВСЕ колонки региона (см. `regionCols`), т.к. origin
- * определяется на render-time: каждая колонка сама решает, она ли сейчас origin
- * (тогда возвращает span) или covered (тогда 0/null и резолвится к origin).
- *
- * Кэш по идентичности (rows, renderColKeys): пересчёт O(регионов) раз на рендер,
- * lookup O(1) на ячейку.
+ * Controlled-объединения (mergeCells.mergedCellsRegions): регионы по стабильным
+ * ключам строк/колонок резолвятся в индексы НА RENDER-time — по актуальному
+ * порядку колонок (renderColKeysRef, переживает reorder/pin/hide) и строк
+ * (rowsRef), с кэшем по идентичности. Разорванный регион (ключи перестали быть
+ * смежными) не рисуется. Резолвер вешается на все колонки региона: каждая на
+ * render-time сама решает, origin она сейчас или covered.
  */
-export function createControlledSpans<R extends ObjectForExtending>(
-  spans: readonly SpanRegion[],
+export function createMergedRegionsResolver<R extends ObjectForExtending>(
+  regions: readonly MergedCellsRegion[],
   renderColKeysRef: { readonly current: readonly string[] },
   rowsRef: { readonly current: readonly R[] },
   rowKeyGetter: (row: R) => string | number,
@@ -43,7 +26,7 @@ export function createControlledSpans<R extends ObjectForExtending>(
   // Union всех colKeys регионов — какие колонки вообще участвуют в объединениях.
   // Не зависит от порядка, поэтому считаем сразу.
   const regionCols = new Set<string>();
-  spans.forEach((region) => region.colKeys.forEach((k) => regionCols.add(k)));
+  regions.forEach((region) => region.colKeys.forEach((k) => regionCols.add(k)));
 
   let cachedRows: readonly R[] | null = null;
   let cachedKeys: readonly string[] | null = null;
@@ -65,12 +48,14 @@ export function createControlledSpans<R extends ObjectForExtending>(
     const rowIndexOf = new Map<string | number, number>();
     rows.forEach((row, index) => rowIndexOf.set(rowKeyGetter(row), index));
 
-    spans.forEach((region) => {
-      const colInds = region.colKeys
+    regions.forEach((region) => {
+      // Дедуп ключей: случайный дубликат в rowKeys/colKeys дал бы повтор индекса
+      // и ложно завалил проверку смежности (регион молча бы не рисовался).
+      const colInds = [...new Set(region.colKeys)]
         .map((k) => colIndexOf.get(k))
         .filter((x): x is number => x !== undefined)
         .sort((a, b) => a - b);
-      const rowInds = region.rowIds
+      const rowInds = [...new Set(region.rowKeys)]
         .map((id) => rowIndexOf.get(id))
         .filter((x): x is number => x !== undefined)
         .sort((a, b) => a - b);

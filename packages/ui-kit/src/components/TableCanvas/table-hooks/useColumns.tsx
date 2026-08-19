@@ -44,8 +44,8 @@ import { ColumnConfigInternal } from '../types/column-config-internal.type';
 import { TableConfig } from '../types/table-config.type';
 import { calculateMinColumnWidth } from '../utils';
 import { renderFilterSortHeader } from '../widgets/filter-sort-header';
-import { createSpanByRowSpan } from './createSpanByRowSpan';
-import { createControlledSpans } from './createControlledSpans';
+import { createMergeByValueRowSpan } from './createMergeByValueRowSpan';
+import { createMergedRegionsResolver } from './createMergedRegionsResolver';
 
 export const useColumns = <
   FilterStateType extends ObjectForExtending,
@@ -199,29 +199,29 @@ export const useColumns = <
 
     const pinnedColsSet = new Set(pinnedCols);
 
-    // spanCells.spanBy: карта colKey → функция значения для авто-объединения
-    // колонки по подряд идущим одинаковым значениям (см. createSpanByRowSpan).
-    const spanByValue = new Map<string, (row: RowType) => unknown>();
-    (tableConfig.spanCells?.spanBy ?? []).forEach((item) => {
+    // mergeCells.mergeByCellValues: карта colKey → функция значения для
+    // авто-объединения подряд идущих одинаковых значений (см. createMergeByValueRowSpan).
+    const mergeByValue = new Map<string, (row: RowType) => unknown>();
+    (tableConfig.mergeCells?.mergeByCellValues ?? []).forEach((item) => {
       if (typeof item === 'string') {
-        spanByValue.set(item, (row) => (row as ObjectForExtending)[item]);
+        mergeByValue.set(item, (row) => (row as ObjectForExtending)[item]);
       } else {
-        spanByValue.set(item.colKey, item.value);
+        mergeByValue.set(item.colKey, item.value);
       }
     });
 
-    // spanCells.spans: controlled-список структурных объединений (id строк + ключи
-    // колонок). Резолвер синтезирует colSpan/rowSpan, читая финальный render-порядок
-    // колонок из renderColKeysRef (reorder/pin/hide-safe).
-    const spanCellsSpans = tableConfig.spanCells?.spans;
-    const spanCellsRowKeyGetter = tableConfig.spanCells?.rowKeyGetter;
-    const controlledSpans =
-      spanCellsSpans && spanCellsSpans.length > 0 && spanCellsRowKeyGetter
-        ? createControlledSpans(
-            spanCellsSpans,
+    // mergeCells.mergedCellsRegions: controlled-список структурных объединений
+    // (ключи строк + колонок). Резолвер синтезирует colSpan/rowSpan, читая финальный
+    // render-порядок колонок из renderColKeysRef (reorder/pin/hide-safe).
+    const mergedRegions = tableConfig.mergeCells?.mergedCellsRegions;
+    const mergeRowKeyGetter = tableConfig.mergeCells?.rowKeyGetter;
+    const regionsResolver =
+      mergedRegions && mergedRegions.length > 0 && mergeRowKeyGetter
+        ? createMergedRegionsResolver(
+            mergedRegions,
             renderColKeysRef,
             rowsRef,
-            spanCellsRowKeyGetter,
+            mergeRowKeyGetter,
           )
         : null;
 
@@ -413,21 +413,21 @@ export const useColumns = <
         ? false
         : tableConfig.resizableColumn;
 
-      // Объединение ячеек тела задаётся ТОЛЬКО через tableConfig.spanCells.
-      // Приоритет: controlled-список (spans) > spanBy. Колоночных colSpan/rowSpan
+      // Объединение ячеек тела задаётся ТОЛЬКО через tableConfig.mergeCells.
+      // Приоритет: mergedCellsRegions > mergeByCellValues. Колоночных colSpan/rowSpan
       // во внешнем API больше нет (см. DefaultOmittedKeys). Резолвер вешаем на все
       // колонки региона: origin определяется на render-time внутри резолвера.
-      const isRegionCol = controlledSpans?.regionCols.has(el.key) ?? false;
-      const spanByValueOf = spanByValue.get(el.key);
+      const isRegionCol = regionsResolver?.regionCols.has(el.key) ?? false;
+      const mergeByValueOf = mergeByValue.get(el.key);
 
       let colSpan;
       let rowSpan;
-      if (isRegionCol && controlledSpans) {
-        colSpan = controlledSpans.colSpan(el.key);
-        rowSpan = controlledSpans.rowSpan(el.key);
+      if (isRegionCol && regionsResolver) {
+        colSpan = regionsResolver.colSpan(el.key);
+        rowSpan = regionsResolver.rowSpan(el.key);
       } else {
         // colSpan синтезируется только служебным detail-panel (внешнего
-        // columnColSpan нет); rowSpan — только через spanBy.
+        // columnColSpan нет); rowSpan — только через mergeByCellValues.
         colSpan = tableConfigRowDetailBoolean
           ? getDetailPanelColSpanFunc<RowType, SummaryRowType>({
               indexZeroColKey,
@@ -436,8 +436,8 @@ export const useColumns = <
               columnColSpan: undefined,
             })
           : undefined;
-        rowSpan = spanByValueOf
-          ? createSpanByRowSpan(spanByValueOf, rowsRef)
+        rowSpan = mergeByValueOf
+          ? createMergeByValueRowSpan(mergeByValueOf, rowsRef)
           : undefined;
       }
 
@@ -535,7 +535,10 @@ export const useColumns = <
   }, [
     columnConfig,
     tableConfig.resizableColumn,
-    tableConfig.spanCells,
+    // mergeCells: точные зависимости — отдельно ссылки на массивы. rowKeyGetter
+    // намеренно НЕ в deps (чистая стабильная функция, см. JSDoc в table-config).
+    tableConfig.mergeCells?.mergeByCellValues,
+    tableConfig.mergeCells?.mergedCellsRegions,
 
     selectingRowsIsActive,
     isLoadingTable,
@@ -584,7 +587,7 @@ export const useColumns = <
   });
 
   // Финальный видимый порядок ключей колонок — для render-time резолва
-  // controlled-объединений (createControlledSpans читает этот ref по идентичности).
+  // controlled-объединений (createMergedRegionsResolver читает ref по идентичности).
   // Мемо: идентичность массива меняется только при реальной смене порядка колонок,
   // иначе кэш резолвера пересобирался бы на каждый ререндер (hover/выделение).
   const renderColKeys = useMemo(

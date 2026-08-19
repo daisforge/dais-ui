@@ -840,6 +840,12 @@ export type CellsSelectionConfig = {
   state?: [GridSelection, React.Dispatch<React.SetStateAction<GridSelection>>];
 };
 
+/** Регион структурного объединения ячеек: ключи строк + ключи колонок. */
+export type MergedCellsRegion = {
+  rowKeys: Array<string | number>;
+  colKeys: string[];
+};
+
 export type TableConfig<
   RowType extends ObjectForExtending,
   SummaryRowType,
@@ -1008,38 +1014,37 @@ export type TableConfig<
   cellTransfer?: CellTransferConfig;
 
   /**
-   * Объединение ячеек тела таблицы (span-cells).
+   * Объединение ячеек тела таблицы.
    *
-   * `spanBy` — колонки, объединяемые по ПОДРЯД ИДУЩИМ одинаковым значениям в
-   * текущем ВИДИМОМ порядке (после сортировки/фильтрации). Обёртка сама считает
-   * «пробеги» одинаковых (O(n) на смену данных, lookup O(1)) и проставляет
-   * вертикальное объединение. Данные НЕ мутируются: значение уже повторяется в
-   * строках, merge лишь схлопывает его визуально. Сортировка/фильтр пересобирают
-   * блоки автоматически.
+   * `mergeByCellValues` — колонки, объединяемые по ПОДРЯД ИДУЩИМ одинаковым
+   * значениям в текущем ВИДИМОМ порядке (после сортировки/фильтрации). Обёртка
+   * сама считает «пробеги» одинаковых (O(n) на смену данных, lookup O(1)) и
+   * проставляет вертикальное объединение. Данные НЕ мутируются: значение уже
+   * повторяется в строках, merge лишь схлопывает его визуально. Сортировка и
+   * фильтр пересобирают блоки автоматически.
    *
-   * `spans` — controlled-список СТРУКТУРНЫХ объединений (управляется извне, как
-   * `selected`): каждый регион задаётся стабильными идентификаторами — id строк
-   * (`rowIds`) и ключами колонок (`colKeys`). Обёртка резолвит их в текущие видимые
-   * индексы; если после сортировки/скрытия строки/колонки региона перестали быть
-   * СМЕЖНЫМИ — регион не рисуется (как ограничения sort в Excel). Требует
-   * `rowKeyGetter` для сопоставления `rowIds` со строками. Приоритетнее `spanBy` и
-   * колоночных `rowSpan/colSpan`.
+   * `mergedCellsRegions` — controlled-список СТРУКТУРНЫХ объединений (управляется
+   * извне, как `selected`): каждый регион задаётся стабильными идентификаторами —
+   * ключами строк (`rowKeys`) и ключами колонок (`colKeys`). Обёртка резолвит их
+   * в текущие видимые индексы; если после сортировки/реордера/скрытия строки или
+   * колонки региона перестали быть СМЕЖНЫМИ — регион не рисуется (как ограничения
+   * sort в Excel). Требует `rowKeyGetter`. Приоритетнее `mergeByCellValues`.
    *
-   * Для тонкого/data-driven объединения остаётся `columnConfig[n].rowSpan/colSpan`.
-   *
-   * Примеры: `spanCells={{ spanBy: ['dept', 'role'] }}`,
-   * `spanCells={{ spans, rowKeyGetter: (r) => r.id }}`.
+   * Примеры: `mergeCells={{ mergeByCellValues: ['dept', 'role'] }}`,
+   * `mergeCells={{ mergedCellsRegions, rowKeyGetter: (r) => r.id }}`.
    */
-  spanCells?: {
-    spanBy?: Array<
+  mergeCells?: {
+    mergeByCellValues?: Array<
       string | { colKey: string; value: (row: RowType) => unknown }
     >;
-    /** Controlled-список структурных объединений по id строк + ключам колонок. */
-    spans?: Array<{
-      rowIds: Array<string | number>;
-      colKeys: string[];
-    }>;
-    /** Нужен для `spans`: сопоставление `rowIds` со строками. */
+    /** Controlled-список структурных объединений по ключам строк + колонок. */
+    mergedCellsRegions?: MergedCellsRegion[];
+    /**
+     * Нужен для `mergedCellsRegions`: сопоставление `rowKeys` со строками.
+     * Должна быть ЧИСТОЙ и стабильной функцией от строки. Намеренно НЕ входит в
+     * зависимости пересчёта колонок (как и rowKeyGetter других фич) — её замена
+     * на лету не пересобирает таблицу.
+     */
     rowKeyGetter?: (row: RowType) => string | number;
   };
 

@@ -12,10 +12,10 @@ export type DefaultOmittedKeys = Extract<
   | 'renderCellPreview'
   | 'renderCell'
   | 'columnThemeOverride'
-  // Объединение ячеек тела задаётся только через tableConfig.spanCells
-  // (spanBy / spans). Колоночные colSpan/rowSpan убраны из внешнего API:
+  // Объединение ячеек тела задаётся только через tableConfig.mergeCells
+  // (mergeByCellValues / mergedCellsRegions). Колоночные colSpan/rowSpan убраны:
   // они позиционные и небезопасны при реордере. Внутри (ColumnConfigInternal)
-  // остаются как труба, в которую spanBy/spans синтезируют объединения.
+  // остаются как труба, в которую mergeCells синтезирует объединения.
   | 'colSpan'
   | 'rowSpan'
 >;

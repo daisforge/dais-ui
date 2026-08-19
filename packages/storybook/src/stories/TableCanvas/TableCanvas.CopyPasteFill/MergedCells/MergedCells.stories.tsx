@@ -5,6 +5,7 @@ import {
   type CellsSelectionMode,
   type ColumnConfig,
   type HighlightActiveType,
+  type MergedCellsRegion,
   type SortColumn,
   TableCanvas,
 } from '@ui-kit/components/TableCanvas';
@@ -161,7 +162,8 @@ export const RowSpanBasic: Story = {
         <p style={{ fontSize: 13, color: '#888', marginBottom: 8 }}>
           <b>Роль</b> и <b>Отдел</b> слиты блоками по 3 строки. Значения РЕАЛЬНО
           повторяются в данных (Аналитик×3, Отдел A×3) — объединение только
-          UI-фасад, скрытых других значений нет. Период/План/Факт — свои у строки.
+          UI-фасад, скрытых других значений нет. Период/План/Факт — свои у
+          строки.
         </p>
 
         <TableCanvas
@@ -171,7 +173,7 @@ export const RowSpanBasic: Story = {
             rowMarkers: { startIndex: 1 },
             columnsControl: { enable: true },
             rowSize: { default: 'medium', showInControl: true },
-            spanCells: { spanBy: ['role', 'dept'] },
+            mergeCells: { mergeByCellValues: ['role', 'dept'] },
             cellsSelection: {
               mode: selectionMode,
               enableColumnSelection: true,
@@ -226,13 +228,13 @@ export const Colspan: Story = {
 
     const [rows, setRows] = useState<MRow[]>(initialRows);
 
-    // Заголовки секций через controlled-список spans: каждая header-строка
+    // Заголовки секций через controlled-список regions: каждая header-строка
     // сливает все 3 колонки (label, a, b). Резолв по id строки.
-    const spans = useMemo(
+    const regions = useMemo(
       () =>
         rows
           .filter((r) => r.kind === 'header')
-          .map((r) => ({ rowIds: [r.id], colKeys: ['label', 'a', 'b'] })),
+          .map((r) => ({ rowKeys: [r.id], colKeys: ['label', 'a', 'b'] })),
       [rows],
     );
 
@@ -266,16 +268,20 @@ export const Colspan: Story = {
       <div>
         <p style={{ fontSize: 13, color: '#888', marginBottom: 8 }}>
           Строки-заголовки секций слиты на всю ширину через{' '}
-          <code>spanCells.spans</code> (список header-строк, colKeys — все
-          колонки). Данные-строки — обычные. Редактирование/протяжка/копирование
-          включены — проверяем overlay-редактор и перенос на merged.
+          <code>mergeCells.mergedCellsRegions</code> (список header-строк,
+          colKeys — все колонки). Данные-строки — обычные.
+          Редактирование/протяжка/копирование включены — проверяем
+          overlay-редактор и перенос на merged.
         </p>
         <TableCanvas
           tableConfig={{
             containerStyle: { height: '520px' },
             rowMarkers: { startIndex: 1 },
             columnsControl: { enable: true },
-            spanCells: { spans, rowKeyGetter: (r) => r.id },
+            mergeCells: {
+              mergedCellsRegions: regions,
+              rowKeyGetter: (r) => r.id,
+            },
             cellsSelection: { mode: 'range-cell', enableColumnSelection: true },
             cellTransfer: { fillHandle: true },
             editing: {
@@ -292,9 +298,9 @@ export const Colspan: Story = {
   },
 };
 
-// Прямоугольный блок cols×rows через controlled-список spanCells.spans.
+// Прямоугольный блок cols×rows через controlled-список mergeCells.mergedCellsRegions.
 export const Rectangular: Story = {
-  name: 'Прямоугольный блок (spans)',
+  name: 'Прямоугольный блок (regions)',
   render: () => {
     type MRow = { id: number; a: string; b: string; c: string; d: string };
     const initialRows: MRow[] = Array.from({ length: 10 }, (_, i) => ({
@@ -310,7 +316,7 @@ export const Rectangular: Story = {
     const savedRef = useRef<MRow[]>(initialRows);
 
     // Блок 2×3: колонки A,B × строки 2..4 (rowInd 1..3, id 2..4). Задаётся
-    // controlled-списком spanCells.spans (id строк + ключи колонок).
+    // controlled-списком mergeCells.mergedCellsRegions (id строк + ключи колонок).
     const inBlock = (rowInd: number) => rowInd >= 1 && rowInd <= 3;
 
     const columns: readonly ColumnConfig<MRow>[] = [
@@ -355,17 +361,17 @@ export const Rectangular: Story = {
       <div>
         <p style={{ fontSize: 13, color: '#888', marginBottom: 8 }}>
           Прямоугольный блок 2×3 (колонки A,B × строки 2–4) — через{' '}
-          <code>spanCells.spans</code> (id строк 2–4 + ключи колонок A,B).
-          Редактирование/протяжка/копирование включены — проверяем overlay на
-          блоке и перенос.
+          <code>mergeCells.mergedCellsRegions</code> (id строк 2–4 + ключи
+          колонок A,B). Редактирование/протяжка/копирование включены — проверяем
+          overlay на блоке и перенос.
         </p>
         <TableCanvas
           tableConfig={{
             containerStyle: { height: '520px' },
             rowMarkers: { startIndex: 1 },
             columnsControl: { enable: true },
-            spanCells: {
-              spans: [{ rowIds: [2, 3, 4], colKeys: ['a', 'b'] }],
+            mergeCells: {
+              mergedCellsRegions: [{ rowKeys: [2, 3, 4], colKeys: ['a', 'b'] }],
               rowKeyGetter: (r) => r.id,
             },
             cellsSelection: { mode: 'range-cell', enableColumnSelection: true },
@@ -398,13 +404,13 @@ export const Rectangular: Story = {
   },
 };
 
-// Авто-объединение через tableConfig.spanCells.spanBy: обёртка САМА объединяет
+// Авто-объединение через tableConfig.mergeCells.mergeByCellValues: обёртка САМА объединяет
 // колонки role/dept по подряд идущим одинаковым значениям в текущем видимом
 // порядке (run-map O(n) на смену данных, lookup O(1)). Sort/filter — ВСТРОЕННЫЕ,
 // и блоки пересобираются сами. Никакого ручного предпосчёта и manualSorting: в
-// колонках role/dept НЕТ rowSpan, всё делает spanBy. Данные не мутируются.
+// колонках role/dept НЕТ rowSpan, всё делает mergeByCellValues. Данные не мутируются.
 export const DerivedGroupingSortFilter: Story = {
-  name: 'spanBy: авто-объединение по значению + сортировка/фильтр',
+  name: 'mergeByCellValues: авто-объединение по значению + сортировка/фильтр',
   render: () => {
     type GRow = {
       id: number;
@@ -440,7 +446,7 @@ export const DerivedGroupingSortFilter: Story = {
     const columns: readonly ColumnConfig<GRow>[] = [
       {
         key: 'role',
-        name: 'Роль (spanBy)',
+        name: 'Роль (mergeByCellValues)',
         width: 260,
         sortingType: 'stringSort',
         filtering: {
@@ -460,7 +466,12 @@ export const DerivedGroupingSortFilter: Story = {
           },
         },
       },
-      { key: 'dept', name: 'Отдел (spanBy)', width: 260, sortingType: 'stringSort' },
+      {
+        key: 'dept',
+        name: 'Отдел (mergeByCellValues)',
+        width: 260,
+        sortingType: 'stringSort',
+      },
       { key: 'person', name: 'Сотрудник', width: 170 },
       { key: 'plan', name: 'План', width: 110, sortingType: 'numberSort' },
     ];
@@ -468,19 +479,21 @@ export const DerivedGroupingSortFilter: Story = {
     return (
       <div>
         <p style={{ fontSize: 13, color: '#888', marginBottom: 8 }}>
-          <code>spanCells.spanBy: [&apos;role&apos;, &apos;dept&apos;]</code> —
-          обёртка сама объединяет эти колонки по подряд идущим одинаковым
-          значениям. Отсортируй по <b>Роль</b> → блоки соберутся; по <b>План</b> →
-          роли перемешаются и блоки распадутся; фильтр по роли (в шапке колонки
-          «Роль») → блоки сожмутся. Всё пересобирается САМО, без ручного кода в
-          стори.
+          <code>
+            mergeCells.mergeByCellValues: [&apos;role&apos;, &apos;dept&apos;]
+          </code>{' '}
+          — обёртка сама объединяет эти колонки по подряд идущим одинаковым
+          значениям. Отсортируй по <b>Роль</b> → блоки соберутся; по <b>План</b>{' '}
+          → роли перемешаются и блоки распадутся; фильтр по роли (в шапке
+          колонки «Роль») → блоки сожмутся. Всё пересобирается САМО, без ручного
+          кода в стори.
         </p>
         <TableCanvas
           tableConfig={{
             containerStyle: { height: '520px' },
             rowMarkers: { startIndex: 1 },
             columnsControl: { enable: true },
-            spanCells: { spanBy: ['role', 'dept'] },
+            mergeCells: { mergeByCellValues: ['role', 'dept'] },
             sorting: { state: sortState },
             filtering: {
               state: filteringState,
@@ -495,11 +508,11 @@ export const DerivedGroupingSortFilter: Story = {
   },
 };
 
-// spanBy + редактирование: правка значения ячейки перестраивает блоки (объединение
+// mergeByCellValues + редактирование: правка значения ячейки перестраивает блоки (объединение
 // derived из значения). Отредактируй «Регион» у origin-строки блока → блок разъедется.
 // Больше данных (6 регионов × 4 строки) — виден масштаб и вложенность region/team.
 export const SpanByWithEditing: Story = {
-  name: 'spanBy + редактирование (правка перестраивает блоки)',
+  name: 'mergeByCellValues + редактирование (правка перестраивает блоки)',
   render: () => {
     type ERow = { id: number; region: string; team: string; person: string };
     const REGIONS = ['Север', 'Юг', 'Запад', 'Восток', 'Центр', 'Урал'];
@@ -522,13 +535,13 @@ export const SpanByWithEditing: Story = {
     const columns: readonly ColumnConfig<ERow>[] = [
       {
         key: 'region',
-        name: 'Регион (spanBy)',
+        name: 'Регион (mergeByCellValues)',
         width: 220,
         editingCell: { component: 'inputString' },
       },
       {
         key: 'team',
-        name: 'Команда (spanBy)',
+        name: 'Команда (mergeByCellValues)',
         width: 220,
         editingCell: { component: 'inputString' },
       },
@@ -543,17 +556,18 @@ export const SpanByWithEditing: Story = {
     return (
       <div>
         <p style={{ fontSize: 13, color: '#888', marginBottom: 8 }}>
-          <code>spanBy: [&apos;region&apos;, &apos;team&apos;]</code>. Регион слит
-          блоками по 4 строки, команда — по 2 (вложенно). Отредактируй значение
-          «Регион» у верхней строки блока → блок разъедется, объединения
-          пересоберутся из новых значений. Данные обычные, merge — только визуал.
+          <code>mergeByCellValues: [&apos;region&apos;, &apos;team&apos;]</code>
+          . Регион слит блоками по 4 строки, команда — по 2 (вложенно).
+          Отредактируй значение «Регион» у верхней строки блока → блок
+          разъедется, объединения пересоберутся из новых значений. Данные
+          обычные, merge — только визуал.
         </p>
         <TableCanvas
           tableConfig={{
             containerStyle: { height: '600px' },
             rowMarkers: { startIndex: 1 },
             columnsControl: { enable: true },
-            spanCells: { spanBy: ['region', 'team'] },
+            mergeCells: { mergeByCellValues: ['region', 'team'] },
             cellsSelection: { mode: 'range-cell' },
             editing: {
               onRowsChange: setRows,
@@ -569,11 +583,11 @@ export const SpanByWithEditing: Story = {
   },
 };
 
-// Controlled-список: объединения задаются ВНЕШНИМ стейтом spanCells.spans (id строк
+// Controlled-список: объединения задаются ВНЕШНИМ стейтом mergeCells.mergedCellsRegions (id строк
 // + ключи колонок) и управляются кнопками (re-merge на лету). Резолвится по
 // ключам/id → переживает hide/reorder; при разрыве смежности (сортировка) регион
 // не рисуется, как ограничения sort в Excel.
-type CtlRegion = { rowIds: Array<string | number>; colKeys: string[] };
+type CtlRegion = MergedCellsRegion;
 
 export const ControlledSpans: Story = {
   name: 'Controlled-список: внешнее управление merge (кнопки)',
@@ -603,14 +617,14 @@ export const ControlledSpans: Story = {
       }
     }
 
-    const [spans, setSpans] = useState<CtlRegion[]>([
-      { rowIds: [1, 2, 3], colKeys: ['dept'] },
+    const [regions, setRegions] = useState<CtlRegion[]>([
+      { rowKeys: [1, 2, 3], colKeys: ['dept'] },
     ]);
     const [sort, setSort] = useState<readonly SortColumn[]>([]);
 
     const keyOf = (r: CtlRegion) => JSON.stringify(r);
     const toggle = (r: CtlRegion) =>
-      setSpans((prev) =>
+      setRegions((prev) =>
         prev.some((s) => keyOf(s) === keyOf(r))
           ? prev.filter((s) => keyOf(s) !== keyOf(r))
           : [...prev, r],
@@ -631,24 +645,27 @@ export const ControlledSpans: Story = {
     return (
       <div>
         <p style={{ fontSize: 13, color: '#888', marginBottom: 8 }}>
-          Объединения — во ВНЕШНЕМ стейте <code>spanCells.spans</code> (id строк +
-          ключи колонок), управляются кнопками. Скрой/переставь колонку через
-          шестерёнку — merge переживает (резолв по ключам). Отсортируй по{' '}
-          <b>План</b> → регион с разбежавшимися строками перестаёт рисоваться (как
-          ограничения sort в Excel).
+          Объединения — во ВНЕШНЕМ стейте{' '}
+          <code>mergeCells.mergedCellsRegions</code> (id строк + ключи колонок),
+          управляются кнопками. Скрой/переставь колонку через шестерёнку — merge
+          переживает (резолв по ключам). Отсортируй по <b>План</b> → регион с
+          разбежавшимися строками перестаёт рисоваться (как ограничения sort в
+          Excel).
         </p>
-        <div style={{ display: 'flex', gap: 8, marginBottom: 8, flexWrap: 'wrap' }}>
+        <div
+          style={{ display: 'flex', gap: 8, marginBottom: 8, flexWrap: 'wrap' }}
+        >
           <button
             type="button"
             style={btn}
-            onClick={() => toggle({ rowIds: [1, 2, 3], colKeys: ['dept'] })}
+            onClick={() => toggle({ rowKeys: [1, 2, 3], colKeys: ['dept'] })}
           >
             Слить 1-3 (Отдел)
           </button>
           <button
             type="button"
             style={btn}
-            onClick={() => toggle({ rowIds: [4, 5, 6], colKeys: ['dept'] })}
+            onClick={() => toggle({ rowKeys: [4, 5, 6], colKeys: ['dept'] })}
           >
             Слить 4-6 (Отдел)
           </button>
@@ -656,17 +673,17 @@ export const ControlledSpans: Story = {
             type="button"
             style={btn}
             onClick={() =>
-              toggle({ rowIds: [1, 2, 3], colKeys: ['dept', 'role'] })
+              toggle({ rowKeys: [1, 2, 3], colKeys: ['dept', 'role'] })
             }
           >
             Прямоугольник 1-3 × Отдел+Роль
           </button>
-          <button type="button" style={btn} onClick={() => setSpans([])}>
+          <button type="button" style={btn} onClick={() => setRegions([])}>
             Очистить
           </button>
         </div>
         <pre style={{ fontSize: 12, color: '#666', marginBottom: 8 }}>
-          spans = {JSON.stringify(spans)}
+          regions = {JSON.stringify(regions)}
         </pre>
         <TableCanvas
           tableConfig={{
@@ -674,7 +691,10 @@ export const ControlledSpans: Story = {
             rowMarkers: { startIndex: 1 },
             columnsControl: { enable: true },
             sorting: { state: [sort, setSort] },
-            spanCells: { spans, rowKeyGetter: (r) => r.id },
+            mergeCells: {
+              mergedCellsRegions: regions,
+              rowKeyGetter: (r) => r.id,
+            },
           }}
           columnConfig={columns}
           rows={rows}
