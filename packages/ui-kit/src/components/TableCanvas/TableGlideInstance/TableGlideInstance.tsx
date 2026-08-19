@@ -45,53 +45,61 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
   onCellClicked: onCellClickedExternal,
   ...rest
 }: TableGlideInstanceProps<R, SR>) => {
-  const { columnsGlide, frozenColsCount, groupMaxLength } = useMemo(() => {
-    const frozenColumns: ColumnGlideLast<R, SR>[] = [];
-    let groupMaxLength = 0;
+  const { columnsGlide, columnsInGlideOrder, frozenColsCount, groupMaxLength } =
+    useMemo(() => {
+      const frozenColumns: ColumnGlideLast<R, SR>[] = [];
+      // Исходные колонки в порядке columnsGlide (frozen — в начало). Индексы от
+      // glide маппим в конфиг через него, иначе при пине colInd укажет на чужую.
+      const frozenOriginal: (typeof columns)[number][] = [];
+      const restOriginal: (typeof columns)[number][] = [];
+      let groupMaxLength = 0;
 
-    const columnsGlide = columns.reduce<ColumnGlideLast<R, SR>[]>(
-      (acc, column, _i) => {
-        if (isGroupColumn(column)) {
-          // не отрабатывает поскольку с уровня выше передается только последний уровень
-          // Пропускаем группы колонок, они обрабатываются через Symbol
+      const columnsGlide = columns.reduce<ColumnGlideLast<R, SR>[]>(
+        (acc, column, _i) => {
+          if (isGroupColumn(column)) {
+            // не отрабатывает поскольку с уровня выше передается только последний уровень
+            // Пропускаем группы колонок, они обрабатываются через Symbol
+            return acc;
+          }
+
+          // Адаптируем колонку: преобразуем из ColumnGlideInstance в ColumnGlideLast
+          const {
+            column: glideColumn,
+            groupLength,
+            wasFrozen,
+          } = adaptColumn({
+            column,
+          });
+
+          // Обновляем максимальную длину группы
+          if (groupLength > groupMaxLength) {
+            groupMaxLength = groupLength;
+          }
+
+          if (wasFrozen) {
+            frozenColumns.push(glideColumn);
+            frozenOriginal.push(column);
+            // не добавляем в acc сейчас, чтобы после reduce запушить вперед (чтобы не сортировать после)
+            return acc;
+          }
+
+          acc.push(glideColumn);
+          restOriginal.push(column);
+
           return acc;
-        }
+        },
+        [],
+      );
 
-        // Адаптируем колонку: преобразуем из ColumnGlideInstance в ColumnGlideLast
-        const {
-          column: glideColumn,
-          groupLength,
-          wasFrozen,
-        } = adaptColumn({
-          column,
-        });
+      columnsGlide.unshift(...frozenColumns);
 
-        // Обновляем максимальную длину группы
-        if (groupLength > groupMaxLength) {
-          groupMaxLength = groupLength;
-        }
-
-        if (wasFrozen) {
-          frozenColumns.push(glideColumn);
-          // не добавляем в acc сейчас, чтобы после reduce запушить вперед (чтобы не сортировать после)
-          return acc;
-        }
-
-        acc.push(glideColumn);
-
-        return acc;
-      },
-      [],
-    );
-
-    columnsGlide.unshift(...frozenColumns);
-
-    return {
-      frozenColsCount: frozenColumns.length,
-      columnsGlide,
-      groupMaxLength,
-    };
-  }, [columns]);
+      return {
+        frozenColsCount: frozenColumns.length,
+        columnsGlide,
+        columnsInGlideOrder: [...frozenOriginal, ...restOriginal],
+        groupMaxLength,
+      };
+    }, [columns]);
 
   // ctxs
   const expandedRowsCtx = useExpandedRowsContext();
@@ -166,7 +174,7 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
     NonNullable<TableGlideProps<R, SR>['onHeaderContextMenu']>
   >(
     (colIndex, event) => {
-      const currentColumn = columns[colIndex];
+      const currentColumn = columnsInGlideOrder[colIndex];
       if (currentColumn) {
         onHeaderContextMenu?.(colIndex, event, {
           column: currentColumn,
@@ -175,14 +183,14 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
         });
       }
     },
-    [columns, onHeaderContextMenu, ctxs, refTable],
+    [columnsInGlideOrder, onHeaderContextMenu, ctxs, refTable],
   );
 
   const handleCellContextMenu = useCallback<
     NonNullable<TableGlideProps<R, SR>['onCellContextMenu']>
   >(
     (cell, event) => {
-      const currentColumn = columns[cell[0]];
+      const currentColumn = columnsInGlideOrder[cell[0]];
       const currentRow = rows[cell[1]];
       if (currentColumn && currentRow) {
         onCellContextMenu?.(cell, event, {
@@ -193,7 +201,7 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
         });
       }
     },
-    [columns, rows, onCellContextMenu, ctxs, refTable],
+    [columnsInGlideOrder, rows, onCellContextMenu, ctxs, refTable],
   );
 
   const handleCellClicked = useCallback<
@@ -201,7 +209,7 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
   >(
     (cell, _event) => {
       if (!onCellClickedExternal) return;
-      const currentColumn = columns[cell[0]];
+      const currentColumn = columnsInGlideOrder[cell[0]];
       const currentRow = rows[cell[1]];
       if (currentColumn && currentRow) {
         onCellClickedExternal(cell, {
@@ -212,7 +220,7 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
         });
       }
     },
-    [columns, rows, onCellClickedExternal, ctxs, refTable],
+    [columnsInGlideOrder, rows, onCellClickedExternal, ctxs, refTable],
   );
 
   const onCellsEdited = useMemo<TableGlideProps<R, SR>['onCellsEdited']>(() => {
@@ -223,7 +231,8 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
         return true;
       }
       const firstChangedRowColumnInd = newValues[0].location[0];
-      const firstChangedRowColumnColumn = columns[firstChangedRowColumnInd];
+      const firstChangedRowColumnColumn =
+        columnsInGlideOrder[firstChangedRowColumnInd];
 
       if (!firstChangedRowColumnColumn) {
         return true;
@@ -233,7 +242,7 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
         (acc, item) => {
           const colInd = item.location[0];
           const rowInd = item.location[1];
-          const column = columns[colInd];
+          const column = columnsInGlideOrder[colInd];
           if (!column) {
             return acc;
           }
@@ -263,7 +272,7 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
       onRowsChange(changedAllRows, { column, indexes, type: 'edit' });
       return true;
     };
-  }, [columns, onRowsChange, rows]);
+  }, [columnsInGlideOrder, onRowsChange, rows]);
 
   const provideEditor = useCallback<ProvideEditorCallback<GridCell>>(
     (gridCell) => {
@@ -271,7 +280,7 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
 
       if (!location) return undefined;
       const [colInd, rowInd] = location;
-      const column = columns[colInd];
+      const column = columnsInGlideOrder[colInd];
       const row = rows[rowInd];
 
       if (!row) return undefined;
@@ -438,7 +447,7 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
 
       return undefined;
     },
-    [CellReadOnlyEditor, columns, ctxs, rows],
+    [CellReadOnlyEditor, columnsInGlideOrder, ctxs, rows],
   );
 
   const isOutsideClick = useMemo((): TableGlideProps<
