@@ -8,7 +8,7 @@ import {
   type SortColumn,
   TableCanvas,
 } from '@ui-kit/components/TableCanvas';
-import { useMemo, useRef, useState } from 'react';
+import { type CSSProperties, useMemo, useRef, useState } from 'react';
 
 const meta: Meta = {
   title: 'Локальные компоненты/TableCanvas/Copy-Paste-Fill/Объединение ячеек',
@@ -555,6 +555,121 @@ export const SpanByWithEditing: Story = {
               rowKeyGetter: (r) => `${r.id}`,
               defaultEnabled: true,
             },
+          }}
+          columnConfig={columns}
+          rows={rows}
+        />
+      </div>
+    );
+  },
+};
+
+// Controlled-список: объединения задаются ВНЕШНИМ стейтом spanCells.spans (id строк
+// + ключи колонок) и управляются кнопками (re-merge на лету). Резолвится по
+// ключам/id → переживает hide/reorder; при разрыве смежности (сортировка) регион
+// не рисуется, как ограничения sort в Excel.
+type CtlRegion = { rowIds: Array<string | number>; colKeys: string[] };
+
+export const ControlledSpans: Story = {
+  name: 'Controlled-список: внешнее управление merge (кнопки)',
+  render: () => {
+    type CRow = {
+      id: number;
+      dept: string;
+      role: string;
+      person: string;
+      plan: number;
+    };
+    const GROUPS = [
+      { dept: 'Отдел A', role: 'Аналитик', ids: [1, 2, 3] },
+      { dept: 'Отдел B', role: 'Разработчик', ids: [4, 5, 6] },
+      { dept: 'Отдел C', role: 'Тестировщик', ids: [7, 8, 9, 10] },
+    ];
+    const rows: CRow[] = [];
+    for (const g of GROUPS) {
+      for (const id of g.ids) {
+        rows.push({
+          id,
+          dept: g.dept,
+          role: g.role,
+          person: `Сотрудник ${id}`,
+          plan: (11 - id) * 5,
+        });
+      }
+    }
+
+    const [spans, setSpans] = useState<CtlRegion[]>([
+      { rowIds: [1, 2, 3], colKeys: ['dept'] },
+    ]);
+    const [sort, setSort] = useState<readonly SortColumn[]>([]);
+
+    const keyOf = (r: CtlRegion) => JSON.stringify(r);
+    const toggle = (r: CtlRegion) =>
+      setSpans((prev) =>
+        prev.some((s) => keyOf(s) === keyOf(r))
+          ? prev.filter((s) => keyOf(s) !== keyOf(r))
+          : [...prev, r],
+      );
+
+    const columns: readonly ColumnConfig<CRow>[] = [
+      { key: 'dept', name: 'Отдел', width: 180, sortingType: 'stringSort' },
+      { key: 'role', name: 'Роль', width: 180, sortingType: 'stringSort' },
+      { key: 'person', name: 'Сотрудник', width: 180 },
+      { key: 'plan', name: 'План', width: 110, sortingType: 'numberSort' },
+    ];
+
+    const btn: CSSProperties = {
+      padding: '4px 10px',
+      cursor: 'pointer',
+    };
+
+    return (
+      <div>
+        <p style={{ fontSize: 13, color: '#888', marginBottom: 8 }}>
+          Объединения — во ВНЕШНЕМ стейте <code>spanCells.spans</code> (id строк +
+          ключи колонок), управляются кнопками. Скрой/переставь колонку через
+          шестерёнку — merge переживает (резолв по ключам). Отсортируй по{' '}
+          <b>План</b> → регион с разбежавшимися строками перестаёт рисоваться (как
+          ограничения sort в Excel).
+        </p>
+        <div style={{ display: 'flex', gap: 8, marginBottom: 8, flexWrap: 'wrap' }}>
+          <button
+            type="button"
+            style={btn}
+            onClick={() => toggle({ rowIds: [1, 2, 3], colKeys: ['dept'] })}
+          >
+            Слить 1-3 (Отдел)
+          </button>
+          <button
+            type="button"
+            style={btn}
+            onClick={() => toggle({ rowIds: [4, 5, 6], colKeys: ['dept'] })}
+          >
+            Слить 4-6 (Отдел)
+          </button>
+          <button
+            type="button"
+            style={btn}
+            onClick={() =>
+              toggle({ rowIds: [1, 2, 3], colKeys: ['dept', 'role'] })
+            }
+          >
+            Прямоугольник 1-3 × Отдел+Роль
+          </button>
+          <button type="button" style={btn} onClick={() => setSpans([])}>
+            Очистить
+          </button>
+        </div>
+        <pre style={{ fontSize: 12, color: '#666', marginBottom: 8 }}>
+          spans = {JSON.stringify(spans)}
+        </pre>
+        <TableCanvas
+          tableConfig={{
+            containerStyle: { height: '520px' },
+            rowMarkers: { startIndex: 1 },
+            columnsControl: { enable: true },
+            sorting: { state: [sort, setSort] },
+            spanCells: { spans, rowKeyGetter: (r) => r.id },
           }}
           columnConfig={columns}
           rows={rows}

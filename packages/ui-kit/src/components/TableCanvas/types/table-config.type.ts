@@ -1017,14 +1017,30 @@ export type TableConfig<
    * строках, merge лишь схлопывает его визуально. Сортировка/фильтр пересобирают
    * блоки автоматически.
    *
+   * `spans` — controlled-список СТРУКТУРНЫХ объединений (управляется извне, как
+   * `selected`): каждый регион задаётся стабильными идентификаторами — id строк
+   * (`rowIds`) и ключами колонок (`colKeys`). Обёртка резолвит их в текущие видимые
+   * индексы; если после сортировки/скрытия строки/колонки региона перестали быть
+   * СМЕЖНЫМИ — регион не рисуется (как ограничения sort в Excel). Требует
+   * `rowKeyGetter` для сопоставления `rowIds` со строками. Приоритетнее `spanBy` и
+   * колоночных `rowSpan/colSpan`.
+   *
    * Для тонкого/data-driven объединения остаётся `columnConfig[n].rowSpan/colSpan`.
    *
-   * Пример: `spanCells={{ spanBy: ['dept', 'role'] }}`.
+   * Примеры: `spanCells={{ spanBy: ['dept', 'role'] }}`,
+   * `spanCells={{ spans, rowKeyGetter: (r) => r.id }}`.
    */
   spanCells?: {
     spanBy?: Array<
       string | { colKey: string; value: (row: RowType) => unknown }
     >;
+    /** Controlled-список структурных объединений по id строк + ключам колонок. */
+    spans?: Array<{
+      rowIds: Array<string | number>;
+      colKeys: string[];
+    }>;
+    /** Нужен для `spans`: сопоставление `rowIds` со строками. */
+    rowKeyGetter?: (row: RowType) => string | number;
   };
 
   /**

@@ -45,6 +45,7 @@ import { TableConfig } from '../types/table-config.type';
 import { calculateMinColumnWidth } from '../utils';
 import { renderFilterSortHeader } from '../widgets/filter-sort-header';
 import { createSpanByRowSpan } from './createSpanByRowSpan';
+import { createControlledSpans } from './createControlledSpans';
 
 export const useColumns = <
   FilterStateType extends ObjectForExtending,
@@ -204,6 +205,20 @@ export const useColumns = <
         spanByValue.set(item.colKey, item.value);
       }
     });
+
+    // spanCells.spans: controlled-список структурных объединений (id строк + ключи
+    // колонок). Резолвер синтезирует colSpan/rowSpan на origin-колонках регионов.
+    const spanCellsSpans = tableConfig.spanCells?.spans;
+    const spanCellsRowKeyGetter = tableConfig.spanCells?.rowKeyGetter;
+    const controlledSpans =
+      spanCellsSpans && spanCellsSpans.length > 0 && spanCellsRowKeyGetter
+        ? createControlledSpans(
+            spanCellsSpans,
+            colsAfterHideCheck.map((c) => c.key),
+            rowsRef,
+            spanCellsRowKeyGetter,
+          )
+        : null;
 
     return colsAfterHideCheck.map((el, currIndex, arr) => {
       const columnIsPinned = pinnedColsSet.has(el.key);
@@ -393,20 +408,29 @@ export const useColumns = <
         ? false
         : tableConfig.resizableColumn;
 
-      const colSpan = tableConfigRowDetailBoolean
-        ? getDetailPanelColSpanFunc({
-            indexZeroColKey,
-            currIndex,
-            arr,
-            columnColSpan: el.colSpan,
-          })
-        : el.colSpan;
-
-      // spanCells.spanBy имеет приоритет: синтезируем rowSpan из run-map по значению.
+      // Приоритет объединения: controlled-список (spans) > spanBy > колоночный.
+      const isControlledOrigin =
+        controlledSpans?.originCols.has(el.key) ?? false;
       const spanByValueOf = spanByValue.get(el.key);
-      const rowSpan = spanByValueOf
-        ? createSpanByRowSpan(spanByValueOf, rowsRef)
-        : el.rowSpan;
+
+      let colSpan;
+      let rowSpan;
+      if (isControlledOrigin && controlledSpans) {
+        colSpan = controlledSpans.colSpan(el.key);
+        rowSpan = controlledSpans.rowSpan(el.key);
+      } else {
+        colSpan = tableConfigRowDetailBoolean
+          ? getDetailPanelColSpanFunc({
+              indexZeroColKey,
+              currIndex,
+              arr,
+              columnColSpan: el.colSpan,
+            })
+          : el.colSpan;
+        rowSpan = spanByValueOf
+          ? createSpanByRowSpan(spanByValueOf, rowsRef)
+          : el.rowSpan;
+      }
 
       // const cellClass: typeof el.cellClass = (() => {
       //   if (!el?.cellClass && (!editModeEnabled || !el.editingCell)) {
