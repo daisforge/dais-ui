@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/dot-notation */
 
 import { SIZE } from '@ui-kit/components/TableCanvas';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 
 import { hideRowServiceKeysHandler } from '../data/hideServiceKeysHanlder';
 import { isServiceEditableColumn } from '../feature-edit';
@@ -148,6 +148,10 @@ export const useColumns = <
   const groupedCols = (tableConfig.rowsGrouping ?? {})?.groupByState?.[0];
   // Создание колонки с нумерацией строк
   const rowMarkersIsActive = !!tableConfig?.rowMarkers;
+
+  // Финальный порядок ключей колонок (после reorder/pin/hide) для резолва
+  // controlled-объединений на render-time. Обновляется ниже, после reorderedColumns.
+  const renderColKeysRef = useRef<readonly string[]>([]);
   const columns = useMemo((): readonly ColumnX[] => {
     const colsAfterRowsGroupingCheck = getColsAfterRowsGrouping({
       rowsGroupingIsActiveInConfig: tableConfigRowsGroupingBoolean,
@@ -207,14 +211,15 @@ export const useColumns = <
     });
 
     // spanCells.spans: controlled-список структурных объединений (id строк + ключи
-    // колонок). Резолвер синтезирует colSpan/rowSpan на origin-колонках регионов.
+    // колонок). Резолвер синтезирует colSpan/rowSpan, читая финальный render-порядок
+    // колонок из renderColKeysRef (reorder/pin/hide-safe).
     const spanCellsSpans = tableConfig.spanCells?.spans;
     const spanCellsRowKeyGetter = tableConfig.spanCells?.rowKeyGetter;
     const controlledSpans =
       spanCellsSpans && spanCellsSpans.length > 0 && spanCellsRowKeyGetter
         ? createControlledSpans(
             spanCellsSpans,
-            colsAfterHideCheck.map((c) => c.key),
+            renderColKeysRef,
             rowsRef,
             spanCellsRowKeyGetter,
           )
@@ -408,28 +413,32 @@ export const useColumns = <
         ? false
         : tableConfig.resizableColumn;
 
-      // Приоритет объединения: controlled-список (spans) > spanBy > колоночный.
-      const isControlledOrigin =
-        controlledSpans?.originCols.has(el.key) ?? false;
+      // Объединение ячеек тела задаётся ТОЛЬКО через tableConfig.spanCells.
+      // Приоритет: controlled-список (spans) > spanBy. Колоночных colSpan/rowSpan
+      // во внешнем API больше нет (см. DefaultOmittedKeys). Резолвер вешаем на все
+      // колонки региона: origin определяется на render-time внутри резолвера.
+      const isRegionCol = controlledSpans?.regionCols.has(el.key) ?? false;
       const spanByValueOf = spanByValue.get(el.key);
 
       let colSpan;
       let rowSpan;
-      if (isControlledOrigin && controlledSpans) {
+      if (isRegionCol && controlledSpans) {
         colSpan = controlledSpans.colSpan(el.key);
         rowSpan = controlledSpans.rowSpan(el.key);
       } else {
+        // colSpan синтезируется только служебным detail-panel (внешнего
+        // columnColSpan нет); rowSpan — только через spanBy.
         colSpan = tableConfigRowDetailBoolean
-          ? getDetailPanelColSpanFunc({
+          ? getDetailPanelColSpanFunc<RowType, SummaryRowType>({
               indexZeroColKey,
               currIndex,
               arr,
-              columnColSpan: el.colSpan,
+              columnColSpan: undefined,
             })
-          : el.colSpan;
+          : undefined;
         rowSpan = spanByValueOf
           ? createSpanByRowSpan(spanByValueOf, rowsRef)
-          : el.rowSpan;
+          : undefined;
       }
 
       // const cellClass: typeof el.cellClass = (() => {
@@ -573,6 +582,16 @@ export const useColumns = <
     colsWithKeyTextMap,
     pinnedCols,
   });
+
+  // Финальный видимый порядок ключей колонок — для render-time резолва
+  // controlled-объединений (createControlledSpans читает этот ref по идентичности).
+  // Мемо: идентичность массива меняется только при реальной смене порядка колонок,
+  // иначе кэш резолвера пересобирался бы на каждый ререндер (hover/выделение).
+  const renderColKeys = useMemo(
+    () => reorderedColumns.map((c) => c.key),
+    [reorderedColumns],
+  );
+  renderColKeysRef.current = renderColKeys;
 
   return {
     columns,

@@ -79,25 +79,17 @@ export const RowSpanBasic: Story = {
     const [highlightActiveType, setHighlightActiveType] =
       useState<HighlightActiveType>('disabled');
 
-    // Блок = 3 строки одной группы. Диапазон ОДИНАКОВ для всех ячеек блока.
-    const rowSpanByThree = (rowInd: number): readonly [number, number] => {
-      const start = Math.floor(rowInd / 3) * 3;
-      return [start, start + 2];
-    };
-
     const columns = useMemo<readonly ColumnConfig<MRow>[]>(
       () => [
         {
           key: 'role',
           name: 'Роль (merge ×3)',
           width: 220,
-          rowSpan: (ci) => rowSpanByThree(ci.rowInd),
         },
         {
           key: 'dept',
           name: 'Отдел (custom + merge ×3)',
           width: 220,
-          rowSpan: (ci) => rowSpanByThree(ci.rowInd),
           renderCell: ({ row, theme }) => (
             <Canvas.Container
               padding={8}
@@ -179,6 +171,7 @@ export const RowSpanBasic: Story = {
             rowMarkers: { startIndex: 1 },
             columnsControl: { enable: true },
             rowSize: { default: 'medium', showInControl: true },
+            spanCells: { spanBy: ['role', 'dept'] },
             cellsSelection: {
               mode: selectionMode,
               enableColumnSelection: true,
@@ -233,13 +226,21 @@ export const Colspan: Story = {
 
     const [rows, setRows] = useState<MRow[]>(initialRows);
 
+    // Заголовки секций через controlled-список spans: каждая header-строка
+    // сливает все 3 колонки (label, a, b). Резолв по id строки.
+    const spans = useMemo(
+      () =>
+        rows
+          .filter((r) => r.kind === 'header')
+          .map((r) => ({ rowIds: [r.id], colKeys: ['label', 'a', 'b'] })),
+      [rows],
+    );
+
     const columns: readonly ColumnConfig<MRow>[] = [
       {
         key: 'label',
         name: 'Заголовок / Строка',
         width: 220,
-        // header-строка: colSpan=2 → спан 3 колонки (label, a, b).
-        colSpan: (ci) => (ci.row.kind === 'header' ? 2 : 0),
         editingCell: { component: 'inputString' },
         renderCell: ({ row, theme }) => (
           <Canvas.Container padding={8} alignItems="center">
@@ -264,15 +265,17 @@ export const Colspan: Story = {
     return (
       <div>
         <p style={{ fontSize: 13, color: '#888', marginBottom: 8 }}>
-          Строки-заголовки секций: первая колонка через <code>colSpan</code>{' '}
-          спанит все 3 колонки. Данные-строки — обычные. Редактирование/протяжка/
-          копирование включены — проверяем overlay-редактор и перенос на merged.
+          Строки-заголовки секций слиты на всю ширину через{' '}
+          <code>spanCells.spans</code> (список header-строк, colKeys — все
+          колонки). Данные-строки — обычные. Редактирование/протяжка/копирование
+          включены — проверяем overlay-редактор и перенос на merged.
         </p>
         <TableCanvas
           tableConfig={{
             containerStyle: { height: '520px' },
             rowMarkers: { startIndex: 1 },
             columnsControl: { enable: true },
+            spanCells: { spans, rowKeyGetter: (r) => r.id },
             cellsSelection: { mode: 'range-cell', enableColumnSelection: true },
             cellTransfer: { fillHandle: true },
             editing: {
@@ -289,9 +292,9 @@ export const Colspan: Story = {
   },
 };
 
-// Прямоугольный блок: colSpan + rowSpan на ОДНОЙ origin-ячейке = блок cols×rows.
+// Прямоугольный блок cols×rows через controlled-список spanCells.spans.
 export const Rectangular: Story = {
-  name: 'Прямоугольный блок (colSpan + rowSpan)',
+  name: 'Прямоугольный блок (spans)',
   render: () => {
     type MRow = { id: number; a: string; b: string; c: string; d: string };
     const initialRows: MRow[] = Array.from({ length: 10 }, (_, i) => ({
@@ -306,8 +309,8 @@ export const Rectangular: Story = {
     // Снимок «сохранённого» состояния: отмена = потребитель откатывает свой стейт.
     const savedRef = useRef<MRow[]>(initialRows);
 
-    // Блок 2×3: колонки A,B × строки 1..3. На origin-колонке 'a' для этих строк:
-    // colSpan=1 (2 колонки A,B) + rowSpan=[1,3] (3 строки).
+    // Блок 2×3: колонки A,B × строки 2..4 (rowInd 1..3, id 2..4). Задаётся
+    // controlled-списком spanCells.spans (id строк + ключи колонок).
     const inBlock = (rowInd: number) => rowInd >= 1 && rowInd <= 3;
 
     const columns: readonly ColumnConfig<MRow>[] = [
@@ -315,8 +318,6 @@ export const Rectangular: Story = {
         key: 'a',
         name: 'A (origin)',
         width: 160,
-        colSpan: (ci) => (inBlock(ci.rowInd) ? 1 : 0),
-        rowSpan: (ci) => (inBlock(ci.rowInd) ? [1, 3] : null),
         editingCell: { component: 'inputString' },
         renderCell: ({ row, rowInd, theme }) => (
           <Canvas.Container
@@ -354,7 +355,7 @@ export const Rectangular: Story = {
       <div>
         <p style={{ fontSize: 13, color: '#888', marginBottom: 8 }}>
           Прямоугольный блок 2×3 (колонки A,B × строки 2–4) — через{' '}
-          <code>colSpan</code> + <code>rowSpan</code> на origin-ячейке A.
+          <code>spanCells.spans</code> (id строк 2–4 + ключи колонок A,B).
           Редактирование/протяжка/копирование включены — проверяем overlay на
           блоке и перенос.
         </p>
@@ -363,6 +364,10 @@ export const Rectangular: Story = {
             containerStyle: { height: '520px' },
             rowMarkers: { startIndex: 1 },
             columnsControl: { enable: true },
+            spanCells: {
+              spans: [{ rowIds: [2, 3, 4], colKeys: ['a', 'b'] }],
+              rowKeyGetter: (r) => r.id,
+            },
             cellsSelection: { mode: 'range-cell', enableColumnSelection: true },
             cellTransfer: { fillHandle: true },
             editing: {

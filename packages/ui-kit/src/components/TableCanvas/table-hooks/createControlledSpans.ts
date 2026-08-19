@@ -16,43 +16,51 @@ const isContiguous = (sorted: readonly number[]): boolean =>
 
 /**
  * Controlled-объединения (`spanCells.spans`): структурные merge по стабильным
- * идентификаторам (id строк + ключи колонок). Резолвим их в текущие видимые
- * индексы и синтезируем colSpan/rowSpan на ORIGIN-колонке каждого региона (левой
- * видимой); покрытые ячейки дальше резолвятся к origin существующим пайплайном.
+ * идентификаторам (id строк + ключи колонок). Резолвим их в ТЕКУЩИЙ ВИДИМЫЙ
+ * порядок колонок и синтезируем colSpan/rowSpan на origin-колонке каждого региона.
  *
- * Origin-КОЛОНКИ известны сразу (из ключей + порядка колонок), поэтому `originCols`
- * вычисляем в конструкторе. Строки резолвим ЛЕНИВО (rowsRef читаем в момент
- * вызова), с кэшем по идентичности массива: O(n) на смену данных, lookup O(1).
- * Если после сортировки/скрытия колонки/строки региона перестали быть СМЕЖНЫМИ —
- * регион не рисуем (как ограничения sort в Excel).
+ * Порядок колонок читаем на RENDER-time из `renderColKeysRef` (финальный порядок
+ * после reorder/pin/hide), а НЕ на build-time. Иначе `colExtra` (число-смещение
+ * блока) считается по старым индексам, а `getSpan` применяет его на новых —
+ * блок «уезжает» и covered-ячейки резолвятся в чужую колонку (превью/клик берут
+ * не то значение). origin — ЛЕВЕЙШАЯ колонка региона в render-порядке; если после
+ * перестановки колонки региона перестали быть СМЕЖНЫМИ, регион не рисуем (блок
+ * распадается — как ограничения sort в Excel).
+ *
+ * Резолвер вешается на ВСЕ колонки региона (см. `regionCols`), т.к. origin
+ * определяется на render-time: каждая колонка сама решает, она ли сейчас origin
+ * (тогда возвращает span) или covered (тогда 0/null и резолвится к origin).
+ *
+ * Кэш по идентичности (rows, renderColKeys): пересчёт O(регионов) раз на рендер,
+ * lookup O(1) на ячейку.
  */
 export function createControlledSpans<R extends ObjectForExtending>(
   spans: readonly SpanRegion[],
-  colKeysInOrder: readonly string[],
+  renderColKeysRef: { readonly current: readonly string[] },
   rowsRef: { readonly current: readonly R[] },
   rowKeyGetter: (row: R) => string | number,
 ) {
-  const colIndexOf = new Map<string, number>();
-  colKeysInOrder.forEach((key, index) => colIndexOf.set(key, index));
-
-  // Origin-колонки (левая видимая колонка каждого региона) — не зависят от строк.
-  const originCols = new Set<string>();
-  spans.forEach((region) => {
-    const colInds = region.colKeys
-      .map((k) => colIndexOf.get(k))
-      .filter((x): x is number => x !== undefined);
-    if (colInds.length === 0) return;
-    const originKey = colKeysInOrder[Math.min(...colInds)];
-    if (originKey !== undefined) originCols.add(originKey);
-  });
+  // Union всех colKeys регионов — какие колонки вообще участвуют в объединениях.
+  // Не зависит от порядка, поэтому считаем сразу.
+  const regionCols = new Set<string>();
+  spans.forEach((region) => region.colKeys.forEach((k) => regionCols.add(k)));
 
   let cachedRows: readonly R[] | null = null;
-  let byCol = new Map<string, Map<number, OriginEntry>>();
+  let cachedKeys: readonly string[] | null = null;
+  // Ключ карты — origin-колонка региона в ТЕКУЩЕМ render-порядке.
+  let byOrigin = new Map<string, Map<number, OriginEntry>>();
 
-  const ensure = (rows: readonly R[]): void => {
-    if (rows === cachedRows) return;
+  const ensure = (
+    rows: readonly R[],
+    renderColKeys: readonly string[],
+  ): void => {
+    if (rows === cachedRows && renderColKeys === cachedKeys) return;
     cachedRows = rows;
-    byCol = new Map();
+    cachedKeys = renderColKeys;
+    byOrigin = new Map();
+
+    const colIndexOf = new Map<string, number>();
+    renderColKeys.forEach((key, index) => colIndexOf.set(key, index));
 
     const rowIndexOf = new Map<string | number, number>();
     rows.forEach((row, index) => rowIndexOf.set(rowKeyGetter(row), index));
@@ -66,7 +74,8 @@ export function createControlledSpans<R extends ObjectForExtending>(
         .map((id) => rowIndexOf.get(id))
         .filter((x): x is number => x !== undefined)
         .sort((a, b) => a - b);
-      // Регион невалиден (нет колонок/строк) или разорван сортировкой/скрытием.
+      // Регион невалиден (нет колонок/строк) или разорван реордером/сортировкой/
+      // скрытием — не рисуем (блок распадается на отдельные ячейки).
       if (
         colInds.length === 0 ||
         rowInds.length === 0 ||
@@ -79,13 +88,13 @@ export function createControlledSpans<R extends ObjectForExtending>(
       const colExtra = (colInds[colInds.length - 1] as number) - originCol;
       const rowStart = rowInds[0] as number;
       const rowEnd = rowInds[rowInds.length - 1] as number;
-      const originKey = colKeysInOrder[originCol];
+      const originKey = renderColKeys[originCol];
       if (originKey === undefined) return;
 
-      let map = byCol.get(originKey);
+      let map = byOrigin.get(originKey);
       if (!map) {
         map = new Map();
-        byCol.set(originKey, map);
+        byOrigin.set(originKey, map);
       }
       for (let ri = rowStart; ri <= rowEnd; ri += 1) {
         map.set(ri, { colExtra, rowStart, rowEnd });
@@ -94,19 +103,19 @@ export function createControlledSpans<R extends ObjectForExtending>(
   };
 
   return {
-    /** Является ли колонка origin хотя бы одного региона (для решения override). */
-    originCols,
+    /** Колонки, участвующие в объединениях (на них вешаем резолвер). */
+    regionCols,
     colSpan:
       (colKey: string) =>
       (cellInfo: { rowInd: number }): number => {
-        ensure(rowsRef.current);
-        return byCol.get(colKey)?.get(cellInfo.rowInd)?.colExtra ?? 0;
+        ensure(rowsRef.current, renderColKeysRef.current);
+        return byOrigin.get(colKey)?.get(cellInfo.rowInd)?.colExtra ?? 0;
       },
     rowSpan:
       (colKey: string) =>
       (cellInfo: { rowInd: number }): readonly [number, number] | null => {
-        ensure(rowsRef.current);
-        const entry = byCol.get(colKey)?.get(cellInfo.rowInd);
+        ensure(rowsRef.current, renderColKeysRef.current);
+        const entry = byOrigin.get(colKey)?.get(cellInfo.rowInd);
         return entry ? [entry.rowStart, entry.rowEnd] : null;
       },
   };
