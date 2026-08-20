@@ -794,7 +794,34 @@ export const GroupedFlatView: Story = {
     const selectingState = useState(
       (): ReadonlySet<string | number> => new Set(),
     );
-    const [selected, setSelected] = selectingState;
+    const [selected, setSelectedRaw] = selectingState;
+
+    // Групповой чекбокс: чекбоксы слиты по отделу, а фича тогглит одну строку
+    // (origin). Сеттер-обёртка расширяет ЛЮБУЮ дельту выделения до границ
+    // группы: тогглнулась строка отдела — тогглится весь отдел. В фиче
+    // rowsGrouping (view merged) эта логика станет нативной.
+    const setSelected = useCallback(
+      (
+        next:
+          | ReadonlySet<string | number>
+          | ((
+              prev: ReadonlySet<string | number>,
+            ) => ReadonlySet<string | number>),
+      ) => {
+        setSelectedRaw((prev) => {
+          const raw = typeof next === 'function' ? next(prev) : next;
+          const result = new Set(raw);
+          for (const keys of deptRowKeys.values()) {
+            const added = keys.some((k) => raw.has(k) && !prev.has(k));
+            const removed = keys.some((k) => !raw.has(k) && prev.has(k));
+            if (added) keys.forEach((k) => result.add(k));
+            else if (removed) keys.forEach((k) => result.delete(k));
+          }
+          return result;
+        });
+      },
+      [setSelectedRaw, deptRowKeys],
+    );
 
     const columns: readonly ColumnConfig<GRow>[] = [
       { key: 'dept', name: 'Отдел', width: 150 },
@@ -814,10 +841,11 @@ export const GroupedFlatView: Story = {
         <p style={hintStyle}>
           Дерево групп (отдел, роль) отображается ПЛОСКО через регионы из узлов
           дерева. «Разработчик» есть в отделах A и B — блоки НЕ сливаются через
-          границу (разные регионы). Нумерация — номер группы верхнего уровня,
-          чекбокс-колонка слита по отделу. Клик по блоку «Отдел» выделяет все
-          строки группы (полоса покрывает группу целиком). Переставь или скрой
-          колонки через шестерёнку — регионы по ключам, ничего не ломается.
+          границу (разные регионы). Нумерация — номер группы верхнего уровня.
+          Чекбокс слит по отделу: клик по нему выделяет/снимает ВСЕ строки
+          группы. Клик по блоку «Отдел» — обычное выделение ячейки, чекбоксы не
+          трогает. Переставь или скрой колонки через шестерёнку — регионы по
+          ключам, ничего не ломается.
         </p>
         <p style={{ ...hintStyle, color: '#555' }}>
           Выбрано строк: <b>{selected.size}</b>
@@ -835,23 +863,10 @@ export const GroupedFlatView: Story = {
               rowKeyGetter: (r) => r.id,
             },
             selecting: {
-              state: selectingState,
+              state: [selected, setSelected],
               rowKeyGetter: (r) => r.id,
             },
             cellsSelection: { mode: 'range-cell' },
-            onCellClicked: (_cell, info) => {
-              // Групповой тоггл: клик по слитому блоку отдела выделяет/снимает
-              // ВСЕ строки группы (identity региона = ключи строк группы).
-              if (!('row' in info) || info.column.key !== 'dept') return;
-              const keys = deptRowKeys.get(info.row.dept);
-              if (!keys) return;
-              setSelected((prev) => {
-                const next = new Set(prev);
-                const allIn = keys.every((k) => next.has(k));
-                keys.forEach((k) => (allIn ? next.delete(k) : next.add(k)));
-                return next;
-              });
-            },
           }}
           columnConfig={columns}
           rows={rows}
