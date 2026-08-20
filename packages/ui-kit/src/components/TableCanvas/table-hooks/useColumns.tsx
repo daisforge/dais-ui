@@ -590,10 +590,17 @@ export const useColumns = <
   // controlled-объединений (createMergedRegionsResolver читает ref по идентичности).
   // Мемо: идентичность массива меняется только при реальной смене порядка колонок,
   // иначе кэш резолвера пересобирался бы на каждый ререндер (hover/выделение).
-  const renderColKeys = useMemo(
-    () => reorderedColumns.map((c) => c.key),
-    [reorderedColumns],
-  );
+  // Frozen-колонки уезжают в НАЧАЛО на уровне glide (columnsGlide в
+  // TableGlideInstance) — зеркалим этот порядок здесь, иначе при пине colExtra
+  // региона считается по до-пиновым индексам и span вылезает за массив колонок.
+  const renderColKeys = useMemo(() => {
+    const frozen: string[] = [];
+    const rest: string[] = [];
+    reorderedColumns.forEach((c) => {
+      (c.frozen ? frozen : rest).push(c.key);
+    });
+    return [...frozen, ...rest];
+  }, [reorderedColumns]);
   renderColKeysRef.current = renderColKeys;
 
   return {
