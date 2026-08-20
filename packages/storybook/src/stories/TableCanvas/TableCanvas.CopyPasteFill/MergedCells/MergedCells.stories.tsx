@@ -42,7 +42,7 @@ const HIGHLIGHT_ACTIVE_TYPE_OPTIONS: Array<{
 // Базовый rowSpan: role/dept ПОВТОРЯЮТСЯ в данных по блоку из 3 строк (объединение —
 // чистый UI-фасад над повторяющимися значениями), period/plan/fact — свои у строки.
 export const RowSpanBasic: Story = {
-  name: 'Базовый rowSpan (повторяющиеся данные)',
+  name: 'mergeByCellValues: базовый rowSpan (повторяющиеся данные)',
   render: () => {
     type MRow = {
       id: number;
@@ -102,6 +102,8 @@ export const RowSpanBasic: Story = {
             </Canvas.Container>
           ),
           copyData: (row) => row.dept,
+          // У canvas-колонок превью по умолчанию выключено — включаем явно.
+          renderCellPreview: 'cellEditorAsPreview',
         },
         {
           key: 'period',
@@ -197,7 +199,7 @@ export const RowSpanBasic: Story = {
 
 // Colspan: строки-заголовки секций, первая колонка спанит всю ширину.
 export const Colspan: Story = {
-  name: 'Colspan (заголовок секции на всю ширину)',
+  name: 'mergedCellsRegions: заголовок секции на всю ширину',
   render: () => {
     type MRow = {
       id: number;
@@ -254,6 +256,8 @@ export const Colspan: Story = {
             <Canvas.Text color={theme.textDark}>{row.label}</Canvas.Text>
           </Canvas.Container>
         ),
+        // У canvas-колонок превью по умолчанию выключено — включаем явно.
+        renderCellPreview: 'cellEditorAsPreview',
       },
       {
         key: 'a',
@@ -278,6 +282,9 @@ export const Colspan: Story = {
           Редактирование/протяжка/копирование включены — проверяем
           overlay-редактор и перенос на merged.
         </p>
+        <pre style={{ fontSize: 12, color: '#666', marginBottom: 8 }}>
+          mergedCellsRegions = {JSON.stringify(regions)}
+        </pre>
         <TableCanvas
           tableConfig={{
             containerStyle: { height: '520px' },
@@ -305,7 +312,7 @@ export const Colspan: Story = {
 
 // Прямоугольный блок cols×rows через controlled-список mergeCells.mergedCellsRegions.
 export const Rectangular: Story = {
-  name: 'Прямоугольный блок (regions)',
+  name: 'mergedCellsRegions: прямоугольный блок',
   render: () => {
     type MRow = { id: number; a: string; b: string; c: string; d: string };
     const initialRows: MRow[] = Array.from({ length: 10 }, (_, i) => ({
@@ -323,6 +330,7 @@ export const Rectangular: Story = {
     // Блок 2×3: колонки A,B × строки 2..4 (rowInd 1..3, id 2..4). Задаётся
     // controlled-списком mergeCells.mergedCellsRegions (id строк + ключи колонок).
     const inBlock = (rowInd: number) => rowInd >= 1 && rowInd <= 3;
+    const regions = [{ rowKeys: [2, 3, 4], colKeys: ['a', 'b'] }];
 
     const columns: readonly ColumnConfig<MRow>[] = [
       {
@@ -341,6 +349,8 @@ export const Rectangular: Story = {
             </Canvas.Text>
           </Canvas.Container>
         ),
+        // У canvas-колонок превью по умолчанию выключено — включаем явно.
+        renderCellPreview: 'cellEditorAsPreview',
       },
       {
         key: 'b',
@@ -370,13 +380,16 @@ export const Rectangular: Story = {
           колонок A,B). Редактирование/протяжка/копирование включены — проверяем
           overlay на блоке и перенос.
         </p>
+        <pre style={{ fontSize: 12, color: '#666', marginBottom: 8 }}>
+          mergedCellsRegions = {JSON.stringify(regions)}
+        </pre>
         <TableCanvas
           tableConfig={{
             containerStyle: { height: '520px' },
             rowMarkers: { startIndex: 1 },
             columnsControl: { enable: true },
             mergeCells: {
-              mergedCellsRegions: [{ rowKeys: [2, 3, 4], colKeys: ['a', 'b'] }],
+              mergedCellsRegions: regions,
               rowKeyGetter: (r) => r.id,
             },
             cellsSelection: { mode: 'range-cell', enableColumnSelection: true },
@@ -595,7 +608,7 @@ export const SpanByWithEditing: Story = {
 type CtlRegion = MergedCellsRegion;
 
 export const ControlledSpans: Story = {
-  name: 'Controlled-список: внешнее управление merge (кнопки)',
+  name: 'mergedCellsRegions: внешнее управление (кнопки)',
   render: () => {
     type CRow = {
       id: number;
@@ -688,7 +701,7 @@ export const ControlledSpans: Story = {
           </button>
         </div>
         <pre style={{ fontSize: 12, color: '#666', marginBottom: 8 }}>
-          regions = {JSON.stringify(regions)}
+          mergedCellsRegions = {JSON.stringify(regions)}
         </pre>
         <TableCanvas
           tableConfig={{

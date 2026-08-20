@@ -266,6 +266,8 @@ export const FormatFromOrigin: Story = {
           </Canvas.Container>
         ),
         copyData: (row) => row.role,
+        // У canvas-колонок превью по умолчанию выключено — включаем явно.
+        renderCellPreview: 'cellEditorAsPreview',
       },
       { key: 'person', name: 'Сотрудник', width: 170 },
       {
@@ -309,6 +311,9 @@ export const FormatFromOrigin: Story = {
             Очистить
           </button>
         </div>
+        <pre style={{ fontSize: 12, color: '#666', marginBottom: 8 }}>
+          mergedCellsRegions = {JSON.stringify(regions)}
+        </pre>
         <TableCanvas
           tableConfig={{
             containerStyle: { height: '520px' },
@@ -580,6 +585,10 @@ export const FullKitchenSink: Story = {
             Очистить регионы
           </button>
         </div>
+        <pre style={{ fontSize: 12, color: '#666', marginBottom: 8 }}>
+          mergedCellsRegions = {JSON.stringify(regions)} | mergeByCellValues =
+          [&quot;dept&quot;, &quot;role&quot;, &quot;rate&quot;]
+        </pre>
         <TableCanvas
           tableConfig={{
             containerStyle: { height: '640px' },
