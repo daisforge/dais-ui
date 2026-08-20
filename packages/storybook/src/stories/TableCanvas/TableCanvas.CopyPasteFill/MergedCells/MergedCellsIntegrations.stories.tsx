@@ -893,6 +893,7 @@ export const RowsGroupingMerged: Story = {
     const [sort, setSort] = useState<readonly SortColumn[]>([]);
     const filteringState = useState<{ dept: string }>({ dept: 'Все' });
     const [view, setView] = useState<'tree' | 'merged'>('merged');
+    const [noGroupSort, setNoGroupSort] = useState(true);
     const savedRef = useRef<ERow[]>([]);
 
     // Редактирование правит плоские строки по id; группировка пересобирается сама.
@@ -983,6 +984,13 @@ export const RowsGroupingMerged: Story = {
           >
             Вид: {view}
           </button>
+          <button
+            type="button"
+            style={btnStyle}
+            onClick={() => setNoGroupSort((v) => !v)}
+          >
+            Сортировка групп-колонок: {noGroupSort ? 'выкл' : 'вкл'}
+          </button>
           <span style={{ ...hintStyle, marginBottom: 0 }}>
             Выбрано строк: <b>{selected.size}</b>
           </span>
@@ -997,6 +1005,7 @@ export const RowsGroupingMerged: Story = {
               groupByState,
               rowKeyGetter: (r) => r.id,
               view,
+              disableGroupColumnsSort: noGroupSort,
             },
             searching: { enabled: true, showSearchBlock: true },
             sorting: { state: [sort, setSort] },

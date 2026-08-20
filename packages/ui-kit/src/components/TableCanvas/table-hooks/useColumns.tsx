@@ -273,8 +273,19 @@ export const useColumns = <
         tableConfigSubRows &&
         getHasArrow(el.subRow?.isColumnWithArrow, keyText);
 
+      // Merged-вид группировки: по группирующим колонкам сортировать нельзя
+      // (как в tree — там они убраны из сортируемых). Опционально, по пропу.
+      // Для шапки колонку показываем БЕЗ sortingType, чтобы не рисовалась стрелка.
+      const stripGroupColumnSort =
+        rowsGroupingMergedView &&
+        !!tableConfig.rowsGrouping?.disableGroupColumnsSort &&
+        !!groupedCols?.includes(el.key);
+      const elHeader = stripGroupColumnSort
+        ? { ...el, sortingType: undefined }
+        : el;
+
       const isHaveFiltering = !!el.filtering;
-      const isHaveSorting = !!el.sortingType;
+      const isHaveSorting = !stripGroupColumnSort && !!el.sortingType;
 
       const editable: ColumnX['editable'] = (row) => {
         if (isServiceEditableColumn(el)) {
@@ -344,7 +355,7 @@ export const useColumns = <
             !columnIsPinned &&
             !subRowIsActiveAndColumnWithArrow) ||
           (!el.filtering &&
-            !el.sortingType &&
+            !elHeader.sortingType &&
             !reorderInHeaderIsActive &&
             !columnIsPinned &&
             !subRowIsActiveAndColumnWithArrow)
@@ -375,7 +386,7 @@ export const useColumns = <
 
         renderHeaderCell = (p) =>
           renderFilterSortHeader({
-            columnConfig: el,
+            columnConfig: elHeader,
             tableConfigSorting,
             tableConfigFiltering,
             columnIsPinned,
@@ -535,6 +546,9 @@ export const useColumns = <
 
       return {
         ...el,
+        // useSortedRows фильтрует по sortingType — снимаем его у группирующих
+        // колонок, чтобы merged-вид не сортировался по ним (как tree).
+        ...(stripGroupColumnSort && { sortingType: undefined }),
         contentAlign: getAlignment(el.contentFormat),
         renderHeaderCell,
         columnThemeOverride,
@@ -586,6 +600,7 @@ export const useColumns = <
     tableConfigRowDetailBoolean,
     tableConfigRowsGroupingBoolean,
     rowsGroupingMergedView,
+    tableConfig.rowsGrouping?.disableGroupColumnsSort,
     reorderInHeaderIsActive,
     groupedCols,
     pinnedCols,

@@ -36,6 +36,13 @@ export type RowsGrouping<
    */
   view?: 'tree' | 'merged';
   /**
+   * Только для `view: 'merged'`. Снять сортировку с колонок, по которым идёт
+   * группировка (как в tree-виде: там сгруппированные колонки не сортируются).
+   * По группирующим колонкам сортировать нельзя, по листовым — можно.
+   * @default false
+   */
+  disableGroupColumnsSort?: boolean;
+  /**
    * Функция определения уникального id строки
    */
   rowKeyGetter: (row: RowType) => string | number;
