@@ -115,7 +115,10 @@ export function TableCanvas<
   > | null>(null);
 
   // ------------------------------------------------  preparing TableConfig ------------------------------------------------
-  const { tableConfig } = usePrepareTableConfig({ tableConfigExternal });
+  const { tableConfig } = usePrepareTableConfig({
+    tableConfigExternal,
+    flattenedRowsRef,
+  });
   // ------------------------------------------------  get last lvl of columnConfig ------------------------------------------------
   const columnConfigWithGroupsInfo = useLastLvlColumnConfig(
     colsOrGroupColsConfig,

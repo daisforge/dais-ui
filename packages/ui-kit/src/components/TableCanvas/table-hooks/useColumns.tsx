@@ -31,6 +31,11 @@ import {
   KEY_GROUPED_COL,
 } from '../feature-rows-grouping';
 import {
+  createGroupPathValue,
+  createTopGroupOrdinalGetter,
+  isMergedGroupingView,
+} from '../feature-rows-grouping/mergedView';
+import {
   CHECKBOX_COLUMN_KEY,
   createCheckboxColumn,
 } from '../feature-select-row';
@@ -146,6 +151,12 @@ export const useColumns = <
   const tableConfigRowDetailBoolean = false; // !!tableConfig.rowDetailPanel;
 
   const groupedCols = (tableConfig.rowsGrouping ?? {})?.groupByState?.[0];
+  // Вид 'merged' группировки: блоки уровней рисует внутренний merge по
+  // составному ключу пути, колонки групп остаются на своих местах.
+  const rowsGroupingMergedView = isMergedGroupingView(
+    tableConfig.rowsGrouping,
+    groupedCols,
+  );
   // Создание колонки с нумерацией строк
   const rowMarkersIsActive = !!tableConfig?.rowMarkers;
 
@@ -160,6 +171,7 @@ export const useColumns = <
       tableConfigGroupedColumnProps:
         tableConfig.rowsGrouping?.groupedColumnProps,
       pinnedCols,
+      mergedView: rowsGroupingMergedView,
     });
 
     const checkboxColumn = selectingRowsIsActive
@@ -175,7 +187,13 @@ export const useColumns = <
           size: tableConfig.rowMarkers?.size,
           rowsRef,
           rowSize,
-          getRowMarker: tableConfig.rowMarkers?.getRowMarker,
+          // Merged-вид группировки: дефолтная нумерация — номер группы
+          // верхнего уровня (пользовательский getRowMarker важнее).
+          getRowMarker:
+            tableConfig.rowMarkers?.getRowMarker ??
+            (rowsGroupingMergedView && groupedCols
+              ? createTopGroupOrdinalGetter(groupedCols[0] as string, rowsRef)
+              : undefined),
           allRowsMapRef,
           rowKeyGetter: tableConfig.subRows?.rowKeyGetter,
         }) as ColumnX)
@@ -209,6 +227,21 @@ export const useColumns = <
         mergeByValue.set(item.colKey, item.value);
       }
     });
+
+    // Merged-вид группировки: каждый уровень сливается по составному ключу
+    // ПУТИ (блок роли рвётся на границе отдела), сервисные колонки (нумерация,
+    // чекбокс) — по верхнему уровню. Записи фичи важнее пользовательских.
+    if (rowsGroupingMergedView && groupedCols) {
+      groupedCols.forEach((colKey, depth) => {
+        mergeByValue.set(
+          colKey,
+          createGroupPathValue<RowType>(groupedCols, depth),
+        );
+      });
+      const topValue = createGroupPathValue<RowType>(groupedCols, 0);
+      mergeByValue.set(ROW_MARKER_COLUMN_KEY, topValue);
+      mergeByValue.set(CHECKBOX_COLUMN_KEY, topValue);
+    }
 
     // mergeCells.mergedCellsRegions: controlled-список структурных объединений
     // (ключи строк + колонок). Резолвер синтезирует colSpan/rowSpan, читая финальный
@@ -552,6 +585,7 @@ export const useColumns = <
     tableConfigSorting,
     tableConfigRowDetailBoolean,
     tableConfigRowsGroupingBoolean,
+    rowsGroupingMergedView,
     reorderInHeaderIsActive,
     groupedCols,
     pinnedCols,

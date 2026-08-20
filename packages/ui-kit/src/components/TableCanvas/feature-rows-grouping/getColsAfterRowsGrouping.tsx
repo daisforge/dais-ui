@@ -12,6 +12,7 @@ export function getColsAfterRowsGrouping<
   columnConfig,
   tableConfigGroupedColumnProps,
   pinnedCols,
+  mergedView,
 }: {
   rowsGroupingIsActiveInConfig: boolean;
   groupByArr: string[];
@@ -21,8 +22,15 @@ export function getColsAfterRowsGrouping<
     SummaryRowType
   >['groupedColumnProps'];
   pinnedCols: string[];
+  /** Вид 'merged': колонки не трогаем — блоки рисует внутренний merge. */
+  mergedView?: boolean;
 }) {
-  if (!rowsGroupingIsActiveInConfig || !groupByArr || groupByArr.length === 0) {
+  if (
+    !rowsGroupingIsActiveInConfig ||
+    !groupByArr ||
+    groupByArr.length === 0 ||
+    mergedView
+  ) {
     return columnConfig;
   }
   const { renderCell, rowsGrouping, ...restTableConfigGroupedColumnProps } =

@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 
 import { ObjectForExtending, TableConfig } from '../types';
 import { groupsToArr, rowGrouper } from './data-handlers';
+import { flattenRowsByGroups } from './mergedView';
 import { GroupRowsOrRows } from './types';
 
 export function useGroupedRows<
@@ -40,6 +41,13 @@ export function useGroupedRows<
       groupByArr.length === 0
     ) {
       return [rows, rows.length];
+    }
+
+    // Вид 'merged': дерево GroupRow не строим — возвращаем плоские листья в
+    // групповом порядке (блоки уровней рисует внутренний merge, см. useColumns).
+    if (rowsGrouping.view === 'merged') {
+      const flat = flattenRowsByGroups(rows, groupByArr);
+      return [flat, flat.length];
     }
 
     type ReturnRows = Readonly<GroupRowsOrRows<RowType>>;
@@ -91,7 +99,7 @@ export function useGroupedRows<
 
     return groupRows(rows, groupByArr, 0, '');
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [groupByArr, rows, rowsGroupingIsActiveInConfig]);
+  }, [groupByArr, rows, rowsGroupingIsActiveInConfig, rowsGrouping?.view]);
 
   return {
     groupedRows,

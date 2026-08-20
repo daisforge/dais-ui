@@ -875,3 +875,72 @@ export const GroupedFlatView: Story = {
     );
   },
 };
+
+// ---------------------------------------------------------------------------
+// НАСТОЯЩИЙ API: rowsGrouping view='merged'. Потребитель отдаёт ПЛОСКИЕ строки и
+// groupByState (как для дерева), только выбирает вид. Регионы, слияние сервисных
+// колонок, нумерацию групп и групповой чекбокс делает сама фича — в стори НЕТ
+// ручной разметки регионов.
+export const RowsGroupingMerged: Story = {
+  name: 'rowsGrouping view=merged (нативный API)',
+  render: () => {
+    const rows = useMemo(() => buildRows(3), []); // плоские строки
+    const groupByState = useState<string[]>(['dept', 'role']);
+    const selectingState = useState(
+      (): ReadonlySet<string | number> => new Set(),
+    );
+    const [selected] = selectingState;
+    const [view, setView] = useState<'tree' | 'merged'>('merged');
+
+    const columns: readonly ColumnConfig<ERow>[] = [
+      { key: 'dept', name: 'Отдел', width: 150 },
+      { key: 'role', name: 'Роль', width: 160 },
+      { key: 'person', name: 'Сотрудник', width: 180 },
+      { key: 'plan', name: 'План', width: 120, contentFormat: 'number' },
+      { key: 'fact', name: 'Факт', width: 120, contentFormat: 'number' },
+    ];
+
+    return (
+      <div>
+        <p style={hintStyle}>
+          Группировка по отделу и роли через <code>rowsGrouping</code>, но вид —{' '}
+          <code>view: &apos;merged&apos;</code>: то же дерево, отрисованное
+          плоско объединёнными ячейками вместо шевронов. Потребитель отдаёт
+          плоские строки и groupByState; регионы/нумерацию групп/групповой
+          чекбокс делает фича. Переключи вид на «tree» для сравнения.
+        </p>
+        <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
+          <button
+            type="button"
+            style={btnStyle}
+            onClick={() => setView((v) => (v === 'merged' ? 'tree' : 'merged'))}
+          >
+            Вид: {view}
+          </button>
+          <span style={{ ...hintStyle, marginBottom: 0 }}>
+            Выбрано строк: <b>{selected.size}</b>
+          </span>
+        </div>
+        <TableCanvas
+          tableConfig={{
+            containerStyle: { height: '620px' },
+            rowMarkers: { startIndex: 1 },
+            columnsControl: { enable: true },
+            rowsGrouping: {
+              groupByState,
+              rowKeyGetter: (r) => r.id,
+              view,
+            },
+            selecting: {
+              state: selectingState,
+              rowKeyGetter: (r) => r.id,
+            },
+            cellsSelection: { mode: 'range-cell' },
+          }}
+          columnConfig={columns}
+          rows={rows}
+        />
+      </div>
+    );
+  },
+};
