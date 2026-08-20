@@ -892,10 +892,27 @@ export const RowsGroupingMerged: Story = {
     const [selected] = selectingState;
     const [view, setView] = useState<'tree' | 'merged'>('merged');
 
+    // rowsGrouping на колонке помечает её как доступную для группировки —
+    // так она появляется в дропдауне «Группировать» в контрол-блоке.
     const columns: readonly ColumnConfig<ERow>[] = [
-      { key: 'dept', name: 'Отдел', width: 150 },
-      { key: 'role', name: 'Роль', width: 160 },
-      { key: 'person', name: 'Сотрудник', width: 180 },
+      {
+        key: 'dept',
+        name: 'Отдел',
+        width: 150,
+        rowsGrouping: { columnGroupLabel: 'Отдел' },
+      },
+      {
+        key: 'role',
+        name: 'Роль',
+        width: 160,
+        rowsGrouping: { columnGroupLabel: 'Роль' },
+      },
+      {
+        key: 'person',
+        name: 'Сотрудник',
+        width: 180,
+        rowsGrouping: { columnGroupLabel: 'Сотрудник' },
+      },
       { key: 'plan', name: 'План', width: 120, contentFormat: 'number' },
       { key: 'fact', name: 'Факт', width: 120, contentFormat: 'number' },
     ];
