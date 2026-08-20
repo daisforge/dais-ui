@@ -602,7 +602,7 @@ export const FullKitchenSink: Story = {
             columnsControl: { enable: true },
             columnsGrouping: { squashEmptyCells: true },
             mergeCells: {
-              mergeByCellValues: ['dept', 'rate', 'plan'],
+              mergeByCellValues: ['dept', 'role', 'rate', 'plan'],
               mergedCellsRegions: regions,
               rowKeyGetter: (r) => r.id,
             },
@@ -696,6 +696,165 @@ export const FullKitchenSink: Story = {
           }}
           columnConfig={columnConfig}
           rows={pageRows}
+        />
+      </div>
+    );
+  },
+};
+
+// ---------------------------------------------------------------------------
+// ПРОТОТИП: группировка как плоский вид. Дерево групп приходит извне (как в
+// tree-виде rowsGrouping), стори раскладывает его в плоские строки и генерирует
+// mergedCellsRegions из УЗЛОВ дерева: регион = группа (у него есть identity —
+// ключи строк). В отличие от merge по значению, блок дочернего уровня НЕ
+// сливается через границу родителя (у «Разработчика» из отделов A и B разные
+// регионы). Сливаются и сервисные колонки: нумерация показывает НОМЕР ГРУППЫ
+// верхнего уровня, чекбокс-колонка слита по отделу (визуально; нативный
+// групповой тоггл — доработка фичи, пока группу выделяет клик по блоку отдела).
+export const GroupedFlatView: Story = {
+  name: 'Группировка как плоский вид (прототип)',
+  render: () => {
+    type GRow = {
+      id: number;
+      dept: string;
+      role: string;
+      person: string;
+      rate: number;
+      plan: number;
+    };
+
+    // Вход — дерево групп, как его отдаёт потребитель (или бэк).
+    const TREE = useMemo(
+      () => [
+        {
+          dept: 'Отдел A',
+          roles: [
+            { role: 'Аналитик', people: ['Иванов', 'Петров', 'Сидоров'] },
+            { role: 'Разработчик', people: ['Козлов', 'Новиков'] },
+          ],
+        },
+        {
+          dept: 'Отдел B',
+          roles: [
+            { role: 'Разработчик', people: ['Смирнов', 'Волков', 'Зайцев'] },
+            { role: 'Тестировщик', people: ['Морозов', 'Павлов'] },
+          ],
+        },
+        {
+          dept: 'Отдел C',
+          roles: [{ role: 'Менеджер', people: ['Фёдоров', 'Егоров'] }],
+        },
+      ],
+      [],
+    );
+
+    // Раскладка дерева в плоские строки + регионы из узлов + номера групп.
+    const { rows, regions, deptOrdinal, deptRowKeys } = useMemo(() => {
+      const flat: GRow[] = [];
+      const regionList: MergedCellsRegion[] = [];
+      const ordinal = new Map<number, number>();
+      const byDept = new Map<string, number[]>();
+      let id = 1;
+      TREE.forEach((deptNode, deptIdx) => {
+        const deptKeys: number[] = [];
+        for (const roleNode of deptNode.roles) {
+          const roleKeys: number[] = [];
+          for (const person of roleNode.people) {
+            flat.push({
+              id,
+              dept: deptNode.dept,
+              role: roleNode.role,
+              person,
+              rate: RATES[roleNode.role] ?? 0,
+              plan: (id % 5) * 1000 + 500,
+            });
+            ordinal.set(id, deptIdx + 1);
+            deptKeys.push(id);
+            roleKeys.push(id);
+            id += 1;
+          }
+          // Регион группы РОЛИ: только своя колонка, в рамках родителя.
+          regionList.push({ rowKeys: roleKeys, colKeys: ['role'] });
+          regionList.push({ rowKeys: roleKeys, colKeys: ['rate'] });
+        }
+        // Регионы группы ОТДЕЛА: data-колонка + сервисные (нумерация, чекбокс).
+        regionList.push({ rowKeys: deptKeys, colKeys: ['dept'] });
+        regionList.push({ rowKeys: deptKeys, colKeys: ['row-markers'] });
+        regionList.push({ rowKeys: deptKeys, colKeys: ['checkbox-row'] });
+        byDept.set(deptNode.dept, deptKeys);
+      });
+      return {
+        rows: flat,
+        regions: regionList,
+        deptOrdinal: ordinal,
+        deptRowKeys: byDept,
+      };
+    }, [TREE]);
+
+    const selectingState = useState(
+      (): ReadonlySet<string | number> => new Set(),
+    );
+    const [selected, setSelected] = selectingState;
+
+    const columns: readonly ColumnConfig<GRow>[] = [
+      { key: 'dept', name: 'Отдел', width: 150 },
+      { key: 'role', name: 'Роль', width: 150 },
+      { key: 'person', name: 'Сотрудник', width: 170 },
+      {
+        key: 'rate',
+        name: 'Ставка',
+        width: 130,
+        contentFormat: { type: 'number', minimumFractionDigits: 2 },
+      },
+      { key: 'plan', name: 'План', width: 120, contentFormat: 'number' },
+    ];
+
+    return (
+      <div>
+        <p style={hintStyle}>
+          Дерево групп (отдел, роль) отображается ПЛОСКО через регионы из узлов
+          дерева. «Разработчик» есть в отделах A и B — блоки НЕ сливаются через
+          границу (разные регионы). Нумерация — номер группы верхнего уровня,
+          чекбокс-колонка слита по отделу. Клик по блоку «Отдел» выделяет все
+          строки группы (полоса покрывает группу целиком). Переставь или скрой
+          колонки через шестерёнку — регионы по ключам, ничего не ломается.
+        </p>
+        <p style={{ ...hintStyle, color: '#555' }}>
+          Выбрано строк: <b>{selected.size}</b>
+        </p>
+        <TableCanvas
+          tableConfig={{
+            containerStyle: { height: '640px' },
+            rowMarkers: {
+              startIndex: 1,
+              getRowMarker: ({ row }) => deptOrdinal.get(row.id) ?? '',
+            },
+            columnsControl: { enable: true },
+            mergeCells: {
+              mergedCellsRegions: regions,
+              rowKeyGetter: (r) => r.id,
+            },
+            selecting: {
+              state: selectingState,
+              rowKeyGetter: (r) => r.id,
+            },
+            cellsSelection: { mode: 'range-cell' },
+            onCellClicked: (_cell, info) => {
+              // Групповой тоггл: клик по слитому блоку отдела выделяет/снимает
+              // ВСЕ строки группы (identity региона = ключи строк группы).
+              if (!('row' in info) || info.column.key !== 'dept') return;
+              const keys = deptRowKeys.get(info.row.dept);
+              if (!keys) return;
+              setSelected((prev) => {
+                const next = new Set(prev);
+                const allIn = keys.every((k) => next.has(k));
+                keys.forEach((k) => (allIn ? next.delete(k) : next.add(k)));
+                return next;
+              });
+            },
+          }}
+          columnConfig={columns}
+          rows={rows}
         />
       </div>
     );
