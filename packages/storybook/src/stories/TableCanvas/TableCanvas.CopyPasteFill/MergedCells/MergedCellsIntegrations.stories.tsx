@@ -17,7 +17,7 @@ import {
 
 const meta: Meta = {
   title:
-    'Локальные компоненты/TableCanvas/Copy-Paste-Fill/Объединение ячеек: интеграции',
+    'Локальные компоненты/TableCanvas/Copy-Paste-Fill/Объединение ячеек/Интеграции',
   tags: ['!autodocs'],
 };
 

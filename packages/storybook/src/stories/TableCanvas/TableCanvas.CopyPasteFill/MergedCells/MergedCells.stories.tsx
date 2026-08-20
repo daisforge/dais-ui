@@ -12,7 +12,8 @@ import {
 import { type CSSProperties, useMemo, useRef, useState } from 'react';
 
 const meta: Meta = {
-  title: 'Локальные компоненты/TableCanvas/Copy-Paste-Fill/Объединение ячеек',
+  title:
+    'Локальные компоненты/TableCanvas/Copy-Paste-Fill/Объединение ячеек/Базовые',
   tags: ['!autodocs'],
 };
 
