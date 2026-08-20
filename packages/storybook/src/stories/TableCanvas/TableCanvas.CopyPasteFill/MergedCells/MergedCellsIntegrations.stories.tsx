@@ -560,11 +560,14 @@ export const FullKitchenSink: Story = {
           контекстное меню ячеек. Правый клик по ЛЮБОЙ ячейке слитого блока
           показывает в пунктах строку/колонку ORIGIN (форк нормализует клик).
           «Ставка» — числовая объединяемая колонка: формат числа берётся из
-          origin-ячейки блока; правка значения пересобирает блоки. Нюанс
-          контракта: при активной пагинации ВСТРОЕННЫЕ поиск/фильтры/сортировка
-          отключены (серверный режим) — стори эмулирует сервер (manualSearching
-          / manualFiltering / manualSorting) и отдаёт срез страницы. Регион
-          задан ключами строк 1-3: виден только на странице 1.
+          origin-ячейки блока; правка значения пересобирает блоки. «План» тоже в
+          mergeByCellValues: без сортировки одинаковые значения не соседствуют и
+          блоков нет, а сортировка по «План» собирает их в блоки — merge следует
+          за данными. Нюанс контракта: при активной пагинации ВСТРОЕННЫЕ
+          поиск/фильтры/сортировка отключены (серверный режим) — стори эмулирует
+          сервер (manualSearching / manualFiltering / manualSorting) и отдаёт
+          срез страницы. Регион задан ключами строк 1-3: виден только на
+          странице 1.
         </p>
         {lastMenuPick && (
           <p style={{ ...hintStyle, color: '#555' }}>
@@ -587,7 +590,8 @@ export const FullKitchenSink: Story = {
         </div>
         <pre style={{ fontSize: 12, color: '#666', marginBottom: 8 }}>
           mergedCellsRegions = {JSON.stringify(regions)} | mergeByCellValues =
-          [&quot;dept&quot;, &quot;role&quot;, &quot;rate&quot;]
+          [&quot;dept&quot;, &quot;role&quot;, &quot;rate&quot;,
+          &quot;plan&quot;]
         </pre>
         <TableCanvas
           tableConfig={{
@@ -598,7 +602,7 @@ export const FullKitchenSink: Story = {
             columnsControl: { enable: true },
             columnsGrouping: { squashEmptyCells: true },
             mergeCells: {
-              mergeByCellValues: ['dept', 'role', 'rate'],
+              mergeByCellValues: ['dept', 'rate', 'plan'],
               mergedCellsRegions: regions,
               rowKeyGetter: (r) => r.id,
             },
