@@ -4,19 +4,21 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "lint": "nx run-many --target=lint --debug --verbose",
-    "fix:lint": "nx run-many --target=lint --fix --verbose",
-    "typecheck": "nx run-many --target=typecheck --verbose",
-    "test": "nx run-many --target=test --verbose",
-    "build": "NODE_OPTIONS=\"--max_old_space_size=4096\" NODE_ENV=production nx run-many --target=build --verbose",
-    "postbuild": "npm run storybook:build",
+    "inst": "rm -rf node_modules && npm cache clean --force && npm i --ignore-scripts --verbose",
+    "ci": "rm -rf node_modules && npm cache clean --force && npm ci --ignore-scripts --verbose",
+    "lint": "nx reset && nx run-many --target=lint --debug --verbose",
+    "fix:lint": "nx reset && nx run-many --target=lint --fix --verbose",
+    "typecheck": "nx reset && nx run-many --target=typecheck --verbose",
+    "test": "nx reset && nx run-many --target=test --verbose",
+    "build": "nx reset && NODE_OPTIONS=\"--max_old_space_size=4096\" NODE_ENV=production nx run-many --target=build --verbose",
+    "postbuild": "nx reset && npm run storybook:build",
     "update": "npm run ui-kit:update && npm install -d @salutejs/plasma-icons@x.x.0 @salutejs/plasma-typo@x.x.0 @salutejs/sdds-finai@x.x.0 @salutejs/sdds-themes@x.x.0 && npm run clean-after-update && npm run ui-kit:generate-tokens",
     "clean-after-update": "npm run ui-kit:delete-after-update && node ./scripts/clean--root--package-lock.js",
     "prestorybook": "npm run generate-storybook-docs-utils",
     "storybook": "nx storybook storybook",
     "storybook-docs": "nx storybook storybook dev --docs",
     "prestorybook:build": "npm run prestorybook",
-    "storybook:build": "NODE_OPTIONS=\"--max_old_space_size=4096\" nx build-storybook storybook",
+    "storybook:build": "nx reset && NODE_OPTIONS=\"--max_old_space_size=4096\" nx build-storybook storybook",
     "ui-kit:circular-check": "npx madge --circular --extensions ts,tsx --ts-config packages/ui-kit/tsconfig.json packages/ui-kit/src",
     "ui-kit:generate-tokens": "node ./generators/generate-ui-kit-tokens-named-exports.js",
     "ui-kit:update": "npm install --prefix ./packages/ui-kit -d @salutejs/plasma-icons@x.x.0 @salutejs/plasma-typo@x.x.0 @salutejs/sdds-finai@x.x.0 @salutejs/sdds-themes@x.x.0 && npm run ui-kit:delete-after-update",
@@ -165,7 +167,8 @@
     "@joshwooding/vite-plugin-react-docgen-typescript": "0.3.0",
     "js-yaml": "4.1.0",
     "@salutejs/plasma-new-hope": "0.370.0",
-    "react-number-format": "5.4.5"
+    "react-number-format": "5.4.5",
+    "rollup": "4.62.2"
   },
   "workspaces": [
     "packages/ui-kit"

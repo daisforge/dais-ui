@@ -6,6 +6,17 @@
   "tags": [],
   "targets": {
     "build": {
+      "executor": "nx:run-commands",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/ui-kit",
+        "commands": ["npx nx reset", "npx nx run ui-kit:build-lib --skip-nx-cache"],
+        "parallel": false,
+        "forwardAllArgs": false,
+        "description": "Полный сброс кэша nx, затем сборка библиотеки"
+      }
+    },
+    "build-lib": {
       "executor": "@nx/vite:build",
       "outputs": ["{options.outputPath}"],
       "options": {
