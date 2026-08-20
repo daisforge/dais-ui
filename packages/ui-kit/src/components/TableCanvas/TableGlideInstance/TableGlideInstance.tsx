@@ -16,6 +16,8 @@ import {
   useHeaderContext,
   useRowContext,
 } from '../contexts';
+import type { TransferColumnConfig } from '../feature-cell-transfer/types';
+import { resolveBlock } from '../feature-cell-transfer/utils/resolveBlockOrigin';
 import { TableContentStateOverlay } from '../feature-content-state';
 import { useRowDetailHandlerContext } from '../feature-row-detail/ctx';
 import { useSelectingRowContext } from '../feature-select-row/selecting-contexts';
@@ -250,6 +252,37 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
 
           /* row должен быть extends ObjectForExtending */
           if (typeof newRow !== 'object') {
+            return acc;
+          }
+
+          // Правка ячейки слитого блока пишет значение во ВСЕ ячейки блока
+          // (паритет с paste/fill): блок остаётся блоком, данные под ним
+          // совпадают с экраном. Одиночная ячейка идёт обычным путём.
+          // resolveBlock читает только key/colSpan/rowSpan; несовместимость
+          // типов только в дженерике строки (R vs ObjectForExtending).
+          const block = resolveBlock(
+            colInd,
+            rowInd,
+            columnsInGlideOrder as unknown as readonly TransferColumnConfig[],
+            rows,
+          );
+          if (block) {
+            const editedValue = (newRow as ObjectForExtending)[column.key];
+            for (let ri = block.startRow; ri <= block.endRow; ri += 1) {
+              const base =
+                ri === rowInd ? (newRow as R) : acc.changedAllRows[ri];
+              if (base) {
+                const updated: ObjectForExtending = { ...base };
+                for (let ci = block.startCol; ci <= block.endCol; ci += 1) {
+                  const key = columnsInGlideOrder[ci]?.key;
+                  if (key !== undefined) {
+                    updated[key] = editedValue;
+                  }
+                }
+                acc.indexes.push(ri);
+                acc.changedAllRows.splice(ri, 1, updated as R);
+              }
+            }
             return acc;
           }
 
