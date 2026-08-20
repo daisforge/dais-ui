@@ -882,15 +882,24 @@ export const GroupedFlatView: Story = {
 // колонок, нумерацию групп и групповой чекбокс делает сама фича — в стори НЕТ
 // ручной разметки регионов.
 export const RowsGroupingMerged: Story = {
-  name: 'rowsGrouping view=merged (нативный API)',
+  name: 'rowsGrouping view=merged (всё вместе)',
   render: () => {
-    const rows = useMemo(() => buildRows(3), []); // плоские строки
+    const [rows, setRows] = useState<ERow[]>(() => buildRows(3)); // плоские строки
     const groupByState = useState<string[]>(['dept', 'role']);
     const selectingState = useState(
       (): ReadonlySet<string | number> => new Set(),
     );
     const [selected] = selectingState;
+    const [sort, setSort] = useState<readonly SortColumn[]>([]);
+    const filteringState = useState<{ dept: string }>({ dept: 'Все' });
     const [view, setView] = useState<'tree' | 'merged'>('merged');
+    const savedRef = useRef<ERow[]>([]);
+
+    // Редактирование правит плоские строки по id; группировка пересобирается сама.
+    const handleRowsChange = useCallback((next: ERow[]) => {
+      const byId = new Map(next.map((r) => [r.id, r]));
+      setRows((prev) => prev.map((r) => byId.get(r.id) ?? r));
+    }, []);
 
     // rowsGrouping на колонке помечает её как доступную для группировки —
     // так она появляется в дропдауне «Группировать» в контрол-блоке.
@@ -899,32 +908,72 @@ export const RowsGroupingMerged: Story = {
         key: 'dept',
         name: 'Отдел',
         width: 150,
+        sortingType: 'stringSort',
         rowsGrouping: { columnGroupLabel: 'Отдел' },
+        filtering: {
+          component: 'select',
+          keyInFilterState: 'dept',
+          valueInRow: (r) => r.dept,
+          selectOptions: {
+            type: 'constant',
+            options: [
+              { value: 'Все', text: 'Все' },
+              ...DEPTS.map((d) => ({ value: d.dept, text: d.dept })),
+            ],
+          },
+          filter: {
+            typeOfValue: 'single',
+            filteringType: (fv, rv) => fv === 'Все' || rv === fv,
+          },
+        },
       },
       {
         key: 'role',
         name: 'Роль',
         width: 160,
+        sortingType: 'stringSort',
         rowsGrouping: { columnGroupLabel: 'Роль' },
+        editingCell: {
+          component: 'select',
+          options: { type: 'constant', options: ROLE_OPTIONS },
+        },
       },
       {
         key: 'person',
         name: 'Сотрудник',
-        width: 180,
+        width: 190,
         rowsGrouping: { columnGroupLabel: 'Сотрудник' },
+        searching: { valueInRow: (r) => r.person },
+        editingCell: { component: 'inputString' },
       },
-      { key: 'plan', name: 'План', width: 120, contentFormat: 'number' },
-      { key: 'fact', name: 'Факт', width: 120, contentFormat: 'number' },
+      {
+        key: 'plan',
+        name: 'План',
+        width: 120,
+        sortingType: 'numberSort',
+        contentFormat: 'number',
+        editingCell: { component: 'inputNumber' },
+      },
+      {
+        key: 'fact',
+        name: 'Факт',
+        width: 120,
+        sortingType: 'numberSort',
+        contentFormat: 'number',
+        editingCell: { component: 'inputNumber' },
+      },
     ];
 
     return (
       <div>
         <p style={hintStyle}>
-          Группировка по отделу и роли через <code>rowsGrouping</code>, но вид —{' '}
-          <code>view: &apos;merged&apos;</code>: то же дерево, отрисованное
-          плоско объединёнными ячейками вместо шевронов. Потребитель отдаёт
-          плоские строки и groupByState; регионы/нумерацию групп/групповой
-          чекбокс делает фича. Переключи вид на «tree» для сравнения.
+          Группировка отдел→роль через <code>rowsGrouping</code>,{' '}
+          <code>view: &apos;merged&apos;</code>: дерево нарисовано плоско
+          объединёнными ячейками. Всё вместе: поиск по сотруднику, фильтр по
+          отделу, сортировка (клик по шапке), редактирование (роль=select,
+          сотрудник=строка, план/факт=число; «Отменить»/«Сохранить»), чекбокс
+          выделяет группу целиком. Меняй состав группировки через шестерёнку или
+          кнопку «Группировать». Переключи вид на «tree» для сравнения.
         </p>
         <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
           <button
@@ -942,15 +991,50 @@ export const RowsGroupingMerged: Story = {
           tableConfig={{
             containerStyle: { height: '620px' },
             rowMarkers: { startIndex: 1 },
+            rowSize: { default: 'medium', showInControl: true },
             columnsControl: { enable: true },
             rowsGrouping: {
               groupByState,
               rowKeyGetter: (r) => r.id,
               view,
             },
+            searching: { enabled: true, showSearchBlock: true },
+            sorting: { state: [sort, setSort] },
+            filtering: {
+              state: filteringState,
+              filtersInfo: { dept: { label: 'Отдел', clearedValue: 'Все' } },
+            },
             selecting: {
               state: selectingState,
               rowKeyGetter: (r) => r.id,
+            },
+            editing: {
+              onRowsChange: handleRowsChange,
+              rowKeyGetter: (r) => `${r.id}`,
+              onEnableEditing: (enable) => {
+                savedRef.current = rows;
+                enable();
+              },
+              onCancel: (disable) => {
+                setRows(savedRef.current);
+                disable();
+              },
+              onSave: (disable) => {
+                savedRef.current = rows;
+                disable();
+              },
+            },
+            controlBlock: {
+              massActionPanel: {
+                buttons: [
+                  {
+                    type: 'button',
+                    text: `Выбрано: ${selected.size}`,
+                    view: 'secondary',
+                    onClick: () => {},
+                  },
+                ],
+              },
             },
             cellsSelection: { mode: 'range-cell' },
           }}
