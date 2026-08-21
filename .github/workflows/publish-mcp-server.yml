@@ -17,6 +17,11 @@ on:
         required: true
         type: boolean
         default: true
+      publish_alias:
+        description: 'Публиковать также зеркальный (white-label) пакет'
+        required: true
+        type: boolean
+        default: true
   workflow_call:
     inputs:
       bump:
@@ -29,9 +34,22 @@ on:
         required: false
         type: boolean
         default: true
+      publish_alias:
+        description: 'Публиковать также зеркальный (white-label) пакет'
+        required: false
+        type: boolean
+        default: true
     secrets:
       NPM_TOKEN:
         required: true
+      # Не required: без них шаги зеркала просто пропускаются (см. if ниже) —
+      # форк или прогон в репозитории без этих секретов не должен падать.
+      ALT_MCP_PACKAGE_NAME:
+        required: false
+      ALT_LIB_PACKAGE_NAME:
+        required: false
+      ALT_NPM_TOKEN:
+        required: false
 
 permissions:
   contents: write
@@ -84,6 +102,56 @@ jobs:
           git add packages/mcp-server/package.json packages/mcp-server/package-lock.json packages/mcp-server/data/component-index.json
           git commit -m "chore(release-mcp): ui-mcp v${{ steps.version.outputs.version }}"
           git tag -a "ui-mcp-v${{ steps.version.outputs.version }}" -m "ui-mcp v${{ steps.version.outputs.version }}"
+
+      # Зеркальный (white-label) пакет: тот же собранный dist и тот же индекс,
+      # но под другим именем пакета и с другим именем связанной библиотеки.
+      # Имена лежат в секретах, в репозитории их нет — см.
+      # packages/mcp-server/scripts/build-alias-package.mjs.
+      #
+      # Зеркало публикуется ПЕРВЫМ, до основного пакета: это новый путь (новый
+      # scope, отдельный токен, своя история версий), и если он падает, job
+      # обрывается до публикации @daisforge/ui-mcp и до git push — ничего не
+      # опубликовано, ничего не запушено, повтор чистый. В обратном порядке
+      # основной пакет уже уехал бы в npm без коммита и тега в репозитории.
+      #
+      # Флаг считается отдельным шагом, а не прямо в `if`: контекст secrets в
+      # условиях шагов недоступен, проверить «секрет не пуст» можно только
+      # через env внутри run.
+      - name: Resolve alias publish flag
+        id: alias
+        env:
+          ALT_MCP_PACKAGE_NAME: ${{ secrets.ALT_MCP_PACKAGE_NAME }}
+          ALT_LIB_PACKAGE_NAME: ${{ secrets.ALT_LIB_PACKAGE_NAME }}
+          ALT_NPM_TOKEN: ${{ secrets.ALT_NPM_TOKEN }}
+        run: |
+          if [ "${{ inputs.publish_alias }}" != "true" ]; then
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Зеркальный пакет отключён параметром publish_alias."
+          elif [ -z "$ALT_MCP_PACKAGE_NAME" ] || [ -z "$ALT_LIB_PACKAGE_NAME" ] || [ -z "$ALT_NPM_TOKEN" ]; then
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::Секреты ALT_MCP_PACKAGE_NAME / ALT_LIB_PACKAGE_NAME / ALT_NPM_TOKEN заданы не полностью — зеркальный пакет пропущен."
+          else
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build alias package
+        if: steps.alias.outputs.enabled == 'true'
+        run: npm run mcp:alias:stage --prefix packages/mcp-server
+        env:
+          ALT_MCP_PACKAGE_NAME: ${{ secrets.ALT_MCP_PACKAGE_NAME }}
+          ALT_LIB_PACKAGE_NAME: ${{ secrets.ALT_LIB_PACKAGE_NAME }}
+
+      - name: Publish alias package to npm
+        if: steps.alias.outputs.enabled == 'true'
+        working-directory: packages/mcp-server/.alias-package
+        run: |
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            npm publish --access public --dry-run
+          else
+            npm publish --access public
+          fi
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.ALT_NPM_TOKEN }}
 
       - name: Publish to npm
         working-directory: packages/mcp-server
