@@ -75,4 +75,4 @@ node ab/prepare-consumer.mjs --ui-source local                    # пакет �
 
 ## Задачи
 
-`tasks.json` — 20 задач четырёх уровней: `single` (12), `form` (3, react-hook-form + zod + `useFieldArray`), `table` (2, на `TableCanvas`), `composition` (3). Таблицы везде требуются на `TableCanvas` — это рекомендованный библиотекой путь (`CLAUDE.md`), а `Table` помечен `legacy`/`supersededBy` (T9). Поля `hint` и `expect` агенту не показываются.
+`tasks.json` — 21 задача четырёх уровней: `single` (12), `form` (3, react-hook-form + zod + `useFieldArray`), `table` (2, на `TableCanvas`), `composition` (4). Одна из composition-задач, `modal-table-canvas`, взята не из головы, а из реального прогона агента на потребительском проекте: `TableCanvas` внутри `ModalDF` с кастомной отрисовкой ячейки — в том логе агент восстанавливал compound-части `ModalDF` из `relatedExports` и написал `renderCell` наугад, получив ошибку компиляции. Таблицы везде требуются на `TableCanvas` — это рекомендованный библиотекой путь (`CLAUDE.md`), а `Table` помечен `legacy`/`supersededBy` (T9). Поля `hint` и `expect` агенту не показываются.
