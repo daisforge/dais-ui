@@ -103,8 +103,12 @@ export interface FeatureRecord {
 export interface TypeRecord {
   name: string;
   definition: string;
-  importPath: string;
-  importStatement: string;
+  /** Отсутствуют у внутренних типов — их из пакета не импортировать (см. resolveTypeImport). */
+  importPath?: string;
+  importStatement?: string;
+  /** true — тип объявлен в ui-kit, но наружу не экспортирован. */
+  internal?: true;
+  importNotice?: string;
   sourceFile: string;
 }
 

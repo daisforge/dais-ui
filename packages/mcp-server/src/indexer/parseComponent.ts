@@ -145,6 +145,37 @@ export function getCollectedTypeDecls(): CollectedTypeDecl[][] {
  * вызывающий код использует это, чтобы решить, надо ли ещё разворачивать
  * структуру типа (см. collectNamedTypeRefs).
  */
+/**
+ * Общая часть записи символа: возвращает декларацию, если она ВПЕРВЫЕ попала
+ * в индекс, и undefined, если тип не подходит или уже записан. Различать
+ * "записал" и "уже было" нужно транзитивному раскрытию — иначе фронтир
+ * зациклится на взаимно ссылающихся типах (их в TableCanvas достаточно).
+ */
+function recordTypeSymbolIfNew(symbol: TsSymbol): Node | undefined {
+  const decl = symbol.getDeclarations()[0];
+  if (!decl) return undefined;
+  if (
+    !Node.isTypeAliasDeclaration(decl) &&
+    !Node.isInterfaceDeclaration(decl)
+  ) {
+    return undefined;
+  }
+  if (!decl.getSourceFile().getFilePath().includes('/packages/ui-kit/src/')) {
+    return undefined;
+  }
+
+  const name = symbol.getName();
+  const filePath = decl.getSourceFile().getFilePath();
+  const existing = collectedTypeDecls.get(name) ?? [];
+  if (existing.some((e) => e.decl.getSourceFile().getFilePath() === filePath)) {
+    return undefined;
+  }
+
+  existing.push({ name, decl });
+  collectedTypeDecls.set(name, existing);
+  return decl;
+}
+
 function recordTypeSymbol(symbol: TsSymbol): boolean {
   const decl = symbol.getDeclarations()[0];
   if (!decl) return false;
@@ -158,16 +189,70 @@ function recordTypeSymbol(symbol: TsSymbol): boolean {
     return false;
   }
 
-  const name = symbol.getName();
-  const filePath = decl.getSourceFile().getFilePath();
-  const existing = collectedTypeDecls.get(name) ?? [];
-  if (
-    !existing.some((e) => e.decl.getSourceFile().getFilePath() === filePath)
-  ) {
-    existing.push({ name, decl });
-    collectedTypeDecls.set(name, existing);
-  }
+  recordTypeSymbolIfNew(symbol);
   return true;
+}
+
+/**
+ * Раскрывает уже собранные типы вглубь: индексируются не только типы, прямо
+ * названные в пропсах, но и те, на которые ссылаются ИХ определения.
+ *
+ * Зачем: `get_component_props(TableCanvas)` показывает `ColumnConfig`, его
+ * определение агент получает — а дальше упирается в `ContentFormat`,
+ * `CellInfo`, `CellContent`, `ColumnDefaultOmitted`, которых в индексе нет
+ * вовсе. В реальном логе это дало шесть промахов `get_type` подряд, после
+ * чего агент ушёл читать `node_modules` руками — то есть перестал считать
+ * MCP источником правды.
+ *
+ * Идём по AST деклараций (`TypeReference`), а не по вычисленным типам:
+ * ссылки на именованные типы видны в тексте объявления как есть, без
+ * дорогого разворачивания структуры, которое для типов масштаба
+ * `ColumnConfig` стоит секунды на каждый.
+ */
+/**
+ * Декларации типов пропсов (`TableCanvasProps` и т.п.) — вторая точка старта
+ * для транзитивного раскрытия. Сам такой тип в индекс типов не идёт (он
+ * развёрнут в `props[]` записи компонента), но именно в его тексте написаны
+ * ссылки, которые тайпчекер к моменту печати пропса уже потерял: `tableConfig`
+ * печатается развёрнутой структурой, потому что `TableConfig<Row, SummRow>` —
+ * инстанцированный дженерик без alias-символа. Без этой точки старта
+ * `TableConfig`/`ColumnsGroupingConfig` — публичные, экспортированные типы —
+ * в индекс не попадали вовсе.
+ */
+const propsTypeDeclNodes: Node[] = [];
+
+function recordPropsDeclForExpansion(ref: PropsRef | undefined): void {
+  const node = ref?.decl ?? ref?.inlineParamNode;
+  if (node) propsTypeDeclNodes.push(node);
+}
+
+export function expandCollectedTypeRefs(maxDepth: number): void {
+  let frontier: Node[] = [
+    ...getCollectedTypeDecls()
+      .flat()
+      .map((entry) => entry.decl),
+    ...propsTypeDeclNodes,
+  ];
+
+  for (let depth = 0; depth < maxDepth; depth += 1) {
+    const next: Node[] = [];
+
+    frontier.forEach((decl) => {
+      decl
+        .getDescendantsOfKind(SyntaxKind.TypeReference)
+        .forEach((reference) => {
+          const symbol = reference.getTypeName().getSymbol();
+          if (!symbol) return;
+          const added = recordTypeSymbolIfNew(
+            symbol.getAliasedSymbol() ?? symbol,
+          );
+          if (added) next.push(added);
+        });
+    });
+
+    if (next.length === 0) return;
+    frontier = next;
+  }
 }
 
 /**
@@ -991,6 +1076,7 @@ export function parseComponent({
   const propsRef =
     findPropsDeclaration(barrelSourceFile, name) ??
     findPropsDeclFromSignature(mainDecl, name);
+  recordPropsDeclForExpansion(propsRef);
   let propsResolved: ResolvedPropsType = propsRef
     ? resolvePropsType(propsRef, defaultsMap)
     : { props: [] };
