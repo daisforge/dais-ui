@@ -19,7 +19,7 @@ function mswInitialize(): SetupWorker | undefined {
   return initialize(
     {
       serviceWorker: {
-        url: `${impMeta.env?.BASE_URL}mockServiceWorker.js`,
+        url: `${impMeta.env?.BASE_URL ?? '/'}mockServiceWorker.js`,
       },
     },
     initialRoutes,
