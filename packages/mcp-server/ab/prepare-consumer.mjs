@@ -341,9 +341,25 @@ function main() {
     fromNpm ? npmSpec : UI_DIST,
     path.join(SANDBOX, 'node_modules/@daisforge/ui'),
   );
+  const mcpTargetDir = path.join(SANDBOX, 'node_modules/@daisforge/ui-mcp');
   const mcpVersion = packInto(
     mcpFromNpm ? mcpNpmSpec : PKG_DIR,
-    path.join(SANDBOX, 'node_modules/@daisforge/ui-mcp'),
+    mcpTargetDir,
+  );
+  // packInto распаковывает только files из тарбола (dist/data/package.json) —
+  // node_modules пакета в тарбол никогда не попадает (нормальное поведение
+  // npm pack), поэтому собственные dependencies сервера (@modelcontextprotocol/sdk,
+  // zod) без этого шага не резолвятся вовсе. Раньше это маскировалось
+  // хойстингом @modelcontextprotocol/sdk из корневого node_modules монорепо —
+  // после изоляции mcp-server от корневых зависимостей его там больше нет, и
+  // сервер в песочнице падал на ERR_MODULE_NOT_FOUND при каждом запуске
+  // (обнаружено на реальном прогоне A/B: агент честно писал, что MCP-тулы
+  // недоступны — это была не лень модели, а сломанный сервер).
+  console.log('▸ Установка зависимостей сервера в песочнице (npm install)…');
+  run(
+    'npm',
+    ['install', '--omit=dev', '--no-audit', '--no-fund', '--ignore-scripts'],
+    mcpTargetDir,
   );
   console.log(
     `   @daisforge/ui@${uiVersion} (${
