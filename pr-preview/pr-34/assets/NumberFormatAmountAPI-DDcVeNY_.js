@@ -1,0 +1,5 @@
+import{j as t}from"./react-D2T61mpp.js";import{c2 as n,c3 as m}from"./vendor-CU5ziH9B.js";import{T as s}from"./TypeSourceViewer-CA9R_L0n.js";import"./react-is-Clcustum.js";import"./styled-components-C2-iHwga.js";import"./tslib-De9GV7Vy.js";function r(e){const o={a:"a",code:"code",h1:"h1",h2:"h2",p:"p",...n(),...e.components};return t.jsxs(t.Fragment,{children:[t.jsx(m,{title:"Локальные компоненты/NumberFormatAmount/API"}),`
+`,t.jsx(o.h1,{id:"numberformatamount-api",children:"NumberFormatAmount API"}),`
+`,t.jsx(o.h2,{id:"numberformatamountprops",children:"NumberFormatAmountProps"}),`
+`,t.jsx(s,{language:"ts",filePath:"packages/ui-kit/src/components/NumberFormatAmount/NumberFormatAmount.types.ts",typeName:"NumberFormatAmountProps"}),`
+`,t.jsxs(o.p,{children:["Компонент наследует все пропсы атомарного ",t.jsx(o.a,{href:"https://plasma.sberdevices.ru/sdds-finai/components/number-format/",rel:"nofollow",children:"NumberFormat"})," и добавляет ",t.jsx(o.code,{children:"onClear?: () => void"})," — колбэк для кнопки очистки."]})]})}function h(e={}){const{wrapper:o}={...n(),...e.components};return o?t.jsx(o,{...e,children:t.jsx(r,{...e})}):r(e)}export{h as default};
