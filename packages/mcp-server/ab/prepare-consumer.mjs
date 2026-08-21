@@ -286,6 +286,10 @@ function main() {
     // кладёт индексер — без этого шага у потребителя не будет индекса и
     // resolveIndex уйдёт в запасную ветку bundled вместо installed.
     console.log('▸ Сборка сервера и индекса…');
+    // Курированная мета лежит в gitignore (регенерируется генератором), а без
+    // неё индексер теперь падает — стенд обязан сгенерировать её сам, иначе
+    // прогон упрётся в assertMetaAvailable на чистом клоне.
+    run('node', ['./generators/meta-info/generate-meta.js'], REPO_ROOT);
     run(path.join(ROOT_NM, '.bin/tsc'), ['-p', 'tsconfig.lib.json'], PKG_DIR);
     run('node', ['./dist/indexer/buildIndex.js'], PKG_DIR);
   }

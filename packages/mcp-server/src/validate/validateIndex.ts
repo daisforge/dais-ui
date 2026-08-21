@@ -7,6 +7,10 @@ import { REPO_ROOT } from '../indexer/tsProject.js';
 import { resolveIndex } from '../resolveIndex.js';
 import type { ComponentRecord } from '../types.js';
 import { isOkComponent } from '../types.js';
+import {
+  checkIndexCompleteness,
+  formatCompletenessReport,
+} from './checkCompleteness.js';
 
 const PROBE_DIR = path.join(REPO_ROOT, 'packages/mcp-server/.probe');
 const PROBE_FILE = path.join(PROBE_DIR, 'validate.ts');
@@ -278,6 +282,16 @@ function printBucket(title: string, items: Finding[], limit: number): void {
 
 function main(): void {
   const resolved = resolveIndex();
+
+  // Проверка наполненности идёт ПЕРЕД дорогим tsc-пробником: пробник отвечает
+  // на вопрос "правда ли то, что в индексе есть", и на выпотрошенном индексе
+  // честно отрапортует "0 ошибок" просто потому, что проверять там нечего.
+  const completeness = checkIndexCompleteness(resolved.index);
+  console.log(formatCompletenessReport(completeness));
+  if (completeness.failures.length > 0) {
+    process.exitCode = 1;
+  }
+
   const components: Record<string, ComponentRecord> = {};
   for (const [name, rec] of Object.entries(resolved.index.components)) {
     if (isOkComponent(rec)) components[name] = rec;

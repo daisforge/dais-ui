@@ -67,6 +67,16 @@ npm run mcp:build-index
 
 Пишет `packages/mcp-server/data/component-index.json` (запасной индекс, вшивается в публикуемый `@daisforge/ui-mcp`) и, если уже собран `dist/packages/ui-kit` — также `dist/packages/ui-kit/mcp-data/component-index.json` (уезжает вместе с публикацией `@daisforge/ui`). Автоматически запускается после `npm run build` (см. корневой `postbuild`).
 
+### Курированная мета — обязательный вход, а не опция
+
+`_docs/meta/components-meta.json` лежит в `.gitignore` (это build-артефакт `npm run meta`), поэтому на свежем клоне и в CI его нет. Без него из индекса молча исчезает всё, что приходит только оттуда: **features** (77 записей, 46 из них у одного `TableCanvas`), **guides.installation**, curated-описания/`keywords`/`chooseWhen` ui-kit компонентов и все примеры типа **full-code**. Ровно такой выпотрошенный индекс уехал в npm `0.1.1` — у потребителя `list_features` отвечал `0`, а поиск по фичам не находил ничего.
+
+Поэтому:
+
+- `mcp:build-index` и корневой `postbuild` сами вызывают `npm run meta` перед сборкой индекса;
+- индексер падает на старте, если меты всё-таки нет (`assertMetaAvailable` в `src/indexer/loadMeta.ts`); осознанно собрать неполный индекс — `MCP_INDEX_ALLOW_MISSING_META=1`;
+- перед записью индекс проходит проверку наполненности (`src/validate/checkCompleteness.ts`): при обвале любого источника (features, full-code примеры, curated-доки, типы, compound-части, гайд по установке) файл **не записывается**, прогон падает. Та же проверка идёт первым шагом в `mcp:validate-index`.
+
 ## Резолв индекса — три уровня
 
 1. **workspace** — если рядом физически лежит `packages/ui-kit` (мы внутри монорепо), сервер читает свежесобранный локальный индекс.
@@ -92,7 +102,7 @@ npm run mcp:vendor-atomic -- --source /путь/к/plasma/website/sdds-finai-doc
 Перед обновлением стоит знать две особенности снэпшота (подробно — `ARCHITECTURE.md` §1.6b):
 
 - **`generate-mcp-data` даёт один файл на СТРАНИЦУ доков, не на атом**, и берёт со страницы только первую таблицу пропсов. В доках 87 таблиц `<PropsTable>` на 74 страницы — 14 таблиц (`AccordionItem`, `CalendarBase`, `Col`, `DatePickerRange`, `ListItem`, `NotificationsProvider`, `SegmentItem`, `RectSkeleton`/`TextSkeleton`, `TabItem`/`TabsController` и др.) в снэпшот не попадают вовсе. Прирост от перевендоринга будет заметным только вместе с исправлением их `extractProps`.
-- **Проверяйте версию**: `vendor/atomic-mcp-data/manifest.json` содержит версию `@salutejs/sdds-finai`, из которой собран текущий снэпшот (сейчас `0.349.0`). Прогон на более старом чекауте plasma перезапишет снэпшот более бедным — `vendorAtomicData.ts` сносит папку целиком и не сверяет версии.
+- **Проверяйте версию**: `vendor/atomic-mcp-data/manifest.json` содержит версию `@salutejs/sdds-finai`, из которой собран текущий снэпшот (сейчас `0.355.0`, установленный в монорепо пакет — `0.351.0`). Прогон на более старом чекауте plasma перезапишет снэпшот более бедным — `vendorAtomicData.ts` сносит папку целиком и не сверяет версии.
 
 ## Курированные данные каталога (description/category/keywords)
 

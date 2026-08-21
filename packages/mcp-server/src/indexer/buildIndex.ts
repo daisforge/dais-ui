@@ -9,6 +9,10 @@ import type {
   WorkingComponentRecord,
 } from '../types.js';
 import {
+  checkIndexCompleteness,
+  formatCompletenessReport,
+} from '../validate/checkCompleteness.js';
+import {
   classify,
   linkFormVariants,
   promoteCompositionToWrapper,
@@ -20,6 +24,7 @@ import { discoverComponents } from './discoverComponents.js';
 import { getDenylistMap } from './htmlAttributeDenylist.js';
 import { buildFeatureIndex } from './indexFeatures.js';
 import { buildTypeIndex } from './indexTypes.js';
+import { assertMetaAvailable } from './loadMeta.js';
 import { mergeAtomicCuratedMeta } from './mergeAtomicCuratedMeta.js';
 import { mergeAtomicData } from './mergeAtomicData.js';
 import { getInstallationGuide, mergeMeta } from './mergeMeta.js';
@@ -341,6 +346,18 @@ function writeIndexFile(outputDir: string, index: ComponentIndex): string {
 function main(): void {
   console.log('Сборка индекса @daisforge/ui для MCP...');
 
+  // До разбора компонентов (он занимает минуты) — падать на отсутствующей мете
+  // сразу, а не через долгий проход с молча пустыми features/guides. Сообщение
+  // печатаем сами: инструкция «выполните npm run meta» должна быть видна, а не
+  // теряться в стектрейсе необработанного исключения.
+  try {
+    assertMetaAvailable();
+  } catch (e) {
+    console.error(`\n${(e as Error).message}`);
+    process.exitCode = 1;
+    return;
+  }
+
   const records = buildComponentRecords();
   const features = buildFeatureIndex(records.filter((r) => !r.error));
   const installationGuide = getInstallationGuide();
@@ -372,6 +389,19 @@ function main(): void {
     records as unknown as IndexedComponent[],
     features,
   );
+
+  const completeness = checkIndexCompleteness(index);
+  console.log(`\n${formatCompletenessReport(completeness)}`);
+  if (completeness.failures.length > 0) {
+    // Именно не записываем: закоммиченный data/component-index.json — то, что
+    // публикуется в npm, и перезапись его неполной версией и есть та поломка,
+    // ради которой существует эта проверка.
+    console.error(
+      '\nИндекс НЕ записан — сборка неполная. Исправьте причину и повторите.',
+    );
+    process.exitCode = 1;
+    return;
+  }
 
   const bundledPath = writeIndexFile(BUNDLED_MCP_DATA_DIR, index);
   console.log(`Записано (bundled fallback): ${bundledPath}`);
