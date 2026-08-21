@@ -52,6 +52,19 @@ jobs:
           NODE_OPTIONS: '--max_old_space_size=4096'
           NODE_ENV: production
 
+      # buildIndex.js пишет component-index.json в dist/packages/ui-kit/mcp-data
+      # только если dist/packages/ui-kit уже существует (см. buildIndex.ts) — на этом
+      # шаге он уже собран предыдущим шагом. У ui-kit/package.json нет поля "files",
+      # поэтому mcp-data уедет в npm-тарболл вместе с остальным dist как есть.
+      # Без этого шага tier "installed" в resolveIndex.ts (@daisforge/ui-mcp)
+      # никогда не сработает ни для одной опубликованной версии @daisforge/ui.
+      - name: Embed MCP component index into ui-kit dist
+        if: steps.before.outputs.sha != steps.after.outputs.sha
+        run: |
+          npm run mcp:ci
+          npm run build --prefix packages/mcp-server
+          node ./packages/mcp-server/dist/indexer/buildIndex.js
+
       - name: Publish to npm
         if: steps.before.outputs.sha != steps.after.outputs.sha
         working-directory: dist/packages/ui-kit
