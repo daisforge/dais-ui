@@ -22,6 +22,7 @@
  *
  *   node ab/prepare-consumer.mjs [--path <dir>] [--skip-build] [--skip-index]
  *                               [--ui-source npm@<version>|npm|local]
+ *                               [--mcp-source npm@<version>|npm|local]
  *
  * Про `--ui-source`. По умолчанию `npm@1.12.2` — настоящий опубликованный
  * пакет, ровно то, что ставит себе потребитель. Версия выбрана вплотную к
@@ -31,15 +32,22 @@
  * остаточный дрейф, что всё же есть, измеряется отдельно (`ab/drift.mjs`) и
  * вычитается при подсчёте метрик.
  *
- * Что надо помнить про этот режим: в опубликованном пакете нет `mcp-data`
- * (индекс ещё ни разу не выпускался), а `@daisforge/ui-mcp` не опубликован
- * вовсе (404) — поэтому сервер ставится из локального пака, а индекс он
- * резолвит запасной веткой `bundled`. Это тоже настоящий потребительский
- * путь, специально предусмотренный в `resolveIndex`.
+ * Про `--mcp-source` (по умолчанию `local`, т.е. локальный пак `packages/
+ * mcp-server`). С публикации `@daisforge/ui-mcp` в npm (v0.1.1) можно
+ * передать `--mcp-source npm` (= `@daisforge/ui-mcp@latest`) или
+ * `npm@<version>`, чтобы поставить сервер настоящим опубликованным пакетом,
+ * как у реального потребителя — это единственный способ реально прогнать
+ * ветку `installed` в `resolveIndex` (кроме симлинка mcp-server в
+ * node_modules, который bundled-веткой не является, но по коду не отличим
+ * от неё, т.к. mcp-data лежит рядом с package.json в обоих случаях). Вместе
+ * с `--ui-source npm` (после v1.14.0 в тарболле есть `mcp-data`) это
+ * единственная комбинация, где `resolveIndex` реально может вернуть
+ * `source: 'installed'`, а не `bundled` — раньше ни один из двух пакетов не
+ * был опубликован в актуальном виде для этого.
  *
- * `--ui-source local` пакует библиотеку из локальной сборки: `.d.ts` и индекс
- * гарантированно одной версии, дрейфа нет вовсе, но обстановка чуть
- * «лабораторная» — и требует полной пересборки `nx build ui-kit`.
+ * `--ui-source local` / `--mcp-source local` пакуют из локальной сборки:
+ * версии гарантированно совпадают с индексом, дрейфа нет вовсе, но
+ * `--ui-source local` требует полной пересборки `nx build ui-kit`.
  */
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
@@ -249,11 +257,17 @@ function main() {
     ? `@daisforge/ui@${uiSource.split('@').pop()}`
     : '@daisforge/ui@latest';
 
+  const mcpSource = String(argv['mcp-source'] || 'local');
+  const mcpFromNpm = mcpSource.startsWith('npm');
+  const mcpNpmSpec = mcpSource.includes('@')
+    ? `@daisforge/ui-mcp@${mcpSource.split('@').pop()}`
+    : '@daisforge/ui-mcp@latest';
+
   if (fromNpm) {
-    console.log(
-      `▸ Библиотека — из реестра (${npmSpec}), как у настоящего потребителя.\n` +
-        '  В опубликованном пакете нет mcp-data — индекс сервер возьмёт веткой bundled.',
-    );
+    console.log(`▸ Библиотека — из реестра (${npmSpec}), как у настоящего потребителя.`);
+  }
+  if (mcpFromNpm) {
+    console.log(`▸ MCP-сервер — из реестра (${mcpNpmSpec}), как у настоящего потребителя.`);
   }
   if (!fromNpm && !argv['skip-build']) {
     console.log('▸ Сборка @daisforge/ui (nx build ui-kit)…');
@@ -327,15 +341,16 @@ function main() {
     fromNpm ? npmSpec : UI_DIST,
     path.join(SANDBOX, 'node_modules/@daisforge/ui'),
   );
-  // Сервер всегда из локального пака: в реестре его нет вовсе (404).
   const mcpVersion = packInto(
-    PKG_DIR,
+    mcpFromNpm ? mcpNpmSpec : PKG_DIR,
     path.join(SANDBOX, 'node_modules/@daisforge/ui-mcp'),
   );
   console.log(
     `   @daisforge/ui@${uiVersion} (${
       fromNpm ? 'из реестра' : 'локальная сборка'
-    }), @daisforge/ui-mcp@${mcpVersion} (локальная сборка)`,
+    }), @daisforge/ui-mcp@${mcpVersion} (${
+      mcpFromNpm ? 'из реестра' : 'локальная сборка'
+    })`,
   );
 
   console.log('\n▸ Smoke: разрешается ли @daisforge/ui по .d.ts…');
