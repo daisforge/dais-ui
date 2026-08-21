@@ -62,7 +62,8 @@
     "screenshot:test:one": "npx test-storybook --url http://localhost:4400 --config-dir packages/storybook/.storybook -- --testPathPattern",
     "screenshot:clean": "npx rimraf packages/storybook/__snapshots__/*.png",
     "screenshot:update": "npm run screenshot:clean && npx test-storybook -u --url http://localhost:4400 --config-dir packages/storybook/.storybook",
-    "screenshot:update:one": "npx test-storybook -u --url http://localhost:4400 --config-dir packages/storybook/.storybook -- --testPathPattern"
+    "screenshot:update:one": "npx test-storybook -u --url http://localhost:4400 --config-dir packages/storybook/.storybook -- --testPathPattern",
+    "mcp:search-eval": "node ./packages/mcp-server/ab/search-eval.mjs"
   },
   "private": true,
   "devDependencies": {
