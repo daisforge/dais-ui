@@ -82,7 +82,6 @@ export const withSelectIcon = (
             position="absolute"
             top={SELECT_TRIGGER_VERTICAL_INSET}
             right={overlayRight}
-            bottom={SELECT_TRIGGER_VERTICAL_INSET}
             zIndex={1}
             {...selectOverlayBackgroundProps}
             onClick={(event) => {
@@ -90,6 +89,11 @@ export const withSelectIcon = (
             }}
             style={{
               width: triggerWidth,
+              // Фиксированная высота в одну строку вместо растяжки top/bottom.
+              // У объединённой ячейки родитель height:100% = высота всего блока,
+              // и растянутый триггер с непрозрачным фоном закрывал заливку выделения
+              // вертикальной полосой на весь блок. Одна строка = как у не-слитых ячеек.
+              height: triggerHeight,
             }}
           >
             <Canvas.EmbedIconButton
