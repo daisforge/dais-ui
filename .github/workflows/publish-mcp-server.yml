@@ -97,8 +97,10 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       # Пушим релизный коммит и тег ТОЛЬКО при реальной публикации (не dry-run) —
-      # аналогично publish-npm.yml, чтобы в main не попадал коммит/тег без
-      # реально опубликованного пакета.
+      # аналогично publish-npm.yml, чтобы не попадал коммит/тег без реально
+      # опубликованного пакета. В ту же ветку, откуда запустили workflow
+      # (не захардкожено в main — этот workflow, в отличие от publish-npm.yml,
+      # рассчитан на запуск с любой ветки через workflow_dispatch/workflow_call).
       - name: Push release commit and tag
         if: ${{ inputs.dry_run != true }}
-        run: git push --follow-tags origin main
+        run: git push --follow-tags origin "HEAD:${{ github.ref_name }}"
