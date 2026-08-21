@@ -12,10 +12,6 @@ node_modules
 # mcp-server — сгенерированный пробник для валидации индекса и A/B-тестов
 packages/mcp-server/.probe/
 
-# mcp-server — staging зеркального (white-label) пакета, собирается на лету
-# перед публикацией из dist/ и data/ (см. scripts/build-alias-package.mjs)
-packages/mcp-server/.alias-package/
-
 # storybook
 packages/storybook/src/*.string.json
 

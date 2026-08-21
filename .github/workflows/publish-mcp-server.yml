@@ -134,16 +134,24 @@ jobs:
             echo "enabled=true" >> "$GITHUB_OUTPUT"
           fi
 
+      # ALIAS_OUT_DIR обязателен и обязан быть вне рабочего дерева: npm ищет
+      # .git вверх от каталога пакета и, найдя, штампует в манифест gitHead с
+      # SHA текущего HEAD (см. @npmcli/package-json/lib/normalize.js). У
+      # опубликованного @daisforge/ui-mcp это поле есть — одинаковый SHA у двух
+      # пакетов связал бы зеркало с основным. runner.temp лежит рядом с
+      # чекаутом, но своего .git не имеет. Скрипт проверяет это сам и падает,
+      # если каталог всё же окажется внутри репозитория.
       - name: Build alias package
         if: steps.alias.outputs.enabled == 'true'
         run: npm run mcp:alias:stage --prefix packages/mcp-server
         env:
           ALT_MCP_PACKAGE_NAME: ${{ secrets.ALT_MCP_PACKAGE_NAME }}
           ALT_LIB_PACKAGE_NAME: ${{ secrets.ALT_LIB_PACKAGE_NAME }}
+          ALIAS_OUT_DIR: ${{ runner.temp }}/mcp-alias-package
 
       - name: Publish alias package to npm
         if: steps.alias.outputs.enabled == 'true'
-        working-directory: packages/mcp-server/.alias-package
+        working-directory: ${{ runner.temp }}/mcp-alias-package
         run: |
           if [ "${{ inputs.dry_run }}" = "true" ]; then
             npm publish --access public --dry-run

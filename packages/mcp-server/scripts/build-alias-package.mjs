@@ -19,6 +19,7 @@
  * Запуск: npm run mcp:alias:stage --prefix packages/mcp-server
  */
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -33,7 +34,24 @@ const README_TEMPLATE = path.join(
   'scripts',
   'alias-readme.template.md',
 );
-const STAGING_DIR = path.join(PKG_ROOT, '.alias-package');
+/**
+ * Staging обязан лежать ВНЕ рабочего дерева git — иначе `npm publish` пометит
+ * зеркало полем gitHead с SHA текущего HEAD. Это не гипотеза: у опубликованного
+ * @daisforge/ui-mcp в реестре лежит gitHead коммита релиза, и любой желающий
+ * видит его через `npm view <пакет> gitHead`. Одинаковый SHA у двух пакетов
+ * связал бы зеркало с основным пакетом намертво.
+ *
+ * Механика — @npmcli/package-json/lib/normalize.js: npm идёт вверх от каталога
+ * пакета в поисках .git и, найдя его, читает оттуда HEAD. Нет предка с .git —
+ * поля gitHead в манифесте не будет.
+ *
+ * В CI путь задаётся через ALIAS_OUT_DIR (${{ runner.temp }}/…), локально по
+ * умолчанию берётся системный временный каталог.
+ */
+const STAGING_DIR = path.resolve(
+  process.env.ALIAS_OUT_DIR?.trim() ||
+    path.join(os.tmpdir(), 'mcp-alias-package'),
+);
 
 /** Имя пакета npm: со scope или без. */
 const NPM_NAME_RE = /^(@[a-z0-9-~][a-z0-9-._~]*\/)?[a-z0-9-~][a-z0-9-._~]*$/;
@@ -151,6 +169,27 @@ function ensureSourcesExist() {
   }
   if (!fs.existsSync(README_TEMPLATE)) {
     fail(`Не найден шаблон README: ${README_TEMPLATE}`);
+  }
+}
+
+/**
+ * Тот же обход вверх, что делает npm при сборке манифеста. Проверяем сами и
+ * падаем — молча получить gitHead в опубликованном зеркале нельзя.
+ */
+function assertOutsideGitWorktree() {
+  let dir = STAGING_DIR;
+  for (;;) {
+    if (fs.existsSync(path.join(dir, '.git'))) {
+      fail(
+        `Staging ${STAGING_DIR} лежит внутри git-репозитория (${dir}). ` +
+          `npm пометит зеркало полем gitHead с SHA текущего HEAD — тем же, ` +
+          `что у основного пакета, и это свяжет их в реестре. ` +
+          `Задайте ALIAS_OUT_DIR вне рабочего дерева.`,
+      );
+    }
+    const parent = path.dirname(dir);
+    if (parent === dir) return;
+    dir = parent;
   }
 }
 
@@ -330,6 +369,7 @@ function assertNoOriginalBrand() {
 
 function main() {
   ensureSourcesExist();
+  assertOutsideGitWorktree();
 
   fs.rmSync(STAGING_DIR, { recursive: true, force: true });
   fs.mkdirSync(STAGING_DIR, { recursive: true });
