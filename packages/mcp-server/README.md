@@ -117,6 +117,21 @@ npm run mcp:ab:selfcheck  # поверка самого скорера, без �
 
 Последний замер (20 задач × 3 руки, sonnet): вызовов инструментов до первой строчки кода — **24.3 без MCP против 7.1 с MCP**, доля ответов, проходящих `tsc`, — **60% против 85%**. Разбор, оговорки и разрез по сложности задач — `ARCHITECTURE.md` §7, подробности харнесса — `ab/README.md`.
 
+## Публикация
+
+`@daisforge/ui-mcp` версионируется и публикуется **независимо** от `@daisforge/ui` — не через Lerna (пакет не входит в npm workspaces и не виден `lerna version`), а через отдельный workflow `.github/workflows/publish-mcp-server.yml`.
+
+Запуск — вручную, из Actions UI или через `gh`:
+
+```bash
+gh workflow run publish-mcp-server.yml -f bump=patch -f dry_run=true   # проверочный прогон, ничего не публикует
+gh workflow run publish-mcp-server.yml -f bump=patch -f dry_run=false  # реальный релиз
+```
+
+`bump` — `patch`/`minor`/`major`. Workflow сам поднимает версию в `package.json` (`npm version`), коммитит и тегирует (`ui-mcp-vX.Y.Z` — отдельный неймспейс от тегов `ui-kit`, `vX.Y.Z`), затем публикует в тот же `registry.npmjs.org`, что и `@daisforge/ui`.
+
+Workflow объявлен и как `workflow_call` — задел на будущее, если релиз `ui-mcp` решат триггерить автоматически из `publish-npm.yml` вместо ручного запуска.
+
 ## Известные ограничения v1
 
 - **Иконки, токены, миксины, утилиты не проиндексированы** — сознательная граница v1 (см. план). Следующий шаг.
