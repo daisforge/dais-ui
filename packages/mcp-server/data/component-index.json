@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-21T15:27:17.963Z",
+  "generatedAt": "2026-08-21T16:20:51.632Z",
   "libVersion": "1.14.0",
   "components": {
     "Accordion": {
@@ -2330,28 +2330,6 @@
         "search field",
         "поиск с автодополнением"
       ],
-      "docs": "# AutocompleteSearch\n\nКомпонент AutocompleteSearch - обертка компонента Autocomplete со своими готовыми стилями для поля поиска. C примерами реализации подробно можно ознакомиться ниже в stories.\n\n## Ключевые особенности\n\n- Поле поиска с автодополнением на основе Autocomplete\n- Иконка лупы слева и крестик очистки справа\n- Доступные размеры: `s`, `xs`\n\n> Подробнее о типах и пропсах — [AutocompleteSearch API](?path=/docs/локальные-компоненты-autocompletesearch-api--docs)",
-      "apiDocs": "# AutocompleteSearch API\n\n## BaseAutocompliteSearchProps\n\n```typescript\ntype BaseAutocompliteSearchProps = {\n  /**\n   * Размер Поля ввода\n   */\n  size?: 'xs' | 's';\n  /**\n   * Показать/Скрыть count значение в начале выпадающего листа. Или указать собственное число\n   */\n  beforeListTotal?: number | boolean;\n  /**\n   * Добавление названия сущности в начале выпадающего списка\n   */\n  beforeListTotalEntity?: string;\n  /**\n   * Действие при выполнении нажатия на кнопку очистки поля ввода\n   * @deprecated Используйте onClear\n   */\n  handlerClear?: () => void;\n  /**\n   * Действие при выполнении нажатия на кнопку очистки поля ввода\n   */\n  onClear?: () => void;\n};\n```",
-      "curatedStories": [
-        {
-          "exportName": "Default",
-          "displayName": "Default",
-          "type": "full-code",
-          "code": "import { AutocompleteSearch } from '@daisforge/ui';\n\n(args: AutocompleteSearchProps) => {\n    const [value, setValue] = useState('');\n\n    return (\n      <div style={{ padding: '20px', minHeight: '500px', width: '500px' }}>\n        <AutocompleteSearch\n          {...args}\n          value={value}\n          onChange={(e: ChangeEvent<HTMLInputElement>) =>\n            setValue(e.target.value)\n          }\n          onSuggestionSelect={(item) => setValue(item.label)}\n          onClear={() => setValue('')}\n          suggestions={mockData}\n          beforeListTotal\n          beforeListTotalEntity=\"[сущность]\"\n        />\n      </div>\n    );\n  }"
-        },
-        {
-          "exportName": "Sizes",
-          "displayName": "Размеры",
-          "type": "full-code",
-          "code": "import { AutocompleteSearch } from '@daisforge/ui';\n\n(args: AutocompleteSearchProps) => {\n    const sizes = ['s', 'xs'] as const;\n    const [values, setValues] = useState<Record<string, string>>({\n      s: '',\n      xs: '',\n    });\n\n    return (\n      <div\n        style={{\n          padding: '20px',\n          display: 'flex',\n          flexDirection: 'column',\n          gap: '1rem',\n          width: '500px',\n          minHeight: '500px',\n        }}\n      >\n        {sizes.map((size) => (\n          <AutocompleteSearch\n            {...args}\n            key={size}\n            size={size}\n            placeholder={`Size: ${size}`}\n            value={values[size]}\n            onChange={(e: ChangeEvent<HTMLInputElement>) =>\n              setValues((prev) => ({ ...prev, [size]: e.target.value }))\n            }\n            onSuggestionSelect={(item) =>\n              setValues((prev) => ({ ...prev, [size]: item.label }))\n            }\n            onClear={() => setValues((prev) => ({ ...prev, [size]: '' }))}\n            suggestions={mockData}\n          />\n        ))}\n      </div>\n    );\n  }"
-        },
-        {
-          "exportName": "WithClear",
-          "displayName": "Различные варианты",
-          "type": "full-code",
-          "code": "import { AutocompleteSearch } from '@daisforge/ui';\n\n(args: AutocompleteSearchProps) => {\n    const [value1, setValue1] = useState('Алексей');\n    const [value2, setValue2] = useState('Екатерина');\n    const [value3, setValue3] = useState('');\n    const [value4, setValue4] = useState('Дмитрий');\n\n    return (\n      <div\n        style={{\n          padding: '20px',\n          display: 'flex',\n          flexDirection: 'column',\n          gap: '1rem',\n          width: '500px',\n          minHeight: '500px',\n        }}\n      >\n        {/* Сценарий 3: onClear + value → только крестик */}\n        <AutocompleteSearch\n          {...args}\n          placeholder=\"onClear + value → крестик\"\n          value={value1}\n          onChange={(e: ChangeEvent<HTMLInputElement>) =>\n            setValue1(e.target.value)\n          }\n          onSuggestionSelect={(item) => setValue1(item.label)}\n          onClear={() => setValue1('')}\n          suggestions={mockData}\n        />\n\n        {/* Сценарий 2: onClear + value + contentRight → [крестик | иконка] рядом */}\n        <AutocompleteSearch\n          {...args}\n          placeholder=\"onClear + value + contentRight → рядом\"\n          value={value2}\n          contentRight={<IconSb size=\"s\" />}\n          onChange={(e: ChangeEvent<HTMLInputElement>) =>\n            setValue2(e.target.value)\n          }\n          onSuggestionSelect={(item) => setValue2(item.label)}\n          onClear={() => setValue2('')}\n          suggestions={mockData}\n        />\n\n        {/* Сценарий 4: onClear без value → крестик скрыт, contentRight как есть */}\n        <AutocompleteSearch\n          {...args}\n          placeholder=\"Пустое значение — крестик скрыт\"\n          value={value3}\n          contentRight={<IconSb size=\"s\" />}\n          onChange={(e: ChangeEvent<HTMLInputElement>) =>\n            setValue3(e.target.value)\n          }\n          onSuggestionSelect={(item) => setValue3(item.label)}\n          onClear={() => setValue3('')}\n          suggestions={mockData}\n        />\n\n        {/* Сценарий 1: readOnly → замок (заменяет всё) */}\n        <AutocompleteSearch\n          {...args}\n          placeholder=\"ReadOnly — замок\"\n          value=\"Только для чтения\"\n          readOnly\n          contentRight={<IconSb size=\"s\" />}\n          onClear={() => {}}\n          suggestions={mockData}\n        />\n\n        {/* Сценарий 1: disabled → замок (заменяет всё) */}\n        <AutocompleteSearch\n          {...args}\n          placeholder=\"Disabled — замок\"\n          value=\"Заблокировано\"\n          disabled\n          contentRight={<IconSb size=\"s\" />}\n          onClear={() => {}}\n          suggestions={mockData}\n        />\n\n        {/* Сценарий 4: только contentRight, без onClear */}\n        <AutocompleteSearch\n          {...args}\n          placeholder=\"Только contentRight, без onClear\"\n          value={value4}\n          contentRight={<IconSb size=\"s\" />}\n          onChange={(e: ChangeEvent<HTMLInputElement>) =>\n            setValue4(e.target.value)\n          }\n          onSuggestionSelect={(item) => setValue4(item.label)}\n          suggestions={mockData}\n        />\n      </div>\n    );\n  }"
-        }
-      ],
       "hasCuratedMeta": true,
       "atomicMcpVersion": "0.355.0",
       "importPath": "@daisforge/ui",
@@ -2359,28 +2337,17 @@
       "minimalUsage": "<AutocompleteSearch />",
       "examples": [
         {
-          "exportName": "Default",
-          "displayName": "Default",
-          "type": "full-code",
-          "code": "import { AutocompleteSearch } from '@daisforge/ui';\n\n(args: AutocompleteSearchProps) => {\n    const [value, setValue] = useState('');\n\n    return (\n      <div style={{ padding: '20px', minHeight: '500px', width: '500px' }}>\n        <AutocompleteSearch\n          {...args}\n          value={value}\n          onChange={(e: ChangeEvent<HTMLInputElement>) =>\n            setValue(e.target.value)\n          }\n          onSuggestionSelect={(item) => setValue(item.label)}\n          onClear={() => setValue('')}\n          suggestions={mockData}\n          beforeListTotal\n          beforeListTotalEntity=\"[сущность]\"\n        />\n      </div>\n    );\n  }"
-        },
-        {
-          "exportName": "Sizes",
-          "displayName": "Размеры",
-          "type": "full-code",
-          "code": "import { AutocompleteSearch } from '@daisforge/ui';\n\n(args: AutocompleteSearchProps) => {\n    const sizes = ['s', 'xs'] as const;\n    const [values, setValues] = useState<Record<string, string>>({\n      s: '',\n      xs: '',\n    });\n\n    return (\n      <div\n        style={{\n          padding: '20px',\n          display: 'flex',\n          flexDirection: 'column',\n          gap: '1rem',\n          width: '500px',\n          minHeight: '500px',\n        }}\n      >\n        {sizes.map((size) => (\n          <AutocompleteSearch\n            {...args}\n            key={size}\n            size={size}\n            placeholder={`Size: ${size}`}\n            value={values[size]}\n            onChange={(e: ChangeEvent<HTMLInputElement>) =>\n              setValues((prev) => ({ ...prev, [size]: e.target.value }))\n            }\n            onSuggestionSelect={(item) =>\n              setValues((prev) => ({ ...prev, [size]: item.label }))\n            }\n            onClear={() => setValues((prev) => ({ ...prev, [size]: '' }))}\n            suggestions={mockData}\n          />\n        ))}\n      </div>\n    );\n  }"
-        },
-        {
-          "exportName": "WithClear",
-          "displayName": "Различные варианты",
-          "type": "full-code",
-          "code": "import { AutocompleteSearch } from '@daisforge/ui';\n\n(args: AutocompleteSearchProps) => {\n    const [value1, setValue1] = useState('Алексей');\n    const [value2, setValue2] = useState('Екатерина');\n    const [value3, setValue3] = useState('');\n    const [value4, setValue4] = useState('Дмитрий');\n\n    return (\n      <div\n        style={{\n          padding: '20px',\n          display: 'flex',\n          flexDirection: 'column',\n          gap: '1rem',\n          width: '500px',\n          minHeight: '500px',\n        }}\n      >\n        {/* Сценарий 3: onClear + value → только крестик */}\n        <AutocompleteSearch\n          {...args}\n          placeholder=\"onClear + value → крестик\"\n          value={value1}\n          onChange={(e: ChangeEvent<HTMLInputElement>) =>\n            setValue1(e.target.value)\n          }\n          onSuggestionSelect={(item) => setValue1(item.label)}\n          onClear={() => setValue1('')}\n          suggestions={mockData}\n        />\n\n        {/* Сценарий 2: onClear + value + contentRight → [крестик | иконка] рядом */}\n        <AutocompleteSearch\n          {...args}\n          placeholder=\"onClear + value + contentRight → рядом\"\n          value={value2}\n          contentRight={<IconSb size=\"s\" />}\n          onChange={(e: ChangeEvent<HTMLInputElement>) =>\n            setValue2(e.target.value)\n          }\n          onSuggestionSelect={(item) => setValue2(item.label)}\n          onClear={() => setValue2('')}\n          suggestions={mockData}\n        />\n\n        {/* Сценарий 4: onClear без value → крестик скрыт, contentRight как есть */}\n        <AutocompleteSearch\n          {...args}\n          placeholder=\"Пустое значение — крестик скрыт\"\n          value={value3}\n          contentRight={<IconSb size=\"s\" />}\n          onChange={(e: ChangeEvent<HTMLInputElement>) =>\n            setValue3(e.target.value)\n          }\n          onSuggestionSelect={(item) => setValue3(item.label)}\n          onClear={() => setValue3('')}\n          suggestions={mockData}\n        />\n\n        {/* Сценарий 1: readOnly → замок (заменяет всё) */}\n        <AutocompleteSearch\n          {...args}\n          placeholder=\"ReadOnly — замок\"\n          value=\"Только для чтения\"\n          readOnly\n          contentRight={<IconSb size=\"s\" />}\n          onClear={() => {}}\n          suggestions={mockData}\n        />\n\n        {/* Сценарий 1: disabled → замок (заменяет всё) */}\n        <AutocompleteSearch\n          {...args}\n          placeholder=\"Disabled — замок\"\n          value=\"Заблокировано\"\n          disabled\n          contentRight={<IconSb size=\"s\" />}\n          onClear={() => {}}\n          suggestions={mockData}\n        />\n\n        {/* Сценарий 4: только contentRight, без onClear */}\n        <AutocompleteSearch\n          {...args}\n          placeholder=\"Только contentRight, без onClear\"\n          value={value4}\n          contentRight={<IconSb size=\"s\" />}\n          onChange={(e: ChangeEvent<HTMLInputElement>) =>\n            setValue4(e.target.value)\n          }\n          onSuggestionSelect={(item) => setValue4(item.label)}\n          suggestions={mockData}\n        />\n      </div>\n    );\n  }"
-        },
-        {
           "exportName": "Usage1",
           "displayName": "Использование в AutoCompleteSearch.stories.tsx",
           "type": "usage",
           "code": "<AutocompleteSearch\n            {...args}\n            key={size}\n            size={size}\n            placeholder={`Size: ${size}`}\n            value={values[size]}\n            onChange={(e: ChangeEvent<HTMLInputElement>) =>\n              setValues((prev) => ({ ...prev, [size]: e.target.value }))\n            }\n            onSuggestionSelect={(item) =>\n              setValues((prev) => ({ ...prev, [size]: item.label }))\n            }\n            onClear={() => setValues((prev) => ({ ...prev, [size]: '' }))}\n            suggestions={mockData}\n          />",
+          "sourceFile": "packages/storybook/src/stories/AutoCompleteSearch/AutoCompleteSearch.stories.tsx"
+        },
+        {
+          "exportName": "Usage2",
+          "displayName": "Использование в AutoCompleteSearch.stories.tsx",
+          "type": "usage",
+          "code": "<AutocompleteSearch\n          {...args}\n          value={value}\n          onChange={(e: ChangeEvent<HTMLInputElement>) =>\n            setValue(e.target.value)\n          }\n          onSuggestionSelect={(item) => setValue(item.label)}\n          onClear={() => setValue('')}\n          suggestions={mockData}\n          beforeListTotal\n          beforeListTotalEntity=\"[сущность]\"\n        />",
           "sourceFile": "packages/storybook/src/stories/AutoCompleteSearch/AutoCompleteSearch.stories.tsx"
         }
       ]
