@@ -41,11 +41,11 @@ export interface AnalyticalWidgetHeaderProps {
    */
   infoTooltipProps?: Omit<TooltipProps, 'text' | 'target'>;
   /**
-   * url для ссылки. Если не передать, то иконка со стрелкой отображаться не будет
+   * @deprecated Стрелка больше не рисуется. Используйте `titleLinkProps`.
    */
   href?: string;
   /**
-   * Дополнительные свойства для `href элемента`. Не будет работать, если не заполнено свойство `href`
+   * @deprecated Стрелка больше не рисуется. Используйте `titleLinkProps`.
    */
   hrefProps?: {
     onClick?: MouseEventHandler<HTMLAnchorElement>;

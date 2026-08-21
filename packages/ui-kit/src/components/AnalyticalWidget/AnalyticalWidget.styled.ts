@@ -97,11 +97,20 @@ export const StyledWidget = styled.article<{
 
 export const StyledTopSlot = styled(BodyM)`
   overflow: hidden;
+  margin-top: 8px;
+
+  &:empty {
+    margin-top: 0;
+  }
+
+  &:has(.${cls.selfSpacedTopSlot}) {
+    margin-top: 0;
+  }
 `;
 
 export const StyledMiddleSlot = styled.div`
   overflow: hidden;
-  padding-top: 4px;
+  padding-top: 8px;
 `;
 
 interface StyledContentProps {
@@ -112,6 +121,6 @@ export const StyledContent = styled.div<StyledContentProps>`
   position: relative;
   flex: 1;
   min-height: 30px;
-  margin-top: 4px;
+  margin-top: 8px;
   overflow-y: ${({ scrollable }) => (scrollable ? 'auto' : 'visible')};
 `;
