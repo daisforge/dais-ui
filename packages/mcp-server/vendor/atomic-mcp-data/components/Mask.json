@@ -14,7 +14,21 @@
       },
       {
         "name": "view",
-        "type": "\"default\" | \"positive\" | \"warning\" | \"negative\"",
+        "type": "\"default\" | \"positive\" | \"warning\" | \"negative\" | \"edited\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "appearance",
+        "type": "\"clear\" | \"default\" | \"viewMode\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "clear",
+        "type": "boolean",
         "required": false,
         "default": "",
         "description": ""
@@ -29,6 +43,20 @@
       {
         "name": "contentRight",
         "type": "ReactElement<any, string | JSXElementConstructor<any>>",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "type",
+        "type": "string",
         "required": false,
         "default": "",
         "description": ""
@@ -90,13 +118,6 @@
         "description": ""
       },
       {
-        "name": "name",
-        "type": "string",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
         "name": "readOnly",
         "type": "boolean",
         "required": false,
@@ -106,13 +127,6 @@
       {
         "name": "required",
         "type": "boolean",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "type",
-        "type": "string",
         "required": false,
         "default": "",
         "description": ""
@@ -134,20 +148,6 @@
       {
         "name": "mask",
         "type": "string",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "clear",
-        "type": "boolean",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "appearance",
-        "type": "\"default\" | \"clear\"",
         "required": false,
         "default": "",
         "description": ""
@@ -293,6 +293,13 @@
         "description": ""
       },
       {
+        "name": "hintPortal",
+        "type": "string | RefObject<HTMLElement | null>",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
         "name": "titleCaption",
         "type": "ReactNode",
         "required": false,
@@ -301,6 +308,13 @@
       },
       {
         "name": "leftHelper",
+        "type": "ReactNode",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "rightHelper",
         "type": "ReactNode",
         "required": false,
         "default": "",

@@ -49,7 +49,7 @@
       },
       {
         "name": "frame",
-        "type": "string | RefObject<HTMLElement>",
+        "type": "string | RefObject<HTMLElement | null>",
         "required": false,
         "default": "",
         "description": ""

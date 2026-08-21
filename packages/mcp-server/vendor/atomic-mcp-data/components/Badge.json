@@ -6,13 +6,6 @@
   "api": {
     "props": [
       {
-        "name": "view",
-        "type": "\"default\" | \"accent\" | \"positive\" | \"warning\" | \"negative\" | \"dark\" | \"light\"",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
         "name": "size",
         "type": "\"s\" | \"l\" | \"m\" | \"xs\"",
         "required": false,
@@ -20,22 +13,15 @@
         "description": ""
       },
       {
-        "name": "pilled",
-        "type": "boolean",
+        "name": "view",
+        "type": "\"default\" | \"accent\" | \"positive\" | \"warning\" | \"negative\" | \"dark\" | \"light\"",
         "required": false,
         "default": "",
         "description": ""
       },
       {
-        "name": "transparent",
-        "type": "boolean",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "clear",
-        "type": "true",
+        "name": "maxWidth",
+        "type": "Width<string | number>",
         "required": false,
         "default": "",
         "description": ""
@@ -62,8 +48,22 @@
         "description": ""
       },
       {
-        "name": "maxWidth",
-        "type": "Width<string | number>",
+        "name": "pilled",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "clear",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "transparent",
+        "type": "boolean",
         "required": false,
         "default": "",
         "description": ""
@@ -81,6 +81,20 @@
         "required": false,
         "default": "",
         "description": ""
+      },
+      {
+        "name": "appearance",
+        "type": "\"clear\" | \"transparent\" | \"default\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "truncate",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
       }
     ]
   },
@@ -95,7 +109,7 @@
     },
     {
       "title": "Вид badge",
-      "snippet": "import React from 'react';\nimport { Badge } from '@salutejs/sdds-finai';\nexport function App() {\n    const Badges = ({transparent, clear}) => {\n        return (\n            <div style={{ display: 'flex', gap: '0.5rem' }}>\n                <Badge text=\"Бейдж\" size=\"l\" view=\"default\" transparent={transparent} clear={clear} />\n                <Badge text=\"Бейдж\" size=\"l\" view=\"accent\" transparent={transparent} clear={clear} />\n                <Badge text=\"Бейдж\" size=\"l\" view=\"positive\" transparent={transparent} clear={clear} />\n                <Badge text=\"Бейдж\" size=\"l\" view=\"warning\" transparent={transparent} clear={clear} />\n                <Badge text=\"Бейдж\" size=\"l\" view=\"negative\" transparent={transparent} clear={clear} />\n                <Badge text=\"Бейдж\" size=\"l\" view=\"dark\" transparent={transparent} clear={clear} />\n                <Badge text=\"Бейдж\" size=\"l\" view=\"light\" transparent={transparent} clear={clear} />\n            </div>\n        )\n    }\n    return (\n        <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>\n            <Badges />\n            <Badges transparent />\n            <Badges clear />\n        </div>\n    );\n}"
+      "snippet": "import React from 'react';\nimport { Badge } from '@salutejs/sdds-finai';\nexport function App() {\n    const Badges = ({ appearance }) => {\n        return (\n            <div style={{ display: 'flex', gap: '0.5rem' }}>\n                <Badge text=\"Бейдж\" size=\"l\" view=\"default\" appearance={appearance} />\n                <Badge text=\"Бейдж\" size=\"l\" view=\"accent\" appearance={appearance} />\n                <Badge text=\"Бейдж\" size=\"l\" view=\"positive\" appearance={appearance} />\n                <Badge text=\"Бейдж\" size=\"l\" view=\"warning\" appearance={appearance} />\n                <Badge text=\"Бейдж\" size=\"l\" view=\"negative\" appearance={appearance} />\n                <Badge text=\"Бейдж\" size=\"l\" view=\"dark\" appearance={appearance} />\n                <Badge text=\"Бейдж\" size=\"l\" view=\"light\" appearance={appearance} />\n            </div>\n        )\n    }\n    return (\n        <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>\n            <Badges />\n            <Badges appearance=\"transparent\" />\n            <Badges appearance=\"clear\" />\n        </div>\n    );\n}"
     },
     {
       "title": "Иконка слева / справа",
@@ -104,6 +118,10 @@
     {
       "title": "Задание цвета текста и фона",
       "snippet": "import React from 'react';\nimport { Badge } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div>\n            <Badge\n                text=\"Бейдж\"\n                size=\"l\"\n                view=\"default\"\n                customColor=\"antiquewhite\"\n                customBackgroundColor=\"darkolivegreen\"\n            />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Градиентный текст",
+      "snippet": "import React from 'react';\nimport { Badge } from '@salutejs/sdds-finai';\nimport styled from 'styled-components';\nexport function App() {\n    const GradientBadge = styled(Badge)`\n        & .sdds-core-text-node {\n            background: linear-gradient(90deg, #f7971e, #ffd200);\n            background-clip: text;\n            -webkit-background-clip: text;\n            -webkit-text-fill-color: transparent;\n    }\n    `;\n    return (\n        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>\n            <GradientBadge\n                text=\"Бейдж\"\n            />\n        </div>\n    );\n}"
     }
   ]
 }

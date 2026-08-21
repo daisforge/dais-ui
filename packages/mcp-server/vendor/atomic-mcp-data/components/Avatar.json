@@ -20,6 +20,13 @@
         "description": ""
       },
       {
+        "name": "focused",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
         "name": "shape",
         "type": "\"circled\"",
         "required": false,
@@ -70,13 +77,6 @@
       },
       {
         "name": "isScalable",
-        "type": "boolean",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "focused",
         "type": "boolean",
         "required": false,
         "default": "",
@@ -141,6 +141,20 @@
       {
         "name": "customBackgroundColor",
         "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "clear",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "transparent",
+        "type": "boolean",
         "required": false,
         "default": "",
         "description": ""

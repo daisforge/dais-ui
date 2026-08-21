@@ -7,7 +7,7 @@
     "props": [
       {
         "name": "view",
-        "type": "\"default\" | \"accent\" | \"positive\" | \"warning\" | \"negative\" | \"dark\" | \"clear\" | \"secondary\" | \"black\" | \"white\"",
+        "type": "\"clear\" | \"default\" | \"accent\" | \"positive\" | \"warning\" | \"negative\" | \"dark\" | \"secondary\" | \"black\" | \"white\"",
         "required": false,
         "default": "",
         "description": ""
@@ -161,7 +161,7 @@
     },
     {
       "title": "Размер кнопки",
-      "snippet": "import React from 'react';\nimport { IconButton } from '@salutejs/sdds-finai';\nimport { IconClose } from '@salutejs/plasma-icons';\nexport function App() {\n    return (\n        <div>\n            <IconButton size=\"s\">\n                <IconClose color=\"inherit\" />\n            </IconButton>\n            <IconButton size=\"xs\">\n                <IconClose color=\"inherit\" size=\"xs\" />\n            </IconButton>\n            <IconButton size=\"xxs\">\n                <IconClose color=\"inherit\" size=\"xs\" />\n            </IconButton>\n        </div>\n    );\n}"
+      "snippet": "import React from 'react';\nimport { IconButton } from '@salutejs/sdds-finai';\nimport { IconClose } from '@salutejs/plasma-icons';\nexport function App() {\n    return (\n        <div>\n            <IconButton size=\"s\">\n                <IconClose color=\"inherit\" />\n            </IconButton>\n            <IconButton size=\"xs\">\n                <IconClose color=\"inherit\" size=\"xs\" />\n            </IconButton>\n            <IconButton size=\"xxs\">\n                <IconClose color=\"inherit\" style={{ width: '0.75rem', height: '0.75rem' }} />\n            </IconButton>\n        </div>\n    );\n}"
     },
     {
       "title": "Вид кнопки",

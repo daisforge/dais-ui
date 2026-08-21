@@ -41,6 +41,20 @@
         "description": ""
       },
       {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "type",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
         "name": "onChange",
         "type": "ChangeEventHandler<HTMLInputElement>",
         "required": false,
@@ -97,13 +111,6 @@
         "description": ""
       },
       {
-        "name": "name",
-        "type": "string",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
         "name": "readOnly",
         "type": "boolean",
         "required": false,
@@ -113,13 +120,6 @@
       {
         "name": "required",
         "type": "boolean",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "type",
-        "type": "string",
         "required": false,
         "default": "",
         "description": ""

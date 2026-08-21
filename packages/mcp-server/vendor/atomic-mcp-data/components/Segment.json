@@ -74,6 +74,13 @@
         "required": false,
         "default": "",
         "description": ""
+      },
+      {
+        "name": "hasDivider",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
       }
     ]
   },

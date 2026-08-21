@@ -27,6 +27,20 @@
         "description": ""
       },
       {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "type",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
         "name": "onChange",
         "type": "ChangeEventHandler<HTMLInputElement>",
         "required": false,
@@ -83,20 +97,6 @@
         "description": ""
       },
       {
-        "name": "name",
-        "type": "string",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "readOnly",
-        "type": "boolean",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
         "name": "required",
         "type": "boolean",
         "required": false,
@@ -104,15 +104,15 @@
         "description": ""
       },
       {
-        "name": "type",
-        "type": "string",
+        "name": "value",
+        "type": "string | number | readonly string[]",
         "required": false,
         "default": "",
         "description": ""
       },
       {
-        "name": "value",
-        "type": "string | number | readonly string[]",
+        "name": "appearance",
+        "type": "string",
         "required": false,
         "default": "",
         "description": ""
@@ -141,13 +141,6 @@
       {
         "name": "indeterminate",
         "type": "boolean",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "appearance",
-        "type": "string",
         "required": false,
         "default": "",
         "description": ""

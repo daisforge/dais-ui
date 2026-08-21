@@ -2,7 +2,7 @@
   "name": "CodeField",
   "package": "sdds-finai",
   "category": "components",
-  "summary": "CodeField Компонент CodeField используется для ввода OTP-кодов.",
+  "summary": "CodeField Компонент CodeField используется для ввода одноразовых OTP-кодов.",
   "api": {
     "props": [
       {
@@ -14,7 +14,7 @@
       },
       {
         "name": "size",
-        "type": "\"l\" | \"m\"",
+        "type": "\"l\" | \"m\" | \"xl\"",
         "required": false,
         "default": "",
         "description": ""
@@ -135,24 +135,40 @@
   },
   "examples": [
     {
-      "title": "Размер Размер Размер задается с помощью свойства  size .",
-      "snippet": "import React from 'react';\nimport { CodeField } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div style={{ flexDirection: 'column', gap: '2rem' }}>\n            <CodeField\n                size=\"l\"\n                caption=\"Осталось попыток: 4\"\n                captionAlign=\"center\"\n            />\n            <CodeField\n                size=\"m\"\n                caption=\"Чтобы выслать вам код повторно подождите: 20 секунд\"\n                captionAlign=\"left\"\n            />\n            <CodeField\n                width=\"25\"\n                caption=\"Не передавайте никому код из СМС. Иначе ваш аккаунт могут взломать\"\n                captionAlign=\"center\"\n            />\n        </div>\n    );\n}"
+      "title": "Быстрый старт",
+      "snippet": "import React, { useState } from 'react';\nimport { CodeField } from '@salutejs/sdds-finai';\nexport function App() {\n    const [code, setCode] = useState('');\n    return (\n        <CodeField\n            value={code}\n            onChange={setCode}\n            autoComplete=\"one-time-code\"\n            caption=\"Введите код из СМС\"\n            captionAlign=\"center\"\n            onFullCodeEnter={(value) => console.log('Код заполнен:', value)}\n        />\n    );\n}"
+    },
+    {
+      "title": "Размер Размер Размер задается с помощью свойства  size . Ширина компонента также может регулироваться при помощи свойства  width",
+      "snippet": "import React from 'react';\nimport { CodeField } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>\n            <CodeField\n                size=\"xl\"\n                caption=\"Введите код из СМС\"\n                captionAlign=\"left\"\n            />\n            <CodeField\n                size=\"l\"\n                caption=\"Осталось попыток: 4\"\n                captionAlign=\"center\"\n            />\n            <CodeField\n                size=\"m\"\n                caption=\"Чтобы выслать вам код повторно подождите: 20 секунд\"\n                captionAlign=\"left\"\n            />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Размер Размер Размер задается с помощью свойства  size . Ширина компонента также может регулироваться при помощи свойства  width",
+      "snippet": "import React from 'react';\nimport { CodeField } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div>\n            <CodeField\n                width=\"25\"\n                caption=\"Не передавайте никому код из СМС. Иначе ваш аккаунт могут взломать\"\n                captionAlign=\"center\"\n            />\n        </div>\n    );\n}"
     },
     {
       "title": "Форма компонента и длина кода",
-      "snippet": "import React from 'react';\nimport { CodeField } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div style={{ flexDirection: 'column', gap: '2rem' }}>\n            <div style={{ display: 'flex', gap: '2rem' }}>\n                <CodeField shape=\"default\" codeLength={4} />\n                <CodeField shape=\"segmented\"  codeLength={4} />\n            </div>\n            <div style={{ display: 'flex', gap: '2rem' }}>\n                <CodeField shape=\"default\" codeLength={5} />\n                <CodeField shape=\"segmented\"  codeLength={5} />\n            </div>\n            <div style={{ display: 'flex', gap: '2rem' }}>\n                <CodeField shape=\"default\" codeLength={6} />\n                <CodeField shape=\"segmented\"  codeLength={6} />\n            </div>\n        </div>\n    );\n}"
+      "snippet": "import React from 'react';\nimport { CodeField } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>\n            <div style={{ display: 'flex', gap: '2rem' }}>\n                <CodeField shape=\"default\" codeLength={4} />\n                <CodeField shape=\"segmented\" codeLength={4} />\n            </div>\n            <div style={{ display: 'flex', gap: '2rem' }}>\n                <CodeField shape=\"default\" codeLength={5} />\n                <CodeField shape=\"segmented\" codeLength={5} />\n            </div>\n            <div style={{ display: 'flex', gap: '2rem' }}>\n                <CodeField shape=\"default\" codeLength={6} />\n                <CodeField shape=\"segmented\" codeLength={6} />\n            </div>\n        </div>\n    );\n}"
     },
     {
-      "title": "Допустимые символы и поведение ячейки при вводе некорректного символа",
-      "snippet": "import React from 'react';\nimport { CodeField } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div>\n            <CodeField value=\"123\" itemErrorBehavior=\"remove-symbol\" />\n            <CodeField value=\"123\" itemErrorBehavior=\"keep\" />\n            <CodeField value=\"123\" itemErrorBehavior=\"forbid-enter\" />\n        </div>\n    );\n}"
+      "title": "Поведение при вводе",
+      "snippet": "import React from 'react';\nimport { CodeField } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>\n            <CodeField itemErrorBehavior=\"remove-symbol\" caption=\"remove-symbol\" />\n            <CodeField itemErrorBehavior=\"keep\" caption=\"keep\" />\n            <CodeField itemErrorBehavior=\"forbid-enter\" caption=\"forbid-enter\" />\n        </div>\n    );\n}"
     },
     {
-      "title": "Поведение компонента при вводе некорректного кода и индикация ошибки",
-      "snippet": "import React, { useState, useRef, Dispatch, SetStateAction } from 'react';\nimport { CodeField } from '@salutejs/sdds-finai';\nexport function App() {\n    const [disabledFirst, setDisabledFirst] = useState(false);\n    const [isErrorFirst, setIsErrorFirst] = useState(false);\n    const [disabledSecond, setDisabledSecond] = useState(false);\n    const [isErrorSecond, setIsErrorSecond] = useState(false);\n    const onFullCodeEnter = (\n        code: string,\n        errorSetter: Dispatch<SetStateAction<boolean>>,\n        disableSetter: Dispatch<SetStateAction<boolean>>\n    ) => {\n        disableSetter(true);\n        // имитация запроса на сервер\n        setTimeout(() => {\n            disableSetter(false);\n            if (code !== '123456') {\n                errorSetter(true);\n            }\n        }, 3000)\n    }\n    return (\n        <div style={{ flexDirection: 'column', gap: '2rem' }}>\n            <CodeField\n                itemErrorBehavior=\"remove-symbol\"\n                codeErrorBehavior=\"remove-code\"\n                disabled={disabledFirst}\n                isError={isErrorFirst}\n                setIsError={setIsErrorFirst}\n                onFullCodeEnter={(code) => onFullCodeEnter(code, setIsErrorFirst, setDisabledFirst)}\n            />\n            <CodeField\n                itemErrorBehavior=\"remove-symbol\"\n                codeErrorBehavior=\"keep\"\n                disabled={disabledSecond}\n                isError={isErrorSecond}\n                setIsError={setIsErrorSecond}\n                onFullCodeEnter={(code) => onFullCodeEnter(code, setIsErrorSecond, setDisabledSecond)}\n            />\n        </div>\n    );\n}"
+      "title": "Поведение при вводе",
+      "snippet": "import React, { useState, Dispatch, SetStateAction } from 'react';\nimport { CodeField } from '@salutejs/sdds-finai';\nexport function App() {\n    const [disabledFirst, setDisabledFirst] = useState(false);\n    const [isErrorFirst, setIsErrorFirst] = useState(false);\n    const [disabledSecond, setDisabledSecond] = useState(false);\n    const [isErrorSecond, setIsErrorSecond] = useState(false);\n    const onFullCodeEnter = (\n        code: string,\n        errorSetter: Dispatch<SetStateAction<boolean>>,\n        disableSetter: Dispatch<SetStateAction<boolean>>\n    ) => {\n        disableSetter(true);\n        // имитация запроса на сервер\n        setTimeout(() => {\n            disableSetter(false);\n            if (code !== '123456') {\n                errorSetter(true);\n            }\n        }, 3000)\n    }\n    return (\n        <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>\n            <CodeField\n                itemErrorBehavior=\"remove-symbol\"\n                codeErrorBehavior=\"remove-code\"\n                disabled={disabledFirst}\n                isError={isErrorFirst}\n                setIsError={setIsErrorFirst}\n                onFullCodeEnter={(code) => onFullCodeEnter(code, setIsErrorFirst, setDisabledFirst)}\n            />\n            <CodeField\n                itemErrorBehavior=\"remove-symbol\"\n                codeErrorBehavior=\"keep\"\n                disabled={disabledSecond}\n                isError={isErrorSecond}\n                setIsError={setIsErrorSecond}\n                onFullCodeEnter={(code) => onFullCodeEnter(code, setIsErrorSecond, setDisabledSecond)}\n            />\n        </div>\n    );\n}"
     },
     {
-      "title": "Работа с OTP-кодом из СМС",
-      "snippet": "Ваш код подтверждения: 123456.\n@plasma.sberdevices.ru #123456"
+      "title": "Тип клавиатуры на мобильных устройствах",
+      "snippet": "import React from 'react';\nimport { CodeField } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>\n            <CodeField\n                inputMode=\"numeric\"\n                caption=\"Числовая клавиатура (по умолчанию)\"\n                captionAlign=\"center\"\n            />\n            <CodeField\n                inputMode=\"text\"\n                caption=\"Текстовая клавиатура\"\n                captionAlign=\"center\"\n            />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Нативный input и HTML-формы",
+      "snippet": "import React from 'react';\nimport { CodeField } from '@salutejs/sdds-finai';\nexport function App() {\n    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {\n        event.preventDefault();\n        const data = new FormData(event.currentTarget);\n        console.log('OTP:', data.get('otp'));\n    };\n    return (\n        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>\n            <CodeField\n                name=\"otp\"\n                required\n                autoComplete=\"one-time-code\"\n                aria-label=\"Код подтверждения из СМС\"\n            />\n            <button type=\"submit\">Продолжить</button>\n        </form>\n    );\n}"
+    },
+    {
+      "title": "Web OTP API",
+      "snippet": "Ваш код подтверждения: 123456.\n@example.com #123456"
     }
   ]
 }

@@ -2,7 +2,7 @@
   "name": "TextField",
   "package": "sdds-finai",
   "category": "components",
-  "summary": "TextField для подсказки в виде Tooltip - hintText , для подсказки сверху справа - titleCaption : Наличие индикатора регулируется свойством hasRequiredIndicator .",
+  "summary": "TextField appearance=\"viewMode\" — режим просмотра.",
   "api": {
     "props": [
       {
@@ -14,7 +14,14 @@
       },
       {
         "name": "view",
-        "type": "\"default\" | \"positive\" | \"warning\" | \"negative\"",
+        "type": "\"default\" | \"positive\" | \"warning\" | \"negative\" | \"edited\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "clear",
+        "type": "boolean",
         "required": false,
         "default": "",
         "description": ""
@@ -29,6 +36,20 @@
       {
         "name": "contentRight",
         "type": "ReactElement<any, string | JSXElementConstructor<any>>",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "type",
+        "type": "string",
         "required": false,
         "default": "",
         "description": ""
@@ -90,13 +111,6 @@
         "description": ""
       },
       {
-        "name": "name",
-        "type": "string",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
         "name": "readOnly",
         "type": "boolean",
         "required": false,
@@ -111,13 +125,6 @@
         "description": ""
       },
       {
-        "name": "type",
-        "type": "string",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
         "name": "value",
         "type": "string | number | readonly string[]",
         "required": false,
@@ -127,13 +134,6 @@
       {
         "name": "label",
         "type": "string",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "clear",
-        "type": "boolean",
         "required": false,
         "default": "",
         "description": ""
@@ -279,6 +279,13 @@
         "description": ""
       },
       {
+        "name": "hintPortal",
+        "type": "string | RefObject<HTMLElement | null>",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
         "name": "titleCaption",
         "type": "ReactNode",
         "required": false,
@@ -287,6 +294,13 @@
       },
       {
         "name": "leftHelper",
+        "type": "ReactNode",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "rightHelper",
         "type": "ReactNode",
         "required": false,
         "default": "",
@@ -343,7 +357,7 @@
       },
       {
         "name": "appearance",
-        "type": "\"default\" | \"clear\"",
+        "type": "\"clear\" | \"default\" | \"viewMode\"",
         "required": false,
         "default": "",
         "description": ""
@@ -361,19 +375,23 @@
     },
     {
       "title": "Управление внешним видом",
-      "snippet": "import React, {useState} from 'react';\nimport { TextField } from '@salutejs/sdds-finai';\nimport { IconBellFill, IconDone } from '@salutejs/plasma-icons';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', gap: '3rem', flexWrap: 'wrap'}}>\n            <TextField\n                view=\"default\"\n                appearance=\"default\"\n                label=\"Appearance default\"\n                placeholder=\"Введите значение\"\n                contentLeft={<IconBellFill size=\"s\" color=\"inherit\" />}\n                contentRight={<IconDone size=\"s\" color=\"inherit\" />}\n            />\n            <TextField\n                view=\"default\"\n                appearance=\"clear\"\n                label=\"Appearance clear\"\n                placeholder=\"Введите значение\"\n                contentLeft={<IconBellFill size=\"s\" color=\"inherit\" />}\n                contentRight={<IconDone size=\"s\" color=\"inherit\" />}\n            />\n            <TextField\n                view=\"positive\"\n                appearance=\"clear\"\n                hasDivider\n                label=\"Appearance clear\"\n                placeholder=\"Введите значение\"\n                contentLeft={<IconBellFill size=\"s\" color=\"inherit\" />}\n                contentRight={<IconDone size=\"s\" color=\"inherit\" />}\n            />\n        </div>\n    );\n}"
+      "snippet": "import React, {useState} from 'react';\nimport { TextField } from '@salutejs/sdds-finai';\nimport { IconBellFill, IconDone } from '@salutejs/plasma-icons';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', gap: '3rem', flexWrap: 'wrap'}}>\n            <TextField\n                view=\"default\"\n                appearance=\"default\"\n                label=\"Appearance default\"\n                placeholder=\"Введите значение\"\n                contentLeft={<IconBellFill size=\"s\" color=\"inherit\" />}\n                contentRight={<IconDone size=\"s\" color=\"inherit\" />}\n            />\n            <TextField\n                view=\"default\"\n                appearance=\"clear\"\n                label=\"Appearance clear\"\n                placeholder=\"Введите значение\"\n                contentLeft={<IconBellFill size=\"s\" color=\"inherit\" />}\n                contentRight={<IconDone size=\"s\" color=\"inherit\" />}\n            />\n            <TextField\n                view=\"positive\"\n                appearance=\"clear\"\n                hasDivider\n                label=\"Appearance clear с разделителем\"\n                placeholder=\"Введите значение\"\n                contentLeft={<IconBellFill size=\"s\" color=\"inherit\" />}\n                contentRight={<IconDone size=\"s\" color=\"inherit\" />}\n            />\n            <TextField\n                view=\"default\"\n                appearance=\"viewMode\"\n                label=\"Appearance viewMode\"\n                value=\"Значение только для просмотра\"\n                readOnly\n                contentLeft={<IconBellFill size=\"s\" color=\"inherit\" />}\n                contentRight={<IconDone size=\"s\" color=\"inherit\" />}\n            />\n        </div>\n    );\n}"
     },
     {
       "title": "Управление внешним видом",
-      "snippet": "import React, {useState} from 'react';\nimport { TextField } from '@salutejs/sdds-finai';\nimport { IconBellFill, IconDone } from '@salutejs/plasma-icons';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', gap: '3rem', flexWrap: 'wrap'}}>\n            <TextField\n                view=\"default\"\n                label=\"View default\"\n                placeholder=\"Введите значение\"\n                contentLeft={<IconBellFill size=\"s\" color=\"inherit\" />}\n                contentRight={<IconDone size=\"s\" color=\"inherit\" />}\n            />\n            <TextField\n                view=\"positive\"\n                label=\"View positive\"\n                placeholder=\"Введите значение\"\n                contentLeft={<IconBellFill size=\"s\" color=\"inherit\" />}\n                contentRight={<IconDone size=\"s\" color=\"inherit\" />}\n            />\n            <TextField\n                view=\"warning\"\n                label=\"View warning\"\n                placeholder=\"Введите значение\"\n                contentLeft={<IconBellFill size=\"s\" color=\"inherit\" />}\n                contentRight={<IconDone size=\"s\" color=\"inherit\" />}\n            />\n            <TextField\n                view=\"negative\"\n                label=\"View negative\"\n                placeholder=\"Введите значение\"\n                contentLeft={<IconBellFill size=\"s\" color=\"inherit\" />}\n                contentRight={<IconDone size=\"s\" color=\"inherit\" />}\n            />\n        </div>\n    );\n}"
+      "snippet": "import React, {useState} from 'react';\nimport { TextField } from '@salutejs/sdds-finai';\nimport { IconBellFill, IconDone } from '@salutejs/plasma-icons';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', gap: '3rem', flexWrap: 'wrap'}}>\n            <TextField\n                view=\"default\"\n                label=\"View default\"\n                placeholder=\"Введите значение\"\n                contentLeft={<IconBellFill size=\"s\" color=\"inherit\" />}\n                contentRight={<IconDone size=\"s\" color=\"inherit\" />}\n            />\n            <TextField\n                view=\"positive\"\n                label=\"View positive\"\n                placeholder=\"Введите значение\"\n                contentLeft={<IconBellFill size=\"s\" color=\"inherit\" />}\n                contentRight={<IconDone size=\"s\" color=\"inherit\" />}\n            />\n            <TextField\n                view=\"warning\"\n                label=\"View warning\"\n                placeholder=\"Введите значение\"\n                contentLeft={<IconBellFill size=\"s\" color=\"inherit\" />}\n                contentRight={<IconDone size=\"s\" color=\"inherit\" />}\n            />\n            <TextField\n                view=\"negative\"\n                label=\"View negative\"\n                placeholder=\"Введите значение\"\n                contentLeft={<IconBellFill size=\"s\" color=\"inherit\" />}\n                contentRight={<IconDone size=\"s\" color=\"inherit\" />}\n            />\n            <TextField\n                view=\"edited\"\n                label=\"View edited\"\n                placeholder=\"Введите значение\"\n                contentLeft={<IconBellFill size=\"s\" color=\"inherit\" />}\n                contentRight={<IconDone size=\"s\" color=\"inherit\" />}\n            />\n        </div>\n    );\n}"
     },
     {
       "title": "Управление внешним видом",
       "snippet": "import React, {useState} from 'react';\nimport { TextField } from '@salutejs/sdds-finai';\nimport { IconBellFill, IconDone } from '@salutejs/plasma-icons';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', gap: '3rem', flexWrap: 'wrap'}}>\n            <TextField\n                size=\"s\"\n                label=\"Size s\"\n                placeholder=\"Введите значение\"\n                contentLeft={<IconBellFill size=\"s\" color=\"inherit\" />}\n                contentRight={<IconDone size=\"s\" color=\"inherit\" />}\n            />\n            <TextField\n                size=\"xs\"\n                label=\"Size xs\"\n                placeholder=\"Введите значение\"\n                contentLeft={<IconBellFill size=\"s\" color=\"inherit\" />}\n                contentRight={<IconDone size=\"s\" color=\"inherit\" />}\n            />\n        </div>\n    );\n}"
     },
     {
-      "title": "Подсказки Подсказки Для вывода подсказки снизу от поля используйте свойство  leftHelper ,",
-      "snippet": "import React from 'react';\nimport { TextField } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div>\n            <TextField\n                placeholder=\"Введите значение\"\n                leftHelper=\"Подсказка снизу\"\n                titleCaption=\"Подсказка сверху\"\n                hintText=\"Подсказка в виде Tooltip\"\n                hintView=\"default\"\n                hintSize=\"m\"\n            />\n        </div>\n    );\n}"
+      "title": "Подсказки Подсказки Для вывода подсказки снизу от поля используйте свойство  leftHelper  - для подсказки слева, и  rightHelper  - для подсказки справа,",
+      "snippet": "import React from 'react';\nimport { TextField } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div>\n            <TextField\n                placeholder=\"Введите значение\"\n                leftHelper=\"Подсказка слева\"\n                rightHelper=\"Подсказка справа\"\n                titleCaption=\"Подсказка сверху\"\n                hintText=\"Подсказка в виде Tooltip\"\n                hintView=\"default\"\n                hintSize=\"m\"\n            />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Подсказки Подсказки Для вывода подсказки снизу от поля используйте свойство  leftHelper  - для подсказки слева, и  rightHelper  - для подсказки справа,",
+      "snippet": "import React from 'react';\nimport { TextField } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', gap: '3rem', flexWrap: 'wrap'}}>\n            <TextField\n                labelPlacement=\"inner\"\n                placeholder=\"Введите значение\"\n                hintText=\"hintTargetPlacement по умолчанию (outer)\"\n            />\n            <TextField\n                labelPlacement=\"inner\"\n                placeholder=\"Введите значение\"\n                hintText=\"hintTargetPlacement=inner\"\n                hintTargetPlacement=\"inner\"\n            />\n        </div>\n    );\n}"
     },
     {
       "title": "Обязательность поля",

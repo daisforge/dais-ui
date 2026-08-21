@@ -7,14 +7,14 @@
     "props": [
       {
         "name": "view",
-        "type": "\"default\" | \"clear\"",
+        "type": "\"clear\" | \"default\"",
         "required": false,
         "default": "",
         "description": ""
       },
       {
         "name": "size",
-        "type": "\"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\" | \"s\" | \"l\" | \"m\" | \"xs\"",
+        "type": "\"h2\" | \"h3\" | \"h4\" | \"h5\" | \"s\" | \"l\" | \"m\" | \"xs\"",
         "required": false,
         "default": "",
         "description": ""
@@ -96,6 +96,10 @@
     {
       "title": "Использование AccordionItem атрибута Type",
       "snippet": "import React from 'react';\nimport { Accordion, AccordionItem } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div>\n            <Accordion size=\"s\">\n                <AccordionItem type=\"clear\" title=\"Как оплатить заправку бонусами СберСпасибо?\">После указания деталей заправки нажмите кнопку «К оплате». Откроется окно оплаты, где вы сможете списать бонусы и оплатить ими до 99% стоимости топлива</AccordionItem>\n                <AccordionItem type=\"clear\" title=\"Как оплатить заправку бонусами СберСпасибо?\">После указания деталей заправки нажмите кнопку «К оплате». Откроется окно оплаты, где вы сможете списать бонусы и оплатить ими до 99% стоимости топлива</AccordionItem>\n                <AccordionItem type=\"clear\" title=\"Как оплатить заправку бонусами СберСпасибо?\">После указания деталей заправки нажмите кнопку «К оплате». Откроется окно оплаты, где вы сможете списать бонусы и оплатить ими до 99% стоимости топлива</AccordionItem>\n            </Accordion>\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Использование AccordionItem с кастомной иконкой contentRight и анимацией",
+      "snippet": "import React, { useState } from 'react';\nimport { Accordion, AccordionItem } from '@salutejs/sdds-finai';\nimport { IconPlus } from '@salutejs/plasma-icons';\nexport function App() {\n    const [activeFirst, setActiveFirst] = useState(false);\n    const [activeSecond, setActiveSecond] = useState(false);\n    const getIcon = (opened) => (\n        <IconPlus\n            size=\"xs\"\n            style={{\n                transition: '0.2s',\n                transform: opened ? 'rotate(225deg)' : 'rotate(0deg)',\n            }}\n        />\n    );\n    return (\n        <div>\n            <Accordion size=\"s\">\n                <AccordionItem\n                    type=\"clear\"\n                    opened={activeFirst}\n                    onClick={(index, opened) => setActiveFirst(opened)}\n                    contentRight={getIcon(activeFirst)}\n                    title=\"Как оплатить заправку бонусами СберСпасибо?\"\n                >\n                    После указания деталей заправки нажмите кнопку «К оплате». Откроется окно оплаты, где вы сможете списать бонусы и оплатить ими до 99% стоимости топлива\n                </AccordionItem>\n                <AccordionItem\n                    type=\"clear\"\n                    opened={activeSecond}\n                    onClick={(index, opened) => setActiveSecond(opened)}\n                    contentRight={getIcon(activeSecond)}\n                    title=\"Как оплатить заправку бонусами СберСпасибо?\"\n                >\n                    После указания деталей заправки нажмите кнопку «К оплате». Откроется окно оплаты, где вы сможете списать бонусы и оплатить ими до 99% стоимости топлива\n                </AccordionItem>\n            </Accordion>\n        </div>\n    );\n}"
     }
   ]
 }

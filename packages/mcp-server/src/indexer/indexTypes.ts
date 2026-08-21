@@ -7,7 +7,7 @@ import {
 } from './parseComponent.js';
 import {
   deriveGroupAndFolder,
-  resolveImportPath,
+  resolveTypeImport,
 } from './resolveImportPath.js';
 
 /**
@@ -32,10 +32,6 @@ export function buildTypeIndex(): Record<string, TypeRecord> {
 
     for (const { name, decl } of group) {
       const sourceFile = decl.getSourceFile().getFilePath();
-      const { importPath, importStatement } = resolveImportPath(
-        name,
-        sourceFile,
-      );
       const definition = clip(
         stripImportPaths(decl.getText()),
         MAX_RAW_TYPE_CHARS,
@@ -44,8 +40,7 @@ export function buildTypeIndex(): Record<string, TypeRecord> {
       const record: TypeRecord = {
         name,
         definition,
-        importPath,
-        importStatement,
+        ...resolveTypeImport(name, sourceFile),
         sourceFile,
       };
 

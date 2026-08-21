@@ -53,6 +53,7 @@ import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 
 import { parseArgs, PKG_DIR, REPO_ROOT } from './lib/paths.mjs';
 
@@ -264,10 +265,14 @@ function main() {
     : '@daisforge/ui-mcp@latest';
 
   if (fromNpm) {
-    console.log(`▸ Библиотека — из реестра (${npmSpec}), как у настоящего потребителя.`);
+    console.log(
+      `▸ Библиотека — из реестра (${npmSpec}), как у настоящего потребителя.`,
+    );
   }
   if (mcpFromNpm) {
-    console.log(`▸ MCP-сервер — из реестра (${mcpNpmSpec}), как у настоящего потребителя.`);
+    console.log(
+      `▸ MCP-сервер — из реестра (${mcpNpmSpec}), как у настоящего потребителя.`,
+    );
   }
   if (!fromNpm && !argv['skip-build']) {
     console.log('▸ Сборка @daisforge/ui (nx build ui-kit)…');
@@ -281,6 +286,10 @@ function main() {
     // кладёт индексер — без этого шага у потребителя не будет индекса и
     // resolveIndex уйдёт в запасную ветку bundled вместо installed.
     console.log('▸ Сборка сервера и индекса…');
+    // Курированная мета лежит в gitignore (регенерируется генератором), а без
+    // неё индексер теперь падает — стенд обязан сгенерировать её сам, иначе
+    // прогон упрётся в assertMetaAvailable на чистом клоне.
+    run('node', ['./generators/meta-info/generate-meta.js'], REPO_ROOT);
     run(path.join(ROOT_NM, '.bin/tsc'), ['-p', 'tsconfig.lib.json'], PKG_DIR);
     run('node', ['./dist/indexer/buildIndex.js'], PKG_DIR);
   }
@@ -341,9 +350,22 @@ function main() {
     fromNpm ? npmSpec : UI_DIST,
     path.join(SANDBOX, 'node_modules/@daisforge/ui'),
   );
-  const mcpVersion = packInto(
-    mcpFromNpm ? mcpNpmSpec : PKG_DIR,
-    path.join(SANDBOX, 'node_modules/@daisforge/ui-mcp'),
+  const mcpTargetDir = path.join(SANDBOX, 'node_modules/@daisforge/ui-mcp');
+  const mcpVersion = packInto(mcpFromNpm ? mcpNpmSpec : PKG_DIR, mcpTargetDir);
+  // packInto распаковывает только files из тарбола (dist/data/package.json) —
+  // node_modules пакета в тарбол никогда не попадает (нормальное поведение
+  // npm pack), поэтому собственные dependencies сервера (@modelcontextprotocol/sdk,
+  // zod) без этого шага не резолвятся вовсе. Раньше это маскировалось
+  // хойстингом @modelcontextprotocol/sdk из корневого node_modules монорепо —
+  // после изоляции mcp-server от корневых зависимостей его там больше нет, и
+  // сервер в песочнице падал на ERR_MODULE_NOT_FOUND при каждом запуске
+  // (обнаружено на реальном прогоне A/B: агент честно писал, что MCP-тулы
+  // недоступны — это была не лень модели, а сломанный сервер).
+  console.log('▸ Установка зависимостей сервера в песочнице (npm install)…');
+  run(
+    'npm',
+    ['install', '--omit=dev', '--no-audit', '--no-fund', '--ignore-scripts'],
+    mcpTargetDir,
   );
   console.log(
     `   @daisforge/ui@${uiVersion} (${
@@ -383,6 +405,46 @@ function main() {
   if (info.source === 'workspace') {
     throw new Error(
       "resolveIndex ушёл веткой 'workspace' — песочница видит монорепо, обстановка не потребительская.",
+    );
+  }
+
+  // Тот же резолв, но из чужого рабочего каталога. MCP-клиент волен запускать
+  // сервер откуда угодно: Claude Code берёт корень проекта, Claude Desktop и
+  // часть других клиентов — что угодно вплоть до '/'. Пока резолв шёл только от
+  // CWD, у таких клиентов ветка молча падала в 'bundled' с сообщением
+  // «@daisforge/ui не установлен в этом проекте» — неправдой, из-за которой
+  // агент получал данные не той версии, что стоит у потребителя.
+  console.log('▸ Smoke: резолв не зависит от рабочего каталога клиента…');
+  const foreignCwd = path.parse(SANDBOX).root;
+  const foreignResolved = capture(
+    'node',
+    [
+      '--input-type=module',
+      '-e',
+      `const {resolveIndex}=await import(${JSON.stringify(
+        pathToFileURL(
+          path.join(
+            SANDBOX,
+            'node_modules/@daisforge/ui-mcp/dist/resolveIndex.js',
+          ),
+        ).href,
+      )});` +
+        'const r=resolveIndex();' +
+        'console.log(JSON.stringify({source:r.source,installed:r.installedLibVersion,libNotInstalled:r.libNotInstalled||false}));',
+    ],
+    foreignCwd,
+  );
+  const foreign = JSON.parse(foreignResolved.split(/\r?\n/).pop());
+  console.log(`   из ${foreignCwd}: ${JSON.stringify(foreign)}`);
+  if (foreign.source !== info.source) {
+    throw new Error(
+      `resolveIndex зависит от CWD: из песочницы ветка '${info.source}', из '${foreignCwd}' — '${foreign.source}'. ` +
+        'У клиентов, запускающих сервер не из корня проекта, индекс будет браться не оттуда.',
+    );
+  }
+  if (foreign.libNotInstalled) {
+    throw new Error(
+      `resolveIndex из '${foreignCwd}' считает @daisforge/ui неустановленным, хотя он стоит в песочнице.`,
     );
   }
 

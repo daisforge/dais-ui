@@ -85,3 +85,136 @@ export function resolveImportPath(
     importStatement: `import { ${exportedName} } from '${importPath}';`,
   };
 }
+
+let cachedPublicFolders: ReadonlySet<string> | undefined;
+
+/**
+ * Папки, из которых корневой баррель реально что-то экспортирует, — то есть
+ * настоящие точки входа библиотеки. У пакета нет `exports`-мапы, поэтому
+ * ФИЗИЧЕСКИ резолвится любой сабпас до собранного файла, включая сугубо
+ * внутренние (`@daisforge/ui/components/TableGlide` — низкоуровневая обвязка
+ * glide-data-grid, из корня не экспортируется вовсе). Отправлять туда агента
+ * нельзя: строка соберётся, но это импорт из потрохов библиотеки. Поэтому
+ * "публичность" папки определяется по корневому баррелю, а не по факту
+ * существования файла.
+ */
+function getPublicFolders(): ReadonlySet<string> {
+  if (!cachedPublicFolders) {
+    const folders = new Set<string>();
+    getRootExportedDecls().forEach((decls) => {
+      decls.forEach((decl) => {
+        const parts = deriveGroupAndFolder(decl.getSourceFile().getFilePath());
+        if (parts) folders.add(`${parts.group}/${parts.folderName}`);
+      });
+    });
+    cachedPublicFolders = folders;
+  }
+  return cachedPublicFolders;
+}
+
+/**
+ * Тот же вопрос, что и `isExportedFromRoot`, но к баррелю ПАПКИ компонента
+ * (`components/TableCanvas/index.ts`) — он и стоит за сабпасом
+ * `@daisforge/ui/components/TableCanvas`. Сравниваем не только имя, но и файл
+ * декларации: в TableCanvas полно тёзок (`ColumnConfig` у него свой,
+ * отдельный от легаси-`Table`).
+ */
+function isExportedFromFolderBarrel(
+  group: string,
+  folderName: string,
+  name: string,
+  sourceFilePath: string,
+): boolean {
+  const barrelPath = path.join(UI_KIT_SRC, group, folderName, 'index.ts');
+  const barrel = getProject().getSourceFile(barrelPath);
+  if (!barrel) return false;
+
+  return (
+    barrel
+      .getExportedDeclarations()
+      .get(name)
+      ?.some((d) => d.getSourceFile().getFilePath() === sourceFilePath) ?? false
+  );
+}
+
+/**
+ * Один и тот же тип часто реэкспортируют несколько барелей: `CellContent`
+ * объявлен в `TableGlide` (внутренняя папка) и реэкспортирован из
+ * `TableCanvas` (публичная). Правильный ответ агенту — публичный сабпас, а не
+ * тот, где тип физически объявлен. Ищем среди публичных папок, начиная с той,
+ * где объявление лежит; порядок остальных фиксирован алфавитом, чтобы индекс
+ * не «дрожал» между сборками.
+ */
+function findPublicExportSite(
+  name: string,
+  sourceFilePath: string,
+): { group: string; folderName: string } | undefined {
+  const publicFolders = getPublicFolders();
+  const own = deriveGroupAndFolder(sourceFilePath);
+  const ownKey = own ? `${own.group}/${own.folderName}` : undefined;
+
+  const ordered = [
+    ...(ownKey && publicFolders.has(ownKey) ? [ownKey] : []),
+    ...[...publicFolders].filter((folder) => folder !== ownKey).sort(),
+  ];
+
+  const hit = ordered.find((key) => {
+    const [group, folderName] = key.split('/');
+    return Boolean(
+      group &&
+        folderName &&
+        isExportedFromFolderBarrel(group, folderName, name, sourceFilePath),
+    );
+  });
+  if (!hit) return undefined;
+
+  const [group, folderName] = hit.split('/');
+  return group && folderName ? { group, folderName } : undefined;
+}
+
+export interface ResolvedTypeImport {
+  importPath?: string;
+  importStatement?: string;
+  /** true — тип объявлен в ui-kit, но наружу не экспортирован ниоткуда. */
+  internal?: true;
+  importNotice?: string;
+}
+
+/**
+ * Импорт для ТИПА, а не для компонента. Разница принципиальная: у компонента
+ * сабпас-ветка `resolveImportPath` всегда попадает в цель (компонент на то и
+ * компонент, что экспортирован), а среди типов полно сугубо внутренних —
+ * особенно после транзитивного раскрытия, которое доходит до вспомогательных
+ * `ColumnDefaultOmitted`/`ContentFormat` в недрах TableCanvas. Отдать на них
+ * синтезированный `import { ContentFormat } from '@daisforge/ui/components/
+ * TableCanvas'` — это выдать агенту строку, которая не соберётся; уж лучше
+ * честно сказать, что тип внутренний, и показать само определение.
+ */
+export function resolveTypeImport(
+  name: string,
+  sourceFilePath: string,
+): ResolvedTypeImport {
+  if (isExportedFromRoot(name, sourceFilePath)) {
+    return {
+      importPath: ROOT_IMPORT_PATH,
+      importStatement: `import { ${name} } from '${ROOT_IMPORT_PATH}';`,
+    };
+  }
+
+  const site = findPublicExportSite(name, sourceFilePath);
+  if (site) {
+    const importPath = `${ROOT_IMPORT_PATH}/${site.group}/${site.folderName}`;
+    return {
+      importPath,
+      importStatement: `import { ${name} } from '${importPath}';`,
+    };
+  }
+
+  return {
+    internal: true,
+    importNotice:
+      `Тип "${name}" не экспортируется из публичной точки входа — импортировать его нельзя. ` +
+      'Определение приведено для понимания структуры: опишите нужную форму ' +
+      'по месту либо возьмите её из типа, который экспортирован.',
+  };
+}

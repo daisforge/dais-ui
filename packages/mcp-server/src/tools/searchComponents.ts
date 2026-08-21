@@ -1,4 +1,9 @@
-import type { ComponentRecord, FeatureRecord, RuntimeIndex } from '../types.js';
+import type {
+  ComponentRecord,
+  FeatureRecord,
+  RuntimeIndex,
+  TypeRecord,
+} from '../types.js';
 import { isOkComponent } from '../types.js';
 
 export interface SearchComponentsArgs {
@@ -44,6 +49,21 @@ const STOPWORDS = new Set([
   'to',
 ]);
 
+/** Первая содержательная строка определения — узнать тип, не заказывая его целиком. */
+function firstLine(definition: string): string {
+  const line = definition.split('\n').find((l) => l.trim().length > 0) || '';
+  return line.trim().slice(0, 120);
+}
+
+/**
+ * Морфологии здесь намеренно нет. Пробовал дешёвый стемминг (отрезать
+ * падежное окончание и засчитывать совпадение по основе с меньшим весом) —
+ * замер на 12 запросах дал ровно тот же результат, 8 попаданий в топ-3, что
+ * и без него, но заметно прибавил шума: на "конфигурация группировки колонок"
+ * фичи таблицы вытеснялись `Container`/`Layout`/`Col`, поймавшими основу
+ * "колон" в общих доках. Русские словоформы стоит закрывать нормальным
+ * стеммером, а не эвристикой на два символа.
+ */
 function tokenize(query: string | undefined): string[] {
   return (query || '')
     .toLowerCase()
@@ -65,7 +85,7 @@ function includesPositively(text: string, word: string): boolean {
   return !/не\s*$/.test(before);
 }
 
-function scoreComponent(component: ComponentRecord, words: string[]): number {
+function scoreComponent(component: ComponentRecord, tokens: string[]): number {
   const name = component.name.toLowerCase();
   const hint = (component.hint || '').toLowerCase();
   const description = (component.description || '').toLowerCase();
@@ -74,7 +94,7 @@ function scoreComponent(component: ComponentRecord, words: string[]): number {
   const category = (component.category || '').toLowerCase();
 
   let score = 0;
-  words.forEach((w) => {
+  tokens.forEach((w) => {
     if (name === w) score += 100;
     else if (name.includes(w)) score += 15;
     if (includesPositively(hint, w)) score += 20;
@@ -94,7 +114,7 @@ function scoreComponent(component: ComponentRecord, words: string[]): number {
   return score;
 }
 
-function scoreFeature(feature: FeatureRecord, words: string[]): number {
+function scoreFeature(feature: FeatureRecord, tokens: string[]): number {
   const featureName = feature.feature.toLowerCase();
   const componentName = feature.component.toLowerCase();
   const summary = (feature.summary || '').toLowerCase();
@@ -102,7 +122,7 @@ function scoreFeature(feature: FeatureRecord, words: string[]): number {
   const apiDocs = (feature.apiDocs || '').toLowerCase();
 
   let score = 0;
-  words.forEach((w) => {
+  tokens.forEach((w) => {
     if (featureName === w) score += 80;
     else if (featureName.includes(w)) score += 15;
     if (componentName.includes(w)) score += 10;
@@ -112,6 +132,33 @@ function scoreFeature(feature: FeatureRecord, words: string[]): number {
   });
 
   if (feature.legacy && score > 0) score *= LEGACY_PENALTY_FACTOR;
+  return score;
+}
+
+/**
+ * Тип ищется и по имени, и по ТЕКСТУ определения — это единственный способ
+ * ответить на запросы вида "как отрисовать свою ячейку" или "GridCellKind
+ * renderCell": нужное имя (`CellContent`) агент заранее не знает, а в тексте
+ * `ColumnConfig` оно написано. Вес по определению маленький: определения
+ * длинные (до 6000 символов), и по совпадению одного слова тип не должен
+ * обгонять компонент, у которого это слово в имени.
+ *
+ * Внутренние типы (не экспортированы наружу) понижаются тем же приёмом, что
+ * legacy и internal-роль: они полезны для понимания структуры, но ответом на
+ * "что импортировать" быть не могут.
+ */
+function scoreType(record: TypeRecord, tokens: string[]): number {
+  const name = record.name.toLowerCase();
+  const definition = record.definition.toLowerCase();
+
+  let score = 0;
+  tokens.forEach((w) => {
+    if (name === w) score += 90;
+    else if (name.includes(w)) score += 15;
+    if (definition.includes(w)) score += 3;
+  });
+
+  if (record.internal && score > 0) score *= INTERNAL_PENALTY_FACTOR;
   return score;
 }
 
@@ -127,7 +174,15 @@ interface FeatureHit {
   record: FeatureRecord;
 }
 
-type SearchHit = ComponentHit | FeatureHit;
+interface TypeHit {
+  kind: 'type';
+  score: number;
+  /** Ключ индекса — может быть квалифицированным ("TableCanvas.ColumnConfig"), именно его ждёт get_type. */
+  key: string;
+  record: TypeRecord;
+}
+
+type SearchHit = ComponentHit | FeatureHit | TypeHit;
 
 interface ComponentResult {
   kind: 'component';
@@ -157,6 +212,38 @@ interface FeatureResult {
   legacy?: true;
 }
 
+interface TypeResult {
+  kind: 'type';
+  score: number;
+  /** Ключ для get_type — может отличаться от name, если имя неоднозначно. */
+  name: string;
+  importPath?: string;
+  /** true — тип не экспортируется, импортировать нельзя (см. resolveTypeImport). */
+  internal?: true;
+  /** Первая строка определения: понять, тот ли это тип, не тратя вызов get_type. */
+  definitionPreview: string;
+}
+
+type SearchResult = ComponentResult | FeatureResult | TypeResult;
+
+/**
+ * Порог отсечки шума: в реальном логе запрос "GridCellKind renderCell ячейка
+ * текст CellContent" вернул TableCanvas со 100 очками и следом пять
+ * компонентов с 6-30 очками, не имевших к вопросу никакого отношения
+ * (`Counter`, `ToastProvider`, `TextSkeleton` — совпало одно общее слово в
+ * описании). Отсекаем хвост относительно лучшего результата, а не абсолютным
+ * значением: у редких терминов абсолютные очки низкие у ВСЕХ хитов, и
+ * фиксированный порог убил бы единственный верный ответ.
+ */
+const NOISE_FLOOR_RATIO = 0.15;
+
+/** Куда идти, когда поиск ничего не дал — тупиковый ответ отправляет агента читать node_modules. */
+const EMPTY_RESULT_NOTICE =
+  'Ничего не найдено. Дальше стоит: list_components({type/category}) — посмотреть каталог целиком; ' +
+  'list_features({component}) — фичи конкретного компонента (у TableCanvas их 46, имена вроде ' +
+  'CopyPasteFill/massPanelAction не угадываются); get_component_props({name}) — типы полей, ' +
+  'если известен компонент, но не известно имя типа.';
+
 /**
  * Простой скоринг по имени/description/docs/hint (без внешних NLP-зависимостей),
  * плюс поиск по фичам наравне с компонентами — запрос "фильтрация в таблице"
@@ -168,16 +255,18 @@ interface FeatureResult {
 export function searchComponents(
   index: RuntimeIndex,
   { query, limit = 15 }: SearchComponentsArgs = {},
-): { results: (ComponentResult | FeatureResult)[] } {
-  const words = tokenize(query);
-  if (words.length === 0) return { results: [] };
+): { results: SearchResult[]; notice?: string } {
+  const tokens = tokenize(query);
+  if (tokens.length === 0) {
+    return { results: [], notice: EMPTY_RESULT_NOTICE };
+  }
 
   const componentResults: ComponentHit[] = Object.values(index.components)
     .filter(isOkComponent)
     .map(
       (c): ComponentHit => ({
         kind: 'component',
-        score: scoreComponent(c, words),
+        score: scoreComponent(c, tokens),
         record: c,
       }),
     )
@@ -187,17 +276,45 @@ export function searchComponents(
     .map(
       (f): FeatureHit => ({
         kind: 'feature',
-        score: scoreFeature(f, words),
+        score: scoreFeature(f, tokens),
         record: f,
       }),
     )
     .filter((r) => r.score > 0);
 
-  const hits: SearchHit[] = [...componentResults, ...featureResults]
-    .sort((a, b) => b.score - a.score)
+  const typeResults: TypeHit[] = Object.entries(index.types)
+    .map(
+      ([key, record]): TypeHit => ({
+        kind: 'type',
+        score: scoreType(record, tokens),
+        key,
+        record,
+      }),
+    )
+    .filter((r) => r.score > 0);
+
+  const scored: SearchHit[] = [
+    ...componentResults,
+    ...featureResults,
+    ...typeResults,
+  ].sort((a, b) => b.score - a.score);
+
+  const best = scored[0]?.score ?? 0;
+  const hits = scored
+    .filter((hit) => hit.score >= best * NOISE_FLOOR_RATIO)
     .slice(0, limit);
 
-  const results = hits.map((hit): ComponentResult | FeatureResult => {
+  const results = hits.map((hit): SearchResult => {
+    if (hit.kind === 'type') {
+      return {
+        kind: hit.kind,
+        score: hit.score,
+        name: hit.key,
+        importPath: hit.record.importPath,
+        internal: hit.record.internal,
+        definitionPreview: firstLine(hit.record.definition),
+      };
+    }
     if (hit.kind === 'component') {
       return {
         kind: hit.kind,
@@ -225,5 +342,7 @@ export function searchComponents(
     };
   });
 
-  return { results };
+  return results.length > 0
+    ? { results }
+    : { results, notice: EMPTY_RESULT_NOTICE };
 }

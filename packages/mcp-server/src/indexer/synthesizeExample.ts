@@ -30,6 +30,7 @@ export function synthesizeMinimalUsage(record: {
   name: string;
   props?: PropRecord[];
   inheritedProps?: InheritedPropRecord[];
+  compoundParts?: { name: string }[];
 }): string {
   const requiredProps = [
     ...(record.props || []),
@@ -39,6 +40,18 @@ export function synthesizeMinimalUsage(record: {
   const attrs = requiredProps
     .map((p) => `${p.name}={${placeholderForType(p.type)}}`)
     .join(' ');
+
+  const openTag = attrs ? `<${record.name} ${attrs}>` : `<${record.name}>`;
+
+  // У compound-компонента самозакрывающийся `<ModalDF />` — не минимальный
+  // пример, а неработающий: весь контент живёт в частях. Перечисляем реально
+  // найденные части, но НЕ выдумываем их вложенность (какая часть внутри
+  // какой — знает только пример из get_component_examples).
+  const parts = record.compoundParts || [];
+  if (parts.length > 0) {
+    const partNames = parts.map((p) => `${record.name}.${p.name}`).join(', ');
+    return `${openTag}\n  {/* части: ${partNames} */}\n</${record.name}>`;
+  }
 
   return attrs ? `<${record.name} ${attrs} />` : `<${record.name} />`;
 }

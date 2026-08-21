@@ -7,7 +7,7 @@
     "props": [
       {
         "name": "view",
-        "type": "\"default\" | \"clear\"",
+        "type": "\"clear\" | \"default\"",
         "required": false,
         "default": "",
         "description": ""

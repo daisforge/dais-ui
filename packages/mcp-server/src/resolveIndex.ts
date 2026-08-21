@@ -22,11 +22,30 @@ function readJson<T>(filePath: string): T | undefined {
   }
 }
 
-/** Резолвит '@daisforge/ui/...' относительно CWD консьюмера (не относительно нашего пакета). */
+const requireFromSelf = createRequire(import.meta.url);
+
+/**
+ * Резолвит '@daisforge/ui/...' в проекте потребителя — сначала от его CWD,
+ * затем от места, где лежим мы сами.
+ *
+ * Второй заход обязателен: MCP-клиент волен запускать сервер с любым рабочим
+ * каталогом (Claude Code берёт корень проекта, а Claude Desktop и часть других
+ * клиентов — что угодно вплоть до '/'), и тогда резолв только от CWD не находит
+ * библиотеку, хотя она установлена. Раньше это молча уводило в ветку 'bundled'
+ * с сообщением «@daisforge/ui не установлен в этом проекте» — неправдой, из-за
+ * которой агент получал данные не той версии, что стоит у потребителя.
+ * При обычной установке мы и библиотека — соседи в одном node_modules, поэтому
+ * резолв от собственного файла её находит независимо от CWD.
+ */
 function resolveFromConsumer(specifier: string): string | undefined {
   try {
     const req = createRequire(path.join(process.cwd(), 'package.json'));
     return req.resolve(specifier);
+  } catch {
+    // CWD не подошёл — пробуем от себя, см. комментарий выше.
+  }
+  try {
+    return requireFromSelf.resolve(specifier);
   } catch {
     return undefined;
   }
@@ -73,7 +92,8 @@ export function resolveIndex(): ResolvedIndex {
   const installedLibVersion = getInstalledLibVersion();
 
   // 2. Installed — версия @daisforge/ui у потребителя уже содержит mcp-data
-  // (появилось начиная с версии, в которой был опубликован этот MCP).
+  // (появилось в 1.14.0 — первом релизе, где publish-npm.yml кладёт индекс в
+  // тарбол библиотеки). Не зависит от CWD клиента, см. resolveFromConsumer.
   const installedIndexPath = resolveFromConsumer(
     '@daisforge/ui/mcp-data/component-index.json',
   );

@@ -120,7 +120,7 @@ function main(): void {
     server,
     index,
     'search_components',
-    'Поиск компонентов и их фичей по свободному запросу (рус/англ) — включая disambiguation-подсказки (например "таблица" → TableCanvas).',
+    'Поиск по свободному запросу (рус/англ) сразу по трём сущностям: компоненты, их фичи и типы (в том числе по тексту определения типа — так находится нужное имя, когда оно заранее неизвестно: "отрисовать свою ячейку" → CellContent/ColumnConfig). Включает disambiguation-подсказки (например "таблица" → TableCanvas).',
     {
       query: z.string(),
       limit: z.number().int().positive().max(50).optional(),
