@@ -57,6 +57,21 @@ function getInstalledLibVersion(): string | undefined {
   return readJson<{ version?: string }>(pkgPath)?.version;
 }
 
+/**
+ * Индекс, у которого обвалился источник данных, а не просто «старая версия».
+ * Признаки бинарные и не зависят от размера каталога: `features` пустой либо
+ * нет `guides.installation`. И то, и другое приходит ТОЛЬКО из курированной
+ * меты, которая лежит в .gitignore — если её не сгенерировали перед сборкой,
+ * индекс собирается молча и без них (см. assertMetaAvailable).
+ *
+ * Проверять здесь пороги из checkCompleteness нельзя: они откалиброваны под
+ * текущий каталог, а установленная у потребителя библиотека может быть
+ * заметно старее и легитимно беднее. Обвал источника — другое.
+ */
+function isDegradedIndex(index: ComponentIndex): boolean {
+  return index.features.length === 0 || !index.guides?.installation;
+}
+
 function buildDataVersionNotice(
   libNotInstalled: boolean,
   versionMismatch: boolean,
@@ -99,6 +114,34 @@ export function resolveIndex(): ResolvedIndex {
   );
   if (installedIndexPath) {
     const index = readJson<ComponentIndex>(installedIndexPath);
+    if (index && !isDegradedIndex(index)) {
+      return { index, source: 'installed', installedLibVersion };
+    }
+
+    // Индекс внутри библиотеки есть, но неполный. Так уехал @daisforge/ui@1.14.0
+    // — первая версия, куда индекс вообще начал класться: релизный шаг собирал
+    // его мимо `npm run meta`, и наружу отправился каталог без features, без
+    // guides и без full-code примеров. Раньше такой индекс выигрывал у
+    // запасного безусловно (проверялось только «файл есть и парсится»), то
+    // есть обновление библиотеки УХУДШАЛО данные MCP: до 1.14.0 работал
+    // bundled, с 1.14.0 включился заведомо худший installed.
+    //
+    // Откатываемся на запасной, только если он сам не деградировал — иначе
+    // менять шило на мыло, теряя совпадение по версии библиотеки.
+    const fallback = readJson<ComponentIndex>(BUNDLED_INDEX_PATH);
+    if (index && fallback && !isDegradedIndex(fallback)) {
+      return {
+        index: fallback,
+        source: 'bundled',
+        installedLibVersion,
+        dataVersionNotice:
+          `Индекс внутри установленного @daisforge/ui@${installedLibVersion} неполный ` +
+          '(нет features и гайда по установке — он собран до исправления релизного пайплайна), ' +
+          `поэтому используется запасной индекс версии ${fallback.libVersion} из @daisforge/ui-mcp. ` +
+          'Возможны расхождения в пропсах, если версии не совпадают — обновите @daisforge/ui.',
+      };
+    }
+
     if (index) {
       return { index, source: 'installed', installedLibVersion };
     }

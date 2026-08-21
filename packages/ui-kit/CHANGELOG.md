@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.14.1](https://github.com/daisforge/dais-ui/compare/v1.14.0...v1.14.1) (2026-08-21)
+
+### Bug Fixes
+
+- **ui-kit:** перевыпуск пакета с корректным mcp-data в тарболе ([1e9dda9](https://github.com/daisforge/dais-ui/commit/1e9dda9701c6dd994f31dc407f2a9053a32b2058))
+
 # [1.14.0](https://github.com/daisforge/dais-ui/compare/v1.13.0...v1.14.0) (2026-08-21)
 
 ### Features
