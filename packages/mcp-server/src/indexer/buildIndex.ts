@@ -28,7 +28,11 @@ import { assertMetaAvailable } from './loadMeta.js';
 import { mergeAtomicCuratedMeta } from './mergeAtomicCuratedMeta.js';
 import { mergeAtomicData } from './mergeAtomicData.js';
 import { getInstallationGuide, mergeMeta } from './mergeMeta.js';
-import { isParsedComponent, parseComponent } from './parseComponent.js';
+import {
+  expandCollectedTypeRefs,
+  isParsedComponent,
+  parseComponent,
+} from './parseComponent.js';
 import { resolveImportPath } from './resolveImportPath.js';
 import { synthesizeMinimalUsage } from './synthesizeExample.js';
 import { REPO_ROOT } from './tsProject.js';
@@ -49,6 +53,17 @@ function getLibVersion(): string {
   return pkg.version;
 }
 
+/**
+ * Curated-стори приходят из меты без всякого потолка — самая длинная в
+ * каталоге весит 24 445 символов, то есть одна она перекрывает весь бюджет
+ * ответа (25 000). Такой пример агент всё равно получит обрезанным, но уже
+ * не тулом, а последним рубежом truncateForResponse — а тот режет ВЕСЬ ответ
+ * в строку `raw`, ломая структуру JSON. Честнее обрезать сам код заранее и
+ * пометить это в тексте, как делают usage/vendor источники. 8000 покрывает
+ * 96% curated-стори целиком (p95 = 6649).
+ */
+const MAX_CURATED_CODE_CHARS = 8000;
+
 function mapCuratedStories(
   stories: ExampleRecord[] | undefined,
 ): ExampleRecord[] {
@@ -56,7 +71,10 @@ function mapCuratedStories(
     exportName: s.exportName,
     displayName: s.displayName,
     type: s.type,
-    code: s.code,
+    code:
+      s.code.length > MAX_CURATED_CODE_CHARS
+        ? `${s.code.slice(0, MAX_CURATED_CODE_CHARS)}\n// … (обрезано)`
+        : s.code,
   }));
 }
 
@@ -70,6 +88,14 @@ const EXAMPLE_TYPE_ORDER: Record<ExampleRecord['type'], number> = {
 
 /** Три источника разом редко нужны — режем итог, чтобы карточка не раздувалась без пользы для агента. */
 const MAX_TOTAL_EXAMPLES = 4;
+
+/**
+ * На сколько уровней вглубь раскрывать ссылки между типами. 2 — компромисс,
+ * подобранный по замеру: покрывает реальный путь агента (проп → ColumnConfig →
+ * ContentFormat/CellInfo/CellContent), но не втягивает в индекс весь
+ * внутренний тайп-граф TableCanvas.
+ */
+const TYPE_EXPANSION_DEPTH = 3;
 
 function sortExamples(examples: ExampleRecord[]): ExampleRecord[] {
   return [...examples].sort(
@@ -363,6 +389,10 @@ function main(): void {
   const installationGuide = getInstallationGuide();
   // Читает module-level Map, которую parseComponent наполнял по ходу разбора
   // каждого компонента в buildComponentRecords() выше — обязательно после неё.
+  // Перед сборкой раскрываем собранное вглубь: типы, названные в пропсах, почти
+  // всегда ссылаются на другие типы ui-kit, и без этого шага агент упирается в
+  // "не найден в индексе" на первом же переходе (см. expandCollectedTypeRefs).
+  expandCollectedTypeRefs(TYPE_EXPANSION_DEPTH);
   const types = buildTypeIndex();
 
   const index: ComponentIndex = {

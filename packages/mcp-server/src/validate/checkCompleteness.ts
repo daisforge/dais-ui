@@ -16,7 +16,7 @@ export const COMPLETENESS_THRESHOLDS = {
   features: 50,
   curatedDocsComponents: 25,
   fullCodeExamples: 30,
-  types: 35,
+  types: 200,
   compoundComponents: 10,
 } as const;
 
