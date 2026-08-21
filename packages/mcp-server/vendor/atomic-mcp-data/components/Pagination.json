@@ -7,14 +7,14 @@
     "props": [
       {
         "name": "view",
-        "type": "\"default\" | \"clear\" | \"secondary\"",
+        "type": "\"clear\" | \"default\" | \"secondary\"",
         "required": false,
         "default": "",
         "description": ""
       },
       {
         "name": "viewCurrentPage",
-        "type": "\"default\" | \"clear\" | \"secondary\"",
+        "type": "\"clear\" | \"default\" | \"secondary\"",
         "required": false,
         "default": "",
         "description": ""

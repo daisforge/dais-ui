@@ -405,6 +405,13 @@
         "description": ""
       },
       {
+        "name": "hintPortal",
+        "type": "string | RefObject<HTMLElement | null>",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
         "name": "_offset",
         "type": "[number, number]",
         "required": false,
@@ -420,7 +427,7 @@
       },
       {
         "name": "view",
-        "type": "\"default\" | \"positive\" | \"warning\" | \"negative\"",
+        "type": "\"default\" | \"positive\" | \"warning\" | \"negative\" | \"edited\"",
         "required": false,
         "default": "",
         "description": ""
@@ -466,6 +473,13 @@
         "required": false,
         "default": "",
         "description": ""
+      },
+      {
+        "name": "appearance",
+        "type": "\"default\" | \"viewMode\"",
+        "required": false,
+        "default": "",
+        "description": ""
       }
     ]
   },
@@ -475,12 +489,20 @@
       "snippet": "type Items = Array<{\n    /**\n     * Значение у item.\n     */\n    value: string;\n    /**\n     * Метка-подпись к item.\n     */\n    label: string;\n    /**\n     * Сторона открытия вложенного дропдауна относительно текущего элемента.\n     * @default bottom-start\n     */\n    placement?: Placement;\n    /**\n     * Список дочерних items.\n     */\n    items?: Array<ItemOption>;\n    /**\n     * Item не активен.\n     */\n    disabled?: boolean;\n    /**\n     * Слот для контента слева.\n     */\n    contentLeft?: ReactNode;\n    /**\n     * Слот для контента справа.\n     */\n    contentRight?: ReactNode;\n    /**\n     * Classname для item.\n     */\n    className?: string;\n    /**\n     * Максимальная высота дочернего выпадающего списка.\n     */\n    listMaxHeight?: CSSProperties['height'];\n}>;"
     },
     {
+      "title": "Appearance Appearance appearance=\"viewMode\"  — режим просмотра.",
+      "snippet": "import React from 'react';\nimport { Combobox } from '@salutejs/sdds-finai';\nexport function App() {\n    const items = [\n        { value: 'option_1', label: 'Опция 1' },\n        { value: 'option_2', label: 'Опция 2' },\n    ];\n    return (\n        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', maxWidth: '350px', height: '200px' }}>\n            <Combobox items={items} appearance=\"default\" label=\"Default\" placeholder=\"Placeholder\" />\n            <Combobox items={items} appearance=\"viewMode\" value=\"option_1\" readOnly label=\"ViewMode\" placeholder=\"Placeholder\" />\n        </div>\n    );\n}"
+    },
+    {
       "title": "Примеры Примеры",
       "snippet": "import React, { useState } from 'react';\nimport { Combobox } from '@salutejs/sdds-finai';\nexport function App() {\n   const [value, setValue] = useState<string>('');\n    const items = [\n        {\n            value: 'north_america',\n            label: 'Северная Америка',\n        },\n        {\n            value: 'south_america',\n            label: 'Южная Америка',\n            items: [\n                {\n                    value: 'brazil',\n                    label: 'Бразилия',\n                },\n                {\n                    value: 'argentina',\n                    label: 'Аргентина',\n                },\n            ],\n        },\n    ];\n    return (\n        <div style={{ display: \"flex\", gap: \"30px\", height: \"300px\" }}>\n            <div style={{ width: \"300px\" }}>\n                <Combobox\n                    items={items}\n                    value={value}\n                    onChange={setValue}\n                    placeholder=\"Placeholder\"\n                    label=\"Label\"\n                    helperText=\"Helper text\"\n                />\n            </div>\n        </div>\n    );\n}"
     },
     {
       "title": "Примеры Примеры",
       "snippet": "import React, { useState } from 'react';\nimport { Combobox } from '@salutejs/sdds-finai';\nexport function App() {\n   const [value, setValue] = useState<string[]>([]);\n    const items = [\n        {\n            value: 'north_america',\n            label: 'Северная Америка',\n        },\n        {\n            value: 'south_america',\n            label: 'Южная Америка',\n            items: [\n                {\n                    value: 'brazil',\n                    label: 'Бразилия',\n                },\n                {\n                    value: 'argentina',\n                    label: 'Аргентина',\n                },\n            ],\n        },\n    ];\n    return (\n        <div style={{ display: \"flex\", gap: \"30px\", height: \"300px\" }}>\n            <div style={{ width: \"300px\" }}>\n                <Combobox\n                    multiple\n                    items={items}\n                    value={value}\n                    onChange={setValue}\n                    placeholder=\"Placeholder\"\n                    label=\"Label\"\n                    helperText=\"Helper text\"\n                />\n            </div>\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Примеры Примеры",
+      "snippet": "import React, { useState } from 'react';\nimport { Combobox } from '@salutejs/sdds-finai';\nexport function App() {\n    const [value, setValue] = useState<string[]>(['north_america']);\n    const items = [\n        {\n            value: 'north_america',\n            label: 'Северная Америка',\n        },\n        {\n            value: 'south_america',\n            label: 'Южная Америка',\n        },\n    ];\n    return (\n        <div style={{ width: \"300px\", height: \"300px\" }}>\n            <Combobox\n                multiple\n                items={items}\n                value={value}\n                onChange={setValue}\n                placeholder={value.length > 0 ? '' : 'Placeholder'}\n                label=\"Label\"\n                helperText=\"Helper text\"\n            />\n        </div>\n    );\n}"
     },
     {
       "title": "Примеры Примеры",

@@ -2,14 +2,26 @@
   "name": "Typography",
   "package": "sdds-finai",
   "category": "components",
-  "summary": "Typography В состав Plasma Web входят компоненты, реализующие типографическую систему типографическую систему Plasma .",
+  "summary": "Typography В состав входят компоненты, реализующие типографическую систему.",
   "api": {
     "props": []
   },
   "examples": [
     {
+      "title": "Установка шрифта",
+      "snippet": "<html>\n    <head>\n        <link rel=\"stylesheet\" href=\"https://cdn-app.sberdevices.ru/shared-static/0.0.0/styles/SBSansText.0.2.0.css\" />\n        <link\n            rel=\"stylesheet\"\n            href=\"https://cdn-app.sberdevices.ru/shared-static/0.0.0/styles/SBSansDisplay.0.2.0.css\"\n        />\n        <link\n            rel=\"stylesheet\"\n            href=\"https://cdn-app.sberdevices.ru/shared-static/0.0.0/styles/SBSansTextMono.0.2.0.css\"\n        />\n    </head>\n</html>"
+    },
+    {
       "title": "Смена тега",
       "snippet": "import React from 'react';\nimport { BodyM } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <BodyM as=\"h3\">\n            BodyM\n        </BodyM>\n    );\n}"
+    },
+    {
+      "title": "Управление насыщенностью шрифта",
+      "snippet": "import React from 'react';\nimport { DsplL } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <>\n            <DsplL bold={false}>Regular</DsplL>\n            <DsplL medium>Medium</DsplL>\n            <DsplL>Bold</DsplL>\n        </>\n    )\n}"
+    },
+    {
+      "title": "Курсивное начертание текста",
+      "snippet": "import React from 'react';\nimport { DsplL } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <>\n            <DsplL isItalic>Bold</DsplL>\n        </>\n    )\n}"
     },
     {
       "title": "Моноширинные числа (группа Numbers)",

@@ -7,7 +7,7 @@
     "props": [
       {
         "name": "size",
-        "type": "\"s\" | \"l\" | \"m\" | \"xs\" | \"xl\" | \"xxs\"",
+        "type": "\"s\" | \"l\" | \"m\" | \"xs\" | \"xxs\" | \"xl\"",
         "required": false,
         "default": "",
         "description": ""

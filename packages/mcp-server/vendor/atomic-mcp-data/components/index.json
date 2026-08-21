@@ -8,7 +8,7 @@
   {
     "name": "Attach",
     "href": "Attach.json",
-    "summary": "Attach",
+    "summary": "Attach С помощью свойства buttonType можно менять вид кнопки: обычный или с иконкой.",
     "category": "components"
   },
   {
@@ -86,7 +86,7 @@
   {
     "name": "Chip",
     "href": "Chip.json",
-    "summary": "Chip Chips могут отображаться в нескольких размерах и цветах, могут содержать текст и/или иконку.",
+    "summary": "Chip Свойство onClickClose позволяет обработать нажатие на иконку закрытия, например, чтобы удалить чип: Возможные значения свойства pin : square – обычное скругление; circle – сильное скругление; clear – нет скругления.",
     "category": "components"
   },
   {
@@ -98,13 +98,13 @@
   {
     "name": "CodeField",
     "href": "CodeField.json",
-    "summary": "CodeField Компонент CodeField используется для ввода OTP-кодов.",
+    "summary": "CodeField Компонент CodeField используется для ввода одноразовых OTP-кодов.",
     "category": "components"
   },
   {
     "name": "CodeInput",
     "href": "CodeInput.json",
-    "summary": "CodeInput Компонент CodeInput используется для ввода OTP-кодов.",
+    "summary": "CodeInput Компонент CodeInput используется для ввода OTP-кодов в виде крупных символов с круговыми индикаторами.",
     "category": "components"
   },
   {
@@ -122,13 +122,13 @@
   {
     "name": "DatePicker",
     "href": "DatePicker.json",
-    "summary": "DatePicker | Обозначение | Отображение | Описание | |-------------|---------------------------------------|----------------------------------| | DD | 01-31 | Дни месяца, 2 цифры | | D | 1-31 | Дни месяца | | MMMM | January...December / январь...декабрь | Месяц года, полное название | | MMM | Jan...D",
+    "summary": "DatePicker Размер DatePicker задаётся с помощью свойства size .",
     "category": "components"
   },
   {
     "name": "DateTimePicker",
     "href": "DateTimePicker.json",
-    "summary": "DateTimePicker Размер DateTimePicker задаётся с помощью свойства size .",
+    "summary": "DateTimePicker appearance=\"viewMode\" — режим просмотра.",
     "category": "components"
   },
   {
@@ -242,7 +242,7 @@
   {
     "name": "NumberInput",
     "href": "NumberInput.json",
-    "summary": "NumberInput С помощью свойства shape можно изменить скругление углов: При isManualInput={true} стрелки также работают, дополнительно разрешая прямой ввод числа.",
+    "summary": "NumberInput С помощью свойства shape можно изменить скругление углов: до которого округляется значение при вычислении шага и после завершения ручного ввода.",
     "category": "components"
   },
   {
@@ -290,7 +290,7 @@
   {
     "name": "ProgressBarCircular",
     "href": "ProgressBarCircular.json",
-    "summary": "ProgressBarCircular Круговой индикатор прогресса.",
+    "summary": "ProgressBarCircular",
     "category": "components"
   },
   {
@@ -302,7 +302,13 @@
   {
     "name": "Range",
     "href": "Range.json",
-    "summary": "Range При таком варианте свойства firstTextfieldTextBefore и secondTextfieldTextBefore становятся обязательными для подсказки в виде Tooltip - hintText, для подсказки сверху справа - titleCaption: Также доступны слоты для дополнительного контента: Наличие индикатора регулируется свойством hasRequire",
+    "summary": "Range Размер компонента зависит от свойства size : При таком варианте свойства firstTextfieldTextBefore и secondTextfieldTextBefore становятся обязательными для подсказки в виде Tooltip - hintText, для подсказки сверху справа - titleCaption: Также доступны слоты для дополнительного контента: Наличие",
+    "category": "components"
+  },
+  {
+    "name": "Rating",
+    "href": "Rating.json",
+    "summary": "Rating Отображение значения можно выключить с помощью свойства hasValue : По умолчанию используется точка ( .",
     "category": "components"
   },
   {
@@ -344,7 +350,7 @@
   {
     "name": "Steps",
     "href": "Steps.json",
-    "summary": "Steps",
+    "summary": "Steps Свойство itemView применяется к индикатору и заголовку активного шага.",
     "category": "components"
   },
   {
@@ -374,7 +380,7 @@
   {
     "name": "TextField",
     "href": "TextField.json",
-    "summary": "TextField для подсказки в виде Tooltip - hintText , для подсказки сверху справа - titleCaption : Наличие индикатора регулируется свойством hasRequiredIndicator .",
+    "summary": "TextField appearance=\"viewMode\" — режим просмотра.",
     "category": "components"
   },
   {
@@ -386,7 +392,7 @@
   {
     "name": "TimePicker",
     "href": "TimePicker.json",
-    "summary": "TimePicker Размер TimePicker задаётся с помощью свойства size .",
+    "summary": "TimePicker appearance=\"viewMode\" — режим просмотра.",
     "category": "components"
   },
   {
@@ -422,7 +428,7 @@
   {
     "name": "Typography",
     "href": "Typography.json",
-    "summary": "Typography В состав Plasma Web входят компоненты, реализующие типографическую систему типографическую систему Plasma .",
+    "summary": "Typography В состав входят компоненты, реализующие типографическую систему.",
     "category": "components"
   },
   {

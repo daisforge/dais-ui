@@ -41,6 +41,13 @@
         "description": ""
       },
       {
+        "name": "status",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
         "name": "title",
         "type": "ReactNode",
         "required": false,
@@ -57,13 +64,6 @@
       {
         "name": "width",
         "type": "Width<string | number>",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "status",
-        "type": "string",
         "required": false,
         "default": "",
         "description": ""

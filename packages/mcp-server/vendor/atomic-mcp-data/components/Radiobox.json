@@ -55,13 +55,6 @@
         "description": ""
       },
       {
-        "name": "readOnly",
-        "type": "boolean",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
         "name": "placeholder",
         "type": "string",
         "required": false,

@@ -2,7 +2,7 @@
   "name": "Chip",
   "package": "sdds-finai",
   "category": "components",
-  "summary": "Chip Chips могут отображаться в нескольких размерах и цветах, могут содержать текст и/или иконку.",
+  "summary": "Chip Свойство onClickClose позволяет обработать нажатие на иконку закрытия, например, чтобы удалить чип: Возможные значения свойства pin : square – обычное скругление; circle – сильное скругление; clear – нет скругления.",
   "api": {
     "props": [
       {
@@ -14,7 +14,7 @@
       },
       {
         "name": "view",
-        "type": "\"default\" | \"accent\" | \"positive\" | \"warning\" | \"negative\" | \"clear\"",
+        "type": "\"clear\" | \"default\" | \"accent\" | \"positive\" | \"warning\" | \"negative\"",
         "required": false,
         "default": "",
         "description": ""
@@ -22,6 +22,13 @@
       {
         "name": "text",
         "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "pilled",
+        "type": "boolean",
         "required": false,
         "default": "",
         "description": ""
@@ -41,13 +48,6 @@
         "description": ""
       },
       {
-        "name": "pilled",
-        "type": "boolean",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
         "name": "disabled",
         "type": "boolean",
         "required": false,
@@ -57,6 +57,13 @@
       {
         "name": "readOnly",
         "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "pin",
+        "type": "\"square-square\" | \"square-clear\" | \"clear-square\" | \"clear-clear\" | \"clear-circle\" | \"circle-clear\" | \"circle-circle\"",
         "required": false,
         "default": "",
         "description": ""
@@ -91,7 +98,7 @@
       },
       {
         "name": "appearance",
-        "type": "\"default\" | \"transparent\"",
+        "type": "\"transparent\" | \"default\"",
         "required": false,
         "default": "",
         "description": ""
@@ -100,16 +107,40 @@
   },
   "examples": [
     {
-      "title": "Использование Использование Компонент  Chip  может содержать текст, который указывается в",
-      "snippet": "import React from 'react';\nimport { Chip } from '@salutejs/sdds-finai';\nimport { IconDownload } from '@salutejs/plasma-icons';\nexport function App() {\n    return (\n        <div>\n            <Chip text=\"Текст\" />\n            <Chip text=\"Текст\" contentLeft={<IconDownload color=\"inherit\" />} />\n            <Chip contentLeft={<IconDownload color=\"inherit\" />} />\n            <Chip text=\"Текст\" />\n            <Chip text=\"Текст\" contentLeft={<IconDownload color=\"inherit\" />} />\n            <Chip>\n                Текст\n            </Chip>\n            <Chip text=\"Текст\" hasClear={false} />\n        </div>\n    );\n}"
+      "title": "Быстрый старт",
+      "snippet": "import React from 'react';\nimport { Chip } from '@salutejs/sdds-finai';\nimport { IconDownload } from '@salutejs/plasma-icons';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>\n            <Chip text=\"Текст\" />\n            <Chip text=\"Текст\" contentLeft={<IconDownload color=\"inherit\" />} />\n            <Chip text=\"Текст\" hasClear={false} />\n        </div>\n    );\n}"
     },
     {
-      "title": "Размер Chip",
-      "snippet": "import React from 'react';\nimport { Chip } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div>\n            <Chip text=\"Chip\" size=\"m\" />\n            <Chip text=\"Chip\" size=\"s\" />\n            <Chip text=\"Chip\" size=\"xs\" />\n            <Chip text=\"Chip\" size=\"xxs\" />\n        </div>\n    );\n}"
+      "title": "Управление внешним видом",
+      "snippet": "import React from 'react';\nimport { Chip } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>\n            <Chip text=\"Default\" view=\"default\" />\n            <Chip text=\"Secondary\" view=\"secondary\" />\n            <Chip text=\"Accent\" view=\"accent\" />\n            <Chip text=\"Positive\" view=\"positive\" />\n            <Chip text=\"Warning\" view=\"warning\" />\n            <Chip text=\"Negative\" view=\"negative\" />\n        </div>\n    );\n}"
     },
     {
-      "title": "Вид Chip",
-      "snippet": "import React from 'react';\nimport { Chip } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div>\n            <Chip text=\"Chip\" size=\"m\" view=\"default\" />\n            <Chip text=\"Chip\" size=\"m\" view=\"clear\" />\n            <Chip text=\"Chip\" size=\"m\" view=\"accent\" />\n            <Chip text=\"Chip\" size=\"m\" view=\"positive\" />\n            <Chip text=\"Chip\" size=\"m\" view=\"warning\" />\n            <Chip text=\"Chip\" size=\"m\" view=\"negative\" />\n        </div>\n    );\n}"
+      "title": "Управление внешним видом",
+      "snippet": "import React from 'react';\nimport { Chip } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>\n            <Chip text=\"Chip\" size=\"m\" />\n            <Chip text=\"Chip\" size=\"s\" />\n            <Chip text=\"Chip\" size=\"xs\" />\n            <Chip text=\"Chip\" size=\"28xs\" />\n            <Chip text=\"Chip\" size=\"xxs\" />\n            <Chip text=\"Chip\" size=\"16xxs\" />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Контент Контент Компонент  Chip  может содержать текст, который указывается в свойстве  text , или любой контент напрямую через  children . Свойство  text  можно использовать вместе со свойствами  contentLeft  и  contentRight  — с их помощью можно разместить  иконку  слева или справа от текста. Иконку кнопки закрытия можно заменить через свойство  contentClearButton , а отключить её отображение — свойством  hasClear",
+      "snippet": "import React from 'react';\nimport { Chip } from '@salutejs/sdds-finai';\nimport { IconDownload } from '@salutejs/plasma-icons';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>\n            <Chip text=\"Текст\" />\n            <Chip text=\"Текст\" contentLeft={<IconDownload color=\"inherit\" />} />\n            <Chip contentLeft={<IconDownload color=\"inherit\" />} />\n            <Chip>Текст</Chip>\n            <Chip text=\"Текст\" hasClear={false} />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Контент Контент Компонент  Chip  может содержать текст, который указывается в свойстве  text , или любой контент напрямую через  children . Свойство  text  можно использовать вместе со свойствами  contentLeft  и  contentRight  — с их помощью можно разместить  иконку  слева или справа от текста. Иконку кнопки закрытия можно заменить через свойство  contentClearButton , а отключить её отображение — свойством  hasClear",
+      "snippet": "import React, { useState } from 'react';\nimport { Chip } from '@salutejs/sdds-finai';\nexport function App() {\n    const [visible, setVisible] = useState(true);\n    return visible ? <Chip text=\"Удали меня\" onClickClose={() => setVisible(false)} /> : null;\n}"
+    },
+    {
+      "title": "Скругления Скругления Скругления  Chip  задаются свойствами  pilled  и  pin . Если задано  pin , оно имеет приоритет над  pilled .",
+      "snippet": "import React from 'react';\nimport { Chip } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', gap: '1rem' }}>\n            <Chip text=\"pilled=false\" />\n            <Chip text=\"pilled=true\" pilled />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Скругления Скругления Скругления  Chip  задаются свойствами  pilled  и  pin . Если задано  pin , оно имеет приоритет над  pilled .",
+      "snippet": "import React from 'react';\nimport { Chip } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>\n            <Chip text=\"Chip\" pin=\"square-square\" />\n            <Chip text=\"Chip\" pin=\"square-clear\" />\n            <Chip text=\"Chip\" pin=\"clear-square\" />\n            <Chip text=\"Chip\" pin=\"clear-clear\" />\n            <Chip text=\"Chip\" pin=\"clear-circle\" />\n            <Chip text=\"Chip\" pin=\"circle-clear\" />\n            <Chip text=\"Chip\" pin=\"circle-circle\" />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Градиентный текст",
+      "snippet": "import React from 'react';\nimport { Chip } from '@salutejs/sdds-finai';\nimport styled from 'styled-components';\nexport function App() {\n    const GradientChip = styled(Chip)`\n        & .sdds-core-text-node {\n            background: linear-gradient(90deg, #f7971e, #ffd200);\n            background-clip: text;\n            -webkit-background-clip: text;\n            -webkit-text-fill-color: transparent;\n        }\n    `;\n    return (\n        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>\n            <GradientChip text=\"Градиент\" />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Состояния Состояния Компонент поддерживает состояния  disabled  и  readOnly",
+      "snippet": "import React from 'react';\nimport { Chip } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', gap: '1rem' }}>\n            <Chip text=\"Активный\" />\n            <Chip text=\"Неактивный\" disabled />\n            <Chip text=\"Только чтение\" readOnly />\n        </div>\n    );\n}"
     }
   ]
 }

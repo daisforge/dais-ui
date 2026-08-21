@@ -2,16 +2,9 @@
   "name": "Range",
   "package": "sdds-finai",
   "category": "components",
-  "summary": "Range При таком варианте свойства firstTextfieldTextBefore и secondTextfieldTextBefore становятся обязательными для подсказки в виде Tooltip - hintText, для подсказки сверху справа - titleCaption: Также доступны слоты для дополнительного контента: Наличие индикатора регулируется свойством hasRequire",
+  "summary": "Range Размер компонента зависит от свойства size : При таком варианте свойства firstTextfieldTextBefore и secondTextfieldTextBefore становятся обязательными для подсказки в виде Tooltip - hintText, для подсказки сверху справа - titleCaption: Также доступны слоты для дополнительного контента: Наличие",
   "api": {
     "props": [
-      {
-        "name": "view",
-        "type": "\"default\"",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
       {
         "name": "size",
         "type": "\"s\" | \"xs\"",
@@ -20,50 +13,8 @@
         "description": ""
       },
       {
-        "name": "hintView",
+        "name": "view",
         "type": "\"default\"",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "hintSize",
-        "type": "\"s\" | \"m\"",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "disabled",
-        "type": "boolean",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "readOnly",
-        "type": "boolean",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "label",
-        "type": "string",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "leftHelper",
-        "type": "string",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "titleCaption",
-        "type": "ReactNode",
         "required": false,
         "default": "",
         "description": ""
@@ -83,104 +34,6 @@
         "description": ""
       },
       {
-        "name": "firstValue",
-        "type": "TextfieldPrimitiveValue",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "secondValue",
-        "type": "TextfieldPrimitiveValue",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "firstValueError",
-        "type": "boolean",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "secondValueError",
-        "type": "boolean",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "firstValueSuccess",
-        "type": "boolean",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "secondValueSuccess",
-        "type": "boolean",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "firstPlaceholder",
-        "type": "string",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "secondPlaceholder",
-        "type": "string",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "firstTextfieldContentLeft",
-        "type": "ReactElement<any, string | JSXElementConstructor<any>>",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "firstTextfieldContentRight",
-        "type": "ReactElement<any, string | JSXElementConstructor<any>>",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "secondTextfieldContentLeft",
-        "type": "ReactElement<any, string | JSXElementConstructor<any>>",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "secondTextfieldContentRight",
-        "type": "ReactElement<any, string | JSXElementConstructor<any>>",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "firstTextfieldTextAfter",
-        "type": "string",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "secondTextfieldTextAfter",
-        "type": "string",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
         "name": "autoComplete",
         "type": "string",
         "required": false,
@@ -188,8 +41,15 @@
         "description": ""
       },
       {
-        "name": "requiredIndicatorPlacement",
-        "type": "\"right\" | \"left\"",
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "readOnly",
+        "type": "boolean",
         "required": false,
         "default": "",
         "description": ""
@@ -202,92 +62,29 @@
         "description": ""
       },
       {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "hintView",
+        "type": "\"default\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "hintSize",
+        "type": "\"s\" | \"m\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
         "name": "hasRequiredIndicator",
         "type": "boolean",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "onChangeFirstValue",
-        "type": "BaseCallbackChangeInstance",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "onChangeSecondValue",
-        "type": "BaseCallbackChangeInstance",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "onSearchFirstValue",
-        "type": "BaseCallbackKeyboardInstance",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "onSearchSecondValue",
-        "type": "BaseCallbackKeyboardInstance",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "onFocusFirstTextfield",
-        "type": "((event: FocusEvent<HTMLInputElement, Element>) => void)",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "onFocusSecondTextfield",
-        "type": "((event: FocusEvent<HTMLInputElement, Element>) => void)",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "onBlurFirstTextfield",
-        "type": "((event: FocusEvent<HTMLInputElement, Element>) => void)",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "onBlurSecondTextfield",
-        "type": "((event: FocusEvent<HTMLInputElement, Element>) => void)",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "firstTextfieldTextBefore",
-        "type": "string",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "secondTextfieldTextBefore",
-        "type": "string",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "dividerVariant",
-        "type": "\"none\" | \"dash\" | \"icon\"",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "dividerIcon",
-        "type": "ReactNode",
         "required": false,
         "default": "",
         "description": ""
@@ -354,6 +151,223 @@
         "required": false,
         "default": "",
         "description": ""
+      },
+      {
+        "name": "titleCaption",
+        "type": "ReactNode",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "leftHelper",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "firstValue",
+        "type": "TextfieldPrimitiveValue",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "secondValue",
+        "type": "TextfieldPrimitiveValue",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "onSearchFirstValue",
+        "type": "BaseCallbackKeyboardInstance",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "onSearchSecondValue",
+        "type": "BaseCallbackKeyboardInstance",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "onChangeFirstValue",
+        "type": "BaseCallbackChangeInstance",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "onChangeSecondValue",
+        "type": "BaseCallbackChangeInstance",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "firstValueError",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "secondValueError",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "firstValueSuccess",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "secondValueSuccess",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "firstValueEdited",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "secondValueEdited",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "firstPlaceholder",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "secondPlaceholder",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "firstTextfieldContentLeft",
+        "type": "ReactElement<any, string | JSXElementConstructor<any>>",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "firstTextfieldContentRight",
+        "type": "ReactElement<any, string | JSXElementConstructor<any>>",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "secondTextfieldContentLeft",
+        "type": "ReactElement<any, string | JSXElementConstructor<any>>",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "secondTextfieldContentRight",
+        "type": "ReactElement<any, string | JSXElementConstructor<any>>",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "firstTextfieldTextAfter",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "secondTextfieldTextAfter",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "requiredIndicatorPlacement",
+        "type": "\"right\" | \"left\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "onFocusFirstTextfield",
+        "type": "((event: FocusEvent<HTMLInputElement, Element>) => void)",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "onFocusSecondTextfield",
+        "type": "((event: FocusEvent<HTMLInputElement, Element>) => void)",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "onBlurFirstTextfield",
+        "type": "((event: FocusEvent<HTMLInputElement, Element>) => void)",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "onBlurSecondTextfield",
+        "type": "((event: FocusEvent<HTMLInputElement, Element>) => void)",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "firstTextfieldTextBefore",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "secondTextfieldTextBefore",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "dividerVariant",
+        "type": "\"none\" | \"dash\" | \"icon\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "dividerIcon",
+        "type": "ReactNode",
+        "required": false,
+        "default": "",
+        "description": ""
       }
     ]
   },
@@ -365,6 +379,10 @@
     {
       "title": "Быстрый старт",
       "snippet": "import React, { useState } from 'react';\nimport { Range } from '@salutejs/sdds-finai';\nexport function App() {\n    const [firstValue, setFirstValue] = useState('');\n    const [secondValue, setSecondValue] = useState('');\n    return (\n        <div>\n            <Range\n                firstValue={firstValue}\n                secondValue={secondValue}\n                label=\"Диапазон значений\"\n                leftHelper=\"Введите два значения\"\n                firstPlaceholder=\"От\"\n                secondPlaceholder=\"До\"\n                dividerVariant=\"dash\"\n                onChangeFirstValue={(e) => {\n                    setFirstValue(e.target.value);\n                }}\n                onChangeSecondValue={(e) => {\n                    setSecondValue(e.target.value);\n                }}\n            />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Управление внешним видом",
+      "snippet": "import React from 'react';\nimport { Range } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>\n            <Range\n                appearance=\"default\"\n                label=\"Appearance default\"\n                firstPlaceholder=\"От\"\n                secondPlaceholder=\"До\"\n                dividerVariant=\"dash\"\n            />\n            <Range\n                appearance=\"viewMode\"\n                label=\"Appearance viewMode\"\n                firstValue=\"100\"\n                secondValue=\"500\"\n                readOnly\n                dividerVariant=\"dash\"\n            />\n        </div>\n    );\n}"
     },
     {
       "title": "Управление внешним видом",

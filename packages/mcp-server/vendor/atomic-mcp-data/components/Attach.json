@@ -2,245 +2,62 @@
   "name": "Attach",
   "package": "sdds-finai",
   "category": "components",
-  "summary": "Attach",
+  "summary": "Attach С помощью свойства buttonType можно менять вид кнопки: обычный или с иконкой.",
   "api": {
-    "props": [
-      {
-        "name": "view",
-        "type": "\"default\" | \"accent\" | \"warning\" | \"dark\" | \"clear\" | \"secondary\" | \"black\" | \"white\" | \"success\" | \"critical\"",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "helperTextView",
-        "type": "\"default\" | \"negative\"",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "size",
-        "type": "\"s\" | \"xs\"",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "text",
-        "type": "string",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "contentLeft",
-        "type": "ReactNode",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "contentPlacing",
-        "type": "ContentPlacing",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "additionalContent",
-        "type": "ReactNode",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "isLoading",
-        "type": "boolean",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "loader",
-        "type": "ReactNode",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "stretch",
-        "type": "boolean",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "stretching",
-        "type": "Stretching",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "square",
-        "type": "boolean",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "focused",
-        "type": "boolean",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "pin",
-        "type": "\"square-square\" | \"square-clear\" | \"clear-square\" | \"clear-clear\" | \"clear-circle\" | \"circle-clear\" | \"circle-circle\"",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "appearance",
-        "type": "\"default\" | \"outline\"",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "outlined",
-        "type": "boolean",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "shiftLeft",
-        "type": "boolean",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "shiftRight",
-        "type": "boolean",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "blur",
-        "type": "\"small\" | \"medium\" | \"large\"",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "contentRight",
-        "type": "ReactNode",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "acceptedFileFormats",
-        "type": "string[]",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "hideButtonOnAttach",
-        "type": "boolean",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "hasAttachment",
-        "type": "boolean",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "helperText",
-        "type": "string",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "customIcon",
-        "type": "ReactNode",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "onClear",
-        "type": "((fileInfo: FileInfo) => void)",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "flow",
-        "type": "\"horizontal\" | \"vertical\" | \"auto\"",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "dropdownOptions",
-        "type": "DropdownOptions",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "buttonType",
-        "type": "\"button\" | \"iconButton\"",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "icon",
-        "type": "ReactNode",
-        "required": false,
-        "default": "",
-        "description": ""
-      }
-    ]
+    "props": []
   },
   "examples": [
     {
-      "title": "Подсказка к кнопке",
-      "snippet": "import React from 'react';\nimport { Attach } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div style={{ padding: \"1rem\" }}>\n            <Attach helperTextView=\"default\" helperText=\"Подсказка\" />\n            <Attach helperTextView=\"negative\" helperText=\"Подсказка\" />\n        </div>\n    );\n}"
+      "title": "Быстрый старт",
+      "snippet": "import React from 'react';\nimport { Attach } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <Attach text=\"Загрузить файл\" />\n    );\n}"
     },
     {
-      "title": "Вид кнопки",
-      "snippet": "import React from 'react';\nimport { Attach } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div style={{ display: \"flex\", flexDirection: \"column\", gap: \"50px\"}}>\n            <Attach view=\"accent\" buttonType={'button'} />\n            <Attach view=\"secondary\" buttonType={'iconButton'} />\n        </div>\n    );\n}"
+      "title": "Управление внешним видом",
+      "snippet": "import React from 'react';\nimport { Attach } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>\n            <Attach view=\"accent\" text=\"Accent\" />\n            <Attach view=\"secondary\" text=\"Secondary\" />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Управление внешним видом",
+      "snippet": "import React from 'react';\nimport { Attach } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>\n            <Attach size=\"xs\" text=\"XS\" />\n            <Attach size=\"s\" text=\"S\" />\n            <Attach size=\"m\" text=\"M\" />\n            <Attach size=\"l\" text=\"L\" />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Управление внешним видом",
+      "snippet": "import React from 'react';\nimport { Attach } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>\n            <Attach buttonType=\"button\" text=\"Обычная кнопка\" />\n            <Attach buttonType=\"iconButton\" />\n        </div>\n    );\n}"
     },
     {
       "title": "Расположение элементов",
-      "snippet": "import React from 'react';\nimport { Attach } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div style={{ display: \"flex\", flexDirection: \"column\", gap: \"50px\"}}>\n            <Attach style={{ width: \"400px\" }} flow=\"auto\" />\n            <Attach style={{ width: \"400px\" }} flow=\"horizontal\" />\n            <Attach style={{ width: \"400px\" }} flow=\"vertical\" />\n        </div>\n    );\n}"
+      "snippet": "import React from 'react';\nimport { Attach } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>\n            <Attach style={{ width: '400px' }} flow=\"auto\" helperText=\"auto\" />\n            <Attach style={{ width: '400px' }} flow=\"horizontal\" helperText=\"horizontal\" />\n            <Attach style={{ width: '400px' }} flow=\"vertical\" helperText=\"vertical\" />\n        </div>\n    );\n}"
     },
     {
-      "title": "Attach с несколькими файлами",
-      "snippet": "import React from 'react';\nimport { Attach } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div style={{ display: \"flex\", flexDirection: \"column\", gap: \"32px\"}}>\n            <Attach multiple flow=\"horizontal\" style={{ width: \"400px\" }} text=\"Upload files\" />\n            <Attach multiple flow=\"vertical\" style={{ width: \"400px\" }} text=\"Upload files\" />\n        </div>\n    );\n}"
+      "title": "Подсказка Подсказка С помощью свойства  helperText  можно добавить подсказку под кнопкой. Вид задаётся свойством  helperTextView",
+      "snippet": "import React from 'react';\nimport { Attach } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>\n            <Attach helperTextView=\"default\" helperText=\"Подсказка\" />\n            <Attach helperTextView=\"negative\" helperText=\"Ошибка валидации\" />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Несколько файлов",
+      "snippet": "import React from 'react';\nimport { Attach } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>\n            <Attach multiple flow=\"horizontal\" style={{ width: '400px' }} text=\"Horizontal\" />\n            <Attach multiple flow=\"vertical\" style={{ width: '400px' }} text=\"Vertical\" />\n        </div>\n    );\n}"
     },
     {
       "title": "Фильтр форматов файлов",
-      "snippet": "import React from 'react';\nimport { Attach } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div>\n            <Attach acceptedFileFormats={['.pdf', '.doc']} />\n        </div>\n    );\n}"
+      "snippet": "import React from 'react';\nimport { Attach } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <Attach acceptedFileFormats={['.pdf', '.doc']} text=\"Загрузить документ\" />\n    );\n}"
     },
     {
-      "title": "Пример взаимодействия с формой",
-      "snippet": "import React, { useState } from 'react';\nimport { Attach, Button, InformationWrapper, outlineSolidPrimary } from '@salutejs/sdds-serv';\nfunction App() {\n    const [isLoading, setIsLoading] = useState(false);\n    const [attachedFiles, setAttachedFiles] = useState([]);\n    const handleAttachFile = (e) => {\n        setAttachedFiles((prevAttachedFiles) => [\n            ...prevAttachedFiles,\n            {\n                fileData: e.target.files[0],\n                id: e.target.id,\n            },\n        ]);\n    };\n    const handleAttachClear = (id) => {\n        setAttachedFiles(attachedFiles.filter((file) => file.id !== id));\n    };\n    const handleSubmit = (e) => {\n        e.preventDefault();\n        setIsLoading(true);\n        const formData = new FormData(e.target);\n        console.log('formData', Object.fromEntries(formData));\n        setTimeout(() => {\n            setAttachedFiles([]);\n            setIsLoading(false);\n        }, 2000);\n    };\n    return (\n        <>\n            {!isLoading && (\n                <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '30px', padding: '16px 18px', border: `1px dashed ${outlineSolidPrimary}` }}>\n                    <InformationWrapper labelHtmlFor={`example-id-attach-1`} label=\"Label\" hasRequiredIndicator leftHelper=\"Caption\" titleCaption=\"Title Caption\">\n                        <Attach\n                            id={`example-id-attach-1`}\n                            name={`attach-1`}\n                            text={`Upload avatar`}\n                            onChange={handleAttachFile}\n                            onClear={() => handleAttachClear('1')}\n                        />\n                   </InformationWrapper>\n                    <InformationWrapper\n                        labelHtmlFor={`example-id-attach-2`}\n                        label=\"Label\"\n                        leftHelper=\"Caption\"\n                        titleCaption=\"Title Caption\"\n                        hintText='Example hint text'\n                    >\n                        <Attach\n                            id={`example-id-attach-2`}\n                            name={`attach-2`}\n                            text={`Upload config`}\n                            onChange={handleAttachFile}\n                            onClear={() => handleAttachClear('2')}\n                        />\n                   </InformationWrapper>\n                   <Button style={{ alignSelf: 'end' }} type=\"submit\">Submit</Button>\n                </form>\n            )}\n            <div style={{ display: 'flex', flexDirection: 'column', padding: '1rem', margin: '16px 0 0 0', border: '1px dashed gray' }}>\n              <span>\n                {isLoading ? 'Форма отправляется' : 'Прикрепленные к форме файлы:'}\n              </span>\n              {!isLoading && attachedFiles.length > 0 && (\n                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>\n                    {attachedFiles.map((file) => (\n                        <div>{file.fileData.name}</div>\n                    ))}\n                </div>\n              )}\n            </div>\n        </>\n    );\n}"
+      "title": "Контролируемый режим",
+      "snippet": "import React, { useState } from 'react';\nimport { Attach } from '@salutejs/sdds-finai';\nexport function App() {\n    const [files, setFiles] = useState([]);\n    return (\n        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>\n            <Attach\n                flow=\"horizontal\"\n                style={{ width: '400px' }}\n                files={files}\n                onChange={(e) => setFiles(Array.from(e.target.files || []))}\n                onClear={(fileInfo) => setFiles((prev) => prev.filter((f) => f !== fileInfo.file))}\n            />\n            <span>Выбранные файлы: {files.map((f) => f.name).join(', ') || 'нет'}</span>\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Контролируемый режим",
+      "snippet": "import React from 'react';\nimport { Attach } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <Attach\n            flow=\"horizontal\"\n            style={{ width: '400px' }}\n            onChange={(e) => console.log('Выбраны:', Array.from(e.target.files || []).map((f) => f.name))}\n            onClear={(fileInfo) => console.log('Удалён:', fileInfo.file.name)}\n        />\n    );\n}"
+    },
+    {
+      "title": "Использование в формах",
+      "snippet": "import React, { useState } from 'react';\nimport { Attach, Button } from '@salutejs/sdds-finai';\nexport function App() {\n    const [result, setResult] = useState('');\n    const handleSubmit = (e) => {\n        e.preventDefault();\n        const files = new FormData(e.target).getAll('avatar');\n        setResult(files.map((f) => f.name).join(', ') || 'Файлы не выбраны');\n    };\n    return (\n        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>\n            <form\n                onSubmit={handleSubmit}\n                style={{ display: 'flex', gap: '16px', alignItems: 'flex-start' }}\n            >\n                <Attach name=\"avatar\" />\n                <Button type=\"submit\">Отправить</Button>\n            </form>\n            {result && <span>Отправлены: {result}</span>}\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Использование в формах",
+      "snippet": "import React from 'react';\nimport { useForm, Controller } from 'react-hook-form';\nimport { Attach, Button } from '@salutejs/sdds-finai';\nexport function App() {\n    const { control, handleSubmit } = useForm();\n    const onSubmit = (data) => console.log('Файлы:', data.files);\n    return (\n        <form onSubmit={handleSubmit(onSubmit)}>\n            <Controller\n                name=\"files\"\n                control={control}\n                defaultValue={[]}\n                render={(props) => {\n                    const { value, onChange: onRhfChange } = props.field;\n                    return (\n                        <Attach\n                            files={value}\n                            onChange={(e) => onRhfChange(Array.from(e.target.files || []))}\n                            onClear={(fileInfo) => onRhfChange(value.filter((f) => f !== fileInfo.file))}\n                        />\n                    );\n                }}\n            />\n            <Button type=\"submit\">Отправить</Button>\n        </form>\n    );\n}"
+    },
+    {
+      "title": "Использование в формах",
+      "snippet": "import React, { useState } from 'react';\nimport { Attach, Button, InformationWrapper, outlineSolidPrimary } from '@salutejs/sdds-finai';\nfunction App() {\n    const [isLoading, setIsLoading] = useState(false);\n    const [attachedFiles, setAttachedFiles] = useState([]);\n    const handleAttachFile = (e) => {\n        setAttachedFiles((prevAttachedFiles) => [\n            ...prevAttachedFiles,\n            {\n                fileData: e.target.files[0],\n                id: e.target.id,\n            },\n        ]);\n    };\n    const handleAttachClear = (id) => {\n        setAttachedFiles(attachedFiles.filter((file) => file.id !== id));\n    };\n    const handleSubmit = (e) => {\n        e.preventDefault();\n        setIsLoading(true);\n        const formData = new FormData(e.target);\n        console.log('formData', Object.fromEntries(formData));\n        setTimeout(() => {\n            setAttachedFiles([]);\n            setIsLoading(false);\n        }, 2000);\n    };\n    return (\n        <>\n            {!isLoading && (\n                <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '30px', padding: '16px 18px', border: `1px dashed ${outlineSolidPrimary}` }}>\n                    <InformationWrapper labelHtmlFor=\"example-id-attach-1\" label=\"Label\" hasRequiredIndicator leftHelper=\"Caption\" titleCaption=\"Title Caption\">\n                        <Attach\n                            id=\"example-id-attach-1\"\n                            name=\"attach-1\"\n                            text=\"Upload avatar\"\n                            onChange={handleAttachFile}\n                            onClear={() => handleAttachClear('1')}\n                            view=\"accent\"\n                        />\n                    </InformationWrapper>\n                    <InformationWrapper\n                        labelHtmlFor=\"example-id-attach-2\"\n                        label=\"Label\"\n                        leftHelper=\"Caption\"\n                        titleCaption=\"Title Caption\"\n                        hintText=\"Example hint text\"\n                    >\n                        <Attach\n                            id=\"example-id-attach-2\"\n                            name=\"attach-2\"\n                            text=\"Upload config\"\n                            onChange={handleAttachFile}\n                            onClear={() => handleAttachClear('2')}\n                            view=\"accent\"\n                        />\n                    </InformationWrapper>\n                    <Button style={{ alignSelf: 'end' }} type=\"submit\">Submit</Button>\n                </form>\n            )}\n            <div style={{ display: 'flex', flexDirection: 'column', padding: '1rem', margin: '16px 0 0 0', border: '1px dashed gray' }}>\n                <span>\n                    {isLoading ? 'Форма отправляется' : 'Прикрепленные к форме файлы:'}\n                </span>\n                {!isLoading && attachedFiles.length > 0 && (\n                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>\n                        {attachedFiles.map((file) => (\n                            <div>{file.fileData.name}</div>\n                        ))}\n                    </div>\n                )}\n            </div>\n        </>\n    );\n}"
     }
   ]
 }
