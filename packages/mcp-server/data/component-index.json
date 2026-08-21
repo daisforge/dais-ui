@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-08-18T15:06:36.553Z",
-  "libVersion": "1.12.1",
+  "generatedAt": "2026-08-21T10:14:18.566Z",
+  "libVersion": "1.13.0",
   "components": {
     "Accordion": {
       "name": "Accordion",
@@ -20489,14 +20489,14 @@
           "exportName": "Usage1",
           "displayName": "Использование в PopoverDF.stories.tsx",
           "type": "usage",
-          "code": "<PopoverDF.Body>\n        <BodySlot />\n      </PopoverDF.Body>",
+          "code": "<PopoverDF.Body>Контент всплывающего окна.</PopoverDF.Body>",
           "sourceFile": "packages/storybook/src/stories/PopoverDF/PopoverDF.stories.tsx"
         },
         {
           "exportName": "Usage2",
           "displayName": "Использование в PopoverDF.stories.tsx",
           "type": "usage",
-          "code": "<PopoverDF.Body>\n          <BodySlot />\n        </PopoverDF.Body>",
+          "code": "<PopoverDF.Body>\n        <BodySlot />\n      </PopoverDF.Body>",
           "sourceFile": "packages/storybook/src/stories/PopoverDF/PopoverDF.stories.tsx"
         }
       ]
@@ -21078,7 +21078,7 @@
           "exportName": "Usage2",
           "displayName": "Использование в PopoverDF.stories.tsx",
           "type": "usage",
-          "code": "<PopoverDF\n      target={\n        <Button onClick={() => setOpened(true)}>Открыть PopoverDF</Button>\n      }\n      opened={opened}\n      onToggle={setOpened}\n      placement=\"bottom-start\"\n      offset={8}\n      size=\"m\"\n      style={{ width: '320px' }}\n    >\n      <PopoverDF.Header title=\"Title\" description=\"Description\" />\n      <PopoverDF.Body>\n        <BodySlot />\n      </PopoverDF.Body>\n      <PopoverDF.Footer>\n        <FooterActions />\n      </PopoverDF.Footer>\n    </PopoverDF>",
+          "code": "<PopoverDF\n      target={<PopoverTarget>Открыть PopoverDF</PopoverTarget>}\n      opened={opened}\n      onToggle={setOpened}\n      placement=\"bottom\"\n      hasTail\n      flip\n      shift\n      offset={8}\n    >\n      <PopoverDF.Body>Контент всплывающего окна.</PopoverDF.Body>\n    </PopoverDF>",
           "sourceFile": "packages/storybook/src/stories/PopoverDF/PopoverDF.stories.tsx"
         }
       ]
@@ -27706,7 +27706,7 @@
         },
         {
           "name": "tableConfig",
-          "type": "{ highlightActiveType?: HighlightActiveType | undefined; cellsSelection?: CellsSelectionConfig | undefined; highlightActiveRow?: { state?: [number | undefined, React.Dispatch<React.SetStateAction<number | undefined>>] | undefined; onChange?: ((params: { index: number | undefined; row: RowType | undefined; }) => void) | undefined; } | undefined; hoverEffects?: HoverEffectsConfig | undefined; enable…",
+          "type": "{ columnsGrouping?: ColumnsGroupingConfig | undefined; highlightActiveType?: HighlightActiveType | undefined; cellsSelection?: CellsSelectionConfig | undefined; highlightActiveRow?: { state?: [number | undefined, React.Dispatch<React.SetStateAction<number | undefined>>] | undefined; onChange?: ((params: { index: number | undefined; row: RowType | undefined; }) => void) | undefined; } | undefined; …",
           "required": false,
           "description": "tableConfig - Конфигурация фичей таблицы (их активация и отключение)",
           "default": "{}"
@@ -28003,6 +28003,12 @@
           "type": "GridSelection | undefined",
           "required": false,
           "description": "The current selection of the data grid. Contains all selected cells, ranges, rows, and columns.\nUsed in conjunction with {@link onGridSelectionChange}\nmethod to implement a controlled selection."
+        },
+        {
+          "name": "groupAlignMap",
+          "type": "Map<string, SpanAlignment> | undefined",
+          "required": false,
+          "description": "Выравнивание текста в объединённой шапке по ключу группы (ColumnGroupConfig.key)."
         },
         {
           "name": "headerHeight",
@@ -28492,10 +28498,28 @@
           "description": "Controls smooth scrolling in the data grid. If smooth scrolling is not enabled the grid will always be cell\naligned."
         },
         {
+          "name": "spanAlign",
+          "type": "SpanAlignment | undefined",
+          "required": false,
+          "description": "Выравнивание текста в объединённых ячейках шапки по умолчанию.\nМожно переопределить на колонке (`spanGroupHeaderAlign`) или на группе (`getGroupDetails().spanAlign`)."
+        },
+        {
+          "name": "spanGroupHeader",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Grid-дефолт слитной шапки: включает `spanGroupHeader` у ВСЕХ листовых колонок (без\nгруппы) — не нужно ставить флаг на каждую. Точечно перекрывается на колонке\n(`spanGroupHeader: true/false`). Колонки с группой проп не трогает."
+        },
+        {
           "name": "spanRangeBehavior",
           "type": "\"default\" | \"allowPartial\" | undefined",
           "required": false,
           "description": "If set to `default`, `gridSelection` will be coerced to always include full spans."
+        },
+        {
+          "name": "spanShallowGroups",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Объединяет (rowspan) пустые нижние ряды у «мелких» групп — тех, что заканчиваются\nвыше самого глубокого уровня групп, — в одну высокую ячейку вместо пустой полосы\nпод заголовком. Точечно на группе можно переопределить через `getGroupDetails().span`\n(поставить `false`, чтобы отключить для конкретной группы). Не задано → как раньше."
         },
         {
           "name": "trailingRowOptions",
@@ -29158,6 +29182,12 @@
           "description": "Флаг fullscreen - пересканирование DOM при переключении"
         },
         {
+          "name": "groupAlignMap",
+          "type": "Map<string, SpanAlignment> | undefined",
+          "required": false,
+          "description": "Выравнивание текста в объединённой шапке по ключу группы (ColumnGroupConfig.key)."
+        },
+        {
           "name": "hideGrid",
           "type": "boolean | undefined",
           "required": false,
@@ -29796,10 +29826,28 @@
           "description": "Controls smooth scrolling in the data grid. If smooth scrolling is not enabled the grid will always be cell\naligned."
         },
         {
+          "name": "spanAlign",
+          "type": "SpanAlignment | undefined",
+          "required": false,
+          "description": "Выравнивание текста в объединённых ячейках шапки по умолчанию.\nМожно переопределить на колонке (`spanGroupHeaderAlign`) или на группе (`getGroupDetails().spanAlign`)."
+        },
+        {
+          "name": "spanGroupHeader",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Grid-дефолт слитной шапки: включает `spanGroupHeader` у ВСЕХ листовых колонок (без\nгруппы) — не нужно ставить флаг на каждую. Точечно перекрывается на колонке\n(`spanGroupHeader: true/false`). Колонки с группой проп не трогает."
+        },
+        {
           "name": "spanRangeBehavior",
           "type": "\"default\" | \"allowPartial\" | undefined",
           "required": false,
           "description": "If set to `default`, `gridSelection` will be coerced to always include full spans."
+        },
+        {
+          "name": "spanShallowGroups",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Объединяет (rowspan) пустые нижние ряды у «мелких» групп — тех, что заканчиваются\nвыше самого глубокого уровня групп, — в одну высокую ячейку вместо пустой полосы\nпод заголовком. Точечно на группе можно переопределить через `getGroupDetails().span`\n(поставить `false`, чтобы отключить для конкретной группы). Не задано → как раньше."
         },
         {
           "name": "trailingRowOptions",
@@ -32036,10 +32084,28 @@
           "description": "Controls smooth scrolling in the data grid. If smooth scrolling is not enabled the grid will always be cell\naligned."
         },
         {
+          "name": "spanAlign",
+          "type": "SpanAlignment | undefined",
+          "required": false,
+          "description": "Выравнивание текста в объединённых ячейках шапки по умолчанию.\nМожно переопределить на колонке (`spanGroupHeaderAlign`) или на группе (`getGroupDetails().spanAlign`)."
+        },
+        {
+          "name": "spanGroupHeader",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Grid-дефолт слитной шапки: включает `spanGroupHeader` у ВСЕХ листовых колонок (без\nгруппы) — не нужно ставить флаг на каждую. Точечно перекрывается на колонке\n(`spanGroupHeader: true/false`). Колонки с группой проп не трогает."
+        },
+        {
           "name": "spanRangeBehavior",
           "type": "\"default\" | \"allowPartial\" | undefined",
           "required": false,
           "description": "If set to `default`, `gridSelection` will be coerced to always include full spans."
+        },
+        {
+          "name": "spanShallowGroups",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Объединяет (rowspan) пустые нижние ряды у «мелких» групп — тех, что заканчиваются\nвыше самого глубокого уровня групп, — в одну высокую ячейку вместо пустой полосы\nпод заголовком. Точечно на группе можно переопределить через `getGroupDetails().span`\n(поставить `false`, чтобы отключить для конкретной группы). Не задано → как раньше."
         },
         {
           "name": "trailingRowOptions",
@@ -45930,7 +45996,14 @@
       "minimalUsage": "<FiltersActionsListOfFilters clearAll={() => {}} items={[]} opened={true} />",
       "examples": [
         {
-          "exportName": "Usage",
+          "exportName": "Usage1",
+          "displayName": "Использование в FiltersActions.stories.tsx",
+          "type": "usage",
+          "code": "<FiltersActions.ListOfFilters\n            clearAll={clearAll}\n            opened={items.length > 0}\n            items={items}\n            showResetAllFiltersButton={false}\n          />",
+          "sourceFile": "packages/storybook/src/stories/FiltersActions/FiltersActions.stories.tsx"
+        },
+        {
+          "exportName": "Usage2",
           "displayName": "Использование в FiltersActions.stories.tsx",
           "type": "usage",
           "code": "<FiltersActions.ListOfFilters\n              clearAll={clearAll}\n              opened={filterListOpened}\n              items={filterList}\n              showResetAllFiltersButton={false}\n            />",
@@ -50960,7 +51033,7 @@
     },
     "TableCanvas.ColumnConfig": {
       "name": "ColumnConfig",
-      "definition": "export type ColumnConfig<\n  Row extends ObjectForExtending,\n  SummRow = unknown,\n  CustomCtxs extends ObjectForExtending = {},\n> = ColumnDefaultOmitted<Row, SummRow, CustomCtxs> & {\n  renderCell?: (cellInfo: CellInfo<Row, SummRow, CustomCtxs>) => CellContent;\n  renderCellPreview?: RenderCellPreview<Row, SummRow, CustomCtxs>;\n  /**\n   * Если в поле name был передан jsx, то нужно заполнить nameAsString для указания label в разделе Настройки столбцов, либо для отображения label в фильтрах в правом сайдбаре (но приоритет для фильтро будет ниже, чем то, что указали в filtering.sidebarConfig.items, там отдельно можно перезаписать label для фильтров сайдабара)\n   */\n  nameAsString?: string;\n  /**\n   * Текстовое представление ячейки для копирования в clipboard (Ctrl+C).\n   * Если не задан, используется `row[column.key]?.toString()`.\n   * Для кастомных canvas-ячеек (бейджи, кнопки) рекомендуется указывать явно.\n   */\n  copyData?: string | ((row: Row) => string);\n  sortingType?: 'stringSort' | 'numberSort' | Comparator<Row>;\n  searching?: {\n    valueInRow: (row: Row) => string | number;\n  };\n  filtering?: {\n    keyInFilterState: string;\n    /**\n     * Обязательно передать в случае НЕ ручной фильтрации. Если на уровне tableConfig.manualFiltering = false или не задан. Иначе фильтрация не отработает.\n     */\n    valueInRow?: (row: Row) => string | number;\n    /**\n     * ```FilterCb - (filterValue: string, rowValue: string) => boolean```\n     */\n  } & (\n    | {\n        component: 'input';\n        filter: 'includes' | 'startWith' | 'equal' | FilterCb<'single'>;\n      }\n    | {\n        component: 'select';\n        beforeList?: (\n          props: FilterComponentInPopoverProps<\n            ObjectForExtending,\n            ColumnConfig<Row, SummRow>\n          >,\n        ) => ReactNode;\n        filter:\n          | {\n              typeOfValue: 'single';\n              /**\n               * Обязательно передать в случае НЕ ручной фильтрации. Если на уровне tableConfig.manualFiltering = false или не задан. Иначе фильтрация не отработает.\n               */\n              filteringType?: FilterCb<'single'>;\n            }\n          | {\n              typeOfValue: 'multiple';\n              /**\n               * Обязательно передать в случае НЕ ручной фильтрации. Если на уровне tableConfig.manualFiltering = false или не задан. Иначе фильтрация не отработает.\n               */\n              filteringType?: FilterCb<'multiple'>;\n            };\n        selectOptions:\n          | {\n              type: 'constant';\n              options: SelectOptions[];\n            }\n          | {\n              type: 'stateInHeaderContext';\n              /**\n               * тип optionsState, который будет в HeaderContext:\n               * ```ts\n               * {\n               * value: string | number;\n               * text: string | number;\n               * }[];\n               * ```\n               */\n              optionsKeyInHeaderContext: string;\n            };\n        /**\n         * Максимальна высота выпадающего списка в фильтрах колонок / правом сайдбаре.\n         * @default \"360px\"\n         */\n        listMaxHeight?: string;\n      }\n    | {\n        component: 'custom';\n        customRender: (\n          props: FilterComponentInPopoverProps<\n            ObjectForExtending,\n            ColumnConfig<Row, SummRow>\n          >,\n        ) => ReactNode;\n        filter?: (filterValue: unknown, rowValue: unknown) => boolean;\n        compareWithClearedValue?: (\n          clearedValue: unknown,\n          currV: unknown,\n        ) => boolean;\n      }\n  );\n\n  contentFormat?: ContentFormat;\n\n  editingCell?: Editing<Row, SummRow>;\n\n  subRow?: {\n    /**\n     * @default false\n     */\n    isColumnWithArrow?: boolean | ((props: { keyText: KeyText }) => boolean);\n    /**\n     * @default false\n     */\n    hideHeaderExpandAllArrow?: boolean;\n    /**\n     * @default false\n     */\n    parentKeyAsDefault?: boolean;\n    /**\n     * @default undefined\n     */\n    contentFormat?: ContentFormat;\n\n    renderSubRowCell?: RenderSubRowCell<ObjectForExtending>;\n  } & (\n    | {\n        keyOfColumnInSubRow:\n          | string\n          | number\n          | ((lvl: number) => string | number);\n        // eslint-disable-next-line @typescript-eslint/no-explicit-any\n        editingCell: Editing<any, any>;\n      }\n    | {\n        editingCell?: undefined;\n        keyOfColumnInSubRow?:\n          | string\n          | number\n          | ((lvl: number) => string | number);\n      }\n  );\n  rowsGrouping?: ColumnRowsGrouping<Row, ColumnConfig<Row, SummRow>>;\n  keyText?: KeyTextColumnConfig<Row, SummRow>;\n  /**\n   * Переопределение темы на уровне ячейки. Позволяет менять фон и паддинги для конкретных ячеек.\n   * @param cellInfo — информация о ячейке (row, column, ctxs, theme)\n   * @param lvl — уровень вложенности (0 для обычных строк, 1+ для subRows)\n   * @returns Partial<Theme> — объект переопределений (bgCell, cellHorizontalPadding и др.)\n   */\n  themeOverride?: (\n    cellInfo: CellInfo<Row, SummRow, CustomCtxs>,\n    lvl: number,\n  ) => CellThemeOverrideResult | undefined;\n};",
+      "definition": "export type ColumnConfig<\n  Row extends ObjectForExtending,\n  SummRow = unknown,\n  CustomCtxs extends ObjectForExtending = {},\n> = ColumnDefaultOmitted<Row, SummRow, CustomCtxs> & {\n  renderCell?: (cellInfo: CellInfo<Row, SummRow, CustomCtxs>) => CellContent;\n  renderCellPreview?: RenderCellPreview<Row, SummRow, CustomCtxs>;\n  /**\n   * Если в поле name был передан jsx, то нужно заполнить nameAsString для указания label в разделе Настройки столбцов, либо для отображения label в фильтрах в правом сайдбаре (но приоритет для фильтро будет ниже, чем то, что указали в filtering.sidebarConfig.items, там отдельно можно перезаписать label для фильтров сайдабара)\n   */\n  nameAsString?: string;\n  /**\n   * Текстовое представление ячейки для копирования в clipboard (Ctrl+C).\n   * Если не задан, используется `row[column.key]?.toString()`.\n   * Для кастомных canvas-ячеек (бейджи, кнопки) рекомендуется указывать явно.\n   */\n  copyData?: string | ((row: Row) => string);\n  sortingType?: 'stringSort' | 'numberSort' | Comparator<Row>;\n  searching?: {\n    valueInRow: (row: Row) => string | number;\n  };\n  filtering?: {\n    keyInFilterState: string;\n    /**\n     * Обязательно передать в случае НЕ ручной фильтрации. Если на уровне tableConfig.manualFiltering = false или не задан. Иначе фильтрация не отработает.\n     */\n    valueInRow?: (row: Row) => string | number;\n    /**\n     * ```FilterCb - (filterValue: string, rowValue: string) => boolean```\n     */\n  } & (\n    | {\n        component: 'input';\n        filter: 'includes' | 'startWith' | 'equal' | FilterCb<'single'>;\n      }\n    | {\n        component: 'select';\n        beforeList?: (\n          props: FilterComponentInPopoverProps<\n            ObjectForExtending,\n            ColumnConfig<Row, SummRow>\n          >,\n        ) => ReactNode;\n        filter:\n          | {\n              typeOfValue: 'single';\n              /**\n               * Обязательно передать в случае НЕ ручной фильтрации. Если на уровне tableConfig.manualFiltering = false или не задан. Иначе фильтрация не отработает.\n               */\n              filteringType?: FilterCb<'single'>;\n            }\n          | {\n              typeOfValue: 'multiple';\n              /**\n               * Обязательно передать в случае НЕ ручной фильтрации. Если на уровне tableConfig.manualFiltering = false или не задан. Иначе фильтрация не отработает.\n               */\n              filteringType?: FilterCb<'multiple'>;\n            };\n        selectOptions:\n          | {\n              type: 'constant';\n              options: SelectOptions[];\n            }\n          | {\n              type: 'stateInHeaderContext';\n              /**\n               * тип optionsState, который будет в HeaderContext:\n               * ```ts\n               * {\n               * value: string | number;\n               * text: string | number;\n               * }[];\n               * ```\n               */\n              optionsKeyInHeaderContext: string;\n            };\n        /**\n         * Максимальна высота выпадающего списка в фильтрах колонок / правом сайдбаре.\n         * @default \"360px\"\n         */\n        listMaxHeight?: string;\n      }\n    | {\n        component: 'custom';\n        customRender: (\n          props: FilterComponentInPopoverProps<\n            ObjectForExtending,\n            ColumnConfig<Row, SummRow>\n          >,\n        ) => ReactNode;\n        filter?: (filterValue: unknown, rowValue: unknown) => boolean;\n        compareWithClearedValue?: (\n          clearedValue: unknown,\n          currV: unknown,\n        ) => boolean;\n      }\n  );\n\n  contentFormat?: ContentFormat;\n\n  editingCell?: Editing<Row, SummRow>;\n\n  subRow?: {\n    /**\n     * @default false\n     */\n    isColumnWithArrow?: boolean | ((props: { keyText: KeyText }) => boolean);\n    /**\n     * @default false\n     */\n    hideHeaderExpandAllArrow?: boolean;\n    /**\n     * @default false\n     */\n    parentKeyAsDefault?: boolean;\n    /**\n     * @default undefined\n     */\n    contentFormat?: ContentFormat;\n\n    renderSubRowCell?: RenderSubRowCell<ObjectForExtending>;\n  } & (\n    | {\n        keyOfColumnInSubRow:\n          | string\n          | number\n          | ((lvl: number) => string | number);\n        // eslint-disable-next-line @typescript-eslint/no-explicit-any\n        editingCell: Editing<any, any>;\n      }\n    | {\n        editingCell?: undefined;\n        keyOfColumnInSubRow?:\n          | string\n          | number\n          | ((lvl: number) => string | number);\n      }\n  );\n  rowsGrouping?: ColumnRowsGrouping<Row, ColumnConfig<Row, SummRow>>;\n  keyText?: KeyTextColumnConfig<Row, SummRow>;\n  /**\n   * Переопределение темы на уровне ячейки. Позволяет менять фон и паддинги для конкретных ячеек.\n   * @param cellInfo — информация о ячейке (row, column, ctxs, theme)\n   * @param lvl — уровень вложенности (0 для обычных строк, 1+ для subRows)\n   * @returns Partial<Theme> — объект переопределений (bgCell, cellHorizontalPadding и др.)\n   */\n  themeOverride?: (\n    cellInfo: CellInfo<Row, SummRow, CustomCtxs>,\n    lvl: number,\n  ) => CellThemeOverrideResult | undefined;\n  /**\n   * Выравнивание текста в объединённой шапке этой колонки. Действует, когда шапка\n   * колонки объединена (`tableConfig.columnsGrouping.squashEmptyCells`); перекрывает\n   * табличный `columnsGrouping.squashedHeaderAlign`.\n   */\n  squashedHeaderAlign?: HeaderAlignment;\n};",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { ColumnConfig } from '@daisforge/ui/components/TableCanvas';",
       "sourceFile": "packages/ui-kit/src/components/TableCanvas/types/column-config.type.ts"
@@ -50981,7 +51054,7 @@
     },
     "ColumnGlideInstance": {
       "name": "ColumnGlideInstance",
-      "definition": "export type ColumnGlideInstance<\n  R extends ObjectForExtending,\n  SR,\n  CustomCtxs extends ObjectForExtending = {},\n> = {\n  key: string;\n  name: string | CanvasEl;\n  nameAsString?: string;\n  readonly width?: number;\n  isServiceColumn?: boolean;\n  isErrorCell?: (row: R) => boolean;\n  frozen?: boolean;\n  /** Минимальная ширина колонки (px). Ограничивает ресайз и начальную ширину снизу. */\n  minWidth?: number;\n  /** Максимальная ширина колонки (px). Ограничивает ресайз и начальную ширину сверху. */\n  maxWidth?: number;\n  /** Максимальная ширина колонки при auto-sizing и grow-распределении (px). Не ограничивает ручной ресайз. */\n  maxAutoWidth?: number;\n  renderHeaderCell?: (\n    cellInfo: HeaderCellInfoGlideInstance<R, SR, CustomCtxs>,\n  ) => CanvasContent;\n  renderCell?: (\n    cellInfo: CellInfoGlideInstance<R, SR, CustomCtxs>,\n  ) => CellContent;\n  contentAlign?: 'left' | 'right' | 'center';\n  copyData?: string | ((row: R) => string);\n  editable?: boolean | ((row: R) => boolean);\n  renderEditCell?: (\n    cellInfo: EditingCellInfoGlideInstance<R, SR, CustomCtxs>,\n  ) => ReactNode;\n  /**\n   * Кастомный рендер preview-ячейки (при двойном клике на readonly-ячейку).\n   * 'none' — отключает превью. 'cellEditorAsPreview' — стандартный текстовый превью.\n   * Функция — полностью кастомный рендер.\n   */\n  renderCellPreview?:\n    | 'none'\n    | 'cellEditorAsPreview'\n    | ((\n        cellInfo: PreviewCellInfoGlideInstance<R, SR, CustomCtxs>,\n      ) => ReactNode);\n  renderSummaryCell?: (\n    cellInfo: SummaryCellInfoGlideInstance<R, SR, CustomCtxs>,\n  ) => CellContent;\n  colSpan?:\n    | number\n    | ((cellInfo: CellInfoGlideInstance<R, SR, CustomCtxs>) => number);\n  /** Тултип для ячеек этой колонки. Строка, объект или функция (context) => config | null. */\n  cellTooltip?:\n    | CanvasNodeTooltipConfig\n    | ((context: {\n        row: R;\n        column: ColumnGlideInstance<R, SR, CustomCtxs>;\n        ctxs: CtxsType<CustomCtxs>;\n        refTable?: React.Ref<DataEditorRef>;\n        colInd?: number;\n        rowInd?: number;\n        theme?: Theme;\n      }) => CanvasNodeTooltipConfig | null);\n  /** Тултип для шапки колонки. Строка, объект или функция (context) => config | null. */\n  headerCellTooltip?:\n    | CanvasNodeTooltipConfig\n    | ((context: {\n        column: ColumnGlideInstance<R, SR, CustomCtxs>;\n        ctxs: CtxsType<CustomCtxs>;\n        refTable?: React.Ref<DataEditorRef>;\n        colInd?: number;\n        theme?: Theme;\n      }) => CanvasNodeTooltipConfig | null);\n  columnThemeOverride?: (\n    cellInfo: CellInfoGlideInstance<R, SR, CustomCtxs>,\n  ) => CellThemeOverrideResult | undefined;\n};",
+      "definition": "export type ColumnGlideInstance<\n  R extends ObjectForExtending,\n  SR,\n  CustomCtxs extends ObjectForExtending = {},\n> = {\n  key: string;\n  name: string | CanvasEl;\n  nameAsString?: string;\n  readonly width?: number;\n  isServiceColumn?: boolean;\n  isErrorCell?: (row: R) => boolean;\n  frozen?: boolean;\n  /** Минимальная ширина колонки (px). Ограничивает ресайз и начальную ширину снизу. */\n  minWidth?: number;\n  /** Максимальная ширина колонки (px). Ограничивает ресайз и начальную ширину сверху. */\n  maxWidth?: number;\n  /** Максимальная ширина колонки при auto-sizing и grow-распределении (px). Не ограничивает ручной ресайз. */\n  maxAutoWidth?: number;\n  renderHeaderCell?: (\n    cellInfo: HeaderCellInfoGlideInstance<R, SR, CustomCtxs>,\n  ) => CanvasContent;\n  renderCell?: (\n    cellInfo: CellInfoGlideInstance<R, SR, CustomCtxs>,\n  ) => CellContent;\n  contentAlign?: 'left' | 'right' | 'center';\n  copyData?: string | ((row: R) => string);\n  editable?: boolean | ((row: R) => boolean);\n  renderEditCell?: (\n    cellInfo: EditingCellInfoGlideInstance<R, SR, CustomCtxs>,\n  ) => ReactNode;\n  /**\n   * Кастомный рендер preview-ячейки (при двойном клике на readonly-ячейку).\n   * 'none' — отключает превью. 'cellEditorAsPreview' — стандартный текстовый превью.\n   * Функция — полностью кастомный рендер.\n   */\n  renderCellPreview?:\n    | 'none'\n    | 'cellEditorAsPreview'\n    | ((\n        cellInfo: PreviewCellInfoGlideInstance<R, SR, CustomCtxs>,\n      ) => ReactNode);\n  renderSummaryCell?: (\n    cellInfo: SummaryCellInfoGlideInstance<R, SR, CustomCtxs>,\n  ) => CellContent;\n  colSpan?:\n    | number\n    | ((cellInfo: CellInfoGlideInstance<R, SR, CustomCtxs>) => number);\n  /** Выравнивание в слитой шапке; в adaptColumn → glide `spanGroupHeaderAlign`. */\n  squashedHeaderAlign?: HeaderAlignment;\n  /** Тултип для ячеек этой колонки. Строка, объект или функция (context) => config | null. */\n  cellTooltip?:\n    | CanvasNodeTooltipConfig\n    | ((context: {\n        row: R;\n        column: ColumnGlideInstance<R, SR, CustomCtxs>;\n        ctxs: CtxsType<CustomCtxs>;\n        refTable?: React.Ref<DataEditorRef>;\n        colInd?: number;\n        rowInd?: number;\n        theme?: Theme;\n      }) => CanvasNodeTooltipConfig | null);\n  /** Тултип для шапки колонки. Строка, объект или функция (context) => config | null. */\n  headerCellTooltip?:\n    | CanvasNodeTooltipConfig\n    | ((context: {\n        column: ColumnGlideInstance<R, SR, CustomCtxs>;\n        ctxs: CtxsType<CustomCtxs>;\n        refTable?: React.Ref<DataEditorRef>;\n        colInd?: number;\n        theme?: Theme;\n      }) => CanvasNodeTooltipConfig | null);\n  columnThemeOverride?: (\n    cellInfo: CellInfoGlideInstance<R, SR, CustomCtxs>,\n  ) => CellThemeOverrideResult | undefined;\n};",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { ColumnGlideInstance } from '@daisforge/ui/components/TableCanvas';",
       "sourceFile": "packages/ui-kit/src/components/TableCanvas/TableGlideInstance/type.ts"

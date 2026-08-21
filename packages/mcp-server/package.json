@@ -25,7 +25,8 @@
     "mcp:ab:app": "node ./ab/assemble-app.mjs",
     "mcp:ab:selfcheck": "node ./ab/selfcheck.mjs",
     "mcp:ab:prepare-before": "node ./ab/prepare-before.mjs",
-    "mcp:inspect": "npm run build && npx @modelcontextprotocol/inspector node ./dist/server.js"
+    "mcp:inspect:check-node": "node -e \"const [maj,min]=process.versions.node.split('.').map(Number);if(!(maj>22||(maj===22&&min>=12))){console.error('mcp:inspect нужна нода >=22.12 (сам inspector и его optional @rolldown/binding-* биндинг), сейчас '+process.version+'. Запусти: nvm use 22.19.0');process.exit(1)}\"",
+    "mcp:inspect": "bash scripts/mcp-inspect.sh"
   },
   "license": "MIT",
   "publishConfig": {
@@ -36,7 +37,23 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
-    "@modelcontextprotocol/inspector": "^2.0.0",
-    "ts-morph": "^24.0.0"
+    "@types/node": "^20.11.0",
+    "ts-morph": "^24.0.0",
+    "typescript": "~5.4.2"
+  },
+  "//": [
+    "@modelcontextprotocol/inspector специально НЕ в devDependencies: сам inspector и его optional",
+    "@rolldown/binding-* (для встроенного vite 8) требуют node >=22.12/>=22.19, а весь остальной",
+    "пакет и репозиторий живут на node 20. Если поставить inspector сюда как devDependency,",
+    "любой обычный `npm i --prefix packages/mcp-server` под node 20 молча пропустит эти optional-",
+    "биндинги (npm так делает при несовпадении engines) — и mcp:inspect будет падать с 'Cannot find",
+    "native binding', пока кто-то не переустановит зависимости под node 22 и не оставит lock/",
+    "node_modules в неродном для репозитория состоянии.",
+    "Поэтому mcp:inspect берёт inspector через `npx -y` — временная установка в кэш npx",
+    "(~/.npm/_npx/...), node_modules и package-lock.json этого пакета не трогает.",
+    "Перед запуском: nvm use 22.19.0 (npm run mcp:inspect:check-node сам об этом напомнит)."
+  ],
+  "engines": {
+    "node": ">=20.0.0"
   }
 }
