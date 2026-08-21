@@ -50,6 +50,8 @@ interface ResolvedPropsType {
 interface CompoundAssignment {
   subName: string;
   localName: string;
+  /** Объявление, на которое указывает локальное имя, — если barrel его не экспортирует. */
+  localDecl?: ExportedDeclarations;
 }
 
 export interface ParsedComponent {
@@ -751,7 +753,35 @@ function tryExtractViaComponentProps(
   }
 }
 
-/** Ищет паттерн `Component.Sub = LocalName;` — compound-компоненты (DrawerDF.Header и т.п.). */
+/**
+ * Декларация, на которую реально указывает идентификатор из файла компонента.
+ * Нужна потому, что локальное имя части (`StyledLeft`) в barrel-файле может
+ * отсутствовать вовсе — ModalDF экспортирует ту же часть как `ModalDFLeft`, —
+ * и тогда резолв через экспорты barrel'а (resolveExportedDeclaration)
+ * возвращает undefined, а часть остаётся без пропсов. Идём от самого
+ * идентификатора: снимаем алиас импорта и берём его объявление.
+ */
+function resolveIdentifierDeclaration(
+  identifier: Node,
+): ExportedDeclarations | undefined {
+  const symbol = identifier.getSymbol();
+  if (!symbol) return undefined;
+  const target = symbol.getAliasedSymbol() ?? symbol;
+  return target.getDeclarations()[0] as ExportedDeclarations | undefined;
+}
+
+/**
+ * Ищет compound-части компонента в файле, где он объявлен. Поддерживаются оба
+ * живых в ui-kit способа их навесить:
+ *
+ *   1. `Component.Sub = LocalName;`               — DrawerDF, AnalyticalWidget, …
+ *   2. `Object.assign(ComponentWithRef, { Sub })` — ModalDF, PopoverDF, PopupDF,
+ *      ModalDFConfirmation, Widget, TourWidget, GridDND.
+ *
+ * До поддержки второго варианта семь компонентов (включая все флагманские
+ * compound-обёртки из CLAUDE.md) отдавали агенту `compoundParts: []` и
+ * minimalUsage `<ModalDF />` — то есть API, которым пользоваться нельзя.
+ */
 function findCompoundAssignments(
   mainSourceFile: SourceFile | undefined,
   componentName: string,
@@ -759,6 +789,7 @@ function findCompoundAssignments(
   if (!mainSourceFile) return [];
 
   const assignments: CompoundAssignment[] = [];
+
   const binaryExprs = mainSourceFile.getDescendantsOfKind(
     SyntaxKind.BinaryExpression,
   );
@@ -772,7 +803,48 @@ function findCompoundAssignments(
     const subName = left.getName();
     const right = expr.getRight();
     if (Node.isIdentifier(right)) {
-      assignments.push({ subName, localName: right.getText() });
+      assignments.push({
+        subName,
+        localName: right.getText(),
+        localDecl: resolveIdentifierDeclaration(right),
+      });
+    }
+  }
+
+  for (const call of mainSourceFile.getDescendantsOfKind(
+    SyntaxKind.CallExpression,
+  )) {
+    if (call.getExpression().getText() !== 'Object.assign') continue;
+    // Нас интересует только тот Object.assign, результат которого и есть сам
+    // компонент: `export const ModalDF = Object.assign(ModalDFWithRef, {...})`.
+    const varDecl = call.getFirstAncestorByKind(SyntaxKind.VariableDeclaration);
+    if (varDecl?.getName() !== componentName) continue;
+
+    const parts = call.getArguments()[1];
+    if (!parts || !Node.isObjectLiteralExpression(parts)) continue;
+
+    for (const prop of parts.getProperties()) {
+      // `{ Header }` — сокращённая запись: имя части и локальное имя совпадают.
+      if (Node.isShorthandPropertyAssignment(prop)) {
+        const nameNode = prop.getNameNode();
+        assignments.push({
+          subName: prop.getName(),
+          localName: prop.getName(),
+          localDecl: resolveIdentifierDeclaration(nameNode),
+        });
+        continue;
+      }
+      // `{ Left: StyledLeft }` — только идентификаторы: инлайновая стрелка или
+      // вызов hoc'а не имеют отдельного объявления, резолвить там нечего.
+      if (!Node.isPropertyAssignment(prop)) continue;
+      const initializer = prop.getInitializer();
+      if (!initializer || !Node.isIdentifier(initializer)) continue;
+
+      assignments.push({
+        subName: prop.getName(),
+        localName: initializer.getText(),
+        localDecl: resolveIdentifierDeclaration(initializer),
+      });
     }
   }
 
@@ -802,8 +874,7 @@ function findLocalTypeDeclaration(
 function resolveCompoundPart(
   barrelSourceFile: SourceFile,
   componentName: string,
-  subName: string,
-  localName: string,
+  { subName, localName, localDecl: declFromIdentifier }: CompoundAssignment,
   compDir: string | undefined,
 ): CompoundPart {
   const propsRef =
@@ -812,7 +883,12 @@ function resolveCompoundPart(
     findLocalTypeDeclaration(compDir, `${componentName}${subName}Props`) ??
     findLocalTypeDeclaration(compDir, `${localName}Props`);
 
-  const localDecl = resolveExportedDeclaration(barrelSourceFile, localName);
+  // Barrel — первый источник (там имя части уже публичное, как его увидит
+  // потребитель), объявление из самого файла компонента — фолбэк для частей,
+  // которые barrel экспортирует под другим именем (StyledLeft → ModalDFLeft).
+  const localDecl =
+    resolveExportedDeclaration(barrelSourceFile, localName) ??
+    declFromIdentifier;
   // Дефолты compound-части читаются из её СОБСТВЕННОЙ render-функции
   // (localDecl), не из render-функции родителя — `DrawerDF.Header`
   // деструктурирует свои пропсы независимо от `DrawerDF` (TASKS.md T6).
@@ -934,8 +1010,8 @@ export function parseComponent({
 
   const localMainFile = declaredInUiKit ? mainSourceFile : undefined;
   const compoundAssignments = findCompoundAssignments(localMainFile, name);
-  const compoundParts = compoundAssignments.map(({ subName, localName }) =>
-    resolveCompoundPart(barrelSourceFile, name, subName, localName, dir),
+  const compoundParts = compoundAssignments.map((assignment) =>
+    resolveCompoundPart(barrelSourceFile, name, assignment, dir),
   );
 
   return {
