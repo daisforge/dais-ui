@@ -1,4 +1,3 @@
-import { IconButton } from '@ui-kit/components/IconButton';
 import { Link } from '@ui-kit/components/Link';
 import {
   Typography,
@@ -7,8 +6,6 @@ import {
 import {
   bodyM,
   bodyMBold,
-  surfaceClear,
-  surfaceSolidCard,
   textPrimary,
   textSecondary,
   textTertiary,
@@ -24,9 +21,8 @@ export const StyledHeader = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 8px;
-  // Зарезервировано для кнопки управления виджетом (абсолютное позиционирование другой командой)
-  padding-right: 40px;
+  // Резерв под кнопку-троеточие (абсолютное позиционирование), ширина 32px
+  padding-right: 32px;
 
   // Стили для popover возле иконки информации
   & .popover-wrapper:has(.${cls.popoverInfo}) {
@@ -50,6 +46,7 @@ export const StyledLeftSlot = styled.div`
 export const StyledTitleContainer = styled.div`
   margin: 0;
   display: flex;
+  align-items: center;
   flex-shrink: 1;
   min-width: 0;
 `;
@@ -77,13 +74,12 @@ export const StyledSubTitleWithTooltip = styled(TypographyWithAutoTooltip)`
   align-items: center;
   min-width: 0;
   margin-right: 4px;
-  padding-bottom: 4px;
 `;
 
 export const StyledAfterTitle = styled.p`
   flex-shrink: 0;
   margin: 0;
-  margin-right: 5px;
+  margin-right: 4px;
   white-space: 'nowrap';
   overflow: 'hidden';
   text-overflow: 'ellipsis';
@@ -92,36 +88,15 @@ export const StyledAfterTitle = styled.p`
   text-transform: uppercase;
 `;
 
-export const StyledActionsContainer = styled.div`
-  display: flex;
-  align-items: center;
-  min-width: 0;
-  flex: 1;
-  position: relative;
-`;
-
-export const StyledActionsWrapper = styled.div.attrs({
+export const StyledHeaderActions = styled.div.attrs({
   className: cls.headerActions as string,
-})<{ $translateX: number }>`
-  position: absolute;
-
-  display: flex;
-  left: 0;
-  top: 0;
-  transform: translateX(
-    ${(props) => (props.$translateX ? props.$translateX : 0)}px
-  );
-  padding-left: ${(props) => (props.$translateX ? 20 : 0)}px;
+})`
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
 
   opacity: 0;
   transition: opacity 0.3s ease;
-  background: linear-gradient(
-    to right,
-    ${surfaceClear} 0%,
-    ${surfaceClear} 15%,
-    ${surfaceSolidCard} 40%,
-    ${surfaceSolidCard} 100%
-  );
 `;
 
 export const StyledSubtitle = styled.p`
@@ -151,12 +126,4 @@ export const StyleSubtitledWithTooltip = styled(TypographyWithAutoTooltip)`
 
 export const StyledRightSlot = styled.div`
   align-self: start;
-`;
-
-export const StyledLinkIconButton = styled(IconButton)`
-  && {
-    width: 24px;
-    height: 24px;
-    color: ${() => textSecondary};
-  }
 `;
