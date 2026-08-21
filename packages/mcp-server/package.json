@@ -15,7 +15,7 @@
     "build": "tsc -p tsconfig.lib.json",
     "typecheck": "tsc -p tsconfig.lib.json --noEmit",
     "prepare": "npm run build",
-    "mcp:build-index": "node ./dist/indexer/buildIndex.js",
+    "mcp:build-index": "node ../../generators/meta-info/generate-meta.js && node ./dist/indexer/buildIndex.js",
     "mcp:vendor-atomic": "node ./dist/indexer/vendorAtomicData.js",
     "mcp:start": "node ./dist/server.js",
     "mcp:ab": "node ./ab/run.mjs && node ./ab/score.mjs",
