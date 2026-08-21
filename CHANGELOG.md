@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.13.0](https://github.com/daisforge/dais-ui/compare/v1.12.2...v1.13.0) (2026-08-17)
+
+### Bug Fixes
+
+- **ListOfFilters:** исправлен показ стрелок скролла без ручного скролла ([9cc2963](https://github.com/daisforge/dais-ui/commit/9cc29635fffd796f8efebd49e5b5ef756856cba2))
+- **Table,TableCanvas:** служебные колонки (в т.ч. группировка) исключены из order/pinned/hidden при onConfirm ([bb2498a](https://github.com/daisforge/dais-ui/commit/bb2498a6c0868998a0cceeb2d0ab8e2ec2c8ab41))
+- **Table:** поправлено направление иконки сортировки для соответствия между двумя таблицами. Актуально было в TableCanvas ([2c2d573](https://github.com/daisforge/dais-ui/commit/2c2d57353a0669b0fe2f93576410176e867e839e))
+- **TypographyWithAutoTooltip:** корректный детект переполнения авто-тултипа на дробном зуме и HiDPI ([#23](https://github.com/daisforge/dais-ui/issues/23)) ([a0bf1c8](https://github.com/daisforge/dais-ui/commit/a0bf1c891e7a2a424f2d85789950e465dcde1935))
+
+### Features
+
+- **Stories:** адаптивный размер, навигация стрелками по сегментам, hideDisabledArrows, error-state и рендер превью ([ab04640](https://github.com/daisforge/dais-ui/commit/ab04640f5302c6540c9682376c8a48c63674f933))
+- **TableCanvas:** tableConfig.columnsGrouping. Объединение пустых ячеек шапки ([#21](https://github.com/daisforge/dais-ui/issues/21)) ([8866f7e](https://github.com/daisforge/dais-ui/commit/8866f7e3c2a8f004419da4f0ba5d62308b27b6ac))
+
+## [1.12.2](https://github.com/daisforge/dais-ui/compare/v1.12.1...v1.12.2) (2026-08-13)
+
+**Note:** Version bump only for package @dais-ui/source
+
 ## [1.12.1](https://github.com/daisforge/dais-ui/compare/v1.12.0...v1.12.1) (2026-08-10)
 
 ### Bug Fixes

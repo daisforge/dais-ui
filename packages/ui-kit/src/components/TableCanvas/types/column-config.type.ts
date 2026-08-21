@@ -22,6 +22,7 @@ import type {
   HeaderCellInfoGlideInstance,
   PreviewCellInfoGlideInstance,
 } from '../TableGlideInstance/type';
+import { HeaderAlignment } from './columns-grouping.type';
 import { CtxsType } from './ctxs.type';
 import type { ColumnDefaultOmitted } from './glide-type';
 import { ObjectForExtending } from './utils.type';
@@ -364,12 +365,13 @@ export type ColumnConfig<
     cellInfo: CellInfo<Row, SummRow, CustomCtxs>,
     lvl: number,
   ) => CellThemeOverrideResult | undefined;
+  /**
+   * Выравнивание текста в объединённой шапке этой колонки. Действует, когда шапка
+   * колонки объединена (`tableConfig.columnsGrouping.squashEmptyCells`); перекрывает
+   * табличный `columnsGrouping.squashedHeaderAlign`.
+   */
+  squashedHeaderAlign?: HeaderAlignment;
 };
-
-// export type ColumnGroupConfig<R extends ObjectForExtending, SR> = ColumnGroup<
-//     R,
-//     SR
-// >;
 
 export type ColumnOrColumnGroupConfig<
   R extends ObjectForExtending,
@@ -380,10 +382,13 @@ export declare interface ColumnGroupConfig<
   R extends ObjectForExtending,
   SR = unknown,
 > {
-  /** The name of the column group, it will be displayed in the header cell */
-  /** A unique key to distinguish each column */
+  /** Уникальный ключ группы. */
   readonly key: string;
+  /** Название группы, отображается в ячейке шапки. Строка или JSX. */
   readonly name: string | ReactElement;
   // readonly headerCellClass?: Maybe<string>;
+  /** Вложенные колонки и подгруппы этой группы. */
   readonly children: readonly ColumnOrColumnGroupConfig<R, SR>[];
+  /** Выравнивание текста в объединённой шапке группы. Действует при squashEmptyCells. */
+  readonly squashedHeaderAlign?: HeaderAlignment;
 }

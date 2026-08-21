@@ -16,8 +16,8 @@ export const HeaderSortButton = ({
   setSortState: React.Dispatch<React.SetStateAction<readonly SortColumn[]>>;
 }) => {
   const SortIcon =
-    (columnSorted?.direction === 'ASC' && IconArrowDown) ||
-    (columnSorted?.direction === 'DESC' && IconArrowUp) ||
+    (columnSorted?.direction === 'ASC' && IconArrowUp) ||
+    (columnSorted?.direction === 'DESC' && IconArrowDown) ||
     IconSwapVert;
 
   return (

@@ -8,6 +8,13 @@ type LastLevel = {
    */
   prettySource?: boolean;
   previewSource?: SourceState;
+  /**
+   * Тип исходника в блоке «Show code». `'dynamic'` (дефолт Storybook для render-стори)
+   * сериализует ОТРЕНДЕРЕННЫЙ элемент вместе с данными пропсов — на тяжёлых данных
+   * (напр. TableCanvas с сотнями строк) это раздувает панель на десятки тысяч строк
+   * и вешает страницу. `'code'` показывает написанный текст стори (короткий).
+   */
+  type?: 'auto' | 'code' | 'dynamic';
 };
 export type AllLevels = {
   parameters: {

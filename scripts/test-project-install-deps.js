@@ -11,15 +11,12 @@ import {
   FINPORTAL_PROJECT,
   FINPORTAL_PROJECT_FLAG,
   getProjectName,
-  PKG_JSON,
-  PKG_JSON_UNTRACKED,
   TGZ_NAME,
   VITE_PROJECT,
   WEBPACK_PROJECT,
   WEBPACK_PROJECT_FLAG,
 } from './test-project-constants.js';
 import {
-  copyFile,
   defaultColor,
   execWithLog,
   findFilesByExtension,
@@ -52,12 +49,12 @@ const PROJECT_NAME = getProjectName(PROJECT);
  * 1. Сборка ui-kit
  * 2. Удаление старых .tgz файлов
  * 3. Создание .tgz пакета из собранного ui-kit
- * 4. Переименование файлов и копирование package.json
+ * 4. Переименование файлов
  * 5. Установка зависимостей в project
  */
 async function main() {
   console.log(
-    `${greenColor}Установка зависимостей проекта ${PROJECT_NAME} запущена...${defaultColor}`
+    `${greenColor}Установка зависимостей проекта ${PROJECT_NAME} запущена...${defaultColor}`,
   );
 
   try {
@@ -79,7 +76,7 @@ async function main() {
       rmrf(path.join(PROJECT, file));
     }
     console.log(
-      `✅ Удаление старых файлов .tgz в директории ${PROJECT} завершено`
+      `✅ Удаление старых файлов .tgz в директории ${PROJECT} завершено`,
     );
 
     // 3. Создание .tgz пакета
@@ -92,7 +89,6 @@ async function main() {
 
     // 4. Переименование файлов
     // *.tgz -> ui-kit-tgz.tgz
-    // untracked-package.json -> package.json
     console.log('Переименование файлов...');
     const tgzFiles = findFilesByExtension(PROJECT, '.tgz');
     if (tgzFiles.length > 0) {
@@ -100,10 +96,6 @@ async function main() {
       const newTgzPath = path.join(PROJECT, TGZ_NAME);
       renameFile(oldTgzPath, newTgzPath);
     }
-    copyFile(
-      path.join(PROJECT, PKG_JSON_UNTRACKED),
-      path.join(PROJECT, PKG_JSON)
-    );
     console.log(`✅ Файлы переименованы`);
 
     // 5. Установка зависимостей
@@ -113,11 +105,11 @@ async function main() {
     console.log(`✅ Зависимости проекта ${PROJECT} успешно установлены`);
 
     console.log(
-      `${greenColor}👍 ${PROJECT_NAME}. Зависимости проекта успешно установлены!${defaultColor}`
+      `${greenColor}👍 ${PROJECT_NAME}. Зависимости проекта успешно установлены!${defaultColor}`,
     );
   } catch (error) {
     throw new Error(
-      `Произошла ошибка при попытке установки зависимостей на локальном проекте ${PROJECT_NAME}. Информация об ошибке: ${error.message}`
+      `Произошла ошибка при попытке установки зависимостей на локальном проекте ${PROJECT_NAME}. Информация об ошибке: ${error.message}`,
     );
   }
 }
@@ -133,7 +125,7 @@ async function safeNxReset() {
   try {
     // Сначала останавливаем daemon
     await execWithLog(`${npxCmd} nx daemon --stop`, { shell: true }).catch(
-      () => {}
+      () => {},
     );
 
     // Ждём немного чтобы процесс завершился
@@ -144,7 +136,7 @@ async function safeNxReset() {
   } catch (e) {
     console.warn(
       'Предупреждение: nx reset не удался, продолжаем...',
-      e.message
+      e.message,
     );
     // Пробуем вручную удалить кэш
     try {

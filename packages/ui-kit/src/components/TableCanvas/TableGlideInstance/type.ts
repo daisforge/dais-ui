@@ -26,6 +26,7 @@ import { ReactNode } from 'react';
 
 import type { FillMeta, RowsChangeType } from '../feature-cell-transfer/types';
 import type { TableContentStateOverlay } from '../feature-content-state/types';
+import { HeaderAlignment } from '../types/columns-grouping.type';
 import type { CtxsType } from '../types/ctxs.type';
 import type { ObjectForExtending } from '../types/utils.type';
 
@@ -172,6 +173,8 @@ export type ColumnGlideInstance<
   colSpan?:
     | number
     | ((cellInfo: CellInfoGlideInstance<R, SR, CustomCtxs>) => number);
+  /** Выравнивание в слитой шапке; в adaptColumn → glide `spanGroupHeaderAlign`. */
+  squashedHeaderAlign?: HeaderAlignment;
   /** Тултип для ячеек этой колонки. Строка, объект или функция (context) => config | null. */
   cellTooltip?:
     | CanvasNodeTooltipConfig
