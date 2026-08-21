@@ -1,0 +1,135 @@
+{
+  "name": "Popup",
+  "package": "sdds-finai",
+  "category": "components",
+  "summary": "Popup",
+  "api": {
+    "props": [
+      {
+        "name": "isOpen",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "opened",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "placement",
+        "type": "PopupPlacement",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "offset",
+        "type": "[number, number] | [string, string]",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "frame",
+        "type": "string | RefObject<HTMLElement>",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "positionFixed",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "overlay",
+        "type": "ReactNode",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "zIndex",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "popupInfo",
+        "type": "PopupInfo",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "withAnimation",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "draggable",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "resizable",
+        "type": "boolean | { disabled?: boolean; directions?: ResizeDirections; defaultSize?: { width?: number | undefined; height?: number | undefined; } | undefined; ... 8 more ...; onResizeEnd?: ((resizableContainer?: RefObject<...> | undefined) => void) | undefined; } | undefined",
+        "required": false,
+        "default": "",
+        "description": ""
+      }
+    ]
+  },
+  "examples": [
+    {
+      "title": "Провайдер контекста",
+      "snippet": "import ReactDOM from 'react-dom';\nimport { PopupProvider } from '@salutejs/sdds-finai';\nimport { App } from './App';\nReactDOM.render(\n    <PopupProvider>\n        <App />\n    </PopupProvider>,\n    document.getElementById('root')\n);"
+    },
+    {
+      "title": "Использование Использование Popup можно использовать как и на всем окне, так и в отдельном фрейме - свойство  frame . Также это свойство поддерживает передачу id элемента, в котором будет использоваться компонент. Само позиционирование можно указать с помощью свойства  placement (center - по умолчанию; left, right, top, bottom и их комбинации),",
+      "snippet": "import React, { useRef } from 'react';\nimport styled from 'styled-components';\nimport { surfaceSolidTertiary, surfaceSolidSecondary } from '@salutejs/sdds-themes/tokens';\nimport { Button, Popup, PopupProvider } from  '@salutejs/sdds-finai';\nexport function App() {\n    const StyledButton = styled(Button)`\n        margin-top: 1rem;\n        width: 15rem;\n    `;\n    const StyledWrapper = styled.div`\n        height: 500px;\n    `;\n    const OtherContent = styled.div`\n        margin-top: 1rem;\n        width: 400px;\n        height: 500px;\n        background: ${surfaceSolidTertiary};\n        position: absolute;\n        display: flex;\n        align-items: flex-start;\n        justify-content: center;\n        padding: 1rem;\n        bottom: 0;\n        right: 0;\n    `;\n    const Content = styled.div`\n        background: ${surfaceSolidSecondary};\n        padding: 1rem;\n    `;\n    const [isOpenA, setIsOpenA] = React.useState(false);\n    const [isOpenB, setIsOpenB] = React.useState(false);\n    const ref = useRef();\n    return (\n        <PopupProvider>\n            <StyledWrapper>\n                <div style={{ display: 'flex', flexDirection: 'column' }}>\n                    <StyledButton text=\"Открыть в document\" onClick={() => setIsOpenB(true)} />\n                    <StyledButton text=\"Открыть во Frame\" onClick={() => setIsOpenA(true)} />\n                </div>\n                <Popup\n                    id=\"popupA\"\n                    frame={ref}\n                    opened={isOpenA}\n                    placement=\"center\"\n                    offset={[0, 0]}\n                >\n                    <Content>\n                        <Button onClick={() => setIsOpenA(false)}>Close</Button>\n                        <>Content</>\n                    </Content>\n                </Popup>\n                <OtherContent ref={ref}>\n                    <>Frame</>\n                </OtherContent>\n                <Popup\n                    id=\"popupB\"\n                    frame=\"document\"\n                    opened={isOpenB}\n                    placement=\"center\"\n                    offset={[0, 0]}\n                >\n                    <Content>\n                        <Button onClick={() => setIsOpenB(false)}>Close</Button>\n                        <>Content</>\n                    </Content>\n                </Popup>\n            </StyledWrapper>\n        </PopupProvider>\n    );\n}"
+    },
+    {
+      "title": "Подключение анимации",
+      "snippet": "const StyledPopupTransition = styled(Popup)`\n    && > .${PopupClasses.root} {\n        opacity: 1;\n        transition: opacity 0.5s 0.1s;\n    }\n    &&.${PopupClasses.endTransition} > .${PopupClasses.root} {\n        opacity: 0;\n        transition: opacity 0.5s 0.1s;\n    }\n`;"
+    },
+    {
+      "title": "Подключение анимации",
+      "snippet": "const StyledPopupAnimation = styled(Popup)`\n    && > .${PopupClasses.root} {\n        animation: fadeIn 1s forwards;\n    }\n    &&.${PopupClasses.endAnimation} > .${PopupClasses.root} {\n        animation: fadeOut 1s forwards;\n    }\n    @keyframes fadeIn {\n        from {\n            opacity: 0;\n        }\n        to {\n            opacity: 1;\n        }\n    }\n    @keyframes fadeOut {\n        from {\n            opacity: 1;\n        }\n        to {\n            opacity: 0;\n        }\n    }\n`;"
+    },
+    {
+      "title": "Подключение анимации",
+      "snippet": "const [isOpen, setIsOpen] = React.useState(false);\n    return (\n        <>\n            <div>\n                <StyledButton text=\"Открыть\" onClick={() => setIsOpen(true)} />\n            </div>\n            <StyledPopupAnimation\n                id=\"popup-id\"\n                withAnimation\n                frame=\"document\"\n                opened={isOpen}\n                placement=\"center\"\n                offset={[0, 0]}\n            >\n                <div>\n                    <Button onClick={() => setIsOpen(false)}>Close</Button>\n                </div>\n            </StyledPopupAnimation>\n        </>\n    );\n}"
+    },
+    {
+      "title": "Draggable Draggable Чтобы иметь возможность перетаскивать Popup по экрану нужно включить свойство  draggable . Пример",
+      "snippet": "import React from 'react';\nimport { Button, Popup, PopupProvider } from  '@salutejs/sdds-finai';\nexport function App() {\n    const [isOpen, setIsOpen] = React.useState(false);\n    return (\n        <PopupProvider>\n            <div style={{height: \"200px\"}}>\n                <div style={{ display: 'flex', flexDirection: 'column' }}>\n                    <Button\n                        style={{\n                            marginTop: \"1rem\",\n                            width: \"15rem\"\n                        }}\n                        text=\"Открыть\"\n                        onClick={() => setIsOpen(true)}\n                    />\n                </div>\n                <Popup\n                    id=\"popup\"\n                    isOpen={isOpen}\n                    placement=\"center\"\n                    draggable\n                >\n                    <div style={{ background: \"lightgray\", padding: \"1rem\", height: '100%', boxSizing: 'border-box', borderRadius: '1rem' }}>\n                        <Button onClick={() => setIsOpen(false)}>Close</Button>\n                        <>Content</>\n                    </div>\n                </Popup>\n            </div>\n        </PopupProvider>\n    );\n}"
+    },
+    {
+      "title": "Resizable Resizable Чтобы иметь возможность растягивать Popup нужно настроить свойство  resizable . Формат следующий",
+      "snippet": "/**\n * Настройка resizable-режима.\n */\nresizable?: {\n      /**\n       * Включение/выключение ресайза.\n       * @default false\n       */\n      disabled?: boolean;\n      /**\n       * Направления для ресайза.\n       */\n      directions?: ResizeDirections;\n      /**\n       * Начальный размер окна ресайза.\n       */\n      defaultSize?: { width?: number; height?: number };\n      /**\n       * Минимальная ширина ресайза в px.\n       */\n      minWidth?: number;\n      /**\n       * Минимальная высота ресайза в px.\n       */\n      minHeight?: number;\n      /**\n       * Максимальная ширина ресайза в px.\n       */\n      maxWidth?: number;\n      /**\n       * Максимальная высота ресайза в px.\n       */\n      maxHeight?: number;\n      /**\n       * Кастомные иконки ресайза.\n       */\n      icons?: {\n          topRight?: ReactNode;\n          bottomRight?: ReactNode;\n          bottomLeft?: ReactNode;\n          topLeft?: ReactNode;\n      };\n      /**\n       * Размер иконки ресайза.\n       * @default s\n       */\n      iconSize?: 'xs' | 's' | 'm';\n      /**\n       * Скрывать ли иконку для ресайза.\n       * @default false\n       */\n      hiddenIcons?: PopupPlacementMixed[];\n};"
+    },
+    {
+      "title": "Resizable Resizable Чтобы иметь возможность растягивать Popup нужно настроить свойство  resizable . Формат следующий",
+      "snippet": "import React from 'react';\nimport { Button, Popup, PopupProvider } from  '@salutejs/sdds-finai';\nexport function App() {\n    const [isOpen, setIsOpen] = React.useState(false);\n    return (\n        <PopupProvider>\n            <div style={{height: \"200px\"}}>\n                <div style={{ display: 'flex', flexDirection: 'column' }}>\n                    <Button\n                        style={{\n                            marginTop: \"1rem\",\n                            width: \"15rem\"\n                        }}\n                        text=\"Открыть\"\n                        onClick={() => setIsOpen(true)}\n                    />\n                </div>\n                <Popup\n                    id=\"popup\"\n                    isOpen={isOpen}\n                    placement=\"center\"\n                    offset={[0, 0]}\n                    resizable\n                >\n                    <div style={{ background: \"lightgray\", padding: \"1rem\", height: '100%', boxSizing: 'border-box', borderRadius: '1rem' }}>\n                        <Button onClick={() => setIsOpen(false)}>Close</Button>\n                        <>Content</>\n                    </div>\n                </Popup>\n            </div>\n        </PopupProvider>\n    );\n}"
+    }
+  ]
+}

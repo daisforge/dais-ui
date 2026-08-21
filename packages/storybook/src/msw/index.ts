@@ -1,3 +1,4 @@
+import { SetupWorker } from 'msw/browser';
 import { initialize, mswLoader } from 'msw-storybook-addon';
 
 import * as routes from './routes';
@@ -11,11 +12,14 @@ const initialRoutes = Object.values(routes)
  * See https://github.com/mswjs/msw-storybook-addon#configuring-msw
  * to learn how to customize it
  */
-function mswInitialize() {
+function mswInitialize(): SetupWorker | undefined {
+  const impMeta = import.meta as ImportMeta & {
+    env?: { BASE_URL: string };
+  };
   return initialize(
     {
       serviceWorker: {
-        url: `${import.meta.env.BASE_URL}mockServiceWorker.js`,
+        url: `${impMeta.env?.BASE_URL}mockServiceWorker.js`,
       },
     },
     initialRoutes,

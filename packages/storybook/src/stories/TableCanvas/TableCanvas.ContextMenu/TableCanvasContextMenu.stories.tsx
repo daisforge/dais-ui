@@ -349,7 +349,7 @@ function ExampleCustomDropdownProps() {
 
 const headerDropdownPreCode = `
 import { createRows, type Row } from './data/tableData';
-import { ColumnConfig, TableCanvas } from '@sber-digital-finance-ui/ui-kit/components/TableCanvas';
+import { ColumnConfig, TableCanvas } from '@daisforge/ui/components/TableCanvas';
 import React, { useMemo, useState } from 'react';
 
 ${getFuncAsString(
@@ -360,7 +360,7 @@ ${getFuncAsString(
 
 const headerHandlerPreCode = `
 import { createRows, type Row } from './data/tableData';
-import { ColumnConfig, TableCanvas } from '@sber-digital-finance-ui/ui-kit/components/TableCanvas';
+import { ColumnConfig, TableCanvas } from '@daisforge/ui/components/TableCanvas';
 import React, { useMemo, useState } from 'react';
 
 ${getFuncAsString(
@@ -371,7 +371,7 @@ ${getFuncAsString(
 
 const cellDropdownPreCode = `
 import { createRows, type Row } from './data/tableData';
-import { ColumnConfig, TableCanvas } from '@sber-digital-finance-ui/ui-kit/components/TableCanvas';
+import { ColumnConfig, TableCanvas } from '@daisforge/ui/components/TableCanvas';
 import React, { useMemo, useState } from 'react';
 
 ${getFuncAsString(
@@ -382,7 +382,7 @@ ${getFuncAsString(
 
 const cellHandlerPreCode = `
 import { createRows, type Row } from './data/tableData';
-import { ColumnConfig, TableCanvas } from '@sber-digital-finance-ui/ui-kit/components/TableCanvas';
+import { ColumnConfig, TableCanvas } from '@daisforge/ui/components/TableCanvas';
 import React, { useMemo, useState } from 'react';
 
 ${getFuncAsString(
@@ -429,7 +429,7 @@ export const ContextOnCellMenuStory: StoryObj = {
 
 const customDropdownPreCode = `
 import { createRows, type Row } from './data/tableData';
-import { ColumnConfig, TableCanvas } from '@sber-digital-finance-ui/ui-kit/components/TableCanvas';
+import { ColumnConfig, TableCanvas } from '@daisforge/ui/components/TableCanvas';
 import React, { useMemo, useState } from 'react';
 
 ${getFuncAsString(
@@ -588,7 +588,7 @@ function AsyncCellDropdownExample({ shouldFail }: { shouldFail: boolean }) {
 
 const code = `
 import { createRows, type Row } from './data/tableData';
-import { ColumnConfig, TableCanvas } from '@sber-digital-finance-ui/ui-kit/components/TableCanvas';
+import { ColumnConfig, TableCanvas } from '@daisforge/ui/components/TableCanvas';
 import React, { useMemo, useState } from 'react';
 
 ${getFuncAsString(

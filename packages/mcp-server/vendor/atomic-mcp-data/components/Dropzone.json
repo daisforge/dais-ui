@@ -1,0 +1,137 @@
+{
+  "name": "Dropzone",
+  "package": "sdds-finai",
+  "category": "components",
+  "summary": "Dropzone Компонент для загрузки файлов, без отображения индикации загрузки.",
+  "api": {
+    "props": [
+      {
+        "name": "view",
+        "type": "\"default\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "size",
+        "type": "\"m\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "files",
+        "type": "File[]",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "title",
+        "type": "ReactNode",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "description",
+        "type": "ReactNode",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "icon",
+        "type": "ReactNode",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "iconPlacement",
+        "type": "\"top\" | \"left\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "stretch",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "onDragEnter",
+        "type": "((event: DragEvent<HTMLDivElement>) => void)",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "onDragLeave",
+        "type": "((event: DragEvent<HTMLDivElement>) => void)",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "onDragOver",
+        "type": "((event: DragEvent<HTMLDivElement>) => void)",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "validator",
+        "type": "((files: File[]) => ValidatorReturnType)",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "onDrop",
+        "type": "FileProcessHandler",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "onChoseFiles",
+        "type": "FileProcessHandler",
+        "required": false,
+        "default": "",
+        "description": ""
+      }
+    ]
+  },
+  "examples": [
+    {
+      "title": "Быстрый старт",
+      "snippet": "import React from 'react';\nimport { Dropzone } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <Dropzone\n            iconPlacement=\"top\"\n            width={400}\n            height={280}\n            title=\"Click to upload\"\n            description=\"or drag and drop files here\"\n            onDrop={({ acceptedFiles }) => console.log('onDrop', acceptedFiles)}\n            onChoseFiles={({ acceptedFiles }) => console.log('onChoseFiles', acceptedFiles)}\n        />\n    );\n}"
+    },
+    {
+      "title": "Растягивание Растягивание С помощью свойства  stretch  компонент растягивается на всю доступную ширину",
+      "snippet": "import React from 'react';\nimport { Dropzone } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <Dropzone\n            stretch\n            height={200}\n            iconPlacement=\"top\"\n            title=\"Click to upload\"\n            description=\"or drag and drop files here\"\n        />\n    );\n}"
+    },
+    {
+      "title": "Множественный выбор",
+      "snippet": "import React from 'react';\nimport { Dropzone } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <Dropzone\n            multiple\n            iconPlacement=\"top\"\n            width={400}\n            height={280}\n            title=\"Click to upload\"\n            description=\"or drag and drop files here\"\n            onChoseFiles={({ acceptedFiles }) => console.log('Выбрано файлов:', acceptedFiles.length)}\n        />\n    );\n}"
+    },
+    {
+      "title": "Контролируемый режим",
+      "snippet": "import React, { useState } from 'react';\nimport { Dropzone, Chip } from '@salutejs/sdds-finai';\nexport function App() {\n    const [files, setFiles] = useState([]);\n    return (\n        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>\n            <Dropzone\n                iconPlacement=\"top\"\n                width={400}\n                height={280}\n                title=\"Click to upload\"\n                description=\"or drag and drop files here\"\n                files={files}\n                onChoseFiles={({ acceptedFiles }) => setFiles(acceptedFiles)}\n                onDrop={({ acceptedFiles }) => setFiles(acceptedFiles)}\n            />\n            {files.length > 0 && (\n                <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>\n                    {files.map((file, index) => (\n                        <Chip\n                            view=\"clear\"\n                            key={index}\n                            text={file.name}\n                            onClickClose={() => setFiles((prev) => prev.filter((_, i) => i !== index))}\n                        />\n                    ))}\n                </div>\n            )}\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Валидация Валидация С помощью свойства  validator  можно задать функцию валидации файлов. Она вызывается перед  onDrop  и  onChoseFiles  и должна вернуть объект с  acceptedFiles  и опционально  rejectedFiles",
+      "snippet": "import React, { useState } from 'react';\nimport { Dropzone } from '@salutejs/sdds-finai';\nexport function App() {\n    const [log, setLog] = useState('');\n    const validator = async (files) => {\n        const acceptedFiles = files.filter((f) => f.size < 1024 * 1024);\n        const rejectedFiles = files.filter((f) => f.size >= 1024 * 1024);\n        return { acceptedFiles, rejectedFiles };\n    };\n    const handleChoseFiles = ({ acceptedFiles, rejectedFiles }) => {\n        if (rejectedFiles.length) {\n            setLog(`Отклонено файлов: ${rejectedFiles.length} (больше 1 МБ)`);\n        } else {\n            setLog(`Принято файлов: ${acceptedFiles.length}`);\n        }\n    };\n    return (\n        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>\n            <Dropzone\n                iconPlacement=\"top\"\n                width={400}\n                height={280}\n                title=\"Только файлы до 1 МБ\"\n                description=\"or drag and drop files here\"\n                validator={validator}\n                onChoseFiles={handleChoseFiles}\n            />\n            {log && <p>{log}</p>}\n        </div>\n    );\n}"
+    }
+  ]
+}

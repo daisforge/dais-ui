@@ -4,12 +4,21 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
+    "inst": "rm -rf node_modules && npm cache clean --force && npm i --ignore-scripts --verbose",
+    "ci": "rm -rf node_modules && npm cache clean --force && npm ci --ignore-scripts --verbose",
     "lint": "nx run-many --target=lint --debug --verbose",
     "fix:lint": "nx run-many --target=lint --fix --verbose",
     "typecheck": "nx run-many --target=typecheck --verbose",
     "test": "nx run-many --target=test --verbose",
-    "build": "NODE_OPTIONS=\"--max_old_space_size=4096\" NODE_ENV=production nx run-many --target=build --verbose",
-    "postbuild": "npm run storybook:build",
+    "build": "NODE_OPTIONS=\"--max_old_space_size=4096\" NODE_ENV=production NX_DAEMON=false nx run-many --target=build --parallel=1 --verbose",
+    "postbuild": "node ./packages/mcp-server/dist/indexer/buildIndex.js && npm run storybook:build",
+    "mcp:i": "npm install --prefix packages/mcp-server",
+    "mcp:ci": "npm install --prefix packages/mcp-server",
+    "mcp:build-index": "npm run build --prefix packages/mcp-server && node ./packages/mcp-server/dist/indexer/buildIndex.js",
+    "mcp:vendor-atomic": "node ./packages/mcp-server/dist/indexer/vendorAtomicData.js",
+    "mcp:start": "node ./packages/mcp-server/dist/server.js",
+    "mcp:inspect": "npm run mcp:build-index && npx @modelcontextprotocol/inspector node ./packages/mcp-server/dist/server.js",
+    "mcp:validate-index": "npm run build --prefix packages/mcp-server && node ./packages/mcp-server/dist/validate/validateIndex.js",
     "update": "npm run ui-kit:update && npm install -d @salutejs/plasma-icons@x.x.0 @salutejs/plasma-typo@x.x.0 @salutejs/sdds-finai@x.x.0 @salutejs/sdds-themes@x.x.0 && npm run clean-after-update && npm run ui-kit:generate-tokens",
     "clean-after-update": "npm run ui-kit:delete-after-update && node ./scripts/clean--root--package-lock.js",
     "prestorybook": "npm run generate-storybook-docs-utils",
@@ -157,19 +166,23 @@
     "fix for storybook performance in dev mode",
     "https://github.com/storybookjs/storybook/issues/28269 - TODO update storybook deps and remove override for vite-plugin-react-docgen-typescript",
     "react-number-format - react-number-format@5.4.5 (нужен @glideappsfinal/glide-data-grid) против вложенного 5.4.3 (точный пин у plasma-new-hope) --- НУЖНО ПОТОМ В glideappsfinal снизить или",
-    "js-yaml — реальный конфликт точных версий у lerna/nx. plasma-new-hope — конфликт между sdds-finai (нужен 0.370.0) и sdds_finai_high_contrast (нужен canary), но мы у второго используем только статичные CSS-темы (TemplateStringsArray), которые вообще не трогают plasma-new-hope — риск проверен и минимален. react-number-format — тот же паттерн конфликта на уровень глубже, внутри самого plasma-new-hope; версии 5.4.3→5.4.5 патч-совместимы."
+    "js-yaml — реальный конфликт точных версий у lerna/nx. plasma-new-hope — конфликт между sdds-finai (нужен 0.370.0) и sdds_finai_high_contrast (нужен canary), но мы у второго используем только статичные CSS-темы (TemplateStringsArray), которые вообще не трогают plasma-new-hope — риск проверен и минимален. react-number-format — тот же паттерн конфликта на уровень глубже, внутри самого plasma-new-hope; версии 5.4.3→5.4.5 патч-совместимы.",
+    "engines.npm <11 + packageManager npm@10.8.2 — npm 10 и 11 по-разному раскладывают package-lock.json (флаги peer, resolution optional-зависимостей): один и тот же лок расходится на ~250 строк. CI берёт node 20 из .nvmrc, а node 20 несёт ровно npm 10.8.2. Если локально node 22/24 (npm 11), выполните один раз `corepack enable` — npm в этом репозитории сам переключится на 10.8.2. Без этого при engine-strict=true в .npmrc любая npm-команда упадёт с EBADENGINE — это намеренно.",
+    "workspaces — только ui-kit, НЕ packages/*. Тестовые проекты (vite-project, webpack-project-finalheader, webpack-finportal-platform) намеренно автономны: ставятся и запускаются через --prefix со своим node_modules, чтобы проверять ui-kit так, как его увидит внешний потребитель — установленным из tgz, без хойстинга из корня. Под glob packages/* они втягивались в корневой package-lock.json на машинах разработчиков, а CI (lerna version делает npm install --package-lock-only) каждый релиз вычищала их обратно — отсюда тысячи строк диффа в локе на релизных коммитах."
   ],
   "overrides": {
     "@joshwooding/vite-plugin-react-docgen-typescript": "0.3.0",
     "js-yaml": "4.1.0",
     "@salutejs/plasma-new-hope": "0.370.0",
-    "react-number-format": "5.4.5"
+    "react-number-format": "5.4.5",
+    "rollup": "4.62.2"
   },
   "workspaces": [
-    "packages/*"
+    "packages/ui-kit"
   ],
+  "packageManager": "npm@10.8.2",
   "engines": {
-    "npm": ">=10.0.0",
+    "npm": ">=10.0.0 <11.0.0",
     "node": ">=20.0.0"
   },
   "msw": {

@@ -69,8 +69,8 @@ function Example(args: unknown) {
 }
 
 const code = `
-import { Canvas, ColumnConfig, TableCanvas } from '@sber-digital-finance-ui/ui-kit/components/TableCanvas';
-import { IconSearch } from '@sber-digital-finance-ui/ui-kit/icons';
+import { Canvas, ColumnConfig, TableCanvas } from '@daisforge/ui/components/TableCanvas';
+import { IconSearch } from '@daisforge/ui/icons';
 
 ${getFuncAsString(
   'packages/storybook/src/stories/TableCanvas/CanvasElements/CanvasIconButton/CanvasIconButton.stories.tsx',

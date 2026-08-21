@@ -1,0 +1,211 @@
+{
+  "name": "Modal",
+  "package": "sdds-finai",
+  "category": "components",
+  "summary": "Modal",
+  "api": {
+    "props": [
+      {
+        "name": "withBlur",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "closeOnEsc",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "closeOnOverlayClick",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "onEscKeyDown",
+        "type": "((event: KeyboardEvent) => void)",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "onOverlayClick",
+        "type": "((event: MouseEvent<HTMLDivElement, MouseEvent>) => void)",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "isFocusTrapped",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "initialFocusRef",
+        "type": "RefObject<HTMLElement>",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "focusAfterRef",
+        "type": "RefObject<HTMLElement>",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "onClose",
+        "type": "(() => void)",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "view",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "isOpen",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "opened",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "placement",
+        "type": "PopupPlacement",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "offset",
+        "type": "[number, number] | [string, string]",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "frame",
+        "type": "string | RefObject<HTMLElement>",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "positionFixed",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "children",
+        "type": "ReactNode",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "overlay",
+        "type": "ReactNode",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "zIndex",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "popupInfo",
+        "type": "PopupInfo",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "withAnimation",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "draggable",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "resizable",
+        "type": "boolean | { disabled?: boolean; directions?: ResizeDirections; defaultSize?: { width?: number | undefined; height?: number | undefined; } | undefined; ... 8 more ...; onResizeEnd?: ((resizableContainer?: RefObject<...> | undefined) => void) | undefined; } | undefined",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "hasBody",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "hasClose",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      }
+    ]
+  },
+  "examples": [
+    {
+      "title": "Использование Использование Перед использованием убедитесь, что  PopupProvider  подключен.",
+      "snippet": "import React, { useState } from 'react';\nimport { surfaceSolidSecondary } from '@salutejs/sdds-themes/tokens';\nimport { Button, Modal, PopupProvider } from '@salutejs/sdds-finai';\nexport function App() {\n    const [isOpenA, setIsOpenA] = useState(false);\n    const [isOpenB, setIsOpenB] = useState(false);\n    return (\n        <PopupProvider>\n            <div style={{ height: \"300px\" }}>\n                <div style={{ display: 'flex', flexDirection: 'column' }}>\n                    <Button text=\"Открыть A\" onClick={() => setIsOpenA(true)} />\n                </div>\n                <Modal\n                    id=\"modalA\"\n                    onClose={() => setIsOpenA(false)}\n                    opened={isOpenA}\n                    placement=\"center\"\n                    offset={[0, 0]}\n                >\n                    <div style={{ background: `${surfaceSolidSecondary}`, padding: \"1rem\" }}>\n                        <Button onClick={() => setIsOpenA(false)}>Close</Button>\n                        <Button text=\"Открыть B\" onClick={() => setIsOpenB(true)} />\n                        Content\n                    </div>\n                    <Modal\n                        id=\"modalB\"\n                        onClose={() => setIsOpenB(false)}\n                        opened={isOpenB}\n                        placement=\"right\"\n                        offset={[0, 0]}\n                    >\n                        <div style={{ background: `${surfaceSolidSecondary}`, padding: \"1rem\" }}>\n                            <Button onClick={() => setIsOpenB(false)}>Close</Button>\n                            Content\n                        </div>\n                    </Modal>\n                </Modal>\n            </div>\n        </PopupProvider>\n    );\n}"
+    },
+    {
+      "title": "Использование стилизованной обертки",
+      "snippet": "import React, { useState } from 'react';\nimport { Button, Modal, PopupProvider } from '@salutejs/sdds-finai';\nexport function App() {\n    const [isOpenA, setIsOpenA] = useState(false);\n    const [isOpenB, setIsOpenB] = useState(false);\n    return (\n        <PopupProvider>\n            <div style={{ height: \"300px\" }}>\n                <div style={{ display: 'flex', flexDirection: 'column' }}>\n                    <Button text=\"Открыть A\" onClick={() => setIsOpenA(true)} />\n                </div>\n                <Modal\n                    id=\"modalA\"\n                    onClose={() => setIsOpenA(false)}\n                    opened={isOpenA}\n                    placement=\"center\"\n                    offset={[0, 0]}\n                    hasBody\n                >\n                    <Button onClick={() => setIsOpenA(false)}>Close</Button>\n                    <Button text=\"Открыть B\" onClick={() => setIsOpenB(true)} />\n                    Content\n                    <Modal\n                        id=\"modalB\"\n                        onClose={() => setIsOpenB(false)}\n                        opened={isOpenB}\n                        placement=\"right\"\n                        offset={[0, 0]}\n                    >\n                        <Button onClick={() => setIsOpenB(false)}>Close</Button>\n                        Content\n                    </Modal>\n                </Modal>\n            </div>\n        </PopupProvider>\n    );\n}"
+    },
+    {
+      "title": "Подключение анимации",
+      "snippet": "import styled from 'styled-components';\nimport { Modal } from '@salutejs/sdds-finai';\nconst StyledModal = styled(Modal)`\n    && > .${popupClasses.root}, .${modalClasses.overlay} {\n        animation: fadeIn 1s forwards;\n    }\n    &&.${popupClasses.endAnimation} .${popupClasses.root} {\n        animation: fadeOut 1s forwards;\n    }\n    &&.${popupClasses.endAnimation} .${modalClasses.overlay} {\n        animation: fadeOut 1s forwards;\n    }\n    @keyframes fadeIn {\n        from {\n            opacity: 0;\n        }\n        to {\n            opacity: 1;\n        }\n    }\n    @keyframes fadeOut {\n        from {\n            opacity: 1;\n        }\n        to {\n            opacity: 0;\n        }\n    }\n`;"
+    },
+    {
+      "title": "Draggable Draggable Чтобы иметь возможность перетаскивать Modal по экрану нужно включить свойство  draggable . Пример",
+      "snippet": "import React from 'react';\nimport { Button, Modal, PopupProvider } from  '@salutejs/sdds-finai';\nexport function App() {\n    const [isOpen, setIsOpen] = React.useState(false);\n    return (\n        <PopupProvider>\n            <div style={{height: \"200px\"}}>\n                <div style={{ display: 'flex', flexDirection: 'column' }}>\n                    <Button\n                        style={{\n                            marginTop: \"1rem\",\n                            width: \"15rem\"\n                        }}\n                        text=\"Открыть\"\n                        onClick={() => setIsOpen(true)}\n                    />\n                </div>\n                <Modal\n                    id=\"modal\"\n                    isOpen={isOpen}\n                    onClose={() => setIsOpen(false)}\n                    placement=\"center\"\n                    draggable\n                >\n                    <div style={{ background: \"lightgray\", padding: \"1rem\", height: '100%', boxSizing: 'border-box', borderRadius: '1rem' }}>\n                        <Button onClick={() => setIsOpen(false)}>Close</Button>\n                        <>Content</>\n                    </div>\n                </Modal>\n            </div>\n        </PopupProvider>\n    );\n}"
+    },
+    {
+      "title": "Resizable Resizable Чтобы иметь возможность растягивать Popup нужно настроить свойство  resizable . Формат следующий",
+      "snippet": "/**\n * Настройка resizable-режима.\n */\nresizable?: {\n      /**\n       * Включение/выключение ресайза.\n       * @default false\n       */\n      disabled?: boolean;\n      /**\n       * Направления для ресайза.\n       */\n      directions?: ResizeDirections;\n      /**\n       * Начальный размер окна ресайза.\n       */\n      defaultSize?: { width?: number; height?: number };\n      /**\n       * Минимальная ширина ресайза в px.\n       */\n      minWidth?: number;\n      /**\n       * Минимальная высота ресайза в px.\n       */\n      minHeight?: number;\n      /**\n       * Максимальная ширина ресайза в px.\n       */\n      maxWidth?: number;\n      /**\n       * Максимальная высота ресайза в px.\n       */\n      maxHeight?: number;\n      /**\n       * Кастомные иконки ресайза.\n       */\n      icons?: {\n          topRight?: ReactNode;\n          bottomRight?: ReactNode;\n          bottomLeft?: ReactNode;\n          topLeft?: ReactNode;\n      };\n      /**\n       * Размер иконки ресайза.\n       * @default s\n       */\n      iconSize?: 'xs' | 's' | 'm';\n      /**\n       * Скрывать ли иконку для ресайза.\n       * @default false\n       */\n      hiddenIcons?: PopupPlacementMixed[];\n};"
+    },
+    {
+      "title": "Resizable Resizable Чтобы иметь возможность растягивать Popup нужно настроить свойство  resizable . Формат следующий",
+      "snippet": "import React from 'react';\nimport { Button, Modal, PopupProvider } from  '@salutejs/sdds-finai';\nexport function App() {\n    const [isOpen, setIsOpen] = React.useState(false);\n    return (\n        <PopupProvider>\n            <div style={{height: \"200px\"}}>\n                <div style={{ display: 'flex', flexDirection: 'column' }}>\n                    <Button\n                        style={{\n                            marginTop: \"1rem\",\n                            width: \"15rem\"\n                        }}\n                        text=\"Открыть\"\n                        onClick={() => setIsOpen(true)}\n                    />\n                </div>\n                <Modal\n                    id=\"modal\"\n                    isOpen={isOpen}\n                    onClose={() => setIsOpen(false)}\n                    placement=\"center\"\n                    offset={[0, 0]}\n                    resizable\n                >\n                    <div style={{ background: \"lightgray\", padding: \"1rem\", height: '100%', boxSizing: 'border-box', borderRadius: '1rem' }}>\n                        <Button onClick={() => setIsOpen(false)}>Close</Button>\n                        <>Content</>\n                    </div>\n                </Modal>\n            </div>\n        </PopupProvider>\n    );\n}"
+    }
+  ]
+}
