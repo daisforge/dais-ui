@@ -1,0 +1,70 @@
+{
+  "extends": [
+    "plugin:@nx/react"
+  ],
+  "ignorePatterns": [
+    "!**/*",
+    "dist",
+    ".probe"
+  ],
+  "rules": {
+    "import/no-extraneous-dependencies": [
+      "error",
+      {
+        "devDependencies": [
+          "packages/mcp-server/src/indexer/**/*.ts"
+        ]
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": [
+        "*.ts",
+        "*.tsx",
+        "*.js",
+        "*.jsx"
+      ],
+      "rules": {}
+    },
+    {
+      "files": [
+        "*.ts",
+        "*.tsx"
+      ],
+      "rules": {}
+    },
+    {
+      "files": [
+        "*.js",
+        "*.jsx"
+      ],
+      "rules": {}
+    },
+    {
+      "files": [
+        "ab/**/*.mjs"
+      ],
+      "env": {
+        "node": true
+      },
+      "rules": {
+        "import/extensions": "off",
+        "import/no-extraneous-dependencies": "off",
+        "no-console": "off",
+        "no-continue": "off",
+        "no-nested-ternary": "off",
+        "no-await-in-loop": "off"
+      }
+    },
+    {
+      "files": [
+        "ab/fixtures/*.tsx"
+      ],
+      "rules": {
+        "react/function-component-definition": "off",
+        "import/no-extraneous-dependencies": "off"
+      }
+    }
+  ]
+}

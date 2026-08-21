@@ -1,0 +1,350 @@
+{
+  "name": "Slider",
+  "package": "sdds-finai",
+  "category": "components",
+  "summary": "Slider Свойство valuePlacement задаёт положение текущего значения относительно ползунка.",
+  "api": {
+    "props": [
+      {
+        "name": "view",
+        "type": "\"default\" | \"accent\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "size",
+        "type": "\"s\" | \"l\" | \"m\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "pointerSize",
+        "type": "\"none\" | \"small\" | \"large\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "min",
+        "type": "number",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "max",
+        "type": "number",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "labelContentLeft",
+        "type": "ReactNode",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "step",
+        "type": "number",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "multipleStepSize",
+        "type": "number",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "settings",
+        "type": "Partial<{ indent?: number; fontSizeMultiplier?: number; backgroundColor?: string | undefined; fillColor?: string | undefined; }> | undefined",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "onChange",
+        "type": "((event: FormTypeNumber) => void) | ((value: number) => void) | ((event: FormTypeString) => void) | ((value: number[]) => void)",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "value",
+        "type": "number | number[]",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "defaultValue",
+        "type": "number | number[]",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "orientation",
+        "type": "\"horizontal\" | \"vertical\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "labelPlacement",
+        "type": "\"outer\" | \"inner\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "scaleAlign",
+        "type": "\"none\" | \"top\" | \"bottom\" | \"side\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "sliderAlign",
+        "type": "\"none\" | \"center\" | \"right\" | \"left\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "reversed",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "labelReversed",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "valuePlacement",
+        "type": "\"none\" | \"top\" | \"bottom\" | \"right\" | \"left\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "onChangeCommitted",
+        "type": "((value: number) => void) | ((value: number[]) => void)",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "ariaLabel",
+        "type": "string | string[]",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "showCurrentValue",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "showRangeValues",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "rangeValuesPlacement",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "showScale",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "hideMinValueDiff",
+        "type": "number",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "hideMaxValueDiff",
+        "type": "number",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "labelContent",
+        "type": "ReactNode",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "type",
+        "type": "\"single\" | \"double\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "pointerVisibility",
+        "type": "\"hover\" | \"always\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "currentValueVisibility",
+        "type": "\"hover\" | \"always\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "scaleTicks",
+        "type": "number[]",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "onChangeTextField",
+        "type": "((value: number[], event: ChangeEvent<HTMLInputElement>) => void)",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "onBlurTextField",
+        "type": "((value: number[], event: FocusEvent<HTMLInputElement, Element>) => void)",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "onKeyDownTextField",
+        "type": "((value: number[], event: KeyboardEvent<HTMLInputElement>) => void)",
+        "required": false,
+        "default": "",
+        "description": ""
+      }
+    ]
+  },
+  "examples": [
+    {
+      "title": "Быстрый старт",
+      "snippet": "import React, { useState } from 'react';\nimport { Slider } from '@salutejs/sdds-finai';\nexport function App() {\n    const [value, setValue] = useState(30);\n    return (\n        <div style={{ width: '25rem', display: 'flex', flexDirection: 'column' }}>\n            <Slider\n                min={0}\n                max={100}\n                value={value}\n                label=\"Громкость\"\n                onChange={(val) => setValue(val)}\n                onChangeCommitted={(val) => setValue(val)}\n            />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Управление внешним видом",
+      "snippet": "import React, { useState } from 'react';\nimport { Slider } from '@salutejs/sdds-finai';\nexport function App() {\n    const [v1, setV1] = useState(50);\n    const [v2, setV2] = useState(50);\n    const [v3, setV3] = useState(50);\n    return (\n        <div style={{ display: 'flex', gap: '1rem', flexDirection: 'column', width: '25rem' }}>\n            <Slider view=\"default\" min={0} max={100} value={v1} label=\"Default\" onChange={setV1} />\n            <Slider view=\"accent\" min={0} max={100} value={v2} label=\"Accent\" onChange={setV2} />\n            <Slider view=\"gradient\" min={0} max={100} value={v3} label=\"Gradient\" onChange={setV3} />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Управление внешним видом",
+      "snippet": "import React, { useState } from 'react';\nimport { Slider } from '@salutejs/sdds-finai';\nexport function App() {\n    const [vs, setVs] = useState(50);\n    const [vm, setVm] = useState(50);\n    const [vl, setVl] = useState(50);\n    return (\n        <div style={{ display: 'flex', gap: '1rem', flexDirection: 'column', width: '25rem' }}>\n            <Slider size=\"s\" min={0} max={100} value={vs} label=\"Size s\" onChange={setVs} />\n            <Slider size=\"m\" min={0} max={100} value={vm} label=\"Size m\" onChange={setVm} />\n            <Slider size=\"l\" min={0} max={100} value={vl} label=\"Size l\" onChange={setVl} />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Диапазон значений",
+      "snippet": "import React, { useState } from 'react';\nimport { Slider } from '@salutejs/sdds-finai';\nexport function App() {\n    const [value, setValue] = useState([10, 80]);\n    const sortValues = (values) =>\n        values.map((val) => Math.min(100, Math.max(0, val))).sort((a, b) => a - b);\n    return (\n        <div style={{ width: '25rem', display: 'flex', flexDirection: 'column' }}>\n            <Slider\n                min={0}\n                max={100}\n                value={value}\n                label=\"Цена товара\"\n                onChange={(values) => setValue(sortValues(values))}\n                onChangeCommitted={(values) => setValue(sortValues(values))}\n                onBlurTextField={(values) => setValue(sortValues(values))}\n                onKeyDownTextField={(values, event) => {\n                    if (event.key === 'Enter') setValue(sortValues(values));\n                }}\n            />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Ориентация Ориентация Слайдер поддерживает горизонтальное (по умолчанию) и вертикальное отображение через свойство  orientation",
+      "snippet": "import React, { useState } from 'react';\nimport { Slider } from '@salutejs/sdds-finai';\nexport function App() {\n    const [value, setValue] = useState(30);\n    return (\n        <div style={{ width: '25rem', display: 'flex', flexDirection: 'column' }}>\n            <Slider\n                min={0}\n                max={100}\n                value={value}\n                label=\"Громкость\"\n                orientation=\"horizontal\"\n                onChange={setValue}\n            />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Ориентация Ориентация Слайдер поддерживает горизонтальное (по умолчанию) и вертикальное отображение через свойство  orientation",
+      "snippet": "import React, { useState } from 'react';\nimport { Slider } from '@salutejs/sdds-finai';\nimport { IconMic } from '@salutejs/plasma-icons';\nexport function App() {\n    const [value, setValue] = useState(30);\n    return (\n        <div style={{ height: '25rem' }}>\n            <Slider\n                min={0}\n                max={100}\n                value={value}\n                label=\"Громкость\"\n                labelContent={<IconMic size=\"s\" />}\n                orientation=\"vertical\"\n                sliderAlign=\"center\"\n                onChange={setValue}\n            />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Ползунок Ползунок С помощью свойств  pointerSize  и  pointerVisibility  можно управлять размером и видимостью ползунка",
+      "snippet": "import React, { useState } from 'react';\nimport { Slider } from '@salutejs/sdds-finai';\nexport function App() {\n    const [v1, setV1] = useState(50);\n    const [v2, setV2] = useState(50);\n    const [v3, setV3] = useState(50);\n    return (\n        <div style={{ display: 'flex', gap: '1rem', flexDirection: 'column', width: '25rem' }}>\n            <Slider min={0} max={100} value={v1} pointerSize=\"small\" label=\"Small (по умолчанию)\" onChange={setV1} />\n            <Slider min={0} max={100} value={v2} pointerSize=\"large\" label=\"Large\" onChange={setV2} />\n            <Slider min={0} max={100} value={v3} pointerSize=\"none\" label=\"None (скрыт)\" onChange={setV3} />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Ползунок Ползунок С помощью свойств  pointerSize  и  pointerVisibility  можно управлять размером и видимостью ползунка",
+      "snippet": "import React, { useState } from 'react';\nimport { Slider } from '@salutejs/sdds-finai';\nexport function App() {\n    const [v1, setV1] = useState(50);\n    const [v2, setV2] = useState(50);\n    return (\n        <div style={{ display: 'flex', gap: '1rem', flexDirection: 'column', width: '25rem' }}>\n            <Slider min={0} max={100} value={v1} pointerVisibility=\"always\" label=\"Always (по умолчанию)\" onChange={setV1} />\n            <Slider min={0} max={100} value={v2} pointerVisibility=\"hover\" label=\"Hover (наведите курсор)\" onChange={setV2} />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Текущее значение",
+      "snippet": "import React, { useState } from 'react';\nimport { Slider } from '@salutejs/sdds-finai';\nexport function App() {\n    const [v1, setV1] = useState(50);\n    const [v2, setV2] = useState(50);\n    return (\n        <div style={{ display: 'flex', gap: '2rem', flexDirection: 'column', width: '25rem' }}>\n            <Slider\n                min={0}\n                max={100}\n                value={v1}\n                showCurrentValue\n                currentValueVisibility=\"always\"\n                label=\"Всегда\"\n                onChange={setV1}\n            />\n            <Slider\n                min={0}\n                max={100}\n                value={v2}\n                showCurrentValue\n                currentValueVisibility=\"hover\"\n                label=\"При наведении\"\n                onChange={setV2}\n            />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Текущее значение",
+      "snippet": "import React, { useState } from 'react';\nimport { Slider } from '@salutejs/sdds-finai';\nexport function App() {\n    const [v1, setV1] = useState(50);\n    const [v2, setV2] = useState(50);\n    return (\n        <div style={{ display: 'flex', gap: '2rem', flexDirection: 'column', width: '25rem' }}>\n            <Slider\n                min={0}\n                max={100}\n                value={v1}\n                showCurrentValue\n                valuePlacement=\"bottom\"\n                label=\"Bottom (по умолчанию)\"\n                onChange={setV1}\n            />\n            <Slider\n                min={0}\n                max={100}\n                value={v2}\n                showCurrentValue\n                valuePlacement=\"top\"\n                label=\"Top\"\n                onChange={setV2}\n            />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Шкала значений",
+      "snippet": "import React, { useState } from 'react';\nimport { Slider } from '@salutejs/sdds-finai';\nexport function App() {\n    const [v1, setV1] = useState(50);\n    const [v2, setV2] = useState(50);\n    const [v3, setV3] = useState(50);\n    return (\n        <div style={{ display: 'flex', gap: '2rem', flexDirection: 'column', width: '25rem' }}>\n            <Slider min={0} max={100} value={v1} showScale scaleAlign=\"bottom\" label=\"Bottom (по умолчанию)\" onChange={setV1} />\n            <Slider min={0} max={100} value={v2} showScale scaleAlign=\"top\" label=\"Top\" onChange={setV2} />\n            <Slider min={0} max={100} value={v3} showScale scaleAlign=\"side\" label=\"Side\" onChange={setV3} />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Шкала значений",
+      "snippet": "import React, { useState } from 'react';\nimport { Slider } from '@salutejs/sdds-finai';\nexport function App() {\n    const [value, setValue] = useState(50);\n    return (\n        <div style={{ width: '25rem', display: 'flex', flexDirection: 'column' }}>\n            <Slider\n                min={0}\n                max={100}\n                value={value}\n                label=\"Произвольные деления\"\n                scaleTicks={[0, 13, 37, 72, 89, 100]}\n                onChange={setValue}\n            />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Подпись Подпись С помощью свойства  label  можно добавить подпись к слайдеру. Расположение подписи управляется через  labelPlacement , а иконку можно передать в  labelContent",
+      "snippet": "import React, { useState } from 'react';\nimport { Slider } from '@salutejs/sdds-finai';\nexport function App() {\n    const [v1, setV1] = useState(50);\n    const [v2, setV2] = useState(50);\n    return (\n        <div style={{ display: 'flex', gap: '2rem', flexDirection: 'column', width: '25rem' }}>\n            <Slider min={0} max={100} value={v1} label=\"Сверху\" labelPlacement=\"top\" onChange={setV1} />\n            <Slider min={0} max={100} value={v2} label=\"Слева\" labelPlacement=\"left\" onChange={setV2} />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Подпись Подпись С помощью свойства  label  можно добавить подпись к слайдеру. Расположение подписи управляется через  labelPlacement , а иконку можно передать в  labelContent",
+      "snippet": "import React, { useState } from 'react';\nimport { Slider } from '@salutejs/sdds-finai';\nimport { IconMic } from '@salutejs/plasma-icons';\nexport function App() {\n    const [value, setValue] = useState(50);\n    return (\n        <div style={{ width: '25rem', display: 'flex', flexDirection: 'column' }}>\n            <Slider\n                min={0}\n                max={100}\n                value={value}\n                label=\"Громкость\"\n                labelContent={<IconMic size=\"s\" />}\n                onChange={setValue}\n            />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Шаг изменения",
+      "snippet": "import React, { useState } from 'react';\nimport { Slider } from '@salutejs/sdds-finai';\nexport function App() {\n    const [v1, setV1] = useState(50);\n    const [v2, setV2] = useState(5000);\n    return (\n        <div style={{ display: 'flex', gap: '2rem', flexDirection: 'column', width: '25rem' }}>\n            <Slider min={0} max={100} step={5} value={v1} label=\"Шаг 5\" showScale onChange={setV1} />\n            <Slider min={0} max={10000} step={500} multipleStepSize={10} value={v2} label=\"Шаг 500, PageUp/Down — 10%\" showScale onChange={setV2} />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Состояния Состояния Компонент поддерживает состояние  disabled",
+      "snippet": "import React, { useState } from 'react';\nimport { Slider } from '@salutejs/sdds-finai';\nexport function App() {\n    const [value, setValue] = useState(50);\n    return (\n        <div style={{ display: 'flex', gap: '1rem', flexDirection: 'column', width: '25rem' }}>\n            <Slider min={0} max={100} value={value} label=\"Активный\" onChange={setValue} />\n            <Slider min={0} max={100} value={50} label=\"Неактивный\" disabled />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Контролируемый режим",
+      "snippet": "import React, { useState } from 'react';\nimport { Slider } from '@salutejs/sdds-finai';\nexport function App() {\n    const [value, setValue] = useState(30);\n    return (\n        <div style={{ width: '25rem', display: 'flex', flexDirection: 'column' }}>\n            <Slider\n                min={0}\n                max={100}\n                value={value}\n                label={`Текущее значение: ${value}`}\n                onChange={setValue}\n                onChangeCommitted={setValue}\n            />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Контролируемый режим",
+      "snippet": "import React from 'react';\nimport { Slider } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div style={{ width: '25rem', display: 'flex', flexDirection: 'column' }}>\n            <Slider\n                min={0}\n                max={100}\n                name=\"volume\"\n                defaultValue={30}\n                label=\"Громкость\"\n                onChange={(event) => console.log('Value:', event.target.value)}\n            />\n        </div>\n    );\n}"
+    }
+  ]
+}

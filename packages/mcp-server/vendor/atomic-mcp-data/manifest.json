@@ -1,0 +1,18 @@
+{
+  "builtAt": "2026-08-03T10:12:18.837Z",
+  "version": "0.349.0",
+  "source": {
+    "repo": "https://github.com/salute-developers/plasma"
+  },
+  "paths": {
+    "beta": "beta/index.json",
+    "components": "components/index.json",
+    "form": "form/index.json",
+    "intro": "intro/index.json",
+    "mcp": "mcp/index.json",
+    "next": "next/index.json",
+    "react_17": "react_17/index.json",
+    "utils": "utils/index.json",
+    "tokens": "tokens/index.json"
+  }
+}

@@ -9,6 +9,9 @@ packages/vite-project/*.tgz
 # dependencies
 node_modules
 
+# mcp-server — сгенерированный пробник для валидации индекса и A/B-тестов
+packages/mcp-server/.probe/
+
 # storybook
 packages/storybook/src/*.string.json
 

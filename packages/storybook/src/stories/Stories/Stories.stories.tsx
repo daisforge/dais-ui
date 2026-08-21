@@ -86,7 +86,7 @@ function CircleStoriesExample() {
 }
 
 const circleCode = `
-import { Button, Stories } from '@sber-digital-finance-ui/ui-kit';
+import { Button, Stories } from '@daisforge/ui';
 import { useState } from 'react';
 
 ${getFuncAsString(
@@ -146,7 +146,7 @@ function RectStoriesExample() {
 }
 
 const rectCode = `
-import { Button, Stories } from '@sber-digital-finance-ui/ui-kit';
+import { Button, Stories } from '@daisforge/ui';
 
 ${getFuncAsString(
   'packages/storybook/src/stories/Stories/Stories.stories.tsx',
@@ -184,7 +184,7 @@ function LoadingStoriesExample() {
 }
 
 const loadingCode = `
-import { Stories } from '@sber-digital-finance-ui/ui-kit';
+import { Stories } from '@daisforge/ui';
 
 ${getFuncAsString(
   'packages/storybook/src/stories/Stories/Stories.stories.tsx',
@@ -211,7 +211,7 @@ function ErrorStateExample() {
 }
 
 const errorCode = `
-import { Stories } from '@sber-digital-finance-ui/ui-kit';
+import { Stories } from '@daisforge/ui';
 
 ${getFuncAsString(
   'packages/storybook/src/stories/Stories/Stories.stories.tsx',
@@ -262,8 +262,8 @@ function ErrorCustomExample() {
 }
 
 const errorCustomCode = `
-import { BodyS, Button, Stories, surfaceAccentMinor, surfaceInfo } from '@sber-digital-finance-ui/ui-kit';
-import { br, s } from '@sber-digital-finance-ui/ui-kit/constants';
+import { BodyS, Button, Stories, surfaceAccentMinor, surfaceInfo } from '@daisforge/ui';
+import { br, s } from '@daisforge/ui/constants';
 
 ${getFuncAsString(
   'packages/storybook/src/stories/Stories/Stories.stories.tsx',
@@ -343,7 +343,7 @@ function ImperativeControlExample() {
 }
 
 const imperativeCode = `
-import { Button, Stories, StoriesRef } from '@sber-digital-finance-ui/ui-kit';
+import { Button, Stories, StoriesRef } from '@daisforge/ui';
 import { useRef, useState } from 'react';
 
 ${getFuncAsString(
@@ -402,7 +402,7 @@ function InsideModalExample() {
 }
 
 const insideModalCode = `
-import { Button, ModalDF, Stories } from '@sber-digital-finance-ui/ui-kit';
+import { Button, ModalDF, Stories } from '@daisforge/ui';
 import { useState } from 'react';
 
 ${getFuncAsString(
@@ -446,7 +446,7 @@ function HiddenArrowsExample() {
 }
 
 const hiddenArrowsCode = `
-import { Stories } from '@sber-digital-finance-ui/ui-kit';
+import { Stories } from '@daisforge/ui';
 
 ${getFuncAsString(
   'packages/storybook/src/stories/Stories/Stories.stories.tsx',
@@ -497,7 +497,7 @@ function TitlesExample() {
 }
 
 const titlesCode = `
-import { Stories } from '@sber-digital-finance-ui/ui-kit';
+import { Stories } from '@daisforge/ui';
 
 ${getFuncAsString(
   'packages/storybook/src/stories/Stories/Stories.stories.tsx',
