@@ -2,7 +2,7 @@
   {
     "name": "EmbeddedButton",
     "href": "EmbeddedButton.json",
-    "summary": "EmbeddedButton Свойство size управляет радиусом скругления кнопки.",
+    "summary": "EmbeddedButton Иконка внутри EmbeddedButton не имеет фиксированного размера — задайте его через style .",
     "category": "beta"
   },
   {

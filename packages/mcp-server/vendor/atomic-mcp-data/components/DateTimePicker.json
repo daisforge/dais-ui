@@ -2,7 +2,7 @@
   "name": "DateTimePicker",
   "package": "sdds-finai",
   "category": "components",
-  "summary": "DateTimePicker Размер DateTimePicker задаётся с помощью свойства size .",
+  "summary": "DateTimePicker appearance=\"viewMode\" — режим просмотра.",
   "api": {
     "props": [
       {
@@ -29,6 +29,20 @@
       {
         "name": "contentRight",
         "type": "ReactElement<any, string | JSXElementConstructor<any>>",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "type",
+        "type": "\"Days\" | \"Months\" | \"Years\" | \"Quarters\"",
         "required": false,
         "default": "",
         "description": ""
@@ -76,13 +90,6 @@
         "description": ""
       },
       {
-        "name": "name",
-        "type": "string",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
         "name": "readOnly",
         "type": "boolean",
         "required": false,
@@ -92,13 +99,6 @@
       {
         "name": "required",
         "type": "boolean",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "type",
-        "type": "\"Days\" | \"Months\" | \"Years\" | \"Quarters\"",
         "required": false,
         "default": "",
         "description": ""
@@ -398,6 +398,13 @@
         "description": ""
       },
       {
+        "name": "hintPortal",
+        "type": "string | RefObject<HTMLElement | null>",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
         "name": "hasClearDivider",
         "type": "boolean",
         "required": false,
@@ -434,6 +441,13 @@
       },
       {
         "name": "valueSuccess",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "valueEdited",
         "type": "boolean",
         "required": false,
         "default": "",
@@ -546,7 +560,7 @@
       },
       {
         "name": "appearance",
-        "type": "\"default\" | \"clear\"",
+        "type": "\"clear\" | \"default\" | \"viewMode\"",
         "required": false,
         "default": "",
         "description": ""
@@ -564,7 +578,7 @@
     },
     {
       "title": "Управление внешним видом",
-      "snippet": "import React from 'react';\nimport { DateTimePicker } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', flexDirection: 'column', gap: '3rem' }}>\n            <DateTimePicker\n                appearance=\"default\"\n                size=\"s\"\n                label=\"Default\"\n                placeholder=\"Введите дату\"\n                maskWithFormat\n                usePortal\n            />\n            <DateTimePicker\n                appearance=\"clear\"\n                size=\"s\"\n                label=\"Clear\"\n                placeholder=\"Введите дату\"\n                maskWithFormat\n                usePortal\n            />\n            <DateTimePicker\n                appearance=\"clear\"\n                hasClearDivider\n                size=\"s\"\n                label=\"Clear с разделителем\"\n                placeholder=\"Введите дату\"\n                maskWithFormat\n                usePortal\n            />\n        </div>\n    );\n}"
+      "snippet": "import React from 'react';\nimport { DateTimePicker } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', flexDirection: 'column', gap: '3rem' }}>\n            <DateTimePicker\n                appearance=\"default\"\n                size=\"s\"\n                label=\"Default\"\n                placeholder=\"Введите дату\"\n                maskWithFormat\n                usePortal\n            />\n            <DateTimePicker\n                appearance=\"clear\"\n                size=\"s\"\n                label=\"Clear\"\n                placeholder=\"Введите дату\"\n                maskWithFormat\n                usePortal\n            />\n            <DateTimePicker\n                appearance=\"clear\"\n                hasClearDivider\n                size=\"s\"\n                label=\"Clear с разделителем\"\n                placeholder=\"Введите дату\"\n                maskWithFormat\n                usePortal\n            />\n            <DateTimePicker\n                appearance=\"viewMode\"\n                size=\"s\"\n                label=\"ViewMode\"\n                value=\"22.06.2026 12:00\"\n                readOnly\n                maskWithFormat\n                usePortal\n            />\n        </div>\n    );\n}"
     },
     {
       "title": "Управление внешним видом",
@@ -589,6 +603,10 @@
     {
       "title": "Подсказки Подсказки Для вывода подсказки снизу от поля используйте свойство  leftHelper ,",
       "snippet": "import React from 'react';\nimport { DateTimePicker } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div>\n            <DateTimePicker\n                placeholder=\"Введите дату\"\n                leftHelper=\"Подсказка снизу\"\n                hintText=\"Подсказка в виде Tooltip\"\n                hintView=\"default\"\n                hintSize=\"m\"\n            />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Отслеживание отображаемого месяца и года",
+      "snippet": "import React, { useState } from 'react';\nimport { DateTimePicker } from '@salutejs/sdds-finai';\nexport function App() {\n    const [currentDate, setCurrentDate] = useState<Date>();\n    return (\n        <div style={{display: 'flex', flexDirection: 'column'}}>\n            <DateTimePicker\n                label=\"Дата и время\"\n                onChangeVisibleDate={setCurrentDate}\n            />\n            <div>\n                Отображаемый период: {currentDate\n                    ? currentDate.toLocaleDateString('ru', { month: 'long', year: 'numeric' })\n                    : 'календарь ещё не листали'}\n            </div>\n        </div>\n    );\n}"
     },
     {
       "title": "Всплывающая подсказка для событий календаря",

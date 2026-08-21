@@ -1,26 +1,11 @@
-import fs from 'node:fs';
-import path from 'node:path';
-
 import type {
   ComponentMeta,
   InstallationGuide,
-  MetaJson,
   WorkingComponentRecord,
 } from '../types.js';
-import { REPO_ROOT } from './tsProject.js';
+import { loadMetaJson } from './loadMeta.js';
 
-const META_JSON_PATH = path.join(REPO_ROOT, '_docs/meta/components-meta.json');
 const INSTALLATION_PAGE_TITLE = 'Установка и использование';
-
-let cachedMeta: MetaJson | null | undefined;
-
-function loadMetaJson(): MetaJson | null {
-  if (cachedMeta !== undefined) return cachedMeta;
-  cachedMeta = fs.existsSync(META_JSON_PATH)
-    ? (JSON.parse(fs.readFileSync(META_JSON_PATH, 'utf8')) as MetaJson)
-    : null;
-  return cachedMeta;
-}
 
 /** Убирает крупные <style>...</style>-блоки из сырого MDX — чистый шум для агента. */
 function stripStyleBlocks(text: string | undefined): string | undefined {

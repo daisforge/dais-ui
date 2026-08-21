@@ -77,7 +77,14 @@
       },
       {
         "name": "view",
-        "type": "\"default\" | \"positive\" | \"warning\" | \"negative\"",
+        "type": "\"default\" | \"positive\" | \"warning\" | \"negative\" | \"edited\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "clear",
+        "type": "boolean",
         "required": false,
         "default": "",
         "description": ""
@@ -97,6 +104,13 @@
         "description": ""
       },
       {
+        "name": "type",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
         "name": "onFocus",
         "type": "FocusEventHandler<HTMLInputElement>",
         "required": false,
@@ -111,22 +125,8 @@
         "description": ""
       },
       {
-        "name": "type",
-        "type": "string",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
         "name": "label",
         "type": "string",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "clear",
-        "type": "boolean",
         "required": false,
         "default": "",
         "description": ""
@@ -272,6 +272,13 @@
         "description": ""
       },
       {
+        "name": "hintPortal",
+        "type": "string | RefObject<HTMLElement | null>",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
         "name": "titleCaption",
         "type": "ReactNode",
         "required": false,
@@ -280,6 +287,13 @@
       },
       {
         "name": "leftHelper",
+        "type": "ReactNode",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "rightHelper",
         "type": "ReactNode",
         "required": false,
         "default": "",
@@ -336,7 +350,7 @@
       },
       {
         "name": "appearance",
-        "type": "\"default\" | \"clear\"",
+        "type": "\"clear\" | \"default\" | \"viewMode\"",
         "required": false,
         "default": "",
         "description": ""

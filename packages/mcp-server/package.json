@@ -15,7 +15,7 @@
     "build": "tsc -p tsconfig.lib.json",
     "typecheck": "tsc -p tsconfig.lib.json --noEmit",
     "prepare": "npm run build",
-    "mcp:build-index": "node ./dist/indexer/buildIndex.js",
+    "mcp:build-index": "node ../../generators/meta-info/generate-meta.js && node ./dist/indexer/buildIndex.js",
     "mcp:vendor-atomic": "node ./dist/indexer/vendorAtomicData.js",
     "mcp:start": "node ./dist/server.js",
     "mcp:ab": "node ./ab/run.mjs && node ./ab/score.mjs",
@@ -26,7 +26,8 @@
     "mcp:ab:selfcheck": "node ./ab/selfcheck.mjs",
     "mcp:ab:prepare-before": "node ./ab/prepare-before.mjs",
     "mcp:inspect:check-node": "node -e \"const [maj,min]=process.versions.node.split('.').map(Number);if(!(maj>22||(maj===22&&min>=12))){console.error('mcp:inspect нужна нода >=22.12 (сам inspector и его optional @rolldown/binding-* биндинг), сейчас '+process.version+'. Запусти: nvm use 22.19.0');process.exit(1)}\"",
-    "mcp:inspect": "bash scripts/mcp-inspect.sh"
+    "mcp:inspect": "bash scripts/mcp-inspect.sh",
+    "mcp:search-eval": "node ./ab/search-eval.mjs"
   },
   "license": "MIT",
   "publishConfig": {

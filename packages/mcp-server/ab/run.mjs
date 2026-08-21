@@ -186,7 +186,16 @@ function runOne({
     const started = Date.now();
     const out = fs.createWriteStream(transcriptPath);
     let stderr = '';
-    const child = spawn('claude', args, { cwd: workDir });
+    // MCP_CONNECTION_NONBLOCKING=true (её выставляет Claude Code вокруг своих
+    // дочерних процессов) заставляет CLI не дожидаться хендшейка с MCP-сервером:
+    // модель начинает первый ход, когда сервер ещё `pending`, и MCP-тулов в её
+    // списке нет вовсе. Прогон при этом выглядит совершенно нормально — агент
+    // молча решает задачу «на память», а замер показывает mcpCalls: 0 и якобы
+    // бесполезный индекс. Снимаем переменную: A/B-руки с MCP обязаны получать
+    // подключённый сервер, иначе они меряют не то, что заявлено.
+    const env = { ...process.env };
+    delete env.MCP_CONNECTION_NONBLOCKING;
+    const child = spawn('claude', args, { cwd: workDir, env });
     const timer = setTimeout(() => child.kill('SIGKILL'), timeoutMs);
 
     child.stdout.pipe(out);

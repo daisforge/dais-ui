@@ -2,7 +2,7 @@
   "name": "ProgressBarCircular",
   "package": "sdds-finai",
   "category": "components",
-  "summary": "ProgressBarCircular Круговой индикатор прогресса.",
+  "summary": "ProgressBarCircular",
   "api": {
     "props": [
       {
@@ -14,7 +14,7 @@
       },
       {
         "name": "size",
-        "type": "\"xxl\" | \"s\" | \"l\" | \"m\" | \"xs\" | \"xl\" | \"xxs\"",
+        "type": "\"xxl\" | \"s\" | \"l\" | \"m\" | \"xs\" | \"xxs\" | \"xl\"",
         "required": false,
         "default": "",
         "description": ""
@@ -46,37 +46,52 @@
         "required": false,
         "default": "",
         "description": ""
+      },
+      {
+        "name": "reverse",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
       }
     ]
   },
   "examples": [
     {
-      "title": "Использование Использование Компонент  ProgressBarCircular  отображает прогресс в виде круговой диаграммы.",
-      "snippet": "import React from 'react';\nimport { ProgressBarCircular } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div>\n            <ProgressBarCircular value={25} />\n            <ProgressBarCircular value={50}>50%</ProgressBarCircular>\n            <ProgressBarCircular value={75} maxValue={200} />\n        </div>\n    );\n}"
+      "title": "Быстрый старт",
+      "snippet": "import React from 'react';\nimport { ProgressBarCircular } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>\n            <ProgressBarCircular value={25} />\n            <ProgressBarCircular value={50}>50%</ProgressBarCircular>\n            <ProgressBarCircular value={75} />\n        </div>\n    );\n}"
     },
     {
-      "title": "Размер индикатора",
-      "snippet": "import React from 'react';\nimport { ProgressBarCircular } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>\n            <ProgressBarCircular value={25} size=\"xxl\" />\n            <ProgressBarCircular value={25} size=\"xl\" />\n            <ProgressBarCircular value={25} size=\"l\" />\n            <ProgressBarCircular value={25} size=\"m\" />\n            <ProgressBarCircular value={25} size=\"s\" />\n            <ProgressBarCircular value={25} size=\"xs\" />\n            <ProgressBarCircular value={25} size=\"xxs\" />\n        </div>\n    );\n}"
-    },
-    {
-      "title": "Вид индикатора",
+      "title": "Управление внешним видом",
       "snippet": "import React from 'react';\nimport { ProgressBarCircular } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>\n            <ProgressBarCircular value={50} view=\"default\" />\n            <ProgressBarCircular value={50} view=\"secondary\" />\n            <ProgressBarCircular value={50} view=\"accent\" />\n            <ProgressBarCircular value={50} view=\"positive\" />\n            <ProgressBarCircular value={50} view=\"warning\" />\n            <ProgressBarCircular value={50} view=\"negative\" />\n            <ProgressBarCircular value={50} view=\"info\" />\n        </div>\n    );\n}"
     },
     {
-      "title": "Отображение контента внутри",
-      "snippet": "import React from 'react';\nimport { ProgressBarCircular } from '@salutejs/sdds-finai';\nimport { IconClose } from '@salutejs/plasma-icons';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>\n            <ProgressBarCircular value={25} size=\"xl\">25%</ProgressBarCircular>\n            <ProgressBarCircular value={50} size=\"xl\">\n                <IconClose color=\"var(--text-primary)\" size=\"s\" />\n            </ProgressBarCircular>\n        </div>\n    );\n}"
+      "title": "Управление внешним видом",
+      "snippet": "import React from 'react';\nimport { ProgressBarCircular } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>\n            <ProgressBarCircular value={50} size=\"xxl\" />\n            <ProgressBarCircular value={50} size=\"xl\" />\n            <ProgressBarCircular value={50} size=\"l\" />\n            <ProgressBarCircular value={50} size=\"m\" />\n            <ProgressBarCircular value={50} size=\"s\" />\n            <ProgressBarCircular value={50} size=\"xs\" />\n            <ProgressBarCircular value={50} size=\"xxs\" />\n        </div>\n    );\n}"
     },
     {
-      "title": "Разные значения прогресса",
-      "snippet": "import React from 'react';\nimport { ProgressBarCircular } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>\n            <ProgressBarCircular value={0} />\n            <ProgressBarCircular value={25} />\n            <ProgressBarCircular value={50} />\n            <ProgressBarCircular value={75} />\n            <ProgressBarCircular value={100} />\n        </div>\n    );\n}"
+      "title": "Трек Трек С помощью свойства  hasTrack  можно управлять отображением фоновой дуги",
+      "snippet": "import React from 'react';\nimport { ProgressBarCircular } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>\n            <ProgressBarCircular value={50} hasTrack={false} />\n            <ProgressBarCircular value={50} />\n        </div>\n    );\n}"
     },
     {
-      "title": "Кастомная толщина линии",
-      "snippet": "import React from 'react';\nimport { ProgressBarCircular } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>\n            <ProgressBarCircular value={50} strokeSize={2} />\n            <ProgressBarCircular value={50} strokeSize={4} />\n            <ProgressBarCircular value={50} strokeSize={8} />\n            <ProgressBarCircular value={50} strokeSize={12} />\n        </div>\n    );\n}"
+      "title": "Толщина обводки",
+      "snippet": "import React from 'react';\nimport { ProgressBarCircular } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>\n            <ProgressBarCircular value={50} strokeSize={2} />\n            <ProgressBarCircular value={50} strokeSize={4} />\n            <ProgressBarCircular value={50} strokeSize={8} />\n            <ProgressBarCircular value={50} strokeSize={12} />\n        </div>\n    );\n}"
     },
     {
-      "title": "Кастомный максимальный показатель",
-      "snippet": "import React from 'react';\nimport { ProgressBarCircular } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>\n            <ProgressBarCircular value={25} maxValue={50} size=\"xl\">25/50</ProgressBarCircular>\n            <ProgressBarCircular value={75} maxValue={150} size=\"xl\">75/150</ProgressBarCircular>\n        </div>\n    );\n}"
+      "title": "Максимальное значение",
+      "snippet": "import React from 'react';\nimport { ProgressBarCircular } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>\n            <ProgressBarCircular value={25} maxValue={50} size=\"xl\">25/50</ProgressBarCircular>\n            <ProgressBarCircular value={75} maxValue={150} size=\"xl\">75/150</ProgressBarCircular>\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Обратное направление",
+      "snippet": "import React from 'react';\nimport { ProgressBarCircular } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>\n            <ProgressBarCircular value={75} size=\"xl\">Обычный</ProgressBarCircular>\n            <ProgressBarCircular value={75} size=\"xl\" reverse>Обратный</ProgressBarCircular>\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Контент внутри",
+      "snippet": "import React from 'react';\nimport { ProgressBarCircular } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>\n            <ProgressBarCircular value={25} size=\"xl\">25%</ProgressBarCircular>\n            <ProgressBarCircular value={50} size=\"xl\">50%</ProgressBarCircular>\n            <ProgressBarCircular value={75} size=\"xl\">75%</ProgressBarCircular>\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Контент внутри",
+      "snippet": "import React from 'react';\nimport { ProgressBarCircular } from '@salutejs/sdds-finai';\nimport { IconDone } from '@salutejs/plasma-icons';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>\n            <ProgressBarCircular value={100} size=\"xl\">\n                <IconDone color=\"var(--text-primary)\" size=\"s\" />\n            </ProgressBarCircular>\n        </div>\n    );\n}"
     }
   ]
 }

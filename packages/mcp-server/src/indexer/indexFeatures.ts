@@ -1,24 +1,5 @@
-import fs from 'node:fs';
-import path from 'node:path';
-
-import type {
-  FeatureRecord,
-  MetaJson,
-  WorkingComponentRecord,
-} from '../types.js';
-import { REPO_ROOT } from './tsProject.js';
-
-const META_JSON_PATH = path.join(REPO_ROOT, '_docs/meta/components-meta.json');
-
-let cachedMeta: MetaJson | null | undefined;
-function loadMetaJson(): MetaJson | null {
-  if (cachedMeta === undefined) {
-    cachedMeta = fs.existsSync(META_JSON_PATH)
-      ? (JSON.parse(fs.readFileSync(META_JSON_PATH, 'utf8')) as MetaJson)
-      : null;
-  }
-  return cachedMeta;
-}
+import type { FeatureRecord, WorkingComponentRecord } from '../types.js';
+import { loadMetaJson } from './loadMeta.js';
 
 /** Первая содержательная строка — пропускаем markdown-заголовки ("# Editing"), это не summary. */
 function firstMeaningfulLine(text: string | undefined): string {

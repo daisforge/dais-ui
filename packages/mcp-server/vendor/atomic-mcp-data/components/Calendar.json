@@ -223,6 +223,10 @@
       "snippet": "import React from 'react';\nimport { CalendarBase } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div style={{ display: \"grid\", gridTemplateColumns: \"1fr 1fr\", gap: \"2rem\" }}>\n            <CalendarBase\n                type=\"Days\"\n                locale=\"en\"\n            />\n            <CalendarBase\n                type=\"Months\"\n                locale=\"en\"\n            />\n        </div>\n    );\n}"
     },
     {
+      "title": "Отслеживание отображаемого месяца и года",
+      "snippet": "import React, { useState } from 'react';\nimport { CalendarBase } from '@salutejs/sdds-finai';\nexport function App() {\n    const [value, setValue] = useState(new Date());\n    const [currentDate, setCurrentDate] = useState<Date>();\n    return (\n        <div style={{display: 'flex', flexDirection: 'column'}}>\n            <CalendarBase\n                value={value}\n                onChangeValue={setValue}\n                onChangeVisibleDate={setCurrentDate}\n            />\n            <div>\n                Отображаемый период: {currentDate\n                    ? currentDate.toLocaleDateString('ru', { month: 'long', year: 'numeric' })\n                    : 'изначальный месяц'}\n            </div>\n        </div>\n    );\n}"
+    },
+    {
       "title": "Всплывающая подсказка для событий календаря",
       "snippet": "type EventDay {\n        date: Date;\n        color?: string;\n        eventInfo?: ReactNode;\n    }"
     },

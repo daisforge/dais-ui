@@ -6,13 +6,6 @@
   "api": {
     "props": [
       {
-        "name": "view",
-        "type": "\"default\" | \"positive\" | \"warning\" | \"negative\"",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
         "name": "size",
         "type": "\"s\"",
         "required": false,
@@ -20,29 +13,36 @@
         "description": ""
       },
       {
-        "name": "hintView",
-        "type": "\"default\"",
+        "name": "view",
+        "type": "\"default\" | \"positive\" | \"warning\" | \"negative\" | \"edited\"",
         "required": false,
         "default": "",
         "description": ""
       },
       {
-        "name": "hintSize",
-        "type": "\"s\" | \"m\"",
+        "name": "clear",
+        "type": "true",
         "required": false,
         "default": "",
         "description": ""
       },
       {
-        "name": "readOnly",
-        "type": "boolean",
+        "name": "contentRight",
+        "type": "ReactElement<any, string | JSXElementConstructor<any>>",
         "required": false,
         "default": "",
         "description": ""
       },
       {
-        "name": "disabled",
-        "type": "boolean",
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "status",
+        "type": "\"\" | \"warning\" | \"success\" | \"error\"",
         "required": false,
         "default": "",
         "description": ""
@@ -90,8 +90,22 @@
         "description": ""
       },
       {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
         "name": "form",
         "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "height",
+        "type": "string | number",
         "required": false,
         "default": "",
         "description": ""
@@ -111,8 +125,15 @@
         "description": ""
       },
       {
-        "name": "name",
-        "type": "string",
+        "name": "readOnly",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "required",
+        "type": "boolean",
         "required": false,
         "default": "",
         "description": ""
@@ -125,6 +146,27 @@
         "description": ""
       },
       {
+        "name": "width",
+        "type": "string | number",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "cols",
+        "type": "number",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
         "name": "dirName",
         "type": "string",
         "required": false,
@@ -132,21 +174,14 @@
         "description": ""
       },
       {
+        "name": "rows",
+        "type": "number",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
         "name": "wrap",
-        "type": "string",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "status",
-        "type": "\"\" | \"warning\" | \"success\" | \"error\"",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "label",
         "type": "string",
         "required": false,
         "default": "",
@@ -160,29 +195,15 @@
         "description": ""
       },
       {
-        "name": "titleCaption",
-        "type": "ReactNode",
+        "name": "hintView",
+        "type": "\"default\"",
         "required": false,
         "default": "",
         "description": ""
       },
       {
-        "name": "headerSlot",
-        "type": "ReactNode",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "contentRight",
-        "type": "ReactElement<any, string | JSXElementConstructor<any>>",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "resize",
-        "type": "\"none\" | \"both\" | \"horizontal\" | \"vertical\"",
+        "name": "hintSize",
+        "type": "\"s\" | \"m\"",
         "required": false,
         "default": "",
         "description": ""
@@ -190,34 +211,6 @@
       {
         "name": "helperText",
         "type": "string",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "leftHelper",
-        "type": "ReactNode",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "rightHelper",
-        "type": "ReactNode",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "leftHelperPlacement",
-        "type": "\"outer\" | \"inner\"",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "required",
-        "type": "boolean",
         "required": false,
         "default": "",
         "description": ""
@@ -265,13 +258,6 @@
         "description": ""
       },
       {
-        "name": "hintOpened",
-        "type": "boolean",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
         "name": "hintTargetIcon",
         "type": "ReactNode",
         "required": false,
@@ -314,8 +300,29 @@
         "description": ""
       },
       {
-        "name": "appearance",
-        "type": "\"default\" | \"clear\"",
+        "name": "titleCaption",
+        "type": "ReactNode",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "leftHelper",
+        "type": "ReactNode",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "rightHelper",
+        "type": "ReactNode",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "hasDivider",
+        "type": "boolean",
         "required": false,
         "default": "",
         "description": ""
@@ -342,43 +349,36 @@
         "description": ""
       },
       {
-        "name": "rows",
-        "type": "number",
+        "name": "headerSlot",
+        "type": "ReactNode",
         "required": false,
         "default": "",
         "description": ""
       },
       {
-        "name": "cols",
-        "type": "number",
+        "name": "resize",
+        "type": "\"none\" | \"both\" | \"horizontal\" | \"vertical\"",
         "required": false,
         "default": "",
         "description": ""
       },
       {
-        "name": "clear",
-        "type": "true",
+        "name": "rightHelperPlacement",
+        "type": "\"outer\" | \"inner\"",
         "required": false,
         "default": "",
         "description": ""
       },
       {
-        "name": "hasDivider",
+        "name": "leftHelperPlacement",
+        "type": "\"outer\" | \"inner\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "hintOpened",
         "type": "boolean",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "height",
-        "type": "string | number",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "width",
-        "type": "string | number",
         "required": false,
         "default": "",
         "description": ""
@@ -386,6 +386,13 @@
       {
         "name": "labelAriaHidden",
         "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "appearance",
+        "type": "\"default\" | \"viewMode\"",
         "required": false,
         "default": "",
         "description": ""
@@ -403,7 +410,11 @@
     },
     {
       "title": "Управление внешним видом",
-      "snippet": "import React from 'react';\nimport { TextArea } from '@salutejs/sdds-finai';\nimport { IconDownload } from '@salutejs/plasma-icons';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', gap: '3rem', flexWrap: 'wrap'}}>\n            <TextArea\n                view=\"default\"\n                label=\"View default\"\n                placeholder=\"Введите значение\"\n                contentRight={<IconDownload />}\n            />\n            <TextArea\n                view=\"positive\"\n                label=\"View positive\"\n                placeholder=\"Введите значение\"\n                contentRight={<IconDownload />}\n            />\n            <TextArea\n                view=\"warning\"\n                label=\"View warning\"\n                placeholder=\"Введите значение\"\n                contentRight={<IconDownload />}\n            />\n            <TextArea\n                view=\"negative\"\n                label=\"View negative\"\n                placeholder=\"Введите значение\"\n                contentRight={<IconDownload />}\n            />\n        </div>\n    );\n}"
+      "snippet": "import React from 'react';\nimport { TextArea } from '@salutejs/sdds-finai';\nimport { IconDownload } from '@salutejs/plasma-icons';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', gap: '3rem', flexWrap: 'wrap'}}>\n            <TextArea\n                appearance=\"default\"\n                label=\"Appearance default\"\n                placeholder=\"Введите значение\"\n                contentRight={<IconDownload />}\n            />\n            <TextArea\n                appearance=\"viewMode\"\n                label=\"Appearance viewMode\"\n                value=\"Значение только для просмотра\"\n                readOnly\n                contentRight={<IconDownload />}\n            />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Управление внешним видом",
+      "snippet": "import React from 'react';\nimport { TextArea } from '@salutejs/sdds-finai';\nimport { IconDownload } from '@salutejs/plasma-icons';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', gap: '3rem', flexWrap: 'wrap'}}>\n            <TextArea\n                view=\"default\"\n                label=\"View default\"\n                placeholder=\"Введите значение\"\n                contentRight={<IconDownload />}\n            />\n            <TextArea\n                view=\"positive\"\n                label=\"View positive\"\n                placeholder=\"Введите значение\"\n                contentRight={<IconDownload />}\n            />\n            <TextArea\n                view=\"warning\"\n                label=\"View warning\"\n                placeholder=\"Введите значение\"\n                contentRight={<IconDownload />}\n            />\n            <TextArea\n                view=\"negative\"\n                label=\"View negative\"\n                placeholder=\"Введите значение\"\n                contentRight={<IconDownload />}\n            />\n            <TextArea\n                view=\"edited\"\n                label=\"View edited\"\n                placeholder=\"Введите значение\"\n                contentRight={<IconDownload />}\n            />\n        </div>\n    );\n}"
     },
     {
       "title": "Управление внешним видом",
@@ -432,10 +443,6 @@
     {
       "title": "Слот для контента над вводимым текстом",
       "snippet": "import React from 'react';\nimport { TextArea, TextS } from '@salutejs/sdds-finai';\nexport function App() {\n    const HeaderSlot = () => (\n       <div style={{ margin: \"0 0.75rem\", padding: \"0.5rem 0\", borderBottom: `0.063rem solid #000` }}>\n           <TextS>Дополнительный контент</TextS>\n       </div>\n    )\n    return (\n        <div>\n            <TextArea\n                headerSlot={<HeaderSlot />}\n                placeholder=\"Введите значение\"\n                defaultValue=\"Значение\"\n                leftHelper=\"Подсказка снизу слева\"\n            />\n        </div>\n    );\n}"
-    },
-    {
-      "title": "Clear (DEPRECATED)",
-      "snippet": "import React from 'react';\nimport { TextArea } from '@salutejs/sdds-finai';\nexport function App() {\n    const [value, setValue] = React.useState('Значение');\n    return (\n        <div>\n            <TextArea\n                placeholder=\"Введите значение\"\n                value={value}\n                onChange={(e) => {\n                    setValue(e.target.value);\n                }}\n                clear\n                hasDivider\n            />\n        </div>\n    );\n}"
     }
   ]
 }

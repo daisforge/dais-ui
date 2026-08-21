@@ -73,6 +73,10 @@
       "snippet": "import React from 'react';\nimport { LineSkeleton } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <LineSkeleton size=\"h3\" animationType=\"pulse\" />\n    );\n}"
     },
     {
+      "title": "Длительность анимации",
+      "snippet": "import React from 'react';\nimport { LineSkeleton, RectSkeleton, TextSkeleton } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <>\n            <LineSkeleton size=\"h3\" animationDuration={1200} />\n            <RectSkeleton width=\"12rem\" height=\"8rem\" animationDuration={600} />\n            <TextSkeleton size=\"textM\" lines={4} animationDuration={0} />\n        </>\n    );\n}"
+    },
+    {
       "title": "Быстрый старт",
       "snippet": "import React from 'react';\nimport { LineSkeleton } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <LineSkeleton size=\"h3\" />\n    );\n}"
     },
@@ -95,6 +99,10 @@
     {
       "title": "Тип анимации",
       "snippet": "import React from 'react';\nimport { Button, withSkeleton } from '@salutejs/sdds-finai';\nexport function App() {\n    const ButtonSkeleton = withSkeleton(Button);\n    return (\n        <ButtonSkeleton\n            text=\"Загрузка...\"\n            view=\"default\"\n            size=\"s\"\n            skeleton={true}\n            animationConfig={{ type: 'pulse' }}\n        />\n    );\n}"
+    },
+    {
+      "title": "Длительность анимации",
+      "snippet": "import React from 'react';\nimport { Button, withSkeleton } from '@salutejs/sdds-finai';\nexport function App() {\n    const ButtonSkeleton = withSkeleton(Button);\n    return (\n        <ButtonSkeleton\n            text=\"Загрузка...\"\n            skeleton={true}\n            animationConfig={{\n                type: 'shimmer',\n                duration: 1000,\n            }}\n        />\n    );\n}"
     },
     {
       "title": "Кастомные цвета",

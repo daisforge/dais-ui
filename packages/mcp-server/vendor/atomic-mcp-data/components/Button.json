@@ -7,14 +7,21 @@
     "props": [
       {
         "name": "size",
-        "type": "\"s\" | \"l\" | \"m\" | \"xs\" | \"xl\" | \"xxs\"",
+        "type": "\"s\" | \"xs\" | \"xxs\"",
         "required": false,
         "default": "",
         "description": ""
       },
       {
         "name": "view",
-        "type": "\"default\" | \"accent\" | \"positive\" | \"warning\" | \"negative\" | \"dark\" | \"clear\" | \"secondary\" | \"black\" | \"white\"",
+        "type": "\"clear\" | \"default\" | \"accent\" | \"positive\" | \"warning\" | \"negative\" | \"dark\" | \"secondary\" | \"black\" | \"white\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "appearance",
+        "type": "\"default\" | \"outline\"",
         "required": false,
         "default": "",
         "description": ""
@@ -41,6 +48,13 @@
         "description": ""
       },
       {
+        "name": "focused",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
         "name": "disabled",
         "type": "boolean",
         "required": false,
@@ -50,13 +64,6 @@
       {
         "name": "value",
         "type": "string | number",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "focused",
-        "type": "boolean",
         "required": false,
         "default": "",
         "description": ""
@@ -113,13 +120,6 @@
       {
         "name": "pin",
         "type": "\"square-square\" | \"square-clear\" | \"clear-square\" | \"clear-clear\" | \"clear-circle\" | \"circle-clear\" | \"circle-circle\"",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "appearance",
-        "type": "\"default\" | \"outline\"",
         "required": false,
         "default": "",
         "description": ""
@@ -182,6 +182,10 @@
     {
       "title": "Гиперссылка Гиперссылка Компонент поддерживает вывод в виде тега  <a> , для этого необходимо указать свойство  as",
       "snippet": "import React from 'react';\nimport { Button } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <Button as=\"a\" text=\"Гиперссылка\" />\n    );\n}"
+    },
+    {
+      "title": "Градиентный текст",
+      "snippet": "import React from 'react';\nimport { Button } from '@salutejs/sdds-finai';\nimport styled from 'styled-components';\nexport function App() {\n    const GradientButton = styled(Button)`\n        & .sdds-core-text-node {\n            background: linear-gradient(90deg, #f7971e, #ffd200);\n            background-clip: text;\n            -webkit-background-clip: text;\n            -webkit-text-fill-color: transparent;\n    }\n    `;\n    return (\n        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>\n            <GradientButton text=\"Градиент\" />\n        </div>\n    );\n}"
     }
   ]
 }

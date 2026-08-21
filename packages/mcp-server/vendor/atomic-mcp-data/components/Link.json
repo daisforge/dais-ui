@@ -7,7 +7,7 @@
     "props": [
       {
         "name": "view",
-        "type": "\"default\" | \"accent\" | \"positive\" | \"warning\" | \"negative\" | \"clear\" | \"secondary\" | \"tertiary\" | \"paragraph\"",
+        "type": "\"clear\" | \"default\" | \"accent\" | \"positive\" | \"warning\" | \"negative\" | \"secondary\" | \"tertiary\" | \"paragraph\"",
         "required": false,
         "default": "",
         "description": ""

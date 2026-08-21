@@ -2,16 +2,9 @@
   "name": "DatePicker",
   "package": "sdds-finai",
   "category": "components",
-  "summary": "DatePicker | Обозначение | Отображение | Описание | |-------------|---------------------------------------|----------------------------------| | DD | 01-31 | Дни месяца, 2 цифры | | D | 1-31 | Дни месяца | | MMMM | January...December / январь...декабрь | Месяц года, полное название | | MMM | Jan...D",
+  "summary": "DatePicker Размер DatePicker задаётся с помощью свойства size .",
   "api": {
     "props": [
-      {
-        "name": "view",
-        "type": "\"default\"",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
       {
         "name": "size",
         "type": "\"s\" | \"xs\"",
@@ -20,134 +13,8 @@
         "description": ""
       },
       {
-        "name": "eventTooltipSize",
-        "type": "\"s\" | \"m\"",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "hintView",
+        "name": "view",
         "type": "\"default\"",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "hintSize",
-        "type": "\"s\" | \"m\"",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "disabled",
-        "type": "boolean",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "readOnly",
-        "type": "boolean",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "appearance",
-        "type": "\"default\" | \"clear\"",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "hasClearDivider",
-        "type": "boolean",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "titleCaption",
-        "type": "ReactNode",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "requiredPlacement",
-        "type": "\"right\" | \"left\"",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "required",
-        "type": "boolean",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "hasRequiredIndicator",
-        "type": "boolean",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "value",
-        "type": "string | Date | null",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "preserveInvalidOnBlur",
-        "type": "boolean",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "defaultDate",
-        "type": "Date",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "placeholder",
-        "type": "string",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "name",
-        "type": "string",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "valueError",
-        "type": "boolean",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "valueSuccess",
-        "type": "boolean",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "leftHelper",
-        "type": "string",
         "required": false,
         "default": "",
         "description": ""
@@ -167,14 +34,35 @@
         "description": ""
       },
       {
-        "name": "textBefore",
+        "name": "name",
         "type": "string",
         "required": false,
         "default": "",
         "description": ""
       },
       {
-        "name": "textAfter",
+        "name": "type",
+        "type": "\"Days\" | \"Months\" | \"Years\" | \"Quarters\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "onChange",
+        "type": "(((event: { target: { value?: string; name?: string; originalDate?: DateType; isoDate?: string | undefined; }; }) => void) & FormEventHandler<HTMLDivElement>) | undefined",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "lang",
+        "type": "\"ru\" | \"en\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "placeholder",
         "type": "string",
         "required": false,
         "default": "",
@@ -188,57 +76,15 @@
         "description": ""
       },
       {
-        "name": "onCommitDate",
-        "type": "OnCommitDateCallback",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "onChangeValue",
-        "type": "((event: SyntheticEvent<HTMLInputElement, Event> | null, value?: string, originalDate?: DateType, isoDate?: string) => void) | undefined",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "onChange",
-        "type": "(((event: { target: { value?: string; name?: string; originalDate?: DateType; isoDate?: string | undefined; }; }) => void) & FormEventHandler<HTMLDivElement>) | undefined",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "label",
-        "type": "string",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "labelPlacement",
-        "type": "string",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "keepPlaceholder",
+        "name": "disabled",
         "type": "boolean",
         "required": false,
         "default": "",
         "description": ""
       },
       {
-        "name": "format",
-        "type": "string",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "maskWithFormat",
-        "type": "boolean",
+        "name": "max",
+        "type": "Date",
         "required": false,
         "default": "",
         "description": ""
@@ -251,8 +97,106 @@
         "description": ""
       },
       {
-        "name": "max",
-        "type": "Date",
+        "name": "readOnly",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "required",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "value",
+        "type": "string | Date | null",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "format",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "offset",
+        "type": "[number, number]",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "frame",
+        "type": "string | RefObject<HTMLElement>",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "onToggle",
+        "type": "((isOpen: boolean, event?: Event | SyntheticEvent<Element, Event>) => void)",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "isOpen",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "opened",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "placement",
+        "type": "DatePickerPlacement | DatePickerPlacementBasic[]",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "zIndex",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "closeOnEsc",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "closeOnOverlayClick",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "onChangeValue",
+        "type": "((event: SyntheticEvent<HTMLInputElement, Event> | null, value?: string, originalDate?: DateType, isoDate?: string) => void) | undefined",
         "required": false,
         "default": "",
         "description": ""
@@ -335,34 +279,6 @@
         "description": ""
       },
       {
-        "name": "type",
-        "type": "\"Days\" | \"Months\" | \"Years\" | \"Quarters\"",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "lang",
-        "type": "\"ru\" | \"en\"",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "calendarContainerWidth",
-        "type": "string | number",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "calendarContainerHeight",
-        "type": "string | number",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
         "name": "stretched",
         "type": "boolean",
         "required": false,
@@ -370,106 +286,64 @@
         "description": ""
       },
       {
-        "name": "dateShortcutsWidth",
-        "type": "Width<string | number>",
+        "name": "eventTooltipSize",
+        "type": "\"s\" | \"m\"",
         "required": false,
         "default": "",
         "description": ""
       },
       {
-        "name": "dateShortcutsPlacement",
-        "type": "\"right\" | \"left\"",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "isOpen",
-        "type": "boolean",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "opened",
-        "type": "boolean",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "placement",
-        "type": "DatePickerPlacement | DatePickerPlacementBasic[]",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "offset",
-        "type": "[number, number]",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "frame",
-        "type": "string | RefObject<HTMLElement>",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "zIndex",
+        "name": "labelPlacement",
         "type": "string",
         "required": false,
         "default": "",
         "description": ""
       },
       {
-        "name": "closeOnOverlayClick",
+        "name": "hintView",
+        "type": "\"default\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "hintSize",
+        "type": "\"s\" | \"m\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "textBefore",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "textAfter",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "keepPlaceholder",
         "type": "boolean",
         "required": false,
         "default": "",
         "description": ""
       },
       {
-        "name": "closeOnEsc",
+        "name": "requiredPlacement",
+        "type": "\"right\" | \"left\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "hasRequiredIndicator",
         "type": "boolean",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "usePortal",
-        "type": "boolean",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "closeAfterDateSelect",
-        "type": "boolean",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "dateShortcuts",
-        "type": "DateShortcutItem[]",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "disableFlip",
-        "type": "boolean",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "onToggle",
-        "type": "((isOpen: boolean, event?: Event | SyntheticEvent<Element, Event>) => void)",
         "required": false,
         "default": "",
         "description": ""
@@ -536,6 +410,146 @@
         "required": false,
         "default": "",
         "description": ""
+      },
+      {
+        "name": "hintPortal",
+        "type": "string | RefObject<HTMLElement | null>",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "hasClearDivider",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "titleCaption",
+        "type": "ReactNode",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "preserveInvalidOnBlur",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "defaultDate",
+        "type": "Date",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "valueError",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "valueSuccess",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "valueEdited",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "leftHelper",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "onCommitDate",
+        "type": "OnCommitDateCallback",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "maskWithFormat",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "calendarContainerWidth",
+        "type": "string | number",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "calendarContainerHeight",
+        "type": "string | number",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "dateShortcutsWidth",
+        "type": "Width<string | number>",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "dateShortcutsPlacement",
+        "type": "\"right\" | \"left\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "usePortal",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "closeAfterDateSelect",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "dateShortcuts",
+        "type": "DateShortcutItem[]",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "disableFlip",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "appearance",
+        "type": "\"default\" | \"viewMode\"",
+        "required": false,
+        "default": "",
+        "description": ""
       }
     ]
   },
@@ -558,6 +572,10 @@
     },
     {
       "title": "Управление внешним видом",
+      "snippet": "import React from 'react';\nimport { DatePicker } from '@salutejs/sdds-finai';\nimport { IconDone } from '@salutejs/plasma-icons';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>\n            <DatePicker\n                appearance=\"default\"\n                size=\"s\"\n                label=\"Appearance default\"\n                placeholder=\"Введите дату\"\n                contentRight={<IconDone size=\"s\" />}\n            />\n            <DatePicker\n                appearance=\"viewMode\"\n                size=\"s\"\n                label=\"Appearance viewMode\"\n                value=\"22.06.2026\"\n                readOnly\n                contentRight={<IconDone size=\"s\" />}\n            />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Управление внешним видом",
       "snippet": "import React from 'react';\nimport { DatePicker } from '@salutejs/sdds-finai';\nimport { IconDone } from '@salutejs/plasma-icons';\nexport function App() {\n    const sizes = ['s', 'xs']\n    return (\n        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '2rem' }}>\n            {sizes.map((size) => (\n                <DatePicker\n                    key={size}\n                    size={size}\n                    label={`Size ${size}`}\n                    leftHelper=\"Подсказка к полю\"\n                    placeholder=\"Введите дату\"\n                    contentRight={<IconDone size=\"s\" />}\n                    usePortal\n                />\n            ))}\n        </div>\n    );\n}"
     },
     {
@@ -575,6 +593,10 @@
     {
       "title": "Обязательность поля",
       "snippet": "import React from 'react';\nimport { DatePicker, IconButton } from '@salutejs/sdds-finai';\nimport { IconDone } from '@salutejs/plasma-icons';\nexport function App() {\n    const ActionButton = () => {\n        return (\n            <IconButton view=\"clear\" size=\"s\">\n                <IconDone size=\"s\" />\n            </IconButton>\n        );\n    };\n    return (\n        <div>\n            <DatePicker\n                label=\"Лейбл\"\n                leftHelper=\"Подсказка к полю\"\n                placeholder=\"Введите дату\"\n                format=\"DD MMMM YYYY\"\n                contentRight={<ActionButton />}\n                hasRequiredIndicator\n                required\n                requiredPlacement=\"right\"\n            />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Отслеживание отображаемого месяца и года",
+      "snippet": "import React, { useState } from 'react';\nimport { DatePicker } from '@salutejs/sdds-finai';\nexport function App() {\n    const [currentDate, setCurrentDate] = useState<Date>();\n    return (\n        <div style={{display: 'flex', flexDirection: 'column'}}>\n            <DatePicker\n                label=\"Дата\"\n                onChangeVisibleDate={setCurrentDate}\n            />\n            <div>\n                Отображаемый период: {currentDate\n                    ? currentDate.toLocaleDateString('ru', { month: 'long', year: 'numeric' })\n                    : 'календарь ещё не листали'}\n            </div>\n        </div>\n    );\n}"
     },
     {
       "title": "Всплывающая подсказка для событий календаря",

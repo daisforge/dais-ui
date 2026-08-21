@@ -83,7 +83,7 @@ jobs:
         run: |
           git add packages/mcp-server/package.json packages/mcp-server/package-lock.json packages/mcp-server/data/component-index.json
           git commit -m "chore(release-mcp): ui-mcp v${{ steps.version.outputs.version }}"
-          git tag "ui-mcp-v${{ steps.version.outputs.version }}"
+          git tag -a "ui-mcp-v${{ steps.version.outputs.version }}" -m "ui-mcp v${{ steps.version.outputs.version }}"
 
       - name: Publish to npm
         working-directory: packages/mcp-server
@@ -101,6 +101,10 @@ jobs:
       # опубликованного пакета. В ту же ветку, откуда запустили workflow
       # (не захардкожено в main — этот workflow, в отличие от publish-npm.yml,
       # рассчитан на запуск с любой ветки через workflow_dispatch/workflow_call).
+      # Тег пушится явно по имени (не через --follow-tags — он молча пропускает
+      # lightweight-теги, из-за чего тег v0.1.1 однажды не уехал на remote).
       - name: Push release commit and tag
         if: ${{ inputs.dry_run != true }}
-        run: git push --follow-tags origin "HEAD:${{ github.ref_name }}"
+        run: |
+          git push origin "HEAD:${{ github.ref_name }}"
+          git push origin "refs/tags/ui-mcp-v${{ steps.version.outputs.version }}"
