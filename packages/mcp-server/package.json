@@ -18,6 +18,7 @@
     "mcp:build-index": "node ../../generators/meta-info/generate-meta.js && node ./dist/indexer/buildIndex.js",
     "mcp:vendor-atomic": "node ./dist/indexer/vendorAtomicData.js",
     "mcp:start": "node ./dist/server.js",
+    "mcp:alias:stage": "node ./scripts/build-alias-package.mjs",
     "mcp:ab": "node ./ab/run.mjs && node ./ab/score.mjs",
     "mcp:ab:consumer": "node ./ab/prepare-consumer.mjs",
     "mcp:ab:drift": "node ./ab/drift.mjs",

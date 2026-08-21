@@ -13,13 +13,19 @@ const initialRoutes = Object.values(routes)
  * to learn how to customize it
  */
 function mswInitialize(): SetupWorker | undefined {
-  const impMeta = import.meta as ImportMeta & {
-    env?: { BASE_URL: string };
-  };
+  // ВАЖНО: обращение к `import.meta.env.BASE_URL` должно оставаться литеральным.
+  // Vite подставляет base только в точное выражение `import.meta.env.BASE_URL`;
+  // если положить `import.meta` в переменную или прочитать через `?.`, замена не
+  // сработает, и в собранном чанке останется рантайм-доступ к `import.meta.env`,
+  // которого в браузере нет → url воркера схлопнется в '/mockServiceWorker.js'.
+  // Локально (base === '/') это незаметно, а на стенде под /<repo>/ MSW падает с
+  // «Service Worker script does not exist at the given path».
+  const baseUrl = import.meta.env.BASE_URL || '/';
+
   return initialize(
     {
       serviceWorker: {
-        url: `${impMeta.env?.BASE_URL ?? '/'}mockServiceWorker.js`,
+        url: `${baseUrl}mockServiceWorker.js`,
       },
     },
     initialRoutes,
