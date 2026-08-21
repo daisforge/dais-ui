@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.14.0](https://github.com/daisforge/dais-ui/compare/v1.13.0...v1.14.0) (2026-08-21)
+
+### Features
+
+- **clickStream:** добавлены типы и утилита для digital trace ([#26](https://github.com/daisforge/dais-ui/issues/26)) ([760aa42](https://github.com/daisforge/dais-ui/commit/760aa426309a0cbede7e9e9966987983707e4240))
+- **mcp:** добавлен mcp для библиотеки компонентов ([23c0c4a](https://github.com/daisforge/dais-ui/commit/23c0c4a26746b94108aa2c7fac1fb7f383754585))
+
 # [1.13.0](https://github.com/daisforge/dais-ui/compare/v1.12.2...v1.13.0) (2026-08-17)
 
 ### Bug Fixes
