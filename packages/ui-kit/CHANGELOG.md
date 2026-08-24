@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.15.0](https://github.com/daisforge/dais-ui/compare/v1.14.1...v1.15.0) (2026-08-24)
+
+### Features
+
+- **AnalyticalWidget:** редизайн и опциональный absolute у кнопки-троеточия ([71d244b](https://github.com/daisforge/dais-ui/commit/71d244bf142f6eb639afac0baae32c3759feea71))
+
 ## [1.14.1](https://github.com/daisforge/dais-ui/compare/v1.14.0...v1.14.1) (2026-08-21)
 
 ### Bug Fixes
