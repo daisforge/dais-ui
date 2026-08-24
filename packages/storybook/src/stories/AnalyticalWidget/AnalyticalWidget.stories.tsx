@@ -20,7 +20,8 @@ import {
   SegmentItem,
   SegmentProvider,
 } from '@ui-kit/components/Segment';
-import React, { useReducer, useRef } from 'react';
+import { Select } from '@ui-kit/components/Select';
+import React, { useReducer, useRef, useState } from 'react';
 import styled from 'styled-components';
 
 import type { Filters } from './lib/utils';
@@ -454,31 +455,24 @@ export const AnalyticalWidgetL: Story = {
                 root: 'myCustomClassForRoot',
               }}
             />
-            <div
-              style={{
-                position: 'absolute',
-                top: '12px',
-                right: '12px',
+            <AnalyticalWidget.DotsIconButton
+              absolute
+              dropdownProps={{
+                items: generateButtonItems(
+                  'dotsButton',
+                  dotsButtonOptions,
+                  filterList,
+                ),
+                onItemSelect(item) {
+                  updateFilters({
+                    dotsButton:
+                      filters.dotsButton === item.value?.toString()
+                        ? ''
+                        : item.value?.toString() ?? '',
+                  });
+                },
               }}
-            >
-              <AnalyticalWidget.DotsIconButton
-                dropdownProps={{
-                  items: generateButtonItems(
-                    'dotsButton',
-                    dotsButtonOptions,
-                    filterList,
-                  ),
-                  onItemSelect(item) {
-                    updateFilters({
-                      dotsButton:
-                        filters.dotsButton === item.value?.toString()
-                          ? ''
-                          : item.value?.toString() ?? '',
-                    });
-                  },
-                }}
-              />
-            </div>
+            />
           </div>
         </SegmentProvider>
       </GridContainerL>
@@ -639,31 +633,24 @@ export const AnalyticalWidgetM: Story = {
                 root: 'myCustomClassForRoot',
               }}
             />
-            <div
-              style={{
-                position: 'absolute',
-                top: '12px',
-                right: '12px',
+            <AnalyticalWidget.DotsIconButton
+              absolute
+              dropdownProps={{
+                items: generateButtonItems(
+                  'dotsButton',
+                  dotsButtonOptions,
+                  filterList,
+                ),
+                onItemSelect(item) {
+                  updateFilters({
+                    dotsButton:
+                      filters.dotsButton === item.value?.toString()
+                        ? ''
+                        : item.value?.toString() ?? '',
+                  });
+                },
               }}
-            >
-              <AnalyticalWidget.DotsIconButton
-                dropdownProps={{
-                  items: generateButtonItems(
-                    'dotsButton',
-                    dotsButtonOptions,
-                    filterList,
-                  ),
-                  onItemSelect(item) {
-                    updateFilters({
-                      dotsButton:
-                        filters.dotsButton === item.value?.toString()
-                          ? ''
-                          : item.value?.toString() ?? '',
-                    });
-                  },
-                }}
-              />
-            </div>
+            />
           </div>
         </SegmentProvider>
       </GridContainerM>
@@ -799,31 +786,24 @@ export const AnalyticalWidgetS: Story = {
                 root: 'myCustomClassForRoot',
               }}
             />
-            <div
-              style={{
-                position: 'absolute',
-                top: '12px',
-                right: '12px',
+            <AnalyticalWidget.DotsIconButton
+              absolute
+              dropdownProps={{
+                items: generateButtonItems(
+                  'dotsButton',
+                  dotsButtonOptions,
+                  filterList,
+                ),
+                onItemSelect(item) {
+                  updateFilters({
+                    dotsButton:
+                      filters.dotsButton === item.value?.toString()
+                        ? ''
+                        : item.value?.toString() ?? '',
+                  });
+                },
               }}
-            >
-              <AnalyticalWidget.DotsIconButton
-                dropdownProps={{
-                  items: generateButtonItems(
-                    'dotsButton',
-                    dotsButtonOptions,
-                    filterList,
-                  ),
-                  onItemSelect(item) {
-                    updateFilters({
-                      dotsButton:
-                        filters.dotsButton === item.value?.toString()
-                          ? ''
-                          : item.value?.toString() ?? '',
-                    });
-                  },
-                }}
-              />
-            </div>
+            />
           </div>
         </SegmentProvider>
       </GridContainerS>
@@ -831,9 +811,13 @@ export const AnalyticalWidgetS: Story = {
   },
 };
 
-/** Кастомный контент в topSlot: потребитель рендерит свои чипы (не AnalyticalWidget.Chips). */
+/**
+ * Custom topSlot (свои чипы потребителя) + rightSlot.
+ * Слева блок title/тег/ⓘ/subtitle с margin-right:16, справа генерик-rightSlot
+ * (здесь Select), кнопка-троеточие — абсолютом от потребителя.
+ */
 export const AnalyticalWidgetCustomTopSlot: Story = {
-  name: 'Custom topSlot (свои чипы потребителя)',
+  name: 'Custom topSlot + rightSlot',
   render: () => {
     const [filters, updateFilters] = useReducer(
       filtersReducer,
@@ -842,6 +826,7 @@ export const AnalyticalWidgetCustomTopSlot: Story = {
     const filtersBlocksOption = useFetch('blocks', 10);
     const filtersTribesOption = useFetch('tribes', 15);
     const filtersAllocationOption = useFetch('allocation', 10);
+    const [period, setPeriod] = useState('month');
 
     const { filterList } = useFiltersList({
       filters,
@@ -880,16 +865,28 @@ export const AnalyticalWidgetCustomTopSlot: Story = {
     const renderedChips = hasChips ? customChips : lastRef.current;
 
     return (
-      <GridContainerS>
-        <div style={{ position: 'relative', width: 'min-content' }}>
+      <div style={{ padding: 20, background: 'grey' }}>
+        <div style={{ position: 'relative', width: 600, height: 512 }}>
           <AnalyticalWidget
             size="l"
             headerSlot={
               <AnalyticalWidget.Header
                 title="Custom topSlot"
                 badge="TA"
-                subtitle="Свои чипы потребителя"
+                subtitle="Свои чипы + Select в rightSlot"
                 infoTooltipText="Info"
+                rightSlot={
+                  <Select
+                    size="xs"
+                    value={period}
+                    onChange={(v) => setPeriod(v as string)}
+                    items={[
+                      { label: 'Месяц', value: 'month' },
+                      { label: 'Квартал', value: 'quarter' },
+                      { label: 'Год', value: 'year' },
+                    ]}
+                  />
+                }
               />
             }
             topSlot={
@@ -931,27 +928,26 @@ export const AnalyticalWidgetCustomTopSlot: Story = {
               <div style={{ minHeight: 'fit-content' }}>{longText()}</div>
             }
           />
-          <div style={{ position: 'absolute', top: '12px', right: '12px' }}>
-            <AnalyticalWidget.DotsIconButton
-              dropdownProps={{
-                items: generateButtonItems(
-                  'dotsButton',
-                  dotsButtonOptions,
-                  filterList,
-                ),
-                onItemSelect(item) {
-                  updateFilters({
-                    dotsButton:
-                      filters.dotsButton === item.value?.toString()
-                        ? ''
-                        : item.value?.toString() ?? '',
-                  });
-                },
-              }}
-            />
-          </div>
+          <AnalyticalWidget.DotsIconButton
+            absolute
+            dropdownProps={{
+              items: generateButtonItems(
+                'dotsButton',
+                dotsButtonOptions,
+                filterList,
+              ),
+              onItemSelect(item) {
+                updateFilters({
+                  dotsButton:
+                    filters.dotsButton === item.value?.toString()
+                      ? ''
+                      : item.value?.toString() ?? '',
+                });
+              },
+            }}
+          />
         </div>
-      </GridContainerS>
+      </div>
     );
   },
 };

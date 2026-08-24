@@ -192,4 +192,7 @@ export const analyticalWidgetClassNames = {
   contentSlot: 'analytical-widget__content',
   headerActions: 'analytical-widget__header-actions',
   selfSpacedTopSlot: 'analytical-widget__self-spaced-top-slot',
+  // Маркер на корне виджета: rightSlot шапки заполнен. По нему абсолютная
+  // dots-кнопка (сиблинг) поднимает top с 12 до 16 через CSS.
+  hasRightSlot: 'analytical-widget--has-right-slot',
 } as const;

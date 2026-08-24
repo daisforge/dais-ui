@@ -21,8 +21,8 @@ export const StyledHeader = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  // Резерв под кнопку-троеточие (абсолютное позиционирование), ширина 32px
-  padding-right: 32px;
+  // Резерв под кнопку-троеточие (абсолютное позиционирование), ширина 24px
+  padding-right: 24px;
 
   // Стили для popover возле иконки информации
   & .popover-wrapper:has(.${cls.popoverInfo}) {
@@ -41,6 +41,9 @@ export const StyledLeftSlot = styled.div`
   min-width: 0;
   gap: 2px;
   min-height: 32px;
+  // 16px до правой части (rightSlot: табы/селекты/кастом). Держим через margin,
+  // чтобы зазор не схлопывался при длинном тайтле.
+  margin-right: 16px;
 `;
 
 export const StyledTitleContainer = styled.div`
@@ -126,4 +129,5 @@ export const StyleSubtitledWithTooltip = styled(TypographyWithAutoTooltip)`
 
 export const StyledRightSlot = styled.div`
   align-self: start;
+  flex-shrink: 0;
 `;

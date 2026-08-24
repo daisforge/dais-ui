@@ -6,10 +6,12 @@ import {
 import {
   Icon,
   IconDotsHorizontalOutline,
-  IconDotsVerticalCenteredOutline,
+  IconDotsVerticalOutline,
 } from '@ui-kit/icons';
 import { textPrimary } from '@ui-kit/tokens';
 import React, { ComponentProps } from 'react';
+
+import { StyledAbsoluteDots } from './AnalyticalWidgetIconButtonDots.styled';
 
 type AnalyticalWidgetIconButtonDotsProps = Omit<
   EmbeddedButtonBetaCompProps,
@@ -18,6 +20,17 @@ type AnalyticalWidgetIconButtonDotsProps = Omit<
   dropdownProps?: ComponentProps<typeof Dropdown>;
   iconSize?: ComponentProps<typeof Icon>['size'];
   iconOrientation?: 'horizontal' | 'vertical';
+  /**
+   * Позиционировать кнопку абсолютом в правом верхнем углу ближайшего
+   * relative-контейнера. Для потребителей (напр. GridDND рабочих столов),
+   * у которых нет доступа к контенту виджета.
+   */
+  absolute?: boolean;
+  /**
+   * Отступ (top/right) при `absolute`.
+   * @default 12
+   */
+  absoluteOffset?: number;
 };
 
 export const AnalyticalWidgetIconButtonDots = ({
@@ -26,30 +39,35 @@ export const AnalyticalWidgetIconButtonDots = ({
   iconOrientation = 'vertical',
   view = 'secondary',
   size = 'm',
-  position = 'center-right',
+  absolute = false,
+  absoluteOffset = 12,
   style,
   ...props
 }: AnalyticalWidgetIconButtonDotsProps) => {
   const DotsIcon =
     iconOrientation === 'vertical'
-      ? IconDotsVerticalCenteredOutline
+      ? IconDotsVerticalOutline
       : IconDotsHorizontalOutline;
 
   const jsx = (
-    <EmbeddedButtonBeta
-      view={view}
-      size={size}
-      position={position}
-      style={{ width: 32, height: 32, ...style }}
-      {...props}
-    >
+    <EmbeddedButtonBeta view={view} size={size} style={style} {...props}>
       <DotsIcon size={iconSize ?? 's'} color={textPrimary} />
     </EmbeddedButtonBeta>
   );
 
-  if (!dropdownProps) {
-    return jsx;
+  const content = dropdownProps ? (
+    <Dropdown {...dropdownProps}>{jsx}</Dropdown>
+  ) : (
+    jsx
+  );
+
+  if (absolute) {
+    return (
+      <StyledAbsoluteDots $offset={absoluteOffset}>
+        {content}
+      </StyledAbsoluteDots>
+    );
   }
 
-  return <Dropdown {...dropdownProps}>{jsx}</Dropdown>;
+  return content;
 };
