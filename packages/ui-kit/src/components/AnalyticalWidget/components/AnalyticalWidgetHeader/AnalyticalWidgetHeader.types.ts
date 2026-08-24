@@ -9,9 +9,11 @@ import type {
 
 export interface AnalyticalWidgetHeaderProps {
   /**
-   * Заголовок. При нехватке места будет обрезаться троеточием (truncated text) с Tooltip при наведении на обрезанный текст
+   * Заголовок. Строка обрезается троеточием (truncated text) с Tooltip при наведении
+   * на обрезанный текст. Можно передать произвольный ReactNode (например, Skeleton на
+   * время загрузки данных с бэкенда) — он рендерится как есть, без тултипа.
    */
-  title?: string;
+  title?: ReactNode;
   /**
    * Пропсы для Tooltip заголовка
    */
@@ -25,9 +27,11 @@ export interface AnalyticalWidgetHeaderProps {
    */
   badgeStyles?: CSSProperties;
   /**
-   * Подзаголовок. При нехватке места будет обрезаться троеточием (truncated text) с Tooltip при наведении на обрезанный текст
+   * Подзаголовок. Строка обрезается троеточием (truncated text) с Tooltip при наведении
+   * на обрезанный текст. Можно передать произвольный ReactNode (например, Skeleton на
+   * время загрузки) — он рендерится как есть, без тултипа.
    */
-  subtitle?: string;
+  subtitle?: ReactNode;
   /**
    * Пропсы для Tooltip подзаголовка
    */

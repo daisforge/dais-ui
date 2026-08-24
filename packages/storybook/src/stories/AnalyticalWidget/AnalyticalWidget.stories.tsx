@@ -12,6 +12,7 @@ import {
   AnalyticalWidget,
   analyticalWidgetClassNames,
 } from '@ui-kit/components/AnalyticalWidget';
+import { Button } from '@ui-kit/components/Button';
 import { Collapse } from '@ui-kit/components/Collapse';
 import { Flow } from '@ui-kit/components/Flow';
 import { useFiltersList } from '@ui-kit/components/ListOfFilters';
@@ -21,6 +22,7 @@ import {
   SegmentProvider,
 } from '@ui-kit/components/Segment';
 import { Select } from '@ui-kit/components/Select';
+import { LineSkeleton } from '@ui-kit/components/Skeleton';
 import React, { useReducer, useRef, useState } from 'react';
 import styled from 'styled-components';
 
@@ -945,6 +947,56 @@ export const AnalyticalWidgetCustomTopSlot: Story = {
                 });
               },
             }}
+          />
+        </div>
+      </div>
+    );
+  },
+};
+
+/**
+ * Скелетон title/subtitle: данные шапки приходят с бэкенда, на время загрузки
+ * в title/subtitle прокидывается ReactNode (Skeleton) — рендерится как есть,
+ * без типографики и тултипа. Кнопка «Загрузить» имитирует ответ бэка.
+ */
+export const AnalyticalWidgetHeaderSkeleton: Story = {
+  name: 'Header: skeleton title/subtitle',
+  render: () => {
+    const [loading, setLoading] = useState(true);
+
+    return (
+      <div style={{ padding: 20, background: 'grey' }}>
+        <div style={{ marginBottom: 12 }}>
+          <Button size="s" onClick={() => setLoading((v) => !v)}>
+            {loading ? 'Загрузить данные' : 'Показать скелетон'}
+          </Button>
+        </div>
+        <div style={{ position: 'relative', width: 600, height: 512 }}>
+          <AnalyticalWidget
+            size="l"
+            headerSlot={
+              <AnalyticalWidget.Header
+                title={
+                  loading ? (
+                    <LineSkeleton size="bodyM" style={{ width: 180 }} />
+                  ) : (
+                    'Аналитический виджет'
+                  )
+                }
+                badge={loading ? undefined : 'TA'}
+                subtitle={
+                  loading ? (
+                    <LineSkeleton size="bodyXS" style={{ width: 120 }} />
+                  ) : (
+                    'Данные за месяц'
+                  )
+                }
+                infoTooltipText="Info"
+              />
+            }
+            contentSlot={
+              <div style={{ minHeight: 'fit-content' }}>{longText()}</div>
+            }
           />
         </div>
       </div>
