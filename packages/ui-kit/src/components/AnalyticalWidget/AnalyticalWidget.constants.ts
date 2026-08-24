@@ -89,7 +89,7 @@ export const ANALYTICAL_WIDGET_STYLES = {
       maxWidth: 'unset', // 608
       width: '100%',
       minHeight: '512px',
-      padding: '16px',
+      padding: '12px',
       borderRadius: '16px',
     },
     lg: {
@@ -97,7 +97,7 @@ export const ANALYTICAL_WIDGET_STYLES = {
       maxWidth: 'unset', // 608
       width: '100%',
       minHeight: '512px', // 432px
-      padding: '16px',
+      padding: '12px',
       borderRadius: '16px',
     },
     md: {
@@ -105,7 +105,7 @@ export const ANALYTICAL_WIDGET_STYLES = {
       maxWidth: 'unset', // 608
       width: '100%',
       minHeight: '512px', // 344px
-      padding: '16px',
+      padding: '12px',
       borderRadius: '16px',
     },
   },
@@ -115,7 +115,7 @@ export const ANALYTICAL_WIDGET_STYLES = {
       maxWidth: 'unset', // 608
       width: '100%',
       minHeight: '248px',
-      padding: '16px',
+      padding: '12px',
       borderRadius: '16px',
     },
     lg: {
@@ -123,7 +123,7 @@ export const ANALYTICAL_WIDGET_STYLES = {
       maxWidth: 'unset', // 608
       width: '100%',
       minHeight: '248px', // 208px
-      padding: '16px',
+      padding: '12px',
       borderRadius: '16px',
     },
     md: {
@@ -131,7 +131,7 @@ export const ANALYTICAL_WIDGET_STYLES = {
       maxWidth: 'unset', // 608
       width: '100%',
       minHeight: '248px', // 172px
-      padding: '16px',
+      padding: '12px',
       borderRadius: '16px',
     },
   },
@@ -141,7 +141,7 @@ export const ANALYTICAL_WIDGET_STYLES = {
       maxWidth: 'unset', // 296px
       width: '100%',
       minHeight: '248px',
-      padding: '16px',
+      padding: '12px',
       borderRadius: '16px',
     },
     lg: {
@@ -149,7 +149,7 @@ export const ANALYTICAL_WIDGET_STYLES = {
       maxWidth: 'unset', // 296px
       width: '100%',
       minHeight: '248px', // 208px
-      padding: '16px',
+      padding: '12px',
       borderRadius: '16px',
     },
     md: {
@@ -157,7 +157,7 @@ export const ANALYTICAL_WIDGET_STYLES = {
       maxWidth: 'unset', // 296px
       width: '100%',
       minHeight: '248px', // 172px
-      padding: '16px',
+      padding: '12px',
       borderRadius: '16px',
     },
   },
@@ -191,4 +191,8 @@ export const analyticalWidgetClassNames = {
   middleSlot: 'analytical-widget__middle-slot',
   contentSlot: 'analytical-widget__content',
   headerActions: 'analytical-widget__header-actions',
+  selfSpacedTopSlot: 'analytical-widget__self-spaced-top-slot',
+  // Маркер на корне виджета: rightSlot шапки заполнен. По нему абсолютная
+  // dots-кнопка (сиблинг) поднимает top с 12 до 16 через CSS.
+  hasRightSlot: 'analytical-widget--has-right-slot',
 } as const;
