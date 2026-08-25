@@ -6,6 +6,7 @@ import { SIZE, SIZES } from '@ui-kit/components/TableCanvas';
 import { IconDone } from '@ui-kit/icons';
 import { ReactNode, useMemo, useState } from 'react';
 
+import { useFocusSearchInput } from '../use-focus-search-input';
 import { inputStopPropagation } from '../utils';
 import {
   StyledList,
@@ -71,6 +72,9 @@ export const ComboboxX = ({
     options.find((o) => o.value === value)?.text ?? '',
   );
 
+  // Детерминированный фокус в инпут поиска при открытии поповера (см. хук).
+  const searchInputRef = useFocusSearchInput();
+
   const optionsLabelMap = useMemo(
     () => new Map(options.map((el) => [el.value, el.text])),
     [options],
@@ -107,6 +111,7 @@ export const ComboboxX = ({
       }}
     >
       <StyledSearchBlockFilter
+        ref={searchInputRef}
         size={SIZES[size].input as 'xs'}
         autoComplete="off"
         tabIndex={tabIndex}
