@@ -10,3 +10,7 @@ export { sdds_finai__dark, sdds_finai__light } from '@salutejs/sdds-themes';
 // Импорт из /theme — минуя компоненты пакета, которые тянут plasma-new-hope и styled-components
 export { sdds_finai_high_contrast__dark } from '@salutejs-ds/sdds_finai_high_contrast/theme/themes/sdds_finai_high_contrast__dark';
 export { sdds_finai_high_contrast__light } from '@salutejs-ds/sdds_finai_high_contrast/theme/themes/sdds_finai_high_contrast__light';
+// themes sdds-finai beta core
+// Импорт из /theme — минуя компоненты пакета (тянут canary plasma-new-hope и styled-components)
+export { sdds_finai_beta_core__dark } from '@salutejs-ds/sdds_finai_beta_core/theme/themes/sdds_finai_beta_core__dark';
+export { sdds_finai_beta_core__light } from '@salutejs-ds/sdds_finai_beta_core/theme/themes/sdds_finai_beta_core__light';
