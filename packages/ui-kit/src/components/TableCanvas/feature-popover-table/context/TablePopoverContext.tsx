@@ -34,8 +34,12 @@ export interface TablePopoverContextValue {
     contentData?: unknown;
     columnId?: string;
   }) => void;
-  /** Закрыть поповер */
-  close: () => void;
+  /**
+   * Закрыть поповер.
+   * @param options.outsidePress закрытие по клику мимо поповера (floating-ui useDismiss).
+   * Взводит защёлку, чтобы повторный клик по той же иконке фильтра не переоткрывал поповер.
+   */
+  close: (options?: { outsidePress?: boolean }) => void;
   /** Обновить позицию поповера (например, при ресайзе колонки) */
   updatePosition: (position: { x: number; y: number }) => void;
 }
