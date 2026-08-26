@@ -16,4 +16,8 @@ export type DataAttributes = {
   [K in `data-${string}`]?: string;
 };
 
-export type ActiveTheme = 'light' | 'dark' | 'highContrastLight';
+export type ActiveTheme =
+  | 'light'
+  | 'dark'
+  | 'highContrastLight'
+  | 'betaCoreLight';
