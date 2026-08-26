@@ -135,8 +135,17 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
       expandedRowsCtx: expandedRowsCtxMerged,
       selectingRowCtx,
       rowCtx,
+      headerHeight,
+      groupHeaderLevels: groupMaxLength,
     }),
-    [headerCtx, expandedRowsCtxMerged, selectingRowCtx, rowCtx],
+    [
+      headerCtx,
+      expandedRowsCtxMerged,
+      selectingRowCtx,
+      rowCtx,
+      headerHeight,
+      groupMaxLength,
+    ],
   );
 
   const groupHeaderHeightArr = useMemo(
