@@ -485,57 +485,6 @@ export const useColumns = <
           : undefined;
       }
 
-      // const cellClass: typeof el.cellClass = (() => {
-      //   if (!el?.cellClass && (!editModeEnabled || !el.editingCell)) {
-      //     return undefined;
-      //   }
-      //   return (row) => {
-      //     let className = '';
-
-      //     const { lvl } = getTreeIdAndLvlOfRow(row);
-
-      //     const clearRow = hideRowServiceKeysHandler(row);
-      //     const defaultCls = getCls(el?.cellClass, clearRow);
-      //     if (defaultCls) {
-      //       className += ` ${defaultCls}`;
-      //     }
-      //     if (!editModeEnabled) {
-      //       return className || undefined;
-      //     }
-
-      //     if (editable(row)) {
-      //       className += ` ${cls.editableCell}`;
-      //     }
-      //     const editedSuccessfullyClass =
-      //       (lvl === 0
-      //         ? // если lvl === 0, то смотрим только на конфиг родительской строки
-      //           el.editingCell?.editedSuccessfully?.value(clearRow, lvl)
-      //         : // если lvl !== 0, то смотрим только на конфиг дочерних строк
-      //           el.subRow?.editingCell?.editedSuccessfully?.value(
-      //             clearRow,
-      //             lvl
-      //           )) && cls.editedSuccessfullyCell;
-
-      //     if (editedSuccessfullyClass) {
-      //       className += ` ${editedSuccessfullyClass}`;
-      //     }
-
-      //     const errorClass =
-      //       (lvl === 0
-      //         ? // если lvl === 0, то смотрим только на конфиг родительской строки
-      //           el.editingCell?.error?.value(clearRow, lvl)
-      //         : // если lvl !== 0, то смотрим только на конфиг дочерних строк
-      //           el.subRow?.editingCell?.error?.value(clearRow, lvl)) &&
-      //       cls.editedWithErrorCell;
-
-      //     if (errorClass) {
-      //       className += ` ${errorClass}`;
-      //     }
-
-      //     return className || undefined;
-      //   };
-      // })();
-
       const userThemeOverride = el.themeOverride;
       const columnThemeOverride = userThemeOverride
         ? (cellInfo: Parameters<typeof userThemeOverride>[0]) => {
