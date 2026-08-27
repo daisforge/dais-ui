@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import type { TransferColumnConfig } from '../types';
-import { normalizePasteValue, validatePasteValue } from './validatePasteValue';
+import type { TransferColumnConfig } from '../../types';
+import { normalizePasteValue, validatePasteValue } from '../validatePasteValue';
 
 /** Конструктор колонки: component/options задают editingCell, contentFormat — формат. */
 const col = (opts: {

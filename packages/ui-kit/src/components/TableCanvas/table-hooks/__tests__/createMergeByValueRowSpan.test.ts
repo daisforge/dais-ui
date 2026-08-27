@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { createMergeByValueRowSpan } from './createMergeByValueRowSpan';
+import { createMergeByValueRowSpan } from '../createMergeByValueRowSpan';
 
 // Контракт mergeCells.mergeByCellValues: объединяются только ПОДРЯД ИДУЩИЕ
 // одинаковые значения в текущем видимом порядке; одиночные строки не сливаются.

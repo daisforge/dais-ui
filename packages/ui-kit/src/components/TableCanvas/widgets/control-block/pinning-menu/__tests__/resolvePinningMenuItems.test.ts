@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import { PinningMenuItem } from '../types';
-import { resolvePinningMenuItems } from './resolvePinningMenuItems';
+import { PinningMenuItem } from '../../types';
+import { resolvePinningMenuItems } from '../resolvePinningMenuItems';
 
 /** Нативные пункты как в buildPinningFeature: reset(100)+divider, pinColumns(200). */
 const nativeItems = (): PinningMenuItem[] => [

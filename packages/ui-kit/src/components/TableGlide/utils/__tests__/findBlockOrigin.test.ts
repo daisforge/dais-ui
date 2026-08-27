@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import { findBlockOrigin } from './findBlockOrigin';
-import { getSpan } from './getSpan';
+import { findBlockOrigin } from '../findBlockOrigin';
+import { getSpan } from '../getSpan';
 
 // Единая геометрия origin для рендера и cell-transfer + guard одиночной ячейки
 // в getSpan (colSpan <= 0 не должен превращать ячейку в «слитую» ширины 1).

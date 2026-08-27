@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
 
-import type { ObjectForExtending } from '../../types';
-import type { TransferColumnConfig } from '../types';
-import { resolveBlock, resolveBlockOrigin } from './resolveBlockOrigin';
-import { snapDestToRowBlocks } from './snapDestToRowBlocks';
+import type { ObjectForExtending } from '../../../types';
+import type { TransferColumnConfig } from '../../types';
+import { resolveBlock, resolveBlockOrigin } from '../resolveBlockOrigin';
+import { snapDestToRowBlocks } from '../snapDestToRowBlocks';
 
 // Геометрия объединённых блоков в слое cell-transfer: резолв любой ячейки к
 // origin, границы блока и вертикальный снап fill-протяжки к целым блокам.

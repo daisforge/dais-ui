@@ -6,8 +6,8 @@ import {
   flattenRowsByGroups,
   isMergedGroupingView,
   wrapMergedGroupSelecting,
-} from './mergedView';
-import type { RowsGrouping } from './types';
+} from '../mergedView';
+import type { RowsGrouping } from '../types';
 
 // Контракты merged-вида группировки: плоский порядок листьев, составной ключ
 // пути, нумерация по верхнему уровню и групповой чекбокс (расширение дельты

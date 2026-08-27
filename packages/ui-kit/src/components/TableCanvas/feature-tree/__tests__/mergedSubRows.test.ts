@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'vitest';
 
-import { TREE_ID_KEY, TREE_LVL_KEY } from './constants';
+import { TREE_ID_KEY, TREE_LVL_KEY } from '../constants';
 import {
   flattenSubRowsToMergedLeaves,
   isMergedSubRowsView,
-} from './mergedSubRows';
-import type { SubRows } from './types';
+} from '../mergedSubRows';
+import type { SubRows } from '../types';
 
 // Контракты merged-вида subRows: дерево потребителя разворачивается в ЛИСТЬЯ с
 // денормализацией значений предков в колонки mergedColumns; служебные

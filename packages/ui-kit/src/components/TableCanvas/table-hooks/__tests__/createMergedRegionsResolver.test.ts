@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import type { MergedCellsRegion } from '../types';
-import { createMergedRegionsResolver } from './createMergedRegionsResolver';
+import type { MergedCellsRegion } from '../../types';
+import { createMergedRegionsResolver } from '../createMergedRegionsResolver';
 
 // Контракт controlled-объединений (mergeCells.mergedCellsRegions): регионы по
 // стабильным ключам резолвятся в индексы на render-time по актуальному порядку
