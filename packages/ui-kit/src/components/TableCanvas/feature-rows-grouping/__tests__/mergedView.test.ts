@@ -199,4 +199,40 @@ describe('wrapMergedGroupSelecting — групповой чекбокс merged-
     expect(wrapped.state[1]).not.toBe(setValue);
     expect(wrapped.extraProp).toBe('x');
   });
+
+  it('карта групп кэшируется по идентичности массива строк', () => {
+    let result: ReadonlySet<string | number> = new Set();
+    const setValue = (
+      updater: SetAction | ((p: ReadonlySet<string | number>) => unknown),
+    ) => {
+      result =
+        typeof updater === 'function'
+          ? (updater(new Set()) as ReadonlySet<string | number>)
+          : updater;
+    };
+    const rowsRef = { current: [...flat] };
+    const selecting = {
+      state: [new Set(), setValue],
+      rowKeyGetter: (r: Row) => r.id,
+    };
+    const wrapped = wrapMergedGroupSelecting(
+      selecting,
+      'dept',
+      rowsRef,
+    ) as typeof selecting;
+    const setWrapped = wrapped.state[1] as (n: SetAction) => void;
+
+    setWrapped(new Set([1]));
+    expect([...result].sort()).toEqual([1, 3, 4]);
+
+    // In-place мутация (та же identity) — карта групп из кэша, результат прежний.
+    rowsRef.current.length = 2; // осталась только часть HR
+    setWrapped(new Set([1]));
+    expect([...result].sort()).toEqual([1, 3, 4]);
+
+    // Новый массив — карта пересобирается: группа IT теперь лишь строки 1 и 3.
+    rowsRef.current = flat.filter((r) => r.id !== 4);
+    setWrapped(new Set([1]));
+    expect([...result].sort()).toEqual([1, 3]);
+  });
 });

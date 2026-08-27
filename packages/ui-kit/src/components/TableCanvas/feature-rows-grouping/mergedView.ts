@@ -114,18 +114,29 @@ export function wrapMergedGroupSelecting<S>(
   const [value, setValue] = sel.state;
   const { rowKeyGetter } = sel;
 
+  // Карта «группа → ключи строк», кэш по идентичности массива строк.
+  let cachedRows: readonly ObjectForExtending[] | null = null;
+  let cachedGroups = new Map<unknown, Array<string | number>>();
+  const groupsOf = (rows: readonly ObjectForExtending[]) => {
+    if (rows !== cachedRows) {
+      cachedRows = rows;
+      cachedGroups = new Map();
+      for (const row of rows) {
+        const g = row[topKey];
+        const keys = cachedGroups.get(g);
+        if (keys) keys.push(rowKeyGetter(row));
+        else cachedGroups.set(g, [rowKeyGetter(row)]);
+      }
+    }
+    return cachedGroups;
+  };
+
   const setWrapped: React.Dispatch<
     React.SetStateAction<ReadonlySet<string | number>>
   > = (next) => {
     setValue((prev) => {
       const raw = typeof next === 'function' ? next(prev) : next;
-      const groups = new Map<unknown, Array<string | number>>();
-      for (const row of flattenedRowsRef.current) {
-        const g = row[topKey];
-        const keys = groups.get(g);
-        if (keys) keys.push(rowKeyGetter(row));
-        else groups.set(g, [rowKeyGetter(row)]);
-      }
+      const groups = groupsOf(flattenedRowsRef.current);
       const result = new Set(raw);
       for (const keys of groups.values()) {
         const added = keys.some((k) => raw.has(k) && !prev.has(k));
