@@ -1,9 +1,7 @@
 import { getRowsGroupingSubrowsConfig } from '../feature-rows-grouping';
-import {
-  isMergedGroupingView,
-  wrapMergedGroupSelecting,
-} from '../feature-rows-grouping/mergedView';
+import { wrapMergedGroupSelecting } from '../feature-rows-grouping/mergedView';
 import { ObjectForExtending, TableConfig } from '../types';
+import { resolveMergedView } from './resolveMergedView';
 
 export const usePrepareTableConfig = <
   FilterStateType extends ObjectForExtending,
@@ -29,21 +27,18 @@ export const usePrepareTableConfig = <
 
   const { rowsGrouping } = tableConfigExternal || {};
 
-  if (!rowsGrouping) {
-    return { tableConfig: tableConfigExternal };
-  }
-
-  const groupByArr = rowsGrouping.groupByState?.[0];
-  if (isMergedGroupingView(rowsGrouping, groupByArr)) {
-    // Вид 'merged': subRows-мост не нужен (дерево не строится, шевронов нет).
-    // Чекбокс слит по верхней группе — сеттер selecting расширяет дельту
-    // выделения до границ группы.
+  // Merged-вид (группировка или subRows): здесь только оборачиваем чекбокс по
+  // верхнему уровню слияния, чтобы тоггл строки выделял весь блок. Дерево и
+  // слияние колонок делают useFlattenedRows / useColumns; subRows-мост
+  // группировки не нужен (дерево не строится, шевронов нет).
+  const mergedView = resolveMergedView(tableConfigExternal);
+  if (mergedView) {
     const { selecting } = tableConfigExternal;
     const wrappedSelecting =
       selecting?.state && flattenedRowsRef
         ? wrapMergedGroupSelecting(
             selecting,
-            groupByArr[0] as string,
+            mergedView.keys[0] as string,
             flattenedRowsRef,
           )
         : selecting;
@@ -53,6 +48,10 @@ export const usePrepareTableConfig = <
         ...(wrappedSelecting && { selecting: wrappedSelecting }),
       } as typeof tableConfigExternal,
     };
+  }
+
+  if (!rowsGrouping) {
+    return { tableConfig: tableConfigExternal };
   }
 
   //  добавили subRows для rowsGrouping при активном rowsGrouping

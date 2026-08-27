@@ -44,7 +44,7 @@ export function flattenRowsByGroups<RowType extends ObjectForExtending>(
  * отделов разные ключи), в отличие от merge по «голому» значению.
  */
 export function createGroupPathValue<RowType extends ObjectForExtending>(
-  groupByArr: string[],
+  groupByArr: readonly string[],
   depth: number,
 ): (row: RowType) => unknown {
   return (row) => {

@@ -33,7 +33,6 @@ import {
 import {
   createGroupPathValue,
   createTopGroupOrdinalGetter,
-  isMergedGroupingView,
 } from '../feature-rows-grouping/mergedView';
 import {
   CHECKBOX_COLUMN_KEY,
@@ -51,6 +50,7 @@ import { calculateMinColumnWidth } from '../utils';
 import { renderFilterSortHeader } from '../widgets/filter-sort-header';
 import { createMergeByValueRowSpan } from './createMergeByValueRowSpan';
 import { createMergedRegionsResolver } from './createMergedRegionsResolver';
+import { resolveMergedView } from './resolveMergedView';
 
 export const useColumns = <
   FilterStateType extends ObjectForExtending,
@@ -151,12 +151,12 @@ export const useColumns = <
   const tableConfigRowDetailBoolean = false; // !!tableConfig.rowDetailPanel;
 
   const groupedCols = (tableConfig.rowsGrouping ?? {})?.groupByState?.[0];
-  // Вид 'merged' группировки: блоки уровней рисует внутренний merge по
-  // составному ключу пути, колонки групп остаются на своих местах.
-  const rowsGroupingMergedView = isMergedGroupingView(
-    tableConfig.rowsGrouping,
-    groupedCols,
-  );
+  // Merged-вид (группировка или subRows): блоки уровней рисует внутренний
+  // merge по составному ключу пути, колонки остаются на своих местах.
+  const mergedView = resolveMergedView(tableConfig);
+  const rowsGroupingMergedView = mergedView?.kind === 'grouping';
+  const mergedKeys = mergedView?.keys;
+  const anyMergedView = mergedView !== null;
   // Создание колонки с нумерацией строк
   const rowMarkersIsActive = !!tableConfig?.rowMarkers;
 
@@ -191,8 +191,8 @@ export const useColumns = <
           // верхнего уровня (пользовательский getRowMarker важнее).
           getRowMarker:
             tableConfig.rowMarkers?.getRowMarker ??
-            (rowsGroupingMergedView && groupedCols
-              ? createTopGroupOrdinalGetter(groupedCols[0] as string, rowsRef)
+            (anyMergedView && mergedKeys
+              ? createTopGroupOrdinalGetter(mergedKeys[0] as string, rowsRef)
               : undefined),
           allRowsMapRef,
           rowKeyGetter: tableConfig.subRows?.rowKeyGetter,
@@ -231,14 +231,14 @@ export const useColumns = <
     // Merged-вид группировки: каждый уровень сливается по составному ключу
     // ПУТИ (блок роли рвётся на границе отдела), сервисные колонки (нумерация,
     // чекбокс) — по верхнему уровню. Записи фичи важнее пользовательских.
-    if (rowsGroupingMergedView && groupedCols) {
-      groupedCols.forEach((colKey, depth) => {
+    if (anyMergedView && mergedKeys) {
+      mergedKeys.forEach((colKey, depth) => {
         mergeByValue.set(
           colKey,
-          createGroupPathValue<RowType>(groupedCols, depth),
+          createGroupPathValue<RowType>(mergedKeys, depth),
         );
       });
-      const topValue = createGroupPathValue<RowType>(groupedCols, 0);
+      const topValue = createGroupPathValue<RowType>(mergedKeys, 0);
       mergeByValue.set(ROW_MARKER_COLUMN_KEY, topValue);
       mergeByValue.set(CHECKBOX_COLUMN_KEY, topValue);
     }
@@ -600,6 +600,9 @@ export const useColumns = <
     tableConfigRowDetailBoolean,
     tableConfigRowsGroupingBoolean,
     rowsGroupingMergedView,
+    subRowsMergedView,
+    mergedKeys,
+    anyMergedView,
     tableConfig.rowsGrouping?.disableGroupColumnsSort,
     reorderInHeaderIsActive,
     groupedCols,
