@@ -31,6 +31,8 @@ const FINAI_THEMES = {
   DARK_THEME: 'FinAI:dark',
   BOTH_THEMES: 'FinAI:both',
   HC_LIGHT_THEME: 'FinAI HC:light',
+  BETA_LIGHT_THEME: 'FinAI Beta:light',
+  BETA_DARK_THEME: 'FinAI Beta:dark',
 } as const;
 type FinAIThemes = typeof FINAI_THEMES;
 type FinAIThemeKey = keyof FinAIThemes;
@@ -43,6 +45,8 @@ const globalStylesThemeMapper: Record<
   [FINAI_THEMES.LIGHT_THEME]: 'light',
   [FINAI_THEMES.DARK_THEME]: 'dark',
   [FINAI_THEMES.HC_LIGHT_THEME]: 'highContrastLight',
+  [FINAI_THEMES.BETA_LIGHT_THEME]: 'betaCoreLight',
+  [FINAI_THEMES.BETA_DARK_THEME]: 'betaCoreDark',
 };
 
 const Flex = styled.div({
@@ -98,6 +102,8 @@ export const globalTypeTheme = {
       FINAI_THEMES.LIGHT_THEME,
       FINAI_THEMES.DARK_THEME,
       FINAI_THEMES.HC_LIGHT_THEME,
+      FINAI_THEMES.BETA_LIGHT_THEME,
+      FINAI_THEMES.BETA_DARK_THEME,
       FINAI_THEMES.BOTH_THEMES,
     ],
     dynamicTitle: true,
