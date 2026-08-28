@@ -93,3 +93,46 @@ describe('useNativeGridSelection — projectionResetSignal', () => {
     expect(onEmit).not.toHaveBeenCalled();
   });
 });
+
+describe('useNativeGridSelection — двухступенчатая очистка', () => {
+  it('первый clear сводит диапазон к активной ячейке, второй снимает всё', () => {
+    const { result } = setup({});
+
+    act(() => result.current.handleGridSelectionChange(someSelection));
+    act(() => result.current.handleSelectionCleared());
+    expect(result.current.selection.current?.cell).toEqual([1, 2]);
+    expect(result.current.selection.current?.range).toEqual({
+      x: 1,
+      y: 2,
+      width: 1,
+      height: 1,
+    });
+
+    act(() => result.current.handleSelectionCleared());
+    expect(result.current.selection.current).toBeUndefined();
+  });
+
+  it('clear без выделения остаётся пустым', () => {
+    const { result } = setup({});
+    act(() => result.current.handleSelectionCleared());
+    expect(result.current.selection.current).toBeUndefined();
+  });
+
+  it('выделенные колонки тоже сводятся к активной ячейке первой ступенью', () => {
+    const { result } = setup({});
+    act(() =>
+      result.current.handleGridSelectionChange({
+        ...someSelection,
+        columns: CompactSelection.fromSingleSelection(1),
+        current: {
+          cell: [1, 2],
+          range: { x: 1, y: 2, width: 1, height: 1 },
+          rangeStack: [],
+        },
+      }),
+    );
+    act(() => result.current.handleSelectionCleared());
+    expect(result.current.selection.columns.length).toBe(0);
+    expect(result.current.selection.current?.cell).toEqual([1, 2]);
+  });
+});

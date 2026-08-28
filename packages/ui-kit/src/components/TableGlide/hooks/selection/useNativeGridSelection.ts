@@ -72,13 +72,41 @@ export function useNativeGridSelection({
   );
 
   const handleSelectionCleared = useCallback(() => {
+    // Двухступенчатая очистка (Esc, клик вне таблицы): сначала диапазон и оси
+    // сводятся к одной активной ячейке, повторная очистка снимает и её.
+    const { current } = selection;
+    const hasMoreThanActiveCell =
+      current !== undefined &&
+      (current.range.width > 1 ||
+        current.range.height > 1 ||
+        current.rangeStack.length > 0 ||
+        selection.columns.length > 0 ||
+        selection.rows.length > 0);
+
+    const next: GridSelection = hasMoreThanActiveCell
+      ? {
+          columns: CompactSelection.empty(),
+          rows: CompactSelection.empty(),
+          current: {
+            cell: current.cell,
+            range: {
+              x: current.cell[0],
+              y: current.cell[1],
+              width: 1,
+              height: 1,
+            },
+            rangeStack: [],
+          },
+        }
+      : EMPTY_SELECTION;
+
     if (isControlled) {
-      onGridSelectionChangeExternal?.(EMPTY_SELECTION);
+      onGridSelectionChangeExternal?.(next);
     } else {
-      setGridSelectionInternal(EMPTY_SELECTION);
+      setGridSelectionInternal(next);
     }
-    onSelectionEmit?.(EMPTY_SELECTION);
-  }, [isControlled, onGridSelectionChangeExternal, onSelectionEmit]);
+    onSelectionEmit?.(next);
+  }, [selection, isControlled, onGridSelectionChangeExternal, onSelectionEmit]);
 
   const rangeSelect = useMemo<GlideProps['rangeSelect']>(() => {
     // range-cell → нативный rect-selection; multi-range-cell → несколько
