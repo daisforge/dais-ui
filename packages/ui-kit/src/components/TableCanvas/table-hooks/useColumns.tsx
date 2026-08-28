@@ -570,7 +570,6 @@ export const useColumns = <
     tableConfigRowDetailBoolean,
     tableConfigRowsGroupingBoolean,
     rowsGroupingMergedView,
-    subRowsMergedView,
     mergedKeys,
     anyMergedView,
     tableConfig.rowsGrouping?.disableGroupColumnsSort,
