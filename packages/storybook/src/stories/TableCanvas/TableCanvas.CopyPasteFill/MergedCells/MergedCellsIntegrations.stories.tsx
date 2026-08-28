@@ -85,6 +85,36 @@ const buildRows = (perRole: number): ERow[] => {
   return rows;
 };
 
+// Вложенные данные для демонстрации merge на 3-4 уровнях группировки:
+// dept -> role -> plan -> fact. На каждом уровне значения повторяются и образуют
+// блоки: 2 плана на роль, 2 факта на план, 2 сотрудника на факт. Одинаковые
+// plan/fact в разных ролях/отделах не сливаются (ключ пути их разделяет).
+const buildNestedRows = (): ERow[] => {
+  const rows: ERow[] = [];
+  let id = 1;
+  for (const d of DEPTS) {
+    for (const role of d.roles) {
+      for (let p = 1; p <= 2; p += 1) {
+        for (let f = 1; f <= 2; f += 1) {
+          for (let k = 0; k < 2; k += 1) {
+            rows.push({
+              id,
+              dept: d.dept,
+              role,
+              person: `Сотрудник ${id}`,
+              rate: RATES[role] ?? 0,
+              plan: p * 1000,
+              fact: f * 500,
+            });
+            id += 1;
+          }
+        }
+      }
+    }
+  }
+  return rows;
+};
+
 // ---------------------------------------------------------------------------
 // Поиск + сортировка + чекбоксы выделения строк + панель массовых действий.
 // Чекбокс — ось СТРОК: внутри слитого блока каждая строка выделяется отдельно,
@@ -884,8 +914,8 @@ export const GroupedFlatView: Story = {
 export const RowsGroupingMerged: Story = {
   name: 'rowsGrouping view=merged (всё вместе)',
   render: () => {
-    const [rows, setRows] = useState<ERow[]>(() => buildRows(3)); // плоские строки
-    const groupByState = useState<string[]>(['dept', 'role']);
+    const [rows, setRows] = useState<ERow[]>(() => buildNestedRows()); // плоские строки
+    const groupByState = useState<string[]>(['dept', 'role', 'plan', 'fact']);
     const selectingState = useState(
       (): ReadonlySet<string | number> => new Set(),
     );
@@ -953,6 +983,7 @@ export const RowsGroupingMerged: Story = {
         width: 120,
         sortingType: 'numberSort',
         contentFormat: 'number',
+        rowsGrouping: { columnGroupLabel: 'План' },
         editingCell: { component: 'inputNumber' },
       },
       {
@@ -961,6 +992,7 @@ export const RowsGroupingMerged: Story = {
         width: 120,
         sortingType: 'numberSort',
         contentFormat: 'number',
+        rowsGrouping: { columnGroupLabel: 'Факт' },
         editingCell: { component: 'inputNumber' },
       },
     ];

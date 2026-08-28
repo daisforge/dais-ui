@@ -7,6 +7,10 @@ import {
   TREE_LVL_KEY,
 } from '../feature-tree/constants';
 import { getTreeIdAndLvlOfRow } from '../feature-tree/handlers';
+import {
+  flattenSubRowsToMergedLeaves,
+  isMergedSubRowsView,
+} from '../feature-tree/mergedSubRows';
 import { ObjectForExtending, TableConfig } from '../types';
 
 /**
@@ -132,11 +136,21 @@ export const useFlattenedRows = <
 
   const tableConfigSubRowsBoolean = !!tableConfig.subRows;
 
+  // Merged-вид subRows: дерево разворачивается в листья со слитыми колонками-предками
+  // (нативные чекбокс/индекс на блок), без tree-разворота по expandedRowsIds.
+  const mergedSubRows = isMergedSubRowsView(tableConfig.subRows);
+  const mergedColumns = tableConfig.subRows?.mergedColumns;
+
   // Полный обход дерева (все ветки "развёрнуты").
   // expandedAllRowsIds — Set всех ключей (для toggleExpandAll).
   // allRowsMap — Map<rowKey, AllRowsMapEntry> для стабильной нумерации rowMarkers.
   const { expandedAllRowsIds, allRowsMap } = useMemo(() => {
     if (!tableConfigSubRowsBoolean) {
+      return { expandedAllRowsIds: null, allRowsMap: null };
+    }
+    // Merged-вид: нумерация идёт через ordinal-getter по верхнему уровню,
+    // allRowsMap не нужен (нет tree-разворота).
+    if (mergedSubRows) {
       return { expandedAllRowsIds: null, allRowsMap: null };
     }
     const rowKeyGetter = tableConfig.subRows?.rowKeyGetter;
@@ -217,6 +231,14 @@ export const useFlattenedRows = <
   ]);
 
   const flattenedRows = useMemo(() => {
+    // Merged-вид subRows: всегда полностью разворачиваем дерево в листья с
+    // денормализацией предков (без учёта expandedRowsIds — collapse тут нет).
+    if (mergedSubRows && mergedColumns) {
+      const getSubRows = tableConfig.subRows?.getSubRows;
+      if (getSubRows) {
+        return flattenSubRowsToMergedLeaves(rows, getSubRows, mergedColumns);
+      }
+    }
     if (!tableConfigSubRowsBoolean || expandedRowsIds.size === 0) {
       return rows;
     }
@@ -241,6 +263,7 @@ export const useFlattenedRows = <
   }, [
     expandedRowsIds,
     rows,
+    mergedSubRows,
     // tableConfig.subRows?.getSubRows, - вместо данного стейта вписан в зависимости tableConfigSubRowsBoolean
     // tableConfig.subRows?.rowKeyGetter, - вместо данного стейта вписан в зависимости tableConfigSubRowsBoolean
     tableConfigSubRowsBoolean,
