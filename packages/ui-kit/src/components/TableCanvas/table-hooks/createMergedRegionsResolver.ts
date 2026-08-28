@@ -1,9 +1,14 @@
-import type { MergedCellsRegion, ObjectForExtending } from '../types';
+import type {
+  MergedCellsAlign,
+  MergedCellsRegion,
+  ObjectForExtending,
+} from '../types';
 
 interface OriginEntry {
   colExtra: number;
   rowStart: number;
   rowEnd: number;
+  align?: MergedCellsAlign;
 }
 
 const isContiguous = (sorted: readonly number[]): boolean =>
@@ -82,7 +87,7 @@ export function createMergedRegionsResolver<R extends ObjectForExtending>(
         byOrigin.set(originKey, map);
       }
       for (let ri = rowStart; ri <= rowEnd; ri += 1) {
-        map.set(ri, { colExtra, rowStart, rowEnd });
+        map.set(ri, { colExtra, rowStart, rowEnd, align: region.align });
       }
     });
   };
@@ -102,6 +107,13 @@ export function createMergedRegionsResolver<R extends ObjectForExtending>(
         ensure(rowsRef.current, renderColKeysRef.current);
         const entry = byOrigin.get(colKey)?.get(cellInfo.rowInd);
         return entry ? [entry.rowStart, entry.rowEnd] : null;
+      },
+    /** Точечное выравнивание региона, накрывающего ячейку (undefined вне регионов). */
+    align:
+      (colKey: string) =>
+      (cellInfo: { rowInd: number }): MergedCellsAlign | undefined => {
+        ensure(rowsRef.current, renderColKeysRef.current);
+        return byOrigin.get(colKey)?.get(cellInfo.rowInd)?.align;
       },
   };
 }

@@ -669,6 +669,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         id,
         colSpan,
         rowSpan,
+        spanAlign: spanAlignConfig,
         editable,
         contentAlign,
         columnThemeOverride,
@@ -677,6 +678,14 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
 
       const span = getSpan(colSpan, cellInfo);
       const spanRows = getRowSpan(rowSpan, cellInfo);
+      // Только для ячеек в блоке: spanAlign на одиночной ячейке переключил бы
+      // её на span-путь отрисовки в форке.
+      const spanAlign =
+        (span || spanRows) && spanAlignConfig
+          ? typeof spanAlignConfig === 'function'
+            ? spanAlignConfig(cellInfo)
+            : spanAlignConfig
+          : undefined;
 
       const cellIsEditable = (() => {
         if (!editable) {
@@ -713,6 +722,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         contentAlign,
         ...(span && { span }),
         ...(spanRows && { spanRows }),
+        ...(spanAlign && { spanAlign }),
       } satisfies TextCellOptions;
 
       if (!renderCell) {

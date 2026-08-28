@@ -27,9 +27,31 @@ const makeResolver = (
   return { resolver, renderColKeysRef, rowsRef };
 };
 
-const region = (colKeys: string[], rowKeys: string[]): MergedCellsRegion => ({
+const region = (
+  colKeys: string[],
+  rowKeys: string[],
+  align?: MergedCellsRegion['align'],
+): MergedCellsRegion => ({
   colKeys,
   rowKeys,
+  ...(align && { align }),
+});
+
+describe('createMergedRegionsResolver — точечное выравнивание региона', () => {
+  it('регион с align отдаёт его на всех своих строках, без align — undefined', () => {
+    const { resolver } = makeResolver(
+      [
+        region(['a'], ['r1', 'r2'], { vertical: 'top' }),
+        region(['b'], ['r1', 'r2']),
+      ],
+      ['a', 'b'],
+      rowsOf('r1', 'r2', 'r3'),
+    );
+    expect(resolver.align('a')({ rowInd: 0 })).toEqual({ vertical: 'top' });
+    expect(resolver.align('a')({ rowInd: 1 })).toEqual({ vertical: 'top' });
+    expect(resolver.align('a')({ rowInd: 2 })).toBeUndefined();
+    expect(resolver.align('b')({ rowInd: 0 })).toBeUndefined();
+  });
 });
 
 describe('createMergedRegionsResolver — базовый резолв', () => {

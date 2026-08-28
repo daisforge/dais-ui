@@ -485,6 +485,26 @@ export const useColumns = <
           : undefined;
       }
 
+      // Выравнивание контента в блоках: регион > колонка > дефолт фичи.
+      const mergedViewAlign =
+        anyMergedView &&
+        (mergedKeys?.includes(el.key) || getColumnIsService(el))
+          ? mergedView?.kind === 'grouping'
+            ? tableConfig.rowsGrouping?.mergedCellsAlign
+            : undefined
+          : undefined;
+      const staticSpanAlign =
+        el.mergedCellsAlign ?? mergedViewAlign ?? tableConfig.mergeCells?.align;
+      let spanAlign: ColumnX['spanAlign'];
+      if (isRegionCol && regionsResolver) {
+        const regionAlignOf = regionsResolver.align(el.key);
+        spanAlign = staticSpanAlign
+          ? (cellInfo) => regionAlignOf(cellInfo) ?? staticSpanAlign
+          : regionAlignOf;
+      } else if (rowSpan !== undefined) {
+        spanAlign = staticSpanAlign;
+      }
+
       const userThemeOverride = el.themeOverride;
       const columnThemeOverride = userThemeOverride
         ? (cellInfo: Parameters<typeof userThemeOverride>[0]) => {
@@ -525,6 +545,7 @@ export const useColumns = <
         ...(columnIsPinned && { frozen: true }),
         ...(colSpan && { colSpan }),
         ...(rowSpan && { rowSpan }),
+        ...(spanAlign && { spanAlign }),
       };
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps

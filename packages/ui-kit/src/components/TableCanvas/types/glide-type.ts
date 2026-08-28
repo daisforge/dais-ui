@@ -18,6 +18,8 @@ export type DefaultOmittedKeys = Extract<
   // остаются как труба, в которую mergeCells синтезирует объединения.
   | 'colSpan'
   | 'rowSpan'
+  // Выравнивание блока публично задаётся через mergedCellsAlign / mergeCells.align.
+  | 'spanAlign'
 >;
 
 export type ColumnDefaultOmitted<

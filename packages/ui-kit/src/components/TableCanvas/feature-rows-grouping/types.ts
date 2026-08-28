@@ -3,6 +3,7 @@ import {
   CellInfoGlideInstance,
 } from '../TableGlideInstance/type';
 import { DomMetadata, DropdownItemOption } from '../types/additional.type';
+import { MergedCellsAlign } from '../types/merged-cells.type';
 import { ObjectForExtending } from '../types/utils.type';
 
 export type GroupRow<RowType> = {
@@ -35,6 +36,11 @@ export type RowsGrouping<
    * @default 'tree'
    */
   view?: 'tree' | 'merged';
+  /**
+   * Только для `view: 'merged'`. Дефолт выравнивания контента в слитых ячейках
+   * группирующих колонок. Перекрывается колоночным `mergedCellsAlign`.
+   */
+  mergedCellsAlign?: MergedCellsAlign;
   /**
    * Только для `view: 'merged'`. Снять сортировку с колонок, по которым идёт
    * группировка (как в tree-виде: там сгруппированные колонки не сортируются).

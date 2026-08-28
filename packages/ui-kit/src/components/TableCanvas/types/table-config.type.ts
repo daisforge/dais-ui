@@ -52,6 +52,7 @@ import type {
   SortColumn,
 } from './column-config.type';
 import { ColumnsGroupingConfig } from './columns-grouping.type';
+import { MergedCellsAlign } from './merged-cells.type';
 import { Maybe, ObjectForExtending, Prettify } from './utils.type';
 /** @deprecated Свойство view не используется и будет удалено в следующей мажорной версии. */
 export type ViewMods = {
@@ -844,6 +845,8 @@ export type CellsSelectionConfig = {
 export type MergedCellsRegion = {
   rowKeys: Array<string | number>;
   colKeys: string[];
+  /** Точечное выравнивание контента этого объединения. Важнее колоночного и общего. */
+  align?: MergedCellsAlign;
 };
 
 export type TableConfig<
@@ -1046,6 +1049,11 @@ export type TableConfig<
      * на лету не пересобирает таблицу.
      */
     rowKeyGetter?: (row: RowType) => string | number;
+    /**
+     * Общий дефолт выравнивания контента в объединённых ячейках. Перекрывается
+     * колоночным `mergedCellsAlign` и `align` конкретного региона.
+     */
+    align?: MergedCellsAlign;
   };
 
   /**

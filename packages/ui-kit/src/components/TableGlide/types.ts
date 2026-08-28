@@ -210,6 +210,14 @@ export type RowSpan<R extends ObjectForExtending, SR> = (
   cellInfo: CellInfo<R, SR>
 ) => readonly [number, number] | null;
 
+/** 2D-выравнивание контента в слитой ячейке (блоке). */
+export type SpanCellAlign = {
+  /** По горизонтали. @default из contentAlign колонки, иначе 'left' */
+  horizontal?: 'left' | 'center' | 'right';
+  /** По вертикали. @default 'center' */
+  vertical?: 'top' | 'center' | 'bottom';
+};
+
 export type ColumnGlideGetCellContent<R extends ObjectForExtending, SR> = (
   cellInfo: CellInfo<R, SR>
 ) => CellContent;
@@ -234,6 +242,8 @@ export type ColumnGlideCustoms<R extends ObjectForExtending, SR = unknown> = {
   renderSummaryCell?: (summaryCellInfo: SummaryCellInfo<R, SR>) => CellContent;
   colSpan?: ColSpan<R, SR>;
   rowSpan?: RowSpan<R, SR>;
+  /** Выравнивание контента в слитых ячейках колонки; функция — для точечного (по блоку). */
+  spanAlign?: SpanCellAlign | ((cellInfo: CellInfo<R, SR>) => SpanCellAlign | undefined);
   /** Тултип для ячеек этой колонки. Строка, объект или функция (context) => config | null. */
   cellTooltip?:
     | CanvasNodeTooltipConfig

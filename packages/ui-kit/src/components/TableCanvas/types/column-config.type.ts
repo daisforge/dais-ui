@@ -25,6 +25,7 @@ import type {
 import { HeaderAlignment } from './columns-grouping.type';
 import { CtxsType } from './ctxs.type';
 import type { ColumnDefaultOmitted } from './glide-type';
+import { MergedCellsAlign } from './merged-cells.type';
 import { ObjectForExtending } from './utils.type';
 
 export type { SortColumn, SortDirection };
@@ -371,6 +372,12 @@ export type ColumnConfig<
    * `columnsGrouping.squashedHeaderAlign`.
    */
   squashedHeaderAlign?: HeaderAlignment;
+  /**
+   * Выравнивание контента в слитых ячейках тела этой колонки (mergeCells,
+   * merged-виды группировки/subRows). Перекрывает дефолт фичи; точечнее — только
+   * `align` конкретного региона в `mergeCells.mergedCellsRegions`.
+   */
+  mergedCellsAlign?: MergedCellsAlign;
 };
 
 export type ColumnOrColumnGroupConfig<
