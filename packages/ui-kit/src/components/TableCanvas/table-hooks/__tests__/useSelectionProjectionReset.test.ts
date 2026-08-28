@@ -2,8 +2,10 @@ import { renderHook } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
 import {
+  buildRestoredSelection,
   projectionChanged,
   resolveDataRevision,
+  type SavedActiveCell,
   useSelectionProjectionReset,
 } from '../useSelectionProjectionReset';
 
@@ -103,5 +105,155 @@ describe('useSelectionProjectionReset — controlled', () => {
     rerender({ parts: parts1, setter: setterB });
     expect(setterA).not.toHaveBeenCalled();
     expect(setterB).not.toHaveBeenCalled();
+  });
+});
+
+// --- Восстановление активной ячейки ------------------------------------------
+
+type Row = { id: number; dept?: string };
+
+const restoreEnv = (rows: Row[]) => ({
+  rows,
+  renderColKeys: ['a', 'b', 'c'],
+  columns: [{ key: 'a' }, { key: 'b' }, { key: 'c' }] as never,
+  rowKeyGetter: (r: Row) => r.id,
+});
+
+describe('buildRestoredSelection — активная ячейка в новой проекции', () => {
+  const saved: SavedActiveCell = { rowKey: 2, colKey: 'b' };
+
+  it('строка найдена: выделение 1x1 на новом индексе', () => {
+    const built = buildRestoredSelection({
+      saved,
+      ...restoreEnv([{ id: 3 }, { id: 2 }, { id: 1 }]),
+    });
+    expect(built?.cell).toEqual([1, 1]);
+    expect(built?.selection.current?.range).toEqual({
+      x: 1,
+      y: 1,
+      width: 1,
+      height: 1,
+    });
+  });
+
+  it('строки нет (фильтр/другая страница) — null', () => {
+    const built = buildRestoredSelection({
+      saved,
+      ...restoreEnv([{ id: 3 }, { id: 1 }]),
+    });
+    expect(built).toBeNull();
+  });
+
+  it('колонки нет (скрыта) — null', () => {
+    const built = buildRestoredSelection({
+      saved: { rowKey: 2, colKey: 'hidden' },
+      ...restoreEnv([{ id: 2 }]),
+    });
+    expect(built).toBeNull();
+  });
+
+  it('ячейка в слитом блоке нормализуется к его левому верхнему углу', () => {
+    const rows: Row[] = [{ id: 10 }, { id: 11 }, { id: 12 }];
+    // Колонка b слита по строкам 0..2: восстановление на строке 12 уводит к origin.
+    const columns = [
+      { key: 'a' },
+      { key: 'b', rowSpan: () => [0, 2] as const },
+      { key: 'c' },
+    ] as never;
+    const built = buildRestoredSelection({
+      saved: { rowKey: 12, colKey: 'b' },
+      rows,
+      renderColKeys: ['a', 'b', 'c'],
+      columns,
+      rowKeyGetter: (r: Row) => r.id,
+    });
+    expect(built?.cell).toEqual([1, 0]);
+  });
+});
+
+describe('useSelectionProjectionReset — восстановление активной ячейки', () => {
+  const gridSelectionAt = (col: number, row: number) => ({
+    columns: { hasIndex: () => false },
+    rows: { hasIndex: () => false },
+    current: {
+      cell: [col, row] as [number, number],
+      range: { x: col, y: row, width: 1, height: 1 },
+      rangeStack: [],
+    },
+  });
+
+  const fullSetup = (
+    rowsRef: { current: Row[] },
+    setter?: (s: unknown) => void,
+  ) => {
+    const scrollTo = vi.fn();
+    const hook = renderHook(
+      ({ parts }: { parts: readonly unknown[] }) =>
+        useSelectionProjectionReset<Row>({
+          projectionParts: parts,
+          controlledSetter: setter as never,
+          rowKeyGetter: (r) => r.id,
+          flattenedRowsRef: rowsRef,
+          renderColKeysRef: { current: ['a', 'b'] },
+          columns: [{ key: 'a' }, { key: 'b' }],
+          scrollTo,
+        }),
+      { initialProps: { parts: ['s', 1] as readonly unknown[] } },
+    );
+    return { ...hook, scrollTo };
+  };
+
+  it('uncontrolled: сигнал несёт восстановленное выделение, вызван scrollTo', () => {
+    const rowsRef = { current: [{ id: 1 }, { id: 2 }] as Row[] };
+    const { result, rerender, scrollTo } = fullSetup(rowsRef);
+
+    // Пользователь встал на ячейку (колонка b, строка id=1).
+    result.current.captureActiveCell(gridSelectionAt(1, 0) as never);
+
+    // Смена проекции: строка id=1 теперь внизу.
+    rowsRef.current = [{ id: 2 }, { id: 1 }];
+    rerender({ parts: ['s', 2] });
+
+    const signal = result.current.projectionResetSignal;
+    expect(signal?.nextSelection?.current?.cell).toEqual([1, 1]);
+    expect(scrollTo).toHaveBeenCalledWith(1, 1);
+  });
+
+  it('строка исчезла: пустой сброс, scrollTo не вызван', () => {
+    const rowsRef = { current: [{ id: 1 }, { id: 2 }] as Row[] };
+    const { result, rerender, scrollTo } = fullSetup(rowsRef);
+
+    result.current.captureActiveCell(gridSelectionAt(1, 0) as never);
+    rowsRef.current = [{ id: 2 }];
+    rerender({ parts: ['s', 2] });
+
+    expect(result.current.projectionResetSignal?.nextSelection).toBeUndefined();
+    expect(scrollTo).not.toHaveBeenCalled();
+  });
+
+  it('controlled: сеттер получает восстановленное выделение', () => {
+    const rowsRef = { current: [{ id: 1 }, { id: 2 }] as Row[] };
+    const setter = vi.fn();
+    const { result, rerender } = fullSetup(rowsRef, setter);
+
+    result.current.captureActiveCell(gridSelectionAt(0, 1) as never);
+    rowsRef.current = [{ id: 2 }, { id: 1 }];
+    rerender({ parts: ['s', 2] });
+
+    expect(setter).toHaveBeenCalledTimes(1);
+    const arg = setter.mock.calls[0]?.[0];
+    expect(arg.current?.cell).toEqual([0, 0]);
+  });
+
+  it('снятие выделения забывает активную ячейку', () => {
+    const rowsRef = { current: [{ id: 1 }, { id: 2 }] as Row[] };
+    const { result, rerender, scrollTo } = fullSetup(rowsRef);
+
+    result.current.captureActiveCell(gridSelectionAt(1, 0) as never);
+    result.current.captureActiveCell({ current: undefined } as never);
+    rerender({ parts: ['s', 2] });
+
+    expect(result.current.projectionResetSignal?.nextSelection).toBeUndefined();
+    expect(scrollTo).not.toHaveBeenCalled();
   });
 });

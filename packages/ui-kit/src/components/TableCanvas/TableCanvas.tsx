@@ -259,6 +259,7 @@ export function TableCanvas<
     getDefaultColumnsOrder,
     setColumnsOrder,
     onColumnsReorder,
+    renderColKeysRef,
   } = useColumns({
     tableConfig,
     columnConfig,
@@ -420,16 +421,27 @@ export function TableCanvas<
   // Сброс нативного выделения при смене проекции данных: критерии (сортировка,
   // фильтры, поиск, группировка) плюс версия данных (dataRevision потребителя,
   // иначе сам массив rows). Пагинация и рефетч приходят именно через версию.
-  const { projectionResetSignal } = useSelectionProjectionReset({
-    projectionParts: [
-      sortColumns,
-      filters,
-      searchQuery,
-      groupedCols,
-      resolveDataRevision(tableConfig.cellsSelection?.dataRevision, rows),
-    ],
-    controlledSetter: tableConfig.cellsSelection?.state?.[1],
-  });
+  // Активная ячейка при возможности сохраняется по ключу строки и доскролливается.
+  const { projectionResetSignal, captureActiveCell } =
+    useSelectionProjectionReset({
+      projectionParts: [
+        sortColumns,
+        filters,
+        searchQuery,
+        groupedCols,
+        resolveDataRevision(tableConfig.cellsSelection?.dataRevision, rows),
+      ],
+      controlledSetter: tableConfig.cellsSelection?.state?.[1],
+      rowKeyGetter:
+        tableConfig.cellsSelection?.rowKeyGetter ??
+        tableConfig.selecting?.rowKeyGetter ??
+        tableConfig.subRows?.rowKeyGetter ??
+        tableConfig.mergeCells?.rowKeyGetter,
+      flattenedRowsRef,
+      renderColKeysRef,
+      columns,
+      scrollTo: (col, row) => refTableX.current?.scrollTo(col, row),
+    });
 
   // ------------------------------------------------ changing rows ------------------------------------------------
   const { onRowsChangeLastVersion } = useOnRowsChange({
@@ -473,13 +485,19 @@ export function TableCanvas<
     onNotification: tableConfig.notifications?.onNotification,
   });
 
-  // Объединяем onGridSelectionChange от cellTransfer и fill handle
+  // Объединяем onGridSelectionChange от cellTransfer, fill handle и запоминание
+  // активной ячейки (восстановление после смены проекции данных).
   const combinedOnGridSelectionChange = useCallback(
     (selection: Parameters<typeof cellTransferOnSelectionChange>[0]) => {
       cellTransferOnSelectionChange(selection);
       onSelectionChangeForFill(selection);
+      captureActiveCell(selection);
     },
-    [cellTransferOnSelectionChange, onSelectionChangeForFill],
+    [
+      cellTransferOnSelectionChange,
+      onSelectionChangeForFill,
+      captureActiveCell,
+    ],
   );
 
   // ------------------------------------------------  data-grid props ------------------------------------------------
