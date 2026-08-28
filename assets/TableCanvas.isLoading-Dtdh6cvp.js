@@ -1,0 +1,21 @@
+import{j as i}from"./react-D2T61mpp.js";import{c6 as t,c7 as s,c0 as e}from"./vendor-H482Df_i.js";import{T as l}from"./TableCanvas.isLoading.stories-DTAAVE7R.js";import"./react-is-Clcustum.js";import"./styled-components-kNohFqZo.js";import"./tslib-De9GV7Vy.js";import"./tableData-UCfjiBCh.js";import"./DocStoryTemplate-CI6eoUuG.js";import"./storySourceDoc-tVKyHcEN.js";import"./FiltersActions-DpX5bnfb.js";import"./IconButton-Dfbyl-9e.js";import"./@salutejs/plasma-icons-Co7qeio2.js";import"./@salutejs/sdds-finai-0jwSobSd.js";import"./@salutejs/sdds-themes-CUTvIVmO.js";import"./utils-DbCY1Z9_.js";import"./constants-BudGGuoE.js";import"./sharedUtilsDebug-BX_KjCjW.js";import"./Box-DsNuXb8L.js";import"./TextField-DX72kUcf.js";import"./sharedUtilsInputs-lcFqwZca.js";import"./AnalyticalWidget-DSB49XD8.js";import"./Collapse-iz8ikY5l.js";import"./Table-BeV-EcNh.js";import"./react-data-grid-DCPnnyYy.js";import"./TableTabs-D0zJQre4.js";import"./TableCanvasSharedConstants-D5ZJAqGq.js";import"./sharedUiSearch-CdHJx3AN.js";import"./ListOfFilters-h0_QR3gb.js";import"./lodash.isequal-DD0Lfcik.js";import"./NumberFormat-D2Fp1WvL.js";import"./EmptyState-B9Pqf4Zj.js";import"./MassActions-LD6Xs8Wo.js";import"./Autocomplete-BY4gUMXJ.js";import"./TableCanvas-DQRIFFPf.js";import"./TableGlide-DMRVscDI.js";import"./@glideappsfinal/glide-data-grid-D0Xvk0sU.js";import"./canvas-hypertxt-DsokSIOX.js";import"./ErrorPage-DylToe__.js";function r(n){const o={a:"a",blockquote:"blockquote",code:"code",h1:"h1",h2:"h2",li:"li",p:"p",strong:"strong",ul:"ul",...t(),...n.components};return i.jsxs(i.Fragment,{children:[i.jsx(s,{of:l,name:"Docs"}),`
+`,i.jsx(o.h1,{id:"isloading-tablecanvas",children:"IsLoading (TableCanvas)"}),`
+`,i.jsx(o.p,{children:i.jsx(o.strong,{children:"tableConfig.isLoading / tableConfig.loadingOverlay"})}),`
+`,i.jsx(o.p,{children:"Состояние загрузки таблицы. Поддерживает скелетон-строки и полноэкранный оверлей."}),`
+`,i.jsx(o.h2,{id:"ключевые-особенности",children:"Ключевые особенности"}),`
+`,i.jsxs(o.ul,{children:[`
+`,i.jsxs(o.li,{children:["Скелетон-строки при загрузке данных (",i.jsx(o.code,{children:"isLoading"}),")"]}),`
+`,i.jsxs(o.li,{children:["Настраиваемое количество скелетон-строк (",i.jsx(o.code,{children:"skeletonRowsCount"}),")"]}),`
+`,i.jsxs(o.li,{children:["Полноэкранный оверлей с кастомным спиннером (",i.jsx(o.code,{children:"loadingOverlay"}),")"]}),`
+`,i.jsxs(o.li,{children:["Задержка показа подзаголовка (",i.jsx(o.code,{children:"showSubtitleDelay"}),")"]}),`
+`]}),`
+`,i.jsx(o.h2,{id:"когда-использовать-loadingoverlay",children:"Когда использовать loadingOverlay"}),`
+`,i.jsxs(o.ul,{children:[`
+`,i.jsx(o.li,{children:"Динамическая загрузка схемы таблицы — колонки загружаются с бэкенда"}),`
+`,i.jsx(o.li,{children:"Конфигурируемые таблицы — пользователь сам настраивает колонки"}),`
+`,i.jsx(o.li,{children:"Ошибки загрузки структуры — не удалось загрузить метаданные"}),`
+`]}),`
+`,i.jsxs(o.blockquote,{children:[`
+`,i.jsxs(o.p,{children:["Подробнее о типах — ",i.jsx(o.a,{href:"?path=/docs/%D0%BB%D0%BE%D0%BA%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D1%8B-tablecanvas-isloading-api--docs",children:"IsLoading API"})]}),`
+`]}),`
+`,i.jsx(e,{})]})}function N(n={}){const{wrapper:o}={...t(),...n.components};return o?i.jsx(o,{...n,children:i.jsx(r,{...n})}):r(n)}export{N as default};
