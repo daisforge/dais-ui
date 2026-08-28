@@ -149,8 +149,6 @@ async function generate(tokensDir, tokens) {
 }
 
 async function generateTokensIndexFile() {
-  await Promise.resolve(async () => unlink(join(tokensIndexFilePath)));
-
   const indexFileInner = `${heading}\n\n${TOKENS.map(
     (t) => `export * from './${t.dirName}';\n`
   ).join('')}`;
@@ -160,10 +158,13 @@ async function generateTokensIndexFile() {
 
 // --------------------------  GENERATING --------------------------
 async function generateAll() {
-  TOKENS.forEach(async (t) => {
-    await generate(t.dir, t.tokenNames);
-  });
-
-  generateTokensIndexFile();
+  // Promise.all вместо forEach(async): forEach не дожидается промисов, из-за чего
+  // процесс мог завершиться до конца записи файлов (гонка, неполная генерация).
+  await Promise.all(TOKENS.map((t) => generate(t.dir, t.tokenNames)));
+  await generateTokensIndexFile();
 }
-generateAll();
+
+generateAll().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});
