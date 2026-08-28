@@ -2,18 +2,10 @@ import { findBlockOrigin } from '../../../TableGlide/utils/findBlockOrigin';
 import type { ObjectForExtending } from '../../types';
 import type { TransferColumnConfig } from '../types';
 
-/**
- * Геометрия объединённых блоков в слое cell-transfer.
- *
- * colSpan/rowSpan объявляются потребителем только на origin-колонке, поэтому по
- * ним находим origin блока и его границы. Нужно, чтобы copy/fill брали значение
- * origin (как отрисовано на экране), а paste/fill нормализовали запись к origin
- * и писали весь блок.
- *
- * Координаты — прямые индексы в columns/rows (форк уже снял rowMarkerOffset).
- */
+// Геометрия блоков для copy/paste/fill: находим левый верхний угол блока и его
+// границы. Координаты — прямые индексы в columns/rows.
 
-// colSpan/rowSpan ждут CellInfo; для геометрии достаточно rowInd/colInd/row.
+// colSpan/rowSpan ждут CellInfo; для геометрии хватает rowInd/colInd/row.
 function spanCellInfo<R extends ObjectForExtending>(
   rows: readonly R[],
   colInd: number,
@@ -22,7 +14,7 @@ function spanCellInfo<R extends ObjectForExtending>(
   return { rowInd, colInd, row: rows[rowInd] };
 }
 
-/** Сколько ДОПОЛНИТЕЛЬНЫХ колонок объединяет colSpan колонки (0 — нет объединения). */
+/** Сколько дополнительных колонок объединяет colSpan (0 — нет объединения). */
 export function readColSpanExtra<R extends ObjectForExtending>(
   column: TransferColumnConfig | undefined,
   rows: readonly R[],
@@ -38,7 +30,7 @@ export function readColSpanExtra<R extends ObjectForExtending>(
   return 0;
 }
 
-/** Диапазон строк rowSpan-блока колонки `[start, end]` или null. */
+/** Диапазон строк блока колонки [начало, конец] или null. */
 export function readRowSpanBlock<R extends ObjectForExtending>(
   column: TransferColumnConfig | undefined,
   rows: readonly R[],
@@ -51,7 +43,7 @@ export function readRowSpanBlock<R extends ObjectForExtending>(
   return rowSpan(info as unknown as Parameters<typeof rowSpan>[0]) ?? null;
 }
 
-/** Резолв ячейки к origin её блока (общая геометрия — findBlockOrigin). */
+/** Левый верхний угол блока для ячейки. */
 export function resolveBlockOrigin<R extends ObjectForExtending>(
   colIndex: number,
   rowIndex: number,
@@ -69,7 +61,7 @@ export function resolveBlockOrigin<R extends ObjectForExtending>(
   );
 }
 
-/** Прямоугольник объединённого блока в индексах columns/rows. */
+/** Прямоугольник блока в индексах columns/rows. */
 export interface BlockRect {
   startCol: number;
   endCol: number;
@@ -77,11 +69,7 @@ export interface BlockRect {
   endRow: number;
 }
 
-/**
- * Границы блока, которому принадлежит ячейка, или null если ячейка одиночная.
- * origin находим через resolveBlockOrigin, затем на origin-колонке читаем правую
- * границу (colSpan) и нижнюю (rowSpan).
- */
+/** Границы блока ячейки или null, если ячейка одиночная. */
 export function resolveBlock<R extends ObjectForExtending>(
   colIndex: number,
   rowIndex: number,

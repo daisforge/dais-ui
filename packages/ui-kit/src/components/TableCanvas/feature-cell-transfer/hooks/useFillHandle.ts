@@ -167,8 +167,7 @@ export function useFillHandle<R extends ObjectForExtending>({
 
       const source = event.patternSource;
       const rawDest = event.fillDestination;
-      // Снап destination к целым rowSpan-блокам: при протяжке нельзя залить пол-блока.
-      // Дальше весь downstream (targetCells, applyValuesToRows, тайлинг) работает по dest.
+      // Растягиваем область до целых блоков: залить пол-блока нельзя.
       const dest = snapDestToRowBlocks(rawDest, columns, flattenedRows);
 
       clipboardDebug(PFX, 'обработка fill-паттерна', { source, rawDest, dest });

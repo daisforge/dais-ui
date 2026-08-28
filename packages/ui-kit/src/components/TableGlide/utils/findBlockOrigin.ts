@@ -1,17 +1,15 @@
 export type SpanRange = readonly [number, number] | null;
 
 /**
- * Origin (левая верхняя ячейка) блока объединения для (col, row). colSpan
- * объявляется на origin-колонке, поэтому покрытые колонки ищем сканированием
- * влево до колонки, чей диапазон накрывает col; вертикаль берём по rowSpan
- * найденной origin-колонки. Единая геометрия для рендера и cell-transfer.
+ * Левый верхний угол блока для ячейки (col, row). Объединение объявлено на этом
+ * углу, поэтому колонку ищем сканом влево, строку берём по rowSpan найденной колонки.
  */
 export const findBlockOrigin = (
   col: number,
   row: number,
-  /** Абсолютный диапазон колонок [start, end] блока колонки c, или null. */
+  /** Диапазон колонок блока [начало, конец] или null. */
   getColRange: (c: number, r: number) => SpanRange,
-  /** Абсолютный диапазон строк [start, end] блока на колонке c, или null. */
+  /** Диапазон строк блока [начало, конец] или null. */
   getRowRange: (c: number, r: number) => SpanRange,
 ): readonly [number, number] => {
   let originCol = col;

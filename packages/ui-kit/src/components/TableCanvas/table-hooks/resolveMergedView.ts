@@ -4,15 +4,11 @@ import type { ObjectForExtending, TableConfig } from '../types';
 
 export interface MergedViewInfo {
   kind: 'grouping' | 'subRows';
-  /** Колонки уровней слияния (индекс = глубина); keys[0] — верхний уровень. */
+  /** Колонки уровней слияния; keys[0] — верхний уровень. */
   keys: readonly string[];
 }
 
-/**
- * Активный merged-вид таблицы: группировка (view: 'merged' + groupBy) или
- * subRows (view: 'merged' + mergedColumns). Единая точка этой развилки для
- * useColumns / usePrepareTableConfig.
- */
+// Какой merged-вид сейчас активен (группировка или subRows) или ни одного.
 export function resolveMergedView<
   FilterStateType extends ObjectForExtending,
   RowIdType extends string | number,

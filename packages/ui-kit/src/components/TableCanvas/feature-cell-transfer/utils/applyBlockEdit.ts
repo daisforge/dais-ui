@@ -3,10 +3,9 @@ import type { TransferColumnConfig } from '../types';
 import { resolveBlock } from './resolveBlockOrigin';
 
 /**
- * Правка ячейки слитого блока: значение пишется во все ячейки блока (паритет
- * с paste/fill). Обновлённые копии строк кладутся в `targetRows` — общий
- * аккумулятор батча, поэтому несколько правок компонуются. Возвращает индексы
- * затронутых строк; не блок — null, правка идёт обычным путём.
+ * Правка ячейки блока: одно значение пишется во все ячейки блока. Новые копии
+ * строк кладутся в `targetRows` (общий массив-накопитель, чтобы правки в пачке
+ * складывались). Возвращает номера изменённых строк; если ячейка не в блоке — null.
  */
 export function applyBlockEdit<R extends ObjectForExtending>({
   colInd,
@@ -20,13 +19,12 @@ export function applyBlockEdit<R extends ObjectForExtending>({
   colInd: number;
   rowInd: number;
   columns: readonly TransferColumnConfig[];
-  /** Видимые строки — по ним резолвится геометрия блока. */
   rows: readonly R[];
-  /** Строка с уже применённой правкой (база для строки rowInd). */
+  /** Строка с уже применённой правкой (основа для строки rowInd). */
   editedRow: R;
-  /** Отредактированное значение — оно уходит во все ячейки блока. */
+  /** Значение, которое уходит во все ячейки блока. */
   editedValue: unknown;
-  /** Аккумулятор батча (мутируемая копия rows). */
+  /** Массив-накопитель (изменяемая копия rows). */
   targetRows: R[];
 }): number[] | null {
   const block = resolveBlock(colInd, rowInd, columns, rows);

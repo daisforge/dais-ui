@@ -9,9 +9,8 @@ export const getSpan = <R extends ObjectForExtending, SR = unknown>(
   const resultColSpan =
     typeof colSpan === 'number' ? colSpan : colSpan(cellInfo);
 
-  // colSpan <= 0 = нет горизонтального объединения. НЕ ставим span=[c,c]: иначе
-  // одиночная ячейка считается «слитой» шириной 1 и ломает чисто-вертикальный
-  // merge (spanRows). Пусть рендер идёт по обычному пути / только по spanRows.
+  // Нет объединения по горизонтали. Возвращаем null, а не [c, c], чтобы одиночная
+  // ячейка не считалась слитой и не ломала вертикальный merge.
   if (resultColSpan <= 0) return null;
 
   return [cellInfo.colInd, cellInfo.colInd + resultColSpan] as readonly [
