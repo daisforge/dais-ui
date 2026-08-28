@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.16.0](https://github.com/daisforge/dais-ui/compare/v1.15.0...v1.16.0) (2026-08-28)
+
+### Features
+
+- **AnalyticalWidget:** редизайн и опциональный absolute у кнопки-троеточия ([1abf469](https://github.com/daisforge/dais-ui/commit/1abf469a5323dfb78b4246276ca3a372e54ed3d2))
+- **AnalyticalWidget:** скелетон для title/subtitle шапки ([aa098b1](https://github.com/daisforge/dais-ui/commit/aa098b1cde3bd3ecb269330de1fef67ba12ede19))
+- **Stories:** Stories.Preview можно оборачивать в Carousel и произвольные контейнеры ([af2218d](https://github.com/daisforge/dais-ui/commit/af2218d5c19fc23a9c60eb03e50e7ce12a154de4))
+- **TableCanvas:** renderGroupCell принимает theme при группировке строк ([b918137](https://github.com/daisforge/dais-ui/commit/b918137c87c5d5ef187a0d8a7e179053f8b697f3))
+- **TableCanvas:** закрытие поповера фильтра по повторному клику и фокус инпута поиска при открытии ([c7f0323](https://github.com/daisforge/dais-ui/commit/c7f03232e64bc11396478e9b4ff32e864705ee83))
+- **TableCanvas:** палитра таблицы под тему sdds_finai_beta_core (light) ([f5c4e64](https://github.com/daisforge/dais-ui/commit/f5c4e64b380fa7aad5dab62e8817be04f907b02d))
+- **theme:** интеграция темы sdds_finai_beta_core в переключатель тем ([9b15c17](https://github.com/daisforge/dais-ui/commit/9b15c17718abdc1b6ce3e383f930c3352309d5b3))
+
 # [1.15.0](https://github.com/daisforge/dais-ui/compare/v1.14.1...v1.15.0) (2026-08-24)
 
 ### Features
