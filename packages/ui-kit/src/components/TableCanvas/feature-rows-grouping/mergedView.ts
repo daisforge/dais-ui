@@ -2,14 +2,10 @@ import type { ObjectForExtending } from '../types/utils.type';
 import { rowGrouper } from './data-handlers';
 import type { RowsGrouping } from './types';
 
-/**
- * Вид отображения группировки «merged»: вместо дерева с шевронами — плоские
- * строки, где колонки уровней группировки слиты вертикально по границам своих
- * групп (внутренний merge по составному ключу пути). Хелперы этого модуля
- * обслуживают порядок строк, блоки, нумерацию групп и групповой чекбокс.
- */
+// Merged-вид группировки: плоские строки вместо дерева, колонки уровней слиты по
+// границам групп. Хелперы модуля дают порядок строк, ключ пути, нумерацию и чекбокс.
 
-/** Разделитель значений в составном ключе пути (не встречается в данных). */
+/** Разделитель в ключе пути (не встречается в данных). */
 const GROUP_PATH_SEP = String.fromCharCode(1);
 
 export const isMergedGroupingView = <
@@ -20,11 +16,8 @@ export const isMergedGroupingView = <
   groupByArr: string[] | undefined,
 ): boolean => rowsGrouping?.view === 'merged' && (groupByArr?.length ?? 0) > 0;
 
-/**
- * Плоский порядок листьев по группам: та же рекурсивная группировка, что у
- * tree-вида (rowGrouper, порядок групп = первое вхождение, листья сохраняют
- * входной порядок после сортировки), но без обёрток GroupRow.
- */
+// Строки в порядке групп: группы идут по первому вхождению, внутри группы
+// порядок строк сохраняется.
 export function flattenRowsByGroups<RowType extends ObjectForExtending>(
   rows: readonly RowType[],
   groupByArr: readonly string[],
@@ -38,11 +31,8 @@ export function flattenRowsByGroups<RowType extends ObjectForExtending>(
   return out;
 }
 
-/**
- * Значение ячейки для merge уровня `depth`: составной ключ пути от корня.
- * Блок дочернего уровня рвётся на границе родителя (у «Разработчика» из разных
- * отделов разные ключи), в отличие от merge по «голому» значению.
- */
+// Ключ пути от корня до уровня depth. Одинаковое значение под разными родителями
+// даёт разные ключи, поэтому блок дочернего уровня рвётся на границе родителя.
 export function createGroupPathValue<RowType extends ObjectForExtending>(
   groupByArr: readonly string[],
   depth: number,
@@ -56,10 +46,7 @@ export function createGroupPathValue<RowType extends ObjectForExtending>(
   };
 }
 
-/**
- * Номер группы ВЕРХНЕГО уровня для нумерации строк: порядковый номер первого
- * вхождения значения в видимом списке. Кэш по идентичности массива строк.
- */
+// Номер группы верхнего уровня для нумерации строк (по порядку первого вхождения).
 export function createTopGroupOrdinalGetter<RowType extends ObjectForExtending>(
   topKey: string,
   rowsRef: { readonly current: readonly RowType[] },
@@ -93,15 +80,8 @@ type SelectingLike<
   rowKeyGetter: (row: RowType) => K;
 };
 
-/**
- * Групповой чекбокс merged-вида: чекбокс-колонка слита по верхнему уровню, а
- * ось selecting тогглит одну строку (origin). Обёртка сеттера расширяет ЛЮБУЮ
- * дельту выделения до границ группы: тогглнулась строка группы — тогглится вся
- * группа. Заодно делает групповыми «выделить всё» и «Сбросить».
- *
- * Дженерик ключа строки (RowIdType) внутри сужен до string | number — форма
- * state/rowKeyGetter совпадает, поэтому кастуем локально и возвращаем S как есть.
- */
+// Групповой чекбокс: оборачивает сеттер выделения так, что тоггл одной строки
+// группы тогглит всю группу. Работает и для «выделить всё» / «сбросить».
 export function wrapMergedGroupSelecting<S>(
   selecting: S,
   topKey: string,
