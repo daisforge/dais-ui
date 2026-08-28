@@ -70,23 +70,26 @@ export const AnalyticalWidgetHeader = ({
           </StyledHeaderActions>
         )}
       </StyledTitleContainer>
-      {subtitle && (
-        <StyledSubTitleWithTooltip
-          variant="BodyXS"
-          tooltipText={subtitle}
-          style={{
-            color: textSecondary,
-            wordBreak: 'normal',
-          }}
-          tooltipProps={{
-            placement: 'top',
-            ...subtitleTooltipProps,
-          }}
-          lines={1}
-        >
-          {subtitle}
-        </StyledSubTitleWithTooltip>
-      )}
+      {subtitle &&
+        (typeof subtitle === 'string' ? (
+          <StyledSubTitleWithTooltip
+            variant="BodyXS"
+            tooltipText={subtitle}
+            style={{
+              color: textSecondary,
+              wordBreak: 'normal',
+            }}
+            tooltipProps={{
+              placement: 'top',
+              ...subtitleTooltipProps,
+            }}
+            lines={1}
+          >
+            {subtitle}
+          </StyledSubTitleWithTooltip>
+        ) : (
+          subtitle
+        ))}
     </StyledLeftSlot>
     {rightSlot && <StyledRightSlot>{rightSlot}</StyledRightSlot>}
   </StyledHeader>

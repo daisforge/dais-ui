@@ -1,1 +1,5 @@
-export type ActiveTheme = 'light' | 'dark' | 'highContrastLight';
+export type ActiveTheme =
+  | 'light'
+  | 'dark'
+  | 'highContrastLight'
+  | 'betaCoreLight';

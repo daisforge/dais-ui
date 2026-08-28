@@ -18,4 +18,6 @@ export {
   shadowUpHardS,
   shadowUpHardM,
   shadowUpHardL,
+  shadowGradientLight,
+  shadowGradientDark,
 } from '@salutejs/sdds-themes/tokens/sdds_finai';

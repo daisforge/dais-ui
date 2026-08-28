@@ -9,8 +9,10 @@ import {
 
 export const getGradientColor = (variant: BlockGradientScrollVariant) => {
   const activeTheme = getActiveTheme();
+  // betaCoreLight в карте градиента нет — деградируем до light
+  const theme = activeTheme === 'betaCoreLight' ? 'light' : activeTheme;
 
-  return BlockGradientScrollColorMap[activeTheme][variant];
+  return BlockGradientScrollColorMap[theme][variant];
 };
 
 export const getResolvedPadding = (
