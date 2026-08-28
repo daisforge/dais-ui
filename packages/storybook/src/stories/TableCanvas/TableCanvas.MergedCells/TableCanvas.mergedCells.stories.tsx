@@ -1,4 +1,4 @@
-/* eslint-disable no-underscore-dangle */
+/* eslint-disable no-underscore-dangle, react-hooks/rules-of-hooks, no-restricted-syntax, no-plusplus, jsx-a11y/label-has-associated-control */
 import type { Meta, StoryObj } from '@storybook/react';
 import {
   Canvas,
@@ -12,8 +12,7 @@ import {
 import { type CSSProperties, useMemo, useRef, useState } from 'react';
 
 const meta: Meta = {
-  title:
-    'Локальные компоненты/TableCanvas/Copy-Paste-Fill/Объединение ячеек/Базовые',
+  title: 'Локальные компоненты/TableCanvas/MergedCells/Базовые',
   tags: ['!autodocs'],
 };
 
