@@ -1,4 +1,8 @@
-export type ActiveThemeGlobal = 'light' | 'dark' | 'highContrastLight';
+export type ActiveThemeGlobal =
+  | 'light'
+  | 'dark'
+  | 'highContrastLight'
+  | 'betaCoreLight';
 
 /**
  * Получение активной темы
@@ -9,5 +13,6 @@ export const getActiveTheme = (): ActiveThemeGlobal => {
 
   if (theme === 'dark') return 'dark';
   if (theme === 'highContrastLight') return 'highContrastLight';
+  if (theme === 'betaCoreLight') return 'betaCoreLight';
   return 'light';
 };
