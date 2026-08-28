@@ -92,8 +92,16 @@ const TOKENS = [
     dirName: 'gradient',
     dir: join(dirname, ...tokensPath, 'gradient'),
     tokenNames: Object.entries(tokens.default)
+      // Исключаем shadow/border/spacing: их значения тоже могут содержать
+      // подстроку `-gradient` (напр. тень `--shadow-gradient-*`), из-за чего
+      // токен попадал бы сразу в две корзины и давал дубль ре-экспорта.
       .filter(
-        ([_, value]) => typeof value === 'string' && value.includes('-gradient')
+        ([_, value]) =>
+          typeof value === 'string' &&
+          value.includes('-gradient') &&
+          !value.includes('--shadow') &&
+          !value.includes('--border') &&
+          !value.includes('--spacing')
       )
       .map((el) => el[0])
       .join(JOIN_STR),

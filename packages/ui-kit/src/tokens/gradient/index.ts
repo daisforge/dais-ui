@@ -134,6 +134,4 @@ export {
   inverseDataInfoGradient,
   inverseDataInfoGradientHover,
   inverseDataInfoGradientActive,
-  shadowGradientLight,
-  shadowGradientDark,
 } from '@salutejs/sdds-themes/tokens/sdds_finai';
