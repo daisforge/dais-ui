@@ -2,9 +2,13 @@ import {
   CompactSelection,
   type GridSelection,
 } from '@glideappsfinal/glide-data-grid';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import type { GlideProps, CellsSelectionMode } from '../../types';
+import type {
+  GlideProps,
+  CellsSelectionMode,
+  ProjectionResetSignal,
+} from '../../types';
 
 const EMPTY_SELECTION: GridSelection = {
   columns: CompactSelection.empty(),
@@ -24,6 +28,8 @@ interface UseNativeGridSelectionParams {
    * (включая own-state колонок/строк, которые в gridSelection не пишутся).
    */
   onSelectionEmit?: (selection: GridSelection) => void;
+  /** Сброс при смене проекции данных (только uncontrolled-режим). */
+  projectionResetSignal?: ProjectionResetSignal;
 }
 
 export function useNativeGridSelection({
@@ -31,12 +37,24 @@ export function useNativeGridSelection({
   gridSelection: gridSelectionExternal,
   onGridSelectionChange: onGridSelectionChangeExternal,
   onSelectionEmit,
+  projectionResetSignal,
 }: UseNativeGridSelectionParams) {
   const [gridSelectionInternal, setGridSelectionInternal] =
     useState<GridSelection>(EMPTY_SELECTION);
 
   const isControlled = gridSelectionExternal !== undefined;
   const selection = gridSelectionExternal ?? gridSelectionInternal;
+
+  // Проекция данных изменилась: применяем nextSelection (по умолчанию пустое).
+  // В controlled-режиме сброс уже сделан сеттером потребителя выше по дереву.
+  useEffect(() => {
+    if (projectionResetSignal === undefined || isControlled) return;
+    const next = projectionResetSignal.nextSelection ?? EMPTY_SELECTION;
+    setGridSelectionInternal(next);
+    onSelectionEmit?.(next);
+    // Реагируем только на новый сигнал, не на смену режима/колбэка.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [projectionResetSignal]);
 
   // Храним glide selection как источник истины нативного выделения. В controlled-
   // режиме значение владеется снаружи (onGridSelectionChange — сеттер), иначе —

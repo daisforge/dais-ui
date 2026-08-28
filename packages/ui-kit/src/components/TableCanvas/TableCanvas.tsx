@@ -32,17 +32,18 @@ import { RowInstrumentsCtxProvider } from './feature-row-instruments';
 import type { AllRowsMapEntry } from './feature-row-markers/types';
 import { getDefuaultRowSize } from './feature-row-size';
 import { useGroupedRows } from './feature-rows-grouping';
-import {
-  flattenSubRowsToMergedLeaves,
-  isMergedSubRowsView,
-} from './feature-tree/mergedSubRows';
 import { SelectingContextProvider } from './feature-select-row/selecting-contexts';
 import { useCheckboxRowIndexes } from './feature-select-row/useCheckboxRowIndexes';
 import { useSelectRow } from './feature-select-row/useSelectRow';
 import { useSortedRows } from './feature-sorting';
 import { useTableTabsContext } from './feature-tabs';
+import {
+  flattenSubRowsToMergedLeaves,
+  isMergedSubRowsView,
+} from './feature-tree/mergedSubRows';
 import { SIZE, tableClassNames } from './styles';
 import {
+  resolveDataRevision,
   useColumns,
   useContextMenuValues,
   useContextsValues,
@@ -56,6 +57,7 @@ import {
   useRowInstruments,
   useRowsWithSkeletonsOrNot,
   useSearchValues,
+  useSelectionProjectionReset,
   useSidebarState,
   useTableCollapseValues,
 } from './table-hooks';
@@ -174,7 +176,11 @@ export function TableCanvas<
   const selectingRows = useMemo(() => {
     const sr = tableConfig?.subRows;
     if (isMergedSubRowsView(sr) && sr?.getSubRows && sr?.mergedColumns) {
-      return flattenSubRowsToMergedLeaves(rows, sr.getSubRows, sr.mergedColumns);
+      return flattenSubRowsToMergedLeaves(
+        rows,
+        sr.getSubRows,
+        sr.mergedColumns,
+      );
     }
     return rows;
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -410,6 +416,20 @@ export function TableCanvas<
   // Обновляем ref — renderCell в row-marker-column прочитает актуальные данные
   flattenedRowsRef.current = flattenedRows;
   allRowsMapRef.current = allRowsMap;
+
+  // Сброс нативного выделения при смене проекции данных: критерии (сортировка,
+  // фильтры, поиск, группировка) плюс версия данных (dataRevision потребителя,
+  // иначе сам массив rows). Пагинация и рефетч приходят именно через версию.
+  const { projectionResetSignal } = useSelectionProjectionReset({
+    projectionParts: [
+      sortColumns,
+      filters,
+      searchQuery,
+      groupedCols,
+      resolveDataRevision(tableConfig.cellsSelection?.dataRevision, rows),
+    ],
+    controlledSetter: tableConfig.cellsSelection?.state?.[1],
+  });
 
   // ------------------------------------------------ changing rows ------------------------------------------------
   const { onRowsChangeLastVersion } = useOnRowsChange({
@@ -937,6 +957,9 @@ export function TableCanvas<
                             // Канал для copy/paste (selectionRef) — отдельно от
                             // controlled gridSelection.
                             onSelectionEmit: combinedOnGridSelectionChange,
+
+                            // Сброс выделения при смене проекции данных.
+                            projectionResetSignal,
 
                             // Ключи выделенных колонок наверх → контрл-блок
                             // (нативный экшен «Закрепить столбцы»).

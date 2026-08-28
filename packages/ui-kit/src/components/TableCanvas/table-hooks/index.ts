@@ -14,5 +14,9 @@ export { useRowHeight } from './useRowHeight';
 export { useRowInstruments } from './useRowInstruments';
 export { useRowsWithSkeletonsOrNot } from './useRowsWithSkeletonsOrNot';
 export { useSearchValues } from './useSearchValues';
+export {
+  resolveDataRevision,
+  useSelectionProjectionReset,
+} from './useSelectionProjectionReset';
 export { useSidebarState } from './useSidebarValues';
 export { useTableCollapseValues } from './useTableCollapseValues';
