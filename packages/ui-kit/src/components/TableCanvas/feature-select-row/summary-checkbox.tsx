@@ -209,9 +209,7 @@ HeaderCellInfoGlideInstance<any, unknown>): CanvasEl => {
       summaryChecked.onChange({
         ...getSummaryCheckedFuncDefaultProps(),
         checkedAll,
-        setSelectedRowsIds:
-          setSelectedRows ??
-          ((() => {}) as NonNullable<typeof setSelectedRows>),
+        setSelectedRowsIds: setSelectedRows ?? (() => {}),
       });
       return;
     }
@@ -488,9 +486,7 @@ export const SummaryCheckbox = ({
       summaryChecked.onChange({
         ...getSummaryCheckedFuncDefaultProps(),
         checkedAll,
-        setSelectedRowsIds:
-          setSelectedRows ??
-          ((() => {}) as NonNullable<typeof setSelectedRows>),
+        setSelectedRowsIds: setSelectedRows ?? (() => {}),
         ...onChangeProps,
       });
       return;
