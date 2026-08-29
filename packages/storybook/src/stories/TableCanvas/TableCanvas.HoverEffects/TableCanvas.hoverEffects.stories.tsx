@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { createRows, type Row as TableRow } from '@df-storybook/data/tableData';
 import DocStoryTemplate from '@df-storybook/templates/DocStoryTemplate.mdx';
+import { StoryHint } from '@df-storybook/utils/StoryHint';
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Select } from '@ui-kit/components/Select';
@@ -163,13 +164,13 @@ export const HoverEffectsPlayground: Story = {
           </div>
         </div>
 
-        <p style={{ fontSize: 13, color: '#888', marginBottom: 8 }}>
+        <StoryHint>
           Водите мышью по строкам — data-ячейки подсвечиваются серым, служебные
           колонки (нумерация/чекбокс) — голубым, как при селектинге.
           Checkbox-строки (3 и 5) под курсором темнеют целиком. Клик по строке
           (активная строка / выделение) рисуется <b>поверх</b> hover-подсветки и
           перекрывает её; после сброса выделения hover снова виден.
-        </p>
+        </StoryHint>
 
         <TableCanvas
           key={[hoverOption, highlightActiveType, selectionMode].join('-')}

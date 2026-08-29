@@ -1,9 +1,8 @@
+/* eslint-disable react-hooks/rules-of-hooks, no-restricted-syntax, react/no-unescaped-entities */
+import { StoryHint } from '@df-storybook/utils/StoryHint';
 import type { Meta, StoryObj } from '@storybook/react';
-import {
-  type ColumnConfig,
-  TableCanvas,
-} from '@ui-kit/components/TableCanvas';
-import { type CSSProperties, useMemo } from 'react';
+import { type ColumnConfig, TableCanvas } from '@ui-kit/components/TableCanvas';
+import { useMemo } from 'react';
 
 /**
  * ИССЛЕДОВАНИЕ: объединение ячеек на основе ДЕРЕВА от бэка (subRows), а не
@@ -27,12 +26,6 @@ const meta: Meta = {
 export default meta;
 
 type Story = StoryObj;
-
-const hintStyle: CSSProperties = {
-  fontSize: 13,
-  color: '#888',
-  marginBottom: 8,
-};
 
 // Разделитель пути: управляющий символ, чтобы имена не могли случайно столкнуться.
 const SEP = String.fromCharCode(1);
@@ -230,13 +223,13 @@ export const SubRowsMergedStaircase: Story = {
 
     return (
       <div>
-        <p style={hintStyle}>
+        <StoryHint>
           Все узлы дерева — строки (pre-order). Колонки-уровни слиты по ключу
           пути, поэтому внутренний узел (категория/подкатегория) становится
           origin-строкой блока своего уровня → «лесенка». Внутренние узлы несут
           субтотал в «Сумме». Полезно, когда у узлов есть собственные данные
           (итоги), которые надо показать отдельной строкой.
-        </p>
+        </StoryHint>
         <TableCanvas
           tableConfig={{
             containerStyle: { height: '60vh' },
@@ -289,11 +282,11 @@ export const SubRowsAsTree: Story = {
 
     return (
       <div>
-        <p style={hintStyle}>
+        <StoryHint>
           Дерево от бэка через <code>subRows.getSubRows</code>. Каждый узел —
           строка; вложенность отступом, раскрытие шевроном. Внутренние узлы
           (категории) видимы как строки. Это baseline «оставляем узлы строками».
-        </p>
+        </StoryHint>
         <TableCanvas
           tableConfig={{
             containerStyle: { height: '60vh' },
@@ -334,12 +327,13 @@ export const SubRowsAsMerged: Story = {
 
     return (
       <div>
-        <p style={hintStyle}>
+        <StoryHint>
           То же дерево, но плоско: строки = листья (товары), а колонки-предки
           подняты в объединённые ячейки. Merge идёт по КЛЮЧУ ПУТИ (
           <code>catPath / subPath / grpPath</code>), поэтому одинаковые имена в
-          разных ветках не сливаются. Это кандидат на <code>view: 'merged'</code>.
-        </p>
+          разных ветках не сливаются. Это кандидат на{' '}
+          <code>view: 'merged'</code>.
+        </StoryHint>
         <TableCanvas
           tableConfig={{
             containerStyle: { height: '60vh' },

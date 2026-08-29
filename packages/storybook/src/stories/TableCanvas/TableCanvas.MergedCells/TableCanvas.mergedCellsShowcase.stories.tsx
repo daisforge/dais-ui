@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks, @typescript-eslint/no-use-before-define */
 /* eslint-disable react-hooks/rules-of-hooks */
 import { createSeededRandom } from '@df-storybook/data/tableData';
+import { StoryHint } from '@df-storybook/utils/StoryHint';
 import type { Meta, StoryObj } from '@storybook/react';
 import {
   type ColumnConfig,
@@ -535,14 +536,6 @@ const HowDataFlows = ({
   return <pre style={codeStyle}>{code}</pre>;
 };
 
-const hintStyle: CSSProperties = {
-  fontSize: 13,
-  color: '#888',
-  marginBottom: 8,
-  maxWidth: 960,
-  lineHeight: 1.5,
-};
-
 const codeStyle: CSSProperties = {
   fontSize: 12,
   lineHeight: 1.45,
@@ -700,7 +693,7 @@ export const Showcase: Story = {
 
     return (
       <div>
-        <p style={hintStyle}>
+        <StoryHint>
           Потребитель отдаёт листья (по строке на сотрудника, всего ~
           {flow.total}) и объединяет колонки-предки (Дивизион / Управление /
           Команда) по ключу пути. Над мерами — 3-уровневая шапка (Результаты →
@@ -711,7 +704,7 @@ export const Showcase: Story = {
           потребителя (manual). Чекбоксы, размер строки, скрытие/порядок колонок
           и fullscreen — в панели управления справа. Редактируемы меры и
           объединённая «Команда» (правка объединённой ячейки меняет весь блок).
-        </p>
+        </StoryHint>
         <HowDataFlows pageRows={pageRows} flow={flow} />
         <TableCanvas
           tableConfig={{
@@ -869,7 +862,7 @@ export const SubRowsMerged: Story = {
 
     return (
       <div>
-        <p style={hintStyle}>
+        <StoryHint>
           Те же данные и колонки, но потребитель отдаёт ДЕРЕВО через{' '}
           <code>subRows.getSubRows</code> с флагом{' '}
           <code>view: &apos;merged&apos;</code>. Структура явная, поэтому
@@ -878,7 +871,7 @@ export const SubRowsMerged: Story = {
           (дивизионам): консьюмер владеет данными, поэтому это работает (в
           отличие от rowsGrouping). Поиск/сортировка/фильтр для структурного
           вида — отдельный шаг (TODO).
-        </p>
+        </StoryHint>
         <TableCanvas
           tableConfig={{
             ...commonConfig,
@@ -937,7 +930,7 @@ export const GroupingMerged: Story = {
 
     return (
       <div>
-        <p style={hintStyle}>
+        <StoryHint>
           Те же данные и колонки, но группирует САМА таблица:{' '}
           <code>rowsGrouping.view: &apos;merged&apos;</code> +{' '}
           <code>
@@ -948,7 +941,7 @@ export const GroupingMerged: Story = {
           один на дивизион. Пагинации здесь НЕТ by design: группировке нужно
           видеть все строки, чтобы группировать (в отличие от плоского X и
           subRows).
-        </p>
+        </StoryHint>
         <TableCanvas
           tableConfig={{
             ...commonConfig,

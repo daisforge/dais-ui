@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { createRows, type Row } from '@df-storybook/data/tableData';
 import DocStoryTemplate from '@df-storybook/templates/DocStoryTemplate.mdx';
+import { StoryHint } from '@df-storybook/utils/StoryHint';
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Button } from '@ui-kit/components/Button';
@@ -110,7 +111,7 @@ export const SelectionModes: Story = {
           />
         </div>
 
-        <p style={{ fontSize: 13, color: '#888', marginBottom: 8 }}>
+        <StoryHint>
           <b>range-cell</b> — тянем мышкой диапазон ячеек.{' '}
           <b>multi-range-cell</b> — то же + Ctrl/Cmd копит несколько диапазонов.{' '}
           <b>cell</b> — одиночная ячейка. <b>disabled</b> — выделение ячеек
@@ -119,7 +120,7 @@ export const SelectionModes: Story = {
           Клик/драг по колонке нумерации → выделение строки (Ctrl — группа).
           Клик по шапке → выделение колонки (Shift — диапазон, Ctrl — несмежно).
           Copy/Paste (Ctrl+C/V) работают по выделению.
-        </p>
+        </StoryHint>
 
         <TableCanvas
           tableConfig={{
@@ -188,7 +189,7 @@ export const Controlled: Story = {
           </Button>
         </div>
 
-        <p style={{ fontSize: 13, color: '#888', marginBottom: 8 }}>
+        <StoryHint>
           Выделение — <b>controlled</b> через{' '}
           <code>tableConfig.cellsSelection.state</code> ([value, setter]).
           Кнопки задают/сбрасывают внешний стейт, таблица реагирует.
@@ -196,7 +197,7 @@ export const Controlled: Story = {
           колонки); несмежный Ctrl-выбор — внутренний.
           <br />
           Текущее выделение: <b>{summary}</b>.
-        </p>
+        </StoryHint>
 
         <TableCanvas
           tableConfig={{
@@ -231,7 +232,7 @@ export const MultiRangeSelect: Story = {
 
     return (
       <div>
-        <p style={{ fontSize: 13, color: '#888', marginBottom: 8 }}>
+        <StoryHint>
           <b>multi-range-cell</b>: тяни мышкой диапазон, затем <b>Ctrl/Cmd</b> +
           клик/драг — докидывай ещё диапазоны. У всех выделенных — заливка и
           рамка.
@@ -244,7 +245,7 @@ export const MultiRangeSelect: Story = {
           <br />
           <b>Paste</b> со схлопыванием промежутков — в режиме редактирования,
           см. <b>Copy-Paste-Fill</b>.
-        </p>
+        </StoryHint>
 
         {lastNotification && (
           <p
@@ -310,11 +311,11 @@ export const EnableToggles: Story = {
           />
         </div>
 
-        <p style={{ fontSize: 13, color: '#888', marginBottom: 8 }}>
+        <StoryHint>
           Сними галочку — клик по шапке (колонки) или по колонке нумерации
           (строки) перестанет выделять. Выделение ячеек мышью при этом
           продолжает работать.
-        </p>
+        </StoryHint>
 
         <TableCanvas
           tableConfig={{
