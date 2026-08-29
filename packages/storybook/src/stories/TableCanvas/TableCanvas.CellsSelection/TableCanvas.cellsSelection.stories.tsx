@@ -223,6 +223,11 @@ export const MultiRangeSelect: Story = {
   render: () => {
     const [rows] = useState(createRows);
     const columnConfig = useMemo(() => COLUMN_CONFIG, []);
+    // Таблица сама тосты не рисует: ошибки copy/paste приходят в notifications,
+    // показ — на стороне потребителя. Здесь показываем последнее событие плашкой.
+    const [lastNotification, setLastNotification] = useState<string | null>(
+      null,
+    );
 
     return (
       <div>
@@ -233,18 +238,40 @@ export const MultiRangeSelect: Story = {
           <br />
           <b>Copy (Ctrl+C):</b> работает, если разрозненный выбор в пределах{' '}
           <b>одной колонки</b> или <b>одной строки</b> — промежутки схлопываются
-          (значения копируются подряд). Разброс сразу по строкам и колонкам не
-          копируется.
+          (значения копируются подряд), либо если куски складываются в сплошной
+          прямоугольник. Разброс сразу по строкам и колонкам не копируется — в{' '}
+          <b>notifications</b> уходит ошибка (плашка ниже).
           <br />
           <b>Paste</b> со схлопыванием промежутков — в режиме редактирования,
           см. <b>Copy-Paste-Fill</b>.
         </p>
+
+        {lastNotification && (
+          <p
+            style={{
+              fontSize: 13,
+              marginBottom: 8,
+              padding: '6px 10px',
+              borderRadius: 6,
+              background: '#fdecec',
+              color: '#a33',
+            }}
+          >
+            notifications: {lastNotification}
+          </p>
+        )}
 
         <TableCanvas
           tableConfig={{
             containerStyle: { height: '600px' },
             cellsSelection: { mode: 'multi-range-cell' },
             rowMarkers: { startIndex: 1 },
+            notifications: {
+              onNotification: (event) =>
+                setLastNotification(
+                  `[${event.type}/${event.level}] ${event.message} (${event.code})`,
+                ),
+            },
           }}
           columnConfig={columnConfig}
           rows={rows}
