@@ -101,7 +101,7 @@ export function useSelectionProjectionReset<R extends ObjectForExtending>({
   flattenedRowsRef?: { readonly current: readonly R[] };
   renderColKeysRef?: { readonly current: readonly string[] };
   /** Колонки в render-порядке (для нормализации к углу слитого блока). */
-  columns?: readonly unknown[];
+  columns?: readonly TransferColumnConfig[];
   scrollTo?: (col: number, row: number) => void;
 }): {
   projectionResetSignal: ProjectionResetSignal | undefined;
@@ -158,8 +158,7 @@ export function useSelectionProjectionReset<R extends ObjectForExtending>({
             saved,
             rows: flattenedRowsRef.current,
             renderColKeys: renderColKeysRef.current,
-            columns: (columnsRef.current ??
-              []) as readonly TransferColumnConfig[],
+            columns: columnsRef.current ?? [],
             rowKeyGetter: getKey,
           })
         : null;

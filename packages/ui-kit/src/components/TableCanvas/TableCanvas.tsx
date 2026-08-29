@@ -418,10 +418,8 @@ export function TableCanvas<
   flattenedRowsRef.current = flattenedRows;
   allRowsMapRef.current = allRowsMap;
 
-  // Сброс нативного выделения при смене проекции данных: критерии (сортировка,
-  // фильтры, поиск, группировка) плюс версия данных (dataRevision потребителя,
-  // иначе сам массив rows). Пагинация и рефетч приходят именно через версию.
-  // Активная ячейка при возможности сохраняется по ключу строки и доскролливается.
+  // Сброс выделения при смене проекции данных; активная ячейка при возможности
+  // сохраняется по ключу строки и доскролливается.
   const { projectionResetSignal, captureActiveCell } =
     useSelectionProjectionReset({
       projectionParts: [
@@ -439,7 +437,9 @@ export function TableCanvas<
         tableConfig.mergeCells?.rowKeyGetter,
       flattenedRowsRef,
       renderColKeysRef,
-      columns,
+      columns: columns as unknown as Parameters<
+        typeof useSelectionProjectionReset
+      >[0]['columns'],
       scrollTo: (col, row) => refTableX.current?.scrollTo(col, row),
     });
 
