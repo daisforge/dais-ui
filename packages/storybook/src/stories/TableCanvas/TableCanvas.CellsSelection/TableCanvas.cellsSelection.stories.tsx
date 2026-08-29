@@ -86,11 +86,6 @@ const COLUMN_CONFIG: readonly ColumnConfig<Row>[] = [
 
 `;
 
-/**
- * cellsSelection.mode — режим фактического (нативного) выделения ячеек.
- * cell / range-cell (по умолчанию) / disabled. По нему работают copy/paste,
- * рамка, fill-handle, затемнение шапки/нумерации.
- */
 export const SelectionModes: Story = {
   name: 'Режимы выделения (cellsSelection.mode)',
   ...storySourceDoc({ preCode, previewSource: 'shown' }),
@@ -141,10 +136,6 @@ export const SelectionModes: Story = {
   },
 };
 
-/**
- * Controlled-режим выделения: значение и сеттер живут снаружи (state-кортеж
- * tableConfig.cellsSelection.state). Можно программно задать/сбросить выделение.
- */
 export const Controlled: Story = {
   name: 'Контролируемое выделение извне (controlled)',
   ...storySourceDoc({ preCode, previewSource: 'shown' }),
@@ -213,11 +204,6 @@ export const Controlled: Story = {
   },
 };
 
-/**
- * multi-range-cell — как range-cell, но Ctrl/Cmd докидывает несколько
- * прямоугольных диапазонов. Copy — для разрозненного выбора в
- * пределах одной колонки или одной строки (промежутки схлопываются).
- */
 export const MultiRangeSelect: Story = {
   name: 'Мультивыбор диапазонов (multi-range-cell)',
   ...storySourceDoc({ preCode, previewSource: 'shown' }),
@@ -282,11 +268,6 @@ export const MultiRangeSelect: Story = {
   },
 };
 
-/**
- * enableColumnSelection / enableRowSelection — независимое включение/выключение
- * осей выделения колонок (по шапке) и строк (по нумерации). Выделение ячеек
- * (cellsSelection.mode) этими флагами не управляется.
- */
 export const EnableToggles: Story = {
   name: 'Включение/выключение колонок и строк',
   ...storySourceDoc({ preCode, previewSource: 'shown' }),
