@@ -293,6 +293,7 @@ export const TableOrCardsUI = <
                 getCellsForSelection={restDataGridProps.getCellsForSelection}
                 onGridSelectionChange={restDataGridProps.onGridSelectionChange}
                 onSelectionEmit={restDataGridProps.onSelectionEmit}
+                projectionResetSignal={restDataGridProps.projectionResetSignal}
                 onColumnSelectionChange={
                   restDataGridProps.onColumnSelectionChange
                 }

@@ -347,6 +347,12 @@ export type TableGlideCustomProps<
   /** Канал для copy/paste (selectionRef потребителя), отдельно от controlled gridSelection. */
   onSelectionEmit?: (selection: GridSelection) => void;
   /**
+   * Сигнал сброса выделения при смене проекции данных (сортировка/фильтр/пагинация).
+   * Новый token = применить nextSelection (по умолчанию пустое). Только для
+   * uncontrolled-режима: controlled сбрасывается сеттером потребителя выше.
+   */
+  projectionResetSignal?: ProjectionResetSignal;
+  /**
    * Ключи выделенных КОЛОНОК (объединение: одиночный клик/Shift/select-all +
    * Ctrl-мультивыбор), без сервисных колонок. Канал наверх для контрл-блока
    * (например «Закрепить столбцы»). Обычное выделение ячеек сюда не попадает.
@@ -395,6 +401,12 @@ export type TableGlideCustomProps<
   /** Включает компенсацию тонких canvas-линий при browser zoom ниже 100% / DPR < 1. */
   enableLowDprHairline?: boolean;
 };
+
+/** Сигнал сброса нативного выделения при смене проекции данных. */
+export interface ProjectionResetSignal {
+  token: number;
+  nextSelection?: GridSelection;
+}
 
 export type TableGlideProps<R extends ObjectForExtending, SR> = Omit<
   GlideProps,

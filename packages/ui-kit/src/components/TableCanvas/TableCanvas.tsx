@@ -32,17 +32,18 @@ import { RowInstrumentsCtxProvider } from './feature-row-instruments';
 import type { AllRowsMapEntry } from './feature-row-markers/types';
 import { getDefuaultRowSize } from './feature-row-size';
 import { useGroupedRows } from './feature-rows-grouping';
-import {
-  flattenSubRowsToMergedLeaves,
-  isMergedSubRowsView,
-} from './feature-tree/mergedSubRows';
 import { SelectingContextProvider } from './feature-select-row/selecting-contexts';
 import { useCheckboxRowIndexes } from './feature-select-row/useCheckboxRowIndexes';
 import { useSelectRow } from './feature-select-row/useSelectRow';
 import { useSortedRows } from './feature-sorting';
 import { useTableTabsContext } from './feature-tabs';
+import {
+  flattenSubRowsToMergedLeaves,
+  isMergedSubRowsView,
+} from './feature-tree/mergedSubRows';
 import { SIZE, tableClassNames } from './styles';
 import {
+  resolveDataRevision,
   useColumns,
   useContextMenuValues,
   useContextsValues,
@@ -56,6 +57,7 @@ import {
   useRowInstruments,
   useRowsWithSkeletonsOrNot,
   useSearchValues,
+  useSelectionProjectionReset,
   useSidebarState,
   useTableCollapseValues,
 } from './table-hooks';
@@ -174,7 +176,11 @@ export function TableCanvas<
   const selectingRows = useMemo(() => {
     const sr = tableConfig?.subRows;
     if (isMergedSubRowsView(sr) && sr?.getSubRows && sr?.mergedColumns) {
-      return flattenSubRowsToMergedLeaves(rows, sr.getSubRows, sr.mergedColumns);
+      return flattenSubRowsToMergedLeaves(
+        rows,
+        sr.getSubRows,
+        sr.mergedColumns,
+      );
     }
     return rows;
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -253,6 +259,7 @@ export function TableCanvas<
     getDefaultColumnsOrder,
     setColumnsOrder,
     onColumnsReorder,
+    renderColKeysRef,
   } = useColumns({
     tableConfig,
     columnConfig,
@@ -411,6 +418,31 @@ export function TableCanvas<
   flattenedRowsRef.current = flattenedRows;
   allRowsMapRef.current = allRowsMap;
 
+  // Сброс выделения при смене проекции данных; активная ячейка при возможности
+  // сохраняется по ключу строки и доскролливается.
+  const { projectionResetSignal, captureActiveCell } =
+    useSelectionProjectionReset({
+      projectionParts: [
+        sortColumns,
+        filters,
+        searchQuery,
+        groupedCols,
+        resolveDataRevision(tableConfig.cellsSelection?.dataRevision, rows),
+      ],
+      controlledSetter: tableConfig.cellsSelection?.state?.[1],
+      rowKeyGetter:
+        tableConfig.cellsSelection?.rowKeyGetter ??
+        tableConfig.selecting?.rowKeyGetter ??
+        tableConfig.subRows?.rowKeyGetter ??
+        tableConfig.mergeCells?.rowKeyGetter,
+      flattenedRowsRef,
+      renderColKeysRef,
+      columns: columns as unknown as Parameters<
+        typeof useSelectionProjectionReset
+      >[0]['columns'],
+      scrollTo: (col, row) => refTableX.current?.scrollTo(col, row),
+    });
+
   // ------------------------------------------------ changing rows ------------------------------------------------
   const { onRowsChangeLastVersion } = useOnRowsChange({
     tableConfig,
@@ -453,13 +485,19 @@ export function TableCanvas<
     onNotification: tableConfig.notifications?.onNotification,
   });
 
-  // Объединяем onGridSelectionChange от cellTransfer и fill handle
+  // Объединяем onGridSelectionChange от cellTransfer, fill handle и запоминание
+  // активной ячейки (восстановление после смены проекции данных).
   const combinedOnGridSelectionChange = useCallback(
     (selection: Parameters<typeof cellTransferOnSelectionChange>[0]) => {
       cellTransferOnSelectionChange(selection);
       onSelectionChangeForFill(selection);
+      captureActiveCell(selection);
     },
-    [cellTransferOnSelectionChange, onSelectionChangeForFill],
+    [
+      cellTransferOnSelectionChange,
+      onSelectionChangeForFill,
+      captureActiveCell,
+    ],
   );
 
   // ------------------------------------------------  data-grid props ------------------------------------------------
@@ -937,6 +975,9 @@ export function TableCanvas<
                             // Канал для copy/paste (selectionRef) — отдельно от
                             // controlled gridSelection.
                             onSelectionEmit: combinedOnGridSelectionChange,
+
+                            // Сброс выделения при смене проекции данных.
+                            projectionResetSignal,
 
                             // Ключи выделенных колонок наверх → контрл-блок
                             // (нативный экшен «Закрепить столбцы»).

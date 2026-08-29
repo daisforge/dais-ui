@@ -631,5 +631,7 @@ export const useColumns = <
     getDefaultColumnsOrder,
     setColumnsOrder,
     onColumnsReorder,
+    /** Актуальный render-порядок ключей колонок (reorder/pin/hide-safe). */
+    renderColKeysRef,
   };
 };

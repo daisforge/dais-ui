@@ -160,6 +160,8 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   onGridSelectionChange: onGridSelectionChangeExternal,
   // Канал для copy/paste (selectionRef потребителя) — отдельно от controlled.
   onSelectionEmit,
+  // Сброс выделения при смене проекции данных (uncontrolled-режим).
+  projectionResetSignal,
   // Канал наверх: индексы выделенных колонок (объединённые) для контрл-блока.
   onColumnSelectionChange,
   // Follow: после реордера (закрепление) заново выделить эти ключи.
@@ -303,6 +305,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     gridSelection: gridSelectionExternal,
     onGridSelectionChange: onGridSelectionChangeExternal,
     onSelectionEmit,
+    projectionResetSignal,
   });
 
   const selectionVisualState = useSelectionGeometry({
