@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks, no-restricted-syntax, react/no-unescaped-entities */
 import { StoryHint } from '@df-storybook/utils/StoryHint';
+import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
 import type { Meta, StoryObj } from '@storybook/react';
 import {
   Canvas,
@@ -24,6 +25,10 @@ const meta: Meta = {
 };
 
 export default meta;
+
+const preCode = `
+import { type ColumnConfig, type MergedCellsRegion, TableCanvas } from '@daisforge/ui/components/TableCanvas';
+`;
 
 type Story = StoryObj;
 
@@ -117,6 +122,7 @@ const buildNestedRows = (): ERow[] => {
 // блок на это не влияет. Поиск/сортировка пересобирают блоки сами.
 export const SearchAndCheckboxes: Story = {
   name: 'Поиск + чекбоксы строк + массовые действия',
+  ...storySourceDoc({ preCode, previewSource: 'shown' }),
   render: () => {
     const rows = useMemo(() => buildRows(3), []);
     const selectingState = useState(
@@ -182,6 +188,7 @@ export const SearchAndCheckboxes: Story = {
 // значением сливаются в один блок; сворачивание пересобирает блоки.
 export const TreeSubRowsMerge: Story = {
   name: 'Дерево (subRows) + объединение по значению',
+  ...storySourceDoc({ preCode, previewSource: 'shown' }),
   render: () => {
     type TRow = {
       id: string;
@@ -268,6 +275,7 @@ export const TreeSubRowsMerge: Story = {
 // Форматы покрытых колонок/строк на блок не влияют.
 export const FormatFromOrigin: Story = {
   name: 'contentFormat / кастомный рендер: всё из origin',
+  ...storySourceDoc({ preCode, previewSource: 'shown' }),
   render: () => {
     const rows = useMemo(() => buildRows(2), []);
     const [regions, setRegions] = useState<MergedCellsRegion[]>([
@@ -363,6 +371,7 @@ export const FormatFromOrigin: Story = {
 // две независимые фичи, работают одновременно.
 export const MergedHeadersAndBody: Story = {
   name: 'Слитые шапки + объединение тела',
+  ...storySourceDoc({ preCode, previewSource: 'shown' }),
   render: () => {
     const rows = useMemo(() => buildRows(2), []);
 
@@ -420,6 +429,7 @@ export const MergedHeadersAndBody: Story = {
 // по значению + controlled-регионы кнопками, клиентская пагинация.
 export const FullKitchenSink: Story = {
   name: 'Всеобъемлющий пример (все возможности + merge)',
+  ...storySourceDoc({ preCode, previewSource: 'shown' }),
   render: () => {
     // Полный набор в стейте: редактирование правит его через маппинг по id.
     const [allRows, setAllRows] = useState<ERow[]>(() => buildRows(6)); // 72 строки
@@ -739,6 +749,7 @@ export const FullKitchenSink: Story = {
 // групповой тоггл — доработка фичи, пока группу выделяет клик по блоку отдела).
 export const GroupedFlatView: Story = {
   name: 'Группировка как плоский вид (прототип)',
+  ...storySourceDoc({ preCode, previewSource: 'shown' }),
   render: () => {
     type GRow = {
       id: number;
@@ -909,6 +920,7 @@ export const GroupedFlatView: Story = {
 // ручной разметки регионов.
 export const RowsGroupingMerged: Story = {
   name: 'rowsGrouping view=merged (всё вместе)',
+  ...storySourceDoc({ preCode, previewSource: 'shown' }),
   render: () => {
     const [rows, setRows] = useState<ERow[]>(() => buildNestedRows()); // плоские строки
     const groupByState = useState<string[]>(['dept', 'role', 'plan', 'fact']);

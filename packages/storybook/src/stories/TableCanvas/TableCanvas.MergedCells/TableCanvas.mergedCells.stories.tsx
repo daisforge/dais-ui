@@ -1,5 +1,6 @@
 /* eslint-disable no-underscore-dangle, react-hooks/rules-of-hooks, no-restricted-syntax, no-plusplus, jsx-a11y/label-has-associated-control */
 import { StoryHint } from '@df-storybook/utils/StoryHint';
+import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
 import type { Meta, StoryObj } from '@storybook/react';
 import {
   Canvas,
@@ -18,6 +19,10 @@ const meta: Meta = {
 };
 
 export default meta;
+
+const preCode = `
+import { type ColumnConfig, type MergedCellsRegion, TableCanvas } from '@daisforge/ui/components/TableCanvas';
+`;
 
 type Story = StoryObj;
 
@@ -43,6 +48,7 @@ const HIGHLIGHT_ACTIVE_TYPE_OPTIONS: Array<{
 // чистый UI-фасад над повторяющимися значениями), period/plan/fact — свои у строки.
 export const RowSpanBasic: Story = {
   name: 'mergeByCellValues: базовый rowSpan (повторяющиеся данные)',
+  ...storySourceDoc({ preCode, previewSource: 'shown' }),
   render: () => {
     type MRow = {
       id: number;
@@ -200,6 +206,7 @@ export const RowSpanBasic: Story = {
 // Colspan: строки-заголовки секций, первая колонка спанит всю ширину.
 export const Colspan: Story = {
   name: 'mergedCellsRegions: заголовок секции на всю ширину',
+  ...storySourceDoc({ preCode, previewSource: 'shown' }),
   render: () => {
     type MRow = {
       id: number;
@@ -313,6 +320,7 @@ export const Colspan: Story = {
 // Прямоугольный блок cols×rows через controlled-список mergeCells.mergedCellsRegions.
 export const Rectangular: Story = {
   name: 'mergedCellsRegions: прямоугольный блок',
+  ...storySourceDoc({ preCode, previewSource: 'shown' }),
   render: () => {
     type MRow = { id: number; a: string; b: string; c: string; d: string };
     const initialRows: MRow[] = Array.from({ length: 10 }, (_, i) => ({
@@ -429,6 +437,7 @@ export const Rectangular: Story = {
 // колонках role/dept НЕТ rowSpan, всё делает mergeByCellValues. Данные не мутируются.
 export const DerivedGroupingSortFilter: Story = {
   name: 'mergeByCellValues: авто-объединение по значению + сортировка/фильтр',
+  ...storySourceDoc({ preCode, previewSource: 'shown' }),
   render: () => {
     type GRow = {
       id: number;
@@ -531,6 +540,7 @@ export const DerivedGroupingSortFilter: Story = {
 // Больше данных (6 регионов × 4 строки) — виден масштаб и вложенность region/team.
 export const SpanByWithEditing: Story = {
   name: 'mergeByCellValues + редактирование (правка перестраивает блоки)',
+  ...storySourceDoc({ preCode, previewSource: 'shown' }),
   render: () => {
     type ERow = { id: number; region: string; team: string; person: string };
     const REGIONS = ['Север', 'Юг', 'Запад', 'Восток', 'Центр', 'Урал'];
@@ -609,6 +619,7 @@ type CtlRegion = MergedCellsRegion;
 
 export const ControlledSpans: Story = {
   name: 'mergedCellsRegions: внешнее управление (кнопки)',
+  ...storySourceDoc({ preCode, previewSource: 'shown' }),
   render: () => {
     type CRow = {
       id: number;

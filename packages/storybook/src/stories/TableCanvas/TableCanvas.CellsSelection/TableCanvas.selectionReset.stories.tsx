@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { createRows, type Row } from '@df-storybook/data/tableData';
+import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Button } from '@ui-kit/components/Button';
 import {
@@ -16,6 +17,10 @@ const meta: Meta = {
 
 export default meta;
 
+const preCode = `
+import { type ColumnConfig, type SortColumn, TableCanvas } from '@daisforge/ui/components/TableCanvas';
+`;
+
 type Story = StoryObj;
 
 const COLUMNS: readonly ColumnConfig<Row>[] = [
@@ -29,17 +34,9 @@ const COLUMNS: readonly ColumnConfig<Row>[] = [
 const PAGE_SIZE = 25;
 const allRows = createRows(0, 100);
 
-/**
- * Демо поведенческой модели «сброс выделения при смене проекции данных».
- *
- * Рамка сбрасывается: сортировка (клик по шапке), смена страницы, «рефетч с новым
- * составом». Рамка живёт: «live-рефетч того же состава» (dataRevision не меняется),
- * скролл, клики вне ячеек. Активная ячейка при сортировке остаётся на своей записи
- * (rowKeyGetter) и таблица к ней доскролливает. Чекбоксы строк переживают всё.
- * Esc: первое нажатие сводит диапазон к активной ячейке, второе снимает её.
- */
 export const ProjectionResetDemo: Story = {
   name: 'Сброс при смене данных (демо)',
+  ...storySourceDoc({ preCode, previewSource: 'shown' }),
   render: () => {
     const [sortColumns, setSortColumns] = useState<readonly SortColumn[]>([]);
     const [page, setPage] = useState(0);
@@ -116,14 +113,9 @@ export const ProjectionResetDemo: Story = {
   },
 };
 
-/**
- * Диагностика «разрыва рамки» колоночными операциями. По поведенческой модели
- * скрытие и перестановка колонок рамку НЕ сбрасывают (меняется только ось
- * отображения, записи те же): рамка перерисовывается, допуская разрыв. Стори
- * позволяет оценить визуал: выделите диапазон и скрывайте/переставляйте колонки.
- */
 export const ColumnBreakDiagnostic: Story = {
   name: 'Диагностика: колонки при активном выделении',
+  ...storySourceDoc({ preCode, previewSource: 'shown' }),
   render: () => {
     const [hiddenKey, setHiddenKey] = useState<string | null>(null);
     const [swapped, setSwapped] = useState(false);

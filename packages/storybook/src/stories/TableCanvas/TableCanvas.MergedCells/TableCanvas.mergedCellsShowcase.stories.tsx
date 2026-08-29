@@ -2,6 +2,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { createSeededRandom } from '@df-storybook/data/tableData';
 import { StoryHint } from '@df-storybook/utils/StoryHint';
+import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
 import type { Meta, StoryObj } from '@storybook/react';
 import {
   type ColumnConfig,
@@ -51,6 +52,10 @@ const meta: Meta = {
 };
 
 export default meta;
+
+const preCode = `
+import { type ColumnConfig, TableCanvas } from '@daisforge/ui/components/TableCanvas';
+`;
 
 type Story = StoryObj;
 
@@ -666,6 +671,7 @@ const colAvgCheck: ColumnConfig<LeafRow> = {
 // resize + fullscreen + настройка колонок + поиск/сортировка/фильтр/пагинация.
 export const Showcase: Story = {
   name: 'Единый пример потребителя',
+  ...storySourceDoc({ preCode, previewSource: 'shown' }),
   render: () => {
     const { pageRows, shared, flow } = useShowcase();
 
@@ -848,6 +854,7 @@ const LEAF_COLUMNS: ColumnOrColumnGroupConfig<LeafRow>[] = [
 // Стори 2 — тот же пример через subRows view:'merged' (структуру задаёт дерево).
 export const SubRowsMerged: Story = {
   name: 'Через subRows view:merged',
+  ...storySourceDoc({ preCode, previewSource: 'shown' }),
   render: () => {
     const { selectedIds, setSelectedIds, commonConfig } = useBuiltinFeatures();
     const [tree, setTree] = useState<readonly ShowcaseNode[]>(TREE);
@@ -923,6 +930,7 @@ export const SubRowsMerged: Story = {
 // Стори 3 — тот же пример через rowsGrouping view:'merged' (группирует таблица).
 export const GroupingMerged: Story = {
   name: 'Через rowsGrouping view:merged',
+  ...storySourceDoc({ preCode, previewSource: 'shown' }),
   render: () => {
     const { selectedIds, setSelectedIds, commonConfig } = useBuiltinFeatures();
     const [rows, setRows] = useState<readonly LeafRow[]>(DATA);

@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks, no-restricted-syntax, react/no-unescaped-entities */
 import { StoryHint } from '@df-storybook/utils/StoryHint';
+import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
 import type { Meta, StoryObj } from '@storybook/react';
 import { type ColumnConfig, TableCanvas } from '@ui-kit/components/TableCanvas';
 import { useMemo } from 'react';
@@ -24,6 +25,10 @@ const meta: Meta = {
 };
 
 export default meta;
+
+const preCode = `
+import { type ColumnConfig, TableCanvas } from '@daisforge/ui/components/TableCanvas';
+`;
 
 type Story = StoryObj;
 
@@ -205,6 +210,7 @@ const flattenAllNodes = (
 // Подход Y — merged-лесенка: ВСЕ узлы строки, колонки-уровни слиты по пути.
 export const SubRowsMergedStaircase: Story = {
   name: 'Подход Y: merged-лесенка (узлы-строки)',
+  ...storySourceDoc({ preCode, previewSource: 'shown' }),
   render: () => {
     const rows = useMemo(() => flattenAllNodes(TREE), []);
 
@@ -254,6 +260,7 @@ export const SubRowsMergedStaircase: Story = {
 // Ссылка — нативное дерево subRows (кандидат на view: 'tree'): узлы-строки, шеврон.
 export const SubRowsAsTree: Story = {
   name: 'Ссылка: нативное дерево subRows (view tree)',
+  ...storySourceDoc({ preCode, previewSource: 'shown' }),
   render: () => {
     const columns = useMemo(
       (): readonly ColumnConfig<TreeNode>[] => [
@@ -309,6 +316,7 @@ export const SubRowsAsTree: Story = {
 // Подход X — merged-плоский: листья-строки, колонки-предки слиты по пути.
 export const SubRowsAsMerged: Story = {
   name: 'Подход X: merged-плоский (предки слиты)',
+  ...storySourceDoc({ preCode, previewSource: 'shown' }),
   render: () => {
     const rows = useMemo(() => flattenToLeaves(TREE), []);
 
