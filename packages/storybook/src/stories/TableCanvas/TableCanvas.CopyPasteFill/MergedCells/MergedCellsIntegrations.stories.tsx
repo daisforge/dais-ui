@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/rules-of-hooks, no-restricted-syntax, react/no-unescaped-entities */
+import { StoryHint } from '@df-storybook/utils/StoryHint';
 import type { Meta, StoryObj } from '@storybook/react';
 import {
   Canvas,
@@ -24,12 +26,6 @@ const meta: Meta = {
 export default meta;
 
 type Story = StoryObj;
-
-const hintStyle: CSSProperties = {
-  fontSize: 13,
-  color: '#888',
-  marginBottom: 8,
-};
 
 const btnStyle: CSSProperties = { padding: '4px 10px', cursor: 'pointer' };
 
@@ -138,7 +134,7 @@ export const SearchAndCheckboxes: Story = {
 
     return (
       <div>
-        <p style={hintStyle}>
+        <StoryHint>
           <code>
             mergeCells.mergeByCellValues: [&apos;dept&apos;, &apos;role&apos;]
           </code>{' '}
@@ -146,7 +142,7 @@ export const SearchAndCheckboxes: Story = {
           «Сотрудник 1» — блоки сожмутся под найденные строки. Чекбокс выделяет
           СВОЮ строку даже внутри слитого блока. Отсортируй по «План» — блоки
           распадутся (значения перемешались).
-        </p>
+        </StoryHint>
         <TableCanvas
           tableConfig={{
             containerStyle: { height: '560px' },
@@ -245,12 +241,12 @@ export const TreeSubRowsMerge: Story = {
 
     return (
       <div>
-        <p style={hintStyle}>
+        <StoryHint>
           Регион повторяется у родителя и его детей. Раскрой команду — дочерние
           строки попадают в видимый список и блок «Регион» накрывает родителя
           вместе с детьми; сверни — блок пересоберётся. Merge считается по
           плоскому видимому списку, отдельного API для subRows не нужно.
-        </p>
+        </StoryHint>
         <TableCanvas
           tableConfig={{
             containerStyle: { height: '560px' },
@@ -320,13 +316,13 @@ export const FormatFromOrigin: Story = {
 
     return (
       <div>
-        <p style={hintStyle}>
+        <StoryHint>
           «Отдел» и «Роль» слиты по значению: блок роли рисуется кастомным
           рендером origin (бейдж по центру). Кнопкой можно слить «План+Факт»
           строк 1–2 в прямоугольник: блок покажет ЗНАЧЕНИЕ и number-ФОРМАТ
           origin-ячейки (План, выравнивание вправо) — формат покрытой колонки
           «Факт» (₽) на блок не влияет.
-        </p>
+        </StoryHint>
         <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
           <button
             type="button"
@@ -395,11 +391,11 @@ export const MergedHeadersAndBody: Story = {
 
     return (
       <div>
-        <p style={hintStyle}>
+        <StoryHint>
           Шапка: группы «Организация» и «Показатели», одиночный «Сотрудник»
           растянут на всю высоту (<code>squashEmptyCells</code>). Тело: отдел и
           роль слиты по значению. Фичи независимы и работают вместе.
-        </p>
+        </StoryHint>
         <TableCanvas
           tableConfig={{
             containerStyle: { height: '520px' },
@@ -581,7 +577,7 @@ export const FullKitchenSink: Story = {
 
     return (
       <div>
-        <p style={hintStyle}>
+        <StoryHint>
           Всё сразу: слитые шапки, merge по значению (отдел/роль), controlled
           прямоугольник кнопкой, поиск, фильтр по отделу, сортировка, чекбоксы с
           массовыми действиями, hide/pin/reorder через шестерёнку, размер строк,
@@ -598,7 +594,7 @@ export const FullKitchenSink: Story = {
           сервер (manualSearching / manualFiltering / manualSorting) и отдаёт
           срез страницы. Регион задан ключами строк 1-3: виден только на
           странице 1.
-        </p>
+        </StoryHint>
         {lastMenuPick && (
           <p style={{ ...hintStyle, color: '#555' }}>
             Последний пункт контекстного меню: <b>{lastMenuPick}</b>
@@ -868,7 +864,7 @@ export const GroupedFlatView: Story = {
 
     return (
       <div>
-        <p style={hintStyle}>
+        <StoryHint>
           Дерево групп (отдел, роль) отображается ПЛОСКО через регионы из узлов
           дерева. «Разработчик» есть в отделах A и B — блоки НЕ сливаются через
           границу (разные регионы). Нумерация — номер группы верхнего уровня.
@@ -876,7 +872,7 @@ export const GroupedFlatView: Story = {
           группы. Клик по блоку «Отдел» — обычное выделение ячейки, чекбоксы не
           трогает. Переставь или скрой колонки через шестерёнку — регионы по
           ключам, ничего не ломается.
-        </p>
+        </StoryHint>
         <p style={{ ...hintStyle, color: '#555' }}>
           Выбрано строк: <b>{selected.size}</b>
         </p>
@@ -999,7 +995,7 @@ export const RowsGroupingMerged: Story = {
 
     return (
       <div>
-        <p style={hintStyle}>
+        <StoryHint>
           Группировка отдел→роль через <code>rowsGrouping</code>,{' '}
           <code>view: &apos;merged&apos;</code>: дерево нарисовано плоско
           объединёнными ячейками. Всё вместе: поиск по сотруднику, фильтр по
@@ -1007,7 +1003,7 @@ export const RowsGroupingMerged: Story = {
           сотрудник=строка, план/факт=число; «Отменить»/«Сохранить»), чекбокс
           выделяет группу целиком. Меняй состав группировки через шестерёнку или
           кнопку «Группировать». Переключи вид на «tree» для сравнения.
-        </p>
+        </StoryHint>
         <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
           <button
             type="button"

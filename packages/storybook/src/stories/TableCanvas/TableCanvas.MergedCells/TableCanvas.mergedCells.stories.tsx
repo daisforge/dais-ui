@@ -1,4 +1,5 @@
 /* eslint-disable no-underscore-dangle, react-hooks/rules-of-hooks, no-restricted-syntax, no-plusplus, jsx-a11y/label-has-associated-control */
+import { StoryHint } from '@df-storybook/utils/StoryHint';
 import type { Meta, StoryObj } from '@storybook/react';
 import {
   Canvas,
@@ -161,12 +162,12 @@ export const RowSpanBasic: Story = {
           </label>
         </div>
 
-        <p style={{ fontSize: 13, color: '#888', marginBottom: 8 }}>
+        <StoryHint>
           <b>Роль</b> и <b>Отдел</b> слиты блоками по 3 строки. Значения РЕАЛЬНО
           повторяются в данных (Аналитик×3, Отдел A×3) — объединение только
           UI-фасад, скрытых других значений нет. Период/План/Факт — свои у
           строки.
-        </p>
+        </StoryHint>
 
         <TableCanvas
           tableConfig={{
@@ -274,13 +275,13 @@ export const Colspan: Story = {
 
     return (
       <div>
-        <p style={{ fontSize: 13, color: '#888', marginBottom: 8 }}>
+        <StoryHint>
           Строки-заголовки секций слиты на всю ширину через{' '}
           <code>mergeCells.mergedCellsRegions</code> (список header-строк,
           colKeys — все колонки). Данные-строки — обычные.
           Редактирование/протяжка/копирование включены — проверяем
           overlay-редактор и перенос на merged.
-        </p>
+        </StoryHint>
         <pre style={{ fontSize: 12, color: '#666', marginBottom: 8 }}>
           mergedCellsRegions = {JSON.stringify(regions)}
         </pre>
@@ -373,12 +374,12 @@ export const Rectangular: Story = {
 
     return (
       <div>
-        <p style={{ fontSize: 13, color: '#888', marginBottom: 8 }}>
+        <StoryHint>
           Прямоугольный блок 2×3 (колонки A,B × строки 2–4) — через{' '}
           <code>mergeCells.mergedCellsRegions</code> (id строк 2–4 + ключи
           колонок A,B). Редактирование/протяжка/копирование включены — проверяем
           overlay на блоке и перенос.
-        </p>
+        </StoryHint>
         <pre style={{ fontSize: 12, color: '#666', marginBottom: 8 }}>
           mergedCellsRegions = {JSON.stringify(regions)}
         </pre>
@@ -495,7 +496,7 @@ export const DerivedGroupingSortFilter: Story = {
 
     return (
       <div>
-        <p style={{ fontSize: 13, color: '#888', marginBottom: 8 }}>
+        <StoryHint>
           <code>
             mergeCells.mergeByCellValues: [&apos;role&apos;, &apos;dept&apos;]
           </code>{' '}
@@ -504,7 +505,7 @@ export const DerivedGroupingSortFilter: Story = {
           → роли перемешаются и блоки распадутся; фильтр по роли (в шапке
           колонки «Роль») → блоки сожмутся. Всё пересобирается САМО, без ручного
           кода в стори.
-        </p>
+        </StoryHint>
         <TableCanvas
           tableConfig={{
             containerStyle: { height: '520px' },
@@ -572,13 +573,13 @@ export const SpanByWithEditing: Story = {
 
     return (
       <div>
-        <p style={{ fontSize: 13, color: '#888', marginBottom: 8 }}>
+        <StoryHint>
           <code>mergeByCellValues: [&apos;region&apos;, &apos;team&apos;]</code>
           . Регион слит блоками по 4 строки, команда — по 2 (вложенно).
           Отредактируй значение «Регион» у верхней строки блока → блок
           разъедется, объединения пересоберутся из новых значений. Данные
           обычные, merge — только визуал.
-        </p>
+        </StoryHint>
         <TableCanvas
           tableConfig={{
             containerStyle: { height: '600px' },
@@ -661,14 +662,14 @@ export const ControlledSpans: Story = {
 
     return (
       <div>
-        <p style={{ fontSize: 13, color: '#888', marginBottom: 8 }}>
+        <StoryHint>
           Объединения — во ВНЕШНЕМ стейте{' '}
           <code>mergeCells.mergedCellsRegions</code> (id строк + ключи колонок),
           управляются кнопками. Скрой/переставь колонку через шестерёнку — merge
           переживает (резолв по ключам). Отсортируй по <b>План</b> → регион с
           разбежавшимися строками перестаёт рисоваться (как ограничения sort в
           Excel).
-        </p>
+        </StoryHint>
         <div
           style={{ display: 'flex', gap: 8, marginBottom: 8, flexWrap: 'wrap' }}
         >
