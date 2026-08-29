@@ -1,4 +1,5 @@
 /* eslint-disable no-underscore-dangle, react-hooks/rules-of-hooks, no-restricted-syntax, no-plusplus, jsx-a11y/label-has-associated-control */
+import DocStoryTemplate from '@df-storybook/templates/DocStoryTemplate.mdx';
 import { StoryHint } from '@df-storybook/utils/StoryHint';
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
 import type { Meta, StoryObj } from '@storybook/react';
@@ -14,8 +15,13 @@ import {
 import { type CSSProperties, useMemo, useRef, useState } from 'react';
 
 const meta: Meta = {
-  title: 'Локальные компоненты/TableCanvas/MergedCells/Базовые',
+  title: 'Локальные компоненты/TableCanvas/MergedCells',
   tags: ['!autodocs'],
+  parameters: {
+    docs: {
+      page: DocStoryTemplate,
+    },
+  },
 };
 
 export default meta;

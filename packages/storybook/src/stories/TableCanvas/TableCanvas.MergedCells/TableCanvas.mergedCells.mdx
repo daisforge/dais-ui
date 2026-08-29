@@ -1,6 +1,7 @@
-import { Meta } from '@storybook/blocks';
+import { Meta, Stories } from '@storybook/blocks';
+import * as MergedCellsStories from './TableCanvas.mergedCells.stories';
 
-<Meta title="Локальные компоненты/TableCanvas/MergedCells/Docs" />
+<Meta of={MergedCellsStories} name="Docs" />
 
 # MergedCells (TableCanvas)
 
@@ -151,3 +152,9 @@ columnConfig={[
 
 - Объединение ячеек шапки — раздел ColumnsGrouping (`squashEmptyCells`).
 - Взаимодействие блоков с copy/paste/fill — раздел Copy-Paste-Fill (Интеграции).
+- Готовые сценарии потребителя (плоский вид, группировка, subRows) — стори
+  «Showcase потребителя» в этом разделе.
+
+> Подробнее о типах — [MergedCells API](?path=/docs/локальные-компоненты-tablecanvas-mergedcells-api--docs)
+
+<Stories />
