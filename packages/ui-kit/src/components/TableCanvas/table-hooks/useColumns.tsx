@@ -494,7 +494,9 @@ export const useColumns = <
             : undefined
           : undefined;
       const staticSpanAlign =
-        el.mergedCellsAlign ?? mergedViewAlign ?? tableConfig.mergeCells?.align;
+        el.mergedCellsAlign ??
+        mergedViewAlign ??
+        tableConfig.mergeCells?.mergedCellsAlign;
       let spanAlign: ColumnX['spanAlign'];
       if (isRegionCol && regionsResolver) {
         const regionAlignOf = regionsResolver.align(el.key);

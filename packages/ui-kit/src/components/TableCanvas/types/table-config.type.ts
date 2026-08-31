@@ -846,7 +846,7 @@ export type MergedCellsRegion = {
   rowKeys: Array<string | number>;
   colKeys: string[];
   /** Точечное выравнивание контента этого объединения. Важнее колоночного и общего. */
-  align?: MergedCellsAlign;
+  mergedCellsAlign?: MergedCellsAlign;
 };
 
 export type TableConfig<
@@ -1051,9 +1051,9 @@ export type TableConfig<
     rowKeyGetter?: (row: RowType) => string | number;
     /**
      * Общий дефолт выравнивания контента в объединённых ячейках. Перекрывается
-     * колоночным `mergedCellsAlign` и `align` конкретного региона.
+     * колоночным `mergedCellsAlign` и `mergedCellsAlign` конкретного региона.
      */
-    align?: MergedCellsAlign;
+    mergedCellsAlign?: MergedCellsAlign;
   };
 
   /**

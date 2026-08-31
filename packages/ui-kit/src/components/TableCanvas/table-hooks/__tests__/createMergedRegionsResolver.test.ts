@@ -30,11 +30,11 @@ const makeResolver = (
 const region = (
   colKeys: string[],
   rowKeys: string[],
-  align?: MergedCellsRegion['align'],
+  align?: MergedCellsRegion['mergedCellsAlign'],
 ): MergedCellsRegion => ({
   colKeys,
   rowKeys,
-  ...(align && { align }),
+  ...(align && { mergedCellsAlign: align }),
 });
 
 describe('createMergedRegionsResolver — точечное выравнивание региона', () => {

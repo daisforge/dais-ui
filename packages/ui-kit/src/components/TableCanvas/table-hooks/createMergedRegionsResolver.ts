@@ -87,7 +87,12 @@ export function createMergedRegionsResolver<R extends ObjectForExtending>(
         byOrigin.set(originKey, map);
       }
       for (let ri = rowStart; ri <= rowEnd; ri += 1) {
-        map.set(ri, { colExtra, rowStart, rowEnd, align: region.align });
+        map.set(ri, {
+          colExtra,
+          rowStart,
+          rowEnd,
+          align: region.mergedCellsAlign,
+        });
       }
     });
   };
