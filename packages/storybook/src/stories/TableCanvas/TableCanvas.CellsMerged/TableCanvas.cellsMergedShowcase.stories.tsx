@@ -39,7 +39,7 @@ import React, {
  * не рассыпаются. Сортировка самих иерархо-колонок (блоками) пока не реализована.
  */
 const meta: Meta = {
-  title: 'Локальные компоненты/TableCanvas/MergedCells/Showcase потребителя',
+  title: 'Локальные компоненты/TableCanvas/CellsMerged/Showcase потребителя',
   tags: ['!autodocs'],
 };
 
