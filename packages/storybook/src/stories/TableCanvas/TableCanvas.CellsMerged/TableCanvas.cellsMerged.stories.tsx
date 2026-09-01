@@ -3,6 +3,8 @@ import DocStoryTemplate from '@df-storybook/templates/DocStoryTemplate.mdx';
 import { StoryHint } from '@df-storybook/utils/StoryHint';
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
 import type { Meta, StoryObj } from '@storybook/react';
+import { Button } from '@ui-kit/components/Button';
+import { Select } from '@ui-kit/components/Select';
 import {
   Canvas,
   type CellsSelectionMode,
@@ -12,7 +14,7 @@ import {
   type SortColumn,
   TableCanvas,
 } from '@ui-kit/components/TableCanvas';
-import { type CSSProperties, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 
 const meta: Meta = {
   title: 'Локальные компоненты/TableCanvas/CellsMerged',
@@ -88,6 +90,7 @@ export const RowSpanBasic: Story = {
     }
 
     const [rows, setRows] = useState<MRow[]>(initialRows);
+    const beforeEditRef = useRef(rows);
     const [selectionMode, setSelectionMode] =
       useState<CellsSelectionMode>('range-cell');
     const [highlightActiveType, setHighlightActiveType] =
@@ -142,36 +145,20 @@ export const RowSpanBasic: Story = {
     return (
       <div>
         <div style={{ display: 'flex', gap: 16, marginBottom: 12 }}>
-          <label>
-            Режим выделения:{' '}
-            <select
-              value={selectionMode}
-              onChange={(e) =>
-                setSelectionMode(e.target.value as CellsSelectionMode)
-              }
-            >
-              {SELECTION_MODE_OPTIONS.map((o) => (
-                <option key={o.value} value={o.value}>
-                  {o.label}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>
-            Highlight active:{' '}
-            <select
-              value={highlightActiveType}
-              onChange={(e) =>
-                setHighlightActiveType(e.target.value as HighlightActiveType)
-              }
-            >
-              {HIGHLIGHT_ACTIVE_TYPE_OPTIONS.map((o) => (
-                <option key={o.value} value={o.value}>
-                  {o.label}
-                </option>
-              ))}
-            </select>
-          </label>
+          <Select
+            target="textfield-like"
+            label="Режим выделения"
+            value={selectionMode}
+            onChange={(v) => setSelectionMode(v as CellsSelectionMode)}
+            items={SELECTION_MODE_OPTIONS}
+          />
+          <Select
+            target="textfield-like"
+            label="Highlight active"
+            value={highlightActiveType}
+            onChange={(v) => setHighlightActiveType(v as HighlightActiveType)}
+            items={HIGHLIGHT_ACTIVE_TYPE_OPTIONS}
+          />
         </div>
 
         <StoryHint>
@@ -188,6 +175,7 @@ export const RowSpanBasic: Story = {
             rowMarkers: { startIndex: 1 },
             columnsControl: { enable: true },
             rowSize: { default: 'medium', showInControl: true },
+            fullScreenEnabled: true,
             mergeCells: { mergeByCellValues: ['role', 'dept'] },
             cellsSelection: {
               mode: selectionMode,
@@ -197,7 +185,17 @@ export const RowSpanBasic: Story = {
             editing: {
               onRowsChange: setRows,
               rowKeyGetter: (r) => `${r.id}`,
-              defaultEnabled: true,
+              onEnableEditing: (enable) => {
+                beforeEditRef.current = rows;
+                enable();
+              },
+              onCancel: (disable) => {
+                setRows(beforeEditRef.current);
+                disable();
+              },
+              onSave: (disable) => {
+                disable();
+              },
             },
             resizableColumn: true,
           }}
@@ -247,6 +245,7 @@ export const Colspan: Story = {
     }
 
     const [rows, setRows] = useState<MRow[]>(initialRows);
+    const beforeEditRef = useRef(rows);
 
     // Заголовки секций через controlled-список regions: каждая header-строка
     // сливает все 3 колонки (label, a, b). Резолв по id строки.
@@ -303,6 +302,8 @@ export const Colspan: Story = {
             containerStyle: { height: '520px' },
             rowMarkers: { startIndex: 1 },
             columnsControl: { enable: true },
+            rowSize: { default: 'medium', showInControl: true },
+            fullScreenEnabled: true,
             mergeCells: {
               mergedCellsRegions: regions,
               rowKeyGetter: (r) => r.id,
@@ -312,7 +313,17 @@ export const Colspan: Story = {
             editing: {
               onRowsChange: setRows,
               rowKeyGetter: (r) => `${r.id}`,
-              defaultEnabled: true,
+              onEnableEditing: (enable) => {
+                beforeEditRef.current = rows;
+                enable();
+              },
+              onCancel: (disable) => {
+                setRows(beforeEditRef.current);
+                disable();
+              },
+              onSave: (disable) => {
+                disable();
+              },
             },
           }}
           columnConfig={columns}
@@ -402,6 +413,8 @@ export const Rectangular: Story = {
             containerStyle: { height: '520px' },
             rowMarkers: { startIndex: 1 },
             columnsControl: { enable: true },
+            rowSize: { default: 'medium', showInControl: true },
+            fullScreenEnabled: true,
             mergeCells: {
               mergedCellsRegions: regions,
               rowKeyGetter: (r) => r.id,
@@ -411,7 +424,6 @@ export const Rectangular: Story = {
             editing: {
               onRowsChange: setRows,
               rowKeyGetter: (r) => `${r.id}`,
-              defaultEnabled: true,
               // Отмена/сохранение данных — на стороне потребителя: снимок при
               // входе, восстановление по «Отменить», фиксация по «Сохранить».
               onEnableEditing: (enable) => {
@@ -526,6 +538,8 @@ export const DerivedGroupingSortFilter: Story = {
             containerStyle: { height: '520px' },
             rowMarkers: { startIndex: 1 },
             columnsControl: { enable: true },
+            rowSize: { default: 'medium', showInControl: true },
+            fullScreenEnabled: true,
             mergeCells: { mergeByCellValues: ['role', 'dept'] },
             sorting: { state: sortState },
             filtering: {
@@ -565,6 +579,7 @@ export const SpanByWithEditing: Story = {
     }
 
     const [rows, setRows] = useState<ERow[]>(initial);
+    const beforeEditRef = useRef(rows);
 
     const columns: readonly ColumnConfig<ERow>[] = [
       {
@@ -601,12 +616,24 @@ export const SpanByWithEditing: Story = {
             containerStyle: { height: '600px' },
             rowMarkers: { startIndex: 1 },
             columnsControl: { enable: true },
+            rowSize: { default: 'medium', showInControl: true },
+            fullScreenEnabled: true,
             mergeCells: { mergeByCellValues: ['region', 'team'] },
             cellsSelection: { mode: 'range-cell' },
             editing: {
               onRowsChange: setRows,
               rowKeyGetter: (r) => `${r.id}`,
-              defaultEnabled: true,
+              onEnableEditing: (enable) => {
+                beforeEditRef.current = rows;
+                enable();
+              },
+              onCancel: (disable) => {
+                setRows(beforeEditRef.current);
+                disable();
+              },
+              onSave: (disable) => {
+                disable();
+              },
             },
           }}
           columnConfig={columns}
@@ -650,6 +677,7 @@ export const MergedSelectEditing: Story = {
     ];
 
     const [rows, setRows] = useState<SRow[]>(initial);
+    const beforeEditRef = useRef(rows);
 
     const columns: readonly ColumnConfig<SRow>[] = [
       {
@@ -742,7 +770,17 @@ export const MergedSelectEditing: Story = {
             editing: {
               onRowsChange: setRows,
               rowKeyGetter: (r) => `${r.id}`,
-              defaultEnabled: true,
+              onEnableEditing: (enable) => {
+                beforeEditRef.current = rows;
+                enable();
+              },
+              onCancel: (disable) => {
+                setRows(beforeEditRef.current);
+                disable();
+              },
+              onSave: (disable) => {
+                disable();
+              },
             },
           }}
           columnConfig={columns}
@@ -808,11 +846,6 @@ export const ControlledSpans: Story = {
       { key: 'plan', name: 'План', width: 110, sortingType: 'numberSort' },
     ];
 
-    const btn: CSSProperties = {
-      padding: '4px 10px',
-      cursor: 'pointer',
-    };
-
     return (
       <div>
         <StoryHint>
@@ -826,32 +859,32 @@ export const ControlledSpans: Story = {
         <div
           style={{ display: 'flex', gap: 8, marginBottom: 8, flexWrap: 'wrap' }}
         >
-          <button
-            type="button"
-            style={btn}
+          <Button
+            view="accent"
+            size="s"
             onClick={() => toggle({ rowKeys: [1, 2, 3], colKeys: ['dept'] })}
           >
             Слить 1-3 (Отдел)
-          </button>
-          <button
-            type="button"
-            style={btn}
+          </Button>
+          <Button
+            view="secondary"
+            size="s"
             onClick={() => toggle({ rowKeys: [4, 5, 6], colKeys: ['dept'] })}
           >
             Слить 4-6 (Отдел)
-          </button>
-          <button
-            type="button"
-            style={btn}
+          </Button>
+          <Button
+            view="secondary"
+            size="s"
             onClick={() =>
               toggle({ rowKeys: [1, 2, 3], colKeys: ['dept', 'role'] })
             }
           >
             Прямоугольник 1-3 × Отдел+Роль
-          </button>
-          <button type="button" style={btn} onClick={() => setRegions([])}>
+          </Button>
+          <Button view="secondary" size="s" onClick={() => setRegions([])}>
             Очистить
-          </button>
+          </Button>
         </div>
         <pre style={{ fontSize: 12, color: '#666', marginBottom: 8 }}>
           mergedCellsRegions = {JSON.stringify(regions)}
@@ -861,6 +894,8 @@ export const ControlledSpans: Story = {
             containerStyle: { height: '520px' },
             rowMarkers: { startIndex: 1 },
             columnsControl: { enable: true },
+            rowSize: { default: 'medium', showInControl: true },
+            fullScreenEnabled: true,
             sorting: { state: [sort, setSort] },
             mergeCells: {
               mergedCellsRegions: regions,

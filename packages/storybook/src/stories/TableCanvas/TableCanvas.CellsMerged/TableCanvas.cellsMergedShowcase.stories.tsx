@@ -850,6 +850,7 @@ export const SubRowsMerged: Story = {
   render: () => {
     const { selectedIds, setSelectedIds, commonConfig } = useBuiltinFeatures();
     const [tree, setTree] = useState<readonly ShowcaseNode[]>(TREE);
+    const beforeEditRef = useRef(tree);
     // Пагинация по ВЕРХНИМ блокам (дивизионам): консьюмер владеет деревом и
     // отдаёт страницу целых поддеревьев (блоки не рвутся на границе страницы).
     const [page, setPage] = useState(1);
@@ -902,6 +903,17 @@ export const SubRowsMerged: Story = {
                 const byId = new Map(updated.map((r) => [r.id, r]));
                 setTree((prev) => updateTreeLeaves(prev, byId));
               },
+              onEnableEditing: (enable) => {
+                beforeEditRef.current = tree;
+                enable();
+              },
+              onCancel: (disable) => {
+                setTree(beforeEditRef.current);
+                disable();
+              },
+              onSave: (disable) => {
+                disable();
+              },
             },
             subRows: {
               getSubRows: (row) => row?.subRows,
@@ -926,6 +938,7 @@ export const GroupingMerged: Story = {
   render: () => {
     const { selectedIds, setSelectedIds, commonConfig } = useBuiltinFeatures();
     const [rows, setRows] = useState<readonly LeafRow[]>(DATA);
+    const beforeEditRef = useRef(rows);
     const groupByState = useState<string[]>(['division', 'unit', 'team']);
 
     return (
@@ -954,6 +967,17 @@ export const GroupingMerged: Story = {
             editing: {
               rowKeyGetter: (r) => r.id,
               onRowsChange: (updated) => setRows(updated as LeafRow[]),
+              onEnableEditing: (enable) => {
+                beforeEditRef.current = rows;
+                enable();
+              },
+              onCancel: (disable) => {
+                setRows(beforeEditRef.current);
+                disable();
+              },
+              onSave: (disable) => {
+                disable();
+              },
             },
             rowsGrouping: {
               view: 'merged',
