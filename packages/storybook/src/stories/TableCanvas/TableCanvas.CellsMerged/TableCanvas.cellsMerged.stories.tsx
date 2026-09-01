@@ -15,7 +15,7 @@ import {
 import { type CSSProperties, useMemo, useRef, useState } from 'react';
 
 const meta: Meta = {
-  title: 'Локальные компоненты/TableCanvas/MergedCells',
+  title: 'Локальные компоненты/TableCanvas/CellsMerged',
   tags: ['!autodocs'],
   parameters: {
     docs: {
@@ -602,6 +602,92 @@ export const SpanByWithEditing: Story = {
             rowMarkers: { startIndex: 1 },
             columnsControl: { enable: true },
             mergeCells: { mergeByCellValues: ['region', 'team'] },
+            cellsSelection: { mode: 'range-cell' },
+            editing: {
+              onRowsChange: setRows,
+              rowKeyGetter: (r) => `${r.id}`,
+              defaultEnabled: true,
+            },
+          }}
+          columnConfig={columns}
+          rows={rows}
+        />
+      </div>
+    );
+  },
+};
+
+export const MergedSelectEditing: Story = {
+  name: 'Редактирование блока через Select (уголок и превью)',
+  ...storySourceDoc({ preCode, previewSource: 'shown' }),
+  render: () => {
+    type SRow = { id: number; status: string; owner: string; task: string };
+    const STATUSES = ['В работе', 'Готово', 'Отменено', 'На паузе'];
+    const initial: SRow[] = [
+      { id: 1, status: 'В работе', owner: 'Иванов', task: 'Задача 1' },
+      { id: 2, status: 'В работе', owner: 'Иванов', task: 'Задача 2' },
+      { id: 3, status: 'В работе', owner: 'Иванов', task: 'Задача 3' },
+      { id: 4, status: 'Готово', owner: 'Петров', task: 'Задача 4' },
+      { id: 5, status: 'Готово', owner: 'Петров', task: 'Задача 5' },
+      { id: 6, status: 'Отменено', owner: 'Сидоров', task: 'Задача 6' },
+    ];
+
+    const [rows, setRows] = useState<SRow[]>(initial);
+
+    const columns: readonly ColumnConfig<SRow>[] = [
+      {
+        key: 'status',
+        name: 'Статус (Select, слит)',
+        width: 280,
+        editingCell: {
+          component: 'select',
+          options: {
+            type: 'constant',
+            options: STATUSES.map((s) => ({ text: s, value: s })),
+          },
+        },
+      },
+      {
+        key: 'owner',
+        name: 'Ответственный (Select, слит)',
+        width: 260,
+        editingCell: {
+          component: 'select',
+          options: {
+            type: 'constant',
+            options: ['Иванов', 'Петров', 'Сидоров'].map((s) => ({
+              text: s,
+              value: s,
+            })),
+          },
+        },
+      },
+      {
+        key: 'task',
+        name: 'Задача',
+        width: 220,
+        editingCell: { component: 'inputString' },
+      },
+    ];
+
+    return (
+      <div>
+        <StoryHint>
+          Колонки «Статус» и «Ответственный» — редактируемые <b>Select</b>,
+          слитые по значению (
+          <code>
+            mergeByCellValues: [&apos;status&apos;, &apos;owner&apos;]
+          </code>
+          ). Наведи на слитый блок — посмотри уголок редактируемой ячейки;
+          кликни — как открывается выпадающий Select и превью на всю площадь
+          блока. Выбор записывается во все строки блока, объединения
+          пересобираются из новых значений.
+        </StoryHint>
+        <TableCanvas
+          tableConfig={{
+            containerStyle: { height: '520px' },
+            rowMarkers: { startIndex: 1 },
+            mergeCells: { mergeByCellValues: ['status', 'owner'] },
             cellsSelection: { mode: 'range-cell' },
             editing: {
               onRowsChange: setRows,
