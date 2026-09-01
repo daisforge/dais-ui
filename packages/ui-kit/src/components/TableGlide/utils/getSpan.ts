@@ -9,8 +9,8 @@ export const getSpan = <R extends ObjectForExtending, SR = unknown>(
   const resultColSpan =
     typeof colSpan === 'number' ? colSpan : colSpan(cellInfo);
 
-  // Нет объединения по горизонтали. Возвращаем null, а не [c, c], чтобы одиночная
-  // ячейка не считалась слитой и не ломала вертикальный merge.
+  // Объединения по горизонтали нет. Возвращаем null, а не [c, c], чтобы одиночная
+  // ячейка не считалась объединённой и не мешала объединению по строкам.
   if (resultColSpan <= 0) return null;
 
   return [cellInfo.colInd, cellInfo.colInd + resultColSpan] as readonly [

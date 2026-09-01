@@ -1,6 +1,6 @@
 import type { CellInfo, ObjectForExtending, RowSpan } from '../types';
 
-// Вертикальное объединение: диапазон строк блока [начало, конец] или null.
+// Объединение строк: диапазон строк блока [начало, конец] или null.
 // Все ячейки блока должны вернуть один и тот же диапазон.
 export const getRowSpan = <R extends ObjectForExtending, SR = unknown>(
   rowSpan: RowSpan<R, SR> | null | undefined,

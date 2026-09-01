@@ -136,8 +136,9 @@ export const useFlattenedRows = <
 
   const tableConfigSubRowsBoolean = !!tableConfig.subRows;
 
-  // Merged-вид subRows: дерево разворачивается в листья со слитыми колонками-предками
-  // (нативные чекбокс/индекс на блок), без tree-разворота по expandedRowsIds.
+  // subRows со слиянием: дерево разворачивается в плоский список листьев, а
+  // колонки-предки рисуются объединёнными ячейками (чекбокс и номер — на весь
+  // блок). Раскрытие по expandedRowsIds тут не используется.
   const mergedSubRows = isMergedSubRowsView(tableConfig.subRows);
   const mergedColumns = tableConfig.subRows?.mergedColumns;
 
@@ -148,8 +149,8 @@ export const useFlattenedRows = <
     if (!tableConfigSubRowsBoolean) {
       return { expandedAllRowsIds: null, allRowsMap: null };
     }
-    // Merged-вид: нумерация идёт через ordinal-getter по верхнему уровню,
-    // allRowsMap не нужен (нет tree-разворота).
+    // Вид со слиянием: строки нумеруются по верхнему уровню отдельной функцией,
+    // allRowsMap не нужен (дерево не разворачивается).
     if (mergedSubRows) {
       return { expandedAllRowsIds: null, allRowsMap: null };
     }
@@ -212,15 +213,15 @@ export const useFlattenedRows = <
 
     return { expandedAllRowsIds: ids, allRowsMap: map };
     /**
-     * ⚠️ В зависимостях стоит tableConfigSubRowsBoolean, а НЕ сами функции
-     * getSubRows/rowKeyGetter. Причина: пользователи обычно передают их инлайн
-     * без useCallback, что вызывает пересчёт полного дерева на каждый рендер.
+     * Важно: в зависимостях стоит tableConfigSubRowsBoolean, а не сами функции
+     * getSubRows/rowKeyGetter. Причина: их обычно передают прямо в пропсах, без
+     * useCallback, и тогда всё дерево пересчитывалось бы на каждый рендер.
      *
-     * Следствие: если getSubRows/rowKeyGetter динамически изменятся (другая
-     * структура дерева) при том же subRows === true — allRowsMap и
-     * expandedAllRowsIds НЕ пересчитаются и будут содержать устаревшие данные.
+     * Побочный эффект: если getSubRows/rowKeyGetter поменяются на лету (другая
+     * структура дерева) при том же subRows === true, то allRowsMap и
+     * expandedAllRowsIds не пересчитаются и останутся устаревшими.
      *
-     * Функции getSubRows и rowKeyGetter должны быть чистыми и стабильными.
+     * Поэтому getSubRows и rowKeyGetter должны быть стабильными функциями.
      */
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
@@ -231,8 +232,9 @@ export const useFlattenedRows = <
   ]);
 
   const flattenedRows = useMemo(() => {
-    // Merged-вид subRows: всегда полностью разворачиваем дерево в листья с
-    // денормализацией предков (без учёта expandedRowsIds — collapse тут нет).
+    // subRows со слиянием: всегда полностью разворачиваем дерево в листья и
+    // переносим в них значения предков. expandedRowsIds не смотрим — сворачивать
+    // тут нечего.
     if (mergedSubRows && mergedColumns) {
       const getSubRows = tableConfig.subRows?.getSubRows;
       if (getSubRows) {

@@ -11,7 +11,7 @@ export type ColumnConfigInternal<
   SR = unknown,
 > = ColumnConfig<R, SR> &
   Pick<ColumnGlideInstance<R, SR>, DefaultOmittedKeys> & {
-    // Внутреннее: выравнивание слитой ячейки. Уходит в форк как spanAlign.
+    // Внутреннее: выравнивание объединённой ячейки. Уходит в форк как spanAlign.
     spanAlign?:
       | SpanCellAlign
       | ((cellInfo: CellInfo<R, SR>) => SpanCellAlign | undefined);

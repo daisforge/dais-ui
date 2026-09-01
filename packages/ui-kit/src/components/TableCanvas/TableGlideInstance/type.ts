@@ -174,17 +174,17 @@ export type ColumnGlideInstance<
   colSpan?:
     | number
     | ((cellInfo: CellInfoGlideInstance<R, SR, CustomCtxs>) => number);
-  /** Вертикальное объединение: (cellInfo) => [startRow, endRow] | null (см. TableGlide RowSpan). */
+  /** Объединение строк: (cellInfo) => [перваяСтрока, последняяСтрока] | null (см. TableGlide RowSpan). */
   rowSpan?: (
     cellInfo: CellInfoGlideInstance<R, SR, CustomCtxs>
   ) => readonly [number, number] | null;
-  /** Выравнивание контента в слитой ячейке тела; в adaptColumn → glide `spanAlign`. */
+  /** Выравнивание контента в объединённой ячейке тела; в adaptColumn идёт в glide как `spanAlign`. */
   spanAlign?:
     | SpanCellAlign
     | ((
         cellInfo: CellInfoGlideInstance<R, SR, CustomCtxs>
       ) => SpanCellAlign | undefined);
-  /** Выравнивание в слитой шапке; в adaptColumn → glide `spanGroupHeaderAlign`. */
+  /** Выравнивание в объединённой шапке; в adaptColumn идёт в glide как `spanGroupHeaderAlign`. */
   squashedHeaderAlign?: HeaderAlignment;
   /** Тултип для ячеек этой колонки. Строка, объект или функция (context) => config | null. */
   cellTooltip?:

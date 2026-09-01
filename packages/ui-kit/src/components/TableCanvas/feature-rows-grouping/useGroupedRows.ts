@@ -43,8 +43,9 @@ export function useGroupedRows<
       return [rows, rows.length];
     }
 
-    // Вид 'merged': дерево GroupRow не строим — возвращаем плоские листья в
-    // групповом порядке (блоки уровней рисует внутренний merge, см. useColumns).
+    // Вид со слиянием: дерево GroupRow не строим — возвращаем плоский список
+    // листьев в порядке групп (блоки по уровням рисует внутреннее объединение,
+    // см. useColumns).
     if (rowsGrouping.view === 'merged') {
       const flat = flattenRowsByGroups(rows, groupByArr);
       return [flat, flat.length];

@@ -15,12 +15,14 @@ const isContiguous = (sorted: readonly number[]): boolean =>
   sorted.every((v, i) => i === 0 || v === (sorted[i - 1] as number) + 1);
 
 /**
- * Controlled-объединения (mergeCells.mergedCellsRegions): регионы по стабильным
- * ключам строк/колонок резолвятся в индексы НА RENDER-time — по актуальному
- * порядку колонок (renderColKeysRef, переживает reorder/pin/hide) и строк
- * (rowsRef), с кэшем по идентичности. Разорванный регион (ключи перестали быть
- * смежными) не рисуется. Резолвер вешается на все колонки региона: каждая на
- * render-time сама решает, origin она сейчас или covered.
+ * Объединения, заданные снаружи (mergeCells.mergedCellsRegions). Регион задан
+ * стабильными ключами строк и колонок. Прямо во время отрисовки эти ключи
+ * переводятся в индексы: колонки берём из текущего порядка (renderColKeysRef, он
+ * учитывает перестановку, закрепление и скрытие), строки — из rowsRef. Результат
+ * кэшируется по ссылке на массивы. Если ключи перестали идти подряд (регион
+ * разорвался), он не рисуется. Один и тот же resolver вешается на все колонки
+ * региона: каждая при отрисовке сама решает, она верхняя-левая ячейка блока или
+ * покрыта им.
  */
 export function createMergedRegionsResolver<R extends ObjectForExtending>(
   regions: readonly MergedCellsRegion[],
@@ -28,14 +30,14 @@ export function createMergedRegionsResolver<R extends ObjectForExtending>(
   rowsRef: { readonly current: readonly R[] },
   rowKeyGetter: (row: R) => string | number,
 ) {
-  // Union всех colKeys регионов — какие колонки вообще участвуют в объединениях.
-  // Не зависит от порядка, поэтому считаем сразу.
+  // Все колонки, которые участвуют хоть в одном объединении. От порядка не
+  // зависит, поэтому считаем сразу.
   const regionCols = new Set<string>();
   regions.forEach((region) => region.colKeys.forEach((k) => regionCols.add(k)));
 
   let cachedRows: readonly R[] | null = null;
   let cachedKeys: readonly string[] | null = null;
-  // Ключ карты — origin-колонка региона в ТЕКУЩЕМ render-порядке.
+  // Ключ карты — верхняя-левая колонка региона в текущем порядке колонок.
   let byOrigin = new Map<string, Map<number, OriginEntry>>();
 
   const ensure = (
@@ -54,8 +56,9 @@ export function createMergedRegionsResolver<R extends ObjectForExtending>(
     rows.forEach((row, index) => rowIndexOf.set(rowKeyGetter(row), index));
 
     regions.forEach((region) => {
-      // Дедуп ключей: случайный дубликат в rowKeys/colKeys дал бы повтор индекса
-      // и ложно завалил проверку смежности (регион молча бы не рисовался).
+      // Убираем повторы ключей: случайный дубликат в rowKeys/colKeys дал бы
+      // повтор индекса, и проверка «идут ли ячейки подряд» ложно провалилась бы
+      // (регион тихо перестал бы рисоваться).
       const colInds = [...new Set(region.colKeys)]
         .map((k) => colIndexOf.get(k))
         .filter((x): x is number => x !== undefined)
@@ -64,8 +67,8 @@ export function createMergedRegionsResolver<R extends ObjectForExtending>(
         .map((id) => rowIndexOf.get(id))
         .filter((x): x is number => x !== undefined)
         .sort((a, b) => a - b);
-      // Регион невалиден (нет колонок/строк) или разорван реордером/сортировкой/
-      // скрытием — не рисуем (блок распадается на отдельные ячейки).
+      // Регион пустой (нет колонок или строк) либо разорван перестановкой,
+      // сортировкой или скрытием — не рисуем, блок распадётся на отдельные ячейки.
       if (
         colInds.length === 0 ||
         rowInds.length === 0 ||
@@ -98,7 +101,7 @@ export function createMergedRegionsResolver<R extends ObjectForExtending>(
   };
 
   return {
-    /** Колонки, участвующие в объединениях (на них вешаем резолвер). */
+    /** Колонки, которые участвуют в объединениях (на них и вешаем resolver). */
     regionCols,
     colSpan:
       (colKey: string) =>
@@ -113,7 +116,7 @@ export function createMergedRegionsResolver<R extends ObjectForExtending>(
         const entry = byOrigin.get(colKey)?.get(cellInfo.rowInd);
         return entry ? [entry.rowStart, entry.rowEnd] : null;
       },
-    /** Точечное выравнивание региона, накрывающего ячейку (undefined вне регионов). */
+    /** Выравнивание того региона, что накрывает ячейку (undefined, если ячейка вне регионов). */
     align:
       (colKey: string) =>
       (cellInfo: { rowInd: number }): MergedCellsAlign | undefined => {

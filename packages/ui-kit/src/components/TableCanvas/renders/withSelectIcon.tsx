@@ -9,7 +9,7 @@ type SelectCellVisual = {
   rowSize: RowSize;
   cellPaddingInline: number;
   cellVerticalPadding: number;
-  // Куда прижать триггер (текст + шеврон) в слитом блоке. Пусто = не слито.
+  // Куда прижать триггер (текст со стрелкой) в объединённом блоке. Пусто = ячейка не объединена.
   mergedVerticalAlign?: 'top' | 'center' | 'bottom';
   mergedHorizontalAlign?: 'left' | 'center' | 'right';
 };

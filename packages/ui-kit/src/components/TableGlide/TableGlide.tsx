@@ -598,9 +598,9 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         return createEmptyCellGlide();
       }
 
-      // Покрытая ячейка блока возвращает контент своего origin: все ячейки блока
-      // несут одинаковый span/spanRows/значение, форк дедупит блок и нормализует
-      // клик/навигацию/редактирование к origin.
+      // Ячейка, покрытая блоком, отдаёт контент верхней-левой ячейки блока: у всех
+      // ячеек блока одинаковые span/spanRows и значение. Форк убирает повторы и
+      // сводит клик, навигацию и редактирование к верхней-левой ячейке.
       const lightInfo = (
         col: (typeof columnsForRender)[number],
         c: number,
@@ -678,8 +678,8 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
 
       const span = getSpan(colSpan, cellInfo);
       const spanRows = getRowSpan(rowSpan, cellInfo);
-      // Только для ячеек в блоке: spanAlign на одиночной ячейке переключил бы
-      // её на span-путь отрисовки в форке.
+      // Только для ячеек внутри блока: spanAlign на одиночной ячейке переключил бы
+      // её в форке на путь отрисовки для объединённых ячеек.
       const spanAlign =
         (span || spanRows) && spanAlignConfig
           ? typeof spanAlignConfig === 'function'
@@ -739,8 +739,8 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         ? { ...cellInfo, theme: { ...theme, ...columnThemeOverrideResult } }
         : cellInfo;
 
-      // У слитой ячейки передаём выравнивание блока, чтобы select-ячейка внутри
-      // расположила контент и уголок по высоте всего блока, а не по одной строке.
+      // У объединённой ячейки передаём выравнивание блока, чтобы ячейка-select
+      // внутри расставила контент и уголок по высоте всего блока, а не одной строки.
       const jsxElement = renderCell(
         span || spanRows
           ? { ...cellInfoWithThemeOverride, __mergedCell: { align: spanAlign } }

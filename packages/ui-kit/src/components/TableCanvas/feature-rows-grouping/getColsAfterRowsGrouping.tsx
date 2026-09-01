@@ -22,7 +22,7 @@ export function getColsAfterRowsGrouping<
     SummaryRowType
   >['groupedColumnProps'];
   pinnedCols: string[];
-  /** Вид 'merged': колонки не трогаем — блоки рисует внутренний merge. */
+  /** Вид со слиянием: колонки не трогаем — блоки рисует внутреннее объединение. */
   mergedView?: boolean;
 }) {
   if (

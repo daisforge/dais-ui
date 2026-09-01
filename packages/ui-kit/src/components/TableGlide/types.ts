@@ -174,8 +174,8 @@ export type CellInfo<R extends ObjectForExtending, SR = unknown> = {
   hovered: CellHoverState;
   /** Состояние активного выделения для ячейки, которую сейчас рендерит renderCell. */
   active: CellActiveState;
-  // Есть только у верхней-левой ячейки слитого блока. align — выравнивание
-  // блока (пусто = по центру). По нему select-ячейка располагает контент и
+  // Есть только у верхней-левой ячейки объединённого блока. align — выравнивание
+  // блока (пусто = по центру). По нему ячейка-select расставляет контент и
   // уголок по высоте всего блока.
   __mergedCell?: { align?: SpanCellAlign };
 };
@@ -208,13 +208,14 @@ export type ColSpan<R extends ObjectForExtending, SR> =
   | number
   | ((cellInfo: CellInfo<R, SR>) => number);
 
-// Вертикальное объединение: функция возвращает ЯВНЫЙ диапазон строк блока
-// [startRow, endRow] (одинаковый для всех ячеек блока) либо null, если ячейка не слита.
+// Объединение строк: функция возвращает диапазон строк блока [перваяСтрока,
+// последняяСтрока] — один и тот же для всех ячеек блока — либо null, если ячейка
+// не объединена.
 export type RowSpan<R extends ObjectForExtending, SR> = (
   cellInfo: CellInfo<R, SR>
 ) => readonly [number, number] | null;
 
-/** 2D-выравнивание контента в слитой ячейке (блоке). */
+/** Выравнивание контента в объединённой ячейке (блоке) по обеим осям. */
 export type SpanCellAlign = {
   /** По горизонтали. @default из contentAlign колонки, иначе 'left' */
   horizontal?: 'left' | 'center' | 'right';
@@ -246,7 +247,7 @@ export type ColumnGlideCustoms<R extends ObjectForExtending, SR = unknown> = {
   renderSummaryCell?: (summaryCellInfo: SummaryCellInfo<R, SR>) => CellContent;
   colSpan?: ColSpan<R, SR>;
   rowSpan?: RowSpan<R, SR>;
-  /** Выравнивание контента в слитых ячейках колонки; функция — для точечного (по блоку). */
+  /** Выравнивание контента в объединённых ячейках колонки; функция — если нужно задавать для каждого блока отдельно. */
   spanAlign?: SpanCellAlign | ((cellInfo: CellInfo<R, SR>) => SpanCellAlign | undefined);
   /** Тултип для ячеек этой колонки. Строка, объект или функция (context) => config | null. */
   cellTooltip?:
@@ -314,7 +315,7 @@ export type TableGlideCustomProps<
   renderGroupHeader?: (
     args: RenderGroupHeaderArgs
   ) => 'default' | { defaultWithCustomGroupName: string } | CanvasEl;
-  /** Выравнивание текста в слитой шапке по ключу группы (ColumnGroupConfig.key). */
+  /** Выравнивание текста в объединённой шапке по ключу группы (ColumnGroupConfig.key). */
   groupAlignMap?: Map<string, SpanAlignment>;
   refTable?: Ref<DataEditorRef>;
   onColumnsReorder?: (sourceKey: string, targetKey: string) => void;
