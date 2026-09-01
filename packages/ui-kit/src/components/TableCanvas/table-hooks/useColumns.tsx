@@ -501,7 +501,8 @@ export const useColumns = <
       if (isRegionCol && regionsResolver) {
         const regionAlignOf = regionsResolver.align(el.key);
         spanAlign = staticSpanAlign
-          ? (cellInfo) => regionAlignOf(cellInfo) ?? staticSpanAlign
+          ? (cellInfo: { rowInd: number }) =>
+              regionAlignOf(cellInfo) ?? staticSpanAlign
           : regionAlignOf;
       } else if (rowSpan !== undefined) {
         spanAlign = staticSpanAlign;

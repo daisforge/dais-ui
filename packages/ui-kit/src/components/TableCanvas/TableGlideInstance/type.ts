@@ -17,6 +17,7 @@ import type {
   HighlightActiveType,
   HoverEffectsConfig,
   Justify,
+  SpanCellAlign,
   SummaryCellInfo,
   TableGlideCustomProps,
   TableGlideProps,
@@ -177,6 +178,12 @@ export type ColumnGlideInstance<
   rowSpan?: (
     cellInfo: CellInfoGlideInstance<R, SR, CustomCtxs>
   ) => readonly [number, number] | null;
+  /** Выравнивание контента в слитой ячейке тела; в adaptColumn → glide `spanAlign`. */
+  spanAlign?:
+    | SpanCellAlign
+    | ((
+        cellInfo: CellInfoGlideInstance<R, SR, CustomCtxs>
+      ) => SpanCellAlign | undefined);
   /** Выравнивание в слитой шапке; в adaptColumn → glide `spanGroupHeaderAlign`. */
   squashedHeaderAlign?: HeaderAlignment;
   /** Тултип для ячеек этой колонки. Строка, объект или функция (context) => config | null. */
