@@ -373,11 +373,16 @@ export type ColumnConfig<
    */
   squashedHeaderAlign?: HeaderAlignment;
   /**
-   * Выравнивание контента в слитых ячейках тела этой колонки (mergeCells,
-   * merged-виды группировки/subRows). Перекрывает дефолт фичи; точечнее — только
-   * `align` конкретного региона в `mergeCells.mergedCellsRegions`.
+   * Выравнивание контента в объединённых ячейках этой колонки. Перекрывает общий
+   * дефолт; важнее только выравнивание конкретного региона.
+   *
+   * Значение — одинаково для всех блоков колонки. Функция (row) => выравнивание —
+   * по данным строки: разным блокам можно задать разное выравнивание (в том числе
+   * в merged-видах группировки/subRows, где блоки формирует таблица).
    */
-  mergedCellsAlign?: MergedCellsAlign;
+  mergedCellsAlign?:
+    | MergedCellsAlign
+    | ((row: Row) => MergedCellsAlign | undefined);
 };
 
 export type ColumnOrColumnGroupConfig<

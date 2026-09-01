@@ -44,7 +44,7 @@ tableConfig={{
 }}
 ```
 
-Пример — стори «Базовые → controlled-регионы».
+Примеры — стори с префиксом `mergedCellsRegions:` ниже.
 
 ### 2. mergeCells.mergeByCellValues — по одинаковым значениям
 
@@ -62,7 +62,7 @@ tableConfig={{
 }}
 ```
 
-Примеры — стори «Базовые → rowSpan / сортировка и фильтр / редактирование».
+Примеры — стори с префиксом `mergeByCellValues:` ниже.
 
 ### 3. Merged-виды группировки и subRows — полный автомат
 
@@ -120,6 +120,18 @@ tableConfig={{
 ```tsx
 columnConfig={[
   { key: 'dept', name: 'Отдел', mergedCellsAlign: { horizontal: 'center', vertical: 'top' } },
+]}
+```
+
+Колоночный `mergedCellsAlign` может быть функцией `(row) => MergedCellsAlign` по данным
+origin-строки блока — так разные блоки одной колонки получают разное выравнивание. Это
+единственный способ управлять выравниванием поблочно в merged-видах группировки/subRows,
+где границы блоков решает таблица, а не потребитель.
+
+```tsx
+columnConfig={[
+  { key: 'dept', mergedCellsAlign: (row) =>
+      row.critical ? { vertical: 'top' } : { vertical: 'center' } },
 ]}
 ```
 

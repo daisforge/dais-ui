@@ -153,10 +153,15 @@ export function CellEditorComboboxInternal<
 
   const value = row[column.key as keyof TRow];
 
-  // Направление раскрытия списка в объединённой ячейке: если контент выровнен по
-  // нижнему краю блока, список открывается ВВЕРХ (placement 'top'), иначе вниз.
-  const placement =
-    column.mergedCellsAlign?.vertical === 'bottom' ? 'top' : 'bottom';
+  // Куда раскрывается список в объединённой ячейке: если контент прижат к нижнему
+  // краю блока, список открывается вверх (placement 'top'), иначе вниз.
+  // mergedCellsAlign может быть функцией по данным строки — вычисляем по row.
+  const columnAlign = column.mergedCellsAlign;
+  const verticalAlign =
+    typeof columnAlign === 'function'
+      ? columnAlign(row)?.vertical
+      : columnAlign?.vertical;
+  const placement = verticalAlign === 'bottom' ? 'top' : 'bottom';
 
   const options = (() => {
     if (

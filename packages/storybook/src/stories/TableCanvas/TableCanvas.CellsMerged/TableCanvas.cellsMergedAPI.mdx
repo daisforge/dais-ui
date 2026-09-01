@@ -17,8 +17,8 @@ mergeCells?: {
   mergedCellsRegions?: MergedCellsRegion[];
   /** Нужен для mergedCellsRegions: сопоставляет rowKeys со строками. */
   rowKeyGetter?: (row) => string | number;
-  /** Общий дефолт выравнивания контента в блоках. */
-  align?: MergedCellsAlign;
+  /** Общий (табличный) дефолт выравнивания контента в блоках. */
+  mergedCellsAlign?: MergedCellsAlign;
 };
 ```
 
@@ -37,6 +37,18 @@ mergeCells?: {
 Выравнивание контента в блоке. Задаётся на трёх уровнях: `mergedCellsAlign` региона,
 `columnConfig[].mergedCellsAlign` (колонка), `mergeCells.mergedCellsAlign` или
 `rowsGrouping.mergedCellsAlign` (дефолт). Точечное важнее общего.
+
+Колоночный `mergedCellsAlign` — это `MergedCellsAlign` (одно на все блоки колонки) или
+функция `(row) => MergedCellsAlign | undefined` по данным origin-строки блока. Функция
+даёт разное выравнивание разным блокам, включая merged-виды группировки/subRows, где
+границы блоков решает таблица.
+
+```tsx
+columnConfig={[
+  { key: 'dept', mergedCellsAlign: (row) =>
+      row.critical ? { vertical: 'top' } : { vertical: 'center' } },
+]}
+```
 
 <TypeSourceViewer
   language="ts"
