@@ -739,7 +739,13 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         ? { ...cellInfo, theme: { ...theme, ...columnThemeOverrideResult } }
         : cellInfo;
 
-      const jsxElement = renderCell(cellInfoWithThemeOverride);
+      // У слитой ячейки передаём выравнивание блока, чтобы select-ячейка внутри
+      // расположила контент и уголок по высоте всего блока, а не по одной строке.
+      const jsxElement = renderCell(
+        span || spanRows
+          ? { ...cellInfoWithThemeOverride, __mergedCell: { align: spanAlign } }
+          : cellInfoWithThemeOverride
+      );
 
       return applyPendingSelfEditorActivation(
         glideCellRenderer({

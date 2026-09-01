@@ -174,6 +174,10 @@ export type CellInfo<R extends ObjectForExtending, SR = unknown> = {
   hovered: CellHoverState;
   /** Состояние активного выделения для ячейки, которую сейчас рендерит renderCell. */
   active: CellActiveState;
+  // Есть только у верхней-левой ячейки слитого блока. align — выравнивание
+  // блока (пусто = по центру). По нему select-ячейка располагает контент и
+  // уголок по высоте всего блока.
+  __mergedCell?: { align?: SpanCellAlign };
 };
 export type EditingCellInfoGlide<
   R extends ObjectForExtending,

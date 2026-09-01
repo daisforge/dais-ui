@@ -153,6 +153,11 @@ export function CellEditorComboboxInternal<
 
   const value = row[column.key as keyof TRow];
 
+  // Направление раскрытия списка в объединённой ячейке: если контент выровнен по
+  // нижнему краю блока, список открывается ВВЕРХ (placement 'top'), иначе вниз.
+  const placement =
+    column.mergedCellsAlign?.vertical === 'bottom' ? 'top' : 'bottom';
+
   const options = (() => {
     if (
       typeof columnConfigEditing.component === 'function' ||
@@ -197,6 +202,7 @@ export function CellEditorComboboxInternal<
         }
       }}
       items={items}
+      placement={placement}
       /* rest external props */
       {...selectProps}
     />

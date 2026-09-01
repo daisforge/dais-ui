@@ -200,21 +200,29 @@ export const RenderCellGlide = <
   const rowSize = theme.rowSize ?? 'big';
   const cellPaddingInline =
     theme.cellHorizontalPadding ?? DEFAULT_CELL_PADDING_INLINE;
+  // В слитой ячейке контент select идёт за выравниванием блока по высоте
+  // (по умолчанию центр). У обычной ячейки — пусто, поведение прежнее.
+  const mergedCell = renderCellProps.__mergedCell;
+  const mergedVerticalAlign =
+    isSelectColumn && mergedCell
+      ? mergedCell.align?.vertical ?? 'center'
+      : undefined;
+  const mergedHorizontalAlign =
+    isSelectColumn && mergedCell
+      ? mergedCell.align?.horizontal ?? 'left'
+      : undefined;
+  const cellVerticalPadding = theme.cellVerticalPadding;
   const selectCellVisual = {
     rowSize,
     cellPaddingInline,
-    overlayRightOffset: 0,
+    cellVerticalPadding,
+    mergedVerticalAlign,
+    mergedHorizontalAlign,
   };
-  const selectCellVisualInPaddedContainer = {
-    ...selectCellVisual,
-    overlayRightOffset: cellPaddingInline,
-  };
-  // Select-trigger должен лежать внутри hit-bounds своего canvas-parent.
-  // Поэтому правый padding wrapper-а отдаем overlay, а не выводим chevron за parent.
+  // Правый padding wrapper-а отдаём триггеру: chevron лежит внутри hit-bounds
+  // своего canvas-parent, а не выводится за него.
   const getSelectAwareWrapperPadding = (select: boolean): CellPaddingInline =>
     select ? { left: cellPaddingInline, right: 0 } : cellPaddingInline;
-  const getSelectAwareVisual = (select: boolean): typeof selectCellVisual =>
-    select ? selectCellVisual : selectCellVisualInPaddedContainer;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   if ((row as any)?.[SKELETON_ROW_KEY]) {
@@ -271,7 +279,7 @@ export const RenderCellGlide = <
       withSelectIcon(defaultLvl0RenderElement, {
         isSelect: isSelectColumn,
         editModeEnabled,
-        visual: getSelectAwareVisual(isSelectColumn),
+        visual: selectCellVisual,
       }),
       getSelectAwareWrapperPadding(isSelectColumn),
     );
@@ -285,7 +293,7 @@ export const RenderCellGlide = <
         withSelectIcon(defaultLvl0RenderElement, {
           isSelect: isSelectColumn,
           editModeEnabled,
-          visual: getSelectAwareVisual(isSelectColumn),
+          visual: selectCellVisual,
         }),
         getSelectAwareWrapperPadding(isSelectColumn),
       );
@@ -296,7 +304,7 @@ export const RenderCellGlide = <
           isSelect: isSelectColumn,
           editModeEnabled,
           textInCanvasText: 'textInCanvasText',
-          visual: selectCellVisualInPaddedContainer,
+          visual: selectCellVisual,
         })}
         {ExpandDetailButton({ row, handleExpandRowDetail })}
       </>,
@@ -330,7 +338,7 @@ export const RenderCellGlide = <
         withSelectIcon(defaultLvl0RenderElement, {
           isSelect: isSelectColumn,
           editModeEnabled,
-          visual: getSelectAwareVisual(isSelectColumn),
+          visual: selectCellVisual,
         }),
         getSelectAwareWrapperPadding(isSelectColumn),
       );
@@ -349,7 +357,7 @@ export const RenderCellGlide = <
         withSelectIcon(defaultLvl0RenderElement, {
           isSelect: isSelectColumn,
           editModeEnabled,
-          visual: getSelectAwareVisual(isSelectColumn),
+          visual: selectCellVisual,
         }),
         getSelectAwareWrapperPadding(isSelectColumn),
       );
@@ -361,7 +369,7 @@ export const RenderCellGlide = <
             isSelect: isSelectColumn,
             editModeEnabled,
             textInCanvasText: 'textInCanvasText',
-            visual: selectCellVisualInPaddedContainer,
+            visual: selectCellVisual,
           })}
           {ExpandDetailButton({ row, handleExpandRowDetail })}
         </>,
@@ -465,7 +473,7 @@ export const RenderCellGlide = <
       withSelectIcon(defaultLvlNot0RenderElement, {
         isSelect: isSubRowSelectColumn,
         editModeEnabled,
-        visual: getSelectAwareVisual(isSubRowSelectColumn),
+        visual: selectCellVisual,
       }),
       getSelectAwareWrapperPadding(isSubRowSelectColumn),
     );
@@ -478,7 +486,7 @@ export const RenderCellGlide = <
           isSelect: isSubRowSelectColumn,
           editModeEnabled,
           textInCanvasText: 'textInCanvasText',
-          visual: selectCellVisualInPaddedContainer,
+          visual: selectCellVisual,
         })}
         {ExpandDetailButton({ row, handleExpandRowDetail })}
       </>,

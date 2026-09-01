@@ -621,15 +621,32 @@ export const MergedSelectEditing: Story = {
   name: 'Редактирование блока через Select (уголок и превью)',
   ...storySourceDoc({ preCode, previewSource: 'shown' }),
   render: () => {
-    type SRow = { id: number; status: string; owner: string; task: string };
+    type SRow = {
+      id: number;
+      status: string;
+      owner: string;
+      priority: string;
+      stage: string;
+      task: string;
+    };
     const STATUSES = ['В работе', 'Готово', 'Отменено', 'На паузе'];
+    const OWNERS = ['Иванов', 'Петров', 'Сидоров'];
+    const PRIORITIES = ['Высокий', 'Средний', 'Низкий'];
+    // Неслитый Select (per-row) — для проверки обычных ячеек рядом со слитыми.
+    const STAGES = ['Анализ', 'Разработка', 'Тест', 'Релиз'];
+    // Блоки разной высоты: 4 строки, 3 строки, 2 строки. Все три select-колонки
+    // слиты синхронно (одинаковые границы), чтобы сравнить выравнивание на разной
+    // высоте блока.
     const initial: SRow[] = [
-      { id: 1, status: 'В работе', owner: 'Иванов', task: 'Задача 1' },
-      { id: 2, status: 'В работе', owner: 'Иванов', task: 'Задача 2' },
-      { id: 3, status: 'В работе', owner: 'Иванов', task: 'Задача 3' },
-      { id: 4, status: 'Готово', owner: 'Петров', task: 'Задача 4' },
-      { id: 5, status: 'Готово', owner: 'Петров', task: 'Задача 5' },
-      { id: 6, status: 'Отменено', owner: 'Сидоров', task: 'Задача 6' },
+      { id: 1, status: 'В работе', owner: 'Иванов', priority: 'Высокий', stage: 'Анализ', task: 'Задача 1' }, // prettier-ignore
+      { id: 2, status: 'В работе', owner: 'Иванов', priority: 'Высокий', stage: 'Разработка', task: 'Задача 2' }, // prettier-ignore
+      { id: 3, status: 'В работе', owner: 'Иванов', priority: 'Высокий', stage: 'Тест', task: 'Задача 3' }, // prettier-ignore
+      { id: 4, status: 'В работе', owner: 'Иванов', priority: 'Высокий', stage: 'Релиз', task: 'Задача 4' }, // prettier-ignore
+      { id: 5, status: 'Готово', owner: 'Петров', priority: 'Средний', stage: 'Анализ', task: 'Задача 5' }, // prettier-ignore
+      { id: 6, status: 'Готово', owner: 'Петров', priority: 'Средний', stage: 'Разработка', task: 'Задача 6' }, // prettier-ignore
+      { id: 7, status: 'Готово', owner: 'Петров', priority: 'Средний', stage: 'Тест', task: 'Задача 7' }, // prettier-ignore
+      { id: 8, status: 'Отменено', owner: 'Сидоров', priority: 'Низкий', stage: 'Анализ', task: 'Задача 8' }, // prettier-ignore
+      { id: 9, status: 'Отменено', owner: 'Сидоров', priority: 'Низкий', stage: 'Релиз', task: 'Задача 9' }, // prettier-ignore
     ];
 
     const [rows, setRows] = useState<SRow[]>(initial);
@@ -637,8 +654,10 @@ export const MergedSelectEditing: Story = {
     const columns: readonly ColumnConfig<SRow>[] = [
       {
         key: 'status',
-        name: 'Статус (Select, слит)',
-        width: 280,
+        name: 'Статус — низ/лево',
+        width: 220,
+        // Выравнивание контента блока: вертикаль низ, горизонталь лево.
+        mergedCellsAlign: { vertical: 'bottom', horizontal: 'left' },
         editingCell: {
           component: 'select',
           options: {
@@ -649,23 +668,46 @@ export const MergedSelectEditing: Story = {
       },
       {
         key: 'owner',
-        name: 'Ответственный (Select, слит)',
-        width: 260,
+        name: 'Ответственный — низ/право',
+        width: 220,
+        mergedCellsAlign: { vertical: 'bottom', horizontal: 'right' },
         editingCell: {
           component: 'select',
           options: {
             type: 'constant',
-            options: ['Иванов', 'Петров', 'Сидоров'].map((s) => ({
-              text: s,
-              value: s,
-            })),
+            options: OWNERS.map((s) => ({ text: s, value: s })),
+          },
+        },
+      },
+      {
+        key: 'priority',
+        name: 'Приоритет — центр/центр',
+        width: 200,
+        mergedCellsAlign: { vertical: 'center', horizontal: 'center' },
+        editingCell: {
+          component: 'select',
+          options: {
+            type: 'constant',
+            options: PRIORITIES.map((s) => ({ text: s, value: s })),
+          },
+        },
+      },
+      {
+        key: 'stage',
+        name: 'Этап (Select, НЕ слит)',
+        width: 200,
+        editingCell: {
+          component: 'select',
+          options: {
+            type: 'constant',
+            options: STAGES.map((s) => ({ text: s, value: s })),
           },
         },
       },
       {
         key: 'task',
-        name: 'Задача',
-        width: 220,
+        name: 'Задача (текст, не слит)',
+        width: 180,
         editingCell: { component: 'inputString' },
       },
     ];
@@ -673,21 +715,29 @@ export const MergedSelectEditing: Story = {
     return (
       <div>
         <StoryHint>
-          Колонки «Статус» и «Ответственный» — редактируемые <b>Select</b>,
-          слитые по значению (
+          Три Select-колонки слиты по значению (
           <code>
-            mergeByCellValues: [&apos;status&apos;, &apos;owner&apos;]
+            mergeByCellValues: [&apos;status&apos;, &apos;owner&apos;,
+            &apos;priority&apos;]
           </code>
-          ). Наведи на слитый блок — посмотри уголок редактируемой ячейки;
-          кликни — как открывается выпадающий Select и превью на всю площадь
-          блока. Выбор записывается во все строки блока, объединения
-          пересобираются из новых значений.
+          ), блоки высотой 4 / 3 / 2 строки. У каждой колонки своё{' '}
+          <code>mergedCellsAlign</code>: «Статус» — низ/лево, «Ответственный» —
+          низ/право, «Приоритет» — центр по обеим осям. Контент, уголок и превью
+          редактора следуют выравниванию блока (низ → список открывается вверх).
+          Колонки «Этап» (Select) и «Задача» (текст) — <b>не слиты</b>, для
+          сравнения с обычными ячейками. В контрол-блоке — переключатель размера
+          строки и полноэкранный режим.
         </StoryHint>
         <TableCanvas
           tableConfig={{
-            containerStyle: { height: '520px' },
+            containerStyle: { height: '560px' },
             rowMarkers: { startIndex: 1 },
-            mergeCells: { mergeByCellValues: ['status', 'owner'] },
+            columnsControl: { enable: true },
+            rowSize: { default: 'medium', showInControl: true },
+            fullScreenEnabled: true,
+            mergeCells: {
+              mergeByCellValues: ['status', 'owner', 'priority'],
+            },
             cellsSelection: { mode: 'range-cell' },
             editing: {
               onRowsChange: setRows,
