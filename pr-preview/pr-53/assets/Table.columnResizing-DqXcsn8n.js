@@ -1,0 +1,14 @@
+import{j as i}from"./react-D2T61mpp.js";import{c6 as e,c7 as t,c0 as s}from"./vendor-BxGjgi7L.js";import{T as c}from"./Table.columnResizing.stories-B0rsbDyr.js";import"./react-is-Clcustum.js";import"./styled-components-CrE_0Vxv.js";import"./tslib-De9GV7Vy.js";import"./tableData-UCfjiBCh.js";import"./DocStoryTemplate-DqVM6KeB.js";import"./storySourceDoc-tVKyHcEN.js";import"./Table-B1GbLhaP.js";import"./FiltersActions-CqDkm2Ei.js";import"./IconButton-t7GNRJ0_.js";import"./@salutejs/plasma-icons-zpxl9Ixy.js";import"./@salutejs/sdds-finai-T191Q1_H.js";import"./@salutejs/sdds-themes-CZ516YZq.js";import"./utils-Dl3ZmthU.js";import"./constants-DM2G2kGu.js";import"./sharedUtilsDebug-BX_KjCjW.js";import"./Box-CuC6Kpp8.js";import"./TextField-CmtYe8O5.js";import"./sharedUtilsInputs-6OTzfcqY.js";import"./AnalyticalWidget-D9a3c7nn.js";import"./Collapse-B6D0FZE5.js";import"./react-data-grid-CS0ueag1.js";import"./TableTabs-BYiMAJiG.js";import"./TableCanvasSharedConstants-D5ZJAqGq.js";import"./sharedUiSearch-DGlzroNA.js";import"./ListOfFilters-CP-V6ZpH.js";import"./lodash.isequal-DD0Lfcik.js";import"./NumberFormat-BTpAbOAA.js";import"./EmptyState-CtHZcXxH.js";import"./MassActions-BG_CryIr.js";import"./Autocomplete-BkLDte0I.js";function n(r){const o={a:"a",code:"code",h1:"h1",h2:"h2",li:"li",p:"p",ul:"ul",...e(),...r.components};return i.jsxs(i.Fragment,{children:[i.jsx(t,{of:c,name:"Docs"}),`
+`,i.jsx(o.h1,{id:"columnresizing",children:"ColumnResizing"}),`
+`,i.jsxs(o.p,{children:["Изменение ширины колонок в legacy ",i.jsx(o.code,{children:"Table"}),"."]}),`
+`,i.jsx(o.h2,{id:"ключевые-особенности",children:"Ключевые особенности"}),`
+`,i.jsxs(o.ul,{children:[`
+`,i.jsxs(o.li,{children:["Включается через ",i.jsx(o.code,{children:"tableConfig.resizableColumn: true"})]}),`
+`,i.jsxs(o.li,{children:["Для колонки можно задать ",i.jsx(o.code,{children:"resizable"}),", ",i.jsx(o.code,{children:"width"}),", ",i.jsx(o.code,{children:"minWidth"})," и ",i.jsx(o.code,{children:"maxWidth"})]}),`
+`,i.jsxs(o.li,{children:["Совместимо с закреплением колонок через ",i.jsx(o.code,{children:"columnsControl"})]}),`
+`,i.jsxs(o.li,{children:["События изменения ширины доступны через ",i.jsx(o.code,{children:"onColumnResize"})]}),`
+`]}),`
+`,i.jsx(o.h2,{id:"особенности",children:"Особенности"}),`
+`,i.jsxs(o.p,{children:["В старом API флаг ",i.jsx(o.code,{children:"resizable"})," задается на колонках явно. Если используется ",i.jsx(o.code,{children:"columnsControl"}),", учитывайте закрепленные колонки и дефолтные состояния."]}),`
+`,i.jsxs(o.p,{children:["Описание типов - в разделе ",i.jsx(o.a,{href:"?path=/docs/%D0%BB%D0%BE%D0%BA%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D1%8B-table-columnresizing-api--docs",children:"API"}),"."]}),`
+`,i.jsx(s,{})]})}function v(r={}){const{wrapper:o}={...e(),...r.components};return o?i.jsx(o,{...r,children:i.jsx(n,{...r})}):n(r)}export{v as default};
