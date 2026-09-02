@@ -2,10 +2,12 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import type { Meta, StoryObj } from '@storybook/react';
 import { Button } from '@ui-kit/components/Button';
-import { PopupDF } from '@ui-kit/components/PopupDF';
+import { IconButton } from '@ui-kit/components/IconButton';
 import { PopupProvider } from '@ui-kit/components/Popup';
+import { PopupDF } from '@ui-kit/components/PopupDF';
 import { SSRProvider } from '@ui-kit/components/SSRProvider';
 import { br, s } from '@ui-kit/constants';
+import { IconFullscreenOff, IconFullscreenOn } from '@ui-kit/icons';
 import {
   backgroundPrimary,
   outlineAccent,
@@ -137,7 +139,7 @@ function FullscreenExample() {
               frame={frameRef}
               placement="center"
               offset={[0, 0]}
-              size="m"
+              size="l"
               draggable={interactive}
               resizable={
                 interactive
@@ -150,13 +152,19 @@ function FullscreenExample() {
                 title="PopupDF"
                 description="Ресайзи за угол, двигай за шапку, затем «Развернуть»"
                 rightBlock={
-                  <Button
+                  <IconButton
                     size="xs"
                     view="secondary"
+                    pin="circle-circle"
+                    title={fullscreen ? 'Свернуть' : 'Развернуть'}
                     onClick={() => (fullscreen ? collapse() : expand())}
                   >
-                    {fullscreen ? 'Свернуть' : 'Развернуть'}
-                  </Button>
+                    {fullscreen ? (
+                      <IconFullscreenOff size="xs" />
+                    ) : (
+                      <IconFullscreenOn size="xs" />
+                    )}
+                  </IconButton>
                 }
               />
               <PopupDF.Body>
@@ -171,10 +179,10 @@ function FullscreenExample() {
                     gap: s.x4,
                   }}
                 >
-                  <Button size="xs" view="secondary">
+                  <Button size="s" view="secondary">
                     Отмена
                   </Button>
-                  <Button size="xs" view="accent">
+                  <Button size="s" view="accent">
                     Применить
                   </Button>
                 </div>
