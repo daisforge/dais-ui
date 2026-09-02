@@ -785,6 +785,118 @@ function PopupDFSizeLExample() {
   );
 }
 
+const sizeLCode = `import { useRef, useState } from 'react';
+import {
+  Button,
+  IconButton,
+  PopupDF,
+  PopupProvider,
+  SSRProvider,
+} from '@daisforge/ui';
+import { IconFullscreenOff, IconFullscreenOn } from '@daisforge/ui/icons';
+
+// Разворот на весь экран собирается на стороне потребителя из пропсов PopupDF.
+// Паттерн «нормализация -> рост»:
+//   1. на разворот выключаем resizable/draggable — попап возвращается к базовому
+//      центрированному размеру (ремаунт Popup сбрасывает ресайз и drag);
+//   2. следующим тиком анимируем инлайновый style до размеров frame.
+function Example() {
+  const frameRef = useRef(null);
+  const [opened, setOpened] = useState(true);
+  const [fullscreen, setFullscreen] = useState(false);
+  const [interactive, setInteractive] = useState(true);
+
+  const expand = () => {
+    setInteractive(false);
+    window.setTimeout(() => setFullscreen(true), 30);
+  };
+
+  const collapse = () => {
+    setFullscreen(false);
+    window.setTimeout(() => setInteractive(true), 320);
+  };
+
+  const IconFullS = fullscreen ? IconFullscreenOff : IconFullscreenOn;
+
+  const sizeStyle = {
+    width: fullscreen ? 'calc(100% - 48px)' : '600px',
+    height: fullscreen ? 'calc(100% - 48px)' : '600px',
+    maxWidth: '100%',
+    maxHeight: '100%',
+    transition: 'width 280ms ease, height 280ms ease',
+    // grid тянет карточку на всю заданную высоту, иначе внешний узел Popup
+    // сжимается по контенту и height не применяется (600 даёт только ширину).
+    display: 'grid',
+    gridTemplateRows: '1fr',
+    gridTemplateColumns: '1fr',
+  };
+
+  return (
+    <SSRProvider>
+      <PopupProvider>
+        {/* frame — контейнер, внутри которого живёт и разворачивается попап */}
+        <div ref={frameRef} style={{ position: 'relative', minHeight: 720 }}>
+          <PopupDF
+            opened={opened}
+            onToggle={setOpened}
+            frame={frameRef}
+            size="l"
+            placement="center"
+            draggable={interactive}
+            resizable={
+              interactive
+                ? {
+                    // стартовый размер контейнера при включённом resizable
+                    defaultSize: { width: 600, height: 600 },
+                    minWidth: 320,
+                    minHeight: 220,
+                    iconSize: 's',
+                  }
+                : false
+            }
+            style={sizeStyle}
+          >
+            <PopupDF.Header
+              title="Заголовок PopupDF размера L"
+              description="Body S. Двигай за шапку, тяни за угол, разворачивай кнопкой."
+              subHeader={
+                <div style={{ height: 40, display: 'flex', alignItems: 'center' }}>
+                  Кастомный слот
+                </div>
+              }
+              rightBlock={
+                <IconButton
+                  size="xs"
+                  view="secondary"
+                  pin="circle-circle"
+                  title={fullscreen ? 'Свернуть' : 'Развернуть'}
+                  onClick={() => (fullscreen ? collapse() : expand())}
+                >
+                  <IconFullS size="xs" />
+                </IconButton>
+              }
+            />
+            {/* высота 100%, чтобы контент тела рос при ресайзе попапа */}
+            <PopupDF.Body>
+              <div style={{ height: '100%' }}>Контент попапа</div>
+            </PopupDF.Body>
+            <PopupDF.Footer>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 4 }}>
+                <Button size="s" view="secondary">
+                  Отмена
+                </Button>
+                <Button size="s" view="accent">
+                  Применить
+                </Button>
+              </div>
+            </PopupDF.Footer>
+          </PopupDF>
+        </div>
+      </PopupProvider>
+    </SSRProvider>
+  );
+}`;
+
 export const SizeL: Story = {
   name: 'Size L',
   argTypes: simpleArgTypes,
@@ -800,5 +912,6 @@ export const SizeL: Story = {
       },
     },
   },
+  ...storySourceDoc({ code: sizeLCode, previewSource: 'shown' }),
   render: () => <PopupDFSizeLExample />,
 };
