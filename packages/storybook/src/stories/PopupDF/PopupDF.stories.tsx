@@ -795,11 +795,9 @@ import {
 } from '@daisforge/ui';
 import { IconFullscreenOff, IconFullscreenOn } from '@daisforge/ui/icons';
 
-// Разворот на весь экран собирается на стороне потребителя из пропсов PopupDF.
-// Паттерн «нормализация -> рост»:
-//   1. на разворот выключаем resizable/draggable — попап возвращается к базовому
-//      центрированному размеру (ремаунт Popup сбрасывает ресайз и drag);
-//   2. следующим тиком анимируем инлайновый style до размеров frame.
+// Разворот на весь экран собираем сами из пропсов PopupDF:
+// сначала выключаем resizable и draggable, чтобы попап вернулся к обычному
+// размеру, затем следующим тиком плавно растим его до краёв frame.
 function Example() {
   const frameRef = useRef(null);
   const [opened, setOpened] = useState(true);
