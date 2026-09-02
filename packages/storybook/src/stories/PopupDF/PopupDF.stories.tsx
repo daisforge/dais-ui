@@ -4,11 +4,18 @@ import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Button } from '@ui-kit/components/Button';
 import { Flow } from '@ui-kit/components/Flow';
+import { IconButton } from '@ui-kit/components/IconButton';
 import { LinkButton } from '@ui-kit/components/LinkButton';
 import { PopupProvider } from '@ui-kit/components/Popup';
+import type { PopupDFSize } from '@ui-kit/components/PopupDF';
 import { PopupDF } from '@ui-kit/components/PopupDF';
 import { SSRProvider } from '@ui-kit/components/SSRProvider';
 import { br, s } from '@ui-kit/constants';
+import {
+  IconFullscreenOff,
+  IconFullscreenOn,
+  IconInfoCircleOutline,
+} from '@ui-kit/icons';
 import {
   backgroundPrimary,
   outlineAccent,
@@ -53,11 +60,13 @@ type PopupDFStoryArgs = React.ComponentProps<typeof PopupDF> & {
 };
 
 const actionSizeByPopupSize = {
+  l: 's',
   m: 'xs',
   s: 'xxs',
 } as const;
 
 const linkButtonSizeByPopupSize = {
+  l: 's',
   m: 'xs',
   s: 'xxs',
 } as const;
@@ -237,7 +246,7 @@ const meta: Meta<PopupDFStoryArgs> = {
   },
   argTypes: {
     size: {
-      options: ['m', 's'],
+      options: ['l', 'm', 's'],
       control: { type: 'inline-radio' },
     },
     placement: {
@@ -401,11 +410,17 @@ function HeaderSlot() {
   return <div style={slotBoxStyle}>subHeader</div>;
 }
 
-function RightBlockSlot({ size = 'm' }: { size?: 's' | 'm' }) {
+const rightBlockHeightByPopupSize = {
+  l: '32px',
+  m: '32px',
+  s: '24px',
+} as const;
+
+function RightBlockSlot({ size = 'm' }: { size?: PopupDFSize }) {
   return (
     <div
       style={{
-        height: size === 's' ? '24px' : '32px',
+        height: rightBlockHeightByPopupSize[size],
         display: 'flex',
         alignItems: 'center',
         padding: '0 8px',
@@ -425,7 +440,7 @@ function BodySlot() {
   return <div style={bodyBoxStyle}>PopupDF.Body</div>;
 }
 
-function FooterActions({ size = 'm' }: { size?: 's' | 'm' }) {
+function FooterActions({ size = 'm' }: { size?: PopupDFSize }) {
   const actionSize = actionSizeByPopupSize[size];
   const linkButtonSize = linkButtonSizeByPopupSize[size];
 
@@ -604,4 +619,297 @@ export const Playground: Story = {
   name: 'Playground',
   ...storySourceDoc({ code: playgroundCode, previewSource: 'shown' }),
   render: (args) => renderInStage(<PopupDFPlaygroundExample {...args} />),
+};
+
+const SIZE_L_ANIM_MS = 280;
+const SIZE_L_BASE_WIDTH = 600;
+const SIZE_L_BASE_HEIGHT = 600;
+// Отступ фуллскрина от краёв frame со всех сторон.
+const SIZE_L_FULLSCREEN_GAP = 24;
+
+// Отдельная сцена/фрейм под пример Size L: крупнее обычного, чтобы дефолтный
+// попап 600x600 помещался с запасом на drag/resize и разворот.
+const sizeLStageStyle: React.CSSProperties = {
+  minHeight: '820px',
+  display: 'flex',
+  alignItems: 'flex-start',
+  justifyContent: 'center',
+  padding: s.x16,
+  backgroundColor: backgroundPrimary,
+};
+
+const sizeLFrameStyle: React.CSSProperties = {
+  position: 'relative',
+  width: '100%',
+  maxWidth: '960px',
+  minHeight: '720px',
+  background: surfaceTransparentPositive,
+  borderRadius: br.l,
+  overflow: 'hidden',
+  padding: s.x8,
+};
+
+// Синий блок body тянется на всю высоту (height: 100%), поэтому при ресайзе
+// попапа по высоте он растёт вместе с телом, а не остаётся минимальным.
+const sizeLBodyStyle: React.CSSProperties = {
+  height: '100%',
+  boxSizing: 'border-box',
+  border: `1px solid ${outlineAccent}`,
+  background: surfaceAccentMinor,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  color: surfaceInfo,
+  padding: '12px',
+};
+
+// Кастомный слот subHeader под description. Компонент высоту не навязывает —
+// задаём контентом (здесь простой слот с иконкой, высота около 40px).
+const sizeLSubHeaderStyle: React.CSSProperties = {
+  height: '40px',
+  display: 'flex',
+  alignItems: 'center',
+  gap: '8px',
+  padding: '0 12px',
+  border: `1px solid ${outlineAccent}`,
+  background: surfaceAccentMinor,
+  color: surfaceInfo,
+  boxSizing: 'border-box',
+};
+
+function PopupDFSizeLExample() {
+  const [opened, setOpened] = useState(true);
+  const [fullscreen, setFullscreen] = useState(false);
+  // interactive: resizable + draggable включены в обычном режиме,
+  // выключаются на время фуллскрина (нормализация до базового вида).
+  const [interactive, setInteractive] = useState(true);
+
+  const expand = () => {
+    setInteractive(false);
+    window.setTimeout(() => setFullscreen(true), 30);
+  };
+
+  const collapse = () => {
+    setFullscreen(false);
+    window.setTimeout(() => setInteractive(true), SIZE_L_ANIM_MS + 40);
+  };
+
+  const IconFullS = fullscreen ? IconFullscreenOff : IconFullscreenOn;
+
+  const sizeStyle: React.CSSProperties = {
+    width: fullscreen
+      ? `calc(100% - ${SIZE_L_FULLSCREEN_GAP * 2}px)`
+      : `${SIZE_L_BASE_WIDTH}px`,
+    height: fullscreen
+      ? `calc(100% - ${SIZE_L_FULLSCREEN_GAP * 2}px)`
+      : `${SIZE_L_BASE_HEIGHT}px`,
+    maxWidth: '100%',
+    maxHeight: '100%',
+    transition: `width ${SIZE_L_ANIM_MS}ms ease, height ${SIZE_L_ANIM_MS}ms ease`,
+    // grid c одной строкой/колонкой 1fr тянет внутреннюю карточку на всю
+    // заданную высоту. Без него внешний узел Popup сжимается по контенту
+    // (заполняется только ширина) и height здесь игнорируется — нужен всегда,
+    // не только во фуллскрине, иначе дефолтные 600x600 дают 600 по ширине и
+    // высоту по контенту.
+    display: 'grid',
+    gridTemplateRows: '1fr',
+    gridTemplateColumns: '1fr',
+  };
+
+  const frameRef = useRef<HTMLDivElement>(null);
+
+  return (
+    <SSRProvider>
+      <PopupProvider>
+        <div style={sizeLStageStyle}>
+          <div ref={frameRef} style={sizeLFrameStyle}>
+            <Button onClick={() => setOpened(true)}>Открыть PopupDF</Button>
+            <PopupDF
+              opened={opened}
+              onToggle={setOpened}
+              frame={frameRef}
+              size="l"
+              placement="center"
+              offset={[0, 0]}
+              draggable={interactive}
+              resizable={
+                interactive
+                  ? {
+                      // Стартовый размер resizable-контейнера. Именно он (а не
+                      // style) задаёт размер, когда resizable включён — иначе
+                      // контейнер садится на minHeight/контент.
+                      defaultSize: {
+                        width: SIZE_L_BASE_WIDTH,
+                        height: SIZE_L_BASE_HEIGHT,
+                      },
+                      minWidth: 320,
+                      minHeight: 220,
+                      iconSize: 's',
+                    }
+                  : false
+              }
+              style={sizeStyle}
+            >
+              <PopupDF.Header
+                title="Заголовок PopupDF размера L"
+                description="Body S. Двигай за шапку, тяни за угол, разворачивай кнопкой."
+                subHeader={
+                  <div style={sizeLSubHeaderStyle}>
+                    <IconInfoCircleOutline size="xs" />
+                    <span>Кастомный слот</span>
+                  </div>
+                }
+                rightBlock={
+                  <IconButton
+                    size="xs"
+                    view="secondary"
+                    pin="circle-circle"
+                    title={fullscreen ? 'Свернуть' : 'Развернуть'}
+                    onClick={() => (fullscreen ? collapse() : expand())}
+                  >
+                    <IconFullS size="xs" />
+                  </IconButton>
+                }
+              />
+              <PopupDF.Body>
+                <div style={sizeLBodyStyle}>PopupDF.Body</div>
+              </PopupDF.Body>
+              <PopupDF.Footer>
+                <FooterActions size="l" />
+              </PopupDF.Footer>
+            </PopupDF>
+          </div>
+        </div>
+      </PopupProvider>
+    </SSRProvider>
+  );
+}
+
+const sizeLCode = `import { useRef, useState } from 'react';
+import {
+  Button,
+  IconButton,
+  PopupDF,
+  PopupProvider,
+  SSRProvider,
+} from '@daisforge/ui';
+import { IconFullscreenOff, IconFullscreenOn } from '@daisforge/ui/icons';
+
+// Разворот на весь экран собираем сами из пропсов PopupDF:
+// сначала выключаем resizable и draggable, чтобы попап вернулся к обычному
+// размеру, затем следующим тиком плавно растим его до краёв frame.
+function Example() {
+  const frameRef = useRef(null);
+  const [opened, setOpened] = useState(true);
+  const [fullscreen, setFullscreen] = useState(false);
+  const [interactive, setInteractive] = useState(true);
+
+  const expand = () => {
+    setInteractive(false);
+    window.setTimeout(() => setFullscreen(true), 30);
+  };
+
+  const collapse = () => {
+    setFullscreen(false);
+    window.setTimeout(() => setInteractive(true), 320);
+  };
+
+  const IconFullS = fullscreen ? IconFullscreenOff : IconFullscreenOn;
+
+  const sizeStyle = {
+    width: fullscreen ? 'calc(100% - 48px)' : '600px',
+    height: fullscreen ? 'calc(100% - 48px)' : '600px',
+    maxWidth: '100%',
+    maxHeight: '100%',
+    transition: 'width 280ms ease, height 280ms ease',
+    // grid тянет карточку на всю заданную высоту, иначе внешний узел Popup
+    // сжимается по контенту и height не применяется (600 даёт только ширину).
+    display: 'grid',
+    gridTemplateRows: '1fr',
+    gridTemplateColumns: '1fr',
+  };
+
+  return (
+    <SSRProvider>
+      <PopupProvider>
+        {/* frame — контейнер, внутри которого живёт и разворачивается попап */}
+        <div ref={frameRef} style={{ position: 'relative', minHeight: 720 }}>
+          <PopupDF
+            opened={opened}
+            onToggle={setOpened}
+            frame={frameRef}
+            size="l"
+            placement="center"
+            draggable={interactive}
+            resizable={
+              interactive
+                ? {
+                    // стартовый размер контейнера при включённом resizable
+                    defaultSize: { width: 600, height: 600 },
+                    minWidth: 320,
+                    minHeight: 220,
+                    iconSize: 's',
+                  }
+                : false
+            }
+            style={sizeStyle}
+          >
+            <PopupDF.Header
+              title="Заголовок PopupDF размера L"
+              description="Body S. Двигай за шапку, тяни за угол, разворачивай кнопкой."
+              subHeader={
+                <div style={{ height: 40, display: 'flex', alignItems: 'center' }}>
+                  Кастомный слот
+                </div>
+              }
+              rightBlock={
+                <IconButton
+                  size="xs"
+                  view="secondary"
+                  pin="circle-circle"
+                  title={fullscreen ? 'Свернуть' : 'Развернуть'}
+                  onClick={() => (fullscreen ? collapse() : expand())}
+                >
+                  <IconFullS size="xs" />
+                </IconButton>
+              }
+            />
+            {/* высота 100%, чтобы контент тела рос при ресайзе попапа */}
+            <PopupDF.Body>
+              <div style={{ height: '100%' }}>Контент попапа</div>
+            </PopupDF.Body>
+            <PopupDF.Footer>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 4 }}>
+                <Button size="s" view="secondary">
+                  Отмена
+                </Button>
+                <Button size="s" view="accent">
+                  Применить
+                </Button>
+              </div>
+            </PopupDF.Footer>
+          </PopupDF>
+        </div>
+      </PopupProvider>
+    </SSRProvider>
+  );
+}`;
+
+export const SizeL: Story = {
+  name: 'Size L',
+  argTypes: simpleArgTypes,
+  args: {},
+  parameters: {
+    controls: {
+      disable: true,
+      exclude: /.*/,
+    },
+    docs: {
+      controls: {
+        exclude: /.*/,
+      },
+    },
+  },
+  ...storySourceDoc({ code: sizeLCode, previewSource: 'shown' }),
+  render: () => <PopupDFSizeLExample />,
 };

@@ -25,6 +25,16 @@ const sizeMap: Record<
     rightBlockMaxHeight: string;
   }
 > = {
+  l: {
+    titleDescriptionGap: s.x2,
+    sectionInnerGap: s.x4,
+    sectionGap: '16px',
+    contentPadding: '16px',
+    subHeaderBottomGap: '0',
+    rightBlockGap: s.x3,
+    rightBlockToCloseGap: s.x6,
+    rightBlockMaxHeight: '32px',
+  },
   m: {
     titleDescriptionGap: s.x2,
     sectionInnerGap: s.x4,
