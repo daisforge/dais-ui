@@ -16,6 +16,7 @@ export type SubRows<RowType, RowIdType> = {
   /**
    * Внешний стейт развёрнутых строк.
    * Если не задан — используется внутренний useState.
+   * При view: 'merged' не используется: сворачивания в этом виде нет.
    */
   expandedIdsState?: [
     Set<string | number>,
