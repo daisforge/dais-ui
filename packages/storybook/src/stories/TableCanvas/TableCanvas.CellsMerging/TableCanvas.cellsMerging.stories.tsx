@@ -50,7 +50,7 @@ const HIGHLIGHT_ACTIVE_TYPE_OPTIONS: Array<{
 
 const ROW_SPAN_BASIC_CODE = `
 import { useMemo, useRef, useState } from 'react';
-import { Select } from '@daisforge/ui/components/Select';
+import { Select } from '@daisforge/ui';
 import {
   Canvas,
   type CellsSelectionMode,
@@ -196,11 +196,15 @@ export const Example = () => {
 };
 `;
 
-// Базовый rowSpan: role/dept ПОВТОРЯЮТСЯ в данных по блоку из 3 строк (объединение —
-// чистый UI-фасад над повторяющимися значениями), period/plan/fact — свои у строки.
+// Базовый rowSpan: role/dept повторяются в данных блоками по 3 строки, объединение
+// только показывает повторы одной ячейкой; period/plan/fact — свои у строки.
 export const RowSpanBasic: Story = {
   name: 'mergeByCellValues: объединение по значению',
-  ...storySourceDoc({ code: ROW_SPAN_BASIC_CODE, type: 'code', previewSource: 'shown' }),
+  ...storySourceDoc({
+    code: ROW_SPAN_BASIC_CODE,
+    type: 'code',
+    previewSource: 'shown',
+  }),
   render: () => {
     type MRow = {
       id: number;
@@ -306,10 +310,9 @@ export const RowSpanBasic: Story = {
         </div>
 
         <StoryHint>
-          <b>Роль</b> и <b>Отдел</b> слиты блоками по 3 строки. Значения РЕАЛЬНО
-          повторяются в данных (Аналитик×3, Отдел A×3) — объединение только
-          UI-фасад, скрытых других значений нет. Период/План/Факт — свои у
-          строки.
+          «Роль» и «Отдел» слиты блоками по три строки: значения в этих строках
+          действительно одинаковые, объединение просто показывает их одной
+          ячейкой. Остальные колонки обычные.
         </StoryHint>
 
         <TableCanvas
@@ -456,7 +459,11 @@ export const Example = () => {
 
 export const DerivedGroupingSortFilter: Story = {
   name: 'mergeByCellValues: сортировка и фильтр',
-  ...storySourceDoc({ code: DERIVED_GROUPING_SORT_FILTER_CODE, type: 'code', previewSource: 'shown' }),
+  ...storySourceDoc({
+    code: DERIVED_GROUPING_SORT_FILTER_CODE,
+    type: 'code',
+    previewSource: 'shown',
+  }),
   render: () => {
     type GRow = {
       id: number;
@@ -525,14 +532,9 @@ export const DerivedGroupingSortFilter: Story = {
     return (
       <div>
         <StoryHint>
-          <code>
-            mergeCells.mergeByCellValues: [&apos;role&apos;, &apos;dept&apos;]
-          </code>{' '}
-          — обёртка сама объединяет эти колонки по подряд идущим одинаковым
-          значениям. Отсортируй по <b>Роль</b> → блоки соберутся; по <b>План</b>{' '}
-          → роли перемешаются и блоки распадутся; фильтр по роли (в шапке
-          колонки «Роль») → блоки сожмутся. Всё пересобирается САМО, без ручного
-          кода в стори.
+          Таблица сама сливает соседние одинаковые значения. Отсортируй по
+          «Роль» — блоки соберутся, по «План» — распадутся; фильтр в шапке
+          «Роли» тоже пересобирает блоки.
         </StoryHint>
         <TableCanvas
           tableConfig={{
@@ -556,9 +558,9 @@ export const DerivedGroupingSortFilter: Story = {
   },
 };
 
-// mergeByCellValues + редактирование: правка значения ячейки перестраивает блоки (объединение
-// derived из значения). Отредактируй «Регион» у origin-строки блока → блок разъедется.
-// Больше данных (6 регионов × 4 строки) — виден масштаб и вложенность region/team.
+// mergeByCellValues + редактирование: правка значения перестраивает блоки, ведь
+// объединение выводится из данных. Измени «Регион» у блока, и он разъедется.
+// Данных побольше (6 регионов по 4 строки), чтобы была видна вложенность region/team.
 const SPAN_BY_WITH_EDITING_CODE = `
 import { useRef, useState } from 'react';
 import {
@@ -609,7 +611,7 @@ export const Example = () => {
   const [rows, setRows] = useState<Row[]>(INITIAL_ROWS);
   const beforeEditRef = useRef(rows);
 
-  // Правка значения перестраивает блоки: объединение derived из значения.
+  // Правка значения перестраивает блоки: объединение выводится из данных.
   return (
     <TableCanvas
       tableConfig={{
@@ -645,7 +647,11 @@ export const Example = () => {
 
 export const SpanByWithEditing: Story = {
   name: 'mergeByCellValues: редактирование',
-  ...storySourceDoc({ code: SPAN_BY_WITH_EDITING_CODE, type: 'code', previewSource: 'shown' }),
+  ...storySourceDoc({
+    code: SPAN_BY_WITH_EDITING_CODE,
+    type: 'code',
+    previewSource: 'shown',
+  }),
   render: () => {
     type ERow = { id: number; region: string; team: string; person: string };
     const REGIONS = ['Север', 'Юг', 'Запад', 'Восток', 'Центр', 'Урал'];
@@ -690,11 +696,9 @@ export const SpanByWithEditing: Story = {
     return (
       <div>
         <StoryHint>
-          <code>mergeByCellValues: [&apos;region&apos;, &apos;team&apos;]</code>
-          . Регион слит блоками по 4 строки, команда — по 2 (вложенно).
-          Отредактируй значение «Регион» у верхней строки блока → блок
-          разъедется, объединения пересоберутся из новых значений. Данные
-          обычные, merge — только визуал.
+          Правка пересобирает блоки: измени «Регион» у блока, и он разъедется
+          или сольётся с соседним. В данных значения просто повторяются,
+          объединение — только способ показа.
         </StoryHint>
         <TableCanvas
           tableConfig={{
@@ -867,7 +871,11 @@ export const Example = () => {
 
 export const MergedSelectEditing: Story = {
   name: 'Select в объединённой ячейке',
-  ...storySourceDoc({ code: MERGED_SELECT_EDITING_CODE, type: 'code', previewSource: 'shown' }),
+  ...storySourceDoc({
+    code: MERGED_SELECT_EDITING_CODE,
+    type: 'code',
+    previewSource: 'shown',
+  }),
   render: () => {
     type SRow = {
       id: number;
@@ -964,18 +972,10 @@ export const MergedSelectEditing: Story = {
     return (
       <div>
         <StoryHint>
-          Три Select-колонки слиты по значению (
-          <code>
-            mergeByCellValues: [&apos;status&apos;, &apos;owner&apos;,
-            &apos;priority&apos;]
-          </code>
-          ), блоки высотой 4 / 3 / 2 строки. У каждой колонки своё{' '}
-          <code>mergedCellsAlign</code>: «Статус» — низ/лево, «Ответственный» —
-          низ/право, «Приоритет» — центр по обеим осям. Контент, уголок и превью
-          редактора следуют выравниванию блока (низ → список открывается вверх).
-          Колонки «Этап» (Select) и «Задача» (текст) — <b>не слиты</b>, для
-          сравнения с обычными ячейками. В контрол-блоке — переключатель размера
-          строки и полноэкранный режим.
+          Три select-колонки слиты, у каждой своё выравнивание: низ-лево,
+          низ-право и центр. Кликни по блоку: редактор откроется у выровненного
+          края, у нижних список раскрывается вверх. «Этап» и «Задача» не слиты —
+          для сравнения.
         </StoryHint>
         <TableCanvas
           tableConfig={{
@@ -1028,9 +1028,9 @@ type Row = {
   b: string;
 };
 
-// Инвариант блочной модели: данные под блоком одинаковы во ВСЕХ его ячейках.
-// Блок показывает origin (левую верхнюю видимую ячейку), и при пине/реордере
-// origin может переехать на другую колонку — заголовок должен остаться видимым.
+// Правило блока: данные одинаковы во всех его ячейках. Блок показывает свою
+// левую верхнюю видимую ячейку, а после закрепления или перестановки колонок
+// ею может стать другая колонка — заголовок при этом останется видимым.
 const buildRows = (): Row[] => {
   const out: Row[] = [];
   let id = 1;
@@ -1078,7 +1078,7 @@ export const Example = () => {
   const beforeEditRef = useRef(rows);
 
   // Заголовки секций через controlled-список regions: каждая header-строка
-  // сливает все 3 колонки (label, a, b). Резолв по id строки.
+  // сливает все 3 колонки (label, a, b). Строки находятся по id.
   const regions = useMemo(
     () =>
       rows
@@ -1127,7 +1127,11 @@ export const Example = () => {
 // Colspan: строки-заголовки секций, первая колонка спанит всю ширину.
 export const Colspan: Story = {
   name: 'mergedCellsRegions: заголовки секций',
-  ...storySourceDoc({ code: COLSPAN_CODE, type: 'code', previewSource: 'shown' }),
+  ...storySourceDoc({
+    code: COLSPAN_CODE,
+    type: 'code',
+    previewSource: 'shown',
+  }),
   render: () => {
     type MRow = {
       id: number;
@@ -1139,10 +1143,10 @@ export const Colspan: Story = {
     const initialRows: MRow[] = [];
     let id = 1;
     for (let s = 0; s < 3; s += 1) {
-      // Инвариант блочной модели: данные под блоком одинаковы во ВСЕХ его
-      // ячейках. Блок показывает origin (левую верхнюю ВИДИМУЮ ячейку), и при
-      // пине/реордере origin может переехать на другую колонку — заголовок
-      // должен остаться видимым.
+      // Правило блока: данные одинаковы во всех его ячейках. Блок показывает
+      // свою левую верхнюю видимую ячейку, а после закрепления или перестановки
+      // колонок ею может стать другая колонка — заголовок при этом останется
+      // видимым.
       initialRows.push({
         id: id++,
         kind: 'header',
@@ -1165,7 +1169,7 @@ export const Colspan: Story = {
     const beforeEditRef = useRef(rows);
 
     // Заголовки секций через controlled-список regions: каждая header-строка
-    // сливает все 3 колонки (label, a, b). Резолв по id строки.
+    // сливает все 3 колонки (label, a, b). Строки находятся по id.
     const regions = useMemo(
       () =>
         rows
@@ -1205,15 +1209,10 @@ export const Colspan: Story = {
     return (
       <div>
         <StoryHint>
-          Строки-заголовки секций слиты на всю ширину через{' '}
-          <code>mergeCells.mergedCellsRegions</code> (список header-строк,
-          colKeys — все колонки). Данные-строки — обычные.
-          Редактирование/протяжка/копирование включены — проверяем
-          overlay-редактор и перенос на merged.
+          Строки-заголовки секций слиты на всю ширину списком регионов. Обычные
+          строки редактируются как всегда; правка заголовка меняет всю его
+          строку.
         </StoryHint>
-        <pre style={{ fontSize: 12, color: '#666', marginBottom: 8 }}>
-          mergedCellsRegions = {JSON.stringify(regions)}
-        </pre>
         <TableCanvas
           tableConfig={{
             containerStyle: { height: '520px' },
@@ -1277,7 +1276,7 @@ const regions = [{ rowKeys: [2, 3, 4], colKeys: ['a', 'b'] }];
 const columns: readonly ColumnConfig<Row>[] = [
   {
     key: 'a',
-    name: 'A (origin)',
+    name: 'A (значение блока)',
     width: 160,
     editingCell: { component: 'inputString' },
     renderCell: ({ row, rowInd, theme }) => (
@@ -1347,7 +1346,11 @@ export const Example = () => {
 // Прямоугольный блок cols×rows через controlled-список mergeCells.mergedCellsRegions.
 export const Rectangular: Story = {
   name: 'mergedCellsRegions: прямоугольный блок',
-  ...storySourceDoc({ code: RECTANGULAR_CODE, type: 'code', previewSource: 'shown' }),
+  ...storySourceDoc({
+    code: RECTANGULAR_CODE,
+    type: 'code',
+    previewSource: 'shown',
+  }),
   render: () => {
     type MRow = { id: number; a: string; b: string; c: string; d: string };
     const initialRows: MRow[] = Array.from({ length: 10 }, (_, i) => ({
@@ -1370,7 +1373,7 @@ export const Rectangular: Story = {
     const columns: readonly ColumnConfig<MRow>[] = [
       {
         key: 'a',
-        name: 'A (origin)',
+        name: 'A (значение блока)',
         width: 160,
         editingCell: { component: 'inputString' },
         renderCell: ({ row, rowInd, theme }) => (
@@ -1410,14 +1413,10 @@ export const Rectangular: Story = {
     return (
       <div>
         <StoryHint>
-          Прямоугольный блок 2×3 (колонки A,B × строки 2–4) — через{' '}
-          <code>mergeCells.mergedCellsRegions</code> (id строк 2–4 + ключи
-          колонок A,B). Редактирование/протяжка/копирование включены — проверяем
-          overlay на блоке и перенос.
+          Блок два на три задан регионом: ключи строк и ключи колонок. Кликни —
+          выделится целиком; стрелки перепрыгивают блок; правка пишет во весь
+          блок.
         </StoryHint>
-        <pre style={{ fontSize: 12, color: '#666', marginBottom: 8 }}>
-          mergedCellsRegions = {JSON.stringify(regions)}
-        </pre>
         <TableCanvas
           tableConfig={{
             containerStyle: { height: '520px' },
@@ -1458,13 +1457,13 @@ export const Rectangular: Story = {
   },
 };
 
-// Controlled-список: объединения задаются ВНЕШНИМ стейтом mergeCells.mergedCellsRegions (id строк
-// + ключи колонок) и управляются кнопками (re-merge на лету). Резолвится по
-// ключам/id → переживает hide/reorder; при разрыве смежности (сортировка) регион
-// не рисуется, как ограничения sort в Excel.
+// Список объединений живёт во внешнем стейте mergeCells.mergedCellsRegions (id строк
+// и ключи колонок), кнопки меняют его на лету. Блоки привязаны к ключам, поэтому
+// переживают скрытие и перестановку колонок; если сортировка разорвала строки
+// региона, он не рисуется — как ограничение сортировки в Excel.
 const CONTROLLED_SPANS_CODE = `
 import { useState } from 'react';
-import { Button } from '@daisforge/ui/components/Button';
+import { Button } from '@daisforge/ui';
 import {
   type ColumnConfig,
   type MergedCellsRegion,
@@ -1507,8 +1506,9 @@ const columns: readonly ColumnConfig<Row>[] = [
 
 export const Example = () => {
   // Объединения — во внешнем стейте: список регионов по id строк и ключам
-  // колонок. Merge переживает hide/reorder (резолв по ключам); при разрыве
-  // смежности (сортировка) регион не рисуется, как ограничения sort в Excel.
+  // колонок. Блоки привязаны к ключам, поэтому переживают скрытие и перестановку
+  // колонок; если сортировка разорвала строки региона, он не рисуется — как
+  // ограничение сортировки в Excel.
   const [regions, setRegions] = useState<MergedCellsRegion[]>([
     { rowKeys: [1, 2, 3], colKeys: ['dept'] },
   ]);
@@ -1573,7 +1573,11 @@ export const Example = () => {
 
 export const ControlledSpans: Story = {
   name: 'mergedCellsRegions: управление кнопками',
-  ...storySourceDoc({ code: CONTROLLED_SPANS_CODE, type: 'code', previewSource: 'shown' }),
+  ...storySourceDoc({
+    code: CONTROLLED_SPANS_CODE,
+    type: 'code',
+    previewSource: 'shown',
+  }),
   render: () => {
     type CRow = {
       id: number;
@@ -1623,12 +1627,10 @@ export const ControlledSpans: Story = {
     return (
       <div>
         <StoryHint>
-          Объединения — во ВНЕШНЕМ стейте{' '}
-          <code>mergeCells.mergedCellsRegions</code> (id строк + ключи колонок),
-          управляются кнопками. Скрой/переставь колонку через шестерёнку — merge
-          переживает (резолв по ключам). Отсортируй по <b>План</b> → регион с
-          разбежавшимися строками перестаёт рисоваться (как ограничения sort в
-          Excel).
+          Объединениями управляют кнопки: список блоков хранится у потребителя.
+          Отсортируй по «План» — блок с разъехавшимися строками перестанет
+          рисоваться; сними сортировку — вернётся. Скрытие и перестановку
+          колонок блоки переживают.
         </StoryHint>
         <div
           style={{ display: 'flex', gap: 8, marginBottom: 8, flexWrap: 'wrap' }}
@@ -1651,7 +1653,11 @@ export const ControlledSpans: Story = {
             view="secondary"
             size="s"
             onClick={() =>
-              toggle({ rowKeys: [1, 2, 3], colKeys: ['dept', 'role'], mergedCellsAlign: { horizontal: 'center', vertical: 'center' } })
+              toggle({
+                rowKeys: [1, 2, 3],
+                colKeys: ['dept', 'role'],
+                mergedCellsAlign: { horizontal: 'center', vertical: 'center' },
+              })
             }
           >
             Прямоугольник 1-3 × Отдел+Роль (центр)
@@ -1660,9 +1666,6 @@ export const ControlledSpans: Story = {
             Очистить
           </Button>
         </div>
-        <pre style={{ fontSize: 12, color: '#666', marginBottom: 8 }}>
-          mergedCellsRegions = {JSON.stringify(regions)}
-        </pre>
         <TableCanvas
           tableConfig={{
             containerStyle: { height: '520px' },
@@ -1686,7 +1689,7 @@ export const ControlledSpans: Story = {
 
 const FORMAT_IN_BLOCK_CODE = `
 import { useState } from 'react';
-import { Button } from '@daisforge/ui/components/Button';
+import { Button } from '@daisforge/ui';
 import {
   Canvas,
   type ColumnConfig,
@@ -1792,7 +1795,12 @@ export const Example = () => {
           rowSize: { default: 'medium', showInControl: true },
           fullScreenEnabled: true,
           mergeCells: {
-            mergeByCellValues: ['dept', 'role'],
+            mergeByCellValues: [
+              'dept',
+              // Составной ключ: «Разработчик» из разных отделов не сольётся
+              // в один блок, слияние обрывается на границе отдела.
+              { colKey: 'role', value: (r) => \`\${r.dept}:\${r.role}\` },
+            ],
             mergedCellsRegions: regions,
             rowKeyGetter: (r) => r.id,
           },
@@ -1896,11 +1904,9 @@ export const FormatInBlock: Story = {
     return (
       <div>
         <StoryHint>
-          «Отдел» и «Роль» слиты по значению: блок роли рисуется своим рендером
-          (бейдж по центру). Кнопкой можно слить «План+Факт» строк 1–2 в
-          прямоугольник: блок покажет значение и числовой формат верхней-левой
-          ячейки (План, выравнивание вправо) — формат покрытой колонки «Факт»
-          (₽) на блок не влияет.
+          Блок показывает свою первую ячейку: у «Роли» — свой рендер (бейдж), у
+          «Плана» — числовой формат. Слей «План+Факт» кнопкой: блок возьмёт
+          значение и формат «Плана», формат «Факта» не участвует.
         </StoryHint>
         <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
           <Button
@@ -1924,7 +1930,12 @@ export const FormatInBlock: Story = {
             rowSize: { default: 'medium', showInControl: true },
             fullScreenEnabled: true,
             mergeCells: {
-              mergeByCellValues: ['dept', 'role'],
+              mergeByCellValues: [
+                'dept',
+                // Составной ключ: «Разработчик» из разных отделов не сольётся
+                // в один блок, слияние обрывается на границе отдела.
+                { colKey: 'role', value: (r) => `${r.dept}:${r.role}` },
+              ],
               mergedCellsRegions: regions,
               rowKeyGetter: (r) => r.id,
             },
