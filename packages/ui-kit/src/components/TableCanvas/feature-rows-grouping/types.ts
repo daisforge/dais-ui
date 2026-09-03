@@ -177,6 +177,11 @@ export type ColumnRowsGrouping<
    * @default ColumnConfig.key
    */
   columnGroupLabel?: string;
+  /**
+   * Свой контент ячейки строки-группы. Работает только в виде дерева: при
+   * view: 'merged' строк-групп нет (группы показаны объединёнными ячейками),
+   * поэтому этот рендер не вызывается.
+   */
   renderGroupCell?: (
     props: RenderGroupCellProps<RowType, ColumnConfig>,
   ) => CanvasContent;

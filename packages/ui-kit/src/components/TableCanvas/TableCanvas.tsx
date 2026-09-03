@@ -174,7 +174,11 @@ export function TableCanvas<
   const selectingRows = useMemo(() => {
     const sr = tableConfig?.subRows;
     if (isMergedSubRowsView(sr) && sr?.getSubRows && sr?.mergedColumns) {
-      return flattenSubRowsToMergedLeaves(rows, sr.getSubRows, sr.mergedColumns);
+      return flattenSubRowsToMergedLeaves(
+        rows,
+        sr.getSubRows,
+        sr.mergedColumns,
+      );
     }
     return rows;
     // eslint-disable-next-line react-hooks/exhaustive-deps
