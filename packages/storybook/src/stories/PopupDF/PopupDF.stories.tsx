@@ -71,6 +71,13 @@ const linkButtonSizeByPopupSize = {
   s: 'xxs',
 } as const;
 
+// Отступ LinkButton до группы кнопок в футере: 16 / 12 / 8 по размеру.
+const linkToGroupGapByPopupSize = {
+  l: s.x8,
+  m: s.x6,
+  s: s.x4,
+} as const;
+
 const popupPlacements = [
   'center',
   'top',
@@ -451,17 +458,17 @@ function FooterActions({ size = 'm' }: { size?: PopupDFSize }) {
         display: 'flex',
         justifyContent: 'flex-end',
         alignItems: 'center',
-        gap: s.x4,
+        gap: linkToGroupGapByPopupSize[size],
       }}
     >
+      <LinkButton
+        href="/"
+        size={linkButtonSize}
+        onClick={(e) => e.preventDefault()}
+      >
+        LinkButton
+      </LinkButton>
       <Flow mainAxisGap={s.x2}>
-        <LinkButton
-          href="/"
-          size={linkButtonSize}
-          onClick={(e) => e.preventDefault()}
-        >
-          LinkButton
-        </LinkButton>
         <Button size={actionSize} view="secondary">
           Label
         </Button>
@@ -789,6 +796,7 @@ const sizeLCode = `import { useRef, useState } from 'react';
 import {
   Button,
   IconButton,
+  LinkButton,
   PopupDF,
   PopupProvider,
   SSRProvider,
@@ -879,13 +887,26 @@ function Example() {
               <div style={{ height: '100%' }}>Контент попапа</div>
             </PopupDF.Body>
             <PopupDF.Footer>
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 4 }}>
-                <Button size="s" view="secondary">
-                  Отмена
-                </Button>
-                <Button size="s" view="accent">
-                  Применить
-                </Button>
+              {/* LinkButton отделён от группы кнопок отступом 16px (L) */}
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'flex-end',
+                  alignItems: 'center',
+                  gap: 16,
+                }}
+              >
+                <LinkButton href="/" size="s">
+                  LinkButton
+                </LinkButton>
+                <div style={{ display: 'flex', gap: 4 }}>
+                  <Button size="s" view="secondary">
+                    Отмена
+                  </Button>
+                  <Button size="s" view="accent">
+                    Применить
+                  </Button>
+                </div>
               </div>
             </PopupDF.Footer>
           </PopupDF>
