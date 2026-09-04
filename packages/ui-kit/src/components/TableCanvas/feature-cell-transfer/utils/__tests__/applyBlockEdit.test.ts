@@ -47,10 +47,10 @@ describe('applyBlockEdit — запись правки во весь блок', 
     });
 
     expect(indexes).toEqual([1, 2]);
-    expect(targetRows[1]?.a).toBe('NEW');
-    expect(targetRows[2]?.a).toBe('NEW');
+    expect(targetRows[1]?.['a']).toBe('NEW');
+    expect(targetRows[2]?.['a']).toBe('NEW');
     // Соседняя колонка и строки вне блока не тронуты.
-    expect(targetRows[1]?.b).toBe('y1');
+    expect(targetRows[1]?.['b']).toBe('y1');
     expect(targetRows[0]).toBe(rows[0]);
     expect(targetRows[3]).toBe(rows[3]);
   });
@@ -71,8 +71,8 @@ describe('applyBlockEdit — запись правки во весь блок', 
     });
 
     expect(indexes).toEqual([1, 2]);
-    expect(targetRows[1]?.a).toBe('NEW');
-    expect(targetRows[2]?.a).toBe('NEW');
+    expect(targetRows[1]?.['a']).toBe('NEW');
+    expect(targetRows[2]?.['a']).toBe('NEW');
   });
 
   it('одиночная ячейка (не блок) — null, аккумулятор не тронут', () => {
@@ -107,7 +107,7 @@ describe('applyBlockEdit — запись правки во весь блок', 
       targetRows,
     });
 
-    expect(rows[2]?.a).toBe('x2');
+    expect(rows[2]?.['a']).toBe('x2');
     expect(targetRows[2]).not.toBe(rows[2]);
   });
 
@@ -137,8 +137,8 @@ describe('applyBlockEdit — запись правки во весь блок', 
     });
 
     // Строка 1 несёт обе правки: a из первого блока, b из второго.
-    expect(targetRows[1]?.a).toBe('A-NEW');
-    expect(targetRows[1]?.b).toBe('B-NEW');
+    expect(targetRows[1]?.['a']).toBe('A-NEW');
+    expect(targetRows[1]?.['b']).toBe('B-NEW');
   });
 
   it('colspan-блок пишет значение и в ЧУЖИЕ колонки блока (текущий контракт)', () => {
@@ -165,7 +165,7 @@ describe('applyBlockEdit — запись правки во весь блок', 
       targetRows,
     });
 
-    expect(targetRows[0]?.a).toBe('NEW');
-    expect(targetRows[0]?.b).toBe('NEW');
+    expect(targetRows[0]?.['a']).toBe('NEW');
+    expect(targetRows[0]?.['b']).toBe('NEW');
   });
 });
