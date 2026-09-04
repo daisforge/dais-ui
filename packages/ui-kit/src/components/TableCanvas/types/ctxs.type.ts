@@ -18,4 +18,12 @@ export type CtxsType<Customs extends ObjectForExtending | void = {}> = {
     expandButtonColumnKey: string | undefined;
   };
   rowCtx: ObjectForExtending;
+  /**
+   * Высота ОДНОГО header-ряда (листового и каждого групп-уровня — они равны).
+   * Нужна рендерам шапки, чтобы позиционировать контент в ПОСЛЕДНЕМ (листовом)
+   * уровне слитой многоуровневой шапки (напр. общий чекбокс прижимается к низу).
+   */
+  headerHeight: number;
+  /** Число групп-уровней шапки (0 — одноуровневая шапка). */
+  groupHeaderLevels: number;
 } & Customs;

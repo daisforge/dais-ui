@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { createRows, type Row } from '@df-storybook/data/tableData';
 import DocStoryTemplate from '@df-storybook/templates/DocStoryTemplate.mdx';
+import { StoryHint } from '@df-storybook/utils/StoryHint';
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Button } from '@ui-kit/components/Button';
@@ -85,11 +86,6 @@ const COLUMN_CONFIG: readonly ColumnConfig<Row>[] = [
 
 `;
 
-/**
- * cellsSelection.mode — режим фактического (нативного) выделения ячеек.
- * cell / range-cell (по умолчанию) / disabled. По нему работают copy/paste,
- * рамка, fill-handle, затемнение шапки/нумерации.
- */
 export const SelectionModes: Story = {
   name: 'Режимы выделения (cellsSelection.mode)',
   ...storySourceDoc({ preCode, previewSource: 'shown' }),
@@ -110,7 +106,7 @@ export const SelectionModes: Story = {
           />
         </div>
 
-        <p style={{ fontSize: 13, color: '#888', marginBottom: 8 }}>
+        <StoryHint>
           <b>range-cell</b> — тянем мышкой диапазон ячеек.{' '}
           <b>multi-range-cell</b> — то же + Ctrl/Cmd копит несколько диапазонов.{' '}
           <b>cell</b> — одиночная ячейка. <b>disabled</b> — выделение ячеек
@@ -119,7 +115,7 @@ export const SelectionModes: Story = {
           Клик/драг по колонке нумерации → выделение строки (Ctrl — группа).
           Клик по шапке → выделение колонки (Shift — диапазон, Ctrl — несмежно).
           Copy/Paste (Ctrl+C/V) работают по выделению.
-        </p>
+        </StoryHint>
 
         <TableCanvas
           tableConfig={{
@@ -140,10 +136,6 @@ export const SelectionModes: Story = {
   },
 };
 
-/**
- * Controlled-режим выделения: значение и сеттер живут снаружи (state-кортеж
- * tableConfig.cellsSelection.state). Можно программно задать/сбросить выделение.
- */
 export const Controlled: Story = {
   name: 'Контролируемое выделение извне (controlled)',
   ...storySourceDoc({ preCode, previewSource: 'shown' }),
@@ -188,7 +180,7 @@ export const Controlled: Story = {
           </Button>
         </div>
 
-        <p style={{ fontSize: 13, color: '#888', marginBottom: 8 }}>
+        <StoryHint>
           Выделение — <b>controlled</b> через{' '}
           <code>tableConfig.cellsSelection.state</code> ([value, setter]).
           Кнопки задают/сбрасывают внешний стейт, таблица реагирует.
@@ -196,7 +188,7 @@ export const Controlled: Story = {
           колонки); несмежный Ctrl-выбор — внутренний.
           <br />
           Текущее выделение: <b>{summary}</b>.
-        </p>
+        </StoryHint>
 
         <TableCanvas
           tableConfig={{
@@ -212,39 +204,61 @@ export const Controlled: Story = {
   },
 };
 
-/**
- * multi-range-cell — как range-cell, но Ctrl/Cmd докидывает несколько
- * прямоугольных диапазонов. Copy — для разрозненного выбора в
- * пределах одной колонки или одной строки (промежутки схлопываются).
- */
 export const MultiRangeSelect: Story = {
   name: 'Мультивыбор диапазонов (multi-range-cell)',
   ...storySourceDoc({ preCode, previewSource: 'shown' }),
   render: () => {
     const [rows] = useState(createRows);
     const columnConfig = useMemo(() => COLUMN_CONFIG, []);
+    // Таблица сама тосты не рисует: ошибки copy/paste приходят в notifications,
+    // показ — на стороне потребителя. Здесь показываем последнее событие плашкой.
+    const [lastNotification, setLastNotification] = useState<string | null>(
+      null,
+    );
 
     return (
       <div>
-        <p style={{ fontSize: 13, color: '#888', marginBottom: 8 }}>
+        <StoryHint>
           <b>multi-range-cell</b>: тяни мышкой диапазон, затем <b>Ctrl/Cmd</b> +
           клик/драг — докидывай ещё диапазоны. У всех выделенных — заливка и
           рамка.
           <br />
           <b>Copy (Ctrl+C):</b> работает, если разрозненный выбор в пределах{' '}
           <b>одной колонки</b> или <b>одной строки</b> — промежутки схлопываются
-          (значения копируются подряд). Разброс сразу по строкам и колонкам не
-          копируется.
+          (значения копируются подряд), либо если куски складываются в сплошной
+          прямоугольник. Разброс сразу по строкам и колонкам не копируется — в{' '}
+          <b>notifications</b> уходит ошибка (плашка ниже).
           <br />
           <b>Paste</b> со схлопыванием промежутков — в режиме редактирования,
           см. <b>Copy-Paste-Fill</b>.
-        </p>
+        </StoryHint>
+
+        {lastNotification && (
+          <p
+            style={{
+              fontSize: 13,
+              marginBottom: 8,
+              padding: '6px 10px',
+              borderRadius: 6,
+              background: '#fdecec',
+              color: '#a33',
+            }}
+          >
+            notifications: {lastNotification}
+          </p>
+        )}
 
         <TableCanvas
           tableConfig={{
             containerStyle: { height: '600px' },
             cellsSelection: { mode: 'multi-range-cell' },
             rowMarkers: { startIndex: 1 },
+            notifications: {
+              onNotification: (event) =>
+                setLastNotification(
+                  `[${event.type}/${event.level}] ${event.message} (${event.code})`,
+                ),
+            },
           }}
           columnConfig={columnConfig}
           rows={rows}
@@ -254,11 +268,6 @@ export const MultiRangeSelect: Story = {
   },
 };
 
-/**
- * enableColumnSelection / enableRowSelection — независимое включение/выключение
- * осей выделения колонок (по шапке) и строк (по нумерации). Выделение ячеек
- * (cellsSelection.mode) этими флагами не управляется.
- */
 export const EnableToggles: Story = {
   name: 'Включение/выключение колонок и строк',
   ...storySourceDoc({ preCode, previewSource: 'shown' }),
@@ -283,11 +292,11 @@ export const EnableToggles: Story = {
           />
         </div>
 
-        <p style={{ fontSize: 13, color: '#888', marginBottom: 8 }}>
+        <StoryHint>
           Сними галочку — клик по шапке (колонки) или по колонке нумерации
           (строки) перестанет выделять. Выделение ячеек мышью при этом
           продолжает работать.
-        </p>
+        </StoryHint>
 
         <TableCanvas
           tableConfig={{

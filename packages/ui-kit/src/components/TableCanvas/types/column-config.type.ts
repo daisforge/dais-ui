@@ -25,6 +25,7 @@ import type {
 import { HeaderAlignment } from './columns-grouping.type';
 import { CtxsType } from './ctxs.type';
 import type { ColumnDefaultOmitted } from './glide-type';
+import { MergedCellsAlign } from './merged-cells.type';
 import { ObjectForExtending } from './utils.type';
 
 export type { SortColumn, SortDirection };
@@ -317,6 +318,12 @@ export type ColumnConfig<
 
   editingCell?: Editing<Row, SummRow>;
 
+  /**
+   * Настройки колонки для дерева subRows (шеврон, свой контент и редактор на
+   * вложенных уровнях). Работает только в виде дерева. При
+   * `subRows.view: 'merged'` не действует: там листья рисуются как обычные
+   * строки, вложенных уровней нет.
+   */
   subRow?: {
     /**
      * @default false
@@ -371,6 +378,17 @@ export type ColumnConfig<
    * табличный `columnsGrouping.squashedHeaderAlign`.
    */
   squashedHeaderAlign?: HeaderAlignment;
+  /**
+   * Выравнивание контента в объединённых ячейках этой колонки. Перекрывает общий
+   * дефолт; важнее только выравнивание конкретного региона.
+   *
+   * Значение — одинаково для всех блоков колонки. Функция (row) => выравнивание —
+   * по данным строки: разным блокам можно задать разное выравнивание (в том числе
+   * в merged-видах группировки/subRows, где блоки формирует таблица).
+   */
+  mergedCellsAlign?:
+    | MergedCellsAlign
+    | ((row: Row) => MergedCellsAlign | undefined);
 };
 
 export type ColumnOrColumnGroupConfig<

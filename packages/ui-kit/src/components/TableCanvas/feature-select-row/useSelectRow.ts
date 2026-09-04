@@ -71,6 +71,8 @@ export function useSelectRow<
       return null;
     }
 
+    // В merged-виде subRows сюда приходят уже плоские листья (TableCanvas
+    // подменяет rows), поэтому flatten по subRows их не трогает.
     const flattenedRowsArray = flatten(
       rows,
       // eslint-disable-next-line @typescript-eslint/dot-notation

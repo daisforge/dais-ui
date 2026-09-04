@@ -13,6 +13,7 @@ import type {
   TransferColumnConfig,
 } from '../types';
 import { collectMatrixFromTargets } from '../utils/collectMatrixFromTargets';
+import { resolveBlockOrigin } from '../utils/resolveBlockOrigin';
 import { resolveTransferTargets } from '../utils/resolveTransferTargets';
 
 const clipboardDebug = createDebugLogger('TABLE_CANVAS_CLIPBOARD');
@@ -98,12 +99,14 @@ export function useCopy<R extends ObjectForExtending>({
     // колонок/строк копируем как есть.
     const withCells =
       targets.kind === 'cells' && !!cellTransferConfig?.onBeforeCopy;
+    // Объединение ячеек: покрытые позиции блока копируем как значение origin —
+    // то, что видно на экране. Матрица остаётся прямоугольной (broadcast).
     const { grid, cells } = collectMatrixFromTargets(
       targets.rowTargets,
       targets.colTargets,
       columns,
       flattenedRows,
-      { withCells },
+      { withCells, resolveOrigin: true },
     );
 
     if (grid.length === 0) {
@@ -111,10 +114,33 @@ export function useCopy<R extends ObjectForExtending>({
       return;
     }
 
-    let finalData: string[][] | false = grid;
+    // Если ВСЁ выделение — ровно один блок (все позиции резолвятся в один
+    // origin), копируем одно значение (1×1), а не решётку повторов.
+    let effectiveGrid = grid;
+    if (targets.kind === 'cells') {
+      const origins = new Set<string>();
+      for (const r of targets.rowTargets) {
+        for (const c of targets.colTargets) {
+          if (flattenedRows[r] && columns[c]) {
+            const [oCol, oRow] = resolveBlockOrigin(
+              c,
+              r,
+              columns,
+              flattenedRows,
+            );
+            origins.add(`${oCol},${oRow}`);
+          }
+        }
+      }
+      if (origins.size === 1) {
+        effectiveGrid = [[grid[0]?.[0] ?? '']];
+      }
+    }
+
+    let finalData: string[][] | false = effectiveGrid;
     if (targets.kind === 'cells' && cellTransferConfig?.onBeforeCopy) {
       const meta: CopyMeta = { range: targets.range, cells };
-      finalData = cellTransferConfig.onBeforeCopy(grid, meta);
+      finalData = cellTransferConfig.onBeforeCopy(effectiveGrid, meta);
     }
 
     if (finalData === false) {

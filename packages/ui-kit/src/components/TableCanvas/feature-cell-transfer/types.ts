@@ -255,4 +255,7 @@ export type TransferColumnConfig = Pick<
   | 'editingCell'
   | 'contentFormat'
   | 'subRow'
+  // Объединение ячеек: нужны cell-transfer для снапа fill к целым блокам.
+  | 'colSpan'
+  | 'rowSpan'
 >;

@@ -199,41 +199,56 @@ HeaderCellInfoGlideInstance<any, unknown>): CanvasEl => {
       size={checkboxSize}
     />
   );
+  const handleToggle = () => {
+    callbackOnChange?.({
+      target: { value: !checkedAll },
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any);
+
+    if (summaryChecked) {
+      summaryChecked.onChange({
+        ...getSummaryCheckedFuncDefaultProps(),
+        checkedAll,
+        setSelectedRowsIds: setSelectedRows ?? (() => {}),
+      });
+      return;
+    }
+
+    if (!setSelectedRows || !rowKeyGetter) {
+      return;
+    }
+    if (checkedAll) {
+      setSelectedRows(new Set());
+      return;
+    }
+    setSelectedRows(new Set(allRowsOnLevel.map((row) => rowKeyGetter(row))));
+  };
+
+  // Слитая (многоуровневая) шапка: чекбокс центрируем в ПОСЛЕДНЕМ (листовом) уровне —
+  // нижней полосе высотой headerHeight, а не по центру всей высоты шапки. Позиция берётся
+  // из этой же Canvas-раскладки, поэтому клик (хит-тест по раскладке) едет вместе с отрисовкой.
+  const { headerHeight, groupHeaderLevels } = ctxs;
+  const pinToLastLevel = groupHeaderLevels > 0;
+
   return (
     <Canvas.Container
-      style={{ width: '100%', cursor: 'pointer' }}
-      justifyContent="center"
+      direction="column"
+      style={{ width: '100%', height: '100%' }}
+      justifyContent={pinToLastLevel ? 'flex-end' : 'center'}
       alignItems="center"
-      onClick={() => {
-        callbackOnChange?.({
-          target: { value: !checkedAll },
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        } as any);
-
-        if (summaryChecked) {
-          summaryChecked.onChange({
-            ...getSummaryCheckedFuncDefaultProps(),
-            checkedAll,
-            setSelectedRowsIds:
-              setSelectedRows ??
-              ((() => {}) as NonNullable<typeof setSelectedRows>),
-          });
-          return;
-        }
-
-        if (!setSelectedRows || !rowKeyGetter) {
-          return;
-        }
-        if (checkedAll) {
-          setSelectedRows(new Set());
-          return;
-        }
-        setSelectedRows(
-          new Set(allRowsOnLevel.map((row) => rowKeyGetter(row))),
-        );
-      }}
     >
-      {checkboxElement}
+      <Canvas.Container
+        style={{
+          width: '100%',
+          height: pinToLastLevel ? headerHeight : '100%',
+          cursor: 'pointer',
+        }}
+        justifyContent="center"
+        alignItems="center"
+        onClick={handleToggle}
+      >
+        {checkboxElement}
+      </Canvas.Container>
     </Canvas.Container>
   );
 };
@@ -471,9 +486,7 @@ export const SummaryCheckbox = ({
       summaryChecked.onChange({
         ...getSummaryCheckedFuncDefaultProps(),
         checkedAll,
-        setSelectedRowsIds:
-          setSelectedRows ??
-          ((() => {}) as NonNullable<typeof setSelectedRows>),
+        setSelectedRowsIds: setSelectedRows ?? (() => {}),
         ...onChangeProps,
       });
       return;

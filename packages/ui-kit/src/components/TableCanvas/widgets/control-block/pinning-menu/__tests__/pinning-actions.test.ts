@@ -6,7 +6,7 @@ import {
   PinningActionCtx,
   resetPinning,
   unpinColumns,
-} from './pinning-actions';
+} from '../pinning-actions';
 
 /** Контекст без пар key/text: запрет закрепления = членство в disablePinningSet. */
 const ctx = (disabled: string[] = []): PinningActionCtx => ({

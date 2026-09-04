@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
-import type { TransferColumnConfig } from '../types';
-import { applyValuesToRows } from './applyValuesToRows';
+import type { TransferColumnConfig } from '../../types';
+import { applyValuesToRows } from '../applyValuesToRows';
 
 // --- Моки колонок/строк ------------------------------------------------------
 const numFormat = {

@@ -174,6 +174,10 @@ export type CellInfo<R extends ObjectForExtending, SR = unknown> = {
   hovered: CellHoverState;
   /** Состояние активного выделения для ячейки, которую сейчас рендерит renderCell. */
   active: CellActiveState;
+  // Есть только у верхней-левой ячейки объединённого блока. align — выравнивание
+  // блока (пусто = по центру). По нему ячейка-select расставляет контент и
+  // уголок по высоте всего блока.
+  __mergedCell?: { align?: SpanCellAlign };
 };
 export type EditingCellInfoGlide<
   R extends ObjectForExtending,
@@ -204,6 +208,21 @@ export type ColSpan<R extends ObjectForExtending, SR> =
   | number
   | ((cellInfo: CellInfo<R, SR>) => number);
 
+// Объединение строк: функция возвращает диапазон строк блока [перваяСтрока,
+// последняяСтрока] — один и тот же для всех ячеек блока — либо null, если ячейка
+// не объединена.
+export type RowSpan<R extends ObjectForExtending, SR> = (
+  cellInfo: CellInfo<R, SR>
+) => readonly [number, number] | null;
+
+/** Выравнивание контента в объединённой ячейке (блоке) по обеим осям. */
+export type SpanCellAlign = {
+  /** По горизонтали. @default из contentAlign колонки, иначе 'left' */
+  horizontal?: 'left' | 'center' | 'right';
+  /** По вертикали. @default 'center' */
+  vertical?: 'top' | 'center' | 'bottom';
+};
+
 export type ColumnGlideGetCellContent<R extends ObjectForExtending, SR> = (
   cellInfo: CellInfo<R, SR>
 ) => CellContent;
@@ -227,6 +246,9 @@ export type ColumnGlideCustoms<R extends ObjectForExtending, SR = unknown> = {
   renderEditCell?: (cellInfo: EditingCellInfoGlide<R, SR>) => CellContent;
   renderSummaryCell?: (summaryCellInfo: SummaryCellInfo<R, SR>) => CellContent;
   colSpan?: ColSpan<R, SR>;
+  rowSpan?: RowSpan<R, SR>;
+  /** Выравнивание контента в объединённых ячейках колонки; функция — если нужно задавать для каждого блока отдельно. */
+  spanAlign?: SpanCellAlign | ((cellInfo: CellInfo<R, SR>) => SpanCellAlign | undefined);
   /** Тултип для ячеек этой колонки. Строка, объект или функция (context) => config | null. */
   cellTooltip?:
     | CanvasNodeTooltipConfig

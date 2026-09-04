@@ -2,8 +2,9 @@
 /* eslint-disable @typescript-eslint/dot-notation */
 
 import { SIZE } from '@ui-kit/components/TableCanvas';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 
+import type { CellInfo } from '../../TableGlide';
 import { hideRowServiceKeysHandler } from '../data/hideServiceKeysHanlder';
 import { isServiceEditableColumn } from '../feature-edit';
 import { isEditableCell } from '../feature-edit/typeGuards';
@@ -31,6 +32,10 @@ import {
   KEY_GROUPED_COL,
 } from '../feature-rows-grouping';
 import {
+  createGroupPathValue,
+  createTopGroupOrdinalGetter,
+} from '../feature-rows-grouping/mergedView';
+import {
   CHECKBOX_COLUMN_KEY,
   createCheckboxColumn,
 } from '../feature-select-row';
@@ -41,9 +46,13 @@ import { RenderEditCell } from '../renders/renderEditCell';
 import { Canvas, CanvasEvent } from '../TableGlideInstance';
 import { ColumnConfig, ObjectForExtending } from '../types';
 import { ColumnConfigInternal } from '../types/column-config-internal.type';
+import type { MergedCellsAlign } from '../types/merged-cells.type';
 import { TableConfig } from '../types/table-config.type';
 import { calculateMinColumnWidth } from '../utils';
 import { renderFilterSortHeader } from '../widgets/filter-sort-header';
+import { createMergeByValueRowSpan } from './createMergeByValueRowSpan';
+import { createMergedRegionsResolver } from './createMergedRegionsResolver';
+import { resolveMergedView } from './resolveMergedView';
 
 export const useColumns = <
   FilterStateType extends ObjectForExtending,
@@ -144,8 +153,19 @@ export const useColumns = <
   const tableConfigRowDetailBoolean = false; // !!tableConfig.rowDetailPanel;
 
   const groupedCols = (tableConfig.rowsGrouping ?? {})?.groupByState?.[0];
+  // Вид со слиянием (группировка или subRows): блоки по уровням рисует
+  // внутреннее объединение по ключу пути, а колонки остаются на своих местах.
+  const mergedView = resolveMergedView(tableConfig);
+  const rowsGroupingMergedView = mergedView?.kind === 'grouping';
+  const mergedKeys = mergedView?.keys;
+  const anyMergedView = mergedView !== null;
   // Создание колонки с нумерацией строк
   const rowMarkersIsActive = !!tableConfig?.rowMarkers;
+
+  // Итоговый порядок ключей колонок (после перестановки, закрепления и скрытия).
+  // Нужен, чтобы во время отрисовки перевести объединения, заданные снаружи, в
+  // индексы. Обновляется ниже, после reorderedColumns.
+  const renderColKeysRef = useRef<readonly string[]>([]);
   const columns = useMemo((): readonly ColumnX[] => {
     const colsAfterRowsGroupingCheck = getColsAfterRowsGrouping({
       rowsGroupingIsActiveInConfig: tableConfigRowsGroupingBoolean,
@@ -154,6 +174,7 @@ export const useColumns = <
       tableConfigGroupedColumnProps:
         tableConfig.rowsGrouping?.groupedColumnProps,
       pinnedCols,
+      mergedView: rowsGroupingMergedView,
     });
 
     const checkboxColumn = selectingRowsIsActive
@@ -169,7 +190,13 @@ export const useColumns = <
           size: tableConfig.rowMarkers?.size,
           rowsRef,
           rowSize,
-          getRowMarker: tableConfig.rowMarkers?.getRowMarker,
+          // Группировка со слиянием: по умолчанию нумеруем строки номером
+          // группы верхнего уровня. Свой getRowMarker имеет приоритет.
+          getRowMarker:
+            tableConfig.rowMarkers?.getRowMarker ??
+            (anyMergedView && mergedKeys
+              ? createTopGroupOrdinalGetter(mergedKeys[0] as string, rowsRef)
+              : undefined),
           allRowsMapRef,
           rowKeyGetter: tableConfig.subRows?.rowKeyGetter,
         }) as ColumnX)
@@ -193,6 +220,48 @@ export const useColumns = <
 
     const pinnedColsSet = new Set(pinnedCols);
 
+    // mergeCells.mergeByCellValues: для каждой колонки — функция, дающая значение
+    // ячейки. По нему автоматически объединяются соседние строки с одинаковым
+    // значением (см. createMergeByValueRowSpan).
+    const mergeByValue = new Map<string, (row: RowType) => unknown>();
+    (tableConfig.mergeCells?.mergeByCellValues ?? []).forEach((item) => {
+      if (typeof item === 'string') {
+        mergeByValue.set(item, (row) => (row as ObjectForExtending)[item]);
+      } else {
+        mergeByValue.set(item.colKey, item.value);
+      }
+    });
+
+    // Группировка со слиянием: каждый уровень объединяется по ключу пути (блок
+    // роли обрывается на границе отдела), а служебные колонки (нумерация,
+    // чекбокс) объединяются по верхнему уровню. Эти записи важнее пользовательских.
+    if (anyMergedView && mergedKeys) {
+      mergedKeys.forEach((colKey, depth) => {
+        mergeByValue.set(
+          colKey,
+          createGroupPathValue<RowType>(mergedKeys, depth),
+        );
+      });
+      const topValue = createGroupPathValue<RowType>(mergedKeys, 0);
+      mergeByValue.set(ROW_MARKER_COLUMN_KEY, topValue);
+      mergeByValue.set(CHECKBOX_COLUMN_KEY, topValue);
+    }
+
+    // mergeCells.mergedCellsRegions: список блоков, заданных снаружи (ключи строк
+    // и колонок). Resolver сам считает colSpan/rowSpan, беря итоговый порядок
+    // колонок из renderColKeysRef (устойчив к перестановке, закреплению, скрытию).
+    const mergedRegions = tableConfig.mergeCells?.mergedCellsRegions;
+    const mergeRowKeyGetter = tableConfig.mergeCells?.rowKeyGetter;
+    const regionsResolver =
+      mergedRegions && mergedRegions.length > 0 && mergeRowKeyGetter
+        ? createMergedRegionsResolver(
+            mergedRegions,
+            renderColKeysRef,
+            rowsRef,
+            mergeRowKeyGetter,
+          )
+        : null;
+
     return colsAfterHideCheck.map((el, currIndex, arr) => {
       const columnIsPinned = pinnedColsSet.has(el.key);
 
@@ -208,8 +277,19 @@ export const useColumns = <
         tableConfigSubRows &&
         getHasArrow(el.subRow?.isColumnWithArrow, keyText);
 
+      // Группировка со слиянием: по группирующим колонкам сортировать нельзя
+      // (как в дереве, где их убирают из сортируемых). Включается пропом. В шапке
+      // такую колонку показываем без sortingType, чтобы не рисовалась стрелка.
+      const stripGroupColumnSort =
+        rowsGroupingMergedView &&
+        !!tableConfig.rowsGrouping?.disableGroupColumnsSort &&
+        !!groupedCols?.includes(el.key);
+      const elHeader = stripGroupColumnSort
+        ? { ...el, sortingType: undefined }
+        : el;
+
       const isHaveFiltering = !!el.filtering;
-      const isHaveSorting = !!el.sortingType;
+      const isHaveSorting = !stripGroupColumnSort && !!el.sortingType;
 
       const editable: ColumnX['editable'] = (row) => {
         if (isServiceEditableColumn(el)) {
@@ -279,7 +359,7 @@ export const useColumns = <
             !columnIsPinned &&
             !subRowIsActiveAndColumnWithArrow) ||
           (!el.filtering &&
-            !el.sortingType &&
+            !elHeader.sortingType &&
             !reorderInHeaderIsActive &&
             !columnIsPinned &&
             !subRowIsActiveAndColumnWithArrow)
@@ -310,7 +390,7 @@ export const useColumns = <
 
         renderHeaderCell = (p) =>
           renderFilterSortHeader({
-            columnConfig: el,
+            columnConfig: elHeader,
             tableConfigSorting,
             tableConfigFiltering,
             columnIsPinned,
@@ -381,65 +461,68 @@ export const useColumns = <
         ? false
         : tableConfig.resizableColumn;
 
-      const colSpan = tableConfigRowDetailBoolean
-        ? getDetailPanelColSpanFunc({
-            indexZeroColKey,
-            currIndex,
-            arr,
-            columnColSpan: el.colSpan,
-          })
-        : el.colSpan;
+      // Объединение ячеек тела задаётся только через tableConfig.mergeCells.
+      // Приоритет: сначала mergedCellsRegions, потом mergeByCellValues. Задавать
+      // colSpan/rowSpan прямо на колонке внешний API больше не даёт (см.
+      // DefaultOmittedKeys). Resolver вешаем на все колонки региона: какая из них
+      // верхняя-левая ячейка блока, он определяет во время отрисовки.
+      const isRegionCol = regionsResolver?.regionCols.has(el.key) ?? false;
+      const mergeByValueOf = mergeByValue.get(el.key);
 
-      // const cellClass: typeof el.cellClass = (() => {
-      //   if (!el?.cellClass && (!editModeEnabled || !el.editingCell)) {
-      //     return undefined;
-      //   }
-      //   return (row) => {
-      //     let className = '';
+      let colSpan;
+      let rowSpan;
+      if (isRegionCol && regionsResolver) {
+        colSpan = regionsResolver.colSpan(el.key);
+        rowSpan = regionsResolver.rowSpan(el.key);
+      } else {
+        // colSpan задаёт только служебная detail-panel (снаружи columnColSpan
+        // нет); rowSpan берётся только из mergeByCellValues.
+        colSpan = tableConfigRowDetailBoolean
+          ? getDetailPanelColSpanFunc<RowType, SummaryRowType>({
+              indexZeroColKey,
+              currIndex,
+              arr,
+              columnColSpan: undefined,
+            })
+          : undefined;
+        rowSpan = mergeByValueOf
+          ? createMergeByValueRowSpan(mergeByValueOf, rowsRef)
+          : undefined;
+      }
 
-      //     const { lvl } = getTreeIdAndLvlOfRow(row);
+      // Выравнивание контента в блоках. Приоритет: сначала регион, потом колонка,
+      // потом значение по умолчанию.
+      const mergedViewAlign =
+        anyMergedView &&
+        (mergedKeys?.includes(el.key) || getColumnIsService(el))
+          ? mergedView?.kind === 'grouping'
+            ? tableConfig.rowsGrouping?.mergedCellsAlign
+            : undefined
+          : undefined;
+      const columnAlign =
+        el.mergedCellsAlign ??
+        mergedViewAlign ??
+        tableConfig.mergeCells?.mergedCellsAlign;
+      // Выравнивание колонки может быть функцией по данным строки — вычисляем из
+      // неё конкретное значение для ячейки (для верхней-левой ячейки блока).
+      const resolveColumnAlign = (
+        cellInfo: CellInfo<RowType, SummaryRowType>,
+      ): MergedCellsAlign | undefined =>
+        typeof columnAlign === 'function'
+          ? columnAlign(cellInfo.row)
+          : columnAlign;
 
-      //     const clearRow = hideRowServiceKeysHandler(row);
-      //     const defaultCls = getCls(el?.cellClass, clearRow);
-      //     if (defaultCls) {
-      //       className += ` ${defaultCls}`;
-      //     }
-      //     if (!editModeEnabled) {
-      //       return className || undefined;
-      //     }
-
-      //     if (editable(row)) {
-      //       className += ` ${cls.editableCell}`;
-      //     }
-      //     const editedSuccessfullyClass =
-      //       (lvl === 0
-      //         ? // если lvl === 0, то смотрим только на конфиг родительской строки
-      //           el.editingCell?.editedSuccessfully?.value(clearRow, lvl)
-      //         : // если lvl !== 0, то смотрим только на конфиг дочерних строк
-      //           el.subRow?.editingCell?.editedSuccessfully?.value(
-      //             clearRow,
-      //             lvl
-      //           )) && cls.editedSuccessfullyCell;
-
-      //     if (editedSuccessfullyClass) {
-      //       className += ` ${editedSuccessfullyClass}`;
-      //     }
-
-      //     const errorClass =
-      //       (lvl === 0
-      //         ? // если lvl === 0, то смотрим только на конфиг родительской строки
-      //           el.editingCell?.error?.value(clearRow, lvl)
-      //         : // если lvl !== 0, то смотрим только на конфиг дочерних строк
-      //           el.subRow?.editingCell?.error?.value(clearRow, lvl)) &&
-      //       cls.editedWithErrorCell;
-
-      //     if (errorClass) {
-      //       className += ` ${errorClass}`;
-      //     }
-
-      //     return className || undefined;
-      //   };
-      // })();
+      let spanAlign: ColumnX['spanAlign'];
+      if (isRegionCol && regionsResolver) {
+        const regionAlignOf = regionsResolver.align(el.key);
+        spanAlign = columnAlign
+          ? (cellInfo: CellInfo<RowType, SummaryRowType>) =>
+              regionAlignOf(cellInfo) ?? resolveColumnAlign(cellInfo)
+          : regionAlignOf;
+      } else if (rowSpan !== undefined) {
+        spanAlign =
+          typeof columnAlign === 'function' ? resolveColumnAlign : columnAlign;
+      }
 
       const userThemeOverride = el.themeOverride;
       const columnThemeOverride = userThemeOverride
@@ -451,6 +534,9 @@ export const useColumns = <
 
       return {
         ...el,
+        // useSortedRows смотрит на sortingType — убираем его у группирующих
+        // колонок, чтобы вид со слиянием по ним не сортировался (как в дереве).
+        ...(stripGroupColumnSort && { sortingType: undefined }),
         contentAlign: getAlignment(el.contentFormat),
         renderHeaderCell,
         columnThemeOverride,
@@ -477,12 +563,18 @@ export const useColumns = <
         // cellClass,
         ...(columnIsPinned && { frozen: true }),
         ...(colSpan && { colSpan }),
+        ...(rowSpan && { rowSpan }),
+        ...(spanAlign && { spanAlign }),
       };
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     columnConfig,
     tableConfig.resizableColumn,
+    // mergeCells: в зависимости берём отдельно ссылки на массивы. rowKeyGetter
+    // сюда намеренно не входит — это стабильная функция (см. JSDoc в table-config).
+    tableConfig.mergeCells?.mergeByCellValues,
+    tableConfig.mergeCells?.mergedCellsRegions,
 
     selectingRowsIsActive,
     isLoadingTable,
@@ -496,6 +588,10 @@ export const useColumns = <
     tableConfigSorting,
     tableConfigRowDetailBoolean,
     tableConfigRowsGroupingBoolean,
+    rowsGroupingMergedView,
+    mergedKeys,
+    anyMergedView,
+    tableConfig.rowsGrouping?.disableGroupColumnsSort,
     reorderInHeaderIsActive,
     groupedCols,
     pinnedCols,
@@ -529,6 +625,24 @@ export const useColumns = <
     colsWithKeyTextMap,
     pinnedCols,
   });
+
+  // Итоговый видимый порядок ключей колонок — по нему во время отрисовки
+  // переводятся объединения, заданные снаружи (createMergedRegionsResolver
+  // сравнивает ref по ссылке). Оборачиваем в useMemo: ссылка на массив меняется
+  // только при реальной смене порядка колонок, иначе кэш resolver пересобирался
+  // бы на каждый перерендер (наведение, выделение). Закреплённые колонки glide
+  // сдвигает в начало (columnsGlide в TableGlideInstance) — повторяем этот
+  // порядок здесь, иначе при закреплении ширина блока считается по старым
+  // индексам и объединение вылезает за массив колонок.
+  const renderColKeys = useMemo(() => {
+    const frozen: string[] = [];
+    const rest: string[] = [];
+    reorderedColumns.forEach((c) => {
+      (c.frozen ? frozen : rest).push(c.key);
+    });
+    return [...frozen, ...rest];
+  }, [reorderedColumns]);
+  renderColKeysRef.current = renderColKeys;
 
   return {
     columns,

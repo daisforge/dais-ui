@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 
-import type { TransferColumnConfig } from '../types';
-import { collectMatrixFromTargets } from './collectMatrixFromTargets';
-import { collectTextMatrix } from './collectTextMatrix';
+import type { TransferColumnConfig } from '../../types';
+import { collectMatrixFromTargets } from '../collectMatrixFromTargets';
+import { collectTextMatrix } from '../collectTextMatrix';
 
 const c = (
   key: string,

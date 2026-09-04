@@ -1,0 +1,79 @@
+import { Meta } from '@storybook/blocks';
+import { TypeSourceViewer } from '@df-storybook/utils/TypeSourceViewer';
+
+<Meta title="Локальные компоненты/TableCanvas/CellsMerging/API" />
+
+# CellsMerging API
+
+## tableConfig.mergeCells
+
+Точка входа для объединения ячеек тела. Все поля опциональны:
+
+```ts
+mergeCells?: {
+  /** Колонки, объединяемые по подряд идущим одинаковым значениям. */
+  mergeByCellValues?: Array<string | { colKey: string; value: (row) => unknown }>;
+  /** Управляемый список объединений по ключам строк и колонок. */
+  mergedCellsRegions?: MergedCellsRegion[];
+  /** Нужен для mergedCellsRegions: сопоставляет rowKeys со строками. */
+  rowKeyGetter?: (row) => string | number;
+  /** Общий (табличный) дефолт выравнивания контента в блоках. */
+  mergedCellsAlign?: MergedCellsAlign;
+};
+```
+
+## MergedCellsRegion
+
+Один управляемый регион: ключи строк, ключи колонок и точечное выравнивание.
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/TableCanvas/types/table-config.type.ts"
+  typeName="MergedCellsRegion"
+/>
+
+## MergedCellsAlign
+
+Выравнивание контента в блоке. Задаётся на трёх уровнях: `mergedCellsAlign` региона,
+`columnConfig[].mergedCellsAlign` (колонка), `mergeCells.mergedCellsAlign` или
+`rowsGrouping.mergedCellsAlign` (дефолт). Точечное важнее общего.
+
+Колоночный `mergedCellsAlign` — это `MergedCellsAlign` (одно на все блоки колонки) или
+функция `(row) => MergedCellsAlign | undefined` по данным верхней строки блока. Функция
+даёт разное выравнивание разным блокам, включая merged-виды группировки/subRows, где
+границы блоков решает таблица.
+
+```tsx
+columnConfig={[
+  { key: 'dept', mergedCellsAlign: (row) =>
+      row.critical ? { vertical: 'top' } : { vertical: 'center' } },
+]}
+```
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/TableCanvas/types/merged-cells.type.ts"
+  typeName="MergedCellsAlign"
+/>
+
+## rowsGrouping (merged-вид)
+
+Поля группировки, относящиеся к merged-виду: `view: 'merged'`,
+`mergedCellsAlign`, `disableGroupColumnsSort`.
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/TableCanvas/feature-rows-grouping/types.ts"
+  typeName="RowsGrouping"
+/>
+
+## subRows (merged-вид)
+
+Поля subRows, относящиеся к merged-виду: `view: 'merged'` и `mergedColumns`
+(упорядоченный список колонок-предков, индекс = глубина уровня дерева).
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/TableCanvas/feature-tree/types.ts"
+  typeName="SubRows"
+/>
