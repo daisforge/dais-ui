@@ -202,7 +202,7 @@ export const RenderCellGlide = <
     theme.cellHorizontalPadding ?? DEFAULT_CELL_PADDING_INLINE;
   // В объединённой ячейке контент select следует за выравниванием блока по высоте
   // (по умолчанию центр). У обычной ячейки тут пусто, поведение прежнее.
-  const mergedCell = renderCellProps.__mergedCell;
+  const { __mergedCell: mergedCell } = renderCellProps;
   const mergedVerticalAlign =
     isSelectColumn && mergedCell
       ? mergedCell.align?.vertical ?? 'center'
@@ -211,7 +211,7 @@ export const RenderCellGlide = <
     isSelectColumn && mergedCell
       ? mergedCell.align?.horizontal ?? 'left'
       : undefined;
-  const cellVerticalPadding = theme.cellVerticalPadding;
+  const { cellVerticalPadding } = theme;
   const selectCellVisual = {
     rowSize,
     cellPaddingInline,

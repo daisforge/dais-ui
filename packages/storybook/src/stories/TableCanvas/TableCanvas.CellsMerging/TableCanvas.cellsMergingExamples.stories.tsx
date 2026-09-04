@@ -10,13 +10,7 @@ import {
   type SortColumn,
   TableCanvas,
 } from '@ui-kit/components/TableCanvas';
-import React, {
-  type CSSProperties,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 
 /**
  * Большой пример потребителя: иерархические данные с объединёнными ячейками и весь

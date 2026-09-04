@@ -32,15 +32,15 @@ import { RowInstrumentsCtxProvider } from './feature-row-instruments';
 import type { AllRowsMapEntry } from './feature-row-markers/types';
 import { getDefuaultRowSize } from './feature-row-size';
 import { useGroupedRows } from './feature-rows-grouping';
-import {
-  flattenSubRowsToMergedLeaves,
-  isMergedSubRowsView,
-} from './feature-tree/mergedSubRows';
 import { SelectingContextProvider } from './feature-select-row/selecting-contexts';
 import { useCheckboxRowIndexes } from './feature-select-row/useCheckboxRowIndexes';
 import { useSelectRow } from './feature-select-row/useSelectRow';
 import { useSortedRows } from './feature-sorting';
 import { useTableTabsContext } from './feature-tabs';
+import {
+  flattenSubRowsToMergedLeaves,
+  isMergedSubRowsView,
+} from './feature-tree/mergedSubRows';
 import { SIZE, tableClassNames } from './styles';
 import {
   useColumns,

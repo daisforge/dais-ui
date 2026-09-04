@@ -4,6 +4,7 @@
 import { SIZE } from '@ui-kit/components/TableCanvas';
 import { useCallback, useMemo, useRef } from 'react';
 
+import type { CellInfo } from '../../TableGlide';
 import { hideRowServiceKeysHandler } from '../data/hideServiceKeysHanlder';
 import { isServiceEditableColumn } from '../feature-edit';
 import { isEditableCell } from '../feature-edit/typeGuards';
@@ -42,11 +43,10 @@ import { getHasArrow, getTreeIdAndLvlOfRow } from '../feature-tree/handlers';
 import { getAlignment } from '../renders/formatCell/getAlignment';
 import { RenderCellGlide } from '../renders/renderCellGlide';
 import { RenderEditCell } from '../renders/renderEditCell';
-import type { CellInfo } from '../../TableGlide';
 import { Canvas, CanvasEvent } from '../TableGlideInstance';
-import type { MergedCellsAlign } from '../types/merged-cells.type';
 import { ColumnConfig, ObjectForExtending } from '../types';
 import { ColumnConfigInternal } from '../types/column-config-internal.type';
+import type { MergedCellsAlign } from '../types/merged-cells.type';
 import { TableConfig } from '../types/table-config.type';
 import { calculateMinColumnWidth } from '../utils';
 import { renderFilterSortHeader } from '../widgets/filter-sort-header';

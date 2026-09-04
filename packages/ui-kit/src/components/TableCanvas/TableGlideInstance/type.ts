@@ -176,13 +176,13 @@ export type ColumnGlideInstance<
     | ((cellInfo: CellInfoGlideInstance<R, SR, CustomCtxs>) => number);
   /** Объединение строк: (cellInfo) => [перваяСтрока, последняяСтрока] | null (см. TableGlide RowSpan). */
   rowSpan?: (
-    cellInfo: CellInfoGlideInstance<R, SR, CustomCtxs>
+    cellInfo: CellInfoGlideInstance<R, SR, CustomCtxs>,
   ) => readonly [number, number] | null;
   /** Выравнивание контента в объединённой ячейке тела; в adaptColumn идёт в glide как `spanAlign`. */
   spanAlign?:
     | SpanCellAlign
     | ((
-        cellInfo: CellInfoGlideInstance<R, SR, CustomCtxs>
+        cellInfo: CellInfoGlideInstance<R, SR, CustomCtxs>,
       ) => SpanCellAlign | undefined);
   /** Выравнивание в объединённой шапке; в adaptColumn идёт в glide как `spanGroupHeaderAlign`. */
   squashedHeaderAlign?: HeaderAlignment;

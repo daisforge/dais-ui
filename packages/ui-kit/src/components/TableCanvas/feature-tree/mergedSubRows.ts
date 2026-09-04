@@ -26,7 +26,9 @@ export const isMergedSubRowsView = <
  * не объединяются. Служебные ключи дерева в листья не добавляем — листья должны
  * рисоваться как обычные строки, без пути дерева и без стрелок.
  */
-export function flattenSubRowsToMergedLeaves<RowType extends ObjectForExtending>(
+export function flattenSubRowsToMergedLeaves<
+  RowType extends ObjectForExtending,
+>(
   rows: readonly RowType[],
   getSubRows: (row: RowType) => RowType[] | undefined,
   mergedColumns: readonly string[],
@@ -34,11 +36,10 @@ export function flattenSubRowsToMergedLeaves<RowType extends ObjectForExtending>
   const out: RowType[] = [];
 
   const walk = (node: RowType, depth: number, stamp: Partial<RowType>) => {
-    const levelKey = depth < mergedColumns.length ? mergedColumns[depth] : undefined;
+    const levelKey =
+      depth < mergedColumns.length ? mergedColumns[depth] : undefined;
     const nextStamp =
-      levelKey !== undefined
-        ? { ...stamp, [levelKey]: node[levelKey] }
-        : stamp;
+      levelKey !== undefined ? { ...stamp, [levelKey]: node[levelKey] } : stamp;
 
     const children = getSubRows(node);
     if (children && children.length) {

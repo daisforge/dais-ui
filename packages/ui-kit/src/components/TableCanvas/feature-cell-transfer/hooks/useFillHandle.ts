@@ -19,9 +19,9 @@ import type {
 } from '../types';
 import { applyValuesToRows } from '../utils/applyValuesToRows';
 import { collectTextMatrix } from '../utils/collectTextMatrix';
-import { snapDestToRowBlocks } from '../utils/snapDestToRowBlocks';
 import { isCellEditable } from '../utils/isCellEditable';
 import { rangeToIndexes } from '../utils/rangeToIndexes';
+import { snapDestToRowBlocks } from '../utils/snapDestToRowBlocks';
 
 const clipboardDebug = createDebugLogger('TABLE_CANVAS_CLIPBOARD');
 const PFX = '[TableCanvas/fillHandle]';
