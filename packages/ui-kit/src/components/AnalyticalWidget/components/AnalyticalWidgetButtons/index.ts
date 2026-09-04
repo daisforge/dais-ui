@@ -1,9 +1,4 @@
-import {
-  IconButtonDots,
-  IconButtonFilter,
-} from '@ui-kit/components/IconButton';
+import { IconButtonFilter } from '@ui-kit/components/IconButton';
 
-export {
-  IconButtonDots as AnalyticalWidgetIconButtonDots,
-  IconButtonFilter as AnalyticalWidgetIconButtonFilter,
-};
+export { AnalyticalWidgetIconButtonDots } from './AnalyticalWidgetIconButtonDots';
+export { IconButtonFilter as AnalyticalWidgetIconButtonFilter };

@@ -1,0 +1,258 @@
+{
+  "name": "NumberInput",
+  "package": "sdds-finai",
+  "category": "components",
+  "summary": "NumberInput С помощью свойства shape можно изменить скругление углов: до которого округляется значение при вычислении шага и после завершения ручного ввода.",
+  "api": {
+    "props": [
+      {
+        "name": "view",
+        "type": "\"clear\" | \"default\" | \"accent\" | \"secondary\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "size",
+        "type": "\"s\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "shape",
+        "type": "\"pilled\" | \"cornered\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "inputBackgroundType",
+        "type": "\"clear\" | \"fill\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "segmentation",
+        "type": "\"default\" | \"segmented\" | \"solid\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "value",
+        "type": "string | number",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "min",
+        "type": "number",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "max",
+        "type": "number",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "step",
+        "type": "number",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "precision",
+        "type": "number",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "isLoading",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "loader",
+        "type": "ReactNode",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "clear",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "textBefore",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "textAfter",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "customIncrementButton",
+        "type": "ReactNode",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "incrementIcon",
+        "type": "ReactNode",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "customDecrementButton",
+        "type": "ReactNode",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "decrementIcon",
+        "type": "ReactNode",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "isManualInput",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "displayWithoutValue",
+        "type": "\"input\" | \"increment\" | \"decrement\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "limitBehavior",
+        "type": "\"hidden\" | \"disabled\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "onChange",
+        "type": "((event: SyntheticEvent<HTMLInputElement, Event> | null, value: string | number) => void)",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "onIncrement",
+        "type": "((value: number) => void)",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "onDecrement",
+        "type": "((value: number) => void)",
+        "required": false,
+        "default": "",
+        "description": ""
+      }
+    ]
+  },
+  "examples": [
+    {
+      "title": "Быстрый старт",
+      "snippet": "import React, { useState } from 'react';\nimport { NumberInput } from '@salutejs/sdds-finai';\nexport function App() {\n    const [value, setValue] = useState(5);\n    return (\n        <div>\n            <NumberInput\n                value={value}\n                min={0}\n                max={10}\n                width={188}\n                onChange={(_, newValue) => setValue(newValue)}\n            />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Управление внешним видом",
+      "snippet": "import React from 'react';\nimport { NumberInput } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', gap: '1rem', flexDirection: 'column' }}>\n            <NumberInput value={5} width={188} view=\"default\" />\n            <NumberInput value={5} width={188} view=\"secondary\" />\n            <NumberInput value={5} width={188} view=\"accent\" />\n            <NumberInput value={5} width={188} view=\"clear\" />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Управление внешним видом",
+      "snippet": "import React from 'react';\nimport { NumberInput } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', gap: '1rem', flexDirection: 'column' }}>\n            <NumberInput value={5} width={188} size=\"l\" />\n            <NumberInput value={5} width={188} size=\"m\" />\n            <NumberInput value={5} width={188} size=\"s\" />\n            <NumberInput value={5} width={188} size=\"xs\" />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Форма компонента",
+      "snippet": "import React from 'react';\nimport { NumberInput } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', gap: '1rem', flexDirection: 'column' }}>\n            <NumberInput value={5} width={188} segmentation=\"default\" />\n            <NumberInput value={5} width={188} segmentation=\"segmented\" />\n            <NumberInput value={5} width={188} segmentation=\"solid\" />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Форма компонента",
+      "snippet": "import React from 'react';\nimport { NumberInput } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', gap: '1rem', flexDirection: 'column' }}>\n            <NumberInput value={5} width={188} shape=\"cornered\" />\n            <NumberInput value={5} width={188} shape=\"pilled\" />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Ограничения значений",
+      "snippet": "import React, { useState } from 'react';\nimport { NumberInput } from '@salutejs/sdds-finai';\nexport function App() {\n    const [value, setValue] = useState(5);\n    return (\n        <div style={{ display: 'flex', gap: '1rem', flexDirection: 'column' }}>\n            <NumberInput\n                value={value}\n                min={0}\n                max={10}\n                step={2}\n                width={188}\n                onChange={(_, newValue) => setValue(newValue)}\n            />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Точность вычислений",
+      "snippet": "import React, { useState } from 'react';\nimport { NumberInput } from '@salutejs/sdds-finai';\nexport function App() {\n    const [value, setValue] = useState(5);\n    return (\n        <div>\n            <NumberInput\n                value={value}\n                min={0}\n                max={10}\n                step={0.1}\n                precision={2}\n                width={188}\n                onChange={(_, newValue) => setValue(newValue)}\n            />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Форматирование значения",
+      "snippet": "import React, { useState } from 'react';\nimport { NumberInput } from '@salutejs/sdds-finai';\nexport function App() {\n    const [value, setValue] = useState<number | string | undefined>(123456.5);\n    return (\n        <NumberInput\n            value={value}\n            width={240}\n            thousandSeparator=\" \"\n            decimalSeparator=\",\"\n            decimalScale={2}\n            fixedDecimalScale\n            isManualInput\n            onChange={(_, newValue) => setValue(newValue)}\n        />\n    );\n}"
+    },
+    {
+      "title": "Вспомогательный текст",
+      "snippet": "import React, { useState } from 'react';\nimport { NumberInput } from '@salutejs/sdds-finai';\nexport function App() {\n    const [value, setValue] = useState(5);\n    return (\n        <div style={{ display: 'flex', gap: '1rem', flexDirection: 'column' }}>\n            <NumberInput\n                value={value}\n                width={220}\n                textBefore=\"от\"\n                onChange={(_, newValue) => setValue(newValue)}\n            />\n            <NumberInput\n                value={value}\n                width={220}\n                textAfter=\"шт.\"\n                onChange={(_, newValue) => setValue(newValue)}\n            />\n            <NumberInput\n                value={value}\n                width={220}\n                textBefore=\"$\"\n                textAfter=\"USD\"\n                onChange={(_, newValue) => setValue(newValue)}\n            />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Ручной ввод",
+      "snippet": "import React, { useState } from 'react';\nimport { NumberInput } from '@salutejs/sdds-finai';\nexport function App() {\n    const [value, setValue] = useState(5);\n    return (\n        <div>\n            <NumberInput\n                value={value}\n                min={0}\n                max={10}\n                width={188}\n                isManualInput\n                onChange={(_, newValue) => setValue(newValue)}\n            />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Отображение без значения",
+      "snippet": "import React, { useState } from 'react';\nimport { NumberInput } from '@salutejs/sdds-finai';\nexport function App() {\n    const [value, setValue] = useState(undefined);\n    return (\n        <div style={{ display: 'flex', gap: '1rem', flexDirection: 'column' }}>\n            <NumberInput\n                value={value}\n                min={0}\n                max={10}\n                displayWithoutValue=\"input\"\n                onChange={(_, newValue) => setValue(newValue)}\n            />\n            <NumberInput\n                value={value}\n                min={0}\n                max={10}\n                displayWithoutValue=\"increment\"\n                onChange={(_, newValue) => setValue(newValue)}\n            />\n            <NumberInput\n                value={value}\n                min={0}\n                max={10}\n                displayWithoutValue=\"decrement\"\n                onChange={(_, newValue) => setValue(newValue)}\n            />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Поведение при достижении границ",
+      "snippet": "import React, { useState } from 'react';\nimport { NumberInput } from '@salutejs/sdds-finai';\nexport function App() {\n    const [value, setValue] = useState(0);\n    return (\n        <div style={{ display: 'flex', gap: '1rem', flexDirection: 'column' }}>\n            <NumberInput\n                value={value}\n                min={0}\n                max={10}\n                width={188}\n                limitBehavior=\"disabled\"\n                onChange={(_, newValue) => setValue(newValue)}\n            />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Пользовательские кнопки",
+      "snippet": "import React, { useState } from 'react';\nimport { NumberInput } from '@salutejs/sdds-finai';\nimport { IconVolumeLevel1Fill, IconVolumeLevel2Fill } from '@salutejs/plasma-icons';\nexport function App() {\n    const [value, setValue] = useState(5);\n    return (\n        <div>\n            <NumberInput\n                value={value}\n                min={0}\n                max={10}\n                size=\"l\"\n                width={188}\n                decrementIcon={<IconVolumeLevel1Fill color=\"inherit\" />}\n                incrementIcon={<IconVolumeLevel2Fill color=\"inherit\" />}\n                onChange={(_, newValue) => setValue(newValue)}\n            />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Пользовательские кнопки",
+      "snippet": "import React, { useState } from 'react';\nimport { NumberInput, IconButton } from '@salutejs/sdds-finai';\nimport { IconVolumeLevel1Fill, IconVolumeLevel2Fill } from '@salutejs/plasma-icons';\nexport function App() {\n    const [value, setValue] = useState(0);\n    const min = 0;\n    const max = 10;\n    const step = 2;\n    return (\n        <div>\n            <NumberInput\n                value={value}\n                step={step}\n                size=\"l\"\n                width={188}\n                customDecrementButton={\n                    <IconButton\n                        size=\"l\"\n                        view={value <= min ? 'critical' : 'accent'}\n                        disabled={value <= min}\n                        onClick={() => setValue(Math.max(min, value - step))}\n                    >\n                        <IconVolumeLevel1Fill color=\"inherit\" />\n                    </IconButton>\n                }\n                customIncrementButton={\n                    <IconButton\n                        size=\"l\"\n                        view={value >= max ? 'critical' : 'accent'}\n                        disabled={value >= max}\n                        onClick={() => setValue(Math.min(max, value + step))}\n                    >\n                        <IconVolumeLevel2Fill color=\"inherit\" />\n                    </IconButton>\n                }\n            />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Состояния Состояния",
+      "snippet": "import React from 'react';\nimport { NumberInput } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div>\n            <NumberInput value={5} width={188} disabled />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Состояния Состояния",
+      "snippet": "import React from 'react';\nimport { NumberInput } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div>\n            <NumberInput value={5} size=\"l\" width={188} isLoading />\n        </div>\n    );\n}"
+    }
+  ]
+}

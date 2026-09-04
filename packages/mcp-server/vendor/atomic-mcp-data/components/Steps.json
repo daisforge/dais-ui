@@ -1,0 +1,152 @@
+{
+  "name": "Steps",
+  "package": "sdds-finai",
+  "category": "components",
+  "summary": "Steps Свойство itemView применяется к индикатору и заголовку активного шага.",
+  "api": {
+    "props": [
+      {
+        "name": "view",
+        "type": "\"default\" | \"accent\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "itemView",
+        "type": "\"default\" | \"positive\" | \"warning\" | \"negative\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "size",
+        "type": "\"s\" | \"l\" | \"m\" | \"xs\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "items",
+        "type": "StepItemProps[]",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "orientation",
+        "type": "StepsOrientation",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "contentAlign",
+        "type": "StepsContentAlign",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "hasLine",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "hasContent",
+        "type": "StepsContent",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "hasLoader",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "current",
+        "type": "number",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "status",
+        "type": "StepStatus",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "onChange",
+        "type": "((item: StepItemProps, index: number, prevIndex?: number) => void)",
+        "required": false,
+        "default": "",
+        "description": ""
+      }
+    ]
+  },
+  "examples": [
+    {
+      "title": "Быстрый старт",
+      "snippet": "import React, { useState } from 'react';\nimport { Steps } from '@salutejs/sdds-finai';\nexport function App() {\n    const [items, setItems] = useState([{\n        indicator: 1,\n        title: 'Шаг 1',\n        status: 'active',\n    }, {\n        indicator: 2,\n        title: 'Шаг 2',\n        status: 'inactive',\n    }, {\n        indicator: 3,\n        title: 'Шаг 3',\n        status: 'inactive',\n    }]);\n    const onChange = (item, index, prevIndex) => {\n        if (prevIndex !== undefined) {\n            items[prevIndex].status = 'completed';\n        }\n        items[index].status = 'active';\n        setItems([...items]);\n    };\n    return (\n        <section>\n            <Steps items={items} onChange={onChange} />\n        </section>\n    );\n}"
+    },
+    {
+      "title": "Ориентация Ориентация Свойство  orientation  задаёт направление шагов. В вертикальном режиме рекомендуется включать разделитель через  hasLine .",
+      "snippet": "import React, { useState } from 'react';\nimport { Steps } from '@salutejs/sdds-finai';\nexport function App() {\n    const [items, setItems] = useState([{\n        indicator: 1,\n        title: 'Title',\n        content: 'Content',\n        status: 'completed',\n    }, {\n        indicator: 2,\n        title: 'Title',\n        content: 'Content',\n        status: 'active',\n    }, {\n        indicator: 3,\n        title: 'Title',\n        content: 'Content',\n        status: 'inactive',\n    }]);\n    const onChange = (item, index, prevIndex) => {\n        if (prevIndex !== undefined) {\n            items[prevIndex].status = 'completed';\n        }\n        items[index].status = 'active';\n        setItems([...items]);\n    };\n    return (\n        <section>\n            <Steps items={items} onChange={onChange} />\n        </section>\n    );\n}"
+    },
+    {
+      "title": "Ориентация Ориентация Свойство  orientation  задаёт направление шагов. В вертикальном режиме рекомендуется включать разделитель через  hasLine .",
+      "snippet": "import React, { useState } from 'react';\nimport { Steps } from '@salutejs/sdds-finai';\nexport function App() {\n    const [items, setItems] = useState([{\n        indicator: 1,\n        title: 'Title',\n        content: 'Content',\n        status: 'completed',\n    }, {\n        indicator: 2,\n        title: 'Title',\n        content: 'Content',\n        status: 'active',\n    }, {\n        indicator: 3,\n        title: 'Title',\n        content: 'Content',\n        status: 'inactive',\n    }]);\n    const onChange = (item, index, prevIndex) => {\n        if (prevIndex !== undefined) {\n            items[prevIndex].status = 'completed';\n        }\n        items[index].status = 'active';\n        setItems([...items]);\n    };\n    return (\n        <section>\n            <Steps orientation=\"vertical\" hasLine items={items} onChange={onChange} />\n        </section>\n    );\n}"
+    },
+    {
+      "title": "Внешний вид",
+      "snippet": "import React from 'react';\nimport { Steps } from '@salutejs/sdds-finai';\nexport function App() {\n    const completedItems = [{\n        indicator: 1,\n        title: 'Title',\n        status: 'completed',\n    }, {\n        indicator: 2,\n        title: 'Title',\n        status: 'active',\n    }, {\n        indicator: 3,\n        title: 'Title',\n        status: 'inactive',\n    }];\n    return (\n        <div style={{ display: 'flex', gap: '2rem', flexDirection: 'column' }}>\n            <Steps view=\"default\" items={completedItems} />\n            <Steps view=\"accent\" items={completedItems} />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Внешний вид",
+      "snippet": "import React from 'react';\nimport { Steps } from '@salutejs/sdds-finai';\nexport function App() {\n    const activeItems = [{\n        indicator: 1,\n        title: 'Active step',\n        status: 'active',\n    }, {\n        indicator: 2,\n        title: 'Inactive step',\n        status: 'inactive',\n    }];\n    return (\n        <div style={{ display: 'flex', gap: '2rem', flexDirection: 'column' }}>\n            <Steps itemView=\"default\" items={activeItems} />\n            <Steps itemView=\"positive\" items={activeItems} />\n            <Steps itemView=\"warning\" items={activeItems} />\n            <Steps itemView=\"negative\" items={activeItems} />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Внешний вид",
+      "snippet": "import React from 'react';\nimport { Steps } from '@salutejs/sdds-finai';\nexport function App() {\n    const items = [{\n        indicator: 1,\n        title: 'accent',\n        status: 'completed',\n        completedItemView: 'accent',\n    }, {\n        indicator: 2,\n        title: 'positive',\n        status: 'completed',\n        completedItemView: 'positive',\n    }, {\n        indicator: 3,\n        title: 'warning',\n        status: 'completed',\n        completedItemView: 'warning',\n    }, {\n        indicator: 4,\n        title: 'negative',\n        status: 'completed',\n        completedItemView: 'negative',\n    }, {\n        indicator: 5,\n        title: 'active',\n        status: 'active',\n    }];\n    return (\n        <section>\n            <Steps items={items} />\n        </section>\n    );\n}"
+    },
+    {
+      "title": "Тип индикатора",
+      "snippet": "import React, { useState } from 'react';\nimport { Steps } from '@salutejs/sdds-finai';\nexport function App() {\n    const [items, setItems] = useState([{\n        indicator: 1,\n        title: 'Title',\n        content: 'Content',\n        status: 'active',\n    }, {\n        indicator: 2,\n        title: 'Title',\n        content: 'Content',\n        status: 'inactive',\n    }, {\n        indicator: 3,\n        title: 'Title',\n        content: 'Content',\n        status: 'inactive',\n    }]);\n    const onChange = (item, index, prevIndex) => {\n        if (prevIndex !== undefined) {\n            items[prevIndex].status = 'completed';\n        }\n        items[index].status = 'active';\n        setItems([...items]);\n    };\n    return (\n        <section>\n            <Steps items={items} onChange={onChange} />\n        </section>\n    );\n}"
+    },
+    {
+      "title": "Тип индикатора",
+      "snippet": "import React, { useState } from 'react';\nimport { Steps } from '@salutejs/sdds-finai';\nexport function App() {\n    const [items, setItems] = useState([{\n        title: 'Title',\n        content: 'Content',\n        status: 'active',\n    }, {\n        title: 'Title',\n        content: 'Content',\n        status: 'inactive',\n    }, {\n        title: 'Title',\n        content: 'Content',\n        status: 'inactive',\n    }]);\n    const onChange = (item, index, prevIndex) => {\n        if (prevIndex !== undefined) {\n            items[prevIndex].status = 'completed';\n        }\n        items[index].status = 'active';\n        setItems([...items]);\n    };\n    return (\n        <section>\n            <Steps items={items} onChange={onChange} />\n        </section>\n    );\n}"
+    },
+    {
+      "title": "Тип индикатора",
+      "snippet": "import React, { useState } from 'react';\nimport { Steps } from '@salutejs/sdds-finai';\nimport { IconPlasma } from '@salutejs/plasma-icons';\nexport function App() {\n    const renderIndicator = ({ size }) => {\n        const iconSize = size === 'xs' || size === 's' ? 'xs' : 's';\n        return <IconPlasma color=\"inherit\" size={iconSize} />;\n    };\n    const [items, setItems] = useState([{\n        indicator: renderIndicator,\n        title: 'Title',\n        content: 'Content',\n        status: 'active',\n    }, {\n        indicator: renderIndicator,\n        title: 'Title',\n        content: 'Content',\n        status: 'inactive',\n    }, {\n        indicator: renderIndicator,\n        title: 'Title',\n        content: 'Content',\n        status: 'inactive',\n    }]);\n    const onChange = (item, index, prevIndex) => {\n        if (prevIndex !== undefined) {\n            items[prevIndex].status = 'completed';\n        }\n        items[index].status = 'active';\n        setItems([...items]);\n    };\n    return (\n        <section>\n            <Steps items={items} onChange={onChange} />\n        </section>\n    );\n}"
+    },
+    {
+      "title": "Управление навигацией",
+      "snippet": "import React, { useState } from 'react';\nimport { Steps, StepItemProps } from '@salutejs/sdds-finai';\nexport function App() {\n    const [items, setItems] = useState([{\n        indicator: 1,\n        title: 'Title',\n        content: 'Content',\n        status: 'active',\n    }, {\n        indicator: 2,\n        title: 'Title',\n        content: 'Content',\n        status: 'inactive',\n    }, {\n        indicator: 3,\n        title: 'Title',\n        content: 'Content',\n        status: 'inactive',\n    }]);\n    const onChange = (item: StepItemProps, index: number, prevIndex: number) => {\n        if (prevIndex !== undefined) {\n            items[prevIndex].status = 'completed';\n        }\n        items[index].status = 'active';\n        setItems([...items]);\n    };\n    return (\n        <section>\n            <Steps items={items} onChange={onChange} />\n        </section>\n    );\n}"
+    },
+    {
+      "title": "Внешнее управление",
+      "snippet": "import React, { useState } from 'react';\nimport { Steps, Button } from '@salutejs/sdds-finai';\nexport function App() {\n    const items = [{\n        indicator: 1,\n    }, {\n        indicator: 2,\n    }, {\n        indicator: 3,\n    }];\n    const [current, setCurrent] = useState(0);\n    const onClick = () => setCurrent((prev) => prev + 1);\n    return (\n        <section>\n            <Steps items={items} current={current} />\n            <br />\n            <Button view=\"secondary\" onClick={onClick}>\n                Next\n            </Button>\n        </section>\n    );\n}"
+    },
+    {
+      "title": "Кастомный размер шага",
+      "snippet": "import React, { useState } from 'react';\nimport { Steps } from '@salutejs/sdds-finai';\nexport function App() {\n    const [items, setItems] = useState([{\n        indicator: 1,\n        title: 'Шаг с фиксированной высотой',\n        content: 'Описание первого шага',\n        height: '6rem',\n        status: 'completed',\n    }, {\n        indicator: 2,\n        title: 'Шаг с фиксированной высотой',\n        content: 'Описание второго шага',\n        height: '6rem',\n        status: 'active',\n    }, {\n        indicator: 3,\n        title: 'Последний шаг',\n        content: 'Высота автоматическая (fit-content)',\n        status: 'inactive',\n    }]);\n    const onChange = (item, index, prevIndex) => {\n        if (prevIndex !== undefined) {\n            items[prevIndex].status = 'completed';\n        }\n        items[index].status = 'active';\n        setItems([...items]);\n    };\n    return (\n        <section>\n            <Steps orientation=\"vertical\" items={items} hasLine onChange={onChange} />\n        </section>\n    );\n}"
+    },
+    {
+      "title": "Кастомный размер шага",
+      "snippet": "import React, { useState } from 'react';\nimport { Steps } from '@salutejs/sdds-finai';\nexport function App() {\n    const [items, setItems] = useState([{\n        indicator: 1,\n        title: 'Фиксированный шаг',\n        width: '180px',\n        status: 'completed',\n    }, {\n        indicator: 2,\n        title: 'Обычный',\n        status: 'active',\n    }, {\n        indicator: 3,\n        title: 'Фиксированный шаг',\n        width: '180px',\n        status: 'inactive',\n    }]);\n    const onChange = (item, index, prevIndex) => {\n        if (prevIndex !== undefined) {\n            items[prevIndex].status = 'completed';\n        }\n        items[index].status = 'active';\n        setItems([...items]);\n    };\n    return (\n        <section>\n            <Steps items={items} hasLine onChange={onChange} />\n        </section>\n    );\n}"
+    },
+    {
+      "title": "Вложенные шаги с аккордеоном",
+      "snippet": "import React, { useState } from 'react';\nimport { Steps, Accordion, AccordionItem } from '@salutejs/sdds-finai';\nexport function App() {\n    const [open, setOpen] = useState(true);\n    const [innerSteps, setInnerSteps] = useState([{\n        indicator: 1,\n        title: 'Установка зависимостей',\n        status: 'active',\n        height: '3.5rem',\n    }, {\n        indicator: 2,\n        title: 'Настройка окружения',\n        status: 'inactive',\n        height: '3.5rem',\n    }, {\n        indicator: 3,\n        title: 'Запуск проекта',\n        status: 'inactive',\n    }]);\n    const [outerStatuses, setOuterStatuses] = useState([\n        { status: 'completed' },\n        { status: 'active' },\n        { status: 'inactive' },\n    ]);\n    const handleInnerChange = (_item, idx, prevIdx) => {\n        setInnerSteps(steps => {\n            const next = [...steps];\n            if (prevIdx !== undefined) {\n                next[prevIdx] = { ...next[prevIdx], status: 'completed' };\n            }\n            next[idx] = { ...next[idx], status: 'active' };\n            return next;\n        });\n    };\n    const handleOuterChange = (_item, idx, prevIdx) => {\n        setOuterStatuses(statuses => {\n            const next = statuses.map(s => ({ ...s }));\n            if (prevIdx !== undefined) {\n                next[prevIdx] = { ...next[prevIdx], status: 'completed' };\n            }\n            next[idx] = { ...next[idx], status: 'active' };\n            return next;\n        });\n    };\n    const outerItems = [{\n        indicator: 1,\n        title: 'Подготовка',\n        height: '4rem',\n        ...outerStatuses[0],\n    }, {\n        indicator: 2,\n        title: 'Установка',\n        height: open ? '16rem' : '7rem',\n        content: (\n            <Accordion stretching=\"filled\">\n                <AccordionItem\n                    title=\"Шаги установки\"\n                    type=\"arrow\"\n                    opened={open}\n                    onClick={() => setOpen(v => !v)}\n                >\n                    <Steps\n                        orientation=\"vertical\"\n                        size=\"s\"\n                        hasLine\n                        items={innerSteps}\n                        onChange={handleInnerChange}\n                    />\n                </AccordionItem>\n            </Accordion>\n        ),\n        ...outerStatuses[1],\n    }, {\n        indicator: 3,\n        title: 'Проверка',\n        ...outerStatuses[2],\n    }];\n    return (\n        <section style={{ width: '400px' }}>\n            <Steps orientation=\"vertical\" hasLine items={outerItems} onChange={handleOuterChange} />\n        </section>\n    );\n}"
+    }
+  ]
+}

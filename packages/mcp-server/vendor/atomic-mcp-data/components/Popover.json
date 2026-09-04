@@ -1,0 +1,176 @@
+{
+  "name": "Popover",
+  "package": "sdds-finai",
+  "category": "components",
+  "summary": "Popover Popover оборачивает слот в собственный контейнер.",
+  "api": {
+    "props": [
+      {
+        "name": "view",
+        "type": "\"default\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "isOpen",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "opened",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "trigger",
+        "type": "PopoverTrigger",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "placement",
+        "type": "Placement | ComputedPlacement[]",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "offset",
+        "type": "[number, number]",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "frame",
+        "type": "string | RefObject<HTMLElement | null>",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "target",
+        "type": "string | number | boolean | ReactElement<any, string | JSXElementConstructor<any>> | ReactFragment | ReactPortal | ((instance: HTMLElement | null) => void) | RefObject<...> | null",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "hasArrow",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "zIndex",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "preventOverflow",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "isFocusTrapped",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "onToggle",
+        "type": "((isOpen: boolean, event: Event | SyntheticEvent<Element, Event>) => void)",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "closeOnEsc",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "closeOnOverlayClick",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "usePortal",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "resizable",
+        "type": "boolean | { disabled?: boolean; directions?: ResizeDirections; defaultSize?: { width?: number | undefined; height?: number | undefined; } | undefined; ... 6 more ...; hiddenIcons?: PlacementMixed[] | undefined; } | undefined",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "onResizeStart",
+        "type": "((resizableContainer?: RefObject<Resizable>) => void)",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "onResizeEnd",
+        "type": "((resizableContainer?: RefObject<Resizable>) => void)",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "animated",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      }
+    ]
+  },
+  "examples": [
+    {
+      "title": "Быстрый старт",
+      "snippet": "<Popover style={{ \"border-radius\": \"20px\" }}>\n    <StyledSlotContent> {/* border-radius: 20px */}\n        ...\n    </StyledSlotContent>\n</Popover>"
+    },
+    {
+      "title": "Быстрый старт",
+      "snippet": "import React, { useState } from 'react';\nimport styled from \"styled-components\";\nimport { surfaceSolidTertiary } from \"@salutejs/sdds-themes/tokens\";\nimport { Popover, Button, H4, ButtonGroup } from '@salutejs/sdds-finai';\nexport function App() {\n    const [isOpen, setIsOpen] = useState(false);\n    const StyledSlotContent = styled.div`\n        display: flex;\n        flex-direction: column;\n        align-items: center;\n        padding: 1rem;\n        border-radius: 20px;\n        background: ${surfaceSolidTertiary};\n    `;\n    return (\n        <section style={{ display: 'flex', width: \"100%\", \"justify-content\": 'center', height: '12rem' }}>\n            <Popover\n                opened={isOpen}\n                onToggle={(is) => setIsOpen(is)}\n                target={<Button>Open popover trigger</Button>}\n                offset={[0, 6]}\n                placement='bottom'\n                trigger='click'\n                style={{\"border-radius\": \"20px\"}}\n            >\n                <StyledSlotContent>\n                    <H4>Заголовок H4</H4>\n                    <ButtonGroup style={{ \"justify-content\": 'flex-end', paddingTop: '24px' }} isCommonButtonStyles={false} gap=\"wide\">\n                        <Button view=\"accent\" onClick={() => setIsOpen(false)}>Принять</Button>\n                        <Button onClick={() => setIsOpen(false)}>Закрыть</Button>\n                    </ButtonGroup>\n                </StyledSlotContent>\n            </Popover>\n        </section>\n    );\n}"
+    },
+    {
+      "title": "Resizable Resizable Чтобы иметь возможность растягивать Popover нужно настроить свойство  resizable . Формат следующий",
+      "snippet": "/**\n * Настройка resizable-режима.\n */\ntype resizable = {\n    resizable?:\n    |  boolean\n    |  {\n            /**\n            * Включение/выключение ресайза.\n            * @default false\n            */\n            disabled?: boolean;\n            /**\n            * Направления для ресайза.\n            */\n            directions?: ResizeDirections;\n            /**\n            * Начальный размер окна ресайза.\n            */\n            defaultSize?: { width?: number; height?: number };\n            /**\n            * Минимальная ширина ресайза в px.\n            */\n            minWidth?: number;\n            /**\n            * Минимальная высота ресайза в px.\n            */\n            minHeight?: number;\n            /**\n            * Максимальная ширина ресайза в px.\n            */\n            maxWidth?: number;\n            /**\n            * Максимальная высота ресайза в px.\n            */\n            maxHeight?: number;\n            /**\n            * Кастомные иконки ресайза.\n            */\n            icons?: {\n                topRight?: ReactNode;\n                bottomRight?: ReactNode;\n                bottomLeft?: ReactNode;\n                topLeft?: ReactNode;\n            };\n            /**\n            * Размер иконки ресайза.\n            * @default s\n            */\n            iconSize?: 'xs' | 's' | 'm';\n            /**\n            * Скрывать ли иконку для ресайза.\n            * @default false\n            */\n            hiddenIcons?: PopupPlacementMixed[];\n        };\n}"
+    },
+    {
+      "title": "Resizable Resizable Чтобы иметь возможность растягивать Popover нужно настроить свойство  resizable . Формат следующий",
+      "snippet": "import React, { useState } from 'react';\nimport styled from \"styled-components\";\nimport { surfaceSolidTertiary } from \"@salutejs/sdds-themes/tokens\";\nimport { Popover, Button, ButtonGroup, H4 } from '@salutejs/sdds-finai';\nexport function App() {\n    const [isOpen, setIsOpen] = useState(false);\n    const StyledContent = styled.div`\n        background: ${surfaceSolidTertiary};\n        padding: 1rem;\n        display: flex;\n        flex-direction: column;\n        align-items: center;\n    `;\n    return (\n        <section style={{ display: 'flex', width: \"100%\", \"justify-content\": 'center', height: '16rem' }}>\n            <Popover\n                opened={isOpen}\n                onToggle={(is) => setIsOpen(is)}\n                target={<Button>Target</Button>}\n                placement='bottom'\n                offset={[0, 6]}\n                trigger='click'\n                resizable\n            >\n               <StyledContent>\n                    <H4>Заголовок H4</H4>\n                    <ButtonGroup style={{ \"justify-content\": 'flex-end', paddingTop: '24px' }} isCommonButtonStyles={false} gap=\"wide\">\n                        <Button view=\"accent\" onClick={() => setIsOpen(false)}>Принять</Button>\n                        <Button onClick={() => setIsOpen(false)}>Закрыть</Button>\n                    </ButtonGroup>\n                </StyledContent>\n            </Popover>\n        </section>\n    );\n}"
+    },
+    {
+      "title": "API API Props (свойства) для компонента Popover",
+      "snippet": "import React, { useState } from 'react';\nimport styled from \"styled-components\";\nimport { surfaceSolidTertiary } from \"@salutejs/sdds-themes/tokens\";\nimport { Popover, Button, H4, ButtonGroup } from '@salutejs/sdds-finai';\nexport function App() {\n    const [isOpen, setIsOpen] = useState(false);\n    const StyledContent = styled.div`\n        display: flex;\n        flex-direction: column;\n        align-items: center;\n        padding: 1rem;\n        background-color: ${surfaceSolidTertiary};\n    `;\n    return (\n        <section style={{ display: 'flex', width: \"100%\", \"justify-content\": 'center', height: '16rem' }}>\n            <Popover\n                opened={isOpen}\n                onToggle={(is) => setIsOpen(is)}\n                role=\"presentation\"\n                id=\"popover\"\n                target={<Button>Target</Button>}\n                offset={[0, 6]}\n                placement='bottom'\n                trigger='click'\n                hasArrow\n                closeOnOverlayClick\n                closeOnEsc\n                isFocusTrapped\n            >\n                <StyledContent>\n                    <H4>Заголовок H4</H4>\n                    <ButtonGroup style={{ \"justify-content\": 'flex-end', paddingTop: '24px' }} isCommonButtonStyles={false} gap=\"wide\">\n                        <Button view=\"accent\" onClick={() => setIsOpen(false)}>Принять</Button>\n                        <Button onClick={() => setIsOpen(false)}>Закрыть</Button>\n                    </ButtonGroup>\n                </StyledContent>\n            </Popover>\n        </section>\n    );\n}"
+    },
+    {
+      "title": "API API Props (свойства) для компонента Popover",
+      "snippet": "import React, { useRef, useState } from 'react';\nimport styled from \"styled-components\";\nimport { surfaceSolidTertiary } from \"@salutejs/sdds-themes/tokens\";\nimport { Popover, Button, H4, ButtonGroup } from '@salutejs/sdds-finai';\nexport function App() {\n    const [isOpen, setIsOpen] = useState(false);\n    // INFO: Type ref HTMLButtonElement | null\n    const targetRef = useRef(null);\n    const targetRef2 = useRef(null);\n    const targetRef3 = useRef(null);\n    const refs = [targetRef, targetRef2, targetRef3];\n    const [currRefIndex, setCurrentRefIndex] = useState(0);\n    const [currentRef, setCurrentRef] = useState(targetRef);\n    const changeRef = () => {\n        let ind = currRefIndex + 1;\n        if (ind > refs.length - 1) {\n            setCurrentRefIndex(0);\n            ind = 0;\n        }\n        setCurrentRefIndex(ind);\n        setCurrentRef(refs[ind]);\n    };\n    const StyledContent = styled.div`\n        display: flex;\n        flex-direction: column;\n        align-items: center;\n        padding: 1rem;\n        background-color: ${surfaceSolidTertiary};\n    `;\n    return (\n        <section style={{ display: 'flex', width: \"100%\", \"justify-content\": 'center', height: '16rem' }}>\n            <Popover\n                opened={isOpen}\n                onToggle={(is) => setIsOpen(is)}\n                role=\"presentation\"\n                id=\"popover\"\n                target={currentRef}\n                offset={[0, 6]}\n                placement='bottom'\n                trigger='click'\n                hasArrow\n                closeOnOverlayClick\n                closeOnEsc\n                isFocusTrapped\n            >\n                <StyledContent>\n                    <H4>Заголовок H4</H4>\n                    <ButtonGroup style={{ \"justify-content\": 'flex-end', paddingTop: '24px' }} isCommonButtonStyles={false} gap=\"wide\">\n                        <Button view=\"accent\" onClick={() => setIsOpen(false)}>Принять</Button>\n                        <Button onClick={() => setIsOpen(false)}>Закрыть</Button>\n                    </ButtonGroup>\n                </StyledContent>\n            </Popover>\n            <Button onClick={changeRef}>\n                Change targetAsRef to Target {currRefIndex + 1 > refs.length - 1 ? 0 : currRefIndex + 1}\n            </Button>\n            <div style={{ padding: '5rem' }}>Current Target: {currRefIndex}</div>\n            <ButtonGroup style={{ \"justify-content\": 'flex-end' }} isCommonButtonStyles={false} gap=\"wide\">\n                <Button ref={targetRef}>Target 0</Button>\n                <Button view=\"secondary\" ref={targetRef2}>Target 1</Button>\n                <Button view=\"accent\" ref={targetRef3}>Target 2</Button>\n            </ButtonGroup>\n        </>\n    );\n}"
+    }
+  ]
+}

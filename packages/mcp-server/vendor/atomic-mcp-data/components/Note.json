@@ -1,0 +1,127 @@
+{
+  "name": "Note",
+  "package": "sdds-finai",
+  "category": "components",
+  "summary": "Note Компонент для отображения текста в виде информационных, предупреждающих, обычных подсказок.",
+  "api": {
+    "props": [
+      {
+        "name": "view",
+        "type": "\"default\" | \"positive\" | \"warning\" | \"negative\" | \"info\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "size",
+        "type": "\"s\" | \"l\" | \"m\" | \"xs\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "orientation",
+        "type": "\"horizontal\" | \"vertical\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "title",
+        "type": "string | (ReactElement<any, string | JSXElementConstructor<any>> & string) | (ReactFragment & string) | (ReactPortal & string)",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "text",
+        "type": "ReactNode",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "contentBefore",
+        "type": "ReactNode",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "contentBeforeSizing",
+        "type": "\"fixed\" | \"scalable\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "stretch",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "width",
+        "type": "string | number",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "height",
+        "type": "string | number",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "hasClose",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "onCloseButtonClick",
+        "type": "(() => void)",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "actionContent",
+        "type": "ReactNode",
+        "required": false,
+        "default": "",
+        "description": ""
+      }
+    ]
+  },
+  "examples": [
+    {
+      "title": "Примеры Примеры Вид компонента задается с помощью свойства  view .",
+      "snippet": "import React from 'react';\nimport { Note } from '@salutejs/sdds-finai';\nimport { IconSaluteOutline } from '@salutejs/plasma-icons';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>\n            <Note\n                title=\"Title\"\n                text=\"Text\"\n                view=\"default\"\n                size=\"s\"\n                contentBefore={<IconSaluteOutline size=\"xs\" color=\"inherit\" />}\n            />\n            <Note\n                title=\"Title\"\n                text=\"Text\"\n                view=\"positive\"\n                size=\"s\"\n                contentBefore={<IconSaluteOutline size=\"xs\" color=\"inherit\" />}\n            />\n            <Note\n                title=\"Title\"\n                text=\"Text\"\n                view=\"warning\"\n                size=\"s\"\n                contentBefore={<IconSaluteOutline size=\"xs\" color=\"inherit\" />}\n            />\n            <Note\n                title=\"Title\"\n                text=\"Text\"\n                view=\"negative\"\n                size=\"s\"\n                contentBefore={<IconSaluteOutline size=\"xs\" color=\"inherit\" />}\n            />\n            <Note\n                title=\"Title\"\n                text=\"Text\"\n                view=\"info\"\n                size=\"s\"\n                contentBefore={<IconSaluteOutline size=\"xs\" color=\"inherit\" />}\n            />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Примеры Примеры Вид компонента задается с помощью свойства  view .",
+      "snippet": "import React from 'react';\nimport { Note } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>\n            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>\n                <Note title=\"Title\" text=\"Text\" view=\"default\" size=\"l\" />\n                <Note title=\"Title\" text=\"Text\" view=\"default\" size=\"m\" />\n                <Note title=\"Title\" text=\"Text\" view=\"default\" size=\"s\" />\n                <Note title=\"Title\" text=\"Text\" view=\"default\" size=\"xs\" />\n            </div>\n            <Note\n                title=\"Title\"\n                text=\"Text\"\n                view=\"default\"\n                size=\"l\"\n                width=\"400\"\n                height=\"116\"\n            />\n            <div style={{ width: '300px', height: '300px' }}>\n                <Note title=\"Title\" text=\"Text\" view=\"default\" size=\"l\" stretch />\n            </div>\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Примеры Примеры Вид компонента задается с помощью свойства  view .",
+      "snippet": "import React from 'react';\nimport { Note, LinkButton } from '@salutejs/sdds-finai';\nimport { IconSaluteOutline } from '@salutejs/plasma-icons';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>\n            <Note\n                title=\"Title\"\n                text=\"Text\"\n                view=\"default\"\n                size=\"l\"\n                orientation=\"vertical\"\n                contentBefore={<IconSaluteOutline size=\"s\" color=\"inherit\" />}\n            />\n            <Note\n                title=\"Title\"\n                text=\"Text\"\n                view=\"default\"\n                size=\"l\"\n                orientation=\"horizontal\"\n                contentBefore={<IconSaluteOutline size=\"s\" color=\"inherit\" />}\n                actionContent={<LinkButton text=\"Label\" />}\n                hasClose\n            />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Контент contentBefore Контент  contentBefore Размерность и положение  contentBefore  задается с помощью свойства  contentBeforeSizing .",
+      "snippet": "import React from 'react';\nimport { Note } from '@salutejs/sdds-finai';\nimport { IconSaluteOutline } from '@salutejs/plasma-icons';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>\n            <Note\n                title=\"Title\"\n                text=\"Text\"\n                view=\"default\"\n                size=\"s\"\n                contentBefore={<IconSaluteOutline size=\"xs\" color=\"inherit\" />}\n                contentBeforeSizing=\"fixed\"\n            />\n            <Note\n                title=\"Title\"\n                text=\"Text\"\n                view=\"positive\"\n                size=\"s\"\n                contentBefore={<IconSaluteOutline size=\"m\" color=\"inherit\" />}\n                contentBeforeSizing=\"scalable\"\n            />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Дополнительный контент actionContent",
+      "snippet": "import React from 'react';\nimport { Note, LinkButton } from '@salutejs/sdds-finai';\nimport { IconSaluteOutline } from '@salutejs/plasma-icons';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>\n            <Note\n                title=\"Title\"\n                text=\"Text\"\n                view=\"default\"\n                size=\"l\"\n                contentBefore={<IconSaluteOutline size=\"s\" color=\"inherit\" />}\n                actionContent={<LinkButton text=\"Label\" />}\n            />\n            <Note\n                title=\"Title\"\n                text=\"Text\"\n                view=\"positive\"\n                size=\"l\"\n                orientation=\"horizontal\"\n                contentBefore={<IconSaluteOutline size=\"s\" color=\"inherit\" />}\n                actionContent={<LinkButton text=\"Label\" />}\n            />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Кнопка закрытия hasClose",
+      "snippet": "import React from 'react';\nimport { Note, Button } from '@salutejs/sdds-finai';\nimport { IconSaluteOutline } from '@salutejs/plasma-icons';\nexport function App() {\n  const [state, setState] = useState(true);\n  return (\n    <div style={{ height: '8rem', display: 'block' }}>\n      <Button\n        size=\"s\"\n        style={{ marginBottom: '0.5rem' }}\n        onClick={() => setState(!state)}\n      >\n        Открыть\n      </Button>\n      {state && (\n        <Note\n          title=\"Ваш заголовок\"\n          text=\"Пример с возможностью закрыть по control\"\n          view=\"default\"\n          size=\"s\"\n          contentBefore={<IconSaluteOutline size=\"xs\" color=\"inherit\" />}\n          hasClose\n          onCloseButtonClick={() => setState(false)}\n        />\n      )}\n    </div>\n  );\n}"
+    }
+  ]
+}

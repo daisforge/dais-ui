@@ -189,7 +189,10 @@ export const PopoverInTable = <
         outsideClick
         onToggle={(isOpen) => {
           if (!isOpen) {
-            close();
+            // Закрытие инициировано floating-ui (клик мимо / Esc). Помечаем как
+            // outsidePress, чтобы повторный клик по той же иконке фильтра не
+            // переоткрывал поповер, а оставлял его закрытым (toggle).
+            close({ outsidePress: true });
           }
         }}
         offset={POPOVER_OFFSET}

@@ -1,0 +1,44 @@
+{
+  "name": "Spinner",
+  "package": "sdds-finai",
+  "category": "components",
+  "summary": "Spinner",
+  "api": {
+    "props": [
+      {
+        "name": "size",
+        "type": "\"s\" | \"l\" | \"m\" | \"xs\" | \"xxs\" | \"xl\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "view",
+        "type": "\"default\" | \"accent\" | \"positive\" | \"warning\" | \"negative\" | \"secondary\" | \"info\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "height",
+        "type": "string | number",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "width",
+        "type": "string | number",
+        "required": false,
+        "default": "",
+        "description": ""
+      }
+    ]
+  },
+  "examples": [
+    {
+      "title": "Example 1",
+      "snippet": "import React from 'react';\nimport { Spinner } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <Spinner size=\"l\" />\n    );\n}"
+    }
+  ]
+}

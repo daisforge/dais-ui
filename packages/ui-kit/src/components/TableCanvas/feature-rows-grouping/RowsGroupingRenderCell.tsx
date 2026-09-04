@@ -49,6 +49,7 @@ export const RowsGroupingRenderCell = <
         const result = groupedColRenderers.rowsGrouping.renderGroupCell({
           ...groupRowData,
           column,
+          theme: renderCellProps.theme,
           tabIndex: 0,
         });
 
@@ -95,6 +96,7 @@ export const RowsGroupingRenderCell = <
     const result = rowsGrouping.renderGroupCell({
       ...groupRowData,
       column,
+      theme: renderCellProps.theme,
       tabIndex: 0,
     });
     if (isCanvasContent(result) || isGlideGridCellObj(result)) {

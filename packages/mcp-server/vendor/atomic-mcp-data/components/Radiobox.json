@@ -1,0 +1,160 @@
+{
+  "name": "Radiobox",
+  "package": "sdds-finai",
+  "category": "components",
+  "summary": "Radiobox",
+  "api": {
+    "props": [
+      {
+        "name": "size",
+        "type": "\"s\" | \"l\" | \"m\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "view",
+        "type": "\"default\" | \"accent\" | \"positive\" | \"warning\" | \"negative\" | \"secondary\" | \"tertiary\" | \"paragraph\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "type",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "value",
+        "type": "string | number | readonly string[]",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "checked",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "placeholder",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "required",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "minLength",
+        "type": "number",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "maxLength",
+        "type": "number",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "onChange",
+        "type": "ChangeEventHandler<HTMLInputElement>",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "onFocus",
+        "type": "FocusEventHandler<HTMLInputElement>",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "onBlur",
+        "type": "FocusEventHandler<HTMLInputElement>",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "defaultChecked",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "label",
+        "type": "ReactNode",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "description",
+        "type": "ReactNode",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "singleLine",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "checkIcon",
+        "type": "ReactNode",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "indeterminateIcon",
+        "type": "ReactNode",
+        "required": false,
+        "default": "",
+        "description": ""
+      }
+    ]
+  },
+  "examples": [
+    {
+      "title": "Использование Использование Компонент  Radiobox  может содержать лейбл и описание. По умолчанию, контент внутри лейбла и описания многострочный. Для того чтобы стал однострочным, необходимо использовать свойство  singleLine (по умолчанию  false ).",
+      "snippet": "import React from 'react';\nimport { Radiobox } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <Radiobox label=\"Радиокнопка\" description=\"Описание\" defaultChecked />\n    );\n}"
+    },
+    {
+      "title": "RadioGroup RadioGroup Компоненты  Radiobox  следует объединять в  RadioGroup",
+      "snippet": "<RadioGroup aria-labelledby=\"radiogroup-title-id\">\n    <H3 id=\"radiogroup-title-id\">Заголовок</H3>\n    <Radiobox name=\"radio-1\" label=\"Радиокнопка 1\" description=\"Описание 1\" defaultChecked />\n    <Radiobox name=\"radio-1\" label=\"Радиокнопка 2\" description=\"Описание 2\" />\n</RadioGroup>"
+    }
+  ]
+}

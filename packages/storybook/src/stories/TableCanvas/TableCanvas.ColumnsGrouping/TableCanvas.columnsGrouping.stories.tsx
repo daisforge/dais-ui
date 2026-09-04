@@ -30,7 +30,7 @@ import {
   Canvas,
   ColumnOrColumnGroupConfig,
   TableCanvas,
-} from '@sber-digital-finance-ui/ui-kit/components/TableCanvas';
+} from '@daisforge/ui/components/TableCanvas';
 `;
 
 const spanRows = createRows(0, 40);

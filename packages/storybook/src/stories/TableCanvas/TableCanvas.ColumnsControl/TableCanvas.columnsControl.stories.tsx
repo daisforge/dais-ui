@@ -225,3 +225,91 @@ export const ColumnsControlPinningMenu: Story = {
     );
   },
 };
+
+export const ColumnsControlWithServiceColumnsForTest: Story = {
+  ...storySourceDoc({
+    preCode,
+    previewSource: 'shown',
+  }),
+  render: () => {
+    const [rows] = useState(createRows);
+
+    const columnConfig = useMemo<readonly ColumnConfig<Row>[]>(
+      () => [
+        {
+          key: 'id',
+          name: 'ID',
+        },
+        {
+          key: 'task',
+          name: 'Title',
+        },
+        {
+          key: 'priority',
+          name: 'Priority',
+        },
+        {
+          key: 'issueType',
+          name: 'Issue Type',
+        },
+        {
+          key: 'developer',
+          name: 'Developer',
+        },
+        {
+          key: 'tr1',
+          name: 'TR',
+        },
+        {
+          key: 'complete',
+          name: '% Complete',
+        },
+      ],
+      [],
+    );
+
+    const selectingRowStateAndSetter = useState(
+      (): ReadonlySet<string | number> => new Set(),
+    );
+
+    return (
+      <TableCanvas
+        tableConfig={{
+          selecting: {
+            rowCheckboxDisabled: (row) => row.id === 2,
+            rowShowCheckbox: (row) => row.id !== 3,
+            state: selectingRowStateAndSetter,
+            rowKeyGetter: (r) => r.id + r.issueType,
+            showDefault: false,
+          },
+          containerStyle: { height: 700 },
+          columnsControl: {
+            enable: true,
+            hiding: true,
+            disableHiding: ['id'],
+            pinning: true,
+            disablePinning: ['developer'],
+            reorderingAside: true,
+            reorderingHeader: true,
+            columnsLabel: {
+              task: 'Задачи',
+            },
+            orderDefault: ['id', 'issueType', 'task'],
+            hiddenDefault: ['tr1'],
+            pinnedDefault: ['complete'],
+            onConfirm: ({ order, hidden, pinned }, _setters) => {
+              // eslint-disable-next-line no-alert
+              alert(`
+                                    order: ${order.join(', ')}
+                                    pinned: ${pinned.join(', ')}
+                                    hidden: ${hidden.join(', ')}
+                                `);
+            },
+          },
+        }}
+        columnConfig={columnConfig}
+        rows={rows}
+      />
+    );
+  },
+};

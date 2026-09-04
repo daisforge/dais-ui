@@ -54,6 +54,11 @@ import type {
 import { ColumnsGroupingConfig } from './columns-grouping.type';
 import { MergedCellsAlign } from './merged-cells.type';
 import { Maybe, ObjectForExtending, Prettify } from './utils.type';
+
+export type {
+  ColumnsGroupingConfig,
+  HeaderAlignment,
+} from './columns-grouping.type';
 /** @deprecated Свойство view не используется и будет удалено в следующей мажорной версии. */
 export type ViewMods = {
   rows: {
@@ -858,8 +863,8 @@ export type TableConfig<
 > = {
   /**
    * Группировка колонок (многоуровневая шапка через `columnConfig.children`):
-   * слияние пустых ячеек шапки (`squashEmptyCells`, по умолчанию включено) и
-   * дефолт выравнивания в слитых ячейках (`squashedHeaderAlign`).
+   * объединение пустых ячеек шапки (`squashEmptyCells`, по умолчанию включено) и
+   * дефолт выравнивания в объединённых ячейках (`squashedHeaderAlign`).
    */
   columnsGrouping?: ColumnsGroupingConfig;
   /**

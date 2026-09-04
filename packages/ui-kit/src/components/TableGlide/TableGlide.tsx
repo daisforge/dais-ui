@@ -60,9 +60,7 @@ import {
   createTextCellGlide,
   TextCellOptions,
 } from './utils/createCell';
-import { findBlockOrigin } from './utils/findBlockOrigin';
 import { getSpan } from './utils/getSpan';
-import { getRowSpan } from './utils/getRowSpan';
 import { isCanvasContent, isPrimitive } from './utils/typeGuards';
 
 /** Функция-болванка. Ничего не делает */
@@ -597,50 +595,6 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       if (!row) {
         return createEmptyCellGlide();
       }
-
-      // Ячейка, покрытая блоком, отдаёт контент верхней-левой ячейки блока: у всех
-      // ячеек блока одинаковые span/spanRows и значение. Форк убирает повторы и
-      // сводит клик, навигацию и редактирование к верхней-левой ячейке.
-      const lightInfo = (
-        col: (typeof columnsForRender)[number],
-        c: number,
-        r: number
-      ): CellInfo<R, SR> =>
-        ({
-          row: rows[r],
-          column: col,
-          colInd: c,
-          rowInd: r,
-          ctxs,
-          theme,
-          hovered: { cellHover: false, rowHover: false },
-          active: { cellActive: false, rowActive: false },
-        } as CellInfo<R, SR>);
-
-      const [originColInd, originRowInd] = findBlockOrigin(
-        colInd,
-        rowInd,
-        (c, r) => {
-          const col = columnsForRender[c];
-          return col?.colSpan
-            ? getSpan(col.colSpan, lightInfo(col, c, r))
-            : null;
-        },
-        (c, r) => {
-          const col = columnsForRender[c];
-          return col?.rowSpan
-            ? getRowSpan(col.rowSpan, lightInfo(col, c, r))
-            : null;
-        }
-      );
-      if (originColInd !== colInd || originRowInd !== rowInd) {
-        // eslint-disable-next-line no-use-before-define
-        return getCellContentGlide(
-          [originColInd, originRowInd],
-          getCellContentOptions
-        );
-      }
-
       const hoveredPosition = hoveredPositionRef.current;
       // Эти флаги считаются для каждой рендеримой ячейки с данными.
       // Так пользователь renderCell не зависит от координат курсора и внутренней модели выделения.
@@ -668,8 +622,6 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         renderCell,
         id,
         colSpan,
-        rowSpan,
-        spanAlign: spanAlignConfig,
         editable,
         contentAlign,
         columnThemeOverride,
@@ -677,15 +629,6 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       const displayData = row[id]?.toString?.() ?? 'NOT FOUND';
 
       const span = getSpan(colSpan, cellInfo);
-      const spanRows = getRowSpan(rowSpan, cellInfo);
-      // Только для ячеек внутри блока: spanAlign на одиночной ячейке переключил бы
-      // её в форке на путь отрисовки для объединённых ячеек.
-      const spanAlign =
-        (span || spanRows) && spanAlignConfig
-          ? typeof spanAlignConfig === 'function'
-            ? spanAlignConfig(cellInfo)
-            : spanAlignConfig
-          : undefined;
 
       const cellIsEditable = (() => {
         if (!editable) {
@@ -721,8 +664,6 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         },
         contentAlign,
         ...(span && { span }),
-        ...(spanRows && { spanRows }),
-        ...(spanAlign && { spanAlign }),
       } satisfies TextCellOptions;
 
       if (!renderCell) {
@@ -739,13 +680,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         ? { ...cellInfo, theme: { ...theme, ...columnThemeOverrideResult } }
         : cellInfo;
 
-      // У объединённой ячейки передаём выравнивание блока, чтобы ячейка-select
-      // внутри расставила контент и уголок по высоте всего блока, а не одной строки.
-      const jsxElement = renderCell(
-        span || spanRows
-          ? { ...cellInfoWithThemeOverride, __mergedCell: { align: spanAlign } }
-          : cellInfoWithThemeOverride
-      );
+      const jsxElement = renderCell(cellInfoWithThemeOverride);
 
       return applyPendingSelfEditorActivation(
         glideCellRenderer({
@@ -1091,17 +1026,8 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         return;
       }
 
-      // нормализуем group колонки в плоский путь имён групп
-      // (glide хранит group как string | string[] | undefined)
-      const toGroupPath = (group: unknown): string[] =>
-        Array.isArray(group)
-          ? group.filter((g): g is string => typeof g === 'string')
-          : typeof group === 'string'
-            ? [group]
-            : [];
-
       // путь кликнутой колонки и уровень клика
-      const clickedPath = toGroupPath(clickedColumn.group);
+      const clickedPath = getColumnGroupPath(clickedColumn.group);
       const clickedLevel = Math.max(0, clickedPath.indexOf(event.group));
       // ключ группы — префикс пути до уровня клика (про '\0' см. выше)
       const prefixKey = clickedPath.slice(0, clickedLevel + 1).join('\0');
@@ -1111,7 +1037,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         const column = columnsForRender[index];
         return (
           column !== undefined &&
-          toGroupPath(column.group)
+          getColumnGroupPath(column.group)
             .slice(0, clickedLevel + 1)
             .join('\0') === prefixKey
         );

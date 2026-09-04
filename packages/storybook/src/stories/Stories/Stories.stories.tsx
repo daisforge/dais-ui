@@ -3,6 +3,7 @@ import { getFuncAsString } from '@df-storybook/utils/getFuncAsString';
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Button } from '@ui-kit/components/Button';
+import { Carousel, CarouselItem } from '@ui-kit/components/Carousel';
 import { ModalDF } from '@ui-kit/components/ModalDF';
 import type { StoriesRef } from '@ui-kit/components/Stories';
 import { Stories } from '@ui-kit/components/Stories';
@@ -36,6 +37,13 @@ function useViewed() {
     setViewed((prev) => ({ ...prev, [index]: true }));
   return { viewed, markViewed };
 }
+
+// Исходник общего хелпера useViewed — вставляем его в Show code всех стори,
+// которые им пользуются (сам хелпер объявлен выше).
+const viewedSource = getFuncAsString(
+  'packages/storybook/src/stories/Stories/Stories.stories.tsx',
+  'useViewed',
+);
 
 function CircleStoriesExample() {
   const { viewed, markViewed } = useViewed();
@@ -86,8 +94,10 @@ function CircleStoriesExample() {
 }
 
 const circleCode = `
-import { Button, Stories } from '@sber-digital-finance-ui/ui-kit';
+import { Button, Stories } from '@daisforge/ui';
 import { useState } from 'react';
+
+${viewedSource}
 
 ${getFuncAsString(
   'packages/storybook/src/stories/Stories/Stories.stories.tsx',
@@ -146,7 +156,9 @@ function RectStoriesExample() {
 }
 
 const rectCode = `
-import { Button, Stories } from '@sber-digital-finance-ui/ui-kit';
+import { Button, Stories } from '@daisforge/ui';
+
+${viewedSource}
 
 ${getFuncAsString(
   'packages/storybook/src/stories/Stories/Stories.stories.tsx',
@@ -184,7 +196,9 @@ function LoadingStoriesExample() {
 }
 
 const loadingCode = `
-import { Stories } from '@sber-digital-finance-ui/ui-kit';
+import { Stories } from '@daisforge/ui';
+
+${viewedSource}
 
 ${getFuncAsString(
   'packages/storybook/src/stories/Stories/Stories.stories.tsx',
@@ -211,7 +225,7 @@ function ErrorStateExample() {
 }
 
 const errorCode = `
-import { Stories } from '@sber-digital-finance-ui/ui-kit';
+import { Stories } from '@daisforge/ui';
 
 ${getFuncAsString(
   'packages/storybook/src/stories/Stories/Stories.stories.tsx',
@@ -262,8 +276,8 @@ function ErrorCustomExample() {
 }
 
 const errorCustomCode = `
-import { BodyS, Button, Stories, surfaceAccentMinor, surfaceInfo } from '@sber-digital-finance-ui/ui-kit';
-import { br, s } from '@sber-digital-finance-ui/ui-kit/constants';
+import { BodyS, Button, Stories, surfaceAccentMinor, surfaceInfo } from '@daisforge/ui';
+import { br, s } from '@daisforge/ui/constants';
 
 ${getFuncAsString(
   'packages/storybook/src/stories/Stories/Stories.stories.tsx',
@@ -343,8 +357,10 @@ function ImperativeControlExample() {
 }
 
 const imperativeCode = `
-import { Button, Stories, StoriesRef } from '@sber-digital-finance-ui/ui-kit';
+import { Button, Stories, StoriesRef } from '@daisforge/ui';
 import { useRef, useState } from 'react';
+
+${viewedSource}
 
 ${getFuncAsString(
   'packages/storybook/src/stories/Stories/Stories.stories.tsx',
@@ -402,8 +418,10 @@ function InsideModalExample() {
 }
 
 const insideModalCode = `
-import { Button, ModalDF, Stories } from '@sber-digital-finance-ui/ui-kit';
+import { Button, ModalDF, Stories } from '@daisforge/ui';
 import { useState } from 'react';
+
+${viewedSource}
 
 ${getFuncAsString(
   'packages/storybook/src/stories/Stories/Stories.stories.tsx',
@@ -446,7 +464,9 @@ function HiddenArrowsExample() {
 }
 
 const hiddenArrowsCode = `
-import { Stories } from '@sber-digital-finance-ui/ui-kit';
+import { Stories } from '@daisforge/ui';
+
+${viewedSource}
 
 ${getFuncAsString(
   'packages/storybook/src/stories/Stories/Stories.stories.tsx',
@@ -497,7 +517,9 @@ function TitlesExample() {
 }
 
 const titlesCode = `
-import { Stories } from '@sber-digital-finance-ui/ui-kit';
+import { Stories } from '@daisforge/ui';
+
+${viewedSource}
 
 ${getFuncAsString(
   'packages/storybook/src/stories/Stories/Stories.stories.tsx',
@@ -509,4 +531,70 @@ export const Titles: Story = {
   name: 'Подписи: 2 строки, ellipsis, выравнивание',
   ...storySourceDoc({ code: titlesCode, previewSource: 'shown' }),
   render: TitlesExample,
+};
+
+// Палитра градиентов для 6 уникальных превью карусели.
+const CAROUSEL_PALETTE: Array<[string, string]> = [
+  ['#08c6c9', '#4f8ef7'],
+  ['#f7971e', '#ffd200'],
+  ['#c471ed', '#f64f59'],
+  ['#00b3a4', '#08c6c9'],
+  ['#7b61ff', '#99b0fe'],
+  ['#12c2e9', '#c471ed'],
+];
+
+function CarouselWrappedExample() {
+  const { viewed, markViewed } = useViewed();
+  const [carouselIndex, setCarouselIndex] = useState(0);
+
+  const handleGroupChange = (groupIndex: number) => {
+    markViewed(groupIndex);
+    setCarouselIndex(groupIndex);
+  };
+
+  return (
+    <Stories onGroupChange={handleGroupChange}>
+      <Carousel
+        index={carouselIndex}
+        onChangeIndex={setCarouselIndex}
+        scrollAlign="start"
+        gap="16px"
+        style={{ maxWidth: 360 }}
+      >
+        {CAROUSEL_PALETTE.map(([from, to], i) => {
+          const n = i + 1;
+          return (
+            <CarouselItem key={n}>
+              <Stories.Preview
+                title={`Превью ${n}`}
+                image={asset(String(n), from, to)}
+                viewed={viewed[i]}
+                slides={[
+                  { src: asset(`Слайд ${n}.1`, from, to) },
+                  { src: asset(`Слайд ${n}.2`, to, from) },
+                ]}
+              />
+            </CarouselItem>
+          );
+        })}
+      </Carousel>
+    </Stories>
+  );
+}
+
+const carouselWrappedCode = `
+import { Carousel, CarouselItem, Stories } from '@daisforge/ui';
+
+${viewedSource}
+
+${getFuncAsString(
+  'packages/storybook/src/stories/Stories/Stories.stories.tsx',
+  'CarouselWrappedExample',
+)}
+`;
+
+export const CarouselWrapped: Story = {
+  name: 'Превью внутри Carousel (вложенность)',
+  ...storySourceDoc({ code: carouselWrappedCode, previewSource: 'shown' }),
+  render: CarouselWrappedExample,
 };

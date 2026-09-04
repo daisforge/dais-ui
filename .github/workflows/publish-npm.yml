@@ -22,7 +22,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version-file: '.nvmrc'
           registry-url: 'https://registry.npmjs.org'
           cache: npm
 
@@ -51,6 +51,26 @@ jobs:
         env:
           NODE_OPTIONS: '--max_old_space_size=4096'
           NODE_ENV: production
+
+      # buildIndex.js пишет component-index.json в dist/packages/ui-kit/mcp-data
+      # только если dist/packages/ui-kit уже существует (см. buildIndex.ts) — на этом
+      # шаге он уже собран предыдущим шагом. У ui-kit/package.json нет поля "files",
+      # поэтому mcp-data уедет в npm-тарболл вместе с остальным dist как есть.
+      # Без этого шага tier "installed" в resolveIndex.ts (@daisforge/ui-mcp)
+      # никогда не сработает ни для одной опубликованной версии @daisforge/ui.
+      #
+      # `npm run meta` обязателен и идёт первым: _docs/meta лежит в .gitignore,
+      # в CI-чекауте его нет, а без него индексер терял features/guides/curated-
+      # описания/full-code примеры — ровно так выпотрошенный индекс однажды уехал
+      # в npm. Сейчас индексер на отсутствующей мете падает (assertMetaAvailable),
+      # то есть без этой строки шаг просто не пройдёт.
+      - name: Embed MCP component index into ui-kit dist
+        if: steps.before.outputs.sha != steps.after.outputs.sha
+        run: |
+          npm run meta
+          npm run mcp:ci
+          npm run build --prefix packages/mcp-server
+          node ./packages/mcp-server/dist/indexer/buildIndex.js
 
       - name: Publish to npm
         if: steps.before.outputs.sha != steps.after.outputs.sha

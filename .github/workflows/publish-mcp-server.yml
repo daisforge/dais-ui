@@ -1,0 +1,186 @@
+name: Publish MCP server package
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: 'Тип версии (semver)'
+        required: true
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+        default: patch
+      dry_run:
+        description: 'Тестовый прогон (npm publish --dry-run), без реальной публикации'
+        required: true
+        type: boolean
+        default: true
+      publish_alias:
+        description: 'Публиковать также зеркальный (white-label) пакет'
+        required: true
+        type: boolean
+        default: true
+  workflow_call:
+    inputs:
+      bump:
+        description: 'Тип версии (semver)'
+        required: false
+        type: string
+        default: patch
+      dry_run:
+        description: 'Тестовый прогон (npm publish --dry-run), без реальной публикации'
+        required: false
+        type: boolean
+        default: true
+      publish_alias:
+        description: 'Публиковать также зеркальный (white-label) пакет'
+        required: false
+        type: boolean
+        default: true
+    secrets:
+      NPM_TOKEN:
+        required: true
+      # Не required: без них шаги зеркала просто пропускаются (см. if ниже) —
+      # форк или прогон в репозитории без этих секретов не должен падать.
+      ALT_MCP_PACKAGE_NAME:
+        required: false
+      ALT_LIB_PACKAGE_NAME:
+        required: false
+      ALT_NPM_TOKEN:
+        required: false
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          registry-url: 'https://registry.npmjs.org'
+          cache: npm
+
+      - name: Configure git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Install root dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Install mcp-server dependencies
+        run: npm run mcp:ci
+
+      # dist/packages/ui-kit в этом чекауте не собран — buildIndex.js запишет
+      # только запасной "bundled" индекс в packages/mcp-server/data/, это и нужно
+      # для публикации самого @daisforge/ui-mcp.
+      - name: Build component index
+        run: npm run mcp:build-index
+
+      - name: Validate component index
+        run: npm run mcp:validate-index
+
+      - name: Bump version
+        id: version
+        working-directory: packages/mcp-server
+        run: |
+          npm version ${{ inputs.bump }} --no-git-tag-version
+          echo "version=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
+
+      - name: Commit version bump
+        run: |
+          git add packages/mcp-server/package.json packages/mcp-server/package-lock.json packages/mcp-server/data/component-index.json
+          git commit -m "chore(release-mcp): ui-mcp v${{ steps.version.outputs.version }}"
+          git tag -a "ui-mcp-v${{ steps.version.outputs.version }}" -m "ui-mcp v${{ steps.version.outputs.version }}"
+
+      # Зеркальный (white-label) пакет: тот же собранный dist и тот же индекс,
+      # но под другим именем пакета и с другим именем связанной библиотеки.
+      # Имена лежат в секретах, в репозитории их нет — см.
+      # packages/mcp-server/scripts/build-alias-package.mjs.
+      #
+      # Зеркало публикуется ПЕРВЫМ, до основного пакета: это новый путь (новый
+      # scope, отдельный токен, своя история версий), и если он падает, job
+      # обрывается до публикации @daisforge/ui-mcp и до git push — ничего не
+      # опубликовано, ничего не запушено, повтор чистый. В обратном порядке
+      # основной пакет уже уехал бы в npm без коммита и тега в репозитории.
+      #
+      # Флаг считается отдельным шагом, а не прямо в `if`: контекст secrets в
+      # условиях шагов недоступен, проверить «секрет не пуст» можно только
+      # через env внутри run.
+      - name: Resolve alias publish flag
+        id: alias
+        env:
+          ALT_MCP_PACKAGE_NAME: ${{ secrets.ALT_MCP_PACKAGE_NAME }}
+          ALT_LIB_PACKAGE_NAME: ${{ secrets.ALT_LIB_PACKAGE_NAME }}
+          ALT_NPM_TOKEN: ${{ secrets.ALT_NPM_TOKEN }}
+        run: |
+          if [ "${{ inputs.publish_alias }}" != "true" ]; then
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Зеркальный пакет отключён параметром publish_alias."
+          elif [ -z "$ALT_MCP_PACKAGE_NAME" ] || [ -z "$ALT_LIB_PACKAGE_NAME" ] || [ -z "$ALT_NPM_TOKEN" ]; then
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::Секреты ALT_MCP_PACKAGE_NAME / ALT_LIB_PACKAGE_NAME / ALT_NPM_TOKEN заданы не полностью — зеркальный пакет пропущен."
+          else
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      # ALIAS_OUT_DIR обязателен и обязан быть вне рабочего дерева: npm ищет
+      # .git вверх от каталога пакета и, найдя, штампует в манифест gitHead с
+      # SHA текущего HEAD (см. @npmcli/package-json/lib/normalize.js). У
+      # опубликованного @daisforge/ui-mcp это поле есть — одинаковый SHA у двух
+      # пакетов связал бы зеркало с основным. runner.temp лежит рядом с
+      # чекаутом, но своего .git не имеет. Скрипт проверяет это сам и падает,
+      # если каталог всё же окажется внутри репозитория.
+      - name: Build alias package
+        if: steps.alias.outputs.enabled == 'true'
+        run: npm run mcp:alias:stage --prefix packages/mcp-server
+        env:
+          ALT_MCP_PACKAGE_NAME: ${{ secrets.ALT_MCP_PACKAGE_NAME }}
+          ALT_LIB_PACKAGE_NAME: ${{ secrets.ALT_LIB_PACKAGE_NAME }}
+          ALIAS_OUT_DIR: ${{ runner.temp }}/mcp-alias-package
+
+      - name: Publish alias package to npm
+        if: steps.alias.outputs.enabled == 'true'
+        working-directory: ${{ runner.temp }}/mcp-alias-package
+        run: |
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            npm publish --access public --dry-run
+          else
+            npm publish --access public
+          fi
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.ALT_NPM_TOKEN }}
+
+      - name: Publish to npm
+        working-directory: packages/mcp-server
+        run: |
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            npm publish --access public --dry-run
+          else
+            npm publish --access public
+          fi
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      # Пушим релизный коммит и тег ТОЛЬКО при реальной публикации (не dry-run) —
+      # аналогично publish-npm.yml, чтобы не попадал коммит/тег без реально
+      # опубликованного пакета. В ту же ветку, откуда запустили workflow
+      # (не захардкожено в main — этот workflow, в отличие от publish-npm.yml,
+      # рассчитан на запуск с любой ветки через workflow_dispatch/workflow_call).
+      # Тег пушится явно по имени (не через --follow-tags — он молча пропускает
+      # lightweight-теги, из-за чего тег v0.1.1 однажды не уехал на remote).
+      - name: Push release commit and tag
+        if: ${{ inputs.dry_run != true }}
+        run: |
+          git push origin "HEAD:${{ github.ref_name }}"
+          git push origin "refs/tags/ui-mcp-v${{ steps.version.outputs.version }}"

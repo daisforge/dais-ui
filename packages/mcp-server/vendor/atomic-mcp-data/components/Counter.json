@@ -1,0 +1,52 @@
+{
+  "name": "Counter",
+  "package": "sdds-finai",
+  "category": "components",
+  "summary": "Counter",
+  "api": {
+    "props": [
+      {
+        "name": "view",
+        "type": "\"default\" | \"accent\" | \"positive\" | \"warning\" | \"negative\" | \"dark\" | \"light\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "size",
+        "type": "\"s\" | \"l\" | \"m\" | \"xs\" | \"xxs\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "count",
+        "type": "number",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "maxCount",
+        "type": "number",
+        "required": false,
+        "default": "",
+        "description": ""
+      }
+    ]
+  },
+  "examples": [
+    {
+      "title": "Максимальное значение числового badge",
+      "snippet": "import React from 'react';\nimport { Counter } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div>\n            <Counter count={10} maxCount={9} />\n            <Counter count={100} maxCount={99} />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Размер числового badge",
+      "snippet": "import React from 'react';\nimport { Counter } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div>\n            <Counter count={10} size=\"xs\" />\n            <Counter count={10} size=\"xxs\" />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Вид числового badge",
+      "snippet": "import React from 'react';\nimport { Counter } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div>\n            <Counter count={10} view=\"primary\" />\n            <Counter count={10} view=\"accent\" />\n            <Counter count={10} view=\"positive\" />\n            <Counter count={10} view=\"warning\" />\n            <Counter count={10} view=\"negative\" />\n            <Counter count={10} view=\"dark\" />\n            <Counter count={10} view=\"light\" />\n        </div>\n    );\n}"
+    }
+  ]
+}

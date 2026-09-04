@@ -1,0 +1,78 @@
+{
+  "name": "ChipGroup",
+  "package": "sdds-finai",
+  "category": "components",
+  "summary": "ChipGroup",
+  "api": {
+    "props": [
+      {
+        "name": "view",
+        "type": "\"clear\" | \"default\" | \"accent\" | \"positive\" | \"warning\" | \"negative\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "size",
+        "type": "\"s\" | \"m\" | \"xs\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "gap",
+        "type": "\"dense\" | \"wide\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "shape",
+        "type": "\"default\" | \"segmented\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "isCommonChipStyles",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "isWrapped",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      }
+    ]
+  },
+  "examples": [
+    {
+      "title": "Быстрый старт",
+      "snippet": "import React from 'react';\nimport { ChipGroup, Chip } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <ChipGroup>\n            {Array(5)\n                .fill(true)\n                .map((_, i) => (\n                    <Chip text={`Chip ${i}`} />\n                ))}\n        </ChipGroup>\n    );\n}"
+    },
+    {
+      "title": "Управление внешним видом",
+      "snippet": "import React from 'react';\nimport { ChipGroup, Chip } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <ChipGroup size=\"s\" view=\"secondary\">\n            {Array(5)\n                .fill(true)\n                .map((_, i) => (\n                    <Chip text={`Chip ${i}`} />\n                ))}\n        </ChipGroup>\n    );\n}"
+    },
+    {
+      "title": "Управление внешним видом",
+      "snippet": "import React from 'react';\nimport { ChipGroup, Chip } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <ChipGroup isCommonChipStyles={false}>\n            <Chip size=\"m\" text=\"Default\" />\n            <Chip size=\"s\" text=\"Secondary\" view=\"secondary\" />\n            <Chip size=\"xs\" text=\"Accent\" view=\"accent\" />\n        </ChipGroup>\n    );\n}"
+    },
+    {
+      "title": "Отступы между Chip",
+      "snippet": "import React from 'react';\nimport { ChipGroup, Chip } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>\n            <ChipGroup size=\"xs\" gap=\"dense\">\n                {Array(5)\n                    .fill(true)\n                    .map((_, i) => (\n                        <Chip text={`Chip ${i}`} />\n                    ))}\n            </ChipGroup>\n            <ChipGroup size=\"xs\" gap=\"wide\">\n                {Array(5)\n                    .fill(true)\n                    .map((_, i) => (\n                        <Chip text={`Chip ${i}`} />\n                    ))}\n            </ChipGroup>\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Скругления группы",
+      "snippet": "import React from 'react';\nimport { ChipGroup, Chip } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>\n            <ChipGroup size=\"xs\" shape=\"default\">\n                {Array(3)\n                    .fill(true)\n                    .map((_, i) => (\n                        <Chip text={`Chip ${i}`} />\n                    ))}\n            </ChipGroup>\n            <ChipGroup size=\"xs\" shape=\"segmented\">\n                {Array(3)\n                    .fill(true)\n                    .map((_, i) => (\n                        <Chip text={`Chip ${i}`} />\n                    ))}\n            </ChipGroup>\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Перенос элементов",
+      "snippet": "import React from 'react';\nimport { ChipGroup, Chip } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div style={{ width: '20rem' }}>\n            <ChipGroup isWrapped>\n                {Array(10)\n                    .fill(true)\n                    .map((_, i) => (\n                        <Chip text={`Chip ${i}`} />\n                    ))}\n            </ChipGroup>\n        </div>\n    );\n}"
+    }
+  ]
+}

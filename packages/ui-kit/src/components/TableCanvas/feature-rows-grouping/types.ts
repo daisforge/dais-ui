@@ -1,3 +1,5 @@
+import type { Theme } from '@ui-kit/components/TableGlide';
+
 import {
   CanvasContent,
   CellInfoGlideInstance,
@@ -161,6 +163,7 @@ export type RenderGroupCellProps<
 > = {
   column: ColumnConfig;
   tabIndex: number;
+  theme?: Theme;
   // TODO isExpanded: boolean;
   // TODO toggleGroup: () => void;
 } & GroupRow<RowType>;

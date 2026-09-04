@@ -7,6 +7,8 @@ import {
   compatible_typo_theme,
   sdds_finai__dark,
   sdds_finai__light,
+  sdds_finai_beta_core__dark,
+  sdds_finai_beta_core__light,
   sdds_finai_high_contrast__dark,
   sdds_finai_high_contrast__light,
   standard_typo_theme,
@@ -48,6 +50,8 @@ export const GlobalPopoverStyles = createGlobalStyle`
 const DarkSDDSTheme = createGlobalStyle(sdds_finai__dark);
 const HCLightSDDSTheme = createGlobalStyle(sdds_finai_high_contrast__light);
 const HCDarkSDDSTheme = createGlobalStyle(sdds_finai_high_contrast__dark);
+const BetaCoreLightSDDSTheme = createGlobalStyle(sdds_finai_beta_core__light);
+const BetaCoreDarkSDDSTheme = createGlobalStyle(sdds_finai_beta_core__dark);
 
 export const DarkGlobalStyle = () => {
   useEffect(() => {
@@ -79,6 +83,8 @@ const sddsThemeMap = {
   dark: sdds_finai__dark,
   highContrastLight: sdds_finai_high_contrast__light,
   highContrastDark: sdds_finai_high_contrast__dark,
+  betaCoreLight: sdds_finai_beta_core__light,
+  betaCoreDark: sdds_finai_beta_core__dark,
 } as const;
 
 const sddsThemeCompMap = {
@@ -86,6 +92,8 @@ const sddsThemeCompMap = {
   dark: DarkSDDSTheme,
   highContrastLight: HCLightSDDSTheme,
   highContrastDark: HCDarkSDDSTheme,
+  betaCoreLight: BetaCoreLightSDDSTheme,
+  betaCoreDark: BetaCoreDarkSDDSTheme,
 } as const;
 
 // const sddsThemeModuleCssMap = {
@@ -107,7 +115,10 @@ export const GlobalStyle = ({
   }, [theme]);
 
   const ActiveSDDSTheme = sddsThemeCompMap[theme];
-  const isLightBase = theme === 'light' || theme === 'highContrastLight';
+  const isLightBase =
+    theme === 'light' ||
+    theme === 'highContrastLight' ||
+    theme === 'betaCoreLight';
 
   return (
     <>
@@ -145,7 +156,10 @@ export const TestGlobalIsolatedStyleWithReplace = ({
     return () => null;
   }, [scopeSelector, theme]);
 
-  const isLightBase = theme === 'light' || theme === 'highContrastLight';
+  const isLightBase =
+    theme === 'light' ||
+    theme === 'highContrastLight' ||
+    theme === 'betaCoreLight';
 
   return (
     <>
@@ -193,7 +207,10 @@ export const TestRootIsolatedThemeProviderLayout = ({
 }: {
   theme?: GlobalStyleTheme;
 } & ComponentProps<'div'>) => {
-  const isLightBase = theme === 'light' || theme === 'highContrastLight';
+  const isLightBase =
+    theme === 'light' ||
+    theme === 'highContrastLight' ||
+    theme === 'betaCoreLight';
 
   return (
     <StyledTestRootIsolatedThemeProviderLayout

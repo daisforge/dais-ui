@@ -3,6 +3,50 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.16.0](https://github.com/daisforge/dais-ui/compare/v1.15.0...v1.16.0) (2026-08-28)
+
+### Features
+
+- **AnalyticalWidget:** скелетон для title/subtitle шапки ([aa098b1](https://github.com/daisforge/dais-ui/commit/aa098b1cde3bd3ecb269330de1fef67ba12ede19))
+- **Stories:** Stories.Preview можно оборачивать в Carousel и произвольные контейнеры ([af2218d](https://github.com/daisforge/dais-ui/commit/af2218d5c19fc23a9c60eb03e50e7ce12a154de4))
+- **TableCanvas:** renderGroupCell принимает theme при группировке строк ([b918137](https://github.com/daisforge/dais-ui/commit/b918137c87c5d5ef187a0d8a7e179053f8b697f3))
+- **TableCanvas:** закрытие поповера фильтра по повторному клику и фокус инпута поиска при открытии ([c7f0323](https://github.com/daisforge/dais-ui/commit/c7f03232e64bc11396478e9b4ff32e864705ee83))
+- **TableCanvas:** палитра таблицы под тему sdds_finai_beta_core (light) ([f5c4e64](https://github.com/daisforge/dais-ui/commit/f5c4e64b380fa7aad5dab62e8817be04f907b02d))
+- **theme:** интеграция темы sdds_finai_beta_core в переключатель тем ([9b15c17](https://github.com/daisforge/dais-ui/commit/9b15c17718abdc1b6ce3e383f930c3352309d5b3))
+
+# [1.15.0](https://github.com/daisforge/dais-ui/compare/v1.14.1...v1.15.0) (2026-08-24)
+
+### Features
+
+- **AnalyticalWidget:** редизайн и опциональный absolute у кнопки-троеточия ([71d244b](https://github.com/daisforge/dais-ui/commit/71d244bf142f6eb639afac0baae32c3759feea71))
+
+## [1.14.1](https://github.com/daisforge/dais-ui/compare/v1.14.0...v1.14.1) (2026-08-21)
+
+### Bug Fixes
+
+- **ui-kit:** перевыпуск пакета с корректным mcp-data в тарболе ([1e9dda9](https://github.com/daisforge/dais-ui/commit/1e9dda9701c6dd994f31dc407f2a9053a32b2058))
+
+# [1.14.0](https://github.com/daisforge/dais-ui/compare/v1.13.0...v1.14.0) (2026-08-21)
+
+### Features
+
+- **clickStream:** добавлены типы и утилита для digital trace ([#26](https://github.com/daisforge/dais-ui/issues/26)) ([760aa42](https://github.com/daisforge/dais-ui/commit/760aa426309a0cbede7e9e9966987983707e4240))
+- **mcp:** добавлен mcp для библиотеки компонентов ([23c0c4a](https://github.com/daisforge/dais-ui/commit/23c0c4a26746b94108aa2c7fac1fb7f383754585))
+
+# [1.13.0](https://github.com/daisforge/dais-ui/compare/v1.12.2...v1.13.0) (2026-08-17)
+
+### Bug Fixes
+
+- **ListOfFilters:** исправлен показ стрелок скролла без ручного скролла ([9cc2963](https://github.com/daisforge/dais-ui/commit/9cc29635fffd796f8efebd49e5b5ef756856cba2))
+- **Table,TableCanvas:** служебные колонки (в т.ч. группировка) исключены из order/pinned/hidden при onConfirm ([bb2498a](https://github.com/daisforge/dais-ui/commit/bb2498a6c0868998a0cceeb2d0ab8e2ec2c8ab41))
+- **Table:** поправлено направление иконки сортировки для соответствия между двумя таблицами. Актуально было в TableCanvas ([2c2d573](https://github.com/daisforge/dais-ui/commit/2c2d57353a0669b0fe2f93576410176e867e839e))
+- **TypographyWithAutoTooltip:** корректный детект переполнения авто-тултипа на дробном зуме и HiDPI ([#23](https://github.com/daisforge/dais-ui/issues/23)) ([a0bf1c8](https://github.com/daisforge/dais-ui/commit/a0bf1c891e7a2a424f2d85789950e465dcde1935))
+
+### Features
+
+- **Stories:** адаптивный размер, навигация стрелками по сегментам, hideDisabledArrows, error-state и рендер превью ([ab04640](https://github.com/daisforge/dais-ui/commit/ab04640f5302c6540c9682376c8a48c63674f933))
+- **TableCanvas:** tableConfig.columnsGrouping. Объединение пустых ячеек шапки ([#21](https://github.com/daisforge/dais-ui/issues/21)) ([8866f7e](https://github.com/daisforge/dais-ui/commit/8866f7e3c2a8f004419da4f0ba5d62308b27b6ac))
+
 ## [1.12.2](https://github.com/daisforge/dais-ui/compare/v1.12.1...v1.12.2) (2026-08-13)
 
 **Note:** Version bump only for package @daisforge/ui

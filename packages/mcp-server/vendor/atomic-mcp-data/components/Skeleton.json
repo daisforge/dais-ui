@@ -1,0 +1,120 @@
+{
+  "name": "Skeleton",
+  "package": "sdds-finai",
+  "category": "components",
+  "summary": "Skeleton Набор компонентов для создания скелетов загрузки (placeholders).",
+  "api": {
+    "props": [
+      {
+        "name": "view",
+        "type": "\"default\" | \"lighter\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "size",
+        "type": "\"h1\" | \"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\" | \"bodyM\" | \"bodyL\" | \"bodyS\" | \"bodyXS\" | \"bodyXXS\" | \"dsplL\" | \"dsplM\" | \"dsplS\" | \"textL\" | \"textM\" | \"textS\" | \"textXS\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "customGradientColor",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "customFadeInColor",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "customFadeOutColor",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "roundness",
+        "type": "0 | 4 | 8 | 12 | 14 | 16 | 18 | 20 | 24 | 28 | 32 | 250",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "animationType",
+        "type": "\"shimmer\" | \"pulse\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "lighter",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      }
+    ]
+  },
+  "examples": [
+    {
+      "title": "Тип анимации",
+      "snippet": "import React from 'react';\nimport { LineSkeleton } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <LineSkeleton size=\"h3\" animationType=\"shimmer\" />\n    );\n}"
+    },
+    {
+      "title": "Тип анимации",
+      "snippet": "import React from 'react';\nimport { LineSkeleton } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <LineSkeleton size=\"h3\" animationType=\"pulse\" />\n    );\n}"
+    },
+    {
+      "title": "Длительность анимации",
+      "snippet": "import React from 'react';\nimport { LineSkeleton, RectSkeleton, TextSkeleton } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <>\n            <LineSkeleton size=\"h3\" animationDuration={1200} />\n            <RectSkeleton width=\"12rem\" height=\"8rem\" animationDuration={600} />\n            <TextSkeleton size=\"textM\" lines={4} animationDuration={0} />\n        </>\n    );\n}"
+    },
+    {
+      "title": "Быстрый старт",
+      "snippet": "import React from 'react';\nimport { LineSkeleton } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <LineSkeleton size=\"h3\" />\n    );\n}"
+    },
+    {
+      "title": "Быстрый старт",
+      "snippet": "import React from 'react';\nimport { RectSkeleton } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <RectSkeleton width=\"12rem\" height=\"8rem\" />\n    );\n}"
+    },
+    {
+      "title": "Быстрый старт",
+      "snippet": "import React from 'react';\nimport { TextSkeleton } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <TextSkeleton size=\"textM\" lines={4} />\n    );\n}"
+    },
+    {
+      "title": "Быстрый старт",
+      "snippet": "import React from 'react';\nimport { Button, withSkeleton } from '@salutejs/sdds-finai';\nexport function App() {\n    const ButtonSkeleton = withSkeleton(Button);\n    return (\n        <ButtonSkeleton\n            fullWidth\n            text=\"Загрузка...\"\n            view=\"primary\"\n            size=\"s\"\n            scaleOnInteraction={false}\n            outlined={false}\n            skeleton={true}\n            tabIndex={-1}\n        />\n    );\n}"
+    },
+    {
+      "title": "Тип анимации",
+      "snippet": "import React from 'react';\nimport { Button, withSkeleton } from '@salutejs/sdds-finai';\nexport function App() {\n    const ButtonSkeleton = withSkeleton(Button);\n    return (\n        <ButtonSkeleton\n            text=\"Загрузка...\"\n            view=\"default\"\n            size=\"s\"\n            skeleton={true}\n            animationConfig={{ type: 'shimmer' }}\n        />\n    );\n}"
+    },
+    {
+      "title": "Тип анимации",
+      "snippet": "import React from 'react';\nimport { Button, withSkeleton } from '@salutejs/sdds-finai';\nexport function App() {\n    const ButtonSkeleton = withSkeleton(Button);\n    return (\n        <ButtonSkeleton\n            text=\"Загрузка...\"\n            view=\"default\"\n            size=\"s\"\n            skeleton={true}\n            animationConfig={{ type: 'pulse' }}\n        />\n    );\n}"
+    },
+    {
+      "title": "Длительность анимации",
+      "snippet": "import React from 'react';\nimport { Button, withSkeleton } from '@salutejs/sdds-finai';\nexport function App() {\n    const ButtonSkeleton = withSkeleton(Button);\n    return (\n        <ButtonSkeleton\n            text=\"Загрузка...\"\n            skeleton={true}\n            animationConfig={{\n                type: 'shimmer',\n                duration: 1000,\n            }}\n        />\n    );\n}"
+    },
+    {
+      "title": "Кастомные цвета",
+      "snippet": "import React from 'react';\nimport { Button, withSkeleton } from '@salutejs/sdds-finai';\nexport function App() {\n    const ButtonSkeleton = withSkeleton(Button);\n    return (\n        <ButtonSkeleton\n            text=\"Загрузка...\"\n            view=\"default\"\n            size=\"s\"\n            skeleton={true}\n            animationConfig={{\n                type: 'shimmer',\n                customGradientColor: 'linear-gradient(90deg, #e0e0e0 25%, #f5f5f5 50%, #e0e0e0 75%)',\n            }}\n        />\n    );\n}"
+    },
+    {
+      "title": "Кастомные цвета",
+      "snippet": "import React from 'react';\nimport { Button, withSkeleton } from '@salutejs/sdds-finai';\nexport function App() {\n    const ButtonSkeleton = withSkeleton(Button);\n    return (\n        <ButtonSkeleton\n            text=\"Загрузка...\"\n            view=\"default\"\n            size=\"s\"\n            skeleton={true}\n            animationConfig={{\n                type: 'pulse',\n                customFadeInColor: '#e0e0e0',\n                customFadeOutColor: '#f5f5f5',\n            }}\n        />\n    );\n}"
+    },
+    {
+      "title": "Доступность Доступность При использовании  withSkeleton  необходимо воспользоваться атрибутами WAI ARIA. Пример с кнопкой",
+      "snippet": "import React, { useState } from 'react';\nimport { Button, withSkeleton } from '@salutejs/sdds-finai';\nconst ButtonSkeleton = withSkeleton(Button);\nexport default function App() {\n    const [skeleton, setSkeleton] = useState(false);\n    return (\n        <ButtonSkeleton\n            type=\"button\"\n            text={skeleton ? 'Загрузка' : 'Нажмите'}\n            skeleton={skeleton}\n            aria-busy={skeleton}\n            onClick={() => setSkeleton((prevValue) => !prevValue)}\n        />\n    );\n}"
+    }
+  ]
+}

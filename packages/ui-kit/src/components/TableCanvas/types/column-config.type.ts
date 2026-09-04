@@ -373,9 +373,9 @@ export type ColumnConfig<
     lvl: number,
   ) => CellThemeOverrideResult | undefined;
   /**
-   * Выравнивание текста в слитой шапке этой колонки. Действует, когда шапка колонки
-   * слита (`tableConfig.columnsGrouping.squashEmptyCells`); перекрывает табличный
-   * `columnsGrouping.squashedHeaderAlign`.
+   * Выравнивание текста в объединённой шапке этой колонки. Действует, когда шапка
+   * колонки объединена (`tableConfig.columnsGrouping.squashEmptyCells`); перекрывает
+   * табличный `columnsGrouping.squashedHeaderAlign`.
    */
   squashedHeaderAlign?: HeaderAlignment;
   /**
@@ -407,6 +407,6 @@ export declare interface ColumnGroupConfig<
   // readonly headerCellClass?: Maybe<string>;
   /** Вложенные колонки и подгруппы этой группы. */
   readonly children: readonly ColumnOrColumnGroupConfig<R, SR>[];
-  /** Выравнивание текста в слитой шапке группы. Действует при squashEmptyCells. */
+  /** Выравнивание текста в объединённой шапке группы. Действует при squashEmptyCells. */
   readonly squashedHeaderAlign?: HeaderAlignment;
 }
