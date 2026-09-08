@@ -1,4 +1,4 @@
-// components <//for rebuild republish: 1.17.0 — перевыпуск ради корректного mcp-data ------- delete!!!!!>
+// components <//for rebuild republish: 1.17.0 — minor >
 export * from './components/Accordion';
 export * from './components/AiAgentPopover';
 export * from './components/AnalyticalWidget';
