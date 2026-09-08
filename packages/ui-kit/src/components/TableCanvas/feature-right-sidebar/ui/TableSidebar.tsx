@@ -1,17 +1,10 @@
-import { RectSkeleton } from '@ui-kit/components/Skeleton';
 import React, { useEffect, useState } from 'react';
 
 import { useSidebar } from '../../contexts';
 import { SidebarTab } from '../../widgets/control-block/types';
-import { SIDEBAR_DURATION } from '../constants';
 import { SidebarContentLayout } from './SidebarContentLayout';
 import { SidebarTabs } from './SidebarTabs';
-import {
-  SidebarContainer,
-  SidebarContent,
-  SidebarSkeletonList,
-  SidebarTogglePanel,
-} from './styled';
+import { SidebarContainer, SidebarContent, SidebarTogglePanel } from './styled';
 import { tableSidebarClassNames as cls } from './TableSidebar.classnames';
 
 export const TableSidebar: React.FC<{
@@ -37,20 +30,6 @@ export const TableSidebar: React.FC<{
   $borderRightTopRadiusRounded,
 }) => {
   const { isOpen, toggle, width } = useSidebar();
-
-  // Тяжёлый контент (например список сотен колонок) живёт в панели только
-  // между анимациями: монтируем после окончания выезда и снимаем в момент
-  // старта закрытия. Иначе его рендер и layout идут на каждом кадре анимации
-  // ширины и она дёргается. На время самих анимаций — ряды-скелетоны.
-  const [contentReady, setContentReady] = useState(isOpen);
-
-  useEffect(() => {
-    const timeoutId = setTimeout(
-      () => setContentReady(isOpen),
-      SIDEBAR_DURATION * 1000,
-    );
-    return () => clearTimeout(timeoutId);
-  }, [isOpen]);
 
   const validDefaultTabId =
     defaultActiveTabId &&
@@ -138,20 +117,7 @@ export const TableSidebar: React.FC<{
             titleRightSlot={activeTabInfo?.titleRightSlot}
             domMetadata={activeTabInfo?.domMetadata}
           >
-            {contentReady && isOpen ? (
-              activeTabInfo?.content || children
-            ) : (
-              <SidebarSkeletonList>
-                {Array.from({ length: 6 }, (_, index) => (
-                  <RectSkeleton
-                    key={index}
-                    roundness={8}
-                    width="100%"
-                    height="40px"
-                  />
-                ))}
-              </SidebarSkeletonList>
-            )}
+            {activeTabInfo?.content || children}
           </SidebarContentLayout>
         </div>
       </SidebarContent>

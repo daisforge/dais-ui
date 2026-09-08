@@ -146,6 +146,7 @@
     "@salutejs/plasma-typo": "^0.52.0",
     "@salutejs/sdds-finai": "^0.356.0",
     "@salutejs/sdds-themes": "^0.78.0",
+    "@tanstack/react-virtual": "^3.13.2",
     "canvas-hypertxt": "^1.0.3",
     "lodash.clonedeep": "^4.5.0",
     "lodash.isequal": "^4.5.0",

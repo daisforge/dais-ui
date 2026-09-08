@@ -1,3 +1,4 @@
+import { useVirtualizer } from '@tanstack/react-virtual';
 import { Box } from '@ui-kit/components/Box';
 import { IconButton } from '@ui-kit/components/IconButton';
 import { Switch } from '@ui-kit/components/Switch';
@@ -139,6 +140,40 @@ export const ColumnsList = <Row extends ObjectForExtending, SummaryRow>({
 
   const isEmptySearch = !!(filteredColumns.length === 0 && searchQuery);
 
+  // Виртуализация: в DOM живут только видимые строки списка с запасом. Ряды
+  // остаются в обычном потоке (отступы сверху и снизу вместо absolute), чтобы
+  // dnd-отступы и линия-цель дропа работали как в невиртуализированном списке.
+  // Управляется columnsControl.virtualization: false — выключена, порог
+  // minCount задаёт, с какого размера списка включать (по умолчанию 30).
+  const virtualizationConfig = columnsControlConfig.virtualization;
+  const virtualizationMinCount =
+    typeof virtualizationConfig === 'object'
+      ? virtualizationConfig.minCount ?? 30
+      : 30;
+  const virtualizationEnabled =
+    virtualizationConfig !== false &&
+    filteredColumns.length >= virtualizationMinCount;
+
+  const rowVirtualizer = useVirtualizer({
+    count: filteredColumns.length,
+    getScrollElement: () => containerRef.current,
+    estimateSize: () => 40,
+    gap: 8,
+    overscan: 8,
+    enabled: virtualizationEnabled,
+  });
+  // Без виртуализации рендерим все строки тем же путём, только без спейсеров.
+  const windowedItems = virtualizationEnabled
+    ? rowVirtualizer.getVirtualItems()
+    : null;
+  const virtualItems =
+    windowedItems ?? filteredColumns.map((_, index) => ({ index }));
+  const paddingTop = windowedItems?.length ? windowedItems[0].start : 0;
+  const paddingBottom = windowedItems?.length
+    ? rowVirtualizer.getTotalSize() -
+      windowedItems[windowedItems.length - 1].end
+    : 0;
+
   return (
     <StyledDragContainer
       onDrop={handleDrop}
@@ -150,195 +185,212 @@ export const ColumnsList = <Row extends ObjectForExtending, SummaryRow>({
       {isEmptySearch && (
         <EmptySearchFallback icon={<IconPinListOutline size="m" />} />
       )}
-      {filteredColumns.map((key) => {
-        const isHiddenColumn = hiddenColsSet.has(key);
-        const isPinnedColumn = pinnedColsSet.has(key);
+      <div style={{ paddingTop, paddingBottom }}>
+        {virtualItems.map((virtualItem, renderIndex) => {
+          const key = filteredColumns[virtualItem.index];
+          const isHiddenColumn = hiddenColsSet.has(key);
+          const isPinnedColumn = pinnedColsSet.has(key);
 
-        const isDisabledHiding = disableHidingSet.has(key);
-        const isDisabledPinning = disablePinningSet.has(key);
+          const isDisabledHiding = disableHidingSet.has(key);
+          const isDisabledPinning = disablePinningSet.has(key);
 
-        const isKeyText = colsWithKeyTextMap.get(key);
+          const isKeyText = colsWithKeyTextMap.get(key);
 
-        const label = getColumnLabel({
-          columnsControlConfig,
-          columnsConfigMap,
-          isHiddenColumn,
-          isPinnedColumn,
-          key,
-          isKeyText,
-          keyText,
-          tableConfigKeyTextBoolean,
-        });
-
-        const onClickPinBtn = () => {
-          if (!pinningIsActive) {
-            return;
-          }
-
-          if (isPinnedColumn) {
-            setPinnedCols((prev) =>
-              prev.filter((colKey) => {
-                if (isKeyText) {
-                  return (
-                    colKey !== isKeyText.keyKey && colKey !== isKeyText.textKey
-                  );
-                }
-                return colKey !== key;
-              }),
-            );
-          } else {
-            setPinnedCols((prev) => {
-              if (isKeyText) {
-                return [...prev, isKeyText.keyKey, isKeyText.textKey];
-              }
-              return [...prev, key];
-            });
-          }
-        };
-        const onChangeHideSwitch = () => {
-          if (!hidingIsActive) {
-            return;
-          }
-
-          if (isHiddenColumn) {
-            setHiddenCols((prev) =>
-              prev.filter((colKey) => {
-                if (isKeyText) {
-                  return (
-                    colKey !== isKeyText.keyKey && colKey !== isKeyText.textKey
-                  );
-                }
-                return colKey !== key;
-              }),
-            );
-          } else {
-            setHiddenCols((prev) => {
-              if (isKeyText) {
-                return [...prev, isKeyText.keyKey, isKeyText.textKey];
-              }
-              return [...prev, key];
-            });
-          }
-        };
-
-        const correctedBorderPlacement = getKeyTextCorrectedBorderPlacement({
-          keyText,
-          colsWithKeyTextMap,
-          currentId: key,
-          borderPlacement,
-          tableConfigKeyTextBoolean,
-        });
-
-        const isOvered = draggingOverId === key;
-
-        const correctedIsOvered = getKeyTextCorrectedIsOvered({
-          colsWithKeyTextMap,
-          draggingId,
-          currentId: key,
-          currentIsDraggingOver: isOvered,
-          tableConfigKeyTextBoolean,
-        });
-
-        const correctedIsDisabledHiding = correctedDisabled(disableHidingSet, {
-          colsWithKeyTextMap,
-          currentKey: key,
-          tableConfigKeyTextBoolean,
-        });
-        const correctedIsDisabledPinning = correctedDisabled(
-          disablePinningSet,
-          {
-            colsWithKeyTextMap,
-            currentKey: key,
+          const label = getColumnLabel({
+            columnsControlConfig,
+            columnsConfigMap,
+            isHiddenColumn,
+            isPinnedColumn,
+            key,
+            isKeyText,
+            keyText,
             tableConfigKeyTextBoolean,
-          },
-        );
+          });
 
-        return (
-          <StyledDragItem
-            className="drag-item"
-            key={key}
-            id={key}
-            {...(reorderingIsActive && {
-              draggable: true,
-              onDragStart: handleDragStart,
-              onDragEnd: handleDragEnd,
-              $isOvered: correctedIsOvered ?? isOvered,
-              $borderPlacement: correctedBorderPlacement ?? borderPlacement,
-              title: 'Перетащить колонку',
-            })}
-          >
-            {reorderingIsActive && (
-              <DragButton
-                itemIsDragging={draggingId === key}
-                itemIsHovered={hoveredId === key}
-                onMouseEnter={() => onDragIconHoverStart(key, draggingId)}
-                onMouseLeave={() => onDragIconHoverEnd(key, draggingId)}
-              />
-            )}
-            {pinningIsActive && (
-              <IconButton
-                disabled={correctedIsDisabledPinning ?? isDisabledPinning}
-                id="pin-column-btn"
-                title={isPinnedColumn ? 'Открепить' : 'Закрепить'}
-                view="clear"
-                size="s"
-                style={{ flexShrink: 0 }}
-                onClick={(e: React.MouseEvent<HTMLElement>) => {
-                  onClickPinBtn();
-                  columnsControlConfig?.pinDomMetadata?.onClick?.(e, {
-                    action: isPinnedColumn
-                      ? DOM_METADATA_ACTIONS.UNPIN_COLUMN
-                      : DOM_METADATA_ACTIONS.PIN_COLUMN,
-                    columnKey: key,
-                    enabled: !isPinnedColumn,
-                  });
-                }}
-                className={columnsControlConfig?.pinDomMetadata?.className}
-                {...columnsControlConfig?.pinDomMetadata?.dataAttributes}
-              >
-                {isPinnedColumn ? (
-                  <IconPinFill color={textSecondary} />
-                ) : (
-                  <IconPinOutline color={textSecondary} />
-                )}
-              </IconButton>
-            )}
-            <Box $css={{ flex: 1, minWidth: 0 }}>
-              <TypographyWithAutoTooltip variant="BodyS" tooltipText={label}>
-                {label}
-              </TypographyWithAutoTooltip>
-            </Box>
+          const onClickPinBtn = () => {
+            if (!pinningIsActive) {
+              return;
+            }
 
-            {hidingIsActive && (
-              <Box
-                title={isHiddenColumn ? 'Показать' : 'Скрыть'}
-                $css={{ marginLeft: 'auto', flexShrink: 0 }}
-                className={columnsControlConfig?.switchDomMetadata?.className}
-                {...columnsControlConfig?.switchDomMetadata?.dataAttributes}
-              >
-                <Switch
-                  checked={!isHiddenColumn}
-                  disabled={correctedIsDisabledHiding ?? isDisabledHiding}
-                  onChange={(e) => {
-                    onChangeHideSwitch();
-                    columnsControlConfig?.switchDomMetadata?.onClick?.(
-                      e as unknown as React.MouseEvent<HTMLElement>,
-                      {
-                        action: isHiddenColumn
-                          ? DOM_METADATA_ACTIONS.SHOW_COLUMN
-                          : DOM_METADATA_ACTIONS.HIDE_COLUMN,
-                        columnKey: key,
-                        enabled: isHiddenColumn,
-                      },
+            if (isPinnedColumn) {
+              setPinnedCols((prev) =>
+                prev.filter((colKey) => {
+                  if (isKeyText) {
+                    return (
+                      colKey !== isKeyText.keyKey &&
+                      colKey !== isKeyText.textKey
                     );
-                  }}
-                  toggleSize="s"
+                  }
+                  return colKey !== key;
+                }),
+              );
+            } else {
+              setPinnedCols((prev) => {
+                if (isKeyText) {
+                  return [...prev, isKeyText.keyKey, isKeyText.textKey];
+                }
+                return [...prev, key];
+              });
+            }
+          };
+          const onChangeHideSwitch = () => {
+            if (!hidingIsActive) {
+              return;
+            }
+
+            if (isHiddenColumn) {
+              setHiddenCols((prev) =>
+                prev.filter((colKey) => {
+                  if (isKeyText) {
+                    return (
+                      colKey !== isKeyText.keyKey &&
+                      colKey !== isKeyText.textKey
+                    );
+                  }
+                  return colKey !== key;
+                }),
+              );
+            } else {
+              setHiddenCols((prev) => {
+                if (isKeyText) {
+                  return [...prev, isKeyText.keyKey, isKeyText.textKey];
+                }
+                return [...prev, key];
+              });
+            }
+          };
+
+          const correctedBorderPlacement = getKeyTextCorrectedBorderPlacement({
+            keyText,
+            colsWithKeyTextMap,
+            currentId: key,
+            borderPlacement,
+            tableConfigKeyTextBoolean,
+          });
+
+          const isOvered = draggingOverId === key;
+
+          const correctedIsOvered = getKeyTextCorrectedIsOvered({
+            colsWithKeyTextMap,
+            draggingId,
+            currentId: key,
+            currentIsDraggingOver: isOvered,
+            tableConfigKeyTextBoolean,
+          });
+
+          const correctedIsDisabledHiding = correctedDisabled(
+            disableHidingSet,
+            {
+              colsWithKeyTextMap,
+              currentKey: key,
+              tableConfigKeyTextBoolean,
+            },
+          );
+          const correctedIsDisabledPinning = correctedDisabled(
+            disablePinningSet,
+            {
+              colsWithKeyTextMap,
+              currentKey: key,
+              tableConfigKeyTextBoolean,
+            },
+          );
+
+          return (
+            <StyledDragItem
+              className="drag-item"
+              key={key}
+              id={key}
+              // Отступ между строками задаётся явно: CSS-правила контейнера
+              // рассчитаны на полный список, а тут окно с произвольного индекса.
+              // Транзишен на margin оставляем только на время перетаскивания
+              // (анимация dnd-зазора): при скролле сдвиг окна меняет margin
+              // граничной строки, и его анимация раскачивает скролл.
+              style={{
+                marginTop: renderIndex === 0 ? 0 : 8,
+                ...(draggingId ? {} : { transition: 'margin 0s' }),
+              }}
+              {...(reorderingIsActive && {
+                draggable: true,
+                onDragStart: handleDragStart,
+                onDragEnd: handleDragEnd,
+                $isOvered: correctedIsOvered ?? isOvered,
+                $borderPlacement: correctedBorderPlacement ?? borderPlacement,
+                title: 'Перетащить колонку',
+              })}
+            >
+              {reorderingIsActive && (
+                <DragButton
+                  itemIsDragging={draggingId === key}
+                  itemIsHovered={hoveredId === key}
+                  onMouseEnter={() => onDragIconHoverStart(key, draggingId)}
+                  onMouseLeave={() => onDragIconHoverEnd(key, draggingId)}
                 />
+              )}
+              {pinningIsActive && (
+                <IconButton
+                  disabled={correctedIsDisabledPinning ?? isDisabledPinning}
+                  id="pin-column-btn"
+                  title={isPinnedColumn ? 'Открепить' : 'Закрепить'}
+                  view="clear"
+                  size="s"
+                  style={{ flexShrink: 0 }}
+                  onClick={(e: React.MouseEvent<HTMLElement>) => {
+                    onClickPinBtn();
+                    columnsControlConfig?.pinDomMetadata?.onClick?.(e, {
+                      action: isPinnedColumn
+                        ? DOM_METADATA_ACTIONS.UNPIN_COLUMN
+                        : DOM_METADATA_ACTIONS.PIN_COLUMN,
+                      columnKey: key,
+                      enabled: !isPinnedColumn,
+                    });
+                  }}
+                  className={columnsControlConfig?.pinDomMetadata?.className}
+                  {...columnsControlConfig?.pinDomMetadata?.dataAttributes}
+                >
+                  {isPinnedColumn ? (
+                    <IconPinFill color={textSecondary} />
+                  ) : (
+                    <IconPinOutline color={textSecondary} />
+                  )}
+                </IconButton>
+              )}
+              <Box $css={{ flex: 1, minWidth: 0 }}>
+                <TypographyWithAutoTooltip variant="BodyS" tooltipText={label}>
+                  {label}
+                </TypographyWithAutoTooltip>
               </Box>
-            )}
-          </StyledDragItem>
-        );
-      })}
+
+              {hidingIsActive && (
+                <Box
+                  title={isHiddenColumn ? 'Показать' : 'Скрыть'}
+                  $css={{ marginLeft: 'auto', flexShrink: 0 }}
+                  className={columnsControlConfig?.switchDomMetadata?.className}
+                  {...columnsControlConfig?.switchDomMetadata?.dataAttributes}
+                >
+                  <Switch
+                    checked={!isHiddenColumn}
+                    disabled={correctedIsDisabledHiding ?? isDisabledHiding}
+                    onChange={(e) => {
+                      onChangeHideSwitch();
+                      columnsControlConfig?.switchDomMetadata?.onClick?.(
+                        e as unknown as React.MouseEvent<HTMLElement>,
+                        {
+                          action: isHiddenColumn
+                            ? DOM_METADATA_ACTIONS.SHOW_COLUMN
+                            : DOM_METADATA_ACTIONS.HIDE_COLUMN,
+                          columnKey: key,
+                          enabled: isHiddenColumn,
+                        },
+                      );
+                    }}
+                    toggleSize="s"
+                  />
+                </Box>
+              )}
+            </StyledDragItem>
+          );
+        })}
+      </div>
     </StyledDragContainer>
   );
 };

@@ -13,6 +13,9 @@ export const StyledDragContainer = styled(Box)<{
   paddingRight: props.$hasScroll ? '8px' : '0',
   flexGrow: 1,
   minHeight: '40px',
+  // Виртуализация меняет отступы-спейсеры при сдвиге окна, а якорение скролла
+  // в ответ подравнивает scrollTop, и получается петля дрожания. Выключаем.
+  overflowAnchor: 'none',
 
   '& .drag-button': {
     cursor: 'grabbing',
@@ -47,17 +50,6 @@ export const StyledDragItem = styled(Box)<{
   height: '40px',
   borderRadius: '8px',
   backgroundColor: surfaceTransparentPrimary,
-
-  // Ленивая отрисовка на уровне браузера: layout и paint строк за пределами
-  // видимой области списка пропускаются. Критично при сотнях колонок.
-  // Высота строки фиксированная (40px), поэтому скроллбар стабилен.
-  'content-visibility': 'auto',
-  'contain-intrinsic-size': 'auto 40px',
-
-  // Синяя линия-цель дропа рисуется псевдоэлементом за пределами бокса строки,
-  // а content-visibility: auto включает paint containment и обрезает её.
-  // Поэтому у строки под перетаскиваемой колонкой ленивую отрисовку снимаем.
-  ...($isOvered && { 'content-visibility': 'visible' }),
 
   ...(draggable && {
     cursor: 'grab',
