@@ -208,3 +208,11 @@ export const TabsStyled = styled(Tabs)`
     width: 0;
   }
 `;
+
+// Заглушка контента на время выезда панели: тяжёлый контент монтируется
+// после окончания анимации, а до этого показываем ряды-скелетоны.
+export const SidebarSkeletonList = styled(Box)`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`;

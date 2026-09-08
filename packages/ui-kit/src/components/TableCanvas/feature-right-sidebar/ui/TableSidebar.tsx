@@ -1,3 +1,4 @@
+import { RectSkeleton } from '@ui-kit/components/Skeleton';
 import React, { useEffect, useState } from 'react';
 
 import { useSidebar } from '../../contexts';
@@ -5,7 +6,12 @@ import { SidebarTab } from '../../widgets/control-block/types';
 import { SIDEBAR_DURATION } from '../constants';
 import { SidebarContentLayout } from './SidebarContentLayout';
 import { SidebarTabs } from './SidebarTabs';
-import { SidebarContainer, SidebarContent, SidebarTogglePanel } from './styled';
+import {
+  SidebarContainer,
+  SidebarContent,
+  SidebarSkeletonList,
+  SidebarTogglePanel,
+} from './styled';
 import { tableSidebarClassNames as cls } from './TableSidebar.classnames';
 
 export const TableSidebar: React.FC<{
@@ -34,17 +40,13 @@ export const TableSidebar: React.FC<{
 
   // Тяжёлый контент (например список сотен колонок) монтируем после окончания
   // выезда панели: иначе его первый рендер и layout идут прямо во время
-  // анимации ширины и она дёргается. На закрытии наоборот: контент убираем
-  // сразу, чтобы панель схлопывалась пустой и лёгкой.
+  // анимации ширины и она дёргается. Пока панель выезжает, показываем
+  // ряды-скелетоны. При закрытии контент остаётся до конца анимации.
   const [contentReady, setContentReady] = useState(isOpen);
 
   useEffect(() => {
-    if (!isOpen) {
-      setContentReady(false);
-      return undefined;
-    }
     const timeoutId = setTimeout(
-      () => setContentReady(true),
+      () => setContentReady(isOpen),
       SIDEBAR_DURATION * 1000,
     );
     return () => clearTimeout(timeoutId);
@@ -136,7 +138,21 @@ export const TableSidebar: React.FC<{
             titleRightSlot={activeTabInfo?.titleRightSlot}
             domMetadata={activeTabInfo?.domMetadata}
           >
-            {contentReady ? activeTabInfo?.content || children : null}
+            {contentReady ? (
+              activeTabInfo?.content || children
+            ) : (
+              <SidebarSkeletonList>
+                {Array.from({ length: 6 }, (_, index) => (
+                  <RectSkeleton
+                    key={index}
+                    roundness={8}
+                    width="100%"
+                    height="40px"
+                    lighter
+                  />
+                ))}
+              </SidebarSkeletonList>
+            )}
           </SidebarContentLayout>
         </div>
       </SidebarContent>

@@ -78,11 +78,17 @@ export const useReorderDragable = <
   // обновление columnsOrder при обновлении columns
   useEffect(() => {
     setColumnsOrder((prev) => {
-      const prevAsSet = new Set(prev);
+      const defaultOrder = getDefaultColumnsOrder();
 
-      const copyOfPrev = [...prev];
+      // Колонки, исчезнувшие из конфига, выбрасываем из порядка: иначе при
+      // динамическом уменьшении columnConfig список колонок (сайдбар)
+      // продолжает показывать удалённые ключи.
+      const actualKeys = new Set(defaultOrder);
+      const copyOfPrev = prev.filter((key) => actualKeys.has(key));
 
-      getDefaultColumnsOrder().forEach((key) => {
+      const prevAsSet = new Set(copyOfPrev);
+
+      defaultOrder.forEach((key) => {
         const isNewCol = !prevAsSet.has(key);
 
         if (isNewCol) {
