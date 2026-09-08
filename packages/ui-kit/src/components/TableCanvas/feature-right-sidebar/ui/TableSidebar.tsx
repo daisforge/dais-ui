@@ -38,10 +38,10 @@ export const TableSidebar: React.FC<{
 }) => {
   const { isOpen, toggle, width } = useSidebar();
 
-  // Тяжёлый контент (например список сотен колонок) монтируем после окончания
-  // выезда панели: иначе его первый рендер и layout идут прямо во время
-  // анимации ширины и она дёргается. Пока панель выезжает, показываем
-  // ряды-скелетоны. При закрытии контент остаётся до конца анимации.
+  // Тяжёлый контент (например список сотен колонок) живёт в панели только
+  // между анимациями: монтируем после окончания выезда и снимаем в момент
+  // старта закрытия. Иначе его рендер и layout идут на каждом кадре анимации
+  // ширины и она дёргается. На время самих анимаций — ряды-скелетоны.
   const [contentReady, setContentReady] = useState(isOpen);
 
   useEffect(() => {
@@ -138,7 +138,7 @@ export const TableSidebar: React.FC<{
             titleRightSlot={activeTabInfo?.titleRightSlot}
             domMetadata={activeTabInfo?.domMetadata}
           >
-            {contentReady ? (
+            {contentReady && isOpen ? (
               activeTabInfo?.content || children
             ) : (
               <SidebarSkeletonList>
