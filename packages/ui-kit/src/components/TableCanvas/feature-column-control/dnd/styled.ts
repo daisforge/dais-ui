@@ -54,6 +54,11 @@ export const StyledDragItem = styled(Box)<{
   'content-visibility': 'auto',
   'contain-intrinsic-size': 'auto 40px',
 
+  // Синяя линия-цель дропа рисуется псевдоэлементом за пределами бокса строки,
+  // а content-visibility: auto включает paint containment и обрезает её.
+  // Поэтому у строки под перетаскиваемой колонкой ленивую отрисовку снимаем.
+  ...($isOvered && { 'content-visibility': 'visible' }),
+
   ...(draggable && {
     cursor: 'grab',
     '&:active': {
