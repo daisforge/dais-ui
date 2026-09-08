@@ -1,1 +1,0 @@
-function r(){return typeof window<"u"&&!window.crypto.randomUUID?"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g,n=>{const x=crypto.getRandomValues(new Uint8Array(1))[0]%16;return(n==="x"?x:x&3|8).toString(16)}):crypto.randomUUID()}export{r as g};
