@@ -5,7 +5,6 @@ import {
   DataEditorRef,
   GridCell,
   GridColumn,
-  type Rectangle,
 } from '@glideappsfinal/glide-data-grid';
 import type { CSSProperties } from 'react';
 import { mergeRefs, useActiveTheme } from '@ui-kit/utils';
@@ -15,7 +14,6 @@ import { createPortal } from 'react-dom';
 import { glideCellRenderer } from './cellRenderer';
 import { DEFAULT_HEADER_HEIGHT, DEFAULT_ROW_HEIGHT } from './constants';
 import {
-  rectContainsCell,
   useBaseHighlightRegions,
   useColumnRowHighlightRegions,
   useNativeGridSelection,
@@ -23,6 +21,7 @@ import {
   useTableSelectionSystem,
 } from './hooks/selection';
 import { useAnimatedRowHeight } from './hooks/useAnimatedRowHeight';
+import { useErrorCellRanges } from './hooks/useErrorCellRanges';
 import { useCanvasContextMenuInteraction } from './hooks/useCanvasContextMenuInteraction';
 import { useCanvasEditorActivation } from './hooks/useCanvasEditorActivation';
 import { useCanvasInteractionSession } from './hooks/useCanvasInteractionSession';
@@ -477,157 +476,23 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     theme.selectionServiceActiveBg,
   ]);
 
-  // ── Окно пересчёта error-ячеек ──
-  // Красные рамки ошибок видны только на экране, поэтому проверку isErrorCell
-  // гоняем не по всей таблице, а по видимой области с запасом в размер
-  // вьюпорта с каждой стороны. Окно сдвигается только когда видимая область
-  // подошла к его краю ближе чем на пол-запаса (гистерезис), а несколько
-  // событий скролла за кадр схлопываются в один пересчёт.
-  const [errorScanWindow, setErrorScanWindow] = useState<Rectangle | null>(
-    null
-  );
-  const errorScanWindowRef = useRef(errorScanWindow);
-  errorScanWindowRef.current = errorScanWindow;
-  const lastVisibleRegionRef = useRef<Rectangle | null>(null);
-  const errorScanRafRef = useRef(0);
-
-  const hasErrorColumns = useMemo(
-    () => columnsLast.some((c) => !c.isServiceColumn && c.isErrorCell),
-    [columnsLast]
-  );
-  const errorScanTotalsRef = useRef({ cols: 0, rows: 0, freeze: 0 });
-  errorScanTotalsRef.current = {
-    cols: columnsLast.length,
-    rows: rows.length,
-    freeze: freezeColumns ?? 0,
-  };
-
-  const scheduleErrorScanWindowUpdate = useCallback(() => {
-    if (errorScanRafRef.current) {
-      return;
-    }
-    errorScanRafRef.current = requestAnimationFrame(() => {
-      errorScanRafRef.current = 0;
-      const visible = lastVisibleRegionRef.current;
-      if (!visible) {
-        return;
-      }
-      const {
-        cols: totalCols,
-        rows: totalRows,
-        freeze,
-      } = errorScanTotalsRef.current;
-      const gapX = Math.max(visible.width, 1);
-      const gapY = Math.max(visible.height, 1);
-      const current = errorScanWindowRef.current;
-      if (current) {
-        const currentRight = current.x + current.width;
-        const currentBottom = current.y + current.height;
-        // Края у границ таблицы считаем безопасными: окно туда уже упёрлось.
-        const nearLeft = current.x > 0 && visible.x - current.x < gapX / 2;
-        const nearTop = current.y > 0 && visible.y - current.y < gapY / 2;
-        const nearRight =
-          currentRight < totalCols &&
-          currentRight - (visible.x + visible.width) < gapX / 2;
-        const nearBottom =
-          currentBottom < totalRows &&
-          currentBottom - (visible.y + visible.height) < gapY / 2;
-        if (!nearLeft && !nearTop && !nearRight && !nearBottom) {
-          return;
-        }
-      }
-      // Закреплённые колонки видимы всегда: окно тянем от нулевой колонки,
-      // иначе их error-рамки пропадали бы при скролле вправо.
-      const x = freeze > 0 ? 0 : Math.max(0, visible.x - gapX);
-      const y = Math.max(0, visible.y - gapY);
-      const right = Math.min(totalCols, visible.x + visible.width + gapX);
-      const bottom = Math.min(totalRows, visible.y + visible.height + gapY);
-      setErrorScanWindow({ x, y, width: right - x, height: bottom - y });
-    });
-  }, []);
-
-  useEffect(
-    () => () => {
-      if (errorScanRafRef.current) {
-        cancelAnimationFrame(errorScanRafRef.current);
-      }
-    },
-    []
-  );
-
-  // Включение режима редактирования (появились error-колонки): строим окно
-  // сразу, не дожидаясь скролла.
-  useEffect(() => {
-    if (hasErrorColumns) {
-      scheduleErrorScanWindowUpdate();
-    }
-  }, [hasErrorColumns, scheduleErrorScanWindowUpdate]);
+  // Регионы error-ячеек считаются по окну видимой области (см. JSDoc хука).
+  const { errorCellRanges, trackVisibleRegion } = useErrorCellRanges({
+    columns: columnsLast,
+    rows,
+    freezeColumns,
+    selectedRange: selection.current?.range,
+  });
 
   const handleVisibleRegionChanged = useCallback<
     NonNullable<GlideProps['onVisibleRegionChanged']>
   >(
     (range, tx, ty, extras) => {
-      lastVisibleRegionRef.current = range;
-      scheduleErrorScanWindowUpdate();
+      trackVisibleRegion(range);
       onVisibleRegionChangedExternal?.(range, tx, ty, extras);
     },
-    [scheduleErrorScanWindowUpdate, onVisibleRegionChangedExternal]
+    [trackVisibleRegion, onVisibleRegionChangedExternal]
   );
-
-  // Тяжёлый проход по ячейкам ограничен окном и считается ТОЛЬКО от данных,
-  // колонок и самого окна. Выделение сюда не входит: иначе обход повторялся бы
-  // на каждый сдвиг рамки при драге. columnsLast вместо columnsForRender по той
-  // же причине: columnsForRender пересобирается от выделения (подсветка шапки).
-  const allErrorCellRanges = useMemo(() => {
-    const regions: Array<{
-      x: number;
-      y: number;
-      width: number;
-      height: number;
-    }> = [];
-
-    if (!hasErrorColumns) {
-      return regions;
-    }
-
-    // Пока glide не сообщил видимую область (первый рендер) — первый экран
-    // с запасом, чтобы рамки не мигали до прихода окна.
-    const win = errorScanWindow ?? {
-      x: 0,
-      y: 0,
-      width: Math.min(columnsLast.length, 60),
-      height: Math.min(rows.length, 300),
-    };
-    const colStart = Math.max(0, win.x);
-    const colEnd = Math.min(columnsLast.length, win.x + win.width);
-    const rowStart = Math.max(0, win.y);
-    const rowEnd = Math.min(rows.length, win.y + win.height);
-
-    for (let colInd = colStart; colInd < colEnd; colInd++) {
-      const column = columnsLast[colInd];
-      if (column.isServiceColumn || !column.isErrorCell) {
-        continue;
-      }
-      for (let rowInd = rowStart; rowInd < rowEnd; rowInd++) {
-        if (column.isErrorCell(rows[rowInd])) {
-          regions.push({ x: colInd, y: rowInd, width: 1, height: 1 });
-        }
-      }
-    }
-
-    return regions;
-  }, [columnsLast, rows, errorScanWindow, hasErrorColumns]);
-
-  // у выбранной ячейки error-outline не рисуем: дешёвый фильтр готового списка.
-  const errorCellRanges = useMemo(() => {
-    const selectedRange = selection.current?.range;
-    if (!selectedRange || allErrorCellRanges.length === 0) {
-      return allErrorCellRanges;
-    }
-    return allErrorCellRanges.filter(
-      (region) => !rectContainsCell(selectedRange, region.x, region.y)
-    );
-  }, [allErrorCellRanges, selection.current]);
 
   const getCellContentGlide = useCallback(
     (
