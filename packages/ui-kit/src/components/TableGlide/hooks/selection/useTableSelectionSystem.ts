@@ -2,7 +2,7 @@ import {
   CompactSelection,
   type GridSelection,
 } from '@glideappsfinal/glide-data-grid';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 
 import type {
   ColumnGlideLast,
@@ -311,6 +311,11 @@ export function useTableSelectionSystem<
   //    при нём isNativeColumnSelection === false.
   // Отдаём КЛЮЧИ (column.id === исходный key), а не индексы: индексы здесь — в
   // пространстве glide-колонок (frozen вынесены вперёд), наружу оно бессмысленно.
+  // Идентичность массива стабильна, пока не изменился состав ключей: selection
+  // меняется на каждый шаг протяжки рамки, и без этого каждый шаг рождал бы
+  // новый (обычно пустой) массив, дёргал onColumnSelectionChange и
+  // перерендеривал потребителей (контрл-блок, сайдбар).
+  const selectedColumnKeysRef = useRef<string[]>([]);
   const selectedColumnKeysAll = useMemo(() => {
     const indexSet = new Set<number>(selectedColumnIndexes);
     if (isNativeColumnSelection && selection.current) {
@@ -321,10 +326,19 @@ export function useTableSelectionSystem<
         }
       }
     }
-    return Array.from(indexSet)
+    const next = Array.from(indexSet)
       .sort((a, b) => a - b)
       .map((columnIndex) => columns[columnIndex]?.id)
       .filter((key): key is string => Boolean(key));
+    const prev = selectedColumnKeysRef.current;
+    if (
+      prev.length === next.length &&
+      prev.every((key, index) => key === next[index])
+    ) {
+      return prev;
+    }
+    selectedColumnKeysRef.current = next;
+    return next;
   }, [selectedColumnIndexes, isNativeColumnSelection, selection, columns]);
 
   // focus-ring рисуем в range-cell / multi-range-cell, КРОМЕ случая, когда
