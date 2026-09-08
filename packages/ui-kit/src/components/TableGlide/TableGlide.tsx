@@ -14,7 +14,6 @@ import { createPortal } from 'react-dom';
 import { glideCellRenderer } from './cellRenderer';
 import { DEFAULT_HEADER_HEIGHT, DEFAULT_ROW_HEIGHT } from './constants';
 import {
-  rectContainsCell,
   useBaseHighlightRegions,
   useColumnRowHighlightRegions,
   useNativeGridSelection,
@@ -22,6 +21,7 @@ import {
   useTableSelectionSystem,
 } from './hooks/selection';
 import { useAnimatedRowHeight } from './hooks/useAnimatedRowHeight';
+import { useErrorCellRanges } from './hooks/useErrorCellRanges';
 import { useCanvasContextMenuInteraction } from './hooks/useCanvasContextMenuInteraction';
 import { useCanvasEditorActivation } from './hooks/useCanvasEditorActivation';
 import { useCanvasInteractionSession } from './hooks/useCanvasInteractionSession';
@@ -179,6 +179,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   // TODO: внешний getGroupDetails пока не прокидываем (см. композицию ниже).
   // getGroupDetails: getGroupDetailsExternal,
   onMouseMove: onMouseMoveExternal,
+  onVisibleRegionChanged: onVisibleRegionChangedExternal,
   portalElementRef: _portalElementRef, // на всякий вытащили, чтобы в составе resProps не перезаписал внутреннюю логику.
   ...restProps
 }: TableGlideProps<R, SR>) => {
@@ -475,41 +476,23 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     theme.selectionServiceActiveBg,
   ]);
 
-  const errorCellRanges = useMemo(() => {
-    const selectedRange = selection.current?.range;
-    const regions: Array<{
-      x: number;
-      y: number;
-      width: number;
-      height: number;
-    }> = [];
+  // Регионы error-ячеек считаются по окну видимой области (см. JSDoc хука).
+  const { errorCellRanges, trackVisibleRegion } = useErrorCellRanges({
+    columns: columnsLast,
+    rows,
+    freezeColumns,
+    selectedRange: selection.current?.range,
+  });
 
-    columnsForRender.forEach((column, colInd) => {
-      if (column.isServiceColumn || !column.isErrorCell) {
-        return;
-      }
-
-      rows.forEach((row, rowInd) => {
-        if (!column.isErrorCell?.(row)) {
-          return;
-        }
-
-        // у выбранной ячейки error-outline не рисуем.
-        if (rectContainsCell(selectedRange, colInd, rowInd)) {
-          return;
-        }
-
-        regions.push({
-          x: colInd,
-          y: rowInd,
-          width: 1,
-          height: 1,
-        });
-      });
-    });
-
-    return regions;
-  }, [columnsForRender, rows, selection.current]);
+  const handleVisibleRegionChanged = useCallback<
+    NonNullable<GlideProps['onVisibleRegionChanged']>
+  >(
+    (range, tx, ty, extras) => {
+      trackVisibleRegion(range);
+      onVisibleRegionChangedExternal?.(range, tx, ty, extras);
+    },
+    [trackVisibleRegion, onVisibleRegionChangedExternal]
+  );
 
   const getCellContentGlide = useCallback(
     (
@@ -1688,6 +1671,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
           onCellClicked={handleCellClickedBridge}
           onCellContextMenu={handleCellContextMenuBridge}
           onItemHovered={onItemHovered}
+          onVisibleRegionChanged={handleVisibleRegionChanged}
           {...restProps}
           experimental={experimental}
           // Copy/paste glide отключены, обрабатываются нашей реализацией
