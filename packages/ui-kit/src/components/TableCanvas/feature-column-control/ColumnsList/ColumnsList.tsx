@@ -168,10 +168,11 @@ export const ColumnsList = <Row extends ObjectForExtending, SummaryRow>({
     : null;
   const virtualItems =
     windowedItems ?? filteredColumns.map((_, index) => ({ index }));
-  const paddingTop = windowedItems?.length ? windowedItems[0].start : 0;
-  const paddingBottom = windowedItems?.length
-    ? rowVirtualizer.getTotalSize() -
-      windowedItems[windowedItems.length - 1].end
+  const firstWindowed = windowedItems?.[0];
+  const lastWindowed = windowedItems?.[windowedItems.length - 1];
+  const paddingTop = firstWindowed ? firstWindowed.start : 0;
+  const paddingBottom = lastWindowed
+    ? rowVirtualizer.getTotalSize() - lastWindowed.end
     : 0;
 
   return (
@@ -188,6 +189,9 @@ export const ColumnsList = <Row extends ObjectForExtending, SummaryRow>({
       <div style={{ paddingTop, paddingBottom }}>
         {virtualItems.map((virtualItem, renderIndex) => {
           const key = filteredColumns[virtualItem.index];
+          if (key === undefined) {
+            return null;
+          }
           const isHiddenColumn = hiddenColsSet.has(key);
           const isPinnedColumn = pinnedColsSet.has(key);
 

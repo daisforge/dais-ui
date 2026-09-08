@@ -140,11 +140,13 @@ export function useErrorCellRanges<R extends ObjectForExtending, SR>({
 
     for (let colInd = colStart; colInd < colEnd; colInd += 1) {
       const column = columns[colInd];
-      if (column.isServiceColumn || !column.isErrorCell) {
+      const { isErrorCell } = column ?? {};
+      if (!column || column.isServiceColumn || !isErrorCell) {
         continue;
       }
       for (let rowInd = rowStart; rowInd < rowEnd; rowInd += 1) {
-        if (column.isErrorCell(rows[rowInd])) {
+        const row = rows[rowInd];
+        if (row !== undefined && isErrorCell(row)) {
           regions.push({ x: colInd, y: rowInd, width: 1, height: 1 });
         }
       }
