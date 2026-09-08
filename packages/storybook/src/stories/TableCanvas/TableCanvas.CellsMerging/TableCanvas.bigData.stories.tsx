@@ -345,7 +345,6 @@ export const BigDataExample: Story = {
         columnsControl: {
           enable: true,
           pinning: true,
-          pinnedDefault: ['employee'],
         },
         ...(withMerge
           ? {
