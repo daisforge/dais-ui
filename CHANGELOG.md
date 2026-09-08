@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.17.0](https://github.com/daisforge/dais-ui/compare/v1.16.0...v1.17.0) (2026-09-08)
+
+### Features
+
+- поднятие версии для синхронизации. Пустой минор-бамп: обновлен комментарий в index.ts ([7de453c](https://github.com/daisforge/dais-ui/commit/7de453c891f1783d4e2839ed181fa11cd581dd7d))
+
 # [1.16.0](https://github.com/daisforge/dais-ui/compare/v1.15.0...v1.16.0) (2026-08-28)
 
 ### Features
