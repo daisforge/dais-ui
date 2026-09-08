@@ -12,6 +12,14 @@ export type DefaultOmittedKeys = Extract<
   | 'renderCellPreview'
   | 'renderCell'
   | 'columnThemeOverride'
+  // Объединение ячеек тела задаётся только через tableConfig.mergeCells
+  // (mergeByCellValues / mergedCellsRegions). Колоночные colSpan/rowSpan убраны:
+  // они позиционные и небезопасны при реордере. Внутри (ColumnConfigInternal)
+  // остаются как труба, в которую mergeCells синтезирует объединения.
+  | 'colSpan'
+  | 'rowSpan'
+  // Выравнивание блока публично задаётся через mergedCellsAlign / mergeCells.align.
+  | 'spanAlign'
 >;
 
 export type ColumnDefaultOmitted<

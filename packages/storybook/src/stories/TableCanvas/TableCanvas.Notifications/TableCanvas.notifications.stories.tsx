@@ -2,6 +2,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { createRows, type Row } from '@df-storybook/data/tableData';
 import DocStoryTemplate from '@df-storybook/templates/DocStoryTemplate.mdx';
+import { StoryHint } from '@df-storybook/utils/StoryHint';
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
 import type { Meta, StoryObj } from '@storybook/react';
 import {
@@ -63,7 +64,7 @@ export const Notifications: Story = {
 
     return (
       <div>
-        <p style={{ fontSize: 13, color: '#888', marginBottom: 8 }}>
+        <StoryHint>
           Режим <b>multi-range-cell</b>. Как спровоцировать события:
           <br />• <b>copy / multi-range-scattered</b> — Ctrl-выдели ячейки в
           РАЗНЫХ строках и колонках → Ctrl+C.
@@ -77,7 +78,7 @@ export const Notifications: Story = {
           (число)».
           <br />• <b>fill / readonly-abort</b>, <b>fill / validation-skipped</b>
           — то же протаскиванием fill-handle.
-        </p>
+        </StoryHint>
 
         <div style={{ display: 'flex', gap: 16 }}>
           <div style={{ flex: 1, minWidth: 0 }}>

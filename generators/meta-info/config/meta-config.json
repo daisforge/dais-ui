@@ -389,6 +389,7 @@
         "CanvasElements/CanvasLink",
         "CanvasElements/CanvasSkeleton",
         "CanvasElements/CanvasText",
+        "TableCanvas.CellsMerging",
         "TableCanvas.ColumnResize",
         "TableCanvas.Collapsing",
         "TableCanvas.ColumnsControl",

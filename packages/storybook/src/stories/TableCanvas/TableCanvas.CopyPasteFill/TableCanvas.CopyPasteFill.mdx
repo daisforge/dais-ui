@@ -206,8 +206,8 @@ Ctrl+V
    tree update → setRows → re-render
 ```
 
-Fill handle проходит тот же pipeline начиная с шага 6 (без clipboard, без
-overflow — TableCanvas сам ограничивает destination range). Перед записью вызывается
+Fill handle проходит ту же цепочку начиная с шага 6 (без clipboard и без
+overflow — зону протяжки таблица ограничивает сама). Перед записью вызывается
 `onBeforeFill(data, meta)` — аналог `onBeforePaste` для fill handle.
 
 ---

@@ -21,6 +21,7 @@ import { applyValuesToRows } from '../utils/applyValuesToRows';
 import { collectTextMatrix } from '../utils/collectTextMatrix';
 import { isCellEditable } from '../utils/isCellEditable';
 import { rangeToIndexes } from '../utils/rangeToIndexes';
+import { snapDestToRowBlocks } from '../utils/snapDestToRowBlocks';
 
 const clipboardDebug = createDebugLogger('TABLE_CANVAS_CLIPBOARD');
 const PFX = '[TableCanvas/fillHandle]';
@@ -165,9 +166,11 @@ export function useFillHandle<R extends ObjectForExtending>({
       if (!enabled || !onRowsChange) return;
 
       const source = event.patternSource;
-      const dest = event.fillDestination;
+      const rawDest = event.fillDestination;
+      // Растягиваем область до целых блоков: залить пол-блока нельзя.
+      const dest = snapDestToRowBlocks(rawDest, columns, flattenedRows);
 
-      clipboardDebug(PFX, 'обработка fill-паттерна', { source, dest });
+      clipboardDebug(PFX, 'обработка fill-паттерна', { source, rawDest, dest });
 
       const onBeforeFill = cellTransferConfig?.onBeforeFill;
 
@@ -175,7 +178,8 @@ export function useFillHandle<R extends ObjectForExtending>({
         source,
         columns,
         flattenedRows,
-        { withCells: true },
+        // Если source задел блок, тянем значение origin, а не покрытых ячеек.
+        { withCells: true, resolveOrigin: true },
       );
 
       if (sourceValues.length === 0 || sourceValues[0]?.length === 0) {
@@ -244,6 +248,8 @@ export function useFillHandle<R extends ObjectForExtending>({
         validation: 'type-check',
         validateContexts: cellContexts,
         source,
+        // Объединение: заливка в блок пишет весь блок (нормализация к origin).
+        resolveBlocks: true,
       });
 
       if (aborted) {

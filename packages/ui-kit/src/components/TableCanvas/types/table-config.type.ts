@@ -52,6 +52,7 @@ import type {
   SortColumn,
 } from './column-config.type';
 import { ColumnsGroupingConfig } from './columns-grouping.type';
+import { MergedCellsAlign } from './merged-cells.type';
 import { Maybe, ObjectForExtending, Prettify } from './utils.type';
 
 export type {
@@ -845,6 +846,14 @@ export type CellsSelectionConfig = {
   state?: [GridSelection, React.Dispatch<React.SetStateAction<GridSelection>>];
 };
 
+/** Один объединённый блок: какие строки и колонки слить. */
+export type MergedCellsRegion = {
+  rowKeys: Array<string | number>;
+  colKeys: string[];
+  /** Выравнивание контента этого блока. Важнее колоночного и общего. */
+  mergedCellsAlign?: MergedCellsAlign;
+};
+
 export type TableConfig<
   RowType extends ObjectForExtending,
   SummaryRowType,
@@ -1011,6 +1020,41 @@ export type TableConfig<
    * tableConfig={{ cellTransfer: { enabled: true, onBeforeCopy: (data) => data } }}
    */
   cellTransfer?: CellTransferConfig;
+
+  /**
+   * Объединение ячеек тела таблицы.
+   *
+   * mergeByCellValues — колонки, в которых подряд идущие одинаковые значения
+   * сливаются в один блок (по вертикали). Границы блоков таблица считает сама из
+   * данных; сортировка и фильтр их пересобирают. Данные не меняются — значение и
+   * так повторяется в строках, объединение лишь показывает его одной ячейкой.
+   *
+   * mergedCellsRegions — список блоков, заданных снаружи (как выделение): каждый
+   * блок описан ключами строк (rowKeys) и колонок (colKeys). Нужен rowKeyGetter.
+   * Если после сортировки или скрытия колонок строки/колонки блока перестали идти
+   * подряд — блок не рисуется. Важнее mergeByCellValues.
+   *
+   * Примеры: mergeCells={{ mergeByCellValues: ['dept', 'role'] }},
+   * mergeCells={{ mergedCellsRegions, rowKeyGetter: (r) => r.id }}.
+   */
+  mergeCells?: {
+    mergeByCellValues?: Array<
+      string | { colKey: string; value: (row: RowType) => unknown }
+    >;
+    /** Список блоков, заданных снаружи (по ключам строк и колонок). */
+    mergedCellsRegions?: MergedCellsRegion[];
+    /**
+     * Нужен для mergedCellsRegions: находит строку по её ключу. Должна быть
+     * стабильной функцией; менять её на лету не нужно — в пересборку таблицы она
+     * не входит.
+     */
+    rowKeyGetter?: (row: RowType) => string | number;
+    /**
+     * Выравнивание по умолчанию для всех блоков. Колоночный mergedCellsAlign и
+     * выравнивание конкретного региона важнее.
+     */
+    mergedCellsAlign?: MergedCellsAlign;
+  };
 
   /**
    * Модуль нотификаций: стандартизированный канал событий для внешних
@@ -1366,7 +1410,7 @@ export type RowMarkersTableConfig<
     isSubRow: boolean;
     /**
      * Индекс строки в **видимых** строках.
-     * ⚠️ **Нестабильный** — меняется при сворачивании/разворачивании веток.
+     * **Нестабильный** — меняется при сворачивании и разворачивании веток.
      */
     rowIndex: number;
     /**

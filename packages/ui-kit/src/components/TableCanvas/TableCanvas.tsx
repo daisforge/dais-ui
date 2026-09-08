@@ -37,6 +37,10 @@ import { useCheckboxRowIndexes } from './feature-select-row/useCheckboxRowIndexe
 import { useSelectRow } from './feature-select-row/useSelectRow';
 import { useSortedRows } from './feature-sorting';
 import { useTableTabsContext } from './feature-tabs';
+import {
+  flattenSubRowsToMergedLeaves,
+  isMergedSubRowsView,
+} from './feature-tree/mergedSubRows';
 import { SIZE, tableClassNames } from './styles';
 import {
   useColumns,
@@ -115,7 +119,10 @@ export function TableCanvas<
   > | null>(null);
 
   // ------------------------------------------------  preparing TableConfig ------------------------------------------------
-  const { tableConfig } = usePrepareTableConfig({ tableConfigExternal });
+  const { tableConfig } = usePrepareTableConfig({
+    tableConfigExternal,
+    flattenedRowsRef,
+  });
   // ------------------------------------------------  get last lvl of columnConfig ------------------------------------------------
   const columnConfigWithGroupsInfo = useLastLvlColumnConfig(
     colsOrGroupColsConfig,
@@ -161,6 +168,22 @@ export function TableCanvas<
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     useRowInstruments((tableConfig as any)?.rowInstruments);
   // ------------------------------------------------ selecting rows -----------------------------------------
+  // В merged-виде subRows входные rows — это ДЕРЕВО (узлы-предки). Selecting и
+  // summary (select-all) должны работать на ОТОБРАЖАЕМЫХ листьях (как в flat/
+  // grouping), поэтому заранее разворачиваем дерево в листья для фичи выделения.
+  const selectingRows = useMemo(() => {
+    const sr = tableConfig?.subRows;
+    if (isMergedSubRowsView(sr) && sr?.getSubRows && sr?.mergedColumns) {
+      return flattenSubRowsToMergedLeaves(
+        rows,
+        sr.getSubRows,
+        sr.mergedColumns,
+      );
+    }
+    return rows;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rows, tableConfig?.subRows]);
+
   const {
     selectingRowsIsActive,
     setSelectingRowsIsActive,
@@ -174,7 +197,7 @@ export function TableCanvas<
     setIsSelectingRowLabelVisible,
     controlBlock: selectRowDomMetadataControlBlock,
     sidebar: selectRowDomMetadataSidebar,
-  } = useSelectRow({ tableConfig, rows });
+  } = useSelectRow({ tableConfig, rows: selectingRows });
 
   // ------------------------------------------------ columns control (pinning, hiding, reorderingConfig) -----------------------------------------
   const {
@@ -716,7 +739,7 @@ export function TableCanvas<
                   <SelectingContextProvider
                     {...{
                       selectingRowConfig,
-                      rows,
+                      rows: selectingRows,
                       flattenedRowsArrAndMap,
                       selectedRows,
                       setSelectedRows,
@@ -941,14 +964,14 @@ export function TableCanvas<
                             onHighlightActiveRowChange:
                               handleHighlightActiveRowChange,
 
+                            // glide требует для чтения source range
+                            getCellsForSelection: true as const,
                             // --------- fill handle (drag-to-fill)
                             ...(fillHandleProps && {
                               fillHandle: fillHandleProps.fillHandle,
                               allowedFillDirections:
                                 fillHandleProps.allowedFillDirections,
                               onFillPattern: fillHandleProps.onFillPattern,
-                              // glide требует для чтения source range
-                              getCellsForSelection: true as const,
                             }),
 
                             // --------- columns

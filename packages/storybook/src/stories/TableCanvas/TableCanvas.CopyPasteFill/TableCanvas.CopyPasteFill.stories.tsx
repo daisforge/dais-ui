@@ -11,6 +11,7 @@ import {
   TRIBES,
 } from '@df-storybook/data/tableData';
 import DocStoryTemplate from '@df-storybook/templates/DocStoryTemplate.mdx';
+import { StoryHint } from '@df-storybook/utils/StoryHint';
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Select } from '@ui-kit/components/Select';
@@ -244,7 +245,7 @@ export const ClipboardFullDemo: Story = {
           />
         </div>
 
-        <p style={{ fontSize: 13, color: '#888', marginBottom: 8 }}>
+        <StoryHint>
           <b>Copy:</b> работает всегда (Ctrl+C). <b>Paste/Fill:</b> только в
           режиме редактирования.
           <br />
@@ -260,7 +261,7 @@ export const ClipboardFullDemo: Story = {
           Продукт (select), Q1 (число + contentFormat), Q2-Q4 (число).
           <br />
           <b>Debug:</b> логи включены (DevTools → Verbose).
-        </p>
+        </StoryHint>
 
         <TableCanvas
           tableConfig={{
@@ -355,14 +356,14 @@ export const InterceptCopyPaste: Story = {
 
     return (
       <div>
-        <p style={{ fontSize: 13, color: '#888', marginBottom: 8 }}>
+        <StoryHint>
           <b>onBeforeCopy:</b> при Ctrl+C в консоль выводятся скопированные
           данные, колонки и rawValue каждой ячейки.
           <br />
           <b>onBeforePaste:</b> при Ctrl+V выводятся вставляемые данные и info о
           target-ячейках. Если вставляется больше 5 строк, вставка блокируется
           (return false).
-        </p>
+        </StoryHint>
 
         <TableCanvas
           tableConfig={{
@@ -479,13 +480,13 @@ export const CopyDataExample: Story = {
 
     return (
       <div>
-        <p style={{ fontSize: 13, color: '#888', marginBottom: 8 }}>
+        <StoryHint>
           <b>Priority</b> — Canvas.Badge с <code>copyData</code>. <b>Type</b> —
           Canvas.Text с <code>copyData</code>.
           <br />
           Выделите ячейку Priority → Ctrl+C → вставьте в блокнот: скопируется
           текст бейджа (например &quot;Critical&quot;), а не пустая строка.
-        </p>
+        </StoryHint>
 
         <TableCanvas
           tableConfig={{
@@ -562,7 +563,7 @@ export const TypeCheckValidation: Story = {
 
     return (
       <div>
-        <p style={{ fontSize: 13, color: '#888', marginBottom: 8 }}>
+        <StoryHint>
           <b>Priority</b> — select (Critical / High / Medium / Low). Вставка
           &quot;Unknown&quot; пропустится.
           <br />
@@ -572,7 +573,7 @@ export const TypeCheckValidation: Story = {
           <br />
           Debug логи включены — смотрите{' '}
           <code>[TableCanvas/paste] skipped by validation</code> в консоли.
-        </p>
+        </StoryHint>
 
         <TableCanvas
           tableConfig={{
@@ -639,14 +640,14 @@ export const FillHandleWithSourceRow: Story = {
 
     return (
       <div>
-        <p style={{ fontSize: 13, color: '#888', marginBottom: 8 }}>
+        <StoryHint>
           Выделите ячейку в колонке <b>% Complete</b> и перетащите fill handle
           вниз.
           <br />
           <b>onRowsChange</b> получает <code>type: &apos;fill&apos;</code> и{' '}
           <code>fillMeta</code> с source row, что позволяет дополнительно
           скопировать <b>priority</b> из исходной строки.
-        </p>
+        </StoryHint>
 
         <TableCanvas
           tableConfig={{
@@ -748,12 +749,12 @@ export const CustomHotkeys: Story = {
 
     return (
       <div>
-        <p style={{ fontSize: 13, color: '#888', marginBottom: 8 }}>
+        <StoryHint>
           Copy: <b>Ctrl+Alt+C</b>. Paste: <b>Ctrl+Alt+V</b>.
           <br />
           Обычные Ctrl+C / Ctrl+V для этой таблицы не работают — хук блокирует
           дефолт, когда задан кастомный хоткей.
-        </p>
+        </StoryHint>
 
         <TableCanvas
           tableConfig={{

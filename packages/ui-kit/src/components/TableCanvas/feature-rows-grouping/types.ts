@@ -5,6 +5,7 @@ import {
   CellInfoGlideInstance,
 } from '../TableGlideInstance/type';
 import { DomMetadata, DropdownItemOption } from '../types/additional.type';
+import { MergedCellsAlign } from '../types/merged-cells.type';
 import { ObjectForExtending } from '../types/utils.type';
 
 export type GroupRow<RowType> = {
@@ -27,6 +28,26 @@ export type RowsGrouping<
    */
   groupByState: [string[], React.Dispatch<React.SetStateAction<string[]>>];
   /**
+   * Как показывать группировку.
+   * 'tree' (по умолчанию) — дерево с раскрытием (шевроны) и колонкой группировки.
+   * 'merged' — плоский вид: строки идут по группам, а группирующие колонки
+   * показаны объединёнными ячейками. Раскрытия нет; чекбокс и номер — на всю
+   * группу верхнего уровня.
+   * @default 'tree'
+   */
+  view?: 'tree' | 'merged';
+  /**
+   * Только для view: 'merged'. Выравнивание по умолчанию в объединённых ячейках
+   * группирующих колонок. Колоночный mergedCellsAlign важнее.
+   */
+  mergedCellsAlign?: MergedCellsAlign;
+  /**
+   * Только для view: 'merged'. Запретить сортировку по группирующим колонкам
+   * (как в дереве). По остальным колонкам сортировка остаётся.
+   * @default false
+   */
+  disableGroupColumnsSort?: boolean;
+  /**
    * Функция определения уникального id строки
    */
   rowKeyGetter: (row: RowType) => string | number;
@@ -38,6 +59,9 @@ export type RowsGrouping<
    */
   showInControl?: boolean;
   /**
+   * Настройки колонки «Группировка» (имя, ширина, свои рендеры). Работает только
+   * в виде дерева: при view: 'merged' эта колонка не создаётся, а сгруппированные
+   * колонки остаются на своих местах.
    * @default 'Группировка'
    */
   groupedColumnProps?: Partial<Pick<ColumnConfig, 'name' | 'width'>> & {
@@ -52,6 +76,7 @@ export type RowsGrouping<
       'renderGroupCell'
     >;
   };
+  /** Кнопка «развернуть всё». Работает только в виде дерева: при view: 'merged' шевронов нет. */
   expandAllBtn?: {
     /**
      * Функция для расчета состояния открытости всех раскрываемых строк. Функция должна быть чистой.
@@ -155,6 +180,11 @@ export type ColumnRowsGrouping<
    * @default ColumnConfig.key
    */
   columnGroupLabel?: string;
+  /**
+   * Свой контент ячейки строки-группы. Работает только в виде дерева: при
+   * view: 'merged' строк-групп нет (группы показаны объединёнными ячейками),
+   * поэтому этот рендер не вызывается.
+   */
   renderGroupCell?: (
     props: RenderGroupCellProps<RowType, ColumnConfig>,
   ) => CanvasContent;

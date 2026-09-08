@@ -1,8 +1,8 @@
 import type { GridSelection } from '@glideappsfinal/glide-data-grid';
 import { describe, expect, it } from 'vitest';
 
-import type { Rectangle, TransferColumnConfig } from '../types';
-import { resolveTransferTargets } from './resolveTransferTargets';
+import type { Rectangle, TransferColumnConfig } from '../../types';
+import { resolveTransferTargets } from '../resolveTransferTargets';
 
 /** Колонки: первые `serviceCount` — служебные (firstDataCol === serviceCount). */
 const cols = (serviceCount = 1, total = 6): readonly TransferColumnConfig[] =>

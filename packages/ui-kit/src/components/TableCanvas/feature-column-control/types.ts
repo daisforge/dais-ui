@@ -34,6 +34,14 @@ export type ColumnsControlConfig = {
     ReactNode | ((isHidden: boolean, isPinned: boolean) => ReactNode)
   >;
 
+  /**
+   * Виртуализация списка колонок в правом сайдбаре: в DOM держатся только
+   * видимые строки списка. false — отключить полностью; { minCount } —
+   * включать, когда строк в списке не меньше порога.
+   * @default { minCount: 30 }
+   */
+  virtualization?: boolean | { minCount?: number };
+
   orderDefault?: string[];
 
   pinnedDefault?: string[];

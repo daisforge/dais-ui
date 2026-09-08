@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { createRows, type Row as TableRow } from '@df-storybook/data/tableData';
 import DocStoryTemplate from '@df-storybook/templates/DocStoryTemplate.mdx';
+import { StoryHint } from '@df-storybook/utils/StoryHint';
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Button } from '@ui-kit/components/Button';
@@ -240,12 +241,12 @@ export const HighlightActiveRowControlled: Story = {
           </Button>
         </div>
 
-        <p style={{ fontSize: 13, color: '#888', marginBottom: 8 }}>
+        <StoryHint>
           Подсветка активной строки — <b>controlled</b> через{' '}
           <code>tableConfig.highlightActiveRow.state</code>. Кнопки
           задают/сбрасывают внешний стейт; клик по строке тоже обновляет его.
           Подсвеченная строка: <b>{highlightActiveRow ?? '—'}</b>.
-        </p>
+        </StoryHint>
 
         <TableCanvas
           tableConfig={{

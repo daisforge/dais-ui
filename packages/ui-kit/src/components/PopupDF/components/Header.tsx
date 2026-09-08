@@ -29,8 +29,9 @@ export function Header({
   const { onClose: onCloseFromContext, size } = usePopupDFContext();
   const resolvedOnClose = onClose ?? onCloseFromContext;
   const shouldShowCloseButton = showCloseButton && !!resolvedOnClose;
-  const titleVariant = size === 's' ? 'BodyXS' : 'BodyM';
-  const descriptionVariant = 'BodyXS';
+  const titleVariantBySize = { s: 'BodyXS', m: 'BodyM', l: 'H4' } as const;
+  const titleVariant = titleVariantBySize[size];
+  const descriptionVariant = size === 'l' ? 'BodyS' : 'BodyXS';
   const closeButtonSize = size === 's' ? 'xxs' : 'xs';
   const headerIconSize = 'xs';
   const isDescriptionPrimitive =
