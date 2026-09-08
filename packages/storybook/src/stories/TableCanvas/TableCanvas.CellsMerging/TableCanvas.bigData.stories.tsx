@@ -1,11 +1,15 @@
 /* eslint-disable react-hooks/rules-of-hooks, no-bitwise */
 import { StoryHint } from '@df-storybook/utils/StoryHint';
 import type { Meta, StoryObj } from '@storybook/react';
+import { Button } from '@ui-kit/components/Button';
+import { Checkbox } from '@ui-kit/components/Checkbox';
+import { Slider } from '@ui-kit/components/Slider';
 import {
   Canvas,
   type ColumnConfig,
   TableCanvas,
 } from '@ui-kit/components/TableCanvas';
+import { TextField } from '@ui-kit/components/TextField';
 import React, {
   Profiler,
   useCallback,
@@ -16,20 +20,18 @@ import React, {
 } from 'react';
 
 /**
- * Изоляция причин лага селектинга (протяжка синей рамки мышью) на больших
- * данных. В чистом glide DataEditor на тех же объёмах выделение быстрое,
- * в обёртке заметно медленнее. Стори даёт матрицу 2x2 переключателей:
+ * Большой набор данных: до 1500 колонок и миллиона строк. Пример для проверки
+ * производительности таблицы (выделение, скролл, сайдбар, редактирование) и
+ * поведения фич на масштабе. Переключатели:
  *
  * - «объединение»: строки как дерево subRows с merged-колонками иерархии
  *   либо плоский список без subRows вообще;
  * - «тяжёлые ячейки»: renderCell с Canvas.Badge и контейнерами либо
- *   максимально дешёвый Canvas.Text.
+ *   максимально дешёвый Canvas.Text;
+ * - «редактирование»: режим редактирования с error-правилом на колонке Факт.
  *
- * Поверх таблицы HUD: FPS, число React-коммитов в секунду и среднее время
- * коммита (Profiler actualDuration). При протяжке выделения каждый шаг мыши
- * даёт коммит, так что среднее время коммита показывает цену перерендера
- * обёртки на одно движение. Сравнение четырёх режимов отвечает, что именно
- * тормозит: merge, кастомные ячейки или сам перерендер по selection.
+ * Поверх таблицы HUD с метриками производительности (описание метрик — на
+ * самой странице стори).
  */
 const meta: Meta = {
   title: 'Локальные компоненты/TableCanvas/CellsMerging',
@@ -299,8 +301,8 @@ function PerfHudBadge({
   );
 }
 
-export const SelectingPerf: Story = {
-  name: 'Стресс селектинга: изоляция причин',
+export const BigDataExample: Story = {
+  name: 'Большой набор данных (строки × колонки)',
   render: () => {
     const [cols, setCols] = useState(1000);
     const [rowInput, setRowInput] = useState('50000');
@@ -370,10 +372,14 @@ export const SelectingPerf: Story = {
     return (
       <div>
         <StoryHint>
-          Потяните мышью большой диапазон ячеек и смотрите на HUD. Сравните
-          четыре режима: объединение и тяжёлые ячейки вкл или выкл. Если лаг
-          остаётся даже без объединения и на дешёвых ячейках, значит тормозит
-          сам перерендер обёртки на каждое движение мыши, а не merge-код.
+          Пример на большом наборе данных: настройте число колонок и строк,
+          включите нужные режимы и проверяйте выделение, скролл, сайдбар и
+          редактирование. HUD справа показывает метрики производительности: FPS
+          — кадров в секунду (ниже 40 подсвечивается красным); «коммитов/с» —
+          сколько раз в секунду React перерендерил таблицу (при протяжке
+          выделения каждый шаг мыши даёт один коммит); «коммит сред/макс» —
+          среднее и максимальное время одного такого перерендера в
+          миллисекундах, то есть цена реакции таблицы на одно действие.
         </StoryHint>
 
         <div
@@ -388,80 +394,60 @@ export const SelectingPerf: Story = {
         >
           <span style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
             Колонок: <b style={{ minWidth: 42 }}>{cols}</b>
-            <input
-              type="range"
-              min={1}
-              max={1500}
-              value={cols}
-              onChange={(e) => setCols(Number(e.target.value))}
-              style={{ width: 220 }}
-            />
+            <div style={{ width: 220 }}>
+              <Slider
+                value={cols}
+                min={1}
+                max={1500}
+                onChangeCommitted={(value) => setCols(value)}
+              />
+            </div>
           </span>
 
           <span style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
             Строк:
-            <input
-              type="number"
-              min={1}
-              step={10000}
-              value={rowInput}
-              onChange={(e) => setRowInput(e.target.value)}
-              style={{ width: 110 }}
-            />
-            <button
-              type="button"
+            <div style={{ width: 130 }}>
+              <TextField
+                value={rowInput}
+                type="number"
+                size="s"
+                onChange={(e) => setRowInput(e.target.value)}
+              />
+            </div>
+            <Button
+              size="s"
+              view="secondary"
               onClick={() => setRowTarget(Math.max(1, Number(rowInput) || 1))}
             >
               Построить
-            </button>
+            </Button>
             <span style={{ opacity: 0.75 }}>
               (листьев: <b>{fmt(leaves)}</b>)
             </span>
           </span>
 
-          <label
-            htmlFor="selecting-perf-merge"
-            style={{ display: 'flex', gap: 6, alignItems: 'center' }}
-          >
-            <input
-              id="selecting-perf-merge"
-              type="checkbox"
-              checked={withMerge}
-              onChange={(e) => setWithMerge(e.target.checked)}
-            />
-            объединение (subRows merged)
-          </label>
+          <Checkbox
+            label="объединение (subRows merged)"
+            checked={withMerge}
+            onChange={(e) => setWithMerge(e.target.checked)}
+          />
 
-          <label
-            htmlFor="selecting-perf-heavy"
-            style={{ display: 'flex', gap: 6, alignItems: 'center' }}
-          >
-            <input
-              id="selecting-perf-heavy"
-              type="checkbox"
-              checked={heavyCells}
-              onChange={(e) => setHeavyCells(e.target.checked)}
-            />
-            тяжёлые ячейки (Canvas.Badge)
-          </label>
+          <Checkbox
+            label="тяжёлые ячейки (Canvas.Badge)"
+            checked={heavyCells}
+            onChange={(e) => setHeavyCells(e.target.checked)}
+          />
 
-          <label
-            htmlFor="selecting-perf-editing"
-            style={{ display: 'flex', gap: 6, alignItems: 'center' }}
-          >
-            <input
-              id="selecting-perf-editing"
-              type="checkbox"
-              checked={withEditing}
-              onChange={(e) => setWithEditing(e.target.checked)}
-            />
-            редактирование (error-ячейки)
-          </label>
+          <Checkbox
+            label="редактирование (error-ячейки)"
+            checked={withEditing}
+            onChange={(e) => setWithEditing(e.target.checked)}
+          />
 
           <PerfHudBadge commitsRef={commitsRef} />
         </div>
 
-        <Profiler id="selecting-perf-table" onRender={onRender}>
+        <Profiler id="big-data-table" onRender={onRender}>
           <TableCanvas
             tableConfig={tableConfig}
             columnConfig={columns}
