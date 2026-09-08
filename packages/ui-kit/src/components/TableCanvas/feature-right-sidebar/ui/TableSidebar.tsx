@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import { useSidebar } from '../../contexts';
 import { SidebarTab } from '../../widgets/control-block/types';
+import { SIDEBAR_DURATION } from '../constants';
 import { SidebarContentLayout } from './SidebarContentLayout';
 import { SidebarTabs } from './SidebarTabs';
 import { SidebarContainer, SidebarContent, SidebarTogglePanel } from './styled';
@@ -30,6 +31,24 @@ export const TableSidebar: React.FC<{
   $borderRightTopRadiusRounded,
 }) => {
   const { isOpen, toggle, width } = useSidebar();
+
+  // Тяжёлый контент (например список сотен колонок) монтируем после окончания
+  // выезда панели: иначе его первый рендер и layout идут прямо во время
+  // анимации ширины и она дёргается. На закрытии наоборот: контент убираем
+  // сразу, чтобы панель схлопывалась пустой и лёгкой.
+  const [contentReady, setContentReady] = useState(isOpen);
+
+  useEffect(() => {
+    if (!isOpen) {
+      setContentReady(false);
+      return undefined;
+    }
+    const timeoutId = setTimeout(
+      () => setContentReady(true),
+      SIDEBAR_DURATION * 1000,
+    );
+    return () => clearTimeout(timeoutId);
+  }, [isOpen]);
 
   const validDefaultTabId =
     defaultActiveTabId &&
@@ -117,7 +136,7 @@ export const TableSidebar: React.FC<{
             titleRightSlot={activeTabInfo?.titleRightSlot}
             domMetadata={activeTabInfo?.domMetadata}
           >
-            {activeTabInfo?.content || children}
+            {contentReady ? activeTabInfo?.content || children : null}
           </SidebarContentLayout>
         </div>
       </SidebarContent>

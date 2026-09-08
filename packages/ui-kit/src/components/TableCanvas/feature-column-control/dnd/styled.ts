@@ -48,6 +48,12 @@ export const StyledDragItem = styled(Box)<{
   borderRadius: '8px',
   backgroundColor: surfaceTransparentPrimary,
 
+  // Ленивая отрисовка на уровне браузера: layout и paint строк за пределами
+  // видимой области списка пропускаются. Критично при сотнях колонок.
+  // Высота строки фиксированная (40px), поэтому скроллбар стабилен.
+  'content-visibility': 'auto',
+  'contain-intrinsic-size': 'auto 40px',
+
   ...(draggable && {
     cursor: 'grab',
     '&:active': {
