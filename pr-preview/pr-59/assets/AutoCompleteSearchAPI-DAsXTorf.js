@@ -1,0 +1,4 @@
+import{j as e}from"./react-D2T61mpp.js";import{cc as r,cd as s}from"./vendor-C-w11k8S.js";import{T as n}from"./TypeSourceViewer-BDeeEc2F.js";import"./react-is-Clcustum.js";import"./styled-components-Dp3rHGA3.js";import"./@tanstack/react-virtual-BuSs1H_i.js";import"./tslib-De9GV7Vy.js";function c(t){const o={h1:"h1",h2:"h2",...r(),...t.components};return e.jsxs(e.Fragment,{children:[e.jsx(s,{title:"Локальные компоненты/AutocompleteSearch/API"}),`
+`,e.jsx(o.h1,{id:"autocompletesearch-api",children:"AutocompleteSearch API"}),`
+`,e.jsx(o.h2,{id:"baseautocomplitesearchprops",children:"BaseAutocompliteSearchProps"}),`
+`,e.jsx(n,{language:"ts",filePath:"packages/ui-kit/src/components/AutocompleteSearch/AutocompleteSearch.types.ts",typeName:"BaseAutocompliteSearchProps"})]})}function x(t={}){const{wrapper:o}={...r(),...t.components};return o?e.jsx(o,{...t,children:e.jsx(c,{...t})}):c(t)}export{x as default};
