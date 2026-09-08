@@ -148,7 +148,6 @@ export const TableSidebar: React.FC<{
                     roundness={8}
                     width="100%"
                     height="40px"
-                    lighter
                   />
                 ))}
               </SidebarSkeletonList>
