@@ -416,23 +416,24 @@ export const useColumns = <
           editModeEnabled: editable(renderCellProps.row),
         });
 
-      const isErrorCell: ColumnX['isErrorCell'] = (row) => {
-        if (!tableConfigEditing || isLoadingTable || getColumnIsService(el)) {
-          return false;
-        }
+      // Без редактирования isErrorCell не навешиваем вовсе: колонка с этой
+      // функцией участвует в обходе строк при пересчёте error-регионов.
+      const isErrorCell: ColumnX['isErrorCell'] =
+        !tableConfigEditing || isLoadingTable || getColumnIsService(el)
+          ? undefined
+          : (row) => {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              if ((row as any)?.[SKELETON_ROW_KEY]) {
+                return false;
+              }
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        if ((row as any)?.[SKELETON_ROW_KEY]) {
-          return false;
-        }
+              const { lvl } = getTreeIdAndLvlOfRow(row);
+              const clearRow = hideRowServiceKeysHandler(row);
 
-        const { lvl } = getTreeIdAndLvlOfRow(row);
-        const clearRow = hideRowServiceKeysHandler(row);
-
-        return !!(lvl === 0
-          ? el.editingCell?.error?.value(clearRow, lvl)
-          : el.subRow?.editingCell?.error?.value(clearRow, lvl));
-      };
+              return !!(lvl === 0
+                ? el.editingCell?.error?.value(clearRow, lvl)
+                : el.subRow?.editingCell?.error?.value(clearRow, lvl));
+            };
 
       const renderEditCell: ColumnX['renderEditCell'] = (() => {
         if (isServiceEditableColumn(el)) {
