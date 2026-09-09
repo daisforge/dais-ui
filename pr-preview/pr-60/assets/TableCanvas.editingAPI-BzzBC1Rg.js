@@ -1,0 +1,8 @@
+import{j as t}from"./react-D2T61mpp.js";import{cc as a,cd as o}from"./vendor-DyskUa3R.js";import{T as i}from"./TypeSourceViewer-CpaXbbiE.js";import"./react-is-Clcustum.js";import"./styled-components-Dk5h8vLx.js";import"./@tanstack/react-virtual-C-_FPY_A.js";import"./tslib-De9GV7Vy.js";function s(e){const n={h1:"h1",h2:"h2",...a(),...e.components};return t.jsxs(t.Fragment,{children:[t.jsx(o,{title:"Локальные компоненты/TableCanvas/Editing/API"}),`
+`,t.jsx(n.h1,{id:"editing-api",children:"Editing API"}),`
+`,t.jsx(n.h2,{id:"editingconfig",children:"EditingConfig"}),`
+`,t.jsx(i,{language:"ts",filePath:"packages/ui-kit/src/components/TableCanvas/types/table-config.type.ts",typeName:"EditingConfig"}),`
+`,t.jsx(n.h2,{id:"editingbuttonprops",children:"EditingButtonProps"}),`
+`,t.jsx(i,{language:"ts",filePath:"packages/ui-kit/src/components/TableCanvas/types/table-config.type.ts",typeName:"EditingButtonProps"}),`
+`,t.jsx(n.h2,{id:"editing",children:"Editing"}),`
+`,t.jsx(i,{language:"ts",filePath:"packages/ui-kit/src/components/TableCanvas/types/column-config.type.ts",typeName:"Editing"})]})}function u(e={}){const{wrapper:n}={...a(),...e.components};return n?t.jsx(n,{...e,children:t.jsx(s,{...e})}):s(e)}export{u as default};
