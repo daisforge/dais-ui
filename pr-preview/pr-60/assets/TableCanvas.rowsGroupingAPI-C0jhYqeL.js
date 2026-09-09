@@ -1,0 +1,4 @@
+import{j as n}from"./react-D2T61mpp.js";import{cc as r,cd as s}from"./vendor-DyskUa3R.js";import{T as i}from"./TypeSourceViewer-CpaXbbiE.js";import"./react-is-Clcustum.js";import"./styled-components-Dk5h8vLx.js";import"./@tanstack/react-virtual-C-_FPY_A.js";import"./tslib-De9GV7Vy.js";function e(o){const t={h1:"h1",h2:"h2",...r(),...o.components};return n.jsxs(n.Fragment,{children:[n.jsx(s,{title:"Локальные компоненты/TableCanvas/RowsGrouping/API"}),`
+`,n.jsx(t.h1,{id:"rowsgrouping-api",children:"RowsGrouping API"}),`
+`,n.jsx(t.h2,{id:"rowsgrouping",children:"RowsGrouping"}),`
+`,n.jsx(i,{language:"ts",filePath:"packages/ui-kit/src/components/TableCanvas/feature-rows-grouping/types.ts",typeName:"RowsGrouping"})]})}function x(o={}){const{wrapper:t}={...r(),...o.components};return t?n.jsx(t,{...o,children:n.jsx(e,{...o})}):e(o)}export{x as default};
