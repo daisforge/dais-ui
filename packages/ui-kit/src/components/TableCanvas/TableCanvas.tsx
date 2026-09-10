@@ -11,7 +11,11 @@ import {
   TableResizeObserverProviderWrapper,
 } from './contexts';
 import { useClipboard, useFillHandle } from './feature-cell-transfer';
-import { useColumnsControl } from './feature-column-control';
+import {
+  buildGroupPathByKey,
+  useColumnsControl,
+  useHiddenColumnsIndicator,
+} from './feature-column-control';
 import { useLastLvlColumnConfig } from './feature-columns-grouping';
 import { useContentStateOverlay } from './feature-content-state/useContentStateOverlay';
 import { useCloseContextMenuOnRegionChange } from './feature-context-menu';
@@ -253,6 +257,7 @@ export function TableCanvas<
   const {
     columns,
     reorderedColumns,
+    renderColKeys,
     columnsOrder,
     getDefaultColumnsOrder,
     setColumnsOrder,
@@ -284,6 +289,32 @@ export function TableCanvas<
   //   allColsFlattened,
   //   columnsGroupingIsActive
   // );
+
+  // ------------------------------------------------ hidden columns indicator -----------------------------------------
+  // Карта «ключ листа -> путь групп» по исходному дереву конфигурации: нужна для
+  // высоты полосы индикатора в сгруппированной шапке.
+  const groupPathByKey = useMemo(
+    () => buildGroupPathByKey(colsOrGroupColsConfig),
+    [colsOrGroupColsConfig],
+  );
+
+  const { hiddenColumnsIndicator, onHiddenColumnsIndicatorClicked } =
+    useHiddenColumnsIndicator({
+      enabled:
+        !!columnsControlConfig.hiding &&
+        (columnsControlConfig.hiddenColumnsIndicator ?? true),
+      // columnsOrder пуст до первого эффекта useReorderDragable, на этот случай
+      // берём полный порядок по умолчанию, иначе индикатор не считался бы.
+      fullColumnsOrder: columnsOrder.length
+        ? columnsOrder
+        : getDefaultColumnsOrder(),
+      hiddenCols,
+      pinnedCols,
+      setHiddenCols,
+      renderColKeys,
+      groupPathByKey,
+      onExpand: columnsControlConfig.onHiddenColumnsIndicatorExpand,
+    });
 
   // ------------------------------------------------ view type -----------------------------------------
   const view = tableConfig.view ?? { type: 'rows' };
@@ -1037,6 +1068,8 @@ export function TableCanvas<
                               spanAlign:
                                 tableConfig.columnsGrouping
                                   ?.squashedHeaderAlign,
+                              hiddenColumnsIndicator,
+                              onHiddenColumnsIndicatorClicked,
                               editorOverlayPortal:
                                 tableConfig.editorOverlayPortal,
                               checkboxSelectedRowIndexes,

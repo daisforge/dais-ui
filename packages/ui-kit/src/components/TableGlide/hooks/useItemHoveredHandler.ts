@@ -2,6 +2,8 @@ import type { DataEditorRef } from '@glideappsfinal/glide-data-grid';
 import type { Ref, RefObject } from 'react';
 import { useCallback, useRef } from 'react';
 
+import { HEADER_TOOLTIP_HIDDEN_COLS_ID } from '@ui-kit/components/TableCanvasSharedConstants';
+
 import { dispatchCanvasPortalHover } from '../lib/canvas';
 import type {
   ColumnGlideLast,
@@ -95,8 +97,8 @@ export interface UseItemHoveredHandlerParams<R extends ObjectForExtending, SR> {
  */
 export function useItemHoveredHandler<R extends ObjectForExtending, SR>(
   params: UseItemHoveredHandlerParams<R, SR>,
-  dataEditorRef: RefObject<DataEditorRef | null>
-): OnItemHovered {
+  dataEditorRef: RefObject<DataEditorRef | null>,
+): { onItemHovered: OnItemHovered; hideTooltip: () => void } {
   const {
     columnsLast,
     rows,
@@ -141,7 +143,7 @@ export function useItemHoveredHandler<R extends ObjectForExtending, SR>(
         nodeId: currentOrigin ?? undefined,
       },
       portalTarget,
-      true // immediate — без debounce
+      true, // immediate — без debounce
     );
   }, []);
 
@@ -161,6 +163,50 @@ export function useItemHoveredHandler<R extends ObjectForExtending, SR>(
       // Общие данные из location (переиспользуются в header и cell)
       const colInd = args.location?.[0] as number | undefined;
       const column = colInd != null ? columnsLast[colInd] : undefined;
+
+      // ─── индикатор скрытых столбцов: полосатая линия на границе шапки ───
+      if (
+        (args.kind === 'header' || args.kind === 'group-header') &&
+        args.hiddenIndicatorCol != null
+      ) {
+        const boundary = args.hiddenIndicatorCol;
+        const isSame = lastHoveredRef.current === HEADER_TOOLTIP_HIDDEN_COLS_ID;
+        if (!isSame) {
+          hideCurrentTooltip(portalTarget);
+        }
+
+        // Якорь — узкий прямоугольник полоски: граница слева от колонки boundary,
+        // для правого края таблицы (boundary за последней колонкой) — правый
+        // край последней видимой.
+        const colCount = columnsLast.length;
+        const anchorCol = Math.min(boundary, colCount - 1);
+        const bounds = dataEditorRef.current?.getBounds(anchorCol, -1);
+        if (!bounds) return;
+        const borderX =
+          boundary >= colCount ? bounds.x + bounds.width : bounds.x;
+        // Полоса может быть выше листового ряда (сгруппированная шапка): поднимаем якорь
+        // на её верх, чтобы подсказка рисовалась над полосой, а не в её нижней части.
+        const aboveLeaf = args.hiddenIndicatorAboveLeaf ?? 0;
+
+        lastHoveredRef.current = HEADER_TOOLTIP_HIDDEN_COLS_ID;
+
+        // priority: 1 — как canvas-ноды: выигрывает у колоночного headerCellTooltip.
+        dispatchCanvasPortalHover(
+          {
+            visible: true,
+            x: borderX - 2,
+            y: bounds.y - aboveLeaf,
+            width: 4,
+            height: bounds.height + aboveLeaf,
+            source: 'header',
+            originId: HEADER_TOOLTIP_HIDDEN_COLS_ID,
+            nodeId: HEADER_TOOLTIP_HIDDEN_COLS_ID,
+            priority: 1,
+          },
+          portalTarget,
+        );
+        return;
+      }
 
       // ─── header: тултип для шапки колонки ───
       if (args.kind === 'header') {
@@ -207,7 +253,7 @@ export function useItemHoveredHandler<R extends ObjectForExtending, SR>(
               theme,
             },
           },
-          portalTarget
+          portalTarget,
         );
         return;
       }
@@ -259,7 +305,7 @@ export function useItemHoveredHandler<R extends ObjectForExtending, SR>(
               theme,
             },
           },
-          portalTarget
+          portalTarget,
         );
         return;
       }
@@ -278,8 +324,14 @@ export function useItemHoveredHandler<R extends ObjectForExtending, SR>(
       onHoverRowChange,
       hideCurrentTooltip,
       dataEditorRef,
-    ]
+    ],
   );
 
-  return onItemHovered;
+  // Явное скрытие текущего тултипа (например, на старте ресайза колонки, когда
+  // наведение уже произошло, а тултип не должен висеть/ехать за границей).
+  const hideTooltip = useCallback(() => {
+    hideCurrentTooltip(portalEventTargetRef?.current ?? null);
+  }, [hideCurrentTooltip, portalEventTargetRef]);
+
+  return { onItemHovered, hideTooltip };
 }
