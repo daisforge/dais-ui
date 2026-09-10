@@ -1,0 +1,21 @@
+import{j as n}from"./react-D2T61mpp.js";import{cc as i,cd as c,c6 as l}from"./vendor-BdLrx4xP.js";import{C as r}from"./Collapse.stories-C9uUe3jH.js";import"./react-is-Clcustum.js";import"./styled-components-CTUN0MzM.js";import"./@tanstack/react-virtual-fAMsGsuS.js";import"./tslib-De9GV7Vy.js";import"./Box-67kQGb5v.js";import"./Collapse-DOEQGpdO.js";import"./utils-C6ISqs0d.js";import"./constants-Ci5uyz-N.js";import"./@salutejs/sdds-themes-p9DCXULv.js";import"./sharedUtilsDebug-BX_KjCjW.js";import"./@salutejs/sdds-finai-B7AZSacY.js";function o(s){const e={a:"a",blockquote:"blockquote",code:"code",h1:"h1",h2:"h2",li:"li",p:"p",ul:"ul",...i(),...s.components};return n.jsxs(n.Fragment,{children:[n.jsx(c,{of:r,name:"Docs"}),`
+`,n.jsx(e.h1,{id:"collapse",children:"Collapse"}),`
+`,n.jsx(e.p,{children:"Компонент анимированного сворачивания/разворачивания контента. Поддерживает вертикальную и горизонтальную ориентацию, настраиваемую длительность и тип анимации."}),`
+`,n.jsx(e.h2,{id:"ключевые-особенности",children:"Ключевые особенности"}),`
+`,n.jsxs(e.ul,{children:[`
+`,n.jsx(e.li,{children:"Анимация open/close с настраиваемой длительностью и easing"}),`
+`,n.jsx(e.li,{children:"Вертикальная и горизонтальная ориентация"}),`
+`,n.jsxs(e.li,{children:["Возможность размонтирования контента при закрытии (",n.jsx(e.code,{children:"unMountOnClose"}),")"]}),`
+`,n.jsx(e.li,{children:"Настраиваемые размеры в открытом и закрытом состоянии"}),`
+`,n.jsxs(e.li,{children:["CSS-стили для внешнего и внутреннего контейнеров (",n.jsx(e.code,{children:"extContainerCss"}),", ",n.jsx(e.code,{children:"intContainerCss"}),")"]}),`
+`]}),`
+`,n.jsx(e.h2,{id:"особенности",children:"Особенности"}),`
+`,n.jsxs(e.ul,{children:[`
+`,n.jsxs(e.li,{children:["Пропс ",n.jsx(e.code,{children:"animation"})," может быть строкой (одинаковая анимация для open/close) или объектом ",n.jsx(e.code,{children:"{ open, close }"})," для разных анимаций"]}),`
+`,n.jsxs(e.li,{children:["Пропс ",n.jsx(e.code,{children:"intContainerCss"})," принимает объект с ключами ",n.jsx(e.code,{children:"always"})," (стили в любом состоянии) и ",n.jsx(e.code,{children:"onOpen"})," (стили только при открытии)"]}),`
+`,n.jsxs(e.li,{children:["По умолчанию контент остаётся в DOM при закрытии. Для размонтирования используйте ",n.jsx(e.code,{children:"unMountOnClose"})]}),`
+`]}),`
+`,n.jsxs(e.blockquote,{children:[`
+`,n.jsxs(e.p,{children:["Подробнее о типах и пропсах — ",n.jsx(e.a,{href:"?path=/docs/%D0%BB%D0%BE%D0%BA%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D1%8B-collapse-api--docs",children:"Collapse API"})]}),`
+`]}),`
+`,n.jsx(l,{})]})}function E(s={}){const{wrapper:e}={...i(),...s.components};return e?n.jsx(e,{...s,children:n.jsx(o,{...s})}):o(s)}export{E as default};

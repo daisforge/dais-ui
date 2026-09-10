@@ -1,4 +1,0 @@
-import{j as e}from"./react-D2T61mpp.js";import{cc as i,cd as a}from"./vendor-DyskUa3R.js";import{T as r}from"./TypeSourceViewer-CpaXbbiE.js";import"./react-is-Clcustum.js";import"./styled-components-Dk5h8vLx.js";import"./@tanstack/react-virtual-C-_FPY_A.js";import"./tslib-De9GV7Vy.js";function o(t){const n={h1:"h1",h2:"h2",...i(),...t.components};return e.jsxs(e.Fragment,{children:[e.jsx(a,{title:"Локальные компоненты/Table/RowDetailPanel/API"}),`
-`,e.jsx(n.h1,{id:"row-detail-panel-api",children:"Row Detail Panel API"}),`
-`,e.jsx(n.h2,{id:"rowdetailconfig",children:"RowDetailConfig"}),`
-`,e.jsx(r,{language:"ts",filePath:"packages/ui-kit/src/components/Table/feature-row-detail/types.ts",typeName:"RowDetailConfig"})]})}function f(t={}){const{wrapper:n}={...i(),...t.components};return n?e.jsx(n,{...t,children:e.jsx(o,{...t})}):o(t)}export{f as default};
