@@ -1,0 +1,8 @@
+import{j as e}from"./react-D2T61mpp.js";import{cc as i,cd as a}from"./vendor-BSh-q9Ou.js";import{T as o}from"./TypeSourceViewer-wAKT1Cx9.js";import"./react-is-Clcustum.js";import"./styled-components-CbgoXU45.js";import"./@tanstack/react-virtual-D4DYTxIh.js";import"./tslib-De9GV7Vy.js";function s(n){const t={h1:"h1",h2:"h2",...i(),...n.components};return e.jsxs(e.Fragment,{children:[e.jsx(a,{title:"Локальные компоненты/Table/KeyText/API"}),`
+`,e.jsx(t.h1,{id:"key-text-api",children:"Key Text API"}),`
+`,e.jsx(t.h2,{id:"keytext",children:"KeyText"}),`
+`,e.jsx(o,{language:"ts",filePath:"packages/ui-kit/src/components/Table/feature-key-text/types.ts",typeName:"KeyText"}),`
+`,e.jsx(t.h2,{id:"keytextconfig",children:"KeyTextConfig"}),`
+`,e.jsx(o,{language:"ts",filePath:"packages/ui-kit/src/components/Table/feature-key-text/types.ts",typeName:"KeyTextConfig"}),`
+`,e.jsx(t.h2,{id:"keytextcolumnconfig",children:"KeyTextColumnConfig"}),`
+`,e.jsx(o,{language:"ts",filePath:"packages/ui-kit/src/components/Table/types/column-config.type.ts",typeName:"KeyTextColumnConfig"})]})}function u(n={}){const{wrapper:t}={...i(),...n.components};return t?e.jsx(t,{...n,children:e.jsx(s,{...n})}):s(n)}export{u as default};
