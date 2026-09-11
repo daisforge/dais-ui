@@ -188,6 +188,62 @@ function ExampleButtonWithTooltip() {
   return <TableCanvas columnConfig={columnConfig} rows={rows} />;
 }
 
+function ExampleGlobalTooltipWidth() {
+  const [rows] = useState(createRows);
+
+  const longText =
+    'Очень длинный текст подсказки, который заведомо шире тултипа и переносится по словам, чтобы была видна ограниченная ширина';
+
+  const columnConfig = useMemo<readonly ColumnConfig<Row>[]>(
+    () => [
+      { key: 'id', name: 'ID' },
+      {
+        key: 'task',
+        name: 'Title (ширина из tableConfig)',
+        width: 160,
+        renderCell: ({ row }) => (
+          <Canvas.Container direction="row" alignItems="center" padding={8}>
+            <Canvas.Text
+              overflow="hidden"
+              textOverflow="ellipsis"
+              autoTooltip
+              style={{ flexGrow: 1 }}
+            >
+              {`${row.task}: ${longText}`}
+            </Canvas.Text>
+          </Canvas.Container>
+        ),
+      },
+      {
+        key: 'developer',
+        name: 'Developer (свой maxWidth)',
+        width: 160,
+        renderCell: ({ row }) => (
+          <Canvas.Container direction="row" alignItems="center" padding={8}>
+            <Canvas.Text
+              overflow="hidden"
+              textOverflow="ellipsis"
+              autoTooltip={{ maxWidth: 360 }}
+              style={{ flexGrow: 1 }}
+            >
+              {`${row.developer}: ${longText}`}
+            </Canvas.Text>
+          </Canvas.Container>
+        ),
+      },
+    ],
+    [],
+  );
+
+  return (
+    <TableCanvas
+      tableConfig={{ tooltip: { maxWidth: 200 } }}
+      columnConfig={columnConfig}
+      rows={rows}
+    />
+  );
+}
+
 const defaultTooltipPreCode = `
 import { createRows, type Row } from '@df-storybook/data/tableData';
 import { ColumnConfig, TableCanvas } from '@ui-kit/components/TableCanvas';
@@ -243,6 +299,17 @@ ${getFuncAsString(
 )}
 `;
 
+const globalWidthPreCode = `
+import { createRows, type Row } from '@df-storybook/data/tableData';
+import { Canvas, ColumnConfig, TableCanvas } from '@daisforge/ui/components/TableCanvas';
+import React, { useMemo, useState } from 'react';
+
+${getFuncAsString(
+  'packages/storybook/src/stories/TableCanvas/TableCanvas.Tooltip/TableCanvasTooltip.stories.tsx',
+  'ExampleGlobalTooltipWidth',
+)}
+`;
+
 export const DefaultTooltipStory: StoryObj = {
   name: 'Встроенный тултип — hover на drag-иконку (⠿) в шапке колонки',
   ...storySourceDoc({
@@ -286,4 +353,13 @@ export const ButtonWithTooltipStory: StoryObj = {
     code: buttonTooltipPreCode,
   }),
   render: ExampleButtonWithTooltip,
+};
+
+export const GlobalTooltipWidthStory: StoryObj = {
+  name: 'Ширина тултипа — глобальная из tableConfig и свой maxWidth у autoTooltip',
+  ...storySourceDoc({
+    previewSource: 'shown',
+    code: globalWidthPreCode,
+  }),
+  render: ExampleGlobalTooltipWidth,
 };

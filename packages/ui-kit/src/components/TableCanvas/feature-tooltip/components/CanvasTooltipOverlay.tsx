@@ -11,6 +11,13 @@ import { LEAVE_ANIMATION_DURATION } from '../utils/normalizeTooltipConfig';
 import { resolveTooltipData } from '../utils/resolveTooltipData';
 import { StyledContainer } from './styled';
 
+// Tooltip подставляет ширину прямо в CSS (max-width: ...), поэтому голое число
+// без единицы браузер игнорирует. Число трактуем как px, строку отдаём как есть.
+const toCssWidth = (value: number | string | undefined): string | undefined => {
+  if (value === undefined) return undefined;
+  return typeof value === 'number' ? `${value}px` : value;
+};
+
 export const CanvasTooltipOverlay: React.FC<CanvasTooltipOverlayProps> =
   React.memo(
     ({
@@ -18,6 +25,8 @@ export const CanvasTooltipOverlay: React.FC<CanvasTooltipOverlayProps> =
       customEnabled = false,
       mouseEnterDelay,
       mouseLeaveDelay,
+      minWidth: globalMinWidth,
+      maxWidth: globalMaxWidth,
     }) => {
       const filter = useMemo(
         () =>
@@ -71,8 +80,12 @@ export const CanvasTooltipOverlay: React.FC<CanvasTooltipOverlayProps> =
             placement={state.data?.tooltipProps?.placement ?? 'top'}
             text={state?.data?.tooltipText ?? ''}
             view={state.data?.tooltipProps?.view ?? 'default'}
-            minWidth={state.data?.tooltipProps?.minWidth}
-            maxWidth={state.data?.tooltipProps?.maxWidth}
+            minWidth={toCssWidth(
+              state.data?.tooltipProps?.minWidth ?? globalMinWidth,
+            )}
+            maxWidth={toCssWidth(
+              state.data?.tooltipProps?.maxWidth ?? globalMaxWidth,
+            )}
             style={{
               position: 'relative',
               ...(state.data?.tooltipProps?.preserveLineBreaks && {
