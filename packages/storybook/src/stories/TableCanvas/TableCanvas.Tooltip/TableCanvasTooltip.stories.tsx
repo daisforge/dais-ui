@@ -311,7 +311,7 @@ ${getFuncAsString(
 `;
 
 export const DefaultTooltipStory: StoryObj = {
-  name: 'Встроенный тултип — hover на drag-иконку (⠿) в шапке колонки',
+  name: 'Встроенный тултип (drag-иконка в шапке)',
   ...storySourceDoc({
     previewSource: 'shown',
     code: defaultTooltipPreCode,
@@ -320,7 +320,7 @@ export const DefaultTooltipStory: StoryObj = {
 };
 
 export const ColumnTooltipStringStory: StoryObj = {
-  name: 'cellTooltip (строка) — hover на ячейки Title / Developer',
+  name: 'cellTooltip: строка',
   ...storySourceDoc({
     previewSource: 'shown',
     code: columnStringPreCode,
@@ -329,7 +329,7 @@ export const ColumnTooltipStringStory: StoryObj = {
 };
 
 export const ColumnTooltipObjectStory: StoryObj = {
-  name: 'cellTooltip (объект) — hover на ячейки % Complete',
+  name: 'cellTooltip: объект',
   ...storySourceDoc({
     previewSource: 'shown',
     code: columnObjectPreCode,
@@ -338,7 +338,7 @@ export const ColumnTooltipObjectStory: StoryObj = {
 };
 
 export const ColumnTooltipMultilineStory: StoryObj = {
-  name: 'cellTooltip (preserveLineBreaks) — hover на ячейки Title',
+  name: 'cellTooltip: preserveLineBreaks',
   ...storySourceDoc({
     previewSource: 'shown',
     code: columnMultilinePreCode,
@@ -347,7 +347,7 @@ export const ColumnTooltipMultilineStory: StoryObj = {
 };
 
 export const ButtonWithTooltipStory: StoryObj = {
-  name: 'Canvas.Button tooltip — hover на кнопку «Подробнее»',
+  name: 'Canvas.Button: tooltip',
   ...storySourceDoc({
     previewSource: 'shown',
     code: buttonTooltipPreCode,
@@ -356,7 +356,7 @@ export const ButtonWithTooltipStory: StoryObj = {
 };
 
 export const GlobalTooltipWidthStory: StoryObj = {
-  name: 'Ширина тултипа — глобальная из tableConfig и свой maxWidth у autoTooltip',
+  name: 'Ширина тултипа: глобальная и своя',
   ...storySourceDoc({
     previewSource: 'shown',
     code: globalWidthPreCode,
