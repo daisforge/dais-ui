@@ -1,0 +1,91 @@
+import{j as e}from"./react-D2T61mpp.js";import{cc as i,cd as s,c6 as r}from"./vendor-B1TAVzHz.js";import{T as d}from"./TableCanvasTooltip.stories-Ye3w1VGR.js";import"./react-is-Clcustum.js";import"./styled-components-CgmEWe3G.js";import"./@tanstack/react-virtual-DeFF4XhQ.js";import"./tslib-De9GV7Vy.js";import"./tableData-UCfjiBCh.js";import"./getFuncAsString-D5MKVTTk.js";import"./storySourceDoc-tVKyHcEN.js";import"./TableCanvas-C7bsey0_.js";import"./FiltersActions-DPSJ4ty6.js";import"./IconButton-BUKSr29K.js";import"./@salutejs/plasma-icons-C2i8oSIU.js";import"./@salutejs/sdds-finai-DLhCxHY8.js";import"./@salutejs/sdds-themes-p9DCXULv.js";import"./utils-DXw-VrGg.js";import"./constants-Ci5uyz-N.js";import"./sharedUtilsDebug-BX_KjCjW.js";import"./Box-BstKeru6.js";import"./TextField-D7CfqQAe.js";import"./sharedUtilsInputs-BX0SRA5u.js";import"./AnalyticalWidget-Ck2mwC4z.js";import"./Collapse-DGnGG4e6.js";import"./Table-2I7sdaAe.js";import"./react-data-grid-B31fHLdB.js";import"./TableTabs-ifVf3869.js";import"./TableCanvasSharedConstants-D5ZJAqGq.js";import"./sharedUiSearch-B3T790A2.js";import"./ListOfFilters-2xFQSXbE.js";import"./lodash.isequal-DD0Lfcik.js";import"./NumberFormat-Dj3bCFeY.js";import"./EmptyState-CzbnZXBz.js";import"./MassActions-DfXRS_bf.js";import"./Autocomplete-De7lJZxG.js";import"./TableGlide-B86TG3Pw.js";import"./@glideappsfinal/glide-data-grid-C9IHWjmp.js";import"./canvas-hypertxt-DsokSIOX.js";import"./ErrorPage-DTR0qOoE.js";function o(l){const n={a:"a",blockquote:"blockquote",code:"code",h1:"h1",h2:"h2",h3:"h3",li:"li",ol:"ol",p:"p",pre:"pre",strong:"strong",ul:"ul",...i(),...l.components};return e.jsxs(e.Fragment,{children:[e.jsx(s,{of:d,name:"Docs"}),`
+`,e.jsx(n.h1,{id:"tooltip-на-канвасной-таблице",children:"Tooltip на канвасной таблице"}),`
+`,e.jsx(n.p,{children:e.jsx(n.strong,{children:"tableConfig.tooltip + columnConfig.cellTooltip / headerCellTooltip"})}),`
+`,e.jsx(n.p,{children:"Один общий тултип для элементов, отрисованных на канвасе (ячейки, заголовки, кнопки и т.д.). Тултип показывается при наведении на те канвас-элементы, которые явно участвуют в механике тултипа."}),`
+`,e.jsx(n.h2,{id:"принцип-работы",children:"Принцип работы"}),`
+`,e.jsxs(n.ul,{children:[`
+`,e.jsxs(n.li,{children:["На таблице работает ",e.jsx(n.strong,{children:"один тултип"}),": при наведении на разные элементы отображается один и тот же тултип-оверлей с нужным текстом/пропсами для текущего элемента."]}),`
+`,e.jsxs(n.li,{children:["Участие элемента в показе тултипа задаётся через проп ",e.jsx(n.strong,{children:e.jsx(n.code,{children:"portalHoverEnabled"})})," на Canvas-примитиве — без этого пропса наведение на элемент не будет передаваться в подсистему тултипа."]}),`
+`]}),`
+`,e.jsx(n.h2,{id:"три-источника-конфига-по-приоритету",children:"Три источника конфига (по приоритету)"}),`
+`,e.jsxs(n.ol,{children:[`
+`,e.jsxs(n.li,{children:[e.jsxs(n.strong,{children:["Проп ",e.jsx(n.code,{children:"tooltip"})," на Canvas-элементе"]})," — задаётся прямо на ",e.jsx(n.code,{children:"Canvas.Container"}),", ",e.jsx(n.code,{children:"Canvas.Button"})," и т.д. Строка или объект с ",e.jsx(n.code,{children:"text"}),". Самый высокий приоритет. ",e.jsx(n.strong,{children:"Работает всегда."})]}),`
+`,e.jsxs(n.li,{children:[e.jsxs(n.strong,{children:["Поле ",e.jsx(n.code,{children:"cellTooltip"})," / ",e.jsx(n.code,{children:"headerCellTooltip"})," в ",e.jsx(n.code,{children:"columnConfig"})]})," — конфиг на уровне колонки. Может быть строкой, объектом или функцией ",e.jsx(n.code,{children:"(context) => config | null"}),". Для ячеек используется ",e.jsx(n.code,{children:"cellTooltip"}),", для заголовков — ",e.jsx(n.code,{children:"headerCellTooltip"}),". ",e.jsxs(n.strong,{children:["Требует ",e.jsx(n.code,{children:"tooltip.enabled: true"})," в ",e.jsx(n.code,{children:"tableConfig"}),"."]})]}),`
+`,e.jsxs(n.li,{children:[e.jsxs(n.strong,{children:["Встроенный маппинг по ",e.jsx(n.code,{children:"nodeId"})]})," — внутренний словарь (например, иконка drag в заголовке → «Перетащить колонку»). ",e.jsx(n.strong,{children:"Работает всегда."})]}),`
+`]}),`
+`,e.jsx(n.h2,{id:"как-включить-тултип-на-элементе",children:"Как включить тултип на элементе"}),`
+`,e.jsxs(n.h3,{id:"через-tooltip-на-canvas-примитиве",children:["Через ",e.jsx(n.code,{children:"tooltip"})," на Canvas-примитиве"]}),`
+`,e.jsxs(n.p,{children:["В ",e.jsx(n.code,{children:"renderCell"})," / ",e.jsx(n.code,{children:"renderHeaderCell"})," задать ",e.jsx(n.code,{children:"portalHoverEnabled"})," и ",e.jsx(n.code,{children:"tooltip"})," на нужном элементе:"]}),`
+`,e.jsx(n.pre,{children:e.jsx(n.code,{className:"language-tsx",children:`renderCell: () => (
+  <Canvas.Button
+    portalHoverEnabled
+    tooltip="Нажмите для перехода"
+    onClick={() => {}}
+  >
+    Подробнее
+  </Canvas.Button>
+);
+`})}),`
+`,e.jsxs(n.h3,{id:"авто-тултип-для-обрезанного-текста-autotooltip-на-canvastext",children:["Авто-тултип для обрезанного текста (",e.jsx(n.code,{children:"autoTooltip"})," на ",e.jsx(n.code,{children:"Canvas.Text"}),")"]}),`
+`,e.jsxs(n.p,{children:["Частный случай node-тултипа: ",e.jsx(n.code,{children:"Canvas.Text"})," с пропом ",e.jsx(n.code,{children:"autoTooltip"})," показывает тултип с полным текстом ",e.jsx(n.strong,{children:"только когда текст реально обрезан в многоточие"})," (однострочный ellipsis или многострочный clamp). ",e.jsx(n.code,{children:"portalHoverEnabled"})," включается автоматически, ",e.jsx(n.code,{children:"tooltip.enabled: true"})," в ",e.jsx(n.code,{children:"tableConfig"})," не требуется — работает всегда, как и остальные node-тултипы."]}),`
+`,e.jsx(n.pre,{children:e.jsx(n.code,{className:"language-tsx",children:`renderCell: ({ row }) => (
+  <Canvas.Text
+    overflow="hidden"
+    textOverflow="ellipsis"
+    autoTooltip
+    style={{ flexGrow: 1 }}
+  >
+    {row.longText}
+  </Canvas.Text>
+);
+`})}),`
+`,e.jsxs(n.p,{children:["Поведение настраивается объектом: ",e.jsx(n.code,{children:"placement"}),", ",e.jsx(n.code,{children:"view"}),", ",e.jsx(n.code,{children:"mouseEnterDelay"})," / ",e.jsx(n.code,{children:"mouseLeaveDelay"}),", трансформация текста через ",e.jsx(n.code,{children:"text"}),", выключение через ",e.jsx(n.code,{children:"enabled: false"}),". Подробности и правила — в ",e.jsx(n.a,{href:"?path=/docs/%D0%BB%D0%BE%D0%BA%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D1%8B-tablecanvas-canvaselements-canvastext--docs",children:"доке Canvas.Text"}),", тип — ",e.jsx(n.code,{children:"CanvasTextAutoTooltip"}),"."]}),`
+`,e.jsxs(n.blockquote,{children:[`
+`,e.jsxs(n.p,{children:["Действует только на ",e.jsx(n.code,{children:"Canvas.Text"})," в canvas-разметке (",e.jsx(n.code,{children:"renderCell"})," / ",e.jsx(n.code,{children:"renderHeaderCell"}),"). Обычные текстовые ячейки (примитивные значения без ",e.jsx(n.code,{children:"renderCell"}),") рисуются встроенным text-рендерером glide — авто-тултип на них пока не распространяется."]}),`
+`]}),`
+`,e.jsxs(n.h3,{id:"через-celltooltip--headercelltooltip-в-columnconfig",children:["Через ",e.jsx(n.code,{children:"cellTooltip"})," / ",e.jsx(n.code,{children:"headerCellTooltip"})," в ",e.jsx(n.code,{children:"columnConfig"})]}),`
+`,e.jsxs(n.p,{children:["Задать на уровне колонки — строкой, объектом или функцией. Не забудьте включить ",e.jsx(n.code,{children:"tooltip.enabled: true"}),":"]}),`
+`,e.jsx(n.pre,{children:e.jsx(n.code,{className:"language-tsx",children:`tableConfig={{
+  tooltip: { enabled: true },
+}}
+columnConfig={[
+  {
+    key: 'task',
+    name: 'Title',
+    headerCellTooltip: 'Название задачи',
+    cellTooltip: ({ row }) => \`Задача: \${row.task}\`,
+  },
+]}
+`})}),`
+`,e.jsx(n.h2,{id:"ширина-тултипа",children:"Ширина тултипа"}),`
+`,e.jsxs(n.p,{children:["Ширину тултипа можно задать глобально для всей таблицы через ",e.jsx(n.code,{children:"tableConfig.tooltip"}),":"]}),`
+`,e.jsx(n.pre,{children:e.jsx(n.code,{className:"language-tsx",children:`tableConfig={{
+  tooltip: { minWidth: 120, maxWidth: 440 },
+}}
+`})}),`
+`,e.jsxs(n.p,{children:["Эта ширина применяется ко всем canvas-тултипам, включая авто-тултип ",e.jsx(n.code,{children:"Canvas.Text"}),"."]}),`
+`,e.jsxs(n.p,{children:["Число трактуется как пиксели. Если нужна другая единица, передайте строку: ",e.jsx(n.code,{children:"maxWidth: '20rem'"}),", ",e.jsx(n.code,{children:"maxWidth: '50%'"}),"."]}),`
+`,e.jsx(n.p,{children:"Приоритет от высокого к низкому:"}),`
+`,e.jsxs(n.ul,{children:[`
+`,e.jsxs(n.li,{children:["ширина, заданная на самом тултипе (",e.jsx(n.code,{children:"tooltip"})," или ",e.jsx(n.code,{children:"autoTooltip"})," на Canvas-элементе);"]}),`
+`,e.jsxs(n.li,{children:["глобальная ",e.jsx(n.code,{children:"tableConfig.tooltip.minWidth"})," / ",e.jsx(n.code,{children:"maxWidth"}),";"]}),`
+`,e.jsxs(n.li,{children:["дефолт компонента ",e.jsx(n.code,{children:"Tooltip"}),"."]}),`
+`]}),`
+`,e.jsx(n.p,{children:"То есть глобальное значение работает как значение по умолчанию, а точечное на элементе его перекрывает:"}),`
+`,e.jsx(n.pre,{children:e.jsx(n.code,{className:"language-tsx",children:`// у этого тултипа своя ширина, глобальная не применится
+<Canvas.Text
+  overflow="hidden"
+  textOverflow="ellipsis"
+  autoTooltip={{ maxWidth: 300 }}
+>
+  {row.longText}
+</Canvas.Text>
+`})}),`
+`,e.jsx(n.h2,{id:"формат-конфига",children:"Формат конфига"}),`
+`,e.jsxs(n.ul,{children:[`
+`,e.jsxs(n.li,{children:[e.jsx(n.strong,{children:"Строка"})," — используется как текст тултипа с дефолтными пропсами."]}),`
+`,e.jsxs(n.li,{children:[e.jsx(n.strong,{children:"Объект"})," ",e.jsx(n.code,{children:"{ text: string, placement?, view?, mouseEnterDelay?, ... }"})," — текст и кастомные пропсы для ",e.jsx(n.code,{children:"Tooltip"}),"."]}),`
+`,e.jsxs(n.li,{children:[e.jsx(n.strong,{children:e.jsx(n.code,{children:"null"})})," — тултип для этого элемента не показывается (переход к следующему приоритету или без тултипа)."]}),`
+`]}),`
+`,e.jsxs(n.p,{children:["Подробное описание типов и контракта — в разделе ",e.jsx(n.a,{href:"/docs/%D0%BB%D0%BE%D0%BA%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D1%8B-tablecanvas-tooltip-api--docs",children:"API"}),"."]}),`
+`,e.jsx(r,{})]})}function J(l={}){const{wrapper:n}={...i(),...l.components};return n?e.jsx(n,{...l,children:e.jsx(o,{...l})}):o(l)}export{J as default};

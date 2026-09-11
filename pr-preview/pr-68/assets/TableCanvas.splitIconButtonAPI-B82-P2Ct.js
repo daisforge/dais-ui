@@ -1,0 +1,4 @@
+import{j as t}from"./react-D2T61mpp.js";import{cc as s,cd as i}from"./vendor-B1TAVzHz.js";import{T as c}from"./TypeSourceViewer-qHzhkrxB.js";import"./react-is-Clcustum.js";import"./styled-components-CgmEWe3G.js";import"./@tanstack/react-virtual-DeFF4XhQ.js";import"./tslib-De9GV7Vy.js";function e(n){const o={h1:"h1",h2:"h2",...s(),...n.components};return t.jsxs(t.Fragment,{children:[t.jsx(i,{title:"Локальные компоненты/TableCanvas/ControlBlock/SplitIconButton/API"}),`
+`,t.jsx(o.h1,{id:"spliticonbutton-api",children:"SplitIconButton API"}),`
+`,t.jsx(o.h2,{id:"spliticonbuttonprops",children:"SplitIconButtonProps"}),`
+`,t.jsx(c,{language:"ts",filePath:"packages/ui-kit/src/components/TableCanvas/components/SplitIconButton/SplitIconButton.types.ts",typeName:"SplitIconButtonProps"})]})}function x(n={}){const{wrapper:o}={...s(),...n.components};return o?t.jsx(o,{...n,children:t.jsx(e,{...n})}):e(n)}export{x as default};
