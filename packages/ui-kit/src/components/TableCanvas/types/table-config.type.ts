@@ -782,6 +782,20 @@ export type TableConfigTooltip = {
   mouseEnterDelay?: number;
   /** Глобальная задержка перед скрытием тултипа (мс). Per-node переопределяет. @default 0 */
   mouseLeaveDelay?: number;
+  /**
+   * Минимальная ширина тултипа. Число трактуется как px, строка с единицей
+   * (например '20rem', '50%') отдаётся как есть. Действует на все canvas-тултипы,
+   * включая авто-тултип Canvas.Text. Если ширина задана на самом тултипе
+   * (per-node), приоритет у неё.
+   */
+  minWidth?: number | string;
+  /**
+   * Максимальная ширина тултипа. Число трактуется как px, строка с единицей
+   * (например '20rem', '50%') отдаётся как есть. Действует на все canvas-тултипы,
+   * включая авто-тултип Canvas.Text. Если ширина задана на самом тултипе
+   * (per-node), приоритет у неё.
+   */
+  maxWidth?: number | string;
 };
 
 export type InfinityScrollConfig<RowType extends ObjectForExtending> = {
