@@ -1,0 +1,14 @@
+import{j as o}from"./react-D2T61mpp.js";import{cg as n,ch as e,ca as s}from"./vendor-CG28KnHz.js";import{T as m}from"./Table.rowSize.stories-C7jSdnVQ.js";import"./react-is-Clcustum.js";import"./styled-components-qe2QC9YJ.js";import"./@tanstack/react-virtual-DzByvrD7.js";import"./tslib-DoU9Jm1N.js";import"./tableData-UCfjiBCh.js";import"./DocStoryTemplate-DzYQ9TYg.js";import"./storySourceDoc-tVKyHcEN.js";import"./Table-BjvK_Bio.js";import"./FiltersActions-CIZi69_k.js";import"./IconButton-CYtyWigL.js";import"./@salutejs/plasma-icons-D8Td9xg-.js";import"./@salutejs/sdds-finai-ir0_aBO1.js";import"./@salutejs/sdds-themes-p9DCXULv.js";import"./utils-CAyeBJPZ.js";import"./constants-Ci5uyz-N.js";import"./sharedUtilsDebug-BX_KjCjW.js";import"./Box-Bjp-QdnC.js";import"./TextField-DItmXp8g.js";import"./sharedUtilsInputs-B0tA7d5A.js";import"./AnalyticalWidget-C7mTb1d7.js";import"./Collapse-DPI2n5nh.js";import"./react-data-grid-BXegpmHc.js";import"./TableTabs-CQ_0rqpV.js";import"./TableCanvasSharedConstants-B2qJZwC8.js";import"./sharedUiSearch-DHYiwQ0D.js";import"./ListOfFilters-D2GenVS0.js";import"./lodash.isequal-DD0Lfcik.js";import"./NumberFormat-DBX2pIbD.js";import"./EmptyState-C6bkYL6A.js";import"./MassActions-Cg0jnma4.js";import"./Autocomplete-BFhJ3y1E.js";function t(r){const i={a:"a",code:"code",h1:"h1",h2:"h2",li:"li",p:"p",strong:"strong",ul:"ul",...n(),...r.components};return o.jsxs(o.Fragment,{children:[o.jsx(e,{of:m,name:"Docs"}),`
+`,o.jsx(i.h1,{id:"tablerowsize",children:"TableRowSize"}),`
+`,o.jsx(i.h2,{id:"ключевые-особенности",children:"Ключевые особенности"}),`
+`,o.jsxs(i.ul,{children:[`
+`,o.jsx(i.li,{children:"Настройка размера строк"}),`
+`,o.jsx(i.li,{children:"Переключение размера через controlBlock"}),`
+`,o.jsx(i.li,{children:"Дефолтный размер и список доступных размеров"}),`
+`]}),`
+`,o.jsx(i.p,{children:o.jsx(i.strong,{children:"tableConfig.rowSize"})}),`
+`,o.jsxs(i.p,{children:["Доступно три варианта размера высоты строк ",o.jsx(i.code,{children:"'small' | 'medium' | 'big'"}),". При включении флага ",o.jsx(i.code,{children:"showInControl: true"}),` появляется кнопка
+в блоке управления. С помощью `,o.jsx(i.code,{children:"available"}),` можно указать из каких вариантов пользователь будет переключать размер строк. Не обязательно пользователю
+давать выбирать размер строк, при этом можно задать значение по умолчанию `,o.jsx(i.code,{children:"default"}),"."]}),`
+`,o.jsxs(i.p,{children:["Описание типов - в разделе ",o.jsx(i.a,{href:"?path=/docs/%D0%BB%D0%BE%D0%BA%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D1%8B-table-rowsize-api--docs",children:"API"}),"."]}),`
+`,o.jsx(s,{})]})}function H(r={}){const{wrapper:i}={...n(),...r.components};return i?o.jsx(i,{...r,children:o.jsx(t,{...r})}):t(r)}export{H as default};
