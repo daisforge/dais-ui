@@ -1,4 +1,0 @@
-import{j as n}from"./react-D2T61mpp.js";import{cg as o,ch as i}from"./vendor-Bn3vvhS7.js";import{T as s}from"./TypeSourceViewer-DZiK3_JS.js";import"./react-is-Clcustum.js";import"./styled-components-B2yYu_cx.js";import"./@tanstack/react-virtual-CRm1yeQQ.js";import"./tslib-DoU9Jm1N.js";function e(t){const a={h1:"h1",h2:"h2",...o(),...t.components};return n.jsxs(n.Fragment,{children:[n.jsx(i,{title:"Локальные компоненты/TableCanvas/Pagination/API"}),`
-`,n.jsx(a.h1,{id:"pagination-api",children:"Pagination API"}),`
-`,n.jsx(a.h2,{id:"paginationprops",children:"PaginationProps"}),`
-`,n.jsx(s,{filePath:"packages/ui-kit/src/components/TableCanvas/feature-pagination/types.ts",typeName:"PaginationProps",language:"ts"})]})}function x(t={}){const{wrapper:a}={...o(),...t.components};return a?n.jsx(a,{...t,children:n.jsx(e,{...t})}):e(t)}export{x as default};
