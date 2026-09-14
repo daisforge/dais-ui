@@ -2,12 +2,7 @@ import {
   CanvasEmbedIconButton,
   CanvasEvent,
 } from '@ui-kit/components/TableGlide';
-import {
-  IconDoubleDisclosureDown,
-  IconDoubleDisclosureUp,
-  IconDrag,
-  IconPinFill,
-} from '@ui-kit/icons';
+import { IconDrag, IconPinFill } from '@ui-kit/icons';
 import React from 'react';
 
 import {
@@ -22,6 +17,13 @@ import {
   HEADER_TOOLTIP_EXPAND_ALL_ROWS_ID,
   HEADER_TOOLTIP_HIDE_ALL_ROWS_ID,
 } from '../feature-tooltip/constants';
+import {
+  getExpandAllIconWidth,
+  getExpandAllTrailingGap,
+  IconTreeCollapseAll,
+  IconTreeExpandAll,
+} from '../feature-tree/tree-disclosure-icons';
+import { HEADER_LEFT_ICONS_CONFIG } from '../renders/rowIconConfig';
 import { tableClassNames } from '../styles';
 import {
   Canvas,
@@ -29,12 +31,6 @@ import {
   isCanvasContent,
 } from '../TableGlideInstance';
 import { ColumnConfig, ObjectForExtending } from '../types';
-
-const HEADER_LEFT_ICONS_CONFIG = {
-  big: { squareSize: 24, iconSize: 16, gapToText: 8 },
-  medium: { squareSize: 24, iconSize: 16, gapToText: 2 },
-  small: { squareSize: 20, iconSize: 12, gapToText: 0 },
-};
 
 export function renderFilterSortHeader<
   _FilterStateType extends ObjectForExtending,
@@ -127,11 +123,16 @@ export function renderFilterSortHeader<
               // ноду и пропускает column-select) — как у кнопок сортировки/фильтра.
               <Canvas.Container
                 interaction={{ selection: 'keep', cellClick: 'stop' }}
+                padding={{ right: getExpandAllTrailingGap(theme.rowSize) }}
               >
                 <Canvas.EmbedIconButton
                   buttonSize="xs"
+                  // Как у шеврона строки: глиф прижат к левому краю квадрата,
+                  // кнопка в раскладке уже на убранную пустоту слева. Так
+                  // двойной шеврон шапки стоит на одной линии с шевронами строк
                   overrideSquareSize={headerIconsCfg.squareSize}
-                  overrideIconSize={headerIconsCfg.iconSize}
+                  overrideIconSize={headerIconsCfg.squareSize}
+                  overrideWidth={getExpandAllIconWidth(theme.rowSize)}
                   onClick={toggleExpandAllButton}
                   view="secondary"
                   style={{ flexShrink: 0 }}
@@ -143,9 +144,9 @@ export function renderFilterSortHeader<
                   }
                   icon={
                     isExpandedAllRows ? (
-                      <IconDoubleDisclosureUp />
+                      <IconTreeCollapseAll size={theme.rowSize} />
                     ) : (
-                      <IconDoubleDisclosureDown />
+                      <IconTreeExpandAll size={theme.rowSize} />
                     )
                   }
                 />

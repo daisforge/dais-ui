@@ -1,12 +1,22 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 
-import { ROW_ICON_BUTTON_CONFIG, RowSize } from '../../renders/rowIconConfig';
 import {
+  HEADER_LEFT_ICONS_CONFIG,
+  ROW_ICON_BUTTON_CONFIG,
+  RowSize,
+  TREE_BUTTON_GAP,
+} from '../../renders/rowIconConfig';
+import {
+  getExpandAllIconWidth,
+  getExpandAllTrailingGap,
   getTreeIconGlyph,
   getTreeIconWidth,
+  IconTreeCollapseAll,
   IconTreeCollapsed,
+  IconTreeExpandAll,
   IconTreeExpanded,
+  TREE_ICON_GLYPHS,
 } from '../tree-disclosure-icons';
 
 // Контракт иконок шеврона дерева: глиф раскрытой иконки прижат к левому краю
@@ -102,5 +112,76 @@ describe('tree-disclosure-icons', () => {
     const markup = renderToStaticMarkup(<IconTreeCollapsed size="medium" />);
 
     expect(markup).toContain('fill="currentColor"');
+  });
+
+  describe('двойной шеврон в шапке', () => {
+    it.each(SIZES)('размера %s рисуется двумя путями', (size) => {
+      const markup = renderToStaticMarkup(<IconTreeExpandAll size={size} />);
+
+      expect(markup.match(/<path/g)).toHaveLength(2);
+    });
+
+    it.each(SIZES)(
+      'у пары размера %s одинаковый viewBox, прижатый к левому краю глифа',
+      (size) => {
+        const expandAll = renderToStaticMarkup(
+          <IconTreeExpandAll size={size} />,
+        );
+        const collapseAll = renderToStaticMarkup(
+          <IconTreeCollapseAll size={size} />,
+        );
+        const viewBox = getSvgAttr(expandAll, 'viewBox');
+
+        expect(viewBox).toBe(getSvgAttr(collapseAll, 'viewBox'));
+        expect(viewBox?.split(' ')[0]).toBe(
+          `${TREE_ICON_GLYPHS.doubleDisclosure.left}`,
+        );
+      },
+    );
+
+    it.each(SIZES)(
+      'размера %s начинается на той же линии, что и шеврон строки',
+      (size) => {
+        // Обе иконки прижаты к левому краю своего квадрата (viewBox начинается
+        // с левого края глифа), а шапка и ячейка верхнего уровня имеют
+        // одинаковый левый паддинг — значит, глифы стоят на одной линии
+        const rowIcon = renderToStaticMarkup(<IconTreeExpanded size={size} />);
+        const headerIcon = renderToStaticMarkup(
+          <IconTreeExpandAll size={size} />,
+        );
+
+        expect(getSvgAttr(rowIcon, 'viewBox')?.split(' ')[0]).toBe(
+          `${getTreeIconGlyph(size).left}`,
+        );
+        expect(getSvgAttr(headerIcon, 'viewBox')?.split(' ')[0]).toBe(
+          `${TREE_ICON_GLYPHS.doubleDisclosure.left}`,
+        );
+      },
+    );
+
+    it.each([
+      // квадрат − (зазор квадрат/иконка + левая пустота глифа в SVG)
+      ['big', 24 - (4 + (6.75 * 16) / 24)],
+      ['medium', 24 - (4 + (6.75 * 16) / 24)],
+      ['small', 20 - (4 + (6.75 * 12) / 24)],
+    ] as const)(
+      'ширина кнопки размера %s — квадрат без левого отступа исходной иконки (%d px)',
+      (size, width) => {
+        expect(getExpandAllIconWidth(size)).toBeCloseTo(width);
+      },
+    );
+
+    it.each(SIZES)(
+      'заголовок колонки размера %s стоит над текстом строк верхнего уровня',
+      (size) => {
+        const headerTextOffset =
+          getExpandAllIconWidth(size) +
+          getExpandAllTrailingGap(size) +
+          HEADER_LEFT_ICONS_CONFIG[size].gapToText;
+        const rowTextOffset = getTreeIconWidth(size) + TREE_BUTTON_GAP[size];
+
+        expect(headerTextOffset).toBeCloseTo(rowTextOffset);
+      },
+    );
   });
 });

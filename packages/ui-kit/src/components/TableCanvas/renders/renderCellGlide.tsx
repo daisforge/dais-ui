@@ -31,18 +31,16 @@ import {
 import { ContentFormat } from '../TableGlideInstance/type';
 import { ColumnConfig, ObjectForExtending, TableConfig } from '../types';
 import { FormattedContent } from './formatCell';
-import { ROW_ICON_BUTTON_CONFIG, RowSize } from './rowIconConfig';
+import {
+  ROW_ICON_BUTTON_CONFIG,
+  RowSize,
+  TREE_BUTTON_GAP,
+} from './rowIconConfig';
 import {
   DEFAULT_CELL_PADDING_INLINE,
   getPaddingLeftFinal,
 } from './styleConstants';
 import { withSelectIcon } from './withSelectIcon';
-
-const TREE_BUTTON_GAP: Record<RowSize, number> = {
-  big: 8,
-  medium: 2,
-  small: 0,
-};
 
 const getTreeButton = (
   expanded: boolean,
