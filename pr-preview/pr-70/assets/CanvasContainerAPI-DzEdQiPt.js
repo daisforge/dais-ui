@@ -1,0 +1,4 @@
+import{j as n}from"./react-D2T61mpp.js";import{cg as o,ch as s}from"./vendor-CYHm0xTY.js";import{T as r}from"./TypeSourceViewer-wHTU1SHV.js";import"./react-is-Clcustum.js";import"./styled-components-BWtOdjTE.js";import"./@tanstack/react-virtual-BjNtAbBb.js";import"./tslib-DoU9Jm1N.js";function a(e){const t={h1:"h1",h2:"h2",...o(),...e.components};return n.jsxs(n.Fragment,{children:[n.jsx(s,{title:"Локальные компоненты/TableCanvas/CanvasElements/CanvasContainer/API"}),`
+`,n.jsx(t.h1,{id:"canvascontainer-api",children:"Canvas.Container API"}),`
+`,n.jsx(t.h2,{id:"containerprops",children:"ContainerProps"}),`
+`,n.jsx(r,{language:"ts",filePath:"packages/ui-kit/src/components/TableGlide/lib/canvas/components/index.tsx",typeName:"ContainerProps"})]})}function u(e={}){const{wrapper:t}={...o(),...e.components};return t?n.jsx(t,{...e,children:n.jsx(a,{...e})}):a(e)}export{u as default};
