@@ -342,6 +342,8 @@ export const TableOrCardsUI = <
                         customEnabled={tooltipCustomEnabled}
                         mouseEnterDelay={tooltip?.mouseEnterDelay}
                         mouseLeaveDelay={tooltip?.mouseLeaveDelay}
+                        minWidth={tooltip?.minWidth}
+                        maxWidth={tooltip?.maxWidth}
                       />,
                     )}
                     {isNeedRenderContextMenu &&
