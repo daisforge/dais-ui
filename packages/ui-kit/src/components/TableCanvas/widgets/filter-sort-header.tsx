@@ -19,7 +19,6 @@ import {
 } from '../feature-tooltip/constants';
 import {
   getExpandAllIconWidth,
-  getExpandAllTrailingGap,
   IconTreeCollapseAll,
   IconTreeExpandAll,
 } from '../feature-tree/tree-disclosure-icons';
@@ -123,13 +122,13 @@ export function renderFilterSortHeader<
               // ноду и пропускает column-select) — как у кнопок сортировки/фильтра.
               <Canvas.Container
                 interaction={{ selection: 'keep', cellClick: 'stop' }}
-                padding={{ right: getExpandAllTrailingGap(theme.rowSize) }}
               >
                 <Canvas.EmbedIconButton
                   buttonSize="xs"
-                  // Как у шеврона строки: глиф прижат к левому краю квадрата,
-                  // кнопка в раскладке уже на убранную пустоту слева. Так
-                  // двойной шеврон шапки стоит на одной линии с шевронами строк
+                  // Как у шеврона строки: глиф прижат к левому краю квадрата
+                  // (с тем же минимальным отступом, что у свёрнутого шеврона),
+                  // а кнопка в раскладке занимает столько же, сколько шеврон
+                  // строки — двойной шеврон стоит на одной линии с ними
                   overrideSquareSize={headerIconsCfg.squareSize}
                   overrideIconSize={headerIconsCfg.squareSize}
                   overrideWidth={getExpandAllIconWidth(theme.rowSize)}

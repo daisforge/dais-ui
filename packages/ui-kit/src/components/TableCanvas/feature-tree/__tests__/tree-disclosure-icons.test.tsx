@@ -8,8 +8,10 @@ import {
   TREE_BUTTON_GAP,
 } from '../../renders/rowIconConfig';
 import {
+  getExpandAllIconInset,
   getExpandAllIconWidth,
-  getExpandAllTrailingGap,
+  getExpandAllTooltipOffsetX,
+  getTreeCollapsedInset,
   getTreeIconGlyph,
   getTreeIconWidth,
   IconTreeCollapseAll,
@@ -121,53 +123,87 @@ describe('tree-disclosure-icons', () => {
       expect(markup.match(/<path/g)).toHaveLength(2);
     });
 
-    it.each(SIZES)(
-      'у пары размера %s одинаковый viewBox, прижатый к левому краю глифа',
-      (size) => {
-        const expandAll = renderToStaticMarkup(
-          <IconTreeExpandAll size={size} />,
-        );
-        const collapseAll = renderToStaticMarkup(
-          <IconTreeCollapseAll size={size} />,
-        );
-        const viewBox = getSvgAttr(expandAll, 'viewBox');
+    it.each(SIZES)('у пары размера %s одинаковый viewBox', (size) => {
+      const expandAll = renderToStaticMarkup(<IconTreeExpandAll size={size} />);
+      const collapseAll = renderToStaticMarkup(
+        <IconTreeCollapseAll size={size} />,
+      );
 
-        expect(viewBox).toBe(getSvgAttr(collapseAll, 'viewBox'));
-        expect(viewBox?.split(' ')[0]).toBe(
-          `${TREE_ICON_GLYPHS.doubleDisclosure.left}`,
-        );
-      },
-    );
+      expect(getSvgAttr(expandAll, 'viewBox')).toBe(
+        getSvgAttr(collapseAll, 'viewBox'),
+      );
+    });
 
     it.each(SIZES)(
-      'размера %s начинается на той же линии, что и шеврон строки',
+      'размера %s стоит на линии свёрнутого шеврона строки (с оптическим сдвигом)',
       (size) => {
-        // Обе иконки прижаты к левому краю своего квадрата (viewBox начинается
-        // с левого края глифа), а шапка и ячейка верхнего уровня имеют
-        // одинаковый левый паддинг — значит, глифы стоят на одной линии
-        const rowIcon = renderToStaticMarkup(<IconTreeExpanded size={size} />);
+        // Шапка и ячейка верхнего уровня имеют одинаковый левый паддинг,
+        // поэтому достаточно сравнить отступ глифа от левого края квадрата
+        const rowIcon = renderToStaticMarkup(<IconTreeCollapsed size={size} />);
         const headerIcon = renderToStaticMarkup(
           <IconTreeExpandAll size={size} />,
         );
+        const inkInset = (
+          markup: string,
+          glyphLeft: number,
+          iconSize: number,
+        ) => {
+          const viewBoxLeft = Number(
+            getSvgAttr(markup, 'viewBox')?.split(' ')[0],
+          );
+          return ((glyphLeft - viewBoxLeft) * iconSize) / 24;
+        };
 
-        expect(getSvgAttr(rowIcon, 'viewBox')?.split(' ')[0]).toBe(
-          `${getTreeIconGlyph(size).left}`,
-        );
-        expect(getSvgAttr(headerIcon, 'viewBox')?.split(' ')[0]).toBe(
-          `${TREE_ICON_GLYPHS.doubleDisclosure.left}`,
+        // у строки свёрнутый шеврон отстоит от края на collapsedLeft − left
+        expect(
+          inkInset(
+            rowIcon,
+            getTreeIconGlyph(size).collapsedLeft,
+            ROW_ICON_BUTTON_CONFIG[size].overrideIconSize,
+          ),
+        ).toBeCloseTo(getTreeCollapsedInset(size));
+        // двойной шеврон — там же, с точностью до оптической правки на big
+        expect(
+          inkInset(
+            headerIcon,
+            TREE_ICON_GLYPHS.doubleDisclosure.left,
+            HEADER_LEFT_ICONS_CONFIG[size].iconSize,
+          ),
+        ).toBeCloseTo(getExpandAllIconInset(size));
+        const nudge = { big: 1, medium: 0.5, small: 0 }[size];
+        expect(getTreeCollapsedInset(size) - getExpandAllIconInset(size)).toBe(
+          nudge,
         );
       },
     );
 
     it.each([
-      // квадрат − (зазор квадрат/иконка + левая пустота глифа в SVG)
-      ['big', 24 - (4 + (6.75 * 16) / 24)],
-      ['medium', 24 - (4 + (6.75 * 16) / 24)],
-      ['small', 20 - (4 + (6.75 * 12) / 24)],
+      // зазор свёрнутого шеврона строки минус оптическая правка размера
+      ['big', ((9.7548 - 6.75) * 24) / 24 - 1],
+      ['medium', ((7.75 - 4.25) * 16) / 24 - 0.5],
+      ['small', ((7.75 - 4.25) * 12) / 24],
     ] as const)(
-      'ширина кнопки размера %s — квадрат без левого отступа исходной иконки (%d px)',
-      (size, width) => {
-        expect(getExpandAllIconWidth(size)).toBeCloseTo(width);
+      'размера %s отодвинут от края на минимальный отступ (%d px)',
+      (size, insetPx) => {
+        const markup = renderToStaticMarkup(<IconTreeExpandAll size={size} />);
+        const viewBoxLeft = Number(
+          getSvgAttr(markup, 'viewBox')?.split(' ')[0],
+        );
+        const { iconSize } = HEADER_LEFT_ICONS_CONFIG[size];
+        // сдвиг viewBox влево на inset в единицах 24-сетки
+        const shiftPx =
+          ((TREE_ICON_GLYPHS.doubleDisclosure.left - viewBoxLeft) * iconSize) /
+          24;
+
+        expect(getExpandAllIconInset(size)).toBeCloseTo(insetPx);
+        expect(shiftPx).toBeCloseTo(insetPx);
+      },
+    );
+
+    it.each(SIZES)(
+      'кнопка размера %s занимает столько же, сколько шеврон строки',
+      (size) => {
+        expect(getExpandAllIconWidth(size)).toBe(getTreeIconWidth(size));
       },
     );
 
@@ -176,11 +212,26 @@ describe('tree-disclosure-icons', () => {
       (size) => {
         const headerTextOffset =
           getExpandAllIconWidth(size) +
-          getExpandAllTrailingGap(size) +
           HEADER_LEFT_ICONS_CONFIG[size].gapToText;
         const rowTextOffset = getTreeIconWidth(size) + TREE_BUTTON_GAP[size];
 
         expect(headerTextOffset).toBeCloseTo(rowTextOffset);
+      },
+    );
+
+    it.each(SIZES)(
+      'тултип размера %s сдвинут в центр глифа, а не кнопки',
+      (size) => {
+        const { iconSize } = HEADER_LEFT_ICONS_CONFIG[size];
+        const glyphWidth =
+          ((24 - 2 * TREE_ICON_GLYPHS.doubleDisclosure.left) * iconSize) / 24;
+        const glyphCenter = getExpandAllIconInset(size) + glyphWidth / 2;
+
+        // якорь тултипа — центр кнопки, поэтому сдвиг отрицательный
+        expect(getExpandAllTooltipOffsetX(size)).toBeCloseTo(
+          glyphCenter - getExpandAllIconWidth(size) / 2,
+        );
+        expect(getExpandAllTooltipOffsetX(size)).toBeLessThan(0);
       },
     );
   });

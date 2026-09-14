@@ -2,7 +2,6 @@ import {
   HEADER_LEFT_ICONS_CONFIG,
   ROW_ICON_BUTTON_CONFIG,
   RowSize,
-  TREE_BUTTON_GAP,
 } from '../renders/rowIconConfig';
 
 const GRID = 24;
@@ -10,6 +9,8 @@ const GRID = 24;
 type TreeIconGlyph = {
   /** Левый край глифа раскрытой иконки в 24-сетке */
   left: number;
+  /** Левый край глифа свёрнутой иконки в 24-сетке */
+  collapsedLeft: number;
   /** Иконка состояния «раскрыто» (шеврон вниз / двойной шеврон вверх) */
   expanded: readonly string[];
   /** Иконка состояния «свёрнуто» (шеврон вправо / двойной шеврон вниз) */
@@ -26,6 +27,7 @@ export const TREE_ICON_GLYPHS = {
   // DisclosureDownOutline / DisclosureRightOutline
   disclosure: {
     left: 6.75,
+    collapsedLeft: 9.7548,
     expanded: [
       'M6.96967 9.9676C7.26256 9.67471 7.73744 9.67471 8.03033 9.9676L12 13.9373L15.9697 9.9676C16.2626 9.67471 16.7374 9.67471 17.0303 9.9676C17.3232 10.2605 17.3232 10.7354 17.0303 11.0283L12 16.0586L6.96967 11.0283C6.67678 10.7354 6.67678 10.2605 6.96967 9.9676Z',
     ],
@@ -36,6 +38,7 @@ export const TREE_ICON_GLYPHS = {
   // ChevronDown / ChevronRight
   chevron: {
     left: 4.25,
+    collapsedLeft: 7.75,
     expanded: [
       'M4.46967 7.96967C4.76256 7.67678 5.23744 7.67678 5.53033 7.96967L12 14.4393L18.4697 7.96967C18.7626 7.67678 19.2374 7.67678 19.5303 7.96967C19.8232 8.26256 19.8232 8.73744 19.5303 9.03033L12.5303 16.0303C12.2374 16.3232 11.7626 16.3232 11.4697 16.0303L4.46967 9.03033C4.17678 8.73744 4.17678 8.26256 4.46967 7.96967Z',
     ],
@@ -44,10 +47,13 @@ export const TREE_ICON_GLYPHS = {
     ],
   },
   // DoubleDisclosureUp / DoubleDisclosureDown — кнопка «раскрыть/скрыть все»
-  // в шапке. Левый край тот же, что у одиночного disclosure, поэтому двойной
-  // шеврон встаёт на ту же линию, что и шевроны строк.
+  // в шапке.
   doubleDisclosure: {
     left: 6.75,
+    // У пары двойных шевронов левый край одинаковый — сама по себе она не
+    // «скачет», но и минимального отступа слева не имеет, поэтому его задаём
+    // снаружи (см. getTreeCollapsedInset)
+    collapsedLeft: 6.75,
     expanded: [
       'M17.0303 16.9697C16.7374 17.2625 16.2626 17.2625 15.9697 16.9697L12 13L8.03033 16.9697C7.73744 17.2625 7.26256 17.2625 6.96967 16.9697C6.67678 16.6768 6.67678 16.2019 6.96967 15.909L12 10.8787L17.0303 15.909C17.3232 16.2019 17.3232 16.6768 17.0303 16.9697Z',
       'M17.0303 11.591C16.7374 11.8839 16.2626 11.8839 15.9697 11.591L12 7.62132L8.03033 11.591C7.73744 11.8839 7.26256 11.8839 6.96967 11.591C6.67678 11.2981 6.67678 10.8232 6.96967 10.5303L12 5.5L17.0303 10.5303C17.3232 10.8232 17.3232 11.2981 17.0303 11.591Z',
@@ -89,10 +95,16 @@ export const getTreeIconGlyph = (size: RowSize) =>
 const getViewBoxSize = ({ squareSize, iconSize }: IconBox) =>
   (GRID * squareSize) / iconSize;
 
-const getViewBox = (glyph: TreeIconGlyph, box: IconBox) => {
+/**
+ * @param insetPx — на сколько пикселей отодвинуть глиф от левого края квадрата
+ * (0 — вплотную)
+ */
+const getViewBox = (glyph: TreeIconGlyph, box: IconBox, insetPx = 0) => {
   const viewBoxSize = getViewBoxSize(box);
   const top = GRID / 2 - viewBoxSize / 2;
-  return `${glyph.left} ${top} ${viewBoxSize} ${viewBoxSize}`;
+  // 1 px = GRID / iconSize единиц сетки
+  const left = glyph.left - (insetPx * GRID) / box.iconSize;
+  return `${left} ${top} ${viewBoxSize} ${viewBoxSize}`;
 };
 
 /**
@@ -116,35 +128,74 @@ export const getTreeIconViewBox = (size: RowSize) =>
 export const getTreeIconWidth = (size: RowSize) =>
   getFlushLeftWidth(getTreeIconGlyph(size), getRowIconBox(size));
 
-/** Ширина кнопки «раскрыть/скрыть все строки» в шапке */
-export const getExpandAllIconWidth = (size: RowSize) =>
-  getFlushLeftWidth(TREE_ICON_GLYPHS.doubleDisclosure, getHeaderIconBox(size));
+/**
+ * Минимальный отступ глифа от линии уровня (px) — тот же, что у свёрнутого
+ * шеврона строки. В паре строки раскрытый шеврон стоит вплотную, свёрнутый
+ * чуть правее; двойной шеврон шапки один на оба состояния, поэтому ставим его
+ * на линию свёрнутого — вплотную к краю он проваливается влево.
+ */
+export const getTreeCollapsedInset = (size: RowSize) => {
+  const glyph = getTreeIconGlyph(size);
+  return (
+    ((glyph.collapsedLeft - glyph.left) * getRowIconBox(size).iconSize) / GRID
+  );
+};
+
+/** Видимая ширина глифа (px): глиф симметричен относительно центра сетки */
+const getGlyphWidth = (glyph: TreeIconGlyph, box: IconBox) =>
+  ((GRID - 2 * glyph.left) * box.iconSize) / GRID;
 
 /**
- * Дополнительный отступ справа от кнопки «раскрыть/скрыть все строки»:
- * двойной шеврон уже шеврона строки, поэтому без компенсации заголовок
- * колонки уехал бы левее текста строк верхнего уровня.
+ * Ширина кнопки «раскрыть/скрыть все строки» в шапке: столько же, сколько
+ * занимает шеврон строки, поэтому зазор до текста одинаковый и заголовок
+ * колонки стоит над текстом строк верхнего уровня.
  */
-export const getExpandAllTrailingGap = (size: RowSize) =>
-  getTreeIconWidth(size) +
-  TREE_BUTTON_GAP[size] -
-  getExpandAllIconWidth(size) -
-  HEADER_LEFT_ICONS_CONFIG[size].gapToText;
+export const getExpandAllIconWidth = (size: RowSize) => getTreeIconWidth(size);
+
+/**
+ * Оптическая правка (px): двойной шеврон массивнее одиночного и кажется правее
+ * линии уровня — тем сильнее, чем крупнее строка. На small правка не нужна.
+ */
+const EXPAND_ALL_NUDGE_LEFT: Record<RowSize, number> = {
+  big: 1,
+  medium: 0.5,
+  small: 0,
+};
+
+/** Отступ двойного шеврона шапки от левого края кнопки (px) */
+export const getExpandAllIconInset = (size: RowSize) =>
+  getTreeCollapsedInset(size) - EXPAND_ALL_NUDGE_LEFT[size];
+
+/**
+ * Сдвиг тултипа кнопки «раскрыть/скрыть все строки» по X: глиф внутри кнопки
+ * смещён вправо на минимальный отступ и уже самой кнопки, поэтому тултип,
+ * центрированный по кнопке, визуально уезжает правее иконки.
+ */
+export const getExpandAllTooltipOffsetX = (size: RowSize) => {
+  const glyphCenter =
+    getExpandAllIconInset(size) +
+    getGlyphWidth(TREE_ICON_GLYPHS.doubleDisclosure, getHeaderIconBox(size)) /
+      2;
+
+  return glyphCenter - getExpandAllIconWidth(size) / 2;
+};
 
 const TreeIconSvg = ({
   glyph,
   box,
   state,
+  insetPx,
 }: {
   glyph: TreeIconGlyph;
   box: IconBox;
   state: 'expanded' | 'collapsed';
+  insetPx?: number;
 }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width={box.squareSize}
     height={box.squareSize}
-    viewBox={getViewBox(glyph, box)}
+    viewBox={getViewBox(glyph, box, insetPx)}
     aria-hidden="true"
     focusable="false"
   >
@@ -184,6 +235,7 @@ export const IconTreeCollapseAll = ({ size = 'big' }: TreeIconProps) => (
     glyph={TREE_ICON_GLYPHS.doubleDisclosure}
     box={getHeaderIconBox(size)}
     state="expanded"
+    insetPx={getExpandAllIconInset(size)}
   />
 );
 IconTreeCollapseAll.displayName = 'IconTreeCollapseAll';
@@ -194,6 +246,7 @@ export const IconTreeExpandAll = ({ size = 'big' }: TreeIconProps) => (
     glyph={TREE_ICON_GLYPHS.doubleDisclosure}
     box={getHeaderIconBox(size)}
     state="collapsed"
+    insetPx={getExpandAllIconInset(size)}
   />
 );
 IconTreeExpandAll.displayName = 'IconTreeExpandAll';
