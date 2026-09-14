@@ -210,6 +210,11 @@ interface EmbedIconButtonProps
   overrideSquareSize?: number;
   /** Переопределяет размер иконки внутри кнопки (px), приоритет над SIZE_CONFIG */
   overrideIconSize?: number;
+  /**
+   * Только EmbedIconButton: ширина кнопки в раскладке и hit-area (px),
+   * по умолчанию — сторона квадрата. Иконка рисуется в квадрате от левого края.
+   */
+  overrideWidth?: number;
   /** Переопределяет цвет иконки в покое (иначе — цвет из view-палитры) */
   iconColor?: string;
   /** Переопределяет цвет иконки при hover (иначе — iconColor override или view) */
@@ -923,9 +928,10 @@ function createNode(
         overrideIconSize,
         disabled,
       });
-      // Цветовой override иконки поддерживает только EmbedIconButton.
+      // Цветовой override иконки и overrideWidth поддерживает только EmbedIconButton.
       if (node instanceof CanvasEmbedIconButton) {
-        const { iconColor, iconColorHovered } = props;
+        const { iconColor, iconColorHovered, overrideWidth } = props;
+        if (overrideWidth !== undefined) node.overrideWidth = overrideWidth;
         if (iconColor !== undefined) node.iconColor = iconColor;
         if (iconColorHovered !== undefined) {
           node.iconColorHovered = iconColorHovered;

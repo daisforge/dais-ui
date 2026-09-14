@@ -1,10 +1,9 @@
 import { EmbedIconButton } from '@ui-kit/components/EmbedIconButton';
-import {
-  IconDisclosureDownOutline,
-  IconDisclosureRightOutline,
-} from '@ui-kit/icons';
 import React from 'react';
 import styled from 'styled-components';
+
+import { useRowContext } from '../contexts';
+import { IconTreeCollapsed, IconTreeExpanded } from './tree-disclosure-icons';
 
 const CellExpand = styled.div`
   display: inline-flex;
@@ -29,6 +28,7 @@ export function CellExpandFormatter({
   onCellExpand,
   className,
 }: CellExpanderFormatterProps) {
+  const { rowSize } = useRowContext();
   const handleKeyDown = (e: React.KeyboardEvent<HTMLSpanElement>) => {
     if (e.key === ' ' || e.key === 'Enter') {
       e.preventDefault();
@@ -44,9 +44,9 @@ export function CellExpandFormatter({
     >
       <EmbedIconButton tabIndex={tabIndex} view="secondary" stretching="auto">
         {expanded ? (
-          <IconDisclosureDownOutline />
+          <IconTreeExpanded size={rowSize} />
         ) : (
-          <IconDisclosureRightOutline />
+          <IconTreeCollapsed size={rowSize} />
         )}
       </EmbedIconButton>
     </CellExpand>
