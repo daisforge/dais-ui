@@ -22,3 +22,11 @@ export const DURATION = 0.5;
 export const COLLAPSE_DURATION = DURATION;
 export const COLLAPSE_DECOR_DELAY = DURATION;
 export const COLLAPSE_DECOR_FADE = 0.15;
+
+/**
+ * Id узла канваса для тултипа индикатора скрытых столбцов (полосатая линия на
+ * границе в шапке). Кросс-слойный контракт: событие ховера шлёт TableGlide, а текст
+ * по этому id резолвит feature-tooltip в TableCanvas. Поэтому id лежит в нейтральном
+ * общем слое, чтобы оба брали его отсюда, а не друг у друга.
+ */
+export const HEADER_TOOLTIP_HIDDEN_COLS_ID = 'header-tooltip-hidden-cols';

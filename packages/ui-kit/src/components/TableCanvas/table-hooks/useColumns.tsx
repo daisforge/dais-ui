@@ -6,6 +6,7 @@ import { useCallback, useMemo, useRef } from 'react';
 
 import type { CellInfo } from '../../TableGlide';
 import { hideRowServiceKeysHandler } from '../data/hideServiceKeysHanlder';
+import { frozenFirst } from '../feature-column-control/columnsRenderOrder';
 import { isServiceEditableColumn } from '../feature-edit';
 import { isEditableCell } from '../feature-edit/typeGuards';
 import { SKELETON_ROW_KEY } from '../feature-infinity-scroll';
@@ -635,19 +636,16 @@ export const useColumns = <
   // сдвигает в начало (columnsGlide в TableGlideInstance) — повторяем этот
   // порядок здесь, иначе при закреплении ширина блока считается по старым
   // индексам и объединение вылезает за массив колонок.
-  const renderColKeys = useMemo(() => {
-    const frozen: string[] = [];
-    const rest: string[] = [];
-    reorderedColumns.forEach((c) => {
-      (c.frozen ? frozen : rest).push(c.key);
-    });
-    return [...frozen, ...rest];
-  }, [reorderedColumns]);
+  const renderColKeys = useMemo(
+    () => frozenFirst(reorderedColumns, (c) => !!c.frozen).map((c) => c.key),
+    [reorderedColumns],
+  );
   renderColKeysRef.current = renderColKeys;
 
   return {
     columns,
     reorderedColumns,
+    renderColKeys,
     columnsOrder,
     getDefaultColumnsOrder,
     setColumnsOrder,
