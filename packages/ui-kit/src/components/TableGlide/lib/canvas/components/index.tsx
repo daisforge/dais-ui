@@ -481,6 +481,24 @@ function wrapEventHandler<T extends CanvasNode>(
 
 type IconToPreload = { icon: ButtonIcon; size: number };
 
+/**
+ * TODO: прогрев кэша спрайтов сейчас вхолостую — иконки собираются без цвета.
+ *
+ * Ключ спрайта — `svg + цвет @ размер * dpr` (см. IconSpriteManager.resolveKey),
+ * а preload ниже зовётся без color. При отрисовке drawIcon запрашивает спрайт
+ * уже с цветом из view-палитры (для EmbedIconButton secondary это #485056B0, на
+ * hover #485056FF), то есть ключи не совпадают и в кэш всегда промах: спрайт
+ * грузится асинхронно (Image.decode) и иконка появляется кадром позже — на
+ * первой отрисовке и ещё раз на первом hover. Заметно в основном локально в
+ * dev-сборке, на стенде эффект в пределах кадра.
+ *
+ * Чинить одним из двух способов:
+ * 1) собирать иконки вместе с цветами (покой + hover) из VIEW_COLORS /
+ *    VIEW_COLORS_EMBED и iconColor-override ноды — тогда ключи сойдутся;
+ * 2) убрать цвет из ключа: держать в кэше одноцветный спрайт и красить его при
+ *    отрисовке (globalCompositeOperation), тогда прогрев не зависит от палитры.
+ */
+
 export function buildCanvasTree({
   element,
   idPrefix = 'root',
