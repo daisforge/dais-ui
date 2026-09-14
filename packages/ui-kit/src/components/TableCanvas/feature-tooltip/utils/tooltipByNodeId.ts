@@ -5,6 +5,7 @@ import {
   HEADER_TOOLTIP_DRAG_ID,
   HEADER_TOOLTIP_EXPAND_ALL_ROWS_ID,
   HEADER_TOOLTIP_FILTER_ID,
+  HEADER_TOOLTIP_HIDDEN_COLS_ID,
   HEADER_TOOLTIP_HIDE_ALL_ROWS_ID,
   HEADER_TOOLTIP_SORTING_ID,
 } from '../constants';
@@ -18,6 +19,7 @@ export const TOOLTIP_TEXTS: Record<string, string> = {
   [HEADER_TOOLTIP_HIDE_ALL_ROWS_ID]: 'Скрыть все дочерние строки',
   [HEADER_TOOLTIP_COLUMN_IS_PINNED_ID]: 'Колонка закреплена',
   [HEADER_TOOLTIP_COLUMN_UNPIN_ID]: 'Открепить колонку',
+  [HEADER_TOOLTIP_HIDDEN_COLS_ID]: 'Дважды нажмите, чтобы развернуть',
 };
 
 /** Данные тултипа по nodeId из внутреннего маппинга TOOLTIP_TEXTS. */

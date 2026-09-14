@@ -14,5 +14,9 @@ export const HEADER_TOOLTIP_COLUMN_IS_PINNED_ID =
   'header-tooltip-column-is-pinned';
 /** Id узла канваса для тултипа кнопки «открепить колонку» в заголовке */
 export const HEADER_TOOLTIP_COLUMN_UNPIN_ID = 'header-tooltip-column-unpin';
+/** Id узла канваса для тултипа индикатора скрытых столбцов (полосатая линия на границе
+ * в шапке). Живёт в общем слое TableCanvasSharedConstants: его шлёт TableGlide и
+ * резолвит feature-tooltip, поэтому берём из нейтрального места. */
+export { HEADER_TOOLTIP_HIDDEN_COLS_ID } from '@ui-kit/components/TableCanvasSharedConstants';
 
 export const DEFAULT_MOUSE_ENTER_DELAY = 500;

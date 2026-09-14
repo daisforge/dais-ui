@@ -6,6 +6,7 @@ import {
   ColumnConfig,
   TableCanvas,
 } from '@ui-kit/components/TableCanvas';
+import { IconSearch } from '@ui-kit/icons';
 import React, { useMemo } from 'react';
 
 const VIEWS = [
@@ -207,6 +208,68 @@ export const Default: StoryObj = {
           ),
         })),
       [text, transparent, clear, pilled],
+    );
+
+    return (
+      <TableCanvas
+        tableConfig={{ containerStyle: { height: '400px' } }}
+        columnConfig={columnConfig}
+        rows={rows}
+      />
+    );
+  },
+};
+
+const iconOnlyCode = `
+import { Canvas, ColumnConfig, TableCanvas } from '@daisforge/ui/components/TableCanvas';
+import { IconSearch } from '@daisforge/ui/icons';
+
+const icon = Canvas.icon(<IconSearch />);
+
+const columnConfig: ColumnConfig[] = [
+  {
+    key: 'badge',
+    name: 'Бейдж',
+    width: 120,
+    renderCell: ({ row }) => (
+      <Canvas.Container direction="row" alignItems="center" padding={8}>
+        <Canvas.Badge text="" leftIcon={icon} view={row.view} size="s" />
+      </Canvas.Container>
+    ),
+  },
+];
+
+<TableCanvas
+  tableConfig={{ containerStyle: { height: '400px' } }}
+  columnConfig={columnConfig}
+  rows={rows}
+/>
+`;
+
+export const IconOnly: StoryObj = {
+  name: 'Only Icon',
+  ...storySourceDoc({ code: iconOnlyCode, previewSource: 'shown' }),
+  render: () => {
+    const icon = useMemo(() => Canvas.icon(<IconSearch />), []);
+
+    const columnConfig = useMemo<readonly ColumnConfig<ViewRow>[]>(
+      () =>
+        SIZES.map((size) => ({
+          key: size,
+          name: size,
+          width: 120,
+          renderCell: ({ row }) => (
+            <Canvas.Container direction="row" alignItems="center" padding={8}>
+              <Canvas.Badge
+                text=""
+                leftIcon={icon}
+                view={row.view}
+                size={size}
+              />
+            </Canvas.Container>
+          ),
+        })),
+      [icon],
     );
 
     return (

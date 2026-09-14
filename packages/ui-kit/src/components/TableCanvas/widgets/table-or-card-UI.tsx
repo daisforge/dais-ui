@@ -271,6 +271,12 @@ export const TableOrCardsUI = <
                 spanGroupHeader={restDataGridProps.spanGroupHeader}
                 spanShallowGroups={restDataGridProps.spanShallowGroups}
                 spanAlign={restDataGridProps.spanAlign}
+                hiddenColumnsIndicator={
+                  restDataGridProps.hiddenColumnsIndicator
+                }
+                onHiddenColumnsIndicatorClicked={
+                  restDataGridProps.onHiddenColumnsIndicatorClicked
+                }
                 minColumnWidth={
                   restDataGridProps.minColumnWidth ?? DEFAULT_MIN_COLUMN_WIDTH
                 }
@@ -336,6 +342,8 @@ export const TableOrCardsUI = <
                         customEnabled={tooltipCustomEnabled}
                         mouseEnterDelay={tooltip?.mouseEnterDelay}
                         mouseLeaveDelay={tooltip?.mouseLeaveDelay}
+                        minWidth={tooltip?.minWidth}
+                        maxWidth={tooltip?.maxWidth}
                       />,
                     )}
                     {isNeedRenderContextMenu &&

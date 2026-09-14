@@ -99,4 +99,8 @@ export const getGlideColors = (activeTheme: ActiveTheme) => ({
   borderColor: GLIDE_COLORS.borderColor[activeTheme],
   bgGroupHeader: GLIDE_COLORS.bgGroupHeader[activeTheme],
   bgGroupHeaderHovered: GLIDE_COLORS.bgGroupHeaderHovered[activeTheme],
+  // Цвет полосы индикатора скрытых столбцов. Это акцентный синий, поэтому берём тот
+  // же accentColor: один источник цвета и адаптация под тему (в форке был только
+  // фиксированный fallback, который не подхватывал high-contrast).
+  hiddenColumnsIndicatorColor: GLIDE_COLORS.accentColor[activeTheme],
 });
