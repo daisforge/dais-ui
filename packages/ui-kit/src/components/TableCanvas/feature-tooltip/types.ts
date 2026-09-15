@@ -20,6 +20,10 @@ export interface CanvasTooltipOverlayProps {
   mouseEnterDelay?: number;
   /** Глобальная задержка перед скрытием тултипа (мс). Per-node переопределяет. */
   mouseLeaveDelay?: number;
+  /** Глобальная минимальная ширина тултипа (число = px). Per-node переопределяет. */
+  minWidth?: number | string;
+  /** Глобальная максимальная ширина тултипа (число = px). Per-node переопределяет. */
+  maxWidth?: number | string;
 }
 
 export interface TooltipData {

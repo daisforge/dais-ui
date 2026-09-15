@@ -11,6 +11,7 @@ import * as TourWidgetStories from './TourWidget.stories';
 
 - Две ориентации: `vertical` и `horizontal`.
 - Compound API: `TourWidget.Header`, `TourWidget.Content`, `TourWidget.Footer`, `TourWidget.Bullets`, `TourWidget.Bullet`.
+- Заголовок и описание сохраняют переводы строк `\n` (`white-space: pre-line`); повторяющиеся пробелы схлопываются, автоматический перенос по ширине сохраняется.
 - Активный шаг передается в `TourWidget` через `activeStepIndex`, а `Bullet` читает его автоматически.
 - `Content` не фиксирует размер вложенного элемента и дает ему занять `100%`.
 - `$css` есть у корневого компонента и compound-частей для локального переопределения стилей.

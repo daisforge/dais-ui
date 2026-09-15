@@ -1,11 +1,20 @@
 import { type SIZE, SIZES } from '../styles';
 
-const DEF_PADDING_LVL = 32;
-const WIDTH_ICON_AND_PADDINGRIGHT = 0;
+/**
+ * Шаг отступа одного уровня вложенности subRows (база — cellHorizontalPadding):
+ * big: 16 → 66 → 116 …, medium: 6 → 42 → 78 …, small: 4 → 32 → 60 …
+ * Зависит только от уровня, а не от наличия шеврона, поэтому текст листа
+ * не выравнивается по тексту родителя (шеврон + gap меньше шага).
+ */
+export const SUBROW_LVL_INDENT: Record<SIZE, number> = {
+  big: 50,
+  medium: 36,
+  small: 28,
+};
 export const DEFAULT_CELL_PADDING_INLINE = 16;
 
-const getPaddingLeft = (lvl: number, hasChildren: boolean): number =>
-  DEF_PADDING_LVL * lvl + (hasChildren ? 0 : WIDTH_ICON_AND_PADDINGRIGHT);
+export const getSubRowLvlIndent = (lvl: number, rowSize: SIZE = 'big') =>
+  SUBROW_LVL_INDENT[rowSize] * lvl;
 
 type EditingMode =
   | false
@@ -28,9 +37,9 @@ const getPaddingLeftForArrowColumnInEditingMode = (
 export const getPaddingLeftFinal = (
   defaultPadding: number,
   lvl: number,
-  hasChildren: boolean,
+  rowSize: SIZE | undefined,
   editingMode: EditingMode,
 ) =>
   defaultPadding +
-  getPaddingLeft(lvl, hasChildren) +
+  getSubRowLvlIndent(lvl, rowSize) +
   getPaddingLeftForArrowColumnInEditingMode(editingMode);

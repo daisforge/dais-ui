@@ -229,6 +229,10 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     new Map<string, number>()
   );
 
+  // Скрытие тултипа на старте ресайза. Присваивается ниже из useItemHoveredHandler
+  // (объявлен позже по коду), поэтому дёргаем через ref.
+  const hideTooltipRef = useRef<(() => void) | null>(null);
+
   const onColumnResizeInternal = useCallback(
     (
       column: GridColumn,
@@ -240,6 +244,10 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       if (!col.id) {
         return;
       }
+
+      // Наведение уже произошло до старта перетаскивания, прячем тултип, чтобы он
+      // не висел на месте (за границей во время ресайза он не едет).
+      hideTooltipRef.current?.();
 
       onColumnResize?.(col, newSize, colIndex, newSizeWithGrow);
 
@@ -985,11 +993,13 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         portalEventTargetRef?.current ?? null
       );
 
-      // Устанавливаем контекст для тултипа (аналогично контекстному меню)
+      // Устанавливаем контекст для тултипа (аналогично контекстному меню).
+      // theme нужен тултипам, которые считают позицию от размера строки
       canvasRootInstance?.setTooltipContext({
         column,
         ctxs,
         refTable,
+        theme,
       });
 
       const hoverPos =
@@ -1512,7 +1522,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   ]);
 
   // ─── onItemHovered: единый агрегатор hover-логики (тултипы, окрашивание строки)
-  const onItemHovered = useItemHoveredHandler(
+  const { onItemHovered, hideTooltip } = useItemHoveredHandler(
     {
       columnsLast: columnsForRender,
       rows,
@@ -1525,6 +1535,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     },
     dataEditorRef
   );
+  hideTooltipRef.current = hideTooltip;
 
   const highlightRegions = useBaseHighlightRegions({
     cellsSelectionMode,

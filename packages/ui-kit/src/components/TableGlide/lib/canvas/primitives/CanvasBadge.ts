@@ -167,9 +167,15 @@ export class CanvasBadge extends CanvasLeaf {
     const font = `${sizeConfig.fontSize}px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif`;
     const textWidth = getCachedTextWidth(ctx, font, this.text);
 
+    // Отступ между иконкой и текстом нужен, только когда текст есть.
+    // Для бейджа без текста (одна иконка) отступ дал бы пустоту сбоку,
+    // из-за неё иконка выглядела прижатой к краю, а не по центру.
+    const hasText = this.text.length > 0;
     let iconsWidth = 0;
-    if (this.leftIcon) iconsWidth += iconSize + ICON_TEXT_SPACING;
-    if (this.rightIcon) iconsWidth += iconSize + ICON_TEXT_SPACING;
+    if (this.leftIcon)
+      iconsWidth += iconSize + (hasText ? ICON_TEXT_SPACING : 0);
+    if (this.rightIcon)
+      iconsWidth += iconSize + (hasText ? ICON_TEXT_SPACING : 0);
 
     this.rect.width = textWidth + iconsWidth + sizeConfig.paddingX * 2;
     this.rect.height = sizeConfig.height;
@@ -236,7 +242,7 @@ export class CanvasBadge extends CanvasLeaf {
 function getCachedTextWidth(
   ctx: CanvasRenderingContext2D,
   font: string,
-  text: string
+  text: string,
 ): number {
   const cacheKey = `${font}${CACHE_SEPARATOR}${text}`;
   let width = textWidthCache.get(cacheKey);

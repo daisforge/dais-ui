@@ -33,6 +33,16 @@ const StyledNumberFormat: (
       && .input-wrapper:before {
         box-shadow: none;
       }
+      /**
+       * Просмотр ячейки (readOnly-оверлей поверх canvas): у TextField в
+       * readOnly свой серый фон (surfaceTransparentSecondary), из-за которого
+       * ячейка с числом выглядела темнее соседних. Фон отдаём оверлею —
+       * он уже красит себя в bgCell. && — чтобы перебить токен из
+       * readOnly-вариации TextField на том же элементе.
+       */
+      && {
+        --plasma-textfield-bg-color-readonly: transparent;
+      }
     `}
   ${({ disableLeftOffset }) =>
     disableLeftOffset &&

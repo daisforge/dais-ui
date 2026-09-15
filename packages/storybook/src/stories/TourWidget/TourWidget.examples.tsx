@@ -72,6 +72,21 @@ function PulseTarget() {
   );
 }
 
+function LineBreaksExample() {
+  return (
+    <TourView>
+      <TourWidget $css={{ width: '320px', paddingBottom: '24px' }}>
+        <TourWidget.Header
+          title={'Знакомьтесь:\nновые возможности'}
+          description={
+            'Режимы просмотра\nОбщий реестр — все пилоты со статусом «В реестре»\n• Мои пилоты — только ваши проекты, включая черновики'
+          }
+        />
+      </TourWidget>
+    </TourView>
+  );
+}
+
 function VerticalExample() {
   const tourStepsCount = 14;
   const [activeStepIndex, setActiveStepIndex] = useState(0);
@@ -435,6 +450,7 @@ function PulseExample() {
 export {
   clampStep,
   HorizontalExample,
+  LineBreaksExample,
   MediaPlaceholder,
   PulseExample,
   PulseTarget,

@@ -78,6 +78,12 @@ export type CanvasNodeTooltipProps = Pick<
 > & {
   /** Сохранять переносы строк (\n) в тексте тултипа через white-space: pre-line. @default false */
   preserveLineBreaks?: boolean;
+  /**
+   * Сдвиг тултипа по X (px) относительно центра ноды. Нужен, когда видимая
+   * часть ноды смещена внутри неё (например, иконка прижата к краю кнопки).
+   * @default 0
+   */
+  offsetX?: number;
 };
 
 /**

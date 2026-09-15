@@ -4,6 +4,7 @@ import styled, { css } from 'styled-components';
 import { SIZE, SIZES } from '../styles';
 import { overflowDotsStyle } from '../utils';
 import { CLASS, CSS_VARIABLES } from './constants';
+import { getSubRowLvlIndent } from './styleConstants';
 
 const containerStyles = css`
   height: 100%;
@@ -29,11 +30,9 @@ const expandButtonStyles = css`
   margin-left: auto;
   flex-shrink: 0;
 `;
-const DEF_PADDING_LVL = 24;
-const WIDTH_ICON_AND_PADDINGRIGHT = 8;
-
-const getPaddingLeft = ({ $lvl, $hasChildren }: SubRowContainerProps) =>
-  DEF_PADDING_LVL * $lvl + ($hasChildren ? 0 : WIDTH_ICON_AND_PADDINGRIGHT);
+// Тот же шаг, что и в canvas-рендере, чтобы редактор не смещал контент
+const getPaddingLeft = ({ $lvl, $editingMode }: SubRowContainerProps) =>
+  getSubRowLvlIndent($lvl, $editingMode ? $editingMode.$rowSize : undefined);
 
 const getPaddingLeftForArrowColumnInEditingMode = ({
   $editingMode,
@@ -47,7 +46,6 @@ const getPaddingLeftForArrowColumnInEditingMode = ({
 
 type SubRowContainerProps = {
   $lvl: number; // уровни вложенности начинаются с 0
-  $hasChildren: boolean | undefined;
   $editingMode:
     | false
     | {

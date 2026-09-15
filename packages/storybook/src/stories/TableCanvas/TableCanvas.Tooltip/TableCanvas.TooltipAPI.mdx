@@ -24,6 +24,8 @@ import { TypeSourceViewer } from '@df-storybook/utils/TypeSourceViewer';
 - **tooltip.enabled** — включает колоночные/кастомные тултипы (`cellTooltip`, `headerCellTooltip`). По умолчанию `false`. Внутренние тултипы (проп `tooltip` на Canvas-элементе и маппинг по `nodeId`) работают всегда, независимо от `enabled`.
 - **tooltip.mouseEnterDelay** — глобальная задержка перед показом (мс, по умолчанию `500`). Per-node переопределяет.
 - **tooltip.mouseLeaveDelay** — глобальная задержка перед скрытием (мс, по умолчанию `0`). Per-node переопределяет.
+- **tooltip.minWidth** — глобальная минимальная ширина тултипа (число = px, строка с единицей отдаётся как есть). Действует на все canvas-тултипы, включая авто-тултип `Canvas.Text`. Per-node переопределяет.
+- **tooltip.maxWidth** — глобальная максимальная ширина тултипа (число = px, строка с единицей отдаётся как есть). Действует на все canvas-тултипы, включая авто-тултип `Canvas.Text`. Per-node переопределяет.
 
 Пример:
 
@@ -32,6 +34,7 @@ tableConfig={{
   tooltip: {
     enabled: true,
     mouseEnterDelay: 300,
+    maxWidth: 440,
   },
 }}
 ```

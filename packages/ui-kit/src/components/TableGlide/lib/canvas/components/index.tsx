@@ -210,6 +210,11 @@ interface EmbedIconButtonProps
   overrideSquareSize?: number;
   /** Переопределяет размер иконки внутри кнопки (px), приоритет над SIZE_CONFIG */
   overrideIconSize?: number;
+  /**
+   * Только EmbedIconButton: ширина кнопки в раскладке и hit-area (px),
+   * по умолчанию — сторона квадрата. Иконка рисуется в квадрате от левого края.
+   */
+  overrideWidth?: number;
   /** Переопределяет цвет иконки в покое (иначе — цвет из view-палитры) */
   iconColor?: string;
   /** Переопределяет цвет иконки при hover (иначе — iconColor override или view) */
@@ -475,6 +480,24 @@ function wrapEventHandler<T extends CanvasNode>(
 }
 
 type IconToPreload = { icon: ButtonIcon; size: number };
+
+/**
+ * TODO: прогрев кэша спрайтов сейчас вхолостую — иконки собираются без цвета.
+ *
+ * Ключ спрайта — `svg + цвет @ размер * dpr` (см. IconSpriteManager.resolveKey),
+ * а preload ниже зовётся без color. При отрисовке drawIcon запрашивает спрайт
+ * уже с цветом из view-палитры (для EmbedIconButton secondary это #485056B0, на
+ * hover #485056FF), то есть ключи не совпадают и в кэш всегда промах: спрайт
+ * грузится асинхронно (Image.decode) и иконка появляется кадром позже — на
+ * первой отрисовке и ещё раз на первом hover. Заметно в основном локально в
+ * dev-сборке, на стенде эффект в пределах кадра.
+ *
+ * Чинить одним из двух способов:
+ * 1) собирать иконки вместе с цветами (покой + hover) из VIEW_COLORS /
+ *    VIEW_COLORS_EMBED и iconColor-override ноды — тогда ключи сойдутся;
+ * 2) убрать цвет из ключа: держать в кэше одноцветный спрайт и красить его при
+ *    отрисовке (globalCompositeOperation), тогда прогрев не зависит от палитры.
+ */
 
 export function buildCanvasTree({
   element,
@@ -923,9 +946,10 @@ function createNode(
         overrideIconSize,
         disabled,
       });
-      // Цветовой override иконки поддерживает только EmbedIconButton.
+      // Цветовой override иконки и overrideWidth поддерживает только EmbedIconButton.
       if (node instanceof CanvasEmbedIconButton) {
-        const { iconColor, iconColorHovered } = props;
+        const { iconColor, iconColorHovered, overrideWidth } = props;
+        if (overrideWidth !== undefined) node.overrideWidth = overrideWidth;
         if (iconColor !== undefined) node.iconColor = iconColor;
         if (iconColorHovered !== undefined) {
           node.iconColorHovered = iconColorHovered;
