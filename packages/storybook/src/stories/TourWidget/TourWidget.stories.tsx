@@ -5,6 +5,7 @@ import { TourWidget } from '@ui-kit/components/TourWidget';
 
 import {
   HorizontalExample,
+  LineBreaksExample,
   PulseExample,
   TourWithoutContentExample,
   TourWithPulseExample,
@@ -131,6 +132,25 @@ export const Horizontal: Story = {
   name: 'Горизонтальный тур',
   ...storySourceDoc({ code: horizontalCode, previewSource: 'shown' }),
   render: HorizontalExample,
+};
+
+export const LineBreaks: Story = {
+  name: 'Переносы строк',
+  ...storySourceDoc({
+    code: [
+      "import { TourWidget, ViewContainer } from '@daisforge/ui';",
+      getFuncAsString(
+        'packages/storybook/src/stories/TourWidget/TourWidget.examples.tsx',
+        'TourView',
+      ),
+      getFuncAsString(
+        'packages/storybook/src/stories/TourWidget/TourWidget.examples.tsx',
+        'LineBreaksExample',
+      ),
+    ].join('\n\n'),
+    previewSource: 'shown',
+  }),
+  render: LineBreaksExample,
 };
 
 export const TourWithPulse: Story = {
