@@ -1,6 +1,6 @@
 import { getCustomScrollbar } from '@ui-kit/mixins';
 import { mCls } from '@ui-kit/utils';
-import { ComponentProps, useEffect, useMemo } from 'react';
+import { ComponentProps, useEffect } from 'react';
 import styled, { createGlobalStyle, css } from 'styled-components';
 
 import {
@@ -136,6 +136,25 @@ export const GlobalStyle = ({
   );
 };
 
+type ScopedThemeProps = {
+  $theme: GlobalStyleTheme;
+  $scopeSelector: string;
+};
+
+/*
+ * Тип компонента создаём один раз на уровне модуля, а не в рендере.
+ * Раньше createGlobalStyle звался внутри useMemo во время рендера, а его
+ * внутренняя dev-проверка в styled-components дёргает скрытый useRef. Когда
+ * useMemo пропускал пересчёт (те же props), этот хук исчезал из
+ * последовательности и React падал с "Rendered fewer hooks than expected".
+ * Теперь динамические только значения стилей (через props), а тип компонента
+ * стабильный.
+ */
+const ScopedTheme = createGlobalStyle<ScopedThemeProps>`
+  ${({ $theme, $scopeSelector }) =>
+    $scopeSelector ? scopeTheme(sddsThemeMap[$theme], $scopeSelector) : ''}
+`;
+
 export const TestGlobalIsolatedStyleWithReplace = ({
   theme = 'light',
   scopeSelector,
@@ -147,15 +166,6 @@ export const TestGlobalIsolatedStyleWithReplace = ({
    */
   scopeSelector: string;
 }) => {
-  const ActiveSDDSTheme = useMemo(() => {
-    if (scopeSelector) {
-      return createGlobalStyle`
-      ${scopeTheme(sddsThemeMap[theme], scopeSelector)}
-      `;
-    }
-    return () => null;
-  }, [scopeSelector, theme]);
-
   const isLightBase =
     theme === 'light' ||
     theme === 'highContrastLight' ||
@@ -163,7 +173,7 @@ export const TestGlobalIsolatedStyleWithReplace = ({
 
   return (
     <>
-      <ActiveSDDSTheme />
+      <ScopedTheme $theme={theme} $scopeSelector={scopeSelector} />
       {isLightBase ? (
         <GlobalScrollbarLightStyles />
       ) : (
