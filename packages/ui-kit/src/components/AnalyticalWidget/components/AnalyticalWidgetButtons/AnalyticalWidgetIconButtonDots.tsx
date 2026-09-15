@@ -8,7 +8,6 @@ import {
   IconDotsHorizontalOutline,
   IconDotsVerticalOutline,
 } from '@ui-kit/icons';
-import { textPrimary } from '@ui-kit/tokens';
 import React, { ComponentProps, forwardRef } from 'react';
 
 import { StyledAbsoluteDots } from './AnalyticalWidgetIconButtonDots.styled';
@@ -42,7 +41,7 @@ export const AnalyticalWidgetIconButtonDots = forwardRef<
       dropdownProps,
       iconSize,
       iconOrientation = 'vertical',
-      view = 'secondary',
+      view = 'default',
       size = 'm',
       absolute = false,
       absoluteOffset = 12,
@@ -64,7 +63,7 @@ export const AnalyticalWidgetIconButtonDots = forwardRef<
         style={style}
         {...props}
       >
-        <DotsIcon size={iconSize ?? 's'} color={textPrimary} />
+        <DotsIcon size={iconSize ?? 's'} />
       </EmbeddedButtonBeta>
     );
 
