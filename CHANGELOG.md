@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.19.0](https://github.com/daisforge/dais-ui/compare/v1.18.0...v1.19.0) (2026-09-15)
+
+### Bug Fixes
+
+- **TableCanvas:** Canvas.Badge иконка без пустого места при пустом text ([32e816a](https://github.com/daisforge/dais-ui/commit/32e816af8559e48b07ca1ca215a19d90135bbf69))
+- **TableCanvas:** выровнены отступы и шевроны вложенных строк subRows ([#71](https://github.com/daisforge/dais-ui/issues/71)) ([e72a867](https://github.com/daisforge/dais-ui/commit/e72a867db79d9fe8117ac65af6fdc4a57dfd5265))
+- **TourWidget:** фикс переноса строк ([#73](https://github.com/daisforge/dais-ui/issues/73)) ([9115433](https://github.com/daisforge/dais-ui/commit/9115433d0af7103eddf754d57bbae62a51071f7f))
+
+### Features
+
+- **TableCanvas:** индикатор скрытых столбцов в шапке ([3e5f195](https://github.com/daisforge/dais-ui/commit/3e5f195122a953d5389489bd8fc2c06582cfb57e))
+- **TableCanvas:** наследование ширины тултипа из tableConfig ([26f317e](https://github.com/daisforge/dais-ui/commit/26f317e8cb42c273ee8c42e4baadfa0b2b6727f3))
+
 # [1.18.0](https://github.com/daisforge/dais-ui/compare/v1.17.0...v1.18.0) (2026-09-08)
 
 ### Bug Fixes

@@ -1,6 +1,6 @@
 {
   "name": "@daisforge/ui",
-  "version": "1.18.0",
+  "version": "1.19.0",
   "main": "./index.cjs",
   "module": "./index.mjs",
   "types": "./index.d.ts",
@@ -42,13 +42,13 @@
     "react-data-grid": "7.0.0-beta.43"
   },
   "peerDependencies": {
+    "@tanstack/react-virtual": "^3.14.10",
     "react": ">=17.0.0",
     "react-dom": ">=17.0.0",
     "react-grid-layout": "^1.5.2",
     "react-hook-form": "^7.54.2",
     "styled-components": "5.3.1",
-    "swr": "^2.3.3",
-    "@tanstack/react-virtual": "^3.14.10"
+    "swr": "^2.3.3"
   },
   "devDependencies": {
     "@types/react-grid-layout": "^1.3.5"
