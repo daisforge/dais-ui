@@ -329,6 +329,7 @@ export const StyledHeaderTitle = styled(Typography).attrs({
 })`
   min-width: 0;
   color: ${C.titleColor};
+  white-space: pre-line;
 `;
 
 export const StyledHeaderDescription = styled(Typography).attrs({
@@ -336,6 +337,7 @@ export const StyledHeaderDescription = styled(Typography).attrs({
 })`
   min-width: 0;
   color: ${C.descriptionColor};
+  white-space: pre-line;
 `;
 
 export const StyledContent = styled.div.attrs({
