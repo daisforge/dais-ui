@@ -52,6 +52,12 @@ export interface CanvasEmbedIconButtonOptions {
   overrideSquareSize?: number;
   /** Переопределяет размер иконки внутри кнопки (px), приоритет над SIZE_CONFIG */
   overrideIconSize?: number;
+  /**
+   * Ширина кнопки в раскладке и hit-area (px), по умолчанию — сторона квадрата.
+   * Иконка по-прежнему рисуется в квадрате от левого края: позволяет не
+   * резервировать место под пустую правую часть иконки.
+   */
+  overrideWidth?: number;
   /** Переопределяет цвет иконки в покое (иначе — цвет из view-палитры) */
   iconColor?: string;
   /** Переопределяет цвет иконки при hover (иначе — iconColor override или view) */
@@ -78,6 +84,8 @@ export class CanvasEmbedIconButton extends CanvasLeaf {
   overrideSquareSize?: number;
 
   overrideIconSize?: number;
+
+  overrideWidth?: number;
 
   iconColor?: string;
 
@@ -118,6 +126,9 @@ export class CanvasEmbedIconButton extends CanvasLeaf {
     if (options?.overrideIconSize !== undefined) {
       this.overrideIconSize = options.overrideIconSize;
     }
+    if (options?.overrideWidth !== undefined) {
+      this.overrideWidth = options.overrideWidth;
+    }
     if (options?.iconColor !== undefined) {
       this.iconColor = options.iconColor;
     }
@@ -150,7 +161,7 @@ export class CanvasEmbedIconButton extends CanvasLeaf {
       const sizeConfig = SIZE_CONFIG[this.buttonSize];
       const h = this.overrideSquareSize ?? sizeConfig.height;
       this.rect.height = h;
-      this.rect.width = h; // Square button
+      this.rect.width = this.overrideWidth ?? h; // Square button by default
     } else {
       const metrics = resolveButtonMetrics(this.size);
       this.rect.height = metrics.height;
@@ -226,7 +237,7 @@ export class CanvasEmbedIconButton extends CanvasLeaf {
       const bounds = {
         x: this.rect.x,
         y: this.rect.y,
-        width: h,
+        width: this.overrideWidth ?? h,
         height: h,
       };
       return isPointInBounds(x, y, bounds);

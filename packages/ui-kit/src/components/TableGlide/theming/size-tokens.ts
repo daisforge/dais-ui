@@ -8,7 +8,7 @@ export const ROW_SIZE_TOKENS = {
   medium: {
     rowHeight: 32,
     cellVerticalPadding: 7,
-    cellHorizontalPadding: 8,
+    cellHorizontalPadding: 6,
     textfieldSize: 's',
   },
   big: {

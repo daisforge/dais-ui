@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { createRowsTree, TreeRow } from '@df-storybook/data/tableData';
+import { createRaggedRowsTree, TreeRow } from '@df-storybook/data/tableData';
 import DocStoryTemplate from '@df-storybook/templates/DocStoryTemplate.mdx';
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
 import type { Meta, StoryObj } from '@storybook/react';
@@ -35,7 +35,8 @@ export const SubRows: Story = {
   }),
   name: 'Иерархичный вид',
   render: () => {
-    const [rows] = useState(() => createRowsTree());
+    // Разная глубина и число детей у строк — «рваная лестница» отступов
+    const [rows] = useState(() => createRaggedRowsTree());
 
     const columns = useMemo(
       (): readonly ColumnConfig<TreeRow>[] => [
@@ -50,10 +51,8 @@ export const SubRows: Story = {
                   return 'block';
                 case 1:
                   return 'tribe';
-                case 2:
-                  return 'product';
                 default:
-                  return 'block';
+                  return 'product';
               }
             },
 
@@ -127,11 +126,14 @@ export const SubRows: Story = {
     return (
       <TableCanvas
         tableConfig={{
-          containerStyle: { height: '60vh' },
+          containerStyle: { height: '85vh' },
           subRows: {
             getSubRows: (row) => row?.subRows,
             rowKeyGetter: (row) => row.id,
           },
+          // Отступ уровня зависит от размера строки: big 16/66/116,
+          // medium 6/42/78, small 4/32/60 px
+          rowSize: { showInControl: true, default: 'big' },
           fullScreenEnabled: true,
           resizableColumn: true,
         }}

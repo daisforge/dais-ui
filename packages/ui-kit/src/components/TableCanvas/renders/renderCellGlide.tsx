@@ -1,10 +1,3 @@
-import {
-  IconChevronDown,
-  IconChevronRight,
-  IconDisclosureDownOutline,
-  IconDisclosureRightOutline,
-} from '@ui-kit/icons';
-
 import { Canvas } from '../../TableGlide';
 import {
   SKELETON_CELLS_KEY,
@@ -21,6 +14,11 @@ import { CHECKBOX_COLUMN_KEY } from '../feature-select-row';
 import { SUBROWS_KEY } from '../feature-tree/constants';
 import { getHasArrow, getTreeIdAndLvlOfRow } from '../feature-tree/handlers';
 import {
+  getTreeIconWidth,
+  IconTreeCollapsed,
+  IconTreeExpanded,
+} from '../feature-tree/tree-disclosure-icons';
+import {
   CanvasContent,
   CellContent,
   CellInfoGlideInstance,
@@ -33,46 +31,28 @@ import {
 import { ContentFormat } from '../TableGlideInstance/type';
 import { ColumnConfig, ObjectForExtending, TableConfig } from '../types';
 import { FormattedContent } from './formatCell';
-import { ROW_ICON_BUTTON_CONFIG } from './rowIconConfig';
+import {
+  ROW_ICON_BUTTON_CONFIG,
+  RowSize,
+  TREE_BUTTON_GAP,
+} from './rowIconConfig';
 import {
   DEFAULT_CELL_PADDING_INLINE,
   getPaddingLeftFinal,
 } from './styleConstants';
 import { withSelectIcon } from './withSelectIcon';
 
-const TREE_BUTTON_CONFIG = {
-  big: {
-    ...ROW_ICON_BUTTON_CONFIG.big,
-    gap: 8,
-    ExpandedIcon: IconDisclosureDownOutline,
-    CollapsedIcon: IconDisclosureRightOutline,
-  },
-  medium: {
-    ...ROW_ICON_BUTTON_CONFIG.medium,
-    gap: 2,
-    ExpandedIcon: IconChevronDown,
-    CollapsedIcon: IconChevronRight,
-  },
-  small: {
-    ...ROW_ICON_BUTTON_CONFIG.small,
-    gap: 0,
-    ExpandedIcon: IconChevronDown,
-    CollapsedIcon: IconChevronRight,
-  },
-};
-
 const getTreeButton = (
   expanded: boolean,
   toggleExpand: () => void,
-  rowSize: 'big' | 'medium' | 'small' = 'big',
+  rowSize: RowSize = 'big',
 ) => {
-  const { overrideSquareSize, overrideIconSize, ExpandedIcon, CollapsedIcon } =
-    TREE_BUTTON_CONFIG[rowSize];
-  const Icon = expanded ? ExpandedIcon : CollapsedIcon;
+  const { overrideSquareSize } = ROW_ICON_BUTTON_CONFIG[rowSize];
+  const Icon = expanded ? IconTreeExpanded : IconTreeCollapsed;
 
   return (
     <Canvas.EmbedIconButton
-      icon={<Icon />}
+      icon={<Icon size={rowSize} />}
       view="secondary"
       interaction={{
         selection: 'keep',
@@ -81,8 +61,13 @@ const getTreeButton = (
         contextMenu: 'keep-selection',
       }}
       // buttonSize="xs"
+      // Иконка занимает весь квадрат: глиф прижат к его левому краю,
+      // размер глифа задан во viewBox (см. tree-disclosure-icons).
+      // В раскладке кнопка уже квадрата на убранную пустоту слева — справа
+      // от глифа места столько же, сколько у исходной иконки
       overrideSquareSize={overrideSquareSize}
-      overrideIconSize={overrideIconSize}
+      overrideIconSize={overrideSquareSize}
+      overrideWidth={getTreeIconWidth(rowSize)}
       onClick={toggleExpand}
       style={{
         flexShrink: 0,
@@ -377,9 +362,7 @@ export const RenderCellGlide = <
       );
     }
 
-    const treeGap = hasChildrenAndArrow
-      ? TREE_BUTTON_CONFIG[theme.rowSize ?? 'big'].gap
-      : 8;
+    const treeGap = hasChildrenAndArrow ? TREE_BUTTON_GAP[rowSize] : 8;
 
     return (
       <Canvas.Container
@@ -387,12 +370,7 @@ export const RenderCellGlide = <
         alignItems="center"
         columnGap={treeGap}
         padding={{
-          left: getPaddingLeftFinal(
-            effectivePadding,
-            lvl,
-            hasChildrenAndArrow,
-            false,
-          ),
+          left: getPaddingLeftFinal(effectivePadding, lvl, rowSize, false),
         }}
       >
         {hasChildrenAndArrow &&
@@ -493,9 +471,7 @@ export const RenderCellGlide = <
       effectivePadding,
     );
   }
-  const treeGapSub = hasChildrenAndArrow
-    ? TREE_BUTTON_CONFIG[theme.rowSize ?? 'big'].gap
-    : 8;
+  const treeGapSub = hasChildrenAndArrow ? TREE_BUTTON_GAP[rowSize] : 8;
 
   return (
     <Canvas.Container
@@ -503,12 +479,7 @@ export const RenderCellGlide = <
       alignItems="center"
       columnGap={treeGapSub}
       padding={{
-        left: getPaddingLeftFinal(
-          effectivePadding,
-          lvl,
-          hasChildrenAndArrow,
-          false,
-        ),
+        left: getPaddingLeftFinal(effectivePadding, lvl, rowSize, false),
       }}
     >
       {hasChildrenAndArrow &&

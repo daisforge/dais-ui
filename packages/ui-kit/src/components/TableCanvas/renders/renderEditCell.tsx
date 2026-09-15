@@ -177,7 +177,6 @@ export const RenderEditCell = <
       <SubRowContainer
         className={CLASS.editableCellWithExpandButton}
         $lvl={lvl}
-        $hasChildren={hasChildrenAndArrow}
         $editingMode={{
           $columnHasArrow: columnHasArrow,
           $rowSize: rowSize,
@@ -310,7 +309,6 @@ export const RenderEditCell = <
     <SubRowContainer
       className={CLASS.editableCellWithExpandButton}
       $lvl={lvl}
-      $hasChildren={hasChildrenAndArrow}
       $editingMode={{
         $columnHasArrow: columnHasArrow,
         $rowSize: rowSize,

@@ -993,11 +993,13 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         portalEventTargetRef?.current ?? null
       );
 
-      // Устанавливаем контекст для тултипа (аналогично контекстному меню)
+      // Устанавливаем контекст для тултипа (аналогично контекстному меню).
+      // theme нужен тултипам, которые считают позицию от размера строки
       canvasRootInstance?.setTooltipContext({
         column,
         ctxs,
         refTable,
+        theme,
       });
 
       const hoverPos =

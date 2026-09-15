@@ -67,7 +67,8 @@ export const CanvasTooltipOverlay: React.FC<CanvasTooltipOverlayProps> =
         <StyledContainer
           style={{
             position: 'absolute',
-            left: displayPosition.x,
+            // offsetX — сдвиг якоря, когда видимая часть ноды не по её центру
+            left: displayPosition.x + (state.data?.tooltipProps?.offsetX ?? 0),
             top: displayPosition.y,
             width: Math.max(0, state.width),
             height: Math.max(0, state.height),
