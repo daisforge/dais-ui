@@ -253,12 +253,41 @@ export type ColumnConfig<
       }
     | {
         component: 'select';
+        /**
+         * Произвольное содержимое над списком опций фильтра.
+         *
+         * Рендерится и в поповере фильтра в шапке колонки, и в сайдбаре
+         * фильтров. Рендерится как компонент, поэтому внутри можно
+         * использовать хуки и локальное состояние.
+         *
+         * @example
+         * beforeList: ({ headerContextState }) => (
+         *   <TableFilterSelectListItem $size={headerContextState.rowSize}>
+         *     Подсказка над списком
+         *   </TableFilterSelectListItem>
+         * )
+         */
         beforeList?: (
           props: FilterComponentInPopoverProps<
             ObjectForExtending,
             ColumnConfig<Row, SummRow>
           >,
         ) => ReactNode;
+        /**
+         * Произвольное содержимое под списком опций фильтра.
+         *
+         * Рендерится и в поповере фильтра в шапке колонки, и в сайдбаре
+         * фильтров. Рендерится как компонент, поэтому внутри можно
+         * использовать хуки и локальное состояние — например, чтобы держать
+         * черновик выбора и применять его по кнопке.
+         *
+         * @example
+         * afterList: ({ headerContextState, setPopoverIsOpen }) => (
+         *   <TableFilterSelectListItem $size={headerContextState.rowSize}>
+         *     Подсказка под списком
+         *   </TableFilterSelectListItem>
+         * )
+         */
         afterList?: (
           props: FilterComponentInPopoverProps<
             ObjectForExtending,

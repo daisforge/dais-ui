@@ -5,6 +5,7 @@ import type { ColumnConfig, ObjectForExtending } from '../../types';
 import type { Option } from '../../types/additional.type';
 import { ComboboxX } from '../combobox';
 import { StyledSearchBlockFilter } from '../combobox/styled';
+import { RenderSlot } from '../render-slot';
 import { inputStopPropagation } from '../utils';
 import { FilterComponentInPopoverProps } from './types';
 
@@ -35,11 +36,17 @@ export const FilterComponentInPopover = <
   }
 
   if (columnConfigFiltering.component === 'custom') {
-    return columnConfigFiltering.customRender(
-      props as FilterComponentInPopoverProps<
-        ObjectForExtending,
-        ColumnConfig<R, SR>
-      >,
+    return (
+      <RenderSlot
+        render={() =>
+          columnConfigFiltering.customRender(
+            props as FilterComponentInPopoverProps<
+              ObjectForExtending,
+              ColumnConfig<R, SR>
+            >,
+          )
+        }
+      />
     );
   }
 

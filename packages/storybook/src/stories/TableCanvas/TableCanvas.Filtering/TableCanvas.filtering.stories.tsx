@@ -11,6 +11,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { Box } from '@ui-kit/components/Box';
 import { Button } from '@ui-kit/components/Button';
 import { Calendar } from '@ui-kit/components/Calendar';
+import { Combobox, ComboboxItemOption } from '@ui-kit/components/Combobox';
 import { Divider } from '@ui-kit/components/Divider';
 import {
   ColumnConfig,
@@ -34,14 +35,21 @@ const meta: Meta = {
 export default meta;
 const preCode = `
 import React, { useMemo, useState } from 'react';
-import { Box, Button, Calendar, Divider, IconStar } from '@sber-digital-finance-ui/ui-kit';
+import {
+  Box,
+  Button,
+  Calendar,
+  Combobox,
+  ComboboxItemOption,
+  Divider,
+} from '@daisforge/ui';
+import { IconStar } from '@daisforge/ui/icons';
 import {
   ColumnConfig,
   TableCanvas,
   TableFilterSelect,
   TableFilterSelectListItem,
-} from '@sber-digital-finance-ui/ui-kit/TableCanvas';
-
+} from '@daisforge/ui/components/TableCanvas';
 
 import { createRows, type Row } from './data/tableData';
 
@@ -77,7 +85,7 @@ export const FilteringTable: StoryObj = {
       task: '',
       priority: 'All',
       issueType: [],
-      issueTypeCustom: [],
+      issueTypeCustom: [] as string[],
       complete: '',
       globalFilter: '',
       date: undefined as string | undefined,
@@ -315,6 +323,16 @@ export const FilteringTable: StoryObj = {
       [],
     );
 
+    // Combobox из sdds-finai ожидает items в формате { value, label }.
+    const sidebarIssueTypeOptions = useMemo<ComboboxItemOption[]>(
+      () =>
+        headerContextValue.issueTypeOptions.map((option) => ({
+          value: option.value,
+          label: option.text,
+        })),
+      [headerContextValue],
+    );
+
     return (
       <TableCanvas
         tableConfig={{
@@ -344,6 +362,54 @@ export const FilteringTable: StoryObj = {
           },
           filtering: {
             state: filteringStateAndSetter,
+            sidebarConfig: {
+              items: {
+                // Переопределяем рендер колоночного фильтра именно для сайдбара:
+                // колоночный customRender остаётся в поповере шапки.
+                issueTypeCustom: {
+                  label: 'Issue Type (custom render)',
+                  customRenderFn: (filters, setFilters) => {
+                    // Хуки здесь допустимы: customRenderFn рендерится как
+                    // компонент (см. RenderSlot в feature-filtering).
+                    // Черновик выбора уезжает в фильтры сайдбара по кнопке
+                    // «Применить» внутри выпадающего списка (afterList).
+                    const [draftValue, setDraftValue] = useState<string[]>(
+                      filters.issueTypeCustom,
+                    );
+
+                    return (
+                      <Combobox
+                        multiple
+                        size="s"
+                        items={sidebarIssueTypeOptions}
+                        value={draftValue}
+                        onChange={(next: string[]) => setDraftValue(next)}
+                        closeAfterSelect={false}
+                        placeholder="Выберите Issue Type"
+                        afterList={
+                          <Box $css="display: grid; gap: 4px; margin-top: 4px;">
+                            <Divider />
+                            <Button
+                              size="xs"
+                              view="accent"
+                              style={{ marginLeft: 'auto' }}
+                              onClick={() =>
+                                setFilters((prev) => ({
+                                  ...prev,
+                                  issueTypeCustom: draftValue,
+                                }))
+                              }
+                            >
+                              Применить
+                            </Button>
+                          </Box>
+                        }
+                      />
+                    );
+                  },
+                },
+              },
+            },
             filtersInfo: {
               id: {
                 label: 'id',

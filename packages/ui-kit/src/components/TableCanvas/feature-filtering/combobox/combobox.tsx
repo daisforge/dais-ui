@@ -2,11 +2,11 @@
 import { Box } from '@ui-kit/components/Box';
 import { Checkbox } from '@ui-kit/components/Checkbox';
 import { EmptyState } from '@ui-kit/components/EmptyState';
-import { SIZE, SIZES } from '@ui-kit/components/TableCanvas';
 import { IconDone } from '@ui-kit/icons';
 import { textAccent } from '@ui-kit/tokens';
 import { ReactNode, useMemo, useState } from 'react';
 
+import { SIZE, SIZES } from '../../styles';
 import { useFocusSearchInput } from '../use-focus-search-input';
 import { inputStopPropagation } from '../utils';
 import {
@@ -39,6 +39,14 @@ function isSingle(
 function isSingle(m: 'single' | 'multiple', _valueOrOnChange: unknown) {
   return m === 'single';
 }
+
+// Контейнер галочки в single-режиме занимает место и когда галочка скрыта,
+// поэтому его ширина повторяет ширину самой иконки выбранного размера.
+const CHECK_ICON_CONTAINER_SIZE: Record<'xs' | 's' | 'm', string> = {
+  xs: '16px',
+  s: '24px',
+  m: '24px',
+};
 
 const getItemIsSelected = (
   o: { text: string; value: string },
@@ -108,7 +116,7 @@ export const ComboboxX = ({
   };
   const checkboxSize = size === 'big' ? 'm' : 's';
   const checkedIconSize = size === 'small' ? 'xs' : 's';
-  const checkedIconContainerSize = checkedIconSize === 'xs' ? '16px' : '24px';
+  const checkedIconContainerSize = CHECK_ICON_CONTAINER_SIZE[checkedIconSize];
 
   return (
     <Box

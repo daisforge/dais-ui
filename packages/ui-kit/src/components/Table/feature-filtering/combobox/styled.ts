@@ -1,5 +1,4 @@
 import { Box } from '@ui-kit/components/Box';
-import { SIZE } from '@ui-kit/components/TableCanvas';
 import { TextFieldSearch } from '@ui-kit/components/TextField';
 import {
   bodyM,
@@ -9,7 +8,7 @@ import {
 } from '@ui-kit/tokens';
 import styled, { css, FlattenSimpleInterpolation } from 'styled-components';
 
-import { COLORS } from '../../styles';
+import { COLORS, type SIZE } from '../../styles';
 
 export const StyledTotalListItemContainer = styled(Box)<{
   $listIsNonEmpty: boolean;

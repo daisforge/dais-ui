@@ -1,11 +1,13 @@
+/* eslint-disable no-redeclare */
 import { Box } from '@ui-kit/components/Box';
 import { Checkbox } from '@ui-kit/components/Checkbox';
 import { EmptyState } from '@ui-kit/components/EmptyState';
-import { SIZE, SIZES } from '@ui-kit/components/Table';
 import { IconDone } from '@ui-kit/icons';
 import { textAccent } from '@ui-kit/tokens';
-import React, { ReactNode, useMemo, useState } from 'react';
+import { ReactNode, useMemo, useState } from 'react';
 
+import { SIZE, SIZES } from '../../styles';
+import { useFocusSearchInput } from '../use-focus-search-input';
 import { inputStopPropagation } from '../utils';
 import {
   StyledList,
@@ -30,16 +32,21 @@ function isSingle(
   onChange: ((v: string[]) => void) | ((v: string) => void),
 ): onChange is (v: string) => void;
 
-// eslint-disable-next-line no-redeclare
 function isSingle(
   m: 'single' | 'multiple',
   value: string | string[],
 ): value is string;
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-redeclare
-function isSingle(m: 'single' | 'multiple', valueOrOnChange: unknown) {
+function isSingle(m: 'single' | 'multiple', _valueOrOnChange: unknown) {
   return m === 'single';
 }
+
+// Контейнер галочки в single-режиме занимает место и когда галочка скрыта,
+// поэтому его ширина повторяет ширину самой иконки выбранного размера.
+const CHECK_ICON_CONTAINER_SIZE: Record<'xs' | 's' | 'm', string> = {
+  xs: '16px',
+  s: '24px',
+  m: '24px',
+};
 
 const getItemIsSelected = (
   o: { text: string; value: string },
@@ -76,6 +83,9 @@ export const ComboboxX = ({
     options.find((o) => o.value === value)?.text ?? '',
   );
 
+  // Детерминированный фокус в инпут поиска при открытии поповера (см. хук).
+  const searchInputRef = useFocusSearchInput();
+
   const optionsLabelMap = useMemo(
     () => new Map(options.map((el) => [el.value, el.text])),
     [options],
@@ -104,10 +114,9 @@ export const ComboboxX = ({
     checked: value?.length !== 0 && value?.length === options.length,
     onChange: () => {},
   };
-
   const checkboxSize = size === 'big' ? 'm' : 's';
   const checkedIconSize = size === 'small' ? 'xs' : 's';
-  const checkedIconContainerSize = checkedIconSize === 'xs' ? '16px' : '24px';
+  const checkedIconContainerSize = CHECK_ICON_CONTAINER_SIZE[checkedIconSize];
 
   return (
     <Box
@@ -116,10 +125,10 @@ export const ComboboxX = ({
       }}
     >
       <StyledSearchBlockFilter
-        size={SIZES[size].input}
+        ref={searchInputRef}
+        size={SIZES[size].input as 'xs'}
         autoComplete="off"
-        autoFocus
-        {...{ tabIndex }}
+        tabIndex={tabIndex}
         value={inputValue}
         onChange={(e) => {
           setInputValue(e.target.value);
@@ -131,7 +140,6 @@ export const ComboboxX = ({
       />
       <StyledList $maxHeight={listMaxHeight}>
         {beforeList}
-
         {!isSingle(mode, onChange) && filteredOptions.length > 1 && (
           <StyledTotalListItemContainer
             $listIsNonEmpty={!!filteredOptions.length}
