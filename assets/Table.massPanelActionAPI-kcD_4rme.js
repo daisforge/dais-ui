@@ -1,0 +1,4 @@
+import{j as t}from"./react-D2T61mpp.js";import{cg as e,ch as a}from"./vendor-Cat6VilP.js";import{T as i}from"./TypeSourceViewer-BhDh3qKt.js";import"./react-is-Clcustum.js";import"./styled-components-4EwW4oL9.js";import"./@tanstack/react-virtual-pz6E_hhO.js";import"./tslib-DoU9Jm1N.js";function o(n){const s={h1:"h1",h2:"h2",...e(),...n.components};return t.jsxs(t.Fragment,{children:[t.jsx(a,{title:"Локальные компоненты/Table/ControlBlock/MassPanelAction/API"}),`
+`,t.jsx(s.h1,{id:"masspanelaction-api",children:"MassPanelAction API"}),`
+`,t.jsx(s.h2,{id:"massactionsbuttonprops",children:"MassActionsButtonProps"}),`
+`,t.jsx(i,{filePath:"packages/ui-kit/src/components/MassActions/types.ts",typeName:"MassActionsButtonProps",language:"ts"})]})}function x(n={}){const{wrapper:s}={...e(),...n.components};return s?t.jsx(s,{...n,children:t.jsx(o,{...n})}):o(n)}export{x as default};
