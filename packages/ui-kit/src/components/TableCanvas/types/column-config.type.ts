@@ -259,6 +259,12 @@ export type ColumnConfig<
             ColumnConfig<Row, SummRow>
           >,
         ) => ReactNode;
+        afterList?: (
+          props: FilterComponentInPopoverProps<
+            ObjectForExtending,
+            ColumnConfig<Row, SummRow>
+          >,
+        ) => ReactNode;
         filter:
           | {
               typeOfValue: 'single';

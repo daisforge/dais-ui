@@ -165,6 +165,8 @@ const FilterComponentInPopoverInner = <
     return [];
   })();
   const BeforeList = columnConfigFiltering?.beforeList ?? (() => undefined);
+  const AfterList = columnConfigFiltering?.afterList ?? (() => undefined);
+
   return (
     <ComboboxX
       // tabIndex={tabIndex} // Комментирую, чтобы в TableCanvas после открытия поповера с фильтрами фокус переключился на инпут
@@ -176,6 +178,8 @@ const FilterComponentInPopoverInner = <
       options={options as any}
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       beforeList={<BeforeList {...(props as any)} />}
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      afterList={<AfterList {...(props as any)} />}
       listMaxHeight={columnConfigFiltering.listMaxHeight ?? '360px'}
       width={FILTER_POPOVER_WIDTH[rowSize]}
     />
