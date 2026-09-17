@@ -1,0 +1,11 @@
+import{j as r}from"./react-D2T61mpp.js";import{cg as n,ch as e,ca as m}from"./vendor-DJU5N2B7.js";import{T as p}from"./Table.fullScreenMode.stories-CRFkuFg0.js";import"./react-is-Clcustum.js";import"./styled-components-BNpt5jar.js";import"./@tanstack/react-virtual-BolgHukU.js";import"./tslib-DoU9Jm1N.js";import"./tableData-DVJFoYoT.js";import"./DocStoryTemplate-BuSM3w1r.js";import"./storySourceDoc-tVKyHcEN.js";import"./Table-BCf7tdbs.js";import"./FiltersActions-BRVtPRmD.js";import"./IconButton-CcHWT3eC.js";import"./@salutejs/plasma-icons-DHjMz4Sp.js";import"./@salutejs/sdds-finai-Be0QV20K.js";import"./@salutejs/sdds-themes-p9DCXULv.js";import"./utils-CvlI6AWW.js";import"./constants-Ci5uyz-N.js";import"./sharedUtilsDebug-BX_KjCjW.js";import"./Box-DVQsDzEi.js";import"./TextField-VnOJB2-L.js";import"./sharedUtilsInputs-DVOV_UZp.js";import"./AnalyticalWidget-CISrZFfS.js";import"./Collapse-BNAkxNH3.js";import"./react-data-grid-GLoasi1p.js";import"./TableTabs-6UwgWZX0.js";import"./TableCanvasSharedConstants-B2qJZwC8.js";import"./sharedUiSearch-CeLIysmj.js";import"./ListOfFilters-BpH_fkY0.js";import"./lodash.isequal-DD0Lfcik.js";import"./NumberFormat-DcLI9GnU.js";import"./EmptyState-Db9UL0jC.js";import"./MassActions-oyzrm0ai.js";import"./Autocomplete-DnNgD-wl.js";function i(t){const o={a:"a",h1:"h1",h2:"h2",li:"li",p:"p",strong:"strong",ul:"ul",...n(),...t.components};return r.jsxs(r.Fragment,{children:[r.jsx(e,{of:p,name:"Docs"}),`
+`,r.jsx(o.h1,{id:"tablefullscreenmode",children:"TableFullScreenMode"}),`
+`,r.jsx(o.h2,{id:"ключевые-особенности",children:"Ключевые особенности"}),`
+`,r.jsxs(o.ul,{children:[`
+`,r.jsx(o.li,{children:"Включение полноэкранного режима"}),`
+`,r.jsx(o.li,{children:"Поддержка дефолтно открытого состояния"}),`
+`,r.jsx(o.li,{children:"Возможность внешнего управления состоянием"}),`
+`]}),`
+`,r.jsx(o.p,{children:r.jsx(o.strong,{children:"tableConfig.fullScreenEnabled"})}),`
+`,r.jsxs(o.p,{children:["Описание типов - в разделе ",r.jsx(o.a,{href:"?path=/docs/%D0%BB%D0%BE%D0%BA%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D1%8B-table-fullscreenmode-api--docs",children:"API"}),"."]}),`
+`,r.jsx(m,{})]})}function H(t={}){const{wrapper:o}={...n(),...t.components};return o?r.jsx(o,{...t,children:r.jsx(i,{...t})}):i(t)}export{H as default};
