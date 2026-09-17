@@ -1,0 +1,14 @@
+import{j as o}from"./react-D2T61mpp.js";import{cg as n,ch as e,ca as m}from"./vendor-DF9AQJZy.js";import{T as c}from"./Table.formatCellContent.stories-CBeN11eW.js";import"./react-is-Clcustum.js";import"./styled-components-jzsBfiVB.js";import"./@tanstack/react-virtual-CIhEIKvd.js";import"./tslib-DoU9Jm1N.js";import"./tableData-DVJFoYoT.js";import"./DocStoryTemplate-9ITy7L8O.js";import"./storySourceDoc-tVKyHcEN.js";import"./Table-Bu1LW2Df.js";import"./FiltersActions-DRljLTxF.js";import"./IconButton-BE811B-t.js";import"./@salutejs/plasma-icons-D71t42sU.js";import"./@salutejs/sdds-finai-BInLHC40.js";import"./@salutejs/sdds-themes-p9DCXULv.js";import"./utils-N0xKRSqs.js";import"./constants-Ci5uyz-N.js";import"./sharedUtilsDebug-BX_KjCjW.js";import"./Box-DhtRad6p.js";import"./TextField-DG8SQJDN.js";import"./sharedUtilsInputs-BzgaFrt9.js";import"./AnalyticalWidget-Cc4tC3z3.js";import"./Collapse-4cY4h1sz.js";import"./react-data-grid-rP992StA.js";import"./TableTabs-C09OWazq.js";import"./TableCanvasSharedConstants-B2qJZwC8.js";import"./sharedUiSearch-DSAXKdDx.js";import"./ListOfFilters-FCIugWa6.js";import"./lodash.isequal-DD0Lfcik.js";import"./NumberFormat-D7RMgjN_.js";import"./EmptyState-BtJ7MqAB.js";import"./MassActions-iVO7bsp2.js";import"./Autocomplete-D1JUreDZ.js";function i(r){const t={a:"a",code:"code",h1:"h1",h2:"h2",li:"li",p:"p",ul:"ul",...n(),...r.components};return o.jsxs(o.Fragment,{children:[o.jsx(e,{of:c,name:"Docs"}),`
+`,o.jsx(t.h1,{id:"formatcellcontent",children:"FormatCellContent"}),`
+`,o.jsxs(t.p,{children:["Форматирование содержимого ячеек legacy ",o.jsx(t.code,{children:"Table"}),"."]}),`
+`,o.jsx(t.h2,{id:"ключевые-особенности",children:"Ключевые особенности"}),`
+`,o.jsxs(t.ul,{children:[`
+`,o.jsx(t.li,{children:"Форматирование чисел, дат и пользовательских значений"}),`
+`,o.jsxs(t.li,{children:["Настройка отображения через ",o.jsx(t.code,{children:"columnConfig"})]}),`
+`,o.jsx(t.li,{children:"Совместимость с вложенными строками"}),`
+`,o.jsx(t.li,{children:"Возможность вернуть React-компонент из render-функции ячейки"}),`
+`]}),`
+`,o.jsx(t.h2,{id:"особенности",children:"Особенности"}),`
+`,o.jsxs(t.p,{children:["Форматирование не должно менять исходные ",o.jsx(t.code,{children:"rows"}),". Если нужно редактирование значения, используйте конфигурацию ",o.jsx(t.code,{children:"editing"}),", а формат оставляйте только слоем отображения."]}),`
+`,o.jsxs(t.p,{children:["Описание типов - в разделе ",o.jsx(t.a,{href:"?path=/docs/%D0%BB%D0%BE%D0%BA%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D1%8B-table-formatcellcontent-api--docs",children:"API"}),"."]}),`
+`,o.jsx(m,{})]})}function H(r={}){const{wrapper:t}={...n(),...r.components};return t?o.jsx(t,{...r,children:o.jsx(i,{...r})}):i(r)}export{H as default};
