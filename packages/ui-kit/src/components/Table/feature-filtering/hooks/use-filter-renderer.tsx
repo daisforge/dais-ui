@@ -6,6 +6,7 @@ import { SIZES } from '../../styles';
 import { ColumnConfig, ObjectForExtending } from '../../types';
 import type { Option } from '../../types/additional.type';
 import { FilterComponentInPopoverProps } from '../header-filter-button/types';
+import { RenderSlot } from '../render-slot';
 import { CheckBoxAllSelected } from './styled';
 
 export const useFilterRenderer = <
@@ -23,7 +24,7 @@ export const useFilterRenderer = <
 
     // Если есть кастомный рендер, используем его
     if (customRenderFn) {
-      return customRenderFn();
+      return <RenderSlot render={customRenderFn} />;
     }
 
     const columnConfigFiltering = columnConfig.filtering;
@@ -33,11 +34,17 @@ export const useFilterRenderer = <
 
     // Кастомный рендер из колонки
     if (columnConfigFiltering.component === 'custom') {
-      return columnConfigFiltering.customRender(
-        props as FilterComponentInPopoverProps<
-          ObjectForExtending,
-          ColumnConfig<R, SR>
-        >,
+      return (
+        <RenderSlot
+          render={() =>
+            columnConfigFiltering.customRender(
+              props as FilterComponentInPopoverProps<
+                ObjectForExtending,
+                ColumnConfig<R, SR>
+              >,
+            )
+          }
+        />
       );
     }
 
@@ -95,6 +102,7 @@ export const useFilterRenderer = <
       }));
 
       const BeforeList = columnConfigFiltering?.beforeList ?? (() => undefined);
+      const AfterList = columnConfigFiltering?.afterList ?? (() => undefined);
 
       // Функция для рендеринга "Выбрать все" в multiple режиме
       const renderSelectAll = () => {
@@ -149,6 +157,7 @@ export const useFilterRenderer = <
               {renderSelectAll()}
             </>
           }
+          afterList={<AfterList {...props} />}
           filter={(item, searchText) =>
             item.label.toLowerCase().includes(searchText.toLowerCase())
           }
@@ -173,6 +182,7 @@ export const useFilterRenderer = <
               {renderSelectAll()}
             </>
           }
+          afterList={<AfterList {...props} />}
           filter={(item, searchText) =>
             item.label.toLowerCase().includes(searchText.toLowerCase())
           }

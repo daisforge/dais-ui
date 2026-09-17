@@ -1,10 +1,13 @@
+/* eslint-disable no-redeclare */
 import { Box } from '@ui-kit/components/Box';
 import { Checkbox } from '@ui-kit/components/Checkbox';
 import { EmptyState } from '@ui-kit/components/EmptyState';
-import { SIZE, SIZES } from '@ui-kit/components/Table';
 import { IconDone } from '@ui-kit/icons';
-import React, { ReactNode, useMemo, useState } from 'react';
+import { textAccent } from '@ui-kit/tokens';
+import { ReactNode, useMemo, useState } from 'react';
 
+import { SIZE, SIZES } from '../../styles';
+import { useFocusSearchInput } from '../use-focus-search-input';
 import { inputStopPropagation } from '../utils';
 import {
   StyledList,
@@ -29,16 +32,21 @@ function isSingle(
   onChange: ((v: string[]) => void) | ((v: string) => void),
 ): onChange is (v: string) => void;
 
-// eslint-disable-next-line no-redeclare
 function isSingle(
   m: 'single' | 'multiple',
   value: string | string[],
 ): value is string;
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars, no-redeclare
-function isSingle(m: 'single' | 'multiple', valueOrOnChange: unknown) {
+function isSingle(m: 'single' | 'multiple', _valueOrOnChange: unknown) {
   return m === 'single';
 }
+
+// Контейнер галочки в single-режиме занимает место и когда галочка скрыта,
+// поэтому его ширина повторяет ширину самой иконки выбранного размера.
+const CHECK_ICON_CONTAINER_SIZE: Record<'xs' | 's' | 'm', string> = {
+  xs: '16px',
+  s: '24px',
+  m: '24px',
+};
 
 const getItemIsSelected = (
   o: { text: string; value: string },
@@ -58,6 +66,7 @@ export const ComboboxX = ({
   options,
   tabIndex,
   beforeList,
+  afterList,
   size = 'medium',
   listMaxHeight = '360px',
   width,
@@ -66,12 +75,16 @@ export const ComboboxX = ({
   tabIndex?: number | undefined;
   size?: SIZE;
   beforeList?: ReactNode;
+  afterList?: ReactNode;
   listMaxHeight?: string;
   width?: string;
 }) => {
   const [inputValue, setInputValue] = useState(
     options.find((o) => o.value === value)?.text ?? '',
   );
+
+  // Детерминированный фокус в инпут поиска при открытии поповера (см. хук).
+  const searchInputRef = useFocusSearchInput();
 
   const optionsLabelMap = useMemo(
     () => new Map(options.map((el) => [el.value, el.text])),
@@ -101,6 +114,9 @@ export const ComboboxX = ({
     checked: value?.length !== 0 && value?.length === options.length,
     onChange: () => {},
   };
+  const checkboxSize = size === 'big' ? 'm' : 's';
+  const checkedIconSize = size === 'small' ? 'xs' : 's';
+  const checkedIconContainerSize = CHECK_ICON_CONTAINER_SIZE[checkedIconSize];
 
   return (
     <Box
@@ -109,10 +125,10 @@ export const ComboboxX = ({
       }}
     >
       <StyledSearchBlockFilter
-        size={SIZES[size].input}
+        ref={searchInputRef}
+        size={SIZES[size].input as 'xs'}
         autoComplete="off"
-        autoFocus
-        {...{ tabIndex }}
+        tabIndex={tabIndex}
         value={inputValue}
         onChange={(e) => {
           setInputValue(e.target.value);
@@ -124,7 +140,6 @@ export const ComboboxX = ({
       />
       <StyledList $maxHeight={listMaxHeight}>
         {beforeList}
-
         {!isSingle(mode, onChange) && filteredOptions.length > 1 && (
           <StyledTotalListItemContainer
             $listIsNonEmpty={!!filteredOptions.length}
@@ -145,7 +160,7 @@ export const ComboboxX = ({
             >
               <Checkbox
                 {...checkAllStates}
-                size="s"
+                size={checkboxSize}
                 style={{
                   pointerEvents: 'none',
                   marginRight: '8px',
@@ -184,8 +199,8 @@ export const ComboboxX = ({
                 {mode === 'single' && (
                   <span
                     style={{
-                      width: '16px',
-                      minWidth: '16px',
+                      width: checkedIconContainerSize,
+                      minWidth: checkedIconContainerSize,
                       display: 'inline-flex',
                       justifyContent: 'center',
                       alignItems: 'center',
@@ -193,14 +208,14 @@ export const ComboboxX = ({
                       visibility: itemIsSelected ? 'visible' : 'hidden',
                     }}
                   >
-                    <IconDone size="s" color="var(--text-accent)" />
+                    <IconDone size={checkedIconSize} color={textAccent} />
                   </span>
                 )}
                 {mode === 'multiple' && (
                   <Checkbox
                     checked={itemIsSelected}
                     onChange={() => {}}
-                    size="s"
+                    size={checkboxSize}
                     style={{
                       pointerEvents: 'none',
                       marginRight: '8px',
@@ -212,6 +227,7 @@ export const ComboboxX = ({
             );
           })
         )}
+        {afterList}
       </StyledList>
     </Box>
   );
