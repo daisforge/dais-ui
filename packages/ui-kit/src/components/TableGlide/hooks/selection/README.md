@@ -16,7 +16,10 @@ useNativeGridSelection ──selection──┬─► useSelectionGeometry ─�
                     │                    активная строка)                   │
                     │ indexes, drawFocusRing                                │
                     ▼                                                       ▼
-        useBaseHighlightRegions ──────────► useColumnRowHighlightRegions
+                          useColoringLayers (единая точка сборки слоёв)
+                          внутри: useBaseHighlightRegions,
+                                  useColumnRowHighlightRegions,
+                                  ховер сервис-зоны
                                                      │
                                                      ▼
                               DataEditor.highlightRegions (в TableGlide.tsx)
@@ -82,6 +85,16 @@ uncontrolled или отдаёт наружу в controlled) и всегда д�
 
 ## Отрисовка (highlightRegions)
 
+### `useColoringLayers`
+Здесь собираются все цветные слои, которые ложатся поверх ячеек: выделение,
+подсветка строк и колонок, рамки. Это же место — карта окрашивания: в
+комментарии в начале файла по порядку расписано, какой слой лежит выше какого.
+С него и стоит начинать чтение.
+
+Сам хук ничего не придумывает. Он по очереди зовёт два хука ниже и добавляет
+подсветку служебных колонок под курсором самым нижним слоем. Наружу отдаётся
+только этот хук, остальные два спрятаны внутри.
+
 ### `useBaseHighlightRegions`
 Базовый слой прямоугольников: затемнение сервис-зоны под активным диапазоном, своя
 заливка+обводка **одиночной** ячейки (в `cell`), outline ошибок (cell-level, `1×1`),
@@ -99,8 +112,8 @@ multi-range).
 
 ### `index.ts`
 Экспортит наружу (в `TableGlide.tsx`) то, что нужно движку: `useNativeGridSelection`,
-`useSelectionGeometry`, `useBaseHighlightRegions`, `useColumnRowHighlightRegions`,
-`useTableSelectionSystem`, `rectContainsCell`. Оси и `rectGeometry` — внутренние.
+`useSelectionGeometry`, `useColoringLayers`, `useTableSelectionSystem`,
+`rectContainsCell`. Оси, `rectGeometry` и оба региона-хука — внутренние.
 
 ## Словарь
 

@@ -277,6 +277,9 @@ export const TableOrCardsUI = <
                 onHiddenColumnsIndicatorClicked={
                   restDataGridProps.onHiddenColumnsIndicatorClicked
                 }
+                verticalBorder={restDataGridProps.verticalBorder}
+                horizontalBorder={restDataGridProps.horizontalBorder}
+                getCellBorder={restDataGridProps.getCellBorder}
                 minColumnWidth={
                   restDataGridProps.minColumnWidth ?? DEFAULT_MIN_COLUMN_WIDTH
                 }
