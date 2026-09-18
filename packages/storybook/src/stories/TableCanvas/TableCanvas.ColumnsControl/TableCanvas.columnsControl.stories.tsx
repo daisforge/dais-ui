@@ -3,16 +3,26 @@ import { createRows, type Row } from '@df-storybook/data/tableData';
 import DocStoryTemplate from '@df-storybook/templates/DocStoryTemplate.mdx';
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
 import type { Meta, StoryObj } from '@storybook/react';
+import { expect, userEvent, waitFor, within } from '@storybook/test';
 import { Box } from '@ui-kit/components/Box';
+import { Button } from '@ui-kit/components/Button';
 import {
   Canvas,
   ColumnConfig,
   ColumnOrColumnGroupConfig,
+  SortColumn,
   TableCanvas,
 } from '@ui-kit/components/TableCanvas';
-import { IconDone, IconPinListOutline } from '@ui-kit/icons';
+import {
+  IconAddOutline,
+  IconBrightness0Fill,
+  IconChevronCircleDownFill,
+  IconDone,
+  IconPinListOutline,
+  IconStar,
+} from '@ui-kit/icons';
 import { textInfo } from '@ui-kit/tokens';
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 
 const meta: Meta = {
   title: 'Локальные компоненты/TableCanvas/ColumnsControl',
@@ -31,6 +41,45 @@ import { ColumnConfig, TableCanvas } from '@daisforge/ui/components/TableCanvas'
 `;
 
 type Story = StoryObj;
+
+/**
+ * Названия колонок в порядке отображения. Шапка TableCanvas рисуется на канвасе,
+ * поэтому берём их из скрытой accessibility-таблицы Glide (th[role=columnheader]).
+ */
+const getHeaderNames = (canvasElement: HTMLElement) =>
+  within(canvasElement)
+    .queryAllByRole('columnheader', { hidden: true })
+    .map((el) => el.textContent?.trim() ?? '');
+
+/**
+ * Тест стори с динамической колонкой: до клика Developer нет, после клика по кнопке
+ * колонка появляется сразу после Title (на своём месте из columnConfig, а не в конце).
+ */
+const playDynamicColumn: Story['play'] = async ({ canvasElement }) => {
+  const canvas = within(canvasElement);
+
+  // ждём рендер таблицы
+  await waitFor(
+    () => expect(getHeaderNames(canvasElement)).toContain('Title'),
+    {
+      timeout: 5000,
+    },
+  );
+  await expect(getHeaderNames(canvasElement)).not.toContain('Developer');
+
+  await userEvent.click(
+    canvas.getByRole('button', { name: 'Добавить колонку Developer' }),
+  );
+
+  await waitFor(
+    () => {
+      const names = getHeaderNames(canvasElement);
+      expect(names).toContain('Developer');
+      expect(names.indexOf('Developer')).toBe(names.indexOf('Title') + 1);
+    },
+    { timeout: 5000 },
+  );
+};
 
 // Плоский набор колонок для стори индикатора скрытых столбцов.
 const INDICATOR_COLS: readonly ColumnConfig<Row>[] = [
@@ -128,6 +177,459 @@ export const ColumnsControl: Story = {
         columnConfig={columnConfig}
         rows={rows}
       />
+    );
+  },
+};
+
+/**
+ * ### Динамическое добавление колонки
+ *
+ * Кнопка над таблицей добавляет колонку Developer в `columnConfig` между Title и
+ * Priority, повторный клик удаляет её. Управление колонками включено
+ * (`columnsControl.enable`), поэтому порядок колонок хранится внутри таблицы —
+ * стори проверяет, что новая колонка встаёт на своё место в конфиге, а не в конец.
+ */
+export const ColumnsControlDynamicColumn: Story = {
+  ...storySourceDoc({
+    preCode,
+    previewSource: 'shown',
+  }),
+  name: 'ColumnsControl: динамическое добавление колонки',
+  play: playDynamicColumn,
+  render: () => {
+    const [rows] = useState(createRows);
+    const [developerIsShown, setDeveloperIsShown] = useState(false);
+
+    const filteringStateAndSetter = useState({
+      id: '',
+      task: '',
+      priority: 'All',
+      issueType: [],
+      complete: '',
+      date: '',
+      globalFilter: '',
+    });
+    const sortingStateAndSetter = useState<readonly SortColumn[]>([]);
+
+    const themeOverride = useCallback<
+      NonNullable<ColumnConfig<Row>['themeOverride']>
+    >((cellInfo) => {
+      if (cellInfo.hovered.rowHover) {
+        return { bgCell: cellInfo.theme.bgHeader };
+      }
+      return {};
+    }, []);
+
+    const columnConfig = useMemo<readonly ColumnConfig<Row>[]>(
+      () => [
+        {
+          key: 'id',
+          name: 'ID',
+          themeOverride,
+        },
+        {
+          key: 'task',
+          name: 'Title',
+          themeOverride,
+          minWidth: 200,
+          width: 250,
+        },
+        ...(developerIsShown
+          ? [
+              {
+                key: 'developer',
+                name: 'Developer',
+                themeOverride,
+              } satisfies ColumnConfig<Row>,
+            ]
+          : []),
+        {
+          key: 'priority',
+          name: 'Priority',
+          sortingType: 'stringSort',
+          themeOverride,
+          filtering: {
+            component: 'select',
+            selectOptions: {
+              type: 'constant',
+              options: [
+                { value: 'All', text: 'All' },
+                { value: 'High', text: 'High' },
+                { value: 'Critical', text: 'Critical' },
+                { value: 'Medium', text: 'Medium' },
+                { value: 'Low', text: 'Low' },
+              ],
+            },
+            keyInFilterState: 'priority',
+            valueInRow: (r) => r.priority,
+            filter: {
+              typeOfValue: 'single',
+              filteringType: (fv, rv) => (fv !== 'All' ? rv === fv : true),
+            },
+          },
+        },
+        {
+          key: 'issueType',
+          name: 'Issue Type',
+          themeOverride,
+          filtering: {
+            component: 'input',
+            filter: 'includes',
+            valueInRow: (r) => `${r.task} ${r.id}`,
+            keyInFilterState: 'task',
+          },
+        },
+        {
+          key: 'complete',
+          name: '% Complete',
+          themeOverride,
+        },
+      ],
+      [developerIsShown, themeOverride],
+    );
+
+    return (
+      <Box $css={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <Box>
+          <Button
+            size="s"
+            view="secondary"
+            onClick={() => setDeveloperIsShown((prev) => !prev)}
+          >
+            {developerIsShown
+              ? 'Удалить колонку Developer'
+              : 'Добавить колонку Developer'}
+          </Button>
+        </Box>
+        <TableCanvas
+          tableConfig={{
+            containerStyle: { height: '60vh' },
+            highlightActiveType: 'row',
+            columnsControl: {
+              enable: true,
+              hiding: true,
+              pinning: true,
+              reorderingAside: true,
+              reorderingHeader: true,
+            },
+            filtering: {
+              state: filteringStateAndSetter,
+              filtersInfo: {
+                id: { label: 'id', clearedValue: '' },
+                task: { label: 'task', clearedValue: '' },
+                priority: { label: 'Some Label', clearedValue: 'All' },
+                issueType: { label: 'issueType', clearedValue: [] },
+                complete: { label: 'complete', clearedValue: '' },
+                date: { label: 'Дата', clearedValue: '' },
+                globalFilter: { label: 'Global filter', clearedValue: '' },
+              },
+            },
+            sorting: {
+              state: sortingStateAndSetter,
+            },
+          }}
+          columnConfig={columnConfig}
+          rows={rows}
+        />
+      </Box>
+    );
+  },
+};
+
+/**
+ * ### Динамическое добавление колонки (SimpleTable)
+ *
+ * Рендер из стори SimpleTable без изменений конфига таблицы. Кнопка над таблицей
+ * добавляет колонку Developer в `columnConfig` между Title и Priority, повторный
+ * клик удаляет её.
+ */
+export const SimpleTableDynamicColumn: Story = {
+  ...storySourceDoc({
+    preCode,
+    previewSource: 'shown',
+  }),
+  name: 'SimpleTable: динамическое добавление колонки',
+  play: playDynamicColumn,
+  render: () => {
+    const [rows] = useState(createRows);
+    const [isFavorite, setIsFavorite] = useState(true);
+    const [developerIsShown, setDeveloperIsShown] = useState(false);
+
+    const filteringStateAndSetter = useState({
+      id: '',
+      task: '',
+      priority: 'All',
+      issueType: [],
+      complete: '',
+      date: '',
+      globalFilter: '',
+    });
+    const themeOverride = useCallback<
+      NonNullable<ColumnConfig<Row>['themeOverride']>
+    >((cellInfo) => {
+      if (cellInfo.hovered.rowHover) {
+        return { bgCell: cellInfo.theme.bgHeader };
+      }
+      return {};
+    }, []);
+
+    const columnConfig = useMemo<readonly ColumnConfig<Row>[]>(
+      () => [
+        {
+          key: 'id',
+          name: 'id',
+          themeOverride,
+          renderHeaderCell: ({ theme }) => (
+            <Canvas.Container
+              direction="row"
+              alignItems="center"
+              gap={8}
+              padding={{
+                left: theme.cellHorizontalPadding,
+                right: theme.cellHorizontalPadding,
+              }}
+            >
+              <Canvas.Container position="relative">
+                <Canvas.Icon icon={<IconChevronCircleDownFill />} />
+                <Canvas.Icon
+                  position="absolute"
+                  top={-5}
+                  right={-5}
+                  icon={<IconBrightness0Fill color="#d70101" size="xs" />}
+                />
+              </Canvas.Container>
+              <Canvas.Container position="relative">
+                <Canvas.Icon icon={<IconAddOutline />} />
+                <Canvas.Icon
+                  position="absolute"
+                  top={-5}
+                  right={-5}
+                  icon={<IconBrightness0Fill color="#d70101" size="xs" />}
+                />
+              </Canvas.Container>
+            </Canvas.Container>
+          ),
+          renderCell: ({ theme }) => (
+            <Canvas.Container
+              direction="row"
+              alignItems="center"
+              justifyContent="space-between"
+              gap={8}
+              padding={{
+                left: theme.cellHorizontalPadding,
+                right: theme.cellHorizontalPadding,
+              }}
+            >
+              <Canvas.Container position="relative">
+                <Canvas.Icon icon={<IconChevronCircleDownFill />} />
+                <Canvas.Icon
+                  position="absolute"
+                  top={-5}
+                  right={-5}
+                  icon={<IconBrightness0Fill color="#d70101" size="xs" />}
+                />
+              </Canvas.Container>
+              <Canvas.Container position="relative">
+                <Canvas.Icon icon={<IconAddOutline />} />
+                <Canvas.Icon
+                  position="absolute"
+                  top={-5}
+                  right={-5}
+                  icon={<IconBrightness0Fill color="#d70101" size="xs" />}
+                />
+              </Canvas.Container>
+            </Canvas.Container>
+          ),
+        },
+        {
+          key: 'task',
+          name: 'Title',
+          themeOverride,
+          minWidth: 200,
+          width: 250,
+          renderCell: ({ row, theme }) => (
+            <Canvas.Container
+              direction="row"
+              alignItems="center"
+              justifyContent="space-between"
+              gap={8}
+              wrap="wrap"
+              padding={{
+                left: theme.cellHorizontalPadding,
+                right: theme.cellHorizontalPadding,
+              }}
+              style={{ width: '100%' }}
+            >
+              <Canvas.Container direction="column" gap={2}>
+                <Canvas.Text
+                  font={theme.baseFontStyle}
+                  color={theme.accentFg}
+                  style={{ flexGrow: 1 }}
+                >
+                  {row.task ?? '—'}
+                </Canvas.Text>
+                <Canvas.Text
+                  font={theme.baseFontStyle}
+                  color={theme.textHeader}
+                  style={{ flexGrow: 1 }}
+                >
+                  {row.priority ?? '—'}
+                </Canvas.Text>
+              </Canvas.Container>
+              <Canvas.Button
+                portalHoverEnabled
+                variant="secondary"
+                onClick={() =>
+                  // eslint-disable-next-line no-console
+                  console.log('Подробнее по сотруднику', row.complete)
+                }
+              >
+                Подробнее
+              </Canvas.Button>
+            </Canvas.Container>
+          ),
+        },
+        ...(developerIsShown
+          ? [
+              {
+                key: 'developer',
+                name: 'Developer',
+                themeOverride,
+              } satisfies ColumnConfig<Row>,
+            ]
+          : []),
+        {
+          key: 'priority',
+          name: 'Priority',
+          sortingType: 'stringSort',
+          themeOverride,
+          filtering: {
+            component: 'select',
+            selectOptions: {
+              type: 'constant',
+              options: [
+                { value: 'All', text: 'All' },
+                { value: 'High', text: 'High' },
+                { value: 'Critical', text: 'Critical' },
+                { value: 'Medium', text: 'Medium' },
+                { value: 'Low', text: 'Low' },
+              ],
+            },
+
+            keyInFilterState: 'priority',
+            valueInRow: (r) => r.priority,
+            filter: {
+              typeOfValue: 'single',
+              filteringType: (fv, rv) => (fv !== 'All' ? rv === fv : true),
+            },
+          },
+        },
+        {
+          key: 'issueType',
+          name: 'Issue Type',
+          themeOverride,
+          filtering: {
+            component: 'input',
+            filter: 'includes',
+
+            valueInRow: (r) => `${r.task} ${r.id}`,
+
+            keyInFilterState: 'task',
+          },
+        },
+        {
+          key: 'complete',
+          name: '% Complete',
+          themeOverride,
+        },
+      ],
+      [developerIsShown, themeOverride],
+    );
+
+    const sortingStateAndSetter = useState<readonly SortColumn[]>([]);
+
+    return (
+      <Box $css={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <Box>
+          <Button
+            size="s"
+            view="secondary"
+            onClick={() => setDeveloperIsShown((prev) => !prev)}
+          >
+            {developerIsShown
+              ? 'Удалить колонку Developer'
+              : 'Добавить колонку Developer'}
+          </Button>
+        </Box>
+        <TableCanvas
+          tableConfig={{
+            containerStyle: { height: '60vh' },
+            rowSize: {
+              default: 'big',
+              showInControl: true,
+            },
+            highlightActiveType: 'row',
+
+            fullScreenEnabled: true,
+            controlBlock: {
+              customFeatures: [
+                // Обязательная кастомная фича
+                {
+                  value: 'favorite',
+                  label: 'Удалить из избранного',
+                  Icon: IconStar,
+                  onClick: () => {},
+                  mandatory: true,
+                  details: {
+                    type: 'switch',
+                    label: 'В избранном',
+                    checked: isFavorite,
+                    onChange: (e) => setIsFavorite(e.target.checked),
+                  },
+                },
+              ],
+            },
+            filtering: {
+              state: filteringStateAndSetter,
+              filtersInfo: {
+                id: {
+                  label: 'id',
+                  clearedValue: '',
+                },
+                task: {
+                  label: 'task',
+                  clearedValue: '',
+                },
+                priority: {
+                  label: 'Some Label',
+                  clearedValue: 'All',
+                },
+                issueType: {
+                  label: 'issueType',
+                  clearedValue: [],
+                },
+                complete: {
+                  label: 'complete',
+                  clearedValue: '',
+                },
+                date: {
+                  label: 'Дата',
+                  clearedValue: '',
+                },
+                globalFilter: {
+                  label: 'Global filter',
+                  clearedValue: '',
+                },
+              },
+            },
+            sorting: {
+              state: sortingStateAndSetter,
+            },
+          }}
+          columnConfig={columnConfig}
+          rows={rows}
+        />
+      </Box>
     );
   },
 };
