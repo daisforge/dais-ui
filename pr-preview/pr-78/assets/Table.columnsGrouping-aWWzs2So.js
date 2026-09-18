@@ -1,0 +1,14 @@
+import{j as o}from"./react-D2T61mpp.js";import{cg as t,ch as e,ca as s}from"./vendor-DwzXrIa_.js";import{T as m}from"./Table.columnsGroup.stories-Dx_mOo3n.js";import"./react-is-Clcustum.js";import"./styled-components-C4HVP9Bu.js";import"./@tanstack/react-virtual-B5rjj9YJ.js";import"./tslib-DoU9Jm1N.js";import"./tableData-DVJFoYoT.js";import"./DocStoryTemplate-D1KCoccP.js";import"./storySourceDoc-tVKyHcEN.js";import"./Table-Br3Prpk9.js";import"./FiltersActions-B9s5M6cr.js";import"./IconButton-BdMspFUd.js";import"./@salutejs/plasma-icons-ByXz74TC.js";import"./@salutejs/sdds-finai-CLAU31SQ.js";import"./@salutejs/sdds-themes-p9DCXULv.js";import"./utils-Cam_MtZy.js";import"./constants-Ci5uyz-N.js";import"./sharedUtilsDebug-BX_KjCjW.js";import"./Box-C2zw6gNX.js";import"./TextField-BKiYQwUB.js";import"./sharedUtilsInputs-Bi3qGV92.js";import"./AnalyticalWidget-pSEUAb11.js";import"./Collapse-DWYGfMp3.js";import"./react-data-grid-BhThHQcM.js";import"./TableTabs-_rcOlpWb.js";import"./TableCanvasSharedConstants-B2qJZwC8.js";import"./sharedUiSearch-DQvbKNpP.js";import"./ListOfFilters-Da26yZqP.js";import"./lodash.isequal-DD0Lfcik.js";import"./NumberFormat-Cqbr1Qf0.js";import"./EmptyState-CQ1IYHsU.js";import"./MassActions-Cr5KFfS2.js";import"./Autocomplete-kr3RqShP.js";function n(r){const i={a:"a",code:"code",h1:"h1",h2:"h2",li:"li",p:"p",ul:"ul",...t(),...r.components};return o.jsxs(o.Fragment,{children:[o.jsx(e,{of:m,name:"Docs"}),`
+`,o.jsx(i.h1,{id:"columnsgrouping",children:"ColumnsGrouping"}),`
+`,o.jsx(i.p,{children:"Вложенная структура шапки таблицы через групповые колонки."}),`
+`,o.jsx(i.h2,{id:"ключевые-особенности",children:"Ключевые особенности"}),`
+`,o.jsxs(i.ul,{children:[`
+`,o.jsxs(i.li,{children:[o.jsx(i.code,{children:"columnConfig"})," может содержать обычные колонки и группы колонок"]}),`
+`,o.jsxs(i.li,{children:["Группа задается через ",o.jsx(i.code,{children:"children"})]}),`
+`,o.jsx(i.li,{children:"Поддерживает несколько уровней вложенности шапки"}),`
+`,o.jsxs(i.li,{children:["Совместима с ",o.jsx(i.code,{children:"columnsControl"})," и ",o.jsx(i.code,{children:"resizableColumn"})]}),`
+`]}),`
+`,o.jsx(i.h2,{id:"особенности",children:"Особенности"}),`
+`,o.jsxs(i.p,{children:["У групповой колонки нет данных строки. Данные отображают leaf-колонки, которые находятся внутри ",o.jsx(i.code,{children:"children"}),"."]}),`
+`,o.jsxs(i.p,{children:["Описание типов - в разделе ",o.jsx(i.a,{href:"?path=/docs/%D0%BB%D0%BE%D0%BA%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D1%8B-table-columnsgrouping-api--docs",children:"API"}),"."]}),`
+`,o.jsx(s,{})]})}function H(r={}){const{wrapper:i}={...t(),...r.components};return i?o.jsx(i,{...r,children:o.jsx(n,{...r})}):n(r)}export{H as default};
