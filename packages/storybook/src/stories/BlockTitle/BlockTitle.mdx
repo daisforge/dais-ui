@@ -12,6 +12,7 @@ import * as BlockTitleStories from './BlockTitle.stories';
 - Настраиваемый размер заголовка через вариант типографики (`titleSize`)
 - Описание под заголовком (`description`)
 - Слоты: `titleLeftSlot`, `titleRightSlot`, `topSlot`, `rightSlot`
+- Настройка тултипа обрезанного заголовка (ширина, позиция) через `titleTooltipProps`
 - Кнопка «назад» через `onBackButtonClick`
 - Кастомизация контейнера через `containerProps` (Box с `$css`)
 
@@ -20,6 +21,19 @@ import * as BlockTitleStories from './BlockTitle.stories';
 - Компонент можно стилизовать: обернув в `styled`, используя `$css` в `containerProps`, или используя объект `blockTitleClassNames` для обращения к подэлементам
 - Слоты `titleLeftSlot`, `titleRightSlot`, `topSlot`, `rightSlot` принимают `ReactNode` или callback с размерами для адаптива
 - По умолчанию адаптив на viewport `<= 1280px` включен; временно отключить его можно через deprecated-проп `disableMediaAdaptive`
+
+## Тултип заголовка
+
+`title` оборачивается в `TypographyWithAutoTooltip`: если текст не помещается в две строки, при наведении показывается тултип с полным заголовком. По умолчанию ширина тултипа не ограничена, поэтому длинный заголовок вытягивается в одну строку. Ограничить ширину и задать позицию можно через `titleTooltipProps`:
+
+```tsx
+<BlockTitle
+  title="Очень длинный заголовок страницы"
+  titleTooltipProps={{ maxWidth: '300px', placement: 'bottom-start' }}
+/>
+```
+
+`titleTooltipProps` принимает пропсы `Tooltip` (кроме `text`, `target`, `trigger`, `opened`, которыми управляет сам компонент): `maxWidth`, `minWidth`, `placement`, `view`, `offset`, `mouseEnterDelay` и другие.
 
 ## Использование адаптивных слотов
 

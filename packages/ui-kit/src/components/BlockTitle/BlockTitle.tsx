@@ -25,6 +25,7 @@ import {
 export const BlockTitle = ({
   title,
   titleSize = 'H2',
+  titleTooltipProps,
   titleLeftSlot,
   titleRightSlot,
   description,
@@ -68,6 +69,7 @@ export const BlockTitle = ({
                 variant={titleSize}
                 className={cls.title}
                 lines={2}
+                tooltipProps={titleTooltipProps}
               >
                 {title}
               </TypographyWithAutoTooltip>
