@@ -329,3 +329,42 @@ export const BlockTitleWithBackButtonAndIcon: Story = {
     </div>
   ),
 };
+
+const longTitle =
+  'Отчёт по операционной эффективности подразделений за третий квартал 2025 года с разбивкой по регионам и продуктам';
+
+export const BlockTitleWithTooltipProps: Story = {
+  name: 'BlockTitle с настройкой тултипа заголовка',
+  ...storySourceDoc({
+    preCode: preCodeExample,
+  }),
+  render: () => (
+    <div
+      style={{
+        height: '100vh',
+        padding: '20px',
+        display: 'flex',
+        backgroundColor: lightBackgroundPrimary,
+      }}
+    >
+      <LeftPanelBlock />
+      <div
+        style={{
+          flex: 1,
+          padding: s.x8,
+          boxShadow: shadowDownSoftS,
+          backgroundColor: surfaceSolidCard,
+          borderRadius: s.x8,
+        }}
+      >
+        <BlockTitle
+          title={longTitle}
+          description="Наведите на заголовок — тултип ограничен по ширине и раскрывается вниз"
+          /* Ограничиваем ширину тултипа и задаём его позицию */
+          titleTooltipProps={{ maxWidth: '300px', placement: 'bottom-start' }}
+          rightSlot={renderRightActionsSlot}
+        />
+      </div>
+    </div>
+  ),
+};

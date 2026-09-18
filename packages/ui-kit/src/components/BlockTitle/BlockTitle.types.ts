@@ -1,5 +1,8 @@
 import { Box } from '@ui-kit/components/Box';
-import { Typography } from '@ui-kit/components/Typography';
+import {
+  Typography,
+  TypographyWithAutoTooltipProps,
+} from '@ui-kit/components/Typography';
 import { ComponentProps, ReactNode } from 'react';
 
 export type BlockTitleSlotSizesProps = {
@@ -34,6 +37,23 @@ export type BlockTitleProps = {
    * Размер заголовка
    */
   titleSize?: ComponentProps<typeof Typography>['variant'];
+  /**
+   * Пропсы тултипа, которым оборачивается обрезанный `title`.
+   *
+   * @remarks
+   * Тултип показывается автоматически, когда `title` не помещается в две строки.
+   * По умолчанию ширина тултипа не ограничена, из-за чего длинный заголовок
+   * растягивается в одну строку — ограничьте её через `maxWidth`.
+   *
+   * @example
+   * ```tsx
+   * <BlockTitle
+   *   title="Очень длинный заголовок"
+   *   titleTooltipProps={{ maxWidth: '300px', placement: 'auto-start' }}
+   * />
+   * ```
+   */
+  titleTooltipProps?: TypographyWithAutoTooltipProps<'H2'>['tooltipProps'];
   /**
    * Иконка слева от заголовка (обычно используется иконка)
    */
