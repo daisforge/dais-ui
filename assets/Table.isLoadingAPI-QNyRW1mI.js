@@ -1,4 +1,0 @@
-import{j as t}from"./react-D2T61mpp.js";import{cg as i,ch as s}from"./vendor-nNOZyNLP.js";import{T as a}from"./TypeSourceViewer-DOEemuTv.js";import"./react-is-Clcustum.js";import"./styled-components-Bm5ATt6S.js";import"./@tanstack/react-virtual-CKihwRsW.js";import"./tslib-DoU9Jm1N.js";function o(e){const n={h1:"h1",h2:"h2",...i(),...e.components};return t.jsxs(t.Fragment,{children:[t.jsx(s,{title:"Локальные компоненты/Table/IsLoading/API"}),`
-`,t.jsx(n.h1,{id:"isloading-api",children:"IsLoading API"}),`
-`,t.jsx(n.h2,{id:"tableconfig",children:"TableConfig"}),`
-`,t.jsx(a,{language:"ts",filePath:"packages/ui-kit/src/components/Table/types/table-config.type.ts",typeName:"TableConfig"})]})}function d(e={}){const{wrapper:n}={...i(),...e.components};return n?t.jsx(n,{...e,children:t.jsx(o,{...e})}):o(e)}export{d as default};
