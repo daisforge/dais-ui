@@ -224,6 +224,12 @@ export type ColumnConfig<
   renderCell?: (cellInfo: CellInfo<Row, SummRow, CustomCtxs>) => CellContent;
   renderCellPreview?: RenderCellPreview<Row, SummRow, CustomCtxs>;
   /**
+   * Рисовать ли вертикальную линию справа от этой колонки (разделитель после неё).
+   * Перекрывает общую настройку `tableConfig.borders.vertical`. Если не задано,
+   * действует общая настройка.
+   */
+  verticalBorder?: boolean;
+  /**
    * Если в поле name был передан jsx, то нужно заполнить nameAsString для указания label в разделе Настройки столбцов, либо для отображения label в фильтрах в правом сайдбаре (но приоритет для фильтро будет ниже, чем то, что указали в filtering.sidebarConfig.items, там отдельно можно перезаписать label для фильтров сайдабара)
    */
   nameAsString?: string;
