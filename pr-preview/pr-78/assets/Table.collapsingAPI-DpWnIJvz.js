@@ -1,0 +1,4 @@
+import{j as e}from"./react-D2T61mpp.js";import{cg as s,ch as a}from"./vendor-Cn_w75H7.js";import{T as i}from"./TypeSourceViewer-CCvaj7Wl.js";import"./react-is-Clcustum.js";import"./styled-components-WMyamcfa.js";import"./@tanstack/react-virtual-BQEO76G2.js";import"./tslib-DoU9Jm1N.js";function o(t){const n={h1:"h1",h2:"h2",...s(),...t.components};return e.jsxs(e.Fragment,{children:[e.jsx(a,{title:"Локальные компоненты/Table/Collapsing/API"}),`
+`,e.jsx(n.h1,{id:"collapsing-api",children:"Collapsing API"}),`
+`,e.jsx(n.h2,{id:"tablecollapseconfig",children:"TableCollapseConfig"}),`
+`,e.jsx(i,{language:"ts",filePath:"packages/ui-kit/src/components/Table/types/table-config.type.ts",typeName:"TableCollapseConfig"})]})}function f(t={}){const{wrapper:n}={...s(),...t.components};return n?e.jsx(n,{...t,children:e.jsx(o,{...t})}):o(t)}export{f as default};
