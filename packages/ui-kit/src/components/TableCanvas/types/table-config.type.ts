@@ -868,6 +868,75 @@ export type MergedCellsRegion = {
   mergedCellsAlign?: MergedCellsAlign;
 };
 
+/**
+ * Видимость сторон рамки ячейки: true рисовать, false не рисовать, не задано -
+ * работает уровень ниже (настройка колонки, строки или общая).
+ */
+export type CellBorderVisibility = {
+  top?: boolean;
+  right?: boolean;
+  bottom?: boolean;
+  left?: boolean;
+};
+
+/**
+ * Управление рамками (линиями) таблицы: включение и выключение. Уровни, от
+ * слабого к сильному: общие настройки (vertical, horizontal), затем колонка
+ * (getVerticalBorder) и строка (getHorizontalBorder), затем ячейка
+ * (getCellBorder).
+ */
+export type BordersConfig<RowType = ObjectForExtending> = {
+  /** Рисовать ли вертикальные линии между колонками. @default true */
+  vertical?: boolean;
+  /** Рисовать ли горизонтальные линии между строками тела. @default true */
+  horizontal?: boolean;
+  /**
+   * Точечное управление вертикальной линией справа от колонки (разделитель
+   * после неё). Вернуть true или false, чтобы переопределить общую настройку
+   * vertical, или undefined, чтобы оставить её. Зовётся на каждую видимую
+   * колонку при перерисовке, поэтому функция должна быть быстрой.
+   */
+  getVerticalBorder?: (params: {
+    /** Ключ колонки, справа от которой рисуется линия. */
+    columnKey: string;
+    /** Индекс колонки в порядке отрисовки (закреплённые в начале). */
+    columnIndex: number;
+  }) => boolean | undefined;
+  /**
+   * Точечное управление горизонтальной линией сверху строки. Вернуть true или
+   * false, чтобы переопределить общую настройку horizontal, или undefined,
+   * чтобы оставить её. Для summary-строк не вызывается. Зовётся на каждую
+   * видимую строку при перерисовке, поэтому функция должна быть быстрой.
+   */
+  getHorizontalBorder?: (params: {
+    /** Строка под линией (линия рисуется сверху этой строки). */
+    row: RowType;
+    /** Индекс строки среди отображаемых. При раскрытии subRows индексы сдвигаются. */
+    rowIndex: number;
+    /** Уровень вложенности subRows: 0 корень, 1 и больше дочерние. */
+    treeLvl: number;
+  }) => boolean | undefined;
+  /**
+   * Стороны рамки конкретной ячейки, вкл и выкл. Для ячеек без переопределений
+   * возвращать undefined. Включает отрисовку линий с разбивкой по ячейкам,
+   * поэтому функция должна быть быстрой: без тяжёлых вычислений и с готовыми
+   * объектами-константами вместо новых на каждый вызов. Для summary-строк не
+   * вызывается.
+   */
+  getCellBorder?: (params: {
+    /** Индекс колонки среди отображаемых (без служебных). */
+    col: number;
+    /** Ключ колонки. */
+    columnKey: string | undefined;
+    /** Строка ячейки. */
+    row: RowType;
+    /** Индекс строки среди отображаемых. */
+    rowIndex: number;
+    /** Уровень вложенности subRows: 0 корень, 1 и больше дочерние. */
+    treeLvl: number;
+  }) => CellBorderVisibility | undefined;
+};
+
 export type TableConfig<
   RowType extends ObjectForExtending,
   SummaryRowType,
@@ -933,6 +1002,19 @@ export type TableConfig<
    * @default false
    */
   enableLowDprHairline?: boolean;
+  /**
+   * Управление рамками (линиями) таблицы: включение и выключение.
+   *
+   * Уровни, от слабого к сильному: общие настройки (vertical, horizontal),
+   * затем колонка (getVerticalBorder) и строка (getHorizontalBorder), затем
+   * ячейка (getCellBorder).
+   *
+   * `vertical: false` и `horizontal: false` убирают все вертикальные или
+   * горизонтальные линии тела. `getCellBorder` включает и выключает стороны
+   * рамки конкретной ячейки; при его использовании линии рисуются с разбивкой
+   * по ячейкам.
+   */
+  borders?: BordersConfig<RowType>;
   /**
    * rowSize - размеры строк таблицы
    */

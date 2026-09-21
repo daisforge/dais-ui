@@ -1,0 +1,55 @@
+import { Meta } from '@storybook/blocks';
+import { TypeSourceViewer } from '@df-storybook/utils/TypeSourceViewer';
+
+<Meta title="Локальные компоненты/TableCanvas/Borders/API" />
+
+# Borders API
+
+## tableConfig.borders
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/TableCanvas/types/table-config.type.ts"
+  typeName="BordersConfig"
+/>
+
+## CellBorderVisibility
+
+Стороны рамки одной ячейки, которые возвращает `getCellBorder`. Для каждой
+стороны:
+
+- `true` — рисовать линию;
+- `false` — не рисовать линию;
+- поле не задано — сторона берётся с уровня ниже (настройка колонки, строки или
+  общая).
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/TableCanvas/types/table-config.type.ts"
+  typeName="CellBorderVisibility"
+/>
+
+## borders.getVerticalBorder
+
+Точечная вертикальная линия справа от колонки. Колбэк получает `columnKey` и
+`columnIndex` (в порядке отрисовки, закреплённые в начале) и возвращает `true`
+или `false`, чтобы переопределить общую настройку `borders.vertical`, или
+`undefined`, чтобы оставить её.
+
+Колбэк зовётся на каждую видимую колонку при каждой перерисовке, поэтому должен
+быть быстрым. Если условие зависит от набора колонок, держите этот набор в `Set`
+заранее (вне колбэка) и проверяйте через `has` — так проверка остаётся дешёвой
+и не растёт с числом колонок:
+
+```tsx
+const COLUMNS_WITHOUT_RIGHT_BORDER = new Set(['priority', 'issueType']);
+
+borders={{
+  getVerticalBorder: ({ columnKey }) =>
+    COLUMNS_WITHOUT_RIGHT_BORDER.has(columnKey) ? false : undefined,
+}}
+```
+
+Тот же приём подходит и для `getHorizontalBorder` и `getCellBorder`: тяжёлые
+вычисления и наборы данных готовьте заранее, а в колбэке оставляйте только
+быструю проверку.

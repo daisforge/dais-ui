@@ -156,7 +156,13 @@ export function useItemHoveredHandler<R extends ObjectForExtending, SR>(
 
       // Трекинг строки под курсором (hoverEffects.row): cell → строка,
       // не-cell (header/group-header/out-of-bounds) → сброс.
-      onHoverRowChange?.(args.kind === 'cell' ? args.location[1] : undefined);
+      // rawLocation это физическая строка под мышью: у объединённой ячейки
+      // location указывает на первую ячейку блока, а подсвечивать надо строку курсора.
+      onHoverRowChange?.(
+        args.kind === 'cell'
+          ? (args.rawLocation?.[1] ?? args.location[1])
+          : undefined,
+      );
 
       const portalTarget = portalEventTargetRef?.current ?? null;
 

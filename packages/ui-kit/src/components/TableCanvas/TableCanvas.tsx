@@ -10,6 +10,7 @@ import {
   RefTableGlobalContainerContext,
   TableResizeObserverProviderWrapper,
 } from './contexts';
+import { useBorders } from './feature-borders/useBorders';
 import { useClipboard, useFillHandle } from './feature-cell-transfer';
 import {
   buildGroupPathByKey,
@@ -315,6 +316,17 @@ export function TableCanvas<
       groupPathByKey,
       onExpand: columnsControlConfig.onHiddenColumnsIndicatorExpand,
     });
+
+  // ------------------------------------------------ borders -----------------------------------------
+  const {
+    verticalBorder: bordersVerticalBorder,
+    horizontalBorder: bordersHorizontalBorder,
+    getCellBorder: bordersGetCellBorder,
+  } = useBorders({
+    borders: tableConfig.borders,
+    reorderedColumns,
+    rowsRef: flattenedRowsRef,
+  });
 
   // ------------------------------------------------ view type -----------------------------------------
   const view = tableConfig.view ?? { type: 'rows' };
@@ -1070,6 +1082,9 @@ export function TableCanvas<
                                   ?.squashedHeaderAlign,
                               hiddenColumnsIndicator,
                               onHiddenColumnsIndicatorClicked,
+                              verticalBorder: bordersVerticalBorder,
+                              horizontalBorder: bordersHorizontalBorder,
+                              getCellBorder: bordersGetCellBorder,
                               editorOverlayPortal:
                                 tableConfig.editorOverlayPortal,
                               checkboxSelectedRowIndexes,
