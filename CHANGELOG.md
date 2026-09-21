@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.20.0](https://github.com/daisforge/dais-ui/compare/v1.19.0...v1.20.0) (2026-09-21)
+
+### Bug Fixes
+
+- **AnalyticalWidget:** скорректирован цвет при наведении на кнопку троеточия ([9e3a5d0](https://github.com/daisforge/dais-ui/commit/9e3a5d0754fe92118a5f5857604647440755d3fd))
+- **LeftPanel:** отступ справа 24px при ширине экрана больше 1280px ([8392f93](https://github.com/daisforge/dais-ui/commit/8392f9326c102fba74e2b0ae7c1ecc3b452561a2))
+- **PageTitle:** выравнивание кнопки назад и titleSlot по высоте заголовка H2 ([eb1744a](https://github.com/daisforge/dais-ui/commit/eb1744a38424195e0e984aa91f66561a2aa952aa))
+- **TableCanvas:** добавленная после первого рендера колонка встаёт на своё место, а не в конец ([#83](https://github.com/daisforge/dais-ui/issues/83)) ([e189404](https://github.com/daisforge/dais-ui/commit/e18940464d9d2f1d25c416c7bb755104c046ea67))
+
+### Features
+
+- **BlockTitle:** добавлен titleTooltipProps для настройки тултипа заголовка ([#84](https://github.com/daisforge/dais-ui/issues/84)) ([2fbfb2f](https://github.com/daisforge/dais-ui/commit/2fbfb2f28173fd85c3da44ad6030a13aaad71e18))
+- **TableCanvas.Borders:** добавлена возможность контролировать видимость вертикальных и горизонтальных линий внутри таблицы ([#78](https://github.com/daisforge/dais-ui/issues/78)) ([de4b82c](https://github.com/daisforge/dais-ui/commit/de4b82caae320390423e524a5d6626d4f58d7ab8))
+- **TableCanvas:** columnConfig.filtering. Добавлен afterList и экспорты TableFilterSelect и его саб-компонетов, исправлен автоперенос текстов([#79](https://github.com/daisforge/dais-ui/issues/79)) ([c43ed0b](https://github.com/daisforge/dais-ui/commit/c43ed0bf8522da5663bc70495bc5cb950aa507b7))
+- **utils:** для изоляции микрофронт-приложений добавлена функция создания инстанса реакта с identifierPrefix ([#81](https://github.com/daisforge/dais-ui/issues/81)) ([49db6bd](https://github.com/daisforge/dais-ui/commit/49db6bdd007b48d155acd576c386aaa1726d9f16))
+
 # [1.19.0](https://github.com/daisforge/dais-ui/compare/v1.18.0...v1.19.0) (2026-09-15)
 
 ### Bug Fixes
