@@ -76,3 +76,4 @@ packages/storybook/__snapshots__/__diff_output__/
 certs/*
 !certs/.gitkeep
 *.pem
+*.diff

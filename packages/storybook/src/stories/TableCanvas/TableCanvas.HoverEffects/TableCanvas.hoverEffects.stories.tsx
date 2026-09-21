@@ -29,12 +29,11 @@ export default meta;
 type Story = StoryObj;
 
 // Варианты значения tableConfig.hoverEffects для playground:
-// выключено / подсветка строки (цвета темы) / подсветка строки со своим цветом.
-type HoverEffectsOption = 'disabled' | 'row' | 'row-custom-color';
+// выключено / подсветка строки (цвета темы).
+type HoverEffectsOption = 'disabled' | 'row';
 
 const HOVER_EFFECTS_OPTIONS: readonly HoverEffectsOption[] = [
   'row',
-  'row-custom-color',
   'disabled',
 ];
 
@@ -42,7 +41,6 @@ const HOVER_EFFECTS_BY_OPTION: Record<HoverEffectsOption, HoverEffectsConfig> =
   {
     disabled: {},
     row: { row: true },
-    'row-custom-color': { row: { color: '#FFF6E5' } },
   };
 
 const HIGHLIGHT_ACTIVE_TYPE_OPTIONS: readonly HighlightActiveType[] = [
@@ -87,6 +85,54 @@ const getRowSelectionKey = (row: Row) => row.id + row.issueType;
 
 `;
 
+// Playground перебирает варианты через селекты, поэтому в показанный код
+// добавлены сами варианты и маппинг на значения tableConfig.hoverEffects,
+// иначе в Show code были бы имена без определений.
+const playgroundPreCode = `
+import { useMemo, useState } from 'react';
+import { Select } from '@daisforge/ui/components/Select';
+import {
+  type CellsSelectionMode,
+  type ColumnConfig,
+  type HighlightActiveType,
+  type HoverEffectsConfig,
+  TableCanvas,
+} from '@daisforge/ui/components/TableCanvas';
+
+// Варианты значения tableConfig.hoverEffects для селекта.
+type HoverEffectsOption = 'disabled' | 'row';
+
+const HOVER_EFFECTS_OPTIONS: readonly HoverEffectsOption[] = ['row', 'disabled'];
+
+// Каждый вариант это готовое значение tableConfig.hoverEffects.
+const HOVER_EFFECTS_BY_OPTION: Record<HoverEffectsOption, HoverEffectsConfig> = {
+  disabled: {},
+  row: { row: true },
+};
+
+const HIGHLIGHT_ACTIVE_TYPE_OPTIONS: readonly HighlightActiveType[] = [
+  'row',
+  'disabled',
+];
+
+const SELECTION_MODE_OPTIONS: readonly CellsSelectionMode[] = [
+  'range-cell',
+  'multi-range-cell',
+  'cell',
+  'disabled',
+];
+
+const COLUMN_CONFIG: readonly ColumnConfig<Row>[] = [
+  { key: 'id', name: 'ID', width: 90 },
+  { key: 'task', name: 'Title', width: 260 },
+  { key: 'priority', name: 'Priority', width: 180 },
+  { key: 'issueType', name: 'Issue Type', width: 180 },
+  { key: 'complete', name: '% Complete', width: 160 },
+];
+const getRowSelectionKey = (row: Row) => row.id + row.issueType;
+
+`;
+
 /**
  * Playground: hoverEffects.row (подсветка строки под курсором) вместе с
  * селектингом и highlightActiveType. Hover — самый нижний визуальный слой:
@@ -95,7 +141,7 @@ const getRowSelectionKey = (row: Row) => row.id + row.issueType;
  * селектинге), checkbox-строки под курсором темнеют целиком (как hover шапки).
  */
 export const HoverEffectsPlayground: Story = {
-  ...storySourceDoc({ preCode, previewSource: 'shown' }),
+  ...storySourceDoc({ preCode: playgroundPreCode, previewSource: 'shown' }),
   render: () => {
     const [hoverOption, setHoverOption] = useState<HoverEffectsOption>('row');
     const [highlightActiveType, setHighlightActiveType] =

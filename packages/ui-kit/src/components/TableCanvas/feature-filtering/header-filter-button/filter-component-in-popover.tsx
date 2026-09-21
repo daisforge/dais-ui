@@ -6,6 +6,7 @@ import type { ColumnConfig, ObjectForExtending } from '../../types';
 import type { Option } from '../../types/additional.type';
 import { ComboboxX } from '../combobox';
 import { StyledSearchBlockFilter } from '../combobox/styled';
+import { RenderSlot } from '../render-slot';
 import { useFocusSearchInput } from '../use-focus-search-input';
 import { inputStopPropagation } from '../utils';
 import { FilterComponentInPopoverProps } from './types';
@@ -80,11 +81,17 @@ const FilterComponentInPopoverInner = <
   }
 
   if (columnConfigFiltering.component === 'custom') {
-    return columnConfigFiltering.customRender(
-      props as FilterComponentInPopoverProps<
-        ObjectForExtending,
-        ColumnConfig<R, SR>
-      >,
+    return (
+      <RenderSlot
+        render={() =>
+          columnConfigFiltering.customRender(
+            props as FilterComponentInPopoverProps<
+              ObjectForExtending,
+              ColumnConfig<R, SR>
+            >,
+          )
+        }
+      />
     );
   }
 
@@ -165,6 +172,8 @@ const FilterComponentInPopoverInner = <
     return [];
   })();
   const BeforeList = columnConfigFiltering?.beforeList ?? (() => undefined);
+  const AfterList = columnConfigFiltering?.afterList ?? (() => undefined);
+
   return (
     <ComboboxX
       // tabIndex={tabIndex} // Комментирую, чтобы в TableCanvas после открытия поповера с фильтрами фокус переключился на инпут
@@ -176,6 +185,8 @@ const FilterComponentInPopoverInner = <
       options={options as any}
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       beforeList={<BeforeList {...(props as any)} />}
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      afterList={<AfterList {...(props as any)} />}
       listMaxHeight={columnConfigFiltering.listMaxHeight ?? '360px'}
       width={FILTER_POPOVER_WIDTH[rowSize]}
     />

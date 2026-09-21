@@ -19,7 +19,13 @@ export {
   type CellEditorNumberFormatProps,
   type CellEditorTextAreaProps,
 } from './feature-edit/types';
-export { TableFilterSelectListItem } from './feature-filtering';
+export {
+  TableFilterSelect,
+  TableFilterSelectList,
+  TableFilterSelectListItem,
+  TableFilterSelectSearchTextfield,
+  TableFilterSelectTotalListItemContainer,
+} from './feature-filtering';
 export { addSkeletonToCellInRow } from './feature-infinity-scroll';
 export type {
   TableNotification,

@@ -31,11 +31,11 @@
     "registry": "https://registry.npmjs.org/"
   },
   "dependencies": {
-    "@glideappsfinal/glide-data-grid": "6.4.0",
-    "@salutejs/plasma-icons": "1.249.0",
-    "@salutejs/plasma-typo": "0.53.0",
-    "@salutejs/sdds-finai": "0.357.1",
-    "@salutejs/sdds-themes": "0.79.1",
+    "@glideappsfinal/glide-data-grid": "6.5.0",
+    "@salutejs/plasma-icons": "^1.250.0",
+    "@salutejs/plasma-typo": "^0.54.0",
+    "@salutejs/sdds-finai": "^0.360.0",
+    "@salutejs/sdds-themes": "^0.82.0",
     "canvas-hypertxt": "1.0.3",
     "lodash.clonedeep": "4.5.0",
     "lodash.isequal": "4.5.0",
