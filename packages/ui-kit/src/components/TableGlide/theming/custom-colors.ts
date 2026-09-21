@@ -83,13 +83,15 @@ const CUSTOM_COLORS = {
     highContrastLight: '#B9D6E7',
     betaCoreLight: '#D4E7F2',
   },
-  // Checkbox-selected строка под курсором: вся строка темнеет
-  // (как hover шапки — bgHeaderHovered), вместо серого hover.
+  // Checkbox-selected строка под курсором: вся строка темнеет вместо серого
+  // hover. По решению дизайнера цвет совпадает со служебной зоной при
+  // выделении/ховере (selectionServiceActiveBg), чтобы data-ячейки и служебные
+  // колонки такой строки были одного цвета.
   bgSelectedRowHovered: {
-    light: '#DEECF5',
-    dark: '#DEECF5',
-    highContrastLight: '#C2DCEB',
-    betaCoreLight: '#DEECF5',
+    light: '#D4E7F2',
+    dark: '#D4E7F2',
+    highContrastLight: '#B9D6E7',
+    betaCoreLight: '#D4E7F2',
   },
 } as const;
 

@@ -58,10 +58,77 @@ const SELECTION_MODE_OPTIONS: Array<{
   { label: 'disabled', value: 'disabled' },
 ];
 
+// Фрагменты для панели «Show code», чтобы каждый пример был самодостаточным.
+const CPF_IMPORTS = `import { ColumnConfig, TableCanvas } from '@daisforge/ui/components/TableCanvas';`;
+
+const CPF_ROWS = `const rows = [
+  { id: 1, task: 'Task 1', priority: 'Critical', issueType: 'Bug', complete: 20 },
+  { id: 2, task: 'Task 2', priority: 'High', issueType: 'Story', complete: 55 },
+  { id: 3, task: 'Task 3', priority: 'Medium', issueType: 'Epic', complete: 80 },
+];`;
+
+const CPF_COLUMNS = `const columnConfig: ColumnConfig<Row>[] = [
+  { key: 'id', name: 'ID', width: 80, editingCell: { component: 'inputNumber' } },
+  { key: 'task', name: 'Title', width: 260, editingCell: { component: 'inputString' } },
+  { key: 'priority', name: 'Priority', width: 180, editingCell: { component: 'inputString' } },
+  { key: 'complete', name: '% Complete', width: 160, editingCell: { component: 'inputNumber' } },
+];`;
+
 export const ClipboardFullDemo: Story = {
   name: 'Полный пример (все возможности)',
   ...storySourceDoc({
     previewSource: 'shown',
+    code: `import { Canvas, ColumnConfig, TableCanvas } from '@daisforge/ui/components/TableCanvas';
+
+const rows = [
+  {
+    id: 1,
+    block: 'Платформа',
+    blockActivity: 'Активный',
+    q1: 100,
+    q2: 120,
+    subRows: [{ id: 11, block: 'Команда A', blockActivity: 'Активный', q1: 40 }],
+  },
+];
+
+const columnConfig: ColumnConfig<Row>[] = [
+  {
+    key: 'block',
+    name: 'Блок',
+    editingCell: { component: 'inputString' },
+    subRow: {
+      keyOfColumnInSubRow: (lvl) => (lvl === 0 ? 'block' : 'tribe'),
+      isColumnWithArrow: true,
+      editingCell: { component: 'inputString' },
+    },
+  },
+  {
+    key: 'blockActivity',
+    name: 'Активность',
+    renderCell: ({ row }) => (
+      <Canvas.Container direction="row" alignItems="center" padding={8}>
+        <Canvas.Badge text={row.blockActivity} size="s" />
+      </Canvas.Container>
+    ),
+    copyData: (row) => row.blockActivity ?? '',
+    editingCell: { component: 'inputString' },
+  },
+  { key: 'q1', name: 'Q1', contentFormat: 'number', editingCell: { component: 'inputNumber' } },
+  { key: 'q2', name: 'Q2', contentFormat: 'number', editingCell: { component: 'inputNumber' } },
+];
+
+<TableCanvas
+  tableConfig={{
+    cellsSelection: { mode: 'range-cell', enableColumnSelection: true },
+    highlightActiveType: 'row',
+    rowMarkers: { startIndex: 1 },
+    subRows: { getSubRows: (row) => row.subRows, rowKeyGetter: (row) => row.id },
+    editing: { onRowsChange: setRows, rowKeyGetter: (r) => \`\${r.id}\` },
+    resizableColumn: true,
+  }}
+  columnConfig={columnConfig}
+  rows={rows}
+/>`,
   }),
   render: () => {
     useEffect(() => {
@@ -314,6 +381,30 @@ export const InterceptCopyPaste: Story = {
   name: 'Перехват onBeforeCopy / onBeforePaste',
   ...storySourceDoc({
     previewSource: 'shown',
+    code: `${CPF_IMPORTS}
+
+${CPF_ROWS}
+
+${CPF_COLUMNS}
+
+<TableCanvas
+  tableConfig={{
+    cellTransfer: {
+      onBeforeCopy: (data, meta) => {
+        console.log('copy', data, meta.cells);
+        return data;
+      },
+      onBeforePaste: (data) => (data.length > 5 ? false : data),
+    },
+    editing: {
+      onRowsChange: setRows,
+      rowKeyGetter: (r) => \`\${r.id}\`,
+      defaultEnabled: true,
+    },
+  }}
+  columnConfig={columnConfig}
+  rows={rows}
+/>`,
   }),
   render: () => {
     const [rows, setRows] = useState(createRows);
@@ -422,6 +513,38 @@ export const CopyDataExample: Story = {
   name: 'copyData для кастомных ячеек',
   ...storySourceDoc({
     previewSource: 'shown',
+    code: `import { Canvas, ColumnConfig, TableCanvas } from '@daisforge/ui/components/TableCanvas';
+
+${CPF_ROWS}
+
+const columnConfig: ColumnConfig<Row>[] = [
+  { key: 'id', name: 'ID', width: 80 },
+  { key: 'task', name: 'Title', width: 240 },
+  {
+    key: 'priority',
+    name: 'Priority',
+    width: 220,
+    renderCell: ({ row }) => (
+      <Canvas.Container direction="row" alignItems="center" padding={8}>
+        <Canvas.Badge text={row.priority} size="s" />
+      </Canvas.Container>
+    ),
+    copyData: (row) => row.priority ?? '',
+  },
+  { key: 'complete', name: '% Complete', width: 140 },
+];
+
+<TableCanvas
+  tableConfig={{
+    editing: {
+      onRowsChange: setRows,
+      rowKeyGetter: (r) => \`\${r.id}\`,
+      defaultEnabled: true,
+    },
+  }}
+  columnConfig={columnConfig}
+  rows={rows}
+/>`,
   }),
   render: () => {
     const [rows, setRows] = useState(createRows);
@@ -510,6 +633,44 @@ export const TypeCheckValidation: Story = {
   name: 'Валидация типов при вставке',
   ...storySourceDoc({
     previewSource: 'shown',
+    code: `${CPF_IMPORTS}
+
+${CPF_ROWS}
+
+const columnConfig: ColumnConfig<Row>[] = [
+  { key: 'id', name: 'ID', width: 80 },
+  { key: 'task', name: 'Title', width: 240, editingCell: { component: 'inputString' } },
+  {
+    key: 'priority',
+    name: 'Priority',
+    width: 180,
+    editingCell: {
+      component: 'select',
+      options: {
+        type: 'constant',
+        options: [
+          { value: 'Critical', text: 'Critical' },
+          { value: 'High', text: 'High' },
+          { value: 'Medium', text: 'Medium' },
+          { value: 'Low', text: 'Low' },
+        ],
+      },
+    },
+  },
+  { key: 'complete', name: '% Complete', width: 180, editingCell: { component: 'inputNumber' } },
+];
+
+<TableCanvas
+  tableConfig={{
+    editing: {
+      onRowsChange: setRows,
+      rowKeyGetter: (r) => \`\${r.id}\`,
+      defaultEnabled: true,
+    },
+  }}
+  columnConfig={columnConfig}
+  rows={rows}
+/>`,
   }),
   render: () => {
     useEffect(() => {
@@ -597,6 +758,44 @@ export const FillHandleWithSourceRow: Story = {
   name: 'Fill Handle — доступ к source row (onBeforeFill)',
   ...storySourceDoc({
     previewSource: 'shown',
+    code: `${CPF_IMPORTS}
+
+${CPF_ROWS}
+
+${CPF_COLUMNS}
+
+<TableCanvas
+  tableConfig={{
+    cellTransfer: {
+      fillHandle: true,
+      onBeforeFill: (data, meta) => {
+        console.log('source row', meta.sourceCells[0]?.[0]?.row);
+        return data;
+      },
+    },
+    editing: {
+      rowKeyGetter: (r) => \`\${r.id}\`,
+      onRowsChange: (newRows, { indexes, column, type, fillMeta }) => {
+        if (type === 'fill' && fillMeta && column.key === 'complete') {
+          const sourceRow = fillMeta.sourceCells[0]?.[0]?.row;
+          if (sourceRow) {
+            setRows(
+              newRows.map((row, i) =>
+                indexes.includes(i)
+                  ? { ...row, priority: sourceRow.priority }
+                  : row,
+              ),
+            );
+            return;
+          }
+        }
+        setRows(newRows);
+      },
+    },
+  }}
+  columnConfig={columnConfig}
+  rows={rows}
+/>`,
   }),
   render: () => {
     const [rows, setRows] = useState(createRows);
@@ -713,6 +912,29 @@ export const CustomHotkeys: Story = {
   name: 'Кастомные хоткеи',
   ...storySourceDoc({
     previewSource: 'shown',
+    code: `${CPF_IMPORTS}
+
+${CPF_ROWS}
+
+${CPF_COLUMNS}
+
+<TableCanvas
+  tableConfig={{
+    cellTransfer: {
+      hotkeys: {
+        copy: { code: 'KeyC', ctrl: true, alt: true },
+        paste: { code: 'KeyV', ctrl: true, alt: true },
+      },
+    },
+    editing: {
+      onRowsChange: setRows,
+      rowKeyGetter: (r) => \`\${r.id}\`,
+      defaultEnabled: true,
+    },
+  }}
+  columnConfig={columnConfig}
+  rows={rows}
+/>`,
   }),
   render: () => {
     const [rows, setRows] = useState(createRows);

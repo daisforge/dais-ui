@@ -7,20 +7,17 @@ import * as HoverEffectsStories from './TableCanvas.hoverEffects.stories';
 
 Эффекты при наведении — единый расширяемый конфиг `tableConfig.hoverEffects`.
 Сейчас поддерживается **подсветка строки под курсором** (`row`). Чисто визуальная фича, по умолчанию
-**выключена**. В будущем в этом же объекте появятся hover по ячейке, кастомные
-мапки цветов и т.д.
+**выключена**. В будущем в этом же объекте появятся hover по ячейке и т.д.
 
 ## Как включить
 
 ```tsx
-tableConfig={{ hoverEffects: { row: true } }}                   // цвета из темы
-tableConfig={{ hoverEffects: { row: { color: '#FFF6E5' } } }}   // свой цвет
+tableConfig={{ hoverEffects: { row: true } }} // цвета из темы
 ```
 
 ## Цвета (уровень темы)
 
-- **data-ячейки** hovered-строки — серый `bgRowHovered` (или свой `color` из
-  конфига);
+- **data-ячейки** hovered-строки — серый `bgRowHovered`;
 - **служебные колонки** (нумерация / чекбокс / инструменты строк) hovered-строки
   не сереют — темнеют голубым `bgServiceRowHovered`, тем же цветом, что
   сервис-зона при селектинге;
