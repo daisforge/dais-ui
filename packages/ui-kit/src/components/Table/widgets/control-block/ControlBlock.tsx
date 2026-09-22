@@ -535,6 +535,9 @@ export const ControlBlock = ({
           alignment="center"
           style={{
             flexWrap: 'nowrap',
+            // Левая зона — строго по содержимому: иначе её может растянуть
+            // окружение и поиск отжимается к центру/правому краю
+            flex: '0 0 auto',
           }}
         >
           {/* Collapsing block - рендерим только если размещение внутри  */}

@@ -92,6 +92,8 @@ export const ControlBlockWithoutResize = ({
           alignment="center"
           style={{
             flexWrap: 'nowrap',
+            // Левая зона — строго по содержимому, см. комментарий в ControlBlock
+            flex: '0 0 auto',
           }}
         >
           {collapseButtonPlacement === 'inside' && <CollapseTableButton />}
