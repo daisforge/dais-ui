@@ -6,6 +6,13 @@
   "api": {
     "props": [
       {
+        "name": "appearance",
+        "type": "\"default\" | \"viewMode\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
         "name": "contentLeft",
         "type": "ReactElement<any, string | JSXElementConstructor<any>>",
         "required": false,
@@ -126,6 +133,13 @@
       },
       {
         "name": "singleLine",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "hasDivider",
         "type": "boolean",
         "required": false,
         "default": "",
@@ -473,13 +487,6 @@
         "required": false,
         "default": "",
         "description": ""
-      },
-      {
-        "name": "appearance",
-        "type": "\"default\" | \"viewMode\"",
-        "required": false,
-        "default": "",
-        "description": ""
       }
     ]
   },
@@ -543,6 +550,10 @@
     {
       "title": "Примеры Примеры",
       "snippet": "import React, { useState } from 'react';\nimport { Combobox } from '@salutejs/sdds-finai';\nexport function App() {\n    const [value, setValue] = useState('brazil');\n    const items = [\n        {\n            value: 'north_america',\n            label: 'Северная Америка',\n        },\n        {\n            value: 'south_america',\n            label: 'Южная Америка',\n            items: [\n                {\n                    value: 'brazil',\n                    label: 'Бразилия',\n                },\n                {\n                    value: 'argentina',\n                    label: 'Аргентина',\n                },\n            ],\n        },\n    ];\n    const renderSelectionIcon = (selected: boolean | 'indeterminate') => {\n        if (selected === true) {\n            return <div style={{ width: '10px', height: '10px', borderRadius: '100%', background: 'red' }} />;\n        }\n        if (selected === 'indeterminate') {\n            return <div style={{ width: '10px', height: '10px', background: 'blue' }} />;\n        }\n        return null;\n    };\n    return (\n        <div style={{ height: '300px' }}>\n           <div style={{ width: '400px' }}>\n                <Combobox\n                    items={items}\n                    value={value}\n                    onChange={setValue}\n                    renderSelectionIcon={renderSelectionIcon}\n                />\n            </div>\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Примеры Примеры",
+      "snippet": "import React, { useState } from 'react';\nimport { BodyXS, Combobox, Divider, LinkButton, TabItem, Tabs } from '@salutejs/sdds-finai';\nexport function App() {\n    const regions = [\n        { value: 'all', label: 'Все' },\n        { value: 'europe', label: 'Европа' },\n        { value: 'asia', label: 'Азия' },\n    ];\n    const cities = [\n        { value: 'berlin', label: 'Берлин', region: 'europe' },\n        { value: 'paris', label: 'Париж', region: 'europe' },\n        { value: 'rome', label: 'Рим', region: 'europe' },\n        { value: 'madrid', label: 'Мадрид', region: 'europe' },\n        { value: 'prague', label: 'Прага', region: 'europe' },\n        { value: 'tokyo', label: 'Токио', region: 'asia' },\n        { value: 'seoul', label: 'Сеул', region: 'asia' },\n        { value: 'bangkok', label: 'Бангкок', region: 'asia' },\n        { value: 'shanghai', label: 'Шанхай', region: 'asia' },\n    ];\n    const [region, setRegion] = useState('all');\n    const [value, setValue] = useState([]);\n    const items = cities.filter((item) => region === 'all' || item.region === region);\n    return (\n        <div style={{ display: \"flex\", gap: \"30px\", height: \"420px\" }}>\n            <div style={{ width: \"300px\" }}>\n                <Combobox\n                    multiple\n                    items={items}\n                    value={value}\n                    onChange={setValue}\n                    label=\"Label\"\n                    placeholder=\"Placeholder\"\n                    listMaxHeight=\"200px\"\n                    beforeList={\n                        <Tabs view=\"filled\" size=\"xs\" stretch>\n                            {regions.map((item) => (\n                                <TabItem\n                                    key={item.value}\n                                    view=\"secondary\"\n                                    size=\"xs\"\n                                    tabIndex={0}\n                                    selected={item.value === region}\n                                    onClick={() => setRegion(item.value)}\n                                >\n                                    {item.label}\n                                </TabItem>\n                            ))}\n                        </Tabs>\n                    }\n                    afterList={\n                        <>\n                            <Divider />\n                            <div\n                                style={{\n                                    display: 'flex',\n                                    alignItems: 'center',\n                                    justifyContent: 'space-between',\n                                    gap: '0.5rem',\n                                    padding: '0.5rem 0.75rem',\n                                }}\n                            >\n                                <BodyXS style={{ color: 'var(--text-secondary)' }}>\n                                    {`В разделе: ${items.length}`}\n                                </BodyXS>\n                                <LinkButton\n                                    size=\"xs\"\n                                    view=\"accent\"\n                                    text=\"Показать все\"\n                                    disabled={region === 'all'}\n                                    onClick={() => setRegion('all')}\n                                />\n                            </div>\n                        </>\n                    }\n                />\n            </div>\n        </div>\n    );\n}"
     },
     {
       "title": "Взаимодействие с disabled-элементами",

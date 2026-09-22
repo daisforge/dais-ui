@@ -49,7 +49,14 @@
       },
       {
         "name": "initialFocusRef",
-        "type": "RefObject<HTMLElement>",
+        "type": "string | RefObject<HTMLElement>",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "focusTrapSelectors",
+        "type": "string[]",
         "required": false,
         "default": "",
         "description": ""
@@ -70,6 +77,13 @@
       },
       {
         "name": "view",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "size",
         "type": "string",
         "required": false,
         "default": "",
@@ -192,8 +206,16 @@
       "snippet": "import React, { useState } from 'react';\nimport { Button, Modal, PopupProvider } from '@salutejs/sdds-finai';\nexport function App() {\n    const [isOpenA, setIsOpenA] = useState(false);\n    const [isOpenB, setIsOpenB] = useState(false);\n    return (\n        <PopupProvider>\n            <div style={{ height: \"300px\" }}>\n                <div style={{ display: 'flex', flexDirection: 'column' }}>\n                    <Button text=\"Открыть A\" onClick={() => setIsOpenA(true)} />\n                </div>\n                <Modal\n                    id=\"modalA\"\n                    onClose={() => setIsOpenA(false)}\n                    opened={isOpenA}\n                    placement=\"center\"\n                    offset={[0, 0]}\n                    hasBody\n                >\n                    <Button onClick={() => setIsOpenA(false)}>Close</Button>\n                    <Button text=\"Открыть B\" onClick={() => setIsOpenB(true)} />\n                    Content\n                    <Modal\n                        id=\"modalB\"\n                        onClose={() => setIsOpenB(false)}\n                        opened={isOpenB}\n                        placement=\"right\"\n                        offset={[0, 0]}\n                    >\n                        <Button onClick={() => setIsOpenB(false)}>Close</Button>\n                        Content\n                    </Modal>\n                </Modal>\n            </div>\n        </PopupProvider>\n    );\n}"
     },
     {
+      "title": "Ширина окна",
+      "snippet": "import React, { useState } from 'react';\nimport { surfaceSolidSecondary } from '@salutejs/sdds-themes/tokens';\nimport { Button, Modal, PopupProvider } from '@salutejs/sdds-finai';\nexport function App() {\n    const [isOpenFixed, setIsOpenFixed] = useState(false);\n    const [isOpenFull, setIsOpenFull] = useState(false);\n    return (\n        <PopupProvider>\n            <div style={{ height: \"300px\" }}>\n                <div style={{ display: 'flex', gap: '1rem' }}>\n                    <Button text=\"Фиксированная ширина\" onClick={() => setIsOpenFixed(true)} />\n                    <Button text=\"На всю ширину экрана\" onClick={() => setIsOpenFull(true)} />\n                </div>\n                <Modal\n                    id=\"modalFixed\"\n                    onClose={() => setIsOpenFixed(false)}\n                    opened={isOpenFixed}\n                    placement=\"center\"\n                    offset={[0, 0]}\n                    style={{ width: \"25rem\" }}\n                    hasBody\n                >\n                    <Button text=\"Закрыть\" onClick={() => setIsOpenFixed(false)} />\n                </Modal>\n                <Modal\n                    id=\"modalFull\"\n                    onClose={() => setIsOpenFull(false)}\n                    opened={isOpenFull}\n                    placement=\"bottom\"\n                    offset={[0, 0]}\n                    style={{ width: \"100%\" }}\n                >\n                    <div style={{ background: `${surfaceSolidSecondary}`, padding: \"1rem\" }}>\n                        <Button text=\"Закрыть\" onClick={() => setIsOpenFull(false)} />\n                    </div>\n                </Modal>\n            </div>\n        </PopupProvider>\n    );\n}"
+    },
+    {
       "title": "Подключение анимации",
       "snippet": "import styled from 'styled-components';\nimport { Modal } from '@salutejs/sdds-finai';\nconst StyledModal = styled(Modal)`\n    && > .${popupClasses.root}, .${modalClasses.overlay} {\n        animation: fadeIn 1s forwards;\n    }\n    &&.${popupClasses.endAnimation} .${popupClasses.root} {\n        animation: fadeOut 1s forwards;\n    }\n    &&.${popupClasses.endAnimation} .${modalClasses.overlay} {\n        animation: fadeOut 1s forwards;\n    }\n    @keyframes fadeIn {\n        from {\n            opacity: 0;\n        }\n        to {\n            opacity: 1;\n        }\n    }\n    @keyframes fadeOut {\n        from {\n            opacity: 1;\n        }\n        to {\n            opacity: 0;\n        }\n    }\n`;"
+    },
+    {
+      "title": "FocusTrapped FocusTrapped Свойство  isFocusTrapped  захватывает фокус внутри одного DOM элемента. Когда свойство имеет значение  true , при нажатии  Tab  или  Shift + Tab  фокус будет перемещаться только внутри модального окна.",
+      "snippet": "<Modal opened focusTrapSelectors={['#fullscreen-table', '.nested-modal']}>\n    <Content />\n</Modal>"
     },
     {
       "title": "Draggable Draggable Чтобы иметь возможность перетаскивать Modal по экрану нужно включить свойство  draggable . Пример",

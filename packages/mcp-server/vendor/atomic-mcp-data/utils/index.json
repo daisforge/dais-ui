@@ -1,0 +1,8 @@
+[
+  {
+    "name": "mixins",
+    "href": "mixins.json",
+    "summary": "|---|---|---|---| | outlineSize | string | '0.125rem' | Толщина фокусной рамки | | outlineOffset | string | '0.125rem' | Отступ от элемента: отрицательное — рамка внутри , положительное — снаружи | | outlineColor | string | 'var(--text-accent)' | Цвет фокусной рамки | | outlineRadius | string | '30p",
+    "category": "utils"
+  }
+]

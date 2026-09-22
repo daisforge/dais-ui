@@ -1,0 +1,8 @@
+[
+  {
+    "name": "tokens.ts",
+    "href": "tokens.ts.json",
+    "summary": "/** Основной цвет текста */\nexport declare const textPrimaryHover = 'var(--text-primary-hover)';\n/** Основной цвет текста */\nexport declare const textPrimaryActive = 'var(--text-primary-active)';\n/** Вторичный цвет текста */\nexport declare const textSecondaryHover = 'var(--text-secondary-hover)';\n/*",
+    "category": "tokens"
+  }
+]

@@ -1,0 +1,50 @@
+# ВРЕМЕННЫЙ ФАЙЛ — удалить после проверки.
+name: TMP probe plasma CDN
+
+# Единственная цель: выяснить, достаёт ли раннер GitHub (Azure, вне РФ) до
+# plasma.sberdevices.ru, откуда vendorAtomicData.ts тянет вендорный снэпшот.
+# Локально и через r.jina.ai адрес отвечает, но это ничего не говорит про
+# раннер. После получения ответа файл удаляется.
+on:
+  push:
+    branches:
+      - 'feature/mcp-vendor-from-cdn'
+  workflow_dispatch: {}
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: npm
+
+      - name: Где мы находимся
+        run: curl -s -m 20 https://ipinfo.io/json || echo "ipinfo недоступен"
+
+      - name: manifest.json (без редиректов, как в скрипте)
+        run: |
+          echo "--- HTTP-код и время ответа ---"
+          curl -s -o /tmp/manifest.json -w "code=%{http_code} time=%{time_total}s size=%{size_download}\n" \
+            -m 30 --max-redirs 0 \
+            https://plasma.sberdevices.ru/mcp/sdds-finai/latest/manifest.json
+          echo "--- тело ---"
+          head -c 400 /tmp/manifest.json || true
+
+      - name: Один файл компонента
+        run: |
+          curl -s -o /tmp/Button.json -w "code=%{http_code} size=%{size_download}\n" \
+            -m 30 --max-redirs 0 \
+            https://plasma.sberdevices.ru/mcp/sdds-finai/latest/components/Button.json
+          node -e "const j=require('/tmp/Button.json');console.log('Button props:',j.api.props.length,'examples:',j.examples.length)"
+
+      - name: Полный прогон настоящего скрипта (dry-run)
+        run: |
+          npm ci --ignore-scripts
+          npm run mcp:ci
+          npm run mcp:vendor-atomic:check

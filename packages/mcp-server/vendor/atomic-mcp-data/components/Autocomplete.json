@@ -76,6 +76,13 @@
         "description": ""
       },
       {
+        "name": "hasDivider",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
         "name": "listMaxHeight",
         "type": "string",
         "required": false,
@@ -279,13 +286,6 @@
         "description": ""
       },
       {
-        "name": "hasDivider",
-        "type": "boolean",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
         "name": "suggestions",
         "type": "T[]",
         "required": false,
@@ -432,6 +432,10 @@
     {
       "title": "Примеры Примеры",
       "snippet": "import React from 'react';\nimport { Select, Cell } from '@salutejs/sdds-finai';\nexport function App() {\n    const items = [\n        { label: 'Алексей Смирнов' },\n        { label: 'Екатерина Иванова' },\n    ];\n    const renderItem = ({ label }) => (\n        <Cell\n            view=\"default\"\n            title={label}\n            label=\"Top left\"\n            contentRight={<Cell view=\"default\" title=\"Bottom right\" label=\"Top right\" />}\n        />\n    )\n    return (\n        <div style={{ display: 'block', height: \"350px\" }}>\n            <Autocomplete suggestions={items} threshold={0} label=\"Label\" placeholder=\"Placeholder\" renderItem={renderItem} />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Примеры Примеры",
+      "snippet": "import React, { useState } from 'react';\nimport { Autocomplete, BodyXS, Divider, TabItem, Tabs } from '@salutejs/sdds-finai';\nexport function App() {\n    const departments = [\n        { value: 'all', label: 'Все' },\n        { value: 'design', label: 'Дизайн' },\n        { value: 'frontend', label: 'Фронтенд' },\n    ];\n    const people = [\n        { label: 'Алексей Смирнов', department: 'design' },\n        { label: 'Екатерина Иванова', department: 'design' },\n        { label: 'Ольга Васильева', department: 'design' },\n        { label: 'Дмитрий Петров', department: 'frontend' },\n        { label: 'Сергей Сидоров', department: 'frontend' },\n        { label: 'Мария Кузнецова', department: 'frontend' },\n        { label: 'Андрей Попов', department: 'frontend' },\n    ];\n    const [department, setDepartment] = useState('all');\n    const [value, setValue] = useState('');\n    const filter = (item) =>\n        (department === 'all' || item.department === department) &&\n        item.label.toLowerCase().includes(value.toLowerCase());\n    const found = people.filter(filter);\n    return (\n        <div style={{ display: 'block', height:\"420px\" }}>\n            <Autocomplete\n                suggestions={people}\n                filter={filter}\n                value={value}\n                onChange={(event) => setValue(event.target.value)}\n                onSuggestionSelect={(item) => setValue(item.label)}\n                threshold={0}\n                label=\"Label\"\n                placeholder=\"Placeholder\"\n                listMaxHeight=\"200px\"\n                beforeList={\n                    <Tabs view=\"filled\" size=\"xs\" stretch>\n                        {departments.map((item) => (\n                            <TabItem\n                                key={item.value}\n                                view=\"secondary\"\n                                size=\"xs\"\n                                tabIndex={0}\n                                selected={item.value === department}\n                                onClick={() => setDepartment(item.value)}\n                            >\n                                {item.label}\n                            </TabItem>\n                        ))}\n                    </Tabs>\n                }\n                afterList={\n                    <>\n                        <Divider />\n                        <BodyXS style={{ padding: '0.5rem 0.75rem', color: 'var(--text-secondary)' }}>\n                            {`Найдено: ${found.length}`}\n                        </BodyXS>\n                    </>\n                }\n            />\n        </div>\n    );\n}"
     },
     {
       "title": "Клавиатурная навигация",

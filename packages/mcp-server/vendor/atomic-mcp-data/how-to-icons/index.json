@@ -1,0 +1,8 @@
+[
+  {
+    "name": "how-to-icons",
+    "href": "how-to-icons.json",
+    "summary": "Так в итоговый бандл попадут только импортированные компоненты.",
+    "category": "how-to-icons"
+  }
+]

@@ -35,7 +35,7 @@
       },
       {
         "name": "value",
-        "type": "string",
+        "type": "string | (string & readonly string[])",
         "required": false,
         "default": "",
         "description": ""
@@ -118,6 +118,13 @@
         "description": ""
       },
       {
+        "name": "enableWebOTP",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
         "name": "onChange",
         "type": "((value: string) => void)",
         "required": false,
@@ -127,6 +134,13 @@
       {
         "name": "onFullCodeEnter",
         "type": "((code: string) => void)",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "onClick",
+        "type": "MouseEventHandler<HTMLDivElement>",
         "required": false,
         "default": "",
         "description": ""
@@ -165,6 +179,10 @@
     {
       "title": "Нативный input и HTML-формы",
       "snippet": "import React from 'react';\nimport { CodeField } from '@salutejs/sdds-finai';\nexport function App() {\n    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {\n        event.preventDefault();\n        const data = new FormData(event.currentTarget);\n        console.log('OTP:', data.get('otp'));\n    };\n    return (\n        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>\n            <CodeField\n                name=\"otp\"\n                required\n                autoComplete=\"one-time-code\"\n                aria-label=\"Код подтверждения из СМС\"\n            />\n            <button type=\"submit\">Продолжить</button>\n        </form>\n    );\n}"
+    },
+    {
+      "title": "Web OTP API",
+      "snippet": "import React from 'react';\nimport { CodeField } from '@salutejs/sdds-finai';\nexport function App() {\n    return <CodeField enableWebOTP caption=\"Введите код из СМС\" />;\n}"
     },
     {
       "title": "Web OTP API",

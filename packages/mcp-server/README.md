@@ -84,20 +84,33 @@ npm run mcp:build-index
 
 Пропсы атомарных компонентов подмешиваются в `inheritedProps[]` из **закоммиченного статического снэпшота** (`vendor/atomic-mcp-data/`), а не через живой MCP атомарной команды — так наш сервер не зависит от установленного `@salutejs/sdds-mcp` и работает полностью оффлайн.
 
-Обновление снэпшота (вручную, при значимых апдейтах `@salutejs/sdds-finai`):
+Обновление снэпшота — одной командой, без чужого чекаута:
 
 ```bash
-# в репозитории plasma, внутри website/sdds-finai-docs
-npm run generate-mcp-data
-
-# в dais/ui
-npm run mcp:vendor-atomic -- --source /путь/к/plasma/website/sdds-finai-docs/mcpData
+npm run mcp:vendor-atomic:check   # сухой прогон: что приедет, ничего не пишется
+npm run mcp:vendor-atomic         # обновить снэпшот
 ```
 
-Перед обновлением стоит знать две особенности снэпшота (подробно — `ARCHITECTURE.md` §1.6b):
+Данные тянутся с `https://plasma.sberdevices.ru/mcp/<lib>/<version>/` — **того же CDN, поверх которого работает официальный `@salutejs/sdds-mcp`** (в их npm-пакете лежит только `dist/`, данных нет; `MANIFEST_BASE_URL` в их `dist/config.js` указывает ровно сюда). В рантайме нашего MCP-сервера сеть по-прежнему не используется: снэпшот закоммичен, загрузка — только на этапе обновления.
 
-- **`generate-mcp-data` даёт один файл на СТРАНИЦУ доков, не на атом**, и берёт со страницы только первую таблицу пропсов. В доках 87 таблиц `<PropsTable>` на 74 страницы — 14 таблиц (`AccordionItem`, `CalendarBase`, `Col`, `DatePickerRange`, `ListItem`, `NotificationsProvider`, `SegmentItem`, `RectSkeleton`/`TextSkeleton`, `TabItem`/`TabsController` и др.) в снэпшот не попадают вовсе. Прирост от перевендоринга будет заметным только вместе с исправлением их `extractProps`.
-- **Проверяйте версию**: `vendor/atomic-mcp-data/manifest.json` содержит версию `@salutejs/sdds-finai`, из которой собран текущий снэпшот (сейчас `0.355.0`, установленный в монорепо пакет — `0.351.0`). Прогон на более старом чекауте plasma перезапишет снэпшот более бедным — `vendorAtomicData.ts` сносит папку целиком и не сверяет версии.
+Версия берётся **не `latest`, а та, что реально установлена** (`node_modules/@salutejs/sdds-finai/package.json`), чтобы индекс не обещал пропсы, которых у потребителя нет. Флаги:
+
+| Флаг | Назначение |
+| --- | --- |
+| `--version <x.y.z\|latest>` | явная версия вместо установленной |
+| `--on-missing keep\|latest\|fail` | что делать, если версии нет на CDN (по умолчанию `keep` — оставить текущий снэпшот и предупредить) |
+| `--dry-run` | показать дифф, ничего не записывать |
+| `--force` | разрешить даунгрейд (по умолчанию снэпшот нельзя перезаписать более старой версией) |
+| `--lib`, `--base-url` | другая дизайн-система / другое зеркало CDN |
+| `--source <dir>` | прежний офлайн-режим: взять локальный каталог `mcpData` вместо сети |
+
+Что важно знать (подробно — `ARCHITECTURE.md` §1.6b):
+
+- **Опубликованы не все версии.** `0.355.0`/`0.351.0` на CDN нет вовсе, и запрос несуществующей версии отвечает **301 на главную страницу сайта, которая отдаёт HTML с кодом 200** — поэтому скрипт не следует редиректам и проверяет форму каждого файла до записи. Пропущенная версия не валит релиз: срабатывает `--on-missing=keep`.
+- **Бандл доков может быть новее одноимённого npm-пакета.** На `0.360.0` снэпшот принёс пропсы, которых в типах установленного `@salutejs/sdds-finai@0.360.0` нет (`Sheet.snapPoints`, `Modal.focusTrapSelectors`, `DatePicker.onChangeVisibleDate`, `Popover.stretchHeight`, `Skeleton.animationDuration`) — `mcp:validate-index` показывает их как +8 диагностик. Пин по версии нужен, но полной гарантии не даёт.
+- **Со страницы доков берётся только первая таблица пропсов** — 14 таблиц (`AccordionItem`, `CalendarBase`, `Col`, `DatePickerRange`, `ListItem`, `NotificationsProvider`, `SegmentItem`, `RectSkeleton`/`TextSkeleton`, `TabItem`/`TabsController` и др.) в бандл не попадают вовсе, и перевендоринг этого не чинит — это дефект генератора атомарной команды.
+- **`vendor/atomic-mcp-data/provenance.json`** (пишется скриптом, не приходит с CDN) фиксирует, откуда и когда взяты данные: `resolvedVersion`, `installedLibVersion`, `sourceUrl`, `fetchedAt`, счётчики по секциям и sha256 каждого файла.
+- Помимо `components/` и `beta/` снэпшот теперь несёт **гайды** (`form`, `utils`, `tokens`, `how-to-icons`, `intro`, `FAQ`, `next`, `react_17`, `mcp`) — они складываются в снэпшот, но в индекс пока не попадают; секции берутся из самого манифеста, поэтому новая приедет сама.
 
 ## Курированные данные каталога (description/category/keywords)
 
@@ -176,4 +189,4 @@ ALT_MCP_PACKAGE_NAME=@acme/ds-mcp ALT_LIB_PACKAGE_NAME=@acme/ds \
 - **Иконки, токены, миксины, утилиты не проиндексированы** — сознательная граница v1 (см. план). Следующий шаг.
 - **Три пары внутренних sub-компонентов с одинаковым именем** в разных папках (`TableFilterSelectListItem`, `ContainerStyled`, `Canvas` — есть и в `Table`/`TableCanvas`/`TableGlide`) — при коллизии имён в индекс попадает только последняя обработанная запись. Не влияет на публичные компоненты, только на внутренние helper-подкомпоненты таблиц.
 - **Поиск (`search_components`) — простой substring-скоринг**, без embeddings/NLP. Хорошо работает на прямых терминах и на курированных `hint`, слабее — на общих словах, которые встречаются во многих фичах одновременно (например "ячеек" — общее слово почти для всех табличных фич).
-- **`atomicDataMissing: true` у 35 записей из 243** — вендорных пропсов нет по двум причинам: у 11 таблица в доках атомарной команды есть, но не первая на своей странице, и снэпшот её теряет (`CalendarBase*`, `DatePickerRange`, `NotificationsProvider`, `SegmentItem`, `TextSkeleton`, `TabItem`, `TabsController`); у 24 таблицы нет в доках вовсе (`Divider` и его обёртки, compound-части `DrawerHeader`/`DrawerContent`/`DrawerFooter`, `Rating`, `SegmentIconItem`, `IconTabItem`, `ToastProvider`, `Typography` + 13 атомов типографики). Пропсы у всех 35 есть — из собственного резолва ts-morph, причём с описаниями и `required`, которых вендор не несёт вовсе. Сборка не падает, диагностика индексера помечает каждую дыру её причиной. Подробности — `ARCHITECTURE.md` §1.6b.
+- **`atomicDataMissing: true` у 31 записи из 247** (было 34 до перевендоринга на `0.360.0`: у `Divider`, `ModalDFDivider` и `WidgetDivider` страница в доках появилась; `ToolbarDivider` остался — его `atomicBase` называется так же, как он сам, а страницы с таким именем нет) — вендорных пропсов нет по двум причинам: у 11 таблица в доках атомарной команды есть, но не первая на своей странице, и снэпшот её теряет (`CalendarBase*`, `DatePickerRange`, `NotificationsProvider`, `SegmentItem`, `TextSkeleton`, `TabItem`, `TabsController`); у остальных таблицы нет в доках вовсе (compound-части `DrawerHeader`/`DrawerContent`/`DrawerFooter`, `SegmentIconItem`, `IconTabItem`, `ToastProvider`, `Typography` + 13 атомов типографики). Пропсы у всех 31 есть — из собственного резолва ts-morph, причём с описаниями и `required`, которых вендор не несёт вовсе. Сборка не падает, диагностика индексера помечает каждую дыру её причиной. Подробности — `ARCHITECTURE.md` §1.6b.
