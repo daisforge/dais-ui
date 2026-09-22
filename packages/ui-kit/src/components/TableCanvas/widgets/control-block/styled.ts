@@ -88,8 +88,21 @@ export const ControlBlockStyled = styled(Box)<{
     css`
       justify-content: unset;
 
+      /* Место под поиск всегда одинаковое (вся свободная ширина), схлопывается
+         только само поле ВНУТРИ блока и всегда прижато к левому краю. Раньше
+         ширину менял сам блок: с первым символом он схлопывался с 100% до
+         ширины текста, освободившееся место перераспределялось между соседями,
+         и поле визуально уезжало вправо (а при очистке возвращалось). */
       & .${cls.searchControlBlock} {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
         padding-inline: 8px;
+        width: 100%;
+        min-width: ${$searchMinWidth ?? 250}px;
+      }
+
+      & .${cls.searchControlBlock} > * {
         ${() => {
           const { font, indent, letterSpacing } = CONTROL_BLOCK.searching;
           const text = $calculatedSearchQuery || '';
@@ -98,13 +111,13 @@ export const ControlBlockStyled = styled(Box)<{
           if (!$calculatedSearchQuery || $calculatedSearchQuery.length === 0) {
             return css`
               width: 100%;
-              min-width: ${$searchMinWidth ?? 250}px;
             `;
           }
           const currentIndent = indent;
           return css`
             width: min(calc(${textWidth + 25}px + ${currentIndent}px), 100%);
             min-width: 40px;
+            flex-shrink: 0;
           `;
         }}
       }

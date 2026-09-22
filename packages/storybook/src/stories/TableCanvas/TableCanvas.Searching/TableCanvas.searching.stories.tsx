@@ -221,6 +221,87 @@ export const ManualSearching: StoryObj = {
   },
 };
 
+export const SearchBlockJump: StoryObj = {
+  ...storySourceDoc({
+    preCode,
+    previewSource: 'shown',
+  }),
+  name: 'Ширина поля поиска при вводе',
+  // Конфиг повторяет боевой кейс (editing + columnsControl + sidebar +
+  // manual-поиск + пагинация). Проверяем: при вводе первого символа поле
+  // схлопывается по ширине текста, но НЕ смещается — левый край поля и
+  // правая зона контрл-блока остаются на месте, при очистке поле снова
+  // растягивается на всю свободную ширину.
+  render: () => {
+    const [rows, setRows] = useState(createRows);
+    const [isEditingEnabled, setIsEditingEnabled] = useState(false);
+    const editBackupRef = useRef<Row[]>([]);
+
+    const columnConfig = useMemo<readonly ColumnConfig<Row>[]>(
+      () => [
+        { key: 'id', name: 'Ключ / Инициатива', resizable: true },
+        { key: 'task', name: 'Название', resizable: true },
+        { key: 'priority', name: 'Статус', resizable: true },
+        { key: 'issueType', name: 'Тип расходов', resizable: true },
+        { key: 'developer', name: 'Плановый год', resizable: true },
+        { key: 'complete', name: 'Q0 на 01.07.27', resizable: true },
+        { key: 'tr', name: 'Q1 на 01.07.27', resizable: true },
+      ],
+      [],
+    );
+
+    return (
+      <TableCanvas
+        tableConfig={{
+          editing: {
+            enabled: [isEditingEnabled, setIsEditingEnabled],
+            showButtons: true,
+            rowKeyGetter: (row) => `${row.id}`,
+            onRowsChange: setRows,
+            onEnableEditing: (enableEditorMode) => {
+              editBackupRef.current = rows;
+              enableEditorMode();
+            },
+            onSave: (disableEditorMode) => disableEditorMode(),
+            onCancel: (disableEditorMode) => {
+              setRows(editBackupRef.current);
+              disableEditorMode();
+            },
+          },
+          columnsControl: {
+            enable: true,
+            pinning: true,
+            hiding: true,
+          },
+          rowHeight: 58,
+          containerStyle: { height: 'calc(100vh - 208px)' },
+          sidebarConfig: { enabled: true },
+          controlBlock: { show: true },
+          tooltip: { enabled: true },
+          searching: {
+            enabled: true,
+            manualSearching: true,
+            showSearchBlock: true,
+            onDebouncedChange: (value) =>
+              console.debug('onDebouncedChange searching', value),
+          },
+          pagination: {
+            viewCurrentPage: 'secondary',
+            slots: 7,
+            perPageList: [10, 20, 50, 100, 500, 1000],
+            value: 1,
+            perPage: 25,
+            count: 200,
+            disabledPages: [],
+          },
+        }}
+        columnConfig={columnConfig}
+        rows={rows}
+      />
+    );
+  },
+};
+
 export const AutocompleteHistory: StoryObj = {
   ...storySourceDoc({
     preCode,
