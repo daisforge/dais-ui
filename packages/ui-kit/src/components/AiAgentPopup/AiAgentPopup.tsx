@@ -78,7 +78,8 @@ export const AiAgentPopup = forwardRef<HTMLDivElement, AiAgentPopupProps>(
       ignoreSelector: dragIgnoreSelector,
     });
 
-    // Размер окна и конфигурация ресайза с ограничением краями экрана
+    // Размер окна и конфигурация ресайза: активный угол подстраивается под
+    // положение окна на экране, рост ограничен краями экрана
     const { popupSize, resizableConfig } = usePopupResize({
       resizable,
       defaultSize,
@@ -86,6 +87,8 @@ export const AiAgentPopup = forwardRef<HTMLDivElement, AiAgentPopupProps>(
       dragBoundary,
       containerRef,
       onSizeChange,
+      popupPosition,
+      setPopupPosition,
     });
 
     // Запись позиции и размера в localStorage при их изменении
@@ -125,7 +128,6 @@ export const AiAgentPopup = forwardRef<HTMLDivElement, AiAgentPopupProps>(
         <StyledContainer
           ref={setContainerRef}
           $shadow={shadow}
-          $draggable={draggable}
           $dragActive={dragActive}
           {...(draggable ? dragHandlers : null)}
         >

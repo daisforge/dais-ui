@@ -17,7 +17,6 @@ export const StyledPopup = styled(Popup)`
 
 export const StyledContainer = styled.div<{
   $shadow: string;
-  $draggable: boolean;
   $dragActive: boolean;
 }>`
   position: relative;
@@ -56,20 +55,8 @@ export const StyledContainer = styled.div<{
     pointer-events: none;
   }
 
-  /* Подсказка курсором: grab там, где окно можно схватить. Интерактивные
-     элементы (кнопки, поля) сохраняют свои курсоры сами, а зонам data-no-drag
-     возвращаем обычный, чтобы курсор не обещал драг, который не сработает */
-  ${({ $draggable }) =>
-    $draggable &&
-    css`
-      cursor: grab;
-
-      [data-no-drag],
-      [data-no-drag] * {
-        cursor: auto;
-      }
-    `}
-
+  /* Курсор-кулак только во время самого перетаскивания, в покое курсор
+     обычный (решение дизайнера) */
   ${({ $dragActive }) =>
     $dragActive &&
     css`
