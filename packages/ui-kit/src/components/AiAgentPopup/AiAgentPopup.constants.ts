@@ -2,9 +2,9 @@ export const DRAG_THRESHOLD = 5;
 
 export const DEFAULT_TARGET_GAP = 12;
 
-export const DEFAULT_MIN_WIDTH = 240;
+export const DEFAULT_MIN_WIDTH = 360;
 
-export const DEFAULT_MIN_HEIGHT = 120;
+export const DEFAULT_MIN_HEIGHT = 360;
 
 /** Отступ от левого верхнего угла экрана, если позицию не из чего вычислить */
 export const FALLBACK_POSITION_INDENT = 56;
