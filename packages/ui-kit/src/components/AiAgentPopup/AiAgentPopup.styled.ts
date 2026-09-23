@@ -20,21 +20,41 @@ export const StyledContainer = styled.div<{
   $draggable: boolean;
   $dragActive: boolean;
 }>`
-  display: flex;
-  flex-direction: column;
+  position: relative;
   width: 100%;
   height: 100%;
   min-width: 0;
   min-height: 0;
-  padding: 16px;
-  /* Градиентную рамку нельзя задать через border-color, поэтому рисуем два
-     фона: градиент нижним слоем виден только в зоне прозрачной рамки */
-  border: 1px solid transparent;
   border-radius: ${C.radius};
-  background: linear-gradient(${C.bg}, ${C.bg}) padding-box,
-    ${C.outline} border-box;
-  box-shadow: ${({ $shadow }) => $shadow};
-  overflow: hidden;
+
+  /* Свечение отдаём прозрачному слою размером с внешний край рамки: тень,
+     повешенная на саму карточку, первые 4px пряталась бы под кольцом */
+  &::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: calc(${C.radius} + 4px);
+    box-shadow: ${({ $shadow }) => $shadow};
+    pointer-events: none;
+  }
+
+  /* Рамка как в макете: обводка снаружи (Figma stroke outside), в размеры
+     контейнера не входит, паддинги и ресайз-иконка считаются от белого края.
+     Градиентное кольцо рисуем псевдоэлементом: маска вырезает середину,
+     оставляя только полосу толщиной 4px вокруг контейнера */
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    padding: 4px;
+    border-radius: calc(${C.radius} + 4px);
+    background: ${C.outline};
+    -webkit-mask: linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
 
   /* Подсказка курсором: grab там, где окно можно схватить. Интерактивные
      элементы (кнопки, поля) сохраняют свои курсоры сами, а зонам data-no-drag
@@ -56,4 +76,19 @@ export const StyledContainer = styled.div<{
       cursor: grabbing;
       user-select: none;
     `}
+`;
+
+/* Белая карточка отдельно от кольца: overflow здесь обрезает контент по
+   скруглению, не задевая выступающую наружу рамку */
+export const StyledContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  padding: 16px;
+  border-radius: ${C.radius};
+  background: ${C.bg};
+  overflow: hidden;
 `;
