@@ -9,6 +9,8 @@ import {
 } from './AiAgentPopup.constants';
 import type {
   AiAgentPopupDragBoundary,
+  AiAgentPopupFrame,
+  AiAgentPopupFrameMetrics,
   AiAgentPopupPosition,
   AiAgentPopupResizableConfig,
   AiAgentPopupResizeCorner,
@@ -16,39 +18,86 @@ import type {
 } from './AiAgentPopup.types';
 
 /**
- * Зажимает позицию так, чтобы окно целиком оставалось в границах вьюпорта
- * с учётом отступов boundary.
+ * Элемент, в котором живёт окно. null означает документ: окно поверх
+ * всего, координаты от вьюпорта.
+ */
+export const resolveFrameElement = (
+  frame: AiAgentPopupFrame,
+): HTMLElement | null => {
+  if (!frame || frame === 'document') return null;
+  if (typeof frame === 'string') return document.getElementById(frame);
+  return frame.current ?? null;
+};
+
+/**
+ * Метрики области, в которой окно позиционируется и двигается:
+ * вьюпорт или элемент из пропса frame. left и top нужны для перевода
+ * координат мыши и таргета (они всегда от вьюпорта) в систему frame.
+ */
+export const getFrameMetrics = (
+  frame: AiAgentPopupFrame,
+): AiAgentPopupFrameMetrics => {
+  const frameElement = resolveFrameElement(frame);
+  if (!frameElement) {
+    return {
+      left: 0,
+      top: 0,
+      width: window.innerWidth,
+      height: window.innerHeight,
+    };
+  }
+
+  const rect = frameElement.getBoundingClientRect();
+  return {
+    left: rect.left + frameElement.clientLeft,
+    top: rect.top + frameElement.clientTop,
+    width: frameElement.clientWidth,
+    height: frameElement.clientHeight,
+  };
+};
+
+const documentMetrics = (): AiAgentPopupFrameMetrics => ({
+  left: 0,
+  top: 0,
+  width: window.innerWidth,
+  height: window.innerHeight,
+});
+
+/**
+ * Зажимает позицию так, чтобы окно целиком оставалось в границах области
+ * (вьюпорт или frame) с учётом отступов boundary.
  */
 export const validatePosition = (
   position: AiAgentPopupPosition,
   elementSize: AiAgentPopupSize = { width: 0, height: 0 },
   boundary: AiAgentPopupDragBoundary = {},
+  frameMetrics?: AiAgentPopupFrameMetrics,
 ): AiAgentPopupPosition => {
-  const { innerWidth, innerHeight } = window;
+  const { width, height } = frameMetrics ?? documentMetrics();
   const { top = 0, right = 0, bottom = 0, left = 0 } = boundary;
 
   return {
-    x: Math.max(
-      left,
-      Math.min(position.x, innerWidth - elementSize.width - right),
-    ),
+    x: Math.max(left, Math.min(position.x, width - elementSize.width - right)),
     y: Math.max(
       top,
-      Math.min(position.y, innerHeight - elementSize.height - bottom),
+      Math.min(position.y, height - elementSize.height - bottom),
     ),
   };
 };
 
 /**
  * Позиция справа от target-элемента, верхние края выровнены.
+ * Координаты переводятся из вьюпортных в систему области окна.
  */
 export const getPositionFromTarget = (
   target: HTMLElement,
   gap: number,
+  frameMetrics?: AiAgentPopupFrameMetrics,
 ): AiAgentPopupPosition => {
   const rect = target.getBoundingClientRect();
+  const { left, top } = frameMetrics ?? documentMetrics();
 
-  return { x: rect.right + gap, y: rect.top };
+  return { x: rect.right + gap - left, y: rect.top - top };
 };
 
 export const getFallbackPosition = (): AiAgentPopupPosition => ({
@@ -70,12 +119,16 @@ export const getViewportSector = (
   position: AiAgentPopupPosition,
   size: AiAgentPopupSize,
   boundary: AiAgentPopupDragBoundary = {},
+  frameMetrics?: AiAgentPopupFrameMetrics,
 ): AiAgentPopupViewportSector => {
-  const { innerWidth, innerHeight } = window;
+  const { width, height } = frameMetrics ?? {
+    width: window.innerWidth,
+    height: window.innerHeight,
+  };
   const { left = 0, right = 0, top = 0, bottom = 0 } = boundary;
 
-  const sectorWidth = (innerWidth - left - right) / 3;
-  const sectorHeight = (innerHeight - top - bottom) / 2;
+  const sectorWidth = (width - left - right) / 3;
+  const sectorHeight = (height - top - bottom) / 2;
 
   const x = position.x - left;
   const y = position.y - top;

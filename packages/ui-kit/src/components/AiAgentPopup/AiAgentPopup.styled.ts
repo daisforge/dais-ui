@@ -40,12 +40,15 @@ export const StyledContainer = styled.div<{
   /* Рамка как в макете: обводка снаружи (Figma stroke outside), в размеры
      контейнера не входит, паддинги и ресайз-иконка считаются от белого края.
      Градиентное кольцо рисуем псевдоэлементом: маска вырезает середину,
-     оставляя только полосу толщиной 4px вокруг контейнера */
+     оставляя полосу вокруг контейнера толщиной в свой padding. Полоса на
+     1px толще выноса кольца наружу и этим заходит под карточку: встык при
+     дробной позиции окна браузер оставлял бы между ними полупрозрачный
+     субпиксельный шов */
   &::before {
     content: '';
     position: absolute;
     inset: -4px;
-    padding: 4px;
+    padding: 5px;
     border-radius: calc(${C.radius} + 4px);
     background: ${C.outline};
     -webkit-mask: linear-gradient(#fff 0 0) content-box,
@@ -66,8 +69,10 @@ export const StyledContainer = styled.div<{
 `;
 
 /* Белая карточка отдельно от кольца: overflow здесь обрезает контент по
-   скруглению, не задевая выступающую наружу рамку */
+   скруглению, не задевая выступающую наружу рамку. position нужен, чтобы
+   карточка рисовалась поверх кольца и прятала его заход под свой край */
 export const StyledContent = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
   width: 100%;

@@ -3,8 +3,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { DRAG_THRESHOLD, NO_DRAG_SELECTOR } from '../AiAgentPopup.constants';
 import type {
   AiAgentPopupDragBoundary,
+  AiAgentPopupFrame,
   AiAgentPopupPosition,
 } from '../AiAgentPopup.types';
+import { getFrameMetrics } from '../AiAgentPopup.utils';
 
 type UseDragParams = {
   /** Элемент, который перетаскиваем (контейнер окна) */
@@ -14,6 +16,8 @@ type UseDragParams = {
   onPositionChange?: (position: AiAgentPopupPosition) => void;
   /** Дополнительный селектор зон, с которых перетаскивание не начинается */
   ignoreSelector?: string;
+  /** Контейнер окна: границы перетаскивания и система координат */
+  frame?: AiAgentPopupFrame;
 };
 
 /**
@@ -33,6 +37,7 @@ export const useDrag = ({
   dragBoundary,
   onPositionChange,
   ignoreSelector,
+  frame,
 }: UseDragParams) => {
   // Кнопка мыши или палец сейчас зажаты (порог мог быть ещё не пройден)
   const [isDragging, setIsDragging] = useState(false);
@@ -108,21 +113,22 @@ export const useDrag = ({
       }
 
       const { offsetWidth, offsetHeight } = elementRef.current;
-      const { innerWidth, innerHeight } = window;
+      // Координаты мыши всегда от вьюпорта, позиция окна в системе области
+      const frameMetrics = getFrameMetrics(frame);
       const { top = 0, right = 0, bottom = 0, left = 0 } = dragBoundary || {};
 
       const newX = Math.max(
         left,
         Math.min(
-          clientX - dragOffset.current.x,
-          innerWidth - offsetWidth - right,
+          clientX - dragOffset.current.x - frameMetrics.left,
+          frameMetrics.width - offsetWidth - right,
         ),
       );
       const newY = Math.max(
         top,
         Math.min(
-          clientY - dragOffset.current.y,
-          innerHeight - offsetHeight - bottom,
+          clientY - dragOffset.current.y - frameMetrics.top,
+          frameMetrics.height - offsetHeight - bottom,
         ),
       );
 
@@ -130,7 +136,14 @@ export const useDrag = ({
       setPosition(newPosition);
       onPositionChange?.(newPosition);
     },
-    [isDragging, elementRef, dragBoundary, setPosition, onPositionChange],
+    [
+      isDragging,
+      elementRef,
+      dragBoundary,
+      setPosition,
+      onPositionChange,
+      frame,
+    ],
   );
 
   const handleMouseMove = useCallback(

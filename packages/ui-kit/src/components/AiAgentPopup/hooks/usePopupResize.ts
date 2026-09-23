@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 
 import type {
   AiAgentPopupDragBoundary,
+  AiAgentPopupFrame,
   AiAgentPopupPosition,
   AiAgentPopupResizableConfig,
   AiAgentPopupResizeCorner,
@@ -10,6 +11,7 @@ import type {
 import {
   buildResizableConfig,
   getCornerForSector,
+  getFrameMetrics,
   getViewportSector,
 } from '../AiAgentPopup.utils';
 
@@ -24,6 +26,8 @@ type UsePopupResizeParams = {
   /** Текущая позиция окна: от неё зависит активный угол ресайза */
   popupPosition: AiAgentPopupPosition | null;
   setPopupPosition: (position: AiAgentPopupPosition) => void;
+  /** Контейнер окна: пределы роста и система координат */
+  frame?: AiAgentPopupFrame;
 };
 
 /**
@@ -50,6 +54,7 @@ export const usePopupResize = ({
   onSizeChange,
   popupPosition,
   setPopupPosition,
+  frame,
 }: UsePopupResizeParams) => {
   const [popupSize, setPopupSize] = useState<AiAgentPopupSize | undefined>(
     () => savedSize ?? defaultSize,
@@ -66,7 +71,7 @@ export const usePopupResize = ({
   const [frozenCorner, setFrozenCorner] =
     useState<AiAgentPopupResizeCorner | null>(null);
 
-  // Угол по сектору экрана: пересчитывается при каждом сдвиге окна
+  // Угол по сектору области окна: пересчитывается при каждом сдвиге окна
   const sectorCorner = useMemo(() => {
     if (!popupPosition) return 'bottom-right' as const;
     const element = containerRef.current;
@@ -75,9 +80,14 @@ export const usePopupResize = ({
       height: element?.offsetHeight ?? 0,
     };
     return getCornerForSector(
-      getViewportSector(popupPosition, size, dragBoundary),
+      getViewportSector(
+        popupPosition,
+        size,
+        dragBoundary,
+        getFrameMetrics(frame),
+      ),
     );
-  }, [popupPosition, dragBoundary, containerRef]);
+  }, [popupPosition, dragBoundary, containerRef, frame]);
 
   const activeCorner = frozenCorner ?? sectorCorner;
 
@@ -111,7 +121,15 @@ export const usePopupResize = ({
     ) => {
       const element = containerRef.current;
       if (element) {
-        const rect = element.getBoundingClientRect();
+        const frameMetrics = getFrameMetrics(frame);
+        const viewportRect = element.getBoundingClientRect();
+        // Края окна в системе области, в которой оно живёт
+        const rect = {
+          left: viewportRect.left - frameMetrics.left,
+          top: viewportRect.top - frameMetrics.top,
+          right: viewportRect.right - frameMetrics.left,
+          bottom: viewportRect.bottom - frameMetrics.top,
+        };
         const corner = activeCorner;
         setFrozenCorner(corner);
 
@@ -119,10 +137,10 @@ export const usePopupResize = ({
         const { top = 0, right = 0, bottom = 0, left = 0 } = dragBoundary ?? {};
         const availableWidth = corner.includes('left')
           ? rect.right - left
-          : window.innerWidth - rect.left - right;
+          : frameMetrics.width - rect.left - right;
         const availableHeight = corner.includes('top')
           ? rect.bottom - top
-          : window.innerHeight - rect.top - bottom;
+          : frameMetrics.height - rect.top - bottom;
 
         setViewportLimits({
           maxWidth: baseConfig.maxWidth
@@ -217,6 +235,7 @@ export const usePopupResize = ({
     onSizeChange,
     containerRef,
     setPopupPosition,
+    frame,
   ]);
 
   return {

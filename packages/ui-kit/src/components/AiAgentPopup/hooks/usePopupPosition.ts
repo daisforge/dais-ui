@@ -10,11 +10,13 @@ import {
 import { RESIZE_THROTTLE_DELAY } from '../AiAgentPopup.constants';
 import type {
   AiAgentPopupDragBoundary,
+  AiAgentPopupFrame,
   AiAgentPopupPosition,
   AiAgentPopupPositionState,
 } from '../AiAgentPopup.types';
 import {
   getFallbackPosition,
+  getFrameMetrics,
   getPositionFromTarget,
   validatePosition,
 } from '../AiAgentPopup.utils';
@@ -30,6 +32,8 @@ type UsePopupPositionParams = {
   /** Внешний стейт позиции: если передан, окном управляет потребитель */
   externalPositionState?: AiAgentPopupPositionState;
   dragBoundary?: AiAgentPopupDragBoundary;
+  /** Контейнер окна: границы и система координат */
+  frame?: AiAgentPopupFrame;
 };
 
 /**
@@ -51,6 +55,7 @@ export const usePopupPosition = ({
   savedPosition,
   externalPositionState,
   dragBoundary,
+  frame,
 }: UsePopupPositionParams) => {
   // Атомарный Popup вставляет содержимое в документ не сразу, а после
   // собственной подготовки. Обычный ref при этом «молчит»: элемент появился,
@@ -98,12 +103,18 @@ export const usePopupPosition = ({
       width: element.offsetWidth,
       height: element.offsetHeight,
     };
+    const frameMetrics = getFrameMetrics(frame);
     const rawPosition =
       popupPosition ??
       (targetRef?.current
-        ? getPositionFromTarget(targetRef.current, targetGap)
+        ? getPositionFromTarget(targetRef.current, targetGap, frameMetrics)
         : getFallbackPosition());
-    const validated = validatePosition(rawPosition, elementSize, dragBoundary);
+    const validated = validatePosition(
+      rawPosition,
+      elementSize,
+      dragBoundary,
+      frameMetrics,
+    );
 
     if (
       !popupPosition ||
@@ -119,6 +130,7 @@ export const usePopupPosition = ({
     targetRef,
     targetGap,
     dragBoundary,
+    frame,
     setPopupPosition,
   ]);
 
@@ -142,6 +154,7 @@ export const usePopupPosition = ({
         currentPosition,
         { width: element.offsetWidth, height: element.offsetHeight },
         dragBoundary,
+        getFrameMetrics(frame),
       );
       if (
         validated.x !== currentPosition.x ||
@@ -156,7 +169,7 @@ export const usePopupPosition = ({
       window.removeEventListener('resize', handleWindowResize);
       handleWindowResize.cancel();
     };
-  }, [opened, dragBoundary, setPopupPosition]);
+  }, [opened, dragBoundary, frame, setPopupPosition]);
 
   return {
     /** Текущая позиция окна, null пока не вычислена */

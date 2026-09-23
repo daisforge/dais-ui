@@ -44,6 +44,7 @@ export const AiAgentPopup = forwardRef<HTMLDivElement, AiAgentPopupProps>(
       resizable = true,
       defaultSize,
       onSizeChange,
+      frame = 'document',
       style: externalStyle,
       ...rest
     } = props;
@@ -67,6 +68,7 @@ export const AiAgentPopup = forwardRef<HTMLDivElement, AiAgentPopupProps>(
       savedPosition: savedState?.position,
       externalPositionState,
       dragBoundary,
+      frame,
     });
 
     // Перетаскивание окна за контейнер
@@ -76,6 +78,7 @@ export const AiAgentPopup = forwardRef<HTMLDivElement, AiAgentPopupProps>(
       dragBoundary,
       onPositionChange,
       ignoreSelector: dragIgnoreSelector,
+      frame,
     });
 
     // Размер окна и конфигурация ресайза: активный угол подстраивается под
@@ -89,6 +92,7 @@ export const AiAgentPopup = forwardRef<HTMLDivElement, AiAgentPopupProps>(
       onSizeChange,
       popupPosition,
       setPopupPosition,
+      frame,
     });
 
     // Запись позиции и размера в localStorage при их изменении
@@ -121,6 +125,7 @@ export const AiAgentPopup = forwardRef<HTMLDivElement, AiAgentPopupProps>(
         {...rest}
         ref={ref}
         opened={opened}
+        frame={frame}
         placement="top-left"
         resizable={resizableConfig}
         style={popupStyle}

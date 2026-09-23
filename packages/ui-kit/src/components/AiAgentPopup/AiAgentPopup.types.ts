@@ -43,6 +43,21 @@ export type AiAgentPopupResizableConfig = Exclude<
   boolean | undefined
 >;
 
+/**
+ * Контейнер, в котором живёт окно (пропс frame атомарного Popup).
+ */
+export type AiAgentPopupFrame = PopupProps['frame'];
+
+/**
+ * Метрики области окна: положение относительно вьюпорта и размеры.
+ */
+export type AiAgentPopupFrameMetrics = {
+  left: number;
+  top: number;
+  width: number;
+  height: number;
+};
+
 export type AiAgentPopupResizeCorner =
   | 'top-left'
   | 'top-right'
@@ -61,6 +76,14 @@ export type AiAgentPopupProps = Omit<
   PopupProps,
   'children' | 'isOpen' | 'placement' | 'offset' | 'draggable' | 'resizable'
 > & {
+  /**
+   * Контейнер, в котором живёт окно. По умолчанию document: окно поверх
+   * всей страницы, это целевой сценарий использования. Если передать
+   * элемент, окно рендерится, перетаскивается и ресайзится в его рамках;
+   * в продуктовом коде это обычно не нужно, вариант используется в стори
+   * для изоляции примеров друг от друга.
+   */
+  frame?: AiAgentPopupFrame;
   /**
    * Содержимое окна. Компонент задаёт только контейнер (обводка, тень,
    * скругление, внутренние отступы), всё наполнение на стороне потребителя.
