@@ -112,6 +112,17 @@ jobs:
         if: ${{ inputs.refresh_vendor }}
         run: npm run mcp:vendor-atomic
 
+      # Второй источник, идёт сразу за первым: проза документации атомарки.
+      # В бандле на CDN её нет — их генератор режет summary компонента по 300
+      # символов (медиана 44, у трети остаётся голое имя). Поэтому текст
+      # берётся из первого скрипта их же пайплайна (generateIndex) на sparse-
+      # чекауте тега @salutejs/sdds-finai@<установленная версия>: ~10 секунд,
+      # 17 МБ. Сборка докусауруса не нужна — раскрытие <PropsTable> у них
+      # опционально, а пропсы у нас свои. Подробности — ARCHITECTURE §1.6d.
+      - name: Harvest atomic docs
+        if: ${{ inputs.refresh_vendor }}
+        run: npm run mcp:harvest-docs
+
       # dist/packages/ui-kit в этом чекауте не собран — buildIndex.js запишет
       # только запасной "bundled" индекс в packages/mcp-server/data/, это и нужно
       # для публикации самого @daisforge/ui-mcp.

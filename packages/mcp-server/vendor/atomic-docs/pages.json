@@ -1,0 +1,611 @@
+[
+  {
+    "name": "EmbeddedButton",
+    "slug": "beta/embedded-button",
+    "category": "beta",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/beta/embedded-button/",
+    "chars": 7783
+  },
+  {
+    "name": "Popover",
+    "slug": "beta/popover",
+    "category": "beta",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/beta/popover/",
+    "chars": 6534
+  },
+  {
+    "name": "Tooltip",
+    "slug": "beta/tooltip",
+    "category": "beta",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/beta/tooltip/",
+    "chars": 2624
+  },
+  {
+    "name": "Accordion",
+    "slug": "components/accordion",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/accordion/",
+    "chars": 23298
+  },
+  {
+    "name": "Attach",
+    "slug": "components/attach",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/attach/",
+    "chars": 10854
+  },
+  {
+    "name": "Autocomplete",
+    "slug": "components/autocomplete",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/autocomplete/",
+    "chars": 25018
+  },
+  {
+    "name": "Avatar",
+    "slug": "components/avatar",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/avatar/",
+    "chars": 5043
+  },
+  {
+    "name": "AvatarGroup",
+    "slug": "components/avatarGroup",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/avatarGroup/",
+    "chars": 507
+  },
+  {
+    "name": "Badge",
+    "slug": "components/badge",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/badge/",
+    "chars": 4790
+  },
+  {
+    "name": "Breadcrumbs",
+    "slug": "components/breadcrumbs",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/breadcrumbs/",
+    "chars": 3388
+  },
+  {
+    "name": "Button",
+    "slug": "components/button",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/button/",
+    "chars": 6161
+  },
+  {
+    "name": "ButtonGroup",
+    "slug": "components/buttonGroup",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/buttonGroup/",
+    "chars": 3486
+  },
+  {
+    "name": "Calendar",
+    "slug": "components/calendar",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/calendar/",
+    "chars": 11913
+  },
+  {
+    "name": "Card",
+    "slug": "components/card",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/card/",
+    "chars": 3144
+  },
+  {
+    "name": "Carousel",
+    "slug": "components/carousel",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/carousel/",
+    "chars": 6184
+  },
+  {
+    "name": "Cell",
+    "slug": "components/cell",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/cell/",
+    "chars": 1876
+  },
+  {
+    "name": "Checkbox",
+    "slug": "components/checkbox",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/checkbox/",
+    "chars": 1378
+  },
+  {
+    "name": "Chip",
+    "slug": "components/chip",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/chip/",
+    "chars": 5308
+  },
+  {
+    "name": "ChipGroup",
+    "slug": "components/chipGroup",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/chipGroup/",
+    "chars": 3811
+  },
+  {
+    "name": "CodeField",
+    "slug": "components/codefield",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/codefield/",
+    "chars": 10084
+  },
+  {
+    "name": "CodeInput",
+    "slug": "components/CodeInput",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/CodeInput/",
+    "chars": 6787
+  },
+  {
+    "name": "Combobox",
+    "slug": "components/combobox",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/combobox/",
+    "chars": 34704
+  },
+  {
+    "name": "Counter",
+    "slug": "components/counter",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/counter/",
+    "chars": 2329
+  },
+  {
+    "name": "DatePicker",
+    "slug": "components/datepicker",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/datepicker/",
+    "chars": 26005
+  },
+  {
+    "name": "DateTimePicker",
+    "slug": "components/dateTimePicker",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/dateTimePicker/",
+    "chars": 19268
+  },
+  {
+    "name": "Divider",
+    "slug": "components/divider",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/divider/",
+    "chars": 1283
+  },
+  {
+    "name": "Drawer",
+    "slug": "components/drawer",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/drawer/",
+    "chars": 12687
+  },
+  {
+    "name": "Dropdown",
+    "slug": "components/dropdown",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/dropdown/",
+    "chars": 14338
+  },
+  {
+    "name": "Dropzone",
+    "slug": "components/dropzone",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/dropzone/",
+    "chars": 4675
+  },
+  {
+    "name": "EmbedIconButton",
+    "slug": "components/EmbedIconButton",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/EmbedIconButton/",
+    "chars": 3102
+  },
+  {
+    "name": "Flow",
+    "slug": "components/flow",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/flow/",
+    "chars": 3172
+  },
+  {
+    "name": "Grid",
+    "slug": "components/grid",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/grid/",
+    "chars": 4016
+  },
+  {
+    "name": "IconButton",
+    "slug": "components/IconButton",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/IconButton/",
+    "chars": 3976
+  },
+  {
+    "name": "Image",
+    "slug": "components/image",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/image/",
+    "chars": 319
+  },
+  {
+    "name": "Indicator",
+    "slug": "components/indicator",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/indicator/",
+    "chars": 2154
+  },
+  {
+    "name": "InformationWrapper",
+    "slug": "components/informationWrapper",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/informationWrapper/",
+    "chars": 11235
+  },
+  {
+    "name": "Link",
+    "slug": "components/link",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/link/",
+    "chars": 1004
+  },
+  {
+    "name": "LinkButton",
+    "slug": "components/link-button",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/link-button/",
+    "chars": 2469
+  },
+  {
+    "name": "List",
+    "slug": "components/list",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/list/",
+    "chars": 1999
+  },
+  {
+    "name": "Mask",
+    "slug": "components/mask",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/mask/",
+    "chars": 2572
+  },
+  {
+    "name": "Modal",
+    "slug": "components/modal",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/modal/",
+    "chars": 11750
+  },
+  {
+    "name": "Note",
+    "slug": "components/note",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/note/",
+    "chars": 6976
+  },
+  {
+    "name": "Notification",
+    "slug": "components/notification",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/notification/",
+    "chars": 7650
+  },
+  {
+    "name": "NumberFormat",
+    "slug": "components/number-format",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/number-format/",
+    "chars": 5566
+  },
+  {
+    "name": "NumberInput",
+    "slug": "components/numberInput",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/numberInput/",
+    "chars": 12882
+  },
+  {
+    "name": "Overlay",
+    "slug": "components/overlay",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/overlay/",
+    "chars": 17
+  },
+  {
+    "name": "Pagination",
+    "slug": "components/pagination",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/pagination/",
+    "chars": 9040
+  },
+  {
+    "name": "Popover",
+    "slug": "components/popover",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/popover/",
+    "chars": 10156
+  },
+  {
+    "name": "Popup",
+    "slug": "components/popup",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/popup/",
+    "chars": 8918
+  },
+  {
+    "name": "Portal",
+    "slug": "components/portal",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/portal/",
+    "chars": 2164
+  },
+  {
+    "name": "Price",
+    "slug": "components/price",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/price/",
+    "chars": 400
+  },
+  {
+    "name": "Progress",
+    "slug": "components/progress",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/progress/",
+    "chars": 6302
+  },
+  {
+    "name": "ProgressBarCircular",
+    "slug": "components/ProgressBarCircular",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/ProgressBarCircular/",
+    "chars": 5235
+  },
+  {
+    "name": "Radiobox",
+    "slug": "components/radiobox",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/radiobox/",
+    "chars": 1063
+  },
+  {
+    "name": "Range",
+    "slug": "components/range",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/range/",
+    "chars": 9729
+  },
+  {
+    "name": "Rating",
+    "slug": "components/rating",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/rating/",
+    "chars": 8517
+  },
+  {
+    "name": "Segment",
+    "slug": "components/segment",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/segment/",
+    "chars": 8411
+  },
+  {
+    "name": "Select",
+    "slug": "components/select",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/select/",
+    "chars": 33582
+  },
+  {
+    "name": "Sheet",
+    "slug": "components/sheet",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/sheet/",
+    "chars": 3689
+  },
+  {
+    "name": "Skeleton",
+    "slug": "components/skeleton",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/skeleton/",
+    "chars": 6381
+  },
+  {
+    "name": "Slider",
+    "slug": "components/slider",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/slider/",
+    "chars": 15929
+  },
+  {
+    "name": "Spinner",
+    "slug": "components/spinner",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/spinner/",
+    "chars": 179
+  },
+  {
+    "name": "Steps",
+    "slug": "components/steps",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/steps/",
+    "chars": 15628
+  },
+  {
+    "name": "Switch",
+    "slug": "components/switch",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/switch/",
+    "chars": 1312
+  },
+  {
+    "name": "Table",
+    "slug": "components/table",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/table/",
+    "chars": 41406
+  },
+  {
+    "name": "Tabs",
+    "slug": "components/tabs",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/tabs/",
+    "chars": 12480
+  },
+  {
+    "name": "TextArea",
+    "slug": "components/textarea",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/textarea/",
+    "chars": 8302
+  },
+  {
+    "name": "TextField",
+    "slug": "components/TextField",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/TextField/",
+    "chars": 11268
+  },
+  {
+    "name": "TextFieldGroup",
+    "slug": "components/textFieldGroup",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/textFieldGroup/",
+    "chars": 3412
+  },
+  {
+    "name": "TimePicker",
+    "slug": "components/time-picker",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/time-picker/",
+    "chars": 7095
+  },
+  {
+    "name": "Toast",
+    "slug": "components/toast",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/toast/",
+    "chars": 5451
+  },
+  {
+    "name": "Toolbar",
+    "slug": "components/toolbar",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/toolbar/",
+    "chars": 3551
+  },
+  {
+    "name": "Tooltip",
+    "slug": "components/Tooltip",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/Tooltip/",
+    "chars": 2279
+  },
+  {
+    "name": "Tour",
+    "slug": "components/Tour",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/Tour/",
+    "chars": 33306
+  },
+  {
+    "name": "Tree",
+    "slug": "components/tree",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/tree/",
+    "chars": 24904
+  },
+  {
+    "name": "Typography",
+    "slug": "components/typography",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/typography/",
+    "chars": 5902
+  },
+  {
+    "name": "ViewContainer",
+    "slug": "components/viewContainer",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/viewContainer/",
+    "chars": 2699
+  },
+  {
+    "name": "FAQ",
+    "slug": "faq",
+    "category": "FAQ",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/faq/",
+    "chars": 1865
+  },
+  {
+    "name": "Components",
+    "slug": "form/components",
+    "category": "form",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/form/components/",
+    "chars": 2804
+  },
+  {
+    "name": "NativeForm",
+    "slug": "form/native-form",
+    "category": "form",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/form/native-form/",
+    "chars": 17567
+  },
+  {
+    "name": "ReactHookForm",
+    "slug": "form/react-hook-form",
+    "category": "form",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/form/react-hook-form/",
+    "chars": 15288
+  },
+  {
+    "name": "how-to-icons",
+    "slug": "how-to-icons",
+    "category": "how-to-icons",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/how-to-icons/",
+    "chars": 3769
+  },
+  {
+    "name": "mcp",
+    "slug": "how-to-mcp",
+    "category": "mcp",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/how-to-mcp/",
+    "chars": 2152
+  },
+  {
+    "name": "/",
+    "slug": "intro",
+    "category": "intro",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/",
+    "chars": 4715
+  },
+  {
+    "name": "next",
+    "slug": "next",
+    "category": "next",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/next/",
+    "chars": 1324
+  },
+  {
+    "name": "react_17",
+    "slug": "react_17",
+    "category": "react_17",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/react_17/",
+    "chars": 395
+  },
+  {
+    "name": "mixins",
+    "slug": "utils/mixins",
+    "category": "utils",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/utils/mixins/",
+    "chars": 1997
+  }
+]
