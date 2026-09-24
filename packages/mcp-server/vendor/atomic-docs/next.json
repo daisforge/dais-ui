@@ -1,0 +1,7 @@
+{
+  "name": "next",
+  "slug": "next",
+  "category": "next",
+  "url": "https://plasma.sberdevices.ru/sdds-finai/next/",
+  "content": "Раздел описывает варианты и нюансы подключения библиотеки в рамках работы с  `NextJs` . :::caution RSC - React Server Components (App router)\n Библиотека поддерживает работу с  RSC  только при  явном использовании  директивы  'use client' . ```ts\n'use client'\n\nimport { Button } from '@salutejs/sdds-finai';\n\n...\n```\n\n::: ## Подключение тем Подключение тем Ниже представлены различные способы подключения темы в проект: ### Styled Components Styled Components :::info\nПрежде всего убедитесь, что у вас правильно настроена работа со Styled Components. Для справки: официальный  пример  работающей реализации.\n::: ```tsx\nimport type { AppProps } from \"next/app\";\nimport { sdds_finai__light } from '@salutejs/sdds-themes';\nimport { createGlobalStyle } from \"styled-components\";\n\nconst PlasmaTheme = createGlobalStyle(sdds_finai__light);\n\nexport default function App({ Component, pageProps }: AppProps) {\n  return (\n      <>\n        <PlasmaTheme />\n\n        <Component {...pageProps} />\n      </>\n  );\n}\n```\n\n## Работа с компонентами Работа с компонентами Библиотека поставляет компоненты в формате  `Styled Components` . ### Пример Пример ```jsx\nimport React from 'react';\nimport { Button } from '@salutejs/sdds-finai'\n\nexport default function Home() {\n  return (\n    <div>\n        <Button>Button</Button>\n    </div>\n  );\n}\n```"
+}

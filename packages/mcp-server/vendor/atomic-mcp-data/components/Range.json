@@ -209,6 +209,20 @@
         "description": ""
       },
       {
+        "name": "firstTextfieldInputWrapperRef",
+        "type": "Ref<HTMLDivElement>",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "secondTextfieldInputWrapperRef",
+        "type": "Ref<HTMLDivElement>",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
         "name": "firstValueError",
         "type": "boolean",
         "required": false,
@@ -309,6 +323,13 @@
       {
         "name": "requiredIndicatorPlacement",
         "type": "\"right\" | \"left\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "inputWrapperRef",
+        "type": "Ref<HTMLDivElement>",
         "required": false,
         "default": "",
         "description": ""

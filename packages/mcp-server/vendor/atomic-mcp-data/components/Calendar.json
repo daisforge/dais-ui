@@ -34,6 +34,13 @@
         "description": ""
       },
       {
+        "name": "onChangeVisibleDate",
+        "type": "((date: Date) => void)",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
         "name": "focusedDate",
         "type": "DateType",
         "required": false,

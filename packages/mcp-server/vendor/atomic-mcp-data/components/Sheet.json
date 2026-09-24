@@ -34,6 +34,27 @@
         "description": ""
       },
       {
+        "name": "onOverlayClick",
+        "type": "((event: MouseEvent<HTMLDivElement, MouseEvent>) => void)",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "closeOnEsc",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "onEscKeyDown",
+        "type": "((event: KeyboardEvent) => void)",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
         "name": "contentHeader",
         "type": "ReactNode",
         "required": false,
@@ -99,6 +120,27 @@
       {
         "name": "hasScrollEvents",
         "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "snapPoints",
+        "type": "SheetSnapPoints",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "initialSnapPoint",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "onSnapPointChange",
+        "type": "((snapPoint: string) => void)",
         "required": false,
         "default": "",
         "description": ""

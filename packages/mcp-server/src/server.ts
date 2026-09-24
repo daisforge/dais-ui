@@ -7,10 +7,7 @@ import type {
   ShapeOutput,
   ZodRawShapeCompat,
 } from '@modelcontextprotocol/sdk/server/zod-compat.js';
-import type {
-  CallToolResult,
-  ReadResourceResult,
-} from '@modelcontextprotocol/sdk/types.js';
+import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js';
 import { z } from 'zod';
 
 import { resolveIndex } from './resolveIndex.js';
@@ -47,19 +44,6 @@ function loadIndex(): RuntimeIndex {
  */
 function toToolResult(payload: unknown): CallToolResult {
   return { content: [{ type: 'text', text: truncateForResponse(payload) }] };
-}
-
-/** То же самое для ресурсов (T8): один текстовый content-блок с тем же JSON-форматом, что и у тулов. */
-function toResourceResult(uri: URL, payload: unknown): ReadResourceResult {
-  return {
-    contents: [
-      {
-        uri: uri.href,
-        mimeType: 'application/json',
-        text: truncateForResponse(payload),
-      },
-    ],
-  };
 }
 
 /** Хендлер тулза: индекс + args, выведенные из той же zod-схемы, что уходит в SDK. */
@@ -104,7 +88,7 @@ function main(): void {
     server,
     index,
     'list_components',
-    'Список компонентов @daisforge/ui с фильтрами по типу (wrapper/composition/standalone/form), категории ("Локальные компоненты" / "Композиции" / "Формы" — количество по типам см. в ресурсе daisforge-ui://catalog/categories), scope. По умолчанию — только самостоятельные компоненты (role: "primary", ~177 из 243): слоты вроде DrawerDFHeader и служебные примитивы вроде CanvasRect скрыты, они видны через relatedExports в карточке владельца (get_component) или напрямую по имени; role: "all" снимает фильтр. Без limit список бюджетируется автоматически (см. shown/total/truncationNotice в ответе); limit/offset — явная пагинация.',
+    'Список компонентов @daisforge/ui с фильтрами по типу (wrapper/composition/standalone/form), категории ("Локальные компоненты" / "Композиции" / "Формы" — количество по типам отдаёт list_categories), scope. По умолчанию — только самостоятельные компоненты (role: "primary", ~177 из 243): слоты вроде DrawerDFHeader и служебные примитивы вроде CanvasRect скрыты, они видны через relatedExports в карточке владельца (get_component) или напрямую по имени; role: "all" снимает фильтр. Без limit список бюджетируется автоматически (см. shown/total/truncationNotice в ответе); limit/offset — явная пагинация.',
     {
       type: z.string().optional(),
       category: z.string().optional(),
@@ -196,35 +180,29 @@ function main(): void {
   );
 
   /**
-   * list_categories и get_installation_guide не принимают аргументов и не
-   * зависят от них — это статический контент за один вызов на сессию, а не
-   * тул с параметрами выбора. Ресурсы (T8) не занимают слот в списке тулов,
-   * который агент читает при каждом запросе; значения category, которые
-   * раньше приходилось узнавать через list_categories(), теперь прямо в
-   * описании list_components (см. ниже).
+   * list_categories и get_installation_guide не принимают аргументов — в T8
+   * они были переведены в MCP-ресурсы именно по этому признаку, но ресурс
+   * агент может прочитать, только зная его URI заранее: в отличие от тулов,
+   * список ресурсов не приходит в контекст сам. На практике это означало, что
+   * оба просто переставали вызываться. Возвращены в тулы (пустая схема
+   * аргументов) — слот в списке тулов дешевле недостижимого контента.
    */
-  server.registerResource(
-    'categories',
-    'daisforge-ui://catalog/categories',
-    {
-      title: 'Категории компонентов @daisforge/ui',
-      description:
-        'Категории каталога с количеством компонентов по типам (wrapper/composition/standalone/form).',
-      mimeType: 'application/json',
-    },
-    async (uri) => toResourceResult(uri, listCategories(index)),
+  registerJsonTool(
+    server,
+    index,
+    'list_categories',
+    'Категории каталога @daisforge/ui с количеством компонентов по типам (wrapper/composition/standalone/form). Значения category отсюда подходят как фильтр для list_components. Аргументов не принимает.',
+    {},
+    listCategories,
   );
 
-  server.registerResource(
-    'installation-guide',
-    'daisforge-ui://catalog/installation-guide',
-    {
-      title: 'Гайд по установке @daisforge/ui',
-      description:
-        'Установка пакета и подключение стилей/токенов, использование компонентов и иконок.',
-      mimeType: 'application/json',
-    },
-    async (uri) => toResourceResult(uri, getInstallationGuide(index)),
+  registerJsonTool(
+    server,
+    index,
+    'get_installation_guide',
+    'Гайд по установке @daisforge/ui: установка пакета, подключение стилей и токенов, использование компонентов и иконок. Аргументов не принимает.',
+    {},
+    getInstallationGuide,
   );
 
   const transport = new StdioServerTransport();

@@ -202,6 +202,13 @@
         "description": ""
       },
       {
+        "name": "onChangeVisibleDate",
+        "type": "((date: Date) => void)",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
         "name": "renderFromDate",
         "type": "Date",
         "required": false,
@@ -625,6 +632,10 @@
     {
       "title": "Управление внешним видом",
       "snippet": "import React from 'react';\nimport { DatePickerRange, IconButton } from '@salutejs/sdds-finai';\nimport { IconDone } from '@salutejs/plasma-icons';\nexport function App() {\n    const ActionButton = () => {\n        return (\n            <IconButton view=\"clear\" size=\"s\">\n                <IconDone size=\"s\" />\n            </IconButton>\n        );\n    };\n    return (\n        <div style={{ display: 'flex', flexDirection: 'column', gap: '3rem' }}>\n            <DatePickerRange\n                size=\"s\"\n                label=\"Одиночный календарь\"\n                leftHelper=\"Подсказка к полю\"\n                firstPlaceholder=\"Введите дату 1\"\n                secondPlaceholder=\"Введите дату 2\"\n                contentRight={<ActionButton />}\n                usePortal\n            />\n            <DatePickerRange\n                size=\"s\"\n                label=\"Двойной календарь\"\n                leftHelper=\"Подсказка к полю\"\n                firstPlaceholder=\"Введите дату 1\"\n                secondPlaceholder=\"Введите дату 2\"\n                contentRight={<ActionButton />}\n                isDoubleCalendar\n                usePortal\n            />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Управление внешним видом",
+      "snippet": "import React from 'react';\nimport { DatePickerRange } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <DatePickerRange\n            size=\"s\"\n            label=\"Период\"\n            firstPlaceholder=\"Дата начала\"\n            secondPlaceholder=\"Дата окончания\"\n            isCalendarPositionedByInput\n            usePortal\n        />\n    );\n}"
     },
     {
       "title": "Независимый выбор дат",

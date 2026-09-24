@@ -181,6 +181,13 @@
         "description": ""
       },
       {
+        "name": "onChangeVisibleDate",
+        "type": "((date: Date) => void)",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
         "name": "renderFromDate",
         "type": "Date",
         "required": false,
@@ -531,6 +538,13 @@
         "description": ""
       },
       {
+        "name": "hasTimeFormat",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
         "name": "dateFormat",
         "type": "string",
         "required": false,
@@ -591,6 +605,10 @@
     {
       "title": "Формат даты и времени",
       "snippet": "import React from 'react';\nimport { DateTimePicker } from '@salutejs/sdds-finai';\nimport { IconDone } from '@salutejs/plasma-icons';\nexport function App() {\n    return (\n        <div>\n            <DateTimePicker\n                label=\"Лейбл\"\n                leftHelper=\"Подсказка к полю\"\n                placeholder=\"Введите дату\"\n                dateFormat=\"DD-MM-YYYY\"\n                timeFormat=\"HH:mm\"\n                dateTimeSeparator=\" \"\n                maskWithFormat\n                contentRight={<IconDone size=\"s\" />}\n                usePortal\n            />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "12-часовой формат (AM/PM)",
+      "snippet": "import React from 'react';\nimport { DateTimePicker } from '@salutejs/sdds-finai';\nexport function App() {\n    const handleCommitDate = (value) => {\n        console.log('Выбрано:', value);\n    };\n    return (\n        <div>\n            <DateTimePicker\n                label=\"Лейбл\"\n                placeholder=\"Введите дату\"\n                hasTimeFormat\n                defaultDate={new Date(2024, 5, 15, 13, 30)}\n                maskWithFormat\n                onCommitDate={handleCommitDate}\n                usePortal\n            />\n        </div>\n    );\n}"
     },
     {
       "title": "Язык даты",

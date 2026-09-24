@@ -1,0 +1,7 @@
+{
+  "name": "Divider",
+  "slug": "components/divider",
+  "category": "components",
+  "url": "https://plasma.sberdevices.ru/sdds-finai/components/divider/",
+  "content": "## Divider Divider ## Использование Использование Компонент  `Divider`  используется для визуального разделения компонентов. ### Ориентация разделителя Ориентация разделителя Ориентация разделителя задается с помощью свойства orientation. Возможные значения свойства orientation: \"horizontal\" – горизонтальная (по умолчанию); \"vertical\" – вертикальная; ```tsx\nimport React from 'react';\nimport { BodyS, Divider } from '@salutejs/sdds-finai';\n\nexport function App() {\n    const Demo = ({\n        orientation = 'horizontal',\n        length = '100%',\n        beforeText = 'Before',\n        afterText = 'After',\n    }) => {\n        const wrapperStyle = {\n            display: \"inline-flex\",\n            gap: \"0.5rem\",\n            alignItems: \"center\",\n            justifyContent: \"center\",\n            flexDirection: orientation === \"horizontal\" ? \"column\" : \"row\"\n        }\n\n        return (\n            <div style={wrapperStyle}>\n                <BodyS>{beforeText}</BodyS>\n                <Divider orientation={orientation} length={length} />\n                <BodyS>{afterText}</BodyS>\n            </div>\n        );\n    };\n\n    return (\n        <div style={{ display: \"flex\", gap: \"2rem\" }}>\n            <Demo />\n            <Demo orientation=\"vertical\" />\n        </div>\n    );\n}\n```"
+}

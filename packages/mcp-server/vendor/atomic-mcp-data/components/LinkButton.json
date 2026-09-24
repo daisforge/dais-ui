@@ -6,13 +6,6 @@
   "api": {
     "props": [
       {
-        "name": "view",
-        "type": "\"default\" | \"accent\" | \"positive\" | \"warning\" | \"negative\" | \"secondary\" | \"info\"",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
         "name": "size",
         "type": "\"s\" | \"xs\" | \"xxs\"",
         "required": false,
@@ -20,8 +13,8 @@
         "description": ""
       },
       {
-        "name": "disabled",
-        "type": "boolean",
+        "name": "view",
+        "type": "\"default\" | \"accent\" | \"positive\" | \"warning\" | \"negative\" | \"secondary\" | \"gradient\" | \"info\"",
         "required": false,
         "default": "",
         "description": ""
@@ -34,6 +27,13 @@
         "description": ""
       },
       {
+        "name": "contentLeft",
+        "type": "ReactNode",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
         "name": "contentRight",
         "type": "ReactNode",
         "required": false,
@@ -41,8 +41,8 @@
         "description": ""
       },
       {
-        "name": "contentLeft",
-        "type": "ReactNode",
+        "name": "disabled",
+        "type": "boolean",
         "required": false,
         "default": "",
         "description": ""
@@ -81,7 +81,7 @@
     },
     {
       "title": "Вид кнопки",
-      "snippet": "import React from 'react';\nimport { LinkButton } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', flexWrap: 'wrap' }}>\n            <LinkButton text=\"Кнопка\" size=\"s\" view=\"default\" />\n            <LinkButton text=\"Кнопка\" size=\"s\" view=\"accent\" />\n            <LinkButton text=\"Кнопка\" size=\"s\" view=\"secondary\" />\n            <LinkButton text=\"Кнопка\" size=\"s\" view=\"positive\" />\n            <LinkButton text=\"Кнопка\" size=\"s\" view=\"warning\" />\n            <LinkButton text=\"Кнопка\" size=\"s\" view=\"negative\" />\n            <LinkButton text=\"Кнопка\" size=\"s\" view=\"info\" />\n        </div>\n    );\n}"
+      "snippet": "import React from 'react';\nimport { LinkButton } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', flexWrap: 'wrap' }}>\n            <LinkButton text=\"Кнопка\" size=\"s\" view=\"default\" />\n            <LinkButton text=\"Кнопка\" size=\"s\" view=\"accent\" />\n            <LinkButton text=\"Кнопка\" size=\"s\" view=\"gradient\" />\n            <LinkButton text=\"Кнопка\" size=\"s\" view=\"secondary\" />\n            <LinkButton text=\"Кнопка\" size=\"s\" view=\"positive\" />\n            <LinkButton text=\"Кнопка\" size=\"s\" view=\"warning\" />\n            <LinkButton text=\"Кнопка\" size=\"s\" view=\"negative\" />\n            <LinkButton text=\"Кнопка\" size=\"s\" view=\"info\" />\n        </div>\n    );\n}"
     }
   ]
 }
