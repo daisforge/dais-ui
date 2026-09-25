@@ -55,6 +55,13 @@
         "description": ""
       },
       {
+        "name": "animationDuration",
+        "type": "number",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
         "name": "lighter",
         "type": "boolean",
         "required": false,

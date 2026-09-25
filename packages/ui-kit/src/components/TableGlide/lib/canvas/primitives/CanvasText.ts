@@ -509,21 +509,26 @@ export class CanvasText extends CanvasNode {
     for (let i = 0, len = visibleLines.length; i < len; i += 1) {
       const v = visibleLines[i];
       if (v !== undefined) {
+        // Рисуем строку по центру её слота (baseline middle), а не от верха
+        // (baseline top). Иначе при lineHeight > 1 лишний интерлиньяж копится
+        // снизу каждой строки и текст визуально прижимается к верху блока.
+        // Центр слота распределяет интерлиньяж поровну сверху и снизу.
+        const lineY = y + lineHeightPx / 2;
         if (this.overflow === 'hidden') {
           // При maxLines высота измеряется по видимым строкам, а clip остается
           // защитой от overhang и слишком узких bounds.
           batcher.fillTextClipped(
             v,
             rect.x,
-            y,
+            lineY,
             font,
             color,
             rect,
-            'top',
+            'middle',
             'left'
           );
         } else {
-          batcher.fillText(v, rect.x, y, font, color, 'top');
+          batcher.fillText(v, rect.x, lineY, font, color, 'middle');
         }
         y += lineHeightPx;
       }

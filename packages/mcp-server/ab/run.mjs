@@ -44,8 +44,17 @@ const MCP_TOOLS = [
   'get_feature',
   'get_feature_examples',
   'get_type',
+  'list_categories',
+  'get_installation_guide',
 ].map((t) => `mcp__daisforge-ui__${t}`);
 
+/**
+ * Ресурсов сервер больше не отдаёт (T16: `list_categories`/`get_installation_guide`
+ * вернулись тулами), но разрешение на чтение ресурсов у рук с MCP остаётся: в
+ * замере T10 оно было выдано и не использовано агентом ни разу — это и есть
+ * замеренное основание отката, и снимать его значит терять возможность
+ * перепроверить утверждение на следующем прогоне.
+ */
 const RESOURCE_TOOLS = ['ListMcpResourcesTool', 'ReadMcpResourceTool'];
 const FILE_TOOLS = ['Read', 'Grep', 'Glob'];
 

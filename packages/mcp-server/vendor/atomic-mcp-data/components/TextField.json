@@ -139,6 +139,13 @@
         "description": ""
       },
       {
+        "name": "hasDivider",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
         "name": "labelPlacement",
         "type": "\"outer\" | \"inner\"",
         "required": false,
@@ -309,13 +316,6 @@
       {
         "name": "onSearch",
         "type": "(((value: string, event?: KeyboardEvent<HTMLInputElement>) => void) & ((value: string, event?: KeyboardEvent<HTMLInputElement>) => void)) | undefined",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "hasDivider",
-        "type": "boolean",
         "required": false,
         "default": "",
         "description": ""

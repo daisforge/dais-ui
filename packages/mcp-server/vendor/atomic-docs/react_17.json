@@ -1,0 +1,7 @@
+{
+  "name": "react_17",
+  "slug": "react_17",
+  "category": "react_17",
+  "url": "https://plasma.sberdevices.ru/sdds-finai/react_17/",
+  "content": "# Использование библиотеки в React 17 и ниже Использование библиотеки в React 17 и ниже ## SSRProvider SSRProvider Для корректной работы приложение нужно обернуть  `SSRProvider` ; ```jsx\nimport React from 'react';\nimport { SSRProvider } from '@salutejs/sdds-finai';\n\nconst App = () => {\n    return (\n        <SSRProvider>\n            ...\n        </SSRProvider>\n    );\n};\n\nexport default App;\n```"
+}

@@ -186,6 +186,13 @@
         "required": false,
         "default": "",
         "description": ""
+      },
+      {
+        "name": "thousandSeparator",
+        "type": "string | boolean",
+        "required": false,
+        "default": "",
+        "description": ""
       }
     ]
   },

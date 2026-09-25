@@ -788,6 +788,13 @@ export type EditingConfig<RowType, RowIdType, SummaryRowType> = {
 export type SummaryRowsConfig = {
   showDefault: boolean;
   showInControl: boolean;
+  /**
+   * callback при переключении тогла «Итоговые строки» в настройках таблицы.
+   * Вызывается только по действию пользователя (не при монтировании),
+   * поэтому подходит для сохранения выбора, например, в localStorage.
+   * Сохранённое значение передавайте обратно в `showDefault`.
+   */
+  onChange?: (checked: boolean) => void;
 } & {
   /**
    * Метки для автоматизированного тестирования и аналитики

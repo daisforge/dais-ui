@@ -1,0 +1,7 @@
+{
+  "name": "Image",
+  "slug": "components/image",
+  "category": "components",
+  "url": "https://plasma.sberdevices.ru/sdds-finai/components/image/",
+  "content": "# Image Image ```tsx\nimport React from 'react';\nimport { Image } from '@salutejs/sdds-finai';\n\nexport function App() {\n    return (\n        <Image\n            src=\"/sdds-finai/images/320_320_9.jpg\"\n            width=\"320px\"\n            height=\"320px\"\n            alt=\"Картинка для примера фоном\"\n        />\n    );\n}\n```"
+}
