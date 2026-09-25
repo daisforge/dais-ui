@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.21.0](https://github.com/daisforge/dais-ui/compare/v1.20.0...v1.21.0) (2026-09-25)
+
+### Bug Fixes
+
+- **deps:** @glideappsfinal/glide-data-grid до 6.5.1 ([08fb999](https://github.com/daisforge/dais-ui/commit/08fb99950e22966ea186e6ea182ee4d3d40aa551))
+- **TableCanvas, Table:** скорректировано поведение и отображение закрытого сайдбара ([7cadb8c](https://github.com/daisforge/dais-ui/commit/7cadb8c4ee8e4333a954eccee69a0d4f0bc58830))
+- **TableCanvas:** Canvas.Text скорректировано центрирование многострочного текста по вертикали ([fb137d7](https://github.com/daisforge/dais-ui/commit/fb137d77017a5e3885a9232f24337a53f052b425))
+
+### Features
+
+- **mcp:** автоматическое обновление данных атомарки и релиз ui-mcp, тулы вместо ресурсов ([#88](https://github.com/daisforge/dais-ui/issues/88)) ([94e52b1](https://github.com/daisforge/dais-ui/commit/94e52b1de7aac94d60980614a598fd62fa504b2c))
+- **TableCanvas, Table:** добавлен колбэк summaryRows.onChange ([#90](https://github.com/daisforge/dais-ui/issues/90)) ([9b7ed8b](https://github.com/daisforge/dais-ui/commit/9b7ed8bd1dc7567786d397874101977f97535915))
+
 # [1.20.0](https://github.com/daisforge/dais-ui/compare/v1.19.0...v1.20.0) (2026-09-21)
 
 ### Bug Fixes
