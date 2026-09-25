@@ -1,0 +1,15 @@
+import{j as o}from"./react-D2T61mpp.js";import{cg as t,ch as e,ca as s}from"./vendor-DaS3N6lV.js";import{T as l}from"./Table.columnsControl.stories-XBldQJB1.js";import"./react-is-Clcustum.js";import"./styled-components-By-Qua6E.js";import"./@tanstack/react-virtual-bE6tDT6W.js";import"./tslib-DoU9Jm1N.js";import"./tableData-DVJFoYoT.js";import"./DocStoryTemplate-CW0G7jtC.js";import"./storySourceDoc-tVKyHcEN.js";import"./Box-CPQ5Zm8W.js";import"./Table-CqpCFdmK.js";import"./FiltersActions-BPlwyOA9.js";import"./IconButton-DN_vLAqh.js";import"./@salutejs/plasma-icons-DYi7Td5X.js";import"./@salutejs/sdds-finai-CE284srQ.js";import"./@salutejs/sdds-themes-p9DCXULv.js";import"./utils-LFsJSXST.js";import"./constants-Ci5uyz-N.js";import"./sharedUtilsDebug-BX_KjCjW.js";import"./TextField-C669WM3p.js";import"./sharedUtilsInputs-B_93GBuf.js";import"./AnalyticalWidget-Dwwt6g9d.js";import"./Collapse-DJnuAkJg.js";import"./react-data-grid-Ci-iu5WB.js";import"./TableTabs-BloZZaWG.js";import"./TableCanvasSharedConstants-B2qJZwC8.js";import"./sharedUiSearch-Ck4cf0_p.js";import"./ListOfFilters-NZpGeeo8.js";import"./lodash.isequal-DD0Lfcik.js";import"./NumberFormat-CMG8MZiW.js";import"./EmptyState-BJxE2lSo.js";import"./MassActions-DcWWP5Ns.js";import"./Autocomplete-A6BK-6Vg.js";function i(r){const n={a:"a",code:"code",h1:"h1",h2:"h2",li:"li",p:"p",ul:"ul",...t(),...r.components};return o.jsxs(o.Fragment,{children:[o.jsx(e,{of:l,name:"Docs"}),`
+`,o.jsx(n.h1,{id:"columnscontrol",children:"ColumnsControl"}),`
+`,o.jsxs(n.p,{children:["Пользовательская настройка колонок legacy ",o.jsx(n.code,{children:"Table"}),"."]}),`
+`,o.jsx(n.h2,{id:"ключевые-особенности",children:"Ключевые особенности"}),`
+`,o.jsxs(n.ul,{children:[`
+`,o.jsxs(n.li,{children:["Включение через ",o.jsx(n.code,{children:"tableConfig.columnsControl.enable"})]}),`
+`,o.jsx(n.li,{children:"Скрытие, закрепление и переупорядочивание колонок"}),`
+`,o.jsx(n.li,{children:"Запрет скрытия или закрепления отдельных колонок"}),`
+`,o.jsxs(n.li,{children:["Дефолтные состояния ",o.jsx(n.code,{children:"orderDefault"}),", ",o.jsx(n.code,{children:"hiddenDefault"}),", ",o.jsx(n.code,{children:"pinnedDefault"})]}),`
+`,o.jsxs(n.li,{children:["Колбэк ",o.jsx(n.code,{children:"onConfirm"})," для сохранения настроек вне таблицы"]}),`
+`]}),`
+`,o.jsx(n.h2,{id:"особенности",children:"Особенности"}),`
+`,o.jsxs(n.p,{children:[o.jsx(n.code,{children:"columnsControl"})," может работать вместе с изменением ширины колонок и с ",o.jsx(n.code,{children:"keyText"}),". Для группированных колонок проверяйте итоговый порядок leaf-колонок."]}),`
+`,o.jsxs(n.p,{children:["Описание типов - в разделе ",o.jsx(n.a,{href:"?path=/docs/%D0%BB%D0%BE%D0%BA%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D1%8B-table-columnscontrol-api--docs",children:"API"}),"."]}),`
+`,o.jsx(s,{})]})}function H(r={}){const{wrapper:n}={...t(),...r.components};return n?o.jsx(n,{...r,children:o.jsx(i,{...r})}):i(r)}export{H as default};

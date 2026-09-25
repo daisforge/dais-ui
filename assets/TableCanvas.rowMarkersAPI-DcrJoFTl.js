@@ -1,0 +1,4 @@
+import{j as e}from"./react-D2T61mpp.js";import{cg as o,ch as a}from"./vendor-DaS3N6lV.js";import{T as s}from"./TypeSourceViewer-BvUJhCS_.js";import"./react-is-Clcustum.js";import"./styled-components-By-Qua6E.js";import"./@tanstack/react-virtual-bE6tDT6W.js";import"./tslib-DoU9Jm1N.js";function r(t){const n={h1:"h1",h2:"h2",...o(),...t.components};return e.jsxs(e.Fragment,{children:[e.jsx(a,{title:"Локальные компоненты/TableCanvas/RowMarkers/API"}),`
+`,e.jsx(n.h1,{id:"rowmarkers-api",children:"RowMarkers API"}),`
+`,e.jsx(n.h2,{id:"rowmarkerstableconfig",children:"RowMarkersTableConfig"}),`
+`,e.jsx(s,{language:"ts",filePath:"packages/ui-kit/src/components/TableCanvas/types/table-config.type.ts",typeName:"RowMarkersTableConfig"})]})}function u(t={}){const{wrapper:n}={...o(),...t.components};return n?e.jsx(n,{...t,children:e.jsx(r,{...t})}):r(t)}export{u as default};
