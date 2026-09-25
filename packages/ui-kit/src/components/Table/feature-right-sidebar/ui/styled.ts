@@ -134,22 +134,37 @@ export const SidebarContent = styled(Box)<{
   isOpen: boolean;
   $contentWidth: number;
 }>`
-  min-width: ${({ $contentWidth }) => `${$contentWidth}px`};
+  min-width: ${({ isOpen, $contentWidth }) =>
+    isOpen ? `${$contentWidth}px` : '0'};
   padding: ${spacing8x};
   flex-grow: 1;
 
   transition: ${transitions};
+  /* ширину схлопываем только после анимации закрытия, чтобы контент не дёргался */
+  transition-delay: ${({ isOpen }) => (isOpen ? '0s' : `${SIDEBAR_DURATION}s`)};
   overflow-y: auto;
 
   & .${cls.tableSidebarContent} {
     overflow: hidden;
     height: 100%;
     opacity: 0;
-    transition: ${transitions};
-    animation: ${tabAnimation};
-    animation-delay: 0.1s;
-    animation-duration: 0.3s;
-    animation-fill-mode: forwards;
+    ${({ isOpen }) =>
+      isOpen
+        ? css`
+            visibility: visible;
+            animation: ${tabAnimation};
+            animation-delay: 0.1s;
+            animation-duration: 0.3s;
+            animation-fill-mode: forwards;
+          `
+        : css`
+            /* контент прячем только ПОСЛЕ анимации закрытия,
+               иначе он исчезает раньше, чем сайдбар схлопнется */
+            opacity: 1;
+            visibility: hidden;
+            animation: none;
+            transition: visibility 0s linear ${SIDEBAR_DURATION}s;
+          `}
   }
 
   ${({ isOpen }) =>
