@@ -1,4 +1,0 @@
-import{j as t}from"./react-D2T61mpp.js";import{cg as i,ch as r}from"./vendor-DaS3N6lV.js";import{T as s}from"./TypeSourceViewer-BvUJhCS_.js";import"./react-is-Clcustum.js";import"./styled-components-By-Qua6E.js";import"./@tanstack/react-virtual-bE6tDT6W.js";import"./tslib-DoU9Jm1N.js";function o(n){const e={h1:"h1",h2:"h2",...i(),...n.components};return t.jsxs(t.Fragment,{children:[t.jsx(r,{title:"Локальные компоненты/Table/InfinityScroll/API"}),`
-`,t.jsx(e.h1,{id:"infinity-scroll-api",children:"Infinity Scroll API"}),`
-`,t.jsx(e.h2,{id:"tableconfig",children:"TableConfig"}),`
-`,t.jsx(s,{language:"ts",filePath:"packages/ui-kit/src/components/Table/types/table-config.type.ts",typeName:"TableConfig"})]})}function u(n={}){const{wrapper:e}={...i(),...n.components};return e?t.jsx(e,{...n,children:t.jsx(o,{...n})}):o(n)}export{u as default};
