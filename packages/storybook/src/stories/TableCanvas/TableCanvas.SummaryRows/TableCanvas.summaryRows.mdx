@@ -18,6 +18,33 @@ import * as TableSummaryRowsStories from './TableCanvas.summaryRows.stories';
 
 - **`showDefault`** `boolean` — показывать итоговые строки по умолчанию
 - **`showInControl`** `boolean` — кнопка переключения видимости в control block
+- **`onChange`** `(checked: boolean) => void` — вызывается, когда пользователь переключает тогл «Итоговые строки» в настройках таблицы. Не вызывается при монтировании
+
+### Сохранение выбора пользователя
+
+Сохраните значение в `onChange` и передайте его обратно в `showDefault`:
+
+```tsx
+const STORAGE_KEY = 'my-table:summary-rows';
+
+const [showSummary] = useState(
+  () => localStorage.getItem(STORAGE_KEY) !== 'false',
+);
+
+<TableCanvas
+  tableConfig={{
+    summaryRows: {
+      showDefault: showSummary,
+      showInControl: true,
+      onChange: (checked) =>
+        localStorage.setItem(STORAGE_KEY, String(checked)),
+    },
+  }}
+  ...
+/>;
+```
+
+> `showDefault` читается только при монтировании таблицы. Если поменять его позже, текущее состояние тогла не изменится.
 
 ## Пропс bottomSummaryRows
 

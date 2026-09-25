@@ -650,8 +650,10 @@ export const useFeatureArray = <
               label: 'Итоговые строки',
               checked: summaryRowsIsActive,
               className: tableConfig.summaryRows?.domMetadata?.className,
-              onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
-                setSummaryRowsIsActive(e.target.checked),
+              onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+                setSummaryRowsIsActive(e.target.checked);
+                tableConfig.summaryRows?.onChange?.(e.target.checked);
+              },
               ...tableConfig.summaryRows?.domMetadata?.dataAttributes,
             },
           },
