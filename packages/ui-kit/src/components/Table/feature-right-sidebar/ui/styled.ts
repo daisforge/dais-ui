@@ -134,7 +134,8 @@ export const SidebarContent = styled(Box)<{
   isOpen: boolean;
   $contentWidth: number;
 }>`
-  min-width: ${({ $contentWidth }) => `${$contentWidth}px`};
+  min-width: ${({ isOpen, $contentWidth }) =>
+    isOpen ? `${$contentWidth}px` : '0'};
   padding: ${spacing8x};
   flex-grow: 1;
 
@@ -146,10 +147,18 @@ export const SidebarContent = styled(Box)<{
     height: 100%;
     opacity: 0;
     transition: ${transitions};
-    animation: ${tabAnimation};
-    animation-delay: 0.1s;
-    animation-duration: 0.3s;
-    animation-fill-mode: forwards;
+    ${({ isOpen }) =>
+      isOpen
+        ? css`
+            animation: ${tabAnimation};
+            animation-delay: 0.1s;
+            animation-duration: 0.3s;
+            animation-fill-mode: forwards;
+          `
+        : css`
+            visibility: hidden;
+            animation: none;
+          `}
   }
 
   ${({ isOpen }) =>
