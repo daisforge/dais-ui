@@ -240,24 +240,129 @@ function Example() {
 
 const panelCode = `import { useRef, useState } from 'react';
 import {
+  AiAgentInput,
   AiAgentPopup,
   AiAgentSurface,
   Button,
+  IconButton,
   PopupProvider,
   SSRProvider,
+  surfaceAccentMinor,
+  textAccentGradient,
+  textPrimary,
+  Typography,
 } from '@daisforge/ui';
+import {
+  IconClose,
+  IconPanelSidebarLOutline,
+  IconSendOutline,
+} from '@daisforge/ui/icons';
 
 // Один и тот же контент чата живёт то в окне, то в левой панели лэйаута.
-// Состояние чата (сообщения, черновик) держите снаружи: окно при закрытии
-// размонтирует контент, а при переносе в панель контент перемонтируется.
-// ChatContent тот же, что в примерах выше, но со стейтом снаружи и кнопкой
-// панели в шапке: onTogglePanel переключает view.
+// Состояние чата (сообщения, черновик) поднято в Example: окно при
+// закрытии размонтирует контент, и при переносе в панель контент
+// перемонтируется, а состояние снаружи это переживает.
+
+const bubbleStyle = {
+  background: surfaceAccentMinor,
+  borderRadius: '8px',
+  padding: '10px 12px',
+  color: textPrimary,
+};
+
+function ChatContent({
+  messages,
+  draft,
+  onDraftChange,
+  onSend,
+  onClose,
+  onTogglePanel,
+}) {
+  return (
+    <>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}
+      >
+        <Typography variant="BodyM" bold>
+          Тема диалога
+        </Typography>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          {/* эта кнопка и переносит чат между окном и панелью */}
+          <IconButton size="s" view="clear" onClick={onTogglePanel}>
+            <IconPanelSidebarLOutline size="s" />
+          </IconButton>
+          <IconButton size="s" view="clear" onClick={onClose}>
+            <IconClose size="s" />
+          </IconButton>
+        </div>
+      </div>
+      <div
+        style={{
+          flex: 1,
+          minHeight: 0,
+          overflow: 'auto',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 8,
+          marginTop: 8,
+        }}
+      >
+        {messages.map((text, index) => (
+          <Typography
+            key={index}
+            variant="BodyS"
+            style={bubbleStyle}
+            data-no-drag
+          >
+            {text}
+          </Typography>
+        ))}
+      </div>
+      <div style={{ paddingTop: 12 }}>
+        <AiAgentInput
+          glow
+          placeholder="Спросите что-нибудь"
+          value={draft}
+          onChange={(e) => onDraftChange(e.target.value)}
+          rightSlot={
+            <IconButton size="xs" view="clear" onClick={onSend}>
+              <IconSendOutline size="s" color={textAccentGradient} />
+            </IconButton>
+          }
+        />
+      </div>
+    </>
+  );
+}
 
 function Example() {
   const targetRef = useRef(null);
   // где сейчас живёт чат: в окне или в левой панели
   const [view, setView] = useState('popup');
   const [opened, setOpened] = useState(true);
+  const [messages, setMessages] = useState(['Привет! Я AI-помощник.']);
+  const [draft, setDraft] = useState('');
+
+  const send = () => {
+    if (!draft.trim()) return;
+    setMessages((prev) => [...prev, draft.trim()]);
+    setDraft('');
+  };
+
+  const chat = (
+    <ChatContent
+      messages={messages}
+      draft={draft}
+      onDraftChange={setDraft}
+      onSend={send}
+      onClose={() => setOpened(false)}
+      onTogglePanel={() => setView(view === 'popup' ? 'panel' : 'popup')}
+    />
+  );
 
   return (
     <SSRProvider>
@@ -265,7 +370,7 @@ function Example() {
         <div style={{ display: 'flex', height: '100vh' }}>
           {/* Левая панель: её ширина анимируется, поэтому переход плавный.
               Рамка AiAgentSurface в варианте embedded входит в блочную
-              модель: отступы лэйаута идут от светящегося края, absolute
+              модель: отступы лэйаута идут от края рамки, absolute
               позиционирования нет */}
           <div
             style={{
@@ -277,12 +382,7 @@ function Example() {
           >
             <div style={{ width: 360, height: '100%', padding: 8 }}>
               <AiAgentSurface style={{ height: '100%' }}>
-                {view === 'panel' ? (
-                  <ChatContent
-                    onTogglePanel={() => setView('popup')}
-                    onClose={() => setView('popup')}
-                  />
-                ) : null}
+                {view === 'panel' ? chat : null}
               </AiAgentSurface>
             </div>
           </div>
@@ -300,12 +400,7 @@ function Example() {
           targetRef={targetRef}
           defaultSize={{ width: 360, height: 420 }}
         >
-          {view === 'popup' ? (
-            <ChatContent
-              onTogglePanel={() => setView('panel')}
-              onClose={() => setOpened(false)}
-            />
-          ) : null}
+          {view === 'popup' ? chat : null}
         </AiAgentPopup>
       </PopupProvider>
     </SSRProvider>
