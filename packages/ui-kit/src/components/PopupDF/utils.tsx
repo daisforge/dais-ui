@@ -1,7 +1,7 @@
 import { Popup } from '@ui-kit/components/Popup';
 import {
   buildPopupResizableConfig,
-  ResizableCorner,
+  PopupResizableCorner,
 } from '@ui-kit/shared/utils/resizable';
 import type { ComponentProps } from 'react';
 
@@ -9,7 +9,7 @@ type PopupResizableProp = ComponentProps<typeof Popup>['resizable'];
 
 const getResizableCornerFromPopupPlacement = (
   placement?: ComponentProps<typeof Popup>['placement'],
-): ResizableCorner => {
+): PopupResizableCorner => {
   switch (placement) {
     case 'top-left':
     case 'top':

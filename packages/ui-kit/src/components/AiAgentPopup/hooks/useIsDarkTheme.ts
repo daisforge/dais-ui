@@ -9,10 +9,8 @@ const readIsDark = () =>
   );
 
 /**
- * Тёмная ли сейчас тема. Признак: значение data-theme на html содержит
- * «dark», это накрывает и обычную тёмную тему, и бета-тёмную (betaCoreDark).
- * Общий хелпер getActiveTheme из '@ui-kit/utils' здесь не подходит:
- * бета-тёмную тему он не знает и считает её светлой.
+ * Тёмная ли активная тема (в data-theme на html есть «dark»).
+ * Общий getActiveTheme не подходит: betaCoreDark он пока не знает.
  */
 export const useIsDarkTheme = () => {
   const [isDark, setIsDark] = useState(readIsDark);

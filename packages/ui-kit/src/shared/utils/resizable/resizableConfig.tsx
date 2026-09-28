@@ -10,27 +10,29 @@ export type PopupResizableConfig = Exclude<
   boolean | undefined
 >;
 
-export type ResizableCorner =
+export type PopupResizableCorner =
   | 'top-left'
   | 'top-right'
   | 'bottom-left'
   | 'bottom-right';
 
-export type ResizableIconSize = NonNullable<PopupResizableConfig['iconSize']>;
+export type PopupResizableIconSize = NonNullable<
+  PopupResizableConfig['iconSize']
+>;
 
-export const RESIZABLE_CORNERS: ResizableCorner[] = [
+export const POPUP_RESIZABLE_CORNERS: PopupResizableCorner[] = [
   'top-left',
   'top-right',
   'bottom-left',
   'bottom-right',
 ];
 
-const defaultIconSize: ResizableIconSize = 's';
+const defaultIconSize: PopupResizableIconSize = 's';
 
 /** DF-иконка ресайза, повёрнутая под свой угол */
-export const getResizeIcon = (
-  corner: ResizableCorner,
-  iconSize: ResizableIconSize = defaultIconSize,
+export const getPopupResizeIcon = (
+  corner: PopupResizableCorner,
+  iconSize: PopupResizableIconSize = defaultIconSize,
 ) => {
   const style: CSSProperties = {};
 
@@ -51,19 +53,20 @@ export const getResizeIcon = (
   );
 };
 
-const getResizeIcons = (
+const getPopupResizeIcons = (
   icons?: PopupResizableConfig['icons'],
   iconSize?: PopupResizableConfig['iconSize'],
 ): NonNullable<PopupResizableConfig['icons']> => ({
-  topLeft: icons?.topLeft || getResizeIcon('top-left', iconSize),
-  topRight: icons?.topRight || getResizeIcon('top-right', iconSize),
-  bottomLeft: icons?.bottomLeft || getResizeIcon('bottom-left', iconSize),
-  bottomRight: icons?.bottomRight || getResizeIcon('bottom-right', iconSize),
+  topLeft: icons?.topLeft || getPopupResizeIcon('top-left', iconSize),
+  topRight: icons?.topRight || getPopupResizeIcon('top-right', iconSize),
+  bottomLeft: icons?.bottomLeft || getPopupResizeIcon('bottom-left', iconSize),
+  bottomRight:
+    icons?.bottomRight || getPopupResizeIcon('bottom-right', iconSize),
 });
 
-export type ResizableConfigDefaults = {
+export type PopupResizableConfigDefaults = {
   /** Активный угол ресайза по умолчанию */
-  corner: ResizableCorner;
+  corner: PopupResizableCorner;
   minWidth: number;
   minHeight: number;
 };
@@ -75,7 +78,7 @@ export type ResizableConfigDefaults = {
  */
 export const buildPopupResizableConfig = (
   resizable: boolean | Partial<PopupResizableConfig> | undefined,
-  defaults: ResizableConfigDefaults,
+  defaults: PopupResizableConfigDefaults,
 ): PopupResizableConfig | undefined => {
   if (!resizable) {
     return undefined;
@@ -83,8 +86,8 @@ export const buildPopupResizableConfig = (
 
   const defaultConfig: PopupResizableConfig = {
     directions: [defaults.corner],
-    icons: getResizeIcons(undefined, defaultIconSize),
-    hiddenIcons: RESIZABLE_CORNERS.filter(
+    icons: getPopupResizeIcons(undefined, defaultIconSize),
+    hiddenIcons: POPUP_RESIZABLE_CORNERS.filter(
       (corner) => corner !== defaults.corner,
     ),
     minWidth: defaults.minWidth,
@@ -100,7 +103,9 @@ export const buildPopupResizableConfig = (
   const hiddenIcons =
     resizable.hiddenIcons ??
     (resizable.directions
-      ? RESIZABLE_CORNERS.filter((corner) => !directions?.includes(corner))
+      ? POPUP_RESIZABLE_CORNERS.filter(
+          (corner) => !directions?.includes(corner),
+        )
       : defaultConfig.hiddenIcons);
 
   return {
@@ -108,7 +113,7 @@ export const buildPopupResizableConfig = (
     ...resizable,
     directions,
     hiddenIcons,
-    icons: getResizeIcons(resizable.icons, resizable.iconSize),
+    icons: getPopupResizeIcons(resizable.icons, resizable.iconSize),
     iconSize: resizable.iconSize ?? defaultConfig.iconSize,
   };
 };

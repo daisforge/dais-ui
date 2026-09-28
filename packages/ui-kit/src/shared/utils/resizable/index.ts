@@ -1,11 +1,11 @@
 export type {
   PopupResizableConfig,
-  ResizableConfigDefaults,
-  ResizableCorner,
-  ResizableIconSize,
+  PopupResizableConfigDefaults,
+  PopupResizableCorner,
+  PopupResizableIconSize,
 } from './resizableConfig';
 export {
   buildPopupResizableConfig,
-  getResizeIcon,
-  RESIZABLE_CORNERS,
+  getPopupResizeIcon,
+  POPUP_RESIZABLE_CORNERS,
 } from './resizableConfig';

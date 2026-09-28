@@ -57,22 +57,16 @@ export const StyledSurfaceFloating = styled.div<{ $shadow: string }>`
     pointer-events: none;
   }
 
-  /* Градиентное кольцо рисуем псевдоэлементом: маска вырезает середину,
-     оставляя полосу вокруг контейнера толщиной в свой padding. Полоса на
-     1px толще выноса кольца наружу и этим заходит под карточку: встык при
-     дробной позиции окна браузер оставлял бы между ними полупрозрачный
-     субпиксельный шов */
+  /* Рамка: сплошной градиентный слой на 4px больше контейнера. Середину
+     вырезать не нужно, её накрывает непрозрачная карточка (она поверх),
+     снаружи остаётся только кант рамки. Заодно исключается субпиксельный
+     шов между рамкой и карточкой при дробной позиции окна */
   &::before {
     content: '';
     position: absolute;
     inset: -4px;
-    padding: 5px;
     border-radius: calc(${C.radius} + 4px);
     background: ${C.outline};
-    -webkit-mask: linear-gradient(#fff 0 0) content-box,
-      linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
     pointer-events: none;
   }
 `;
