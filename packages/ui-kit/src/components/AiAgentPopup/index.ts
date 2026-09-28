@@ -6,4 +6,7 @@ export type {
   AiAgentPopupProps,
   AiAgentPopupResizableConfig,
   AiAgentPopupSize,
+  AiAgentSurfaceProps,
+  AiAgentSurfaceVariant,
 } from './AiAgentPopup.types';
+export { AiAgentSurface } from './AiAgentSurface';

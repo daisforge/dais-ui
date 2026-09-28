@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
 import type { Meta, StoryObj } from '@storybook/react';
-import { AiAgentPopup } from '@ui-kit/components/AiAgentPopup';
+import { AiAgentPopup, AiAgentSurface } from '@ui-kit/components/AiAgentPopup';
 import { Button } from '@ui-kit/components/Button';
 import { IconButton } from '@ui-kit/components/IconButton';
 import { PopupProvider } from '@ui-kit/components/Popup';
@@ -54,56 +54,24 @@ import {
 } from '@daisforge/ui/icons';
 
 // Весь контент окна на стороне потребителя, ниже один из вариантов сборки.
+// Рамку, тень и овальное свечение снизу рисует сам компонент: свечение
+// включается пропом glow (например, пока AI-агент обдумывает ответ)
+// и выключается в реальном времени.
 
-// Слой свечения: фон окна. Позиционируется он от контейнера окна (absolute
-// с inset 0), поэтому паддинги контентной области его не сжимают, а
-// overflow со скруглением обрезают размытие по форме окна, чтобы оно не
-// выходило за его пределы
-const glowClipStyle = {
-  position: 'absolute',
-  inset: 0,
-  overflow: 'hidden',
-  borderRadius: '16px',
-  pointerEvents: 'none',
-};
-
-// Овальное свечение из двух слоёв: широкий мягкий ореол и более плотное
-// ядро, один сильный blur съедал бы всю насыщенность цвета. Ширина в
-// процентах, поэтому при ресайзе окна овал растёт вместе с ним
-const glowBaseStyle = {
-  position: 'absolute',
-  left: '50%',
-  bottom: '8px',
-  transform: 'translateX(-50%)',
-  width: '84%',
-  height: '79px',
-  borderRadius: '50%',
-  background:
-    'linear-gradient(268.89deg, rgba(157, 179, 255, 1) 6.881%, rgba(0, 224, 255, 1) 50.076%, rgba(157, 179, 255, 1) 99.883%)',
-  opacity: 0.2,
-};
-const glowHaloStyle = { ...glowBaseStyle, filter: 'blur(92px)' };
-const glowCoreStyle = { ...glowBaseStyle, filter: 'blur(28px)', opacity: 0.14 };
-
-// Контент лежит поверх слоя свечения за счёт zIndex
 const chatHeaderStyle = {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
-  position: 'relative',
-  zIndex: 1,
 };
 const chatBodyStyle = {
   flex: '1 1 auto',
   minHeight: 0,
   display: 'flex',
   flexDirection: 'column',
-  position: 'relative',
-  zIndex: 1,
 };
 
 // Лента скроллится в своём контейнере, свечение при этом стоит на месте:
-// оно живёт в отдельном слое окна, а не внутри скролла
+// оно нарисовано компонентом в слое окна под контентом
 const chatMessagesStyle = {
   flex: '1 1 auto',
   minHeight: 0,
@@ -174,10 +142,6 @@ function ChatContent({ onClose }) {
 
   return (
     <>
-      <div style={glowClipStyle}>
-        <div style={glowHaloStyle} />
-        <div style={glowCoreStyle} />
-      </div>
       <ChatHeader onClose={onClose} />
       <div style={chatBodyStyle}>
         <div style={chatMessagesStyle}>
@@ -230,6 +194,7 @@ function Example() {
         <AiAgentPopup
           opened={opened}
           targetRef={targetRef}
+          glow
           defaultSize={{ width: 360, height: 420 }}
           dragBoundary={{ top: 8, right: 8, bottom: 8, left: 8 }}
         >
@@ -258,12 +223,88 @@ function Example() {
           draggable
           resizable
           useStorage
+          glow
           defaultSize={{ width: 360, height: 420 }}
           dragBoundary={{ top: 8, right: 8, bottom: 8, left: 8 }}
           onPositionChange={(position) => console.log(position)}
           onSizeChange={(size) => console.log(size)}
         >
           <ChatContent onClose={() => setOpened(false)} />
+        </AiAgentPopup>
+      </PopupProvider>
+    </SSRProvider>
+  );
+}`;
+
+const panelCode = `import { useRef, useState } from 'react';
+import {
+  AiAgentPopup,
+  AiAgentSurface,
+  Button,
+  PopupProvider,
+  SSRProvider,
+} from '@daisforge/ui';
+
+// Один и тот же контент чата живёт то в окне, то в левой панели лэйаута.
+// Состояние чата (сообщения, черновик) держите снаружи: окно при закрытии
+// размонтирует контент, а при переносе в панель контент перемонтируется.
+// ChatContent тот же, что в примерах выше, но со стейтом снаружи и кнопкой
+// панели в шапке: onTogglePanel переключает view.
+
+function Example() {
+  const targetRef = useRef(null);
+  // где сейчас живёт чат: в окне или в левой панели
+  const [view, setView] = useState('popup');
+  const [opened, setOpened] = useState(true);
+
+  return (
+    <SSRProvider>
+      <PopupProvider>
+        <div style={{ display: 'flex', height: '100vh' }}>
+          {/* Левая панель: её ширина анимируется, поэтому переход плавный.
+              Рамка AiAgentSurface в варианте embedded входит в блочную
+              модель: отступы лэйаута идут от светящегося края, absolute
+              позиционирования нет */}
+          <div
+            style={{
+              width: view === 'panel' ? 376 : 0,
+              overflow: 'hidden',
+              transition: 'width 0.3s ease',
+              flex: 'none',
+            }}
+          >
+            <div style={{ width: 360, height: '100%', padding: 8 }}>
+              <AiAgentSurface glow style={{ height: '100%' }}>
+                {view === 'panel' ? (
+                  <ChatContent
+                    onTogglePanel={() => setView('popup')}
+                    onClose={() => setView('popup')}
+                  />
+                ) : null}
+              </AiAgentSurface>
+            </div>
+          </div>
+
+          {/* остальная страница */}
+          <div style={{ flex: 1 }}>
+            <span ref={targetRef}>
+              <Button onClick={() => setOpened(!opened)}>AI помощник</Button>
+            </span>
+          </div>
+        </div>
+
+        <AiAgentPopup
+          opened={view === 'popup' && opened}
+          targetRef={targetRef}
+          glow
+          defaultSize={{ width: 360, height: 420 }}
+        >
+          {view === 'popup' ? (
+            <ChatContent
+              onTogglePanel={() => setView('panel')}
+              onClose={() => setOpened(false)}
+            />
+          ) : null}
         </AiAgentPopup>
       </PopupProvider>
     </SSRProvider>
@@ -290,6 +331,7 @@ const simpleArgTypes = {
   resizable: hiddenArgType,
   defaultSize: hiddenArgType,
   onSizeChange: hiddenArgType,
+  glow: hiddenArgType,
 };
 
 const meta: Meta<AiAgentPopupStoryArgs> = {
@@ -309,6 +351,7 @@ const meta: Meta<AiAgentPopupStoryArgs> = {
     draggable: { control: 'boolean' },
     resizable: { control: 'boolean' },
     useStorage: { control: 'boolean' },
+    glow: { control: 'boolean' },
     targetGap: { control: 'number' },
     dragIgnoreSelector: { control: 'text' },
     defaultPosition: { control: 'object' },
@@ -319,6 +362,7 @@ const meta: Meta<AiAgentPopupStoryArgs> = {
     draggable: true,
     resizable: true,
     useStorage: false,
+    glow: true,
     targetGap: 12,
     defaultSize: { width: 360, height: 420 },
     dragBoundary: { top: 8, right: 8, bottom: 8, left: 8 },
@@ -356,8 +400,6 @@ const chatHeaderStyle: React.CSSProperties = {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
-  position: 'relative',
-  zIndex: 1,
 };
 
 // Общий контейнер ленты сообщений и поля ввода
@@ -366,47 +408,6 @@ const chatBodyStyle: React.CSSProperties = {
   minHeight: 0,
   display: 'flex',
   flexDirection: 'column',
-  position: 'relative',
-  zIndex: 1,
-};
-
-// Слой свечения: фон окна, растянут на всю карточку без учёта её паддингов
-// (позиционируется от контейнера окна) и обрезает размытие по скруглению,
-// чтобы оно не выходило за пределы окна. Весь контент лежит поверх слоя
-const glowClipStyle: React.CSSProperties = {
-  position: 'absolute',
-  inset: 0,
-  overflow: 'hidden',
-  borderRadius: '16px',
-  pointerEvents: 'none',
-};
-
-// Овальное свечение по макету, прижато к нижнему краю окна под полем ввода.
-// Два слоя: насыщенное ядро с небольшим размытием и широкий мягкий ореол,
-// один сильный blur съедал всю насыщенность цвета. Ширина в процентах,
-// поэтому при ресайзе окна овал растёт вместе с ним
-const glowBaseStyle: React.CSSProperties = {
-  position: 'absolute',
-  left: '50%',
-  bottom: '8px',
-  transform: 'translateX(-50%)',
-  width: '84%',
-  height: '79px',
-  borderRadius: '50%',
-  background:
-    'linear-gradient(268.89deg, rgba(157, 179, 255, 1) 6.881%, rgba(0, 224, 255, 1) 50.076%, rgba(157, 179, 255, 1) 99.883%)',
-  opacity: 0.2,
-};
-
-const glowHaloStyle: React.CSSProperties = {
-  ...glowBaseStyle,
-  filter: 'blur(92px)',
-};
-
-const glowCoreStyle: React.CSSProperties = {
-  ...glowBaseStyle,
-  filter: 'blur(28px)',
-  opacity: 0.14,
 };
 
 const chatHeaderGroupStyle: React.CSSProperties = {
@@ -414,6 +415,8 @@ const chatHeaderGroupStyle: React.CSSProperties = {
   alignItems: 'center',
 };
 
+// Лента скроллится в своём контейнере, свечение при этом стоит на месте:
+// оно нарисовано компонентом в слое окна под контентом
 const chatMessagesStyle: React.CSSProperties = {
   flex: '1 1 auto',
   minHeight: 0,
@@ -443,9 +446,28 @@ const inputBackplateStyle: React.CSSProperties = {
   borderRadius: '0.625rem',
 };
 
+const initialMessages = [
+  'Привет! Я AI-помощник. Это сообщение помечено data-no-drag: текст в нём можно выделять, перетаскивание с него не начинается.',
+  'А за свободные места, включая просветы между сообщениями, окно можно перетащить. Растянуть за угол с иконкой, закрыть крестиком.',
+  'Свечение снизу рисует сам компонент, оно включено пропом glow.',
+  'Проверь: позиция скролла и набранный черновик не теряются при перетаскивании окна.',
+  'И при ресайзе за любой угол тоже.',
+  'И когда активный угол ресайза переезжает после переноса окна в другой сектор экрана.',
+  'Отправь своё сообщение кнопкой, оно добавится в конец ленты.',
+  'Кнопка с иконкой панели в шапке переносит чат в левую панель, смотри стори «Переход в панель».',
+  'Закрытие окна размонтирует контент, поэтому в реальном чате состояние держат снаружи.',
+  'Это описано в документации компонента.',
+];
+
 // Шапка окна по макету: стрелка назад с темой диалога слева, четыре
 // кнопки-иконки справа, крестик закрывает окно
-function ChatHeader({ onClose }: { onClose: () => void }) {
+function ChatHeader({
+  onClose,
+  onTogglePanel,
+}: {
+  onClose: () => void;
+  onTogglePanel?: () => void;
+}) {
   return (
     <div style={chatHeaderStyle}>
       <div style={chatHeaderGroupStyle}>
@@ -457,7 +479,7 @@ function ChatHeader({ onClose }: { onClose: () => void }) {
         </Typography>
       </div>
       <div style={chatHeaderGroupStyle}>
-        <IconButton size="s" view="clear">
+        <IconButton size="s" view="clear" onClick={onTogglePanel}>
           <IconPanelSidebarLOutline size="s" />
         </IconButton>
         <IconButton size="s" view="clear">
@@ -474,39 +496,26 @@ function ChatHeader({ onClose }: { onClose: () => void }) {
   );
 }
 
-const initialMessages = [
-  'Привет! Я AI-помощник. Это сообщение помечено data-no-drag: текст в нём можно выделять, перетаскивание с него не начинается.',
-  'А за свободные места, включая просветы между сообщениями, окно можно перетащить. Растянуть за угол с иконкой, закрыть крестиком.',
-  'Сообщений специально много, чтобы в ленте появился скролл.',
-  'Проверь: позиция скролла и набранный черновик не теряются при перетаскивании окна.',
-  'И при ресайзе за любой угол тоже.',
-  'И когда активный угол ресайза переезжает после переноса окна в другой сектор экрана.',
-  'Отправь своё сообщение кнопкой, оно добавится в конец ленты.',
-  'Локальный стейт живёт, пока окно открыто.',
-  'А вот закрытие окна размонтирует контент, поэтому в реальном чате состояние держат снаружи.',
-  'Это описано в документации компонента.',
-];
-
-// Заглушка содержимого: в реальном использовании сюда встраивается чат
-// AI-помощника со стороны потребителя. Локальные стейты (лента сообщений,
-// черновик ввода) здесь для проверки, что драг и ресайз их не теряют
-function ChatStub({ onClose }: { onClose: () => void }) {
-  const [messages, setMessages] = useState(initialMessages);
-  const [draft, setDraft] = useState('');
-
-  const sendDraft = () => {
-    if (!draft.trim()) return;
-    setMessages((prev) => [...prev, draft.trim()]);
-    setDraft('');
-  };
-
+// Контент чата со стейтом снаружи: один и тот же компонент рендерится
+// и в окне, и в левой панели, состояние при переносе не теряется
+function ChatContent({
+  messages,
+  draft,
+  onDraftChange,
+  onSend,
+  onClose,
+  onTogglePanel,
+}: {
+  messages: string[];
+  draft: string;
+  onDraftChange: (draft: string) => void;
+  onSend: () => void;
+  onClose: () => void;
+  onTogglePanel?: () => void;
+}) {
   return (
     <>
-      <div style={glowClipStyle}>
-        <div style={glowHaloStyle} />
-        <div style={glowCoreStyle} />
-      </div>
-      <ChatHeader onClose={onClose} />
+      <ChatHeader onClose={onClose} onTogglePanel={onTogglePanel} />
       <div style={chatBodyStyle}>
         {/* data-no-drag стоит точечно на сообщениях: их текст выделяется, а за
             просветы между ними и остальные свободные места окно перетаскивается */}
@@ -530,9 +539,9 @@ function ChatStub({ onClose }: { onClose: () => void }) {
               rows={1}
               placeholder="Спросите что-нибудь"
               value={draft}
-              onChange={(e) => setDraft(e.target.value)}
+              onChange={(e) => onDraftChange(e.target.value)}
               contentRight={
-                <IconButton size="xs" view="clear" onClick={sendDraft}>
+                <IconButton size="xs" view="clear" onClick={onSend}>
                   {/* плазма-иконки умеют градиент в color: рисуют её маской */}
                   <IconSendOutline size="s" color={textAccentGradient} />
                 </IconButton>
@@ -545,6 +554,21 @@ function ChatStub({ onClose }: { onClose: () => void }) {
   );
 }
 
+// Стейт чата: в простых сторях живёт внутри примера, в стори с переходом
+// в панель показывает, что состояние переживает перенос контента
+function useChatState() {
+  const [messages, setMessages] = useState(initialMessages);
+  const [draft, setDraft] = useState('');
+
+  const sendDraft = () => {
+    if (!draft.trim()) return;
+    setMessages((prev) => [...prev, draft.trim()]);
+    setDraft('');
+  };
+
+  return { messages, draft, setDraft, sendDraft };
+}
+
 function AiAgentPopupExample({
   fullHeight,
   ...args
@@ -552,9 +576,10 @@ function AiAgentPopupExample({
   const targetRef = useRef<HTMLSpanElement>(null);
   const frameRef = useRef<HTMLDivElement>(null);
   const [opened, setOpened] = useState(true);
+  const chat = useChatState();
 
   // frame здесь нужен только для стори: он изолирует окно в рамках примера,
-  // чтобы два примера на странице документации не мешали друг другу.
+  // чтобы примеры на странице документации не мешали друг другу.
   // В продуктовом коде frame не передавайте: окно живёт поверх всей страницы
   return (
     <SSRProvider>
@@ -576,7 +601,82 @@ function AiAgentPopupExample({
             targetRef={targetRef}
             frame={frameRef}
           >
-            <ChatStub onClose={() => setOpened(false)} />
+            <ChatContent
+              messages={chat.messages}
+              draft={chat.draft}
+              onDraftChange={chat.setDraft}
+              onSend={chat.sendDraft}
+              onClose={() => setOpened(false)}
+            />
+          </AiAgentPopup>
+        </div>
+      </PopupProvider>
+    </SSRProvider>
+  );
+}
+
+// Чат переезжает из окна в левую панель лэйаута и обратно по кнопке
+// с иконкой панели в шапке. Состояние чата живёт снаружи и перенос
+// переживает. Ширина панели анимируется, рамка оболочки в варианте
+// embedded входит в блочную модель: отступ лэйаута идёт от светящегося края
+function PanelTransformExample({ fullHeight }: { fullHeight?: boolean }) {
+  const targetRef = useRef<HTMLSpanElement>(null);
+  const frameRef = useRef<HTMLDivElement>(null);
+  const [view, setView] = useState<'popup' | 'panel'>('popup');
+  const [opened, setOpened] = useState(true);
+  const chat = useChatState();
+
+  const chatContent = (
+    <ChatContent
+      messages={chat.messages}
+      draft={chat.draft}
+      onDraftChange={chat.setDraft}
+      onSend={chat.sendDraft}
+      onClose={() => {
+        setView('popup');
+        setOpened(false);
+      }}
+      onTogglePanel={() => setView(view === 'popup' ? 'panel' : 'popup')}
+    />
+  );
+
+  return (
+    <SSRProvider>
+      <PopupProvider>
+        <div
+          ref={frameRef}
+          style={fullHeight ? fullHeightStageStyle : stageStyle}
+        >
+          <div
+            style={{
+              width: view === 'panel' ? 376 : 0,
+              overflow: 'hidden',
+              transition: 'width 0.3s ease',
+              flex: 'none',
+            }}
+          >
+            <div style={{ width: 360, height: '100%', padding: 8 }}>
+              <AiAgentSurface glow style={{ height: '100%' }}>
+                {view === 'panel' ? chatContent : null}
+              </AiAgentSurface>
+            </div>
+          </div>
+          <div style={toolbarStyle}>
+            <span ref={targetRef}>
+              <Button size="xs" onClick={() => setOpened(!opened)}>
+                AI помощник
+              </Button>
+            </span>
+          </div>
+          <AiAgentPopup
+            opened={view === 'popup' && opened}
+            targetRef={targetRef}
+            frame={frameRef}
+            glow
+            defaultSize={{ width: 360, height: 420 }}
+            dragBoundary={{ top: 8, right: 8, bottom: 8, left: 8 }}
+          >
+            {view === 'popup' ? chatContent : null}
           </AiAgentPopup>
         </div>
       </PopupProvider>
@@ -602,6 +702,7 @@ export const Simple: Story = {
   ...storySourceDoc({ code: simpleCode, previewSource: 'shown' }),
   render: (_args, context) => (
     <AiAgentPopupExample
+      glow
       defaultSize={{ width: 360, height: 420 }}
       dragBoundary={{ top: 8, right: 8, bottom: 8, left: 8 }}
       fullHeight={context.viewMode === 'story'}
@@ -614,5 +715,26 @@ export const Playground: Story = {
   ...storySourceDoc({ code: playgroundCode, previewSource: 'shown' }),
   render: (args, context) => (
     <AiAgentPopupExample {...args} fullHeight={context.viewMode === 'story'} />
+  ),
+};
+
+export const PanelTransform: Story = {
+  name: 'Переход в панель',
+  argTypes: simpleArgTypes,
+  args: {},
+  parameters: {
+    controls: {
+      disable: true,
+      exclude: /.*/,
+    },
+    docs: {
+      controls: {
+        exclude: /.*/,
+      },
+    },
+  },
+  ...storySourceDoc({ code: panelCode, previewSource: 'shown' }),
+  render: (_args, context) => (
+    <PanelTransformExample fullHeight={context.viewMode === 'story'} />
   ),
 };

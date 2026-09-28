@@ -20,3 +20,14 @@ export const LOCAL_STORAGE_DEFAULT_KEY = 'ai-agent-popup-state';
  */
 export const NO_DRAG_SELECTOR =
   'button, a, input, textarea, select, [contenteditable="true"], [data-no-drag]';
+
+/**
+ * Геометрия овального свечения по макету: овал 304x79 при ширине окна 360.
+ * Ширина в долях от ширины окна, высота фиксированная и при ресайзе
+ * не меняется.
+ */
+export const GLOW_WIDTH_RATIO = 0.84;
+
+export const GLOW_HEIGHT = 79;
+
+export const GLOW_BOTTOM_OFFSET = 8;

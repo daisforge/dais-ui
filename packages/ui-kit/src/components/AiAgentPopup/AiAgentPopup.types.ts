@@ -2,6 +2,7 @@ import { Popup } from '@ui-kit/components/Popup';
 import type {
   ComponentProps,
   Dispatch,
+  HTMLAttributes,
   ReactNode,
   RefObject,
   SetStateAction,
@@ -63,6 +64,32 @@ export type AiAgentPopupResizeCorner =
   | 'top-right'
   | 'bottom-left'
   | 'bottom-right';
+
+/**
+ * Вариант оболочки AiAgentSurface.
+ * - floating: рамка нарисована наружу от карточки и в размеры не входит,
+ *   так оболочка используется внутри AiAgentPopup;
+ * - embedded: рамка часть блочной модели (обычный padding с градиентным
+ *   фоном), для встраивания в лэйаут страницы.
+ */
+export type AiAgentSurfaceVariant = 'floating' | 'embedded';
+
+export type AiAgentSurfaceProps = HTMLAttributes<HTMLDivElement> & {
+  /**
+   * Вариант рамки.
+   * @default embedded
+   */
+  variant?: AiAgentSurfaceVariant;
+  /**
+   * Включить овальное свечение в нижней части. Включение и выключение
+   * плавные, переключать можно в реальном времени (например, включать,
+   * пока AI-агент обдумывает ответ). При ресайзе свечение растёт только
+   * по ширине, высота фиксированная.
+   * @default false
+   */
+  glow?: boolean;
+  children?: ReactNode;
+};
 
 /**
  * Что храним в localStorage при useStorage.
@@ -155,4 +182,11 @@ export type AiAgentPopupProps = Omit<
    * Callback смены размера по окончании ресайза.
    */
   onSizeChange?: (size: AiAgentPopupSize) => void;
+  /**
+   * Включить овальное свечение в нижней части окна. Переключать можно
+   * в реальном времени: включение и выключение плавные. При ресайзе
+   * свечение растёт только по ширине, высота фиксированная.
+   * @default false
+   */
+  glow?: boolean;
 };

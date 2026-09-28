@@ -64,3 +64,25 @@ import { TypeSourceViewer } from '@df-storybook/utils/TypeSourceViewer';
 её частично: не заданные поля компонент заполняет своими значениями
 (активный угол по положению окна, DF-иконка, минимум 360x360, пределы
 по краям экрана).
+
+## AiAgentSurfaceProps
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/AiAgentPopup/AiAgentPopup.types.ts"
+  typeName="AiAgentSurfaceProps"
+/>
+> Оболочка окна (рамка, тень, свечение, карточка) отдельным компонентом:
+для встраивания чата в лэйаут страницы без попапа, перетаскивания
+и ресайза. `AiAgentPopup` использует её внутри себя сам.
+
+## AiAgentSurfaceVariant
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/AiAgentPopup/AiAgentPopup.types.ts"
+  typeName="AiAgentSurfaceVariant"
+/>
+> В варианте `embedded` рамка входит в блочную модель, и отступы лэйаута
+считаются от светящегося края; вариант `floating` рисует рамку наружу
+от карточки и используется самим окном.

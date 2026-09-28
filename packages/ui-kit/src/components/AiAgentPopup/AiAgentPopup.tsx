@@ -1,16 +1,11 @@
-import { shadowGradientDark, shadowGradientLight } from '@ui-kit/tokens';
 import type { CSSProperties } from 'react';
 import { forwardRef, useEffect, useMemo } from 'react';
 
 import { DEFAULT_TARGET_GAP } from './AiAgentPopup.constants';
-import {
-  StyledContainer,
-  StyledContent,
-  StyledPopup,
-} from './AiAgentPopup.styled';
+import { StyledPopup } from './AiAgentPopup.styled';
 import type { AiAgentPopupProps } from './AiAgentPopup.types';
+import { AiAgentSurface } from './AiAgentSurface';
 import { useDrag } from './hooks/useDrag';
-import { useIsDarkTheme } from './hooks/useIsDarkTheme';
 import { usePopupPosition } from './hooks/usePopupPosition';
 import { usePopupResize } from './hooks/usePopupResize';
 import { useStateStorage } from './hooks/useStateStorage';
@@ -44,8 +39,10 @@ export const AiAgentPopup = forwardRef<HTMLDivElement, AiAgentPopupProps>(
       resizable = true,
       defaultSize,
       onSizeChange,
+      glow = false,
       frame = 'document',
       style: externalStyle,
+      className,
       ...rest
     } = props;
 
@@ -114,12 +111,6 @@ export const AiAgentPopup = forwardRef<HTMLDivElement, AiAgentPopupProps>(
       [popupPosition, externalStyle],
     );
 
-    // Обводку и фон тема переключает сама через CSS-переменные, а тени
-    // в атомарке заведены двумя отдельными токенами (light и dark с разными
-    // значениями в макетах), поэтому тёмную тень выбираем по активной теме
-    const isDarkTheme = useIsDarkTheme();
-    const shadow = isDarkTheme ? shadowGradientDark : shadowGradientLight;
-
     return (
       <StyledPopup
         {...rest}
@@ -129,15 +120,20 @@ export const AiAgentPopup = forwardRef<HTMLDivElement, AiAgentPopupProps>(
         placement="top-left"
         resizable={resizableConfig}
         style={popupStyle}
+        className={
+          dragActive
+            ? `${className ?? ''} ai-agent-popup-dragging`.trim()
+            : className
+        }
       >
-        <StyledContainer
+        <AiAgentSurface
+          variant="floating"
+          glow={glow}
           ref={setContainerRef}
-          $shadow={shadow}
-          $dragActive={dragActive}
           {...(draggable ? dragHandlers : null)}
         >
-          <StyledContent>{children}</StyledContent>
-        </StyledContainer>
+          {children}
+        </AiAgentSurface>
       </StyledPopup>
     );
   },
