@@ -29,7 +29,7 @@ import {
   textInfo,
   textPrimary,
 } from '@ui-kit/tokens';
-import React, { useRef, useState } from 'react';
+import React, { useLayoutEffect, useRef, useState } from 'react';
 
 type AiAgentPopupStoryArgs = React.ComponentProps<typeof AiAgentPopup> & {
   glow?: boolean;
@@ -738,9 +738,24 @@ function AiAgentPopupExample({
 function PanelTransformExample({ fullHeight }: { fullHeight?: boolean }) {
   const targetRef = useRef<HTMLSpanElement>(null);
   const frameRef = useRef<HTMLDivElement>(null);
+  const toolbarRef = useRef<HTMLDivElement>(null);
   const [view, setView] = useState<'popup' | 'panel'>('popup');
   const [opened, setOpened] = useState(true);
   const chat = useChatState();
+
+  // Левая граница перетаскивания равна ширине панели инструментов:
+  // окно не наезжает на неё. Ширину следим наблюдателем, а не одним
+  // замером: после загрузки шрифта кнопка становится чуть шире
+  const [leftBoundary, setLeftBoundary] = useState(8);
+  useLayoutEffect(() => {
+    const toolbar = toolbarRef.current;
+    if (!toolbar) return undefined;
+    const update = () => setLeftBoundary(toolbar.offsetWidth);
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(toolbar);
+    return () => observer.disconnect();
+  }, []);
 
   const chatContent = (
     <ChatContent
@@ -778,7 +793,7 @@ function PanelTransformExample({ fullHeight }: { fullHeight?: boolean }) {
               </AiAgentSurface>
             </div>
           </div>
-          <div style={toolbarStyle}>
+          <div ref={toolbarRef} style={toolbarStyle}>
             <span ref={targetRef}>
               <Button size="xs" onClick={() => setOpened(!opened)}>
                 AI помощник
@@ -790,7 +805,7 @@ function PanelTransformExample({ fullHeight }: { fullHeight?: boolean }) {
             targetRef={targetRef}
             frame={frameRef}
             defaultSize={{ width: 360, height: 420 }}
-            dragBoundary={{ top: 8, right: 8, bottom: 8, left: 8 }}
+            dragBoundary={{ top: 8, right: 8, bottom: 8, left: leftBoundary }}
           >
             {view === 'popup' ? chatContent : null}
           </AiAgentPopup>
