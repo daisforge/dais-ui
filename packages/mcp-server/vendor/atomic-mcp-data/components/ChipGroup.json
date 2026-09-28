@@ -14,7 +14,7 @@
       },
       {
         "name": "size",
-        "type": "\"s\" | \"m\" | \"xs\"",
+        "type": "\"s\" | \"m\" | \"xs\" | \"xxs\" | \"28xs\" | \"16xxs\"",
         "required": false,
         "default": "",
         "description": ""

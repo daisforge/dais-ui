@@ -55,6 +55,20 @@
         "description": ""
       },
       {
+        "name": "prefix",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "suffix",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
         "name": "isAllowed",
         "type": "((values: NumberFormatValues) => boolean)",
         "required": false,
@@ -127,6 +141,13 @@
       {
         "name": "label",
         "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "hasDivider",
+        "type": "boolean",
         "required": false,
         "default": "",
         "description": ""
@@ -302,13 +323,6 @@
       {
         "name": "onSearch",
         "type": "(((value: string, event?: KeyboardEvent<HTMLInputElement>) => void) & ((value: string, event?: KeyboardEvent<HTMLInputElement>) => void)) | undefined",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "hasDivider",
-        "type": "boolean",
         "required": false,
         "default": "",
         "description": ""

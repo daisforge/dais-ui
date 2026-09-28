@@ -144,6 +144,13 @@
         "required": false,
         "default": "",
         "description": ""
+      },
+      {
+        "name": "stretchHeight",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
       }
     ]
   },

@@ -7,7 +7,7 @@
     "props": [
       {
         "name": "view",
-        "type": "\"default\" | \"accent\" | \"positive\" | \"warning\" | \"negative\" | \"secondary\" | \"info\"",
+        "type": "\"default\" | \"accent\" | \"positive\" | \"warning\" | \"negative\" | \"secondary\" | \"gradient\" | \"info\"",
         "required": false,
         "default": "",
         "description": ""
@@ -165,7 +165,7 @@
     },
     {
       "title": "Вид кнопки",
-      "snippet": "import React from 'react';\nimport { EmbedIconButton } from '@salutejs/sdds-finai';\nimport { IconClose } from '@salutejs/plasma-icons';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', flexWrap: 'wrap' }}>\n            <EmbedIconButton size=\"s\" view=\"default\">\n                <IconClose color=\"inherit\" />\n            </EmbedIconButton>\n            <EmbedIconButton size=\"s\" view=\"accent\">\n                <IconClose color=\"inherit\" />\n            </EmbedIconButton>\n            <EmbedIconButton size=\"s\" view=\"secondary\">\n                <IconClose color=\"inherit\" />\n            </EmbedIconButton>\n            <EmbedIconButton size=\"s\" view=\"clear\">\n                <IconClose color=\"inherit\" />\n            </EmbedIconButton>\n            <EmbedIconButton size=\"s\" view=\"positive\">\n                <IconClose color=\"inherit\" />\n            </EmbedIconButton>\n            <EmbedIconButton size=\"s\" view=\"warning\">\n                <IconClose color=\"inherit\" />\n            </EmbedIconButton>\n            <EmbedIconButton size=\"s\" view=\"negative\">\n                <IconClose color=\"inherit\" />\n            </EmbedIconButton>\n        </div>\n    );\n}"
+      "snippet": "import React from 'react';\nimport { EmbedIconButton } from '@salutejs/sdds-finai';\nimport { IconClose } from '@salutejs/plasma-icons';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', flexWrap: 'wrap' }}>\n            <EmbedIconButton size=\"s\" view=\"default\">\n                <IconClose color=\"inherit\" />\n            </EmbedIconButton>\n            <EmbedIconButton size=\"s\" view=\"accent\">\n                <IconClose color=\"inherit\" />\n            </EmbedIconButton>\n            <EmbedIconButton size=\"s\" view=\"secondary\">\n                <IconClose color=\"inherit\" />\n            </EmbedIconButton>\n            <EmbedIconButton size=\"s\" view=\"clear\">\n                <IconClose color=\"inherit\" />\n            </EmbedIconButton>\n            <EmbedIconButton size=\"s\" view=\"positive\">\n                <IconClose color=\"inherit\" />\n            </EmbedIconButton>\n            <EmbedIconButton size=\"s\" view=\"warning\">\n                <IconClose color=\"inherit\" />\n            </EmbedIconButton>\n            <EmbedIconButton size=\"s\" view=\"negative\">\n                <IconClose color=\"inherit\" />\n            </EmbedIconButton>\n            <EmbedIconButton size=\"s\" view=\"negative\">\n                <IconClose color=\"linear-gradient(100.49deg, #199AF0 0%, #12C2F3 41.912%, #528EFF 106.22%)\" />\n            </EmbedIconButton>\n        </div>\n    );\n}"
     }
   ]
 }

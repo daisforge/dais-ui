@@ -7,7 +7,7 @@
     "props": [
       {
         "name": "view",
-        "type": "\"default\" | \"accent\" | \"positive\" | \"warning\" | \"negative\" | \"dark\" | \"light\"",
+        "type": "\"default\" | \"accent\" | \"positive\" | \"warning\" | \"negative\" | \"dark\" | \"light\" | \"secondary\"",
         "required": false,
         "default": "",
         "description": ""
@@ -32,6 +32,13 @@
         "required": false,
         "default": "",
         "description": ""
+      },
+      {
+        "name": "thousandSeparator",
+        "type": "string | boolean",
+        "required": false,
+        "default": "",
+        "description": ""
       }
     ]
   },
@@ -41,12 +48,16 @@
       "snippet": "import React from 'react';\nimport { Counter } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div>\n            <Counter count={10} maxCount={9} />\n            <Counter count={100} maxCount={99} />\n        </div>\n    );\n}"
     },
     {
+      "title": "Разделитель тысяч",
+      "snippet": "import React from 'react';\nimport { Counter } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div>\n            <Counter count={1234567} />\n            <Counter count={1234567} thousandSeparator=\",\" />\n            <Counter count={1234567} thousandSeparator={false} />\n            <Counter count={1234567} maxCount={999999} />\n        </div>\n    );\n}"
+    },
+    {
       "title": "Размер числового badge",
       "snippet": "import React from 'react';\nimport { Counter } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div>\n            <Counter count={10} size=\"xs\" />\n            <Counter count={10} size=\"xxs\" />\n        </div>\n    );\n}"
     },
     {
       "title": "Вид числового badge",
-      "snippet": "import React from 'react';\nimport { Counter } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div>\n            <Counter count={10} view=\"primary\" />\n            <Counter count={10} view=\"accent\" />\n            <Counter count={10} view=\"positive\" />\n            <Counter count={10} view=\"warning\" />\n            <Counter count={10} view=\"negative\" />\n            <Counter count={10} view=\"dark\" />\n            <Counter count={10} view=\"light\" />\n        </div>\n    );\n}"
+      "snippet": "import React from 'react';\nimport { Counter } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div>\n            <Counter count={10} view=\"default\" />\n            <Counter count={10} view=\"secondary\" />\n            <Counter count={10} view=\"accent\" />\n            <Counter count={10} view=\"positive\" />\n            <Counter count={10} view=\"warning\" />\n            <Counter count={10} view=\"negative\" />\n            <Counter count={10} view=\"dark\" />\n            <Counter count={10} view=\"light\" />\n        </div>\n    );\n}"
     }
   ]
 }

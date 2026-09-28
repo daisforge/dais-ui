@@ -22,6 +22,11 @@ on:
         required: true
         type: boolean
         default: true
+      refresh_vendor:
+        description: 'Обновить вендорный снэпшот атомарных пропсов с CDN перед сборкой индекса'
+        required: true
+        type: boolean
+        default: true
   workflow_call:
     inputs:
       bump:
@@ -39,6 +44,20 @@ on:
         required: false
         type: boolean
         default: true
+      refresh_vendor:
+        description: 'Обновить вендорный снэпшот атомарных пропсов с CDN перед сборкой индекса'
+        required: false
+        type: boolean
+        default: true
+      # Какую ревизию чекаутить. При вызове из publish-npm.yml сюда приходит
+      # 'main': к этому моменту релиз ui-kit уже запушил туда свой lerna-коммит,
+      # а github.sha вызывающего события указывает на состояние ДО него — работа
+      # поверх него дала бы non-fast-forward на нашем `git push`.
+      ref:
+        description: 'Ветка или SHA для чекаута (по умолчанию — ревизия события)'
+        required: false
+        type: string
+        default: ''
     secrets:
       NPM_TOKEN:
         required: true
@@ -62,6 +81,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: ${{ inputs.ref || github.ref }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -81,6 +101,28 @@ jobs:
       - name: Install mcp-server dependencies
         run: npm run mcp:ci
 
+      # Вендорный снэпшот атомарных пропсов тянется с того же CDN, поверх
+      # которого работает официальный @salutejs/sdds-mcp. Версия берётся не
+      # "latest", а та, что реально установлена в этом чекауте (см.
+      # vendorAtomicData.ts): индекс не должен обещать пропсы, которых у
+      # потребителя нет. Если такой версии на CDN не оказалось, шаг оставляет
+      # закоммиченный снэпшот как есть (--on-missing=keep) и печатает warning —
+      # релиз из-за этого не встаёт.
+      - name: Refresh atomic vendor snapshot
+        if: ${{ inputs.refresh_vendor }}
+        run: npm run mcp:vendor-atomic
+
+      # Второй источник, идёт сразу за первым: проза документации атомарки.
+      # В бандле на CDN её нет — их генератор режет summary компонента по 300
+      # символов (медиана 44, у трети остаётся голое имя). Поэтому текст
+      # берётся из первого скрипта их же пайплайна (generateIndex) на sparse-
+      # чекауте тега @salutejs/sdds-finai@<установленная версия>: ~10 секунд,
+      # 17 МБ. Сборка докусауруса не нужна — раскрытие <PropsTable> у них
+      # опционально, а пропсы у нас свои. Подробности — ARCHITECTURE §1.6d.
+      - name: Harvest atomic docs
+        if: ${{ inputs.refresh_vendor }}
+        run: npm run mcp:harvest-docs
+
       # dist/packages/ui-kit в этом чекауте не собран — buildIndex.js запишет
       # только запасной "bundled" индекс в packages/mcp-server/data/, это и нужно
       # для публикации самого @daisforge/ui-mcp.
@@ -99,7 +141,7 @@ jobs:
 
       - name: Commit version bump
         run: |
-          git add packages/mcp-server/package.json packages/mcp-server/package-lock.json packages/mcp-server/data/component-index.json
+          git add packages/mcp-server/package.json packages/mcp-server/package-lock.json packages/mcp-server/data/component-index.json packages/mcp-server/vendor
           git commit -m "chore(release-mcp): ui-mcp v${{ steps.version.outputs.version }}"
           git tag -a "ui-mcp-v${{ steps.version.outputs.version }}" -m "ui-mcp v${{ steps.version.outputs.version }}"
 

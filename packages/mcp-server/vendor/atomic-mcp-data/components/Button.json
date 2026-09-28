@@ -14,7 +14,7 @@
       },
       {
         "name": "view",
-        "type": "\"clear\" | \"default\" | \"accent\" | \"positive\" | \"warning\" | \"negative\" | \"dark\" | \"secondary\" | \"black\" | \"white\"",
+        "type": "\"clear\" | \"default\" | \"accent\" | \"positive\" | \"warning\" | \"negative\" | \"dark\" | \"secondary\" | \"black\" | \"white\" | \"gradient\"",
         "required": false,
         "default": "",
         "description": ""
@@ -173,7 +173,7 @@
     },
     {
       "title": "Вид кнопки",
-      "snippet": "import React from 'react';\nimport { Button } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', flexWrap: 'wrap' }}>\n            <Button text=\"Кнопка\" size=\"s\" view=\"default\" />\n            <Button text=\"Кнопка\" size=\"s\" view=\"primary\" />\n            <Button text=\"Кнопка\" size=\"s\" view=\"accent\" />\n            <Button text=\"Кнопка\" size=\"s\" view=\"secondary\" />\n            <Button text=\"Кнопка\" size=\"s\" view=\"clear\" />\n            <Button text=\"Кнопка\" size=\"s\" view=\"positive\" />\n            <Button text=\"Кнопка\" size=\"s\" view=\"warning\" />\n            <Button text=\"Кнопка\" size=\"s\" view=\"negative\" />\n            <Button text=\"Кнопка\" size=\"s\" view=\"dark\" />\n            <Button text=\"Кнопка\" size=\"s\" view=\"black\" />\n            <Button text=\"Кнопка\" size=\"s\" view=\"white\" />\n        </div>\n    );\n}"
+      "snippet": "import React from 'react';\nimport { Button } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', flexWrap: 'wrap' }}>\n            <Button text=\"Кнопка\" size=\"s\" view=\"default\" />\n            <Button text=\"Кнопка\" size=\"s\" view=\"primary\" />\n            <Button text=\"Кнопка\" size=\"s\" view=\"accent\" />\n            <Button text=\"Кнопка\" size=\"s\" view=\"gradient\" />\n            <Button text=\"Кнопка\" size=\"s\" view=\"secondary\" />\n            <Button text=\"Кнопка\" size=\"s\" view=\"clear\" />\n            <Button text=\"Кнопка\" size=\"s\" view=\"positive\" />\n            <Button text=\"Кнопка\" size=\"s\" view=\"warning\" />\n            <Button text=\"Кнопка\" size=\"s\" view=\"negative\" />\n            <Button text=\"Кнопка\" size=\"s\" view=\"dark\" />\n            <Button text=\"Кнопка\" size=\"s\" view=\"black\" />\n            <Button text=\"Кнопка\" size=\"s\" view=\"white\" />\n        </div>\n    );\n}"
     },
     {
       "title": "Границы кнопки",

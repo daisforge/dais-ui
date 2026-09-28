@@ -1,0 +1,7 @@
+{
+  "name": "Switch",
+  "slug": "components/switch",
+  "category": "components",
+  "url": "https://plasma.sberdevices.ru/sdds-finai/components/switch/",
+  "content": "# Switch Switch ## Использование Использование Компонент  `Switch`  может содержать лейбл. ```tsx\nimport React from 'react';\nimport { Switch } from '@salutejs/sdds-finai';\n\nexport function App() {\n    return (\n        <Switch description=\"Описание переключателя\" label=\"Переключатель\" defaultChecked />\n    );\n}\n```\n\n## Примеры Примеры ### Размер Switch Размер Switch Размер компонента задается с помощью свойства  `size` . ```tsx\nimport React from 'react';\nimport { Switch } from '@salutejs/sdds-finai';\n\nexport function App() {\n    return (\n        <div>\n            <Switch size=\"s\" description=\"Описание переключателя\" label=\"Переключатель\" defaultChecked />\n            <Switch size=\"m\" description=\"Описание переключателя\" label=\"Переключатель\" defaultChecked />\n            <Switch size=\"l\" description=\"Описание переключателя\" label=\"Переключатель\" defaultChecked />\n        </div>\n    );\n}\n```\n\nРазмер переключателя задается с помощью свойства  `toggleSize` . ```tsx\nimport React from 'react';\nimport { Switch } from '@salutejs/sdds-finai';\n\nexport function App() {\n    return (\n        <div style={{ alignItems: \"center\" }}>\n            <Switch toggleSize=\"s\" label=\"Переключатель\" defaultChecked />\n            <Switch toggleSize=\"l\" label=\"Переключатель\" defaultChecked />\n        </div>\n    );\n}\n```"
+}

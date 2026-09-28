@@ -7,7 +7,7 @@
     "props": [
       {
         "name": "view",
-        "type": "\"clear\" | \"default\" | \"accent\" | \"positive\" | \"warning\" | \"negative\" | \"dark\" | \"secondary\" | \"black\" | \"white\"",
+        "type": "\"clear\" | \"default\" | \"accent\" | \"positive\" | \"warning\" | \"negative\" | \"dark\" | \"secondary\" | \"black\" | \"white\" | \"gradient\"",
         "required": false,
         "default": "",
         "description": ""
@@ -63,7 +63,7 @@
     },
     {
       "title": "Размер и вид группы кнопок",
-      "snippet": "import React from 'react';\nimport { ButtonGroup, Button } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div>\n            <ButtonGroup size=\"s\" view=\"secondary\">\n                {Array(5)\n                    .fill(true)\n                    .map((_, i) => (\n                        <Button text={`Button ${i}`} />\n                    ))}\n            </ButtonGroup>\n            <ButtonGroup isCommonButtonStyles={false}>\n                <Button size=\"s\" text=\"Primary\" view=\"primary\" />\n                <Button size=\"xs\" text=\"Positive\" view=\"positive\" />\n            </ButtonGroup>\n        </div>\n    );\n}"
+      "snippet": "import React from 'react';\nimport { ButtonGroup, Button } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div>\n            <ButtonGroup size=\"s\" view=\"secondary\">\n                {Array(5)\n                    .fill(true)\n                    .map((_, i) => (\n                        <Button text={`Button ${i}`} />\n                    ))}\n            </ButtonGroup>\n            <ButtonGroup size=\"s\" view=\"gradient\">\n                {Array(5)\n                    .fill(true)\n                    .map((_, i) => (\n                        <Button text={`Button ${i}`} />\n                    ))}\n            </ButtonGroup>\n            <ButtonGroup isCommonButtonStyles={false}>\n                <Button size=\"s\" text=\"Primary\" view=\"primary\" />\n                <Button size=\"xs\" text=\"Positive\" view=\"positive\" />\n            </ButtonGroup>\n        </div>\n    );\n}"
     },
     {
       "title": "Ориентация группы кнопок и отступы между кнопками",

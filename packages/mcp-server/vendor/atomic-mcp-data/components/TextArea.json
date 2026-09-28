@@ -188,6 +188,13 @@
         "description": ""
       },
       {
+        "name": "hasDivider",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
         "name": "labelPlacement",
         "type": "\"outer\" | \"inner\"",
         "required": false,
@@ -316,13 +323,6 @@
       {
         "name": "rightHelper",
         "type": "ReactNode",
-        "required": false,
-        "default": "",
-        "description": ""
-      },
-      {
-        "name": "hasDivider",
-        "type": "boolean",
         "required": false,
         "default": "",
         "description": ""

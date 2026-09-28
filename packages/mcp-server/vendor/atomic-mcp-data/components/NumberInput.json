@@ -55,6 +55,13 @@
         "description": ""
       },
       {
+        "name": "defaultValue",
+        "type": "string | number",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
         "name": "min",
         "type": "number",
         "required": false,
@@ -78,6 +85,62 @@
       {
         "name": "precision",
         "type": "number",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "thousandSeparator",
+        "type": "string | boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "decimalSeparator",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "thousandsGroupStyle",
+        "type": "\"none\" | \"thousand\" | \"lakh\" | \"wan\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "decimalScale",
+        "type": "number",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "fixedDecimalScale",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "allowNegative",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "allowLeadingZeros",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "isAllowed",
+        "type": "((values: NumberFormatValues) => boolean)",
         "required": false,
         "default": "",
         "description": ""

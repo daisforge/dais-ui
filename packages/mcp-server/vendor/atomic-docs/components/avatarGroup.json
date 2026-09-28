@@ -1,0 +1,7 @@
+{
+  "name": "AvatarGroup",
+  "slug": "components/avatarGroup",
+  "category": "components",
+  "url": "https://plasma.sberdevices.ru/sdds-finai/components/avatarGroup/",
+  "content": "# AvatarGroup AvatarGroup AvatarGroup это обертка для Avatar. Принимает в себя группу из avatar's. ```tsx\nimport React from 'react';\nimport { Avatar, AvatarGroup } from '@salutejs/sdds-finai';\n\nexport function App() {\n    return (\n        <AvatarGroup>\n                {\n                    Array(5).fill(true).map(() => (\n                        <Avatar size=\"xxl\" url=\"https://avatars.githubusercontent.com/u/1813468?v=4\" />\n                    ))\n                }\n            </AvatarGroup>\n    );\n}\n```"
+}

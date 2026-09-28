@@ -132,6 +132,12 @@
     "category": "components"
   },
   {
+    "name": "Divider",
+    "href": "Divider.json",
+    "summary": "",
+    "category": "components"
+  },
+  {
     "name": "Drawer",
     "href": "Drawer.json",
     "summary": "Drawer",

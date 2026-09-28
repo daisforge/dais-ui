@@ -1,0 +1,6 @@
+{
+  "name": "react_17",
+  "package": "sdds-finai",
+  "category": "react_17",
+  "summary": "# Использование библиотеки в React 17 и ниже Использование библиотеки в React 17 и ниже ## SSRProvider SSRProvider Для корректной работы приложение нужно обернуть  `SSRProvider` ; ```jsx\nimport React from 'react';\nimport { SSRProvider } from '@salutejs/sdds-finai';\n\nconst App = () => {\n    return (\n        <SSRProvider>\n            ...\n        </SSRProvider>\n    );\n};\n\nexport default App;\n```"
+}
