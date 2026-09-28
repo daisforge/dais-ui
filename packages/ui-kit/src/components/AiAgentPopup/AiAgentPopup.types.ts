@@ -1,8 +1,10 @@
 import { Popup } from '@ui-kit/components/Popup';
+import { TextArea } from '@ui-kit/components/TextArea';
 import type {
   ComponentProps,
   Dispatch,
   HTMLAttributes,
+  ReactElement,
   ReactNode,
   RefObject,
   SetStateAction,
@@ -80,15 +82,35 @@ export type AiAgentSurfaceProps = HTMLAttributes<HTMLDivElement> & {
    * @default embedded
    */
   variant?: AiAgentSurfaceVariant;
+  children?: ReactNode;
+};
+
+type TextAreaProps = ComponentProps<typeof TextArea>;
+
+export type AiAgentInputProps = Omit<TextAreaProps, 'contentRight'> & {
   /**
-   * Включить овальное свечение в нижней части. Включение и выключение
-   * плавные, переключать можно в реальном времени (например, включать,
-   * пока AI-агент обдумывает ответ). При ресайзе свечение растёт только
-   * по ширине, высота фиксированная.
+   * Включить овальное свечение позади поля. Переключается в реальном
+   * времени с плавным переходом: например, включать, пока AI-агент
+   * обдумывает ответ, и выключать, когда пользователь печатает.
+   * Свечение привязано к полю: при авторосте растёт вслед за ним
+   * и ложится под соседний контент.
    * @default false
    */
   glow?: boolean;
-  children?: ReactNode;
+  /**
+   * Содержимое правой части поля: кнопка отправки, кнопка остановки
+   * и любые другие элементы с логикой и тултипами потребителя.
+   * Атомарный TextArea ждёт в этом месте один элемент; несколько кнопок
+   * оборачивайте в общий контейнер.
+   */
+  rightSlot?: ReactElement;
+  /**
+   * Пиксельный предел высоты поля при авторосте, дальше внутренний
+   * скролл. Предел в px, а не в строках: при ресайзе окна количество
+   * помещающихся строк меняется.
+   * @default 312
+   */
+  maxHeight?: number;
 };
 
 /**
@@ -182,11 +204,4 @@ export type AiAgentPopupProps = Omit<
    * Callback смены размера по окончании ресайза.
    */
   onSizeChange?: (size: AiAgentPopupSize) => void;
-  /**
-   * Включить овальное свечение в нижней части окна. Переключать можно
-   * в реальном времени: включение и выключение плавные. При ресайзе
-   * свечение растёт только по ширине, высота фиксированная.
-   * @default false
-   */
-  glow?: boolean;
 };

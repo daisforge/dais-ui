@@ -2,12 +2,15 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
 import type { Meta, StoryObj } from '@storybook/react';
-import { AiAgentPopup, AiAgentSurface } from '@ui-kit/components/AiAgentPopup';
+import {
+  AiAgentInput,
+  AiAgentPopup,
+  AiAgentSurface,
+} from '@ui-kit/components/AiAgentPopup';
 import { Button } from '@ui-kit/components/Button';
 import { IconButton } from '@ui-kit/components/IconButton';
 import { PopupProvider } from '@ui-kit/components/Popup';
 import { SSRProvider } from '@ui-kit/components/SSRProvider';
-import { TextArea } from '@ui-kit/components/TextArea';
 import { Typography } from '@ui-kit/components/Typography';
 import { br, s } from '@ui-kit/constants';
 import {
@@ -21,26 +24,28 @@ import {
 import {
   backgroundPrimary,
   surfaceAccentMinor,
-  surfaceSolidCard,
   surfaceTransparentSecondary,
   textAccentGradient,
+  textInfo,
   textPrimary,
 } from '@ui-kit/tokens';
 import React, { useRef, useState } from 'react';
 
-type AiAgentPopupStoryArgs = React.ComponentProps<typeof AiAgentPopup>;
+type AiAgentPopupStoryArgs = React.ComponentProps<typeof AiAgentPopup> & {
+  glow?: boolean;
+};
 
 const preCode = `import { useRef, useState } from 'react';
 import {
+  AiAgentInput,
   AiAgentPopup,
   Button,
   IconButton,
   PopupProvider,
   SSRProvider,
   surfaceAccentMinor,
-  surfaceSolidCard,
-  TextArea,
   textAccentGradient,
+  textInfo,
   textPrimary,
   Typography,
 } from '@daisforge/ui';
@@ -54,9 +59,10 @@ import {
 } from '@daisforge/ui/icons';
 
 // Весь контент окна на стороне потребителя, ниже один из вариантов сборки.
-// Рамку, тень и овальное свечение снизу рисует сам компонент: свечение
-// включается пропом glow (например, пока AI-агент обдумывает ответ)
-// и выключается в реальном времени.
+// Поле ввода с овальным свечением позади даёт компонент AiAgentInput:
+// свечение включается его пропом glow (например, пока AI-агент обдумывает
+// ответ) и выключается в реальном времени, при авторосте поля растёт
+// вслед за ним и ложится под соседние сообщения.
 
 const chatHeaderStyle = {
   display: 'flex',
@@ -70,8 +76,6 @@ const chatBodyStyle = {
   flexDirection: 'column',
 };
 
-// Лента скроллится в своём контейнере, свечение при этом стоит на месте:
-// оно нарисовано компонентом в слое окна под контентом
 const chatMessagesStyle = {
   flex: '1 1 auto',
   minHeight: 0,
@@ -89,12 +93,10 @@ const chatBubbleStyle = {
   color: textPrimary,
 };
 
-// Фон у поля атомарки полупрозрачный, и свечение просвечивало бы сквозь
-// него. Непрозрачная подложка цвета карточки глушит свечение, поле поверх
-// неё выглядит как обычно. Радиус равен радиусу поля размера s
-const inputBackplateStyle = {
-  background: surfaceSolidCard,
-  borderRadius: '0.625rem',
+// Сообщение от системы: без фона, свечение ложится прямо под текст
+const systemMessageStyle = {
+  padding: '0 12px',
+  color: textInfo,
 };
 
 // Кнопки не начинают перетаскивание, по ним работают обычные клики
@@ -129,14 +131,17 @@ function ChatHeader({ onClose }) {
 
 function ChatContent({ onClose }) {
   const [messages, setMessages] = useState([
-    'Привет! Я AI-помощник.',
-    'Сообщения помечены data-no-drag: текст в них выделяется, а за свободные места окно можно перетащить.',
+    { text: 'Привет! Я AI-помощник.' },
+    { text: 'Анализирую ваш запрос…', system: true },
   ]);
   const [draft, setDraft] = useState('');
+  // Пока агент «думает», подсветка поля включена; свою логику смены
+  // состояний (стоп вместо отправки, тултипы) реализуйте в rightSlot
+  const [thinking, setThinking] = useState(true);
 
   const sendDraft = () => {
     if (!draft.trim()) return;
-    setMessages((prev) => [...prev, draft.trim()]);
+    setMessages((prev) => [...prev, { text: draft.trim() }]);
     setDraft('');
   };
 
@@ -149,29 +154,28 @@ function ChatContent({ onClose }) {
             <Typography
               key={index}
               variant="BodyS"
-              style={chatBubbleStyle}
+              style={message.system ? systemMessageStyle : chatBubbleStyle}
               data-no-drag
             >
-              {message}
+              {message.text}
             </Typography>
           ))}
         </div>
+        {/* Внешних отступов у AiAgentInput нет, место в лэйауте чата
+            задаёт потребитель */}
         <div style={{ paddingTop: '12px' }}>
-          <div style={inputBackplateStyle}>
-            <TextArea
-              size="s"
-              rows={1}
-              placeholder="Спросите что-нибудь"
-              value={draft}
-              onChange={(e) => setDraft(e.target.value)}
-              contentRight={
-                <IconButton size="xs" view="clear" onClick={sendDraft}>
-                  {/* плазма-иконки умеют градиент в color: рисуют её маской */}
-                  <IconSendOutline size="s" color={textAccentGradient} />
-                </IconButton>
-              }
-            />
-          </div>
+          <AiAgentInput
+            glow={thinking}
+            placeholder="Спросите что-нибудь"
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            rightSlot={
+              <IconButton size="xs" view="clear" onClick={sendDraft}>
+                {/* плазма-иконки умеют градиент в color: рисуют её маской */}
+                <IconSendOutline size="s" color={textAccentGradient} />
+              </IconButton>
+            }
+          />
         </div>
       </div>
     </>
@@ -194,7 +198,6 @@ function Example() {
         <AiAgentPopup
           opened={opened}
           targetRef={targetRef}
-          glow
           defaultSize={{ width: 360, height: 420 }}
           dragBoundary={{ top: 8, right: 8, bottom: 8, left: 8 }}
         >
@@ -223,7 +226,6 @@ function Example() {
           draggable
           resizable
           useStorage
-          glow
           defaultSize={{ width: 360, height: 420 }}
           dragBoundary={{ top: 8, right: 8, bottom: 8, left: 8 }}
           onPositionChange={(position) => console.log(position)}
@@ -274,7 +276,7 @@ function Example() {
             }}
           >
             <div style={{ width: 360, height: '100%', padding: 8 }}>
-              <AiAgentSurface glow style={{ height: '100%' }}>
+              <AiAgentSurface style={{ height: '100%' }}>
                 {view === 'panel' ? (
                   <ChatContent
                     onTogglePanel={() => setView('popup')}
@@ -296,7 +298,6 @@ function Example() {
         <AiAgentPopup
           opened={view === 'popup' && opened}
           targetRef={targetRef}
-          glow
           defaultSize={{ width: 360, height: 420 }}
         >
           {view === 'popup' ? (
@@ -351,7 +352,10 @@ const meta: Meta<AiAgentPopupStoryArgs> = {
     draggable: { control: 'boolean' },
     resizable: { control: 'boolean' },
     useStorage: { control: 'boolean' },
-    glow: { control: 'boolean' },
+    glow: {
+      control: 'boolean',
+      description: 'Свечение поля ввода (проп AiAgentInput в примере)',
+    },
     targetGap: { control: 'number' },
     dragIgnoreSelector: { control: 'text' },
     defaultPosition: { control: 'object' },
@@ -415,8 +419,6 @@ const chatHeaderGroupStyle: React.CSSProperties = {
   alignItems: 'center',
 };
 
-// Лента скроллится в своём контейнере, свечение при этом стоит на месте:
-// оно нарисовано компонентом в слое окна под контентом
 const chatMessagesStyle: React.CSSProperties = {
   flex: '1 1 auto',
   minHeight: 0,
@@ -434,29 +436,45 @@ const chatBubbleStyle: React.CSSProperties = {
   color: textPrimary,
 };
 
+// Сообщение от системы: без фона, свечение поля ввода ложится прямо
+// под текст, буквы остаются читаемыми поверх градиента
+const systemMessageStyle: React.CSSProperties = {
+  padding: '0 12px',
+  color: textInfo,
+};
+
 const chatInputRowStyle: React.CSSProperties = {
   paddingTop: '12px',
 };
 
-// Фон у поля атомарки полупрозрачный, и свечение просвечивало бы сквозь
-// него. Непрозрачная подложка цвета карточки глушит свечение, поле поверх
-// неё выглядит как обычно. Радиус равен радиусу поля размера s
-const inputBackplateStyle: React.CSSProperties = {
-  background: surfaceSolidCard,
-  borderRadius: '0.625rem',
-};
+type ChatMessage = { text: string; system?: boolean };
 
-const initialMessages = [
-  'Привет! Я AI-помощник. Это сообщение помечено data-no-drag: текст в нём можно выделять, перетаскивание с него не начинается.',
-  'А за свободные места, включая просветы между сообщениями, окно можно перетащить. Растянуть за угол с иконкой, закрыть крестиком.',
-  'Свечение снизу рисует сам компонент, оно включено пропом glow.',
-  'Проверь: позиция скролла и набранный черновик не теряются при перетаскивании окна.',
-  'И при ресайзе за любой угол тоже.',
-  'И когда активный угол ресайза переезжает после переноса окна в другой сектор экрана.',
-  'Отправь своё сообщение кнопкой, оно добавится в конец ленты.',
-  'Кнопка с иконкой панели в шапке переносит чат в левую панель, смотри стори «Переход в панель».',
-  'Закрытие окна размонтирует контент, поэтому в реальном чате состояние держат снаружи.',
-  'Это описано в документации компонента.',
+const initialMessages: ChatMessage[] = [
+  {
+    text: 'Привет! Я AI-помощник. Это сообщение помечено data-no-drag: текст в нём можно выделять, перетаскивание с него не начинается.',
+  },
+  {
+    text: 'А за свободные места, включая просветы между сообщениями, окно можно перетащить. Растянуть за угол с иконкой, закрыть крестиком.',
+  },
+  {
+    text: 'Свечение позади поля ввода рисует AiAgentInput, оно включено его пропом glow.',
+  },
+  {
+    text: 'Проверь: позиция скролла и набранный черновик не теряются при перетаскивании окна.',
+  },
+  {
+    text: 'Поле ввода авторастёт: набери несколько строк через Shift+Enter, свечение вырастет вслед за ним.',
+  },
+  {
+    text: 'Отправь своё сообщение кнопкой, оно добавится в конец ленты.',
+  },
+  {
+    text: 'Кнопка с иконкой панели в шапке переносит чат в левую панель, смотри стори «Переход в панель».',
+  },
+  {
+    text: 'Закрытие окна размонтирует контент, поэтому в реальном чате состояние держат снаружи.',
+  },
+  { text: 'Анализирую ваш запрос…', system: true },
 ];
 
 // Шапка окна по макету: стрелка назад с темой диалога слева, четыре
@@ -501,13 +519,15 @@ function ChatHeader({
 function ChatContent({
   messages,
   draft,
+  glow,
   onDraftChange,
   onSend,
   onClose,
   onTogglePanel,
 }: {
-  messages: string[];
+  messages: ChatMessage[];
   draft: string;
+  glow?: boolean;
   onDraftChange: (draft: string) => void;
   onSend: () => void;
   onClose: () => void;
@@ -525,29 +545,28 @@ function ChatContent({
               // eslint-disable-next-line react/no-array-index-key
               key={index}
               variant="BodyS"
-              style={chatBubbleStyle}
+              style={message.system ? systemMessageStyle : chatBubbleStyle}
               data-no-drag
             >
-              {message}
+              {message.text}
             </Typography>
           ))}
         </div>
+        {/* Внешних отступов у AiAgentInput нет, место в лэйауте чата
+            задаёт потребитель */}
         <div style={chatInputRowStyle}>
-          <div style={inputBackplateStyle}>
-            <TextArea
-              size="s"
-              rows={1}
-              placeholder="Спросите что-нибудь"
-              value={draft}
-              onChange={(e) => onDraftChange(e.target.value)}
-              contentRight={
-                <IconButton size="xs" view="clear" onClick={onSend}>
-                  {/* плазма-иконки умеют градиент в color: рисуют её маской */}
-                  <IconSendOutline size="s" color={textAccentGradient} />
-                </IconButton>
-              }
-            />
-          </div>
+          <AiAgentInput
+            glow={glow}
+            placeholder="Спросите что-нибудь"
+            value={draft}
+            onChange={(e) => onDraftChange(e.target.value)}
+            rightSlot={
+              <IconButton size="xs" view="clear" onClick={onSend}>
+                {/* плазма-иконки умеют градиент в color: рисуют её маской */}
+                <IconSendOutline size="s" color={textAccentGradient} />
+              </IconButton>
+            }
+          />
         </div>
       </div>
     </>
@@ -562,7 +581,7 @@ function useChatState() {
 
   const sendDraft = () => {
     if (!draft.trim()) return;
-    setMessages((prev) => [...prev, draft.trim()]);
+    setMessages((prev) => [...prev, { text: draft.trim() }]);
     setDraft('');
   };
 
@@ -571,6 +590,7 @@ function useChatState() {
 
 function AiAgentPopupExample({
   fullHeight,
+  glow,
   ...args
 }: AiAgentPopupStoryArgs & { fullHeight?: boolean }) {
   const targetRef = useRef<HTMLSpanElement>(null);
@@ -604,6 +624,7 @@ function AiAgentPopupExample({
             <ChatContent
               messages={chat.messages}
               draft={chat.draft}
+              glow={glow}
               onDraftChange={chat.setDraft}
               onSend={chat.sendDraft}
               onClose={() => setOpened(false)}
@@ -630,6 +651,7 @@ function PanelTransformExample({ fullHeight }: { fullHeight?: boolean }) {
     <ChatContent
       messages={chat.messages}
       draft={chat.draft}
+      glow
       onDraftChange={chat.setDraft}
       onSend={chat.sendDraft}
       onClose={() => {
@@ -656,7 +678,7 @@ function PanelTransformExample({ fullHeight }: { fullHeight?: boolean }) {
             }}
           >
             <div style={{ width: 360, height: '100%', padding: 8 }}>
-              <AiAgentSurface glow style={{ height: '100%' }}>
+              <AiAgentSurface style={{ height: '100%' }}>
                 {view === 'panel' ? chatContent : null}
               </AiAgentSurface>
             </div>
@@ -672,7 +694,6 @@ function PanelTransformExample({ fullHeight }: { fullHeight?: boolean }) {
             opened={view === 'popup' && opened}
             targetRef={targetRef}
             frame={frameRef}
-            glow
             defaultSize={{ width: 360, height: 420 }}
             dragBoundary={{ top: 8, right: 8, bottom: 8, left: 8 }}
           >

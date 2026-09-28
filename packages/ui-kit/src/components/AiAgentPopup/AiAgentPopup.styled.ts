@@ -1,13 +1,9 @@
 import { Popup, popupClasses } from '@ui-kit/components/Popup';
 import { br } from '@ui-kit/constants';
 import { outlineAccentGradient, surfaceSolidCard } from '@ui-kit/tokens';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
-import {
-  GLOW_BOTTOM_OFFSET,
-  GLOW_HEIGHT,
-  GLOW_WIDTH_RATIO,
-} from './AiAgentPopup.constants';
+import { GLOW_OVERHANG, GLOW_WIDTH_RATIO } from './AiAgentPopup.constants';
 
 const C = {
   bg: () => surfaceSolidCard,
@@ -107,8 +103,9 @@ export const StyledCard = styled.div`
   overflow: hidden;
 `;
 
-/* Контент всегда поверх слоя свечения, потребителю следить за слоями
-   не нужно */
+/* z-index создаёт контекст наложения: свечение поля ввода с отрицательным
+   z-index рисуется над фоном карточки, но под всем контентом, и потребителю
+   следить за слоями не нужно */
 export const StyledCardContent = styled.div`
   position: relative;
   z-index: 1;
@@ -119,26 +116,25 @@ export const StyledCardContent = styled.div`
   flex-direction: column;
 `;
 
-/* Слой свечения: фон карточки, паддинги контентной области его не сжимают */
-export const StyledGlowClip = styled.div`
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  border-radius: ${C.radius};
-  pointer-events: none;
+export const StyledInputRoot = styled.div`
+  position: relative;
 `;
 
-/* Овальное свечение по макету: 304x79 при ширине окна 360, поэтому ширина
-   в долях от окна и растёт при ресайзе, а высота фиксированная. Два слоя:
-   широкий мягкий ореол и более плотное ядро, один сильный blur съедал бы
-   всю насыщенность цвета. Включение и выключение плавные */
-const glowBase = css<{ $visible: boolean }>`
+/* Овальное свечение позади поля ввода, по макету (линейный градиент
+   цветов, размытие, непрозрачность 0.56). Свесы сверху и снизу постоянные,
+   поэтому при авторосте поля овал растёт вслед за ним. Радиус размытия
+   умеренный: большое значение из макета размазывало овал такой высоты
+   в невидимую дымку. Отрицательный z-index уводит свечение под соседний
+   контент (сообщения чата); для этого нужен предок с контекстом
+   наложения, внутри AiAgentSurface он уже есть */
+export const StyledInputGlow = styled.div<{ $visible: boolean }>`
   position: absolute;
+  top: ${-GLOW_OVERHANG}px;
+  bottom: ${-GLOW_OVERHANG}px;
   left: 50%;
-  bottom: ${GLOW_BOTTOM_OFFSET}px;
   transform: translateX(-50%);
   width: ${GLOW_WIDTH_RATIO * 100}%;
-  height: ${GLOW_HEIGHT}px;
+  z-index: -1;
   border-radius: 50%;
   background: linear-gradient(
     268.89deg,
@@ -146,17 +142,23 @@ const glowBase = css<{ $visible: boolean }>`
     rgba(0, 224, 255, 1) 50.076%,
     rgba(157, 179, 255, 1) 99.883%
   );
+  filter: blur(20px);
+  opacity: ${({ $visible }) => ($visible ? 0.56 : 0)};
   transition: opacity 0.3s ease;
+  pointer-events: none;
 `;
 
-export const StyledGlowHalo = styled.div<{ $visible: boolean }>`
-  ${glowBase};
-  filter: blur(92px);
-  opacity: ${({ $visible }) => ($visible ? 0.2 : 0)};
-`;
+/* Фон у поля атомарки полупрозрачный, и свечение просвечивало бы сквозь
+   него. Непрозрачная подложка цвета карточки глушит свечение, поле поверх
+   неё выглядит как обычно. Радиус равен радиусу поля размера s.
+   Пиксельный предел высоты при авторосте задаётся здесь: у атомарного
+   поля ограничение только в строках, а на разных размерах окна это
+   некорректно */
+export const StyledInputBackplate = styled.div<{ $maxHeight: number }>`
+  background: ${C.bg};
+  border-radius: 0.625rem;
 
-export const StyledGlowCore = styled.div<{ $visible: boolean }>`
-  ${glowBase};
-  filter: blur(28px);
-  opacity: ${({ $visible }) => ($visible ? 0.14 : 0)};
+  textarea {
+    max-height: ${({ $maxHeight }) => $maxHeight}px;
+  }
 `;

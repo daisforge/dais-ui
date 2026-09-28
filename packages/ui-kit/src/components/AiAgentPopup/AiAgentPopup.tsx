@@ -39,7 +39,6 @@ export const AiAgentPopup = forwardRef<HTMLDivElement, AiAgentPopupProps>(
       resizable = true,
       defaultSize,
       onSizeChange,
-      glow = false,
       frame = 'document',
       style: externalStyle,
       className,
@@ -128,7 +127,6 @@ export const AiAgentPopup = forwardRef<HTMLDivElement, AiAgentPopupProps>(
       >
         <AiAgentSurface
           variant="floating"
-          glow={glow}
           ref={setContainerRef}
           {...(draggable ? dragHandlers : null)}
         >
