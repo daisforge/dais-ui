@@ -1,6 +1,4 @@
-import { IconResizeCorneredFill } from '@ui-kit/icons';
-import { textTertiary } from '@ui-kit/tokens';
-import type { CSSProperties } from 'react';
+import { buildPopupResizableConfig } from '@ui-kit/shared/utils/resizable';
 
 import {
   DEFAULT_MIN_HEIGHT,
@@ -32,7 +30,10 @@ export const resolveFrameElement = (
 /**
  * Метрики области, в которой окно позиционируется и двигается:
  * вьюпорт или элемент из пропса frame. left и top нужны для перевода
- * координат мыши и таргета (они всегда от вьюпорта) в систему frame.
+ * координат мыши и таргета (они всегда от вьюпорта) в систему frame:
+ * это точка начала содержимого, поэтому прокрутка frame вычитается,
+ * ведь окно позиционируется absolute и скроллится вместе с содержимым.
+ * Размеры содержимого, а не видимой части, по той же причине.
  */
 export const getFrameMetrics = (
   frame: AiAgentPopupFrame,
@@ -49,10 +50,10 @@ export const getFrameMetrics = (
 
   const rect = frameElement.getBoundingClientRect();
   return {
-    left: rect.left + frameElement.clientLeft,
-    top: rect.top + frameElement.clientTop,
-    width: frameElement.clientWidth,
-    height: frameElement.clientHeight,
+    left: rect.left + frameElement.clientLeft - frameElement.scrollLeft,
+    top: rect.top + frameElement.clientTop - frameElement.scrollTop,
+    width: frameElement.scrollWidth,
+    height: frameElement.scrollHeight,
   };
 };
 
@@ -183,89 +184,17 @@ export const getCornerForSector = (
   }
 };
 
-type ResizeIconSize = NonNullable<AiAgentPopupResizableConfig['iconSize']>;
-
-const defaultResizeIconSize: ResizeIconSize = 's';
-
-const allCorners: AiAgentPopupResizeCorner[] = [
-  'top-left',
-  'top-right',
-  'bottom-left',
-  'bottom-right',
-];
-
-const getResizeIcon = (
-  corner: AiAgentPopupResizeCorner,
-  iconSize: ResizeIconSize = defaultResizeIconSize,
-) => {
-  const style: CSSProperties = {};
-
-  if (corner.includes('left')) {
-    style.transform = 'scaleX(-1)';
-  }
-
-  if (corner.includes('top')) {
-    style.transform = style.transform ? 'scale(-1, -1)' : 'scaleY(-1)';
-  }
-
-  return (
-    <IconResizeCorneredFill
-      color={textTertiary}
-      size={iconSize}
-      style={style}
-    />
-  );
-};
-
-const getResizeIcons = (
-  icons?: AiAgentPopupResizableConfig['icons'],
-  iconSize?: AiAgentPopupResizableConfig['iconSize'],
-): NonNullable<AiAgentPopupResizableConfig['icons']> => ({
-  topLeft: icons?.topLeft || getResizeIcon('top-left', iconSize),
-  topRight: icons?.topRight || getResizeIcon('top-right', iconSize),
-  bottomLeft: icons?.bottomLeft || getResizeIcon('bottom-left', iconSize),
-  bottomRight: icons?.bottomRight || getResizeIcon('bottom-right', iconSize),
-});
-
 /**
- * Собирает конфигурацию resizable для атомарного Popup: ресайз за один
- * угол (activeCorner, зависит от положения окна на экране) с нашей иконкой,
- * переданная частичная конфигурация мержится с дефолтной.
+ * Конфигурация resizable для атомарного Popup: ресайз за один угол
+ * (activeCorner, зависит от положения окна на экране). Сборка общая
+ * с PopupDF, отличаются только угол и минимальные размеры.
  */
 export const buildResizableConfig = (
   resizable: boolean | Partial<AiAgentPopupResizableConfig> | undefined,
   activeCorner: AiAgentPopupResizeCorner = 'bottom-right',
-): AiAgentPopupResizableConfig | undefined => {
-  if (!resizable) {
-    return undefined;
-  }
-
-  const defaultConfig: AiAgentPopupResizableConfig = {
-    directions: [activeCorner],
-    icons: getResizeIcons(undefined, defaultResizeIconSize),
-    hiddenIcons: allCorners.filter((corner) => corner !== activeCorner),
+): AiAgentPopupResizableConfig | undefined =>
+  buildPopupResizableConfig(resizable, {
+    corner: activeCorner,
     minWidth: DEFAULT_MIN_WIDTH,
     minHeight: DEFAULT_MIN_HEIGHT,
-    iconSize: defaultResizeIconSize,
-  };
-
-  if (resizable === true) {
-    return defaultConfig;
-  }
-
-  const directions = resizable.directions ?? defaultConfig.directions;
-  const hiddenIcons =
-    resizable.hiddenIcons ??
-    (resizable.directions
-      ? allCorners.filter((corner) => !directions?.includes(corner))
-      : defaultConfig.hiddenIcons);
-
-  return {
-    ...defaultConfig,
-    ...resizable,
-    directions,
-    hiddenIcons,
-    icons: getResizeIcons(resizable.icons, resizable.iconSize),
-    iconSize: resizable.iconSize ?? defaultConfig.iconSize,
-  };
-};
+  });

@@ -165,6 +165,10 @@ export const usePopupResize = ({
             corner,
           };
           anchorRef.current = anchor;
+          // Прошлый наблюдатель мог пережить ресайз с потерянным
+          // завершением (mouseup над iframe): без отключения он продолжил
+          // бы двигать окно к устаревшим краям
+          anchorObserverRef.current?.disconnect();
           anchorObserverRef.current = new ResizeObserver(() => {
             const node = containerRef.current;
             if (!node) return;

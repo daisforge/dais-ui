@@ -3,7 +3,11 @@ import { br } from '@ui-kit/constants';
 import { outlineAccentGradient, surfaceSolidCard } from '@ui-kit/tokens';
 import styled from 'styled-components';
 
-import { GLOW_OVERHANG, GLOW_WIDTH_RATIO } from './AiAgentPopup.constants';
+import {
+  DRAGGING_CLASS,
+  GLOW_OVERHANG,
+  GLOW_WIDTH_RATIO,
+} from './AiAgentPopup.constants';
 
 const C = {
   bg: () => surfaceSolidCard,
@@ -18,7 +22,7 @@ export const StyledPopup = styled(Popup)`
 
   /* Курсор-кулак только во время самого перетаскивания, в покое курсор
      обычный (решение дизайнера) */
-  &.ai-agent-popup-dragging {
+  &.${DRAGGING_CLASS} {
     cursor: grabbing;
     user-select: none;
   }
@@ -36,6 +40,11 @@ export const StyledSurfaceFloating = styled.div<{ $shadow: string }>`
   min-width: 0;
   min-height: 0;
   border-radius: ${C.radius};
+  /* Иначе на тач-устройствах перетаскивание окна конкурирует со скроллом
+     страницы (touchmove пассивный, preventDefault не поможет). Скроллу
+     ленты сообщений не мешает: у неё свой скролл-контейнер, и жесты
+     по ней считаются до него */
+  touch-action: none;
 
   /* Свечение отдаём прозрачному слою размером с внешний край рамки: тень,
      повешенная на саму карточку, первые 4px пряталась бы под кольцом */

@@ -18,6 +18,7 @@ import {
   getFallbackPosition,
   getFrameMetrics,
   getPositionFromTarget,
+  resolveFrameElement,
   validatePosition,
 } from '../AiAgentPopup.utils';
 
@@ -141,11 +142,14 @@ export const usePopupPosition = ({
     positionRef.current = popupPosition;
   }, [popupPosition]);
 
-  // Если окно браузера уменьшилось, возвращаем окно в видимую область
+  // Если область окна уменьшилась, возвращаем окно в видимую часть.
+  // Область меняется двумя путями: ресайз окна браузера и, при
+  // frame-контейнере, изменение размеров самого контейнера (например,
+  // анимация соседней панели), за ним следит ResizeObserver
   useEffect(() => {
     if (!opened) return undefined;
 
-    const handleWindowResize = throttleWithLastCall(() => {
+    const handleAreaResize = throttleWithLastCall(() => {
       const element = containerRef.current;
       const currentPosition = positionRef.current;
       if (!element || !currentPosition) return;
@@ -164,10 +168,17 @@ export const usePopupPosition = ({
       }
     }, RESIZE_THROTTLE_DELAY);
 
-    window.addEventListener('resize', handleWindowResize);
+    window.addEventListener('resize', handleAreaResize);
+    const frameElement = resolveFrameElement(frame);
+    let frameObserver: ResizeObserver | undefined;
+    if (frameElement) {
+      frameObserver = new ResizeObserver(handleAreaResize);
+      frameObserver.observe(frameElement);
+    }
     return () => {
-      window.removeEventListener('resize', handleWindowResize);
-      handleWindowResize.cancel();
+      window.removeEventListener('resize', handleAreaResize);
+      frameObserver?.disconnect();
+      handleAreaResize.cancel();
     };
   }, [opened, dragBoundary, frame, setPopupPosition]);
 

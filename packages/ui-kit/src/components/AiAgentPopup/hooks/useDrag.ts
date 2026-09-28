@@ -4,6 +4,7 @@ import { DRAG_THRESHOLD, NO_DRAG_SELECTOR } from '../AiAgentPopup.constants';
 import type {
   AiAgentPopupDragBoundary,
   AiAgentPopupFrame,
+  AiAgentPopupFrameMetrics,
   AiAgentPopupPosition,
 } from '../AiAgentPopup.types';
 import { getFrameMetrics } from '../AiAgentPopup.utils';
@@ -46,6 +47,10 @@ export const useDrag = ({
   const dragOffset = useRef({ x: 0, y: 0 });
   const dragStartPos = useRef({ x: 0, y: 0 });
   const wasDragged = useRef(false);
+  // Метрики области снимаются один раз на старте: во время перетаскивания
+  // ни окно браузера, ни frame не меняются, а замер на каждое движение
+  // мыши это принудительный layout
+  const frameMetricsRef = useRef<AiAgentPopupFrameMetrics | null>(null);
 
   const noDragSelector = useMemo(
     () =>
@@ -61,6 +66,7 @@ export const useDrag = ({
 
       wasDragged.current = false;
       dragStartPos.current = { x: clientX, y: clientY };
+      frameMetricsRef.current = getFrameMetrics(frame);
 
       // Запоминаем, за какую точку окна схватились, чтобы при движении
       // окно не прыгало левым верхним углом под курсор
@@ -72,11 +78,14 @@ export const useDrag = ({
 
       setIsDragging(true);
     },
-    [elementRef],
+    [elementRef, frame],
   );
 
   const handleMouseDown = useCallback(
     (e: React.MouseEvent) => {
+      // Только левая кнопка: правая открывает контекстное меню, средняя
+      // включает автоскролл, окно они таскать не должны
+      if (e.button !== 0) return;
       if ((e.target as HTMLElement).closest(noDragSelector)) return;
       startDrag(e.clientX, e.clientY);
     },
@@ -114,7 +123,7 @@ export const useDrag = ({
 
       const { offsetWidth, offsetHeight } = elementRef.current;
       // Координаты мыши всегда от вьюпорта, позиция окна в системе области
-      const frameMetrics = getFrameMetrics(frame);
+      const frameMetrics = frameMetricsRef.current ?? getFrameMetrics(frame);
       const { top = 0, right = 0, bottom = 0, left = 0 } = dragBoundary || {};
 
       const newX = Math.max(
@@ -168,18 +177,25 @@ export const useDrag = ({
     setDragActive(false);
   }, []);
 
-  // Движение и отпускание слушаем на документе: курсор при перетаскивании
-  // легко уходит за пределы окна AI-помощника
+  // Движение и завершение слушаем на документе: курсор и палец при
+  // перетаскивании легко уходят за пределы окна AI-помощника. touchcancel
+  // обязателен: браузер шлёт его, когда перехватывает жест под скролл
   useEffect(() => {
     if (isDragging) {
       document.addEventListener('mousemove', handleMouseMove);
       document.addEventListener('mouseup', endDrag);
+      document.addEventListener('touchmove', handleTouchMove);
+      document.addEventListener('touchend', endDrag);
+      document.addEventListener('touchcancel', endDrag);
     }
     return () => {
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', endDrag);
+      document.removeEventListener('touchmove', handleTouchMove);
+      document.removeEventListener('touchend', endDrag);
+      document.removeEventListener('touchcancel', endDrag);
     };
-  }, [isDragging, handleMouseMove, endDrag]);
+  }, [isDragging, handleMouseMove, handleTouchMove, endDrag]);
 
   return {
     /** Порог пройден, окно перемещается: стили grabbing и запрет выделения */
@@ -188,8 +204,6 @@ export const useDrag = ({
     dragHandlers: {
       onMouseDown: handleMouseDown,
       onTouchStart: handleTouchStart,
-      onTouchMove: handleTouchMove as unknown as React.TouchEventHandler,
-      onTouchEnd: endDrag as unknown as React.TouchEventHandler,
     },
   };
 };

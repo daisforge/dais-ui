@@ -13,6 +13,12 @@ export const RESIZE_THROTTLE_DELAY = 100;
 
 export const LOCAL_STORAGE_DEFAULT_KEY = 'ai-agent-popup-state';
 
+/** Пауза записи состояния в localStorage после последнего изменения */
+export const STORAGE_SAVE_DELAY = 300;
+
+/** Класс на корне окна во время перетаскивания */
+export const DRAGGING_CLASS = 'ai-agent-popup-dragging';
+
 /**
  * Элементы, с которых перетаскивание не начинается: клики по ним должны
  * работать как обычно. Потребитель может расширить список через

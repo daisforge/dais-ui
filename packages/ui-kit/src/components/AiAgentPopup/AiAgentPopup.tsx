@@ -1,7 +1,12 @@
+import { debounce } from '@ui-kit/utils';
 import type { CSSProperties } from 'react';
 import { forwardRef, useEffect, useMemo } from 'react';
 
-import { DEFAULT_TARGET_GAP } from './AiAgentPopup.constants';
+import {
+  DEFAULT_TARGET_GAP,
+  DRAGGING_CLASS,
+  STORAGE_SAVE_DELAY,
+} from './AiAgentPopup.constants';
 import { StyledPopup } from './AiAgentPopup.styled';
 import type { AiAgentPopupProps } from './AiAgentPopup.types';
 import { AiAgentSurface } from './AiAgentSurface';
@@ -46,7 +51,7 @@ export const AiAgentPopup = forwardRef<HTMLDivElement, AiAgentPopupProps>(
     } = props;
 
     // Сохранённые позиция и размер из localStorage (читаются один раз)
-    const { savedState, saveState } = useStateStorage(useStorage, dragBoundary);
+    const { savedState, saveState } = useStateStorage(useStorage);
 
     // Позиция окна: вычисление при открытии, зажим в границах экрана,
     // возврат в видимую область при изменении размеров окна браузера
@@ -91,11 +96,17 @@ export const AiAgentPopup = forwardRef<HTMLDivElement, AiAgentPopupProps>(
       frame,
     });
 
-    // Запись позиции и размера в localStorage при их изменении
+    // Запись позиции и размера в localStorage при их изменении. С паузой:
+    // во время перетаскивания позиция меняется на каждое движение мыши,
+    // и синхронная запись на каждый шаг подтормаживала бы сам драг
+    const saveStateDebounced = useMemo(
+      () => debounce(saveState, STORAGE_SAVE_DELAY),
+      [saveState],
+    );
     useEffect(() => {
       if (!useStorage) return;
-      saveState({ position: positionForStorage, size: popupSize });
-    }, [useStorage, positionForStorage, popupSize, saveState]);
+      saveStateDebounced({ position: positionForStorage, size: popupSize });
+    }, [useStorage, positionForStorage, popupSize, saveStateDebounced]);
 
     // Позиция окна задаётся напрямую через left/top: атомарному Popup
     // выставлен placement="top-left", то есть нулевая точка экрана
@@ -120,9 +131,7 @@ export const AiAgentPopup = forwardRef<HTMLDivElement, AiAgentPopupProps>(
         resizable={resizableConfig}
         style={popupStyle}
         className={
-          dragActive
-            ? `${className ?? ''} ai-agent-popup-dragging`.trim()
-            : className
+          dragActive ? `${className ?? ''} ${DRAGGING_CLASS}`.trim() : className
         }
       >
         <AiAgentSurface
