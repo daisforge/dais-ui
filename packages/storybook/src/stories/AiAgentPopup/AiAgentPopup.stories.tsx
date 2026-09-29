@@ -7,15 +7,17 @@ import {
   AiAgentPopup,
   AiAgentSurface,
 } from '@ui-kit/components/AiAgentPopup';
-import { Button } from '@ui-kit/components/Button';
 import { IconButton } from '@ui-kit/components/IconButton';
 import { PopupProvider } from '@ui-kit/components/Popup';
 import { SSRProvider } from '@ui-kit/components/SSRProvider';
 import { Typography } from '@ui-kit/components/Typography';
 import { br, s } from '@ui-kit/constants';
 import {
+  IconCalendarEventOutline,
+  IconCatalogOutline,
   IconChevronLeft,
   IconClose,
+  IconDoneCircleOutline,
   IconHistory,
   IconMessageAddOutline,
   IconPanelSidebarLOutline,
@@ -39,19 +41,22 @@ const preCode = `import { useRef, useState } from 'react';
 import {
   AiAgentInput,
   AiAgentPopup,
-  Button,
   IconButton,
   PopupProvider,
   SSRProvider,
   surfaceAccentMinor,
+  surfaceTransparentSecondary,
   textAccentGradient,
   textInfo,
   textPrimary,
   Typography,
 } from '@daisforge/ui';
 import {
+  IconCalendarEventOutline,
+  IconCatalogOutline,
   IconChevronLeft,
   IconClose,
+  IconDoneCircleOutline,
   IconHistory,
   IconMessageAddOutline,
   IconPanelSidebarLOutline,
@@ -98,6 +103,37 @@ const systemMessageStyle = {
   padding: '0 12px',
   color: textInfo,
 };
+
+// Левый сайдбар страницы: узкая вертикальная панель с иконками разделов.
+// Нижняя иконка (каталог) — триггер AI-помощника: окно откроется справа
+// от неё, targetRef висит на обёртке кнопки
+const sidebarStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: '8px',
+  padding: '8px',
+  background: surfaceTransparentSecondary,
+};
+
+function Sidebar({ targetRef, onToggle }) {
+  return (
+    <div style={sidebarStyle}>
+      <IconButton size="s" view="clear">
+        <IconCalendarEventOutline size="s" />
+      </IconButton>
+      <IconButton size="s" view="clear">
+        <IconDoneCircleOutline size="s" />
+      </IconButton>
+      <span ref={targetRef}>
+        <IconButton size="s" view="clear" onClick={onToggle}>
+          <IconCatalogOutline size="s" />
+        </IconButton>
+      </span>
+    </div>
+  );
+}
 
 // Кнопки не начинают перетаскивание, по ним работают обычные клики
 function ChatHeader({ onClose }) {
@@ -190,9 +226,7 @@ function Example() {
   return (
     <SSRProvider>
       <PopupProvider>
-        <span ref={targetRef}>
-          <Button onClick={() => setOpened(!opened)}>AI помощник</Button>
-        </span>
+        <Sidebar targetRef={targetRef} onToggle={() => setOpened(!opened)} />
         <AiAgentPopup
           opened={opened}
           targetRef={targetRef}
@@ -214,9 +248,7 @@ function Example() {
   return (
     <SSRProvider>
       <PopupProvider>
-        <span ref={targetRef}>
-          <Button onClick={() => setOpened(!opened)}>AI помощник</Button>
-        </span>
+        <Sidebar targetRef={targetRef} onToggle={() => setOpened(!opened)} />
         <AiAgentPopup
           opened={opened}
           targetRef={targetRef}
@@ -241,17 +273,20 @@ import {
   AiAgentInput,
   AiAgentPopup,
   AiAgentSurface,
-  Button,
   IconButton,
   PopupProvider,
   SSRProvider,
   surfaceAccentMinor,
+  surfaceTransparentSecondary,
   textAccentGradient,
   textPrimary,
   Typography,
 } from '@daisforge/ui';
 import {
+  IconCalendarEventOutline,
+  IconCatalogOutline,
   IconClose,
+  IconDoneCircleOutline,
   IconPanelSidebarLOutline,
   IconSendOutline,
 } from '@daisforge/ui/icons';
@@ -260,6 +295,35 @@ import {
 // Состояние чата (сообщения, черновик) поднято в Example: окно при
 // закрытии размонтирует контент, и при переносе в панель контент
 // перемонтируется, а состояние снаружи это переживает.
+
+// Левый сайдбар страницы, нижняя иконка (каталог) — триггер AI-помощника
+const sidebarStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: '8px',
+  padding: '8px',
+  background: surfaceTransparentSecondary,
+};
+
+function Sidebar({ targetRef, onToggle }) {
+  return (
+    <div style={sidebarStyle}>
+      <IconButton size="s" view="clear">
+        <IconCalendarEventOutline size="s" />
+      </IconButton>
+      <IconButton size="s" view="clear">
+        <IconDoneCircleOutline size="s" />
+      </IconButton>
+      <span ref={targetRef}>
+        <IconButton size="s" view="clear" onClick={onToggle}>
+          <IconCatalogOutline size="s" />
+        </IconButton>
+      </span>
+    </div>
+  );
+}
 
 const bubbleStyle = {
   background: surfaceAccentMinor,
@@ -383,12 +447,13 @@ function Example() {
             </div>
           </div>
 
+          <Sidebar
+            targetRef={targetRef}
+            onToggle={() => setOpened(!opened)}
+          />
+
           {/* остальная страница */}
-          <div style={{ flex: 1 }}>
-            <span ref={targetRef}>
-              <Button onClick={() => setOpened(!opened)}>AI помощник</Button>
-            </span>
-          </div>
+          <div style={{ flex: 1 }} />
         </div>
 
         <AiAgentPopup
@@ -483,11 +548,14 @@ const fullHeightStageStyle: React.CSSProperties = {
   height: '100vh',
 };
 
-const toolbarStyle: React.CSSProperties = {
+// Левый сайдбар страницы: узкая вертикальная панель с иконками разделов
+const sidebarStyle: React.CSSProperties = {
   display: 'flex',
   flexDirection: 'column',
-  gap: s.x4,
-  padding: s.x4,
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: s.x2,
+  padding: s.x2,
   background: surfaceTransparentSecondary,
 };
 
@@ -673,6 +741,33 @@ function useChatState() {
   return { messages, draft, setDraft, sendDraft };
 }
 
+// Сайдбар с иконками разделов, как в целевом лэйауте. Нижняя иконка
+// (каталог) — триггер AI-помощника: окно открывается справа от неё,
+// targetRef висит на обёртке кнопки
+function Sidebar({
+  targetRef,
+  onToggle,
+}: {
+  targetRef: React.RefObject<HTMLSpanElement>;
+  onToggle: () => void;
+}) {
+  return (
+    <div style={sidebarStyle}>
+      <IconButton size="s" view="clear">
+        <IconCalendarEventOutline size="s" />
+      </IconButton>
+      <IconButton size="s" view="clear">
+        <IconDoneCircleOutline size="s" />
+      </IconButton>
+      <span ref={targetRef}>
+        <IconButton size="s" view="clear" onClick={onToggle}>
+          <IconCatalogOutline size="s" />
+        </IconButton>
+      </span>
+    </div>
+  );
+}
+
 function AiAgentPopupExample({
   fullHeight,
   glow,
@@ -693,13 +788,7 @@ function AiAgentPopupExample({
           ref={frameRef}
           style={fullHeight ? fullHeightStageStyle : stageStyle}
         >
-          <div style={toolbarStyle}>
-            <span ref={targetRef}>
-              <Button size="xs" onClick={() => setOpened(!opened)}>
-                AI помощник
-              </Button>
-            </span>
-          </div>
+          <Sidebar targetRef={targetRef} onToggle={() => setOpened(!opened)} />
           <AiAgentPopup
             {...args}
             opened={opened}
@@ -733,9 +822,9 @@ function PanelTransformExample({ fullHeight }: { fullHeight?: boolean }) {
   const [opened, setOpened] = useState(true);
   const chat = useChatState();
 
-  // Левая граница перетаскивания равна ширине панели инструментов:
-  // окно не наезжает на неё. Ширину следим наблюдателем, а не одним
-  // замером: после загрузки шрифта кнопка становится чуть шире
+  // Левая граница перетаскивания равна ширине сайдбара: окно не наезжает
+  // на него. Ширину следим наблюдателем, а не одним замером, чтобы граница
+  // не отставала при изменении размеров панели
   const [leftBoundary, setLeftBoundary] = useState(8);
   useLayoutEffect(() => {
     const toolbar = toolbarRef.current;
@@ -783,12 +872,11 @@ function PanelTransformExample({ fullHeight }: { fullHeight?: boolean }) {
               </AiAgentSurface>
             </div>
           </div>
-          <div ref={toolbarRef} style={toolbarStyle}>
-            <span ref={targetRef}>
-              <Button size="xs" onClick={() => setOpened(!opened)}>
-                AI помощник
-              </Button>
-            </span>
+          <div ref={toolbarRef} style={{ display: 'flex' }}>
+            <Sidebar
+              targetRef={targetRef}
+              onToggle={() => setOpened(!opened)}
+            />
           </div>
           <AiAgentPopup
             opened={view === 'popup' && opened}
