@@ -1,1 +1,0 @@
-import{bB as i,bC as e,bD as k}from"./vendor-9g8l4WhJ.js";const c={};function f(s){const t=this,n=s||c,o=t.data(),r=o.micromarkExtensions||(o.micromarkExtensions=[]),a=o.fromMarkdownExtensions||(o.fromMarkdownExtensions=[]),m=o.toMarkdownExtensions||(o.toMarkdownExtensions=[]);r.push(i(n)),a.push(e()),m.push(k(n))}export{f as r};
