@@ -161,22 +161,20 @@ function ChatContent({ onClose }) {
             </Typography>
           ))}
         </div>
-        {/* Внешних отступов у AiAgentInput нет, место в лэйауте чата
-            задаёт потребитель */}
-        <div style={{ paddingTop: '12px' }}>
-          <AiAgentInput
-            glow={thinking}
-            placeholder="Спросите что-нибудь"
-            value={draft}
-            onChange={(e) => setDraft(e.target.value)}
-            rightSlot={
-              <IconButton size="xs" view="clear" onClick={sendDraft}>
-                {/* плазма-иконки умеют градиент в color: рисуют её маской */}
-                <IconSendOutline size="s" color={textAccentGradient} />
-              </IconButton>
-            }
-          />
-        </div>
+        {/* Отступов вокруг AiAgentInput нет: по дизайну поле прижато
+            к ленте сообщений */}
+        <AiAgentInput
+          glow={thinking}
+          placeholder="Спросите что-нибудь"
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          rightSlot={
+            <IconButton size="xs" view="clear" onClick={sendDraft}>
+              {/* плазма-иконки умеют градиент в color: рисуют её маской */}
+              <IconSendOutline size="s" color={textAccentGradient} />
+            </IconButton>
+          }
+        />
       </div>
     </>
   );
@@ -322,19 +320,17 @@ function ChatContent({
           </Typography>
         ))}
       </div>
-      <div style={{ paddingTop: 12 }}>
-        <AiAgentInput
-          glow
-          placeholder="Спросите что-нибудь"
-          value={draft}
-          onChange={(e) => onDraftChange(e.target.value)}
-          rightSlot={
-            <IconButton size="xs" view="clear" onClick={onSend}>
-              <IconSendOutline size="s" color={textAccentGradient} />
-            </IconButton>
-          }
-        />
-      </div>
+      <AiAgentInput
+        glow
+        placeholder="Спросите что-нибудь"
+        value={draft}
+        onChange={(e) => onDraftChange(e.target.value)}
+        rightSlot={
+          <IconButton size="xs" view="clear" onClick={onSend}>
+            <IconSendOutline size="s" color={textAccentGradient} />
+          </IconButton>
+        }
+      />
     </>
   );
 }
@@ -538,10 +534,6 @@ const systemMessageStyle: React.CSSProperties = {
   color: textInfo,
 };
 
-const chatInputRowStyle: React.CSSProperties = {
-  paddingTop: '12px',
-};
-
 type ChatMessage = { text: string; system?: boolean };
 
 const initialMessages: ChatMessage[] = [
@@ -647,22 +639,20 @@ function ChatContent({
             </Typography>
           ))}
         </div>
-        {/* Внешних отступов у AiAgentInput нет, место в лэйауте чата
-            задаёт потребитель */}
-        <div style={chatInputRowStyle}>
-          <AiAgentInput
-            glow={glow}
-            placeholder="Спросите что-нибудь"
-            value={draft}
-            onChange={(e) => onDraftChange(e.target.value)}
-            rightSlot={
-              <IconButton size="xs" view="clear" onClick={onSend}>
-                {/* плазма-иконки умеют градиент в color: рисуют её маской */}
-                <IconSendOutline size="s" color={textAccentGradient} />
-              </IconButton>
-            }
-          />
-        </div>
+        {/* Отступов вокруг AiAgentInput нет: по дизайну поле прижато
+            к ленте сообщений */}
+        <AiAgentInput
+          glow={glow}
+          placeholder="Спросите что-нибудь"
+          value={draft}
+          onChange={(e) => onDraftChange(e.target.value)}
+          rightSlot={
+            <IconButton size="xs" view="clear" onClick={onSend}>
+              {/* плазма-иконки умеют градиент в color: рисуют её маской */}
+              <IconSendOutline size="s" color={textAccentGradient} />
+            </IconButton>
+          }
+        />
       </div>
     </>
   );
