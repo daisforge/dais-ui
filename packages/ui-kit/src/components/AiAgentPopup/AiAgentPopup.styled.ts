@@ -161,7 +161,7 @@ export const StyledInputGlow = styled.div<{
   border-radius: 50%;
   background: ${({ $isDark }) =>
     $isDark ? glowDarkBackground : glowLightBackground};
-  filter: blur(14px);
+  filter: blur(40px);
   opacity: ${({ $visible, $isDark }) => {
     if (!$visible) return 0;
     return $isDark ? 1 : 0.56;
