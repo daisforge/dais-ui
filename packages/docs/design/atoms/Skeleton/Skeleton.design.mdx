@@ -1,0 +1,160 @@
+---
+id: skeleton
+title: Skeleton
+type: atom
+status: Stable
+version: 1.0
+lastUpdated: 2026-06-01
+pixsoLink: "{{Pixso URL Skeleton}}"
+storybookLink: "{{Storybook URL Skeleton}}"
+pixsoDocLink: "{{Pixso URL Skeleton Doc Block 1}}"
+hasDesignDoc: true
+hasDevDoc: true
+hasMechanics: true
+hasCornerCases: false
+related:
+ - spinner
+ - avatar
+ - image
+tags:
+ - skeleton
+ - data-display
+ - loading
+ - placeholder
+---
+
+# Skeleton
+
+Графическая имитация блоков контента, используемая в качестве заполнителя во время загрузки реального контента.
+
+Визуал: {{Pixso URL Skeleton Doc Block 1}}
+
+---
+
+## Общее
+
+- Skeleton должен обеспечить близкое представление конечного макета страницы и содержимого после загрузки.
+- Если визуальный формат загружаемого контента неизвестен или нужно указать обработку/изменение данных — не рекомендуется использовать Skeleton. В таком случае можно адаптировать пустое состояние с иконкой загрузки.
+- В дизайне созданы компоненты с верным токеном внутри, которые можно использовать на блоках.
+
+---
+
+## Анатомия
+
+Skeleton — это набор компонентов-заполнителей. В дизайне выделены два типа.
+
+| Тип | Назначение |
+|---|---|
+| **LineSkeleton** | Отображает загрузку текстового содержимого, например абзацев. |
+| **RectSkeleton** | Отображает загрузку графических элементов, таких как значки, аватары и небольшие изображения. |
+
+---
+
+## Настройки (Props)
+
+> Здесь — визуальное поведение. Полный список пропсов с типами — в dev-документации через `<PropsTable name="LineSkeleton" />`, `<PropsTable name="RectSkeleton" />`, `<PropsTable name="TextSkeleton" />`.
+
+### Токены поверхности
+
+Цвет заливки заполнителя задаётся токенами. В дизайне созданы компоненты с верным токеном внутри.
+
+| Токен | Назначение |
+|---|---|
+| **SurfaceSkeletonGradient** | Стандартный токен Skeleton в подтеме по умолчанию. |
+| **SurfaceSkeletonDeepGradient** | Более яркий вариант для отображения Skeleton в подтеме по умолчанию. |
+| **onDarkSurfaceSkeletonGradient** | Значение SurfaceSkeletonGradient из тёмной темы. |
+| **onDarkSurfaceSkeletonDeepGradient** | Значение SurfaceSkeletonDeepGradient из тёмной темы. |
+| **onLightSurfaceSkeletonGradient** | Значение SurfaceSkeletonGradient из светлой темы. |
+| **onLightSurfaceSkeletonDeepGradient** | Значение SurfaceSkeletonDeepGradient из светлой темы. |
+| **InverseSurfaceSkeletonGradient** | Инвертированное значение SurfaceSkeletonGradient подтемы default. |
+| **InverseSurfaceSkeletonDeepGradient** | Инвертированное значение SurfaceSkeletonDeepGradient подтемы default. |
+
+---
+
+## Примеры использования
+
+| Вариант | Описание | Визуал |
+|---|---|---|
+| **1 вариант** | Возможно отображение разных элементов отдельными компонентами Skeleton. | {{Pixso URL Skeleton Doc Block 1}} |
+| **2 вариант** | Также можно показать Skeleton на блок целиком. | {{Pixso URL Skeleton Doc Block 1}} |
+
+---
+
+## Механика и взаимодействия
+
+- Skeleton отображается анимированным во время загрузки контента — мерцание/пульсация, которые показывают, что данные ещё подгружаются.
+- Параметры анимации (тип, скорость, направление) задаются в коде — см. Storybook: {{Storybook URL Skeleton}}.
+
+---
+
+## Маппинг: дизайн → код
+
+| Свойство в дизайне | Проп в коде | Значения | Примечание |
+|---|---|---|---|
+| Тип: LineSkeleton | `LineSkeleton` | — | Загрузка текстового содержимого. |
+| Тип: RectSkeleton | `RectSkeleton` | — | Загрузка графических элементов. |
+| Тип анимации | `animationType` | shimmer / pulse | `shimmer` — по умолчанию. |
+| Токен поверхности | — | SurfaceSkeletonGradient и др. | Токен задаётся внутри компонента в дизайне; выбор токена в коде уточните в Storybook или в чате поддержки дизайн-системы. |
+
+---
+
+## Использование в коде
+
+Живые примеры кода — в Storybook: {{Storybook URL Skeleton}}.
+
+---
+
+## Связанные компоненты
+
+- **Spinner** — крутилка-лоадер для мгновенного отклика системы, без имитации структуры контента. [Дизайн]({{Pixso URL Spinner}}) · [Storybook]({{Storybook URL Spinner}})
+- **Avatar** — графический элемент, при загрузке которого используется RectSkeleton. [Дизайн]({{Pixso URL Avatar}}) · [Storybook]({{Storybook URL Avatar}})
+- **Image** — изображение, при загрузке которого используется RectSkeleton. [Дизайн]({{Pixso URL Image}}) · [Storybook]({{Storybook URL Image}})
+
+---
+
+## FAQ
+
+### Для дизайнеров
+
+**Q: Чем Skeleton отличается от Spinner/Loader?**
+A: Skeleton имитирует структуру и макет будущего контента (заполнитель), а Loader/Spinner — это просто индикатор процесса. Для мгновенного отклика системы (0.5–1 сек) подойдёт обычный Loader или Skeleton. Подробнее — в Pixso-документации компонента, блок «Общее»: {{Pixso URL Skeleton Doc Block 1}}.
+
+**Q: Когда не стоит использовать Skeleton?**
+A: Если визуальный формат загружаемого контента неизвестен или нужно указать обработку/изменение данных. В этом случае лучше адаптировать пустое состояние с иконкой загрузки. Подробнее — в Pixso-документации компонента, блок «Общее»: {{Pixso URL Skeleton Doc Block 1}}.
+
+**Q: Какие типы Skeleton есть в дизайне?**
+A: Два: LineSkeleton — для текстового содержимого (например, абзацев), и RectSkeleton — для графики (иконок, аватаров, небольших изображений). Подробнее — в Pixso-документации компонента, блок «Анатомия»: {{Pixso URL Skeleton Doc Block 1}}.
+
+**Q: Можно ли показать Skeleton на целый блок, а не на отдельные элементы?**
+A: Да. Возможны оба варианта: отдельные заполнители на разные элементы или один Skeleton на весь блок. Подробнее — в Pixso-документации компонента, блок «Примеры использования»: {{Pixso URL Skeleton Doc Block 1}}.
+
+**Q: Каким должен быть цвет заливки заполнителя?**
+A: Цвет задаётся токенами поверхности — по умолчанию используется стандартный токен, для более яркого варианта есть «глубокий». Есть также значения для тёмной, светлой и инверсной подтем. В дизайне уже созданы компоненты с верным токеном внутри. Подробнее — в Pixso-документации компонента, блок «Токены поверхности»: {{Pixso URL Skeleton Doc Block 1}}.
+
+### Для разработчиков
+
+**Q: Как настроить анимацию заполнителя?**
+A: Через `animationType`: `shimmer` (бегущий градиент, по умолчанию) или `pulse` (пульсация фона). Примеры кода — в Storybook: {{Storybook URL Skeleton}}.
+
+**Q: Какие компоненты использовать для текста и для графики?**
+A: `LineSkeleton` — для загрузки текстового содержимого, `RectSkeleton` — для графических элементов (иконки, аватары, небольшие изображения). Примеры кода — в Storybook: {{Storybook URL Skeleton}}.
+
+**Q: Как задаётся токен поверхности в коде?**
+A: Токен (SurfaceSkeletonGradient, SurfaceSkeletonDeepGradient и варианты для тёмной/светлой/инверсной подтем) задаётся внутри компонента в дизайне; выбор токена в коде уточните в Storybook или в чате поддержки дизайн-системы. Примеры кода — в Storybook: {{Storybook URL Skeleton}}.
+
+---
+
+## Ссылки
+
+- **Storybook:** {{Storybook URL Skeleton}}
+- **Документация в Pixso:** {{Pixso URL Skeleton Doc Block 1}}
+- **Компонент в Pixso:** {{Pixso URL Skeleton}}
+- **Гайд по паттернам загрузки: Loader/Skeleton:** {{Pixso URL Skeleton DocGuide Block 1}}
+
+---
+
+## Changelog
+
+| Дата | Версия | Изменение |
+|---|---|---|
+| 2026-06-01 | 1.0 | Перенос дизайн-документации Skeleton из Pixso/Sketch в MDX. Первая версия. |

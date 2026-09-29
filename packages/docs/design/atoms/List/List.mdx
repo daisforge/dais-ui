@@ -1,0 +1,85 @@
+---
+id: list
+title: List
+type: atom
+status: Stable
+version: 1.0
+lastUpdated: 2026-06-11
+pixsoLink: "{{Pixso URL List}}"
+storybookLink: "{{Storybook URL List}}"
+pixsoDocLink: "{{Pixso URL List Doc Block 1}}"
+hasDesignDoc: true
+hasDevDoc: true
+hasMechanics: false
+hasCornerCases: false
+related:
+ - cell
+ - divider
+ - dropdown
+tags:
+ - data-display
+ - list
+---
+
+import { PropsTable } from '@site/src/components';
+
+# List
+Компонент списка
+
+<PropsTable name="List" />
+
+Компонент представляет собой список состоящий из `ListItem`.
+
+ListItem представляет собой простой компонент с текстом и иконкой
+
+### Типы ListItem
+<PropsTable name="ListItem" />
+
+## Примеры
+
+### Базовое использование
+```tsx live
+import React from 'react';
+import { List, ListItem } from '@salutejs/sdds-finai';
+import { IconChevronRight } from '@salutejs/plasma-icons';
+
+export function App() {
+    return (
+        <div>
+            <List view="default" size="s" variant="normal">
+                <ListItem contentRight={<IconChevronRight color="inherit" size="xs" />}>Test Item 1</ListItem>
+                <ListItem contentRight={<IconChevronRight color="inherit" size="xs" />}>Test Item 2</ListItem>
+                <ListItem disabled contentRight={<IconChevronRight color="inherit" size="xs" />}>
+                    Test Item 3
+                </ListItem>
+                <ListItem contentRight={<IconChevronRight color="inherit" size="xs" />}>Test Item 4</ListItem>
+            </List>
+        </div>
+    );
+}
+```
+
+### Использование с Divider
+```tsx live
+import React from 'react';
+import { List, ListItem, Divider } from '@salutejs/sdds-finai';
+import { IconChevronRight } from '@salutejs/plasma-icons';
+
+export function App() {
+    return (
+        <div>
+            <List view="default" size="s" variant="normal">
+                <ListItem contentRight={<IconChevronRight color="inherit" size="xs" />}>Test Item 1</ListItem>
+                <Divider/>
+                <ListItem contentRight={<IconChevronRight color="inherit" size="xs" />}>Test Item 2</ListItem>
+                <Divider/>
+                <ListItem disabled contentRight={<IconChevronRight color="inherit" size="xs" />}>
+                    Test Item 3
+                </ListItem>
+                <Divider/>
+                <ListItem contentRight={<IconChevronRight color="inherit" size="xs" />}>Test Item 4</ListItem>
+            </List>
+        </div>
+    );
+}
+```
