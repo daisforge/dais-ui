@@ -178,6 +178,10 @@ export const StyledInputGlow = styled.div<{
 export const StyledInputBackplate = styled.div<{ $maxHeight: number }>`
   background: ${C.bg};
   border-radius: 0.625rem;
+  /* Само поле лежит над свечением: подсвечивается контент вокруг,
+     а не текст, который набирает пользователь */
+  position: relative;
+  z-index: 2;
 
   textarea {
     max-height: ${({ $maxHeight }) => $maxHeight - INPUT_VERTICAL_CHROME}px;
