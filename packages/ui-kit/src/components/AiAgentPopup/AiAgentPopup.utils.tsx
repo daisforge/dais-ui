@@ -13,6 +13,7 @@ import type {
   AiAgentPopupResizableConfig,
   AiAgentPopupResizeCorner,
   AiAgentPopupSize,
+  AiAgentPopupTargetGap,
 } from './AiAgentPopup.types';
 
 /**
@@ -87,18 +88,22 @@ export const validatePosition = (
 };
 
 /**
- * Позиция справа от target-элемента, верхние края выровнены.
- * Координаты переводятся из вьюпортных в систему области окна.
+ * Позиция справа от target-элемента. Числовой gap: только горизонтальный
+ * отступ, верхние края выровнены. Объектный gap: смещение по обеим осям
+ * от правого верхнего угла таргета. Координаты переводятся из вьюпортных
+ * в систему области окна.
  */
 export const getPositionFromTarget = (
   target: HTMLElement,
-  gap: number,
+  gap: AiAgentPopupTargetGap,
   frameMetrics?: AiAgentPopupFrameMetrics,
 ): AiAgentPopupPosition => {
   const rect = target.getBoundingClientRect();
   const { left, top } = frameMetrics ?? documentMetrics();
+  const gapX = typeof gap === 'number' ? gap : gap.x ?? 0;
+  const gapY = typeof gap === 'number' ? 0 : gap.y ?? 0;
 
-  return { x: rect.right + gap - left, y: rect.top - top };
+  return { x: rect.right + gapX - left, y: rect.top + gapY - top };
 };
 
 export const getFallbackPosition = (): AiAgentPopupPosition => ({

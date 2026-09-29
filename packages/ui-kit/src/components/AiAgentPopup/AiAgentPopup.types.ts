@@ -23,6 +23,14 @@ export type AiAgentPopupPositionState = [
 ];
 
 /**
+ * Отступ окна от targetRef. Число: отступ по горизонтали (окно справа
+ * от таргета, верхние кромки на одном уровне). Объект: смещение по обеим
+ * осям от правого верхнего угла таргета; y больше нуля опускает окно вниз,
+ * меньше нуля поднимает вверх.
+ */
+export type AiAgentPopupTargetGap = number | { x?: number; y?: number };
+
+/**
  * Размер окна в px.
  */
 export type AiAgentPopupSize = { width: number; height: number };
@@ -147,10 +155,12 @@ export type AiAgentPopupProps = Omit<
    */
   targetRef?: RefObject<HTMLElement | null>;
   /**
-   * Отступ окна от targetRef в px.
+   * Отступ окна от targetRef в px. Число: только по горизонтали.
+   * Объект { x, y }: смещение по обеим осям от правого верхнего угла
+   * таргета, y больше нуля опускает окно вниз, меньше нуля поднимает.
    * @default 12
    */
-  targetGap?: number;
+  targetGap?: AiAgentPopupTargetGap;
   /**
    * Начальная позиция окна. Приоритетнее targetRef, но уступает сохранённой
    * позиции из useStorage.

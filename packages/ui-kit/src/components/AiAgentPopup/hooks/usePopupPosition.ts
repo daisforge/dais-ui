@@ -13,6 +13,7 @@ import type {
   AiAgentPopupFrame,
   AiAgentPopupPosition,
   AiAgentPopupPositionState,
+  AiAgentPopupTargetGap,
 } from '../AiAgentPopup.types';
 import {
   getFallbackPosition,
@@ -26,7 +27,7 @@ type UsePopupPositionParams = {
   opened?: boolean;
   /** Элемент, справа от которого открыть окно, если позиция ещё не известна */
   targetRef?: React.RefObject<HTMLElement | null>;
-  targetGap: number;
+  targetGap: AiAgentPopupTargetGap;
   defaultPosition?: AiAgentPopupPosition;
   /** Позиция, прочитанная из хранилища (localStorage) */
   savedPosition?: AiAgentPopupPosition;

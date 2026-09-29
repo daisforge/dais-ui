@@ -8,6 +8,7 @@ export type {
   AiAgentPopupProps,
   AiAgentPopupResizableConfig,
   AiAgentPopupSize,
+  AiAgentPopupTargetGap,
   AiAgentSurfaceProps,
   AiAgentSurfaceVariant,
 } from './AiAgentPopup.types';
