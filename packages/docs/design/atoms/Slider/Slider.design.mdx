@@ -1,0 +1,266 @@
+---
+id: slider
+title: Slider
+type: atom
+status: Stable
+version: 1.0
+lastUpdated: 2026-06-12
+pixsoLink: "{{Pixso URL Slider}}"
+storybookLink: "{{Storybook URL Slider}}"
+pixsoDocLink: "{{Pixso URL Slider Doc Block 1}}"
+hasDesignDoc: true
+hasDevDoc: true
+hasMechanics: true
+hasCornerCases: false
+related:
+ - range
+tags:
+ - data-entry
+ - selection
+---
+
+# Slider
+
+Компонент для указания значения из заданного диапазона. Значение задаётся перетаскиванием ползунка вдоль линии слайдера.
+
+Визуал: {{Pixso URL Slider Doc Block 1}}
+
+---
+
+## Анатомия
+
+1. **Label** — подпись слайдера. Можно скрыть.
+2. **Pointer** — ползунок, который пользователь перетаскивает для выбора значения. Существует в четырёх вариантах под ориентацию и состояние: Pointer Horizontal, Pointer Hovered Horizontal, Pointer Vertical, Pointer Hovered Vertical. В каждом размере у ползунка два вида — большой (Large) и маленький (Small); при смене вида размер текста не меняется.
+3. **Value** — текущее значение, которое можно показать рядом с ползунком.
+4. **Progress** — активная линия (заполненная часть слайдера). Длина настраивается через Auto layout (см. «Механика и взаимодействия»).
+5. **Scale** — шкала с минимальным и максимальным значениями диапазона.
+
+---
+
+## Типы
+
+| Тип | Описание | Визуал |
+|---|---|---|
+| **SliderHorizontal** | Слайдер в горизонтальной ориентации. | {{Pixso URL Slider Doc Block 2}} |
+| **SliderVertical** | Слайдер в вертикальной ориентации. | {{Pixso URL Slider Doc Block 3}} |
+| **SliderRange** | Слайдер с двумя ползунками и полями ввода — для выбора диапазона значений. | {{Pixso URL Slider Doc Block 4}} |
+
+---
+
+## Размеры и отступы
+
+### SliderHorizontal
+
+| Размер | Шрифт Label | Шрифт Scale | Размер иконки | Fill (линия) |
+|---|---|---|---|---|
+| **L** | Body/BodyL N | Body/BodyM N | 24px | 20 / 12 |
+| **M** | Body/BodyM N | Body/BodyS N | 24px | 16 / 10 |
+| **S** | Body/BodyS N | Body/BodyXS N | 16px | 14 / 8 |
+
+### SliderVertical
+
+| Размер | Шрифт Label | Шрифт Scale | Размер иконки | Fill (линия) |
+|---|---|---|---|---|
+| **L** | Body/BodyL N | Body/BodyM N | 24px | 16 / 12 / 12 |
+| **M** | Body/BodyM N | Body/BodyS N | 24px | 12 / 10 / 10 |
+| **S** | Body/BodyS N | Body/BodyXS N | 16px | 10 / 8 / 8 |
+
+### SliderRange
+
+| Размер | Шрифт Label | Размер иконки |
+|---|---|---|
+| **S** | Body/BodyS N | 16px |
+
+### Pointer (Value)
+
+| Размер | Шрифт Value |
+|---|---|
+| **L** | Body/BodyM N |
+| **M** | Body/BodyS N |
+| **S** | Body/BodyXS N |
+
+---
+
+## Настройки (Props)
+
+> Здесь — визуальное поведение. Полный список пропсов с типами — в dev-документации через `<PropsTable name="Slider" />`.
+
+### View
+
+Цвет активной линии слайдера.
+
+| View | Назначение |
+|---|---|
+| Default | Активная линия принимает цвет Default. |
+| Accent | Активная линия принимает цвет Accent. |
+| Gradient | Активная линия принимает цвет AccentGradient. |
+
+### Hovered
+
+Состояние наведения.
+
+| Hovered | Результат |
+|---|---|
+| True | Включает состояние Hovered. |
+| False | Выключает состояние Hovered. |
+
+### Label
+
+| Свойство | Значения | Результат |
+|---|---|---|
+| **hasTitle / hasLabel** | True / False | Включает или выключает подпись. |
+| **TitlePlacement / LabelPlacement** | Top / Left / None | Подпись сверху, слева или скрыта. |
+| **LabelAlign** | Center / Left / Right / None | Выравнивание подписи по центру, левому или правому краю. |
+
+### Scale
+
+| Свойство | Значения | Результат |
+|---|---|---|
+| **hasScale** | True / False | Включает или выключает шкалу. |
+| **ScaleAlign** | Side / Bottom / None | Шкала на уровне слайдера, снизу или скрыта. |
+
+### Orientation
+
+Доступно для вертикального слайдера.
+
+| Orientation | Результат |
+|---|---|
+| Default | Шкала начинается с 0. |
+| Reverse | Шкала начинается со 100. |
+
+### Pointer
+
+| Свойство | Значения | Результат |
+|---|---|---|
+| **hasPointer** | True / False | Включает или выключает ползунок. |
+| **PointerSize** | Large / Small / None | Большой ползунок, маленький или скрытый. |
+| **hasValue** | True / False | Включает или выключает отображение значения. |
+| **ValuePlacement** (горизонтальный) | Top / Bottom / None | Значение сверху, снизу относительно ползунка или скрыто. |
+| **ValuePlacement** (вертикальный) | Left / Right / None | Значение слева, справа относительно ползунка или скрыто. |
+
+---
+
+## Состояния
+
+| Состояние | Описание |
+|---|---|
+| Default | Базовое состояние. |
+| Hovered | Состояние наведения, включается свойством Hovered. |
+| Disabled | Неактивный слайдер. |
+
+---
+
+## Механика и взаимодействия
+
+- **Перетаскивание ползунка.** Значение из диапазона задаётся перетаскиванием Pointer вдоль линии слайдера. Для диапазона (SliderRange) используется два ползунка.
+- **Настройка активной линии (Progress).** Чтобы изменить длину активной (заполненной) части слайдера, нужно перейти на слой Progress и задать нужную длину через Auto layout.
+
+Детали реализации (шаг, клик по делениям шкалы, навигация с клавиатуры) — в Storybook: {{Storybook URL Slider}}.
+
+---
+
+## Маппинг: дизайн → код
+
+| Свойство в дизайне | Проп в коде | Значения | Примечание |
+|---|---|---|---|
+| View | `view` | default / accent / gradient | Прямое соответствие. |
+| Размер (L / M / S) | `size` | l / m / s | Прямое соответствие. |
+| Тип SliderHorizontal / SliderVertical | `orientation` | horizontal / vertical | Горизонтальная ориентация — по умолчанию. |
+| Тип SliderRange | `value` (массив из двух чисел) | `[number, number]` | Двойной слайдер включается передачей массива в `value`. |
+| Label | `label` | строка | Текстовая подпись. |
+| TitlePlacement / LabelPlacement | `labelPlacement` | top / left | В коде доступны `top` и `left`. |
+| Иконка в подписи | `labelContent` | иконка (ReactNode) | Иконка рядом с подписью. |
+| hasPointer / PointerSize | `pointerSize` | small / large / none | None скрывает ползунок. |
+| Hovered (видимость ползунка) | `pointerVisibility` | always / hover | Ползунок всегда виден или только при наведении. |
+| hasValue | `showCurrentValue` | boolean | Включает отображение текущего значения над ползунком. |
+| ValuePlacement (видимость) | `currentValueVisibility` | always / hover | Значение всегда видно или только при наведении. |
+| hasScale | `showScale` | boolean | Включает шкалу. |
+| ScaleAlign | `scaleAlign` | bottom / top / side | Расположение меток шкалы. |
+| — | `scaleTicks` | `number[]` | Произвольный набор делений на шкале (нет прямого свойства в дизайне). |
+| — | `step` | number | Шаг ползунка (нет прямого свойства в дизайне). |
+| — | `multipleStepSize` | number | Увеличенный шаг при PageUp / PageDown (нет прямого свойства в дизайне). |
+| Disabled | `disabled` | boolean | Неактивное состояние. |
+
+---
+
+## Использование в коде
+
+Живые примеры кода — в Storybook: {{Storybook URL Slider}}.
+
+---
+
+## Связанные компоненты
+
+- **Range** — парный ввод диапазона значений через два поля «от» и «до». [Дизайн]({{Pixso URL Range}}) · [Storybook]({{Storybook URL Range}})
+
+---
+
+## FAQ
+
+### Для дизайнеров
+
+**Q: Как сделать вертикальный слайдер?**
+A: Использовать тип SliderVertical — слайдер отображается в вертикальной ориентации. Подробнее — в Pixso-документации компонента, блок «Типы»: {{Pixso URL Slider Doc Block 1}}.
+
+**Q: Как сделать слайдер с выбором диапазона (двумя ползунками)?**
+A: Использовать тип SliderRange — слайдер с двумя ползунками и полями ввода. Подробнее — в Pixso-документации компонента, блок «Типы»: {{Pixso URL Slider Doc Block 1}}.
+
+**Q: Как изменить длину активной (заполненной) линии слайдера?**
+A: Перейти на слой Progress и задать нужную длину через Auto layout. Подробнее — в Pixso-документации компонента, блок «Общее»: {{Pixso URL Slider Doc Block 1}}.
+
+**Q: Как изменить цвет активной линии?**
+A: Через свойство View: Default, Accent или Gradient — активная линия принимает соответствующий цвет (Default, Accent или AccentGradient). Подробнее — в Pixso-документации компонента, блок «Свойства»: {{Pixso URL Slider Doc Block 1}}.
+
+**Q: Как добавить шкалу с минимумом и максимумом?**
+A: Включить свойство hasScale, а расположение задать через ScaleAlign — Side (на уровне слайдера) или Bottom (снизу). Подробнее — в Pixso-документации компонента, блок «Свойства»: {{Pixso URL Slider Doc Block 1}}.
+
+**Q: Как настроить ползунок и показать его значение?**
+A: Свойство PointerSize задаёт вид ползунка (Large / Small / None), а hasValue — отображение значения; расположение значения задаётся через ValuePlacement. Подробнее — в Pixso-документации компонента, блок «Свойства»: {{Pixso URL Slider Doc Block 1}}.
+
+**Q: Где расположить подпись слайдера?**
+A: Через TitlePlacement / LabelPlacement — Top (сверху) или Left (слева); выравнивание задаётся через LabelAlign (Center / Left / Right). Подробнее — в Pixso-документации компонента, блок «Свойства»: {{Pixso URL Slider Doc Block 1}}.
+
+**Q: Какие размеры есть у слайдера?**
+A: L, M и S — каждый со своим шрифтом подписи, шрифтом шкалы и размером иконки. У SliderRange предусмотрен размер S. Подробнее — в Pixso-документации компонента, блок «Размеры и отступы»: {{Pixso URL Slider Doc Block 1}}.
+
+### Для разработчиков
+
+**Q: Как задать значение и обрабатывать его изменение?**
+A: Передать `value` и `onChange` (контролируемый режим) либо `defaultValue` и `name` (неконтролируемый). Примеры кода — в Storybook: {{Storybook URL Slider}}.
+
+**Q: Как включить выбор диапазона (двойной слайдер)?**
+A: Передать в `value` массив из двух чисел — слайдер станет двойным. Примеры кода — в Storybook: {{Storybook URL Slider}}.
+
+**Q: Как сделать слайдер вертикальным?**
+A: Через проп `orientation="vertical"` (по умолчанию `horizontal`). Примеры кода — в Storybook: {{Storybook URL Slider}}.
+
+**Q: Как управлять размером и видимостью ползунка?**
+A: `pointerSize` задаёт размер (`small` / `large` / `none`), `pointerVisibility` — видимость (`always` / `hover`). Примеры кода — в Storybook: {{Storybook URL Slider}}.
+
+**Q: Как показать текущее значение над ползунком?**
+A: Включить `showCurrentValue`, видимость задать через `currentValueVisibility` (`always` / `hover`). Примеры кода — в Storybook: {{Storybook URL Slider}}.
+
+**Q: Как добавить шкалу и произвольные деления?**
+A: `showScale` включает шкалу, `scaleAlign` задаёт расположение (`bottom` / `top` / `side`), `scaleTicks` — произвольный набор делений (клик по делению перемещает ползунок). Примеры кода — в Storybook: {{Storybook URL Slider}}.
+
+**Q: Как задать шаг изменения значения?**
+A: `step` задаёт шаг ползунка, `multipleStepSize` — увеличенный шаг при `PageUp` / `PageDown` (в процентах от диапазона). Примеры кода — в Storybook: {{Storybook URL Slider}}.
+
+**Q: Как сделать слайдер неактивным?**
+A: Через проп `disabled`. Примеры кода — в Storybook: {{Storybook URL Slider}}.
+
+---
+
+## Ссылки
+
+- **Storybook:** {{Storybook URL Slider}}
+- **Документация в Pixso:** {{Pixso URL Slider Doc Block 1}}
+- **Компонент в Pixso:** {{Pixso URL Slider}}
+
+---
+
+## Changelog
+
+| Дата | Версия | Изменение |
+|---|---|---|
+| 2026-06-12 | 1.0 | Перенос дизайн-документации Slider из Pixso/Sketch в MDX. Первая версия. |

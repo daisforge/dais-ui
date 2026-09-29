@@ -1,0 +1,182 @@
+---
+id: badge
+title: Badge
+type: atom
+status: Stable
+version: 1.0
+lastUpdated: 2026-06-01
+pixsoLink: "{{Pixso URL Badge}}"
+storybookLink: "{{Storybook URL Badge}}"
+pixsoDocLink: "{{Pixso URL Badge Doc Block 1}}"
+hasDesignDoc: true
+hasDevDoc: true
+hasMechanics: false
+hasCornerCases: false
+related:
+ - chip
+tags:
+ - badge
+ - data-display
+ - static
+---
+
+# Badge
+
+Небольшой элемент для обозначения категории, статуса или другой важной информации. Данный компонент не интерактивен.
+
+Визуал: {{Pixso URL Badge Doc Block 1}}
+
+---
+
+## Анатомия
+
+1. **Label** — текстовый лейбл бейджа. Можно скрыть (бейдж только с иконкой).
+2. **ContentLeft** — иконка слева от текста (опционально).
+3. **ContentRight** — иконка справа от текста (опционально).
+
+---
+
+## Типы
+
+Тип отвечает за заливку фона.
+
+| Тип | Описание | Визуал |
+|---|---|---|
+| **Badge Solid** | Компонент с залитым фоном. | {{Pixso URL Badge Doc Block 2}} |
+| **Badge Transparent** | Компонент с полупрозрачным фоном. | {{Pixso URL Badge Doc Block 3}} |
+| **Badge Clear** | Прозрачный фон, текстовый вариант без горизонтальных отступов. | {{Pixso URL Badge Doc Block 4}} |
+
+---
+
+## Размеры и отступы
+
+| Размер | Высота | Corner Radius | Шрифт лейбла | Размер иконки | Отступ иконка↔текст |
+|---|---|---|---|---|---|
+| **L** | 28 | S (8px) | Body/BodyS N | 16px | 4 |
+| **M** | 24 | XS (6px) | Body/BodyXS N | 12px | 3 |
+| **S** | 20 | XS (6px) | Body/BodyXXS N | 12px | 2 |
+| **XS** | 16 | XXS (4px) | Body/BodyXXS N | 10px | 2 |
+
+---
+
+## Настройки (Props)
+
+> Здесь — визуальное поведение. Полный список пропсов с типами — в dev-документации через `<PropsTable name="Badge" />`.
+
+### Вид
+
+Цветовая тема бейджа.
+
+| Вид | Назначение |
+|---|---|
+| Default | Дефолтный бейдж. |
+| Accent | Акцентный бейдж. |
+| Positive | Информирует о позитивном сценарии. |
+| Negative | Информирует о негативном сценарии. |
+| Warning | Предупреждение. |
+| Black | Чёрный бейдж, не изменяет цвет при переключении тем. |
+| White | Белый бейдж, не изменяет цвет при переключении тем. |
+
+### Custom
+
+Вид Custom позволяет настроить индивидуальные стили бейджа (в т.ч. цвет текста и фона).
+
+### Скруглённость
+
+Свойство Shape отвечает за скругление углов бейджа.
+
+| Shape | Результат |
+|---|---|
+| Квадратные | Со скруглением по Corner Radius из таблицы размеров. |
+| Скруглённые | Полное скругление. |
+
+### Иконки
+
+В левой или правой части бейджа можно отобразить иконку через слоты ContentLeft / ContentRight. Для бейджа с иконкой без текста — используется ContentLeft без Label.
+
+---
+
+## Маппинг: дизайн → код
+
+| Свойство в дизайне | Проп в коде | Значения | Примечание |
+|---|---|---|---|
+| View | `view` | default / accent / positive / warning / negative / dark / light | Виды **Black** и **White** в дизайне = `dark` и `light` в коде. |
+| Custom (вид) | `customColor`, `customBackgroundColor` | CSS-цвет | В дизайне один вид «Custom», в коде — два отдельных пропа. |
+| Тип: Solid / Transparent / Clear | `transparent`, `clear` | boolean | Solid = оба `false`; Transparent = `transparent`; Clear = `clear`. |
+| Size | `size` | l / m / s / xs | Прямое соответствие. |
+| Shape (Квадратные / Скруглённые) | `pilled` | boolean | Свойство **Shape** в дизайне = проп `pilled` в коде. |
+| ContentLeft | `contentLeft` | иконка (ReactNode) | Для иконки без текста — `contentLeft` без `text`. |
+| ContentRight | `contentRight` | иконка (ReactNode) | Прямое соответствие. |
+| Label | `text` | строка | Текстовый лейбл. |
+
+---
+
+## Использование в коде
+
+Живые примеры кода (размеры, скруглённость, виды, иконки, кастомный цвет) — в Storybook: {{Storybook URL Badge}}.
+
+---
+
+## Связанные компоненты
+
+- **Chip** — близкий по виду компонент-метка, но интерактивный. [Дизайн]({{Pixso URL Chip}}) · [Storybook]({{Storybook URL Chip}})
+
+---
+
+## FAQ
+
+### Для дизайнеров
+
+**Q: Какие размеры есть у бейджа?**
+A: Четыре: L (28px), M (24px), S (20px), XS (16px). Каждый со своим скруглением углов, шрифтом лейбла и размером иконки. Подробнее — в Pixso-документации компонента, блок «Размеры и отступы»: {{Pixso URL Badge Doc Block 1}}.
+
+**Q: Как сделать бейдж со скруглёнными краями?**
+A: Выбрать свойство Shape → Скруглённые — бейдж получит полное скругление. По умолчанию углы скруглены по значению из таблицы размеров. Подробнее — в Pixso-документации компонента, блок «Скруглённость»: {{Pixso URL Badge Doc Block 1}}.
+
+**Q: Чем отличаются Solid, Transparent и Clear?**
+A: Solid — залитый фон; Transparent — полупрозрачный фон; Clear — прозрачный фон, текстовый вариант без горизонтальных отступов. Подробнее — в Pixso-документации компонента, блок «Типы»: {{Pixso URL Badge Doc Block 1}}.
+
+**Q: Как сделать бейдж только с иконкой, без текста?**
+A: Лейбл можно скрыть и оставить только иконку слева. Подробнее — в Pixso-документации компонента, блок «Иконки»: {{Pixso URL Badge Doc Block 1}}.
+
+**Q: Как задать произвольный цвет бейджа?**
+A: Выбрать вид Custom — он позволяет настроить цвет текста и цвет фона индивидуально. Подробнее — в Pixso-документации компонента, блок «Кастомный цвет»: {{Pixso URL Badge Doc Block 1}}.
+
+**Q: Бейдж кликабельный?**
+A: Нет, компонент не интерактивен.
+
+### Для разработчиков
+
+**Q: Как задать размер бейджа?**
+A: Через проп `size` со значениями `l` / `m` / `s` / `xs` — прямое соответствие размерам L / M / S / XS. Примеры кода — в Storybook: {{Storybook URL Badge}}.
+
+**Q: Как включить скруглённые края?**
+A: Передать проп `pilled` (boolean) — он даёт полное скругление. Без него углы скруглены по Corner Radius из таблицы размеров. Примеры кода — в Storybook: {{Storybook URL Badge}}.
+
+**Q: Какими пропсами задаются типы Solid / Transparent / Clear?**
+A: Парой `transparent` / `clear` (boolean): Solid — оба `false`; Transparent — `transparent`; Clear — `clear`. Примеры кода — в Storybook: {{Storybook URL Badge}}.
+
+**Q: Вид называется `dark`/`light` или Black/White?**
+A: В коде проп `view` принимает `dark` и `light`, в дизайн-макете эти виды называются Black и White. Это одно и то же. Примеры кода — в Storybook: {{Storybook URL Badge}}.
+
+**Q: Как задать произвольный цвет?**
+A: Через `customColor` (цвет текста) и `customBackgroundColor` (цвет фона) — CSS-цвета. В дизайне это один вид Custom, в коде — два отдельных пропа. Примеры кода — в Storybook: {{Storybook URL Badge}}.
+
+**Q: Как добавить иконки и как сделать бейдж только с иконкой?**
+A: Иконка слева — `contentLeft`, справа — `contentRight` (ReactNode). Для бейджа только с иконкой используйте `contentLeft` без `text`. Текстовый лейбл задаётся пропом `text`. Примеры кода — в Storybook: {{Storybook URL Badge}}.
+
+---
+
+## Ссылки
+
+- **Storybook:** {{Storybook URL Badge}}
+- **Документация в Pixso:** {{Pixso URL Badge Doc Block 1}}
+- **Компонент в Pixso:** {{Pixso URL Badge}}
+
+---
+
+## Changelog
+
+| Дата | Версия | Изменение |
+|---|---|---|
+| 2026-06-01 | 1.0 | Перенос дизайн-документации Badge из Pixso/Sketch в MDX. Первая версия. |

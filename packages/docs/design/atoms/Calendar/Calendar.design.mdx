@@ -1,0 +1,223 @@
+---
+id: calendar
+title: Calendar
+type: atom
+status: Stable
+version: 1.0
+lastUpdated: 2026-06-12
+pixsoLink: "{{Pixso URL Calendar}}"
+storybookLink: "{{Storybook URL Calendar}}"
+pixsoDocLink: "{{Pixso URL Calendar Doc Block 1}}"
+hasDesignDoc: true
+hasDevDoc: true
+hasMechanics: true
+hasCornerCases: false
+related:
+ - date-picker
+tags:
+ - data-entry
+ - selection
+---
+
+# Calendar
+
+Календарь позволяет пользователям выбирать дату без какого-либо ввода или всплывающего/модального окна.
+
+Визуал: {{Pixso URL Calendar Doc Block 1}}
+
+---
+
+## Анатомия
+
+1. **DataElement** — ячейка, которую можно выбрать. Базовая единица сетки: содержит значение (день, месяц, квартал или год) и отражает все состояния выбора.
+2. **CalendarGrid** — сетка ячеек DataElement. Объединяет шапку с подписями (дни недели, период) и поле выбора. Может отображаться как одно поле (Single) или как два поля рядом (Double).
+3. **PeriodSelector** — заголовок с текущим периодом и переключателями навигации (предыдущий/следующий). Выравнивается по левому краю.
+
+---
+
+## Типы
+
+Тип отвечает за количество отображаемых полей сетки.
+
+| Тип | Описание | Визуал |
+|---|---|---|
+| **CalendarGridSingle** | Одинарный календарь — одно поле выбора. | {{Pixso URL Calendar Doc Block 1}} |
+| **CalendarGridDouble** | Двойной календарь — два поля выбора рядом. | {{Pixso URL Calendar Doc Block 1}} |
+
+В варианте Single текст в Label Font выравнивается по левому краю. В варианте Double текст в Label Font выравнивается посередине.
+
+---
+
+## Размеры и отступы
+
+| Размер | Label Font | Value Font | IconButton Size |
+|---|---|---|---|
+| **S** | Header/Large Screen/H4 B | Body/BodyS N | 40 (S) |
+| **XS** | Header/Large Screen/H5 B | Body/BodyXS N | 32 (XS) |
+
+PeriodSelector в обоих размерах выравнивается по левому краю.
+
+---
+
+## Настройки (Props)
+
+> Здесь — визуальное поведение. Полный список пропсов с типами — в dev-документации через `<PropsTable name="Calendar" />`.
+
+### Picker type
+
+Количество отображаемых полей.
+
+| Picker type | Назначение |
+|---|---|
+| Single | Отображает одно поле. |
+| Double | Отображает два поля. |
+
+### Selection type
+
+Гранулярность сетки выбора.
+
+| Selection type | Назначение |
+|---|---|
+| Date | Отображение по дням. |
+| Month | Отображение по месяцам. |
+| Quarter | Отображение по кварталам. |
+| Year | Отображение по годам. |
+
+### Controls
+
+Возможность переключения периодов в PeriodSelector.
+
+| Controls | Результат |
+|---|---|
+| True | Включает возможность переключения. |
+| False | Выключает возможность переключения. |
+
+---
+
+## Состояния
+
+Состояния задаются на уровне DataElement — выбираемой ячейки.
+
+| Состояние | Назначение |
+|---|---|
+| **Today** | Отображает сегодняшнюю дату (True). При False сегодняшняя дата выключена. |
+| **Selected** | Включает состояние выбранной ячейки (True) или выключает его (False). |
+| **Disabled** | Включает (True) или выключает (False) состояние недоступной для выбора ячейки. |
+| **Event dots** | Включает (True) или выключает (False) индикаторы-точки событий под значением ячейки. |
+
+Помимо этого ячейка поддерживает интерактивные состояния Hover, Active, Focus.
+
+### Period
+
+Роль ячейки внутри выбранного периода (диапазона).
+
+| Period | Назначение |
+|---|---|
+| None | Ячейка, когда период не выбран. |
+| Begin | Начало периода. |
+| Path | Часть периода (между началом и концом). |
+| End | Конец периода. |
+
+---
+
+## Механика и взаимодействия
+
+- **Выбор даты.** Клик по ячейке DataElement выбирает значение. Календарь работает как самостоятельная сетка — без поля ввода и без всплывающего/модального окна.
+- **Выбор диапазона.** Для диапазона первая выбранная ячейка получает роль Begin, последняя — End, промежуточные — Path; до начала выбора все ячейки в состоянии None.
+- **Навигация по периодам.** PeriodSelector переключает текущий период вперёд/назад. Включение/выключение переключателей задаётся свойством Controls.
+- **Переключение гранулярности.** Selection type задаёт сетку — по дням, месяцам, кварталам или годам.
+
+Детали поведения и крайние случаи — в Storybook: {{Storybook URL Calendar}}.
+
+---
+
+## Маппинг: дизайн → код
+
+| Свойство в дизайне | Проп в коде | Значения | Примечание |
+|---|---|---|---|
+| Picker type: Single / Double | `isDouble` | boolean | Single = `isDouble` false; Double = `isDouble` true. Также есть отдельные компоненты `CalendarBase` / `CalendarDouble`. |
+| Selection type | `type` | Days / Months / Quarters / Years | Date → `Days`, Month → `Months`, Quarter → `Quarters`, Year → `Years`. |
+| Size (S / XS) | `size` | l / m / s / xs | Размеры календаря задаются пропом `size`. |
+| Выбор диапазона (Begin / Path / End) | `isRange` | boolean | Диапазон включается пропом `isRange`; роли ячеек период определяются автоматически по выбранным значениям. |
+| Event dots | `eventList` | массив событий | Точки событий задаются списком событий для дат; для разных гранулярностей — `eventMonthList`, `eventQuarterList`, `eventYearList`. |
+| Disabled (ячейка) | `disabledList` | массив дат | Недоступные для выбора даты задаются списком. |
+| Today | — | — | Сегодняшняя дата подсвечивается автоматически. |
+| Locale | `locale` | ru / en | Язык подписей; по умолчанию `ru`. |
+
+---
+
+## Использование в коде
+
+Живые примеры кода — в Storybook: {{Storybook URL Calendar}}.
+
+---
+
+## Связанные компоненты
+
+- **DatePicker** — выбор даты с полем ввода и всплывающим календарём. [Дизайн]({{Pixso URL DatePicker}}) · [Storybook]({{Storybook URL DatePicker}})
+
+---
+
+## FAQ
+
+### Для дизайнеров
+
+**Q: Как сделать двойной календарь?**
+A: Выбрать тип CalendarGridDouble (Picker type → Double) — отобразятся два поля выбора рядом, а текст в Label Font выровняется посередине. Подробнее — в Pixso-документации компонента, блок «Типы»: {{Pixso URL Calendar Doc Block 1}}.
+
+**Q: Какие размеры есть у календаря?**
+A: Два: S (Label Font Header/Large Screen/H4 B, Value Font Body/BodyS N, IconButton 40) и XS (Label Font Header/Large Screen/H5 B, Value Font Body/BodyXS N, IconButton 32). Подробнее — в Pixso-документации компонента, блок «Размеры и отступы»: {{Pixso URL Calendar Doc Block 1}}.
+
+**Q: Как переключить сетку с дней на месяцы, кварталы или годы?**
+A: Через свойство Selection type — Date (по дням), Month (по месяцам), Quarter (по кварталам), Year (по годам). Подробнее — в Pixso-документации компонента, блок «Настройки (Props)»: {{Pixso URL Calendar Doc Block 1}}.
+
+**Q: Как оформить выбор диапазона дат?**
+A: Ячейкам присваиваются роли Period: Begin — начало, End — конец, Path — промежуточные ячейки; до начала выбора все ячейки в состоянии None. Подробнее — в Pixso-документации компонента, блок «Состояния»: {{Pixso URL Calendar Doc Block 1}}.
+
+**Q: Как сделать ячейку недоступной для выбора?**
+A: Включить у DataElement состояние Disabled (True). Подробнее — в Pixso-документации компонента, блок «Состояния»: {{Pixso URL Calendar Doc Block 1}}.
+
+**Q: Как показать точки событий на дате?**
+A: Включить у DataElement свойство Event dots (True) — под значением ячейки появятся индикаторы-точки. Подробнее — в Pixso-документации компонента, блок «Состояния»: {{Pixso URL Calendar Doc Block 1}}.
+
+**Q: Как убрать переключение периодов?**
+A: Выключить свойство Controls (False) — переключатели вперёд/назад в PeriodSelector станут недоступны. Подробнее — в Pixso-документации компонента, блок «Настройки (Props)»: {{Pixso URL Calendar Doc Block 1}}.
+
+### Для разработчиков
+
+**Q: Как сделать двойной календарь?**
+A: Передать проп `isDouble` (boolean) либо использовать готовый компонент `CalendarDouble` / `CalendarDoubleRange`. Примеры кода — в Storybook: {{Storybook URL Calendar}}.
+
+**Q: Как задать размер календаря?**
+A: Через проп `size` со значениями `l` / `m` / `s` / `xs`. Примеры кода — в Storybook: {{Storybook URL Calendar}}.
+
+**Q: Как переключить сетку выбора (дни/месяцы/кварталы/годы)?**
+A: Через проп `type` со значениями `Days` / `Months` / `Quarters` / `Years`. Примеры кода — в Storybook: {{Storybook URL Calendar}}.
+
+**Q: Как включить выбор диапазона дат?**
+A: Передать проп `isRange` (boolean) либо использовать компоненты `CalendarBaseRange` / `CalendarDoubleRange`; значение тогда передаётся массивом дат. Примеры кода — в Storybook: {{Storybook URL Calendar}}.
+
+**Q: Как сделать даты недоступными для выбора?**
+A: Передать список дат в проп `disabledList`. Примеры кода — в Storybook: {{Storybook URL Calendar}}.
+
+**Q: Как добавить точки событий и подсказку к ним?**
+A: Задать события в `eventList` (или `eventMonthList` / `eventQuarterList` / `eventYearList`); параметры всплывающей подсказки — через `eventTooltipOptions`. Примеры кода — в Storybook: {{Storybook URL Calendar}}.
+
+**Q: Как сменить язык подписей?**
+A: Через проп `locale` со значениями `ru` / `en`; по умолчанию `ru`. Примеры кода — в Storybook: {{Storybook URL Calendar}}.
+
+---
+
+## Ссылки
+
+- **Storybook:** {{Storybook URL Calendar}}
+- **Документация в Pixso:** {{Pixso URL Calendar Doc Block 1}}
+- **Компонент в Pixso:** {{Pixso URL Calendar}}
+
+---
+
+## Changelog
+
+| Дата | Версия | Изменение |
+|---|---|---|
+| 2026-06-12 | 1.0 | Перенос дизайн-документации Calendar из Pixso/Sketch в MDX. Первая версия. |

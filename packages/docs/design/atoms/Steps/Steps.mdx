@@ -1,0 +1,296 @@
+---
+id: steps
+title: Steps
+type: atom
+status: Stable
+version: 1.0
+lastUpdated: 2026-06-12
+pixsoLink: "{{Pixso URL Steps}}"
+storybookLink: "{{Storybook URL Steps}}"
+pixsoDocLink: "{{Pixso URL Steps Doc Block 1}}"
+hasDesignDoc: true
+hasDevDoc: true
+hasMechanics: true
+hasCornerCases: false
+related: []
+tags:
+  - navigation
+---
+
+import { PropsTable, Description } from '@site/src/components';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Steps
+
+<Description name="Steps" />
+<PropsTable name="Steps" />
+
+## Внешнее вид
+
+:::info
+Важно! Значения `ItemView` применяются к шагу только когда его статус — inProgress.
+:::
+
+Внешний вид компонента регулируется 2 свойствами:
+
+#### View
+
+Свойство применяется ко всему компоненту и принимает следующие значения:
+- `default`
+- `accent`
+
+#### ItemView
+
+Свойство применяется к индикатору шага и заголовку, и принимает следующие значения:
+- `default`
+- `negative`
+- `warning`
+- `positive`
+
+## Тип индикатора
+
+Свойство `indicator` каждого шага определяет, что отображается в индикаторе:
+
+<Tabs>
+    <TabItem value="numbered" label="Numbered" default>
+        ```tsx live
+        import React from 'react';
+        import { Steps } from '@salutejs/sdds-finai';
+
+        export function App() {
+            const initialItems = [{
+                indicator: 1,
+                title: 'Title',
+                content: 'Content',
+            }, {
+                indicator: 2,
+                title: 'Title',
+                content: 'Content',
+            }, {
+                indicator: 3,
+                title: 'Title',
+                content: 'Content',
+            }];
+
+            const [items, setItems] = useState(initialItems);
+
+            const onChange = (item: StepItemProps, index: number, prevIndex: number) => {
+                if (prevIndex !== undefined) {
+                    items[prevIndex].status = 'completed';
+                }
+
+                items[index].status = 'active';
+
+                setItems([...items]);
+            };
+
+            return (
+                <section>
+                    <Steps items={items} onChange={onChange} />
+                </section>
+            );
+        }
+        ```
+    </TabItem>
+    <TabItem value="bullet" label="Bullet">
+        Если передать `indicator: undefined`, индикатор отображается в виде точки.
+
+        ```tsx live
+        import React from 'react';
+        import { Steps } from '@salutejs/sdds-finai';
+
+        export function App() {
+            const initialItems = [{
+                title: 'Title',
+                content: 'Content',
+            }, {
+                title: 'Title',
+                content: 'Content',
+            }, {
+                title: 'Title',
+                content: 'Content',
+            }];
+            
+            const [items, setItems] = useState(initialItems);
+
+            const onChange = (item: StepItemProps, index: number, prevIndex: number) => {
+                if (prevIndex !== undefined) {
+                    items[prevIndex].status = 'completed';
+                }
+
+                items[index].status = 'active';
+
+                setItems([...items]);
+            };
+
+            return (
+                <section>
+                    <Steps items={items} onChange={onChange} />
+                </section>
+            );
+        }
+        ```
+    </TabItem>
+    <TabItem value="icon" label="Icon">
+        Свойство `indicator` также принимает render-функцию, которая получает `{ status, size }` и возвращает иконку.
+
+        ```tsx live
+        import React from 'react';
+        import { Steps } from '@salutejs/sdds-finai';
+        import { IconPlasma } from '@salutejs/plasma-icons';
+
+        export function App() {
+            const renderIndicator = ({ status, size }) => {
+                const iconSize = size === 'xs' || size === 's' ? 'xs' : 'xs';
+                return <IconPlasma color="inherit" size={iconSize} />;
+            };
+
+            const initialItems = [{
+                indicator: renderIndicator,
+                title: 'Title',
+                content: 'Content',
+            }, {
+                indicator: renderIndicator,
+                title: 'Title',
+                content: 'Content',
+            }, {
+                indicator: renderIndicator,
+                title: 'Title',
+                content: 'Content',
+            }];
+            
+            const [items, setItems] = useState(initialItems);
+
+            const onChange = (item: StepItemProps, index: number, prevIndex: number) => {
+                if (prevIndex !== undefined) {
+                    items[prevIndex].status = 'completed';
+                }
+
+                items[index].status = 'active';
+
+                setItems([...items]);
+            };
+
+            return (
+                <section>
+                    <Steps items={items} onChange={onChange} />
+                </section>
+            );
+        }
+        ```
+    </TabItem>
+</Tabs>
+
+## Внешнее управление
+
+```tsx live
+import React, { useState } from 'react';
+import { Steps, Button } from '@salutejs/sdds-finai';
+
+export function App() {
+    const items = [{
+        indicator: 1,
+    }, {
+        indicator: 2,
+    }, {
+        indicator: 3,
+    }];
+
+    const [current, setCurrent] = useState<number>(0);
+    const onClick = () => setCurrent(() => current + 1);
+
+    return (
+        <section>
+            <Steps items={items} current={current} />
+            <br />
+            <Button view="secondary" onClick={onClick}>
+                Next
+            </Button>
+        </section>
+    );
+}
+```
+
+## Управление через onChange и статус шага
+
+```tsx live
+import React, { useState } from 'react';
+import { Steps, StepItemProps  } from '@salutejs/sdds-finai';
+
+export function App() {
+    const initialItems = [{
+        indicator: 1,
+        title: 'Title',
+        content: 'Content',
+    }, {
+        indicator: 2,
+        title: 'Title',
+        content: 'Content',
+    }, {
+        indicator: 3,
+        title: 'Title',
+        content: 'Content',
+    }];
+
+    const [items, setItems] = useState(initialItems);
+
+    const onChange = (item: StepItemProps, index: number, prevIndex: number) => {
+        if (prevIndex !== undefined) {
+            items[prevIndex].status = 'completed';
+        }
+
+        items[index].status = 'active';
+
+        setItems([...items]);
+    };
+
+    return (
+        <section>
+            <Steps items={items} onChange={onChange} />
+        </section>
+    );
+}
+```
+
+
+## Использование свойства ItemView
+
+```tsx live
+import React, { useState } from 'react';
+import { Steps, StepItemProps  } from '@salutejs/sdds-finai';
+
+export function App() {
+    const initialItems = [{
+        indicator: 1,
+        title: 'Title',
+        content: 'Content',
+    }, {
+        indicator: 2,
+        title: 'Title',
+        content: 'Content',
+    }, {
+        indicator: 3,
+        title: 'Title',
+        content: 'Content',
+    }];
+
+    const [items, setItems] = useState(initialItems);
+
+    const onChange = (item: StepItemProps, index: number, prevIndex: number) => {
+        if (prevIndex !== undefined) {
+            items[prevIndex].status = 'completed';
+        }
+
+        items[index].status = 'active';
+
+        setItems([...items]);
+    };
+
+    return (
+        <section>
+            <Steps items={items} itemView="positive" onChange={onChange} />
+        </section>
+    );
+}
+```
