@@ -5,8 +5,10 @@ import styled from 'styled-components';
 
 import {
   DRAGGING_CLASS,
-  GLOW_OVERHANG,
+  GLOW_HEIGHT,
+  GLOW_TOP_OVERHANG,
   GLOW_WIDTH_RATIO,
+  INPUT_VERTICAL_CHROME,
 } from './AiAgentPopup.constants';
 
 const C = {
@@ -124,29 +126,49 @@ export const StyledInputRoot = styled.div`
 `;
 
 /* Овальное свечение позади поля ввода, по макету (линейный градиент
-   цветов, размытие, непрозрачность 0.56). Свесы сверху и снизу постоянные,
-   поэтому при авторосте поля овал растёт вслед за ним. Радиус размытия
-   умеренный: большое значение из макета размазывало овал такой высоты
-   в невидимую дымку. Отрицательный z-index уводит свечение под соседний
-   контент (сообщения чата); для этого нужен предок с контекстом
-   наложения, внутри AiAgentSurface он уже есть */
-export const StyledInputGlow = styled.div<{ $visible: boolean }>`
+   цветов, размытие, непрозрачность 0.56). Высота овала фиксированная,
+   овал держится у верхней границы поля со свесом над ней: при авторосте
+   поля он поднимается вместе с кромкой, а его нижняя часть уходит
+   за поле. Радиус размытия умеренный: большое значение из макета
+   размазывало овал такой высоты в невидимую дымку. Отрицательный z-index
+   уводит свечение под соседний контент (сообщения чата); для этого нужен
+   предок с контекстом наложения, внутри AiAgentSurface он уже есть */
+/* Цвета из макетов, токена у атомарки под них нет. У тёмной темы
+   прозрачность зашита в сами цвета градиента, поэтому непрозрачность
+   слоя там полная, а у светлой 0.56 из макета */
+const glowLightBackground = `linear-gradient(
+  268.89deg,
+  rgba(157, 179, 255, 1) 6.881%,
+  rgba(0, 224, 255, 1) 50.076%,
+  rgba(157, 179, 255, 1) 99.883%
+)`;
+
+const glowDarkBackground = `linear-gradient(
+  268.89deg,
+  rgba(111, 144, 255, 0.7) 6.881%,
+  rgba(11, 226, 255, 0.8) 50.076%,
+  rgba(111, 144, 255, 0.7) 99.883%
+)`;
+
+export const StyledInputGlow = styled.div<{
+  $visible: boolean;
+  $isDark: boolean;
+}>`
   position: absolute;
-  top: ${-GLOW_OVERHANG}px;
-  bottom: ${-GLOW_OVERHANG}px;
+  top: ${-GLOW_TOP_OVERHANG}px;
+  height: ${GLOW_HEIGHT}px;
   left: 50%;
   transform: translateX(-50%);
   width: ${GLOW_WIDTH_RATIO * 100}%;
   z-index: -1;
   border-radius: 50%;
-  background: linear-gradient(
-    268.89deg,
-    rgba(157, 179, 255, 1) 6.881%,
-    rgba(0, 224, 255, 1) 50.076%,
-    rgba(157, 179, 255, 1) 99.883%
-  );
+  background: ${({ $isDark }) =>
+    $isDark ? glowDarkBackground : glowLightBackground};
   filter: blur(20px);
-  opacity: ${({ $visible }) => ($visible ? 0.56 : 0)};
+  opacity: ${({ $visible, $isDark }) => {
+    if (!$visible) return 0;
+    return $isDark ? 1 : 0.56;
+  }};
   transition: opacity 0.3s ease;
   pointer-events: none;
 `;
@@ -156,12 +178,13 @@ export const StyledInputGlow = styled.div<{ $visible: boolean }>`
    неё выглядит как обычно. Радиус равен радиусу поля размера s.
    Пиксельный предел высоты при авторосте задаётся здесь: у атомарного
    поля ограничение только в строках, а на разных размерах окна это
-   некорректно */
+   некорректно. maxHeight означает высоту рамки поля целиком, поэтому
+   из него вычитается обвязка вокруг textarea */
 export const StyledInputBackplate = styled.div<{ $maxHeight: number }>`
   background: ${C.bg};
   border-radius: 0.625rem;
 
   textarea {
-    max-height: ${({ $maxHeight }) => $maxHeight}px;
+    max-height: ${({ $maxHeight }) => $maxHeight - INPUT_VERTICAL_CHROME}px;
   }
 `;

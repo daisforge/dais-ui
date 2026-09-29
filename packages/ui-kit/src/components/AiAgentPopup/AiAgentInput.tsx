@@ -9,6 +9,7 @@ import {
   StyledInputRoot,
 } from './AiAgentPopup.styled';
 import type { AiAgentInputProps } from './AiAgentPopup.types';
+import { useIsDarkTheme } from './hooks/useIsDarkTheme';
 
 /**
  * Поле ввода AI-помощника: атомарный TextArea с овальным свечением позади
@@ -17,12 +18,12 @@ import type { AiAgentInputProps } from './AiAgentPopup.types';
  * потребителя.
  *
  * - свечение включается пропом glow и переключается в реальном времени;
- *   привязано к полю: при авторосте поля растёт вслед за ним так, что
- *   свес над верхней границей поля постоянный, и ложится под соседний
+ *   овал фиксированной высоты держится у верхней границы поля,
+ *   при авторосте поднимается вместе с ней и ложится под соседний
  *   контент (сообщения чата);
  * - rightSlot — произвольное содержимое правой части поля: кнопка
  *   отправки, кнопка остановки, с тултипами и любой логикой потребителя;
- * - поле авторастёт до пиксельного предела maxHeight (по умолчанию 312),
+ * - поле авторастёт до пиксельного предела maxHeight (по умолчанию 160),
  *   дальше внутренний скролл;
  * - внешних отступов у компонента нет: место в лэйауте чата задаёт
  *   потребитель. Остальные пропсы уходят в TextArea, стили можно
@@ -40,6 +41,10 @@ export const AiAgentInput = forwardRef<HTMLDivElement, AiAgentInputProps>(
     },
     ref,
   ) => {
+    // Градиент свечения тёмных тем отличается от светлых (макет),
+    // тема сама его не переключает: токена под эти цвета у атомарки нет
+    const isDarkTheme = useIsDarkTheme();
+
     // Пропсы атомарного поля это union вариантов, спред такого набора
     // TypeScript не сводит, поэтому собираем объект и возвращаем ему тип
     const textAreaProps = {
@@ -52,7 +57,7 @@ export const AiAgentInput = forwardRef<HTMLDivElement, AiAgentInputProps>(
 
     return (
       <StyledInputRoot ref={ref} className={className} style={style}>
-        <StyledInputGlow $visible={glow} aria-hidden />
+        <StyledInputGlow $visible={glow} $isDark={isDarkTheme} aria-hidden />
         <StyledInputBackplate $maxHeight={maxHeight}>
           <TextArea {...textAreaProps} />
         </StyledInputBackplate>
