@@ -12,9 +12,9 @@ import { TypeSourceViewer } from '@df-storybook/utils/TypeSourceViewer';
   filePath="packages/ui-kit/src/components/AiAgentPopup/AiAgentPopup.types.ts"
   typeName="AiAgentPopupProps"
 />
-> `AiAgentPopup` наследует базовые пропсы `Popup` из `sdds-finai`, кроме
-`placement`, `offset`, `draggable` и `resizable`: позицией и ресайзом
-компонент управляет сам через собственные пропсы.
+> `AiAgentPopup` наследует базовые пропсы `Popup` из `sdds-finai`, кроме `placement`,
+`offset`, `draggable` и `resizable`: позицией и ресайзом компонент управляет сам
+через собственные пропсы.
 
 ## AiAgentPopupPosition
 
@@ -32,9 +32,19 @@ import { TypeSourceViewer } from '@df-storybook/utils/TypeSourceViewer';
   filePath="packages/ui-kit/src/components/AiAgentPopup/AiAgentPopup.types.ts"
   typeName="AiAgentPopupPositionState"
 />
-> Пара для полного внешнего управления позицией, как у `useState`.
-Если передана в `positionState`, компонент не хранит позицию сам
-и не сохраняет её в localStorage.
+> Пара для полного внешнего управления позицией, как у `useState`. Если передана
+в `positionState`, компонент не хранит позицию сам и не сохраняет её в localStorage.
+
+## AiAgentPopupTargetGap
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/AiAgentPopup/AiAgentPopup.types.ts"
+  typeName="AiAgentPopupTargetGap"
+/>
+> Отступ окна от `targetRef`. Число задаёт отступ только по горизонтали, объект `
+{(x, y)}` — смещение по обеим осям от правого верхнего угла таргета: `y` больше нуля
+опускает окно, меньше нуля поднимает.
 
 ## AiAgentPopupSize
 
@@ -50,8 +60,8 @@ import { TypeSourceViewer } from '@df-storybook/utils/TypeSourceViewer';
   filePath="packages/ui-kit/src/components/AiAgentPopup/AiAgentPopup.types.ts"
   typeName="AiAgentPopupDragBoundary"
 />
-> Отступы от краёв экрана. Учитываются при перетаскивании, при ресайзе
-и при вычислении начальной позиции.
+> Отступы от краёв экрана. Учитываются при перетаскивании, при ресайзе и при вычислении
+начальной позиции.
 
 ## AiAgentPopupResizableConfig
 
@@ -60,10 +70,9 @@ import { TypeSourceViewer } from '@df-storybook/utils/TypeSourceViewer';
   filePath="packages/ui-kit/src/components/AiAgentPopup/AiAgentPopup.types.ts"
   typeName="AiAgentPopupResizableConfig"
 />
-> Конфигурация ресайза атомарного `Popup`. В `resizable` можно передать
-её частично: не заданные поля компонент заполняет своими значениями
-(активный угол по положению окна, DF-иконка, минимум 360x360, пределы
-по краям экрана).
+> Конфигурация ресайза атомарного `Popup`. В `resizable` можно передать её частично:
+не заданные поля компонент заполняет своими значениями (активный угол по положению
+окна, DF-иконка, минимум 360x360, пределы по краям экрана).
 
 ## AiAgentInputProps
 
@@ -72,8 +81,8 @@ import { TypeSourceViewer } from '@df-storybook/utils/TypeSourceViewer';
   filePath="packages/ui-kit/src/components/AiAgentPopup/AiAgentPopup.types.ts"
   typeName="AiAgentInputProps"
 />
-> Поле ввода чата с овальным свечением позади. Наследует пропсы `TextArea`,
-кроме `contentRight`: правая часть поля задаётся через `rightSlot`.
+> Поле ввода чата с овальным свечением позади. Наследует пропсы `TextArea`, кроме
+`contentRight`: правая часть поля задаётся через `rightSlot`.
 
 ## AiAgentSurfaceProps
 
@@ -82,9 +91,9 @@ import { TypeSourceViewer } from '@df-storybook/utils/TypeSourceViewer';
   filePath="packages/ui-kit/src/components/AiAgentPopup/AiAgentPopup.types.ts"
   typeName="AiAgentSurfaceProps"
 />
-> Оболочка окна (рамка, тень, карточка) отдельным компонентом:
-для встраивания чата в лэйаут страницы без попапа, перетаскивания
-и ресайза. `AiAgentPopup` использует её внутри себя сам.
+> Оболочка окна (рамка, тень, карточка) отдельным компонентом: для встраивания чата
+в лэйаут страницы без попапа, перетаскивания и ресайза. `AiAgentPopup` использует
+её внутри себя сам.
 
 ## AiAgentSurfaceVariant
 
@@ -93,6 +102,6 @@ import { TypeSourceViewer } from '@df-storybook/utils/TypeSourceViewer';
   filePath="packages/ui-kit/src/components/AiAgentPopup/AiAgentPopup.types.ts"
   typeName="AiAgentSurfaceVariant"
 />
-> В варианте `embedded` рамка входит в блочную модель, и отступы лэйаута
-считаются от светящегося края; вариант `floating` рисует рамку наружу
-от карточки и используется самим окном.
+> В варианте `embedded` рамка входит в блочную модель, и отступы лэйаута считаются
+от светящегося края; вариант `floating` рисует рамку наружу от карточки и используется
+самим окном.
