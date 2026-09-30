@@ -406,6 +406,7 @@
         "TableCanvas.FormatCellContent",
         "TableCanvas.Borders",
         "TableCanvas.FullScreenMode",
+        "TableCanvas.HeaderRowHeight",
         "TableCanvas.HighlightActiveType",
         "TableCanvas.HoverEffects",
         "TableCanvas.InfinityScroll",
