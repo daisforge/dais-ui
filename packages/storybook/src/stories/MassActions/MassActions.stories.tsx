@@ -780,3 +780,112 @@ export const Adaptive1280: Story = {
   }),
   render: StandaloneExample,
 };
+
+// Пример ограничения счётчика: maxCount у MassActions.Counter.
+// 150 элементов, все выбраны по умолчанию → счётчик показывает «99+».
+function CounterMaxCountExample() {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const items = Array.from({ length: 150 }, (_, i) => ({
+    id: i + 1,
+    name: `Документ ${i + 1}`,
+  }));
+
+  // По умолчанию выбраны все 150 элементов → 150 > 99 → «99+».
+  const [selectedItems, setSelectedItems] = useState<Set<number>>(
+    () => new Set(items.map((item) => item.id)),
+  );
+
+  const allSelected = selectedItems.size === items.length;
+  const someSelected =
+    selectedItems.size > 0 && selectedItems.size < items.length;
+
+  const toggleItem = (id: number) => {
+    const newSelected = new Set(selectedItems);
+    if (newSelected.has(id)) {
+      newSelected.delete(id);
+    } else {
+      newSelected.add(id);
+    }
+    setSelectedItems(newSelected);
+  };
+
+  const handleCheckboxChange = (isChecked: boolean) => {
+    setSelectedItems(
+      isChecked ? new Set(items.map((item) => item.id)) : new Set(),
+    );
+  };
+
+  return (
+    <DemoContainer>
+      <ContentBox ref={containerRef} style={{ position: 'relative' }}>
+        <Title>MassActions.Counter — maxCount</Title>
+        <Description>
+          Выбрано {selectedItems.size} из {items.length}. maxCount = 99, поэтому
+          счётчик показывает «99+». Снимите выделение до ≤ 99, чтобы увидеть
+          точное число.
+        </Description>
+        <ItemsList style={{ maxHeight: 260, overflow: 'auto' }}>
+          {items.map((item) => (
+            <Item
+              key={item.id}
+              $selected={selectedItems.has(item.id)}
+              onClick={() => toggleItem(item.id)}
+            >
+              {item.name}
+            </Item>
+          ))}
+        </ItemsList>
+
+        {selectedItems.size > 0 && (
+          <MassActions
+            containerRef={containerRef}
+            selectedCount={selectedItems.size}
+            leftSection={
+              <MassActions.Counter
+                selectedCount={selectedItems.size}
+                maxCount={99}
+                showCheckbox
+                checked={allSelected}
+                indeterminate={someSelected}
+                onCheckboxChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  handleCheckboxChange(e.target.checked)
+                }
+              />
+            }
+            buttons={[
+              {
+                text: 'Экспорт',
+                onClick: () => alert(`Экспорт ${selectedItems.size} элементов`),
+                type: 'button',
+                view: 'secondary',
+              },
+            ]}
+          />
+        )}
+      </ContentBox>
+    </DemoContainer>
+  );
+}
+
+const counterMaxCountPreCode = `
+import { useRef, useState } from 'react';
+import { MassActions } from '@ui-kit/components/MassActions';
+
+${getFuncAsString(
+  'packages/storybook/src/stories/MassActions/MassActions.stories.tsx',
+  'CounterMaxCountExample',
+)}
+`;
+
+/**
+ * #####ℹ️ Для просмотра примера нажми `Show code`.
+ */
+export const CounterMaxCount: Story = {
+  name: 'Ограничение счётчика (99+)',
+  ...storySourceDoc({
+    previewSource: 'shown',
+    code: counterMaxCountPreCode,
+  }),
+  render: CounterMaxCountExample,
+};
