@@ -212,6 +212,13 @@ export type SelectingRowConfig<RowType, RowIdType extends string | number> = {
    */
   hideSummaryCheckbox?: boolean;
   /**
+   * summaryCounterMaxCount - максимальное отображаемое число в счётчике выбранных
+   * строк (в шапке и в панели массовых действий). Если выбрано больше — счётчик
+   * показывает «N+» (например, при значении 99 и 5000 выбранных отобразится «99+»).
+   * Не ограничивает само выделение, влияет только на отображение.
+   */
+  summaryCounterMaxCount?: number;
+  /**
    * summaryChecked - пропс, отвечающий за логику состояния checked у итогового чекбокса в левой части контролблока.
    */
   summaryChecked?: {

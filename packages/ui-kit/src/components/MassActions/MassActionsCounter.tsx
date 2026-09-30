@@ -14,6 +14,7 @@ import type { MassActionsCounterProps } from './types';
  */
 export const MassActionsCounter: React.FC<MassActionsCounterProps> = ({
   selectedCount,
+  maxCount,
   label = 'Выбрано',
   showCheckbox = false,
   checked = false,
@@ -26,10 +27,16 @@ export const MassActionsCounter: React.FC<MassActionsCounterProps> = ({
   const isHaveCounter = selectedCount > 0;
   const labelVariant = isCompact ? 'BodyXS' : 'BodyS';
 
+  // Отображаемый текст счётчика с учётом maxCount: при превышении показываем «N+».
+  const counterText =
+    typeof maxCount === 'number' && selectedCount > maxCount
+      ? `${maxCount}+`
+      : `${selectedCount}`;
+
   const sizeOnOpen = (() => {
     if (selectedCount === 0) return '0px';
 
-    const symbolsCount = selectedCount.toString().length;
+    const symbolsCount = counterText.length;
     // Средняя ширина одного символа шрифта body-xxs (Counter xs)
     const sizeOfSymbol = 6.1;
     // Горизонтальный padding Counter xs: 0.25rem * 2 = 4px * 2 ≈ 7.1px
@@ -97,6 +104,7 @@ export const MassActionsCounter: React.FC<MassActionsCounterProps> = ({
             className="counter"
             key={selectedCount}
             count={selectedCount}
+            maxCount={maxCount}
             size="xs"
             view="accent"
             style={{
