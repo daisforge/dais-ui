@@ -428,8 +428,15 @@ export const getRowSelectingInfo = <RowType extends ObjectForExtending>(
         );
     const getRowParentsInfo = () => {
       const allParentsEntries = Array.from(allParents);
-      const getShouldBeSelectedInfo = (actualSelecteds: typeof selectedRows) =>
-        allParentsEntries.reduce<{
+      const getShouldBeSelectedInfo = (
+        actualSelecteds: typeof selectedRows,
+      ) => {
+        // Предки идут снизу вверх (ближайший родитель первым, корень последним).
+        // Ведём рабочую копию набора и по ходу обхода помечаем в ней уже
+        // решённого предка, чтобы вышестоящий предок видел актуальное состояние
+        // нижестоящего. Иначе корень не переселектится при возврате потомка.
+        const working = new Set(actualSelecteds);
+        return allParentsEntries.reduce<{
           shouldBeSelected: (string | number)[];
           shouldNotBeSelected: (string | number)[];
         }>(
@@ -447,19 +454,22 @@ export const getRowSelectingInfo = <RowType extends ObjectForExtending>(
             const subRows = parent?.[SUBROWS_KEY] as ObjectForExtending[];
 
             const parentIsShouldBeSelected = subRows.every((subRow) =>
-              actualSelecteds?.has(rowKeyGetter(subRow)),
+              working.has(rowKeyGetter(subRow)),
             );
 
             if (parentIsShouldBeSelected && isCurrLevelInLevels) {
               acc.shouldBeSelected.push(keyOfParent);
+              working.add(keyOfParent);
               return acc;
             }
 
             acc.shouldNotBeSelected.push(keyOfParent);
+            working.delete(keyOfParent);
             return acc;
           },
           { shouldBeSelected: [], shouldNotBeSelected: [] },
         );
+      };
       return {
         all: allParentsEntries.map(([_, v]) => v),
         getShouldBeSelectedInfo,
