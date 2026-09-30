@@ -262,6 +262,7 @@ export const TableOrCardsUI = <
                 }
                 highlightActiveType={$highlightActiveType}
                 enableLowDprHairline={restDataGridProps.enableLowDprHairline}
+                headerHeight={restDataGridProps.headerHeight}
                 rowHeight={restDataGridProps.rowHeight}
                 bottomSummaryRows={restDataGridProps.bottomSummaryRows}
                 refTable={refTable}
