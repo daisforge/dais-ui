@@ -2,6 +2,9 @@
 /* eslint-disable no-plusplus */
 /* eslint-disable default-case */
 /* eslint-disable consistent-return */
+import type { CanvasImageResources } from './CanvasImageResources';
+import { CanvasImageTransitions } from './CanvasImageTransitions';
+
 export type TextBaseline =
   | 'top'
   | 'middle'
@@ -136,6 +139,10 @@ const hasNativeRoundRect =
   typeof CanvasRenderingContext2D.prototype.roundRect === 'function';
 
 export class DrawBatcher {
+  imageResources?: CanvasImageResources;
+
+  readonly imageTransitions = new CanvasImageTransitions();
+
   private commands: DrawCommand[] = [];
 
   private orderCounter = 0;
@@ -180,7 +187,7 @@ export class DrawBatcher {
     y: number,
     width: number,
     height: number,
-    fillStyle: string
+    fillStyle: string,
   ): this {
     this.commands.push({
       type: 'fillRect',
@@ -201,7 +208,7 @@ export class DrawBatcher {
     width: number,
     height: number,
     strokeStyle: string,
-    lineWidth = 1
+    lineWidth = 1,
   ): this {
     this.commands.push({
       type: 'strokeRect',
@@ -224,7 +231,7 @@ export class DrawBatcher {
     font: string,
     fillStyle: string,
     textBaseline: TextBaseline = 'middle',
-    textAlign?: TextAlign
+    textAlign?: TextAlign,
   ): this {
     this.commands.push({
       type: 'fillText',
@@ -249,7 +256,7 @@ export class DrawBatcher {
     fillStyle: string,
     clipRect: { x: number; y: number; width: number; height: number },
     textBaseline: TextBaseline = 'middle',
-    textAlign?: TextAlign
+    textAlign?: TextAlign,
   ): this {
     // Команда хранит clipRect вместе с текстом, чтобы primitive не рисовал
     // напрямую в canvas и не ломал общий порядок batch rendering.
@@ -278,7 +285,7 @@ export class DrawBatcher {
     x: number,
     y: number,
     width: number,
-    height: number
+    height: number,
   ): this {
     this.commands.push({
       type: 'drawImage',
@@ -303,7 +310,7 @@ export class DrawBatcher {
       fillStyle?: string;
       strokeStyle?: string;
       lineWidth?: number;
-    }
+    },
   ): this {
     this.commands.push({
       type: 'roundedRect',
@@ -328,7 +335,7 @@ export class DrawBatcher {
     height: number,
     radius: number,
     gradientStops: GradientStop[],
-    angle: number = 90
+    angle = 90,
   ): this {
     this.commands.push({
       type: 'linearGradientRect',
@@ -493,7 +500,7 @@ export class DrawBatcher {
    */
   private executeLinearGradientRect(
     ctx: CanvasRenderingContext2D,
-    cmd: LinearGradientRectCommand
+    cmd: LinearGradientRectCommand,
   ): void {
     const { x, y, width, height, radius, gradientStops, angle } = cmd;
 
@@ -565,7 +572,7 @@ export class DrawBatcher {
 
   private executeFillTextClipped(
     ctx: CanvasRenderingContext2D,
-    cmd: FillTextClippedCommand
+    cmd: FillTextClippedCommand,
   ): void {
     if (cmd.clipWidth <= 0 || cmd.clipHeight <= 0 || cmd.text.length === 0) {
       return;
@@ -585,7 +592,7 @@ export class DrawBatcher {
 
   private executeRoundedRect(
     ctx: CanvasRenderingContext2D,
-    cmd: RoundedRectCommand
+    cmd: RoundedRectCommand,
   ): void {
     const { x, y, width, height, radius, fillStyle, strokeStyle, lineWidth } =
       cmd;

@@ -1,5 +1,6 @@
 import { CanvasContainer } from '../core/CanvasContainer';
 import { CanvasHoverController } from '../core/CanvasHoverController';
+import type { CanvasImageResources } from '../core/CanvasImageResources';
 import type { ResolvedCanvasInteractionConfig } from '../core/canvasInteraction';
 import { type CanvasEvent, CanvasNode, type Rect } from '../core/CanvasNode';
 import { DrawBatcher } from '../core/DrawBatcher';
@@ -73,7 +74,8 @@ export class CellCanvasRoot {
     rect: Rect,
     hoverPos?: { x: number; y: number },
     absoluteBounds?: Rect,
-    animationCtx?: { frameTime?: number; requestAnimationFrame?: () => void }
+    animationCtx?: { frameTime?: number; requestAnimationFrame?: () => void },
+    imageResources?: CanvasImageResources,
   ): void {
     this.bounds = { ...(absoluteBounds ?? rect) };
     this.hoverController.setAbsoluteBounds(this.bounds);
@@ -91,8 +93,14 @@ export class CellCanvasRoot {
 
     this.batcher.clear();
     this.batcher.setAnimationContext(animationCtx);
-    this.rootNode.paint(this.batcher, ctx);
-    this.batcher.flush(ctx);
+    this.batcher.imageResources = imageResources;
+    this.batcher.imageTransitions.beginFrame(imageResources);
+    try {
+      this.rootNode.paint(this.batcher, ctx);
+      this.batcher.flush(ctx);
+    } finally {
+      this.batcher.imageTransitions.endFrame();
+    }
 
     ctx.restore();
   }
@@ -108,7 +116,7 @@ export class CellCanvasRoot {
     type: PointerEventType,
     x: number,
     y: number,
-    nativeEvent?: MouseEvent
+    nativeEvent?: MouseEvent,
   ): CellCanvasPointerDispatchResult {
     if (!this.bounds) {
       return {
@@ -122,7 +130,7 @@ export class CellCanvasRoot {
     // же hits, поэтому старое поведение event dispatch не меняется.
     const hits = this.rootNode.hitTest(x, y);
     const interaction = hits.find(
-      (node) => node.interaction !== undefined
+      (node) => node.interaction !== undefined,
     )?.interaction;
     let propagationStopped = false;
     let suppressGridDefault = false;
@@ -178,7 +186,7 @@ export class CellCanvasRoot {
    */
   getInteractionAtPoint(
     x: number,
-    y: number
+    y: number,
   ): ResolvedCanvasInteractionConfig | undefined {
     if (!this.bounds) {
       return undefined;
@@ -194,7 +202,7 @@ export class CellCanvasRoot {
   private dispatchEventToNodes(
     hits: CanvasNode[],
     canvasEvent: CanvasEvent,
-    type: PointerEventType
+    type: PointerEventType,
   ): void {
     let propagationStopped = false;
     const eventWithStop = {
@@ -223,7 +231,7 @@ export class CellCanvasRoot {
   private invokeNodeHandler(
     node: CanvasNode,
     type: PointerEventType,
-    event: CanvasEvent
+    event: CanvasEvent,
   ): void {
     // eslint-disable-next-line default-case
     switch (type) {
@@ -272,7 +280,7 @@ export class CellCanvasRoot {
     return this.hoverController.computeCursor(
       relativeX,
       relativeY,
-      this.rootNode
+      this.rootNode,
     );
   }
 

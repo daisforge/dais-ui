@@ -16,6 +16,8 @@ const TOKENS_LIGHT = {
   textParagraph: '#13181BCC',
   textParagraphHover: '#13181B7A',
   textParagraphActive: '#13181BA3',
+  avatarBackground: '#199AF033',
+  avatarText: '#0B7ECB',
   textAccent: '#0B7ECB',
   textAccentHover: '#0D96F2FF',
   textAccentActive: '#0966A5FF',
@@ -132,6 +134,8 @@ const TOKENS_HC_LIGHT = {
   textParagraph: '#13181BCC',
   textParagraphHover: '#13181B7A',
   textParagraphActive: '#13181BA3',
+  avatarBackground: '#00AD7C33',
+  avatarText: '#0058A2',
   textAccent: '#0058A2',
   textAccentHover: '#0D96F2FF', // TODO: уточнить
   textAccentActive: '#0966A5FF', // TODO: уточнить
@@ -249,6 +253,8 @@ const TOKENS_BETA_LIGHT = {
   textParagraph: '#14191DCC',
   textParagraphHover: '#151A1E7A',
   textParagraphActive: '#151A1EA3',
+  avatarBackground: '#0092DB33',
+  avatarText: '#0087CD',
   textAccent: '#0087CD',
   textAccentHover: '#00A3F5FF',
   textAccentActive: '#006DA3FF',
@@ -309,7 +315,11 @@ const TOKENS_BETA_LIGHT = {
 export type Tokens = { [K in keyof typeof TOKENS_LIGHT]: string };
 
 // TODO: заменить на реальные значения от дизайнера
-const TOKENS_DARK = { ...TOKENS_LIGHT } as const;
+const TOKENS_DARK = {
+  ...TOKENS_LIGHT,
+  avatarBackground: '#118CDF24',
+  avatarText: '#199AF0',
+} as const;
 const TOKENS_BY_THEME: Record<ActiveTheme, Tokens> = {
   light: TOKENS_LIGHT,
   dark: TOKENS_DARK,

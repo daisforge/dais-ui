@@ -1,5 +1,10 @@
 import { GridCellKind } from '@glideappsfinal/glide-data-grid';
 
+import type {
+  BeginInteractionSessionArgs,
+  FindInteractionSessionArgs,
+  InteractionSession,
+} from '../../interaction/interactionSessionStore';
 import {
   buildCellId,
   getCellIndices,
@@ -10,11 +15,6 @@ import {
 import { retrieveRenderData, storeRenderData } from '../state';
 import type { CanvasCell, CanvasCellData, CanvasRenderArgs } from '../types';
 import { CANVAS_CELL_KIND } from '../types';
-import type {
-  BeginInteractionSessionArgs,
-  FindInteractionSessionArgs,
-  InteractionSession,
-} from '../../interaction/interactionSessionStore';
 import {
   handleCanvasRootHover,
   updateHoverStateIfNeeded,
@@ -39,12 +39,12 @@ interface CanvasCellRendererOptions {
    * decision из session и применяет его к своей фазе.
    */
   beginOrGetInteractionSession?: (
-    args: BeginInteractionSessionArgs
+    args: BeginInteractionSessionArgs,
   ) => InteractionSession;
 
   /** Забирает click-result, который уже был посчитан в `onCellClicked`. */
   consumeCanvasClickResult?: (
-    args: FindInteractionSessionArgs
+    args: FindInteractionSessionArgs,
   ) => CanvasClickDispatchResult | undefined;
 }
 
@@ -58,7 +58,7 @@ interface CanvasCellRendererOptions {
  * - Pointer event dispatching
  */
 export function createCanvasCellRenderer(
-  options: CanvasCellRendererOptions = {}
+  options: CanvasCellRendererOptions = {},
 ): CanvasCellRendererConfig {
   return {
     kind: GridCellKind.Custom,
@@ -182,6 +182,20 @@ export function createCanvasCellRenderer(
         hoverX: args.hoverX,
         hoverY: args.hoverY,
         row: args.row,
+        // getCellIndices переиспользует один объект и меняет его при каждом вызове.
+        // Сохраняем числовые координаты текущего draw отдельно, чтобы отрисовка
+        // следующей ячейки не подменила адрес, по которому imageLoader должен
+        // запросить перерисовку после загрузки изображения.
+        imageResources:
+          args.imageLoader &&
+          typeof args.col === 'number' &&
+          typeof args.row === 'number'
+            ? {
+                loader: args.imageLoader,
+                colIndex: args.col,
+                rowIndex: args.row,
+              }
+            : undefined,
         rowData: args.rowData,
         event: args.event,
         frameTime: args.frameTime,
@@ -204,7 +218,7 @@ export function createCanvasCellRenderer(
         {
           ...renderArgs,
           canvasRoot: previousRenderData?.canvasRoot,
-        }
+        },
       );
       const hoveredAreas = renderResult?.hoveredAreas ?? [];
 
@@ -218,7 +232,7 @@ export function createCanvasCellRenderer(
         relativeHover,
         hoveredAreas,
         canvasRoot,
-        args
+        args,
       );
 
       ctx.restore();

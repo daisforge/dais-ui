@@ -8,8 +8,8 @@ export type {
   DimensionValue,
   DrawCommand,
   Rect,
-  ResolvedCanvasInteractionConfig,
   RegistryListener,
+  ResolvedCanvasInteractionConfig,
   TextAlign,
   TextBaseline,
 } from './core';
@@ -30,28 +30,40 @@ export {
 
 // Primitives
 export type {
+  AvatarContent,
+  AvatarGroupItemClick,
+  AvatarGroupOverflowClick,
+  AvatarSize,
   BadgeSize,
   BadgeView,
+  CanvasAvatarGroupOptions,
+  CanvasAvatarItem,
+  CanvasAvatarOptions,
   CanvasBadgeOptions,
   CanvasButtonOptions,
   CanvasChevronOptions,
   CanvasIconButtonOptions,
   CanvasIconOptions,
+  CanvasImageOptions,
+  CanvasLinkOptions,
   CanvasTextAutoTooltip,
   CanvasTextOptions,
-  CanvasLinkOptions,
+  ImageFit,
   LinkView,
 } from './primitives';
 export {
+  CanvasAvatar,
+  CanvasAvatarGroup,
   CanvasBadge,
   CanvasButton,
   CanvasChevron,
   CanvasEmbedIconButton,
   CanvasIcon,
   CanvasIconButton,
+  CanvasImage,
+  CanvasLink,
   CanvasRect,
   CanvasText,
-  CanvasLink,
 } from './primitives';
 
 // Cells
@@ -61,8 +73,8 @@ export type {
   ButtonView,
   CanvasCell,
   CanvasCellData,
-  CanvasClickDispatchResult,
   CanvasCellRendererConfig,
+  CanvasClickDispatchResult,
   CanvasPointerIntentResult,
   CanvasRenderResult,
   CellIndices,
@@ -117,11 +129,11 @@ export {
 
 // Utils
 export type {
+  CanvasNodeTooltipConfig,
+  CanvasNodeTooltipProps,
   CanvasPortalHoverDetail,
   CanvasPortalHoverListener,
   CanvasPortalSource,
-  CanvasNodeTooltipConfig,
-  CanvasNodeTooltipProps,
 } from './utils';
 export {
   CANVAS_PORTAL_EVENT,
@@ -147,9 +159,9 @@ export type {
   FlexBoxOptions,
   FlexStyle,
   Justify,
+  PaddingBox,
   Position,
   Size,
-  PaddingBox,
 } from './miniflex';
 export {
   FlexBox,
@@ -161,16 +173,19 @@ export {
 
 // Components
 export type {
+  CanvasAvatarGroupProps,
+  CanvasAvatarProps,
   CanvasBadgeProps,
   CanvasButtonProps,
   CanvasContainerProps,
   CanvasEmbedIconButtonProps,
   CanvasIconButtonProps,
   CanvasIconProps,
+  CanvasImageProps,
+  CanvasLinkProps,
   CanvasRectProps,
   CanvasTextProps,
   RootBridgeProps,
-  CanvasLinkProps,
 } from './components';
 export { buildCanvasTree, Canvas, RootBridge } from './components';
 
