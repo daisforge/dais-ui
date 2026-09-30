@@ -11,7 +11,6 @@ import React, { useMemo } from 'react';
 
 import {
   avatarCopyText,
-  avatarFixtureSource,
   avatarItems,
   createAvatarSvg,
 } from '../CanvasAvatar/avatarFixtures';
@@ -37,17 +36,6 @@ const meta: Meta = {
   },
 };
 export default meta;
-const preCode = `
-import React, { useMemo } from 'react';
-import { Canvas, TableCanvas, type ColumnConfig, type CanvasAvatarItem } from '@daisforge/ui/components/TableCanvas';
-
-${avatarFixtureSource}
-${getFuncAsString(
-  'packages/storybook/src/stories/TableCanvas/CanvasElements/CanvasAvatar/avatarFixtures.ts',
-  'avatarCopyText',
-)}
-`;
-
 function VirtualTable() {
   const rows = useMemo(() => {
     const cases = [
@@ -104,18 +92,8 @@ function VirtualTable() {
     />
   );
 }
-export const Virtualized: StoryObj = {
-  name: 'Количество участников, узкая колонка и прокрутка',
-  ...storySourceDoc({
-    preCode: `${preCode}
-${getFuncAsString(
-  'packages/storybook/src/stories/TableCanvas/CanvasElements/CanvasAvatarGroup/CanvasAvatarGroup.stories.tsx',
-  'VirtualTable',
-)}`,
-    type: 'code',
-    previewSource: 'hidden',
-  }),
-  render: () => (
+function AvatarGroupExample() {
+  return (
     <>
       <p>
         700 строк с разным количеством участников в обычной и узкой колонках. У
@@ -124,5 +102,26 @@ ${getFuncAsString(
       </p>
       <VirtualTable />
     </>
-  ),
+  );
+}
+
+// Парсер meta-info ожидает getFuncAsString без завершающей запятой.
+// prettier-ignore
+const exampleCode = `
+import React, { useMemo } from 'react';
+import { Canvas, TableCanvas, type ColumnConfig } from '@daisforge/ui/components/TableCanvas';
+import { avatarCopyText, avatarItems } from '../CanvasAvatar/avatarFixtures';
+
+${getFuncAsString('packages/storybook/src/stories/TableCanvas/CanvasElements/CanvasAvatarGroup/CanvasAvatarGroup.stories.tsx', 'VirtualTable')}
+${getFuncAsString('packages/storybook/src/stories/TableCanvas/CanvasElements/CanvasAvatarGroup/CanvasAvatarGroup.stories.tsx', 'AvatarGroupExample')}
+`;
+
+export const Virtualized: StoryObj = {
+  name: 'Количество участников, узкая колонка и прокрутка',
+  ...storySourceDoc({
+    code: exampleCode,
+    type: 'code',
+    previewSource: 'hidden',
+  }),
+  render: AvatarGroupExample,
 };

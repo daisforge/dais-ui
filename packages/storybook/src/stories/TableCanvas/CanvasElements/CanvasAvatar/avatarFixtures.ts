@@ -1,4 +1,3 @@
-import { getFuncAsString } from '@df-storybook/utils/getFuncAsString';
 import {
   type CanvasAvatarItem,
   tableCanvasTheme,
@@ -74,26 +73,6 @@ export const transparentAvatarImage = createAvatarImage({
   variant: 2,
   transparent: true,
 });
-
-// В Show code выводим код генераторов вместо длинных строк data URL.
-export const avatarFixtureSource = `
-import { tableCanvasTheme } from '@daisforge/ui/components/TableCanvas';
-
-${getFuncAsString(
-  'packages/storybook/src/stories/TableCanvas/CanvasElements/CanvasAvatar/avatarFixtures.ts',
-  'createAvatarSvg',
-)}
-${getFuncAsString(
-  'packages/storybook/src/stories/TableCanvas/CanvasElements/CanvasAvatar/avatarFixtures.ts',
-  'createAvatarImage',
-)}
-${getFuncAsString(
-  'packages/storybook/src/stories/TableCanvas/CanvasElements/CanvasAvatar/avatarFixtures.ts',
-  'createAvatarItems',
-)}
-const avatarItems = createAvatarItems();
-const transparentAvatarImage = createAvatarImage({ variant: 2, transparent: true });
-`;
 
 export function avatarCopyText(
   items: readonly CanvasAvatarItem[],
