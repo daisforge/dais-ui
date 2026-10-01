@@ -2,7 +2,18 @@ export type ActiveThemeGlobal =
   | 'light'
   | 'dark'
   | 'highContrastLight'
-  | 'betaCoreLight';
+  | 'highContrastDark'
+  | 'betaCoreLight'
+  | 'betaCoreDark';
+
+const KNOWN_THEMES: readonly ActiveThemeGlobal[] = [
+  'light',
+  'dark',
+  'highContrastLight',
+  'highContrastDark',
+  'betaCoreLight',
+  'betaCoreDark',
+];
 
 /**
  * Получение активной темы
@@ -11,8 +22,5 @@ export type ActiveThemeGlobal =
 export const getActiveTheme = (): ActiveThemeGlobal => {
   const theme = document.documentElement.getAttribute('data-theme');
 
-  if (theme === 'dark') return 'dark';
-  if (theme === 'highContrastLight') return 'highContrastLight';
-  if (theme === 'betaCoreLight') return 'betaCoreLight';
-  return 'light';
+  return KNOWN_THEMES.find((known) => known === theme) ?? 'light';
 };

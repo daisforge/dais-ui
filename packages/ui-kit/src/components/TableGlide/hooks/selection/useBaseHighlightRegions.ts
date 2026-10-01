@@ -40,12 +40,13 @@ export function useBaseHighlightRegions({
 
       // Ошибки рисуем ровно на конкретных ячейках, как в обычном Table:
       // отдельный red outline на cell-level, без service-area.
-      // Добавляем его в самом конце, чтобы border не перекрывался active fill.
+      // drawAboveSelection: рамка ошибки поверх нативной рамки выделения.
       for (const range of errorCellRanges) {
         regions.push({
           color: baseTheme.errorOutlineColor,
           range,
           style: 'solid-outline',
+          drawAboveSelection: true,
         });
       }
     };

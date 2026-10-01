@@ -45,6 +45,10 @@ import { buildEffectiveInteractionOutcome } from './lib/canvas/interaction/inter
 import { resolveCanvasCellInteractionTargetFromRenderData } from './lib/canvas/interaction/resolveCanvasCellInteractionTarget';
 import { StyledGlideDataEditor, StyledOverlayPortal } from './styled';
 import { getTheme } from './theming';
+import {
+  resolveCellFillOverride,
+  resolveConsumerFillOverride,
+} from './theming/cell-fill-override';
 import type {
   CellInfo,
   ColumnGlideLast,
@@ -689,6 +693,26 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
           ? columnThemeOverride(cellInfo)
           : undefined;
 
+      // Состояния ячейки со своим цветом — см. theming/cell-fill-override.ts
+      const cellRowHover = isRowHoverEnabled && cellInfo.hovered.rowHover;
+      const fillOverride = cellIsEditable
+        ? resolveCellFillOverride(
+            {
+              rest: theme.bgEditableCell,
+              hover: theme.bgEditableCellHovered,
+              active: theme.bgEditableCellActive,
+              hoverActive: theme.bgEditableCellActiveHovered,
+            },
+            cellRowHover
+          )
+        : columnThemeOverrideResult?.bgCell
+          ? resolveConsumerFillOverride(
+              columnThemeOverrideResult.bgCell,
+              activeTheme,
+              cellRowHover
+            )
+          : undefined;
+
       const options = {
         data: row[id]?.toString?.() ?? 'NOT FOUND',
         ...(cellIsEditable
@@ -703,7 +727,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
             }),
         themeOverride: {
           ...columnThemeOverrideResult,
-          ...(cellIsEditable && { bgCell: theme.bgEditableCell }),
+          ...fillOverride,
         },
         contentAlign,
         ...(span && { span }),
@@ -753,6 +777,8 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       columnsForRender,
       ctxs,
       theme,
+      activeTheme,
+      isRowHoverEnabled,
       selectionVisualState,
       canvasCellCache,
       portalEventTargetRef,
@@ -1420,18 +1446,19 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       // Под курсором checkbox-строка темнеет ЦЕЛИКОМ (bgSelectedRowHovered,
       // как hover шапки) — серый hover данных к ней не применяется.
       if (checkboxSelectedRowIndexes?.has(rowInd)) {
+        const hovered = rowInd === hoveredRow;
         return {
-          bgCell:
-            rowInd === hoveredRow
-              ? theme.bgSelectedRowHovered
-              : theme.selectionCheckboxBg,
+          bgCell: hovered ? theme.bgSelectedRowHovered : theme.selectionCheckboxBg,
+          accentLight: hovered
+            ? theme.selectionActiveCheckboxHoveredBg
+            : theme.selectionActiveCheckboxBg,
         };
       }
 
       // Hover-подсветка — самый нижний слой: селектинг и highlightActiveType
       // рисуются поверх (highlightRegions) и визуально перекрывают её.
       if (rowInd === hoveredRow) {
-        return { bgCell: hoverBg };
+        return { bgCell: hoverBg, accentLight: theme.selectionActiveHoveredBg };
       }
 
       return {};

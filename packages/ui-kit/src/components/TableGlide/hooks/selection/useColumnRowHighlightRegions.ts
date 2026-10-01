@@ -110,11 +110,13 @@ export function useColumnRowHighlightRegions({
           style: 'no-outline' as const,
         });
       }
+      // 'accent': заливка берёт accentLight из per-cell темы — ячейки со своим
+      // цветом (редактируемые/статусные) показывают свой active-вариант.
       for (const colInd of selectedColumnIndexes) {
         regions.push({
           color: theme.selectionActiveBg,
           range: { x: colInd, y: 0, width: 1, height: totalRows },
-          style: 'no-outline' as const,
+          style: 'accent' as const,
         });
       }
       pushMergedOutlines(selectedColumnIndexes, (start, end) => ({
@@ -142,7 +144,7 @@ export function useColumnRowHighlightRegions({
         regions.push({
           color: theme.selectionActiveBg,
           range: { x: firstDataCol, y: rowInd, width: dataWidth, height: 1 },
-          style: 'no-outline' as const,
+          style: 'accent' as const,
         });
       }
       pushMergedOutlines(headerSelectedRowIndexes, (start, end) => ({
