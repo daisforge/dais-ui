@@ -102,7 +102,11 @@ const hexToOklch = (hex: string): Oklch => {
   const l = 0.2104542553 * l_ + 0.793617785 * m_ - 0.0040720468 * s_;
   const A = 1.9779984951 * l_ - 2.428592205 * m_ + 0.4505937099 * s_;
   const B = 0.0259040371 * l_ + 0.7827717662 * m_ - 0.808675766 * s_;
-  return { l, c: Math.hypot(A, B), h: ((Math.atan2(B, A) * 180) / Math.PI + 360) % 360 };
+  return {
+    l,
+    c: Math.hypot(A, B),
+    h: ((Math.atan2(B, A) * 180) / Math.PI + 360) % 360,
+  };
 };
 
 /** OKLCH → hex. Вне sRGB каналы обрезаются (для токенов таблицы не случается). */
@@ -153,7 +157,11 @@ export const stepHex = (
  * Тинт: шаг длиной d по лучу от фона ячейки (без хромы) к токену семейства.
  * Тон — у токена, поэтому смесь не проходит через серую зону.
  */
-export const tintHex = (cellHex: string, familyHex: string, d: number): string => {
+export const tintHex = (
+  cellHex: string,
+  familyHex: string,
+  d: number,
+): string => {
   const cell = hexToOklch(cellHex);
   const family = hexToOklch(familyHex);
   const span = Math.abs(family.l - cell.l);
@@ -188,8 +196,16 @@ export const getTableStateColors = (
   const level3 = stepHex(level1, active, mode);
   const level4 = stepHex(level1, active + hover, mode);
 
-  const editable = tintHex(card, onCard(tokens.dataYellow), TINT_DISTANCE.editable[mode]);
-  const saved = tintHex(card, onCard(tokens.surfaceAccent), TINT_DISTANCE.saved[mode]);
+  const editable = tintHex(
+    card,
+    onCard(tokens.dataYellow),
+    TINT_DISTANCE.editable[mode],
+  );
+  const saved = tintHex(
+    card,
+    onCard(tokens.surfaceAccent),
+    TINT_DISTANCE.saved[mode],
+  );
 
   return {
     // каркас — токены как есть
@@ -205,7 +221,12 @@ export const getTableStateColors = (
     selectionServiceBg: level1,
 
     // наведение
-    bgRowHovered: stepHex(card, hover, mode, onCard(tokens.surfaceSolidPrimary)),
+    bgRowHovered: stepHex(
+      card,
+      hover,
+      mode,
+      onCard(tokens.surfaceSolidPrimary),
+    ),
     bgServiceRowHovered: level2,
     bgSelectedRowHovered: level2,
     bgHeaderHovered: level2,

@@ -66,12 +66,7 @@ export const ACHROMATIC_CHROMA = 0.004;
 // ─── Типы входа и выхода ───
 
 export type TokenGroup =
-  | 'surface'
-  | 'text'
-  | 'outline'
-  | 'data'
-  | 'background'
-  | 'other';
+  'surface' | 'text' | 'outline' | 'data' | 'background' | 'other';
 
 /** Как таблица использует цвет: заливка считается формулой, остальное берётся из темы. */
 export type TokenUsage = 'fill' | 'text' | 'outline' | 'static';
@@ -148,10 +143,10 @@ export const defaultUsage = (group: TokenGroup): TokenUsage =>
   group === 'text'
     ? 'text'
     : group === 'outline'
-    ? 'outline'
-    : group === 'background'
-    ? 'static'
-    : 'fill';
+      ? 'outline'
+      : group === 'background'
+        ? 'static'
+        : 'fill';
 
 /** Токен — фон ячейки? Для него луч задаёт surface-solid-primary. */
 export const isCardToken = (tokenName: string) =>

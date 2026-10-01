@@ -8,8 +8,10 @@
 
 ## Структура
 
-**Код дизайн-системы — источник истины, не править.** При обновлении от
-дизайнера файлы заменяются целиком, после замены — `npm test`:
+**Код дизайн-системы — источник истины, по смыслу не править.** При
+обновлении от дизайнера файлы заменяются целиком, затем
+`npm run format && npm test` (форматирование prettier допустимо — семантика
+защищена тестами):
 
 - `code/table-token-states.ts` — формулы (OKLCH, шаг по лучу, наложение выделения);
 - `code/table-token-sources.ts` — темы, семантические токены, карта ключей таблицы;
@@ -29,10 +31,11 @@
 
 ```bash
 cd generators/table-token-states
-npm ci            # локальные devDeps: tsx, vitest, typescript (однократно)
+npm ci            # локальные devDeps: tsx, vitest, typescript, prettier (однократно)
 npm test          # тесты дизайнера — прогонять после любой замены code/
-npm run typecheck # strict-проверка кода дизайнера её же флагами
+npm run typecheck # strict-проверка всего TS папки (tsc -p tsconfig.json)
 npm run emit      # пересборка палитры → theming/table-colors.generated.ts
+npm run format    # prettier по папке + ../theme-tokens (есть и format:check)
 ```
 
 После `emit` прогнать в корне `npx nx test ui-kit`: тест

@@ -66,39 +66,106 @@ const MODE_BASE = {
 // Порядок и состав — как в текущем TOKENS_LIGHT (контракт getTokens сохраняется).
 
 const KEYS = [
-  'textPrimary', 'textPrimaryHover', 'textPrimaryActive',
-  'textSecondary', 'textSecondaryHover', 'textSecondaryActive',
-  'textTertiary', 'textTertiaryHover', 'textTertiaryActive',
-  'textTertiaryBase', 'textTertiaryVariant',
-  'textParagraph', 'textParagraphHover', 'textParagraphActive',
-  'textAccent', 'textAccentHover', 'textAccentActive', 'textAccentTransparent20',
-  'textPositive', 'textPositiveHover', 'textPositiveActive',
-  'textWarning', 'textWarningHover', 'textWarningActive',
-  'textNegative', 'textNegativeHover', 'textNegativeActive',
+  'textPrimary',
+  'textPrimaryHover',
+  'textPrimaryActive',
+  'textSecondary',
+  'textSecondaryHover',
+  'textSecondaryActive',
+  'textTertiary',
+  'textTertiaryHover',
+  'textTertiaryActive',
+  'textTertiaryBase',
+  'textTertiaryVariant',
+  'textParagraph',
+  'textParagraphHover',
+  'textParagraphActive',
+  'textAccent',
+  'textAccentHover',
+  'textAccentActive',
+  'textAccentTransparent20',
+  'textPositive',
+  'textPositiveHover',
+  'textPositiveActive',
+  'textWarning',
+  'textWarningHover',
+  'textWarningActive',
+  'textNegative',
+  'textNegativeHover',
+  'textNegativeActive',
   'inverseTextPrimary',
-  'onDarkTextPrimary', 'onDarkTextPrimaryHover', 'onDarkTextPrimaryActive',
-  'onDarkTextPrimary96', 'onDarkTextPrimary56', 'onDarkTextPrimary28',
-  'onLightTextPrimary', 'onLightTextPrimaryHover', 'onLightTextPrimaryActive',
-  'surfaceSolidCard', 'surfaceAccentMinor', 'surfaceSolidDefault', 'surfaceSolidTertiary',
-  'surfaceAccent', 'surfaceAccentHover', 'surfaceAccentActive',
-  'surfaceTransparentSecondary', 'surfaceTransparentSecondaryHover', 'surfaceTransparentSecondaryActive',
-  'surfaceTransparentTertiary', 'surfaceTransparentDeep', 'surfaceClear',
-  'surfacePositive', 'surfacePositiveHover', 'surfacePositiveActive',
-  'surfaceWarning', 'surfaceWarningHover', 'surfaceWarningActive', 'surfaceWarningMinor56',
-  'surfaceNegative', 'surfaceNegativeHover', 'surfaceNegativeActive',
+  'onDarkTextPrimary',
+  'onDarkTextPrimaryHover',
+  'onDarkTextPrimaryActive',
+  'onDarkTextPrimary96',
+  'onDarkTextPrimary56',
+  'onDarkTextPrimary28',
+  'onLightTextPrimary',
+  'onLightTextPrimaryHover',
+  'onLightTextPrimaryActive',
+  'surfaceSolidCard',
+  'surfaceAccentMinor',
+  'surfaceSolidDefault',
+  'surfaceSolidTertiary',
+  'surfaceAccent',
+  'surfaceAccentHover',
+  'surfaceAccentActive',
+  'surfaceTransparentSecondary',
+  'surfaceTransparentSecondaryHover',
+  'surfaceTransparentSecondaryActive',
+  'surfaceTransparentTertiary',
+  'surfaceTransparentDeep',
+  'surfaceClear',
+  'surfacePositive',
+  'surfacePositiveHover',
+  'surfacePositiveActive',
+  'surfaceWarning',
+  'surfaceWarningHover',
+  'surfaceWarningActive',
+  'surfaceWarningMinor56',
+  'surfaceNegative',
+  'surfaceNegativeHover',
+  'surfaceNegativeActive',
   'disabled',
-  'surfaceTransparentAccent', 'surfaceTransparentAccent12', 'surfaceTransparentAccent20',
-  'surfaceTransparentPositive', 'surfaceTransparentPositive12', 'surfaceTransparentPositive20',
-  'surfaceTransparentWarning', 'surfaceTransparentWarning12', 'surfaceTransparentWarning20',
-  'surfaceTransparentNegative', 'surfaceTransparentNegative12', 'surfaceTransparentNegative20',
-  'onLightSurfaceSolidDefault', 'onLightSurfaceTransparentDeep',
-  'onDarkSurfaceSolidDefault', 'onDarkSurfaceTransparentCard',
-  'outlineAccent', 'outlineSolidPrimary', 'outlineSolidPrimary26',
-  'dataBlueMinor', 'dataBlueMinorActive', 'dataBlue', 'dataAccentMinorHover',
-  'dataPositive', 'dataPositiveMinor', 'dataNegative', 'dataNegativeMinor',
-  'dataWarning', 'dataWarningMinor', 'dataOrange', 'dataOrangeMinor',
-  'dataViolet', 'dataVioletMinor', 'dataPink', 'dataMagenta',
-  'dataCyan', 'dataCyanDark', 'dataLime', 'dataTeal',
+  'surfaceTransparentAccent',
+  'surfaceTransparentAccent12',
+  'surfaceTransparentAccent20',
+  'surfaceTransparentPositive',
+  'surfaceTransparentPositive12',
+  'surfaceTransparentPositive20',
+  'surfaceTransparentWarning',
+  'surfaceTransparentWarning12',
+  'surfaceTransparentWarning20',
+  'surfaceTransparentNegative',
+  'surfaceTransparentNegative12',
+  'surfaceTransparentNegative20',
+  'onLightSurfaceSolidDefault',
+  'onLightSurfaceTransparentDeep',
+  'onDarkSurfaceSolidDefault',
+  'onDarkSurfaceTransparentCard',
+  'outlineAccent',
+  'outlineSolidPrimary',
+  'outlineSolidPrimary26',
+  'dataBlueMinor',
+  'dataBlueMinorActive',
+  'dataBlue',
+  'dataAccentMinorHover',
+  'dataPositive',
+  'dataPositiveMinor',
+  'dataNegative',
+  'dataNegativeMinor',
+  'dataWarning',
+  'dataWarningMinor',
+  'dataOrange',
+  'dataOrangeMinor',
+  'dataViolet',
+  'dataVioletMinor',
+  'dataPink',
+  'dataMagenta',
+  'dataCyan',
+  'dataCyanDark',
+  'dataLime',
+  'dataTeal',
 ];
 
 // ─── Таблица маппинга (исключения из kebab-case) ───
@@ -128,12 +195,20 @@ const MAPPING = {
   textAccentTransparent20: { alpha: ['text-accent', '33'] },
   surfaceTransparentAccent12: { alpha: ['surface-transparent-accent', '1E'] },
   surfaceTransparentAccent20: { alpha: ['surface-transparent-accent', '33'] },
-  surfaceTransparentPositive12: { alpha: ['surface-transparent-positive', '1E'] },
-  surfaceTransparentPositive20: { alpha: ['surface-transparent-positive', '33'] },
+  surfaceTransparentPositive12: {
+    alpha: ['surface-transparent-positive', '1E'],
+  },
+  surfaceTransparentPositive20: {
+    alpha: ['surface-transparent-positive', '33'],
+  },
   surfaceTransparentWarning12: { alpha: ['surface-transparent-warning', '1E'] },
   surfaceTransparentWarning20: { alpha: ['surface-transparent-warning', '33'] },
-  surfaceTransparentNegative12: { alpha: ['surface-transparent-negative', '1E'] },
-  surfaceTransparentNegative20: { alpha: ['surface-transparent-negative', '33'] },
+  surfaceTransparentNegative12: {
+    alpha: ['surface-transparent-negative', '1E'],
+  },
+  surfaceTransparentNegative20: {
+    alpha: ['surface-transparent-negative', '33'],
+  },
   outlineSolidPrimary26: { alpha: ['outline-solid-primary', '42'] },
   surfaceWarningMinor56: { alpha: ['data-yellow', '8E'] },
 
@@ -178,7 +253,9 @@ const MAPPING = {
 const parseTheme = (file) => {
   const text = fs.readFileSync(path.join(ROOT, file), 'utf8');
   const vars = {};
-  for (const m of text.matchAll(/--([a-z0-9-]+)\s*:\s*(#[0-9A-Fa-f]{3,8})\b/g)) {
+  for (const m of text.matchAll(
+    /--([a-z0-9-]+)\s*:\s*(#[0-9A-Fa-f]{3,8})\b/g,
+  )) {
     // первое вхождение — значение :root текущей темы
     if (!(m[1] in vars)) vars[m[1]] = m[2].toUpperCase();
   }
@@ -200,7 +277,8 @@ const rgbOf = (hex) => {
 // ─── Сборка ───
 
 const varsByTheme = {};
-for (const theme of THEMES) varsByTheme[theme] = parseTheme(THEME_SOURCES[theme]);
+for (const theme of THEMES)
+  varsByTheme[theme] = parseTheme(THEME_SOURCES[theme]);
 
 const tokens = {}; // { theme: { key: hex } }
 const report = []; // строки отчёта
@@ -220,7 +298,9 @@ for (const key of KEYS) {
     } else if (rule.alpha) {
       const [baseVar, alphaByte] = rule.alpha;
       const baseValue =
-        vars[baseVar] ?? varsByTheme[baseTheme][baseVar] ?? varsByTheme.light[baseVar];
+        vars[baseVar] ??
+        varsByTheme[baseTheme][baseVar] ??
+        varsByTheme.light[baseVar];
       value = rgbOf(baseValue) + alphaByte;
       origin = vars[baseVar]
         ? `альфа: ${baseVar} + ${alphaByte}`
@@ -231,7 +311,9 @@ for (const key of KEYS) {
       origin = rule.var ? `алиас → --${varName}` : `--${varName}`;
       if (value === undefined) {
         value = varsByTheme[baseTheme][varName] ?? varsByTheme.light[varName];
-        origin += ` (нет в теме, унаследовано из ${varsByTheme[baseTheme][varName] ? baseTheme : 'light'})`;
+        origin += ` (нет в теме, унаследовано из ${
+          varsByTheme[baseTheme][varName] ? baseTheme : 'light'
+        })`;
       }
     }
 
@@ -268,7 +350,8 @@ const header = `/**
 
 fs.writeFileSync(
   OUT_TS,
-  header +
+  `${
+    header +
     [
       emitTheme('TOKENS_LIGHT', 'light'),
       emitTheme('TOKENS_DARK', 'dark'),
@@ -276,15 +359,17 @@ fs.writeFileSync(
       emitTheme('TOKENS_BETA_DARK', 'betaCoreDark'),
       emitTheme('TOKENS_HC_LIGHT', 'highContrastLight'),
       emitTheme('TOKENS_HC_DARK', 'highContrastDark'),
-    ].join('\n\n') +
-    '\n',
+    ].join('\n\n')
+  }\n`,
 );
 
 fs.writeFileSync(
   OUT_REPORT,
   `# Отчёт генератора токенов тем
 
-Сгенерировано: ${new Date().toISOString().slice(0, 10)}. Ниже — все значения, которые
+Сгенерировано: ${new Date()
+    .toISOString()
+    .slice(0, 10)}. Ниже — все значения, которые
 взяты НЕ напрямую из переменной своей темы: пины (нет аналога в CSS или соответствие
 не подтверждено) и наследования (переменной нет в теме — взята база того же режима).
 Прямые попадания в отчёт не включаются.

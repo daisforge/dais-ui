@@ -1,0 +1,6 @@
+# Автогенерируемые артефакты — формат задаёт генератор, не prettier
+code/table-token-states.output.json
+docs/
+# Прототип дизайнера — один большой html, не трогаем
+demo/
+node_modules/

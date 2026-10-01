@@ -38,7 +38,12 @@ const OUT_PATH = resolve(
 
 // ─── База: честный расчёт генератора ───
 
-const byTableKey = buildTableColors(TABLE_COLORS, SEMANTIC, THEME_SETTINGS, CELL);
+const byTableKey = buildTableColors(
+  TABLE_COLORS,
+  SEMANTIC,
+  THEME_SETTINGS,
+  CELL,
+);
 
 // Комментарии к значениям, подставленным слоем интеграции: ключ → тема → причина.
 const notes = new Map<string, Map<ThemeName, string>>();
@@ -106,7 +111,10 @@ const TEMP_FILLS: TempFillGroup[] = [
 ];
 
 for (const group of TEMP_FILLS) {
-  for (const [theme, hex] of Object.entries(group.values) as [ThemeName, string][]) {
+  for (const [theme, hex] of Object.entries(group.values) as [
+    ThemeName,
+    string,
+  ][]) {
     const states = statesFor(hex, theme);
     for (const state of ['rest', 'hover', 'active', 'hoverActive'] as const) {
       const key = group.keys[state];
@@ -124,11 +132,19 @@ for (const group of TEMP_FILLS) {
 // В highContrastLight нет surface-solid-primary → hover белого фона не считается;
 // берём текущее ручное значение таблицы.
 byTableKey.bgRowHovered.highContrastLight = '#E8EEF2';
-note('bgRowHovered', 'highContrastLight', 'временно: в HC нет surface-solid-primary, текущее ручное значение');
+note(
+  'bgRowHovered',
+  'highContrastLight',
+  'временно: в HC нет surface-solid-primary, текущее ручное значение',
+);
 
 // В highContrastLight нет background-primary → затухание на сером берём из light.
 byTableKey.fadeGray.highContrastLight = byTableKey.fadeGray.light;
-note('fadeGray', 'highContrastLight', 'временно: в HC нет background-primary, копия light');
+note(
+  'fadeGray',
+  'highContrastLight',
+  'временно: в HC нет background-primary, копия light',
+);
 
 // В tokens.ts HC нет surface-negative-minor и surface-info-minor → статусные ячейки из light.
 for (const key of [
@@ -142,7 +158,11 @@ for (const key of [
   'bgCellInfoActiveHovered',
 ]) {
   byTableKey[key].highContrastLight = byTableKey[key].light;
-  note(key, 'highContrastLight', 'временно: в HC нет минорного токена статуса, копия light');
+  note(
+    key,
+    'highContrastLight',
+    'временно: в HC нет минорного токена статуса, копия light',
+  );
 }
 
 // ─── Проверка полноты ───
@@ -174,18 +194,34 @@ const fillParams = THEMES.map((theme) => {
 
 const lines: string[] = [];
 lines.push('/**');
-lines.push(' * АВТОГЕНЕРИРОВАНО из generators/table-token-states — НЕ ПРАВИТЬ РУКАМИ.');
-lines.push(' * Перегенерация: cd generators/table-token-states && npm run emit');
+lines.push(
+  ' * АВТОГЕНЕРИРОВАНО из generators/table-token-states — НЕ ПРАВИТЬ РУКАМИ.',
+);
+lines.push(
+  ' * Перегенерация: cd generators/table-token-states && npm run emit',
+);
 lines.push(' *');
-lines.push(' * Модель: каждый цвет таблицы = семантический токен темы × состояние');
-lines.push(' * (rest / hover / active / hoverActive), расчёт в OKLCH на этапе генерации,');
-lines.push(' * здесь — только готовые непрозрачные hex. Подробности: generators/table-token-states/README.md.');
-lines.push(' * Значения с пометкой «временно» закрывают дыры тем (см. README, «Открытые вопросы»).');
+lines.push(
+  ' * Модель: каждый цвет таблицы = семантический токен темы × состояние',
+);
+lines.push(
+  ' * (rest / hover / active / hoverActive), расчёт в OKLCH на этапе генерации,',
+);
+lines.push(
+  ' * здесь — только готовые непрозрачные hex. Подробности: generators/table-token-states/README.md.',
+);
+lines.push(
+  ' * Значения с пометкой «временно» закрывают дыры тем (см. README, «Открытые вопросы»).',
+);
 lines.push(' */');
 lines.push('');
-lines.push(`export const TABLE_COLOR_THEMES = [${THEMES.map((t) => `'${t}'`).join(', ')}] as const;`);
+lines.push(
+  `export const TABLE_COLOR_THEMES = [${THEMES.map((t) => `'${t}'`).join(', ')}] as const;`,
+);
 lines.push('');
-lines.push('export type TableColorTheme = (typeof TABLE_COLOR_THEMES)[number];');
+lines.push(
+  'export type TableColorTheme = (typeof TABLE_COLOR_THEMES)[number];',
+);
 lines.push('');
 lines.push('export const TABLE_STATE_COLORS = {');
 for (const [key, record] of Object.entries(byTableKey)) {
@@ -205,9 +241,15 @@ lines.push('');
 lines.push('export type TableStateColorKey = keyof typeof TABLE_STATE_COLORS;');
 lines.push('');
 lines.push('/**');
-lines.push(' * Параметры формулы состояний по темам — вход для рантайм-fillStates');
-lines.push(' * (состояния произвольных цветов потребителя). cardHex — фон ячейки,');
-lines.push(' * primaryHex — луч для цвета без хромы, selectionHex — заливка выделения с альфой.');
+lines.push(
+  ' * Параметры формулы состояний по темам — вход для рантайм-fillStates',
+);
+lines.push(
+  ' * (состояния произвольных цветов потребителя). cardHex — фон ячейки,',
+);
+lines.push(
+  ' * primaryHex — луч для цвета без хромы, selectionHex — заливка выделения с альфой.',
+);
 lines.push(' */');
 lines.push('export const TABLE_FILL_PARAMS = {');
 lines.push(...fillParams);
