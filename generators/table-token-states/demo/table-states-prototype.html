@@ -1,0 +1,1250 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Table Canvas · прототип состояний</title>
+<style>
+:root{--bg:#F2F5F8;--card:#FFFFFF;--text:#13181B;--text2:#5E666C;--line:#D5DFE6;--accent:#0B7ECB;--accentBg:#E2F1FB;--mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 "SB Sans Text",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+button{font:inherit;color:inherit}
+.top{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line);padding:10px 20px;display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center}
+.top h1{font-size:16px;margin:0 8px 0 0;font-weight:600;white-space:nowrap}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--card)}
+.seg button{border:0;background:none;cursor:pointer;padding:6px 12px;color:var(--text2);white-space:nowrap}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed=true]{background:var(--accentBg);color:var(--text);font-weight:600}
+.seg button:disabled{opacity:.4;cursor:not-allowed}
+.tgl{display:inline-flex;gap:6px;align-items:center;cursor:pointer;color:var(--text2);white-space:nowrap}
+.tgl input{accent-color:var(--accent)}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(420px,560px);gap:20px;padding:20px;align-items:start}
+@media (max-width:1280px){.layout{grid-template-columns:minmax(0,1fr)}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;min-width:0}
+.card+.card{margin-top:16px}
+.card h2{font-size:14px;margin:0 0 10px;font-weight:600}
+.muted{color:var(--text2)}
+.small{font-size:12px}
+.mono{font-family:var(--mono);font-size:12px}
+.presets{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}
+.btn{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:5px 10px;cursor:pointer}
+.btn:hover{border-color:var(--accent)}
+.tbl-scroll{overflow:auto;border-radius:6px;max-width:100%}
+.tbl{position:relative;user-select:none;-webkit-user-select:none;cursor:cell}
+.c{position:absolute;display:flex;align-items:center;padding:0 10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-right:1px solid;border-bottom:1px solid}
+.c.r{justify-content:flex-end;font-variant-numeric:tabular-nums}
+.c.ctr{justify-content:center;padding:0}
+.c.h{font-weight:600}
+.ring{position:absolute;pointer-events:none;border:1px solid;z-index:3}
+.probe::after{content:"";position:absolute;inset:2px;border:2px dashed #FF00AA;pointer-events:none;z-index:5}
+.ring.probe{border-width:3px}
+.cb{width:16px;height:16px;border-radius:4px;border:1.5px solid;display:inline-flex;align-items:center;justify-content:center}
+.cb svg{width:12px;height:12px}
+.editor{position:absolute;z-index:6;border:1px solid;box-shadow:0 4px 16px rgba(0,0,0,.18);font:inherit;padding:0 9px;outline:none}
+.status{margin-top:10px;min-height:20px}
+.status b{font-family:var(--mono);font-weight:600}
+.checklist{margin:0;padding-left:18px;columns:2 320px;column-gap:28px}
+.checklist li{margin:0 0 6px;break-inside:avoid}
+.fades{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.fade{position:relative;height:150px;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.fade .in{height:100%;overflow:auto;padding:10px 12px 40px}
+.fade .g{position:absolute;left:0;right:0;bottom:0;height:56px;pointer-events:none}
+.fade .lbl{position:absolute;top:6px;right:8px;font-size:11px;padding:1px 6px;border-radius:4px;background:rgba(127,127,127,.18)}
+.side{position:sticky;top:64px;max-height:calc(100vh - 84px);overflow:auto}
+@media (max-width:1280px){.side{position:static;max-height:none}}
+.tok{width:100%;border-collapse:collapse}
+.tok td{padding:6px 6px;border-top:1px solid var(--line);vertical-align:middle}
+.tok tr.grp td{border-top:0;padding-top:14px;font-weight:600;font-size:12px;color:var(--text2);text-transform:uppercase;letter-spacing:.04em}
+.tok tr.t:hover td{background:var(--accentBg)}
+.sw{display:inline-block;vertical-align:middle;width:30px;height:30px;border-radius:6px;border:1px solid rgba(127,127,127,.35);position:relative;overflow:hidden}
+.sw.a{background-image:linear-gradient(45deg,#ccc 25%,transparent 25%,transparent 75%,#ccc 75%),linear-gradient(45deg,#ccc 25%,transparent 25%,transparent 75%,#ccc 75%);background-size:8px 8px;background-position:0 0,4px 4px}
+.sw i{position:absolute;inset:0}
+.sw.s{width:14px;height:14px;border-radius:3px;display:inline-block;vertical-align:-2px;margin-right:4px}
+.hex{font-family:var(--mono);font-weight:600;cursor:copy;white-space:nowrap}
+.key{font-family:var(--mono);font-size:12px;font-weight:600}
+.warn{color:#E15400}
+.params{display:grid;grid-template-columns:auto 1fr 56px;gap:6px 10px;align-items:center}
+.params input[type=range]{width:100%;accent-color:var(--accent)}
+.params output{font-family:var(--mono);font-size:12px;text-align:right}
+.formula{font-family:var(--mono);font-size:12px;background:var(--bg);border-radius:8px;padding:10px 12px;line-height:1.6;overflow-x:auto;white-space:pre}
+textarea{width:100%;height:260px;font-family:var(--mono);font-size:11px;background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:8px}
+details summary{cursor:pointer;font-weight:600}
+.mx{border-collapse:collapse;width:100%}
+.mx th,.mx td{padding:4px 6px;border-top:1px solid var(--line);text-align:left;white-space:nowrap}
+.mx th{font-size:12px;color:var(--text2);font-weight:600}
+.toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:var(--text);color:var(--card);padding:6px 12px;border-radius:8px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:50}
+.toast.on{opacity:1}
+.sw.s{background-size:8px 8px}
+.seg button{font-size:13px}
+</style>
+</head>
+<body>
+<div class="top">
+  <h1>Table Canvas · прототип состояний</h1>
+  <div class="seg" id="themeSeg" role="group" aria-label="Тема"></div>
+  <div class="seg" id="srcSeg" role="group" aria-label="Источник цветов">
+    <button data-v="rule">Правило</button><button data-v="code">Сейчас в коде</button>
+  </div>
+  <label class="tgl"><input type="checkbox" id="optRowHover"> hoverEffects.row</label>
+  <label class="tgl"><input type="checkbox" id="optActiveRow"> подсветка активной строки</label>
+  <label class="tgl"><input type="checkbox" id="optPin"> закрепить наведения (для пипетки)</label>
+  <label class="tgl"><input type="checkbox" id="optHoldSaved"> не гасить сохранённые</label>
+</div>
+
+<div class="layout">
+  <main>
+    <section class="card">
+      <div class="presets" id="presets"></div>
+      <div class="tbl-scroll" id="tblScroll"><div class="tbl" id="tbl"></div></div>
+      <div class="status small" id="status"><span class="muted">Наведите на ячейку — здесь будет её токен и состояние.</span></div>
+    </section>
+
+    <section class="card">
+      <h2>Что проверять</h2>
+      <ol class="checklist small">
+        <li><b>Модель</b> — каждый цвет таблицы это семантический токен в состоянии: покой, hover (+1δ по лучу OKLCH) или выделение. Выделение по макету «Выделение ячеек» — полупрозрачный surface-transparent-accent поверх цвета покоя (12 % в светлых темах, 20 % в тёмных), результат просчитан заранее и отдаётся непрозрачным hex.</li>
+        <li><b>Наведение на строку</b> — включите hoverEffects.row и ведите курсор. В режиме «Правило» темнеют и жёлтые, и статусные ячейки; в режиме «Сейчас в коде» — нет.</li>
+        <li><b>Ячейки со статусом</b> — колонка «Статус»: Проведено = positive (surface-transparent-positive), Ошибка = negative (surface-negative-minor), В обработке = warning (surface-transparent-warning), Черновик = info (surface-info-minor). Протяните диапазон через неё: выделение ложится поверх цвета ячейки, как в макете. В коде сейчас выделение закрывает цвет голубым.</li>
+        <li><b>Редактируемые ячейки</b> — «Сумма» и «Комментарий»: покой, под курсором, в выделении, в выделении под курсором. Двойной клик или Enter, затем Enter — сохранённая подсветка, гаснет через 2 с.</li>
+        <li><b>Hover и выделение</b> — по макету hover на выделенных ячейках и на выделенной шапке не показывается: наведите на выделенный диапазон, цвет не меняется.</li>
+        <li><b>Шапка и групповая шапка</b> — наведение, выделение колонки или группы, наведение на выделенную.</li>
+        <li><b>Отмеченная строка</b> — чекбокс, затем наведение и клик по ячейке в ней.</li>
+        <li><b>Временные значения</b> — в Light редактируемая ячейка показана с amber-100 <span class="mono">#FFF6E5</span> (значение темы до релиза 0.78.0; запрос на возврат отправлен). В Beta токенов data-yellow-light и data-blue-light нет: показаны шаги новой палитры Amber/100, Blue/100 (тёмные Amber/950, Blue/950). Всё помечено «временно» в панели.</li>
+        <li><b>HC Light</b> — второй приоритет: где нет данных темы, ячейка заштрихована розовым.</li>
+        <li><b>Токен → ячейки</b> — наведите на строку в панели справа: ячейки с этим ключом обведутся пунктиром. Клик по HEX копирует его.</li>
+      </ol>
+    </section>
+
+    <section class="card">
+      <h2>Затухание контента при скролле</h2>
+      <div class="fades" id="fades"></div>
+    </section>
+  </main>
+
+  <aside class="side">
+    <section class="card">
+      <h2>Правило</h2>
+      <div class="formula" id="formula"></div>
+      <div id="moduleCheck" class="small" style="margin-top:8px"></div>
+      <div class="params" id="params" style="margin-top:12px"></div>
+      <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <button class="btn" id="resetParams">Параметры по умолчанию</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Различимость соседних состояний</h2>
+      <div class="small muted" id="pairsHint" style="margin-bottom:6px"></div>
+      <div id="pairs"></div>
+    </section>
+
+    <section class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap">
+        <h2 style="margin:0" id="tokTitle">Токены</h2>
+        <div class="seg" id="viewSeg"><button data-v="detail">Подробно</button><button data-v="matrix">Результат</button><button data-v="sources">Исходные токены</button></div>
+      </div>
+      <div class="small muted" id="tokHint"></div>
+      <div id="tokWrap"></div>
+    </section>
+
+    <section class="card">
+      <details>
+        <summary>Экспорт (TS / JSON / CSV)</summary>
+        <p class="small muted">Все шесть тем с текущими параметрами. TS — в форме <span class="mono">glide-colors.ts</span> / <span class="mono">custom-colors.ts</span>; CSV карты — ключ, токен, состояние и результат; CSV токенов — вход: hex семантических токенов по темам.</p>
+        <div style="display:flex;gap:8px;margin-bottom:8px"><div class="seg" id="expSeg"><button data-v="ts">TS</button><button data-v="json">JSON</button><button data-v="csv">CSV карты</button><button data-v="csvTokens">CSV токенов</button></div><button class="btn" id="copyExp">Скопировать</button></div>
+        <textarea id="exp" readonly></textarea>
+      </details>
+    </section>
+  </aside>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// code/table-token-states.ts — генератор состояний (esbuild iife, глобал TS)
+var TS = (() => {
+  var __defProp = Object.defineProperty;
+  var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+  var __getOwnPropNames = Object.getOwnPropertyNames;
+  var __hasOwnProp = Object.prototype.hasOwnProperty;
+  var __export = (target, all) => {
+    for (var name in all)
+      __defProp(target, name, { get: all[name], enumerable: true });
+  };
+  var __copyProps = (to, from, except, desc) => {
+    if (from && typeof from === "object" || typeof from === "function") {
+      for (let key of __getOwnPropNames(from))
+        if (!__hasOwnProp.call(to, key) && key !== except)
+          __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+    }
+    return to;
+  };
+  var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+
+  // ../../../../../../../Users/nika/Documents/SBER/table/code/table-token-states.ts
+  var table_token_states_exports = {};
+  __export(table_token_states_exports, {
+    ACHROMATIC_CHROMA: () => ACHROMATIC_CHROMA,
+    STEP: () => STEP,
+    STEP_FACTOR: () => STEP_FACTOR,
+    THEMES: () => THEMES,
+    buildTableColors: () => buildTableColors,
+    defaultUsage: () => defaultUsage,
+    deltaE: () => deltaE,
+    deriveAllStates: () => deriveAllStates,
+    deriveStates: () => deriveStates,
+    deriveThemeStates: () => deriveThemeStates,
+    detectGroup: () => detectGroup,
+    fillStates: () => fillStates,
+    flattenHex: () => flattenHex,
+    hexToOklch: () => hexToOklch,
+    isCardToken: () => isCardToken,
+    oklchToHex: () => oklchToHex,
+    selectedHex: () => selectedHex,
+    stepHex: () => stepHex
+  });
+  var THEMES = [
+    "light",
+    "dark",
+    "betaCoreLight",
+    "betaCoreDark",
+    "highContrastLight",
+    "highContrastDark"
+  ];
+  var STEP = 0.025;
+  var STEP_FACTOR = { light: 1, dark: 1.2 };
+  var ACHROMATIC_CHROMA = 4e-3;
+  var normalize = (name) => name.replace(/^--/, "").replace(/[-_]/g, "").toLowerCase();
+  var detectGroup = (tokenName) => {
+    const n = normalize(tokenName);
+    if (n.startsWith("surface")) return "surface";
+    if (n.startsWith("text") || n.startsWith("inversetext") || /^on(dark|light)text/.test(n)) return "text";
+    if (n.startsWith("outline")) return "outline";
+    if (n.startsWith("data")) return "data";
+    if (n.startsWith("background")) return "background";
+    return "other";
+  };
+  var defaultUsage = (group) => group === "text" ? "text" : group === "outline" ? "outline" : group === "background" ? "static" : "fill";
+  var isCardToken = (tokenName) => normalize(tokenName) === "surfacesolidcard";
+  var parseHex = (hex) => {
+    let h = hex.trim().replace("#", "");
+    if (h.length === 3) h = h.split("").map((ch) => ch + ch).join("");
+    if (h.length === 6) h += "FF";
+    if (!/^[0-9a-fA-F]{8}$/.test(h)) throw new Error(`\u041D\u0435 hex: ${hex}`);
+    return [0, 2, 4, 6].map((i) => parseInt(h.slice(i, i + 2), 16) / 255);
+  };
+  var toHex2 = (v) => Math.round(Math.min(1, Math.max(0, v)) * 255).toString(16).padStart(2, "0");
+  var toLinear = (c) => c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+  var toGamma = (c) => c <= 31308e-7 ? 12.92 * c : 1.055 * c ** (1 / 2.4) - 0.055;
+  var flattenHex = (hex, backgroundHex = "#FFFFFF") => {
+    const fg = parseHex(hex);
+    const bg = parseHex(backgroundHex);
+    const a = fg[3];
+    return "#" + [0, 1, 2].map((i) => toHex2(Math.round((fg[i] * a + bg[i] * (1 - a)) * 255) / 255)).join("").toUpperCase();
+  };
+  var hexToOklch = (hex) => {
+    const [r, g, b] = parseHex(hex).slice(0, 3).map(toLinear);
+    const l_ = Math.cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b);
+    const m_ = Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b);
+    const s_ = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b);
+    const l = 0.2104542553 * l_ + 0.793617785 * m_ - 0.0040720468 * s_;
+    const A = 1.9779984951 * l_ - 2.428592205 * m_ + 0.4505937099 * s_;
+    const B = 0.0259040371 * l_ + 0.7827717662 * m_ - 0.808675766 * s_;
+    return { l, c: Math.hypot(A, B), h: (Math.atan2(B, A) * 180 / Math.PI + 360) % 360 };
+  };
+  var toLinearRgb = ({ l, c, h }) => {
+    const A = c * Math.cos(h * Math.PI / 180);
+    const B = c * Math.sin(h * Math.PI / 180);
+    const l_ = (l + 0.3963377774 * A + 0.2158037573 * B) ** 3;
+    const m_ = (l - 0.1055613458 * A - 0.0638541728 * B) ** 3;
+    const s_ = (l - 0.0894841775 * A - 1.291485548 * B) ** 3;
+    return [
+      4.0767416621 * l_ - 3.3077115913 * m_ + 0.2309699292 * s_,
+      -1.2684380046 * l_ + 2.6097574011 * m_ - 0.3413193965 * s_,
+      -0.0041960863 * l_ - 0.7034186147 * m_ + 1.707614701 * s_
+    ];
+  };
+  var inGamut = (rgb) => rgb.every((v) => v >= -1e-6 && v <= 1 + 1e-6);
+  var oklchToHex = (color) => {
+    const base = { ...color, l: Math.min(1, Math.max(0, color.l)) };
+    let rgb = toLinearRgb(base);
+    if (!inGamut(rgb)) {
+      let lo = 0;
+      let hi = base.c;
+      for (let i = 0; i < 24; i += 1) {
+        const mid = (lo + hi) / 2;
+        if (inGamut(toLinearRgb({ ...base, c: mid }))) lo = mid;
+        else hi = mid;
+      }
+      rgb = toLinearRgb({ ...base, c: lo });
+    }
+    return "#" + rgb.map((v) => toHex2(toGamma(Math.min(1, Math.max(0, v))))).join("").toUpperCase();
+  };
+  var stepHex = (baseHex, d, mode, slopeHex) => {
+    const base = hexToOklch(baseHex);
+    const anchor = mode === "light" ? 1 : 0;
+    const slope = slopeHex ? hexToOklch(slopeHex) : base;
+    const span = Math.abs(slope.l - anchor);
+    const sigma = span > 1e-6 ? slope.c / span : 0;
+    const dl = d / Math.sqrt(1 + sigma * sigma);
+    const l = mode === "light" ? base.l - dl : base.l + dl;
+    return oklchToHex({ l, c: sigma * Math.abs(l - anchor), h: slope.h });
+  };
+  var deltaE = (hexA, hexB) => {
+    const toLab = (hex) => {
+      const { l, c, h } = hexToOklch(hex);
+      return [l, c * Math.cos(h * Math.PI / 180), c * Math.sin(h * Math.PI / 180)];
+    };
+    const [a, b] = [toLab(hexA), toLab(hexB)];
+    return 100 * Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
+  };
+  var pick = (values, theme) => values?.[theme] ?? null;
+  var deriveThemeStates = (source, usage, theme, settings, cell) => {
+    const raw = pick(source.values, theme);
+    const cardRaw = pick(cell.card.values, theme);
+    const setting = settings[theme];
+    if (!raw || !cardRaw || !setting) return null;
+    const card = flattenHex(cardRaw);
+    if (usage !== "fill") {
+      const own = (v, fallback) => {
+        const value = pick(v, theme);
+        return value ? usage === "text" ? value.toUpperCase() : flattenHex(value, card) : fallback;
+      };
+      const rest = usage === "text" ? raw.toUpperCase() : flattenHex(raw, card);
+      const hover = own(source.hover, rest);
+      const active = own(source.active, rest);
+      return { rest, hover, active, hoverActive: own(source.hoverActive, active) };
+    }
+    return fillStates(raw, setting.mode, {
+      stepFactor: setting.stepFactor,
+      cardHex: card,
+      primaryHex: pick(cell.primary.values, theme),
+      selectionHex: pick(cell.selection.values, theme),
+      achromatic: isCardToken(source.name)
+    });
+  };
+  var hoverOnSelection = (active, delta, mode, primary) => {
+    if (!active) return null;
+    const achromatic = hexToOklch(active).c < ACHROMATIC_CHROMA;
+    return stepHex(active, delta, mode, achromatic ? primary : void 0);
+  };
+  var fillStates = (hex, mode, options = {}) => {
+    const card = flattenHex(options.cardHex ?? (mode === "light" ? "#FFFFFF" : "#000000"));
+    const token = flattenHex(hex, card);
+    const delta = STEP * (options.stepFactor ?? STEP_FACTOR[mode]);
+    const active = options.selectionHex ? flattenHex(options.selectionHex, token) : null;
+    const primary = options.primaryHex ? flattenHex(options.primaryHex, card) : void 0;
+    const hoverActive = hoverOnSelection(active, delta, mode, primary);
+    if (options.achromatic || hexToOklch(token).c < ACHROMATIC_CHROMA) {
+      if (!primary) return { rest: token, hover: null, active, hoverActive };
+      return { rest: token, hover: stepHex(token, delta, mode, primary), active, hoverActive };
+    }
+    return { rest: token, hover: stepHex(token, delta, mode), active, hoverActive };
+  };
+  var selectedHex = (cellHex, selectionHex) => flattenHex(selectionHex, cellHex);
+  var deriveStates = (source, settings, cell, usage = defaultUsage(detectGroup(source.name))) => {
+    const out = {};
+    for (const theme of THEMES) out[theme] = deriveThemeStates(source, usage, theme, settings, cell);
+    return out;
+  };
+  var deriveAllStates = (sources, settings, cell) => Object.fromEntries(Object.entries(sources).map(([key, source]) => [key, deriveStates(source, settings, cell)]));
+  var buildTableColors = (map, sources, settings, cell) => {
+    const cache = /* @__PURE__ */ new Map();
+    const out = {};
+    for (const [key, entry] of Object.entries(map)) {
+      const source = sources[entry.source];
+      if (!source) throw new Error(`\u041D\u0435\u0442 \u0441\u0435\u043C\u0430\u043D\u0442\u0438\u0447\u0435\u0441\u043A\u043E\u0433\u043E \u0442\u043E\u043A\u0435\u043D\u0430 ${entry.source} \u0434\u043B\u044F ${key}`);
+      const usage = entry.usage ?? defaultUsage(detectGroup(source.name));
+      const cacheKey = `${entry.source}/${usage}`;
+      let states = cache.get(cacheKey);
+      if (!states) {
+        states = deriveStates(source, settings, cell, usage);
+        cache.set(cacheKey, states);
+      }
+      const s = states;
+      out[key] = Object.fromEntries(THEMES.map((t) => [t, s[t]?.[entry.state] ?? null]));
+    }
+    return out;
+  };
+  return __toCommonJS(table_token_states_exports);
+})();
+
+</script>
+<script>
+// code/table-token-sources.ts — темы, токены, карта ключей (глобал SRC)
+var SRC = (() => {
+  var __defProp = Object.defineProperty;
+  var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+  var __getOwnPropNames = Object.getOwnPropertyNames;
+  var __hasOwnProp = Object.prototype.hasOwnProperty;
+  var __export = (target, all) => {
+    for (var name in all)
+      __defProp(target, name, { get: all[name], enumerable: true });
+  };
+  var __copyProps = (to, from, except, desc) => {
+    if (from && typeof from === "object" || typeof from === "function") {
+      for (let key of __getOwnPropNames(from))
+        if (!__hasOwnProp.call(to, key) && key !== except)
+          __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+    }
+    return to;
+  };
+  var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+
+  // ../../../../../../../Users/nika/Documents/SBER/table/code/table-token-sources.ts
+  var table_token_sources_exports = {};
+  __export(table_token_sources_exports, {
+    CELL: () => CELL,
+    SEMANTIC: () => SEMANTIC,
+    TABLE_COLORS: () => TABLE_COLORS,
+    THEME_SETTINGS: () => THEME_SETTINGS
+  });
+  var v = (light, dark, betaCoreLight, betaCoreDark, highContrastLight = null, highContrastDark = dark) => ({ light, dark, betaCoreLight, betaCoreDark, highContrastLight, highContrastDark });
+  var THEME_SETTINGS = {
+    light: { mode: "light" },
+    dark: { mode: "dark" },
+    betaCoreLight: { mode: "light" },
+    betaCoreDark: { mode: "dark" },
+    highContrastLight: { mode: "light", stepFactor: 1, note: "\u043C\u043D\u043E\u0436\u0438\u0442\u0435\u043B\u044C \u0441\u0442\u0443\u043F\u0435\u043D\u0438 \u043F\u043E\u0434\u043E\u0431\u0440\u0430\u0442\u044C \u0433\u043B\u0430\u0437\u0430\u043C\u0438 \u043D\u0430 \u0441\u0442\u0435\u043D\u0434\u0435" },
+    highContrastDark: { mode: "dark", note: "\u0442\u0435\u043C\u044B \u043D\u0435\u0442 \u0438 \u043D\u0435 \u043F\u043B\u0430\u043D\u0438\u0440\u0443\u0435\u0442\u0441\u044F \u2014 \u0437\u0430\u0433\u043B\u0443\u0448\u043A\u0430, \u043A\u043E\u043F\u0438\u044F dark" }
+  };
+  var src = (tokens) => tokens;
+  var SEMANTIC = src({
+    surfaceSolidCard: { name: "surface-solid-card", values: v("#FFFFFFFF", "#060A0C", "#FFFFFF", "#060A0D", "#FFFFFF") },
+    // TODO HC: --surface-solid-primary контрастной темы
+    surfaceSolidPrimary: { name: "surface-solid-primary", values: v("#F2F5F8", "#13181B", "#F3F7FA", "#14191D") },
+    // TODO HC: --background-primary контрастной темы
+    backgroundPrimary: { name: "background-primary", values: v("#F2F5F8", "#060A0C", "#F3F7FA", "#060A0D") },
+    surfaceAccentMinor: { name: "surface-accent-minor", values: v("#ECF6FCFF", "#071A26FF", "#EFF8FF", "#0C1A24", "#CFE5F2FF") },
+    surfaceAccent: { name: "surface-accent", values: v("#199AF0", "#199AF0", "#1F9EEB", "#1F9EEB", "#0076D2") },
+    outlineAccent: { name: "outline-accent", values: v("#0B7ECB", "#199AF0", "#0087CD", "#1F9EEB", "#0058A2") },
+    outlineSolidPrimary: { name: "outline-solid-primary", values: v("#D5DFE6", "#23292D", "#CFDBE4", "#262626", "#C4CFD7") },
+    surfaceNegative: { name: "surface-negative", values: v("#FF293E", "#FF293E", "#F81C42", "#F81C42", "#E7002F") },
+    // выделение: полупрозрачная акцентная заливка, накладывается на цвет покоя (макет «Выделение ячеек»)
+    surfaceTransparentAccent: { name: "surface-transparent-accent", values: v("#118CDF1F", "#118CDF33", "#0090DA1F", "#0090DA33", "#0076D21F") },
+    // статусные заливки: в макете positive и warning — полупрозрачные surface-transparent-*, negative — surface-negative-minor
+    surfaceTransparentPositive: { name: "surface-transparent-positive", values: v("#1A9E321F", "#1A9E3233", "#21A0381F", "#21A03833", "#198A001F") },
+    surfaceTransparentWarning: { name: "surface-transparent-warning", values: v("#FA5F051F", "#FA5F0533", "#E154001F", "#E1540033", "#D958001F") },
+    // минорные статусные заливки — есть во всех четырёх темах; HC light в tokens.ts их нет
+    surfacePositiveMinor: { name: "surface-positive-minor", values: v("#9EFAAF", "#0A2B10", "#AFFFB1", "#0F2D11") },
+    surfaceNegativeMinor: { name: "surface-negative-minor", values: v("#FFE0E3", "#4A0D13", "#FEDFDE", "#480B11") },
+    surfaceWarningMinor: { name: "surface-warning-minor", values: v("#FEE2D2", "#3D1D0A", "#FEE1D6", "#3C1C0F") },
+    surfaceInfoMinor: { name: "surface-info-minor", values: v("#CFECFF", "#0C283B", "#D3EBFF", "#09283D") },
+    // в beta-темах токенов *-light нет — значения null, пока их не добавят или не выберут другой токен
+    dataYellowLight: { name: "data-yellow-light", values: v("#FFE4AE", "#211807", null, null, null) },
+    dataBlueLight: { name: "data-blue-light", values: v("#EDF8FF", "#0A1924", null, null, null) },
+    // TODO HC: в tokens.ts значение названо dataOrange — подтвердить, что это data-yellow контрастной темы
+    dataYellow: { name: "data-yellow", values: v("#F3A912", "#A16B00", "#E9A431", "#9A6700", "#D49100") },
+    textPrimary: {
+      name: "text-primary",
+      values: v("#13181BF5", "#F2F5F8F5", "#14191DF5", "#F3F7FAF5", "#13181BF5"),
+      hover: v("#13181B93", "#F2F5F893", "#151A1E93", "#F4F8FA93", "#13181B93"),
+      active: v("#13181BC4", "#F2F5F8C4", "#151A1EC4", "#F4F8FAC4", "#13181BC4")
+    }
+  });
+  var CELL = { card: SEMANTIC.surfaceSolidCard, primary: SEMANTIC.surfaceSolidPrimary, selection: SEMANTIC.surfaceTransparentAccent };
+  var TABLE_COLORS = {
+    // фон ячейки и строка под курсором
+    bgCell: { source: "surfaceSolidCard", state: "rest", paints: "\u0444\u043E\u043D \u044F\u0447\u0435\u0439\u043A\u0438" },
+    bgRowHovered: { source: "surfaceSolidCard", state: "hover", paints: "\u0441\u0442\u0440\u043E\u043A\u0430 \u043F\u043E\u0434 \u043A\u0443\u0440\u0441\u043E\u0440\u043E\u043C" },
+    // шапка
+    bgHeader: { source: "surfaceAccentMinor", state: "rest", paints: "\u0448\u0430\u043F\u043A\u0430, \u0438\u0442\u043E\u0433\u043E\u0432\u0430\u044F \u0441\u0442\u0440\u043E\u043A\u0430" },
+    bgHeaderHasFocus: { source: "surfaceAccentMinor", state: "rest", paints: "\u0448\u0430\u043F\u043A\u0430 \u0432 \u0444\u043E\u043A\u0443\u0441\u0435" },
+    bgGroupHeader: { source: "surfaceAccentMinor", state: "rest", paints: "\u0433\u0440\u0443\u043F\u043F\u043E\u0432\u0430\u044F \u0448\u0430\u043F\u043A\u0430" },
+    bgHeaderHovered: { source: "surfaceAccentMinor", state: "hover", paints: "\u0448\u0430\u043F\u043A\u0430 \u043F\u043E\u0434 \u043A\u0443\u0440\u0441\u043E\u0440\u043E\u043C" },
+    bgGroupHeaderHovered: { source: "surfaceAccentMinor", state: "hover", paints: "\u0433\u0440\u0443\u043F\u043F\u043E\u0432\u0430\u044F \u0448\u0430\u043F\u043A\u0430 \u043F\u043E\u0434 \u043A\u0443\u0440\u0441\u043E\u0440\u043E\u043C" },
+    selectionServiceActiveBg: { source: "surfaceAccentMinor", state: "active", paints: "\u0448\u0430\u043F\u043A\u0430 \u0438 \u0441\u043B\u0443\u0436\u0435\u0431\u043D\u0430\u044F \u0437\u043E\u043D\u0430 \u043F\u0440\u0438 \u0432\u044B\u0434\u0435\u043B\u0435\u043D\u0438\u0438" },
+    bgHeaderSelectedHovered: { source: "surfaceAccentMinor", state: "hoverActive", paints: "\u0432\u044B\u0434\u0435\u043B\u0435\u043D\u043D\u0430\u044F \u0448\u0430\u043F\u043A\u0430 \u043F\u043E\u0434 \u043A\u0443\u0440\u0441\u043E\u0440\u043E\u043C" },
+    // отмеченная строка и служебные колонки
+    selectionCheckboxBg: { source: "surfaceAccentMinor", state: "rest", paints: "\u043E\u0442\u043C\u0435\u0447\u0435\u043D\u043D\u0430\u044F \u0441\u0442\u0440\u043E\u043A\u0430" },
+    selectionServiceBg: { source: "surfaceAccentMinor", state: "rest", paints: "\u0441\u043B\u0443\u0436\u0435\u0431\u043D\u044B\u0435 \u043A\u043E\u043B\u043E\u043D\u043A\u0438 \u0432 \u043F\u043E\u043A\u043E\u0435" },
+    bgSelectedRowHovered: { source: "surfaceAccentMinor", state: "hover", paints: "\u043E\u0442\u043C\u0435\u0447\u0435\u043D\u043D\u0430\u044F \u0441\u0442\u0440\u043E\u043A\u0430 \u043F\u043E\u0434 \u043A\u0443\u0440\u0441\u043E\u0440\u043E\u043C" },
+    bgServiceRowHovered: { source: "surfaceAccentMinor", state: "hover", paints: "\u0441\u043B\u0443\u0436\u0435\u0431\u043D\u044B\u0435 \u043A\u043E\u043B\u043E\u043D\u043A\u0438 \u0441\u0442\u0440\u043E\u043A\u0438 \u043F\u043E\u0434 \u043A\u0443\u0440\u0441\u043E\u0440\u043E\u043C" },
+    selectionServiceActiveHoveredBg: { source: "surfaceAccentMinor", state: "hoverActive", paints: "\u0432\u044B\u0434\u0435\u043B\u0435\u043D\u043D\u0430\u044F \u0441\u043B\u0443\u0436\u0435\u0431\u043D\u0430\u044F \u0437\u043E\u043D\u0430 \u043F\u043E\u0434 \u043A\u0443\u0440\u0441\u043E\u0440\u043E\u043C" },
+    // выделение = наложение surface-transparent-accent на подложку: на белом #E2F1FB (light), на отмеченной строке #D1E9F8
+    selectionActiveBg: { source: "surfaceSolidCard", state: "active", paints: "\u0430\u043A\u0442\u0438\u0432\u043D\u0430\u044F \u044F\u0447\u0435\u0439\u043A\u0430, \u0432\u044B\u0434\u0435\u043B\u0435\u043D\u043D\u044B\u0435 \u043A\u043E\u043B\u043E\u043D\u043A\u0430/\u0441\u0442\u0440\u043E\u043A\u0430 \u043D\u0430 \u0431\u0435\u043B\u043E\u043C" },
+    accentLight: { source: "surfaceSolidCard", state: "active", paints: "\u0437\u0430\u043B\u0438\u0432\u043A\u0430 \u0434\u0438\u0430\u043F\u0430\u0437\u043E\u043D\u0430 Glide \u043D\u0430 \u0431\u0435\u043B\u043E\u043C" },
+    selectionActiveCheckboxBg: { source: "surfaceAccentMinor", state: "active", paints: "\u0430\u043A\u0442\u0438\u0432\u043D\u0430\u044F \u044F\u0447\u0435\u0439\u043A\u0430 \u0432 \u043E\u0442\u043C\u0435\u0447\u0435\u043D\u043D\u043E\u0439 \u0441\u0442\u0440\u043E\u043A\u0435" },
+    selectionActiveHoveredBg: { source: "surfaceSolidCard", state: "hoverActive", paints: "\u0432\u044B\u0434\u0435\u043B\u0435\u043D\u0438\u0435 \u0432 \u0441\u0442\u0440\u043E\u043A\u0435 \u043F\u043E\u0434 \u043A\u0443\u0440\u0441\u043E\u0440\u043E\u043C (= \u0432\u044B\u0434\u0435\u043B\u0435\u043D\u0438\u0435)" },
+    selectionActiveCheckboxHoveredBg: { source: "surfaceAccentMinor", state: "hoverActive", paints: "\u0432\u044B\u0434\u0435\u043B\u0435\u043D\u0438\u0435 \u0432 \u043E\u0442\u043C\u0435\u0447\u0435\u043D\u043D\u043E\u0439 \u0441\u0442\u0440\u043E\u043A\u0435 \u043F\u043E\u0434 \u043A\u0443\u0440\u0441\u043E\u0440\u043E\u043C" },
+    // редактирование — токены data-yellow-light / data-blue-light (в beta их нет)
+    bgEditableCell: { source: "dataYellowLight", state: "rest", paints: "\u0440\u0435\u0434\u0430\u043A\u0442\u0438\u0440\u0443\u0435\u043C\u0430\u044F \u044F\u0447\u0435\u0439\u043A\u0430" },
+    bgEditableCellHovered: { source: "dataYellowLight", state: "hover", paints: "\u0440\u0435\u0434\u0430\u043A\u0442\u0438\u0440\u0443\u0435\u043C\u0430\u044F \u044F\u0447\u0435\u0439\u043A\u0430 \u043F\u043E\u0434 \u043A\u0443\u0440\u0441\u043E\u0440\u043E\u043C" },
+    bgEditableCellActive: { source: "dataYellowLight", state: "active", paints: "\u0440\u0435\u0434\u0430\u043A\u0442\u0438\u0440\u0443\u0435\u043C\u0430\u044F \u044F\u0447\u0435\u0439\u043A\u0430 \u0432 \u0434\u0438\u0430\u043F\u0430\u0437\u043E\u043D\u0435 \u0432\u044B\u0434\u0435\u043B\u0435\u043D\u0438\u044F" },
+    bgEditableCellActiveHovered: { source: "dataYellowLight", state: "hoverActive", paints: "\u0440\u0435\u0434\u0430\u043A\u0442\u0438\u0440\u0443\u0435\u043C\u0430\u044F \u044F\u0447\u0435\u0439\u043A\u0430 \u0432 \u0432\u044B\u0434\u0435\u043B\u0435\u043D\u0438\u0438 \u043F\u043E\u0434 \u043A\u0443\u0440\u0441\u043E\u0440\u043E\u043C" },
+    editedSuccessfullyCellColor: { source: "dataBlueLight", state: "rest", paints: "\u0443\u0441\u043F\u0435\u0448\u043D\u043E \u0441\u043E\u0445\u0440\u0430\u043D\u0451\u043D\u043D\u0430\u044F \u044F\u0447\u0435\u0439\u043A\u0430" },
+    editedSuccessfullyCellHoverColor: { source: "dataBlueLight", state: "hover", paints: "\u0441\u043E\u0445\u0440\u0430\u043D\u0451\u043D\u043D\u0430\u044F \u044F\u0447\u0435\u0439\u043A\u0430 \u043F\u043E\u0434 \u043A\u0443\u0440\u0441\u043E\u0440\u043E\u043C" },
+    editedSuccessfullyCellActiveColor: { source: "dataBlueLight", state: "active", paints: "\u0441\u043E\u0445\u0440\u0430\u043D\u0451\u043D\u043D\u0430\u044F \u044F\u0447\u0435\u0439\u043A\u0430 \u0432 \u0434\u0438\u0430\u043F\u0430\u0437\u043E\u043D\u0435 \u0432\u044B\u0434\u0435\u043B\u0435\u043D\u0438\u044F" },
+    editedSuccessfullyCellActiveHoverColor: { source: "dataBlueLight", state: "hoverActive", paints: "\u0441\u043E\u0445\u0440\u0430\u043D\u0451\u043D\u043D\u0430\u044F \u044F\u0447\u0435\u0439\u043A\u0430 \u0432 \u0432\u044B\u0434\u0435\u043B\u0435\u043D\u0438\u0438 \u043F\u043E\u0434 \u043A\u0443\u0440\u0441\u043E\u0440\u043E\u043C" },
+    // ячейки, окрашенные статусом — потребитель задаёт bgCell через themeOverride; четыре стандартных заливки
+    bgCellPositive: { source: "surfaceTransparentPositive", state: "rest", paints: "\u044F\u0447\u0435\u0439\u043A\u0430 \u0441\u043E \u0441\u0442\u0430\u0442\u0443\u0441\u043E\u043C positive" },
+    bgCellPositiveHovered: { source: "surfaceTransparentPositive", state: "hover", paints: "positive \u043F\u043E\u0434 \u043A\u0443\u0440\u0441\u043E\u0440\u043E\u043C" },
+    bgCellPositiveActive: { source: "surfaceTransparentPositive", state: "active", paints: "positive \u0432 \u0432\u044B\u0434\u0435\u043B\u0435\u043D\u0438\u0438" },
+    bgCellPositiveActiveHovered: { source: "surfaceTransparentPositive", state: "hoverActive", paints: "positive \u0432 \u0432\u044B\u0434\u0435\u043B\u0435\u043D\u0438\u0438 \u043F\u043E\u0434 \u043A\u0443\u0440\u0441\u043E\u0440\u043E\u043C" },
+    bgCellNegative: { source: "surfaceNegativeMinor", state: "rest", paints: "\u044F\u0447\u0435\u0439\u043A\u0430 \u0441\u043E \u0441\u0442\u0430\u0442\u0443\u0441\u043E\u043C negative" },
+    bgCellNegativeHovered: { source: "surfaceNegativeMinor", state: "hover", paints: "negative \u043F\u043E\u0434 \u043A\u0443\u0440\u0441\u043E\u0440\u043E\u043C" },
+    bgCellNegativeActive: { source: "surfaceNegativeMinor", state: "active", paints: "negative \u0432 \u0432\u044B\u0434\u0435\u043B\u0435\u043D\u0438\u0438" },
+    bgCellNegativeActiveHovered: { source: "surfaceNegativeMinor", state: "hoverActive", paints: "negative \u0432 \u0432\u044B\u0434\u0435\u043B\u0435\u043D\u0438\u0438 \u043F\u043E\u0434 \u043A\u0443\u0440\u0441\u043E\u0440\u043E\u043C" },
+    bgCellWarning: { source: "surfaceTransparentWarning", state: "rest", paints: "\u044F\u0447\u0435\u0439\u043A\u0430 \u0441\u043E \u0441\u0442\u0430\u0442\u0443\u0441\u043E\u043C warning" },
+    bgCellWarningHovered: { source: "surfaceTransparentWarning", state: "hover", paints: "warning \u043F\u043E\u0434 \u043A\u0443\u0440\u0441\u043E\u0440\u043E\u043C" },
+    bgCellWarningActive: { source: "surfaceTransparentWarning", state: "active", paints: "warning \u0432 \u0432\u044B\u0434\u0435\u043B\u0435\u043D\u0438\u0438" },
+    bgCellWarningActiveHovered: { source: "surfaceTransparentWarning", state: "hoverActive", paints: "warning \u0432 \u0432\u044B\u0434\u0435\u043B\u0435\u043D\u0438\u0438 \u043F\u043E\u0434 \u043A\u0443\u0440\u0441\u043E\u0440\u043E\u043C" },
+    bgCellInfo: { source: "surfaceInfoMinor", state: "rest", paints: "\u044F\u0447\u0435\u0439\u043A\u0430 \u0441\u043E \u0441\u0442\u0430\u0442\u0443\u0441\u043E\u043C info" },
+    bgCellInfoHovered: { source: "surfaceInfoMinor", state: "hover", paints: "info \u043F\u043E\u0434 \u043A\u0443\u0440\u0441\u043E\u0440\u043E\u043C" },
+    bgCellInfoActive: { source: "surfaceInfoMinor", state: "active", paints: "info \u0432 \u0432\u044B\u0434\u0435\u043B\u0435\u043D\u0438\u0438" },
+    bgCellInfoActiveHovered: { source: "surfaceInfoMinor", state: "hoverActive", paints: "info \u0432 \u0432\u044B\u0434\u0435\u043B\u0435\u043D\u0438\u0438 \u043F\u043E\u0434 \u043A\u0443\u0440\u0441\u043E\u0440\u043E\u043C" },
+    // текст, обводки, акцент — пока из темы (правило для «чернил» отдельно)
+    textDark: { source: "textPrimary", state: "rest", paints: "\u0442\u0435\u043A\u0441\u0442 \u044F\u0447\u0435\u0435\u043A" },
+    textHeader: { source: "textPrimary", state: "rest", paints: "\u0442\u0435\u043A\u0441\u0442 \u0448\u0430\u043F\u043A\u0438" },
+    textHeaderSelected: { source: "textPrimary", state: "rest", paints: "\u0442\u0435\u043A\u0441\u0442 \u0432\u044B\u0434\u0435\u043B\u0435\u043D\u043D\u043E\u0439 \u0448\u0430\u043F\u043A\u0438" },
+    textGroupHeader: { source: "textPrimary", state: "rest", paints: "\u0442\u0435\u043A\u0441\u0442 \u0433\u0440\u0443\u043F\u043F\u043E\u0432\u043E\u0439 \u0448\u0430\u043F\u043A\u0438" },
+    borderColor: { source: "outlineSolidPrimary", state: "rest", paints: "\u0441\u0435\u0442\u043A\u0430" },
+    accentColor: { source: "outlineAccent", state: "rest", paints: "\u0440\u0430\u043C\u043A\u0430 \u0432\u044B\u0434\u0435\u043B\u0435\u043D\u0438\u044F \u0438 \u0440\u0435\u0434\u0430\u043A\u0442\u043E\u0440\u0430" },
+    hiddenColumnsIndicatorColor: { source: "outlineAccent", state: "rest", paints: "\u0438\u043D\u0434\u0438\u043A\u0430\u0442\u043E\u0440 \u0441\u043A\u0440\u044B\u0442\u044B\u0445 \u0441\u0442\u043E\u043B\u0431\u0446\u043E\u0432" },
+    errorOutlineColor: { source: "surfaceNegative", state: "rest", usage: "outline", paints: "\u0440\u0430\u043C\u043A\u0430 \u044F\u0447\u0435\u0439\u043A\u0438 \u0441 \u043E\u0448\u0438\u0431\u043A\u043E\u0439" },
+    // затухание при скролле — статично
+    fadeWhite: { source: "surfaceSolidCard", state: "rest", usage: "static", paints: "\u0437\u0430\u0442\u0443\u0445\u0430\u043D\u0438\u0435 \u043D\u0430 \u0431\u0435\u043B\u043E\u043C \u0431\u043B\u043E\u043A\u0435" },
+    fadeGray: { source: "backgroundPrimary", state: "rest", paints: "\u0437\u0430\u0442\u0443\u0445\u0430\u043D\u0438\u0435 \u043D\u0430 \u0441\u0435\u0440\u043E\u043C \u0431\u043B\u043E\u043A\u0435" }
+  };
+  return __toCommonJS(table_token_sources_exports);
+})();
+
+</script>
+<script>
+// OKLCH state rule — shared by node tests and the HTML page
+const R = (() => {
+  const hex2rgb = h => { h = h.replace('#',''); if (h.length === 6) h += 'FF'; return [0,2,4,6].map(i => parseInt(h.slice(i,i+2),16)/255); };
+  const toLin = c => c <= 0.04045 ? c/12.92 : ((c+0.055)/1.055)**2.4;
+  const toGam = c => c <= 0.0031308 ? 12.92*c : 1.055*c**(1/2.4) - 0.055;
+  const lin2lab = ([r,g,b]) => { const l=Math.cbrt(0.4122214708*r+0.5363325363*g+0.0514459929*b), m=Math.cbrt(0.2119034982*r+0.6806995451*g+0.1073969566*b), s=Math.cbrt(0.0883024619*r+0.2817188376*g+0.6299787005*b);
+    return [0.2104542553*l+0.7936177850*m-0.0040720468*s, 1.9779984951*l-2.4285922050*m+0.4505937099*s, 0.0259040371*l+0.7827717662*m-0.8086757660*s]; };
+  const lab2lin = ([L,a,b]) => { const l=(L+0.3963377774*a+0.2158037573*b)**3, m=(L-0.1055613458*a-0.0638541728*b)**3, s=(L-0.0894841775*a-1.2914855480*b)**3;
+    return [4.0767416621*l-3.3077115913*m+0.2309699292*s, -1.2684380046*l+2.6097574011*m-0.3413193965*s, -0.0041960863*l-0.7034186147*m+1.7076147010*s]; };
+  const rgb2lab = rgb => lin2lab(rgb.slice(0,3).map(toLin));
+  const lab2lch = ([L,a,b]) => [L, Math.hypot(a,b), (Math.atan2(b,a)*180/Math.PI+360)%360];
+  const lch2lab = ([L,C,H]) => [L, C*Math.cos(H*Math.PI/180), C*Math.sin(H*Math.PI/180)];
+  const inGamut = lin => lin.every(v => v >= -1e-6 && v <= 1+1e-6);
+  const lch2hex = lch => '#' + lab2lin(lch2lab(lch)).map(v => Math.round(Math.min(1,Math.max(0,toGam(Math.min(1,Math.max(0,v)))))*255).toString(16).padStart(2,'0')).join('').toUpperCase();
+  // alpha-composite a (possibly transparent) hex over an opaque hex → opaque hex
+  const flatten = (hex, bgHex='#FFFFFF') => { const f=hex2rgb(hex), b=hex2rgb(bgHex), a=f[3];
+    return '#' + [0,1,2].map(i => Math.round((f[i]*a + b[i]*(1-a))*255).toString(16).padStart(2,'0')).join('').toUpperCase(); };
+  const lch = hex => lab2lch(rgb2lab(hex2rgb(hex)));
+  const dE = (h1,h2) => { const a=rgb2lab(hex2rgb(h1)), b=rgb2lab(hex2rgb(h2)); return Math.hypot(a[0]-b[0],a[1]-b[1],a[2]-b[2])*100; };
+  const relLum = hex => { const [r,g,b]=hex2rgb(hex).map(toLin); return 0.2126*r+0.7152*g+0.0722*b; };
+  const contrast = (fg, bg) => { const f = flatten(fg, bg); const a=relLum(f), b=relLum(bg); return (Math.max(a,b)+0.05)/(Math.min(a,b)+0.05); };
+
+  // Candidate colour on the "same tint" line: hue fixed, relative chroma (C/Cmax) fixed, L free
+  // hover/active и тинты считает модуль code/table-state-colors.ts (глобал SC) — тот же код, что идёт в продукт.
+  // Здесь d в единицах ΔEok×100, в модуле — /100.
+  const step = (baseHex, d, dir, { neutralHex = null } = {}) =>
+    TS.stepHex(baseHex, d / 100, dir < 0 ? 'light' : 'dark', neutralHex || undefined);
+  const tint = (cardHex, familyHex, d) => null;
+  /** mix(a, b, t): интерполяция в OKLab */
+  const mix = (aHex, bHex, t) => { const a = rgb2lab(hex2rgb(aHex)), b = rgb2lab(hex2rgb(bHex));
+    return '#' + lab2lin([0,1,2].map(i => a[i] + (b[i]-a[i])*t)).map(v => Math.round(Math.min(1,Math.max(0,toGam(Math.min(1,Math.max(0,v)))))*255).toString(16).padStart(2,'0')).join('').toUpperCase(); };
+  return { hex2rgb, lch, dE, flatten, contrast, lch2hex, step, tint, mix };
+})();
+if (typeof module !== 'undefined') module.exports = R;
+
+</script>
+<script>
+// ───────────────────────── Темы ─────────────────────────
+const THEME_ORDER = ['light', 'dark', 'betaCoreLight', 'betaCoreDark', 'highContrastLight'];
+const THEME_META = {
+  light: { label: 'Light', mode: 'light', src: '@salutejs/sdds-themes 0.79.1 · sdds_finai__light' },
+  dark: { label: 'Dark', mode: 'dark', src: '@salutejs/sdds-themes 0.79.1 · sdds_finai__dark' },
+  betaCoreLight: { label: 'Beta Light', mode: 'light', src: '@salutejs-ds/sdds_finai_beta_core 0.1.0 · light' },
+  betaCoreDark: { label: 'Beta Dark', mode: 'dark', src: '@salutejs-ds/sdds_finai_beta_core 0.1.0 · dark' },
+  highContrastLight: { label: 'HC Light · 2-й приоритет', mode: 'light', src: 'TableGlide/tokens.ts (HC): нет surface-solid-primary, background-primary, *-light, *-minor' },
+};
+const EXPORT_THEMES = [...THEME_ORDER, 'highContrastDark'];
+// токены для оформления самой страницы
+const CHROME = {
+  light: { 'text-secondary': '#485056B0', 'text-tertiary': '#707C847A', 'text-accent': '#0B7ECB', 'surface-transparent-accent': '#118CDF1F' },
+  dark: { 'text-secondary': '#D5DFE69E', 'text-tertiary': '#D5DFE64D', 'text-accent': '#199AF0', 'surface-transparent-accent': '#118CDF33' },
+  betaCoreLight: { 'text-secondary': '#475158B0', 'text-tertiary': '#707F897A', 'text-accent': '#0087CD', 'surface-transparent-accent': '#0090DA1F' },
+  betaCoreDark: { 'text-secondary': '#CFDBE49E', 'text-tertiary': '#CFDBE44D', 'text-accent': '#1F9EEB', 'surface-transparent-accent': '#0090DA33' },
+  highContrastLight: { 'text-secondary': '#03070CAF', 'text-tertiary': '#000206A8', 'text-accent': '#0058A2', 'surface-transparent-accent': '#0076D21F' },
+};
+const THEMES = {};
+for (const id of THEME_ORDER) { const t = {}; for (const src of Object.values(SRC.SEMANTIC)) t[src.name] = src.values[id] ?? null; Object.assign(t, CHROME[id]); if (!t['background-primary']) t['background-primary'] = t['surface-solid-card']; THEMES[id] = t; }
+// Временные значения поверх темы (помечены «временно»):
+//  light: data-yellow-light = amber-100 #FFF6E5 — значение темы до релиза 0.78.0; в 0.78.0+ стоит amber-150 #FFE4AE, запрос на возврат отправлен (решение дизайнера 18.09)
+//  beta: токенов data-yellow-light / data-blue-light нет — шаги новой палитры Amber/100, Blue/100 (тёмные Amber/950, Blue/950), запрошены у владельцев темы
+const TEMP = { light: { dataYellowLight: '#FFF6E5' }, betaCoreLight: { dataYellowLight: '#FFF5E7', dataBlueLight: '#EFF8FF' }, betaCoreDark: { dataYellowLight: '#211607', dataBlueLight: '#0C1A24' } };
+const TEMP_NOTE = { light: 'временно: amber-100, до исправления темы', betaCoreLight: 'временно: шаг новой палитры, токена в beta нет', betaCoreDark: 'временно: шаг новой палитры, токена в beta нет' };
+function sourcesFor(id) { const out = {}; for (const [k, src] of Object.entries(SRC.SEMANTIC)) { const tv = TEMP[id] && TEMP[id][k]; out[k] = tv ? { ...src, values: { ...src.values, [id]: tv }, temp: true, tempNote: TEMP_NOTE[id] } : src; } return out; }
+
+// ───────────────────────── Сейчас в коде (dais-ui main 15.09.2026) ─────────────────────────
+const CODE_LIGHT = {
+  bgCell: '#FFFFFF', textDark: '#13181BF5', textHeader: '#13181BF5', textHeaderSelected: '#13181BF5', textGroupHeader: '#13181BF5', borderColor: '#D5DFE6', accentColor: '#0b7ecb', hiddenColumnsIndicatorColor: '#0b7ecb',
+  bgHeader: '#ECF6FC', bgHeaderHasFocus: '#ECF6FC', bgGroupHeader: '#ECF6FC', errorOutlineColor: '#FF3D51',
+  bgRowHovered: '#F7F9FB', bgServiceRowHovered: '#D4E7F2', bgSelectedRowHovered: '#DEECF5', bgHeaderHovered: '#DEECF5', bgGroupHeaderHovered: '#DEECF5',
+  accentLight: '#E2F1FB', selectionActiveBg: '#E2F1FB', selectionActiveCheckboxBg: '#D1E9F8', selectionCheckboxBg: '#ECF6FC', selectionServiceBg: '#ECF6FC', selectionServiceActiveBg: '#D4E7F2',
+  bgEditableCell: '#FFF6E5', bgEditableCellHovered: '#FFF4E0', editedSuccessfullyCellColor: '#EDF8FF', editedSuccessfullyCellHoverColor: '#E6F5FF',
+  fadeWhite: '#FFFFFF', fadeGray: '#F2F5F8',
+};
+const CODE = {
+  light: CODE_LIGHT,
+  // canvas-таблица в dark копирует light (TOKENS_DARK = { ...TOKENS_LIGHT }); тёмные только редактирование и затухание
+  dark: { ...CODE_LIGHT, bgEditableCell: '#211807', bgEditableCellHovered: '#2A1F09', editedSuccessfullyCellColor: '#0A1924', editedSuccessfullyCellHoverColor: '#0C1E2C', fadeWhite: '#13181B', fadeGray: '#060A0C' },
+  betaCoreLight: { ...CODE_LIGHT, textDark: '#14191DF5', textHeader: '#14191DF5', textHeaderSelected: '#14191DF5', textGroupHeader: '#14191DF5', borderColor: '#CFDBE4', accentColor: '#0087CD', hiddenColumnsIndicatorColor: '#0087CD', bgHeader: '#EFF8FF', bgHeaderHasFocus: '#EFF8FF', bgGroupHeader: '#EFF8FF',
+    selectionCheckboxBg: '#EFF8FF', selectionServiceBg: '#EFF8FF', errorOutlineColor: '#F81C42', fadeWhite: null, fadeGray: null },
+  betaCoreDark: null,
+  highContrastLight: { accentColor: '#0058A2', hiddenColumnsIndicatorColor: '#0058A2', accentLight: '#DAE8F1', textDark: '#13181BF5', textHeader: '#13181BF5', textHeaderSelected: '#13181BF5', textGroupHeader: '#13181BF5', bgCell: '#FFFFFF', bgHeader: '#CFE5F2', bgHeaderHasFocus: '#B9D6E7', bgHeaderHovered: '#C2DCEB', borderColor: '#C4CFD7', bgGroupHeader: '#CFE5F2', bgGroupHeaderHovered: '#C2DCEB',
+    bgEditableCell: '#F1DDB8', bgEditableCellHovered: '#E8D4AD', selectionCheckboxBg: '#CFE5F2', selectionActiveBg: '#BFDDF4', selectionActiveCheckboxBg: '#9BCAEA', selectionServiceBg: '#CFE5F2', selectionServiceActiveBg: '#B9D6E7', errorOutlineColor: '#E9203F', bgRowHovered: '#E8EEF2', bgServiceRowHovered: '#B9D6E7', bgSelectedRowHovered: '#C2DCEB',
+    editedSuccessfullyCellColor: '#DAE8F1', editedSuccessfullyCellHoverColor: '#D0E0ED' },
+};
+
+// ───────────────────────── Группы и подписи ─────────────────────────
+const GROUPS = [
+  ['cell', 'Фон ячейки и строка под курсором'], ['header', 'Шапка'], ['row', 'Отмеченная строка и служебные колонки'], ['select', 'Активное выделение'],
+  ['edit', 'Редактирование'], ['status', 'Ячейки со статусом'], ['ink', 'Текст, обводки, акцент — из темы'], ['fade', 'Затухание при скролле'],
+];
+const GROUP_RULES = [
+  [/^(bgCell|bgRowHovered)$/, 'cell'], [/^bgCell(Positive|Negative|Warning|Info)/, 'status'], [/^(bgHeader|bgGroupHeader|selectionServiceActiveBg$)/, 'header'],
+  [/^(selectionCheckboxBg|selectionServiceBg|bgSelectedRowHovered|bgServiceRowHovered|selectionServiceActiveHoveredBg)$/, 'row'], [/^(selectionActive|accentLight)/, 'select'],
+  [/^(bgEditable|editedSuccessfully)/, 'edit'], [/^(text|borderColor|accentColor|hiddenColumns|errorOutline)/, 'ink'], [/^fade/, 'fade'],
+];
+const groupOf = key => { for (const [re, g] of GROUP_RULES) if (re.test(key)) return g; return 'ink'; };
+const STATE_LABEL = { rest: 'покой · токен', hover: 'hover · +1δ по лучу', active: 'выделение · наложение surface-transparent-accent', hoverActive: 'hover на выделении · +1δ по лучу от выделения' };
+const STATE_SHORT = { rest: 'rest', hover: 'hover', active: 'active', hoverActive: 'hoverActive' };
+const SAVED_HOLD_MS = 2000, SAVED_FADE_MS = 400;
+const DEFAULTS = { step: 2.5, darkK: 1.2, hcK: 1 };
+const PARAM_UI = [
+  ['step', 'Ступень δ, ΔEok (hover +1δ, active +2δ, hover + active +3δ)', 0, 6, 0.1],
+  ['darkK', 'Множитель ступени в тёмных темах', 0.5, 2.5, 0.05],
+  ['hcK', 'Множитель ступени в контрастной теме', 0.5, 3, 0.05],
+];
+const store = {
+  get(k, d) { try { const v = localStorage.getItem('tcproto:' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem('tcproto:' + k, JSON.stringify(v)); } catch (e) {} },
+};
+let P = { ...DEFAULTS, ...store.get('params', {}) };
+const fmt = n => (Math.round(n * 100) / 100).toString();
+const HATCH = 'repeating-linear-gradient(45deg,#FF00AA 0 4px,#FFFFFF 4px 8px)';
+
+// ───────────────────────── Расчёт: генератор table-token-states.ts ─────────────────────────
+function mapFor() { return SRC.TABLE_COLORS; }
+function computeRule(id) {
+  const meta = THEME_META[id];
+  const factor = (P.step / 2.5) * (meta.mode === 'dark' ? P.darkK : 1) * (id === 'highContrastLight' ? P.hcK : 1);
+  const settings = { [id]: { mode: meta.mode, stepFactor: factor } };
+  const src = sourcesFor(id), cell = { card: src.surfaceSolidCard, primary: src.surfaceSolidPrimary, selection: src.surfaceTransparentAccent };
+  const out = {}, cache = {};
+  for (const [key, e] of Object.entries(mapFor())) {
+    const s = src[e.source], usage = e.usage || TS.defaultUsage(TS.detectGroup(s.name));
+    const ck = e.source + '/' + usage;
+    const st = ck in cache ? cache[ck] : (cache[ck] = TS.deriveThemeStates(s, usage, id, settings, cell));
+    const hex = st ? st[e.state] : null;
+    const label = usage === 'fill' ? STATE_LABEL[e.state] : e.state === 'rest' ? 'токен как есть' : 'из темы';
+    out[key] = { g: groupOf(key), key, hex, base: s.name, baseHex: s.values[id] || null, rule: label + (s.temp ? ' · ' + s.tempNote : ''), state: e.state, source: e.source, temp: !!s.temp, paints: e.paints || '' };
+  }
+  return out;
+}
+let cache = { key: '', data: {} };
+function ruleValues(id) {
+  const k = JSON.stringify(P);
+  if (cache.key !== k) cache = { key: k, data: {} };
+  return cache.data[id] || (cache.data[id] = computeRule(id));
+}
+function palette(id, source) {
+  const rule = ruleValues(id), code = CODE[id], out = {};
+  for (const key in rule) out[key] = source === 'code' && code && code[key] ? code[key] : rule[key].hex;
+  return out;
+}
+
+// ───────────────────────── Данные таблицы ─────────────────────────
+const COLS = [
+  { id: 'num', title: '№', w: 48, service: true, cls: 'ctr' },
+  { id: 'chk', title: '', w: 44, service: true, checkbox: true, cls: 'ctr' },
+  { id: 'client', title: 'Клиент', w: 196, group: 'Контрагент' },
+  { id: 'inn', title: 'ИНН', w: 124, group: 'Контрагент' },
+  { id: 'sum', title: 'Сумма, ₽', w: 128, group: 'Операция', editable: true, cls: 'r' },
+  { id: 'status', title: 'Статус', w: 118, group: 'Операция', status: true },
+  { id: 'date', title: 'Дата', w: 100, group: 'Операция' },
+  { id: 'comment', title: 'Комментарий', w: 220, group: 'Прочее', editable: true },
+];
+const FIRST_DATA = 2;
+const ROWS = [
+  { client: 'ООО «Северный ветер»', inn: '7701234567', sum: 1250000, status: 'Проведено', date: '02.09.2026', comment: 'Аванс по договору' },
+  { client: 'АО «Промтехснаб»', inn: '7812345678', sum: 86400.5, status: 'В обработке', date: '03.09.2026', comment: 'Сверено с актом' },
+  { client: 'ИП Соколова Н. А.', inn: '50012345', sum: 15000, status: 'Ошибка', date: '03.09.2026', comment: 'ИНН короче нормы' },
+  { client: 'ООО «Альфа-Логистик»', inn: '7723456789', sum: 430000, status: 'Проведено', date: '04.09.2026', comment: 'Строка без чекбокса' },
+  { client: 'ПАО «Уралэнерго»', inn: '6601234567', sum: 2980000, status: 'Черновик', date: '05.09.2026', comment: 'Отмечена по умолчанию' },
+  { client: 'ООО «Вектор»', inn: '7734567890', sum: 57200, status: 'Черновик', date: '08.09.2026', comment: '' },
+  { client: 'АО «Балтийский порт»', inn: '7845678901', sum: -12000, status: 'Ошибка', date: '08.09.2026', comment: 'Сумма отрицательная' },
+  { client: 'ООО «Горизонт»', inn: '7756789012', sum: 312000, status: 'В обработке', date: '09.09.2026', comment: 'Строка без чекбокса' },
+  { client: 'ИП Орлов Д. В.', inn: '7707654321', sum: 9900, status: 'Проведено', date: '10.09.2026', comment: '' },
+  { client: 'ООО «Лента данных»', inn: '7767890123', sum: 780500, status: 'В обработке', date: '11.09.2026', comment: '' },
+];
+const STATUS_FAMILY = { 'Проведено': 'positive', 'Ошибка': 'negative', 'В обработке': 'warning', 'Черновик': 'info' };
+const FAMILY = {
+  editable: ['bgEditableCell', 'bgEditableCellHovered', 'bgEditableCellActive', 'bgEditableCellActiveHovered'],
+  saved: ['editedSuccessfullyCellColor', 'editedSuccessfullyCellHoverColor', 'editedSuccessfullyCellActiveColor', 'editedSuccessfullyCellActiveHoverColor'],
+  positive: ['bgCellPositive', 'bgCellPositiveHovered', 'bgCellPositiveActive', 'bgCellPositiveActiveHovered'],
+  negative: ['bgCellNegative', 'bgCellNegativeHovered', 'bgCellNegativeActive', 'bgCellNegativeActiveHovered'],
+  warning: ['bgCellWarning', 'bgCellWarningHovered', 'bgCellWarningActive', 'bgCellWarningActiveHovered'],
+  info: ['bgCellInfo', 'bgCellInfoHovered', 'bgCellInfoActive', 'bgCellInfoActiveHovered'],
+};
+const famKey = (fam, hovered, active) => FAMILY[fam][(active ? 2 : 0) + (hovered ? 1 : 0)];
+const isStatusFam = fam => fam === 'positive' || fam === 'negative' || fam === 'warning' || fam === 'info';
+const NO_CHECKBOX = new Set([3, 7]);
+const ERRORS = new Set(['2:inn', '6:sum']);
+const GH = 32, HH = 38, RH = 36;
+const NROWS = ROWS.length, SUMMARY = NROWS;
+const colX = []; { let x = 0; for (const c of COLS) { colX.push(x); x += c.w; } }
+const TW = colX[colX.length - 1] + COLS[COLS.length - 1].w;
+const TH = GH + HH + RH * (NROWS + 1);
+const GROUPS_H = []; { let cur = null; COLS.forEach((c, i) => { const g = c.service ? '' : c.group; if (cur && cur.name === g) cur.c1 = i; else { cur = { name: g, c0: i, c1: i }; GROUPS_H.push(cur); } }); }
+const moneyFmt = new Intl.NumberFormat('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const hasCheckbox = r => r < NROWS && !NO_CHECKBOX.has(r);
+
+// ───────────────────────── Состояние ─────────────────────────
+const S = {
+  theme: store.get('theme', 'betaCoreLight'),
+  source: store.get('source', 'rule'),
+  view: store.get('view', 'detail'),
+  exp: 'ts',
+  rowHover: store.get('rowHover', true),
+  activeRow: store.get('activeRow', false),
+  pin: false, hover: null,
+  checked: new Set([4]),
+  edited: new Map([['1:comment', performance.now()]]),
+  holdSaved: false,
+  cur: null, stack: [], cols: new Set(), rows: new Set(), lastRow: null,
+  drag: false, editing: null, probe: null,
+};
+if (!THEME_META[S.theme]) S.theme = 'betaCoreLight';
+
+const $ = id => document.getElementById(id);
+const tbl = $('tbl');
+const rectOf = cur => ({ x0: Math.min(cur.a[0], cur.f[0]), x1: Math.max(cur.a[0], cur.f[0]), y0: Math.min(cur.a[1], cur.f[1]), y1: Math.max(cur.a[1], cur.f[1]) });
+const inRect = (rc, ci, r) => rc && ci >= rc.x0 && ci <= rc.x1 && r >= rc.y0 && r <= rc.y1;
+
+function hoverState() {
+  if (S.pin) return { rows: S.rowHover ? new Set([1, 4]) : new Set(), cells: new Set(['1:comment', '4:sum']), header: 4, group: 0 };
+  const h = S.hover, res = { rows: new Set(), cells: new Set(), header: null, group: null };
+  if (!h || S.drag) return res;
+  if (h.zone === 'body' && h.r < NROWS) { if (S.rowHover) res.rows.add(h.r); res.cells.add(h.r + ':' + COLS[h.ci].id); }
+  if (h.zone === 'header') res.header = h.ci;
+  if (h.zone === 'group') res.group = h.g;
+  return res;
+}
+
+// ───────────────────────── Отрисовка таблицы (слои как в TableGlide) ─────────────────────────
+let paint = {};
+function renderTable() {
+  const V = palette(S.theme, S.source);
+  const hv = hoverState();
+  const curRect = S.cur ? rectOf(S.cur) : null;
+  const single = curRect && curRect.x0 === curRect.x1 && curRect.y0 === curRect.y1;
+  const stackRects = S.stack.map(rectOf);
+  const rangeFillRects = [...stackRects, ...(curRect && !single ? [curRect] : [])];
+  const activeHeaderCols = new Set(), stackRows = new Set();
+  for (const rc of [...stackRects, ...(curRect ? [curRect] : [])]) for (let c = rc.x0; c <= rc.x1; c++) activeHeaderCols.add(c);
+  for (const rc of stackRects) for (let r = rc.y0; r <= rc.y1; r++) stackRows.add(r);
+  const activeRow = S.activeRow && S.cur ? S.cur.a[1] : null;
+  const onChecked = r => S.checked.has(r) && hasCheckbox(r);
+  const activeFill = r => onChecked(r) ? 'selectionActiveCheckboxBg' : 'selectionActiveBg';
+  const layered = S.source === 'rule';
+  paint = {};
+  const txt = V.textDark, line = V.borderColor;
+  let html = '';
+  const cell = (id, x, y, w, h, key, content, cls = '', bg = null) => {
+    paint[id] = key;
+    html += `<div class="c ${cls}" data-k="${key}" style="left:${x}px;top:${y}px;width:${w}px;height:${h}px;background:${bg || V[key] || HATCH};color:${txt};border-color:${line}">${content}</div>`;
+  };
+  const cbox = (on, mixed) => {
+    const bc = on || mixed ? V.accentColor : R.flatten(THEMES[S.theme]['text-tertiary'], R.flatten(THEMES[S.theme]['surface-solid-card']));
+    const fill = on || mixed ? V.accentColor : 'transparent';
+    const mark = on ? '<svg viewBox="0 0 12 12"><path d="M2.5 6.2l2.2 2.2 4.8-4.9" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+      : mixed ? '<svg viewBox="0 0 12 12"><path d="M3 6h6" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg>' : '';
+    return `<span class="cb" style="border-color:${bc};background:${fill}">${mark}</span>`;
+  };
+
+  GROUPS_H.forEach((g, gi) => {
+    const x = colX[g.c0], w = colX[g.c1] + COLS[g.c1].w - x;
+    const dataCols = []; for (let c = Math.max(g.c0, FIRST_DATA); c <= g.c1; c++) dataCols.push(c);
+    const fullySel = dataCols.length > 0 && dataCols.every(c => S.cols.has(c));
+    let key = fullySel ? 'selectionServiceActiveBg' : 'bgGroupHeader';
+    if (hv.group === gi) key = fullySel ? (layered ? 'bgHeaderSelectedHovered' : 'bgHeaderHovered') : 'bgGroupHeaderHovered'; // hover показывается и на выделенной шапке (18.09)
+    cell('g:' + gi, x, 0, w, GH, key, g.name, 'h');
+  });
+  const nChecked = [...S.checked].filter(hasCheckbox).length, nBoxes = ROWS.filter((_, r) => hasCheckbox(r)).length;
+  COLS.forEach((c, ci) => {
+    let key = 'bgHeader';
+    const overridden = activeHeaderCols.has(ci) || S.cols.has(ci) || (S.rows.size > 0 && !c.service);
+    if (overridden) key = 'selectionServiceActiveBg';
+    if (hv.header === ci) key = overridden && layered ? 'bgHeaderSelectedHovered' : 'bgHeaderHovered';
+    const content = c.checkbox ? cbox(nChecked === nBoxes, nChecked > 0 && nChecked < nBoxes) : c.title;
+    cell('h:' + ci, colX[ci], GH, c.w, HH, key, content, 'h ' + (c.cls || ''));
+  });
+  for (let r = 0; r <= NROWS; r++) {
+    const y = GH + HH + RH * r, isSum = r === SUMMARY;
+    COLS.forEach((c, ci) => {
+      const id = r + ':' + c.id;
+      let fadeBg = null;
+      let key = c.service ? 'selectionServiceBg' : 'bgCell';
+      if (isSum) key = 'bgHeader';
+      else {
+        const rowHovered = hv.rows.has(r);
+        if (onChecked(r)) key = rowHovered ? 'bgSelectedRowHovered' : 'selectionCheckboxBg';
+        else if (rowHovered) key = 'bgRowHovered';
+        const selected = !c.service && (rangeFillRects.some(rc => inRect(rc, ci, r)) || (single && inRect(curRect, ci, r)) || S.cols.has(ci) || S.rows.has(r));
+        let fam = null;
+        if (!c.service) {
+          const ph = savedPhase(id);
+          fam = ph ? 'saved' : c.editable ? 'editable' : c.status ? STATUS_FAMILY[ROWS[r].status] : null;
+          if (fam) {
+            // правило: ячейка со своим цветом остаётся в нём; hover — её собственное состояние, выделение —
+            // наложение surface-transparent-accent на её цвет; на выделенных ячейках hover тоже показывается (+1δ от выделения).
+            // код сейчас: hover строки до неё не доходит, у статусных нет hover, выделение закрывает цвет.
+            const cellHovered = layered ? (hv.cells.has(id) || rowHovered) : (hv.cells.has(id) && !isStatusFam(fam));
+            key = famKey(fam, cellHovered, layered && selected);
+            if (ph && ph.fade > 0) fadeBg = R.mix(V[key], V[famKey('editable', cellHovered, layered && selected)], ph.fade);
+          }
+        }
+        if (!fam && layered) {
+          // правило: выделение — наложение на цвет покоя ячейки; индекс строки/колонки подсвечивается; hover на выделении — +1δ от цвета выделения
+          const serviceSelected = (curRect && r >= curRect.y0 && r <= curRect.y1) || stackRows.has(r) || S.rows.has(r) || S.cols.size > 0;
+          if (c.service) { if (rowHovered) key = 'bgServiceRowHovered'; if (serviceSelected) key = rowHovered ? 'selectionServiceActiveHoveredBg' : 'selectionServiceActiveBg'; }
+          else if (selected) key = rowHovered ? (onChecked(r) ? 'selectionActiveCheckboxHoveredBg' : 'selectionActiveHoveredBg') : activeFill(r);
+          else if (activeRow === r) key = hasCheckbox(r) ? (rowHovered ? 'selectionActiveCheckboxHoveredBg' : 'selectionActiveCheckboxBg') : (rowHovered ? 'bgSelectedRowHovered' : 'selectionCheckboxBg');
+        } else if (!fam) {
+          // как в коде сейчас
+          if (!c.service && rangeFillRects.some(rc => inRect(rc, ci, r))) key = 'accentLight';
+          if (c.service && rowHovered) key = 'bgServiceRowHovered';
+          if (curRect) {
+            if (c.service && r >= curRect.y0 && r <= curRect.y1) key = 'selectionServiceActiveBg';
+            if (single && inRect(curRect, ci, r)) key = activeFill(r);
+          }
+          if (S.cols.size) { if (c.service) key = 'selectionServiceActiveBg'; else if (S.cols.has(ci)) key = 'selectionActiveBg'; }
+          if (S.rows.has(r)) key = c.service ? 'selectionServiceActiveBg' : 'selectionActiveBg';
+          if (activeRow === r && !c.service && !inRect(curRect, ci, r)) key = hasCheckbox(r) ? 'selectionActiveCheckboxBg' : 'selectionCheckboxBg';
+          if (c.service && stackRows.has(r)) key = 'selectionServiceActiveBg';
+        } else if (!layered && selected) {
+          key = single && inRect(curRect, ci, r) ? activeFill(r) : (S.cols.has(ci) || S.rows.has(r)) ? 'selectionActiveBg' : 'accentLight';
+        }
+      }
+      let content = '';
+      if (c.id === 'num') content = isSum ? '' : String(r + 1);
+      else if (c.checkbox) content = hasCheckbox(r) ? cbox(S.checked.has(r)) : '';
+      else if (isSum) content = c.id === 'client' ? '<b>Итого</b>' : c.id === 'sum' ? '<b>' + moneyFmt.format(ROWS.reduce((s, x) => s + (+x.sum || 0), 0)) + '</b>' : '';
+      else { const v = ROWS[r][c.id]; content = c.id === 'sum' ? moneyFmt.format(+v || 0) : escapeHtml(v); }
+      cell('b:' + id, colX[ci], y, c.w, RH, key, content, (c.cls || '') + (c.id === 'num' ? ' muted' : ''), key.startsWith('editedSuccessfully') ? fadeBg : null);
+    });
+  }
+  const ring = (id, x, y, w, h, key) => { paint[id] = key; html += `<div class="ring" data-k="${key}" style="left:${x}px;top:${y}px;width:${w}px;height:${h}px;border-color:${V[key]}"></div>`; };
+  const bodyY = r => GH + HH + RH * r;
+  if (curRect) ring('ring:cur', colX[curRect.x0], bodyY(curRect.y0), colX[curRect.x1] + COLS[curRect.x1].w - colX[curRect.x0], RH * (curRect.y1 - curRect.y0 + 1), 'accentColor');
+  const blocks = idx => { const s = [...idx].sort((a, b) => a - b), out = []; for (const i of s) { const last = out[out.length - 1]; if (last && i === last[1] + 1) last[1] = i; else out.push([i, i]); } return out; };
+  blocks(S.cols).forEach(([a, b], i) => ring('ring:c' + i, colX[a], bodyY(0), colX[b] + COLS[b].w - colX[a], RH * (NROWS + 1), 'accentColor'));
+  blocks(S.rows).forEach(([a, b], i) => ring('ring:r' + i, colX[FIRST_DATA], bodyY(a), TW - colX[FIRST_DATA], RH * (b - a + 1), 'accentColor'));
+  for (const e of ERRORS) { const [r, cid] = e.split(':'); const ci = COLS.findIndex(c => c.id === cid); ring('ring:e' + e, colX[ci], bodyY(+r), COLS[ci].w, RH, 'errorOutlineColor'); }
+  tbl.style.width = TW + 'px'; tbl.style.height = TH + 'px';
+  tbl.innerHTML = html;
+  if (S.editing) placeEditor(V);
+  applyProbe();
+  renderStatus();
+}
+function escapeHtml(s) { return String(s).replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch])); }
+
+// ───────────────────────── Сохранённая ячейка: временная подсветка ─────────────────────────
+function savedPhase(id) {
+  if (!S.edited.has(id)) return null;
+  if (S.holdSaved) return { fade: 0 };
+  const age = performance.now() - S.edited.get(id);
+  if (age >= SAVED_HOLD_MS + SAVED_FADE_MS) return null;
+  return { fade: Math.max(0, (age - SAVED_HOLD_MS) / SAVED_FADE_MS) };
+}
+let savedRaf = 0;
+function tickSaved() {
+  if (savedRaf) return;
+  const loop = () => {
+    savedRaf = 0;
+    if (S.holdSaved) { renderTable(); return; }
+    const now = performance.now();
+    for (const [id, t0] of S.edited) if (now - t0 >= SAVED_HOLD_MS + SAVED_FADE_MS) S.edited.delete(id);
+    if (!S.editing) renderTable();
+    if (S.edited.size) savedRaf = requestAnimationFrame(loop);
+  };
+  savedRaf = requestAnimationFrame(loop);
+}
+
+// ───────────────────────── Редактор ─────────────────────────
+let editorEl = null;
+function startEdit(ci, r) {
+  if (!COLS[ci].editable || r >= NROWS) return;
+  S.editing = { ci, r };
+  editorEl = document.createElement('input');
+  editorEl.className = 'editor';
+  editorEl.value = ROWS[r][COLS[ci].id];
+  editorEl.addEventListener('keydown', e => { if (e.key === 'Enter') { commitEdit(); e.preventDefault(); } if (e.key === 'Escape') { cancelEdit(); e.preventDefault(); } e.stopPropagation(); });
+  editorEl.addEventListener('blur', () => { if (S.editing) commitEdit(); });
+  renderTable();
+  editorEl.focus(); editorEl.select();
+}
+function placeEditor(V) {
+  const { ci, r } = S.editing;
+  Object.assign(editorEl.style, { left: colX[ci] + 'px', top: GH + HH + RH * r + 'px', width: COLS[ci].w + 'px', height: RH + 'px', background: V.bgCell, color: V.textDark, borderColor: V.accentColor });
+  tbl.appendChild(editorEl);
+}
+function commitEdit() {
+  const { ci, r } = S.editing, c = COLS[ci];
+  const v = editorEl.value;
+  ROWS[r][c.id] = c.id === 'sum' ? (parseFloat(String(v).replace(/\s/g, '').replace(',', '.')) || 0) : v;
+  S.edited.set(r + ':' + c.id, performance.now()); tickSaved();
+  S.editing = null; editorEl = null;
+  renderTable();
+}
+function cancelEdit() { S.editing = null; editorEl = null; renderTable(); }
+
+// ───────────────────────── Мышь и клавиатура ─────────────────────────
+function hit(e) {
+  const b = tbl.getBoundingClientRect(), x = e.clientX - b.left, y = e.clientY - b.top;
+  if (x < 0 || y < 0 || x >= TW || y >= TH) return null;
+  let ci = COLS.length - 1; for (let i = 0; i < COLS.length; i++) if (x < colX[i] + COLS[i].w) { ci = i; break; }
+  if (y < GH) return { zone: 'group', ci, g: GROUPS_H.findIndex(g => ci >= g.c0 && ci <= g.c1) };
+  if (y < GH + HH) return { zone: 'header', ci };
+  return { zone: 'body', ci, r: Math.min(NROWS, Math.floor((y - GH - HH) / RH)) };
+}
+const clearSel = () => { S.cur = null; S.stack = []; S.cols = new Set(); S.rows = new Set(); };
+tbl.addEventListener('mousedown', e => {
+  if (S.editing || e.button !== 0) return;
+  const h = hit(e); if (!h) return;
+  const add = e.ctrlKey || e.metaKey;
+  if (h.zone === 'group') {
+    const g = GROUPS_H[h.g], cols = []; for (let c = Math.max(g.c0, FIRST_DATA); c <= g.c1; c++) cols.push(c);
+    if (!cols.length) return;
+    const next = add ? new Set(S.cols) : new Set(); cols.forEach(c => next.add(c));
+    clearSel(); S.cols = next;
+  } else if (h.zone === 'header') {
+    if (COLS[h.ci].checkbox) { const all = ROWS.map((_, r) => r).filter(hasCheckbox); const allOn = all.every(r => S.checked.has(r)); S.checked = allOn ? new Set() : new Set(all); }
+    else if (!COLS[h.ci].service) { const next = add ? new Set(S.cols) : new Set(); if (add && next.has(h.ci)) next.delete(h.ci); else next.add(h.ci); clearSel(); S.cols = next; }
+  } else if (h.r < NROWS) {
+    const c = COLS[h.ci];
+    if (c.checkbox) { if (hasCheckbox(h.r)) { S.checked.has(h.r) ? S.checked.delete(h.r) : S.checked.add(h.r); } }
+    else if (c.id === 'num') {
+      let next = add ? new Set(S.rows) : new Set();
+      if (e.shiftKey && S.lastRow != null) { for (let r = Math.min(S.lastRow, h.r); r <= Math.max(S.lastRow, h.r); r++) next.add(r); }
+      else if (add && next.has(h.r)) next.delete(h.r); else next.add(h.r);
+      clearSel(); S.rows = next; S.lastRow = h.r;
+    } else if (e.detail === 2 && c.editable) { e.preventDefault(); startEdit(h.ci, h.r); return; }
+    else { const keepStack = add && S.cur ? [...S.stack, S.cur] : []; clearSel(); S.stack = keepStack; S.cur = { a: [h.ci, h.r], f: [h.ci, h.r] }; S.drag = true; }
+  }
+  e.preventDefault();
+  renderTable();
+});
+window.addEventListener('mousemove', e => {
+  if (S.drag && S.cur) {
+    const b = tbl.getBoundingClientRect();
+    const x = e.clientX - b.left, y = e.clientY - b.top;
+    let ci = COLS.length - 1; for (let i = 0; i < COLS.length; i++) if (x < colX[i] + COLS[i].w) { ci = i; break; }
+    ci = Math.max(FIRST_DATA, ci);
+    const r = Math.max(0, Math.min(NROWS - 1, Math.floor((y - GH - HH) / RH)));
+    if (S.cur.f[0] !== ci || S.cur.f[1] !== r) { S.cur.f = [ci, r]; renderTable(); }
+    return;
+  }
+  const h = hit(e);
+  const same = (a, b) => (!a && !b) || (a && b && a.zone === b.zone && a.ci === b.ci && a.r === b.r && a.g === b.g);
+  if (!same(h, S.hover)) { S.hover = h; renderTable(); }
+});
+window.addEventListener('mouseup', () => { if (S.drag) { S.drag = false; renderTable(); } });
+document.addEventListener('keydown', e => {
+  if (e.target.matches && e.target.matches('textarea, input:not([type=checkbox]):not([type=range])')) return;
+  if (e.key === 'Escape') { clearSel(); renderTable(); }
+  if (e.key === 'Enter' && S.cur) { const rc = rectOf(S.cur); if (rc.x0 === rc.x1 && rc.y0 === rc.y1) { startEdit(rc.x0, rc.y0); e.preventDefault(); } }
+});
+
+// ───────────────────────── Статус под таблицей ─────────────────────────
+function describe(key) {
+  const V = palette(S.theme, S.source), rule = ruleValues(S.theme)[key];
+  const codeMissing = S.source === 'code' && !(CODE[S.theme] && CODE[S.theme][key]);
+  const hex = V[key];
+  return `<b>${key}</b> ${sw(hex, true)}<b>${hex || 'нет данных темы'}</b>` +
+    (S.source === 'rule' ? ` <span class="muted">← <span class="mono">${rule.base}</span> · ${rule.rule}</span>` : codeMissing ? ' <span class="warn">нет в коде — показано правило</span>' : ' <span class="muted">значение из кода</span>');
+}
+function renderStatus() {
+  const h = S.hover, el = $('status');
+  if (S.pin) { el.innerHTML = '<span class="muted">Наведения закреплены: строки 2 и 5, шапка «Сумма», группа «Контрагент», ячейки «Комментарий» (стр. 2) и «Сумма» (стр. 5).</span>'; return; }
+  if (!h) { el.innerHTML = '<span class="muted">Наведите на ячейку — здесь будет её токен и состояние.</span>'; return; }
+  let id, where;
+  if (h.zone === 'group') { id = 'g:' + h.g; where = `Групповая шапка «${GROUPS_H[h.g].name || '—'}»`; }
+  else if (h.zone === 'header') { id = 'h:' + h.ci; where = `Шапка «${COLS[h.ci].title || 'чекбокс'}»`; }
+  else { id = 'b:' + h.r + ':' + COLS[h.ci].id; where = (h.r === SUMMARY ? 'Итоговая строка' : `Строка ${h.r + 1}`) + `, «${COLS[h.ci].title || 'чекбокс'}»`; }
+  const key = paint[id];
+  el.innerHTML = key ? `${where} · фон ${describe(key)}` : where;
+}
+
+// ───────────────────────── Панель токенов ─────────────────────────
+function applyProbe() {
+  tbl.querySelectorAll('.probe').forEach(n => n.classList.remove('probe'));
+  if (S.probe) tbl.querySelectorAll(`[data-k="${S.probe}"]`).forEach(n => n.classList.add('probe'));
+}
+function sw(hex, small) {
+  if (!hex) return `<span class="sw${small ? ' s' : ''}" style="background:${HATCH}" title="нет данных темы"></span>`;
+  const alpha = hex.length === 9 && !/FF$/i.test(hex);
+  return `<span class="sw${small ? ' s' : ''}${alpha ? ' a' : ''}"><i style="background:${hex}"></i></span>`;
+}
+const hexCell = v => v ? `${sw(v, true)}<span class="hex" data-copy="${v}">${v}</span>` : '<span class="warn">—</span>';
+function renderPanel() {
+  const id = S.theme, rule = ruleValues(id), code = CODE[id], V = palette(id, S.source);
+  const title = { detail: `Токены · ${THEME_META[id].label}`, matrix: 'Результат · все темы', sources: 'Исходные токены · все темы' }[S.view];
+  $('tokTitle').textContent = title;
+  $('tokHint').innerHTML = S.view === 'detail'
+    ? `Источник: <span class="mono">${THEME_META[id].src}</span>. Стрелка — семантический токен и состояние. ΔE — расстояние OKLab ×100 до значения в коде. Aa — контраст text-primary. Клик по HEX — скопировать.`
+    : S.view === 'matrix' ? 'Hex каждого ключа по темам с текущими параметрами; highContrastDark — копия dark. Клик по HEX — скопировать.'
+    : 'Для разработчиков: сначала вход — семантические токены с hex по темам, затем карта — какой токен и в каком состоянии стоит за каждым ключом. Экспорт CSV — внизу.';
+  let h = '';
+  if (S.view === 'detail') {
+    h += '<table class="tok">';
+    for (const [g, gl] of GROUPS) {
+      h += `<tr class="grp"><td colspan="4">${gl}</td></tr>`;
+      for (const key in rule) {
+        const x = rule[key]; if (x.g !== g) continue;
+        const cv = code && code[key];
+        const d = cv && x.hex ? R.dE(R.flatten(x.hex, '#FFFFFF'), R.flatten(cv, '#FFFFFF')) : null;
+        const cr = x.hex ? (x.g === 'ink' ? R.contrast(x.hex, rule.bgCell.hex) : R.contrast(THEMES[id]['text-primary'], x.hex)) : null;
+        h += `<tr class="t" data-probe="${key}">
+          <td style="width:36px">${sw(x.hex)}</td>
+          <td><div class="key">${key}</div><div class="small muted">${x.paints}</div>
+              <div class="small">← <span class="mono">${x.base}</span> ${sw(x.baseHex, true)}<span class="${x.temp ? 'warn' : 'muted'}">${x.rule}</span></div></td>
+          <td style="text-align:right"><div class="hex" data-copy="${x.hex || ''}">${x.hex || '<span class="warn">нет данных</span>'}</div>
+              ${cr ? `<div class="small muted" title="${x.g === 'ink' ? 'контраст к фону ячейки' : 'контраст text-primary на этом фоне'}">Aa ${cr.toFixed(1)}</div>` : ''}</td>
+          <td style="text-align:right;white-space:nowrap" class="small">${cv ? `<div>код ${sw(cv, true)}<span class="mono">${cv}</span></div><div class="${d > 3 ? 'warn' : 'muted'}">ΔE ${d.toFixed(1)}</div>` : '<span class="muted">нет в коде</span>'}</td>
+        </tr>`;
+      }
+    }
+    h += '</table>';
+  } else if (S.view === 'sources') {
+    const cols = THEME_ORDER, label = t => THEME_META[t].label.replace(' · 2-й приоритет', '');
+    h += '<div class="small" style="margin:6px 0 4px"><b>1. Вход: семантические токены и их hex</b> — единственное, что задаётся руками.</div>';
+    h += '<div style="overflow-x:auto"><table class="mx"><tr><th>Токен</th>' + cols.map(t => `<th>${label(t)}</th>`).join('') + '</tr>';
+    for (const [k, srcBase] of Object.entries(SRC.SEMANTIC)) {
+      const row = (name, get) => `<tr><td class="mono">${name}</td>` + cols.map(t => { const v = get(t); const temp = TEMP[t] && TEMP[t][k] && name === srcBase.name ? TEMP_NOTE[t] : ''; return `<td>${v ? hexCell(v) : '<span class="warn">—</span>'}${temp ? ' <span class="warn small">' + temp + '</span>' : ''}</td>`; }).join('') + '</tr>';
+      h += row(srcBase.name, t => sourcesFor(t)[k].values[t]);
+      if (srcBase.hover) h += row(srcBase.name + '-hover · из темы', t => srcBase.hover[t]);
+      if (srcBase.active) h += row(srcBase.name + '-active · из темы', t => srcBase.active[t]);
+    }
+    h += '</table></div>';
+    h += '<div class="small" style="margin:14px 0 4px"><b>2. Карта: ключ таблицы → токен + состояние</b> — всё, у чего состояние не rest, считает генератор.</div>';
+    h += '<div style="overflow-x:auto"><table class="mx"><tr><th>Ключ</th><th>Что красит</th><th>Токен</th><th>Состояние</th></tr>';
+    for (const [g, gl] of GROUPS) {
+      h += `<tr><th colspan="4" style="padding-top:12px">${gl}</th></tr>`;
+      for (const key in rule) if (rule[key].g === g) { const x = rule[key]; h += `<tr data-probe="${key}"><td class="key">${key}</td><td class="small">${x.paints}</td><td class="mono">${x.base}</td><td class="mono">${STATE_SHORT[x.state]}</td></tr>`; }
+    }
+    h += '</table></div>';
+  } else {
+    const cols = EXPORT_THEMES;
+    const label = t => t === 'highContrastDark' ? 'HC Dark (= dark)' : THEME_META[t].label.replace(' · 2-й приоритет', '');
+    h += '<div style="overflow-x:auto"><table class="mx"><tr><th>Ключ</th><th>Токен · состояние</th>' + cols.map(t => `<th>${label(t)}</th>`).join('') + '</tr>';
+    for (const [g, gl] of GROUPS) {
+      h += `<tr><th colspan="${cols.length + 2}" style="padding-top:12px">${gl}</th></tr>`;
+      for (const key in rule) if (rule[key].g === g) {
+        const x = rule[key];
+        h += `<tr data-probe="${key}"><td class="key">${key}</td><td class="mono small">${x.base} · ${STATE_SHORT[x.state]}</td>` + cols.map(t => `<td>${hexCell((t === 'highContrastDark' ? ruleValues('dark') : ruleValues(t))[key].hex)}</td>`).join('') + '</tr>';
+      }
+    }
+    h += '</table></div>';
+  }
+  $('tokWrap').innerHTML = h;
+}
+$('tokWrap').addEventListener('mouseover', e => { const tr = e.target.closest('[data-probe]'); const k = tr ? tr.dataset.probe : null; if (k !== S.probe) { S.probe = k; applyProbe(); } });
+$('tokWrap').addEventListener('mouseleave', () => { S.probe = null; applyProbe(); });
+document.addEventListener('click', e => { const c = e.target.closest('[data-copy]'); if (c && c.dataset.copy) copy(c.dataset.copy); });
+function copy(text) {
+  const done = () => toast('Скопировано: ' + (text.length > 40 ? 'экспорт' : text));
+  try { navigator.clipboard.writeText(text).then(done, () => fallback()); } catch (e) { fallback(); }
+  function fallback() { const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); done(); } catch (e) {} ta.remove(); }
+}
+let toastT; function toast(m) { const t = $('toast'); t.textContent = m; t.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('on'), 1400); }
+
+// ───────────────────────── Правило, параметры, экспорт ─────────────────────────
+function renderFormula() {
+  const k = THEME_META[S.theme].mode === 'dark' ? P.darkK : 1, kh = S.theme === 'highContrastLight' ? P.hcK : 1;
+  const d = P.step * k * kh;
+  $('formula').textContent =
+`каждый цвет таблицы = семантический токен × состояние
+  rest          токен как есть
+  hover         +1δ по лучу = ${fmt(d)} ΔEok
+  выделение     surface-transparent-accent поверх цвета покоя
+                (компонент Selection Area, макет «Выделение ячеек»);
+                светлые 12 % · тёмные 20 %
+  hover на выделении  +1δ по лучу от цвета выделения
+
+шаг по лучу (code/table-token-states.ts):
+  опора: белый (L=1) в светлых, чёрный (L=0) в тёмных
+  σ  = C / |L − L_опоры|,  ΔL = d / √(1 + σ²)
+  L′ = L ∓ ΔL (от опоры),  C′ = σ · |L′ − L_опоры|,  h′ = h
+  фон без хромы: луч задаёт surface-solid-primary
+  текст и обводки: пока из темы
+
+выделение (sRGB-композит, как в макете):
+  c′ = α·c_sel + (1 − α)·c_cell по каждому каналу, α = 0.12 | 0.20
+
+${THEME_META[S.theme].label}: δ = ${fmt(P.step)}${k !== 1 ? ` × ${fmt(k)}` : ''}${kh !== 1 ? ` × ${fmt(kh)}` : ''} = ${fmt(d)}`;
+  renderModuleCheck();
+}
+function renderModuleCheck() {
+  const isDefault = Object.keys(DEFAULTS).every(k => P[k] === DEFAULTS[k]);
+  if (!isDefault) { $('moduleCheck').innerHTML = '<span class="warn">Параметры изменены — сверка с table-token-sources.ts отключена.</span>'; return; }
+  // генератору отдаём те же временные значения (TEMP), что показывает страница
+  const SEM = Object.fromEntries(Object.entries(SRC.SEMANTIC).map(([k, src]) => { const values = { ...src.values }; let changed = false; for (const [t, ov] of Object.entries(TEMP)) if (ov[k]) { values[t] = ov[k]; changed = true; } return [k, changed ? { ...src, values } : src]; }));
+  const mod = TS.buildTableColors(SRC.TABLE_COLORS, SEM, SRC.THEME_SETTINGS, SRC.CELL);
+  let same = 0, total = 0; const diff = [];
+  for (const id of THEME_ORDER) { const rule = ruleValues(id); for (const key in rule) { const m = mod[key][id]; if (m == null) continue; total++; if (m === rule[key].hex) same++; else diff.push(`${id} ${key}`); } }
+  $('moduleCheck').innerHTML = diff.length ? `<span class="warn">Расходится с генератором: ${diff.join(', ')}</span>` : `<span class="muted">✓ Совпадает с code/table-token-states.ts + table-token-sources.ts: ${same} из ${total} hex (временные значения light и beta переданы генератору как вход).</span>`;
+}
+function renderParams() {
+  $('params').innerHTML = PARAM_UI.map(([k, l, mn, mx, s]) => `<label class="small" for="p_${k}">${l}</label><input type="range" id="p_${k}" min="${mn}" max="${mx}" step="${s}" value="${P[k]}"><output id="o_${k}">${fmt(P[k])}</output>`).join('');
+  PARAM_UI.forEach(([k]) => $('p_' + k).addEventListener('input', e => { P[k] = +e.target.value; $('o_' + k).textContent = fmt(P[k]); store.set('params', P); renderAll(); }));
+}
+const GLIDE_KEYS = ['accentColor', 'accentLight', 'textDark', 'textHeader', 'textHeaderSelected', 'textGroupHeader', 'bgCell', 'bgHeader', 'bgHeaderHasFocus', 'bgHeaderHovered', 'borderColor', 'bgGroupHeader', 'bgGroupHeaderHovered', 'hiddenColumnsIndicatorColor'];
+const CUSTOM_KEYS = ['bgEditableCell', 'bgEditableCellHovered', 'bgEditableCellActive', 'bgEditableCellActiveHovered', 'selectionCheckboxBg', 'selectionActiveBg', 'selectionActiveCheckboxBg', 'selectionServiceBg', 'selectionServiceActiveBg', 'errorOutlineColor', 'bgRowHovered', 'bgServiceRowHovered', 'bgSelectedRowHovered', 'bgHeaderSelectedHovered', 'selectionActiveHoveredBg', 'selectionActiveCheckboxHoveredBg', 'selectionServiceActiveHoveredBg',
+  ...['Positive', 'Negative', 'Warning', 'Info'].flatMap(s => ['bgCell' + s, `bgCell${s}Hovered`, `bgCell${s}Active`, `bgCell${s}ActiveHovered`])];
+const TABLE_KEYS = [['headerColor', 'bgHeader'], ['editableCellColor', 'bgEditableCell'], ['editableCellHoverColor', 'bgEditableCellHovered'], 'editedSuccessfullyCellColor', 'editedSuccessfullyCellHoverColor', 'editedSuccessfullyCellActiveColor', 'editedSuccessfullyCellActiveHoverColor'];
+const valueFor = (t, key) => (t === 'highContrastDark' ? ruleValues('dark') : ruleValues(t))[key];
+function renderExport() {
+  const head = `// Модель «токен + состояние»: hover — δ ${fmt(P.step)} ΔEok по лучу (тёмные ×${fmt(P.darkK)}, контрастная ×${fmt(P.hcK)}); выделение — наложение surface-transparent-accent на цвет покоя (макет «Выделение ячеек»); hover на выделении — +1δ по лучу от цвета выделения\n// highContrastDark — заглушка, копия dark. null — нет данных темы. Временные значения: light data-yellow-light = amber-100 #FFF6E5 (значение темы до 0.78.0, запрос на возврат отправлен); beta data-yellow-light / data-blue-light = шаги новой палитры Amber/100, Blue/100 и Amber/950, Blue/950 (токенов в beta нет).\n`;
+  if (S.exp === 'json') {
+    const o = {}; for (const t of EXPORT_THEMES) { o[t] = {}; for (const k in ruleValues('light')) o[t][k] = valueFor(t, k).hex; }
+    $('exp').value = JSON.stringify({ params: P, themes: o }, null, 2);
+    return;
+  }
+  if (S.exp === 'csv') {
+    const rule = ruleValues('light');
+    let csv = 'key,paints,token,state,' + EXPORT_THEMES.map(t => 'result_' + t).join(',') + '\n';
+    for (const k in rule) csv += [k, JSON.stringify(rule[k].paints), rule[k].base, STATE_SHORT[rule[k].state], ...EXPORT_THEMES.map(t => valueFor(t, k).hex || '')].join(',') + '\n';
+    $('exp').value = csv;
+    return;
+  }
+  if (S.exp === 'csvTokens') {
+    let csv = 'token,' + EXPORT_THEMES.join(',') + '\n';
+    const val = (t, k) => (t === 'highContrastDark' ? sourcesFor('dark')[k].values.dark : sourcesFor(t)[k].values[t]) || '';
+    for (const [k, src] of Object.entries(SRC.SEMANTIC)) {
+      csv += [src.name, ...EXPORT_THEMES.map(t => val(t, k))].join(',') + '\n';
+      if (src.hover) csv += [src.name + '-hover', ...EXPORT_THEMES.map(t => src.hover[t === 'highContrastDark' ? 'dark' : t] || '')].join(',') + '\n';
+      if (src.active) csv += [src.name + '-active', ...EXPORT_THEMES.map(t => src.active[t === 'highContrastDark' ? 'dark' : t] || '')].join(',') + '\n';
+    }
+    $('exp').value = csv;
+    return;
+  }
+  const block = (name, keys) => `const ${name} = {\n` + keys.map(k => { const [out, src] = Array.isArray(k) ? k : [k, k];
+    return `  ${out}: {\n` + EXPORT_THEMES.map(t => { const v = valueFor(t, src).hex; return `    ${t}: ${v ? `'${v}'` : 'null'},`; }).join('\n') + `\n  },`; }).join('\n') + '\n} as const;\n';
+  $('exp').value = head + '\n// TableGlide/theming/glide-colors.ts\n' + block('GLIDE_COLORS', GLIDE_KEYS) +
+    '\n// TableGlide/theming/custom-colors.ts\n' + block('CUSTOM_COLORS', CUSTOM_KEYS) +
+    '\n// Table/styles/customColors.ts и TableCanvas/styles/customColors.ts\n' + block('CUSTOM_COLORS', TABLE_KEYS) +
+    '\n// Затухание (BlockGradientScroll)\n' + block('FADE_COLORS', ['fadeWhite', 'fadeGray']);
+}
+
+// ───────────────────────── Затухание ─────────────────────────
+function renderFades() {
+  const V = palette(S.theme, S.source), rule = ruleValues(S.theme);
+  const lines = Array.from({ length: 14 }, (_, i) => `<div style="padding:3px 0">Строка контента ${i + 1} — прокрутите блок</div>`).join('');
+  $('fades').innerHTML = ['fadeWhite', 'fadeGray'].map(k => {
+    const hex = (V[k] || '#808080').slice(0, 7);
+    return `<div><div class="fade" style="background:${hex};color:${V.textDark}" data-k="${k}"><div class="in">${lines}</div><div class="g" style="background:linear-gradient(to top, ${hex} 0%, ${hex}00 100%)"></div><span class="lbl">${k}</span></div>
+      <div class="small" style="margin-top:6px"><span class="mono">${V[k] || 'нет данных'}</span> <span class="muted">← ${rule[k].base}</span></div></div>`;
+  }).join('');
+}
+
+// ───────────────────────── Хром страницы из токенов темы ─────────────────────────
+function applyChrome() {
+  const t = THEMES[S.theme], card = R.flatten(t['surface-solid-card']), bg = R.flatten(t['background-primary'] || t['surface-solid-card']);
+  const set = (k, v) => document.documentElement.style.setProperty(k, v);
+  set('--bg', bg); set('--card', card);
+  set('--text', R.flatten(t['text-primary'], card)); set('--text2', R.flatten(t['text-secondary'], card));
+  set('--line', R.flatten(t['outline-solid-primary'], card)); set('--accent', R.flatten(t['text-accent'], card));
+  set('--accentBg', R.flatten(t['surface-transparent-accent'], card));
+  document.documentElement.style.colorScheme = THEME_META[S.theme].mode;
+}
+
+// ───────────────────────── Верхняя панель ─────────────────────────
+function seg(el, value, onPick, disabled = {}) {
+  el.querySelectorAll('button').forEach(b => { b.setAttribute('aria-pressed', String(b.dataset.v === value)); b.disabled = !!disabled[b.dataset.v]; b.onclick = () => onPick(b.dataset.v); });
+}
+$('themeSeg').innerHTML = THEME_ORDER.map(t => `<button data-v="${t}">${THEME_META[t].label}</button>`).join('');
+$('optRowHover').checked = S.rowHover; $('optActiveRow').checked = S.activeRow;
+$('optRowHover').onchange = e => { S.rowHover = e.target.checked; store.set('rowHover', S.rowHover); renderTable(); };
+$('optActiveRow').onchange = e => { S.activeRow = e.target.checked; store.set('activeRow', S.activeRow); renderTable(); };
+$('optPin').onchange = e => { S.pin = e.target.checked; renderTable(); };
+$('resetParams').onclick = () => { P = { ...DEFAULTS }; store.set('params', P); renderParams(); renderAll(); };
+$('copyExp').onclick = () => copy($('exp').value);
+
+const PRESETS = [
+  ['Сбросить', () => { clearSel(); S.checked = new Set([4]); }],
+  ['Ячейка', () => { clearSel(); S.cur = { a: [6, 1], f: [6, 1] }; }],
+  ['Ячейка в отмеченной строке', () => { clearSel(); S.checked.add(4); S.cur = { a: [6, 4], f: [6, 4] }; }],
+  ['Диапазон со статусами и жёлтыми', () => { clearSel(); S.cur = { a: [4, 0], f: [7, 4] }; }],
+  ['Ctrl-диапазоны', () => { clearSel(); S.stack = [{ a: [2, 0], f: [3, 1] }]; S.cur = { a: [5, 5], f: [6, 8] }; }],
+  ['Колонка «Статус»', () => { clearSel(); S.cols = new Set([5]); }],
+  ['Группа', () => { clearSel(); S.cols = new Set([4, 5, 6]); }],
+  ['Строки по №', () => { clearSel(); S.rows = new Set([1, 2]); }],
+  ['Сохранить ячейки рядом с выделением', () => { clearSel(); S.checked = new Set([1, 4]); ['1:comment', '4:sum', '5:comment', '8:sum'].forEach(x => S.edited.set(x, performance.now())); tickSaved(); S.cur = { a: [4, 5], f: [4, 5] }; }],
+];
+$('presets').innerHTML = PRESETS.map(([l], i) => `<button class="btn" data-p="${i}">${l}</button>`).join('');
+$('presets').onclick = e => { const b = e.target.closest('[data-p]'); if (!b) return; PRESETS[+b.dataset.p][1](); renderTable(); };
+
+const PAIRS = [
+  ['selectionActiveBg', 'bgCell', 'выделение на белом ↔ ячейка'],
+  ['selectionActiveBg', 'bgRowHovered', 'выделение на белом ↔ hover строки'],
+  ['selectionActiveHoveredBg', 'selectionActiveBg', 'hover на выделении ↔ выделение'],
+  ['selectionActiveHoveredBg', 'bgRowHovered', 'hover на выделении ↔ hover строки'],
+  ['selectionActiveBg', 'bgHeader', 'выделение на белом ↔ шапка'],
+  ['selectionActiveBg', 'selectionCheckboxBg', 'выделение на белом ↔ отмеченная строка'],
+  ['selectionActiveCheckboxBg', 'selectionCheckboxBg', 'выделение в отмеченной ↔ отмеченная строка'],
+  ['selectionActiveCheckboxBg', 'bgHeaderHovered', 'выделение в отмеченной ↔ hover шапки'],
+  ['bgRowHovered', 'bgCell', 'hover строки ↔ ячейка'],
+  ['bgRowHovered', 'bgHeader', 'hover строки ↔ шапка'],
+  ['bgSelectedRowHovered', 'selectionCheckboxBg', 'hover отмеченной ↔ отмеченная'],
+  ['bgServiceRowHovered', 'selectionServiceBg', 'hover служебных ↔ покой'],
+  ['bgServiceRowHovered', 'selectionServiceActiveBg', 'hover служебных ↔ индекс выделенной'],
+  ['bgHeaderHovered', 'bgHeader', 'hover шапки ↔ шапка'],
+  ['selectionServiceActiveBg', 'bgHeaderHovered', 'выделенная шапка ↔ hover шапки'],
+  ['bgEditableCell', 'bgCell', 'редактируемая ↔ ячейка'],
+  ['bgEditableCellHovered', 'bgEditableCell', 'hover редактируемой ↔ редактируемая'],
+  ['bgEditableCellActive', 'bgEditableCell', 'редактируемая в выделении ↔ редактируемая'],
+  ['bgEditableCellActive', 'selectionActiveBg', 'редактируемая в выделении ↔ выделение на белом'],
+  ['editedSuccessfullyCellColor', 'selectionCheckboxBg', 'сохранённая ↔ отмеченная строка'],
+  ['editedSuccessfullyCellColor', 'bgEditableCell', 'сохранённая ↔ редактируемая'],
+  ['bgCellPositiveActive', 'bgCellPositive', 'positive в выделении ↔ positive'],
+  ['bgCellPositiveHovered', 'bgCellPositive', 'hover positive ↔ positive'],
+  ['bgCellNegativeActive', 'bgCellNegative', 'negative в выделении ↔ negative'],
+  ['bgCellWarningActive', 'bgCellWarning', 'warning в выделении ↔ warning'],
+  ['bgCellInfoActive', 'bgCellInfo', 'info в выделении ↔ info'],
+  ['bgCellInfo', 'selectionCheckboxBg', 'info ↔ отмеченная строка'],
+  ['bgCellInfo', 'selectionActiveBg', 'info ↔ выделение на белом'],
+  ['bgCellInfoActive', 'selectionActiveCheckboxBg', 'info в выделении ↔ выделение в отмеченной'],
+];
+function renderPairs() {
+  const V = palette(S.theme, S.source), bg = V.bgCell;
+  const transient = a => a.startsWith('editedSuccessfully');
+  const rows = PAIRS.map(([a, b, l]) => {
+    if (!V[a] || !V[b]) return `<tr data-probe="${a}"><td>${sw(V[a], true)}${sw(V[b], true)}</td><td>${l}</td><td class="mono warn" style="text-align:right">—</td><td class="small warn">нет данных</td></tr>`;
+    const d = R.dE(R.flatten(V[a], bg), R.flatten(V[b], bg));
+    const [cls, word] = d >= 2 ? ['muted', 'ок'] : transient(a) ? ['', 'гаснет через 2 с'] : ['warn', 'не различить'];
+    return `<tr data-probe="${a}"><td>${sw(V[a], true)}${sw(V[b], true)}</td><td>${l}</td><td style="text-align:right" class="mono ${cls}">${d.toFixed(1)}</td><td class="small ${cls}">${word}</td></tr>`;
+  });
+  const bad = PAIRS.filter(([a, b]) => V[a] && V[b] && !transient(a) && R.dE(R.flatten(V[a], bg), R.flatten(V[b], bg)) < 2).length;
+  $('pairsHint').innerHTML = `${THEME_META[S.theme].label} · ${S.source === 'rule' ? 'правило' : 'код'}. Порог заметности ΔEok ≈ 2. ` + (bad ? `<span class="warn">Неразличимых пар: ${bad}</span>` : 'Неразличимых пар нет.') + ' Пары сохранённой ячейки не считаются: подсветка временная.';
+  $('pairs').innerHTML = `<table class="mx">${rows.join('')}</table>`;
+}
+$('pairs').addEventListener('mouseover', e => { const tr = e.target.closest('[data-probe]'); const k = tr ? tr.dataset.probe : null; if (k !== S.probe) { S.probe = k; applyProbe(); } });
+$('pairs').addEventListener('mouseleave', () => { S.probe = null; applyProbe(); });
+
+function renderAll() {
+  seg($('themeSeg'), S.theme, v => { S.theme = v; store.set('theme', v); renderAll(); });
+  seg($('srcSeg'), S.source, v => { S.source = v; store.set('source', v); renderAll(); }, { code: !CODE[S.theme] });
+  seg($('viewSeg'), S.view, v => { S.view = v; store.set('view', v); renderPanel(); });
+  seg($('expSeg'), S.exp, v => { S.exp = v; renderExport(); });
+  applyChrome(); renderFormula(); renderTable(); renderPairs(); renderPanel(); renderFades(); renderExport();
+}
+if (!CODE[S.theme] && S.source === 'code') S.source = 'rule';
+renderParams();
+renderAll();
+$('optHoldSaved').onchange = e => { S.holdSaved = e.target.checked; if (!S.holdSaved) { const now = performance.now(); for (const id of S.edited.keys()) S.edited.set(id, now); } tickSaved(); };
+tickSaved();
+
+</script>
+</body>
+</html>

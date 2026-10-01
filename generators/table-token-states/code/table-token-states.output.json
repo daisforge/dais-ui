@@ -1,0 +1,1102 @@
+{
+  "generated": "2026-09-18, table-token-states.ts v1.1 (модель «токен + состояние»; hover на выделении +1δ) + table-token-sources.ts",
+  "themes": [
+    "light",
+    "dark",
+    "betaCoreLight",
+    "betaCoreDark",
+    "highContrastLight",
+    "highContrastDark"
+  ],
+  "note": "null — нет данных темы: highContrastLight без surface-solid-primary и background-primary; data-yellow-light / data-blue-light и surface-*-minor отсутствуют в beta или HC; highContrastDark — заглушка, копия dark",
+  "bySemanticToken": {
+    "surfaceSolidCard": {
+      "light": {
+        "rest": "#FFFFFF",
+        "hover": "#F5F7F9",
+        "active": "#E2F1FB",
+        "hoverActive": "#D5EBF9"
+      },
+      "dark": {
+        "rest": "#060A0C",
+        "hover": "#0C1013",
+        "active": "#082436",
+        "hoverActive": "#0B2B40"
+      },
+      "betaCoreLight": {
+        "rest": "#FFFFFF",
+        "hover": "#F4F8FA",
+        "active": "#E0F2FB",
+        "hoverActive": "#D2ECF9"
+      },
+      "betaCoreDark": {
+        "rest": "#060A0D",
+        "hover": "#0C1013",
+        "active": "#052536",
+        "hoverActive": "#072D40"
+      },
+      "highContrastLight": {
+        "rest": "#FFFFFF",
+        "hover": null,
+        "active": "#E0EEFA",
+        "hoverActive": "#D3E7F8"
+      },
+      "highContrastDark": {
+        "rest": "#060A0C",
+        "hover": "#0C1013",
+        "active": "#082436",
+        "hoverActive": "#0B2B40"
+      }
+    },
+    "surfaceSolidPrimary": {
+      "light": {
+        "rest": "#F2F5F8",
+        "hover": "#E8EDF2",
+        "active": "#D7E8F5",
+        "hoverActive": "#CBE1F2"
+      },
+      "dark": {
+        "rest": "#13181B",
+        "hover": "#191F23",
+        "active": "#132F42",
+        "hoverActive": "#17374C"
+      },
+      "betaCoreLight": {
+        "rest": "#F3F7FA",
+        "hover": "#E8F0F5",
+        "active": "#D5EAF6",
+        "hoverActive": "#C8E3F3"
+      },
+      "betaCoreDark": {
+        "rest": "#14191D",
+        "hover": "#1A2025",
+        "active": "#103143",
+        "hoverActive": "#14394D"
+      },
+      "highContrastLight": null,
+      "highContrastDark": {
+        "rest": "#13181B",
+        "hover": "#191F23",
+        "active": "#132F42",
+        "hoverActive": "#17374C"
+      }
+    },
+    "backgroundPrimary": {
+      "light": {
+        "rest": "#F2F5F8",
+        "hover": "#F2F5F8",
+        "active": "#F2F5F8",
+        "hoverActive": "#F2F5F8"
+      },
+      "dark": {
+        "rest": "#060A0C",
+        "hover": "#060A0C",
+        "active": "#060A0C",
+        "hoverActive": "#060A0C"
+      },
+      "betaCoreLight": {
+        "rest": "#F3F7FA",
+        "hover": "#F3F7FA",
+        "active": "#F3F7FA",
+        "hoverActive": "#F3F7FA"
+      },
+      "betaCoreDark": {
+        "rest": "#060A0D",
+        "hover": "#060A0D",
+        "active": "#060A0D",
+        "hoverActive": "#060A0D"
+      },
+      "highContrastLight": null,
+      "highContrastDark": {
+        "rest": "#060A0C",
+        "hover": "#060A0C",
+        "active": "#060A0C",
+        "hoverActive": "#060A0C"
+      }
+    },
+    "surfaceAccentMinor": {
+      "light": {
+        "rest": "#ECF6FC",
+        "hover": "#DEF0FA",
+        "active": "#D1E9F8",
+        "hoverActive": "#C3E3F6"
+      },
+      "dark": {
+        "rest": "#071A26",
+        "hover": "#0A212F",
+        "active": "#09314B",
+        "hoverActive": "#0C3956"
+      },
+      "betaCoreLight": {
+        "rest": "#EFF8FF",
+        "hover": "#E1F2FF",
+        "active": "#D2EBFB",
+        "hoverActive": "#C4E5FA"
+      },
+      "betaCoreDark": {
+        "rest": "#0C1A24",
+        "hover": "#11212D",
+        "active": "#0A3248",
+        "hoverActive": "#0D3A53"
+      },
+      "highContrastLight": {
+        "rest": "#CFE5F2",
+        "hover": "#C2DEEE",
+        "active": "#B6D8EE",
+        "hoverActive": "#A9D1EB"
+      },
+      "highContrastDark": {
+        "rest": "#071A26",
+        "hover": "#0A212F",
+        "active": "#09314B",
+        "hoverActive": "#0C3956"
+      }
+    },
+    "surfaceAccent": {
+      "light": {
+        "rest": "#199AF0",
+        "hover": "#0093E9",
+        "active": "#1898EE",
+        "hoverActive": "#0091E7"
+      },
+      "dark": {
+        "rest": "#199AF0",
+        "hover": "#1BA3FE",
+        "active": "#1797ED",
+        "hoverActive": "#19A0FB"
+      },
+      "betaCoreLight": {
+        "rest": "#1F9EEB",
+        "hover": "#0097E5",
+        "active": "#1B9CE9",
+        "hoverActive": "#0095E2"
+      },
+      "betaCoreDark": {
+        "rest": "#1F9EEB",
+        "hover": "#21A7F9",
+        "active": "#199BE8",
+        "hoverActive": "#1BA4F6"
+      },
+      "highContrastLight": {
+        "rest": "#0076D2",
+        "hover": "#006FC6",
+        "active": "#0076D2",
+        "hoverActive": "#006FC6"
+      },
+      "highContrastDark": {
+        "rest": "#199AF0",
+        "hover": "#1BA3FE",
+        "active": "#1797ED",
+        "hoverActive": "#19A0FB"
+      }
+    },
+    "outlineAccent": {
+      "light": {
+        "rest": "#0B7ECB",
+        "hover": "#0B7ECB",
+        "active": "#0B7ECB",
+        "hoverActive": "#0B7ECB"
+      },
+      "dark": {
+        "rest": "#199AF0",
+        "hover": "#199AF0",
+        "active": "#199AF0",
+        "hoverActive": "#199AF0"
+      },
+      "betaCoreLight": {
+        "rest": "#0087CD",
+        "hover": "#0087CD",
+        "active": "#0087CD",
+        "hoverActive": "#0087CD"
+      },
+      "betaCoreDark": {
+        "rest": "#1F9EEB",
+        "hover": "#1F9EEB",
+        "active": "#1F9EEB",
+        "hoverActive": "#1F9EEB"
+      },
+      "highContrastLight": {
+        "rest": "#0058A2",
+        "hover": "#0058A2",
+        "active": "#0058A2",
+        "hoverActive": "#0058A2"
+      },
+      "highContrastDark": {
+        "rest": "#199AF0",
+        "hover": "#199AF0",
+        "active": "#199AF0",
+        "hoverActive": "#199AF0"
+      }
+    },
+    "outlineSolidPrimary": {
+      "light": {
+        "rest": "#D5DFE6",
+        "hover": "#D5DFE6",
+        "active": "#D5DFE6",
+        "hoverActive": "#D5DFE6"
+      },
+      "dark": {
+        "rest": "#23292D",
+        "hover": "#23292D",
+        "active": "#23292D",
+        "hoverActive": "#23292D"
+      },
+      "betaCoreLight": {
+        "rest": "#CFDBE4",
+        "hover": "#CFDBE4",
+        "active": "#CFDBE4",
+        "hoverActive": "#CFDBE4"
+      },
+      "betaCoreDark": {
+        "rest": "#262626",
+        "hover": "#262626",
+        "active": "#262626",
+        "hoverActive": "#262626"
+      },
+      "highContrastLight": {
+        "rest": "#C4CFD7",
+        "hover": "#C4CFD7",
+        "active": "#C4CFD7",
+        "hoverActive": "#C4CFD7"
+      },
+      "highContrastDark": {
+        "rest": "#23292D",
+        "hover": "#23292D",
+        "active": "#23292D",
+        "hoverActive": "#23292D"
+      }
+    },
+    "surfaceNegative": {
+      "light": {
+        "rest": "#FF293E",
+        "hover": "#FB0033",
+        "active": "#E23552",
+        "hoverActive": "#DE1F49"
+      },
+      "dark": {
+        "rest": "#FF293E",
+        "hover": "#FF4C51",
+        "active": "#CF3D5E",
+        "hoverActive": "#DD4265"
+      },
+      "betaCoreLight": {
+        "rest": "#F81C42",
+        "hover": "#F1003B",
+        "active": "#DA2A54",
+        "hoverActive": "#D60C4B"
+      },
+      "betaCoreDark": {
+        "rest": "#F81C42",
+        "hover": "#FF364E",
+        "active": "#C63360",
+        "hoverActive": "#D43767"
+      },
+      "highContrastLight": {
+        "rest": "#E7002F",
+        "hover": "#DC002C",
+        "active": "#CB0E43",
+        "hoverActive": "#C1003E"
+      },
+      "highContrastDark": {
+        "rest": "#FF293E",
+        "hover": "#FF4C51",
+        "active": "#CF3D5E",
+        "hoverActive": "#DD4265"
+      }
+    },
+    "surfaceTransparentAccent": {
+      "light": {
+        "rest": "#E2F1FB",
+        "hover": "#D5EBF9",
+        "active": "#C9E5F8",
+        "hoverActive": "#BBDEF6"
+      },
+      "dark": {
+        "rest": "#082436",
+        "hover": "#0B2B40",
+        "active": "#0A3958",
+        "hoverActive": "#0D4163"
+      },
+      "betaCoreLight": {
+        "rest": "#E0F2FB",
+        "hover": "#D2ECF9",
+        "active": "#C5E6F7",
+        "hoverActive": "#B7E0F5"
+      },
+      "betaCoreDark": {
+        "rest": "#052536",
+        "hover": "#072D40",
+        "active": "#043A57",
+        "hoverActive": "#054262"
+      },
+      "highContrastLight": {
+        "rest": "#E0EEFA",
+        "hover": "#D3E7F8",
+        "active": "#C5DFF5",
+        "hoverActive": "#B9D8F3"
+      },
+      "highContrastDark": {
+        "rest": "#082436",
+        "hover": "#0B2B40",
+        "active": "#0A3958",
+        "hoverActive": "#0D4163"
+      }
+    },
+    "surfaceTransparentPositive": {
+      "light": {
+        "rest": "#E3F3E6",
+        "hover": "#D7EEDB",
+        "active": "#C9E6E5",
+        "hoverActive": "#BBE0DF"
+      },
+      "dark": {
+        "rest": "#0A2814",
+        "hover": "#0E3019",
+        "active": "#0B3C3D",
+        "hoverActive": "#0E4546"
+      },
+      "betaCoreLight": {
+        "rest": "#E4F3E7",
+        "hover": "#D8EEDC",
+        "active": "#C8E7E5",
+        "hoverActive": "#BAE1DF"
+      },
+      "betaCoreDark": {
+        "rest": "#0B2816",
+        "hover": "#0F301B",
+        "active": "#093D3D",
+        "hoverActive": "#0C4646"
+      },
+      "highContrastLight": {
+        "rest": "#E3F1E0",
+        "hover": "#D8EBD4",
+        "active": "#C7E2DE",
+        "hoverActive": "#BADCD7"
+      },
+      "highContrastDark": {
+        "rest": "#0A2814",
+        "hover": "#0E3019",
+        "active": "#0B3C3D",
+        "hoverActive": "#0E4546"
+      }
+    },
+    "surfaceTransparentWarning": {
+      "light": {
+        "rest": "#FEECE1",
+        "hover": "#FDE3D3",
+        "active": "#E1E0E1",
+        "hoverActive": "#CFDAE5"
+      },
+      "dark": {
+        "rest": "#371B0B",
+        "hover": "#41210F",
+        "active": "#2F3235",
+        "hoverActive": "#363A3D"
+      },
+      "betaCoreLight": {
+        "rest": "#FBEAE0",
+        "hover": "#F9E1D2",
+        "active": "#DCDFDF",
+        "hoverActive": "#C7D9E7"
+      },
+      "betaCoreDark": {
+        "rest": "#32190A",
+        "hover": "#3C1F0E",
+        "active": "#283134",
+        "hoverActive": "#2F393C"
+      },
+      "highContrastLight": {
+        "rest": "#FAEBE0",
+        "hover": "#F8E2D2",
+        "active": "#DCDDDE",
+        "hoverActive": "#D4D5D6"
+      },
+      "highContrastDark": {
+        "rest": "#371B0B",
+        "hover": "#41210F",
+        "active": "#2F3235",
+        "hoverActive": "#363A3D"
+      }
+    },
+    "surfacePositiveMinor": {
+      "light": {
+        "rest": "#9EFAAF",
+        "hover": "#8CF9A2",
+        "active": "#8DEDB5",
+        "hoverActive": "#79EAAA"
+      },
+      "dark": {
+        "rest": "#0A2B10",
+        "hover": "#0D3314",
+        "active": "#0B3E39",
+        "hoverActive": "#0E4741"
+      },
+      "betaCoreLight": {
+        "rest": "#AFFFB1",
+        "hover": "#9FFEA3",
+        "active": "#9AF2B6",
+        "hoverActive": "#87F0AB"
+      },
+      "betaCoreDark": {
+        "rest": "#0F2D11",
+        "hover": "#133515",
+        "active": "#0C4139",
+        "hoverActive": "#0F4A41"
+      },
+      "highContrastLight": null,
+      "highContrastDark": {
+        "rest": "#0A2B10",
+        "hover": "#0D3314",
+        "active": "#0B3E39",
+        "hoverActive": "#0E4741"
+      }
+    },
+    "surfaceNegativeMinor": {
+      "light": {
+        "rest": "#FFE0E3",
+        "hover": "#FED6DA",
+        "active": "#E2D6E3",
+        "hoverActive": "#DCCDDD"
+      },
+      "dark": {
+        "rest": "#4A0D13",
+        "hover": "#561117",
+        "active": "#3F263C",
+        "hoverActive": "#482C45"
+      },
+      "betaCoreLight": {
+        "rest": "#FEDFDE",
+        "hover": "#FDD5D4",
+        "active": "#DFD5DE",
+        "hoverActive": "#D8CCD7"
+      },
+      "betaCoreDark": {
+        "rest": "#480B11",
+        "hover": "#540E15",
+        "active": "#3A2639",
+        "hoverActive": "#432C42"
+      },
+      "highContrastLight": null,
+      "highContrastDark": {
+        "rest": "#4A0D13",
+        "hover": "#561117",
+        "active": "#3F263C",
+        "hoverActive": "#482C45"
+      }
+    },
+    "surfaceWarningMinor": {
+      "light": {
+        "rest": "#FEE2D2",
+        "hover": "#FDD9C4",
+        "active": "#E1D8D4",
+        "hoverActive": "#DACFCB"
+      },
+      "dark": {
+        "rest": "#3D1D0A",
+        "hover": "#47230D",
+        "active": "#343335",
+        "hoverActive": "#333D43"
+      },
+      "betaCoreLight": {
+        "rest": "#FEE1D6",
+        "hover": "#FDD7C9",
+        "active": "#DFD7D6",
+        "hoverActive": "#D8CECD"
+      },
+      "betaCoreDark": {
+        "rest": "#3C1C0F",
+        "hover": "#462213",
+        "active": "#303338",
+        "hoverActive": "#373B40"
+      },
+      "highContrastLight": null,
+      "highContrastDark": {
+        "rest": "#3D1D0A",
+        "hover": "#47230D",
+        "active": "#343335",
+        "hoverActive": "#333D43"
+      }
+    },
+    "surfaceInfoMinor": {
+      "light": {
+        "rest": "#CFECFF",
+        "hover": "#C0E6FF",
+        "active": "#B8E0FB",
+        "hoverActive": "#AADAFA"
+      },
+      "dark": {
+        "rest": "#0C283B",
+        "hover": "#103045",
+        "active": "#0D3C5C",
+        "hoverActive": "#104467"
+      },
+      "betaCoreLight": {
+        "rest": "#D3EBFF",
+        "hover": "#C5E5FF",
+        "active": "#B9E0FB",
+        "hoverActive": "#ABDAFA"
+      },
+      "betaCoreDark": {
+        "rest": "#09283D",
+        "hover": "#0C3048",
+        "active": "#073D5C",
+        "hoverActive": "#094567"
+      },
+      "highContrastLight": null,
+      "highContrastDark": {
+        "rest": "#0C283B",
+        "hover": "#103045",
+        "active": "#0D3C5C",
+        "hoverActive": "#104467"
+      }
+    },
+    "dataYellowLight": {
+      "light": {
+        "rest": "#FFE4AE",
+        "hover": "#FFDD99",
+        "active": "#E2D9B4",
+        "hoverActive": "#DCD2A5"
+      },
+      "dark": {
+        "rest": "#211807",
+        "hover": "#291F0A",
+        "active": "#1E2F32",
+        "hoverActive": "#24373A"
+      },
+      "betaCoreLight": null,
+      "betaCoreDark": null,
+      "highContrastLight": null,
+      "highContrastDark": {
+        "rest": "#211807",
+        "hover": "#291F0A",
+        "active": "#1E2F32",
+        "hoverActive": "#24373A"
+      }
+    },
+    "dataBlueLight": {
+      "light": {
+        "rest": "#EDF8FF",
+        "hover": "#DEF2FF",
+        "active": "#D2EBFB",
+        "hoverActive": "#C4E5FA"
+      },
+      "dark": {
+        "rest": "#0A1924",
+        "hover": "#0E202D",
+        "active": "#0B3049",
+        "hoverActive": "#0E3854"
+      },
+      "betaCoreLight": null,
+      "betaCoreDark": null,
+      "highContrastLight": null,
+      "highContrastDark": {
+        "rest": "#0A1924",
+        "hover": "#0E202D",
+        "active": "#0B3049",
+        "hoverActive": "#0E3854"
+      }
+    },
+    "dataYellow": {
+      "light": {
+        "rest": "#F3A912",
+        "hover": "#ECA300",
+        "active": "#D8A52B",
+        "hoverActive": "#D39D00"
+      },
+      "dark": {
+        "rest": "#A16B00",
+        "hover": "#AC7300",
+        "active": "#84722D",
+        "hoverActive": "#8E7B31"
+      },
+      "betaCoreLight": {
+        "rest": "#E9A431",
+        "hover": "#E69C00",
+        "active": "#CDA246",
+        "hoverActive": "#C99A2F"
+      },
+      "betaCoreDark": {
+        "rest": "#9A6700",
+        "hover": "#A56F00",
+        "active": "#7B6F2C",
+        "hoverActive": "#847830"
+      },
+      "highContrastLight": {
+        "rest": "#D49100",
+        "hover": "#CB8B00",
+        "active": "#BA8E1A",
+        "hoverActive": "#B38700"
+      },
+      "highContrastDark": {
+        "rest": "#A16B00",
+        "hover": "#AC7300",
+        "active": "#84722D",
+        "hoverActive": "#8E7B31"
+      }
+    },
+    "textPrimary": {
+      "light": {
+        "rest": "#13181BF5",
+        "hover": "#13181B93",
+        "active": "#13181BC4",
+        "hoverActive": "#13181BC4"
+      },
+      "dark": {
+        "rest": "#F2F5F8F5",
+        "hover": "#F2F5F893",
+        "active": "#F2F5F8C4",
+        "hoverActive": "#F2F5F8C4"
+      },
+      "betaCoreLight": {
+        "rest": "#14191DF5",
+        "hover": "#151A1E93",
+        "active": "#151A1EC4",
+        "hoverActive": "#151A1EC4"
+      },
+      "betaCoreDark": {
+        "rest": "#F3F7FAF5",
+        "hover": "#F4F8FA93",
+        "active": "#F4F8FAC4",
+        "hoverActive": "#F4F8FAC4"
+      },
+      "highContrastLight": {
+        "rest": "#13181BF5",
+        "hover": "#13181B93",
+        "active": "#13181BC4",
+        "hoverActive": "#13181BC4"
+      },
+      "highContrastDark": {
+        "rest": "#F2F5F8F5",
+        "hover": "#F2F5F893",
+        "active": "#F2F5F8C4",
+        "hoverActive": "#F2F5F8C4"
+      }
+    }
+  },
+  "byTableKey": {
+    "bgCell": {
+      "light": "#FFFFFF",
+      "dark": "#060A0C",
+      "betaCoreLight": "#FFFFFF",
+      "betaCoreDark": "#060A0D",
+      "highContrastLight": "#FFFFFF",
+      "highContrastDark": "#060A0C"
+    },
+    "bgRowHovered": {
+      "light": "#F5F7F9",
+      "dark": "#0C1013",
+      "betaCoreLight": "#F4F8FA",
+      "betaCoreDark": "#0C1013",
+      "highContrastLight": null,
+      "highContrastDark": "#0C1013"
+    },
+    "bgHeader": {
+      "light": "#ECF6FC",
+      "dark": "#071A26",
+      "betaCoreLight": "#EFF8FF",
+      "betaCoreDark": "#0C1A24",
+      "highContrastLight": "#CFE5F2",
+      "highContrastDark": "#071A26"
+    },
+    "bgHeaderHasFocus": {
+      "light": "#ECF6FC",
+      "dark": "#071A26",
+      "betaCoreLight": "#EFF8FF",
+      "betaCoreDark": "#0C1A24",
+      "highContrastLight": "#CFE5F2",
+      "highContrastDark": "#071A26"
+    },
+    "bgGroupHeader": {
+      "light": "#ECF6FC",
+      "dark": "#071A26",
+      "betaCoreLight": "#EFF8FF",
+      "betaCoreDark": "#0C1A24",
+      "highContrastLight": "#CFE5F2",
+      "highContrastDark": "#071A26"
+    },
+    "bgHeaderHovered": {
+      "light": "#DEF0FA",
+      "dark": "#0A212F",
+      "betaCoreLight": "#E1F2FF",
+      "betaCoreDark": "#11212D",
+      "highContrastLight": "#C2DEEE",
+      "highContrastDark": "#0A212F"
+    },
+    "bgGroupHeaderHovered": {
+      "light": "#DEF0FA",
+      "dark": "#0A212F",
+      "betaCoreLight": "#E1F2FF",
+      "betaCoreDark": "#11212D",
+      "highContrastLight": "#C2DEEE",
+      "highContrastDark": "#0A212F"
+    },
+    "selectionServiceActiveBg": {
+      "light": "#D1E9F8",
+      "dark": "#09314B",
+      "betaCoreLight": "#D2EBFB",
+      "betaCoreDark": "#0A3248",
+      "highContrastLight": "#B6D8EE",
+      "highContrastDark": "#09314B"
+    },
+    "bgHeaderSelectedHovered": {
+      "light": "#C3E3F6",
+      "dark": "#0C3956",
+      "betaCoreLight": "#C4E5FA",
+      "betaCoreDark": "#0D3A53",
+      "highContrastLight": "#A9D1EB",
+      "highContrastDark": "#0C3956"
+    },
+    "selectionCheckboxBg": {
+      "light": "#ECF6FC",
+      "dark": "#071A26",
+      "betaCoreLight": "#EFF8FF",
+      "betaCoreDark": "#0C1A24",
+      "highContrastLight": "#CFE5F2",
+      "highContrastDark": "#071A26"
+    },
+    "selectionServiceBg": {
+      "light": "#ECF6FC",
+      "dark": "#071A26",
+      "betaCoreLight": "#EFF8FF",
+      "betaCoreDark": "#0C1A24",
+      "highContrastLight": "#CFE5F2",
+      "highContrastDark": "#071A26"
+    },
+    "bgSelectedRowHovered": {
+      "light": "#DEF0FA",
+      "dark": "#0A212F",
+      "betaCoreLight": "#E1F2FF",
+      "betaCoreDark": "#11212D",
+      "highContrastLight": "#C2DEEE",
+      "highContrastDark": "#0A212F"
+    },
+    "bgServiceRowHovered": {
+      "light": "#DEF0FA",
+      "dark": "#0A212F",
+      "betaCoreLight": "#E1F2FF",
+      "betaCoreDark": "#11212D",
+      "highContrastLight": "#C2DEEE",
+      "highContrastDark": "#0A212F"
+    },
+    "selectionServiceActiveHoveredBg": {
+      "light": "#C3E3F6",
+      "dark": "#0C3956",
+      "betaCoreLight": "#C4E5FA",
+      "betaCoreDark": "#0D3A53",
+      "highContrastLight": "#A9D1EB",
+      "highContrastDark": "#0C3956"
+    },
+    "selectionActiveBg": {
+      "light": "#E2F1FB",
+      "dark": "#082436",
+      "betaCoreLight": "#E0F2FB",
+      "betaCoreDark": "#052536",
+      "highContrastLight": "#E0EEFA",
+      "highContrastDark": "#082436"
+    },
+    "accentLight": {
+      "light": "#E2F1FB",
+      "dark": "#082436",
+      "betaCoreLight": "#E0F2FB",
+      "betaCoreDark": "#052536",
+      "highContrastLight": "#E0EEFA",
+      "highContrastDark": "#082436"
+    },
+    "selectionActiveCheckboxBg": {
+      "light": "#D1E9F8",
+      "dark": "#09314B",
+      "betaCoreLight": "#D2EBFB",
+      "betaCoreDark": "#0A3248",
+      "highContrastLight": "#B6D8EE",
+      "highContrastDark": "#09314B"
+    },
+    "selectionActiveHoveredBg": {
+      "light": "#D5EBF9",
+      "dark": "#0B2B40",
+      "betaCoreLight": "#D2ECF9",
+      "betaCoreDark": "#072D40",
+      "highContrastLight": "#D3E7F8",
+      "highContrastDark": "#0B2B40"
+    },
+    "selectionActiveCheckboxHoveredBg": {
+      "light": "#C3E3F6",
+      "dark": "#0C3956",
+      "betaCoreLight": "#C4E5FA",
+      "betaCoreDark": "#0D3A53",
+      "highContrastLight": "#A9D1EB",
+      "highContrastDark": "#0C3956"
+    },
+    "bgEditableCell": {
+      "light": "#FFE4AE",
+      "dark": "#211807",
+      "betaCoreLight": null,
+      "betaCoreDark": null,
+      "highContrastLight": null,
+      "highContrastDark": "#211807"
+    },
+    "bgEditableCellHovered": {
+      "light": "#FFDD99",
+      "dark": "#291F0A",
+      "betaCoreLight": null,
+      "betaCoreDark": null,
+      "highContrastLight": null,
+      "highContrastDark": "#291F0A"
+    },
+    "bgEditableCellActive": {
+      "light": "#E2D9B4",
+      "dark": "#1E2F32",
+      "betaCoreLight": null,
+      "betaCoreDark": null,
+      "highContrastLight": null,
+      "highContrastDark": "#1E2F32"
+    },
+    "bgEditableCellActiveHovered": {
+      "light": "#DCD2A5",
+      "dark": "#24373A",
+      "betaCoreLight": null,
+      "betaCoreDark": null,
+      "highContrastLight": null,
+      "highContrastDark": "#24373A"
+    },
+    "editedSuccessfullyCellColor": {
+      "light": "#EDF8FF",
+      "dark": "#0A1924",
+      "betaCoreLight": null,
+      "betaCoreDark": null,
+      "highContrastLight": null,
+      "highContrastDark": "#0A1924"
+    },
+    "editedSuccessfullyCellHoverColor": {
+      "light": "#DEF2FF",
+      "dark": "#0E202D",
+      "betaCoreLight": null,
+      "betaCoreDark": null,
+      "highContrastLight": null,
+      "highContrastDark": "#0E202D"
+    },
+    "editedSuccessfullyCellActiveColor": {
+      "light": "#D2EBFB",
+      "dark": "#0B3049",
+      "betaCoreLight": null,
+      "betaCoreDark": null,
+      "highContrastLight": null,
+      "highContrastDark": "#0B3049"
+    },
+    "editedSuccessfullyCellActiveHoverColor": {
+      "light": "#C4E5FA",
+      "dark": "#0E3854",
+      "betaCoreLight": null,
+      "betaCoreDark": null,
+      "highContrastLight": null,
+      "highContrastDark": "#0E3854"
+    },
+    "bgCellPositive": {
+      "light": "#E3F3E6",
+      "dark": "#0A2814",
+      "betaCoreLight": "#E4F3E7",
+      "betaCoreDark": "#0B2816",
+      "highContrastLight": "#E3F1E0",
+      "highContrastDark": "#0A2814"
+    },
+    "bgCellPositiveHovered": {
+      "light": "#D7EEDB",
+      "dark": "#0E3019",
+      "betaCoreLight": "#D8EEDC",
+      "betaCoreDark": "#0F301B",
+      "highContrastLight": "#D8EBD4",
+      "highContrastDark": "#0E3019"
+    },
+    "bgCellPositiveActive": {
+      "light": "#C9E6E5",
+      "dark": "#0B3C3D",
+      "betaCoreLight": "#C8E7E5",
+      "betaCoreDark": "#093D3D",
+      "highContrastLight": "#C7E2DE",
+      "highContrastDark": "#0B3C3D"
+    },
+    "bgCellPositiveActiveHovered": {
+      "light": "#BBE0DF",
+      "dark": "#0E4546",
+      "betaCoreLight": "#BAE1DF",
+      "betaCoreDark": "#0C4646",
+      "highContrastLight": "#BADCD7",
+      "highContrastDark": "#0E4546"
+    },
+    "bgCellNegative": {
+      "light": "#FFE0E3",
+      "dark": "#4A0D13",
+      "betaCoreLight": "#FEDFDE",
+      "betaCoreDark": "#480B11",
+      "highContrastLight": null,
+      "highContrastDark": "#4A0D13"
+    },
+    "bgCellNegativeHovered": {
+      "light": "#FED6DA",
+      "dark": "#561117",
+      "betaCoreLight": "#FDD5D4",
+      "betaCoreDark": "#540E15",
+      "highContrastLight": null,
+      "highContrastDark": "#561117"
+    },
+    "bgCellNegativeActive": {
+      "light": "#E2D6E3",
+      "dark": "#3F263C",
+      "betaCoreLight": "#DFD5DE",
+      "betaCoreDark": "#3A2639",
+      "highContrastLight": null,
+      "highContrastDark": "#3F263C"
+    },
+    "bgCellNegativeActiveHovered": {
+      "light": "#DCCDDD",
+      "dark": "#482C45",
+      "betaCoreLight": "#D8CCD7",
+      "betaCoreDark": "#432C42",
+      "highContrastLight": null,
+      "highContrastDark": "#482C45"
+    },
+    "bgCellWarning": {
+      "light": "#FEECE1",
+      "dark": "#371B0B",
+      "betaCoreLight": "#FBEAE0",
+      "betaCoreDark": "#32190A",
+      "highContrastLight": "#FAEBE0",
+      "highContrastDark": "#371B0B"
+    },
+    "bgCellWarningHovered": {
+      "light": "#FDE3D3",
+      "dark": "#41210F",
+      "betaCoreLight": "#F9E1D2",
+      "betaCoreDark": "#3C1F0E",
+      "highContrastLight": "#F8E2D2",
+      "highContrastDark": "#41210F"
+    },
+    "bgCellWarningActive": {
+      "light": "#E1E0E1",
+      "dark": "#2F3235",
+      "betaCoreLight": "#DCDFDF",
+      "betaCoreDark": "#283134",
+      "highContrastLight": "#DCDDDE",
+      "highContrastDark": "#2F3235"
+    },
+    "bgCellWarningActiveHovered": {
+      "light": "#CFDAE5",
+      "dark": "#363A3D",
+      "betaCoreLight": "#C7D9E7",
+      "betaCoreDark": "#2F393C",
+      "highContrastLight": "#D4D5D6",
+      "highContrastDark": "#363A3D"
+    },
+    "bgCellInfo": {
+      "light": "#CFECFF",
+      "dark": "#0C283B",
+      "betaCoreLight": "#D3EBFF",
+      "betaCoreDark": "#09283D",
+      "highContrastLight": null,
+      "highContrastDark": "#0C283B"
+    },
+    "bgCellInfoHovered": {
+      "light": "#C0E6FF",
+      "dark": "#103045",
+      "betaCoreLight": "#C5E5FF",
+      "betaCoreDark": "#0C3048",
+      "highContrastLight": null,
+      "highContrastDark": "#103045"
+    },
+    "bgCellInfoActive": {
+      "light": "#B8E0FB",
+      "dark": "#0D3C5C",
+      "betaCoreLight": "#B9E0FB",
+      "betaCoreDark": "#073D5C",
+      "highContrastLight": null,
+      "highContrastDark": "#0D3C5C"
+    },
+    "bgCellInfoActiveHovered": {
+      "light": "#AADAFA",
+      "dark": "#104467",
+      "betaCoreLight": "#ABDAFA",
+      "betaCoreDark": "#094567",
+      "highContrastLight": null,
+      "highContrastDark": "#104467"
+    },
+    "textDark": {
+      "light": "#13181BF5",
+      "dark": "#F2F5F8F5",
+      "betaCoreLight": "#14191DF5",
+      "betaCoreDark": "#F3F7FAF5",
+      "highContrastLight": "#13181BF5",
+      "highContrastDark": "#F2F5F8F5"
+    },
+    "textHeader": {
+      "light": "#13181BF5",
+      "dark": "#F2F5F8F5",
+      "betaCoreLight": "#14191DF5",
+      "betaCoreDark": "#F3F7FAF5",
+      "highContrastLight": "#13181BF5",
+      "highContrastDark": "#F2F5F8F5"
+    },
+    "textHeaderSelected": {
+      "light": "#13181BF5",
+      "dark": "#F2F5F8F5",
+      "betaCoreLight": "#14191DF5",
+      "betaCoreDark": "#F3F7FAF5",
+      "highContrastLight": "#13181BF5",
+      "highContrastDark": "#F2F5F8F5"
+    },
+    "textGroupHeader": {
+      "light": "#13181BF5",
+      "dark": "#F2F5F8F5",
+      "betaCoreLight": "#14191DF5",
+      "betaCoreDark": "#F3F7FAF5",
+      "highContrastLight": "#13181BF5",
+      "highContrastDark": "#F2F5F8F5"
+    },
+    "borderColor": {
+      "light": "#D5DFE6",
+      "dark": "#23292D",
+      "betaCoreLight": "#CFDBE4",
+      "betaCoreDark": "#262626",
+      "highContrastLight": "#C4CFD7",
+      "highContrastDark": "#23292D"
+    },
+    "accentColor": {
+      "light": "#0B7ECB",
+      "dark": "#199AF0",
+      "betaCoreLight": "#0087CD",
+      "betaCoreDark": "#1F9EEB",
+      "highContrastLight": "#0058A2",
+      "highContrastDark": "#199AF0"
+    },
+    "hiddenColumnsIndicatorColor": {
+      "light": "#0B7ECB",
+      "dark": "#199AF0",
+      "betaCoreLight": "#0087CD",
+      "betaCoreDark": "#1F9EEB",
+      "highContrastLight": "#0058A2",
+      "highContrastDark": "#199AF0"
+    },
+    "errorOutlineColor": {
+      "light": "#FF293E",
+      "dark": "#FF293E",
+      "betaCoreLight": "#F81C42",
+      "betaCoreDark": "#F81C42",
+      "highContrastLight": "#E7002F",
+      "highContrastDark": "#FF293E"
+    },
+    "fadeWhite": {
+      "light": "#FFFFFF",
+      "dark": "#060A0C",
+      "betaCoreLight": "#FFFFFF",
+      "betaCoreDark": "#060A0D",
+      "highContrastLight": "#FFFFFF",
+      "highContrastDark": "#060A0C"
+    },
+    "fadeGray": {
+      "light": "#F2F5F8",
+      "dark": "#060A0C",
+      "betaCoreLight": "#F3F7FA",
+      "betaCoreDark": "#060A0D",
+      "highContrastLight": null,
+      "highContrastDark": "#060A0C"
+    }
+  }
+}

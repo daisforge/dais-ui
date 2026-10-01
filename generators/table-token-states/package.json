@@ -1,0 +1,16 @@
+{
+  "name": "table-token-states",
+  "private": true,
+  "description": "Состояния цветов Table Canvas (rest / hover / active / hoverActive) из семантических токенов темы, OKLCH",
+  "scripts": {
+    "test": "vitest run code",
+    "typecheck": "tsc --noEmit --strict --target es2022 --module esnext --moduleResolution bundler --skipLibCheck code/table-token-states.ts code/table-token-sources.ts",
+    "generate": "tsx code/generate.ts code/table-token-states.output.json docs/table-token-sources.md docs/table-semantic-tokens.csv docs/table-token-map.csv",
+    "emit": "tsx emit-table-colors.ts"
+  },
+  "devDependencies": {
+    "tsx": "^4.20.0",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.1"
+  }
+}

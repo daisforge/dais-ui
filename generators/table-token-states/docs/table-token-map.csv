@@ -1,0 +1,54 @@
+key,paints,token,state,result_light,result_dark,result_betaCoreLight,result_betaCoreDark,result_highContrastLight,result_highContrastDark
+bgCell,"фон ячейки",surface-solid-card,rest,#FFFFFF,#060A0C,#FFFFFF,#060A0D,#FFFFFF,#060A0C
+bgRowHovered,"строка под курсором",surface-solid-card,hover,#F5F7F9,#0C1013,#F4F8FA,#0C1013,,#0C1013
+bgHeader,"шапка, итоговая строка",surface-accent-minor,rest,#ECF6FC,#071A26,#EFF8FF,#0C1A24,#CFE5F2,#071A26
+bgHeaderHasFocus,"шапка в фокусе",surface-accent-minor,rest,#ECF6FC,#071A26,#EFF8FF,#0C1A24,#CFE5F2,#071A26
+bgGroupHeader,"групповая шапка",surface-accent-minor,rest,#ECF6FC,#071A26,#EFF8FF,#0C1A24,#CFE5F2,#071A26
+bgHeaderHovered,"шапка под курсором",surface-accent-minor,hover,#DEF0FA,#0A212F,#E1F2FF,#11212D,#C2DEEE,#0A212F
+bgGroupHeaderHovered,"групповая шапка под курсором",surface-accent-minor,hover,#DEF0FA,#0A212F,#E1F2FF,#11212D,#C2DEEE,#0A212F
+selectionServiceActiveBg,"шапка и служебная зона при выделении",surface-accent-minor,active,#D1E9F8,#09314B,#D2EBFB,#0A3248,#B6D8EE,#09314B
+bgHeaderSelectedHovered,"выделенная шапка под курсором",surface-accent-minor,hoverActive,#C3E3F6,#0C3956,#C4E5FA,#0D3A53,#A9D1EB,#0C3956
+selectionCheckboxBg,"отмеченная строка",surface-accent-minor,rest,#ECF6FC,#071A26,#EFF8FF,#0C1A24,#CFE5F2,#071A26
+selectionServiceBg,"служебные колонки в покое",surface-accent-minor,rest,#ECF6FC,#071A26,#EFF8FF,#0C1A24,#CFE5F2,#071A26
+bgSelectedRowHovered,"отмеченная строка под курсором",surface-accent-minor,hover,#DEF0FA,#0A212F,#E1F2FF,#11212D,#C2DEEE,#0A212F
+bgServiceRowHovered,"служебные колонки строки под курсором",surface-accent-minor,hover,#DEF0FA,#0A212F,#E1F2FF,#11212D,#C2DEEE,#0A212F
+selectionServiceActiveHoveredBg,"выделенная служебная зона под курсором",surface-accent-minor,hoverActive,#C3E3F6,#0C3956,#C4E5FA,#0D3A53,#A9D1EB,#0C3956
+selectionActiveBg,"активная ячейка, выделенные колонка/строка на белом",surface-solid-card,active,#E2F1FB,#082436,#E0F2FB,#052536,#E0EEFA,#082436
+accentLight,"заливка диапазона Glide на белом",surface-solid-card,active,#E2F1FB,#082436,#E0F2FB,#052536,#E0EEFA,#082436
+selectionActiveCheckboxBg,"активная ячейка в отмеченной строке",surface-accent-minor,active,#D1E9F8,#09314B,#D2EBFB,#0A3248,#B6D8EE,#09314B
+selectionActiveHoveredBg,"выделение в строке под курсором (= выделение)",surface-solid-card,hoverActive,#D5EBF9,#0B2B40,#D2ECF9,#072D40,#D3E7F8,#0B2B40
+selectionActiveCheckboxHoveredBg,"выделение в отмеченной строке под курсором",surface-accent-minor,hoverActive,#C3E3F6,#0C3956,#C4E5FA,#0D3A53,#A9D1EB,#0C3956
+bgEditableCell,"редактируемая ячейка",data-yellow-light,rest,#FFE4AE,#211807,,,,#211807
+bgEditableCellHovered,"редактируемая ячейка под курсором",data-yellow-light,hover,#FFDD99,#291F0A,,,,#291F0A
+bgEditableCellActive,"редактируемая ячейка в диапазоне выделения",data-yellow-light,active,#E2D9B4,#1E2F32,,,,#1E2F32
+bgEditableCellActiveHovered,"редактируемая ячейка в выделении под курсором",data-yellow-light,hoverActive,#DCD2A5,#24373A,,,,#24373A
+editedSuccessfullyCellColor,"успешно сохранённая ячейка",data-blue-light,rest,#EDF8FF,#0A1924,,,,#0A1924
+editedSuccessfullyCellHoverColor,"сохранённая ячейка под курсором",data-blue-light,hover,#DEF2FF,#0E202D,,,,#0E202D
+editedSuccessfullyCellActiveColor,"сохранённая ячейка в диапазоне выделения",data-blue-light,active,#D2EBFB,#0B3049,,,,#0B3049
+editedSuccessfullyCellActiveHoverColor,"сохранённая ячейка в выделении под курсором",data-blue-light,hoverActive,#C4E5FA,#0E3854,,,,#0E3854
+bgCellPositive,"ячейка со статусом positive",surface-transparent-positive,rest,#E3F3E6,#0A2814,#E4F3E7,#0B2816,#E3F1E0,#0A2814
+bgCellPositiveHovered,"positive под курсором",surface-transparent-positive,hover,#D7EEDB,#0E3019,#D8EEDC,#0F301B,#D8EBD4,#0E3019
+bgCellPositiveActive,"positive в выделении",surface-transparent-positive,active,#C9E6E5,#0B3C3D,#C8E7E5,#093D3D,#C7E2DE,#0B3C3D
+bgCellPositiveActiveHovered,"positive в выделении под курсором",surface-transparent-positive,hoverActive,#BBE0DF,#0E4546,#BAE1DF,#0C4646,#BADCD7,#0E4546
+bgCellNegative,"ячейка со статусом negative",surface-negative-minor,rest,#FFE0E3,#4A0D13,#FEDFDE,#480B11,,#4A0D13
+bgCellNegativeHovered,"negative под курсором",surface-negative-minor,hover,#FED6DA,#561117,#FDD5D4,#540E15,,#561117
+bgCellNegativeActive,"negative в выделении",surface-negative-minor,active,#E2D6E3,#3F263C,#DFD5DE,#3A2639,,#3F263C
+bgCellNegativeActiveHovered,"negative в выделении под курсором",surface-negative-minor,hoverActive,#DCCDDD,#482C45,#D8CCD7,#432C42,,#482C45
+bgCellWarning,"ячейка со статусом warning",surface-transparent-warning,rest,#FEECE1,#371B0B,#FBEAE0,#32190A,#FAEBE0,#371B0B
+bgCellWarningHovered,"warning под курсором",surface-transparent-warning,hover,#FDE3D3,#41210F,#F9E1D2,#3C1F0E,#F8E2D2,#41210F
+bgCellWarningActive,"warning в выделении",surface-transparent-warning,active,#E1E0E1,#2F3235,#DCDFDF,#283134,#DCDDDE,#2F3235
+bgCellWarningActiveHovered,"warning в выделении под курсором",surface-transparent-warning,hoverActive,#CFDAE5,#363A3D,#C7D9E7,#2F393C,#D4D5D6,#363A3D
+bgCellInfo,"ячейка со статусом info",surface-info-minor,rest,#CFECFF,#0C283B,#D3EBFF,#09283D,,#0C283B
+bgCellInfoHovered,"info под курсором",surface-info-minor,hover,#C0E6FF,#103045,#C5E5FF,#0C3048,,#103045
+bgCellInfoActive,"info в выделении",surface-info-minor,active,#B8E0FB,#0D3C5C,#B9E0FB,#073D5C,,#0D3C5C
+bgCellInfoActiveHovered,"info в выделении под курсором",surface-info-minor,hoverActive,#AADAFA,#104467,#ABDAFA,#094567,,#104467
+textDark,"текст ячеек",text-primary,rest,#13181BF5,#F2F5F8F5,#14191DF5,#F3F7FAF5,#13181BF5,#F2F5F8F5
+textHeader,"текст шапки",text-primary,rest,#13181BF5,#F2F5F8F5,#14191DF5,#F3F7FAF5,#13181BF5,#F2F5F8F5
+textHeaderSelected,"текст выделенной шапки",text-primary,rest,#13181BF5,#F2F5F8F5,#14191DF5,#F3F7FAF5,#13181BF5,#F2F5F8F5
+textGroupHeader,"текст групповой шапки",text-primary,rest,#13181BF5,#F2F5F8F5,#14191DF5,#F3F7FAF5,#13181BF5,#F2F5F8F5
+borderColor,"сетка",outline-solid-primary,rest,#D5DFE6,#23292D,#CFDBE4,#262626,#C4CFD7,#23292D
+accentColor,"рамка выделения и редактора",outline-accent,rest,#0B7ECB,#199AF0,#0087CD,#1F9EEB,#0058A2,#199AF0
+hiddenColumnsIndicatorColor,"индикатор скрытых столбцов",outline-accent,rest,#0B7ECB,#199AF0,#0087CD,#1F9EEB,#0058A2,#199AF0
+errorOutlineColor,"рамка ячейки с ошибкой",surface-negative,rest,#FF293E,#FF293E,#F81C42,#F81C42,#E7002F,#FF293E
+fadeWhite,"затухание на белом блоке",surface-solid-card,rest,#FFFFFF,#060A0C,#FFFFFF,#060A0D,#FFFFFF,#060A0C
+fadeGray,"затухание на сером блоке",background-primary,rest,#F2F5F8,#060A0C,#F3F7FA,#060A0D,,#060A0C
