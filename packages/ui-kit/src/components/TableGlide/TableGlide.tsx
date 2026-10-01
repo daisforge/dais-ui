@@ -488,7 +488,6 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     columns: columnsLast,
     rows,
     freezeColumns,
-    selectedRange: selection.current?.range,
   });
 
   const handleVisibleRegionChanged = useCallback<

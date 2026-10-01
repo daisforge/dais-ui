@@ -2,15 +2,12 @@ import type { Rectangle } from '@glideappsfinal/glide-data-grid';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import type { ColumnGlideLast, ObjectForExtending } from '../types';
-import { rectContainsCell } from './selection';
 
 interface UseErrorCellRangesParams<R extends ObjectForExtending, SR> {
   columns: readonly ColumnGlideLast<R, SR>[];
   rows: readonly R[];
   /** Число закреплённых колонок: они видимы всегда и входят в окно пересчёта. */
   freezeColumns?: number;
-  /** Активный диапазон выделения: у выбранной ячейки error-рамка не рисуется. */
-  selectedRange?: Rectangle;
 }
 
 /**
@@ -20,9 +17,8 @@ interface UseErrorCellRangesParams<R extends ObjectForExtending, SR> {
  * поэтому проверка isErrorCell гоняется только по окну: видимая область плюс
  * запас в размер вьюпорта с каждой стороны. Окно сдвигается, только когда
  * видимая область подошла к его краю ближе чем на пол-запаса (гистерезис),
- * события скролла схлопываются в один пересчёт за кадр (rAF). Выделение на
- * тяжёлый проход не влияет: вырез выбранной ячейки — дешёвый фильтр готового
- * списка.
+ * события скролла схлопываются в один пересчёт за кадр (rAF). Рамка рисуется
+ * и у ячеек внутри выделения — поверх него (регион с drawAboveSelection).
  *
  * Возвращает:
  * - `errorCellRanges` — регионы для отрисовки;
@@ -32,7 +28,6 @@ export function useErrorCellRanges<R extends ObjectForExtending, SR>({
   columns,
   rows,
   freezeColumns,
-  selectedRange,
 }: UseErrorCellRangesParams<R, SR>) {
   const [scanWindow, setScanWindow] = useState<Rectangle | null>(null);
   const scanWindowRef = useRef(scanWindow);
@@ -116,9 +111,8 @@ export function useErrorCellRanges<R extends ObjectForExtending, SR>({
     [scheduleWindowUpdate]
   );
 
-  // Тяжёлый проход по ячейкам окна. Выделение в зависимостях отсутствует
-  // намеренно: иначе обход повторялся бы на каждый сдвиг рамки при драге.
-  const allRanges = useMemo(() => {
+  // Тяжёлый проход по ячейкам окна.
+  const errorCellRanges = useMemo(() => {
     const regions: Rectangle[] = [];
 
     if (!hasErrorColumns) {
@@ -154,16 +148,6 @@ export function useErrorCellRanges<R extends ObjectForExtending, SR>({
 
     return regions;
   }, [columns, rows, scanWindow, hasErrorColumns]);
-
-  // у выбранной ячейки error-outline не рисуем: дешёвый фильтр готового списка.
-  const errorCellRanges = useMemo(() => {
-    if (!selectedRange || allRanges.length === 0) {
-      return allRanges;
-    }
-    return allRanges.filter(
-      (region) => !rectContainsCell(selectedRange, region.x, region.y)
-    );
-  }, [allRanges, selectedRange]);
 
   return { errorCellRanges, trackVisibleRegion };
 }
