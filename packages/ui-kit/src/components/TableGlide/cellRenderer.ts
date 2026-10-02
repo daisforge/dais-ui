@@ -8,6 +8,7 @@ import {
   CellContent,
   CellInfo,
   GlideThemeForRender,
+  GlideThemePartial,
   ObjectForExtending,
 } from './types';
 import { createEmptyCellGlide, createTextCellGlide } from './utils/createCell';
@@ -40,6 +41,7 @@ export const glideCellRenderer = <R extends ObjectForExtending, SR>({
   options: {
     span?: readonly [number, number] | undefined;
     data: string | undefined;
+    themeOverride?: GlideThemePartial;
     getPortalEventTarget?: () => EventTarget | null;
     refTable?: unknown;
   };
