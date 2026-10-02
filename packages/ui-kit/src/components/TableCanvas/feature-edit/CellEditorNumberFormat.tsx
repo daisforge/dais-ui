@@ -3,7 +3,13 @@ import {
   type NumberFormatCompProps,
 } from '@ui-kit/components/NumberFormat';
 import { mergeRefs } from '@ui-kit/utils';
-import React, { forwardRef, ReactElement, useState } from 'react';
+import React, {
+  forwardRef,
+  ReactElement,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import styled, { css } from 'styled-components';
 
 import { useRowContext } from '../contexts';
@@ -15,7 +21,6 @@ import type {
   CustomCellStyleNumberFormatProps,
   EmptyObj,
 } from './types';
-import { autoFocus, autoFocusAndSelect } from './utils';
 
 const StyledNumberFormat: (
   props: NumberFormatCompProps & CustomCellStyleNumberFormatProps,
@@ -60,12 +65,6 @@ const StyledNumberFormat: (
     min-height: ${({ cellHeight }) => cellHeight + 3}px;
   }
 `;
-const autofocusMapper = {
-  autoFocusAndSelect,
-  autoFocus,
-  none: undefined,
-};
-
 export const CellEditorNumberFormat = forwardRef<
   HTMLInputElement,
   CellEditorNumberFormatProps
@@ -84,6 +83,46 @@ export const CellEditorNumberFormat = forwardRef<
   ) => {
     const { rowSize } = useRowContext();
 
+    const inputRef = useRef<HTMLInputElement | null>(null);
+
+    /**
+     * Единая точка управления фокусом и кареткой — выбирается через
+     * `autoFocusType`. Раньше это жило в `*Internal` (отдельный ref + эффект);
+     * теперь здесь, чтобы тем же поведением могли пользоваться и внешние
+     * потребители реэкспортируемого `CellEditorNumberFormat`.
+     */
+    useEffect(() => {
+      const input = inputRef.current;
+      if (!input || autoFocusType === 'none') return;
+
+      input.focus();
+
+      if (autoFocusType === 'autoFocusAndSelect') {
+        input.select();
+        return;
+      }
+
+      if (autoFocusType === 'autoFocusBeforeDecimals') {
+        // Каретка в конец целой части (перед дробной). Длину дробной части
+        // берём из конфигурации формата (decimalScale + сам разделитель),
+        // отсчитывая от конца — поэтому не зависим от символа разделителя и от
+        // того, есть ли дробная часть вообще.
+        const { decimalScale, fixedDecimalScale } = props as {
+          decimalScale?: number;
+          fixedDecimalScale?: boolean;
+        };
+        const fractionLen =
+          fixedDecimalScale && decimalScale ? decimalScale + 1 : 0;
+        const pos = Math.max(0, input.value.length - fractionLen);
+        input.setSelectionRange(pos, pos);
+        return;
+      }
+
+      // 'autoFocus' — каретка в конец значения.
+      input.setSelectionRange(input.value.length, input.value.length);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     return (
       <StyledNumberFormat
         cellHeight={cellHeight}
@@ -91,12 +130,7 @@ export const CellEditorNumberFormat = forwardRef<
         disableLeftOffset={disableLeftOffset}
         align={align}
         autoFocusType={autoFocusType}
-        ref={
-          mergeRefs(
-            autofocusMapper[autoFocusType],
-            refExternal,
-          ) as React.Ref<HTMLInputElement>
-        }
+        ref={mergeRefs(inputRef, refExternal) as React.Ref<HTMLInputElement>}
         size={SIZES[rowSize].input}
         placeholder=""
         allowNegative
@@ -160,13 +194,35 @@ export function CellEditorNumberFormatInternal<
     alignContent,
   } = getNumberFormat();
 
+  const fixedDecimalScale = minimumFractionDigits !== undefined;
+
   const initialValueAsNumber =
     initialValue && !isNaN(+initialValue) ? +initialValue : null;
+
+  const isOverwriteEntry = initialValueAsNumber !== null;
 
   const [v, setV] = useState<string | number>(
     initialValueAsNumber ??
       (row[column.key as keyof TRow] as unknown as number),
   );
+
+  /**
+   * Вход в редактирование «перезаписью» (набор символа на выделенной ячейке):
+   * Glide передаёт введённый символ как initialValue и НЕ открывает ячейку
+   * через onChange. Локальный стейт мы засеяли, но черновик строки в Glide
+   * остаётся старым — поэтому при коммите одной цифры значение не сохранялось
+   * (две и более сохранялись, т.к. второй символ уже триггерил onChange).
+   * Прокидываем засеянное значение в onRowChange один раз на маунте.
+   */
+  useEffect(() => {
+    if (isOverwriteEntry) {
+      onRowChange({
+        ...row,
+        [column.key]: initialValueAsNumber,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleChange = (
     _event?: React.ChangeEvent<HTMLInputElement>,
@@ -193,14 +249,14 @@ export function CellEditorNumberFormatInternal<
       disableLeftOffset={disableLeftOffset}
       align={alignContent}
       autoFocusType={
-        initialValueAsNumber === null ? 'autoFocusAndSelect' : 'autoFocus'
+        isOverwriteEntry ? 'autoFocusBeforeDecimals' : 'autoFocusAndSelect'
       }
       value={v}
       onChange={handleChange}
       decimalSeparator={decimalSeparator}
       thousandSeparator={thousandSeparator}
       decimalScale={maximumFractionDigits}
-      fixedDecimalScale={minimumFractionDigits !== undefined}
+      fixedDecimalScale={fixedDecimalScale}
       /* типы из-за styled или по др причине не встают один в один */
       {...(inputProps as unknown as EmptyObj)}
     />
