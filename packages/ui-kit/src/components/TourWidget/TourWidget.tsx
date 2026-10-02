@@ -1,4 +1,5 @@
 import { mCls } from '@ui-kit/utils';
+import { useActiveTheme } from '@ui-kit/utils/hooks';
 import { forwardRef } from 'react';
 
 import { TourWidgetBullet } from './components/TourWidgetBullet';
@@ -24,19 +25,24 @@ const TourWidgetWithRef = forwardRef<HTMLDivElement, TourWidgetProps>(
   (
     { children, orientation = 'vertical', activeStepIndex, className, ...rest },
     ref,
-  ) => (
-    <TourWidgetProvider value={{ activeStepIndex }}>
-      <StyledContainer
-        ref={ref}
-        $orientation={orientation}
-        className={mCls(orientationClassNames[orientation], className)}
-        {...rest}
-      >
-        <TourWidgetGradient orientation={orientation} />
-        {children}
-      </StyledContainer>
-    </TourWidgetProvider>
-  ),
+  ) => {
+    const theme = useActiveTheme();
+
+    return (
+      <TourWidgetProvider value={{ activeStepIndex }}>
+        <StyledContainer
+          ref={ref}
+          $orientation={orientation}
+          $isDark={theme === 'dark'}
+          className={mCls(orientationClassNames[orientation], className)}
+          {...rest}
+        >
+          <TourWidgetGradient orientation={orientation} />
+          {children}
+        </StyledContainer>
+      </TourWidgetProvider>
+    );
+  },
 );
 
 export const TourWidget = Object.assign(TourWidgetWithRef, {

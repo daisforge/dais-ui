@@ -1,9 +1,9 @@
 import { Typography } from '@ui-kit/components/Typography';
 import {
-  onDarkSurfaceSolidCardBrightness,
-  onDarkSurfaceTransparentTertiary,
-  onDarkTextPrimary,
-  onDarkTextSecondary,
+  onLightSurfaceSolidPrimary,
+  outlineAccentGradient,
+  surfaceTransparentTertiary,
+  textPrimary,
 } from '@ui-kit/tokens';
 import styled, {
   css,
@@ -12,111 +12,110 @@ import styled, {
 } from 'styled-components';
 
 import { tourWidgetClassNames as cls } from './TourWidget.classNames';
+import { tourWidgetThemePalettes } from './TourWidget.palette';
 import type { TourWidgetOrientation } from './types';
 
 type CssProp = string | CSSObject | FlattenSimpleInterpolation;
 
 type StyledContainerProps = {
   $orientation: TourWidgetOrientation;
+  $isDark: boolean;
   $css?: CssProp;
 };
 
-const GRADIENT_COLORS = {
-  verticalGreen: '56 255 62',
-  horizontalGreen: '56 255 136',
-  cyanSolid: '0 224 255',
-  verticalBlue: '16 194 219',
-  horizontalBlue: '16 138 219',
-  verticalSlateBlue: '110 135 219',
-  horizontalSlateBlue: '90 117 207',
-  cyan: '0, 224, 255',
-  blue: '25, 154, 240',
-  periwinkle: '153, 176, 254',
-  slateBlue: '90, 117, 207',
-  green: '#56ff71',
-  greenTransparent: 'rgba(86, 255, 113, 0)',
-} as const;
-
-const TOUR_WIDGET_GRADIENT = {
-  vertical: `linear-gradient(
-    -45.68deg,
-    rgb(${GRADIENT_COLORS.verticalGreen}) 16.982%,
-    rgb(${GRADIENT_COLORS.cyanSolid}) 16.982%,
-    rgb(${GRADIENT_COLORS.verticalBlue}) 44.903%,
-    rgb(${GRADIENT_COLORS.verticalSlateBlue}) 69.826%
-  )`,
-  horizontal: `linear-gradient(
-    -45.68deg,
-    rgb(${GRADIENT_COLORS.horizontalGreen}) 16.982%,
-    rgb(${GRADIENT_COLORS.cyanSolid}) 16.982%,
-    rgb(${GRADIENT_COLORS.horizontalBlue}) 44.903%,
-    rgb(${GRADIENT_COLORS.horizontalSlateBlue}) 69.826%
-  )`,
-  fallback: `linear-gradient(
-    90deg,
-    rgba(${GRADIENT_COLORS.periwinkle}, 0.56) 0%,
-    rgba(${GRADIENT_COLORS.blue}, 0.76) 50%,
-    rgba(${GRADIENT_COLORS.cyan}, 0.84) 100%
-  )`,
-  oval: `linear-gradient(
-    180deg,
-    ${GRADIENT_COLORS.green} 0%,
-    ${GRADIENT_COLORS.greenTransparent} 100%
-  )`,
-} as const;
+const LIGHT_PALETTE = tourWidgetThemePalettes.light;
 
 const C = {
   radius: '14px',
   contentRadius: '6px',
-  cardBg: () => onDarkSurfaceSolidCardBrightness,
-  titleColor: () => onDarkTextPrimary,
-  descriptionColor: () => onDarkTextSecondary,
+  cardBg: () =>
+    `var(--tour-widget-theme-background, ${onLightSurfaceSolidPrimary})`,
+  titleColor: () => textPrimary,
+  descriptionColor: () => textPrimary,
 };
 
 const verticalGradientPreset = css`
-  --tour-widget-gradient-frame-height: 42%;
+  --tour-widget-gradient-frame-height: 20%;
   --tour-widget-gradient-frame-left: 0;
   --tour-widget-gradient-frame-right: 0;
   --tour-widget-gradient-frame-bottom: 0;
   --tour-widget-gradient-frame-fade: 60%;
 
-  --tour-widget-gradient-background: ${TOUR_WIDGET_GRADIENT.vertical};
+  --tour-widget-gradient-background: var(
+    --tour-widget-theme-gradient-vertical,
+    ${LIGHT_PALETTE['--tour-widget-theme-gradient-vertical']}
+  );
   --tour-widget-gradient-width: 115%;
   --tour-widget-gradient-height: 100%;
   --tour-widget-gradient-left: -15%;
-  --tour-widget-gradient-top: 80%;
-  --tour-widget-gradient-blur: 34px;
-  --tour-widget-gradient-opacity: 1;
+  --tour-widget-gradient-top: 60%;
+  --tour-widget-gradient-blur: var(
+    --tour-widget-theme-gradient-vertical-blur,
+    45px
+  );
+  --tour-widget-gradient-opacity: var(
+    --tour-widget-theme-gradient-opacity,
+    0.53
+  );
 
-  --tour-widget-oval-width: 50%;
-  --tour-widget-oval-height: 90%;
-  --tour-widget-oval-left: 90%;
-  --tour-widget-oval-top: 70%;
-  --tour-widget-oval-blur: 37px;
-  --tour-widget-oval-opacity: 1;
+  --tour-widget-inline-oval-display: none;
+  --tour-widget-oval-frame-display: block;
+  --tour-widget-oval-frame-height: 32%;
+  --tour-widget-oval-border-radius: 50%;
+  --tour-widget-shape-gradient-mask-start: 84%;
+  --tour-widget-shape-gradient-mask-middle: 94%;
+
+  --tour-widget-oval-width: 45%;
+  --tour-widget-oval-height: 100%;
+  --tour-widget-oval-left: 78%;
+  --tour-widget-oval-top: 35%;
+  --tour-widget-oval-blur: var(--tour-widget-theme-oval-vertical-blur, 48px);
+  --tour-widget-oval-opacity: var(
+    --tour-widget-theme-oval-vertical-opacity,
+    0.42
+  );
 `;
 
 const horizontalGradientPreset = css`
-  --tour-widget-gradient-frame-height: 42%;
+  --tour-widget-gradient-frame-height: 30%;
   --tour-widget-gradient-frame-left: 0;
   --tour-widget-gradient-frame-right: 0;
   --tour-widget-gradient-frame-bottom: 0;
   --tour-widget-gradient-frame-fade: 78%;
 
-  --tour-widget-gradient-background: ${TOUR_WIDGET_GRADIENT.horizontal};
+  --tour-widget-gradient-background: var(
+    --tour-widget-theme-gradient-horizontal,
+    ${LIGHT_PALETTE['--tour-widget-theme-gradient-horizontal']}
+  );
   --tour-widget-gradient-width: 115%;
   --tour-widget-gradient-height: 100%;
   --tour-widget-gradient-left: -10%;
-  --tour-widget-gradient-top: 60%;
-  --tour-widget-gradient-blur: 46px;
-  --tour-widget-gradient-opacity: 1;
+  --tour-widget-gradient-top: 55%;
+  --tour-widget-gradient-blur: var(
+    --tour-widget-theme-gradient-horizontal-blur,
+    45px
+  );
+  --tour-widget-gradient-opacity: var(
+    --tour-widget-theme-gradient-opacity,
+    0.53
+  );
 
-  --tour-widget-oval-width: 40%;
-  --tour-widget-oval-height: 126%;
-  --tour-widget-oval-left: 78%;
-  --tour-widget-oval-top: 34%;
-  --tour-widget-oval-blur: 86px;
-  --tour-widget-oval-opacity: 0.82;
+  --tour-widget-inline-oval-display: none;
+  --tour-widget-oval-frame-display: block;
+  --tour-widget-oval-frame-height: 42%;
+  --tour-widget-oval-border-radius: 50%;
+  --tour-widget-shape-gradient-mask-start: 76%;
+  --tour-widget-shape-gradient-mask-middle: 88%;
+
+  --tour-widget-oval-width: 30%;
+  --tour-widget-oval-height: 120%;
+  --tour-widget-oval-left: 84%;
+  --tour-widget-oval-top: 20%;
+  --tour-widget-oval-blur: var(--tour-widget-theme-oval-horizontal-blur, 48px);
+  --tour-widget-oval-opacity: var(
+    --tour-widget-theme-oval-horizontal-opacity,
+    0.42
+  );
 `;
 
 const verticalStyles = css`
@@ -126,16 +125,16 @@ const verticalStyles = css`
   flex-direction: column;
 
   & .${cls.content} {
-    padding: 10px 10px 0 10px;
+    padding: 16px 16px 0 16px;
   }
 
   & .${cls.header} {
     padding-top: 24px;
-    padding-inline: 10px;
+    padding-inline: 16px;
   }
 
   & .${cls.footer} {
-    padding: 24px 10px 10px;
+    padding: 24px 16px 16px;
   }
 `;
 
@@ -150,7 +149,7 @@ const horizontalStyles = css`
   & .${cls.header} {
     grid-column: 1 / span 1;
     grid-row: 1 / span 1;
-    padding: 10px 10px 0;
+    padding: 16px 16px 0;
   }
 
   & .${cls.footer} {
@@ -158,7 +157,7 @@ const horizontalStyles = css`
     grid-row: 3 / span 1;
     align-self: end;
     margin-top: 0;
-    padding: 24px 10px 10px;
+    padding: 24px 16px 16px;
   }
 
   &:has(> .${cls.content}) {
@@ -170,19 +169,19 @@ const horizontalStyles = css`
   &:has(> .${cls.content}) .${cls.content} {
     grid-column: 1;
     grid-row: 1 / 4;
-    padding: 10px 0 10px 10px;
+    padding: 16px 0 16px 16px;
   }
 
   &:has(> .${cls.content}) .${cls.header} {
     grid-column: 2;
     grid-row: 1;
-    padding: 10px 10px 0 0;
+    padding: 16px 16px 0 0;
   }
 
   &:has(> .${cls.content}) .${cls.footer} {
     grid-column: 2;
     grid-row: 3;
-    padding: 0 10px 10px 0;
+    padding: 0 16px 16px 0;
   }
 `;
 
@@ -203,13 +202,21 @@ export const StyledContainer = styled.div.attrs({
   min-width: var(--tour-widget-min-width, auto);
   width: fit-content;
   color: ${C.titleColor};
-  background: var(--tour-widget-background, ${C.cardBg});
+  border: 4px solid transparent;
+  background: linear-gradient(
+        var(--tour-widget-background, ${C.cardBg}),
+        var(--tour-widget-background, ${C.cardBg})
+      )
+      padding-box,
+    ${outlineAccentGradient} border-box;
   border-radius: var(--tour-widget-border-radius, ${C.radius});
 
   & > :not(.${cls.gradient}):not(.${cls.shapeGradient}) {
     position: relative;
     z-index: 1;
   }
+
+  ${({ $isDark }) => tourWidgetThemePalettes[$isDark ? 'dark' : 'light']}
 
   ${getContainerLayoutStyles}
 
@@ -227,20 +234,26 @@ export const StyledShapeGradient = styled.svg.attrs({
   width: 100%;
   height: 100%;
   pointer-events: none;
-  opacity: var(--tour-widget-shape-gradient-opacity, 0.84);
+  clip-path: inset(
+    0 round max(0px, calc(var(--tour-widget-border-radius, ${C.radius}) - 4px))
+  );
+  opacity: var(
+    --tour-widget-shape-gradient-opacity,
+    var(--tour-widget-theme-shape-opacity, 0.32)
+  );
 
   /* Маска оставляет SVG-хвост видимым только в нижней части карточки,
-     чтобы диагональная фигура не перекрывала основной темный фон сверху. */
+     чтобы диагональная фигура не перекрывала основной фон сверху. */
   -webkit-mask-image: linear-gradient(
     to bottom,
-    transparent 42%,
-    rgba(0, 0, 0, 0.55) 58%,
+    transparent var(--tour-widget-shape-gradient-mask-start, 42%),
+    rgba(0, 0, 0, 0.55) var(--tour-widget-shape-gradient-mask-middle, 58%),
     #000 100%
   );
   mask-image: linear-gradient(
     to bottom,
-    transparent 42%,
-    rgba(0, 0, 0, 0.55) 58%,
+    transparent var(--tour-widget-shape-gradient-mask-start, 42%),
+    rgba(0, 0, 0, 0.55) var(--tour-widget-shape-gradient-mask-middle, 58%),
     #000 100%
   );
 
@@ -259,7 +272,10 @@ export const StyledGradient = styled.div.attrs({
   bottom: var(--tour-widget-gradient-frame-bottom, 0);
   height: var(--tour-widget-gradient-frame-height, 36%);
   overflow: hidden;
-  border-radius: inherit;
+  border-radius: max(
+    0px,
+    calc(var(--tour-widget-border-radius, ${C.radius}) - 4px)
+  );
   pointer-events: none;
 
   /* Маска плавно проявляет нижний gradient-frame и срезает верхнюю часть blur,
@@ -288,7 +304,7 @@ export const StyledGradient = styled.div.attrs({
 
     background: var(
       --tour-widget-gradient-background,
-      ${TOUR_WIDGET_GRADIENT.fallback}
+      ${LIGHT_PALETTE['--tour-widget-theme-gradient-horizontal']}
     );
 
     filter: blur(var(--tour-widget-gradient-blur, 69px));
@@ -298,18 +314,39 @@ export const StyledGradient = styled.div.attrs({
   /* ::after — отдельный зеленый овал справа. Его blur смешивается с
      прямоугольником и дает зеленую подсветку, как в Figma-композиции. */
   &::after {
+    display: var(--tour-widget-inline-oval-display, block);
     width: var(--tour-widget-oval-width);
     height: var(--tour-widget-oval-height);
     left: var(--tour-widget-oval-left);
     top: var(--tour-widget-oval-top);
+    border-radius: var(--tour-widget-oval-border-radius, 0);
 
     background: var(
       --tour-widget-oval-background,
-      ${TOUR_WIDGET_GRADIENT.oval}
+      var(
+        --tour-widget-theme-oval-background,
+        ${LIGHT_PALETTE['--tour-widget-theme-oval-background']}
+      )
     );
 
     filter: blur(var(--tour-widget-oval-blur, 127px));
     opacity: var(--tour-widget-oval-opacity, 1);
+  }
+`;
+
+// Овал проявляется выше узкой нижней полосы в обеих темах.
+// Отдельная область сохраняет её маску и положение без изменений.
+export const StyledOvalGradient = styled(StyledGradient)`
+  display: var(--tour-widget-oval-frame-display, none);
+  height: var(--tour-widget-oval-frame-height, 0%);
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 40%, #000 100%);
+
+  &::before {
+    display: none;
+  }
+
+  &::after {
+    display: block;
   }
 `;
 
@@ -396,7 +433,7 @@ export const StyledBullet = styled.span.attrs({
   border-radius: 100%;
   background: var(
     --tour-widget-bullet-background,
-    ${onDarkSurfaceTransparentTertiary}
+    ${surfaceTransparentTertiary}
   );
   transform: scale(1);
   transform-origin: center;
@@ -404,10 +441,7 @@ export const StyledBullet = styled.span.attrs({
     transform 300ms ease;
 
   &.${cls.bulletActive} {
-    background: var(
-      --tour-widget-bullet-active-background,
-      ${onDarkTextPrimary}
-    );
+    background: var(--tour-widget-bullet-active-background, ${textPrimary});
   }
 
   &.${cls.bulletEdge} {
