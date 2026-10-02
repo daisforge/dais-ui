@@ -530,8 +530,12 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
 
         const { renderSummaryCell, colSpan } = column;
 
+        // Фон итоговой строки задаём на уровне ячейки (не строки): так форк
+        // не продлевает его в пустую зону ниже данных.
+        const summaryThemeOverride = { bgCell: theme.bgHeader };
+
         if (!renderSummaryCell || !summaryRow) {
-          return createEmptyCellGlide();
+          return createEmptyCellGlide({ themeOverride: summaryThemeOverride });
         }
 
         const cellInfo: CellInfo<R, SR> = {
@@ -562,6 +566,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
 
         const options = {
           data: '',
+          themeOverride: summaryThemeOverride,
           ...(span && { span }),
         };
 
@@ -1412,8 +1417,10 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     const hoverBg = theme.bgRowHovered;
 
     return (rowInd) => {
-      const isSummary = rowInd > rows.length - 1;
-      if (isSummary) return { bgCell: theme.bgHeader };
+      // Фон summary-строк задаётся на уровне ЯЧЕЙКИ (см. getCellContentGlide),
+      // а не строки. На уровне строки его давать нельзя: форк (drawExtraRowThemes,
+      // апстрим #880) продлевает фон строки в пустую зону ниже данных, и этот
+      // «хвост» при горизонтальном скролле наезжает на итоговую строку.
 
       // Базовый слой: checkbox-selected строки получают общий фон,
       // а active-state сверху дорисовывается через highlightRegions.
@@ -1437,9 +1444,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       return {};
     };
   }, [
-    rows.length,
     summaryRowsLength,
-    theme.bgHeader,
     theme.selectionCheckboxBg,
     theme.bgRowHovered,
     theme.bgSelectedRowHovered,
