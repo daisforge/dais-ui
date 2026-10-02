@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+
 import { useRowContext } from '../contexts';
 import {
   CellEditorComboboxInternal,
@@ -16,10 +18,51 @@ import {
   ColumnConfig,
   EditingCellInfo,
   ObjectForExtending,
+  RenderRowCustomEditCell,
   TableConfig,
 } from '../types';
 import { CLASS } from './constants';
 import { StyledCellContainer, SubRowContainer } from './styled';
+
+/**
+ * Обёртка для кастомных редакторов (`editingCell.component` в виде функции).
+ *
+ * При входе в редактирование «перезаписью» (набор символа на выделенной
+ * ячейке) Glide передаёт введённый символ как `initialValue`, но для кастомных
+ * ячеек НЕ триггерит onChange. Из-за этого черновик строки оставался старым и
+ * одиночный ввод не сохранялся (две цифры и более сохранялись, т.к. второй
+ * символ уже триггерил onChange). Засеиваем значение в `onRowChange` один раз
+ * на маунте — чтобы авторам кастомных редакторов не нужно было делать это
+ * руками. Встроенные редакторы (inputString/inputNumber) делают то же самое
+ * внутри себя.
+ */
+function CustomEditCellSeed<
+  RowType extends ObjectForExtending,
+  SummaryRowType,
+>({
+  info,
+  render,
+  lvl,
+  disableLeftOffset,
+}: {
+  info: EditingCellInfo<RowType, SummaryRowType>;
+  render: RenderRowCustomEditCell<RowType, SummaryRowType>;
+  lvl: number;
+  disableLeftOffset: boolean;
+}) {
+  const { initialValue, row, column, onRowChange } = info;
+
+  useEffect(() => {
+    if (initialValue === undefined || initialValue === null) return;
+    const str = String(initialValue);
+    if (str.trim() === '') return;
+    const seeded = Number.isNaN(Number(str)) ? str : Number(str);
+    onRowChange({ ...row, [column.key]: seeded });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return <>{render(info, lvl, disableLeftOffset)}</>;
+}
 
 export const RenderEditCell = <
   FilterStateType extends ObjectForExtending,
@@ -106,7 +149,14 @@ export const RenderEditCell = <
       );
     }
 
-    return column.editingCell.component(editingCellInfo, 0, disableLeftOffset);
+    return (
+      <CustomEditCellSeed
+        info={editingCellInfo}
+        render={column.editingCell.component}
+        lvl={0}
+        disableLeftOffset={disableLeftOffset}
+      />
+    );
   };
 
   const tableConfigSubrowsActivated = !!tableConfigSubRows;
@@ -274,10 +324,13 @@ export const RenderEditCell = <
         />
       );
     }
-    return column.subRow.editingCell.component(
-      renderSubRowEditCellProps,
-      lvl,
-      disableLeftOffset,
+    return (
+      <CustomEditCellSeed
+        info={renderSubRowEditCellProps}
+        render={column.subRow.editingCell.component}
+        lvl={lvl}
+        disableLeftOffset={disableLeftOffset}
+      />
     );
   };
 
