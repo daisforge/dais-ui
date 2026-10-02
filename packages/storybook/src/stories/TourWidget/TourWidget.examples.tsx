@@ -93,7 +93,7 @@ function VerticalExample() {
 
   return (
     <TourView>
-      <TourWidget activeStepIndex={activeStepIndex} $css={{ width: '306px' }}>
+      <TourWidget activeStepIndex={activeStepIndex} $css={{ width: '298px' }}>
         <TourWidget.Content>
           <MediaPlaceholder width={266} height={266} />
         </TourWidget.Content>
@@ -165,7 +165,7 @@ function HorizontalExample() {
       <TourWidget
         orientation="horizontal"
         activeStepIndex={activeStepIndex}
-        $css={{ width: '740px', height: '280px' }}
+        $css={{ width: '732px', height: '272px' }}
       >
         <TourWidget.Content>
           <MediaPlaceholder width={240} height={240} />
@@ -262,7 +262,7 @@ function TourWithPulseExample() {
         <TourWidget
           orientation="horizontal"
           activeStepIndex={activeStepIndex}
-          $css={{ width: '740px', height: '284px' }}
+          $css={{ width: '732px', height: '272px' }}
         >
           <TourWidget.Content>
             <MediaPlaceholder width={240} height={240} />

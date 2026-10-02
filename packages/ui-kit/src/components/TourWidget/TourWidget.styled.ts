@@ -125,16 +125,16 @@ const verticalStyles = css`
   flex-direction: column;
 
   & .${cls.content} {
-    padding: 16px 16px 0 16px;
+    padding: 12px 12px 0;
   }
 
   & .${cls.header} {
     padding-top: 24px;
-    padding-inline: 16px;
+    padding-inline: 12px;
   }
 
   & .${cls.footer} {
-    padding: 24px 16px 16px;
+    padding: 24px 12px 12px;
   }
 `;
 
@@ -149,7 +149,7 @@ const horizontalStyles = css`
   & .${cls.header} {
     grid-column: 1 / span 1;
     grid-row: 1 / span 1;
-    padding: 16px 16px 0;
+    padding: 12px 12px 0;
   }
 
   & .${cls.footer} {
@@ -157,7 +157,7 @@ const horizontalStyles = css`
     grid-row: 3 / span 1;
     align-self: end;
     margin-top: 0;
-    padding: 24px 16px 16px;
+    padding: 24px 12px 12px;
   }
 
   &:has(> .${cls.content}) {
@@ -169,19 +169,19 @@ const horizontalStyles = css`
   &:has(> .${cls.content}) .${cls.content} {
     grid-column: 1;
     grid-row: 1 / 4;
-    padding: 16px 0 16px 16px;
+    padding: 12px 0 12px 12px;
   }
 
   &:has(> .${cls.content}) .${cls.header} {
     grid-column: 2;
     grid-row: 1;
-    padding: 16px 16px 0 0;
+    padding: 12px 12px 0 0;
   }
 
   &:has(> .${cls.content}) .${cls.footer} {
     grid-column: 2;
     grid-row: 3;
-    padding: 0 16px 16px 0;
+    padding: 0 12px 12px 0;
   }
 `;
 
@@ -199,6 +199,7 @@ export const StyledContainer = styled.div.attrs({
   position: relative;
   isolation: isolate;
   overflow: hidden;
+  box-sizing: border-box;
   min-width: var(--tour-widget-min-width, auto);
   width: fit-content;
   color: ${C.titleColor};
