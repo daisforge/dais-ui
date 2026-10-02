@@ -1,6 +1,7 @@
 // components <//for rebuild republish: 1.17.0 — minor >
 export * from './components/Accordion';
 export * from './components/AiAgentPopover';
+export * from './components/AiAgentPopup';
 export * from './components/AnalyticalWidget';
 export * from './components/ApprovalCenter';
 export * from './components/Attach';
