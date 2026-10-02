@@ -2,6 +2,8 @@ export { AiAgentInput } from './AiAgentInput';
 export { AiAgentPopup } from './AiAgentPopup';
 export type {
   AiAgentInputProps,
+  AiAgentLeftPanelItem,
+  AiAgentLeftPanelProps,
   AiAgentPopupDragBoundary,
   AiAgentPopupPosition,
   AiAgentPopupPositionState,

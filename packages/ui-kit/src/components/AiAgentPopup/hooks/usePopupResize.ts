@@ -1,5 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
+import {
+  MIN_WIDTH_WITH_SECTION,
+  POPUP_MAX_SIZE,
+} from '../AiAgentPopup.constants';
 import type {
   AiAgentPopupDragBoundary,
   AiAgentPopupFrame,
@@ -28,6 +32,8 @@ type UsePopupResizeParams = {
   setPopupPosition: (position: AiAgentPopupPosition) => void;
   /** Контейнер окна: пределы роста и система координат */
   frame?: AiAgentPopupFrame;
+  /** Открыт ли раздел левой панели: от этого зависит минимальная ширина */
+  isSectionOpen?: boolean;
 };
 
 /**
@@ -55,6 +61,7 @@ export const usePopupResize = ({
   popupPosition,
   setPopupPosition,
   frame,
+  isSectionOpen = false,
 }: UsePopupResizeParams) => {
   const [popupSize, setPopupSize] = useState<AiAgentPopupSize | undefined>(
     () => savedSize ?? defaultSize,
@@ -133,14 +140,21 @@ export const usePopupResize = ({
         const corner = activeCorner;
         setFrozenCorner(corner);
 
-        // Предел роста в сторону, куда тянется активный угол
+        // Предел роста в сторону, куда тянется активный угол. Сверху
+        // ограничен максимальным размером окна (макет), снизу край экрана
         const { top = 0, right = 0, bottom = 0, left = 0 } = dragBoundary ?? {};
-        const availableWidth = corner.includes('left')
-          ? rect.right - left
-          : frameMetrics.width - rect.left - right;
-        const availableHeight = corner.includes('top')
-          ? rect.bottom - top
-          : frameMetrics.height - rect.top - bottom;
+        const availableWidth = Math.min(
+          POPUP_MAX_SIZE,
+          corner.includes('left')
+            ? rect.right - left
+            : frameMetrics.width - rect.left - right,
+        );
+        const availableHeight = Math.min(
+          POPUP_MAX_SIZE,
+          corner.includes('top')
+            ? rect.bottom - top
+            : frameMetrics.height - rect.top - bottom,
+        );
 
         setViewportLimits({
           maxWidth: baseConfig.maxWidth
@@ -222,11 +236,28 @@ export const usePopupResize = ({
       baseConfig.onResizeEnd?.(resizableContainer);
     };
 
+    // Пока раздел левой панели открыт, окно нельзя сузить так, чтобы чат
+    // схлопнулся: минимальная ширина больше. По высоте предел не меняется
+    const minWidth = isSectionOpen
+      ? MIN_WIDTH_WITH_SECTION
+      : baseConfig.minWidth;
+
+    // Верхний предел размеров: максимум окна либо край экрана (меньшее)
+    const maxWidth = Math.min(
+      POPUP_MAX_SIZE,
+      viewportLimits.maxWidth ?? POPUP_MAX_SIZE,
+    );
+    const maxHeight = Math.min(
+      POPUP_MAX_SIZE,
+      viewportLimits.maxHeight ?? POPUP_MAX_SIZE,
+    );
+
     return {
       ...baseConfig,
       defaultSize: popupSize ?? baseConfig.defaultSize,
-      maxWidth: viewportLimits.maxWidth ?? baseConfig.maxWidth,
-      maxHeight: viewportLimits.maxHeight ?? baseConfig.maxHeight,
+      minWidth,
+      maxWidth,
+      maxHeight,
       onResizeStart: handleResizeStart,
       onResizeEnd: handleResizeEnd,
     };
@@ -240,6 +271,7 @@ export const usePopupResize = ({
     containerRef,
     setPopupPosition,
     frame,
+    isSectionOpen,
   ]);
 
   return {

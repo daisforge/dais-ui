@@ -88,6 +88,22 @@ export const validatePosition = (
 };
 
 /**
+ * Раздувает отступы границ на величину by со всех сторон. Нужно для учёта
+ * светящейся рамки: она нарисована снаружи контейнера и в его размеры
+ * не входит, поэтому для границ окно считается на by шире с каждой стороны,
+ * иначе рамка вылезает за dragBoundary при перетаскивании и ресайзе к краю.
+ */
+export const inflateDragBoundary = (
+  boundary: AiAgentPopupDragBoundary | undefined,
+  by: number,
+): AiAgentPopupDragBoundary => ({
+  top: (boundary?.top ?? 0) + by,
+  right: (boundary?.right ?? 0) + by,
+  bottom: (boundary?.bottom ?? 0) + by,
+  left: (boundary?.left ?? 0) + by,
+});
+
+/**
  * Позиция справа от target-элемента. Числовой gap: только горизонтальный
  * отступ, верхние края выровнены. Объектный gap: смещение по обеим осям
  * от правого верхнего угла таргета. Координаты переводятся из вьюпортных

@@ -1,20 +1,26 @@
 import { Popup, popupClasses } from '@ui-kit/components/Popup';
 import { br } from '@ui-kit/constants';
 import { outlineAccentGradient, surfaceSolidCard } from '@ui-kit/tokens';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 import {
+  CARD_PADDING,
   DRAGGING_CLASS,
   GLOW_HEIGHT,
   GLOW_TOP_OVERHANG,
   GLOW_WIDTH_RATIO,
   INPUT_VERTICAL_CHROME,
+  LEFT_PANEL_DIVIDER_GAP,
+  LEFT_PANEL_HEADER_HEIGHT,
+  LEFT_PANEL_RAIL_WIDTH,
+  LEFT_PANEL_SECTION_WIDTH,
 } from './AiAgentPopup.constants';
 
 const C = {
   bg: () => surfaceSolidCard,
   outline: () => outlineAccentGradient,
   radius: () => br.m,
+  padding: () => `${CARD_PADDING}px`,
 };
 
 export const StyledPopup = styled(Popup)`
@@ -93,16 +99,17 @@ export const StyledSurfaceEmbedded = styled.div<{ $shadow: string }>`
 /* Белая карточка отдельно от рамки: overflow здесь обрезает контент
    и свечение по скруглению, не задевая рамку. position нужен, чтобы
    в плавающем варианте карточка рисовалась поверх кольца и прятала
-   его заход под свой край */
+   его заход под свой край. Направление row: слева левая панель (если
+   есть), справа контент чата */
 export const StyledCard = styled.div`
   position: relative;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   width: 100%;
   height: 100%;
   min-width: 0;
   min-height: 0;
-  padding: 16px;
+  padding: ${C.padding};
   border-radius: ${C.radius};
   background: ${C.bg};
   overflow: hidden;
@@ -187,5 +194,115 @@ export const StyledInputBackplate = styled.div<{ $maxHeight: number }>`
 
   textarea {
     max-height: ${({ $maxHeight }) => $maxHeight - INPUT_VERTICAL_CHROME}px;
+  }
+`;
+
+/* ===== Левая панель ===== */
+
+/* Обёртка левой панели: зона (полоса или раздел) и вертикальный девайдер.
+   Встаёт слева от контента чата, тянется на всю высоту карточки */
+export const StyledLeftPanel = styled.div`
+  display: flex;
+  align-items: stretch;
+  flex: none;
+  height: 100%;
+`;
+
+/* Зона панели меняет ширину между полосой иконок и раскрытым разделом;
+   ширину анимируем, за ней тянется и ширина окна. overflow прячет раздел,
+   пока зона сужена до полосы */
+export const StyledLeftPanelZone = styled.div<{ $open: boolean }>`
+  position: relative;
+  flex: none;
+  height: 100%;
+  overflow: hidden;
+  width: ${({ $open }) =>
+    $open ? LEFT_PANEL_SECTION_WIDTH : LEFT_PANEL_RAIL_WIDTH}px;
+  transition: width 0.3s ease;
+`;
+
+/* Полоса иконок и раздел наложены друг на друга и показываются по очереди
+   через прозрачность (кросс-фейд): из раздела к другим иконкам можно
+   вернуться только закрытием крестиком */
+const panelLayer = css<{ $active: boolean }>`
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  opacity: ${({ $active }) => ($active ? 1 : 0)};
+  pointer-events: ${({ $active }) => ($active ? 'auto' : 'none')};
+  transition: opacity 0.3s ease;
+`;
+
+export const StyledRail = styled.div<{ $active: boolean }>`
+  ${panelLayer};
+  width: ${LEFT_PANEL_RAIL_WIDTH}px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+`;
+
+export const StyledRailItem = styled.div`
+  position: relative;
+  flex: none;
+`;
+
+/* Слот индикатора над иконкой: небольшой бейдж в правом верхнем углу,
+   кликам по иконке не мешает */
+export const StyledRailIndicator = styled.div`
+  position: absolute;
+  top: 0;
+  right: 0;
+  pointer-events: none;
+`;
+
+export const StyledSection = styled.div<{ $active: boolean }>`
+  ${panelLayer};
+  width: ${LEFT_PANEL_SECTION_WIDTH}px;
+  display: flex;
+  flex-direction: column;
+`;
+
+/* Шапка раздела фиксированной высоты: иконка, заголовок и крестик */
+export const StyledSectionHeader = styled.div`
+  flex: none;
+  height: ${LEFT_PANEL_HEADER_HEIGHT}px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+`;
+
+export const StyledSectionTitleIcon = styled.div`
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const StyledSectionTitle = styled.div`
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+
+/* Контент раздела под шапкой. Отступы, скролл и наполнение задаёт
+   потребитель, поэтому здесь только растяжка и min-height для его скролла */
+export const StyledSectionContent = styled.div`
+  flex: 1 1 auto;
+  min-height: 0;
+`;
+
+/* Вертикальный девайдер между панелью и чатом: отступы по 4px с каждой
+   стороны, сам девайдер (атомарный Divider) тянется на всю высоту */
+export const StyledLeftPanelDivider = styled.div`
+  flex: none;
+  display: flex;
+  margin: 0 ${LEFT_PANEL_DIVIDER_GAP}px;
+
+  & > * {
+    height: 100%;
   }
 `;

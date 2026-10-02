@@ -1,10 +1,26 @@
 export const DRAG_THRESHOLD = 5;
 
+/**
+ * Толщина светящейся рамки, нарисованной снаружи блочной модели
+ * (inset:-4px у floating-оболочки). В размеры контейнера она не входит,
+ * поэтому в расчётах границ окна её учитываем отдельно: для границ окно
+ * считается на столько шире с каждой стороны, иначе рамка вылезает
+ * за dragBoundary при перетаскивании и ресайзе к краю.
+ */
+export const GLOW_BORDER = 4;
+
 export const DEFAULT_TARGET_GAP = 12;
 
 export const DEFAULT_MIN_WIDTH = 360;
 
 export const DEFAULT_MIN_HEIGHT = 360;
+
+/**
+ * Внутренний отступ белой карточки до контента. Вместе со светящейся рамкой
+ * (GLOW_BORDER) даёт отступ контента от внешнего края окна 12 + 4 = 16,
+ * как в макете.
+ */
+export const CARD_PADDING = 12;
 
 /** Отступ от левого верхнего угла экрана, если позицию не из чего вычислить */
 export const FALLBACK_POSITION_INDENT = 56;
@@ -56,3 +72,32 @@ export const DEFAULT_INPUT_MAX_HEIGHT = 160;
 /** Обвязка поля размера s вокруг textarea: внутренние отступы рамки.
  * Поле в одну строку 41px при textarea 18px */
 export const INPUT_VERTICAL_CHROME = 23;
+
+/** Ширина полосы иконок левой панели (свёрнутое состояние), макет */
+export const LEFT_PANEL_RAIL_WIDTH = 44;
+
+/** Ширина открытого раздела левой панели, макет */
+export const LEFT_PANEL_SECTION_WIDTH = 300;
+
+/** Отступ до и после вертикального девайдера между левой панелью и чатом */
+export const LEFT_PANEL_DIVIDER_GAP = 4;
+
+/** Толщина вертикального девайдера */
+export const LEFT_PANEL_DIVIDER_WIDTH = 1;
+
+/** Высота шапки открытого раздела: иконка, заголовок, крестик, макет */
+export const LEFT_PANEL_HEADER_HEIGHT = 40;
+
+/** Максимальный размер окна при ресайзе (и по ширине, и по высоте), макет */
+export const POPUP_MAX_SIZE = 800;
+
+/** Минимальная ширина окна, когда открыт раздел левой панели, макет */
+export const MIN_WIDTH_WITH_SECTION = 615;
+
+/**
+ * Прирост ширины окна при открытии раздела: раздел (300) заменяет полосу
+ * иконок (44), окно дорастягивается на разницу, чтобы чат не сужался.
+ * Совпадает с разницей минимумов (615 - 360).
+ */
+export const LEFT_PANEL_SECTION_DELTA =
+  MIN_WIDTH_WITH_SECTION - DEFAULT_MIN_WIDTH;

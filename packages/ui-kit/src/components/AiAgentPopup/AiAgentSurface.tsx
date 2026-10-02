@@ -1,6 +1,7 @@
 import { shadowGradientDark, shadowGradientLight } from '@ui-kit/tokens';
 import { forwardRef } from 'react';
 
+import { AiAgentLeftPanel } from './AiAgentLeftPanel';
 import {
   StyledCard,
   StyledCardContent,
@@ -27,7 +28,7 @@ import { useIsDarkTheme } from './hooks/useIsDarkTheme';
  * Тема подхватывается автоматически, как у AiAgentPopup.
  */
 export const AiAgentSurface = forwardRef<HTMLDivElement, AiAgentSurfaceProps>(
-  ({ variant = 'embedded', children, ...rest }, ref) => {
+  ({ variant = 'embedded', leftPanel, children, ...rest }, ref) => {
     const isDarkTheme = useIsDarkTheme();
     const shadow = isDarkTheme ? shadowGradientDark : shadowGradientLight;
 
@@ -37,6 +38,7 @@ export const AiAgentSurface = forwardRef<HTMLDivElement, AiAgentSurfaceProps>(
     return (
       <Root {...rest} ref={ref} $shadow={shadow}>
         <StyledCard>
+          {leftPanel && <AiAgentLeftPanel {...leftPanel} />}
           <StyledCardContent>{children}</StyledCardContent>
         </StyledCard>
       </Root>

@@ -1,14 +1,16 @@
 import { debounce } from '@ui-kit/utils';
 import type { CSSProperties } from 'react';
-import { forwardRef, useEffect, useMemo } from 'react';
+import { forwardRef, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
   DEFAULT_TARGET_GAP,
   DRAGGING_CLASS,
+  GLOW_BORDER,
   STORAGE_SAVE_DELAY,
 } from './AiAgentPopup.constants';
 import { StyledPopup } from './AiAgentPopup.styled';
 import type { AiAgentPopupProps } from './AiAgentPopup.types';
+import { inflateDragBoundary } from './AiAgentPopup.utils';
 import { AiAgentSurface } from './AiAgentSurface';
 import { useDrag } from './hooks/useDrag';
 import { usePopupPosition } from './hooks/usePopupPosition';
@@ -31,6 +33,7 @@ export const AiAgentPopup = forwardRef<HTMLDivElement, AiAgentPopupProps>(
   (props, ref) => {
     const {
       children,
+      leftPanel,
       opened,
       targetRef,
       targetGap = DEFAULT_TARGET_GAP,
@@ -53,6 +56,57 @@ export const AiAgentPopup = forwardRef<HTMLDivElement, AiAgentPopupProps>(
     // Сохранённые позиция и размер из localStorage (читаются один раз)
     const { savedState, saveState } = useStateStorage(useStorage);
 
+    // Светящаяся рамка нарисована снаружи контейнера и в его размеры
+    // не входит. Чтобы она не вылезала за границы, все расчёты позиции
+    // и ресайза используют границы, раздутые на толщину рамки
+    const effectiveBoundary = useMemo(
+      () => inflateDragBoundary(dragBoundary, GLOW_BORDER),
+      [dragBoundary],
+    );
+
+    // Управление открытым разделом левой панели поднято сюда: от того,
+    // открыт ли раздел, зависит минимальная ширина окна при ресайзе.
+    // Если потребитель задал activeKey, режим управляемый; иначе ключ
+    // хранится здесь (defaultActiveKey как начальное значение)
+    const consumerActiveKey = leftPanel?.activeKey;
+    const isSectionControlled = consumerActiveKey !== undefined;
+    const [internalSectionKey, setInternalSectionKey] = useState<string | null>(
+      leftPanel?.defaultActiveKey ?? null,
+    );
+    const sectionKey = isSectionControlled
+      ? consumerActiveKey
+      : internalSectionKey;
+    const isSectionOpen = Boolean(
+      leftPanel &&
+        sectionKey != null &&
+        leftPanel.items.some((item) => item.key === sectionKey),
+    );
+
+    const handleSectionChange = useCallback(
+      (key: string | null) => {
+        if (!isSectionControlled) {
+          setInternalSectionKey(key);
+        }
+        leftPanel?.onActiveKeyChange?.(key);
+      },
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [isSectionControlled, leftPanel?.onActiveKeyChange],
+    );
+
+    // Левую панель отдаём в оболочку как управляемую: активный раздел
+    // и его смену держит окно, чтобы отслеживать открытие для размеров
+    const effectiveLeftPanel = useMemo(
+      () =>
+        leftPanel
+          ? {
+              ...leftPanel,
+              activeKey: sectionKey,
+              onActiveKeyChange: handleSectionChange,
+            }
+          : undefined,
+      [leftPanel, sectionKey, handleSectionChange],
+    );
+
     // Позиция окна: вычисление при открытии, зажим в границах экрана,
     // возврат в видимую область при изменении размеров окна браузера
     const {
@@ -68,7 +122,7 @@ export const AiAgentPopup = forwardRef<HTMLDivElement, AiAgentPopupProps>(
       defaultPosition,
       savedPosition: savedState?.position,
       externalPositionState,
-      dragBoundary,
+      dragBoundary: effectiveBoundary,
       frame,
     });
 
@@ -76,7 +130,7 @@ export const AiAgentPopup = forwardRef<HTMLDivElement, AiAgentPopupProps>(
     const { dragActive, dragHandlers } = useDrag({
       elementRef: containerRef,
       setPosition: setPopupPosition,
-      dragBoundary,
+      dragBoundary: effectiveBoundary,
       onPositionChange,
       ignoreSelector: dragIgnoreSelector,
       frame,
@@ -88,12 +142,13 @@ export const AiAgentPopup = forwardRef<HTMLDivElement, AiAgentPopupProps>(
       resizable,
       defaultSize,
       savedSize: savedState?.size,
-      dragBoundary,
+      dragBoundary: effectiveBoundary,
       containerRef,
       onSizeChange,
       popupPosition,
       setPopupPosition,
       frame,
+      isSectionOpen,
     });
 
     // Запись позиции и размера в localStorage при их изменении. С паузой:
@@ -136,6 +191,7 @@ export const AiAgentPopup = forwardRef<HTMLDivElement, AiAgentPopupProps>(
       >
         <AiAgentSurface
           variant="floating"
+          leftPanel={effectiveLeftPanel}
           ref={setContainerRef}
           {...(draggable ? dragHandlers : null)}
         >
