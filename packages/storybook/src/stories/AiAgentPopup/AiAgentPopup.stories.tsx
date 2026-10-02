@@ -29,6 +29,7 @@ import {
   surfaceTransparentSecondary,
   textAccentGradient,
   textInfo,
+  textNegative,
   textPrimary,
 } from '@ui-kit/tokens';
 import React, { useLayoutEffect, useRef, useState } from 'react';
@@ -48,6 +49,7 @@ import {
   surfaceTransparentSecondary,
   textAccentGradient,
   textInfo,
+  textNegative,
   textPrimary,
   Typography,
 } from '@daisforge/ui';
@@ -428,10 +430,13 @@ function Example() {
     <SSRProvider>
       <PopupProvider>
         <div style={{ display: 'flex', height: '100vh' }}>
-          {/* Левая панель: её ширина анимируется, поэтому переход плавный.
-              Рамка AiAgentSurface в варианте embedded входит в блочную
-              модель: отступы лэйаута идут от края рамки, absolute
-              позиционирования нет */}
+          {/* Сайдбар с кнопками всегда самый левый элемент страницы */}
+          <Sidebar targetRef={targetRef} onToggle={() => setOpened(!opened)} />
+
+          {/* Панель с чатом выезжает правее сайдбара: её ширина
+              анимируется, поэтому переход плавный. Рамка AiAgentSurface
+              в варианте embedded входит в блочную модель: отступы лэйаута
+              идут от края рамки, absolute позиционирования нет */}
           <div
             style={{
               width: view === 'panel' ? 376 : 0,
@@ -447,11 +452,6 @@ function Example() {
             </div>
           </div>
 
-          <Sidebar
-            targetRef={targetRef}
-            onToggle={() => setOpened(!opened)}
-          />
-
           {/* остальная страница */}
           <div style={{ flex: 1 }} />
         </div>
@@ -462,6 +462,77 @@ function Example() {
           defaultSize={{ width: 360, height: 420 }}
         >
           {view === 'popup' ? chat : null}
+        </AiAgentPopup>
+      </PopupProvider>
+    </SSRProvider>
+  );
+}`;
+
+const leftPanelCode = `${preCode}
+const sectionBodyStyle = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '8px',
+  padding: '12px',
+  height: '100%',
+  overflow: 'auto',
+};
+
+const indicatorDotStyle = {
+  display: 'block',
+  width: '6px',
+  height: '6px',
+  borderRadius: '50%',
+  background: textNegative,
+};
+
+function Example() {
+  const targetRef = useRef(null);
+  const [opened, setOpened] = useState(false);
+  // активный раздел левой панели; null — открыта полоса иконок
+  const [activeSection, setActiveSection] = useState(null);
+
+  const leftPanel = {
+    activeKey: activeSection,
+    onActiveKeyChange: setActiveSection,
+    items: [
+      {
+        key: 'history',
+        icon: <IconHistory size="s" />,
+        indicator: <span style={indicatorDotStyle} />,
+        title: 'История',
+        content: (
+          <div style={sectionBodyStyle}>
+            <Typography variant="BodyS">Вчера — вопросы по таблицам</Typography>
+            <Typography variant="BodyS">2 дня назад — настройка форм</Typography>
+          </div>
+        ),
+      },
+      {
+        key: 'calendar',
+        icon: <IconCalendarEventOutline size="s" />,
+        title: 'Календарь',
+        content: (
+          <div style={sectionBodyStyle}>
+            <Typography variant="BodyS">Сегодня: созвон в 15:00</Typography>
+          </div>
+        ),
+      },
+    ],
+  };
+
+  return (
+    <SSRProvider>
+      <PopupProvider>
+        <Sidebar targetRef={targetRef} onToggle={() => setOpened(!opened)} />
+        <AiAgentPopup
+          opened={opened}
+          targetRef={targetRef}
+          leftPanel={leftPanel}
+          defaultSize={{ width: 680, height: 520 }}
+          dragBoundary={{ top: 8, right: 8, bottom: 8, left: 8 }}
+        >
+          <ChatContent onClose={() => setOpened(false)} />
         </AiAgentPopup>
       </PopupProvider>
     </SSRProvider>
@@ -858,6 +929,14 @@ function PanelTransformExample({ fullHeight }: { fullHeight?: boolean }) {
           ref={frameRef}
           style={fullHeight ? fullHeightStageStyle : stageStyle}
         >
+          {/* Сайдбар с кнопками всегда самый левый элемент страницы,
+              панель с чатом выезжает правее него */}
+          <div ref={toolbarRef} style={{ display: 'flex' }}>
+            <Sidebar
+              targetRef={targetRef}
+              onToggle={() => setOpened(!opened)}
+            />
+          </div>
           <div
             style={{
               width: view === 'panel' ? 376 : 0,
@@ -872,12 +951,6 @@ function PanelTransformExample({ fullHeight }: { fullHeight?: boolean }) {
               </AiAgentSurface>
             </div>
           </div>
-          <div ref={toolbarRef} style={{ display: 'flex' }}>
-            <Sidebar
-              targetRef={targetRef}
-              onToggle={() => setOpened(!opened)}
-            />
-          </div>
           <AiAgentPopup
             opened={view === 'popup' && opened}
             targetRef={targetRef}
@@ -886,6 +959,109 @@ function PanelTransformExample({ fullHeight }: { fullHeight?: boolean }) {
             dragBoundary={{ top: 8, right: 8, bottom: 8, left: leftBoundary }}
           >
             {view === 'popup' ? chatContent : null}
+          </AiAgentPopup>
+        </div>
+      </PopupProvider>
+    </SSRProvider>
+  );
+}
+
+const sectionBodyStyle: React.CSSProperties = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 8,
+  padding: 12,
+  height: '100%',
+  overflow: 'auto',
+};
+
+const indicatorDotStyle: React.CSSProperties = {
+  display: 'block',
+  width: 6,
+  height: 6,
+  borderRadius: '50%',
+  background: textNegative,
+};
+
+// Левая панель с иконками-разделами внутри окна. Активный раздел держим
+// снаружи (управляемый режим), контент разделов наполняет потребитель
+function WithLeftPanelExample({ fullHeight }: { fullHeight?: boolean }) {
+  const targetRef = useRef<HTMLSpanElement>(null);
+  const frameRef = useRef<HTMLDivElement>(null);
+  const [opened, setOpened] = useState(true);
+  const [activeSection, setActiveSection] = useState<string | null>(null);
+  const chat = useChatState();
+
+  const leftPanel = {
+    activeKey: activeSection,
+    onActiveKeyChange: setActiveSection,
+    items: [
+      {
+        key: 'history',
+        icon: <IconHistory size="s" />,
+        indicator: <span style={indicatorDotStyle} />,
+        title: 'История',
+        content: (
+          <div style={sectionBodyStyle}>
+            <Typography variant="BodyS">Вчера — вопросы по таблицам</Typography>
+            <Typography variant="BodyS">
+              2 дня назад — настройка форм
+            </Typography>
+            <Typography variant="BodyS">
+              Неделю назад — обзор дашбордов
+            </Typography>
+          </div>
+        ),
+      },
+      {
+        key: 'tasks',
+        icon: <IconDoneCircleOutline size="s" />,
+        title: 'Задачи',
+        content: (
+          <div style={sectionBodyStyle}>
+            <Typography variant="BodyS">Проверить отчёт</Typography>
+            <Typography variant="BodyS">Согласовать макет</Typography>
+          </div>
+        ),
+      },
+      {
+        key: 'calendar',
+        icon: <IconCalendarEventOutline size="s" />,
+        title: 'Календарь',
+        content: (
+          <div style={sectionBodyStyle}>
+            <Typography variant="BodyS">Сегодня: созвон в 15:00</Typography>
+            <Typography variant="BodyS">Завтра: демо в 12:00</Typography>
+          </div>
+        ),
+      },
+    ],
+  };
+
+  return (
+    <SSRProvider>
+      <PopupProvider>
+        <div
+          ref={frameRef}
+          style={fullHeight ? fullHeightStageStyle : stageStyle}
+        >
+          <Sidebar targetRef={targetRef} onToggle={() => setOpened(!opened)} />
+          <AiAgentPopup
+            opened={opened}
+            targetRef={targetRef}
+            frame={frameRef}
+            leftPanel={leftPanel}
+            defaultSize={{ width: 680, height: 520 }}
+            dragBoundary={{ top: 8, right: 8, bottom: 8, left: 8 }}
+          >
+            <ChatContent
+              messages={chat.messages}
+              draft={chat.draft}
+              glow
+              onDraftChange={chat.setDraft}
+              onSend={chat.sendDraft}
+              onClose={() => setOpened(false)}
+            />
           </AiAgentPopup>
         </div>
       </PopupProvider>
@@ -945,5 +1121,26 @@ export const PanelTransform: Story = {
   ...storySourceDoc({ code: panelCode, previewSource: 'shown' }),
   render: (_args, context) => (
     <PanelTransformExample fullHeight={context.viewMode === 'story'} />
+  ),
+};
+
+export const WithLeftPanel: Story = {
+  name: 'С левой панелью',
+  argTypes: simpleArgTypes,
+  args: {},
+  parameters: {
+    controls: {
+      disable: true,
+      exclude: /.*/,
+    },
+    docs: {
+      controls: {
+        exclude: /.*/,
+      },
+    },
+  },
+  ...storySourceDoc({ code: leftPanelCode, previewSource: 'shown' }),
+  render: (_args, context) => (
+    <WithLeftPanelExample fullHeight={context.viewMode === 'story'} />
   ),
 };

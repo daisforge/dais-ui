@@ -84,6 +84,28 @@ import { TypeSourceViewer } from '@df-storybook/utils/TypeSourceViewer';
 > Поле ввода чата с овальным свечением позади. Наследует пропсы `TextArea`, кроме
 `contentRight`: правая часть поля задаётся через `rightSlot`.
 
+## AiAgentLeftPanelProps
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/AiAgentPopup/AiAgentPopup.types.ts"
+  typeName="AiAgentLeftPanelProps"
+/>
+> Левая панель окна: полоса иконок-разделов. Открытый раздел задаётся `activeKey`
+(управляемо) или `defaultActiveKey`; смена приходит в `onActiveKeyChange` (ключ раздела
+или `null` при закрытии). Доступна в `AiAgentPopup` и в `AiAgentSurface`.
+
+## AiAgentLeftPanelItem
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/AiAgentPopup/AiAgentPopup.types.ts"
+  typeName="AiAgentLeftPanelItem"
+/>
+> Один раздел левой панели: `icon` в полосе, `title` и `content` в раскрытом разделе.
+Шапку с иконкой, заголовком и крестиком компонент рисует сам; наполнение раздела
+под шапкой задаёт потребитель.
+
 ## AiAgentSurfaceProps
 
 <TypeSourceViewer
