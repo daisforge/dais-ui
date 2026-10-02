@@ -207,7 +207,7 @@ const DEFAULT_RESIZABLE_CONFIG: CompPopoverProps['resizable'] = {
   maxWidth: 700,
   maxHeight: typeof window !== 'undefined' ? window.innerHeight * 0.8 : 600,
   defaultSize: { width: 360, height: 430 },
-  directions: ['bottom-right', 'right', 'top-right'],
+  directions: ['bottom-right'],
   icons: {
     topRight: null,
     bottomRight: <IconResizeCorneredFill color={textTertiary} />,
