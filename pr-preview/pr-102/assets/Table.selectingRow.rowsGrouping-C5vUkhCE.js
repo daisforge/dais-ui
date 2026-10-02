@@ -1,0 +1,13 @@
+import{j as o}from"./react-D2T61mpp.js";import{cg as n,ch as e,ca as s}from"./vendor-YHRYeQna.js";import{T as p}from"./Table.selectingRow.rowsGrouping.stories-B4zd9Wjx.js";import"./react-is-Clcustum.js";import"./styled-components-egl4WZWx.js";import"./@tanstack/react-virtual-DiLt45p2.js";import"./tslib-DoU9Jm1N.js";import"./DocStoryTemplate-BCTeHdf-.js";import"./storySourceDoc-tVKyHcEN.js";import"./Table-DiAwcQnI.js";import"./FiltersActions-DV_pAnON.js";import"./IconButton-D1tbsOLX.js";import"./@salutejs/plasma-icons-BuYXq1qK.js";import"./@salutejs/sdds-finai-DNMRn4Q7.js";import"./@salutejs/sdds-themes-BWS17lsS.js";import"./utils-BE2UrxrW.js";import"./constants-BEafpjqR.js";import"./sharedUtilsDebug-BX_KjCjW.js";import"./Box-CIjdXmm7.js";import"./TextField-DsS5YAcU.js";import"./sharedUtilsInputs-C7Ob8q9J.js";import"./AnalyticalWidget-D57f2t_Z.js";import"./Collapse-ClewjDaJ.js";import"./react-data-grid-CMFZnrfx.js";import"./TableTabs-Cw637UQ4.js";import"./TableCanvasSharedConstants-B2qJZwC8.js";import"./sharedUiSearch-DjyXhVuf.js";import"./ListOfFilters-DRLKKolB.js";import"./lodash.isequal-DD0Lfcik.js";import"./NumberFormat-DBPysjva.js";import"./EmptyState-CrMiza6H.js";import"./MassActions-B_g8AhoZ.js";import"./Autocomplete-duO_QZ5_.js";import"./dataRowGrouping-0JMPVnJT.js";import"./tableData-DVJFoYoT.js";function t(i){const r={a:"a",h1:"h1",h2:"h2",li:"li",p:"p",strong:"strong",ul:"ul",...n(),...i.components};return o.jsxs(o.Fragment,{children:[o.jsx(e,{of:p,name:"Docs"}),`
+`,o.jsx(r.h1,{id:"tablerowsgrouping",children:"TableRowsGrouping"}),`
+`,o.jsx(r.h2,{id:"ключевые-особенности",children:"Ключевые особенности"}),`
+`,o.jsxs(r.ul,{children:[`
+`,o.jsx(r.li,{children:"Выбор строк в группированной таблице"}),`
+`,o.jsx(r.li,{children:"Кастомная логика checked/indeterminate для групп"}),`
+`,o.jsx(r.li,{children:"Совместная работа selecting и rowsGrouping"}),`
+`]}),`
+`,o.jsx(r.p,{children:o.jsx(r.strong,{children:"tableConfig.selecting"})}),`
+`,o.jsx(r.p,{children:o.jsx(r.strong,{children:"tableConfig.rowsGrouping"})}),`
+`,o.jsx(r.p,{children:o.jsx(r.strong,{children:"columnConfig.rowsGrouping"})}),`
+`,o.jsxs(r.p,{children:["Описание типов - в разделах ",o.jsx(r.a,{href:"?path=/docs/%D0%BB%D0%BE%D0%BA%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D1%8B-table-selectingrow-api--docs",children:"Selecting API"})," и ",o.jsx(r.a,{href:"?path=/docs/%D0%BB%D0%BE%D0%BA%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D1%8B-table-rowsgrouping-api--docs",children:"RowsGrouping API"}),"."]}),`
+`,o.jsx(s,{})]})}function J(i={}){const{wrapper:r}={...n(),...i.components};return r?o.jsx(r,{...i,children:o.jsx(t,{...i})}):t(i)}export{J as default};
