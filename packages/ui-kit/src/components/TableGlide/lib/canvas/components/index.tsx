@@ -2,6 +2,8 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import React, { ReactElement, ReactNode, useLayoutEffect } from 'react';
 
+import type { FontMetrics } from '../../../fonts';
+import { Theme } from '../../../theming/types';
 import {
   type ButtonSize,
   type ButtonView,
@@ -22,7 +24,14 @@ import {
   PositionValue,
 } from '../core/CanvasNode';
 import type { FlexBoxOptions } from '../miniflex';
-import type { CanvasNodeTooltipConfig } from '../utils/portalHoverEvents';
+import {
+  CanvasAvatar,
+  type CanvasAvatarOptions,
+} from '../primitives/CanvasAvatar';
+import {
+  CanvasAvatarGroup,
+  type CanvasAvatarGroupOptions,
+} from '../primitives/CanvasAvatarGroup';
 import {
   type BadgeSize,
   type BadgeView,
@@ -37,14 +46,17 @@ import {
 import { CanvasEmbedIconButton } from '../primitives/CanvasEmbedIconButton';
 import { CanvasIcon } from '../primitives/CanvasIcon';
 import { CanvasIconButton } from '../primitives/CanvasIconButton';
-import { CanvasRect } from '../primitives/CanvasRect';
-import { CanvasText, CanvasTextOptions } from '../primitives/CanvasText';
+import {
+  CanvasImage,
+  type CanvasImageOptions,
+} from '../primitives/CanvasImage';
 import { CanvasLink, type LinkView } from '../primitives/CanvasLink';
-import { Theme } from '../../../theming/types';
-import { isReactIcon, normalizeIcon } from '../utils/iconUtils';
+import { CanvasRect } from '../primitives/CanvasRect';
 import { CanvasSkeleton } from '../primitives/CanvasSkeleton';
+import { CanvasText, CanvasTextOptions } from '../primitives/CanvasText';
 import { normalizeDimensionValue } from '../utils';
-import type { FontMetrics } from '../../../fonts';
+import { isReactIcon, normalizeIcon } from '../utils/iconUtils';
+import type { CanvasNodeTooltipConfig } from '../utils/portalHoverEvents';
 
 interface CanvasInteractionProps {
   /**
@@ -100,13 +112,13 @@ type InternalContainerProps = ContainerProps & {
    * Публичный backgroundColor остается простым string API без callback-ов.
    */
   __backgroundColorResolver?: (
-    theme: GlideThemeForRender
+    theme: GlideThemeForRender,
   ) => string | undefined;
 };
 
 const resolveContainerBackgroundColor = (
   { backgroundColor, __backgroundColorResolver }: InternalContainerProps,
-  theme: GlideThemeForRender
+  theme: GlideThemeForRender,
 ): string | undefined => __backgroundColorResolver?.(theme) ?? backgroundColor;
 
 interface TextProps
@@ -344,7 +356,53 @@ interface LinkProps
   tooltip?: CanvasNodeTooltipConfig;
 }
 
+interface ImageElementProps<T extends CanvasNode>
+  extends CanvasInteractionProps,
+    CanvasLayerProps {
+  /** Идентификатор canvas-ноды; при отсутствии генерируется при построении дерева. */
+  id?: string;
+  /** Дочерние JSX-элементы запрещены: содержимое задаётся через свойства примитива. */
+  children?: never;
+  /** Параметры flex-layout, размеры и курсор canvas-ноды. */
+  style?: Partial<CanvasFlexStyle>;
+  /** Способ размещения: в потоке flex-layout или по абсолютным отступам. */
+  position?: 'relative' | 'absolute';
+  /** Отступ от левого края родителя при абсолютном позиционировании. */
+  left?: PositionValue;
+  /** Отступ от верхнего края родителя при абсолютном позиционировании. */
+  top?: PositionValue;
+  /** Отступ от правого края родителя при абсолютном позиционировании. */
+  right?: PositionValue;
+  /** Отступ от нижнего края родителя при абсолютном позиционировании. */
+  bottom?: PositionValue;
+  /** Подсказка элемента, отображаемая через портал таблицы. */
+  tooltip?: CanvasNodeTooltipConfig;
+  /** Включает передачу hover-событий в портал; наличие tooltip также включает её. */
+  portalHoverEnabled?: boolean;
+  /** Обработчик клика по элементу; дополняет внутреннее поведение примитива. */
+  onClick?: (event: CanvasEvent<T>) => void;
+  /** Обработчик входа указателя в элемент; дополняет внутреннее поведение примитива. */
+  onMouseEnter?: (event: CanvasEvent<T>) => void;
+  /** Обработчик выхода указателя из элемента; дополняет внутреннее поведение примитива. */
+  onMouseLeave?: (event: CanvasEvent<T>) => void;
+}
+/** JSX-свойства изображения: источник, масштабирование, размещение и события. */
+export interface CanvasImageProps
+  extends ImageElementProps<CanvasImage>,
+    CanvasImageOptions {}
+/** JSX-свойства аватара; тема берётся из таблицы. */
+export interface CanvasAvatarProps
+  extends ImageElementProps<CanvasAvatar>,
+    Omit<CanvasAvatarOptions, 'theme'> {}
+/** JSX-свойства группы участников; тема берётся из таблицы. */
+export interface CanvasAvatarGroupProps
+  extends ImageElementProps<CanvasAvatarGroup>,
+    Omit<CanvasAvatarGroupOptions, 'theme'> {}
+
 type CanvasComponentType =
+  | 'Image'
+  | 'Avatar'
+  | 'AvatarGroup'
   | 'Container'
   | 'Text'
   | 'Icon'
@@ -363,7 +421,7 @@ type CanvasComponent<P> = ((props: P) => ReactElement | null) &
   CanvasComponentMarker;
 
 const createCanvasComponent = <P extends object>(
-  type: CanvasComponentType
+  type: CanvasComponentType,
 ): CanvasComponent<P> => {
   const Component = (_props: P) => null;
   // eslint-disable-next-line no-underscore-dangle
@@ -416,11 +474,11 @@ export const RootBridge = React.memo(
           lastCellIdRef.current = null;
         }
       },
-      [nodeRegistry]
+      [nodeRegistry],
     );
 
     return null;
-  }
+  },
 );
 
 const SkeletonComponent = createCanvasComponent<SkeletonProps>('Skeleton');
@@ -438,6 +496,9 @@ const CheckboxComponent = createCanvasComponent<CheckboxProps>('Checkbox');
 const LinkComponent = createCanvasComponent<LinkProps>('Link');
 
 export const Canvas = {
+  Image: createCanvasComponent<CanvasImageProps>('Image'),
+  Avatar: createCanvasComponent<CanvasAvatarProps>('Avatar'),
+  AvatarGroup: createCanvasComponent<CanvasAvatarGroupProps>('AvatarGroup'),
   Container: ContainerComponent,
   Text: TextComponent,
   Icon: IconComponent,
@@ -467,7 +528,7 @@ export const Canvas = {
 
 function wrapEventHandler<T extends CanvasNode>(
   handler: ((event: CanvasEvent<T>) => void) | undefined,
-  _node: T
+  _node: T,
 ): ((event: CanvasEvent<T>) => void) | undefined {
   if (!handler) {
     return undefined;
@@ -544,7 +605,7 @@ function extractTextFromChildren(children: ReactNode): string {
 function resolveCanvasTextMetrics(
   theme: GlideThemeForRender,
   font: string | undefined,
-  lineHeight: number | undefined
+  lineHeight: number | undefined,
 ): Pick<CanvasTextOptions, 'fontSize' | 'lineHeightPx'> {
   const fontMetrics = theme.fontMetrics as FontMetrics | undefined;
   const themeFonts = theme.fonts;
@@ -555,7 +616,7 @@ function resolveCanvasTextMetrics(
 
   const fontToken = font ?? theme.baseFontStyle;
   const fontKey = (Object.keys(themeFonts) as Array<keyof FontMetrics>).find(
-    (key) => themeFonts[key] === fontToken
+    (key) => themeFonts[key] === fontToken,
   );
 
   if (fontKey === undefined) {
@@ -580,7 +641,7 @@ function buildNode(
   idPrefix: string,
   index: number,
   iconsToPreload: IconToPreload[],
-  theme: GlideThemeForRender
+  theme: GlideThemeForRender,
 ): CanvasNode {
   if (!element || !React.isValidElement(element)) {
     throw new Error('Invalid element. Use Canvas.* components.');
@@ -595,7 +656,7 @@ function buildNode(
     throw new Error(
       `Unknown canvas component. Use Canvas.* components. Got: ${
         elementType?.name || elementType
-      }`
+      }`,
     );
   }
 
@@ -718,14 +779,63 @@ function buildNode(
   return node;
 }
 
+function configureImageNode<T extends CanvasNode>(
+  node: T,
+  props: ImageElementProps<T>,
+  type: string,
+): T {
+  if (props.children !== undefined)
+    throw new Error(`Canvas.${type} does not accept children`);
+  if (props.position) node.position = props.position;
+  if (props.left !== undefined) node.left = props.left;
+  if (props.top !== undefined) node.top = props.top;
+  if (props.right !== undefined) node.right = props.right;
+  if (props.bottom !== undefined) node.bottom = props.bottom;
+  for (const key of ['onClick', 'onMouseEnter', 'onMouseLeave'] as const) {
+    const external = wrapEventHandler(props[key], node);
+    if (external) {
+      const internal = node[key].bind(node);
+      // Пользовательский обработчик дополняет внутреннее поведение ноды.
+      node[key] = (event) => {
+        internal(event);
+        external.call(node, event as CanvasEvent<T>);
+      };
+    }
+  }
+  if (props.tooltip !== undefined) node.portalHoverEnabled = true;
+  if (props.onClick) node.style = { ...node.style, cursor: 'pointer' };
+  return node;
+}
+
 function createNode(
   type: string,
   id: string,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   props: Record<string, any>,
-  theme: GlideThemeForRender
+  theme: GlideThemeForRender,
 ): CanvasNode {
   switch (type) {
+    case 'Image':
+      return configureImageNode(
+        new CanvasImage(id, props as CanvasImageProps),
+        props as CanvasImageProps,
+        type,
+      );
+    case 'Avatar':
+      return configureImageNode(
+        new CanvasAvatar(id, { ...props, theme }),
+        props as CanvasAvatarProps,
+        type,
+      );
+    case 'AvatarGroup':
+      return configureImageNode(
+        new CanvasAvatarGroup(id, {
+          ...(props as CanvasAvatarGroupProps),
+          theme,
+        }),
+        props as CanvasAvatarGroupProps,
+        type,
+      );
     case 'Container': {
       const containerProps = props as InternalContainerProps;
       const {
@@ -757,7 +867,7 @@ function createNode(
       const node = new CanvasContainer(
         id,
         flexOptions,
-        resolveContainerBackgroundColor(containerProps, theme)
+        resolveContainerBackgroundColor(containerProps, theme),
       );
       if (position) node.position = position;
       if (left !== undefined) node.left = left;
@@ -984,7 +1094,7 @@ function createNode(
       } = props;
       // Normalize React icon components to SVG strings
       const normalizedIcon = normalizeIcon(
-        checked ? CHECKBOX_ICONS.checkedIcon : CHECKBOX_ICONS.indeterminateIcon
+        checked ? CHECKBOX_ICONS.checkedIcon : CHECKBOX_ICONS.indeterminateIcon,
       );
       const node = new CanvasCheckbox(
         id,
@@ -997,7 +1107,7 @@ function createNode(
           view,
           buttonSize,
           disabled,
-        }
+        },
       );
       if (position) node.position = position;
       if (left !== undefined) node.left = left;
@@ -1190,14 +1300,14 @@ function createNode(
 }
 
 export type {
-  SkeletonProps as CanvasSkeletonProps,
   BadgeProps as CanvasBadgeProps,
   ButtonProps as CanvasButtonProps,
   ContainerProps as CanvasContainerProps,
   EmbedIconButtonProps as CanvasEmbedIconButtonProps,
   IconButtonProps as CanvasIconButtonProps,
   IconProps as CanvasIconProps,
-  RectProps as CanvasRectProps,
-  TextProps as CanvasTextProps,
   LinkProps as CanvasLinkProps,
+  RectProps as CanvasRectProps,
+  SkeletonProps as CanvasSkeletonProps,
+  TextProps as CanvasTextProps,
 };
