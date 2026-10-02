@@ -1,0 +1,21 @@
+import{j as i}from"./react-D2T61mpp.js";import{cg as t,ch as s,ca as e}from"./vendor-DWj-TKO5.js";import{T as l}from"./TableCanvas.isLoading.stories-7B4pedQz.js";import"./react-is-Clcustum.js";import"./styled-components-B0IEQUpD.js";import"./@tanstack/react-virtual-B0dXp-LB.js";import"./tslib-DoU9Jm1N.js";import"./tableData-DVJFoYoT.js";import"./DocStoryTemplate-BvjsuRLP.js";import"./storySourceDoc-tVKyHcEN.js";import"./FiltersActions-BiPlnogl.js";import"./IconButton-1gOssj5s.js";import"./@salutejs/plasma-icons-LNSm6cYu.js";import"./@salutejs/sdds-finai-DUjmE73T.js";import"./@salutejs/sdds-themes-p9DCXULv.js";import"./utils-CSDXMeGs.js";import"./constants-Ci5uyz-N.js";import"./sharedUtilsDebug-BX_KjCjW.js";import"./Box-hmQcRD2u.js";import"./TextField-D87gW--t.js";import"./sharedUtilsInputs-Dz-qEfn5.js";import"./AnalyticalWidget-iQ2l6wI7.js";import"./Collapse-DETPqTA2.js";import"./Table-zAVVxDV4.js";import"./react-data-grid-CEeDAoVs.js";import"./TableTabs-CRtWlmPJ.js";import"./TableCanvasSharedConstants-B2qJZwC8.js";import"./sharedUiSearch-DgiOIT3S.js";import"./ListOfFilters-BLmLHECo.js";import"./lodash.isequal-DD0Lfcik.js";import"./NumberFormat-C-CkitMr.js";import"./EmptyState-B0MXEbXG.js";import"./MassActions-Cr6v13CY.js";import"./Autocomplete-Dv0_y6YK.js";import"./TableCanvas-Dwu2fICj.js";import"./TableGlide-Eoj4TAGK.js";import"./@glideappsfinal/glide-data-grid-BYHX9OEW.js";import"./canvas-hypertxt-DsokSIOX.js";import"./ErrorPage-B_Y5Hkoz.js";function r(n){const o={a:"a",blockquote:"blockquote",code:"code",h1:"h1",h2:"h2",li:"li",p:"p",strong:"strong",ul:"ul",...t(),...n.components};return i.jsxs(i.Fragment,{children:[i.jsx(s,{of:l,name:"Docs"}),`
+`,i.jsx(o.h1,{id:"isloading-tablecanvas",children:"IsLoading (TableCanvas)"}),`
+`,i.jsx(o.p,{children:i.jsx(o.strong,{children:"tableConfig.isLoading / tableConfig.loadingOverlay"})}),`
+`,i.jsx(o.p,{children:"Состояние загрузки таблицы. Поддерживает скелетон-строки и полноэкранный оверлей."}),`
+`,i.jsx(o.h2,{id:"ключевые-особенности",children:"Ключевые особенности"}),`
+`,i.jsxs(o.ul,{children:[`
+`,i.jsxs(o.li,{children:["Скелетон-строки при загрузке данных (",i.jsx(o.code,{children:"isLoading"}),")"]}),`
+`,i.jsxs(o.li,{children:["Настраиваемое количество скелетон-строк (",i.jsx(o.code,{children:"skeletonRowsCount"}),")"]}),`
+`,i.jsxs(o.li,{children:["Полноэкранный оверлей с кастомным спиннером (",i.jsx(o.code,{children:"loadingOverlay"}),")"]}),`
+`,i.jsxs(o.li,{children:["Задержка показа подзаголовка (",i.jsx(o.code,{children:"showSubtitleDelay"}),")"]}),`
+`]}),`
+`,i.jsx(o.h2,{id:"когда-использовать-loadingoverlay",children:"Когда использовать loadingOverlay"}),`
+`,i.jsxs(o.ul,{children:[`
+`,i.jsx(o.li,{children:"Динамическая загрузка схемы таблицы — колонки загружаются с бэкенда"}),`
+`,i.jsx(o.li,{children:"Конфигурируемые таблицы — пользователь сам настраивает колонки"}),`
+`,i.jsx(o.li,{children:"Ошибки загрузки структуры — не удалось загрузить метаданные"}),`
+`]}),`
+`,i.jsxs(o.blockquote,{children:[`
+`,i.jsxs(o.p,{children:["Подробнее о типах — ",i.jsx(o.a,{href:"?path=/docs/%D0%BB%D0%BE%D0%BA%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D1%8B-tablecanvas-isloading-api--docs",children:"IsLoading API"})]}),`
+`]}),`
+`,i.jsx(e,{})]})}function Q(n={}){const{wrapper:o}={...t(),...n.components};return o?i.jsx(o,{...n,children:i.jsx(r,{...n})}):r(n)}export{Q as default};
