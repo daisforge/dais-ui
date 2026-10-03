@@ -9,6 +9,7 @@ import { libInjectCss } from 'vite-plugin-lib-inject-css';
 
 import { glob } from 'glob';
 import { viteDFUIChunks } from '../../plugins/vite-df-ui-chunks.ts';
+import { viteDFUIExternalStarReexports } from '../../plugins/vite-df-ui-external-star-reexports.ts';
 import { vitePluginRollupOutputChunkFileNames } from '../../plugins/vitePluginRollupOutputChunkFileNames.ts';
 import path from 'path';
 
@@ -21,6 +22,10 @@ export default defineConfig(() => {
     cacheDir: '../../node_modules/.vite/packages/ui-kit',
 
     plugins: [
+      viteDFUIExternalStarReexports({
+        [resolve(import.meta.dirname, 'src/icons/index.ts')]:
+          '@salutejs/plasma-icons',
+      }),
       react(),
       // @vitejs/plugin-react 6 больше не принимает опцию babel — babel-плагины подключаются отдельно
       babel({
