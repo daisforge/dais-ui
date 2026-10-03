@@ -2,7 +2,7 @@
 import { type Row } from '@df-storybook/data/tableData';
 import DocStoryTemplate from '@df-storybook/templates/DocStoryTemplate.mdx';
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Table } from '@ui-kit/components/Table';
 import { IconSber } from '@ui-kit/icons';
 import React, { ComponentProps, useState } from 'react';

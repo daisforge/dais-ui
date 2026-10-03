@@ -31,7 +31,7 @@ const rows: Row[] = [
 
 describe('isMergedGroupingView — гейт активации', () => {
   const grouping = (view?: 'tree' | 'merged') =>
-    ({ view } as RowsGrouping<Row, unknown>);
+    ({ view }) as RowsGrouping<Row, unknown>;
 
   it('true только при view merged И непустом groupBy', () => {
     expect(isMergedGroupingView(grouping('merged'), ['dept'])).toBe(true);

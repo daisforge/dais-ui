@@ -1,4 +1,4 @@
-import { Source, type SourceProps } from '@storybook/blocks';
+import { Source, type SourceProps } from '@storybook/addon-docs/blocks';
 
 import ALL_TYPES_OBJ from '../types.string.json';
 

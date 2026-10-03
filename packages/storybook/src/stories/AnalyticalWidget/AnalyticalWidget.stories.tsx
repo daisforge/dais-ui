@@ -6,7 +6,7 @@ import './lib/global.css';
 import { getFuncAsString } from '@df-storybook/utils/getFuncAsString';
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { AnalyticalWidgetProps } from '@ui-kit/components/AnalyticalWidget';
 import {
   AnalyticalWidget,
@@ -470,7 +470,7 @@ export const AnalyticalWidgetL: Story = {
                     dotsButton:
                       filters.dotsButton === item.value?.toString()
                         ? ''
-                        : item.value?.toString() ?? '',
+                        : (item.value?.toString() ?? ''),
                   });
                 },
               }}
@@ -648,7 +648,7 @@ export const AnalyticalWidgetM: Story = {
                     dotsButton:
                       filters.dotsButton === item.value?.toString()
                         ? ''
-                        : item.value?.toString() ?? '',
+                        : (item.value?.toString() ?? ''),
                   });
                 },
               }}
@@ -801,7 +801,7 @@ export const AnalyticalWidgetS: Story = {
                     dotsButton:
                       filters.dotsButton === item.value?.toString()
                         ? ''
-                        : item.value?.toString() ?? '',
+                        : (item.value?.toString() ?? ''),
                   });
                 },
               }}
@@ -943,7 +943,7 @@ export const AnalyticalWidgetCustomTopSlot: Story = {
                   dotsButton:
                     filters.dotsButton === item.value?.toString()
                       ? ''
-                      : item.value?.toString() ?? '',
+                      : (item.value?.toString() ?? ''),
                 });
               },
             }}

@@ -4,7 +4,7 @@
 
 import { getFuncAsString } from '@df-storybook/utils/getFuncAsString';
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { AiAgentPopover } from '@ui-kit/components/AiAgentPopover';
 import { Button } from '@ui-kit/components/Button';
 import { BodyS, H3 } from '@ui-kit/components/Typography';

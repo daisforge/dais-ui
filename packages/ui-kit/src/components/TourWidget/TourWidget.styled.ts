@@ -400,7 +400,9 @@ export const StyledBullet = styled.span.attrs({
   );
   transform: scale(1);
   transform-origin: center;
-  transition: background-color 300ms ease, opacity 300ms ease,
+  transition:
+    background-color 300ms ease,
+    opacity 300ms ease,
     transform 300ms ease;
 
   &.${cls.bulletActive} {

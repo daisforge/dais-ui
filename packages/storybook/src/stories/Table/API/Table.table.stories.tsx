@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import DocArgsTemplate from '@df-storybook/templates/DocArgsTemplate.mdx';
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Table } from '@ui-kit/components/Table';
 import React from 'react';
 

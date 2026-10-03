@@ -11,8 +11,7 @@ export type SplitViewSlotSizesProps = {
 };
 
 export type SplitViewAdaptiveContent =
-  | ReactNode
-  | ((props: SplitViewSlotSizesProps) => ReactNode);
+  ReactNode | ((props: SplitViewSlotSizesProps) => ReactNode);
 
 export type SplitViewProps = Omit<ComponentProps<'div'>, 'ref' | 'onResize'> & {
   /**

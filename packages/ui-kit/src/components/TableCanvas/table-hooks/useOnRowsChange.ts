@@ -18,9 +18,9 @@ const deepCloneRow = <T>(v: T): T =>
     : JSON.parse(JSON.stringify(v));
 
 function isFinded<R extends ObjectForExtending | undefined>(
-  row: R,
+  _row: R,
   index: number,
-): row is NonNullable<R> {
+): _row is NonNullable<R> {
   return index !== -1;
 }
 

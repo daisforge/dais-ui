@@ -126,7 +126,7 @@ function loadAtomicComponent(
   if (!isBeta && PAGE_FILES_OF_OTHER_ATOM.has(atomicBase)) return undefined;
   const fileBase = isBeta
     ? atomicBase
-    : ATOMIC_PAGE_FILE_BY_BASE[atomicBase] ?? atomicBase;
+    : (ATOMIC_PAGE_FILE_BY_BASE[atomicBase] ?? atomicBase);
 
   const filePath = path.join(dir, `${fileBase}.json`);
   if (!fs.existsSync(filePath)) return undefined;

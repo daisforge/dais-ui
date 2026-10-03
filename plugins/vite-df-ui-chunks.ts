@@ -305,7 +305,7 @@ export const EXTERNAL_PACKAGE_MODULES_AS_CHUNK = [
 
 /** Нежелательный чанк.
  * Что подпадает под этот чанк - мы устраняем с помощью "отметить пакет как external deps"
- * это делается в {@link  [ui-kit/vite.config.ts](../packages/ui-kit/vite.config.ts)} в config.rollupOptions.external
+ * это делается в {@link  [ui-kit/vite.config.ts](../packages/ui-kit/vite.config.ts)} в config.rolldownOptions.external
  */
 export const VENDOR_CHUNK = [
   {
@@ -365,7 +365,7 @@ export function viteDFUIChunks(): Plugin {
     config(_config) {
       return {
         build: {
-          rollupOptions: {
+          rolldownOptions: {
             output: {
               manualChunks,
             },

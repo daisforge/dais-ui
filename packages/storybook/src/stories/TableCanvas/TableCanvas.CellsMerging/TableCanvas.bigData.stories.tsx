@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks, no-bitwise */
 import { StoryHint } from '@df-storybook/utils/StoryHint';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Button } from '@ui-kit/components/Button';
 import { Checkbox } from '@ui-kit/components/Checkbox';
 import { Slider } from '@ui-kit/components/Slider';

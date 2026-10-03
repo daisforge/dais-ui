@@ -1,6 +1,6 @@
 import { getFuncAsString } from '@df-storybook/utils/getFuncAsString';
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { TourWidget } from '@ui-kit/components/TourWidget';
 
 import {

@@ -20,36 +20,17 @@ export const getChipsArray = <
   clearedFiltersStateValue: FilterStateType;
   headerContextValue: HeaderContextValueType | undefined;
 }) =>
-  columnConfig.reduce((acc, curr) => {
-    if (!curr.filtering) {
-      return acc;
-    }
-    const { component, keyInFilterState } = curr.filtering;
-
-    const clearedValue = clearedFiltersStateValue?.[keyInFilterState];
-    const currentValue = filters?.[keyInFilterState];
-
-    if (component === 'input') {
-      if (clearedValue === currentValue) {
+  columnConfig.reduce(
+    (acc, curr) => {
+      if (!curr.filtering) {
         return acc;
       }
+      const { component, keyInFilterState } = curr.filtering;
 
-      acc.push({
-        onClick: () => {
-          setFilters({
-            ...filters,
-            [keyInFilterState]: clearedValue,
-          });
-        },
-        label: currentValue,
-      });
+      const clearedValue = clearedFiltersStateValue?.[keyInFilterState];
+      const currentValue = filters?.[keyInFilterState];
 
-      return acc;
-    }
-    if (component === 'select') {
-      const isSingeSelect = curr.filtering.filter.typeOfValue === 'single';
-
-      if (isSingeSelect) {
+      if (component === 'input') {
         if (clearedValue === currentValue) {
           return acc;
         }
@@ -63,42 +44,64 @@ export const getChipsArray = <
           },
           label: currentValue,
         });
+
         return acc;
       }
-      // multiple
-      const currentValueX = currentValue as string[];
+      if (component === 'select') {
+        const isSingeSelect = curr.filtering.filter.typeOfValue === 'single';
 
-      const optionsType = curr.filtering.selectOptions.type;
+        if (isSingeSelect) {
+          if (clearedValue === currentValue) {
+            return acc;
+          }
 
-      let optionsAll: {
-        value: string | number;
-        text: string | number;
-      }[] = [];
+          acc.push({
+            onClick: () => {
+              setFilters({
+                ...filters,
+                [keyInFilterState]: clearedValue,
+              });
+            },
+            label: currentValue,
+          });
+          return acc;
+        }
+        // multiple
+        const currentValueX = currentValue as string[];
 
-      if (optionsType === 'constant') {
-        optionsAll = curr.filtering.selectOptions.options ?? [];
-      } else {
-        const key = curr.filtering.selectOptions.optionsKeyInHeaderContext;
+        const optionsType = curr.filtering.selectOptions.type;
 
-        optionsAll = headerContextValue?.[key] ?? [];
-      }
-      const selectedOptions = optionsAll.filter((o) =>
-        currentValueX.some((v) => v === o.value),
-      );
+        let optionsAll: {
+          value: string | number;
+          text: string | number;
+        }[] = [];
 
-      selectedOptions.forEach((o) => {
-        acc.push({
-          label: o.text.toString(),
-          onClick: () => {
-            setFilters({
-              ...filters,
-              [keyInFilterState]: currentValueX.filter((v) => v !== o.value),
-            });
-          },
+        if (optionsType === 'constant') {
+          optionsAll = curr.filtering.selectOptions.options ?? [];
+        } else {
+          const key = curr.filtering.selectOptions.optionsKeyInHeaderContext;
+
+          optionsAll = headerContextValue?.[key] ?? [];
+        }
+        const selectedOptions = optionsAll.filter((o) =>
+          currentValueX.some((v) => v === o.value),
+        );
+
+        selectedOptions.forEach((o) => {
+          acc.push({
+            label: o.text.toString(),
+            onClick: () => {
+              setFilters({
+                ...filters,
+                [keyInFilterState]: currentValueX.filter((v) => v !== o.value),
+              });
+            },
+          });
         });
-      });
-      return acc;
-    }
+        return acc;
+      }
 
-    return acc;
-  }, [] as { onClick: () => void; label: string }[]);
+      return acc;
+    },
+    [] as { onClick: () => void; label: string }[],
+  );

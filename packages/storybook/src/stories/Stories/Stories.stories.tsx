@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { getFuncAsString } from '@df-storybook/utils/getFuncAsString';
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Button } from '@ui-kit/components/Button';
 import { Carousel, CarouselItem } from '@ui-kit/components/Carousel';
 import { ModalDF } from '@ui-kit/components/ModalDF';

@@ -25,8 +25,7 @@ export type BlockTitleSlotSizesProps = {
 };
 
 export type BlockTitleAdaptiveSlot =
-  | ReactNode
-  | ((props: BlockTitleSlotSizesProps) => ReactNode);
+  ReactNode | ((props: BlockTitleSlotSizesProps) => ReactNode);
 
 export type BlockTitleProps = {
   /**

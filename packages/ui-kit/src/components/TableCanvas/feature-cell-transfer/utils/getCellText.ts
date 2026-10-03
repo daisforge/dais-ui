@@ -17,7 +17,7 @@ export function getCellText<R extends ObjectForExtending>(
 ): string {
   if (column.copyData !== undefined) {
     return typeof column.copyData === 'function'
-      ? column.copyData(row) ?? ''
+      ? (column.copyData(row) ?? '')
       : column.copyData;
   }
 

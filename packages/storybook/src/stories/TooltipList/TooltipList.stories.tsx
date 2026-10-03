@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Combobox } from '@ui-kit/components/Combobox';
 import { TooltipList } from '@ui-kit/components/Tooltip';
 import { Typography } from '@ui-kit/components/Typography';

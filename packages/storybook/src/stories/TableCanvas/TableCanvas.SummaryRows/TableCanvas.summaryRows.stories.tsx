@@ -2,8 +2,7 @@
 import { createRows, Row } from '@df-storybook/data/tableData';
 import DocStoryTemplate from '@df-storybook/templates/DocStoryTemplate.mdx';
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
-import type { Meta, StoryObj } from '@storybook/react';
-import { expect, userEvent, waitFor, within } from '@storybook/test';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Button } from '@ui-kit/components/Button';
 import {
   Canvas,
@@ -15,6 +14,7 @@ import { BodyS } from '@ui-kit/components/Typography';
 import { s } from '@ui-kit/constants';
 import { textSecondary } from '@ui-kit/tokens';
 import React, { useCallback, useMemo, useState } from 'react';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 const meta: Meta = {
   title: 'Локальные компоненты/TableCanvas/SummaryRows',

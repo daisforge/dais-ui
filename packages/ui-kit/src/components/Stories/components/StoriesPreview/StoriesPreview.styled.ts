@@ -66,8 +66,12 @@ export const StyledRing = styled.div<{ $shape: StoriesShape }>`
   padding: ${STORIES_SIZES.ring}px;
   background: ${C.ring};
   border-radius: ${({ $shape }) => radiusFor($shape, 'outer')};
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
 `;

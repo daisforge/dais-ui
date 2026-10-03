@@ -1,8 +1,5 @@
 export type ActiveThemeGlobal =
-  | 'light'
-  | 'dark'
-  | 'highContrastLight'
-  | 'betaCoreLight';
+  'light' | 'dark' | 'highContrastLight' | 'betaCoreLight';
 
 /**
  * Получение активной темы

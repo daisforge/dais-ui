@@ -9,14 +9,10 @@ type DataAttributes = {
  * Кастомные placement для popover
  */
 export type AiAgentPopoverCustomPlacement =
-  | 'top-right'
-  | 'top-left'
-  | 'bottom-right'
-  | 'bottom-left';
+  'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
 
 export type AiAgentPopoverPlacement =
-  | PopoverProps['placement']
-  | AiAgentPopoverCustomPlacement;
+  PopoverProps['placement'] | AiAgentPopoverCustomPlacement;
 
 /**
  * Позиция target элемента для drag-a

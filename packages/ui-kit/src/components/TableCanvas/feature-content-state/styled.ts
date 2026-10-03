@@ -63,17 +63,16 @@ export const OverlayContainer = styled.div<{
     $borderRightTopRadiusRounded,
     $borderLeftBottomRadiusRounded,
     $borderRightBottomRadiusRounded,
-  }) =>
-    css`
-      border-radius: ${getBorderRadiusValue(
-          $displayMode === 'full-content' && $borderLeftTopRadiusRounded,
-        )}
-        ${getBorderRadiusValue(
-          $displayMode === 'full-content' && $borderRightTopRadiusRounded,
-        )}
-        ${getBorderRadiusValue($borderRightBottomRadiusRounded)}
-        ${getBorderRadiusValue($borderLeftBottomRadiusRounded)};
-    `}
+  }) => css`
+    border-radius: ${getBorderRadiusValue(
+        $displayMode === 'full-content' && $borderLeftTopRadiusRounded,
+      )}
+      ${getBorderRadiusValue(
+        $displayMode === 'full-content' && $borderRightTopRadiusRounded,
+      )}
+      ${getBorderRadiusValue($borderRightBottomRadiusRounded)}
+      ${getBorderRadiusValue($borderLeftBottomRadiusRounded)};
+  `}
 `;
 
 export const OverlayContent = styled.div`
@@ -81,7 +80,8 @@ export const OverlayContent = styled.div`
   max-width: 100%;
   margin: auto;
   opacity: 0;
-  animation: ${fadeIn} 0.18s ease-out forwards,
+  animation:
+    ${fadeIn} 0.18s ease-out forwards,
     ${riseIn} 0.24s ease-out forwards;
   animation-delay: 0.06s;
   will-change: opacity, transform;

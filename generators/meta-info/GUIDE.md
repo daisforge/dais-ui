@@ -31,7 +31,7 @@ stories/TableCanvas/
 ## 1. Docs MDX — документация компонента
 
 ```mdx
-import { Meta, Stories } from '@storybook/blocks';
+import { Meta, Stories } from '@storybook/addon-docs/blocks';
 import * as MyStories from './MyComponent.stories';
 
 <Meta of={MyStories} name="Docs" />
@@ -82,7 +82,7 @@ _(детали реализации, важные нюансы, ограниче
 ## 2. API MDX — описание типов
 
 ```mdx
-import { Meta } from '@storybook/blocks';
+import { Meta } from '@storybook/addon-docs/blocks';
 import { TypeSourceViewer } from '@df-storybook/utils/TypeSourceViewer';
 
 <Meta title="Категория/MyComponent/API" />

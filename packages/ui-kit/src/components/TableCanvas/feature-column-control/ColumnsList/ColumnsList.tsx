@@ -148,7 +148,7 @@ export const ColumnsList = <Row extends ObjectForExtending, SummaryRow>({
   const virtualizationConfig = columnsControlConfig.virtualization;
   const virtualizationMinCount =
     typeof virtualizationConfig === 'object'
-      ? virtualizationConfig.minCount ?? 30
+      ? (virtualizationConfig.minCount ?? 30)
       : 30;
   const virtualizationEnabled =
     virtualizationConfig !== false &&

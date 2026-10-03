@@ -60,7 +60,7 @@ export const FormCombobox = <TFieldValues extends FieldValues>({
             requiredPlacement="right"
             hasRequiredIndicator={!!newOptions.required || undefined}
             size="s"
-            view={error?.type ? 'negative' : view ?? 'default'}
+            view={error?.type ? 'negative' : (view ?? 'default')}
             onChange={(valueList: string | string[]) => {
               fieldRest.onChange(valueList);
               // eslint-disable-next-line @typescript-eslint/no-explicit-any

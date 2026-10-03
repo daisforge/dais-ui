@@ -25,8 +25,7 @@ export const addSkeletonToCellInRow = <
   columnKeyForSkeleton: string,
 ) => {
   const currentSkeletonCells = row?.[SKELETON_CELLS_KEY] as
-    | Set<string>
-    | undefined;
+    Set<string> | undefined;
   if (!currentSkeletonCells) {
     return { ...row, [SKELETON_CELLS_KEY]: new Set([columnKeyForSkeleton]) };
   }
@@ -42,8 +41,7 @@ export const deleteSkeletonCellFromRow = <
   columnKeyWithSkeleton: string,
 ) => {
   const currentSkeletonCells = row?.[SKELETON_CELLS_KEY] as
-    | Set<string>
-    | undefined;
+    Set<string> | undefined;
   if (!currentSkeletonCells) return row;
   const newRow = { ...row };
   if (currentSkeletonCells.has(columnKeyWithSkeleton)) {

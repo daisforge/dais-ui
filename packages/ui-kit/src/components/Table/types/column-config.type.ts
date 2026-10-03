@@ -319,18 +319,14 @@ export type ColumnConfig<
   } & (
     | {
         keyOfColumnInSubRow:
-          | string
-          | number
-          | ((lvl: number) => string | number);
+          string | number | ((lvl: number) => string | number);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         editingCell: Editing<any>;
       }
     | {
         editingCell?: undefined;
         keyOfColumnInSubRow?:
-          | string
-          | number
-          | ((lvl: number) => string | number);
+          string | number | ((lvl: number) => string | number);
       }
   );
   rowsGrouping?: ColumnRowsGrouping<Row, SummRow>;

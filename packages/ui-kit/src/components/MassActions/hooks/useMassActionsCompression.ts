@@ -117,7 +117,7 @@ export const useMassActionsCompression = ({
     // Div-обертка автоматически включает ширину divider элемента + его margins
     const shouldShowDivider = buttons.length > 0;
     const dividerWrapperWidth = shouldShowDivider
-      ? dividerRef?.current?.getBoundingClientRect().width ?? 0
+      ? (dividerRef?.current?.getBoundingClientRect().width ?? 0)
       : 0;
     const dividerGapRight = shouldShowDivider ? ELEMENTS_GAP : 0;
     const dividerGapLeft =
@@ -355,7 +355,7 @@ export const useMassActionsCompression = ({
         const shouldShowDivider = (buttons?.length ?? 0) > 0;
         // Измеряем ширину div-обертки (которая уже включает ширину divider + его margins)
         const dividerWrapperWidth = shouldShowDivider
-          ? dividerRef?.current?.getBoundingClientRect().width ?? 0
+          ? (dividerRef?.current?.getBoundingClientRect().width ?? 0)
           : 0;
         // Divider обернут в div, который участвует в gap ActionsWrapper (gap: 4px)
         // gap слева только если есть middleSection

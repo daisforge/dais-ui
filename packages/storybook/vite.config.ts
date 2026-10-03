@@ -1,26 +1,20 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import viteTsConfigPaths from 'vite-tsconfig-paths';
 import path from 'path';
-import { viteDFUIStorybookChunks } from '../../plugins/vite-df-ui-chunks-storybook';
-import { viteDFUISuppressWarnings } from '../../plugins/vite-df-ui-suppress-warnings';
-
-//? using viteTsConfigPaths instead
-// import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
+import { viteDFUIStorybookChunks } from '../../plugins/vite-df-ui-chunks-storybook.ts';
 
 export default defineConfig({
   plugins: [
     react(),
-    viteTsConfigPaths(),
     // viteDFUIChunks(),
     viteDFUIStorybookChunks(),
-    // TODO update nx + vite + storybook and see - if this warning is gone then we can remove this plugin
-    viteDFUISuppressWarnings({ warnFilter: ['/*#__PURE__*/'] }),
   ],
   resolve: {
+    // Вместо плагина vite-tsconfig-paths — Vite 8 сам читает paths из tsconfig
+    tsconfigPaths: true,
     alias: {
-      '@ui-kit': path.resolve(__dirname, '../ui-kit/src'),
-      '@df-storybook': path.resolve(__dirname, 'src'),
+      '@ui-kit': path.resolve(import.meta.dirname, '../ui-kit/src'),
+      '@df-storybook': path.resolve(import.meta.dirname, 'src'),
     },
   },
 });

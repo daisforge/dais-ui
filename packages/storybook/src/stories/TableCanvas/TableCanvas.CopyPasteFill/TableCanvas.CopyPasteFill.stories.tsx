@@ -13,7 +13,7 @@ import {
 import DocStoryTemplate from '@df-storybook/templates/DocStoryTemplate.mdx';
 import { StoryHint } from '@df-storybook/utils/StoryHint';
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Select } from '@ui-kit/components/Select';
 import {
   Canvas,
@@ -879,8 +879,7 @@ ${CPF_COLUMNS}
               onRowsChange: (newRows, { indexes, column, type, fillMeta }) => {
                 if (type === 'fill' && fillMeta && column.key === 'complete') {
                   const sourceRow = fillMeta.sourceCells[0]?.[0]?.row as
-                    | Row
-                    | undefined;
+                    Row | undefined;
 
                   if (sourceRow) {
                     const updated = newRows.map((row, i) =>

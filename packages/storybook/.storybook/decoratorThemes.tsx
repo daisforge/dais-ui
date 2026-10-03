@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Decorator } from '@storybook/react';
+import type { Decorator } from '@storybook/react-vite';
 import styled, { createGlobalStyle } from 'styled-components';
 import { GlobalStyle } from '../../ui-kit/src/styles';
 import type { GlobalStyleTheme } from '../../ui-kit/src/styles/DefaultGlobalStyle';

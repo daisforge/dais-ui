@@ -73,7 +73,8 @@ export const StyledDiv = styled.div.attrs({
   grid-template-columns:
     var(${c.mainWidthVar}) var(${c.separatorWidthVar})
     var(${c.sidebarWidthVar});
-  transition: grid-template-columns 0.2s ease-in-out,
+  transition:
+    grid-template-columns 0.2s ease-in-out,
     margin-right 0.2s ease-in-out;
 
   flex-grow: 1;

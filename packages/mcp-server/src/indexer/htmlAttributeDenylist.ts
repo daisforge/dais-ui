@@ -170,7 +170,7 @@ function stripOuterParens(typeText: string): string {
 
 function stripOuterParensRepeated(typeText: string): string {
   let t = typeText;
-  for (let prev = ''; prev !== t; ) {
+  for (let prev = ''; prev !== t;) {
     prev = t;
     t = stripOuterParens(t).trim();
   }

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { BlockGradientScroll } from '@ui-kit/components/BlockGradientScroll';
 import { Button } from '@ui-kit/components/Button';
 import { BlockGradientScrollMixin } from '@ui-kit/mixins/blockGradientScroll';
@@ -468,10 +468,8 @@ export const StylingMethods: Story = {
 
 export const AdaptiveLessThan1280: Story = {
   name: '1280 Адаптив',
-  parameters: {
-    viewport: {
-      defaultViewport: 'mobile',
-    },
+  globals: {
+    viewport: { value: 'mobile', isRotated: false },
   },
   render: () => (
     <DemoContainer>

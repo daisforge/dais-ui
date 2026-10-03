@@ -13,19 +13,19 @@ export const mergeLayoutClasses = (
 
   return {
     root: `${defaultClasses.root} ${
-      isClassNameObj ? className?.root ?? '' : className ?? ''
+      isClassNameObj ? (className?.root ?? '') : (className ?? '')
     }`.trim(),
     header: `${defaultClasses.header} ${
-      isClassNameObj ? className?.header ?? '' : ''
+      isClassNameObj ? (className?.header ?? '') : ''
     }`.trim(),
     main: `${defaultClasses.main} ${
-      isClassNameObj ? className?.main ?? '' : ''
+      isClassNameObj ? (className?.main ?? '') : ''
     }`.trim(),
     item: `${defaultClasses.item} ${
-      isClassNameObj ? className?.item ?? '' : ''
+      isClassNameObj ? (className?.item ?? '') : ''
     }`.trim(),
     centeredItem: `${defaultClasses.centeredItem} ${
-      isClassNameObj ? className?.centeredItem ?? '' : ''
+      isClassNameObj ? (className?.centeredItem ?? '') : ''
     }`.trim(),
   };
 };

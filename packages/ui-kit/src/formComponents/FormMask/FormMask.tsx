@@ -49,7 +49,7 @@ export const FormMask = <TFieldValues extends FieldValues>({
           requiredPlacement="right"
           hasRequiredIndicator={!!newOptions.required || undefined}
           size="s"
-          view={error?.type ? 'negative' : view ?? 'default'}
+          view={error?.type ? 'negative' : (view ?? 'default')}
           onValueChange={({ value }) => {
             onChange({ target: { value } }); // onChange - для работы при revalidate='onChange'
             handleChange?.(value, formCtx);

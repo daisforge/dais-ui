@@ -542,8 +542,8 @@ export type SidebarConfig = {
 export function activeViewIs<T extends 'cards' | 'rows'>(
   checkType: T,
   viewState: 'cards' | 'rows',
-  view: View,
-): view is ViewMods[T] {
+  _view: View,
+): _view is ViewMods[T] {
   return checkType === viewState;
 }
 

@@ -47,17 +47,16 @@ export const tourPulseMixin = ({
   timingFunction = 'ease-in-out',
   iterationCount = 'infinite',
   pointerEventsNone = true,
-}: TourPulseMixinOptions = {}) =>
-  css`
-    ${css({
-      '--tour-pulse-border-color': borderColor,
-      '--tour-pulse-border-color-fade': borderColorFade,
-      '--tour-pulse-shadow-color': shadowColor,
-      '--tour-pulse-shadow-color-fade': shadowColorFade,
-      inset,
-      borderRadius,
-      background: backgroundColor,
-      ...(pointerEventsNone ? { pointerEvents: 'none' } : {}),
-    } as CSSObject)}
-    ${getTourPulseAnimation({ duration, timingFunction, iterationCount })}
-  `;
+}: TourPulseMixinOptions = {}) => css`
+  ${css({
+    '--tour-pulse-border-color': borderColor,
+    '--tour-pulse-border-color-fade': borderColorFade,
+    '--tour-pulse-shadow-color': shadowColor,
+    '--tour-pulse-shadow-color-fade': shadowColorFade,
+    inset,
+    borderRadius,
+    background: backgroundColor,
+    ...(pointerEventsNone ? { pointerEvents: 'none' } : {}),
+  } as CSSObject)}
+  ${getTourPulseAnimation({ duration, timingFunction, iterationCount })}
+`;

@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/ban-types */
+/* eslint-disable @typescript-eslint/no-empty-object-type */
 import { CellActivatedEventArgs } from '@glideappsfinal/glide-data-grid';
 import type { DropdownProps } from '@ui-kit/components/Dropdown';
 import type {
@@ -172,8 +172,7 @@ export type ColumnGlideInstance<
     cellInfo: SummaryCellInfoGlideInstance<R, SR, CustomCtxs>,
   ) => CellContent;
   colSpan?:
-    | number
-    | ((cellInfo: CellInfoGlideInstance<R, SR, CustomCtxs>) => number);
+    number | ((cellInfo: CellInfoGlideInstance<R, SR, CustomCtxs>) => number);
   /** Объединение строк: (cellInfo) => [перваяСтрока, последняяСтрока] | null (см. TableGlide RowSpan). */
   rowSpan?: (
     cellInfo: CellInfoGlideInstance<R, SR, CustomCtxs>,

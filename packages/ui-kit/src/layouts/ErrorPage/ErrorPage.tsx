@@ -96,8 +96,7 @@ export const ErrorPage = (props: ErrorPageProps) => {
 
   // Маппинг statusCode в variant для изображения
   const getVariantFromStatusCode = useCallback(():
-    | ErrorPageVariant
-    | undefined => {
+    ErrorPageVariant | undefined => {
     if (typeof statusCode === 'number') {
       const statusCodeStr = statusCode.toString();
       const validVariants: ErrorPageVariant[] = [

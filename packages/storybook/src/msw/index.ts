@@ -1,5 +1,5 @@
-import { SetupWorker } from 'msw/browser';
-import { initialize, mswLoader } from 'msw-storybook-addon';
+import { setupWorker } from 'msw/browser';
+import { mswLoader as createMswLoader } from 'msw-storybook-addon/csf3';
 
 import * as routes from './routes';
 
@@ -8,11 +8,12 @@ const initialRoutes = Object.values(routes)
   .flat();
 
 /*
- * Initializes MSW
- * See https://github.com/mswjs/msw-storybook-addon#configuring-msw
- * to learn how to customize it
+ * Loader, который поднимает MSW с начальными хендлерами.
+ * Хендлеры из setupWorker() переживают сброс между историями,
+ * а parameters.msw в историях добавляет к ним свои.
+ * See https://github.com/mswjs/msw-storybook-addon#custom-worker-setup
  */
-function mswInitialize(): SetupWorker | undefined {
+const mswLoader = createMswLoader(async () => {
   // ВАЖНО: обращение к `import.meta.env.BASE_URL` должно оставаться литеральным.
   // Vite подставляет base только в точное выражение `import.meta.env.BASE_URL`;
   // если положить `import.meta` в переменную или прочитать через `?.`, замена не
@@ -22,14 +23,14 @@ function mswInitialize(): SetupWorker | undefined {
   // «Service Worker script does not exist at the given path».
   const baseUrl = import.meta.env.BASE_URL || '/';
 
-  return initialize(
-    {
-      serviceWorker: {
-        url: `${baseUrl}mockServiceWorker.js`,
-      },
+  const worker = setupWorker(...initialRoutes);
+  await worker.start({
+    serviceWorker: {
+      url: `${baseUrl}mockServiceWorker.js`,
     },
-    initialRoutes,
-  );
-}
+  });
 
-export { mswInitialize, mswLoader };
+  return worker;
+});
+
+export { mswLoader };

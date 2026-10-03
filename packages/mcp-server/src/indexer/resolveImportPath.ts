@@ -8,8 +8,7 @@ const ROOT_BARREL_PATH = path.join(UI_KIT_SRC, 'index.ts');
 const ROOT_IMPORT_PATH = '@daisforge/ui';
 
 let cachedRootExportedDecls:
-  | ReadonlyMap<string, ExportedDeclarations[]>
-  | undefined;
+  ReadonlyMap<string, ExportedDeclarations[]> | undefined;
 
 /**
  * packages/ui-kit/src/index.ts реэкспортирует почти всё единым плоским
@@ -162,8 +161,8 @@ function findPublicExportSite(
     const [group, folderName] = key.split('/');
     return Boolean(
       group &&
-        folderName &&
-        isExportedFromFolderBarrel(group, folderName, name, sourceFilePath),
+      folderName &&
+      isExportedFromFolderBarrel(group, folderName, name, sourceFilePath),
     );
   });
   if (!hit) return undefined;

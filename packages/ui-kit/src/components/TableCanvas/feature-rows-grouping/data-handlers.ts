@@ -5,16 +5,19 @@ export function objectGroupBy<T extends ObjectForExtending>(
   items: T[],
   keyGetter: (item: T) => string,
 ) {
-  const groups = items.reduce((acc, curr) => {
-    const key = keyGetter(curr);
-    const keyIsNotFound = typeof acc[key] === 'undefined';
-    if (keyIsNotFound) {
-      acc[key] = [curr];
-    } else {
-      (acc[key] as T[]).push(curr);
-    }
-    return acc;
-  }, {} as Record<string, T[]>);
+  const groups = items.reduce(
+    (acc, curr) => {
+      const key = keyGetter(curr);
+      const keyIsNotFound = typeof acc[key] === 'undefined';
+      if (keyIsNotFound) {
+        acc[key] = [curr];
+      } else {
+        (acc[key] as T[]).push(curr);
+      }
+      return acc;
+    },
+    {} as Record<string, T[]>,
+  );
 
   return groups;
 }

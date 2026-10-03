@@ -82,7 +82,8 @@ const crossfadeLayer = css<{ $active?: boolean }>`
   opacity: ${({ $active }) => ($active ? 1 : 0)};
   visibility: ${({ $active }) => ($active ? 'visible' : 'hidden')};
   pointer-events: ${({ $active }) => ($active ? 'auto' : 'none')};
-  transition: opacity ${TRANSITION_TIME}s ease-in-out,
+  transition:
+    opacity ${TRANSITION_TIME}s ease-in-out,
     visibility 0s ${({ $active }) => ($active ? '0s' : `${TRANSITION_TIME}s`)};
 `;
 

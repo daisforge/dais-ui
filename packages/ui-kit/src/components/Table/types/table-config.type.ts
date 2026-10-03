@@ -135,7 +135,7 @@ type SummaryCheckedFunc<
     getAllRowsInfo: () => ChildrenInfo<RowType, RowIdType>;
   } & (AdditionalPropsObj extends ObjectForExtending
     ? AdditionalPropsObj
-    : // eslint-disable-next-line @typescript-eslint/ban-types
+    : // eslint-disable-next-line @typescript-eslint/no-empty-object-type
       {}),
 ) => ReturnType;
 
@@ -255,8 +255,7 @@ export type SelectingRowConfig<
   summaryChecked?: {
     checked: boolean | SummaryCheckedFunc<RowType, boolean>;
     indeterminate:
-      | boolean
-      | SummaryCheckedFunc<RowType, boolean, { checkedAll: boolean }>;
+      boolean | SummaryCheckedFunc<RowType, boolean, { checkedAll: boolean }>;
     getCountOfChecked: SummaryCheckedFunc<RowType, number>;
     onChange: SummaryCheckedFunc<
       RowType,
@@ -660,8 +659,8 @@ type SidebarConfig = {
 export function activeViewIs<T extends 'cards' | 'rows'>(
   checkType: T,
   viewState: 'cards' | 'rows',
-  view: View,
-): view is ViewMods[T] {
+  _view: View,
+): _view is ViewMods[T] {
   return checkType === viewState;
 }
 

@@ -2,8 +2,7 @@
 import { createRows, type Row } from '@df-storybook/data/tableData';
 import DocStoryTemplate from '@df-storybook/templates/DocStoryTemplate.mdx';
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
-import type { Meta, StoryObj } from '@storybook/react';
-import { expect, userEvent, waitFor, within } from '@storybook/test';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Box } from '@ui-kit/components/Box';
 import { Button } from '@ui-kit/components/Button';
 import {
@@ -23,6 +22,7 @@ import {
 } from '@ui-kit/icons';
 import { textInfo } from '@ui-kit/tokens';
 import React, { useCallback, useMemo, useState } from 'react';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 const meta: Meta = {
   title: 'Локальные компоненты/TableCanvas/ColumnsControl',

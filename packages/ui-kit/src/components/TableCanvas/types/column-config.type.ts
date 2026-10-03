@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/ban-types */
+/* eslint-disable @typescript-eslint/no-empty-object-type */
 import { ReactElement, ReactNode } from 'react';
 
 import type {
@@ -381,18 +381,14 @@ export type ColumnConfig<
   } & (
     | {
         keyOfColumnInSubRow:
-          | string
-          | number
-          | ((lvl: number) => string | number);
+          string | number | ((lvl: number) => string | number);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         editingCell: Editing<any, any>;
       }
     | {
         editingCell?: undefined;
         keyOfColumnInSubRow?:
-          | string
-          | number
-          | ((lvl: number) => string | number);
+          string | number | ((lvl: number) => string | number);
       }
   );
   rowsGrouping?: ColumnRowsGrouping<Row, ColumnConfig<Row, SummRow>>;
@@ -422,8 +418,7 @@ export type ColumnConfig<
    * в merged-видах группировки/subRows, где блоки формирует таблица).
    */
   mergedCellsAlign?:
-    | MergedCellsAlign
-    | ((row: Row) => MergedCellsAlign | undefined);
+    MergedCellsAlign | ((row: Row) => MergedCellsAlign | undefined);
 };
 
 export type ColumnOrColumnGroupConfig<

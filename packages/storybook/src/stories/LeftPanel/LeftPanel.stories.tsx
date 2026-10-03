@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Accordion, AccordionItem } from '@ui-kit/components/Accordion';
 import { Box } from '@ui-kit/components/Box';
 import { Button } from '@ui-kit/components/Button';

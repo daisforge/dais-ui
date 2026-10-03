@@ -1,3 +1,5 @@
+// Пропсы уходят в ColumnsControlInner через rest-spread — eslint-plugin-react этого не видит
+/* eslint-disable react/no-unused-prop-types */
 import { Box } from '@ui-kit/components/Box';
 import { ColumnConfig, ObjectForExtending } from '@ui-kit/components/Table';
 import React, { PropsWithChildren } from 'react';

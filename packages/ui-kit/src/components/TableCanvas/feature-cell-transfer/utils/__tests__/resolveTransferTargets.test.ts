@@ -20,7 +20,7 @@ const sel = (range: Rectangle, stack: Rectangle[] = []): GridSelection =>
     },
     columns: undefined,
     rows: undefined,
-  } as unknown as GridSelection);
+  }) as unknown as GridSelection;
 
 const rect = (x: number, y: number, width = 1, height = 1): Rectangle => ({
   x,

@@ -1,17 +1,23 @@
-import type { TestRunnerConfig } from '@storybook/test-runner';
-import { waitForPageReady, getStoryContext } from '@storybook/test-runner';
+/**
+ * Node-часть скриншотных тестов: команды Vitest browser mode, которые вызываются
+ * из браузера (см. ./afterEach.ts) и выполняются в процессе Vitest.
+ */
 import fs from 'fs';
 import path from 'path';
 import pixelmatch from 'pixelmatch';
 import { PNG } from 'pngjs';
+import type { BrowserCommand } from 'vitest/node';
 
-const customSnapshotsDir = path.resolve(__dirname, '../__snapshots__');
+const customSnapshotsDir = path.resolve(
+  import.meta.dirname,
+  '../../__snapshots__',
+);
 const diffOutputDir = path.resolve(customSnapshotsDir, '__diff_output__');
 
 const isCI = process.env.CI === 'true';
 const failureThreshold = isCI ? 0.01 : 0.04;
 
-// Хелперы для обхода несовместимости Buffer/Uint8Array в TypeScript 5.4
+// Хелперы для обхода несовместимости Buffer/Uint8Array в типах Node
 const writeFile = (filePath: string, data: Buffer | Uint8Array) =>
   fs.writeFileSync(filePath, data as unknown as Uint8Array);
 const readPng = (filePath: string) =>
@@ -27,7 +33,7 @@ function ensureDir(dir: string) {
 function createCompositeDiff(
   baselinePng: PNG,
   currentPng: PNG,
-  diffPng: PNG
+  diffPng: PNG,
 ): Uint8Array {
   const { width, height } = baselinePng;
   const gap = 2;
@@ -58,7 +64,7 @@ function createCompositeDiff(
       const dstStart = (y * compositeWidth + offsetX) * 4;
       composite.data.set(
         png.data.subarray(srcStart, srcStart + width * 4),
-        dstStart
+        dstStart,
       );
     }
   }
@@ -70,7 +76,7 @@ function compareSnapshots(
   received: Uint8Array,
   snapshotPath: string,
   snapshotId: string,
-  update: boolean
+  update: boolean,
 ) {
   ensureDir(customSnapshotsDir);
 
@@ -88,7 +94,7 @@ function compareSnapshots(
     throw new Error(
       `Screenshot size mismatch for "${snapshotId}": ` +
         `expected ${width}x${height}, got ${current.width}x${current.height}. ` +
-        `Run with -u to update.`
+        `Run with -u to update.`,
     );
   }
 
@@ -99,7 +105,7 @@ function compareSnapshots(
     new Uint8Array(diff.data.buffer),
     width,
     height,
-    { threshold: 0.1 } // 0.1 игнорирует различия в антиалиасинге текста между запусками
+    { threshold: 0.1 }, // 0.1 игнорирует различия в антиалиасинге текста между запусками
   );
 
   const totalPixels = width * height;
@@ -111,85 +117,48 @@ function compareSnapshots(
     // Композитное изображение: baseline | diff (красные пиксели) | received
     writeFile(
       path.join(diffOutputDir, `${snapshotId}-composite.png`),
-      createCompositeDiff(baseline, current, diff)
+      createCompositeDiff(baseline, current, diff),
     );
 
     throw new Error(
       `Screenshot "${snapshotId}" differs by ${(diffPercent * 100).toFixed(
-        2
+        2,
       )}% ` +
         `(threshold: ${(failureThreshold * 100).toFixed(0)}%). ` +
-        `Diff: ${diffOutputDir}/${snapshotId}-composite.png`
+        `Diff: ${diffOutputDir}/${snapshotId}-composite.png`,
     );
   }
 }
 
-const config: TestRunnerConfig = {
-  // Права на буфер обмена нужны интеракционным тестам copy/paste
-  // (наш Ctrl+C/Ctrl+V читает/пишет navigator.clipboard). Гранта на все
-  // стори безвредна — обычные скриншоты его не используют.
-  async preVisit(page) {
-    await page
-      .context()
-      .grantPermissions(['clipboard-read', 'clipboard-write'])
-      .catch(() => {
-        // headless без поддержки — copy/paste-стори просто не изменят данные
-      });
-  },
-  async postVisit(page, context) {
-    const storyContext = await getStoryContext(page, context);
-
-    if (storyContext.parameters?.screenshot?.skip) {
-      return;
-    }
-
-    await waitForPageReady(page);
-
-    await page.evaluate(() => document.fonts?.ready).catch(() => {});
-
-    // Отключаем субпиксельное сглаживание шрифтов для стабильных скриншотов.
-    // Без этого Chromium может рендерить текст с субпиксельным сдвигом (0.25px)
-    // между запусками — визуально незаметно, но pixelmatch видит разницу 3-5%.
-    await page.addStyleTag({
-      content: `
-      *, *::before, *::after {
-        -webkit-font-smoothing: none !important;
-        text-rendering: geometricPrecision !important;
-      }
-    `,
-    });
-
-    await page
-      .waitForFunction(
-        () =>
-          Array.from(document.images).every(
-            (img) => img.complete && img.naturalHeight > 0
-          ),
-        { timeout: 5000 }
-      )
-      .catch(() => {
-        // Продолжаем
-      });
-
-    await page.waitForTimeout(2500);
-
-    if (!storyContext.parameters?.screenshot?.keepState) {
-      await page.waitForTimeout(300);
-      await page.mouse.move(0, 0);
-      await page.waitForTimeout(300);
-    }
-
-    const storyRoot = page.locator('#storybook-root').first();
-    const isVisible = await storyRoot.isVisible().catch(() => false);
-    const image = isVisible
-      ? await storyRoot.screenshot()
-      : await page.screenshot();
-    const snapshotPath = path.join(customSnapshotsDir, `${context.id}.png`);
-    // @ts-expect-error globals из jest config
-    const update = globalThis.UPDATE_SNAPSHOTS === 'true';
-
-    compareSnapshots(new Uint8Array(image), snapshotPath, context.id, update);
-  },
+/** Сравнивает скриншот истории (base64 PNG) со снапшотом `__snapshots__/<storyId>.png` */
+const compareStoryScreenshot: BrowserCommand<[string, string]> = (
+  context,
+  storyId,
+  base64,
+) => {
+  // `vitest -u` (npm run screenshot:update) перезаписывает снапшоты
+  const update =
+    context.project.config.snapshotOptions.updateSnapshot === 'all';
+  compareSnapshots(
+    new Uint8Array(Buffer.from(base64, 'base64')),
+    path.join(customSnapshotsDir, `${storyId}.png`),
+    storyId,
+    update,
+  );
 };
 
-export default config;
+/** Уводит курсор в левый верхний угол, чтобы на скриншот не попали hover-состояния */
+const moveMouseToOrigin: BrowserCommand<[]> = async (context) => {
+  if (context.provider.name === 'playwright') {
+    await context.page.mouse.move(0, 0);
+  }
+};
+
+export const screenshotCommands = { compareStoryScreenshot, moveMouseToOrigin };
+
+declare module 'vitest/browser' {
+  interface BrowserCommands {
+    compareStoryScreenshot: (storyId: string, base64: string) => Promise<void>;
+    moveMouseToOrigin: () => Promise<void>;
+  }
+}

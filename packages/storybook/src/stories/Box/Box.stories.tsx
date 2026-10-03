@@ -1,6 +1,6 @@
 /* eslint-disable no-alert */
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Box, BoxProps } from '@ui-kit/components/Box';
 import { Link } from '@ui-kit/components/Link';
 import { textAccent, textNegative, textPositive } from '@ui-kit/tokens';

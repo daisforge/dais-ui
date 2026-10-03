@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
 import { zodResolver } from '@hookform/resolvers/zod';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Button } from '@ui-kit/components/Button';
 import { FormAutocomplete } from '@ui-kit/formComponents/FormAutocomplete';
 import { FormCheckbox } from '@ui-kit/formComponents/FormCheckbox';

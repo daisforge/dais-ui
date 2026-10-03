@@ -46,8 +46,8 @@ export const StoriesPreview = (
   const snapshot = useStoriesSnapshot(store);
   const isActive = snapshot.isOpen && snapshot.groupIndex === __index;
 
-  const triggerWidth = shape === 'rect' ? width ?? size : size;
-  const triggerHeight = shape === 'rect' ? height ?? size : size;
+  const triggerWidth = shape === 'rect' ? (width ?? size) : size;
+  const triggerHeight = shape === 'rect' ? (height ?? size) : size;
 
   const handleClick = (): void => controller.open(__index);
   const handleEnter = (): void => {

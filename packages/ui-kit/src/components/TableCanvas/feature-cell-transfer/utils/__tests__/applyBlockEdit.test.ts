@@ -13,7 +13,7 @@ const col = (
   key: string,
   rowSpan?: (info: { rowInd: number }) => readonly [number, number] | null,
 ): TransferColumnConfig =>
-  ({ key, ...(rowSpan && { rowSpan }) } as unknown as TransferColumnConfig);
+  ({ key, ...(rowSpan && { rowSpan }) }) as unknown as TransferColumnConfig;
 
 const rowsBlock =
   (start: number, end: number) =>

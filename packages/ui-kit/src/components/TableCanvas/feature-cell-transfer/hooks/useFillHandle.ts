@@ -110,8 +110,7 @@ export function useFillHandle<R extends ObjectForExtending>({
       return {
         enabled: false,
         fillHandleStyle: false as
-          | boolean
-          | Pick<FillHandleConfig, 'shape' | 'size' | 'outline'>,
+          boolean | Pick<FillHandleConfig, 'shape' | 'size' | 'outline'>,
         resolvedConfig: DEFAULT_FILL_CONFIG,
       };
     }
@@ -120,8 +119,7 @@ export function useFillHandle<R extends ObjectForExtending>({
       return {
         enabled: true,
         fillHandleStyle: true as
-          | boolean
-          | Pick<FillHandleConfig, 'shape' | 'size' | 'outline'>,
+          boolean | Pick<FillHandleConfig, 'shape' | 'size' | 'outline'>,
         resolvedConfig: DEFAULT_FILL_CONFIG,
       };
     }
@@ -130,8 +128,7 @@ export function useFillHandle<R extends ObjectForExtending>({
       return {
         enabled: false,
         fillHandleStyle: false as
-          | boolean
-          | Pick<FillHandleConfig, 'shape' | 'size' | 'outline'>,
+          boolean | Pick<FillHandleConfig, 'shape' | 'size' | 'outline'>,
         resolvedConfig: DEFAULT_FILL_CONFIG,
       };
     }
@@ -145,8 +142,7 @@ export function useFillHandle<R extends ObjectForExtending>({
     return {
       enabled: true,
       fillHandleStyle: (hasStyle ? style : true) as
-        | boolean
-        | Pick<FillHandleConfig, 'shape' | 'size' | 'outline'>,
+        boolean | Pick<FillHandleConfig, 'shape' | 'size' | 'outline'>,
       resolvedConfig: {
         allowedDirections:
           raw.allowedDirections ?? DEFAULT_FILL_CONFIG.allowedDirections,

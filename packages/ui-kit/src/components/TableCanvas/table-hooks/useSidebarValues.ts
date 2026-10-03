@@ -29,11 +29,14 @@ export const useSidebarState = <
 
   const toggle = () => {
     setIsOpen(!isOpen);
-    setTimeout(() => {
-      if (refTableContainer?.current) {
-        bubble(refTableContainer?.current, TABLE_BUBBLES.recalculateWidth);
-      }
-    }, SIDEBAR_DURATION * 1000 + BUBBLE_DELAY);
+    setTimeout(
+      () => {
+        if (refTableContainer?.current) {
+          bubble(refTableContainer?.current, TABLE_BUBBLES.recalculateWidth);
+        }
+      },
+      SIDEBAR_DURATION * 1000 + BUBBLE_DELAY,
+    );
   };
 
   return {

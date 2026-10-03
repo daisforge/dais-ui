@@ -3,7 +3,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { createRows, type Row } from '@df-storybook/data/tableData';
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import {
   ColumnConfig,
   SplitIconButton,

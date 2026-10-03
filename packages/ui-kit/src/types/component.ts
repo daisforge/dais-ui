@@ -19,11 +19,4 @@ export type TViewColor =
 export type TViewColors = Record<TViewColor, TComponentColor>;
 
 export type TBorderRadiusSizes =
-  | 'none'
-  | 'xxs'
-  | 'xs'
-  | 's'
-  | 'm'
-  | 'l'
-  | 'xl'
-  | 'xxl';
+  'none' | 'xxs' | 'xs' | 's' | 'm' | 'l' | 'xl' | 'xxl';

@@ -49,7 +49,7 @@ export const FormAutocomplete = <TFieldValues extends FieldValues>({
           required={!!newOptions.required || undefined}
           requiredPlacement="right"
           hasRequiredIndicator={!!newOptions.required || undefined}
-          view={error?.type ? 'negative' : view ?? 'default'}
+          view={error?.type ? 'negative' : (view ?? 'default')}
           onChange={async ({ target: { value } }) => {
             await onChange(value);
             handleChangeInput?.(value, formCtx);

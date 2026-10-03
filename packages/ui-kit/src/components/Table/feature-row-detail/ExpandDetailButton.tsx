@@ -45,8 +45,8 @@ export const ExpandDetailButton = <RowType extends ObjectForExtending>({
         {...restButtonProps}
       >
         {rowIsHaveExpandedDetailPanel(row)
-          ? OpenedIcon ?? <IconChevronCircleUpFill color="inherit" />
-          : ClosedIcon ?? <IconChevronCircleDownFill color="inherit" />}
+          ? (OpenedIcon ?? <IconChevronCircleUpFill color="inherit" />)
+          : (ClosedIcon ?? <IconChevronCircleDownFill color="inherit" />)}
       </IconButton>
     </Box>
   );

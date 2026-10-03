@@ -4,7 +4,7 @@ import { createRows, type Row } from '@df-storybook/data/tableData';
 import DocStoryTemplate from '@df-storybook/templates/DocStoryTemplate.mdx';
 import { StoryHint } from '@df-storybook/utils/StoryHint';
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import {
   type ColumnConfig,
   TableCanvas,

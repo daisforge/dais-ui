@@ -120,8 +120,8 @@ function mcpConfig(arm, workDir, beforeServer) {
     arm === 'pkg-mcp-before'
       ? beforeServer
       : ARMS[arm].stand === 'consumer'
-      ? path.join(workDir, 'node_modules/@daisforge/ui-mcp/dist/server.js')
-      : path.join(PKG_DIR, 'dist/server.js');
+        ? path.join(workDir, 'node_modules/@daisforge/ui-mcp/dist/server.js')
+        : path.join(PKG_DIR, 'dist/server.js');
   if (!fs.existsSync(entry)) {
     throw new Error(
       `Сервер для руки «${arm}» не найден: ${entry}\n${

@@ -20,7 +20,7 @@ const col = (
     rowSpan?: (info: { rowInd: number }) => readonly [number, number] | null;
   } = {},
 ): TransferColumnConfig =>
-  ({ key, ...spans } as unknown as TransferColumnConfig);
+  ({ key, ...spans }) as unknown as TransferColumnConfig;
 
 /** rowSpan-функция «блок строк [start, end] на этой колонке». */
 const rowsBlock =

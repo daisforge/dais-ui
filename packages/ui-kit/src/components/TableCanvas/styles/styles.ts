@@ -60,9 +60,11 @@ const FROZEN_BOX_SHADOW = (position: 'right' | 'left' = 'right') =>
 const cellFontStyles = (rowHeight: SIZE) => css(SIZES[rowHeight].font());
 
 const transitions = ({ maxHeight }: { maxHeight?: number } = {}) => css`
-  transition: grid-template-rows ${DURATION}s ease,
+  transition:
+    grid-template-rows ${DURATION}s ease,
     max-height ${maxHeight ?? DURATION}s linear,
-    border-radius ${DURATION + 0.2}s ease, border-color ${DURATION + 0.2}s ease;
+    border-radius ${DURATION + 0.2}s ease,
+    border-color ${DURATION + 0.2}s ease;
 `;
 
 export const tableBorderRadius = (
@@ -92,8 +94,11 @@ const headerCellFontStyles = () => css(bodyXS);
 const rowHeightAnimationStyles = css`
   > .rdg-header-row,
   > .rdg-row {
-    transition: line-height 0.5s ease, font-size 0.5s ease,
-      line-height 0.5s ease, padding 0.5s ease;
+    transition:
+      line-height 0.5s ease,
+      font-size 0.5s ease,
+      line-height 0.5s ease,
+      padding 0.5s ease;
   }
 
   > .rdg-header-row {
@@ -350,7 +355,9 @@ export const ContainerStyled = styled.div<{
   ${({ $isEnabledCollapse }) =>
     $isEnabledCollapse &&
     css`
-      transition: height 0.5s ease, max-height 0.5s ease;
+      transition:
+        height 0.5s ease,
+        max-height 0.5s ease;
     `}
   // Для свернутой таблицы активируем overflow: hidden (чтобы блоки пагинации и др. не было видно)
   ${({ $isCollapsed }) => css`
@@ -366,7 +373,10 @@ export const ContainerStyled = styled.div<{
     ${({ $isEnabledCollapse }) =>
       $isEnabledCollapse &&
       css`
-        transition: height 0.5s ease, max-height 0.5s ease, opacity 0.5s ease;
+        transition:
+          height 0.5s ease,
+          max-height 0.5s ease,
+          opacity 0.5s ease;
       `}
     display: flex;
 
@@ -400,7 +410,9 @@ export const ContainerStyled = styled.div<{
       return css`
         ${scrollbarStyles}
         & .${cls.tableCardsViewContainer} {
-          transition: opacity 2s ease, max-height 0.3s ease;
+          transition:
+            opacity 2s ease,
+            max-height 0.3s ease;
           border: 1px solid transparent;
         }
       `;

@@ -84,8 +84,7 @@ export const RenderCell = <
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const skeletonCells = (row as any)?.[SKELETON_CELLS_KEY] as
-    | SkeletonCells
-    | undefined;
+    SkeletonCells | undefined;
 
   if (skeletonCells && skeletonCells.has(column.key)) {
     return <RectSkeleton roundness={8} width="100%" height="100%" lighter />;

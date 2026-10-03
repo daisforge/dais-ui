@@ -6,8 +6,8 @@ export type TGetValue<
     ? TGetValue<O[Key], Rest>
     : undefined
   : K extends keyof O
-  ? O[K]
-  : undefined;
+    ? O[K]
+    : undefined;
 
 // Этот тип рекурсивно разбивает строку пути на ключи и проверяет наличие каждого ключа в объекте. Если ключ не существует, возвращает undefined
 

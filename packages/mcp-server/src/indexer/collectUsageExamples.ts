@@ -322,15 +322,13 @@ export function buildUsageExamples(
     if (!top.length) return;
     result.set(
       name,
-      top.map(
-        (c, i): ExampleRecord => ({
-          exportName: top.length > 1 ? `Usage${i + 1}` : 'Usage',
-          displayName: `Использование в ${path.basename(c.sourceFile)}`,
-          type: 'usage',
-          code: c.code,
-          sourceFile: c.sourceFile,
-        }),
-      ),
+      top.map((c, i): ExampleRecord => ({
+        exportName: top.length > 1 ? `Usage${i + 1}` : 'Usage',
+        displayName: `Использование в ${path.basename(c.sourceFile)}`,
+        type: 'usage',
+        code: c.code,
+        sourceFile: c.sourceFile,
+      })),
     );
   });
 

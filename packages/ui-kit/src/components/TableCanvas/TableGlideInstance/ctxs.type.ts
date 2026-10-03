@@ -7,7 +7,7 @@ import { SelectingContextType } from '../feature-select-row/selecting-contexts';
 import { ObjectForExtending } from '../types/utils.type';
 import { HandleExpandDetail } from './feature-row-detail/types';
 
-// eslint-disable-next-line @typescript-eslint/ban-types
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export type CtxsType<Customs extends ObjectForExtending | void = {}> = {
   selectingRowCtx: SelectingContextType;
   headerCtx: HeaderContextValueTypeInstance<ObjectForExtending>;

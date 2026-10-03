@@ -5,8 +5,7 @@
 /* eslint-disable react/no-unescaped-entities */
 import { getFuncAsString } from '@df-storybook/utils/getFuncAsString';
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
-import type { Meta, StoryObj } from '@storybook/react';
-import { userEvent, waitFor, within } from '@storybook/test';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Button } from '@ui-kit/components/Button';
 import { Combobox } from '@ui-kit/components/Combobox';
 import { IconButton } from '@ui-kit/components/IconButton';
@@ -36,6 +35,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
+import { userEvent, waitFor, within } from 'storybook/test';
 import styled from 'styled-components';
 
 const meta: Meta<FiltersActionsProps> = {

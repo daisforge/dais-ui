@@ -86,7 +86,9 @@ function isComponentLikeSymbol(symbol: TsSymbol): boolean {
   const name = symbol.getName();
   if (!/^[A-Z]/.test(name) || isAllCaps(name)) return false;
 
-  const real = symbol.isAlias() ? symbol.getAliasedSymbol() ?? symbol : symbol;
+  const real = symbol.isAlias()
+    ? (symbol.getAliasedSymbol() ?? symbol)
+    : symbol;
   const flags = real.getFlags();
   const isValueLike = Boolean(
     flags & (SymbolFlags.Variable | SymbolFlags.Function | SymbolFlags.Class),

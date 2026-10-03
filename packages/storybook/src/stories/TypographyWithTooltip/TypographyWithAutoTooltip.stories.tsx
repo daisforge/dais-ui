@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { TypographyWithAutoTooltip } from '@ui-kit/components/Typography';
 import { TypographyVariant } from '@ui-kit/components/Typography/Typography';
 import { useState } from 'react';

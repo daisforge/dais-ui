@@ -8,8 +8,7 @@ export interface IStyledContainerWrapperProps {
   $roundedInner?: boolean;
 }
 
-export interface IStyledSplitContainerWrapperProps
-  extends IStyledContainerWrapperProps {
+export interface IStyledSplitContainerWrapperProps extends IStyledContainerWrapperProps {
   $view: TContainerView;
   $minColWidth?: string;
   $gap?: string;
@@ -53,8 +52,7 @@ export interface IContainerBaseProps {
 export interface ISplitContainerProps extends IContainerBaseProps {
   split: true;
   children?:
-    | [ReactElement, ReactElement]
-    | [ReactElement, ReactElement, ReactElement];
+    [ReactElement, ReactElement] | [ReactElement, ReactElement, ReactElement];
   /**
    * @default '30/70'
    */

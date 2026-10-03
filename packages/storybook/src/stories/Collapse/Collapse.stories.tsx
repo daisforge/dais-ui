@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Box } from '@ui-kit/components/Box';
 import { Button } from '@ui-kit/components/Button';
 import { Collapse, CollapseProps } from '@ui-kit/components/Collapse';

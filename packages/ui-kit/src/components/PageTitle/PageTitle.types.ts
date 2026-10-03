@@ -13,8 +13,7 @@ export type PageTitleSlotSizesProps = {
 };
 
 export type PageTitleAdaptiveSlot =
-  | ReactNode
-  | ((props: PageTitleSlotSizesProps) => ReactNode);
+  ReactNode | ((props: PageTitleSlotSizesProps) => ReactNode);
 
 /**
  * Компонент `PageTitle` предназначен для отображения заголовка страницы с опциональными breadcrumbs, кнопкой «назад», заголовком, подзаголовком и правым блоком действий.

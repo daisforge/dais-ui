@@ -335,8 +335,10 @@ export interface AtomicCuratedMeta {
    месте (record.type = 'wrapper', delete record.internalComponentImports),
    поэтому конвейеру нужен мутабельный вид, отличный от ComponentRecord. */
 
-export interface WorkingComponentRecord
-  extends Omit<Partial<ComponentRecord>, 'error'> {
+export interface WorkingComponentRecord extends Omit<
+  Partial<ComponentRecord>,
+  'error'
+> {
   name: string;
   group: ComponentGroup;
   type?: ComponentType;

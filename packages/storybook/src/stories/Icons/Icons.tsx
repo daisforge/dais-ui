@@ -1,4 +1,4 @@
-import { IconGallery, IconItem } from '@storybook/blocks';
+import { IconGallery, IconItem } from '@storybook/addon-docs/blocks';
 import { TextFieldSearch } from '@ui-kit/components/TextField';
 import { GlobalStyle } from '@ui-kit/styles';
 import { useDebouncedValue } from '@ui-kit/utils';

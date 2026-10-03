@@ -7,7 +7,7 @@ export type Maybe<T> = T | undefined | null;
 
 export type Prettify<T> = {
   [K in keyof T]: T[K];
-  // eslint-disable-next-line @typescript-eslint/ban-types
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 } & {};
 
 export type RequiredOnly<T, K extends keyof T> = T & { [P in K]-?: T[P] };
@@ -17,7 +17,4 @@ export type DataAttributes = {
 };
 
 export type ActiveTheme =
-  | 'light'
-  | 'dark'
-  | 'highContrastLight'
-  | 'betaCoreLight';
+  'light' | 'dark' | 'highContrastLight' | 'betaCoreLight';

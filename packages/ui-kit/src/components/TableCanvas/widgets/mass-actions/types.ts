@@ -35,8 +35,7 @@ export type MassActionButtonPropsLinkButton = DataAttributes &
 
 // Объединенный тип для MassActions
 export type MassActionButtonProps =
-  | MassActionButtonPropsButton
-  | MassActionButtonPropsLinkButton;
+  MassActionButtonPropsButton | MassActionButtonPropsLinkButton;
 
 export interface StyledButtonProps {
   $hasDropdown?: boolean;

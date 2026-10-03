@@ -99,12 +99,12 @@ function main() {
         .split(',')
         .map((s) => s.trim())
     : fs.existsSync(RUNS_DIR)
-    ? fs
-        .readdirSync(RUNS_DIR, { withFileTypes: true })
-        .filter((d) => d.isDirectory())
-        .map((d) => d.name)
-        .sort()
-    : [];
+      ? fs
+          .readdirSync(RUNS_DIR, { withFileTypes: true })
+          .filter((d) => d.isDirectory())
+          .map((d) => d.name)
+          .sort()
+      : [];
   if (arms.length === 0) {
     console.error('Прогонов нет: сначала node ab/run.mjs');
     process.exit(1);

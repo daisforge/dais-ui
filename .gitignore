@@ -55,6 +55,7 @@ testem.log
 Thumbs.db
 
 .nx/cache
+.nx/workspace-data
 
 storybook-static
 
@@ -77,3 +78,6 @@ certs/*
 !certs/.gitkeep
 *.pem
 *.diff
+.nx/polygraph
+.nx/self-healing
+.nx/migrate-runs

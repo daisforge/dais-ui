@@ -26,8 +26,8 @@ export const ExpandDetailButton = <RowType extends ObjectForExtending>({
   const icon = (
     rowIsHaveExpandedDetailPanel(row)
       ? // TODO custom icons
-        OpenedIcon ?? <IconChevronCircleUpFill color="inherit" />
-      : ClosedIcon ?? <IconChevronCircleDownFill color="inherit" />
+        (OpenedIcon ?? <IconChevronCircleUpFill color="inherit" />)
+      : (ClosedIcon ?? <IconChevronCircleDownFill color="inherit" />)
   ) as CanvasEl;
   return (
     <Canvas.Container padding={{ left: 8 }}>

@@ -10,17 +10,14 @@ export function getTreeIdAndLvlOfRow<RowType extends ObjectForExtending>(
   row: RowType,
 ) {
   const treeId = (row as { [TREE_ID_KEY]?: string })?.[TREE_ID_KEY] as
-    | string
-    | undefined;
+    string | undefined;
 
   return { treeId, lvl: getLvlFromTreeId(treeId) };
 }
 
 export function getHasArrow(
   isColumnWithArrow:
-    | boolean
-    | ((props: { keyText: KeyText }) => boolean)
-    | undefined,
+    boolean | ((props: { keyText: KeyText }) => boolean) | undefined,
   keyText: KeyText,
 ) {
   if (!isColumnWithArrow) {

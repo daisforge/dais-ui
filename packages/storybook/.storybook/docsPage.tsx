@@ -4,7 +4,7 @@ import {
   Title,
   Stories,
   ArgTypes,
-} from '@storybook/addon-docs';
+} from '@storybook/addon-docs/blocks';
 
 /* <Stories /> */
 /* <ArgTypes /> */

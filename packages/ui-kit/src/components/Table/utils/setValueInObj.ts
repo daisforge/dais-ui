@@ -45,8 +45,8 @@ export const setValueInObj = (
         isObject(objValue) || Array.isArray(objValue)
           ? objValue
           : !Number.isNaN?.(+tempPath[index + 1]!)
-          ? []
-          : {};
+            ? []
+            : {};
     }
 
     if (key === '__proto__') {

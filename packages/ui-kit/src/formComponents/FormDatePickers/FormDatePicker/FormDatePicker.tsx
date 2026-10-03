@@ -116,8 +116,7 @@ export const FormDatePicker = <TFieldValues extends FieldValues>({
     validate: (value: Date | string) => {
       // Если задана функция внешней валидации - исполняем ее
       const externalValidate = newOptions?.validate as
-        | ((val: unknown) => string | boolean)
-        | undefined;
+        ((val: unknown) => string | boolean) | undefined;
       if (externalValidate) {
         return externalValidate(value);
       }

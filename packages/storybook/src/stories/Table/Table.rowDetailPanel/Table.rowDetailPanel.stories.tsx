@@ -2,7 +2,7 @@
 import { createRows, type Row } from '@df-storybook/data/tableData';
 import DocStoryTemplate from '@df-storybook/templates/DocStoryTemplate.mdx';
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Button } from '@ui-kit/components/Button';
 import { IconButtonProps } from '@ui-kit/components/IconButton';
 import { StoryTableConfigComp } from '@ui-kit/components/StoriesUtils';

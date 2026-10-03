@@ -1,16 +1,16 @@
 /* eslint-disable no-restricted-syntax */
 import { Plugin } from 'vite';
 
-import PackageJson from '../package.json';
-import { ALL_MANUAL_UIKIT_CHUNKS } from './vite-df-ui-chunks';
+import PackageJson from '../package.json' with { type: 'json' };
+import { ALL_MANUAL_UIKIT_CHUNKS } from './vite-df-ui-chunks.ts';
 
 const PACKAGES_FOR_VENDOR = ['react-dom']; // 'react-dom' - имеет сложности при переводе в чанки
 const packages = Object.keys(PackageJson.dependencies).filter(
-  (p) => !PACKAGES_FOR_VENDOR.some((el) => p === el) //
+  (p) => !PACKAGES_FOR_VENDOR.some((el) => p === el), //
 );
 
 const filteredUIKitChunks = ALL_MANUAL_UIKIT_CHUNKS.filter(
-  (m) => m.chunkName !== 'vendor'
+  (m) => m.chunkName !== 'vendor',
 );
 
 const manualStorybookChunks = (id: string) => {
@@ -55,7 +55,7 @@ export function viteDFUIStorybookChunks(): Plugin {
     config(_config) {
       return {
         build: {
-          rollupOptions: {
+          rolldownOptions: {
             output: {
               manualChunks: manualStorybookChunks,
             },

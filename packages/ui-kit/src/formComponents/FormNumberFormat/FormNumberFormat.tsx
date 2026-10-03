@@ -57,7 +57,7 @@ export const FormNumberFormat = <TFieldValues extends FieldValues>({
             handleBlur?.(e);
           }}
           leftHelper={error?.message || leftHelper}
-          view={error?.message ? 'negative' : view ?? 'default'}
+          view={error?.message ? 'negative' : (view ?? 'default')}
           required={!!newOptions.required || undefined}
           hasRequiredIndicator={!!newOptions.required || undefined}
           // типы конфликтуют из-за Omit<> и тп., хотя идентичны

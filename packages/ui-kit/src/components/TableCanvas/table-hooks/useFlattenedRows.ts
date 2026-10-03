@@ -187,8 +187,8 @@ export const useFlattenedRows = <
         // getRecursivelyRowAndOpenedSubRows. Работает для любой глубины вложенности.
         const parentKey: string | number | null = isRoot
           ? null
-          : (r as { [PARENT_ROW_KEY]?: string | number })?.[PARENT_ROW_KEY] ??
-            null;
+          : ((r as { [PARENT_ROW_KEY]?: string | number })?.[PARENT_ROW_KEY] ??
+            null);
 
         // siblingIndex: порядковый номер среди siblings одного родителя
         const siblingKey = parentKey;

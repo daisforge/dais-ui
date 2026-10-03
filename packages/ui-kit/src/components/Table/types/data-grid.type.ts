@@ -116,8 +116,11 @@ type Direction = 'ltr' | 'rtl';
 /**
  * Полная копия типа "DataGridProps" из react-data-grid. Скопирован для того, чтобы API в Story проинициализировался
  */
-export interface DataGridPropsDefault<R, SR = unknown, K extends Key = Key>
-  extends SharedDivProps {
+export interface DataGridPropsDefault<
+  R,
+  SR = unknown,
+  K extends Key = Key,
+> extends SharedDivProps {
   /**
    * Grid and data Props
    */

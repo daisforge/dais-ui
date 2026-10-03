@@ -69,12 +69,10 @@ export function finalizeVendorExamples(
   if (!snippets?.length) return [];
 
   const best = pickBest(snippets);
-  return best.map(
-    (s, i): ExampleRecord => ({
-      exportName: best.length > 1 ? `Vendor${i + 1}` : 'Vendor',
-      displayName: s.title || 'Пример из документации @salutejs/sdds-finai',
-      type: 'vendor',
-      code: clip(rewriteImportSpecifier(s.snippet, importPath)),
-    }),
-  );
+  return best.map((s, i): ExampleRecord => ({
+    exportName: best.length > 1 ? `Vendor${i + 1}` : 'Vendor',
+    displayName: s.title || 'Пример из документации @salutejs/sdds-finai',
+    type: 'vendor',
+    code: clip(rewriteImportSpecifier(s.snippet, importPath)),
+  }));
 }

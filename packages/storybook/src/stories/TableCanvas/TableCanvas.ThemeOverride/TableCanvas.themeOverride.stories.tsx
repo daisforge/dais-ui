@@ -7,7 +7,7 @@ import {
   TreeRow,
 } from '@df-storybook/data/tableData';
 import DocStoryTemplate from '@df-storybook/templates/DocStoryTemplate.mdx';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import {
   Canvas,
   ColumnConfig,
@@ -201,8 +201,8 @@ export const ThemeOverrideSubRowsLvl: Story = {
               lvl === 0
                 ? 'rgba(120, 200, 120, 0.12)'
                 : lvl === 1
-                ? 'rgba(120, 200, 120, 0.20)'
-                : 'rgba(120, 200, 120, 0.30)',
+                  ? 'rgba(120, 200, 120, 0.20)'
+                  : 'rgba(120, 200, 120, 0.30)',
             cellHorizontalPadding: 64,
           }),
         },

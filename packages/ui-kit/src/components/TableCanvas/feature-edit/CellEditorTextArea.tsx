@@ -40,14 +40,16 @@ const TextAreaWrap = styled.div<
         margin-block: auto;
         height: fit-content;
         min-width: calc(
-          min(${cellWidth}px, 400px) -
-            var(${CSS_VARIABLES.subrowContainerPaddingLeft}) - 32px -
-            ${paddingInline}px
+          min(${cellWidth}px, 400px) - var(
+              ${CSS_VARIABLES.subrowContainerPaddingLeft}
+            ) -
+            32px - ${paddingInline}px
         );
         max-width: calc(
-          max(${cellWidth}px, 400px) -
-            var(${CSS_VARIABLES.subrowContainerPaddingLeft}) - 32px -
-            ${paddingInline}px
+          max(${cellWidth}px, 400px) - var(
+              ${CSS_VARIABLES.subrowContainerPaddingLeft}
+            ) -
+            32px - ${paddingInline}px
         );
       }
     `}

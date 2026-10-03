@@ -190,11 +190,11 @@ export const RenderCellGlide = <
   const { __mergedCell: mergedCell } = renderCellProps;
   const mergedVerticalAlign =
     isSelectColumn && mergedCell
-      ? mergedCell.align?.vertical ?? 'center'
+      ? (mergedCell.align?.vertical ?? 'center')
       : undefined;
   const mergedHorizontalAlign =
     isSelectColumn && mergedCell
-      ? mergedCell.align?.horizontal ?? 'left'
+      ? (mergedCell.align?.horizontal ?? 'left')
       : undefined;
   const { cellVerticalPadding } = theme;
   const selectCellVisual = {
@@ -223,8 +223,7 @@ export const RenderCellGlide = <
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const skeletonCells = (row as any)?.[SKELETON_CELLS_KEY] as
-    | SkeletonCells
-    | undefined;
+    SkeletonCells | undefined;
 
   if (skeletonCells && skeletonCells.has(column.key)) {
     return createTextCellGlide('LOADING CELL');

@@ -46,8 +46,10 @@ const TooltipContent: FC<{ groupLabel?: string; items: string[] }> = ({
   </StyledTooltipContent>
 );
 
-export interface FiltersActionsTooltipProps
-  extends Omit<TooltipProps, 'text' | 'children'> {
+export interface FiltersActionsTooltipProps extends Omit<
+  TooltipProps,
+  'text' | 'children'
+> {
   groupLabel?: string;
   items: string[];
   children: React.ReactNode;
@@ -88,7 +90,7 @@ export const FiltersActionsTooltip: FC<FiltersActionsTooltipProps> = ({
     <Tooltip
       key={`tooltip-${shouldForceCloseTooltip}`} // Ключ для принудительного ререндера
       usePortal
-      trigger={hasItemsToShow ? tooltipProps?.trigger ?? 'hover' : 'none'}
+      trigger={hasItemsToShow ? (tooltipProps?.trigger ?? 'hover') : 'none'}
       text={<TooltipContent groupLabel={groupLabel} items={items} />}
       size="s"
       {...tooltipProps}

@@ -21,11 +21,11 @@
  * Fill (протяжка fill-handle) здесь НЕ тестируется: захват canvas-handle drag'ом в
  * headless нестабилен. Логика протяжки покрыта юнит-тестом `applyValuesToRows`.
  */
-import type { Meta, StoryObj } from '@storybook/react';
-import { fireEvent, waitFor } from '@storybook/test';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { type ColumnConfig, TableCanvas } from '@ui-kit/components/TableCanvas';
 import type { DataEditorRef } from '@ui-kit/components/TableCanvas/TableGlideInstance/type';
 import { createRef, useState } from 'react';
+import { fireEvent, waitFor } from 'storybook/test';
 
 const meta: Meta = {
   title:

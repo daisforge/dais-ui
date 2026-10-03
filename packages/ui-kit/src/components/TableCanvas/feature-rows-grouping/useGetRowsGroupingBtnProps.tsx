@@ -86,7 +86,7 @@ export const useGetRowsGroupingBtnProps = <
     const dropdownOptions: DropdownProps['items'] = columnConfig
       .filter((col) => {
         const enabled = col.rowsGrouping
-          ? col.rowsGrouping.groupByColumn ?? true // @default true -   при наличии пропса col.rowsGrouping
+          ? (col.rowsGrouping.groupByColumn ?? true) // @default true -   при наличии пропса col.rowsGrouping
           : false;
 
         columns[enabled ? 'visible' : 'hidden'].push(col.key);

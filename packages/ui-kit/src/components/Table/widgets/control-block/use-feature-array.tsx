@@ -171,7 +171,7 @@ export const useFeatureArray = <
       activeViewIsRows &&
       !!tableConfig.fullScreenEnabled &&
       (typeof tableConfig.fullScreenEnabled === 'object'
-        ? tableConfig.fullScreenEnabled.showInControl ?? true
+        ? (tableConfig.fullScreenEnabled.showInControl ?? true)
         : true),
     rowInstruments:
       activeViewIsRows &&

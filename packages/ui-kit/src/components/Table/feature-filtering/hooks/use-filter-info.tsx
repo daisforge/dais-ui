@@ -23,16 +23,19 @@ export const useFiltersInfo = <
 
     Object.keys(filters ?? {}).forEach((key) => allFilterKeys.add(key));
 
-    return Array.from(allFilterKeys).reduce((acc, key) => {
-      acc[key] = {
-        label: tableConfig?.filtering?.filtersInfo?.[key]?.label ?? key,
-        clearedValue:
-          tableConfig?.filtering?.filtersInfo?.[key]?.clearedValue ??
-          tableConfig.filtering?.clearedValue?.[key] ??
-          undefined,
-      };
-      return acc;
-    }, {} as Record<string, { label: string; clearedValue: unknown }>);
+    return Array.from(allFilterKeys).reduce(
+      (acc, key) => {
+        acc[key] = {
+          label: tableConfig?.filtering?.filtersInfo?.[key]?.label ?? key,
+          clearedValue:
+            tableConfig?.filtering?.filtersInfo?.[key]?.clearedValue ??
+            tableConfig.filtering?.clearedValue?.[key] ??
+            undefined,
+        };
+        return acc;
+      },
+      {} as Record<string, { label: string; clearedValue: unknown }>,
+    );
   }, [
     columnConfig,
     filters,

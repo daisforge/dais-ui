@@ -17,8 +17,7 @@
  * Эталонные PNG генерятся первым прогоном test-runner (`-u`) на стороне CI.
  */
 import { createRows, type Row } from '@df-storybook/data/tableData';
-import type { Meta, StoryObj } from '@storybook/react';
-import { fireEvent, waitFor } from '@storybook/test';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import {
   type CellsSelectionMode,
   type ColumnConfig,
@@ -27,6 +26,7 @@ import {
 } from '@ui-kit/components/TableCanvas';
 import type { DataEditorRef } from '@ui-kit/components/TableCanvas/TableGlideInstance/type';
 import { createRef } from 'react';
+import { fireEvent, waitFor } from 'storybook/test';
 
 const meta: Meta = {
   title:
@@ -62,28 +62,27 @@ const renderGrid =
     selectionMode: CellsSelectionMode,
     highlightActiveType: HighlightActiveType = 'disabled',
   ) =>
-  () =>
-    (
-      <div style={{ padding: 8 }}>
-        <TableCanvas
-          refTable={tableRef}
-          tableConfig={{
-            containerStyle: { height: '320px', width: '800px' },
-            rowSize: { default: 'medium', showInControl: false },
-            rowMarkers: { startIndex: 1 },
-            cellsSelection: {
-              mode: selectionMode,
-              enableColumnSelection: true,
-              enableRowSelection: true,
-              enableSelectAll: true,
-            },
-            highlightActiveType,
-          }}
-          columnConfig={COLS}
-          rows={ROWS}
-        />
-      </div>
-    );
+  () => (
+    <div style={{ padding: 8 }}>
+      <TableCanvas
+        refTable={tableRef}
+        tableConfig={{
+          containerStyle: { height: '320px', width: '800px' },
+          rowSize: { default: 'medium', showInControl: false },
+          rowMarkers: { startIndex: 1 },
+          cellsSelection: {
+            mode: selectionMode,
+            enableColumnSelection: true,
+            enableRowSelection: true,
+            enableSelectAll: true,
+          },
+          highlightActiveType,
+        }}
+        columnConfig={COLS}
+        rows={ROWS}
+      />
+    </div>
+  );
 
 // --- Хелперы взаимодействия с канвасом ---------------------------------------
 // eslint-disable-next-line no-promise-executor-return

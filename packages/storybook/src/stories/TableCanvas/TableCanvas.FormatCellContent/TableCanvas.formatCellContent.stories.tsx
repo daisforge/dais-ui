@@ -2,7 +2,7 @@
 import { createRowsTree, TreeRow } from '@df-storybook/data/tableData';
 import DocStoryTemplate from '@df-storybook/templates/DocStoryTemplate.mdx';
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ColumnConfig, TableCanvas } from '@ui-kit/components/TableCanvas';
 import React, { useMemo, useState } from 'react';
 

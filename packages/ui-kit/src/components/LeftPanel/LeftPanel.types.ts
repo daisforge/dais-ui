@@ -17,8 +17,7 @@ export type LeftPanelSlotSizesProps = {
 };
 
 export type LeftPanelAdaptiveSlot =
-  | ReactNode
-  | ((props: LeftPanelSlotSizesProps) => ReactNode);
+  ReactNode | ((props: LeftPanelSlotSizesProps) => ReactNode);
 
 export type LeftPanelProps = {
   /**

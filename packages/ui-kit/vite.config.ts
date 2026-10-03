@@ -1,16 +1,15 @@
 /// <reference types='vitest' />
+import babel from '@rolldown/plugin-babel';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import dts from 'vite-plugin-dts';
 import { relative, extname, join, resolve } from 'path';
-import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
-import pkgJSON from './package.json';
+import pkgJSON from './package.json' with { type: 'json' };
 import { libInjectCss } from 'vite-plugin-lib-inject-css';
 
 import { glob } from 'glob';
-import { viteDFUIChunks } from '../../plugins/vite-df-ui-chunks';
-import { vitePluginRollupOutputChunkFileNames } from '../../plugins/vitePluginRollupOutputChunkFileNames';
-import { viteDFUISuppressWarnings } from '../../plugins/vite-df-ui-suppress-warnings';
+import { viteDFUIChunks } from '../../plugins/vite-df-ui-chunks.ts';
+import { vitePluginRollupOutputChunkFileNames } from '../../plugins/vitePluginRollupOutputChunkFileNames.ts';
 import path from 'path';
 
 export default defineConfig(() => {
@@ -18,30 +17,24 @@ export default defineConfig(() => {
 
   return {
     mode: NODE_ENV_LOCAL,
-    root: __dirname,
+    root: import.meta.dirname,
     cacheDir: '../../node_modules/.vite/packages/ui-kit',
 
     plugins: [
-      react({
-        babel: {
-          plugins: [
-            [
-              'babel-plugin-styled-components',
-              { displayName: true, ssr: false },
-            ],
-          ],
-        },
+      react(),
+      // @vitejs/plugin-react 6 больше не принимает опцию babel — babel-плагины подключаются отдельно
+      babel({
+        plugins: [
+          ['babel-plugin-styled-components', { displayName: true, ssr: false }],
+        ],
       }),
-      nxViteTsPaths(),
       dts({
         entryRoot: 'src',
-        tsconfigPath: join(__dirname, 'tsconfig.lib.json'),
+        tsconfigPath: join(import.meta.dirname, 'tsconfig.lib.json'),
       }),
       libInjectCss(),
       viteDFUIChunks(),
       vitePluginRollupOutputChunkFileNames(),
-      // TODO update nx + vite + storybook and see - if this warning is gone then we can remove this plugin
-      viteDFUISuppressWarnings({ warnFilter: ['/*#__PURE__*/'] }),
     ],
 
     // Uncomment this if you are using workers.
@@ -52,26 +45,26 @@ export default defineConfig(() => {
     // Configuration for building library.
     // See: https://vitejs.dev/guide/build.html#library-mode
     build: {
+      // Дефолтный target Vite 5 (в Vite 8 дефолт новее — baseline-widely-available).
+      // Фиксируем, чтобы уровень синтаксиса в dist не менялся для потребителей
+      target: ['es2020', 'edge88', 'firefox78', 'chrome87', 'safari14'],
       outDir: '../../dist/packages/ui-kit',
       emptyOutDir: true,
       reportCompressedSize: true,
-      commonjsOptions: {
-        transformMixedEsModules: true,
-      },
       lib: {
         // https://vitejs.dev/config/build-options.html#build-lib
         entry: (() => {
-          const srcDir = resolve(__dirname, 'src');
+          const srcDir = resolve(import.meta.dirname, 'src');
 
           // Используем относительный паттерн с cwd - работает на всех ОС
           const files = glob.sync('src/**/index.ts', {
-            cwd: __dirname,
+            cwd: import.meta.dirname,
             absolute: true,
           });
 
           if (files.length === 0) {
             console.warn('No entry files found!');
-            return { index: resolve(__dirname, 'src/index.ts') };
+            return { index: resolve(import.meta.dirname, 'src/index.ts') };
           }
 
           return Object.fromEntries(
@@ -104,7 +97,7 @@ export default defineConfig(() => {
         formats: ['es', 'cjs'],
       },
 
-      rollupOptions: {
+      rolldownOptions: {
         output: {
           /** chunkFileNames: настроен в плагине --> {@link vitePluginRollupOutputChunkFileNames } */
           assetFileNames: 'assets/[name]-[hash][extname]',
@@ -137,8 +130,10 @@ export default defineConfig(() => {
       },
     },
     resolve: {
+      // Замена устаревшего nxViteTsPaths — Vite 8 сам читает paths из tsconfig
+      tsconfigPaths: true,
       alias: {
-        '@ui-kit': path.resolve(__dirname, '../ui-kit/src'),
+        '@ui-kit': path.resolve(import.meta.dirname, '../ui-kit/src'),
       },
     },
 

@@ -168,12 +168,12 @@ export const StyledDrawer = styled(Drawer)<DrawerDFPropsForStyles>`
             // - непустой контейнер заголовка (drawerHeaderTitleContainer)
             // - правый блок (drawerHeaderRightBlock)
             &:has(
-                :is(
-                    .${cls.drawerHeaderSubtitle},
-                      .${cls.drawerHeaderTitleContainer}:not(:empty),
-                    .${cls.drawerHeaderRightBlock}
-                  )
-              ) {
+              :is(
+                .${cls.drawerHeaderSubtitle},
+                  .${cls.drawerHeaderTitleContainer}:not(:empty),
+                .${cls.drawerHeaderRightBlock}
+              )
+            ) {
               // Устанавливаем вертикальные отступы:
               // - 16px сверху (x8)
               // - 0px снизу

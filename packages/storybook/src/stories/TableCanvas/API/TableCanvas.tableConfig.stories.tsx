@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import DocArgsTemplate from '@df-storybook/templates/DocArgsTemplate.mdx';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { StoryTableCanvasConfigComp } from '@ui-kit/components/StoriesUtils/storiesUtils.TableCanvas';
 import type { ComponentType } from 'react';
 import React from 'react';

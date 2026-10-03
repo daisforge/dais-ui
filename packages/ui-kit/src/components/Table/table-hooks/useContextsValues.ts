@@ -47,8 +47,7 @@ export const useContextsValues = <
   >;
   setFilters: React.Dispatch<React.SetStateAction<FilterStateType>> | undefined;
   setSortColumns:
-    | React.Dispatch<React.SetStateAction<readonly SortColumn[]>>
-    | undefined;
+    React.Dispatch<React.SetStateAction<readonly SortColumn[]>> | undefined;
   sortColumns: readonly SortColumn[] | undefined;
   sortIsVisible: boolean;
   setSortIsVisible: React.Dispatch<React.SetStateAction<boolean>>;

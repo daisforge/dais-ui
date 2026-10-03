@@ -75,7 +75,7 @@ export const FormTextField = <TFieldValues extends FieldValues>({
           hasRequiredIndicator={!!newOptions.required || undefined}
           size="s"
           value={value as string}
-          view={error?.type ? 'negative' : view ?? 'default'}
+          view={error?.type ? 'negative' : (view ?? 'default')}
           onBlur={async (e) => {
             setFocusTextField(false);
             await onBlur();

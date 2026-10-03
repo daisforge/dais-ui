@@ -87,7 +87,7 @@ export const TooltipList: FC<TooltipListProps> = ({
       mouseEnterDelay={500}
       {...tooltipProps}
       // Принудительно скрываем тултип, если нет элементов, перебивая пропсы
-      trigger={hasItemsToShow ? tooltipProps['trigger'] ?? 'hover' : 'none'}
+      trigger={hasItemsToShow ? (tooltipProps['trigger'] ?? 'hover') : 'none'}
       text={
         hasItemsToShow ? (
           <TooltipContent groupLabel={groupLabel} items={items} />

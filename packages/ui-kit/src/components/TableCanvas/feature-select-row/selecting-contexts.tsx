@@ -36,8 +36,7 @@ export type SelectingContextType<
   flattenedRowsArrAndMap: FlattenedRowsArrAndMap<RowType, RowIdType> | null;
   selectedRows: ReadonlySet<string | number> | undefined;
   setSelectedRows:
-    | React.Dispatch<React.SetStateAction<ReadonlySet<RowIdType>>>
-    | undefined;
+    React.Dispatch<React.SetStateAction<ReadonlySet<RowIdType>>> | undefined;
   rowKeyGetter: undefined | ((row: RowType) => RowIdType);
   rowsGroupingIsActive: boolean;
   isRowsGroupingLabelVisible: boolean;
@@ -77,8 +76,7 @@ export const SelectingContextProvider = <
   flattenedRowsArrAndMap: FlattenedRowsArrAndMap<RowType, RowIdType> | null;
   selectedRows: ReadonlySet<string | number> | undefined;
   setSelectedRows:
-    | React.Dispatch<React.SetStateAction<ReadonlySet<RowIdType>>>
-    | undefined;
+    React.Dispatch<React.SetStateAction<ReadonlySet<RowIdType>>> | undefined;
   rowKeyGetter: undefined | ((row: RowType) => RowIdType);
   rowsGroupingIsActive: boolean;
   isRowsGroupingLabelVisible: boolean;

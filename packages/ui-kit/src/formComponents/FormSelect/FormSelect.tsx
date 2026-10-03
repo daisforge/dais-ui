@@ -57,7 +57,7 @@ export const FormSelect = <TFieldValues extends FieldValues>({
             label={label}
             size="s"
             chipView="secondary"
-            view={error?.type ? 'negative' : view ?? 'default'}
+            view={error?.type ? 'negative' : (view ?? 'default')}
             onChange={(newValue: string) => {
               fieldRest.onChange(newValue);
               // eslint-disable-next-line @typescript-eslint/no-explicit-any

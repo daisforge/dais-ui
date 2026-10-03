@@ -79,7 +79,7 @@ export const FormTextArea = <TFieldValues extends FieldValues>({
             )
           }
           size="s"
-          view={error?.type ? 'negative' : view ?? 'default'}
+          view={error?.type ? 'negative' : (view ?? 'default')}
           onBlur={(e) => {
             if (e.relatedTarget) {
               return;

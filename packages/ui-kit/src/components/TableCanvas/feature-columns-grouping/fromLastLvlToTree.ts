@@ -40,7 +40,7 @@ export const getSeparatedColWithAllParents = <
     const colForPushing = (
       isNotGroupColumn(column)
         ? // чтобы на последнем уровне вложенности была колонка со всеми фичами (в просто column потеряны все фичевые ключи)
-          lastLvlColsMap.get(column.key) ?? column
+          (lastLvlColsMap.get(column.key) ?? column)
         : column
     ) as typeof column;
 

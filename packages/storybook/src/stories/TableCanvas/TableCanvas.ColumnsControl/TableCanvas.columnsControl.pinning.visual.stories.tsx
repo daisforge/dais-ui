@@ -25,11 +25,11 @@
  * Данные детерминированы: createRows (seeded-random, сид 42) — стабильные строки.
  */
 import { createRows, type Row } from '@df-storybook/data/tableData';
-import type { Meta, StoryObj } from '@storybook/react';
-import { fireEvent, userEvent, waitFor, within } from '@storybook/test';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { type ColumnConfig, TableCanvas } from '@ui-kit/components/TableCanvas';
 import type { DataEditorRef } from '@ui-kit/components/TableCanvas/TableGlideInstance/type';
 import { createRef } from 'react';
+import { fireEvent, userEvent, waitFor, within } from 'storybook/test';
 
 const meta: Meta = {
   title:
@@ -66,39 +66,38 @@ const COLS: readonly ColumnConfig<Row>[] = [
 /** Общий рендер: фиксированный грид, закрепление + выделение столбцов. */
 const renderGrid =
   (pinnedDefault: string[] = []) =>
-  () =>
-    (
-      <div style={{ padding: 8 }}>
-        <TableCanvas
-          refTable={tableRef}
-          tableConfig={{
-            containerStyle: { height: '360px', width: '900px' },
-            rowSize: { default: 'medium', showInControl: false },
-            rowMarkers: { startIndex: 1 },
-            cellsSelection: {
-              mode: 'range-cell',
-              enableColumnSelection: true,
-              enableRowSelection: true,
-              enableSelectAll: true,
-            },
-            columnsControl: {
-              enable: true,
-              pinning: true,
-              pinnedDefault,
-            },
-            controlBlock: {
-              pinningMenu: {
-                iconDomMetadata: {
-                  dataAttributes: { 'data-testid': PIN_TESTID },
-                },
+  () => (
+    <div style={{ padding: 8 }}>
+      <TableCanvas
+        refTable={tableRef}
+        tableConfig={{
+          containerStyle: { height: '360px', width: '900px' },
+          rowSize: { default: 'medium', showInControl: false },
+          rowMarkers: { startIndex: 1 },
+          cellsSelection: {
+            mode: 'range-cell',
+            enableColumnSelection: true,
+            enableRowSelection: true,
+            enableSelectAll: true,
+          },
+          columnsControl: {
+            enable: true,
+            pinning: true,
+            pinnedDefault,
+          },
+          controlBlock: {
+            pinningMenu: {
+              iconDomMetadata: {
+                dataAttributes: { 'data-testid': PIN_TESTID },
               },
             },
-          }}
-          columnConfig={COLS}
-          rows={ROWS}
-        />
-      </div>
-    );
+          },
+        }}
+        columnConfig={COLS}
+        rows={ROWS}
+      />
+    </div>
+  );
 
 // --- Хелперы взаимодействия с канвасом (только ref, без раскладки) ------------
 // eslint-disable-next-line no-promise-executor-return

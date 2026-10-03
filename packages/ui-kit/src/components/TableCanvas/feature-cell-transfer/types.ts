@@ -16,10 +16,7 @@ export type ValidationMode = 'none' | 'type-check';
 
 /** Разрешённые направления перетаскивания fill handle */
 export type AllowedFillDirections =
-  | 'horizontal'
-  | 'vertical'
-  | 'orthogonal'
-  | 'any';
+  'horizontal' | 'vertical' | 'orthogonal' | 'any';
 
 /**
  * Конфигурация одной горячей клавиши для copy/paste.

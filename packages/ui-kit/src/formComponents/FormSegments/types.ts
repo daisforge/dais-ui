@@ -59,8 +59,7 @@ export type TGroupPropsForStyled<TFieldValues extends FieldValues> =
     };
 
 export type TOptionsForRequired<TFieldValues extends FieldValues> =
-  | RegisterOptions<FieldValues, Path<TFieldValues>>
-  | undefined;
+  RegisterOptions<FieldValues, Path<TFieldValues>> | undefined;
 
 export type SegmentControlledProps<TFieldValues extends FieldValues> =
   TLabelBlockProps & {

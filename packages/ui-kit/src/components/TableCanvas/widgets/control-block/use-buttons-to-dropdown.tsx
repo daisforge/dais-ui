@@ -467,8 +467,7 @@ export const useButtonsToDropdownItems = (
     // Дивайдер после последнего пункта не рисуем (как в CB: у крайнего
     // элемента dividerLeft не рендерится)
     const lastItem = items[items.length - 1] as
-      | (DropdownItemOption & { dividerAfter?: boolean })
-      | undefined;
+      (DropdownItemOption & { dividerAfter?: boolean }) | undefined;
     if (lastItem?.dividerAfter) {
       delete lastItem.dividerAfter;
     }

@@ -3,7 +3,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { gridDndRoutes } from '@df-storybook/msw/routes';
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { AnalyticalWidget } from '@ui-kit/components/AnalyticalWidget';
 import { Button } from '@ui-kit/components/Button';
 import {

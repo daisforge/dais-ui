@@ -1,11 +1,15 @@
 import type { StorybookConfig } from '@storybook/react-vite';
 
+import { createRequire } from 'module';
 import { dirname, join, resolve } from 'path';
 import https from 'https';
 import { readFileSync, utimesSync } from 'fs';
 import { normalizePath } from 'vite';
 import { existsSync } from 'fs';
 import { transformSync } from 'esbuild';
+
+// Storybook 10 загружает main.ts как ESM — require и __dirname недоступны
+const require = createRequire(import.meta.url);
 
 function getAbsolutePath(value: string): any {
   return dirname(require.resolve(join(value, 'package.json')));
@@ -36,8 +40,8 @@ function isSyntaxValid(code: string, filePath: string): boolean {
 // прод-билда публичного стенда: `storybook:build` запускается с NODE_ENV=production.
 // В остальных случаях стори НУЖНЫ и включаются:
 //   - локальный dev-сервер (`storybook`);
-//   - прогон скриншот-тестов (test-runner читает этот конфиг под jest — там
-//     NODE_ENV=test, НЕ production), иначе он их не находит (0 matches).
+//   - прогон скриншот-тестов (addon-vitest читает этот конфиг под Vitest — там
+//     NODE_ENV=test, НЕ production), иначе он их не находит.
 const isProductionBuild = process.env.NODE_ENV === 'production';
 
 const config: StorybookConfig = {
@@ -49,8 +53,8 @@ const config: StorybookConfig = {
   ],
 
   addons: [
-    getAbsolutePath('@storybook/addon-essentials'),
-    getAbsolutePath('@storybook/addon-interactions'),
+    // essentials и interactions с Storybook 9 входят в ядро
+    getAbsolutePath('@storybook/addon-docs'),
     getAbsolutePath('@storybook/addon-links'),
   ],
   staticDirs: ['../static'],
@@ -90,10 +94,10 @@ const config: StorybookConfig = {
                 try {
                   return new https.Agent({
                     key: readFileSync(
-                      resolve(__dirname, '../../../certs/key.pem'),
+                      resolve(import.meta.dirname, '../../../certs/key.pem'),
                     ),
                     cert: readFileSync(
-                      resolve(__dirname, '../../../certs/cert.pem'),
+                      resolve(import.meta.dirname, '../../../certs/cert.pem'),
                     ),
                     rejectUnauthorized: false, // Дублирует secure: false на уровне агента
                   });

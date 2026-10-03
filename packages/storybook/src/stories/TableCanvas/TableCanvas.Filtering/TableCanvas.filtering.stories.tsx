@@ -7,7 +7,7 @@ import {
 } from '@df-storybook/data/tableData';
 import DocStoryTemplate from '@df-storybook/templates/DocStoryTemplate.mdx';
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Box } from '@ui-kit/components/Box';
 import { Button } from '@ui-kit/components/Button';
 import { Calendar } from '@ui-kit/components/Calendar';

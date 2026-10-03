@@ -29,10 +29,7 @@ export type CustomCellStyleNumberFormatProps = {
    * - `none` — фокусом/кареткой компонент не управляет.
    */
   autoFocusType:
-    | 'autoFocus'
-    | 'autoFocusAndSelect'
-    | 'autoFocusBeforeDecimals'
-    | 'none';
+    'autoFocus' | 'autoFocusAndSelect' | 'autoFocusBeforeDecimals' | 'none';
 } & CustomCellStyleProps;
 
 export type CellEditorNumberFormatProps = Omit<

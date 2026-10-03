@@ -58,8 +58,8 @@ const CollapseBlock = ({
   tabsSize?: TableTabsSize;
 }) => {
   const text = isCollapsed
-    ? config.expandText ?? 'Развернуть'
-    : config.collapseText ?? 'Свернуть';
+    ? (config.expandText ?? 'Развернуть')
+    : (config.collapseText ?? 'Свернуть');
 
   return (
     <StyledCollapseBlock $collapsed={isCollapsed} $size={tabsSize}>

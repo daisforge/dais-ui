@@ -15,11 +15,7 @@ export type StoriesMode = 'light' | 'dark';
 
 /** Способ вписывания ассета в баннер (значения CSS `object-fit`). */
 export type StoriesObjectFit =
-  | 'cover'
-  | 'contain'
-  | 'fill'
-  | 'none'
-  | 'scale-down';
+  'cover' | 'contain' | 'fill' | 'none' | 'scale-down';
 
 /** Тип ассета сегмента. `video` зарезервирован под будущую реализацию. */
 export type StoryAssetType = 'image' | 'gif' | 'video';

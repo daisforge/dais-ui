@@ -84,8 +84,8 @@ export const TableSettingsWithTabs: FC<{
     activeTabExists && activeTabId
       ? activeTabId
       : tabs.length > 0 && tabs[0]
-      ? tabs[0].id
-      : null;
+        ? tabs[0].id
+        : null;
 
   // Обновляем состояние, если нужно выбрать другой таб
   useEffect(() => {

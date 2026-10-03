@@ -22,8 +22,7 @@ export type TableContentStateErrorOverlay = {
 } & TableContentStateFrame;
 
 export type TableContentStateOverlay =
-  | TableContentStateEmptyOverlay
-  | TableContentStateErrorOverlay;
+  TableContentStateEmptyOverlay | TableContentStateErrorOverlay;
 
 /**
  * Empty state внутри body-области canvas-таблицы.

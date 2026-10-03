@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { getFuncAsString } from '@df-storybook/utils/getFuncAsString';
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Button } from '@ui-kit/components/Button';
 import { IconButton } from '@ui-kit/components/IconButton';
 import { LeftPanel } from '@ui-kit/components/LeftPanel';
@@ -770,9 +770,9 @@ export const Adaptive1280: Story = {
   name: '1280 Адаптив',
   parameters: {
     layout: 'fullscreen',
-    viewport: {
-      defaultViewport: 'mobile',
-    },
+  },
+  globals: {
+    viewport: { value: 'mobile', isRotated: false },
   },
   ...storySourceDoc({
     previewSource: 'shown',

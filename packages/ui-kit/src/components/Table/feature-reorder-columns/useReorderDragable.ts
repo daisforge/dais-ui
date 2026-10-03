@@ -114,15 +114,18 @@ export const useReorderDragable = <
 
     const columnsMap = new Map(columns.map((col) => [col.key, col]));
 
-    return columnsOrder.reduce((acc, currKey) => {
-      const currInNewColumns = columnsMap.get(currKey);
+    return columnsOrder.reduce(
+      (acc, currKey) => {
+        const currInNewColumns = columnsMap.get(currKey);
 
-      if (currInNewColumns) {
-        acc.push(currInNewColumns);
-      }
+        if (currInNewColumns) {
+          acc.push(currInNewColumns);
+        }
 
-      return acc;
-    }, [] as (typeof columns)[number][]);
+        return acc;
+      },
+      [] as (typeof columns)[number][],
+    );
 
     // columns зависимость убрана из-за того, что columnsOrder уже всегда меняется при измении сolumns
     // eslint-disable-next-line react-hooks/exhaustive-deps

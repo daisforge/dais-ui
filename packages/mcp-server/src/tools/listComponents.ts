@@ -59,21 +59,19 @@ export function listComponents(
     .filter((c) => !category || c.category === category)
     .filter((c) => !scope || c.scope === scope)
     .filter((c) => roleFilter === 'all' || c.role === roleFilter)
-    .map(
-      (c): ComponentSummary => ({
-        name: c.name,
-        type: c.type,
-        category: c.category,
-        description: clipDescription(c.description),
-        // legacy и deprecated сигналят одно и то же ("не используйте это") —
-        // не показываем оба сразу, deprecated значим только сам по себе.
-        legacy: c.legacy || undefined,
-        deprecated: !c.legacy && c.deprecated ? true : undefined,
-        hasFormVariant: c.formVariant ? true : undefined,
-        role: c.role !== 'primary' ? c.role : undefined,
-        parentComponent: c.role !== 'primary' ? c.parentComponent : undefined,
-      }),
-    );
+    .map((c): ComponentSummary => ({
+      name: c.name,
+      type: c.type,
+      category: c.category,
+      description: clipDescription(c.description),
+      // legacy и deprecated сигналят одно и то же ("не используйте это") —
+      // не показываем оба сразу, deprecated значим только сам по себе.
+      legacy: c.legacy || undefined,
+      deprecated: !c.legacy && c.deprecated ? true : undefined,
+      hasFormVariant: c.formVariant ? true : undefined,
+      role: c.role !== 'primary' ? c.role : undefined,
+      parentComponent: c.role !== 'primary' ? c.parentComponent : undefined,
+    }));
 
   const total = filtered.length;
 

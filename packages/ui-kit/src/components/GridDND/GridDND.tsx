@@ -1060,8 +1060,8 @@ const GridDNDWithRef = forwardRef<GridDNDRef, GridDNDProps>(
             suppressCompaction
               ? null
               : smartCompact
-              ? currentCompactType
-              : compactType
+                ? currentCompactType
+                : compactType
           }
           allowOverlap={allowOverlap}
           isBounded={isBounded}

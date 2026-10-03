@@ -1,8 +1,8 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable import/no-extraneous-dependencies */
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
-import { Stories } from '@storybook/blocks';
-import type { Meta, StoryObj } from '@storybook/react';
+import { Stories } from '@storybook/addon-docs/blocks';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ColumnConfig, Table } from '@ui-kit/components/Table';
 import React, { useMemo, useState } from 'react';
 

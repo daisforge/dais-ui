@@ -176,7 +176,7 @@ export type SummaryCheckedFunc<
     getAllRowsInfo: () => ChildrenInfo<RowType, RowIdType>;
   } & (AdditionalPropsObj extends ObjectForExtending
     ? AdditionalPropsObj
-    : // eslint-disable-next-line @typescript-eslint/ban-types
+    : // eslint-disable-next-line @typescript-eslint/no-empty-object-type
       {}),
 ) => ReturnType;
 
@@ -224,8 +224,7 @@ export type SelectingRowConfig<RowType, RowIdType extends string | number> = {
   summaryChecked?: {
     checked: boolean | SummaryCheckedFunc<RowType, boolean>;
     indeterminate:
-      | boolean
-      | SummaryCheckedFunc<RowType, boolean, { checkedAll: boolean }>;
+      boolean | SummaryCheckedFunc<RowType, boolean, { checkedAll: boolean }>;
     getCountOfChecked: SummaryCheckedFunc<RowType, number>;
     onChange: SummaryCheckedFunc<
       RowType,

@@ -42,7 +42,7 @@ const tree: Node[] = [
 
 describe('isMergedSubRowsView — гейт активации', () => {
   const sub = (view?: 'tree' | 'merged', mergedColumns?: string[]) =>
-    ({ view, mergedColumns } as unknown as SubRows<Node, string>);
+    ({ view, mergedColumns }) as unknown as SubRows<Node, string>;
 
   it('true только при view merged И непустом mergedColumns', () => {
     expect(isMergedSubRowsView(sub('merged', ['dept']))).toBe(true);

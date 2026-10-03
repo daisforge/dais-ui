@@ -77,8 +77,7 @@ export type HeaderContextValueTypeInstance<
   clearedFiltersValue: FilterStateType | undefined;
   sortState: readonly SortColumn[] | undefined;
   setSortState:
-    | React.Dispatch<React.SetStateAction<readonly SortColumn[]>>
-    | undefined;
+    React.Dispatch<React.SetStateAction<readonly SortColumn[]>> | undefined;
   sortIsVisible: boolean;
   setSortIsVisible: React.Dispatch<React.SetStateAction<boolean>>;
 

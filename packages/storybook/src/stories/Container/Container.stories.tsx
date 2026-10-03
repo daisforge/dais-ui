@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Box } from '@ui-kit/components/Box';
 import { BodyL } from '@ui-kit/components/Typography';
 import { Container, ContainerProps } from '@ui-kit/layouts/Container';

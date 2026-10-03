@@ -4,7 +4,7 @@ import { createRows, type Row } from '@df-storybook/data/tableData';
 import DocStoryTemplate from '@df-storybook/templates/DocStoryTemplate.mdx';
 import { getFuncAsString } from '@df-storybook/utils/getFuncAsString';
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { EmptyState } from '@ui-kit/components/EmptyState';
 import { LineSkeleton, RectSkeleton } from '@ui-kit/components/Skeleton';
 import { ColumnConfig, Table } from '@ui-kit/components/Table';

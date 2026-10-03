@@ -4,7 +4,7 @@
 import { createRows, type Row } from '@df-storybook/data/tableData';
 import DocStoryTemplate from '@df-storybook/templates/DocStoryTemplate.mdx';
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { EmbedIconButton } from '@ui-kit/components/EmbedIconButton';
 import { Select } from '@ui-kit/components/Select';
 import { Switch } from '@ui-kit/components/Switch';

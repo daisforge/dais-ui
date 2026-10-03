@@ -142,8 +142,7 @@ export const TableContract = ({
 
   // -------------------------------------------- ROW INSTRUMENTS
   const rowInstruments = useMemo(():
-    | InstanceTableConfig['rowInstruments']
-    | null => {
+    InstanceTableConfig['rowInstruments'] | null => {
     if (!getDeleteOneRowRowInstrument) {
       return null;
     }

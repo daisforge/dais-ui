@@ -127,7 +127,7 @@ export const ControlBlockWithoutResize = ({
 
             {resultLeftSightInner?.map((props, i, arr) => (
               <ControlBlockButton
-                key={props['key'] ?? `${props['text']}${i}` ?? i}
+                key={props['key'] ?? `${props['text']}${i}`}
                 {...props}
                 index={i}
                 isLastButtonInnArray={i === arr.length - 1}

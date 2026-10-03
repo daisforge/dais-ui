@@ -82,9 +82,9 @@ export const computeGroupDepth = ({
   // Есть большая: пропускаем общий префикс групп двух видимых соседей (полоса тянется
   // вверх до низа общей группы; если общей нет — 0, на всю высоту).
   const leftPath =
-    leftKey !== undefined ? groupPathByKey.get(leftKey) ?? [] : [];
+    leftKey !== undefined ? (groupPathByKey.get(leftKey) ?? []) : [];
   const rightPath =
-    rightKey !== undefined ? groupPathByKey.get(rightKey) ?? [] : [];
+    rightKey !== undefined ? (groupPathByKey.get(rightKey) ?? []) : [];
   let k = 0;
   while (
     k < leftPath.length &&

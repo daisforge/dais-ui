@@ -1,4 +1,4 @@
-import { Meta, Stories, Story, Canvas } from '@storybook/blocks';
+import { Meta, Stories, Story, Canvas } from '@storybook/addon-docs/blocks';
 import { AnalyticalWidget } from '@ui-kit/components/AnalyticalWidget';
 import { AnalyticalWidgetHeader } from '@ui-kit/components/AnalyticalWidget/components/AnalyticalWidgetHeader';
 import { AnalyticalWidgetChipsGroup } from '@ui-kit/components/AnalyticalWidget/components/AnalyticalWidgetChips';
@@ -8,7 +8,7 @@ import {
 } from '@ui-kit/components/IconButton';
 import { CustomArgTypes } from '@df-storybook/utils/CustomArgTypes';
 import * as AnalyticalWidgetStories from './AnalyticalWidget.stories';
-import { ArgTypes } from '@storybook/blocks';
+import { ArgTypes } from '@storybook/addon-docs/blocks';
 import { TypeSourceViewer } from '@df-storybook/utils/TypeSourceViewer';
 import {
   StoryAnalyticalWidgetClassNamesComp,

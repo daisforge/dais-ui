@@ -13,9 +13,9 @@ const getCopy = <T>(v: T): T => {
 };
 
 function isFinded<R extends ObjectForExtending | undefined>(
-  row: R,
+  _row: R,
   index: number,
-): row is NonNullable<R> {
+): _row is NonNullable<R> {
   return index !== -1;
 }
 

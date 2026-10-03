@@ -2,6 +2,8 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
+    // vite-конфиги импортируют плагины с расширением .ts (требование native config loader Vite 8)
+    "allowImportingTsExtensions": true,
     "types": [
       "node",
       "@nx/react/typings/cssmodule.d.ts",

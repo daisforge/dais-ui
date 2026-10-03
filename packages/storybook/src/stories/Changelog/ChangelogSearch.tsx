@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import { CopyButton } from '@df-storybook/utils/CopyButton';
-import { Markdown } from '@storybook/blocks';
+import { Markdown } from '@storybook/addon-docs/blocks';
 import { Box } from '@ui-kit/components/Box';
 import { TextFieldSearch } from '@ui-kit/components/TextField';
 import { GlobalStyle } from '@ui-kit/styles';

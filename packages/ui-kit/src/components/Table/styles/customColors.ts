@@ -50,7 +50,9 @@ export const getCustomColors = () => {
   );
 
   const customColorTokens = Object.fromEntries(customColorTokensAsArr) as {
-    [K in keyof typeof customColorTokensKeys]: `var(${(typeof customColorTokensKeys)[K]})`;
+    [
+      K in keyof typeof customColorTokensKeys
+    ]: `var(${(typeof customColorTokensKeys)[K]})`;
   };
 
   // type GlobalVars<K extends Key, Theme extends ActiveTheme> = Record<

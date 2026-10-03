@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Typography } from '@ui-kit/components/Typography';
 import { TypographyVariant } from '@ui-kit/components/Typography/Typography';
 

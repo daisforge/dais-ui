@@ -33,20 +33,23 @@ export const useGetAllLvlColumnsConfig = <
     }
 
     const allColsMap = new Map(
-      allColsFlattened.reduce((acc, curr) => {
-        acc.push([curr.key, curr]);
-        // добавление keyText ключей в allColsMap (добавляются только здесь)
-        if (isNotGroupColumn(curr) && curr.keyText) {
-          const keyCol = getKeyTextCol(curr.keyText, 'key');
-          const keyColWithParent = {
-            ...keyCol,
-            ...(curr.parent && { parent: curr.parent }),
-          } as typeof curr;
+      allColsFlattened.reduce(
+        (acc, curr) => {
+          acc.push([curr.key, curr]);
+          // добавление keyText ключей в allColsMap (добавляются только здесь)
+          if (isNotGroupColumn(curr) && curr.keyText) {
+            const keyCol = getKeyTextCol(curr.keyText, 'key');
+            const keyColWithParent = {
+              ...keyCol,
+              ...(curr.parent && { parent: curr.parent }),
+            } as typeof curr;
 
-          acc.push([keyCol.key, keyColWithParent]);
-        }
-        return acc;
-      }, [] as [string, (typeof allColsFlattened)[number]][]),
+            acc.push([keyCol.key, keyColWithParent]);
+          }
+          return acc;
+        },
+        [] as [string, (typeof allColsFlattened)[number]][],
+      ),
     );
 
     const lastLvlColsMap = new Map(reorderedColumns.map((c) => [c.key, c]));

@@ -29,8 +29,7 @@ export type DropdownRenderCtx = {
  * поведение и обратную совместимость.
  */
 export type FeatureIconRender =
-  | ReactNode
-  | ((ctx: DropdownRenderCtx) => ReactNode);
+  ReactNode | ((ctx: DropdownRenderCtx) => ReactNode);
 
 /**
  * Базовый тип для деталей фичи, содержащий общие поля

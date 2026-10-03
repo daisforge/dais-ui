@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { NumberFormatAmount } from '@ui-kit/components/NumberFormatAmount';
 import { IconSb } from '@ui-kit/icons';
 import type { ComponentProps } from 'react';

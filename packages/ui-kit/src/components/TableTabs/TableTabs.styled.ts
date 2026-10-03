@@ -93,7 +93,9 @@ export const StyledTabsAndPanelsContainer = styled(Box)<{
 }>`
   background-color: ${() => surfaceSolidCard};
   border-radius: ${() => `${TABLE_BORDER_RADIUS}px`};
-  transition: height ${DURATION}s ease, max-height ${DURATION}s ease;
+  transition:
+    height ${DURATION}s ease,
+    max-height ${DURATION}s ease;
   ${({ $isCollapsed }) => $isCollapsed && 'overflow: hidden;'}
 `;
 

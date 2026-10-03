@@ -5,7 +5,7 @@ import { searchingRoute } from '@df-storybook/msw/routes/searching.routes';
 import { simpleRoute } from '@df-storybook/msw/routes/simple.routes';
 import { sortingRoute } from '@df-storybook/msw/routes/sorting.routes';
 import { subRowsRoute } from '@df-storybook/msw/routes/subRows.routes';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import {
   type FetcherFunc,
   TableContract,

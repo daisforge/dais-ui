@@ -178,9 +178,9 @@ export type TreeRow<ChildsKey extends void | string = 'subRows'> = {
   q3: number;
   q4: number;
 } & {
-  [key in ChildsKey extends string
-    ? ChildsKey
-    : 'subRows']?: TreeRow<ChildsKey>[];
+  [
+    key in ChildsKey extends string ? ChildsKey : 'subRows'
+  ]?: TreeRow<ChildsKey>[];
 };
 
 export const BLOCKS = [

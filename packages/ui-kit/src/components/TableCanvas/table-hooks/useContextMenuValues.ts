@@ -14,7 +14,7 @@ import { ColumnConfig, ObjectForExtending, TableConfig } from '../types';
 interface ContextMenuState<
   RowType extends ObjectForExtending,
   SummaryRowType,
-  /* eslint-disable @typescript-eslint/ban-types */
+  /* eslint-disable @typescript-eslint/no-empty-object-type */
 
   CustomCtxs extends ObjectForExtending = {},
 > {

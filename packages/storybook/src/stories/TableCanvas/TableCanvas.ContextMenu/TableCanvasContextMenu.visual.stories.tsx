@@ -7,10 +7,10 @@
  * перед снимком. Эталонные PNG генерит test-runner (`-u`) на стороне CI.
  */
 import { createRows, type Row } from '@df-storybook/data/tableData';
-import type { Meta, StoryObj } from '@storybook/react';
-import { fireEvent, waitFor } from '@storybook/test';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ColumnConfig, TableCanvas } from '@ui-kit/components/TableCanvas';
 import React, { useMemo, useState } from 'react';
+import { fireEvent, waitFor } from 'storybook/test';
 
 const meta: Meta = {
   title: 'Локальные компоненты/TableCanvas/ContextMenu/Визуальные тесты',

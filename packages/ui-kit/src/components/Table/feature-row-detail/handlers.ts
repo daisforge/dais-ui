@@ -147,5 +147,4 @@ export const getExpandButtonProps = <RowType extends ObjectForExtending>(
   row: RowType,
 ) =>
   (row as ObjectForExtending)?.[DETAIL_KEYS.EXPAND_ICON_BUTTON_PROPS] as
-    | IconButtonProps
-    | undefined;
+    IconButtonProps | undefined;

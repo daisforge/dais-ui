@@ -68,25 +68,28 @@ export const getColsWithKeyText = <
   cols: Column[],
   keyText: KeyText,
 ) =>
-  cols.reduce((acc, curr) => {
-    if (!curr.keyText) {
-      acc.push(curr);
+  cols.reduce(
+    (acc, curr) => {
+      if (!curr.keyText) {
+        acc.push(curr);
+        return acc;
+      }
+
+      const keyCol = {
+        ...getKeyTextCol(curr.keyText, keyText),
+        [KEY_TEXT_PARENT]: curr.key,
+      } as Column;
+
+      const current = { ...curr, keyText: keyCol };
+
+      const arrForPush = getCols({ keyText, key: keyCol, text: current });
+
+      acc.push(...arrForPush);
+
       return acc;
-    }
-
-    const keyCol = {
-      ...getKeyTextCol(curr.keyText, keyText),
-      [KEY_TEXT_PARENT]: curr.key,
-    } as Column;
-
-    const current = { ...curr, keyText: keyCol };
-
-    const arrForPush = getCols({ keyText, key: keyCol, text: current });
-
-    acc.push(...arrForPush);
-
-    return acc;
-  }, [] as typeof cols);
+    },
+    [] as typeof cols,
+  );
 
 export const getKeyTextOptionsWithIcon = ({
   keyText,

@@ -195,8 +195,9 @@ export const SidebarLayoutHeader = styled.div`
 
 export const SidebarLayoutContent = styled.div`
   height: calc(
-    100% - var(--table-sidebar-layout-header) -
-      var(--table-sidebar-layout-header-margin-bottom)
+    100% - var(--table-sidebar-layout-header) - var(
+        --table-sidebar-layout-header-margin-bottom
+      )
   );
   display: flex;
   flex-direction: column;

@@ -263,34 +263,28 @@ export function searchComponents(
 
   const componentResults: ComponentHit[] = Object.values(index.components)
     .filter(isOkComponent)
-    .map(
-      (c): ComponentHit => ({
-        kind: 'component',
-        score: scoreComponent(c, tokens),
-        record: c,
-      }),
-    )
+    .map((c): ComponentHit => ({
+      kind: 'component',
+      score: scoreComponent(c, tokens),
+      record: c,
+    }))
     .filter((r) => r.score > 0);
 
   const featureResults: FeatureHit[] = index.features
-    .map(
-      (f): FeatureHit => ({
-        kind: 'feature',
-        score: scoreFeature(f, tokens),
-        record: f,
-      }),
-    )
+    .map((f): FeatureHit => ({
+      kind: 'feature',
+      score: scoreFeature(f, tokens),
+      record: f,
+    }))
     .filter((r) => r.score > 0);
 
   const typeResults: TypeHit[] = Object.entries(index.types)
-    .map(
-      ([key, record]): TypeHit => ({
-        kind: 'type',
-        score: scoreType(record, tokens),
-        key,
-        record,
-      }),
-    )
+    .map(([key, record]): TypeHit => ({
+      kind: 'type',
+      score: scoreType(record, tokens),
+      key,
+      record,
+    }))
     .filter((r) => r.score > 0);
 
   const scored: SearchHit[] = [

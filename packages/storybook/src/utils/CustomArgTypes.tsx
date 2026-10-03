@@ -1,4 +1,4 @@
-import { ArgTypes } from '@storybook/blocks';
+import { ArgTypes } from '@storybook/addon-docs/blocks';
 import { ComponentProps } from 'react';
 import styled, { css } from 'styled-components';
 

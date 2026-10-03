@@ -93,9 +93,11 @@ export const MassActionsContainer = styled.div<{
   opacity: ${({ $isInitialCalculationComplete }) =>
     $isInitialCalculationComplete ? 1 : 0};
   /* Плавная анимация для всех изменений: padding, transform, max-width (размер и позиция одновременно) */
-  transition: padding 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+  transition:
+    padding 0.3s cubic-bezier(0.4, 0, 0.2, 1),
     transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-    max-width 0.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease-in-out;
+    max-width 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.2s ease-in-out;
   will-change: padding, transform, max-width;
   box-shadow: ${shadowDownHardS};
 `;
@@ -122,7 +124,8 @@ export const ActionsWrapper = styled.div<{ $isCollapsed: boolean }>`
   overflow: hidden;
   min-width: 0;
   /* Плавная анимация - контент остается в DOM для анимации */
-  transition: max-height 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+  transition:
+    max-height 0.2s cubic-bezier(0.4, 0, 0.2, 1),
     opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
     max-width 0.1s cubic-bezier(0.4, 0, 0.2, 1),
     margin 0.3s cubic-bezier(0.4, 0, 0.2, 1),

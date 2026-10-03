@@ -1,7 +1,7 @@
 /* eslint-disable no-alert */
 /* eslint-disable react/jsx-boolean-value */
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Button } from '@ui-kit/components/Button';
 import { Flow } from '@ui-kit/components/Flow';
 import type {

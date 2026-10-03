@@ -16,7 +16,7 @@ const svc = (): TransferColumnConfig =>
     key: 'svc',
     isServiceColumn: true,
     editable: false,
-  } as unknown as TransferColumnConfig);
+  }) as unknown as TransferColumnConfig;
 
 /** Data-колонка: editable управляет правом записи, extra — editingCell/contentFormat. */
 const dcol = (
@@ -24,7 +24,7 @@ const dcol = (
   editable = true,
   extra: Record<string, unknown> = {},
 ): TransferColumnConfig =>
-  ({ key, editable, ...extra } as unknown as TransferColumnConfig);
+  ({ key, editable, ...extra }) as unknown as TransferColumnConfig;
 
 const numCol = (key: string): TransferColumnConfig =>
   dcol(key, true, {

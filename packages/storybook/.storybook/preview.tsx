@@ -1,7 +1,7 @@
-import type { Preview } from '@storybook/react';
+import type { Preview } from '@storybook/react-vite';
 import storybookTheme from './theme';
 
-import { mswInitialize, mswLoader } from '../src/msw';
+import { mswLoader } from '../src/msw';
 import { previewSourceTransform } from './sourceCode/previewSourceTransform';
 import { globalTypeTheme, withTheme } from './decoratorThemes';
 import { docsPage } from './docsPage';
@@ -11,12 +11,10 @@ if (typeof document !== 'undefined') {
   document.documentElement.setAttribute('lang', 'ru');
 }
 
-mswInitialize();
-
 const preview: Preview = {
   parameters: {
     viewport: {
-      viewports: {
+      options: {
         mobile: {
           name: '<= 1280',
           styles: {
