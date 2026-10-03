@@ -7,7 +7,7 @@ description: Пишет и правит автотесты (юнит и скри
 
 - **Тип**: UI-библиотека (React 18 + TypeScript)
 - **Юнит-тесты**: Vitest (globals + jsdom)
-- **Скриншотные тесты**: Storybook test-runner + pixelmatch
+- **Скриншотные тесты**: @storybook/addon-vitest (Vitest browser mode) + pixelmatch, конфиг `packages/storybook/vitest.screenshot.config.ts`
 - **Контекст**: 100+ компонентов, 135+ Storybook-историй
 
 ## Где писать тесты
@@ -71,14 +71,15 @@ export const Default = {
 ### Правила
 
 - 135+ сторис уже покрыты тестами
-- Ограничение diff: 0.1 (локально), 0.01 (CI)
+- Порог: доля отличающихся пикселей 4% (локально), 1% (CI); pixelmatch threshold 0.1
 - Diff-файлы: `baseline | diff | received`
 - Обновление: `npm run screenshot:update`
 
 ### Запуск
 
 ```bash
-npm run screenshot:test      # проверка
+npm run screenshot:test      # проверка (Storybook запускать не нужно)
+npm run screenshot:test:one -- AnalyticalWidget  # один файл историй
 npm run screenshot:update    # обновление снапшотов
 npm run screenshot:clean     # удаление
 ```

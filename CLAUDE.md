@@ -3,7 +3,7 @@
 ## Обзор проекта
 
 **Название**: `@daisforge/ui`
-**Тип**: Моно-репозиторий (Lerna + Nx v19)
+**Тип**: Моно-репозиторий (Lerna + Nx v23)
 **Назначение**: Комплексная библиотека React-компонентов для приложений Сбердиджитал Финанса, соответствующих дизайн-системе Plasma.
 
 Это **библиотека UI-компонентов**, содержащая более 100 переиспользуемых компонентов, компоненты форм, макеты, токены и утилиты. Она служит единым источником правды для UI-компонентов во всех приложениях Финансового блока.
@@ -12,14 +12,14 @@
 
 | Категория            | Технология                                                  |
 | -------------------- | ----------------------------------------------------------- |
-| **Фреймворк**        | React 18.3.1 + TypeScript 5.4.2                             |
+| **Фреймворк**        | React 18.3.1 + TypeScript 5.9                               |
 | **Стилизация**       | styled-components 5.3.1                                     |
 | **UI-основа**        | `@salutejs/sdds-finai` (дизайн-система Plasma)              |
-| **Сборка**           | Vite 5.0 + Nx                                               |
-| **Моно-репо**        | Lerna 8 + Nx 19                                             |
+| **Сборка**           | Vite 8 (rolldown) + Nx                                      |
+| **Моно-репо**        | Lerna 10 + Nx 23                                            |
 | **State-менеджмент** | SWR, react-hook-form, Zod                                   |
 | **Таблицы**          | Glide Data Grid (TableCanvas), react-data-grid (устаревшая) |
-| **Тестирование**     | Vitest (юнит) + Storybook test-runner (скриншоты)           |
+| **Тестирование**     | Vitest 4 (юнит) + Storybook addon-vitest (скриншоты)        |
 
 ---
 
@@ -57,8 +57,9 @@ lib-3/
 
 ### Предварительные требования
 
-- **Node.js**: >= 20.0.0
-- **npm**: >= 10.0.0
+- **Node.js**: 24 (`.nvmrc`, CI) или >= 22.13
+- **npm**: 11 (`packageManager`). На Node 22 один раз выполнить `corepack enable`
+- Это требования только для разработки: потребители `@daisforge/ui` могут оставаться на Node 18/20
 
 ### Установка
 
@@ -103,8 +104,11 @@ npm run storybook:build
 # Юнит-тесты Vitest
 npm run test
 
-# Скриншотные тесты (требует запущенный Storybook на порту 4400)
+# Скриншотные тесты (Vitest browser mode, Storybook запускать не нужно)
 npm run screenshot:test
+
+# Скриншоты одного файла историй
+npm run screenshot:test:one -- AnalyticalWidget
 
 # Обновление скриншотов
 npm run screenshot:update
@@ -165,7 +169,7 @@ npm run generate-storybook-docs-utils
 
 ### 2. Правила стиля кода
 
-**ESLint** (airbnb + airbnb-typescript + Nx):
+**ESLint 9, flat config** (`eslint.config.mjs`; airbnb через FlatCompat + порт airbnb-typescript в `tools/eslint/` + Nx):
 
 | Правило                              | Настройка              | Примечание                  |
 | ------------------------------------ | ---------------------- | --------------------------- |
@@ -314,11 +318,14 @@ import { ModalDF } from '@ui-kit/components';
 
 ### Скриншотные тесты
 
-- **Тест-раннер**: `@storybook/test-runner` + `pixelmatch`
+- **Тест-раннер**: `@storybook/addon-vitest` (Vitest browser mode, Playwright, SberBrowser) + `pixelmatch`
+- **Конфиг**: `packages/storybook/vitest.screenshot.config.ts`, логика снимка — `packages/storybook/.storybook/screenshot/`
+- **Браузер**: SberBrowser; путь переопределяется `SCREENSHOT_BROWSER_PATH`
 - **Сторис**: 135+ тестированных сторис
 - **Расположение снапшотов**: `packages/storybook/__snapshots__/`
 - **Отображение diff**: `baseline | diff | received`
-- **Порог**: 0.1 (локально), 0.01 (CI)
+- **Порог**: доля отличающихся пикселей 4% (локально), 1% (CI); pixelmatch threshold 0.1
+- **Пропуск/состояние**: `parameters.screenshot.skip`, `parameters.screenshot.keepState`
 
 **Команды**:
 
@@ -627,10 +634,6 @@ fp:
 # Использовать больше памяти
 NODE_OPTIONS="--max_old_space_size=4096" npm run build
 ```
-
-**Storybook медленный в dev**:
-
-- Заменить `@joshwooding/vite-plugin-react-docgen-typescript` на `0.3.0` (см. overrides в package.json)
 
 **Проблемы обновления**:
 

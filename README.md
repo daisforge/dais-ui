@@ -47,13 +47,13 @@
 
 | Категория        | Технология                                         |
 | ---------------- | -------------------------------------------------- |
-| **Моно-репо**    | Lerna + Nx (v19.0.2)                               |
-| **Сборка**       | Vite (v5.0.0) с плагинами                          |
-| **Язык**         | TypeScript 5.4.2                                   |
+| **Моно-репо**    | Lerna 10 + Nx 23                                   |
+| **Сборка**       | Vite 8 (rolldown) с плагинами                      |
+| **Язык**         | TypeScript 5.9                                     |
 | **React**        | 18.3.1                                             |
 | **Стили**        | styled-components 5.3.1                            |
 | **UI-фреймворк** | @salutejs/sdds-finai (Plasma Design System)        |
-| **Тестирование** | Vitest + @storybook/test-runner (screenshot tests) |
+| **Тестирование** | Vitest 4 + @storybook/addon-vitest (screenshots)   |
 | **Линтинг**      | ESLint + Prettier + Husky                          |
 | **State 管理**   | SWR, react-hook-form, Zod                          |
 
@@ -211,7 +211,7 @@ export const getTokenValue = (token: string, fallback?: string) => {
 | Тип         | Движок                              | Покрытие                               |
 | ----------- | ----------------------------------- | -------------------------------------- |
 | Юнит-тесты  | Vitest                              | Небольшое (5 файлов на момент анализа) |
-| Скриншотные | @storybook/test-runner + pixelmatch | Storybook stories                      |
+| Скриншотные | @storybook/addon-vitest + pixelmatch | Storybook stories                     |
 | Type-check  | TypeScript                          | Всё при сборке                         |
 
 ### Конфигурация Vitest
@@ -226,8 +226,9 @@ coverage: provider: v8;
 ### Скриншотное тестирование
 
 ```bash
-npm run screenshot:test      # Запуск тестов
+npm run screenshot:test      # Запуск тестов (Storybook запускать не нужно)
 npm run screenshot:update    # Обновление скриншотов
+npm run screenshot:test:one -- AnalyticalWidget  # Один файл историй
 ```
 
 **Особенности**:
@@ -241,7 +242,7 @@ npm run screenshot:update    # Обновление скриншотов
 
 ## 🎯 Линтинг и код-стиль
 
-### ESLint (airbnb + airbnb-typescript)
+### ESLint 9, flat config (airbnb + порт airbnb-typescript)
 
 **Правила**:
 
