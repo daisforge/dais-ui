@@ -7,7 +7,7 @@ import {
   TableGlideProps,
   Theme,
 } from '@ui-kit/components/TableGlide';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 
 import {
   HeaderContextValueTypeInstance,
@@ -314,7 +314,7 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
     };
   }, [columnsInGlideOrder, onRowsChange, rows]);
 
-  const provideEditor = useCallback<ProvideEditorCallback<GridCell>>(
+  const provideEditorLatest = useCallback<ProvideEditorCallback<GridCell>>(
     (gridCell) => {
       const { location } = gridCell;
 
@@ -488,6 +488,15 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
       return undefined;
     },
     [CellReadOnlyEditor, columnsInGlideOrder, ctxs, rows],
+  );
+  // Оверлей glide пересоздаёт редактор при смене provideEditor: со свежей ссылкой
+  // открытый редактор размонтировался бы на любом ререндере таблицы (выделение,
+  // строки, колонки) и терял ввод. Ссылка стабильная, открытие — по свежим данным.
+  const provideEditorRef = useRef(provideEditorLatest);
+  provideEditorRef.current = provideEditorLatest;
+  const provideEditor = useCallback<ProvideEditorCallback<GridCell>>(
+    (gridCell) => provideEditorRef.current(gridCell),
+    [],
   );
 
   const isOutsideClick = useMemo((): TableGlideProps<
