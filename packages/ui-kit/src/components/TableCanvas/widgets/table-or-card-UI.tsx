@@ -357,6 +357,7 @@ export const TableOrCardsUI = <
                   onFillPattern={restDataGridProps.onFillPattern}
                   contentStateOverlay={restDataGridProps.contentStateOverlay}
                   onCellClicked={restDataGridProps.onCellClicked}
+                  onItemHovered={restDataGridProps.onItemHovered}
                   editorOverlayPortal={restDataGridProps.editorOverlayPortal}
                   fullScreened={fullScreened}
                   CellReadOnlyEditor={CellReadOnlyEditor}

@@ -1144,6 +1144,7 @@ export function TableCanvas<
                               onVisibleRegionChanged: handleVisibleRegionChange, // Для TableGlideInstance
                               // enableVirtualization,
                               onCellClicked: tableConfig.onCellClicked,
+                              onItemHovered: tableConfig.onItemHovered,
                               unstickyHeader: tableConfig.unstickyHeader,
                               stickyColumnsConfig: tableConfig.stickyColumns,
                               stickyRowsConfig: tableConfig.stickyRows,
