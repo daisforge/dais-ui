@@ -384,12 +384,14 @@ export function TableCanvas<
       if (isHaveActiveInfinityScroll) {
         handleInfinityScrollRegionChange(...args);
       }
+      tableConfig.onVisibleRegionChanged?.(...args);
     },
     [
       handlePopoverRegionChange,
       handleContextMenuRegionChange,
       handleInfinityScrollRegionChange,
       isHaveActiveInfinityScroll,
+      tableConfig.onVisibleRegionChanged,
     ],
   );
 
