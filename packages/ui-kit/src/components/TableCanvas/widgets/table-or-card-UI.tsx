@@ -358,6 +358,10 @@ export const TableOrCardsUI = <
                   contentStateOverlay={restDataGridProps.contentStateOverlay}
                   onCellClicked={restDataGridProps.onCellClicked}
                   onItemHovered={restDataGridProps.onItemHovered}
+                  onGroupHeaderClicked={restDataGridProps.onGroupHeaderClicked}
+                  onGroupHeaderContextMenu={
+                    restDataGridProps.onGroupHeaderContextMenu
+                  }
                   editorOverlayPortal={restDataGridProps.editorOverlayPortal}
                   fullScreened={fullScreened}
                   CellReadOnlyEditor={CellReadOnlyEditor}

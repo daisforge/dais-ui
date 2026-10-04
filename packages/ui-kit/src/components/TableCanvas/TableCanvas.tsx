@@ -1145,6 +1145,11 @@ export function TableCanvas<
                               // enableVirtualization,
                               onCellClicked: tableConfig.onCellClicked,
                               onItemHovered: tableConfig.onItemHovered,
+                              // event.group — ключ группы уровня, по которому кликнули
+                              onGroupHeaderClicked:
+                                tableConfig.onGroupHeaderClicked,
+                              onGroupHeaderContextMenu:
+                                tableConfig.onGroupHeaderContextMenu,
                               unstickyHeader: tableConfig.unstickyHeader,
                               stickyColumnsConfig: tableConfig.stickyColumns,
                               stickyRowsConfig: tableConfig.stickyRows,
