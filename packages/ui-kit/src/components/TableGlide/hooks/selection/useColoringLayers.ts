@@ -23,7 +23,8 @@ import { useColumnRowHighlightRegions } from './useColumnRowHighlightRegions';
  *      фон строки с отмеченным чекбоксом, фон выбранной строки
  *      (highlightActiveType='row'), фон summary;
  *   3) тема ячейки (getCellContent в TableGlide.tsx): жёлтый фон редактируемой
- *      ячейки (bgEditableCell). Самая сильная: editing перекрывает и ховер,
+ *      ячейки (bgEditableCell), поверх него — тема ячейки от потребителя
+ *      (columnThemeOverride). Самая сильная: editing перекрывает и ховер,
  *      и чекбокс.
  *
  * Часть 2. ПОВЕРХ выбранного фона рисуются прямоугольники этого хука.

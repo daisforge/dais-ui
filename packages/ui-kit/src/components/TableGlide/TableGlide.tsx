@@ -755,14 +755,16 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         rowHover: isRowHoverEnabled && cellInfo.hovered.rowHover,
         rowActive: rowInd === activeRow,
       };
-      const fillOverride = cellIsEditable
-        ? resolveCellFillOverride(getEditableCellFillStates(theme), fillContext)
-        : columnThemeOverrideResult?.bgCell
-          ? resolveConsumerFillOverride(
-              columnThemeOverrideResult.bgCell,
-              activeTheme,
-              fillContext
-            )
+      // Фон потребителя (columnThemeOverride) сильнее жёлтого фона редактируемой
+      // ячейки: им размечают состояния правки (изменено, ошибка).
+      const fillOverride = columnThemeOverrideResult?.bgCell
+        ? resolveConsumerFillOverride(
+            columnThemeOverrideResult.bgCell,
+            activeTheme,
+            fillContext
+          )
+        : cellIsEditable
+          ? resolveCellFillOverride(getEditableCellFillStates(theme), fillContext)
           : undefined;
 
       // Кликнутая ячейка на выбранной строке: показываем только рамку, фон
