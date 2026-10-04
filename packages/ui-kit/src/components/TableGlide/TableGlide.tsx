@@ -1007,8 +1007,14 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     () => new Map<string, CellCanvasRoot>(),
     []
   );
-  const columnsGroupHeaderCanvasRootInstanceMap = useMemo(
-    () => new Map<string, CellCanvasRoot>(),
+  // Части заголовка группы по ключу: закреплённые колонки рисуют группу двумя
+  // частями с одним ключом, клик ищет свою часть по колонке.
+  const groupHeaderPartsMap = useMemo(
+    () =>
+      new Map<
+        string,
+        { span: readonly [number, number]; root: CellCanvasRoot }[]
+      >(),
     []
   );
   const overlayPortalRef = useRef<HTMLDivElement>(null);
@@ -1177,6 +1183,27 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     NonNullable<GlideProps['onGroupHeaderClicked']>
   >(
     (colIndex, event) => {
+      // Клик сначала получают canvas-ноды заголовка группы (как у листовой шапки):
+      // если под точкой интерактивная нода, это клик по ней — группу не выделяем.
+      const [clickedCol] = event.location;
+      const groupRoot = groupHeaderPartsMap
+        .get(event.group)
+        ?.find(
+          ({ span: [start, end] }) => clickedCol >= start && clickedCol <= end
+        )?.root;
+      if (groupRoot) {
+        const interaction = groupRoot.getInteractionAtPoint(
+          event.localEventX,
+          event.localEventY
+        );
+        groupRoot.dispatchPointerEvent(
+          'click',
+          event.localEventX,
+          event.localEventY
+        );
+        if (interaction) return;
+      }
+
       const clickedColumn = columnsForRender[colIndex];
       if (!enableColumnSelection || !clickedColumn) {
         onGroupHeaderClickedExternal?.(colIndex, event);
@@ -1222,6 +1249,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       columnsForRender,
       selectColumnsByKeys,
       onGroupHeaderClickedExternal,
+      groupHeaderPartsMap,
     ]
   );
 
@@ -1399,7 +1427,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         return drawContent(result.defaultWithCustomGroupName);
       }
 
-      const { groupName, rect, ctx } = args;
+      const { groupName, rect, ctx, span } = args;
 
       let jsxElement = result;
 
@@ -1431,7 +1459,14 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         portalEventTargetRef?.current ?? null
       );
 
-      columnsGroupHeaderCanvasRootInstanceMap.set(nodeId, canvasRootInstance);
+      // Часть, перекрытая новой (после перестановки колонок), устарела
+      const otherParts = (groupHeaderPartsMap.get(nodeId) ?? []).filter(
+        (part) => part.span[1] < span[0] || part.span[0] > span[1]
+      );
+      groupHeaderPartsMap.set(nodeId, [
+        ...otherParts,
+        { span, root: canvasRootInstance },
+      ]);
 
       // Позиция курсора — из аргументов Glide, как у шапки колонки.
       const hoverPos =
@@ -1450,7 +1485,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       return canvasRootInstance.render(ctx, rect, hoverPos, absoluteBounds);
     };
   }, [
-    columnsGroupHeaderCanvasRootInstanceMap,
+    groupHeaderPartsMap,
     renderGroupHeader,
     theme,
     portalEventTargetRef,
