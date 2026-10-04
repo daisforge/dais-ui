@@ -1058,6 +1058,8 @@ export function TableCanvas<
                               rowHeight: resultRowHeight,
                             }),
                             headerHeight: tableConfig.headerRowHeight ?? 33,
+                            groupHeaderRowHeight:
+                              tableConfig.groupHeaderRowHeight ?? undefined,
 
                             ...(tableConfig.editing &&
                               !isLoadingTable && {

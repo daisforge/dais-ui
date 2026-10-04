@@ -314,6 +314,8 @@ export type TableGlideInstanceProps<
     CustomCtxs
   >;
   onCellContextMenuDropdown?: CellContextMenuDropdownProps<R, SR>;
+  /** Высота каждого уровня групповых заголовков; по умолчанию `headerHeight` */
+  groupHeaderRowHeight?: number;
   containerProps?: {
     className?: string;
     style?: React.CSSProperties;

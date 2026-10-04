@@ -32,6 +32,7 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
   columns,
   className,
   headerHeight = 33,
+  groupHeaderRowHeight,
   onColumnResize,
   onVisibleRegionChanged,
   refTable,
@@ -158,8 +159,12 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
   );
 
   const groupHeaderHeightArr = useMemo(
-    () => Array.from({ length: groupMaxLength }, () => headerHeight),
-    [groupMaxLength, headerHeight],
+    () =>
+      Array.from(
+        { length: groupMaxLength },
+        () => groupHeaderRowHeight ?? headerHeight,
+      ),
+    [groupMaxLength, groupHeaderRowHeight, headerHeight],
   );
   const shouldRenderFullContentState =
     contentStateOverlay?.displayMode === 'full-content';
