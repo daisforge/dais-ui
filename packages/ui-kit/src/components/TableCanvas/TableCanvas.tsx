@@ -1190,6 +1190,9 @@ export function TableCanvas<
                               cellsSelectionMode:
                                 tableConfig.cellsSelection?.mode ??
                                 'range-cell',
+                              focusOnGridSelectionChange:
+                                tableConfig.cellsSelection
+                                  ?.focusOnStateChange ?? true,
                               hoverEffects: tableConfig.hoverEffects,
                               appearance: tableConfig.appearance,
                               enableLowDprHairline:

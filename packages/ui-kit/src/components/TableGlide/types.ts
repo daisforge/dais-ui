@@ -413,6 +413,8 @@ export type TableGlideCustomProps<
   highlightActiveType?: HighlightActiveType;
   /** Режим выделения ячеек (нативный glide selection). По умолчанию 'range-cell'. */
   cellsSelectionMode?: CellsSelectionMode;
+  /** Фокусировать грид при внешней смене controlled gridSelection. По умолчанию true. */
+  focusOnGridSelectionChange?: boolean;
   /** Канал для copy/paste (selectionRef потребителя), отдельно от controlled gridSelection. */
   onSelectionEmit?: (selection: GridSelection) => void;
   /**
