@@ -1446,8 +1446,18 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       }
 
       const nodeId = groupName;
+      const horizontalPadding = (theme as GlideThemeForRender)
+        .cellHorizontalPadding;
       const node = buildCanvasTree({
-        element: jsxElement,
+        element: (
+          <Canvas.Container
+            padding={{ left: horizontalPadding, right: horizontalPadding }}
+            style={{ width: '100%' }}
+            alignItems="center"
+          >
+            {jsxElement}
+          </Canvas.Container>
+        ),
         idPrefix: nodeId,
         theme: theme as GlideThemeForRender,
       });
