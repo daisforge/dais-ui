@@ -13,6 +13,7 @@ import type {
 import { Canvas as InternalCanvas } from './index';
 
 export type {
+  CanvasInteractionConfig,
   CanvasNodeTooltipConfig,
   CanvasNodeTooltipProps,
   CanvasPortalHoverDetail,
@@ -46,10 +47,17 @@ type CanvasMemberWithoutInteraction<T> = T extends {
     : T
   : T;
 
+/**
+ * Кнопки внутри ячейки принимают `interaction`: клик по кнопке может не
+ * переносить выделение и не доходить до `onCellClicked` (шеврон дерева,
+ * действие в строке). Остальным элементам он снаружи не нужен.
+ */
+type CanvasMemberWithInteraction = 'IconButton' | 'EmbedIconButton';
+
 type PublicCanvas = {
-  [K in keyof typeof InternalCanvas]: CanvasMemberWithoutInteraction<
-    (typeof InternalCanvas)[K]
-  >;
+  [K in keyof typeof InternalCanvas]: K extends CanvasMemberWithInteraction
+    ? (typeof InternalCanvas)[K]
+    : CanvasMemberWithoutInteraction<(typeof InternalCanvas)[K]>;
 };
 
 type PublicCanvasProps<T> = Omit<T, 'interaction'>;
@@ -60,10 +68,8 @@ export type CanvasBadgeProps = PublicCanvasProps<InternalCanvasBadgeProps>;
 export type CanvasButtonProps = PublicCanvasProps<InternalCanvasButtonProps>;
 export type CanvasContainerProps =
   PublicCanvasProps<InternalCanvasContainerProps>;
-export type CanvasEmbedIconButtonProps =
-  PublicCanvasProps<InternalCanvasEmbedIconButtonProps>;
-export type CanvasIconButtonProps =
-  PublicCanvasProps<InternalCanvasIconButtonProps>;
+export type CanvasEmbedIconButtonProps = InternalCanvasEmbedIconButtonProps;
+export type CanvasIconButtonProps = InternalCanvasIconButtonProps;
 export type CanvasIconProps = PublicCanvasProps<InternalCanvasIconProps>;
 export type CanvasTextProps = PublicCanvasProps<InternalCanvasTextProps>;
 
