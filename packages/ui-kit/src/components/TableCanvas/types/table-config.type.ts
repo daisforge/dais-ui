@@ -120,6 +120,11 @@ export type RowSize = {
    */
   showInControl: boolean;
   /**
+   * Контролируемый размер строк: таблица читает размер из state и меняет его через setter
+   * (кнопка в блоке управления тоже). Без state размер хранится внутри таблицы, начальное значение - default.
+   */
+  state?: [SIZE, React.Dispatch<React.SetStateAction<SIZE>>];
+  /**
    * Значение по умолчанию
    */
   default?: SIZE;

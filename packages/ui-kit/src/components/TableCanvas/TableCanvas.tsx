@@ -252,10 +252,13 @@ export function TableCanvas<
    *
    * Также в зависимости от rowSize - устанавливается размер высоты строк.
    * Но если передан tableConfig.rowHeight, tableConfig.rowHeight - будет приоритетнее
+   *
+   * Контролируемый режим: tableConfig.rowSize.state - размер хранит потребитель (переключатель вне таблицы).
    * */
-  const [rowSize, setRowSize] = useState<SIZE>(() =>
+  const innerRowSizeState = useState<SIZE>(() =>
     getDefuaultRowSize(tableConfig.rowSize),
   );
+  const [rowSize, setRowSize] = tableConfig.rowSize?.state ?? innerRowSizeState;
 
   // ------------------------------------------------ columns reConfig -----------------------------------------
   const {
