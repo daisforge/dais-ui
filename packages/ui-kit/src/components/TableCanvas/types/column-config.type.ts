@@ -351,6 +351,12 @@ export type ColumnConfig<
 
   contentFormat?: ContentFormat;
 
+  /**
+   * Выравнивание контента ячеек колонки. Приоритетнее `contentFormat.alignContent`.
+   * @default из `contentFormat`: 'right' для чисел, иначе 'left'
+   */
+  contentAlign?: 'left' | 'center' | 'right';
+
   editingCell?: Editing<Row, SummRow>;
 
   /**
