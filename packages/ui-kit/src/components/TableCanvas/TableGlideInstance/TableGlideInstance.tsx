@@ -227,17 +227,21 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
   const handleCellClicked = useCallback<
     NonNullable<TableGlideProps<R, SR>['onCellClicked']>
   >(
-    (cell, _event) => {
+    (cell, event) => {
       if (!onCellClickedExternal) return;
       const currentColumn = columnsInGlideOrder[cell[0]];
       const currentRow = rows[cell[1]];
       if (currentColumn && currentRow) {
-        onCellClickedExternal(cell, {
-          column: currentColumn,
-          row: currentRow,
-          ctxs,
-          refTable,
-        });
+        onCellClickedExternal(
+          cell,
+          {
+            column: currentColumn,
+            row: currentRow,
+            ctxs,
+            refTable,
+          },
+          event,
+        );
       }
     },
     [columnsInGlideOrder, rows, onCellClickedExternal, ctxs, refTable],

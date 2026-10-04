@@ -1,5 +1,8 @@
 /* eslint-disable @typescript-eslint/ban-types */
-import { CellActivatedEventArgs } from '@glideappsfinal/glide-data-grid';
+import {
+  CellActivatedEventArgs,
+  CellClickedEventArgs,
+} from '@glideappsfinal/glide-data-grid';
 import type { DropdownProps } from '@ui-kit/components/Dropdown';
 import type {
   AppearanceConfig,
@@ -302,7 +305,7 @@ export type TableGlideInstanceProps<
   CustomCtxs extends ObjectForExtending = {},
 > = Omit<
   TableGlideProps<R, SR>,
-  'columns' | 'onHeaderContextMenu' | 'onCellContextMenu'
+  'columns' | 'onHeaderContextMenu' | 'onCellContextMenu' | 'onCellClicked'
 > & {
   columns: readonly ColumnGlideInstance<R, SR, CustomCtxs>[];
   onHeaderContextMenuDropdown?: HeaderContextMenuDropdownProps<
@@ -331,6 +334,8 @@ export type TableGlideInstanceProps<
   onCellClicked?: (
     cell: readonly [number, number],
     info: TableInfoWithRow<R, SR, CustomCtxs>,
+    /** Событие клика glide: позиция в ячейке, модификаторы, кнопка */
+    event: CellClickedEventArgs,
   ) => void;
   stickyColumnsConfig?: StickyColumnsConfig<
     ColumnGlideInstance<R, SR, CustomCtxs>
