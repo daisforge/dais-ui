@@ -906,9 +906,16 @@ export type CellsSelectionConfig = {
    * Внешний (controlled) контроль НАТИВНОГО выделения (ячейки/диапазон/смежные
    * строки и колонки). `state` — кортеж `[value, setter]` как у `selecting.state`.
    * Сброс: `setter({ current: undefined, rows: empty, columns: empty })`.
-   * Несмежный Ctrl-выбор колонок/строк (own-state) сюда не входит — он внутренний.
+   * Несмежный Ctrl-выбор колонок/строк (own-state) сюда не входит — см. `onChange`.
    */
   state?: [GridSelection, React.Dispatch<React.SetStateAction<GridSelection>>];
+  /**
+   * Итоговое выделение после каждого действия пользователя — в том числе
+   * несмежный Ctrl-выбор колонок (`columns`) и строк (`rows`), которого нет в
+   * `state`. Индексы — в координатах грида (сервисные колонки включены).
+   * Срабатывает с `state` и без него.
+   */
+  onChange?: (selection: GridSelection) => void;
   /**
    * Фокусировать грид, когда выделение с ячейкой приходит снаружи через `state`
    * (иначе glide рисует якорную ячейку как у несфокусированного грида).

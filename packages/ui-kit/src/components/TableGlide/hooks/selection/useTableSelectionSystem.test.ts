@@ -75,8 +75,8 @@ describe('useTableSelectionSystem — выделение колонок', () => 
     expect(handleGridSelectionChange).toHaveBeenCalledWith(
       expect.objectContaining({ current: undefined }),
     );
-    // Наружу для copy/paste отдаём колонки.
-    expect(onSelectionEmit).toHaveBeenCalled();
+    // Наружу (copy/paste, cellsSelection.onChange) отдаём колонки.
+    expect(onSelectionEmit.mock.lastCall?.[0].columns.toArray()).toEqual([2]);
   });
 
   it('одиночный клик по колонке → нативный вертикальный range (рисует glide, не своё состояние)', () => {
@@ -143,6 +143,28 @@ describe('useTableSelectionSystem — выделение строк по нум�
     );
     // Смежные строки идут нативным путём — своё состояние строк пустое.
     expect(view.result.current.headerSelectedRowIndexes).toEqual([]);
+  });
+
+  it('Ctrl+клик по нумерации → несмежные строки уходят наружу последним выделением', () => {
+    const { view, onSelectionEmit } = setup();
+
+    act(() => {
+      window.dispatchEvent(new MouseEvent('pointerdown', { ctrlKey: true }));
+      view.result.current.handleGridSelectionWithColumnReset(
+        gridSel([0, 1], { x: 0, y: 1, width: 1, height: 1 }),
+      );
+    });
+    act(() => {
+      window.dispatchEvent(new MouseEvent('pointerdown', { ctrlKey: true }));
+      view.result.current.handleGridSelectionWithColumnReset(
+        gridSel([0, 3], { x: 0, y: 3, width: 1, height: 1 }),
+      );
+    });
+
+    expect(view.result.current.headerSelectedRowIndexes).toEqual([1, 3]);
+    const emitted = onSelectionEmit.mock.lastCall?.[0];
+    expect(emitted.current).toBeUndefined();
+    expect(emitted.rows.toArray()).toEqual([1, 3]);
   });
 
   it('фокус грида без выделения (активная ячейка в нумерации, без мыши) → первая ячейка данных, а не строка', () => {
