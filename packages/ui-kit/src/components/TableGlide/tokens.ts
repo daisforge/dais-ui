@@ -70,6 +70,7 @@ const TOKENS_LIGHT = {
 
   // Surface transparent (Badge/Status)
   surfaceTransparentAccent: '#118CDF1F',
+  surfaceTransparentAccentActive: '#118CDF33',
   surfaceTransparentAccent12: '#118CDF1E',
   surfaceTransparentAccent20: '#118CDF33',
   surfaceTransparentPositive: '#1A9E321F',
@@ -186,6 +187,7 @@ const TOKENS_HC_LIGHT = {
 
   // Surface transparent (Badge/Status)
   surfaceTransparentAccent: '#0076D21F',
+  surfaceTransparentAccentActive: '#00AD7C33',
   surfaceTransparentAccent12: '#0076D21E',
   surfaceTransparentAccent20: '#0076D233',
   surfaceTransparentPositive: '#198A001F',
@@ -289,6 +291,7 @@ const TOKENS_BETA_LIGHT = {
   surfaceNegativeHover: '#F94361FF',
   surfaceNegativeActive: '#F70830FF',
   surfaceTransparentAccent: '#0090DA1F',
+  surfaceTransparentAccentActive: '#0092DB33',
   surfaceTransparentPositive: '#21A0381F',
   surfaceTransparentWarning: '#E154001F',
   surfaceTransparentNegative: '#F81C421F',
@@ -306,12 +309,23 @@ const TOKENS_BETA_LIGHT = {
 } as const;
 
 // Тип по ключам TOKENS_LIGHT, значения — любые строки (hex разных тем)
-export type Tokens = { [K in keyof typeof TOKENS_LIGHT]: string };
+export type Tokens = { [K in keyof typeof TOKENS_LIGHT]: string } & {
+  /** Производный surfaceAccent с прозрачностью 20%, если нужен вместо библиотечного фона. */
+  surfaceAccent20?: string;
+};
 
 // TODO: заменить на реальные значения от дизайнера
-const TOKENS_DARK = { ...TOKENS_LIGHT } as const;
+const TOKENS_DARK = {
+  ...TOKENS_LIGHT,
+  surfaceTransparentAccentActive: '#118CDF24',
+  textAccent: '#199AF0',
+} as const;
 const TOKENS_BY_THEME: Record<ActiveTheme, Tokens> = {
-  light: TOKENS_LIGHT,
+  light: {
+    ...TOKENS_LIGHT,
+    // SDDS FinAI light: surfaceAccent (#199AF0) с прозрачностью 20%.
+    surfaceAccent20: '#199AF033',
+  },
   dark: TOKENS_DARK,
   highContrastLight: TOKENS_HC_LIGHT,
   betaCoreLight: TOKENS_BETA_LIGHT,

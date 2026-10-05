@@ -57,7 +57,9 @@ export const withSelectIcon = (
 ): CanvasContent => {
   if (isSelect) {
     const changedContent = isCanvasString(content) ? (
-      <Canvas.Text>{content}</Canvas.Text>
+      <Canvas.Text overflow="hidden" textOverflow="ellipsis" autoTooltip>
+        {content}
+      </Canvas.Text>
     ) : (
       content
     );
@@ -112,7 +114,7 @@ export const withSelectIcon = (
               interaction={openSelectEditorInteraction}
               overrideSquareSize={overrideSquareSize}
               overrideIconSize={overrideIconSize}
-              style={{ cursor: 'pointer' }}
+              style={{ cursor: 'pointer', flexShrink: 0 }}
             />
           )}
         </Canvas.Container>

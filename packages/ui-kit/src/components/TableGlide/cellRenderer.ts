@@ -4,10 +4,16 @@ import {
   CellCanvasRoot,
   createCanvasCell,
 } from './lib/canvas';
+import type { CanvasRenderArgs } from './lib/canvas/cells/types';
+import { CanvasContainer } from './lib/canvas/core/CanvasContainer';
+import { CanvasAvatar } from './lib/canvas/primitives/CanvasAvatar';
+import { CanvasAvatarGroup } from './lib/canvas/primitives/CanvasAvatarGroup';
+import { CanvasImage } from './lib/canvas/primitives/CanvasImage';
 import {
   CellContent,
   CellInfo,
   GlideThemeForRender,
+  GlideThemePartial,
   ObjectForExtending,
 } from './types';
 import { createEmptyCellGlide, createTextCellGlide } from './utils/createCell';
@@ -40,6 +46,7 @@ export const glideCellRenderer = <R extends ObjectForExtending, SR>({
   options: {
     span?: readonly [number, number] | undefined;
     data: string | undefined;
+    themeOverride?: GlideThemePartial;
     getPortalEventTarget?: () => EventTarget | null;
     refTable?: unknown;
   };
@@ -65,7 +72,7 @@ export const glideCellRenderer = <R extends ObjectForExtending, SR>({
   }
   const { colInd, rowInd, row, column } = cellInfo;
   const { id } = column;
-  const getPortalEventTarget = options.getPortalEventTarget;
+  const { getPortalEventTarget } = options;
 
   let cellCanvasRoot: CellCanvasRoot | null = null;
   const cellPortalOriginId = `cell-${colInd}-${rowInd}`;
@@ -76,11 +83,7 @@ export const glideCellRenderer = <R extends ObjectForExtending, SR>({
     theme: GlideThemeForRender,
     _hoverX: number | undefined,
     _hoverY: number | undefined,
-    renderArgs?: {
-      canvasRoot?: CellCanvasRoot;
-      frameTime?: number;
-      requestAnimationFrame?: () => void;
-    }
+    renderArgs?: CanvasRenderArgs,
   ): CanvasRenderResult => {
     const cacheKeyValue = undefined;
     const isCacheable = cacheKeyValue !== undefined && cacheKeyValue !== null;
@@ -117,11 +120,25 @@ export const glideCellRenderer = <R extends ObjectForExtending, SR>({
         return {};
       }
 
-      const node = buildCanvasTree({
+      let node = buildCanvasTree({
         element: jsxElement,
         idPrefix: `cell-${colInd}-${rowInd}-${id}`,
         theme,
       });
+
+      // CellCanvasRoot задаёт корневой ноде размеры всей ячейки. Обёртка принимает
+      // эти размеры на себя, а изображение, аватар или группа внутри получают
+      // собственные размеры через layout. Так область hover/click и обрезка
+      // группы соответствуют элементу, а не растягиваются на всю ячейку.
+      if (
+        node instanceof CanvasImage ||
+        node instanceof CanvasAvatar ||
+        node instanceof CanvasAvatarGroup
+      ) {
+        const container = new CanvasContainer(`${node.id}:cell-root`);
+        container.addChild(node);
+        node = container;
+      }
 
       if (!canvasRootInstance) {
         canvasRootInstance = new CellCanvasRoot(node, cellPortalOriginId);
@@ -178,10 +195,17 @@ export const glideCellRenderer = <R extends ObjectForExtending, SR>({
       refTable: options.refTable,
     });
 
-    canvasRootInstance.render(ctx, rect, hoverPos, absoluteBounds, {
-      frameTime: renderArgs?.frameTime,
-      requestAnimationFrame: renderArgs?.requestAnimationFrame,
-    });
+    canvasRootInstance.render(
+      ctx,
+      rect,
+      hoverPos,
+      absoluteBounds,
+      {
+        frameTime: renderArgs?.frameTime,
+        requestAnimationFrame: renderArgs?.requestAnimationFrame,
+      },
+      renderArgs?.imageResources,
+    );
 
     if (!isCacheable || rebuilt) {
       cellCanvasRoot = canvasRootInstance;
@@ -192,11 +216,13 @@ export const glideCellRenderer = <R extends ObjectForExtending, SR>({
     };
   };
   const { data: _data, ...restOptions } = options;
-  const copyData = column.copyData
-    ? typeof column.copyData === 'function'
-      ? column.copyData(row)
-      : column.copyData
-    : _data;
+  let copyData = _data;
+  if (column.copyData) {
+    copyData =
+      typeof column.copyData === 'function'
+        ? column.copyData(row)
+        : column.copyData;
+  }
 
   return createCanvasCell(render, undefined, copyData, restOptions);
 };

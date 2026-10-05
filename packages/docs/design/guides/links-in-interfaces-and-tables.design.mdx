@@ -1,0 +1,103 @@
+---
+id: links-in-interfaces-and-tables
+title: Ссылки в интерфейсах и таблицах
+type: guide
+status: Stable
+version: 1.0
+lastUpdated: 2026-08-11
+pixsoDocLink: "{{Pixso URL LinkInterfaceTable}}"
+hasDesignDoc: true
+hasDevDoc: false
+hasMechanics: false
+hasCornerCases: false
+related:
+  - link-guide
+  - link
+  - link-button
+  - embed-icon-button
+  - cell
+tags:
+  - guide
+  - navigation
+---
+
+# Ссылки в интерфейсах и таблицах
+
+Гайд о том, как оформлять ссылки в интерфейсе — внутри таблицы и в лэйауте вне таблицы. Ссылка — интерактивный элемент интерфейса, позволяющий мгновенно переходить к другой странице, документу или действию простым нажатием.
+
+Гайд актуален для веб-платформы.
+
+---
+
+## В таблице
+
+Внутри таблицы ссылку можно оформить тремя способами: текстовой ссылкой, отдельной колонкой с EmbedIconButton или EmbedIconButton в слоте ячейки.
+
+### Текстовая ссылка
+
+Текст ссылки — цвета textAccent, без подчёркивания. Подчёркивание появляется при наведении (hover).
+
+### EmbedIconButton ссылкой в отдельной колонке таблицы
+
+Можно предусмотреть отдельный столбец для ссылки и заложить в ячейку EmbedIconButton с иконкой OpenOutline.
+
+> Это может расширить ячейку — тогда нужно расширить и остальные ячейки в этой строке. Ориентир — пример в блоке «В таблице»: {{Pixso URL LinkInterfaceTable Doc Block 1}}
+
+### EmbedIconButton в слоте ячейки
+
+Обозначить ссылку можно внутри ячейки: выбрать RightContent=slot и уже в слоте выбрать EmbedIconButton, поменяв ей стиль на Secondary. Размер не указываем — он зависит от размера ячейки.
+
+> Если прокинуть иконку просто через RightContent=Icon, такая иконка будет некликабельной — только визуальной.
+
+Примеры оформления ссылок в таблице — в документации гайда, блок «В таблице»: {{Pixso URL LinkInterfaceTable Doc Block 1}}
+
+---
+
+## В лэйауте (вне таблицы)
+
+### LinkButton
+
+Вне таблицы для ссылок используем LinkButton с иконкой ArrowDiagRightUp.
+
+View и размер компонента (XXS, XS, S) можно менять в зависимости от продукта.
+
+Пример ссылки вне таблицы — в документации гайда, блок «В лэйауте (вне таблицы)»: {{Pixso URL LinkInterfaceTable Doc Block 2}}
+
+---
+
+## Связанные компоненты
+
+- **Гайд на Link** — смежный гайд про сам компонент-ссылку. [Гайд]({{Pixso URL LinkGuide}})
+- **Link** — базовый компонент-ссылка. [Storybook]({{Storybook URL Link}})
+- **LinkButton** — ссылка вне таблицы (иконка ArrowDiagRightUp). [Дизайн]({{Pixso URL LinkButton}}) · [Storybook]({{Storybook URL LinkButton}})
+- **EmbedIconButton** — ссылка в отдельной колонке таблицы и в слоте ячейки (иконка OpenOutline). [Дизайн]({{Pixso URL EmbedIconButton}}) · [Storybook]({{Storybook URL EmbedIconButton}})
+- **Cell** — ячейка таблицы, в слоте которой размещается ссылка. [Дизайн]({{Pixso URL Cell}}) · [Storybook]({{Storybook URL Cell}})
+
+---
+
+## FAQ
+
+### Для дизайнеров
+
+**Q: Как оформить ссылку внутри таблицы?**
+A: Есть три способа: текстовая ссылка цвета textAccent, EmbedIconButton в отдельной колонке или EmbedIconButton в слоте ячейки (RightContent=slot, стиль Secondary). Подробнее — блок «В таблице»: {{Pixso URL LinkInterfaceTable Doc Block 1}}
+
+**Q: Каким цветом оформлять текстовую ссылку?**
+A: Цветом textAccent, без подчёркивания — подчёркивание появляется при наведении. Подробнее — блок «В таблице»: {{Pixso URL LinkInterfaceTable Doc Block 1}}
+
+**Q: Почему иконка-ссылка в ячейке не кликается?**
+A: Иконка, прокинутая через RightContent=Icon, визуальная и некликабельная. Чтобы ссылка работала, используйте RightContent=slot с EmbedIconButton (стиль Secondary). Подробнее — блок «В таблице»: {{Pixso URL LinkInterfaceTable Doc Block 1}}
+
+**Q: Что учесть при добавлении отдельной колонки со ссылкой?**
+A: EmbedIconButton с иконкой OpenOutline может расширить ячейку — тогда нужно расширить и остальные ячейки в строке. Подробнее — блок «В таблице»: {{Pixso URL LinkInterfaceTable Doc Block 1}}
+
+**Q: Какой компонент использовать для ссылки вне таблицы?**
+A: LinkButton с иконкой ArrowDiagRightUp; View и размер (XXS, XS, S) подбираются под продукт. Подробнее — блок «В лэйауте (вне таблицы)»: {{Pixso URL LinkInterfaceTable Doc Block 2}}
+
+---
+
+## Changelog
+
+| Дата | Версия | Изменение |
+|---|---|---|
+| 2026-08-11 | 1.0 | Первая версия гайда: перенос из Pixso/Sketch в MDX, правки по ревью, FAQ в формате Q/A. |

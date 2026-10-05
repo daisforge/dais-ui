@@ -1,0 +1,258 @@
+---
+id: range
+title: Range
+type: atom
+status: Stable
+version: 1.0
+lastUpdated: 2026-06-11
+pixsoLink: "{{Pixso URL Range}}"
+storybookLink: "{{Storybook URL Range}}"
+pixsoDocLink: "{{Pixso URL Range Doc Block 1}}"
+hasDesignDoc: true
+hasDevDoc: true
+hasMechanics: true
+hasCornerCases: false
+related:
+ - text-field
+tags:
+ - data-entry
+ - input
+ - validation
+---
+
+# Range
+
+Обеспечивает возможность ввода диапазона значений. Компонент состоит из двух полей ввода — левого и правого — и разделителя между ними. Range — это парный ввод диапазона (например, «от» и «до»), а не ползунок.
+
+Визуал: {{Pixso URL Range Doc Block 1}}
+
+---
+
+## Анатомия
+
+Компонент Range имеет три части:
+
+1. **Content Left** — левое поле ввода диапазона.
+2. **Separator** — разделитель между левым и правым полями.
+3. **Content Right** — правое поле ввода диапазона.
+
+Дополнительные элементы поля:
+
+- **Label** — подпись над полем.
+- **Placeholder** — подсказка внутри пустого поля.
+- **Caption** — подпись под полем.
+- **Counter** — счётчик символов.
+- **Tooltip** — всплывающая подсказка.
+- **Title Caption** — дополнительная подпись сверху справа.
+- **TextBefore (TB)** — дополнительный текст до основного значения.
+- **TextAfter (TA)** — дополнительный текст после основного значения.
+
+---
+
+## Типы
+
+### Separator
+
+Разделитель между левым и правым полями.
+
+| Separator | Описание |
+|---|---|
+| **Icon** | Разделитель между левым и правым полями в виде иконки. |
+| **Dash** | Разделитель между левым и правым полями в виде дефиса. |
+| **None** | Выключает разделитель. |
+
+---
+
+## Размеры и отступы
+
+| Размер | Высота | Corner Radius | Шрифт Label | Шрифт Caption | Размер иконки |
+|---|---|---|---|---|---|
+| **40 S** | 40 | Calc:[m-2] (10px) | Body/BodyS N | Body/BodyXS N | 24px |
+| **32 XS** | 32 | S (8px) | Body/BodyXS N | Body/BodyXS N | 16px |
+
+Внутри поля значение (Value) использует тот же шрифт, что и Label соответствующего размера: Body/BodyS N для 40 S и Body/BodyXS N для 32 XS.
+
+---
+
+## Настройки (Props)
+
+> Здесь — визуальное поведение. Полный список пропсов с типами — в dev-документации через `<PropsTable name="Range" />`.
+
+### Separator
+
+См. раздел «Типы» — Icon / Dash / None. Свойство задаётся на уровне элемента Separator.
+
+### View
+
+Вид компонента отвечает за состояние полей и индикацию валидации.
+
+| View | Назначение |
+|---|---|
+| Default | Дефолтное поле ввода диапазона значений. |
+| ErrorLeft | Отображение критических сценариев в левом поле ввода данных (только в заполненных вариантах). |
+| ErrorRight | Отображение критических сценариев в правом поле ввода данных (только в заполненных вариантах). |
+| ErrorGeneral | Отображение критических сценариев на уровне всего компонента Range (только в заполненных вариантах). |
+| SuccessLeft | Отображение позитивных сценариев в левом поле ввода данных (только в заполненных вариантах). |
+| SuccessRight | Отображение позитивных сценариев в правом поле ввода данных (только в заполненных вариантах). |
+| SuccessGeneral | Отображение позитивных сценариев на уровне всего компонента Range (только в заполненных вариантах). |
+| FocusedLeft | Левое поле в фокусе. |
+| FocusedRight | Правое поле в фокусе. |
+| Disabled | Компонент недоступен для ввода. |
+| ReadOnly | Компонент доступен только для чтения. |
+| ContentBefore | Отображение контента в начале компонента. |
+| ContentAfter | Отображение контента в конце компонента. |
+
+### Label / Caption
+
+Подпись над полем (Label) и под полем (Caption) можно включать и выключать.
+
+### Content Left / Right (InputContent)
+
+Каждое поле — левое и правое — настраивается отдельно.
+
+| Свойство | Назначение |
+|---|---|
+| Empty | Незаполненное состояние поля ввода с подсказкой внутри. |
+| Filled | Заполненное состояние. |
+| TextBefore | Включает дополнительный текст до основного текста. |
+| TextAfter | Включает дополнительный текст после основного текста. |
+| IconBefore | Включает иконку до основного и дополнительного текста. |
+| IconAfter | Включает иконку после основного и дополнительного текста. |
+
+### ContentBefore / ContentAfter
+
+Контент в начале и в конце всего компонента Range.
+
+| Свойство | Назначение |
+|---|---|
+| hasContentBefore | Включает контент в начале компонента. |
+| hasContentAfter | Включает контент (iconButton) справа. |
+| hasAction (ContentAfter) | Включает отображение iconButton справа. Если HintPlacement = Inner, то контент справа состоит из iconButton и тултипа, которые можно включать и выключать независимо друг от друга. |
+| hasHint (ContentAfter) | Включает подсказку-тултип. Если HintPlacement = Inner, то контент справа состоит из iconButton и тултипа, которые можно включать и выключать независимо друг от друга. |
+
+---
+
+## Состояния
+
+- **Default** — поле готово к вводу.
+- **Focused** — поле в фокусе (FocusedLeft / FocusedRight, по отдельному полю).
+- **Error** — критический сценарий: по левому полю (ErrorLeft), по правому полю (ErrorRight) или на уровне всего компонента (ErrorGeneral). Доступно только в заполненных вариантах.
+- **Success** — позитивный сценарий: по левому полю (SuccessLeft), по правому полю (SuccessRight) или на уровне всего компонента (SuccessGeneral). Доступно только в заполненных вариантах.
+- **Disabled** — компонент недоступен для ввода.
+- **ReadOnly** — компонент доступен только для чтения.
+
+---
+
+## Механика и взаимодействия
+
+Range — это два независимых поля ввода, объединённых разделителем в единый диапазон.
+
+- **Ввод.** Левое поле задаёт начало диапазона, правое — конец. Поля заполняются независимо; каждое поле имеет собственный Placeholder, может содержать TextBefore / TextAfter и иконки IconBefore / IconAfter.
+- **Валидация.** Ошибку и успех можно индицировать по отдельному полю (ErrorLeft / ErrorRight, SuccessLeft / SuccessRight) либо на уровне всего компонента (ErrorGeneral / SuccessGeneral). Индикация Error и Success доступна только в заполненных вариантах.
+- **Фокус полей.** Фокус ставится на конкретное поле — левое (FocusedLeft) или правое (FocusedRight).
+- **Разделитель None.** Когда разделитель выключен, визуальную границу между полями берут на себя дополнительные тексты до значения (TextBefore) — поэтому в этом режиме их использование становится обязательным.
+
+Детали поведения в коде — в Storybook: {{Storybook URL Range}}.
+
+---
+
+## Маппинг: дизайн → код
+
+| Свойство в дизайне | Проп в коде | Значения | Примечание |
+|---|---|---|---|
+| Separator: Icon / Dash / None | `dividerVariant` | icon / dash / none | Прямое соответствие. Иконка разделителя задаётся через `dividerIcon`. |
+| Size (40 S / 32 XS) | `size` | s / xs | 40 S = `s`, 32 XS = `xs`. |
+| Label | `label` | строка | Подпись над полем. |
+| Placeholder (левое / правое) | `firstPlaceholder`, `secondPlaceholder` | строка | Левое поле — `firstPlaceholder`, правое — `secondPlaceholder`. |
+| Value (левое / правое) | `firstValue`, `secondValue` | строка | Значение левого и правого полей. |
+| Caption | `leftHelper` | строка | Подпись-подсказка под полем. |
+| Title Caption | `titleCaption` | строка | Дополнительная подпись сверху справа. |
+| Tooltip (Hint) | `hintText`, `hintView`, `hintSize` | строка / параметры | Всплывающая подсказка-тултип. |
+| ErrorLeft / ErrorRight | `firstValueError`, `secondValueError` | boolean | Индикация ошибки по левому и правому полю. |
+| SuccessLeft / SuccessRight | `firstValueSuccess`, `secondValueSuccess` | boolean | Индикация успеха по левому и правому полю. |
+| TextBefore (левое / правое) | `firstTextfieldTextBefore`, `secondTextfieldTextBefore` | строка | При Separator = None становятся обязательными. |
+| TextAfter (левое / правое) | `firstTextfieldTextAfter`, `secondTextfieldTextAfter` | строка | Дополнительный текст после значения. |
+| ContentBefore (поле) | `firstTextfieldContentLeft` | иконка (ReactNode) | Иконка в начале поля. |
+| ContentAfter (поле) | `secondTextfieldContentRight` | иконка (ReactNode) | Иконка в конце поля. |
+| ContentBefore / ContentAfter (компонент) | `contentLeft`, `contentRight` | иконка / iconButton (ReactNode) | Контент в начале и конце всего компонента. |
+
+---
+
+## Использование в коде
+
+Живые примеры кода — в Storybook: {{Storybook URL Range}}.
+
+---
+
+## Связанные компоненты
+
+- **TextField** — одиночное поле ввода; Range объединяет два таких поля для ввода диапазона. [Дизайн]({{Pixso URL TextField}}) · [Storybook]({{Storybook URL TextField}})
+
+---
+
+## FAQ
+
+### Для дизайнеров
+
+**Q: Как сделать ввод диапазона «от» и «до»?**
+A: Используйте Range — он состоит из левого поля (Content Left), разделителя (Separator) и правого поля (Content Right). Левое поле — начало диапазона, правое — конец. Подробнее — в Pixso-документации компонента, блок «Анатомия»: {{Pixso URL Range Doc Block 1}}.
+
+**Q: Как выбрать разделитель между полями?**
+A: Свойство Separator: Icon — иконка, Dash — дефис, None — разделитель выключен. Подробнее — в Pixso-документации компонента, блок «Типы»: {{Pixso URL Range Doc Block 1}}.
+
+**Q: Какие размеры есть у Range?**
+A: Два: 40 S (Corner Radius 10px, шрифт Label Body/BodyS N, иконка 24px) и 32 XS (Corner Radius 8px, шрифт Label Body/BodyXS N, иконка 16px). Подробнее — в Pixso-документации компонента, блок «Размеры и отступы»: {{Pixso URL Range Doc Block 1}}.
+
+**Q: Как показать ошибку только в одном поле?**
+A: Используйте View ErrorLeft для левого поля или ErrorRight для правого; ErrorGeneral отмечает ошибку на уровне всего компонента. Индикация доступна только в заполненных вариантах. Подробнее — в Pixso-документации компонента, блок «View»: {{Pixso URL Range Doc Block 1}}.
+
+**Q: Как показать успешный ввод?**
+A: Используйте View SuccessLeft / SuccessRight для отдельного поля или SuccessGeneral для всего компонента; индикация доступна только в заполненных вариантах. Подробнее — в Pixso-документации компонента, блок «View»: {{Pixso URL Range Doc Block 1}}.
+
+**Q: Как добавить текст или иконку внутри поля?**
+A: В Content Left / Right включите TextBefore / TextAfter для дополнительного текста и IconBefore / IconAfter для иконок до и после значения. Подробнее — в Pixso-документации компонента, блок «Content Left / Right (InputContent)»: {{Pixso URL Range Doc Block 1}}.
+
+**Q: Как добавить подсказку-тултип и подпись?**
+A: Подпись под полем — Caption, подпись сверху справа — Title Caption, всплывающая подсказка — Tooltip. Контент-тултип в конце компонента включается через hasHint. Подробнее — в Pixso-документации компонента, блок «ContentBefore / ContentAfter»: {{Pixso URL Range Doc Block 1}}.
+
+**Q: Как сделать Range без видимого разделителя?**
+A: Выберите Separator = None. В этом режиме границу между полями обозначает TextBefore, поэтому дополнительный текст до значения в обоих полях становится обязательным. Подробнее — в Pixso-документации компонента, блок «Механика и взаимодействия»: {{Pixso URL Range Doc Block 1}}.
+
+### Для разработчиков
+
+**Q: Как задать значения левого и правого полей?**
+A: Через `firstValue` и `secondValue`; изменения обрабатываются через `onChangeFirstValue` и `onChangeSecondValue`. Плейсхолдеры — `firstPlaceholder` и `secondPlaceholder`. Примеры кода — в Storybook: {{Storybook URL Range}}.
+
+**Q: Каким пропом выбирается разделитель?**
+A: `dividerVariant` со значениями `dash` / `icon` / `none`; иконка разделителя задаётся через `dividerIcon`. Примеры кода — в Storybook: {{Storybook URL Range}}.
+
+**Q: Как задать размер?**
+A: Через `size` со значениями `s` (40 S) и `xs` (32 XS). Примеры кода — в Storybook: {{Storybook URL Range}}.
+
+**Q: Как индицировать ошибку и успех по полям?**
+A: `firstValueError` / `secondValueError` для ошибки и `firstValueSuccess` / `secondValueSuccess` для успеха (boolean). Примеры кода — в Storybook: {{Storybook URL Range}}.
+
+**Q: Как добавить текст и иконки внутри полей?**
+A: `firstTextfieldTextBefore` / `secondTextfieldTextBefore` и `firstTextfieldTextAfter` / `secondTextfieldTextAfter` для текста; `firstTextfieldContentLeft` / `secondTextfieldContentRight` для иконок. При `dividerVariant="none"` тексты `firstTextfieldTextBefore` / `secondTextfieldTextBefore` обязательны. Примеры кода — в Storybook: {{Storybook URL Range}}.
+
+**Q: Как добавить подсказки и дополнительные элементы?**
+A: `leftHelper` — подсказка под полем, `titleCaption` — подпись сверху справа, `hintText` / `hintView` / `hintSize` — тултип; `contentLeft` / `contentRight` — контент в начале и конце компонента, `stretch` растягивает компонент. Примеры кода — в Storybook: {{Storybook URL Range}}.
+
+**Q: Как сделать поле обязательным?**
+A: Через `required`; индикатор включается `hasRequiredIndicator`, а его сторона — `requiredIndicatorPlacement` (`left` / `right`). Примеры кода — в Storybook: {{Storybook URL Range}}.
+
+---
+
+## Ссылки
+
+- **Storybook:** {{Storybook URL Range}}
+- **Документация в Pixso:** {{Pixso URL Range Doc Block 1}}
+- **Компонент в Pixso:** {{Pixso URL Range}}
+
+---
+
+## Changelog
+
+| Дата | Версия | Изменение |
+|---|---|---|
+| 2026-06-11 | 1.0 | Перенос дизайн-документации Range из Pixso/Sketch в MDX. Первая версия. |

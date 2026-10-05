@@ -1,0 +1,217 @@
+---
+id: time-picker
+title: TimePicker
+type: atom
+status: Stable
+version: 1.0
+lastUpdated: 2026-06-12
+pixsoLink: "{{Pixso URL TimePicker}}"
+storybookLink: "{{Storybook URL TimePicker}}"
+pixsoDocLink: "{{Pixso URL TimePicker Doc Block 1}}"
+hasDesignDoc: true
+hasDevDoc: true
+hasMechanics: true
+hasCornerCases: false
+related:
+ - text-field
+ - mask
+tags:
+ - data-entry
+ - selection
+---
+
+# TimePicker
+
+Элемент выбора времени посредством ввода цифр, либо путём выбора в раскрывающемся списке.
+
+Визуал: {{Pixso URL TimePicker Doc Block 1}}
+
+---
+
+## Анатомия
+
+1. **TimePickerTrigger** — поле ввода времени. Наследует все свойства TextField. Значение времени выводится Маской времени.
+2. **DropDown** — выпадающий элемент для выбора времени. Выведен в абсолют и не влияет на размер компонента.
+3. **TimeColumn** — колонка вывода значений времени одной единицы измерения (часы, минуты, секунды). Внутри DropDown.
+4. **TimeItem** — айтем единичного значения времени. Из них собирается TimeColumn.
+
+---
+
+## Типы
+
+Формат времени задаётся количеством колонок в DropDown.
+
+| Тип | Описание | Визуал |
+|---|---|---|
+| **Часы и минуты** | DropDown отображает 2 TimeColumn (формат 00:00). | {{Pixso URL TimePicker Doc Block 2}} |
+| **Часы, минуты и секунды** | DropDown отображает 3 TimeColumn (формат 00:00:00). | {{Pixso URL TimePicker Doc Block 1}} |
+
+---
+
+## Размеры и отступы
+
+У компонента два размера — **S** и **XS**. Высота поля зависит от высоты TimePickerTrigger (TextField).
+
+| Размер | Высота | Шрифт лейбла TimeItem | Corner Radius TimeItem | Corner Radius DropDown |
+|---|---|---|---|---|
+| **S** | Зависит от высоты TimePickerTrigger (TextField) | Body/BodyS N | S (8px) | Calc: [M−2] (10px) |
+| **XS** | Зависит от высоты TimePickerTrigger (TextField) | Body/BodyXS N | cRXS (6px) | S (8px) |
+
+Ширина TimeColumn зависит от ширины DropDown, высота — от высоты DropDown.
+
+---
+
+## Настройки (Props)
+
+> Здесь — визуальное поведение. Полный список пропсов с типами — в dev-документации через `<PropsTable name="TimePicker" />`.
+
+### Размер
+
+Свойство **Size** задаёт размер компонента: **S** или **XS**.
+
+### Количество колонок
+
+Свойство **ColumnQuantity** (на уровне TimeGrid) задаёт количество TimeColumn в DropDown.
+
+| ColumnQuantity | Результат |
+|---|---|
+| 3 | Три TimeColumn — выбор времени в формате 00:00:00. |
+| 2 | Две TimeColumn — выбор времени в формате 00:00. |
+
+### Ширина выпадающего списка
+
+Свойство **DropDownWidht** задаёт ширину DropDown относительно триггера.
+
+| DropDownWidht | Результат |
+|---|---|
+| Fixed | Положение DropDown относительно триггера слева. |
+| FullWidht | Ширина DropDown зависит от ширины триггера. |
+
+Ширина DropDown задаётся боковым отступом в Auto Layout на слое dropdownWIDTH. Высота DropDown задаётся отступом сверху в Auto Layout на слое dropdownHEIGHT (кроме варианта DropDownAlign=Justified).
+
+### Выравнивание выпадающего списка
+
+Свойство **DropDownAlign** выравнивает DropDown относительно поля ввода.
+
+| DropDownAlign | Результат |
+|---|---|
+| Left | Положение DropDown относительно триггера слева. |
+| Right | Положение DropDown относительно триггера справа. |
+| None | Раскрывает DropDown на всю ширину. |
+
+### Прокрутка списка
+
+Свойство **hasScrollbar** на уровне TimeColumn включает или выключает отображение ScrollBar.
+
+### Видимость списка
+
+Свойство **Opened** управляет раскрытием DropDown (True — скрывает, False — раскрывает).
+
+### Состояния TimeItem
+
+- **ItemSelected** — включает или выключает состояние Selected у TimeItem.
+- **Disabled** — включает или выключает состояние Disabled у TimeItem.
+
+---
+
+## Состояния
+
+- **Selected** — выбранное значение времени (TimeItem в состоянии ItemSelected).
+- **Disabled** — недоступный для выбора TimeItem.
+
+Поле ввода (TimePickerTrigger) наследует состояния TextField — подробнее см. документацию [TextField]({{Storybook URL TextField}}).
+
+---
+
+## Механика и взаимодействия
+
+- Время задаётся двумя способами: вводом цифр в поле или выбором из раскрывающегося списка (DropDown).
+- В DropDown при выборе времени происходит скролл TimeItem на 1-ю позицию в списке — при условии, что под выбранным значением достаточно TimeItems для скролла.
+- Если TimeItem отображается на последних позициях, то его позиционирование при выборе не изменяется.
+- DropDown выведен в абсолют и не влияет на размер компонента.
+
+Детали реализации взаимодействий — в Storybook: {{Storybook URL TimePicker}}.
+
+---
+
+## Маппинг: дизайн → код
+
+| Свойство в дизайне | Проп в коде | Значения | Примечание |
+|---|---|---|---|
+| Size | `size` | s / xs | Прямое соответствие размерам S / XS. |
+| ColumnQuantity (3 / 2) | `columnsQuantity` | 3 / 2 | 3 — формат 00:00:00; 2 — формат 00:00. |
+| DropDownAlign (Left / Right) | `dropdownAlign` | left / right | Выравнивание выпадающего списка относительно поля ввода. |
+| TimePickerTrigger (TextField) | — | — | Поле ввода наследует свойства TextField; значение выводится Маской времени. |
+
+---
+
+## Использование в коде
+
+Живые примеры кода — в Storybook: {{Storybook URL TimePicker}}.
+
+---
+
+## Связанные компоненты
+
+- **TextField** — поле ввода, на котором построен TimePickerTrigger; наследует все его свойства. [Дизайн]({{Pixso URL TextField}}) · [Storybook]({{Storybook URL TextField}})
+- **Mask** — маска ввода, которой выводится значение времени. [Storybook]({{Storybook URL Mask}})
+
+---
+
+## FAQ
+
+### Для дизайнеров
+
+**Q: Как выбрать формат времени — с секундами или без?**
+A: Через свойство ColumnQuantity. Значение 3 даёт три колонки (формат 00:00:00, с секундами), значение 2 — две колонки (формат 00:00, без секунд). Подробнее — в Pixso-документации компонента, блок «Типы»: {{Pixso URL TimePicker Doc Block 1}}.
+
+**Q: Какие размеры есть у TimePicker?**
+A: Два: S и XS. Высота поля зависит от высоты TimePickerTrigger (TextField), а у элементов TimeItem различаются шрифт лейбла и скругление углов. Подробнее — в Pixso-документации компонента, блок «Размеры и отступы»: {{Pixso URL TimePicker Doc Block 1}}.
+
+**Q: Как задать ширину выпадающего списка?**
+A: Через свойство DropDownWidht: Fixed располагает DropDown относительно триггера слева, FullWidht привязывает ширину DropDown к ширине триггера. Сама ширина задаётся боковым отступом в Auto Layout на слое dropdownWIDTH. Подробнее — в Pixso-документации компонента, блок «Настройки (Props)»: {{Pixso URL TimePicker Doc Block 1}}.
+
+**Q: Как выровнять выпадающий список относительно поля?**
+A: Через свойство DropDownAlign: Left — слева от триггера, Right — справа, None — раскрытие на всю ширину. Подробнее — в Pixso-документации компонента, блок «Настройки (Props)»: {{Pixso URL TimePicker Doc Block 1}}.
+
+**Q: Как показать или скрыть полосу прокрутки в списке?**
+A: Через свойство hasScrollbar на уровне TimeColumn — оно включает или выключает отображение ScrollBar. Подробнее — в Pixso-документации компонента, блок «Настройки (Props)»: {{Pixso URL TimePicker Doc Block 1}}.
+
+**Q: Как сделать значение в списке выбранным или недоступным?**
+A: У TimeItem есть свойства ItemSelected (состояние Selected) и Disabled (состояние Disabled). Подробнее — в Pixso-документации компонента, блок «Состояния»: {{Pixso URL TimePicker Doc Block 1}}.
+
+**Q: Влияет ли выпадающий список на размер компонента?**
+A: Нет. DropDown выведен в абсолют и не влияет на размер компонента.
+
+### Для разработчиков
+
+**Q: Как переключить формат времени между 00:00 и 00:00:00?**
+A: Через проп `columnsQuantity`: значение 2 — две колонки (часы и минуты), значение 3 — три колонки (часы, минуты, секунды). Примеры кода — в Storybook: {{Storybook URL TimePicker}}.
+
+**Q: Как задать размер компонента?**
+A: Через проп `size` со значениями `s` и `xs` — прямое соответствие размерам S и XS. Примеры кода — в Storybook: {{Storybook URL TimePicker}}.
+
+**Q: Как выровнять выпадающий список относительно поля ввода?**
+A: Через проп `dropdownAlign` со значениями `left` и `right`. Примеры кода — в Storybook: {{Storybook URL TimePicker}}.
+
+**Q: Как добавить подсказку к полю?**
+A: Подсказка снизу от поля задаётся пропом `leftHelper`, подсказка в виде Tooltip — пропом `hintText`. Примеры кода — в Storybook: {{Storybook URL TimePicker}}.
+
+**Q: Как управлять клавиатурной навигацией?**
+A: Компонент поддерживает полную клавиатурную навигацию — открытие/закрытие списка, перемещение по значениям и колонкам, переход к следующему значению. Примеры кода — в Storybook: {{Storybook URL TimePicker}}.
+
+---
+
+## Ссылки
+
+- **Storybook:** {{Storybook URL TimePicker}}
+- **Документация в Pixso:** {{Pixso URL TimePicker Doc Block 1}}
+- **Компонент в Pixso:** {{Pixso URL TimePicker}}
+
+---
+
+## Changelog
+
+| Дата | Версия | Изменение |
+|---|---|---|
+| 2026-06-12 | 1.0 | Перенос дизайн-документации TimePicker из Pixso/Sketch в MDX. Первая версия. |

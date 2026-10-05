@@ -1,15 +1,21 @@
 import { useId } from 'react';
 
-import { StyledGradient, StyledShapeGradient } from '../TourWidget.styled';
+import { tourWidgetThemePalettes } from '../TourWidget.palette';
+import {
+  StyledGradient,
+  StyledOvalGradient,
+  StyledShapeGradient,
+} from '../TourWidget.styled';
+import { tourWidgetTokens as tokens } from '../TourWidget.tokens';
 import type { TourWidgetOrientation } from '../types';
 
 type TourWidgetGradientProps = {
   orientation: TourWidgetOrientation;
 };
 
-// Градиент собран из двух слоев: SVG рисует фигуру хвоста из Figma и
-// растягивается вместе с карточкой через preserveAspectRatio="none", а
-// StyledGradient добавляет мягкую размытую подсветку снизу.
+// SVG рисует фигуру хвоста и растягивается вместе с карточкой через
+// preserveAspectRatio="none". CSS добавляет размытую нижнюю полосу
+// и зелёный овал с отдельной областью проявления.
 const tailGradientConfig = {
   vertical: {
     viewBox: '0 0 286 480',
@@ -77,17 +83,23 @@ export const TourWidgetGradient = ({
           >
             <stop
               offset="0"
-              stopColor="#6e87db"
+              stopColor={`var(${tokens.themeShapeStart}, ${
+                tourWidgetThemePalettes.light[tokens.themeShapeStart]
+              })`}
               stopOpacity={tailConfig.gradient.startOpacity}
             />
             <stop
               offset={tailConfig.gradient.middleOffset}
-              stopColor="#00e0ff"
+              stopColor={`var(${tokens.themeShapeMiddle}, ${
+                tourWidgetThemePalettes.light[tokens.themeShapeMiddle]
+              })`}
               stopOpacity={tailConfig.gradient.middleOpacity}
             />
             <stop
               offset="1"
-              stopColor="#56ff88"
+              stopColor={`var(${tokens.themeShapeEnd}, ${
+                tourWidgetThemePalettes.light[tokens.themeShapeEnd]
+              })`}
               stopOpacity={tailConfig.gradient.endOpacity}
             />
           </linearGradient>
@@ -108,6 +120,7 @@ export const TourWidgetGradient = ({
         />
       </StyledShapeGradient>
       <StyledGradient aria-hidden />
+      <StyledOvalGradient aria-hidden />
     </>
   );
 };

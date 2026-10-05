@@ -1,0 +1,44 @@
+---
+id: image
+title: Image
+type: atom
+status: Stable
+version: 1.0
+lastUpdated: 2026-06-01
+pixsoLink: "{{Pixso URL Image}}"
+storybookLink: "{{Storybook URL Image}}"
+pixsoDocLink: "{{Pixso URL Image Doc Block 1}}"
+hasDesignDoc: true
+hasDevDoc: true
+hasMechanics: false
+hasCornerCases: false
+related:
+ - avatar
+ - skeleton
+tags:
+ - image
+ - data-display
+ - static
+---
+
+import { PropsTable, Description } from '@site/src/components';
+
+# Image
+<Description name="Image" />
+<PropsTable name="Image" />
+
+```tsx live
+import React from 'react';
+import { Image } from '@salutejs/sdds-finai';
+
+export function App() {
+    return (
+        <Image
+            src="/sdds-finai/images/320_320_9.jpg"
+            width="320px"
+            height="320px"
+            alt="Картинка для примера фоном"
+        />
+    );
+}
+```

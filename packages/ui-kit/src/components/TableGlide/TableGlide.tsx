@@ -530,8 +530,13 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
 
         const { renderSummaryCell, colSpan } = column;
 
+        // Фон итоговой строки красим по её ячейкам, а не на всю строку. Если
+        // задать фон на строку, пустое место под данными заливается тем же
+        // фоном и при горизонтальном скролле наезжает на саму итоговую строку.
+        const summaryThemeOverride = { bgCell: theme.bgHeader };
+
         if (!renderSummaryCell || !summaryRow) {
-          return createEmptyCellGlide();
+          return createEmptyCellGlide({ themeOverride: summaryThemeOverride });
         }
 
         const cellInfo: CellInfo<R, SR> = {
@@ -562,6 +567,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
 
         const options = {
           data: '',
+          themeOverride: summaryThemeOverride,
           ...(span && { span }),
         };
 
@@ -1412,8 +1418,11 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     const hoverBg = theme.bgRowHovered;
 
     return (rowInd) => {
-      const isSummary = rowInd > rows.length - 1;
-      if (isSummary) return { bgCell: theme.bgHeader };
+      // Итоговые строки здесь намеренно НЕ красим: их фон задаётся по ячейкам
+      // (в getCellContentGlide). Если вернуть фон на уровне строки, библиотека
+      // таблицы растянет его вниз, в пустое место под данными, и при
+      // горизонтальном скролле эта заливка наедет на итоговую строку и
+      // перекроет её текст.
 
       // Базовый слой: checkbox-selected строки получают общий фон,
       // а active-state сверху дорисовывается через highlightRegions.
@@ -1437,9 +1446,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       return {};
     };
   }, [
-    rows.length,
     summaryRowsLength,
-    theme.bgHeader,
     theme.selectionCheckboxBg,
     theme.bgRowHovered,
     theme.bgSelectedRowHovered,

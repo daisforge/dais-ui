@@ -1,0 +1,226 @@
+---
+id: steps
+title: Steps
+type: atom
+status: Stable
+version: 1.0
+lastUpdated: 2026-06-12
+pixsoLink: "{{Pixso URL Steps}}"
+storybookLink: "{{Storybook URL Steps}}"
+pixsoDocLink: "{{Pixso URL Steps Doc Block 1}}"
+hasDesignDoc: true
+hasDevDoc: true
+hasMechanics: true
+hasCornerCases: false
+related: []
+tags:
+  - navigation
+---
+
+# Steps
+
+Отображает прогресс через последовательность логических шагов. Также может использоваться для навигации.
+
+Визуал: {{Pixso URL Steps Doc Block 1}}
+
+---
+
+## Анатомия
+
+1. **StepItem** — отдельный шаг последовательности. Из StepItem собирается весь компонент.
+2. **Indicator** — индикатор шага. Отображает номер (Numbered), иконку (Icon) или точку (Bullet).
+3. **Title** — заголовок шага.
+4. **Content** — область контента под заголовком. В неё можно поместить любой компонент (`Content you can replace with any component`). Отображение управляется свойством hasContent.
+5. **Соединительная линия (connector)** — линия между StepItem, показывающая связь шагов. Управляется свойством hasLine.
+
+В макетах компонента доступно отображение максимум 10 StepItem — лишние можно включать или выключать в слоях компонента.
+
+---
+
+## Типы
+
+Тип задаётся двумя осями: **ориентация** (Horizontal / Vertical) и **вид индикатора** (Indicators / Bullet). Дополнительно есть вариант **Simple** — без области контента.
+
+| Тип | Описание | Визуал |
+|---|---|---|
+| **Horizontal / Indicators** | Горизонтальная ориентация. Индикатор шага с числом или иконкой. | {{Pixso URL Steps Doc Block 2}} |
+| **Horizontal / Bullet** | Горизонтальная ориентация. Шаг без числа или иконки (точка). | {{Pixso URL Steps Doc Block 4}} |
+| **Vertical / Indicators** | Вертикальная ориентация. Индикатор шага с числом или иконкой. | {{Pixso URL Steps Doc Block 6}} |
+| **Vertical / Bullet** | Вертикальная ориентация. Шаг без числа или иконки (точка). | {{Pixso URL Steps Doc Block 8}} |
+| **Simple / Horizontal / Indicators** | Горизонтальная ориентация без контента. Индикатор с числом или иконкой. | {{Pixso URL Steps Doc Block 10}} |
+| **Simple / Horizontal / Bullet** | Горизонтальная ориентация без контента. Шаг-точка. | {{Pixso URL Steps Doc Block 12}} |
+| **Simple / Vertical / Indicators** | Вертикальная ориентация без контента. Индикатор с числом или иконкой. | {{Pixso URL Steps Doc Block 14}} |
+| **Simple / Vertical / Bullet** | Вертикальная ориентация без контента. Шаг-точка. | {{Pixso URL Steps Doc Block 16}} |
+
+---
+
+## Размеры и отступы
+
+Размер задаётся на уровне StepItem. У каждого размера свои шрифты заголовка (LabelFont) и контента (CaptionFont).
+
+| Размер | LabelFont (Title) | CaptionFont (Content) |
+|---|---|---|
+| **L** | Body/BodyL N | Body/BodyM N |
+| **M** | Body/BodyM N | Body/BodyS N |
+| **S** | Body/BodyS N | Body/BodyXS N |
+| **XS** | Body/BodyXS N | Body/BodyXS N |
+
+### Индикатор
+
+Размер StepItem зависит от размера индикатора (свойство IndicatorSize). Свойство IndicatorSize доступно для размеров **M** и **L** и принимает два значения:
+
+| IndicatorSize | Назначение |
+|---|---|
+| **36** | Индикатор 36 px. |
+| **24** | Индикатор 24 px. |
+
+Размер иконки внутри индикатора (IconSize): для горизонтальной ориентации — 24px / 36px, для вертикальной — 24px / 16px.
+
+---
+
+## Настройки (Props)
+
+> Здесь — визуальное поведение. Полный список пропсов с типами — в dev-документации через `<PropsTable name="Steps" />`.
+
+### Свойства компонента (Steps)
+
+| Свойство | Значения | Назначение |
+|---|---|---|
+| **View** | Default / Accent | Цвет пройденных и активных StepItem: дефолтный или акцентный. |
+| **hasLine** | True / False | Включает или выключает соединительную линию между StepItem. |
+| **ContentAlign** | Left / Center | Позиционирование контента в StepItem по левому краю или по центру (горизонтальная ориентация). |
+
+### Свойства шага (StepItem)
+
+| Свойство | Значения | Назначение |
+|---|---|---|
+| **IndicatorType** | Numbered / Icon | Числовой индикатор шага или индикатор с иконкой. |
+| **IndicatorSize** | 36 / 24 | Размер индикатора (для размеров M и L). |
+| **IndicatorView** | Default / Negative / Warning / Positive | Цвет индикатора и заголовка шага. |
+| **hasContent** | True / False | Включает или выключает отображение области контента. |
+| **Disabled** | True / False | Включает или выключает состояние Disabled. |
+
+---
+
+## Состояния
+
+Состояние шага задаётся свойством **Progress** на StepItem.
+
+| Состояние | Описание |
+|---|---|
+| **Completed** | Пройденный шаг. |
+| **inProgress** | Текущий активный шаг. |
+| **notStarted** | Непройденный (предстоящий) шаг. |
+
+Дополнительно у StepItem есть состояние **Disabled** (шаг недоступен). Цветовая окраска индикатора и заголовка для разных сценариев задаётся свойством **IndicatorView** (Default / Negative / Warning / Positive) и применяется к активному шагу.
+
+---
+
+## Механика и взаимодействия
+
+- **Прохождение шагов.** Шаги последовательно меняют состояние: notStarted → inProgress → completed. Текущий активный шаг — один (inProgress).
+- **Индикатор текущего шага.** Цветовое выделение текущего шага задаётся через IndicatorView; пройденные и активные шаги окрашиваются согласно свойству View (Default / Accent).
+- **Навигация.** Компонент может использоваться для навигации между этапами — переход по шагам.
+- **Соединительная линия** между StepItem визуально связывает шаги и показывает направление прогресса.
+
+Детали кода (управление текущим шагом, обработка переходов) — в Storybook: {{Storybook URL Steps}}.
+
+---
+
+## Маппинг: дизайн → код
+
+| Свойство в дизайне | Проп в коде | Значения | Примечание |
+|---|---|---|---|
+| View | `view` | default / accent | Прямое соответствие. |
+| IndicatorView | `itemView` | default / negative / warning / positive | Применяется к шагу только когда его статус — `inProgress`. |
+| Progress | `status` | completed / active / … | Completed = `completed`; inProgress = `active`; notStarted — без статуса (по умолчанию). |
+| IndicatorType: Numbered | `indicator` | число | Числовой индикатор: передаётся номер шага (`indicator: 1`). |
+| Bullet (вид индикатора) | `indicator` | `undefined` | Точечный индикатор: `indicator: undefined`. |
+| IndicatorType: Icon | `indicator` | render-функция | Индикатор с иконкой: `indicator` принимает функцию `({ status, size }) => иконка`. |
+| StepItem | `items` | массив StepItemProps | Каждый шаг — объект с `title`, `content`, `indicator`. |
+| — | `current` | число | Внешнее управление текущим шагом (индекс). |
+| — | `onChange` | функция | Колбэк перехода между шагами: `(item, index, prevIndex)`. |
+
+---
+
+## Использование в коде
+
+Живые примеры кода — в Storybook: {{Storybook URL Steps}}.
+
+---
+
+## Связанные компоненты
+
+Уточните в Pixso или в чате поддержки.
+
+---
+
+## FAQ
+
+### Для дизайнеров
+
+**Q: Как сделать шаги в вертикальной ориентации?**
+A: Выбрать тип Vertical (Indicators или Bullet). Горизонтальная ориентация — это типы Horizontal. Подробнее — в Pixso-документации компонента, блок «Типы»: {{Pixso URL Steps Doc Block 1}}.
+
+**Q: Как сделать шаг без номера и иконки?**
+A: Использовать вид индикатора Bullet — индикатор отображается точкой. Виды Indicators отображают число или иконку. Подробнее — в Pixso-документации компонента, блок «Типы»: {{Pixso URL Steps Doc Block 1}}.
+
+**Q: Как показать только индикаторы без области контента?**
+A: Использовать вариант Simple (Simple/Horizontal или Simple/Vertical) — шаги отображаются без контента. Также можно выключить hasContent на StepItem. Подробнее — в Pixso-документации компонента, блок «Типы»: {{Pixso URL Steps Doc Block 1}}.
+
+**Q: Какие размеры есть у компонента?**
+A: Четыре: L, M, S, XS. Каждый со своими шрифтами заголовка и контента. Подробнее — в Pixso-документации компонента, блок «Размеры и отступы»: {{Pixso URL Steps Doc Block 1}}.
+
+**Q: Как задать размер индикатора?**
+A: Свойством IndicatorSize со значениями 36 px или 24 px (доступно для размеров M и L). Подробнее — в Pixso-документации компонента, блок «Размеры и отступы»: {{Pixso URL Steps Doc Block 1}}.
+
+**Q: Как обозначить состояние шага?**
+A: Свойством Progress: Completed (пройден), inProgress (текущий активный), notStarted (предстоящий). Подробнее — в Pixso-документации компонента, блок «Состояния»: {{Pixso URL Steps Doc Block 1}}.
+
+**Q: Как выделить шаг как ошибку, предупреждение или успех?**
+A: Свойством IndicatorView: Negative (критический сценарий), Warning (предупреждение), Positive (позитивный сценарий) или Default. Подробнее — в Pixso-документации компонента, блок «Настройки (Props)»: {{Pixso URL Steps Doc Block 1}}.
+
+**Q: Как включить или убрать линию между шагами?**
+A: Свойством hasLine — True включает соединительную линию между StepItem, False выключает. Подробнее — в Pixso-документации компонента, блок «Настройки (Props)»: {{Pixso URL Steps Doc Block 1}}.
+
+**Q: Сколько шагов можно показать?**
+A: До 10 StepItem; лишние можно включать или выключать в слоях компонента. Подробнее — в Pixso-документации компонента, блок «Анатомия»: {{Pixso URL Steps Doc Block 1}}.
+
+### Для разработчиков
+
+**Q: Как задать вид всего компонента?**
+A: Пропом `view` со значениями `default` / `accent` — он задаёт цвет пройденных и активных шагов. Примеры кода — в Storybook: {{Storybook URL Steps}}.
+
+**Q: Как окрасить шаг как ошибку, предупреждение или успех?**
+A: Пропом `itemView` со значениями `default` / `negative` / `warning` / `positive`. Важно: `itemView` применяется к шагу только когда его статус — `inProgress`. Примеры кода — в Storybook: {{Storybook URL Steps}}.
+
+**Q: Как сделать числовой индикатор, точку или иконку?**
+A: Пропом `indicator` каждого шага: число (`indicator: 1`) — числовой индикатор; `indicator: undefined` — точка (Bullet); render-функция `({ status, size }) => иконка` — индикатор с иконкой. Примеры кода — в Storybook: {{Storybook URL Steps}}.
+
+**Q: Как задать состояние шага?**
+A: Полем `status` в объекте шага: `completed` (пройден) и `active` (текущий). Примеры кода — в Storybook: {{Storybook URL Steps}}.
+
+**Q: Как управлять текущим шагом извне?**
+A: Пропом `current` (индекс активного шага) — внешнее управление. Пример с кнопкой Next — в Storybook: {{Storybook URL Steps}}.
+
+**Q: Как обработать переход между шагами?**
+A: Пропом `onChange` — колбэк `(item, index, prevIndex)`: на основе индексов можно проставить `status` предыдущему и текущему шагу. Примеры кода — в Storybook: {{Storybook URL Steps}}.
+
+**Q: Как передать шаги в компонент?**
+A: Пропом `items` — массив объектов (`StepItemProps`) с полями `indicator`, `title`, `content`. Примеры кода — в Storybook: {{Storybook URL Steps}}.
+
+---
+
+## Ссылки
+
+- **Storybook:** {{Storybook URL Steps}}
+- **Документация в Pixso:** {{Pixso URL Steps Doc Block 1}}
+- **Компонент в Pixso:** {{Pixso URL Steps}}
+
+---
+
+## Changelog
+
+| Дата | Версия | Изменение |
+|---|---|---|
+| 2026-06-12 | 1.0 | Перенос дизайн-документации Steps из Pixso/Sketch в MDX. Первая версия. |
