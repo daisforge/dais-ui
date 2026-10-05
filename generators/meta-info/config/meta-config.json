@@ -380,12 +380,15 @@
         }
       },
       "features": [
+        "CanvasElements/CanvasAvatar",
+        "CanvasElements/CanvasAvatarGroup",
         "CanvasElements/CanvasBadge",
         "CanvasElements/CanvasButton",
         "CanvasElements/CanvasCheckbox",
         "CanvasElements/CanvasContainer",
         "CanvasElements/CanvasIcon",
         "CanvasElements/CanvasIconButton",
+        "CanvasElements/CanvasImage",
         "CanvasElements/CanvasLink",
         "CanvasElements/CanvasSkeleton",
         "CanvasElements/CanvasText",

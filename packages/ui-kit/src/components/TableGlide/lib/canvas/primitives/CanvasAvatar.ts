@@ -114,7 +114,8 @@ export class CanvasAvatar extends CanvasLeaf {
         ctx.arc(rect.x + d / 2, rect.y + d / 2, d / 2, 0, Math.PI * 2);
         ctx.clip();
         // Прозрачность уже задана в цвете фона; текст и фото остаются непрозрачными.
-        ctx.fillStyle = tokens.avatarBackground;
+        ctx.fillStyle =
+          tokens.surfaceAccent20 ?? tokens.surfaceTransparentAccentActive;
         ctx.fillRect(rect.x, rect.y, d, d);
         if (image) {
           paintImage(ctx, image, rect, 'fill');
@@ -125,7 +126,7 @@ export class CanvasAvatar extends CanvasLeaf {
           }`;
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
-          ctx.fillStyle = tokens.avatarText;
+          ctx.fillStyle = tokens.textAccent;
           ctx.fillText(text, rect.x + d / 2, rect.y + d / 2);
         }
       } finally {

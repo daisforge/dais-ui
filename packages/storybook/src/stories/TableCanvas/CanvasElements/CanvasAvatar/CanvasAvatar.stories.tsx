@@ -9,7 +9,7 @@ import {
 } from '@ui-kit/components/TableCanvas';
 import React from 'react';
 
-import { avatarItems, transparentAvatarImage } from './avatarFixtures';
+import { avatarItems } from './avatarFixtures';
 
 const meta: Meta = {
   title: 'Локальные компоненты/TableCanvas/CanvasElements/CanvasAvatar',
@@ -40,12 +40,7 @@ function AvatarContentAndSizesExample() {
       {
         key: 'broken',
         name: 'Ошибка первой загрузки',
-        url: '/canvas-images/missing.svg',
-      },
-      {
-        key: 'alpha',
-        name: 'SVG без фона',
-        url: transparentAvatarImage,
+        url: '/canvas-images/missing.png',
       },
     ].map(({ key, name, ...content }) => ({
       key,
@@ -78,7 +73,7 @@ function AvatarContentAndSizesExample() {
 const exampleCode = `
 import React from 'react';
 import { Canvas, TableCanvas, type ColumnConfig, type AvatarSize } from '@daisforge/ui/components/TableCanvas';
-import { avatarItems, transparentAvatarImage } from './avatarFixtures';
+import { avatarItems } from './avatarFixtures';
 
 ${getFuncAsString('packages/storybook/src/stories/TableCanvas/CanvasElements/CanvasAvatar/CanvasAvatar.stories.tsx', 'AvatarContentAndSizesExample')}
 `;

@@ -12,7 +12,7 @@ import React, { useMemo } from 'react';
 import {
   avatarCopyText,
   avatarItems,
-  createAvatarSvg,
+  avatarPhotos,
 } from '../CanvasAvatar/avatarFixtures';
 
 const meta: Meta = {
@@ -21,16 +21,14 @@ const meta: Meta = {
   parameters: {
     msw: {
       handlers: [
-        http.get(
-          '/canvas-images/virtual/:person',
-          ({ params }) =>
-            new HttpResponse(
-              createAvatarSvg({ variant: Number(params.person) }),
-              {
-                headers: { 'Content-Type': 'image/svg+xml' },
-              },
-            ),
-        ),
+        http.get('/canvas-images/virtual/:person', async ({ params }) => {
+          const photo =
+            avatarPhotos[Number(params.person) % avatarPhotos.length]!;
+          const response = await fetch(photo);
+          return new HttpResponse(await response.arrayBuffer(), {
+            headers: { 'Content-Type': 'image/png' },
+          });
+        }),
       ],
     },
   },
@@ -96,9 +94,9 @@ function AvatarGroupExample() {
   return (
     <>
       <p>
-        700 строк с разным количеством участников в обычной и узкой колонках. У
-        каждой строки свои URL фотографий — прокрутите таблицу, чтобы увидеть
-        загрузку новых изображений.
+        700 строк с локальными PNG-фотографиями и разным количеством участников
+        в обычной и узкой колонках. У каждой строки свои URL фотографий —
+        прокрутите таблицу, чтобы увидеть загрузку новых изображений.
       </p>
       <VirtualTable />
     </>

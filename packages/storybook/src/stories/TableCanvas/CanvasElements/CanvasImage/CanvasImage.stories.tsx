@@ -9,7 +9,7 @@ import {
 } from '@ui-kit/components/TableCanvas';
 import React from 'react';
 
-import { createAvatarImage } from '../CanvasAvatar/avatarFixtures';
+import wideImage from '../CanvasAvatar/images/wide.png';
 
 const meta: Meta = {
   title: 'Локальные компоненты/TableCanvas/CanvasElements/CanvasImage',
@@ -20,30 +20,12 @@ function ImageFitsExample() {
   const rows = [
     {
       id: 0,
-      image: 'wide',
-      src: createAvatarImage({ width: 192, height: 96 }),
-    },
-    {
-      id: 1,
-      image: 'tall',
-      src: createAvatarImage({ width: 96, height: 192, variant: 1 }),
-    },
-    {
-      id: 2,
-      image: 'transparent',
-      src: createAvatarImage({
-        width: 192,
-        height: 96,
-        transparent: true,
-        variant: 2,
-      }),
+      image: 'Горы',
+      src: wideImage,
     },
   ];
-  const columns: ColumnConfig<(typeof rows)[number]>[] = [
-    'cover',
-    'contain',
-    'fill',
-  ].map((fit) => ({
+  const fits: ImageFit[] = ['cover', 'contain', 'fill'];
+  const columns: ColumnConfig<(typeof rows)[number]>[] = fits.map((fit) => ({
     key: fit,
     name: fit,
     width: 170,
@@ -57,7 +39,7 @@ function ImageFitsExample() {
         >
           <Canvas.Image
             src={row.src}
-            fit={fit as ImageFit}
+            fit={fit}
             style={{ width: 88, height: 88 }}
           />
           <Canvas.Rect
@@ -77,7 +59,7 @@ function ImageFitsExample() {
     <TableCanvas
       rows={rows}
       columnConfig={columns}
-      tableConfig={{ rowHeight: 104, containerStyle: { height: '390px' } }}
+      tableConfig={{ rowHeight: 104, containerStyle: { height: '160px' } }}
     />
   );
 }
@@ -87,7 +69,7 @@ function ImageFitsExample() {
 const exampleCode = `
 import React from 'react';
 import { Canvas, TableCanvas, type ColumnConfig, type ImageFit } from '@daisforge/ui/components/TableCanvas';
-import { createAvatarImage } from '../CanvasAvatar/avatarFixtures';
+import wideImage from '../CanvasAvatar/images/wide.png';
 
 ${getFuncAsString('packages/storybook/src/stories/TableCanvas/CanvasElements/CanvasImage/CanvasImage.stories.tsx', 'ImageFitsExample')}
 `;
