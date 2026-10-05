@@ -1,10 +1,13 @@
 import type {
+  CanvasAvatarGroupProps as InternalCanvasAvatarGroupProps,
+  CanvasAvatarProps as InternalCanvasAvatarProps,
   CanvasBadgeProps as InternalCanvasBadgeProps,
   CanvasButtonProps as InternalCanvasButtonProps,
   CanvasContainerProps as InternalCanvasContainerProps,
   CanvasEmbedIconButtonProps as InternalCanvasEmbedIconButtonProps,
   CanvasIconButtonProps as InternalCanvasIconButtonProps,
   CanvasIconProps as InternalCanvasIconProps,
+  CanvasImageProps as InternalCanvasImageProps,
   CanvasTextProps as InternalCanvasTextProps,
 } from './index';
 import { Canvas as InternalCanvas } from './index';
@@ -63,3 +66,8 @@ export type CanvasIconButtonProps =
   PublicCanvasProps<InternalCanvasIconButtonProps>;
 export type CanvasIconProps = PublicCanvasProps<InternalCanvasIconProps>;
 export type CanvasTextProps = PublicCanvasProps<InternalCanvasTextProps>;
+
+export type CanvasImageProps = PublicCanvasProps<InternalCanvasImageProps>;
+export type CanvasAvatarProps = PublicCanvasProps<InternalCanvasAvatarProps>;
+export type CanvasAvatarGroupProps =
+  PublicCanvasProps<InternalCanvasAvatarGroupProps>;
