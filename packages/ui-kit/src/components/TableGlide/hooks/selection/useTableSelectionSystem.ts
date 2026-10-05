@@ -22,7 +22,7 @@ type HeaderClickEvent = Parameters<
 
 interface UseTableSelectionSystemParams<
   R extends ObjectForExtending,
-  SR = unknown
+  SR = unknown,
 > {
   columns: readonly ColumnGlideLast<R, SR>[];
   selection: GridSelection;
@@ -67,9 +67,25 @@ interface UseTableSelectionSystemParams<
  * (см. `useColumnRowHighlightRegions`); наружу для copy/paste отдаём через
  * `onSelectionEmit`.
  */
+/** Активная ячейка — первая ячейка данных строки `current.cell` */
+const toFirstDataCell = (
+  selection: GridSelection,
+  firstDataCol: number,
+): GridSelection => {
+  const row = selection.current?.cell[1] ?? 0;
+  return {
+    ...selection,
+    current: {
+      cell: [firstDataCol, row],
+      range: { x: firstDataCol, y: row, width: 1, height: 1 },
+      rangeStack: [],
+    },
+  };
+};
+
 export function useTableSelectionSystem<
   R extends ObjectForExtending,
-  SR = unknown
+  SR = unknown,
 >({
   columns,
   selection,
@@ -116,9 +132,9 @@ export function useTableSelectionSystem<
   const numberingColumnIndex = useMemo(
     () =>
       columns.findIndex(
-        (column) => column.isServiceColumn && column.id === 'row-markers'
+        (column) => column.isServiceColumn && column.id === 'row-markers',
       ),
-    [columns]
+    [columns],
   );
 
   // Сервисные колонки не должны попадать в выделение ячеек/диапазона: заехавшее
@@ -147,7 +163,7 @@ export function useTableSelectionSystem<
         },
       };
     },
-    [leadingServiceColumnsCount]
+    [leadingServiceColumnsCount],
   );
 
   const handleGridSelectionWithColumnReset = useCallback(
@@ -159,11 +175,15 @@ export function useTableSelectionSystem<
       // glide ничего не рисует для current (ни рамки на нумерации при драге, ни
       // двойной заливки), а cell-якорь НЕ трогаем — нативный drag glide (он
       // ведётся от позиции мыши) продолжает работать.
+      // Только жест мышью: при фокусе грида без выделения glide сам ставит
+      // активную ячейку в первую колонку (у нас это нумерация) — это не выбор
+      // строки, такое выделение ниже обрезается до первой ячейки данных.
       if (
         enableRowSelection &&
         numberingColumnIndex >= 0 &&
         current &&
-        current.cell[0] === numberingColumnIndex
+        current.cell[0] === numberingColumnIndex &&
+        pointerGestureRef.current
       ) {
         const firstDataCol = leadingServiceColumnsCount;
         const startRow = current.range.y;
@@ -250,7 +270,14 @@ export function useTableSelectionSystem<
       }
 
       // Иначе: исключаем сервисные колонки + сбрасываем выделение колонок/строк.
-      const next = clampSelectionToData(raw);
+      // Без мыши (фокус грида, стрелки) активная ячейка в сервисной колонке
+      // переносится на первую ячейку данных строки, а не сбрасывается.
+      const next =
+        !pointerGestureRef.current &&
+        current &&
+        current.cell[0] < leadingServiceColumnsCount
+          ? toFirstDataCell(raw, leadingServiceColumnsCount)
+          : clampSelectionToData(raw);
       if (next.current !== undefined || next.rows.length > 0) {
         setSelectedColumns(CompactSelection.empty());
         setSelectedRows(CompactSelection.empty());
@@ -286,7 +313,7 @@ export function useTableSelectionSystem<
       setSelectedColumns,
       setSelectedRows,
       setIsNativeColumnSelection,
-    ]
+    ],
   );
 
   const handleSelectionClearedWithColumns = useCallback(() => {
@@ -491,7 +518,7 @@ export function useTableSelectionSystem<
       setSelectedColumns,
       setSelectedRows,
       setIsNativeColumnSelection,
-    ]
+    ],
   );
 
   // Программно выделить колонки по ключам (после реордера от закрепления):
@@ -502,7 +529,7 @@ export function useTableSelectionSystem<
       const keySet = new Set(keys);
       const indexes = columns
         .map((column, index) =>
-          !column.isServiceColumn && keySet.has(column.id) ? index : -1
+          !column.isServiceColumn && keySet.has(column.id) ? index : -1,
         )
         .filter((index) => index >= 0);
 
@@ -569,7 +596,7 @@ export function useTableSelectionSystem<
       setIsNativeColumnSelection,
       commitActiveRow,
       lastSelectedColumnRef,
-    ]
+    ],
   );
 
   return {
