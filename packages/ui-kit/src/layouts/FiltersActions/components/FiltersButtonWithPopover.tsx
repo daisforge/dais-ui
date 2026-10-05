@@ -173,11 +173,12 @@ const PopoverHeaderTop = styled.div`
   flex-shrink: 0;
 `;
 
-const HeaderText = styled.div`
+const HeaderText = styled.div<{ $searchable?: boolean }>`
   display: flex;
   flex-direction: column;
   gap: 4px;
-  margin-bottom: 8px;
+  /* Зазор до строки поиска нужен только когда поиск включён */
+  margin-bottom: ${({ $searchable }) => ($searchable ? '8px' : '0')};
 `;
 
 // Основной контент с прокруткой
@@ -339,7 +340,7 @@ export const FiltersActionsFiltersButtonWithPopover: React.FC<
         {/* Header */}
         <PopoverHeader>
           <PopoverHeaderTop>
-            <HeaderText>
+            <HeaderText $searchable={searchable}>
               <BodyM bold>{title}</BodyM>
               {subtitle && <BodyXS color={textSecondary}>{subtitle}</BodyXS>}
             </HeaderText>
@@ -350,7 +351,7 @@ export const FiltersActionsFiltersButtonWithPopover: React.FC<
               pin="circle-circle"
               title="Закрыть"
               style={{
-                marginBottom: '8px',
+                marginBottom: searchable ? '8px' : undefined,
               }}
             >
               <IconClose size="xs" />
