@@ -1,5 +1,0 @@
-import{k as i}from"./TableGlide-B-BBfNaF.js";function $({variant:t=0,width:a=96,height:r=96,transparent:e=!1}={}){const{tokens:n}=i,o=[n.dataBlue,n.dataPink,n.dataPositive,n.dataViolet,n.dataOrange],c=o[t%o.length]??o[0],l=Math.min(a,r)*.18;return`<svg xmlns="http://www.w3.org/2000/svg" width="${a}" height="${r}" viewBox="0 0 ${a} ${r}">
-    ${e?"":`<rect width="100%" height="100%" fill="${n.surfaceAccentMinor}" />`}
-    <circle cx="${a/2}" cy="${r*.35}" r="${l}" fill="${n.dataWarningMinor}" />
-    <ellipse cx="${a/2}" cy="${r}" rx="${a*.38}" ry="${r*.43}" fill="${c}" />
-  </svg>`}function s(t={}){return`data:image/svg+xml;charset=utf-8,${encodeURIComponent($(t))}`}function u(){return["Анна Иванова","Борис Петров","Вера Соколова","Глеб Орлов","Дарья Белова"].map((t,a)=>({id:`person-${a+1}`,name:t,url:s({variant:a}),tooltip:t}))}const m=u(),f=s({variant:2,transparent:!0});function p(t,a=t.length){const r=t.map(n=>n.name||n.customText||"Участник").join(", "),e=Math.max(0,a-t.length);return[r,e?`ещё ${e} участников`:""].filter(Boolean).join("; ")}export{m as a,p as b,$ as c,s as d,f as t};
