@@ -1,0 +1,26 @@
+import{j as n}from"./react-D2T61mpp.js";import{cg as e,ch as r,ca as t}from"./vendor-pjEbe7K_.js";import{T as l}from"./Table.pagination.stories-Bkt8Kok1.js";import"./react-is-Clcustum.js";import"./styled-components-DLh7Loza.js";import"./@tanstack/react-virtual-CK5Nm0__.js";import"./tslib-DoU9Jm1N.js";import"./tableData-DVJFoYoT.js";import"./DocStoryTemplate-D4rmyDH8.js";import"./storySourceDoc-tVKyHcEN.js";import"./TableCanvas-Bik_bgA_.js";import"./FiltersActions-BrevyeVk.js";import"./IconButton-DRGVI8Xz.js";import"./@salutejs/plasma-icons-C-KTBipy.js";import"./@salutejs/sdds-finai-CPXmgNvG.js";import"./@salutejs/sdds-themes-BWS17lsS.js";import"./utils-CT7J1Ydu.js";import"./constants-BEafpjqR.js";import"./sharedUtilsDebug-BX_KjCjW.js";import"./Box-Ce6xPdsp.js";import"./TextField-Bzm8NUH7.js";import"./sharedUtilsInputs-B9m87C-J.js";import"./AnalyticalWidget-C5URm50_.js";import"./Collapse-6c0Mf_8P.js";import"./Table-BxEDrj6n.js";import"./react-data-grid-BZuhNkSa.js";import"./TableTabs-RrhGB_mV.js";import"./TableCanvasSharedConstants-B2qJZwC8.js";import"./sharedUiSearch-b_eDH5Y-.js";import"./ListOfFilters-BmwjC1-1.js";import"./lodash.isequal-DD0Lfcik.js";import"./NumberFormat-CzuNGJoH.js";import"./EmptyState-BElEMty-.js";import"./MassActions-DJglkn3b.js";import"./Autocomplete-BXetjKVq.js";import"./TableGlide-_Rr5FWgf.js";import"./@glideappsfinal/glide-data-grid-Dpga-upe.js";import"./canvas-hypertxt-DsokSIOX.js";import"./ErrorPage-Ddk8Bwqz.js";function s(o){const i={a:"a",blockquote:"blockquote",code:"code",h1:"h1",h2:"h2",h3:"h3",li:"li",p:"p",strong:"strong",ul:"ul",...e(),...o.components};return n.jsxs(n.Fragment,{children:[n.jsx(r,{of:l,name:"Docs"}),`
+`,n.jsx(i.h1,{id:"table-pagination",children:"Table Pagination"}),`
+`,n.jsx(i.p,{children:n.jsx(i.strong,{children:"tableConfig.pagination"})}),`
+`,n.jsxs(i.p,{children:["Таблица поддерживает пагинацию. Для активации функционала в ",n.jsx(i.code,{children:"tableConfig"})," заполняется ",n.jsx(i.code,{children:"pagination"}),"."]}),`
+`,n.jsx(i.h2,{id:"особенности-работы-с-пагинацией",children:"Особенности работы с пагинацией"}),`
+`,n.jsx(i.h3,{id:"отключение-дефолтной-сортировки-и-фильтрации",children:"Отключение дефолтной сортировки и фильтрации"}),`
+`,n.jsxs(i.p,{children:["При активации ",n.jsx(i.code,{children:"pagination"}),` отключается дефолтная сортировка и фильтрация.
+Нужно использовать версии данных фичей с ручным управлением. Например, для отправки на бэкенд выбранных фильтров и сортировки.`]}),`
+`,n.jsxs(i.p,{children:[n.jsx(i.strong,{children:"Причина:"}),` Предполагается, что если есть pagination, то в таблице представлен не весь объем данных,
+по этой причине дефолтная сортировка и фильтрация не подходят и будут отображать некорректные данные.`]}),`
+`,n.jsx(i.h3,{id:"адаптивные-slots",children:"Адаптивные slots"}),`
+`,n.jsxs(i.p,{children:["По умолчанию ВЫКЛЮЧЕНА умная адаптация количества slots пагинации в зависимости от ширины контейнера таблицы и размера пагинации (",n.jsx(i.code,{children:"size"}),")."]}),`
+`,n.jsxs(i.p,{children:["Эту функциональность можно включить, установив ",n.jsx(i.code,{children:"responsiveSlots: true"}),", тогда количество slots будет фиксированным (задавать ",n.jsx(i.code,{children:"slots"})," в props не нужно), важно указать ",n.jsx(i.code,{children:"value"})," как значение текущей выбранной страницы."]}),`
+`,n.jsxs(i.p,{children:["При достижении минимальной ширины контейнера, когда остается только 1 slot, автоматически отображаются навигационные стрелки в ",n.jsx(i.code,{children:"leftContent"})," и ",n.jsx(i.code,{children:"rightContent"}),"."]}),`
+`,n.jsx(i.h2,{id:"изменения-в-api-относительно-sdds-pagination",children:"Изменения в API относительно SDDS Pagination"}),`
+`,n.jsxs(i.ul,{children:[`
+`,n.jsxs(i.li,{children:[n.jsx(i.strong,{children:n.jsx(i.code,{children:"onChangePageValue"})})," — добавлен параметр ",n.jsx(i.code,{children:"scrollToTop: () => void"})," для автоматического скролла к началу новой страницы"]}),`
+`,n.jsxs(i.li,{children:[n.jsx(i.strong,{children:n.jsx(i.code,{children:"onChange"})})," — добавлен параметр ",n.jsx(i.code,{children:"scrollToTop: () => void"})," для автоматического скролла к началу новой страницы"]}),`
+`,n.jsxs(i.li,{children:[n.jsx(i.strong,{children:n.jsx(i.code,{children:"responsiveSlots"})})," — включение/выключение умной адаптации slots (default: ",n.jsx(i.code,{children:"false"}),")"]}),`
+`,n.jsxs(i.li,{children:[n.jsx(i.strong,{children:n.jsx(i.code,{children:"onResize"})})," — callback при изменении ширины контейнера пагинации"]}),`
+`]}),`
+`,n.jsxs(i.p,{children:["С основной информацией по компоненту Пагинации можно ознакомиться по ",n.jsx(i.a,{href:"https://plasma.sberdevices.ru/sdds-finai/components/pagination/",rel:"nofollow",children:"ссылке на SDDS Pagination"})]}),`
+`,n.jsxs(i.blockquote,{children:[`
+`,n.jsxs(i.p,{children:["Подробнее о типах — ",n.jsx(i.a,{href:"?path=/docs/%D0%BB%D0%BE%D0%BA%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D1%8B-tablecanvas-pagination-api--docs",children:"Pagination API"})]}),`
+`]}),`
+`,n.jsx(t,{})]})}function O(o={}){const{wrapper:i}={...e(),...o.components};return i?n.jsx(i,{...o,children:n.jsx(s,{...o})}):s(o)}export{O as default};
