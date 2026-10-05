@@ -4,6 +4,8 @@ import {
 } from '@ui-kit/tokens';
 import type { CSSObject } from 'styled-components';
 
+import { tourWidgetTokens as tokens } from './TourWidget.tokens';
+
 const lightGradient = `linear-gradient(
   270deg,
   #00dfff 33.759%,
@@ -21,49 +23,49 @@ const ovalGradient = `linear-gradient(
 // --tour-widget-* overrides.
 export const tourWidgetThemePalettes = {
   light: {
-    '--tour-widget-theme-background': onLightSurfaceSolidPrimary,
-    '--tour-widget-theme-gradient-vertical': lightGradient,
-    '--tour-widget-theme-gradient-horizontal': lightGradient,
-    '--tour-widget-theme-gradient-opacity': '0.53',
-    '--tour-widget-theme-gradient-vertical-blur': '45px',
-    '--tour-widget-theme-gradient-horizontal-blur': '45px',
-    '--tour-widget-theme-oval-background': ovalGradient,
-    '--tour-widget-theme-oval-vertical-opacity': '0.42',
-    '--tour-widget-theme-oval-horizontal-opacity': '0.42',
-    '--tour-widget-theme-oval-vertical-blur': '48px',
-    '--tour-widget-theme-oval-horizontal-blur': '48px',
-    '--tour-widget-theme-shape-opacity': '0.32',
-    '--tour-widget-theme-shape-start': '#bbb0fc',
-    '--tour-widget-theme-shape-middle': '#00dfff',
-    '--tour-widget-theme-shape-end': '#56ff71',
+    [tokens.themeBackground]: onLightSurfaceSolidPrimary,
+    [tokens.themeGradientVertical]: lightGradient,
+    [tokens.themeGradientHorizontal]: lightGradient,
+    [tokens.themeGradientOpacity]: '0.53',
+    [tokens.themeGradientVerticalBlur]: '45px',
+    [tokens.themeGradientHorizontalBlur]: '45px',
+    [tokens.themeOvalBackground]: ovalGradient,
+    [tokens.themeOvalVerticalOpacity]: '0.42',
+    [tokens.themeOvalHorizontalOpacity]: '0.42',
+    [tokens.themeOvalVerticalBlur]: '48px',
+    [tokens.themeOvalHorizontalBlur]: '48px',
+    [tokens.themeShapeOpacity]: '0.32',
+    [tokens.themeShapeStart]: '#bbb0fc',
+    [tokens.themeShapeMiddle]: '#00dfff',
+    [tokens.themeShapeEnd]: '#56ff71',
   },
   dark: {
-    '--tour-widget-theme-background': onDarkSurfaceSolidCardBrightness,
-    '--tour-widget-theme-gradient-vertical': `linear-gradient(
+    [tokens.themeBackground]: onDarkSurfaceSolidCardBrightness,
+    [tokens.themeGradientVertical]: `linear-gradient(
       -45.68deg,
       rgb(56 255 62) 16.982%,
       rgb(0 224 255) 16.982%,
       rgb(16 194 219) 44.903%,
       rgb(110 135 219) 69.826%
     )`,
-    '--tour-widget-theme-gradient-horizontal': `linear-gradient(
+    [tokens.themeGradientHorizontal]: `linear-gradient(
       -45.68deg,
       rgb(56 255 136) 16.982%,
       rgb(0 224 255) 16.982%,
       rgb(16 138 219) 44.903%,
       rgb(90 117 207) 69.826%
     )`,
-    '--tour-widget-theme-gradient-opacity': '1',
-    '--tour-widget-theme-gradient-vertical-blur': '34px',
-    '--tour-widget-theme-gradient-horizontal-blur': '46px',
-    '--tour-widget-theme-oval-background': ovalGradient,
-    '--tour-widget-theme-oval-vertical-opacity': '1',
-    '--tour-widget-theme-oval-horizontal-opacity': '0.82',
-    '--tour-widget-theme-oval-vertical-blur': '37px',
-    '--tour-widget-theme-oval-horizontal-blur': '86px',
-    '--tour-widget-theme-shape-opacity': '0.84',
-    '--tour-widget-theme-shape-start': '#6e87db',
-    '--tour-widget-theme-shape-middle': '#00e0ff',
-    '--tour-widget-theme-shape-end': '#56ff88',
+    [tokens.themeGradientOpacity]: '1',
+    [tokens.themeGradientVerticalBlur]: '34px',
+    [tokens.themeGradientHorizontalBlur]: '46px',
+    [tokens.themeOvalBackground]: ovalGradient,
+    [tokens.themeOvalVerticalOpacity]: '1',
+    [tokens.themeOvalHorizontalOpacity]: '0.82',
+    [tokens.themeOvalVerticalBlur]: '37px',
+    [tokens.themeOvalHorizontalBlur]: '86px',
+    [tokens.themeShapeOpacity]: '0.84',
+    [tokens.themeShapeStart]: '#6e87db',
+    [tokens.themeShapeMiddle]: '#00e0ff',
+    [tokens.themeShapeEnd]: '#56ff88',
   },
 } satisfies Record<'light' | 'dark', CSSObject>;

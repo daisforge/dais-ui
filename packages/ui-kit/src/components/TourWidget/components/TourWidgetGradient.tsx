@@ -1,10 +1,12 @@
 import { useId } from 'react';
 
+import { tourWidgetThemePalettes } from '../TourWidget.palette';
 import {
   StyledGradient,
   StyledOvalGradient,
   StyledShapeGradient,
 } from '../TourWidget.styled';
+import { tourWidgetTokens as tokens } from '../TourWidget.tokens';
 import type { TourWidgetOrientation } from '../types';
 
 type TourWidgetGradientProps = {
@@ -81,17 +83,23 @@ export const TourWidgetGradient = ({
           >
             <stop
               offset="0"
-              stopColor="var(--tour-widget-theme-shape-start, #bbb0fc)"
+              stopColor={`var(${tokens.themeShapeStart}, ${
+                tourWidgetThemePalettes.light[tokens.themeShapeStart]
+              })`}
               stopOpacity={tailConfig.gradient.startOpacity}
             />
             <stop
               offset={tailConfig.gradient.middleOffset}
-              stopColor="var(--tour-widget-theme-shape-middle, #00dfff)"
+              stopColor={`var(${tokens.themeShapeMiddle}, ${
+                tourWidgetThemePalettes.light[tokens.themeShapeMiddle]
+              })`}
               stopOpacity={tailConfig.gradient.middleOpacity}
             />
             <stop
               offset="1"
-              stopColor="var(--tour-widget-theme-shape-end, #56ff71)"
+              stopColor={`var(${tokens.themeShapeEnd}, ${
+                tourWidgetThemePalettes.light[tokens.themeShapeEnd]
+              })`}
               stopOpacity={tailConfig.gradient.endOpacity}
             />
           </linearGradient>

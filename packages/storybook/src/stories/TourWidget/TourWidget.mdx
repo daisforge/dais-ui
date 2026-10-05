@@ -20,7 +20,6 @@ import * as TourWidgetStories from './TourWidget.stories';
 ## Использование
 
 ```tsx
-import { ViewContainer } from '@daisforge/ui';
 import { Box, Button, TourWidget } from '@daisforge/ui';
 import { tourPulseMixin } from '@daisforge/ui/mixins';
 ```
@@ -173,14 +172,19 @@ const Target = styled(Box)`
 Корневой `$css` можно использовать для точечной настройки внешнего вида.
 
 ```tsx
+import {
+  TourWidget,
+  tourWidgetTokens,
+} from '@daisforge/ui/components/TourWidget';
+
 <TourWidget
   $css={{
-    '--tour-widget-min-width': '0',
-    '--tour-widget-border-radius': '16px',
-    '--tour-widget-gradient-frame-height': '34%',
-    '--tour-widget-gradient-frame-fade': '56%',
+    [tourWidgetTokens.minWidth]: '0',
+    [tourWidgetTokens.borderRadius]: '16px',
+    [tourWidgetTokens.gradientFrameHeight]: '34%',
+    [tourWidgetTokens.gradientFrameFade]: '56%',
   }}
-/>
+/>;
 ```
 
 ## Особенности

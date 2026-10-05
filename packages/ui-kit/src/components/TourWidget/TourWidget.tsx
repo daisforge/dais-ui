@@ -1,5 +1,4 @@
 import { mCls } from '@ui-kit/utils';
-import { useActiveTheme } from '@ui-kit/utils/hooks';
 import { forwardRef } from 'react';
 
 import { TourWidgetBullet } from './components/TourWidgetBullet';
@@ -8,6 +7,7 @@ import { TourWidgetContent } from './components/TourWidgetContent';
 import { TourWidgetFooter } from './components/TourWidgetFooter';
 import { TourWidgetGradient } from './components/TourWidgetGradient';
 import { TourWidgetHeader } from './components/TourWidgetHeader';
+import { useIsDarkTheme } from './hooks/useIsDarkTheme';
 import { tourWidgetClassNames as cls } from './TourWidget.classNames';
 import { TourWidgetProvider } from './TourWidget.context';
 import { StyledContainer } from './TourWidget.styled';
@@ -26,14 +26,14 @@ const TourWidgetWithRef = forwardRef<HTMLDivElement, TourWidgetProps>(
     { children, orientation = 'vertical', activeStepIndex, className, ...rest },
     ref,
   ) => {
-    const theme = useActiveTheme();
+    const isDarkTheme = useIsDarkTheme();
 
     return (
       <TourWidgetProvider value={{ activeStepIndex }}>
         <StyledContainer
           ref={ref}
           $orientation={orientation}
-          $isDark={theme === 'dark'}
+          $isDark={isDarkTheme}
           className={mCls(orientationClassNames[orientation], className)}
           {...rest}
         >
