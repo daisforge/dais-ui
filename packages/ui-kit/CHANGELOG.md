@@ -3,6 +3,36 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.22.0](https://github.com/daisforge/dais-ui/compare/v1.21.0...v1.22.0) (2026-10-05)
+
+### Bug Fixes
+
+- **deps:** @tanstack/react-virtual из peerDependencies в dependencies ui-kit ([#107](https://github.com/daisforge/dais-ui/issues/107)) ([c35c194](https://github.com/daisforge/dais-ui/commit/c35c194095846f4d6fb574a5843147d235eccc68))
+- **FiltersActions:** убран лишний отступ шапки поповера без поиска ([#109](https://github.com/daisforge/dais-ui/issues/109)) ([77b3a72](https://github.com/daisforge/dais-ui/commit/77b3a7262661ae9a280d9a9c7c4191eea2b15059))
+- **TableCanvas:** tableConfig.editing. Исправлено отображение длинного текста в select ([#105](https://github.com/daisforge/dais-ui/issues/105)) ([d4dd511](https://github.com/daisforge/dais-ui/commit/d4dd511ec4fb172d127da35234befd9d39cbbe49))
+- **TableCanvas:** tableConfig.selecting — переселект предков при возврате потомка на всех уровнях ([593cbb1](https://github.com/daisforge/dais-ui/commit/593cbb1ce42b517aadc733a461af43f56a4695d1))
+- **TableCanvas:** итоговая строка не перекрывается фоном пустого места под данными ([#106](https://github.com/daisforge/dais-ui/issues/106)) ([614d7dc](https://github.com/daisforge/dais-ui/commit/614d7dc51aeb8313ff409941181c880363625703))
+- **TableCanvas:** корректное редактирование и позиционирование каретки в ячейке при вводе набором символов ([8a13718](https://github.com/daisforge/dais-ui/commit/8a137187cbc8f91396aef812faea17b414bef353))
+
+### Features
+
+- **TableCanvas, Table, MassActions:** summaryCounterMaxCount — ограничение отображаемого числа в счётчике выбранных строк ([f23295b](https://github.com/daisforge/dais-ui/commit/f23295b93f513675eca92177219fa1cd547377cb))
+- **TableCanvas:** tableConfig.headerRowHeight — добавлена возможность настраивать высоту шапки ([883b8d5](https://github.com/daisforge/dais-ui/commit/883b8d5667b8cd4f696430ce8f95174438cb3107))
+- **TableCanvas:** добавлены Canvas.Image, Canvas.Avatar и Canvas.AvatarGroup ([62b1862](https://github.com/daisforge/dais-ui/commit/62b186228b9ef0373f6e2b0b618f3d663c0a5b64))
+- **TourWidget:** добавлена светлая тема ([6c98624](https://github.com/daisforge/dais-ui/commit/6c98624c794941ee61a48d8a26bb2734db7dabb8))
+
+# [1.21.0](https://github.com/daisforge/dais-ui/compare/v1.20.0...v1.21.0) (2026-09-25)
+
+### Bug Fixes
+
+- **deps:** @glideappsfinal/glide-data-grid до 6.5.1 ([08fb999](https://github.com/daisforge/dais-ui/commit/08fb99950e22966ea186e6ea182ee4d3d40aa551))
+- **TableCanvas, Table:** скорректировано поведение и отображение закрытого сайдбара ([7cadb8c](https://github.com/daisforge/dais-ui/commit/7cadb8c4ee8e4333a954eccee69a0d4f0bc58830))
+- **TableCanvas:** Canvas.Text скорректировано центрирование многострочного текста по вертикали ([fb137d7](https://github.com/daisforge/dais-ui/commit/fb137d77017a5e3885a9232f24337a53f052b425))
+
+### Features
+
+- **TableCanvas, Table:** добавлен колбэк summaryRows.onChange ([#90](https://github.com/daisforge/dais-ui/issues/90)) ([9b7ed8b](https://github.com/daisforge/dais-ui/commit/9b7ed8bd1dc7567786d397874101977f97535915))
+
 # [1.20.0](https://github.com/daisforge/dais-ui/compare/v1.19.0...v1.20.0) (2026-09-21)
 
 ### Bug Fixes
