@@ -1,0 +1,14 @@
+import{j as i}from"./react-D2T61mpp.js";import{cg as n,ch as t,ca as s}from"./vendor-DnzZ9UTZ.js";import{T as l}from"./Table.simple.stories-BKKsIIy3.js";import"./react-is-Clcustum.js";import"./styled-components-Duv-lZes.js";import"./@tanstack/react-virtual-DuiQXsFz.js";import"./tslib-DoU9Jm1N.js";import"./tableData-DVJFoYoT.js";import"./DocStoryTemplate-JszTZfrB.js";import"./storySourceDoc-tVKyHcEN.js";import"./Table-DeGegnP_.js";import"./FiltersActions-Cwc0W2vh.js";import"./IconButton-BB0DmyOh.js";import"./@salutejs/plasma-icons-CBo6sATl.js";import"./@salutejs/sdds-finai-BZdsFt-V.js";import"./@salutejs/sdds-themes-BWS17lsS.js";import"./utils-Cd1k1OL_.js";import"./constants-BEafpjqR.js";import"./sharedUtilsDebug-BX_KjCjW.js";import"./Box-B2j6LtZn.js";import"./TextField-BJCUtEBi.js";import"./sharedUtilsInputs-0v1fRA_K.js";import"./AnalyticalWidget-CybUWx0S.js";import"./Collapse-DVtw0dkZ.js";import"./react-data-grid-C4_2LtGD.js";import"./TableTabs-B-wJKzTx.js";import"./TableCanvasSharedConstants-B2qJZwC8.js";import"./sharedUiSearch-QKSWR09t.js";import"./ListOfFilters-hTa6q2LU.js";import"./lodash.isequal-DD0Lfcik.js";import"./NumberFormat-ugXt7Wlh.js";import"./EmptyState-T6Y8UEI6.js";import"./MassActions-B_MLl_V3.js";import"./Autocomplete-B8J1D44R.js";function e(r){const o={a:"a",code:"code",h1:"h1",h2:"h2",li:"li",p:"p",ul:"ul",...n(),...r.components};return i.jsxs(i.Fragment,{children:[i.jsx(t,{of:l,name:"Docs"}),`
+`,i.jsx(o.h1,{id:"simpletable",children:"SimpleTable"}),`
+`,i.jsxs(o.p,{children:["Базовые примеры legacy ",i.jsx(o.code,{children:"Table"}),": минимальная HTML-таблица и нагрузочный пример с большим количеством ячеек."]}),`
+`,i.jsx(o.h2,{id:"ключевые-особенности",children:"Ключевые особенности"}),`
+`,i.jsxs(o.ul,{children:[`
+`,i.jsxs(o.li,{children:["Минимальная связка ",i.jsx(o.code,{children:"rows"}),", ",i.jsx(o.code,{children:"columnConfig"})," и ",i.jsx(o.code,{children:"tableConfig"})]}),`
+`,i.jsx(o.li,{children:"Кастомный заголовок колонки через React-разметку"}),`
+`,i.jsx(o.li,{children:"Пример render-функции ячейки для большого набора строк и колонок"}),`
+`,i.jsxs(o.li,{children:["Управление размерами таблицы через ",i.jsx(o.code,{children:"tableConfig.containerStyle"})]}),`
+`]}),`
+`,i.jsx(o.h2,{id:"особенности",children:"Особенности"}),`
+`,i.jsxs(o.p,{children:[i.jsx(o.code,{children:"MillionCells"})," показывает сценарий проверки виртуализации и производительности. Для новых сценариев больших таблиц предпочтительнее ",i.jsx(o.code,{children:"TableCanvas"}),"."]}),`
+`,i.jsxs(o.p,{children:["Описание типов - в разделе ",i.jsx(o.a,{href:"?path=/docs/%D0%BB%D0%BE%D0%BA%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D1%8B-table-simple-api--docs",children:"API"}),"."]}),`
+`,i.jsx(s,{})]})}function G(r={}){const{wrapper:o}={...n(),...r.components};return o?i.jsx(o,{...r,children:i.jsx(e,{...r})}):e(r)}export{G as default};
