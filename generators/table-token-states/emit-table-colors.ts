@@ -113,20 +113,30 @@ const TEMP_FILLS: TempFillGroup[] = [
   },
 ];
 
-const STATE_NAMES = [
+// ReadonlyArray<StateName>: добавили состояние в States — TS заставит
+// дополнить список, иначе emit молча пропустит новые ключи.
+const STATE_NAMES: readonly StateName[] = [
   'rest',
   'hover',
   'hover2',
   'active',
   'hoverActive',
-] as const;
+];
+
+/** Защита от опечаток/переименований: ключ обязан существовать в палитре. */
+const mustExist = (key: string): string => {
+  if (!(key in byTableKey)) {
+    throw new Error(`Ключ «${key}» отсутствует в TABLE_COLORS генератора`);
+  }
+  return key;
+};
 
 TEMP_FILLS.forEach((group) => {
   const themeEntries = Object.entries(group.values) as [ThemeName, string][];
   themeEntries.forEach(([theme, hex]) => {
     const states = statesFor(hex, theme);
     STATE_NAMES.forEach((state) => {
-      const key = group.keys[state];
+      const key = mustExist(group.keys[state]);
       const value = states[state];
       if (value) {
         byTableKey[key][theme] = value;
@@ -167,7 +177,8 @@ note(
   'bgCellInfoRowActiveHovered',
   'bgCellInfoActive',
   'bgCellInfoActiveHovered',
-].forEach((key) => {
+].forEach((rawKey) => {
+  const key = mustExist(rawKey);
   byTableKey[key].highContrastLight = byTableKey[key].light;
   note(
     key,

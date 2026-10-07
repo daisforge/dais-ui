@@ -46,6 +46,7 @@ import { resolveCanvasCellInteractionTargetFromRenderData } from './lib/canvas/i
 import { StyledGlideDataEditor, StyledOverlayPortal } from './styled';
 import { getTheme } from './theming';
 import {
+  getEditableCellFillStates,
   resolveActiveRowBg,
   resolveCellFillOverride,
   resolveConsumerFillOverride,
@@ -176,8 +177,9 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   highlightActiveRowControlled,
   highlightRegions: highlightRegionsExternal,
   checkboxSelectedRowIndexes,
-  // На цвет больше не влияет (правило v1.2: наличие чекбокса не меняет цвет
-  // выбранной строки) — вытаскиваем, чтобы не утёк в restProps.
+  // На цвет не влияет: наличие чекбокса не меняет цвет выбранной строки,
+  // ступень добавляет только НАЖАТЫЙ чекбокс (checkboxSelectedRowIndexes).
+  // Вытаскиваем из restProps; удалить вместе с пропом в следующем мажоре.
   checkboxVisibleRowIndexes: _checkboxVisibleRowIndexes,
   hoverEffects,
   onCellClicked: onCellClickedExternal,
@@ -450,8 +452,9 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       if (headerIsActive) {
         themeOverride.bgHeader = theme.selectionServiceActiveBg;
         themeOverride.bgHeaderHasFocus = theme.selectionServiceActiveBg;
-        // Выделенная шапка под курсором — на ступень глубже (hoverActive),
-        // а не штатный светлый ховер (подтверждено дизайнером 07.10, в.2).
+        // Выделенная шапка под курсором темнеет на ступень (hoverActive-пара),
+        // а не светлеет штатным ховером — иначе hover визуально «снимал» бы
+        // выделение.
         themeOverride.bgHeaderHovered = theme.bgHeaderSelectedHovered;
         hasThemeOverride = true;
       }
@@ -713,16 +716,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         rowActive: rowInd === activeRow,
       };
       const fillOverride = cellIsEditable
-        ? resolveCellFillOverride(
-            {
-              rest: theme.bgEditableCell,
-              hover: theme.bgEditableCellHovered,
-              hover2: theme.bgEditableCellRowActiveHovered,
-              active: theme.bgEditableCellActive,
-              hoverActive: theme.bgEditableCellActiveHovered,
-            },
-            fillContext
-          )
+        ? resolveCellFillOverride(getEditableCellFillStates(theme), fillContext)
         : columnThemeOverrideResult?.bgCell
           ? resolveConsumerFillOverride(
               columnThemeOverrideResult.bgCell,
@@ -731,20 +725,18 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
             )
           : undefined;
 
-      // Активная ячейка выбранной строки при одиночном выделении: по правилу
-      // v1.2 от выделения остаётся только рамка accentColor, без тонирования.
-      // Glide тонирует одиночную выбранную ячейку её accentLight — гасим бленд,
-      // подставляя в accentLight фон самой ячейки (бленд непрозрачного hex —
-      // no-op). Настоящие диапазоны (>1 ячейки) не трогаем: пересечение с
-      // выбранной строкой = выделение.
-      const soloRange = selectionVisualState.activeDataRange;
+      // Активная ячейка выбранной строки при одиночном выделении: от
+      // выделения остаётся только рамка accentColor, без тонирования — ячейка
+      // живёт на фоне своей строки. Glide тонирует одиночную выбранную ячейку
+      // её accentLight — гасим бленд, подставляя в accentLight фон самой
+      // ячейки (бленд непрозрачного hex — no-op). Настоящие диапазоны
+      // (>1 ячейки) не трогаем: пересечение с выбранной строкой = выделение.
+      const { soloDataCell } = selectionVisualState;
       const soloActiveCellOverride =
         fillContext.rowActive &&
-        soloRange !== undefined &&
-        soloRange.width === 1 &&
-        soloRange.height === 1 &&
-        soloRange.x === colInd &&
-        soloRange.y === rowInd
+        soloDataCell !== undefined &&
+        soloDataCell[0] === colInd &&
+        soloDataCell[1] === rowInd
           ? {
               accentLight: fillOverride
                 ? fillOverride.bgCell
@@ -1229,7 +1221,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
 
   // Фон полностью выделенной группы повторяет выделенную листовую шапку:
   // idle — тёмный selected (selectionServiceActiveBg), под курсором — на
-  // ступень глубже (bgHeaderSelectedHovered, подтверждено дизайнером 07.10).
+  // ступень глубже (bgHeaderSelectedHovered), те же пары, что у листа.
   const getGroupDetails = useCallback<
     NonNullable<GlideProps['getGroupDetails']>
   >(
@@ -1496,12 +1488,11 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       // горизонтальном скролле эта заливка наедет на итоговую строку и
       // перекроет её текст.
 
-      // Выбранная строка (highlightActiveType='row') — правило v1.2: это НЕ
-      // выделение, наложения нет. Фон = selectionCheckboxBg (rest), под
-      // курсором bgSelectedRowHovered (hover); НАЖАТЫЙ чекбокс добавляет
-      // ступень (hover, под курсором hover2 = bgSelectedRowActiveHovered).
-      // accentLight — на случай пересечения с реальным выделением: там
-      // показывается выделение, как на отмеченной строке.
+      // Выбранная строка (highlightActiveType='row') — НЕ выделение,
+      // наложения нет: фон идёт лестницей resolveActiveRowBg (rest → hover,
+      // нажатый чекбокс добавляет ступень). accentLight — на случай
+      // пересечения с реальным выделением: в пересечении показывается
+      // выделение, как на отмеченной строке.
       if (rowInd === activeRow) {
         const hovered = rowInd === hoveredRow;
         return {

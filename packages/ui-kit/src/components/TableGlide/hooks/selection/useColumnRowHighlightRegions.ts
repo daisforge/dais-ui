@@ -142,8 +142,8 @@ export function useColumnRowHighlightRegions({
       }));
     }
 
-    // Подсветку строки (highlightActiveType='row') регионы НЕ рисуют: по
-    // правилу v1.2 выбранная строка — не выделение. Её фон отдаёт row-тема
+    // Подсветку строки (highlightActiveType='row') регионы НЕ рисуют:
+    // выбранная строка — не выделение, наложения нет. Её фон отдаёт row-тема
     // (getRowThemeOverride в TableGlide.tsx), цветные ячейки — per-cell тема
     // (cell-fill-override: hover/hover2).
 

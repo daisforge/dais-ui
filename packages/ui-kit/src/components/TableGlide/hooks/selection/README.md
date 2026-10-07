@@ -108,10 +108,10 @@ Error-outline добавляется в конец (чтобы active-fill ег�
 (`pushMergedOutlines`), затемнение шапки/нумерации, затемнение нумерации под
 ячейками `rangeStack`. Свою обводку `rangeStack` **не рисует** (см.
 функциональную доку, раздел про multi-range). Выбранную строку регионами
-**не красит** (правило v1.2): её фон — row-тема (`getRowThemeOverride`),
+**не красит** (выбранная строка — не выделение): её фон — row-тема (`getRowThemeOverride`),
 цветные ячейки — per-cell тема (`cell-fill-override`, hover/hover2).
 
-## Барьель
+## Барьер
 
 ### `index.ts`
 Экспортит наружу (в `TableGlide.tsx`) то, что нужно движку: `useNativeGridSelection`,

@@ -27,6 +27,8 @@ const SOURCES = {
       dark: '#1A9E3233',
       betaCoreLight: '#21A0381F',
       betaCoreDark: '#21A03833',
+      highContrastLight: '#198A001F',
+      highContrastDark: '#1A9E3233', // CSS-темы нет, вход = копия dark
     },
   },
   surfaceNegativeMinor: {
@@ -42,6 +44,9 @@ const SOURCES = {
       dark: '#4A0D13',
       betaCoreLight: '#FEDFDE',
       betaCoreDark: '#480B11',
+      // highContrastLight намеренно нет: токена в HC-теме нет, палитра для неё
+      // — копия light (слой emit), формулой не считается.
+      highContrastDark: '#4A0D13', // CSS-темы нет, вход = копия dark
     },
   },
   surfaceAccentMinor: {
@@ -57,6 +62,8 @@ const SOURCES = {
       dark: '#071A26FF',
       betaCoreLight: '#EFF8FF',
       betaCoreDark: '#0C1A24',
+      highContrastLight: '#CFE5F2FF',
+      highContrastDark: '#071A26FF', // CSS-темы нет, вход = копия dark
     },
   },
 } as const;

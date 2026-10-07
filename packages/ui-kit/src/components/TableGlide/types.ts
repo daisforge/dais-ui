@@ -38,10 +38,7 @@ export type {
   ProvideEditorComponent,
   SpanAlignment,
 };
-export type ThemeDynamicCustoms = {
-  rowSize: SIZE;
-  activeSizes: GlideSizeConfig;
-};
+export type { ThemeDynamicCustoms } from './theming/types';
 export type { Theme, ActiveTheme };
 
 export type GlideProps = ComponentProps<typeof DataEditor>;
@@ -402,9 +399,9 @@ export type TableGlideCustomProps<
   checkboxSelectedRowIndexes?: ReadonlySet<number>;
   /**
    * Индексы строк, у которых ЕСТЬ (виден) чекбокс.
-   * @deprecated На цвет больше не влияет: по правилу дизайн-системы v1.2
-   * наличие чекбокса не меняет цвет выбранной строки (только НАЖАТЫЙ чекбокс
-   * добавляет ступень — это `checkboxSelectedRowIndexes`).
+   * @deprecated На цвет не влияет: наличие чекбокса не меняет цвет выбранной
+   * строки, ступень добавляет только НАЖАТЫЙ чекбокс
+   * (`checkboxSelectedRowIndexes`). Удалить в следующем мажоре.
    */
   checkboxVisibleRowIndexes?: ReadonlySet<number>;
   /**

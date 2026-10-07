@@ -192,6 +192,12 @@ export const fillStates = (
 };
 
 const cache = new Map<string, CellFillStates>();
+/**
+ * Страховка от неограниченного роста: потребитель может генерировать hex из
+ * данных. При переполнении кэш просто сбрасывается — дешевле, чем LRU, а
+ * пересчёт редких цветов копеечный.
+ */
+const CACHE_LIMIT = 1024;
 
 /**
  * Состояния произвольного цвета ячейки в активной теме — с кэшем по hex.
@@ -211,6 +217,7 @@ export const getCellFillStates = (
     primaryHex: params.primaryHex,
     selectionHex: params.selectionHex,
   });
+  if (cache.size >= CACHE_LIMIT) cache.clear();
   cache.set(key, states);
   return states;
 };

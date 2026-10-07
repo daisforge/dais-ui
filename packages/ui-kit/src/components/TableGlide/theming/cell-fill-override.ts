@@ -43,6 +43,29 @@ export const resolveCellFillOverride = (
  * состояния считаются формулой генератора с кэшем по hex. Не-hex значение
  * (rgba(), var() и т. п.) передаётся как есть, без вычисленных состояний.
  */
+/** Ключи темы, образующие лестницу редактируемой (жёлтой) ячейки. */
+type EditableCellTheme = {
+  bgEditableCell: string;
+  bgEditableCellHovered: string;
+  bgEditableCellRowActiveHovered: string;
+  bgEditableCellActive: string;
+  bgEditableCellActiveHovered: string;
+};
+
+/**
+ * Состояния редактируемой ячейки из темы. Знание «какие поля темы образуют
+ * лестницу» живёт здесь, рядом с формулой выбора состояния, а не в компоненте.
+ */
+export const getEditableCellFillStates = (
+  theme: EditableCellTheme,
+): CellFillStates => ({
+  rest: theme.bgEditableCell,
+  hover: theme.bgEditableCellHovered,
+  hover2: theme.bgEditableCellRowActiveHovered,
+  active: theme.bgEditableCellActive,
+  hoverActive: theme.bgEditableCellActiveHovered,
+});
+
 /** Ключи темы, образующие лестницу фона выбранной строки. */
 type ActiveRowBgTheme = {
   selectionCheckboxBg: string;
@@ -51,11 +74,14 @@ type ActiveRowBgTheme = {
 };
 
 /**
- * Фон обычной ячейки выбранной строки (highlightActiveType='row', правило
- * v1.2): rest = selectionCheckboxBg, под курсором hover = bgSelectedRowHovered;
+ * Фон обычной ячейки выбранной строки (highlightActiveType='row'):
+ * rest = selectionCheckboxBg, под курсором hover = bgSelectedRowHovered;
  * НАЖАТЫЙ чекбокс добавляет ступень (hover, под курсором hover2 =
- * bgSelectedRowActiveHovered). Используется row-темой и гашением тонирования
- * одиночной активной ячейки.
+ * bgSelectedRowActiveHovered). Побочный эффект лестницы: «чекбокс без
+ * курсора» и «курсор без чекбокса» дают один цвет — это осознанные уровни,
+ * а не ошибка. Используется row-темой и гашением тонирования одиночной
+ * активной ячейки. Решение дизайн-системы и история — в
+ * generators/table-token-states/INTEGRATION-STATUS.md.
  */
 export const resolveActiveRowBg = (
   theme: ActiveRowBgTheme,

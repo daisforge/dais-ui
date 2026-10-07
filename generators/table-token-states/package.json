@@ -1,6 +1,10 @@
 {
   "name": "table-token-states",
   "private": true,
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  },
   "description": "Состояния цветов Table Canvas (rest / hover / active / hoverActive) из семантических токенов темы, OKLCH",
   "scripts": {
     "test": "vitest run code",
