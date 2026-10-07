@@ -20,7 +20,6 @@ import * as TourWidgetStories from './TourWidget.stories';
 ## Использование
 
 ```tsx
-import { ViewContainer } from '@daisforge/ui';
 import { Box, Button, TourWidget } from '@daisforge/ui';
 import { tourPulseMixin } from '@daisforge/ui/mixins';
 ```
@@ -30,23 +29,18 @@ import { tourPulseMixin } from '@daisforge/ui/mixins';
 ```tsx
 const [activeStepIndex, setActiveStepIndex] = useState(0);
 
-<ViewContainer view="onDark">
-  <TourWidget
-    activeStepIndex={activeStepIndex}
-    $css={{ width: '286px', height: '480px' }}
-  >
-    <TourWidget.Content>
-      <Box as="img" src={imageSrc} alt="" $css={{ width: '100%' }} />
-    </TourWidget.Content>
-    <TourWidget.Header title="Title" description="Description" />
-    <TourWidget.Footer>
-      <TourWidget.Bullets count={steps.length} />
-      <Button onClick={() => setActiveStepIndex((step) => step + 1)}>
-        Далее
-      </Button>
-    </TourWidget.Footer>
-  </TourWidget>
-</ViewContainer>;
+<TourWidget activeStepIndex={activeStepIndex} $css={{ width: '306px' }}>
+  <TourWidget.Content>
+    <Box as="img" src={imageSrc} alt="" $css={{ width: '100%' }} />
+  </TourWidget.Content>
+  <TourWidget.Header title="Title" description="Description" />
+  <TourWidget.Footer>
+    <TourWidget.Bullets count={steps.length} />
+    <Button onClick={() => setActiveStepIndex((step) => step + 1)}>
+      Далее
+    </Button>
+  </TourWidget.Footer>
+</TourWidget>;
 ```
 
 ## Compound-компоненты
@@ -169,34 +163,28 @@ const Target = styled(Box)`
 
 По умолчанию `tourPulseMixin` сам задает `inset: -4px` и `border-radius: 16px` и не добавляет заливку на target.
 
-## Темная тема
+## Темы
 
-`TourWidget` всегда используется на темной поверхности. Если внутри футера есть SDDS-кнопки или ссылки, оборачивайте композицию в `ViewContainer view="onDark"`, чтобы вложенные controls взяли on-dark токены без ручных переопределений цвета.
-
-```tsx
-<ViewContainer view="onDark">
-  <TourWidget activeStepIndex={activeStepIndex}>
-    <TourWidget.Footer>
-      <Button view="secondary">Назад</Button>
-      <Button view="white">Далее</Button>
-    </TourWidget.Footer>
-  </TourWidget>
-</ViewContainer>
-```
+`TourWidget` автоматически использует глобальную тему приложения.
 
 ## CSS-переменные
 
 Корневой `$css` можно использовать для точечной настройки внешнего вида.
 
 ```tsx
+import {
+  TourWidget,
+  tourWidgetTokens,
+} from '@daisforge/ui/components/TourWidget';
+
 <TourWidget
   $css={{
-    '--tour-widget-min-width': '0',
-    '--tour-widget-border-radius': '16px',
-    '--tour-widget-gradient-frame-height': '34%',
-    '--tour-widget-gradient-frame-fade': '56%',
+    [tourWidgetTokens.minWidth]: '0',
+    [tourWidgetTokens.borderRadius]: '16px',
+    [tourWidgetTokens.gradientFrameHeight]: '34%',
+    [tourWidgetTokens.gradientFrameFade]: '56%',
   }}
-/>
+/>;
 ```
 
 ## Особенности

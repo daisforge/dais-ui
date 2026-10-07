@@ -1,0 +1,35 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as TableHeaderRowHeightStories from './TableCanvas.headerRowHeight.stories';
+
+<Meta of={TableHeaderRowHeightStories} name="Docs" />
+
+# HeaderRowHeight (TableCanvas)
+
+**tableConfig.headerRowHeight**
+
+Настройка высоты ряда шапки таблицы. Одно число задаёт высоту заголовков. По умолчанию `33`.
+
+## Ключевые особенности
+
+- Фиксированная высота ряда шапки (`number`)
+- Значение задаётся один раз в `tableConfig`
+- Применяется ко всем уровням объединённой (групповой) шапки одинаково
+
+## tableConfig.headerRowHeight
+
+- **`number`** — высота одного ряда шапки в пикселях
+- **по умолчанию** — `33`
+
+## Поведение с объединёнными шапками
+
+Значение применяется к **каждому** уровню шапки: и к листовому (нижнему) ряду
+колонок, и к каждому уровню объединённых заголовков. Поэтому при `N` уровнях
+группировки итоговая высота шапки считается так:
+
+```
+итоговая высота = headerRowHeight * (1 + число уровней групп)
+```
+
+> Подробнее о пропсах — [API tableConfig](?path=/docs/локальные-компоненты-tablecanvas-api-tableconfig--api)
+
+<Stories />

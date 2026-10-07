@@ -973,7 +973,7 @@ export function TableCanvas<
                             ...(resultRowHeight && {
                               rowHeight: resultRowHeight,
                             }),
-                            headerHeight: 33,
+                            headerHeight: tableConfig.headerRowHeight ?? 33,
 
                             ...(tableConfig.editing &&
                               !isLoadingTable && {

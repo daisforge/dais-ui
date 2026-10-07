@@ -48,6 +48,7 @@ export const SummaryCheckbox = ({
     rowShowCheckbox,
     disableSummaryCheckboxInHeader,
     hideSummaryCheckboxInHeader,
+    summaryCounterMaxCount,
   } = selectingRowConfig;
 
   const callbackOnChange = summaryCheckedUncontrolled?.onChange;
@@ -220,10 +221,17 @@ export const SummaryCheckbox = ({
     return { isHaveCounter: count > 0, count };
   })();
 
+  // Отображаемый текст счётчика с учётом ограничения summaryCounterMaxCount:
+  // при превышении показываем «N+» (как это делает базовый Counter через maxCount).
+  const counterText =
+    typeof summaryCounterMaxCount === 'number' && count > summaryCounterMaxCount
+      ? `${summaryCounterMaxCount}+`
+      : `${count}`;
+
   const sizeOnOpen = (() => {
     if (!selectedRows || selectedRows.size === 0) return '0px';
 
-    const symbolsCount = selectedRows.size.toString().length;
+    const symbolsCount = counterText.length;
     // Средняя ширина одного символа шрифта body-xxs (Counter xs)
     const sizeOfSymbol = 6.1;
     // Горизонтальный padding Counter xs: 0.25rem * 2 = 4px * 2 ≈ 7.1px
@@ -331,6 +339,7 @@ export const SummaryCheckbox = ({
             view="accent"
             size="xs"
             count={count}
+            maxCount={summaryCounterMaxCount}
             style={{
               marginBottom: '3px',
             }}

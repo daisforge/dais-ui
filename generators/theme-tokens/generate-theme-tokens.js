@@ -127,6 +127,7 @@ const KEYS = [
   'surfaceNegativeHover',
   'surfaceNegativeActive',
   'surfaceTransparentAccent',
+  'surfaceTransparentAccentActive',
   'surfaceTransparentAccent12',
   'surfaceTransparentAccent20',
   'surfaceTransparentPositive',

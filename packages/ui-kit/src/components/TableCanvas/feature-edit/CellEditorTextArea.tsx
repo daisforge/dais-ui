@@ -1,7 +1,7 @@
 import { TextCellEntry } from '@glideappsfinal/glide-data-grid';
 import { bodyM, bodyS, bodyXS } from '@ui-kit/tokens';
 import { mergeClasses } from '@ui-kit/utils';
-import React, { forwardRef, useState } from 'react';
+import React, { forwardRef, useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 
 import { useRowContext } from '../contexts';
@@ -125,6 +125,20 @@ export function CellEditorTextAreaInternal<
   const defV =
     initialValue ?? (row[column.key as keyof TRow] as unknown as string);
   const [v, setV] = useState(() => defV);
+
+  /**
+   * Вход в редактирование «перезаписью» (набор символа на выделенной ячейке):
+   * Glide передаёт введённый символ как initialValue и НЕ триггерит onChange,
+   * поэтому черновик строки остаётся старым и при коммите одного символа
+   * значение не сохранялось. Засеиваем initialValue в onRowChange на маунте.
+   */
+  useEffect(() => {
+    if (initialValue !== undefined && initialValue !== null) {
+      onRowChange({ ...row, [column.key]: initialValue });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const onChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newVStr = event.target.value ?? '';
     setV(newVStr);
