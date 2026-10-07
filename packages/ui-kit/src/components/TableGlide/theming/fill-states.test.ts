@@ -18,6 +18,7 @@ const SOURCES = {
     keys: {
       rest: 'bgCellPositive',
       hover: 'bgCellPositiveHovered',
+      hover2: 'bgCellPositiveRowActiveHovered',
       active: 'bgCellPositiveActive',
       hoverActive: 'bgCellPositiveActiveHovered',
     },
@@ -32,6 +33,7 @@ const SOURCES = {
     keys: {
       rest: 'bgCellNegative',
       hover: 'bgCellNegativeHovered',
+      hover2: 'bgCellNegativeRowActiveHovered',
       active: 'bgCellNegativeActive',
       hoverActive: 'bgCellNegativeActiveHovered',
     },
@@ -46,6 +48,7 @@ const SOURCES = {
     keys: {
       rest: 'selectionCheckboxBg',
       hover: 'bgSelectedRowHovered',
+      hover2: 'bgSelectedRowActiveHovered',
       active: 'selectionActiveCheckboxBg',
       hoverActive: 'selectionActiveCheckboxHoveredBg',
     },
@@ -58,12 +61,12 @@ const SOURCES = {
   },
 } as const;
 
-const STATE_NAMES = ['rest', 'hover', 'active', 'hoverActive'] as const;
+const STATE_NAMES = ['rest', 'hover', 'hover2', 'active', 'hoverActive'] as const;
 
 describe('fill-states: эквивалентность рантайм-формулы и генератора', () => {
   for (const [token, { keys, values }] of Object.entries(SOURCES)) {
     for (const [theme, sourceHex] of Object.entries(values)) {
-      it(`${token} в ${theme}: все четыре состояния совпадают с палитрой`, () => {
+      it(`${token} в ${theme}: все пять состояний совпадают с палитрой`, () => {
         const states = getCellFillStates(
           sourceHex,
           theme as keyof typeof TABLE_STATE_COLORS.bgCell,

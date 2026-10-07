@@ -81,6 +81,7 @@ const TEMP_FILLS: TempFillGroup[] = [
     keys: {
       rest: 'bgEditableCell',
       hover: 'bgEditableCellHovered',
+      hover2: 'bgEditableCellRowActiveHovered',
       active: 'bgEditableCellActive',
       hoverActive: 'bgEditableCellActiveHovered',
     },
@@ -98,6 +99,7 @@ const TEMP_FILLS: TempFillGroup[] = [
     keys: {
       rest: 'editedSuccessfullyCellColor',
       hover: 'editedSuccessfullyCellHoverColor',
+      hover2: 'editedSuccessfullyCellRowActiveHoverColor',
       active: 'editedSuccessfullyCellActiveColor',
       hoverActive: 'editedSuccessfullyCellActiveHoverColor',
     },
@@ -116,7 +118,13 @@ for (const group of TEMP_FILLS) {
     string,
   ][]) {
     const states = statesFor(hex, theme);
-    for (const state of ['rest', 'hover', 'active', 'hoverActive'] as const) {
+    for (const state of [
+      'rest',
+      'hover',
+      'hover2',
+      'active',
+      'hoverActive',
+    ] as const) {
       const key = group.keys[state];
       const value = states[state];
       if (value) {
@@ -150,10 +158,12 @@ note(
 for (const key of [
   'bgCellNegative',
   'bgCellNegativeHovered',
+  'bgCellNegativeRowActiveHovered',
   'bgCellNegativeActive',
   'bgCellNegativeActiveHovered',
   'bgCellInfo',
   'bgCellInfoHovered',
+  'bgCellInfoRowActiveHovered',
   'bgCellInfoActive',
   'bgCellInfoActiveHovered',
 ]) {

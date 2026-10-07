@@ -152,7 +152,21 @@ export const CELL: CellTokens = {
  * Цвета таблицы: ключ как в glide-colors.ts / custom-colors.ts → семантический токен + состояние.
  * Состояния заливки: rest — токен; hover — +δ по лучу; active — выделение, наложение
  * surface-transparent-accent на цвет покоя; hoverActive = +1δ по лучу от цвета выделения (hover на выделении
- * показывается; макет «Выделение ячеек» здесь ошибался, правится 18.09).
+ * показывается; макет «Выделение ячеек» здесь ошибался, правится 18.09); hover2 = +2δ по лучу от покоя
+ * (второй шаг hover) — выбранная строка под курсором.
+ *
+ * Выбранная строка (highlightActiveType = 'row', в макете «Выделение ячеек» — выбор строки с раскрытием
+ * деталей), решение 07.10. Наличие чекбокса у строки ничего не меняет, только нажатый чекбокс:
+ *   обычная ячейка                        selectionCheckboxBg          (surface-accent-minor × rest, как отмеченная)
+ *   обычная ячейка под курсором           bgSelectedRowHovered         (× hover)
+ *   чекбокс нажат                         bgSelectedRowHovered         (× hover — на одну ступень глубже, не на две)
+ *   чекбокс нажат, под курсором           bgSelectedRowActiveHovered   (× hover2)
+ *   цветная ячейка (жёлтая, статусная…)   её …Hovered / fillStates(hex).hover — свой hover, без наложения
+ *   цветная ячейка под курсором           её …RowActiveHovered / fillStates(hex).hover2
+ *   служебная зона (№, чекбокс)           selectionServiceActiveBg, под курсором selectionServiceActiveHoveredBg
+ *   шапка над колонкой активной ячейки    selectionServiceActiveBg, под курсором bgHeaderSelectedHovered
+ * Активная ячейка красится как её строка, сверху рамка. Наложение выделения (× active) — только у
+ * выделенной области: диапазон, колонка, строка по номеру.
  */
 export const TABLE_COLORS: TableColorMap<keyof typeof SEMANTIC> = {
   // фон ячейки и строка под курсором
@@ -204,7 +218,7 @@ export const TABLE_COLORS: TableColorMap<keyof typeof SEMANTIC> = {
   selectionCheckboxBg: {
     source: 'surfaceAccentMinor',
     state: 'rest',
-    paints: 'отмеченная строка',
+    paints: 'отмеченная строка; выбранная строка (highlightActiveType = row)',
   },
   selectionServiceBg: {
     source: 'surfaceAccentMinor',
@@ -214,7 +228,13 @@ export const TABLE_COLORS: TableColorMap<keyof typeof SEMANTIC> = {
   bgSelectedRowHovered: {
     source: 'surfaceAccentMinor',
     state: 'hover',
-    paints: 'отмеченная строка под курсором',
+    paints:
+      'отмеченная строка под курсором; выбранная строка под курсором; выбранная строка с нажатым чекбоксом',
+  },
+  bgSelectedRowActiveHovered: {
+    source: 'surfaceAccentMinor',
+    state: 'hover2',
+    paints: 'выбранная строка с нажатым чекбоксом под курсором',
   },
   bgServiceRowHovered: {
     source: 'surfaceAccentMinor',
@@ -275,6 +295,11 @@ export const TABLE_COLORS: TableColorMap<keyof typeof SEMANTIC> = {
     state: 'hoverActive',
     paints: 'редактируемая ячейка в выделении под курсором',
   },
+  bgEditableCellRowActiveHovered: {
+    source: 'dataYellowLight',
+    state: 'hover2',
+    paints: 'редактируемая ячейка выбранной строки под курсором',
+  },
   editedSuccessfullyCellColor: {
     source: 'dataBlueLight',
     state: 'rest',
@@ -295,8 +320,14 @@ export const TABLE_COLORS: TableColorMap<keyof typeof SEMANTIC> = {
     state: 'hoverActive',
     paints: 'сохранённая ячейка в выделении под курсором',
   },
+  editedSuccessfullyCellRowActiveHoverColor: {
+    source: 'dataBlueLight',
+    state: 'hover2',
+    paints: 'сохранённая ячейка выбранной строки под курсором',
+  },
 
   // ячейки, окрашенные статусом — потребитель задаёт bgCell через themeOverride; четыре стандартных заливки
+  // (в выбранной строке цветная ячейка в покое красится своим …Hovered, под курсором — …RowActiveHovered)
   bgCellPositive: {
     source: 'surfaceTransparentPositive',
     state: 'rest',
@@ -316,6 +347,11 @@ export const TABLE_COLORS: TableColorMap<keyof typeof SEMANTIC> = {
     source: 'surfaceTransparentPositive',
     state: 'hoverActive',
     paints: 'positive в выделении под курсором',
+  },
+  bgCellPositiveRowActiveHovered: {
+    source: 'surfaceTransparentPositive',
+    state: 'hover2',
+    paints: 'positive в выбранной строке под курсором',
   },
   bgCellNegative: {
     source: 'surfaceNegativeMinor',
@@ -337,6 +373,11 @@ export const TABLE_COLORS: TableColorMap<keyof typeof SEMANTIC> = {
     state: 'hoverActive',
     paints: 'negative в выделении под курсором',
   },
+  bgCellNegativeRowActiveHovered: {
+    source: 'surfaceNegativeMinor',
+    state: 'hover2',
+    paints: 'negative в выбранной строке под курсором',
+  },
   bgCellWarning: {
     source: 'surfaceTransparentWarning',
     state: 'rest',
@@ -357,6 +398,11 @@ export const TABLE_COLORS: TableColorMap<keyof typeof SEMANTIC> = {
     state: 'hoverActive',
     paints: 'warning в выделении под курсором',
   },
+  bgCellWarningRowActiveHovered: {
+    source: 'surfaceTransparentWarning',
+    state: 'hover2',
+    paints: 'warning в выбранной строке под курсором',
+  },
   bgCellInfo: {
     source: 'surfaceInfoMinor',
     state: 'rest',
@@ -376,6 +422,11 @@ export const TABLE_COLORS: TableColorMap<keyof typeof SEMANTIC> = {
     source: 'surfaceInfoMinor',
     state: 'hoverActive',
     paints: 'info в выделении под курсором',
+  },
+  bgCellInfoRowActiveHovered: {
+    source: 'surfaceInfoMinor',
+    state: 'hover2',
+    paints: 'info в выбранной строке под курсором',
   },
 
   // текст, обводки, акцент — пока из темы (правило для «чернил» отдельно)

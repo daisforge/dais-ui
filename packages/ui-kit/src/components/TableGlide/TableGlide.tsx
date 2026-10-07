@@ -699,6 +699,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
             {
               rest: theme.bgEditableCell,
               hover: theme.bgEditableCellHovered,
+              hover2: theme.bgEditableCellRowActiveHovered,
               active: theme.bgEditableCellActive,
               hoverActive: theme.bgEditableCellActiveHovered,
             },

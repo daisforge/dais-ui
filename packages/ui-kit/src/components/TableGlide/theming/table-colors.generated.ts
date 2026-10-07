@@ -94,7 +94,7 @@ export const TABLE_STATE_COLORS = {
     highContrastLight: '#A9D1EB',
     highContrastDark: '#0C3956',
   },
-  /** surface-accent-minor · rest — отмеченная строка */
+  /** surface-accent-minor · rest — отмеченная строка; выбранная строка (highlightActiveType = row) */
   selectionCheckboxBg: {
     light: '#ECF6FC',
     dark: '#071A26',
@@ -112,7 +112,7 @@ export const TABLE_STATE_COLORS = {
     highContrastLight: '#CFE5F2',
     highContrastDark: '#071A26',
   },
-  /** surface-accent-minor · hover — отмеченная строка под курсором */
+  /** surface-accent-minor · hover — отмеченная строка под курсором; выбранная строка под курсором; выбранная строка с нажатым чекбоксом */
   bgSelectedRowHovered: {
     light: '#DEF0FA',
     dark: '#0A212F',
@@ -120,6 +120,15 @@ export const TABLE_STATE_COLORS = {
     betaCoreDark: '#11212D',
     highContrastLight: '#C2DEEE',
     highContrastDark: '#0A212F',
+  },
+  /** surface-accent-minor · hover2 — выбранная строка с нажатым чекбоксом под курсором */
+  bgSelectedRowActiveHovered: {
+    light: '#D0EAF8',
+    dark: '#0E2839',
+    betaCoreLight: '#D3ECFF',
+    betaCoreDark: '#162836',
+    highContrastLight: '#B5D7EA',
+    highContrastDark: '#0E2839',
   },
   /** surface-accent-minor · hover — служебные колонки строки под курсором */
   bgServiceRowHovered: {
@@ -220,6 +229,15 @@ export const TABLE_STATE_COLORS = {
     highContrastLight: '#CDC8B0', // временно: data-yellow-light (light amber-100; beta Amber/100|950; HC — текущее значение)
     highContrastDark: '#24373A',
   },
+  /** data-yellow-light · hover2 — редактируемая ячейка выбранной строки под курсором */
+  bgEditableCellRowActiveHovered: {
+    light: '#FFE8BF', // временно: data-yellow-light (light amber-100; beta Amber/100|950; HC — текущее значение)
+    dark: '#31260E',
+    betaCoreLight: '#FFE5C3', // временно: data-yellow-light (light amber-100; beta Amber/100|950; HC — текущее значение)
+    betaCoreDark: '#32230E', // временно: data-yellow-light (light amber-100; beta Amber/100|950; HC — текущее значение)
+    highContrastLight: '#EBCD97', // временно: data-yellow-light (light amber-100; beta Amber/100|950; HC — текущее значение)
+    highContrastDark: '#31260E',
+  },
   /** data-blue-light · rest — успешно сохранённая ячейка */
   editedSuccessfullyCellColor: {
     light: '#EDF8FF',
@@ -255,6 +273,15 @@ export const TABLE_STATE_COLORS = {
     betaCoreDark: '#0D3A53', // временно: data-blue-light (beta Blue/100|950; HC — текущее значение)
     highContrastLight: '#B3D3E9', // временно: data-blue-light (beta Blue/100|950; HC — текущее значение)
     highContrastDark: '#0E3854',
+  },
+  /** data-blue-light · hover2 — сохранённая ячейка выбранной строки под курсором */
+  editedSuccessfullyCellRowActiveHoverColor: {
+    light: '#CFECFF',
+    dark: '#122736',
+    betaCoreLight: '#D3ECFF', // временно: data-blue-light (beta Blue/100|950; HC — текущее значение)
+    betaCoreDark: '#162836', // временно: data-blue-light (beta Blue/100|950; HC — текущее значение)
+    highContrastLight: '#C2DAE9', // временно: data-blue-light (beta Blue/100|950; HC — текущее значение)
+    highContrastDark: '#122736',
   },
   /** surface-transparent-positive · rest — ячейка со статусом positive */
   bgCellPositive: {
@@ -292,6 +319,15 @@ export const TABLE_STATE_COLORS = {
     highContrastLight: '#BADCD7',
     highContrastDark: '#0E4546',
   },
+  /** surface-transparent-positive · hover2 — positive в выбранной строке под курсором */
+  bgCellPositiveRowActiveHovered: {
+    light: '#CBE9D0',
+    dark: '#12381E',
+    betaCoreLight: '#CCE9D1',
+    betaCoreDark: '#133821',
+    highContrastLight: '#CDE5C8',
+    highContrastDark: '#12381E',
+  },
   /** surface-negative-minor · rest — ячейка со статусом negative */
   bgCellNegative: {
     light: '#FFE0E3',
@@ -327,6 +363,15 @@ export const TABLE_STATE_COLORS = {
     betaCoreDark: '#432C42',
     highContrastLight: '#DCCDDD', // временно: в HC нет минорного токена статуса, копия light
     highContrastDark: '#482C45',
+  },
+  /** surface-negative-minor · hover2 — negative в выбранной строке под курсором */
+  bgCellNegativeRowActiveHovered: {
+    light: '#FDCCD1',
+    dark: '#62151B',
+    betaCoreLight: '#FCCBCA',
+    betaCoreDark: '#601119',
+    highContrastLight: '#FDCCD1', // временно: в HC нет минорного токена статуса, копия light
+    highContrastDark: '#62151B',
   },
   /** surface-transparent-warning · rest — ячейка со статусом warning */
   bgCellWarning: {
@@ -364,6 +409,15 @@ export const TABLE_STATE_COLORS = {
     highContrastLight: '#D4D5D6',
     highContrastDark: '#363A3D',
   },
+  /** surface-transparent-warning · hover2 — warning в выбранной строке под курсором */
+  bgCellWarningRowActiveHovered: {
+    light: '#FCDAC5',
+    dark: '#4B2713',
+    betaCoreLight: '#F7D8C4',
+    betaCoreDark: '#462512',
+    highContrastLight: '#F6D9C4',
+    highContrastDark: '#4B2713',
+  },
   /** surface-info-minor · rest — ячейка со статусом info */
   bgCellInfo: {
     light: '#CFECFF',
@@ -399,6 +453,15 @@ export const TABLE_STATE_COLORS = {
     betaCoreDark: '#094567',
     highContrastLight: '#AADAFA', // временно: в HC нет минорного токена статуса, копия light
     highContrastDark: '#104467',
+  },
+  /** surface-info-minor · hover2 — info в выбранной строке под курсором */
+  bgCellInfoRowActiveHovered: {
+    light: '#B1E0FF',
+    dark: '#14384F',
+    betaCoreLight: '#B7DFFF',
+    betaCoreDark: '#0F3853',
+    highContrastLight: '#B1E0FF', // временно: в HC нет минорного токена статуса, копия light
+    highContrastDark: '#14384F',
   },
   /** text-primary · rest — текст ячеек */
   textDark: {

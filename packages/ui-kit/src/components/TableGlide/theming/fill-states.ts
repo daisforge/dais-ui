@@ -15,6 +15,8 @@ import { TABLE_FILL_PARAMS, TableColorTheme } from './table-colors.generated';
 export type CellFillStates = {
   rest: string;
   hover: string | null;
+  /** +2δ по лучу: цвет ячейки в выбранной строке под курсором (highlightActiveType='row'). */
+  hover2: string | null;
   active: string | null;
   hoverActive: string | null;
 };
@@ -168,15 +170,25 @@ export const fillStates = (
     : undefined;
   const hoverActive = hoverOnSelection(active, delta, mode, primary);
   if (options.achromatic || hexToOklch(token).c < ACHROMATIC_CHROMA) {
-    if (!primary) return { rest: token, hover: null, active, hoverActive };
+    if (!primary)
+      return { rest: token, hover: null, hover2: null, active, hoverActive };
+    const hover = stepHex(token, delta, mode, primary);
     return {
       rest: token,
-      hover: stepHex(token, delta, mode, primary),
+      hover,
+      hover2: stepHex(hover, delta, mode, primary),
       active,
       hoverActive,
     };
   }
-  return { rest: token, hover: stepHex(token, delta, mode), active, hoverActive };
+  const hover = stepHex(token, delta, mode);
+  return {
+    rest: token,
+    hover,
+    hover2: stepHex(hover, delta, mode),
+    active,
+    hoverActive,
+  };
 };
 
 const cache = new Map<string, CellFillStates>();

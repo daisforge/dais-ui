@@ -40,8 +40,14 @@ export const getCustomColors = (activeTheme: ActiveTheme) => ({
   bgEditableCellActiveHovered:
     TABLE_STATE_COLORS.bgEditableCellActiveHovered[activeTheme],
 
+  bgEditableCellRowActiveHovered:
+    TABLE_STATE_COLORS.bgEditableCellRowActiveHovered[activeTheme],
+
   // Отмеченная строка и служебные колонки (surface-accent-minor × состояния)
   selectionCheckboxBg: TABLE_STATE_COLORS.selectionCheckboxBg[activeTheme],
+  // Выбранная строка (highlightActiveType='row') под курсором — hover2
+  bgSelectedRowActiveHovered:
+    TABLE_STATE_COLORS.bgSelectedRowActiveHovered[activeTheme],
   selectionActiveBg: TABLE_STATE_COLORS.selectionActiveBg[activeTheme],
   selectionActiveCheckboxBg:
     TABLE_STATE_COLORS.selectionActiveCheckboxBg[activeTheme],
@@ -76,6 +82,8 @@ export const getCustomColors = (activeTheme: ActiveTheme) => ({
     TABLE_STATE_COLORS.editedSuccessfullyCellActiveColor[activeTheme],
   editedSuccessfullyCellActiveHoverColor:
     TABLE_STATE_COLORS.editedSuccessfullyCellActiveHoverColor[activeTheme],
+  editedSuccessfullyCellRowActiveHoverColor:
+    TABLE_STATE_COLORS.editedSuccessfullyCellRowActiveHoverColor[activeTheme],
 
   // Статусные заливки ячеек (positive / negative / warning / info × состояния)
   bgCellPositive: TABLE_STATE_COLORS.bgCellPositive[activeTheme],
@@ -83,21 +91,29 @@ export const getCustomColors = (activeTheme: ActiveTheme) => ({
   bgCellPositiveActive: TABLE_STATE_COLORS.bgCellPositiveActive[activeTheme],
   bgCellPositiveActiveHovered:
     TABLE_STATE_COLORS.bgCellPositiveActiveHovered[activeTheme],
+  bgCellPositiveRowActiveHovered:
+    TABLE_STATE_COLORS.bgCellPositiveRowActiveHovered[activeTheme],
   bgCellNegative: TABLE_STATE_COLORS.bgCellNegative[activeTheme],
   bgCellNegativeHovered: TABLE_STATE_COLORS.bgCellNegativeHovered[activeTheme],
   bgCellNegativeActive: TABLE_STATE_COLORS.bgCellNegativeActive[activeTheme],
   bgCellNegativeActiveHovered:
     TABLE_STATE_COLORS.bgCellNegativeActiveHovered[activeTheme],
+  bgCellNegativeRowActiveHovered:
+    TABLE_STATE_COLORS.bgCellNegativeRowActiveHovered[activeTheme],
   bgCellWarning: TABLE_STATE_COLORS.bgCellWarning[activeTheme],
   bgCellWarningHovered: TABLE_STATE_COLORS.bgCellWarningHovered[activeTheme],
   bgCellWarningActive: TABLE_STATE_COLORS.bgCellWarningActive[activeTheme],
   bgCellWarningActiveHovered:
     TABLE_STATE_COLORS.bgCellWarningActiveHovered[activeTheme],
+  bgCellWarningRowActiveHovered:
+    TABLE_STATE_COLORS.bgCellWarningRowActiveHovered[activeTheme],
   bgCellInfo: TABLE_STATE_COLORS.bgCellInfo[activeTheme],
   bgCellInfoHovered: TABLE_STATE_COLORS.bgCellInfoHovered[activeTheme],
   bgCellInfoActive: TABLE_STATE_COLORS.bgCellInfoActive[activeTheme],
   bgCellInfoActiveHovered:
     TABLE_STATE_COLORS.bgCellInfoActiveHovered[activeTheme],
+  bgCellInfoRowActiveHovered:
+    TABLE_STATE_COLORS.bgCellInfoRowActiveHovered[activeTheme],
 
   // Затухание при скролле — статичные цвета
   fadeWhite: TABLE_STATE_COLORS.fadeWhite[activeTheme],

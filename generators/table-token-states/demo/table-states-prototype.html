@@ -76,6 +76,12 @@ details summary{cursor:pointer;font-weight:600}
 .toast.on{opacity:1}
 .sw.s{background-size:8px 8px}
 .seg button{font-size:13px}
+
+.c.dis{opacity:.4}
+.qrow{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:8px}
+.qcap{margin:6px 0 10px;color:var(--text2)}
+.qcap .mono{color:var(--text)}
+.presets .btn.q{font-weight:600}
 </style>
 </head>
 <body>
@@ -89,12 +95,15 @@ details summary{cursor:pointer;font-weight:600}
   <label class="tgl"><input type="checkbox" id="optActiveRow"> подсветка активной строки</label>
   <label class="tgl"><input type="checkbox" id="optPin"> закрепить наведения (для пипетки)</label>
   <label class="tgl"><input type="checkbox" id="optHoldSaved"> не гасить сохранённые</label>
+  <label class="tgl"><input type="checkbox" id="optDisabled"> disabled-строка, 40 %</label>
 </div>
 
 <div class="layout">
   <main>
     <section class="card">
       <div class="presets" id="presets"></div>
+      <div class="qrow"><span class="small muted">Шесть вопросов коллеги, решения 05.10 и 07.10:</span><div class="presets" id="questions"></div></div>
+      <div class="small qcap" id="qcap"></div>
       <div class="tbl-scroll" id="tblScroll"><div class="tbl" id="tbl"></div></div>
       <div class="status small" id="status"><span class="muted">Наведите на ячейку — здесь будет её токен и состояние.</span></div>
     </section>
@@ -106,7 +115,9 @@ details summary{cursor:pointer;font-weight:600}
         <li><b>Наведение на строку</b> — включите hoverEffects.row и ведите курсор. В режиме «Правило» темнеют и жёлтые, и статусные ячейки; в режиме «Сейчас в коде» — нет.</li>
         <li><b>Ячейки со статусом</b> — колонка «Статус»: Проведено = positive (surface-transparent-positive), Ошибка = negative (surface-negative-minor), В обработке = warning (surface-transparent-warning), Черновик = info (surface-info-minor). Протяните диапазон через неё: выделение ложится поверх цвета ячейки, как в макете. В коде сейчас выделение закрывает цвет голубым.</li>
         <li><b>Редактируемые ячейки</b> — «Сумма» и «Комментарий»: покой, под курсором, в выделении, в выделении под курсором. Двойной клик или Enter, затем Enter — сохранённая подсветка, гаснет через 2 с.</li>
-        <li><b>Hover и выделение</b> — по макету hover на выделенных ячейках и на выделенной шапке не показывается: наведите на выделенный диапазон, цвет не меняется.</li>
+        <li><b>Hover и выделение</b> — hover показывается и на выделенных ячейках, и на выделенной шапке: +1δ по лучу от цвета выделения (решение 18.09; в макете «Выделение ячеек» сказано обратное, это ошибка макета).</li>
+        <li><b>Выбранная строка</b> — нажмите кнопки вопросов над таблицей или включите «подсветка активной строки» и кликните по ячейке. Фон строки как у отмеченной; наличие чекбокса ничего не меняет, а нажатый чекбокс даёт одну ступень глубже. Цветные ячейки красятся своим hover, без наложения. Под курсором ещё ступень глубже: hover2, +2δ от покоя, ключи <span class="mono">bgSelectedRowActiveHovered</span> и <span class="mono">…RowActiveHovered</span>. Активная ячейка красится как её строка. Номер строки, чекбокс и шапка над активной колонкой — активный цвет. Решения 05.10 и 07.10.</li>
+        <li><b>Disabled-строка</b> — переключатель сверху: строка 9 показана с непрозрачностью 40 %, без hover, по правилу ДС.</li>
         <li><b>Шапка и групповая шапка</b> — наведение, выделение колонки или группы, наведение на выделенную.</li>
         <li><b>Отмеченная строка</b> — чекбокс, затем наведение и клик по ячейке в ней.</li>
         <li><b>Временные значения</b> — в Light редактируемая ячейка показана с amber-100 <span class="mono">#FFF6E5</span> (значение темы до релиза 0.78.0; запрос на возврат отправлен). В Beta токенов data-yellow-light и data-blue-light нет: показаны шаги новой палитры Amber/100, Blue/100 (тёмные Amber/950, Blue/950). Всё помечено «временно» в панели.</li>
@@ -180,7 +191,7 @@ var TS = (() => {
   };
   var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
-  // ../../../../../../../Users/nika/Documents/SBER/table/code/table-token-states.ts
+  // code/table-token-states.ts
   var table_token_states_exports = {};
   __export(table_token_states_exports, {
     ACHROMATIC_CHROMA: () => ACHROMATIC_CHROMA,
@@ -312,7 +323,7 @@ var TS = (() => {
       const rest = usage === "text" ? raw.toUpperCase() : flattenHex(raw, card);
       const hover = own(source.hover, rest);
       const active = own(source.active, rest);
-      return { rest, hover, active, hoverActive: own(source.hoverActive, active) };
+      return { rest, hover, hover2: hover, active, hoverActive: own(source.hoverActive, active) };
     }
     return fillStates(raw, setting.mode, {
       stepFactor: setting.stepFactor,
@@ -335,10 +346,12 @@ var TS = (() => {
     const primary = options.primaryHex ? flattenHex(options.primaryHex, card) : void 0;
     const hoverActive = hoverOnSelection(active, delta, mode, primary);
     if (options.achromatic || hexToOklch(token).c < ACHROMATIC_CHROMA) {
-      if (!primary) return { rest: token, hover: null, active, hoverActive };
-      return { rest: token, hover: stepHex(token, delta, mode, primary), active, hoverActive };
+      if (!primary) return { rest: token, hover: null, hover2: null, active, hoverActive };
+      const hover2 = stepHex(token, delta, mode, primary);
+      return { rest: token, hover: hover2, hover2: stepHex(hover2, delta, mode, primary), active, hoverActive };
     }
-    return { rest: token, hover: stepHex(token, delta, mode), active, hoverActive };
+    const hover = stepHex(token, delta, mode);
+    return { rest: token, hover, hover2: stepHex(hover, delta, mode), active, hoverActive };
   };
   var selectedHex = (cellHex, selectionHex) => flattenHex(selectionHex, cellHex);
   var deriveStates = (source, settings, cell, usage = defaultUsage(detectGroup(source.name))) => {
@@ -367,9 +380,7 @@ var TS = (() => {
   };
   return __toCommonJS(table_token_states_exports);
 })();
-
-</script>
-<script>
+</script><script>
 // code/table-token-sources.ts — темы, токены, карта ключей (глобал SRC)
 var SRC = (() => {
   var __defProp = Object.defineProperty;
@@ -390,7 +401,7 @@ var SRC = (() => {
   };
   var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
-  // ../../../../../../../Users/nika/Documents/SBER/table/code/table-token-sources.ts
+  // code/table-token-sources.ts
   var table_token_sources_exports = {};
   __export(table_token_sources_exports, {
     CELL: () => CELL,
@@ -455,9 +466,10 @@ var SRC = (() => {
     selectionServiceActiveBg: { source: "surfaceAccentMinor", state: "active", paints: "\u0448\u0430\u043F\u043A\u0430 \u0438 \u0441\u043B\u0443\u0436\u0435\u0431\u043D\u0430\u044F \u0437\u043E\u043D\u0430 \u043F\u0440\u0438 \u0432\u044B\u0434\u0435\u043B\u0435\u043D\u0438\u0438" },
     bgHeaderSelectedHovered: { source: "surfaceAccentMinor", state: "hoverActive", paints: "\u0432\u044B\u0434\u0435\u043B\u0435\u043D\u043D\u0430\u044F \u0448\u0430\u043F\u043A\u0430 \u043F\u043E\u0434 \u043A\u0443\u0440\u0441\u043E\u0440\u043E\u043C" },
     // отмеченная строка и служебные колонки
-    selectionCheckboxBg: { source: "surfaceAccentMinor", state: "rest", paints: "\u043E\u0442\u043C\u0435\u0447\u0435\u043D\u043D\u0430\u044F \u0441\u0442\u0440\u043E\u043A\u0430" },
+    selectionCheckboxBg: { source: "surfaceAccentMinor", state: "rest", paints: "\u043E\u0442\u043C\u0435\u0447\u0435\u043D\u043D\u0430\u044F \u0441\u0442\u0440\u043E\u043A\u0430; \u0432\u044B\u0431\u0440\u0430\u043D\u043D\u0430\u044F \u0441\u0442\u0440\u043E\u043A\u0430 (highlightActiveType = row)" },
     selectionServiceBg: { source: "surfaceAccentMinor", state: "rest", paints: "\u0441\u043B\u0443\u0436\u0435\u0431\u043D\u044B\u0435 \u043A\u043E\u043B\u043E\u043D\u043A\u0438 \u0432 \u043F\u043E\u043A\u043E\u0435" },
-    bgSelectedRowHovered: { source: "surfaceAccentMinor", state: "hover", paints: "\u043E\u0442\u043C\u0435\u0447\u0435\u043D\u043D\u0430\u044F \u0441\u0442\u0440\u043E\u043A\u0430 \u043F\u043E\u0434 \u043A\u0443\u0440\u0441\u043E\u0440\u043E\u043C" },
+    bgSelectedRowHovered: { source: "surfaceAccentMinor", state: "hover", paints: "\u043E\u0442\u043C\u0435\u0447\u0435\u043D\u043D\u0430\u044F \u0441\u0442\u0440\u043E\u043A\u0430 \u043F\u043E\u0434 \u043A\u0443\u0440\u0441\u043E\u0440\u043E\u043C; \u0432\u044B\u0431\u0440\u0430\u043D\u043D\u0430\u044F \u0441\u0442\u0440\u043E\u043A\u0430 \u043F\u043E\u0434 \u043A\u0443\u0440\u0441\u043E\u0440\u043E\u043C; \u0432\u044B\u0431\u0440\u0430\u043D\u043D\u0430\u044F \u0441\u0442\u0440\u043E\u043A\u0430 \u0441 \u043D\u0430\u0436\u0430\u0442\u044B\u043C \u0447\u0435\u043A\u0431\u043E\u043A\u0441\u043E\u043C" },
+    bgSelectedRowActiveHovered: { source: "surfaceAccentMinor", state: "hover2", paints: "\u0432\u044B\u0431\u0440\u0430\u043D\u043D\u0430\u044F \u0441\u0442\u0440\u043E\u043A\u0430 \u0441 \u043D\u0430\u0436\u0430\u0442\u044B\u043C \u0447\u0435\u043A\u0431\u043E\u043A\u0441\u043E\u043C \u043F\u043E\u0434 \u043A\u0443\u0440\u0441\u043E\u0440\u043E\u043C" },
     bgServiceRowHovered: { source: "surfaceAccentMinor", state: "hover", paints: "\u0441\u043B\u0443\u0436\u0435\u0431\u043D\u044B\u0435 \u043A\u043E\u043B\u043E\u043D\u043A\u0438 \u0441\u0442\u0440\u043E\u043A\u0438 \u043F\u043E\u0434 \u043A\u0443\u0440\u0441\u043E\u0440\u043E\u043C" },
     selectionServiceActiveHoveredBg: { source: "surfaceAccentMinor", state: "hoverActive", paints: "\u0432\u044B\u0434\u0435\u043B\u0435\u043D\u043D\u0430\u044F \u0441\u043B\u0443\u0436\u0435\u0431\u043D\u0430\u044F \u0437\u043E\u043D\u0430 \u043F\u043E\u0434 \u043A\u0443\u0440\u0441\u043E\u0440\u043E\u043C" },
     // выделение = наложение surface-transparent-accent на подложку: на белом #E2F1FB (light), на отмеченной строке #D1E9F8
@@ -471,27 +483,34 @@ var SRC = (() => {
     bgEditableCellHovered: { source: "dataYellowLight", state: "hover", paints: "\u0440\u0435\u0434\u0430\u043A\u0442\u0438\u0440\u0443\u0435\u043C\u0430\u044F \u044F\u0447\u0435\u0439\u043A\u0430 \u043F\u043E\u0434 \u043A\u0443\u0440\u0441\u043E\u0440\u043E\u043C" },
     bgEditableCellActive: { source: "dataYellowLight", state: "active", paints: "\u0440\u0435\u0434\u0430\u043A\u0442\u0438\u0440\u0443\u0435\u043C\u0430\u044F \u044F\u0447\u0435\u0439\u043A\u0430 \u0432 \u0434\u0438\u0430\u043F\u0430\u0437\u043E\u043D\u0435 \u0432\u044B\u0434\u0435\u043B\u0435\u043D\u0438\u044F" },
     bgEditableCellActiveHovered: { source: "dataYellowLight", state: "hoverActive", paints: "\u0440\u0435\u0434\u0430\u043A\u0442\u0438\u0440\u0443\u0435\u043C\u0430\u044F \u044F\u0447\u0435\u0439\u043A\u0430 \u0432 \u0432\u044B\u0434\u0435\u043B\u0435\u043D\u0438\u0438 \u043F\u043E\u0434 \u043A\u0443\u0440\u0441\u043E\u0440\u043E\u043C" },
+    bgEditableCellRowActiveHovered: { source: "dataYellowLight", state: "hover2", paints: "\u0440\u0435\u0434\u0430\u043A\u0442\u0438\u0440\u0443\u0435\u043C\u0430\u044F \u044F\u0447\u0435\u0439\u043A\u0430 \u0432\u044B\u0431\u0440\u0430\u043D\u043D\u043E\u0439 \u0441\u0442\u0440\u043E\u043A\u0438 \u043F\u043E\u0434 \u043A\u0443\u0440\u0441\u043E\u0440\u043E\u043C" },
     editedSuccessfullyCellColor: { source: "dataBlueLight", state: "rest", paints: "\u0443\u0441\u043F\u0435\u0448\u043D\u043E \u0441\u043E\u0445\u0440\u0430\u043D\u0451\u043D\u043D\u0430\u044F \u044F\u0447\u0435\u0439\u043A\u0430" },
     editedSuccessfullyCellHoverColor: { source: "dataBlueLight", state: "hover", paints: "\u0441\u043E\u0445\u0440\u0430\u043D\u0451\u043D\u043D\u0430\u044F \u044F\u0447\u0435\u0439\u043A\u0430 \u043F\u043E\u0434 \u043A\u0443\u0440\u0441\u043E\u0440\u043E\u043C" },
     editedSuccessfullyCellActiveColor: { source: "dataBlueLight", state: "active", paints: "\u0441\u043E\u0445\u0440\u0430\u043D\u0451\u043D\u043D\u0430\u044F \u044F\u0447\u0435\u0439\u043A\u0430 \u0432 \u0434\u0438\u0430\u043F\u0430\u0437\u043E\u043D\u0435 \u0432\u044B\u0434\u0435\u043B\u0435\u043D\u0438\u044F" },
     editedSuccessfullyCellActiveHoverColor: { source: "dataBlueLight", state: "hoverActive", paints: "\u0441\u043E\u0445\u0440\u0430\u043D\u0451\u043D\u043D\u0430\u044F \u044F\u0447\u0435\u0439\u043A\u0430 \u0432 \u0432\u044B\u0434\u0435\u043B\u0435\u043D\u0438\u0438 \u043F\u043E\u0434 \u043A\u0443\u0440\u0441\u043E\u0440\u043E\u043C" },
+    editedSuccessfullyCellRowActiveHoverColor: { source: "dataBlueLight", state: "hover2", paints: "\u0441\u043E\u0445\u0440\u0430\u043D\u0451\u043D\u043D\u0430\u044F \u044F\u0447\u0435\u0439\u043A\u0430 \u0432\u044B\u0431\u0440\u0430\u043D\u043D\u043E\u0439 \u0441\u0442\u0440\u043E\u043A\u0438 \u043F\u043E\u0434 \u043A\u0443\u0440\u0441\u043E\u0440\u043E\u043C" },
     // ячейки, окрашенные статусом — потребитель задаёт bgCell через themeOverride; четыре стандартных заливки
+    // (в выбранной строке цветная ячейка в покое красится своим …Hovered, под курсором — …RowActiveHovered)
     bgCellPositive: { source: "surfaceTransparentPositive", state: "rest", paints: "\u044F\u0447\u0435\u0439\u043A\u0430 \u0441\u043E \u0441\u0442\u0430\u0442\u0443\u0441\u043E\u043C positive" },
     bgCellPositiveHovered: { source: "surfaceTransparentPositive", state: "hover", paints: "positive \u043F\u043E\u0434 \u043A\u0443\u0440\u0441\u043E\u0440\u043E\u043C" },
     bgCellPositiveActive: { source: "surfaceTransparentPositive", state: "active", paints: "positive \u0432 \u0432\u044B\u0434\u0435\u043B\u0435\u043D\u0438\u0438" },
     bgCellPositiveActiveHovered: { source: "surfaceTransparentPositive", state: "hoverActive", paints: "positive \u0432 \u0432\u044B\u0434\u0435\u043B\u0435\u043D\u0438\u0438 \u043F\u043E\u0434 \u043A\u0443\u0440\u0441\u043E\u0440\u043E\u043C" },
+    bgCellPositiveRowActiveHovered: { source: "surfaceTransparentPositive", state: "hover2", paints: "positive \u0432 \u0432\u044B\u0431\u0440\u0430\u043D\u043D\u043E\u0439 \u0441\u0442\u0440\u043E\u043A\u0435 \u043F\u043E\u0434 \u043A\u0443\u0440\u0441\u043E\u0440\u043E\u043C" },
     bgCellNegative: { source: "surfaceNegativeMinor", state: "rest", paints: "\u044F\u0447\u0435\u0439\u043A\u0430 \u0441\u043E \u0441\u0442\u0430\u0442\u0443\u0441\u043E\u043C negative" },
     bgCellNegativeHovered: { source: "surfaceNegativeMinor", state: "hover", paints: "negative \u043F\u043E\u0434 \u043A\u0443\u0440\u0441\u043E\u0440\u043E\u043C" },
     bgCellNegativeActive: { source: "surfaceNegativeMinor", state: "active", paints: "negative \u0432 \u0432\u044B\u0434\u0435\u043B\u0435\u043D\u0438\u0438" },
     bgCellNegativeActiveHovered: { source: "surfaceNegativeMinor", state: "hoverActive", paints: "negative \u0432 \u0432\u044B\u0434\u0435\u043B\u0435\u043D\u0438\u0438 \u043F\u043E\u0434 \u043A\u0443\u0440\u0441\u043E\u0440\u043E\u043C" },
+    bgCellNegativeRowActiveHovered: { source: "surfaceNegativeMinor", state: "hover2", paints: "negative \u0432 \u0432\u044B\u0431\u0440\u0430\u043D\u043D\u043E\u0439 \u0441\u0442\u0440\u043E\u043A\u0435 \u043F\u043E\u0434 \u043A\u0443\u0440\u0441\u043E\u0440\u043E\u043C" },
     bgCellWarning: { source: "surfaceTransparentWarning", state: "rest", paints: "\u044F\u0447\u0435\u0439\u043A\u0430 \u0441\u043E \u0441\u0442\u0430\u0442\u0443\u0441\u043E\u043C warning" },
     bgCellWarningHovered: { source: "surfaceTransparentWarning", state: "hover", paints: "warning \u043F\u043E\u0434 \u043A\u0443\u0440\u0441\u043E\u0440\u043E\u043C" },
     bgCellWarningActive: { source: "surfaceTransparentWarning", state: "active", paints: "warning \u0432 \u0432\u044B\u0434\u0435\u043B\u0435\u043D\u0438\u0438" },
     bgCellWarningActiveHovered: { source: "surfaceTransparentWarning", state: "hoverActive", paints: "warning \u0432 \u0432\u044B\u0434\u0435\u043B\u0435\u043D\u0438\u0438 \u043F\u043E\u0434 \u043A\u0443\u0440\u0441\u043E\u0440\u043E\u043C" },
+    bgCellWarningRowActiveHovered: { source: "surfaceTransparentWarning", state: "hover2", paints: "warning \u0432 \u0432\u044B\u0431\u0440\u0430\u043D\u043D\u043E\u0439 \u0441\u0442\u0440\u043E\u043A\u0435 \u043F\u043E\u0434 \u043A\u0443\u0440\u0441\u043E\u0440\u043E\u043C" },
     bgCellInfo: { source: "surfaceInfoMinor", state: "rest", paints: "\u044F\u0447\u0435\u0439\u043A\u0430 \u0441\u043E \u0441\u0442\u0430\u0442\u0443\u0441\u043E\u043C info" },
     bgCellInfoHovered: { source: "surfaceInfoMinor", state: "hover", paints: "info \u043F\u043E\u0434 \u043A\u0443\u0440\u0441\u043E\u0440\u043E\u043C" },
     bgCellInfoActive: { source: "surfaceInfoMinor", state: "active", paints: "info \u0432 \u0432\u044B\u0434\u0435\u043B\u0435\u043D\u0438\u0438" },
     bgCellInfoActiveHovered: { source: "surfaceInfoMinor", state: "hoverActive", paints: "info \u0432 \u0432\u044B\u0434\u0435\u043B\u0435\u043D\u0438\u0438 \u043F\u043E\u0434 \u043A\u0443\u0440\u0441\u043E\u0440\u043E\u043C" },
+    bgCellInfoRowActiveHovered: { source: "surfaceInfoMinor", state: "hover2", paints: "info \u0432 \u0432\u044B\u0431\u0440\u0430\u043D\u043D\u043E\u0439 \u0441\u0442\u0440\u043E\u043A\u0435 \u043F\u043E\u0434 \u043A\u0443\u0440\u0441\u043E\u0440\u043E\u043C" },
     // текст, обводки, акцент — пока из темы (правило для «чернил» отдельно)
     textDark: { source: "textPrimary", state: "rest", paints: "\u0442\u0435\u043A\u0441\u0442 \u044F\u0447\u0435\u0435\u043A" },
     textHeader: { source: "textPrimary", state: "rest", paints: "\u0442\u0435\u043A\u0441\u0442 \u0448\u0430\u043F\u043A\u0438" },
@@ -507,9 +526,7 @@ var SRC = (() => {
   };
   return __toCommonJS(table_token_sources_exports);
 })();
-
-</script>
-<script>
+</script><script>
 // OKLCH state rule — shared by node tests and the HTML page
 const R = (() => {
   const hex2rgb = h => { h = h.replace('#',''); if (h.length === 6) h += 'FF'; return [0,2,4,6].map(i => parseInt(h.slice(i,i+2),16)/255); };
@@ -545,8 +562,7 @@ const R = (() => {
 })();
 if (typeof module !== 'undefined') module.exports = R;
 
-</script>
-<script>
+</script><script>
 // ───────────────────────── Темы ─────────────────────────
 const THEME_ORDER = ['light', 'dark', 'betaCoreLight', 'betaCoreDark', 'highContrastLight'];
 const THEME_META = {
@@ -602,12 +618,12 @@ const GROUPS = [
 ];
 const GROUP_RULES = [
   [/^(bgCell|bgRowHovered)$/, 'cell'], [/^bgCell(Positive|Negative|Warning|Info)/, 'status'], [/^(bgHeader|bgGroupHeader|selectionServiceActiveBg$)/, 'header'],
-  [/^(selectionCheckboxBg|selectionServiceBg|bgSelectedRowHovered|bgServiceRowHovered|selectionServiceActiveHoveredBg)$/, 'row'], [/^(selectionActive|accentLight)/, 'select'],
+  [/^(selectionCheckboxBg|selectionServiceBg|bgSelectedRowHovered|bgSelectedRowActiveHovered|bgServiceRowHovered|selectionServiceActiveHoveredBg)$/, 'row'], [/^(selectionActive|accentLight)/, 'select'],
   [/^(bgEditable|editedSuccessfully)/, 'edit'], [/^(text|borderColor|accentColor|hiddenColumns|errorOutline)/, 'ink'], [/^fade/, 'fade'],
 ];
 const groupOf = key => { for (const [re, g] of GROUP_RULES) if (re.test(key)) return g; return 'ink'; };
-const STATE_LABEL = { rest: 'покой · токен', hover: 'hover · +1δ по лучу', active: 'выделение · наложение surface-transparent-accent', hoverActive: 'hover на выделении · +1δ по лучу от выделения' };
-const STATE_SHORT = { rest: 'rest', hover: 'hover', active: 'active', hoverActive: 'hoverActive' };
+const STATE_LABEL = { rest: 'покой · токен', hover: 'hover · +1δ по лучу', active: 'выделение · наложение surface-transparent-accent', hoverActive: 'hover на выделении · +1δ по лучу от выделения', hover2: 'hover2 · +2δ по лучу от покоя (второй шаг hover): выбранная строка под курсором' };
+const STATE_SHORT = { rest: 'rest', hover: 'hover', active: 'active', hoverActive: 'hoverActive', hover2: 'hover2' };
 const SAVED_HOLD_MS = 2000, SAVED_FADE_MS = 400;
 const DEFAULTS = { step: 2.5, darkK: 1.2, hcK: 1 };
 const PARAM_UI = [
@@ -639,6 +655,7 @@ function computeRule(id) {
     const label = usage === 'fill' ? STATE_LABEL[e.state] : e.state === 'rest' ? 'токен как есть' : 'из темы';
     out[key] = { g: groupOf(key), key, hex, base: s.name, baseHex: s.values[id] || null, rule: label + (s.temp ? ' · ' + s.tempNote : ''), state: e.state, source: e.source, temp: !!s.temp, paints: e.paints || '' };
   }
+  // hover2 (+2δ от покоя) считает генератор: ключи bgSelectedRowActiveHovered и …RowActiveHovered приходят из карты TABLE_COLORS (решение 07.10).
   return out;
 }
 let cache = { key: '', data: {} };
@@ -679,13 +696,14 @@ const ROWS = [
 ];
 const STATUS_FAMILY = { 'Проведено': 'positive', 'Ошибка': 'negative', 'В обработке': 'warning', 'Черновик': 'info' };
 const FAMILY = {
-  editable: ['bgEditableCell', 'bgEditableCellHovered', 'bgEditableCellActive', 'bgEditableCellActiveHovered'],
-  saved: ['editedSuccessfullyCellColor', 'editedSuccessfullyCellHoverColor', 'editedSuccessfullyCellActiveColor', 'editedSuccessfullyCellActiveHoverColor'],
-  positive: ['bgCellPositive', 'bgCellPositiveHovered', 'bgCellPositiveActive', 'bgCellPositiveActiveHovered'],
-  negative: ['bgCellNegative', 'bgCellNegativeHovered', 'bgCellNegativeActive', 'bgCellNegativeActiveHovered'],
-  warning: ['bgCellWarning', 'bgCellWarningHovered', 'bgCellWarningActive', 'bgCellWarningActiveHovered'],
-  info: ['bgCellInfo', 'bgCellInfoHovered', 'bgCellInfoActive', 'bgCellInfoActiveHovered'],
+  editable: ['bgEditableCell', 'bgEditableCellHovered', 'bgEditableCellActive', 'bgEditableCellActiveHovered', 'bgEditableCellRowActiveHovered'],
+  saved: ['editedSuccessfullyCellColor', 'editedSuccessfullyCellHoverColor', 'editedSuccessfullyCellActiveColor', 'editedSuccessfullyCellActiveHoverColor', 'editedSuccessfullyCellRowActiveHoverColor'],
+  positive: ['bgCellPositive', 'bgCellPositiveHovered', 'bgCellPositiveActive', 'bgCellPositiveActiveHovered', 'bgCellPositiveRowActiveHovered'],
+  negative: ['bgCellNegative', 'bgCellNegativeHovered', 'bgCellNegativeActive', 'bgCellNegativeActiveHovered', 'bgCellNegativeRowActiveHovered'],
+  warning: ['bgCellWarning', 'bgCellWarningHovered', 'bgCellWarningActive', 'bgCellWarningActiveHovered', 'bgCellWarningRowActiveHovered'],
+  info: ['bgCellInfo', 'bgCellInfoHovered', 'bgCellInfoActive', 'bgCellInfoActiveHovered', 'bgCellInfoRowActiveHovered'],
 };
+const ROW_FAMILY = ['selectionCheckboxBg', 'bgSelectedRowHovered', 'selectionActiveCheckboxBg', 'selectionActiveCheckboxHoveredBg', 'bgSelectedRowActiveHovered'];
 const famKey = (fam, hovered, active) => FAMILY[fam][(active ? 2 : 0) + (hovered ? 1 : 0)];
 const isStatusFam = fam => fam === 'positive' || fam === 'negative' || fam === 'warning' || fam === 'info';
 const NO_CHECKBOX = new Set([3, 7]);
@@ -708,6 +726,7 @@ const S = {
   rowHover: store.get('rowHover', true),
   activeRow: store.get('activeRow', false),
   pin: false, hover: null,
+  disabled: store.get('disabled', false), forceHover: null,
   checked: new Set([4]),
   edited: new Map([['1:comment', performance.now()]]),
   holdSaved: false,
@@ -723,6 +742,7 @@ const inRect = (rc, ci, r) => rc && ci >= rc.x0 && ci <= rc.x1 && r >= rc.y0 && 
 
 function hoverState() {
   if (S.pin) return { rows: S.rowHover ? new Set([1, 4]) : new Set(), cells: new Set(['1:comment', '4:sum']), header: 4, group: 0 };
+  if (S.forceHover) { const f = S.forceHover; return { rows: S.rowHover ? new Set([f.r]) : new Set(), cells: new Set([f.r + ':' + COLS[f.ci].id]), header: null, group: null }; }
   const h = S.hover, res = { rows: new Set(), cells: new Set(), header: null, group: null };
   if (!h || S.drag) return res;
   if (h.zone === 'body' && h.r < NROWS) { if (S.rowHover) res.rows.add(h.r); res.cells.add(h.r + ':' + COLS[h.ci].id); }
@@ -747,6 +767,7 @@ function renderTable() {
   const onChecked = r => S.checked.has(r) && hasCheckbox(r);
   const activeFill = r => onChecked(r) ? 'selectionActiveCheckboxBg' : 'selectionActiveBg';
   const layered = S.source === 'rule';
+  const DIS = S.disabled ? new Set([8]) : new Set(); // disabled-строка: содержимое 40 %, без hover (правило ДС)
   paint = {};
   const txt = V.textDark, line = V.borderColor;
   let html = '';
@@ -784,24 +805,31 @@ function renderTable() {
     COLS.forEach((c, ci) => {
       const id = r + ':' + c.id;
       let fadeBg = null;
+      const isDis = DIS.has(r);
       let key = c.service ? 'selectionServiceBg' : 'bgCell';
       if (isSum) key = 'bgHeader';
       else {
-        const rowHovered = hv.rows.has(r);
+        const rowHovered = hv.rows.has(r) && !isDis;
         if (onChecked(r)) key = rowHovered ? 'bgSelectedRowHovered' : 'selectionCheckboxBg';
         else if (rowHovered) key = 'bgRowHovered';
-        const selected = !c.service && (rangeFillRects.some(rc => inRect(rc, ci, r)) || (single && inRect(curRect, ci, r)) || S.cols.has(ci) || S.rows.has(r));
+        // выбранная строка (highlightActiveType='row'): активная ячейка красится как её строка, а не как выделение (решение 05.10)
+        const isActiveCell = single && inRect(curRect, ci, r);
+        const inActiveRow = layered && activeRow === r && !c.service;
+        const selected = !c.service && (rangeFillRects.some(rc => inRect(rc, ci, r)) || (isActiveCell && !inActiveRow) || S.cols.has(ci) || S.rows.has(r));
         let fam = null;
         if (!c.service) {
           const ph = savedPhase(id);
           fam = ph ? 'saved' : c.editable ? 'editable' : c.status ? STATUS_FAMILY[ROWS[r].status] : null;
           if (fam) {
-            // правило: ячейка со своим цветом остаётся в нём; hover — её собственное состояние, выделение —
-            // наложение surface-transparent-accent на её цвет; на выделенных ячейках hover тоже показывается (+1δ от выделения).
+            // правило: ячейка со своим цветом остаётся в нём; hover — её собственное состояние; выделение —
+            // наложение surface-transparent-accent на её цвет, на выделенных ячейках hover тоже показывается (+1δ от выделения).
+            // в выбранной строке цветная ячейка красится как при наведении на строку (свой hover), под курсором ещё шаг (hover2), без наложения (решение 05.10).
             // код сейчас: hover строки до неё не доходит, у статусных нет hover, выделение закрывает цвет.
-            const cellHovered = layered ? (hv.cells.has(id) || rowHovered) : (hv.cells.has(id) && !isStatusFam(fam));
-            key = famKey(fam, cellHovered, layered && selected);
-            if (ph && ph.fade > 0) fadeBg = R.mix(V[key], V[famKey('editable', cellHovered, layered && selected)], ph.fade);
+            const cellHovered = (layered ? (hv.cells.has(id) || rowHovered) : (hv.cells.has(id) && !isStatusFam(fam))) && !isDis;
+            // в выбранной строке под курсором — ещё ступень, hover2 (решение 07.10)
+            const keyFor = f => inActiveRow && !selected ? FAMILY[f][cellHovered ? 4 : 1] : famKey(f, cellHovered, layered && selected);
+            key = keyFor(fam);
+            if (ph && ph.fade > 0) fadeBg = R.mix(V[key], V[keyFor('editable')], ph.fade);
           }
         }
         if (!fam && layered) {
@@ -809,7 +837,9 @@ function renderTable() {
           const serviceSelected = (curRect && r >= curRect.y0 && r <= curRect.y1) || stackRows.has(r) || S.rows.has(r) || S.cols.size > 0;
           if (c.service) { if (rowHovered) key = 'bgServiceRowHovered'; if (serviceSelected) key = rowHovered ? 'selectionServiceActiveHoveredBg' : 'selectionServiceActiveBg'; }
           else if (selected) key = rowHovered ? (onChecked(r) ? 'selectionActiveCheckboxHoveredBg' : 'selectionActiveHoveredBg') : activeFill(r);
-          else if (activeRow === r) key = hasCheckbox(r) ? (rowHovered ? 'selectionActiveCheckboxHoveredBg' : 'selectionActiveCheckboxBg') : (rowHovered ? 'bgSelectedRowHovered' : 'selectionCheckboxBg');
+          // фон выбранной строки (решение 07.10): наличие чекбокса ничего не меняет — как у отмеченной строки (× rest);
+          // если чекбокс нажат — на одну ступень глубже (× hover); под курсором ещё ступень (× hover / × hover2)
+          else if (activeRow === r) key = onChecked(r) ? (rowHovered ? 'bgSelectedRowActiveHovered' : 'bgSelectedRowHovered') : (rowHovered ? 'bgSelectedRowHovered' : 'selectionCheckboxBg');
         } else if (!fam) {
           // как в коде сейчас
           if (!c.service && rangeFillRects.some(rc => inRect(rc, ci, r))) key = 'accentLight';
@@ -831,7 +861,7 @@ function renderTable() {
       else if (c.checkbox) content = hasCheckbox(r) ? cbox(S.checked.has(r)) : '';
       else if (isSum) content = c.id === 'client' ? '<b>Итого</b>' : c.id === 'sum' ? '<b>' + moneyFmt.format(ROWS.reduce((s, x) => s + (+x.sum || 0), 0)) + '</b>' : '';
       else { const v = ROWS[r][c.id]; content = c.id === 'sum' ? moneyFmt.format(+v || 0) : escapeHtml(v); }
-      cell('b:' + id, colX[ci], y, c.w, RH, key, content, (c.cls || '') + (c.id === 'num' ? ' muted' : ''), key.startsWith('editedSuccessfully') ? fadeBg : null);
+      cell('b:' + id, colX[ci], y, c.w, RH, key, content, (c.cls || '') + (c.id === 'num' ? ' muted' : '') + (isDis ? ' dis' : ''), key.startsWith('editedSuccessfully') ? fadeBg : null);
     });
   }
   const ring = (id, x, y, w, h, key) => { paint[id] = key; html += `<div class="ring" data-k="${key}" style="left:${x}px;top:${y}px;width:${w}px;height:${h}px;border-color:${V[key]}"></div>`; };
@@ -908,7 +938,7 @@ function hit(e) {
   if (y < GH + HH) return { zone: 'header', ci };
   return { zone: 'body', ci, r: Math.min(NROWS, Math.floor((y - GH - HH) / RH)) };
 }
-const clearSel = () => { S.cur = null; S.stack = []; S.cols = new Set(); S.rows = new Set(); };
+const clearSel = () => { S.cur = null; S.stack = []; S.cols = new Set(); S.rows = new Set(); S.forceHover = null; };
 tbl.addEventListener('mousedown', e => {
   if (S.editing || e.button !== 0) return;
   const h = hit(e); if (!h) return;
@@ -946,6 +976,7 @@ window.addEventListener('mousemove', e => {
     return;
   }
   const h = hit(e);
+  if (S.forceHover && h) S.forceHover = null;
   const same = (a, b) => (!a && !b) || (a && b && a.zone === b.zone && a.ci === b.ci && a.r === b.r && a.g === b.g);
   if (!same(h, S.hover)) { S.hover = h; renderTable(); }
 });
@@ -1071,6 +1102,9 @@ function renderFormula() {
                 (компонент Selection Area, макет «Выделение ячеек»);
                 светлые 12 % · тёмные 20 %
   hover на выделении  +1δ по лучу от цвета выделения
+  выбранная строка    как отмеченная (× rest); нажатый чекбокс — на ступень глубже (× hover);
+                      цветные ячейки — свой hover; под курсором ещё ступень:
+                      hover2 = +2δ по лучу от покоя (решение 07.10)
 
 шаг по лучу (code/table-token-states.ts):
   опора: белый (L=1) в светлых, чёрный (L=0) в тёмных
@@ -1092,7 +1126,7 @@ function renderModuleCheck() {
   const SEM = Object.fromEntries(Object.entries(SRC.SEMANTIC).map(([k, src]) => { const values = { ...src.values }; let changed = false; for (const [t, ov] of Object.entries(TEMP)) if (ov[k]) { values[t] = ov[k]; changed = true; } return [k, changed ? { ...src, values } : src]; }));
   const mod = TS.buildTableColors(SRC.TABLE_COLORS, SEM, SRC.THEME_SETTINGS, SRC.CELL);
   let same = 0, total = 0; const diff = [];
-  for (const id of THEME_ORDER) { const rule = ruleValues(id); for (const key in rule) { const m = mod[key][id]; if (m == null) continue; total++; if (m === rule[key].hex) same++; else diff.push(`${id} ${key}`); } }
+  for (const id of THEME_ORDER) { const rule = ruleValues(id); for (const key in rule) { const m = mod[key] && mod[key][id]; if (m == null) continue; total++; if (m === rule[key].hex) same++; else diff.push(`${id} ${key}`); } }
   $('moduleCheck').innerHTML = diff.length ? `<span class="warn">Расходится с генератором: ${diff.join(', ')}</span>` : `<span class="muted">✓ Совпадает с code/table-token-states.ts + table-token-sources.ts: ${same} из ${total} hex (временные значения light и beta переданы генератору как вход).</span>`;
 }
 function renderParams() {
@@ -1100,12 +1134,12 @@ function renderParams() {
   PARAM_UI.forEach(([k]) => $('p_' + k).addEventListener('input', e => { P[k] = +e.target.value; $('o_' + k).textContent = fmt(P[k]); store.set('params', P); renderAll(); }));
 }
 const GLIDE_KEYS = ['accentColor', 'accentLight', 'textDark', 'textHeader', 'textHeaderSelected', 'textGroupHeader', 'bgCell', 'bgHeader', 'bgHeaderHasFocus', 'bgHeaderHovered', 'borderColor', 'bgGroupHeader', 'bgGroupHeaderHovered', 'hiddenColumnsIndicatorColor'];
-const CUSTOM_KEYS = ['bgEditableCell', 'bgEditableCellHovered', 'bgEditableCellActive', 'bgEditableCellActiveHovered', 'selectionCheckboxBg', 'selectionActiveBg', 'selectionActiveCheckboxBg', 'selectionServiceBg', 'selectionServiceActiveBg', 'errorOutlineColor', 'bgRowHovered', 'bgServiceRowHovered', 'bgSelectedRowHovered', 'bgHeaderSelectedHovered', 'selectionActiveHoveredBg', 'selectionActiveCheckboxHoveredBg', 'selectionServiceActiveHoveredBg',
-  ...['Positive', 'Negative', 'Warning', 'Info'].flatMap(s => ['bgCell' + s, `bgCell${s}Hovered`, `bgCell${s}Active`, `bgCell${s}ActiveHovered`])];
-const TABLE_KEYS = [['headerColor', 'bgHeader'], ['editableCellColor', 'bgEditableCell'], ['editableCellHoverColor', 'bgEditableCellHovered'], 'editedSuccessfullyCellColor', 'editedSuccessfullyCellHoverColor', 'editedSuccessfullyCellActiveColor', 'editedSuccessfullyCellActiveHoverColor'];
+const CUSTOM_KEYS = ['bgEditableCell', 'bgEditableCellHovered', 'bgEditableCellActive', 'bgEditableCellActiveHovered', 'bgEditableCellRowActiveHovered', 'selectionCheckboxBg', 'selectionActiveBg', 'selectionActiveCheckboxBg', 'selectionServiceBg', 'selectionServiceActiveBg', 'errorOutlineColor', 'bgRowHovered', 'bgServiceRowHovered', 'bgSelectedRowHovered', 'bgHeaderSelectedHovered', 'selectionActiveHoveredBg', 'selectionActiveCheckboxHoveredBg', 'selectionServiceActiveHoveredBg', 'bgSelectedRowActiveHovered',
+  ...['Positive', 'Negative', 'Warning', 'Info'].flatMap(s => ['bgCell' + s, `bgCell${s}Hovered`, `bgCell${s}Active`, `bgCell${s}ActiveHovered`, `bgCell${s}RowActiveHovered`])];
+const TABLE_KEYS = [['headerColor', 'bgHeader'], ['editableCellColor', 'bgEditableCell'], ['editableCellHoverColor', 'bgEditableCellHovered'], 'editedSuccessfullyCellColor', 'editedSuccessfullyCellHoverColor', 'editedSuccessfullyCellActiveColor', 'editedSuccessfullyCellActiveHoverColor', 'editedSuccessfullyCellRowActiveHoverColor'];
 const valueFor = (t, key) => (t === 'highContrastDark' ? ruleValues('dark') : ruleValues(t))[key];
 function renderExport() {
-  const head = `// Модель «токен + состояние»: hover — δ ${fmt(P.step)} ΔEok по лучу (тёмные ×${fmt(P.darkK)}, контрастная ×${fmt(P.hcK)}); выделение — наложение surface-transparent-accent на цвет покоя (макет «Выделение ячеек»); hover на выделении — +1δ по лучу от цвета выделения\n// highContrastDark — заглушка, копия dark. null — нет данных темы. Временные значения: light data-yellow-light = amber-100 #FFF6E5 (значение темы до 0.78.0, запрос на возврат отправлен); beta data-yellow-light / data-blue-light = шаги новой палитры Amber/100, Blue/100 и Amber/950, Blue/950 (токенов в beta нет).\n`;
+  const head = `// Модель «токен + состояние»: hover — δ ${fmt(P.step)} ΔEok по лучу (тёмные ×${fmt(P.darkK)}, контрастная ×${fmt(P.hcK)}); выделение — наложение surface-transparent-accent на цвет покоя (макет «Выделение ячеек»); hover на выделении — +1δ по лучу от цвета выделения; выбранная строка (highlightActiveType=row) — как отмеченная (× rest), нажатый чекбокс — на ступень глубже (× hover), цветные ячейки — свой hover; под курсором ещё ступень (hover2 = +2δ от покоя; ключи bgSelectedRowActiveHovered и …RowActiveHovered, решение 07.10)\n// highContrastDark — заглушка, копия dark. null — нет данных темы. Временные значения: light data-yellow-light = amber-100 #FFF6E5 (значение темы до 0.78.0, запрос на возврат отправлен); beta data-yellow-light / data-blue-light = шаги новой палитры Amber/100, Blue/100 и Amber/950, Blue/950 (токенов в beta нет).\n`;
   if (S.exp === 'json') {
     const o = {}; for (const t of EXPORT_THEMES) { o[t] = {}; for (const k in ruleValues('light')) o[t][k] = valueFor(t, k).hex; }
     $('exp').value = JSON.stringify({ params: P, themes: o }, null, 2);
@@ -1168,11 +1202,12 @@ $('optRowHover').checked = S.rowHover; $('optActiveRow').checked = S.activeRow;
 $('optRowHover').onchange = e => { S.rowHover = e.target.checked; store.set('rowHover', S.rowHover); renderTable(); };
 $('optActiveRow').onchange = e => { S.activeRow = e.target.checked; store.set('activeRow', S.activeRow); renderTable(); };
 $('optPin').onchange = e => { S.pin = e.target.checked; renderTable(); };
+$('optDisabled').checked = S.disabled; $('optDisabled').onchange = e => { S.disabled = e.target.checked; store.set('disabled', S.disabled); renderTable(); };
 $('resetParams').onclick = () => { P = { ...DEFAULTS }; store.set('params', P); renderParams(); renderAll(); };
 $('copyExp').onclick = () => copy($('exp').value);
 
 const PRESETS = [
-  ['Сбросить', () => { clearSel(); S.checked = new Set([4]); }],
+  ['Сбросить', () => { clearSel(); S.checked = new Set([4]); $('qcap').innerHTML = ''; }],
   ['Ячейка', () => { clearSel(); S.cur = { a: [6, 1], f: [6, 1] }; }],
   ['Ячейка в отмеченной строке', () => { clearSel(); S.checked.add(4); S.cur = { a: [6, 4], f: [6, 4] }; }],
   ['Диапазон со статусами и жёлтыми', () => { clearSel(); S.cur = { a: [4, 0], f: [7, 4] }; }],
@@ -1185,11 +1220,43 @@ const PRESETS = [
 $('presets').innerHTML = PRESETS.map(([l], i) => `<button class="btn" data-p="${i}">${l}</button>`).join('');
 $('presets').onclick = e => { const b = e.target.closest('[data-p]'); if (!b) return; PRESETS[+b.dataset.p][1](); renderTable(); };
 
+// ───────────────────────── Шесть вопросов коллеги: решения 05.10 и 07.10 на большой таблице ─────────────────────────
+const Q = [
+  ['1 · с чекбоксом', { r: 2 }, '<b>Вопрос 1.</b> Обычная ячейка выбранной строки: <span class="mono">surface-accent-minor × rest</span>, ключ <span class="mono">selectionCheckboxBg</span>, как у отмеченной строки 5. У строки 3 есть чекбокс, но он не нажат, и это ничего не меняет. Смотрите «ИНН», «Дата» и фон под активной ячейкой «Клиент».'],
+  ['1 · без чекбокса', { r: 3 }, '<b>Вопрос 1.</b> У строки 4 чекбокса нет вовсе: тот же <span class="mono">surface-accent-minor × rest</span>, ключ <span class="mono">selectionCheckboxBg</span>. Строки с чекбоксом и без него красятся одинаково.'],
+  ['2 · с чекбоксом', { r: 2, hover: true }, '<b>Вопрос 2.</b> Та же строка под курсором: на ступень глубже, <span class="mono">× hover</span>, ключ <span class="mono">bgSelectedRowHovered</span> (решение 07.10). Наведение закреплено на строке 3, движение мыши по таблице его снимает.'],
+  ['2 · без чекбокса', { r: 3, hover: true }, '<b>Вопрос 2.</b> Строка без чекбокса под курсором: тот же <span class="mono">× hover</span>, ключ <span class="mono">bgSelectedRowHovered</span>. Строка 4.'],
+  ['3', { r: 2 }, '<b>Вопрос 3.</b> Цветные ячейки выбранной строки: свой цвет на шаге hover, без наложения. Строка 3: «Сумма», «Статус», «Комментарий». Сравните с теми же ячейками в строках 2 и 4.'],
+  ['4', { r: 2, hover: true }, '<b>Вопрос 4.</b> Цветная ячейка выбранной строки под курсором: ещё ступень глубже, <span class="mono">hover2</span> = +2δ от покоя, ключи <span class="mono">…RowActiveHovered</span> (решение 07.10). Строка 3: «Сумма», «Статус», «Комментарий».'],
+  ['5', { r: 4 }, '<b>Вопрос 5.</b> Чекбокс нажат и строка выбрана: на одну ступень глубже отмеченной, <span class="mono">surface-accent-minor × hover</span>, ключ <span class="mono">bgSelectedRowHovered</span>. Строка 5. Сравните с выбранной строкой без нажатого чекбокса: кнопка «1 · с чекбоксом».'],
+  ['5 · курсор', { r: 4, hover: true }, '<b>Вопрос 5.</b> То же под курсором: ещё ступень глубже, <span class="mono">× hover2</span>, ключ <span class="mono">bgSelectedRowActiveHovered</span> (решение 07.10).'],
+  ['6', { r: 2 }, '<b>Вопрос 6.</b> Служебная зона выбранной строки, номер и чекбокс: <span class="mono">surface-accent-minor × active</span>, ключ <span class="mono">selectionServiceActiveBg</span>. Шапка над колонкой активной ячейки красится так же.'],
+  ['6 · курсор', { r: 2, hover: true }, '<b>Вопрос 6.</b> Служебная зона под курсором: <span class="mono">× hoverActive</span>, ключ <span class="mono">selectionServiceActiveHoveredBg</span>.'],
+];
+function runQuestion(i) {
+  const [, o, text] = Q[i];
+  S.source = 'rule'; store.set('source', 'rule');
+  S.activeRow = true; S.rowHover = true; store.set('activeRow', true); store.set('rowHover', true);
+  $('optActiveRow').checked = true; $('optRowHover').checked = true;
+  S.pin = false; $('optPin').checked = false;
+  clearSel(); S.checked = new Set([4]);
+  S.cur = { a: [2, o.r], f: [2, o.r] };
+  S.forceHover = o.hover ? { r: o.r, ci: 2 } : null;
+  $('qcap').innerHTML = text;
+  renderAll();
+}
+$('questions').innerHTML = Q.map(([l], i) => `<button class="btn q" data-q="${i}">${l}</button>`).join('');
+$('questions').onclick = e => { const b = e.target.closest('[data-q]'); if (!b) return; runQuestion(+b.dataset.q); };
+
 const PAIRS = [
   ['selectionActiveBg', 'bgCell', 'выделение на белом ↔ ячейка'],
   ['selectionActiveBg', 'bgRowHovered', 'выделение на белом ↔ hover строки'],
   ['selectionActiveHoveredBg', 'selectionActiveBg', 'hover на выделении ↔ выделение'],
   ['selectionActiveHoveredBg', 'bgRowHovered', 'hover на выделении ↔ hover строки'],
+  ['bgSelectedRowHovered', 'selectionCheckboxBg', 'отмеченная и выбранная ↔ просто отмеченная'],
+  ['bgSelectedRowActiveHovered', 'bgSelectedRowHovered', 'отмеченная и выбранная под курсором ↔ без курсора'],
+  ['bgEditableCellHovered', 'bgEditableCell', 'жёлтая в выбранной строке ↔ жёлтая вне её'],
+  ['bgEditableCellRowActiveHovered', 'bgEditableCellHovered', 'жёлтая в выбранной строке под курсором ↔ без курсора'],
   ['selectionActiveBg', 'bgHeader', 'выделение на белом ↔ шапка'],
   ['selectionActiveBg', 'selectionCheckboxBg', 'выделение на белом ↔ отмеченная строка'],
   ['selectionActiveCheckboxBg', 'selectionCheckboxBg', 'выделение в отмеченной ↔ отмеченная строка'],
@@ -1245,6 +1312,5 @@ renderAll();
 $('optHoldSaved').onchange = e => { S.holdSaved = e.target.checked; if (!S.holdSaved) { const now = performance.now(); for (const id of S.edited.keys()) S.edited.set(id, now); } tickSaved(); };
 tickSaved();
 
-</script>
-</body>
+</script></body>
 </html>

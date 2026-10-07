@@ -153,6 +153,98 @@ describe('модель «токен + состояние» против спек
     }
   });
 
+  it('hover2 — второй шаг hover: +1δ от hover, +2δ от покоя (выбранная строка под курсором, решение 07.10)', () => {
+    const triples = [
+      [
+        'bgSelectedRowActiveHovered',
+        'bgSelectedRowHovered',
+        'selectionCheckboxBg',
+      ],
+      [
+        'bgEditableCellRowActiveHovered',
+        'bgEditableCellHovered',
+        'bgEditableCell',
+      ],
+      [
+        'editedSuccessfullyCellRowActiveHoverColor',
+        'editedSuccessfullyCellHoverColor',
+        'editedSuccessfullyCellColor',
+      ],
+      [
+        'bgCellPositiveRowActiveHovered',
+        'bgCellPositiveHovered',
+        'bgCellPositive',
+      ],
+      [
+        'bgCellNegativeRowActiveHovered',
+        'bgCellNegativeHovered',
+        'bgCellNegative',
+      ],
+      [
+        'bgCellWarningRowActiveHovered',
+        'bgCellWarningHovered',
+        'bgCellWarning',
+      ],
+      ['bgCellInfoRowActiveHovered', 'bgCellInfoHovered', 'bgCellInfo'],
+    ] as const;
+    for (const theme of KNOWN) {
+      const setting = THEME_SETTINGS[theme]!;
+      const d = 100 * STEP * (setting.stepFactor ?? STEP_FACTOR[setting.mode]);
+      for (const [second, first, rest] of triples) {
+        const r = colors[rest][theme],
+          h1 = colors[first][theme],
+          h2 = colors[second][theme];
+        if (!r) {
+          expect(h2, second + ' ' + theme).toBeNull();
+          continue;
+        }
+        expect(
+          Math.abs(deltaE(h1!, h2!) - d),
+          second + ' ' + theme,
+        ).toBeLessThan(0.3);
+        expect(
+          Math.abs(deltaE(r, h2!) - 2 * d),
+          second + ' ' + theme,
+        ).toBeLessThan(0.5);
+        expect(
+          Math.abs(hexToOklch(h2!).h - hexToOklch(h1!).h),
+          second + ' ' + theme,
+        ).toBeLessThan(3);
+      }
+    }
+    // выбранная строка с нажатым чекбоксом под курсором в light — не темнее сегодняшнего «выделения в отмеченной строке»
+    expect(
+      deltaE(
+        colors.bgSelectedRowActiveHovered.light!,
+        colors.selectionActiveCheckboxBg.light!,
+      ),
+    ).toBeLessThan(1);
+  });
+
+  it('hover2 произвольного цвета = hover от его hover-цвета (так считали прототип и примерки)', () => {
+    const opts = {
+      cardHex: '#FFFFFF',
+      primaryHex: '#F2F5F8',
+      selectionHex: '#118CDF1F',
+    } as const;
+    for (const hex of [
+      '#ECF6FC',
+      '#FFF6E5',
+      '#1A9E321F',
+      '#FFE0E3',
+      '#FA5F051F',
+      '#CFECFF',
+    ]) {
+      const s = fillStates(hex, 'light', opts);
+      expect(s.hover2, hex).toBe(fillStates(s.hover!, 'light', opts).hover);
+    }
+    const card = fillStates('#FFFFFF', 'light', { ...opts, achromatic: true });
+    expect(card.hover2).toBe(
+      fillStates(card.hover!, 'light', { ...opts, achromatic: true }).hover,
+    );
+    expect(fillStates('#FFFFFF', 'light').hover2).toBeNull();
+  });
+
   it('редактируемая ячейка в выделении — наложение на её цвет', () => {
     const s = deriveStates(SEMANTIC.dataYellowLight, THEME_SETTINGS, CELL);
     expect(colors.bgEditableCellActive.light).toBe(s.light!.active);
@@ -224,6 +316,7 @@ describe('группа и правило', () => {
     ).toEqual({
       rest: '#13181BF5',
       hover: '#13181B93',
+      hover2: '#13181B93',
       active: '#13181BC4',
       hoverActive: '#13181BC4',
     });

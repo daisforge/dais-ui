@@ -3,7 +3,7 @@
  * Версия 1: вход и выход в hex, все вычисления в OKLCH. Без зависимостей.
  *
  * Модель: каждый цвет таблицы = семантический токен темы в одном из состояний
- * rest, hover, active (= выделение), hoverActive. Все выходные цвета непрозрачные:
+ * rest, hover, hover2, active (= выделение), hoverActive. Все выходные цвета непрозрачные:
  * в канвасе ничего не накладывается в рантайме, наложение просчитано заранее.
  *
  * Шаг 1. Группа семантического токена по префиксу имени: surface | text | outline | data | background.
@@ -21,6 +21,11 @@
  *                  как компонент Selection Area в макете) — работает поверх любой подложки
  *   hoverActive  = +1δ по лучу от цвета выделения: hover показывается и на выделенных ячейках
  *                  (макет «Выделение ячеек» говорит обратное — это ошибка макета, правится 18.09)
+ *   hover2       = ещё +1δ по тому же лучу от hover (+2δ от покоя): выбранная строка
+ *                  (highlightActiveType = 'row') под курсором — нажатый чекбокс в ней и цветные ячейки в ней
+ *                  (решение 07.10). Выбранная строка в покое красится как отмеченная (× rest), нажатый
+ *                  чекбокс в ней — × hover, цветные ячейки в ней — свой hover; наложение выделения
+ *                  остаётся только у выделенной области.
  *
  * Формула «шаг по лучу» (вывод — table-states-formula.md). Опора A: белый (L = 1) в светлых темах,
  * чёрный (L = 0) в тёмных; направляющий B — токен. При постоянном тоне:
@@ -94,10 +99,11 @@ export type CellTokens = {
   selection: SourceToken;
 };
 
-/** rest есть всегда; hover null без surface-solid-primary у фона, active null без surface-transparent-accent. */
+/** rest есть всегда; hover и hover2 null без surface-solid-primary у фона, active и hoverActive null без surface-transparent-accent. */
 export type States = {
   rest: string;
   hover: string | null;
+  hover2: string | null;
   active: string | null;
   hoverActive: string | null;
 };
@@ -187,10 +193,13 @@ export const flattenHex = (hex: string, backgroundHex = '#FFFFFF'): string => {
   const fg = parseHex(hex);
   const bg = parseHex(backgroundHex);
   const a = fg[3];
-  return `#${[0, 1, 2]
-    .map((i) => toHex2(Math.round((fg[i] * a + bg[i] * (1 - a)) * 255) / 255))
-    .join('')
-    .toUpperCase()}`;
+  return (
+    '#' +
+    [0, 1, 2]
+      .map((i) => toHex2(Math.round((fg[i] * a + bg[i] * (1 - a)) * 255) / 255))
+      .join('')
+      .toUpperCase()
+  );
 };
 
 export const hexToOklch = (hex: string): Oklch => {
@@ -238,10 +247,13 @@ export const oklchToHex = (color: Oklch): string => {
     }
     rgb = toLinearRgb({ ...base, c: lo });
   }
-  return `#${rgb
-    .map((v) => toHex2(toGamma(Math.min(1, Math.max(0, v)))))
-    .join('')
-    .toUpperCase()}`;
+  return (
+    '#' +
+    rgb
+      .map((v) => toHex2(toGamma(Math.min(1, Math.max(0, v)))))
+      .join('')
+      .toUpperCase()
+  );
 };
 
 // ─── Формула ───
@@ -287,7 +299,7 @@ const pick = (values: ThemeValues | undefined, theme: ThemeName) =>
   values?.[theme] ?? null;
 
 /**
- * Четыре состояния семантического токена в одной теме.
+ * Пять состояний семантического токена в одной теме.
  * null — нет токена или фона ячейки в теме; если у фона нет surface-solid-primary, null только у производных состояний.
  */
 export const deriveThemeStates = (
@@ -319,6 +331,7 @@ export const deriveThemeStates = (
     return {
       rest,
       hover,
+      hover2: hover,
       active,
       hoverActive: own(source.hoverActive, active),
     };
@@ -353,6 +366,7 @@ const hoverOnSelection = (
  * Состояния произвольной заливки — для цветов, которые приходят в таблицу из themeOverride
  * потребителя (ячейка со статусом и т. п.). То же правило, что для токенов. Считать можно
  * в рантайме, функция без зависимостей; результат стоит кэшировать по hex.
+ * hover2 — второй шаг по тому же лучу (+2δ от покоя): цвет ячейки в выбранной строке под курсором.
  *   cardHex      — фон ячейки темы: на него накладывается альфа входного цвета
  *   primaryHex   — surface-solid-primary: направление луча для цвета без хромы (белый фон)
  *   selectionHex — surface-transparent-accent темы (с альфой): без него active = null
@@ -382,17 +396,22 @@ export const fillStates = (
     : undefined;
   const hoverActive = hoverOnSelection(active, delta, mode, primary);
   if (options.achromatic || hexToOklch(token).c < ACHROMATIC_CHROMA) {
-    if (!primary) return { rest: token, hover: null, active, hoverActive };
+    if (!primary)
+      return { rest: token, hover: null, hover2: null, active, hoverActive };
+    const hover = stepHex(token, delta, mode, primary);
     return {
       rest: token,
-      hover: stepHex(token, delta, mode, primary),
+      hover,
+      hover2: stepHex(hover, delta, mode, primary),
       active,
       hoverActive,
     };
   }
+  const hover = stepHex(token, delta, mode);
   return {
     rest: token,
-    hover: stepHex(token, delta, mode),
+    hover,
+    hover2: stepHex(hover, delta, mode),
     active,
     hoverActive,
   };
@@ -415,7 +434,7 @@ export const deriveStates = (
   return out;
 };
 
-/** Состояния всех семантических токенов: { токен: { тема: { rest, hover, active, hoverActive } } }. */
+/** Состояния всех семантических токенов: { токен: { тема: { rest, hover, hover2, active, hoverActive } } }. */
 export const deriveAllStates = (
   sources: Record<string, SourceToken>,
   settings: ThemeSettings,
