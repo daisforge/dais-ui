@@ -63,11 +63,17 @@ let md = `# Цвета таблицы — исходные токены, кар�
 |---${themeSep}
 `;
 for (const s of Object.values(S)) {
-  md += `| \`${s.name}\` | ${THEMES.map((t) => hx(s.values[t])).join(' | ')} |\n`;
+  md += `| \`${s.name}\` | ${THEMES.map((t) => hx(s.values[t])).join(
+    ' | ',
+  )} |\n`;
   if (s.hover)
-    md += `| \`${s.name}-hover\` (из темы) | ${THEMES.map((t) => hx(s.hover?.[t])).join(' | ')} |\n`;
+    md += `| \`${s.name}-hover\` (из темы) | ${THEMES.map((t) =>
+      hx(s.hover?.[t]),
+    ).join(' | ')} |\n`;
   if (s.active)
-    md += `| \`${s.name}-active\` (из темы) | ${THEMES.map((t) => hx(s.active?.[t])).join(' | ')} |\n`;
+    md += `| \`${s.name}-active\` (из темы) | ${THEMES.map((t) =>
+      hx(s.active?.[t]),
+    ).join(' | ')} |\n`;
 }
 md += `
 ## 2. Карта: ключ таблицы → семантический токен + состояние
@@ -78,7 +84,9 @@ hex здесь нет намеренно: rest — токен как есть, h
 |---|---|---|---|
 `;
 for (const [key, e] of Object.entries(TABLE_COLORS))
-  md += `| \`${key}\` | ${e.paints ?? ''} | \`${S[e.source].name}\` | ${e.state} |\n`;
+  md += `| \`${key}\` | ${e.paints ?? ''} | \`${S[e.source].name}\` | ${
+    e.state
+  } |\n`;
 md += `
 ## 3. Результат для сверки: hex ключа таблицы в каждой теме
 
@@ -88,7 +96,9 @@ md += `
 |---|---${themeSep}
 `;
 for (const [key, e] of Object.entries(TABLE_COLORS))
-  md += `| \`${key}\` | \`${S[e.source].name}\` · ${e.state} | ${THEMES.map((t) => hx(byTableKey[key][t])).join(' | ')} |\n`;
+  md += `| \`${key}\` | \`${S[e.source].name}\` · ${e.state} | ${THEMES.map(
+    (t) => hx(byTableKey[key][t]),
+  ).join(' | ')} |\n`;
 md += `
 ## 4. Пять состояний каждого семантического токена
 
@@ -105,7 +115,9 @@ for (const [k, st] of Object.entries(bySemanticToken))
     'active',
     'hoverActive',
   ] as const)
-    md += `| \`${S[k].name}\` | ${state} | ${THEMES.map((t) => hx(st[t]?.[state])).join(' | ')} |\n`;
+    md += `| \`${S[k].name}\` | ${state} | ${THEMES.map((t) =>
+      hx(st[t]?.[state]),
+    ).join(' | ')} |\n`;
 writeFileSync(process.argv[3], md);
 let csvTokens = 'token,' + THEMES.join(',') + '\n';
 for (const s of Object.values(S)) {
@@ -135,5 +147,7 @@ for (const [key, e] of Object.entries(TABLE_COLORS))
     ].join(',') + '\n';
 writeFileSync(process.argv[5], csvMap);
 console.log(
-  `table keys: ${Object.keys(byTableKey).length}, semantic tokens: ${Object.keys(bySemanticToken).length}, cells: ${total}, filled: ${total - nulls}, null: ${nulls}`,
+  `table keys: ${Object.keys(byTableKey).length}, semantic tokens: ${
+    Object.keys(bySemanticToken).length
+  }, cells: ${total}, filled: ${total - nulls}, null: ${nulls}`,
 );

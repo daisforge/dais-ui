@@ -3,3 +3,9 @@ node_modules
 *.config.js
 *.config.ts
 dist
+# Код дизайн-системы в генераторе цветов таблицы: заменяется целиком при
+# обновлениях от дизайнера, под наш линт не подгоняется (семантика защищена
+# его собственными тестами). Наш слой (emit-table-colors.ts, theme-tokens)
+# линтится как обычно.
+generators/table-token-states/code
+generators/table-token-states/demo

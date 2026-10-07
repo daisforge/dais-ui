@@ -71,7 +71,12 @@ export const ACHROMATIC_CHROMA = 0.004;
 // ─── Типы входа и выхода ───
 
 export type TokenGroup =
-  'surface' | 'text' | 'outline' | 'data' | 'background' | 'other';
+  | 'surface'
+  | 'text'
+  | 'outline'
+  | 'data'
+  | 'background'
+  | 'other';
 
 /** Как таблица использует цвет: заливка считается формулой, остальное берётся из темы. */
 export type TokenUsage = 'fill' | 'text' | 'outline' | 'static';
@@ -149,10 +154,10 @@ export const defaultUsage = (group: TokenGroup): TokenUsage =>
   group === 'text'
     ? 'text'
     : group === 'outline'
-      ? 'outline'
-      : group === 'background'
-        ? 'static'
-        : 'fill';
+    ? 'outline'
+    : group === 'background'
+    ? 'static'
+    : 'fill';
 
 /** Токен — фон ячейки? Для него луч задаёт surface-solid-primary. */
 export const isCardToken = (tokenName: string) =>
@@ -193,13 +198,10 @@ export const flattenHex = (hex: string, backgroundHex = '#FFFFFF'): string => {
   const fg = parseHex(hex);
   const bg = parseHex(backgroundHex);
   const a = fg[3];
-  return (
-    '#' +
-    [0, 1, 2]
-      .map((i) => toHex2(Math.round((fg[i] * a + bg[i] * (1 - a)) * 255) / 255))
-      .join('')
-      .toUpperCase()
-  );
+  return `#${[0, 1, 2]
+    .map((i) => toHex2(Math.round((fg[i] * a + bg[i] * (1 - a)) * 255) / 255))
+    .join('')
+    .toUpperCase()}`;
 };
 
 export const hexToOklch = (hex: string): Oklch => {
@@ -247,13 +249,10 @@ export const oklchToHex = (color: Oklch): string => {
     }
     rgb = toLinearRgb({ ...base, c: lo });
   }
-  return (
-    '#' +
-    rgb
-      .map((v) => toHex2(toGamma(Math.min(1, Math.max(0, v)))))
-      .join('')
-      .toUpperCase()
-  );
+  return `#${rgb
+    .map((v) => toHex2(toGamma(Math.min(1, Math.max(0, v)))))
+    .join('')
+    .toUpperCase()}`;
 };
 
 // ─── Формула ───

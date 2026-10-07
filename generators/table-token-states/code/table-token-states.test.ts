@@ -365,12 +365,8 @@ describe('группа и правило', () => {
   });
 
   it('насыщенный токен как заливка: выход за sRGB снимается уменьшением хромы, тон сохраняется', () => {
-    const s = deriveStates(
-      SEMANTIC.surfaceAccent,
-      THEME_SETTINGS,
-      CELL,
-      'fill',
-    ).light!;
+    const s = deriveStates(SEMANTIC.surfaceAccent, THEME_SETTINGS, CELL, 'fill')
+      .light!;
     for (const hex of Object.values(s)) expect(hex).toMatch(/^#[0-9A-F]{6}$/);
     expect(
       Math.abs(hexToOklch(s.hover!).h - hexToOklch(s.rest).h),

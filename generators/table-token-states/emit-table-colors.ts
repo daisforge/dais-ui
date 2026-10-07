@@ -17,19 +17,19 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import {
-  THEMES,
-  type StateName,
-  type States,
-  type ThemeName,
-  buildTableColors,
-  fillStates,
-} from './code/table-token-states';
-import {
   CELL,
   SEMANTIC,
   TABLE_COLORS,
   THEME_SETTINGS,
 } from './code/table-token-sources';
+import {
+  buildTableColors,
+  fillStates,
+  type StateName,
+  type States,
+  type ThemeName,
+  THEMES,
+} from './code/table-token-states';
 
 const OUT_PATH = resolve(
   dirname(fileURLToPath(import.meta.url)),
@@ -48,8 +48,9 @@ const byTableKey = buildTableColors(
 // Комментарии к значениям, подставленным слоем интеграции: ключ → тема → причина.
 const notes = new Map<string, Map<ThemeName, string>>();
 const note = (key: string, theme: ThemeName, why: string) => {
-  if (!notes.has(key)) notes.set(key, new Map());
-  notes.get(key)!.set(theme, why);
+  const keyNotes = notes.get(key) ?? new Map<ThemeName, string>();
+  keyNotes.set(theme, why);
+  notes.set(key, keyNotes);
 };
 
 /** Четыре состояния произвольного hex по правилам темы (та же формула, что у токенов). */
@@ -112,28 +113,28 @@ const TEMP_FILLS: TempFillGroup[] = [
   },
 ];
 
-for (const group of TEMP_FILLS) {
-  for (const [theme, hex] of Object.entries(group.values) as [
-    ThemeName,
-    string,
-  ][]) {
+const STATE_NAMES = [
+  'rest',
+  'hover',
+  'hover2',
+  'active',
+  'hoverActive',
+] as const;
+
+TEMP_FILLS.forEach((group) => {
+  const themeEntries = Object.entries(group.values) as [ThemeName, string][];
+  themeEntries.forEach(([theme, hex]) => {
     const states = statesFor(hex, theme);
-    for (const state of [
-      'rest',
-      'hover',
-      'hover2',
-      'active',
-      'hoverActive',
-    ] as const) {
+    STATE_NAMES.forEach((state) => {
       const key = group.keys[state];
       const value = states[state];
       if (value) {
         byTableKey[key][theme] = value;
         note(key, theme, group.why);
       }
-    }
-  }
-}
+    });
+  });
+});
 
 // ─── Статические подстановки для одиночных ключей ───
 
@@ -155,7 +156,7 @@ note(
 );
 
 // В tokens.ts HC нет surface-negative-minor и surface-info-minor → статусные ячейки из light.
-for (const key of [
+[
   'bgCellNegative',
   'bgCellNegativeHovered',
   'bgCellNegativeRowActiveHovered',
@@ -166,23 +167,20 @@ for (const key of [
   'bgCellInfoRowActiveHovered',
   'bgCellInfoActive',
   'bgCellInfoActiveHovered',
-]) {
+].forEach((key) => {
   byTableKey[key].highContrastLight = byTableKey[key].light;
   note(
     key,
     'highContrastLight',
     'временно: в HC нет минорного токена статуса, копия light',
   );
-}
+});
 
 // ─── Проверка полноты ───
 
-const missing: string[] = [];
-for (const [key, record] of Object.entries(byTableKey)) {
-  for (const theme of THEMES) {
-    if (!record[theme]) missing.push(`${key}.${theme}`);
-  }
-}
+const missing = Object.entries(byTableKey).flatMap(([key, record]) =>
+  THEMES.filter((theme) => !record[theme]).map((theme) => `${key}.${theme}`),
+);
 if (missing.length > 0) {
   throw new Error(`Не закрыты значения: ${missing.join(', ')}`);
 }
@@ -195,11 +193,13 @@ const fillParams = THEMES.map((theme) => {
   const setting = THEME_SETTINGS[theme];
   const stepFactor = setting.stepFactor ?? (setting.mode === 'dark' ? 1.2 : 1);
   const q = (v: string | null | undefined) => (v ? `'${v}'` : 'null');
-  return `  ${theme}: { mode: '${setting.mode}', stepFactor: ${stepFactor}, cardHex: ${q(
+  return `  ${theme}: { mode: '${
+    setting.mode
+  }', stepFactor: ${stepFactor}, cardHex: ${q(
     SEMANTIC.surfaceSolidCard.values[theme],
-  )}, primaryHex: ${q(SEMANTIC.surfaceSolidPrimary.values[theme])}, selectionHex: ${q(
-    SEMANTIC.surfaceTransparentAccent.values[theme],
-  )} },`;
+  )}, primaryHex: ${q(
+    SEMANTIC.surfaceSolidPrimary.values[theme],
+  )}, selectionHex: ${q(SEMANTIC.surfaceTransparentAccent.values[theme])} },`;
 });
 
 const lines: string[] = [];
@@ -226,7 +226,9 @@ lines.push(
 lines.push(' */');
 lines.push('');
 lines.push(
-  `export const TABLE_COLOR_THEMES = [${THEMES.map((t) => `'${t}'`).join(', ')}] as const;`,
+  `export const TABLE_COLOR_THEMES = [${THEMES.map((t) => `'${t}'`).join(
+    ', ',
+  )}] as const;`,
 );
 lines.push('');
 lines.push(
@@ -234,18 +236,18 @@ lines.push(
 );
 lines.push('');
 lines.push('export const TABLE_STATE_COLORS = {');
-for (const [key, record] of Object.entries(byTableKey)) {
+Object.entries(byTableKey).forEach(([key, record]) => {
   const entry = TABLE_COLORS[key];
   const source = entry ? SEMANTIC[entry.source].name : '?';
   const paints = entry?.paints ? ` — ${entry.paints}` : '';
   lines.push(`  /** ${source} · ${entry?.state ?? '?'}${paints} */`);
   lines.push(`  ${key}: {`);
-  for (const theme of THEMES) {
+  THEMES.forEach((theme) => {
     const why = notes.get(key)?.get(theme);
     lines.push(`    ${theme}: '${record[theme]}',${why ? ` // ${why}` : ''}`);
-  }
+  });
   lines.push('  },');
-}
+});
 lines.push('} as const;');
 lines.push('');
 lines.push('export type TableStateColorKey = keyof typeof TABLE_STATE_COLORS;');
@@ -271,5 +273,7 @@ writeFileSync(OUT_PATH, lines.join('\n'));
 const tempCount = [...notes.values()].reduce((sum, m) => sum + m.size, 0);
 // eslint-disable-next-line no-console
 console.log(
-  `table-colors.generated.ts: ${Object.keys(byTableKey).length} ключей × ${THEMES.length} тем, временных значений: ${tempCount}`,
+  `table-colors.generated.ts: ${Object.keys(byTableKey).length} ключей × ${
+    THEMES.length
+  } тем, временных значений: ${tempCount}`,
 );
