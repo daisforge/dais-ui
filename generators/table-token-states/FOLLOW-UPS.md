@@ -1,0 +1,69 @@
+# Отдельные задачи после ветки feature/table-theme-states
+
+Что сознательно НЕ вошло в ветку палитры. Каждый пункт — кандидат на свою
+задачу/ветку; здесь — суть, мотивация и точки в коде. Статус интеграции
+самой палитры — INTEGRATION-STATUS.md.
+
+## 1. Миграция canvas-примитивов со старого API
+
+Старый API (`variant: 'primary' | 'secondary' | 'danger'`, `size: number`,
+без передачи `theme`) падает на захардкоженные light-цвета: `BUTTON_THEME`
+(`#1e88e5`), статичный `VIEW_COLORS` — в dark/HC такие контролы остаются
+светлыми. Новый API (`view`, `buttonSize`, `theme` в опциях) темизирован
+правильно через `buildButtonViewColors(theme.tokens)`.
+
+Что делать: прогнать потребителей примитивов на новый API, затем либо
+удалить старый (мажор, BREAKING CHANGE), либо научить fallback читать
+токены. Точки: `TableGlide/lib/canvas/primitives/*` (deprecated-поля),
+`cells/buttons/constants.ts` (`VIEW_COLORS` @deprecated),
+`cells/buttons/colorResolvers.ts`.
+
+## 2. Disabled-состояния canvas-контролов (нужен дизайнер)
+
+Disabled-кнопки (`#E8EEF2`/`#8A959D`) и unchecked-чекбокс (белый фон,
+`#485056B0` рамка) захардкожены light-значениями и не адаптируются к
+dark/HC. Токен `disabled` удалён из контракта как неподтверждённый. Нужны
+пары «токен × состояние» от дизайн-системы (вопрос поставлен в
+INTEGRATION-STATUS, «Остаётся открытым» п. 5). Точка:
+`cells/buttons/colorResolvers.ts`.
+
+## 3. Canvas-состояние сохранённой ячейки (editedSuccessfully)
+
+Ключи `editedSuccessfullyCell{Color,HoverColor,RowActiveHoverColor,
+ActiveColor,ActiveHoverColor}` есть в палитре по всем темам, но
+canvas-реализации нет: сохранённая ячейка красится только CSS-слоем
+TableCanvas (`styles/cellStyle.ts`, класс `rdg-edited-successfully-cell`).
+Перенести на per-cell тему тем же механизмом, что редактируемая ячейка
+(`cell-fill-override`).
+
+## 4. CI-проверка актуальности generated-файлов
+
+Генераторы запускаются руками; забытый `npm run emit` после правки `code/`
+или обновления CSS-пакетов CI не поймает. Добавить шаг:
+`emit` + `node generators/theme-tokens/generate-theme-tokens.js` +
+`git diff --exit-code` по двум generated-файлам.
+
+## 5. Снапшот-тест генератора чернил
+
+`generators/theme-tokens` не покрыт тестами: смена значений при обновлении
+пакетов атомарки проходит незаметно. Минимум — снапшот `report.md`/пинов и
+проверка «все ключи KEYS получили значения» (сейчас это только throw в
+рантайме генератора).
+
+## 6. Мёртвые/неподтверждённые ключи токенов
+
+Не используются в коде: `dataTeal`, `onDarkTextPrimary96/56/28`,
+`textTertiaryBase/Variant` (алиасы text-tertiary), `fadeWhite`/`fadeGray`
+(палитра). Либо подтвердить у дизайнера и подключить, либо удалить из
+контрактов. Список происхождений — `generators/theme-tokens/report.md`.
+
+## 7. Симметрия раскладки токенов
+
+`table-colors.generated.ts` лежит в `TableGlide/theming/`, а
+`theme-tokens.generated.ts` + `tokens.ts` — в корне `TableGlide/`.
+Перенести вторую пару в `theming/` (churn импортов, делать отдельно).
+
+## 8. Удаление deprecated-пропа checkboxVisibleRowIndexes
+
+На цвет больше не влияет (@deprecated в types.ts). Удалить проп по всей
+цепочке TableCanvas → TableGlide в следующем мажоре.

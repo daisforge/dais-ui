@@ -480,8 +480,10 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     theme.bgHeaderSelectedHovered,
   ]);
 
-  // ─── hoverEffects.row: подсветка строки под курсором (цвета из темы)
-  const isRowHoverEnabled = !!hoverEffects?.row;
+  // ─── hoverEffects.row: подсветка строки под курсором (цвета из темы).
+  // По умолчанию ВКЛЮЧЕНА (решение дизайн-системы — строка под курсором
+  // показывает hover-ступень); выключается явно hoverEffects: { row: false }.
+  const isRowHoverEnabled = hoverEffects?.row !== false;
 
   // Единый источник ховера: логическая ячейка (контент-флаги, ref) и
   // физическая строка (фон, state). Разница семантик описана в useHoverState.

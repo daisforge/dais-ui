@@ -73,9 +73,9 @@ export type CellsSelectionMode =
  */
 export type HoverEffectsConfig = {
   /**
-   * Подсветка строки под курсором. По умолчанию выключена.
-   * - не задано или `false` — выключена;
-   * - `true` — включена, цвета из темы.
+   * Подсветка строки под курсором. По умолчанию ВКЛЮЧЕНА.
+   * - не задано или `true` — включена, цвета из темы;
+   * - `false` — выключена явно.
    *
    * Цвета по зонам строки берутся из темы:
    * - data-ячейки — `bgRowHovered`;
@@ -416,7 +416,8 @@ export type TableGlideCustomProps<
    * Эффекты при наведении. `hoverEffects.row` — подсветка строки под курсором:
    * рисуется через bgCell (getRowThemeOverride), т.е. лежит ПОД селектингом и
    * highlightActiveType — они рисуются поверх (highlightRegions) и визуально
-   * перекрывают hover. По умолчанию выключено.
+   * перекрывают hover. По умолчанию row-подсветка ВКЛЮЧЕНА; выключение —
+   * явное `{ row: false }`.
    */
   hoverEffects?: HoverEffectsConfig;
   /** Включает компенсацию тонких canvas-линий при browser zoom ниже 100% / DPR < 1. */
