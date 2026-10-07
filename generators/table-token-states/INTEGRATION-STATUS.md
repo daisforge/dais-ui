@@ -120,7 +120,7 @@ bgCell из смерженной per-cell темы → при `accentCount > 0` 
   `theming/cell-fill-override.ts` кладёт в per-cell `themeOverride`
   `bgCell` = rest|hover (в выбранной строке hover|hover2) и `accentLight` =
   active|hoverActive. Для потребительских цветов (`columnThemeOverride →
-  bgCell`) состояния считает `getCellFillStates(hex, theme)` с кэшем.
+bgCell`) состояния считает `getCellFillStates(hex, theme)` с кэшем.
 - **Выбранная строка** (`highlightActiveType='row'`): фон строки отдаёт
   row-тема (`getRowThemeOverride`, лестница — `resolveActiveRowBg` в
   `cell-fill-override.ts`), регионами не красится. Активная ячейка при
@@ -137,7 +137,7 @@ bgCell из смерженной per-cell темы → при `accentCount > 0` 
   **`style: 'accent'`** (патч форка): заливка берёт `accentLight` из
   per-cell темы — тот же механизм, что натив.
 - **Выделенная шапка**: `columnsForRender` — `bgHeader/bgHeaderHasFocus =
-  selectionServiceActiveBg`, `bgHeaderHovered = bgHeaderSelectedHovered`;
+selectionServiceActiveBg`, `bgHeaderHovered = bgHeaderSelectedHovered`;
   группа — `getGroupDetails` (`bgGroupHeaderHovered`).
 - **Патч форка** (ветка feature/table-theme-states в RamK-16/glide, коммиты
   f58b344 + 7bd3e4c): `Highlight.style 'accent'` + `drawAboveSelection`

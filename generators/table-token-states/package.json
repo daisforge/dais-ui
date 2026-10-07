@@ -7,8 +7,8 @@
     "typecheck": "tsc -p tsconfig.json",
     "generate": "tsx code/generate.ts code/table-token-states.output.json docs/table-token-sources.md docs/table-semantic-tokens.csv docs/table-token-map.csv",
     "emit": "tsx emit-table-colors.ts",
-    "format": "prettier --write . ../theme-tokens/generate-theme-tokens.js",
-    "format:check": "prettier --check . ../theme-tokens/generate-theme-tokens.js"
+    "format": "prettier --write . ../theme-tokens/generate-theme-tokens.js ../theme-tokens/lib",
+    "format:check": "prettier --check . ../theme-tokens/generate-theme-tokens.js ../theme-tokens/lib"
   },
   "devDependencies": {
     "prettier": "^3.9.9",

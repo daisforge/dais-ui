@@ -4,7 +4,7 @@
  *
  * Токены тем для canvas-рендереров TableGlide, собранные из CSS-переменных
  * пакетов атомарной команды (@salutejs/sdds-themes, beta core, high contrast).
- * Карта соответствий и ручные пины — generators/theme-tokens/generate-theme-tokens.js,
+ * Карта соответствий и ручные пины — generators/theme-tokens/lib/token-map.js,
  * происхождение каждого нестандартного значения — generators/theme-tokens/report.md.
  */
 
