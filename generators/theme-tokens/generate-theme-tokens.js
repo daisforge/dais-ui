@@ -126,7 +126,6 @@ const KEYS = [
   'surfaceNegative',
   'surfaceNegativeHover',
   'surfaceNegativeActive',
-  'disabled',
   'surfaceTransparentAccent',
   'surfaceTransparentAccent12',
   'surfaceTransparentAccent20',
@@ -184,6 +183,7 @@ const MAPPING = {
   dataWarningMinor: { var: 'data-orange-light' },
   dataOrange: { var: 'data-yellow' },
   dataOrangeMinor: { var: 'data-yellow-minor' },
+  dataViolet: { var: 'data-orchid' },
   dataVioletMinor: { var: 'data-orchid-minor' },
   dataMagenta: { var: 'data-fuchsia-minor' },
   dataCyan: { var: 'data-malachite-minor' },
@@ -212,20 +212,13 @@ const MAPPING = {
   outlineSolidPrimary26: { alpha: ['outline-solid-primary', '42'] },
   surfaceWarningMinor56: { alpha: ['data-yellow', '8E'] },
 
+  // исторические синонимы text-tertiary: свои значения не подтверждены
+  // дизайнером, по решению v1.2 оба читают семантический --text-tertiary
+  textTertiaryBase: { var: 'text-tertiary' },
+  textTertiaryVariant: { var: 'text-tertiary' },
+
   // пины: аналога в CSS нет или соответствие не подтверждено — значения из
   // текущего tokens.ts по темам (тёмные без данных наследуют light, TODO дизайнеру)
-  disabled: {
-    pin: { light: '#DDDDDD' },
-    why: 'в CSS тем нет переменной disabled',
-  },
-  textTertiaryBase: {
-    pin: { light: '#8A959D', highContrastLight: '#818C95' },
-    why: 'кандидаты outline-solid-secondary / data-gray — выбор за дизайнером',
-  },
-  textTertiaryVariant: {
-    pin: { light: '#657179', highContrastLight: '#65717A' },
-    why: 'кандидат outline-solid-tertiary — выбор за дизайнером',
-  },
   onDarkTextPrimary96: {
     pin: { light: '#F7F9FBF4' },
     why: 'RGB не совпадает с on-dark-text-primary текущей темы — источник не найден',
@@ -237,10 +230,6 @@ const MAPPING = {
   onDarkTextPrimary28: {
     pin: { light: '#F7F9FB47' },
     why: 'RGB не совпадает с on-dark-text-primary текущей темы — источник не найден',
-  },
-  dataViolet: {
-    pin: { light: '#AD42F5', highContrastLight: '#9A29E0' },
-    why: 'ближайший в теме data-orchid #C46BFF — замену должен подтвердить дизайнер',
   },
   dataTeal: {
     pin: { light: '#14CC98', highContrastLight: '#00B082' },
