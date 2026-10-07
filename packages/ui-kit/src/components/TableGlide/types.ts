@@ -280,6 +280,14 @@ export type ColumnGlideCustoms<R extends ObjectForExtending, SR = unknown> = {
         colInd?: number;
         theme?: Theme;
       }) => CanvasNodeTooltipConfig | null);
+  /**
+   * Пер-ячеечная тема колонки. Если вернуть `bgCell` hex-цветом (`#RGB`,
+   * `#RRGGBB`, `#RRGGBBAA` — альфа сплющивается на фон ячейки темы), таблица
+   * сама посчитает его состояния (hover, выбранная строка, выделение)
+   * формулой активной темы — цвет «живёт» как встроенные. Не-hex значение
+   * (`rgba()`, `var()` и т.п.) применяется как есть, БЕЗ состояний: ячейка
+   * не отреагирует на hover и выделение.
+   */
   columnThemeOverride?: (
     cellInfo: CellInfo<R, SR>
   ) => CellThemeOverrideResult | undefined;
