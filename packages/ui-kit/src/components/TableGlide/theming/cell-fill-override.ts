@@ -43,6 +43,32 @@ export const resolveCellFillOverride = (
  * состояния считаются формулой генератора с кэшем по hex. Не-hex значение
  * (rgba(), var() и т. п.) передаётся как есть, без вычисленных состояний.
  */
+/** Ключи темы, образующие лестницу фона выбранной строки. */
+type ActiveRowBgTheme = {
+  selectionCheckboxBg: string;
+  bgSelectedRowHovered: string;
+  bgSelectedRowActiveHovered: string;
+};
+
+/**
+ * Фон обычной ячейки выбранной строки (highlightActiveType='row', правило
+ * v1.2): rest = selectionCheckboxBg, под курсором hover = bgSelectedRowHovered;
+ * НАЖАТЫЙ чекбокс добавляет ступень (hover, под курсором hover2 =
+ * bgSelectedRowActiveHovered). Используется row-темой и гашением тонирования
+ * одиночной активной ячейки.
+ */
+export const resolveActiveRowBg = (
+  theme: ActiveRowBgTheme,
+  { rowHover, checkboxChecked }: { rowHover: boolean; checkboxChecked: boolean },
+): string =>
+  checkboxChecked
+    ? rowHover
+      ? theme.bgSelectedRowActiveHovered
+      : theme.bgSelectedRowHovered
+    : rowHover
+      ? theme.bgSelectedRowHovered
+      : theme.selectionCheckboxBg;
+
 export const resolveConsumerFillOverride = (
   bgCell: string,
   theme: TableColorTheme,

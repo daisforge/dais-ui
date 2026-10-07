@@ -46,6 +46,7 @@ import { resolveCanvasCellInteractionTargetFromRenderData } from './lib/canvas/i
 import { StyledGlideDataEditor, StyledOverlayPortal } from './styled';
 import { getTheme } from './theming';
 import {
+  resolveActiveRowBg,
   resolveCellFillOverride,
   resolveConsumerFillOverride,
 } from './theming/cell-fill-override';
@@ -449,6 +450,9 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       if (headerIsActive) {
         themeOverride.bgHeader = theme.selectionServiceActiveBg;
         themeOverride.bgHeaderHasFocus = theme.selectionServiceActiveBg;
+        // Выделенная шапка под курсором — на ступень глубже (hoverActive),
+        // а не штатный светлый ховер (подтверждено дизайнером 07.10, в.2).
+        themeOverride.bgHeaderHovered = theme.bgHeaderSelectedHovered;
         hasThemeOverride = true;
       }
 
@@ -470,6 +474,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     numberingColumnIndex,
     theme.selectionServiceBg,
     theme.selectionServiceActiveBg,
+    theme.bgHeaderSelectedHovered,
   ]);
 
   // ─── hoverEffects.row: подсветка строки под курсором (цвета из темы)
@@ -737,13 +742,11 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
           ? {
               accentLight: fillOverride
                 ? fillOverride.bgCell
-                : checkboxSelectedRowIndexes?.has(rowInd)
-                  ? fillContext.rowHover
-                    ? theme.bgSelectedRowActiveHovered
-                    : theme.bgSelectedRowHovered
-                  : fillContext.rowHover
-                    ? theme.bgSelectedRowHovered
-                    : theme.selectionCheckboxBg,
+                : resolveActiveRowBg(theme, {
+                    rowHover: fillContext.rowHover,
+                    checkboxChecked:
+                      checkboxSelectedRowIndexes?.has(rowInd) ?? false,
+                  }),
             }
           : undefined;
 
@@ -1219,7 +1222,8 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   ]);
 
   // Фон полностью выделенной группы повторяет выделенную листовую шапку:
-  // idle — тёмный selected (selectionServiceActiveBg), ховер — штатный (светлее).
+  // idle — тёмный selected (selectionServiceActiveBg), под курсором — на
+  // ступень глубже (bgHeaderSelectedHovered, подтверждено дизайнером 07.10).
   const getGroupDetails = useCallback<
     NonNullable<GlideProps['getGroupDetails']>
   >(
@@ -1233,7 +1237,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         ...base,
         overrideTheme: {
           bgGroupHeader: theme.selectionServiceActiveBg,
-          bgGroupHeaderHovered: theme.bgHeaderHovered,
+          bgGroupHeaderHovered: theme.bgHeaderSelectedHovered,
         },
       };
     },
@@ -1241,7 +1245,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       groupAlignMap,
       fullySelectedGroupNames,
       theme.selectionServiceActiveBg,
-      theme.bgHeaderHovered,
+      theme.bgHeaderSelectedHovered,
     ]
   );
 
@@ -1491,16 +1495,11 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       // показывается выделение, как на отмеченной строке.
       if (rowInd === activeRow) {
         const hovered = rowInd === hoveredRow;
-        const checkboxChecked = checkboxSelectedRowIndexes?.has(rowInd) ?? false;
-        const bgCell = checkboxChecked
-          ? hovered
-            ? theme.bgSelectedRowActiveHovered
-            : theme.bgSelectedRowHovered
-          : hovered
-            ? theme.bgSelectedRowHovered
-            : theme.selectionCheckboxBg;
         return {
-          bgCell,
+          bgCell: resolveActiveRowBg(theme, {
+            rowHover: hovered,
+            checkboxChecked: checkboxSelectedRowIndexes?.has(rowInd) ?? false,
+          }),
           accentLight: hovered
             ? theme.selectionActiveCheckboxHoveredBg
             : theme.selectionActiveCheckboxBg,
