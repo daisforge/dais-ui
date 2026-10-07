@@ -7,13 +7,16 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { Button } from '@ui-kit/components/Button';
 import { Checkbox } from '@ui-kit/components/Checkbox';
 import {
+  Canvas,
   ColumnConfig,
   ColumnOrColumnGroupConfig,
+  RenderCellProps,
   SortColumn,
   SummaryCellInfoGlideInstance,
   TableCanvas,
 } from '@ui-kit/components/TableCanvas';
 import { TextField } from '@ui-kit/components/TextField';
+import { IconBankCard, IconEye, IconStar } from '@ui-kit/icons';
 import React, {
   useCallback,
   useEffect,
@@ -139,6 +142,202 @@ const highlightTotals = ({ row }: { row: ReportRow }) => {
   return bgCell ? { bgCell } : undefined;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type CellProps = RenderCellProps<ReportRow, any>;
+
+type BadgeView = React.ComponentProps<typeof Canvas.Badge>['view'];
+
+const REGION_VIEW: Record<string, BadgeView> = {
+  Москва: 'accent',
+  'Санкт-Петербург': 'positive',
+  Казань: 'warning',
+  Новосибирск: 'dark',
+  Екатеринбург: 'negative',
+};
+
+const BAR_MAX_WIDTH = 48;
+const BAR_MAX_VALUE = 1000;
+
+/** Общие пропсы контейнера ячейки: отступы и выравнивание по центру. Canvas не раскрывает свои компоненты, поэтому спредим пропсы. */
+const boxProps = (theme: CellProps['theme']) =>
+  ({
+    direction: 'row',
+    alignItems: 'center',
+    columnGap: 8,
+    padding: {
+      left: theme.cellHorizontalPadding,
+      right: theme.cellHorizontalPadding,
+    },
+    style: { width: '100%' },
+  } as const);
+
+/** Жирная версия шрифта ячейки того же размера: у шрифта формат "400 normal 0.875rem/1.125rem". */
+const boldFont = (theme: CellProps['theme']) =>
+  theme.baseFontStyle.replace(/^\d+/, '600');
+
+/** Регион: пилюля-бейдж, цвет зависит от региона; у общего итога — тёмный. */
+const renderRegion = ({ row, theme }: CellProps) => (
+  <Canvas.Container {...boxProps(theme)}>
+    <Canvas.Badge
+      text={row.region}
+      view={
+        row.kind === 'total' ? 'dark' : REGION_VIEW[row.region] ?? 'default'
+      }
+      size={row.kind === 'item' ? 's' : 'm'}
+      pilled
+    />
+  </Canvas.Container>
+);
+
+/** Менеджер: ссылка, по клику открывает карточку (здесь — просто лог). */
+const renderManager = ({ row, theme }: CellProps) => (
+  <Canvas.Container {...boxProps(theme)}>
+    {row.kind === 'item' ? (
+      <Canvas.Link
+        // Для примера
+        // eslint-disable-next-line no-console
+        onClick={() => console.log('Открыть менеджера', row.manager)}
+      >
+        {row.manager}
+      </Canvas.Link>
+    ) : (
+      <Canvas.Text font={theme.baseFontStyle}>{row.manager}</Canvas.Text>
+    )}
+  </Canvas.Container>
+);
+
+/** Продукт: иконка + название; у итогов название жирное, иконка другого цвета. */
+const renderProduct = ({ row, theme }: CellProps) => (
+  <Canvas.Container {...boxProps(theme)}>
+    <Canvas.Icon
+      icon={row.kind === 'item' ? <IconBankCard /> : <IconStar />}
+      size={16}
+      color={
+        row.kind === 'item' ? theme.tokens.textAccent : theme.tokens.textWarning
+      }
+    />
+    <Canvas.Text
+      font={row.kind === 'item' ? theme.baseFontStyle : boldFont(theme)}
+    >
+      {row.product}
+    </Canvas.Text>
+  </Canvas.Container>
+);
+
+/** Месяц: мини-столбик, пропорциональный значению, и число. Итоги — просто число. */
+const renderMonth =
+  (month: number) =>
+  ({ row, theme }: CellProps) => {
+    const value = row.months[month] ?? 0;
+    const barWidth = Math.max(
+      2,
+      Math.round(
+        (Math.min(value, BAR_MAX_VALUE) / BAR_MAX_VALUE) * BAR_MAX_WIDTH,
+      ),
+    );
+    return (
+      <Canvas.Container {...boxProps(theme)}>
+        {row.kind === 'item' && (
+          <Canvas.Rect
+            color={theme.tokens.textAccent}
+            style={{ width: barWidth, height: 6 }}
+          />
+        )}
+        <Canvas.Text
+          font={row.kind === 'item' ? theme.baseFontStyle : boldFont(theme)}
+        >
+          {formatNumber(value)}
+        </Canvas.Text>
+      </Canvas.Container>
+    );
+  };
+
+const AVERAGE_YEAR_TOTAL =
+  sum(
+    createReportRows()
+      .filter((row) => row.kind === 'item')
+      .map((row) => row.total),
+  ) /
+  (REGIONS.length * 40);
+
+/** Год: число и бейдж «выше/ниже среднего» для обычных строк. */
+const renderYearTotal = ({ row, theme }: CellProps) => (
+  <Canvas.Container {...boxProps(theme)}>
+    <Canvas.Text
+      font={row.kind === 'item' ? theme.baseFontStyle : boldFont(theme)}
+    >
+      {formatNumber(row.total)}
+    </Canvas.Text>
+    {row.kind !== 'item' && (
+      <Canvas.Badge text="Итог" view="accent" size="xs" transparent />
+    )}
+    {row.kind === 'item' && (
+      <Canvas.Badge
+        text={row.total >= AVERAGE_YEAR_TOTAL ? 'Выше плана' : 'Ниже плана'}
+        view={row.total >= AVERAGE_YEAR_TOTAL ? 'positive' : 'negative'}
+        size="xs"
+        transparent
+      />
+    )}
+  </Canvas.Container>
+);
+
+/** Чекбокс «Сверено»: только отображение, состояние в данных не хранится. */
+const renderChecked = ({ row, theme }: CellProps) => (
+  <Canvas.Container {...boxProps(theme)}>
+    {row.kind === 'item' && (
+      <Canvas.Checkbox checked={row.id % 3 === 0} size={16} />
+    )}
+  </Canvas.Container>
+);
+
+/** Действия: кнопки появляются при наведении на строку. */
+const renderActions = ({ row, theme, hovered }: CellProps) => {
+  const showActions = row.kind === 'item' && hovered.rowHover;
+  return (
+    <Canvas.Container {...boxProps(theme)}>
+      {row.kind !== 'item' && (
+        <Canvas.Button
+          view="accent"
+          size="xs"
+          // Для примера
+          // eslint-disable-next-line no-console
+          onClick={() => console.log('Детали', row.region)}
+        >
+          Детали
+        </Canvas.Button>
+      )}
+      {showActions && (
+        <Canvas.Button
+          view="secondary"
+          size="xs"
+          // Для примера
+          // eslint-disable-next-line no-console
+          onClick={() => console.log('Открыть', row.id)}
+        >
+          Открыть
+        </Canvas.Button>
+      )}
+      {showActions && (
+        <Canvas.IconButton
+          icon={<IconEye color="#1d1d1f" size="xs" />}
+          view="clear"
+          buttonSize="xs"
+          tooltip="Просмотр"
+        />
+      )}
+      {showActions && (
+        <Canvas.IconButton
+          icon={<IconStar color="#1d1d1f" size="xs" />}
+          view="clear"
+          buttonSize="xs"
+          tooltip="В избранное"
+        />
+      )}
+    </Canvas.Container>
+  );
+};
+
 function createColumns<SR = unknown>({ sortable = false } = {}): ColumnConfig<
   ReportRow,
   SR
@@ -148,23 +347,40 @@ function createColumns<SR = unknown>({ sortable = false } = {}): ColumnConfig<
 
   const columns: ColumnConfig<ReportRow, SR>[] = [
     { key: 'id', name: '№', width: 64, sortingType: numberSort },
-    { key: 'region', name: 'Регион', width: 160, sortingType: stringSort },
-    { key: 'manager', name: 'Менеджер', width: 140 },
-    { key: 'product', name: 'Продукт', width: 180 },
+    {
+      key: 'region',
+      name: 'Регион',
+      width: 180,
+      sortingType: stringSort,
+      renderCell: renderRegion,
+    },
+    {
+      key: 'manager',
+      name: 'Менеджер',
+      width: 150,
+      renderCell: renderManager,
+    },
+    {
+      key: 'product',
+      name: 'Продукт',
+      width: 240,
+      renderCell: renderProduct,
+    },
     ...MONTHS.map((name, month) => ({
       key: `m${month + 1}`,
       name,
-      width: 110,
-      renderCell: ({ row }: { row: ReportRow }) =>
-        formatNumber(row.months[month] ?? 0),
+      width: 130,
+      renderCell: renderMonth(month),
     })),
     {
       key: 'total',
       name: 'Год',
-      width: 130,
+      width: 200,
       sortingType: numberSort,
-      renderCell: ({ row }: { row: ReportRow }) => formatNumber(row.total),
+      renderCell: renderYearTotal,
     },
+    { key: 'checked', name: 'Сверено', width: 110, renderCell: renderChecked },
+    { key: 'actions', name: 'Действия', width: 220, renderCell: renderActions },
   ];
 
   return columns.map((column) => ({
@@ -440,7 +656,9 @@ const MERGE_REPORT_ROWS = createReportRows(12);
 
 // Слитая ячейка берёт фон первой строки блока (итога региона), поэтому колонку слияния не подсвечиваем.
 const MERGE_COLUMNS = COLUMNS.map((column) =>
-  column.key === 'region' ? { ...column, themeOverride: undefined } : column,
+  column.key === 'region'
+    ? { ...column, themeOverride: undefined, renderCell: undefined }
+    : column,
 );
 
 export const WithMergedCells: Story = {
