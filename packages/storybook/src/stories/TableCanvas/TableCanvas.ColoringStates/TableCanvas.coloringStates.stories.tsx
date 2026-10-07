@@ -1,15 +1,13 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import type { Meta, StoryObj } from '@storybook/react';
-
-import React, { useMemo, useState } from 'react';
-
 import { createRows, type Row } from '@df-storybook/data/tableData';
+import type { Meta, StoryObj } from '@storybook/react';
 import {
   type CellsSelectionMode,
   type ColumnConfig,
   type HighlightActiveType,
   TableCanvas,
 } from '@ui-kit/components/TableCanvas';
+import React, { useMemo, useState } from 'react';
 
 /**
  * Универсальный стенд состояний цветов таблицы: hover строки, выделение

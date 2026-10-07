@@ -62,7 +62,11 @@ const ConstantStyles = () => (
 );
 
 export const withTheme: Decorator = (Story, context) => {
-  const theme = context.globals.theme as FinAIThemeValue;
+  // parameters.forcedTheme — фиксированная тема КОНКРЕТНОЙ стори (например,
+  // скриншот-тесты состояний цветов по тёмной/контрастной теме). Перебивает
+  // глобальный тулбар; в Storybook 8.1 story-level globals ещё нет.
+  const theme = (context.parameters.forcedTheme ??
+    context.globals.theme) as FinAIThemeValue;
   if (theme === FINAI_THEMES.BOTH_THEMES) {
     return (
       <BreakpointProvider>
