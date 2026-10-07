@@ -84,12 +84,14 @@ export type HoverEffectsConfig = {
    * - data-ячейки — `bgRowHovered`;
    * - служебные колонки (нумерация, чекбокс) — `bgServiceRowHovered`, тот же
    *   цвет, что у сервис-зоны при выделении;
-   * - строка, отмеченная чекбоксом, темнеет целиком `bgSelectedRowHovered`.
+   * - строка, отмеченная чекбоксом, темнеет целиком `bgSelectedRowHovered`;
+   * - выбранная строка (`highlightActiveType: 'row'`) под курсором делает
+   *   шаг глубже: hover (с нажатым чекбоксом — hover2), цветные ячейки —
+   *   свой hover2.
    *
-   * Hover — самый нижний слой: выделение ячеек, строк, колонок и залипшая
-   * активная строка (`highlightActiveType: 'row'`) рисуются поверх и
-   * перекрывают его; после сброса выделения он снова виден. Summary-строки
-   * hover не получают.
+   * Hover — самый нижний слой: выделение ячеек, строк и колонок рисуется
+   * поверх и перекрывает его; после сброса выделения он снова виден.
+   * Summary-строки hover не получают.
    */
   row?: boolean;
 };
@@ -398,7 +400,12 @@ export type TableGlideCustomProps<
   enableSelectAll?: boolean;
   /** Индексы строк, выбранных через checkbox selection. */
   checkboxSelectedRowIndexes?: ReadonlySet<number>;
-  /** Индексы строк, у которых ЕСТЬ (виден) чекбокс — для тёмной подсветки highlightActiveType='row'. */
+  /**
+   * Индексы строк, у которых ЕСТЬ (виден) чекбокс.
+   * @deprecated На цвет больше не влияет: по правилу дизайн-системы v1.2
+   * наличие чекбокса не меняет цвет выбранной строки (только НАЖАТЫЙ чекбокс
+   * добавляет ступень — это `checkboxSelectedRowIndexes`).
+   */
   checkboxVisibleRowIndexes?: ReadonlySet<number>;
   /**
    * Эффекты при наведении. `hoverEffects.row` — подсветка строки под курсором:

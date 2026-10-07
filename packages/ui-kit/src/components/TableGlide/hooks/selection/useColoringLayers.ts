@@ -18,7 +18,8 @@ import { useColumnRowHighlightRegions } from './useColumnRowHighlightRegions';
  *      сервис-колонок, прозрачный accent нумерации, тёмная шапка активной
  *      или выделенной колонки;
  *   2) тема строки (getRowThemeOverride в TableGlide.tsx): серый ховер строки,
- *      фон строки с отмеченным чекбоксом, фон summary;
+ *      фон строки с отмеченным чекбоксом, фон выбранной строки
+ *      (highlightActiveType='row'), фон summary;
  *   3) тема ячейки (getCellContent в TableGlide.tsx): жёлтый фон редактируемой
  *      ячейки (bgEditableCell). Самая сильная: editing перекрывает и ховер,
  *      и чекбокс.
@@ -30,8 +31,9 @@ import { useColumnRowHighlightRegions } from './useColumnRowHighlightRegions';
  *   3) базовое выделение (useBaseHighlightRegions): затемнение сервис-зоны
  *      активного диапазона, заливка и обводка одиночной активной ячейки,
  *      кольца ошибок;
- *   4) выделение колонок и строк, подсветка активной строки, затемнение
- *      нумерации под rangeStack (useColumnRowHighlightRegions).
+ *   4) выделение колонок и строк, затемнение нумерации под rangeStack
+ *      (useColumnRowHighlightRegions). Выбранная строка регионами не
+ *      красится — её фон задают темы (часть 1).
  * Дальше рисует форк: заливки регионов блендятся с фоном, потом линии сетки,
  * после линий кольца (solid-outline: ошибки, активная ячейка), сверху
  * фокус-ринг и fill-handle.
@@ -46,13 +48,17 @@ interface UseColoringLayersParams {
   activeDataRange?: Rectangle;
   outlineRange?: Rectangle;
   checkboxSelectedRowIndexes?: ReadonlySet<number>;
+  /**
+   * Выбранная строка (highlightActiveType='row'). Регионами НЕ красится
+   * (её фон — row-тема и per-cell тема в TableGlide.tsx); нужна базовому
+   * слою, чтобы не заливать на ней активную ячейку цветом выделения.
+   */
+  activeRow?: number;
   errorCellRanges?: readonly Rectangle[];
   highlightRegionsExternal?: GlideProps['highlightRegions'];
-  /* Слой 4: выделение колонок и строк, активная строка. */
+  /* Слой 4: выделение колонок и строк. */
   selectedColumnIndexes: number[];
   headerSelectedRowIndexes: number[];
-  activeRow?: number;
-  checkboxVisibleRowIndexes?: ReadonlySet<number>;
   /** Всего строк (данные + summary). */
   totalRows: number;
   columnsCount: number;
@@ -71,12 +77,11 @@ export function useColoringLayers({
   activeDataRange,
   outlineRange,
   checkboxSelectedRowIndexes,
+  activeRow,
   errorCellRanges,
   highlightRegionsExternal,
   selectedColumnIndexes,
   headerSelectedRowIndexes,
-  activeRow,
-  checkboxVisibleRowIndexes,
   totalRows,
   columnsCount,
   isRowHoverEnabled,
@@ -92,6 +97,7 @@ export function useColoringLayers({
     activeDataRange,
     outlineRange,
     checkboxSelectedRowIndexes,
+    highlightActiveRow: activeRow,
     errorCellRanges,
     highlightRegionsExternal,
   });
@@ -102,10 +108,7 @@ export function useColoringLayers({
     baseRegions,
     selectedColumnIndexes,
     headerSelectedRowIndexes,
-    activeRow,
-    activeRange: selection.current?.range,
     selectionRangeStack: selection.current?.rangeStack,
-    checkboxAvailableRowIndexes: checkboxVisibleRowIndexes,
     totalRows,
     firstDataCol: serviceColumnsCount,
     columnsCount,

@@ -5,16 +5,33 @@ import { getCellFillStates } from './fill-states';
 
 /**
  * Состояния заливки ячейки со своим цветом для per-cell themeOverride:
- * bgCell — rest/hover; accentLight — active/hoverActive (заливка выделения
- * Glide берёт accentLight из per-cell темы и применяется только в выделении).
+ * bgCell — rest/hover (в выбранной строке hover/hover2); accentLight —
+ * active/hoverActive (заливка выделения Glide берёт accentLight из per-cell
+ * темы и применяется только в выделении).
  */
 export type CellFillOverride = { bgCell: string; accentLight?: string };
 
+/**
+ * Положение ячейки относительно курсора и выбранной строки
+ * (highlightActiveType='row').
+ */
+export type CellFillContext = { rowHover: boolean; rowActive: boolean };
+
 export const resolveCellFillOverride = (
   states: CellFillStates,
-  rowHover: boolean,
+  { rowHover, rowActive }: CellFillContext,
 ): CellFillOverride => {
-  const bgCell = rowHover ? (states.hover ?? states.rest) : states.rest;
+  // Выбранная строка — не выделение, наложения нет: цветная ячейка в ней
+  // показывает свой hover, под курсором — hover2 (+2δ). accentLight остаётся:
+  // пересечение с реальным выделением показывает active-цвета.
+  const hover = states.hover ?? states.rest;
+  const bgCell = rowActive
+    ? rowHover
+      ? (states.hover2 ?? hover)
+      : hover
+    : rowHover
+      ? hover
+      : states.rest;
   const accent = rowHover
     ? (states.hoverActive ?? states.active)
     : states.active;
@@ -29,10 +46,10 @@ export const resolveCellFillOverride = (
 export const resolveConsumerFillOverride = (
   bgCell: string,
   theme: TableColorTheme,
-  rowHover: boolean,
+  context: CellFillContext,
 ): CellFillOverride => {
   try {
-    return resolveCellFillOverride(getCellFillStates(bgCell, theme), rowHover);
+    return resolveCellFillOverride(getCellFillStates(bgCell, theme), context);
   } catch {
     return { bgCell };
   }

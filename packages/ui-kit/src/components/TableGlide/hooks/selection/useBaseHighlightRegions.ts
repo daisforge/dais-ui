@@ -11,6 +11,12 @@ interface UseBaseHighlightRegionsParams {
   activeDataRange?: Rectangle;
   outlineRange?: Rectangle;
   checkboxSelectedRowIndexes?: ReadonlySet<number>;
+  /**
+   * Выбранная строка (highlightActiveType='row'). Активная ячейка на ней
+   * остаётся на фоне строки (row-тема), своя заливка выделения не рисуется —
+   * только рамка.
+   */
+  highlightActiveRow?: number;
   errorCellRanges?: readonly Rectangle[];
   highlightRegionsExternal?: GlideProps['highlightRegions'];
 }
@@ -23,6 +29,7 @@ export function useBaseHighlightRegions({
   activeDataRange,
   outlineRange,
   checkboxSelectedRowIndexes,
+  highlightActiveRow,
   errorCellRanges,
   highlightRegionsExternal,
 }: UseBaseHighlightRegionsParams): GlideProps['highlightRegions'] {
@@ -80,11 +87,14 @@ export function useBaseHighlightRegions({
 
     // Свою заливку рисуем ТОЛЬКО для одиночной ячейки в cell-режиме. Любой
     // реальный диапазон (range-cell, строка по нумерации) рисует glide нативно.
+    // На выбранной строке (highlightActiveType='row') заливка не нужна:
+    // активная ячейка остаётся на фоне строки, от выделения — одна рамка.
     if (
       activeDataRange &&
       cellsSelectionMode === 'cell' &&
       activeDataRange.width === 1 &&
-      activeDataRange.height === 1
+      activeDataRange.height === 1 &&
+      activeDataRange.y !== highlightActiveRow
     ) {
       // Data fill активной сущности рисуем отдельно от outline,
       // чтобы спокойно комбинировать его с red error-outline.
@@ -122,6 +132,7 @@ export function useBaseHighlightRegions({
     activeDataRange,
     outlineRange,
     checkboxSelectedRowIndexes,
+    highlightActiveRow,
     errorCellRanges,
     highlightRegionsExternal,
   ]);

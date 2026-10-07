@@ -11,20 +11,11 @@ interface UseColumnRowHighlightRegionsParams {
   /** Индексы выделенных по нумерации строк. */
   headerSelectedRowIndexes: number[];
   /**
-   * Подсвеченная строка (highlightActiveType='row') — только bg, без рамки.
-   * Перекрывается селектингом: ячейки текущего диапазона из заливки вырезаются.
-   */
-  activeRow?: number;
-  /** Текущий диапазон выделения (для выреза под селектинг на подсвеченной строке). */
-  activeRange?: Rectangle;
-  /**
    * Диапазоны rangeStack (multi-range-cell). glide рисует рамку только вокруг
    * current.range, поэтому предыдущие Ctrl-диапазоны остаются без обводки —
    * дорисовываем её сами.
    */
   selectionRangeStack?: readonly Rectangle[];
-  /** Строки, у которых ЕСТЬ чекбокс — подсвеченная строка тогда темнее. */
-  checkboxAvailableRowIndexes?: ReadonlySet<number>;
   /** Всего строк (данные + summary). */
   totalRows: number;
   /** Индекс первой колонки данных (= кол-во ведущих сервисных колонок). */
@@ -44,10 +35,7 @@ export function useColumnRowHighlightRegions({
   baseRegions,
   selectedColumnIndexes,
   headerSelectedRowIndexes,
-  activeRow,
-  activeRange,
   selectionRangeStack,
-  checkboxAvailableRowIndexes,
   totalRows,
   firstDataCol,
   columnsCount,
@@ -56,9 +44,8 @@ export function useColumnRowHighlightRegions({
   return useMemo<GlideProps['highlightRegions']>(() => {
     const hasColumns = selectedColumnIndexes.length > 0;
     const hasRows = headerSelectedRowIndexes.length > 0;
-    const hasHighlightRow = activeRow !== undefined;
     const hasRangeStack = (selectionRangeStack?.length ?? 0) > 0;
-    if (!hasColumns && !hasRows && !hasHighlightRow && !hasRangeStack) {
+    if (!hasColumns && !hasRows && !hasRangeStack) {
       return baseRegions;
     }
 
@@ -155,38 +142,10 @@ export function useColumnRowHighlightRegions({
       }));
     }
 
-    // Подсветка строки (highlightActiveType='row') — только bg по данным, без
-    // рамки. Ячейки активного селектинга на этой строке ВЫРЕЗАЕМ, чтобы glide
-    // показал поверх свой selection (цвет+рамка+fill-handle). Цвет строки без
-    // чекбокса — светло-голубой, как у шапки (selectionCheckboxBg); если у строки
-    // ЕСТЬ чекбокс — темнее (selectionActiveCheckboxBg), независимо от того,
-    // отмечен он или нет.
-    if (activeRow !== undefined && dataWidth > 0) {
-      const rowFill = checkboxAvailableRowIndexes?.has(activeRow)
-        ? theme.selectionActiveCheckboxBg
-        : theme.selectionCheckboxBg;
-      const pushRowFill = (x: number, width: number) => {
-        if (width > 0) {
-          regions.push({
-            color: rowFill,
-            range: { x, y: activeRow, width, height: 1 },
-            style: 'no-outline' as const,
-          });
-        }
-      };
-      const intersectsRow =
-        activeRange &&
-        activeRow >= activeRange.y &&
-        activeRow < activeRange.y + activeRange.height;
-      if (!intersectsRow) {
-        pushRowFill(firstDataCol, dataWidth);
-      } else {
-        const selStart = Math.max(activeRange.x, firstDataCol);
-        const selEnd = activeRange.x + activeRange.width;
-        pushRowFill(firstDataCol, selStart - firstDataCol);
-        pushRowFill(selEnd, columnsCount - selEnd);
-      }
-    }
+    // Подсветку строки (highlightActiveType='row') регионы НЕ рисуют: по
+    // правилу v1.2 выбранная строка — не выделение. Её фон отдаёт row-тема
+    // (getRowThemeOverride в TableGlide.tsx), цветные ячейки — per-cell тема
+    // (cell-fill-override: hover/hover2).
 
     // Диапазоны rangeStack (multi-range-cell). Свою обводку НЕ рисуем: рамку
     // ставит glide только вокруг активного current.range, а накопленные Ctrl-
@@ -220,16 +179,11 @@ export function useColumnRowHighlightRegions({
     baseRegions,
     selectedColumnIndexes,
     headerSelectedRowIndexes,
-    activeRow,
-    activeRange,
     selectionRangeStack,
-    checkboxAvailableRowIndexes,
     totalRows,
     firstDataCol,
     columnsCount,
     theme.selectionActiveBg,
-    theme.selectionActiveCheckboxBg,
-    theme.selectionCheckboxBg,
     theme.selectionServiceActiveBg,
     theme.accentColor,
   ]);
