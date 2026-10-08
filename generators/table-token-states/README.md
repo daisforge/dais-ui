@@ -150,31 +150,37 @@ rest/hover-hex, а в per-cell тему кладётся `accentLight` = active/
 
 - `emit-table-colors.ts` — выпуск палитры (описан выше);
 - `INTEGRATION-STATUS.md` — статус интеграции и открытые вопросы к дизайнеру;
-- `package.json`, `tsconfig.json`, `.prettierrc` — локальная инфраструктура
-  мини-проекта (см. CLAUDE.md, там же — почему папка изолирована от
-  строгостей репозитория).
+- `BACKLOG.md` — отдельные задачи, сознательно не вошедшие в ветку палитры;
+- `tsconfig.json` — локальный, со смягчёнными флагами: строгие флаги
+  репозитория (`noUncheckedIndexedAccess` и др.) ломают код дизайнера, а
+  подгонять его нельзя — файлы заменяются 1-в-1 при обновлениях. По той же
+  причине `code/` и `demo/` исключены из eslint (корневой `.eslintignore`).
 
-## Команды
+Своей инфраструктуры зависимостей у папки нет: tsx/vitest/typescript/prettier
+живут в devDependencies корня, скрипты — в корневом package.json.
+
+## Команды (из корня репозитория)
 
 ```bash
-cd generators/table-token-states
-npm ci            # однократно: tsx, vitest, typescript, prettier
-npm test          # 17 тестов формулы
-npm run typecheck # tsc -p tsconfig.json
-npm run emit      # палитра → theming/table-colors.generated.ts
-npm run format    # prettier (эта папка + ../theme-tokens)
+npm run table-colors:test         # тесты дизайнера (19) — после любой замены code/
+npm run table-colors:typecheck    # tsc -p tsconfig.json папки
+npm run table-colors:emit         # палитра → theming/table-colors.generated.ts
+npm run table-colors:generate     # пересчёт output.json/docs/csv дизайнера
+npm run table-colors:format       # prettier: эта папка + ../theme-tokens (есть и :format-check)
+npm run theme-tokens:generate     # второй генератор — токены «чернил»
 ```
 
-После `npm run emit` обязательно прогнать в корне `npx nx test ui-kit` —
+После `table-colors:emit` обязательно прогнать `npx nx test ui-kit` —
 тест эквивалентности рантайм-копии формулы должен остаться зелёным.
 
 ## Процедура обновления от дизайн-системы
 
 1. Заменить файлы `code/` (и при необходимости `docs/`, `demo/`) целиком.
-2. `npm run format && npm test && npm run typecheck`.
+2. `npm run table-colors:format && npm run table-colors:test && npm run table-colors:typecheck`
+   (форматирование prettier допустимо — семантика защищена тестами).
 3. Пересмотреть временные значения в `emit-table-colors.ts`: возможно, дыры
    тем уже закрыты настоящими токенами и подстановки пора удалить.
-4. `npm run emit`, затем в корне `npx nx test ui-kit`.
+4. `npm run table-colors:emit`, затем `npx nx test ui-kit`.
 5. Глазами по стенду: Storybook → Локальные компоненты → TableCanvas →
    ColoringStates (все режимы выделения, hover, ошибки, 6 тем).
 
@@ -182,5 +188,10 @@ npm run format    # prettier (эта папка + ../theme-tokens)
 
 - Токены «чернил» (текст, бейджи, кнопки внутри ячеек) собирает отдельный
   генератор `generators/theme-tokens/` — парсит CSS-переменные тем атомарки
-  из node_modules; спорные соответствия имён — в его `report.md`.
-- Текущие нерешённые вопросы и план — `INTEGRATION-STATUS.md`.
+  из node_modules; спорные соответствия имён — в его `report.md`; карта
+  ключей и правил — `generators/theme-tokens/lib/token-map.js`.
+- Рантайм-копия fill-формулы:
+  `packages/ui-kit/src/components/TableGlide/theming/fill-states.ts` —
+  менять только синхронно с `code/table-token-states.ts`, защищено тестом.
+- Текущие нерешённые вопросы — `INTEGRATION-STATUS.md`; задачи после
+  ветки — `BACKLOG.md`.
