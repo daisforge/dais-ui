@@ -20,9 +20,9 @@
  *   generators/theme-tokens/report.md — список значений, взятых НЕ
  *     напрямую из своей темы (заданы руками или взяты из запасной темы).
  *
- * Когда запускать: после обновления пакетов атомарной команды (в npm run
- * update не входит) и после правки token-map.js.
- * Запуск из корня: npm run theme-tokens:generate
+ * Когда запускается: сам — последним шагом npm run update и npm run updateX
+ * (после установки новых пакетов атомарной команды); руками — после правки
+ * token-map.js: npm run theme-tokens:generate (из корня).
  */
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
