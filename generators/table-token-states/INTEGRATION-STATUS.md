@@ -66,11 +66,27 @@ ColoringStates (переключатели всех режимов, темы —
 
 ## Открытые вопросы
 
-1. **Временные токены** — запросы владельцам темы:
-   `data-yellow-light` в light (нужен amber-100 вместо amber-150), в beta
-   нет `data-yellow-light`/`data-blue-light`; в high contrast light нет
-   `surface-solid-primary` (нет hover у серых цветов потребителя),
-   `background-primary` и минорных статусных токенов.
+1. **Недостающие токены в темах — нужен запрос от дизайна атомарной
+   команде.** Пока их нет, в таблице стоят временные цвета (согласованы,
+   помечены «временно»). Когда токены появятся, временные цвета заменятся
+   на них перезапуском генераторов.
+
+   - **light:** у `data-yellow-light` неверное значение — amber-150
+     `#FFE4AE`, по решению дизайна нужен amber-100;
+   - **beta light/dark:** нет `data-yellow-light` (жёлтая редактируемая
+     ячейка) и `data-blue-light` (сохранённая ячейка);
+   - **high contrast light:** нет `data-yellow-light`, `data-blue-light`,
+     `surface-solid-primary` (без него у серых и белых фонов нет
+     состояния «под курсором»), `background-primary`, светлых статусных
+     `surface-negative-minor` и `surface-info-minor`;
+   - **все темы:** нет `data-arctic-minor` (сейчас временно `#14CC98`).
+
+   Не блокирует, но стоит упомянуть в том же запросе: в beta и high
+   contrast нет части цветов данных (`data-red-light`, `data-orange-light`,
+   `data-electric-blue-minor`, `data-fuchsia-minor`,
+   `data-blue-minor-active`) — таблица берёт их из обычной светлой или
+   тёмной темы.
+
 2. **Контрастная тема**: множитель шага состояний подобрать на стенде.
 3. **Правило «чернил»** (состояния текста и обводок) — когда появится,
    встанет в `deriveThemeStates` (ветка `usage !== 'fill'`), остальное не
