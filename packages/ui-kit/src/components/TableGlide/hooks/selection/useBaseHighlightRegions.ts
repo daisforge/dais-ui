@@ -12,9 +12,8 @@ interface UseBaseHighlightRegionsParams {
   outlineRange?: Rectangle;
   checkboxSelectedRowIndexes?: ReadonlySet<number>;
   /**
-   * Выбранная строка (highlightActiveType='row'). Активная ячейка на ней
-   * остаётся на фоне строки (row-тема), своя заливка выделения не рисуется —
-   * только рамка.
+   * Номер выбранной строки (highlightActiveType='row'). Нужен, чтобы на этой
+   * строке не заливать кликнутую ячейку цветом выделения — только рамка.
    */
   highlightActiveRow?: number;
   errorCellRanges?: readonly Rectangle[];
@@ -87,8 +86,8 @@ export function useBaseHighlightRegions({
 
     // Свою заливку рисуем ТОЛЬКО для одиночной ячейки в cell-режиме. Любой
     // реальный диапазон (range-cell, строка по нумерации) рисует glide нативно.
-    // На выбранной строке (highlightActiveType='row') заливка не нужна:
-    // активная ячейка остаётся на фоне строки, от выделения — одна рамка.
+    // Кроме выбранной строки (highlightActiveType='row'): там у кликнутой
+    // ячейки остаётся фон строки, а от выделения — только рамка.
     if (
       activeDataRange &&
       cellsSelectionMode === 'cell' &&

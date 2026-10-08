@@ -6,10 +6,12 @@ import { useBaseHighlightRegions } from './useBaseHighlightRegions';
 import { useColumnRowHighlightRegions } from './useColumnRowHighlightRegions';
 
 /**
- * Карта окрашивания ячейки. Единственное место, где задан порядок слоёв.
- * Хук ничего не решает сам: что именно красится, живёт в
- * useBaseHighlightRegions и useColumnRowHighlightRegions, фоны в темах.
- * Здесь только порядок.
+ * Собирает все прямоугольники подсветки таблицы (выделение, рамки ошибок,
+ * подсветку служебных колонок) в один список в правильном порядке.
+ *
+ * Подробнее. Это единственное место, где задан порядок слоёв окраски. Сам
+ * хук ничего не решает: что именно красится, описано в
+ * useBaseHighlightRegions и useColumnRowHighlightRegions, фоны — в темах.
  *
  * Итоговый цвет ячейки складывается из двух частей.
  *
@@ -49,9 +51,10 @@ interface UseColoringLayersParams {
   outlineRange?: Rectangle;
   checkboxSelectedRowIndexes?: ReadonlySet<number>;
   /**
-   * Выбранная строка (highlightActiveType='row'). Регионами НЕ красится
-   * (её фон — row-тема и per-cell тема в TableGlide.tsx); нужна базовому
-   * слою, чтобы не заливать на ней активную ячейку цветом выделения.
+   * Номер выбранной строки (highlightActiveType='row'). Саму строку этот хук
+   * не красит — её фон задают темы в TableGlide.tsx. Номер нужен только
+   * базовому слою: на этой строке кликнутая ячейка не заливается цветом
+   * выделения.
    */
   activeRow?: number;
   errorCellRanges?: readonly Rectangle[];
