@@ -163,11 +163,11 @@ rest/hover-hex, а в per-cell тему кладётся `accentLight` = active/
 
 ```bash
 npm run table-colors:palette        # палитра заливок → theming/table-colors.generated.ts
-npm run table-colors:ink            # цвета «чернил» → TableGlide/ink-tokens.generated.ts
+npm run table-colors:content            # цвета содержимого ячеек → TableGlide/content-tokens.generated.ts
 npm run table-colors:test           # тесты дизайнера (19) — после любой замены code/
 npm run table-colors:typecheck      # tsc -p tsconfig.json папки
 npm run table-colors:designer-docs  # пересчёт output.json/docs/csv дизайнера
-npm run table-colors:format         # prettier: эта папка + ../table-ink-tokens (есть и :format-check)
+npm run table-colors:format         # prettier: эта папка + ../table-content-tokens (есть и :format-check)
 ```
 
 После `table-colors:palette` обязательно прогнать `npx nx test ui-kit` —
@@ -186,8 +186,8 @@ npm run table-colors:format         # prettier: эта папка + ../table-ink
 
 ## Связанное
 
-- Цвета «чернил» (текст, бейджи, кнопки внутри ячеек) собирает отдельный
-  генератор `generators/table-ink-tokens/` — читает темы атомарной команды
+- Цвета содержимого ячеек (текст, бейджи, кнопки, иконки) собирает отдельный
+  генератор `generators/table-content-tokens/` — читает темы атомарной команды
   из node_modules. Запускается сам в конце `npm run update` / `updateX`.
   Какие цвета нужны и где их искать — его `lib/token-map.js`; в `report.md` —
   что поменялось у атомарки с прошлого запуска (новые и пропавшие

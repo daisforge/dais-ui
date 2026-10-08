@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 /* eslint-disable import/extensions -- Node ESM требует явного расширения в относительных импортах (как в scripts/husky-commit) */
 /**
- * Генератор цветов «чернил» для таблицы: текст, бейджи, кнопки, статусы
+ * Генератор цветов содержимого ячеек таблицы: текст, бейджи, кнопки, статусы
  * внутри ячеек.
  *
  * Зачем он нужен. Обычные компоненты красятся CSS-переменными вида
@@ -15,14 +15,14 @@
  * называются в темах — lib/token-map.js; остальные файлы lib/ — механика.
  *
  * Что пишет:
- *   packages/ui-kit/src/components/TableGlide/ink-tokens.generated.ts —
+ *   packages/ui-kit/src/components/TableGlide/content-tokens.generated.ts —
  *     цвета по темам, в код попадают через getTokens() → theme.tokens;
- *   generators/table-ink-tokens/report.md — список значений, взятых НЕ
+ *   generators/table-content-tokens/report.md — список значений, взятых НЕ
  *     напрямую из своей темы (заданы руками или взяты из запасной темы).
  *
  * Когда запускается: сам — последним шагом npm run update и npm run updateX
  * (после установки новых пакетов атомарной команды); руками — после правки
- * token-map.js: npm run table-colors:ink (из корня).
+ * token-map.js: npm run table-colors:content (из корня).
  */
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -44,7 +44,7 @@ const DIRNAME = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(DIRNAME, '../..');
 const OUT_TS = path.join(
   ROOT,
-  'packages/ui-kit/src/components/TableGlide/ink-tokens.generated.ts',
+  'packages/ui-kit/src/components/TableGlide/content-tokens.generated.ts',
 );
 const OUT_REPORT = path.join(DIRNAME, 'report.md');
 const SNAPSHOT = path.join(DIRNAME, 'atomic-variables.txt');
@@ -103,5 +103,5 @@ emitReport(OUT_REPORT, report, changesSection);
 writeSnapshot(SNAPSHOT, atomicVariables);
 
 console.log(
-  `ink-tokens.generated.ts: ${KEYS.length} ключей × ${THEMES.length} тем; задано руками: ${counts.manual}, из запасной темы: ${counts.fallback} (см. report.md)`,
+  `content-tokens.generated.ts: ${KEYS.length} ключей × ${THEMES.length} тем; задано руками: ${counts.manual}, из запасной темы: ${counts.fallback} (см. report.md)`,
 );

@@ -40,12 +40,12 @@ TableCanvas (`styles/cellStyle.ts`, класс `rdg-edited-successfully-cell`).
 
 Генераторы запускаются руками; забытый `npm run table-colors:palette` после правки `code/`
 или обновления CSS-пакетов CI не поймает. Добавить шаг:
-`emit` + `node generators/table-ink-tokens/generate-ink-tokens.js` +
+`emit` + `node generators/table-content-tokens/generate-content-tokens.js` +
 `git diff --exit-code` по двум generated-файлам.
 
-## 5. Снапшот-тест генератора чернил
+## 5. Снапшот-тест генератора цветов содержимого ячеек
 
-`generators/table-ink-tokens` не покрыт тестами: смена значений при обновлении
+`generators/table-content-tokens` не покрыт тестами: смена значений при обновлении
 пакетов атомарки проходит незаметно. Минимум — снапшот `report.md`/пинов и
 проверка «все ключи KEYS получили значения» (сейчас это только throw в
 рантайме генератора).
@@ -55,12 +55,12 @@ TableCanvas (`styles/cellStyle.ts`, класс `rdg-edited-successfully-cell`).
 Не используются в коде: `dataTeal`, `onDarkTextPrimary96/56/28`,
 `textTertiaryBase/Variant` (алиасы text-tertiary), `fadeWhite`/`fadeGray`
 (палитра). Либо подтвердить у дизайнера и подключить, либо удалить из
-контрактов. Список происхождений — `generators/table-ink-tokens/report.md`.
+контрактов. Список происхождений — `generators/table-content-tokens/report.md`.
 
 ## 7. Симметрия раскладки токенов
 
 `table-colors.generated.ts` лежит в `TableGlide/theming/`, а
-`ink-tokens.generated.ts` + `tokens.ts` — в корне `TableGlide/`.
+`content-tokens.generated.ts` + `tokens.ts` — в корне `TableGlide/`.
 Перенести вторую пару в `theming/` (churn импортов, делать отдельно).
 
 ## 8. Артефакты при дробном масштабе экрана (DPR 1.25 / 1.5 / 2.5)
