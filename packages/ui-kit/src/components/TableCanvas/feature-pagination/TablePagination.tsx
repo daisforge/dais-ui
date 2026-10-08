@@ -42,15 +42,23 @@ const StyledPagination = styled(Pagination)<{ $hideQuickJump?: boolean }>`
     `}
 `;
 
+const collapsedStyle: React.CSSProperties = {
+  maxHeight: 0,
+  opacity: 0,
+  overflow: 'hidden',
+};
+
 export const TablePagination = (
   props: PaginationProps & {
     setPaginationHeight: React.Dispatch<React.SetStateAction<number>>;
+    isCollapsed?: boolean;
   },
 ) => {
   const {
     onChangePageValue,
     onChange: onChangeTablePagination,
     setPaginationHeight,
+    isCollapsed = false,
     size = DEFAULT_PAGINATION_SIZE,
     responsiveSlots = false,
     onResize,
@@ -59,6 +67,8 @@ export const TablePagination = (
     ...rest
   } = props ?? {};
   const paginationRef = useRef<HTMLDivElement>(null);
+  const collapsedRef = useRef(isCollapsed);
+  collapsedRef.current = isCollapsed;
   const refTable = useRefTableContext();
   const [dynamicSlots, setDynamicSlots] = useState<PaginationSlots>(undefined);
   const [showQuickJump, setShowQuickJump] = useState<boolean>(true);
@@ -164,7 +174,8 @@ export const TablePagination = (
         const {
           contentRect: { height, width },
         } = entry;
-        setPaginationHeight(height);
+        // При collapse наблюдатель видит 0: сохраняем естественную высоту для раскрытия.
+        if (!collapsedRef.current) setPaginationHeight(height);
         onResize?.(width);
         // Вычисляем slots на основе ширины и size
         const [slots, statusQuickJump] =
@@ -186,8 +197,15 @@ export const TablePagination = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setPaginationHeight, size, responsiveSlots]);
 
+  // Не размонтируем пагинацию, чтобы сохранить её состояние.
+  // aria-hidden исключает чтение скринридером, inert — фокус и взаимодействие.
   return (
-    <div ref={paginationRef}>
+    <div
+      ref={paginationRef}
+      aria-hidden={isCollapsed}
+      {...(isCollapsed ? { inert: '' } : {})}
+      style={isCollapsed ? collapsedStyle : undefined}
+    >
       <StyledDiv>
         <StyledPagination
           {...PAGINATION_TEXTS}

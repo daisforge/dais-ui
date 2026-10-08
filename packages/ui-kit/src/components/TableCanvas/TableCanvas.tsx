@@ -30,7 +30,6 @@ import {
   useClosePopoverOnRegionChange,
   useTablePopoverState,
 } from './feature-popover-table';
-import { TableSidebar } from './feature-right-sidebar';
 import { useRowDetailPanel } from './feature-row-detail';
 import { RowDetailHandlerContextProvider } from './feature-row-detail/ctx';
 import { RowInstrumentsCtxProvider } from './feature-row-instruments';
@@ -40,6 +39,8 @@ import { useGroupedRows } from './feature-rows-grouping';
 import { SelectingContextProvider } from './feature-select-row/selecting-contexts';
 import { useCheckboxRowIndexes } from './feature-select-row/useCheckboxRowIndexes';
 import { useSelectRow } from './feature-select-row/useSelectRow';
+import { TableSidebar } from './feature-sidebar';
+import { getCustomSidebarTabs } from './feature-sidebar/getCustomSidebarTabs';
 import { useSortedRows } from './feature-sorting';
 import { useTableTabsContext } from './feature-tabs';
 import {
@@ -64,6 +65,7 @@ import {
   useSidebarState,
   useTableCollapseValues,
 } from './table-hooks';
+import { useLeftSidebarState } from './table-hooks/useLeftSidebarValues';
 import { type DataEditorRef } from './TableGlideInstance/type';
 import { ActiveViewModsType, ObjectForExtending, TableProps } from './types';
 import { pasteOnlyKeysWithNotUndefinedValue } from './utils';
@@ -384,11 +386,26 @@ export function TableCanvas<
     ],
   );
 
-  // ------------------------------------------------ sideBar ------------------------------------------------
-  const sideBarContextVal = useSidebarState({
+  // ------------------------------------------------ sidebars ------------------------------------------------
+  const rightSidebarContextVal = useSidebarState({
     tableConfig,
     refTableContainer: refTableContainerInternal,
   });
+  const leftSidebarContextVal = useLeftSidebarState(
+    tableConfig.leftSidebarConfig,
+    refTableContainerInternal,
+  );
+  const leftSidebarTabs = useMemo(
+    () => getCustomSidebarTabs(tableConfig.leftSidebarConfig),
+    [tableConfig.leftSidebarConfig],
+  );
+  const hasLeftSidebar =
+    (tableConfig.leftSidebarConfig?.enabled ?? true) &&
+    leftSidebarTabs.some((tab) => tab.showInSidebar);
+  const hasBottomSheet =
+    activeView === 'rows' &&
+    !!tableConfig.bottomSheetConfig &&
+    tableConfig.bottomSheetConfig.enabled !== false;
 
   // ------------------------------------------------ collapsing table ------------------------------------------------
   const tableCollapseContextVal = useTableCollapseValues({ tableConfig });
@@ -672,15 +689,21 @@ export function TableCanvas<
     (!!featuresObj.isHaveSomeFeature || isHaveCustomButtons);
 
   const borderLeftTopRadiusRounded =
-    !isTableInTabs && !isHaveControlBlock && !filtersAreVisible;
+    !isTableInTabs &&
+    !isHaveControlBlock &&
+    !filtersAreVisible &&
+    !hasLeftSidebar;
   const borderRightTopRadiusRounded =
     !isTableInTabs &&
     !isHaveControlBlock &&
     !filtersAreVisible &&
     !featuresObj.isHaveSomeFeatureInSidebar;
-  const borderLeftBottomRadiusRounded = !paginationActiveInConfig;
+  const borderLeftBottomRadiusRounded =
+    !paginationActiveInConfig && !hasLeftSidebar && !hasBottomSheet;
   const borderRightBottomRadiusRounded =
-    !paginationActiveInConfig && !featuresObj.isHaveSomeFeatureInSidebar;
+    !paginationActiveInConfig &&
+    !featuresObj.isHaveSomeFeatureInSidebar &&
+    !hasBottomSheet;
 
   const errorStateConfig = tableConfig.errorState;
   const emptyStateConfig = tableConfig.emptyState;
@@ -716,6 +739,7 @@ export function TableCanvas<
     paginationHeight,
     refTableContainer: refTableContainerInternal,
     collapseButtonPlacement: tableConfig.collapsing?.collapseButtonPlacement,
+    hasBottomSheet,
   });
 
   // ------------------------------------------------ rows height ------------------------------------------------
@@ -770,7 +794,11 @@ export function TableCanvas<
             expandedRowCtxV={expandedRowsIdsStateAndSetter}
             searchCtxV={searchContextVal}
             contextMenuCtxV={contextMenuCtxVal}
-            sideBarCtxV={sideBarContextVal}
+            rightSidebarCtxV={rightSidebarContextVal}
+            leftSidebarCtxV={{
+              ...leftSidebarContextVal,
+              isOpen: hasLeftSidebar && leftSidebarContextVal.isOpen,
+            }}
             tableCollapseCtxV={tableCollapseContextVal}
           >
             <TablePopoverProvider value={tablePopoverValue}>
@@ -908,15 +936,58 @@ export function TableCanvas<
                                 </Suspense>
                               </div>
                             ),
-                            sidebarBlock:
+                            leftSidebarBlock: hasLeftSidebar ? (
+                              <TableSidebar
+                                side="left"
+                                sidebarState={leftSidebarContextVal}
+                                $borderRightBottomRadiusRounded={
+                                  !paginationActiveInConfig
+                                }
+                                $borderRightTopRadiusRounded={
+                                  !isTableInTabs &&
+                                  !isHaveControlBlock &&
+                                  !filtersAreVisible
+                                }
+                                activeTabId={
+                                  leftSidebarTabs.find(
+                                    (tab) => tab.showInSidebar,
+                                  )?.id ?? null
+                                }
+                                sidebarTabs={leftSidebarTabs}
+                                defaultActiveTabId={
+                                  tableConfig.leftSidebarConfig
+                                    ?.defaultActiveTabId
+                                }
+                                activeTabState={
+                                  tableConfig.leftSidebarConfig?.activeTabState
+                                }
+                                onActiveTabChange={
+                                  tableConfig.leftSidebarConfig
+                                    ?.onActiveTabChange
+                                }
+                              />
+                            ) : null,
+                            bottomSheetConfig: hasBottomSheet
+                              ? tableConfig.bottomSheetConfig
+                              : undefined,
+                            rightSidebarWidth: tableConfig.sidebarConfig?.width,
+                            rightSidebarBlock:
                               (tableConfig.sidebarConfig?.enabled ?? true) &&
                               featuresObj.isHaveSomeFeatureInSidebar ? (
                                 <TableSidebar
+                                  sidebarState={{
+                                    ...rightSidebarContextVal,
+                                    width:
+                                      rightSidebarContextVal.effectiveWidth,
+                                  }}
+                                  preserveMinimumWidth={!hasLeftSidebar}
                                   $borderRightBottomRadiusRounded={
                                     !paginationActiveInConfig
                                   }
                                   $borderRightTopRadiusRounded={
-                                    !isTableInTabs && !isHaveControlBlock
+                                    !isTableInTabs &&
+                                    !isHaveControlBlock &&
+                                    !filtersAreVisible
                                   }
                                   activeTabId={featuresObj.activeSidebarTabId}
                                   sidebarTabs={featuresObj.sidebarTabs}

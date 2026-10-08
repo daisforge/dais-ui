@@ -13,7 +13,6 @@ import { useTableCollapse } from '../../contexts';
 import { CollapseTableButton } from '../../feature-collapse-table';
 import { SearchBlock } from '../../feature-searching';
 // import { SummaryCheckbox } from '../../feature-select-row/summary-checkbox';
-import { HEIGHT_CONTROL_BLOCK } from '../../styles';
 import { controlBlockClassNames as cls } from './control-block.classnames';
 import {
   getControlBlockSizeMap,
@@ -94,7 +93,7 @@ export const ControlBlockWithoutResize = ({
   return (
     <Collapse
       isOpen={isHaveControlBlock}
-      sizeOnOpen={HEIGHT_CONTROL_BLOCK}
+      sizeOnOpen={spacing.containerHeight}
       unMountOnClose
     >
       <ControlBlockStyled

@@ -10,21 +10,23 @@ interface SidebarTabsProps {
   tabs: SidebarTab[];
   activeTabId: string | null;
   onTabChange: (id: string) => void;
+  side?: 'left' | 'right';
 }
 
 export const SidebarTabs = ({
   tabs,
   activeTabId,
   onTabChange,
+  side = 'right',
 }: SidebarTabsProps) => (
   <TabsStyled view="divider" orientation="vertical" size="xs">
     {tabs
-      .filter((tab) => tab.showInSidebar)
+      .filter((tab) => tab.showInSidebar ?? true)
       .map((tab) => (
         <TableTooltip
           key={`tooltip-${tab.id}`}
           text={tab.label}
-          placement="left"
+          placement={side === 'left' ? 'right' : 'left'}
           trigger="hover"
           hasArrow
           mouseEnterDelay={TABLE_TOOLTIP_MOUSE_ENTER_DELAY}
@@ -35,6 +37,7 @@ export const SidebarTabs = ({
             orientation="vertical"
             size="xs"
             selected={tab.id === activeTabId}
+            aria-label={tab.label}
             tabIndex={0}
             contentLeft={isValidElement(tab.icon) && tab.icon}
             onClick={(e: React.MouseEvent<HTMLElement>) => {

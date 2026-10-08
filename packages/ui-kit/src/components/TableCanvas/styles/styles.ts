@@ -22,6 +22,7 @@ import {
   CHECKBOX_COL_CLASS_CUSTOM,
   CHECKBOX_HEADER_COL_CLASS_CUSTOM,
 } from '../feature-select-row';
+import { SIDEBAR_TABS_WIDTH } from '../feature-sidebar/constants';
 import { CLASS } from '../renders/constants';
 import { ActiveTheme, HighlightActiveType } from '../TableGlideInstance/type';
 import { ActiveViewModsType } from '../types';
@@ -357,11 +358,11 @@ export const ContainerStyled = styled.div<{
     overflow: ${$isCollapsed ? 'hidden' : 'unset'};
   `}
 
-  // RightSidebar
+  // Рабочая область с боковыми панелями и нижним слотом.
   & .${cls.tableSidebarLayout} {
     position: relative;
 
-    // Collapsing (если есть RightSidebar)
+    // Collapsing всей рабочей области.
     // Для collapse таблицы плавное изменений высот
     ${({ $isEnabledCollapse }) =>
       $isEnabledCollapse &&
@@ -369,12 +370,39 @@ export const ContainerStyled = styled.div<{
         transition: height 0.5s ease, max-height 0.5s ease, opacity 0.5s ease;
       `}
     display: flex;
+    min-width: 0;
+    min-height: 0;
+
+    & > .${cls.tableCenterColumn} {
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 0;
+      min-width: 0;
+      min-height: 0;
+      height: 100%;
+
+      &[data-has-bottom-sheet='true'] {
+        // На узком контейнере сжимаем контент сайдбаров, сохраняя область canvas.
+        min-width: max(
+          0px,
+          min(120px, calc(100% - ${SIDEBAR_TABS_WIDTH * 2}px))
+        );
+
+        & > .${cls.tableSidebarTableContainer} {
+          // Canvas занимает оставшуюся высоту над нижней панелью.
+          flex: 1 1 0;
+          height: 0;
+        }
+      }
+    }
 
     & .${cls.tableSidebarTableContainer} {
-      position: 'relative'
+      position: relative;
       ${() => transitions()}
       flex-grow: 1;
       min-width: 0;
+      min-height: 0;
+      height: 100%;
     }
   }
 
@@ -689,6 +717,7 @@ const getHeightOfTable = (
   // всегда брали HEIGHT_CONTROL_BLOCK (40), из-за чего в xs таблица
   // недосчитывала 8px на каждый блок и часть оставалась не свёрнутой.
   controlBlockHeight: number = HEIGHT_CONTROL_BLOCK,
+  minContentHeight: number = MIN_CONTENT_HEIGHT,
 ) => {
   // Если таблица свернута - высота 0 (кроме controlBlock)
   if (isCollapsed) {
@@ -699,8 +728,8 @@ const getHeightOfTable = (
 
   // Гарантируем минимальную высоту контентной части
   const height =
-    typeof initialHeight === 'number' && initialHeight < MIN_CONTENT_HEIGHT
-      ? MIN_CONTENT_HEIGHT
+    typeof initialHeight === 'number' && initialHeight < minContentHeight
+      ? minContentHeight
       : initialHeight;
 
   if (typeof height === 'number' || typeof height === 'string') {
@@ -733,7 +762,7 @@ const getHeightOfTable = (
       filterListHeight +
       heightOfPagination;
 
-    return `max(${MIN_CONTENT_HEIGHT}px, calc(${heightConverted} - ${totalHeightToSubtract}px))`;
+    return `max(${minContentHeight}px, calc(${heightConverted} - ${totalHeightToSubtract}px))`;
   }
   return undefined;
 };
@@ -753,6 +782,9 @@ export const getTableHeightStyles = (
   // Реальная высота контрл-блока (m/s = 40, xs = 32), прокидывается в
   // расчёт высоты таблицы
   controlBlockHeight: number = HEIGHT_CONTROL_BLOCK,
+  // При нижнем слоте минимум canvas задаётся внутри центральной колонки.
+  // Общая рабочая область должна помещаться в контейнер вместе с пагинацией.
+  minContentHeight: number = MIN_CONTENT_HEIGHT,
 ) => {
   if (fullScreened) {
     const height = getHeightOfTable(
@@ -766,6 +798,7 @@ export const getTableHeightStyles = (
       isCollapsed,
       collapseButtonPlacement,
       controlBlockHeight,
+      minContentHeight,
     );
     return {
       height,
@@ -784,6 +817,7 @@ export const getTableHeightStyles = (
       isCollapsed,
       collapseButtonPlacement,
       controlBlockHeight,
+      minContentHeight,
     );
 
   const height = getH(tableContainerHeight);

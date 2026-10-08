@@ -28,6 +28,7 @@ export const useInlineStyle = <
   tableCollapsingValue,
   refTableContainer,
   collapseButtonPlacement = 'inside',
+  hasBottomSheet = false,
 }: {
   tableConfig: TableConfig<
     RowType,
@@ -48,6 +49,7 @@ export const useInlineStyle = <
   tableCollapsingValue: TableCollapseContextValue;
   refTableContainer?: React.RefObject<HTMLElement>;
   collapseButtonPlacement?: 'inside' | 'above';
+  hasBottomSheet?: boolean;
 }) => {
   const styleString = JSON.stringify(style ?? {});
 
@@ -61,19 +63,28 @@ export const useInlineStyle = <
     tableCollapsingValue.enableCollapse && tableCollapsingValue.isCollapsed;
 
   const containerStyleResult = (() => {
+    if (isCollapsed) {
+      // После collapse остаются видимые заголовки и отступы fullscreen.
+      const visibleControlBlockHeight = controlBlockIsHave
+        ? controlBlockHeight
+        : 0;
+      const collapseHeaderHeight =
+        collapseButtonPlacement === 'above' ? controlBlockHeight : 0;
+      const fullScreenPadding = fullScreened ? FULL_SCREEN.PADDING * 2 : 0;
+      const height =
+        visibleControlBlockHeight + collapseHeaderHeight + fullScreenPadding;
+      return {
+        ...tableConfig.containerStyle,
+        height,
+        maxHeight: height,
+        minHeight: 0,
+      };
+    }
     if (fullScreened) {
       return {
         ...tableConfig.containerStyle,
         height: FULL_SCREEN.HEIGHT_TABLE_CONTAINER,
         maxHeight: FULL_SCREEN.HEIGHT_TABLE_CONTAINER,
-      };
-    }
-
-    // Если таблица свернута и есть controlBlock - высота равна высоте controlBlock
-    if (isCollapsed && controlBlockIsHave) {
-      return {
-        ...tableConfig.containerStyle,
-        height: `${controlBlockHeight}px`,
       };
     }
 
@@ -110,6 +121,7 @@ export const useInlineStyle = <
       isCollapsed,
       collapseButtonPlacement,
       controlBlockHeight,
+      hasBottomSheet ? 0 : undefined,
     );
 
     const tableAndSidebarContainerHeightStyle: CSSProperties = {
@@ -146,6 +158,7 @@ export const useInlineStyle = <
     widthOfTable,
     collapseButtonPlacement,
     controlBlockHeight,
+    hasBottomSheet,
   ]);
 
   return {

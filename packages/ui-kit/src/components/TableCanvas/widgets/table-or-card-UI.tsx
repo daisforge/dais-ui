@@ -2,8 +2,8 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import { Box } from '@ui-kit/components/Box';
 import type { MassActionsSize } from '@ui-kit/components/MassActions';
-import { useActiveTheme } from '@ui-kit/utils';
-import React, { ReactNode, Ref, useMemo } from 'react';
+import { mergeRefs, useActiveTheme } from '@ui-kit/utils';
+import React, { ReactNode, Ref, useMemo, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { CSSObject, CSSProperties } from 'styled-components';
 
@@ -22,6 +22,7 @@ import { TableLoadingOverlay } from '../feature-loading-overlay/TableLoadingOver
 import { TablePagination } from '../feature-pagination';
 import type { PaginationProps } from '../feature-pagination/types';
 import { PopoverInTable } from '../feature-popover-table/components/PopoverContainer';
+import { BottomSheet } from '../feature-sidebar/ui/BottomSheet';
 import { CanvasTooltipOverlay } from '../feature-tooltip';
 import { ContainerStyled, SIZES, tableClassNames as cls } from '../styles';
 import {
@@ -33,6 +34,7 @@ import {
 } from '../TableGlideInstance';
 import type {
   ActiveViewModsType,
+  BottomSheetConfig,
   ControlBlockSize,
   Key,
   ObjectForExtending,
@@ -60,7 +62,10 @@ export const TableOrCardsUI = <
     viewProp: { activeView, view },
     controlBlock,
     containerId,
-    sidebarBlock,
+    rightSidebarBlock,
+    rightSidebarWidth,
+    leftSidebarBlock,
+    bottomSheetConfig,
     refTableGlobalContainer,
     refTableContainer,
     $borderLeftTopRadiusRounded,
@@ -104,7 +109,10 @@ export const TableOrCardsUI = <
       view: View;
     };
     controlBlock: ReactNode;
-    sidebarBlock: ReactNode;
+    rightSidebarBlock: ReactNode;
+    rightSidebarWidth?: string | number;
+    leftSidebarBlock?: ReactNode;
+    bottomSheetConfig?: BottomSheetConfig;
     containerId: string | undefined;
     refTableGlobalContainer: React.MutableRefObject<HTMLDivElement | null>;
     refTableContainer: React.Ref<HTMLDivElement>;
@@ -174,9 +182,23 @@ export const TableOrCardsUI = <
   const isCardViewActive = activeViewIs('cards', activeView, view);
   const isRowsViewActive = !isCardViewActive;
   const fullScreenedCls = $fullScreened ? cls.tableContainerFullScreened : '';
-  const { isCollapsed, enableCollapse } = useTableCollapse();
+  const { isCollapsed: collapsedState, enableCollapse } = useTableCollapse();
+  // Сохранённое состояние не скрывает таблицу, если возможность collapse отключена.
+  const isCollapsed = enableCollapse && collapsedState;
 
   const activeTheme = useActiveTheme();
+  // Сохраняем DOM-контейнер canvas, чтобы вывести внутри него панель массовых действий через портал.
+  // mergeRefs одновременно передаёт этот контейнер во внешний ref таблицы.
+  const [canvasContainer, setCanvasContainer] = useState<HTMLDivElement | null>(
+    null,
+  );
+  const canvasContainerRef = useMemo(
+    () =>
+      mergeRefs(refTableContainer, (element: HTMLDivElement | null) =>
+        setCanvasContainer(element),
+      ),
+    [refTableContainer],
+  );
 
   const collapsedStyles = useMemo(
     () => ({
@@ -242,149 +264,178 @@ export const TableOrCardsUI = <
               {view.typeCardsRender}
             </Box>
           )}
+          {/* Сохраняем состояние скрытой области. aria-hidden исключает чтение скринридером, inert — фокус и взаимодействие. */}
           {isRowsViewActive && (
             <Box
               className={cls.tableSidebarLayout}
+              aria-hidden={isCollapsed}
+              {...(isCollapsed ? { inert: '' } : {})}
               style={{
                 ...$tableAndSidebarContainerHeightStyle,
                 ...(isCollapsed && collapsedStyles),
               }}
             >
-              <TableGlideInstance<RowType, SummRowType>
-                className={className}
-                onRowsChange={restDataGridProps.onRowsChange}
-                columns={restDataGridProps.columns}
-                rows={restDataGridProps.rows}
-                rowSize={rowSize}
-                onColumnResize={restDataGridProps.onColumnResize}
-                onVisibleRegionChanged={
-                  restDataGridProps.onVisibleRegionChanged
-                }
-                highlightActiveType={$highlightActiveType}
-                enableLowDprHairline={restDataGridProps.enableLowDprHairline}
-                headerHeight={restDataGridProps.headerHeight}
-                rowHeight={restDataGridProps.rowHeight}
-                bottomSummaryRows={restDataGridProps.bottomSummaryRows}
-                refTable={refTable}
-                portalEventTargetRef={refTableGlobalContainer}
-                onColumnsReorder={restDataGridProps?.onColumnsReorder}
-                unstickyHeader={restDataGridProps?.unstickyHeader}
-                spanGroupHeader={restDataGridProps.spanGroupHeader}
-                spanShallowGroups={restDataGridProps.spanShallowGroups}
-                spanAlign={restDataGridProps.spanAlign}
-                hiddenColumnsIndicator={
-                  restDataGridProps.hiddenColumnsIndicator
-                }
-                onHiddenColumnsIndicatorClicked={
-                  restDataGridProps.onHiddenColumnsIndicatorClicked
-                }
-                verticalBorder={restDataGridProps.verticalBorder}
-                horizontalBorder={restDataGridProps.horizontalBorder}
-                getCellBorder={restDataGridProps.getCellBorder}
-                minColumnWidth={
-                  restDataGridProps.minColumnWidth ?? DEFAULT_MIN_COLUMN_WIDTH
-                }
-                maxColumnWidth={
-                  restDataGridProps.maxColumnWidth ?? DEFAULT_MAX_COLUMN_WIDTH
-                }
-                maxColumnAutoWidth={restDataGridProps.maxColumnAutoWidth}
-                resizableColumn={restDataGridProps.resizableColumn}
-                checkboxSelectedRowIndexes={
-                  restDataGridProps.checkboxSelectedRowIndexes
-                }
-                checkboxVisibleRowIndexes={
-                  restDataGridProps.checkboxVisibleRowIndexes
-                }
-                enableColumnSelection={restDataGridProps.enableColumnSelection}
-                enableRowSelection={restDataGridProps.enableRowSelection}
-                enableSelectAll={restDataGridProps.enableSelectAll}
-                cellsSelectionMode={restDataGridProps.cellsSelectionMode}
-                hoverEffects={restDataGridProps.hoverEffects}
-                getCellsForSelection={restDataGridProps.getCellsForSelection}
-                onGridSelectionChange={restDataGridProps.onGridSelectionChange}
-                onSelectionEmit={restDataGridProps.onSelectionEmit}
-                onColumnSelectionChange={
-                  restDataGridProps.onColumnSelectionChange
-                }
-                pendingColumnSelectionKeys={
-                  restDataGridProps.pendingColumnSelectionKeys
-                }
-                onColumnSelectionApplied={
-                  restDataGridProps.onColumnSelectionApplied
-                }
-                gridSelection={restDataGridProps.gridSelection}
-                highlightActiveRow={restDataGridProps.highlightActiveRow}
-                highlightActiveRowControlled={
-                  restDataGridProps.highlightActiveRowControlled
-                }
-                onHighlightActiveRowChange={
-                  restDataGridProps.onHighlightActiveRowChange
-                }
-                fillHandle={restDataGridProps.fillHandle}
-                allowedFillDirections={restDataGridProps.allowedFillDirections}
-                onFillPattern={restDataGridProps.onFillPattern}
-                contentStateOverlay={restDataGridProps.contentStateOverlay}
-                onCellClicked={restDataGridProps.onCellClicked}
-                editorOverlayPortal={restDataGridProps.editorOverlayPortal}
-                fullScreened={fullScreened}
-                CellReadOnlyEditor={CellReadOnlyEditor}
-                containerProps={{
-                  className: cls.tableSidebarTableContainer,
-                  ref: refTableContainer,
-                }}
-                renderOverlayFeatures={({
-                  containerElement,
-                  renderInContainer,
-                }) => (
-                  <>
-                    {renderInContainer(
-                      <PopoverInTable containerEl={containerElement} />,
-                    )}
-                    {renderInContainer(
-                      <CanvasTooltipOverlay
-                        containerRef={refTableGlobalContainer}
-                        customEnabled={tooltipCustomEnabled}
-                        mouseEnterDelay={tooltip?.mouseEnterDelay}
-                        mouseLeaveDelay={tooltip?.mouseLeaveDelay}
-                        minWidth={tooltip?.minWidth}
-                        maxWidth={tooltip?.maxWidth}
-                      />,
-                    )}
-                    {isNeedRenderContextMenu &&
-                      renderInContainer(
-                        <ContextMenu containerEl={containerElement} />,
-                      )}
-                  </>
-                )}
-                {...(enableHeaderContextMenu && {
-                  onHeaderContextMenu: (colIndex, event, tableInfo) => {
-                    openHeaderContextMenu?.(colIndex, event, tableInfo);
-                  },
-                })}
-                {...(enableCellContextMenu && {
-                  onCellContextMenu: (cell, event, tableInfo) => {
-                    openCellContextMenu?.(cell, event, tableInfo);
-                  },
-                })}
-              />
-              {sidebarBlock}
-              {massActionPanel?.show !== false && (
-                <MassActions
-                  buttons={massActionPanel?.buttons}
-                  isHaveSomeFeatureInSidebar={isHaveSomeFeatureInSidebar}
-                  collapsedDropdownProps={
-                    massActionPanel?.collapsedDropdownProps
+              {leftSidebarBlock}
+              {/* Постоянная колонка сохраняет canvas при включении и отключении нижней панели. */}
+              <div
+                className={cls.tableCenterColumn}
+                data-has-bottom-sheet={!!bottomSheetConfig}
+              >
+                <TableGlideInstance<RowType, SummRowType>
+                  className={className}
+                  onRowsChange={restDataGridProps.onRowsChange}
+                  columns={restDataGridProps.columns}
+                  rows={restDataGridProps.rows}
+                  rowSize={rowSize}
+                  onColumnResize={restDataGridProps.onColumnResize}
+                  onVisibleRegionChanged={
+                    restDataGridProps.onVisibleRegionChanged
                   }
-                  bottom={massActionPanel?.bottom}
-                  forceShow={massActionPanel?.show === true}
-                  size={massActionPanel?.size}
+                  highlightActiveType={$highlightActiveType}
+                  enableLowDprHairline={restDataGridProps.enableLowDprHairline}
+                  headerHeight={restDataGridProps.headerHeight}
+                  rowHeight={restDataGridProps.rowHeight}
+                  bottomSummaryRows={restDataGridProps.bottomSummaryRows}
+                  refTable={refTable}
+                  portalEventTargetRef={refTableGlobalContainer}
+                  onColumnsReorder={restDataGridProps?.onColumnsReorder}
+                  unstickyHeader={restDataGridProps?.unstickyHeader}
+                  spanGroupHeader={restDataGridProps.spanGroupHeader}
+                  spanShallowGroups={restDataGridProps.spanShallowGroups}
+                  spanAlign={restDataGridProps.spanAlign}
+                  hiddenColumnsIndicator={
+                    restDataGridProps.hiddenColumnsIndicator
+                  }
+                  onHiddenColumnsIndicatorClicked={
+                    restDataGridProps.onHiddenColumnsIndicatorClicked
+                  }
+                  verticalBorder={restDataGridProps.verticalBorder}
+                  horizontalBorder={restDataGridProps.horizontalBorder}
+                  getCellBorder={restDataGridProps.getCellBorder}
+                  minColumnWidth={
+                    restDataGridProps.minColumnWidth ?? DEFAULT_MIN_COLUMN_WIDTH
+                  }
+                  maxColumnWidth={
+                    restDataGridProps.maxColumnWidth ?? DEFAULT_MAX_COLUMN_WIDTH
+                  }
+                  maxColumnAutoWidth={restDataGridProps.maxColumnAutoWidth}
+                  resizableColumn={restDataGridProps.resizableColumn}
+                  checkboxSelectedRowIndexes={
+                    restDataGridProps.checkboxSelectedRowIndexes
+                  }
+                  checkboxVisibleRowIndexes={
+                    restDataGridProps.checkboxVisibleRowIndexes
+                  }
+                  enableColumnSelection={
+                    restDataGridProps.enableColumnSelection
+                  }
+                  enableRowSelection={restDataGridProps.enableRowSelection}
+                  enableSelectAll={restDataGridProps.enableSelectAll}
+                  cellsSelectionMode={restDataGridProps.cellsSelectionMode}
+                  hoverEffects={restDataGridProps.hoverEffects}
+                  getCellsForSelection={restDataGridProps.getCellsForSelection}
+                  onGridSelectionChange={
+                    restDataGridProps.onGridSelectionChange
+                  }
+                  onSelectionEmit={restDataGridProps.onSelectionEmit}
+                  onColumnSelectionChange={
+                    restDataGridProps.onColumnSelectionChange
+                  }
+                  pendingColumnSelectionKeys={
+                    restDataGridProps.pendingColumnSelectionKeys
+                  }
+                  onColumnSelectionApplied={
+                    restDataGridProps.onColumnSelectionApplied
+                  }
+                  gridSelection={restDataGridProps.gridSelection}
+                  highlightActiveRow={restDataGridProps.highlightActiveRow}
+                  highlightActiveRowControlled={
+                    restDataGridProps.highlightActiveRowControlled
+                  }
+                  onHighlightActiveRowChange={
+                    restDataGridProps.onHighlightActiveRowChange
+                  }
+                  fillHandle={restDataGridProps.fillHandle}
+                  allowedFillDirections={
+                    restDataGridProps.allowedFillDirections
+                  }
+                  onFillPattern={restDataGridProps.onFillPattern}
+                  contentStateOverlay={restDataGridProps.contentStateOverlay}
+                  onCellClicked={restDataGridProps.onCellClicked}
+                  editorOverlayPortal={restDataGridProps.editorOverlayPortal}
+                  fullScreened={fullScreened}
+                  CellReadOnlyEditor={CellReadOnlyEditor}
+                  containerProps={{
+                    className: cls.tableSidebarTableContainer,
+                    ref: canvasContainerRef,
+                  }}
+                  renderOverlayFeatures={({
+                    containerElement,
+                    renderInContainer,
+                  }) => (
+                    <>
+                      {renderInContainer(
+                        <PopoverInTable containerEl={containerElement} />,
+                      )}
+                      {renderInContainer(
+                        <CanvasTooltipOverlay
+                          containerRef={refTableGlobalContainer}
+                          customEnabled={tooltipCustomEnabled}
+                          mouseEnterDelay={tooltip?.mouseEnterDelay}
+                          mouseLeaveDelay={tooltip?.mouseLeaveDelay}
+                          minWidth={tooltip?.minWidth}
+                          maxWidth={tooltip?.maxWidth}
+                        />,
+                      )}
+                      {isNeedRenderContextMenu &&
+                        renderInContainer(
+                          <ContextMenu containerEl={containerElement} />,
+                        )}
+                    </>
+                  )}
+                  {...(enableHeaderContextMenu && {
+                    onHeaderContextMenu: (colIndex, event, tableInfo) => {
+                      openHeaderContextMenu?.(colIndex, event, tableInfo);
+                    },
+                  })}
+                  {...(enableCellContextMenu && {
+                    onCellContextMenu: (cell, event, tableInfo) => {
+                      openCellContextMenu?.(cell, event, tableInfo);
+                    },
+                  })}
                 />
-              )}
+                {bottomSheetConfig && (
+                  <BottomSheet
+                    {...bottomSheetConfig}
+                    roundLeft={!pagination && !leftSidebarBlock}
+                    roundRight={!pagination && !rightSidebarBlock}
+                  />
+                )}
+              </div>
+              {rightSidebarBlock}
+              {canvasContainer &&
+                massActionPanel?.show !== false &&
+                // Портал привязан к внешнему canvas-контейнеру и работает также в error/empty state.
+                createPortal(
+                  <MassActions
+                    buttons={massActionPanel?.buttons}
+                    isHaveSomeFeatureInSidebar={isHaveSomeFeatureInSidebar}
+                    rightSidebarWidth={rightSidebarWidth}
+                    collapsedDropdownProps={
+                      massActionPanel?.collapsedDropdownProps
+                    }
+                    bottom={massActionPanel?.bottom}
+                    forceShow={massActionPanel?.show === true}
+                    size={massActionPanel?.size}
+                  />,
+                  canvasContainer,
+                )}
             </Box>
           )}
           {pagination && (
             <TablePagination
               {...pagination}
+              isCollapsed={isCollapsed}
               setPaginationHeight={setPaginationHeight}
             />
           )}
