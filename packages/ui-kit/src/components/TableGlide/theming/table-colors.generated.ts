@@ -1,6 +1,6 @@
 /**
  * АВТОГЕНЕРИРОВАНО из generators/table-token-states — НЕ ПРАВИТЬ РУКАМИ.
- * Перегенерация: cd generators/table-token-states && npm run emit
+ * Перегенерация из корня: npm run table-colors:palette
  *
  * Модель: каждый цвет таблицы = семантический токен темы × состояние
  * (rest / hover / active / hoverActive), расчёт в OKLCH на этапе генерации,

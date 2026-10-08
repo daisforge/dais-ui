@@ -1,12 +1,12 @@
 /**
- * АВТОГЕНЕРИРОВАНО из generators/theme-tokens — НЕ ПРАВИТЬ РУКАМИ.
- * Перегенерация из корня: npm run theme-tokens:generate
+ * АВТОГЕНЕРИРОВАНО из generators/table-ink-tokens — НЕ ПРАВИТЬ РУКАМИ.
+ * Перегенерация из корня: npm run table-colors:ink
  *
  * Готовые цвета «чернил» (текст, бейджи, кнопки) для canvas-рендеров
  * таблицы по шести темам — выписаны из тем атомарной команды
  * (@salutejs/sdds-themes, beta core, high contrast).
- * Какие цвета и где их искать — generators/theme-tokens/lib/token-map.js;
- * значения, взятые не напрямую из своей темы, — generators/theme-tokens/report.md.
+ * Какие цвета и где их искать — generators/table-ink-tokens/lib/token-map.js;
+ * значения, взятые не напрямую из своей темы, — generators/table-ink-tokens/report.md.
  */
 
 export const TOKENS_LIGHT = {

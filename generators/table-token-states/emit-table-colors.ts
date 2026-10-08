@@ -10,7 +10,7 @@
  * Состояния временных цветов считаются той же формулой (fillStates),
  * а не подбираются руками — модель «токен × состояние» сохраняется.
  *
- * Запуск: npm run emit (из generators/table-token-states).
+ * Запуск из корня: npm run table-colors:palette
  */
 import { writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
@@ -218,9 +218,7 @@ lines.push('/**');
 lines.push(
   ' * АВТОГЕНЕРИРОВАНО из generators/table-token-states — НЕ ПРАВИТЬ РУКАМИ.',
 );
-lines.push(
-  ' * Перегенерация: cd generators/table-token-states && npm run emit',
-);
+lines.push(' * Перегенерация из корня: npm run table-colors:palette');
 lines.push(' *');
 lines.push(
   ' * Модель: каждый цвет таблицы = семантический токен темы × состояние',

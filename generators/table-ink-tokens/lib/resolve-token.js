@@ -10,7 +10,7 @@
 import { MODE_BASE } from './theme-sources.js';
 
 /** Имя ключа → имя CSS-переменной: textPrimary → text-primary, surfaceAccent20 → surface-accent-20. */
-const toKebabCase = (key) =>
+export const toKebabCase = (key) =>
   key
     .replace(/([a-z0-9])([A-Z])/g, '$1-$2')
     .replace(/([a-zA-Z])(\d+)$/, '$1-$2')

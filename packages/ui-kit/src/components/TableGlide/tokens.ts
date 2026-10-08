@@ -6,15 +6,15 @@ import {
   TOKENS_HC_DARK,
   TOKENS_HC_LIGHT,
   TOKENS_LIGHT,
-} from './theme-tokens.generated';
+} from './ink-tokens.generated';
 
 /**
  * Токены тем для canvas-рендереров (текст, бейджи, кнопки, статусы внутри ячеек).
  *
- * Значения собираются генератором generators/theme-tokens из CSS-переменных
- * пакетов атомарной команды — руками не поддерживаются. Карта соответствий
- * имён и ручные пины — в generate-theme-tokens.js, происхождение каждого
- * нестандартного значения — в generators/theme-tokens/report.md.
+ * Значения собирает генератор generators/table-ink-tokens из тем атомарной
+ * команды — руками не правятся (перегенерация: npm run table-colors:ink).
+ * Какие цвета нужны и где их искать — generators/table-ink-tokens/lib/token-map.js;
+ * цвета, взятые не напрямую из своей темы, — generators/table-ink-tokens/report.md.
  */
 
 // Тип по ключам TOKENS_LIGHT, значения — любые строки (hex разных тем)

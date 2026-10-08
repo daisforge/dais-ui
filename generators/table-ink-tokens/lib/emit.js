@@ -5,14 +5,14 @@ import fs from 'node:fs';
 import { KEYS } from './token-map.js';
 
 const TS_HEADER = `/**
- * АВТОГЕНЕРИРОВАНО из generators/theme-tokens — НЕ ПРАВИТЬ РУКАМИ.
- * Перегенерация из корня: npm run theme-tokens:generate
+ * АВТОГЕНЕРИРОВАНО из generators/table-ink-tokens — НЕ ПРАВИТЬ РУКАМИ.
+ * Перегенерация из корня: npm run table-colors:ink
  *
  * Готовые цвета «чернил» (текст, бейджи, кнопки) для canvas-рендеров
  * таблицы по шести темам — выписаны из тем атомарной команды
  * (@salutejs/sdds-themes, beta core, high contrast).
- * Какие цвета и где их искать — generators/theme-tokens/lib/token-map.js;
- * значения, взятые не напрямую из своей темы, — generators/theme-tokens/report.md.
+ * Какие цвета и где их искать — generators/table-ink-tokens/lib/token-map.js;
+ * значения, взятые не напрямую из своей темы, — generators/table-ink-tokens/report.md.
  */
 
 `;
@@ -41,16 +41,20 @@ export const emitTokensFile = (outPath, tokens) => {
   fs.writeFileSync(outPath, `${TS_HEADER + constants.join('\n\n')}\n`);
 };
 
-export const emitReport = (outPath, reportRows) => {
+export const emitReport = (outPath, reportRows, changesSection) => {
   const generatedDate = new Date().toISOString().slice(0, 10);
   fs.writeFileSync(
     outPath,
-    `# Отчёт генератора токенов тем
+    `# Отчёт генератора цветов чернил таблицы
 
 Сгенерировано: ${generatedDate}.
 
 Это не список ошибок, а список мест, на которые стоит смотреть при обновлении
-тем. Сюда попадают только цвета, взятые НЕ напрямую из своей темы:
+тем. Два раздела: что поменялось у атомарной команды с прошлого запуска, и
+какие цвета таблицы взяты НЕ напрямую из своей темы.
+
+${changesSection}
+## Цвета, взятые не напрямую из своей темы
 
 - **задан руками** (pin) — подходящей переменной в темах нет или замену не
   подтвердил дизайнер; такой цвет не обновится при обновлении пакетов;

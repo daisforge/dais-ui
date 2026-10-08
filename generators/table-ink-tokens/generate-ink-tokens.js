@@ -15,18 +15,25 @@
  * называются в темах — lib/token-map.js; остальные файлы lib/ — механика.
  *
  * Что пишет:
- *   packages/ui-kit/src/components/TableGlide/theme-tokens.generated.ts —
+ *   packages/ui-kit/src/components/TableGlide/ink-tokens.generated.ts —
  *     цвета по темам, в код попадают через getTokens() → theme.tokens;
- *   generators/theme-tokens/report.md — список значений, взятых НЕ
+ *   generators/table-ink-tokens/report.md — список значений, взятых НЕ
  *     напрямую из своей темы (заданы руками или взяты из запасной темы).
  *
  * Когда запускается: сам — последним шагом npm run update и npm run updateX
  * (после установки новых пакетов атомарной команды); руками — после правки
- * token-map.js: npm run theme-tokens:generate (из корня).
+ * token-map.js: npm run table-colors:ink (из корня).
  */
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import {
+  collectAtomicVariables,
+  collectUsedVariables,
+  describeChanges,
+  readSnapshot,
+  writeSnapshot,
+} from './lib/atomic-changes.js';
 import { emitReport, emitTokensFile } from './lib/emit.js';
 import { readThemeVariables } from './lib/parse-css-variables.js';
 import { resolveTokenValue, SOURCE } from './lib/resolve-token.js';
@@ -37,9 +44,10 @@ const DIRNAME = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(DIRNAME, '../..');
 const OUT_TS = path.join(
   ROOT,
-  'packages/ui-kit/src/components/TableGlide/theme-tokens.generated.ts',
+  'packages/ui-kit/src/components/TableGlide/ink-tokens.generated.ts',
 );
 const OUT_REPORT = path.join(DIRNAME, 'report.md');
+const SNAPSHOT = path.join(DIRNAME, 'atomic-variables.txt');
 
 // ─── Чтение цветов всех шести тем ───
 
@@ -81,9 +89,19 @@ KEYS.forEach((key) => {
 
 // ─── Запись ───
 
+// Что поменялось у атомарной команды с прошлого запуска (новые и пропавшие
+// переменные) — подробно в lib/atomic-changes.js.
+const atomicVariables = collectAtomicVariables(varsByTheme);
+const changesSection = describeChanges(
+  readSnapshot(SNAPSHOT),
+  atomicVariables,
+  collectUsedVariables(KEYS, MAPPING),
+);
+
 emitTokensFile(OUT_TS, tokens);
-emitReport(OUT_REPORT, report);
+emitReport(OUT_REPORT, report, changesSection);
+writeSnapshot(SNAPSHOT, atomicVariables);
 
 console.log(
-  `theme-tokens.generated.ts: ${KEYS.length} ключей × ${THEMES.length} тем; задано руками: ${counts.manual}, из запасной темы: ${counts.fallback} (см. report.md)`,
+  `ink-tokens.generated.ts: ${KEYS.length} ключей × ${THEMES.length} тем; задано руками: ${counts.manual}, из запасной темы: ${counts.fallback} (см. report.md)`,
 );
