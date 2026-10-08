@@ -23,7 +23,6 @@ type ColoringArgs = {
   checkboxSelecting: boolean;
   editingEnabled: boolean;
   rowMarkers: boolean;
-  lowDprHairline: boolean;
 };
 
 const meta: Meta<ColoringArgs> = {
@@ -36,7 +35,6 @@ const meta: Meta<ColoringArgs> = {
     checkboxSelecting: true,
     editingEnabled: true,
     rowMarkers: true,
-    lowDprHairline: false,
   },
   argTypes: {
     hoverRow: {
@@ -63,10 +61,6 @@ const meta: Meta<ColoringArgs> = {
     },
     rowMarkers: {
       name: 'rowMarkers (нумерация)',
-      control: 'boolean',
-    },
-    lowDprHairline: {
-      name: 'enableLowDprHairline (дробный DPR)',
       control: 'boolean',
     },
   },
@@ -162,7 +156,6 @@ export const ColoringStates: Story = {
         tableConfig={{
           containerStyle: { height: '560px' },
           hoverEffects: { row: args.hoverRow },
-          enableLowDprHairline: args.lowDprHairline,
           summaryRows: { showDefault: true, showInControl: false },
           highlightActiveType: args.highlightActiveType,
           cellsSelection: { mode: args.cellsSelectionMode },
