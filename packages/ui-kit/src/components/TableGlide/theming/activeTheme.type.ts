@@ -3,18 +3,20 @@ import type { ActiveThemeGlobal } from '@ui-kit/utils/getActiveTheme';
 import type { TableColorTheme } from './table-colors.generated';
 
 /**
- * Темы таблицы — шесть, по палитре генератора (generators/table-token-states).
- * Примечание: highContrastDark — CSS-темы нет и не планируется, значения
- * палитры = копия dark (договорённость с дизайн-системой).
+ * Шесть тем, для которых посчитана палитра таблицы
+ * (generators/table-token-states).
+ * Для тёмной контрастной темы (highContrastDark) у дизайнера своих значений
+ * палитры нет: она — копия обычной тёмной (так договорились с
+ * дизайн-системой).
  */
 export type ActiveTheme = TableColorTheme;
 
 type Equals<A, B> = [A] extends [B] ? ([B] extends [A] ? true : false) : false;
 
 /**
- * Статическая страховка: множество тем палитры (генератор) и множество тем
- * глобальной детекции (getActiveTheme) обязаны совпадать. Добавили тему в
- * одном месте и забыли в другом — здесь будет ошибка типов.
+ * Проверка при сборке: список тем палитры (генератор) и список тем, которые
+ * распознаёт getActiveTheme, должны совпадать. Добавили тему в одном месте и
+ * забыли в другом — TypeScript покажет ошибку в этой строке.
  */
 const _themesInSync: Equals<ActiveTheme, ActiveThemeGlobal> = true;
 void _themesInSync;

@@ -93,7 +93,7 @@ const TEMP_FILLS: TempFillGroup[] = [
       betaCoreDark: '#211607',
       highContrastLight: '#F1DDB8',
     },
-    why: 'временно: data-yellow-light (light amber-100; beta Amber/100|950; HC — текущее значение)',
+    why: 'временно: подходящего цвета редактируемой ячейки (data-yellow-light) в теме нет, цвет согласован с дизайнером',
   },
   {
     // data-blue-light: в beta-темах токена нет, временные Blue/100 и Blue/950.
@@ -110,7 +110,7 @@ const TEMP_FILLS: TempFillGroup[] = [
       betaCoreDark: '#0C1A24',
       highContrastLight: '#DAE8F1',
     },
-    why: 'временно: data-blue-light (beta Blue/100|950; HC — текущее значение)',
+    why: 'временно: подходящего цвета сохранённой ячейки (data-blue-light) в теме нет, цвет согласован с дизайнером',
   },
 ];
 
@@ -149,24 +149,27 @@ TEMP_FILLS.forEach((group) => {
 
 // ─── Статические подстановки для одиночных ключей ───
 
-// В highContrastLight нет surface-solid-primary → hover белого фона не считается;
-// берём текущее ручное значение таблицы.
+// В high contrast light нет surface-solid-primary — серого цвета, который
+// задаёт направление hover для белого фона. Без него hover белой строки не
+// посчитать, поэтому оставлено прежнее значение таблицы.
 byTableKey.bgRowHovered.highContrastLight = '#E8EEF2';
 note(
   'bgRowHovered',
   'highContrastLight',
-  'временно: в HC нет surface-solid-primary, текущее ручное значение',
+  'временно: в теме нет surface-solid-primary, по которому считается hover белого фона; оставлено прежнее значение таблицы',
 );
 
-// В highContrastLight нет background-primary → затухание на сером берём из light.
+// В high contrast light нет background-primary → цвет затухания на сером
+// фоне берём из светлой темы.
 byTableKey.fadeGray.highContrastLight = byTableKey.fadeGray.light;
 note(
   'fadeGray',
   'highContrastLight',
-  'временно: в HC нет background-primary, копия light',
+  'временно: в теме нет background-primary, взят цвет светлой темы',
 );
 
-// В tokens.ts HC нет surface-negative-minor и surface-info-minor → статусные ячейки из light.
+// В high contrast light нет surface-negative-minor и surface-info-minor →
+// цвета статусных ячеек negative/info берём из светлой темы.
 [
   'bgCellNegative',
   'bgCellNegativeHovered',
@@ -184,7 +187,7 @@ note(
   note(
     key,
     'highContrastLight',
-    'временно: в HC нет минорного токена статуса, копия light',
+    'временно: в теме нет светлого статусного токена, взят цвет светлой темы',
   );
 });
 
@@ -199,8 +202,9 @@ if (missing.length > 0) {
 
 // ─── Выпуск TS-файла ───
 
-// Параметры формулы fillStates по темам — для рантайм-расчёта состояний
-// произвольных цветов потребителя (themeOverride.bgCell статусных ячеек).
+// Настройки формулы состояний по темам — нужны, чтобы в браузере посчитать
+// hover и выделение для цвета, который задал потребитель (например, свой
+// цвет статусной ячейки в themeOverride.bgCell): его нет в палитре.
 const fillParams = THEMES.map((theme) => {
   const setting = THEME_SETTINGS[theme];
   const stepFactor = setting.stepFactor ?? (setting.mode === 'dark' ? 1.2 : 1);
@@ -238,6 +242,13 @@ lines.push(
   ' * нет в темах (generators/table-token-states/INTEGRATION-STATUS.md,',
 );
 lines.push(' * «Открытые вопросы»).');
+lines.push(' *');
+lines.push(
+  ' * Над каждым ключом: токен темы · состояние — что этим цветом красится.',
+);
+lines.push(
+  ' * Все комментарии этого файла пишет генератор (emit-table-colors.ts).',
+);
 lines.push(' */');
 lines.push('');
 lines.push(
@@ -268,15 +279,24 @@ lines.push('');
 lines.push('export type TableStateColorKey = keyof typeof TABLE_STATE_COLORS;');
 lines.push('');
 lines.push('/**');
-lines.push(
-  ' * Параметры формулы состояний по темам — вход для рантайм-fillStates',
-);
-lines.push(
-  ' * (состояния произвольных цветов потребителя). cardHex — фон ячейки,',
-);
-lines.push(
-  ' * primaryHex — луч для цвета без хромы, selectionHex — заливка выделения с альфой.',
-);
+[
+  ' * Настройки формулы состояний для каждой темы. Нужны, чтобы прямо в',
+  ' * браузере посчитать hover и выделение для цвета, который задал',
+  ' * потребитель (например, свой цвет статусной ячейки): такого цвета в',
+  ' * палитре выше нет. Считает их функция fillStates (theming/fill-states.ts).',
+  ' *',
+  ' * - mode — светлая тема или тёмная: от этого зависит, темнеет цвет при',
+  ' *   hover или светлеет;',
+  ' * - stepFactor — во сколько раз увеличить шаг hover (в тёмных темах шаг',
+  ' *   больше, иначе разница незаметна глазу);',
+  ' * - cardHex — обычный фон ячейки: полупрозрачный цвет сначала',
+  ' *   смешивается с ним и становится непрозрачным;',
+  ' * - primaryHex — серый цвет темы, который задаёт направление hover для',
+  ' *   белых и серых цветов (у них нет своего оттенка). null — в теме его',
+  ' *   нет, и hover для серых цветов не считается;',
+  ' * - selectionHex — полупрозрачная заливка выделения, которая',
+  ' *   накладывается на цвет ячейки, когда она выделена.',
+].forEach((line) => lines.push(line));
 lines.push(' */');
 lines.push('export const TABLE_FILL_PARAMS = {');
 lines.push(...fillParams);

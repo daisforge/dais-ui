@@ -11,29 +11,38 @@ export type ThemeCustoms = ReturnType<typeof getCustomColors> & {
 };
 
 /**
- * Кастомные цвета TableGlide — не входят в стандартный Theme библиотеки Glide Data Grid.
- * Используются в наших рендерерах: выделение строк, редактируемые ячейки, ошибки.
+ * Наши цвета таблицы, которых нет в стандартной теме Glide Data Grid:
+ * состояния выделения и подсветки строк, редактируемые, сохранённые и
+ * статусные ячейки, рамка ошибки, а также цвета содержимого ячеек и шрифты.
  *
- * Источник — палитра «токен × состояние» (table-colors.generated.ts),
- * руками значения не поддерживаются: перегенерация в generators/table-token-states.
+ * Названия состояний в именах ключей:
+ *  - без суффикса — покой;
+ *  - Hovered / HoverColor — под курсором;
+ *  - Active — ячейка в выделении;
+ *  - ActiveHovered — в выделении и под курсором;
+ *  - RowActiveHovered — в выбранной строке под курсором
+ *    (highlightActiveType='row').
+ *
+ * Значения берутся из палитры таблицы (table-colors.generated.ts) — руками
+ * их не правят: палитру пересчитывает npm run table-colors:palette.
  */
 export const getCustomColors = (activeTheme: ActiveTheme) => ({
   /**
-   * Токены для canvas-рендереров (бейджи, статусы, кнопки внутри ячеек).
+   * Цвета содержимого ячеек: текст, бейджи, кнопки, цвета данных.
    * Пример: theme.tokens.textSecondary
    */
   tokens: getTokens(activeTheme),
   /**
-   * Строки шрифтов для компонентов.
+   * Шрифты строкой, как в CSS (размер, начертание, семейство).
    * Пример: theme.fonts.bodyS
    */
   fonts: fontStyles,
   /**
-   * Числовые метрики тех же шрифтов для canvas layout.
+   * Размеры тех же шрифтов числами — для расчёта раскладки на canvas.
    */
   fontMetrics,
 
-  // Редактируемая ячейка (data-yellow-light × состояния)
+  // Редактируемая (жёлтая) ячейка во всех состояниях
   bgEditableCell: TABLE_STATE_COLORS.bgEditableCell[activeTheme],
   bgEditableCellHovered: TABLE_STATE_COLORS.bgEditableCellHovered[activeTheme],
   bgEditableCellActive: TABLE_STATE_COLORS.bgEditableCellActive[activeTheme],
@@ -43,27 +52,31 @@ export const getCustomColors = (activeTheme: ActiveTheme) => ({
   bgEditableCellRowActiveHovered:
     TABLE_STATE_COLORS.bgEditableCellRowActiveHovered[activeTheme],
 
-  // Отмеченная строка и служебные колонки (surface-accent-minor × состояния)
+  // Фон строки, отмеченной чекбоксом, и фон выбранной строки в покое
   selectionCheckboxBg: TABLE_STATE_COLORS.selectionCheckboxBg[activeTheme],
-  // Выбранная строка (highlightActiveType='row') под курсором — hover2
+  // Выбранная строка с нажатым чекбоксом под курсором — самая тёмная ступень
   bgSelectedRowActiveHovered:
     TABLE_STATE_COLORS.bgSelectedRowActiveHovered[activeTheme],
+  // Выделенная ячейка; выделенная ячейка в отмеченной чекбоксом строке
   selectionActiveBg: TABLE_STATE_COLORS.selectionActiveBg[activeTheme],
   selectionActiveCheckboxBg:
     TABLE_STATE_COLORS.selectionActiveCheckboxBg[activeTheme],
+  // Служебные колонки (нумерация, чекбокс): в покое и рядом с выделением
   selectionServiceBg: TABLE_STATE_COLORS.selectionServiceBg[activeTheme],
   selectionServiceActiveBg:
     TABLE_STATE_COLORS.selectionServiceActiveBg[activeTheme],
+  // Красная рамка ячейки с ошибкой
   errorOutlineColor: TABLE_STATE_COLORS.errorOutlineColor[activeTheme],
 
-  // Фон строки под курсором (hoverEffects.row) — hover фона ячейки.
+  // Строка под курсором (hoverEffects.row): обычные ячейки
   bgRowHovered: TABLE_STATE_COLORS.bgRowHovered[activeTheme],
-  // Служебные колонки (нумерация/чекбокс/инструменты) в hovered-строке.
+  // …и служебные колонки (нумерация, чекбокс) в этой строке
   bgServiceRowHovered: TABLE_STATE_COLORS.bgServiceRowHovered[activeTheme],
-  // Checkbox-selected строка под курсором: вся строка темнеет вместо серого hover.
+  // Отмеченная чекбоксом строка под курсором: темнеет целиком, а не серым
   bgSelectedRowHovered: TABLE_STATE_COLORS.bgSelectedRowHovered[activeTheme],
 
-  // Hover поверх выделения
+  // Выделение под курсором: ячейка, ячейка отмеченной строки, служебная
+  // колонка, выделенная шапка
   selectionActiveHoveredBg:
     TABLE_STATE_COLORS.selectionActiveHoveredBg[activeTheme],
   selectionActiveCheckboxHoveredBg:
@@ -73,7 +86,7 @@ export const getCustomColors = (activeTheme: ActiveTheme) => ({
   bgHeaderSelectedHovered:
     TABLE_STATE_COLORS.bgHeaderSelectedHovered[activeTheme],
 
-  // Успешно сохранённая ячейка (data-blue-light × состояния)
+  // Успешно сохранённая (голубая) ячейка во всех состояниях
   editedSuccessfullyCellColor:
     TABLE_STATE_COLORS.editedSuccessfullyCellColor[activeTheme],
   editedSuccessfullyCellHoverColor:
@@ -85,7 +98,7 @@ export const getCustomColors = (activeTheme: ActiveTheme) => ({
   editedSuccessfullyCellRowActiveHoverColor:
     TABLE_STATE_COLORS.editedSuccessfullyCellRowActiveHoverColor[activeTheme],
 
-  // Статусные заливки ячеек (positive / negative / warning / info × состояния)
+  // Статусные ячейки (positive / negative / warning / info) во всех состояниях
   bgCellPositive: TABLE_STATE_COLORS.bgCellPositive[activeTheme],
   bgCellPositiveHovered: TABLE_STATE_COLORS.bgCellPositiveHovered[activeTheme],
   bgCellPositiveActive: TABLE_STATE_COLORS.bgCellPositiveActive[activeTheme],
@@ -115,7 +128,7 @@ export const getCustomColors = (activeTheme: ActiveTheme) => ({
   bgCellInfoRowActiveHovered:
     TABLE_STATE_COLORS.bgCellInfoRowActiveHovered[activeTheme],
 
-  // Затухание при скролле — статичные цвета
+  // Цвет плавного затухания у края при прокрутке (без состояний)
   fadeWhite: TABLE_STATE_COLORS.fadeWhite[activeTheme],
   fadeGray: TABLE_STATE_COLORS.fadeGray[activeTheme],
 });

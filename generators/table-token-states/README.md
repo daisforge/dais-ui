@@ -37,8 +37,8 @@ hex: меняется тема → меняются входные токены 
 `data-blue-light` и т.д.). Для каждого выписан hex по шести темам: `light`,
 `dark`, `betaCoreLight`, `betaCoreDark`, `highContrastLight`,
 `highContrastDark`. Источник значений — CSS тем атомарной команды
-(`@salutejs/sdds-themes` 0.79.1, beta core 0.1.0); `highContrastDark` как
-темы не существует — это договорённая копия dark. Всё это лежит в
+(`@salutejs/sdds-themes` 0.79.1, beta core 0.1.0); для `highContrastDark`
+своих значений у дизайнера нет — это договорённая копия dark. Всё это лежит в
 `code/table-token-sources.ts` (объект `SEMANTIC`), там же — настройки тем
 (`THEME_SETTINGS`: светлая или тёмная, множитель шага) и карта ключей
 (о ней ниже).

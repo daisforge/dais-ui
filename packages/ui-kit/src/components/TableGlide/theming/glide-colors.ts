@@ -2,11 +2,11 @@ import { ActiveTheme } from './activeTheme.type';
 import { TABLE_STATE_COLORS } from './table-colors.generated';
 
 /**
- * Цвета Glide Data Grid canvas: фоны ячеек, заголовков, текст, обводки.
- * Эти значения передаются напрямую в <DataEditor theme={...}>.
+ * Цвета, которые понимает сам Glide Data Grid: фон ячеек и шапки, цвет
+ * текста, линии сетки, цвет выделения. Передаются в <DataEditor theme={...}>.
  *
- * Источник — палитра «токен × состояние» (table-colors.generated.ts),
- * руками значения не поддерживаются: перегенерация в generators/table-token-states.
+ * Значения берутся из палитры таблицы (table-colors.generated.ts) — руками
+ * их не правят: палитру пересчитывает npm run table-colors:palette.
  */
 export const getGlideColors = (activeTheme: ActiveTheme) => ({
   accentColor: TABLE_STATE_COLORS.accentColor[activeTheme],
@@ -22,9 +22,10 @@ export const getGlideColors = (activeTheme: ActiveTheme) => ({
   borderColor: TABLE_STATE_COLORS.borderColor[activeTheme],
   bgGroupHeader: TABLE_STATE_COLORS.bgGroupHeader[activeTheme],
   bgGroupHeaderHovered: TABLE_STATE_COLORS.bgGroupHeaderHovered[activeTheme],
-  // Цвет полосы индикатора скрытых столбцов. Это акцентный синий, поэтому берём тот
-  // же accentColor: один источник цвета и адаптация под тему (в форке был только
-  // фиксированный fallback, который не подхватывал high-contrast).
+  // Цвет полоски-индикатора скрытых столбцов. Это тот же акцентный синий,
+  // поэтому берём accentColor: цвет меняется вместе с темой. (Своё значение по
+  // умолчанию у Glide Data Grid одно на все темы и в контрастной теме не
+  // подходит.)
   hiddenColumnsIndicatorColor:
     TABLE_STATE_COLORS.hiddenColumnsIndicatorColor[activeTheme],
 });

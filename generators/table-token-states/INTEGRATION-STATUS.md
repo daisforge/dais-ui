@@ -136,7 +136,7 @@ ColoringStates (переключатели всех режимов, темы —
   `theming/cell-fill-override.ts` кладёт в тему ячейки `bgCell` =
   rest|hover (в выбранной строке hover|hover2) и `accentLight` =
   active|hoverActive. Для цветов потребителя (`columnThemeOverride →
-  bgCell`) состояния считает `getCellFillStates(hex, theme)` с кэшем.
+bgCell`) состояния считает `getCellFillStates(hex, theme)` с кэшем.
 - **Выбранная строка** (`highlightActiveType='row'`): фон строки отдаёт
   тема строки (`getRowThemeOverride`, лестница — `resolveActiveRowBg` в
   `cell-fill-override.ts`), регионами не красится. Активная ячейка при
@@ -153,7 +153,7 @@ ColoringStates (переключатели всех режимов, темы —
   **`style: 'accent'`** (доработка рендера): заливка берёт `accentLight`
   из темы ячейки — тот же механизм, что у обычного выделения.
 - **Выделенная шапка**: `columnsForRender` — `bgHeader/bgHeaderHasFocus =
-  selectionServiceActiveBg`, `bgHeaderHovered = bgHeaderSelectedHovered`;
+selectionServiceActiveBg`, `bgHeaderHovered = bgHeaderSelectedHovered`;
   группа — `getGroupDetails` (`bgGroupHeaderHovered`).
 - **Доработки рендера**: стиль региона `'accent'` и
   `Highlight.drawAboveSelection` (обводка второй фазой поверх рамки

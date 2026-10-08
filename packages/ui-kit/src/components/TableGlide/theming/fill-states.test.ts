@@ -7,12 +7,15 @@ import {
 } from './table-colors.generated';
 
 /**
- * Эквивалентность рантайм-копии формулы и генератора: fillStates на исходном
- * hex токена обязан выдавать ровно те hex, что генератор положил в палитру.
- * Исходные hex токенов — из generators/table-token-states (table-token-sources.ts).
+ * Проверяет, что копия формулы в fill-states.ts считает так же, как формула
+ * дизайнера в генераторе: из исходного цвета токена должны получиться ровно
+ * те цвета, что лежат в палитре (table-colors.generated.ts).
+ * Исходные цвета токенов взяты из generators/table-token-states
+ * (code/table-token-sources.ts).
  */
 
-// токен → исходный hex по темам (срез SEMANTIC: статусные заливки и отмеченная строка)
+// Токен → исходный цвет по темам и ключи палитры, где лежат его состояния
+// (часть токенов: статусные заливки и фон отмеченной строки)
 const SOURCES = {
   surfaceTransparentPositive: {
     keys: {
@@ -28,7 +31,7 @@ const SOURCES = {
       betaCoreLight: '#21A0381F',
       betaCoreDark: '#21A03833',
       highContrastLight: '#198A001F',
-      highContrastDark: '#1A9E3233', // CSS-темы нет, вход = копия dark
+      highContrastDark: '#1A9E3233', // своих значений у дизайнера нет, исходный цвет — как в тёмной
     },
   },
   surfaceNegativeMinor: {
@@ -44,9 +47,10 @@ const SOURCES = {
       dark: '#4A0D13',
       betaCoreLight: '#FEDFDE',
       betaCoreDark: '#480B11',
-      // highContrastLight намеренно нет: токена в HC-теме нет, палитра для неё
-      // — копия light (слой emit), формулой не считается.
-      highContrastDark: '#4A0D13', // CSS-темы нет, вход = копия dark
+      // highContrastLight нет специально: в контрастной теме этого токена
+      // нет, и палитра для неё не считается формулой, а копируется из
+      // светлой (emit-table-colors.ts) — сравнивать не с чем.
+      highContrastDark: '#4A0D13', // своих значений у дизайнера нет, исходный цвет — как в тёмной
     },
   },
   surfaceAccentMinor: {
@@ -63,7 +67,7 @@ const SOURCES = {
       betaCoreLight: '#EFF8FF',
       betaCoreDark: '#0C1A24',
       highContrastLight: '#CFE5F2FF',
-      highContrastDark: '#071A26FF', // CSS-темы нет, вход = копия dark
+      highContrastDark: '#071A26FF', // своих значений у дизайнера нет, исходный цвет — как в тёмной
     },
   },
 } as const;
