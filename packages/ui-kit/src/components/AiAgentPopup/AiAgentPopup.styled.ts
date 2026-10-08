@@ -10,8 +10,11 @@ import {
   GLOW_TOP_OVERHANG,
   GLOW_WIDTH_RATIO,
   INPUT_VERTICAL_CHROME,
-  LEFT_PANEL_DIVIDER_GAP,
+  LEFT_PANEL_CONTENT_GAP,
+  LEFT_PANEL_DIVIDER_RADIUS,
+  LEFT_PANEL_DIVIDER_WIDTH,
   LEFT_PANEL_HEADER_HEIGHT,
+  LEFT_PANEL_INNER_GAP,
   LEFT_PANEL_RAIL_WIDTH,
   LEFT_PANEL_SECTION_WIDTH,
 } from './AiAgentPopup.constants';
@@ -223,12 +226,15 @@ export const StyledLeftPanelZone = styled.div<{ $open: boolean }>`
 
 /* Полоса иконок и раздел наложены друг на друга и показываются по очереди
    через прозрачность (кросс-фейд): из раздела к другим иконкам можно
-   вернуться только закрытием крестиком */
+   вернуться только закрытием крестиком. Внутренний отступ справа входит
+   в ширину слоя, девайдер стоит сразу за ним */
 const panelLayer = css<{ $active: boolean }>`
   position: absolute;
   top: 0;
   left: 0;
+  box-sizing: border-box;
   height: 100%;
+  padding-right: ${LEFT_PANEL_INNER_GAP}px;
   opacity: ${({ $active }) => ($active ? 1 : 0)};
   pointer-events: ${({ $active }) => ($active ? 'auto' : 'none')};
   transition: opacity 0.3s ease;
@@ -239,7 +245,7 @@ export const StyledRail = styled.div<{ $active: boolean }>`
   width: ${LEFT_PANEL_RAIL_WIDTH}px;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   gap: 4px;
 `;
 
@@ -295,14 +301,23 @@ export const StyledSectionContent = styled.div`
   min-height: 0;
 `;
 
-/* Вертикальный девайдер между панелью и чатом: отступы по 4px с каждой
-   стороны, сам девайдер (атомарный Divider) тянется на всю высоту */
+/* Вертикальный девайдер стоит сразу за панелью, от него отступ до чата.
+   Атомарный Divider в вертикальном режиме рисует линию псевдоэлементом,
+   а сам занимает 0px, поэтому ширину линии задаём обёртке, иначе линия
+   ложится на отступ до чата. Скругления у этой линии нет, добавляем
+   по макету */
 export const StyledLeftPanelDivider = styled.div`
   flex: none;
   display: flex;
-  margin: 0 ${LEFT_PANEL_DIVIDER_GAP}px;
+  width: ${LEFT_PANEL_DIVIDER_WIDTH}px;
+  margin-right: ${LEFT_PANEL_CONTENT_GAP}px;
 
   & > * {
+    width: 100%;
     height: 100%;
+  }
+
+  & > *::before {
+    border-radius: ${LEFT_PANEL_DIVIDER_RADIUS}px;
   }
 `;

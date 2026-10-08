@@ -16,11 +16,13 @@ export const DEFAULT_MIN_WIDTH = 360;
 export const DEFAULT_MIN_HEIGHT = 360;
 
 /**
- * Внутренний отступ белой карточки до контента. Вместе со светящейся рамкой
- * (GLOW_BORDER) даёт отступ контента от внешнего края окна 12 + 4 = 16,
- * как в макете.
+ * Внутренний отступ белой карточки до контента, со всех сторон (макет).
+ * Светящаяся рамка GLOW_BORDER нарисована снаружи и в этот отступ не входит.
  */
-export const CARD_PADDING = 12;
+export const CARD_PADDING = 16;
+
+/** Размер окна при первом открытии, если не задан defaultSize (макет) */
+export const DEFAULT_POPUP_SIZE = { width: 400, height: 540 };
 
 /** Отступ от левого верхнего угла экрана, если позицию не из чего вычислить */
 export const FALLBACK_POSITION_INDENT = 56;
@@ -67,23 +69,36 @@ export const GLOW_TOP_OVERHANG = 25;
 
 /** Максимальная высота поля ввода при авторосте по умолчанию, px (макет).
  * Высота всей текстовой рамки, включая её внутренние отступы */
-export const DEFAULT_INPUT_MAX_HEIGHT = 160;
+export const DEFAULT_INPUT_MAX_HEIGHT = 220;
 
 /** Обвязка поля размера s вокруг textarea: внутренние отступы рамки.
  * Поле в одну строку 41px при textarea 18px */
 export const INPUT_VERTICAL_CHROME = 23;
 
-/** Ширина полосы иконок левой панели (свёрнутое состояние), макет */
-export const LEFT_PANEL_RAIL_WIDTH = 44;
+/**
+ * Ширина полосы иконок левой панели (свёрнутое состояние), макет. Кнопки
+ * 40x40 прижаты к левому краю, справа внутренний отступ
+ * LEFT_PANEL_INNER_GAP
+ */
+export const LEFT_PANEL_RAIL_WIDTH = 48;
 
-/** Ширина открытого раздела левой панели, макет */
+/**
+ * Ширина открытого раздела левой панели, макет. Включает внутренний отступ
+ * LEFT_PANEL_INNER_GAP справа, под шапку и контент остаётся 292
+ */
 export const LEFT_PANEL_SECTION_WIDTH = 300;
 
-/** Отступ до и после вертикального девайдера между левой панелью и чатом */
-export const LEFT_PANEL_DIVIDER_GAP = 4;
+/** Внутренний отступ справа у полосы иконок и у раздела, до девайдера */
+export const LEFT_PANEL_INNER_GAP = 8;
+
+/** Отступ от девайдера до контента чата */
+export const LEFT_PANEL_CONTENT_GAP = 12;
 
 /** Толщина вертикального девайдера */
 export const LEFT_PANEL_DIVIDER_WIDTH = 1;
+
+/** Скругление вертикального девайдера, макет */
+export const LEFT_PANEL_DIVIDER_RADIUS = 2;
 
 /** Высота шапки открытого раздела: иконка, заголовок, крестик, макет */
 export const LEFT_PANEL_HEADER_HEIGHT = 40;
@@ -96,8 +111,9 @@ export const MIN_WIDTH_WITH_SECTION = 615;
 
 /**
  * Прирост ширины окна при открытии раздела: раздел (300) заменяет полосу
- * иконок (44), окно дорастягивается на разницу, чтобы чат не сужался.
- * Совпадает с разницей минимумов (615 - 360).
+ * иконок (48), окно растёт на разницу, и ширина чата не меняется. Пока
+ * не используется: окно нельзя растянуть из кода, атомарный Popup ещё
+ * не умеет управляемый размер
  */
 export const LEFT_PANEL_SECTION_DELTA =
-  MIN_WIDTH_WITH_SECTION - DEFAULT_MIN_WIDTH;
+  LEFT_PANEL_SECTION_WIDTH - LEFT_PANEL_RAIL_WIDTH;

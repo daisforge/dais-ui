@@ -184,7 +184,7 @@ export type AiAgentInputProps = Omit<TextAreaProps, 'contentRight'> & {
    * целиком, с её внутренними отступами), дальше внутренний скролл.
    * Предел в px, а не в строках: при ресайзе окна количество
    * помещающихся строк меняется.
-   * @default 160
+   * @default 220
    */
   maxHeight?: number;
 };
@@ -280,8 +280,9 @@ export type AiAgentPopupProps = Omit<
    */
   resizable?: boolean | Partial<AiAgentPopupResizableConfig>;
   /**
-   * Начальный размер окна в px. Если не задан, размер определяет контент.
-   * Сохранённый размер из useStorage приоритетнее.
+   * Начальный размер окна в px. Сохранённый размер из useStorage
+   * приоритетнее.
+   * @default { width: 400, height: 540 }
    */
   defaultSize?: AiAgentPopupSize;
   /**

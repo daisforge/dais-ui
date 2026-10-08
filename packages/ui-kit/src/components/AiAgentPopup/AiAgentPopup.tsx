@@ -3,6 +3,7 @@ import type { CSSProperties } from 'react';
 import { forwardRef, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
+  DEFAULT_POPUP_SIZE,
   DEFAULT_TARGET_GAP,
   DRAGGING_CLASS,
   GLOW_BORDER,
@@ -45,7 +46,7 @@ export const AiAgentPopup = forwardRef<HTMLDivElement, AiAgentPopupProps>(
       dragIgnoreSelector,
       useStorage = false,
       resizable = true,
-      defaultSize,
+      defaultSize = DEFAULT_POPUP_SIZE,
       onSizeChange,
       frame = 'document',
       style: externalStyle,
