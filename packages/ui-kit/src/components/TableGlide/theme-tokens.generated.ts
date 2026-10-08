@@ -1,11 +1,12 @@
 /**
  * АВТОГЕНЕРИРОВАНО из generators/theme-tokens — НЕ ПРАВИТЬ РУКАМИ.
- * Перегенерация: node generators/theme-tokens/generate-theme-tokens.js
+ * Перегенерация из корня: npm run theme-tokens:generate
  *
- * Токены тем для canvas-рендереров TableGlide, собранные из CSS-переменных
- * пакетов атомарной команды (@salutejs/sdds-themes, beta core, high contrast).
- * Карта соответствий и ручные пины — generators/theme-tokens/lib/token-map.js,
- * происхождение каждого нестандартного значения — generators/theme-tokens/report.md.
+ * Готовые цвета «чернил» (текст, бейджи, кнопки) для canvas-рендеров
+ * таблицы по шести темам — выписаны из тем атомарной команды
+ * (@salutejs/sdds-themes, beta core, high contrast).
+ * Какие цвета и где их искать — generators/theme-tokens/lib/token-map.js;
+ * значения, взятые не напрямую из своей темы, — generators/theme-tokens/report.md.
  */
 
 export const TOKENS_LIGHT = {

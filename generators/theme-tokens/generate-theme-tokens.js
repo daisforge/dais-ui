@@ -1,25 +1,35 @@
 /* eslint-disable no-console */
 /* eslint-disable import/extensions -- Node ESM требует явного расширения в относительных импортах (как в scripts/husky-commit) */
 /**
- * Генератор токенов тем для canvas-рендереров TableGlide (слой «чернил»:
- * текст, бейджи, кнопки, статусы внутри ячеек).
+ * Генератор цветов «чернил» для таблицы: текст, бейджи, кнопки, статусы
+ * внутри ячеек.
  *
- * Источник истины — CSS-переменные тем атомарной команды в node_modules
- * (какие файлы — lib/theme-sources.js). Состав ключей и правила соответствия
- * «ключ → переменная» — lib/token-map.js; механика — остальные модули lib/.
+ * Зачем он нужен. Обычные компоненты красятся CSS-переменными вида
+ * var(--text-primary) — браузер сам подставляет цвет текущей темы. Таблица
+ * рисует на canvas, а canvas понимает только готовый цвет (#RRGGBB), не
+ * var(...). Поэтому генератор заранее выписывает конкретный цвет каждого
+ * токена для каждой из шести тем.
  *
- * Выход:
- *   packages/ui-kit/src/components/TableGlide/theme-tokens.generated.ts
- *   generators/theme-tokens/report.md — пины и наследования (что откуда взялось).
+ * Откуда берёт. Читает файлы тем атомарной команды прямо из node_modules
+ * (какие именно — lib/theme-sources.js). Какие цвета нужны и как они
+ * называются в темах — lib/token-map.js; остальные файлы lib/ — механика.
  *
- * Запуск: node generators/theme-tokens/generate-theme-tokens.js
+ * Что пишет:
+ *   packages/ui-kit/src/components/TableGlide/theme-tokens.generated.ts —
+ *     цвета по темам, в код попадают через getTokens() → theme.tokens;
+ *   generators/theme-tokens/report.md — список значений, взятых НЕ
+ *     напрямую из своей темы (заданы руками или взяты из запасной темы).
+ *
+ * Когда запускать: после обновления пакетов атомарной команды (в npm run
+ * update не входит) и после правки token-map.js.
+ * Запуск из корня: npm run theme-tokens:generate
  */
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { emitReport, emitTokensFile } from './lib/emit.js';
 import { readThemeVariables } from './lib/parse-css-variables.js';
-import { resolveTokenValue } from './lib/resolve-token.js';
+import { resolveTokenValue, SOURCE } from './lib/resolve-token.js';
 import { THEME_SOURCES, THEMES } from './lib/theme-sources.js';
 import { KEYS, MAPPING } from './lib/token-map.js';
 
@@ -31,7 +41,7 @@ const OUT_TS = path.join(
 );
 const OUT_REPORT = path.join(DIRNAME, 'report.md');
 
-// ─── Чтение переменных всех шести тем ───
+// ─── Чтение цветов всех шести тем ───
 
 const varsByTheme = Object.fromEntries(
   THEMES.map((theme) => [
@@ -40,34 +50,40 @@ const varsByTheme = Object.fromEntries(
   ]),
 );
 
-// ─── Значение каждого ключа в каждой теме + строки отчёта ───
+// ─── Цвет каждого ключа в каждой теме + строки отчёта ───
 
 const tokens = Object.fromEntries(THEMES.map((theme) => [theme, {}]));
 const report = [];
+const counts = { manual: 0, fallback: 0 };
 
 KEYS.forEach((key) => {
   const rule = MAPPING[key] ?? {};
   THEMES.forEach((theme) => {
-    const { value, origin } = resolveTokenValue(key, rule, varsByTheme, theme);
+    const { value, source, origin } = resolveTokenValue(
+      key,
+      rule,
+      varsByTheme,
+      theme,
+    );
     if (value === undefined) {
+      // Переменной нет ни в одной теме: скорее всего, атомарная команда её
+      // переименовала или удалила — нужно поправить token-map.js.
       throw new Error(`Нет значения: ${key} / ${theme}`);
     }
     tokens[theme][key] = value;
-    const isWorthReporting =
-      origin.includes('пин') || origin.includes('унаслед');
-    if (isWorthReporting) {
+    // В отчёт — только то, что взято НЕ напрямую из своей темы.
+    if (source !== SOURCE.direct) {
+      counts[source] += 1;
       report.push(`| \`${key}\` | ${theme} | \`${value}\` | ${origin} |`);
     }
   });
 });
 
-// ─── Выпуск ───
+// ─── Запись ───
 
 emitTokensFile(OUT_TS, tokens);
 emitReport(OUT_REPORT, report);
 
-const pinCount = report.filter((row) => row.includes('пин')).length;
-const inheritCount = report.length - pinCount;
 console.log(
-  `theme-tokens.generated.ts: ${KEYS.length} ключей × ${THEMES.length} тем; пинов: ${pinCount}, наследований: ${inheritCount} (см. report.md)`,
+  `theme-tokens.generated.ts: ${KEYS.length} ключей × ${THEMES.length} тем; задано руками: ${counts.manual}, из запасной темы: ${counts.fallback} (см. report.md)`,
 );
