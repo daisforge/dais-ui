@@ -25,33 +25,43 @@
   закрывает дыры тем временными значениями (их состояния считаются той же
   формулой `fillStates`, не руками) и эмитит `table-colors.generated.ts`;
 - `INTEGRATION-STATUS.md` — статус интеграции и открытые вопросы к дизайнеру;
-- `package.json`, `tsconfig.json`, `.gitignore` — локальная инфраструктура.
+- `package.json` (только scripts, без зависимостей), `tsconfig.json`,
+  `.gitignore` — локальная инфраструктура. Своих node_modules у папки НЕТ:
+  tsx/vitest/typescript/prettier берутся из devDependencies корня
+  (npm run добавляет родительские node_modules/.bin в PATH).
 
 ## Команды
 
 ```bash
 cd generators/table-token-states
-npm ci            # локальные devDeps: tsx, vitest, typescript, prettier (однократно)
 npm test          # тесты дизайнера — прогонять после любой замены code/
 npm run typecheck # strict-проверка всего TS папки (tsc -p tsconfig.json)
 npm run emit      # пересборка палитры → theming/table-colors.generated.ts
 npm run format    # prettier по папке + ../theme-tokens (есть и format:check)
 ```
 
+Зависимости ставятся обычным `npm ci` в КОРНЕ репозитория — отдельной
+установки у мини-проекта нет.
+
 После `emit` прогнать в корне `npx nx test ui-kit`: тест
 `theming/fill-states.test.ts` сверяет рантайм-копию формулы с палитрой
 бит-в-бит.
 
-## Почему мини-проект изолирован
+## Границы изоляции (что локально, а что общее)
 
-1. Код `code/*` не подгоняется под строгие флаги репозитория
-   (`noUncheckedIndexedAccess` и др. его ломают) — у папки свой `tsconfig.json`
-   с флагами из её же скрипта typecheck; иначе потеряется возможность
-   заменять файлы 1-в-1 при обновлениях от дизайн-системы.
-2. Свои devDeps (`tsx`, `vitest`, `typescript`) — их нет в корне репозитория;
-   ставятся локально `npm ci`, в git не попадают, workspaces корня их не видят.
-3. Линтер репозитория папку не проверяет (generators/ вне проектов nx) —
-   осознанно, по той же причине неприкосновенности кода.
+Общее с корнем: все зависимости (tsx/vitest/typescript/prettier в
+devDependencies корня, один package-lock на репозиторий) и форматирование
+(prettier той же версии, что проверяет IDE).
+
+Локальное — только два осознанных исключения:
+
+1. `tsconfig.json`: код `code/*` не подгоняется под строгие флаги
+   репозитория (`noUncheckedIndexedAccess` и др. его ломают) — иначе
+   потеряется возможность заменять файлы 1-в-1 при обновлениях от
+   дизайн-системы.
+2. eslint: `code/` и `demo/` исключены в корневом `.eslintignore` по той же
+   причине неприкосновенности; наш слой (`emit-table-colors.ts`) линтится
+   как обычный код.
 
 ## Связанное
 
