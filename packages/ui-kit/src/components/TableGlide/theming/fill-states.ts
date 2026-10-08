@@ -1,5 +1,5 @@
 /**
- * Рантайм-состояния произвольной заливки ячейки: rest / hover / active / hoverActive.
+ * Рантайм-состояния произвольной заливки ячейки: rest / hover / hover2 / active / hoverActive.
  *
  * Контролируемая копия fill-пути формулы из generators/table-token-states
  * (code/table-token-states.ts, модель «токен × состояние», OKLCH):

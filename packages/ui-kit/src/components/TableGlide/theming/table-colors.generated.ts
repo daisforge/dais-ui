@@ -3,9 +3,12 @@
  * Перегенерация из корня: npm run table-colors:palette
  *
  * Модель: каждый цвет таблицы = семантический токен темы × состояние
- * (rest / hover / active / hoverActive), расчёт в OKLCH на этапе генерации,
- * здесь — только готовые непрозрачные hex. Подробности: generators/table-token-states/README.md.
- * Значения с пометкой «временно» закрывают дыры тем (см. README, «Открытые вопросы»).
+ * (rest / hover / hover2 / active / hoverActive). Расчёт в OKLCH идёт при
+ * генерации, здесь — только готовые непрозрачные цвета. Подробности:
+ * generators/table-token-states/README.md.
+ * Значения с пометкой «временно» подставлены вместо токенов, которых пока
+ * нет в темах (generators/table-token-states/INTEGRATION-STATUS.md,
+ * «Открытые вопросы»).
  */
 
 export const TABLE_COLOR_THEMES = ['light', 'dark', 'betaCoreLight', 'betaCoreDark', 'highContrastLight', 'highContrastDark'] as const;
