@@ -27,9 +27,7 @@ type ColoringArgs = {
 
 const meta: Meta<ColoringArgs> = {
   title: 'Локальные компоненты/TableCanvas/ColoringStates',
-  // Служебный раздел: скрыт из сайдбара (hideInSidebar), в дев-навигации не
-  // показывается. Стенд доступен по прямому URL, матрица — test-runner'ом.
-  tags: ['!autodocs', 'hideInSidebar'],
+  tags: ['!autodocs'],
   args: {
     hoverRow: true,
     highlightActiveType: 'row',

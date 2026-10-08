@@ -38,9 +38,7 @@ import {
 
 const meta: Meta = {
   title: 'Локальные компоненты/TableCanvas/ColoringStates/Визуальные тесты',
-  // Чисто тестовый раздел: скрыт из сайдбара (hideInSidebar), test-runner
-  // стори видит через индекс. Снапшоты остаются под прежними id.
-  tags: ['!autodocs', 'hideInSidebar'],
+  tags: ['!autodocs'],
 };
 export default meta;
 
