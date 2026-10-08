@@ -9,8 +9,6 @@ import {
   StyledLeftPanelDivider,
   StyledLeftPanelZone,
   StyledRail,
-  StyledRailIndicator,
-  StyledRailItem,
   StyledSection,
   StyledSectionContent,
   StyledSectionHeader,
@@ -61,18 +59,14 @@ export const AiAgentLeftPanel = ({
       <StyledLeftPanelZone $open={isOpen}>
         <StyledRail $active={!isOpen} aria-hidden={isOpen}>
           {items.map((item) => (
-            <StyledRailItem key={item.key}>
-              {item.indicator && (
-                <StyledRailIndicator>{item.indicator}</StyledRailIndicator>
-              )}
-              <IconButton
-                size="s"
-                view="clear"
-                onClick={() => changeKey(item.key)}
-              >
-                {item.icon}
-              </IconButton>
-            </StyledRailItem>
+            <IconButton
+              key={item.key}
+              size="s"
+              view="clear"
+              onClick={() => changeKey(item.key)}
+            >
+              {item.icon}
+            </IconButton>
           ))}
         </StyledRail>
         <StyledSection $active={isOpen} aria-hidden={!isOpen}>

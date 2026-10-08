@@ -11,7 +11,11 @@ export type {
   AiAgentPopupResizableConfig,
   AiAgentPopupSize,
   AiAgentPopupTargetGap,
-  AiAgentSurfaceProps,
-  AiAgentSurfaceVariant,
 } from './AiAgentPopup.types';
-export { AiAgentSurface } from './AiAgentSurface';
+// Встраивание чата в лэйаут страницы пока отложено: оболочка остаётся
+// внутренней деталью окна. Чтобы открыть её потребителям, раскомментировать
+// export type {
+//   AiAgentSurfaceProps,
+//   AiAgentSurfaceVariant,
+// } from './AiAgentPopup.types';
+// export { AiAgentSurface } from './AiAgentSurface';

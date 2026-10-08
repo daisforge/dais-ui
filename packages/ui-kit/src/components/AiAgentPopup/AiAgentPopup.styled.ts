@@ -13,6 +13,7 @@ import {
   LEFT_PANEL_CONTENT_GAP,
   LEFT_PANEL_DIVIDER_RADIUS,
   LEFT_PANEL_DIVIDER_WIDTH,
+  LEFT_PANEL_HEADER_GAP,
   LEFT_PANEL_HEADER_HEIGHT,
   LEFT_PANEL_INNER_GAP,
   LEFT_PANEL_RAIL_WIDTH,
@@ -133,13 +134,13 @@ export const StyledInputRoot = styled.div`
 `;
 
 /* Овальное свечение поля ввода, по макету (линейный градиент цветов,
-   непрозрачность 0.56). Высота овала фиксированная, овал держится
-   у верхней границы поля со свесом над ней: при авторосте поля он
-   поднимается вместе с кромкой. По решению дизайнера свечение лежит
-   ПОВЕРХ контента чата, включая сообщения с фоном; кликам не мешает,
-   это чистая подсветка. Радиус размытия меньше макетных 92: гаусс
-   такого радиуса на овале высотой 79 размазывает цвет в дымку,
-   непохожую на макет, значение подобрано глазами */
+   непрозрачность 0.56). Высота овала фиксированная, он выступает над
+   верхним краем поля и при росте поля поднимается вместе с этим краем.
+   По решению дизайнера свечение лежит ПОВЕРХ контента чата, включая
+   сообщения с фоном; кликам не мешает, это только подсветка. Размытие
+   меньше макетных 92: в Фигме и в CSS одно и то же число размывает
+   по-разному, с 92 цвет расплывается почти до прозрачности, значение
+   подобрано глазами по скриншоту макета */
 /* Цвета из макетов, токена у атомарки под них нет. У тёмной темы
    прозрачность зашита в сами цвета градиента, поэтому непрозрачность
    слоя там полная, а у светлой 0.56 из макета */
@@ -249,20 +250,6 @@ export const StyledRail = styled.div<{ $active: boolean }>`
   gap: 4px;
 `;
 
-export const StyledRailItem = styled.div`
-  position: relative;
-  flex: none;
-`;
-
-/* Слот индикатора над иконкой: небольшой бейдж в правом верхнем углу,
-   кликам по иконке не мешает */
-export const StyledRailIndicator = styled.div`
-  position: absolute;
-  top: 0;
-  right: 0;
-  pointer-events: none;
-`;
-
 export const StyledSection = styled.div<{ $active: boolean }>`
   ${panelLayer};
   width: ${LEFT_PANEL_SECTION_WIDTH}px;
@@ -270,20 +257,25 @@ export const StyledSection = styled.div<{ $active: boolean }>`
   flex-direction: column;
 `;
 
-/* Шапка раздела фиксированной высоты: иконка, заголовок и крестик */
+/* Шапка раздела фиксированной высоты: иконка раздела, заголовок и крестик */
 export const StyledSectionHeader = styled.div`
   flex: none;
   height: ${LEFT_PANEL_HEADER_HEIGHT}px;
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: ${LEFT_PANEL_HEADER_GAP}px;
 `;
 
+/* На макете иконка раздела выглядит как кнопка 40x40, но не кликается.
+   Таких размеров у иконок нет (бывают 16, 24 и 36), поэтому иконка стоит
+   по центру квадрата 40x40, без ховера и фокуса кнопки */
 export const StyledSectionTitleIcon = styled.div`
   flex: none;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: ${LEFT_PANEL_HEADER_HEIGHT}px;
+  height: ${LEFT_PANEL_HEADER_HEIGHT}px;
 `;
 
 export const StyledSectionTitle = styled.div`
