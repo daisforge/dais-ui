@@ -163,11 +163,12 @@ rest/hover-hex, а в per-cell тему кладётся `accentLight` = active/
 
 ```bash
 npm run table-colors:palette        # палитра заливок → theming/table-colors.generated.ts
-npm run table-colors:content            # цвета содержимого ячеек → TableGlide/content-tokens.generated.ts
+npm run table-colors:content        # цвета содержимого ячеек → TableGlide/content-tokens.generated.ts
 npm run table-colors:test           # тесты дизайнера (19) — после любой замены code/
 npm run table-colors:typecheck      # tsc -p tsconfig.json папки
 npm run table-colors:designer-docs  # пересчёт output.json/docs/csv дизайнера
 npm run table-colors:format         # prettier: эта папка + ../table-content-tokens (есть и :format-check)
+npm run table-colors:check-sdds     # сверка исходных цветов палитры с темами SDDS (сам в конце update)
 ```
 
 После `table-colors:palette` обязательно прогнать `npx nx test ui-kit` —
@@ -178,8 +179,10 @@ npm run table-colors:format         # prettier: эта папка + ../table-con
 1. Заменить файлы `code/` (и при необходимости `docs/`, `demo/`) целиком.
 2. `npm run table-colors:format && npm run table-colors:test && npm run table-colors:typecheck`
    (форматирование prettier допустимо — семантика защищена тестами).
-3. Пересмотреть временные значения в `emit-table-colors.ts`: возможно, дыры
-   тем уже закрыты настоящими токенами и подстановки пора удалить.
+3. `npm run table-colors:check-sdds` — должен молчать или показать только
+   известные расхождения. Пересмотреть временные значения в
+   `emit-table-colors.ts`: возможно, дыры тем уже закрыты настоящими
+   токенами и подстановки пора удалить.
 4. `npm run table-colors:palette`, затем `npx nx test ui-kit`.
 5. Глазами по стенду: Storybook → Локальные компоненты → TableCanvas →
    ColoringStates (все режимы выделения, hover, ошибки, 6 тем).
@@ -190,8 +193,15 @@ npm run table-colors:format         # prettier: эта папка + ../table-con
   генератор `generators/table-content-tokens/` — читает темы атомарной команды
   из node_modules. Запускается сам в конце `npm run update` / `updateX`.
   Какие цвета нужны и где их искать — его `lib/token-map.js`; в `report.md` —
-  что поменялось у атомарки с прошлого запуска (новые и пропавшие
-  переменные) и какие цвета взяты не напрямую из своей темы.
+  что поменялось в темах атомарной команды (SDDS) с прошлого запуска (новые
+  и пропавшие переменные по каждой теме), появились ли переменные, которых
+  ждут ручные цвета (`awaits`), и какие цвета взяты не напрямую из своей
+  темы. Коротко то же самое он печатает в консоль жёлтым блоком.
+- Сверка исходных цветов палитры с темами SDDS — `check-sdds-sources.ts`
+  (`npm run table-colors:check-sdds`, сам в конце `npm run update` /
+  `updateX`). Палитра дизайнера считается от снимка цветов тем в
+  `code/table-token-sources.ts`; скрипт печатает, где снимок разошёлся с
+  пакетами SDDS, — это нужно передать дизайнеру.
 - Рантайм-копия fill-формулы:
   `packages/ui-kit/src/components/TableGlide/theming/fill-states.ts` —
   менять только синхронно с `code/table-token-states.ts`, защищено тестом.

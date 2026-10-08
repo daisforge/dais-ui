@@ -41,7 +41,8 @@ export const emitTokensFile = (outPath, tokens) => {
   fs.writeFileSync(outPath, `${TS_HEADER + constants.join('\n\n')}\n`);
 };
 
-export const emitReport = (outPath, reportRows, changesSection) => {
+/** sections — готовые разделы отчёта (изменения в темах, ожидаемые переменные). */
+export const emitReport = (outPath, reportRows, sections) => {
   const generatedDate = new Date().toISOString().slice(0, 10);
   fs.writeFileSync(
     outPath,
@@ -50,10 +51,11 @@ export const emitReport = (outPath, reportRows, changesSection) => {
 Сгенерировано: ${generatedDate}.
 
 Это не список ошибок, а список мест, на которые стоит смотреть при обновлении
-тем. Два раздела: что поменялось у атомарной команды с прошлого запуска, и
-какие цвета таблицы взяты НЕ напрямую из своей темы.
+тем атомарной команды (SDDS): что в них поменялось с прошлого запуска, не
+появились ли переменные, которых ждут ручные цвета, и какие цвета таблицы
+взяты НЕ напрямую из своей темы.
 
-${changesSection}
+${sections.join('\n')}
 ## Цвета, взятые не напрямую из своей темы
 
 - **задан руками** (pin) — подходящей переменной в темах нет или замену не

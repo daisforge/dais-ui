@@ -26,6 +26,9 @@ const CSS_VARIABLE_DECLARATION = /--([a-z0-9-]+)\s*:\s*(#[0-9A-Fa-f]{3,8})\b/g;
  * Одна переменная может встречаться в файле несколько раз: первой идёт
  * в `:root` (это и есть цвет темы), дальше — для вложенных блоков с другими
  * значениями. Поэтому берётся ПЕРВОЕ значение, следующие игнорируются.
+ *
+ * @param {string} filePath
+ * @returns {Record<string, string>}
  */
 export const readThemeVariables = (filePath) => {
   const text = fs.readFileSync(filePath, 'utf8');

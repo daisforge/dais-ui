@@ -34,7 +34,7 @@ export const TABLE_STATE_COLORS = {
     dark: '#0C1013',
     betaCoreLight: '#F4F8FA',
     betaCoreDark: '#0C1013',
-    highContrastLight: '#E8EEF2', // временно: в теме нет surface-solid-primary, по которому считается hover белого фона; оставлено прежнее значение таблицы
+    highContrastLight: '#E8EEF2', // временно: в исходных цветах палитры нет surface-solid-primary, по которому считается hover белого фона; оставлено прежнее значение таблицы
     highContrastDark: '#0C1013',
   },
   /** surface-accent-minor · rest — шапка, итоговая строка */
@@ -340,7 +340,7 @@ export const TABLE_STATE_COLORS = {
     dark: '#4A0D13',
     betaCoreLight: '#FEDFDE',
     betaCoreDark: '#480B11',
-    highContrastLight: '#FFE0E3', // временно: в теме нет светлого статусного токена, взят цвет светлой темы
+    highContrastLight: '#FFE0E3', // временно: в исходных цветах палитры нет светлого статусного токена, взят цвет светлой темы
     highContrastDark: '#4A0D13',
   },
   /** surface-negative-minor · hover — negative под курсором */
@@ -349,7 +349,7 @@ export const TABLE_STATE_COLORS = {
     dark: '#561117',
     betaCoreLight: '#FDD5D4',
     betaCoreDark: '#540E15',
-    highContrastLight: '#FED6DA', // временно: в теме нет светлого статусного токена, взят цвет светлой темы
+    highContrastLight: '#FED6DA', // временно: в исходных цветах палитры нет светлого статусного токена, взят цвет светлой темы
     highContrastDark: '#561117',
   },
   /** surface-negative-minor · active — negative в выделении */
@@ -358,7 +358,7 @@ export const TABLE_STATE_COLORS = {
     dark: '#3F263C',
     betaCoreLight: '#DFD5DE',
     betaCoreDark: '#3A2639',
-    highContrastLight: '#E2D6E3', // временно: в теме нет светлого статусного токена, взят цвет светлой темы
+    highContrastLight: '#E2D6E3', // временно: в исходных цветах палитры нет светлого статусного токена, взят цвет светлой темы
     highContrastDark: '#3F263C',
   },
   /** surface-negative-minor · hoverActive — negative в выделении под курсором */
@@ -367,7 +367,7 @@ export const TABLE_STATE_COLORS = {
     dark: '#482C45',
     betaCoreLight: '#D8CCD7',
     betaCoreDark: '#432C42',
-    highContrastLight: '#DCCDDD', // временно: в теме нет светлого статусного токена, взят цвет светлой темы
+    highContrastLight: '#DCCDDD', // временно: в исходных цветах палитры нет светлого статусного токена, взят цвет светлой темы
     highContrastDark: '#482C45',
   },
   /** surface-negative-minor · hover2 — negative в выбранной строке под курсором */
@@ -376,7 +376,7 @@ export const TABLE_STATE_COLORS = {
     dark: '#62151B',
     betaCoreLight: '#FCCBCA',
     betaCoreDark: '#601119',
-    highContrastLight: '#FDCCD1', // временно: в теме нет светлого статусного токена, взят цвет светлой темы
+    highContrastLight: '#FDCCD1', // временно: в исходных цветах палитры нет светлого статусного токена, взят цвет светлой темы
     highContrastDark: '#62151B',
   },
   /** surface-transparent-warning · rest — ячейка со статусом warning */
@@ -430,7 +430,7 @@ export const TABLE_STATE_COLORS = {
     dark: '#0C283B',
     betaCoreLight: '#D3EBFF',
     betaCoreDark: '#09283D',
-    highContrastLight: '#CFECFF', // временно: в теме нет светлого статусного токена, взят цвет светлой темы
+    highContrastLight: '#CFECFF', // временно: в исходных цветах палитры нет светлого статусного токена, взят цвет светлой темы
     highContrastDark: '#0C283B',
   },
   /** surface-info-minor · hover — info под курсором */
@@ -439,7 +439,7 @@ export const TABLE_STATE_COLORS = {
     dark: '#103045',
     betaCoreLight: '#C5E5FF',
     betaCoreDark: '#0C3048',
-    highContrastLight: '#C0E6FF', // временно: в теме нет светлого статусного токена, взят цвет светлой темы
+    highContrastLight: '#C0E6FF', // временно: в исходных цветах палитры нет светлого статусного токена, взят цвет светлой темы
     highContrastDark: '#103045',
   },
   /** surface-info-minor · active — info в выделении */
@@ -448,7 +448,7 @@ export const TABLE_STATE_COLORS = {
     dark: '#0D3C5C',
     betaCoreLight: '#B9E0FB',
     betaCoreDark: '#073D5C',
-    highContrastLight: '#B8E0FB', // временно: в теме нет светлого статусного токена, взят цвет светлой темы
+    highContrastLight: '#B8E0FB', // временно: в исходных цветах палитры нет светлого статусного токена, взят цвет светлой темы
     highContrastDark: '#0D3C5C',
   },
   /** surface-info-minor · hoverActive — info в выделении под курсором */
@@ -457,7 +457,7 @@ export const TABLE_STATE_COLORS = {
     dark: '#104467',
     betaCoreLight: '#ABDAFA',
     betaCoreDark: '#094567',
-    highContrastLight: '#AADAFA', // временно: в теме нет светлого статусного токена, взят цвет светлой темы
+    highContrastLight: '#AADAFA', // временно: в исходных цветах палитры нет светлого статусного токена, взят цвет светлой темы
     highContrastDark: '#104467',
   },
   /** surface-info-minor · hover2 — info в выбранной строке под курсором */
@@ -466,7 +466,7 @@ export const TABLE_STATE_COLORS = {
     dark: '#14384F',
     betaCoreLight: '#B7DFFF',
     betaCoreDark: '#0F3853',
-    highContrastLight: '#B1E0FF', // временно: в теме нет светлого статусного токена, взят цвет светлой темы
+    highContrastLight: '#B1E0FF', // временно: в исходных цветах палитры нет светлого статусного токена, взят цвет светлой темы
     highContrastDark: '#14384F',
   },
   /** text-primary · rest — текст ячеек */
@@ -556,7 +556,7 @@ export const TABLE_STATE_COLORS = {
     dark: '#060A0C',
     betaCoreLight: '#F3F7FA',
     betaCoreDark: '#060A0D',
-    highContrastLight: '#F2F5F8', // временно: в теме нет background-primary, взят цвет светлой темы
+    highContrastLight: '#F2F5F8', // временно: в исходных цветах палитры нет background-primary, взят цвет светлой темы
     highContrastDark: '#060A0C',
   },
 } as const;

@@ -78,7 +78,7 @@ type TempFillGroup = {
 const TEMP_FILLS: TempFillGroup[] = [
   {
     // data-yellow-light: в теме 0.79.1 ошибочно amber-150 #FFE4AE, решение дизайнера — amber-100.
-    // В beta-темах токена нет, временные Amber/100 и Amber/950 (запрошены у владельцев темы).
+    // В beta-темах токена нет, временные Amber/100 и Amber/950 (запрос атомарной команде через дизайн).
     // В HC токена нет — текущее ручное значение таблицы.
     keys: {
       rest: 'bgEditableCell',
@@ -149,27 +149,29 @@ TEMP_FILLS.forEach((group) => {
 
 // ─── Статические подстановки для одиночных ключей ───
 
-// В high contrast light нет surface-solid-primary — серого цвета, который
-// задаёт направление hover для белого фона. Без него hover белой строки не
+// В исходных цветах палитры для high contrast light нет surface-solid-primary
+// (в теме SDDS он уже есть — ждём обновления палитры у дизайнера) — серого
+// цвета, который задаёт направление hover для белого фона. Без него hover белой строки не
 // посчитать, поэтому оставлено прежнее значение таблицы.
 byTableKey.bgRowHovered.highContrastLight = '#E8EEF2';
 note(
   'bgRowHovered',
   'highContrastLight',
-  'временно: в теме нет surface-solid-primary, по которому считается hover белого фона; оставлено прежнее значение таблицы',
+  'временно: в исходных цветах палитры нет surface-solid-primary, по которому считается hover белого фона; оставлено прежнее значение таблицы',
 );
 
-// В high contrast light нет background-primary → цвет затухания на сером
-// фоне берём из светлой темы.
+// В исходных цветах палитры для high contrast light нет background-primary →
+// цвет затухания на сером фоне берём из светлой темы.
 byTableKey.fadeGray.highContrastLight = byTableKey.fadeGray.light;
 note(
   'fadeGray',
   'highContrastLight',
-  'временно: в теме нет background-primary, взят цвет светлой темы',
+  'временно: в исходных цветах палитры нет background-primary, взят цвет светлой темы',
 );
 
-// В high contrast light нет surface-negative-minor и surface-info-minor →
-// цвета статусных ячеек negative/info берём из светлой темы.
+// В исходных цветах палитры для high contrast light нет surface-negative-minor
+// и surface-info-minor → цвета статусных ячеек negative/info берём из
+// светлой темы.
 [
   'bgCellNegative',
   'bgCellNegativeHovered',
@@ -187,7 +189,7 @@ note(
   note(
     key,
     'highContrastLight',
-    'временно: в теме нет светлого статусного токена, взят цвет светлой темы',
+    'временно: в исходных цветах палитры нет светлого статусного токена, взят цвет светлой темы',
   );
 });
 

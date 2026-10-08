@@ -9,8 +9,10 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "skipLibCheck": true,
+    // check-sdds-sources.ts импортирует JS-модули генератора содержимого.
+    "allowJs": true,
     "noEmit": true,
     "types": ["vitest/globals", "node"]
   },
-  "include": ["code/**/*.ts", "emit-table-colors.ts"]
+  "include": ["code/**/*.ts", "emit-table-colors.ts", "check-sdds-sources.ts"]
 }
