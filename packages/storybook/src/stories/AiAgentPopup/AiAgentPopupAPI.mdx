@@ -93,7 +93,7 @@ import { TypeSourceViewer } from '@df-storybook/utils/TypeSourceViewer';
 />
 > Левая панель окна: полоса иконок-разделов. Открытый раздел задаётся `activeKey`
 (управляемо) или `defaultActiveKey`; смена приходит в `onActiveKeyChange` (ключ раздела
-или `null` при закрытии). Доступна в `AiAgentPopup` и в `AiAgentSurface`.
+или `null` при закрытии).
 
 ## AiAgentLeftPanelItem
 
@@ -105,25 +105,3 @@ import { TypeSourceViewer } from '@df-storybook/utils/TypeSourceViewer';
 > Один раздел левой панели: `icon` в полосе, `title` и `content` в раскрытом разделе.
 Шапку с иконкой, заголовком и крестиком компонент рисует сам; наполнение раздела
 под шапкой задаёт потребитель.
-
-## AiAgentSurfaceProps
-
-<TypeSourceViewer
-  language="ts"
-  filePath="packages/ui-kit/src/components/AiAgentPopup/AiAgentPopup.types.ts"
-  typeName="AiAgentSurfaceProps"
-/>
-> Оболочка окна (рамка, тень, карточка) отдельным компонентом: для встраивания чата
-в лэйаут страницы без попапа, перетаскивания и ресайза. `AiAgentPopup` использует
-её внутри себя сам.
-
-## AiAgentSurfaceVariant
-
-<TypeSourceViewer
-  language="ts"
-  filePath="packages/ui-kit/src/components/AiAgentPopup/AiAgentPopup.types.ts"
-  typeName="AiAgentSurfaceVariant"
-/>
-> В варианте `embedded` рамка входит в блочную модель, и отступы лэйаута считаются
-от светящегося края; вариант `floating` рисует рамку наружу от карточки и используется
-самим окном.

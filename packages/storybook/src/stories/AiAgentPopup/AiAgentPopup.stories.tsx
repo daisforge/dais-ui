@@ -3,11 +3,7 @@
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
 import type { Meta, StoryObj } from '@storybook/react';
 import type { AiAgentLeftPanelItem } from '@ui-kit/components/AiAgentPopup';
-import {
-  AiAgentInput,
-  AiAgentPopup,
-  AiAgentSurface,
-} from '@ui-kit/components/AiAgentPopup';
+import { AiAgentInput, AiAgentPopup } from '@ui-kit/components/AiAgentPopup';
 import { IconButton } from '@ui-kit/components/IconButton';
 import { PopupProvider } from '@ui-kit/components/Popup';
 import { SSRProvider } from '@ui-kit/components/SSRProvider';
@@ -16,12 +12,11 @@ import { br, s } from '@ui-kit/constants';
 import {
   IconCalendarEventOutline,
   IconCatalogOutline,
-  IconChevronLeft,
   IconClose,
   IconDoneCircleOutline,
   IconHistory,
   IconMessageAddOutline,
-  IconPanelSidebarLOutline,
+  IconSearchAIOutline,
   IconSendOutline,
 } from '@ui-kit/icons';
 import {
@@ -30,7 +25,6 @@ import {
   surfaceTransparentSecondary,
   textAccentGradient,
   textInfo,
-  textNegative,
   textPrimary,
 } from '@ui-kit/tokens';
 import React, { useLayoutEffect, useRef, useState } from 'react';
@@ -43,7 +37,6 @@ const preCode = `import { useLayoutEffect, useRef, useState } from 'react';
 import {
   AiAgentInput,
   AiAgentPopup,
-  AiAgentSurface,
   IconButton,
   PopupProvider,
   SSRProvider,
@@ -51,25 +44,23 @@ import {
   surfaceTransparentSecondary,
   textAccentGradient,
   textInfo,
-  textNegative,
   textPrimary,
   Typography,
 } from '@daisforge/ui';
 import {
   IconCalendarEventOutline,
   IconCatalogOutline,
-  IconChevronLeft,
   IconClose,
   IconDoneCircleOutline,
   IconHistory,
   IconMessageAddOutline,
-  IconPanelSidebarLOutline,
+  IconSearchAIOutline,
   IconSendOutline,
 } from '@daisforge/ui/icons';
 
 // Весь контент окна на стороне потребителя, ниже один из вариантов сборки.
 // Состояние чата и открытый раздел левой панели держим снаружи окна:
-// контент переезжает между окном и панелью лэйаута без потерь.
+// закрытие окна размонтирует контент, а состояние снаружи это переживает.
 
 // Левый сайдбар страницы с кнопкой AI-помощника: окно откроется справа
 // от неё, targetRef висит на обёртке кнопки
@@ -116,6 +107,16 @@ const chatHeaderStyle = {
   justifyContent: 'space-between',
 };
 
+// Иконка у заголовка не кликается, но стоит в том же квадрате 40x40,
+// что и кнопки шапки
+const chatTitleIconStyle = {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  width: '40px',
+  height: '40px',
+};
+
 const chatMessagesStyle = {
   flex: '1 1 auto',
   minHeight: 0,
@@ -123,7 +124,7 @@ const chatMessagesStyle = {
   display: 'flex',
   flexDirection: 'column',
   gap: '8px',
-  marginTop: '8px',
+  marginTop: '12px',
 };
 
 const chatBubbleStyle = {
@@ -139,23 +140,19 @@ const systemMessageStyle = {
   color: textInfo,
 };
 
-// Кнопки не начинают перетаскивание, по ним работают обычные клики.
-// Кнопка с иконкой панели переносит чат между окном и панелью лэйаута
-function ChatHeader({ onClose, onTogglePanel }) {
+// Кнопки не начинают перетаскивание, по ним работают обычные клики
+function ChatHeader({ onClose }) {
   return (
     <div style={chatHeaderStyle}>
       <div style={{ display: 'flex', alignItems: 'center' }}>
-        <IconButton size="s" view="clear">
-          <IconChevronLeft size="s" />
-        </IconButton>
+        <span style={chatTitleIconStyle}>
+          <IconSearchAIOutline size="s" color={textAccentGradient} />
+        </span>
         <Typography variant="BodyM" bold>
-          Тема диалога
+          AI-Chat
         </Typography>
       </div>
       <div style={{ display: 'flex', alignItems: 'center' }}>
-        <IconButton size="s" view="clear" onClick={onTogglePanel}>
-          <IconPanelSidebarLOutline size="s" />
-        </IconButton>
         <IconButton size="s" view="clear">
           <IconMessageAddOutline size="s" />
         </IconButton>
@@ -173,11 +170,10 @@ function ChatContent({
   onDraftChange,
   onSend,
   onClose,
-  onTogglePanel,
 }) {
   return (
     <>
-      <ChatHeader onClose={onClose} onTogglePanel={onTogglePanel} />
+      <ChatHeader onClose={onClose} />
       <div style={chatMessagesStyle}>
         {messages.map((message, index) => (
           <Typography
@@ -217,20 +213,12 @@ const sectionBodyStyle = {
   overflow: 'auto',
 };
 
-const indicatorDotStyle = {
-  display: 'block',
-  width: '6px',
-  height: '6px',
-  borderRadius: '50%',
-  background: textNegative,
-};
 
 // Разделы левой панели окна: иконка в полосе, заголовок и контент раздела
 const leftPanelItems = [
   {
     key: 'history',
     icon: <IconHistory size="s" />,
-    indicator: <span style={indicatorDotStyle} />,
     title: 'История',
     content: (
       <div style={sectionBodyStyle}>
@@ -267,8 +255,6 @@ function Example() {
   const sidebarRef = useRef(null);
   const targetRef = useRef(null);
   const sidebarWidth = useSidebarWidth(sidebarRef);
-  // где сейчас живёт чат: в окне или в панели лэйаута
-  const [view, setView] = useState('popup');
   const [opened, setOpened] = useState(false);
   // открытый раздел левой панели; null — видна полоса иконок
   const [activeSection, setActiveSection] = useState(null);
@@ -284,30 +270,6 @@ function Example() {
     setDraft('');
   };
 
-  const leftPanel = {
-    items: leftPanelItems,
-    activeKey: activeSection,
-    onActiveKeyChange: setActiveSection,
-  };
-
-  const chat = (
-    <ChatContent
-      messages={messages}
-      draft={draft}
-      onDraftChange={setDraft}
-      onSend={send}
-      onClose={() => {
-        setView('popup');
-        setOpened(false);
-      }}
-      onTogglePanel={() => setView(view === 'popup' ? 'panel' : 'popup')}
-    />
-  );
-
-  // В лэйауте ширину панели задаёт страница: с открытым разделом панель
-  // шире на 252 (раздел 300 вместо полосы иконок 48), чат не сужается
-  const panelWidth = activeSection ? 612 : 360;
-
   // SSRProvider и PopupProvider обычно уже подключены на уровне приложения
   return (
     <SSRProvider>
@@ -318,39 +280,25 @@ function Example() {
             targetRef={targetRef}
             onToggle={() => setOpened(!opened)}
           />
-          {/* Панель лэйаута с чатом выезжает правее сайдбара: её ширина
-              анимируется. Рамка AiAgentSurface здесь входит в блочную модель */}
-          <div
-            style={{
-              width: view === 'panel' ? panelWidth : 0,
-              overflow: 'hidden',
-              transition: 'width 0.3s ease',
-              flex: 'none',
-            }}
-          >
-            <div
-              style={{
-                width: panelWidth,
-                height: '100%',
-                padding: '8px',
-                boxSizing: 'border-box',
-                transition: 'width 0.3s ease',
-              }}
-            >
-              <AiAgentSurface leftPanel={leftPanel} style={{ height: '100%' }}>
-                {view === 'panel' ? chat : null}
-              </AiAgentSurface>
-            </div>
-          </div>
         </div>
 
         <AiAgentPopup
-          opened={view === 'popup' && opened}
+          opened={opened}
           targetRef={targetRef}
-          leftPanel={leftPanel}
+          leftPanel={{
+            items: leftPanelItems,
+            activeKey: activeSection,
+            onActiveKeyChange: setActiveSection,
+          }}
 ${popupProps}
         >
-          {view === 'popup' ? chat : null}
+          <ChatContent
+            messages={messages}
+            draft={draft}
+            onDraftChange={setDraft}
+            onSend={send}
+            onClose={() => setOpened(false)}
+          />
         </AiAgentPopup>
       </PopupProvider>
     </SSRProvider>
@@ -477,6 +425,16 @@ const chatHeaderGroupStyle: React.CSSProperties = {
   alignItems: 'center',
 };
 
+// Иконка у заголовка не кликается, но стоит в том же квадрате 40x40,
+// что и кнопки шапки
+const chatTitleIconStyle: React.CSSProperties = {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  width: 40,
+  height: 40,
+};
+
 const chatMessagesStyle: React.CSSProperties = {
   flex: '1 1 auto',
   minHeight: 0,
@@ -484,7 +442,7 @@ const chatMessagesStyle: React.CSSProperties = {
   display: 'flex',
   flexDirection: 'column',
   gap: '8px',
-  marginTop: '8px',
+  marginTop: '12px',
 };
 
 const chatBubbleStyle: React.CSSProperties = {
@@ -510,14 +468,6 @@ const sectionBodyStyle: React.CSSProperties = {
   overflow: 'auto',
 };
 
-const indicatorDotStyle: React.CSSProperties = {
-  display: 'block',
-  width: 6,
-  height: 6,
-  borderRadius: '50%',
-  background: textNegative,
-};
-
 type ChatMessage = { text: string; system?: boolean };
 
 const initialMessages: ChatMessage[] = [
@@ -534,10 +484,7 @@ const initialMessages: ChatMessage[] = [
     text: 'Иконки слева в окне открывают разделы: история, задачи, календарь. Из раздела назад к иконкам ведёт крестик.',
   },
   {
-    text: 'Кнопка с иконкой панели в шапке переносит чат в панель лэйаута и обратно, переписка и открытый раздел сохраняются.',
-  },
-  {
-    text: 'Поле ввода авторастёт: набери несколько строк через Shift+Enter, свечение поднимется вслед за кромкой поля.',
+    text: 'Поле ввода авторастёт: набери несколько строк через Shift+Enter, свечение поднимется вместе с верхним краем поля.',
   },
   {
     text: 'Закрытие окна размонтирует контент, поэтому в реальном чате состояние держат снаружи.',
@@ -549,7 +496,6 @@ const leftPanelItems: AiAgentLeftPanelItem[] = [
   {
     key: 'history',
     icon: <IconHistory size="s" />,
-    indicator: <span style={indicatorDotStyle} />,
     title: 'История',
     content: (
       <div style={sectionBodyStyle}>
@@ -583,29 +529,21 @@ const leftPanelItems: AiAgentLeftPanelItem[] = [
   },
 ];
 
-// Шапка окна по макету: стрелка назад с темой диалога слева, кнопки-иконки
-// справа. Кнопка с иконкой панели переносит чат, крестик закрывает окно
-function ChatHeader({
-  onClose,
-  onTogglePanel,
-}: {
-  onClose: () => void;
-  onTogglePanel: () => void;
-}) {
+// Шапка окна по макету: иконка AI и заголовок AI-Chat слева, кнопки-иконки
+// справа, крестик закрывает окно
+function ChatHeader({ onClose }: { onClose: () => void }) {
   return (
     <div style={chatHeaderStyle}>
       <div style={chatHeaderGroupStyle}>
-        <IconButton size="s" view="clear">
-          <IconChevronLeft size="s" />
-        </IconButton>
+        <span style={chatTitleIconStyle}>
+          {/* плазма-иконки умеют градиент в color: рисуют её маской */}
+          <IconSearchAIOutline size="s" color={textAccentGradient} />
+        </span>
         <Typography variant="BodyM" bold>
-          Тема диалога
+          AI-Chat
         </Typography>
       </div>
       <div style={chatHeaderGroupStyle}>
-        <IconButton size="s" view="clear" onClick={onTogglePanel}>
-          <IconPanelSidebarLOutline size="s" />
-        </IconButton>
         <IconButton size="s" view="clear">
           <IconMessageAddOutline size="s" />
         </IconButton>
@@ -617,8 +555,8 @@ function ChatHeader({
   );
 }
 
-// Контент чата со стейтом снаружи: один и тот же компонент рендерится
-// и в окне, и в панели лэйаута, состояние при переносе не теряется
+// Контент чата со стейтом снаружи: закрытие окна размонтирует контент,
+// а переписка и черновик живут в примере и не теряются
 function ChatContent({
   messages,
   draft,
@@ -626,7 +564,6 @@ function ChatContent({
   onDraftChange,
   onSend,
   onClose,
-  onTogglePanel,
 }: {
   messages: ChatMessage[];
   draft: string;
@@ -634,11 +571,10 @@ function ChatContent({
   onDraftChange: (draft: string) => void;
   onSend: () => void;
   onClose: () => void;
-  onTogglePanel: () => void;
 }) {
   return (
     <>
-      <ChatHeader onClose={onClose} onTogglePanel={onTogglePanel} />
+      <ChatHeader onClose={onClose} />
       {/* data-no-drag стоит точечно на сообщениях: их текст выделяется, а за
           просветы между ними и остальные свободные места окно перетаскивается */}
       <div style={chatMessagesStyle}>
@@ -711,15 +647,9 @@ function useSidebarWidth(ref: React.RefObject<HTMLElement>) {
   return width;
 }
 
-// Ширина панели лэйаута: задаёт страница. С открытым разделом панель шире
-// на 252 (раздел 300 вместо полосы иконок 48), чат внутри не сужается
-const PANEL_WIDTH = 360;
-const PANEL_WIDTH_WITH_SECTION = 612;
-
-// Один пример на всё: окно с левой панелью разделов, сайдбар с кнопкой
-// открытия и перенос чата в панель лэйаута. Пропсы окна приходят снаружи
-// (в Playground из контролов), left в dragBoundary отсчитывается от
-// правого края сайдбара
+// Один пример на всё: окно с левой панелью разделов и сайдбар с кнопкой
+// открытия. Пропсы окна приходят снаружи (в Playground из контролов),
+// left в dragBoundary отсчитывается от правого края сайдбара
 function AiAgentExample({
   fullHeight,
   glow,
@@ -730,7 +660,6 @@ function AiAgentExample({
   const targetRef = useRef<HTMLSpanElement>(null);
   const frameRef = useRef<HTMLDivElement>(null);
   const sidebarWidth = useSidebarWidth(sidebarRef);
-  const [view, setView] = useState<'popup' | 'panel'>('popup');
   const [opened, setOpened] = useState(true);
   const [activeSection, setActiveSection] = useState<string | null>(null);
   const [messages, setMessages] = useState(initialMessages);
@@ -741,29 +670,6 @@ function AiAgentExample({
     setMessages((prev) => [...prev, { text: draft.trim() }]);
     setDraft('');
   };
-
-  const leftPanel = {
-    items: leftPanelItems,
-    activeKey: activeSection,
-    onActiveKeyChange: setActiveSection,
-  };
-
-  const chat = (
-    <ChatContent
-      messages={messages}
-      draft={draft}
-      glow={glow}
-      onDraftChange={setDraft}
-      onSend={sendDraft}
-      onClose={() => {
-        setView('popup');
-        setOpened(false);
-      }}
-      onTogglePanel={() => setView(view === 'popup' ? 'panel' : 'popup')}
-    />
-  );
-
-  const panelWidth = activeSection ? PANEL_WIDTH_WITH_SECTION : PANEL_WIDTH;
 
   // frame здесь нужен только для стори: он изолирует окно в рамках примера,
   // чтобы примеры на странице документации не мешали друг другу.
@@ -780,37 +686,19 @@ function AiAgentExample({
             targetRef={targetRef}
             onToggle={() => setOpened(!opened)}
           />
-          <div
-            style={{
-              width: view === 'panel' ? panelWidth : 0,
-              overflow: 'hidden',
-              transition: 'width 0.3s ease',
-              flex: 'none',
-            }}
-          >
-            <div
-              style={{
-                width: panelWidth,
-                height: '100%',
-                padding: 8,
-                boxSizing: 'border-box',
-                transition: 'width 0.3s ease',
-              }}
-            >
-              <AiAgentSurface leftPanel={leftPanel} style={{ height: '100%' }}>
-                {view === 'panel' ? chat : null}
-              </AiAgentSurface>
-            </div>
-          </div>
           <AiAgentPopup
             // Пока окно не умеет само расширяться при открытии раздела,
             // стартуем шире размера по умолчанию
             defaultSize={{ width: 680, height: 540 }}
             {...popupArgs}
-            opened={view === 'popup' && opened}
+            opened={opened}
             targetRef={targetRef}
             frame={frameRef}
-            leftPanel={leftPanel}
+            leftPanel={{
+              items: leftPanelItems,
+              activeKey: activeSection,
+              onActiveKeyChange: setActiveSection,
+            }}
             dragBoundary={{
               top: 8,
               right: 8,
@@ -819,7 +707,14 @@ function AiAgentExample({
               left: sidebarWidth + (dragBoundary?.left ?? 0),
             }}
           >
-            {view === 'popup' ? chat : null}
+            <ChatContent
+              messages={messages}
+              draft={draft}
+              glow={glow}
+              onDraftChange={setDraft}
+              onSend={sendDraft}
+              onClose={() => setOpened(false)}
+            />
           </AiAgentPopup>
         </div>
       </PopupProvider>
