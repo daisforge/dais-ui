@@ -88,8 +88,9 @@ export function useColumnRowHighlightRegions({
 
     // Колонки: заливка поколоночно + объединённая обводка блоков.
     if (hasColumns) {
-      // Service-зона (нумерация/чекбокс) затемняется как при нативном selecting:
-      // выделенная колонка покрывает ВСЕ строки → темнеет вся service-зона.
+      // Служебные колонки (нумерация, чекбокс) темнеют так же, как при
+      // обычном выделении мышью. Выделенная колонка занимает все строки,
+      // поэтому темнеют служебные колонки всех строк.
       if (firstDataCol > 0) {
         regions.push({
           color: theme.selectionServiceActiveBg,
@@ -97,8 +98,9 @@ export function useColumnRowHighlightRegions({
           style: 'no-outline' as const,
         });
       }
-      // 'accent': заливка берёт accentLight из per-cell темы — ячейки со своим
-      // цветом (редактируемые/статусные) показывают свой active-вариант.
+      // Стиль 'accent' (наша доработка форка): цвет заливки берётся не из
+      // региона, а из accentLight темы каждой ячейки. Так жёлтые и статусные
+      // ячейки показывают свой цвет «в выделении», а не общий синий.
       for (const colInd of selectedColumnIndexes) {
         regions.push({
           color: theme.selectionActiveBg,
@@ -115,8 +117,8 @@ export function useColumnRowHighlightRegions({
     }
 
     // Строки: заливка по данным построчно + объединённая обводка блоков строк.
-    // Сервисные колонки (нумерация) в заливку/рамку не входят (x = firstDataCol),
-    // но саму нумерацию выделенных строк затемняем как при нативном selecting.
+    // Служебные колонки (нумерация) в заливку и рамку не входят
+    // (x = firstDataCol), но темнеют так же, как при обычном выделении мышью.
     if (hasRows && dataWidth > 0) {
       if (firstDataCol > 0) {
         for (const rowInd of headerSelectedRowIndexes) {
@@ -142,17 +144,17 @@ export function useColumnRowHighlightRegions({
       }));
     }
 
-    // Подсветку строки (highlightActiveType='row') регионы НЕ рисуют:
-    // выбранная строка — не выделение, наложения нет. Её фон отдаёт row-тема
-    // (getRowThemeOverride в TableGlide.tsx), цветные ячейки — per-cell тема
-    // (cell-fill-override: hover/hover2).
+    // Выбранную строку (highlightActiveType='row') здесь НЕ рисуем: это не
+    // выделение, поверх неё ничего не накладывается. Её фон задаёт тема
+    // строки (getRowThemeOverride в TableGlide.tsx), фон цветных ячеек —
+    // тема самой ячейки (theming/cell-fill-override.ts).
 
-    // Диапазоны rangeStack (multi-range-cell). Свою обводку НЕ рисуем: рамку
-    // ставит glide только вокруг активного current.range, а накопленные Ctrl-
-    // ячейки показываем заливкой (её красит glide) + затемнением нумерации, как
-    // у выделения строк. Так нет швов между смежными ячейками и «залипших» рамок
-    // при поглощении диапазоном. Собираем только покрытые строки для затемнения
-    // левой service-зоны (нумерации).
+    // Несколько диапазонов, выбранных с Ctrl (rangeStack): здесь только
+    // затемняем нумерацию их строк.
+    // Подробнее: рамку glide рисует только вокруг последнего диапазона, а
+    // заливку прежних красит сам. Свою рамку не добавляем — иначе между
+    // соседними ячейками видны швы, а рамка остаётся, когда новый диапазон
+    // поглощает старый.
     if (hasRangeStack && selectionRangeStack && firstDataCol > 0) {
       const coveredRows = new Set<number>();
       for (const rect of selectionRangeStack) {

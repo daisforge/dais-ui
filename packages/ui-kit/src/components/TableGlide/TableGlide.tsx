@@ -727,12 +727,13 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
             )
           : undefined;
 
-      // Активная ячейка выбранной строки при одиночном выделении: от
-      // выделения остаётся только рамка accentColor, без тонирования — ячейка
-      // живёт на фоне своей строки. Glide тонирует одиночную выбранную ячейку
-      // её accentLight — гасим бленд, подставляя в accentLight фон самой
-      // ячейки (бленд непрозрачного hex — no-op). Настоящие диапазоны
-      // (>1 ячейки) не трогаем: пересечение с выбранной строкой = выделение.
+      // Кликнутая ячейка на выбранной строке: показываем только рамку, фон
+      // остаётся как у строки (правило дизайнера).
+      // Подробнее: glide красит выделенную ячейку цветом accentLight из её
+      // темы. Кладём в accentLight тот же цвет, что и фон ячейки, — заливка
+      // выделения становится невидимой (непрозрачный цвет glide не смешивает,
+      // а просто подставляет). Работает только для одной выделенной ячейки:
+      // если выделено больше, пересечение со строкой красится как выделение.
       const { soloDataCell } = selectionVisualState;
       const soloActiveCellOverride =
         fillContext.rowActive &&
@@ -1490,11 +1491,12 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       // горизонтальном скролле эта заливка наедет на итоговую строку и
       // перекроет её текст.
 
-      // Выбранная строка (highlightActiveType='row') — НЕ выделение,
-      // наложения нет: фон идёт лестницей resolveActiveRowBg (rest → hover,
-      // нажатый чекбокс добавляет ступень). accentLight — на случай
-      // пересечения с реальным выделением: в пересечении показывается
-      // выделение, как на отмеченной строке.
+      // Выбранная строка (highlightActiveType='row'): светло-голубой фон,
+      // под курсором и с нажатым чекбоксом — на ступень темнее.
+      // Подробнее: это не выделение, поверх ничего не накладывается. Фон
+      // выбирает resolveActiveRowBg (theming/cell-fill-override.ts).
+      // accentLight нужен на случай, когда выделение мышью заходит на эту
+      // строку: там ячейки красятся как выделение отмеченной строки.
       if (rowInd === activeRow) {
         const hovered = rowInd === hoveredRow;
         return {
@@ -1508,10 +1510,10 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         };
       }
 
-      // Базовый слой: checkbox-selected строки получают общий фон,
-      // а active-state сверху дорисовывается через highlightRegions.
-      // Под курсором checkbox-строка темнеет ЦЕЛИКОМ (bgSelectedRowHovered,
-      // как hover шапки) — серый hover данных к ней не применяется.
+      // Строка, отмеченная чекбоксом: свой фон, под курсором — темнее.
+      // Подробнее: под курсором строка темнеет целиком (bgSelectedRowHovered),
+      // обычный серый фон строки под курсором к ней не применяется.
+      // accentLight — цвет её ячеек, когда они попадают в выделение.
       if (checkboxSelectedRowIndexes?.has(rowInd)) {
         const hovered = rowInd === hoveredRow;
         return {
@@ -1522,8 +1524,9 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         };
       }
 
-      // Hover-подсветка — самый нижний слой: селектинг и highlightActiveType
-      // рисуются поверх (highlightRegions) и визуально перекрывают её.
+      // Обычная строка под курсором: серый фон.
+      // Подробнее: accentLight — цвет её ячеек в выделении под курсором
+      // (на ступень темнее обычного выделения).
       if (rowInd === hoveredRow) {
         return { bgCell: hoverBg, accentLight: theme.selectionActiveHoveredBg };
       }
