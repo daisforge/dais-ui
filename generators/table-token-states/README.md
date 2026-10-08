@@ -150,7 +150,7 @@ rest/hover-hex, а в per-cell тему кладётся `accentLight` = active/
 
 - `emit-table-colors.ts` — выпуск палитры (описан выше);
 - `INTEGRATION-STATUS.md` — статус интеграции и открытые вопросы к дизайнеру;
-- `BACKLOG.md` — отдельные задачи, сознательно не вошедшие в ветку палитры;
+- `BACKLOG.md` — отдельные задачи, сознательно не вошедшие в интеграцию палитры;
 - `tsconfig.json` — локальный, со смягчёнными флагами: строгие флаги
   репозитория (`noUncheckedIndexedAccess` и др.) ломают код дизайнера, а
   подгонять его нельзя — файлы заменяются 1-в-1 при обновлениях. По той же
@@ -196,4 +196,4 @@ npm run table-colors:format         # prettier: эта папка + ../table-con
   `packages/ui-kit/src/components/TableGlide/theming/fill-states.ts` —
   менять только синхронно с `code/table-token-states.ts`, защищено тестом.
 - Текущие нерешённые вопросы — `INTEGRATION-STATUS.md`; задачи после
-  ветки — `BACKLOG.md`.
+  интеграции палитры — `BACKLOG.md`.
