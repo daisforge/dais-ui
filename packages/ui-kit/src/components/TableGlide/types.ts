@@ -350,6 +350,8 @@ export type TableGlideCustomProps<
   hideGrid?: boolean;
   /** DOM-узел content-state (empty/error), рендерится как прямой child контейнера. */
   contentStateNode?: ReactNode;
+  /** Дополнительный контент wrapper-div, не зависящий от готовности canvas-grid. */
+  containerSlot?: ReactNode;
   /** Флаг fullscreen - пересканирование DOM при переключении */
   fullScreened?: boolean;
   /** Переносит editor overlay внутрь контейнера (вместо document.body). Для модалок с CSS transform. */

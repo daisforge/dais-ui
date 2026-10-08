@@ -65,15 +65,15 @@ const emitResize = (target: Element, height: number, width = 1000) => {
     contentRect: {
       x: 0,
       y: 0,
-      width,
-      height,
+      width: Math.max(0, width - 10),
+      height: Math.max(0, height - 9),
       top: 0,
       right: width,
       bottom: height,
       left: 0,
       toJSON: () => ({}),
     },
-    borderBoxSize: [],
+    borderBoxSize: [{ blockSize: height, inlineSize: width }],
     contentBoxSize: [],
     devicePixelContentBoxSize: [],
   };
@@ -96,16 +96,18 @@ describe('pagination collapse without remounting', () => {
       perPage: 10,
       responsiveSlots: true,
       setPaginationHeight,
+      enableCollapse: true,
     };
     const { container, rerender } = render(<TablePagination {...props} />);
     const root = container.firstElementChild as HTMLDivElement;
     const controls = screen.getByTestId('pagination-controls');
     const input = screen.getByRole('textbox') as HTMLInputElement;
-    expect(observer.observe).toHaveBeenCalledWith(root);
+    const naturalBlock = controls.parentElement as HTMLDivElement;
+    expect(observer.observe).toHaveBeenCalledWith(naturalBlock);
     expect(controls.parentElement?.parentElement).toBe(root);
     expect(root.hasAttribute('inert')).toBe(false);
 
-    emitResize(root, 56);
+    emitResize(naturalBlock, 56);
     expect(setPaginationHeight.mock.calls).toEqual([[56]]);
     fireEvent.change(input, { target: { value: 'unsent page draft' } });
     const slotsBeforeCollapse = controls.getAttribute('data-slots');
@@ -118,10 +120,10 @@ describe('pagination collapse without remounting', () => {
     expect(input.value).toBe('unsent page draft');
     expect(input.closest('[aria-hidden="true"][inert]')).toBe(root);
     expect(screen.queryByRole('textbox')).toBeNull();
-    expect(root.style.maxHeight).toBe('0');
+    expect(root.style.height).toBe('0px');
     expect(root.style.display).not.toBe('none');
 
-    emitResize(root, 0);
+    emitResize(naturalBlock, 0);
     expect(setPaginationHeight.mock.calls).toEqual([[56]]);
     expect(controls.getAttribute('data-slots')).toBe(slotsBeforeCollapse);
     rerender(<TablePagination {...props} isCollapsed={false} />);
@@ -129,24 +131,34 @@ describe('pagination collapse without remounting', () => {
     expect(input.value).toBe('unsent page draft');
     expect(root.hasAttribute('inert')).toBe(false);
     expect(root.getAttribute('aria-hidden')).toBe('false');
-    expect(root.style.maxHeight).toBe('');
+    expect(root.style.height).toBe('56px');
     expect(observer.observe).toHaveBeenCalledOnce();
 
-    emitResize(root, 64);
+    emitResize(naturalBlock, 64);
     expect(setPaginationHeight.mock.calls).toEqual([[56], [64]]);
   });
 
   it('keeps the initial height fallback when mounted collapsed and measures on expansion', () => {
     const setPaginationHeight = vi.fn();
     const { container, rerender, unmount } = render(
-      <TablePagination setPaginationHeight={setPaginationHeight} isCollapsed />,
+      <TablePagination
+        setPaginationHeight={setPaginationHeight}
+        isCollapsed
+        enableCollapse
+      />,
     );
     const root = container.firstElementChild as HTMLDivElement;
-    emitResize(root, 0);
+    const naturalBlock = root.firstElementChild as HTMLDivElement;
+    emitResize(naturalBlock, 0);
     expect(setPaginationHeight).not.toHaveBeenCalled();
 
-    rerender(<TablePagination setPaginationHeight={setPaginationHeight} />);
-    emitResize(root, 56);
+    rerender(
+      <TablePagination
+        setPaginationHeight={setPaginationHeight}
+        enableCollapse
+      />,
+    );
+    emitResize(naturalBlock, 56);
     expect(setPaginationHeight).toHaveBeenLastCalledWith(56);
     expect(screen.getByRole('textbox')).toBeTruthy();
     unmount();

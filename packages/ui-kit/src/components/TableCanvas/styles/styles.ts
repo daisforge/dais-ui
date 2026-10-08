@@ -11,7 +11,6 @@ import styled, { css, CSSObject } from 'styled-components';
 
 import { CLASS_PINNED_RIGHT_COL } from '../feature-column-control/constantsUI';
 import { FULL_SCREEN } from '../feature-full-screen/constants';
-import { getPaginationHeight } from '../feature-pagination/handlers';
 import { PaginationSize } from '../feature-pagination/types';
 import {
   ROW_I_COL_ACTIVE,
@@ -33,6 +32,12 @@ import {
   selectionStyleForCell,
 } from './cellStyle';
 import { tableClassNames as cls, tableClassNames } from './classNames';
+import {
+  getReservedTableHeight,
+  HEIGHT_CONTROL_BLOCK,
+  HEIGHT_TABLE_DEFAULT,
+  MIN_CONTENT_HEIGHT,
+} from './getReservedTableHeight';
 import { headerCellDividerStyles } from './headerCellDivider';
 import {
   headerCellRightIconsBaseStyle,
@@ -367,7 +372,7 @@ export const ContainerStyled = styled.div<{
     ${({ $isEnabledCollapse }) =>
       $isEnabledCollapse &&
       css`
-        transition: height 0.5s ease, max-height 0.5s ease, opacity 0.5s ease;
+        transition: height 0.5s ease, max-height 0.5s ease;
       `}
     display: flex;
     min-width: 0;
@@ -697,11 +702,12 @@ export const ContainerStyled = styled.div<{
     ${({ $fullScreened }) => $fullScreened && fullScreenStyles}
   }
 `;
-// По дизайну 40px (fallback для m/s, xs использует SPACING_MAP.xs.containerHeight = 32)
-export const HEIGHT_CONTROL_BLOCK = 40;
-export const HEIGHT_FILTERLIST_BLOCK = 33;
-export const HEIGHT_TABLE_DEFAULT = 350;
-export const MIN_CONTENT_HEIGHT = 316;
+export {
+  HEIGHT_CONTROL_BLOCK,
+  HEIGHT_FILTERLIST_BLOCK,
+  HEIGHT_TABLE_DEFAULT,
+  MIN_CONTENT_HEIGHT,
+} from './getReservedTableHeight';
 
 const getHeightOfTable = (
   tableContainerHeight: string | number | undefined,
@@ -735,34 +741,19 @@ const getHeightOfTable = (
   if (typeof height === 'number' || typeof height === 'string') {
     const heightConverted = typeof height === 'number' ? `${height}px` : height;
 
-    const heightOfControlBlock = isHaveControlBlock ? controlBlockHeight : 0;
+    // Вычитаем элементы вне рабочей области из высоты внешнего контейнера.
+    const reservedHeight = getReservedTableHeight({
+      isHaveControlBlock,
+      controlBlockHeight,
+      collapseButtonPlacement,
+      filtersAreVisible,
+      isSearchingBellow,
+      paginationActiveInConfig,
+      paginationHeight,
+      paginationCustomSize,
+    });
 
-    // Если кнопка коллапсинга сверху - добавляем еще один блок той же высоты
-    const heightOfCollapseBlockAbove =
-      collapseButtonPlacement === 'above' ? controlBlockHeight : 0;
-
-    const filterListHeight = filtersAreVisible ? HEIGHT_FILTERLIST_BLOCK : 0;
-
-    // Если paginationHeight === 0 - значит эффект вычисляющий высоту блока пагинации не отработал еще, используем в качестве fallback старую логику (getPaginationHeight)
-    // Если это не делать, то так как у нас стоит анимация на изменения высоты таблицы, блок пагинации изменится с 0 до условных 56px - сработает анимация и будет плавное визуальное уменьшение основной высоты таблицы. В этих случаях отработает fallback.
-    const heightOfPagination =
-      paginationHeight === 0
-        ? getPaginationHeight(paginationActiveInConfig, paginationCustomSize)
-        : paginationHeight;
-
-    // ControlBlock heights
-    // If searching is active and move bellow - that's means control block multiply own height
-    const calculatedControlBlockHeight = isSearchingBellow
-      ? heightOfControlBlock * 2
-      : heightOfControlBlock;
-
-    const totalHeightToSubtract =
-      calculatedControlBlockHeight +
-      heightOfCollapseBlockAbove +
-      filterListHeight +
-      heightOfPagination;
-
-    return `max(${minContentHeight}px, calc(${heightConverted} - ${totalHeightToSubtract}px))`;
+    return `max(${minContentHeight}px, calc(${heightConverted} - ${reservedHeight}px))`;
   }
   return undefined;
 };

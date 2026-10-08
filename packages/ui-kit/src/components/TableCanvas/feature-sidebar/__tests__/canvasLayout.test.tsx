@@ -1,11 +1,17 @@
 import { cleanup, render, screen } from '@testing-library/react';
 import React, { createRef } from 'react';
+import { createPortal } from 'react-dom';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import type { TableContentStateOverlay } from '../../feature-content-state/types';
 import { tableClassNames } from '../../styles';
 import type { TableGlideInstanceProps } from '../../TableGlideInstance';
 import { TableOrCardsUI } from '../../widgets/table-or-card-UI';
+
+vi.mock('react-dom', async (importOriginal) => {
+  const original = await importOriginal<typeof import('react-dom')>();
+  return { ...original, createPortal: vi.fn(original.createPortal) };
+});
 
 vi.mock('../../contexts', async (importOriginal) => ({
   ...(await importOriginal<typeof import('../../contexts')>()),
@@ -21,16 +27,18 @@ vi.mock('../../contexts', async (importOriginal) => ({
 
 vi.mock('../../TableGlideInstance', async (importOriginal) => ({
   ...(await importOriginal<typeof import('../../TableGlideInstance')>()),
-  // Не создаём grid и не вызываем renderOverlayFeatures: портал должен работать без готовности Glide.
+  // Не создаём grid и не вызываем renderOverlayFeatures: slot должен работать без готовности Glide.
   TableGlideInstance: ({
     containerProps,
     contentStateOverlay,
+    containerSlot,
   }: Pick<
     TableGlideInstanceProps<Record<string, unknown>>,
-    'containerProps' | 'contentStateOverlay'
+    'containerProps' | 'contentStateOverlay' | 'containerSlot'
   >) => (
     <div {...containerProps} data-testid="canvas-container">
       {contentStateOverlay?.kind ?? 'normal'}
+      {containerSlot}
     </div>
   ),
 }));
@@ -42,6 +50,11 @@ vi.mock('../../widgets/mass-actions', () => ({
 }));
 
 type LayoutProps = Parameters<typeof TableOrCardsUI>[0];
+
+afterEach(() => {
+  cleanup();
+  vi.clearAllMocks();
+});
 
 const contentStates: [string, TableContentStateOverlay | undefined][] = [
   ['normal', undefined],
@@ -97,8 +110,6 @@ const createLayoutProps = (
 describe.each([false, true])(
   'canvas layout with bottom sheet: %s',
   (withBottomSheet) => {
-    afterEach(cleanup);
-
     it.each(contentStates)(
       'keeps forced mass actions inside the canvas in %s state',
       (_, contentStateOverlay) => {
@@ -114,6 +125,7 @@ describe.each([false, true])(
 
         expect(canvasRef.current).toBe(canvas);
         expect(massActions.parentElement).toBe(canvas);
+        expect(createPortal).not.toHaveBeenCalled();
         expect(massActions.getAttribute('data-force-show')).toBe('true');
         expect(
           container.querySelectorAll(`.${tableClassNames.tableCenterColumn}`),
@@ -134,10 +146,8 @@ describe.each([false, true])(
 );
 
 describe('bottom sheet configuration changes', () => {
-  afterEach(cleanup);
-
   it.each(contentStates)(
-    'preserves canvas, its external ref and mass actions portal in %s state',
+    'preserves canvas, its external ref and mass actions slot in %s state',
     (_, contentStateOverlay) => {
       const canvasRef = vi.fn((_node: HTMLDivElement | null) => undefined);
       const props = createLayoutProps(canvasRef, contentStateOverlay);
@@ -188,4 +198,51 @@ describe('bottom sheet configuration changes', () => {
       expect(canvasRef.mock.calls).toEqual([[canvas], [null]]);
     },
   );
+});
+
+describe('mass actions slot visibility and fullscreen', () => {
+  it.each(['cards', 'loading', 'hidden'] as const)(
+    'does not render mass actions in %s mode',
+    (mode) => {
+      const props = createLayoutProps(createRef<HTMLDivElement>());
+      if (mode === 'cards') {
+        props.containerProps.viewProp = {
+          activeView: 'cards',
+          view: { type: 'cards', typeCardsRender: 'Cards' },
+        };
+      } else if (mode === 'loading') {
+        props.loadingOverlayConfig = { active: true };
+      } else {
+        props.massActionPanel = { buttons: [], show: false };
+      }
+
+      render(<TableOrCardsUI {...props} />);
+
+      expect(screen.queryByTestId('mass-actions')).toBeNull();
+      expect(createPortal).not.toHaveBeenCalled();
+    },
+  );
+
+  it('keeps only the fullscreen layout portal and renders mass actions inside its canvas', () => {
+    const canvasRef = createRef<HTMLDivElement>();
+    const props = createLayoutProps(canvasRef, undefined, bottomSheetConfig);
+    const fullScreenPortal = document.createElement('div');
+    document.body.append(fullScreenPortal);
+    props.containerProps.$fullScreened = true;
+    props.containerProps.fullScreenPortal = fullScreenPortal;
+
+    try {
+      render(<TableOrCardsUI {...props} />);
+      const canvas = screen.getByTestId('canvas-container');
+      const massActions = screen.getByTestId('mass-actions');
+
+      expect(canvasRef.current).toBe(canvas);
+      expect(massActions.parentElement).toBe(canvas);
+      expect(fullScreenPortal.contains(canvas)).toBe(true);
+      expect(createPortal).toHaveBeenCalledTimes(1);
+      expect(vi.mocked(createPortal).mock.calls[0]?.[1]).toBe(fullScreenPortal);
+    } finally {
+      fullScreenPortal.remove();
+    }
+  });
 });

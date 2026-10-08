@@ -2,8 +2,8 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import { Box } from '@ui-kit/components/Box';
 import type { MassActionsSize } from '@ui-kit/components/MassActions';
-import { mergeRefs, useActiveTheme } from '@ui-kit/utils';
-import React, { ReactNode, Ref, useMemo, useState } from 'react';
+import { useActiveTheme } from '@ui-kit/utils';
+import React, { ReactNode, Ref, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { CSSObject, CSSProperties } from 'styled-components';
 
@@ -187,18 +187,6 @@ export const TableOrCardsUI = <
   const isCollapsed = enableCollapse && collapsedState;
 
   const activeTheme = useActiveTheme();
-  // Сохраняем DOM-контейнер canvas, чтобы вывести внутри него панель массовых действий через портал.
-  // mergeRefs одновременно передаёт этот контейнер во внешний ref таблицы.
-  const [canvasContainer, setCanvasContainer] = useState<HTMLDivElement | null>(
-    null,
-  );
-  const canvasContainerRef = useMemo(
-    () =>
-      mergeRefs(refTableContainer, (element: HTMLDivElement | null) =>
-        setCanvasContainer(element),
-      ),
-    [refTableContainer],
-  );
 
   const collapsedStyles = useMemo(
     () => ({
@@ -272,7 +260,7 @@ export const TableOrCardsUI = <
               {...(isCollapsed ? { inert: '' } : {})}
               style={{
                 ...$tableAndSidebarContainerHeightStyle,
-                ...(isCollapsed && collapsedStyles),
+                ...(isCollapsed && { maxHeight: 0, overflow: 'hidden' }),
               }}
             >
               {leftSidebarBlock}
@@ -367,8 +355,23 @@ export const TableOrCardsUI = <
                   CellReadOnlyEditor={CellReadOnlyEditor}
                   containerProps={{
                     className: cls.tableSidebarTableContainer,
-                    ref: canvasContainerRef,
+                    ref: refTableContainer,
                   }}
+                  containerSlot={
+                    massActionPanel?.show !== false && (
+                      <MassActions
+                        buttons={massActionPanel?.buttons}
+                        isHaveSomeFeatureInSidebar={isHaveSomeFeatureInSidebar}
+                        rightSidebarWidth={rightSidebarWidth}
+                        collapsedDropdownProps={
+                          massActionPanel?.collapsedDropdownProps
+                        }
+                        bottom={massActionPanel?.bottom}
+                        forceShow={massActionPanel?.show === true}
+                        size={massActionPanel?.size}
+                      />
+                    )
+                  }
                   renderOverlayFeatures={({
                     containerElement,
                     renderInContainer,
@@ -413,29 +416,13 @@ export const TableOrCardsUI = <
                 )}
               </div>
               {rightSidebarBlock}
-              {canvasContainer &&
-                massActionPanel?.show !== false &&
-                // Портал привязан к внешнему canvas-контейнеру и работает также в error/empty state.
-                createPortal(
-                  <MassActions
-                    buttons={massActionPanel?.buttons}
-                    isHaveSomeFeatureInSidebar={isHaveSomeFeatureInSidebar}
-                    rightSidebarWidth={rightSidebarWidth}
-                    collapsedDropdownProps={
-                      massActionPanel?.collapsedDropdownProps
-                    }
-                    bottom={massActionPanel?.bottom}
-                    forceShow={massActionPanel?.show === true}
-                    size={massActionPanel?.size}
-                  />,
-                  canvasContainer,
-                )}
             </Box>
           )}
           {pagination && (
             <TablePagination
               {...pagination}
               isCollapsed={isCollapsed}
+              enableCollapse={enableCollapse}
               setPaginationHeight={setPaginationHeight}
             />
           )}

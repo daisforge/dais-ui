@@ -560,11 +560,13 @@ export type LeftSidebarConfig = TableCanvasSidebarConfig;
 export type BottomSheetConfig = {
   /** @default true */
   enabled?: boolean;
-  /** Число — px, строка — CSS. Проценты — от высоты рабочей области. @default 32 */
+  /** Число — px, строка — CSS; 'auto' — по содержимому. Проценты — от рабочей области. @default 32 */
   height?: string | number;
   /** Минимальная высота, ограниченная доступным пространством. @default 32 */
   minHeight?: string | number;
-  /** Пользователь управляет содержимым, раскрытием и внутренней прокруткой. */
+  /** Максимальная высота в px или CSS, дополнительно ограниченная доступным пространством. */
+  maxHeight?: string | number;
+  /** Пользователь управляет содержимым и раскрытием; при height: 'auto' панель прокручивается сама. */
   content: React.ReactNode;
 };
 

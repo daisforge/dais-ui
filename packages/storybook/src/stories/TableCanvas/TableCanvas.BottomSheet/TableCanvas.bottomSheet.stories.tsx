@@ -3,6 +3,7 @@ import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
 import type { Meta, StoryObj } from '@storybook/react';
 import { TableCanvas } from '@ui-kit/components/TableCanvas';
 
+import { AutoHeightExample } from './TableCanvas.bottomSheet.auto';
 import { BottomSheetExample } from './TableCanvas.bottomSheet.basic';
 import { AllFeaturesExample } from './TableCanvas.bottomSheet.example';
 
@@ -26,6 +27,18 @@ import React, { useId, useState } from 'react';
 ${getFuncAsString('packages/storybook/src/stories/TableCanvas/TableCanvas.BottomSheet/TableCanvas.bottomSheet.basic.tsx', 'BottomSheetExample')}
 
 <BottomSheetExample />;
+`;
+
+// prettier-ignore
+const autoHeightCode = `
+import { Button, IconButton, BodyS } from '@daisforge/ui';
+import { TableCanvas } from '@daisforge/ui/components/TableCanvas';
+import { IconChevronDown, IconChevronUp } from '@daisforge/ui/icons';
+import React, { useId, useState } from 'react';
+
+${getFuncAsString('packages/storybook/src/stories/TableCanvas/TableCanvas.BottomSheet/TableCanvas.bottomSheet.auto.tsx', 'AutoHeightExample')}
+
+<AutoHeightExample />;
 `;
 
 // prettier-ignore
@@ -220,4 +233,14 @@ export const AllFeatures: Story = {
     type: 'code',
   }),
   render: () => <AllFeaturesExample />,
+};
+
+export const AutoHeight: Story = {
+  name: 'Высота по содержимому и maxHeight',
+  ...storySourceDoc({
+    code: autoHeightCode,
+    previewSource: 'shown',
+    type: 'code',
+  }),
+  render: AutoHeightExample,
 };
