@@ -83,12 +83,26 @@ const renderSummaryCell = ({
   column: { key: string };
 }) => row.values.find((v) => v.columnId === column.key)?.value ?? '';
 
-// Статусные цвета потребителя: состояния считает рантайм-формула
-const PRIORITY_COLORS: Record<string, string> = {
-  Critical: '#FFE0E3',
-  High: '#FEE2D2',
-  Medium: '#CFECFF',
-  Low: '#9EFAAF',
+// Статусный цвет ячейки по приоритету. Цвет берётся из темы таблицы, а не
+// задаётся фиксированным hex: так он подстраивается под каждую тему (в
+// тёмной теме — тёмный). Его состояния (hover, выделение) таблица считает
+// сама формулой (fill-states.ts) — это путь «свой цвет потребителя».
+const PRIORITY_THEME_KEY = {
+  Critical: 'bgCellNegative',
+  High: 'bgCellWarning',
+  Medium: 'bgCellInfo',
+  Low: 'bgCellPositive',
+} as const;
+
+const priorityBgCell = (
+  priority: string,
+  theme: Record<
+    (typeof PRIORITY_THEME_KEY)[keyof typeof PRIORITY_THEME_KEY],
+    string
+  >,
+) => {
+  const key = PRIORITY_THEME_KEY[priority as keyof typeof PRIORITY_THEME_KEY];
+  return key ? { bgCell: theme[key] } : undefined;
 };
 
 const COLS: readonly ColumnConfig<Row, SummaryRow>[] = [
@@ -110,10 +124,7 @@ const COLS: readonly ColumnConfig<Row, SummaryRow>[] = [
     name: 'Priority',
     width: LAYOUT.colW,
     renderSummaryCell,
-    themeOverride: ({ row }) => {
-      const bgCell = PRIORITY_COLORS[row.priority];
-      return bgCell ? { bgCell } : undefined;
-    },
+    themeOverride: ({ row, theme }) => priorityBgCell(row.priority, theme),
   },
   { key: 'issueType', name: 'Type', width: LAYOUT.colW, renderSummaryCell },
   {

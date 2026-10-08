@@ -174,6 +174,10 @@ selectionServiceActiveBg`, `bgHeaderHovered = bgHeaderSelectedHovered`;
   строке блока (ячейки блока передают отрисовку главной —
   `getCellContentGlide`, `findBlockOrigin`). По ответу дизайнера v1.2 — пока
   не менять.
+- Свой цвет потребителя (`columnThemeOverride.bgCell`) таблица не
+  перекрашивает под тему: фиксированный светлый hex в тёмной теме останется
+  светлым. Для статусов нужно брать цвета темы (`theme.bgCellPositive` и
+  т. п.) — так сделано на стенде ColoringStates.
 - `fadeWhite`/`fadeGray` — в палитре есть, не используются.
 - `checkboxVisibleRowIndexes` — @deprecated (на цвет больше не влияет).
 - High contrast light: `TABLE_FILL_PARAMS.primaryHex = null` → у серых
