@@ -143,13 +143,7 @@ export const TableOrCardsUI = <RowType, SummRowType, K extends Key = Key>({
   const fullScreenedCls = $fullScreened ? cls.tableContainerFullScreened : '';
   const { isCollapsed, enableCollapse } = useTableCollapse();
 
-  const activeThemeGlobal = useActiveTheme();
-  // Устаревшая Table знает только четыре темы — новые деградируем до базы.
-  const activeTheme =
-    activeThemeGlobal === 'betaCoreDark' ||
-    activeThemeGlobal === 'highContrastDark'
-      ? 'dark'
-      : activeThemeGlobal;
+  const activeTheme = useActiveTheme();
 
   const collapsedStyles = useMemo(
     () => ({
