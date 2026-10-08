@@ -60,6 +60,28 @@ const LAYOUT = {
 
 const ROWS: Row[] = createRows().slice(0, 6);
 
+// Итоговая строка присутствует во всех кадрах как контроль: красится
+// bgHeader (row-тема), hover/выделение/подсветку строки не получает.
+const SUMMARY_ROWS = [
+  {
+    type: 'bottom' as const,
+    values: [
+      { columnId: 'id', value: 'Итого' },
+      { columnId: 'task', value: `строк: ${ROWS.length}` },
+      { columnId: 'complete', value: '263' },
+    ],
+  },
+];
+type SummaryRow = (typeof SUMMARY_ROWS)[number];
+
+const renderSummaryCell = ({
+  row,
+  column,
+}: {
+  row: SummaryRow;
+  column: { key: string };
+}) => row.values.find((v) => v.columnId === column.key)?.value ?? '';
+
 // Статусные цвета потребителя: состояния считает рантайм-формула
 const PRIORITY_COLORS: Record<string, string> = {
   Critical: '#FFE0E3',
@@ -68,12 +90,13 @@ const PRIORITY_COLORS: Record<string, string> = {
   Low: '#9EFAAF',
 };
 
-const COLS: readonly ColumnConfig<Row>[] = [
-  { key: 'id', name: 'ID', width: LAYOUT.colW },
+const COLS: readonly ColumnConfig<Row, SummaryRow>[] = [
+  { key: 'id', name: 'ID', width: LAYOUT.colW, renderSummaryCell },
   {
     key: 'task',
     name: 'Task (edit)',
     width: LAYOUT.colW,
+    renderSummaryCell,
     editingCell: {
       component: 'inputString',
       editable: true,
@@ -85,16 +108,18 @@ const COLS: readonly ColumnConfig<Row>[] = [
     key: 'priority',
     name: 'Priority',
     width: LAYOUT.colW,
+    renderSummaryCell,
     themeOverride: ({ row }) => {
       const bgCell = PRIORITY_COLORS[row.priority];
       return bgCell ? { bgCell } : undefined;
     },
   },
-  { key: 'issueType', name: 'Type', width: LAYOUT.colW },
+  { key: 'issueType', name: 'Type', width: LAYOUT.colW, renderSummaryCell },
   {
     key: 'complete',
     name: '% (edit)',
     width: LAYOUT.colW,
+    renderSummaryCell,
     editingCell: { component: 'inputNumber', editable: true },
   },
 ];
@@ -122,9 +147,12 @@ const renderGrid =
         <TableCanvas
           refTable={tableRef}
           tableConfig={{
-            containerStyle: { height: '280px', width: '720px' },
+            // Итоговая строка рисуется ПРИЖАТОЙ К НИЗУ контейнера; высота с
+            // запасом, чтобы она попадала в элемент-скриншот #storybook-root
+            containerStyle: { height: '352px', width: '720px' },
             rowSize: { default: 'medium', showInControl: false },
             rowMarkers: { startIndex: 1 },
+            summaryRows: { showDefault: true, showInControl: false },
             cellsSelection: { mode: 'range-cell' },
             highlightActiveType: opts.highlightActiveType ?? 'row',
             selecting: {
@@ -138,6 +166,7 @@ const renderGrid =
             },
           }}
           columnConfig={COLS}
+          bottomSummaryRows={SUMMARY_ROWS}
           rows={rows}
         />
       </div>

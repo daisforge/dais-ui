@@ -70,6 +70,19 @@ export default meta;
 
 type Story = StoryObj<ColoringArgs>;
 
+// Итоговая строка (bottomSummaryRows): контент ячеек отдаёт renderSummaryCell.
+type SummaryRow = {
+  type: 'top' | 'bottom';
+  values: Array<{ columnId: string; value: string }>;
+};
+const renderSummaryCell = ({
+  row,
+  column,
+}: {
+  row: SummaryRow;
+  column: { key: string };
+}) => row.values.find((v) => v.columnId === column.key)?.value ?? '';
+
 // Статусные цвета потребителя (hex — состояния hover/active считаются формулой)
 const PRIORITY_COLORS: Record<string, string> = {
   Critical: '#FFE0E3',
@@ -86,13 +99,28 @@ export const ColoringStates: Story = {
       () => new Set(),
     );
 
+    // Итоговая строка: красится bgHeader, hover/подсветку не получает.
+    const bottomSummaryRows = useMemo(
+      (): SummaryRow[] => [
+        {
+          type: 'bottom',
+          values: [
+            { columnId: 'id', value: 'Итого' },
+            { columnId: 'task', value: `строк: ${rows.length}` },
+          ],
+        },
+      ],
+      [rows.length],
+    );
+
     const columnConfig = useMemo(
-      (): ColumnConfig<Row>[] => [
-        { key: 'id', name: 'ID', width: 70 },
+      (): ColumnConfig<Row, SummaryRow>[] => [
+        { key: 'id', name: 'ID', width: 70, renderSummaryCell },
         {
           key: 'task',
           name: 'Задача (редактируемая, ошибка на id % 7 = 0)',
           width: 320,
+          renderSummaryCell,
           editingCell: {
             component: 'inputString',
             editable: true,
@@ -128,6 +156,7 @@ export const ColoringStates: Story = {
         tableConfig={{
           containerStyle: { height: '560px' },
           hoverEffects: { row: args.hoverRow },
+          summaryRows: { showDefault: true, showInControl: false },
           highlightActiveType: args.highlightActiveType,
           cellsSelection: { mode: args.cellsSelectionMode },
           ...(args.rowMarkers && { rowMarkers: { startIndex: 1 } }),
@@ -146,6 +175,7 @@ export const ColoringStates: Story = {
           }),
         }}
         columnConfig={columnConfig}
+        bottomSummaryRows={bottomSummaryRows}
         rows={rows}
       />
     );

@@ -63,7 +63,19 @@ TableCanvas (`styles/cellStyle.ts`, класс `rdg-edited-successfully-cell`).
 `theme-tokens.generated.ts` + `tokens.ts` — в корне `TableGlide/`.
 Перенести вторую пару в `theming/` (churn импортов, делать отдельно).
 
-## 8. Удаление deprecated-пропа checkboxVisibleRowIndexes
+## 8. Hairline-артефакты при дробном DPR > 1 (масштаб ОС 125/150%)
+
+При дробном devicePixelRatio координаты 1px-линий сетки и границ заливок
+округляются к физическим пикселям независимо → на части строк линию
+перекрывает заливка соседней ячейки: верхние бордеры выглядят разной
+светлости, заливка «выезжает» на соседнюю колонку на 1 физический пиксель.
+На DPR=1 рендер бит-в-бит ровный (подтверждено скриншот-тестами с
+--force-device-scale-factor=1). Существующий `enableLowDprHairline`
+компенсирует только zoom < 100% — нужна аналогичная компенсация для
+дробного DPR > 1. Точки: `data-grid-render.hairline.ts` (форк),
+`enableLowDprHairline` в обёртке.
+
+## 9. Удаление deprecated-пропа checkboxVisibleRowIndexes
 
 На цвет больше не влияет (@deprecated в types.ts). Удалить проп по всей
 цепочке TableCanvas → TableGlide в следующем мажоре.
