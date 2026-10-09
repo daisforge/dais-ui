@@ -134,13 +134,21 @@ function VerticalExample() {
               Далее
             </Button>
           </Box>
-          <LinkButton
-            size="s"
-            view="default"
-            onClick={() => setActiveStepIndex(0)}
+          <Box
+            $css={{
+              display: 'flex',
+              flexDirection: 'column',
+              marginTop: '4px',
+            }}
           >
-            Пропустить всё
-          </LinkButton>
+            <LinkButton
+              size="s"
+              view="default"
+              onClick={() => setActiveStepIndex(0)}
+            >
+              Пропустить всё
+            </LinkButton>
+          </Box>
         </Box>
       </TourWidget.Footer>
     </TourWidget>
