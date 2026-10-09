@@ -24,7 +24,7 @@ Disabled-кнопки (`#E8EEF2`/`#8A959D`) и unchecked-чекбокс (бел�
 `#485056B0` рамка) захардкожены light-значениями и не адаптируются к
 dark/HC. Токен `disabled` удалён из контракта как неподтверждённый. Нужны
 пары «токен × состояние» от дизайн-системы (вопрос поставлен в
-INTEGRATION-STATUS, «Остаётся открытым» п. 5). Точка:
+INTEGRATION-STATUS, «Открытые вопросы», п. 6). Точка:
 `cells/buttons/colorResolvers.ts`.
 
 ## 3. Canvas-состояние сохранённой ячейки (editedSuccessfully)
@@ -77,3 +77,14 @@ TableCanvas (`styles/cellStyle.ts`, класс `rdg-edited-successfully-cell`).
 
 На цвет больше не влияет (@deprecated в types.ts). Удалить проп по всей
 цепочке TableCanvas → TableGlide в следующем мажоре.
+
+## 10. Скелетон загрузки в ячейках не следует теме
+
+Градиент и запасной цвет скелетона заданы как тёмная полупрозрачность
+`rgba(8, 8, 8, …)` под светлый фон, поэтому в тёмной и контрастной темах
+скелетон почти не виден. Что делать: брать цвета из токенов темы, как у
+бейджей (`buildBadgeViewColors(tokens)`), — передавать `theme` в опции
+примитива. Скорее всего хватит прозрачных `surface-transparent-*` из
+тем; если нет — вопрос дизайнеру. Точка:
+`TableGlide/lib/canvas/primitives/CanvasSkeleton.ts`
+(`DEFAULT_FALLBACK_COLOR`, `DEFAULT_GRADIENT`, `DEFAULT_GRADIENT_LIGHTER`).
