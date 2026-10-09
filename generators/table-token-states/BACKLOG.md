@@ -16,7 +16,9 @@
 удалить старый (мажор, BREAKING CHANGE), либо научить fallback читать
 токены. Точки: `TableGlide/lib/canvas/primitives/*` (deprecated-поля),
 `cells/buttons/constants.ts` (`VIEW_COLORS` @deprecated),
-`cells/buttons/colorResolvers.ts`.
+`cells/buttons/colorResolvers.ts`. Нужно подтверждение дизайнера, что
+старые кнопки красим так же, как новые (INTEGRATION-STATUS, «Открытые
+вопросы», п. 7).
 
 ## 2. Disabled-состояния canvas-контролов (нужен дизайнер)
 
@@ -84,7 +86,7 @@ TableCanvas (`styles/cellStyle.ts`, класс `rdg-edited-successfully-cell`).
 `rgba(8, 8, 8, …)` под светлый фон, поэтому в тёмной и контрастной темах
 скелетон почти не виден. Что делать: брать цвета из токенов темы, как у
 бейджей (`buildBadgeViewColors(tokens)`), — передавать `theme` в опции
-примитива. Скорее всего хватит прозрачных `surface-transparent-*` из
-тем; если нет — вопрос дизайнеру. Точка:
+примитива. Какими токенами красить — решает дизайнер (вопрос поставлен в
+INTEGRATION-STATUS, «Открытые вопросы», п. 7). Точка:
 `TableGlide/lib/canvas/primitives/CanvasSkeleton.ts`
 (`DEFAULT_FALLBACK_COLOR`, `DEFAULT_GRADIENT`, `DEFAULT_GRADIENT_LIGHTER`).
