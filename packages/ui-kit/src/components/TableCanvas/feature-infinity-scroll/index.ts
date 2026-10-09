@@ -1,4 +1,4 @@
-import { ObjectForExtending } from '../types';
+import type { ObjectForExtending } from '../types';
 
 export const SKELETON_ROW_KEY = 'skeletonXXXXXXXXX';
 export const SKELETON_CELLS_KEY = 'SKELETON_CELLS_XXXXXXXXX';

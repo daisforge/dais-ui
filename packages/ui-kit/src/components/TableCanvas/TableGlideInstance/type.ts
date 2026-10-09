@@ -27,6 +27,7 @@ import { ReactNode } from 'react';
 
 import type { FillMeta, RowsChangeType } from '../feature-cell-transfer/types';
 import type { TableContentStateOverlay } from '../feature-content-state/types';
+import type { StickyColumnsConfig, StickyRowsConfig } from '../feature-sticky';
 import { HeaderAlignment } from '../types/columns-grouping.type';
 import type { CtxsType } from '../types/ctxs.type';
 import type { ObjectForExtending } from '../types/utils.type';
@@ -327,6 +328,10 @@ export type TableGlideInstanceProps<
     cell: readonly [number, number],
     info: TableInfoWithRow<R, SR, CustomCtxs>,
   ) => void;
+  stickyColumnsConfig?: StickyColumnsConfig<
+    ColumnGlideInstance<R, SR, CustomCtxs>
+  >;
+  stickyRowsConfig?: StickyRowsConfig<R>;
 } & TableGlideInstanceContextMenu<R, SR, CustomCtxs>;
 
 export type CommonFormat = {
