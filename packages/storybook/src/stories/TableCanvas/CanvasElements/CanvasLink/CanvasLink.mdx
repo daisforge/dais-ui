@@ -12,7 +12,7 @@ import * as CanvasLinkStories from './CanvasLink.stories';
 - Несколько вариантов `view`
 - `view="clear"` использует цвета `default` как fallback — canvas не поддерживает `inherit`
 - Поддержка `href`, `target`, `disabled`
-- Наследует текстовые свойства от `Canvas.Text`: `wordWrap`, `overflow`, `textOverflow`, `ellipsis`, `maxLines`
+- Наследует текстовые свойства от `Canvas.Text`: `wordWrap`, `overflow`, `textOverflow`, `ellipsis`, `maxLines`, `autoTooltip`
 
 ## Перехват навигации
 
@@ -34,7 +34,27 @@ import * as CanvasLinkStories from './CanvasLink.stories';
 
 ## Многострочный режим
 
-При многострочном переносе underline не рисуется, поэтому многострочные ссылки лучше использовать там, где underline не критичен.
+Перенос включается явно через `wordWrap`. Каждая видимая строка подчёркивается по длине её текста.
+
+```tsx
+<Canvas.Container direction="row" alignItems="center" padding={8}>
+  <Canvas.Link
+    href="/details"
+    wordWrap
+    maxLines={2}
+    overflow="hidden"
+    textOverflow="ellipsis"
+    autoTooltip
+    style={{ flexGrow: 1 }}
+  >
+    Длинное название документа с переносом на несколько строк
+  </Canvas.Link>
+</Canvas.Container>
+```
+
+`maxLines` ограничивает количество строк при `wordWrap` и `overflow="hidden"`. `maxLines={1}` сохраняет однострочное подчёркивание и ellipsis. `autoTooltip` показывает полный текст при обрезке в многоточие.
+
+Высота строки таблицы не увеличивается автоматически: задайте `tableConfig.rowHeight` с запасом под текст и padding, например `72` для двух строк. Область клика остаётся прямоугольником всего блока ссылки.
 
 Описание типов — в разделе [API](?path=/docs/локальные-компоненты-tablecanvas-canvaselements-canvaslink-api--docs).
 

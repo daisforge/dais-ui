@@ -260,6 +260,23 @@
       ]
     },
     {
+      "name": "AiAgentPopup",
+      "type": "wrapper",
+      "category": "Локальные компоненты",
+      "scope": "internal",
+      "scopeNote": "Создан для команды AI-агента под новый дизайн окна помощника. Существующий AiAgentPopover остаётся как есть.",
+      "description": "Окно AI-помощника с градиентной рамкой: перетаскивание, ресайз с адаптивным углом, сохранение позиции и размера в localStorage, опциональная левая панель с иконками-разделами. В комплекте AiAgentInput (поле ввода чата со свечением)",
+      "hint": "Не путать с AiAgentPopover (старая плавающая кнопка с поповером) — AiAgentPopup отдельное окно под новый дизайн. Наполнение окна на стороне потребителя.",
+      "keywords": [
+        "ai-помощник",
+        "окно чата",
+        "draggable popup",
+        "перетаскиваемое окно",
+        "свечение поля ввода",
+        "левая панель с разделами"
+      ]
+    },
+    {
       "name": "Autocomplete",
       "type": "wrapper",
       "category": "Локальные компоненты",
@@ -426,6 +443,7 @@
         "TableCanvas.CellsSelection",
         "TableCanvas.Sidebar",
         "TableCanvas.Sorting",
+        "TableCanvas.StickyRowsCols",
         "TableCanvas.SubRows",
         "TableCanvas.SummaryRows",
         "TableCanvas.ThemeOverride",

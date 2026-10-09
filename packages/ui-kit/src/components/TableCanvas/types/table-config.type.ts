@@ -28,6 +28,10 @@ import {
   FlattenedRowsArrAndMap,
   SelectingRowConfig,
 } from '../feature-select-row/types';
+import type {
+  StickyColumnsConfig,
+  StickyRowsConfig,
+} from '../feature-sticky/types';
 import { SubRows } from '../feature-tree/types';
 import type {
   CellReadOnlyEditorGlideInstanceStaticProps,
@@ -1256,6 +1260,32 @@ export type TableConfig<
    * @default false
    */
   unstickyHeader?: boolean;
+
+  /**
+   * stickyColumns - колонки, которые прилипают к левому краю при горизонтальной прокрутке,
+   * как `position: sticky`. Ключи колонок или предикат по колонке.
+   *
+   * ```tsx
+   * tableConfig={{ stickyColumns: ['region', 'total'] }}
+   * tableConfig={{ stickyColumns: (column) => column.key.startsWith('total') }}
+   * ```
+   */
+  stickyColumns?: StickyColumnsConfig<ColumnConfig<RowType, SummaryRowType>>;
+
+  /**
+   * stickyRows - строки, которые прилипают под шапкой при вертикальной прокрутке.
+   * Предикат проверяется для каждой отображаемой строки данных (результаты кешируются); строки групп
+   * (`rowsGrouping`) и заглушки загрузки в него не попадают и липкими не становятся.
+   * Индексы передаются как есть — удобно для больших таблиц, где позиции известны заранее. Они
+   * считаются по итоговому отображаемому списку: сортировка, фильтры, группировка и раскрытые узлы
+   * дерева (`subRows`) сдвигают нумерацию — тогда индексы нужно пересчитывать или передать предикат.
+   *
+   * ```tsx
+   * tableConfig={{ stickyRows: (row) => row.isSubtotal }}
+   * tableConfig={{ stickyRows: [0, 41, 82] }}
+   * ```
+   */
+  stickyRows?: StickyRowsConfig<RowType>;
 
   /** Тултип при hover по canvas-элементам.
    *  Для активации фичи необходимо заполнить данный конфиг,
