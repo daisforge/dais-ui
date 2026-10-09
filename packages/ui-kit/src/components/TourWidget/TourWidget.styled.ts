@@ -102,14 +102,15 @@ const horizontalGradientPreset = css`
 
   ${tokens.inlineOvalDisplay}: none;
   ${tokens.ovalFrameDisplay}: block;
-  ${tokens.ovalFrameHeight}: 42%;
+  /* Минимальные размеры сохраняют овал на низкой карточке без Content. */
+  ${tokens.ovalFrameHeight}: max(42%, 110px);
   ${tokens.ovalBorderRadius}: 50%;
   ${tokens.shapeGradientMaskStart}: 76%;
   ${tokens.shapeGradientMaskMiddle}: 88%;
 
-  ${tokens.ovalWidth}: 30%;
+  ${tokens.ovalWidth}: max(30%, 216px);
   ${tokens.ovalHeight}: 120%;
-  ${tokens.ovalLeft}: 90%;
+  ${tokens.ovalLeft}: calc(100% - 72px);
   ${tokens.ovalTop}: 20%;
   ${tokens.ovalBlur}: var(${tokens.themeOvalHorizontalBlur}, 15px);
   ${tokens.ovalOpacity}: var(
