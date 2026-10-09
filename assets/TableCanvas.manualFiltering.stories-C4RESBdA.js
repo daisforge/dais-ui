@@ -1,0 +1,139 @@
+import{r,d as v}from"./react-D2T61mpp.js";import{c as w}from"./tableData-DVJFoYoT.js";import C from"./DocStoryTemplate-C8MKfFxP.js";import{s as x}from"./storySourceDoc-tVKyHcEN.js";import{T as k}from"./TableCanvas-CtDXR6sM.js";import"./vendor-DhPQnvNP.js";import"./react-is-Clcustum.js";import"./styled-components-D2iYy2uM.js";import"./@tanstack/react-virtual-DonijgCh.js";import"./tslib-DoU9Jm1N.js";import"./FiltersActions-CLe33RcG.js";import"./IconButton-DbjMdgRP.js";import"./@salutejs/plasma-icons-Duq7ysyN.js";import"./@salutejs/sdds-finai-BD5fhF9i.js";import"./@salutejs/sdds-themes-DL6tmVfr.js";import"./utils-CEczJKOt.js";import"./constants-rCJTDDk_.js";import"./sharedUtilsDebug-BX_KjCjW.js";import"./Box-C5xCp2yD.js";import"./TextField-CsSlqUbx.js";import"./sharedUtilsInputs-5r9tslRT.js";import"./AiAgentPopup-C62dlwE-.js";import"./TextArea-CB5TA1ke.js";import"./sharedUtilsResizable-4btFEOm_.js";import"./Table-DSX9J23j.js";import"./Collapse-CeSlpnVB.js";import"./react-data-grid-CrmilZIk.js";import"./TableTabs-DJtpo5Ax.js";import"./TableCanvasSharedConstants-B2qJZwC8.js";import"./sharedUiSearch-CpRVk69d.js";import"./ListOfFilters-Bk0Z2nOk.js";import"./lodash.isequal-DD0Lfcik.js";import"./NumberFormat-Capqp8AZ.js";import"./EmptyState-DwNB7vmB.js";import"./MassActions-CyL5s2MM.js";import"./Autocomplete-DvLjjVr2.js";import"./TableGlide-B9U6X1Yz.js";import"./@glideappsfinal/glide-data-grid-DawffSjL.js";import"./canvas-hypertxt-DsokSIOX.js";import"./ErrorPage-Dw7x_35p.js";const pe={title:"Локальные компоненты/TableCanvas/Filtering/Manual",tags:["!autodocs"],parameters:{docs:{page:C}}},S=`
+import { ColumnConfig, TableCanvas } from '@daisforge/ui';
+
+`,o={...x({preCode:S,previewSource:"shown"}),render:()=>{const y=r.useMemo(()=>[{key:"task",name:"Title",filtering:{component:"input",filter:"includes",valueInRow:e=>e.task,keyInFilterState:"task"}},{key:"priority",name:"Priority",filtering:{component:"select",selectOptions:{type:"constant",options:[{value:"All",text:"All"},{value:"High",text:"High"},{value:"Critical",text:"Critical"},{value:"Medium",text:"Medium"},{value:"Low",text:"Low"}]},keyInFilterState:"priority",valueInRow:e=>e.priority,filter:{typeOfValue:"single",filteringType:(e,t)=>e!=="All"?t===e:!0}}},{key:"issueType",name:"Issue Type",filtering:{component:"select",selectOptions:{type:"stateInHeaderContext",optionsKeyInHeaderContext:"issueTypeOptions"},keyInFilterState:"issueType",valueInRow:e=>e.issueType,filter:{typeOfValue:"multiple",filteringType:(e,t)=>!e.length||e.some(n=>n===t)}}},{key:"complete",name:"% Complete",filtering:{component:"input",keyInFilterState:"complete",valueInRow:e=>e.complete,filter:(e,t)=>(+t||0)>=(+e||0)}}],[]),l=r.useMemo(()=>w(),[]),[f,d]=r.useState(l),s=r.useState({task:"",priority:"All",issueType:[],complete:""}),[a]=s;r.useEffect(()=>{const e=Object.entries(a).filter(n=>Array.isArray(n[1])?!!n[1].length:!!n[1]),t=l.filter(n=>e.every(i=>{const p=n[i[0]];return Array.isArray(i[1])?i[1].includes(p):i[1]===p.toString()||i[1]==="All"}));d(t)},[a]);const g=r.useMemo(()=>({issueTypeOptions:[{text:"Bug",value:"Bug"},{text:"Improvement",value:"Improvement"},{text:"Epic",value:"Epic"},{text:"Story",value:"Story"}]}),[]);return v.jsxDEV(k,{tableConfig:{filtering:{state:s,filtersInfo:{task:{label:"task",clearedValue:""},priority:{label:"Some Label",clearedValue:"All"},issueType:{label:"issueType",clearedValue:[]},complete:{label:"complete",clearedValue:""}},manualFiltering:!0}},columnConfig:y,rows:f,headerContextValue:g},void 0,!1,{fileName:"/home/runner/work/dais-ui/dais-ui/packages/storybook/src/stories/TableCanvas/TableCanvas.Filtering/TableCanvas.manualFiltering.stories.tsx",lineNumber:152,columnNumber:7},void 0)}};var u,m,c;o.parameters={...o.parameters,docs:{...(u=o.parameters)==null?void 0:u.docs,source:{originalSource:`{
+  ...storySourceDoc({
+    preCode,
+    previewSource: 'shown'
+  }),
+  render: () => {
+    const columnConfig = useMemo<readonly ColumnConfig<Row>[]>(() => [{
+      key: 'task',
+      name: 'Title',
+      filtering: {
+        component: 'input',
+        filter: 'includes',
+        valueInRow: r => r.task,
+        keyInFilterState: 'task'
+      }
+    }, {
+      key: 'priority',
+      name: 'Priority',
+      filtering: {
+        component: 'select',
+        selectOptions: {
+          type: 'constant',
+          options: [{
+            value: 'All',
+            text: 'All'
+          }, {
+            value: 'High',
+            text: 'High'
+          }, {
+            value: 'Critical',
+            text: 'Critical'
+          }, {
+            value: 'Medium',
+            text: 'Medium'
+          }, {
+            value: 'Low',
+            text: 'Low'
+          }]
+        },
+        keyInFilterState: 'priority',
+        valueInRow: r => r.priority,
+        filter: {
+          typeOfValue: 'single',
+          filteringType: (fv, rv) => fv !== 'All' ? rv === fv : true
+        }
+      }
+    }, {
+      key: 'issueType',
+      name: 'Issue Type',
+      filtering: {
+        component: 'select',
+        selectOptions: {
+          type: 'stateInHeaderContext',
+          optionsKeyInHeaderContext: 'issueTypeOptions'
+        },
+        keyInFilterState: 'issueType',
+        valueInRow: r => r.issueType,
+        filter: {
+          typeOfValue: 'multiple',
+          filteringType: (fv, rv) => !fv.length || fv.some(fvCurr => fvCurr === rv)
+        }
+      }
+    }, {
+      key: 'complete',
+      name: '% Complete',
+      filtering: {
+        component: 'input',
+        keyInFilterState: 'complete',
+        valueInRow: r => r.complete,
+        filter: (fv, rv) => (+rv || 0) >= (+fv || 0)
+      }
+    }], []);
+    const rows = useMemo(() => createRows(), []);
+    const [filteredRows, setFilteredRows] = useState(rows);
+    const filteringStateAndSetter = useState<{
+      task: string;
+      priority: string;
+      issueType: string[];
+      complete: string;
+    }>({
+      task: '',
+      priority: 'All',
+      issueType: [],
+      complete: ''
+    });
+    const [state] = filteringStateAndSetter;
+    useEffect(() => {
+      const enabledFilters = Object.entries(state).filter(el => Array.isArray(el[1]) ? !!el[1].length : !!el[1]);
+      const filterRows = rows.filter(row => enabledFilters.every(enabledFilter => {
+        const colValue = row[enabledFilter[0] as keyof typeof row] as string;
+        return Array.isArray(enabledFilter[1]) ? enabledFilter[1].includes(colValue) : enabledFilter[1] === colValue.toString() || enabledFilter[1] === 'All';
+      }));
+      setFilteredRows(filterRows);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [state]);
+    const headerContextValue = useMemo(() => ({
+      issueTypeOptions: [{
+        text: 'Bug',
+        value: 'Bug'
+      }, {
+        text: 'Improvement',
+        value: 'Improvement'
+      }, {
+        text: 'Epic',
+        value: 'Epic'
+      }, {
+        text: 'Story',
+        value: 'Story'
+      }]
+    }), []);
+    return <TableCanvas tableConfig={{
+      filtering: {
+        state: filteringStateAndSetter,
+        filtersInfo: {
+          task: {
+            label: 'task',
+            clearedValue: ''
+          },
+          priority: {
+            label: 'Some Label',
+            clearedValue: 'All'
+          },
+          issueType: {
+            label: 'issueType',
+            clearedValue: []
+          },
+          complete: {
+            label: 'complete',
+            clearedValue: ''
+          }
+        },
+        manualFiltering: true
+      }
+    }} columnConfig={columnConfig} rows={filteredRows} headerContextValue={headerContextValue} />;
+  }
+}`,...(c=(m=o.parameters)==null?void 0:m.docs)==null?void 0:c.source}}};const ue=["ManualFiltering"];export{o as ManualFiltering,ue as __namedExportsOrder,pe as default};
