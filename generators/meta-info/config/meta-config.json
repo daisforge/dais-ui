@@ -442,6 +442,7 @@
         "TableCanvas.Selecting",
         "TableCanvas.CellsSelection",
         "TableCanvas.Sidebar",
+        "TableCanvas.BottomSheet",
         "TableCanvas.Sorting",
         "TableCanvas.SubRows",
         "TableCanvas.SummaryRows",

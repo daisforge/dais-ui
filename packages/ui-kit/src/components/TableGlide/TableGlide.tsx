@@ -141,6 +141,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   renderOverlayFeatures,
   hideGrid,
   contentStateNode,
+  containerSlot,
   fullScreened,
   editorOverlayPortal,
   highlightActiveType = 'disabled',
@@ -1587,6 +1588,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       )}
       {/* EmptyState, ErrorState */}
       {contentStateNode}
+      {containerSlot}
       {isGlideReady &&
         glideContainerEl &&
         renderOverlayFeatures?.({

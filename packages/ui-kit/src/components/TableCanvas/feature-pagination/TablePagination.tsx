@@ -16,11 +16,13 @@ import styled, { css } from 'styled-components';
 
 import { useRefTableContext } from '../contexts';
 import { COLORS, TABLE_BORDER_RADIUS } from '../styles';
+import { DURATION } from '../styles/styles.constants';
 import {
   DEFAULT_PAGINATION_SIZE,
   getPaginationSlotsAndStatusQuickJumpByWidth,
   PAGINATION_TEXTS,
 } from './constants';
+import { getPaginationHeight } from './handlers';
 import { PaginationProps, PaginationSlots } from './types';
 
 const StyledDiv = styled.div(() => ({
@@ -45,12 +47,16 @@ const StyledPagination = styled(Pagination)<{ $hideQuickJump?: boolean }>`
 export const TablePagination = (
   props: PaginationProps & {
     setPaginationHeight: React.Dispatch<React.SetStateAction<number>>;
+    isCollapsed?: boolean;
+    enableCollapse?: boolean;
   },
 ) => {
   const {
     onChangePageValue,
     onChange: onChangeTablePagination,
     setPaginationHeight,
+    isCollapsed = false,
+    enableCollapse = false,
     size = DEFAULT_PAGINATION_SIZE,
     responsiveSlots = false,
     onResize,
@@ -59,6 +65,7 @@ export const TablePagination = (
     ...rest
   } = props ?? {};
   const paginationRef = useRef<HTMLDivElement>(null);
+  const [naturalHeight, setNaturalHeight] = useState<number | null>(null);
   const refTable = useRefTableContext();
   const [dynamicSlots, setDynamicSlots] = useState<PaginationSlots>(undefined);
   const [showQuickJump, setShowQuickJump] = useState<boolean>(true);
@@ -161,10 +168,15 @@ export const TablePagination = (
     const resizeObserver = createSafeResizeObserver((entries) => {
       const entry = entries[0];
       if (entry) {
-        const {
-          contentRect: { height, width },
-        } = entry;
-        setPaginationHeight(height);
+        // Измеряем внутренний блок: его естественный размер не зависит от collapse.
+        const borderBox = entry.borderBoxSize?.[0];
+        const bounds = entry.target.getBoundingClientRect();
+        const height = borderBox?.blockSize ?? bounds.height;
+        const width = borderBox?.inlineSize ?? bounds.width;
+        if (height > 0) {
+          setNaturalHeight(height);
+          setPaginationHeight(height);
+        }
         onResize?.(width);
         // Вычисляем slots на основе ширины и size
         const [slots, statusQuickJump] =
@@ -186,9 +198,26 @@ export const TablePagination = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setPaginationHeight, size, responsiveSlots]);
 
+  // Не размонтируем пагинацию, чтобы сохранить её состояние.
+  // aria-hidden исключает чтение скринридером, inert — фокус и взаимодействие.
   return (
-    <div ref={paginationRef}>
-      <StyledDiv>
+    <div
+      aria-hidden={isCollapsed}
+      {...(isCollapsed ? { inert: '' } : {})}
+      style={
+        enableCollapse
+          ? {
+              height: isCollapsed
+                ? 0
+                : naturalHeight ?? getPaginationHeight(true, size),
+              opacity: isCollapsed ? 0 : 1,
+              overflow: isCollapsed ? 'hidden' : undefined,
+              transition: `height ${DURATION}s ease, opacity ${DURATION}s ease`,
+            }
+          : undefined
+      }
+    >
+      <StyledDiv ref={paginationRef}>
         <StyledPagination
           {...PAGINATION_TEXTS}
           size={size}

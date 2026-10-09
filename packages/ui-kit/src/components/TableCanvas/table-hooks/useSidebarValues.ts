@@ -1,11 +1,8 @@
-import { bubble } from '@ui-kit/utils';
 import { useState } from 'react';
 
-import { TABLE_BUBBLES } from '../constants';
-import { SIDEBAR_DURATION } from '../feature-right-sidebar/constants';
+import { DEFAULT_RIGHT_SIDEBAR_WIDTH } from '../feature-sidebar/constants';
 import { ObjectForExtending, TableConfig } from '../types';
-
-const BUBBLE_DELAY = 100;
+import { useSidebarOpenState, useSidebarResize } from './useSidebarOpenState';
 
 export const useSidebarState = <
   FilterStateType extends ObjectForExtending,
@@ -19,27 +16,17 @@ export const useSidebarState = <
   tableConfig: TableConfig<RowType, SummaryRowType, RowIdType, FilterStateType>;
   refTableContainer?: React.RefObject<HTMLElement>;
 }) => {
-  // FIXME: ширину пока не выносим в конфиг — по дизайну она фиксированная. Открытие управляется через sidebarConfig.
-  const internalOpenState = useState(
-    tableConfig.sidebarConfig?.defaultOpen ?? false,
-  );
-  const [isOpen, setIsOpen] =
-    tableConfig.sidebarConfig?.openState ?? internalOpenState;
-  const [width, setWidth] = useState(400);
-
-  const toggle = () => {
-    setIsOpen(!isOpen);
-    setTimeout(() => {
-      if (refTableContainer?.current) {
-        bubble(refTableContainer?.current, TABLE_BUBBLES.recalculateWidth);
-      }
-    }, SIDEBAR_DURATION * 1000 + BUBBLE_DELAY);
-  };
+  const { isOpen, toggle } = useSidebarOpenState(tableConfig.sidebarConfig);
+  // Числовой width/setWidth сохраняют прежний контракт useSidebar().
+  const [width, setWidth] = useState(DEFAULT_RIGHT_SIDEBAR_WIDTH);
+  const effectiveWidth = tableConfig.sidebarConfig?.width ?? width;
+  useSidebarResize({ isOpen, width: effectiveWidth, refTableContainer });
 
   return {
     isOpen,
     width,
     toggle,
     setWidth,
+    effectiveWidth,
   };
 };
