@@ -1,39 +1,17 @@
+import { TABLE_STATE_COLORS } from '@ui-kit/components/TableGlide/theming/table-colors.generated';
+
 import { ActiveTheme } from '../TableGlideInstance/type';
 
-// betaCoreLight: headerColor привязан к токену surface-accent-minor (beta #EFF8FF),
-// остальные тинты редактируемых/успешных ячеек в атомарке токенов не имеют —
-// наследуют light до beta-значений от дизайнера.
+// Источник — палитра «токен × состояние» (generators/table-token-states):
+// headerColor — surface-accent-minor, редактируемая ячейка — data-yellow-light,
+// сохранённая — data-blue-light; руками значения не поддерживаются.
 const CUSTOM_COLORS = {
-  headerColor: {
-    light: '#ECF6FC',
-    dark: '#071A26',
-    highContrastLight: '#CFE5F2',
-    betaCoreLight: '#EFF8FF',
-  },
-  editableCellColor: {
-    light: '#FFF6E5',
-    dark: '#211807',
-    highContrastLight: '#F1DDB8',
-    betaCoreLight: '#FFF6E5',
-  },
-  editableCellHoverColor: {
-    light: '#FFF4E0',
-    dark: '#2A1F09',
-    highContrastLight: '#E8D4AD',
-    betaCoreLight: '#FFF4E0',
-  },
-  editedSuccessfullyCellColor: {
-    light: '#EDF8FF',
-    dark: '#0A1924',
-    highContrastLight: '#DAE8F1',
-    betaCoreLight: '#EDF8FF',
-  },
-  editedSuccessfullyCellHoverColor: {
-    light: '#E6F5FF',
-    dark: '#0C1E2C',
-    highContrastLight: '#D0E0ED',
-    betaCoreLight: '#E6F5FF',
-  },
+  headerColor: TABLE_STATE_COLORS.bgHeader,
+  editableCellColor: TABLE_STATE_COLORS.bgEditableCell,
+  editableCellHoverColor: TABLE_STATE_COLORS.bgEditableCellHovered,
+  editedSuccessfullyCellColor: TABLE_STATE_COLORS.editedSuccessfullyCellColor,
+  editedSuccessfullyCellHoverColor:
+    TABLE_STATE_COLORS.editedSuccessfullyCellHoverColor,
 } as const;
 /**
  * Функция для автоматического создания css-токенов на основе объекта CUSTOM_COLORS с сохранением типов
