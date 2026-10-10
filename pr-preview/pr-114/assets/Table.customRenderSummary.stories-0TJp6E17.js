@@ -1,0 +1,51 @@
+import{r,d as a}from"./react-D2T61mpp.js";import{c as p}from"./tableData-DVJFoYoT.js";import u from"./DocStoryTemplate-fMZZ290W.js";import{s as l}from"./storySourceDoc-tVKyHcEN.js";import{f as c}from"./Table-CA6ZUQ5N.js";import"./vendor-BGzzYN-b.js";import"./react-is-Clcustum.js";import"./styled-components-CD4KFY2h.js";import"./@tanstack/react-virtual-7i3ITNa_.js";import"./tslib-DoU9Jm1N.js";import"./FiltersActions-a7bIw2Fz.js";import"./IconButton-BsuSMrKD.js";import"./@salutejs/plasma-icons-DoqG1pWM.js";import"./@salutejs/sdds-finai-DvhCM2Xz.js";import"./@salutejs/sdds-themes-DL6tmVfr.js";import"./utils-BopI5f_-.js";import"./constants-rCJTDDk_.js";import"./sharedUtilsDebug-BX_KjCjW.js";import"./Box-B5Lk0A0c.js";import"./TextField-1s64aVQu.js";import"./sharedUtilsInputs-D8S3qiky.js";import"./AiAgentPopup-BjpWl_pW.js";import"./TextArea-Dx3aHTDW.js";import"./sharedUtilsResizable-CdV8UiPe.js";import"./Collapse-CWsg-GsF.js";import"./react-data-grid-BIBmSmvS.js";import"./TableTabs-BxgxHb0J.js";import"./TableCanvasSharedConstants-B2qJZwC8.js";import"./TableGlide-tcONULjm.js";import"./@glideappsfinal/glide-data-grid-BU--_Fv5.js";import"./canvas-hypertxt-DsokSIOX.js";import"./sharedUiSearch-y7IwLXgM.js";import"./ListOfFilters-BuQDevqY.js";import"./lodash.isequal-DD0Lfcik.js";import"./NumberFormat-D8XT1I-j.js";import"./EmptyState-DMkiJ__L.js";import"./MassActions-C5VaWbKf.js";import"./Autocomplete-BFrIC_iF.js";const W={title:"Локальные компоненты/Table/Custom render/Summary",tags:["!autodocs"],parameters:{docs:{page:u}}},d=`
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  Badge,
+  Box,
+  Button,
+  ColumnConfig,
+  ColumnOrColumnGroupConfig,
+  RenderCellProps,
+  RowHeightFunc,
+  SIZES,
+  Select,
+  Switch,
+  Table,
+  TextField,
+} from '@daisforge/ui';
+import { IconAddOutline, IconBoxOutline, IconSber } from '@daisforge/ui/icons';
+`,e={...l({preCode:d,previewSource:"shown"}),render:()=>{const[m]=r.useState(p),s=r.useMemo(()=>[{key:"id",name:"ID"},{key:"task",name:"Title"},{key:"priority",name:"Priority"},{key:"issueType",name:"Issue Type"},{key:"complete",name:"% Complete"},{key:"total",name:"Сумма title и priority",renderCell:({row:o})=>`${o.task} ${o.priority}`}],[]);return a.jsxDEV(c,{tableConfig:{enableVirtualization:!1},columnConfig:s,rows:m},void 0,!1,{fileName:"/home/runner/work/dais-ui/dais-ui/packages/storybook/src/stories/Table/Table.customRender/Table.customRenderSummary.stories.tsx",lineNumber:80,columnNumber:7},void 0)}};var t,i,n;e.parameters={...e.parameters,docs:{...(t=e.parameters)==null?void 0:t.docs,source:{originalSource:`{
+  ...storySourceDoc({
+    preCode,
+    previewSource: 'shown'
+  }),
+  render: () => {
+    const [rows] = useState(createRows);
+    const columnConfig = useMemo<readonly ColumnConfig<Row>[]>(() => [{
+      key: 'id',
+      name: 'ID'
+    }, {
+      key: 'task',
+      name: 'Title'
+    }, {
+      key: 'priority',
+      name: 'Priority'
+    }, {
+      key: 'issueType',
+      name: 'Issue Type'
+    }, {
+      key: 'complete',
+      name: '% Complete'
+    }, {
+      key: 'total',
+      name: 'Сумма title и priority',
+      renderCell: ({
+        row
+      }) => \`\${row.task} \${row.priority}\`
+    }], []);
+    return <Table tableConfig={{
+      enableVirtualization: false
+    }} columnConfig={columnConfig} rows={rows} />;
+  }
+}`,...(n=(i=e.parameters)==null?void 0:i.docs)==null?void 0:n.source}}};const Y=["Summary"];export{e as Summary,Y as __namedExportsOrder,W as default};
