@@ -13,7 +13,6 @@ import { useTableCollapse } from '../../contexts';
 import { CollapseTableButton } from '../../feature-collapse-table';
 import { SearchBlock } from '../../feature-searching';
 // import { SummaryCheckbox } from '../../feature-select-row/summary-checkbox';
-import { HEIGHT_CONTROL_BLOCK } from '../../styles';
 import { controlBlockClassNames as cls } from './control-block.classnames';
 import {
   getControlBlockSizeMap,
@@ -94,7 +93,7 @@ export const ControlBlockWithoutResize = ({
   return (
     <Collapse
       isOpen={isHaveControlBlock}
-      sizeOnOpen={HEIGHT_CONTROL_BLOCK}
+      sizeOnOpen={spacing.containerHeight}
       unMountOnClose
     >
       <ControlBlockStyled
@@ -113,6 +112,9 @@ export const ControlBlockWithoutResize = ({
           alignment="center"
           style={{
             flexWrap: 'nowrap',
+            // Левая группа не сжимается, иначе поиск заезжает на её кнопки
+            flexShrink: 0,
+            gap: spacing.collapseGap,
           }}
         >
           {collapseButtonPlacement === 'inside' && (

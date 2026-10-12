@@ -2,16 +2,16 @@ import { split } from 'canvas-hypertxt';
 
 import { CanvasNode } from '../core/CanvasNode';
 import { DrawBatcher } from '../core/DrawBatcher';
+import type {
+  CanvasNodeTooltipConfig,
+  CanvasNodeTooltipProps,
+} from '../utils/portalHoverEvents';
 import {
   type CanvasTextOverflow,
   invalidateOverflowTextCache,
   resolveOverflowText,
   resolveWrappedOverflowText,
 } from '../utils/textOverflow';
-import type {
-  CanvasNodeTooltipConfig,
-  CanvasNodeTooltipProps,
-} from '../utils/portalHoverEvents';
 
 /*
  * ТУЛТИПЫ НА CanvasText — как это работает и что важно знать.
@@ -342,10 +342,28 @@ export class CanvasText extends CanvasNode {
   }
 
   protected getLastPaintedTextWidth(): number {
-    // Наследники вроде CanvasLink используют не исходную ширину строки,
-    // а ширину текста, который действительно ушел в DrawBatcher.
+    // Для наследников, использующих ширину фактически нарисованного однострочного текста.
     return this.lastPaintedTextWidth;
   }
+
+  protected measureTextWidth(
+    ctx: CanvasRenderingContext2D,
+    text: string
+  ): number {
+    return getCachedTextWidth(ctx, text, this.font);
+  }
+
+  /** Декорации получают фактически нарисованный текст после ellipsis и центр строки. */
+  // eslint-disable-next-line class-methods-use-this -- hook для наследников без декораций в базовом тексте
+  protected onPaintLine(
+    _batcher: DrawBatcher,
+    _ctx: CanvasRenderingContext2D,
+    _text: string,
+    _x: number,
+    _y: number,
+    _fontSize: number,
+    _lineHeightPx: number
+  ): void {}
 
   /**
    * Эффективный конфиг тултипа для hover-контроллера.
@@ -483,7 +501,7 @@ export class CanvasText extends CanvasNode {
     lines: string[],
     rect: { x: number; y: number; width: number; height: number }
   ) {
-    const { lineHeightPx } = getCachedFontMetrics(
+    const { fontSize, lineHeightPx } = getCachedFontMetrics(
       font,
       this.lineHeight,
       this.fontSize,
@@ -530,6 +548,15 @@ export class CanvasText extends CanvasNode {
         } else {
           batcher.fillText(v, rect.x, lineY, font, color, 'middle');
         }
+        this.onPaintLine(
+          batcher,
+          ctx,
+          v,
+          rect.x,
+          lineY,
+          fontSize,
+          lineHeightPx
+        );
         y += lineHeightPx;
       }
     }
@@ -544,6 +571,12 @@ export class CanvasText extends CanvasNode {
     rect: { x: number; y: number; width: number; height: number }
   ) {
     const textY = rect.y + rect.height * 0.5;
+    const { fontSize, lineHeightPx } = getCachedFontMetrics(
+      font,
+      this.lineHeight,
+      this.fontSize,
+      this.lineHeightPx
+    );
 
     if (this.overflow === 'hidden') {
       // Layout уже назначил этой ноде финальный rect, поэтому ellipsis считаем по rect.width.
@@ -578,13 +611,23 @@ export class CanvasText extends CanvasNode {
         'middle',
         'left'
       );
+      this.onPaintLine(
+        batcher,
+        ctx,
+        resolvedText.text,
+        rect.x,
+        textY,
+        fontSize,
+        lineHeightPx
+      );
       return;
     }
 
     // В visible-режиме сохраняем старое поведение: текст рисуется целиком,
-    // а lastPaintedTextWidth нужен только для совместимости с CanvasLink.
+    // а lastPaintedTextWidth сохраняем для совместимости с наследниками.
     this.lastPaintedTextWidth = getCachedTextWidth(ctx, text, font);
     batcher.fillText(text, rect.x, textY, font, color, 'middle');
+    this.onPaintLine(batcher, ctx, text, rect.x, textY, fontSize, lineHeightPx);
   }
 }
 

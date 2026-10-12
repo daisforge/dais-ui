@@ -40,6 +40,7 @@ import {
   setRowSizeCb,
 } from '../../feature-row-size';
 import { useGetRowsGroupingBtnProps } from '../../feature-rows-grouping';
+import { getCustomSidebarTabs } from '../../feature-sidebar/getCustomSidebarTabs';
 import {
   DEFAULT_TABS_INFO,
   type DefaultTabInfo,
@@ -823,24 +824,7 @@ export const useFeatureArray = <
     // Всегда начинаем с дефолтных вкладок
     const resultTabs = [...defaultSidebarTabs];
 
-    // Добавляем кастомные если есть
-    if (tableConfig.sidebarConfig?.customTabs) {
-      const { customTabs, customTabsOrder } = tableConfig.sidebarConfig;
-
-      // Применяем порядок если указан
-      if (customTabsOrder) {
-        const orderedTabs = customTabsOrder
-          .map((id) => customTabs.find((tab) => tab.id === id))
-          .filter(Boolean) as SidebarTab[];
-
-        const remainingTabs = customTabs.filter(
-          (tab) => !customTabsOrder.includes(tab.id),
-        );
-        resultTabs.push(...orderedTabs, ...remainingTabs);
-      } else {
-        resultTabs.push(...customTabs);
-      }
-    }
+    resultTabs.push(...getCustomSidebarTabs(tableConfig.sidebarConfig));
 
     return resultTabs;
   })();

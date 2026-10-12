@@ -21,6 +21,7 @@ import { applyBlockEdit } from '../feature-cell-transfer/utils/applyBlockEdit';
 import { TableContentStateOverlay } from '../feature-content-state';
 import { useRowDetailHandlerContext } from '../feature-row-detail/ctx';
 import { useSelectingRowContext } from '../feature-select-row/selecting-contexts';
+import { useStickyColumnIndexes, useStickyRowIndexes } from '../feature-sticky';
 import { CtxsType } from '../types/ctxs.type';
 import { ObjectForExtending } from '../types/utils.type';
 import { adaptColumn } from './adapters';
@@ -45,6 +46,8 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
   onRowsChange,
   CellReadOnlyEditor,
   onCellClicked: onCellClickedExternal,
+  stickyColumnsConfig,
+  stickyRowsConfig,
   ...rest
 }: TableGlideInstanceProps<R, SR>) => {
   const { columnsGlide, columnsInGlideOrder, frozenColsCount, groupMaxLength } =
@@ -102,6 +105,12 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
         groupMaxLength,
       };
     }, [columns]);
+
+  const stickyColumns = useStickyColumnIndexes(
+    columnsInGlideOrder,
+    stickyColumnsConfig,
+  );
+  const stickyRows = useStickyRowIndexes(rows, stickyRowsConfig);
 
   // ctxs
   const expandedRowsCtx = useExpandedRowsContext();
@@ -515,6 +524,8 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
       className={`gdg-table ${className}`}
       headerHeight={headerHeight}
       freezeColumns={frozenColsCount}
+      stickyColumns={stickyColumns}
+      stickyRows={stickyRows}
       ctxs={ctxs}
       groupHeaderHeight={groupHeaderHeightArr}
       renderGroupHeader={renderGroupHeader}

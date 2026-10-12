@@ -25,15 +25,23 @@ export const usePrepareTableConfig = <
     return { tableConfig: tableConfigExternal };
   }
 
-  const { rowsGrouping } = tableConfigExternal || {};
+  // Нормализуем алиас один раз: все существующие фичи правой панели читают sidebarConfig.
+  const tableConfig = tableConfigExternal.rightSidebarConfig
+    ? {
+        ...tableConfigExternal,
+        sidebarConfig: tableConfigExternal.rightSidebarConfig,
+      }
+    : tableConfigExternal;
+
+  const { rowsGrouping } = tableConfig;
 
   // Вид со слиянием (группировка или subRows): здесь только оборачиваем чекбокс
   // по верхнему уровню, чтобы клик по строке выделял весь блок. Дерево и слияние
   // колонок делают useFlattenedRows и useColumns; переходник subRows для
   // группировки не нужен (дерево не строится, стрелок нет).
-  const mergedView = resolveMergedView(tableConfigExternal);
+  const mergedView = resolveMergedView(tableConfig);
   if (mergedView) {
-    const { selecting } = tableConfigExternal;
+    const { selecting } = tableConfig;
     const wrappedSelecting =
       selecting?.state && flattenedRowsRef
         ? wrapMergedGroupSelecting(
@@ -44,20 +52,20 @@ export const usePrepareTableConfig = <
         : selecting;
     return {
       tableConfig: {
-        ...tableConfigExternal,
+        ...tableConfig,
         ...(wrappedSelecting && { selecting: wrappedSelecting }),
       } as typeof tableConfigExternal,
     };
   }
 
   if (!rowsGrouping) {
-    return { tableConfig: tableConfigExternal };
+    return { tableConfig };
   }
 
   //  добавили subRows для rowsGrouping при активном rowsGrouping
   return {
     tableConfig: {
-      ...tableConfigExternal,
+      ...tableConfig,
       ...(rowsGrouping && {
         subRows: getRowsGroupingSubrowsConfig(rowsGrouping),
       }),

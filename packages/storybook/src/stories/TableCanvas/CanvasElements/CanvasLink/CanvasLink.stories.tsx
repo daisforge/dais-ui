@@ -117,3 +117,79 @@ export const Default: StoryObj = {
     );
   },
 };
+
+export const Multiline: StoryObj = {
+  args: {
+    text: 'Длинное название документа с переносом на несколько строк и многоточием в конце',
+    width: 220,
+    maxLines: 2,
+    lineHeight: 1.4,
+    disabled: false,
+  },
+  argTypes: {
+    text: { control: 'text' },
+    width: { control: { type: 'range', min: 80, max: 480, step: 10 } },
+    maxLines: { control: { type: 'range', min: 1, max: 3, step: 1 } },
+    lineHeight: { control: { type: 'range', min: 1, max: 2, step: 0.1 } },
+    disabled: { control: 'boolean' },
+  },
+  render: (args) => {
+    const { text, width, maxLines, lineHeight, disabled } = args as {
+      text: string;
+      width: number;
+      maxLines: number;
+      lineHeight: number;
+      disabled: boolean;
+    };
+    const columnConfig = useMemo<readonly ColumnConfig<ViewRow>[]>(
+      () => [
+        {
+          key: 'view',
+          name: 'View',
+          width: 100,
+          renderCell: ({ row }) => (
+            <Canvas.Container padding={8} alignItems="center">
+              <Canvas.Text>{row.view}</Canvas.Text>
+            </Canvas.Container>
+          ),
+        },
+        {
+          key: 'link',
+          name: 'Multiline link',
+          width,
+          renderCell: ({ row }) => (
+            <Canvas.Container direction="row" alignItems="center" padding={8}>
+              <Canvas.Link
+                view={row.view}
+                href="https://example.com"
+                target="_blank"
+                disabled={disabled}
+                wordWrap
+                maxLines={maxLines}
+                lineHeight={lineHeight}
+                overflow="hidden"
+                textOverflow="ellipsis"
+                autoTooltip
+                style={{ flexGrow: 1 }}
+              >
+                {text}
+              </Canvas.Link>
+            </Canvas.Container>
+          ),
+        },
+      ],
+      [text, width, maxLines, lineHeight, disabled],
+    );
+
+    return (
+      <TableCanvas
+        tableConfig={{
+          rowHeight: 112,
+          containerStyle: { height: '600px' },
+        }}
+        columnConfig={columnConfig}
+        rows={rows}
+      />
+    );
+  },
+};

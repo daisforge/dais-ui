@@ -8,7 +8,8 @@ const sizeMapper: Record<SIZE, keyof typeof FONTS_CONFIG> = {
 };
 
 /**
- * Возвращает шрифтовые и размерные пропсы темы для указанного размера строки.
+ * Шрифты, отступы и высоты элементов темы для выбранного размера строки
+ * (big / medium / small).
  */
 export const getSizeProps = (rowSize: SIZE = 'big') => {
   const baseFontStyle = fontStyles[sizeMapper[rowSize]];

@@ -124,6 +124,11 @@ export const LefSideStyled = styled(Box).attrs({
   align-items: center;
   flex-shrink: 0;
   gap: ${({ $gap }) => ($gap != null ? `${$gap}px` : undefined)};
+  /* Пустая группа не участвует в раскладке, иначе рядом с кнопкой
+     сворачивания появится лишний отступ collapseGap */
+  &:empty {
+    display: none;
+  }
   padding-right: ${({ $paddingRight }) =>
     $paddingRight != null ? `${$paddingRight}px` : undefined};
 `;

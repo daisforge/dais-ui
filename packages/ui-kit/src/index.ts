@@ -1,6 +1,7 @@
 // components <//for rebuild republish: 1.17.0 — minor >
 export * from './components/Accordion';
 export * from './components/AiAgentPopover';
+export * from './components/AiAgentPopup';
 export * from './components/AnalyticalWidget';
 export * from './components/ApprovalCenter';
 export * from './components/Attach';
@@ -88,7 +89,18 @@ export * from './components/Steps';
 export * from './components/Stories';
 export * from './components/Switch';
 export * from './components/Table';
-export { TableCanvas } from './components/TableCanvas';
+export type {
+  BottomSheetConfig,
+  LeftSidebarConfig,
+  RightSidebarConfig,
+  TableCanvasSidebarConfig,
+  TableCanvasSidebarTab,
+} from './components/TableCanvas';
+export {
+  TableCanvas,
+  useLeftSidebar,
+  useRightSidebar,
+} from './components/TableCanvas';
 export * from './components/TableContract';
 export * from './components/TableSDDS';
 export * from './components/TableTabs';

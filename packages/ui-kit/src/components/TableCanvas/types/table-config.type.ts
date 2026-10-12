@@ -28,6 +28,10 @@ import {
   FlattenedRowsArrAndMap,
   SelectingRowConfig,
 } from '../feature-select-row/types';
+import type {
+  StickyColumnsConfig,
+  StickyRowsConfig,
+} from '../feature-sticky/types';
 import { SubRows } from '../feature-tree/types';
 import type {
   CellReadOnlyEditorGlideInstanceStaticProps,
@@ -440,9 +444,9 @@ export type FilteringConfig<T> = {
 export type DefaultSidebarTabIds = 'columns' | 'tableSettings' | 'filtering';
 
 /**
- * Конфигурация sidebar
+ * Общие настройки пользовательских вкладок левой и правой панели TableCanvas.
  */
-export type SidebarConfig = {
+export type TableCanvasSidebarConfig = {
   /**
    * Включен ли sidebar. Отвечает только за UI. Не влияет на перерасчёт фичей.
    * @default true
@@ -489,6 +493,17 @@ export type SidebarConfig = {
    * Порядок отображения кастомных вкладок
    */
   customTabsOrder?: Array<Exclude<string, DefaultSidebarTabIds>>;
+  /**
+   * Ширина контента без полоски вкладок (44px). Число — px, строка — CSS.
+   * Проценты считаются от ширины рабочей области TableCanvas.
+   * Изменение пропса сразу меняет ширину открытой панели.
+   * По умолчанию: 300px слева, 400px справа.
+   */
+  width?: string | number;
+};
+
+/** Настройки правой панели; встроенные вкладки доступны только справа. */
+export type SidebarConfig = TableCanvasSidebarConfig & {
   defaultTabs?: Array<
     | {
         id: 'filtering' | 'columns';
@@ -537,6 +552,26 @@ export type SidebarConfig = {
         iconTooltipText?: string;
       }
   >;
+};
+
+/** Конфигурация правой панели. SidebarConfig сохранён для совместимости. */
+export type RightSidebarConfig = SidebarConfig;
+
+/** Пользовательские вкладки слева; встроенных вкладок настроек нет. */
+export type LeftSidebarConfig = TableCanvasSidebarConfig;
+
+/** Нижний слот под canvas, над пагинацией, между боковыми панелями. */
+export type BottomSheetConfig = {
+  /** @default true */
+  enabled?: boolean;
+  /** Число — px, строка — CSS; 'auto' — по содержимому. Проценты — от рабочей области. @default 32 */
+  height?: string | number;
+  /** Минимальная высота, ограниченная доступным пространством. @default 32 */
+  minHeight?: string | number;
+  /** Максимальная высота в px или CSS, дополнительно ограниченная доступным пространством. */
+  maxHeight?: string | number;
+  /** Пользователь управляет содержимым и раскрытием; при height: 'auto' панель прокручивается сама. */
+  content: React.ReactNode;
 };
 
 export function activeViewIs<T extends 'cards' | 'rows'>(
@@ -998,9 +1033,8 @@ export type TableConfig<
    * рисуются ПОВЕРХ hover-подсветки и визуально перекрывают её (hover
    * «остаётся под ними» и снова виден после сброса выделения).
    *
-   * `{ row: true }` — включить с цветами из темы;
-   * `{ row: { color: '#F7F9FB' } }` — переопределить цвет data-ячеек.
-   * @default undefined (выключено)
+   * По умолчанию row-подсветка ВКЛЮЧЕНА (цвета из темы);
+   * `{ row: false }` — выключить явно.
    */
   hoverEffects?: HoverEffectsConfig;
   /**
@@ -1258,6 +1292,32 @@ export type TableConfig<
    */
   unstickyHeader?: boolean;
 
+  /**
+   * stickyColumns - колонки, которые прилипают к левому краю при горизонтальной прокрутке,
+   * как `position: sticky`. Ключи колонок или предикат по колонке.
+   *
+   * ```tsx
+   * tableConfig={{ stickyColumns: ['region', 'total'] }}
+   * tableConfig={{ stickyColumns: (column) => column.key.startsWith('total') }}
+   * ```
+   */
+  stickyColumns?: StickyColumnsConfig<ColumnConfig<RowType, SummaryRowType>>;
+
+  /**
+   * stickyRows - строки, которые прилипают под шапкой при вертикальной прокрутке.
+   * Предикат проверяется для каждой отображаемой строки данных (результаты кешируются); строки групп
+   * (`rowsGrouping`) и заглушки загрузки в него не попадают и липкими не становятся.
+   * Индексы передаются как есть — удобно для больших таблиц, где позиции известны заранее. Они
+   * считаются по итоговому отображаемому списку: сортировка, фильтры, группировка и раскрытые узлы
+   * дерева (`subRows`) сдвигают нумерацию — тогда индексы нужно пересчитывать или передать предикат.
+   *
+   * ```tsx
+   * tableConfig={{ stickyRows: (row) => row.isSubtotal }}
+   * tableConfig={{ stickyRows: [0, 41, 82] }}
+   * ```
+   */
+  stickyRows?: StickyRowsConfig<RowType>;
+
   /** Тултип при hover по canvas-элементам.
    *  Для активации фичи необходимо заполнить данный конфиг,
    * а также добавить нужные изменения в Canvas-элементах или в конфиге колонки.
@@ -1369,7 +1429,14 @@ export type TableConfig<
   /**
    * Конфигурация табов в сайдбаре
    */
+  /** @deprecated Используйте rightSidebarConfig. При наличии обоих приоритет у rightSidebarConfig. */
   sidebarConfig?: SidebarConfig;
+  /** Конфигурация правой панели. */
+  rightSidebarConfig?: RightSidebarConfig;
+  /** Конфигурация пользовательских вкладок левой панели (режим строк). */
+  leftSidebarConfig?: LeftSidebarConfig;
+  /** Нижний слот в режиме строк. Не увеличивает внешний контейнер таблицы. */
+  bottomSheetConfig?: BottomSheetConfig;
   searching?: SearchingProps;
   /**
    * onHeaderContextMenu - callback открытия контекстного меню.

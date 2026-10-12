@@ -195,6 +195,22 @@ export const useSidebar = () => {
   return ctx;
 };
 
+/** useSidebar сохранён как алиас правой панели. */
+export const useRightSidebar = useSidebar;
+
+export type LeftSidebarContextValue = Omit<
+  SidebarContextValue,
+  'width' | 'setWidth'
+> & { width: string | number };
+
+const LeftSidebarContext = createContext<LeftSidebarContextValue | null>(null);
+
+export const useLeftSidebar = () => {
+  const ctx = useContext(LeftSidebarContext);
+  if (!ctx) throw new Error('useLeftSidebar used outside Provider');
+  return ctx;
+};
+
 // ----------------------------------------------------------------
 
 // Table collapse context
@@ -231,7 +247,8 @@ export const ContextProviders = <
   expandedRowCtxV,
   searchCtxV,
   contextMenuCtxV,
-  sideBarCtxV,
+  rightSidebarCtxV,
+  leftSidebarCtxV,
   tableCollapseCtxV,
 }: PropsWithChildren & {
   headerCtxV: HeaderContextValueTypeInstance<ObjectForExtending>;
@@ -239,7 +256,8 @@ export const ContextProviders = <
   expandedRowCtxV: [ExpandedRowsContextV, ExpandedRowsChangeContextV];
   searchCtxV: SearchContextValue;
   contextMenuCtxV: ContextMenuContextV<RowType, SummaryRowType>;
-  sideBarCtxV: SidebarContextValue;
+  rightSidebarCtxV: SidebarContextValue;
+  leftSidebarCtxV: LeftSidebarContextValue;
   tableCollapseCtxV: TableCollapseContextValue;
 }) => (
   <HeaderContext.Provider value={headerCtxV}>
@@ -248,10 +266,12 @@ export const ContextProviders = <
         <ExpandedRowsChangeContext.Provider value={expandedRowCtxV[1]}>
           <SearchContext.Provider value={searchCtxV}>
             <ContextMenuContext.Provider value={contextMenuCtxV}>
-              <SidebarContext.Provider value={sideBarCtxV}>
-                <TableCollapseContext.Provider value={tableCollapseCtxV}>
-                  {children}
-                </TableCollapseContext.Provider>
+              <SidebarContext.Provider value={rightSidebarCtxV}>
+                <LeftSidebarContext.Provider value={leftSidebarCtxV}>
+                  <TableCollapseContext.Provider value={tableCollapseCtxV}>
+                    {children}
+                  </TableCollapseContext.Provider>
+                </LeftSidebarContext.Provider>
               </SidebarContext.Provider>
             </ContextMenuContext.Provider>
           </SearchContext.Provider>

@@ -7,7 +7,7 @@ export type ThemeDynamicCustoms = {
   activeSizes: GlideSizeConfig;
 };
 
-// Theme
+// Полная тема таблицы: цвета Glide Data Grid + наши цвета + размеры.
 export type Theme = ThemeGlide & ThemeCustoms & ThemeDynamicCustoms;
 
 export type GlideThemePartial = Partial<Theme>;

@@ -188,8 +188,9 @@ Hover-эффект строки, как в старой `Table` (там это �
 hover реализован через штатный glide-паттерн: `onItemHovered` трекает строку
 под курсором, `getRowThemeOverride` подкрашивает её `bgCell`.
 
-**Как включается:** `tableConfig.hoverEffects: { row: true }` (цвета из темы).
-По умолчанию выключено. `hoverEffects` — единый расширяемый объект «эффектов при
+**Как включается:** включено по умолчанию (цвета из темы); выключение —
+явное `tableConfig.hoverEffects: { row: false }`.
+`hoverEffects` — единый расширяемый объект «эффектов при
 наведении» (тип `HoverEffectsConfig` в `TableGlide/types.ts`): в будущем в нём
 же появятся hover по ячейке и т.д.
 
