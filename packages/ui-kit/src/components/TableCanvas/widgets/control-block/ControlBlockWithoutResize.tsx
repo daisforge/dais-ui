@@ -114,6 +114,7 @@ export const ControlBlockWithoutResize = ({
             flexWrap: 'nowrap',
             // Левая группа не сжимается, иначе поиск заезжает на её кнопки
             flexShrink: 0,
+            gap: spacing.collapseGap,
           }}
         >
           {collapseButtonPlacement === 'inside' && (

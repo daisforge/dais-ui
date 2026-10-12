@@ -358,6 +358,7 @@ export type CompressionSpacing = {
   containerPadding: number;
   leftPartGap: number;
   leftPartPaddingRight: number;
+  collapseGap: number;
   rightButtonsGap: number;
   rightButtonsPaddingInline: number;
 };
