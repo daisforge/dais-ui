@@ -35,7 +35,7 @@ const C = {
 };
 
 const verticalGradientPreset = css`
-  ${tokens.gradientFrameHeight}: 20%;
+  ${tokens.gradientFrameHeight}: 10%;
   ${tokens.gradientFrameLeft}: 0;
   ${tokens.gradientFrameRight}: 0;
   ${tokens.gradientFrameBottom}: 0;
@@ -46,16 +46,16 @@ const verticalGradientPreset = css`
     ${LIGHT_PALETTE[tokens.themeGradientVertical]}
   );
   ${tokens.gradientWidth}: 115%;
-  ${tokens.gradientHeight}: 100%;
+  ${tokens.gradientHeight}: 70%;
   ${tokens.gradientLeft}: -15%;
-  ${tokens.gradientTop}: 60%;
+  ${tokens.gradientTop}: 110%;
   ${tokens.gradientBlur}: var(
     ${tokens.themeGradientVerticalBlur},
-    45px
+    25px
   );
   ${tokens.gradientOpacity}: var(
     ${tokens.themeGradientOpacity},
-    0.53
+    1
   );
 
   ${tokens.inlineOvalDisplay}: none;
@@ -67,8 +67,8 @@ const verticalGradientPreset = css`
 
   ${tokens.ovalWidth}: 45%;
   ${tokens.ovalHeight}: 100%;
-  ${tokens.ovalLeft}: 78%;
-  ${tokens.ovalTop}: 35%;
+  ${tokens.ovalLeft}: 90%;
+  ${tokens.ovalTop}: 60%;
   ${tokens.ovalBlur}: var(${tokens.themeOvalVerticalBlur}, 48px);
   ${tokens.ovalOpacity}: var(
     ${tokens.themeOvalVerticalOpacity},
@@ -88,30 +88,31 @@ const horizontalGradientPreset = css`
     ${LIGHT_PALETTE[tokens.themeGradientHorizontal]}
   );
   ${tokens.gradientWidth}: 115%;
-  ${tokens.gradientHeight}: 100%;
+  ${tokens.gradientHeight}: 50%;
   ${tokens.gradientLeft}: -10%;
-  ${tokens.gradientTop}: 55%;
+  ${tokens.gradientTop}: 100%;
   ${tokens.gradientBlur}: var(
     ${tokens.themeGradientHorizontalBlur},
-    45px
+    25px
   );
   ${tokens.gradientOpacity}: var(
     ${tokens.themeGradientOpacity},
-    0.53
+    1
   );
 
   ${tokens.inlineOvalDisplay}: none;
   ${tokens.ovalFrameDisplay}: block;
-  ${tokens.ovalFrameHeight}: 42%;
+  /* Минимальные размеры сохраняют овал на низкой карточке без Content. */
+  ${tokens.ovalFrameHeight}: max(42%, 110px);
   ${tokens.ovalBorderRadius}: 50%;
   ${tokens.shapeGradientMaskStart}: 76%;
   ${tokens.shapeGradientMaskMiddle}: 88%;
 
-  ${tokens.ovalWidth}: 30%;
+  ${tokens.ovalWidth}: max(30%, 216px);
   ${tokens.ovalHeight}: 120%;
-  ${tokens.ovalLeft}: 84%;
+  ${tokens.ovalLeft}: calc(100% - 72px);
   ${tokens.ovalTop}: 20%;
-  ${tokens.ovalBlur}: var(${tokens.themeOvalHorizontalBlur}, 48px);
+  ${tokens.ovalBlur}: var(${tokens.themeOvalHorizontalBlur}, 15px);
   ${tokens.ovalOpacity}: var(
     ${tokens.themeOvalHorizontalOpacity},
     0.42

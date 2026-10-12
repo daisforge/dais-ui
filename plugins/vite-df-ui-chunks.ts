@@ -98,6 +98,10 @@ export const MANUAL_UIKIT_COMP_CHUNKS = [
     modulePaths: ['packages/ui-kit/src/components/AiAgentPopover/'],
   },
   {
+    chunkName: 'AiAgentPopup',
+    modulePaths: ['packages/ui-kit/src/components/AiAgentPopup/'],
+  },
+  {
     chunkName: 'TourWidget',
     modulePaths: ['packages/ui-kit/src/components/TourWidget/'],
   },
@@ -278,6 +282,12 @@ export const MANUAL_UIKIT_COMP_CHUNKS = [
     chunkName: 'sharedUtilsCopy',
     modulePaths: ['packages/ui-kit/src/shared/utils/copy/'],
   },
+  {
+    // Общая сборка resizable-конфига атомарного Popup: используют PopupDF
+    // и AiAgentPopup, отдельный чанк, чтобы они не тянули друг друга
+    chunkName: 'sharedUtilsResizable',
+    modulePaths: ['packages/ui-kit/src/shared/utils/resizable/'],
+  },
   // utils chunk
   {
     chunkName: 'utils',
@@ -329,7 +339,7 @@ const calledChunks = new Set();
 const manualChunks = (id: string) => {
   const notCalledChunks = () =>
     ALL_MANUAL_UIKIT_CHUNKS.filter(
-      (m) => !new Set(calledChunks).has(m.chunkName)
+      (m) => !new Set(calledChunks).has(m.chunkName),
     ).map((m) => m.chunkName);
 
   let currentManualChunkName;

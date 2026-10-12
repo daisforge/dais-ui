@@ -1137,6 +1137,8 @@ export function TableCanvas<
                               // enableVirtualization,
                               onCellClicked: tableConfig.onCellClicked,
                               unstickyHeader: tableConfig.unstickyHeader,
+                              stickyColumnsConfig: tableConfig.stickyColumns,
+                              stickyRowsConfig: tableConfig.stickyRows,
                               minColumnWidth: tableConfig.minColumnWidth,
                               maxColumnWidth: tableConfig.maxColumnWidth,
                               maxColumnAutoWidth:

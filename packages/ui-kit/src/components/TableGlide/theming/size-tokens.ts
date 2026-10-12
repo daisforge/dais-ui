@@ -23,10 +23,10 @@ export type RowSizeTokens = typeof ROW_SIZE_TOKENS;
 type RowSizeName = keyof RowSizeTokens;
 export type RowSizeToken = RowSizeTokens[RowSizeName];
 
-// Возвращает базовую высоту строки для выбранного размера.
+// Высота строки для выбранного размера (big / medium / small).
 export const getRowHeightBySize = (size: RowSizeName) =>
   ROW_SIZE_TOKENS[size].rowHeight;
 
-// Возвращает размер textfield для выбранного размера строки.
+// Размер поля ввода (textfield) для выбранного размера строки.
 export const getTextfieldSizeByRowSize = (size: RowSizeName) =>
   ROW_SIZE_TOKENS[size].textfieldSize;

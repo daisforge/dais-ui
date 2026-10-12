@@ -1,4 +1,8 @@
-import type { GridSelection, Rectangle } from '@glideappsfinal/glide-data-grid';
+import type {
+  GridSelection,
+  Item,
+  Rectangle,
+} from '@glideappsfinal/glide-data-grid';
 import { useMemo } from 'react';
 
 import type {
@@ -69,6 +73,7 @@ export function useSelectionGeometry<
         activeRows: EMPTY_SET,
         activeColumns: EMPTY_SET,
         activeDataRange: undefined as Rectangle | undefined,
+        soloDataCell: undefined as Item | undefined,
         isSingleCellCustomHighlight: false,
         outlineRange: undefined as Rectangle | undefined,
         isServiceColumn: (colInd: number) => !!columns[colInd]?.isServiceColumn,
@@ -107,6 +112,7 @@ export function useSelectionGeometry<
         activeRows: EMPTY_SET,
         activeColumns: EMPTY_SET,
         activeDataRange: undefined as Rectangle | undefined,
+        soloDataCell: undefined as Item | undefined,
         isSingleCellCustomHighlight: false,
         outlineRange: undefined as Rectangle | undefined,
         isServiceColumn: (colInd: number) => !!columns[colInd]?.isServiceColumn,
@@ -134,6 +140,14 @@ export function useSelectionGeometry<
           })
         : EMPTY_SET;
 
+    // Координаты выбранной ячейки, если выделена ровно одна ячейка
+    // (иначе undefined). Нужно, например, чтобы на выбранной строке не
+    // подкрашивать кликнутую ячейку цветом выделения — только рамка.
+    const soloDataCell: Item | undefined =
+      activeDataRange.width === 1 && activeDataRange.height === 1
+        ? [activeDataRange.x, activeDataRange.y]
+        : undefined;
+
     return {
       hasAnyActiveSelection,
       firstDataColumnIndex,
@@ -141,6 +155,7 @@ export function useSelectionGeometry<
       activeRows,
       activeColumns,
       activeDataRange,
+      soloDataCell,
       // Флаг: рисуем ли свою заливку/обводку (только одиночная ячейка в cell).
       isSingleCellCustomHighlight,
       // outline рисуем сами только для одиночной ячейки; реальные диапазоны
