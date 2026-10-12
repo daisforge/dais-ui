@@ -1,0 +1,23 @@
+import{j as o}from"./react-D2T61mpp.js";import{cg as e,ch as t,ca as s}from"./vendor-m8ptr2NK.js";import{T as l}from"./TableCanvas.rowsGrouping.stories-DVizVc2p.js";import"./react-is-Clcustum.js";import"./styled-components-B4nx6Z04.js";import"./@tanstack/react-virtual-T6w5YrM7.js";import"./tslib-DoU9Jm1N.js";import"./DocStoryTemplate-qx-PZ3pk.js";import"./storySourceDoc-tVKyHcEN.js";import"./TableCanvas-DULiTQM_.js";import"./FiltersActions-DAPzLdsq.js";import"./IconButton-CbjzGPcl.js";import"./@salutejs/plasma-icons-B39iMR5e.js";import"./@salutejs/sdds-finai-CKzZmfdH.js";import"./@salutejs/sdds-themes-DL6tmVfr.js";import"./utils-0LQegF5b.js";import"./constants-rCJTDDk_.js";import"./sharedUtilsDebug-BX_KjCjW.js";import"./Box-B3n0ev6h.js";import"./TextField-DiJCRAT7.js";import"./sharedUtilsInputs-Bsa0hnp8.js";import"./AiAgentPopup-DJ6b1BI4.js";import"./TextArea-DDJILtRV.js";import"./sharedUtilsResizable-BGoHR4Ou.js";import"./Table-DvMRgACe.js";import"./Collapse-DUmKgMT1.js";import"./react-data-grid-DKzBhZuS.js";import"./TableTabs-D6SEcbTs.js";import"./TableCanvasSharedConstants-B2qJZwC8.js";import"./TableGlide-DciZ3-22.js";import"./@glideappsfinal/glide-data-grid-DGM0WF9M.js";import"./canvas-hypertxt-DsokSIOX.js";import"./sharedUiSearch-7qE5IVNC.js";import"./ListOfFilters-Dn5j_mQd.js";import"./lodash.isequal-DD0Lfcik.js";import"./NumberFormat-DJNgv68p.js";import"./EmptyState-C0F7Jmuu.js";import"./MassActions-BOpBgRIh.js";import"./Autocomplete-BmIAFlFk.js";import"./ErrorPage-B7VwmGr8.js";import"./tableData-DVJFoYoT.js";function n(i){const r={a:"a",blockquote:"blockquote",code:"code",h1:"h1",h2:"h2",li:"li",p:"p",strong:"strong",ul:"ul",...e(),...i.components};return o.jsxs(o.Fragment,{children:[o.jsx(t,{of:l,name:"Docs"}),`
+`,o.jsx(r.h1,{id:"rowsgrouping-tablecanvas",children:"RowsGrouping (TableCanvas)"}),`
+`,o.jsx(r.p,{children:o.jsx(r.strong,{children:"tableConfig.rowsGrouping + columnConfig.rowsGrouping"})}),`
+`,o.jsx(r.p,{children:"Группировка строк таблицы по значениям колонок с поддержкой вложенных группировок."}),`
+`,o.jsx(r.h2,{id:"ключевые-особенности",children:"Ключевые особенности"}),`
+`,o.jsxs(r.ul,{children:[`
+`,o.jsxs(r.li,{children:["Управляемое состояние группировки через ",o.jsx(r.code,{children:"groupByState"})]}),`
+`,o.jsx(r.li,{children:"Кнопка с выпадающим списком для выбора группировок в controlBlock"}),`
+`,o.jsxs(r.li,{children:["Кастомный рендер сгруппированных строк через ",o.jsx(r.code,{children:"renderGroupCell"})]}),`
+`,o.jsxs(r.li,{children:["Кастомные элементы в выпадающем списке через ",o.jsx(r.code,{children:"groupButton.defaultCustomItems"})]}),`
+`,o.jsxs(r.li,{children:["Возможность замены данных группированных строк через ",o.jsx(r.code,{children:"groupRowReplaceTo"})]}),`
+`]}),`
+`,o.jsx(r.h2,{id:"особенности",children:"Особенности"}),`
+`,o.jsxs(r.ul,{children:[`
+`,o.jsxs(r.li,{children:[o.jsx(r.code,{children:"rowKeyGetter"})," должен возвращать уникальный идентификатор строки"]}),`
+`,o.jsxs(r.li,{children:[o.jsx(r.code,{children:"groupedColumnProps"})," позволяет настроить колонку с группировкой (ширину, рендер и т.д.)"]}),`
+`,o.jsxs(r.li,{children:["В ",o.jsx(r.code,{children:"columnConfig.rowsGrouping"})," можно указать ",o.jsx(r.code,{children:"groupByColumn: false"})," для исключения колонки из группировки"]}),`
+`,o.jsxs(r.li,{children:[o.jsx(r.code,{children:"columnGroupLabel"})," переопределяет лейбл в выпадающем списке (default: ",o.jsx(r.code,{children:"columnConfig.key"}),")"]}),`
+`]}),`
+`,o.jsxs(r.blockquote,{children:[`
+`,o.jsxs(r.p,{children:["Подробнее о типах — ",o.jsx(r.a,{href:"?path=/docs/%D0%BB%D0%BE%D0%BA%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D1%8B-tablecanvas-rowsgrouping-api--docs",children:"RowsGrouping API"})]}),`
+`]}),`
+`,o.jsx(s,{})]})}function V(i={}){const{wrapper:r}={...e(),...i.components};return r?o.jsx(r,{...i,children:o.jsx(n,{...i})}):n(i)}export{V as default};
