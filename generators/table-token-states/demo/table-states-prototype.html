@@ -590,7 +590,7 @@ const TEMP = { light: { dataYellowLight: '#FFF6E5' }, betaCoreLight: { dataYello
 const TEMP_NOTE = { light: 'временно: amber-100, до исправления темы', betaCoreLight: 'временно: шаг новой палитры, токена в beta нет', betaCoreDark: 'временно: шаг новой палитры, токена в beta нет' };
 function sourcesFor(id) { const out = {}; for (const [k, src] of Object.entries(SRC.SEMANTIC)) { const tv = TEMP[id] && TEMP[id][k]; out[k] = tv ? { ...src, values: { ...src.values, [id]: tv }, temp: true, tempNote: TEMP_NOTE[id] } : src; } return out; }
 
-// ───────────────────────── Сейчас в коде (dais-ui main 15.09.2026) ─────────────────────────
+
 const CODE_LIGHT = {
   bgCell: '#FFFFFF', textDark: '#13181BF5', textHeader: '#13181BF5', textHeaderSelected: '#13181BF5', textGroupHeader: '#13181BF5', borderColor: '#D5DFE6', accentColor: '#0b7ecb', hiddenColumnsIndicatorColor: '#0b7ecb',
   bgHeader: '#ECF6FC', bgHeaderHasFocus: '#ECF6FC', bgGroupHeader: '#ECF6FC', errorOutlineColor: '#FF3D51',
