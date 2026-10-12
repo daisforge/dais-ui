@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.23.0](https://github.com/daisforge/dais-ui/compare/v1.22.0...v1.23.0) (2026-10-12)
+
+### Bug Fixes
+
+- **TourWidget:** исправлен градиент ([cbcb277](https://github.com/daisforge/dais-ui/commit/cbcb277dd2d51f090b9bd7cd71ecdfdb910cf695))
+
+### Features
+
+- **AiAgentPopup:** окно AI-помощника ([#94](https://github.com/daisforge/dais-ui/issues/94)) ([3e4b045](https://github.com/daisforge/dais-ui/commit/3e4b0450f76c80e38867bbeaa08b3c4649ca4ca1))
+- **TableCanvas:** tableConfig.stickyColumns и stickyRows — липкие колонки и строки ([#108](https://github.com/daisforge/dais-ui/issues/108)) ([072cc7c](https://github.com/daisforge/dais-ui/commit/072cc7c05fd7c3b32693f8710db29244b1fc0217)), closes [RamK-16/glide#52](https://github.com/RamK-16/glide/issues/52)
+- **TableCanvas:** добавлен левый Sidebar и нижняя панель BottomSheet ([#115](https://github.com/daisforge/dais-ui/issues/115)) ([d2c91e2](https://github.com/daisforge/dais-ui/commit/d2c91e26d4bc4f89a7ecc68701d3211d3fb74a24))
+- **TableCanvas:** добавлено подчеркивание многострочных ссылок ([9dd2f9c](https://github.com/daisforge/dais-ui/commit/9dd2f9cf199ca2225ea575e970c0b1f257ea926d))
+- **TableCanvas:** добавлены цветовые темы таблицы и состояния ячеек ([#114](https://github.com/daisforge/dais-ui/issues/114)) ([5c98ee1](https://github.com/daisforge/dais-ui/commit/5c98ee1bebe074ee073e7f2a85c51b576160c19a))
+
 # [1.22.0](https://github.com/daisforge/dais-ui/compare/v1.21.0...v1.22.0) (2026-10-05)
 
 ### Bug Fixes
