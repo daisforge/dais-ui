@@ -238,6 +238,7 @@ export const ControlBlock = ({
         containerPadding: spacing.containerPadding,
         leftPartGap: spacing.leftPartGap,
         leftPartPaddingRight: spacing.leftPartPaddingRight,
+        collapseGap: spacing.collapseGap,
         rightButtonsGap: spacing.rightButtonsGap,
         rightButtonsPaddingInline: spacing.rightButtonsPaddingInline,
       },
@@ -456,6 +457,7 @@ export const ControlBlock = ({
               flexWrap: 'nowrap',
               // Левая группа не сжимается, иначе поиск заезжает на её кнопки
               flexShrink: 0,
+              gap: spacing.collapseGap,
             }}
           >
             {hasInlineCollapse && (

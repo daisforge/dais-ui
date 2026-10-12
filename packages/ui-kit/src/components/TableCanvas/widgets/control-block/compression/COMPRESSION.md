@@ -68,6 +68,7 @@
 | inlineTitle          | inline-заголовок виден                  | DOM-замер                           |
 | collapseBlock        | активна кнопка коллапса                 | DOM-замер                           |
 | leftGaps + padding   | есть коллапс ИЛИ внутренние левые элем. | спейсинг                            |
+| collapseGap          | есть коллапс И внутренние левые элем.   | спейсинг (8px, как у заголовка)     |
 | editModeLeftSlot     | editMode активен                        | DOM-замер                           |
 | edit-кнопки          | фича редактирования активна             | с лейблом / icon-only (DOM-замер)   |
 | leftSideInnerBlock   | есть leftSideInner                      | DOM-замер (целиком, не сжимается)   |

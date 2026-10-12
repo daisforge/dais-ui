@@ -119,6 +119,12 @@ export const calculateWidth = (
     add('leftGaps', sp.leftPartGap * leftGapCount + sp.leftPartPaddingRight);
   }
 
+  // Отступ между кнопкой коллапса и LefSideStyled. Пустой LefSideStyled
+  // скрыт (display: none), поэтому без внутренних элементов отступа нет.
+  if (hasCollapse && innerLeftItems > 0) {
+    add('collapseGap', sp.collapseGap);
+  }
+
   // editModeLeftSlot
   if (hasEditSlot) {
     add('editModeLeftSlot', measuredWidths!.editModeLeftSlot!);
