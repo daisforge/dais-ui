@@ -2,7 +2,7 @@
   {
     "name": "/",
     "href": "_.json",
-    "summary": "Убедитесь, что у вас установлен ReactJS!",
+    "summary": "Требуются react и react-dom версии 16.13.1 или выше.",
     "category": "intro"
   }
 ]
