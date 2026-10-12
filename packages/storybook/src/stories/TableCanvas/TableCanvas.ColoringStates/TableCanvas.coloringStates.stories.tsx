@@ -27,8 +27,7 @@ type ColoringArgs = {
 
 const meta: Meta<ColoringArgs> = {
   title: 'Локальные компоненты/TableCanvas/ColoringStates',
-  // Стенд для ручной проверки цветов, в сайдбаре не нужен — там остаются
-  // только визуальные тесты
+  // Стенд для ручной проверки цветов, в сайдбаре не нужен, там только визуальные тесты
   tags: ['!autodocs', 'hideInSidebar'],
   args: {
     hoverRow: true,
