@@ -6,10 +6,12 @@ import { useBaseHighlightRegions } from './useBaseHighlightRegions';
 import { useColumnRowHighlightRegions } from './useColumnRowHighlightRegions';
 
 /**
- * Карта окрашивания ячейки. Единственное место, где задан порядок слоёв.
- * Хук ничего не решает сам: что именно красится, живёт в
- * useBaseHighlightRegions и useColumnRowHighlightRegions, фоны в темах.
- * Здесь только порядок.
+ * Собирает все прямоугольники подсветки таблицы (выделение, рамки ошибок,
+ * подсветку служебных колонок) в один список в правильном порядке.
+ *
+ * Подробнее. Это единственное место, где задан порядок слоёв окраски. Сам
+ * хук ничего не решает: что именно красится, описано в
+ * useBaseHighlightRegions и useColumnRowHighlightRegions, фоны — в темах.
  *
  * Итоговый цвет ячейки складывается из двух частей.
  *
@@ -18,7 +20,8 @@ import { useColumnRowHighlightRegions } from './useColumnRowHighlightRegions';
  *      сервис-колонок, прозрачный accent нумерации, тёмная шапка активной
  *      или выделенной колонки;
  *   2) тема строки (getRowThemeOverride в TableGlide.tsx): серый ховер строки,
- *      фон строки с отмеченным чекбоксом, фон summary;
+ *      фон строки с отмеченным чекбоксом, фон выбранной строки
+ *      (highlightActiveType='row'), фон summary;
  *   3) тема ячейки (getCellContent в TableGlide.tsx): жёлтый фон редактируемой
  *      ячейки (bgEditableCell). Самая сильная: editing перекрывает и ховер,
  *      и чекбокс.
@@ -30,9 +33,10 @@ import { useColumnRowHighlightRegions } from './useColumnRowHighlightRegions';
  *   3) базовое выделение (useBaseHighlightRegions): затемнение сервис-зоны
  *      активного диапазона, заливка и обводка одиночной активной ячейки,
  *      кольца ошибок;
- *   4) выделение колонок и строк, подсветка активной строки, затемнение
- *      нумерации под rangeStack (useColumnRowHighlightRegions).
- * Дальше рисует форк: заливки регионов блендятся с фоном, потом линии сетки,
+ *   4) выделение колонок и строк, затемнение нумерации под rangeStack
+ *      (useColumnRowHighlightRegions). Выбранная строка регионами не
+ *      красится — её фон задают темы (часть 1).
+ * Дальше рисует форк: заливки регионов накладываются на фон, потом линии сетки,
  * после линий кольца (solid-outline: ошибки, активная ячейка), сверху
  * фокус-ринг и fill-handle.
  */
@@ -46,13 +50,18 @@ interface UseColoringLayersParams {
   activeDataRange?: Rectangle;
   outlineRange?: Rectangle;
   checkboxSelectedRowIndexes?: ReadonlySet<number>;
+  /**
+   * Номер выбранной строки (highlightActiveType='row'). Саму строку этот хук
+   * не красит — её фон задают темы в TableGlide.tsx. Номер нужен только
+   * базовому слою: на этой строке кликнутая ячейка не заливается цветом
+   * выделения.
+   */
+  activeRow?: number;
   errorCellRanges?: readonly Rectangle[];
   highlightRegionsExternal?: GlideProps['highlightRegions'];
-  /* Слой 4: выделение колонок и строк, активная строка. */
+  /* Слой 4: выделение колонок и строк. */
   selectedColumnIndexes: number[];
   headerSelectedRowIndexes: number[];
-  activeRow?: number;
-  checkboxVisibleRowIndexes?: ReadonlySet<number>;
   /** Всего строк (данные + summary). */
   totalRows: number;
   columnsCount: number;
@@ -71,12 +80,11 @@ export function useColoringLayers({
   activeDataRange,
   outlineRange,
   checkboxSelectedRowIndexes,
+  activeRow,
   errorCellRanges,
   highlightRegionsExternal,
   selectedColumnIndexes,
   headerSelectedRowIndexes,
-  activeRow,
-  checkboxVisibleRowIndexes,
   totalRows,
   columnsCount,
   isRowHoverEnabled,
@@ -92,6 +100,7 @@ export function useColoringLayers({
     activeDataRange,
     outlineRange,
     checkboxSelectedRowIndexes,
+    highlightActiveRow: activeRow,
     errorCellRanges,
     highlightRegionsExternal,
   });
@@ -102,10 +111,7 @@ export function useColoringLayers({
     baseRegions,
     selectedColumnIndexes,
     headerSelectedRowIndexes,
-    activeRow,
-    activeRange: selection.current?.range,
     selectionRangeStack: selection.current?.rangeStack,
-    checkboxAvailableRowIndexes: checkboxVisibleRowIndexes,
     totalRows,
     firstDataCol: serviceColumnsCount,
     columnsCount,

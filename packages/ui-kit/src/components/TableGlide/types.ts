@@ -38,10 +38,7 @@ export type {
   ProvideEditorComponent,
   SpanAlignment,
 };
-export type ThemeDynamicCustoms = {
-  rowSize: SIZE;
-  activeSizes: GlideSizeConfig;
-};
+export type { ThemeDynamicCustoms } from './theming/types';
 export type { Theme, ActiveTheme };
 
 export type GlideProps = ComponentProps<typeof DataEditor>;
@@ -76,20 +73,22 @@ export type CellsSelectionMode =
  */
 export type HoverEffectsConfig = {
   /**
-   * Подсветка строки под курсором. По умолчанию выключена.
-   * - не задано или `false` — выключена;
-   * - `true` — включена, цвета из темы.
+   * Подсветка строки под курсором. По умолчанию ВКЛЮЧЕНА.
+   * - не задано или `true` — включена, цвета из темы;
+   * - `false` — выключена явно.
    *
    * Цвета по зонам строки берутся из темы:
    * - data-ячейки — `bgRowHovered`;
    * - служебные колонки (нумерация, чекбокс) — `bgServiceRowHovered`, тот же
    *   цвет, что у сервис-зоны при выделении;
-   * - строка, отмеченная чекбоксом, темнеет целиком `bgSelectedRowHovered`.
+   * - строка, отмеченная чекбоксом, темнеет целиком `bgSelectedRowHovered`;
+   * - выбранная строка (`highlightActiveType: 'row'`) под курсором делает
+   *   шаг глубже: hover (с нажатым чекбоксом — hover2), цветные ячейки —
+   *   свой hover2.
    *
-   * Hover — самый нижний слой: выделение ячеек, строк, колонок и залипшая
-   * активная строка (`highlightActiveType: 'row'`) рисуются поверх и
-   * перекрывают его; после сброса выделения он снова виден. Summary-строки
-   * hover не получают.
+   * Hover — самый нижний слой: выделение ячеек, строк и колонок рисуется
+   * поверх и перекрывает его; после сброса выделения он снова виден.
+   * Summary-строки hover не получают.
    */
   row?: boolean;
 };
@@ -281,6 +280,21 @@ export type ColumnGlideCustoms<R extends ObjectForExtending, SR = unknown> = {
         colInd?: number;
         theme?: Theme;
       }) => CanvasNodeTooltipConfig | null);
+  /**
+   * Свой цвет ячеек колонки (тема ячейки).
+   *
+   * Цвет лучше брать из темы (`cellInfo.theme`), например статусные
+   * `theme.bgCellPositive / bgCellNegative / bgCellWarning / bgCellInfo`:
+   * они свои для каждой темы. Фиксированный hex в тёмной теме останется
+   * таким же светлым, как в светлой.
+   *
+   * Подробнее. Если вернуть `bgCell` hex-цветом (`#RGB`, `#RRGGBB`,
+   * `#RRGGBBAA` — прозрачный цвет сначала смешивается с фоном ячейки),
+   * таблица сама посчитает его состояния (под курсором, в выбранной строке,
+   * в выделении) — цвет ведёт себя как встроенные. Не-hex значение
+   * (`rgba()`, `var()` и т. п.) применяется как есть, без состояний: ячейка
+   * не отреагирует на курсор и выделение.
+   */
   columnThemeOverride?: (
     cellInfo: CellInfo<R, SR>
   ) => CellThemeOverrideResult | undefined;
@@ -398,13 +412,19 @@ export type TableGlideCustomProps<
   enableSelectAll?: boolean;
   /** Индексы строк, выбранных через checkbox selection. */
   checkboxSelectedRowIndexes?: ReadonlySet<number>;
-  /** Индексы строк, у которых ЕСТЬ (виден) чекбокс — для тёмной подсветки highlightActiveType='row'. */
+  /**
+   * Индексы строк, у которых ЕСТЬ (виден) чекбокс.
+   * @deprecated На цвет не влияет: наличие чекбокса не меняет цвет выбранной
+   * строки, ступень добавляет только НАЖАТЫЙ чекбокс
+   * (`checkboxSelectedRowIndexes`). Удалить в следующем мажоре.
+   */
   checkboxVisibleRowIndexes?: ReadonlySet<number>;
   /**
    * Эффекты при наведении. `hoverEffects.row` — подсветка строки под курсором:
    * рисуется через bgCell (getRowThemeOverride), т.е. лежит ПОД селектингом и
    * highlightActiveType — они рисуются поверх (highlightRegions) и визуально
-   * перекрывают hover. По умолчанию выключено.
+   * перекрывают hover. По умолчанию row-подсветка ВКЛЮЧЕНА; выключение —
+   * явное `{ row: false }`.
    */
   hoverEffects?: HoverEffectsConfig;
   /** Включает компенсацию тонких canvas-линий при browser zoom ниже 100% / DPR < 1. */
