@@ -1,0 +1,5 @@
+import{d as o}from"./react-D2T61mpp.js";import a from"./DocArgsTemplate-81Nspu3b.js";import{b as t}from"./StoriesUtils-C9QbZHs7.js";import"./vendor-BotQo-m5.js";import"./react-is-Clcustum.js";import"./styled-components-CA2CAEjL.js";import"./@tanstack/react-virtual-Cn23thnX.js";import"./tslib-DoU9Jm1N.js";const C={title:"Локальные компоненты/TableCanvas/API/columnConfig",parameters:{docs:{page:a,description:{component:"### API columnConfig:"}}},excludeStories:["CANVAS"],component:t},e={name:"API",render:()=>o.jsxDEV(o.Fragment,{},void 0,!1,{fileName:"/home/runner/work/dais-ui/dais-ui/packages/storybook/src/stories/TableCanvas/API/TableCanvas.columnConfig.stories.tsx",lineNumber:27,columnNumber:17},void 0)};var r,s,n;e.parameters={...e.parameters,docs:{...(r=e.parameters)==null?void 0:r.docs,source:{originalSource:`{
+  name: 'API',
+  // eslint-disable-next-line react/jsx-no-useless-fragment
+  render: () => <></>
+}`,...(n=(s=e.parameters)==null?void 0:s.docs)==null?void 0:n.source}}};const b=["Docs"];export{e as Docs,b as __namedExportsOrder,C as default};
