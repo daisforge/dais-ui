@@ -1,0 +1,32 @@
+[
+  {
+    "name": "/FAQ",
+    "href": "_FAQ.json",
+    "summary": "Данная проблема справедлива только для styled-components tip Если оборачиваешь компонент дизайн-системы в styled(...) и нужно сменить тег - используй свойство forwardedAs , а не as .",
+    "category": "guides"
+  },
+  {
+    "name": "/how-to-icons",
+    "href": "_how-to-icons.json",
+    "summary": "Так в итоговый бандл попадут только импортированные компоненты.",
+    "category": "guides"
+  },
+  {
+    "name": "/how-to-mcp",
+    "href": "_how-to-mcp.json",
+    "summary": "Сервер работает по stdio и предоставляет агенту доступ к документации, свойствам компонентов, примерам и гайдам по sdds-finai .",
+    "category": "guides"
+  },
+  {
+    "name": "/next",
+    "href": "_next.json",
+    "summary": "Раздел описывает варианты и нюансы подключения библиотеки в рамках работы с NextJs .",
+    "category": "guides"
+  },
+  {
+    "name": "/react_17",
+    "href": "_react_17.json",
+    "summary": "",
+    "category": "guides"
+  }
+]

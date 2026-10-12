@@ -1,0 +1,7 @@
+{
+  "name": "/components/price",
+  "slug": "components/data-display/price",
+  "category": "components",
+  "url": "https://plasma.sberdevices.ru/sdds-finai/components/data-display/price/",
+  "content": "# Price Price ```tsx\nimport React from 'react';\nimport { Price } from '@salutejs/sdds-finai';\n\nexport function App() {\n    return (\n        <div style={{ display: 'flex', flexDirection: 'column' }}>\n            <Price currency=\"rub\" minimumFractionDigits={3}>12345.67</Price>\n            <Price locale=\"en\" currency=\"rub\" minimumFractionDigits={3} stroked>12345.67</Price>\n        </div>\n    );\n}\n```\n\n## API API"
+}

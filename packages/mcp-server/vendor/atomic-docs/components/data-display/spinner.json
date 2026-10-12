@@ -1,0 +1,7 @@
+{
+  "name": "/components/spinner",
+  "slug": "components/data-display/spinner",
+  "category": "components",
+  "url": "https://plasma.sberdevices.ru/sdds-finai/components/data-display/spinner/",
+  "content": "# Spinner Spinner ```tsx\nimport React from 'react';\nimport { Spinner } from '@salutejs/sdds-finai';\n\nexport function App() {\n    return (\n        <Spinner size=\"l\" />\n    );\n}\n```\n\n## API API"
+}

@@ -1,0 +1,87 @@
+{
+  "name": "/components/link-button",
+  "package": "sdds-finai",
+  "category": "components",
+  "summary": "свойстве text , или любой контент напрямую через children .",
+  "api": {
+    "props": [
+      {
+        "name": "size",
+        "type": "\"s\" | \"xs\" | \"xxs\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "view",
+        "type": "\"default\" | \"accent\" | \"positive\" | \"warning\" | \"negative\" | \"secondary\" | \"gradient\" | \"info\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "text",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "contentLeft",
+        "type": "ReactNode",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "contentRight",
+        "type": "ReactNode",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "additionalContent",
+        "type": "ReactNode",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "isLoading",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "loader",
+        "type": "ReactNode",
+        "required": false,
+        "default": "",
+        "description": ""
+      }
+    ]
+  },
+  "examples": [
+    {
+      "title": "Использование Использование Компонент  LinkButton  может содержать текст, который указывается в",
+      "snippet": "import React from 'react';\nimport { LinkButton } from '@salutejs/sdds-finai';\nimport { IconDownload } from '@salutejs/plasma-icons';\nexport function App() {\n    return (\n        <div>\n            <LinkButton text=\"Текст\" />\n            <LinkButton text=\"Текст\" contentLeft={<IconDownload color=\"inherit\" />} />\n            <LinkButton text=\"Текст\" contentRight={<IconDownload color=\"inherit\" />} />\n            <LinkButton text=\"Текст\" isLoading />\n            <LinkButton text=\"Текст\" isLoading loader={<div>Loader...</div>} />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Размер кнопки",
+      "snippet": "import React from 'react';\nimport { LinkButton } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div>\n            <LinkButton text=\"Кнопка\" size=\"s\" />\n            <LinkButton text=\"Кнопка\" size=\"xs\" />\n            <LinkButton text=\"Кнопка\" size=\"xxs\" />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Вид кнопки",
+      "snippet": "import React from 'react';\nimport { LinkButton } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', flexWrap: 'wrap' }}>\n            <LinkButton text=\"Кнопка\" size=\"s\" view=\"default\" />\n            <LinkButton text=\"Кнопка\" size=\"s\" view=\"accent\" />\n            <LinkButton text=\"Кнопка\" size=\"s\" view=\"gradient\" />\n            <LinkButton text=\"Кнопка\" size=\"s\" view=\"secondary\" />\n            <LinkButton text=\"Кнопка\" size=\"s\" view=\"positive\" />\n            <LinkButton text=\"Кнопка\" size=\"s\" view=\"warning\" />\n            <LinkButton text=\"Кнопка\" size=\"s\" view=\"negative\" />\n            <LinkButton text=\"Кнопка\" size=\"s\" view=\"info\" />\n        </div>\n    );\n}"
+    }
+  ]
+}

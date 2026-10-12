@@ -1,19 +1,15 @@
 {
-  "builtAt": "2026-09-18T14:59:28.196Z",
-  "version": "0.360.0",
+  "builtAt": "2026-09-30T10:22:24.923Z",
+  "version": "0.361.0",
   "source": {
     "repo": "https://github.com/salute-developers/plasma"
   },
   "paths": {
-    "FAQ": "FAQ/index.json",
     "beta": "beta/index.json",
     "components": "components/index.json",
     "form": "form/index.json",
-    "how-to-icons": "how-to-icons/index.json",
+    "guides": "guides/index.json",
     "intro": "intro/index.json",
-    "mcp": "mcp/index.json",
-    "next": "next/index.json",
-    "react_17": "react_17/index.json",
     "utils": "utils/index.json",
     "tokens": "tokens/index.json"
   }
