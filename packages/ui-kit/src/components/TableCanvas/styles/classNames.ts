@@ -1,7 +1,7 @@
 import { tableTabsClassNames } from '@ui-kit/components/TableTabs/TableTabs.classNames';
 
 import { tableSidebarFilterBlockClassNames } from '../feature-filtering/sidebar-filter-block/SideBarFilter.classnames';
-import { tableSidebarClassNames } from '../feature-right-sidebar';
+import { tableSidebarClassNames } from '../feature-sidebar/ui/TableSidebar.classnames';
 import { controlBlockClassNames } from '../widgets/control-block/control-block.classnames';
 
 export const tableClassNames = {
@@ -12,6 +12,7 @@ export const tableClassNames = {
   tableScroller: 'dvn-scroller',
   tableCardsViewContainer: 'rdg-cards-view-container',
   tableRowsViewContainer: 'rdg-rows-view-container',
+  tableCenterColumn: 'rdg-table-center-column',
   cell: 'rdg-cell',
   cellPinnedLeft: 'rdg-cell-frozen',
   row: 'rdg-row',

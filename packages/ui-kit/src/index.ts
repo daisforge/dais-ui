@@ -89,7 +89,18 @@ export * from './components/Steps';
 export * from './components/Stories';
 export * from './components/Switch';
 export * from './components/Table';
-export { TableCanvas } from './components/TableCanvas';
+export type {
+  BottomSheetConfig,
+  LeftSidebarConfig,
+  RightSidebarConfig,
+  TableCanvasSidebarConfig,
+  TableCanvasSidebarTab,
+} from './components/TableCanvas';
+export {
+  TableCanvas,
+  useLeftSidebar,
+  useRightSidebar,
+} from './components/TableCanvas';
 export * from './components/TableContract';
 export * from './components/TableSDDS';
 export * from './components/TableTabs';

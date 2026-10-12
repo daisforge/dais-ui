@@ -33,7 +33,7 @@ export const useMassActionsEffects = ({
   calculateCompression: () => void;
   measuredButtonWidthsRef: React.MutableRefObject<number[]>;
 }) => {
-  // Подписываемся на изменения размера контейнера таблицы
+  // Существующий общий observer сообщает о resize; ширину берём из ref canvas.
   useTableResizeObserver(() => {
     // Пересчитываем позицию (работает и в свернутом, и в развернутом режиме)
     calculatePosition();

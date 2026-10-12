@@ -48,6 +48,8 @@ export const useTableResizeObserverWidth = () => {
   return context.getCurrentWidth;
 };
 
+// Измеряем контейнер одним observer и уведомляем внутренние компоненты через контекст.
+// Например, массовые действия пересчитывают положение и число видимых кнопок.
 export const TableResizeObserverProvider = ({
   children,
   element,
@@ -144,7 +146,8 @@ export const TableResizeObserverProvider = ({
   );
 };
 
-// Компонент-обертка для TableResizeObserverProvider, который обновляется при изменении ref
+// После монтирования передаём DOM-узел из ref в provider через state.
+// Изменение ref.current не вызывает рендер, поэтому одного ref для подключения observer недостаточно.
 export const TableResizeObserverProviderWrapper = ({
   children,
   refTableContainer,
@@ -157,7 +160,7 @@ export const TableResizeObserverProviderWrapper = ({
   );
 
   React.useLayoutEffect(() => {
-    // Обновляем элемент при изменении ref (синхронно после DOM мутаций)
+    // Считываем ref после DOM-мутаций, когда React уже привязал к нему контейнер.
     if (refTableContainer?.current) {
       setElement(refTableContainer.current);
     }

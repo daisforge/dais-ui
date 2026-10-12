@@ -2,7 +2,9 @@ export type { SplitIconButtonProps } from './components/SplitIconButton';
 export { SplitIconButton } from './components/SplitIconButton';
 export {
   useHeaderContext,
+  useLeftSidebar,
   useRefTableGlobalContainerContext,
+  useRightSidebar,
   useRowContext,
   useSidebar,
 } from './contexts';
@@ -49,6 +51,7 @@ export { type GroupRow } from './feature-rows-grouping/types';
 export type { TooltipConfigResult } from './feature-tooltip';
 export * from './styles';
 export { TableCanvas } from './TableCanvas';
+export type { SidebarTab as TableCanvasSidebarTab } from './widgets/control-block/types';
 // Реэкспорт для controlled-режима выделения (tableConfig.cellsSelection.state):
 // потребителю нужны CompactSelection (строить rows/columns) и тип GridSelection.
 export * from './TableGlideInstance/reexports-for-external';

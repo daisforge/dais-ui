@@ -1,242 +1,147 @@
-/* eslint-disable no-console */
-/* eslint-disable react-hooks/rules-of-hooks */
-import { createRows, type Row } from '@df-storybook/data/tableData';
-import DocStoryTemplate from '@df-storybook/templates/DocStoryTemplate.mdx';
+import { getFuncAsString } from '@df-storybook/utils/getFuncAsString';
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
 import type { Meta, StoryObj } from '@storybook/react';
-import { Button } from '@ui-kit/components/Button';
-import { ColumnConfig, TableCanvas } from '@ui-kit/components/TableCanvas';
-import { IconInfo, IconSettings } from '@ui-kit/icons';
-import React, { useMemo, useState } from 'react';
+import { TableCanvas } from '@ui-kit/components/TableCanvas';
+
+import {
+  ActiveTabCallbackExample,
+  ControlledActiveTabExample,
+  DefaultOpenExample,
+  LeftSidebarExample,
+  RightSidebarExample,
+  WithCustomTabExample,
+} from './Table.sidebar.examples';
 
 const meta: Meta = {
   title: 'Локальные компоненты/TableCanvas/Sidebar',
-  parameters: {
-    docs: {
-      page: DocStoryTemplate,
-    },
-  },
+  component: TableCanvas,
   tags: ['!autodocs'],
 };
 
 export default meta;
+type Story = StoryObj;
 
-export const WithCustomTab: StoryObj = {
+// prettier-ignore
+const withCustomTabCode = `
+import { TableCanvas, type ColumnConfig } from '@daisforge/ui/components/TableCanvas';
+import { IconInfo } from '@daisforge/ui/icons';
+import React, { useState } from 'react';
+
+${getFuncAsString('packages/storybook/src/stories/TableCanvas/TableCanvas.Sidebar/Table.sidebar.examples.tsx', 'createSidebarData')}
+
+${getFuncAsString('packages/storybook/src/stories/TableCanvas/TableCanvas.Sidebar/Table.sidebar.examples.tsx', 'WithCustomTabExample')}
+`;
+
+// prettier-ignore
+const defaultOpenCode = `
+import { TableCanvas, type ColumnConfig } from '@daisforge/ui/components/TableCanvas';
+import { IconInfo } from '@daisforge/ui/icons';
+import React, { useState } from 'react';
+
+${getFuncAsString('packages/storybook/src/stories/TableCanvas/TableCanvas.Sidebar/Table.sidebar.examples.tsx', 'createSidebarData')}
+
+${getFuncAsString('packages/storybook/src/stories/TableCanvas/TableCanvas.Sidebar/Table.sidebar.examples.tsx', 'DefaultOpenExample')}
+`;
+
+// prettier-ignore
+const controlledActiveTabCode = `
+import { TableCanvas, type ColumnConfig } from '@daisforge/ui/components/TableCanvas';
+import { Button } from '@daisforge/ui';
+import { IconInfo, IconSettings } from '@daisforge/ui/icons';
+import React, { useState } from 'react';
+
+${getFuncAsString('packages/storybook/src/stories/TableCanvas/TableCanvas.Sidebar/Table.sidebar.examples.tsx', 'createSidebarData')}
+
+${getFuncAsString('packages/storybook/src/stories/TableCanvas/TableCanvas.Sidebar/Table.sidebar.examples.tsx', 'ControlledActiveTabExample')}
+`;
+
+// prettier-ignore
+const activeTabCallbackCode = `
+import { TableCanvas, type ColumnConfig } from '@daisforge/ui/components/TableCanvas';
+import { IconInfo, IconSettings } from '@daisforge/ui/icons';
+import React, { useState } from 'react';
+
+${getFuncAsString('packages/storybook/src/stories/TableCanvas/TableCanvas.Sidebar/Table.sidebar.examples.tsx', 'createSidebarData')}
+
+${getFuncAsString('packages/storybook/src/stories/TableCanvas/TableCanvas.Sidebar/Table.sidebar.examples.tsx', 'ActiveTabCallbackExample')}
+`;
+
+// prettier-ignore
+const leftSidebarCode = `
+import { TableCanvas } from '@daisforge/ui/components/TableCanvas';
+import { Button, TextFieldSearch, BodyS } from '@daisforge/ui';
+import { IconBookOpenOutline, IconDocumentOutline } from '@daisforge/ui/icons';
+import React, { useState } from 'react';
+
+${getFuncAsString('packages/storybook/src/stories/TableCanvas/TableCanvas.Sidebar/Table.sidebar.examples.tsx', 'LeftSidebarExample')}
+`;
+
+// prettier-ignore
+const rightSidebarCode = `
+import { TableCanvas } from '@daisforge/ui/components/TableCanvas';
+import { Button, BodyS } from '@daisforge/ui';
+import { IconBookOpenOutline, IconDocumentOutline } from '@daisforge/ui/icons';
+import React, { useState } from 'react';
+
+${getFuncAsString('packages/storybook/src/stories/TableCanvas/TableCanvas.Sidebar/Table.sidebar.examples.tsx', 'RightSidebarExample')}
+`;
+
+export const WithCustomTab: Story = {
   name: 'С кастомной вкладкой',
   ...storySourceDoc({
+    code: withCustomTabCode,
     previewSource: 'shown',
+    type: 'code',
   }),
-  render: () => {
-    const [rows] = useState(createRows);
-    const [selectedRows, setSelectedRows] = useState<ReadonlySet<string>>(
-      new Set(),
-    );
-    const [filters, setFilters] = useState({});
-
-    const columnConfig = useMemo<readonly ColumnConfig<Row>[]>(
-      () => [
-        { key: 'id', name: 'ID' },
-        { key: 'task', name: 'Title' },
-        { key: 'priority', name: 'Priority' },
-      ],
-      [],
-    );
-
-    const CustomInfoTab = () => (
-      <>
-        <p>Всего строк: {rows.length}</p>
-        <p>Выбрано строк: {selectedRows.size}</p>
-      </>
-    );
-
-    return (
-      <TableCanvas
-        tableConfig={{
-          sidebarConfig: {
-            customTabs: [
-              {
-                id: 'customInfo',
-                label: 'Информация',
-                icon: <IconInfo size="s" />,
-                content: <CustomInfoTab />,
-                title: 'Информация',
-                showInSidebar: true,
-              },
-            ],
-          },
-          selecting: {
-            state: [selectedRows, setSelectedRows],
-            rowKeyGetter: (row) => row.id.toString(),
-          },
-          filtering: {
-            state: [filters, setFilters],
-          },
-        }}
-        columnConfig={columnConfig}
-        rows={rows}
-      />
-    );
-  },
+  render: WithCustomTabExample,
 };
 
-export const DefaultOpen: StoryObj = {
+export const DefaultOpen: Story = {
   name: 'Открыт по умолчанию на кастомной вкладке',
   ...storySourceDoc({
+    code: defaultOpenCode,
     previewSource: 'shown',
+    type: 'code',
   }),
-  render: () => {
-    const [rows] = useState(createRows);
-
-    const columnConfig = useMemo<readonly ColumnConfig<Row>[]>(
-      () => [
-        { key: 'id', name: 'ID' },
-        { key: 'task', name: 'Title' },
-        { key: 'priority', name: 'Priority' },
-      ],
-      [],
-    );
-
-    return (
-      <TableCanvas
-        tableConfig={{
-          sidebarConfig: {
-            defaultOpen: true,
-            defaultActiveTabId: 'customInfo',
-            customTabs: [
-              {
-                id: 'customInfo',
-                label: 'Информация',
-                icon: <IconInfo size="s" />,
-                content: <p>Эта вкладка открыта сразу при первом рендере.</p>,
-                title: 'Информация',
-                showInSidebar: true,
-              },
-            ],
-          },
-        }}
-        columnConfig={columnConfig}
-        rows={rows}
-      />
-    );
-  },
+  render: DefaultOpenExample,
 };
 
-export const ControlledActiveTab: StoryObj = {
+export const ControlledActiveTab: Story = {
   name: 'Внешнее управление активной вкладкой',
   ...storySourceDoc({
+    code: controlledActiveTabCode,
     previewSource: 'shown',
+    type: 'code',
   }),
-  render: () => {
-    const [rows] = useState(createRows);
-    const [isOpen, setIsOpen] = useState(false);
-    const [activeTab, setActiveTab] = useState<string | null>(null);
-
-    const columnConfig = useMemo<readonly ColumnConfig<Row>[]>(
-      () => [
-        { key: 'id', name: 'ID' },
-        { key: 'task', name: 'Title' },
-        { key: 'priority', name: 'Priority' },
-      ],
-      [],
-    );
-
-    const openTab = (id: string) => {
-      setActiveTab(id);
-      setIsOpen(true);
-    };
-
-    return (
-      <>
-        <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
-          <Button onClick={() => openTab('customInfo')}>Инфо</Button>
-          <Button onClick={() => openTab('customSettings')}>Настройки</Button>
-          <Button onClick={() => setIsOpen(false)}>Закрыть</Button>
-        </div>
-        <TableCanvas
-          tableConfig={{
-            sidebarConfig: {
-              openState: [isOpen, setIsOpen],
-              activeTabState: [activeTab, setActiveTab],
-              customTabs: [
-                {
-                  id: 'customInfo',
-                  label: 'Информация',
-                  icon: <IconInfo size="s" />,
-                  content: <p>Вкладка «Информация».</p>,
-                  title: 'Информация',
-                  showInSidebar: true,
-                },
-                {
-                  id: 'customSettings',
-                  label: 'Настройки',
-                  icon: <IconSettings size="s" />,
-                  content: <p>Вкладка «Настройки».</p>,
-                  title: 'Настройки',
-                  showInSidebar: true,
-                },
-              ],
-            },
-          }}
-          columnConfig={columnConfig}
-          rows={rows}
-        />
-      </>
-    );
-  },
+  render: ControlledActiveTabExample,
 };
 
-export const ActiveTabCallback: StoryObj = {
+export const ActiveTabCallback: Story = {
   name: 'Колбэк активной вкладки',
   ...storySourceDoc({
+    code: activeTabCallbackCode,
     previewSource: 'shown',
+    type: 'code',
   }),
-  render: () => {
-    const [rows] = useState(createRows);
-    const [currentTab, setCurrentTab] = useState<string | null>(null);
+  render: ActiveTabCallbackExample,
+};
 
-    const columnConfig = useMemo<readonly ColumnConfig<Row>[]>(
-      () => [
-        { key: 'id', name: 'ID' },
-        { key: 'task', name: 'Title' },
-        { key: 'priority', name: 'Priority' },
-      ],
-      [],
-    );
+export const LeftSidebar: Story = {
+  name: 'Левая панель: ширина по активной вкладке',
+  ...storySourceDoc({
+    code: leftSidebarCode,
+    previewSource: 'shown',
+    type: 'code',
+  }),
+  render: LeftSidebarExample,
+};
 
-    return (
-      <>
-        <p style={{ marginBottom: 12 }}>
-          Активная вкладка: <b>{currentTab ?? 'нет (сайдбар закрыт)'}</b>
-        </p>
-        <TableCanvas
-          tableConfig={{
-            sidebarConfig: {
-              onActiveTabChange: (tabId, tab) =>
-                setCurrentTab(tab?.title ?? tabId),
-              customTabs: [
-                {
-                  id: 'customInfo',
-                  label: 'Информация',
-                  icon: <IconInfo size="s" />,
-                  content: <p>Вкладка «Информация».</p>,
-                  title: 'Информация',
-                  showInSidebar: true,
-                },
-                {
-                  id: 'customSettings',
-                  label: 'Настройки',
-                  icon: <IconSettings size="s" />,
-                  content: <p>Вкладка «Настройки».</p>,
-                  title: 'Настройки',
-                  showInSidebar: true,
-                },
-              ],
-            },
-          }}
-          columnConfig={columnConfig}
-          rows={rows}
-        />
-      </>
-    );
-  },
+export const RightSidebar: Story = {
+  name: 'Правая панель: контент и ширина по активной вкладке',
+  ...storySourceDoc({
+    code: rightSidebarCode,
+    previewSource: 'shown',
+    type: 'code',
+  }),
+  render: RightSidebarExample,
 };
