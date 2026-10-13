@@ -52,6 +52,7 @@ export * from './components/Link';
 export * from './components/LinkButton';
 export * from './components/List';
 export * from './components/ListOfFilters';
+export * from './components/Logger';
 export * from './components/Mask';
 export * from './components/MassActions';
 export * from './components/MassActionsStatic';
