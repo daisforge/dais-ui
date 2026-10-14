@@ -66,6 +66,13 @@ export const ColumnsControlInner = <
   const [localHiddens, setLocalHiddens] = useState(hiddenCols);
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Прототип мгновенного применения: правки пишутся сразу в стейт таблицы,
+  // локальные стейты лишь зеркалят его через эффекты ниже.
+  const applyImmediately = !!columnsControlConfig.applyImmediately;
+  const setOrder = applyImmediately ? setColumnsOrder : setLocalOrder;
+  const setPinned = applyImmediately ? setPinnedCols : setLocalPinned;
+  const setHiddens = applyImmediately ? setHiddenCols : setLocalHiddens;
+
   // отображаем блок поиска в настройках столбцов в случае, если колонок больше 10
   const isVisibleSearchColumnBlock = Object.keys(columnConfig).length >= 10;
 
@@ -100,13 +107,19 @@ export const ColumnsControlInner = <
         sourceKey,
         targetKey,
         reorderIsActive: true,
-        setColumnsOrder: setLocalOrder,
+        setColumnsOrder: setOrder,
         keyText,
         tableConfigKeyTextBoolean,
         colsWithKeyTextMap,
         pinnedCols: localPinned,
       }),
-    [colsWithKeyTextMap, keyText, tableConfigKeyTextBoolean, localPinned],
+    [
+      colsWithKeyTextMap,
+      keyText,
+      tableConfigKeyTextBoolean,
+      localPinned,
+      setOrder,
+    ],
   );
 
   const confirmOrResetHandlers = {
@@ -180,7 +193,7 @@ export const ColumnsControlInner = <
   const columnsVisibilityProps = {
     allColumnsIsVisible: allNotDisabledHidingColsIsVisible,
     allColumnsVisibilityChanger: () => {
-      setLocalHiddens((prev) => {
+      setHiddens((prev) => {
         if (allNotDisabledHidingColsIsVisible) {
           const res = [...prev, ...notDisabledHidingCols];
           const resWithoutCopy = Array.from(new Set(res));
@@ -209,7 +222,7 @@ export const ColumnsControlInner = <
   const disabledUnpinAll = localPinned.length === pinnedAlways.length;
 
   const clearLocalPinned = () =>
-    setLocalPinned((prev) =>
+    setPinned((prev) =>
       prev.filter((k) => {
         const correctedDisable = correctedDisabled(disablePinningSet, {
           colsWithKeyTextMap,
@@ -264,7 +277,7 @@ export const ColumnsControlInner = <
         disabledClearPinnedButton={disabledUnpinAll}
         columnsControlConfig={columnsControlConfig}
         clearLocalPinned={clearLocalPinned}
-        resetToDefaultOrder={() => setLocalOrder(getDefaultColumnsOrder())}
+        resetToDefaultOrder={() => setOrder(getDefaultColumnsOrder())}
         disableResetToDefaultOrderButton={orderIsNotChanged}
         {...columnsVisibilityProps}
       />
@@ -273,8 +286,8 @@ export const ColumnsControlInner = <
         searchQuery={searchQuery}
         columnsOrder={localOrder}
         onColumnsReorder={onColumnsReorderLocal}
-        setPinnedCols={setLocalPinned}
-        setHiddenCols={setLocalHiddens}
+        setPinnedCols={setPinned}
+        setHiddenCols={setHiddens}
         columnConfig={columnConfig}
         columnsControlConfig={columnsControlConfig}
         colsWithKeyTextMap={colsWithKeyTextMap}
@@ -285,7 +298,7 @@ export const ColumnsControlInner = <
         pinnedColsSet={pinnedColsSet}
         hiddenColsSet={hiddenColsSet}
       />
-      <ConfirmOrResetBlock {...confirmOrResetHandlers} />
+      {!applyImmediately && <ConfirmOrResetBlock {...confirmOrResetHandlers} />}
     </>
   );
 };
