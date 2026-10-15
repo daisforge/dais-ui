@@ -15,7 +15,7 @@ import React, {
 import styled, { css } from 'styled-components';
 
 import { useRefTableContext } from '../contexts';
-import { COLORS, TABLE_BORDER_RADIUS } from '../styles';
+import { COLORS, outerBorderColor, TABLE_BORDER_RADIUS } from '../styles';
 import { DURATION } from '../styles/styles.constants';
 import {
   DEFAULT_PAGINATION_SIZE,
@@ -26,7 +26,7 @@ import { getPaginationHeight } from './handlers';
 import { PaginationProps, PaginationSlots } from './types';
 
 const StyledDiv = styled.div(() => ({
-  border: `1px solid ${COLORS.border}`,
+  border: `1px solid ${outerBorderColor}`,
   borderTop: 'none',
   borderBottomLeftRadius: `${TABLE_BORDER_RADIUS}px`,
   borderBottomRightRadius: `${TABLE_BORDER_RADIUS}px`,

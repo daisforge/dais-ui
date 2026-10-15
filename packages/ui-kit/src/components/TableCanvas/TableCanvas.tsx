@@ -10,6 +10,7 @@ import {
   RefTableGlobalContainerContext,
   TableResizeObserverProviderWrapper,
 } from './contexts';
+import { resolveBorders } from './feature-borders/resolveBorders';
 import { useBorders } from './feature-borders/useBorders';
 import { useClipboard, useFillHandle } from './feature-cell-transfer';
 import {
@@ -320,12 +321,18 @@ export function TableCanvas<
     });
 
   // ------------------------------------------------ borders -----------------------------------------
+  // «Чистый» вид выключает линии сетки; явный tableConfig.borders сильнее.
+  const appearanceVariant = tableConfig.appearance?.variant ?? 'default';
+  const effectiveBorders = useMemo(
+    () => resolveBorders(appearanceVariant, tableConfig.borders),
+    [appearanceVariant, tableConfig.borders],
+  );
   const {
     verticalBorder: bordersVerticalBorder,
     horizontalBorder: bordersHorizontalBorder,
     getCellBorder: bordersGetCellBorder,
   } = useBorders({
-    borders: tableConfig.borders,
+    borders: effectiveBorders,
     reorderedColumns,
     rowsRef: flattenedRowsRef,
   });
@@ -1025,6 +1032,7 @@ export function TableCanvas<
                             $css: tableConfig.css,
                             $highlightActiveType:
                               tableConfig.highlightActiveType ?? 'disabled',
+                            $appearanceVariant: appearanceVariant,
                             collapseButtonPlacement:
                               tableCollapseContextVal.collapseButtonPlacement,
                             isHaveSomeFeatureInSidebar:
@@ -1175,6 +1183,7 @@ export function TableCanvas<
                                 tableConfig.cellsSelection?.mode ??
                                 'range-cell',
                               hoverEffects: tableConfig.hoverEffects,
+                              appearance: tableConfig.appearance,
                               enableLowDprHairline:
                                 tableConfig.enableLowDprHairline,
                             }),

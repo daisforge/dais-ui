@@ -425,6 +425,7 @@
         "TableCanvas.Filtering",
         "TableCanvas.FormatCellContent",
         "TableCanvas.Borders",
+        "TableCanvas.Appearance",
         "TableCanvas.FullScreenMode",
         "TableCanvas.HeaderRowHeight",
         "TableCanvas.HighlightActiveType",

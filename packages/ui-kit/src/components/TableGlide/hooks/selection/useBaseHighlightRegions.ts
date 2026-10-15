@@ -18,6 +18,8 @@ interface UseBaseHighlightRegionsParams {
   highlightActiveRow?: number;
   errorCellRanges?: readonly Rectangle[];
   highlightRegionsExternal?: GlideProps['highlightRegions'];
+  /** Служебная зона следует за строкой: регионы её выделения стилем 'accent'. */
+  serviceZoneFollowsRow?: boolean;
 }
 
 export function useBaseHighlightRegions({
@@ -31,6 +33,7 @@ export function useBaseHighlightRegions({
   highlightActiveRow,
   errorCellRanges,
   highlightRegionsExternal,
+  serviceZoneFollowsRow = false,
 }: UseBaseHighlightRegionsParams): GlideProps['highlightRegions'] {
   return useMemo(() => {
     // highlightRegions — это уже финальный слой canvas-overlay.
@@ -71,7 +74,9 @@ export function useBaseHighlightRegions({
     const serviceActiveFill = baseTheme.selectionServiceActiveBg;
 
     if (activeDataRange && serviceColumnsCount > 0) {
-      // Service-часть строки/диапазона подсвечиваем только фоном.
+      // Service-часть строки/диапазона подсвечиваем только фоном. Когда
+      // служебная зона следует за строкой, цвет берётся из accentLight каждой
+      // ячейки (стиль 'accent'), а не из региона.
       regions.push({
         color: serviceActiveFill,
         range: {
@@ -80,7 +85,7 @@ export function useBaseHighlightRegions({
           width: serviceColumnsCount,
           height: activeDataRange.height,
         },
-        style: 'no-outline',
+        style: serviceZoneFollowsRow ? 'accent' : 'no-outline',
       });
     }
 
@@ -133,6 +138,7 @@ export function useBaseHighlightRegions({
     checkboxSelectedRowIndexes,
     highlightActiveRow,
     errorCellRanges,
+    serviceZoneFollowsRow,
     highlightRegionsExternal,
   ]);
 }
