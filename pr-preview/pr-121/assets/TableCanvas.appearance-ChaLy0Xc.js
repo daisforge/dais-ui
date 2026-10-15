@@ -1,0 +1,53 @@
+import{j as n}from"./react-D2T61mpp.js";import{cf as o,cg as t,c9 as s}from"./vendor-B_4HYhc7.js";import{A as c}from"./TableCanvas.appearance.stories-CgdVS0XC.js";import"./react-is-Clcustum.js";import"./styled-components-ouObhINl.js";import"./@tanstack/react-virtual-CE-19ytw.js";import"./tslib-DoU9Jm1N.js";import"./tableData-DVJFoYoT.js";import"./DocStoryTemplate-CCrE2aBJ.js";import"./storySourceDoc-tVKyHcEN.js";import"./FiltersActions-BWlFKlXZ.js";import"./IconButton-7hiUSILU.js";import"./@salutejs/plasma-icons-CIq0u5Dl.js";import"./@salutejs/sdds-finai-TCjL4Z2W.js";import"./@salutejs/sdds-themes-CBoev_d5.js";import"./utils-D44Kgftq.js";import"./constants-CUAU9RhA.js";import"./sharedUtilsDebug-BX_KjCjW.js";import"./Box-DWEALaeF.js";import"./TextField-C-XntaTZ.js";import"./sharedUtilsInputs-CFf5mopW.js";import"./AiAgentPopup-BZhxewmV.js";import"./TextArea-BFMWdmJf.js";import"./sharedUtilsResizable-BUJ8zcRl.js";import"./Table-BBtd5LAh.js";import"./Collapse-B5wk63HI.js";import"./react-data-grid-4GcFAa9Q.js";import"./TableTabs-Bhs-ucb7.js";import"./TableCanvasSharedConstants-B2qJZwC8.js";import"./TableGlide-B_-BnE-y.js";import"./@glideappsfinal/glide-data-grid-GuYPfrbc.js";import"./canvas-hypertxt-DsokSIOX.js";import"./sharedUiSearch-BV5BLS2m.js";import"./ListOfFilters-Be9eUEGC.js";import"./lodash.isequal-DD0Lfcik.js";import"./NumberFormat-CIpqoF1s.js";import"./EmptyState-ywfnPcWp.js";import"./MassActions-fHpeQgcH.js";import"./Autocomplete-DFGSHODx.js";import"./TableCanvas-Cvg1gFqP.js";import"./ErrorPage-2chbbO0g.js";function i(r){const e={a:"a",blockquote:"blockquote",code:"code",h1:"h1",h2:"h2",li:"li",p:"p",pre:"pre",strong:"strong",ul:"ul",...o(),...r.components};return n.jsxs(n.Fragment,{children:[n.jsx(t,{of:c,name:"Docs"}),`
+`,n.jsx(e.h1,{id:"appearance-tablecanvas",children:"Appearance (TableCanvas)"}),`
+`,n.jsx(e.p,{children:n.jsx(e.strong,{children:"tableConfig.appearance"})}),`
+`,n.jsx(e.p,{children:`Внешний вид таблицы: преднастроенные конфигурации дизайн-системы. Сейчас это
+«чистый» вид и зебра.`}),`
+`,n.jsx(e.pre,{children:n.jsx(e.code,{className:"language-tsx",children:`<TableCanvas
+  tableConfig={{
+    appearance: { variant: 'clean', zebra: true },
+  }}
+/>
+`})}),`
+`,n.jsxs(e.h2,{id:"чистый-вид--variant-clean",children:["Чистый вид — ",n.jsx(e.code,{children:"variant: 'clean'"})]}),`
+`,n.jsx(e.p,{children:"Таблица без линий и рамок:"}),`
+`,n.jsxs(e.ul,{children:[`
+`,n.jsx(e.li,{children:`нет линий сетки, ни вертикальных, ни горизонтальных, в том числе у служебных
+колонок (нумерация, чекбокс) и под шапкой;`}),`
+`,n.jsx(e.li,{children:`нет внешних рамок у контейнера таблицы, блока управления, строки активных
+фильтров, пагинации и скроллбаров;`}),`
+`,n.jsxs(e.li,{children:["шапка на фоне ячеек, текст шапки серый (",n.jsx(e.code,{children:"text-secondary"}),`); групповая шапка
+на том же фоне; итоговая строка остаётся голубой, как в обычном виде;`]}),`
+`,n.jsx(e.li,{children:"служебные колонки без собственной заливки: красятся вместе со строкой."}),`
+`]}),`
+`,n.jsx(e.p,{children:`Остальные цвета не меняются: hover строки, выделение ячеек и строк, отмеченная
+чекбоксом строка, редактируемые и статусные ячейки берутся из той же палитры,
+что и в обычном виде. Отступы, скругления углов и размеры строк не меняются.`}),`
+`,n.jsxs(e.p,{children:["Линии сетки выключаются как ",n.jsx(e.code,{children:"borders: { vertical: false, horizontal: false }"}),`.
+Явно заданный `,n.jsx(e.code,{children:"tableConfig.borders"}),` сильнее: в чистом виде можно точечно вернуть
+нужные линии через `,n.jsx(e.code,{children:"getVerticalBorder"}),", ",n.jsx(e.code,{children:"getHorizontalBorder"}),` и
+`,n.jsx(e.code,{children:"getCellBorder"}),"."]}),`
+`,n.jsxs(e.h2,{id:"зебра--zebra-true",children:["Зебра — ",n.jsx(e.code,{children:"zebra: true"})]}),`
+`,n.jsxs(e.p,{children:[`Чередование фона строк: первая, третья, пятая и далее строки окрашены цветом
+`,n.jsx(e.code,{children:"surface-transparent-primary"}),`, остальные на обычном фоне. Красится вся строка,
+включая служебные колонки. Чередование считается по отображаемым строкам, поэтому
+при раскрытии `,n.jsx(e.code,{children:"subRows"}),` дочерние строки участвуют в нём наравне с родителями.
+Итоговые строки не окрашиваются.`]}),`
+`,n.jsxs(e.p,{children:[`Зебра это новый цвет покоя строки, а не наложение: hover, выделение ячеек и
+выделение строки по нумерации считаются от него той же формулой, что и для
+обычных строк, поэтому на окрашенной строке они на ступень темнее, чем на белой.
+Отмеченная чекбоксом и выбранная (`,n.jsx(e.code,{children:"highlightActiveType: 'row'"}),`) строки сильнее
+зебры и красятся своими цветами.`]}),`
+`,n.jsxs(e.p,{children:["Зебра работает в любом ",n.jsx(e.code,{children:"variant"}),", по умолчанию выключена."]}),`
+`,n.jsx(e.h2,{id:"что-ещё-учесть",children:"Что ещё учесть"}),`
+`,n.jsxs(e.ul,{children:[`
+`,n.jsxs(e.li,{children:[`Цвета для всех шести тем считает генератор палитры
+(`,n.jsx(e.code,{children:"generators/table-token-states"}),"), руками ни один цвет не задаётся."]}),`
+`,n.jsxs(e.li,{children:["В обычном виде (",n.jsx(e.code,{children:"variant: 'default'"}),`) служебные колонки сохраняют свой голубой
+фон и в зебре не участвуют; как это должно выглядеть, уточняется у
+дизайн-системы.`]}),`
+`]}),`
+`,n.jsxs(e.blockquote,{children:[`
+`,n.jsxs(e.p,{children:["Подробнее о типах — ",n.jsx(e.a,{href:"?path=/docs/%D0%BB%D0%BE%D0%BA%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D1%8B-tablecanvas-appearance-api--docs",children:"Appearance API"})]}),`
+`]}),`
+`,n.jsx(s,{})]})}function U(r={}){const{wrapper:e}={...o(),...r.components};return e?n.jsx(e,{...r,children:n.jsx(i,{...r})}):i(r)}export{U as default};
