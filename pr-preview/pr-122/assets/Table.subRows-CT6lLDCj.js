@@ -1,0 +1,15 @@
+import{j as o}from"./react-D2T61mpp.js";import{cf as e,cg as n,c9 as s}from"./vendor-C8VuHz3V.js";import{T as c}from"./Table.subRows.stories-BcF31CId.js";import"./react-is-Clcustum.js";import"./styled-components-BpVVkBzC.js";import"./@tanstack/react-virtual-CcbeDy_e.js";import"./tslib-DoU9Jm1N.js";import"./tableData-DVJFoYoT.js";import"./DocStoryTemplate-B-riaFPz.js";import"./storySourceDoc-tVKyHcEN.js";import"./Table-B0AdTL7m.js";import"./FiltersActions-DmSh7VYo.js";import"./IconButton-Cyh6jX5Y.js";import"./@salutejs/plasma-icons-98834dYt.js";import"./@salutejs/sdds-finai-Cz7rM39w.js";import"./@salutejs/sdds-themes-CBoev_d5.js";import"./utils-DPKiBQxU.js";import"./constants-CUAU9RhA.js";import"./sharedUtilsDebug-BX_KjCjW.js";import"./Box-CcNAFjSN.js";import"./TextField-Co0gL0EW.js";import"./sharedUtilsInputs-PdFYUoI6.js";import"./AiAgentPopup-CP0GYSYQ.js";import"./TextArea-CuXgMFQV.js";import"./sharedUtilsResizable-k1DpAbyC.js";import"./Collapse-BFOVUS3J.js";import"./react-data-grid-B83SeY1o.js";import"./TableTabs-DrUU80Is.js";import"./TableCanvasSharedConstants-B2qJZwC8.js";import"./TableGlide-_EWp1AOz.js";import"./@glideappsfinal/glide-data-grid-DwMYPKa3.js";import"./canvas-hypertxt-DsokSIOX.js";import"./sharedUiSearch-BWV_Zq-r.js";import"./ListOfFilters-C9boEqTG.js";import"./lodash.isequal-DD0Lfcik.js";import"./NumberFormat-02ANNdG-.js";import"./EmptyState-BvkbGYoG.js";import"./MassActions-CxTbJd7d.js";import"./Autocomplete-ARwfIOGo.js";function t(i){const r={a:"a",code:"code",h1:"h1",h2:"h2",li:"li",p:"p",ul:"ul",...e(),...i.components};return o.jsxs(o.Fragment,{children:[o.jsx(n,{of:c,name:"Docs"}),`
+`,o.jsx(r.h1,{id:"subrows",children:"SubRows"}),`
+`,o.jsxs(r.p,{children:["Иерархичные строки legacy ",o.jsx(r.code,{children:"Table"}),"."]}),`
+`,o.jsx(r.h2,{id:"ключевые-особенности",children:"Ключевые особенности"}),`
+`,o.jsxs(r.ul,{children:[`
+`,o.jsxs(r.li,{children:["Вложенные строки подключаются через ",o.jsx(r.code,{children:"tableConfig.subRows"})]}),`
+`,o.jsxs(r.li,{children:[o.jsx(r.code,{children:"getSubRows"})," возвращает дочерние строки"]}),`
+`,o.jsxs(r.li,{children:[o.jsx(r.code,{children:"rowKeyGetter"})," задает уникальный ключ строки"]}),`
+`,o.jsxs(r.li,{children:[o.jsx(r.code,{children:"columnConfig.subRow"})," управляет отображением данных дочерних строк"]}),`
+`,o.jsx(r.li,{children:"Можно показать chevron раскрытия и кастомный render дочерней ячейки"}),`
+`]}),`
+`,o.jsx(r.h2,{id:"особенности",children:"Особенности"}),`
+`,o.jsxs(r.p,{children:["Для вложенных строк важно иметь стабильный ",o.jsx(r.code,{children:"rowKeyGetter"}),". Если нужно группировать плоский набор данных, используйте ",o.jsx(r.code,{children:"rowsGrouping"}),", а не ",o.jsx(r.code,{children:"subRows"}),"."]}),`
+`,o.jsxs(r.p,{children:["Описание типов - в разделе ",o.jsx(r.a,{href:"?path=/docs/%D0%BB%D0%BE%D0%BA%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D1%8B-table-subrows-api--docs",children:"API"}),"."]}),`
+`,o.jsx(s,{})]})}function Q(i={}){const{wrapper:r}={...e(),...i.components};return r?o.jsx(r,{...i,children:o.jsx(t,{...i})}):t(i)}export{Q as default};
