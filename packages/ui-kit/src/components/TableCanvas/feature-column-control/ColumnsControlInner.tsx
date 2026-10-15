@@ -17,6 +17,7 @@ import { ChangeAllButtonsBlock } from './ChangeAllButtonsBlock';
 import { ColumnsList } from './ColumnsList';
 import { correctedDisabled } from './ColumnsList/handlers';
 import { ConfirmOrResetBlock } from './ConfirmOrResetBlock';
+import { buildConfirmParams } from './confirmParams';
 import { ColumnsControlConfig } from './types';
 
 const SERVICE_COLS_SET = new Set([
@@ -27,6 +28,8 @@ const SERVICE_COLS_SET = new Set([
 ]);
 const withoutServiceCols = (cols: string[]) =>
   cols.filter((cKey) => !SERVICE_COLS_SET.has(cKey));
+
+type ColumnsState = { order: string[]; pinned: string[]; hidden: string[] };
 
 export const ColumnsControlInner = <
   Row extends ObjectForExtending,
@@ -66,12 +69,52 @@ export const ColumnsControlInner = <
   const [localHiddens, setLocalHiddens] = useState(hiddenCols);
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Прототип мгновенного применения: правки пишутся сразу в стейт таблицы,
-  // локальные стейты лишь зеркалят его через эффекты ниже.
+  const setters = { setColumnsOrder, setHiddenCols, setPinnedCols };
+
+  // Режим без кнопок «Отменить / Применить»: каждая правка в списке сразу
+  // пишется в стейт таблицы и сразу уходит в onConfirm. Локальные стейты
+  // при этом лишь повторяют стейт таблицы через эффекты ниже.
   const applyImmediately = !!columnsControlConfig.applyImmediately;
-  const setOrder = applyImmediately ? setColumnsOrder : setLocalOrder;
-  const setPinned = applyImmediately ? setPinnedCols : setLocalPinned;
-  const setHiddens = applyImmediately ? setHiddenCols : setLocalHiddens;
+
+  const commitImmediately = (patch: Partial<ColumnsState>) => {
+    const prev = {
+      order: columnsOrder,
+      pinned: pinnedCols,
+      hidden: hiddenCols,
+    };
+    const next = { ...prev, ...patch };
+    if (patch.order) setColumnsOrder(patch.order);
+    if (patch.pinned) setPinnedCols(patch.pinned);
+    if (patch.hidden) setHiddenCols(patch.hidden);
+
+    const params = buildConfirmParams(prev, next, withoutServiceCols);
+    // правка, которая ничего не поменяла (например, колонку бросили на её же
+    // место), в onConfirm не уходит
+    if (Object.keys(params.changed).length) {
+      columnsControlConfig.onConfirm?.(params, setters);
+    }
+  };
+
+  const immediateSetter =
+    (key: keyof ColumnsState): React.Dispatch<React.SetStateAction<string[]>> =>
+    (action) => {
+      const prevValue = {
+        order: columnsOrder,
+        pinned: pinnedCols,
+        hidden: hiddenCols,
+      }[key];
+      const nextValue =
+        typeof action === 'function' ? action(prevValue) : action;
+      commitImmediately({ [key]: nextValue });
+    };
+
+  const setOrder = applyImmediately ? immediateSetter('order') : setLocalOrder;
+  const setPinned = applyImmediately
+    ? immediateSetter('pinned')
+    : setLocalPinned;
+  const setHiddens = applyImmediately
+    ? immediateSetter('hidden')
+    : setLocalHiddens;
 
   // отображаем блок поиска в настройках столбцов в случае, если колонок больше 10
   const isVisibleSearchColumnBlock = Object.keys(columnConfig).length >= 10;
@@ -128,33 +171,14 @@ export const ColumnsControlInner = <
       setPinnedCols(localPinned);
       setHiddenCols(localHiddens);
 
-      if (columnsControlConfig?.onConfirm) {
-        const orderIsChanged =
-          columnsOrder.join() !== localOrder.join() && ('order' as const);
-
-        const pinnedIsChanged =
-          [...localPinned].sort().join() !== [...pinnedCols].sort().join() &&
-          ('pinned' as const);
-        const hiddenIsChanged =
-          [...localHiddens].sort().join() !== [...hiddenCols].sort().join() &&
-          ('hidden' as const);
-
-        const changed = {
-          ...(pinnedIsChanged && { pinned: pinnedIsChanged }),
-          ...(orderIsChanged && { order: orderIsChanged }),
-          ...(hiddenIsChanged && { hidden: hiddenIsChanged }),
-        };
-
-        columnsControlConfig.onConfirm(
-          {
-            order: withoutServiceCols(localOrder),
-            pinned: withoutServiceCols(localPinned),
-            hidden: withoutServiceCols(localHiddens),
-            changed,
-          },
-          { setColumnsOrder, setHiddenCols, setPinnedCols },
-        );
-      }
+      columnsControlConfig.onConfirm?.(
+        buildConfirmParams(
+          { order: columnsOrder, pinned: pinnedCols, hidden: hiddenCols },
+          { order: localOrder, pinned: localPinned, hidden: localHiddens },
+          withoutServiceCols,
+        ),
+        setters,
+      );
       onClose();
     },
     resetAllLocalChanging() {
