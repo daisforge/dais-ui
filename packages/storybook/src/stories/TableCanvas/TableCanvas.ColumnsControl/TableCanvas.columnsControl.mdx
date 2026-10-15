@@ -18,6 +18,7 @@ import * as TableColumnsControlStories from './TableCanvas.columnsControl.storie
 - Дефолтные состояния при первом рендере (`pinnedDefault`, `hiddenDefault`, `orderDefault`)
 - Переопределение названий колонок в Aside (`columnsLabel`)
 - Колбэк при применении настроек (`onConfirm`)
+- Применение без кнопок «Отменить / Применить» (`applyImmediately`)
 - Синий индикатор скрытых столбцов в шапке (`hiddenColumnsIndicator`)
 
 ## Подфичи
@@ -38,6 +39,12 @@ import * as TableColumnsControlStories from './TableCanvas.columnsControl.storie
 ## onConfirm
 
 Callback вызывается при нажатии «Применить» в Aside. Получает текущее состояние (`pinned`, `order`, `hidden`, `changed`) и сеттеры для программного управления состоянием.
+
+## Применение без кнопок (applyImmediately)
+
+`applyImmediately: true` убирает кнопки «Отменить» и «Применить». Скрытие, закрепление и порядок колонок меняются в таблице сразу, в момент действия. `onConfirm` в этом режиме вызывается после каждой правки. По умолчанию выключено.
+
+Пример: стори «ColumnsControl: применение без кнопок».
 
 ## Индикатор скрытых столбцов (hiddenColumnsIndicator)
 

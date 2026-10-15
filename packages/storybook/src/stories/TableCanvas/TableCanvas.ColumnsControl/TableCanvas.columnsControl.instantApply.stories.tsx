@@ -22,9 +22,9 @@ export default meta;
 const preCode = `
 import { ColumnConfig, TableCanvas } from '@daisforge/ui/components/TableCanvas';
 
-// ПРОТОТИП: правки в правом сайдбаре применяются к таблице сразу,
-// кнопок «Отменить / Применить» нет:
-// columnsControl: { enable: true, applyImmediately: true }
+// Правки в настройках столбцов применяются к таблице сразу,
+// без кнопок «Отменить / Применить»:
+// columnsControl: { enable: true, applyImmediately: true, onConfirm }
 `;
 
 type Story = StoryObj;
@@ -56,25 +56,25 @@ const createWideRows = (): WideRow[] =>
   }));
 
 /**
- * ### ColumnsControl: мгновенное применение (прототип)
+ * ### ColumnsControl: применение без кнопок
  *
- * Временный флаг `columnsControl.applyImmediately`: скрытие колонки свитчем и
- * перетаскивание в списке правого сайдбара сразу перестраивают таблицу, кнопок
- * «Отменить / Применить» нет. Колонок нарочно больше, чем помещается в ширину
- * контейнера, а часть из них широкие: так видно, как скачет горизонтальный
- * скролл, закреплённые колонки и ширины при каждом переключении. Стенд для
- * обсуждения с дизайнерами, не для продакшена.
+ * `columnsControl.applyImmediately: true` убирает кнопки «Отменить» и
+ * «Применить»: скрытие, закрепление и порядок колонок меняются в таблице сразу.
+ * `onConfirm` вызывается после каждой правки, последний вызов показан над
+ * таблицей. Колонок больше, чем помещается по ширине, чтобы было видно, как
+ * таблица перестраивается при каждом переключении.
  */
 export const ColumnsControlInstantApply: Story = {
   ...storySourceDoc({
     preCode,
     previewSource: 'shown',
   }),
-  name: 'ColumnsControl: мгновенное применение (прототип)',
+  name: 'ColumnsControl: применение без кнопок',
   render: () => {
     const [rows] = useState(createWideRows);
     const [applyImmediately, setApplyImmediately] = useState(true);
     const [narrow, setNarrow] = useState(false);
+    const [lastConfirm, setLastConfirm] = useState('ещё не вызывался');
 
     const columnConfig = useMemo<readonly ColumnConfig<WideRow>[]>(
       () => [
@@ -109,7 +109,7 @@ export const ColumnsControlInstantApply: Story = {
           }}
         >
           <Switch
-            label="Применять сразу (без кнопки «Применить»)"
+            label="applyImmediately"
             checked={applyImmediately}
             onChange={() => setApplyImmediately((prev) => !prev)}
           />
@@ -119,6 +119,9 @@ export const ColumnsControlInstantApply: Story = {
             onChange={() => setNarrow((prev) => !prev)}
           />
         </div>
+        <p style={{ margin: '0 0 12px' }}>
+          Последний вызов onConfirm: {lastConfirm}
+        </p>
         <TableCanvas
           // ключ пересоздаёт таблицу при смене режима, чтобы локальные правки
           // сайдбара не «зависали» между режимами
@@ -137,6 +140,12 @@ export const ColumnsControlInstantApply: Story = {
               reorderingHeader: true,
               disableHiding: ['id'],
               pinnedDefault: ['id'],
+              onConfirm: ({ changed, hidden, pinned }) =>
+                setLastConfirm(
+                  `изменено: ${Object.keys(changed).join(', ')}; ` +
+                    `скрыты: ${hidden.join(', ') || 'нет'}; ` +
+                    `закреплены: ${pinned.join(', ') || 'нет'}`,
+                ),
             },
             rightSidebarConfig: {
               defaultOpen: true,
