@@ -1,0 +1,14 @@
+import{j as i}from"./react-D2T61mpp.js";import{cf as n,cg as e,c9 as m}from"./vendor-BotQo-m5.js";import{T as p}from"./Table.virtualization.stories-B_FoHNhG.js";import"./react-is-Clcustum.js";import"./styled-components-CA2CAEjL.js";import"./@tanstack/react-virtual-Cn23thnX.js";import"./tslib-DoU9Jm1N.js";import"./tableData-DVJFoYoT.js";import"./DocStoryTemplate-CjcIKVa0.js";import"./storySourceDoc-tVKyHcEN.js";import"./Table-DGopHaeF.js";import"./FiltersActions-CooA6-xZ.js";import"./IconButton-ccomzgm8.js";import"./@salutejs/plasma-icons-BBqnx34S.js";import"./@salutejs/sdds-finai-DvlGEIcs.js";import"./@salutejs/sdds-themes-CBoev_d5.js";import"./utils-lmXrkf06.js";import"./constants-CUAU9RhA.js";import"./sharedUtilsDebug-BX_KjCjW.js";import"./Box-jWxNdqW7.js";import"./TextField-BX85iKFw.js";import"./sharedUtilsInputs-Dco3jVOB.js";import"./AiAgentPopup-DNnm6PBE.js";import"./TextArea-D9rJSiSG.js";import"./sharedUtilsResizable-Ce6zImS-.js";import"./Collapse-BZa4thMs.js";import"./react-data-grid-Dh_hmPqE.js";import"./TableTabs-OEWva7WB.js";import"./TableCanvasSharedConstants-B2qJZwC8.js";import"./TableGlide-CUde736M.js";import"./@glideappsfinal/glide-data-grid-UoDXzAhD.js";import"./canvas-hypertxt-DsokSIOX.js";import"./sharedUiSearch-Cov9-p4x.js";import"./ListOfFilters-C9ZCcAs7.js";import"./lodash.isequal-DD0Lfcik.js";import"./NumberFormat-Bf63rie1.js";import"./EmptyState-tBnEXlI6.js";import"./MassActions-B7-P4Btm.js";import"./Autocomplete-DUELlavs.js";function o(t){const r={a:"a",code:"code",h1:"h1",h2:"h2",li:"li",p:"p",ul:"ul",...n(),...t.components};return i.jsxs(i.Fragment,{children:[i.jsx(e,{of:p,name:"Docs"}),`
+`,i.jsx(r.h1,{id:"virtualization",children:"Virtualization"}),`
+`,i.jsxs(r.p,{children:["Виртуализация строк и колонок legacy ",i.jsx(r.code,{children:"Table"}),"."]}),`
+`,i.jsx(r.h2,{id:"ключевые-особенности",children:"Ключевые особенности"}),`
+`,i.jsxs(r.ul,{children:[`
+`,i.jsx(r.li,{children:"Используется для больших списков строк"}),`
+`,i.jsxs(r.li,{children:["Управляется настройками underlying ",i.jsx(r.code,{children:"DataGrid"})]}),`
+`,i.jsxs(r.li,{children:["Может быть отключена через ",i.jsx(r.code,{children:"enableVirtualization"})]}),`
+`,i.jsx(r.li,{children:"Работает вместе с высотой контейнера таблицы"}),`
+`]}),`
+`,i.jsx(r.h2,{id:"особенности",children:"Особенности"}),`
+`,i.jsx(r.p,{children:"Отключение виртуализации полезно только для небольших таблиц или специальных тестовых сценариев. Для больших наборов данных оставляйте виртуализацию включенной."}),`
+`,i.jsxs(r.p,{children:["Описание типов - в разделе ",i.jsx(r.a,{href:"?path=/docs/%D0%BB%D0%BE%D0%BA%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D1%8B-table-virtualization-api--docs",children:"API"}),"."]}),`
+`,i.jsx(m,{})]})}function O(t={}){const{wrapper:r}={...n(),...t.components};return r?i.jsx(r,{...t,children:i.jsx(o,{...t})}):o(t)}export{O as default};
