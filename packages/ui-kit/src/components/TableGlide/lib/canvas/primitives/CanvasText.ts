@@ -8,6 +8,7 @@ import type {
 } from '../utils/portalHoverEvents';
 import {
   type CanvasTextOverflow,
+  getMinEllipsisWidth,
   invalidateOverflowTextCache,
   resolveOverflowText,
   resolveWrappedOverflowText,
@@ -145,6 +146,17 @@ export interface CanvasTextOptions {
   ellipsis?: string;
   maxLines?: number;
   autoTooltip?: CanvasTextAutoTooltip;
+  /**
+   * Не давать тексту сжиматься в ноль. Когда места не хватает, от текста
+   * остаётся хотя бы первая буква с многоточием, а за границу уходят соседи.
+   *
+   * Подробнее: при измерении текст выставляет себе minContentWidth, равный
+   * ширине первого видимого символа с многоточием. Работает только для
+   * однострочного текста с overflow 'hidden' и textOverflow 'ellipsis', в
+   * остальных случаях minContentWidth не заполняется. Явный style.minWidth
+   * важнее. По умолчанию выключено.
+   */
+  minWidthByContent?: boolean;
 }
 
 function buildFontMetricsKey(
@@ -204,6 +216,8 @@ export class CanvasText extends CanvasNode {
 
   autoTooltip: CanvasTextAutoTooltip | undefined;
 
+  minWidthByContent = false;
+
   private lastMeasureKey = '';
 
   private cachedLines: string[] | null = null;
@@ -231,6 +245,9 @@ export class CanvasText extends CanvasNode {
       if (options.textOverflow !== undefined)
         this.textOverflow = options.textOverflow;
       if (options.ellipsis !== undefined) this.ellipsis = options.ellipsis;
+      if (options.minWidthByContent !== undefined) {
+        this.minWidthByContent = options.minWidthByContent;
+      }
       if (options.maxLines !== undefined) this.maxLines = options.maxLines;
       if (options.autoTooltip !== undefined)
         this.autoTooltip = options.autoTooltip;
@@ -253,6 +270,16 @@ export class CanvasText extends CanvasNode {
     } else {
       this.measureSingleLine(ctx, font, text, lineHeightPx, rect);
     }
+
+    // Минимум по содержимому: первая буква с многоточием, см. minWidthByContent.
+    this.minContentWidth =
+      this.minWidthByContent &&
+      !wordWrap &&
+      this.overflow === 'hidden' &&
+      this.textOverflow === 'ellipsis' &&
+      text.length > 0
+        ? getMinEllipsisWidth(ctx, text, font, this.ellipsis)
+        : undefined;
   }
 
   private measureWordWrap(

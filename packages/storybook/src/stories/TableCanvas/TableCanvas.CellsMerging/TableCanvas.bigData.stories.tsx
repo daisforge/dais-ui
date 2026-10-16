@@ -7,6 +7,7 @@ import { Slider } from '@ui-kit/components/Slider';
 import {
   Canvas,
   type ColumnConfig,
+  type SortColumn,
   TableCanvas,
 } from '@ui-kit/components/TableCanvas';
 import { TextField } from '@ui-kit/components/TextField';
@@ -143,10 +144,14 @@ function badgeView(v: number): 'accent' | 'warning' | 'negative' | 'dark' {
   return 'negative';
 }
 
+/** Пустые значения фильтров: по ним кнопка фильтра понимает, активна ли она. */
+const CLEARED_FILTERS = { plan: '', fact: '' };
+
 function buildColumns(
   measureCount: number,
   heavyCells: boolean,
   withEditing: boolean,
+  withHeaderButtons: boolean,
 ): ColumnConfig<Node>[] {
   // Правило ошибки для режима редактирования: факт сильно ниже плана.
   const factError = withEditing
@@ -169,6 +174,15 @@ function buildColumns(
       ...(withEditing && {
         editingCell: { component: 'inputNumber' as const },
       }),
+      ...(withHeaderButtons && {
+        sortingType: 'numberSort' as const,
+        filtering: {
+          component: 'input' as const,
+          keyInFilterState: 'plan',
+          valueInRow: (r: Node) => String(r.plan ?? ''),
+          filter: 'startWith' as const,
+        },
+      }),
     },
     {
       key: 'fact',
@@ -177,6 +191,15 @@ function buildColumns(
       contentFormat: 'number',
       ...(withEditing && {
         editingCell: { component: 'inputNumber' as const, ...factError },
+      }),
+      ...(withHeaderButtons && {
+        sortingType: 'numberSort' as const,
+        filtering: {
+          component: 'input' as const,
+          keyInFilterState: 'fact',
+          valueInRow: (r: Node) => String(r.fact ?? ''),
+          filter: 'startWith' as const,
+        },
       }),
     },
   ];
@@ -188,6 +211,9 @@ function buildColumns(
         key: `m${i}`,
         name: `M${i + 1}`,
         width: 84,
+        // Кнопка сортировки появляется в шапке по наведению: нагрузка на
+        // перерисовку шапки при тысячах колонок.
+        ...(withHeaderButtons && { sortingType: 'numberSort' as const }),
       };
       if (!heavyCells) {
         // Дешёвая ячейка: один Canvas.Text без контейнеров и бейджей.
@@ -310,6 +336,9 @@ export const BigDataExample: Story = {
     const [withMerge, setWithMerge] = useState(true);
     const [heavyCells, setHeavyCells] = useState(true);
     const [withEditing, setWithEditing] = useState(false);
+    const [withHeaderButtons, setWithHeaderButtons] = useState(false);
+    const filteringStateAndSetter = useState(CLEARED_FILTERS);
+    const sortingStateAndSetter = useState<readonly SortColumn[]>([]);
     // Правки пользователя поверх сгенерированных данных (режим редактирования).
     const [editedRows, setEditedRows] = useState<Node[] | null>(null);
 
@@ -333,8 +362,8 @@ export const BigDataExample: Story = {
     const dataRows = editedRows ?? builtRows;
 
     const columns = useMemo(
-      () => buildColumns(cols, heavyCells, withEditing),
-      [cols, heavyCells, withEditing],
+      () => buildColumns(cols, heavyCells, withEditing, withHeaderButtons),
+      [cols, heavyCells, withEditing, withHeaderButtons],
     );
 
     const tableConfig = useMemo(
@@ -364,8 +393,23 @@ export const BigDataExample: Story = {
               },
             }
           : {}),
+        ...(withHeaderButtons
+          ? {
+              sorting: { state: sortingStateAndSetter },
+              filtering: {
+                state: filteringStateAndSetter,
+                clearedValue: CLEARED_FILTERS,
+              },
+            }
+          : {}),
       }),
-      [withMerge, withEditing],
+      [
+        withMerge,
+        withEditing,
+        withHeaderButtons,
+        sortingStateAndSetter,
+        filteringStateAndSetter,
+      ],
     );
 
     return (
@@ -441,6 +485,12 @@ export const BigDataExample: Story = {
             label="редактирование (error-ячейки)"
             checked={withEditing}
             onChange={(e) => setWithEditing(e.target.checked)}
+          />
+
+          <Checkbox
+            label="сортировка и фильтр в шапке"
+            checked={withHeaderButtons}
+            onChange={(e) => setWithHeaderButtons(e.target.checked)}
           />
 
           <PerfHudBadge commitsRef={commitsRef} />

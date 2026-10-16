@@ -542,15 +542,23 @@ export const useColumns = <
         contentAlign: getAlignment(el.contentFormat),
         renderHeaderCell,
         columnThemeOverride,
-        minWidth:
-          el.minWidth ??
+        // Минимальная ширина колонки: чтобы в шапке всегда помещались иконки,
+        // буква названия с многоточием и кнопки.
+        //
+        // Подробнее: берём большее из minWidth колонки и автоматического
+        // минимума по содержимому шапки. Свой minWidth может только поднять
+        // границу, но не опустить её ниже автоматической.
+        minWidth: Math.max(
+          el.minWidth ?? 0,
           calculateMinColumnWidth({
+            rowSize,
             isHaveFiltering,
             isHaveSorting,
             columnIsPinned,
             subRowIsActiveAndColumnWithArrow,
             reorderForColIsActive,
           }),
+        ),
         ...(el.maxAutoWidth !== undefined && {
           maxAutoWidth: el.maxAutoWidth,
         }),
