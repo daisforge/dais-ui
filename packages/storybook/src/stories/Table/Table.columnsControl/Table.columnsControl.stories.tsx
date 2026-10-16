@@ -17,6 +17,7 @@ import {
   Table,
 } from '@ui-kit/components/Table';
 import { IconAddOutline, IconBoxOutline, IconSber } from '@ui-kit/icons';
+import { surfaceTransparentPrimary } from '@ui-kit/tokens';
 import React, { useCallback, useMemo, useState } from 'react';
 
 const meta: Meta = {
@@ -170,6 +171,89 @@ export const ColumnsControl: Story = {
         columnConfig={columnConfig}
         rows={rows}
       />
+    );
+  },
+};
+
+/**
+ * ### Мгновенное применение (applyMode: 'instant')
+ *
+ * Кнопок «Отменить» и «Применить» в панели нет: каждое действие (свитч
+ * видимости, пин, перенос, «открепить все», «сбросить порядок») сразу меняет
+ * таблицу. `onConfirm` вызывается после каждого действия с тем же контрактом,
+ * что и по кнопке «Применить». Журнал вызовов показан над таблицей.
+ */
+export const ColumnsControlInstantApply: Story = {
+  ...storySourceDoc({
+    preCode,
+    previewSource: 'shown',
+  }),
+  render: () => {
+    const [rows] = useState(createRows);
+    const [confirmLog, setConfirmLog] = useState<string[]>([]);
+
+    const columnConfig = useMemo<readonly ColumnConfig<Row>[]>(
+      () => [
+        { key: 'id', name: 'ID' },
+        { key: 'task', name: 'Title' },
+        { key: 'priority', name: 'Priority' },
+        { key: 'issueType', name: 'Issue Type' },
+        { key: 'developer', name: 'Developer' },
+        { key: 'tr1', name: 'TR' },
+        { key: 'complete', name: '% Complete' },
+      ],
+      [],
+    );
+
+    return (
+      <Box $css={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        <Box
+          data-testid="confirm-log"
+          $css={{
+            height: '96px',
+            overflowY: 'auto',
+            padding: '8px 12px',
+            borderRadius: '8px',
+            backgroundColor: surfaceTransparentPrimary,
+            fontSize: '12px',
+            lineHeight: '18px',
+            fontFamily: 'monospace',
+            whiteSpace: 'pre',
+          }}
+        >
+          {confirmLog.length
+            ? confirmLog.join('\n')
+            : 'Вызовы onConfirm: откройте настройки колонок и измените что-нибудь'}
+        </Box>
+        <Table
+          tableConfig={{
+            containerStyle: { height: 600 },
+            columnsControl: {
+              enable: true,
+              applyMode: 'instant',
+              disableHiding: ['id'],
+              disablePinning: ['developer'],
+              hiddenDefault: ['tr1'],
+              pinnedDefault: ['complete'],
+              onConfirm: ({ order, hidden, pinned, changed }) => {
+                setConfirmLog((prev) => [
+                  [
+                    `#${prev.length + 1} изменилось: ${Object.keys(
+                      changed,
+                    ).join(', ')}`,
+                    `    order:  ${order.join(', ')}`,
+                    `    pinned: ${pinned.join(', ')}`,
+                    `    hidden: ${hidden.join(', ')}`,
+                  ].join('\n'),
+                  ...prev,
+                ]);
+              },
+            },
+          }}
+          columnConfig={columnConfig}
+          rows={rows}
+        />
+      </Box>
     );
   },
 };
