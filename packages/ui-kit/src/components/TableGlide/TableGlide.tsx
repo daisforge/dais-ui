@@ -421,6 +421,22 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     return set;
   }, [selection, selectionVisualState.firstDataColumnIndex]);
 
+  // Выделена ли колонка. По этому признаку темнеет её шапка и показываются
+  // кнопки фильтра и сортировки.
+  //
+  // Подробнее: колонка считается выделенной, если она активная колонка
+  // текущего диапазона, выделена кликом по шапке (своё состояние, у Glide
+  // selection.columns намеренно пуст) или покрыта ячейками rangeStack.
+  // Выделение строк сюда не входит: оно темнит шапки всех колонок, но
+  // кнопки на всех шапках показывать незачем.
+  const isColumnInSelection = useCallback(
+    (columnIndex: number) =>
+      selectionVisualState.isActiveHeaderColumn(columnIndex) ||
+      selectedColumnSet.has(columnIndex) ||
+      rangeStackColumnSet.has(columnIndex),
+    [selectionVisualState, selectedColumnSet, rangeStackColumnSet]
+  );
+
   const columnsForRender = useMemo(() => {
     return columnsLast.map((column, columnIndex) => {
       const themeOverride = { ...(column.themeOverride ?? {}) };
@@ -453,9 +469,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       // (multi-range-cell); либо выделены строки по нумерации, тогда темнеют
       // шапки всех data-колонок, как нативный highlightActiveType='row'.
       const headerIsActive =
-        selectionVisualState.isActiveHeaderColumn(columnIndex) ||
-        selectedColumnSet.has(columnIndex) ||
-        rangeStackColumnSet.has(columnIndex) ||
+        isColumnInSelection(columnIndex) ||
         (hasSelectedRows && !column.isServiceColumn);
 
       if (headerIsActive) {
@@ -479,9 +493,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     });
   }, [
     columnsLast,
-    selectionVisualState,
-    selectedColumnSet,
-    rangeStackColumnSet,
+    isColumnInSelection,
     hasSelectedRows,
     numberingColumnIndex,
     appearanceVariant,
@@ -978,17 +990,6 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     consumeCanvasClickResult,
   });
 
-  const hoveredHeaderColumn = useRef<{
-    id: string;
-    x: number;
-    y: number;
-  } | null>(null);
-  const hoveredColumnsGroup = useRef<{
-    id: string;
-    x: number;
-    y: number;
-  } | null>(null);
-
   const columnsHeaderCanvasRootInstanceMap = useMemo(
     () => new Map<string, CellCanvasRoot>(),
     []
@@ -1019,6 +1020,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       const headerCellInfo: HeaderCellInfo<R, SR> = {
         column,
         drawArgs,
+        columnIsSelected: isColumnInSelection(columnIndex),
         ctxs,
         theme,
       };
@@ -1077,9 +1079,17 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         theme,
       });
 
+      // Где курсор над шапкой, знает Glide: берём позицию из его аргументов.
+      //
+      // Подробнее: Glide сам перерисовывает шапку при каждом движении мыши,
+      // на кадрах анимации наведения и при уходе курсора, и каждый раз
+      // передаёт актуальные isHovered, hoverX и hoverY. Своё хранение позиции
+      // в ref здесь не нужно и раньше ломало перерисовки не из mousemove.
       const hoverPos =
-        hoveredHeaderColumn.current?.id === column.id
-          ? hoveredHeaderColumn.current
+        drawArgs.isHovered &&
+        drawArgs.hoverX !== undefined &&
+        drawArgs.hoverY !== undefined
+          ? { x: drawArgs.hoverX, y: drawArgs.hoverY }
           : undefined;
 
       const canvasBounds = ctx.canvas.getBoundingClientRect();
@@ -1130,6 +1140,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     columnsForRender,
     ctxs,
     theme,
+    isColumnInSelection,
     columnsHeaderCanvasRootInstanceMap,
     portalEventTargetRef,
     dataEditorRef,
@@ -1329,57 +1340,6 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       } else {
         setHoveredCell(null);
       }
-
-      if (event.kind === 'group-header') {
-        const groupHeaderCallback = () => {
-          if (typeof event.group !== 'string') {
-            hoveredColumnsGroup.current = null;
-            return;
-          }
-
-          hoveredColumnsGroup.current = {
-            id: event.group,
-            x: event.localEventX,
-            y: event.localEventY,
-          };
-          return;
-        };
-
-        groupHeaderCallback();
-      } else {
-        hoveredColumnsGroup.current = null;
-      }
-
-      if (event.kind === 'header') {
-        const headerCallback = () => {
-          const columnIndex = event.location[0];
-          const headerRowIndex = event.location[1];
-          const column = columnsForRender[columnIndex];
-
-          if (!column || !column?.renderHeaderCell) {
-            hoveredHeaderColumn.current = null;
-            return;
-          }
-
-          hoveredHeaderColumn.current = {
-            id: column.id,
-            x: event.localEventX,
-            y: event.localEventY,
-          };
-
-          dataEditorRef.current?.updateCells?.([
-            { cell: [columnIndex, headerRowIndex] },
-          ]);
-          return;
-        };
-
-        headerCallback();
-      } else {
-        hoveredHeaderColumn.current = null;
-      }
-
-      hoveredHeaderColumn.current = null;
-      hoveredColumnsGroup.current = null;
     },
     [columnsForRender, onMouseMoveExternal, rows, setHoveredCell]
   );
@@ -1460,9 +1420,10 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
 
       columnsGroupHeaderCanvasRootInstanceMap.set(nodeId, canvasRootInstance);
 
+      // Позиция курсора — из аргументов Glide, как у шапки колонки.
       const hoverPos =
-        hoveredColumnsGroup.current?.id === nodeId
-          ? hoveredColumnsGroup.current
+        args.isHovered && args.hoverX !== undefined && args.hoverY !== undefined
+          ? { x: args.hoverX, y: args.hoverY }
           : undefined;
 
       const canvasBounds = ctx.canvas.getBoundingClientRect();

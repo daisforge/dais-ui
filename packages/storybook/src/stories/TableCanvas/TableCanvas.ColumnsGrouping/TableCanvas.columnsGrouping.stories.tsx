@@ -7,6 +7,7 @@ import { Switch } from '@ui-kit/components/Switch';
 import {
   Canvas,
   ColumnOrColumnGroupConfig,
+  type SortColumn,
   TableCanvas,
   tableCanvasFonts,
   tableCanvasTheme,
@@ -44,17 +45,34 @@ type Story = StoryObj;
  * Переключатель включает и выключает поведение, видно, как появляются и исчезают пустые
  * полосы. Также здесь: кастомный `name` группы (canvas-элемент), реордер колонок за шапку.
  */
+/** Пустые значения фильтров: по ним кнопка фильтра понимает, активна ли она. */
+const CLEARED_FILTERS = { id: '', tr: '' };
+
 export const Playground: Story = {
   ...storySourceDoc({ preCode, previewSource: 'shown', type: 'code' }),
   name: 'Группировка (squash)',
   render: () => {
     const [rows] = useState(createRows);
     const [squash, setSquash] = useState(true);
+    const filteringStateAndSetter = useState(CLEARED_FILTERS);
+    const sortingStateAndSetter = useState<readonly SortColumn[]>([]);
 
     const columnConfig = useMemo<ColumnOrColumnGroupConfig<Row>[]>(
       () => [
         // Одиночная колонка без группы: при squash её шапка тянется вверх.
-        { key: 'id', name: 'ID', width: 90, resizable: true },
+        {
+          key: 'id',
+          name: 'ID',
+          width: 90,
+          resizable: true,
+          sortingType: 'numberSort',
+          filtering: {
+            component: 'input',
+            keyInFilterState: 'id',
+            valueInRow: (r) => String(r.id),
+            filter: 'startWith',
+          },
+        },
         // Глубокая группа (3 уровня) для реордера.
         {
           key: 'metrics',
@@ -93,7 +111,21 @@ export const Playground: Story = {
               </Canvas.Text>
             </Canvas.Container>
           ),
-          children: [{ key: 'tr', name: 'TR', width: 130, resizable: true }],
+          children: [
+            {
+              key: 'tr',
+              name: 'TR',
+              width: 130,
+              resizable: true,
+              sortingType: 'stringSort',
+              filtering: {
+                component: 'input',
+                keyInFilterState: 'tr',
+                valueInRow: (r) => r.tr,
+                filter: 'startWith',
+              },
+            },
+          ],
         },
       ],
       [],
@@ -121,6 +153,11 @@ export const Playground: Story = {
             columnsGrouping: { squashEmptyCells: squash },
             columnsControl: { enable: true },
             resizableColumn: true,
+            sorting: { state: sortingStateAndSetter },
+            filtering: {
+              state: filteringStateAndSetter,
+              clearedValue: CLEARED_FILTERS,
+            },
           }}
           columnConfig={columnConfig}
           rows={rows}

@@ -24,6 +24,7 @@ const defaultStyle: FlexStyle = {
   alignSelf: 'auto',
   width: undefined,
   height: undefined,
+  minWidth: undefined,
   // Обычный элемент участвует в расчете размера линии.
   crossAxisSizing: 'auto',
 };
@@ -63,6 +64,7 @@ abstract class FlexNode {
       alignSelf: style.alignSelf ?? 'auto',
       width: style.width,
       height: style.height,
+      minWidth: style.minWidth,
       crossAxisSizing: style.crossAxisSizing ?? 'auto',
       id: style.id,
       metadata: style.metadata,
@@ -131,6 +133,7 @@ export class FlexBox extends FlexNode {
         boxStyle.alignSelf = arg2.alignSelf ?? 'auto';
         boxStyle.width = arg2.width;
         boxStyle.height = arg2.height;
+        boxStyle.minWidth = arg2.minWidth;
         boxStyle.crossAxisSizing = arg2.crossAxisSizing ?? 'auto';
       }
       this.children.push(box);
@@ -350,6 +353,13 @@ export class FlexBox extends FlexNode {
       }
 
       if (main < 0) main = 0;
+
+      // Минимальная ширина важнее нехватки места: элемент остаётся читаемым,
+      // а лишнее выходит за границу контейнера. Остальных детей после этого
+      // заново не ужимаем, это осознанное отличие от CSS.
+      if (horizontal && style.minWidth !== undefined && main < style.minWidth) {
+        main = style.minWidth;
+      }
 
       if (horizontal) {
         child.size.width = main;
