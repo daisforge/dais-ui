@@ -16,6 +16,8 @@ export type HiddenColumnsIndicatorExpandInfo = {
   rightKey?: string;
 };
 
+export type ColumnsControlApplyMode = 'confirm' | 'instant';
+
 export type ColumnsControlConfig = {
   enable: boolean;
   /**
@@ -79,6 +81,17 @@ export type ColumnsControlConfig = {
   onHiddenColumnsIndicatorExpand?: (
     info: HiddenColumnsIndicatorExpandInfo,
   ) => void;
+
+  /**
+   * Как применяются изменения из панели настройки колонок (правый сайдбар).
+   * - `confirm` — панель копит изменения локально, внизу кнопки «Отменить» и
+   *   «Применить»; в таблицу и в `onConfirm` изменения уходят по кнопке.
+   * - `instant` — кнопок нет, каждое действие (свитч видимости, пин, перенос,
+   *   «открепить все» и т.п.) сразу меняет таблицу, а `onConfirm` вызывается
+   *   после каждого такого действия с тем же контрактом, что и по кнопке.
+   * @default 'confirm'
+   */
+  applyMode?: ColumnsControlApplyMode;
 
   onConfirm?: (
     params: {
