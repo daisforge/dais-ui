@@ -257,6 +257,15 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         return;
       }
 
+      // Колонка с фиксированной шириной (minWidth равен maxWidth, например
+      // колонка чекбоксов) не ресайзится. Glide и так не даёт ей стать шире
+      // или уже, но без этой проверки ширина попала бы в resizedColsMap и
+      // перестала бы следовать за размером строк, а внешний onColumnResize
+      // получил бы событие, которого по смыслу не было.
+      if (col.minWidth !== undefined && col.minWidth === col.maxWidth) {
+        return;
+      }
+
       // Наведение уже произошло до старта перетаскивания, прячем тултип, чтобы он
       // не висел на месте (за границей во время ресайза он не едет).
       hideTooltipRef.current?.();
