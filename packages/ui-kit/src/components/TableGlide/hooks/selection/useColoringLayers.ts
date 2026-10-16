@@ -70,6 +70,13 @@ interface UseColoringLayersParams {
   hoverRow?: number;
   /** Строк данных без summary: summary ховер не получает. */
   dataRowsCount: number;
+  /**
+   * Служебные колонки красятся вместе со строкой (appearance.variant='clean'):
+   * у них нет своего голубого фона. Слой ховера сервис-зоны не нужен (иначе
+   * он перекрыл бы зебру и отмеченную строку серым), а регионы выделения
+   * сервис-зоны рисуются стилем 'accent' — цветом выделения своей строки.
+   */
+  serviceZoneFollowsRow?: boolean;
 }
 
 export function useColoringLayers({
@@ -90,6 +97,7 @@ export function useColoringLayers({
   isRowHoverEnabled,
   hoverRow,
   dataRowsCount,
+  serviceZoneFollowsRow = false,
 }: UseColoringLayersParams): GlideProps['highlightRegions'] {
   // Слои 2 и 3: внешние регионы и базовое выделение.
   const baseRegions = useBaseHighlightRegions({
@@ -103,6 +111,7 @@ export function useColoringLayers({
     highlightActiveRow: activeRow,
     errorCellRanges,
     highlightRegionsExternal,
+    serviceZoneFollowsRow,
   });
 
   // Слой 4: выделение колонок и строк поверх базы. Шапки выделенных колонок
@@ -116,6 +125,7 @@ export function useColoringLayers({
     firstDataCol: serviceColumnsCount,
     columnsCount,
     theme,
+    serviceZoneFollowsRow,
   });
 
   // Слой 1: ховер сервис-зоны, первым в массиве (самый нижний). Голубой фон
@@ -125,6 +135,7 @@ export function useColoringLayers({
   return useMemo((): GlideProps['highlightRegions'] | undefined => {
     if (
       !isRowHoverEnabled ||
+      serviceZoneFollowsRow ||
       hoverRow === undefined ||
       hoverRow > dataRowsCount - 1 || // summary-строки ховер не получают
       serviceColumnsCount === 0
@@ -144,6 +155,7 @@ export function useColoringLayers({
     withColumnsAndRows,
     serviceColumnsCount,
     isRowHoverEnabled,
+    serviceZoneFollowsRow,
     hoverRow,
     dataRowsCount,
     theme.bgServiceRowHovered,

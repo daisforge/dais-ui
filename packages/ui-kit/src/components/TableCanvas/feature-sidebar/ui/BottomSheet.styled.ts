@@ -1,7 +1,11 @@
-import { outlineSolidPrimary, surfaceSolidCard } from '@ui-kit/tokens';
+import { surfaceSolidCard } from '@ui-kit/tokens';
 import styled, { css } from 'styled-components';
 
-import { DURATION, TABLE_BORDER_RADIUS } from '../../styles/styles.constants';
+import {
+  DURATION,
+  outerBorderColor,
+  TABLE_BORDER_RADIUS,
+} from '../../styles/styles.constants';
 import { MIN_CANVAS_HEIGHT_WITH_BOTTOM_SHEET } from '../constants';
 
 export const BOTTOM_SHEET_AVAILABLE_HEIGHT = `max(0px, calc(100% - ${MIN_CANVAS_HEIGHT_WITH_BOTTOM_SHEET}px))`;
@@ -17,7 +21,7 @@ export const BottomSheetContainer = styled.div<{
   height: var(--rdg-bottom-sheet-height);
   min-height: var(--rdg-bottom-sheet-min-height);
   max-height: var(--rdg-bottom-sheet-max-height);
-  border: 1px solid ${outlineSolidPrimary};
+  border: 1px solid ${outerBorderColor};
   /* Разделитель уже рисует нижняя граница canvas, вторую линию не добавляем. */
   border-top: 0;
   background: ${surfaceSolidCard};

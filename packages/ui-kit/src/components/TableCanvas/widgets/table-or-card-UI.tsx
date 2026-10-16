@@ -26,6 +26,7 @@ import { BottomSheet } from '../feature-sidebar/ui/BottomSheet';
 import { CanvasTooltipOverlay } from '../feature-tooltip';
 import { ContainerStyled, SIZES, tableClassNames as cls } from '../styles';
 import {
+  type AppearanceVariant,
   type ColumnOrColumnGroupGlideInstance,
   type DataEditorRef,
   type HighlightActiveType,
@@ -80,6 +81,7 @@ export const TableOrCardsUI = <
     fullScreenPortal,
     $tableAndSidebarContainerHeightStyle,
     $highlightActiveType,
+    $appearanceVariant,
     collapseButtonPlacement,
     collapseButtonAboveRightSlot,
     $borderTopRounded,
@@ -129,6 +131,7 @@ export const TableOrCardsUI = <
     fullScreenPortal: Element | DocumentFragment | false;
     $tableAndSidebarContainerHeightStyle: CSSProperties;
     $highlightActiveType: HighlightActiveType;
+    $appearanceVariant: AppearanceVariant;
     collapseButtonPlacement?: 'inside' | 'above';
     collapseButtonAboveRightSlot?: ReactNode;
     controlBlockSize?: ControlBlockSize;
@@ -220,6 +223,7 @@ export const TableOrCardsUI = <
       // table css ( table style передается напрямую в DataGrid)
       $css={$css}
       $highlightActiveType={$highlightActiveType}
+      $appearanceVariant={$appearanceVariant}
       $isCollapsed={isCollapsed}
       $isEnabledCollapse={enableCollapse}
       $activeTheme={activeTheme}
@@ -323,6 +327,7 @@ export const TableOrCardsUI = <
                   enableSelectAll={restDataGridProps.enableSelectAll}
                   cellsSelectionMode={restDataGridProps.cellsSelectionMode}
                   hoverEffects={restDataGridProps.hoverEffects}
+                  appearance={restDataGridProps.appearance}
                   getCellsForSelection={restDataGridProps.getCellsForSelection}
                   onGridSelectionChange={
                     restDataGridProps.onGridSelectionChange

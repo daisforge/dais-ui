@@ -183,6 +183,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   // Вытаскиваем из restProps; удалить вместе с пропом в следующем мажоре.
   checkboxVisibleRowIndexes: _checkboxVisibleRowIndexes,
   hoverEffects,
+  appearance,
   onCellClicked: onCellClickedExternal,
   onCellContextMenu: onCellContextMenuExternal,
   onGroupHeaderClicked: onGroupHeaderClickedExternal,
@@ -194,9 +195,10 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   ...restProps
 }: TableGlideProps<R, SR>) => {
   const activeTheme = useActiveTheme();
+  const appearanceVariant = appearance?.variant ?? 'default';
   const theme = useMemo(
-    () => getTheme(rowSize, activeTheme),
-    [rowSize, activeTheme],
+    () => getTheme(rowSize, activeTheme, appearanceVariant),
+    [rowSize, activeTheme, appearanceVariant],
   );
 
   const rowHeightGlide = useMemo<RowHeightGlide>(() => {
@@ -432,8 +434,14 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       // Колонку нумерации не подсвечиваем при выделении строки: accentLight
       // (заливка) и accentColor (рамка/ring) прозрачные → скрытый current glide
       // в этой колонке не красит число и не рисует бледную рамку.
+      // В «чистом» виде заливку (accentLight) оставляем: служебная зона
+      // красится регионами со стилем 'accent', то есть цветом выделения
+      // своей строки (белой, зебры, отмеченной), и число внутри выделенной
+      // строки и так на этом фоне.
       if (columnIndex === numberingColumnIndex) {
-        themeOverride.accentLight = 'transparent';
+        if (appearanceVariant !== 'clean') {
+          themeOverride.accentLight = 'transparent';
+        }
         themeOverride.accentColor = 'transparent';
         hasThemeOverride = true;
       }
@@ -476,6 +484,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     rangeStackColumnSet,
     hasSelectedRows,
     numberingColumnIndex,
+    appearanceVariant,
     theme.selectionServiceBg,
     theme.selectionServiceActiveBg,
     theme.bgHeaderSelectedHovered,
@@ -485,6 +494,9 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   // По умолчанию ВКЛЮЧЕНА (решение дизайн-системы — строка под курсором
   // показывает hover-ступень); выключается явно hoverEffects: { row: false }.
   const isRowHoverEnabled = hoverEffects?.row !== false;
+
+  // ─── appearance.zebra: строки с чётным индексом с серым фоном (см. getRowThemeOverride).
+  const isZebra = appearance?.zebra === true;
 
   // Единый источник ховера: логическая ячейка (контент-флаги, ref) и
   // физическая строка (фон, state). Разница семантик описана в useHoverState.
@@ -549,7 +561,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         // Фон итоговой строки красим по её ячейкам, а не на всю строку. Если
         // задать фон на строку, пустое место под данными заливается тем же
         // фоном и при горизонтальном скролле наезжает на саму итоговую строку.
-        const summaryThemeOverride = { bgCell: theme.bgHeader };
+        const summaryThemeOverride = { bgCell: theme.bgSummaryRow };
 
         if (!renderSummaryCell || !summaryRow) {
           return createEmptyCellGlide({ themeOverride: summaryThemeOverride });
@@ -1477,11 +1489,15 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     if (
       !summaryRowsLength &&
       !hasSelectedRows &&
+      !isZebra &&
       hoveredRow === undefined &&
       activeRow === undefined
     ) {
       return undefined;
     }
+
+    // Итоговые строки идут после строк данных: зебру на них не распространяем.
+    const dataRowsLength = rows.length;
 
     const hoverBg = theme.bgRowHovered;
 
@@ -1525,10 +1541,26 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         };
       }
 
+      // Зебра: строка с чётным индексом (первая, третья…) с серым фоном.
+      // Подробнее: это цвет покоя строки, под курсором — на ступень темнее.
+      // accentLight — цвет её ячеек в выделении (считается от цвета зебры).
+      // Отмеченная и выбранная строки выше по приоритету и обработаны раньше.
+      if (isZebra && rowInd % 2 === 0 && rowInd < dataRowsLength) {
+        const hovered = rowInd === hoveredRow;
+        return {
+          bgCell: hovered ? theme.bgZebraRowHovered : theme.bgZebraRow,
+          accentLight: hovered
+            ? theme.bgZebraRowActiveHovered
+            : theme.bgZebraRowActive,
+        };
+      }
+
       // Обычная строка под курсором: серый фон.
       // Подробнее: accentLight — цвет её ячеек в выделении под курсором
-      // (на ступень темнее обычного выделения).
-      if (rowInd === hoveredRow) {
+      // (на ступень темнее обычного выделения). Итоговые строки hover не
+      // получают: их ячейки красятся сами, а фон строки залил бы серым
+      // пустое место справа от колонок.
+      if (rowInd === hoveredRow && rowInd < dataRowsLength) {
         return { bgCell: hoverBg, accentLight: theme.selectionActiveHoveredBg };
       }
 
@@ -1543,8 +1575,14 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     theme.selectionActiveCheckboxBg,
     theme.selectionActiveCheckboxHoveredBg,
     theme.selectionActiveHoveredBg,
+    theme.bgZebraRow,
+    theme.bgZebraRowHovered,
+    theme.bgZebraRowActive,
+    theme.bgZebraRowActiveHovered,
     checkboxSelectedRowIndexes,
     isRowHoverEnabled,
+    isZebra,
+    rows.length,
     hoverRow,
     activeRow,
   ]);
@@ -1585,6 +1623,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     isRowHoverEnabled,
     hoverRow,
     dataRowsCount: rows.length,
+    serviceZoneFollowsRow: appearanceVariant === 'clean',
   });
 
   const wrapperStyle = useMemo<CSSProperties | undefined>(() => {

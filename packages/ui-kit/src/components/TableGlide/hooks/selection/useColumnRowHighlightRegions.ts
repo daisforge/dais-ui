@@ -23,6 +23,8 @@ interface UseColumnRowHighlightRegionsParams {
   /** Всего колонок (вместе с сервисными). */
   columnsCount: number;
   theme: Theme;
+  /** Служебная зона следует за строкой: регионы её выделения стилем 'accent'. */
+  serviceZoneFollowsRow?: boolean;
 }
 
 /**
@@ -40,7 +42,13 @@ export function useColumnRowHighlightRegions({
   firstDataCol,
   columnsCount,
   theme,
+  serviceZoneFollowsRow = false,
 }: UseColumnRowHighlightRegionsParams): GlideProps['highlightRegions'] {
+  // Цвет заливки служебной зоны: из региона (фиксированный голубой) или из
+  // accentLight каждой ячейки, когда служебная зона следует за строкой.
+  const serviceStyle = serviceZoneFollowsRow
+    ? ('accent' as const)
+    : ('no-outline' as const);
   return useMemo<GlideProps['highlightRegions']>(() => {
     const hasColumns = selectedColumnIndexes.length > 0;
     const hasRows = headerSelectedRowIndexes.length > 0;
@@ -95,7 +103,7 @@ export function useColumnRowHighlightRegions({
         regions.push({
           color: theme.selectionServiceActiveBg,
           range: { x: 0, y: 0, width: firstDataCol, height: totalRows },
-          style: 'no-outline' as const,
+          style: serviceStyle,
         });
       }
       // Стиль 'accent' (наша доработка форка): цвет заливки берётся не из
@@ -125,7 +133,7 @@ export function useColumnRowHighlightRegions({
           regions.push({
             color: theme.selectionServiceActiveBg,
             range: { x: 0, y: rowInd, width: firstDataCol, height: 1 },
-            style: 'no-outline' as const,
+            style: serviceStyle,
           });
         }
       }
@@ -171,7 +179,7 @@ export function useColumnRowHighlightRegions({
         regions.push({
           color: theme.selectionServiceActiveBg,
           range: { x: 0, y: row, width: firstDataCol, height: 1 },
-          style: 'no-outline' as const,
+          style: serviceStyle,
         });
       }
     }
@@ -188,5 +196,6 @@ export function useColumnRowHighlightRegions({
     theme.selectionActiveBg,
     theme.selectionServiceActiveBg,
     theme.accentColor,
+    serviceStyle,
   ]);
 }

@@ -34,6 +34,7 @@ import type {
 } from '../feature-sticky/types';
 import { SubRows } from '../feature-tree/types';
 import type {
+  AppearanceConfig,
   CellReadOnlyEditorGlideInstanceStaticProps,
   CellsSelectionMode,
   HighlightActiveType,
@@ -1056,6 +1057,15 @@ export type TableConfig<
    * по ячейкам.
    */
   borders?: BordersConfig<RowType>;
+  /**
+   * Готовые варианты внешнего вида таблицы.
+   *
+   * `variant: 'clean'` — без линий сетки и внешних рамок, шапка на белом фоне
+   * с серым текстом. Отдельные линии можно вернуть через `borders`.
+   *
+   * `zebra: true` — строки через одну окрашены серым, работает в любом варианте.
+   */
+  appearance?: AppearanceConfig;
   /**
    * rowSize - размеры строк таблицы
    */

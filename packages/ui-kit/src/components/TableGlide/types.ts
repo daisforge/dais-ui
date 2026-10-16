@@ -93,6 +93,24 @@ export type HoverEffectsConfig = {
   row?: boolean;
 };
 
+/** Вариант внешнего вида таблицы: `'default'` — как всегда, `'clean'` — «чистый» вид. */
+export type AppearanceVariant = 'default' | 'clean';
+
+/** Готовые варианты внешнего вида таблицы: «чистый» вид и зебра. */
+export type AppearanceConfig = {
+  /**
+   * `'clean'` — «чистый» вид: без линий сетки и внешних рамок, шапка на белом
+   * фоне с серым текстом.
+   * @default 'default'
+   */
+  variant?: AppearanceVariant;
+  /**
+   * Зебра: строки через одну окрашены серым. Работает в любом `variant`.
+   * @default false
+   */
+  zebra?: boolean;
+};
+
 // ---------------------------------------- COLUMNS
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -429,6 +447,8 @@ export type TableGlideCustomProps<
    * явное `{ row: false }`.
    */
   hoverEffects?: HoverEffectsConfig;
+  /** Внешний вид: «чистый» вариант и зебра. См. {@link AppearanceConfig}. */
+  appearance?: AppearanceConfig;
   /** Включает компенсацию тонких canvas-линий при browser zoom ниже 100% / DPR < 1. */
   enableLowDprHairline?: boolean;
 };
