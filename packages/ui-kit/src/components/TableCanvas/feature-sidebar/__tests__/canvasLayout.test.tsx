@@ -91,6 +91,7 @@ const createLayoutProps = (
     $tableAndSidebarContainerHeightStyle: {},
     $highlightActiveType: 'disabled',
     $borderTopRounded: false,
+    $appearanceVariant: 'default',
     isHaveSomeFeatureInSidebar: false,
     bottomSheetConfig: bottomSheet,
   },

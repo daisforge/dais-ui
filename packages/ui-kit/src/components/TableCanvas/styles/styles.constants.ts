@@ -53,6 +53,16 @@ export const COLORS = {
 
 export const TABLE_BORDER_RADIUS = 8;
 
+/**
+ * Цвет внешних рамок таблицы: контейнер, блок управления, активные фильтры,
+ * пагинация, сайдбары, нижняя панель. Задаётся CSS-переменной на контейнере
+ * таблицы, чтобы «чистый» вид (appearance.variant = 'clean') гасил все рамки
+ * одним значением: рамки красятся в фон карточки. Сами рамки остаются шириной
+ * 1px: геометрия не меняется.
+ */
+export const OUTER_BORDER_COLOR_VAR = '--table-outer-border-color';
+export const outerBorderColor = `var(${OUTER_BORDER_COLOR_VAR}, ${COLORS.border})`;
+
 export {
   COLLAPSE_DECOR_DELAY,
   COLLAPSE_DECOR_FADE,

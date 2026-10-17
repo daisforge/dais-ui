@@ -13,6 +13,7 @@ interface ChildFlexProperties {
   flexGrow: number;
   flexShrink: number;
   flexBasis: number;
+  minWidth: number | undefined;
   alignSelf: FlexStyle['alignSelf'];
   crossAxisSizing: FlexStyle['crossAxisSizing'];
 }
@@ -31,6 +32,7 @@ export class FlexTreeBuilder {
     alignSelf: 'auto',
     width: undefined,
     height: undefined,
+    minWidth: undefined,
     // По умолчанию размер считаем сразу.
     crossAxisSizing: 'auto',
   };
@@ -77,6 +79,7 @@ export class FlexTreeBuilder {
       this.defaultFlexStyle.alignSelf = props.alignSelf;
       this.defaultFlexStyle.width = props.width;
       this.defaultFlexStyle.height = props.height;
+      this.defaultFlexStyle.minWidth = props.minWidth;
       this.defaultFlexStyle.crossAxisSizing = props.crossAxisSizing;
 
       // Добавляем дочерний элемент в flex-дерево
@@ -92,7 +95,7 @@ export class FlexTreeBuilder {
    * Извлекает flex-свойства из дочернего узла.
    */
   private extractChildFlexProperties(
-    _child: ICanvasNode,
+    child: ICanvasNode,
     childStyle: ICanvasNode['style']
   ): ChildFlexProperties {
     const flexGrow = childStyle.flexGrow ?? 0;
@@ -107,6 +110,7 @@ export class FlexTreeBuilder {
       flexGrow,
       flexShrink,
       flexBasis,
+      minWidth: childStyle.minWidth ?? child.minContentWidth,
       alignSelf: childStyle.alignSelf ?? 'auto',
       crossAxisSizing: 'auto',
     };

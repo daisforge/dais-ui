@@ -128,6 +128,19 @@ export const getCustomColors = (activeTheme: ActiveTheme) => ({
   bgCellInfoRowActiveHovered:
     TABLE_STATE_COLORS.bgCellInfoRowActiveHovered[activeTheme],
 
+  // Зебра (appearance.zebra): чётная строка во всех состояниях
+  bgZebraRow: TABLE_STATE_COLORS.bgZebraRow[activeTheme],
+  bgZebraRowHovered: TABLE_STATE_COLORS.bgZebraRowHovered[activeTheme],
+  bgZebraRowActive: TABLE_STATE_COLORS.bgZebraRowActive[activeTheme],
+  bgZebraRowActiveHovered:
+    TABLE_STATE_COLORS.bgZebraRowActiveHovered[activeTheme],
+
+  // Текст шапки в «чистом» виде (appearance.variant = 'clean')
+  textHeaderClean: TABLE_STATE_COLORS.textHeaderClean[activeTheme],
+  // Фон итоговой строки: тот же токен, что у шапки, но свой ключ — в чистом
+  // виде шапка белеет, а итоговая строка по решению дизайнера остаётся голубой
+  bgSummaryRow: TABLE_STATE_COLORS.bgHeader[activeTheme],
+
   // Цвет плавного затухания у края при прокрутке (без состояний)
   fadeWhite: TABLE_STATE_COLORS.fadeWhite[activeTheme],
   fadeGray: TABLE_STATE_COLORS.fadeGray[activeTheme],

@@ -1,14 +1,12 @@
 import { Box } from '@ui-kit/components/Box';
 import { TabItem, Tabs } from '@ui-kit/components/Tabs';
-import {
-  outlineSolidPrimary,
-  spacing4x,
-  spacing8x,
-  surfaceSolidCard,
-} from '@ui-kit/tokens';
+import { spacing4x, spacing8x, surfaceSolidCard } from '@ui-kit/tokens';
 import styled, { css, keyframes } from 'styled-components';
 
-import { TABLE_BORDER_RADIUS } from '../../styles/styles.constants';
+import {
+  outerBorderColor,
+  TABLE_BORDER_RADIUS,
+} from '../../styles/styles.constants';
 import { SIDEBAR_DURATION, SIDEBAR_TABS_WIDTH, toCssSize } from '../constants';
 import { tableSidebarClassNames as cls } from './TableSidebar.classnames';
 
@@ -62,7 +60,7 @@ export const SidebarContainer = styled(Box)<{
   flex-direction: ${({ $side }) => ($side === 'left' ? 'row' : 'row-reverse')};
   flex: 0 1 auto;
   min-height: 0;
-  border: 1px solid ${() => outlineSolidPrimary};
+  border: 1px solid ${outerBorderColor};
   ${({ $side }) =>
     $side === 'left' ? 'border-right: none;' : 'border-left: none;'}
   box-sizing: border-box;
@@ -122,10 +120,10 @@ export const SidebarTogglePanel = styled(Box)<{
   ${({ $side }) =>
     $side === 'left'
       ? css`
-          border-right: 1px solid ${outlineSolidPrimary};
+          border-right: 1px solid ${outerBorderColor};
         `
       : css`
-          border-left: 1px solid ${outlineSolidPrimary};
+          border-left: 1px solid ${outerBorderColor};
         `}
 
   background-color: ${surfaceSolidCard};
