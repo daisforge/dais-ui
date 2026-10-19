@@ -1,7 +1,7 @@
 import { Button } from '@ui-kit/components/Button';
 import { BodyS, BodyXS, TextXS } from '@ui-kit/components/Typography';
 import { IconCopyOutline, IconDisclosureDownOutline } from '@ui-kit/icons';
-import { copyTextToClipboard } from '@ui-kit/shared/utils/copy';
+import { handleCopyAsync } from '@ui-kit/shared/utils/copy';
 import { mergeClasses } from '@ui-kit/utils';
 import React, {
   FC,
@@ -88,10 +88,10 @@ const TableCanvasLoggerMessageBase: FC<TableCanvasLoggerMessageProps> = ({
   const copy = useCallback(
     async (kind: TableCanvasLoggerCopyKind, value: string) => {
       try {
-        const done = ctx.copyToClipboard
-          ? (await ctx.copyToClipboard(value)) !== false
-          : await copyTextToClipboard(value);
-        if (!done) {
+        const result = ctx.copyToClipboard
+          ? await ctx.copyToClipboard(value)
+          : await handleCopyAsync(value);
+        if (result === false) {
           setCopied(null);
           return;
         }
