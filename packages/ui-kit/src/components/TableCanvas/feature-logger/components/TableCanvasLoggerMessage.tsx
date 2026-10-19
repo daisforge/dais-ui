@@ -14,15 +14,12 @@ import React, {
   useState,
 } from 'react';
 
+import { useControllableState } from '../hooks/useControllableState';
 import {
   COPIED_FEEDBACK_MS,
-  TABLE_CANVAS_LOGGER_STATUS_LABEL_KEYS,
   tableCanvasLoggerClassNames as cls,
 } from '../TableCanvasLogger.constants';
-import {
-  useTableCanvasLoggerContext,
-  useTableCanvasLoggerExpanded,
-} from '../TableCanvasLogger.context';
+import { useTableCanvasLoggerContext } from '../TableCanvasLogger.context';
 import {
   StyledTableCanvasLoggerCopyIcon,
   StyledTableCanvasLoggerDescription,
@@ -32,8 +29,6 @@ import {
   StyledTableCanvasLoggerMessageActions,
   StyledTableCanvasLoggerMessageContent,
   StyledTableCanvasLoggerMessageDate,
-  StyledTableCanvasLoggerMessageIcon,
-  StyledTableCanvasLoggerVisuallyHidden,
 } from '../TableCanvasLogger.styled';
 import type {
   TableCanvasLoggerCopyKind,
@@ -45,22 +40,24 @@ import { TableCanvasLoggerStatusIcon } from './TableCanvasLoggerStatusIcon';
 
 export type TableCanvasLoggerMessageProps = {
   item: TableCanvasLoggerMessageItem;
-  depth?: number;
-  /** Раскрыты ли подробности. По умолчанию берётся из контекста TableCanvasLogger */
+  /** Раскрыты ли подробности. Без пропа состояние хранится внутри */
   open?: boolean;
-  onToggle?: (item: TableCanvasLoggerMessageItem) => void;
+  defaultOpen?: boolean;
+  onOpenChange?: (open: boolean, item: TableCanvasLoggerMessageItem) => void;
 };
+
+const hasContent = (value: ReactNode) =>
+  value !== undefined && value !== null && value !== false && value !== '';
 
 const TableCanvasLoggerMessageBase: FC<TableCanvasLoggerMessageProps> = ({
   item,
-  depth = 0,
   open: openProp,
-  onToggle,
+  defaultOpen = false,
+  onOpenChange,
 }) => {
   const ctx = useTableCanvasLoggerContext();
-  const { labels, classes, toggleExpanded, managed: hasProvider } = ctx;
+  const { labels, classes } = ctx;
   const {
-    id,
     status,
     title,
     description,
@@ -71,19 +68,19 @@ const TableCanvasLoggerMessageBase: FC<TableCanvasLoggerMessageProps> = ({
   } = item;
 
   const descriptionId = `${useId()}-description`;
-  const [localOpen, setLocalOpen] = useState(false);
-  const managedOpen = useTableCanvasLoggerExpanded(id);
-  const open = openProp ?? (hasProvider ? managedOpen : localOpen);
+  const [open, setOpen] = useControllableState(
+    openProp,
+    defaultOpen,
+    useCallback(
+      (next: boolean) => onOpenChange?.(next, item),
+      [onOpenChange, item],
+    ),
+  );
+  const toggle = useCallback(() => setOpen((prev) => !prev), [setOpen]);
 
   const [copied, setCopied] = useState<TableCanvasLoggerCopyKind | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout>>();
   useEffect(() => () => clearTimeout(timer.current), []);
-
-  const toggle = useCallback(() => {
-    if (onToggle) onToggle(item);
-    else if (hasProvider) toggleExpanded(id);
-    else setLocalOpen((prev) => !prev);
-  }, [onToggle, item, hasProvider, toggleExpanded, id]);
 
   const copy = useCallback(
     async (kind: TableCanvasLoggerCopyKind, value: string) => {
@@ -96,6 +93,7 @@ const TableCanvasLoggerMessageBase: FC<TableCanvasLoggerMessageProps> = ({
           return;
         }
         ctx.onCopy?.(kind, value, item);
+        ctx.announce(labels.copied);
         setCopied(kind);
         clearTimeout(timer.current);
         timer.current = setTimeout(() => setCopied(null), COPIED_FEEDBACK_MS);
@@ -103,14 +101,10 @@ const TableCanvasLoggerMessageBase: FC<TableCanvasLoggerMessageProps> = ({
         setCopied(null);
       }
     },
-    [ctx, item],
+    [ctx, item, labels.copied],
   );
 
-  const hasDescription =
-    description !== undefined &&
-    description !== null &&
-    description !== false &&
-    description !== '';
+  const hasDescription = hasContent(description);
   const descriptionText =
     typeof description === 'string' ? description : undefined;
   const formattedDate =
@@ -203,13 +197,10 @@ const TableCanvasLoggerMessageBase: FC<TableCanvasLoggerMessageProps> = ({
       className={mergeClasses(cls.message, classes?.message, item.className)}
       data-status={status}
     >
-      <StyledTableCanvasLoggerMessageIcon
-        role="img"
-        aria-label={labels[TABLE_CANVAS_LOGGER_STATUS_LABEL_KEYS[status]]}
+      <TableCanvasLoggerStatusIcon
+        status={status}
         className={mergeClasses(cls.messageIcon, classes?.messageIcon)}
-      >
-        <TableCanvasLoggerStatusIcon status={status} item={item} />
-      </StyledTableCanvasLoggerMessageIcon>
+      />
       <StyledTableCanvasLoggerMessageContent>
         <BodyS
           className={mergeClasses(cls.messageTitle, classes?.messageTitle)}
@@ -232,9 +223,6 @@ const TableCanvasLoggerMessageBase: FC<TableCanvasLoggerMessageProps> = ({
           )}
         </StyledTableCanvasLoggerMessageActions>
         {defaultDescription}
-        <StyledTableCanvasLoggerVisuallyHidden role="status">
-          {copied ? labels.copied : ''}
-        </StyledTableCanvasLoggerVisuallyHidden>
       </StyledTableCanvasLoggerMessageContent>
     </StyledTableCanvasLoggerMessage>
   );
@@ -243,7 +231,6 @@ const TableCanvasLoggerMessageBase: FC<TableCanvasLoggerMessageProps> = ({
 
   const renderCtx: TableCanvasLoggerMessageRenderContext = {
     item,
-    depth,
     open,
     toggle,
     copy,

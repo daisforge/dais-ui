@@ -76,12 +76,7 @@ export type TableCanvasLoggerLabels = {
   collapseGroup: string;
   /** Подпись группы фильтров для скринридера */
   filters: string;
-  /** Названия статусов для скринридера: иконки и чипсы фильтров */
-  statusError: string;
-  statusWarning: string;
-  statusInfo: string;
-  statusSuccess: string;
-};
+} & Record<TableCanvasLoggerStatus, string>;
 
 /** Классы внутренних элементов */
 export type TableCanvasLoggerClasses = {
@@ -110,7 +105,6 @@ export type TableCanvasLoggerCssProp =
 /** Контекст, который получает кастомный рендер сообщения */
 export type TableCanvasLoggerMessageRenderContext = {
   item: TableCanvasLoggerMessageItem;
-  depth: number;
   /** Раскрыты ли подробности */
   open: boolean;
   toggle: () => void;
@@ -123,7 +117,6 @@ export type TableCanvasLoggerMessageRenderContext = {
 /** Контекст, который получает кастомный рендер группы */
 export type TableCanvasLoggerGroupRenderContext = {
   item: TableCanvasLoggerGroupItem;
-  depth: number;
   open: boolean;
   toggle: () => void;
   /** Уже отрисованные дочерние элементы */
@@ -135,11 +128,6 @@ export type TableCanvasLoggerGroupRenderContext = {
 export type TableCanvasLoggerRenderProps = {
   /** Замена иконок статусов */
   statusIcons?: Partial<Record<TableCanvasLoggerStatus, ReactNode>>;
-  /** Полная замена иконки статуса */
-  renderStatusIcon?: (
-    status: TableCanvasLoggerStatus,
-    item: TableCanvasLoggerItem,
-  ) => ReactNode;
   /** Полная замена сообщения */
   renderMessage?: (ctx: TableCanvasLoggerMessageRenderContext) => ReactNode;
   /** Полная замена группы */
@@ -202,9 +190,10 @@ export type TableCanvasLoggerProps = Omit<
   open?: boolean;
   defaultOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
-  filter?: TableCanvasLoggerFilterValue | null;
-  defaultFilter?: TableCanvasLoggerFilterValue | null;
-  onFilterChange?: (filter: TableCanvasLoggerFilterValue | null) => void;
+  /** Текущий фильтр. При закрытии панели сбрасывается на «Все», в закрытой панели чипсы не выделены */
+  filter?: TableCanvasLoggerFilterValue;
+  defaultFilter?: TableCanvasLoggerFilterValue;
+  onFilterChange?: (filter: TableCanvasLoggerFilterValue) => void;
   /**
    * Внешние счётчики. По умолчанию считаются по `items`: группа учитывается
    * наравне с сообщениями, поэтому группа с тремя сообщениями даёт «Все (4)»

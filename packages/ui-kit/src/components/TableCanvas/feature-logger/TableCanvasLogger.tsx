@@ -5,8 +5,6 @@ import { mergeClasses } from '@ui-kit/utils';
 import React, { FC, useId } from 'react';
 
 import { TableCanvasLoggerFilters } from './components/TableCanvasLoggerFilters';
-import { TableCanvasLoggerGroup } from './components/TableCanvasLoggerGroup';
-import { TableCanvasLoggerMessage } from './components/TableCanvasLoggerMessage';
 import { useTableCanvasLogger } from './hooks/useTableCanvasLogger';
 import {
   DEFAULT_TABLE_CANVAS_LOGGER_LABELS,
@@ -21,13 +19,10 @@ import {
   StyledTableCanvasLoggerToggle,
 } from './TableCanvasLogger.styled';
 import type { TableCanvasLoggerProps } from './TableCanvasLogger.types';
-import {
-  TableCanvasLoggerList,
-  TableCanvasLoggerListView,
-} from './TableCanvasLoggerList';
+import { TableCanvasLoggerListView } from './TableCanvasLoggerList';
 import { TableCanvasLoggerProvider } from './TableCanvasLoggerProvider';
 
-const TableCanvasLoggerRoot: FC<TableCanvasLoggerProps> = ({
+export const TableCanvasLogger: FC<TableCanvasLoggerProps> = ({
   items,
   open,
   defaultOpen,
@@ -102,7 +97,7 @@ const TableCanvasLoggerRoot: FC<TableCanvasLoggerProps> = ({
             {!hideFilters && (
               <TableCanvasLoggerFilters
                 counts={state.counts}
-                value={state.filter}
+                value={state.open ? state.filter : null}
                 onChange={state.selectFilter}
                 showEmpty={showEmptyFilters}
               />
@@ -129,10 +124,3 @@ const TableCanvasLoggerRoot: FC<TableCanvasLoggerProps> = ({
     </TableCanvasLoggerProvider>
   );
 };
-
-export const TableCanvasLogger = Object.assign(TableCanvasLoggerRoot, {
-  List: TableCanvasLoggerList,
-  Message: TableCanvasLoggerMessage,
-  Group: TableCanvasLoggerGroup,
-  Filters: TableCanvasLoggerFilters,
-});

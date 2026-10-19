@@ -10,11 +10,13 @@ import {
 import React from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import { TableCanvasLoggerGroup, TableCanvasLoggerMessage } from './components';
 import { useTableCanvasLogger } from './hooks';
 import { TableCanvasLogger } from './TableCanvasLogger';
 import type {
   TableCanvasLoggerGroupItem,
   TableCanvasLoggerItem,
+  TableCanvasLoggerMessageItem,
 } from './TableCanvasLogger.types';
 import { TableCanvasLoggerList } from './TableCanvasLoggerList';
 
@@ -372,7 +374,7 @@ describe('расширяемость', () => {
     expect(screen.getByText('Вложенное предупреждение')).toBeTruthy();
   });
 
-  it('statusIcons и renderStatusIcon заменяют иконки', () => {
+  it('statusIcons заменяют иконки статусов', () => {
     render(
       <TableCanvasLoggerList
         items={[{ id: 'x', status: 'error', title: 'Ошибка' }]}
@@ -426,18 +428,27 @@ describe('расширяемость', () => {
 });
 
 describe('useTableCanvasLogger', () => {
-  it('toggleOpen при открытии выбирает «Все», при закрытии сбрасывает фильтр', () => {
+  it('закрытие сбрасывает фильтр на «Все», открытие сохраняет текущий', () => {
     const { result } = renderHook(() =>
-      useTableCanvasLogger({ items, defaultFilter: null }),
+      useTableCanvasLogger({ items, defaultFilter: 'warning' }),
     );
 
     act(() => result.current.toggleOpen());
     expect(result.current.open).toBe(true);
-    expect(result.current.filter).toBe('all');
+    expect(result.current.filter).toBe('warning');
 
     act(() => result.current.toggleOpen());
     expect(result.current.open).toBe(false);
-    expect(result.current.filter).toBeNull();
+    expect(result.current.filter).toBe('all');
+  });
+
+  it('в закрытой панели ни один чипс фильтра не выделен', () => {
+    render(<TableCanvasLogger items={items} />);
+
+    const pressed = screen
+      .getAllByRole('button')
+      .filter((button) => button.getAttribute('aria-pressed') === 'true');
+    expect(pressed).toHaveLength(0);
   });
 
   it('selectFilter открывает панель', () => {
@@ -630,5 +641,71 @@ describe('надёжность', () => {
 
     expect(onExpandedIdsChange).not.toHaveBeenCalled();
     expect(screen.queryByText('Внутри поздней')).toBeNull();
+  });
+});
+
+describe('отдельные части', () => {
+  it('сообщение без провайдера раскрывает подробности само', () => {
+    render(
+      <TableCanvasLoggerMessage
+        item={{
+          id: 'solo',
+          status: 'info',
+          title: 'Одно',
+          description: 'Текст',
+        }}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'Подробнее' }));
+    expect(screen.getByText('Текст')).toBeTruthy();
+  });
+
+  it('группа без провайдера берёт начальное состояние из defaultOpen', () => {
+    render(
+      <TableCanvasLoggerGroup
+        item={{
+          id: 'g',
+          status: 'error',
+          title: 'Группа',
+          defaultOpen: true,
+          items: [],
+        }}
+      >
+        <span>Внутри</span>
+      </TableCanvasLoggerGroup>,
+    );
+
+    expect(screen.getByText('Внутри')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: /Группа/ }));
+    expect(screen.queryByText('Внутри')).toBeNull();
+  });
+
+  it('управляемое сообщение сообщает о смене через onOpenChange', () => {
+    const onOpenChange = vi.fn();
+    const item: TableCanvasLoggerItem = {
+      id: 'c',
+      status: 'info',
+      title: 'Т',
+      description: 'Д',
+    };
+    render(
+      <TableCanvasLoggerMessage
+        item={item as TableCanvasLoggerMessageItem}
+        open={false}
+        onOpenChange={onOpenChange}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'Подробнее' }));
+    expect(onOpenChange).toHaveBeenCalledWith(true, item);
+    expect(screen.queryByText('Д')).toBeNull();
+  });
+
+  it('один live-регион на весь список', () => {
+    render(
+      <TableCanvasLoggerList items={items} defaultExpandedIds={['group-1']} />,
+    );
+    expect(screen.getAllByRole('status')).toHaveLength(1);
   });
 });

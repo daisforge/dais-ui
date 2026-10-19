@@ -13,10 +13,8 @@ import {
 import React, { FC, ReactNode } from 'react';
 
 import { useTableCanvasLoggerContext } from '../TableCanvasLogger.context';
-import type {
-  TableCanvasLoggerItem,
-  TableCanvasLoggerStatus,
-} from '../TableCanvasLogger.types';
+import { StyledTableCanvasLoggerStatusIcon } from '../TableCanvasLogger.styled';
+import type { TableCanvasLoggerStatus } from '../TableCanvasLogger.types';
 
 const getDefaultStatusIcon = (status: TableCanvasLoggerStatus): ReactNode => {
   switch (status) {
@@ -33,14 +31,22 @@ const getDefaultStatusIcon = (status: TableCanvasLoggerStatus): ReactNode => {
 
 export type TableCanvasLoggerStatusIconProps = {
   status: TableCanvasLoggerStatus;
-  item?: TableCanvasLoggerItem;
+  className?: string;
 };
 
+/** Иконка статуса с подписью для скринридера (`labels[status]`) */
 export const TableCanvasLoggerStatusIcon: FC<
   TableCanvasLoggerStatusIconProps
-> = ({ status, item }) => {
-  const { statusIcons, renderStatusIcon } = useTableCanvasLoggerContext();
+> = ({ status, className }) => {
+  const { statusIcons, labels } = useTableCanvasLoggerContext();
 
-  if (renderStatusIcon && item) return renderStatusIcon(status, item);
-  return statusIcons?.[status] ?? getDefaultStatusIcon(status);
+  return (
+    <StyledTableCanvasLoggerStatusIcon
+      role="img"
+      aria-label={labels[status]}
+      className={className}
+    >
+      {statusIcons?.[status] ?? getDefaultStatusIcon(status)}
+    </StyledTableCanvasLoggerStatusIcon>
+  );
 };

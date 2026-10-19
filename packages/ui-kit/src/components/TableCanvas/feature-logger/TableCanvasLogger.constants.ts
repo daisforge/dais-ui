@@ -34,21 +34,11 @@ export const DEFAULT_TABLE_CANVAS_LOGGER_LABELS: TableCanvasLoggerLabels = {
   expandGroup: 'Развернуть группу',
   collapseGroup: 'Свернуть группу',
   filters: 'Фильтр по статусу',
-  statusError: 'Ошибка',
-  statusWarning: 'Предупреждение',
-  statusInfo: 'Информация',
-  statusSuccess: 'Успешно',
+  error: 'Ошибка',
+  warning: 'Предупреждение',
+  info: 'Информация',
+  success: 'Успешно',
 };
-
-export const TABLE_CANVAS_LOGGER_STATUS_LABEL_KEYS = {
-  error: 'statusError',
-  warning: 'statusWarning',
-  info: 'statusInfo',
-  success: 'statusSuccess',
-} as const satisfies Record<
-  TableCanvasLoggerStatus,
-  keyof TableCanvasLoggerLabels
->;
 
 export const TABLE_CANVAS_LOGGER_STATUSES: TableCanvasLoggerStatus[] = [
   'info',
@@ -59,4 +49,8 @@ export const TABLE_CANVAS_LOGGER_STATUSES: TableCanvasLoggerStatus[] = [
 
 export const COPIED_FEEDBACK_MS = 2000;
 
-export const GROUP_BODY_INDENT = 42;
+/** Размер иконок статусов и шевронов */
+export const ICON_SIZE = 16;
+
+/** Скругление как у Button size="xxs": чипсы фильтров выглядят как кнопки */
+export const BUTTON_XXS_RADIUS = '0.375rem';

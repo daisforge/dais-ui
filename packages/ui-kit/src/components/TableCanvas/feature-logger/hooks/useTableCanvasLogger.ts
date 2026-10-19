@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import type {
   TableCanvasLoggerCounts,
@@ -8,20 +8,19 @@ import type {
 import {
   countTableCanvasLoggerItems,
   filterTableCanvasLoggerItems,
-  getTableCanvasLoggerDefaultOpenIds,
-  getTableCanvasLoggerGroupIds,
   sumTableCanvasLoggerCounts,
 } from '../TableCanvasLogger.utils';
 import { useControllableState } from './useControllableState';
+import { useExpandedIds } from './useExpandedIds';
 
 export type UseTableCanvasLoggerOptions = {
   items?: TableCanvasLoggerItem[] | null;
   defaultOpen?: boolean;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
-  filter?: TableCanvasLoggerFilterValue | null;
-  defaultFilter?: TableCanvasLoggerFilterValue | null;
-  onFilterChange?: (filter: TableCanvasLoggerFilterValue | null) => void;
+  filter?: TableCanvasLoggerFilterValue;
+  defaultFilter?: TableCanvasLoggerFilterValue;
+  onFilterChange?: (filter: TableCanvasLoggerFilterValue) => void;
   expandedIds?: string[];
   defaultExpandedIds?: string[];
   onExpandedIdsChange?: (ids: string[]) => void;
@@ -39,62 +38,22 @@ export const useTableCanvasLogger = (
     options.onOpenChange,
   );
   const [filter, setFilter] =
-    useControllableState<TableCanvasLoggerFilterValue | null>(
+    useControllableState<TableCanvasLoggerFilterValue>(
       options.filter,
       options.defaultFilter ?? 'all',
       options.onFilterChange,
     );
-  const [expandedIds, setExpandedIds] = useControllableState<string[]>(
-    options.expandedIds,
-    () =>
-      options.defaultExpandedIds ?? getTableCanvasLoggerDefaultOpenIds(items),
-    options.onExpandedIdsChange,
+  const expanded = useExpandedIds(options);
+
+  const counts = useMemo(
+    () => ({ ...countTableCanvasLoggerItems(items), ...externalCounts }),
+    [items, externalCounts],
   );
-
-  const isExpandedControlled = options.expandedIds !== undefined;
-  const knownGroupIds = useRef<Set<string> | null>(null);
-  useEffect(() => {
-    const groupIds = getTableCanvasLoggerGroupIds(items);
-    if (!knownGroupIds.current) {
-      knownGroupIds.current = new Set(groupIds);
-      return;
-    }
-    const known = knownGroupIds.current;
-    const fresh = getTableCanvasLoggerDefaultOpenIds(items).filter(
-      (id) => !known.has(id),
-    );
-    groupIds.forEach((id) => known.add(id));
-    if (!fresh.length || isExpandedControlled) return;
-    setExpandedIds((prev) => [
-      ...prev,
-      ...fresh.filter((id) => !prev.includes(id)),
-    ]);
-  }, [items, isExpandedControlled, setExpandedIds]);
-
-  const counts = useMemo(() => {
-    const own = countTableCanvasLoggerItems(items);
-    return { ...own, ...externalCounts };
-  }, [items, externalCounts]);
-
   const total = useMemo(() => sumTableCanvasLoggerCounts(counts), [counts]);
   const visibleItems = useMemo(
     () => filterTableCanvasLoggerItems(items ?? [], filter),
     [items, filter],
   );
-
-  const toggleExpanded = useCallback(
-    (id: string) =>
-      setExpandedIds((prev) =>
-        prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
-      ),
-    [setExpandedIds],
-  );
-
-  const expandAll = useCallback(
-    () => setExpandedIds(getTableCanvasLoggerGroupIds(items)),
-    [items, setExpandedIds],
-  );
-  const collapseAll = useCallback(() => setExpandedIds([]), [setExpandedIds]);
 
   const selectFilter = useCallback(
     (next: TableCanvasLoggerFilterValue) => {
@@ -105,14 +64,9 @@ export const useTableCanvasLogger = (
   );
 
   const toggleOpen = useCallback(() => {
-    if (open) {
-      setFilter(null);
-      setOpen(false);
-    } else {
-      if (filter === null) setFilter('all');
-      setOpen(true);
-    }
-  }, [open, filter, setFilter, setOpen]);
+    if (open) setFilter('all');
+    setOpen(!open);
+  }, [open, setFilter, setOpen]);
 
   return {
     open,
@@ -121,11 +75,7 @@ export const useTableCanvasLogger = (
     filter,
     setFilter,
     selectFilter,
-    expandedIds,
-    setExpandedIds,
-    toggleExpanded,
-    expandAll,
-    collapseAll,
+    ...expanded,
     counts,
     total,
     visibleItems,

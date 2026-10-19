@@ -1,22 +1,16 @@
 import { BodyS } from '@ui-kit/components/Typography';
 import { IconDisclosureDownFill } from '@ui-kit/icons';
 import { mergeClasses } from '@ui-kit/utils';
-import React, { FC, memo, ReactNode, useCallback, useState } from 'react';
+import React, { FC, memo, ReactNode, useCallback } from 'react';
 
-import {
-  TABLE_CANVAS_LOGGER_STATUS_LABEL_KEYS,
-  tableCanvasLoggerClassNames as cls,
-} from '../TableCanvasLogger.constants';
-import {
-  useTableCanvasLoggerContext,
-  useTableCanvasLoggerExpanded,
-} from '../TableCanvasLogger.context';
+import { useControllableState } from '../hooks/useControllableState';
+import { tableCanvasLoggerClassNames as cls } from '../TableCanvasLogger.constants';
+import { useTableCanvasLoggerContext } from '../TableCanvasLogger.context';
 import {
   StyledTableCanvasLoggerChevron,
   StyledTableCanvasLoggerGroup,
   StyledTableCanvasLoggerGroupBody,
   StyledTableCanvasLoggerGroupHeader,
-  StyledTableCanvasLoggerMessageIcon,
 } from '../TableCanvasLogger.styled';
 import type {
   TableCanvasLoggerGroupItem,
@@ -26,31 +20,30 @@ import { TableCanvasLoggerStatusIcon } from './TableCanvasLoggerStatusIcon';
 
 export type TableCanvasLoggerGroupProps = {
   item: TableCanvasLoggerGroupItem;
-  depth?: number;
+  /** Раскрыта ли группа. Без пропа состояние хранится внутри, начальное — `item.defaultOpen` */
   open?: boolean;
-  onToggle?: (item: TableCanvasLoggerGroupItem) => void;
-  /** Дочерние элементы, уже отрисованные списком */
+  onOpenChange?: (open: boolean, item: TableCanvasLoggerGroupItem) => void;
+  /** Вложенные элементы */
   children?: ReactNode;
 };
 
 const TableCanvasLoggerGroupBase: FC<TableCanvasLoggerGroupProps> = ({
   item,
-  depth = 0,
   open: openProp,
-  onToggle,
+  onOpenChange,
   children,
 }) => {
   const ctx = useTableCanvasLoggerContext();
-  const { classes, labels, toggleExpanded, managed } = ctx;
-  const [localOpen, setLocalOpen] = useState(Boolean(item.defaultOpen));
-  const managedOpen = useTableCanvasLoggerExpanded(item.id);
-  const open = openProp ?? (managed ? managedOpen : localOpen);
-
-  const toggle = useCallback(() => {
-    if (onToggle) onToggle(item);
-    else if (managed) toggleExpanded(item.id);
-    else setLocalOpen((prev) => !prev);
-  }, [onToggle, item, managed, toggleExpanded]);
+  const { classes, labels } = ctx;
+  const [open, setOpen] = useControllableState(
+    openProp,
+    Boolean(item.defaultOpen),
+    useCallback(
+      (next: boolean) => onOpenChange?.(next, item),
+      [onOpenChange, item],
+    ),
+  );
+  const toggle = useCallback(() => setOpen((prev) => !prev), [setOpen]);
 
   const defaultRender = () => (
     <StyledTableCanvasLoggerGroup
@@ -67,14 +60,7 @@ const TableCanvasLoggerGroupBase: FC<TableCanvasLoggerGroupProps> = ({
         <StyledTableCanvasLoggerChevron $open={open}>
           <IconDisclosureDownFill size="xs" />
         </StyledTableCanvasLoggerChevron>
-        <StyledTableCanvasLoggerMessageIcon
-          role="img"
-          aria-label={
-            labels[TABLE_CANVAS_LOGGER_STATUS_LABEL_KEYS[item.status]]
-          }
-        >
-          <TableCanvasLoggerStatusIcon status={item.status} item={item} />
-        </StyledTableCanvasLoggerMessageIcon>
+        <TableCanvasLoggerStatusIcon status={item.status} />
         <BodyS>{item.title}</BodyS>
       </StyledTableCanvasLoggerGroupHeader>
       {open && (
@@ -91,7 +77,6 @@ const TableCanvasLoggerGroupBase: FC<TableCanvasLoggerGroupProps> = ({
 
   const renderCtx: TableCanvasLoggerGroupRenderContext = {
     item,
-    depth,
     open,
     toggle,
     children,

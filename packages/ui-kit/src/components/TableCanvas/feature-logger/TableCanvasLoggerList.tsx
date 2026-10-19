@@ -1,9 +1,9 @@
 import { BodyS } from '@ui-kit/components/Typography';
 import { mergeClasses } from '@ui-kit/utils';
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 
 import { TableCanvasLoggerItems } from './components/TableCanvasLoggerItems';
-import { useTableCanvasLogger } from './hooks/useTableCanvasLogger';
+import { useExpandedIds } from './hooks/useExpandedIds';
 import { tableCanvasLoggerClassNames as cls } from './TableCanvasLogger.constants';
 import { useTableCanvasLoggerContext } from './TableCanvasLogger.context';
 import {
@@ -15,6 +15,7 @@ import type {
   TableCanvasLoggerItem,
   TableCanvasLoggerListProps,
 } from './TableCanvasLogger.types';
+import { filterTableCanvasLoggerItems } from './TableCanvasLogger.utils';
 import { TableCanvasLoggerProvider } from './TableCanvasLoggerProvider';
 
 type TableCanvasLoggerListViewProps = {
@@ -70,22 +71,25 @@ export const TableCanvasLoggerList: FC<TableCanvasLoggerListProps> = ({
   $css,
   ...providerProps
 }) => {
-  const state = useTableCanvasLogger({
+  const expanded = useExpandedIds({
     items,
     expandedIds,
     defaultExpandedIds,
     onExpandedIdsChange,
-    filter,
   });
+  const visibleItems = useMemo(
+    () => filterTableCanvasLoggerItems(items ?? [], filter),
+    [items, filter],
+  );
 
   return (
     <TableCanvasLoggerProvider
       {...providerProps}
-      expandedIds={state.expandedIds}
-      toggleExpanded={state.toggleExpanded}
+      expandedIds={expanded.expandedIds}
+      toggleExpanded={expanded.toggleExpanded}
     >
       <TableCanvasLoggerListView
-        items={state.visibleItems}
+        items={visibleItems}
         maxHeight={maxHeight}
         emptyContent={emptyContent}
         className={className}

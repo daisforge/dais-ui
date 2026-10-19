@@ -3,7 +3,6 @@ import { mergeClasses } from '@ui-kit/utils';
 import React, { FC, ReactNode } from 'react';
 
 import {
-  TABLE_CANVAS_LOGGER_STATUS_LABEL_KEYS,
   TABLE_CANVAS_LOGGER_STATUSES,
   tableCanvasLoggerClassNames as cls,
 } from '../TableCanvasLogger.constants';
@@ -66,9 +65,7 @@ export const TableCanvasLoggerFilters: FC<TableCanvasLoggerFiltersProps> = ({
           $active={value === status}
           aria-pressed={value === status}
           data-status={status}
-          aria-label={`${
-            labels[TABLE_CANVAS_LOGGER_STATUS_LABEL_KEYS[status]]
-          }: ${counts[status] ?? 0}`}
+          aria-label={`${labels[status]}: ${counts[status] ?? 0}`}
           className={mergeClasses(cls.filter, classes?.filter)}
           onClick={() => onChange(status)}
         >

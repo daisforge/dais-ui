@@ -1,4 +1,9 @@
-import { createContext, useContext, useSyncExternalStore } from 'react';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useSyncExternalStore,
+} from 'react';
 
 import { DEFAULT_TABLE_CANVAS_LOGGER_LABELS } from './TableCanvasLogger.constants';
 import type {
@@ -6,41 +11,42 @@ import type {
   TableCanvasLoggerRenderProps,
 } from './TableCanvasLogger.types';
 
-/** Раскрытые id с подпиской: элемент перерисовывается только при смене своего состояния */
-export type TableCanvasLoggerExpandedStore = {
-  has: (id: string) => boolean;
-  subscribe: (listener: () => void) => () => void;
-};
-
 export type TableCanvasLoggerContextValue = Omit<
   TableCanvasLoggerRenderProps,
   'labels'
 > & {
   labels: TableCanvasLoggerLabels;
-  /** true, если состояние раскрытия ведёт TableCanvasLogger или TableCanvasLoggerList */
-  managed: boolean;
-  expanded: TableCanvasLoggerExpandedStore;
-  toggleExpanded: (id: string) => void;
-};
-
-const EMPTY_EXPANDED_STORE: TableCanvasLoggerExpandedStore = {
-  has: () => false,
-  subscribe: () => () => undefined,
+  /** Озвучить текст скринридером через общий live-регион */
+  announce: (text: string) => void;
 };
 
 export const TableCanvasLoggerContext =
   createContext<TableCanvasLoggerContextValue>({
     labels: DEFAULT_TABLE_CANVAS_LOGGER_LABELS,
-    managed: false,
-    expanded: EMPTY_EXPANDED_STORE,
-    toggleExpanded: () => undefined,
+    announce: () => undefined,
   });
 
 export const useTableCanvasLoggerContext = () =>
   useContext(TableCanvasLoggerContext);
 
-export const useTableCanvasLoggerExpanded = (id: string) => {
-  const { expanded } = useTableCanvasLoggerContext();
-  const getSnapshot = () => expanded.has(id);
-  return useSyncExternalStore(expanded.subscribe, getSnapshot, getSnapshot);
+/** Раскрытые id с подпиской: элемент перерисовывается только при смене своего состояния */
+export type TableCanvasLoggerExpandedStore = {
+  has: (id: string) => boolean;
+  toggle: (id: string) => void;
+  subscribe: (listener: () => void) => () => void;
+};
+
+export const TableCanvasLoggerExpandedContext =
+  createContext<TableCanvasLoggerExpandedStore>({
+    has: () => false,
+    toggle: () => undefined,
+    subscribe: () => () => undefined,
+  });
+
+export const useTableCanvasLoggerExpandedItem = (id: string) => {
+  const store = useContext(TableCanvasLoggerExpandedContext);
+  const getSnapshot = () => store.has(id);
+  const open = useSyncExternalStore(store.subscribe, getSnapshot, getSnapshot);
+  const toggle = useCallback(() => store.toggle(id), [store, id]);
+  return [open, toggle] as const;
 };

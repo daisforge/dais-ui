@@ -124,8 +124,8 @@ import type { TableCanvasLoggerFilterValue, TableCanvasLoggerItem } from '@daisf
 export const Example = () => {
   // Открыта ли панель
   const [open, setOpen] = useState(true);
-  // Активный фильтр: 'all' | 'error' | 'warning' | 'info' | 'success' | null
-  const [filter, setFilter] = useState<TableCanvasLoggerFilterValue | null>('all');
+  // Активный фильтр: 'all' | 'error' | 'warning' | 'info' | 'success'. При закрытии панели сбрасывается на 'all'
+  const [filter, setFilter] = useState<TableCanvasLoggerFilterValue>('all');
   // id раскрытых групп и сообщений с открытыми подробностями
   const [expanded, setExpanded] = useState<string[]>([]);
 
@@ -160,9 +160,7 @@ export const Example = () => {
   }),
   render: () => {
     const [open, setOpen] = useState(true);
-    const [filter, setFilter] = useState<TableCanvasLoggerFilterValue | null>(
-      'all',
-    );
+    const [filter, setFilter] = useState<TableCanvasLoggerFilterValue>('all');
     const [expanded, setExpanded] = useState<string[]>([]);
 
     return (
