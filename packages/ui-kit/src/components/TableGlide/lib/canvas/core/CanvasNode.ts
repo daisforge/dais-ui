@@ -41,6 +41,8 @@ export abstract class CanvasNode implements ICanvasNode {
 
   zIndex = 0;
 
+  minContentWidth: number | undefined = undefined;
+
   protected _intrinsicWidth = 0;
 
   protected _intrinsicHeight = 0;

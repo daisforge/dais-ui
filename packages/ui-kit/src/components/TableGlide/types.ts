@@ -93,6 +93,24 @@ export type HoverEffectsConfig = {
   row?: boolean;
 };
 
+/** Вариант внешнего вида таблицы: `'default'` — как всегда, `'clean'` — «чистый» вид. */
+export type AppearanceVariant = 'default' | 'clean';
+
+/** Готовые варианты внешнего вида таблицы: «чистый» вид и зебра. */
+export type AppearanceConfig = {
+  /**
+   * `'clean'` — «чистый» вид: без линий сетки и внешних рамок, шапка на белом
+   * фоне с серым текстом.
+   * @default 'default'
+   */
+  variant?: AppearanceVariant;
+  /**
+   * Зебра: строки через одну окрашены серым. Работает в любом `variant`.
+   * @default false
+   */
+  zebra?: boolean;
+};
+
 // ---------------------------------------- COLUMNS
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -210,6 +228,17 @@ type DrawHeaderArgs = Parameters<NonNullable<GlideProps['drawHeader']>>[0];
 export type HeaderCellInfo<R extends ObjectForExtending, SR> = {
   column: ColumnGlideLast<R, SR>;
   drawArgs: DrawHeaderArgs;
+  /**
+   * Колонка выделена в таблице. Шапка такой колонки ведёт себя как при
+   * наведении: показывает кнопки и подсвечивает название.
+   *
+   * Подробнее: считается в TableGlide через isColumnInSelection: клик по
+   * шапке, активная колонка текущего диапазона или колонка, покрытая
+   * ячейками rangeStack. Поле drawArgs.isSelected от Glide для этого не
+   * подходит: выделение колонок хранится отдельно, и selection.columns у
+   * Glide намеренно пуст.
+   */
+  columnIsSelected: boolean;
   ctxs: ObjectForExtending;
   theme: Theme;
 };
@@ -300,7 +329,16 @@ export type ColumnGlideCustoms<R extends ObjectForExtending, SR = unknown> = {
   ) => CellThemeOverrideResult | undefined;
   /** Управление preview для колонки. true — включить overlay, 'none' — отключить (в т.ч. стандартный). */
   hasPreview?: boolean | 'none';
-  /** Минимальная ширина колонки (px). Ограничивает ресайз и начальную ширину снизу. */
+  /**
+   * Минимальная ширина колонки в пикселях. Уже этого значения колонку нельзя
+   * сжать ни мышью, ни автоматическим расчётом ширины.
+   *
+   * Подробнее: у каждой колонки есть ещё минимум по содержимому шапки
+   * (отступы ячейки, иконки пина и перетаскивания, буква с многоточием,
+   * кнопки фильтра и сортировки), он считается в calculateMinColumnWidth.
+   * Итоговый минимум это большее из двух, поэтому значение меньше
+   * автоматического не действует.
+   */
   minWidth?: number;
   /** Максимальная ширина колонки (px). Ограничивает ресайз и начальную ширину сверху. */
   maxWidth?: number;
@@ -429,6 +467,8 @@ export type TableGlideCustomProps<
    * явное `{ row: false }`.
    */
   hoverEffects?: HoverEffectsConfig;
+  /** Внешний вид: «чистый» вариант и зебра. См. {@link AppearanceConfig}. */
+  appearance?: AppearanceConfig;
   /** Включает компенсацию тонких canvas-линий при browser zoom ниже 100% / DPR < 1. */
   enableLowDprHairline?: boolean;
 };

@@ -17,10 +17,11 @@ import { writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { CLEAN_VIEW_COLORS, CLEAN_VIEW_SEMANTIC } from './clean-view-colors';
 import {
   CELL,
-  SEMANTIC,
-  TABLE_COLORS,
+  SEMANTIC as DESIGNER_SEMANTIC,
+  TABLE_COLORS as DESIGNER_COLORS,
   THEME_SETTINGS,
 } from './code/table-token-sources';
 import {
@@ -38,6 +39,11 @@ const OUT_PATH = resolve(
 );
 
 // ─── База: честный расчёт генератора ───
+
+// Карта дизайнера плюс наши ключи чистого вида и зебры (clean-view-colors.ts):
+// считаются одной формулой, в выходном файле не различаются.
+const SEMANTIC = { ...DESIGNER_SEMANTIC, ...CLEAN_VIEW_SEMANTIC };
+const TABLE_COLORS = { ...DESIGNER_COLORS, ...CLEAN_VIEW_COLORS };
 
 const byTableKey = buildTableColors(
   TABLE_COLORS,

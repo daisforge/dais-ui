@@ -9,6 +9,7 @@ import {
   COLORS,
   DURATION,
   HEIGHT_CONTROL_BLOCK,
+  outerBorderColor,
   TABLE_BORDER_RADIUS,
 } from '../../styles';
 import { ActiveViewModsType, ControlBlockSize } from '../../types';
@@ -68,7 +69,7 @@ export const ControlBlockStyled = styled(Box)<{
     css({
       ...($activeView === 'rows' && {
         backgroundColor: COLORS.white,
-        borderColor: COLORS.border,
+        borderColor: outerBorderColor,
       }),
       ...($activeView === 'cards' && {
         borderColor: 'transparent',
@@ -78,7 +79,9 @@ export const ControlBlockStyled = styled(Box)<{
      карточки (и только в rows-виде). В остальных случаях прозрачный, поэтому
      на стыке с телом/соседним блоком нет лишней линии. */
   border-bottom-color: ${({ $collapsedTable, $activeView }) =>
-    $collapsedTable && $activeView === 'rows' ? COLORS.border : 'transparent'};
+    $collapsedTable && $activeView === 'rows'
+      ? outerBorderColor
+      : 'transparent'};
 
   overflow-y: hidden;
   overflow-x: auto;

@@ -898,6 +898,7 @@ function createNode(
         ellipsis,
         maxLines,
         autoTooltip,
+        minWidthByContent,
         position,
         left,
         top,
@@ -935,6 +936,7 @@ function createNode(
         ellipsis,
         maxLines,
         autoTooltip,
+        minWidthByContent,
       });
       if (position) node.position = position;
       if (left !== undefined) node.left = left;

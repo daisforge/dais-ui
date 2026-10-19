@@ -23,7 +23,11 @@ import {
 } from '../feature-select-row';
 import { SIDEBAR_TABS_WIDTH } from '../feature-sidebar/constants';
 import { CLASS } from '../renders/constants';
-import { ActiveTheme, HighlightActiveType } from '../TableGlideInstance/type';
+import {
+  ActiveTheme,
+  AppearanceVariant,
+  HighlightActiveType,
+} from '../TableGlideInstance/type';
 import { ActiveViewModsType } from '../types';
 import {
   editableCellStyle,
@@ -51,6 +55,8 @@ import {
   DURATION,
   FIRST_ROW,
   LVL_1_ROW_CLASS,
+  OUTER_BORDER_COLOR_VAR,
+  outerBorderColor,
   SIZES,
   TABLE_BORDER_RADIUS,
 } from './styles.constants';
@@ -146,6 +152,8 @@ const globalColorAndStyles = (theme: ActiveTheme) => css`
   --rdg-cell-frozen-box-shadow: ${FROZEN_BOX_SHADOW()};
 `;
 
+// Линии-разделители треков скролла идут той же переменной, что внешние рамки:
+// в «чистом» виде они тоже гаснут.
 export const scrollbarStyles = css`
   &::-webkit-scrollbar {
     width: 16px;
@@ -162,7 +170,7 @@ export const scrollbarStyles = css`
         border-bottom-left-radius: 0px;
         border-top-right-radius: inherit;
         border-bottom-right-radius: inherit;
-        border-left: 1px solid ${COLORS.border};
+        border-left: 1px solid ${outerBorderColor};
       }
       &:horizontal {
         border-top-right-radius: 0px;
@@ -170,7 +178,7 @@ export const scrollbarStyles = css`
 
         border-bottom-left-radius: inherit;
         border-bottom-right-radius: inherit;
-        border-top: 1px solid ${COLORS.border};
+        border-top: 1px solid ${outerBorderColor};
       }
     }
 
@@ -205,7 +213,7 @@ export const scrollbarStyles = css`
     }
 
     &-corner {
-      border-left: 1px solid ${COLORS.border};
+      border-left: 1px solid ${outerBorderColor};
       background-color: ${COLORS.white};
     }
   }
@@ -350,7 +358,14 @@ export const ContainerStyled = styled.div<{
   $isEnabledCollapse?: boolean;
   $highlightActiveType: HighlightActiveType;
   $activeTheme: ActiveTheme;
+  $appearanceVariant: AppearanceVariant;
 }>`
+  // Внешние рамки: в «чистом» виде красятся в фон карточки, а не в
+  // прозрачный: сквозь прозрачную рамку просвечивает фон страницы и остаётся
+  // тонкая линия (см. OUTER_BORDER_COLOR_VAR)
+  ${OUTER_BORDER_COLOR_VAR}: ${({ $appearanceVariant }) =>
+    $appearanceVariant === 'clean' ? COLORS.white : COLORS.border};
+
   // Collapsing таблицы
   // Для collapse таблицы плавное изменений высот
   ${({ $isEnabledCollapse }) =>
@@ -450,7 +465,7 @@ export const ContainerStyled = styled.div<{
       ${globalColorAndStyles($activeTheme)}
       
       & .${tableClassNames.table} {
-        border: 1px solid var(--rdg-border-color);
+        border: 1px solid ${outerBorderColor};
       }
       & .${tableClassNames.tableAndTableScroller} {
         ${scrollbarStyles}
@@ -464,7 +479,7 @@ export const ContainerStyled = styled.div<{
       }
 
       & .rdg {
-        border: 1px solid var(--rdg-border-color);
+        border: 1px solid ${outerBorderColor};
         ${globalColorAndStyles($activeTheme)}
         ${() => transitions()}
     

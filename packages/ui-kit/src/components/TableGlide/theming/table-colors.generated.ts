@@ -559,6 +559,51 @@ export const TABLE_STATE_COLORS = {
     highContrastLight: '#F2F5F8', // временно: в исходных цветах палитры нет background-primary, взят цвет светлой темы
     highContrastDark: '#060A0C',
   },
+  /** text-secondary · rest — чистый вид: текст шапки, групповой и выделенной шапки */
+  textHeaderClean: {
+    light: '#485056B0',
+    dark: '#D5DFE69E',
+    betaCoreLight: '#475158B0',
+    betaCoreDark: '#CFDBE49E',
+    highContrastLight: '#03070CB0',
+    highContrastDark: '#D5DFE69E',
+  },
+  /** surface-transparent-primary · rest — зебра: строка с чётным индексом */
+  bgZebraRow: {
+    light: '#F4F7F9',
+    dark: '#15181A',
+    betaCoreLight: '#F3F6F8',
+    betaCoreDark: '#15181B',
+    highContrastLight: '#E7ECEF',
+    highContrastDark: '#15181A',
+  },
+  /** surface-transparent-primary · hover — зебра: строка с чётным индексом под курсором */
+  bgZebraRowHovered: {
+    light: '#E9EFF3',
+    dark: '#1B1F21',
+    betaCoreLight: '#E9EEF2',
+    betaCoreDark: '#1B1F23',
+    highContrastLight: '#DDE4E8',
+    highContrastDark: '#1B1F21',
+  },
+  /** surface-transparent-primary · active — зебра: выделенные ячейки строки с чётным индексом */
+  bgZebraRowActive: {
+    light: '#D8EAF6',
+    dark: '#142F41',
+    betaCoreLight: '#D5EAF4',
+    betaCoreDark: '#113041',
+    highContrastLight: '#CBDEEB',
+    highContrastDark: '#142F41',
+  },
+  /** surface-transparent-primary · hoverActive — зебра: выделенные ячейки строки с чётным индексом под курсором */
+  bgZebraRowActiveHovered: {
+    light: '#CBE3F3',
+    dark: '#18374B',
+    betaCoreLight: '#C8E3F0',
+    betaCoreDark: '#15384B',
+    highContrastLight: '#C0D7E7',
+    highContrastDark: '#18374B',
+  },
 } as const;
 
 export type TableStateColorKey = keyof typeof TABLE_STATE_COLORS;

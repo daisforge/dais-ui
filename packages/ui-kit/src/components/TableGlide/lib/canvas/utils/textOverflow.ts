@@ -131,6 +131,25 @@ function splitGraphemes(text: string): string[] {
   return Array.from(text);
 }
 
+/**
+ * Сколько места нужно, чтобы от текста осталась хотя бы первая буква с
+ * многоточием. Ниже этой ширины текст сжимать нет смысла.
+ *
+ * Подробнее: первый символ берётся как grapheme cluster, то есть эмодзи или
+ * буква с диакритикой считаются целиком. Ширина измеряется через кэш
+ * getCachedTextWidth для переданного шрифта. Для пустой строки возвращается
+ * ширина одного многоточия.
+ */
+export function getMinEllipsisWidth(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  font: string,
+  ellipsis: string
+): number {
+  const firstGrapheme = splitGraphemes(text)[0] ?? '';
+  return getCachedTextWidth(ctx, firstGrapheme + ellipsis, font);
+}
+
 function getTruncatedText(
   ctx: CanvasRenderingContext2D,
   text: string,

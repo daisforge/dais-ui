@@ -2,6 +2,8 @@
 import { CellActivatedEventArgs } from '@glideappsfinal/glide-data-grid';
 import type { DropdownProps } from '@ui-kit/components/Dropdown';
 import type {
+  AppearanceConfig,
+  AppearanceVariant,
   CanvasContent,
   CanvasEl,
   CanvasEvent,
@@ -59,6 +61,8 @@ export type {
 } from '@ui-kit/components/TableGlide';
 
 export type {
+  AppearanceConfig,
+  AppearanceVariant,
   CanvasContent,
   CanvasEl,
   CanvasEvent,

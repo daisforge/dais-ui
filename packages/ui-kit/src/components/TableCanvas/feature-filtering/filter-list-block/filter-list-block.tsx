@@ -6,6 +6,7 @@ import {
   COLORS,
   DURATION,
   HEIGHT_FILTERLIST_BLOCK,
+  outerBorderColor,
   TABLE_BORDER_RADIUS,
 } from '../../styles';
 import {
@@ -18,7 +19,7 @@ import { useFilterManagement } from '../hooks/use-filter-management';
 
 const BORDER_WIDTH = 1;
 const PADDING_INLINE = 8;
-const BORDER = `${BORDER_WIDTH}px solid ${COLORS.border}`;
+const BORDER = `${BORDER_WIDTH}px solid ${outerBorderColor}`;
 
 const EMPTY_OBJ = {};
 export const FilterListBlock = <
