@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.24.0](https://github.com/daisforge/dais-ui/compare/v1.23.0...v1.24.0) (2026-10-19)
+
+### Bug Fixes
+
+- **TableCanvas:** колонка чекбоксов выбора строк больше не меняет ширину при перетаскивании границы в шапке ([9040210](https://github.com/daisforge/dais-ui/commit/9040210ae151c2027daa14c3b06cf6b840fd5a84))
+
+### Features
+
+- **TableCanvas, Table:** добавлен режим columnsControl.applyMode у настройки колонок в правом сайдбаре. Новый режим позволяет применять изменения по столбцам (пин, порядок, видимость) мгновенно, также визуально скрываются кнопки сохранения и отмены внизу ([62922fe](https://github.com/daisforge/dais-ui/commit/62922fea8bcfd0766e867bb50336caec3f067f21))
+- **TableCanvas:** анимированный показ кнопок фильтрации и сортировки в шапке, название столбца уходит в троеточие с тултипом при нехватке места ([34531a3](https://github.com/daisforge/dais-ui/commit/34531a3adeb3cffb67374ce7dd20e7d89d716ee3))
+- **TableCanvas:** добавлен проп appearance — «чистый» вид таблицы и зебра ([b1c86e5](https://github.com/daisforge/dais-ui/commit/b1c86e56c6703b5d11bfeb172c1fefd6ea339afb))
+
 # [1.23.0](https://github.com/daisforge/dais-ui/compare/v1.22.0...v1.23.0) (2026-10-12)
 
 ### Bug Fixes
