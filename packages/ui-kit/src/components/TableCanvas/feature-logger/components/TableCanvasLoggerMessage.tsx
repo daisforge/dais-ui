@@ -1,4 +1,7 @@
+import { Button } from '@ui-kit/components/Button';
+import { BodyS, BodyXS, TextXS } from '@ui-kit/components/Typography';
 import { IconCopyOutline, IconDisclosureDownOutline } from '@ui-kit/icons';
+import { copyTextToClipboard } from '@ui-kit/shared/utils/copy';
 import { mergeClasses } from '@ui-kit/utils';
 import React, {
   FC,
@@ -6,62 +9,56 @@ import React, {
   ReactNode,
   useCallback,
   useEffect,
+  useId,
   useRef,
   useState,
 } from 'react';
 
-import { Button } from '../../Button';
-import { BodyS, BodyXS, TextXS } from '../../Typography';
 import {
   COPIED_FEEDBACK_MS,
-  loggerClassNames as cls,
-} from '../Logger.constants';
-import { useLoggerContext } from '../Logger.context';
+  TABLE_CANVAS_LOGGER_STATUS_LABEL_KEYS,
+  tableCanvasLoggerClassNames as cls,
+} from '../TableCanvasLogger.constants';
 import {
-  StyledLoggerCopyIcon,
-  StyledLoggerDescription,
-  StyledLoggerDescriptionText,
-  StyledLoggerDetailsIcon,
-  StyledLoggerMessage,
-  StyledLoggerMessageActions,
-  StyledLoggerMessageContent,
-  StyledLoggerMessageDate,
-  StyledLoggerMessageIcon,
-} from '../Logger.styled';
+  useTableCanvasLoggerContext,
+  useTableCanvasLoggerExpanded,
+} from '../TableCanvasLogger.context';
+import {
+  StyledTableCanvasLoggerCopyIcon,
+  StyledTableCanvasLoggerDescription,
+  StyledTableCanvasLoggerDescriptionText,
+  StyledTableCanvasLoggerDetailsIcon,
+  StyledTableCanvasLoggerMessage,
+  StyledTableCanvasLoggerMessageActions,
+  StyledTableCanvasLoggerMessageContent,
+  StyledTableCanvasLoggerMessageDate,
+  StyledTableCanvasLoggerMessageIcon,
+  StyledTableCanvasLoggerVisuallyHidden,
+} from '../TableCanvasLogger.styled';
 import type {
-  LoggerCopyKind,
-  LoggerMessageItem,
-  LoggerMessageRenderContext,
-} from '../Logger.types';
-import { formatLoggerDate } from '../Logger.utils';
-import { LoggerStatusIcon } from './LoggerStatusIcon';
+  TableCanvasLoggerCopyKind,
+  TableCanvasLoggerMessageItem,
+  TableCanvasLoggerMessageRenderContext,
+} from '../TableCanvasLogger.types';
+import { formatTableCanvasLoggerDate } from '../TableCanvasLogger.utils';
+import { TableCanvasLoggerStatusIcon } from './TableCanvasLoggerStatusIcon';
 
-export type LoggerMessageProps = {
-  item: LoggerMessageItem;
+export type TableCanvasLoggerMessageProps = {
+  item: TableCanvasLoggerMessageItem;
   depth?: number;
-  /** Раскрыты ли подробности. По умолчанию берётся из контекста Logger */
+  /** Раскрыты ли подробности. По умолчанию берётся из контекста TableCanvasLogger */
   open?: boolean;
-  onToggle?: (item: LoggerMessageItem) => void;
+  onToggle?: (item: TableCanvasLoggerMessageItem) => void;
 };
 
-const copyWithClipboardApi = async (value: string) => {
-  await navigator.clipboard.writeText(value);
-};
-
-const LoggerMessageBase: FC<LoggerMessageProps> = ({
+const TableCanvasLoggerMessageBase: FC<TableCanvasLoggerMessageProps> = ({
   item,
   depth = 0,
   open: openProp,
   onToggle,
 }) => {
-  const ctx = useLoggerContext();
-  const {
-    labels,
-    classes,
-    expandedIds,
-    toggleExpanded,
-    managed: hasProvider,
-  } = ctx;
+  const ctx = useTableCanvasLoggerContext();
+  const { labels, classes, toggleExpanded, managed: hasProvider } = ctx;
   const {
     id,
     status,
@@ -73,10 +70,12 @@ const LoggerMessageBase: FC<LoggerMessageProps> = ({
     actions = [],
   } = item;
 
+  const descriptionId = `${useId()}-description`;
   const [localOpen, setLocalOpen] = useState(false);
-  const open = openProp ?? (hasProvider ? expandedIds.has(id) : localOpen);
+  const managedOpen = useTableCanvasLoggerExpanded(id);
+  const open = openProp ?? (hasProvider ? managedOpen : localOpen);
 
-  const [copied, setCopied] = useState<LoggerCopyKind | null>(null);
+  const [copied, setCopied] = useState<TableCanvasLoggerCopyKind | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout>>();
   useEffect(() => () => clearTimeout(timer.current), []);
 
@@ -87,9 +86,15 @@ const LoggerMessageBase: FC<LoggerMessageProps> = ({
   }, [onToggle, item, hasProvider, toggleExpanded, id]);
 
   const copy = useCallback(
-    async (kind: LoggerCopyKind, value: string) => {
+    async (kind: TableCanvasLoggerCopyKind, value: string) => {
       try {
-        await (ctx.copyToClipboard ?? copyWithClipboardApi)(value);
+        const done = ctx.copyToClipboard
+          ? (await ctx.copyToClipboard(value)) !== false
+          : await copyTextToClipboard(value);
+        if (!done) {
+          setCopied(null);
+          return;
+        }
         ctx.onCopy?.(kind, value, item);
         setCopied(kind);
         clearTimeout(timer.current);
@@ -101,26 +106,31 @@ const LoggerMessageBase: FC<LoggerMessageProps> = ({
     [ctx, item],
   );
 
+  const hasDescription =
+    description !== undefined &&
+    description !== null &&
+    description !== false &&
+    description !== '';
   const descriptionText =
     typeof description === 'string' ? description : undefined;
   const formattedDate =
     date !== undefined
-      ? (ctx.formatDate ?? formatLoggerDate)(date, item)
+      ? (ctx.formatDate ?? formatTableCanvasLoggerDate)(date, item)
       : null;
 
   const defaultActions: ReactNode = (
     <>
-      {description && (
+      {hasDescription && (
         <Button
           size="xxs"
           view="secondary"
           aria-expanded={open}
-          aria-controls={`${id}-description`}
+          aria-controls={open ? descriptionId : undefined}
           text={open ? labels.hide : labels.details}
           contentRight={
-            <StyledLoggerDetailsIcon $open={open}>
+            <StyledTableCanvasLoggerDetailsIcon $open={open}>
               <IconDisclosureDownOutline size="xs" />
-            </StyledLoggerDetailsIcon>
+            </StyledTableCanvasLoggerDetailsIcon>
           }
           onClick={toggle}
         />
@@ -149,7 +159,7 @@ const LoggerMessageBase: FC<LoggerMessageProps> = ({
           view={action.view ?? 'secondary'}
           text={action.text}
           title={action.title}
-          aria-label={action.title}
+          aria-label={action.text ? undefined : action.title}
           disabled={action.disabled}
           contentLeft={action.icon}
           onClick={() => action.onClick?.(item)}
@@ -158,23 +168,23 @@ const LoggerMessageBase: FC<LoggerMessageProps> = ({
     </>
   );
 
-  const defaultDescription = open && description && (
-    <StyledLoggerDescription
-      id={`${id}-description`}
+  const defaultDescription = open && hasDescription && (
+    <StyledTableCanvasLoggerDescription
+      id={descriptionId}
       className={mergeClasses(
         cls.messageDescription,
         classes?.messageDescription,
       )}
     >
-      <StyledLoggerDescriptionText>
+      <StyledTableCanvasLoggerDescriptionText>
         {ctx.renderDescription ? (
           ctx.renderDescription(item)
         ) : (
           <BodyXS>{description}</BodyXS>
         )}
-      </StyledLoggerDescriptionText>
+      </StyledTableCanvasLoggerDescriptionText>
       {descriptionText && (
-        <StyledLoggerCopyIcon
+        <StyledTableCanvasLoggerCopyIcon
           type="button"
           title={
             copied === 'description' ? labels.copied : labels.copyDescription
@@ -183,50 +193,55 @@ const LoggerMessageBase: FC<LoggerMessageProps> = ({
           onClick={() => copy('description', descriptionText)}
         >
           <IconCopyOutline size="xs" />
-        </StyledLoggerCopyIcon>
+        </StyledTableCanvasLoggerCopyIcon>
       )}
-    </StyledLoggerDescription>
+    </StyledTableCanvasLoggerDescription>
   );
 
   const defaultRender = () => (
-    <StyledLoggerMessage
+    <StyledTableCanvasLoggerMessage
       className={mergeClasses(cls.message, classes?.message, item.className)}
       data-status={status}
     >
-      <StyledLoggerMessageIcon
+      <StyledTableCanvasLoggerMessageIcon
+        role="img"
+        aria-label={labels[TABLE_CANVAS_LOGGER_STATUS_LABEL_KEYS[status]]}
         className={mergeClasses(cls.messageIcon, classes?.messageIcon)}
       >
-        <LoggerStatusIcon status={status} item={item} />
-      </StyledLoggerMessageIcon>
-      <StyledLoggerMessageContent>
+        <TableCanvasLoggerStatusIcon status={status} item={item} />
+      </StyledTableCanvasLoggerMessageIcon>
+      <StyledTableCanvasLoggerMessageContent>
         <BodyS
           className={mergeClasses(cls.messageTitle, classes?.messageTitle)}
         >
           {title}
         </BodyS>
         {ctx.renderMessageExtra?.(item)}
-        <StyledLoggerMessageActions
+        <StyledTableCanvasLoggerMessageActions
           className={mergeClasses(cls.messageActions, classes?.messageActions)}
         >
           {ctx.renderActions
             ? ctx.renderActions(item, defaultActions)
             : defaultActions}
           {formattedDate && (
-            <StyledLoggerMessageDate
+            <StyledTableCanvasLoggerMessageDate
               className={mergeClasses(cls.messageDate, classes?.messageDate)}
             >
               <TextXS>{formattedDate}</TextXS>
-            </StyledLoggerMessageDate>
+            </StyledTableCanvasLoggerMessageDate>
           )}
-        </StyledLoggerMessageActions>
+        </StyledTableCanvasLoggerMessageActions>
         {defaultDescription}
-      </StyledLoggerMessageContent>
-    </StyledLoggerMessage>
+        <StyledTableCanvasLoggerVisuallyHidden role="status">
+          {copied ? labels.copied : ''}
+        </StyledTableCanvasLoggerVisuallyHidden>
+      </StyledTableCanvasLoggerMessageContent>
+    </StyledTableCanvasLoggerMessage>
   );
 
   if (!ctx.renderMessage) return defaultRender();
 
-  const renderCtx: LoggerMessageRenderContext = {
+  const renderCtx: TableCanvasLoggerMessageRenderContext = {
     item,
     depth,
     open,
@@ -237,4 +252,4 @@ const LoggerMessageBase: FC<LoggerMessageProps> = ({
   return <>{ctx.renderMessage(renderCtx)}</>;
 };
 
-export const LoggerMessage = memo(LoggerMessageBase);
+export const TableCanvasLoggerMessage = memo(TableCanvasLoggerMessageBase);

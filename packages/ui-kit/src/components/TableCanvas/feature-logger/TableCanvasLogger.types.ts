@@ -1,19 +1,18 @@
+import type { ButtonCompProps } from '@ui-kit/components/Button';
 import type { ReactNode } from 'react';
 import type { CSSObject, FlattenSimpleInterpolation } from 'styled-components';
 
-import type { ButtonCompProps } from '../Button';
-
 /** Статус сообщения. Определяет иконку, цвет и фильтр */
-export type LoggerStatus = 'error' | 'warning' | 'info' | 'success';
+export type TableCanvasLoggerStatus = 'error' | 'warning' | 'info' | 'success';
 
 /** Значение фильтра: конкретный статус или все сообщения */
-export type LoggerFilterValue = 'all' | LoggerStatus;
+export type TableCanvasLoggerFilterValue = 'all' | TableCanvasLoggerStatus;
 
 /** Что именно было скопировано пользователем */
-export type LoggerCopyKind = 'traceId' | 'description';
+export type TableCanvasLoggerCopyKind = 'traceId' | 'description';
 
 /** Дополнительное действие сообщения (кнопка в строке действий) */
-export type LoggerAction = {
+export type TableCanvasLoggerAction = {
   id: string;
   text?: string;
   icon?: ReactNode;
@@ -21,13 +20,14 @@ export type LoggerAction = {
   disabled?: boolean;
   /** Подсказка и aria-label, если у кнопки нет текста */
   title?: string;
-  onClick?: (item: LoggerMessageItem) => void;
+  onClick?: (item: TableCanvasLoggerMessageItem) => void;
 };
 
 /** Общие поля элементов лога */
-type LoggerItemBase = {
+type TableCanvasLoggerItemBase = {
+  /** Уникален среди всех сообщений и групп: по нему хранится раскрытие и строится key */
   id: string;
-  status: LoggerStatus;
+  status: TableCanvasLoggerStatus;
   title: ReactNode;
   className?: string;
   /** Произвольные данные для кастомных рендеров и колбэков */
@@ -35,7 +35,7 @@ type LoggerItemBase = {
 };
 
 /** Одиночное сообщение */
-export type LoggerMessageItem = LoggerItemBase & {
+export type TableCanvasLoggerMessageItem = TableCanvasLoggerItemBase & {
   /** Текст подробностей. Если строка, то доступно копирование */
   description?: ReactNode;
   /** Дата создания: ISO-строка, timestamp или Date */
@@ -45,21 +45,23 @@ export type LoggerMessageItem = LoggerItemBase & {
   /** Код сообщения, например F23. Показывается отдельной кнопкой */
   code?: string;
   /** Дополнительные действия, добавляются после встроенных кнопок */
-  actions?: LoggerAction[];
+  actions?: TableCanvasLoggerAction[];
   items?: undefined;
 };
 
 /** Группа сообщений. Может содержать как сообщения, так и вложенные группы */
-export type LoggerGroupItem = LoggerItemBase & {
-  items: LoggerItem[];
-  /** Значение по умолчанию для неконтролируемого режима */
+export type TableCanvasLoggerGroupItem = TableCanvasLoggerItemBase & {
+  items: TableCanvasLoggerItem[];
+  /** Раскрыть группу при появлении. В управляемом `expandedIds` не применяется */
   defaultOpen?: boolean;
 };
 
-export type LoggerItem = LoggerMessageItem | LoggerGroupItem;
+export type TableCanvasLoggerItem =
+  | TableCanvasLoggerMessageItem
+  | TableCanvasLoggerGroupItem;
 
 /** Тексты компонента. Переопределяются целиком или частично */
-export type LoggerLabels = {
+export type TableCanvasLoggerLabels = {
   title: string;
   all: string;
   details: string;
@@ -68,12 +70,21 @@ export type LoggerLabels = {
   copied: string;
   copyDescription: string;
   empty: string;
+  /** Подсказка кнопки свёрнутой группы */
   expandGroup: string;
+  /** Подсказка кнопки раскрытой группы */
   collapseGroup: string;
+  /** Подпись группы фильтров для скринридера */
+  filters: string;
+  /** Названия статусов для скринридера: иконки и чипсы фильтров */
+  statusError: string;
+  statusWarning: string;
+  statusInfo: string;
+  statusSuccess: string;
 };
 
 /** Классы внутренних элементов */
-export type LoggerClasses = {
+export type TableCanvasLoggerClasses = {
   root?: string;
   header?: string;
   filters?: string;
@@ -91,24 +102,27 @@ export type LoggerClasses = {
   messageDescription?: string;
 };
 
-export type LoggerCssProp = string | CSSObject | FlattenSimpleInterpolation;
+export type TableCanvasLoggerCssProp =
+  | string
+  | CSSObject
+  | FlattenSimpleInterpolation;
 
 /** Контекст, который получает кастомный рендер сообщения */
-export type LoggerMessageRenderContext = {
-  item: LoggerMessageItem;
+export type TableCanvasLoggerMessageRenderContext = {
+  item: TableCanvasLoggerMessageItem;
   depth: number;
   /** Раскрыты ли подробности */
   open: boolean;
   toggle: () => void;
   /** Копирование значения с учётом `onCopy` и обратной связи в кнопке */
-  copy: (kind: LoggerCopyKind, value: string) => Promise<void>;
+  copy: (kind: TableCanvasLoggerCopyKind, value: string) => Promise<void>;
   /** Стандартный рендер сообщения, удобен для оборачивания */
   defaultRender: () => ReactNode;
 };
 
 /** Контекст, который получает кастомный рендер группы */
-export type LoggerGroupRenderContext = {
-  item: LoggerGroupItem;
+export type TableCanvasLoggerGroupRenderContext = {
+  item: TableCanvasLoggerGroupItem;
   depth: number;
   open: boolean;
   toggle: () => void;
@@ -118,71 +132,84 @@ export type LoggerGroupRenderContext = {
 };
 
 /** Настройки отображения, общие для всех элементов списка */
-export type LoggerRenderProps = {
+export type TableCanvasLoggerRenderProps = {
   /** Замена иконок статусов */
-  statusIcons?: Partial<Record<LoggerStatus, ReactNode>>;
+  statusIcons?: Partial<Record<TableCanvasLoggerStatus, ReactNode>>;
   /** Полная замена иконки статуса */
-  renderStatusIcon?: (status: LoggerStatus, item: LoggerItem) => ReactNode;
+  renderStatusIcon?: (
+    status: TableCanvasLoggerStatus,
+    item: TableCanvasLoggerItem,
+  ) => ReactNode;
   /** Полная замена сообщения */
-  renderMessage?: (ctx: LoggerMessageRenderContext) => ReactNode;
+  renderMessage?: (ctx: TableCanvasLoggerMessageRenderContext) => ReactNode;
   /** Полная замена группы */
-  renderGroup?: (ctx: LoggerGroupRenderContext) => ReactNode;
+  renderGroup?: (ctx: TableCanvasLoggerGroupRenderContext) => ReactNode;
   /** Замена блока подробностей */
-  renderDescription?: (item: LoggerMessageItem) => ReactNode;
+  renderDescription?: (item: TableCanvasLoggerMessageItem) => ReactNode;
   /** Замена строки действий. Получает стандартные кнопки вторым аргументом */
   renderActions?: (
-    item: LoggerMessageItem,
+    item: TableCanvasLoggerMessageItem,
     defaultActions: ReactNode,
   ) => ReactNode;
   /** Дополнительный контент справа от заголовка сообщения */
-  renderMessageExtra?: (item: LoggerMessageItem) => ReactNode;
+  renderMessageExtra?: (item: TableCanvasLoggerMessageItem) => ReactNode;
   /** Формат даты. Вернуть null, чтобы скрыть дату */
   formatDate?: (
-    date: NonNullable<LoggerMessageItem['date']>,
-    item: LoggerMessageItem,
+    date: NonNullable<TableCanvasLoggerMessageItem['date']>,
+    item: TableCanvasLoggerMessageItem,
   ) => string | null;
-  labels?: Partial<LoggerLabels>;
-  classes?: LoggerClasses;
+  labels?: Partial<TableCanvasLoggerLabels>;
+  classes?: TableCanvasLoggerClasses;
   /** Вызывается после копирования. Если задан `copyToClipboard`, он заменяет стандартное копирование */
   onCopy?: (
-    kind: LoggerCopyKind,
+    kind: TableCanvasLoggerCopyKind,
     value: string,
-    item: LoggerMessageItem,
+    item: TableCanvasLoggerMessageItem,
   ) => void;
-  copyToClipboard?: (value: string) => Promise<void> | void;
+  /** Своё копирование. Вернуть `false` или выбросить ошибку, если скопировать не удалось */
+  copyToClipboard?: (value: string) => Promise<boolean | void> | boolean | void;
   /** Вызывается при клике на кнопку с кодом сообщения */
-  onCodeClick?: (code: string, item: LoggerMessageItem) => void;
+  onCodeClick?: (code: string, item: TableCanvasLoggerMessageItem) => void;
 };
 
 /** Счётчики сообщений по статусам, могут быть переданы снаружи (например, с сервера) */
-export type LoggerCounts = Partial<Record<LoggerStatus, number>>;
+export type TableCanvasLoggerCounts = Partial<
+  Record<TableCanvasLoggerStatus, number>
+>;
 
 /** Пропсы списка сообщений */
-export type LoggerListProps = LoggerRenderProps & {
-  items?: LoggerItem[] | null;
+export type TableCanvasLoggerListProps = TableCanvasLoggerRenderProps & {
+  items?: TableCanvasLoggerItem[] | null;
   /** Раскрытые id: сообщений (подробности) и групп */
   expandedIds?: string[];
   defaultExpandedIds?: string[];
   onExpandedIdsChange?: (ids: string[]) => void;
   /** Текущий фильтр. Применяется к списку и счётчикам */
-  filter?: LoggerFilterValue;
+  filter?: TableCanvasLoggerFilterValue;
   /** Контент пустого списка */
   emptyContent?: ReactNode;
+  /** Максимальная высота списка. По умолчанию не ограничена: логгер занимает высоту родителя, а список прокручивается */
   maxHeight?: number | string;
   className?: string;
-  $css?: LoggerCssProp;
+  $css?: TableCanvasLoggerCssProp;
 };
 
 /** Пропсы панели лога */
-export type LoggerProps = Omit<LoggerListProps, 'filter'> & {
+export type TableCanvasLoggerProps = Omit<
+  TableCanvasLoggerListProps,
+  'filter'
+> & {
   open?: boolean;
   defaultOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
-  filter?: LoggerFilterValue | null;
-  defaultFilter?: LoggerFilterValue | null;
-  onFilterChange?: (filter: LoggerFilterValue | null) => void;
-  /** Внешние счётчики. По умолчанию считаются по `items` */
-  counts?: LoggerCounts;
+  filter?: TableCanvasLoggerFilterValue | null;
+  defaultFilter?: TableCanvasLoggerFilterValue | null;
+  onFilterChange?: (filter: TableCanvasLoggerFilterValue | null) => void;
+  /**
+   * Внешние счётчики. По умолчанию считаются по `items`: группа учитывается
+   * наравне с сообщениями, поэтому группа с тремя сообщениями даёт «Все (4)»
+   */
+  counts?: TableCanvasLoggerCounts;
   /** Заголовок панели */
   title?: ReactNode;
   /** Иконка слева от заголовка */

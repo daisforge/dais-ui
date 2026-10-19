@@ -1,5 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import type { LoggerItem, LoggerStatus } from '@ui-kit/components/Logger';
+import type { TableCanvasLoggerItem } from '@ui-kit/components/TableCanvas';
 
 const at = (hours: number, minutes: number, seconds: number) =>
   new Date(2025, 0, 1, hours, minutes, seconds);
@@ -12,7 +12,7 @@ export const EXCEL_ERROR_DESCRIPTION = [
   'The sharing violation occurred while attempting to flush the binary stream to the physical disk."',
 ].join('\n');
 
-export const GROUPED_ITEMS: LoggerItem[] = [
+export const GROUPED_ITEMS: TableCanvasLoggerItem[] = [
   {
     id: 'excel',
     status: 'error',
@@ -86,7 +86,7 @@ export const GROUPED_ITEMS: LoggerItem[] = [
   },
 ];
 
-export const PLAIN_ITEMS: LoggerItem[] = [
+export const PLAIN_ITEMS: TableCanvasLoggerItem[] = [
   {
     id: 'p1',
     status: 'error',
@@ -115,17 +115,3 @@ export const PLAIN_ITEMS: LoggerItem[] = [
     date: at(9, 3, 0),
   },
 ];
-
-const STATUS_CYCLE: LoggerStatus[] = ['info', 'error', 'warning', 'success'];
-
-export const MANY_ITEMS: LoggerItem[] = Array.from(
-  { length: 40 },
-  (_, index) => ({
-    id: `many-${index}`,
-    status: STATUS_CYCLE[index % STATUS_CYCLE.length] ?? 'info',
-    title: `Сообщение №${index + 1}`,
-    description:
-      index % 3 === 0 ? `Подробности сообщения №${index + 1}` : undefined,
-    date: at(12, Math.floor(index / 60), index % 60),
-  }),
-);

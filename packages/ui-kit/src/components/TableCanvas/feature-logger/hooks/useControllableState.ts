@@ -2,7 +2,7 @@ import { useCallback, useRef, useState } from 'react';
 
 export function useControllableState<T>(
   value: T | undefined,
-  defaultValue: T,
+  defaultValue: T | (() => T),
   onChange?: (next: T) => void,
 ): [T, (next: T | ((prev: T) => T)) => void] {
   const [inner, setInner] = useState<T>(defaultValue);
@@ -21,8 +21,10 @@ export function useControllableState<T>(
           ? (next as (prev: T) => T)(currentRef.current)
           : next;
       if (Object.is(resolved, currentRef.current)) return;
-      currentRef.current = resolved;
-      if (!isControlled) setInner(resolved);
+      if (!isControlled) {
+        currentRef.current = resolved;
+        setInner(resolved);
+      }
       onChangeRef.current?.(resolved);
     },
     [isControlled],

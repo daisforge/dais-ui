@@ -147,10 +147,6 @@ export const MANUAL_UIKIT_COMP_CHUNKS = [
     modulePaths: ['packages/ui-kit/src/components/ListOfFilters/'],
   },
   {
-    chunkName: 'Logger',
-    modulePaths: ['packages/ui-kit/src/components/Logger/'],
-  },
-  {
     chunkName: 'LeftPanel',
     modulePaths: ['packages/ui-kit/src/components/LeftPanel/'],
   },

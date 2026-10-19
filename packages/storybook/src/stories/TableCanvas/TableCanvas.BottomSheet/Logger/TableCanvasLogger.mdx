@@ -1,0 +1,121 @@
+import { Meta } from '@storybook/blocks';
+import { LazyCanvas } from '@df-storybook/utils/LazyCanvas';
+import * as TableCanvasLoggerStories from './TableCanvasLogger.stories';
+
+<Meta of={TableCanvasLoggerStories} name="Docs" />
+
+# TableCanvasLogger
+
+Панель системных сообщений таблицы: шапка со счётчиками и фильтрами по статусам, список сообщений с группами, подробностями и копированием идентификатора трассировки.
+
+Компонент входит в `TableCanvas` и предназначен для нижней панели таблицы: передайте его в `tableConfig.bottomSheetConfig.content` (пример — сторис «В нижней панели таблицы»). Если обёртка растягивается на высоту панели, а ``, шапка остаётся на месте и прокручивается только список.
+
+## Ключевые особенности
+
+- Четыре статуса: `error`, `warning`, `info`, `success`
+- Группы любой вложенности
+- Фильтр по статусу учитывает вложенные сообщения: группа остаётся в списке, если в ней есть подходящее сообщение
+- Кнопки сообщения: «Подробнее», «Скопировать ID», код сообщения (например `F23`) и собственные `actions`
+- Состояние панели, фильтра и раскрытых элементов можно задавать извне или оставить компоненту
+
+## Основная структура
+
+```tsx
+import {
+  TableCanvas,
+  TableCanvasLogger,
+} from '@daisforge/ui/components/TableCanvas';
+
+<TableCanvas
+  rows={rows}
+  columnConfig={columns}
+  tableConfig={{
+    bottomSheetConfig: {
+      height: open ? 280 : 40,
+      content: (
+        <TableCanvasLogger items={items} open={open} onOpenChange={setOpen} />
+      ),
+    },
+  }}
+/>;
+```
+
+## Compound-компоненты
+
+```ts
+TableCanvasLogger.List; // Список сообщений без шапки
+TableCanvasLogger.Message; // Одно сообщение
+TableCanvasLogger.Group; // Группа сообщений
+TableCanvasLogger.Filters; // Фильтры по статусам со счётчиками
+```
+
+- `TableCanvasLogger.List` — подходит для модалки, drawer или своей панели, принимает те же `items` и настройки отображения
+- `TableCanvasLogger.Message` и `TableCanvasLogger.Group` — можно использовать отдельно от панели
+- `TableCanvasLogger.Filters` — чипсы «Все» и по одному на статус
+
+## Особенности
+
+- Счётчики считаются по всем элементам: группа учитывается наравне с сообщениями. Например, одна группа `error` с тремя вложенными сообщениями даёт «Все (4)». Если нужен другой подсчёт или загружена только часть данных, передайте итоговые значения в `counts`
+- Описание сообщения можно скопировать, только если оно передано строкой
+- Закрытие панели сбрасывает фильтр, открытие выбирает «Все». Выбор фильтра в закрытой панели открывает её
+- Начальное состояние задаётся `defaultOpen`, `defaultFilter` и `defaultExpandedIds`
+- Без сообщений показывается «Сообщений нет»: текст меняется через `labels.empty`, разметка целиком — через `emptyContent`
+- Логгер занимает высоту родителя, а список прокручивается. Ограничить высоту списка можно через `maxHeight`
+
+Описание типов и пропсов — в разделе [API](?path=/docs/локальные-компоненты-tablecanvas-bottomsheet-logger-api--docs).
+
+### В нижней панели таблицы
+
+<LazyCanvas of={TableCanvasLoggerStories.InTable} />
+
+### Базовый пример
+
+<LazyCanvas of={TableCanvasLoggerStories.Default} />
+
+### Управляемое состояние
+
+<LazyCanvas of={TableCanvasLoggerStories.ControlledState} />
+
+### Только список (TableCanvasLoggerList)
+
+<LazyCanvas of={TableCanvasLoggerStories.ListOnly} />
+
+### Свои действия сообщений
+
+<LazyCanvas of={TableCanvasLoggerStories.CustomActions} />
+
+### Свои тексты и иконки
+
+<LazyCanvas of={TableCanvasLoggerStories.CustomLabelsAndIcons} />
+
+### Свой рендер сообщения
+
+<LazyCanvas of={TableCanvasLoggerStories.CustomMessageRender} />
+
+### Свой рендер группы
+
+<LazyCanvas of={TableCanvasLoggerStories.CustomGroupRender} />
+
+### Расширение строки действий и описания
+
+<LazyCanvas of={TableCanvasLoggerStories.CustomActionsSlot} />
+
+### Обработка копирования и кода
+
+<LazyCanvas of={TableCanvasLoggerStories.CopyHandlers} />
+
+### Шапка: заголовок, иконка, доп. контент
+
+<LazyCanvas of={TableCanvasLoggerStories.HeaderCustomization} />
+
+### Стилизация: classes и $css
+
+<LazyCanvas of={TableCanvasLoggerStories.CustomStyling} />
+
+### Headless: useTableCanvasLogger + собственная вёрстка
+
+<LazyCanvas of={TableCanvasLoggerStories.Headless} />
+
+### Отдельные части: TableCanvasLoggerMessage и TableCanvasLoggerGroup
+
+<LazyCanvas of={TableCanvasLoggerStories.SingleParts} />
