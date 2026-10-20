@@ -1,0 +1,4 @@
+import{j as t}from"./react-D2T61mpp.js";import{cf as s,cg as i}from"./vendor-BotQo-m5.js";import{T as a}from"./TypeSourceViewer-BZiQOZIu.js";import"./react-is-Clcustum.js";import"./styled-components-CA2CAEjL.js";import"./@tanstack/react-virtual-Cn23thnX.js";import"./tslib-DoU9Jm1N.js";function n(e){const o={h1:"h1",h2:"h2",...s(),...e.components};return t.jsxs(t.Fragment,{children:[t.jsx(i,{title:"Локальные компоненты/TableCanvas/BottomSheet/API"}),`
+`,t.jsx(o.h1,{id:"bottomsheet-api",children:"BottomSheet API"}),`
+`,t.jsx(o.h2,{id:"bottomsheetconfig",children:"BottomSheetConfig"}),`
+`,t.jsx(a,{language:"ts",filePath:"packages/ui-kit/src/components/TableCanvas/types/table-config.type.ts",typeName:"BottomSheetConfig"})]})}function u(e={}){const{wrapper:o}={...s(),...e.components};return o?t.jsx(o,{...e,children:t.jsx(n,{...e})}):n(e)}export{u as default};
