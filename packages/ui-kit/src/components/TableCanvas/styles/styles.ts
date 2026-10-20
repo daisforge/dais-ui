@@ -360,11 +360,9 @@ export const ContainerStyled = styled.div<{
   $activeTheme: ActiveTheme;
   $appearanceVariant: AppearanceVariant;
 }>`
-  // Внешние рамки: в «чистом» виде красятся в фон карточки, а не в
-  // прозрачный: сквозь прозрачную рамку просвечивает фон страницы и остаётся
-  // тонкая линия (см. OUTER_BORDER_COLOR_VAR)
+  // Внешние рамки: в «чистом» виде прозрачные (см. OUTER_BORDER_COLOR_VAR)
   ${OUTER_BORDER_COLOR_VAR}: ${({ $appearanceVariant }) =>
-    $appearanceVariant === 'clean' ? COLORS.white : COLORS.border};
+    $appearanceVariant === 'clean' ? 'transparent' : COLORS.border};
 
   // Collapsing таблицы
   // Для collapse таблицы плавное изменений высот
