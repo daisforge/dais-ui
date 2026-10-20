@@ -113,7 +113,6 @@ export function renderFilterSortHeader<
     sortAvailable: !!sortIconIsVisible,
     filterActive: isFilterActive,
     sortActive: !!sortingCondition,
-    columnIsSelected,
     hoverAmount,
   });
 
