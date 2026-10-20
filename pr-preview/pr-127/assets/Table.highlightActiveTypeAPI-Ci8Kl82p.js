@@ -1,0 +1,4 @@
+import{j as t}from"./react-D2T61mpp.js";import{cf as o,cg as c}from"./vendor-D_V-7t_a.js";import{T as h}from"./TypeSourceViewer-D78CbZCA.js";import"./react-is-Clcustum.js";import"./styled-components-Dq-tdBjG.js";import"./@tanstack/react-virtual-CQCncR_5.js";import"./tslib-DoU9Jm1N.js";function n(e){const i={h1:"h1",h2:"h2",...o(),...e.components};return t.jsxs(t.Fragment,{children:[t.jsx(c,{title:"Локальные компоненты/Table/HighlightActiveType/API"}),`
+`,t.jsx(i.h1,{id:"highlight-active-type-api",children:"Highlight Active Type API"}),`
+`,t.jsx(i.h2,{id:"highlightactivetype",children:"HighlightActiveType"}),`
+`,t.jsx(h,{language:"ts",filePath:"packages/ui-kit/src/components/Table/types/table-config.type.ts",typeName:"HighlightActiveType"})]})}function u(e={}){const{wrapper:i}={...o(),...e.components};return i?t.jsx(i,{...e,children:t.jsx(n,{...e})}):n(e)}export{u as default};

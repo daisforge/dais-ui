@@ -1,0 +1,15 @@
+import{j as o}from"./react-D2T61mpp.js";import{cf as r,cg as e,c9 as c}from"./vendor-D_V-7t_a.js";import{C as s}from"./CanvasIconButton.stories-PtroQCMh.js";import"./react-is-Clcustum.js";import"./styled-components-Dq-tdBjG.js";import"./@tanstack/react-virtual-CQCncR_5.js";import"./tslib-DoU9Jm1N.js";import"./getFuncAsString-Be9FzmNp.js";import"./storySourceDoc-tVKyHcEN.js";import"./TableCanvas-dSeoqcn-.js";import"./FiltersActions-HkTjSAr8.js";import"./IconButton-Ccn4UksK.js";import"./@salutejs/plasma-icons-B2MmBGK5.js";import"./@salutejs/sdds-finai-CCVgly2E.js";import"./@salutejs/sdds-themes-CBoev_d5.js";import"./utils-DRPdSg45.js";import"./constants-CUAU9RhA.js";import"./sharedUtilsDebug-BX_KjCjW.js";import"./Box-CYTaRxTD.js";import"./TextField-1tiUIhRw.js";import"./sharedUtilsInputs-CjCot3Kv.js";import"./AiAgentPopup-BaInsmnj.js";import"./TextArea-DaZBl3_t.js";import"./sharedUtilsResizable-CZBz5p8e.js";import"./Table-DT5LyPRu.js";import"./Collapse-D8NryjXw.js";import"./react-data-grid-DTQWprzh.js";import"./TableTabs-DxadsATc.js";import"./TableCanvasSharedConstants-B2qJZwC8.js";import"./TableGlide-DM-7xkOX.js";import"./@glideappsfinal/glide-data-grid-C-fLDB5h.js";import"./canvas-hypertxt-DsokSIOX.js";import"./sharedUiSearch-lHetejzp.js";import"./ListOfFilters-UOj9_xA6.js";import"./lodash.isequal-DD0Lfcik.js";import"./NumberFormat-Bfbbctir.js";import"./EmptyState-zxDobyZ4.js";import"./MassActions-KfImpKme.js";import"./Autocomplete-B9-NR3rI.js";import"./ErrorPage-B4KGxaHC.js";function t(n){const i={a:"a",code:"code",h1:"h1",h2:"h2",li:"li",p:"p",ul:"ul",...r(),...n.components};return o.jsxs(o.Fragment,{children:[o.jsx(e,{of:s,name:"Docs"}),`
+`,o.jsx(i.h1,{id:"canvasiconbutton",children:"Canvas.IconButton"}),`
+`,o.jsxs(i.p,{children:["Кнопка-иконка внутри canvas-ячейки ",o.jsx(i.code,{children:"TableCanvas"}),"."]}),`
+`,o.jsx(i.h2,{id:"ключевые-особенности",children:"Ключевые особенности"}),`
+`,o.jsxs(i.ul,{children:[`
+`,o.jsxs(i.li,{children:["Иконка через ",o.jsx(i.code,{children:"Canvas.icon(<IconName />)"})]}),`
+`,o.jsxs(i.li,{children:["Несколько вариантов ",o.jsx(i.code,{children:"view"})," и ",o.jsx(i.code,{children:"buttonSize"})]}),`
+`,o.jsxs(i.li,{children:["Поддержка ",o.jsx(i.code,{children:"disabled"})]}),`
+`,o.jsxs(i.li,{children:[o.jsx(i.code,{children:"interaction"}),` — как клик по кнопке влияет на таблицу. Например,
+`,o.jsx(i.code,{children:"interaction={{ selection: 'keep', cellClick: 'stop', editor: 'never' }}"}),`: клик
+не переносит выделение, не вызывает `,o.jsx(i.code,{children:"onCellClicked"}),` и не открывает редактор
+(шеврон дерева, действие в строке). То же у `,o.jsx(i.code,{children:"Canvas.EmbedIconButton"})]}),`
+`]}),`
+`,o.jsxs(i.p,{children:["Описание типов — в разделе ",o.jsx(i.a,{href:"?path=/docs/%D0%BB%D0%BE%D0%BA%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D1%8B-tablecanvas-canvaselements-canvasiconbutton-api--docs",children:"API"}),"."]}),`
+`,o.jsx(c,{})]})}function U(n={}){const{wrapper:i}={...r(),...n.components};return i?o.jsx(i,{...n,children:o.jsx(t,{...n})}):t(n)}export{U as default};
