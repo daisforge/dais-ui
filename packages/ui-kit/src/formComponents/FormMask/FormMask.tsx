@@ -2,7 +2,12 @@ import { Mask } from '@ui-kit/components/Mask';
 import React from 'react';
 import { Controller, type FieldValues } from 'react-hook-form';
 
-import { getPriorityRequired, useChangedFormContext } from '../utils';
+import {
+  getErrorHelper,
+  getErrorView,
+  getPriorityRequired,
+  useChangedFormContext,
+} from '../utils';
 import type { FormMaskProps } from './types';
 
 /**
@@ -43,13 +48,13 @@ export const FormMask = <TFieldValues extends FieldValues>({
         <Mask
           {...fieldRest}
           label={label}
-          leftHelper={error?.message ?? leftHelper}
+          leftHelper={getErrorHelper(error, leftHelper)}
           name={name}
           required={!!newOptions.required || undefined}
           requiredPlacement="right"
           hasRequiredIndicator={!!newOptions.required || undefined}
           size="s"
-          view={error?.type ? 'negative' : view ?? 'default'}
+          view={getErrorView(error, view)}
           onValueChange={({ value }) => {
             onChange({ target: { value } }); // onChange - для работы при revalidate='onChange'
             handleChange?.(value, formCtx);
