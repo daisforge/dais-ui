@@ -921,8 +921,11 @@ export type CellsSelectionConfig = {
   /**
    * Итоговое выделение после каждого действия пользователя — в том числе
    * несмежный Ctrl-выбор колонок (`columns`) и строк (`rows`), которого нет в
-   * `state`. Индексы — в координатах грида (сервисные колонки включены).
-   * Срабатывает с `state` и без него.
+   * `state`. Срабатывает с `state` и без него.
+   *
+   * Индексы колонок — в координатах грида: служебные колонки слева (нумерация
+   * `rowMarkers`, чекбоксы `selecting`) входят в счёт. Колонка, `i`-я по порядку
+   * на экране, имеет индекс `i` + число служебных колонок.
    */
   onChange?: (selection: GridSelection) => void;
   /**
@@ -1544,6 +1547,8 @@ export type TableConfig<
    *
    * Получает `cell` readonly [colIndex, rowIndex] от glide, и `info` обогащённый объект
    * с row, column, ctxs, refTable (аналогично onCellContextMenu).
+   * `colIndex` — в координатах грида: служебные колонки слева (нумерация, чекбоксы)
+   * входят в счёт; колонку надёжнее брать из `info.column`.
    */
   onCellClicked?: (
     cell: readonly [number, number],

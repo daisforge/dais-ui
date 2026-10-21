@@ -80,6 +80,8 @@ tableConfig={{ columnsGrouping: { squashEmptyCells: true } }}
 - `tableConfig.onGroupHeaderClicked(colIndex, event)` и
   `tableConfig.onGroupHeaderContextMenu(colIndex, event)` — клик и правый клик по
   заголовку группы; `event.group` — ключ группы уровня, по которому кликнули.
+  `colIndex` — индекс колонки в координатах грида: служебные колонки слева
+  (нумерация `rowMarkers`, чекбоксы `selecting`) входят в счёт.
 - Клик по группе выделяет её колонки (если включено выделение колонок).
 - Canvas-элементы в кастомном `name` группы получают клик первыми, как в листовой
   шапке: кнопка с `interaction={{ selection: 'keep', cellClick: 'stop' }}`
