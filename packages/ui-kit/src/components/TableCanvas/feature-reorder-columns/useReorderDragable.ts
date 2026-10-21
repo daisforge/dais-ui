@@ -27,6 +27,7 @@ export const useReorderDragable = <
   columnConfig,
   selectingRowsIsActive,
   rowMarkersIsActive,
+  rowErrorsIsActive,
   rowsGroupingIsActive,
   showRowInstruments,
   tableConfigKeyTextBoolean,
@@ -40,6 +41,7 @@ export const useReorderDragable = <
   columnConfig: readonly ColumnConfig<RowType, SummaryRowType>[];
   rowMarkersIsActive: boolean;
   selectingRowsIsActive: boolean;
+  rowErrorsIsActive: boolean;
   rowsGroupingIsActive: boolean;
   showRowInstruments: boolean;
   tableConfigKeyTextBoolean: boolean;
@@ -56,6 +58,7 @@ export const useReorderDragable = <
           tableConfigDefaultOrder,
           rowMarkersIsActive,
           selectingRowsIsActive,
+          rowErrorsIsActive,
           colsWithKeyTextMap,
           keyText,
           rowsGroupingIsActive,
@@ -70,6 +73,7 @@ export const useReorderDragable = <
       tableConfigDefaultOrder,
       rowMarkersIsActive,
       selectingRowsIsActive,
+      rowErrorsIsActive,
       rowsGroupingIsActive,
       colsWithKeyTextMap,
       keyText,

@@ -152,7 +152,15 @@ export type ColumnGlideInstance<
   readonly width?: number;
   isServiceColumn?: boolean;
   isErrorCell?: (row: R) => boolean;
+  /** Тултип ячейки с ошибкой (вызывается при наведении, если isErrorCell вернул true). */
+  errorCellTooltip?: (row: R) => CanvasNodeTooltipConfig | null | undefined;
   frozen?: boolean;
+  /**
+   * Внутреннее: разрешён ли ресайз колонки. `false` у служебных колонок, Glide
+   * тогда не показывает курсор ресайза у их границы. Публично ресайз включается
+   * только целиком через tableConfig.resizableColumn.
+   */
+  resizable?: boolean;
   /** Минимальная ширина колонки (px). Ограничивает ресайз и начальную ширину снизу. */
   minWidth?: number;
   /** Максимальная ширина колонки (px). Ограничивает ресайз и начальную ширину сверху. */

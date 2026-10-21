@@ -184,6 +184,8 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   checkboxVisibleRowIndexes: _checkboxVisibleRowIndexes,
   hoverEffects,
   appearance,
+  isErrorRow,
+  collectRowErrors,
   onCellClicked: onCellClickedExternal,
   onCellContextMenu: onCellContextMenuExternal,
   onGroupHeaderClicked: onGroupHeaderClickedExternal,
@@ -529,11 +531,19 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       rowsCount: rows.length,
     });
 
-  // Регионы error-ячеек считаются по окну видимой области (см. JSDoc хука).
-  const { errorCellRanges, trackVisibleRegion } = useErrorCellRanges({
+  // Регионы ошибок (ячейки и строки) и сводка по строкам считаются по окну
+  // видимой области (см. JSDoc хука).
+  const {
+    errorCellRanges,
+    errorRowIndexes,
+    rowErrorsByIndex,
+    trackVisibleRegion,
+  } = useErrorCellRanges({
     columns: columnsLast,
     rows,
     freezeColumns,
+    isErrorRow,
+    collectRowErrors,
   });
 
   const handleVisibleRegionChanged = useCallback<
@@ -704,6 +714,12 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
           rowActive: selectionVisualState.isActiveRow(rowInd),
         },
       };
+      // Сводка ошибок строки есть только у строк с ошибками и только когда
+      // её собирают (collectRowErrors); ячейки без неё не трогаем.
+      const rowErrors = rowErrorsByIndex.get(rowInd);
+      if (rowErrors) {
+        cellInfo.rowErrors = rowErrors;
+      }
 
       const {
         renderCell,
@@ -855,6 +871,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       activeRow,
       checkboxSelectedRowIndexes,
       selectionVisualState,
+      rowErrorsByIndex,
       canvasCellCache,
       portalEventTargetRef,
       applyCanvasEditorActivation,
@@ -1584,6 +1601,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     outlineRange: selectionVisualState.outlineRange,
     checkboxSelectedRowIndexes,
     errorCellRanges,
+    errorRowIndexes,
     highlightRegionsExternal,
     selectedColumnIndexes,
     headerSelectedRowIndexes,

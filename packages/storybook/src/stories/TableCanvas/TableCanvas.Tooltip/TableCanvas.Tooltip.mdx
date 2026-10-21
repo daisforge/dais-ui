@@ -20,6 +20,10 @@ import * as TableTooltipStories from './TableCanvasTooltip.stories';
 2. **Поле `cellTooltip` / `headerCellTooltip` в `columnConfig`** — конфиг на уровне колонки. Может быть строкой, объектом или функцией `(context) => config | null`. Для ячеек используется `cellTooltip`, для заголовков — `headerCellTooltip`. **Требует `tooltip.enabled: true` в `tableConfig`.**
 3. **Встроенный маппинг по `nodeId`** — внутренний словарь (например, иконка drag в заголовке → «Перетащить колонку»). **Работает всегда.**
 
+### Тултип ячейки с ошибкой
+
+В режиме редактирования у колонки может быть `editingCell.error.tooltip(row, treeLevel)`. Он показывается при наведении на любую точку ячейки, которую `editingCell.error.value` пометила как ошибочную. По приоритету он стоит между первым и вторым источником: перекрывает `cellTooltip` колонки, но уступает пропу `tooltip` на Canvas-элементе внутри той же ячейки. **Работает всегда**, `tooltip.enabled` не требуется. Тултип индикатора ошибок строки (`editing.rowErrors.tooltip`) это обычный `tooltip` на Canvas-иконке служебного столбца. Подробности в [доке Editing](?path=/docs/локальные-компоненты-tablecanvas-editing--docs).
+
 ## Как включить тултип на элементе
 
 ### Через `tooltip` на Canvas-примитиве

@@ -328,6 +328,8 @@ export const TableOrCardsUI = <
                   cellsSelectionMode={restDataGridProps.cellsSelectionMode}
                   hoverEffects={restDataGridProps.hoverEffects}
                   appearance={restDataGridProps.appearance}
+                  isErrorRow={restDataGridProps.isErrorRow}
+                  collectRowErrors={restDataGridProps.collectRowErrors}
                   getCellsForSelection={restDataGridProps.getCellsForSelection}
                   onGridSelectionChange={
                     restDataGridProps.onGridSelectionChange

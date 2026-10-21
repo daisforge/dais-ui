@@ -15,6 +15,7 @@ import React, {
 
 import { KeyText, KeyTextMap } from '../feature-key-text/types';
 import { reorderHandler } from '../feature-reorder-columns/reorderHandler';
+import { ROW_ERRORS_COLUMN_KEY } from '../feature-row-errors';
 import { ROW_I_COLUMN_KEY } from '../feature-row-instruments';
 import { ROW_MARKER_COLUMN_KEY } from '../feature-row-markers';
 import { KEY_GROUPED_COL } from '../feature-rows-grouping';
@@ -30,6 +31,7 @@ const SERVICE_COLS_SET = new Set([
   ROW_MARKER_COLUMN_KEY,
   ROW_I_COLUMN_KEY,
   CHECKBOX_COLUMN_KEY,
+  ROW_ERRORS_COLUMN_KEY,
   KEY_GROUPED_COL,
 ]);
 const withoutServiceCols = (cols: string[]) =>

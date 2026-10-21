@@ -32,7 +32,7 @@ import { useColumnRowHighlightRegions } from './useColumnRowHighlightRegions';
  *   2) внешние регионы потребителя (highlightRegionsExternal);
  *   3) базовое выделение (useBaseHighlightRegions): затемнение сервис-зоны
  *      активного диапазона, заливка и обводка одиночной активной ячейки,
- *      кольца ошибок;
+ *      кольца ошибок (поячеечные и на всю строку);
  *   4) выделение колонок и строк, затемнение нумерации под rangeStack
  *      (useColumnRowHighlightRegions). Выбранная строка регионами не
  *      красится — её фон задают темы (часть 1).
@@ -58,6 +58,8 @@ interface UseColoringLayersParams {
    */
   activeRow?: number;
   errorCellRanges?: readonly Rectangle[];
+  /** Строки с ошибкой всей строки (одна рамка на строку). */
+  errorRowIndexes?: readonly number[];
   highlightRegionsExternal?: GlideProps['highlightRegions'];
   /* Слой 4: выделение колонок и строк. */
   selectedColumnIndexes: number[];
@@ -89,6 +91,7 @@ export function useColoringLayers({
   checkboxSelectedRowIndexes,
   activeRow,
   errorCellRanges,
+  errorRowIndexes,
   highlightRegionsExternal,
   selectedColumnIndexes,
   headerSelectedRowIndexes,
@@ -110,6 +113,8 @@ export function useColoringLayers({
     checkboxSelectedRowIndexes,
     highlightActiveRow: activeRow,
     errorCellRanges,
+    errorRowIndexes,
+    columnsCount,
     highlightRegionsExternal,
     serviceZoneFollowsRow,
   });
