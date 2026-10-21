@@ -13,6 +13,7 @@ import * as TableRowHeightStories from './TableCanvas.rowHeight.stories';
 
 - Фиксированная высота строки (`number`)
 - Динамическая высота через функцию (`RowHeightFunc`)
+- Высота по содержимому ячеек (`'auto'`): перенос текста растит строку
 - Доступ к данным строки и текущему размеру (`currentRowSize`)
 - Переключатель размера строк в controlBlock (`rowSize`)
 
@@ -22,6 +23,30 @@ import * as TableRowHeightStories from './TableCanvas.rowHeight.stories';
 
 - **`number`** — фиксированная высота в пикселях для всех строк
 - **`RowHeightFunc`** — функция, вычисляющая высоту на основе `row`, `currentRowSize` и `rowIndex`
+- **`'auto'`** — высота по содержимому (см. ниже)
+
+## rowHeight: 'auto'
+
+ui-kit измеряет дерево Canvas каждой ячейки при ширине колонки (`Canvas.Text wordWrap` переносит слова и растит строку). Вертикальные отступы ячейки (`cellVerticalPadding` темы) ui-kit добавляет к высоте строки, в дереве ячейки их задавать не нужно. Содержимое центрируйте по вертикали (`alignItems="center"`): у выровненного по верху весь запас окажется снизу. Подсветку фрагментов текста с переносом по строкам делает [`Canvas.Mark`](?path=/docs/локальные-компоненты-tablecanvas-canvaselements-canvasmark--docs) внутри `Canvas.Text`.
+
+- Высота не ниже высоты по `rowSize` и не выше **480px**: более длинный текст обрезается
+- Точно измеряются видимые строки с запасом; остальные до прокрутки имеют высоту по `rowSize`. При прокрутке вверх строки над видимой областью могут вырасти и сдвинуть контент
+- Измерение кешируется по объекту строки и сбрасывается при смене ширин колонок или размера строк и после загрузки шрифтов. Чтобы перемерить строку после изменения содержимого, передайте новый объект строки
+- Ячейка, объединённая на несколько строк (`mergeCells`), строку не растит; объединённая на несколько колонок меряется по ширине блока
+- С панелью детализации строки не растут: `'auto'` там равен высоте по `rowSize`
+
+### tableConfig.rowHeightsRef
+
+Если поверх таблицы рисуется что-то, привязанное к строкам (например, метки на скроллбаре), высоты строк можно читать из `rowHeightsRef`: таблица кладёт туда функцию «индекс строки → текущая высота».
+
+```tsx
+import type { RowHeightsRef } from '@daisforge/ui/components/TableCanvas';
+
+const rowHeightsRef: RowHeightsRef = useRef(null);
+const heightOf = (rowIndex: number) => rowHeightsRef.current?.(rowIndex) ?? 40;
+
+<TableCanvas tableConfig={{ rowHeight: 'auto', rowHeightsRef }} /* ... */ />;
+```
 
 ## tableConfig.rowSize
 

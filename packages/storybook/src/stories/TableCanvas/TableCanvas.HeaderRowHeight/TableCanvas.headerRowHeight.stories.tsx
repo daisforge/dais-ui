@@ -112,3 +112,61 @@ export const Playground: Story = {
     );
   },
 };
+
+/**
+ * `tableConfig.groupHeaderRowHeight` задаёт высоту уровней объединённых заголовков
+ * отдельно от листового ряда: нижний ряд можно сделать выше (например, под перенос
+ * названий колонок), а группы над ним оставить компактными.
+ */
+export const GroupHeaderRowHeight: Story = {
+  ...storySourceDoc({ preCode, previewSource: 'shown', type: 'code' }),
+  name: 'Своя высота групповых заголовков (groupHeaderRowHeight)',
+  render: () => {
+    const [headerRowHeight, setHeaderRowHeight] = useState<number>(56);
+    const [groupHeaderRowHeight, setGroupHeaderRowHeight] =
+      useState<number>(28);
+
+    // 2 уровня групп над листовым рядом.
+    const groupLevels = 2;
+    const total = headerRowHeight + groupHeaderRowHeight * groupLevels;
+
+    return (
+      <div>
+        <div style={{ maxWidth: 360, marginBottom: 16 }}>
+          <div>headerRowHeight (листовой ряд): {headerRowHeight}px</div>
+          <Slider
+            value={headerRowHeight}
+            onChange={setHeaderRowHeight}
+            min={24}
+            max={96}
+            step={1}
+          />
+          <div style={{ marginTop: 12 }}>
+            groupHeaderRowHeight (каждый уровень групп): {groupHeaderRowHeight}
+            px
+          </div>
+          <Slider
+            value={groupHeaderRowHeight}
+            onChange={setGroupHeaderRowHeight}
+            min={20}
+            max={96}
+            step={1}
+          />
+        </div>
+        <p style={{ opacity: 0.7, marginBottom: 12 }}>
+          итог: {headerRowHeight} + {groupHeaderRowHeight} × {groupLevels} ={' '}
+          {total}px
+        </p>
+        <TableCanvas
+          tableConfig={{
+            containerStyle: { height: 420 },
+            headerRowHeight,
+            groupHeaderRowHeight,
+          }}
+          columnConfig={threeLevelColumns}
+          rows={rows}
+        />
+      </div>
+    );
+  },
+};

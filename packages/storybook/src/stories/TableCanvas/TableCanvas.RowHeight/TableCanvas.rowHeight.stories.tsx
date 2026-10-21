@@ -114,3 +114,202 @@ export const RowHeight: StoryObj = {
     );
   },
 };
+
+export const AutoRowHeight: StoryObj = {
+  ...storySourceDoc({
+    preCode,
+    previewSource: 'shown',
+  }),
+  name: 'Auto row height (перенос текста)',
+  render: () => {
+    const [rows] = useState(createRows);
+
+    const columnConfig = useMemo<readonly ColumnConfig<Row>[]>(
+      () => [
+        { key: 'id', name: 'id' },
+        { key: 'task', name: 'Title' },
+        {
+          key: 'loremIpsum',
+          name: 'Длинный текст',
+          width: 360,
+          renderCell: ({ row, theme }) => (
+            <Canvas.Container
+              alignItems="center"
+              padding={{ left: 8, right: 8 }}
+            >
+              <Canvas.Text font={theme.baseFontStyle} wordWrap>
+                {row.loremIpsum}
+              </Canvas.Text>
+            </Canvas.Container>
+          ),
+        },
+        {
+          key: 'short',
+          name: 'Без переноса',
+          width: 160,
+          renderCell: ({ row }) => row.task,
+        },
+      ],
+      [],
+    );
+
+    return (
+      <TableCanvas
+        tableConfig={{
+          containerStyle: { height: 700 },
+          rowHeight: 'auto',
+        }}
+        columnConfig={columnConfig}
+        rows={rows}
+      />
+    );
+  },
+};
+
+type TaskRow = {
+  id: string;
+  title: string;
+  description: string;
+  status: 'Новая' | 'В работе' | 'Готово';
+  tags: string[];
+};
+
+const STATUS_VIEW = {
+  Новая: 'default',
+  'В работе': 'accent',
+  Готово: 'positive',
+} as const;
+
+const TAGS = [
+  'дизайн',
+  'frontend',
+  'релиз',
+  'backend',
+  'аналитика',
+  'тестирование',
+];
+
+const createTaskRows = (): TaskRow[] =>
+  Array.from({ length: 60 }, (_, index) => ({
+    id: String(index + 1),
+    title: `Задача ${
+      index + 1
+    }: ${'согласовать макет и уточнить требования '.repeat((index % 3) + 1)}`,
+    description:
+      index % 4 === 0
+        ? 'Короткое описание'
+        : 'Подробное описание задачи: что нужно сделать, кого позвать на ревью и какие риски учесть до релиза.',
+    status: (['Новая', 'В работе', 'Готово'] as const)[index % 3]!,
+    tags: TAGS.slice(0, TAGS.length - (index % TAGS.length)),
+  }));
+
+export const FlexLayoutCell: StoryObj = {
+  ...storySourceDoc({
+    preCode,
+    previewSource: 'shown',
+  }),
+  name: 'Вёрстка ячейки на flex (кнопки, бейджи, перенос, wrap)',
+  render: () => {
+    const [rows] = useState(createTaskRows);
+
+    const columnConfig = useMemo<readonly ColumnConfig<TaskRow>[]>(
+      () => [
+        { key: 'id', name: '#', width: 56 },
+        {
+          key: 'title',
+          name: 'Задача',
+          width: 480,
+          renderCell: ({ row, theme }) => (
+            <Canvas.Container
+              direction="column"
+              justifyContent="center"
+              gap={6}
+              padding={{ left: 8, right: 8 }}
+              style={{ width: '100%' }}
+            >
+              <Canvas.Container
+                direction="row"
+                alignItems="center"
+                gap={8}
+                style={{ width: '100%' }}
+              >
+                <Canvas.Text
+                  font={theme.baseFontStyle}
+                  wordWrap
+                  style={{ flexGrow: 1, flexShrink: 1 }}
+                >
+                  {row.title}
+                </Canvas.Text>
+                <Canvas.Badge
+                  text={row.status}
+                  view={STATUS_VIEW[row.status]}
+                  size="s"
+                  style={{ flexShrink: 0 }}
+                />
+              </Canvas.Container>
+              <Canvas.Text
+                font={theme.baseFontStyle}
+                color={theme.textLight}
+                wordWrap
+              >
+                {row.description}
+              </Canvas.Text>
+              <Canvas.Container
+                direction="row"
+                alignItems="center"
+                gap={8}
+                style={{ width: '100%' }}
+              >
+                <Canvas.Container
+                  wrap="wrap"
+                  gap={6}
+                  style={{ flexGrow: 1, flexShrink: 1 }}
+                >
+                  {row.tags.map((tag) => (
+                    <Canvas.Badge key={tag} text={tag} view="light" size="xs" />
+                  ))}
+                </Canvas.Container>
+                <Canvas.Button
+                  view="accent"
+                  size="xs"
+                  style={{ flexShrink: 0 }}
+                  // eslint-disable-next-line no-console
+                  onClick={() => console.debug('open', row.id)}
+                >
+                  Открыть
+                </Canvas.Button>
+                <Canvas.Button
+                  view="secondary"
+                  size="xs"
+                  style={{ flexShrink: 0 }}
+                  // eslint-disable-next-line no-console
+                  onClick={() => console.debug('assign', row.id)}
+                >
+                  Назначить
+                </Canvas.Button>
+              </Canvas.Container>
+            </Canvas.Container>
+          ),
+        },
+        {
+          key: 'status',
+          name: 'Статус',
+          width: 120,
+          renderCell: ({ row }) => row.status,
+        },
+      ],
+      [],
+    );
+
+    return (
+      <TableCanvas
+        tableConfig={{
+          containerStyle: { height: 700 },
+          rowHeight: 'auto',
+        }}
+        columnConfig={columnConfig}
+        rows={rows}
+      />
+    );
+  },
+};
