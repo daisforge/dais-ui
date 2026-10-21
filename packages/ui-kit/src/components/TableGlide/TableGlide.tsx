@@ -12,7 +12,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import { glideCellRenderer } from './cellRenderer';
-import { DEFAULT_HEADER_HEIGHT, DEFAULT_ROW_HEIGHT } from './constants';
+import { DEFAULT_HEADER_HEIGHT } from './constants';
 import {
   useColoringLayers,
   useNativeGridSelection,
@@ -20,6 +20,7 @@ import {
   useTableSelectionSystem,
 } from './hooks/selection';
 import { useAnimatedRowHeight } from './hooks/useAnimatedRowHeight';
+import { spansSeveralRows } from './hooks/useAutoRowHeight';
 import { useErrorCellRanges } from './hooks/useErrorCellRanges';
 import { useCanvasContextMenuInteraction } from './hooks/useCanvasContextMenuInteraction';
 import { useCanvasEditorActivation } from './hooks/useCanvasEditorActivation';
@@ -29,6 +30,7 @@ import { useGlideElements } from './hooks/useGlideElements';
 import { useHoverState } from './hooks/useHoverState';
 import { useOverlayPortalFix } from './hooks/useOverlayPortalFix';
 import { useItemHoveredHandler } from './hooks/useItemHoveredHandler';
+import { useRowHeightGlide } from './hooks/useRowHeightGlide';
 import { useUnstickyHeader } from './hooks/useUnstickyHeader';
 import {
   buildCanvasTree,
@@ -46,10 +48,8 @@ import { resolveCanvasCellInteractionTargetFromRenderData } from './lib/canvas/i
 import { StyledGlideDataEditor, StyledOverlayPortal } from './styled';
 import { getTheme } from './theming';
 import {
-  getEditableCellFillStates,
   resolveActiveRowBg,
-  resolveCellFillOverride,
-  resolveConsumerFillOverride,
+  resolveCellFill,
 } from './theming/cell-fill-override';
 import type {
   CellInfo,
@@ -58,7 +58,6 @@ import type {
   GlideThemeForRender,
   HeaderCellInfo,
   ObjectForExtending,
-  RowHeightGlide,
   TableGlideProps,
 } from './types';
 import {
@@ -125,6 +124,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   rows,
   bottomSummaryRows,
   rowHeight,
+  rowHeightsRef,
   width,
   rowSize = 'medium',
   ctxs = CTXS_EMPTY,
@@ -154,7 +154,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   // Режим фактического выделения ячеек (нативный glide). Независим от
   // highlightActiveType: по нему идут copy/paste, рамка, fill-handle, затемнение.
   cellsSelectionMode = 'range-cell',
-  focusOnGridSelectionChange = true,
+  focusOnStateChange = true,
   // Выделение колонок — независимая ось (НЕ через highlightActiveType).
   // По умолчанию включено; работает при любом highlightActiveType.
   enableColumnSelection = true,
@@ -204,37 +204,8 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     [rowSize, activeTheme, appearanceVariant],
   );
 
-  const rowHeightGlide = useMemo<RowHeightGlide>(() => {
-    const baseNumber = typeof rowHeight === 'number' ? rowHeight : undefined;
-    if (baseNumber) {
-      return baseNumber;
-    }
-    const DEF_HEIGHT = DEFAULT_ROW_HEIGHT[rowSize];
-
-    const baseFunction =
-      typeof rowHeight === 'function' ? rowHeight : undefined;
-
-    if (baseFunction) {
-      return (rowIndex: number) => {
-        const row = rows[rowIndex];
-        if (!row) {
-          return baseNumber ?? DEF_HEIGHT;
-        }
-        const currentRowSize = {
-          rowSizeName: rowSize,
-          rowSizeValue: DEF_HEIGHT,
-        };
-        const value = baseFunction(row, currentRowSize, rowIndex);
-
-        return typeof value === 'number' && !Number.isNaN(value)
-          ? value
-          : DEF_HEIGHT;
-      };
-    }
-
-    return DEF_HEIGHT;
-  }, [rows, rowHeight, rowSize]);
-  // ---------------------------
+  const { rowHeightGlide, measureSourceRef, trackAutoRowHeightRegion } =
+    useRowHeightGlide({ rowHeight, rows, rowSize, rowHeightsRef });
 
   const summaryRowsLength = bottomSummaryRows?.length ?? 0;
 
@@ -308,12 +279,12 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   // выглядело как обычное. На интеракции мышью грид уже в фокусе -> focus().
   useEffect(() => {
     if (
-      focusOnGridSelectionChange &&
+      focusOnStateChange &&
       gridSelectionExternal?.current !== undefined
     ) {
       dataEditorRef.current?.focus();
     }
-  }, [gridSelectionExternal, focusOnGridSelectionChange]);
+  }, [gridSelectionExternal, focusOnStateChange]);
 
   const {
     interactionSessionStore,
@@ -547,9 +518,14 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   >(
     (range, tx, ty, extras) => {
       trackVisibleRegion(range);
+      trackAutoRowHeightRegion(range);
       onVisibleRegionChangedExternal?.(range, tx, ty, extras);
     },
-    [trackVisibleRegion, onVisibleRegionChangedExternal]
+    [
+      trackVisibleRegion,
+      trackAutoRowHeightRegion,
+      onVisibleRegionChangedExternal,
+    ]
   );
 
   const getCellContentGlide = useCallback(
@@ -757,17 +733,13 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         rowHover: isRowHoverEnabled && cellInfo.hovered.rowHover,
         rowActive: rowInd === activeRow,
       };
-      // Фон потребителя (columnThemeOverride) сильнее жёлтого фона редактируемой
-      // ячейки: им размечают состояния правки (изменено, ошибка).
-      const fillOverride = columnThemeOverrideResult?.bgCell
-        ? resolveConsumerFillOverride(
-            columnThemeOverrideResult.bgCell,
-            activeTheme,
-            fillContext
-          )
-        : cellIsEditable
-          ? resolveCellFillOverride(getEditableCellFillStates(theme), fillContext)
-          : undefined;
+      const fillOverride = resolveCellFill({
+        consumerBg: columnThemeOverrideResult?.bgCell,
+        isEditable: cellIsEditable,
+        editableTheme: theme,
+        colorTheme: activeTheme,
+        context: fillContext,
+      });
 
       // Кликнутая ячейка на выбранной строке: показываем только рамку, фон
       // остаётся как у строки (правило дизайнера).
@@ -848,6 +820,8 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
             getPortalEventTarget: () => portalEventTargetRef?.current ?? null,
             refTable,
           },
+          // Блок на несколько строк высоту строки не растит — и отступа не получает
+          autoRowInset: rowHeight === 'auto' && !spansSeveralRows(spanRows),
         })
       );
     },
@@ -855,6 +829,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       updateVersion,
       bottomSummaryRows,
       rows,
+      rowHeight,
       columnsForRender,
       ctxs,
       theme,
@@ -868,6 +843,19 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       applyCanvasEditorActivation,
     ]
   );
+  const themeForMeasure = useMemo(
+    () => ({
+      ...theme,
+      baseFontFull: `${theme.baseFontStyle} ${theme.fontFamily}`,
+    }),
+    [theme]
+  );
+
+  measureSourceRef.current = {
+    columns: columnsForRender,
+    getCell: getCellContentGlide,
+    theme: themeForMeasure,
+  };
 
   const handleCellClickedBridge = useCallback<
     NonNullable<GlideProps['onCellClicked']>

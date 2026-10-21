@@ -28,7 +28,8 @@ export function createCanvasCell(
     renderData?: CanvasRenderResult
   ) => boolean,
   copyData?: string,
-  options?: Omit<BaseGridCell, 'allowOverlay'> & { allowOverlay?: boolean }
+  options?: Omit<BaseGridCell, 'allowOverlay'> & { allowOverlay?: boolean },
+  measureHeight?: CanvasCellData['measureHeight']
 ): CanvasCell {
   return {
     kind: GridCellKind.Custom,
@@ -39,6 +40,7 @@ export function createCanvasCell(
       kind: CANVAS_CELL_KIND,
       render: render as CanvasCellData['render'],
       onClick: onClick as CanvasCellData['onClick'],
+      ...(measureHeight && { measureHeight }),
     },
     ...options,
   };

@@ -1,3 +1,6 @@
+import { clearButtonCaches } from '../cells/buttons';
+import { invalidateTextCache } from '../primitives/CanvasText';
+
 const TEST_FONT =
   '400 normal 1rem/1.25rem "SB Sans Text", sans-serif, Inter, Roboto, -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui, helvetica neue, helvetica, Ubuntu, noto, arial, sans-serif';
 const TEST_TEXT =
@@ -74,4 +77,32 @@ export function waitForCanvasFonts(options: PollOptions = {}): Promise<void> {
 
 export function waitForFonts(options?: PollOptions): Promise<void> {
   return waitForDocumentFonts().then(() => waitForCanvasFonts(options));
+}
+
+/**
+ * Вызывает `onLoaded`, когда шрифты загружены, и после каждой следующей догрузки.
+ * Canvas запрашивает шрифт лениво — при первой отрисовке, поэтому разового `waitForFonts`
+ * мало: он может закончиться раньше, чем догрузится шрифт таблицы, и кеши ширин и переносов
+ * останутся посчитанными запасным шрифтом.
+ * @returns отписка
+ */
+export function subscribeFontsLoaded(onLoaded: () => void): () => void {
+  let active = true;
+
+  const notify = () => {
+    if (!active) return;
+    invalidateTextCache();
+    clearButtonCaches();
+    onLoaded();
+  };
+
+  waitForFonts().then(notify);
+
+  const fonts = typeof document === 'undefined' ? undefined : document.fonts;
+  fonts?.addEventListener?.('loadingdone', notify);
+
+  return () => {
+    active = false;
+    fonts?.removeEventListener?.('loadingdone', notify);
+  };
 }

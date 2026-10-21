@@ -13,6 +13,7 @@ import type {
 import type {
   CSSProperties,
   ComponentProps,
+  MutableRefObject,
   ReactElement,
   ReactNode,
   ReactPortal,
@@ -44,6 +45,26 @@ export type { Theme, ActiveTheme };
 export type GlideProps = ComponentProps<typeof DataEditor>;
 
 export type RowHeightGlide = GlideProps['rowHeight'];
+
+/**
+ * Сюда таблица кладёт функцию «индекс строки → текущая высота (px)». Функция обновляется
+ * на каждом рендере; во время анимации смены `rowSize` отдаёт целевую высоту.
+ */
+export type RowHeightsRef = MutableRefObject<
+  ((rowIndex: number) => number) | null
+>;
+
+/** Высота строки: число, функция по строке или `'auto'` — по содержимому ячеек. */
+export type RowHeightProp<R> =
+  | ((
+      row: R,
+      currentRowSize: { rowSizeName: SIZE; rowSizeValue: number },
+      rowIndex: number
+    ) => number)
+  | number
+  | 'auto'
+  | undefined
+  | null;
 
 /**
  * Подсветка активной сущности (визуальная ось).
@@ -361,18 +382,9 @@ export type TableGlideCustomProps<
   rows: readonly R[];
   bottomSummaryRows?: readonly SR[];
   rowSize?: SIZE;
-  rowHeight?:
-    | ((
-        row: R,
-        currentRowSize: {
-          rowSizeName: SIZE;
-          rowSizeValue: number;
-        },
-        rowIndex: number
-      ) => number)
-    | number
-    | undefined
-    | null;
+  rowHeight?: RowHeightProp<R>;
+  /** Принимает функцию текущей высоты строки по индексу (см. TableConfig.rowHeightsRef). */
+  rowHeightsRef?: RowHeightsRef;
   ctxs?: ObjectForExtending;
   renderGroupHeader?: (
     args: RenderGroupHeaderArgs
@@ -414,7 +426,7 @@ export type TableGlideCustomProps<
   /** Режим выделения ячеек (нативный glide selection). По умолчанию 'range-cell'. */
   cellsSelectionMode?: CellsSelectionMode;
   /** Фокусировать грид при внешней смене controlled gridSelection. По умолчанию true. */
-  focusOnGridSelectionChange?: boolean;
+  focusOnStateChange?: boolean;
   /** Канал для copy/paste (selectionRef потребителя), отдельно от controlled gridSelection. */
   onSelectionEmit?: (selection: GridSelection) => void;
   /**

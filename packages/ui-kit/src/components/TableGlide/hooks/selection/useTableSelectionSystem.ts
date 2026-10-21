@@ -55,6 +55,20 @@ interface UseTableSelectionSystemParams<
   isHighlightActiveRowControlled?: boolean;
 }
 
+/** Выделение с активной ячейкой в первой колонке данных строки `row` */
+const toFirstDataCell = (
+  selection: GridSelection,
+  firstDataCol: number,
+  row: number,
+): GridSelection => ({
+  ...selection,
+  current: {
+    cell: [firstDataCol, row],
+    range: { x: firstDataCol, y: row, width: 1, height: 1 },
+    rangeStack: [],
+  },
+});
+
 /**
  * Оркестратор трёх независимых от glide осей выделения TableCanvas:
  *  - выделение КОЛОНОК по клику на шапку (`useColumnAxisSelection`);
@@ -67,22 +81,6 @@ interface UseTableSelectionSystemParams<
  * (см. `useColumnRowHighlightRegions`); наружу для copy/paste отдаём через
  * `onSelectionEmit`.
  */
-/** Активная ячейка — первая ячейка данных строки `current.cell` */
-const toFirstDataCell = (
-  selection: GridSelection,
-  firstDataCol: number,
-): GridSelection => {
-  const row = selection.current?.cell[1] ?? 0;
-  return {
-    ...selection,
-    current: {
-      cell: [firstDataCol, row],
-      range: { x: firstDataCol, y: row, width: 1, height: 1 },
-      rangeStack: [],
-    },
-  };
-};
-
 export function useTableSelectionSystem<
   R extends ObjectForExtending,
   SR = unknown,
@@ -276,7 +274,7 @@ export function useTableSelectionSystem<
         !pointerGestureRef.current &&
         current &&
         current.cell[0] < leadingServiceColumnsCount
-          ? toFirstDataCell(raw, leadingServiceColumnsCount)
+          ? toFirstDataCell(raw, leadingServiceColumnsCount, current.cell[1])
           : clampSelectionToData(raw);
       if (next.current !== undefined || next.rows.length > 0) {
         setSelectedColumns(CompactSelection.empty());

@@ -263,6 +263,13 @@ export class CellCanvasRoot {
     this.hoverController.handlePointerLeave();
   }
 
+  /** Высота дерева при ширине `width`: layout без отрисовки, высоту задаёт содержимое. */
+  measureHeight(ctx: CanvasRenderingContext2D, width: number): number {
+    this.rootNode.style = { width };
+    this.prepareRootNode(ctx, { x: 0, y: 0, width, height: 0 });
+    return this.rootNode.rect.height;
+  }
+
   private prepareRootNode(ctx: CanvasRenderingContext2D, rect: Rect): void {
     this.rootNode.rect.x = 0;
     this.rootNode.rect.y = 0;

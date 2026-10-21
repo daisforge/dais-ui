@@ -14,10 +14,12 @@ import { Canvas as InternalCanvas } from './index';
 
 export type {
   CanvasInteractionConfig,
+  CanvasMarkProps,
   CanvasNodeTooltipConfig,
   CanvasNodeTooltipProps,
   CanvasPortalHoverDetail,
   CanvasPortalSource,
+  RowHeightsRef,
 } from '../../TableGlide';
 export {
   createEmptyCellGlide,

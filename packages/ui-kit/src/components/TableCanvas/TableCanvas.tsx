@@ -377,7 +377,8 @@ export function TableCanvas<
     useCloseContextMenuOnRegionChange(contextMenuCtxVal);
 
   // Композитный обработчик смены видимого региона: закрытие поповера (X),
-  // закрытие контекстного меню (Y) и подгрузка данных при infinity scroll.
+  // закрытие контекстного меню (Y), подгрузка данных при infinity scroll и потребитель.
+  const onVisibleRegionChangedExternal = tableConfig.onVisibleRegionChanged;
   const handleVisibleRegionChange = useCallback<
     NonNullable<typeof handlePopoverRegionChange>
   >(
@@ -387,14 +388,14 @@ export function TableCanvas<
       if (isHaveActiveInfinityScroll) {
         handleInfinityScrollRegionChange(...args);
       }
-      tableConfig.onVisibleRegionChanged?.(...args);
+      onVisibleRegionChangedExternal?.(...args);
     },
     [
       handlePopoverRegionChange,
       handleContextMenuRegionChange,
       handleInfinityScrollRegionChange,
       isHaveActiveInfinityScroll,
-      tableConfig.onVisibleRegionChanged,
+      onVisibleRegionChangedExternal,
     ],
   );
 
@@ -1060,6 +1061,7 @@ export function TableCanvas<
 
                             // rowSize and height
                             rowSize,
+                            rowHeightsRef: tableConfig.rowHeightsRef,
                             ...(resultRowHeight && {
                               rowHeight: resultRowHeight,
                             }),
@@ -1204,7 +1206,7 @@ export function TableCanvas<
                               cellsSelectionMode:
                                 tableConfig.cellsSelection?.mode ??
                                 'range-cell',
-                              focusOnGridSelectionChange:
+                              focusOnStateChange:
                                 tableConfig.cellsSelection
                                   ?.focusOnStateChange ?? true,
                               hoverEffects: tableConfig.hoverEffects,

@@ -2,8 +2,10 @@ import { describe, expect, it } from 'vitest';
 
 import {
   resolveActiveRowBg,
+  resolveCellFill,
   resolveCellFillOverride,
 } from './cell-fill-override';
+import type { TableColorTheme } from './table-colors.generated';
 
 const STATES = {
   rest: 'rest',
@@ -81,5 +83,39 @@ describe('resolveActiveRowBg: фон выбранной строки', () => {
     expect(
       resolveActiveRowBg(THEME, { rowHover: true, checkboxChecked: true }),
     ).toBe('step2');
+  });
+});
+
+describe('resolveCellFill: чей фон у ячейки', () => {
+  const EDITABLE_THEME = {
+    bgEditableCell: 'editable',
+    bgEditableCellHovered: 'editableHover',
+    bgEditableCellRowActiveHovered: 'editableHover2',
+    bgEditableCellActive: 'editableActive',
+    bgEditableCellActiveHovered: 'editableHoverActive',
+  };
+  const CONTEXT = { rowHover: false, rowActive: false };
+  const fill = (consumerBg: string | undefined, isEditable: boolean) =>
+    resolveCellFill({
+      consumerBg,
+      isEditable,
+      editableTheme: EDITABLE_THEME,
+      colorTheme: {} as TableColorTheme,
+      context: CONTEXT,
+    });
+
+  it('фон потребителя сильнее фона редактируемой ячейки', () => {
+    expect(fill('var(--changed)', true)).toEqual({ bgCell: 'var(--changed)' });
+  });
+
+  it('без фона потребителя редактируемая ячейка — жёлтая', () => {
+    expect(fill(undefined, true)).toEqual({
+      bgCell: 'editable',
+      accentLight: 'editableActive',
+    });
+  });
+
+  it('обычная ячейка без фона потребителя — своего цвета нет', () => {
+    expect(fill(undefined, false)).toBeUndefined();
   });
 });

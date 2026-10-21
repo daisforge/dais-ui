@@ -5,6 +5,7 @@ import type {
 import { Group, Item, ItemOrGroup } from '@ui-kit/components/ListOfFilters';
 import type { MassActionsSize } from '@ui-kit/components/MassActions';
 import { SIZE } from '@ui-kit/components/TableCanvas';
+import type { RowHeightsRef } from '@ui-kit/components/TableGlide';
 // FIXME: Ждем адаптации фичи RowInstauments
 // import { RowInstrumentsType, SIZE } from '@ui-kit/components/TableCanvas';
 import { CSSProperties, ReactNode } from 'react';
@@ -1102,9 +1103,20 @@ export type TableConfig<
    */
   rowSize?: Prettify<RowSize>;
   /**
-   * rowHeight - размер высоты строк таблицы
+   * rowHeight - размер высоты строк таблицы: число, функция или `'auto'`.
+   * `'auto'` — высота строки по содержимому: ui-kit измеряет дерево Canvas каждой ячейки при ширине
+   * колонки (перенос слов в `Canvas.Text wordWrap` растит строку), но не ниже высоты по `rowSize`
+   * и не выше 480px. Строки вне видимой области получают высоту по `rowSize` и измеряются при прокрутке.
+   * Измерение кешируется по объекту строки: чтобы перемерить строку, передайте новый объект.
+   * Ячейки, объединённые на несколько строк, строку не растят.
+   * С панелью детализации строки не растут: `'auto'` там равен высоте по `rowSize`.
    */
-  rowHeight?: Maybe<number | RowHeightFunc<RowType>>;
+  rowHeight?: Maybe<number | 'auto' | RowHeightFunc<RowType>>;
+  /**
+   * Сюда таблица кладёт функцию «индекс строки → её текущая высота (px)»: нужна внешним
+   * наложениям (метки на скроллбаре), когда высота зависит от содержимого (`rowHeight: 'auto'`).
+   */
+  rowHeightsRef?: RowHeightsRef;
   /**
    * headerRowHeight - высота одного ряда шапки (в px). По умолчанию 33.
    *
@@ -1558,6 +1570,7 @@ type GlideInstanceOmitted<
   | 'onVisibleRegionChanged'
   // onCellClicked объявлен в TableConfig явно — с info и событием
   // | 'CellReadOnlyEditor'
+  // Сигнатуры glide: индекс колонки — в координатах грида (сервисные колонки включены)
   | 'onGroupHeaderClicked'
   | 'onGroupHeaderContextMenu'
   | 'onHeaderClicked'
