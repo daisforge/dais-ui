@@ -63,6 +63,8 @@ interface UseColoringLayersParams {
   /* Слой 4: выделение колонок и строк. */
   selectedColumnIndexes: number[];
   headerSelectedRowIndexes: number[];
+  /** Рамка у каждого Ctrl-диапазона ячеек, а не только у активного. */
+  outlineEachRange: boolean;
   /** Всего строк (данные + summary). */
   totalRows: number;
   columnsCount: number;
@@ -93,6 +95,7 @@ export function useColoringLayers({
   highlightRegionsExternal,
   selectedColumnIndexes,
   headerSelectedRowIndexes,
+  outlineEachRange,
   totalRows,
   columnsCount,
   isRowHoverEnabled,
@@ -122,6 +125,8 @@ export function useColoringLayers({
     selectedColumnIndexes,
     headerSelectedRowIndexes,
     selectionRangeStack: selection.current?.rangeStack,
+    activeRange: selection.current?.range,
+    outlineEachRange,
     totalRows,
     firstDataCol: serviceColumnsCount,
     columnsCount,

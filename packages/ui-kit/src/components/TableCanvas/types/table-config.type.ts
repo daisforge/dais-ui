@@ -903,6 +903,14 @@ export type CellsSelectionConfig = {
    */
   enableSelectAll?: boolean;
   /**
+   * Рамка у каждого диапазона несмежного Ctrl-выбора ячеек (`multi-range-cell`).
+   * По умолчанию рамку рисует только активный (последний) диапазон, остальные
+   * показываются заливкой. Ограничение: соседние диапазоны дают общую линию на
+   * стыке; диапазон, поглощённый более поздним, не обводится.
+   * @default false
+   */
+  outlineEachRange?: boolean;
+  /**
    * Внешний (controlled) контроль НАТИВНОГО выделения (ячейки/диапазон/смежные
    * строки и колонки). `state` — кортеж `[value, setter]` как у `selecting.state`.
    * Сброс: `setter({ current: undefined, rows: empty, columns: empty })`.

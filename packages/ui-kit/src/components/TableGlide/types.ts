@@ -452,6 +452,8 @@ export type TableGlideCustomProps<
   enableRowSelection?: boolean;
   /** Выделение всей таблицы кликом по шапке колонки нумерации. По умолчанию true. */
   enableSelectAll?: boolean;
+  /** Рамка у каждого Ctrl-диапазона ячеек (multi-range-cell), а не только у активного. По умолчанию false. */
+  outlineEachRange?: boolean;
   /** Индексы строк, выбранных через checkbox selection. */
   checkboxSelectedRowIndexes?: ReadonlySet<number>;
   /**

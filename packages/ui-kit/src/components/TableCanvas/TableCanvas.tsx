@@ -1198,6 +1198,9 @@ export function TableCanvas<
                               enableSelectAll:
                                 tableConfig.cellsSelection?.enableSelectAll ??
                                 true,
+                              outlineEachRange:
+                                tableConfig.cellsSelection?.outlineEachRange ??
+                                false,
                               cellsSelectionMode:
                                 tableConfig.cellsSelection?.mode ??
                                 'range-cell',
