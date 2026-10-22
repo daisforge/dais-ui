@@ -7,6 +7,7 @@ import {
   TRIBES,
 } from '@df-storybook/data/tableData';
 import DocStoryTemplate from '@df-storybook/templates/DocStoryTemplate.mdx';
+import { StoryHint } from '@df-storybook/utils/StoryHint';
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Button } from '@ui-kit/components/Button';
@@ -627,6 +628,8 @@ type InvoiceRow = {
   status: 'new' | 'approved' | 'rejected';
 };
 
+// Строки с ошибками идут через одну, а соседи отклонённых строк чистые:
+// рамки ошибок разных строк не касаются углами и не сливаются визуально.
 const INVOICE_ROWS: InvoiceRow[] = [
   {
     id: '1',
@@ -636,22 +639,46 @@ const INVOICE_ROWS: InvoiceRow[] = [
     status: 'approved',
   },
   { id: '2', name: '', amount: 48000, limit: 50000, status: 'new' },
-  { id: '3', name: 'Канцелярия', amount: 9000, limit: 5000, status: 'new' },
+  {
+    id: '3',
+    name: 'Канцелярия',
+    amount: 3000,
+    limit: 5000,
+    status: 'approved',
+  },
   {
     id: '4',
     name: 'Командировка',
-    amount: 70000,
+    amount: 30000,
     limit: 40000,
     status: 'rejected',
   },
-  { id: '5', name: '', amount: 99000, limit: 30000, status: 'new' },
   {
-    id: '6',
+    id: '5',
     name: 'Обучение',
     amount: 15000,
     limit: 20000,
     status: 'approved',
   },
+  { id: '6', name: 'Хостинг', amount: 9000, limit: 5000, status: 'new' },
+  { id: '7', name: 'Связь', amount: 4000, limit: 6000, status: 'approved' },
+  { id: '8', name: '', amount: 99000, limit: 30000, status: 'new' },
+  { id: '9', name: 'Реклама', amount: 45000, limit: 60000, status: 'approved' },
+  {
+    id: '10',
+    name: 'Консалтинг',
+    amount: 18000,
+    limit: 25000,
+    status: 'rejected',
+  },
+  {
+    id: '11',
+    name: 'Лицензии',
+    amount: 22000,
+    limit: 30000,
+    status: 'approved',
+  },
+  { id: '12', name: 'Страхование', amount: 52000, limit: 50000, status: 'new' },
 ];
 
 const rowErrorsCode = `
@@ -705,7 +732,7 @@ const App = () => {
   return (
     <TableCanvas
       tableConfig={{
-        containerStyle: { height: '400px' },
+        containerStyle: { height: '680px' },
         rowMarkers: {},
         rowSize: { showInControl: true, default: 'big' },
         editing: {
@@ -800,6 +827,15 @@ export const EditingRowErrors: Story = {
 
     return (
       <>
+        <StoryHint>
+          Таблица открыта в режиме правки. Пустое назначение и сумма выше лимита
+          подсвечиваются рамкой, при наведении на такую ячейку появляется
+          подсказка. В служебном столбце слева иконка у строк с ошибками, её
+          подсказка показывает число ошибок в строке. Строки со статусом
+          «Отклонена» обведены целиком одной рамкой. Исправьте значение в
+          ячейке, и рамка с иконкой пропадут. Кнопка ниже прячет столбец,
+          оставляя рамки.
+        </StoryHint>
         <Button
           size="s"
           view="secondary"
@@ -812,7 +848,7 @@ export const EditingRowErrors: Story = {
         </Button>
         <TableCanvas
           tableConfig={{
-            containerStyle: { height: '400px' },
+            containerStyle: { height: '680px' },
             rowMarkers: {},
             rowSize: { showInControl: true, default: 'big' },
             selecting: {
@@ -906,7 +942,7 @@ const App = () => {
   return (
     <TableCanvas
       tableConfig={{
-        containerStyle: { height: '400px' },
+        containerStyle: { height: '680px' },
         rowMarkers: {},
         editing: {
           defaultEnabled: true,
@@ -1013,10 +1049,19 @@ export const EditingAsyncSave: Story = {
 
     return (
       <>
+        <StoryHint>
+          Таблица открыта в режиме правки, ошибок пока нет: до ответа сервера
+          таблица о них не знает. Нажмите «Сохранить»: сервер отвечает через
+          секунду, на кнопке в это время спиннер, обе кнопки заблокированы.
+          Сервер отклоняет пустые назначения и суммы выше лимита, такие ячейки
+          подсвечиваются, появляется столбец с индикатором, а таблица остаётся в
+          режиме правки. Исправьте ячейки и сохраните снова, тогда режим правки
+          закроется. «Отменить» возвращает исходные данные.
+        </StoryHint>
         <div style={{ marginBottom: 12, minHeight: 20 }}>{message}</div>
         <TableCanvas
           tableConfig={{
-            containerStyle: { height: '400px' },
+            containerStyle: { height: '680px' },
             rowMarkers: {},
             rowSize: { showInControl: true, default: 'big' },
             editing: {
