@@ -11,7 +11,7 @@ import type { GridCell, Rectangle } from '@glideappsfinal/glide-data-grid';
 
 import { isCanvasCell } from '../lib/canvas/cells';
 import type { CanvasCellData } from '../lib/canvas/cells/types';
-import { subscribeFontsLoaded } from '../lib/canvas/hooks/fontUtils';
+import { subscribeFontsLoaded } from '../lib/canvas/hooks/fontsLoaded';
 import type { GlideThemeForRender } from '../theming/types';
 
 /** Строк сверх видимых, которые измеряются заранее */

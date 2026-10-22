@@ -6,7 +6,7 @@ import type { RowHeightProp, RowHeightsRef } from '../../types';
 import { useRowHeightGlide } from '../useRowHeightGlide';
 
 // Шрифты в jsdom не грузятся: подписка не нужна и требует canvas
-vi.mock('../../lib/canvas/hooks/fontUtils', () => ({
+vi.mock('../../lib/canvas/hooks/fontsLoaded', () => ({
   subscribeFontsLoaded: () => () => {},
 }));
 

@@ -1386,7 +1386,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   };
   useIconLoadRedraw(loadRedrawOptions);
 
-  useFontLoadRedraw(loadRedrawOptions);
+  useFontLoadRedraw({ ...loadRedrawOptions, fontFamily: theme.fontFamily });
 
   const onColumnMoved = useMemo((): GlideProps['onColumnMoved'] => {
     if (!onColumnsReorder) {

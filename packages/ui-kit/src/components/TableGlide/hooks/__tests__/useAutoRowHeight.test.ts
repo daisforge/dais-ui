@@ -12,7 +12,7 @@ import {
 } from '../useAutoRowHeight';
 
 let resolveFonts: () => void = () => {};
-vi.mock('../../lib/canvas/hooks/fontUtils', () => ({
+vi.mock('../../lib/canvas/hooks/fontsLoaded', () => ({
   subscribeFontsLoaded: (onLoaded: () => void) => {
     resolveFonts = onLoaded;
     return () => {};
