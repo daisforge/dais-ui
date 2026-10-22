@@ -840,3 +840,221 @@ export const EditingRowErrors: Story = {
     );
   },
 };
+
+// Ошибки, которые вернул сервер: ключ строки и колонка. В приложении такой
+// список приходит из ответа на сохранение и хранится рядом со строками.
+type ServerError = { rowId: string; column: 'name' | 'amount' };
+
+const asyncSaveCode = `
+import { ColumnConfig, TableCanvas } from '@daisforge/ui/components/TableCanvas';
+import { useMemo, useState } from 'react';
+
+type InvoiceRow = { id: string; name: string; amount: number; limit: number };
+type ServerError = { rowId: string; column: 'name' | 'amount' };
+
+// Имитация сервера: отвечает через секунду, пустое назначение и сумму выше
+// лимита не принимает.
+const saveOnServer = (rows: InvoiceRow[]): Promise<ServerError[]> =>
+  new Promise((resolve) =>
+    setTimeout(() => {
+      const errors: ServerError[] = [];
+      rows.forEach((row) => {
+        if (row.name.trim() === '') errors.push({ rowId: row.id, column: 'name' });
+        if (row.amount > row.limit) errors.push({ rowId: row.id, column: 'amount' });
+      });
+      resolve(errors);
+    }, 1000),
+  );
+
+const App = () => {
+  const [rows, setRows] = useState<InvoiceRow[]>(initialRows);
+  const [saving, setSaving] = useState(false);
+  const [serverErrors, setServerErrors] = useState<ServerError[]>([]);
+
+  const columnConfig = useMemo((): ColumnConfig<InvoiceRow>[] => {
+    const hasError = (row: InvoiceRow, column: ServerError['column']) =>
+      serverErrors.some((e) => e.rowId === row.id && e.column === column);
+    return [
+      {
+        key: 'name',
+        name: 'Назначение',
+        editingCell: {
+          component: 'inputString',
+          // Ошибка берётся из ответа сервера, а не из правила на фронте.
+          error: {
+            value: (row) => hasError(row, 'name'),
+            tooltip: () => 'Сервер: назначение платежа не заполнено',
+          },
+        },
+      },
+      {
+        key: 'amount',
+        name: 'Сумма',
+        contentFormat: 'number',
+        editingCell: {
+          component: 'inputNumber',
+          error: {
+            value: (row) => hasError(row, 'amount'),
+            tooltip: (row) => \`Сервер: сумма превышает лимит \${row.limit}\`,
+          },
+        },
+      },
+      { key: 'limit', name: 'Лимит', contentFormat: 'number' },
+    ];
+  }, [serverErrors]);
+
+  return (
+    <TableCanvas
+      tableConfig={{
+        containerStyle: { height: '400px' },
+        rowMarkers: {},
+        editing: {
+          defaultEnabled: true,
+          onRowsChange: setRows,
+          rowKeyGetter: (r) => r.id,
+          // Столбец-индикатор включаем, только когда ошибки есть: до первого
+          // ответа сервера таблица про них ничего не знает.
+          rowErrors: serverErrors.length > 0 ? true : undefined,
+          // Пока идёт сохранение, на кнопке спиннер, обе кнопки заблокированы.
+          buttons: {
+            save: { isLoading: saving, disabled: saving },
+            cancel: { disabled: saving },
+          },
+          onSave: async (disableEditorMode) => {
+            setSaving(true);
+            const errors = await saveOnServer(rows);
+            setSaving(false);
+            setServerErrors(errors);
+            if (errors.length > 0) {
+              // disableEditorMode не вызываем: таблица остаётся в режиме
+              // правки, ошибки уже подсвечены. Здесь же можно показать
+              // уведомление или модальное окно.
+              return;
+            }
+            disableEditorMode();
+          },
+          onCancel: (disableEditorMode) => {
+            setServerErrors([]);
+            setRows(initialRows);
+            disableEditorMode();
+          },
+        },
+      }}
+      columnConfig={columnConfig}
+      rows={rows}
+    />
+  );
+};
+`;
+
+export const EditingAsyncSave: Story = {
+  ...storySourceDoc({
+    code: asyncSaveCode,
+    type: 'code',
+  }),
+  name: 'Асинхронное сохранение и ошибки с сервера',
+  render: () => {
+    const [rows, setRows] = useState<InvoiceRow[]>(INVOICE_ROWS);
+    const [saving, setSaving] = useState(false);
+    const [serverErrors, setServerErrors] = useState<ServerError[]>([]);
+    const [message, setMessage] = useState('');
+
+    const saveOnServer = (toSave: InvoiceRow[]): Promise<ServerError[]> =>
+      new Promise((resolve) => {
+        setTimeout(() => {
+          const errors: ServerError[] = [];
+          toSave.forEach((row) => {
+            if (row.name.trim() === '') {
+              errors.push({ rowId: row.id, column: 'name' });
+            }
+            if (row.amount > row.limit) {
+              errors.push({ rowId: row.id, column: 'amount' });
+            }
+          });
+          resolve(errors);
+        }, 1000);
+      });
+
+    const columnConfig = useMemo((): ColumnConfig<InvoiceRow>[] => {
+      const hasError = (row: InvoiceRow, column: ServerError['column']) =>
+        serverErrors.some((e) => e.rowId === row.id && e.column === column);
+      return [
+        {
+          key: 'name',
+          name: 'Назначение',
+          editingCell: {
+            component: 'inputString',
+            error: {
+              value: (row) => hasError(row, 'name'),
+              tooltip: () => 'Сервер: назначение платежа не заполнено',
+            },
+          },
+        },
+        {
+          key: 'amount',
+          name: 'Сумма',
+          contentFormat: 'number',
+          editingCell: {
+            component: 'inputNumber',
+            error: {
+              value: (row) => hasError(row, 'amount'),
+              tooltip: (row) => `Сервер: сумма превышает лимит ${row.limit}`,
+            },
+          },
+        },
+        {
+          key: 'limit',
+          name: 'Лимит',
+          contentFormat: 'number',
+          editingCell: { component: 'inputNumber' },
+        },
+      ];
+    }, [serverErrors]);
+
+    return (
+      <>
+        <div style={{ marginBottom: 12, minHeight: 20 }}>{message}</div>
+        <TableCanvas
+          tableConfig={{
+            containerStyle: { height: '400px' },
+            rowMarkers: {},
+            rowSize: { showInControl: true, default: 'big' },
+            editing: {
+              defaultEnabled: true,
+              onRowsChange: setRows,
+              rowKeyGetter: (r) => r.id,
+              rowErrors: serverErrors.length > 0 ? true : undefined,
+              buttons: {
+                save: { isLoading: saving, disabled: saving },
+                cancel: { disabled: saving },
+              },
+              onSave: async (disableEditorMode) => {
+                setSaving(true);
+                setMessage('Сохраняем...');
+                const errors = await saveOnServer(rows);
+                setSaving(false);
+                setServerErrors(errors);
+                if (errors.length > 0) {
+                  setMessage(
+                    `Сервер отклонил сохранение: ошибок ${errors.length}. Исправьте подсвеченные ячейки.`,
+                  );
+                  return;
+                }
+                setMessage('Сохранено');
+                disableEditorMode();
+              },
+              onCancel: (disableEditorMode) => {
+                setServerErrors([]);
+                setRows(INVOICE_ROWS);
+                setMessage('');
+                disableEditorMode();
+              },
+            },
+          }}
+          columnConfig={columnConfig}
+          rows={rows}
+        />
+      </>
+    );
+  },
+};
