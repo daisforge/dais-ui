@@ -313,3 +313,119 @@ export const FlexLayoutCell: StoryObj = {
     );
   },
 };
+
+type ReportRow = {
+  id: number;
+  direction: string;
+  division: string;
+  comment: string;
+  values: number[];
+};
+
+const REPORT_METRICS = 120;
+const DIRECTIONS = [
+  'Цифровизация',
+  'Стратегическое направление «Розничный бизнес»',
+  'Развитие корпоративного сегмента и работа с ключевыми клиентами',
+  'ИТ',
+];
+const DIVISIONS = [
+  'Центральный аппарат',
+  'Территориальный банк: Северо-Западный',
+  'Управление по работе с крупнейшими клиентами и холдингами',
+];
+
+const createReportRows = (): ReportRow[] =>
+  Array.from({ length: 5000 }, (_, id) => ({
+    id,
+    direction: DIRECTIONS[id % DIRECTIONS.length]!,
+    division: DIVISIONS[id % DIVISIONS.length]!,
+    comment:
+      id % 5 === 0
+        ? 'Плановое значение пересмотрено после квартального комитета, факт уточняется'
+        : '',
+    values: Array.from(
+      { length: REPORT_METRICS },
+      (__, index) => (id * 7919 + index * 104729) % 1_000_000,
+    ),
+  }));
+
+type ReportCellRender = NonNullable<ColumnConfig<ReportRow>['renderCell']>;
+
+/** Текст строки с переносом по словам */
+const wrappedText =
+  (key: 'direction' | 'division' | 'comment'): ReportCellRender =>
+  ({ row, theme }) =>
+    (
+      <Canvas.Container alignItems="center" padding={{ left: 8, right: 8 }}>
+        <Canvas.Text font={theme.baseFontStyle} wordWrap>
+          {row[key]}
+        </Canvas.Text>
+      </Canvas.Container>
+    );
+
+export const AutoRowHeightWideTable: StoryObj = {
+  ...storySourceDoc({
+    preCode,
+    previewSource: 'shown',
+  }),
+  name: 'Auto row height: широкая таблица (120 показателей)',
+  render: () => {
+    const [rows] = useState(createReportRows);
+
+    const columnConfig = useMemo<readonly ColumnConfig<ReportRow>[]>(
+      () => [
+        {
+          key: 'direction',
+          name: 'Направление',
+          width: 220,
+          renderCell: wrappedText('direction'),
+        },
+        {
+          key: 'division',
+          name: 'Подразделение',
+          width: 200,
+          renderCell: wrappedText('division'),
+        },
+        ...Array.from(
+          { length: REPORT_METRICS },
+          (_, index): ColumnConfig<ReportRow> => ({
+            key: `metric${index}`,
+            name: `Показатель ${index + 1}`,
+            width: 120,
+            renderCell: ({ row }) => (
+              <Canvas.Container
+                alignItems="center"
+                justifyContent="flex-end"
+                padding={{ left: 8, right: 8 }}
+              >
+                <Canvas.Text>
+                  {row.values[index]!.toLocaleString('ru-RU')}
+                </Canvas.Text>
+              </Canvas.Container>
+            ),
+          }),
+        ),
+        // Колонка с переносом в конце таблицы: строки дорастут, когда до неё прокрутят
+        {
+          key: 'comment',
+          name: 'Комментарий',
+          width: 240,
+          renderCell: wrappedText('comment'),
+        },
+      ],
+      [],
+    );
+
+    return (
+      <TableCanvas
+        tableConfig={{
+          containerStyle: { height: 700 },
+          rowHeight: 'auto',
+        }}
+        columnConfig={columnConfig}
+        rows={rows}
+      />
+    );
+  },
+};
