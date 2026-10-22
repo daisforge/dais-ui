@@ -1,8 +1,8 @@
-import { useMemo, useRef } from 'react';
+import { useMemo } from 'react';
 
 import { DEFAULT_ROW_HEIGHT, type SIZE } from '../constants';
 import type { RowHeightGlide, RowHeightProp, RowHeightsRef } from '../types';
-import { type AutoRowHeightSource, useAutoRowHeight } from './useAutoRowHeight';
+import { useAutoRowHeight } from './useAutoRowHeight';
 
 const baseHeightOf =
   <R extends object>(
@@ -28,36 +28,35 @@ interface Params<R extends object> {
   rows: readonly R[];
   rowSize: SIZE;
   rowHeightsRef?: RowHeightsRef;
+  columns: readonly { id: string }[];
+  fontFamily?: string;
 }
 
 /**
- * Высоты строк для glide. `'auto'` — по содержимому ячеек (их измеряет `useAutoRowHeight`),
- * иначе число, функция по строке или высота по размеру строк.
- * Источник измерения (`measureSourceRef`) таблица заполняет, когда готовы колонки и чтение ячеек.
+ * Высоты строк для glide. `'auto'` — по содержимому ячеек (`useAutoRowHeight`; ячейкам
+ * нужен `autoHeightReporter`), иначе число, функция по строке или высота по размеру строк.
  */
 export function useRowHeightGlide<R extends object>({
   rowHeight,
   rows,
   rowSize,
   rowHeightsRef,
+  columns,
+  fontFamily,
 }: Params<R>) {
-  const measureSourceRef = useRef<AutoRowHeightSource | null>(null);
-  const auto = useAutoRowHeight({
-    enabled: rowHeight === 'auto',
-    rows,
-    sourceRef: measureSourceRef,
-  });
+  const isAuto = rowHeight === 'auto';
+  const auto = useAutoRowHeight({ enabled: isAuto, rows, columns, fontFamily });
 
   const rowHeightGlide = useMemo<NonNullable<RowHeightGlide>>(() => {
     const baseOf = baseHeightOf(rowHeight, rows, rowSize);
-    if (rowHeight === 'auto') {
+    if (isAuto) {
       const base = baseOf(0);
       return (rowIndex) => auto.heightOf(rowIndex, base);
     }
     return typeof rowHeight === 'function' ? baseOf : baseOf(0);
     // auto.heightOf и auto.version меняются с новыми измерениями: glide должен заново спросить высоты
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rowHeight, rows, rowSize, auto.heightOf, auto.version]);
+  }, [rowHeight, isAuto, rows, rowSize, auto.heightOf, auto.version]);
 
   if (rowHeightsRef) {
     rowHeightsRef.current =
@@ -68,7 +67,7 @@ export function useRowHeightGlide<R extends object>({
 
   return {
     rowHeightGlide,
-    measureSourceRef,
     trackAutoRowHeightRegion: auto.trackVisibleRegion,
+    autoHeightReporter: isAuto ? auto.reporterFor : undefined,
   };
 }

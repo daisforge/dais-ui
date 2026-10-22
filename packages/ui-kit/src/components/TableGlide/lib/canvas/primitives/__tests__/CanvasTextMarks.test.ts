@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 
-import { CellCanvasRoot } from '../../cells/CellCanvasRoot';
 import { CanvasContainer } from '../../core/CanvasContainer';
 import { DrawBatcher } from '../../core/DrawBatcher';
+import { measureNodeHeight } from '../../core/measureNodeHeight';
 import { CanvasBadge } from '../CanvasBadge';
 import { CanvasText } from '../CanvasText';
 
@@ -133,7 +133,7 @@ describe('CanvasBadge: подсветка', () => {
   });
 });
 
-describe('CellCanvasRoot.measureHeight', () => {
+describe('measureNodeHeight', () => {
   const heightAt = (width: number) => {
     const container = new CanvasContainer('c', { direction: 'column' });
     const text = new CanvasText('t', 'aaaa bbbb cccc dddd', {
@@ -143,7 +143,7 @@ describe('CellCanvasRoot.measureHeight', () => {
     });
     text.style = { width: '100%' };
     container.addChild(text);
-    return new CellCanvasRoot(container).measureHeight(createCtx(), width);
+    return measureNodeHeight(createCtx(), container, width);
   };
 
   it('высота ячейки с переносимым текстом зависит от ширины', () => {
@@ -164,8 +164,16 @@ describe('CellCanvasRoot.measureHeight', () => {
     });
     container.addChild(text);
 
-    expect(new CellCanvasRoot(container).measureHeight(createCtx(), 110)).toBe(
-      40,
-    );
+    expect(measureNodeHeight(createCtx(), container, 110)).toBe(40);
+  });
+
+  it('после замера стиль узла восстанавливается — узел готов к отрисовке', () => {
+    const container = new CanvasContainer('c', { direction: 'column' });
+    const style = { width: '100%' as const, height: '100%' as const };
+    container.style = style;
+
+    measureNodeHeight(createCtx(), container, 110);
+
+    expect(container.style).toBe(style);
   });
 });

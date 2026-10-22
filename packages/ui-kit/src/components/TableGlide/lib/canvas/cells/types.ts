@@ -78,12 +78,6 @@ export interface CanvasCellData {
   onMouseLeave?: () => void;
   copyData?: string;
   renderData?: CanvasRenderResult;
-  /** Высота ячейки при заданной ширине: строит дерево Canvas и считает layout без отрисовки. */
-  measureHeight?: (
-    ctx: CanvasRenderingContext2D,
-    width: number,
-    theme: GlideThemeForRender,
-  ) => number | undefined;
 }
 
 export interface CanvasCell {

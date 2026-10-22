@@ -22,6 +22,7 @@ const heightsOf = (rowHeight: RowHeightProp<Row>) => {
       rows: ROWS,
       rowSize: 'medium',
       rowHeightsRef,
+      columns: [],
     }),
   );
   const { rowHeightGlide } = result.current;

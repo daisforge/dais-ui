@@ -3,7 +3,11 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { glideCellRenderer } from '../cellRenderer';
 import { Canvas, CellCanvasRoot } from '../lib/canvas';
 import type { CanvasCell, CanvasCellData } from '../lib/canvas/cells/types';
-import type { CellInfo, GlideThemeForRender, ObjectForExtending } from '../types';
+import type {
+  CellInfo,
+  GlideThemeForRender,
+  ObjectForExtending,
+} from '../types';
 
 afterEach(() => {
   vi.restoreAllMocks();
@@ -66,5 +70,48 @@ describe('glideCellRenderer: обрезка по ячейке', () => {
       'paint',
       'restore',
     ]);
+  });
+});
+
+describe('glideCellRenderer: высота для rowHeight auto', () => {
+  /** Ячейка с отступами содержимого 10 + 10 и приёмником высоты */
+  const renderAutoHeightCell = (needsHeight: boolean) => {
+    const report = vi.fn();
+    vi.spyOn(CellCanvasRoot.prototype, 'render').mockReturnValue(
+      undefined as never,
+    );
+    const cell = glideCellRenderer({
+      jsxElement: <Canvas.Container padding={{ top: 10, bottom: 10 }} />,
+      canvasCellCache: new WeakMap(),
+      cellInfo: {
+        row: { id: 1 },
+        column: { id: 'col' },
+        colInd: 0,
+        rowInd: 0,
+        ctxs: {},
+      } as unknown as CellInfo<ObjectForExtending, unknown>,
+      options: { data: undefined },
+      autoHeight: { needsHeight: () => needsHeight, report },
+    });
+    ((cell as CanvasCell).data as CanvasCellData).render(
+      createCtx().ctx,
+      { x: 0, y: 0, width: 120, height: 40 },
+      { cellVerticalPadding: 4 } as GlideThemeForRender,
+      undefined,
+      undefined,
+    );
+    return report;
+  };
+
+  it('сообщает высоту содержимого с вертикальными отступами при ширине ячейки', () => {
+    const report = renderAutoHeightCell(true);
+
+    expect(report).toHaveBeenCalledWith(120, 20 + 4 * 2);
+  });
+
+  it('высота уже известна — не меряет', () => {
+    const report = renderAutoHeightCell(false);
+
+    expect(report).not.toHaveBeenCalled();
   });
 });

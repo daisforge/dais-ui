@@ -20,7 +20,6 @@ import {
   useTableSelectionSystem,
 } from './hooks/selection';
 import { useAnimatedRowHeight } from './hooks/useAnimatedRowHeight';
-import { spansSeveralRows } from './hooks/useAutoRowHeight';
 import { useErrorCellRanges } from './hooks/useErrorCellRanges';
 import { useCanvasContextMenuInteraction } from './hooks/useCanvasContextMenuInteraction';
 import { useCanvasEditorActivation } from './hooks/useCanvasEditorActivation';
@@ -67,7 +66,7 @@ import {
 } from './utils/createCell';
 import { findBlockOrigin } from './utils/findBlockOrigin';
 import { getSpan } from './utils/getSpan';
-import { getRowSpan } from './utils/getRowSpan';
+import { getRowSpan, spansSeveralRows } from './utils/getRowSpan';
 import { isCanvasContent, isPrimitive } from './utils/typeGuards';
 
 /** Функция-болванка. Ничего не делает */
@@ -204,12 +203,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     [rowSize, activeTheme, appearanceVariant],
   );
 
-  const { rowHeightGlide, measureSourceRef, trackAutoRowHeightRegion } =
-    useRowHeightGlide({ rowHeight, rows, rowSize, rowHeightsRef });
-
   const summaryRowsLength = bottomSummaryRows?.length ?? 0;
-
-  const rowH = useAnimatedRowHeight(rowHeightGlide);
 
   const [resizedColsMap, setResizedColsMap] = useState(
     new Map<string, number>()
@@ -265,6 +259,17 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       return c;
     });
   }, [columns, resizedColsMap]);
+
+  const { rowHeightGlide, trackAutoRowHeightRegion, autoHeightReporter } =
+    useRowHeightGlide({
+      rowHeight,
+      rows,
+      rowSize,
+      rowHeightsRef,
+      columns: columnsLast,
+      fontFamily: theme.fontFamily,
+    });
+  const rowH = useAnimatedRowHeight(rowHeightGlide);
 
   const [updateVersion, _setUpdateVersion] = useState(0);
   const canvasCellCache = useMemo(
@@ -821,7 +826,10 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
             refTable,
           },
           // Блок на несколько строк высоту строки не растит — и отступа не получает
-          autoRowInset: rowHeight === 'auto' && !spansSeveralRows(spanRows),
+          autoHeight:
+            autoHeightReporter && !spansSeveralRows(spanRows)
+              ? autoHeightReporter(row, rowInd, id, !!span)
+              : undefined,
         })
       );
     },
@@ -829,7 +837,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       updateVersion,
       bottomSummaryRows,
       rows,
-      rowHeight,
+      autoHeightReporter,
       columnsForRender,
       ctxs,
       theme,
@@ -843,19 +851,6 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       applyCanvasEditorActivation,
     ]
   );
-  const themeForMeasure = useMemo(
-    () => ({
-      ...theme,
-      baseFontFull: `${theme.baseFontStyle} ${theme.fontFamily}`,
-    }),
-    [theme]
-  );
-
-  measureSourceRef.current = {
-    columns: columnsForRender,
-    getCell: getCellContentGlide,
-    theme: themeForMeasure,
-  };
 
   const handleCellClickedBridge = useCallback<
     NonNullable<GlideProps['onCellClicked']>

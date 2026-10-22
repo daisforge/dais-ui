@@ -6,6 +6,7 @@ import {
 } from './lib/canvas';
 import type { CanvasRenderArgs } from './lib/canvas/cells/types';
 import { CanvasContainer } from './lib/canvas/core/CanvasContainer';
+import { measureNodeHeight } from './lib/canvas/core/measureNodeHeight';
 import { CanvasAvatar } from './lib/canvas/primitives/CanvasAvatar';
 import { CanvasAvatarGroup } from './lib/canvas/primitives/CanvasAvatarGroup';
 import { CanvasImage } from './lib/canvas/primitives/CanvasImage';
@@ -29,14 +30,22 @@ type CanvasCacheKey = string | number | boolean | null;
 /** Отступ обрезки от левого и верхнего края ячейки: там линии сетки (как у glide) */
 const CELL_EDGE_INSET = 1;
 
+/**
+ * Приёмник высоты содержимого ячейки для `rowHeight: 'auto'`. Ячейка снимает
+ * высоту с уже построенного при отрисовке дерева, если её ещё нет при этой ширине.
+ */
+export interface CellHeightReporter {
+  needsHeight: (width: number) => boolean;
+  report: (width: number, height: number) => void;
+}
+
 interface CanvasCellCacheEntry {
   cacheKey: CanvasCacheKey;
   canvasRoot: CellCanvasRoot;
 }
 
 /**
- * Дерево ячейки — одно для отрисовки и для замера высоты.
- * CellCanvasRoot задаёт корневой ноде размеры всей ячейки. Обёртка принимает
+ * Дерево ячейки. CellCanvasRoot задаёт корневой ноде размеры всей ячейки. Обёртка принимает
  * эти размеры на себя, а изображение, аватар или группа внутри получают
  * собственные размеры через layout. Так область hover/click и обрезка
  * группы соответствуют элементу, а не растягиваются на всю ячейку.
@@ -78,12 +87,32 @@ const withVerticalInset = (
   return container;
 };
 
+/**
+ * Ячейка строки с `rowHeight: 'auto'`: сообщает высоту содержимого с отступами,
+ * если её ещё нет при этой ширине, и раскладывает содержимое между отступами.
+ * Высота снимается с того же дерева, что пойдёт в отрисовку.
+ */
+const withAutoHeight = (
+  node: ReturnType<typeof buildCellNode>,
+  reporter: CellHeightReporter,
+  {
+    ctx,
+    width,
+    inset,
+  }: { ctx: CanvasRenderingContext2D; width: number; inset: number },
+) => {
+  if (reporter.needsHeight(width)) {
+    reporter.report(width, measureNodeHeight(ctx, node, width) + inset * 2);
+  }
+  return withVerticalInset(node, inset);
+};
+
 export const glideCellRenderer = <R extends ObjectForExtending, SR>({
   jsxElement,
   canvasCellCache,
   cellInfo,
   options,
-  autoRowInset = false,
+  autoHeight,
 }: {
   jsxElement: CellContent;
   cellInfo: CellInfo<R, SR>;
@@ -98,8 +127,8 @@ export const glideCellRenderer = <R extends ObjectForExtending, SR>({
     getPortalEventTarget?: () => EventTarget | null;
     refTable?: unknown;
   };
-  /** Строка с `rowHeight: 'auto'`: содержимое между вертикальными отступами ячейки */
-  autoRowInset?: boolean;
+  /** Строка с `rowHeight: 'auto'`: ячейка сообщает высоту содержимого и рисует его между вертикальными отступами */
+  autoHeight?: CellHeightReporter;
 }) => {
   let canvasBounds: DOMRect | null = null;
 
@@ -172,8 +201,12 @@ export const glideCellRenderer = <R extends ObjectForExtending, SR>({
       }
 
       const cellNode = buildCellNode(jsxElement, nodeIdPrefix, theme);
-      const node = autoRowInset
-        ? withVerticalInset(cellNode, theme.cellVerticalPadding ?? 0)
+      const node = autoHeight
+        ? withAutoHeight(cellNode, autoHeight, {
+            ctx,
+            width: rect.width,
+            inset: theme.cellVerticalPadding ?? 0,
+          })
         : cellNode;
 
       if (!canvasRootInstance) {
@@ -279,23 +312,5 @@ export const glideCellRenderer = <R extends ObjectForExtending, SR>({
         : column.copyData;
   }
 
-  const measureHeight = (
-    ctx: CanvasRenderingContext2D,
-    width: number,
-    theme: GlideThemeForRender,
-  ): number | undefined => {
-    if (!jsxElement) return undefined;
-    return new CellCanvasRoot(
-      buildCellNode(jsxElement, nodeIdPrefix, theme),
-      cellPortalOriginId,
-    ).measureHeight(ctx, width);
-  };
-
-  return createCanvasCell(
-    render,
-    undefined,
-    copyData,
-    restOptions,
-    measureHeight,
-  );
+  return createCanvasCell(render, undefined, copyData, restOptions);
 };

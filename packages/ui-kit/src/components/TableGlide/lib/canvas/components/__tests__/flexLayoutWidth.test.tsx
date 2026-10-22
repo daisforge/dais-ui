@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
 
 import type { GlideThemeForRender } from '../../../../theming/types';
-import { CellCanvasRoot } from '../../cells/CellCanvasRoot';
 import type { CanvasContainer } from '../../core/CanvasContainer';
 import { DrawBatcher } from '../../core/DrawBatcher';
+import { measureNodeHeight } from '../../core/measureNodeHeight';
 import type { CanvasText } from '../../primitives/CanvasText';
 import { Canvas, buildCanvasTree } from '../index';
 
@@ -87,12 +87,9 @@ describe('Раскладка колонки', () => {
     );
   });
 
-  it('высота строки по содержимому (measureHeight) учитывает перенос и совпадает с отрисовкой', () => {
+  it('высота строки по содержимому (measureNodeHeight) учитывает перенос и совпадает с отрисовкой', () => {
     const element = card(LONG);
-    const measured = new CellCanvasRoot(build(element), 'x').measureHeight(
-      ctx,
-      CELL_WIDTH,
-    );
+    const measured = measureNodeHeight(ctx, build(element), CELL_WIDTH);
     const painted = layoutAsPaint(element, measured);
 
     const contentBottom = Math.max(
@@ -147,10 +144,7 @@ describe('Раскладка колонки', () => {
         </Canvas.Container>
       </Canvas.Container>
     );
-    const measured = new CellCanvasRoot(build(element), 'x').measureHeight(
-      ctx,
-      CELL_WIDTH,
-    );
+    const measured = measureNodeHeight(ctx, build(element), CELL_WIDTH);
     const painted = layoutAsPaint(element, measured);
     const tags = painted.children[0]!.children[0]!;
     const lineTops = new Set(tags.children.map((tag) => tag.rect.y));
