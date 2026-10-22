@@ -110,8 +110,8 @@ const getColumnGroupPath = (group: unknown): string[] =>
   Array.isArray(group)
     ? group.filter((g): g is string => typeof g === 'string')
     : typeof group === 'string'
-      ? [group]
-      : [];
+    ? [group]
+    : [];
 
 type CanvasCacheKey = string | number | boolean | null;
 
@@ -240,7 +240,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   const rowH = useAnimatedRowHeight(rowHeightGlide);
 
   const [resizedColsMap, setResizedColsMap] = useState(
-    new Map<string, number>()
+    new Map<string, number>(),
   );
 
   // Скрытие тултипа на старте ресайза. Присваивается ниже из useItemHoveredHandler
@@ -252,7 +252,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       column: GridColumn,
       newSize: number,
       colIndex: number,
-      newSizeWithGrow: number
+      newSizeWithGrow: number,
     ) => {
       const col = column as ColumnGlideLast<R, SR>;
       if (!col.id) {
@@ -279,7 +279,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         return new Map(prev);
       });
     },
-    [onColumnResize]
+    [onColumnResize],
   );
 
   const columnsLast = useMemo(() => {
@@ -297,7 +297,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   const [updateVersion, _setUpdateVersion] = useState(0);
   const canvasCellCache = useMemo(
     () => new WeakMap<R, Map<string, CanvasCellCacheEntry>>(),
-    []
+    [],
   );
   const dataEditorRef = useRef<DataEditorRef | null>(null);
 
@@ -317,7 +317,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     consumeCanvasClickResult,
   } = useCanvasInteractionSession();
   const applyCanvasEditorActivation = useCanvasEditorActivation(
-    interactionSessionStore
+    interactionSessionStore,
   );
 
   const {
@@ -327,6 +327,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     rangeSelect,
   } = useNativeGridSelection({
     cellsSelectionMode,
+    columns: columnsLast,
     gridSelection: gridSelectionExternal,
     onGridSelectionChange: onGridSelectionChangeExternal,
     onSelectionEmit,
@@ -348,10 +349,10 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         ? (index: number | undefined) =>
             onHighlightActiveRowChange(
               index,
-              index !== undefined ? rows[index] : undefined
+              index !== undefined ? rows[index] : undefined,
             )
         : undefined,
-    [onHighlightActiveRowChange, rows]
+    [onHighlightActiveRowChange, rows],
   );
 
   // Две независимые от glide оси выделения: колонки по клику на шапку и строки
@@ -445,7 +446,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       selectionVisualState.isActiveHeaderColumn(columnIndex) ||
       selectedColumnSet.has(columnIndex) ||
       rangeStackColumnSet.has(columnIndex),
-    [selectionVisualState, selectedColumnSet, rangeStackColumnSet]
+    [selectionVisualState, selectedColumnSet, rangeStackColumnSet],
   );
 
   const columnsForRender = useMemo(() => {
@@ -553,13 +554,13 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       trackVisibleRegion(range);
       onVisibleRegionChangedExternal?.(range, tx, ty, extras);
     },
-    [trackVisibleRegion, onVisibleRegionChangedExternal]
+    [trackVisibleRegion, onVisibleRegionChangedExternal],
   );
 
   const getCellContentGlide = useCallback(
     (
       [colInd, rowInd]: [number, number],
-      getCellContentOptions?: { applyCanvasEditorActivation?: boolean }
+      getCellContentOptions?: { applyCanvasEditorActivation?: boolean },
     ): GridCell => {
       // Terrible hack to force update when setCellValue requests it
       noop(updateVersion);
@@ -567,7 +568,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         getCellContentOptions?.applyCanvasEditorActivation !== false;
 
       const applyPendingSelfEditorActivation = (
-        cellContent: GridCell
+        cellContent: GridCell,
       ): GridCell => {
         if (!shouldApplyCanvasEditorActivation) {
           return cellContent;
@@ -616,12 +617,12 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         };
 
         const jsxElement = renderSummaryCell(
-          cellInfo as unknown as Omit<typeof cellInfo, 'row'> & { row: SR }
+          cellInfo as unknown as Omit<typeof cellInfo, 'row'> & { row: SR },
         );
 
         const span = getSpan(
           colSpan,
-          cellInfo as Omit<typeof cellInfo, 'row'> & { row: R }
+          cellInfo as Omit<typeof cellInfo, 'row'> & { row: R },
         );
 
         const options = {
@@ -640,7 +641,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
               getPortalEventTarget: () => portalEventTargetRef?.current ?? null,
               refTable,
             },
-          })
+          }),
         );
       }
 
@@ -655,7 +656,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       const lightInfo = (
         col: (typeof columnsForRender)[number],
         c: number,
-        r: number
+        r: number,
       ): CellInfo<R, SR> =>
         ({
           row: rows[r],
@@ -682,13 +683,13 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
           return col?.rowSpan
             ? getRowSpan(col.rowSpan, lightInfo(col, c, r))
             : null;
-        }
+        },
       );
       if (originColInd !== colInd || originRowInd !== rowInd) {
         // eslint-disable-next-line no-use-before-define
         return getCellContentGlide(
           [originColInd, originRowInd],
-          getCellContentOptions
+          getCellContentOptions,
         );
       }
 
@@ -770,12 +771,12 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       const fillOverride = cellIsEditable
         ? resolveCellFillOverride(getEditableCellFillStates(theme), fillContext)
         : columnThemeOverrideResult?.bgCell
-          ? resolveConsumerFillOverride(
-              columnThemeOverrideResult.bgCell,
-              activeTheme,
-              fillContext
-            )
-          : undefined;
+        ? resolveConsumerFillOverride(
+            columnThemeOverrideResult.bgCell,
+            activeTheme,
+            fillContext,
+          )
+        : undefined;
 
       // Кликнутая ячейка на выбранной строке: показываем только рамку, фон
       // остаётся как у строки (правило дизайнера).
@@ -828,7 +829,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         const txt = String(displayData);
         if (isPrimitive(txt)) {
           return applyPendingSelfEditorActivation(
-            createTextCellGlide(txt, options)
+            createTextCellGlide(txt, options),
           );
         }
         return applyPendingSelfEditorActivation(createEmptyCellGlide(options));
@@ -843,7 +844,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       const jsxElement = renderCell(
         span || spanRows
           ? { ...cellInfoWithThemeOverride, __mergedCell: { align: spanAlign } }
-          : cellInfoWithThemeOverride
+          : cellInfoWithThemeOverride,
       );
 
       return applyPendingSelfEditorActivation(
@@ -856,7 +857,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
             getPortalEventTarget: () => portalEventTargetRef?.current ?? null,
             refTable,
           },
-        })
+        }),
       );
     },
     [
@@ -875,7 +876,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       canvasCellCache,
       portalEventTargetRef,
       applyCanvasEditorActivation,
-    ]
+    ],
   );
 
   const handleCellClickedBridge = useCallback<
@@ -908,7 +909,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       // Строим ключ доступа к последнему renderData этой canvas-ячейки.
       const cellId = buildCellId(
         { colIndex: cell[0], rowIndex: cell[1] },
-        event.bounds
+        event.bounds,
       );
       // Берем сохраненное дерево canvas-нод и click-area для текущей ячейки.
       const renderData = retrieveRenderData(cellId, glideCell);
@@ -968,7 +969,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       if (event.button === 0 && outcome.editorRequest?.target === 'self') {
         interactionSessionStore.armEditorRequest(
           session,
-          outcome.editorRequest
+          outcome.editorRequest,
         );
       }
 
@@ -993,7 +994,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         return;
       }
     },
-    [getCellContentGlide, interactionSessionStore, onCellClickedExternal, rows]
+    [getCellContentGlide, interactionSessionStore, onCellClickedExternal, rows],
   );
 
   const handleCellContextMenuBridge = useCallback<
@@ -1008,7 +1009,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
 
       onCellContextMenuExternal?.(cell, event);
     },
-    [interactionSessionStore, onCellContextMenuExternal]
+    [interactionSessionStore, onCellContextMenuExternal],
   );
 
   const customRenderers = useCustomRenderers({
@@ -1018,23 +1019,23 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
 
   const columnsHeaderCanvasRootInstanceMap = useMemo(
     () => new Map<string, CellCanvasRoot>(),
-    []
+    [],
   );
   const columnsGroupHeaderCanvasRootInstanceMap = useMemo(
     () => new Map<string, CellCanvasRoot>(),
-    []
+    [],
   );
   const overlayPortalRef = useRef<HTMLDivElement>(null);
   // div-обертка над Glide для DOM-поиска элементов
   const containerRefInternal = useRef<HTMLDivElement>(null);
   const mergedContainerRef = useMemo(
     () => mergeRefs(containerRefInternal, containerRefExternal),
-    [containerRefExternal]
+    [containerRefExternal],
   );
   const { drawHeader, onHeaderClicked } = useMemo(() => {
     const drawHeader: NonNullable<GlideProps['drawHeader']> = (
       drawArgs,
-      drawContent
+      drawContent,
     ) => {
       const { ctx, rect, columnIndex } = drawArgs;
       const column = columnsForRender[columnIndex];
@@ -1093,7 +1094,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       }
 
       canvasRootInstance?.setPortalEventTarget(
-        portalEventTargetRef?.current ?? null
+        portalEventTargetRef?.current ?? null,
       );
 
       // Устанавливаем контекст для тултипа (аналогично контекстному меню).
@@ -1131,7 +1132,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
 
     const onHeaderClicked: NonNullable<GlideProps['onHeaderClicked']> = (
       columnIndex,
-      event
+      event,
     ) => {
       const column = columnsForRender[columnIndex];
 
@@ -1145,12 +1146,12 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         if (rootInstance) {
           const interaction = rootInstance.getInteractionAtPoint(
             event.localEventX,
-            event.localEventY
+            event.localEventY,
           );
           rootInstance.dispatchPointerEvent(
             'click',
             event.localEventX,
-            event.localEventY
+            event.localEventY,
           );
           if (interaction) return;
         }
@@ -1235,7 +1236,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       columnsForRender,
       selectColumnsByKeys,
       onGroupHeaderClickedExternal,
-    ]
+    ],
   );
 
   // Групп-ячейка подсвечивается, если ВСЕ её листья выделены (транзитивно вверх —
@@ -1297,7 +1298,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       fullySelectedGroupNames,
       theme.selectionServiceActiveBg,
       theme.bgHeaderSelectedHovered,
-    ]
+    ],
   );
 
   // useGlideElements: поиск DOM-элементов Glide
@@ -1328,7 +1329,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
 
   const mergedRef = useMemo(
     () => mergeRefs(dataEditorRef, refTable, unstickyCallbackRef),
-    [refTable, unstickyCallbackRef]
+    [refTable, unstickyCallbackRef],
   );
 
   const experimental = useMemo<GlideProps['experimental']>(() => {
@@ -1367,7 +1368,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         setHoveredCell(null);
       }
     },
-    [columnsForRender, onMouseMoveExternal, rows, setHoveredCell]
+    [columnsForRender, onMouseMoveExternal, rows, setHoveredCell],
   );
 
   const loadRedrawOptions = {
@@ -1441,7 +1442,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         height: rect.height,
       };
       canvasRootInstance.setPortalEventTarget(
-        portalEventTargetRef?.current ?? null
+        portalEventTargetRef?.current ?? null,
       );
 
       columnsGroupHeaderCanvasRootInstanceMap.set(nodeId, canvasRootInstance);
@@ -1521,7 +1522,9 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       if (checkboxSelectedRowIndexes?.has(rowInd)) {
         const hovered = rowInd === hoveredRow;
         return {
-          bgCell: hovered ? theme.bgSelectedRowHovered : theme.selectionCheckboxBg,
+          bgCell: hovered
+            ? theme.bgSelectedRowHovered
+            : theme.selectionCheckboxBg,
           accentLight: hovered
             ? theme.selectionActiveCheckboxHoveredBg
             : theme.selectionActiveCheckboxBg,
@@ -1586,7 +1589,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       externalOnItemHovered: onItemHoveredExternal,
       onHoverRowChange,
     },
-    dataEditorRef
+    dataEditorRef,
   );
   hideTooltipRef.current = hideTooltip;
 
@@ -1639,16 +1642,16 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
               onAnimationEndCapture={(e) => e.stopPropagation()} // важно, чтобы слушатели модальных окон не перехватывали фокус
               id="portal"
             />,
-            containerRefInternal?.current ?? document.body
+            containerRefInternal?.current ?? document.body,
           )
         : createPortal(
             <StyledOverlayPortal id="portal" ref={overlayPortalRef} />,
-            document.body
+            document.body,
           )}
       {
         createPortal(
           <StyledOverlayPortal id="portal2" />,
-          document.body
+          document.body,
         ) /* id="portal2" создан для выпадающего списка CellEditorCombobox, поскольку id=portal не удовлетворяет внутри модальных окон
           у него должен быть  document.body
         */
