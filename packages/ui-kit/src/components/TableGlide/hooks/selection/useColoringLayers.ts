@@ -23,7 +23,8 @@ import { useColumnRowHighlightRegions } from './useColumnRowHighlightRegions';
  *      фон строки с отмеченным чекбоксом, фон выбранной строки
  *      (highlightActiveType='row'), фон summary;
  *   3) тема ячейки (getCellContent в TableGlide.tsx): жёлтый фон редактируемой
- *      ячейки (bgEditableCell). Самая сильная: editing перекрывает и ховер,
+ *      ячейки (bgEditableCell), поверх него — тема ячейки от потребителя
+ *      (columnThemeOverride). Самая сильная: editing перекрывает и ховер,
  *      и чекбокс.
  *
  * Часть 2. ПОВЕРХ выбранного фона рисуются прямоугольники этого хука.
@@ -62,6 +63,8 @@ interface UseColoringLayersParams {
   /* Слой 4: выделение колонок и строк. */
   selectedColumnIndexes: number[];
   headerSelectedRowIndexes: number[];
+  /** Рамка у каждого Ctrl-диапазона ячеек, а не только у активного. */
+  outlineEachRange: boolean;
   /** Всего строк (данные + summary). */
   totalRows: number;
   columnsCount: number;
@@ -92,6 +95,7 @@ export function useColoringLayers({
   highlightRegionsExternal,
   selectedColumnIndexes,
   headerSelectedRowIndexes,
+  outlineEachRange,
   totalRows,
   columnsCount,
   isRowHoverEnabled,
@@ -121,6 +125,8 @@ export function useColoringLayers({
     selectedColumnIndexes,
     headerSelectedRowIndexes,
     selectionRangeStack: selection.current?.rangeStack,
+    activeRange: selection.current?.range,
+    outlineEachRange,
     totalRows,
     firstDataCol: serviceColumnsCount,
     columnsCount,

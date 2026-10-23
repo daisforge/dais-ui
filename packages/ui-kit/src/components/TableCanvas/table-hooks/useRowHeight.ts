@@ -47,7 +47,7 @@ export const useRowHeight = <
           return getDetailPanelHeight(row, undefined);
           // return getDetailPanelHeight(row, tableConfig.rowDetailPanel);
         }
-        if (rowHeightInConfig) {
+        if (rowHeightInConfig && rowHeightInConfig !== 'auto') {
           if (typeof rowHeightInConfig === 'number') {
             return rowHeightInConfig;
           }
@@ -64,7 +64,7 @@ export const useRowHeight = <
       return undefined;
     }
 
-    if (typeof rowHeightInConfig === 'number') {
+    if (typeof rowHeightInConfig === 'number' || rowHeightInConfig === 'auto') {
       return rowHeightInConfig;
     }
 

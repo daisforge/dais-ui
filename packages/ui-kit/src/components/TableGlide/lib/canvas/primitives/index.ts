@@ -33,4 +33,5 @@ export type { CanvasSkeletonOptions } from './CanvasSkeleton';
 export { CanvasSkeleton } from './CanvasSkeleton';
 export type { CanvasTextAutoTooltip, CanvasTextOptions } from './CanvasText';
 export { CanvasText } from './CanvasText';
+export type { CanvasTextMark } from './textMarks';
 export type { ImageFit } from './image/image';

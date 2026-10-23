@@ -117,6 +117,40 @@ export const getEditableCellFillStates = (
 });
 
 /**
+ * Фон ячейки со своим цветом: фон потребителя (`columnThemeOverride.bgCell`),
+ * иначе жёлтый фон редактируемой ячейки, иначе своего цвета нет.
+ *
+ * Подробнее. Фон потребителя сильнее редактируемого: им размечают состояния
+ * правки (изменено, ошибка).
+ */
+export const resolveCellFill = ({
+  consumerBg,
+  isEditable,
+  editableTheme,
+  colorTheme,
+  context,
+}: {
+  consumerBg: string | undefined;
+  isEditable: boolean;
+  editableTheme: EditableCellTheme;
+  colorTheme: TableColorTheme;
+  context: CellFillContext;
+}): CellFillOverride | undefined => {
+  if (consumerBg) {
+    return resolveConsumerFillOverride(consumerBg, colorTheme, context);
+  }
+
+  if (isEditable) {
+    return resolveCellFillOverride(
+      getEditableCellFillStates(editableTheme),
+      context,
+    );
+  }
+
+  return undefined;
+};
+
+/**
  * Фон обычной ячейки выбранной строки (highlightActiveType='row').
  *
  * Подробнее. Три ступени одного голубого цвета, от светлой к тёмной. Каждое

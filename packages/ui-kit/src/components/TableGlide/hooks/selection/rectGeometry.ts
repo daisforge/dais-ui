@@ -17,7 +17,7 @@ import type { Rectangle } from '@glideappsfinal/glide-data-grid';
 export const rectContainsCell = (
   rect: Rectangle | undefined,
   columnIndex: number,
-  rowIndex: number
+  rowIndex: number,
 ): boolean => {
   if (!rect) {
     return false;
@@ -31,13 +31,20 @@ export const rectContainsCell = (
   );
 };
 
+/** Целиком ли прямоугольник `inner` лежит внутри `outer` (совпадение — тоже). */
+export const rectContainsRect = (outer: Rectangle, inner: Rectangle): boolean =>
+  inner.x >= outer.x &&
+  inner.y >= outer.y &&
+  inner.x + inner.width <= outer.x + outer.width &&
+  inner.y + inner.height <= outer.y + outer.height;
+
 /**
  * Индекс первой НЕсервисной (data-) колонки. Если все колонки служебные —
  * возвращает длину массива (data-колонок нет). Предполагается, что ведущие
  * служебные колонки идут подряд слева.
  */
 export const findFirstDataColumnIndex = (
-  columns: readonly { isServiceColumn?: boolean }[]
+  columns: readonly { isServiceColumn?: boolean }[],
 ): number => {
   const firstDataIndex = columns.findIndex((column) => !column.isServiceColumn);
 
@@ -52,7 +59,7 @@ export const findFirstDataColumnIndex = (
  */
 export const clampRectToDataColumns = (
   rect: Rectangle | undefined,
-  firstDataColumnIndex: number
+  firstDataColumnIndex: number,
 ): Rectangle | undefined => {
   if (!rect) {
     return undefined;

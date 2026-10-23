@@ -1,5 +1,10 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { createRowsTree, TreeRow } from '@df-storybook/data/tableData';
+import {
+  createRows,
+  createRowsTree,
+  type Row,
+  TreeRow,
+} from '@df-storybook/data/tableData';
 import DocStoryTemplate from '@df-storybook/templates/DocStoryTemplate.mdx';
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
 import type { Meta, StoryObj } from '@storybook/react';
@@ -148,6 +153,55 @@ export const BasicFormatting: StoryObj = {
           },
           resizableColumn: true,
         }}
+        columnConfig={columns}
+        rows={rows}
+      />
+    );
+  },
+};
+
+/**
+ * `column.contentAlign` задаёт выравнивание ячеек колонки явно и приоритетнее
+ * `contentFormat`: число можно прижать влево, текст поставить по центру.
+ */
+export const ContentAlign: StoryObj = {
+  ...storySourceDoc({
+    preCode,
+    previewSource: 'shown',
+  }),
+  name: 'Выравнивание колонки (contentAlign)',
+  render: () => {
+    const [rows] = useState(() => createRows(1, 30));
+
+    const columns = useMemo<readonly ColumnConfig<Row>[]>(
+      () => [
+        { key: 'issueType', name: 'Текст', width: 140 },
+        {
+          key: 'priority',
+          name: 'Текст, center',
+          width: 120,
+          contentAlign: 'center',
+        },
+        {
+          key: 'complete',
+          name: 'Число',
+          width: 120,
+          contentFormat: 'number',
+        },
+        {
+          key: 'inspiredDay',
+          name: 'Число, left',
+          width: 120,
+          contentFormat: 'number',
+          contentAlign: 'left',
+        },
+      ],
+      [],
+    );
+
+    return (
+      <TableCanvas
+        tableConfig={{ containerStyle: { height: '500px' } }}
         columnConfig={columns}
         rows={rows}
       />

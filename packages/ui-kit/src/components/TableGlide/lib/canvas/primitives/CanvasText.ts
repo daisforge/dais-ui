@@ -1,7 +1,12 @@
-import { split } from 'canvas-hypertxt';
+import { clearCache as clearHypertxtCache, split } from 'canvas-hypertxt';
 
 import { CanvasNode } from '../core/CanvasNode';
 import { DrawBatcher } from '../core/DrawBatcher';
+import {
+  type CanvasTextMark,
+  type MarkedLine,
+  paintTextMarks,
+} from './textMarks';
 import type {
   CanvasNodeTooltipConfig,
   CanvasNodeTooltipProps,
@@ -157,6 +162,7 @@ export interface CanvasTextOptions {
    * важнее. По умолчанию выключено.
    */
   minWidthByContent?: boolean;
+  marks?: readonly CanvasTextMark[];
 }
 
 function buildFontMetricsKey(
@@ -217,6 +223,7 @@ export class CanvasText extends CanvasNode {
   autoTooltip: CanvasTextAutoTooltip | undefined;
 
   minWidthByContent = false;
+  marks: readonly CanvasTextMark[] | undefined;
 
   private lastMeasureKey = '';
 
@@ -251,6 +258,8 @@ export class CanvasText extends CanvasNode {
       if (options.maxLines !== undefined) this.maxLines = options.maxLines;
       if (options.autoTooltip !== undefined)
         this.autoTooltip = options.autoTooltip;
+      if (options.marks !== undefined && options.marks.length > 0)
+        this.marks = options.marks;
     }
   }
 
@@ -550,10 +559,25 @@ export class CanvasText extends CanvasNode {
     const contentHeight = visibleLines.length * lineHeightPx;
     let y = rect.y + Math.max(0, (rect.height - contentHeight) * 0.5);
     this.lastPaintedTextWidth = 0;
+    const lineStarts = this.marks ? computeLineStarts(this.text, lines) : null;
 
     for (let i = 0, len = visibleLines.length; i < len; i += 1) {
       const v = visibleLines[i];
       if (v !== undefined) {
+        const source = lineStarts?.[i];
+        if (source) {
+          const shownLength =
+            v === source.text ? v.length : v.length - this.ellipsis.length;
+
+          this.paintMarks(batcher, ctx, font, {
+            text: source.text,
+            start: source.start,
+            shownLength: Math.max(0, shownLength),
+            x: rect.x,
+            y,
+            height: lineHeightPx,
+          });
+        }
         // Рисуем строку по центру её слота (baseline middle), а не от верха
         // (baseline top). Иначе при lineHeight > 1 лишний интерлиньяж копится
         // снизу каждой строки и текст визуально прижимается к верху блока.
@@ -587,6 +611,18 @@ export class CanvasText extends CanvasNode {
         y += lineHeightPx;
       }
     }
+  }
+
+  private paintMarks(
+    batcher: DrawBatcher,
+    ctx: CanvasRenderingContext2D,
+    font: string,
+    line: MarkedLine
+  ) {
+    if (!this.marks) return;
+    paintTextMarks(batcher, this.marks, line, (text) =>
+      getCachedTextWidth(ctx, text, font)
+    );
   }
 
   private paintSingleLine(
@@ -628,6 +664,17 @@ export class CanvasText extends CanvasNode {
         return;
       }
 
+      this.paintMarks(batcher, ctx, font, {
+        text,
+        start: 0,
+        shownLength: resolvedText.didTruncate
+          ? Math.max(0, resolvedText.text.length - this.ellipsis.length)
+          : text.length,
+        x: rect.x,
+        y: textY - lineHeightPx / 2,
+        height: lineHeightPx,
+      });
+
       batcher.fillTextClipped(
         resolvedText.text,
         rect.x,
@@ -652,6 +699,14 @@ export class CanvasText extends CanvasNode {
 
     // В visible-режиме сохраняем старое поведение: текст рисуется целиком,
     // а lastPaintedTextWidth сохраняем для совместимости с наследниками.
+    this.paintMarks(batcher, ctx, font, {
+      text,
+      start: 0,
+      shownLength: text.length,
+      x: rect.x,
+      y: textY - lineHeightPx / 2,
+      height: lineHeightPx,
+    });
     this.lastPaintedTextWidth = getCachedTextWidth(ctx, text, font);
     batcher.fillText(text, rect.x, textY, font, color, 'middle');
     this.onPaintLine(batcher, ctx, text, rect.x, textY, fontSize, lineHeightPx);
@@ -752,6 +807,19 @@ function hasRiskyTextForWrap(text: string): boolean {
   return RISKY_WRAP_TEXT_REGEX.test(text);
 }
 
+function computeLineStarts(
+  text: string,
+  lines: readonly string[]
+): { text: string; start: number }[] {
+  let cursor = 0;
+  return lines.map((line) => {
+    const found = text.indexOf(line, cursor);
+    const start = found === -1 ? cursor : found;
+    cursor = start + line.length;
+    return { text: line, start };
+  });
+}
+
 function normalizeSplitResult(result: ReturnType<typeof split>): string[] {
   if (Array.isArray(result)) {
     return result;
@@ -767,5 +835,7 @@ export function invalidateTextCache(): void {
   fontMetricsCache.clear();
   textWidthCache.clear();
   splitLinesCache.clear();
+  // canvas-hypertxt хранит свои переносы и ширины символов — их тоже считали старым шрифтом.
+  clearHypertxtCache();
   invalidateOverflowTextCache();
 }

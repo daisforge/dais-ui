@@ -351,6 +351,12 @@ export type ColumnConfig<
 
   contentFormat?: ContentFormat;
 
+  /**
+   * Выравнивание контента ячеек колонки. Приоритетнее `contentFormat.alignContent`.
+   * @default из `contentFormat`: 'right' для чисел, иначе 'left'
+   */
+  contentAlign?: 'left' | 'center' | 'right';
+
   editingCell?: Editing<Row, SummRow>;
 
   /**
@@ -399,6 +405,7 @@ export type ColumnConfig<
   keyText?: KeyTextColumnConfig<Row, SummRow>;
   /**
    * Переопределение темы на уровне ячейки. Позволяет менять фон и паддинги для конкретных ячеек.
+   * Фон отсюда приоритетнее фона редактируемой ячейки (`bgEditableCell`).
    * @param cellInfo — информация о ячейке (row, column, ctxs, theme)
    * @param lvl — уровень вложенности (0 для обычных строк, 1+ для subRows)
    * @returns Partial<Theme> — объект переопределений (bgCell, cellHorizontalPadding и др.)

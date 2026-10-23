@@ -12,13 +12,14 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import { glideCellRenderer } from './cellRenderer';
-import { DEFAULT_HEADER_HEIGHT, DEFAULT_ROW_HEIGHT } from './constants';
+import { DEFAULT_HEADER_HEIGHT } from './constants';
 import {
   useColoringLayers,
   useNativeGridSelection,
   useSelectionGeometry,
   useTableSelectionSystem,
 } from './hooks/selection';
+import { useKeepCellInView } from './hooks/autoRowHeight/useKeepCellInView';
 import { useAnimatedRowHeight } from './hooks/useAnimatedRowHeight';
 import { useErrorCellRanges } from './hooks/useErrorCellRanges';
 import { useCanvasContextMenuInteraction } from './hooks/useCanvasContextMenuInteraction';
@@ -29,6 +30,7 @@ import { useGlideElements } from './hooks/useGlideElements';
 import { useHoverState } from './hooks/useHoverState';
 import { useOverlayPortalFix } from './hooks/useOverlayPortalFix';
 import { useItemHoveredHandler } from './hooks/useItemHoveredHandler';
+import { useRowHeightGlide } from './hooks/useRowHeightGlide';
 import { useUnstickyHeader } from './hooks/useUnstickyHeader';
 import {
   buildCanvasTree,
@@ -46,10 +48,8 @@ import { resolveCanvasCellInteractionTargetFromRenderData } from './lib/canvas/i
 import { StyledGlideDataEditor, StyledOverlayPortal } from './styled';
 import { getTheme } from './theming';
 import {
-  getEditableCellFillStates,
   resolveActiveRowBg,
-  resolveCellFillOverride,
-  resolveConsumerFillOverride,
+  resolveCellFill,
 } from './theming/cell-fill-override';
 import type {
   CellInfo,
@@ -58,7 +58,6 @@ import type {
   GlideThemeForRender,
   HeaderCellInfo,
   ObjectForExtending,
-  RowHeightGlide,
   TableGlideProps,
 } from './types';
 import {
@@ -68,7 +67,7 @@ import {
 } from './utils/createCell';
 import { findBlockOrigin } from './utils/findBlockOrigin';
 import { getSpan } from './utils/getSpan';
-import { getRowSpan } from './utils/getRowSpan';
+import { getRowSpan, spansSeveralRows } from './utils/getRowSpan';
 import { isCanvasContent, isPrimitive } from './utils/typeGuards';
 
 /** Функция-болванка. Ничего не делает */
@@ -125,6 +124,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   rows,
   bottomSummaryRows,
   rowHeight,
+  rowHeightsRef,
   width,
   rowSize = 'medium',
   ctxs = CTXS_EMPTY,
@@ -154,6 +154,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   // Режим фактического выделения ячеек (нативный glide). Независим от
   // highlightActiveType: по нему идут copy/paste, рамка, fill-handle, затемнение.
   cellsSelectionMode = 'range-cell',
+  focusOnStateChange = true,
   // Выделение колонок — независимая ось (НЕ через highlightActiveType).
   // По умолчанию включено; работает при любом highlightActiveType.
   enableColumnSelection = true,
@@ -161,6 +162,8 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   enableRowSelection = true,
   // Выделение всей таблицы кликом по шапке колонки нумерации. По умолчанию включено.
   enableSelectAll = true,
+  // Рамка у каждого Ctrl-диапазона ячеек, а не только у активного.
+  outlineEachRange = false,
   enableLowDprHairline,
   // Controlled нативное выделение (значение + сеттер).
   gridSelection: gridSelectionExternal,
@@ -201,41 +204,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     [rowSize, activeTheme, appearanceVariant],
   );
 
-  const rowHeightGlide = useMemo<RowHeightGlide>(() => {
-    const baseNumber = typeof rowHeight === 'number' ? rowHeight : undefined;
-    if (baseNumber) {
-      return baseNumber;
-    }
-    const DEF_HEIGHT = DEFAULT_ROW_HEIGHT[rowSize];
-
-    const baseFunction =
-      typeof rowHeight === 'function' ? rowHeight : undefined;
-
-    if (baseFunction) {
-      return (rowIndex: number) => {
-        const row = rows[rowIndex];
-        if (!row) {
-          return baseNumber ?? DEF_HEIGHT;
-        }
-        const currentRowSize = {
-          rowSizeName: rowSize,
-          rowSizeValue: DEF_HEIGHT,
-        };
-        const value = baseFunction(row, currentRowSize, rowIndex);
-
-        return typeof value === 'number' && !Number.isNaN(value)
-          ? value
-          : DEF_HEIGHT;
-      };
-    }
-
-    return DEF_HEIGHT;
-  }, [rows, rowHeight, rowSize]);
-  // ---------------------------
-
   const summaryRowsLength = bottomSummaryRows?.length ?? 0;
-
-  const rowH = useAnimatedRowHeight(rowHeightGlide);
 
   const [resizedColsMap, setResizedColsMap] = useState(
     new Map<string, number>()
@@ -292,6 +261,17 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     });
   }, [columns, resizedColsMap]);
 
+  const { rowHeightGlide, trackAutoRowHeightRegion, autoHeightReporter } =
+    useRowHeightGlide({
+      rowHeight,
+      rows,
+      rowSize,
+      rowHeightsRef,
+      columns: columnsLast,
+      fontFamily: theme.fontFamily,
+    });
+  const rowH = useAnimatedRowHeight(rowHeightGlide);
+
   const [updateVersion, _setUpdateVersion] = useState(0);
   const canvasCellCache = useMemo(
     () => new WeakMap<R, Map<string, CanvasCellCacheEntry>>(),
@@ -304,10 +284,13 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   // «активная ячейка, грид не сфокусирован»). Фокусируем грид, чтобы выделение
   // выглядело как обычное. На интеракции мышью грид уже в фокусе -> focus().
   useEffect(() => {
-    if (gridSelectionExternal?.current !== undefined) {
+    if (
+      focusOnStateChange &&
+      gridSelectionExternal?.current !== undefined
+    ) {
       dataEditorRef.current?.focus();
     }
-  }, [gridSelectionExternal]);
+  }, [gridSelectionExternal, focusOnStateChange]);
 
   const {
     interactionSessionStore,
@@ -328,6 +311,15 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     gridSelection: gridSelectionExternal,
     onGridSelectionChange: onGridSelectionChangeExternal,
     onSelectionEmit,
+  });
+
+  // Прыжок с клавиатуры через ещё не измеренные строки: докручиваем к ячейке,
+  // когда строки дорастут до своей высоты
+  useKeepCellInView({
+    enabled: rowHeight === 'auto',
+    dataEditorRef,
+    cell: selection.current?.cell,
+    rowHeights: rowHeightGlide,
   });
 
   const selectionVisualState = useSelectionGeometry({
@@ -541,9 +533,14 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   >(
     (range, tx, ty, extras) => {
       trackVisibleRegion(range);
+      trackAutoRowHeightRegion(range);
       onVisibleRegionChangedExternal?.(range, tx, ty, extras);
     },
-    [trackVisibleRegion, onVisibleRegionChangedExternal]
+    [
+      trackVisibleRegion,
+      trackAutoRowHeightRegion,
+      onVisibleRegionChangedExternal,
+    ]
   );
 
   const getCellContentGlide = useCallback(
@@ -751,15 +748,13 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         rowHover: isRowHoverEnabled && cellInfo.hovered.rowHover,
         rowActive: rowInd === activeRow,
       };
-      const fillOverride = cellIsEditable
-        ? resolveCellFillOverride(getEditableCellFillStates(theme), fillContext)
-        : columnThemeOverrideResult?.bgCell
-          ? resolveConsumerFillOverride(
-              columnThemeOverrideResult.bgCell,
-              activeTheme,
-              fillContext
-            )
-          : undefined;
+      const fillOverride = resolveCellFill({
+        consumerBg: columnThemeOverrideResult?.bgCell,
+        isEditable: cellIsEditable,
+        editableTheme: theme,
+        colorTheme: activeTheme,
+        context: fillContext,
+      });
 
       // Кликнутая ячейка на выбранной строке: показываем только рамку, фон
       // остаётся как у строки (правило дизайнера).
@@ -840,6 +835,11 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
             getPortalEventTarget: () => portalEventTargetRef?.current ?? null,
             refTable,
           },
+          // Блок на несколько строк высоту строки не растит — и отступа не получает
+          autoHeight:
+            autoHeightReporter && !spansSeveralRows(spanRows)
+              ? autoHeightReporter(row, rowInd, id, !!span)
+              : undefined,
         })
       );
     },
@@ -847,6 +847,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       updateVersion,
       bottomSummaryRows,
       rows,
+      autoHeightReporter,
       columnsForRender,
       ctxs,
       theme,
@@ -1003,8 +1004,14 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     () => new Map<string, CellCanvasRoot>(),
     []
   );
-  const columnsGroupHeaderCanvasRootInstanceMap = useMemo(
-    () => new Map<string, CellCanvasRoot>(),
+  // Части заголовка группы по ключу: закреплённые колонки рисуют группу двумя
+  // частями с одним ключом, клик ищет свою часть по колонке.
+  const groupHeaderPartsMap = useMemo(
+    () =>
+      new Map<
+        string,
+        { span: readonly [number, number]; root: CellCanvasRoot }[]
+      >(),
     []
   );
   const overlayPortalRef = useRef<HTMLDivElement>(null);
@@ -1173,6 +1180,27 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     NonNullable<GlideProps['onGroupHeaderClicked']>
   >(
     (colIndex, event) => {
+      // Клик сначала получают canvas-ноды заголовка группы (как у листовой шапки):
+      // если под точкой интерактивная нода, это клик по ней — группу не выделяем.
+      const [clickedCol] = event.location;
+      const groupRoot = groupHeaderPartsMap
+        .get(event.group)
+        ?.find(
+          ({ span: [start, end] }) => clickedCol >= start && clickedCol <= end
+        )?.root;
+      if (groupRoot) {
+        const interaction = groupRoot.getInteractionAtPoint(
+          event.localEventX,
+          event.localEventY
+        );
+        groupRoot.dispatchPointerEvent(
+          'click',
+          event.localEventX,
+          event.localEventY
+        );
+        if (interaction) return;
+      }
+
       const clickedColumn = columnsForRender[colIndex];
       if (!enableColumnSelection || !clickedColumn) {
         onGroupHeaderClickedExternal?.(colIndex, event);
@@ -1218,6 +1246,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       columnsForRender,
       selectColumnsByKeys,
       onGroupHeaderClickedExternal,
+      groupHeaderPartsMap,
     ]
   );
 
@@ -1362,7 +1391,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   };
   useIconLoadRedraw(loadRedrawOptions);
 
-  useFontLoadRedraw(loadRedrawOptions);
+  useFontLoadRedraw({ ...loadRedrawOptions, fontFamily: theme.fontFamily });
 
   const onColumnMoved = useMemo((): GlideProps['onColumnMoved'] => {
     if (!onColumnsReorder) {
@@ -1395,7 +1424,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         return drawContent(result.defaultWithCustomGroupName);
       }
 
-      const { groupName, rect, ctx } = args;
+      const { groupName, rect, ctx, span } = args;
 
       let jsxElement = result;
 
@@ -1412,8 +1441,18 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       }
 
       const nodeId = groupName;
+      const horizontalPadding = (theme as GlideThemeForRender)
+        .cellHorizontalPadding;
       const node = buildCanvasTree({
-        element: jsxElement,
+        element: (
+          <Canvas.Container
+            padding={{ left: horizontalPadding, right: horizontalPadding }}
+            style={{ width: '100%' }}
+            alignItems="center"
+          >
+            {jsxElement}
+          </Canvas.Container>
+        ),
         idPrefix: nodeId,
         theme: theme as GlideThemeForRender,
       });
@@ -1427,7 +1466,14 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         portalEventTargetRef?.current ?? null
       );
 
-      columnsGroupHeaderCanvasRootInstanceMap.set(nodeId, canvasRootInstance);
+      // Часть, перекрытая новой (после перестановки колонок), устарела
+      const otherParts = (groupHeaderPartsMap.get(nodeId) ?? []).filter(
+        (part) => part.span[1] < span[0] || part.span[0] > span[1]
+      );
+      groupHeaderPartsMap.set(nodeId, [
+        ...otherParts,
+        { span, root: canvasRootInstance },
+      ]);
 
       // Позиция курсора — из аргументов Glide, как у шапки колонки.
       const hoverPos =
@@ -1446,7 +1492,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       return canvasRootInstance.render(ctx, rect, hoverPos, absoluteBounds);
     };
   }, [
-    columnsGroupHeaderCanvasRootInstanceMap,
+    groupHeaderPartsMap,
     renderGroupHeader,
     theme,
     portalEventTargetRef,
@@ -1588,6 +1634,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     selectedColumnIndexes,
     headerSelectedRowIndexes,
     activeRow,
+    outlineEachRange,
     totalRows: rows.length + summaryRowsLength,
     columnsCount: columnsLast.length,
     isRowHoverEnabled,

@@ -163,10 +163,14 @@ export class LayoutReconciler {
     let maxExtent = 0;
 
     if (rowLayout) {
-      // Row-лайаут: высота растёт на основе дочерних элементов
+      // Row-лайаут: высота растёт на основе дочерних элементов.
+      // В однострочном ряду сдвиг выравнивания (center, flex-end) в содержимое не входит:
+      // он посчитан от прежней высоты ряда, и с ним ряд вырос бы на этот сдвиг.
+      const singleLine = flexBox.wrap === 'nowrap';
       for (let i = 0; i < len; i += 1) {
         const child = boxChildren[i]!;
-        const end = child.position.y + child.size.height;
+        const start = singleLine ? padding.top : child.position.y;
+        const end = start + child.size.height;
         if (end > maxExtent) maxExtent = end;
       }
 
@@ -199,21 +203,19 @@ export class LayoutReconciler {
       }
 
       const contentWidth = maxExtent > 0 ? maxExtent + padding.right : 0;
-      const styleWidth = container.style.width;
       let sizeChanged = false;
       let widthChanged = false;
       let heightChanged = false;
 
-      // 100% уже получил доступную ширину от flex layout.
-      if (styleWidth !== '100%') {
-        const minWidth = typeof styleWidth === 'number' ? styleWidth : 0;
-        const targetWidth = contentWidth > minWidth ? contentWidth : minWidth;
-
-        if (targetWidth > container.rect.width + LAYOUT_EPSILON) {
-          container.rect.width = targetWidth;
-          sizeChanged = true;
-          widthChanged = true;
-        }
+      // Заданная ширина фиксирована: содержимое шире её переполняет контейнер.
+      // Под содержимое растёт только колонка без заданной ширины.
+      if (
+        !container.hasDefiniteWidth() &&
+        contentWidth > container.rect.width + LAYOUT_EPSILON
+      ) {
+        container.rect.width = contentWidth;
+        sizeChanged = true;
+        widthChanged = true;
       }
 
       const contentHeight =

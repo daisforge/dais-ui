@@ -252,10 +252,13 @@ export function TableCanvas<
    *
    * Также в зависимости от rowSize - устанавливается размер высоты строк.
    * Но если передан tableConfig.rowHeight, tableConfig.rowHeight - будет приоритетнее
+   *
+   * Контролируемый режим: tableConfig.rowSize.state - размер хранит потребитель (переключатель вне таблицы).
    * */
-  const [rowSize, setRowSize] = useState<SIZE>(() =>
+  const innerRowSizeState = useState<SIZE>(() =>
     getDefuaultRowSize(tableConfig.rowSize),
   );
+  const [rowSize, setRowSize] = tableConfig.rowSize?.state ?? innerRowSizeState;
 
   // ------------------------------------------------ columns reConfig -----------------------------------------
   const {
@@ -374,7 +377,8 @@ export function TableCanvas<
     useCloseContextMenuOnRegionChange(contextMenuCtxVal);
 
   // Композитный обработчик смены видимого региона: закрытие поповера (X),
-  // закрытие контекстного меню (Y) и подгрузка данных при infinity scroll.
+  // закрытие контекстного меню (Y), подгрузка данных при infinity scroll и потребитель.
+  const onVisibleRegionChangedExternal = tableConfig.onVisibleRegionChanged;
   const handleVisibleRegionChange = useCallback<
     NonNullable<typeof handlePopoverRegionChange>
   >(
@@ -384,12 +388,14 @@ export function TableCanvas<
       if (isHaveActiveInfinityScroll) {
         handleInfinityScrollRegionChange(...args);
       }
+      onVisibleRegionChangedExternal?.(...args);
     },
     [
       handlePopoverRegionChange,
       handleContextMenuRegionChange,
       handleInfinityScrollRegionChange,
       isHaveActiveInfinityScroll,
+      onVisibleRegionChangedExternal,
     ],
   );
 
@@ -524,13 +530,19 @@ export function TableCanvas<
     onNotification: tableConfig.notifications?.onNotification,
   });
 
-  // Объединяем onGridSelectionChange от cellTransfer и fill handle
+  // Объединяем onGridSelectionChange от cellTransfer, fill handle и потребителя
+  const onCellsSelectionChange = tableConfig.cellsSelection?.onChange;
   const combinedOnGridSelectionChange = useCallback(
     (selection: Parameters<typeof cellTransferOnSelectionChange>[0]) => {
       cellTransferOnSelectionChange(selection);
       onSelectionChangeForFill(selection);
+      onCellsSelectionChange?.(selection);
     },
-    [cellTransferOnSelectionChange, onSelectionChangeForFill],
+    [
+      cellTransferOnSelectionChange,
+      onSelectionChangeForFill,
+      onCellsSelectionChange,
+    ],
   );
 
   // ------------------------------------------------  data-grid props ------------------------------------------------
@@ -1049,10 +1061,13 @@ export function TableCanvas<
 
                             // rowSize and height
                             rowSize,
+                            rowHeightsRef: tableConfig.rowHeightsRef,
                             ...(resultRowHeight && {
                               rowHeight: resultRowHeight,
                             }),
                             headerHeight: tableConfig.headerRowHeight ?? 33,
+                            groupHeaderRowHeight:
+                              tableConfig.groupHeaderRowHeight ?? undefined,
 
                             ...(tableConfig.editing &&
                               !isLoadingTable && {
@@ -1144,6 +1159,12 @@ export function TableCanvas<
                               onVisibleRegionChanged: handleVisibleRegionChange, // Для TableGlideInstance
                               // enableVirtualization,
                               onCellClicked: tableConfig.onCellClicked,
+                              onItemHovered: tableConfig.onItemHovered,
+                              // event.group — ключ группы уровня, по которому кликнули
+                              onGroupHeaderClicked:
+                                tableConfig.onGroupHeaderClicked,
+                              onGroupHeaderContextMenu:
+                                tableConfig.onGroupHeaderContextMenu,
                               unstickyHeader: tableConfig.unstickyHeader,
                               stickyColumnsConfig: tableConfig.stickyColumns,
                               stickyRowsConfig: tableConfig.stickyRows,
@@ -1179,9 +1200,15 @@ export function TableCanvas<
                               enableSelectAll:
                                 tableConfig.cellsSelection?.enableSelectAll ??
                                 true,
+                              outlineEachRange:
+                                tableConfig.cellsSelection?.outlineEachRange ??
+                                false,
                               cellsSelectionMode:
                                 tableConfig.cellsSelection?.mode ??
                                 'range-cell',
+                              focusOnStateChange:
+                                tableConfig.cellsSelection
+                                  ?.focusOnStateChange ?? true,
                               hoverEffects: tableConfig.hoverEffects,
                               appearance: tableConfig.appearance,
                               enableLowDprHairline:
