@@ -19,6 +19,7 @@ import {
   useSelectionGeometry,
   useTableSelectionSystem,
 } from './hooks/selection';
+import { useKeepCellInView } from './hooks/autoRowHeight/useKeepCellInView';
 import { useAnimatedRowHeight } from './hooks/useAnimatedRowHeight';
 import { useErrorCellRanges } from './hooks/useErrorCellRanges';
 import { useCanvasContextMenuInteraction } from './hooks/useCanvasContextMenuInteraction';
@@ -310,6 +311,15 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     gridSelection: gridSelectionExternal,
     onGridSelectionChange: onGridSelectionChangeExternal,
     onSelectionEmit,
+  });
+
+  // Прыжок с клавиатуры через ещё не измеренные строки: докручиваем к ячейке,
+  // когда строки дорастут до своей высоты
+  useKeepCellInView({
+    enabled: rowHeight === 'auto',
+    dataEditorRef,
+    cell: selection.current?.cell,
+    rowHeights: rowHeightGlide,
   });
 
   const selectionVisualState = useSelectionGeometry({
