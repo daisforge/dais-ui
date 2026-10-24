@@ -79,6 +79,9 @@ export function useUnstickyHeader({
 
       scroller.addEventListener('scroll', scrollCb);
 
+      // Шапку открепили в прокрученной таблице — сдвигаем сразу, не дожидаясь следующей прокрутки
+      scrollCb();
+
       scrollCleanupRef.current = () => {
         scroller.removeEventListener('scroll', scrollCb);
         // Возвращаем стили underlay к дефолту: иначе последний
