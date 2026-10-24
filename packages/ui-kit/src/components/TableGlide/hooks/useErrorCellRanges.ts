@@ -1,17 +1,40 @@
 import type { Rectangle } from '@glideappsfinal/glide-data-grid';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import type { ColumnGlideLast, ObjectForExtending } from '../types';
+import type {
+  ColumnGlideLast,
+  ObjectForExtending,
+  RowErrorsSummary,
+} from '../types';
 
 interface UseErrorCellRangesParams<R extends ObjectForExtending, SR> {
   columns: readonly ColumnGlideLast<R, SR>[];
   rows: readonly R[];
   /** Число закреплённых колонок: они видимы всегда и входят в окно пересчёта. */
   freezeColumns?: number;
+  /** Ошибка всей строки: рамка на всю строку вместо поячеечных. */
+  isErrorRow?: (row: R) => boolean;
+  /** Собирать сводку ошибок по строкам окна (обход всех колонок строки). */
+  collectRowErrors?: boolean;
 }
 
+export interface ErrorRangesResult {
+  /** Поячеечные регионы ошибок. Ячейки строк с ошибкой всей строки не входят. */
+  errorCellRanges: readonly Rectangle[];
+  /** Индексы строк с ошибкой всей строки. */
+  errorRowIndexes: readonly number[];
+  /** Сводка ошибок по индексу строки. Пустая, если сводка не собирается. */
+  rowErrorsByIndex: ReadonlyMap<number, RowErrorsSummary>;
+}
+
+const EMPTY_RESULT: ErrorRangesResult = {
+  errorCellRanges: [],
+  errorRowIndexes: [],
+  rowErrorsByIndex: new Map(),
+};
+
 /**
- * Регионы error-ячеек (красные рамки невалидных значений) для highlightRegions.
+ * Регионы ошибок (красные рамки невалидных значений) для highlightRegions.
  *
  * Полный обход таблицы (колонки x строки) на больших данных стоит секунды,
  * поэтому проверка isErrorCell гоняется только по окну: видимая область плюс
@@ -20,14 +43,26 @@ interface UseErrorCellRangesParams<R extends ObjectForExtending, SR> {
  * события скролла схлопываются в один пересчёт за кадр (rAF). Рамка рисуется
  * и у ячеек внутри выделения — поверх него (регион с drawAboveSelection).
  *
+ * Два дополнения к поячеечным рамкам:
+ * - `isErrorRow` помечает строку целиком: у такой строки поячеечные регионы не
+ *   строятся, вместо них наружу отдаётся индекс строки (одна рамка на строку);
+ * - `collectRowErrors` собирает сводку по строкам окна: число ячеек с ошибкой
+ *   и ключи их колонок. Для точного числа обходятся ВСЕ колонки строки, а не
+ *   только попавшие в окно по горизонтали, поэтому включается только когда
+ *   сводка нужна (столбец-индикатор). Стоимость: строки окна x колонки с
+ *   isErrorCell, пересчёт только при сдвиге окна или смене данных.
+ *
  * Возвращает:
- * - `errorCellRanges` — регионы для отрисовки;
+ * - `errorCellRanges`, `errorRowIndexes`, `rowErrorsByIndex`, см.
+ *   {@link ErrorRangesResult};
  * - `trackVisibleRegion` — вызывать из onVisibleRegionChanged таблицы.
  */
 export function useErrorCellRanges<R extends ObjectForExtending, SR>({
   columns,
   rows,
   freezeColumns,
+  isErrorRow,
+  collectRowErrors = false,
 }: UseErrorCellRangesParams<R, SR>) {
   const [scanWindow, setScanWindow] = useState<Rectangle | null>(null);
   const scanWindowRef = useRef(scanWindow);
@@ -39,6 +74,7 @@ export function useErrorCellRanges<R extends ObjectForExtending, SR>({
     () => columns.some((c) => !c.isServiceColumn && c.isErrorCell),
     [columns]
   );
+  const scanEnabled = hasErrorColumns || isErrorRow !== undefined;
   const totalsRef = useRef({ cols: 0, rows: 0, freeze: 0 });
   totalsRef.current = {
     cols: columns.length,
@@ -98,10 +134,10 @@ export function useErrorCellRanges<R extends ObjectForExtending, SR>({
   // Включение режима редактирования (появились error-колонки): строим окно
   // сразу, не дожидаясь скролла.
   useEffect(() => {
-    if (hasErrorColumns) {
+    if (scanEnabled) {
       scheduleWindowUpdate();
     }
-  }, [hasErrorColumns, scheduleWindowUpdate]);
+  }, [scanEnabled, scheduleWindowUpdate]);
 
   const trackVisibleRegion = useCallback(
     (visible: Rectangle) => {
@@ -112,11 +148,9 @@ export function useErrorCellRanges<R extends ObjectForExtending, SR>({
   );
 
   // Тяжёлый проход по ячейкам окна.
-  const errorCellRanges = useMemo(() => {
-    const regions: Rectangle[] = [];
-
-    if (!hasErrorColumns) {
-      return regions;
+  const result = useMemo((): ErrorRangesResult => {
+    if (!scanEnabled) {
+      return EMPTY_RESULT;
     }
 
     // Пока таблица не сообщила видимую область (первый рендер) — первый экран
@@ -132,22 +166,70 @@ export function useErrorCellRanges<R extends ObjectForExtending, SR>({
     const rowStart = Math.max(0, win.y);
     const rowEnd = Math.min(rows.length, win.y + win.height);
 
-    for (let colInd = colStart; colInd < colEnd; colInd += 1) {
+    // Колонки с проверкой ошибки: для сводки все, иначе только попавшие в окно.
+    const errorColumns: {
+      colInd: number;
+      id: string;
+      isErrorCell: (row: R) => boolean;
+    }[] = [];
+    const scanColStart = collectRowErrors ? 0 : colStart;
+    const scanColEnd = collectRowErrors ? columns.length : colEnd;
+    for (let colInd = scanColStart; colInd < scanColEnd; colInd += 1) {
       const column = columns[colInd];
-      const { isErrorCell } = column ?? {};
-      if (!column || column.isServiceColumn || !isErrorCell) {
-        continue;
-      }
-      for (let rowInd = rowStart; rowInd < rowEnd; rowInd += 1) {
-        const row = rows[rowInd];
-        if (row !== undefined && isErrorCell(row)) {
-          regions.push({ x: colInd, y: rowInd, width: 1, height: 1 });
-        }
+      if (column && !column.isServiceColumn && column.isErrorCell) {
+        errorColumns.push({
+          colInd,
+          id: column.id,
+          isErrorCell: column.isErrorCell,
+        });
       }
     }
 
-    return regions;
-  }, [columns, rows, scanWindow, hasErrorColumns]);
+    const errorCellRanges: Rectangle[] = [];
+    const errorRowIndexes: number[] = [];
+    const rowErrorsByIndex = new Map<number, RowErrorsSummary>();
 
-  return { errorCellRanges, trackVisibleRegion };
+    for (let rowInd = rowStart; rowInd < rowEnd; rowInd += 1) {
+      const row = rows[rowInd];
+      if (row === undefined) {
+        continue;
+      }
+      const rowIsError = isErrorRow?.(row) ?? false;
+      if (rowIsError) {
+        errorRowIndexes.push(rowInd);
+      }
+      // Без сводки у строки с ошибкой всей строки ячейки не проверяем: рамка
+      // одна на строку, поячеечные не рисуются.
+      if (rowIsError && !collectRowErrors) {
+        continue;
+      }
+
+      let errorCellsCount = 0;
+      const errorColumnKeys: string[] = [];
+      for (const { colInd, id, isErrorCell } of errorColumns) {
+        if (!isErrorCell(row)) {
+          continue;
+        }
+        errorCellsCount += 1;
+        if (collectRowErrors) {
+          errorColumnKeys.push(id);
+        }
+        if (!rowIsError && colInd >= colStart && colInd < colEnd) {
+          errorCellRanges.push({ x: colInd, y: rowInd, width: 1, height: 1 });
+        }
+      }
+
+      if (collectRowErrors && (rowIsError || errorCellsCount > 0)) {
+        rowErrorsByIndex.set(rowInd, {
+          errorCellsCount,
+          errorColumnKeys,
+          isErrorRow: rowIsError,
+        });
+      }
+    }
+
+    return { errorCellRanges, errorRowIndexes, rowErrorsByIndex };
+  }, [columns, rows, scanWindow, scanEnabled, isErrorRow, collectRowErrors]);
+
+  return { ...result, trackVisibleRegion };
 }

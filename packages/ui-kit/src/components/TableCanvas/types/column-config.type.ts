@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-types */
+import type { CanvasNodeTooltipConfig } from '@ui-kit/components/TableGlide';
 import { ReactElement, ReactNode } from 'react';
 
 import type {
@@ -113,9 +114,20 @@ export type SelectOptions = {
 
 export type Editing<RowType extends ObjectForExtending, SummaryRowType> = {
   /**
-   * Если `error.value(row) === true`, то у ячейки появляется красная рамка
+   * Если `error.value(row) === true`, то у ячейки появляется красная рамка.
+   *
+   * `tooltip` задаёт тултип при наведении на такую ячейку: строка или конфиг
+   * (placement, maxWidth, задержки). Вызывается только при наведении и только
+   * для ячейки с ошибкой; вернуть `null`, чтобы тултипа не было. Приоритетнее
+   * `cellTooltip` колонки, от `tableConfig.tooltip.enabled` не зависит.
    */
-  error?: { value: (row: RowType, treeLevel: number) => boolean };
+  error?: {
+    value: (row: RowType, treeLevel: number) => boolean;
+    tooltip?: (
+      row: RowType,
+      treeLevel: number,
+    ) => CanvasNodeTooltipConfig | null;
+  };
   editedSuccessfully?: { value: (row: RowType, treeLevel: number) => boolean };
   /**
    * Функция для определения возможности редактирования  ячейки на основе данных строки (приоритетнее, чем rowEditable в tableConfig.editing)

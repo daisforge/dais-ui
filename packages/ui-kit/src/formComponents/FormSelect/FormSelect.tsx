@@ -3,7 +3,12 @@ import React from 'react';
 import type { FieldValues } from 'react-hook-form';
 import { Controller } from 'react-hook-form';
 
-import { getPriorityRequired, useChangedFormContext } from '../utils';
+import {
+  getErrorHelper,
+  getErrorView,
+  getPriorityRequired,
+  useChangedFormContext,
+} from '../utils';
 import type { FormSelectProps } from './types';
 import { SelectStyled } from './ui/SelectStyled';
 
@@ -52,12 +57,12 @@ export const FormSelect = <TFieldValues extends FieldValues>({
           <SelectStyled
             {...fieldRest}
             multiselect={calcMultiselect}
-            helperText={error?.message || helperText}
+            helperText={getErrorHelper(error, helperText)}
             items={items}
             label={label}
             size="s"
             chipView="secondary"
-            view={error?.type ? 'negative' : view ?? 'default'}
+            view={getErrorView(error, view)}
             onChange={(newValue: string) => {
               fieldRest.onChange(newValue);
               // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -269,8 +269,17 @@ export function useItemHoveredHandler<R extends ObjectForExtending, SR>(
         const rowInd = args.location[1];
         const row = rows[rowInd];
 
-        // У колонки нет cellTooltip или строка/колонка не найдены → скрываем.
-        if (!column || !row || !column.cellTooltip) {
+        // Тултип ошибки: только у ячейки с ошибкой и только если текст задан.
+        // Считается здесь, при наведении, а не при отрисовке. Он приоритетнее
+        // колоночного cellTooltip и не зависит от tableConfig.tooltip.enabled.
+        const errorTooltip =
+          column && row && column.errorCellTooltip && column.isErrorCell?.(row)
+            ? column.errorCellTooltip(row)
+            : undefined;
+
+        // Нет ни тултипа ошибки, ни cellTooltip, или строка/колонка не
+        // найдены: скрываем.
+        if (!column || !row || (!errorTooltip && !column.cellTooltip)) {
           hideCurrentTooltip(portalTarget);
           return;
         }
@@ -301,6 +310,7 @@ export function useItemHoveredHandler<R extends ObjectForExtending, SR>(
             originId: cellId,
             nodeId: cellId,
             priority: 0,
+            ...(errorTooltip && { tooltipFromNode: errorTooltip }),
             tooltipContext: {
               column,
               row,

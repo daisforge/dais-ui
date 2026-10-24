@@ -81,6 +81,7 @@ export const adaptColumn = <R extends ObjectForExtending, SR = unknown>({
     frozen,
     isServiceColumn,
     isErrorCell,
+    errorCellTooltip,
     colSpan,
     rowSpan,
     spanAlign,
@@ -94,6 +95,7 @@ export const adaptColumn = <R extends ObjectForExtending, SR = unknown>({
     copyData,
     columnThemeOverride,
     renderCellPreview,
+    resizable,
   } = column;
 
   const isHaveExternalWidth = typeof width === 'number';
@@ -164,7 +166,11 @@ export const adaptColumn = <R extends ObjectForExtending, SR = unknown>({
     copyData,
     contentAlign,
     ...(isServiceColumn && { isServiceColumn: true }),
+    // resizable: false запрещает ресайз колонки в самом Glide, без курсора у
+    // её границы (служебные колонки: чекбокс, индикатор ошибок, инструменты).
+    ...(resizable === false && { resizable: false }),
     ...(isErrorCell && { isErrorCell }),
+    ...(errorCellTooltip && { errorCellTooltip }),
     ...(group && { group }),
     ...(isHaveExternalWidth && { width }),
     ...(minWidth && { minWidth }),

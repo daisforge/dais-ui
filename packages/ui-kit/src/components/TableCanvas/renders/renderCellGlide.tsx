@@ -8,6 +8,7 @@ import type { KeyText } from '../feature-key-text/types';
 import { ExpandDetailButton } from '../feature-row-detail/ExpandDetailButton';
 import { rowIsHaveDetailPanel } from '../feature-row-detail/handlers';
 import { RowDetailConfig } from '../feature-row-detail/types';
+import { ROW_ERRORS_COLUMN_KEY } from '../feature-row-errors';
 import { ROW_I_COLUMN_KEY } from '../feature-row-instruments';
 import { ROW_MARKER_COLUMN_KEY } from '../feature-row-markers';
 import { CHECKBOX_COLUMN_KEY } from '../feature-select-row';
@@ -235,6 +236,9 @@ export const RenderCellGlide = <
   if (column.key === ROW_MARKER_COLUMN_KEY && column.renderCell) {
     return column.renderCell(renderCellProps);
   }
+  if (column.key === ROW_ERRORS_COLUMN_KEY && column.renderCell) {
+    return column.renderCell(renderCellProps);
+  }
 
   const defaultLvl0RenderElement: CellContent = column.renderCell
     ? column.renderCell(renderCellProps)
@@ -406,6 +410,9 @@ export const RenderCellGlide = <
       return 'ROW_I_COLUMN_KEY CELL';
     }
     if (column.key === ROW_MARKER_COLUMN_KEY && column.renderCell) {
+      return column.renderCell(renderCellProps);
+    }
+    if (column.key === ROW_ERRORS_COLUMN_KEY && column.renderCell) {
       return column.renderCell(renderCellProps);
     }
 

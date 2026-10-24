@@ -3,7 +3,12 @@ import { IconClose } from '@ui-kit/icons';
 import React, { useState } from 'react';
 import { Controller, type FieldValues } from 'react-hook-form';
 
-import { getPriorityRequired, useChangedFormContext } from '../utils';
+import {
+  getErrorHelper,
+  getErrorView,
+  getPriorityRequired,
+  useChangedFormContext,
+} from '../utils';
 import type { FormTextFieldProps } from './types';
 import { IconButtonStyled } from './ui/IconButtonStyled';
 /**
@@ -68,14 +73,14 @@ export const FormTextField = <TFieldValues extends FieldValues>({
             </IconButtonStyled>
           }
           label={label}
-          leftHelper={error?.message ?? leftHelper}
+          leftHelper={getErrorHelper(error, leftHelper)}
           name={name}
           required={!!newOptions.required || undefined}
           requiredPlacement="right"
           hasRequiredIndicator={!!newOptions.required || undefined}
           size="s"
           value={value as string}
-          view={error?.type ? 'negative' : view ?? 'default'}
+          view={getErrorView(error, view)}
           onBlur={async (e) => {
             setFocusTextField(false);
             await onBlur();

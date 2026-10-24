@@ -359,12 +359,11 @@ export const ContainerStyled = styled.div<{
   $highlightActiveType: HighlightActiveType;
   $activeTheme: ActiveTheme;
   $appearanceVariant: AppearanceVariant;
+  $isCoverOverlayActive?: boolean;
 }>`
-  // Внешние рамки: в «чистом» виде красятся в фон карточки, а не в
-  // прозрачный: сквозь прозрачную рамку просвечивает фон страницы и остаётся
-  // тонкая линия (см. OUTER_BORDER_COLOR_VAR)
+  // Внешние рамки: в «чистом» виде прозрачные (см. OUTER_BORDER_COLOR_VAR)
   ${OUTER_BORDER_COLOR_VAR}: ${({ $appearanceVariant }) =>
-    $appearanceVariant === 'clean' ? COLORS.white : COLORS.border};
+    $appearanceVariant === 'clean' ? 'transparent' : COLORS.border};
 
   // Collapsing таблицы
   // Для collapse таблицы плавное изменений высот
@@ -712,6 +711,15 @@ export const ContainerStyled = styled.div<{
       }
     `;
   }}
+  // Оверлей loadingOverlay mode: 'cover' растягивается на корневой контейнер,
+  // а его слои не выходят за пределы таблицы. В fullscreen position задаёт fullScreenStyles.
+  ${({ $isCoverOverlayActive }) =>
+    $isCoverOverlayActive &&
+    css`
+      position: relative;
+      isolation: isolate;
+    `}
+
   & {
     ${({ $containerCss }) => $containerCss}
     ${({ $fullScreened }) => $fullScreened && fullScreenStyles}

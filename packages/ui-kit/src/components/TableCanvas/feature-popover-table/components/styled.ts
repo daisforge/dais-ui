@@ -48,7 +48,9 @@ export const HiddenTriggerButton = styled.button`
 `;
 
 export const StyledPopoverBeta = styled(PopoverBeta)`
-  padding: 0;
-  box-shadow: none;
-  background: transparent;
+  && {
+    padding: 0;
+    box-shadow: none;
+    background: transparent;
+  }
 `;

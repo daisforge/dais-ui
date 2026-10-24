@@ -2,7 +2,12 @@ import { NumberFormat } from '@ui-kit/components/NumberFormat';
 import React from 'react';
 import { Controller, FieldValues } from 'react-hook-form';
 
-import { getPriorityRequired, useChangedFormContext } from '../utils';
+import {
+  getErrorHelper,
+  getErrorView,
+  getPriorityRequired,
+  useChangedFormContext,
+} from '../utils';
 import type { FormNumberFormatProps } from './types';
 
 export const FormNumberFormat = <TFieldValues extends FieldValues>({
@@ -56,8 +61,8 @@ export const FormNumberFormat = <TFieldValues extends FieldValues>({
             fieldRest.onBlur();
             handleBlur?.(e);
           }}
-          leftHelper={error?.message || leftHelper}
-          view={error?.message ? 'negative' : view ?? 'default'}
+          leftHelper={getErrorHelper(error, leftHelper)}
+          view={getErrorView(error, view)}
           required={!!newOptions.required || undefined}
           hasRequiredIndicator={!!newOptions.required || undefined}
           // типы конфликтуют из-за Omit<> и тп., хотя идентичны

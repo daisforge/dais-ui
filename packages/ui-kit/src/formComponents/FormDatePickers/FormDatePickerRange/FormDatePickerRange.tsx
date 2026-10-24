@@ -4,6 +4,7 @@ import type { FieldValues } from 'react-hook-form';
 import { Controller } from 'react-hook-form';
 
 import {
+  getErrorHelper,
   getPriorityRequired,
   getRuleValue,
   hasValidationRule,
@@ -307,7 +308,8 @@ export const FormDatePickerRange = <TFieldValues extends FieldValues>({
               setOpened(value);
             }}
             leftHelper={
-              errorText || textHint ? errorText || textHint : undefined
+              getErrorHelper(error && { message: errorText ?? '' }, textHint) ||
+              undefined
             }
             {...rest}
           />

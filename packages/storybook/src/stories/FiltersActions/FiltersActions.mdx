@@ -160,6 +160,33 @@ const { visibleItems, overlayItems, modifications, customActions } =
 
 Живой пример — в истории **«FiltersActions с кастомным таргетом Popover»** ниже.
 
+### Размер Popover — `popoverProps.resizable`
+
+По умолчанию размер Popover можно менять, потянув за правый нижний уголок. Значения по умолчанию:
+
+- ширина от 360 до 700px;
+- высота от 430px до 80% высоты окна;
+- стартовый размер 360×430.
+
+Свои размеры передавайте объектом в `popoverProps.resizable`, он накладывается поверх значений по умолчанию:
+
+```tsx
+<FiltersActions.FiltersButtonWithPopover
+  title="Фильтры"
+  popoverProps={{
+    resizable: {
+      maxWidth: 1000,
+      defaultSize: { width: 480, height: 500 },
+    },
+  }}
+  content={/* ... */}
+/>
+```
+
+Ограничивайте размер только через `resizable` (`minWidth`, `maxWidth`, `minHeight`, `maxHeight`, `defaultSize`), а не через стили или `className`. Иначе карточка упрётся в CSS-границу раньше, чем область ресайза, и уголок ресайза останется в стороне от Popover.
+
+С `resizable: false` ресайз выключен, и размер берётся по содержимому: ширина от 360 до 700px, высота до 80% окна, дальше содержимое прокручивается.
+
 ## Размещение фильтров внутри Popover
 
 **Контент Popover (`FiltersActions.FiltersButtonWithPopover`) полностью контролируется использующей стороной.** Компонент предоставляет layout (шапка, контент, футер) — всё остальное (логика, стили, компоненты) реализуется на стороне проекта.
