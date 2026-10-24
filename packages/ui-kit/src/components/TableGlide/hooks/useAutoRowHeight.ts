@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import type { CellHeightReporter } from '../cellRenderer';
 import { subscribeFontsLoaded } from '../lib/canvas/hooks/fontsLoaded';
+import { anchorShiftOf } from './autoRowHeight/anchorShift';
 import { AutoRowHeightStore } from './autoRowHeight/AutoRowHeightStore';
 
 export { MAX_AUTO_ROW_HEIGHT } from './autoRowHeight/AutoRowHeightStore';
@@ -33,10 +34,18 @@ export function useAutoRowHeight<R extends object>({
   fontFamily,
 }: Params<R>) {
   const [version, setVersion] = useState(0);
-  const [store] = useState(
-    () => new AutoRowHeightStore<R>(() => setVersion((value) => value + 1)),
-  );
   const visibleRowsRef = useRef({ from: 0, to: INITIAL_VISIBLE_ROWS });
+  const anchorShiftRef = useRef(0);
+  const [store] = useState(
+    () =>
+      new AutoRowHeightStore<R>((changes) => {
+        anchorShiftRef.current += anchorShiftOf(
+          changes,
+          visibleRowsRef.current,
+        );
+        setVersion((value) => value + 1);
+      }),
+  );
   const fontFamilyRef = useRef(fontFamily);
   fontFamilyRef.current = fontFamily;
 
@@ -87,8 +96,21 @@ export function useAutoRowHeight<R extends object>({
     [store, columnIds],
   );
 
+  /** Накопленный с прошлого вызова сдвиг прокрутки, который держит видимое содержимое на месте */
+  const takeAnchorShift = useCallback(() => {
+    const shift = anchorShiftRef.current;
+    anchorShiftRef.current = 0;
+    return shift;
+  }, []);
+
   return useMemo(
-    () => ({ heightOf, trackVisibleRegion, reporterFor, version }),
-    [heightOf, trackVisibleRegion, reporterFor, version],
+    () => ({
+      heightOf,
+      trackVisibleRegion,
+      reporterFor,
+      takeAnchorShift,
+      version,
+    }),
+    [heightOf, trackVisibleRegion, reporterFor, takeAnchorShift, version],
   );
 }

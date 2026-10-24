@@ -20,6 +20,7 @@ import {
   useTableSelectionSystem,
 } from './hooks/selection';
 import { useKeepCellInView } from './hooks/autoRowHeight/useKeepCellInView';
+import { useScrollAnchor } from './hooks/autoRowHeight/useScrollAnchor';
 import { useAnimatedRowHeight } from './hooks/useAnimatedRowHeight';
 import { useErrorCellRanges } from './hooks/useErrorCellRanges';
 import { useCanvasContextMenuInteraction } from './hooks/useCanvasContextMenuInteraction';
@@ -261,15 +262,19 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     });
   }, [columns, resizedColsMap]);
 
-  const { rowHeightGlide, trackAutoRowHeightRegion, autoHeightReporter } =
-    useRowHeightGlide({
-      rowHeight,
-      rows,
-      rowSize,
-      rowHeightsRef,
-      columns: columnsLast,
-      fontFamily: theme.fontFamily,
-    });
+  const {
+    rowHeightGlide,
+    trackAutoRowHeightRegion,
+    autoHeightReporter,
+    takeAnchorShift,
+  } = useRowHeightGlide({
+    rowHeight,
+    rows,
+    rowSize,
+    rowHeightsRef,
+    columns: columnsLast,
+    fontFamily: theme.fontFamily,
+  });
   const rowH = useAnimatedRowHeight(rowHeightGlide);
 
   const [updateVersion, _setUpdateVersion] = useState(0);
@@ -1017,6 +1022,13 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   const overlayPortalRef = useRef<HTMLDivElement>(null);
   // div-обертка над Glide для DOM-поиска элементов
   const containerRefInternal = useRef<HTMLDivElement>(null);
+
+  useScrollAnchor({
+    enabled: rowHeight === 'auto',
+    containerRef: containerRefInternal,
+    rowHeights: rowHeightGlide,
+    takeShift: takeAnchorShift,
+  });
   const mergedContainerRef = useMemo(
     () => mergeRefs(containerRefInternal, containerRefExternal),
     [containerRefExternal]

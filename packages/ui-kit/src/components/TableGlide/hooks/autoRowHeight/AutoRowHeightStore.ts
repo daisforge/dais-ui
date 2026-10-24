@@ -13,6 +13,12 @@ interface RowHeight {
 
 export type ScheduleCommit = (commit: () => void) => void;
 
+/** Строка, измеренная в коммите, и изменение её высоты для glide (0 — не изменилась) */
+export interface RowHeightChange {
+  rowIndex: number;
+  delta: number;
+}
+
 const sameIds = (a: readonly string[], b: readonly string[]) =>
   a.length === b.length && a.every((id, i) => id === b[i]);
 
@@ -49,11 +55,12 @@ export class AutoRowHeightStore<R extends object> {
   private resizedInFrame = false;
 
   /**
-   * @param onChange после коммита высота какой-то строки изменилась для glide
+   * @param onChange после коммита высота какой-то строки изменилась для glide: все измеренные в коммите
+   * строки; пустой список — сброс всех высот
    * @param scheduleCommit когда применить замеры кадра; по умолчанию — сразу после него
    */
   constructor(
-    private readonly onChange: () => void,
+    private readonly onChange: (changes: readonly RowHeightChange[]) => void,
     private readonly scheduleCommit: ScheduleCommit = (commit) =>
       queueMicrotask(commit),
   ) {}
@@ -78,7 +85,7 @@ export class AutoRowHeightStore<R extends object> {
     this.index.clear();
     this.rows = new WeakMap();
     this.pending.clear();
-    this.onChange();
+    this.onChange([]);
   }
 
   /**
@@ -130,22 +137,22 @@ export class AutoRowHeightStore<R extends object> {
       this.resizedInFrame = false;
       this.generation += 1;
     }
-    const changes = [...this.pending].map(([row, rowIndex]) =>
-      this.commitRow(row, rowIndex),
-    );
+    const changes = [...this.pending]
+      .map(([row, rowIndex]) => ({
+        rowIndex,
+        delta: this.commitRow(row, rowIndex),
+      }))
     this.pending.clear();
 
-    if (changes.some(Boolean)) this.onChange();
+    if (changes.some(({ delta }) => delta !== 0)) this.onChange(changes);
   }
 
-  /** @returns true — высота строки изменилась для glide */
-  private commitRow(row: R, rowIndex: number): boolean {
+  /** @returns на сколько изменилась высота строки для glide */
+  private commitRow(row: R, rowIndex: number): number {
     const before = this.rows.get(row)?.height ?? 0;
     const after = this.computeRowHeight(row);
     this.index.set(rowIndex, row, after);
-    return (
-      Math.max(before, this.baseHeight) !== Math.max(after, this.baseHeight)
-    );
+    return Math.max(after, this.baseHeight) - Math.max(before, this.baseHeight);
   }
 
   /** Высота строки; с `fresh` устаревшая пересчитывается из высот ячеек */

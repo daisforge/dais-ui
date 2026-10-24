@@ -69,5 +69,6 @@ export function useRowHeightGlide<R extends object>({
     rowHeightGlide,
     trackAutoRowHeightRegion: auto.trackVisibleRegion,
     autoHeightReporter: isAuto ? auto.reporterFor : undefined,
+    takeAnchorShift: auto.takeAnchorShift,
   };
 }
