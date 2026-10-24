@@ -39,7 +39,7 @@ export const useRowHeight = <
     };
 
     if (rowDetailIsActiveInConfig) {
-      return (r: RowType) => {
+      return (r: RowType, _rowSize: unknown, rowIndex: number) => {
         const row = hideRowServiceKeysHandler(r);
 
         if (isDetailPanelRow(r)) {
@@ -51,9 +51,7 @@ export const useRowHeight = <
           if (typeof rowHeightInConfig === 'number') {
             return rowHeightInConfig;
           }
-          // return rowHeightInConfig(row, rowSizeObj);
-          // FIXME
-          return rowHeightInConfig(row, rowSizeObj, 0);
+          return rowHeightInConfig(row, rowSizeObj, rowIndex);
         }
 
         return baseRowHeight;
@@ -68,9 +66,8 @@ export const useRowHeight = <
       return rowHeightInConfig;
     }
 
-    // return (r: RowType) => rowHeightInConfig(r, rowSizeObj);
-    // FIXME
-    return (r: RowType) => rowHeightInConfig(r, rowSizeObj, 0);
+    return (r: RowType, _rowSize: unknown, rowIndex: number) =>
+      rowHeightInConfig(r, rowSizeObj, rowIndex);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     rowHeightInConfig,
