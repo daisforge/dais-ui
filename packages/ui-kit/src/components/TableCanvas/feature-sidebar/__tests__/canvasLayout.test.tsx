@@ -247,3 +247,36 @@ describe('mass actions slot visibility and fullscreen', () => {
     }
   });
 });
+
+describe('loadingOverlay mode: cover', () => {
+  it('covers the table without unmounting it and blocks its blocks', () => {
+    const props = createLayoutProps(createRef<HTMLDivElement>());
+    props.loadingOverlayConfig = { mode: 'cover', active: true };
+
+    const { container, rerender } = render(<TableOrCardsUI {...props} />);
+    const canvas = screen.getByTestId('canvas-container');
+    const root = container.firstElementChild as HTMLElement;
+    const overlay = screen.getByRole('status');
+
+    expect(overlay.parentElement).toBe(root);
+    expect(overlay.textContent).toContain('Таблица обновляется');
+    expect(root.getAttribute('aria-busy')).toBe('true');
+    Array.from(root.children)
+      .filter((child) => child !== overlay)
+      .forEach((child) => expect(child.hasAttribute('inert')).toBe(true));
+
+    rerender(
+      <TableOrCardsUI
+        {...props}
+        loadingOverlayConfig={{ mode: 'cover', active: false }}
+      />,
+    );
+
+    expect(screen.queryByRole('status')).toBeNull();
+    expect(screen.getByTestId('canvas-container')).toBe(canvas);
+    expect(root.hasAttribute('aria-busy')).toBe(false);
+    Array.from(root.children).forEach((child) =>
+      expect(child.hasAttribute('inert')).toBe(false),
+    );
+  });
+});

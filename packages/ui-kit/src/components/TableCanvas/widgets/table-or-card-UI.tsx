@@ -18,7 +18,9 @@ import {
   CollapseTableWrapper,
 } from '../feature-collapse-table';
 import { ContextMenu } from '../feature-context-menu';
+import { TableCoverOverlay } from '../feature-loading-overlay/TableCoverOverlay';
 import { TableLoadingOverlay } from '../feature-loading-overlay/TableLoadingOverlay';
+import type { LoadingOverlayConfig } from '../feature-loading-overlay/types';
 import { TablePagination } from '../feature-pagination';
 import type { PaginationProps } from '../feature-pagination/types';
 import { PopoverInTable } from '../feature-popover-table/components/PopoverContainer';
@@ -157,13 +159,7 @@ export const TableOrCardsUI = <
     };
   pagination: PaginationProps | undefined;
   setPaginationHeight: React.Dispatch<React.SetStateAction<number>>;
-  loadingOverlayConfig?: {
-    active?: boolean;
-    spinner?: ReactNode;
-    title?: string;
-    subtitle?: string;
-    showSubtitleDelay?: number;
-  };
+  loadingOverlayConfig?: LoadingOverlayConfig;
   containerStyle?: CSSProperties | undefined;
   massActionPanel?: {
     buttons: MassActionButtonProps[];
@@ -200,6 +196,10 @@ export const TableOrCardsUI = <
     [],
   );
 
+  const isCoverOverlay = loadingOverlayConfig?.mode === 'cover';
+  const isCoverOverlayActive =
+    isCoverOverlay && (loadingOverlayConfig?.active ?? true);
+
   const isNeedRenderContextMenu =
     enableHeaderContextMenu || enableCellContextMenu;
 
@@ -227,8 +227,9 @@ export const TableOrCardsUI = <
       $isCollapsed={isCollapsed}
       $isEnabledCollapse={enableCollapse}
       $activeTheme={activeTheme}
+      $isCoverOverlayActive={isCoverOverlayActive}
     >
-      {loadingOverlayConfig?.active ? (
+      {loadingOverlayConfig?.active && !isCoverOverlay ? (
         <TableLoadingOverlay
           loadingOverlayConfig={loadingOverlayConfig}
           containerStyle={containerStyle}
@@ -436,6 +437,9 @@ export const TableOrCardsUI = <
             />
           )}
         </>
+      )}
+      {isCoverOverlay && (
+        <TableCoverOverlay loadingOverlayConfig={loadingOverlayConfig} />
       )}
     </ContainerStyled>
   );

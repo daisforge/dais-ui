@@ -18,8 +18,9 @@ isLoading?: boolean | { boolean: boolean; skeletonRowsCount: number };
 ```ts
 loadingOverlay?: {
   active?: boolean; // default: true
-  spinner?: ReactNode; // default: <Spinner view="secondary" size="36" />
-  title?: string; // default: 'Загрузка таблицы'
+  mode?: 'replace' | 'cover'; // default: 'replace'
+  spinner?: ReactNode; // default: <Spinner view="secondary" size="l" />
+  title?: string; // default: 'Загрузка таблицы', для mode: 'cover' — 'Таблица обновляется'
   subtitle?: string; // default: ''
   showSubtitleDelay?: number; // default: 10000 (10 секунд)
 };
