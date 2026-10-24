@@ -22,6 +22,7 @@ import { FullScreen } from '../feature-full-screen/types';
 import { KeyTextConfig } from '../feature-key-text/types';
 import type { TableNotificationsConfig } from '../feature-notifications';
 import { PaginationProps } from '../feature-pagination/types';
+import type { RowErrorsOption } from '../feature-row-errors/types';
 import { RowsGrouping } from '../feature-rows-grouping/types';
 import { SearchingProps } from '../feature-searching/types';
 import {
@@ -733,6 +734,15 @@ export type EditingConfig<
    * @returns
    */
   rowEditable?: (row: RowType) => boolean;
+  /**
+   * Ошибки на уровне строки: служебный столбец с индикатором (иконка с
+   * тултипом) и ошибка всей строки. `true` включает столбец с настройками
+   * по умолчанию, объект позволяет их задать. Столбец появляется только
+   * в режиме правки и исчезает при выходе из него.
+   *
+   * @see {@link RowErrorsConfig} — полное описание и пример.
+   */
+  rowErrors?: RowErrorsOption<RowType>;
   /**
    * defaultEnabled - пропс, отвечающий за то, будет ли активен режим редактирования или нет. По умолчанию - не активно.
    * @default false
@@ -1635,3 +1645,8 @@ export type RowMarkersTableConfig<
     rows: readonly RowType[];
   }) => string | number;
 };
+
+export type {
+  RowErrorsConfig,
+  RowErrorsInfo,
+} from '../feature-row-errors/types';

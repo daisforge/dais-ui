@@ -176,3 +176,7 @@ feature-tooltip/
 `tableConfig.tooltip.enabled` (по умолчанию `false`) управляет **только** колоночными/кастомными тултипами (`cellTooltip`, `headerCellTooltip`). Внутренние тултипы — проп `tooltip` на Canvas-элементе и встроенный маппинг `TOOLTIP_TEXTS` по `nodeId` — работают **всегда**, независимо от `enabled`.
 
 `CanvasTooltipOverlay` рендерится безусловно. Значение `enabled` передаётся в `resolveTooltipData` как параметр `customEnabled`, который включает/выключает приоритет 2 (колоночный конфиг).
+
+## Тултипы ошибок редактирования
+
+Тултип ячейки с ошибкой (`editingCell.error.tooltip`) не зависит от `enabled`: `useItemHoveredHandler` вызывает `column.errorCellTooltip(row)` при наведении, только если `isErrorCell(row)` вернул true, и кладёт результат в `tooltipFromNode` события. Так он идёт приоритетом 2 и перекрывает колоночный `cellTooltip` той же ячейки. Тултип индикатора ошибок строки (`editing.rowErrors.tooltip`) задаётся пропом `tooltip` на `Canvas.Icon` в служебном столбце `row-errors` и тоже работает всегда.

@@ -29,7 +29,11 @@ import React, {
  *   либо плоский список без subRows вообще;
  * - «тяжёлые ячейки»: renderCell с Canvas.Badge и контейнерами либо
  *   максимально дешёвый Canvas.Text;
- * - «редактирование»: режим редактирования с error-правилом на колонке Факт.
+ * - «редактирование»: режим редактирования с error-правилом на колонке Факт;
+ * - «ошибки в M-колонках»: error-правило с тултипом на каждой колонке
+ *   показателей, чтобы нагрузить обход строк по всем колонкам;
+ * - «столбец-индикатор»: служебный столбец rowErrors со счётчиком ошибок;
+ * - «ошибка всей строки»: часть строк помечена целиком через isErrorRow.
  *
  * Поверх таблицы HUD с метриками производительности (описание метрик — на
  * самой странице стори).
@@ -147,11 +151,17 @@ function badgeView(v: number): 'accent' | 'warning' | 'negative' | 'dark' {
 /** Пустые значения фильтров: по ним кнопка фильтра понимает, активна ли она. */
 const CLEARED_FILTERS = { plan: '', fact: '' };
 
+/** Ячейка-показатель с ошибкой: модуль значения ниже порога (около 10%). */
+const MEASURE_ERROR_THRESHOLD = 100;
+const isMeasureError = (rowId: string, colIndex: number) =>
+  Math.abs(cellNum(rowId, colIndex)) < MEASURE_ERROR_THRESHOLD;
+
 function buildColumns(
   measureCount: number,
   heavyCells: boolean,
   withEditing: boolean,
   withHeaderButtons: boolean,
+  withMeasureErrors: boolean,
 ): ColumnConfig<Node>[] {
   // Правило ошибки для режима редактирования: факт сильно ниже плана.
   const factError = withEditing
@@ -214,6 +224,23 @@ function buildColumns(
         // Кнопка сортировки появляется в шапке по наведению: нагрузка на
         // перерисовку шапки при тысячах колонок.
         ...(withHeaderButtons && { sortingType: 'numberSort' as const }),
+        // Правило ошибки на каждом показателе: при сборе сводки по строке
+        // обходятся все колонки, это самый тяжёлый сценарий для индикатора.
+        ...(withEditing &&
+          withMeasureErrors && {
+            editingCell: {
+              component: 'inputString' as const,
+              editable: false,
+              error: {
+                value: (r: Node) => isMeasureError(r.id, i),
+                tooltip: (r: Node) =>
+                  `Значение ${cellNum(
+                    r.id,
+                    i,
+                  )} ниже порога ${MEASURE_ERROR_THRESHOLD}`,
+              },
+            },
+          }),
       };
       if (!heavyCells) {
         // Дешёвая ячейка: один Canvas.Text без контейнеров и бейджей.
@@ -336,6 +363,9 @@ export const BigDataExample: Story = {
     const [withMerge, setWithMerge] = useState(true);
     const [heavyCells, setHeavyCells] = useState(true);
     const [withEditing, setWithEditing] = useState(false);
+    const [withMeasureErrors, setWithMeasureErrors] = useState(false);
+    const [withRowErrorsColumn, setWithRowErrorsColumn] = useState(false);
+    const [withWholeRowErrors, setWithWholeRowErrors] = useState(false);
     const [withHeaderButtons, setWithHeaderButtons] = useState(false);
     const filteringStateAndSetter = useState(CLEARED_FILTERS);
     const sortingStateAndSetter = useState<readonly SortColumn[]>([]);
@@ -362,14 +392,25 @@ export const BigDataExample: Story = {
     const dataRows = editedRows ?? builtRows;
 
     const columns = useMemo(
-      () => buildColumns(cols, heavyCells, withEditing, withHeaderButtons),
-      [cols, heavyCells, withEditing, withHeaderButtons],
+      () =>
+        buildColumns(
+          cols,
+          heavyCells,
+          withEditing,
+          withHeaderButtons,
+          withMeasureErrors,
+        ),
+      [cols, heavyCells, withEditing, withHeaderButtons, withMeasureErrors],
     );
 
     const tableConfig = useMemo(
       () => ({
         containerStyle: { height: '70vh' },
         rowMarkers: { startIndex: 1 },
+        // Размер строки переключается в настройках таблицы (шестерёнка справа):
+        // от него зависят высота строк, ширина служебных колонок и размер иконки
+        // индикатора ошибок.
+        rowSize: { showInControl: true, default: 'big' as const },
         resizableColumn: true,
         columnsControl: {
           enable: true,
@@ -390,6 +431,26 @@ export const BigDataExample: Story = {
               editing: {
                 onRowsChange: (next: Node[]) => setEditedRows(next),
                 rowKeyGetter: (r: Node) => r.id,
+                defaultEnabled: true,
+                ...((withRowErrorsColumn || withWholeRowErrors) && {
+                  rowErrors: {
+                    indicatorColumn: withRowErrorsColumn,
+                    ...(withWholeRowErrors && {
+                      // Каждая десятая строка помечена целиком.
+                      isErrorRow: (r: Node) => hashStr(r.id) % 10 === 0,
+                      tooltip: ({
+                        isErrorRow,
+                        errorCellsCount,
+                      }: {
+                        isErrorRow: boolean;
+                        errorCellsCount: number;
+                      }) =>
+                        isErrorRow
+                          ? 'Строка помечена целиком'
+                          : `Ошибок в строке: ${errorCellsCount}`,
+                    }),
+                  },
+                }),
               },
             }
           : {}),
@@ -406,6 +467,8 @@ export const BigDataExample: Story = {
       [
         withMerge,
         withEditing,
+        withRowErrorsColumn,
+        withWholeRowErrors,
         withHeaderButtons,
         sortingStateAndSetter,
         filteringStateAndSetter,
@@ -485,6 +548,27 @@ export const BigDataExample: Story = {
             label="редактирование (error-ячейки)"
             checked={withEditing}
             onChange={(e) => setWithEditing(e.target.checked)}
+          />
+
+          <Checkbox
+            label="ошибки в M-колонках (с тултипом)"
+            checked={withMeasureErrors}
+            disabled={!withEditing}
+            onChange={(e) => setWithMeasureErrors(e.target.checked)}
+          />
+
+          <Checkbox
+            label="столбец-индикатор (rowErrors)"
+            checked={withRowErrorsColumn}
+            disabled={!withEditing}
+            onChange={(e) => setWithRowErrorsColumn(e.target.checked)}
+          />
+
+          <Checkbox
+            label="ошибка всей строки (каждая 10-я)"
+            checked={withWholeRowErrors}
+            disabled={!withEditing}
+            onChange={(e) => setWithWholeRowErrors(e.target.checked)}
           />
 
           <Checkbox

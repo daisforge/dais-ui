@@ -18,6 +18,7 @@ import {
   getKeyTextCorrectedBorderPlacement,
   getKeyTextCorrectedIsOvered,
 } from '../../feature-reorder-columns/handlers';
+import { ROW_ERRORS_COLUMN_KEY } from '../../feature-row-errors';
 import { isRowInstrumentsColumn } from '../../feature-row-instruments';
 import { ROW_MARKER_COLUMN_KEY } from '../../feature-row-markers';
 import { KEY_GROUPED_COL } from '../../feature-rows-grouping';
@@ -70,6 +71,7 @@ export const ColumnsList = <Row extends ObjectForExtending, SummaryRow>({
         (c) =>
           c !== ROW_MARKER_COLUMN_KEY &&
           c !== CHECKBOX_COLUMN_KEY &&
+          c !== ROW_ERRORS_COLUMN_KEY &&
           c !== KEY_GROUPED_COL &&
           !isRowInstrumentsColumn(c),
       ),

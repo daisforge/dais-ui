@@ -22,6 +22,13 @@ import {
   getDetailPanelColSpanFunc,
   isDetailPanelRow,
 } from '../feature-row-detail/handlers';
+import {
+  createRowErrorsColumn,
+  type GetRowErrorsTooltip,
+  normalizeRowErrorsConfig,
+  ROW_ERRORS_COLUMN_KEY,
+  ROW_ERRORS_TOOLTIP_DEFAULT_TEXT,
+} from '../feature-row-errors';
 import { ROW_I_COLUMN_KEY, RowIColumn } from '../feature-row-instruments';
 import {
   createRowMarkerColumn,
@@ -163,6 +170,17 @@ export const useColumns = <
   // Создание колонки с нумерацией строк
   const rowMarkersIsActive = !!tableConfig?.rowMarkers;
 
+  // Столбец-индикатор ошибок строки: появляется вместе с режимом правки,
+  // если задан editing.rowErrors (без indicatorColumn: false).
+  const rowErrorsConfig = normalizeRowErrorsConfig(
+    tableConfig.editing?.rowErrors,
+  );
+  const rowErrorsIsActive =
+    editModeEnabled &&
+    !!rowErrorsConfig &&
+    rowErrorsConfig.indicatorColumn !== false;
+  const rowErrorsTooltipExternal = rowErrorsConfig?.tooltip;
+
   // Итоговый порядок ключей колонок (после перестановки, закрепления и скрытия).
   // Нужен, чтобы во время отрисовки перевести объединения, заданные снаружи, в
   // индексы. Обновляется ниже, после reorderedColumns.
@@ -181,6 +199,28 @@ export const useColumns = <
     const checkboxColumn = selectingRowsIsActive
       ? (createCheckboxColumn({
           rowSize,
+        }) as ColumnX)
+      : null;
+
+    // Тултип индикатора: своя функция потребителя, иначе «Ошибок в строке: N»
+    // для поячеечных ошибок и без тултипа для ошибки всей строки.
+    const getRowErrorsTooltip: GetRowErrorsTooltip = (row, rowErrors) => {
+      if (rowErrorsTooltipExternal) {
+        const { lvl } = getTreeIdAndLvlOfRow(row as RowType);
+        return rowErrorsTooltipExternal({
+          row: hideRowServiceKeysHandler(row as RowType),
+          treeLevel: lvl,
+          ...rowErrors,
+        });
+      }
+      return rowErrors.isErrorRow
+        ? null
+        : `${ROW_ERRORS_TOOLTIP_DEFAULT_TEXT}: ${rowErrors.errorCellsCount}`;
+    };
+    const rowErrorsColumn = rowErrorsIsActive
+      ? (createRowErrorsColumn({
+          rowSize,
+          getTooltip: getRowErrorsTooltip,
         }) as ColumnX)
       : null;
 
@@ -205,6 +245,7 @@ export const useColumns = <
     const colsAfterSelectingCheck = [
       ...(rowMarkersIsActive ? [rowMarkerColumn as ColumnX] : []),
       ...(selectingRowsIsActive ? [checkboxColumn as ColumnX] : []),
+      ...(rowErrorsColumn ? [rowErrorsColumn] : []),
       ...(showRowInstruments ? [RowIColumn as ColumnX] : []),
       ...colsAfterRowsGroupingCheck,
     ];
@@ -236,6 +277,7 @@ export const useColumns = <
     // Группировка со слиянием: каждый уровень объединяется по ключу пути (блок
     // роли обрывается на границе отдела), а служебные колонки (нумерация,
     // чекбокс) объединяются по верхнему уровню. Эти записи важнее пользовательских.
+    // Столбец ошибок не сливаем: индикатор относится к конкретной строке.
     if (anyMergedView && mergedKeys) {
       mergedKeys.forEach((colKey, depth) => {
         mergeByValue.set(
@@ -262,6 +304,22 @@ export const useColumns = <
             mergeRowKeyGetter,
           )
         : null;
+
+    // Кэш очищенной строки для проверок ошибок. Обход ошибок идёт по строке
+    // через все колонки с правилом подряд, поэтому одной записи достаточно:
+    // строка клонируется один раз на строку, а не на каждую колонку.
+    let errorRowCacheSource: RowType | undefined;
+    let errorRowCacheValue: { lvl: number; clearRow: RowType } | undefined;
+    const getErrorRowContext = (row: RowType) => {
+      if (errorRowCacheSource !== row || !errorRowCacheValue) {
+        errorRowCacheSource = row;
+        errorRowCacheValue = {
+          lvl: getTreeIdAndLvlOfRow(row).lvl,
+          clearRow: hideRowServiceKeysHandler(row),
+        };
+      }
+      return errorRowCacheValue;
+    };
 
     return colsAfterHideCheck.map((el, currIndex, arr) => {
       const columnIsPinned = pinnedColsSet.has(el.key);
@@ -343,6 +401,10 @@ export const useColumns = <
           renderHeaderCell = el.renderHeaderCell;
           return;
         }
+        if (el.key === ROW_ERRORS_COLUMN_KEY) {
+          renderHeaderCell = el.renderHeaderCell;
+          return;
+        }
         if (el.key === ROW_I_COLUMN_KEY) {
           renderHeaderCell = el.renderHeaderCell;
           return;
@@ -417,10 +479,16 @@ export const useColumns = <
           editModeEnabled: editable(renderCellProps.row),
         });
 
-      // Без редактирования isErrorCell не навешиваем вовсе: колонка с этой
-      // функцией участвует в обходе строк при пересчёте error-регионов.
+      // isErrorCell навешиваем только в режиме правки и только на колонки с
+      // правилом ошибки: колонка с этой функцией участвует в обходе строк при
+      // пересчёте error-регионов и сводки по строкам.
+      const errorValueLvl0 = el.editingCell?.error?.value;
+      const errorValueSub = el.subRow?.editingCell?.error?.value;
       const isErrorCell: ColumnX['isErrorCell'] =
-        !tableConfigEditing || isLoadingTable || getColumnIsService(el)
+        !tableConfigEditing ||
+        isLoadingTable ||
+        getColumnIsService(el) ||
+        (!errorValueLvl0 && !errorValueSub)
           ? undefined
           : (row) => {
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -428,12 +496,27 @@ export const useColumns = <
                 return false;
               }
 
-              const { lvl } = getTreeIdAndLvlOfRow(row);
-              const clearRow = hideRowServiceKeysHandler(row);
+              const { lvl, clearRow } = getErrorRowContext(row);
 
               return !!(lvl === 0
-                ? el.editingCell?.error?.value(clearRow, lvl)
-                : el.subRow?.editingCell?.error?.value(clearRow, lvl));
+                ? errorValueLvl0?.(clearRow, lvl)
+                : errorValueSub?.(clearRow, lvl));
+            };
+
+      // Тултип ошибки вызывается только при наведении на ячейку с ошибкой
+      // (см. useItemHoveredHandler), поэтому вешаем его лишь когда он задан
+      // хотя бы для одного уровня.
+      const errorTooltipLvl0 = el.editingCell?.error?.tooltip;
+      const errorTooltipSub = el.subRow?.editingCell?.error?.tooltip;
+      const errorCellTooltip: ColumnX['errorCellTooltip'] =
+        !isErrorCell || (!errorTooltipLvl0 && !errorTooltipSub)
+          ? undefined
+          : (row) => {
+              const { lvl, clearRow } = getErrorRowContext(row);
+
+              return lvl === 0
+                ? errorTooltipLvl0?.(clearRow, lvl)
+                : errorTooltipSub?.(clearRow, lvl);
             };
 
       const renderEditCell: ColumnX['renderEditCell'] = (() => {
@@ -547,18 +630,24 @@ export const useColumns = <
         //
         // Подробнее: берём большее из minWidth колонки и автоматического
         // минимума по содержимому шапки. Свой minWidth может только поднять
-        // границу, но не опустить её ниже автоматической.
-        minWidth: Math.max(
-          el.minWidth ?? 0,
-          calculateMinColumnWidth({
-            rowSize,
-            isHaveFiltering,
-            isHaveSorting,
-            columnIsPinned,
-            subRowIsActiveAndColumnWithArrow,
-            reorderForColIsActive,
-          }),
-        ),
+        // границу, но не опустить её ниже автоматической. У служебных колонок
+        // шапка пустая, их ширина задана точно: автоминимум к ним не
+        // применяем, иначе minWidth станет больше maxWidth и колонка с
+        // фиксированной шириной (чекбокс, индикатор ошибок) перестанет
+        // распознаваться как нересайзная.
+        minWidth: getColumnIsService(el)
+          ? el.minWidth
+          : Math.max(
+              el.minWidth ?? 0,
+              calculateMinColumnWidth({
+                rowSize,
+                isHaveFiltering,
+                isHaveSorting,
+                columnIsPinned,
+                subRowIsActiveAndColumnWithArrow,
+                reorderForColIsActive,
+              }),
+            ),
         ...(el.maxAutoWidth !== undefined && {
           maxAutoWidth: el.maxAutoWidth,
         }),
@@ -566,6 +655,7 @@ export const useColumns = <
         renderCell,
         editable,
         isErrorCell,
+        errorCellTooltip,
         renderEditCell,
         resizable,
         draggable: reorderForColIsActive,
@@ -587,6 +677,8 @@ export const useColumns = <
     tableConfig.mergeCells?.mergedCellsRegions,
 
     selectingRowsIsActive,
+    rowErrorsIsActive,
+    rowErrorsTooltipExternal,
     isLoadingTable,
     /* tableConfig.subRows, - убрал, чтобы убрать перерендеры.
          Заменил на boolean - tableConfigSubRows.
@@ -628,6 +720,7 @@ export const useColumns = <
     columnConfig,
     rowMarkersIsActive,
     selectingRowsIsActive,
+    rowErrorsIsActive,
     rowsGroupingIsActive: tableConfigRowsGroupingBoolean,
     showRowInstruments,
     tableConfigKeyTextBoolean,

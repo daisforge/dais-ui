@@ -736,8 +736,11 @@ function buildNode(
     node.portalHoverEnabled = true;
   }
 
+  // Тултип показывается через portal hover, поэтому нода с тултипом сама
+  // становится hover-таргетом (как Image и Avatar), без отдельного флага.
   if (props['tooltip'] !== undefined) {
     node.tooltip = props['tooltip'];
+    node.portalHoverEnabled = true;
   }
 
   // autoTooltip делает текстовую ноду hover-таргетом (если не выключен явно).

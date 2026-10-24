@@ -33,6 +33,10 @@ import {
 } from './feature-popover-table';
 import { useRowDetailPanel } from './feature-row-detail';
 import { RowDetailHandlerContextProvider } from './feature-row-detail/ctx';
+import {
+  normalizeRowErrorsConfig,
+  useRowErrorsGlideProps,
+} from './feature-row-errors';
 import { RowInstrumentsCtxProvider } from './feature-row-instruments';
 import type { AllRowsMapEntry } from './feature-row-markers/types';
 import { getDefuaultRowSize } from './feature-row-size';
@@ -237,6 +241,13 @@ export function TableCanvas<
     tableConfig.editing?.enabled,
     innerState,
   );
+
+  // Ошибки строки (рамка на всю строку, сводка для столбца-индикатора).
+  const { isErrorRow, collectRowErrors } = useRowErrorsGlideProps({
+    rowErrorsConfig: normalizeRowErrorsConfig(tableConfig.editing?.rowErrors),
+    editModeEnabled: !!editModeEnabled,
+    isLoadingTable,
+  });
 
   // ------------------------------------------------ filter popover  -----------------------------------------
   const tablePopoverValue = useTablePopoverState();
@@ -1058,6 +1069,8 @@ export function TableCanvas<
                               !isLoadingTable && {
                                 onRowsChange: onRowsChangeLastVersion,
                               }),
+                            isErrorRow,
+                            collectRowErrors,
 
                             // --------- clipboard (copy support) + fill handle (source cell tracking)
                             // Канал для copy/paste (selectionRef) — отдельно от
