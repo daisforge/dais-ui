@@ -34,12 +34,15 @@ export function useRowAxisSelection() {
   // Признак «изменение выделения вызвано кликом мыши» (а не стрелками) — нужен
   // для sticky-подсветки строки: true между pointerdown и pointerup.
   const pointerGestureRef = useRef(false);
+  // Жест правой кнопкой (открытие контекстного меню).
+  const rightClickGestureRef = useRef(false);
 
   useEffect(() => {
     const onPointerDown = (event: PointerEvent) => {
       ctrlGestureRef.current = event.ctrlKey || event.metaKey;
       ctrlBaseRowsRef.current = selectedRowsRef.current;
       pointerGestureRef.current = true;
+      rightClickGestureRef.current = event.button === 2;
     };
     const onPointerUp = () => {
       pointerGestureRef.current = false;
@@ -64,6 +67,7 @@ export function useRowAxisSelection() {
     ctrlGestureRef,
     ctrlBaseRowsRef,
     pointerGestureRef,
+    rightClickGestureRef,
     clearRowSelection,
   };
 }

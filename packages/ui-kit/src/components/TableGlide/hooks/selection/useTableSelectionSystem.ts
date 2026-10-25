@@ -117,6 +117,8 @@ export function useTableSelectionSystem<
     ctrlGestureRef,
     ctrlBaseRowsRef,
     pointerGestureRef,
+    rightClickGestureRef,
+    selectedRowsRef,
   } = useRowAxisSelection();
 
   const { activeRow, commitActiveRow } = useActiveRowHighlight({
@@ -186,6 +188,20 @@ export function useTableSelectionSystem<
         const firstDataCol = leadingServiceColumnsCount;
         const startRow = current.range.y;
         const endRow = startRow + Math.max(current.range.height, 1);
+
+        // Правый клик по уже выбранной строке открывает меню над всем
+        // выделением — выделение не трогаем.
+        if (rightClickGestureRef.current) {
+          const prev = selection.current;
+          const isInRowRange =
+            prev?.cell[0] === numberingColumnIndex &&
+            startRow >= prev.range.y &&
+            startRow < prev.range.y + prev.range.height;
+
+          if (isInRowRange || selectedRowsRef.current.hasIndex(startRow)) {
+            return;
+          }
+        }
 
         // Ctrl/Meta → НЕсмежный накопительный выбор строк. Одного нативного
         // range для разрозненных строк не существует → рисуем СВОИМ оверлеем
@@ -308,6 +324,8 @@ export function useTableSelectionSystem<
       ctrlGestureRef,
       ctrlBaseRowsRef,
       pointerGestureRef,
+      rightClickGestureRef,
+      selectedRowsRef,
       setSelectedColumns,
       setSelectedRows,
       setIsNativeColumnSelection,
