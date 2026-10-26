@@ -9,7 +9,7 @@
 
 ## Изменения в темах SDDS с прошлого запуска
 
-Цветовых переменных в темах: 1586, из них таблица берёт 83.
+Цветовых переменных в темах: 1586, из них таблица берёт 85.
 
 Изменений нет.
 
@@ -35,24 +35,6 @@
 
 | Ключ | Тема | Значение | Происхождение |
 |---|---|---|---|
-| `onDarkTextPrimary96` | light | `#F7F9FBF4` | задан руками: похожий --on-dark-text-primary другого оттенка (#F2F5F8, а не #F7F9FB) — откуда взят этот цвет, неизвестно |
-| `onDarkTextPrimary96` | dark | `#F7F9FBF4` | задан руками: похожий --on-dark-text-primary другого оттенка (#F2F5F8, а не #F7F9FB) — откуда взят этот цвет, неизвестно |
-| `onDarkTextPrimary96` | betaCoreLight | `#F7F9FBF4` | задан руками: похожий --on-dark-text-primary другого оттенка (#F2F5F8, а не #F7F9FB) — откуда взят этот цвет, неизвестно |
-| `onDarkTextPrimary96` | betaCoreDark | `#F7F9FBF4` | задан руками: похожий --on-dark-text-primary другого оттенка (#F2F5F8, а не #F7F9FB) — откуда взят этот цвет, неизвестно |
-| `onDarkTextPrimary96` | highContrastLight | `#F7F9FBF4` | задан руками: похожий --on-dark-text-primary другого оттенка (#F2F5F8, а не #F7F9FB) — откуда взят этот цвет, неизвестно |
-| `onDarkTextPrimary96` | highContrastDark | `#F7F9FBF4` | задан руками: похожий --on-dark-text-primary другого оттенка (#F2F5F8, а не #F7F9FB) — откуда взят этот цвет, неизвестно |
-| `onDarkTextPrimary56` | light | `#F7F9FB8E` | задан руками: похожий --on-dark-text-primary другого оттенка (#F2F5F8, а не #F7F9FB) — откуда взят этот цвет, неизвестно |
-| `onDarkTextPrimary56` | dark | `#F7F9FB8E` | задан руками: похожий --on-dark-text-primary другого оттенка (#F2F5F8, а не #F7F9FB) — откуда взят этот цвет, неизвестно |
-| `onDarkTextPrimary56` | betaCoreLight | `#F7F9FB8E` | задан руками: похожий --on-dark-text-primary другого оттенка (#F2F5F8, а не #F7F9FB) — откуда взят этот цвет, неизвестно |
-| `onDarkTextPrimary56` | betaCoreDark | `#F7F9FB8E` | задан руками: похожий --on-dark-text-primary другого оттенка (#F2F5F8, а не #F7F9FB) — откуда взят этот цвет, неизвестно |
-| `onDarkTextPrimary56` | highContrastLight | `#F7F9FB8E` | задан руками: похожий --on-dark-text-primary другого оттенка (#F2F5F8, а не #F7F9FB) — откуда взят этот цвет, неизвестно |
-| `onDarkTextPrimary56` | highContrastDark | `#F7F9FB8E` | задан руками: похожий --on-dark-text-primary другого оттенка (#F2F5F8, а не #F7F9FB) — откуда взят этот цвет, неизвестно |
-| `onDarkTextPrimary28` | light | `#F7F9FB47` | задан руками: похожий --on-dark-text-primary другого оттенка (#F2F5F8, а не #F7F9FB) — откуда взят этот цвет, неизвестно |
-| `onDarkTextPrimary28` | dark | `#F7F9FB47` | задан руками: похожий --on-dark-text-primary другого оттенка (#F2F5F8, а не #F7F9FB) — откуда взят этот цвет, неизвестно |
-| `onDarkTextPrimary28` | betaCoreLight | `#F7F9FB47` | задан руками: похожий --on-dark-text-primary другого оттенка (#F2F5F8, а не #F7F9FB) — откуда взят этот цвет, неизвестно |
-| `onDarkTextPrimary28` | betaCoreDark | `#F7F9FB47` | задан руками: похожий --on-dark-text-primary другого оттенка (#F2F5F8, а не #F7F9FB) — откуда взят этот цвет, неизвестно |
-| `onDarkTextPrimary28` | highContrastLight | `#F7F9FB47` | задан руками: похожий --on-dark-text-primary другого оттенка (#F2F5F8, а не #F7F9FB) — откуда взят этот цвет, неизвестно |
-| `onDarkTextPrimary28` | highContrastDark | `#F7F9FB47` | задан руками: похожий --on-dark-text-primary другого оттенка (#F2F5F8, а не #F7F9FB) — откуда взят этот цвет, неизвестно |
 | `dataBlueMinorActive` | highContrastLight | `#C2E7FFFF` | --data-blue-minor-active (имя у атомарной команды другое): в этой теме нет, взят из темы light |
 | `dataBlueMinorActive` | highContrastDark | `#0B3550FF` | --data-blue-minor-active (имя у атомарной команды другое): в этой теме нет, взят из темы dark |
 | `dataBlue` | highContrastLight | `#8BB2FC` | --data-electric-blue-minor (имя у атомарной команды другое): в этой теме нет, взят из темы light |
