@@ -56,6 +56,8 @@ import { CanvasSkeleton } from '../primitives/CanvasSkeleton';
 import { CanvasText, CanvasTextOptions } from '../primitives/CanvasText';
 import { normalizeDimensionValue } from '../utils';
 import { isReactIcon, normalizeIcon } from '../utils/iconUtils';
+import type { CanvasNodeDropdownConfig } from '../utils/dropdownConfig';
+import type { CanvasNodePopoverConfig } from '../utils/portalClickEvents';
 import type { CanvasNodeTooltipConfig } from '../utils/portalHoverEvents';
 
 interface CanvasInteractionProps {
@@ -100,6 +102,10 @@ interface ContainerProps
   bottom?: PositionValue;
   /** Конфиг тултипа при hover: строка (текст) или объект с text и опциональными пропсами Tooltip */
   tooltip?: CanvasNodeTooltipConfig;
+  /** Поповер по клику или наведению на элемент (см. TableCanvas → Popover). */
+  popover?: CanvasNodePopoverConfig;
+  /** Дропдаун по клику или наведению на элемент (см. TableCanvas → Dropdown). */
+  dropdown?: CanvasNodeDropdownConfig;
   onClick?: (event: CanvasEvent<CanvasContainer>) => void;
   onMouseEnter?: (event: CanvasEvent<CanvasContainer>) => void;
   onMouseLeave?: (event: CanvasEvent<CanvasContainer>) => void;
@@ -137,6 +143,10 @@ interface TextProps
   right?: PositionValue;
   bottom?: PositionValue;
   tooltip?: CanvasNodeTooltipConfig;
+  /** Поповер по клику или наведению на элемент (см. TableCanvas → Popover). */
+  popover?: CanvasNodePopoverConfig;
+  /** Дропдаун по клику или наведению на элемент (см. TableCanvas → Dropdown). */
+  dropdown?: CanvasNodeDropdownConfig;
 }
 
 interface IconProps extends CanvasInteractionProps, CanvasLayerProps {
@@ -157,6 +167,10 @@ interface IconProps extends CanvasInteractionProps, CanvasLayerProps {
   id?: string;
   portalHoverEnabled?: boolean;
   tooltip?: CanvasNodeTooltipConfig;
+  /** Поповер по клику или наведению на элемент (см. TableCanvas → Popover). */
+  popover?: CanvasNodePopoverConfig;
+  /** Дропдаун по клику или наведению на элемент (см. TableCanvas → Dropdown). */
+  dropdown?: CanvasNodeDropdownConfig;
 }
 
 interface ButtonProps extends CanvasInteractionProps, CanvasLayerProps {
@@ -182,6 +196,10 @@ interface ButtonProps extends CanvasInteractionProps, CanvasLayerProps {
   id?: string;
   portalHoverEnabled?: boolean;
   tooltip?: CanvasNodeTooltipConfig;
+  /** Поповер по клику или наведению на элемент (см. TableCanvas → Popover). */
+  popover?: CanvasNodePopoverConfig;
+  /** Дропдаун по клику или наведению на элемент (см. TableCanvas → Dropdown). */
+  dropdown?: CanvasNodeDropdownConfig;
 }
 
 interface IconButtonProps extends CanvasInteractionProps, CanvasLayerProps {
@@ -205,6 +223,10 @@ interface IconButtonProps extends CanvasInteractionProps, CanvasLayerProps {
   id?: string;
   portalHoverEnabled?: boolean;
   tooltip?: CanvasNodeTooltipConfig;
+  /** Поповер по клику или наведению на элемент (см. TableCanvas → Popover). */
+  popover?: CanvasNodePopoverConfig;
+  /** Дропдаун по клику или наведению на элемент (см. TableCanvas → Dropdown). */
+  dropdown?: CanvasNodeDropdownConfig;
 }
 interface EmbedIconButtonProps
   extends CanvasInteractionProps,
@@ -242,6 +264,10 @@ interface EmbedIconButtonProps
   id?: string;
   portalHoverEnabled?: boolean;
   tooltip?: CanvasNodeTooltipConfig;
+  /** Поповер по клику или наведению на элемент (см. TableCanvas → Popover). */
+  popover?: CanvasNodePopoverConfig;
+  /** Дропдаун по клику или наведению на элемент (см. TableCanvas → Dropdown). */
+  dropdown?: CanvasNodeDropdownConfig;
 }
 interface CheckboxProps extends CanvasInteractionProps, CanvasLayerProps {
   checked: boolean;
@@ -259,6 +285,10 @@ interface CheckboxProps extends CanvasInteractionProps, CanvasLayerProps {
   id?: string;
   portalHoverEnabled?: boolean;
   tooltip?: CanvasNodeTooltipConfig;
+  /** Поповер по клику или наведению на элемент (см. TableCanvas → Popover). */
+  popover?: CanvasNodePopoverConfig;
+  /** Дропдаун по клику или наведению на элемент (см. TableCanvas → Dropdown). */
+  dropdown?: CanvasNodeDropdownConfig;
 }
 
 interface RectProps extends CanvasInteractionProps, CanvasLayerProps {
@@ -274,6 +304,10 @@ interface RectProps extends CanvasInteractionProps, CanvasLayerProps {
   id?: string;
   portalHoverEnabled?: boolean;
   tooltip?: CanvasNodeTooltipConfig;
+  /** Поповер по клику или наведению на элемент (см. TableCanvas → Popover). */
+  popover?: CanvasNodePopoverConfig;
+  /** Дропдаун по клику или наведению на элемент (см. TableCanvas → Dropdown). */
+  dropdown?: CanvasNodeDropdownConfig;
 }
 
 interface BadgeProps extends CanvasInteractionProps, CanvasLayerProps {
@@ -304,6 +338,10 @@ interface BadgeProps extends CanvasInteractionProps, CanvasLayerProps {
   id?: string;
   portalHoverEnabled?: boolean;
   tooltip?: CanvasNodeTooltipConfig;
+  /** Поповер по клику или наведению на элемент (см. TableCanvas → Popover). */
+  popover?: CanvasNodePopoverConfig;
+  /** Дропдаун по клику или наведению на элемент (см. TableCanvas → Dropdown). */
+  dropdown?: CanvasNodeDropdownConfig;
   pilled?: boolean;
 }
 
@@ -354,6 +392,10 @@ interface LinkProps
   right?: PositionValue;
   bottom?: PositionValue;
   tooltip?: CanvasNodeTooltipConfig;
+  /** Поповер по клику или наведению на элемент (см. TableCanvas → Popover). */
+  popover?: CanvasNodePopoverConfig;
+  /** Дропдаун по клику или наведению на элемент (см. TableCanvas → Dropdown). */
+  dropdown?: CanvasNodeDropdownConfig;
 }
 
 interface ImageElementProps<T extends CanvasNode>
@@ -377,6 +419,10 @@ interface ImageElementProps<T extends CanvasNode>
   bottom?: PositionValue;
   /** Подсказка элемента, отображаемая через портал таблицы. */
   tooltip?: CanvasNodeTooltipConfig;
+  /** Поповер по клику или наведению на элемент (см. TableCanvas → Popover). */
+  popover?: CanvasNodePopoverConfig;
+  /** Дропдаун по клику или наведению на элемент (см. TableCanvas → Dropdown). */
+  dropdown?: CanvasNodeDropdownConfig;
   /** Включает передачу hover-событий в портал; наличие tooltip также включает её. */
   portalHoverEnabled?: boolean;
   /** Обработчик клика по элементу; дополняет внутреннее поведение примитива. */
@@ -741,6 +787,31 @@ function buildNode(
   if (props['tooltip'] !== undefined) {
     node.tooltip = props['tooltip'];
     node.portalHoverEnabled = true;
+  }
+
+  if (props['popover'] !== undefined) {
+    node.popover = props['popover'];
+  }
+  if (props['dropdown'] !== undefined) {
+    node.dropdown = props['dropdown'];
+  }
+  // Поповер и дропдаун открываются одинаково; если заданы оба, клик и
+  // наведение разбирает feature-canvas-popover (поповер важнее).
+  const overlay = props['popover'] ?? props['dropdown'];
+  if (overlay !== undefined) {
+    if (overlay?.trigger === 'hover') {
+      // Наведение на элемент идёт через тот же механизм, что у тултипа.
+      node.portalHoverEnabled = true;
+    } else {
+      // Клик по элементу с поповером не должен переключать выделение таблицы,
+      // как у кнопки фильтра в шапке. Явный interaction потребителя важнее.
+      if (props['interaction'] === undefined) {
+        node.interaction = normalizeCanvasInteraction({ selection: 'keep' });
+      }
+      if (!node.style.cursor) {
+        node.style = { ...node.style, cursor: 'pointer' };
+      }
+    }
   }
 
   // autoTooltip делает текстовую ноду hover-таргетом (если не выключен явно).

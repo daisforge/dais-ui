@@ -37,7 +37,7 @@ export const usePopoverResizeHandler = (
       const { state } = tablePopoverValue;
 
       // Проверяем: открыт ли поповер и совпадает ли колонка
-      if (!state.isOpen || state.columnId !== columnId || !state.position) {
+      if (!state.isOpen || state.sourceKey !== columnId || !state.position) {
         return;
       }
 

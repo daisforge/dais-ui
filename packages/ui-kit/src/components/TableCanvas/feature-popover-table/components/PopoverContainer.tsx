@@ -14,7 +14,7 @@ import {
   POPOVER_OFFSET,
   POPOVER_Z_INDEX,
 } from '../constants';
-import { useTablePopover } from '../context';
+import { getPopoverBehavior, useTablePopover } from '../context';
 import {
   HiddenTriggerButton,
   PopoverContent,
@@ -79,6 +79,7 @@ const FilterContent = React.memo(
  *
  * Управляется через TablePopoverContext:
  * - open({ position, contentType: 'filter', contentData: columnConfig })
+ * - open({ position, anchorSize, contentType: 'custom', render, behavior, sourceKey }) — контент рисует открывший
  * - close()
  *
  * position приходит в viewport-координатах (после absoluteBounds для header).
@@ -95,7 +96,8 @@ export const PopoverInTable = <
   containerEl?: HTMLElement | null;
 } = {}) => {
   const { state, close } = useTablePopover();
-  const { isOpen, position, contentType, contentData } = state;
+  const { isOpen, position, anchorSize, contentType, contentData, render } =
+    state;
 
   const triggerId = useId();
 
@@ -110,8 +112,9 @@ export const PopoverInTable = <
     return result;
   }, [position, containerEl]);
 
+  // Размер таблицы изменился (ресайз, полный экран): якорь уехал, закрываем.
   useTableResizeObserver(() => {
-    if (isOpen && contentType === 'filter') {
+    if (isOpen && getPopoverBehavior(state)?.closeOnTableResize) {
       close();
     }
   });
@@ -135,7 +138,7 @@ export const PopoverInTable = <
    * что и React-коммит, и внутренняя инициализация PopoverBeta завершены.
    */
   useEffect(() => {
-    if (isOpen && containerEl) {
+    if (isOpen && contentType === 'filter' && containerEl) {
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           const trigger = containerEl.querySelector<HTMLElement>(
@@ -145,9 +148,26 @@ export const PopoverInTable = <
         });
       });
     }
-  }, [isOpen, triggerId, containerEl]);
+  }, [isOpen, contentType, triggerId, containerEl]);
 
   if (!isOpen || !position || !contentType || !displayPosition) return null;
+
+  // Произвольный контент (canvas-поповер): якорь размером с ноду или ячейку,
+  // сам поповер рисует открывший через render.
+  if (contentType === 'custom') {
+    if (!render) return null;
+    return (
+      <StyledPopoverContainer
+        $x={displayPosition.x}
+        $y={displayPosition.y}
+        $width={anchorSize?.width}
+        $height={anchorSize?.height}
+        $passThrough
+      >
+        {render({ close })}
+      </StyledPopoverContainer>
+    );
+  }
 
   // Рендер контента в зависимости от типа
   const renderContent = () => {
@@ -164,9 +184,6 @@ export const PopoverInTable = <
             />
           )
         );
-      case 'custom':
-        // Заглушка для будущего расширения
-        return <div>Custom content placeholder</div>;
       default:
         return null;
     }

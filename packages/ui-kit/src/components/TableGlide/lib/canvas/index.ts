@@ -129,24 +129,46 @@ export {
 
 // Utils
 export type {
+  CanvasDropdownApi,
+  CanvasDropdownErrorApi,
+  CanvasDropdownItem,
+  CanvasNodeDropdownConfig,
+  CanvasNodeDropdownItems,
+  CanvasNodeDropdownProps,
+  CanvasNodePopoverConfig,
+  CanvasNodePopoverContent,
+  CanvasNodePopoverProps,
   CanvasNodeTooltipConfig,
   CanvasNodeTooltipProps,
+  CanvasPopoverRenderApi,
+  CanvasPortalClickDetail,
+  CanvasPortalClickListener,
+  CanvasPortalRect,
   CanvasPortalHoverDetail,
   CanvasPortalHoverListener,
   CanvasPortalSource,
 } from './utils';
 export {
+  CANVAS_PORTAL_CLICK_EVENT,
   CANVAS_PORTAL_EVENT,
+  CANVAS_PORTAL_PRIORITY,
+  CANVAS_PORTAL_RESET_EVENT,
   clearIconCache,
+  dispatchCanvasPortalClick,
   dispatchCanvasPortalHover,
+  dispatchCanvasPortalReset,
   getIconCacheSize,
+  isCanvasNodeDropdownConfig,
+  isCanvasNodePopoverConfig,
   isPortalHoverLocked,
   isReactIcon,
   lockPortalHover,
   normalizeIcon,
   // Icon utilities
   reactIconToSvg,
+  subscribeToCanvasPortalClick,
   subscribeToCanvasPortalHover,
+  subscribeToCanvasPortalReset,
   subscribeToPortalHoverLock,
 } from './utils';
 

@@ -35,7 +35,9 @@ import {
   Canvas,
   CellCanvasRoot,
   createNormalCanvasInteraction,
+  dispatchCanvasPortalReset,
   isCanvasCell,
+  lockPortalHover,
   performCanvasClick,
   retrieveRenderData,
   buildCellId,
@@ -119,6 +121,9 @@ interface CanvasCellCacheEntry {
   cacheKey: CanvasCacheKey;
   canvasRoot: CellCanvasRoot;
 }
+
+/** Сколько ждать после последнего события ресайза колонки, чтобы снять блокировку (мс). */
+const RESIZE_LOCK_RELEASE_MS = 300;
 
 export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   columns,
@@ -247,6 +252,23 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   // (объявлен позже по коду), поэтому дёргаем через ref.
   const hideTooltipRef = useRef<(() => void) | null>(null);
 
+  // Блокировка тултипов и открытия по наведению на время ресайза колонки
+  // (lockPortalHover): якорь за границей не едет. Glide не сообщает о конце
+  // ресайза, поэтому снимаем блокировку, когда события ресайза перестали приходить.
+  const resizeLockRef = useRef<{ release: () => void; timer: number } | null>(
+    null,
+  );
+  useEffect(
+    () => () => {
+      if (resizeLockRef.current) {
+        window.clearTimeout(resizeLockRef.current.timer);
+        resizeLockRef.current.release();
+        resizeLockRef.current = null;
+      }
+    },
+    [],
+  );
+
   const onColumnResizeInternal = useCallback(
     (
       column: GridColumn,
@@ -272,6 +294,21 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       // не висел на месте (за границей во время ресайза он не едет).
       hideTooltipRef.current?.();
 
+      // Начало ресайза: якоря этой таблицы устарели, её поповер закрывается.
+      if (!resizeLockRef.current) {
+        dispatchCanvasPortalReset(portalEventTargetRef?.current ?? null);
+      }
+      const lock = resizeLockRef.current ?? {
+        release: lockPortalHover(),
+        timer: 0,
+      };
+      window.clearTimeout(lock.timer);
+      lock.timer = window.setTimeout(() => {
+        lock.release();
+        resizeLockRef.current = null;
+      }, RESIZE_LOCK_RELEASE_MS);
+      resizeLockRef.current = lock;
+
       onColumnResize?.(col, newSize, colIndex, newSizeWithGrow);
 
       setResizedColsMap((prev) => {
@@ -279,7 +316,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         return new Map(prev);
       });
     },
-    [onColumnResize],
+    [onColumnResize, portalEventTargetRef],
   );
 
   const columnsLast = useMemo(() => {
@@ -949,6 +986,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         renderData,
         rowData: rows[cell[1]],
         rowIndex: cell[1],
+        pointerOptions: { button: event.button, cellBounds: event.bounds },
       });
       const outcome = session
         ? buildEffectiveInteractionOutcome({
@@ -1152,6 +1190,8 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
             'click',
             event.localEventX,
             event.localEventY,
+            undefined,
+            { button: event.button, cellBounds: event.bounds },
           );
           if (interaction) return;
         }
@@ -1191,6 +1231,29 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     NonNullable<GlideProps['onGroupHeaderClicked']>
   >(
     (colIndex, event) => {
+      // Сначала отдаём клик canvas-содержимому шапки группы (кнопки, поповер),
+      // как у шапки колонки: клик по интерактивной ноде группу не выделяет.
+      const groupRoot = columnsGroupHeaderCanvasRootInstanceMap.get(
+        event.group,
+      );
+      if (groupRoot) {
+        const interaction = groupRoot.getInteractionAtPoint(
+          event.localEventX,
+          event.localEventY,
+        );
+        groupRoot.dispatchPointerEvent(
+          'click',
+          event.localEventX,
+          event.localEventY,
+          undefined,
+          { button: event.button, cellBounds: event.bounds },
+        );
+        if (interaction) {
+          onGroupHeaderClickedExternal?.(colIndex, event);
+          return;
+        }
+      }
+
       const clickedColumn = columnsForRender[colIndex];
       if (!enableColumnSelection || !clickedColumn) {
         onGroupHeaderClickedExternal?.(colIndex, event);
@@ -1236,6 +1299,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       columnsForRender,
       selectColumnsByKeys,
       onGroupHeaderClickedExternal,
+      columnsGroupHeaderCanvasRootInstanceMap,
     ],
   );
 
@@ -1393,11 +1457,16 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       if (typeof sourceKey !== 'string' || typeof targetKey !== 'string')
         return;
 
+      // Колонки переставлены: якоря тултипов и поповеров устарели. Короткая
+      // блокировка прячет тултип, сброс закрывает поповер этой таблицы.
+      lockPortalHover()();
+      dispatchCanvasPortalReset(portalEventTargetRef?.current ?? null);
+
       onColumnsReorder(sourceKey, targetKey);
     };
 
     return onColumnMoved;
-  }, [columnsForRender, onColumnsReorder]);
+  }, [columnsForRender, onColumnsReorder, portalEventTargetRef]);
 
   const drawGroupHeader = useMemo((): GlideProps['drawGroupHeader'] => {
     if (!renderGroupHeader) return undefined;

@@ -128,12 +128,16 @@ export const useColumns = <
   ) => 'isServiceColumn' in column && column.isServiceColumn === true;
 
   // -------------- onOpenFilter callback -----------------
+  // Зависим только от стабильного open: объект контекста меняется на каждое
+  // открытие и закрытие любого поповера, а от onOpenFilter зависят колонки,
+  // и смена колонок пересобирает шапку и перерисовывает весь холст.
+  const { open: openTablePopover } = tablePopoverValue;
   const onOpenFilter = useCallback(
     (
       columnConfig: ColumnConfig<RowType, SummaryRowType>,
       event: CanvasEvent,
     ) => {
-      tablePopoverValue.open({
+      openTablePopover({
         // Формируем координату через координату ячейки + смещение таргета (иконка фильтра)
         position: {
           x: calculateFilterPopoverPositionX(event),
@@ -144,10 +148,10 @@ export const useColumns = <
           columnConfig,
         },
         // Передаем ID колонки для отслеживания ресайза
-        columnId: columnConfig.key,
+        sourceKey: columnConfig.key,
       });
     },
-    [tablePopoverValue],
+    [openTablePopover],
   );
 
   const tableConfigFiltering = !!tableConfig.filtering;

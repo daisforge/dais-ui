@@ -119,7 +119,7 @@ export type ObjectForExtending = Record<string, any>;
 // ---------------------------------------- COLUMNS
 export interface CanvasCellOptions<
   R extends ObjectForExtending = ObjectForExtending,
-  SR = unknown
+  SR = unknown,
 > {
   render: (
     ctx: CanvasRenderingContext2D,
@@ -128,7 +128,7 @@ export interface CanvasCellOptions<
     hoverX: number | undefined,
     hoverY: number | undefined,
     row: R,
-    rowIndex: number
+    rowIndex: number,
   ) => {
     hoveredAreas?: Array<{
       x: number;
@@ -149,7 +149,7 @@ export interface CanvasCellOptions<
         width: number;
         height: number;
       }>;
-    }
+    },
   ) => boolean;
   onMouseEnter?: (rowInfo: CellInfo<R, SR>) => void;
   onMouseLeave?: (rowInfo: CellInfo<R, SR>) => void;
@@ -159,7 +159,7 @@ export interface CanvasCellOptions<
    * Return a primitive that changes whenever the visual content should update.
    */
   getCacheKey?: (
-    rowInfo: CellInfo<R, SR>
+    rowInfo: CellInfo<R, SR>,
   ) => string | number | boolean | null | undefined;
 }
 export type CanvasEl = ReactElement;
@@ -224,7 +224,7 @@ export type CellInfo<R extends ObjectForExtending, SR = unknown> = {
 };
 export type EditingCellInfoGlide<
   R extends ObjectForExtending,
-  SR = unknown
+  SR = unknown,
 > = Omit<CellInfo<R, SR>, 'hovered' | 'active'> & {
   onRowChange: (row: R, commitChanges?: boolean) => void;
   onClose: (commitChanges?: boolean, shouldFocusCell?: boolean) => void;
@@ -266,7 +266,7 @@ export type ColSpan<R extends ObjectForExtending, SR> =
 // последняяСтрока] — один и тот же для всех ячеек блока — либо null, если ячейка
 // не объединена.
 export type RowSpan<R extends ObjectForExtending, SR> = (
-  cellInfo: CellInfo<R, SR>
+  cellInfo: CellInfo<R, SR>,
 ) => readonly [number, number] | null;
 
 /** Выравнивание контента в объединённой ячейке (блоке) по обеим осям. */
@@ -278,11 +278,11 @@ export type SpanCellAlign = {
 };
 
 export type ColumnGlideGetCellContent<R extends ObjectForExtending, SR> = (
-  cellInfo: CellInfo<R, SR>
+  cellInfo: CellInfo<R, SR>,
 ) => CellContent;
 export type ColumnGlideGetSummaryCellContent<
   R extends ObjectForExtending,
-  SR
+  SR,
 > = (cellInfo: CellInfo<R, SR>) => CellContent;
 
 export type ColumnGlideCustoms<R extends ObjectForExtending, SR = unknown> = {
@@ -307,7 +307,9 @@ export type ColumnGlideCustoms<R extends ObjectForExtending, SR = unknown> = {
   colSpan?: ColSpan<R, SR>;
   rowSpan?: RowSpan<R, SR>;
   /** Выравнивание контента в объединённых ячейках колонки; функция — если нужно задавать для каждого блока отдельно. */
-  spanAlign?: SpanCellAlign | ((cellInfo: CellInfo<R, SR>) => SpanCellAlign | undefined);
+  spanAlign?:
+    | SpanCellAlign
+    | ((cellInfo: CellInfo<R, SR>) => SpanCellAlign | undefined);
   /** Тултип для ячеек этой колонки. Строка, объект или функция (context) => config | null. */
   cellTooltip?:
     | CanvasNodeTooltipConfig
@@ -346,7 +348,7 @@ export type ColumnGlideCustoms<R extends ObjectForExtending, SR = unknown> = {
    * не отреагирует на курсор и выделение.
    */
   columnThemeOverride?: (
-    cellInfo: CellInfo<R, SR>
+    cellInfo: CellInfo<R, SR>,
   ) => CellThemeOverrideResult | undefined;
   /** Управление preview для колонки. true — включить overlay, 'none' — отключить (в т.ч. стандартный). */
   hasPreview?: boolean | 'none';
@@ -376,7 +378,7 @@ export type RenderGroupHeaderArgs = Parameters<
 
 export type TableGlideCustomProps<
   R extends ObjectForExtending,
-  SR = unknown
+  SR = unknown,
 > = {
   columns: ColumnGlideLast<R, SR>[];
   rows: readonly R[];
@@ -389,14 +391,14 @@ export type TableGlideCustomProps<
           rowSizeName: SIZE;
           rowSizeValue: number;
         },
-        rowIndex: number
+        rowIndex: number,
       ) => number)
     | number
     | undefined
     | null;
   ctxs?: ObjectForExtending;
   renderGroupHeader?: (
-    args: RenderGroupHeaderArgs
+    args: RenderGroupHeaderArgs,
   ) => 'default' | { defaultWithCustomGroupName: string } | CanvasEl;
   /** Выравнивание текста в объединённой шапке по ключу группы (ColumnGroupConfig.key). */
   groupAlignMap?: Map<string, SpanAlignment>;
@@ -457,7 +459,7 @@ export type TableGlideCustomProps<
    */
   onHighlightActiveRowChange?: (
     row: number | undefined,
-    rowData?: R | undefined
+    rowData?: R | undefined,
   ) => void;
   /**
    * Режим подсветки строки controlled (значением владеют снаружи). Если не

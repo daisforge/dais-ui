@@ -13,6 +13,7 @@ import {
   DEFAULT_MIN_COLUMN_WIDTH,
 } from '../constants';
 import { useContextMenu, useTableCollapse } from '../contexts';
+import { CanvasPopoverListener } from '../feature-canvas-popover';
 import {
   CollapseBlockAbove,
   CollapseTableWrapper,
@@ -41,6 +42,8 @@ import type {
   ControlBlockSize,
   Key,
   ObjectForExtending,
+  TableConfigDropdown,
+  TableConfigPopover,
   TableConfigTooltip,
   View,
   ViewMods,
@@ -105,6 +108,9 @@ export const TableOrCardsUI = <
   containerStyle,
   massActionPanel,
   tooltip,
+  popover,
+  dropdown,
+  rowKeyGetter,
   fullScreened,
 }: {
   containerProps: {
@@ -169,6 +175,10 @@ export const TableOrCardsUI = <
     size?: MassActionsSize;
   };
   tooltip?: TableConfigTooltip;
+  popover?: TableConfigPopover;
+  dropdown?: TableConfigDropdown;
+  /** Ключ строки: по нему поповер ячейки понимает, что строка под якорем сменилась. */
+  rowKeyGetter?: (row: RowType) => unknown;
   fullScreened?: boolean;
 }) => {
   const tooltipCustomEnabled = tooltip?.enabled ?? false;
@@ -389,6 +399,15 @@ export const TableOrCardsUI = <
                     <>
                       {renderInContainer(
                         <PopoverInTable containerEl={containerElement} />,
+                      )}
+                      {renderInContainer(
+                        <CanvasPopoverListener
+                          containerRef={refTableGlobalContainer}
+                          config={popover}
+                          dropdownConfig={dropdown}
+                          rows={restDataGridProps.rows}
+                          rowKeyGetter={rowKeyGetter}
+                        />,
                       )}
                       {renderInContainer(
                         <CanvasTooltipOverlay

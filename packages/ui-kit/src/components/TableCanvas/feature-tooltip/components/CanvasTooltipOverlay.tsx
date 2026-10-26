@@ -2,6 +2,7 @@ import { Tooltip } from '@ui-kit/components/Tooltip';
 import React, { useMemo } from 'react';
 import { createPortal } from 'react-dom';
 
+import { useOptionalTablePopover } from '../../feature-popover-table/context';
 import type { CanvasPortalHoverDetail } from '../../TableGlideInstance';
 import { viewportToContainerPosition } from '../../utils';
 import { DEFAULT_MOUSE_ENTER_DELAY } from '../constants';
@@ -52,7 +53,15 @@ export const CanvasTooltipOverlay: React.FC<CanvasTooltipOverlayProps> =
         getDelays,
       });
 
-      if (!state.visible) return null;
+      // Пока открыт canvas-поповер, тултипы таблицы не показываем: иначе тултип
+      // элемента висит рядом с его поповером. После закрытия тултип вернётся,
+      // если курсор всё ещё над элементом.
+      const tablePopover = useOptionalTablePopover();
+      const canvasPopoverOpen =
+        !!tablePopover?.state.isOpen &&
+        tablePopover.state.contentType === 'custom';
+
+      if (!state.visible || canvasPopoverOpen) return null;
 
       const containerEl = containerRef?.current;
       if (!containerEl || !(containerEl instanceof HTMLElement)) return null;

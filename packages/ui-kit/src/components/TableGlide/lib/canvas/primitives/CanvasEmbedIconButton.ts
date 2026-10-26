@@ -169,6 +169,25 @@ export class CanvasEmbedIconButton extends CanvasLeaf {
     }
   }
 
+  /**
+   * Новый API рисует квадрат (или overrideWidth × квадрат) от угла rect,
+   * старый рисует rect без вертикальных отступов BUTTON_PADDING_Y.
+   */
+  override getAnchorRect() {
+    const { x, y, width, height } = this.rect;
+    if (this.useNewApi) {
+      const side =
+        this.overrideSquareSize ?? SIZE_CONFIG[this.buttonSize].height;
+      return { x, y, width: this.overrideWidth ?? side, height: side };
+    }
+    return {
+      x,
+      y: y + BUTTON_PADDING_Y,
+      width,
+      height: height - BUTTON_PADDING_Y * 2,
+    };
+  }
+
   onPaint(batcher: DrawBatcher, _ctx: CanvasRenderingContext2D) {
     const { x, y, width, height } = this.rect;
 
