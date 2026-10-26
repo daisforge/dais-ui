@@ -1,0 +1,4 @@
+import{j as t}from"./react-D2T61mpp.js";import{cf as o,cg as r}from"./vendor-DmlXfB6n.js";import{T as a}from"./TypeSourceViewer-BHRjR-dz.js";import"./react-is-Clcustum.js";import"./styled-components-D3BTJ4t7.js";import"./@tanstack/react-virtual-DB5Ptt1B.js";import"./tslib-DoU9Jm1N.js";function n(e){const s={h1:"h1",h2:"h2",...o(),...e.components};return t.jsxs(t.Fragment,{children:[t.jsx(r,{title:"Локальные компоненты/TableCanvas/SubRows/API"}),`
+`,t.jsx(s.h1,{id:"subrows-api",children:"SubRows API"}),`
+`,t.jsx(s.h2,{id:"subrows",children:"SubRows"}),`
+`,t.jsx(a,{language:"ts",filePath:"packages/ui-kit/src/components/TableCanvas/feature-tree/types.ts",typeName:"SubRows"})]})}function l(e={}){const{wrapper:s}={...o(),...e.components};return s?t.jsx(s,{...e,children:t.jsx(n,{...e})}):n(e)}export{l as default};
