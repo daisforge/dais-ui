@@ -40,7 +40,7 @@ type EditableCellTheme = {
 };
 
 /** Поля темы с тремя ступенями фона выбранной строки. */
-type ActiveRowBgTheme = {
+export type ActiveRowBgTheme = {
   selectionCheckboxBg: string;
   bgSelectedRowHovered: string;
   bgSelectedRowActiveHovered: string;
