@@ -120,8 +120,8 @@ details summary{cursor:pointer;font-weight:600}
         <li><b>Disabled-строка</b> — переключатель сверху: строка 9 показана с непрозрачностью 40 %, без hover, по правилу ДС.</li>
         <li><b>Шапка и групповая шапка</b> — наведение, выделение колонки или группы, наведение на выделенную.</li>
         <li><b>Отмеченная строка</b> — чекбокс, затем наведение и клик по ячейке в ней.</li>
-        <li><b>Временные значения</b> — в Light редактируемая ячейка показана с amber-100 <span class="mono">#FFF6E5</span> (значение темы до релиза 0.78.0; запрос на возврат отправлен). В Beta токенов data-yellow-light и data-blue-light нет: показаны шаги новой палитры Amber/100, Blue/100 (тёмные Amber/950, Blue/950). Всё помечено «временно» в панели.</li>
-        <li><b>HC Light</b> — второй приоритет: где нет данных темы, ячейка заштрихована розовым.</li>
+        <li><b>Временные значения</b> — в Light редактируемая ячейка показана с amber-100 <span class="mono">#FFF6E5</span> (в теме amber-150, запрошен возврат), в Beta Light с amber/100 <span class="mono">#FFF5E7</span> (в теме amber/150, запрошено исправление). В Beta и контрастной токены редактирования называются data-*-on-light. Всё помечено «временно» в панели.</li>
+        <li><b>HC Light и HC Dark</b> — значения пакета sdds_finai_high_contrast 0.1.2: в светлой выделение 25 % и статусы 30 %. Множитель ступени для контрастных тем подбирается на стенде (ползунок в панели формулы).</li>
         <li><b>Токен → ячейки</b> — наведите на строку в панели справа: ячейки с этим ключом обведутся пунктиром. Клик по HEX копирует его.</li>
       </ol>
     </section>
@@ -416,34 +416,35 @@ var SRC = (() => {
     betaCoreLight: { mode: "light" },
     betaCoreDark: { mode: "dark" },
     highContrastLight: { mode: "light", stepFactor: 1, note: "\u043C\u043D\u043E\u0436\u0438\u0442\u0435\u043B\u044C \u0441\u0442\u0443\u043F\u0435\u043D\u0438 \u043F\u043E\u0434\u043E\u0431\u0440\u0430\u0442\u044C \u0433\u043B\u0430\u0437\u0430\u043C\u0438 \u043D\u0430 \u0441\u0442\u0435\u043D\u0434\u0435" },
-    highContrastDark: { mode: "dark", note: "\u0442\u0435\u043C\u044B \u043D\u0435\u0442 \u0438 \u043D\u0435 \u043F\u043B\u0430\u043D\u0438\u0440\u0443\u0435\u0442\u0441\u044F \u2014 \u0437\u0430\u0433\u043B\u0443\u0448\u043A\u0430, \u043A\u043E\u043F\u0438\u044F dark" }
+    highContrastDark: { mode: "dark", note: "sdds_finai_high_contrast 0.1.2; \u043C\u043D\u043E\u0436\u0438\u0442\u0435\u043B\u044C \u043A\u0430\u043A \u0443 dark, \u0443\u0442\u043E\u0447\u043D\u0438\u0442\u044C \u043D\u0430 \u0441\u0442\u0435\u043D\u0434\u0435" }
   };
   var src = (tokens) => tokens;
+  var ON_LIGHT = (name) => ({ betaCoreLight: name, betaCoreDark: name, highContrastLight: name, highContrastDark: name });
   var SEMANTIC = src({
     surfaceSolidCard: { name: "surface-solid-card", values: v("#FFFFFFFF", "#060A0C", "#FFFFFF", "#060A0D", "#FFFFFF") },
-    // TODO HC: --surface-solid-primary контрастной темы
-    surfaceSolidPrimary: { name: "surface-solid-primary", values: v("#F2F5F8", "#13181B", "#F3F7FA", "#14191D") },
-    // TODO HC: --background-primary контрастной темы
-    backgroundPrimary: { name: "background-primary", values: v("#F2F5F8", "#060A0C", "#F3F7FA", "#060A0D") },
+    surfaceSolidPrimary: { name: "surface-solid-primary", values: v("#F2F5F8", "#13181B", "#F3F7FA", "#14191D", "#D6DFE7") },
+    backgroundPrimary: { name: "background-primary", values: v("#F2F5F8", "#060A0C", "#F3F7FA", "#060A0D", "#E5EBF1") },
     surfaceAccentMinor: { name: "surface-accent-minor", values: v("#ECF6FCFF", "#071A26FF", "#EFF8FF", "#0C1A24", "#CFE5F2FF") },
-    surfaceAccent: { name: "surface-accent", values: v("#199AF0", "#199AF0", "#1F9EEB", "#1F9EEB", "#0076D2") },
+    surfaceAccent: { name: "surface-accent", values: v("#199AF0", "#199AF0", "#1F9EEB", "#1F9EEB", "#0076D2", "#118CDF") },
     outlineAccent: { name: "outline-accent", values: v("#0B7ECB", "#199AF0", "#0087CD", "#1F9EEB", "#0058A2") },
-    outlineSolidPrimary: { name: "outline-solid-primary", values: v("#D5DFE6", "#23292D", "#CFDBE4", "#262626", "#C4CFD7") },
+    outlineSolidPrimary: { name: "outline-solid-primary", values: v("#D5DFE6", "#23292D", "#CFDBE4", "#262626", "#A3ACB4", "#25262D") },
     surfaceNegative: { name: "surface-negative", values: v("#FF293E", "#FF293E", "#F81C42", "#F81C42", "#E7002F") },
     // выделение: полупрозрачная акцентная заливка, накладывается на цвет покоя (макет «Выделение ячеек»)
-    surfaceTransparentAccent: { name: "surface-transparent-accent", values: v("#118CDF1F", "#118CDF33", "#0090DA1F", "#0090DA33", "#0076D21F") },
+    // в контрастной светлой заливки плотнее: выделение 25 %, статусы 30 %
+    surfaceTransparentAccent: { name: "surface-transparent-accent", values: v("#118CDF1F", "#118CDF33", "#0090DA1F", "#0090DA33", "#0076D240") },
     // статусные заливки: в макете positive и warning — полупрозрачные surface-transparent-*, negative — surface-negative-minor
-    surfaceTransparentPositive: { name: "surface-transparent-positive", values: v("#1A9E321F", "#1A9E3233", "#21A0381F", "#21A03833", "#198A001F") },
-    surfaceTransparentWarning: { name: "surface-transparent-warning", values: v("#FA5F051F", "#FA5F0533", "#E154001F", "#E1540033", "#D958001F") },
-    // минорные статусные заливки — есть во всех четырёх темах; HC light в tokens.ts их нет
-    surfacePositiveMinor: { name: "surface-positive-minor", values: v("#9EFAAF", "#0A2B10", "#AFFFB1", "#0F2D11") },
-    surfaceNegativeMinor: { name: "surface-negative-minor", values: v("#FFE0E3", "#4A0D13", "#FEDFDE", "#480B11") },
-    surfaceWarningMinor: { name: "surface-warning-minor", values: v("#FEE2D2", "#3D1D0A", "#FEE1D6", "#3C1C0F") },
-    surfaceInfoMinor: { name: "surface-info-minor", values: v("#CFECFF", "#0C283B", "#D3EBFF", "#09283D") },
-    // в beta-темах токенов *-light нет — значения null, пока их не добавят или не выберут другой токен
-    dataYellowLight: { name: "data-yellow-light", values: v("#FFE4AE", "#211807", null, null, null) },
-    dataBlueLight: { name: "data-blue-light", values: v("#EDF8FF", "#0A1924", null, null, null) },
-    // TODO HC: в tokens.ts значение названо dataOrange — подтвердить, что это data-yellow контрастной темы
+    surfaceTransparentPositive: { name: "surface-transparent-positive", values: v("#1A9E321F", "#1A9E3233", "#21A0381F", "#21A03833", "#198A004D") },
+    surfaceTransparentWarning: { name: "surface-transparent-warning", values: v("#FA5F051F", "#FA5F0533", "#E154001F", "#E1540033", "#D958004D") },
+    // минорные статусные заливки — есть во всех шести темах
+    surfacePositiveMinor: { name: "surface-positive-minor", values: v("#9EFAAF", "#0A2B10", "#AFFFB1", "#0F2D11", "#96DAA1") },
+    surfaceNegativeMinor: { name: "surface-negative-minor", values: v("#FFE0E3", "#4A0D13", "#FEDFDE", "#480B11", "#F8BDC4") },
+    surfaceWarningMinor: { name: "surface-warning-minor", values: v("#FEE2D2", "#3D1D0A", "#FEE1D6", "#3C1C0F", "#F7C29D") },
+    surfaceInfoMinor: { name: "surface-info-minor", values: v("#CFECFF", "#0C283B", "#D3EBFF", "#09283D", "#9CD5FF") },
+    // редактирование: в beta core и контрастной семья называется data-*-on-light (поле names).
+    // light: в теме amber-150 #FFE4AE, по решению дизайнера нужен amber-100 #FFF6E5 — запрошено, до исправления таблица
+    // использует временное #FFF6E5; beta light: в теме amber/150 #FFE3BD, запрошен amber/100 #FFF5E7, временное #FFF5E7
+    dataYellowLight: { name: "data-yellow-light", names: ON_LIGHT("data-yellow-on-light"), values: v("#FFE4AE", "#211807", "#FFE3BD", "#211607", "#F1DDB8", "#211807") },
+    dataBlueLight: { name: "data-blue-light", names: ON_LIGHT("data-blue-on-light"), values: v("#EDF8FF", "#0A1924", "#EFF8FF", "#0C1A24", "#DAE8F1", "#0A1924") },
     dataYellow: { name: "data-yellow", values: v("#F3A912", "#A16B00", "#E9A431", "#9A6700", "#D49100") },
     textPrimary: {
       name: "text-primary",
@@ -564,33 +565,35 @@ if (typeof module !== 'undefined') module.exports = R;
 
 </script><script>
 // ───────────────────────── Темы ─────────────────────────
-const THEME_ORDER = ['light', 'dark', 'betaCoreLight', 'betaCoreDark', 'highContrastLight'];
+const THEME_ORDER = ['light', 'dark', 'betaCoreLight', 'betaCoreDark', 'highContrastLight', 'highContrastDark'];
 const THEME_META = {
   light: { label: 'Light', mode: 'light', src: '@salutejs/sdds-themes 0.79.1 · sdds_finai__light' },
   dark: { label: 'Dark', mode: 'dark', src: '@salutejs/sdds-themes 0.79.1 · sdds_finai__dark' },
   betaCoreLight: { label: 'Beta Light', mode: 'light', src: '@salutejs-ds/sdds_finai_beta_core 0.1.0 · light' },
   betaCoreDark: { label: 'Beta Dark', mode: 'dark', src: '@salutejs-ds/sdds_finai_beta_core 0.1.0 · dark' },
-  highContrastLight: { label: 'HC Light · 2-й приоритет', mode: 'light', src: 'TableGlide/tokens.ts (HC): нет surface-solid-primary, background-primary, *-light, *-minor' },
+  highContrastLight: { label: 'HC Light', mode: 'light', src: '@salutejs-ds/sdds_finai_high_contrast 0.1.2 · light' },
+  highContrastDark: { label: 'HC Dark', mode: 'dark', src: '@salutejs-ds/sdds_finai_high_contrast 0.1.2 · dark' },
 };
-const EXPORT_THEMES = [...THEME_ORDER, 'highContrastDark'];
+const EXPORT_THEMES = [...THEME_ORDER];
 // токены для оформления самой страницы
 const CHROME = {
   light: { 'text-secondary': '#485056B0', 'text-tertiary': '#707C847A', 'text-accent': '#0B7ECB', 'surface-transparent-accent': '#118CDF1F' },
   dark: { 'text-secondary': '#D5DFE69E', 'text-tertiary': '#D5DFE64D', 'text-accent': '#199AF0', 'surface-transparent-accent': '#118CDF33' },
   betaCoreLight: { 'text-secondary': '#475158B0', 'text-tertiary': '#707F897A', 'text-accent': '#0087CD', 'surface-transparent-accent': '#0090DA1F' },
   betaCoreDark: { 'text-secondary': '#CFDBE49E', 'text-tertiary': '#CFDBE44D', 'text-accent': '#1F9EEB', 'surface-transparent-accent': '#0090DA33' },
-  highContrastLight: { 'text-secondary': '#03070CAF', 'text-tertiary': '#000206A8', 'text-accent': '#0058A2', 'surface-transparent-accent': '#0076D21F' },
+  highContrastLight: { 'text-secondary': '#03070CB0', 'text-tertiary': '#000206A8', 'text-accent': '#0058A2', 'surface-transparent-accent': '#0076D240' },
+  highContrastDark: { 'text-secondary': '#D5DFE69E', 'text-tertiary': '#D5DFE64D', 'text-accent': '#199AF0', 'surface-transparent-accent': '#118CDF33' },
 };
 const THEMES = {};
 for (const id of THEME_ORDER) { const t = {}; for (const src of Object.values(SRC.SEMANTIC)) t[src.name] = src.values[id] ?? null; Object.assign(t, CHROME[id]); if (!t['background-primary']) t['background-primary'] = t['surface-solid-card']; THEMES[id] = t; }
 // Временные значения поверх темы (помечены «временно»):
 //  light: data-yellow-light = amber-100 #FFF6E5 — значение темы до релиза 0.78.0; в 0.78.0+ стоит amber-150 #FFE4AE, запрос на возврат отправлен (решение дизайнера 18.09)
-//  beta: токенов data-yellow-light / data-blue-light нет — шаги новой палитры Amber/100, Blue/100 (тёмные Amber/950, Blue/950), запрошены у владельцев темы
-const TEMP = { light: { dataYellowLight: '#FFF6E5' }, betaCoreLight: { dataYellowLight: '#FFF5E7', dataBlueLight: '#EFF8FF' }, betaCoreDark: { dataYellowLight: '#211607', dataBlueLight: '#0C1A24' } };
-const TEMP_NOTE = { light: 'временно: amber-100, до исправления темы', betaCoreLight: 'временно: шаг новой палитры, токена в beta нет', betaCoreDark: 'временно: шаг новой палитры, токена в beta нет' };
+//  beta light: data-yellow-on-light в теме amber/150 #FFE3BD, по решению дизайнера amber/100 #FFF5E7 — запрошено исправление (19.10). data-blue-on-light и тёмные значения берутся из темы
+const TEMP = { light: { dataYellowLight: '#FFF6E5' }, betaCoreLight: { dataYellowLight: '#FFF5E7' } };
+const TEMP_NOTE = { light: 'временно: amber-100, до исправления темы', betaCoreLight: 'временно: amber/100, в теме amber/150, запрошено исправление' };
 function sourcesFor(id) { const out = {}; for (const [k, src] of Object.entries(SRC.SEMANTIC)) { const tv = TEMP[id] && TEMP[id][k]; out[k] = tv ? { ...src, values: { ...src.values, [id]: tv }, temp: true, tempNote: TEMP_NOTE[id] } : src; } return out; }
 
-
+// ───────────────────────── Сейчас в коде (dais-ui main 15.09.2026) ─────────────────────────
 const CODE_LIGHT = {
   bgCell: '#FFFFFF', textDark: '#13181BF5', textHeader: '#13181BF5', textHeaderSelected: '#13181BF5', textGroupHeader: '#13181BF5', borderColor: '#D5DFE6', accentColor: '#0b7ecb', hiddenColumnsIndicatorColor: '#0b7ecb',
   bgHeader: '#ECF6FC', bgHeaderHasFocus: '#ECF6FC', bgGroupHeader: '#ECF6FC', errorOutlineColor: '#FF3D51',
@@ -643,7 +646,7 @@ const HATCH = 'repeating-linear-gradient(45deg,#FF00AA 0 4px,#FFFFFF 4px 8px)';
 function mapFor() { return SRC.TABLE_COLORS; }
 function computeRule(id) {
   const meta = THEME_META[id];
-  const factor = (P.step / 2.5) * (meta.mode === 'dark' ? P.darkK : 1) * (id === 'highContrastLight' ? P.hcK : 1);
+  const factor = (P.step / 2.5) * (meta.mode === 'dark' ? P.darkK : 1) * (id.startsWith('highContrast') ? P.hcK : 1);
   const settings = { [id]: { mode: meta.mode, stepFactor: factor } };
   const src = sourcesFor(id), cell = { card: src.surfaceSolidCard, primary: src.surfaceSolidPrimary, selection: src.surfaceTransparentAccent };
   const out = {}, cache = {};
@@ -1024,7 +1027,7 @@ function renderPanel() {
   $('tokTitle').textContent = title;
   $('tokHint').innerHTML = S.view === 'detail'
     ? `Источник: <span class="mono">${THEME_META[id].src}</span>. Стрелка — семантический токен и состояние. ΔE — расстояние OKLab ×100 до значения в коде. Aa — контраст text-primary. Клик по HEX — скопировать.`
-    : S.view === 'matrix' ? 'Hex каждого ключа по темам с текущими параметрами; highContrastDark — копия dark. Клик по HEX — скопировать.'
+    : S.view === 'matrix' ? 'Hex каждого ключа по темам с текущими параметрами. Клик по HEX — скопировать.'
     : 'Для разработчиков: сначала вход — семантические токены с hex по темам, затем карта — какой токен и в каком состоянии стоит за каждым ключом. Экспорт CSV — внизу.';
   let h = '';
   if (S.view === 'detail') {
@@ -1067,13 +1070,13 @@ function renderPanel() {
     h += '</table></div>';
   } else {
     const cols = EXPORT_THEMES;
-    const label = t => t === 'highContrastDark' ? 'HC Dark (= dark)' : THEME_META[t].label.replace(' · 2-й приоритет', '');
+    const label = t => THEME_META[t].label;
     h += '<div style="overflow-x:auto"><table class="mx"><tr><th>Ключ</th><th>Токен · состояние</th>' + cols.map(t => `<th>${label(t)}</th>`).join('') + '</tr>';
     for (const [g, gl] of GROUPS) {
       h += `<tr><th colspan="${cols.length + 2}" style="padding-top:12px">${gl}</th></tr>`;
       for (const key in rule) if (rule[key].g === g) {
         const x = rule[key];
-        h += `<tr data-probe="${key}"><td class="key">${key}</td><td class="mono small">${x.base} · ${STATE_SHORT[x.state]}</td>` + cols.map(t => `<td>${hexCell((t === 'highContrastDark' ? ruleValues('dark') : ruleValues(t))[key].hex)}</td>`).join('') + '</tr>';
+        h += `<tr data-probe="${key}"><td class="key">${key}</td><td class="mono small">${x.base} · ${STATE_SHORT[x.state]}</td>` + cols.map(t => `<td>${hexCell(ruleValues(t)[key].hex)}</td>`).join('') + '</tr>';
       }
     }
     h += '</table></div>';
@@ -1092,7 +1095,7 @@ let toastT; function toast(m) { const t = $('toast'); t.textContent = m; t.class
 
 // ───────────────────────── Правило, параметры, экспорт ─────────────────────────
 function renderFormula() {
-  const k = THEME_META[S.theme].mode === 'dark' ? P.darkK : 1, kh = S.theme === 'highContrastLight' ? P.hcK : 1;
+  const k = THEME_META[S.theme].mode === 'dark' ? P.darkK : 1, kh = S.theme.startsWith('highContrast') ? P.hcK : 1;
   const d = P.step * k * kh;
   $('formula').textContent =
 `каждый цвет таблицы = семантический токен × состояние
@@ -1137,9 +1140,9 @@ const GLIDE_KEYS = ['accentColor', 'accentLight', 'textDark', 'textHeader', 'tex
 const CUSTOM_KEYS = ['bgEditableCell', 'bgEditableCellHovered', 'bgEditableCellActive', 'bgEditableCellActiveHovered', 'bgEditableCellRowActiveHovered', 'selectionCheckboxBg', 'selectionActiveBg', 'selectionActiveCheckboxBg', 'selectionServiceBg', 'selectionServiceActiveBg', 'errorOutlineColor', 'bgRowHovered', 'bgServiceRowHovered', 'bgSelectedRowHovered', 'bgHeaderSelectedHovered', 'selectionActiveHoveredBg', 'selectionActiveCheckboxHoveredBg', 'selectionServiceActiveHoveredBg', 'bgSelectedRowActiveHovered',
   ...['Positive', 'Negative', 'Warning', 'Info'].flatMap(s => ['bgCell' + s, `bgCell${s}Hovered`, `bgCell${s}Active`, `bgCell${s}ActiveHovered`, `bgCell${s}RowActiveHovered`])];
 const TABLE_KEYS = [['headerColor', 'bgHeader'], ['editableCellColor', 'bgEditableCell'], ['editableCellHoverColor', 'bgEditableCellHovered'], 'editedSuccessfullyCellColor', 'editedSuccessfullyCellHoverColor', 'editedSuccessfullyCellActiveColor', 'editedSuccessfullyCellActiveHoverColor', 'editedSuccessfullyCellRowActiveHoverColor'];
-const valueFor = (t, key) => (t === 'highContrastDark' ? ruleValues('dark') : ruleValues(t))[key];
+const valueFor = (t, key) => ruleValues(t)[key];
 function renderExport() {
-  const head = `// Модель «токен + состояние»: hover — δ ${fmt(P.step)} ΔEok по лучу (тёмные ×${fmt(P.darkK)}, контрастная ×${fmt(P.hcK)}); выделение — наложение surface-transparent-accent на цвет покоя (макет «Выделение ячеек»); hover на выделении — +1δ по лучу от цвета выделения; выбранная строка (highlightActiveType=row) — как отмеченная (× rest), нажатый чекбокс — на ступень глубже (× hover), цветные ячейки — свой hover; под курсором ещё ступень (hover2 = +2δ от покоя; ключи bgSelectedRowActiveHovered и …RowActiveHovered, решение 07.10)\n// highContrastDark — заглушка, копия dark. null — нет данных темы. Временные значения: light data-yellow-light = amber-100 #FFF6E5 (значение темы до 0.78.0, запрос на возврат отправлен); beta data-yellow-light / data-blue-light = шаги новой палитры Amber/100, Blue/100 и Amber/950, Blue/950 (токенов в beta нет).\n`;
+  const head = `// Модель «токен + состояние»: hover — δ ${fmt(P.step)} ΔEok по лучу (тёмные ×${fmt(P.darkK)}, контрастная ×${fmt(P.hcK)}); выделение — наложение surface-transparent-accent на цвет покоя (макет «Выделение ячеек»); hover на выделении — +1δ по лучу от цвета выделения; выбранная строка (highlightActiveType=row) — как отмеченная (× rest), нажатый чекбокс — на ступень глубже (× hover), цветные ячейки — свой hover; под курсором ещё ступень (hover2 = +2δ от покоя; ключи bgSelectedRowActiveHovered и …RowActiveHovered, решение 07.10)\n// Контрастные темы из пакета sdds_finai_high_contrast 0.1.2. Временные значения: light data-yellow-light = amber-100 #FFF6E5 (в теме amber-150, запрошен возврат); beta light data-yellow-on-light = amber/100 #FFF5E7 (в теме amber/150, запрошено исправление). В beta и контрастной data-*-light называются data-*-on-light.\n`;
   if (S.exp === 'json') {
     const o = {}; for (const t of EXPORT_THEMES) { o[t] = {}; for (const k in ruleValues('light')) o[t][k] = valueFor(t, k).hex; }
     $('exp').value = JSON.stringify({ params: P, themes: o }, null, 2);
@@ -1154,11 +1157,11 @@ function renderExport() {
   }
   if (S.exp === 'csvTokens') {
     let csv = 'token,' + EXPORT_THEMES.join(',') + '\n';
-    const val = (t, k) => (t === 'highContrastDark' ? sourcesFor('dark')[k].values.dark : sourcesFor(t)[k].values[t]) || '';
+    const val = (t, k) => sourcesFor(t)[k].values[t] || '';
     for (const [k, src] of Object.entries(SRC.SEMANTIC)) {
       csv += [src.name, ...EXPORT_THEMES.map(t => val(t, k))].join(',') + '\n';
-      if (src.hover) csv += [src.name + '-hover', ...EXPORT_THEMES.map(t => src.hover[t === 'highContrastDark' ? 'dark' : t] || '')].join(',') + '\n';
-      if (src.active) csv += [src.name + '-active', ...EXPORT_THEMES.map(t => src.active[t === 'highContrastDark' ? 'dark' : t] || '')].join(',') + '\n';
+      if (src.hover) csv += [src.name + '-hover', ...EXPORT_THEMES.map(t => src.hover[t] || '')].join(',') + '\n';
+      if (src.active) csv += [src.name + '-active', ...EXPORT_THEMES.map(t => src.active[t] || '')].join(',') + '\n';
     }
     $('exp').value = csv;
     return;

@@ -3,8 +3,8 @@
  *
  * Код генератора (code/*) — источник истины дизайн-системы, он не правится.
  * Этот скрипт — слой интеграции библиотеки: считает палитру через
- * buildTableColors(), подставляет временные значения для токенов, которых
- * пока нет в темах (согласованы с дизайнером; список недостающих токенов —
+ * buildTableColors(), подставляет временные значения для токенов, у которых
+ * в темах пока неверный цвет (согласованы с дизайнером; список —
  * INTEGRATION-STATUS.md, «Открытые вопросы»), и пишет готовый файл
  * packages/ui-kit/src/components/TableGlide/theming/table-colors.generated.ts.
  *
@@ -83,9 +83,11 @@ type TempFillGroup = {
 
 const TEMP_FILLS: TempFillGroup[] = [
   {
-    // data-yellow-light: в теме 0.79.1 ошибочно amber-150 #FFE4AE, решение дизайнера — amber-100.
-    // В beta-темах токена нет, временные Amber/100 и Amber/950 (запрос атомарной команде через дизайн).
-    // В HC токена нет — текущее ручное значение таблицы.
+    // data-yellow-light: в теме amber-150 #FFE4AE (ошибка релиза 0.78.0), по решению
+    // дизайнера нужен amber-100 #FFF6E5. В beta light то же: в теме amber/150 #FFE3BD,
+    // нужен amber/100 #FFF5E7. Запрос в SDDS отправлен дизайнером 19.10.2026; когда
+    // темы исправят, группу убрать. Остальные темы берут значение темы
+    // (в beta и контрастной токен называется data-yellow-on-light).
     keys: {
       rest: 'bgEditableCell',
       hover: 'bgEditableCellHovered',
@@ -96,27 +98,8 @@ const TEMP_FILLS: TempFillGroup[] = [
     values: {
       light: '#FFF6E5',
       betaCoreLight: '#FFF5E7',
-      betaCoreDark: '#211607',
-      highContrastLight: '#F1DDB8',
     },
-    why: 'временно: подходящего цвета редактируемой ячейки (data-yellow-light) в теме нет, цвет согласован с дизайнером',
-  },
-  {
-    // data-blue-light: в beta-темах токена нет, временные Blue/100 и Blue/950.
-    // В HC токена нет — текущее ручное значение TableCanvas.
-    keys: {
-      rest: 'editedSuccessfullyCellColor',
-      hover: 'editedSuccessfullyCellHoverColor',
-      hover2: 'editedSuccessfullyCellRowActiveHoverColor',
-      active: 'editedSuccessfullyCellActiveColor',
-      hoverActive: 'editedSuccessfullyCellActiveHoverColor',
-    },
-    values: {
-      betaCoreLight: '#EFF8FF',
-      betaCoreDark: '#0C1A24',
-      highContrastLight: '#DAE8F1',
-    },
-    why: 'временно: подходящего цвета сохранённой ячейки (data-blue-light) в теме нет, цвет согласован с дизайнером',
+    why: 'временно: в теме data-yellow-light стоит amber-150, по решению дизайнера нужен amber-100; запрос в SDDS отправлен',
   },
 ];
 
@@ -151,52 +134,6 @@ TEMP_FILLS.forEach((group) => {
       }
     });
   });
-});
-
-// ─── Статические подстановки для одиночных ключей ───
-
-// В исходных цветах палитры для high contrast light нет surface-solid-primary
-// (в теме SDDS он уже есть — ждём обновления палитры у дизайнера) — серого
-// цвета, который задаёт направление hover для белого фона. Без него hover белой строки не
-// посчитать, поэтому оставлено прежнее значение таблицы.
-byTableKey.bgRowHovered.highContrastLight = '#E8EEF2';
-note(
-  'bgRowHovered',
-  'highContrastLight',
-  'временно: в исходных цветах палитры нет surface-solid-primary, по которому считается hover белого фона; оставлено прежнее значение таблицы',
-);
-
-// В исходных цветах палитры для high contrast light нет background-primary →
-// цвет затухания на сером фоне берём из светлой темы.
-byTableKey.fadeGray.highContrastLight = byTableKey.fadeGray.light;
-note(
-  'fadeGray',
-  'highContrastLight',
-  'временно: в исходных цветах палитры нет background-primary, взят цвет светлой темы',
-);
-
-// В исходных цветах палитры для high contrast light нет surface-negative-minor
-// и surface-info-minor → цвета статусных ячеек negative/info берём из
-// светлой темы.
-[
-  'bgCellNegative',
-  'bgCellNegativeHovered',
-  'bgCellNegativeRowActiveHovered',
-  'bgCellNegativeActive',
-  'bgCellNegativeActiveHovered',
-  'bgCellInfo',
-  'bgCellInfoHovered',
-  'bgCellInfoRowActiveHovered',
-  'bgCellInfoActive',
-  'bgCellInfoActiveHovered',
-].forEach((rawKey) => {
-  const key = mustExist(rawKey);
-  byTableKey[key].highContrastLight = byTableKey[key].light;
-  note(
-    key,
-    'highContrastLight',
-    'временно: в исходных цветах палитры нет светлого статусного токена, взят цвет светлой темы',
-  );
 });
 
 // ─── Проверка полноты ───
@@ -244,10 +181,10 @@ lines.push(
 );
 lines.push(' * generators/table-token-states/README.md.');
 lines.push(
-  ' * Значения с пометкой «временно» подставлены вместо токенов, которых пока',
+  ' * Значения с пометкой «временно» подставлены вместо токенов, у которых в',
 );
 lines.push(
-  ' * нет в темах (generators/table-token-states/INTEGRATION-STATUS.md,',
+  ' * темах пока неверный цвет (generators/table-token-states/INTEGRATION-STATUS.md,',
 );
 lines.push(' * «Открытые вопросы»).');
 lines.push(' *');
@@ -300,8 +237,7 @@ lines.push('/**');
   ' * - cardHex — обычный фон ячейки: полупрозрачный цвет сначала',
   ' *   смешивается с ним и становится непрозрачным;',
   ' * - primaryHex — серый цвет темы, который задаёт направление hover для',
-  ' *   белых и серых цветов (у них нет своего оттенка). null — в теме его',
-  ' *   нет, и hover для серых цветов не считается;',
+  ' *   белых и серых цветов (у них нет своего оттенка);',
   ' * - selectionHex — полупрозрачная заливка выделения, которая',
   ' *   накладывается на цвет ячейки, когда она выделена.',
 ].forEach((line) => lines.push(line));

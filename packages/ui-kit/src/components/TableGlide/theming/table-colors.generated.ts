@@ -6,8 +6,8 @@
  * (rest / hover / hover2 / active / hoverActive). Расчёт в OKLCH идёт при
  * генерации, здесь — только готовые непрозрачные цвета. Подробности:
  * generators/table-token-states/README.md.
- * Значения с пометкой «временно» подставлены вместо токенов, которых пока
- * нет в темах (generators/table-token-states/INTEGRATION-STATUS.md,
+ * Значения с пометкой «временно» подставлены вместо токенов, у которых в
+ * темах пока неверный цвет (generators/table-token-states/INTEGRATION-STATUS.md,
  * «Открытые вопросы»).
  *
  * Над каждым ключом: токен темы · состояние — что этим цветом красится.
@@ -34,7 +34,7 @@ export const TABLE_STATE_COLORS = {
     dark: '#0C1013',
     betaCoreLight: '#F4F8FA',
     betaCoreDark: '#0C1013',
-    highContrastLight: '#E8EEF2', // временно: в исходных цветах палитры нет surface-solid-primary, по которому считается hover белого фона; оставлено прежнее значение таблицы
+    highContrastLight: '#F5F7F9',
     highContrastDark: '#0C1013',
   },
   /** surface-accent-minor · rest — шапка, итоговая строка */
@@ -88,7 +88,7 @@ export const TABLE_STATE_COLORS = {
     dark: '#09314B',
     betaCoreLight: '#D2EBFB',
     betaCoreDark: '#0A3248',
-    highContrastLight: '#B6D8EE',
+    highContrastLight: '#9BC9EA',
     highContrastDark: '#09314B',
   },
   /** surface-accent-minor · hoverActive — выделенная шапка под курсором */
@@ -97,7 +97,7 @@ export const TABLE_STATE_COLORS = {
     dark: '#0C3956',
     betaCoreLight: '#C4E5FA',
     betaCoreDark: '#0D3A53',
-    highContrastLight: '#A9D1EB',
+    highContrastLight: '#8EC2E7',
     highContrastDark: '#0C3956',
   },
   /** surface-accent-minor · rest — отмеченная строка; выбранная строка (highlightActiveType = row) */
@@ -151,7 +151,7 @@ export const TABLE_STATE_COLORS = {
     dark: '#0C3956',
     betaCoreLight: '#C4E5FA',
     betaCoreDark: '#0D3A53',
-    highContrastLight: '#A9D1EB',
+    highContrastLight: '#8EC2E7',
     highContrastDark: '#0C3956',
   },
   /** surface-solid-card · active — активная ячейка, выделенные колонка/строка на белом */
@@ -160,7 +160,7 @@ export const TABLE_STATE_COLORS = {
     dark: '#082436',
     betaCoreLight: '#E0F2FB',
     betaCoreDark: '#052536',
-    highContrastLight: '#E0EEFA',
+    highContrastLight: '#BFDDF4',
     highContrastDark: '#082436',
   },
   /** surface-solid-card · active — заливка диапазона Glide на белом */
@@ -169,7 +169,7 @@ export const TABLE_STATE_COLORS = {
     dark: '#082436',
     betaCoreLight: '#E0F2FB',
     betaCoreDark: '#052536',
-    highContrastLight: '#E0EEFA',
+    highContrastLight: '#BFDDF4',
     highContrastDark: '#082436',
   },
   /** surface-accent-minor · active — активная ячейка в отмеченной строке */
@@ -178,7 +178,7 @@ export const TABLE_STATE_COLORS = {
     dark: '#09314B',
     betaCoreLight: '#D2EBFB',
     betaCoreDark: '#0A3248',
-    highContrastLight: '#B6D8EE',
+    highContrastLight: '#9BC9EA',
     highContrastDark: '#09314B',
   },
   /** surface-solid-card · hoverActive — выделение в строке под курсором (= выделение) */
@@ -187,7 +187,7 @@ export const TABLE_STATE_COLORS = {
     dark: '#0B2B40',
     betaCoreLight: '#D2ECF9',
     betaCoreDark: '#072D40',
-    highContrastLight: '#D3E7F8',
+    highContrastLight: '#B2D6F2',
     highContrastDark: '#0B2B40',
   },
   /** surface-accent-minor · hoverActive — выделение в отмеченной строке под курсором */
@@ -196,97 +196,97 @@ export const TABLE_STATE_COLORS = {
     dark: '#0C3956',
     betaCoreLight: '#C4E5FA',
     betaCoreDark: '#0D3A53',
-    highContrastLight: '#A9D1EB',
+    highContrastLight: '#8EC2E7',
     highContrastDark: '#0C3956',
   },
   /** data-yellow-light · rest — редактируемая ячейка */
   bgEditableCell: {
-    light: '#FFF6E5', // временно: подходящего цвета редактируемой ячейки (data-yellow-light) в теме нет, цвет согласован с дизайнером
+    light: '#FFF6E5', // временно: в теме data-yellow-light стоит amber-150, по решению дизайнера нужен amber-100; запрос в SDDS отправлен
     dark: '#211807',
-    betaCoreLight: '#FFF5E7', // временно: подходящего цвета редактируемой ячейки (data-yellow-light) в теме нет, цвет согласован с дизайнером
-    betaCoreDark: '#211607', // временно: подходящего цвета редактируемой ячейки (data-yellow-light) в теме нет, цвет согласован с дизайнером
-    highContrastLight: '#F1DDB8', // временно: подходящего цвета редактируемой ячейки (data-yellow-light) в теме нет, цвет согласован с дизайнером
+    betaCoreLight: '#FFF5E7', // временно: в теме data-yellow-light стоит amber-150, по решению дизайнера нужен amber-100; запрос в SDDS отправлен
+    betaCoreDark: '#211607',
+    highContrastLight: '#F1DDB8',
     highContrastDark: '#211807',
   },
   /** data-yellow-light · hover — редактируемая ячейка под курсором */
   bgEditableCellHovered: {
-    light: '#FFEFD2', // временно: подходящего цвета редактируемой ячейки (data-yellow-light) в теме нет, цвет согласован с дизайнером
+    light: '#FFEFD2', // временно: в теме data-yellow-light стоит amber-150, по решению дизайнера нужен amber-100; запрос в SDDS отправлен
     dark: '#291F0A',
-    betaCoreLight: '#FFEDD5', // временно: подходящего цвета редактируемой ячейки (data-yellow-light) в теме нет, цвет согласован с дизайнером
-    betaCoreDark: '#291C0A', // временно: подходящего цвета редактируемой ячейки (data-yellow-light) в теме нет, цвет согласован с дизайнером
-    highContrastLight: '#EED5A8', // временно: подходящего цвета редактируемой ячейки (data-yellow-light) в теме нет, цвет согласован с дизайнером
+    betaCoreLight: '#FFEDD5', // временно: в теме data-yellow-light стоит amber-150, по решению дизайнера нужен amber-100; запрос в SDDS отправлен
+    betaCoreDark: '#291C0A',
+    highContrastLight: '#EED5A8',
     highContrastDark: '#291F0A',
   },
   /** data-yellow-light · active — редактируемая ячейка в диапазоне выделения */
   bgEditableCellActive: {
-    light: '#E2E9E4', // временно: подходящего цвета редактируемой ячейки (data-yellow-light) в теме нет, цвет согласован с дизайнером
+    light: '#E2E9E4', // временно: в теме data-yellow-light стоит amber-150, по решению дизайнера нужен amber-100; запрос в SDDS отправлен
     dark: '#1E2F32',
-    betaCoreLight: '#E0E9E5', // временно: подходящего цвета редактируемой ячейки (data-yellow-light) в теме нет, цвет согласован с дизайнером
-    betaCoreDark: '#1A2E31', // временно: подходящего цвета редактируемой ячейки (data-yellow-light) в теме нет, цвет согласован с дизайнером
-    highContrastLight: '#D4D0BB', // временно: подходящего цвета редактируемой ячейки (data-yellow-light) в теме нет, цвет согласован с дизайнером
+    betaCoreLight: '#E0E9E5', // временно: в теме data-yellow-light стоит amber-150, по решению дизайнера нужен amber-100; запрос в SDDS отправлен
+    betaCoreDark: '#1A2E31',
+    highContrastLight: '#B5C3BF',
     highContrastDark: '#1E2F32',
   },
   /** data-yellow-light · hoverActive — редактируемая ячейка в выделении под курсором */
   bgEditableCellActiveHovered: {
-    light: '#D8E2DB', // временно: подходящего цвета редактируемой ячейки (data-yellow-light) в теме нет, цвет согласован с дизайнером
+    light: '#D8E2DB', // временно: в теме data-yellow-light стоит amber-150, по решению дизайнера нужен amber-100; запрос в SDDS отправлен
     dark: '#24373A',
-    betaCoreLight: '#D6E2DC', // временно: подходящего цвета редактируемой ячейки (data-yellow-light) в теме нет, цвет согласован с дизайнером
-    betaCoreDark: '#1F3639', // временно: подходящего цвета редактируемой ячейки (data-yellow-light) в теме нет, цвет согласован с дизайнером
-    highContrastLight: '#CDC8B0', // временно: подходящего цвета редактируемой ячейки (data-yellow-light) в теме нет, цвет согласован с дизайнером
+    betaCoreLight: '#D6E2DC', // временно: в теме data-yellow-light стоит amber-150, по решению дизайнера нужен amber-100; запрос в SDDS отправлен
+    betaCoreDark: '#1F3639',
+    highContrastLight: '#ACBCB7',
     highContrastDark: '#24373A',
   },
   /** data-yellow-light · hover2 — редактируемая ячейка выбранной строки под курсором */
   bgEditableCellRowActiveHovered: {
-    light: '#FFE8BF', // временно: подходящего цвета редактируемой ячейки (data-yellow-light) в теме нет, цвет согласован с дизайнером
+    light: '#FFE8BF', // временно: в теме data-yellow-light стоит amber-150, по решению дизайнера нужен amber-100; запрос в SDDS отправлен
     dark: '#31260E',
-    betaCoreLight: '#FFE5C3', // временно: подходящего цвета редактируемой ячейки (data-yellow-light) в теме нет, цвет согласован с дизайнером
-    betaCoreDark: '#32230E', // временно: подходящего цвета редактируемой ячейки (data-yellow-light) в теме нет, цвет согласован с дизайнером
-    highContrastLight: '#EBCD97', // временно: подходящего цвета редактируемой ячейки (data-yellow-light) в теме нет, цвет согласован с дизайнером
+    betaCoreLight: '#FFE5C3', // временно: в теме data-yellow-light стоит amber-150, по решению дизайнера нужен amber-100; запрос в SDDS отправлен
+    betaCoreDark: '#32230E',
+    highContrastLight: '#EBCD97',
     highContrastDark: '#31260E',
   },
   /** data-blue-light · rest — успешно сохранённая ячейка */
   editedSuccessfullyCellColor: {
     light: '#EDF8FF',
     dark: '#0A1924',
-    betaCoreLight: '#EFF8FF', // временно: подходящего цвета сохранённой ячейки (data-blue-light) в теме нет, цвет согласован с дизайнером
-    betaCoreDark: '#0C1A24', // временно: подходящего цвета сохранённой ячейки (data-blue-light) в теме нет, цвет согласован с дизайнером
-    highContrastLight: '#DAE8F1', // временно: подходящего цвета сохранённой ячейки (data-blue-light) в теме нет, цвет согласован с дизайнером
+    betaCoreLight: '#EFF8FF',
+    betaCoreDark: '#0C1A24',
+    highContrastLight: '#DAE8F1',
     highContrastDark: '#0A1924',
   },
   /** data-blue-light · hover — сохранённая ячейка под курсором */
   editedSuccessfullyCellHoverColor: {
     light: '#DEF2FF',
     dark: '#0E202D',
-    betaCoreLight: '#E1F2FF', // временно: подходящего цвета сохранённой ячейки (data-blue-light) в теме нет, цвет согласован с дизайнером
-    betaCoreDark: '#11212D', // временно: подходящего цвета сохранённой ячейки (data-blue-light) в теме нет, цвет согласован с дизайнером
-    highContrastLight: '#CEE1ED', // временно: подходящего цвета сохранённой ячейки (data-blue-light) в теме нет, цвет согласован с дизайнером
+    betaCoreLight: '#E1F2FF',
+    betaCoreDark: '#11212D',
+    highContrastLight: '#CEE1ED',
     highContrastDark: '#0E202D',
   },
   /** data-blue-light · active — сохранённая ячейка в диапазоне выделения */
   editedSuccessfullyCellActiveColor: {
     light: '#D2EBFB',
     dark: '#0B3049',
-    betaCoreLight: '#D2EBFB', // временно: подходящего цвета сохранённой ячейки (data-blue-light) в теме нет, цвет согласован с дизайнером
-    betaCoreDark: '#0A3248', // временно: подходящего цвета сохранённой ячейки (data-blue-light) в теме нет, цвет согласован с дизайнером
-    highContrastLight: '#BFDAED', // временно: подходящего цвета сохранённой ячейки (data-blue-light) в теме нет, цвет согласован с дизайнером
+    betaCoreLight: '#D2EBFB',
+    betaCoreDark: '#0A3248',
+    highContrastLight: '#A3CBE9',
     highContrastDark: '#0B3049',
   },
   /** data-blue-light · hoverActive — сохранённая ячейка в выделении под курсором */
   editedSuccessfullyCellActiveHoverColor: {
     light: '#C4E5FA',
     dark: '#0E3854',
-    betaCoreLight: '#C4E5FA', // временно: подходящего цвета сохранённой ячейки (data-blue-light) в теме нет, цвет согласован с дизайнером
-    betaCoreDark: '#0D3A53', // временно: подходящего цвета сохранённой ячейки (data-blue-light) в теме нет, цвет согласован с дизайнером
-    highContrastLight: '#B3D3E9', // временно: подходящего цвета сохранённой ячейки (data-blue-light) в теме нет, цвет согласован с дизайнером
+    betaCoreLight: '#C4E5FA',
+    betaCoreDark: '#0D3A53',
+    highContrastLight: '#97C4E6',
     highContrastDark: '#0E3854',
   },
   /** data-blue-light · hover2 — сохранённая ячейка выбранной строки под курсором */
   editedSuccessfullyCellRowActiveHoverColor: {
     light: '#CFECFF',
     dark: '#122736',
-    betaCoreLight: '#D3ECFF', // временно: подходящего цвета сохранённой ячейки (data-blue-light) в теме нет, цвет согласован с дизайнером
-    betaCoreDark: '#162836', // временно: подходящего цвета сохранённой ячейки (data-blue-light) в теме нет, цвет согласован с дизайнером
-    highContrastLight: '#C2DAE9', // временно: подходящего цвета сохранённой ячейки (data-blue-light) в теме нет, цвет согласован с дизайнером
+    betaCoreLight: '#D3ECFF',
+    betaCoreDark: '#162836',
+    highContrastLight: '#C2DAE9',
     highContrastDark: '#122736',
   },
   /** surface-transparent-positive · rest — ячейка со статусом positive */
@@ -295,7 +295,7 @@ export const TABLE_STATE_COLORS = {
     dark: '#0A2814',
     betaCoreLight: '#E4F3E7',
     betaCoreDark: '#0B2816',
-    highContrastLight: '#E3F1E0',
+    highContrastLight: '#BADCB2',
     highContrastDark: '#0A2814',
   },
   /** surface-transparent-positive · hover — positive под курсором */
@@ -304,7 +304,7 @@ export const TABLE_STATE_COLORS = {
     dark: '#0E3019',
     betaCoreLight: '#D8EEDC',
     betaCoreDark: '#0F301B',
-    highContrastLight: '#D8EBD4',
+    highContrastLight: '#AFD6A6',
     highContrastDark: '#0E3019',
   },
   /** surface-transparent-positive · active — positive в выделении */
@@ -313,7 +313,7 @@ export const TABLE_STATE_COLORS = {
     dark: '#0B3C3D',
     betaCoreLight: '#C8E7E5',
     betaCoreDark: '#093D3D',
-    highContrastLight: '#C7E2DE',
+    highContrastLight: '#8BC2BA',
     highContrastDark: '#0B3C3D',
   },
   /** surface-transparent-positive · hoverActive — positive в выделении под курсором */
@@ -322,7 +322,7 @@ export const TABLE_STATE_COLORS = {
     dark: '#0E4546',
     betaCoreLight: '#BAE1DF',
     betaCoreDark: '#0C4646',
-    highContrastLight: '#BADCD7',
+    highContrastLight: '#7EBCB3',
     highContrastDark: '#0E4546',
   },
   /** surface-transparent-positive · hover2 — positive в выбранной строке под курсором */
@@ -331,7 +331,7 @@ export const TABLE_STATE_COLORS = {
     dark: '#12381E',
     betaCoreLight: '#CCE9D1',
     betaCoreDark: '#133821',
-    highContrastLight: '#CDE5C8',
+    highContrastLight: '#A4D09A',
     highContrastDark: '#12381E',
   },
   /** surface-negative-minor · rest — ячейка со статусом negative */
@@ -340,7 +340,7 @@ export const TABLE_STATE_COLORS = {
     dark: '#4A0D13',
     betaCoreLight: '#FEDFDE',
     betaCoreDark: '#480B11',
-    highContrastLight: '#FFE0E3', // временно: в исходных цветах палитры нет светлого статусного токена, взят цвет светлой темы
+    highContrastLight: '#F8BDC4',
     highContrastDark: '#4A0D13',
   },
   /** surface-negative-minor · hover — negative под курсором */
@@ -349,7 +349,7 @@ export const TABLE_STATE_COLORS = {
     dark: '#561117',
     betaCoreLight: '#FDD5D4',
     betaCoreDark: '#540E15',
-    highContrastLight: '#FED6DA', // временно: в исходных цветах палитры нет светлого статусного токена, взят цвет светлой темы
+    highContrastLight: '#F6B3BB',
     highContrastDark: '#561117',
   },
   /** surface-negative-minor · active — negative в выделении */
@@ -358,7 +358,7 @@ export const TABLE_STATE_COLORS = {
     dark: '#3F263C',
     betaCoreLight: '#DFD5DE',
     betaCoreDark: '#3A2639',
-    highContrastLight: '#E2D6E3', // временно: в исходных цветах палитры нет светлого статусного токена, взят цвет светлой темы
+    highContrastLight: '#BAABC8',
     highContrastDark: '#3F263C',
   },
   /** surface-negative-minor · hoverActive — negative в выделении под курсором */
@@ -367,7 +367,7 @@ export const TABLE_STATE_COLORS = {
     dark: '#482C45',
     betaCoreLight: '#D8CCD7',
     betaCoreDark: '#432C42',
-    highContrastLight: '#DCCDDD', // временно: в исходных цветах палитры нет светлого статусного токена, взят цвет светлой темы
+    highContrastLight: '#B3A3C2',
     highContrastDark: '#482C45',
   },
   /** surface-negative-minor · hover2 — negative в выбранной строке под курсором */
@@ -376,7 +376,7 @@ export const TABLE_STATE_COLORS = {
     dark: '#62151B',
     betaCoreLight: '#FCCBCA',
     betaCoreDark: '#601119',
-    highContrastLight: '#FDCCD1', // временно: в исходных цветах палитры нет светлого статусного токена, взят цвет светлой темы
+    highContrastLight: '#F4A9B2',
     highContrastDark: '#62151B',
   },
   /** surface-transparent-warning · rest — ячейка со статусом warning */
@@ -385,7 +385,7 @@ export const TABLE_STATE_COLORS = {
     dark: '#371B0B',
     betaCoreLight: '#FBEAE0',
     betaCoreDark: '#32190A',
-    highContrastLight: '#FAEBE0',
+    highContrastLight: '#F4CDB2',
     highContrastDark: '#371B0B',
   },
   /** surface-transparent-warning · hover — warning под курсором */
@@ -394,7 +394,7 @@ export const TABLE_STATE_COLORS = {
     dark: '#41210F',
     betaCoreLight: '#F9E1D2',
     betaCoreDark: '#3C1F0E',
-    highContrastLight: '#F8E2D2',
+    highContrastLight: '#F2C4A4',
     highContrastDark: '#41210F',
   },
   /** surface-transparent-warning · active — warning в выделении */
@@ -403,7 +403,7 @@ export const TABLE_STATE_COLORS = {
     dark: '#2F3235',
     betaCoreLight: '#DCDFDF',
     betaCoreDark: '#283134',
-    highContrastLight: '#DCDDDE',
+    highContrastLight: '#B7B7BA',
     highContrastDark: '#2F3235',
   },
   /** surface-transparent-warning · hoverActive — warning в выделении под курсором */
@@ -412,7 +412,7 @@ export const TABLE_STATE_COLORS = {
     dark: '#363A3D',
     betaCoreLight: '#C7D9E7',
     betaCoreDark: '#2F393C',
-    highContrastLight: '#D4D5D6',
+    highContrastLight: '#AFAFB2',
     highContrastDark: '#363A3D',
   },
   /** surface-transparent-warning · hover2 — warning в выбранной строке под курсором */
@@ -421,7 +421,7 @@ export const TABLE_STATE_COLORS = {
     dark: '#4B2713',
     betaCoreLight: '#F7D8C4',
     betaCoreDark: '#462512',
-    highContrastLight: '#F6D9C4',
+    highContrastLight: '#EFBB96',
     highContrastDark: '#4B2713',
   },
   /** surface-info-minor · rest — ячейка со статусом info */
@@ -430,7 +430,7 @@ export const TABLE_STATE_COLORS = {
     dark: '#0C283B',
     betaCoreLight: '#D3EBFF',
     betaCoreDark: '#09283D',
-    highContrastLight: '#CFECFF', // временно: в исходных цветах палитры нет светлого статусного токена, взят цвет светлой темы
+    highContrastLight: '#9CD5FF',
     highContrastDark: '#0C283B',
   },
   /** surface-info-minor · hover — info под курсором */
@@ -439,7 +439,7 @@ export const TABLE_STATE_COLORS = {
     dark: '#103045',
     betaCoreLight: '#C5E5FF',
     betaCoreDark: '#0C3048',
-    highContrastLight: '#C0E6FF', // временно: в исходных цветах палитры нет светлого статусного токена, взят цвет светлой темы
+    highContrastLight: '#8DCFFF',
     highContrastDark: '#103045',
   },
   /** surface-info-minor · active — info в выделении */
@@ -448,7 +448,7 @@ export const TABLE_STATE_COLORS = {
     dark: '#0D3C5C',
     betaCoreLight: '#B9E0FB',
     betaCoreDark: '#073D5C',
-    highContrastLight: '#B8E0FB', // временно: в исходных цветах палитры нет светлого статусного токена, взят цвет светлой темы
+    highContrastLight: '#75BDF4',
     highContrastDark: '#0D3C5C',
   },
   /** surface-info-minor · hoverActive — info в выделении под курсором */
@@ -457,7 +457,7 @@ export const TABLE_STATE_COLORS = {
     dark: '#104467',
     betaCoreLight: '#ABDAFA',
     betaCoreDark: '#094567',
-    highContrastLight: '#AADAFA', // временно: в исходных цветах палитры нет светлого статусного токена, взят цвет светлой темы
+    highContrastLight: '#66B6F2',
     highContrastDark: '#104467',
   },
   /** surface-info-minor · hover2 — info в выбранной строке под курсором */
@@ -466,7 +466,7 @@ export const TABLE_STATE_COLORS = {
     dark: '#14384F',
     betaCoreLight: '#B7DFFF',
     betaCoreDark: '#0F3853',
-    highContrastLight: '#B1E0FF', // временно: в исходных цветах палитры нет светлого статусного токена, взят цвет светлой темы
+    highContrastLight: '#7DC9FE',
     highContrastDark: '#14384F',
   },
   /** text-primary · rest — текст ячеек */
@@ -511,8 +511,8 @@ export const TABLE_STATE_COLORS = {
     dark: '#23292D',
     betaCoreLight: '#CFDBE4',
     betaCoreDark: '#262626',
-    highContrastLight: '#C4CFD7',
-    highContrastDark: '#23292D',
+    highContrastLight: '#A3ACB4',
+    highContrastDark: '#25262D',
   },
   /** outline-accent · rest — рамка выделения и редактора */
   accentColor: {
@@ -556,7 +556,7 @@ export const TABLE_STATE_COLORS = {
     dark: '#060A0C',
     betaCoreLight: '#F3F7FA',
     betaCoreDark: '#060A0D',
-    highContrastLight: '#F2F5F8', // временно: в исходных цветах палитры нет background-primary, взят цвет светлой темы
+    highContrastLight: '#E5EBF1',
     highContrastDark: '#060A0C',
   },
   /** text-secondary · rest — чистый вид: текст шапки, групповой и выделенной шапки */
@@ -592,7 +592,7 @@ export const TABLE_STATE_COLORS = {
     dark: '#142F41',
     betaCoreLight: '#D5EAF4',
     betaCoreDark: '#113041',
-    highContrastLight: '#CBDEEB',
+    highContrastLight: '#ADCEE8',
     highContrastDark: '#142F41',
   },
   /** surface-transparent-primary · hoverActive — зебра: выделенные ячейки строки с чётным индексом под курсором */
@@ -601,7 +601,7 @@ export const TABLE_STATE_COLORS = {
     dark: '#18374B',
     betaCoreLight: '#C8E3F0',
     betaCoreDark: '#15384B',
-    highContrastLight: '#C0D7E7',
+    highContrastLight: '#A1C7E4',
     highContrastDark: '#18374B',
   },
 } as const;
@@ -621,8 +621,7 @@ export type TableStateColorKey = keyof typeof TABLE_STATE_COLORS;
  * - cardHex — обычный фон ячейки: полупрозрачный цвет сначала
  *   смешивается с ним и становится непрозрачным;
  * - primaryHex — серый цвет темы, который задаёт направление hover для
- *   белых и серых цветов (у них нет своего оттенка). null — в теме его
- *   нет, и hover для серых цветов не считается;
+ *   белых и серых цветов (у них нет своего оттенка);
  * - selectionHex — полупрозрачная заливка выделения, которая
  *   накладывается на цвет ячейки, когда она выделена.
  */
@@ -631,6 +630,6 @@ export const TABLE_FILL_PARAMS = {
   dark: { mode: 'dark', stepFactor: 1.2, cardHex: '#060A0C', primaryHex: '#13181B', selectionHex: '#118CDF33' },
   betaCoreLight: { mode: 'light', stepFactor: 1, cardHex: '#FFFFFF', primaryHex: '#F3F7FA', selectionHex: '#0090DA1F' },
   betaCoreDark: { mode: 'dark', stepFactor: 1.2, cardHex: '#060A0D', primaryHex: '#14191D', selectionHex: '#0090DA33' },
-  highContrastLight: { mode: 'light', stepFactor: 1, cardHex: '#FFFFFF', primaryHex: null, selectionHex: '#0076D21F' },
+  highContrastLight: { mode: 'light', stepFactor: 1, cardHex: '#FFFFFF', primaryHex: '#D6DFE7', selectionHex: '#0076D240' },
   highContrastDark: { mode: 'dark', stepFactor: 1.2, cardHex: '#060A0C', primaryHex: '#13181B', selectionHex: '#118CDF33' },
 } as const;
