@@ -1,145 +1,33 @@
-/* eslint-disable @typescript-eslint/no-use-before-define */
 import {
-  DANGER_COLOR,
-  DANGER_TEXT_COLOR,
-  DEFAULT_ACCENT_FG,
-  DEFAULT_SECONDARY_HOVER,
-  DISABLED_BG_COLOR,
-  DISABLED_BORDER_COLOR,
-  DISABLED_TEXT_COLOR,
-  LIGHTEN_AMOUNT,
+  DISABLED_OPACITY,
+  getButtonViewColors,
+  getEmbedIconButtonViewColors,
+  LEGACY_VARIANT_VIEW,
+  resolveTokens,
 } from './constants';
 import type {
   ButtonVariant,
+  ButtonView,
+  EmbedViewColors,
   GlideThemeForRender,
   ResolvedColors,
   ViewColors,
 } from './types';
-import { colorWithOpacity, lightenColor, lightenColorCached } from './utils';
+import { withOpacity } from './utils';
 
-// Pre-computed danger hover color
-const DANGER_COLOR_HOVER = lightenColor(DANGER_COLOR, LIGHTEN_AMOUNT);
-/**
- * Resolve colors for theme-based buttons
- */
-export function resolveButtonColors(
-  theme: GlideThemeForRender,
-  variant: ButtonVariant,
-  disabled: boolean,
-  isHovered: boolean
-): ResolvedColors {
-  if (disabled) {
-    return {
-      bgColor: theme.bgCell,
-      borderColor: theme.borderColor,
-      textColor: theme.textLight,
-      iconColor: theme.textLight,
-    };
-  }
-
-  switch (variant) {
-    case 'primary':
-      return resolvePrimaryColors(theme, isHovered);
-    case 'secondary':
-      return resolveSecondaryColors(theme, isHovered);
-    case 'danger':
-      return resolveDangerColors(isHovered);
-    default:
-      return resolvePrimaryColors(theme, isHovered);
-  }
-}
-
-/**
- * Resolve colors for primary variant
- */
-export function resolveCheckboxColors(
-  theme: GlideThemeForRender,
-  checked: boolean,
-  indeterminate: boolean,
-  _isHovered: boolean,
-  disabled: boolean
-): ResolvedColors {
-  const { accentColor } = theme;
-  const textColor = theme.accentFg || DEFAULT_ACCENT_FG;
-  const iconColor = theme.accentFg || DEFAULT_ACCENT_FG;
-  const disabledOpacity = 0.4;
-
-  if (checked || indeterminate) {
-    const bgColor = disabled
-      ? colorWithOpacity(accentColor, disabledOpacity)
-      : accentColor;
-    return {
-      bgColor,
-      borderColor: bgColor,
-      textColor,
-      iconColor,
-    };
-  }
-  const borderColorRoot = '#485056B0';
-
-  const bgColor = 'white';
-  const borderColor = disabled
-    ? colorWithOpacity(borderColorRoot, disabledOpacity)
-    : borderColorRoot;
+/** Все цвета контрола на 40 %: недоступное состояние по правилу SDDS. */
+function disabledColors(colors: ResolvedColors): ResolvedColors {
   return {
-    bgColor,
-    borderColor,
-    textColor,
-    iconColor,
+    bgColor: withOpacity(colors.bgColor, DISABLED_OPACITY),
+    borderColor: withOpacity(colors.borderColor, DISABLED_OPACITY),
+    textColor: withOpacity(colors.textColor, DISABLED_OPACITY),
+    iconColor: withOpacity(colors.iconColor, DISABLED_OPACITY),
   };
 }
 
 /**
- * Resolve colors for primary variant
- */
-export function resolvePrimaryColors(
-  theme: GlideThemeForRender,
-  isHovered: boolean
-): ResolvedColors {
-  const { accentColor } = theme;
-  const bgColor = isHovered
-    ? lightenColorCached(accentColor, LIGHTEN_AMOUNT)
-    : accentColor;
-  return {
-    bgColor,
-    borderColor: bgColor,
-    textColor: theme.accentFg || DEFAULT_ACCENT_FG,
-    iconColor: theme.accentFg || DEFAULT_ACCENT_FG,
-  };
-}
-
-/**
- * Resolve colors for secondary variant
- */
-export function resolveSecondaryColors(
-  theme: GlideThemeForRender,
-  isHovered: boolean
-): ResolvedColors {
-  return {
-    bgColor: isHovered
-      ? theme.accentLight || DEFAULT_SECONDARY_HOVER
-      : theme.bgCell,
-    borderColor: theme.accentColor,
-    textColor: theme.accentColor,
-    iconColor: theme.accentColor,
-  };
-}
-
-/**
- * Resolve colors for danger variant
- */
-export function resolveDangerColors(isHovered: boolean): ResolvedColors {
-  const bgColor = isHovered ? DANGER_COLOR_HOVER : DANGER_COLOR;
-  return {
-    bgColor,
-    borderColor: bgColor,
-    textColor: DANGER_TEXT_COLOR,
-    iconColor: DANGER_TEXT_COLOR,
-  };
-}
-
-/**
- * Resolve colors for view-based buttons (sdds_finai__light theme)
+ * Цвета кнопки по её виду: покой или под курсором; недоступная кнопка
+ * рисуется цветами покоя с непрозрачностью 40 % и на курсор не реагирует.
  */
 export function resolveViewColors(
   viewColors: ViewColors,
@@ -147,12 +35,12 @@ export function resolveViewColors(
   isHovered: boolean
 ): ResolvedColors {
   if (disabled) {
-    return {
-      bgColor: DISABLED_BG_COLOR,
-      borderColor: DISABLED_BORDER_COLOR,
-      textColor: DISABLED_TEXT_COLOR,
-      iconColor: DISABLED_TEXT_COLOR,
-    };
+    return disabledColors({
+      bgColor: viewColors.bgColor,
+      borderColor: viewColors.borderColor,
+      textColor: viewColors.textColor,
+      iconColor: viewColors.iconColor,
+    });
   }
 
   return {
@@ -167,4 +55,87 @@ export function resolveViewColors(
         ? viewColors.iconColorHover
         : viewColors.iconColor,
   };
+}
+
+/**
+ * Цвета кнопки старого способа подключения (`variant`): тот же вид из
+ * токенов темы, что у новых кнопок (LEGACY_VARIANT_VIEW).
+ */
+export function resolveButtonColors(
+  theme: GlideThemeForRender,
+  variant: ButtonVariant,
+  disabled: boolean,
+  isHovered: boolean
+): ResolvedColors {
+  const view = LEGACY_VARIANT_VIEW[variant] ?? LEGACY_VARIANT_VIEW.primary;
+  const viewColors = getButtonViewColors(resolveTokens(theme))[view];
+  return resolveViewColors(viewColors, disabled, isHovered);
+}
+
+/**
+ * Цвета кнопки-иконки без подложки по её виду. Переопределения цвета
+ * иконки (например, акцент активной сортировки) приоритетнее вида; hover
+ * без своего переопределения берёт цвет покоя переопределения.
+ */
+export function resolveEmbedIconButtonColors(
+  viewColors: EmbedViewColors,
+  disabled: boolean,
+  isHovered: boolean,
+  overrides?: { iconColor?: string; iconColorHovered?: string }
+): ResolvedColors {
+  const iconColor = overrides?.iconColor ?? viewColors.iconColor;
+  const iconColorHover =
+    overrides?.iconColorHovered ??
+    overrides?.iconColor ??
+    viewColors.iconColorHover;
+  const colors = resolveViewColors(
+    {
+      ...viewColors,
+      textColor: iconColor,
+      textColorHover: iconColorHover,
+      iconColor,
+      iconColorHover,
+    },
+    disabled,
+    isHovered
+  );
+  return colors;
+}
+
+export function getEmbedIconButtonColors(
+  theme: GlideThemeForRender | undefined,
+  view: ButtonView
+): EmbedViewColors {
+  return getEmbedIconButtonViewColors(resolveTokens(theme))[view];
+}
+
+/**
+ * Цвета чекбокса, как у Checkbox в SDDS: неотмеченный — прозрачный фон и
+ * рамка `text-secondary`; отмеченный или частично отмеченный — заливка
+ * `text-accent`, галочка `on-dark-text-primary`, без рамки. Недоступный —
+ * те же цвета на 40 %.
+ */
+export function resolveCheckboxColors(
+  theme: GlideThemeForRender,
+  checked: boolean,
+  indeterminate: boolean,
+  _isHovered: boolean,
+  disabled: boolean
+): ResolvedColors {
+  const tokens = resolveTokens(theme);
+  const colors: ResolvedColors =
+    checked || indeterminate
+      ? {
+          bgColor: tokens.textAccent,
+          borderColor: tokens.textAccent,
+          textColor: tokens.onDarkTextPrimary,
+          iconColor: tokens.onDarkTextPrimary,
+        }
+      : {
+          bgColor: 'transparent',
+          borderColor: tokens.textSecondary,
+          textColor: tokens.onDarkTextPrimary,
+          iconColor: tokens.onDarkTextPrimary,
+        };
+  return disabled ? disabledColors(colors) : colors;
 }

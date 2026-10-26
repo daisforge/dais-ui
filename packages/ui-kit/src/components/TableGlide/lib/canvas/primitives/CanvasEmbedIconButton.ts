@@ -1,9 +1,13 @@
+import type { Theme } from '../../../theming/types';
 import {
   BUTTON_PADDING_Y,
   type ButtonView,
+  drawEmbedIconButton,
   drawEmbedIconButtonWithView,
-  drawIconButton,
   EmbedIconButtonSize,
+  type EmbedViewColors,
+  FALLBACK_THEME,
+  getEmbedIconButtonViewColors,
   ICON_SIZE_ADJUSTMENT,
   SIZE_CONFIG,
 } from '../cells/buttons';
@@ -17,19 +21,6 @@ const DEFAULT_VIEW: ButtonView = 'default';
 const DEFAULT_SIZE: EmbedIconButtonSize = 's';
 const DEFAULT_CURSOR = 'pointer';
 const MAX_ICON_SIZE = 20;
-
-// Legacy theme for backward compatibility
-const BUTTON_THEME = {
-  accentColor: '#1e88e5',
-  accentLight: 'rgba(30, 136, 229, 0.16)',
-  accentFg: '#ffffff',
-  bgCell: '#ffffff',
-  borderColor: '#e0e0e0',
-  textLight: '#9e9e9e',
-  textDark: '#1f1f1f',
-  baseFontFull:
-    "13px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-};
 
 interface ButtonMetrics {
   height: number;
@@ -64,6 +55,8 @@ export interface CanvasEmbedIconButtonOptions {
   iconColorHovered?: string;
   disabled?: boolean;
   onClick?: (event: CanvasEvent) => void;
+  /** Тема таблицы: из её токенов берутся цвета видов. */
+  theme?: Theme;
 }
 
 export class CanvasEmbedIconButton extends CanvasLeaf {
@@ -95,6 +88,10 @@ export class CanvasEmbedIconButton extends CanvasLeaf {
 
   private useNewApi = false;
 
+  private theme: Theme | undefined;
+
+  private viewColors: Record<ButtonView, EmbedViewColors> | undefined;
+
   private getDisabled = () => (this.disabled ? 'default' : DEFAULT_CURSOR);
 
   constructor(
@@ -107,6 +104,10 @@ export class CanvasEmbedIconButton extends CanvasLeaf {
     this.size = options?.size ?? 'auto';
     this.variant = options?.variant ?? 'primary';
     this.disabled = options?.disabled ?? false;
+    this.theme = options?.theme;
+    if (options?.theme?.tokens) {
+      this.viewColors = getEmbedIconButtonViewColors(options.theme.tokens);
+    }
     super.style = {
       ...super.style,
       cursor: this.getDisabled(),
@@ -194,7 +195,8 @@ export class CanvasEmbedIconButton extends CanvasLeaf {
         this.buttonSize,
         this.disabled,
         this.isHovered,
-        overrides
+        overrides,
+        this.viewColors
       );
       if (CanvasNode.DEBUG) {
         const sizeConfig = SIZE_CONFIG[this.buttonSize];
@@ -205,14 +207,14 @@ export class CanvasEmbedIconButton extends CanvasLeaf {
         batcher.strokeRect(iconX, iconY, iconSz, iconSz, 'cyan', 1);
       }
     } else {
-      drawIconButton(
+      drawEmbedIconButton(
         batcher,
         x,
         y,
         width,
         height,
         this.icon,
-        BUTTON_THEME,
+        { ...FALLBACK_THEME, ...this.theme },
         this.variant,
         this.disabled,
         this.isHovered
