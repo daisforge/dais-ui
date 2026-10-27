@@ -1,7 +1,7 @@
 import { POPOVER_Z_INDEX } from '../feature-popover-table/constants';
 import type { ResolvedCanvasDropdownConfig } from './types';
 
-/** Пункт-заглушка, пока getItems не разрешился. */
+/** Пункт-заглушка, пока getItems загружает пункты. */
 export const DROPDOWN_LOADING_ITEM_VALUE = '__canvas-dropdown-loading';
 
 /** Пункт-заглушка, если getItems завершился ошибкой. */

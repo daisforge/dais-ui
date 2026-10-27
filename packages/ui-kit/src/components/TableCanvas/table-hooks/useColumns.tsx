@@ -128,9 +128,9 @@ export const useColumns = <
   ) => 'isServiceColumn' in column && column.isServiceColumn === true;
 
   // -------------- onOpenFilter callback -----------------
-  // Зависим только от стабильного open: объект контекста меняется на каждое
-  // открытие и закрытие любого поповера, а от onOpenFilter зависят колонки,
-  // и смена колонок пересобирает шапку и перерисовывает весь холст.
+  // Берём только open, он не меняется. Весь контекст меняется при каждом
+  // открытии окна, а от onOpenFilter зависят колонки: их смена перерисовала
+  // бы всю таблицу.
   const { open: openTablePopover } = tablePopoverValue;
   const onOpenFilter = useCallback(
     (

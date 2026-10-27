@@ -19,7 +19,7 @@ const node = (id: string, rect: CanvasNode['rect']) => {
   return result;
 };
 
-/** Ячейка 200×40 с кнопкой (поповер по клику) и иконкой внутри кнопки. */
+/** Ячейка 200×40 с кнопкой (Popover по клику) и иконкой внутри кнопки. */
 const createCell = () => {
   const root = node('root', { x: 0, y: 0, width: 200, height: 40 });
   const button = node('button', { x: 10, y: 5, width: 100, height: 30 });
@@ -29,7 +29,7 @@ const createCell = () => {
   button.addChild(icon);
 
   const cellRoot = new CellCanvasRoot(root);
-  // Границы ячейки во viewport с последней отрисовки.
+  // Границы ячейки на экране с последней отрисовки.
   (cellRoot as unknown as { bounds: CanvasNode['rect'] }).bounds = {
     x: 500,
     y: 300,
@@ -39,7 +39,7 @@ const createCell = () => {
   return { cellRoot, button, icon };
 };
 
-/** Нода, которая рисует себя меньше своего layout-rect (кнопка в растянутом контейнере). */
+/** Нода рисует себя меньше своей области в раскладке, как кнопка в растянутом контейнере. */
 class DrawnSmallerNode extends TestNode {
   override getAnchorRect() {
     return {

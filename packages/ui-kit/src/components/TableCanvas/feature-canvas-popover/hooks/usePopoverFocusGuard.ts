@@ -4,31 +4,18 @@ import { useLayoutEffect, useState } from 'react';
 import { getFloatingContainer } from '../utils/floatingContainer';
 
 /**
- * Не даёт canvas-поповеру забирать фокус у таблицы при открытии.
+ * Не даёт Popover забрать фокус у таблицы при открытии. PopoverBeta ставит
+ * фокус на свой контейнер: вокруг Popover мелькает рамка фокуса, а стрелки в
+ * таблице перестают работать. Сразу возвращаем фокус туда, где он был.
  *
- * При открытии floating-ui FloatingFocusManager внутри PopoverBeta ставит
- * фокус на сам контейнер поповера. В таблице из-за этого:
- * - мелькает фокус-рамка вокруг поповера: Glide отменяет pointerdown на canvas,
- *   браузер не видит клика мышью и считает фокус «клавиатурным» (:focus-visible);
- * - фокус уходит из таблицы: перестают работать стрелки.
- *
- * Тот же приём, что у поповера фильтра (use-focus-search-input): focusin в
- * capture-фазе ловит фокус на нашем контейнере и синхронно, до отрисовки кадра,
- * возвращает его туда, где он был до открытия.
- *
- * Перехват работает только в начальном окне открытия: до первого перехвата
- * или до первого нажатия внутри поповера. Дальше фокус ведёт пользователь:
- * клик по тексту внутри поповера (браузер ставит фокус на контейнер) не
- * возвращает его в таблицу, иначе Ctrl+C копировал бы ячейку, а не текст.
- * Если фокус уже внутри (autoFocus поля), floating-ui контейнер не фокусирует
- * и перехвата нет.
- *
- * Если поповер закрывается с фокусом внутри, фокус возвращается на место.
+ * Возвращаем только один раз, до первого нажатия внутри Popover: дальше фокус
+ * ведёт пользователь, например, чтобы Ctrl+C копировал выделенный текст.
+ * При закрытии с фокусом внутри фокус тоже возвращается на место.
  */
 export function usePopoverFocusGuard(
   popoverRef: RefObject<HTMLElement | null>,
 ) {
-  // Читаем при первом рендере: эффекты PopoverBeta (и перевод фокуса) идут раньше наших.
+  // Запоминаем при первом рендере: PopoverBeta переносит фокус раньше наших эффектов.
   const [previousFocus] = useState<Element | null>(() =>
     typeof document === 'undefined' ? null : document.activeElement,
   );
@@ -42,10 +29,9 @@ export function usePopoverFocusGuard(
       element !== document.body &&
       element.isConnected;
 
-    // from — откуда фокус пришёл на контейнер (relatedTarget). Он точнее
-    // запомненного при рендере: при переключении поповера A на B фокус до
-    // открытия B был внутри A, который уже удалён, а A успел вернуть фокус в
-    // таблицу.
+    // from: откуда фокус пришёл на контейнер. Он точнее запомненного при
+    // рендере, когда один Popover сменяется другим: прежний уже удалён и успел
+    // вернуть фокус в таблицу.
     const restore = (container: HTMLElement, from?: unknown) => {
       if (canTakeFocus(from) && !container.contains(from)) {
         from.focus({ preventScroll: true });
@@ -66,7 +52,7 @@ export function usePopoverFocusGuard(
       restore(container, from);
     };
 
-    // Нажатие внутри поповера: дальше фокус ведёт пользователь.
+    // Нажатие внутри Popover: дальше фокус ведёт пользователь.
     const handlePointerDown = (event: PointerEvent) => {
       const container = getContainer();
       if (
@@ -91,8 +77,8 @@ export function usePopoverFocusGuard(
     return () => {
       document.removeEventListener('focusin', handleFocusIn, true);
       document.removeEventListener('pointerdown', handlePointerDown, true);
-      // Закрываемся с фокусом внутри (кнопка «Закрыть», Esc после Tab):
-      // без этого фокус упадёт на body и таблица потеряет клавиатуру.
+      // Закрываемся с фокусом внутри (кнопка «Закрыть», Esc после Tab): иначе
+      // фокус уйдёт на body и таблица перестанет отвечать на клавиатуру.
       const current = getContainer();
       if (current && current.contains(document.activeElement)) {
         restore(current);

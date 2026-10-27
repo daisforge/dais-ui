@@ -53,9 +53,8 @@ export const CanvasTooltipOverlay: React.FC<CanvasTooltipOverlayProps> =
         getDelays,
       });
 
-      // Пока открыт canvas-поповер, тултипы таблицы не показываем: иначе тултип
-      // элемента висит рядом с его поповером. После закрытия тултип вернётся,
-      // если курсор всё ещё над элементом.
+      // Пока открыт Popover на canvas, подсказки таблицы прячем, чтобы они не
+      // висели рядом с ним. После закрытия подсказка вернётся, если курсор над элементом.
       const tablePopover = useOptionalTablePopover();
       const canvasPopoverOpen =
         !!tablePopover?.state.isOpen &&

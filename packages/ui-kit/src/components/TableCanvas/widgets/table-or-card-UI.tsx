@@ -177,7 +177,7 @@ export const TableOrCardsUI = <
   tooltip?: TableConfigTooltip;
   popover?: TableConfigPopover;
   dropdown?: TableConfigDropdown;
-  /** Ключ строки: по нему поповер ячейки понимает, что строка под якорем сменилась. */
+  /** Ключ строки: по нему Popover понимает, что под якорем теперь другая строка. */
   rowKeyGetter?: (row: RowType) => unknown;
   fullScreened?: boolean;
 }) => {

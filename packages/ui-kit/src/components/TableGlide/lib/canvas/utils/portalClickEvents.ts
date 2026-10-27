@@ -7,45 +7,35 @@ import type {
   TooltipContextShape,
 } from './portalHoverEvents';
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Приоритеты событий шины
-// ─────────────────────────────────────────────────────────────────────────────
-
 /**
- * Приоритет события на шинах наведения и клика. Событие canvas-ноды важнее
- * события ячейки или шапки колонки: тултип и поповер ноды не перебиваются
- * колоночными.
+ * Приоритет событий наведения и клика. Событие canvas-элемента важнее события
+ * ячейки или шапки: его тултип и Popover не перебиваются настройками колонки.
  */
 export const CANVAS_PORTAL_PRIORITY = {
   /** Ячейка или шапка колонки целиком (cellTooltip, headerCellTooltip). */
   COLUMN: 0,
-  /** Canvas-нода (проп tooltip, popover или dropdown на Canvas-элементе). */
+  /** Canvas-элемент с пропом tooltip, popover или dropdown. */
   NODE: 1,
 } as const;
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Конфиг поповера на canvas-ноде / колонке
-// ─────────────────────────────────────────────────────────────────────────────
-
 /**
- * Пропсы поповера, которые можно задать снаружи: на Canvas-элементе (проп
- * `popover`) или глобально (`tableConfig.popover`).
+ * Настройки Popover на Canvas-элементе (проп `popover`) или для всей таблицы
+ * (`tableConfig.popover`).
  *
- * Сквозные поля (`placement`, `offset`, `hasTail`, `flip`, `shift`, `zIndex`,
- * `resizable`) взяты из атомарного PopoverBeta и уходят в него как есть.
- * Остальное своё: открытие, закрытие и якорь делает таблица, атомарка про
- * них не знает. Тот же приём, что у тултипа (`CanvasNodeTooltipProps`).
+ * Поля `placement`, `offset`, `hasTail`, `flip`, `shift`, `zIndex`, `resizable`
+ * передаются в PopoverBeta без изменений. Остальные поля обрабатывает таблица:
+ * она сама открывает и закрывает Popover и считает, к чему его привязать.
  */
 export type CanvasNodePopoverProps = Pick<
   PopoverBetaCompProps,
   'placement' | 'offset' | 'hasTail' | 'flip' | 'shift' | 'zIndex' | 'resizable'
 > & {
   /**
-   * Чем открывать поповер.
-   * - `click` — клик по элементу;
-   * - `hover` — наведение. Поповер держится, пока курсор над элементом или
-   *   над самим поповером, поэтому в него можно перевести курсор и нажать
-   *   кнопку или ссылку.
+   * Как открывать Popover.
+   * - `click`: по клику на элемент;
+   * - `hover`: по наведению. Popover остаётся открытым, пока курсор над
+   *   элементом или над самим Popover, поэтому в него можно перевести курсор
+   *   и нажать кнопку или ссылку.
    * @default 'click'
    */
   trigger?: 'click' | 'hover';
@@ -53,62 +43,58 @@ export type CanvasNodePopoverProps = Pick<
   mouseEnterDelay?: number;
   /**
    * Задержка перед скрытием при `trigger: 'hover'` (мс): сколько курсор может
-   * пробыть вне элемента и поповера, прежде чем поповер закроется.
+   * пробыть вне элемента и Popover, прежде чем Popover закроется.
    * @default 200
    */
   mouseLeaveDelay?: number;
   /**
-   * Закрывать поповер при скролле таблицы по любой оси.
-   * Якорь нарисован на canvas и за скроллом не едет, поэтому по умолчанию
-   * поповер закрывается.
+   * Закрывать Popover при прокрутке таблицы в любую сторону.
+   * Элемент нарисован на canvas, и Popover не может следовать за ним при
+   * прокрутке, поэтому по умолчанию он закрывается.
    * @default true
    */
   closeOnScroll?: boolean;
   /**
-   * Закрывать по клику вне поповера. При `trigger: 'hover'` не действует:
-   * поповер закрывается, когда уходит курсор.
+   * Закрывать по клику вне Popover. При `trigger: 'hover'` не действует:
+   * Popover закрывается, когда уходит курсор.
    * @default true
    */
   closeOnOutsideClick?: boolean;
   /** Закрывать по Esc. @default true */
   closeOnEsc?: boolean;
-  /** Подпись поповера для экранных дикторов (aria-label). */
+  /** Подпись Popover для программ чтения с экрана (aria-label). */
   ariaLabel?: string;
-  /** Вызывается после открытия поповера. */
+  /** Вызывается после открытия Popover. */
   onOpen?: () => void;
-  /** Вызывается после закрытия поповера любым способом. */
+  /** Вызывается после закрытия Popover любым способом. */
   onClose?: () => void;
 };
 
-/** Что получает функция `renderContent`: закрыть поповер из своего содержимого. */
+/** Что получает функция `renderContent`: `close`, чтобы закрыть Popover из его содержимого. */
 export interface CanvasPopoverRenderApi {
   close: () => void;
 }
 
 /**
- * Содержимое поповера: готовый узел (`content`) или функция (`renderContent`),
- * которой нужен `close`. Задаётся что-то одно.
+ * Содержимое Popover: готовая разметка (`content`) или функция (`renderContent`),
+ * если содержимому нужен `close`. Задаётся что-то одно.
  */
 export type CanvasNodePopoverContent =
   | {
-      /** Готовое содержимое поповера. */
+      /** Готовое содержимое Popover. */
       content: ReactNode;
       renderContent?: never;
     }
   | {
-      /** Содержимое поповера с доступом к `close`. */
+      /** Содержимое Popover с доступом к `close`. */
       renderContent: (api: CanvasPopoverRenderApi) => ReactNode;
       content?: never;
     };
 
-/**
- * Проп `popover` на Canvas-элементах. Открывается по клику или наведению
- * на ноду, см. `trigger`.
- */
+/** Проп `popover` на Canvas-элементах. Открывается по клику или наведению, смотря по `trigger`. */
 export type CanvasNodePopoverConfig = CanvasNodePopoverProps &
   CanvasNodePopoverContent;
 
-/** Конфиг похож на конфиг поповера: объект с `content` или `renderContent`. */
 export function isCanvasNodePopoverConfig(
   value: unknown,
 ): value is CanvasNodePopoverConfig {
@@ -117,11 +103,7 @@ export function isCanvasNodePopoverConfig(
   return 'content' in config || typeof config['renderContent'] === 'function';
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Событие клика по canvas-якорю
-// ─────────────────────────────────────────────────────────────────────────────
-
-/** Прямоугольник во viewport. */
+/** Прямоугольник в координатах окна браузера. */
 export interface CanvasPortalRect {
   x: number;
   y: number;
@@ -130,25 +112,24 @@ export interface CanvasPortalRect {
 }
 
 /**
- * Клик по canvas-элементу, у которого есть поповер или дропдаун. Координаты
- * якоря во viewport, как у hover-события.
+ * Клик по canvas-элементу с Popover или Dropdown. Координаты элемента считаются
+ * от окна браузера, как в событии наведения.
  */
 export interface CanvasPortalClickDetail<
   TContext extends TooltipContextShape = TooltipContextShape,
 > extends CanvasPortalRect {
-  /** Id canvas-ноды. */
+  /** Id canvas-элемента. */
   originId: string;
   nodeId?: string;
   source?: CanvasPortalSource;
   /**
-   * column, row, ctxs, refTable, colInd, rowInd, theme. Имя поля то же, что у
-   * события наведения, чтобы резолверы работали с обоими. Дженерик стирается
-   * CustomEvent-ом.
+   * column, row, ctxs, refTable, colInd, rowInd, theme. Поле названо так же, как
+   * в событии наведения, чтобы один и тот же код читал оба события.
    */
   tooltipContext?: TContext;
-  /** Конфиг с ноды (проп popover на Canvas-элементе). */
+  /** Проп popover с Canvas-элемента. */
   popoverFromNode?: CanvasNodePopoverConfig;
-  /** Конфиг с ноды (проп dropdown на Canvas-элементе). */
+  /** Проп dropdown с Canvas-элемента. */
   dropdownFromNode?: CanvasNodeDropdownConfig;
   /** Приоритет события, см. CANVAS_PORTAL_PRIORITY. @default COLUMN */
   priority?: number;
@@ -161,9 +142,9 @@ export type CanvasPortalClickListener = (
 export const CANVAS_PORTAL_CLICK_EVENT = 'basic-grid-canvas-portal-click';
 
 /**
- * Диспатчит клик по canvas-якорю.
- * @param detail — координаты якоря и конфиг поповера
- * @param target — контейнер таблицы. Если передан, событие идёт на нём, иначе на window.
+ * Сообщает о клике по canvas-элементу.
+ * @param detail координаты элемента и настройки Popover или Dropdown
+ * @param target контейнер таблицы. Если передан, событие отправляется на нём, иначе на window.
  */
 export function dispatchCanvasPortalClick(
   detail: CanvasPortalClickDetail,
@@ -179,9 +160,8 @@ export function dispatchCanvasPortalClick(
 }
 
 /**
- * Подписка на клик по canvas-якорю.
- * @param listener — колбэк при событии
- * @param target — контейнер таблицы. Если передан, слушаем только его, иначе window.
+ * Подписка на клик по canvas-элементу.
+ * @param target контейнер таблицы. Если передан, слушаем только его, иначе window.
  */
 export function subscribeToCanvasPortalClick(
   listener: CanvasPortalClickListener,

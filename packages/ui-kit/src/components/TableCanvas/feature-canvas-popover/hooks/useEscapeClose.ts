@@ -6,42 +6,34 @@ import {
   isEditableElement,
 } from '../utils/floatingContainer';
 
-/** Плавающие элементы внутри таблицы, у которых свой Esc (контекстное меню, списки). */
+/** Всплывающие элементы внутри таблицы со своей обработкой Esc (контекстное меню, списки). */
 const OWN_ESCAPE_SELECTOR = '[role="menu"], [role="listbox"], [role="dialog"]';
 
-/** Последний Esc и что с ним решили: по нему переходник разбирает onToggle(false). */
+/** Последнее нажатие Esc и закрывает ли оно Popover. */
 export interface LastEscape {
   at: number;
   /**
-   * Esc законно закрывает поповер: пришёл изнутри поповера (его закрывает
-   * PopoverBeta) или его закрыли мы. Esc из чужого элемента страницы — нет:
-   * floating-ui слушает Esc на всём документе, и такое закрытие игнорируем.
+   * Esc нажат внутри Popover или в таблице и закрывает Popover. Esc в другом
+   * месте страницы Popover не закрывает, хотя floating-ui его тоже слышит.
    */
   closes: boolean;
 }
 
 export interface UseEscapeCloseParams {
-  /** Закрывать по Esc (closeOnEsc). */
   enabled: boolean;
   onClose: () => void;
-  /** Контейнер таблицы: Esc закрывает поповер, только если пришёл из неё. */
+  /** Контейнер таблицы: Esc закрывает Popover, только если нажат в ней. */
   tableContainer?: HTMLElement | null;
   popoverRef: RefObject<HTMLElement | null>;
 }
 
 /**
- * Закрывает canvas-поповер по Esc, пока фокус остаётся в таблице.
+ * Закрывает Popover по Esc, когда фокус в таблице. Пока Popover открыт, фокус
+ * остаётся в таблице, и Esc сначала получает glide. Перехватываем его раньше,
+ * если он нажат в своей таблице или фокуса нет нигде, но не в поле ввода и не
+ * во всплывающем элементе со своим Esc. Тогда первый Esc закрывает только Popover.
  *
- * Фокус при открытом поповере остаётся в таблице (usePopoverFocusGuard), и Esc
- * получает Glide, а не floating-ui. Ловим его в capture-фазе, но только если
- * он пришёл из своей таблицы (или ни из чего: фокус на body) и не из поля ввода
- * или плавающего элемента внутри таблицы со своим Esc. Тогда первый Esc
- * закрывает поповер и до таблицы не доходит. Esc внутри поповера обрабатывают
- * его содержимое и PopoverBeta, Esc в чужих элементах страницы (в том числе в
- * модалке, внутри которой стоит таблица, если фокус не в таблице) мы не трогаем.
- *
- * @returns ref с последним Esc: по нему переходник отличает закрытие по Esc от
- *   клика мимо и решает, принимать ли его.
+ * @returns ref с последним Esc, чтобы отличить закрытие по Esc от клика мимо.
  */
 export function useEscapeClose({
   enabled,
@@ -73,8 +65,8 @@ export function useEscapeClose({
         target === document.body ||
         target === document.documentElement;
       const fromTable = !!target && !!tableContainer?.contains(target);
-      // Свой Esc у поля ввода и у плавающего элемента внутри таблицы. Модалка
-      // снаружи таблицы не в счёт: closest поднимается и до неё.
+      // Учитываем только всплывающие элементы внутри таблицы: closest найдёт и
+      // модальное окно вокруг таблицы, а его Esc закрывать Popover не мешает.
       const ownEscape =
         !!target &&
         (isEditableElement(target) ||

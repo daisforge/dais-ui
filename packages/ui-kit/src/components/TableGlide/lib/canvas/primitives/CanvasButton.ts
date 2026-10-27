@@ -124,9 +124,9 @@ export class CanvasButton extends CanvasLeaf {
   }
 
   /**
-   * Кнопка рисует себя высотой из SIZE_CONFIG, даже если контейнер растянул
-   * rect. Старый API (variant) к тому же отступает по BUTTON_PADDING_Y сверху
-   * и снизу: пилюля ниже своих 32 px на 8 px.
+   * Кнопка рисуется высотой из SIZE_CONFIG, даже если контейнер растянул её
+   * область, поэтому якорь берём по нарисованной кнопке. В старом API (variant)
+   * кнопка ещё и отступает от краёв на BUTTON_PADDING_Y сверху и снизу.
    */
   override getAnchorRect() {
     const { x, y, width } = this.rect;

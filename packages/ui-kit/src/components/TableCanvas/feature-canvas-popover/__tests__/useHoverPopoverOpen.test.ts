@@ -52,7 +52,7 @@ describe('useHoverPopoverOpen: открытие поповера по навед
   let stateRef: { current: TablePopoverState };
   let openPopover: ReturnType<typeof vi.fn>;
 
-  // Ref-ы стабильные, как в CanvasPopoverListener.
+  // ref не меняются между рендерами, как в CanvasPopoverListener.
   const renderOpenHook = (isOpen = false, rows: readonly unknown[] = ROWS) => {
     const containerRef = { current: container };
     const configRef = { current: {} };
@@ -80,7 +80,7 @@ describe('useHoverPopoverOpen: открытие поповера по навед
       true,
     );
 
-  // Состояние, в которое listener переводит таблицу после openPopover.
+  // Состояние, в которое CanvasPopoverListener переводит таблицу после openPopover.
   const openedHoverState = (sourceKey: string): TablePopoverState => ({
     ...CLOSED,
     isOpen: true,
@@ -183,7 +183,7 @@ describe('useHoverPopoverOpen: открытие поповера по навед
   });
 
   it('скрытие с тем же id ноды, пока курсор над якорем, ожидание не отменяет', () => {
-    // id ноды одинаковый во всех строках: hide прошлой строки приходит позже show новой.
+    // id элемента одинаковый во всех строках: скрытие прошлой строки приходит после показа новой.
     renderOpenHook();
     show(nodeShow());
     movePointer(110, 110);

@@ -84,13 +84,13 @@ describe('usePopoverFocusGuard: фокус остаётся в таблице', 
   });
 
   it('закрытие с фокусом внутри возвращает фокус на ячейку', () => {
-    // Содержимое поповера рендерит и удаляет React, как в таблице: иначе React
+    // Содержимое Popover рисует и удаляет React, как в таблице: иначе React
     // сам вернул бы фокус на кнопку, оставшуюся в документе.
     const GuardedPopover = () => {
       const ref = useRef<HTMLDivElement>(null);
       usePopoverFocusGuard(ref);
       return (
-        // Разметка floating-ui: контейнер поповера фокусируемый.
+        // Разметка floating-ui: контейнер Popover фокусируемый.
         // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
         <div data-floating-ui-focusable="" role="dialog" tabIndex={0}>
           <div ref={ref}>

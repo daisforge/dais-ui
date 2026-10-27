@@ -35,9 +35,7 @@ export interface CanvasClickDispatchResult {
    */
   suppressGridDefault: boolean;
 
-  /**
-   * Клик попал в canvas-ноду с пропом popover: событие поповера уже отправлено.
-   */
+  /** Клик пришёлся на canvas-элемент с пропом popover, и событие для Popover уже отправлено. */
   portalClickDispatched?: boolean;
 }
 
@@ -101,7 +99,7 @@ interface PerformCanvasClickArgs {
    */
   event?: MouseEvent | React.MouseEvent;
 
-  /** Кнопка и свежие границы ячейки для поповера (см. CellCanvasPointerDispatchOptions). */
+  /** Нажатая кнопка мыши и актуальные границы ячейки, нужны для Popover. */
   pointerOptions?: CellCanvasPointerDispatchOptions;
 }
 

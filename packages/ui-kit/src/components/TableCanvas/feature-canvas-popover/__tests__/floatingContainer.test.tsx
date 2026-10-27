@@ -6,9 +6,8 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { getFloatingContainer } from '../utils/floatingContainer';
 
 /**
- * Страховка внешней зависимости: защита фокуса и Esc ищут контейнер поповера
- * по разметке, которую ставят floating-ui и PopoverBeta. Если атомарка её
- * поменяет, этот тест упадёт раньше, чем вернётся фокус-рамка в таблице.
+ * Возврат фокуса и Esc ищут контейнер Popover по разметке floating-ui и
+ * PopoverBeta. Если она поменяется, тест это поймает.
  */
 describe('getFloatingContainer на настоящем PopoverBeta', () => {
   afterEach(() => {

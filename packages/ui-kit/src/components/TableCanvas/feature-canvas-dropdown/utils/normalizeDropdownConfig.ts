@@ -4,8 +4,8 @@ import { DROPDOWN_DEFAULTS } from '../constants';
 import type { ResolvedCanvasDropdownConfig } from '../types';
 
 /**
- * Накладывает дефолты на конфиг дропдауна: сначала значение с элемента, потом
- * tableConfig.dropdown, потом встроенные дефолты.
+ * Подставляет значения в конфиг Dropdown: сначала с элемента, потом из
+ * tableConfig.dropdown, потом значения по умолчанию.
  */
 export function normalizeDropdownConfig(
   config: CanvasNodeDropdownConfig,
@@ -14,8 +14,8 @@ export function normalizeDropdownConfig(
   return {
     items: config.items,
     getItems: config.getItems,
-    // trigger только с элемента: canvas-нода решает, участвовать ли в
-    // наведении, ещё при построении дерева и про tableConfig не знает.
+    // Элемент узнаёт, реагировать ли на наведение, ещё при построении и
+    // tableConfig не видит, поэтому trigger берём только с него.
     trigger: config.trigger ?? DROPDOWN_DEFAULTS.trigger,
     mouseEnterDelay:
       config.mouseEnterDelay ??

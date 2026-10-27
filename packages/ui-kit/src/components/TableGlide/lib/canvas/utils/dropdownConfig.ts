@@ -4,14 +4,9 @@ import type {
 } from '@ui-kit/components/Dropdown';
 import type { ReactNode } from 'react';
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Конфиг дропдауна на canvas-ноде
-// ─────────────────────────────────────────────────────────────────────────────
-
-/** Пункт дропдауна: тот же тип, что у контекстного меню таблицы. */
 export type CanvasDropdownItem = DropdownItemOption;
 
-/** Что получают колбэки дропдауна: закрыть его из своего кода. */
+/** Что получают колбэки Dropdown: функция закрытия. */
 export interface CanvasDropdownApi {
   close: () => void;
 }
@@ -23,14 +18,10 @@ export interface CanvasDropdownErrorApi extends CanvasDropdownApi {
 }
 
 /**
- * Пропсы дропдауна, которые можно задать снаружи: на Canvas-элементе (проп
- * `dropdown`) или глобально (`tableConfig.dropdown`).
- *
- * Сквозные поля (`placement`, `offset`, `listWidth`, `listMaxHeight`,
- * `variant`, `zIndex`, `closeOnSelect`, `renderItem`, `beforeList`,
- * `afterList`) взяты из атомарного Dropdown и уходят в него как есть.
- * Остальное своё: открытие, закрытие, якорь и подгрузку пунктов делает
- * таблица. Тот же приём, что у тултипа (`CanvasNodeTooltipProps`).
+ * Настройки Dropdown: на Canvas-элементе (проп `dropdown`) или для всей таблицы
+ * (`tableConfig.dropdown`). Поля `placement`, `offset`, `listWidth`,
+ * `listMaxHeight`, `variant`, `zIndex`, `closeOnSelect`, `renderItem`,
+ * `beforeList`, `afterList` передаются в атомарный Dropdown как есть.
  */
 export type CanvasNodeDropdownProps = Pick<
   DropdownProps,
@@ -46,9 +37,9 @@ export type CanvasNodeDropdownProps = Pick<
   | 'afterList'
 > & {
   /**
-   * Чем открывать дропдаун.
-   * - `click` — левый клик по элементу;
-   * - `hover` — наведение. Дропдаун держится, пока курсор над элементом или
+   * Как открывать Dropdown.
+   * - `click`: левый клик по элементу;
+   * - `hover`: наведение. Dropdown открыт, пока курсор над элементом или
    *   над списком.
    * @default 'click'
    */
@@ -57,7 +48,7 @@ export type CanvasNodeDropdownProps = Pick<
   mouseEnterDelay?: number;
   /**
    * Задержка перед скрытием при `trigger: 'hover'` (мс): сколько курсор может
-   * пробыть вне элемента и списка, прежде чем дропдаун закроется.
+   * пробыть вне элемента и списка, прежде чем Dropdown закроется.
    * @default 200
    */
   mouseLeaveDelay?: number;
@@ -65,22 +56,22 @@ export type CanvasNodeDropdownProps = Pick<
   size?: 'xs' | 's' | 'm';
   /**
    * Закрывать при скролле таблицы по любой оси.
-   * Якорь нарисован на canvas и за скроллом не едет, поэтому по умолчанию
-   * дропдаун закрывается.
+   * Элемент нарисован на canvas, и список за ним при скролле не двигается,
+   * поэтому по умолчанию Dropdown закрывается.
    * @default true
    */
   closeOnScroll?: boolean;
   /**
    * Закрывать по клику вне списка. При `trigger: 'hover'` не действует:
-   * дропдаун закрывается, когда уходит курсор.
+   * Dropdown закрывается, когда уходит курсор.
    * @default true
    */
   closeOnOutsideClick?: boolean;
   /** Закрывать по Esc. @default true */
   closeOnEsc?: boolean;
   /**
-   * Пункты, пока `getItems` загружает настоящие. По умолчанию один
-   * неактивный пункт «Загрузка...»; для скелетонов задайте свои пункты и
+   * Пункты, которые видны, пока `getItems` загружает настоящие. По умолчанию
+   * один неактивный пункт «Загрузка...». Для скелетонов задайте свои пункты и
    * `renderItem`.
    */
   loadingItems?: CanvasDropdownItem[];
@@ -89,21 +80,20 @@ export type CanvasNodeDropdownProps = Pick<
    * По умолчанию один неактивный пункт «Не удалось загрузить».
    */
   renderError?: (api: CanvasDropdownErrorApi) => ReactNode;
-  /** Выбор пункта. Для пункта с вложенными пунктами тоже вызывается. */
+  /** Выбор пункта, в том числе пункта с вложенными пунктами. */
   onItemSelect?: (item: CanvasDropdownItem, api: CanvasDropdownApi) => void;
   /** Подпись списка для экранных дикторов (aria-label). */
   ariaLabel?: string;
-  /** Вызывается после открытия дропдауна. */
+  /** Вызывается после открытия Dropdown. */
   onOpen?: () => void;
-  /** Вызывается после закрытия дропдауна любым способом. */
+  /** Вызывается после закрытия Dropdown любым способом. */
   onClose?: () => void;
 };
 
 /**
- * Пункты дропдауна: готовый массив (`items`) или функция (`getItems`), которая
- * возвращает пункты сразу или промисом. Промис — асинхронная подгрузка: пока
- * он не разрешился, список показывает `loadingItems`, при ошибке `renderError`.
- * Задаётся что-то одно.
+ * Пункты Dropdown: готовый массив (`items`) или функция (`getItems`), которая
+ * возвращает пункты сразу или промисом. Пока промис не выполнился, список
+ * показывает `loadingItems`, при ошибке `renderError`. Задаётся что-то одно.
  */
 export type CanvasNodeDropdownItems =
   | {
@@ -117,14 +107,10 @@ export type CanvasNodeDropdownItems =
       items?: never;
     };
 
-/**
- * Проп `dropdown` на Canvas-элементах. Открывается по клику или наведению
- * на ноду, см. `trigger`.
- */
+/** Проп `dropdown` на Canvas-элементах. */
 export type CanvasNodeDropdownConfig = CanvasNodeDropdownProps &
   CanvasNodeDropdownItems;
 
-/** Конфиг похож на конфиг дропдауна: объект с `items` или `getItems`. */
 export function isCanvasNodeDropdownConfig(
   value: unknown,
 ): value is CanvasNodeDropdownConfig {

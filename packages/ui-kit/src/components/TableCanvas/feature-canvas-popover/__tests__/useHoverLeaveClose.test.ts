@@ -29,11 +29,11 @@ const pointer = (type: string, x: number, y: number) =>
   );
 
 describe('useHoverLeaveClose: закрытие поповера по уходу курсора', () => {
-  // Иконка под поповером (placement: top), между ними зазор.
+  // Иконка под Popover (placement: top), между ними зазор.
   const anchor = withRect({ x: 344, y: 162, width: 16, height: 16 });
   const popover = withRect({ x: 235, y: 61, width: 236, height: 90 });
   let onLeave: ReturnType<typeof vi.fn>;
-  // В таблице за курсором следит слушатель поповеров, здесь — тест.
+  // В таблице за курсором следит CanvasPopoverListener, здесь сам тест.
   let releasePointer: () => void;
 
   const renderLeaveHook = () =>
@@ -52,7 +52,7 @@ describe('useHoverLeaveClose: закрытие поповера по уходу 
     vi.useFakeTimers();
     onLeave = vi.fn();
     releasePointer = trackPointer();
-    // Поповер открывается, когда курсор над якорем.
+    // Popover открывается, когда курсор над элементом.
     pointer('pointermove', 352, 170);
   });
 

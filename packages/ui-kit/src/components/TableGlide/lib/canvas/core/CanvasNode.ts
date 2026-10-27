@@ -157,10 +157,10 @@ export abstract class CanvasNode implements ICanvasNode {
   /** Конфиг тултипа с ноды (проп tooltip на Canvas-элементе). */
   tooltip?: CanvasNodeTooltipConfig;
 
-  /** Конфиг поповера с ноды (проп popover на Canvas-элементе): по клику или наведению, см. trigger. */
+  /** Проп popover с Canvas-элемента. */
   popover?: CanvasNodePopoverConfig;
 
-  /** Конфиг дропдауна с ноды (проп dropdown на Canvas-элементе): по клику или наведению, см. trigger. */
+  /** Проп dropdown с Canvas-элемента. */
   dropdown?: CanvasNodeDropdownConfig;
 
   interaction?: ResolvedCanvasInteractionConfig;
@@ -332,10 +332,9 @@ export abstract class CanvasNode implements ICanvasNode {
   }
 
   /**
-   * Прямоугольник, который нода реально рисует, в координатах ячейки. По нему
-   * ставится якорь тултипа, поповера и дропдауна. По умолчанию это layout-rect;
-   * нода, которая рисует себя меньше своего rect (кнопка в растянутом
-   * контейнере), переопределяет.
+   * Прямоугольник, который нода на самом деле рисует, в координатах ячейки. По
+   * нему ставится якорь тултипа, Popover и Dropdown. По умолчанию это rect из
+   * раскладки; ноды, которые рисуют себя меньше rect, его переопределяют.
    */
   getAnchorRect(): Rect {
     return this.rect;

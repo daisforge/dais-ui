@@ -122,7 +122,7 @@ interface CanvasCellCacheEntry {
   canvasRoot: CellCanvasRoot;
 }
 
-/** Сколько ждать после последнего события ресайза колонки, чтобы снять блокировку (мс). */
+/** Сколько ждать после последнего изменения ширины колонки, чтобы снять блокировку (мс). */
 const RESIZE_LOCK_RELEASE_MS = 300;
 
 export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
@@ -252,9 +252,9 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   // (объявлен позже по коду), поэтому дёргаем через ref.
   const hideTooltipRef = useRef<(() => void) | null>(null);
 
-  // Блокировка тултипов и открытия по наведению на время ресайза колонки
-  // (lockPortalHover): якорь за границей не едет. Glide не сообщает о конце
-  // ресайза, поэтому снимаем блокировку, когда события ресайза перестали приходить.
+  // Пока колонку тянут, тултипы и открытие по наведению выключены: якорь за
+  // границей колонки не двигается. Glide не сообщает о конце изменения ширины,
+  // поэтому снимаем блокировку, когда события перестали приходить.
   const resizeLockRef = useRef<{ release: () => void; timer: number } | null>(
     null,
   );
@@ -294,7 +294,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       // не висел на месте (за границей во время ресайза он не едет).
       hideTooltipRef.current?.();
 
-      // Начало ресайза: якоря этой таблицы устарели, её поповер закрывается.
+      // Ширину колонки начали менять: якоря сдвинулись, открытый Popover закрываем.
       if (!resizeLockRef.current) {
         dispatchCanvasPortalReset(portalEventTargetRef?.current ?? null);
       }
@@ -1231,8 +1231,8 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     NonNullable<GlideProps['onGroupHeaderClicked']>
   >(
     (colIndex, event) => {
-      // Сначала отдаём клик canvas-содержимому шапки группы (кнопки, поповер),
-      // как у шапки колонки: клик по интерактивной ноде группу не выделяет.
+      // Клик сначала получает содержимое шапки группы (кнопки, Popover), как у
+      // шапки колонки: клик по интерактивному элементу группу не выделяет.
       const groupRoot = columnsGroupHeaderCanvasRootInstanceMap.get(
         event.group,
       );
@@ -1457,8 +1457,8 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       if (typeof sourceKey !== 'string' || typeof targetKey !== 'string')
         return;
 
-      // Колонки переставлены: якоря тултипов и поповеров устарели. Короткая
-      // блокировка прячет тултип, сброс закрывает поповер этой таблицы.
+      // Колонки переставлены, и якоря сдвинулись: прячем тултип и закрываем
+      // открытый Popover этой таблицы.
       lockPortalHover()();
       dispatchCanvasPortalReset(portalEventTargetRef?.current ?? null);
 

@@ -74,8 +74,8 @@ export function resolveTooltipData(
     if (normalized) return normalized;
   }
 
-  // Нода — якорь поповера или дропдауна (проп popover / dropdown): колоночный
-  // тултип от неё не показываем, иначе он повис бы рядом с её поповером.
+  // У элемента с Popover или Dropdown подсказку колонки не показываем,
+  // иначе она висела бы рядом с открытым окном.
   if (detail.popoverFromNode || detail.dropdownFromNode) return null;
 
   // Приоритет 3: колоночный cellTooltip / headerCellTooltip (только при customEnabled)

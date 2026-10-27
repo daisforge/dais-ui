@@ -55,7 +55,7 @@ const Table = ({ rows = [rowA] }: { rows?: readonly unknown[] }) => {
   );
 };
 
-/** Без листенера, но с тем же контекстом: таблица «размонтировалась». */
+/** Тот же контекст без CanvasPopoverListener: таблицу убрали со страницы. */
 const TableWithoutListener = () => {
   const value = useTablePopoverState();
   return (

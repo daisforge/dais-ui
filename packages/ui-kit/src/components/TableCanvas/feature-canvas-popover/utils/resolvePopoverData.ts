@@ -4,11 +4,9 @@ import type { CanvasOverlayDefaults, ResolvedCanvasOverlay } from '../types';
 import { normalizePopoverConfig } from './normalizePopoverConfig';
 
 /**
- * Что открыть по событию клика или наведения на canvas-якорь: поповер (проп
- * `popover` на Canvas-элементе) или дропдаун (проп `dropdown`), уже с
- * наложенными дефолтами из tableConfig. Если на элементе заданы оба,
- * открывается поповер. Событие без конфига (нода без поповера, ячейка или
- * шапка целиком) ничего не открывает.
+ * Что открыть по клику или наведению на canvas-элемент: Popover (проп `popover`)
+ * или Dropdown (проп `dropdown`) со значениями по умолчанию из tableConfig.
+ * Если заданы оба, открывается Popover. Без них ничего не открывается.
  */
 export function resolveCanvasOverlay(
   detail: Pick<CanvasPortalClickDetail, 'popoverFromNode' | 'dropdownFromNode'>,

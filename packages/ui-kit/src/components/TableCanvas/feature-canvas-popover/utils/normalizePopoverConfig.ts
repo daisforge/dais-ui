@@ -4,8 +4,8 @@ import { POPOVER_DEFAULTS } from '../constants';
 import type { ResolvedCanvasPopoverConfig } from '../types';
 
 /**
- * Накладывает дефолты на конфиг поповера: сначала значение с элемента или
- * колонки, потом tableConfig.popover, потом встроенные дефолты.
+ * Дополняет настройки Popover: берём значение с элемента или колонки, затем
+ * из tableConfig.popover, затем значение по умолчанию.
  */
 export function normalizePopoverConfig(
   config: CanvasNodePopoverConfig,
@@ -31,8 +31,8 @@ export function normalizePopoverConfig(
       POPOVER_DEFAULTS.closeOnOutsideClick,
     closeOnEsc:
       config.closeOnEsc ?? defaults?.closeOnEsc ?? POPOVER_DEFAULTS.closeOnEsc,
-    // trigger только с элемента или колонки: canvas-нода решает, участвовать ли
-    // в наведении, ещё при построении дерева и про tableConfig не знает.
+    // trigger берём только с элемента: элемент решает, ловить ли наведение,
+    // ещё до того, как известен tableConfig.
     trigger: config.trigger ?? POPOVER_DEFAULTS.trigger,
     mouseEnterDelay:
       config.mouseEnterDelay ??

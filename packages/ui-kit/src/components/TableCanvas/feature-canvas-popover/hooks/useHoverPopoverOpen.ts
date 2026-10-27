@@ -23,13 +23,13 @@ import {
   trackPointer,
 } from '../utils';
 
-/** Поля события клика или наведения, нужные для открытия поповера. */
+/** Поля события клика или наведения, нужные для открытия Popover. */
 export type CanvasPopoverAnchorDetail = Pick<
   CanvasPortalHoverDetail,
   'x' | 'y' | 'width' | 'height' | 'tooltipContext'
 >;
 
-/** Открыть поповер или дропдаун по событию: общий путь с кликом в CanvasPopoverListener. */
+/** Открывает Popover или Dropdown так же, как по клику в CanvasPopoverListener. */
 export type OpenCanvasPopover = (
   detail: CanvasPopoverAnchorDetail,
   overlay: ResolvedCanvasOverlay,
@@ -47,35 +47,25 @@ interface HoverCandidate {
 export interface UseHoverPopoverOpenParams {
   /** Контейнер таблицы: на нём слушаем наведение на canvas-элементы. */
   containerRef: RefObject<HTMLElement | null>;
-  /** Дефолты из tableConfig.popover и tableConfig.dropdown. */
+  /** Значения по умолчанию из tableConfig.popover и tableConfig.dropdown. */
   configRef: MutableRefObject<CanvasOverlayDefaults>;
   stateRef: MutableRefObject<TablePopoverState>;
-  /** Открыт ли сейчас какой-нибудь поповер таблицы: после закрытия пересматриваем наведение. */
+  /** Открыт ли сейчас любой Popover таблицы: после закрытия снова проверяем наведение. */
   isOpen: boolean;
-  /** Строки грида: при смене данных запомненное наведение устарело. */
+  /** Строки таблицы: при смене данных запомненное наведение устарело. */
   rows?: readonly unknown[];
   openPopover: OpenCanvasPopover;
 }
 
 /**
- * Открывает поповер или дропдаун с `trigger: 'hover'` по наведению на
- * canvas-элемент.
+ * Открывает Popover или Dropdown с `trigger: 'hover'` по наведению на
+ * canvas-элемент. Открываем через mouseEnterDelay, если курсор всё ещё над
+ * элементом, не открыт Popover по клику или фильтр шапки и пользователь не
+ * печатает в таблице.
  *
- * Слушает ту же шину, что тултипы: show приходит от CanvasHoverController с
- * `popoverFromNode` или `dropdownFromNode`. Поповер открывается через mouseEnterDelay, если к этому
- * моменту курсор всё ещё над якорем и открытию ничего не мешает. Закрытие по
- * уходу курсора делает сам поповер.
- *
- * Не открывает поповер:
- * - пока открыт поповер по клику или фильтр шапки (проверка и при show, и при
- *   срабатывании таймера: клик мог случиться во время задержки);
- * - пока пользователь печатает в своей таблице (поле ввода, редактор ячейки).
- *
- * Последнее наведение запоминается: когда мешавший поповер закрылся, а курсор
- * всё ещё над элементом, поповер открывается без повторного show (нода шлёт
- * show один раз при входе курсора). Поповер, закрытый, пока курсор над якорем
- * (Esc, кнопка в содержимом, смена данных), заново не открывается, пока курсор
- * не уйдёт с элемента.
+ * Наведение запоминается: когда мешавший Popover закрылся, а курсор на месте,
+ * открываем без нового события. Popover, закрытый под курсором (Esc, кнопка в
+ * содержимом), снова откроется только после того, как курсор уйдёт и вернётся.
  */
 export function useHoverPopoverOpen({
   containerRef,
@@ -87,21 +77,21 @@ export function useHoverPopoverOpen({
 }: UseHoverPopoverOpenParams) {
   const openPopoverRef = useRef(openPopover);
   openPopoverRef.current = openPopover;
-  // Функции живут внутри эффекта подписки, наружу — через ref.
+  // Функции создаются внутри эффекта, другим эффектам отдаём их через ref.
   const reconsiderRef = useRef<() => void>(() => {});
   const resetRef = useRef<() => void>(() => {});
 
   useEffect(() => {
     const target = containerRef.current;
     let pending: (HoverCandidate & { timer: number }) | null = null;
-    // Последнее наведение на элемент с поповером по наведению.
+    // Последнее наведение на элемент с Popover по наведению.
     let candidate: HoverCandidate | null = null;
-    // Наведение, чей поповер открыли мы.
+    // Наведение, по которому открыли Popover.
     let opened: HoverCandidate | null = null;
-    // Поповер закрылся, пока курсор над якорем: ждём ухода курсора.
+    // Popover закрылся, пока курсор над элементом: ждём, когда курсор уйдёт.
     let dismissed: HoverCandidate | null = null;
     let locked = false;
-    // За курсором следим, только если в таблице встретился поповер по наведению.
+    // За курсором следим, только если в таблице есть Popover по наведению.
     let releasePointer: (() => void) | null = null;
 
     const isPointerOver = (rect: PopoverRect) => {
@@ -113,7 +103,7 @@ export function useHoverPopoverOpen({
       if (locked || isEditingInTable(target)) return false;
       const state = stateRef.current;
       if (!state.isOpen) return true;
-      // Открытый поповер по наведению сменяется наведением на другой элемент.
+      // Открытый Popover по наведению сменяется наведением на другой элемент.
       return !!getOpenHoverPopover(state) && state.sourceKey !== next.sourceKey;
     };
 
@@ -172,10 +162,9 @@ export function useHoverPopoverOpen({
       if (canOpen(candidate)) schedule(candidate);
     };
 
-    // Скрытие источника: курсор ушёл. Явный id ноды одинаковый во всех строках,
-    // поэтому решает геометрия: пока курсор над прямоугольником, наведение живо.
-    // Скрытие без источника (сброс тултипа) не трогаем: оно приходит и при
-    // переходе внутрь ячейки, а положение курсора проверит таймер.
+    // Курсор ушёл с элемента. id элемента одинаковый во всех строках, поэтому
+    // проверяем координаты курсора. Скрытие без id не учитываем: оно приходит и
+    // при переходе внутри ячейки, а положение курсора потом проверит таймер.
     const handleHide = (detail: CanvasPortalHoverDetail) => {
       const origin = detail.originId ?? detail.nodeId;
       if (!origin) return;
@@ -195,13 +184,13 @@ export function useHoverPopoverOpen({
       else handleHide(detail);
     }, target);
 
-    // Прокрутка: якорь ожидания и запомненного наведения устарел.
+    // Прокрутка: запомненные координаты элементов устарели.
     target?.addEventListener('scroll', reset, true);
 
-    // Ресайз или перестановка колонки в этой таблице.
+    // Ширину колонки поменяли или колонку переставили.
     const unsubscribeReset = subscribeToCanvasPortalReset(reset, target);
 
-    // Перетаскивание или ресайз колонки: наведение не обрабатываем.
+    // Колонку перетаскивают или меняют ширину: наведение не обрабатываем.
     const unsubscribeLock = subscribeToPortalHoverLock((isLocked) => {
       locked = isLocked;
       if (isLocked) reset();
@@ -236,12 +225,11 @@ export function useHoverPopoverOpen({
     };
   }, [containerRef, configRef, stateRef]);
 
-  // Поповер (любой) закрылся: наведение, которому он мешал, можно показать.
+  // Любой Popover закрылся: можно открыть тот, которому он мешал.
   useEffect(() => {
     if (!isOpen) reconsiderRef.current();
   }, [isOpen]);
 
-  // Новые данные: строка в запомненном наведении устарела.
   useEffect(() => {
     resetRef.current();
   }, [rows]);

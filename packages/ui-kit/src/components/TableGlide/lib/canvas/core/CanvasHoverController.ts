@@ -159,7 +159,7 @@ export class CanvasHoverController {
     baseEvent: CanvasEvent | null = null,
   ) {
     const portalTarget = this.findPortalTarget(target);
-    // Якорь по нарисованному прямоугольнику, а не по layout-rect.
+    // Привязываем к тому, что реально нарисовано: оно может не совпадать с областью элемента.
     const rect = portalTarget ? { ...portalTarget.getAnchorRect() } : null;
     const previousActive = this.activePortalNode;
     const next = portalTarget && rect ? { id: portalTarget.id, rect } : null;

@@ -30,10 +30,8 @@ const ERROR_ITEMS: DropdownItemOption[] = [
 ];
 
 /**
- * Позиционированная обёртка списка внутри портала атомарки. Сам узел портала
- * (`data-floating-ui-portal`, ставит floating-ui) размера не имеет: список в
- * нём абсолютный. Если атрибут сменится, зона удержания курсора по наведению
- * сузится до якоря, и дропдаун по hover будет закрываться над списком.
+ * Список внутри портала Dropdown. Портал сам размера не имеет, поэтому зону,
+ * где курсор держит список открытым, считаем по этому элементу.
  */
 const FLOATING_LIST_SELECTOR = '[data-floating-ui-portal] > *';
 
@@ -48,24 +46,11 @@ export interface CanvasDropdownProps {
 }
 
 /**
- * Переходник между конфигом canvas-дропдауна и атомарным компонентом.
- * Единственное место, где таблица знает, что под капотом Dropdown из
- * дизайн-системы: при замене компонента меняется только этот файл.
- *
- * Дропдаун управляемый: открыт, пока он есть в TablePopoverState, поэтому
- * атомарке передаётся `alwaysOpened`, а закрытие делаем сами:
- * - клик мимо списка — pointerdown в capture-фазе (Glide отменяет pointerdown
- *   на canvas, и штатный mousedown-слушатель атомарки до него не доходит);
- *   закрытие помечается как outsidePress, чтобы повторный клик по тому же
- *   якорю работал как toggle;
- * - выбор пункта с `closeOnSelect`, Esc и Tab внутри списка — атомарка зовёт
- *   onToggle(false);
- * - Esc из таблицы — useEscapeClose;
- * - уход курсора при `trigger: 'hover'` — useHoverLeaveClose.
- *
- * Список рисуется в портал внутри якоря: так клик по пункту для таблицы
- * остаётся кликом внутри своего контейнера. Атомарка читает элемент портала
- * при первом рендере, поэтому сам Dropdown монтируется, когда портал уже в DOM.
+ * Связывает конфиг Dropdown на canvas-элементе с Dropdown из дизайн-системы.
+ * Список всегда открыт (`alwaysOpened`), закрываем его сами: по клику мимо
+ * (glide гасит pointerdown на canvas, поэтому ловим его раньше), по Esc и по
+ * уходу курсора. Список рисуется в портал внутри якоря, чтобы клик по пункту
+ * оставался кликом внутри таблицы.
  */
 export const CanvasDropdown = ({
   config,
@@ -73,8 +58,7 @@ export const CanvasDropdown = ({
   tableContainer,
 }: CanvasDropdownProps) => {
   const isHover = config.trigger === 'hover';
-  // Зона удержания курсора считается по обёртке: она есть с первого рендера
-  // и размером с якорь, а сам Dropdown монтируется на рендер позже.
+  // Обёртка размером с якорь есть с первого рендера, а Dropdown появляется позже.
   const anchorRef = useRef<HTMLDivElement>(null);
   const portalRef = useRef<HTMLDivElement | null>(null);
   const [portalReady, setPortalReady] = useState(false);
@@ -82,8 +66,6 @@ export const CanvasDropdown = ({
     portalRef.current = element;
     setPortalReady(!!element);
   }, []);
-  // Список внутри портала позиционирован абсолютно и размера порталу не даёт,
-  // поэтому зона удержания курсора считается по самому списку.
   const listRef = useMemo<RefObject<HTMLElement | null>>(
     () => ({
       get current() {

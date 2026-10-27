@@ -1,10 +1,10 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 /**
- * Визуальные (скриншотные) тесты поповера на canvas.
- * Каждая стори доводит таблицу до одного состояния (поповер открыт) — один
- * скриншот. `play` кликает или наводит курсор по координатам canvas, поэтому
- * ширины колонок заданы явно. `screenshot.keepState` не сбрасывает мышь перед
- * снимком. Эталонные PNG генерит test-runner (`-u`).
+ * Скриншотные тесты Popover на canvas. Каждая история приводит таблицу к
+ * одному состоянию (Popover открыт) и делает один снимок. `play` кликает или
+ * наводит курсор по координатам canvas, поэтому ширины колонок заданы явно.
+ * `screenshot.keepState` не сбрасывает мышь перед снимком. Эталонные PNG
+ * создаёт test-runner (`-u`).
  */
 import type { Meta, StoryObj } from '@storybook/react';
 import { fireEvent, waitFor } from '@storybook/test';

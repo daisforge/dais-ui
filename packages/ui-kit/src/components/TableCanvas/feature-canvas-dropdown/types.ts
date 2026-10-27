@@ -3,10 +3,7 @@ import type {
   CanvasNodeDropdownProps,
 } from '@ui-kit/components/TableGlide';
 
-/**
- * Конфиг дропдауна после наложения дефолтов из tableConfig.dropdown.
- * Именно его получает переходник на атомарный Dropdown (CanvasDropdown).
- */
+/** Конфиг Dropdown с подставленными значениями по умолчанию, его получает CanvasDropdown. */
 export type ResolvedCanvasDropdownConfig = Required<
   Pick<
     CanvasNodeDropdownProps,

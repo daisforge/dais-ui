@@ -21,11 +21,11 @@ type PointerEventType = CanvasEvent['type'];
 
 /** Дополнительные данные клика от TableGlide. */
 export interface CellCanvasPointerDispatchOptions {
-  /** Кнопка мыши (MouseEvent.button). Поповер открывает только левая. */
+  /** Кнопка мыши (MouseEvent.button). Popover открывает только левая. */
   button?: number;
   /**
-   * Границы ячейки во viewport в момент клика (event.bounds от Glide). Свежее
-   * границ последней отрисовки: страница могла прокрутиться без перерисовки.
+   * Границы ячейки на экране в момент клика (event.bounds от Glide). Они точнее
+   * границ с последней отрисовки: страница могла прокрутиться без перерисовки.
    */
   cellBounds?: CanvasPortalRect;
 }
@@ -39,9 +39,7 @@ export interface CellCanvasPointerDispatchResult {
    * использовать уже посчитанный hit-test вместо второго обхода canvas tree.
    */
   interaction?: ResolvedCanvasInteractionConfig;
-  /**
-   * Клик попал в ноду с пропом popover или dropdown: событие уже отправлено.
-   */
+  /** Клик попал в элемент с Popover или Dropdown, событие уже отправлено. */
   portalClickDispatched?: boolean;
 }
 
@@ -207,12 +205,12 @@ export class CellCanvasRoot {
   }
 
   /**
-   * Клик по ноде с пропом popover или dropdown (или по её содержимому): шлём
-   * событие на контейнер таблицы, дальше его разбирает feature-canvas-popover. Якорь —
-   * нарисованный прямоугольник ноды (getAnchorRect) во viewport.
+   * Клик по элементу с Popover или Dropdown (или по его содержимому): шлём
+   * событие на контейнер таблицы, открытием занимается feature-canvas-popover.
+   * Якорь: нарисованный прямоугольник элемента (getAnchorRect) на экране.
    *
-   * @param reached — ноды, до которых дошёл клик: если дочерний onClick
-   *   вызвал stopPropagation, поповер родителя не открывается.
+   * @param reached ноды, до которых дошёл клик: если дочерний onClick
+   *   вызвал stopPropagation, Popover родителя не открывается.
    */
   private dispatchPopoverClick(
     reached: CanvasNode[],

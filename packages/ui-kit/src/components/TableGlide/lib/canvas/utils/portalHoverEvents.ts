@@ -41,17 +41,13 @@ export function subscribeToPortalHoverLock(
   };
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Reset (anchors of one table are stale)
-// ─────────────────────────────────────────────────────────────────────────────
-
 export const CANVAS_PORTAL_RESET_EVENT = 'basic-grid-canvas-portal-reset';
 
 /**
- * Якоря тултипов и поповеров одной таблицы устарели: начался ресайз колонки,
- * колонки переставлены. В отличие от lockPortalHover касается только таблицы,
- * на контейнере которой отправлено.
- * @param target — контейнер таблицы. Если не передан, событие идёт на window.
+ * Сообщает, что тултипы и Popover таблицы привязаны к старым координатам:
+ * начали менять ширину колонки или переставили колонки. В отличие от
+ * lockPortalHover действует только на таблицу, в контейнер которой отправлено.
+ * @param target контейнер таблицы. Если не передан, событие отправляется на window.
  */
 export function dispatchCanvasPortalReset(target?: EventTarget | null): void {
   if (typeof window === 'undefined') return;
@@ -59,8 +55,8 @@ export function dispatchCanvasPortalReset(target?: EventTarget | null): void {
 }
 
 /**
- * Подписка на устаревание якорей таблицы.
- * @param target — контейнер таблицы. Если не передан, слушаем window.
+ * Подписка на событие dispatchCanvasPortalReset.
+ * @param target контейнер таблицы. Если не передан, слушаем window.
  */
 export function subscribeToCanvasPortalReset(
   listener: () => void,
@@ -157,9 +153,9 @@ export interface CanvasPortalHoverDetail<
   tooltipContext?: TContext;
   /** Конфиг с ноды (проп tooltip на Canvas-элементе). */
   tooltipFromNode?: CanvasNodeTooltipConfig;
-  /** Конфиг поповера с ноды (проп popover на Canvas-элементе), нужен для `trigger: 'hover'`. */
+  /** Проп popover с Canvas-элемента, нужен для `trigger: 'hover'`. */
   popoverFromNode?: CanvasNodePopoverConfig;
-  /** Конфиг дропдауна с ноды (проп dropdown на Canvas-элементе). */
+  /** Проп dropdown с Canvas-элемента. */
   dropdownFromNode?: CanvasNodeDropdownConfig;
   /**
    * Приоритет события. usePortalHover не заменяет активный тултип с бо́льшим приоритетом.

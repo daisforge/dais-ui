@@ -15,12 +15,10 @@ const isPromise = (value: unknown): value is Promise<unknown> =>
   typeof (value as { then?: unknown })?.then === 'function';
 
 /**
- * Пункты дропдауна по конфигу: готовый массив `items` или результат
- * `getItems`. Если `getItems` вернул промис, пока он не разрешился, статус
- * `loading`; ошибка промиса или исключение из `getItems` дают `error`.
- *
- * Запрос уходит при открытии и при `retry`. Ответ, пришедший после закрытия
- * дропдауна или после нового запроса, игнорируется.
+ * Пункты Dropdown: готовый массив `items` или результат `getItems`. Пока
+ * промис не выполнился, статус `loading`, при ошибке `error`. Запрос уходит
+ * при открытии и при `retry`; ответ после закрытия или после нового запроса
+ * отбрасываем.
  */
 export function useDropdownItems(
   config: Pick<ResolvedCanvasDropdownConfig, 'items' | 'getItems'>,
@@ -68,7 +66,6 @@ export function useDropdownItems(
   useEffect(() => {
     load();
     return () => {
-      // Размонтирование: ответ больше не нужен.
       requestRef.current += 1;
     };
   }, [load]);

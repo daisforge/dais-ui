@@ -29,7 +29,7 @@ describe('unionRect: зона «якорь и поповер»', () => {
     const popover = { x: 235, y: 61, width: 236, height: 90 };
     const zone = unionRect([anchor, popover]);
     expect(zone).toEqual({ x: 235, y: 61, width: 236, height: 117 });
-    // Точка в зазоре по диагонали от иконки к кнопке поповера
+    // Точка в зазоре по диагонали от иконки к кнопке Popover
     expect(isPointInRect(320, 156, zone!)).toBe(true);
   });
 

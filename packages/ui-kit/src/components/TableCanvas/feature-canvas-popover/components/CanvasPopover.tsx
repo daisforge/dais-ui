@@ -10,31 +10,27 @@ import { usePopoverFocusGuard } from '../hooks/usePopoverFocusGuard';
 import type { ResolvedCanvasPopoverConfig } from '../types';
 import { CanvasAnchor } from './styled';
 
-/** Сколько после Esc внутри поповера считать его закрытие закрытием по Esc (мс). */
+/** Сколько мс после нажатия Esc закрытие Popover считается закрытием по Esc. */
 const ESCAPE_TOGGLE_WINDOW_MS = 100;
 
 export interface CanvasPopoverProps {
   config: ResolvedCanvasPopoverConfig;
   close: TablePopoverRenderParams['close'];
-  /** Контейнер таблицы: Esc закрывает поповер, только если пришёл из неё. */
+  /** Контейнер таблицы: Esc закрывает Popover, только если нажат в ней. */
   tableContainer?: HTMLElement | null;
 }
 
 /**
- * Переходник между конфигом canvas-поповера и атомарным компонентом.
- * Единственное место, где таблица знает, что под капотом PopoverBeta: при
- * замене компонента меняется только этот файл, публичный конфиг остаётся.
+ * Рисует Popover canvas-элемента через PopoverBeta. Только этот файл знает,
+ * какой компонент внутри, поэтому его можно заменить, не меняя настройки.
  *
- * Поповер управляемый: открыт, пока он есть в TablePopoverState. Закрытие по
- * клику мимо приходит через onToggle(false) и помечается как outsidePress,
- * чтобы повторный клик по тому же якорю работал как toggle.
+ * Popover открыт, пока он записан в TablePopoverState. Закрытие кликом мимо
+ * помечаем как outsidePress, чтобы повторный клик по тому же элементу закрыл
+ * Popover, а не открыл заново.
  *
- * Фокус при открытии остаётся в таблице (usePopoverFocusGuard), Esc из
- * таблицы ловит useEscapeClose.
- *
- * Поповер по наведению закрывается, когда курсор уходит с якоря и с поповера
- * (useHoverLeaveClose). Клик мимо его не закрывает: клик по самому якорю для
- * floating-ui тоже клик мимо, ведь якорь пропускает клики на canvas.
+ * Popover по наведению закрывается, когда курсор уходит и с элемента, и с
+ * Popover. Клик мимо его не закрывает: клик по самому элементу тоже считается
+ * кликом мимо, потому что проходит насквозь на canvas.
  */
 export const CanvasPopover = ({
   config,
@@ -62,9 +58,8 @@ export const CanvasPopover = ({
   const handleToggle = useCallback(
     (opened: boolean) => {
       if (opened) return;
-      // floating-ui закрывает по Esc на всём документе. Закрытие по Esc
-      // принимаем, только если он законный (изнутри поповера или из таблицы)
-      // и closeOnEsc включён; иначе поповер управляемый и останется открытым.
+      // floating-ui ловит Esc по всей странице. Закрываем, только если Esc
+      // нажат внутри Popover или в таблице и closeOnEsc включён.
       const lastEscape = lastEscapeRef.current;
       const byEscape = Date.now() - lastEscape.at < ESCAPE_TOGGLE_WINDOW_MS;
       if (byEscape && (!config.closeOnEsc || !lastEscape.closes)) return;

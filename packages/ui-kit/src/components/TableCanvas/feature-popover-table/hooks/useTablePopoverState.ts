@@ -28,7 +28,7 @@ const REOPEN_GUARD_MS = 300;
  * и закрывает поповер уже на pointerdown. Сам клик по иконке приходит позже, на
  * mouseup, и без защёлки снова открыл бы поповер. Поэтому при закрытии по
  * клику-мимо запоминаем ключ источника и гасим следующий open() для него.
- * Так же работает canvas-поповер по клику: его якорь пропускает клики на canvas.
+ * Так же работает Popover на canvas по клику: его якорь пропускает клики на canvas.
  */
 export const useTablePopoverState = (): TablePopoverContextValue => {
   const [state, setState] = useState<TablePopoverState>({

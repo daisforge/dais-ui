@@ -31,25 +31,25 @@ import {
 import { CanvasPopover } from './CanvasPopover';
 
 export interface CanvasPopoverListenerProps {
-  /** Контейнер таблицы: на нём слушаем клики и наведение на canvas-якоря. */
+  /** Контейнер таблицы: на нём слушаем клики и наведение на canvas-элементы. */
   containerRef: RefObject<HTMLElement | null>;
-  /** Дефолты поповеров: tableConfig.popover. */
+  /** Значения по умолчанию для Popover: tableConfig.popover. */
   config?: TableConfigPopover;
-  /** Дефолты дропдаунов: tableConfig.dropdown. */
+  /** Значения по умолчанию для Dropdown: tableConfig.dropdown. */
   dropdownConfig?: TableConfigDropdown;
   /**
-   * Строки, которые рисует грид. Если на месте строки под якорем оказалась
-   * другая (сортировка, новые данные), поповер закрывается.
+   * Строки, которые рисует таблица. Если на месте строки, где открыт Popover,
+   * оказалась другая (сортировка, новые данные), он закрывается.
    */
   rows?: readonly unknown[];
   /**
    * Ключ строки. С ним та же строка в новом объекте (данные пришли заново,
-   * правка ячейки) поповер не закрывает. Без него строки сравниваются по ссылке.
+   * правка ячейки) Popover не закрывает. Без него строки сравниваются по ссылке.
    */
   rowKeyGetter?: (row: never) => unknown;
 }
 
-/** Та же ли строка: по ссылке, иначе по ключу. Служебные строки ключа могут не иметь. */
+/** Та же ли строка: по ссылке, иначе по ключу. У служебных строк ключа может не быть. */
 const isSameRow = (
   prev: unknown,
   next: unknown,
@@ -64,17 +64,16 @@ const isSameRow = (
   }
 };
 
-/** Видимая на экране область грида: по ней обрезается якорь. */
+/** Видимая на экране область таблицы: по ней обрезаем прямоугольник элемента. */
 const getGridViewport = (container: HTMLElement | null) =>
   container
     ?.querySelector(`.${tableClassNames.tableAndTableScroller}`)
     ?.getBoundingClientRect() ?? null;
 
 /**
- * Слушает клики и наведение на canvas-якоря (нода с пропом popover или
- * dropdown), резолвит конфиг и открывает поповер или дропдаун через общий
- * TablePopoverContext. Сам ничего не рисует: контент рисует `render`
- * (CanvasPopover или CanvasDropdown), правила закрытия передаются в `behavior`.
+ * Слушает клики и наведение на canvas-элементы с пропом popover или dropdown
+ * и открывает Popover или Dropdown через общий TablePopoverContext. Сам ничего
+ * не рисует: содержимое рисует `render`, правила закрытия задаёт `behavior`.
  */
 export const CanvasPopoverListener: FC<CanvasPopoverListenerProps> = ({
   containerRef,
@@ -116,7 +115,7 @@ export const CanvasPopoverListener: FC<CanvasPopoverListenerProps> = ({
           closeOnScroll: overlay.config.closeOnScroll ? 'xy' : false,
           closeOnTableResize: true,
         },
-        // key: смена источника пересоздаёт поповер (позиция, фокус до открытия).
+        // Для другого элемента новый key: Popover создаётся заново со своей позицией и фокусом.
         render: ({ close: closePopover }) =>
           overlay.kind === 'dropdown' ? (
             <CanvasDropdown
@@ -144,14 +143,13 @@ export const CanvasPopoverListener: FC<CanvasPopoverListenerProps> = ({
     const unsubscribeClick = subscribeToCanvasPortalClick(
       (detail: CanvasPortalClickDetail) => {
         const overlay = resolveCanvasOverlay(detail, configRef.current);
-        // Поповер по наведению открывает useHoverPopoverOpen, клик его не трогает.
+        // Popover по наведению открывает useHoverPopoverOpen, клик его не трогает.
         if (!overlay || overlay.config.trigger === 'hover') return;
         const sourceKey = getPopoverSourceKey(detail);
         if (!sourceKey) return;
 
-        // Повторный клик по тому же источнику закрывает. При
-        // closeOnOutsideClick: true это делает защёлка в useTablePopoverState
-        // (поповер уже закрылся на pointerdown), здесь — когда клик мимо выключен.
+        // Повторный клик по тому же элементу закрывает. Если closeOnOutsideClick
+        // включён, Popover уже закрылся при нажатии, здесь случай, когда выключен.
         const { current } = stateRef;
         if (getOpenCanvasPopover(current) && current.sourceKey === sourceKey) {
           close();
@@ -163,7 +161,7 @@ export const CanvasPopoverListener: FC<CanvasPopoverListenerProps> = ({
       target,
     );
 
-    // Ресайз или перестановка колонки в этой таблице: якорь уедет.
+    // Ширину колонки поменяли или колонку переставили: элемент сдвинется.
     const unsubscribeReset = subscribeToCanvasPortalReset(() => {
       if (getOpenCanvasPopover(stateRef.current)) close();
     }, target);
@@ -186,7 +184,7 @@ export const CanvasPopoverListener: FC<CanvasPopoverListenerProps> = ({
   const rowKeyGetterRef = useRef(rowKeyGetter);
   rowKeyGetterRef.current = rowKeyGetter;
 
-  // На месте строки под якорем другая строка: содержимое устарело.
+  // На месте строки, где открыт Popover, другая строка: содержимое устарело.
   useEffect(() => {
     const anchorRow = getOpenCanvasPopover(stateRef.current)?.anchorRow;
     if (
@@ -210,9 +208,8 @@ export const CanvasPopoverListener: FC<CanvasPopoverListenerProps> = ({
     openedRef.current = next;
   }, [state]);
 
-  // Таблица размонтируется (смена вида, оверлей загрузки): поповер закрываем,
-  // onClose вызываем. Иначе после возвращения таблицы поповер всплыл бы на
-  // старом месте.
+  // Таблицу убирают со страницы (смена вида, загрузка): закрываем Popover и
+  // вызываем onClose, иначе после возвращения таблицы он всплыл бы на старом месте.
   useEffect(
     () => () => {
       openedRef.current?.overlay.config.onClose?.();

@@ -10,8 +10,8 @@ import type {
 } from '../types/table-config.type';
 
 /**
- * Конфиг поповера после наложения дефолтов из tableConfig.popover.
- * Именно его получает переходник на PopoverBeta (CanvasPopover).
+ * Настройки Popover вместе со значениями по умолчанию из tableConfig.popover.
+ * Их получает CanvasPopover.
  */
 export type ResolvedCanvasPopoverConfig = Required<
   Pick<
@@ -39,15 +39,15 @@ export type ResolvedCanvasPopoverConfig = Required<
   };
 
 /**
- * Что открывается на canvas-элементе: поповер (проп `popover`) или дропдаун
- * (проп `dropdown`). Открытие, якорь и закрытие у них общие, различается
- * только переходник на атомарный компонент.
+ * Что открывается на canvas-элементе: Popover (проп `popover`) или Dropdown
+ * (проп `dropdown`). Открытие, привязка к элементу и закрытие у них общие,
+ * отличается только компонент, который рисует содержимое.
  */
 export type ResolvedCanvasOverlay =
   | { kind: 'popover'; config: ResolvedCanvasPopoverConfig }
   | { kind: 'dropdown'; config: ResolvedCanvasDropdownConfig };
 
-/** Дефолты из tableConfig для обоих видов оверлея. */
+/** Значения по умолчанию из tableConfig для Popover и Dropdown. */
 export interface CanvasOverlayDefaults {
   popover?: TableConfigPopover;
   dropdown?: TableConfigDropdown;
@@ -55,13 +55,13 @@ export interface CanvasOverlayDefaults {
 
 export const CANVAS_POPOVER_CONTENT_KIND = 'canvas-popover' as const;
 
-/** Данные открытого canvas-поповера или дропдауна в TablePopoverState.contentData. */
+/** Данные открытого Popover или Dropdown в TablePopoverState.contentData. */
 export interface CanvasPopoverContentData {
   kind: typeof CANVAS_POPOVER_CONTENT_KIND;
   overlay: ResolvedCanvasOverlay;
   /**
-   * Строка под якорем на момент открытия. Если на этом месте окажется другая
-   * строка (сортировка, новые данные), содержимое устарело и поповер закрывается.
+   * Строка, на которой открыли. Если на её месте окажется другая строка
+   * (сортировка, новые данные), содержимое устарело и Popover закрывается.
    */
   anchorRow?: { rowInd: number; row: unknown };
 }
@@ -76,7 +76,6 @@ export function isCanvasPopoverContentData(
   );
 }
 
-/** Данные открытого canvas-поповера или дропдауна из стейта, или null. */
 export function getOpenCanvasPopover(state: {
   isOpen: boolean;
   contentType: string | null;
@@ -88,7 +87,6 @@ export function getOpenCanvasPopover(state: {
     : null;
 }
 
-/** Открытый поповер или дропдаун по наведению из стейта, или null. */
 export function getOpenHoverPopover(
   state: Parameters<typeof getOpenCanvasPopover>[0],
 ): CanvasPopoverContentData | null {

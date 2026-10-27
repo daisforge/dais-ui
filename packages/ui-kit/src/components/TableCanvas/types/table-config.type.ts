@@ -857,9 +857,8 @@ export type TableConfigTooltip = {
 };
 
 /**
- * Значения по умолчанию для поповеров на canvas-элементах таблицы (проп
- * `popover` на элементе). Конфиг на элементе важнее. `trigger` задаётся
- * только на элементе.
+ * Значения по умолчанию для Popover на canvas-элементах (проп `popover`).
+ * Настройки на элементе важнее. `trigger` задаётся только на элементе.
  */
 export type TableConfigPopover = Pick<
   CanvasNodePopoverProps,
@@ -877,9 +876,8 @@ export type TableConfigPopover = Pick<
 >;
 
 /**
- * Значения по умолчанию для дропдаунов на canvas-элементах таблицы (проп
- * `dropdown` на элементе). Конфиг на элементе важнее. `trigger` задаётся
- * только на элементе.
+ * Значения по умолчанию для Dropdown на canvas-элементах (проп `dropdown`).
+ * Настройки на элементе важнее. `trigger` задаётся только на элементе.
  */
 export type TableConfigDropdown = Pick<
   CanvasNodeDropdownProps,
@@ -1393,12 +1391,15 @@ export type TableConfig<
    */
   tooltip?: TableConfigTooltip;
 
-  /** Значения по умолчанию для поповеров на canvas-элементах (проп `popover`
-   *  на элементе). Сам поповер включается пропом на элементе, конфиг не обязателен.
+  /**
+   * Значения по умолчанию для Popover на canvas-элементах. Сам Popover
+   * включается пропом `popover` на элементе, этот конфиг не обязателен.
    */
   popover?: TableConfigPopover;
-  /** Значения по умолчанию для дропдаунов на canvas-элементах (проп `dropdown`
-   * на элементе). Конфиг на элементе важнее. */
+  /**
+   * Значения по умолчанию для Dropdown на canvas-элементах (проп `dropdown`).
+   * Настройки на элементе важнее.
+   */
   dropdown?: TableConfigDropdown;
 
   /**

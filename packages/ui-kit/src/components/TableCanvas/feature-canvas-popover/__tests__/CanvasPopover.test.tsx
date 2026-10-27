@@ -7,8 +7,8 @@ import { CanvasPopover } from '../components/CanvasPopover';
 import { normalizePopoverConfig } from '../utils';
 
 /**
- * Переходник на настоящем PopoverBeta: floating-ui внутри него сам слушает Esc
- * на всём документе и сам ставит фокус. Проверяем, что таблица с этим уживается.
+ * CanvasPopover с настоящим PopoverBeta: тот сам ловит Esc по всей странице и
+ * сам ставит фокус. Проверяем, что таблица с этим уживается.
  */
 describe('CanvasPopover на настоящем PopoverBeta', () => {
   afterEach(() => {

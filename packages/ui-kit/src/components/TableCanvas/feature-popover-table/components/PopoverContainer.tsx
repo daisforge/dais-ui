@@ -79,7 +79,7 @@ const FilterContent = React.memo(
  *
  * Управляется через TablePopoverContext:
  * - open({ position, contentType: 'filter', contentData: columnConfig })
- * - open({ position, anchorSize, contentType: 'custom', render, behavior, sourceKey }) — контент рисует открывший
+ * - open({ position, anchorSize, contentType: 'custom', render, behavior, sourceKey }): контент рисует тот, кто открыл
  * - close()
  *
  * position приходит в viewport-координатах (после absoluteBounds для header).
@@ -112,7 +112,7 @@ export const PopoverInTable = <
     return result;
   }, [position, containerEl]);
 
-  // Размер таблицы изменился (ресайз, полный экран): якорь уехал, закрываем.
+  // Размер таблицы изменился (окно, полный экран): якорь сдвинулся, закрываем.
   useTableResizeObserver(() => {
     if (isOpen && getPopoverBehavior(state)?.closeOnTableResize) {
       close();
@@ -152,8 +152,8 @@ export const PopoverInTable = <
 
   if (!isOpen || !position || !contentType || !displayPosition) return null;
 
-  // Произвольный контент (canvas-поповер): якорь размером с ноду или ячейку,
-  // сам поповер рисует открывший через render.
+  // Свой контент (Popover на canvas): якорь размером с элемент или ячейку,
+  // рисует его тот, кто открыл, через render.
   if (contentType === 'custom') {
     if (!render) return null;
     return (

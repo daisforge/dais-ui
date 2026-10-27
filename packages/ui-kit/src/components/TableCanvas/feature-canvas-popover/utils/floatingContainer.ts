@@ -1,16 +1,11 @@
 /**
- * Контейнер поповера, на котором floating-ui (внутри PopoverBeta) держит фокус:
- * элемент с `data-floating-ui-focusable` и ролью dialog.
- *
- * ВАЖНО (внешняя зависимость): атрибут ставит floating-ui, роль ставит
- * PopoverBeta. Ищем по обоим, чтобы переименование одного из них не отключило
- * перехват фокуса. Тест `floatingContainer.test.tsx` рендерит настоящий
- * PopoverBeta и упадёт, если контейнер перестанет находиться.
+ * Контейнер Popover, на который PopoverBeta ставит фокус. Атрибут ставит
+ * floating-ui, роль ставит PopoverBeta: ищем по обоим, чтобы смена одного
+ * из них не сломала возврат фокуса.
  */
 export const FLOATING_FOCUS_CONTAINER_SELECTOR =
   '[data-floating-ui-focusable], [role="dialog"]';
 
-/** Контейнер поповера для элемента внутри него (ref на PopoverBeta). */
 export function getFloatingContainer(
   element: Element | null | undefined,
 ): HTMLElement | null {
@@ -26,11 +21,7 @@ export function isEditableElement(element: Element | null): boolean {
   return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT';
 }
 
-/**
- * Редактор ячейки Glide рисуется в портале вне контейнера таблицы
- * (`#gdg-overlay-N`). Атрибут форка Glide; если он сменится, наведение
- * перестанет учитывать редактирование ячейки.
- */
+/** Редактор ячейки glide рисуется вне контейнера таблицы, в `#gdg-overlay-N`. */
 const GRID_EDITOR_OVERLAY_SELECTOR = '[id^="gdg-overlay"]';
 
 /** Пользователь печатает в своей таблице: в её поле ввода или в редакторе ячейки. */

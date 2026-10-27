@@ -5,30 +5,25 @@ import { isPointInRect, type PopoverRect, unionRect } from '../utils/geometry';
 import { getLastPointer, trackPointer } from '../utils/pointerPosition';
 
 export interface UseHoverLeaveCloseParams {
-  /** Включено только для поповера с `trigger: 'hover'`. */
+  /** Включено только для Popover с `trigger: 'hover'`. */
   enabled: boolean;
-  /** Якорь поповера: невидимый DOM-элемент на месте canvas-элемента. */
+  /** Невидимый элемент на месте canvas-элемента, к которому привязан Popover. */
   anchorRef: RefObject<HTMLElement | null>;
-  /** Сам поповер. */
   popoverRef: RefObject<HTMLElement | null>;
-  /** Запас вокруг зоны «якорь и поповер» (px). */
+  /** Запас вокруг элемента и Popover (px). */
   expand: number;
-  /** Сколько курсор может пробыть вне якоря и поповера (мс). */
+  /** Сколько курсор может пробыть снаружи до закрытия (мс). */
   delay: number;
   onLeave: () => void;
 }
 
 /**
- * Закрывает поповер по наведению, когда курсор ушёл и с якоря, и с поповера.
+ * Закрывает Popover по наведению, когда курсор ушёл и с элемента, и с Popover.
  *
- * Зона, где поповер держится, это общий прямоугольник якоря и поповера: так
- * курсор может идти от элемента к поповеру любым путём, в том числе по
- * диагонали через зазор и хвостик.
- *
- * Положение курсора проверяем по геометрии, а не по hide-событиям шины
- * наведения: шина откладывает скрытие и отменяет его, когда показывается
- * соседний элемент, и hide для якоря может не прийти совсем. Пока курсор
- * не двигается над якорем или поповером, поповер остаётся открытым.
+ * Popover держится, пока курсор внутри общего прямоугольника элемента и
+ * Popover: так к нему можно вести мышь любым путём, в том числе по диагонали.
+ * Положение курсора проверяем по координатам, потому что событие скрытия от
+ * таблицы может не прийти, если курсор сразу попал на соседний элемент.
  */
 export function useHoverLeaveClose({
   enabled,
@@ -82,8 +77,8 @@ export function useHoverLeaveClose({
       if (!event.relatedTarget) schedule();
     };
 
-    // Нажатие вне зоны закрывает сразу. На сенсорных экранах pointermove между
-    // касаниями нет, и без этого поповер по наведению после касания висел бы.
+    // Нажатие снаружи закрывает сразу: на сенсорном экране курсор между
+    // касаниями не двигается, и Popover иначе остался бы открытым.
     const handlePointerDown = (event: PointerEvent) => {
       if (!isInside(event.clientX, event.clientY)) {
         cancel();
@@ -97,8 +92,8 @@ export function useHoverLeaveClose({
     document.addEventListener('mouseout', handleMouseOut);
     document.addEventListener('pointerdown', handlePointerDown, true);
 
-    // Поповер мог открыться, когда курсор уже не над якорем (show пришёл от
-    // перерисовки без движения мыши): тогда закрываем, не дожидаясь движения.
+    // Popover мог открыться, когда курсор уже ушёл с элемента: тогда закрываем,
+    // не дожидаясь движения мыши.
     const releasePointer = trackPointer();
     const pointer = getLastPointer();
     if (pointer && !isInside(pointer.x, pointer.y)) {

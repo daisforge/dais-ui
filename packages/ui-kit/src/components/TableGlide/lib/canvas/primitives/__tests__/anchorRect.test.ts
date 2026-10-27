@@ -10,9 +10,9 @@ import { CanvasIconButton } from '../CanvasIconButton';
 const ICON = 'icon-stub' as never;
 
 /**
- * Якорь тултипа, поповера и дропдауна берётся из getAnchorRect: нарисованный
- * прямоугольник ноды, а не layout-rect. Контейнер с alignItems stretch
- * растягивает rect по высоте ячейки, нода же рисует себя своим размером.
+ * Якорь тултипа, Popover и Dropdown берётся из getAnchorRect: это нарисованный
+ * прямоугольник ноды, а не её область в раскладке. Контейнер с alignItems
+ * stretch растягивает область по высоте ячейки, а нода рисует себя своим размером.
  */
 describe('getAnchorRect: нарисованный прямоугольник в растянутом rect', () => {
   const stretched = { x: 10, y: 0, width: 100, height: 48 };
