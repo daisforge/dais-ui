@@ -69,7 +69,8 @@ interface UseColoringLayersParams {
   columnsCount: number;
   /* Слой 1: ховер сервис-зоны. */
   isRowHoverEnabled: boolean;
-  hoverRow?: number;
+  /** Строки под курсором (у объединённого блока все его строки). */
+  hoverRows?: { from: number; to: number };
   /** Строк данных без summary: summary ховер не получает. */
   dataRowsCount: number;
   /**
@@ -98,7 +99,7 @@ export function useColoringLayers({
   totalRows,
   columnsCount,
   isRowHoverEnabled,
-  hoverRow,
+  hoverRows,
   dataRowsCount,
   serviceZoneFollowsRow = false,
 }: UseColoringLayersParams): GlideProps['highlightRegions'] {
@@ -141,8 +142,8 @@ export function useColoringLayers({
     if (
       !isRowHoverEnabled ||
       serviceZoneFollowsRow ||
-      hoverRow === undefined ||
-      hoverRow > dataRowsCount - 1 || // summary-строки ховер не получают
+      hoverRows === undefined ||
+      hoverRows.from > dataRowsCount - 1 || // summary-строки ховер не получают
       serviceColumnsCount === 0
     ) {
       return withColumnsAndRows;
@@ -151,7 +152,12 @@ export function useColoringLayers({
     return [
       {
         color: theme.bgServiceRowHovered,
-        range: { x: 0, y: hoverRow, width: serviceColumnsCount, height: 1 },
+        range: {
+          x: 0,
+          y: hoverRows.from,
+          width: serviceColumnsCount,
+          height: Math.min(hoverRows.to, dataRowsCount - 1) - hoverRows.from + 1,
+        },
         style: 'no-outline',
       },
       ...(withColumnsAndRows ?? []),
@@ -161,7 +167,7 @@ export function useColoringLayers({
     serviceColumnsCount,
     isRowHoverEnabled,
     serviceZoneFollowsRow,
-    hoverRow,
+    hoverRows,
     dataRowsCount,
     theme.bgServiceRowHovered,
   ]);

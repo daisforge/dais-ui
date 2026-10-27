@@ -273,7 +273,7 @@ export type RowSpan<R extends ObjectForExtending, SR> = (
 export type SpanCellAlign = {
   /** По горизонтали. @default из contentAlign колонки, иначе 'left' */
   horizontal?: 'left' | 'center' | 'right';
-  /** По вертикали. @default 'center' */
+  /** По вертикали. @default 'top' у блока в несколько строк, иначе 'center' */
   vertical?: 'top' | 'center' | 'bottom';
 };
 

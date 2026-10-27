@@ -8,6 +8,25 @@ export interface HoveredCell {
   rowInd: number;
 }
 
+/** Строки под курсором: от первой до последней включительно. */
+export interface HoverRows {
+  from: number;
+  to: number;
+}
+
+/**
+ * Строки, которые подсвечивает курсор на ячейке. Курсор на обычной ячейке
+ * подсвечивает её строку, на объединённом блоке все строки блока (решение
+ * дизайнера от 27.10.2026).
+ */
+export type ResolveHoverRows = (
+  /** Главная ячейка блока под курсором или сама ячейка, если блока нет. */
+  originColInd: number,
+  originRowInd: number,
+  /** Строка прямо под мышью. */
+  rawRowInd: number,
+) => HoverRows;
+
 /**
  * Единый источник наведения курсора для таблицы. Хранит два значения. У них
  * разный смысл, поэтому объединить их в одно нельзя.
@@ -20,20 +39,25 @@ export interface HoveredCell {
  * Когда курсор переходит на другую ячейку, перерисовываются только две строки:
  * прежняя и новая. Значение записывается при движении мыши.
  *
- * Второе значение (hoverRow) это номер строки под курсором. Внутри
- * объединённого блока это строка прямо под мышью, а не главная ячейка блока.
- * Служебные колонки тут учитываются. Значение лежит в состоянии, потому что от
- * него зависит фон строки и подсветка служебных колонок, а смена фона это
- * перерисовка. Меняется только когда включён эффект наведения на строку
- * (hoverEffects.row), иначе движение мыши перерисовок не вызывает.
+ * Второе значение (hoverRows) это строки под курсором. Курсор на обычной
+ * ячейке даёт одну строку, на объединённом блоке все строки блока: они
+ * подсвечиваются целиком вместе со служебной зоной, а с ними и блоки, через
+ * которые они проходят. Служебные колонки тут учитываются. Значение лежит в
+ * состоянии, потому что от него зависит фон строк и подсветка служебных
+ * колонок, а смена фона это перерисовка. Меняется только когда включён эффект
+ * наведения на строку (hoverEffects.row), иначе движение мыши перерисовок не
+ * вызывает.
  */
 export function useHoverState({
   isRowHoverEnabled,
   dataEditorRef,
   columnsCount,
   rowsCount,
+  resolveHoverRows,
 }: {
   isRowHoverEnabled: boolean;
+  /** Строки под курсором по ячейке; без него подсвечивается строка под мышью. */
+  resolveHoverRows?: ResolveHoverRows;
   dataEditorRef: RefObject<DataEditorRef | null>;
   /** Число отображаемых колонок: перерисовка строки обновляет все её ячейки. */
   columnsCount: number;
@@ -94,17 +118,31 @@ export function useHoverState({
     [damageRows],
   );
 
-  // Номер строки под курсором (для фона строки и подсветки служебных колонок).
-  const [hoverRow, setHoverRow] = useState<number | undefined>(undefined);
+  // Строки под курсором (для фона строк и подсветки служебных колонок).
+  const [hoverRows, setHoverRows] = useState<HoverRows | undefined>(undefined);
 
-  const handleHoverRowChange = useCallback((nextRow: number | undefined) => {
-    setHoverRow((prev) => (prev === nextRow ? prev : nextRow));
-  }, []);
+  const handleHoverRowChange = useCallback(
+    (
+      rawRowInd: number | undefined,
+      origin?: readonly [number, number],
+    ) => {
+      const next: HoverRows | undefined =
+        rawRowInd === undefined
+          ? undefined
+          : origin && resolveHoverRows
+          ? resolveHoverRows(origin[0], origin[1], rawRowInd)
+          : { from: rawRowInd, to: rawRowInd };
+      setHoverRows((prev) =>
+        prev?.from === next?.from && prev?.to === next?.to ? prev : next,
+      );
+    },
+    [resolveHoverRows],
+  );
 
   return {
     hoveredCellRef,
     setHoveredCell,
-    hoverRow,
+    hoverRows,
     // Если наведение на строку выключено, наружу не отдаём функцию, и тогда
     // слежение за строкой не ведётся вовсе.
     onHoverRowChange: isRowHoverEnabled ? handleHoverRowChange : undefined,

@@ -10,6 +10,7 @@ const theme = {
   bgSelectedRowHovered: 'checkbox-hover',
   bgSelectedRowActiveHovered: 'checkbox-hover2',
   bgRowHovered: 'hover',
+  selectionActiveBg: 'active',
   selectionActiveCheckboxBg: 'active-checkbox',
   selectionActiveCheckboxHoveredBg: 'active-checkbox-hover',
   selectionActiveHoveredBg: 'active-hover',
@@ -53,7 +54,7 @@ describe('resolveBlockRowOverride', () => {
   it('выбранная строка проходит через блок — лестница выбранной строки', () => {
     expect(resolveBlockRowOverride(theme, { ...rest, activeRow: 3 })).toEqual({
       bgCell: 'checkbox',
-      accentLight: 'active-checkbox',
+      accentLight: 'active',
     });
     expect(
       resolveBlockRowOverride(theme, {
@@ -66,6 +67,17 @@ describe('resolveBlockRowOverride', () => {
       bgCell: 'checkbox-hover2',
       accentLight: 'active-checkbox-hover',
     });
+  });
+
+  it('выделение на блоке выбранной строки: обычный цвет выделения, в отмеченной строке свой', () => {
+    expect(
+      resolveBlockRowOverride(theme, { ...rest, activeRow: 3, rowHover: true })
+        ?.accentLight,
+    ).toBe('active-hover');
+    expect(
+      resolveBlockRowOverride(theme, { ...rest, activeRow: 3, checkboxRow: true })
+        ?.accentLight,
+    ).toBe('active-checkbox');
   });
 
   it('выбранная строка приоритетнее отмеченной', () => {
