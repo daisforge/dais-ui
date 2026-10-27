@@ -1947,3 +1947,243 @@ export const FormatInBlock: Story = {
     );
   },
 };
+
+// ── Прилипание подписи в высоком блоке ──────────────────────────────────────
+
+const STICKY_CONTENT_CODE = `
+import { useMemo, useState } from 'react';
+import { Button } from '@daisforge/ui';
+import {
+  Canvas,
+  type ColumnConfig,
+  TableCanvas,
+} from '@daisforge/ui/components/TableCanvas';
+
+type Row = {
+  id: number;
+  dept: string;
+  deptCustom: string;
+  team: string;
+  person: string;
+};
+type SummaryRow = { values: Record<string, string> };
+
+// Отдел: блоки по 15 строк, команда: по 5 строк внутри отдела.
+const DEPTS = ['Продажи', 'Разработка', 'Поддержка', 'Финансы'];
+const TEAMS = ['Север', 'Юг', 'Запад'];
+const ROWS: Row[] = Array.from({ length: 60 }, (_, i) => {
+  const dept = DEPTS[Math.floor(i / 15)];
+  return {
+    id: i + 1,
+    dept,
+    deptCustom: dept,
+    team: TEAMS[Math.floor(i / 5) % TEAMS.length],
+    person: \`Сотрудник \${i + 1}\`,
+  };
+});
+const SUMMARY: SummaryRow[] = [{ values: { person: \`Всего: \${ROWS.length}\` } }];
+
+type Vertical = 'top' | 'center' | 'bottom';
+
+export const Example = () => {
+  const [vertical, setVertical] = useState<Vertical>('top');
+  const [rows, setRows] = useState<Row[]>(ROWS);
+
+  const columns = useMemo(
+    (): ColumnConfig<Row, SummaryRow>[] => [
+      { key: 'dept', name: 'Отдел (текст)', width: 160 },
+      {
+        key: 'team',
+        name: 'Команда (Select)',
+        width: 180,
+        editingCell: {
+          component: 'select',
+          options: {
+            type: 'constant',
+            options: TEAMS.map((t) => ({ text: t, value: t })),
+          },
+        },
+      },
+      {
+        key: 'deptCustom',
+        name: 'Отдел (свой renderCell)',
+        width: 200,
+        // Кастомная отрисовка получает весь блок: прилипания у неё нет.
+        renderCell: ({ row, theme }) => (
+          <Canvas.Container padding={8} alignItems="flex-start">
+            <Canvas.Text color={theme.textDark}>{row.deptCustom}</Canvas.Text>
+          </Canvas.Container>
+        ),
+      },
+      {
+        key: 'person',
+        name: 'Сотрудник',
+        width: 200,
+        renderSummaryCell: ({ row }) => row.values.person ?? '',
+      },
+    ],
+    [],
+  );
+
+  return (
+    <div>
+      <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+        {(['top', 'center', 'bottom'] as const).map((v) => (
+          <Button
+            key={v}
+            size="s"
+            view={vertical === v ? 'accent' : 'secondary'}
+            onClick={() => setVertical(v)}
+          >
+            {v}
+          </Button>
+        ))}
+      </div>
+      <TableCanvas
+        tableConfig={{
+          containerStyle: { height: '480px' },
+          rowMarkers: { startIndex: 1 },
+          hoverEffects: { row: true },
+          summaryRows: { showDefault: true, showInControl: false },
+          editing: {
+            onRowsChange: (next: Row[]) => setRows([...next]),
+            rowKeyGetter: (r: Row) => r.id,
+            defaultEnabled: true,
+          },
+          mergeCells: {
+            mergeByCellValues: ['dept', 'deptCustom', 'team'],
+            mergedCellsAlign: { vertical },
+          },
+        }}
+        columnConfig={columns}
+        bottomSummaryRows={SUMMARY}
+        rows={rows}
+      />
+    </div>
+  );
+};
+`;
+
+export const StickyContent: Story = {
+  name: 'Прилипание подписи в высоком блоке',
+  ...storySourceDoc({
+    code: STICKY_CONTENT_CODE,
+    type: 'code',
+    previewSource: 'shown',
+  }),
+  render: () => {
+    type SRow = {
+      id: number;
+      dept: string;
+      deptCustom: string;
+      team: string;
+      person: string;
+    };
+    type SSummaryRow = { values: Record<string, string> };
+    type Vertical = 'top' | 'center' | 'bottom';
+
+    const DEPTS = ['Продажи', 'Разработка', 'Поддержка', 'Финансы'];
+    const TEAMS = ['Север', 'Юг', 'Запад'];
+    const initial = useMemo(
+      (): SRow[] =>
+        Array.from({ length: 60 }, (_, i) => {
+          const dept = DEPTS[Math.floor(i / 15)] ?? '';
+          return {
+            id: i + 1,
+            dept,
+            deptCustom: dept,
+            team: TEAMS[Math.floor(i / 5) % TEAMS.length] ?? '',
+            person: `Сотрудник ${i + 1}`,
+          };
+        }),
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [],
+    );
+    const summary = useMemo(
+      (): SSummaryRow[] => [{ values: { person: `Всего: ${initial.length}` } }],
+      [initial.length],
+    );
+
+    const [vertical, setVertical] = useState<Vertical>('top');
+    const [rows, setRows] = useState<SRow[]>(initial);
+
+    const columns = useMemo(
+      (): ColumnConfig<SRow, SSummaryRow>[] => [
+        { key: 'dept', name: 'Отдел (текст)', width: 160 },
+        {
+          key: 'team',
+          name: 'Команда (Select)',
+          width: 180,
+          editingCell: {
+            component: 'select',
+            options: {
+              type: 'constant',
+              options: TEAMS.map((t) => ({ text: t, value: t })),
+            },
+          },
+        },
+        {
+          key: 'deptCustom',
+          name: 'Отдел (свой renderCell)',
+          width: 200,
+          renderCell: ({ row, theme }) => (
+            <Canvas.Container padding={8} alignItems="flex-start">
+              <Canvas.Text color={theme.textDark}>{row.deptCustom}</Canvas.Text>
+            </Canvas.Container>
+          ),
+        },
+        {
+          key: 'person',
+          name: 'Сотрудник',
+          width: 200,
+          renderSummaryCell: ({ row }) => row.values['person'] ?? '',
+        },
+      ],
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [],
+    );
+
+    return (
+      <div>
+        <StoryHint>
+          Прокрути таблицу: подпись «Отдела» и «Команды» держится в видимой
+          части блока по выбранному выравниванию, у конца блока уезжает вместе с
+          ним. Колонка со своим renderCell получает весь блок, её подпись уходит
+          за край. Клик по «Команде» открывает Select.
+        </StoryHint>
+        <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+          {(['top', 'center', 'bottom'] as const).map((v) => (
+            <Button
+              key={v}
+              size="s"
+              view={vertical === v ? 'accent' : 'secondary'}
+              onClick={() => setVertical(v)}
+            >
+              {v}
+            </Button>
+          ))}
+        </div>
+        <TableCanvas
+          tableConfig={{
+            containerStyle: { height: '480px' },
+            rowMarkers: { startIndex: 1 },
+            hoverEffects: { row: true },
+            summaryRows: { showDefault: true, showInControl: false },
+            editing: {
+              onRowsChange: (next: SRow[]) => setRows([...next]),
+              rowKeyGetter: (r: SRow) => r.id,
+              defaultEnabled: true,
+            },
+            mergeCells: {
+              mergeByCellValues: ['dept', 'deptCustom', 'team'],
+              mergedCellsAlign: { vertical },
+            },
+          }}
+          columnConfig={columns}
+          bottomSummaryRows={summary}
+          rows={rows}
+        />
+      </div>
+    );
+  },
+};
