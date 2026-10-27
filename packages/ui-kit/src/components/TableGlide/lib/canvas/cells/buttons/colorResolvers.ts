@@ -110,10 +110,13 @@ export function getEmbedIconButtonColors(
 }
 
 /**
- * Цвета чекбокса, как у Checkbox в SDDS: неотмеченный — прозрачный фон и
- * рамка `text-secondary`; отмеченный или частично отмеченный — заливка
- * `text-accent`, галочка `on-dark-text-primary`, без рамки. Недоступный —
- * те же цвета на 40 %.
+ * Цвета чекбокса, как у Checkbox в SDDS: неотмеченный — фон карточки
+ * `surface-solid-card` и рамка `text-secondary`; отмеченный или частично
+ * отмеченный — заливка `text-accent`, галочка `on-dark-text-primary`, без
+ * рамки. Недоступный — те же цвета на 40 %.
+ * Фон неотмеченного не прозрачный (решение дизайнера от 27.10.2026): чекбокс
+ * стоит в служебной колонке со своим голубым фоном, и прозрачный просвечивал
+ * бы его. Фон карточки в светлой теме белый, в тёмной тёмный.
  */
 export function resolveCheckboxColors(
   theme: GlideThemeForRender,
@@ -132,7 +135,7 @@ export function resolveCheckboxColors(
           iconColor: tokens.onDarkTextPrimary,
         }
       : {
-          bgColor: 'transparent',
+          bgColor: tokens.surfaceSolidCard,
           borderColor: tokens.textSecondary,
           textColor: tokens.onDarkTextPrimary,
           iconColor: tokens.onDarkTextPrimary,
