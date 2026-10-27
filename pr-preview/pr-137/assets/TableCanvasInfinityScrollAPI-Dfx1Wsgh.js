@@ -1,0 +1,4 @@
+import{j as n}from"./react-CAOzMBF_.js";import{cf as o,cg as r}from"./vendor-DmWczWMC.js";import{T as s}from"./TypeSourceViewer-C-x0VKN2.js";import"./react-is-vVGXX3JE.js";import"./styled-components-DCFsnh-i.js";import"./@tanstack/react-virtual-vLM_tzFQ.js";import"./tslib-DoU9Jm1N.js";function e(t){const i={h1:"h1",h2:"h2",...o(),...t.components};return n.jsxs(n.Fragment,{children:[n.jsx(r,{title:"Локальные компоненты/TableCanvas/InfinityScroll/API"}),`
+`,n.jsx(i.h1,{id:"infinity-scroll-api",children:"Infinity Scroll API"}),`
+`,n.jsx(i.h2,{id:"infinityscrollconfig",children:"InfinityScrollConfig"}),`
+`,n.jsx(s,{language:"ts",filePath:"packages/ui-kit/src/components/TableCanvas/types/table-config.type.ts",typeName:"InfinityScrollConfig"})]})}function u(t={}){const{wrapper:i}={...o(),...t.components};return i?n.jsx(i,{...t,children:n.jsx(e,{...t})}):e(t)}export{u as default};
