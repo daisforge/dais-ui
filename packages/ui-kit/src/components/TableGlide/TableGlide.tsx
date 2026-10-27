@@ -841,8 +841,9 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
             : spanAlignConfig
           : undefined;
       // Подпись блока в несколько строк по умолчанию сверху и остаётся
-      // в видимой части блока при прокрутке.
-      const spanAlign: GridCell['spanAlign'] =
+      // в видимой части блока при прокрутке. Тип не указан явно: в опубликованной
+      // версии форка у выравнивания ещё нет поля sticky.
+      const spanAlign =
         spanRows && spanRows[0] !== spanRows[1]
           ? {
               vertical: DEFAULT_SPAN_VERTICAL_ALIGN,
