@@ -52,7 +52,7 @@ import { getAlignment } from '../renders/formatCell/getAlignment';
 import { RenderCellGlide } from '../renders/renderCellGlide';
 import { RenderEditCell } from '../renders/renderEditCell';
 import { Canvas, CanvasEvent } from '../TableGlideInstance';
-import { ColumnConfig, ObjectForExtending } from '../types';
+import { ColumnConfig, EditingCellInfo, ObjectForExtending } from '../types';
 import { ColumnConfigInternal } from '../types/column-config-internal.type';
 import type { MergedCellsAlign } from '../types/merged-cells.type';
 import { TableConfig } from '../types/table-config.type';
@@ -533,6 +533,12 @@ export const useColumns = <
           <RenderEditCell
             editingCellInfo={renderEditCellProps}
             column={el}
+            // Итоговое выравнивание блока (регион, колонка, общая настройка):
+            // по нему редактор Select решает, куда раскрывать список.
+            // eslint-disable-next-line @typescript-eslint/no-use-before-define
+            mergedVerticalAlign={resolveMergedVerticalAlign(
+              renderEditCellProps,
+            )}
             tableConfigSubRows={tableConfig.subRows}
             tableConfigRowDetailPanel={undefined}
             currIndex={currIndex}
@@ -607,6 +613,23 @@ export const useColumns = <
       } else if (rowSpan !== undefined) {
         spanAlign =
           typeof columnAlign === 'function' ? resolveColumnAlign : columnAlign;
+      }
+
+      // Вертикаль блока для редактора ячейки: та же лестница, что у отрисовки.
+      // У блока в несколько строк без настройки отрисовка ставит верх, это
+      // равно раскрытию списка вниз, поэтому отдельное умолчание не нужно.
+      function resolveMergedVerticalAlign(
+        info: EditingCellInfo<RowType, SummaryRowType>,
+      ): 'top' | 'center' | 'bottom' | undefined {
+        // Функция выравнивания читает строку и её индекс (row, rowInd), они
+        // есть и в данных редактора.
+        const align =
+          typeof spanAlign === 'function'
+            ? (
+                spanAlign as (cellInfo: unknown) => MergedCellsAlign | undefined
+              )(info)
+            : spanAlign;
+        return align?.vertical;
       }
 
       const userThemeOverride = el.themeOverride;
