@@ -23,6 +23,7 @@
  * Результат запоминается по паре «тема + цвет», поэтому расчёт идёт один раз
  * на каждый разный цвет, а не на каждую ячейку.
  */
+import { getTablePaletteOverride } from './palette-override';
 import { TABLE_FILL_PARAMS, TableColorTheme } from './table-colors.generated';
 
 export type CellFillStates = {
@@ -247,12 +248,15 @@ export const getCellFillStates = (
   hex: string,
   theme: TableColorTheme,
 ): CellFillStates => {
-  const key = `${theme}/${hex}`;
+  const params = TABLE_FILL_PARAMS[theme];
+  // Множитель шага может подменить стенд подбора цветов (palette-override.ts).
+  const stepFactor =
+    getTablePaletteOverride(theme)?.stepFactor ?? params.stepFactor;
+  const key = `${theme}/${stepFactor}/${hex}`;
   const hit = cache.get(key);
   if (hit) return hit;
-  const params = TABLE_FILL_PARAMS[theme];
   const states = fillStates(hex, params.mode, {
-    stepFactor: params.stepFactor,
+    stepFactor,
     cardHex: params.cardHex,
     primaryHex: params.primaryHex,
     selectionHex: params.selectionHex,

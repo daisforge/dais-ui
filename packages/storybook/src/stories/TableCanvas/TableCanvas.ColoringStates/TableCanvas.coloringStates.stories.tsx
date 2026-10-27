@@ -7,13 +7,25 @@ import {
   type HighlightActiveType,
   TableCanvas,
 } from '@ui-kit/components/TableCanvas';
-import React, { useMemo, useState } from 'react';
+import { setTablePaletteOverride } from '@ui-kit/components/TableGlide/theming/palette-override';
+import React, { useEffect, useMemo, useState } from 'react';
+
+import {
+  buildHcPalette,
+  defaultStepFactor,
+  HC_THEMES,
+} from './stepFactorPalette';
 
 /**
  * Универсальный стенд состояний цветов таблицы: hover строки, выделение
  * (диапазон/колонка/строка), highlightActiveType, чекбокс-строки,
  * редактируемые ячейки, ячейки с ошибкой и статусные цвета потребителя.
  * Темы переключаются глобальным тулбаром Storybook.
+ *
+ * Ползунки «множитель шага» пересчитывают палитру контрастных тем на лету
+ * формулой генератора: насколько заметно ячейка темнеет под курсором. Нужны
+ * для подбора значения вместе с дизайнером; выбранное число вносится в
+ * THEME_SETTINGS генератора, затем npm run table-colors:palette.
  */
 
 type ColoringArgs = {
@@ -23,7 +35,13 @@ type ColoringArgs = {
   checkboxSelecting: boolean;
   editingEnabled: boolean;
   rowMarkers: boolean;
+  hcLightStepFactor: number;
+  hcDarkStepFactor: number;
 };
+
+const STEP_FACTOR_CONTROL = {
+  control: { type: 'range', min: 0.5, max: 2.5, step: 0.05 },
+} as const;
 
 const meta: Meta<ColoringArgs> = {
   title: 'Локальные компоненты/TableCanvas/ColoringStates',
@@ -36,8 +54,18 @@ const meta: Meta<ColoringArgs> = {
     checkboxSelecting: true,
     editingEnabled: true,
     rowMarkers: true,
+    hcLightStepFactor: defaultStepFactor('highContrastLight'),
+    hcDarkStepFactor: defaultStepFactor('highContrastDark'),
   },
   argTypes: {
+    hcLightStepFactor: {
+      name: 'множитель шага: контрастная светлая',
+      ...STEP_FACTOR_CONTROL,
+    },
+    hcDarkStepFactor: {
+      name: 'множитель шага: контрастная тёмная',
+      ...STEP_FACTOR_CONTROL,
+    },
     hoverRow: {
       name: 'hoverEffects.row',
       control: 'boolean',
@@ -164,8 +192,33 @@ export const ColoringStates: Story = {
       [],
     );
 
+    // Палитра контрастных тем с множителями из ползунков. Подмена ставится
+    // до отрисовки таблицы, а key пересоздаёт таблицу, чтобы тема собралась
+    // заново с новыми цветами.
+    const factors = {
+      highContrastLight: args.hcLightStepFactor,
+      highContrastDark: args.hcDarkStepFactor,
+    };
+    const paletteKey = `${factors.highContrastLight}/${factors.highContrastDark}`;
+    useMemo(() => {
+      const palette = buildHcPalette(factors);
+      HC_THEMES.forEach((theme) => {
+        setTablePaletteOverride(theme, {
+          colors: palette[theme],
+          stepFactor: factors[theme],
+        });
+      });
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [paletteKey]);
+    useEffect(
+      () => () =>
+        HC_THEMES.forEach((theme) => setTablePaletteOverride(theme, undefined)),
+      [],
+    );
+
     return (
       <TableCanvas
+        key={paletteKey}
         tableConfig={{
           containerStyle: { height: '560px' },
           hoverEffects: { row: args.hoverRow },
