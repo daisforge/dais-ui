@@ -35,19 +35,6 @@ import * as TableRowHeightStories from './TableCanvas.rowHeight.stories';
 - Ячейка, объединённая на несколько строк (`mergeCells`), строку не растит; объединённая на несколько колонок меряется по ширине блока
 - С панелью детализации строки не растут: `'auto'` там равен высоте по `rowSize`
 
-### tableConfig.rowHeightsRef
-
-Если поверх таблицы рисуется что-то, привязанное к строкам (например, метки на скроллбаре), высоты строк можно читать из `rowHeightsRef`: таблица кладёт туда функцию «индекс строки → текущая высота».
-
-```tsx
-import type { RowHeightsRef } from '@daisforge/ui/components/TableCanvas';
-
-const rowHeightsRef: RowHeightsRef = useRef(null);
-const heightOf = (rowIndex: number) => rowHeightsRef.current?.(rowIndex) ?? 40;
-
-<TableCanvas tableConfig={{ rowHeight: 'auto', rowHeightsRef }} /* ... */ />;
-```
-
 ## tableConfig.rowSize
 
 Переключатель размера строк в controlBlock (кнопка с выпадающим списком):

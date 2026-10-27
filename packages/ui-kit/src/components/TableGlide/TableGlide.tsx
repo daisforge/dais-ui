@@ -125,7 +125,6 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   rows,
   bottomSummaryRows,
   rowHeight,
-  rowHeightsRef,
   width,
   rowSize = 'medium',
   ctxs = CTXS_EMPTY,
@@ -271,7 +270,6 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     rowHeight,
     rows,
     rowSize,
-    rowHeightsRef,
     columns: columnsLast,
     fontFamily: theme.fontFamily,
   });

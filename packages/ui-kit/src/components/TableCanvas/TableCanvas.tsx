@@ -1078,7 +1078,6 @@ export function TableCanvas<
 
                             // rowSize and height
                             rowSize,
-                            rowHeightsRef: tableConfig.rowHeightsRef,
                             ...(resultRowHeight && {
                               rowHeight: resultRowHeight,
                             }),

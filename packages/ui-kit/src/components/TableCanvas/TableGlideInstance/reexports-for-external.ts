@@ -19,7 +19,6 @@ export type {
   CanvasNodeTooltipProps,
   CanvasPortalHoverDetail,
   CanvasPortalSource,
-  RowHeightsRef,
 } from '../../TableGlide';
 export {
   createEmptyCellGlide,

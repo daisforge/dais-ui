@@ -13,7 +13,6 @@ import type {
 import type {
   CSSProperties,
   ComponentProps,
-  MutableRefObject,
   ReactElement,
   ReactNode,
   ReactPortal,
@@ -45,14 +44,6 @@ export type { Theme, ActiveTheme };
 export type GlideProps = ComponentProps<typeof DataEditor>;
 
 export type RowHeightGlide = GlideProps['rowHeight'];
-
-/**
- * Сюда таблица кладёт функцию «индекс строки → текущая высота (px)». Функция обновляется
- * на каждом рендере; во время анимации смены `rowSize` отдаёт целевую высоту.
- */
-export type RowHeightsRef = MutableRefObject<
-  ((rowIndex: number) => number) | null
->;
 
 /** Высота строки: число, функция по строке или `'auto'` — по содержимому ячеек. */
 export type RowHeightProp<R> =
@@ -383,8 +374,6 @@ export type TableGlideCustomProps<
   bottomSummaryRows?: readonly SR[];
   rowSize?: SIZE;
   rowHeight?: RowHeightProp<R>;
-  /** Принимает функцию текущей высоты строки по индексу (см. TableConfig.rowHeightsRef). */
-  rowHeightsRef?: RowHeightsRef;
   ctxs?: ObjectForExtending;
   renderGroupHeader?: (
     args: RenderGroupHeaderArgs

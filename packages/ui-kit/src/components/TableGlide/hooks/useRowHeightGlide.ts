@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
 import { DEFAULT_ROW_HEIGHT, type SIZE } from '../constants';
-import type { RowHeightGlide, RowHeightProp, RowHeightsRef } from '../types';
+import type { RowHeightGlide, RowHeightProp } from '../types';
 import { useAutoRowHeight } from './useAutoRowHeight';
 
 const baseHeightOf =
@@ -27,7 +27,6 @@ interface Params<R extends object> {
   rowHeight: RowHeightProp<R>;
   rows: readonly R[];
   rowSize: SIZE;
-  rowHeightsRef?: RowHeightsRef;
   columns: readonly { id: string }[];
   fontFamily?: string;
 }
@@ -40,7 +39,6 @@ export function useRowHeightGlide<R extends object>({
   rowHeight,
   rows,
   rowSize,
-  rowHeightsRef,
   columns,
   fontFamily,
 }: Params<R>) {
@@ -57,13 +55,6 @@ export function useRowHeightGlide<R extends object>({
     // auto.heightOf и auto.version меняются с новыми измерениями: glide должен заново спросить высоты
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rowHeight, isAuto, rows, rowSize, auto.heightOf, auto.version]);
-
-  if (rowHeightsRef) {
-    rowHeightsRef.current =
-      typeof rowHeightGlide === 'function'
-        ? rowHeightGlide
-        : () => rowHeightGlide;
-  }
 
   return {
     rowHeightGlide,

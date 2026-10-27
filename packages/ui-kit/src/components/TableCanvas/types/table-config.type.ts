@@ -6,7 +6,6 @@ import type {
 import { Group, Item, ItemOrGroup } from '@ui-kit/components/ListOfFilters';
 import type { MassActionsSize } from '@ui-kit/components/MassActions';
 import { SIZE } from '@ui-kit/components/TableCanvas';
-import type { RowHeightsRef } from '@ui-kit/components/TableGlide';
 // FIXME: Ждем адаптации фичи RowInstauments
 // import { RowInstrumentsType, SIZE } from '@ui-kit/components/TableCanvas';
 import { CSSProperties, ReactNode } from 'react';
@@ -1119,11 +1118,6 @@ export type TableConfig<
    * С панелью детализации строки не растут: `'auto'` там равен высоте по `rowSize`.
    */
   rowHeight?: Maybe<number | 'auto' | RowHeightFunc<RowType>>;
-  /**
-   * Сюда таблица кладёт функцию «индекс строки → её текущая высота (px)»: нужна внешним
-   * наложениям (метки на скроллбаре), когда высота зависит от содержимого (`rowHeight: 'auto'`).
-   */
-  rowHeightsRef?: RowHeightsRef;
   /**
    * headerRowHeight - высота одного ряда шапки (в px). По умолчанию 33.
    *
