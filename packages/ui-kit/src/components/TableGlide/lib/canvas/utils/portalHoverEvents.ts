@@ -10,37 +10,81 @@ import type {
 // Interaction Lock (pauses portal hover during drag/resize)
 // ─────────────────────────────────────────────────────────────────────────────
 
-let interactionLockCount = 0;
 type InteractionLockListener = (locked: boolean) => void;
-const lockListeners = new Set<InteractionLockListener>();
 
-export function lockPortalHover(): () => void {
-  interactionLockCount++;
-  if (interactionLockCount === 1) {
-    lockListeners.forEach((listener) => listener(true));
-  }
+/** Сколько блокировок взято на каждый контейнер. null: блокировка на всю страницу. */
+const lockCounts = new Map<EventTarget | null, number>();
+
+interface LockSubscription {
+  listener: InteractionLockListener;
+  target: EventTarget | null | undefined;
+  locked: boolean;
+}
+const lockSubscriptions = new Set<LockSubscription>();
+
+function isLocked(target: EventTarget | null | undefined): boolean {
+  if (target === undefined) return lockCounts.size > 0;
+  return lockCounts.has(target) || lockCounts.has(null);
+}
+
+function notifyLockListeners(): void {
+  lockSubscriptions.forEach((subscription) => {
+    const locked = isLocked(subscription.target);
+    if (locked === subscription.locked) return;
+    subscription.locked = locked;
+    subscription.listener(locked);
+  });
+}
+
+/**
+ * Выключает тултипы и открытие по наведению, пока колонку тянут или меняют ей
+ * ширину.
+ * @param target контейнер таблицы: блокировка действует только на неё. Без
+ * него блокируется вся страница.
+ * @returns функция снятия блокировки, повторный вызов ничего не делает.
+ */
+export function lockPortalHover(target?: EventTarget | null): () => void {
+  const key = target ?? null;
+  lockCounts.set(key, (lockCounts.get(key) ?? 0) + 1);
+  notifyLockListeners();
 
   let released = false;
   return () => {
     if (released) return;
     released = true;
-    interactionLockCount--;
-    if (interactionLockCount === 0) {
-      lockListeners.forEach((listener) => listener(false));
-    }
+    const count = (lockCounts.get(key) ?? 1) - 1;
+    if (count > 0) lockCounts.set(key, count);
+    else lockCounts.delete(key);
+    notifyLockListeners();
   };
 }
 
-export function isPortalHoverLocked(): boolean {
-  return interactionLockCount > 0;
+/**
+ * @param target контейнер таблицы: заблокирована ли она. Без него: есть ли
+ * блокировка хоть где-то.
+ */
+export function isPortalHoverLocked(target?: EventTarget | null): boolean {
+  return isLocked(target === null ? undefined : target);
 }
 
+/**
+ * Подписка на блокировку наведения.
+ * @param target контейнер таблицы: слушаем её блокировку и блокировку всей
+ * страницы. Без него слушаем любую блокировку.
+ */
 export function subscribeToPortalHoverLock(
-  listener: InteractionLockListener
+  listener: InteractionLockListener,
+  target?: EventTarget | null
 ): () => void {
-  lockListeners.add(listener);
+  const key = target ?? undefined;
+  const subscription: LockSubscription = {
+    listener,
+    target: key,
+    locked: isLocked(key)
+  };
+  lockSubscriptions.add(subscription);
   return () => {
-    lockListeners.delete(listener);
+    lockSubscriptions.delete(subscription);
   };
 }
 
@@ -48,8 +92,8 @@ export const CANVAS_PORTAL_RESET_EVENT = 'basic-grid-canvas-portal-reset';
 
 /**
  * Сообщает, что тултипы и Popover таблицы привязаны к старым координатам:
- * начали менять ширину колонки или переставили колонки. В отличие от
- * lockPortalHover действует только на таблицу, в контейнер которой отправлено.
+ * начали менять ширину колонки или переставили колонки. Действует только на
+ * таблицу, в контейнер которой отправлено.
  * @param target контейнер таблицы. Если не передан, событие отправляется на window.
  */
 export function dispatchCanvasPortalReset(target?: EventTarget | null): void {

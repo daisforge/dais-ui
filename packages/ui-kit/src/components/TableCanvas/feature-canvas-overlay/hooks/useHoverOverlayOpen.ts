@@ -190,7 +190,7 @@ export function useHoverOverlayOpen({
     const unsubscribeLock = subscribeToPortalHoverLock((isLocked) => {
       locked = isLocked;
       if (isLocked) reset();
-    });
+    }, target);
 
     reconsiderRef.current = () => {
       if (opened) {

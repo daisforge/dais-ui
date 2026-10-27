@@ -9,31 +9,42 @@ import {
 /** Всплывающие элементы внутри таблицы со своей обработкой Esc (контекстное меню, списки). */
 const OWN_ESCAPE_SELECTOR = '[role="menu"], [role="listbox"], [role="dialog"]';
 
-/** Последнее нажатие Esc и закрывает ли оно Popover. */
-export interface LastEscape {
-  at: number;
-  /**
-   * Esc нажат внутри Popover или в таблице и закрывает Popover. Esc в другом
-   * месте страницы Popover не закрывает, хотя floating-ui его тоже слышит.
-   */
-  closes: boolean;
+/**
+ * Открытые окна всех таблиц страницы в порядке открытия. Esc без фокуса
+ * (на body) закрывает только последнее.
+ */
+const openWindows: object[] = [];
+
+/** Esc, который сейчас идёт по документу. */
+let currentEscape: KeyboardEvent | null = null;
+
+/**
+ * Идёт ли сейчас обработка нажатия Esc. Атомарные окна сами слушают Esc и
+ * зовут `onToggle(false)`, а отключить это нельзя. Такое закрытие переходник
+ * пропускает: по Esc окно закрывает только `useEscapeClose`. Проверяем само
+ * событие: после обработки у него `eventPhase` снова `NONE`.
+ */
+export function isEscapeInProgress(): boolean {
+  return !!currentEscape && currentEscape.eventPhase !== Event.NONE;
 }
 
 export interface UseEscapeCloseParams {
   enabled: boolean;
   onClose: () => void;
-  /** Контейнер таблицы: Esc закрывает Popover, только если нажат в ней. */
+  /** Контейнер таблицы: Esc закрывает окно, только если нажат в ней. */
   tableContainer?: HTMLElement | null;
+  /** Содержимое окна: Esc внутри него тоже закрывает окно. */
   popoverRef: RefObject<HTMLElement | null>;
 }
 
 /**
- * Закрывает Popover по Esc, когда фокус в таблице. Пока Popover открыт, фокус
- * остаётся в таблице, и Esc сначала получает glide. Перехватываем его раньше,
- * если он нажат в своей таблице или фокуса нет нигде, но не в поле ввода и не
- * во всплывающем элементе со своим Esc. Тогда первый Esc закрывает только Popover.
- *
- * @returns ref с последним Esc, чтобы отличить закрытие по Esc от клика мимо.
+ * Единственное место, где Popover и Dropdown закрываются по Esc. Слушаем
+ * документ в capture-фазе, раньше glide и атомарки. Закрываем, если Esc нажат:
+ * - внутри окна;
+ * - в своей таблице, но не в поле ввода и не во всплывающем элементе со своим
+ *   Esc. Всплытие останавливаем, чтобы первый Esc закрыл только окно;
+ * - без фокуса (на body), и это окно открыто последним на странице.
+ * Esc в другом месте страницы окно не закрывает.
  */
 export function useEscapeClose({
   enabled,
@@ -43,20 +54,28 @@ export function useEscapeClose({
 }: UseEscapeCloseParams) {
   const onCloseRef = useRef(onClose);
   onCloseRef.current = onClose;
-  const lastEscapeRef = useRef<LastEscape>({ at: 0, closes: false });
+  const tokenRef = useRef({});
+
+  useEffect(() => {
+    const token = tokenRef.current;
+    openWindows.push(token);
+    return () => {
+      const index = openWindows.indexOf(token);
+      if (index !== -1) openWindows.splice(index, 1);
+    };
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key !== 'Escape') return;
+      currentEscape = event;
+      if (!enabled) return;
       const target = event.target instanceof Element ? event.target : null;
-      const remember = (closes: boolean) => {
-        lastEscapeRef.current = { at: Date.now(), closes };
-      };
 
       const popover =
         getFloatingContainer(popoverRef.current) ?? popoverRef.current;
       if (target && popover?.contains(target)) {
-        remember(true);
+        onCloseRef.current();
         return;
       }
 
@@ -64,21 +83,22 @@ export function useEscapeClose({
         !target ||
         target === document.body ||
         target === document.documentElement;
-      const fromTable = !!target && !!tableContainer?.contains(target);
-      // Учитываем только всплывающие элементы внутри таблицы: closest найдёт и
-      // модальное окно вокруг таблицы, а его Esc закрывать Popover не мешает.
-      const ownEscape =
-        !!target &&
-        (isEditableElement(target) ||
-          !!tableContainer?.contains(target.closest(OWN_ESCAPE_SELECTOR)));
-
-      if (!enabled || (!fromNowhere && !fromTable) || ownEscape) {
-        remember(false);
+      if (fromNowhere) {
+        if (openWindows[openWindows.length - 1] === tokenRef.current) {
+          onCloseRef.current();
+        }
         return;
       }
 
-      remember(true);
-      if (fromTable) event.stopPropagation();
+      if (!target || !tableContainer?.contains(target)) return;
+      // Учитываем только всплывающие элементы внутри таблицы: closest найдёт и
+      // модальное окно вокруг таблицы, а его Esc закрывать окно не мешает.
+      const ownEscape =
+        isEditableElement(target) ||
+        tableContainer.contains(target.closest(OWN_ESCAPE_SELECTOR));
+      if (ownEscape) return;
+
+      event.stopPropagation();
       onCloseRef.current();
     };
 
@@ -87,6 +107,4 @@ export function useEscapeClose({
       document.removeEventListener('keydown', handleKeyDown, true);
     };
   }, [enabled, tableContainer, popoverRef]);
-
-  return lastEscapeRef;
 }

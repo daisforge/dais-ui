@@ -211,6 +211,25 @@ describe('useHoverOverlayOpen: открытие поповера по навед
     expect(openOverlay).not.toHaveBeenCalled();
   });
 
+  it('блокировка своей таблицы отменяет ожидание, чужой таблицы нет', () => {
+    renderOpenHook();
+    show(nodeShow());
+    movePointer(110, 110);
+    const releaseOther = lockPortalHover(document.createElement('div'));
+    vi.advanceTimersByTime(300);
+    releaseOther();
+    expect(openOverlay).toHaveBeenCalledTimes(1);
+
+    openOverlay.mockClear();
+    show(
+      nodeShow({ tooltipContext: { column: { id: 'priority' }, rowInd: 3 } }),
+    );
+    const releaseOwn = lockPortalHover(container);
+    vi.advanceTimersByTime(300);
+    releaseOwn();
+    expect(openOverlay).not.toHaveBeenCalled();
+  });
+
   it('сброс якорей своей таблицы отменяет ожидание, чужой таблицы нет', () => {
     renderOpenHook();
     show(nodeShow());

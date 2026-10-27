@@ -1,5 +1,4 @@
 import { Dropdown, type DropdownItemOption } from '@ui-kit/components/Dropdown';
-import type { SyntheticEvent } from 'react';
 import React, {
   useCallback,
   useEffect,
@@ -10,7 +9,10 @@ import React, {
 
 import { useHeaderContext } from '../../contexts';
 import { HOVER_ANCHOR_GAP } from '../../feature-canvas-overlay/constants';
-import { useEscapeClose } from '../../feature-canvas-overlay/hooks/useEscapeClose';
+import {
+  isEscapeInProgress,
+  useEscapeClose,
+} from '../../feature-canvas-overlay/hooks/useEscapeClose';
 import { useHoverLeaveClose } from '../../feature-canvas-overlay/hooks/useHoverLeaveClose';
 import type { TablePopoverRenderParams } from '../../feature-popover-table/context';
 import { LIST_WIDTH, SIZES } from '../../styles/styles.constants';
@@ -28,9 +30,6 @@ const ERROR_ITEMS: DropdownItemOption[] = [
     disabled: true,
   },
 ];
-
-const isEscapeEvent = (event?: SyntheticEvent | Event) =>
-  !!event && (event as { key?: unknown }).key === 'Escape';
 
 export interface CanvasDropdownProps {
   config: ResolvedCanvasDropdownConfig;
@@ -105,12 +104,12 @@ export const CanvasDropdown = ({
   });
 
   const handleToggle = useCallback(
-    (opened: boolean, event?: SyntheticEvent | Event) => {
-      if (opened) return;
-      if (isEscapeEvent(event) && !config.closeOnEsc) return;
+    (opened: boolean) => {
+      // Esc решает useEscapeClose, как у Popover.
+      if (opened || isEscapeInProgress()) return;
       close();
     },
-    [close, config.closeOnEsc],
+    [close],
   );
 
   const handleItemSelect = useCallback(

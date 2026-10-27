@@ -30,14 +30,13 @@ import { useHoverState } from './hooks/useHoverState';
 import { useOverlayPortalFix } from './hooks/useOverlayPortalFix';
 import { useItemHoveredHandler } from './hooks/useItemHoveredHandler';
 import { useUnstickyHeader } from './hooks/useUnstickyHeader';
+import { useColumnPortalReset } from './hooks/useColumnPortalReset';
 import {
   buildCanvasTree,
   Canvas,
   CellCanvasRoot,
   createNormalCanvasInteraction,
-  dispatchCanvasPortalReset,
   isCanvasCell,
-  lockPortalHover,
   performCanvasClick,
   retrieveRenderData,
   buildCellId,
@@ -121,9 +120,6 @@ interface CanvasCellCacheEntry {
   cacheKey: CanvasCacheKey;
   canvasRoot: CellCanvasRoot;
 }
-
-/** Сколько ждать после последнего изменения ширины колонки, чтобы снять блокировку (мс). */
-const RESIZE_LOCK_RELEASE_MS = 300;
 
 export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   columns,
@@ -252,22 +248,8 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   // (объявлен позже по коду), поэтому дёргаем через ref.
   const hideTooltipRef = useRef<(() => void) | null>(null);
 
-  // Пока колонку тянут, тултипы и открытие по наведению выключены: якорь за
-  // границей колонки не двигается. Glide не сообщает о конце изменения ширины,
-  // поэтому снимаем блокировку, когда события перестали приходить.
-  const resizeLockRef = useRef<{ release: () => void; timer: number } | null>(
-    null,
-  );
-  useEffect(
-    () => () => {
-      if (resizeLockRef.current) {
-        window.clearTimeout(resizeLockRef.current.timer);
-        resizeLockRef.current.release();
-        resizeLockRef.current = null;
-      }
-    },
-    [],
-  );
+  const { onColumnResizeStep, onColumnMoved: resetOnColumnMoved } =
+    useColumnPortalReset(portalEventTargetRef);
 
   const onColumnResizeInternal = useCallback(
     (
@@ -294,20 +276,8 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       // не висел на месте (за границей во время ресайза он не едет).
       hideTooltipRef.current?.();
 
-      // Ширину колонки начали менять: якоря сдвинулись, открытый Popover закрываем.
-      if (!resizeLockRef.current) {
-        dispatchCanvasPortalReset(portalEventTargetRef?.current ?? null);
-      }
-      const lock = resizeLockRef.current ?? {
-        release: lockPortalHover(),
-        timer: 0,
-      };
-      window.clearTimeout(lock.timer);
-      lock.timer = window.setTimeout(() => {
-        lock.release();
-        resizeLockRef.current = null;
-      }, RESIZE_LOCK_RELEASE_MS);
-      resizeLockRef.current = lock;
+      // Ширину колонки меняют: якоря сдвинулись, открытый Popover закрываем.
+      onColumnResizeStep();
 
       onColumnResize?.(col, newSize, colIndex, newSizeWithGrow);
 
@@ -316,7 +286,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         return new Map(prev);
       });
     },
-    [onColumnResize, portalEventTargetRef],
+    [onColumnResize, onColumnResizeStep],
   );
 
   const columnsLast = useMemo(() => {
@@ -1459,14 +1429,13 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
 
       // Колонки переставлены, и якоря сдвинулись: прячем тултип и закрываем
       // открытый Popover этой таблицы.
-      lockPortalHover()();
-      dispatchCanvasPortalReset(portalEventTargetRef?.current ?? null);
+      resetOnColumnMoved();
 
       onColumnsReorder(sourceKey, targetKey);
     };
 
     return onColumnMoved;
-  }, [columnsForRender, onColumnsReorder, portalEventTargetRef]);
+  }, [columnsForRender, onColumnsReorder, resetOnColumnMoved]);
 
   const drawGroupHeader = useMemo((): GlideProps['drawGroupHeader'] => {
     if (!renderGroupHeader) return undefined;

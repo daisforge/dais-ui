@@ -1,3 +1,4 @@
+import { subscribeToCanvasPortalReset } from '@ui-kit/components/TableGlide';
 import type { RefObject } from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
@@ -238,11 +239,18 @@ export function usePortalHover<T = unknown>(
       if (locked) {
         hideImmediately();
       }
-    });
+    }, eventTarget);
+
+    // Колонки переставили или начали менять ширину: тултип на старом месте.
+    const unsubscribeReset = subscribeToCanvasPortalReset(
+      hideImmediately,
+      eventTarget,
+    );
 
     return () => {
       unsubscribeHover();
       unsubscribeLock();
+      unsubscribeReset();
       clearAllTimers();
     };
   }, [

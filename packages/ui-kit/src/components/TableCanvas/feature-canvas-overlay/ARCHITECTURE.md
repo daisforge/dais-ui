@@ -32,7 +32,7 @@ feature-canvas-overlay/
 ├── hooks/
 │   ├── useHoverOverlayOpen.ts       — открытие по наведению
 │   ├── useHoverLeaveClose.ts        — закрытие по уходу курсора
-│   └── useEscapeClose.ts            — Esc из таблицы
+│   └── useEscapeClose.ts            — Esc для Popover и Dropdown, стек открытых окон
 └── utils/
     ├── resolveCanvasOverlay.ts      — событие в Popover или Dropdown с дефолтами
     ├── anchor.ts                    — ключ источника, обрезка якоря краем таблицы
@@ -45,7 +45,9 @@ feature-canvas-overlay/
 - `TableGlide/lib/canvas/utils/portalClickEvents.ts` — публичные типы конфига
   Popover, шина клика, `CANVAS_PORTAL_PRIORITY`;
 - `TableGlide/lib/canvas/utils/portalHoverEvents.ts` — шина наведения (общая с
-  тултипами), блокировка `lockPortalHover`, сброс `dispatchCanvasPortalReset`.
+  тултипами), блокировка `lockPortalHover`, сброс `dispatchCanvasPortalReset`;
+- `TableGlide/hooks/useColumnPortalReset.ts` — сброс и блокировка при ресайзе
+  и перестановке колонок.
 
 Если на ноде заданы оба пропа, открывается Popover (`resolveCanvasOverlay`).
 Общий код читает из `config` только общие поля: `trigger`, `mouseEnterDelay`,
@@ -126,17 +128,18 @@ Hide-события шины для этого не годятся: шина о�
 
 - клик мимо — floating-ui `onToggle(false)` → `close({ outsidePress })`
   (защёлка гасит догоняющий open() того же источника: toggle);
-- Esc — `useEscapeClose` (см. «Фокус и Esc»);
+- Esc — только `useEscapeClose` (см. «Esc»);
 - скролл таблицы — `useClosePopoverOnRegionChange` по `behavior.closeOnScroll`;
   сдвиг считается по первой видимой ячейке и смещению внутри неё, иначе
   прокрутка ровно на N строк не закрывала бы;
 - ресайз таблицы — `PopoverInTable` по `behavior.closeOnTableResize`;
-- ресайз или перестановка колонки — `TableGlide` шлёт
-  `dispatchCanvasPortalReset` на контейнер своей таблицы, listener закрывает
-  поповер. Глобальный `lockPortalHover()` при этом тоже берётся (на время
-  ресайза и коротко при перестановке): он прячет тултипы и останавливает
-  открытие по наведению, но закрывать поповер по нему нельзя: он общий на все
-  таблицы страницы;
+- ресайз или перестановка колонки — `TableGlide` (`useColumnPortalReset`)
+  шлёт `dispatchCanvasPortalReset` на контейнер своей таблицы: listener
+  закрывает поповер, тултип прячется. На время ресайза ещё берётся
+  `lockPortalHover(контейнер)`: тултипы и открытие по наведению в этой таблице
+  выключены, другие таблицы работают. Снимается через
+  `RESIZE_LOCK_RELEASE_MS` после последнего шага ресайза или при
+  размонтировании. Перестановке блокировка не нужна, хватает сброса;
 - на месте строки под якорем другая строка (сортировка, новые данные) —
   listener сравнивает `rows[rowInd]` со строкой на момент открытия: по
   `rowKeyGetter` (`editing`, `selecting`, `subRows`, `mergeCells`), без него по
@@ -149,6 +152,32 @@ Hide-события шины для этого не годятся: шина о�
 Содержимое — снимок на момент открытия: `render` замыкает `resolved` конфиг,
 `content` и `renderContent` при перерисовке таблицы не пересчитываются.
 Изменяемое состояние живёт внутри компонента содержимого.
+
+## Esc
+
+Popover и Dropdown закрываются по Esc одинаково: только через
+`useEscapeClose`. Он слушает `keydown` на документе в capture-фазе и
+закрывает окно, если Esc нажат:
+- внутри окна;
+- в своей таблице, но не в поле ввода и не во всплывающем элементе со своим
+  Esc (меню, список, диалог). Всплытие останавливается, чтобы первый Esc
+  закрыл только окно, а не выделение Glide или модалку вокруг таблицы;
+- без фокуса (body), и это окно открыто последним на странице. Открытые окна
+  всех таблиц лежат в общем стеке модуля, иначе такой Esc закрыл бы окна во
+  всех таблицах сразу.
+
+Esc в другом месте страницы и Esc при `closeOnEsc: false` окно не закрывают.
+
+Атомарки слушают Esc сами, и отключить это пропом нельзя:
+- PopoverBeta: `useDismiss` floating-ui ловит Esc на всём документе и зовёт
+  `onToggle(false)` без события;
+- Dropdown: Esc ловит только обёртка trigger-ребёнка (`onKeyDown`), на
+  документ не подписан. Фокуса на якоре не бывает, но переходник
+  защищён так же.
+
+Поэтому `onToggle(false)` во время обработки Esc переходники пропускают:
+`isEscapeInProgress()` проверяет, что Esc ещё идёт по документу (у события
+`eventPhase` не `NONE`). Таймеров нет.
 
 ## Тултипы
 

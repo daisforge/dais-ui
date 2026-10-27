@@ -2,16 +2,16 @@ import { PopoverBeta } from '@ui-kit/components/PopoverBeta';
 import React, { useCallback, useMemo, useRef } from 'react';
 
 import { HOVER_ANCHOR_GAP } from '../../feature-canvas-overlay/constants';
-import { useEscapeClose } from '../../feature-canvas-overlay/hooks/useEscapeClose';
+import {
+  isEscapeInProgress,
+  useEscapeClose,
+} from '../../feature-canvas-overlay/hooks/useEscapeClose';
 import { useHoverLeaveClose } from '../../feature-canvas-overlay/hooks/useHoverLeaveClose';
 import type { TablePopoverRenderParams } from '../../feature-popover-table/context';
 import type { CanvasPopoverRenderApi } from '../../TableGlideInstance';
 import { usePopoverFocusGuard } from '../hooks/usePopoverFocusGuard';
 import type { ResolvedCanvasPopoverConfig } from '../types';
 import { CanvasAnchor } from './styled';
-
-/** Сколько мс после нажатия Esc закрытие Popover считается закрытием по Esc. */
-const ESCAPE_TOGGLE_WINDOW_MS = 100;
 
 export interface CanvasPopoverProps {
   config: ResolvedCanvasPopoverConfig;
@@ -48,7 +48,7 @@ export const CanvasPopover = ({
 
   usePopoverFocusGuard(popoverRef);
 
-  const lastEscapeRef = useEscapeClose({
+  useEscapeClose({
     enabled: config.closeOnEsc,
     onClose: close,
     tableContainer,
@@ -57,15 +57,11 @@ export const CanvasPopover = ({
 
   const handleToggle = useCallback(
     (opened: boolean) => {
-      if (opened) return;
-      // floating-ui ловит Esc по всей странице. Закрываем, только если Esc
-      // нажат внутри Popover или в таблице и closeOnEsc включён.
-      const lastEscape = lastEscapeRef.current;
-      const byEscape = Date.now() - lastEscape.at < ESCAPE_TOGGLE_WINDOW_MS;
-      if (byEscape && (!config.closeOnEsc || !lastEscape.closes)) return;
-      close(isHover || byEscape ? undefined : { outsidePress: true });
+      // floating-ui ловит Esc по всей странице. Esc решает useEscapeClose.
+      if (opened || isEscapeInProgress()) return;
+      close(isHover ? undefined : { outsidePress: true });
     },
-    [close, config.closeOnEsc, isHover, lastEscapeRef],
+    [close, isHover],
   );
 
   useHoverLeaveClose({

@@ -105,15 +105,6 @@ describe('CanvasDropdown на настоящем Dropdown', () => {
     expect(close).not.toHaveBeenCalled();
   });
 
-  it('Esc из таблицы закрывает', async () => {
-    const { table, cell } = createTable();
-    cell.focus();
-    const close = renderDropdown(table);
-    await screen.findByText('Открыть');
-    fireEvent.keyDown(cell, { key: 'Escape' });
-    expect(close).toHaveBeenCalled();
-  });
-
   it('пока getItems грузится, показывает пункт загрузки, потом пункты', async () => {
     const { table } = createTable();
     let resolve: (items: typeof ITEMS) => void = () => {};

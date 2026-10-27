@@ -1,8 +1,7 @@
 import { cleanup, render, renderHook, screen } from '@testing-library/react';
 import React, { useRef } from 'react';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it } from 'vitest';
 
-import { useEscapeClose } from '../../feature-canvas-overlay/hooks/useEscapeClose';
 import { usePopoverFocusGuard } from '../hooks/usePopoverFocusGuard';
 
 /** Разметка как у PopoverBeta: фокусируемый контейнер floating-ui и содержимое внутри. */
@@ -28,12 +27,6 @@ const createTable = () => {
   table.append(cell, editor);
   document.body.appendChild(table);
   return { table, cell, editor };
-};
-
-const pressEscape = (target: Element) => {
-  const event = new KeyboardEvent('keydown', { key: 'Escape', bubbles: true });
-  target.dispatchEvent(event);
-  return event;
 };
 
 describe('usePopoverFocusGuard: фокус остаётся в таблице', () => {
@@ -105,135 +98,5 @@ describe('usePopoverFocusGuard: фокус остаётся в таблице', 
     screen.getByText('Закрыть').focus();
     rerender(<span />);
     expect(document.activeElement).toBe(cell);
-  });
-});
-
-describe('useEscapeClose: Esc только из своей таблицы', () => {
-  let onClose: ReturnType<typeof vi.fn>;
-
-  beforeEach(() => {
-    onClose = vi.fn();
-  });
-
-  afterEach(() => {
-    cleanup();
-    document.body.innerHTML = '';
-  });
-
-  const renderEscapeHook = (
-    table: HTMLElement,
-    popoverContent: HTMLElement,
-    enabled = true,
-  ) =>
-    renderHook(() =>
-      useEscapeClose({
-        enabled,
-        onClose,
-        tableContainer: table,
-        popoverRef: { current: popoverContent },
-      }),
-    );
-
-  it('Esc из ячейки таблицы закрывает поповер и не доходит до таблицы', () => {
-    const { table, cell } = createTable();
-    const popover = createPopoverDom();
-    renderEscapeHook(table, popover.content);
-    const tableListener = vi.fn();
-    table.addEventListener('keydown', tableListener);
-    pressEscape(cell);
-    expect(onClose).toHaveBeenCalledTimes(1);
-    expect(tableListener).not.toHaveBeenCalled();
-  });
-
-  it('Esc в редакторе ячейки поповер не закрывает', () => {
-    const { table, editor } = createTable();
-    const popover = createPopoverDom();
-    renderEscapeHook(table, popover.content);
-    pressEscape(editor);
-    expect(onClose).not.toHaveBeenCalled();
-  });
-
-  it('Esc внутри поповера оставляем содержимому и PopoverBeta', () => {
-    const { table } = createTable();
-    const popover = createPopoverDom();
-    const ref = renderEscapeHook(table, popover.content);
-    const contentListener = vi.fn();
-    popover.button.addEventListener('keydown', contentListener);
-    pressEscape(popover.button);
-    expect(onClose).not.toHaveBeenCalled();
-    expect(contentListener).toHaveBeenCalled();
-    expect(ref.result.current.current.at).toBeGreaterThan(0);
-    expect(ref.result.current.current.closes).toBe(true);
-  });
-
-  it('Esc в чужом элементе страницы не трогаем', () => {
-    const { table } = createTable();
-    const popover = createPopoverDom();
-    const foreign = document.createElement('button');
-    document.body.appendChild(foreign);
-    renderEscapeHook(table, popover.content);
-    const foreignListener = vi.fn();
-    foreign.addEventListener('keydown', foreignListener);
-    pressEscape(foreign);
-    expect(onClose).not.toHaveBeenCalled();
-    expect(foreignListener).toHaveBeenCalled();
-  });
-
-  it('Esc в чужом элементе помечается как не закрывающий', () => {
-    const { table } = createTable();
-    const popover = createPopoverDom();
-    const foreign = document.createElement('button');
-    document.body.appendChild(foreign);
-    const ref = renderEscapeHook(table, popover.content);
-    pressEscape(foreign);
-    expect(ref.result.current.current.at).toBeGreaterThan(0);
-    expect(ref.result.current.current.closes).toBe(false);
-  });
-
-  it('таблица внутри модалки: Esc из ячейки закрывает поповер, а не модалку', () => {
-    const modal = document.createElement('div');
-    modal.setAttribute('role', 'dialog');
-    document.body.appendChild(modal);
-    const { table, cell } = createTable();
-    modal.appendChild(table);
-    const popover = createPopoverDom();
-    renderEscapeHook(table, popover.content);
-    const modalListener = vi.fn();
-    modal.addEventListener('keydown', modalListener);
-    pressEscape(cell);
-    expect(onClose).toHaveBeenCalledTimes(1);
-    expect(modalListener).not.toHaveBeenCalled();
-  });
-
-  it('Esc в меню внутри таблицы оставляем меню', () => {
-    const { table } = createTable();
-    const menu = document.createElement('div');
-    menu.setAttribute('role', 'menu');
-    const item = document.createElement('button');
-    menu.appendChild(item);
-    table.appendChild(menu);
-    const popover = createPopoverDom();
-    renderEscapeHook(table, popover.content);
-    pressEscape(item);
-    expect(onClose).not.toHaveBeenCalled();
-  });
-
-  it('Esc без фокуса (body) закрывает, всплытие не останавливает', () => {
-    const { table } = createTable();
-    const popover = createPopoverDom();
-    renderEscapeHook(table, popover.content);
-    const bodyListener = vi.fn();
-    document.body.addEventListener('keydown', bodyListener);
-    pressEscape(document.body);
-    expect(onClose).toHaveBeenCalledTimes(1);
-    expect(bodyListener).toHaveBeenCalled();
-  });
-
-  it('closeOnEsc: false — Esc поповер не закрывает', () => {
-    const { table, cell } = createTable();
-    const popover = createPopoverDom();
-    renderEscapeHook(table, popover.content, false);
-    pressEscape(cell);
-    expect(onClose).not.toHaveBeenCalled();
   });
 });

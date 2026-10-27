@@ -63,9 +63,11 @@ feature-canvas-dropdown/
   (та же причина, что у `TableDropdown`). Закрытие помечается `outsidePress`,
   защёлка в `useTablePopoverState` гасит догоняющий `open()` того же источника
   (toggle повторным кликом);
-- выбор пункта с `closeOnSelect`, Esc и Tab внутри списка — атомарка зовёт
-  `onToggle(false)`; Esc при `closeOnEsc: false` отбрасывается по `event.key`;
-- Esc из таблицы — `useEscapeClose` (общий с поповером);
+- выбор пункта с `closeOnSelect` — атомарка зовёт `onToggle(false)`;
+- Esc — только `useEscapeClose` (общий с поповером, раздел «Esc» в
+  `feature-canvas-overlay/ARCHITECTURE.md`). Атомарка ловит Esc лишь на обёртке
+  якоря, на документ не подписана; её `onToggle(false)` во время Esc
+  переходник всё равно пропускает (`isEscapeInProgress()`), как у поповера;
 - уход курсора при `trigger: 'hover'` — `useHoverLeaveClose` по общему
   прямоугольнику якоря и списка.
 
