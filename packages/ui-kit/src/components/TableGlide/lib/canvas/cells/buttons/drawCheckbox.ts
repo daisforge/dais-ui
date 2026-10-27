@@ -80,7 +80,11 @@ export function drawCheckbox(
     }
   );
 
-  drawIcon(batcher, icon, iconX, iconY, iconSize, colors.iconColor);
+  // Иконка (галочка или минус) только у отмеченного и частично отмеченного
+  // чекбокса: пустой чекбокс это рамка без иконки, как у Checkbox в SDDS.
+  if (checked || indeterminate) {
+    drawIcon(batcher, icon, iconX, iconY, iconSize, colors.iconColor);
+  }
 
   return { x, y: buttonY, width: actualSize, height: buttonHeight };
 }
