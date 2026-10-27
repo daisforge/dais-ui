@@ -13,7 +13,7 @@ import {
   DEFAULT_MIN_COLUMN_WIDTH,
 } from '../constants';
 import { useContextMenu, useTableCollapse } from '../contexts';
-import { CanvasPopoverListener } from '../feature-canvas-popover';
+import { CanvasOverlayListener } from '../feature-canvas-overlay';
 import {
   CollapseBlockAbove,
   CollapseTableWrapper,
@@ -401,7 +401,7 @@ export const TableOrCardsUI = <
                         <PopoverInTable containerEl={containerElement} />,
                       )}
                       {renderInContainer(
-                        <CanvasPopoverListener
+                        <CanvasOverlayListener
                           containerRef={refTableGlobalContainer}
                           config={popover}
                           dropdownConfig={dropdown}

@@ -13,7 +13,7 @@ import {
   useTablePopover,
 } from '../../feature-popover-table/context';
 import { useTablePopoverState } from '../../feature-popover-table/hooks/useTablePopoverState';
-import { CanvasPopoverListener } from '../components/CanvasPopoverListener';
+import { CanvasOverlayListener } from '../components/CanvasOverlayListener';
 
 const rowA = { id: 'a' };
 const rowB = { id: 'b' };
@@ -48,14 +48,14 @@ const Table = ({ rows = [rowA] }: { rows?: readonly unknown[] }) => {
   return (
     <TablePopoverProvider value={value}>
       <div ref={containerRef} data-testid="table">
-        <CanvasPopoverListener containerRef={containerRef} rows={rows} />
+        <CanvasOverlayListener containerRef={containerRef} rows={rows} />
         <StateProbe />
       </div>
     </TablePopoverProvider>
   );
 };
 
-/** Тот же контекст без CanvasPopoverListener: таблицу убрали со страницы. */
+/** Тот же контекст без CanvasOverlayListener: таблицу убрали со страницы. */
 const TableWithoutListener = () => {
   const value = useTablePopoverState();
   return (
@@ -70,7 +70,7 @@ const click = (container: HTMLElement, detail: CanvasPortalClickDetail) =>
     dispatchCanvasPortalClick(detail, container);
   });
 
-describe('CanvasPopoverListener: открытие по клику и жизненный цикл', () => {
+describe('CanvasOverlayListener: открытие по клику и жизненный цикл', () => {
   afterEach(() => {
     cleanup();
     lastState = null;

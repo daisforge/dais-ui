@@ -9,9 +9,9 @@ import React, {
 } from 'react';
 
 import { useHeaderContext } from '../../contexts';
-import { HOVER_ANCHOR_GAP } from '../../feature-canvas-popover/constants';
-import { useEscapeClose } from '../../feature-canvas-popover/hooks/useEscapeClose';
-import { useHoverLeaveClose } from '../../feature-canvas-popover/hooks/useHoverLeaveClose';
+import { HOVER_ANCHOR_GAP } from '../../feature-canvas-overlay/constants';
+import { useEscapeClose } from '../../feature-canvas-overlay/hooks/useEscapeClose';
+import { useHoverLeaveClose } from '../../feature-canvas-overlay/hooks/useHoverLeaveClose';
 import type { TablePopoverRenderParams } from '../../feature-popover-table/context';
 import { LIST_WIDTH, SIZES } from '../../styles/styles.constants';
 import type { CanvasDropdownApi } from '../../TableGlideInstance';

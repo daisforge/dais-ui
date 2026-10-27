@@ -33,7 +33,7 @@ describe('useHoverLeaveClose: закрытие поповера по уходу 
   const anchor = withRect({ x: 344, y: 162, width: 16, height: 16 });
   const popover = withRect({ x: 235, y: 61, width: 236, height: 90 });
   let onLeave: ReturnType<typeof vi.fn>;
-  // В таблице за курсором следит CanvasPopoverListener, здесь сам тест.
+  // В таблице за курсором следит CanvasOverlayListener, здесь сам тест.
   let releasePointer: () => void;
 
   const renderLeaveHook = () =>

@@ -1,7 +1,7 @@
-import { normalizeDropdownConfig } from '../../feature-canvas-dropdown/utils';
+import { normalizeDropdownConfig } from '../../feature-canvas-dropdown';
+import { normalizePopoverConfig } from '../../feature-canvas-popover';
 import type { CanvasPortalClickDetail } from '../../TableGlideInstance';
 import type { CanvasOverlayDefaults, ResolvedCanvasOverlay } from '../types';
-import { normalizePopoverConfig } from './normalizePopoverConfig';
 
 /**
  * Что открыть по клику или наведению на canvas-элемент: Popover (проп `popover`)

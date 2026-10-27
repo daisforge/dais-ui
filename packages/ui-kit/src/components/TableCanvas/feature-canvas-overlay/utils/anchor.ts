@@ -14,7 +14,7 @@ type AnchorDetail = Pick<
  * `id` одинаковый во всех строках, и без координат кнопки разных строк
  * считались бы одной.
  */
-export function getPopoverSourceKey(detail: AnchorDetail): string | null {
+export function getOverlaySourceKey(detail: AnchorDetail): string | null {
   const originId = detail.originId ?? detail.nodeId;
   if (!originId) return null;
   const ctx = detail.tooltipContext;

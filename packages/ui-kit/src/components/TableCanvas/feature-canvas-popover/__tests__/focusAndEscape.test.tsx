@@ -2,7 +2,7 @@ import { cleanup, render, renderHook, screen } from '@testing-library/react';
 import React, { useRef } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { useEscapeClose } from '../hooks/useEscapeClose';
+import { useEscapeClose } from '../../feature-canvas-overlay/hooks/useEscapeClose';
 import { usePopoverFocusGuard } from '../hooks/usePopoverFocusGuard';
 
 /** Разметка как у PopoverBeta: фокусируемый контейнер floating-ui и содержимое внутри. */

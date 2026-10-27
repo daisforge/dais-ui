@@ -19,6 +19,3 @@ export const POPOVER_DEFAULTS: Omit<
   mouseEnterDelay: 300,
   mouseLeaveDelay: 200,
 };
-
-/** Запас вокруг элемента и Popover при проверке, где курсор (px). */
-export const HOVER_ANCHOR_GAP = 4;

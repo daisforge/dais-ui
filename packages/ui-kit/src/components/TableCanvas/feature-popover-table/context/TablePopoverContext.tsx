@@ -4,7 +4,7 @@ import React, { createContext, ReactNode, useContext } from 'react';
  * Тип контента который можно показать в поповере.
  * - `filter` — фильтр колонки из шапки
  * - `custom` — произвольный контент, который рисует сам открывший (`render`),
- *   например canvas-поповер (feature-canvas-popover)
+ *   например canvas-поповер (feature-canvas-overlay)
  */
 export type PopoverContentType = 'filter' | 'custom';
 

@@ -1,11 +1,11 @@
 import { PopoverBeta } from '@ui-kit/components/PopoverBeta';
 import React, { useCallback, useMemo, useRef } from 'react';
 
+import { HOVER_ANCHOR_GAP } from '../../feature-canvas-overlay/constants';
+import { useEscapeClose } from '../../feature-canvas-overlay/hooks/useEscapeClose';
+import { useHoverLeaveClose } from '../../feature-canvas-overlay/hooks/useHoverLeaveClose';
 import type { TablePopoverRenderParams } from '../../feature-popover-table/context';
 import type { CanvasPopoverRenderApi } from '../../TableGlideInstance';
-import { HOVER_ANCHOR_GAP } from '../constants';
-import { useEscapeClose } from '../hooks/useEscapeClose';
-import { useHoverLeaveClose } from '../hooks/useHoverLeaveClose';
 import { usePopoverFocusGuard } from '../hooks/usePopoverFocusGuard';
 import type { ResolvedCanvasPopoverConfig } from '../types';
 import { CanvasAnchor } from './styled';

@@ -7,10 +7,10 @@ import {
   dispatchCanvasPortalReset,
   lockPortalHover,
 } from '../../../TableGlide/lib/canvas';
+import { normalizePopoverConfig } from '../../feature-canvas-popover';
 import type { TablePopoverState } from '../../feature-popover-table/context';
-import { useHoverPopoverOpen } from '../hooks/useHoverPopoverOpen';
-import { CANVAS_POPOVER_CONTENT_KIND } from '../types';
-import { normalizePopoverConfig } from '../utils';
+import { useHoverOverlayOpen } from '../hooks/useHoverOverlayOpen';
+import { CANVAS_OVERLAY_CONTENT_KIND } from '../types';
 
 const CLOSED: TablePopoverState = {
   isOpen: false,
@@ -47,24 +47,24 @@ const movePointer = (x: number, y: number) => {
   );
 };
 
-describe('useHoverPopoverOpen: открытие поповера по наведению', () => {
+describe('useHoverOverlayOpen: открытие поповера по наведению', () => {
   let container: HTMLDivElement;
   let stateRef: { current: TablePopoverState };
-  let openPopover: ReturnType<typeof vi.fn>;
+  let openOverlay: ReturnType<typeof vi.fn>;
 
-  // ref не меняются между рендерами, как в CanvasPopoverListener.
+  // ref не меняются между рендерами, как в CanvasOverlayListener.
   const renderOpenHook = (isOpen = false, rows: readonly unknown[] = ROWS) => {
     const containerRef = { current: container };
     const configRef = { current: {} };
     return renderHook(
       (props: { isOpen: boolean; rows: readonly unknown[] }) =>
-        useHoverPopoverOpen({
+        useHoverOverlayOpen({
           containerRef,
           configRef,
           stateRef,
           isOpen: props.isOpen,
           rows: props.rows,
-          openPopover,
+          openOverlay,
         }),
       { initialProps: { isOpen, rows } },
     );
@@ -80,14 +80,14 @@ describe('useHoverPopoverOpen: открытие поповера по навед
       true,
     );
 
-  // Состояние, в которое CanvasPopoverListener переводит таблицу после openPopover.
+  // Состояние, в которое CanvasOverlayListener переводит таблицу после openOverlay.
   const openedHoverState = (sourceKey: string): TablePopoverState => ({
     ...CLOSED,
     isOpen: true,
     contentType: 'custom',
     sourceKey,
     contentData: {
-      kind: CANVAS_POPOVER_CONTENT_KIND,
+      kind: CANVAS_OVERLAY_CONTENT_KIND,
       overlay: {
         kind: 'popover',
         config: normalizePopoverConfig({ trigger: 'hover', content: 'открыт' }),
@@ -100,7 +100,7 @@ describe('useHoverPopoverOpen: открытие поповера по навед
     container = document.createElement('div');
     document.body.appendChild(container);
     stateRef = { current: CLOSED };
-    openPopover = vi.fn();
+    openOverlay = vi.fn();
   });
 
   afterEach(() => {
@@ -115,10 +115,10 @@ describe('useHoverPopoverOpen: открытие поповера по навед
     movePointer(110, 110);
 
     vi.advanceTimersByTime(299);
-    expect(openPopover).not.toHaveBeenCalled();
+    expect(openOverlay).not.toHaveBeenCalled();
     vi.advanceTimersByTime(1);
-    expect(openPopover).toHaveBeenCalledTimes(1);
-    expect(openPopover.mock.calls[0]?.[2]).toBe('icon|priority|2');
+    expect(openOverlay).toHaveBeenCalledTimes(1);
+    expect(openOverlay.mock.calls[0]?.[2]).toBe('icon|priority|2');
   });
 
   it('не открывает, если курсор ушёл с якоря до конца задержки', () => {
@@ -127,7 +127,7 @@ describe('useHoverPopoverOpen: открытие поповера по навед
     movePointer(110, 110);
     movePointer(400, 400);
     vi.advanceTimersByTime(300);
-    expect(openPopover).not.toHaveBeenCalled();
+    expect(openOverlay).not.toHaveBeenCalled();
   });
 
   it('не открывает, если во время задержки открыли поповер по клику', () => {
@@ -140,7 +140,7 @@ describe('useHoverPopoverOpen: открытие поповера по навед
       contentType: 'custom',
       sourceKey: 'button|action|2',
       contentData: {
-        kind: CANVAS_POPOVER_CONTENT_KIND,
+        kind: CANVAS_OVERLAY_CONTENT_KIND,
         overlay: {
           kind: 'popover',
           config: normalizePopoverConfig({ content: 'клик' }),
@@ -148,7 +148,7 @@ describe('useHoverPopoverOpen: открытие поповера по навед
       },
     };
     vi.advanceTimersByTime(300);
-    expect(openPopover).not.toHaveBeenCalled();
+    expect(openOverlay).not.toHaveBeenCalled();
   });
 
   it('не открывает поверх фильтра шапки', () => {
@@ -157,7 +157,7 @@ describe('useHoverPopoverOpen: открытие поповера по навед
     show(nodeShow());
     movePointer(110, 110);
     vi.advanceTimersByTime(300);
-    expect(openPopover).not.toHaveBeenCalled();
+    expect(openOverlay).not.toHaveBeenCalled();
   });
 
   it('открытый поповер по наведению сменяется наведением на другой элемент', () => {
@@ -168,8 +168,8 @@ describe('useHoverPopoverOpen: открытие поповера по навед
     );
     movePointer(110, 110);
     vi.advanceTimersByTime(300);
-    expect(openPopover).toHaveBeenCalledTimes(1);
-    expect(openPopover.mock.calls[0]?.[2]).toBe('icon|priority|3');
+    expect(openOverlay).toHaveBeenCalledTimes(1);
+    expect(openOverlay.mock.calls[0]?.[2]).toBe('icon|priority|3');
   });
 
   it('скрытие того же источника отменяет ожидание', () => {
@@ -179,7 +179,7 @@ describe('useHoverPopoverOpen: открытие поповера по навед
     hide('icon');
     movePointer(110, 110);
     vi.advanceTimersByTime(300);
-    expect(openPopover).not.toHaveBeenCalled();
+    expect(openOverlay).not.toHaveBeenCalled();
   });
 
   it('скрытие с тем же id ноды, пока курсор над якорем, ожидание не отменяет', () => {
@@ -189,7 +189,7 @@ describe('useHoverPopoverOpen: открытие поповера по навед
     movePointer(110, 110);
     hide('icon');
     vi.advanceTimersByTime(300);
-    expect(openPopover).toHaveBeenCalledTimes(1);
+    expect(openOverlay).toHaveBeenCalledTimes(1);
   });
 
   it('прокрутка таблицы отменяет ожидание', () => {
@@ -198,7 +198,7 @@ describe('useHoverPopoverOpen: открытие поповера по навед
     movePointer(110, 110);
     container.dispatchEvent(new Event('scroll'));
     vi.advanceTimersByTime(300);
-    expect(openPopover).not.toHaveBeenCalled();
+    expect(openOverlay).not.toHaveBeenCalled();
   });
 
   it('блокировка (ресайз колонки) отменяет ожидание', () => {
@@ -208,7 +208,7 @@ describe('useHoverPopoverOpen: открытие поповера по навед
     const release = lockPortalHover();
     vi.advanceTimersByTime(300);
     release();
-    expect(openPopover).not.toHaveBeenCalled();
+    expect(openOverlay).not.toHaveBeenCalled();
   });
 
   it('сброс якорей своей таблицы отменяет ожидание, чужой таблицы нет', () => {
@@ -217,15 +217,15 @@ describe('useHoverPopoverOpen: открытие поповера по навед
     movePointer(110, 110);
     dispatchCanvasPortalReset(document.createElement('div'));
     vi.advanceTimersByTime(300);
-    expect(openPopover).toHaveBeenCalledTimes(1);
+    expect(openOverlay).toHaveBeenCalledTimes(1);
 
-    openPopover.mockClear();
+    openOverlay.mockClear();
     show(
       nodeShow({ tooltipContext: { column: { id: 'priority' }, rowInd: 3 } }),
     );
     dispatchCanvasPortalReset(container);
     vi.advanceTimersByTime(300);
-    expect(openPopover).not.toHaveBeenCalled();
+    expect(openOverlay).not.toHaveBeenCalled();
   });
 
   it('не открывает, пока фокус в поле ввода своей таблицы', () => {
@@ -236,7 +236,7 @@ describe('useHoverPopoverOpen: открытие поповера по навед
     show(nodeShow());
     movePointer(110, 110);
     vi.advanceTimersByTime(300);
-    expect(openPopover).not.toHaveBeenCalled();
+    expect(openOverlay).not.toHaveBeenCalled();
   });
 
   it('не открывает, пока открыт редактор ячейки (он в портале вне таблицы)', () => {
@@ -250,7 +250,7 @@ describe('useHoverPopoverOpen: открытие поповера по навед
     show(nodeShow());
     movePointer(110, 110);
     vi.advanceTimersByTime(300);
-    expect(openPopover).not.toHaveBeenCalled();
+    expect(openOverlay).not.toHaveBeenCalled();
     overlay.remove();
   });
 
@@ -262,7 +262,7 @@ describe('useHoverPopoverOpen: открытие поповера по навед
     show(nodeShow());
     movePointer(110, 110);
     vi.advanceTimersByTime(300);
-    expect(openPopover).toHaveBeenCalledTimes(1);
+    expect(openOverlay).toHaveBeenCalledTimes(1);
     input.remove();
   });
 
@@ -276,8 +276,8 @@ describe('useHoverPopoverOpen: открытие поповера по навед
     );
     movePointer(110, 110);
     vi.advanceTimersByTime(300);
-    expect(openPopover).toHaveBeenCalledTimes(1);
-    expect(openPopover.mock.calls[0]?.[1]?.kind).toBe('dropdown');
+    expect(openOverlay).toHaveBeenCalledTimes(1);
+    expect(openOverlay.mock.calls[0]?.[1]?.kind).toBe('dropdown');
   });
 
   it('поповер по клику не открывается наведением', () => {
@@ -285,7 +285,7 @@ describe('useHoverPopoverOpen: открытие поповера по навед
     show(nodeShow({ popoverFromNode: { content: 'по клику' } }));
     movePointer(110, 110);
     vi.advanceTimersByTime(300);
-    expect(openPopover).not.toHaveBeenCalled();
+    expect(openOverlay).not.toHaveBeenCalled();
   });
 
   it('после закрытия мешавшего поповера показывает поповер под курсором', () => {
@@ -294,13 +294,13 @@ describe('useHoverPopoverOpen: открытие поповера по навед
     show(nodeShow());
     movePointer(110, 110);
     vi.advanceTimersByTime(300);
-    expect(openPopover).not.toHaveBeenCalled();
+    expect(openOverlay).not.toHaveBeenCalled();
 
     stateRef.current = CLOSED;
     rerender({ isOpen: false, rows: ROWS });
     vi.advanceTimersByTime(300);
-    expect(openPopover).toHaveBeenCalledTimes(1);
-    expect(openPopover.mock.calls[0]?.[2]).toBe('icon|priority|2');
+    expect(openOverlay).toHaveBeenCalledTimes(1);
+    expect(openOverlay.mock.calls[0]?.[2]).toBe('icon|priority|2');
   });
 
   it('закрытый под курсором поповер не открывается снова, пока курсор не уйдёт', () => {
@@ -308,7 +308,7 @@ describe('useHoverPopoverOpen: открытие поповера по навед
     show(nodeShow());
     movePointer(110, 110);
     vi.advanceTimersByTime(300);
-    expect(openPopover).toHaveBeenCalledTimes(1);
+    expect(openOverlay).toHaveBeenCalledTimes(1);
     stateRef.current = openedHoverState('icon|priority|2');
     rerender({ isOpen: true, rows: ROWS });
 
@@ -317,7 +317,7 @@ describe('useHoverPopoverOpen: открытие поповера по навед
     rerender({ isOpen: false, rows: ROWS });
     show(nodeShow());
     vi.advanceTimersByTime(300);
-    expect(openPopover).toHaveBeenCalledTimes(1);
+    expect(openOverlay).toHaveBeenCalledTimes(1);
 
     // Ушли и вернулись: открывается снова.
     movePointer(400, 400);
@@ -325,7 +325,7 @@ describe('useHoverPopoverOpen: открытие поповера по навед
     movePointer(110, 110);
     show(nodeShow());
     vi.advanceTimersByTime(300);
-    expect(openPopover).toHaveBeenCalledTimes(2);
+    expect(openOverlay).toHaveBeenCalledTimes(2);
   });
 
   it('смена строк забывает запомненное наведение', () => {
@@ -340,6 +340,6 @@ describe('useHoverPopoverOpen: открытие поповера по навед
     stateRef.current = CLOSED;
     rerender({ isOpen: false, rows: nextRows });
     vi.advanceTimersByTime(300);
-    expect(openPopover).not.toHaveBeenCalled();
+    expect(openOverlay).not.toHaveBeenCalled();
   });
 });

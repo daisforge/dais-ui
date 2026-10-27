@@ -10,28 +10,24 @@ import {
 } from '../../TableGlideInstance';
 import {
   type CanvasOverlayDefaults,
-  getOpenHoverPopover,
+  getOpenHoverOverlay,
   type ResolvedCanvasOverlay,
 } from '../types';
-import {
-  getLastPointer,
-  getPopoverSourceKey,
-  isEditingInTable,
-  isPointInRect,
-  type PopoverRect,
-  resolveCanvasOverlay,
-  trackPointer,
-} from '../utils';
+import { getOverlaySourceKey } from '../utils/anchor';
+import { isEditingInTable } from '../utils/floatingContainer';
+import { isPointInRect, type PopoverRect } from '../utils/geometry';
+import { getLastPointer, trackPointer } from '../utils/pointerPosition';
+import { resolveCanvasOverlay } from '../utils/resolveCanvasOverlay';
 
 /** Поля события клика или наведения, нужные для открытия Popover. */
-export type CanvasPopoverAnchorDetail = Pick<
+export type CanvasOverlayAnchorDetail = Pick<
   CanvasPortalHoverDetail,
   'x' | 'y' | 'width' | 'height' | 'tooltipContext'
 >;
 
-/** Открывает Popover или Dropdown так же, как по клику в CanvasPopoverListener. */
-export type OpenCanvasPopover = (
-  detail: CanvasPopoverAnchorDetail,
+/** Открывает Popover или Dropdown так же, как по клику в CanvasOverlayListener. */
+export type OpenCanvasOverlay = (
+  detail: CanvasOverlayAnchorDetail,
   overlay: ResolvedCanvasOverlay,
   sourceKey: string,
 ) => void;
@@ -44,7 +40,7 @@ interface HoverCandidate {
   overlay: ResolvedCanvasOverlay;
 }
 
-export interface UseHoverPopoverOpenParams {
+export interface UseHoverOverlayOpenParams {
   /** Контейнер таблицы: на нём слушаем наведение на canvas-элементы. */
   containerRef: RefObject<HTMLElement | null>;
   /** Значения по умолчанию из tableConfig.popover и tableConfig.dropdown. */
@@ -54,7 +50,7 @@ export interface UseHoverPopoverOpenParams {
   isOpen: boolean;
   /** Строки таблицы: при смене данных запомненное наведение устарело. */
   rows?: readonly unknown[];
-  openPopover: OpenCanvasPopover;
+  openOverlay: OpenCanvasOverlay;
 }
 
 /**
@@ -67,16 +63,16 @@ export interface UseHoverPopoverOpenParams {
  * открываем без нового события. Popover, закрытый под курсором (Esc, кнопка в
  * содержимом), снова откроется только после того, как курсор уйдёт и вернётся.
  */
-export function useHoverPopoverOpen({
+export function useHoverOverlayOpen({
   containerRef,
   configRef,
   stateRef,
   isOpen,
   rows,
-  openPopover,
-}: UseHoverPopoverOpenParams) {
-  const openPopoverRef = useRef(openPopover);
-  openPopoverRef.current = openPopover;
+  openOverlay,
+}: UseHoverOverlayOpenParams) {
+  const openOverlayRef = useRef(openOverlay);
+  openOverlayRef.current = openOverlay;
   // Функции создаются внутри эффекта, другим эффектам отдаём их через ref.
   const reconsiderRef = useRef<() => void>(() => {});
   const resetRef = useRef<() => void>(() => {});
@@ -104,7 +100,7 @@ export function useHoverPopoverOpen({
       const state = stateRef.current;
       if (!state.isOpen) return true;
       // Открытый Popover по наведению сменяется наведением на другой элемент.
-      return !!getOpenHoverPopover(state) && state.sourceKey !== next.sourceKey;
+      return !!getOpenHoverOverlay(state) && state.sourceKey !== next.sourceKey;
     };
 
     const cancelPending = () => {
@@ -119,7 +115,7 @@ export function useHoverPopoverOpen({
         pending = null;
         if (!isPointerOver(next.rect) || !canOpen(next)) return;
         opened = next;
-        openPopoverRef.current(next.detail, next.overlay, next.sourceKey);
+        openOverlayRef.current(next.detail, next.overlay, next.sourceKey);
       }, next.overlay.config.mouseEnterDelay);
       pending = { ...next, timer };
     };
@@ -133,7 +129,7 @@ export function useHoverPopoverOpen({
 
     const handleShow = (detail: CanvasPortalHoverDetail) => {
       const originId = detail.originId ?? detail.nodeId;
-      const sourceKey = getPopoverSourceKey({
+      const sourceKey = getOverlaySourceKey({
         originId: originId ?? '',
         tooltipContext: detail.tooltipContext,
       });

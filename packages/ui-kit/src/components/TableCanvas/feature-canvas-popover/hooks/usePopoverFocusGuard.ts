@@ -1,7 +1,7 @@
 import type { RefObject } from 'react';
 import { useLayoutEffect, useState } from 'react';
 
-import { getFloatingContainer } from '../utils/floatingContainer';
+import { getFloatingContainer } from '../../feature-canvas-overlay/utils/floatingContainer';
 
 /**
  * Не даёт Popover забрать фокус у таблицы при открытии. PopoverBeta ставит

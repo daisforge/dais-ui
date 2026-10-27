@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { resolveCanvasOverlay } from '../utils/resolvePopoverData';
+import { resolveCanvasOverlay } from '../utils/resolveCanvasOverlay';
 
 describe('resolveCanvasOverlay: что открыть по событию canvas-якоря', () => {
   it('проп popover на ноде даёт поповер с дефолтами из tableConfig.popover', () => {

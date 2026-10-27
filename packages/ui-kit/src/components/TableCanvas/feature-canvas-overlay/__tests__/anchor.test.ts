@@ -1,15 +1,15 @@
 import { describe, expect, it } from 'vitest';
 
-import { clipAnchorRect, getPopoverSourceKey } from '../utils/anchor';
+import { clipAnchorRect, getOverlaySourceKey } from '../utils/anchor';
 
-describe('getPopoverSourceKey: ключ источника поповера', () => {
+describe('getOverlaySourceKey: ключ источника поповера', () => {
   it('один id ноды в разных строках даёт разные ключи', () => {
     const column = { id: 'action' };
-    const row2 = getPopoverSourceKey({
+    const row2 = getOverlaySourceKey({
       originId: 'details',
       tooltipContext: { column, rowInd: 2 },
     });
-    const row3 = getPopoverSourceKey({
+    const row3 = getOverlaySourceKey({
       originId: 'details',
       tooltipContext: { column, rowInd: 3 },
     });
@@ -18,12 +18,12 @@ describe('getPopoverSourceKey: ключ источника поповера', ()
 
   it('один id в разных колонках даёт разные ключи', () => {
     expect(
-      getPopoverSourceKey({
+      getOverlaySourceKey({
         originId: 'details',
         tooltipContext: { column: { id: 'a' }, rowInd: 1 },
       }),
     ).not.toBe(
-      getPopoverSourceKey({
+      getOverlaySourceKey({
         originId: 'details',
         tooltipContext: { column: { id: 'b' }, rowInd: 1 },
       }),
@@ -32,18 +32,18 @@ describe('getPopoverSourceKey: ключ источника поповера', ()
 
   it('шапка без строки и событие без контекста тоже получают ключ', () => {
     expect(
-      getPopoverSourceKey({
+      getOverlaySourceKey({
         originId: 'header-popover-1',
         tooltipContext: { column: { id: 'task' } },
       }),
     ).toBe('header-popover-1|task|header');
-    expect(getPopoverSourceKey({ originId: 'group-node' })).toBe(
+    expect(getOverlaySourceKey({ originId: 'group-node' })).toBe(
       'group-node||header',
     );
   });
 
   it('без id ключа нет', () => {
-    expect(getPopoverSourceKey({ originId: '' })).toBeNull();
+    expect(getOverlaySourceKey({ originId: '' })).toBeNull();
   });
 });
 

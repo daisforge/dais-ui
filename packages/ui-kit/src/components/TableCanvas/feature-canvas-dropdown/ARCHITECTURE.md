@@ -6,7 +6,7 @@
 (`feature-context-menu`), подгрузка пунктов может быть асинхронной.
 
 Открытие, якорь и закрытие общие с поповером: событие с canvas уходит на
-контейнер таблицы, `feature-canvas-popover/CanvasPopoverListener` собирает из
+контейнер таблицы, `feature-canvas-overlay/CanvasOverlayListener` собирает из
 него конфиг (`resolveCanvasOverlay`) и открывает через общий
 `TablePopoverContext`. Здесь живёт только то, что отличает дропдаун: публичные
 дефолты, нормализация, загрузка пунктов и переходник на атомарный Dropdown.
@@ -15,7 +15,7 @@
 
 ```
 feature-canvas-dropdown/
-├── index.ts                         — API фичи для TableCanvas (не публичный)
+├── index.ts                         — CanvasDropdown, normalizeDropdownConfig, ResolvedCanvasDropdownConfig (для feature-canvas-overlay)
 ├── constants.ts                     — DROPDOWN_DEFAULTS, значения пунктов-заглушек
 ├── types.ts                         — ResolvedCanvasDropdownConfig
 ├── components/
@@ -33,10 +33,10 @@ feature-canvas-dropdown/
   тултипа; пункт списка — `DropdownItemOption`, как у контекстного меню);
 - `TableGlide/lib/canvas/core/popoverTarget.ts` — поиск ноды с поповером или
   дропдауном по клику (`hasClickOverlay`);
-- `feature-canvas-popover` — слушатель, открытие по наведению, Esc, уход
-  курсора, ключ источника, обрезка якоря. Хуки оттуда импортируются по прямым
-  путям, а не через barrel: barrel тянет слушатель, который сам рендерит
-  `CanvasDropdown`.
+- `feature-canvas-overlay` — слушатель, открытие по наведению, Esc, уход
+  курсора, ключ источника, обрезка якоря. Хуки и константы оттуда берём по
+  прямым путям, а не через `index.ts`: там слушатель, который сам рендерит
+  `CanvasDropdown`. С `feature-canvas-popover` папка не связана.
 
 ## Открытие
 
@@ -46,7 +46,7 @@ feature-canvas-dropdown/
 наведения несут `dropdownFromNode`. Если на ноде заданы оба пропа, открывается
 поповер (`resolveCanvasOverlay`).
 
-`ResolvedCanvasOverlay` в `feature-canvas-popover/types.ts` различает виды:
+`ResolvedCanvasOverlay` в `feature-canvas-overlay/types.ts` различает виды:
 `{ kind: 'popover' | 'dropdown', config }`. Общий код читает из `config`
 только общие поля: `trigger`, `mouseEnterDelay`, `closeOnScroll`, `onOpen`,
 `onClose`.

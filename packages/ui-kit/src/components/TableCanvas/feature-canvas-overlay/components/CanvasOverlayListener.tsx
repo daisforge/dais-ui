@@ -1,7 +1,8 @@
 import type { FC, RefObject } from 'react';
 import React, { useCallback, useEffect, useRef } from 'react';
 
-import { CanvasDropdown } from '../../feature-canvas-dropdown/components/CanvasDropdown';
+import { CanvasDropdown } from '../../feature-canvas-dropdown';
+import { CanvasPopover } from '../../feature-canvas-popover';
 import { useTablePopover } from '../../feature-popover-table/context';
 import { tableClassNames } from '../../styles';
 import {
@@ -14,23 +15,19 @@ import type {
   TableConfigPopover,
 } from '../../types/table-config.type';
 import {
-  type OpenCanvasPopover,
-  useHoverPopoverOpen,
-} from '../hooks/useHoverPopoverOpen';
+  type OpenCanvasOverlay,
+  useHoverOverlayOpen,
+} from '../hooks/useHoverOverlayOpen';
 import {
-  CANVAS_POPOVER_CONTENT_KIND,
+  CANVAS_OVERLAY_CONTENT_KIND,
+  type CanvasOverlayContentData,
   type CanvasOverlayDefaults,
-  type CanvasPopoverContentData,
-  getOpenCanvasPopover,
+  getOpenCanvasOverlay,
 } from '../types';
-import {
-  clipAnchorRect,
-  getPopoverSourceKey,
-  resolveCanvasOverlay,
-} from '../utils';
-import { CanvasPopover } from './CanvasPopover';
+import { clipAnchorRect, getOverlaySourceKey } from '../utils/anchor';
+import { resolveCanvasOverlay } from '../utils/resolveCanvasOverlay';
 
-export interface CanvasPopoverListenerProps {
+export interface CanvasOverlayListenerProps {
   /** Контейнер таблицы: на нём слушаем клики и наведение на canvas-элементы. */
   containerRef: RefObject<HTMLElement | null>;
   /** Значения по умолчанию для Popover: tableConfig.popover. */
@@ -53,7 +50,7 @@ export interface CanvasPopoverListenerProps {
 const isSameRow = (
   prev: unknown,
   next: unknown,
-  rowKeyGetter: CanvasPopoverListenerProps['rowKeyGetter'],
+  rowKeyGetter: CanvasOverlayListenerProps['rowKeyGetter'],
 ) => {
   if (prev === next) return true;
   if (!rowKeyGetter || next === undefined) return false;
@@ -75,7 +72,7 @@ const getGridViewport = (container: HTMLElement | null) =>
  * и открывает Popover или Dropdown через общий TablePopoverContext. Сам ничего
  * не рисует: содержимое рисует `render`, правила закрытия задаёт `behavior`.
  */
-export const CanvasPopoverListener: FC<CanvasPopoverListenerProps> = ({
+export const CanvasOverlayListener: FC<CanvasOverlayListenerProps> = ({
   containerRef,
   config,
   dropdownConfig,
@@ -90,7 +87,7 @@ export const CanvasPopoverListener: FC<CanvasPopoverListenerProps> = ({
   const stateRef = useRef(state);
   stateRef.current = state;
 
-  const openPopover = useCallback<OpenCanvasPopover>(
+  const openOverlay = useCallback<OpenCanvasOverlay>(
     (detail, overlay, sourceKey) => {
       const container = containerRef.current;
       const rect = clipAnchorRect(detail, getGridViewport(container));
@@ -99,8 +96,8 @@ export const CanvasPopoverListener: FC<CanvasPopoverListenerProps> = ({
         typeof ctx?.rowInd === 'number' && ctx.row !== undefined
           ? { rowInd: ctx.rowInd, row: ctx.row }
           : undefined;
-      const contentData: CanvasPopoverContentData = {
-        kind: CANVAS_POPOVER_CONTENT_KIND,
+      const contentData: CanvasOverlayContentData = {
+        kind: CANVAS_OVERLAY_CONTENT_KIND,
         overlay,
         anchorRow,
       };
@@ -143,42 +140,42 @@ export const CanvasPopoverListener: FC<CanvasPopoverListenerProps> = ({
     const unsubscribeClick = subscribeToCanvasPortalClick(
       (detail: CanvasPortalClickDetail) => {
         const overlay = resolveCanvasOverlay(detail, configRef.current);
-        // Popover по наведению открывает useHoverPopoverOpen, клик его не трогает.
+        // Popover по наведению открывает useHoverOverlayOpen, клик его не трогает.
         if (!overlay || overlay.config.trigger === 'hover') return;
-        const sourceKey = getPopoverSourceKey(detail);
+        const sourceKey = getOverlaySourceKey(detail);
         if (!sourceKey) return;
 
         // Повторный клик по тому же элементу закрывает. Если closeOnOutsideClick
         // включён, Popover уже закрылся при нажатии, здесь случай, когда выключен.
         const { current } = stateRef;
-        if (getOpenCanvasPopover(current) && current.sourceKey === sourceKey) {
+        if (getOpenCanvasOverlay(current) && current.sourceKey === sourceKey) {
           close();
           return;
         }
 
-        openPopover(detail, overlay, sourceKey);
+        openOverlay(detail, overlay, sourceKey);
       },
       target,
     );
 
     // Ширину колонки поменяли или колонку переставили: элемент сдвинется.
     const unsubscribeReset = subscribeToCanvasPortalReset(() => {
-      if (getOpenCanvasPopover(stateRef.current)) close();
+      if (getOpenCanvasOverlay(stateRef.current)) close();
     }, target);
 
     return () => {
       unsubscribeClick();
       unsubscribeReset();
     };
-  }, [containerRef, openPopover, close]);
+  }, [containerRef, openOverlay, close]);
 
-  useHoverPopoverOpen({
+  useHoverOverlayOpen({
     containerRef,
     configRef,
     stateRef,
     isOpen: state.isOpen,
     rows,
-    openPopover,
+    openOverlay,
   });
 
   const rowKeyGetterRef = useRef(rowKeyGetter);
@@ -186,7 +183,7 @@ export const CanvasPopoverListener: FC<CanvasPopoverListenerProps> = ({
 
   // На месте строки, где открыт Popover, другая строка: содержимое устарело.
   useEffect(() => {
-    const anchorRow = getOpenCanvasPopover(stateRef.current)?.anchorRow;
+    const anchorRow = getOpenCanvasOverlay(stateRef.current)?.anchorRow;
     if (
       anchorRow &&
       rows &&
@@ -197,9 +194,9 @@ export const CanvasPopoverListener: FC<CanvasPopoverListenerProps> = ({
   }, [rows, close]);
 
   // onOpen / onClose конфига: ровно по одному на каждое открытие.
-  const openedRef = useRef<CanvasPopoverContentData | null>(null);
+  const openedRef = useRef<CanvasOverlayContentData | null>(null);
   useEffect(() => {
-    const next = getOpenCanvasPopover(state);
+    const next = getOpenCanvasOverlay(state);
     const prev = openedRef.current;
     if (prev === next) return;
 
@@ -214,7 +211,7 @@ export const CanvasPopoverListener: FC<CanvasPopoverListenerProps> = ({
     () => () => {
       openedRef.current?.overlay.config.onClose?.();
       openedRef.current = null;
-      if (getOpenCanvasPopover(stateRef.current)) close();
+      if (getOpenCanvasOverlay(stateRef.current)) close();
     },
     [close],
   );
