@@ -187,8 +187,8 @@ export const MAPPING = {
   outlineSolidPrimary26: { alpha: ['outline-solid-primary', '42'] },
   surfaceWarningMinor56: { alpha: ['data-yellow', '8E'] },
 
-  // Три старых ключа почти белого текста с непрозрачностью 96/56/28 %.
-  // По решению дизайнера (19.10.2026) берут токены темы по роли.
+  // Три старых ключа почти белого текста с непрозрачностью 96/56/28 %:
+  // берут токены темы по роли.
   onDarkTextPrimary96: { var: 'on-dark-text-primary' },
   onDarkTextPrimary56: { var: 'on-dark-text-secondary' },
   onDarkTextPrimary28: { var: 'on-dark-text-tertiary' },

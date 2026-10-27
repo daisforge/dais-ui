@@ -531,7 +531,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   // Единый источник ховера: логическая ячейка (контент-флаги, ref) и
   // физическая строка (фон, state). Разница семантик описана в useHoverState.
   // Строки, которые подсвечивает курсор: на объединённом блоке все строки
-  // блока (ответ дизайнера от 27.10.2026), иначе строка под мышью.
+  // блока, иначе строка под мышью.
   const resolveHoverRows = useCallback<ResolveHoverRows>(
     (originColInd, originRowInd, rawRowInd) => {
       const column = columnsForRender[originColInd];
@@ -772,9 +772,8 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       const span = getSpan(colSpan, cellInfo);
       const spanRows = getRowSpan(rowSpan, cellInfo);
 
-      // Объединённый блок ведёт себя и красится целиком (решение дизайнера
-      // от 19.10.2026): курсор на любой его ячейке — hover всего блока;
-      // выделение или выбранная строка, задевшие блок, — состояние всего блока.
+      // Объединённый блок ведёт себя и красится целиком: курсор на любой его
+      // ячейке, выделение или выбранная строка, задевшие блок, меняют весь блок.
       const blockCols: readonly [number, number] = span ?? [colInd, colInd];
       const blockRows: readonly [number, number] = spanRows ?? [rowInd, rowInd];
       const isBlock = !!span || !!spanRows;
@@ -817,10 +816,8 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
             ? spanAlignConfig(cellInfo)
             : spanAlignConfig
           : undefined;
-      // Подпись многострочного блока по умолчанию по верхнему краю (ответ
-      // дизайнера от 27.10.2026, п. 6) и выравнивается по видимой части блока,
-      // чтобы при прокрутке оставаться на экране. Прилипание только у встроенной
-      // отрисовки: кастомный renderCell получает весь блок, как раньше.
+      // Подпись блока в несколько строк по умолчанию сверху и остаётся
+      // в видимой части блока при прокрутке.
       const spanAlign =
         spanRows && spanRows[0] !== spanRows[1]
           ? {

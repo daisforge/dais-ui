@@ -143,10 +143,7 @@ export function CellEditorComboboxInternal<
   mergedVerticalAlign,
 }: EditingCellInfo<TRow, TSummaryRow> & {
   disableLeftOffset: boolean | undefined;
-  /**
-   * Итоговое вертикальное выравнивание объединённого блока (регион, колонка
-   * или общая настройка). Без него берётся колоночный mergedCellsAlign.
-   */
+  /** Вертикальное выравнивание объединённого блока. */
   mergedVerticalAlign?: 'top' | 'center' | 'bottom';
 }) {
   const rowContextValue = useRowContext();
@@ -159,18 +156,8 @@ export function CellEditorComboboxInternal<
 
   const value = row[column.key as keyof TRow];
 
-  // Куда раскрывается список в объединённой ячейке: если контент прижат к нижнему
-  // краю блока, список открывается вверх (placement 'top'), иначе вниз.
-  // Итоговое выравнивание блока приходит снаружи (учитывает регион и общую
-  // настройку); без него берём колоночный mergedCellsAlign, он может быть
-  // функцией по данным строки.
-  const columnAlign = column.mergedCellsAlign;
-  const verticalAlign =
-    mergedVerticalAlign ??
-    (typeof columnAlign === 'function'
-      ? columnAlign(row)?.vertical
-      : columnAlign?.vertical);
-  const placement = verticalAlign === 'bottom' ? 'top' : 'bottom';
+  // У объединённой ячейки с подписью внизу список открывается вверх.
+  const placement = mergedVerticalAlign === 'bottom' ? 'top' : 'bottom';
 
   const options = (() => {
     if (

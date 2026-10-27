@@ -201,45 +201,45 @@ export const TABLE_STATE_COLORS = {
   },
   /** data-yellow-light · rest — редактируемая ячейка */
   bgEditableCell: {
-    light: '#FFF6E5', // временно: в теме data-yellow-light стоит amber-150, по решению дизайнера нужен amber-100; запрос в SDDS отправлен
+    light: '#FFF6E5', // временно: в теме data-yellow-light стоит amber-150, нужен amber-100; ждём исправления в SDDS
     dark: '#211807',
-    betaCoreLight: '#FFF5E7', // временно: в теме data-yellow-light стоит amber-150, по решению дизайнера нужен amber-100; запрос в SDDS отправлен
+    betaCoreLight: '#FFF5E7', // временно: в теме data-yellow-light стоит amber-150, нужен amber-100; ждём исправления в SDDS
     betaCoreDark: '#211607',
     highContrastLight: '#F1DDB8',
     highContrastDark: '#211807',
   },
   /** data-yellow-light · hover — редактируемая ячейка под курсором */
   bgEditableCellHovered: {
-    light: '#FFEFD2', // временно: в теме data-yellow-light стоит amber-150, по решению дизайнера нужен amber-100; запрос в SDDS отправлен
+    light: '#FFEFD2', // временно: в теме data-yellow-light стоит amber-150, нужен amber-100; ждём исправления в SDDS
     dark: '#291F0A',
-    betaCoreLight: '#FFEDD5', // временно: в теме data-yellow-light стоит amber-150, по решению дизайнера нужен amber-100; запрос в SDDS отправлен
+    betaCoreLight: '#FFEDD5', // временно: в теме data-yellow-light стоит amber-150, нужен amber-100; ждём исправления в SDDS
     betaCoreDark: '#291C0A',
     highContrastLight: '#EED5A8',
     highContrastDark: '#291F0A',
   },
   /** data-yellow-light · active — редактируемая ячейка в диапазоне выделения */
   bgEditableCellActive: {
-    light: '#E2E9E4', // временно: в теме data-yellow-light стоит amber-150, по решению дизайнера нужен amber-100; запрос в SDDS отправлен
+    light: '#E2E9E4', // временно: в теме data-yellow-light стоит amber-150, нужен amber-100; ждём исправления в SDDS
     dark: '#1E2F32',
-    betaCoreLight: '#E0E9E5', // временно: в теме data-yellow-light стоит amber-150, по решению дизайнера нужен amber-100; запрос в SDDS отправлен
+    betaCoreLight: '#E0E9E5', // временно: в теме data-yellow-light стоит amber-150, нужен amber-100; ждём исправления в SDDS
     betaCoreDark: '#1A2E31',
     highContrastLight: '#B5C3BF',
     highContrastDark: '#1E2F32',
   },
   /** data-yellow-light · hoverActive — редактируемая ячейка в выделении под курсором */
   bgEditableCellActiveHovered: {
-    light: '#D8E2DB', // временно: в теме data-yellow-light стоит amber-150, по решению дизайнера нужен amber-100; запрос в SDDS отправлен
+    light: '#D8E2DB', // временно: в теме data-yellow-light стоит amber-150, нужен amber-100; ждём исправления в SDDS
     dark: '#24373A',
-    betaCoreLight: '#D6E2DC', // временно: в теме data-yellow-light стоит amber-150, по решению дизайнера нужен amber-100; запрос в SDDS отправлен
+    betaCoreLight: '#D6E2DC', // временно: в теме data-yellow-light стоит amber-150, нужен amber-100; ждём исправления в SDDS
     betaCoreDark: '#1F3639',
     highContrastLight: '#ACBCB7',
     highContrastDark: '#24373A',
   },
   /** data-yellow-light · hover2 — редактируемая ячейка выбранной строки под курсором */
   bgEditableCellRowActiveHovered: {
-    light: '#FFE8BF', // временно: в теме data-yellow-light стоит amber-150, по решению дизайнера нужен amber-100; запрос в SDDS отправлен
+    light: '#FFE8BF', // временно: в теме data-yellow-light стоит amber-150, нужен amber-100; ждём исправления в SDDS
     dark: '#31260E',
-    betaCoreLight: '#FFE5C3', // временно: в теме data-yellow-light стоит amber-150, по решению дизайнера нужен amber-100; запрос в SDDS отправлен
+    betaCoreLight: '#FFE5C3', // временно: в теме data-yellow-light стоит amber-150, нужен amber-100; ждём исправления в SDDS
     betaCoreDark: '#32230E',
     highContrastLight: '#EBCD97',
     highContrastDark: '#31260E',

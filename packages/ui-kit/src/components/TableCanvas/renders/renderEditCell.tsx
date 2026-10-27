@@ -79,7 +79,7 @@ export const RenderEditCell = <
 }: {
   editingCellInfo: EditingCellInfo<RowType, SummaryRowType>;
   column: ColumnConfig<RowType, SummaryRowType>;
-  /** Итоговое вертикальное выравнивание объединённого блока ячейки. */
+  /** Вертикальное выравнивание объединённого блока. */
   mergedVerticalAlign?: 'top' | 'center' | 'bottom';
   tableConfigSubRows: TableConfig<
     RowType,

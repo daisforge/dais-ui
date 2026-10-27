@@ -206,7 +206,7 @@ export type ColumnGlideInstance<
     | ((
         cellInfo: CellInfoGlideInstance<R, SR, CustomCtxs>,
       ) => SpanCellAlign | undefined);
-  /** Прилипание содержимого объединённой ячейки; в adaptColumn идёт в glide как `spanContentSticky`. */
+  /** Прилипает ли подпись объединённой ячейки. */
   spanContentSticky?: boolean;
   /** Выравнивание в объединённой шапке; в adaptColumn идёт в glide как `spanGroupHeaderAlign`. */
   squashedHeaderAlign?: HeaderAlignment;

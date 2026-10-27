@@ -275,7 +275,7 @@ export type SpanCellAlign = {
   horizontal?: 'left' | 'center' | 'right';
   /** По вертикали. @default 'top' у блока в несколько строк, иначе 'center' */
   vertical?: 'top' | 'center' | 'bottom';
-  /** Выравнивание по видимой части блока (см. spanContentSticky колонки). */
+  /** Выравнивать по видимой части блока. */
   sticky?: boolean;
 };
 
@@ -311,10 +311,8 @@ export type ColumnGlideCustoms<R extends ObjectForExtending, SR = unknown> = {
   /** Выравнивание контента в объединённых ячейках колонки; функция — если нужно задавать для каждого блока отдельно. */
   spanAlign?: SpanCellAlign | ((cellInfo: CellInfo<R, SR>) => SpanCellAlign | undefined);
   /**
-   * Прилипание содержимого объединённой ячейки в несколько строк: оно
-   * выравнивается по видимой части блока и при прокрутке остаётся на экране.
-   * По умолчанию включено, если у колонки нет renderCell: кастомная отрисовка
-   * получает весь блок.
+   * Подпись объединённой ячейки остаётся в видимой части блока при прокрутке.
+   * @default true, если у колонки нет renderCell
    */
   spanContentSticky?: boolean;
   /** Тултип для ячеек этой колонки. Строка, объект или функция (context) => config | null. */
