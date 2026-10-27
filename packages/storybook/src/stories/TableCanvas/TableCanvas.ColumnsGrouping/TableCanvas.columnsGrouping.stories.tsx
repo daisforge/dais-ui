@@ -8,6 +8,7 @@ import { Switch } from '@ui-kit/components/Switch';
 import {
   Canvas,
   ColumnOrColumnGroupConfig,
+  type GroupHeaderInfo,
   type SortColumn,
   TableCanvas,
   tableCanvasFonts,
@@ -32,6 +33,7 @@ const preCode = `
 import {
   Canvas,
   ColumnOrColumnGroupConfig,
+  type GroupHeaderInfo,
   TableCanvas,
 } from '@daisforge/ui/components/TableCanvas';
 `;
@@ -224,7 +226,7 @@ export const HeaderAlign: Story = {
 
 /**
  * Клик и контекстное меню по заголовку группы: `tableConfig.onGroupHeaderClicked` и
- * `onGroupHeaderContextMenu` (в `event.group` — ключ группы). Кнопка внутри заголовка
+ * `onGroupHeaderContextMenu` (во втором аргументе — `key` и `children` группы). Кнопка внутри заголовка
  * группы с `interaction` получает клик сама: группа не выделяется, обработчик группы
  * не вызывается.
  */
@@ -236,6 +238,10 @@ export const GroupHeaderClick: Story = {
     const [log, setLog] = useState<string[]>([]);
     const pushLog = (message: string) =>
       setLog((prev) => [message, ...prev].slice(0, 5));
+    const describeGroup = ({ key, children }: GroupHeaderInfo<Row>) =>
+      `группа «${key}», колонки: ${children
+        .map((child) => child.key)
+        .join(', ')}`;
 
     const columnConfig = useMemo<ColumnOrColumnGroupConfig<Row>[]>(
       () => [
@@ -295,11 +301,11 @@ export const GroupHeaderClick: Story = {
           tableConfig={{
             containerStyle: { height: 400 },
             rowMarkers: { startIndex: 1 },
-            onGroupHeaderClicked: (_colIndex, event) =>
-              pushLog(`onGroupHeaderClicked: группа «${event.group}»`),
-            onGroupHeaderContextMenu: (_colIndex, event) => {
+            onGroupHeaderClicked: (_colIndex, group) =>
+              pushLog(`onGroupHeaderClicked: ${describeGroup(group)}`),
+            onGroupHeaderContextMenu: (_colIndex, group, event) => {
               event.preventDefault();
-              pushLog(`onGroupHeaderContextMenu: группа «${event.group}»`);
+              pushLog(`onGroupHeaderContextMenu: ${describeGroup(group)}`);
             },
           }}
           columnConfig={columnConfig}
