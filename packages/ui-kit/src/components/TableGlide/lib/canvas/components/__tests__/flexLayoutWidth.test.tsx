@@ -4,6 +4,7 @@ import type { GlideThemeForRender } from '../../../../theming/types';
 import type { CanvasContainer } from '../../core/CanvasContainer';
 import { DrawBatcher } from '../../core/DrawBatcher';
 import { measureNodeHeight } from '../../core/measureNodeHeight';
+import { resolveInteractionDecision } from '../../interaction/interactionManager';
 import type { CanvasText } from '../../primitives/CanvasText';
 import { Canvas, buildCanvasTree } from '../index';
 
@@ -156,18 +157,75 @@ describe('Раскладка колонки', () => {
     expect(measured).toBeGreaterThanOrEqual(tags.rect.y + tags.rect.height);
   });
 
-  it('контейнер с числовой шириной не растёт под широкого ребёнка', () => {
+  it('числовая ширина — минимум: колонка растёт под широкого ребёнка, выступ попадает в hit-test', () => {
     const root = layoutAsPaint(
-      <Canvas.Container
-        direction="column"
-        alignItems="flex-start"
-        style={{ width: 200 }}
-      >
-        <Canvas.Container style={{ width: 300, height: 10 }} />
+      <Canvas.Container direction="row" style={{ width: '100%' }}>
+        <Canvas.Container
+          direction="column"
+          alignItems="flex-start"
+          style={{ width: 200 }}
+        >
+          <Canvas.Container style={{ width: 300, height: 10 }} />
+        </Canvas.Container>
+      </Canvas.Container>,
+    );
+    const column = root.children[0]!;
+    const wide = column.children[0]!;
+
+    expect(column.rect.width).toBe(300);
+    expect(root.hitTest(250, 5)).toContain(wide);
+  });
+
+  it('выступ широкого ребёнка отдаёт свой interaction: выделение остаётся, onCellClicked подавлен', () => {
+    const root = layoutAsPaint(
+      <Canvas.Container direction="row" style={{ width: '100%' }}>
+        <Canvas.Container
+          direction="column"
+          alignItems="flex-start"
+          style={{ width: 200 }}
+        >
+          <Canvas.Container
+            interaction={{ selection: 'keep', cellClick: 'stop' }}
+            style={{ width: 300, height: 10 }}
+          />
+        </Canvas.Container>
+      </Canvas.Container>,
+    );
+    const wide = root.children[0]!.children[0]!;
+    const owner = root.hitTest(250, 5).find((node) => node.interaction);
+
+    expect(owner).toBe(wide);
+    expect(resolveInteractionDecision(owner!.interaction!)).toMatchObject({
+      suppressEarlyGridSelect: true,
+      suppressExternalCellClick: true,
+    });
+  });
+
+  it('числовая ширина не меньше заданной, если содержимое уже', () => {
+    const root = layoutAsPaint(
+      <Canvas.Container direction="row" style={{ width: '100%' }}>
+        <Canvas.Container direction="column" style={{ width: 200 }}>
+          <Canvas.Container style={{ width: 50, height: 10 }} />
+        </Canvas.Container>
       </Canvas.Container>,
     );
 
-    expect(root.rect.width).toBe(200);
+    expect(root.children[0]!.rect.width).toBe(200);
+  });
+
+  it('текст с переносом в колонке с числовой шириной переносится по ней, а не раздвигает колонку', () => {
+    const root = layoutAsPaint(
+      <Canvas.Container direction="row" style={{ width: '100%' }}>
+        <Canvas.Container direction="column" style={{ width: 200 }}>
+          <Canvas.Text wordWrap>{LONG}</Canvas.Text>
+        </Canvas.Container>
+      </Canvas.Container>,
+    );
+    const column = root.children[0]!;
+
+    expect(column.rect.width).toBe(200);
+    expect(column.children[0]!.rect.width).toBe(200);
+    expect(linesOf(column.children[0])).toBeGreaterThan(1);
   });
 
   it('колонка без заданной ширины по-прежнему подстраивается под самого широкого ребёнка', () => {

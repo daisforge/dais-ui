@@ -22,7 +22,7 @@ export interface ICanvasContainer extends ICanvasNode {
   setFlexOptions(options: Partial<FlexBoxOptions>): void;
 
   /** Ширина задана снаружи и не растёт под содержимое */
-  hasDefiniteWidth(): boolean;
+  hasFixedWidth(): boolean;
 
   /** Колонка без заданной высоты: её высоту задаёт содержимое */
   isSizedByContent(): boolean;

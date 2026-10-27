@@ -207,15 +207,18 @@ export class LayoutReconciler {
       let widthChanged = false;
       let heightChanged = false;
 
-      // Заданная ширина фиксирована: содержимое шире её переполняет контейнер.
-      // Под содержимое растёт только колонка без заданной ширины.
-      if (
-        !container.hasDefiniteWidth() &&
-        contentWidth > container.rect.width + LAYOUT_EPSILON
-      ) {
-        container.rect.width = contentWidth;
-        sizeChanged = true;
-        widthChanged = true;
+      // 100% и корень уже получили ширину снаружи. Числовая ширина — минимум:
+      // содержимое шире раздвигает колонку, иначе выступ не попал бы в hit-test.
+      if (!container.hasFixedWidth()) {
+        const styleWidth = container.style.width;
+        const minWidth = typeof styleWidth === 'number' ? styleWidth : 0;
+        const targetWidth = contentWidth > minWidth ? contentWidth : minWidth;
+
+        if (targetWidth > container.rect.width + LAYOUT_EPSILON) {
+          container.rect.width = targetWidth;
+          sizeChanged = true;
+          widthChanged = true;
+        }
       }
 
       const contentHeight =

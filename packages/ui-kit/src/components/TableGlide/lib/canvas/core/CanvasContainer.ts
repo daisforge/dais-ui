@@ -128,14 +128,11 @@ export class CanvasContainer extends CanvasNode implements ICanvasContainer {
   }
 
   /**
-   * Ширина задана снаружи и не растёт под содержимое: число, 100% или корень,
-   * которому ширину дал прямоугольник ячейки.
+   * Ширина задана снаружи и не растёт под содержимое: 100% или корень,
+   * которому ширину дал прямоугольник ячейки. Число — минимальная ширина.
    */
-  hasDefiniteWidth(): boolean {
-    const { width } = this.style;
-    return (
-      typeof width === 'number' || width === '100%' || this.parent === null
-    );
+  hasFixedWidth(): boolean {
+    return this.style.width === '100%' || this.parent === null;
   }
 
   /** Колонка без заданной высоты: её высоту задаёт содержимое */
