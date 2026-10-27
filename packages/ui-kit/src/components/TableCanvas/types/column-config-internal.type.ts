@@ -15,4 +15,7 @@ export type ColumnConfigInternal<
     spanAlign?:
       | SpanCellAlign
       | ((cellInfo: CellInfo<R, SR>) => SpanCellAlign | undefined);
+    // Внутреннее: прилипание содержимого объединённой ячейки (spanContentSticky
+    // в TableGlide). Только у встроенной отрисовки, без кастомного renderCell.
+    spanContentSticky?: boolean;
   };

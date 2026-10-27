@@ -28,6 +28,12 @@ export type CanvasRenderResult = {
   clickHandlers?: RenderClickHandler[];
   preferredHeight?: number;
   canvasRoot?: CellCanvasRoot;
+  /**
+   * Насколько содержимое объединённой ячейки с прилипанием нарисовано ниже верха
+   * блока (из отрисовки форка). Клик приходит относительно всего блока, на это
+   * значение его сдвигаем, чтобы попасть в нарисованные элементы.
+   */
+  contentOffsetY?: number;
 };
 
 /** Arguments passed to render function from the grid renderer */

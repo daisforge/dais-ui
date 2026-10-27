@@ -665,6 +665,13 @@ export const useColumns = <
         ...(colSpan && { colSpan }),
         ...(rowSpan && { rowSpan }),
         ...(spanAlign && { spanAlign }),
+        // Каждая колонка TableCanvas рисуется через общий renderCell, поэтому
+        // «встроенная ли отрисовка» решается здесь: прилипание содержимого
+        // объединённой ячейки только без кастомного renderCell потребителя.
+        // У служебных колонок (чекбокс, номер) renderCell наш.
+        ...(rowSpan && {
+          spanContentSticky: !el.renderCell || getColumnIsService(el),
+        }),
       };
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps

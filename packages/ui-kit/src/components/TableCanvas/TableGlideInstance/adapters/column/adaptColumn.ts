@@ -85,6 +85,7 @@ export const adaptColumn = <R extends ObjectForExtending, SR = unknown>({
     colSpan,
     rowSpan,
     spanAlign,
+    spanContentSticky,
     squashedHeaderAlign,
     minWidth,
     maxWidth,
@@ -182,6 +183,7 @@ export const adaptColumn = <R extends ObjectForExtending, SR = unknown>({
     ...(spanAlign && {
       spanAlign: spanAlign as ColumnGlideLast<R, SR>['spanAlign'],
     }),
+    ...(spanContentSticky !== undefined && { spanContentSticky }),
     ...(squashedHeaderAlign && { spanGroupHeaderAlign: squashedHeaderAlign }),
     renderHeaderCell: adaptedRenderHeaderCell,
     renderSummaryCell: renderSummaryCell

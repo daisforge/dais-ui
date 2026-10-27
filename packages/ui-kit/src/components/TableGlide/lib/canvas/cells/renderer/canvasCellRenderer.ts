@@ -10,6 +10,7 @@ import {
   getCellIndices,
   normalizeHoverPoint,
   resolveClickPoint,
+  toContentPoint,
   toRelativePoint,
 } from '../helpers';
 import { retrieveRenderData, storeRenderData } from '../state';
@@ -78,10 +79,13 @@ export function createCanvasCellRenderer(
         return;
       }
 
-      const relativePoint = toRelativePoint(clickPoint, rect);
       const indices = getCellIndices(args);
       const cellId = buildCellId(indices, rect);
       const renderData = retrieveRenderData(cellId, cell);
+      const relativePoint = toContentPoint(
+        toRelativePoint(clickPoint, rect),
+        renderData,
+      );
       const pointerIntent = performCanvasPointerDownIntent({
         renderData,
         relativePoint,
@@ -122,10 +126,13 @@ export function createCanvasCellRenderer(
         return undefined;
       }
 
-      const relativePoint = toRelativePoint(clickPoint, rect);
       const indices = getCellIndices(args);
       const cellId = buildCellId(indices, rect);
       const renderData = retrieveRenderData(cellId, cell);
+      const relativePoint = toContentPoint(
+        toRelativePoint(clickPoint, rect),
+        renderData,
+      );
       const location: [number, number] = args.location ?? [
         indices.colIndex,
         indices.rowIndex,
@@ -222,7 +229,10 @@ export function createCanvasCellRenderer(
       );
       const hoveredAreas = renderResult?.hoveredAreas ?? [];
 
-      storeRenderData(cellId, cell, renderResult);
+      const storedRenderData = storeRenderData(cellId, cell, renderResult);
+      if (args.contentOffsetY) {
+        storedRenderData.contentOffsetY = args.contentOffsetY;
+      }
 
       const canvasRoot =
         renderResult?.canvasRoot ?? previousRenderData?.canvasRoot;

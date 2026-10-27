@@ -39,6 +39,7 @@ import {
   performCanvasClick,
   retrieveRenderData,
   buildCellId,
+  toContentPoint,
 } from './lib/canvas';
 import { useFontLoadRedraw, useIconLoadRedraw } from './lib/canvas/hooks';
 import { buildEffectiveInteractionOutcome } from './lib/canvas/interaction/interactionManager';
@@ -816,11 +817,17 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
             ? spanAlignConfig(cellInfo)
             : spanAlignConfig
           : undefined;
-      // Подпись многострочного блока по умолчанию по верхнему краю и прилипает
-      // к верху видимой части (ответ дизайнера от 27.10.2026, п. 6).
+      // Подпись многострочного блока по умолчанию по верхнему краю (ответ
+      // дизайнера от 27.10.2026, п. 6) и выравнивается по видимой части блока,
+      // чтобы при прокрутке оставаться на экране. Прилипание только у встроенной
+      // отрисовки: кастомный renderCell получает весь блок, как раньше.
       const spanAlign =
         spanRows && spanRows[0] !== spanRows[1]
-          ? { vertical: 'top' as const, ...configuredSpanAlign }
+          ? {
+              vertical: 'top' as const,
+              ...configuredSpanAlign,
+              sticky: column.spanContentSticky ?? !renderCell,
+            }
           : configuredSpanAlign;
 
       const cellIsEditable = (() => {
@@ -1020,11 +1027,11 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       );
       // Берем сохраненное дерево canvas-нод и click-area для текущей ячейки.
       const renderData = retrieveRenderData(cellId, glideCell);
-      // Переводим координаты клика в систему координат внутри ячейки.
-      const relativePoint = {
-        x: event.localEventX,
-        y: event.localEventY,
-      };
+      // Переводим координаты клика в систему координат нарисованного содержимого.
+      const relativePoint = toContentPoint(
+        { x: event.localEventX, y: event.localEventY },
+        renderData,
+      );
       const resolvedTarget = resolveCanvasCellInteractionTargetFromRenderData({
         cell: cell as [number, number],
         glideCell,
