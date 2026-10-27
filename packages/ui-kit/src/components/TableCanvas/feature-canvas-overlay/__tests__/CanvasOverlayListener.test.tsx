@@ -6,6 +6,7 @@ import {
   type CanvasNodePopoverConfig,
   type CanvasPortalClickDetail,
   dispatchCanvasPortalClick,
+  dispatchCanvasPortalReset,
 } from '../../../TableGlide/lib/canvas';
 import {
   TablePopoverProvider,
@@ -153,5 +154,75 @@ describe('CanvasOverlayListener: открытие по клику и жизне�
     click(getByTestId('table'), clickDetail({ content: 'x', onClose }));
     rerender(<TableWithoutListener />);
     expect(onClose).toHaveBeenCalledTimes(1);
+  });
+});
+
+/** Таблица со своим контекстом, состояние которой пишется в `states[name]`. */
+const NamedTable = ({
+  name,
+  states,
+}: {
+  name: string;
+  states: Record<string, TablePopoverState>;
+}) => {
+  const value = useTablePopoverState();
+  const containerRef = useRef<HTMLDivElement>(null);
+  states[name] = value.state;
+  return (
+    <TablePopoverProvider value={value}>
+      <div ref={containerRef} data-testid={name}>
+        <CanvasOverlayListener containerRef={containerRef} rows={[rowA]} />
+      </div>
+    </TablePopoverProvider>
+  );
+};
+
+describe('CanvasOverlayListener: две таблицы на странице', () => {
+  afterEach(() => {
+    cleanup();
+  });
+
+  const renderTwoTables = () => {
+    const states: Record<string, TablePopoverState> = {};
+    const view = render(
+      <>
+        <NamedTable name="first" states={states} />
+        <NamedTable name="second" states={states} />
+      </>,
+    );
+    return { states, ...view };
+  };
+
+  it('клик по элементу в одной таблице открывает Popover только в ней', () => {
+    const onOpen = vi.fn();
+    const { states, getByTestId } = renderTwoTables();
+    click(getByTestId('first'), clickDetail({ content: 'x', onOpen }));
+    expect(states['first']?.isOpen).toBe(true);
+    expect(states['second']?.isOpen).toBe(false);
+    expect(onOpen).toHaveBeenCalledTimes(1);
+  });
+
+  it('клик по элементу с dropdown во второй таблице открывает Dropdown только в ней', () => {
+    const { states, getByTestId } = renderTwoTables();
+    click(getByTestId('second'), {
+      ...clickDetail({ content: 'x' }),
+      popoverFromNode: undefined,
+      dropdownFromNode: { items: [{ value: 1, label: 'Открыть' }] },
+    });
+    expect(states['first']?.isOpen).toBe(false);
+    expect(states['second']?.isOpen).toBe(true);
+  });
+
+  it('сброс в другой таблице не закрывает открытый Popover', () => {
+    const { states, getByTestId } = renderTwoTables();
+    click(getByTestId('first'), clickDetail({ content: 'x' }));
+    act(() => {
+      dispatchCanvasPortalReset(getByTestId('second'));
+    });
+    expect(states['first']?.isOpen).toBe(true);
+    act(() => {
+      dispatchCanvasPortalReset(getByTestId('first'));
+    });
+    expect(states['first']?.isOpen).toBe(false);
   });
 });

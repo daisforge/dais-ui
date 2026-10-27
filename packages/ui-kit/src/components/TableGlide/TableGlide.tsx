@@ -69,6 +69,10 @@ import {
 } from './utils/createCell';
 import { findBlockOrigin } from './utils/findBlockOrigin';
 import { getSpan } from './utils/getSpan';
+import {
+  getColumnGroupPath,
+  handleGroupHeaderClick,
+} from './utils/groupHeaderClick';
 import { getRowSpan } from './utils/getRowSpan';
 import { isCanvasContent, isPrimitive } from './utils/typeGuards';
 
@@ -105,14 +109,6 @@ export class CellContentCache {
 }
 
 const CTXS_EMPTY = {};
-
-// Путь групп колонки: string → [string], string[] → как есть, иначе [].
-const getColumnGroupPath = (group: unknown): string[] =>
-  Array.isArray(group)
-    ? group.filter((g): g is string => typeof g === 'string')
-    : typeof group === 'string'
-    ? [group]
-    : [];
 
 type CanvasCacheKey = string | number | boolean | null;
 
@@ -1185,85 +1181,19 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     selectColumnFromHeader,
   ]);
 
-  // Клик по шапке группы выделяет все листовые колонки этой группы.
-  //
-  // У каждой колонки есть group-путь — имена групп сверху вниз (напр.
-  // ['Метрики','Продажи']). Берём путь кликнутой колонки, обрезаем до уровня, по
-  // которому кликнули, — это префикс, однозначно задающий группу. Колонки одной
-  // группы всегда идут в ряд, поэтому от кликнутой расширяем диапазон влево и
-  // вправо, пока у соседа тот же префикс; листья диапазона выделяем разом.
-  //
-  // Префикс сравниваем как строку — путь склеиваем через '\0' (символ NUL). NUL
-  // взят разделителем, потому что он не может встретиться в имени группы, и склейка
-  // получается без коллизий: пути ['A','B'] и ['AB'] дают разные ключи ('A\0B' и
-  // 'AB'), тогда как join('/') или join('') их бы схлопнули в один.
   const onGroupHeaderClicked = useCallback<
     NonNullable<GlideProps['onGroupHeaderClicked']>
   >(
-    (colIndex, event) => {
-      // Клик сначала получает содержимое шапки группы (кнопки, Popover), как у
-      // шапки колонки: клик по интерактивному элементу группу не выделяет.
-      const groupRoot = columnsGroupHeaderCanvasRootInstanceMap.get(
-        event.group,
-      );
-      if (groupRoot) {
-        const interaction = groupRoot.getInteractionAtPoint(
-          event.localEventX,
-          event.localEventY,
-        );
-        groupRoot.dispatchPointerEvent(
-          'click',
-          event.localEventX,
-          event.localEventY,
-          undefined,
-          { button: event.button, cellBounds: event.bounds },
-        );
-        if (interaction) {
-          onGroupHeaderClickedExternal?.(colIndex, event);
-          return;
-        }
-      }
-
-      const clickedColumn = columnsForRender[colIndex];
-      if (!enableColumnSelection || !clickedColumn) {
-        onGroupHeaderClickedExternal?.(colIndex, event);
-        return;
-      }
-
-      // путь кликнутой колонки и уровень клика
-      const clickedPath = getColumnGroupPath(clickedColumn.group);
-      const clickedLevel = Math.max(0, clickedPath.indexOf(event.group));
-      // ключ группы — префикс пути до уровня клика (про '\0' см. выше)
-      const prefixKey = clickedPath.slice(0, clickedLevel + 1).join('\0');
-
-      // у колонки тот же префикс, что у кликнутой?
-      const hasSamePrefix = (index: number): boolean => {
-        const column = columnsForRender[index];
-        return (
-          column !== undefined &&
-          getColumnGroupPath(column.group)
-            .slice(0, clickedLevel + 1)
-            .join('\0') === prefixKey
-        );
-      };
-
-      // растим диапазон влево и вправо, пока префикс совпадает
-      let start = colIndex;
-      let end = colIndex;
-      while (start - 1 >= 0 && hasSamePrefix(start - 1)) start -= 1;
-      while (end + 1 < columnsForRender.length && hasSamePrefix(end + 1))
-        end += 1;
-
-      // ключи листьев диапазона (без служебных) → выделяем
-      const keys: string[] = [];
-      for (let i = start; i <= end; i += 1) {
-        const column = columnsForRender[i];
-        if (column && !column.isServiceColumn) keys.push(column.id);
-      }
-      if (keys.length > 0) selectColumnsByKeys(keys);
-
-      onGroupHeaderClickedExternal?.(colIndex, event);
-    },
+    (colIndex, event) =>
+      handleGroupHeaderClick({
+        colIndex,
+        event,
+        groupRoot: columnsGroupHeaderCanvasRootInstanceMap.get(event.group),
+        columns: columnsForRender,
+        enableColumnSelection,
+        selectColumnsByKeys,
+        onGroupHeaderClicked: onGroupHeaderClickedExternal,
+      }),
     [
       enableColumnSelection,
       columnsForRender,

@@ -40,7 +40,8 @@ export type CanvasNodeDropdownProps = Pick<
    * Как открывать Dropdown.
    * - `click`: левый клик по элементу;
    * - `hover`: наведение. Dropdown открыт, пока курсор над элементом или
-   *   над списком.
+   *   над списком. С клавиатуры и на сенсорном экране так не открыть,
+   *   поэтому действия, нужные всем, вешайте на `click`.
    * @default 'click'
    */
   trigger?: 'click' | 'hover';

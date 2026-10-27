@@ -24,32 +24,40 @@
 
 ```
 feature-canvas-overlay/
-├── index.ts                         — CanvasOverlayListener
-├── constants.ts                     — HOVER_ANCHOR_GAP
-├── types.ts                         — ResolvedCanvasOverlay, CanvasOverlayDefaults, CanvasOverlayContentData, getOpenCanvasOverlay / getOpenHoverOverlay
+├── index.ts                         CanvasOverlayListener
+├── constants.ts                     HOVER_ANCHOR_GAP
+├── types.ts                         ResolvedCanvasOverlay, CanvasOverlayDefaults, CanvasOverlayContentData, getOpenCanvasOverlay, getOpenHoverOverlay
 ├── components/
-│   └── CanvasOverlayListener.tsx    — клики, открытие Popover или Dropdown, закрытие при смене строки, onOpen/onClose, уборка при размонтировании
+│   └── CanvasOverlayListener.tsx    клики, открытие Popover или Dropdown, закрытие при смене строки, onOpen и onClose, уборка при размонтировании
 ├── hooks/
-│   ├── useHoverOverlayOpen.ts       — открытие по наведению
-│   ├── useHoverLeaveClose.ts        — закрытие по уходу курсора
-│   └── useEscapeClose.ts            — Esc для Popover и Dropdown, стек открытых окон
+│   ├── useHoverOverlayOpen.ts       открытие по наведению
+│   ├── useHoverLeaveClose.ts        закрытие по уходу курсора
+│   └── useEscapeClose.ts            Esc для Popover и Dropdown, стек открытых окон
 └── utils/
-    ├── resolveCanvasOverlay.ts      — событие в Popover или Dropdown с дефолтами
-    ├── anchor.ts                    — ключ источника, обрезка якоря краем таблицы
-    ├── floatingContainer.ts         — контейнер floating-ui, поле ввода
-    ├── geometry.ts                  — точка в прямоугольнике, общий прямоугольник
-    └── pointerPosition.ts           — последняя позиция курсора (общий слушатель)
+    ├── resolveCanvasOverlay.ts      событие с canvas в Popover или Dropdown с дефолтами
+    ├── anchor.ts                    ключ источника, обрезка якоря краем таблицы
+    ├── floatingContainer.ts         контейнер floating-ui, поле ввода
+    ├── geometry.ts                  точка в прямоугольнике, общий прямоугольник
+    └── pointerPosition.ts           последняя позиция курсора (общий слушатель)
 ```
 
 Рядом:
-- `TableGlide/lib/canvas/utils/portalClickEvents.ts` — публичные типы конфига
-  Popover, шина клика, `CANVAS_PORTAL_PRIORITY`;
-- `TableGlide/lib/canvas/utils/portalHoverEvents.ts` — шина наведения (общая с
-  тултипами), блокировка `lockPortalHover`, сброс `dispatchCanvasPortalReset`;
-- `TableGlide/hooks/useColumnPortalReset.ts` — сброс и блокировка при ресайзе
-  и перестановке колонок.
 
-Если на ноде заданы оба пропа, открывается Popover (`resolveCanvasOverlay`).
+- `TableGlide/lib/canvas/utils/portalClickEvents.ts`: публичные типы конфига
+  Popover, шина клика, `CANVAS_PORTAL_PRIORITY`;
+- `TableGlide/lib/canvas/utils/dropdownConfig.ts`: публичные типы конфига
+  Dropdown;
+- `TableGlide/lib/canvas/utils/portalHoverEvents.ts`: шина наведения (общая с
+  тултипами), блокировка `lockPortalHover`, сброс `dispatchCanvasPortalReset`;
+- `TableGlide/lib/canvas/core/popoverTarget.ts`: поиск ноды с Popover или
+  Dropdown по клику (`findPopoverTarget`, `hasClickOverlay`);
+- `TableGlide/hooks/useColumnPortalReset.ts`: сброс и блокировка при ресайзе
+  и перестановке колонок;
+- `TableGlide/utils/groupHeaderClick.ts`: клик по шапке группы колонок.
+
+Задать на одном элементе и `popover`, и `dropdown` не дают типы
+(`CanvasOverlayProps`). Если это всё же случилось (например, через `any`),
+в режиме разработки в консоль пишется предупреждение и открывается Popover.
 Общий код читает из `config` только общие поля: `trigger`, `mouseEnterDelay`,
 `closeOnScroll`, `onOpen`, `onClose`.
 
@@ -57,107 +65,127 @@ feature-canvas-overlay/
 
 `feature-popover-table` ничего не знает про canvas. Открывший передаёт в
 `open()`:
-- `sourceKey` — ключ источника (toggle повторным кликом, переключение);
-- `behavior` — когда закрывать: `closeOnScroll: 'x' | 'xy' | false`,
-  `closeOnTableResize`;
-- `render` — что рисовать внутри якоря (`CanvasPopover` с `key={sourceKey}`:
-  смена источника пересоздаёт поповер);
-- `contentData` — данные открывшего (`CanvasOverlayContentData`: оверлей с
-  видом и конфигом, строка под якорем).
 
-На таблицу один поповер: фильтр шапки и canvas-поповер закрывают друг друга.
+- `sourceKey`: ключ источника (повторный клик закрывает, клик по другому
+  элементу переключает);
+- `behavior`: когда закрывать (`closeOnScroll: 'x' | 'xy' | false`,
+  `closeOnTableResize`);
+- `render`: что рисовать внутри якоря (`CanvasPopover` или `CanvasDropdown`
+  с `key={sourceKey}`, поэтому смена источника создаёт окно заново);
+- `contentData`: данные открывшего (`CanvasOverlayContentData`: вид окна с
+  конфигом и строка под якорем).
+
+На таблице открыто одно окно: фильтр шапки, Popover и Dropdown закрывают друг
+друга.
 
 ## Клик
 
-```
-CellCanvasRoot.dispatchPointerEvent('click', x, y, native, { button, cellBounds })
-  · только левая кнопка
-  · нода с поповером по клику: ближайшая к точке, до которой дошёл клик
-    (stopPropagation ребёнка не открывает поповер родителя)
-  · якорь = cellBounds клика (свежие) + getAnchorRect() ноды, priority NODE
-    (нарисованный прямоугольник: кнопка в растянутом контейнере рисует себя
-    меньше своего layout-rect, якорь и placement считаются по нарисованному)
-  · результат: portalClickDispatched — во всех ветках performCanvasClick
-onGroupHeaderClicked — клик уходит в canvas-корень шапки группы, как у шапки колонки
+1. `CellCanvasRoot.dispatchPointerEvent('click', x, y, native, { button, cellBounds })`:
+   - учитывается только левая кнопка;
+   - берётся ближайшая к точке нода с Popover или Dropdown по клику, до
+     которой дошёл клик (если ребёнок остановил всплытие, окно родителя не
+     открывается);
+   - якорь: свежие `cellBounds` клика плюс `getAnchorRect()` ноды, приоритет
+     `CANVAS_PORTAL_PRIORITY.NODE`. Якорь считается по нарисованному
+     прямоугольнику: кнопка в растянутом контейнере рисует себя меньше своей
+     области в раскладке;
+   - в результате `portalClickDispatched` во всех ветках `performCanvasClick`.
+2. Шапка колонки и шапка группы отдают клик своему canvas-корню так же, как
+   ячейка. Для шапки группы это `handleGroupHeaderClick`
+   (`TableGlide/utils/groupHeaderClick.ts`): если под точкой интерактивный
+   элемент, группа не выделяется, но внешний `onGroupHeaderClicked` всё равно
+   вызывается.
+3. `dispatchCanvasPortalClick` на контейнере своей таблицы, его слушает
+   `CanvasOverlayListener`:
+   - `resolveCanvasOverlay` собирает Popover или Dropdown с дефолтами, окна с
+     `trigger: 'hover'` клик пропускает;
+   - если этот источник уже открыт, окно закрывается (повторный клик при
+     `closeOnOutsideClick: false`);
+   - иначе `openOverlay`: якорь обрезается видимой областью грида.
 
-dispatchCanvasPortalClick → CanvasOverlayListener
-  resolveCanvasOverlay (поповер или дропдаун с дефолтами) → trigger 'hover' пропускаем
-  тот же источник уже открыт → close() (toggle при closeOnOutsideClick: false)
-  иначе openOverlay: якорь обрезается прямоугольником грида
-```
-
-Нода с поповером по клику получает `interaction: { selection: 'keep' }` и
-курсор `pointer`, если их не задали. Корни canvas шапок групп лежат в
+Нода с окном по клику получает `interaction: { selection: 'keep' }` и курсор
+`pointer`, если их не задали. Корни canvas шапок групп лежат в
 `columnsGroupHeaderCanvasRootInstanceMap` по имени группы: две группы с
 одним именем делят один корень (так же, как их отрисовка).
 
+Каждая таблица слушает только свой контейнер, поэтому клик в одной таблице не
+открывает окно в другой.
+
 ## Наведение
 
-Нода с `popover={{ trigger: 'hover' }}` получает `portalHoverEnabled`, и
-`CanvasHoverController` шлёт show с `popoverFromNode`.
+Нода с `trigger: 'hover'` получает `portalHoverEnabled`, и
+`CanvasHoverController` шлёт show с `popoverFromNode` или `dropdownFromNode`.
 
 `useHoverOverlayOpen`:
+
 - открывает через `mouseEnterDelay`, если в этот момент курсор над якорем
   (по `pointerPosition`, а не по событию: Glide перерисовывает ячейки со своей
   сохранённой позицией курсора и может прислать show без движения мыши);
-- не открывает, пока открыт поповер по клику или фильтр (проверка и при show,
-  и при срабатывании таймера), пока пользователь печатает в своей таблице
+- не открывает, пока открыто окно по клику или фильтр (проверка и при show,
+  и при срабатывании таймера), и пока пользователь печатает в своей таблице
   (`isEditingInTable`: поле ввода внутри контейнера или редактор ячейки Glide в
   портале `#gdg-overlay-N`);
-- ожидание отменяют скрытие того же источника (только если курсор ушёл с его
+- ожидание отменяют: скрытие того же источника (только если курсор ушёл с его
   прямоугольника: id ноды одинаковый во всех строках, и hide прошлой строки
-  приходит после show новой), прокрутка таблицы, блокировка, сброс якорей;
+  приходит после show новой), прокрутка таблицы, блокировка наведения в этой
+  таблице, сброс якорей;
 - последнее подходящее наведение запоминается и пересматривается, когда
-  мешавший поповер закрылся (нода шлёт show один раз при входе курсора);
-- поповер, закрытый, пока курсор над якорем (Esc, кнопка внутри, смена данных),
-  не переоткрывается, пока курсор не уйдёт с элемента;
+  мешавшее окно закрылось (нода шлёт show один раз при входе курсора);
+- окно, закрытое, пока курсор над якорем (Esc, кнопка внутри, смена данных),
+  не открывается заново, пока курсор не уйдёт с элемента;
 - смена `rows` сбрасывает запомненное наведение;
-- за курсором следит, только если в таблице встретился поповер по наведению.
+- за курсором следит, только если в таблице встретилось окно по наведению.
 
-`useHoverLeaveClose` держит поповер, пока курсор внутри общего прямоугольника
-якоря и поповера (+ `HOVER_ANCHOR_GAP`), закрывает через `mouseLeaveDelay`
-после выхода, сразу — по нажатию вне зоны (касание на сенсорном экране).
+`useHoverLeaveClose` держит окно, пока курсор внутри общего прямоугольника
+якоря и окна (плюс `HOVER_ANCHOR_GAP`), закрывает через `mouseLeaveDelay`
+после выхода и сразу по нажатию вне этой зоны (касание на сенсорном экране).
 Hide-события шины для этого не годятся: шина откладывает скрытие и отменяет
-его при показе соседнего элемента. Клик мимо поповер по наведению не закрывает
+его при показе соседнего элемента. Клик мимо окно по наведению не закрывает
 (`outsideClick: false`): клик по самому якорю для floating-ui тоже клик мимо.
 
 `trigger` берётся только с элемента: нода решает, участвовать ли в наведении,
 при построении дерева и про `tableConfig` не знает.
 
+Окно по наведению нельзя открыть с клавиатуры и на сенсорном экране. Так и
+задумано: наведение для дополнительной информации, действия, нужные всем,
+вешаются на клик. Это написано в описании `trigger` и в mdx.
+
 ## Закрытие
 
-- клик мимо — floating-ui `onToggle(false)` → `close({ outsidePress })`
-  (защёлка гасит догоняющий open() того же источника: toggle);
-- Esc — только `useEscapeClose` (см. «Esc»);
-- скролл таблицы — `useClosePopoverOnRegionChange` по `behavior.closeOnScroll`;
-  сдвиг считается по первой видимой ячейке и смещению внутри неё, иначе
-  прокрутка ровно на N строк не закрывала бы;
-- ресайз таблицы — `PopoverInTable` по `behavior.closeOnTableResize`;
-- ресайз или перестановка колонки — `TableGlide` (`useColumnPortalReset`)
-  шлёт `dispatchCanvasPortalReset` на контейнер своей таблицы: listener
-  закрывает поповер, тултип прячется. На время ресайза ещё берётся
+- клик мимо: floating-ui `onToggle(false)`, затем `close({ outsidePress })`.
+  Защёлка в `useTablePopoverState` гасит догоняющий `open()` того же
+  источника, так повторный клик по элементу закрывает окно;
+- Esc: только `useEscapeClose` (раздел «Esc»);
+- скролл таблицы: `useClosePopoverOnRegionChange` по `behavior.closeOnScroll`.
+  Сдвиг считается по первой видимой ячейке и смещению внутри неё, иначе
+  прокрутка ровно на N строк не закрывала бы окно;
+- ресайз таблицы: `PopoverInTable` по `behavior.closeOnTableResize`;
+- ресайз или перестановка колонки: `TableGlide` (`useColumnPortalReset`)
+  шлёт `dispatchCanvasPortalReset` на контейнер своей таблицы, слушатель
+  закрывает окно, тултип прячется. На время ресайза ещё берётся
   `lockPortalHover(контейнер)`: тултипы и открытие по наведению в этой таблице
-  выключены, другие таблицы работают. Снимается через
+  выключены, другие таблицы работают. Блокировка снимается через
   `RESIZE_LOCK_RELEASE_MS` после последнего шага ресайза или при
   размонтировании. Перестановке блокировка не нужна, хватает сброса;
-- на месте строки под якорем другая строка (сортировка, новые данные) —
-  listener сравнивает `rows[rowInd]` со строкой на момент открытия: по
+- на месте строки под якорем другая строка (сортировка, новые данные):
+  слушатель сравнивает `rows[rowInd]` со строкой на момент открытия по
   `rowKeyGetter` (`editing`, `selecting`, `subRows`, `mergeCells`), без него по
   ссылке;
-- размонтирование таблицы (смена вида, оверлей загрузки) — listener закрывает
-  поповер и вызывает `onClose`.
+- размонтирование таблицы (смена вида, оверлей загрузки): слушатель закрывает
+  окно и вызывает `onClose`.
 
-`onOpen` / `onClose` вызываются ровно по одному на каждое открытие.
+`onOpen` и `onClose` вызываются ровно по одному разу на каждое открытие.
 
-Содержимое — снимок на момент открытия: `render` замыкает `resolved` конфиг,
-`content` и `renderContent` при перерисовке таблицы не пересчитываются.
-Изменяемое состояние живёт внутри компонента содержимого.
+Содержимое снимается в момент открытия: `render` замыкает собранный конфиг,
+`content`, `renderContent` и `items` при перерисовке таблицы не
+пересчитываются. Изменяемое состояние живёт внутри компонента содержимого.
 
 ## Esc
 
 Popover и Dropdown закрываются по Esc одинаково: только через
 `useEscapeClose`. Он слушает `keydown` на документе в capture-фазе и
 закрывает окно, если Esc нажат:
+
 - внутри окна;
 - в своей таблице, но не в поле ввода и не во всплывающем элементе со своим
   Esc (меню, список, диалог). Всплытие останавливается, чтобы первый Esc
@@ -169,6 +197,7 @@ Popover и Dropdown закрываются по Esc одинаково: толь
 Esc в другом месте страницы и Esc при `closeOnEsc: false` окно не закрывают.
 
 Атомарки слушают Esc сами, и отключить это пропом нельзя:
+
 - PopoverBeta: `useDismiss` floating-ui ловит Esc на всём документе и зовёт
   `onToggle(false)` без события;
 - Dropdown: Esc ловит только обёртка trigger-ребёнка (`onKeyDown`), на
@@ -181,9 +210,10 @@ Esc в другом месте страницы и Esc при `closeOnEsc: false
 
 ## Тултипы
 
-Пока открыт canvas-поповер, `CanvasTooltipOverlay` тултипы не показывает.
-Колоночный тултип не показывается от события ноды, у которой есть поповер
-(`popoverFromNode` в `resolveTooltipData`).
+Пока открыт Popover или Dropdown с canvas-элемента, `CanvasTooltipOverlay`
+тултипы не показывает (`getOpenCanvasOverlay`). Колоночный тултип не
+показывается от события ноды, у которой есть Popover или Dropdown
+(`popoverFromNode`, `dropdownFromNode` в `resolveTooltipData`).
 
 ## Где что менять
 
