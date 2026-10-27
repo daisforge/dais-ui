@@ -50,8 +50,9 @@ const STEP_FACTOR_CONTROL = {
 
 const meta: Meta<ColoringArgs> = {
   title: 'Локальные компоненты/TableCanvas/ColoringStates',
-  // Стенд виден в меню: у скрытой тегом hideInSidebar стори Storybook не
-  // показывает панель контролов, а без неё не работают переключатели и ползунки.
+  // Стенд лежит в файле *.visual.stories: как и визуальные тесты, он есть
+  // в локальном Storybook и в прогоне снимков, но не в опубликованной сборке.
+  // Тег hideInSidebar не подходит: у скрытой им стори нет панели контролов.
   tags: ['!autodocs'],
   args: {
     hoverRow: true,
