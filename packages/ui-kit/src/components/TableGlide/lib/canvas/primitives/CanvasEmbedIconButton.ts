@@ -1,13 +1,14 @@
-import type { Theme } from '../../../theming/types';
 import {
   BUTTON_PADDING_Y,
   type ButtonView,
-  drawEmbedIconButton,
   drawEmbedIconButtonWithView,
+  drawIconButton,
   EmbedIconButtonSize,
   type EmbedViewColors,
   FALLBACK_THEME,
   getEmbedIconButtonViewColors,
+  type GlideThemeForRender,
+  resolveTokens,
   ICON_SIZE_ADJUSTMENT,
   SIZE_CONFIG,
 } from '../cells/buttons';
@@ -56,7 +57,7 @@ export interface CanvasEmbedIconButtonOptions {
   disabled?: boolean;
   onClick?: (event: CanvasEvent) => void;
   /** Тема таблицы: из её токенов берутся цвета видов. */
-  theme?: Theme;
+  theme?: GlideThemeForRender;
 }
 
 export class CanvasEmbedIconButton extends CanvasLeaf {
@@ -88,9 +89,9 @@ export class CanvasEmbedIconButton extends CanvasLeaf {
 
   private useNewApi = false;
 
-  private theme: Theme | undefined;
+  private theme: GlideThemeForRender;
 
-  private viewColors: Record<ButtonView, EmbedViewColors> | undefined;
+  private viewColors: Record<ButtonView, EmbedViewColors>;
 
   private getDisabled = () => (this.disabled ? 'default' : DEFAULT_CURSOR);
 
@@ -104,10 +105,8 @@ export class CanvasEmbedIconButton extends CanvasLeaf {
     this.size = options?.size ?? 'auto';
     this.variant = options?.variant ?? 'primary';
     this.disabled = options?.disabled ?? false;
-    this.theme = options?.theme;
-    if (options?.theme?.tokens) {
-      this.viewColors = getEmbedIconButtonViewColors(options.theme.tokens);
-    }
+    this.theme = options?.theme ?? FALLBACK_THEME;
+    this.viewColors = getEmbedIconButtonViewColors(resolveTokens(this.theme));
     super.style = {
       ...super.style,
       cursor: this.getDisabled(),
@@ -207,14 +206,14 @@ export class CanvasEmbedIconButton extends CanvasLeaf {
         batcher.strokeRect(iconX, iconY, iconSz, iconSz, 'cyan', 1);
       }
     } else {
-      drawEmbedIconButton(
+      drawIconButton(
         batcher,
         x,
         y,
         width,
         height,
         this.icon,
-        { ...FALLBACK_THEME, ...this.theme },
+        this.theme,
         this.variant,
         this.disabled,
         this.isHovered

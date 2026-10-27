@@ -1,13 +1,16 @@
-import type { EditingCellInfo, ObjectForExtending } from '../types';
+import type { CellInfo } from '../../TableGlide';
+import type { ObjectForExtending } from '../types';
 import type { ColumnConfigInternal } from '../types/column-config-internal.type';
 import type { MergedCellsAlign } from '../types/merged-cells.type';
 
-/** Вертикальное выравнивание объединённого блока для редактируемой ячейки. */
+/**
+ * Вертикальное выравнивание объединённого блока для редактируемой ячейки.
+ * Функции выравнивания читают строку и её индекс, их и передаём.
+ */
 export const resolveSpanVerticalAlign = <R extends ObjectForExtending, SR>(
   spanAlign: ColumnConfigInternal<R, SR>['spanAlign'],
-  info: EditingCellInfo<R, SR>,
+  info: Pick<CellInfo<R, SR>, 'row' | 'rowInd'>,
 ): MergedCellsAlign['vertical'] => {
-  // Функции выравнивания нужны строка и её индекс, они есть в данных редактора.
   const align =
     typeof spanAlign === 'function'
       ? (spanAlign as (cellInfo: unknown) => MergedCellsAlign | undefined)(info)

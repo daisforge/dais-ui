@@ -1,4 +1,3 @@
-import type { Theme } from '../../../theming/types';
 import {
   BUTTON_PADDING_Y,
   type ButtonSize,
@@ -7,7 +6,9 @@ import {
   drawIconButtonWithView,
   FALLBACK_THEME,
   getButtonViewColors,
+  type GlideThemeForRender,
   ICON_SIZE_ADJUSTMENT,
+  resolveTokens,
   SIZE_CONFIG,
   type ViewColors,
 } from '../cells/buttons';
@@ -42,7 +43,7 @@ export interface CanvasIconButtonOptions {
   disabled?: boolean;
   onClick?: (event: CanvasEvent) => void;
   /** Тема таблицы: из её токенов берутся цвета видов. */
-  theme?: Theme;
+  theme?: GlideThemeForRender;
 }
 
 export class CanvasIconButton extends CanvasLeaf {
@@ -64,9 +65,9 @@ export class CanvasIconButton extends CanvasLeaf {
 
   private useNewApi = false;
 
-  private theme: Theme | undefined;
+  private theme: GlideThemeForRender;
 
-  private viewColors: Record<ButtonView, ViewColors> | undefined;
+  private viewColors: Record<ButtonView, ViewColors>;
 
   constructor(id: string, icon: ButtonIcon, options?: CanvasIconButtonOptions) {
     super(id);
@@ -74,10 +75,8 @@ export class CanvasIconButton extends CanvasLeaf {
     this.size = options?.size ?? 'auto';
     this.variant = options?.variant ?? 'primary';
     this.disabled = options?.disabled ?? false;
-    this.theme = options?.theme;
-    if (options?.theme?.tokens) {
-      this.viewColors = getButtonViewColors(options.theme.tokens);
-    }
+    this.theme = options?.theme ?? FALLBACK_THEME;
+    this.viewColors = getButtonViewColors(resolveTokens(this.theme));
     super.style = { ...super.style, cursor: DEFAULT_CURSOR };
 
     if (options?.view !== undefined) {
@@ -140,7 +139,7 @@ export class CanvasIconButton extends CanvasLeaf {
         width,
         height,
         this.icon,
-        { ...FALLBACK_THEME, ...this.theme },
+        this.theme,
         this.variant,
         this.disabled,
         this.isHovered

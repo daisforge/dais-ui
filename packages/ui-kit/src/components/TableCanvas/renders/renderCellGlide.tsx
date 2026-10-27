@@ -1,4 +1,5 @@
 import { Canvas } from '../../TableGlide';
+import { DEFAULT_SPAN_VERTICAL_ALIGN } from '../../TableGlide/constants';
 import {
   SKELETON_CELLS_KEY,
   SKELETON_ROW_KEY,
@@ -191,7 +192,7 @@ export const RenderCellGlide = <
   const { __mergedCell: mergedCell } = renderCellProps;
   const mergedVerticalAlign =
     isSelectColumn && mergedCell
-      ? mergedCell.align?.vertical ?? 'top'
+      ? mergedCell.align?.vertical ?? DEFAULT_SPAN_VERTICAL_ALIGN
       : undefined;
   const mergedHorizontalAlign =
     isSelectColumn && mergedCell

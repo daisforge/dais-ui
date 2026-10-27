@@ -1,4 +1,3 @@
-import type { Theme } from '../../../theming/types';
 import {
   type ButtonIcon,
   type ButtonSize,
@@ -8,6 +7,8 @@ import {
   drawButtonWithView,
   FALLBACK_THEME,
   getButtonViewColors,
+  type GlideThemeForRender,
+  resolveTokens,
   SIZE_CONFIG,
 } from '../cells/buttons';
 import { CanvasLeaf } from '../core/CanvasLeaf';
@@ -34,7 +35,8 @@ export interface CanvasButtonOptions {
   rightIcon?: ButtonIcon;
   disabled?: boolean;
   onClick?: (event: CanvasEvent) => void;
-  theme?: Theme;
+  /** Тема таблицы: из её токенов берутся цвета видов. */
+  theme?: GlideThemeForRender;
 }
 
 export class CanvasButton extends CanvasLeaf {
@@ -57,9 +59,11 @@ export class CanvasButton extends CanvasLeaf {
 
   private useNewApi = false;
 
-  private theme: Theme | undefined;
+  private theme: GlideThemeForRender = FALLBACK_THEME;
 
-  private viewColors: Record<ButtonView, ViewColors> | undefined;
+  private viewColors: Record<ButtonView, ViewColors> = getButtonViewColors(
+    resolveTokens(FALLBACK_THEME),
+  );
 
   constructor(id: string, text: string, options?: CanvasButtonOptions) {
     super(id);
@@ -81,9 +85,9 @@ export class CanvasButton extends CanvasLeaf {
 
       if (options.disabled !== undefined) this.disabled = options.disabled;
       if (options.onClick) this.onClick = options.onClick;
-      this.theme = options.theme;
-      if (options.theme?.tokens) {
-        this.viewColors = getButtonViewColors(options.theme.tokens);
+      if (options.theme) {
+        this.theme = options.theme;
+        this.viewColors = getButtonViewColors(resolveTokens(options.theme));
       }
     }
   }
@@ -143,7 +147,7 @@ export class CanvasButton extends CanvasLeaf {
         width,
         sizeConfig.height,
         this.text,
-        { ...FALLBACK_THEME, ...this.theme },
+        this.theme,
         this.variant,
         this.disabled,
         this.isHovered,

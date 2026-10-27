@@ -4,7 +4,7 @@ import type { AppearanceVariant, Theme } from '../types';
 
 import { getCustomColors } from './custom-colors';
 import { getGlideColors } from './glide-colors';
-import { getTablePaletteOverride } from './palette-override';
+import type { TablePaletteOverride } from './palette-override';
 import { getSizeProps } from './sizes';
 
 /**
@@ -48,11 +48,10 @@ const withCleanAppearance = (theme: Theme): Theme => {
  * Подмена палитры для стенда подбора цветов (palette-override.ts). Имена
  * ключей темы совпадают с ключами палитры; итоговая строка берёт цвет шапки.
  */
-const withPaletteOverride = (theme: Theme, activeTheme: ActiveTheme): Theme => {
-  const override = getTablePaletteOverride(activeTheme);
-  if (!override) {
-    return theme;
-  }
+const withPaletteOverride = (
+  theme: Theme,
+  override: TablePaletteOverride,
+): Theme => {
   const colors: Record<string, string | undefined> = override.colors;
   const next: Record<string, unknown> = { ...theme };
   Object.keys(colors).forEach((key) => {
@@ -85,6 +84,7 @@ export const getTheme = (
   rowSize: SIZE | undefined = 'big',
   activeTheme: ActiveTheme = 'light',
   variant: AppearanceVariant = 'default',
+  paletteOverride?: TablePaletteOverride,
 ): Theme => {
   const generated = {
     ...getGlideColors(activeTheme),
@@ -92,7 +92,9 @@ export const getTheme = (
     ...getCustomColors(activeTheme),
     rowSize,
   } as Theme;
-  const theme = withPaletteOverride(generated, activeTheme);
+  const theme = paletteOverride
+    ? withPaletteOverride(generated, paletteOverride)
+    : generated;
 
   return variant === 'clean' ? withCleanAppearance(theme) : theme;
 };

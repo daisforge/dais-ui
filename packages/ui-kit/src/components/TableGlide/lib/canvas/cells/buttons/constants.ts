@@ -125,7 +125,7 @@ export function buildButtonViewColors(
  * фоном кнопки; фон всегда прозрачный (`surface-clear`).
  * Видов `clear`, `dark`, `black` и `white` у EmbedIconButton в SDDS нет:
  * `clear` повторяет `secondary`, `dark` и `black` берут текст «на светлом»,
- * `white` — текст «на тёмном».
+ * `white` текст «на тёмном».
  */
 export function buildEmbedIconButtonViewColors(
   tokens: Tokens
@@ -182,15 +182,18 @@ export function getEmbedIconButtonViewColors(
   return colors;
 }
 
-/** Токены темы для отрисовки контрола; без темы — токены светлой темы. */
+/** Токены светлой темы: для контролов, нарисованных без темы таблицы. */
+export const LIGHT_THEME_TOKENS: Tokens = getTokens('light');
+
+/** Токены темы для отрисовки контрола, без темы токены светлой темы. */
 export function resolveTokens(theme: { tokens?: Tokens } | undefined): Tokens {
-  return theme?.tokens ?? getTokens('light');
+  return theme?.tokens ?? LIGHT_THEME_TOKENS;
 }
 
 /**
  * Старый способ подключения кнопок (`variant`) красится теми же видами,
- * что новый (`view`): основная — accent, второстепенная — secondary,
- * опасная — critical.
+ * что новый (`view`): основная как accent, второстепенная как secondary,
+ * опасная как critical.
  */
 export const LEGACY_VARIANT_VIEW: Record<ButtonVariant, ButtonView> = {
   primary: 'accent',
@@ -203,7 +206,7 @@ export const LEGACY_VARIANT_VIEW: Record<ButtonVariant, ButtonView> = {
  * шрифт по умолчанию и токены светлой темы.
  */
 export const FALLBACK_THEME: GlideThemeForRender = (() => {
-  const tokens = getTokens('light');
+  const tokens = LIGHT_THEME_TOKENS;
   return {
     accentColor: tokens.textAccent,
     accentFg: tokens.onDarkTextPrimary,
@@ -221,9 +224,8 @@ export const FALLBACK_THEME: GlideThemeForRender = (() => {
  * @deprecated Цвета видов светлой темы. Берите `getButtonViewColors(theme.tokens)`:
  * палитра зависит от темы таблицы.
  */
-export const VIEW_COLORS: Record<ButtonView, ViewColors> = getButtonViewColors(
-  getTokens('light')
-);
+export const VIEW_COLORS: Record<ButtonView, ViewColors> =
+  getButtonViewColors(LIGHT_THEME_TOKENS);
 
 // Button layout constants
 export const BUTTON_PADDING_Y = 4;

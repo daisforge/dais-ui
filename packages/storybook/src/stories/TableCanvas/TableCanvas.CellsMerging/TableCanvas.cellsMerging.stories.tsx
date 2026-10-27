@@ -2064,6 +2064,63 @@ export const Example = () => {
 };
 `;
 
+type StickyRow = {
+  id: number;
+  dept: string;
+  deptCustom: string;
+  team: string;
+  person: string;
+};
+type StickySummaryRow = { values: Record<string, string> };
+type StickyVertical = 'top' | 'center' | 'bottom';
+
+const STICKY_DEPTS = ['Продажи', 'Разработка', 'Поддержка', 'Финансы'];
+const STICKY_TEAMS = ['Север', 'Юг', 'Запад'];
+const STICKY_ROWS: StickyRow[] = Array.from({ length: 60 }, (_, i) => {
+  const dept = STICKY_DEPTS[Math.floor(i / 15)] ?? '';
+  return {
+    id: i + 1,
+    dept,
+    deptCustom: dept,
+    team: STICKY_TEAMS[Math.floor(i / 5) % STICKY_TEAMS.length] ?? '',
+    person: `Сотрудник ${i + 1}`,
+  };
+});
+const STICKY_SUMMARY: StickySummaryRow[] = [
+  { values: { person: `Всего: ${STICKY_ROWS.length}` } },
+];
+const STICKY_COLUMNS: ColumnConfig<StickyRow, StickySummaryRow>[] = [
+  { key: 'dept', name: 'Отдел (текст)', width: 160 },
+  {
+    key: 'team',
+    name: 'Команда (Select)',
+    width: 180,
+    editingCell: {
+      component: 'select',
+      options: {
+        type: 'constant',
+        options: STICKY_TEAMS.map((t) => ({ text: t, value: t })),
+      },
+    },
+  },
+  {
+    key: 'deptCustom',
+    name: 'Отдел (свой renderCell)',
+    width: 200,
+    renderCell: ({ row, theme }) => (
+      <Canvas.Container padding={8} alignItems="flex-start">
+        <Canvas.Text color={theme.textDark}>{row.deptCustom}</Canvas.Text>
+      </Canvas.Container>
+    ),
+  },
+  {
+    key: 'person',
+    name: 'Сотрудник',
+    width: 200,
+    renderSummaryCell: ({ row }) => row.values['person'] ?? '',
+  },
+];
+
 export const StickyContent: Story = {
   name: 'Прилипание подписи в высоком блоке',
   ...storySourceDoc({
@@ -2072,76 +2129,8 @@ export const StickyContent: Story = {
     previewSource: 'shown',
   }),
   render: () => {
-    type SRow = {
-      id: number;
-      dept: string;
-      deptCustom: string;
-      team: string;
-      person: string;
-    };
-    type SSummaryRow = { values: Record<string, string> };
-    type Vertical = 'top' | 'center' | 'bottom';
-
-    const DEPTS = ['Продажи', 'Разработка', 'Поддержка', 'Финансы'];
-    const TEAMS = ['Север', 'Юг', 'Запад'];
-    const initial = useMemo(
-      (): SRow[] =>
-        Array.from({ length: 60 }, (_, i) => {
-          const dept = DEPTS[Math.floor(i / 15)] ?? '';
-          return {
-            id: i + 1,
-            dept,
-            deptCustom: dept,
-            team: TEAMS[Math.floor(i / 5) % TEAMS.length] ?? '',
-            person: `Сотрудник ${i + 1}`,
-          };
-        }),
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      [],
-    );
-    const summary = useMemo(
-      (): SSummaryRow[] => [{ values: { person: `Всего: ${initial.length}` } }],
-      [initial.length],
-    );
-
-    const [vertical, setVertical] = useState<Vertical>('top');
-    const [rows, setRows] = useState<SRow[]>(initial);
-
-    const columns = useMemo(
-      (): ColumnConfig<SRow, SSummaryRow>[] => [
-        { key: 'dept', name: 'Отдел (текст)', width: 160 },
-        {
-          key: 'team',
-          name: 'Команда (Select)',
-          width: 180,
-          editingCell: {
-            component: 'select',
-            options: {
-              type: 'constant',
-              options: TEAMS.map((t) => ({ text: t, value: t })),
-            },
-          },
-        },
-        {
-          key: 'deptCustom',
-          name: 'Отдел (свой renderCell)',
-          width: 200,
-          renderCell: ({ row, theme }) => (
-            <Canvas.Container padding={8} alignItems="flex-start">
-              <Canvas.Text color={theme.textDark}>{row.deptCustom}</Canvas.Text>
-            </Canvas.Container>
-          ),
-        },
-        {
-          key: 'person',
-          name: 'Сотрудник',
-          width: 200,
-          renderSummaryCell: ({ row }) => row.values['person'] ?? '',
-        },
-      ],
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      [],
-    );
+    const [vertical, setVertical] = useState<StickyVertical>('top');
+    const [rows, setRows] = useState<StickyRow[]>(STICKY_ROWS);
 
     return (
       <div>
@@ -2170,8 +2159,8 @@ export const StickyContent: Story = {
             hoverEffects: { row: true },
             summaryRows: { showDefault: true, showInControl: false },
             editing: {
-              onRowsChange: (next: SRow[]) => setRows([...next]),
-              rowKeyGetter: (r: SRow) => r.id,
+              onRowsChange: (next: StickyRow[]) => setRows([...next]),
+              rowKeyGetter: (r: StickyRow) => r.id,
               defaultEnabled: true,
             },
             mergeCells: {
@@ -2179,8 +2168,8 @@ export const StickyContent: Story = {
               mergedCellsAlign: { vertical },
             },
           }}
-          columnConfig={columns}
-          bottomSummaryRows={summary}
+          columnConfig={STICKY_COLUMNS}
+          bottomSummaryRows={STICKY_SUMMARY}
           rows={rows}
         />
       </div>

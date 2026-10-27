@@ -2,7 +2,7 @@ import type { DataEditorRef } from '@glideappsfinal/glide-data-grid';
 
 import { CellCanvasRoot } from '../cells/CellCanvasRoot';
 import { isCanvasCell } from '../cells/factory';
-import { buildCellId, toContentPoint } from '../cells/helpers';
+import { buildCellId } from '../cells/helpers';
 import { retrieveRenderData } from '../cells/state';
 import type {
   CanvasCell,
@@ -125,10 +125,10 @@ export function resolveCanvasCellInteractionTargetFromDomPoint({
   // Render data содержит последний CellCanvasRoot и click areas для этой
   // canvas-cell. Без него невозможно понять, какая canvas-нода под курсором.
   const renderData = retrieveRenderData(cellId, glideCell);
-  const relativePoint = toContentPoint(
-    { x: mouseArgs.localEventX, y: mouseArgs.localEventY },
-    renderData,
-  );
+  const relativePoint = {
+    x: mouseArgs.localEventX,
+    y: mouseArgs.localEventY,
+  };
 
   return resolveCanvasCellInteractionTargetFromRenderData({
     cell,

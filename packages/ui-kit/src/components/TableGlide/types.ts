@@ -275,8 +275,6 @@ export type SpanCellAlign = {
   horizontal?: 'left' | 'center' | 'right';
   /** По вертикали. @default 'top' у блока в несколько строк, иначе 'center' */
   vertical?: 'top' | 'center' | 'bottom';
-  /** Выравнивать по видимой части блока. */
-  sticky?: boolean;
 };
 
 export type ColumnGlideGetCellContent<R extends ObjectForExtending, SR> = (

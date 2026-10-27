@@ -13,7 +13,7 @@ import {
   DEFAULT_VIEW,
   ICON_SIZE_ADJUSTMENT,
   getButtonViewColors,
-  resolveTokens,
+  LIGHT_THEME_TOKENS,
   SIZE_CONFIG,
 } from './constants';
 import { drawIcon } from './drawIcon';
@@ -33,7 +33,7 @@ import {
 
 /**
  * Кнопка старого способа подключения (`variant`): геометрия по высоте
- * строки, цвета — те же виды из токенов темы, что у новых кнопок.
+ * строки, цвета те же виды из токенов темы, что у новых кнопок.
  */
 export function drawButton(
   batcher: DrawBatcher,
@@ -137,8 +137,8 @@ export function drawButton(
 }
 
 /**
- * Кнопка по виду и размеру; цвета видов — из токенов темы таблицы
- * (viewColorsMap), без карты — токены светлой темы.
+ * Кнопка по виду и размеру. Цвета видов из токенов темы таблицы
+ * (viewColorsMap), без карты из токенов светлой темы.
  */
 export function drawButtonWithView(
   batcher: DrawBatcher,
@@ -157,7 +157,7 @@ export function drawButtonWithView(
   viewColorsMap?: Record<ButtonView, ViewColors>
 ): ButtonResult {
   const sizeConfig = SIZE_CONFIG[size];
-  const viewColors = (viewColorsMap ?? getButtonViewColors(resolveTokens(undefined)))[
+  const viewColors = (viewColorsMap ?? getButtonViewColors(LIGHT_THEME_TOKENS))[
     view
   ];
   const font = `${sizeConfig.fontSize}px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif`;
