@@ -33,7 +33,7 @@ export function isPortalHoverLocked(): boolean {
 }
 
 export function subscribeToPortalHoverLock(
-  listener: InteractionLockListener,
+  listener: InteractionLockListener
 ): () => void {
   lockListeners.add(listener);
   return () => {
@@ -138,7 +138,7 @@ export type CanvasNodeTooltipConfig =
     });
 
 export interface CanvasPortalHoverDetail<
-  TContext extends TooltipContextShape = TooltipContextShape,
+  TContext extends TooltipContextShape = TooltipContextShape
 > {
   visible: boolean;
   x: number;
@@ -167,7 +167,7 @@ export interface CanvasPortalHoverDetail<
 }
 
 export type CanvasPortalHoverListener = (
-  detail: CanvasPortalHoverDetail,
+  detail: CanvasPortalHoverDetail
 ) => void;
 
 export const CANVAS_PORTAL_EVENT = 'basic-grid-canvas-portal-hover';
@@ -196,7 +196,7 @@ function getSourceKey(source?: CanvasPortalSource, originId?: string): string {
 
 function dispatchEvent(
   detail: CanvasPortalHoverDetail,
-  target: EventTarget | null | undefined,
+  target: EventTarget | null | undefined
 ): void {
   const event = new CustomEvent<CanvasPortalHoverDetail>(CANVAS_PORTAL_EVENT, {
     detail,
@@ -230,7 +230,7 @@ function cancelAllPendingHidesForTarget(targetKey: string): void {
 function scheduleHide(
   key: string,
   detail: CanvasPortalHoverDetail,
-  target: EventTarget | null | undefined,
+  target: EventTarget | null | undefined
 ): void {
   const timeoutId = window.setTimeout(() => {
     hideTimeouts.delete(key);
@@ -252,7 +252,7 @@ function scheduleHide(
 export function dispatchCanvasPortalHover(
   detail: CanvasPortalHoverDetail,
   target?: EventTarget | null,
-  immediate?: boolean,
+  immediate?: boolean
 ): void {
   if (typeof window === 'undefined') return;
 
@@ -280,7 +280,7 @@ export function dispatchCanvasPortalHover(
  */
 export function subscribeToCanvasPortalHover(
   listener: CanvasPortalHoverListener,
-  target?: EventTarget | null,
+  target?: EventTarget | null
 ): () => void {
   if (typeof window === 'undefined') {
     return () => {};
@@ -300,7 +300,7 @@ export function subscribeToCanvasPortalHover(
   return () => {
     eventTarget.removeEventListener(
       CANVAS_PORTAL_EVENT,
-      handler as EventListener,
+      handler as EventListener
     );
   };
 }
