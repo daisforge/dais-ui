@@ -51,6 +51,7 @@ import type { MergedCellsAlign } from '../types/merged-cells.type';
 import { TableConfig } from '../types/table-config.type';
 import { calculateMinColumnWidth } from '../utils';
 import { renderFilterSortHeader } from '../widgets/filter-sort-header';
+import { createLazyRowSpan } from './createLazyRowSpan';
 import { createMergeByValueRowSpan } from './createMergeByValueRowSpan';
 import { createMergedRegionsResolver } from './createMergedRegionsResolver';
 import { resolveMergedView } from './resolveMergedView';
@@ -464,7 +465,7 @@ export const useColumns = <
         : tableConfig.resizableColumn;
 
       // Объединение ячеек тела задаётся только через tableConfig.mergeCells.
-      // Приоритет: mergedCellsRegions, затем mergeByCellValues, затем getRowSpan. Задавать
+      // Приоритет: mergedCellsRegions, затем mergeByCellValues, затем lazyRowSpan. Задавать
       // colSpan/rowSpan прямо на колонке внешний API больше не даёт (см.
       // DefaultOmittedKeys). Resolver вешаем на все колонки региона: какая из них
       // верхняя-левая ячейка блока, он определяет во время отрисовки.
@@ -478,7 +479,7 @@ export const useColumns = <
         rowSpan = regionsResolver.rowSpan(el.key);
       } else {
         // colSpan задаёт только служебная detail-panel (снаружи columnColSpan
-        // нет); rowSpan — из mergeByCellValues, иначе из ленивого getRowSpan.
+        // нет); rowSpan — из mergeByCellValues, иначе из lazyRowSpan.
         colSpan = tableConfigRowDetailBoolean
           ? getDetailPanelColSpanFunc<RowType, SummaryRowType>({
               indexZeroColKey,
@@ -487,17 +488,11 @@ export const useColumns = <
               columnColSpan: undefined,
             })
           : undefined;
-        const getRowSpan = tableConfig.mergeCells?.getRowSpan;
+        const lazyRowSpan = tableConfig.mergeCells?.lazyRowSpan;
         if (mergeByValueOf) {
           rowSpan = createMergeByValueRowSpan(mergeByValueOf, rowsRef);
-        } else if (getRowSpan && !getColumnIsService(el)) {
-          rowSpan = ({ rowInd, row }: { rowInd: number; row: RowType }) => {
-            const rows = rowsRef.current;
-            // Скелетоны TableCanvas (загрузка, бесконечная прокрутка) не входят
-            // в отображаемые строки — не сливаются
-            if (rows[rowInd] !== row) return null;
-            return getRowSpan(el.key, rowInd, { row, rows });
-          };
+        } else if (lazyRowSpan && !getColumnIsService(el)) {
+          rowSpan = createLazyRowSpan(lazyRowSpan, el.key, rowsRef);
         }
       }
 
@@ -594,7 +589,7 @@ export const useColumns = <
     // сюда намеренно не входит — это стабильная функция (см. JSDoc в table-config).
     tableConfig.mergeCells?.mergeByCellValues,
     tableConfig.mergeCells?.mergedCellsRegions,
-    tableConfig.mergeCells?.getRowSpan,
+    tableConfig.mergeCells?.lazyRowSpan,
 
     selectingRowsIsActive,
     isLoadingTable,

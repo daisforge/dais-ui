@@ -1968,14 +1968,14 @@ const blockOf = (rowInd: number, size: number): readonly [number, number] => {
 
 // Блоки известны по позиции строки, поэтому резолвер не обходит данные: таблица
 // спрашивает его только для видимых ячеек.
-const getLazyRowSpan = (colKey: string, rowInd: number) => {
+const getLazyRowSpan = (_row: LazyRow, colKey: string, rowInd: number) => {
   if (colKey === 'region') return blockOf(rowInd, REGION_BLOCK);
   if (colKey === 'team') return blockOf(rowInd, TEAM_BLOCK);
   return null;
 };
 
-export const GetRowSpanLazy: Story = {
-  name: 'getRowSpan: ленивые блоки на 100 000 строк',
+export const LazyRowSpanBlocks: Story = {
+  name: 'lazyRowSpan: ленивые блоки на 100 000 строк',
   ...storySourceDoc({ type: 'code', previewSource: 'shown' }),
   render: () => {
     const rows = useMemo<LazyRow[]>(
@@ -1991,8 +1991,8 @@ export const GetRowSpanLazy: Story = {
     );
     const columnConfig = useMemo<readonly ColumnConfig<LazyRow>[]>(
       () => [
-        { key: 'region', name: 'Регион (getRowSpan ×1000)', width: 220 },
-        { key: 'team', name: 'Команда (getRowSpan ×50)', width: 220 },
+        { key: 'region', name: 'Регион (lazyRowSpan ×1000)', width: 220 },
+        { key: 'team', name: 'Команда (lazyRowSpan ×50)', width: 220 },
         { key: 'person', name: 'Сотрудник', width: 200 },
         { key: 'plan', name: 'План', width: 120, contentFormat: 'number' },
       ],
@@ -2002,19 +2002,20 @@ export const GetRowSpanLazy: Story = {
     return (
       <div>
         <StoryHint>
-          <code>mergeCells.getRowSpan(colKey, rowInd)</code> возвращает первую и
-          последнюю строку блока ячейки или <code>null</code>. Таблица вызывает
-          его только для видимых ячеек, поэтому способ подходит для больших и
-          ленивых данных, где обход всех строк (<code>mergeByCellValues</code>)
-          дорог. Здесь блоки считаются по номеру строки: регион — по 1000 строк,
-          команда — по 50. Резолвер должен быть стабильной функцией.
+          <code>mergeCells.lazyRowSpan(row, colKey, rowInd)</code> возвращает
+          первую и последнюю строку блока ячейки или <code>null</code>. Таблица
+          вызывает его только для видимых ячеек, поэтому способ подходит для
+          больших и ленивых данных, где обход всех строк (
+          <code>mergeByCellValues</code>) дорог. Здесь блоки считаются по номеру
+          строки: регион — по 1000 строк, команда — по 50. Резолвер должен быть
+          стабильной функцией.
         </StoryHint>
         <TableCanvas
           tableConfig={{
             containerStyle: { height: '600px' },
             rowMarkers: { startIndex: 1 },
             mergeCells: {
-              getRowSpan: getLazyRowSpan,
+              lazyRowSpan: getLazyRowSpan,
               // Блоки длинные: подпись наверху блока, а не в его середине.
               mergedCellsAlign: { vertical: 'top' },
             },
@@ -2048,9 +2049,10 @@ const SORTABLE_ROWS: SortableRow[] = [
 
 // Блок — соседи на экране с тем же регионом: верно при любой сортировке и фильтре
 const getRegionRowSpan = (
+  row: SortableRow,
   colKey: string,
   rowInd: number,
-  { row, rows }: { row: SortableRow; rows: readonly SortableRow[] },
+  { rows }: { rows: readonly SortableRow[] },
 ) => {
   if (colKey !== 'region') return null;
   let start = rowInd;
@@ -2060,8 +2062,8 @@ const getRegionRowSpan = (
   return end > start ? ([start, end] as const) : null;
 };
 
-export const GetRowSpanSorted: Story = {
-  name: 'getRowSpan по соседям: с сортировкой',
+export const LazyRowSpanSorted: Story = {
+  name: 'lazyRowSpan по соседям: с сортировкой',
   ...storySourceDoc({ type: 'code', previewSource: 'shown' }),
   render: () => {
     const columnConfig = useMemo<readonly ColumnConfig<SortableRow>[]>(
@@ -2090,16 +2092,16 @@ export const GetRowSpanSorted: Story = {
     return (
       <div>
         <StoryHint>
-          Третий аргумент <code>getRowSpan</code> — строка ячейки и отображаемые
-          строки в порядке на экране. Блок считается по соседям с тем же
-          регионом, поэтому остаётся верным после сортировки: нажмите на
-          заголовок колонки.
+          Первый аргумент <code>lazyRowSpan</code> — строка ячейки, в{' '}
+          <code>ctx.rows</code> — отображаемые строки в порядке на экране. Блок
+          считается по соседям с тем же регионом, поэтому остаётся верным после
+          сортировки: нажмите на заголовок колонки.
         </StoryHint>
         <TableCanvas
           tableConfig={{
             containerStyle: { height: '420px' },
             sorting: { state: sortingState },
-            mergeCells: { getRowSpan: getRegionRowSpan },
+            mergeCells: { lazyRowSpan: getRegionRowSpan },
           }}
           columnConfig={columnConfig}
           rows={SORTABLE_ROWS}
