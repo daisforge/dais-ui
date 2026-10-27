@@ -1,15 +1,15 @@
-import type { FC, RefObject } from 'react';
+import {
+  type CanvasPortalClickDetail,
+  subscribeToCanvasPortalClick,
+  subscribeToCanvasPortalReset,
+} from '@ui-kit/components/TableGlide';
+import type { RefObject } from 'react';
 import React, { useCallback, useEffect, useRef } from 'react';
 
 import { CanvasDropdown } from '../../feature-canvas-dropdown';
 import { CanvasPopover } from '../../feature-canvas-popover';
 import { useTablePopover } from '../../feature-popover-table/context';
 import { tableClassNames } from '../../styles';
-import {
-  type CanvasPortalClickDetail,
-  subscribeToCanvasPortalClick,
-  subscribeToCanvasPortalReset,
-} from '../../TableGlideInstance';
 import type {
   TableConfigDropdown,
   TableConfigPopover,
@@ -27,7 +27,7 @@ import {
 import { clipAnchorRect, getOverlaySourceKey } from '../utils/anchor';
 import { resolveCanvasOverlay } from '../utils/resolveCanvasOverlay';
 
-export interface CanvasOverlayListenerProps {
+export interface CanvasOverlayListenerProps<RowType = unknown> {
   /** Контейнер таблицы: на нём слушаем клики и наведение на canvas-элементы. */
   containerRef: RefObject<HTMLElement | null>;
   /** Значения по умолчанию для Popover: tableConfig.popover. */
@@ -38,24 +38,24 @@ export interface CanvasOverlayListenerProps {
    * Строки, которые рисует таблица. Если на месте строки, где открыт Popover,
    * оказалась другая (сортировка, новые данные), он закрывается.
    */
-  rows?: readonly unknown[];
+  rows?: readonly RowType[];
   /**
    * Ключ строки. С ним та же строка в новом объекте (данные пришли заново,
    * правка ячейки) Popover не закрывает. Без него строки сравниваются по ссылке.
    */
-  rowKeyGetter?: (row: never) => unknown;
+  rowKeyGetter?: (row: RowType) => unknown;
 }
 
 /** Та же ли строка: по ссылке, иначе по ключу. У служебных строк ключа может не быть. */
-const isSameRow = (
-  prev: unknown,
-  next: unknown,
-  rowKeyGetter: CanvasOverlayListenerProps['rowKeyGetter'],
+const isSameRow = <RowType,>(
+  prev: RowType,
+  next: RowType | undefined,
+  rowKeyGetter: ((row: RowType) => unknown) | undefined,
 ) => {
   if (prev === next) return true;
   if (!rowKeyGetter || next === undefined) return false;
   try {
-    return rowKeyGetter(prev as never) === rowKeyGetter(next as never);
+    return rowKeyGetter(prev) === rowKeyGetter(next);
   } catch {
     return false;
   }
@@ -72,13 +72,13 @@ const getGridViewport = (container: HTMLElement | null) =>
  * и открывает Popover или Dropdown через общий TablePopoverContext. Сам ничего
  * не рисует: содержимое рисует `render`, правила закрытия задаёт `behavior`.
  */
-export const CanvasOverlayListener: FC<CanvasOverlayListenerProps> = ({
+export const CanvasOverlayListener = <RowType,>({
   containerRef,
   config,
   dropdownConfig,
   rows,
   rowKeyGetter,
-}) => {
+}: CanvasOverlayListenerProps<RowType>): null => {
   const { state, open, close } = useTablePopover();
 
   // Дефолты и состояние читаем через ref, чтобы не переподписываться на каждый рендер.
@@ -134,6 +134,8 @@ export const CanvasOverlayListener: FC<CanvasOverlayListenerProps> = ({
     [containerRef, open],
   );
 
+  // Контейнер читаем один раз: Listener рендерится внутри него, и при замене
+  // элемента (полный экран, переход к карточкам) React монтирует Listener заново.
   useEffect(() => {
     const target = containerRef.current;
 
@@ -187,7 +189,12 @@ export const CanvasOverlayListener: FC<CanvasOverlayListenerProps> = ({
     if (
       anchorRow &&
       rows &&
-      !isSameRow(anchorRow.row, rows[anchorRow.rowInd], rowKeyGetterRef.current)
+      // Строка якоря взята из rows этой же таблицы, поэтому она того же типа.
+      !isSameRow(
+        anchorRow.row as RowType,
+        rows[anchorRow.rowInd],
+        rowKeyGetterRef.current,
+      )
     ) {
       close();
     }

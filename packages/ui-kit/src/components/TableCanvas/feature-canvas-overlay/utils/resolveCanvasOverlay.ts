@@ -1,6 +1,7 @@
+import type { CanvasPortalClickDetail } from '@ui-kit/components/TableGlide';
+
 import { normalizeDropdownConfig } from '../../feature-canvas-dropdown';
 import { normalizePopoverConfig } from '../../feature-canvas-popover';
-import type { CanvasPortalClickDetail } from '../../TableGlideInstance';
 import type { CanvasOverlayDefaults, ResolvedCanvasOverlay } from '../types';
 
 /**

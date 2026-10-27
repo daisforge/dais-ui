@@ -102,8 +102,19 @@ export type CanvasNodeDropdownItems =
       getItems?: never;
     }
   | {
-      /** Пункты по запросу: вызывается при каждом открытии. */
-      getItems: () => CanvasDropdownItem[] | Promise<CanvasDropdownItem[]>;
+      /**
+       * Пункты по запросу: вызывается при каждом открытии и при повторе после
+       * ошибки. Можно вернуть массив сразу или промис.
+       *
+       * Аргумент `{ signal }`: AbortSignal запроса. Он срабатывает, когда
+       * Dropdown закрылся, таблицу убрали со страницы или запрос заменён
+       * повтором. Передайте его в `fetch(url, { signal })`, чтобы не тянуть
+       * ненужный ответ. Ответ отменённого запроса таблица всё равно
+       * отбрасывает, поэтому аргумент можно не использовать.
+       */
+      getItems: (context: {
+        signal: AbortSignal;
+      }) => CanvasDropdownItem[] | Promise<CanvasDropdownItem[]>;
       items?: never;
     };
 

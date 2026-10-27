@@ -4,7 +4,10 @@ import { useCallback, useRef } from 'react';
 
 import { HEADER_TOOLTIP_HIDDEN_COLS_ID } from '@ui-kit/components/TableCanvasSharedConstants';
 
-import { dispatchCanvasPortalHover } from '../lib/canvas';
+import {
+  CANVAS_PORTAL_PRIORITY,
+  dispatchCanvasPortalHover
+} from '../lib/canvas';
 import type {
   ColumnGlideLast,
   GlideProps,
@@ -207,7 +210,7 @@ export function useItemHoveredHandler<R extends ObjectForExtending, SR>(
             source: 'header',
             originId: HEADER_TOOLTIP_HIDDEN_COLS_ID,
             nodeId: HEADER_TOOLTIP_HIDDEN_COLS_ID,
-            priority: 1,
+            priority: CANVAS_PORTAL_PRIORITY.NODE,
           },
           portalTarget,
         );
@@ -250,7 +253,7 @@ export function useItemHoveredHandler<R extends ObjectForExtending, SR>(
             source: 'header',
             originId: headerId,
             nodeId: headerId,
-            priority: 0,
+            priority: CANVAS_PORTAL_PRIORITY.COLUMN,
             tooltipContext: {
               column,
               ctxs,
@@ -309,7 +312,7 @@ export function useItemHoveredHandler<R extends ObjectForExtending, SR>(
             source: 'cell',
             originId: cellId,
             nodeId: cellId,
-            priority: 0,
+            priority: CANVAS_PORTAL_PRIORITY.COLUMN,
             ...(errorTooltip && { tooltipFromNode: errorTooltip }),
             tooltipContext: {
               column,

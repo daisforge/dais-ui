@@ -1,8 +1,10 @@
 import { describe, expect, it, vi } from 'vitest';
 
+import { isCanvasNodeDropdownConfig } from '../dropdownConfig';
 import {
   type CanvasPortalClickDetail,
   dispatchCanvasPortalClick,
+  isCanvasNodePopoverConfig,
   subscribeToCanvasPortalClick,
 } from '../portalClickEvents';
 
@@ -54,5 +56,28 @@ describe('portalClickEvents: шина клика по canvas-якорю', () => 
 
     expect(listener).toHaveBeenCalledWith(detail);
     unsubscribe();
+  });
+});
+
+describe('isCanvasNodePopoverConfig и isCanvasNodeDropdownConfig', () => {
+  it('Popover: нужен content или функция renderContent', () => {
+    expect(isCanvasNodePopoverConfig({ content: 'текст' })).toBe(true);
+    expect(isCanvasNodePopoverConfig({ content: null })).toBe(true);
+    expect(isCanvasNodePopoverConfig({ renderContent: () => null })).toBe(
+      true
+    );
+    expect(isCanvasNodePopoverConfig({ content: undefined })).toBe(false);
+    expect(isCanvasNodePopoverConfig({ renderContent: 'текст' })).toBe(false);
+    expect(isCanvasNodePopoverConfig({})).toBe(false);
+    expect(isCanvasNodePopoverConfig(null)).toBe(false);
+  });
+
+  it('Dropdown: нужен массив items или функция getItems', () => {
+    expect(isCanvasNodeDropdownConfig({ items: [] })).toBe(true);
+    expect(isCanvasNodeDropdownConfig({ getItems: () => [] })).toBe(true);
+    expect(isCanvasNodeDropdownConfig({ items: undefined })).toBe(false);
+    expect(isCanvasNodeDropdownConfig({ items: 'a' })).toBe(false);
+    expect(isCanvasNodeDropdownConfig({ getItems: [] })).toBe(false);
+    expect(isCanvasNodeDropdownConfig(undefined)).toBe(false);
   });
 });

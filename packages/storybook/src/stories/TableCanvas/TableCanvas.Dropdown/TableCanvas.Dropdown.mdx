@@ -69,7 +69,7 @@ renderCell: ({ row }) => (
 
 ```tsx
 dropdown={{
-  getItems: () => api.loadActions(row.id),
+  getItems: ({ signal }) => api.loadActions(row.id, { signal }),
   loadingItems: SKELETON_ITEMS,
   renderItem: (item) =>
     String(item.value).startsWith('__skeleton') ? <SkeletonRow /> : item.label,
@@ -80,6 +80,8 @@ dropdown={{
 ```
 
 Если промис отклонился или `getItems` бросил исключение, вместо списка показывается `renderError({ error, retry, close })`. Без `renderError` показывается неактивный пункт «Не удалось загрузить». Ответ, пришедший после закрытия дропдауна, игнорируется.
+
+`getItems` получает `{ signal }`. Сигнал срабатывает, когда дропдаун закрылся, таблицу убрали или запрос заменён повтором. Его можно передать в `fetch(url, { signal })`, чтобы отменить ненужный запрос.
 
 Отличие от контекстного меню: там запросом владеет потребитель и перечитывает пункты из `tableConfig` на каждом рендере. Дропдаун элемента получает промис и состояние загрузки держит сам.
 

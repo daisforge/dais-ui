@@ -46,11 +46,14 @@ export type * from './type';
 export type { Rectangle } from '@glideappsfinal/glide-data-grid';
 export { TextCellEntry } from '@glideappsfinal/glide-data-grid';
 
+// Omit по каждой ветке объединения: иначе теряется запрет задавать popover и dropdown вместе.
+type OmitInteraction<T> = T extends unknown ? Omit<T, 'interaction'> : never;
+
 type CanvasMemberWithoutInteraction<T> = T extends {
   __canvasType: infer CanvasType;
 }
   ? T extends (props: infer Props) => infer Result
-    ? ((props: Omit<Props, 'interaction'>) => Result) & {
+    ? ((props: OmitInteraction<Props>) => Result) & {
         __canvasType: CanvasType;
       }
     : T
@@ -62,7 +65,7 @@ type PublicCanvas = {
   >;
 };
 
-type PublicCanvasProps<T> = Omit<T, 'interaction'>;
+type PublicCanvasProps<T> = OmitInteraction<T>;
 
 export const Canvas = InternalCanvas as PublicCanvas;
 

@@ -1,3 +1,4 @@
+import { CANVAS_PORTAL_PRIORITY } from '../utils/portalClickEvents';
 import type { CanvasEvent, CanvasNode, Rect } from './CanvasNode';
 import type {
   CanvasPortalHoverDetail,
@@ -191,7 +192,7 @@ export class CanvasHoverController {
         tooltipFromNode: portalTarget.getTooltip(),
         popoverFromNode: portalTarget.popover,
         dropdownFromNode: portalTarget.dropdown,
-        priority: 1,
+        priority: CANVAS_PORTAL_PRIORITY.NODE,
       });
     } else if (previousActive) {
       this.dispatchPortalHover({

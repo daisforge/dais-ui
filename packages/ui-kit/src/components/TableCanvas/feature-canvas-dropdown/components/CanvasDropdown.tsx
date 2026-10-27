@@ -1,5 +1,5 @@
 import { Dropdown, type DropdownItemOption } from '@ui-kit/components/Dropdown';
-import type { RefObject, SyntheticEvent } from 'react';
+import type { SyntheticEvent } from 'react';
 import React, {
   useCallback,
   useEffect,
@@ -28,12 +28,6 @@ const ERROR_ITEMS: DropdownItemOption[] = [
     disabled: true,
   },
 ];
-
-/**
- * Список внутри портала Dropdown. Портал сам размера не имеет, поэтому зону,
- * где курсор держит список открытым, считаем по этому элементу.
- */
-const FLOATING_LIST_SELECTOR = '[data-floating-ui-portal] > *';
 
 const isEscapeEvent = (event?: SyntheticEvent | Event) =>
   !!event && (event as { key?: unknown }).key === 'Escape';
@@ -66,15 +60,10 @@ export const CanvasDropdown = ({
     portalRef.current = element;
     setPortalReady(!!element);
   }, []);
-  const listRef = useMemo<RefObject<HTMLElement | null>>(
-    () => ({
-      get current() {
-        const list = portalRef.current?.querySelector(FLOATING_LIST_SELECTOR);
-        return list instanceof HTMLElement ? list : null;
-      },
-    }),
-    [],
-  );
+  // Ref Dropdown указывает на сам список. Портал размера не имеет, поэтому
+  // зону, где курсор держит список открытым, считаем по списку. В типах
+  // атомарного Dropdown ref описан как кнопка, нам нужен только HTMLElement.
+  const listRef = useRef<HTMLButtonElement>(null);
   const { rowSize } = useHeaderContext();
 
   const { status, items, error, retry } = useDropdownItems(config);
@@ -152,6 +141,7 @@ export const CanvasDropdown = ({
       <DropdownPortal ref={setPortal} />
       {portalReady && (
         <Dropdown
+          ref={listRef}
           alwaysOpened
           items={shownItems}
           portal={portalRef}

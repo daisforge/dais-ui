@@ -1,13 +1,13 @@
-import type { MutableRefObject, RefObject } from 'react';
-import { useEffect, useRef } from 'react';
-
-import type { TablePopoverState } from '../../feature-popover-table/context';
 import {
   type CanvasPortalHoverDetail,
   subscribeToCanvasPortalHover,
   subscribeToCanvasPortalReset,
   subscribeToPortalHoverLock,
-} from '../../TableGlideInstance';
+} from '@ui-kit/components/TableGlide';
+import type { MutableRefObject, RefObject } from 'react';
+import { useEffect, useRef } from 'react';
+
+import type { TablePopoverState } from '../../feature-popover-table/context';
 import {
   type CanvasOverlayDefaults,
   getOpenHoverOverlay,

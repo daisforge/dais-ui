@@ -86,4 +86,43 @@ describe('useDropdownItems: пункты дропдауна, в том числ�
     expect(error).not.toHaveBeenCalled();
     error.mockRestore();
   });
+
+  it('размонтирование во время загрузки отменяет запрос через signal', () => {
+    let signal: AbortSignal | undefined;
+    const config = {
+      getItems: (context: { signal: AbortSignal }) => {
+        signal = context.signal;
+        return new Promise<typeof ITEMS>(() => {});
+      },
+    };
+    const { unmount } = renderHook(() => useDropdownItems(config));
+    expect(signal?.aborted).toBe(false);
+    unmount();
+    expect(signal?.aborted).toBe(true);
+  });
+
+  it('retry отменяет прежний запрос', () => {
+    const signals: AbortSignal[] = [];
+    const config = {
+      getItems: ({ signal }: { signal: AbortSignal }) => {
+        signals.push(signal);
+        return new Promise<typeof ITEMS>(() => {});
+      },
+    };
+    const { result } = renderHook(() => useDropdownItems(config));
+    act(() => {
+      result.current.retry();
+    });
+    expect(signals).toHaveLength(2);
+    expect(signals[0]?.aborted).toBe(true);
+    expect(signals[1]?.aborted).toBe(false);
+  });
+
+  it('новый объект config с тем же getItems не запускает загрузку заново', () => {
+    const getItems = vi.fn(() => ITEMS);
+    const { rerender } = renderHook(() => useDropdownItems({ getItems }));
+    rerender();
+    rerender();
+    expect(getItems).toHaveBeenCalledTimes(1);
+  });
 });

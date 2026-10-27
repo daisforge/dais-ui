@@ -1,7 +1,8 @@
 import type {
   CanvasPortalClickDetail,
   CanvasPortalRect,
-} from '../../TableGlideInstance';
+} from '@ui-kit/components/TableGlide';
+
 import type { PopoverRect } from './geometry';
 
 type AnchorDetail = Pick<

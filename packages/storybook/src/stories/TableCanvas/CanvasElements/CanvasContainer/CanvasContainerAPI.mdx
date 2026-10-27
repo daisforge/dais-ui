@@ -7,8 +7,20 @@ import { TypeSourceViewer } from '@df-storybook/utils/TypeSourceViewer';
 
 ## ContainerProps
 
+Свойства контейнера и общие свойства окон: `ContainerProps = ContainerBaseProps & CanvasOverlayProps`.
+
 <TypeSourceViewer
   language="ts"
   filePath="packages/ui-kit/src/components/TableGlide/lib/canvas/components/index.tsx"
-  typeName="ContainerProps"
+  typeName="ContainerBaseProps"
+/>
+
+## CanvasOverlayProps
+
+Подсказка, Popover и Dropdown. Popover и Dropdown на одном элементе задать нельзя.
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/TableGlide/lib/canvas/utils/canvasOverlayProps.ts"
+  typeName="CanvasOverlayProps"
 />

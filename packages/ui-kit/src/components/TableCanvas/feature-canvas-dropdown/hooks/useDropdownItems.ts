@@ -17,29 +17,30 @@ const isPromise = (value: unknown): value is Promise<unknown> =>
 /**
  * Пункты Dropdown: готовый массив `items` или результат `getItems`. Пока
  * промис не выполнился, статус `loading`, при ошибке `error`. Запрос уходит
- * при открытии и при `retry`; ответ после закрытия или после нового запроса
- * отбрасываем.
+ * при открытии и при `retry`. При закрытии, размонтировании и новом запросе
+ * прежний отменяется через AbortSignal, а его ответ отбрасывается.
  */
 export function useDropdownItems(
   config: Pick<ResolvedCanvasDropdownConfig, 'items' | 'getItems'>,
 ): DropdownItemsState & { retry: () => void } {
+  const { getItems } = config;
   const [state, setState] = useState<DropdownItemsState>(() => ({
-    status: config.getItems ? 'loading' : 'ready',
+    status: getItems ? 'loading' : 'ready',
     items: config.items ?? [],
     error: undefined,
   }));
-  const requestRef = useRef(0);
+  const abortRef = useRef<AbortController | null>(null);
 
   const load = useCallback(() => {
-    const { getItems } = config;
     if (!getItems) return;
-    requestRef.current += 1;
-    const request = requestRef.current;
-    const isCurrent = () => requestRef.current === request;
+    abortRef.current?.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
+    const isCurrent = () => !controller.signal.aborted;
 
     let result: ReturnType<typeof getItems>;
     try {
-      result = getItems();
+      result = getItems({ signal: controller.signal });
     } catch (error) {
       setState({ status: 'error', items: [], error });
       return;
@@ -61,12 +62,13 @@ export function useDropdownItems(
         if (isCurrent()) setState({ status: 'error', items: [], error });
       },
     );
-  }, [config]);
+  }, [getItems]);
 
   useEffect(() => {
     load();
     return () => {
-      requestRef.current += 1;
+      abortRef.current?.abort();
+      abortRef.current = null;
     };
   }, [load]);
 

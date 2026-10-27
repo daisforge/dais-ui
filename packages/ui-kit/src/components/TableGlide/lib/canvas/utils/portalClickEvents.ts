@@ -18,6 +18,9 @@ export const CANVAS_PORTAL_PRIORITY = {
   NODE: 1,
 } as const;
 
+export type CanvasPortalPriority =
+  (typeof CANVAS_PORTAL_PRIORITY)[keyof typeof CANVAS_PORTAL_PRIORITY];
+
 /**
  * Настройки Popover на Canvas-элементе (проп `popover`) или для всей таблицы
  * (`tableConfig.popover`).
@@ -100,7 +103,10 @@ export function isCanvasNodePopoverConfig(
 ): value is CanvasNodePopoverConfig {
   if (!value || typeof value !== 'object') return false;
   const config = value as Record<string, unknown>;
-  return 'content' in config || typeof config['renderContent'] === 'function';
+  return (
+    config['content'] !== undefined ||
+    typeof config['renderContent'] === 'function'
+  );
 }
 
 /** Прямоугольник в координатах окна браузера. */
@@ -132,7 +138,7 @@ export interface CanvasPortalClickDetail<
   /** Проп dropdown с Canvas-элемента. */
   dropdownFromNode?: CanvasNodeDropdownConfig;
   /** Приоритет события, см. CANVAS_PORTAL_PRIORITY. @default COLUMN */
-  priority?: number;
+  priority?: CanvasPortalPriority;
 }
 
 export type CanvasPortalClickListener = (

@@ -140,6 +140,7 @@ export type {
   CanvasNodePopoverProps,
   CanvasNodeTooltipConfig,
   CanvasNodeTooltipProps,
+  CanvasOverlayProps,
   CanvasPopoverRenderApi,
   CanvasPortalClickDetail,
   CanvasPortalClickListener,

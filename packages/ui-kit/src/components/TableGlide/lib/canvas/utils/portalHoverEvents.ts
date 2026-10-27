@@ -1,7 +1,10 @@
 import type { CanvasNode } from '../core/CanvasNode';
 import type { TooltipProps } from '@ui-kit/components/Tooltip';
 import type { CanvasNodeDropdownConfig } from './dropdownConfig';
-import type { CanvasNodePopoverConfig } from './portalClickEvents';
+import type {
+  CanvasNodePopoverConfig,
+  CanvasPortalPriority,
+} from './portalClickEvents';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Interaction Lock (pauses portal hover during drag/resize)
@@ -158,12 +161,11 @@ export interface CanvasPortalHoverDetail<
   /** Проп dropdown с Canvas-элемента. */
   dropdownFromNode?: CanvasNodeDropdownConfig;
   /**
-   * Приоритет события. usePortalHover не заменяет активный тултип с бо́льшим приоритетом.
-   * - 1 — canvas-нода (CanvasHoverController)
-   * - 0 — колоночный тултип (useItemHoveredHandler)
-   * @default 0
+   * Приоритет события, см. CANVAS_PORTAL_PRIORITY. usePortalHover не заменяет
+   * активный тултип с бо́льшим приоритетом.
+   * @default COLUMN
    */
-  priority?: number;
+  priority?: CanvasPortalPriority;
 }
 
 export type CanvasPortalHoverListener = (

@@ -56,9 +56,8 @@ import { CanvasSkeleton } from '../primitives/CanvasSkeleton';
 import { CanvasText, CanvasTextOptions } from '../primitives/CanvasText';
 import { normalizeDimensionValue } from '../utils';
 import { isReactIcon, normalizeIcon } from '../utils/iconUtils';
-import type { CanvasNodeDropdownConfig } from '../utils/dropdownConfig';
-import type { CanvasNodePopoverConfig } from '../utils/portalClickEvents';
-import type { CanvasNodeTooltipConfig } from '../utils/portalHoverEvents';
+import type { CanvasOverlayProps } from '../utils/canvasOverlayProps';
+import { isDevMode } from '../utils/isDevMode';
 
 interface CanvasInteractionProps {
   /**
@@ -83,7 +82,7 @@ interface CanvasLayerProps {
   zIndex?: number;
 }
 
-interface ContainerProps
+interface ContainerBaseProps
   extends CanvasInteractionProps,
     CanvasLayerProps,
     Omit<FlexBoxOptions, 'columnGap' | 'rowGap'> {
@@ -100,12 +99,6 @@ interface ContainerProps
   top?: PositionValue;
   right?: PositionValue;
   bottom?: PositionValue;
-  /** Конфиг тултипа при hover: строка (текст) или объект с text и опциональными пропсами Tooltip */
-  tooltip?: CanvasNodeTooltipConfig;
-  /** Popover по клику или наведению на элемент. */
-  popover?: CanvasNodePopoverConfig;
-  /** Dropdown по клику или наведению на элемент. */
-  dropdown?: CanvasNodeDropdownConfig;
   onClick?: (event: CanvasEvent<CanvasContainer>) => void;
   onMouseEnter?: (event: CanvasEvent<CanvasContainer>) => void;
   onMouseLeave?: (event: CanvasEvent<CanvasContainer>) => void;
@@ -127,7 +120,7 @@ const resolveContainerBackgroundColor = (
   theme: GlideThemeForRender,
 ): string | undefined => __backgroundColorResolver?.(theme) ?? backgroundColor;
 
-interface TextProps
+interface TextBaseProps
   extends CanvasInteractionProps,
     CanvasLayerProps,
     Omit<CanvasTextOptions, 'font' | 'fontSize' | 'lineHeightPx' | 'color'> {
@@ -142,14 +135,9 @@ interface TextProps
   top?: PositionValue;
   right?: PositionValue;
   bottom?: PositionValue;
-  tooltip?: CanvasNodeTooltipConfig;
-  /** Popover по клику или наведению на элемент. */
-  popover?: CanvasNodePopoverConfig;
-  /** Dropdown по клику или наведению на элемент. */
-  dropdown?: CanvasNodeDropdownConfig;
 }
 
-interface IconProps extends CanvasInteractionProps, CanvasLayerProps {
+interface IconBaseProps extends CanvasInteractionProps, CanvasLayerProps {
   icon: ButtonIcon;
   size?: number;
   color?: string;
@@ -166,14 +154,9 @@ interface IconProps extends CanvasInteractionProps, CanvasLayerProps {
   onMouseDown?: (event: CanvasEvent<CanvasIcon>) => void;
   id?: string;
   portalHoverEnabled?: boolean;
-  tooltip?: CanvasNodeTooltipConfig;
-  /** Popover по клику или наведению на элемент. */
-  popover?: CanvasNodePopoverConfig;
-  /** Dropdown по клику или наведению на элемент. */
-  dropdown?: CanvasNodeDropdownConfig;
 }
 
-interface ButtonProps extends CanvasInteractionProps, CanvasLayerProps {
+interface ButtonBaseProps extends CanvasInteractionProps, CanvasLayerProps {
   children: string;
   /** @deprecated Use `view` instead */
   variant?: 'primary' | 'secondary' | 'danger';
@@ -195,14 +178,9 @@ interface ButtonProps extends CanvasInteractionProps, CanvasLayerProps {
   bottom?: PositionValue;
   id?: string;
   portalHoverEnabled?: boolean;
-  tooltip?: CanvasNodeTooltipConfig;
-  /** Popover по клику или наведению на элемент. */
-  popover?: CanvasNodePopoverConfig;
-  /** Dropdown по клику или наведению на элемент. */
-  dropdown?: CanvasNodeDropdownConfig;
 }
 
-interface IconButtonProps extends CanvasInteractionProps, CanvasLayerProps {
+interface IconButtonBaseProps extends CanvasInteractionProps, CanvasLayerProps {
   icon: ButtonIcon;
   /** @deprecated Use `buttonSize` with ButtonSize type instead */
   size?: number | 'auto';
@@ -222,13 +200,8 @@ interface IconButtonProps extends CanvasInteractionProps, CanvasLayerProps {
   bottom?: PositionValue;
   id?: string;
   portalHoverEnabled?: boolean;
-  tooltip?: CanvasNodeTooltipConfig;
-  /** Popover по клику или наведению на элемент. */
-  popover?: CanvasNodePopoverConfig;
-  /** Dropdown по клику или наведению на элемент. */
-  dropdown?: CanvasNodeDropdownConfig;
 }
-interface EmbedIconButtonProps
+interface EmbedIconButtonBaseProps
   extends CanvasInteractionProps,
     CanvasLayerProps {
   icon: ButtonIcon;
@@ -263,13 +236,8 @@ interface EmbedIconButtonProps
   bottom?: PositionValue;
   id?: string;
   portalHoverEnabled?: boolean;
-  tooltip?: CanvasNodeTooltipConfig;
-  /** Popover по клику или наведению на элемент. */
-  popover?: CanvasNodePopoverConfig;
-  /** Dropdown по клику или наведению на элемент. */
-  dropdown?: CanvasNodeDropdownConfig;
 }
-interface CheckboxProps extends CanvasInteractionProps, CanvasLayerProps {
+interface CheckboxBaseProps extends CanvasInteractionProps, CanvasLayerProps {
   checked: boolean;
   indeterminate?: boolean;
   size?: number | 'auto';
@@ -284,14 +252,9 @@ interface CheckboxProps extends CanvasInteractionProps, CanvasLayerProps {
   bottom?: PositionValue;
   id?: string;
   portalHoverEnabled?: boolean;
-  tooltip?: CanvasNodeTooltipConfig;
-  /** Popover по клику или наведению на элемент. */
-  popover?: CanvasNodePopoverConfig;
-  /** Dropdown по клику или наведению на элемент. */
-  dropdown?: CanvasNodeDropdownConfig;
 }
 
-interface RectProps extends CanvasInteractionProps, CanvasLayerProps {
+interface RectBaseProps extends CanvasInteractionProps, CanvasLayerProps {
   color?: string;
   borderColor?: string;
   borderWidth?: number;
@@ -303,14 +266,9 @@ interface RectProps extends CanvasInteractionProps, CanvasLayerProps {
   bottom?: PositionValue;
   id?: string;
   portalHoverEnabled?: boolean;
-  tooltip?: CanvasNodeTooltipConfig;
-  /** Popover по клику или наведению на элемент. */
-  popover?: CanvasNodePopoverConfig;
-  /** Dropdown по клику или наведению на элемент. */
-  dropdown?: CanvasNodeDropdownConfig;
 }
 
-interface BadgeProps extends CanvasInteractionProps, CanvasLayerProps {
+interface BadgeBaseProps extends CanvasInteractionProps, CanvasLayerProps {
   /** Badge text content */
   text: string;
   /** Badge view style */
@@ -337,11 +295,6 @@ interface BadgeProps extends CanvasInteractionProps, CanvasLayerProps {
   bottom?: PositionValue;
   id?: string;
   portalHoverEnabled?: boolean;
-  tooltip?: CanvasNodeTooltipConfig;
-  /** Popover по клику или наведению на элемент. */
-  popover?: CanvasNodePopoverConfig;
-  /** Dropdown по клику или наведению на элемент. */
-  dropdown?: CanvasNodeDropdownConfig;
   pilled?: boolean;
 }
 
@@ -371,7 +324,7 @@ interface SkeletonProps extends CanvasInteractionProps, CanvasLayerProps {
   id?: string;
 }
 
-interface LinkProps
+interface LinkBaseProps
   extends CanvasInteractionProps,
     CanvasLayerProps,
     Omit<CanvasTextOptions, 'font' | 'fontSize' | 'lineHeightPx' | 'color'> {
@@ -391,14 +344,9 @@ interface LinkProps
   top?: PositionValue;
   right?: PositionValue;
   bottom?: PositionValue;
-  tooltip?: CanvasNodeTooltipConfig;
-  /** Popover по клику или наведению на элемент. */
-  popover?: CanvasNodePopoverConfig;
-  /** Dropdown по клику или наведению на элемент. */
-  dropdown?: CanvasNodeDropdownConfig;
 }
 
-interface ImageElementProps<T extends CanvasNode>
+interface ImageElementBaseProps<T extends CanvasNode>
   extends CanvasInteractionProps,
     CanvasLayerProps {
   /** Идентификатор canvas-ноды; при отсутствии генерируется при построении дерева. */
@@ -417,12 +365,6 @@ interface ImageElementProps<T extends CanvasNode>
   right?: PositionValue;
   /** Отступ от нижнего края родителя при абсолютном позиционировании. */
   bottom?: PositionValue;
-  /** Подсказка элемента, отображаемая через портал таблицы. */
-  tooltip?: CanvasNodeTooltipConfig;
-  /** Popover по клику или наведению на элемент. */
-  popover?: CanvasNodePopoverConfig;
-  /** Dropdown по клику или наведению на элемент. */
-  dropdown?: CanvasNodeDropdownConfig;
   /** Включает передачу hover-событий в портал; наличие tooltip также включает её. */
   portalHoverEnabled?: boolean;
   /** Обработчик клика по элементу; дополняет внутреннее поведение примитива. */
@@ -432,18 +374,27 @@ interface ImageElementProps<T extends CanvasNode>
   /** Обработчик выхода указателя из элемента; дополняет внутреннее поведение примитива. */
   onMouseLeave?: (event: CanvasEvent<T>) => void;
 }
+type ContainerProps = ContainerBaseProps & CanvasOverlayProps;
+type TextProps = TextBaseProps & CanvasOverlayProps;
+type IconProps = IconBaseProps & CanvasOverlayProps;
+type ButtonProps = ButtonBaseProps & CanvasOverlayProps;
+type IconButtonProps = IconButtonBaseProps & CanvasOverlayProps;
+type EmbedIconButtonProps = EmbedIconButtonBaseProps & CanvasOverlayProps;
+type CheckboxProps = CheckboxBaseProps & CanvasOverlayProps;
+type RectProps = RectBaseProps & CanvasOverlayProps;
+type BadgeProps = BadgeBaseProps & CanvasOverlayProps;
+type LinkProps = LinkBaseProps & CanvasOverlayProps;
+type ImageElementProps<T extends CanvasNode> = ImageElementBaseProps<T> &
+  CanvasOverlayProps;
 /** JSX-свойства изображения: источник, масштабирование, размещение и события. */
-export interface CanvasImageProps
-  extends ImageElementProps<CanvasImage>,
-    CanvasImageOptions {}
+export type CanvasImageProps = ImageElementProps<CanvasImage> &
+  CanvasImageOptions;
 /** JSX-свойства аватара; тема берётся из таблицы. */
-export interface CanvasAvatarProps
-  extends ImageElementProps<CanvasAvatar>,
-    Omit<CanvasAvatarOptions, 'theme'> {}
+export type CanvasAvatarProps = ImageElementProps<CanvasAvatar> &
+  Omit<CanvasAvatarOptions, 'theme'>;
 /** JSX-свойства группы участников; тема берётся из таблицы. */
-export interface CanvasAvatarGroupProps
-  extends ImageElementProps<CanvasAvatarGroup>,
-    Omit<CanvasAvatarGroupOptions, 'theme'> {}
+export type CanvasAvatarGroupProps = ImageElementProps<CanvasAvatarGroup> &
+  Omit<CanvasAvatarGroupOptions, 'theme'>;
 
 type CanvasComponentType =
   | 'Image'
@@ -796,6 +747,17 @@ function buildNode(
     node.dropdown = props['dropdown'];
   }
   // Popover и Dropdown открываются одинаково. Если заданы оба, побеждает Popover.
+  if (
+    isDevMode() &&
+    props['popover'] !== undefined &&
+    props['dropdown'] !== undefined
+  ) {
+    // eslint-disable-next-line no-console
+    console.warn(
+      `[TableCanvas] Canvas.${canvasType} (${nodeId}): заданы и popover, и dropdown. ` +
+        'Откроется только Popover, dropdown будет пропущен.'
+    );
+  }
   const overlay = props['popover'] ?? props['dropdown'];
   if (overlay !== undefined) {
     if (overlay?.trigger === 'hover') {
