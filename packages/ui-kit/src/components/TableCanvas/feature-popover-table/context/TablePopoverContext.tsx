@@ -2,8 +2,8 @@ import React, { createContext, ReactNode, useContext } from 'react';
 
 /**
  * Тип контента который можно показать в поповере.
- * - `filter` — фильтр колонки из шапки
- * - `custom` — произвольный контент, который рисует сам открывший (`render`),
+ * - `filter`: фильтр колонки из шапки
+ * - `custom`: произвольный контент, который рисует сам открывший (`render`),
  *   например canvas-поповер (feature-canvas-overlay)
  */
 export type PopoverContentType = 'filter' | 'custom';
@@ -20,8 +20,8 @@ export interface PopoverAnchorSize {
  */
 export interface TablePopoverBehavior {
   /**
-   * Закрывать при скролле таблицы: `x` — только по горизонтали (фильтр шапки),
-   * `xy` — по любой оси, `false` — не закрывать.
+   * Закрывать при скролле таблицы: `x` только по горизонтали (фильтр шапки),
+   * `xy` по любой оси, `false` не закрывать.
    */
   closeOnScroll: 'x' | 'xy' | false;
   /** Закрывать при изменении размеров таблицы (ресайз окна, полный экран). */
@@ -52,7 +52,7 @@ export interface TablePopoverState {
   contentData?: unknown;
   /** Отрисовка контента для `contentType: 'custom'`. */
   render?: (params: TablePopoverRenderParams) => ReactNode;
-  /** Правила закрытия; null — значения по умолчанию для типа контента. */
+  /** Правила закрытия; null означает значения по умолчанию для типа контента. */
   behavior: TablePopoverBehavior | null;
   /**
    * Ключ источника, открывшего поповер: ключ колонки для фильтра, ключ ноды
