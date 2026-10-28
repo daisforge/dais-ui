@@ -131,11 +131,7 @@ function InteractionExample() {
               icon={<IconSearch />}
               view="clear"
               buttonSize="xs"
-              interaction={{
-                selection: 'keep',
-                cellClick: 'stop',
-                editor: 'never',
-              }}
+              interaction={{ selection: 'keep', cellClick: 'stop' }}
               onClick={() => pushLog(`кнопка с interaction, строка ${row.id}`)}
             />
           </Canvas.Container>

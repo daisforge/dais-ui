@@ -12,10 +12,11 @@ import * as CanvasIconButtonStories from './CanvasIconButton.stories';
 - Иконка через `Canvas.icon(<IconName />)`
 - Несколько вариантов `view` и `buttonSize`
 - Поддержка `disabled`
-- `interaction` — как клик по кнопке влияет на таблицу. Например,
-  `interaction={{ selection: 'keep', cellClick: 'stop', editor: 'never' }}`: клик
-  не переносит выделение, не вызывает `onCellClicked` и не открывает редактор
-  (шеврон дерева, действие в строке). То же у `Canvas.EmbedIconButton`
+- `interaction` — как клик по кнопке влияет на таблицу:
+  `interaction={{ selection: 'keep', cellClick: 'stop' }}` — клик не переносит
+  выделение и не вызывает `onCellClicked` (шеврон дерева, действие в строке).
+  Так же работает у `Canvas.Button`, `Canvas.EmbedIconButton`, `Canvas.Link` и
+  `Canvas.Container`
 
 Описание типов — в разделе [API](?path=/docs/локальные-компоненты-tablecanvas-canvaselements-canvasiconbutton-api--docs).
 

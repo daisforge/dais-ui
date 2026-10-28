@@ -1,3 +1,4 @@
+import type { CanvasInteractionConfig as InternalCanvasInteractionConfig } from '../../TableGlide';
 import type {
   CanvasAvatarGroupProps as InternalCanvasAvatarGroupProps,
   CanvasAvatarProps as InternalCanvasAvatarProps,
@@ -13,7 +14,6 @@ import type {
 import { Canvas as InternalCanvas } from './index';
 
 export type {
-  CanvasInteractionConfig,
   CanvasMarkProps,
   CanvasNodeTooltipConfig,
   CanvasNodeTooltipProps,
@@ -38,39 +38,56 @@ export type * from './type';
 export type { Rectangle } from '@glideappsfinal/glide-data-grid';
 export { TextCellEntry } from '@glideappsfinal/glide-data-grid';
 
-type CanvasMemberWithoutInteraction<T> = T extends {
+/**
+ * Как клик по элементу внутри ячейки влияет на таблицу: можно не переносить
+ * выделение и не доходить до `onCellClicked` (шеврон дерева, действие в строке)
+ */
+export type CanvasInteractionConfig = Pick<
+  InternalCanvasInteractionConfig,
+  'selection' | 'cellClick'
+>;
+
+type PublicInteractionProps = { interaction?: CanvasInteractionConfig };
+
+type PublicCanvasMember<T, Extra> = T extends {
   __canvasType: infer CanvasType;
 }
   ? T extends (props: infer Props) => infer Result
-    ? ((props: Omit<Props, 'interaction'>) => Result) & {
+    ? ((props: Omit<Props, 'interaction'> & Extra) => Result) & {
         __canvasType: CanvasType;
       }
     : T
   : T;
 
-/**
- * Кнопки внутри ячейки принимают `interaction`: клик по кнопке может не
- * переносить выделение и не доходить до `onCellClicked` (шеврон дерева,
- * действие в строке). Остальным элементам он снаружи не нужен.
- */
-type CanvasMemberWithInteraction = 'IconButton' | 'EmbedIconButton';
+/** Кликабельные элементы принимают `interaction`, остальным он снаружи не нужен */
+type CanvasMemberWithInteraction =
+  | 'Button'
+  | 'IconButton'
+  | 'EmbedIconButton'
+  | 'Link'
+  | 'Container';
 
 type PublicCanvas = {
-  [K in keyof typeof InternalCanvas]: K extends CanvasMemberWithInteraction
-    ? (typeof InternalCanvas)[K]
-    : CanvasMemberWithoutInteraction<(typeof InternalCanvas)[K]>;
+  [K in keyof typeof InternalCanvas]: PublicCanvasMember<
+    (typeof InternalCanvas)[K],
+    K extends CanvasMemberWithInteraction ? PublicInteractionProps : unknown
+  >;
 };
 
 type PublicCanvasProps<T> = Omit<T, 'interaction'>;
 
+type PublicClickableProps<T> = PublicCanvasProps<T> & PublicInteractionProps;
+
 export const Canvas = InternalCanvas as PublicCanvas;
 
 export type CanvasBadgeProps = PublicCanvasProps<InternalCanvasBadgeProps>;
-export type CanvasButtonProps = PublicCanvasProps<InternalCanvasButtonProps>;
+export type CanvasButtonProps = PublicClickableProps<InternalCanvasButtonProps>;
 export type CanvasContainerProps =
-  PublicCanvasProps<InternalCanvasContainerProps>;
-export type CanvasEmbedIconButtonProps = InternalCanvasEmbedIconButtonProps;
-export type CanvasIconButtonProps = InternalCanvasIconButtonProps;
+  PublicClickableProps<InternalCanvasContainerProps>;
+export type CanvasEmbedIconButtonProps =
+  PublicClickableProps<InternalCanvasEmbedIconButtonProps>;
+export type CanvasIconButtonProps =
+  PublicClickableProps<InternalCanvasIconButtonProps>;
 export type CanvasIconProps = PublicCanvasProps<InternalCanvasIconProps>;
 export type CanvasTextProps = PublicCanvasProps<InternalCanvasTextProps>;
 
