@@ -1,6 +1,7 @@
 import { renderHook } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { SCROLL_THROTTLE_MS } from '../canvas/core/constants';
 import type { TablePopoverContextValue, TablePopoverState } from '../context';
 import { useClosePopoverOnRegionChange } from '../hooks/useClosePopoverOnRegionchange';
 
@@ -30,14 +31,27 @@ const createValue = (
   updatePosition: vi.fn(),
 });
 
-const renderRegionHook = (value: TablePopoverContextValue) =>
-  renderHook(() => useClosePopoverOnRegionChange(value)).result.current as (
-    range: Region,
-    tx: number,
-    ty: number,
-  ) => void;
+type RegionHandler = (range: Region, tx: number, ty: number) => void;
+
+/** Обработчик с троттлингом: между вызовами ждём, чтобы каждый был обработан. */
+const renderRegionHook = (value: TablePopoverContextValue): RegionHandler => {
+  const handler = renderHook(() => useClosePopoverOnRegionChange(value)).result
+    .current as RegionHandler;
+  return (range, tx, ty) => {
+    handler(range, tx, ty);
+    vi.advanceTimersByTime(SCROLL_THROTTLE_MS);
+  };
+};
 
 describe('useClosePopoverOnRegionChange: закрытие при прокрутке', () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it('canvas-поповер закрывается при прокрутке ровно на целое число строк', () => {
     const value = createValue({});
     const onRegion = renderRegionHook(value);
@@ -88,5 +102,17 @@ describe('useClosePopoverOnRegionChange: закрытие при прокрут�
     const onRegion = renderRegionHook(value);
     onRegion(region(3, 7), 0, 0);
     expect(value.close).not.toHaveBeenCalled();
+  });
+
+  it('частые события: обрабатывается первое и последнее, положение не теряется', () => {
+    const value = createValue({});
+    const handler = renderHook(() => useClosePopoverOnRegionChange(value))
+      .result.current as RegionHandler;
+    handler(region(0, 0), 0, 0);
+    handler(region(0, 0), 0, 1);
+    handler(region(0, 0), 0, 10);
+    expect(value.close).not.toHaveBeenCalled();
+    vi.advanceTimersByTime(SCROLL_THROTTLE_MS);
+    expect(value.close).toHaveBeenCalledTimes(1);
   });
 });

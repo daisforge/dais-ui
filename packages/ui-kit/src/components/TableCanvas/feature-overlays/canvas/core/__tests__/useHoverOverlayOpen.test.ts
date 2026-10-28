@@ -2,6 +2,7 @@ import { cleanup, renderHook } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import {
+  CANVAS_PORTAL_PRIORITY,
   type CanvasPortalHoverDetail,
   dispatchCanvasPortalHover,
   dispatchCanvasPortalReset,
@@ -10,7 +11,7 @@ import {
 import type { TablePopoverState } from '../../../context';
 import { normalizePopoverConfig } from '../../popover';
 import { useHoverOverlayOpen } from '../hooks/useHoverOverlayOpen';
-import { CANVAS_OVERLAY_CONTENT_KIND } from '../types';
+import { CANVAS_OVERLAY_CONTENT_KIND } from '../utils/overlayState';
 
 const CLOSED: TablePopoverState = {
   isOpen: false,
@@ -32,7 +33,7 @@ const nodeShow = (
   originId: 'icon',
   nodeId: 'icon',
   source: 'cell',
-  priority: 1,
+  priority: CANVAS_PORTAL_PRIORITY.NODE,
   popoverFromNode: { trigger: 'hover', content: 'с иконки' },
   tooltipContext: { column: { id: 'priority' }, rowInd: 2 },
   ...overrides,

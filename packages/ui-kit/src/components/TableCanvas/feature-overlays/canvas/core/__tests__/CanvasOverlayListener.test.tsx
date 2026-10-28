@@ -3,6 +3,7 @@ import React, { useRef } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import {
+  CANVAS_PORTAL_PRIORITY,
   type CanvasNodePopoverConfig,
   type CanvasPortalClickDetail,
   dispatchCanvasPortalClick,
@@ -31,7 +32,7 @@ const clickDetail = (
   originId: 'button',
   nodeId: 'button',
   source: 'cell',
-  priority: 1,
+  priority: CANVAS_PORTAL_PRIORITY.NODE,
   popoverFromNode: popover,
   tooltipContext: { column: { id: 'action' }, rowInd, row },
 });

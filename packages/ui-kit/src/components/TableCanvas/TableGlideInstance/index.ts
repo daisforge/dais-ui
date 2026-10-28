@@ -22,6 +22,7 @@ export {
   isCanvasEl,
   isCanvasString,
   isGlideGridCellObj,
+  isPortalHoverLocked,
   subscribeToCanvasPortalHover,
   subscribeToPortalHoverLock,
   TABLE_GLIDE_SIZES,

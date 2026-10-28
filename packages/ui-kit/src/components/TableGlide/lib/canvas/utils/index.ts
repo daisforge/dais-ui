@@ -5,7 +5,6 @@ export {
   normalizeIcon,
   reactIconToSvg,
 } from './iconUtils';
-export type { CanvasOverlayProps } from './canvasOverlayProps';
 export type {
   CanvasDropdownApi,
   CanvasDropdownErrorApi,

@@ -35,7 +35,7 @@ export interface CanvasClickDispatchResult {
    */
   suppressGridDefault: boolean;
 
-  /** Клик пришёлся на canvas-элемент с пропом popover, и событие для Popover уже отправлено. */
+  /** Клик пришёлся на canvas-элемент с popover или dropdown, и событие для окна уже отправлено. */
   portalClickDispatched?: boolean;
 }
 

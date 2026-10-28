@@ -1,21 +1,18 @@
-import type { RefObject } from 'react';
 import { useEffect, useRef } from 'react';
 
-import {
-  getFloatingContainer,
-  isEditableElement,
-} from '../utils/floatingContainer';
+import { isEditableElement } from '../utils/floatingContainer';
 
-/** Всплывающие элементы внутри таблицы со своей обработкой Esc (контекстное меню, списки). */
+/** Всплывающие элементы со своей обработкой Esc (контекстное меню, списки, вложенные окна). */
 const OWN_ESCAPE_SELECTOR = '[role="menu"], [role="listbox"], [role="dialog"]';
 
 /**
  * Открытые окна всех таблиц страницы в порядке открытия. Esc без фокуса
- * (на body) закрывает только последнее.
+ * (на body) закрывает только последнее. Окно с `closeOnEsc: false` сюда не
+ * попадает, иначе оно заслоняло бы Esc для остальных.
  */
 const openWindows: object[] = [];
 
-/** Esc, который сейчас идёт по документу. */
+/** Esc, который сейчас идёт по документу. После прохода ссылку отпускаем. */
 let currentEscape: KeyboardEvent | null = null;
 
 /**
@@ -28,53 +25,81 @@ export function isEscapeInProgress(): boolean {
   return !!currentEscape && currentEscape.eventPhase !== Event.NONE;
 }
 
+/**
+ * Esc нажат в элементе, который сам его обрабатывает: в поле ввода или во
+ * всплывающем элементе, лежащем внутри `boundary` (сам `boundary` не считается:
+ * у контейнера Popover тоже роль dialog).
+ */
+function hasOwnEscape(target: Element, boundary: Element): boolean {
+  if (isEditableElement(target)) return true;
+  const own = target.closest(OWN_ESCAPE_SELECTOR);
+  return !!own && own !== boundary && boundary.contains(own);
+}
+
 export interface UseEscapeCloseParams {
   enabled: boolean;
   onClose: () => void;
   /** Контейнер таблицы: Esc закрывает окно, только если нажат в ней. */
   tableContainer?: HTMLElement | null;
-  /** Содержимое окна: Esc внутри него тоже закрывает окно. */
-  popoverRef: RefObject<HTMLElement | null>;
+  /**
+   * Корень окна на странице: Esc внутри него закрывает окно. У Popover это
+   * контейнер floating-ui, на который PopoverBeta ставит фокус, у Dropdown
+   * сам список. Вверх от него не поднимаемся: вокруг таблицы может лежать
+   * модальное окно, и его содержимое не наше.
+   */
+  getOverlayElement: () => HTMLElement | null;
 }
 
 /**
  * Единственное место, где Popover и Dropdown закрываются по Esc. Слушаем
  * документ в capture-фазе, раньше glide и атомарки. Закрываем, если Esc нажат:
- * - внутри окна;
+ * - внутри окна, но не в поле ввода и не во вложенном элементе со своим Esc
+ *   (список, меню): их Esc сворачивает только их;
  * - в своей таблице, но не в поле ввода и не во всплывающем элементе со своим
- *   Esc. Всплытие останавливаем, чтобы первый Esc закрыл только окно;
+ *   Esc;
  * - без фокуса (на body), и это окно открыто последним на странице.
- * Esc в другом месте страницы окно не закрывает.
+ * В первых двух случаях всплытие останавливаем, чтобы первый Esc закрыл только
+ * окно и не дошёл до таблицы и того, что вокруг неё. Esc в другом месте
+ * страницы окно не закрывает.
  */
 export function useEscapeClose({
   enabled,
   onClose,
   tableContainer,
-  popoverRef,
+  getOverlayElement,
 }: UseEscapeCloseParams) {
   const onCloseRef = useRef(onClose);
   onCloseRef.current = onClose;
+  const getOverlayElementRef = useRef(getOverlayElement);
+  getOverlayElementRef.current = getOverlayElement;
   const tokenRef = useRef({});
 
   useEffect(() => {
+    if (!enabled) return undefined;
     const token = tokenRef.current;
     openWindows.push(token);
     return () => {
       const index = openWindows.indexOf(token);
       if (index !== -1) openWindows.splice(index, 1);
     };
-  }, []);
+  }, [enabled]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key !== 'Escape') return;
-      currentEscape = event;
+      if (currentEscape !== event) {
+        currentEscape = event;
+        window.setTimeout(() => {
+          if (currentEscape === event) currentEscape = null;
+        }, 0);
+      }
       if (!enabled) return;
       const target = event.target instanceof Element ? event.target : null;
 
-      const popover =
-        getFloatingContainer(popoverRef.current) ?? popoverRef.current;
-      if (target && popover?.contains(target)) {
+      const overlay = getOverlayElementRef.current();
+      if (target && overlay?.contains(target)) {
+        if (hasOwnEscape(target, overlay)) return;
+        event.stopPropagation();
         onCloseRef.current();
         return;
       }
@@ -91,12 +116,7 @@ export function useEscapeClose({
       }
 
       if (!target || !tableContainer?.contains(target)) return;
-      // Учитываем только всплывающие элементы внутри таблицы: closest найдёт и
-      // модальное окно вокруг таблицы, а его Esc закрывать окно не мешает.
-      const ownEscape =
-        isEditableElement(target) ||
-        tableContainer.contains(target.closest(OWN_ESCAPE_SELECTOR));
-      if (ownEscape) return;
+      if (hasOwnEscape(target, tableContainer)) return;
 
       event.stopPropagation();
       onCloseRef.current();
@@ -106,5 +126,5 @@ export function useEscapeClose({
     return () => {
       document.removeEventListener('keydown', handleKeyDown, true);
     };
-  }, [enabled, tableContainer, popoverRef]);
+  }, [enabled, tableContainer]);
 }

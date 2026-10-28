@@ -240,10 +240,6 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     new Map<string, number>(),
   );
 
-  // Скрытие тултипа на старте ресайза. Присваивается ниже из useItemHoveredHandler
-  // (объявлен позже по коду), поэтому дёргаем через ref.
-  const hideTooltipRef = useRef<(() => void) | null>(null);
-
   const { onColumnResizeStep, onColumnMoved: resetOnColumnMoved } =
     useColumnPortalReset(portalEventTargetRef);
 
@@ -268,11 +264,8 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         return;
       }
 
-      // Наведение уже произошло до старта перетаскивания, прячем тултип, чтобы он
-      // не висел на месте (за границей во время ресайза он не едет).
-      hideTooltipRef.current?.();
-
-      // Ширину колонки меняют: якоря сдвинулись, открытый Popover закрываем.
+      // Ширину колонки меняют: якоря сдвинулись, тултип и открытый Popover
+      // прячем, наведение на время ресайза выключаем.
       onColumnResizeStep();
 
       onColumnResize?.(col, newSize, colIndex, newSizeWithGrow);
@@ -1546,7 +1539,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   ]);
 
   // ─── onItemHovered: единый агрегатор hover-логики (тултипы, окрашивание строки)
-  const { onItemHovered, hideTooltip } = useItemHoveredHandler(
+  const { onItemHovered } = useItemHoveredHandler(
     {
       columnsLast: columnsForRender,
       rows,
@@ -1559,7 +1552,6 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     },
     dataEditorRef,
   );
-  hideTooltipRef.current = hideTooltip;
 
   // Все прямоугольники подсветки собирает один модуль, там же описан порядок
   // слоёв целиком (см. карту в useColoringLayers).

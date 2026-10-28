@@ -12,19 +12,31 @@ import type {
 
 type InteractionLockListener = (locked: boolean) => void;
 
-/** Сколько блокировок взято на каждый контейнер. null: блокировка на всю страницу. */
-const lockCounts = new Map<EventTarget | null, number>();
+/**
+ * Таблица, к которой относится блокировка, подписка или проверка. Без таблицы
+ * (`undefined` или `null`) смысл у них разный, и он описан у каждой функции:
+ * блокировка без таблицы действует на всю страницу, подписка и проверка без
+ * таблицы учитывают блокировку любой таблицы.
+ */
+type LockTarget = EventTarget | null | undefined;
+
+/** Ключ блокировки на всю страницу. */
+const PAGE_LOCK = null;
+
+/** Сколько блокировок взято на каждую таблицу и на всю страницу (PAGE_LOCK). */
+const lockCounts = new Map<EventTarget | typeof PAGE_LOCK, number>();
 
 interface LockSubscription {
   listener: InteractionLockListener;
-  target: EventTarget | null | undefined;
+  target: LockTarget;
   locked: boolean;
 }
 const lockSubscriptions = new Set<LockSubscription>();
 
-function isLocked(target: EventTarget | null | undefined): boolean {
-  if (target === undefined) return lockCounts.size > 0;
-  return lockCounts.has(target) || lockCounts.has(null);
+/** Заблокирована ли таблица (своей блокировкой или блокировкой страницы). Без таблицы: есть ли блокировка хоть где-то. */
+function isLocked(target: LockTarget): boolean {
+  if (target === undefined || target === null) return lockCounts.size > 0;
+  return lockCounts.has(target) || lockCounts.has(PAGE_LOCK);
 }
 
 function notifyLockListeners(): void {
@@ -40,11 +52,13 @@ function notifyLockListeners(): void {
  * Выключает тултипы и открытие по наведению, пока колонку тянут или меняют ей
  * ширину.
  * @param target контейнер таблицы: блокировка действует только на неё. Без
- * него блокируется вся страница.
+ * него блокируется вся страница: так бывает у TableGlide без контейнера
+ * событий (`portalEventTargetRef` не передан), его ресайз выключает наведение
+ * во всех таблицах страницы.
  * @returns функция снятия блокировки, повторный вызов ничего не делает.
  */
-export function lockPortalHover(target?: EventTarget | null): () => void {
-  const key = target ?? null;
+export function lockPortalHover(target?: LockTarget): () => void {
+  const key = target ?? PAGE_LOCK;
   lockCounts.set(key, (lockCounts.get(key) ?? 0) + 1);
   notifyLockListeners();
 
@@ -60,27 +74,28 @@ export function lockPortalHover(target?: EventTarget | null): () => void {
 }
 
 /**
- * @param target контейнер таблицы: заблокирована ли она. Без него: есть ли
- * блокировка хоть где-то.
+ * @param target контейнер таблицы: заблокирована ли она (своей блокировкой
+ * или блокировкой всей страницы). Без него: есть ли блокировка хоть где-то.
  */
-export function isPortalHoverLocked(target?: EventTarget | null): boolean {
-  return isLocked(target === null ? undefined : target);
+export function isPortalHoverLocked(target?: LockTarget): boolean {
+  return isLocked(target);
 }
 
 /**
- * Подписка на блокировку наведения.
+ * Подписка на блокировку наведения. Слушателя зовут только при смене
+ * состояния, текущее состояние на момент подписки берите из
+ * `isPortalHoverLocked(target)`.
  * @param target контейнер таблицы: слушаем её блокировку и блокировку всей
- * страницы. Без него слушаем любую блокировку.
+ * страницы. Без него слушаем блокировку любой таблицы.
  */
 export function subscribeToPortalHoverLock(
   listener: InteractionLockListener,
-  target?: EventTarget | null
+  target?: LockTarget
 ): () => void {
-  const key = target ?? undefined;
   const subscription: LockSubscription = {
     listener,
-    target: key,
-    locked: isLocked(key)
+    target,
+    locked: isLocked(target)
   };
   lockSubscriptions.add(subscription);
   return () => {

@@ -20,43 +20,13 @@ export interface CanvasOverlayDefaults {
   dropdown?: TableConfigDropdown;
 }
 
-export const CANVAS_OVERLAY_CONTENT_KIND = 'canvas-overlay' as const;
-
 /** Данные открытого Popover или Dropdown в TablePopoverState.contentData. */
 export interface CanvasOverlayContentData {
-  kind: typeof CANVAS_OVERLAY_CONTENT_KIND;
+  kind: 'canvas-overlay';
   overlay: ResolvedCanvasOverlay;
   /**
    * Строка, на которой открыли. Если на её месте окажется другая строка
    * (сортировка, новые данные), содержимое устарело и Popover закрывается.
    */
   anchorRow?: { rowInd: number; row: unknown };
-}
-
-export function isCanvasOverlayContentData(
-  value: unknown,
-): value is CanvasOverlayContentData {
-  return (
-    typeof value === 'object' &&
-    value !== null &&
-    (value as { kind?: unknown }).kind === CANVAS_OVERLAY_CONTENT_KIND
-  );
-}
-
-export function getOpenCanvasOverlay(state: {
-  isOpen: boolean;
-  contentType: string | null;
-  contentData?: unknown;
-}): CanvasOverlayContentData | null {
-  if (!state.isOpen || state.contentType !== 'custom') return null;
-  return isCanvasOverlayContentData(state.contentData)
-    ? state.contentData
-    : null;
-}
-
-export function getOpenHoverOverlay(
-  state: Parameters<typeof getOpenCanvasOverlay>[0],
-): CanvasOverlayContentData | null {
-  const open = getOpenCanvasOverlay(state);
-  return open?.overlay.config.trigger === 'hover' ? open : null;
 }

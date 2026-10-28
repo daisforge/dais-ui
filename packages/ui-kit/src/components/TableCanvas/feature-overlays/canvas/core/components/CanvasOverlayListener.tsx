@@ -18,13 +18,12 @@ import {
   type OpenCanvasOverlay,
   useHoverOverlayOpen,
 } from '../hooks/useHoverOverlayOpen';
+import type { CanvasOverlayContentData, CanvasOverlayDefaults } from '../types';
+import { clipAnchorRect, getOverlaySourceKey } from '../utils/anchor';
 import {
   CANVAS_OVERLAY_CONTENT_KIND,
-  type CanvasOverlayContentData,
-  type CanvasOverlayDefaults,
   getOpenCanvasOverlay,
-} from '../types';
-import { clipAnchorRect, getOverlaySourceKey } from '../utils/anchor';
+} from '../utils/overlayState';
 import { resolveCanvasOverlay } from '../utils/resolveCanvasOverlay';
 
 export interface CanvasOverlayListenerProps<RowType = unknown> {

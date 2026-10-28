@@ -35,7 +35,17 @@ const popoverCase: OverlayCase = {
   name: 'Popover',
   renderOverlay: async (table, close, closeOnEsc = true) => {
     const config = normalizePopoverConfig({
-      content: <button type="button">Внутри</button>,
+      content: (
+        <>
+          <button type="button">Внутри</button>
+          <div role="listbox">
+            <div role="option" tabIndex={-1} aria-selected={false}>
+              Пункт списка
+            </div>
+          </div>
+          <input aria-label="Поиск" />
+        </>
+      ),
       closeOnEsc,
     } as CanvasNodePopoverConfig);
     render(
@@ -63,13 +73,27 @@ const dropdownCase: OverlayCase = {
 
 const cases = [popoverCase, dropdownCase];
 
-const createTable = () => {
+const createTable = (parent: HTMLElement = document.body) => {
   const table = document.createElement('div');
   const cell = document.createElement('div');
   cell.tabIndex = -1;
   table.appendChild(cell);
-  document.body.appendChild(table);
+  parent.appendChild(table);
   return { table, cell };
+};
+
+/** Модальное окно с полем ввода: таблица будет лежать внутри него. */
+const createModal = () => {
+  const modal = document.createElement('div');
+  modal.setAttribute('role', 'dialog');
+  const field = document.createElement('input');
+  modal.appendChild(field);
+  document.body.appendChild(modal);
+  const onEscape = vi.fn();
+  modal.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') onEscape();
+  });
+  return { modal, field, onEscape };
 };
 
 const createForeignInput = () => {
@@ -143,6 +167,23 @@ describe.each(cases)('$name: Esc', ({ renderOverlay }) => {
     expect(close).not.toHaveBeenCalled();
   });
 
+  it('таблица внутри модалки: Esc в поле модалки окно не закрывает, Esc из ячейки и из окна до модалки не доходит', async () => {
+    const { modal, field, onEscape } = createModal();
+    const { table, cell } = createTable(modal);
+    const close = vi.fn();
+    const inside = await renderOverlay(table, close);
+
+    field.focus();
+    pressEscape(field);
+    expect(close).not.toHaveBeenCalled();
+    expect(onEscape).toHaveBeenCalledTimes(1);
+
+    pressEscape(inside);
+    pressEscape(cell);
+    expect(close).toHaveBeenCalledTimes(2);
+    expect(onEscape).toHaveBeenCalledTimes(1);
+  });
+
   it('пропущенный Esc не мешает потом закрыть кликом мимо', async () => {
     const { table, cell } = createTable();
     const input = createForeignInput();
@@ -151,6 +192,35 @@ describe.each(cases)('$name: Esc', ({ renderOverlay }) => {
     pressEscape(input);
     fireEvent.pointerDown(cell);
     expect(close).toHaveBeenCalledWith({ outsidePress: true });
+  });
+});
+
+describe('Popover: Esc внутри содержимого со своим Esc', () => {
+  afterEach(() => {
+    cleanup();
+    document.body.innerHTML = '';
+  });
+
+  it('Esc в раскрытом списке внутри Popover закрывает только список', async () => {
+    const { table } = createTable();
+    const close = vi.fn();
+    await popoverCase.renderOverlay(table, close);
+    const option = screen.getByText('Пункт списка');
+    const listListener = vi.fn();
+    option.addEventListener('keydown', listListener);
+    pressEscape(option);
+    expect(close).not.toHaveBeenCalled();
+    expect(listListener).toHaveBeenCalledTimes(1);
+  });
+
+  it('Esc в поле ввода внутри Popover остаётся полю', async () => {
+    const { table } = createTable();
+    const close = vi.fn();
+    await popoverCase.renderOverlay(table, close);
+    const search = screen.getByLabelText('Поиск');
+    search.focus();
+    pressEscape(search);
+    expect(close).not.toHaveBeenCalled();
   });
 });
 

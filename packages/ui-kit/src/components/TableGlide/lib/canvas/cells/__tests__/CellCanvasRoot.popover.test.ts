@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { CanvasNode } from '../../core/CanvasNode';
 import {
+  CANVAS_PORTAL_PRIORITY,
   type CanvasPortalClickDetail,
   subscribeToCanvasPortalClick,
 } from '../../utils/portalClickEvents';
@@ -115,7 +116,7 @@ describe('CellCanvasRoot: клик по ноде с поповером', () => {
       y: 305,
       width: 100,
       height: 30,
-      priority: 1,
+      priority: CANVAS_PORTAL_PRIORITY.NODE,
     });
   });
 

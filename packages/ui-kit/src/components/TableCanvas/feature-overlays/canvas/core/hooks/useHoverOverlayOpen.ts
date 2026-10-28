@@ -1,21 +1,21 @@
 import {
   type CanvasPortalHoverDetail,
+  isPortalHoverLocked,
   subscribeToCanvasPortalHover,
   subscribeToCanvasPortalReset,
   subscribeToPortalHoverLock,
 } from '@ui-kit/components/TableGlide';
+import { throttleWithLastCall } from '@ui-kit/utils/throttle';
 import type { MutableRefObject, RefObject } from 'react';
 import { useEffect, useRef } from 'react';
 
 import type { TablePopoverState } from '../../../context';
-import {
-  type CanvasOverlayDefaults,
-  getOpenHoverOverlay,
-  type ResolvedCanvasOverlay,
-} from '../types';
+import { SCROLL_THROTTLE_MS } from '../constants';
+import type { CanvasOverlayDefaults, ResolvedCanvasOverlay } from '../types';
 import { getOverlaySourceKey } from '../utils/anchor';
 import { isEditingInTable } from '../utils/floatingContainer';
 import { isPointInRect, type PopoverRect } from '../utils/geometry';
+import { getOpenHoverOverlay } from '../utils/overlayState';
 import { getLastPointer, trackPointer } from '../utils/pointerPosition';
 import { resolveCanvasOverlay } from '../utils/resolveCanvasOverlay';
 
@@ -86,7 +86,7 @@ export function useHoverOverlayOpen({
     let opened: HoverCandidate | null = null;
     // Popover закрылся, пока курсор над элементом: ждём, когда курсор уйдёт.
     let dismissed: HoverCandidate | null = null;
-    let locked = false;
+    let locked = isPortalHoverLocked(target);
     // За курсором следим, только если в таблице есть Popover по наведению.
     let releasePointer: (() => void) | null = null;
 
@@ -180,8 +180,10 @@ export function useHoverOverlayOpen({
       else handleHide(detail);
     }, target);
 
-    // Прокрутка: запомненные координаты элементов устарели.
-    target?.addEventListener('scroll', reset, true);
+    // Прокрутка: запомненные координаты элементов устарели. Событий много,
+    // поэтому сбрасываем не чаще SCROLL_THROTTLE_MS, но последнее не теряем.
+    const resetOnScroll = throttleWithLastCall(reset, SCROLL_THROTTLE_MS);
+    target?.addEventListener('scroll', resetOnScroll, true);
 
     // Ширину колонки поменяли или колонку переставили.
     const unsubscribeReset = subscribeToCanvasPortalReset(reset, target);
@@ -213,7 +215,8 @@ export function useHoverOverlayOpen({
       unsubscribeHover();
       unsubscribeLock();
       unsubscribeReset();
-      target?.removeEventListener('scroll', reset, true);
+      target?.removeEventListener('scroll', resetOnScroll, true);
+      resetOnScroll.cancel();
       cancelPending();
       releasePointer?.();
       reconsiderRef.current = () => {};

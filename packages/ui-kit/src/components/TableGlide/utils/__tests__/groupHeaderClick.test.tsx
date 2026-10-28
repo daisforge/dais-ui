@@ -2,39 +2,42 @@ import type { GroupHeaderClickedEventArgs } from '@glideappsfinal/glide-data-gri
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { CellCanvasRoot } from '../../lib/canvas/cells/CellCanvasRoot';
-import { normalizeCanvasInteraction } from '../../lib/canvas/core/canvasInteraction';
-import { CanvasNode } from '../../lib/canvas/core/CanvasNode';
+import { buildCanvasTree, Canvas } from '../../lib/canvas/components';
+import type { CanvasNode } from '../../lib/canvas/core/CanvasNode';
 import {
   type CanvasPortalClickDetail,
   subscribeToCanvasPortalClick
 } from '../../lib/canvas/utils/portalClickEvents';
+import type { GlideThemeForRender } from '../../theming/types';
 import { handleGroupHeaderClick } from '../groupHeaderClick';
 
-class TestNode extends CanvasNode {
-  measure(): void {}
+const theme = {} as GlideThemeForRender;
 
-  onPaint(): void {}
-}
-
-const node = (id: string, rect: CanvasNode['rect']) => {
-  const result = new TestNode(id);
-  result.rect = rect;
-  return result;
-};
+type Overlay =
+  | Pick<CanvasNode, 'popover'>
+  | Pick<CanvasNode, 'dropdown'>;
 
 /**
- * Шапка группы 300×32 с кнопкой в точке (10..110, 4..28). Кнопка собрана так
- * же, как её собирает buildNode для popover/dropdown с trigger: 'click'.
+ * Шапка группы 300×32 с кнопкой в точке (10..110, 4..28). Дерево собирает
+ * настоящий buildCanvasTree, он же ставит кнопке interaction и popover или
+ * dropdown. Раскладка идёт по canvas, которого в jsdom нет, поэтому размеры и
+ * границы на экране задаём руками.
  */
-const createGroupRoot = (
-  overlay: Pick<CanvasNode, 'popover'> | Pick<CanvasNode, 'dropdown'>,
-  target: HTMLElement
-) => {
-  const root = node('group', { x: 0, y: 0, width: 300, height: 32 });
-  const button = node('button', { x: 10, y: 4, width: 100, height: 24 });
-  Object.assign(button, overlay);
-  button.interaction = normalizeCanvasInteraction({ selection: 'keep' });
-  root.addChild(button);
+const createGroupRoot = (overlay: Overlay, target: HTMLElement) => {
+  const root = buildCanvasTree({
+    element: (
+      <Canvas.Container id="group">
+        <Canvas.Button id="button" {...overlay}>
+          Кнопка
+        </Canvas.Button>
+      </Canvas.Container>
+    ),
+    theme
+  });
+  root.rect = { x: 0, y: 0, width: 300, height: 32 };
+  const button = root.children[0];
+  if (!button) throw new Error('кнопка не собралась');
+  button.rect = { x: 10, y: 4, width: 100, height: 24 };
   const groupRoot = new CellCanvasRoot(root);
   (groupRoot as unknown as { bounds: CanvasNode['rect'] }).bounds = {
     x: 100,
@@ -82,10 +85,12 @@ describe('handleGroupHeaderClick: canvas-элементы в шапке груп
     unsubscribe();
   });
 
-  it.each([
+  const overlays: [string, Overlay][] = [
     ['popover', { popover: { content: 'окно' } }],
     ['dropdown', { dropdown: { items: [{ value: 'a', label: 'A' }] } }]
-  ] as const)(
+  ];
+
+  it.each(overlays)(
     'клик по элементу с %s не выделяет группу, но вызывает внешний onGroupHeaderClicked',
     (_, overlay) => {
       const selectColumnsByKeys = vi.fn();
@@ -95,10 +100,7 @@ describe('handleGroupHeaderClick: canvas-элементы в шапке груп
       handleGroupHeaderClick({
         colIndex: 1,
         event,
-        groupRoot: createGroupRoot(
-          overlay as Pick<CanvasNode, 'popover'>,
-          target
-        ),
+        groupRoot: createGroupRoot(overlay, target),
         columns,
         enableColumnSelection: true,
         selectColumnsByKeys,

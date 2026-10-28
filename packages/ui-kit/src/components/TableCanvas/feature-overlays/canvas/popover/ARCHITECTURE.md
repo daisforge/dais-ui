@@ -75,7 +75,8 @@ canvas/popover/
 │  Хуки:                                                                      │
 │    usePopoverFocusGuard(popoverRef)      hooks/usePopoverFocusGuard.ts      │
 │      фокус не уходит из таблицы при открытии                                │
-│    useEscapeClose({ enabled: closeOnEsc, popoverRef, tableContainer })      │
+│    useEscapeClose({ enabled: closeOnEsc, tableContainer,                    │
+│                     getOverlayElement: контейнер floating-ui })             │
 │      ../core/hooks/useEscapeClose.ts                                        │
 │    useHoverLeaveClose({ enabled: isHover, anchorRef, popoverRef,            │
 │                         expand: HOVER_ANCHOR_GAP, delay: mouseLeaveDelay }) │

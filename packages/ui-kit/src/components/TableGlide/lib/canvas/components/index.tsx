@@ -57,7 +57,6 @@ import { CanvasText, CanvasTextOptions } from '../primitives/CanvasText';
 import { normalizeDimensionValue } from '../utils';
 import { isReactIcon, normalizeIcon } from '../utils/iconUtils';
 import type { CanvasOverlayProps } from '../utils/canvasOverlayProps';
-import { isDevMode } from '../utils/isDevMode';
 
 interface CanvasInteractionProps {
   /**
@@ -82,10 +81,11 @@ interface CanvasLayerProps {
   zIndex?: number;
 }
 
-interface ContainerBaseProps
+interface ContainerProps
   extends CanvasInteractionProps,
     CanvasLayerProps,
-    Omit<FlexBoxOptions, 'columnGap' | 'rowGap'> {
+    Omit<FlexBoxOptions, 'columnGap' | 'rowGap'>,
+    CanvasOverlayProps {
   children?: ReactNode;
   style?: Partial<CanvasFlexStyle>;
   backgroundColor?: string;
@@ -120,10 +120,11 @@ const resolveContainerBackgroundColor = (
   theme: GlideThemeForRender,
 ): string | undefined => __backgroundColorResolver?.(theme) ?? backgroundColor;
 
-interface TextBaseProps
+interface TextProps
   extends CanvasInteractionProps,
     CanvasLayerProps,
-    Omit<CanvasTextOptions, 'font' | 'fontSize' | 'lineHeightPx' | 'color'> {
+    Omit<CanvasTextOptions, 'font' | 'fontSize' | 'lineHeightPx' | 'color'>,
+    CanvasOverlayProps {
   children?: ReactNode;
   font?: string;
   color?: string;
@@ -137,7 +138,10 @@ interface TextBaseProps
   bottom?: PositionValue;
 }
 
-interface IconBaseProps extends CanvasInteractionProps, CanvasLayerProps {
+interface IconProps
+  extends CanvasInteractionProps,
+    CanvasLayerProps,
+    CanvasOverlayProps {
   icon: ButtonIcon;
   size?: number;
   color?: string;
@@ -156,7 +160,10 @@ interface IconBaseProps extends CanvasInteractionProps, CanvasLayerProps {
   portalHoverEnabled?: boolean;
 }
 
-interface ButtonBaseProps extends CanvasInteractionProps, CanvasLayerProps {
+interface ButtonProps
+  extends CanvasInteractionProps,
+    CanvasLayerProps,
+    CanvasOverlayProps {
   children: string;
   /** @deprecated Use `view` instead */
   variant?: 'primary' | 'secondary' | 'danger';
@@ -180,7 +187,10 @@ interface ButtonBaseProps extends CanvasInteractionProps, CanvasLayerProps {
   portalHoverEnabled?: boolean;
 }
 
-interface IconButtonBaseProps extends CanvasInteractionProps, CanvasLayerProps {
+interface IconButtonProps
+  extends CanvasInteractionProps,
+    CanvasLayerProps,
+    CanvasOverlayProps {
   icon: ButtonIcon;
   /** @deprecated Use `buttonSize` with ButtonSize type instead */
   size?: number | 'auto';
@@ -201,9 +211,10 @@ interface IconButtonBaseProps extends CanvasInteractionProps, CanvasLayerProps {
   id?: string;
   portalHoverEnabled?: boolean;
 }
-interface EmbedIconButtonBaseProps
+interface EmbedIconButtonProps
   extends CanvasInteractionProps,
-    CanvasLayerProps {
+    CanvasLayerProps,
+    CanvasOverlayProps {
   icon: ButtonIcon;
   /** @deprecated Use `buttonSize` with ButtonSize type instead */
   size?: number | 'auto';
@@ -237,7 +248,10 @@ interface EmbedIconButtonBaseProps
   id?: string;
   portalHoverEnabled?: boolean;
 }
-interface CheckboxBaseProps extends CanvasInteractionProps, CanvasLayerProps {
+interface CheckboxProps
+  extends CanvasInteractionProps,
+    CanvasLayerProps,
+    CanvasOverlayProps {
   checked: boolean;
   indeterminate?: boolean;
   size?: number | 'auto';
@@ -254,7 +268,10 @@ interface CheckboxBaseProps extends CanvasInteractionProps, CanvasLayerProps {
   portalHoverEnabled?: boolean;
 }
 
-interface RectBaseProps extends CanvasInteractionProps, CanvasLayerProps {
+interface RectProps
+  extends CanvasInteractionProps,
+    CanvasLayerProps,
+    CanvasOverlayProps {
   color?: string;
   borderColor?: string;
   borderWidth?: number;
@@ -268,7 +285,10 @@ interface RectBaseProps extends CanvasInteractionProps, CanvasLayerProps {
   portalHoverEnabled?: boolean;
 }
 
-interface BadgeBaseProps extends CanvasInteractionProps, CanvasLayerProps {
+interface BadgeProps
+  extends CanvasInteractionProps,
+    CanvasLayerProps,
+    CanvasOverlayProps {
   /** Badge text content */
   text: string;
   /** Badge view style */
@@ -324,10 +344,11 @@ interface SkeletonProps extends CanvasInteractionProps, CanvasLayerProps {
   id?: string;
 }
 
-interface LinkBaseProps
+interface LinkProps
   extends CanvasInteractionProps,
     CanvasLayerProps,
-    Omit<CanvasTextOptions, 'font' | 'fontSize' | 'lineHeightPx' | 'color'> {
+    Omit<CanvasTextOptions, 'font' | 'fontSize' | 'lineHeightPx' | 'color'>,
+    CanvasOverlayProps {
   children?: ReactNode;
   href?: string;
   target?: string;
@@ -346,9 +367,10 @@ interface LinkBaseProps
   bottom?: PositionValue;
 }
 
-interface ImageElementBaseProps<T extends CanvasNode>
+interface ImageElementProps<T extends CanvasNode>
   extends CanvasInteractionProps,
-    CanvasLayerProps {
+    CanvasLayerProps,
+    CanvasOverlayProps {
   /** Идентификатор canvas-ноды; при отсутствии генерируется при построении дерева. */
   id?: string;
   /** Дочерние JSX-элементы запрещены: содержимое задаётся через свойства примитива. */
@@ -374,27 +396,18 @@ interface ImageElementBaseProps<T extends CanvasNode>
   /** Обработчик выхода указателя из элемента; дополняет внутреннее поведение примитива. */
   onMouseLeave?: (event: CanvasEvent<T>) => void;
 }
-type ContainerProps = ContainerBaseProps & CanvasOverlayProps;
-type TextProps = TextBaseProps & CanvasOverlayProps;
-type IconProps = IconBaseProps & CanvasOverlayProps;
-type ButtonProps = ButtonBaseProps & CanvasOverlayProps;
-type IconButtonProps = IconButtonBaseProps & CanvasOverlayProps;
-type EmbedIconButtonProps = EmbedIconButtonBaseProps & CanvasOverlayProps;
-type CheckboxProps = CheckboxBaseProps & CanvasOverlayProps;
-type RectProps = RectBaseProps & CanvasOverlayProps;
-type BadgeProps = BadgeBaseProps & CanvasOverlayProps;
-type LinkProps = LinkBaseProps & CanvasOverlayProps;
-type ImageElementProps<T extends CanvasNode> = ImageElementBaseProps<T> &
-  CanvasOverlayProps;
 /** JSX-свойства изображения: источник, масштабирование, размещение и события. */
-export type CanvasImageProps = ImageElementProps<CanvasImage> &
-  CanvasImageOptions;
+export interface CanvasImageProps
+  extends ImageElementProps<CanvasImage>,
+    CanvasImageOptions {}
 /** JSX-свойства аватара; тема берётся из таблицы. */
-export type CanvasAvatarProps = ImageElementProps<CanvasAvatar> &
-  Omit<CanvasAvatarOptions, 'theme'>;
+export interface CanvasAvatarProps
+  extends ImageElementProps<CanvasAvatar>,
+    Omit<CanvasAvatarOptions, 'theme'> {}
 /** JSX-свойства группы участников; тема берётся из таблицы. */
-export type CanvasAvatarGroupProps = ImageElementProps<CanvasAvatarGroup> &
-  Omit<CanvasAvatarGroupOptions, 'theme'>;
+export interface CanvasAvatarGroupProps
+  extends ImageElementProps<CanvasAvatarGroup>,
+    Omit<CanvasAvatarGroupOptions, 'theme'> {}
 
 type CanvasComponentType =
   | 'Image'
@@ -633,6 +646,9 @@ function resolveCanvasTextMetrics(
   };
 }
 
+// Предупреждение о popover вместе с dropdown уже выводили.
+let overlayConflictWarned = false;
+
 function buildNode(
   element: ReactElement,
   idPrefix: string,
@@ -747,11 +763,13 @@ function buildNode(
     node.dropdown = props['dropdown'];
   }
   // Popover и Dropdown открываются одинаково. Если заданы оба, побеждает Popover.
+  // Дерево собирается на каждую ячейку, поэтому предупреждаем один раз.
   if (
-    isDevMode() &&
+    !overlayConflictWarned &&
     props['popover'] !== undefined &&
     props['dropdown'] !== undefined
   ) {
+    overlayConflictWarned = true;
     // eslint-disable-next-line no-console
     console.warn(
       `[TableCanvas] Canvas.${canvasType} (${nodeId}): заданы и popover, и dropdown. ` +

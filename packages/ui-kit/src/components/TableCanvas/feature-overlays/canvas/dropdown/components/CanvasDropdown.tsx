@@ -76,7 +76,9 @@ export const CanvasDropdown = ({
     enabled: config.closeOnEsc,
     onClose: close,
     tableContainer,
-    popoverRef: portalRef,
+    // Esc внутри списка. Портал не годится: он лежит в таблице, и поиск окна
+    // вверх от него нашёл бы модальное окно вокруг таблицы.
+    getOverlayElement: () => listRef.current,
   });
 
   useEffect(() => {

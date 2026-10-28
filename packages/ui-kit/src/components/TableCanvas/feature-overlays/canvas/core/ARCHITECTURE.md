@@ -19,8 +19,8 @@
   Они берут Popover и Dropdown через `index.ts` их папок, циклов нет.
 - Снаружи (`widgets/table-or-card-UI.tsx`) нужен только
   `CanvasOverlayListener`, он реэкспортируется из `feature-overlays/index.ts`.
-- `feature-tooltip` читает `getOpenCanvasOverlay` из `types.ts`, чтобы не
-  показывать тултип поверх открытого окна.
+- `feature-tooltip` берёт из `index.ts` ещё `getOpenCanvasOverlay`
+  (`utils/overlayState.ts`), чтобы не показывать тултип поверх открытого окна.
 
 ## Структура
 
@@ -28,7 +28,7 @@
 canvas/core/
 ├── index.ts                         CanvasOverlayListener, CanvasOverlayListenerProps
 ├── constants.ts                     HOVER_ANCHOR_GAP
-├── types.ts                         ResolvedCanvasOverlay, CanvasOverlayDefaults, CanvasOverlayContentData, getOpenCanvasOverlay, getOpenHoverOverlay
+├── types.ts                         ResolvedCanvasOverlay, CanvasOverlayDefaults, CanvasOverlayContentData (только типы)
 ├── components/
 │   └── CanvasOverlayListener.tsx    клики, открытие Popover или Dropdown, закрытие при смене строки, onOpen и onClose, уборка при размонтировании
 ├── hooks/
@@ -40,6 +40,7 @@ canvas/core/
 │   ├── anchor.ts                    ключ источника, обрезка якоря краем таблицы
 │   ├── floatingContainer.ts         контейнер floating-ui, поле ввода, редактор ячейки
 │   ├── geometry.ts                  точка в прямоугольнике, общий прямоугольник
+│   ├── overlayState.ts              CANVAS_OVERLAY_CONTENT_KIND, getOpenCanvasOverlay, getOpenHoverOverlay
 │   └── pointerPosition.ts           последняя позиция курсора (общий слушатель)
 └── __tests__/
 ```
@@ -123,7 +124,8 @@ canvas/core/
 │  openOverlay (внутри CanvasOverlayListener)                                 │
 │                                                                             │
 │  rect = clipAnchorRect(detail, видимая область грида)      utils/anchor.ts  │
-│  contentData = { kind: 'canvas-overlay', overlay, anchorRow }     types.ts  │
+│  contentData = { kind: 'canvas-overlay', overlay, anchorRow }               │
+│                                                    utils/overlayState.ts    │
 │                                                                             │
 │  useTablePopover().open({                                                   │
 │    position: { rect.x, rect.y }, anchorSize: { rect.width, rect.height },  │
@@ -158,7 +160,8 @@ canvas/core/
 `dropdownFromNode` в событии и возвращает `{ kind: 'popover', config }` или
 `{ kind: 'dropdown', config }` с дефолтами из `tableConfig.popover` и
 `tableConfig.dropdown` (`normalizePopoverConfig`, `normalizeDropdownConfig`).
-Если заданы оба, открывается Popover. Без них `null`.
+Если заданы оба, открывается Popover, а `buildNode` в `TableGlide` один раз на
+процесс пишет предупреждение в консоль (`console.warn`). Без них `null`.
 
 Общий код читает из `config` только общие поля: `trigger`, `mouseEnterDelay`,
 `closeOnScroll`, `onOpen`, `onClose`. Остальное отдаётся компоненту окна.
@@ -276,14 +279,23 @@ Popover и Dropdown закрываются по Esc одинаково: толь
 `useEscapeClose`. Он слушает `keydown` на документе в capture-фазе (раньше
 Glide и атомарки) и закрывает окно, если Esc нажат:
 
-- внутри окна;
+- внутри окна, но не в поле ввода и не во вложенном элементе со своим Esc
+  (`[role="menu"]`, `[role="listbox"]`, `[role="dialog"]` внутри окна): их Esc
+  сворачивает только их;
 - в своей таблице, но не в поле ввода и не во всплывающем элементе со своим
-  Esc (`[role="menu"]`, `[role="listbox"]`, `[role="dialog"]` внутри таблицы).
-  Всплытие останавливается, чтобы первый Esc закрыл только окно, а не
-  выделение Glide или модалку вокруг таблицы;
+  Esc внутри таблицы;
 - без фокуса (body), и это окно открыто последним на странице. Открытые окна
   всех таблиц лежат в общем стеке модуля (`openWindows`), иначе такой Esc
-  закрыл бы окна во всех таблицах сразу.
+  закрыл бы окна во всех таблицах сразу. Окно с `closeOnEsc: false` в стек не
+  попадает и Esc для остальных не заслоняет.
+
+В первых двух случаях всплытие останавливается, чтобы первый Esc закрыл только
+окно, а не выделение Glide или модалку вокруг таблицы.
+
+Окно задаётся функцией `getOverlayElement`: у Popover это контейнер floating-ui
+(`getFloatingContainer`), у Dropdown сам список (`listRef`). Вверх от него хук
+не поднимается: портал Dropdown лежит в таблице, и `closest('[role="dialog"]')`
+нашёл бы модалку вокруг таблицы, тогда Esc в любом её поле закрывал бы список.
 
 Esc в другом месте страницы и Esc при `closeOnEsc: false` окно не закрывают.
 

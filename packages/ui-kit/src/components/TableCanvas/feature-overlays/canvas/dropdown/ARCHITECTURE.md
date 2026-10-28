@@ -88,7 +88,8 @@ canvas/dropdown/
 │    beforeList при error с renderError: renderError({ error, retry, close }) │
 │                                                                             │
 │  Хуки закрытия:                                                             │
-│    useEscapeClose({ enabled: closeOnEsc, popoverRef: portalRef })           │
+│    useEscapeClose({ enabled: closeOnEsc, tableContainer,                    │
+│                     getOverlayElement: () => listRef.current })             │
 │      ../core/hooks/useEscapeClose.ts                                        │
 │    pointerdown на документе (capture), цель вне портала                     │
 │      → close({ outsidePress: true })   только click и closeOnOutsideClick   │
@@ -132,7 +133,8 @@ canvas/dropdown/
 `trigger: 'hover'` даёт `portalHoverEnabled`, клик даёт
 `interaction: { selection: 'keep' }` и курсор `pointer`. События клика и
 наведения несут `dropdownFromNode`. Если на одном элементе заданы и
-`popover`, и `dropdown`, `resolveCanvasOverlay` открывает Popover.
+`popover`, и `dropdown`, `resolveCanvasOverlay` открывает Popover, а `buildNode`
+один раз на процесс пишет предупреждение в консоль.
 
 ## Переходник CanvasDropdown
 

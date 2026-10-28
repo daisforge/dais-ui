@@ -9,6 +9,7 @@ import {
   useEscapeClose,
 } from '../../core/hooks/useEscapeClose';
 import { useHoverLeaveClose } from '../../core/hooks/useHoverLeaveClose';
+import { getFloatingContainer } from '../../core/utils/floatingContainer';
 import { usePopoverFocusGuard } from '../hooks/usePopoverFocusGuard';
 import type { ResolvedCanvasPopoverConfig } from '../types';
 import { CanvasAnchor } from './styled';
@@ -52,7 +53,9 @@ export const CanvasPopover = ({
     enabled: config.closeOnEsc,
     onClose: close,
     tableContainer,
-    popoverRef,
+    // Esc внутри Popover: его корень на странице это контейнер floating-ui.
+    getOverlayElement: () =>
+      getFloatingContainer(popoverRef.current) ?? popoverRef.current,
   });
 
   const handleToggle = useCallback(

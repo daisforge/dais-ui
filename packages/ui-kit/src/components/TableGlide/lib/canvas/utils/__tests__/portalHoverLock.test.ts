@@ -42,16 +42,34 @@ describe('lockPortalHover по таблице', () => {
     unsubscribe();
   });
 
-  it('подписка без таблицы слышит блокировку любой таблицы', () => {
+  it('подписка и проверка без таблицы (undefined или null) видят блокировку любой таблицы', () => {
     const table = document.createElement('div');
     const onAny = vi.fn();
+    const onAnyNull = vi.fn();
     const unsubscribe = subscribeToPortalHoverLock(onAny);
+    const unsubscribeNull = subscribeToPortalHoverLock(onAnyNull, null);
     const release = lockPortalHover(table);
     expect(isPortalHoverLocked()).toBe(true);
+    expect(isPortalHoverLocked(null)).toBe(true);
     expect(onAny).toHaveBeenLastCalledWith(true);
+    expect(onAnyNull).toHaveBeenLastCalledWith(true);
     release();
     expect(isPortalHoverLocked()).toBe(false);
     expect(onAny).toHaveBeenLastCalledWith(false);
+    expect(onAnyNull).toHaveBeenLastCalledWith(false);
+    unsubscribe();
+    unsubscribeNull();
+  });
+
+  it('подписка во время блокировки: слушателя не зовут, состояние даёт isPortalHoverLocked', () => {
+    const table = document.createElement('div');
+    const release = lockPortalHover(table);
+    const onTable = vi.fn();
+    const unsubscribe = subscribeToPortalHoverLock(onTable, table);
+    expect(isPortalHoverLocked(table)).toBe(true);
+    expect(onTable).not.toHaveBeenCalled();
+    release();
+    expect(onTable).toHaveBeenLastCalledWith(false);
     unsubscribe();
   });
 

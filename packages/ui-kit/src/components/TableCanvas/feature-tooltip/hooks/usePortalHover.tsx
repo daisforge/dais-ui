@@ -7,6 +7,7 @@ import type {
   CanvasPortalSource,
 } from '../../TableGlideInstance';
 import {
+  isPortalHoverLocked,
   subscribeToCanvasPortalHover,
   subscribeToPortalHoverLock,
 } from '../../TableGlideInstance';
@@ -120,6 +121,8 @@ export function usePortalHover<T = unknown>(
 
   useEffect(() => {
     const eventTarget = containerRef?.current ?? undefined;
+    // Блокировку могли взять до подписки (таблица смонтирована во время ресайза).
+    lockedRef.current = isPortalHoverLocked(eventTarget);
 
     const unsubscribeHover = subscribeToCanvasPortalHover(
       (detail: CanvasPortalHoverDetail) => {

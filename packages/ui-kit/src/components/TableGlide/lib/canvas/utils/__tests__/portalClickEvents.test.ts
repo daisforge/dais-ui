@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { isCanvasNodeDropdownConfig } from '../dropdownConfig';
 import {
+  CANVAS_PORTAL_PRIORITY,
   type CanvasPortalClickDetail,
   dispatchCanvasPortalClick,
   isCanvasNodePopoverConfig,
@@ -15,7 +16,7 @@ const detail: CanvasPortalClickDetail = {
   height: 4,
   originId: 'node-1',
   source: 'cell',
-  priority: 1,
+  priority: CANVAS_PORTAL_PRIORITY.NODE,
 };
 
 describe('portalClickEvents: шина клика по canvas-якорю', () => {

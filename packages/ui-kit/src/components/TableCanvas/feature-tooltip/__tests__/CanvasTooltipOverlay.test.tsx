@@ -2,8 +2,11 @@ import { act, cleanup, render } from '@testing-library/react';
 import React, { useRef } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { dispatchCanvasPortalHover } from '../../../TableGlide/lib/canvas';
-import { CANVAS_OVERLAY_CONTENT_KIND } from '../../feature-overlays/canvas/core/types';
+import {
+  CANVAS_PORTAL_PRIORITY,
+  dispatchCanvasPortalHover,
+} from '../../../TableGlide/lib/canvas';
+import { CANVAS_OVERLAY_CONTENT_KIND } from '../../feature-overlays/canvas/core/utils/overlayState';
 import {
   type TablePopoverContextValue,
   TablePopoverProvider,
@@ -50,7 +53,7 @@ const hover = (container: HTMLElement) =>
         originId: 'icon',
         source: 'cell',
         tooltipFromNode: 'подсказка',
-        priority: 1,
+        priority: CANVAS_PORTAL_PRIORITY.NODE,
       },
       container,
     );

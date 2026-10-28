@@ -2,7 +2,7 @@ import { Tooltip } from '@ui-kit/components/Tooltip';
 import React, { useMemo } from 'react';
 import { createPortal } from 'react-dom';
 
-import { getOpenCanvasOverlay } from '../../feature-overlays/canvas/core/types';
+import { getOpenCanvasOverlay } from '../../feature-overlays/canvas/core';
 import { useOptionalTablePopover } from '../../feature-overlays/context';
 import type { CanvasPortalHoverDetail } from '../../TableGlideInstance';
 import { viewportToContainerPosition } from '../../utils';
