@@ -41,6 +41,37 @@ describe('ColumnHeights', () => {
     expect(heights.maxHeight(row, ['a'])).toBe(40);
   });
 
+  it('ячейку разъединили — высота прежнего блока отбрасывается', () => {
+    const heights = new ColumnHeights();
+    heights.set(row, 'a', 200, true, 100);
+
+    heights.set(row, 'a', 100, false, 40);
+
+    expect(heights.maxHeight(row, ['a'])).toBe(40);
+    expect(heights.needsHeight(row, 'a', 200, true)).toBe(true);
+  });
+
+  it('ячейку объединили — высота прежней обычной ячейки отбрасывается', () => {
+    const heights = new ColumnHeights();
+    heights.set(row, 'a', 100, false, 100);
+
+    heights.set(row, 'a', 200, true, 40);
+
+    expect(heights.maxHeight(row, ['a'])).toBe(40);
+    expect(heights.needsHeight(row, 'a', 100, false)).toBe(true);
+  });
+
+  it('смена вида ячейки не трогает замеры других строк колонки', () => {
+    const heights = new ColumnHeights();
+    heights.set(row, 'a', 200, true, 100);
+    heights.set(other, 'a', 100, false, 30);
+
+    heights.set(row, 'a', 100, false, 40);
+
+    expect(heights.maxHeight(row, ['a'])).toBe(40);
+    expect(heights.maxHeight(other, ['a'])).toBe(30);
+  });
+
   it('retain отбрасывает высоты убранных колонок', () => {
     const heights = new ColumnHeights();
     heights.set(row, 'a', 100, false, 40);

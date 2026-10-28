@@ -155,6 +155,17 @@ describe('AutoRowHeightStore', () => {
     );
   });
 
+  it('ячейку разъединили или объединили: высота строки — по свежему замеру, не по прежнему', () => {
+    const { store, rows, report } = setup();
+
+    report(0, 'a', 100, 200, true);
+    report(0, 'a', 40, 100);
+    expect(store.heightAt(rows, 0, true)).toBe(40);
+
+    report(0, 'a', 30, 200, true);
+    expect(store.heightAt(rows, 0, true)).toBe(30);
+  });
+
   it('новый массив строк (сортировка, подгрузка): высоты по объекту строки сохраняются', () => {
     const { store, rows, report } = setup();
     report(0, 'a', 40);

@@ -34,7 +34,8 @@ export class ColumnHeights {
   }
 
   /**
-   * Запоминает высоту ячейки.
+   * Запоминает высоту ячейки. Замер другого вида (блок ↔ обычная ячейка) для этой строки
+   * отбрасывается: ячейку объединили или разъединили, прежняя высота неактуальна.
    * @returns true — у колонки новая ширина, прежние высоты её ячеек отброшены
    */
   set(
@@ -46,10 +47,12 @@ export class ColumnHeights {
   ): boolean {
     const column = this.entry(columnId);
     if (isSpan) {
+      column.cells.delete(row);
       column.spans.set(row, { width, height });
       return false;
     }
 
+    column.spans.delete(row);
     const resized = column.width !== undefined && column.width !== width;
     if (column.width !== width) {
       column.width = width;
