@@ -349,8 +349,9 @@ export type CommonFormat = {
   alignContent?: 'right' | 'left' | 'center';
 };
 
+/** Без `customFormat` значение выводится как есть: так задаётся только выравнивание */
 export type CustomFormat = CommonFormat & {
-  customFormat: (value: string) => React.ReactNode;
+  customFormat?: (value: string) => React.ReactNode;
 };
 
 export type NumberFormatOptions = CommonFormat & {

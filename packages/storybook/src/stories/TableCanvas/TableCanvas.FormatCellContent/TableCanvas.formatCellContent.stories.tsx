@@ -161,15 +161,15 @@ export const BasicFormatting: StoryObj = {
 };
 
 /**
- * `column.contentAlign` задаёт выравнивание ячеек колонки явно и приоритетнее
- * `contentFormat`: число можно прижать влево, текст поставить по центру.
+ * `contentFormat.alignContent` выравнивает ячейки колонки: число можно прижать
+ * влево, текст поставить по центру без функции форматирования.
  */
 export const ContentAlign: StoryObj = {
   ...storySourceDoc({
     preCode,
     previewSource: 'shown',
   }),
-  name: 'Выравнивание колонки (contentAlign)',
+  name: 'Выравнивание колонки (alignContent)',
   render: () => {
     const [rows] = useState(() => createRows(1, 30));
 
@@ -180,7 +180,7 @@ export const ContentAlign: StoryObj = {
           key: 'priority',
           name: 'Текст, center',
           width: 120,
-          contentAlign: 'center',
+          contentFormat: { alignContent: 'center' },
         },
         {
           key: 'complete',
@@ -192,8 +192,7 @@ export const ContentAlign: StoryObj = {
           key: 'inspiredDay',
           name: 'Число, left',
           width: 120,
-          contentFormat: 'number',
-          contentAlign: 'left',
+          contentFormat: { type: 'number', alignContent: 'left' },
         },
       ],
       [],

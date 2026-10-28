@@ -543,7 +543,7 @@ export const useColumns = <
         // useSortedRows смотрит на sortingType — убираем его у группирующих
         // колонок, чтобы вид со слиянием по ним не сортировался (как в дереве).
         ...(stripGroupColumnSort && { sortingType: undefined }),
-        contentAlign: el.contentAlign ?? getAlignment(el.contentFormat),
+        contentAlign: getAlignment(el.contentFormat),
         renderHeaderCell,
         columnThemeOverride,
         // Минимальная ширина колонки: чтобы в шапке всегда помещались иконки,
