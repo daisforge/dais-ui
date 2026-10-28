@@ -1,7 +1,7 @@
 import type {
   CanvasPortalClickDetail,
   CanvasPortalRect,
-} from '@ui-kit/components/TableGlide';
+} from '@ui-kit/components/TableGlide/lib/canvas/utils/portalClickEvents';
 
 import type { PopoverRect } from './geometry';
 

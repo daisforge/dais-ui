@@ -3,7 +3,7 @@ import {
   dispatchCanvasPortalHover,
   dispatchCanvasPortalReset,
   lockPortalHover,
-} from '@ui-kit/components/TableGlide';
+} from '@ui-kit/components/TableGlide/lib/canvas/utils/portalHoverEvents';
 import { describe, expect, it } from 'vitest';
 
 import { usePortalHover } from './usePortalHover';

@@ -2,7 +2,7 @@ import { DropdownProps } from '@ui-kit/components/Dropdown';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { ContextMenuDropdownItem } from '../feature-context-menu';
-import { TablePopoverContextValue } from '../feature-overlays/context/TablePopoverContext';
+import { TablePopoverContextValue } from '../feature-overlays';
 import {
   ColumnOrColumnGroupGlideInstance,
   TableGlideInstanceProps,

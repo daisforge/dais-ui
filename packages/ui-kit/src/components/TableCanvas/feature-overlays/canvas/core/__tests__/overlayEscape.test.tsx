@@ -93,7 +93,15 @@ const createModal = () => {
   modal.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') onEscape();
   });
-  return { modal, field, onEscape };
+  // Модалка, которая слушает Esc на документе в capture-фазе.
+  const onDocumentEscape = vi.fn();
+  const documentListener = (event: KeyboardEvent) => {
+    if (event.key === 'Escape') onDocumentEscape();
+  };
+  document.addEventListener('keydown', documentListener, true);
+  const dispose = () =>
+    document.removeEventListener('keydown', documentListener, true);
+  return { modal, field, onEscape, onDocumentEscape, dispose };
 };
 
 const createForeignInput = () => {
@@ -168,7 +176,7 @@ describe.each(cases)('$name: Esc', ({ renderOverlay }) => {
   });
 
   it('таблица внутри модалки: Esc в поле модалки окно не закрывает, Esc из ячейки и из окна до модалки не доходит', async () => {
-    const { modal, field, onEscape } = createModal();
+    const { modal, field, onEscape, onDocumentEscape, dispose } = createModal();
     const { table, cell } = createTable(modal);
     const close = vi.fn();
     const inside = await renderOverlay(table, close);
@@ -177,11 +185,17 @@ describe.each(cases)('$name: Esc', ({ renderOverlay }) => {
     pressEscape(field);
     expect(close).not.toHaveBeenCalled();
     expect(onEscape).toHaveBeenCalledTimes(1);
+    expect(onDocumentEscape).toHaveBeenCalledTimes(1);
 
     pressEscape(inside);
     pressEscape(cell);
     expect(close).toHaveBeenCalledTimes(2);
     expect(onEscape).toHaveBeenCalledTimes(1);
+    // Текущее поведение: stopPropagation из capture-слушателя на документе
+    // не останавливает другие capture-слушатели на том же документе. Модалка,
+    // которая слушает Esc так, закроется вместе с окном таблицы.
+    expect(onDocumentEscape).toHaveBeenCalledTimes(3);
+    dispose();
   });
 
   it('пропущенный Esc не мешает потом закрыть кликом мимо', async () => {

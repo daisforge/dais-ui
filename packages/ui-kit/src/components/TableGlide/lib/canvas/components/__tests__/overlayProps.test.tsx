@@ -1,18 +1,26 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { GlideThemeForRender } from '../../../../theming/types';
-import { buildCanvasTree, Canvas } from '..';
 
 const theme = {} as GlideThemeForRender;
 const popover = { content: 'поповер' };
 const dropdown = { items: [{ value: 'a', label: 'A' }] };
 
+// Флаг «предупреждение уже выводилось» живёт в модуле, поэтому каждый тест
+// загружает модуль заново и не зависит от порядка тестов.
+const loadCanvas = async () => import('..');
+
 describe('Canvas: popover и dropdown на одном элементе', () => {
+  beforeEach(() => {
+    vi.resetModules();
+  });
+
   afterEach(() => {
     vi.restoreAllMocks();
   });
 
-  it('без конфликта не предупреждает', () => {
+  it('без конфликта не предупреждает', async () => {
+    const { buildCanvasTree, Canvas } = await loadCanvas();
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
     buildCanvasTree({ element: <Canvas.Rect key="1" popover={popover} />, theme });
@@ -21,7 +29,8 @@ describe('Canvas: popover и dropdown на одном элементе', () => {
     expect(warn).not.toHaveBeenCalled();
   });
 
-  it('если заданы оба, открывается Popover, предупреждение выводится один раз на процесс', () => {
+  it('если заданы оба, открывается Popover, предупреждение выводится один раз на процесс', async () => {
+    const { buildCanvasTree, Canvas } = await loadCanvas();
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
     const node = buildCanvasTree({

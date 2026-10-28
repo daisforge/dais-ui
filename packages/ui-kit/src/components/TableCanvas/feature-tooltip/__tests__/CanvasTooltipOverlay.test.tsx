@@ -2,10 +2,8 @@ import { act, cleanup, render } from '@testing-library/react';
 import React, { useRef } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import {
-  CANVAS_PORTAL_PRIORITY,
-  dispatchCanvasPortalHover,
-} from '../../../TableGlide/lib/canvas';
+import { CANVAS_PORTAL_PRIORITY } from '../../../TableGlide/lib/canvas/utils/portalClickEvents';
+import { dispatchCanvasPortalHover } from '../../../TableGlide/lib/canvas/utils/portalHoverEvents';
 import { CANVAS_OVERLAY_CONTENT_KIND } from '../../feature-overlays/canvas/core/utils/overlayState';
 import {
   type TablePopoverContextValue,

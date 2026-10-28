@@ -773,7 +773,8 @@ function buildNode(
     // eslint-disable-next-line no-console
     console.warn(
       `[TableCanvas] Canvas.${canvasType} (${nodeId}): заданы и popover, и dropdown. ` +
-        'Откроется только Popover, dropdown будет пропущен.'
+        'Откроется только Popover, dropdown будет пропущен. ' +
+        'Предупреждение выводится один раз, дальше такие случаи не выводятся.'
     );
   }
   const overlay = props['popover'] ?? props['dropdown'];

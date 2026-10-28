@@ -1,9 +1,7 @@
-import { throttleWithLastCall } from '@ui-kit/utils/throttle';
-import { useEffect, useMemo, useRef } from 'react';
+import { useCallback, useRef } from 'react';
 
 import { TableGlideInstanceProps } from '../../TableGlideInstance/type';
 import { ObjectForExtending } from '../../types';
-import { SCROLL_THROTTLE_MS } from '../canvas/core/constants';
 import { getPopoverBehavior, TablePopoverContextValue } from '../context';
 
 interface UseClosePopoverOnRegionChangeOptions {
@@ -29,9 +27,9 @@ interface LastRegion {
  * открытом поповере: первый же сдвиг после открытия сравнивается с реальным
  * положением.
  *
- * Glide зовёт обработчик на каждый кадр прокрутки, поэтому он обрабатывает не
- * чаще SCROLL_THROTTLE_MS. Последний вызов не теряется: иначе запомненное
- * положение отстало бы от реального и следующий сдвиг закрыл бы поповер зря.
+ * Обработчик не троттлим: сравнение должно идти на каждый кадр, иначе
+ * запомненное положение отстаёт от прокрутки и поповер закроется зря. Сама
+ * работа копеечная.
  */
 export function useClosePopoverOnRegionChange<
   RowType extends ObjectForExtending,
@@ -48,39 +46,30 @@ export function useClosePopoverOnRegionChange<
   const valueRef = useRef(tablePopoverValue);
   valueRef.current = tablePopoverValue;
 
-  type VisibleRegionHandler = NonNullable<
-    TableGlideInstanceProps<RowType, SummaryRowType>['onVisibleRegionChanged']
-  >;
+  const handleVisibleRegionChange = useCallback<
+    NonNullable<
+      TableGlideInstanceProps<RowType, SummaryRowType>['onVisibleRegionChanged']
+    >
+  >(
+    (range, tx, ty) => {
+      const last = lastRegionRef.current;
+      lastRegionRef.current = { x: range.x, y: range.y, tx, ty };
 
-  const handleVisibleRegionChange = useMemo(
-    () =>
-      throttleWithLastCall<void, Parameters<VisibleRegionHandler>>(
-        (range, tx, ty) => {
-          const last = lastRegionRef.current;
-          lastRegionRef.current = { x: range.x, y: range.y, tx, ty };
+      const { state, close } = valueRef.current;
+      const behavior = getPopoverBehavior(state);
+      if (!state.isOpen || !behavior?.closeOnScroll || !last) return;
 
-          const { state, close } = valueRef.current;
-          const behavior = getPopoverBehavior(state);
-          if (!state.isOpen || !behavior?.closeOnScroll || !last) return;
+      const movedX =
+        range.x !== last.x || Math.abs(tx - last.tx) > scrollThreshold;
+      const movedY =
+        range.y !== last.y || Math.abs(ty - last.ty) > scrollThreshold;
 
-          const movedX =
-            range.x !== last.x || Math.abs(tx - last.tx) > scrollThreshold;
-          const movedY =
-            range.y !== last.y || Math.abs(ty - last.ty) > scrollThreshold;
-
-          if (movedX || (behavior.closeOnScroll === 'xy' && movedY)) {
-            close();
-          }
-        },
-        SCROLL_THROTTLE_MS,
-      ),
+      if (movedX || (behavior.closeOnScroll === 'xy' && movedY)) {
+        close();
+      }
+    },
     [scrollThreshold],
   );
 
-  useEffect(
-    () => () => handleVisibleRegionChange.cancel(),
-    [handleVisibleRegionChange],
-  );
-
-  return handleVisibleRegionChange as VisibleRegionHandler;
+  return handleVisibleRegionChange;
 }

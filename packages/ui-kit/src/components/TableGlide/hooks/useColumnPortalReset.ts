@@ -1,7 +1,10 @@
 import type { RefObject } from 'react';
 import { useCallback, useEffect, useRef } from 'react';
 
-import { dispatchCanvasPortalReset, lockPortalHover } from '../lib/canvas';
+import {
+  dispatchCanvasPortalReset,
+  lockPortalHover
+} from '../lib/canvas/utils/portalHoverEvents';
 
 /** Сколько ждать после последнего изменения ширины колонки, чтобы снять блокировку (мс). */
 export const RESIZE_LOCK_RELEASE_MS = 300;

@@ -1,13 +1,13 @@
 import { cleanup, renderHook } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { CANVAS_PORTAL_PRIORITY } from '../../../../../TableGlide/lib/canvas/utils/portalClickEvents';
 import {
-  CANVAS_PORTAL_PRIORITY,
   type CanvasPortalHoverDetail,
   dispatchCanvasPortalHover,
   dispatchCanvasPortalReset,
   lockPortalHover,
-} from '../../../../../TableGlide/lib/canvas';
+} from '../../../../../TableGlide/lib/canvas/utils/portalHoverEvents';
 import type { TablePopoverState } from '../../../context';
 import { normalizePopoverConfig } from '../../popover';
 import { useHoverOverlayOpen } from '../hooks/useHoverOverlayOpen';
@@ -200,6 +200,18 @@ describe('useHoverOverlayOpen: открытие поповера по навед
     container.dispatchEvent(new Event('scroll'));
     vi.advanceTimersByTime(300);
     expect(openOverlay).not.toHaveBeenCalled();
+  });
+
+  it('наведение через 50 мс после прокрутки открывает окно', () => {
+    // Во время прокрутки под неподвижным курсором оказался элемент: нода шлёт
+    // show один раз, повторного не будет. Сброс по прокрутке не должен его стереть.
+    renderOpenHook();
+    movePointer(110, 110);
+    container.dispatchEvent(new Event('scroll'));
+    vi.advanceTimersByTime(50);
+    show(nodeShow());
+    vi.advanceTimersByTime(300);
+    expect(openOverlay).toHaveBeenCalledTimes(1);
   });
 
   it('блокировка (ресайз колонки) отменяет ожидание', () => {

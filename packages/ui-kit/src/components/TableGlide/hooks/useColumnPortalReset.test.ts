@@ -4,7 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   isPortalHoverLocked,
   subscribeToCanvasPortalReset
-} from '../lib/canvas';
+} from '../lib/canvas/utils/portalHoverEvents';
 import {
   RESIZE_LOCK_RELEASE_MS,
   useColumnPortalReset

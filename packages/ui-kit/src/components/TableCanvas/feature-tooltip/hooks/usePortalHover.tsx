@@ -1,4 +1,4 @@
-import { subscribeToCanvasPortalReset } from '@ui-kit/components/TableGlide';
+import { subscribeToCanvasPortalReset } from '@ui-kit/components/TableGlide/lib/canvas/utils/portalHoverEvents';
 import type { RefObject } from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 

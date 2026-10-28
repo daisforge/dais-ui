@@ -2,13 +2,13 @@ import { act, cleanup, render } from '@testing-library/react';
 import React, { useRef } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import type { CanvasNodePopoverConfig } from '../../../../../TableGlide/lib/canvas';
 import {
   CANVAS_PORTAL_PRIORITY,
-  type CanvasNodePopoverConfig,
   type CanvasPortalClickDetail,
   dispatchCanvasPortalClick,
-  dispatchCanvasPortalReset,
-} from '../../../../../TableGlide/lib/canvas';
+} from '../../../../../TableGlide/lib/canvas/utils/portalClickEvents';
+import { dispatchCanvasPortalReset } from '../../../../../TableGlide/lib/canvas/utils/portalHoverEvents';
 import {
   TablePopoverProvider,
   type TablePopoverState,

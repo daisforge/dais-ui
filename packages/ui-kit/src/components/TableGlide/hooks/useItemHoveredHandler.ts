@@ -4,10 +4,8 @@ import { useCallback, useRef } from 'react';
 
 import { HEADER_TOOLTIP_HIDDEN_COLS_ID } from '@ui-kit/components/TableCanvasSharedConstants';
 
-import {
-  CANVAS_PORTAL_PRIORITY,
-  dispatchCanvasPortalHover
-} from '../lib/canvas';
+import { CANVAS_PORTAL_PRIORITY } from '../lib/canvas/utils/portalClickEvents';
+import { dispatchCanvasPortalHover } from '../lib/canvas/utils/portalHoverEvents';
 import type {
   ColumnGlideLast,
   GlideProps,
@@ -101,7 +99,7 @@ export interface UseItemHoveredHandlerParams<R extends ObjectForExtending, SR> {
 export function useItemHoveredHandler<R extends ObjectForExtending, SR>(
   params: UseItemHoveredHandlerParams<R, SR>,
   dataEditorRef: RefObject<DataEditorRef | null>,
-): { onItemHovered: OnItemHovered; hideTooltip: () => void } {
+): { onItemHovered: OnItemHovered } {
   const {
     columnsLast,
     rows,
@@ -346,11 +344,5 @@ export function useItemHoveredHandler<R extends ObjectForExtending, SR>(
     ],
   );
 
-  // Явное скрытие текущего тултипа (например, на старте ресайза колонки, когда
-  // наведение уже произошло, а тултип не должен висеть/ехать за границей).
-  const hideTooltip = useCallback(() => {
-    hideCurrentTooltip(portalEventTargetRef?.current ?? null);
-  }, [hideCurrentTooltip, portalEventTargetRef]);
-
-  return { onItemHovered, hideTooltip };
+  return { onItemHovered };
 }

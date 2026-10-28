@@ -1,4 +1,4 @@
-import type { CanvasPortalClickDetail } from '@ui-kit/components/TableGlide';
+import type { CanvasPortalClickDetail } from '@ui-kit/components/TableGlide/lib/canvas/utils/portalClickEvents';
 
 import { normalizeDropdownConfig } from '../../dropdown';
 import { normalizePopoverConfig } from '../../popover';

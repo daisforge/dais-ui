@@ -4,13 +4,11 @@ import {
   subscribeToCanvasPortalHover,
   subscribeToCanvasPortalReset,
   subscribeToPortalHoverLock,
-} from '@ui-kit/components/TableGlide';
-import { throttleWithLastCall } from '@ui-kit/utils/throttle';
+} from '@ui-kit/components/TableGlide/lib/canvas/utils/portalHoverEvents';
 import type { MutableRefObject, RefObject } from 'react';
 import { useEffect, useRef } from 'react';
 
 import type { TablePopoverState } from '../../../context';
-import { SCROLL_THROTTLE_MS } from '../constants';
 import type { CanvasOverlayDefaults, ResolvedCanvasOverlay } from '../types';
 import { getOverlaySourceKey } from '../utils/anchor';
 import { isEditingInTable } from '../utils/floatingContainer';
@@ -180,10 +178,10 @@ export function useHoverOverlayOpen({
       else handleHide(detail);
     }, target);
 
-    // Прокрутка: запомненные координаты элементов устарели. Событий много,
-    // поэтому сбрасываем не чаще SCROLL_THROTTLE_MS, но последнее не теряем.
-    const resetOnScroll = throttleWithLastCall(reset, SCROLL_THROTTLE_MS);
-    target?.addEventListener('scroll', resetOnScroll, true);
+    // Прокрутка: запомненные координаты элементов устарели. Сбрасываем сразу,
+    // без троттлинга: отложенный сброс стёр бы наведение, пришедшее после
+    // последнего кадра прокрутки, и окно не открылось бы. Сам сброс дешёвый.
+    target?.addEventListener('scroll', reset, true);
 
     // Ширину колонки поменяли или колонку переставили.
     const unsubscribeReset = subscribeToCanvasPortalReset(reset, target);
@@ -215,8 +213,7 @@ export function useHoverOverlayOpen({
       unsubscribeHover();
       unsubscribeLock();
       unsubscribeReset();
-      target?.removeEventListener('scroll', resetOnScroll, true);
-      resetOnScroll.cancel();
+      target?.removeEventListener('scroll', reset, true);
       cancelPending();
       releasePointer?.();
       reconsiderRef.current = () => {};
