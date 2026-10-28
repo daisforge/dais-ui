@@ -395,6 +395,8 @@ export type TableGlideCustomProps<
   bottomSummaryRows?: readonly SR[];
   rowSize?: SIZE;
   rowHeight?: RowHeightProp<R>;
+  /** Потолок высоты строки при `rowHeight: 'auto'`, по умолчанию 480 */
+  maxAutoRowHeight?: number;
   ctxs?: ObjectForExtending;
   renderGroupHeader?: (
     args: RenderGroupHeaderArgs

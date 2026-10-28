@@ -126,6 +126,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   rows,
   bottomSummaryRows,
   rowHeight,
+  maxAutoRowHeight,
   width,
   rowSize = 'medium',
   ctxs = CTXS_EMPTY,
@@ -275,6 +276,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     rowSize,
     columns: columnsLast,
     theme,
+    maxAutoRowHeight,
   });
   const rowH = useAnimatedRowHeight(rowHeightGlide);
 

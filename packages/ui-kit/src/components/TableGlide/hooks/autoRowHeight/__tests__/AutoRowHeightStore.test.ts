@@ -65,6 +65,34 @@ describe('AutoRowHeightStore', () => {
     expect(store.heightAt(rows, 0, false)).toBe(41);
   });
 
+  it('новый потолок: видимая строка пересчитывается сразу, невидимая — когда снова на экране', () => {
+    const { store, rows, report } = setup();
+    report(0, 'a', 1000);
+    report(1, 'a', 1000);
+
+    store.setMaxHeight(600);
+
+    expect(store.heightAt(rows, 0, true)).toBe(600);
+    expect(store.heightAt(rows, 1, false)).toBe(MAX_AUTO_ROW_HEIGHT);
+    expect(store.heightAt(rows, 1, true)).toBe(600);
+
+    store.setMaxHeight(100);
+
+    expect(store.heightAt(rows, 0, true)).toBe(100);
+  });
+
+  it('потолок не выше 0xFFFE, NaN — потолок по умолчанию', () => {
+    const { store, rows, report } = setup();
+    store.setMaxHeight(Infinity);
+    report(0, 'a', 100_000);
+
+    expect(store.heightAt(rows, 0, true)).toBe(0xfffe);
+
+    store.setMaxHeight(NaN);
+
+    expect(store.heightAt(rows, 0, true)).toBe(MAX_AUTO_ROW_HEIGHT);
+  });
+
   it('внутри кадра высоты не меняются: все колонки кадра рисуются с одними высотами', () => {
     const { store, rows, onChange, endFrame } = setup();
     store.reporter(rows[0]!, 0, 'a', false).report(100, 70);

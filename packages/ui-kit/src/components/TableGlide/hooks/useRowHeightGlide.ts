@@ -30,6 +30,8 @@ interface Params<R extends object> {
   columns: readonly { id: string; renderCell?: unknown }[];
   /** Тема таблицы: её смена перемеряет ячейки в `'auto'` */
   theme?: object;
+  /** Потолок высоты строки в `'auto'` */
+  maxAutoRowHeight?: number;
 }
 
 /**
@@ -42,9 +44,16 @@ export function useRowHeightGlide<R extends object>({
   rowSize,
   columns,
   theme,
+  maxAutoRowHeight,
 }: Params<R>) {
   const isAuto = rowHeight === 'auto';
-  const auto = useAutoRowHeight({ enabled: isAuto, rows, columns, theme });
+  const auto = useAutoRowHeight({
+    enabled: isAuto,
+    rows,
+    columns,
+    theme,
+    maxHeight: maxAutoRowHeight,
+  });
 
   const rowHeightGlide = useMemo<NonNullable<RowHeightGlide>>(() => {
     const baseOf = baseHeightOf(rowHeight, rows, rowSize);

@@ -2,8 +2,11 @@ import type { CellHeightReporter } from '../../cellRenderer';
 import { ColumnHeights } from './ColumnHeights';
 import { RowHeightIndex } from './RowHeightIndex';
 
-/** Потолок высоты строки: текст длиннее обрезается */
+/** Потолок высоты строки по умолчанию: текст длиннее обрезается */
 export const MAX_AUTO_ROW_HEIGHT = 480;
+
+/** Выше не хранит `RowHeightIndex`: `0xFFFF` там — «строку ещё не искали» */
+const MAX_STORED_ROW_HEIGHT = 0xfffe;
 
 interface RowHeight {
   height: number;
@@ -48,6 +51,8 @@ export class AutoRowHeightStore<R extends object> {
   /** Ниже базовой высоты строка не бывает: изменения под ней glide не видит */
   private baseHeight = 0;
 
+  private maxHeight = MAX_AUTO_ROW_HEIGHT;
+
   /** Строки с новыми высотами ячеек, ждущие коммита, и их индексы */
   private readonly pending = new Map<R, number>();
 
@@ -67,6 +72,16 @@ export class AutoRowHeightStore<R extends object> {
 
   setBaseHeight(height: number): void {
     this.baseHeight = height;
+  }
+
+  /** Новый потолок пересчитывает высоту строки из ячеек, когда строка снова на экране */
+  setMaxHeight(height: number): void {
+    const max = Number.isNaN(height)
+      ? MAX_AUTO_ROW_HEIGHT
+      : Math.min(Math.max(height, 0), MAX_STORED_ROW_HEIGHT);
+    if (max === this.maxHeight) return;
+    this.maxHeight = max;
+    this.generation += 1;
   }
 
   /** Вызывается на каждый запрос высоты: тот же массив отсекается по ссылке */
@@ -165,7 +180,7 @@ export class AutoRowHeightStore<R extends object> {
 
   private computeRowHeight(row: R): number {
     const height = Math.ceil(
-      Math.min(this.cells.maxHeight(row, this.columnIds), MAX_AUTO_ROW_HEIGHT),
+      Math.min(this.cells.maxHeight(row, this.columnIds), this.maxHeight),
     );
     this.rows.set(row, { height, generation: this.generation });
     return height;

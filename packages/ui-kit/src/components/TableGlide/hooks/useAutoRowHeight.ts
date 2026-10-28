@@ -5,9 +5,12 @@ import { flushSync } from 'react-dom';
 import type { CellHeightReporter } from '../cellRenderer';
 import { subscribeFontsLoaded } from '../lib/canvas/hooks/fontsLoaded';
 import { anchorShiftOf } from './autoRowHeight/anchorShift';
-import { AutoRowHeightStore } from './autoRowHeight/AutoRowHeightStore';
+import {
+  AutoRowHeightStore,
+  MAX_AUTO_ROW_HEIGHT,
+} from './autoRowHeight/AutoRowHeightStore';
 
-export { MAX_AUTO_ROW_HEIGHT } from './autoRowHeight/AutoRowHeightStore';
+export { MAX_AUTO_ROW_HEIGHT };
 
 /** Строк в окне до первого сообщения glide о видимой области */
 const INITIAL_VISIBLE_ROWS = 50;
@@ -18,6 +21,8 @@ interface Params<R extends object> {
   columns: readonly { id: string; renderCell?: unknown }[];
   /** Тема таблицы (шрифты, отступы; меняется вместе с `rowSize`) */
   theme?: object;
+  /** Потолок высоты строки, по умолчанию `MAX_AUTO_ROW_HEIGHT` */
+  maxHeight?: number;
 }
 
 /**
@@ -35,6 +40,7 @@ export function useAutoRowHeight<R extends object>({
   rows,
   columns,
   theme,
+  maxHeight = MAX_AUTO_ROW_HEIGHT,
 }: Params<R>) {
   const [version, setVersion] = useState(0);
   const visibleRowsRef = useRef({ from: 0, to: INITIAL_VISIBLE_ROWS });
@@ -85,6 +91,7 @@ export function useAutoRowHeight<R extends object>({
   const heightOf = useCallback(
     (rowIndex: number, baseHeight: number): number => {
       store.setBaseHeight(baseHeight);
+      store.setMaxHeight(maxHeight);
       store.setColumns(columnIds);
       const { from, to } = visibleRowsRef.current;
       const height = store.heightAt(
@@ -94,7 +101,7 @@ export function useAutoRowHeight<R extends object>({
       );
       return Math.max(baseHeight, height ?? 0);
     },
-    [store, rows, columnIds],
+    [store, rows, columnIds, maxHeight],
   );
 
   const trackVisibleRegion = useCallback((range: Rectangle) => {

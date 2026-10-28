@@ -158,4 +158,31 @@ describe('useAutoRowHeight', () => {
 
     expect(needsHeight(result, 'a')).toBe(false);
   });
+
+  it('maxHeight ограничивает строку, смена даёт glide новую функцию высоты без перемера', async () => {
+    const { result, rerender } = renderHook(
+      ({ maxHeight }) =>
+        useAutoRowHeight({
+          enabled: true,
+          rows: ROWS,
+          columns: COLUMNS,
+          theme: SMALL,
+          maxHeight,
+        }),
+      { initialProps: { maxHeight: 50 } },
+    );
+    result.current.heightOf(0, BASE);
+    await act(async () => {
+      result.current.reporterFor(ROWS[0]!, 0, 'a', false).report(100, 900);
+    });
+
+    expect(result.current.heightOf(0, BASE)).toBe(50);
+
+    const heightOfBefore = result.current.heightOf;
+    rerender({ maxHeight: 700 });
+
+    expect(result.current.heightOf).not.toBe(heightOfBefore);
+    expect(result.current.heightOf(0, BASE)).toBe(700);
+    expect(needsHeight(result, 'a')).toBe(false);
+  });
 });
