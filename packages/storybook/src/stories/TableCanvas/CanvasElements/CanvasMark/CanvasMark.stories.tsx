@@ -197,8 +197,6 @@ const columnConfig: ColumnConfig[] = [
   },
 ];
 
-// Бейдж принимает разметку и в text:
-<Canvas.Badge text={withMarks(row.tribe, query, theme.tokens.surfaceWarningMinor56)} />
 `;
 
 export const InLinksAndBadges: StoryObj = {
@@ -211,7 +209,7 @@ export const InLinksAndBadges: StoryObj = {
       () => [
         {
           key: 'tribe',
-          name: 'Бейдж (children)',
+          name: 'Бейдж',
           width: 260,
           renderCell: ({ row, theme }) => (
             <Canvas.Container
@@ -225,28 +223,6 @@ export const InLinksAndBadges: StoryObj = {
                   theme.tokens.surfaceWarningMinor56,
                 )}
               </Canvas.Badge>
-            </Canvas.Container>
-          ),
-        },
-        {
-          key: 'tribeText',
-          name: 'Бейдж (text)',
-          width: 260,
-          renderCell: ({ row, theme }) => (
-            <Canvas.Container
-              alignItems="center"
-              padding={{ left: 8, right: 8 }}
-            >
-              <Canvas.Badge
-                size="s"
-                view="positive"
-                transparent
-                text={withMarks(
-                  row.tribe,
-                  query,
-                  theme.tokens.surfaceWarningMinor56,
-                )}
-              />
             </Canvas.Container>
           ),
         },

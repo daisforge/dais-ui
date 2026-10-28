@@ -292,11 +292,8 @@ interface RectProps extends CanvasInteractionProps, CanvasLayerProps {
 }
 
 interface BadgeProps extends CanvasInteractionProps, CanvasLayerProps {
-  /**
-   * Текст бейджа: строка или разметка с `Canvas.Mark`.
-   * Если заданы `children`, используются они.
-   */
-  text?: ReactNode;
+  /** Текст бейджа. Если заданы `children`, используются они */
+  text?: string;
   /** Текст бейджа разметкой, как у `Canvas.Text`: `<Canvas.Badge>до <Canvas.Mark color="…">фрагмент</Canvas.Mark></Canvas.Badge>` */
   children?: ReactNode;
   /** Badge view style */

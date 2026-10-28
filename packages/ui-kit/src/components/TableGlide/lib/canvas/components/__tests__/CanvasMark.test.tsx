@@ -92,21 +92,6 @@ describe('Canvas.Mark в Canvas.Badge', () => {
     expect(node.marks).toEqual([{ start: 6, end: 11, color: 'yellow' }]);
   });
 
-  it('разметка в text работает так же, как children', () => {
-    const node = buildBadge(
-      <Canvas.Badge
-        text={
-          <>
-            Трайб <Canvas.Mark color="yellow">вклад</Canvas.Mark>ов
-          </>
-        }
-      />,
-    );
-
-    expect(node.text).toBe('Трайб вкладов');
-    expect(node.marks).toEqual([{ start: 6, end: 11, color: 'yellow' }]);
-  });
-
   it('children приоритетнее text; строка в text — без подсветки', () => {
     expect(
       buildBadge(<Canvas.Badge text="из text">из children</Canvas.Badge>).text,
