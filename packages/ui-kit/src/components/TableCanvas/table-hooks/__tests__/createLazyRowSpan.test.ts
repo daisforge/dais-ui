@@ -59,9 +59,11 @@ describe('createLazyRowSpan', () => {
 
   it('несколько блоков: строка находит свой, строка между блоками спрашивает резолвер', () => {
     const many = Array.from({ length: 10 }, (_, id) => ({ id, region: '' }));
-    const lazyRowSpan = vi.fn((_row: Row, _colKey: string, rowInd: number) =>
-      rowInd < 3 ? ([0, 2] as const) : rowInd > 6 ? ([7, 9] as const) : null,
-    );
+    const lazyRowSpan = vi.fn((_row: Row, _colKey: string, rowInd: number) => {
+      if (rowInd < 3) return [0, 2] as const;
+      if (rowInd > 6) return [7, 9] as const;
+      return null;
+    });
     const rowSpan = createLazyRowSpan<Row>(lazyRowSpan, 'region', {
       current: many,
     });
