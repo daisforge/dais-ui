@@ -41,7 +41,7 @@ const columnConfig: ColumnConfig[] = [
     name: 'Статус',
     width: 200,
     renderCell: ({ row }) => (
-      <Canvas.Container direction="row" alignItems="center" padding={8}>
+      <Canvas.Container direction="row" alignItems="center" padding={{ left: 8, right: 8 }}>
         <Canvas.Badge
           text={row.status}
           view="default"
@@ -54,7 +54,10 @@ const columnConfig: ColumnConfig[] = [
 ];
 
 <TableCanvas
-  tableConfig={{ containerStyle: { height: '300px' } }}
+  tableConfig={{
+    containerStyle: { height: '300px' },
+    rowSize: { showInControl: true },
+  }}
   columnConfig={columnConfig}
   rows={rows}
 />
@@ -110,7 +113,11 @@ export const CustomColors: StoryObj = {
           name: 'Solid',
           width: 200,
           renderCell: ({ row }) => (
-            <Canvas.Container direction="row" alignItems="center" padding={8}>
+            <Canvas.Container
+              direction="row"
+              alignItems="center"
+              padding={{ left: 8, right: 8 }}
+            >
               <Canvas.Badge
                 text={row.label}
                 view="default"
@@ -125,7 +132,11 @@ export const CustomColors: StoryObj = {
           name: 'Pilled',
           width: 200,
           renderCell: ({ row }) => (
-            <Canvas.Container direction="row" alignItems="center" padding={8}>
+            <Canvas.Container
+              direction="row"
+              alignItems="center"
+              padding={{ left: 8, right: 8 }}
+            >
               <Canvas.Badge
                 text={row.label}
                 view="default"
@@ -141,7 +152,11 @@ export const CustomColors: StoryObj = {
           name: 'Transparent',
           width: 200,
           renderCell: ({ row }) => (
-            <Canvas.Container direction="row" alignItems="center" padding={8}>
+            <Canvas.Container
+              direction="row"
+              alignItems="center"
+              padding={{ left: 8, right: 8 }}
+            >
               <Canvas.Badge
                 text={row.label}
                 view="default"
@@ -158,7 +173,10 @@ export const CustomColors: StoryObj = {
 
     return (
       <TableCanvas
-        tableConfig={{ containerStyle: { height: '300px' } }}
+        tableConfig={{
+          containerStyle: { height: '300px' },
+          rowSize: { showInControl: true },
+        }}
         columnConfig={columnConfig}
         rows={customRows}
       />
