@@ -206,7 +206,7 @@ export class CellCanvasRoot {
 
   /**
    * Клик по элементу с Popover или Dropdown (или по его содержимому): шлём
-   * событие на контейнер таблицы, открытием занимается feature-canvas-popover.
+   * событие на контейнер таблицы, открытием занимается feature-overlays/canvas/popover.
    * Якорь: нарисованный прямоугольник элемента (getAnchorRect) на экране.
    *
    * @param reached ноды, до которых дошёл клик: если дочерний onClick

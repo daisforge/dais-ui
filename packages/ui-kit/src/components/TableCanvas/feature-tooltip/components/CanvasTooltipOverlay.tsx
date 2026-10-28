@@ -2,8 +2,8 @@ import { Tooltip } from '@ui-kit/components/Tooltip';
 import React, { useMemo } from 'react';
 import { createPortal } from 'react-dom';
 
-import { getOpenCanvasOverlay } from '../../feature-canvas-overlay/types';
-import { useOptionalTablePopover } from '../../feature-popover-table/context';
+import { getOpenCanvasOverlay } from '../../feature-overlays/canvas/core/types';
+import { useOptionalTablePopover } from '../../feature-overlays/context';
 import type { CanvasPortalHoverDetail } from '../../TableGlideInstance';
 import { viewportToContainerPosition } from '../../utils';
 import { DEFAULT_MOUSE_ENTER_DELAY } from '../constants';

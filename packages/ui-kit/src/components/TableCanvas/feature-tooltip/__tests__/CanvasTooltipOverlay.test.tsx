@@ -3,13 +3,13 @@ import React, { useRef } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { dispatchCanvasPortalHover } from '../../../TableGlide/lib/canvas';
-import { CANVAS_OVERLAY_CONTENT_KIND } from '../../feature-canvas-overlay/types';
+import { CANVAS_OVERLAY_CONTENT_KIND } from '../../feature-overlays/canvas/core/types';
 import {
   type TablePopoverContextValue,
   TablePopoverProvider,
   useTablePopover,
-} from '../../feature-popover-table/context';
-import { useTablePopoverState } from '../../feature-popover-table/hooks/useTablePopoverState';
+} from '../../feature-overlays/context';
+import { useTablePopoverState } from '../../feature-overlays/hooks/useTablePopoverState';
 import { CanvasTooltipOverlay } from '../components/CanvasTooltipOverlay';
 
 vi.mock('@ui-kit/components/Tooltip', () => ({

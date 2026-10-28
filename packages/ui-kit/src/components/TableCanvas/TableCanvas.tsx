@@ -30,7 +30,7 @@ import {
   TablePopoverProvider,
   useClosePopoverOnRegionChange,
   useTablePopoverState,
-} from './feature-popover-table';
+} from './feature-overlays';
 import { useRowDetailPanel } from './feature-row-detail';
 import { RowDetailHandlerContextProvider } from './feature-row-detail/ctx';
 import {

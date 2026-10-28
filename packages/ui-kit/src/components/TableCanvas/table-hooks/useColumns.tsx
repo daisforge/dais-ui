@@ -16,7 +16,7 @@ import {
   calculateFilterPopoverPositionX,
   calculateFilterPopoverPositionY,
   TablePopoverContextValue,
-} from '../feature-popover-table';
+} from '../feature-overlays';
 import { useReorderDragable } from '../feature-reorder-columns/useReorderDragable';
 import {
   getDetailPanelColSpanFunc,

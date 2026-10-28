@@ -13,7 +13,6 @@ import {
   DEFAULT_MIN_COLUMN_WIDTH,
 } from '../constants';
 import { useContextMenu, useTableCollapse } from '../contexts';
-import { CanvasOverlayListener } from '../feature-canvas-overlay';
 import {
   CollapseBlockAbove,
   CollapseTableWrapper,
@@ -22,9 +21,9 @@ import { ContextMenu } from '../feature-context-menu';
 import { TableCoverOverlay } from '../feature-loading-overlay/TableCoverOverlay';
 import { TableLoadingOverlay } from '../feature-loading-overlay/TableLoadingOverlay';
 import type { LoadingOverlayConfig } from '../feature-loading-overlay/types';
+import { CanvasOverlayListener, PopoverInTable } from '../feature-overlays';
 import { TablePagination } from '../feature-pagination';
 import type { PaginationProps } from '../feature-pagination/types';
-import { PopoverInTable } from '../feature-popover-table/components/PopoverContainer';
 import { BottomSheet } from '../feature-sidebar/ui/BottomSheet';
 import { CanvasTooltipOverlay } from '../feature-tooltip';
 import { ContainerStyled, SIZES, tableClassNames as cls } from '../styles';
