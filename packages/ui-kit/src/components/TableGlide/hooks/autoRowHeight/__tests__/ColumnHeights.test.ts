@@ -82,4 +82,33 @@ describe('ColumnHeights', () => {
     expect(heights.maxHeight(row, ['a', 'b'])).toBe(40);
     expect(heights.needsHeight(row, 'b', 100, false)).toBe(true);
   });
+
+  it('устаревший замер перемеряется, но до перемера высота прежняя', () => {
+    const heights = new ColumnHeights();
+    heights.set(row, 'a', 100, false, 40);
+    heights.set(other, 'a', 250, true, 60);
+
+    heights.invalidate();
+
+    expect(heights.needsHeight(row, 'a', 100, false)).toBe(true);
+    expect(heights.needsHeight(other, 'a', 250, true)).toBe(true);
+    expect(heights.maxHeight(row, ['a'])).toBe(40);
+    expect(heights.maxHeight(other, ['a'])).toBe(60);
+
+    heights.set(row, 'a', 100, false, 30);
+
+    expect(heights.needsHeight(row, 'a', 100, false)).toBe(false);
+    expect(heights.maxHeight(row, ['a'])).toBe(30);
+  });
+
+  it('устаревшими помечаются только переданные колонки', () => {
+    const heights = new ColumnHeights();
+    heights.set(row, 'a', 100, false, 40);
+    heights.set(row, 'b', 100, false, 90);
+
+    heights.invalidate(['a']);
+
+    expect(heights.needsHeight(row, 'a', 100, false)).toBe(true);
+    expect(heights.needsHeight(row, 'b', 100, false)).toBe(false);
+  });
 });

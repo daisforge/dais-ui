@@ -25,9 +25,4 @@ export class RowHeightIndex<R> {
   set(rowIndex: number, row: R, height: number): void {
     if (this.rows[rowIndex] === row) this.heights[rowIndex] = height;
   }
-
-  clear(): void {
-    this.rows = [];
-    this.heights = new Float64Array(0);
-  }
 }

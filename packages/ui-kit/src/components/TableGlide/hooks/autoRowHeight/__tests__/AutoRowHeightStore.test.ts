@@ -177,14 +177,33 @@ describe('AutoRowHeightStore', () => {
     expect(store.heightAt(sorted, 2, false)).toBe(40);
   });
 
-  it('clear сбрасывает высоты и уведомляет', () => {
+  it('invalidate: до перемера строка держит прежнюю высоту, после — свежую', () => {
     const { store, rows, report, onChange } = setup();
-    report(0, 'a', 40);
+    report(0, 'a', 120);
     onChange.mockClear();
 
-    store.clear();
+    store.invalidate();
 
-    expect(store.heightAt(rows, 0, true)).toBe(0);
+    expect(store.heightAt(rows, 0, true)).toBe(120);
+    expect(onChange).not.toHaveBeenCalled();
+    expect(store.reporter(rows[0]!, 0, 'a', false).needsHeight(100)).toBe(true);
+
+    report(0, 'a', 40);
+
+    expect(store.heightAt(rows, 0, true)).toBe(40);
     expect(onChange).toHaveBeenCalledTimes(1);
+  });
+
+  it('invalidate колонки перемеряет только её ячейки', () => {
+    const { store, rows, report } = setup();
+    report(0, 'a', 40);
+    report(0, 'b', 60);
+
+    store.invalidate(['a']);
+
+    expect(store.reporter(rows[0]!, 0, 'a', false).needsHeight(100)).toBe(true);
+    expect(store.reporter(rows[0]!, 0, 'b', false).needsHeight(100)).toBe(
+      false,
+    );
   });
 });

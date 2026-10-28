@@ -39,7 +39,7 @@ export class AutoRowHeightStore<R extends object> {
 
   private readonly index = new RowHeightIndex<R>();
 
-  private rows = new WeakMap<object, RowHeight>();
+  private readonly rows = new WeakMap<object, RowHeight>();
 
   private columnIds: readonly string[] = [];
 
@@ -56,7 +56,7 @@ export class AutoRowHeightStore<R extends object> {
 
   /**
    * @param onChange после коммита высота какой-то строки изменилась для glide: все измеренные в коммите
-   * строки; пустой список — сброс всех высот
+   * строки
    * @param scheduleCommit когда применить замеры кадра; по умолчанию — сразу после него
    */
   constructor(
@@ -80,12 +80,12 @@ export class AutoRowHeightStore<R extends object> {
     this.generation += 1;
   }
 
-  clear(): void {
-    this.cells.clear();
-    this.index.clear();
-    this.rows = new WeakMap();
-    this.pending.clear();
-    this.onChange([]);
+  /**
+   * Замеры колонок `columnIds` (по умолчанию всех) устарели — сменились тема, шрифт или
+   * рендер колонки: ячейки перемеряются при следующей отрисовке, до этого высоты строк прежние.
+   */
+  invalidate(columnIds?: readonly string[]): void {
+    this.cells.invalidate(columnIds);
   }
 
   /**

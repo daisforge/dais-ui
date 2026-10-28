@@ -7,19 +7,21 @@ interface SpanHeight {
  * Высоты ячеек одной колонки при ширине `width` (undefined — ещё не мерили).
  * Числа по объекту строки — объект на ячейку стоил бы памяти на каждую строку.
  * Блоки на несколько колонок редкие и зависят от ширины соседей, поэтому
- * хранятся со своей шириной.
+ * хранятся со своей шириной. `fresh` — строки, измеренные после последней
+ * пометки замеров устаревшими: устаревшая высота действует, пока ячейку не перемерят.
  */
 interface ColumnEntry {
   width?: number;
   cells: WeakMap<object, number>;
   spans: WeakMap<object, SpanHeight>;
+  fresh: WeakSet<object>;
 }
 
 /** Высоты ячеек по колонкам: что сообщили ячейки при отрисовке */
 export class ColumnHeights {
   private readonly columns = new Map<string, ColumnEntry>();
 
-  /** Высоты ячейки при этой ширине ещё нет */
+  /** Высоты ячейки при этой ширине ещё нет или она устарела */
   needsHeight(
     row: object,
     columnId: string,
@@ -28,6 +30,7 @@ export class ColumnHeights {
   ): boolean {
     const column = this.columns.get(columnId);
     if (!column) return true;
+    if (!column.fresh.has(row)) return true;
     return isSpan
       ? column.spans.get(row)?.width !== width
       : column.width !== width || !column.cells.has(row);
@@ -46,6 +49,7 @@ export class ColumnHeights {
     height: number,
   ): boolean {
     const column = this.entry(columnId);
+    column.fresh.add(row);
     if (isSpan) {
       column.cells.delete(row);
       column.spans.set(row, { width, height });
@@ -74,6 +78,18 @@ export class ColumnHeights {
     }, 0);
   }
 
+  /**
+   * Помечает замеры колонок `columnIds` (по умолчанию всех) устаревшими: ячейки перемеряются
+   * при следующей отрисовке, до этого их высоты прежние.
+   */
+  invalidate(columnIds?: readonly string[]): void {
+    const ids = columnIds ?? [...this.columns.keys()];
+    ids.forEach((id) => {
+      const column = this.columns.get(id);
+      if (column) column.fresh = new WeakSet();
+    });
+  }
+
   /** Отбрасывает высоты колонок, которых больше нет */
   retain(columnIds: readonly string[]): void {
     const actual = new Set(columnIds);
@@ -82,15 +98,15 @@ export class ColumnHeights {
       .forEach((id) => this.columns.delete(id));
   }
 
-  clear(): void {
-    this.columns.clear();
-  }
-
   private entry(id: string): ColumnEntry {
     const existing = this.columns.get(id);
     if (existing) return existing;
 
-    const created: ColumnEntry = { cells: new WeakMap(), spans: new WeakMap() };
+    const created: ColumnEntry = {
+      cells: new WeakMap(),
+      spans: new WeakMap(),
+      fresh: new WeakSet(),
+    };
     this.columns.set(id, created);
     return created;
   }

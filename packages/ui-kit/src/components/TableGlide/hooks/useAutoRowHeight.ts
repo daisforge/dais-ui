@@ -14,8 +14,9 @@ const INITIAL_VISIBLE_ROWS = 50;
 interface Params<R extends object> {
   enabled: boolean;
   rows: readonly R[];
-  columns: readonly { id: string }[];
-  fontFamily?: string;
+  columns: readonly { id: string; renderCell?: unknown }[];
+  /** Тема таблицы (шрифты, отступы; меняется вместе с `rowSize`) */
+  theme?: object;
 }
 
 /**
@@ -24,14 +25,14 @@ interface Params<R extends object> {
  * Отдельного замера нет: ячейка сообщает высоту содержимого, когда glide её рисует
  * (`reporterFor`), а glide рисует только видимые ячейки. Строка, которую ещё не
  * рисовали, первый кадр показывается с базовой высотой и дорастает на следующем.
- * После загрузки шрифта таблицы высоты сбрасываются — до неё ячейки измерены
- * запасным шрифтом.
+ * Смена темы или рендера колонки и загрузка любого шрифта помечают замеры устаревшими:
+ * ячейки перемеряются при следующей отрисовке, до этого строки держат прежнюю высоту.
  */
 export function useAutoRowHeight<R extends object>({
   enabled,
   rows,
   columns,
-  fontFamily,
+  theme,
 }: Params<R>) {
   const [version, setVersion] = useState(0);
   const visibleRowsRef = useRef({ from: 0, to: INITIAL_VISIBLE_ROWS });
@@ -46,15 +47,33 @@ export function useAutoRowHeight<R extends object>({
         setVersion((value) => value + 1);
       }),
   );
-  const fontFamilyRef = useRef(fontFamily);
-  fontFamilyRef.current = fontFamily;
 
+  // Шрифт у Canvas.Text может быть свой, не из темы: ждём загрузки любого семейства
   useEffect(() => {
     if (!enabled) return undefined;
-    return subscribeFontsLoaded(() => store.clear(), {
-      fontFamily: () => fontFamilyRef.current,
+    return subscribeFontsLoaded(() => {
+      store.invalidate();
+      setVersion((value) => value + 1);
     });
   }, [enabled, store]);
+
+  // Сверяем во время рендера: glide рисует ячейки раньше эффектов TableGlide
+  const prevRef = useRef({ theme, columns });
+  const prev = prevRef.current;
+  if (prev.theme !== theme) {
+    store.invalidate();
+  } else if (prev.columns !== columns) {
+    const renderCellOf = new Map(prev.columns.map((c) => [c.id, c.renderCell]));
+    store.invalidate(
+      columns
+        .filter(
+          (c) =>
+            renderCellOf.has(c.id) && renderCellOf.get(c.id) !== c.renderCell,
+        )
+        .map((c) => c.id),
+    );
+  }
+  prevRef.current = { theme, columns };
 
   const columnIds = useMemo(
     () => columns.map((column) => column.id),

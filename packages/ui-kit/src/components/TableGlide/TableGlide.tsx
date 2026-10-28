@@ -272,7 +272,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     rows,
     rowSize,
     columns: columnsLast,
-    fontFamily: theme.fontFamily,
+    theme,
   });
   const rowH = useAnimatedRowHeight(rowHeightGlide);
 

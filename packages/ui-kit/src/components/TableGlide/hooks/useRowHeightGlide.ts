@@ -27,8 +27,9 @@ interface Params<R extends object> {
   rowHeight: RowHeightProp<R>;
   rows: readonly R[];
   rowSize: SIZE;
-  columns: readonly { id: string }[];
-  fontFamily?: string;
+  columns: readonly { id: string; renderCell?: unknown }[];
+  /** Тема таблицы: её смена перемеряет ячейки в `'auto'` */
+  theme?: object;
 }
 
 /**
@@ -40,10 +41,10 @@ export function useRowHeightGlide<R extends object>({
   rows,
   rowSize,
   columns,
-  fontFamily,
+  theme,
 }: Params<R>) {
   const isAuto = rowHeight === 'auto';
-  const auto = useAutoRowHeight({ enabled: isAuto, rows, columns, fontFamily });
+  const auto = useAutoRowHeight({ enabled: isAuto, rows, columns, theme });
 
   const rowHeightGlide = useMemo<NonNullable<RowHeightGlide>>(() => {
     const baseOf = baseHeightOf(rowHeight, rows, rowSize);
