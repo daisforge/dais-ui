@@ -1,5 +1,6 @@
 import type { Rectangle } from '@glideappsfinal/glide-data-grid';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
 
 import type { CellHeightReporter } from '../cellRenderer';
 import { subscribeFontsLoaded } from '../lib/canvas/hooks/fontsLoaded';
@@ -23,8 +24,9 @@ interface Params<R extends object> {
  * Высота строк по содержимому ячеек (`rowHeight: 'auto'`).
  *
  * Отдельного замера нет: ячейка сообщает высоту содержимого, когда glide её рисует
- * (`reporterFor`), а glide рисует только видимые ячейки. Строка, которую ещё не
- * рисовали, первый кадр показывается с базовой высотой и дорастает на следующем.
+ * (`reporterFor`), а glide рисует только видимые ячейки. Строку, которую ещё не
+ * рисовали, glide сначала рисует с базовой высотой; коммит замеров рендерится синхронно
+ * (`flushSync`), и таблица перерисовывается до показа кадра — базовая высота не мелькает.
  * Смена темы или рендера колонки и загрузка любого шрифта помечают замеры устаревшими:
  * ячейки перемеряются при следующей отрисовке, до этого строки держат прежнюю высоту.
  */
@@ -44,7 +46,7 @@ export function useAutoRowHeight<R extends object>({
           changes,
           visibleRowsRef.current,
         );
-        setVersion((value) => value + 1);
+        flushSync(() => setVersion((value) => value + 1));
       }),
   );
 

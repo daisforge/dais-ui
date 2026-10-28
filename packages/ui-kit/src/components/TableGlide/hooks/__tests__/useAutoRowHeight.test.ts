@@ -77,6 +77,23 @@ describe('useAutoRowHeight', () => {
     expect(result.current.version).toBe(versionBefore + 1);
   });
 
+  it('обновление рендерится в микрозадаче коммита, до показа кадра', async () => {
+    const { result } = setup();
+    const versionBefore = result.current.version;
+    const scope = globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean };
+    const actEnvironment = scope.IS_REACT_ACT_ENVIRONMENT;
+    scope.IS_REACT_ACT_ENVIRONMENT = false;
+
+    try {
+      result.current.reporterFor(ROWS[0]!, 0, 'a', false).report(100, 60);
+      await Promise.resolve();
+
+      expect(result.current.version).toBe(versionBefore + 1);
+    } finally {
+      scope.IS_REACT_ACT_ENVIRONMENT = actEnvironment;
+    }
+  });
+
   it('высота ниже базовой обновления не вызывает', async () => {
     const { result } = setup();
     const versionBefore = result.current.version;
