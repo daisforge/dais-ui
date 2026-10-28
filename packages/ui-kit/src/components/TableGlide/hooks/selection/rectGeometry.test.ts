@@ -37,7 +37,7 @@ describe('findFirstDataColumnIndex', () => {
         { isServiceColumn: true },
         { isServiceColumn: true },
         { isServiceColumn: false },
-      ]),
+      ])
     ).toBe(2);
   });
 
@@ -50,7 +50,7 @@ describe('findFirstDataColumnIndex', () => {
       findFirstDataColumnIndex([
         { isServiceColumn: true },
         { isServiceColumn: true },
-      ]),
+      ])
     ).toBe(2);
   });
 
@@ -63,25 +63,25 @@ describe('clampRectToDataColumns', () => {
   it('обрезает ведущие сервисные колонки слева', () => {
     // выделение с колонки 0, ширина 3, firstDataCol=1 → остаётся x=1, width=2
     expect(
-      clampRectToDataColumns({ x: 0, y: 5, width: 3, height: 2 }, 1),
+      clampRectToDataColumns({ x: 0, y: 5, width: 3, height: 2 }, 1)
     ).toEqual({ x: 1, y: 5, width: 2, height: 2 });
   });
 
   it('не трогает прямоугольник целиком в data-области', () => {
     expect(
-      clampRectToDataColumns({ x: 2, y: 0, width: 2, height: 1 }, 1),
+      clampRectToDataColumns({ x: 2, y: 0, width: 2, height: 1 }, 1)
     ).toEqual({ x: 2, y: 0, width: 2, height: 1 });
   });
 
   it('undefined, если после отсечения ширина <= 0 (целиком в service)', () => {
     expect(
-      clampRectToDataColumns({ x: 0, y: 0, width: 1, height: 1 }, 1),
+      clampRectToDataColumns({ x: 0, y: 0, width: 1, height: 1 }, 1)
     ).toBeUndefined();
   });
 
   it('undefined, если высота <= 0', () => {
     expect(
-      clampRectToDataColumns({ x: 2, y: 0, width: 2, height: 0 }, 1),
+      clampRectToDataColumns({ x: 2, y: 0, width: 2, height: 0 }, 1)
     ).toBeUndefined();
   });
 
@@ -95,17 +95,17 @@ describe('rectContainsRect', () => {
 
   it('true для вложенного и совпадающего', () => {
     expect(rectContainsRect(outer, { x: 2, y: 2, width: 1, height: 1 })).toBe(
-      true,
+      true
     );
     expect(rectContainsRect(outer, outer)).toBe(true);
   });
 
   it('false, если выходит за границу', () => {
     expect(rectContainsRect(outer, { x: 3, y: 3, width: 2, height: 1 })).toBe(
-      false,
+      false
     );
     expect(rectContainsRect(outer, { x: 0, y: 1, width: 1, height: 1 })).toBe(
-      false,
+      false
     );
   });
 });

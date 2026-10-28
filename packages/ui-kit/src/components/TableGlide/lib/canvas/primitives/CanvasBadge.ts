@@ -239,7 +239,7 @@ export class CanvasBadge extends CanvasLeaf {
     if (this.marks) {
       const markHeight = Math.min(
         height,
-        Math.round(sizeConfig.fontSize * MARK_HEIGHT_TO_FONT_SIZE),
+        Math.round(sizeConfig.fontSize * MARK_HEIGHT_TO_FONT_SIZE)
       );
       paintTextMarks(
         batcher,
@@ -252,7 +252,7 @@ export class CanvasBadge extends CanvasLeaf {
           y: centerY - markHeight / 2,
           height: markHeight,
         },
-        (text) => getCachedTextWidth(ctx, text, font),
+        (text) => getCachedTextWidth(ctx, text, font)
       );
     }
 

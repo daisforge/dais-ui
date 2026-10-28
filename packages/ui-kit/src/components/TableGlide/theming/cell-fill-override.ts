@@ -143,7 +143,7 @@ export const resolveCellFill = ({
   if (isEditable) {
     return resolveCellFillOverride(
       getEditableCellFillStates(editableTheme),
-      context,
+      context
     );
   }
 

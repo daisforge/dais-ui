@@ -53,7 +53,7 @@ interface CanvasCellCacheEntry {
 const buildCellNode = (
   element: Parameters<typeof buildCanvasTree>[0]['element'],
   idPrefix: string,
-  theme: GlideThemeForRender,
+  theme: GlideThemeForRender
 ) => {
   const node = buildCanvasTree({ element, idPrefix, theme });
   if (
@@ -75,7 +75,7 @@ const buildCellNode = (
  */
 const withVerticalInset = (
   node: ReturnType<typeof buildCellNode>,
-  inset: number,
+  inset: number
 ) => {
   const container = new CanvasContainer(`${node.id}:auto-row-inset`);
   container.setFlexOptions({
@@ -99,7 +99,7 @@ const withAutoHeight = (
     ctx,
     width,
     inset,
-  }: { ctx: CanvasRenderingContext2D; width: number; inset: number },
+  }: { ctx: CanvasRenderingContext2D; width: number; inset: number }
 ) => {
   if (reporter.needsHeight(width)) {
     reporter.report(width, measureNodeHeight(ctx, node, width) + inset * 2);
@@ -275,7 +275,7 @@ export const glideCellRenderer = <R extends ObjectForExtending, SR>({
       rect.x + CELL_EDGE_INSET,
       rect.y + CELL_EDGE_INSET,
       rect.width - CELL_EDGE_INSET,
-      rect.height - CELL_EDGE_INSET,
+      rect.height - CELL_EDGE_INSET
     );
     ctx.clip();
 
@@ -289,7 +289,7 @@ export const glideCellRenderer = <R extends ObjectForExtending, SR>({
           frameTime: renderArgs?.frameTime,
           requestAnimationFrame: renderArgs?.requestAnimationFrame,
         },
-        renderArgs?.imageResources,
+        renderArgs?.imageResources
       );
     } finally {
       ctx.restore();

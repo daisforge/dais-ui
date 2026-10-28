@@ -19,7 +19,7 @@ const EMPTY_SELECTION = { current: undefined } as unknown as GridSelection;
 /** Мок glide-выделения с current.range. */
 const gridSel = (
   cell: [number, number],
-  range: { x: number; y: number; width: number; height: number },
+  range: { x: number; y: number; width: number; height: number }
 ): GridSelection =>
   ({ current: { cell, range, rangeStack: [] } } as unknown as GridSelection);
 
@@ -88,14 +88,14 @@ describe('useTableSelectionSystem — выделение колонок', () => 
     act(() => {
       view.result.current.selectColumnFromHeader(
         2,
-        headerEvent({ ctrlKey: true }),
+        headerEvent({ ctrlKey: true })
       );
     });
 
     expect(view.result.current.selectedColumnIndexes).toEqual([2]);
     // Ctrl-выбор несмежных колонок → нативное glide-выделение чистим.
     expect(
-      handleGridSelectionChange.mock.lastCall?.[0].current,
+      handleGridSelectionChange.mock.lastCall?.[0].current
     ).toBeUndefined();
   });
 
@@ -112,7 +112,7 @@ describe('useTableSelectionSystem — выделение колонок', () => 
         current: expect.objectContaining({
           range: { x: 1, y: 0, width: 1, height: 5 },
         }),
-      }),
+      })
     );
     // Смежный выбор идёт нативным путём — в собственном наборе колонок пусто.
     expect(view.result.current.selectedColumnIndexes).toEqual([]);
@@ -126,14 +126,14 @@ describe('useTableSelectionSystem — инвариант взаимоисклю�
     act(() => {
       view.result.current.selectColumnFromHeader(
         2,
-        headerEvent({ ctrlKey: true }),
+        headerEvent({ ctrlKey: true })
       );
     });
     expect(view.result.current.selectedColumnIndexes).toEqual([2]);
 
     act(() => {
       view.result.current.handleGridSelectionWithColumnReset(
-        gridSel([1, 1], { x: 1, y: 1, width: 1, height: 1 }),
+        gridSel([1, 1], { x: 1, y: 1, width: 1, height: 1 })
       );
     });
 
@@ -149,7 +149,7 @@ describe('useTableSelectionSystem — выделение строк по нум�
       window.dispatchEvent(new Event('pointerdown'));
       // клик по колонке нумерации (x=0), строки 2..3
       view.result.current.handleGridSelectionWithColumnReset(
-        gridSel([0, 2], { x: 0, y: 2, width: 1, height: 2 }),
+        gridSel([0, 2], { x: 0, y: 2, width: 1, height: 2 })
       );
     });
 
@@ -159,7 +159,7 @@ describe('useTableSelectionSystem — выделение строк по нум�
         current: expect.objectContaining({
           range: { x: 1, y: 2, width: 3, height: 2 },
         }),
-      }),
+      })
     );
     // Смежные строки идут нативным путём — своё состояние строк пустое.
     expect(view.result.current.headerSelectedRowIndexes).toEqual([]);
@@ -171,13 +171,13 @@ describe('useTableSelectionSystem — выделение строк по нум�
     act(() => {
       window.dispatchEvent(new MouseEvent('pointerdown', { ctrlKey: true }));
       view.result.current.handleGridSelectionWithColumnReset(
-        gridSel([0, 1], { x: 0, y: 1, width: 1, height: 1 }),
+        gridSel([0, 1], { x: 0, y: 1, width: 1, height: 1 })
       );
     });
     act(() => {
       window.dispatchEvent(new MouseEvent('pointerdown', { ctrlKey: true }));
       view.result.current.handleGridSelectionWithColumnReset(
-        gridSel([0, 3], { x: 0, y: 3, width: 1, height: 1 }),
+        gridSel([0, 3], { x: 0, y: 3, width: 1, height: 1 })
       );
     });
 
@@ -195,7 +195,7 @@ describe('useTableSelectionSystem — выделение строк по нум�
       act(() => {
         window.dispatchEvent(new MouseEvent('pointerdown', { ctrlKey: true }));
         view.result.current.handleGridSelectionWithColumnReset(
-          gridSel([0, row], { x: 0, y: row, width: 1, height: 1 }),
+          gridSel([0, row], { x: 0, y: row, width: 1, height: 1 })
         );
       });
     }
@@ -204,7 +204,7 @@ describe('useTableSelectionSystem — выделение строк по нум�
     act(() => {
       window.dispatchEvent(new MouseEvent('pointerdown', { button: 2 }));
       view.result.current.handleGridSelectionWithColumnReset(
-        gridSel([0, 3], { x: 0, y: 3, width: 1, height: 1 }),
+        gridSel([0, 3], { x: 0, y: 3, width: 1, height: 1 })
       );
     });
 
@@ -220,7 +220,7 @@ describe('useTableSelectionSystem — выделение строк по нум�
     act(() => {
       window.dispatchEvent(new MouseEvent('pointerdown', { button: 2 }));
       view.result.current.handleGridSelectionWithColumnReset(
-        gridSel([0, 1], { x: 0, y: 1, width: 1, height: 1 }),
+        gridSel([0, 1], { x: 0, y: 1, width: 1, height: 1 })
       );
     });
 
@@ -235,7 +235,7 @@ describe('useTableSelectionSystem — выделение строк по нум�
     act(() => {
       window.dispatchEvent(new MouseEvent('pointerdown', { button: 2 }));
       view.result.current.handleGridSelectionWithColumnReset(
-        gridSel([0, 4], { x: 0, y: 4, width: 1, height: 1 }),
+        gridSel([0, 4], { x: 0, y: 4, width: 1, height: 1 })
       );
     });
 
@@ -244,7 +244,7 @@ describe('useTableSelectionSystem — выделение строк по нум�
         current: expect.objectContaining({
           range: { x: 1, y: 4, width: 3, height: 1 },
         }),
-      }),
+      })
     );
   });
 
@@ -254,7 +254,7 @@ describe('useTableSelectionSystem — выделение строк по нум�
     act(() => {
       window.dispatchEvent(new Event('pointerup'));
       view.result.current.handleGridSelectionWithColumnReset(
-        gridSel([0, 0], { x: 0, y: 0, width: 1, height: 1 }),
+        gridSel([0, 0], { x: 0, y: 0, width: 1, height: 1 })
       );
     });
 
@@ -264,7 +264,7 @@ describe('useTableSelectionSystem — выделение строк по нум�
           cell: [1, 0],
           range: { x: 1, y: 0, width: 1, height: 1 },
         }),
-      }),
+      })
     );
   });
 });
@@ -276,7 +276,7 @@ describe('useTableSelectionSystem — наружу одно итоговое в�
     act(() => {
       view.result.current.selectColumnFromHeader(
         2,
-        headerEvent({ ctrlKey: true }),
+        headerEvent({ ctrlKey: true })
       );
     });
 

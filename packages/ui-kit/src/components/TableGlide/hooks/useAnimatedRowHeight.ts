@@ -10,10 +10,10 @@ const prefersReducedMotion = () =>
   window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 export const useAnimatedRowHeight = (
-  extRowHeight: RowHeightGlide,
+  extRowHeight: RowHeightGlide
 ): RowHeightGlide => {
   const [rowHeight, setRowHeight] = useState<number | null>(
-    typeof extRowHeight === 'number' ? extRowHeight : null,
+    typeof extRowHeight === 'number' ? extRowHeight : null
   );
   const shownRef = useRef(rowHeight);
 
@@ -39,7 +39,7 @@ export const useAnimatedRowHeight = (
     const update = () => {
       const progress = Math.min(
         (performance.now() - startTime) / ANIMATION_DURATION_MS,
-        1,
+        1
       );
       show(Math.round(from + (extRowHeight - from) * progress));
       if (progress < 1) {

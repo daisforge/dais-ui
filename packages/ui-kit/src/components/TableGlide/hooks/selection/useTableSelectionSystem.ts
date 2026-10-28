@@ -22,7 +22,7 @@ type HeaderClickEvent = Parameters<
 
 interface UseTableSelectionSystemParams<
   R extends ObjectForExtending,
-  SR = unknown,
+  SR = unknown
 > {
   columns: readonly ColumnGlideLast<R, SR>[];
   selection: GridSelection;
@@ -44,7 +44,7 @@ interface UseTableSelectionSystemParams<
    */
   handleGridSelectionChange: (
     next: GridSelection,
-    emitted?: GridSelection,
+    emitted?: GridSelection
   ) => void;
   /** Базовый обработчик сброса выделения (из useNativeGridSelection). */
   handleSelectionCleared: () => void;
@@ -63,7 +63,7 @@ interface UseTableSelectionSystemParams<
 const toFirstDataCell = (
   selection: GridSelection,
   firstDataCol: number,
-  row: number,
+  row: number
 ): GridSelection => ({
   ...selection,
   current: {
@@ -86,7 +86,7 @@ const axisSelection = ({
 const columnsRangeSelection = (
   fromCol: number,
   toCol: number,
-  rowCount: number,
+  rowCount: number
 ): GridSelection => ({
   current: {
     cell: [fromCol, 0],
@@ -111,7 +111,7 @@ const columnsRangeSelection = (
  */
 export function useTableSelectionSystem<
   R extends ObjectForExtending,
-  SR = unknown,
+  SR = unknown
 >({
   columns,
   selection,
@@ -159,9 +159,9 @@ export function useTableSelectionSystem<
   const numberingColumnIndex = useMemo(
     () =>
       columns.findIndex(
-        (column) => column.isServiceColumn && column.id === 'row-markers',
+        (column) => column.isServiceColumn && column.id === 'row-markers'
       ),
-    [columns],
+    [columns]
   );
 
   // Сервисные колонки не должны попадать в выделение ячеек/диапазона: заехавшее
@@ -198,7 +198,7 @@ export function useTableSelectionSystem<
         },
       };
     },
-    [leadingServiceColumnsCount],
+    [leadingServiceColumnsCount]
   );
 
   const handleGridSelectionWithColumnReset = useCallback(
@@ -286,7 +286,7 @@ export function useTableSelectionSystem<
                 },
               },
             },
-            axisSelection({ rows }),
+            axisSelection({ rows })
           );
           return;
         }
@@ -373,7 +373,7 @@ export function useTableSelectionSystem<
       setSelectedColumns,
       setSelectedRows,
       setIsNativeColumnSelection,
-    ],
+    ]
   );
 
   const handleSelectionClearedWithColumns = useCallback(() => {
@@ -463,7 +463,7 @@ export function useTableSelectionSystem<
         commitActiveRow(undefined);
         setIsNativeColumnSelection(true); // гасим focus-ring на якоре
         handleGridSelectionChange(
-          columnsRangeSelection(firstDataCol, columns.length - 1, dataRowCount),
+          columnsRangeSelection(firstDataCol, columns.length - 1, dataRowCount)
         );
         return;
       }
@@ -504,7 +504,7 @@ export function useTableSelectionSystem<
         setIsNativeColumnSelection(false);
         handleGridSelectionChange(
           axisSelection(),
-          axisSelection({ columns: nextColumns }),
+          axisSelection({ columns: nextColumns })
         );
         return;
       }
@@ -529,7 +529,7 @@ export function useTableSelectionSystem<
       commitActiveRow(undefined);
       setIsNativeColumnSelection(true);
       handleGridSelectionChange(
-        columnsRangeSelection(fromCol, toCol, dataRowCount),
+        columnsRangeSelection(fromCol, toCol, dataRowCount)
       );
     },
     [
@@ -549,7 +549,7 @@ export function useTableSelectionSystem<
       setSelectedColumns,
       setSelectedRows,
       setIsNativeColumnSelection,
-    ],
+    ]
   );
 
   // Программно выделить колонки по ключам (после реордера от закрепления):
@@ -560,7 +560,7 @@ export function useTableSelectionSystem<
       const keySet = new Set(keys);
       const indexes = columns
         .map((column, index) =>
-          !column.isServiceColumn && keySet.has(column.id) ? index : -1,
+          !column.isServiceColumn && keySet.has(column.id) ? index : -1
         )
         .filter((index) => index >= 0);
 
@@ -586,20 +586,20 @@ export function useTableSelectionSystem<
         setSelectedColumns(CompactSelection.empty());
         setIsNativeColumnSelection(true);
         handleGridSelectionChange(
-          columnsRangeSelection(fromCol, toCol, dataRowCount),
+          columnsRangeSelection(fromCol, toCol, dataRowCount)
         );
         return;
       }
 
       const nextColumns = indexes.reduce(
         (acc, index) => acc.add(index),
-        CompactSelection.empty(),
+        CompactSelection.empty()
       );
       setSelectedColumns(nextColumns);
       setIsNativeColumnSelection(false);
       handleGridSelectionChange(
         axisSelection(),
-        axisSelection({ columns: nextColumns }),
+        axisSelection({ columns: nextColumns })
       );
     },
     [
@@ -611,7 +611,7 @@ export function useTableSelectionSystem<
       setIsNativeColumnSelection,
       commitActiveRow,
       lastSelectedColumnRef,
-    ],
+    ]
   );
 
   return {

@@ -1371,7 +1371,7 @@ function createNode(
 
     case 'Mark':
       throw new Error(
-        'Canvas.Mark используется только внутри Canvas.Text, Canvas.Link и Canvas.Badge',
+        'Canvas.Mark используется только внутри Canvas.Text, Canvas.Link и Canvas.Badge'
       );
 
     default:

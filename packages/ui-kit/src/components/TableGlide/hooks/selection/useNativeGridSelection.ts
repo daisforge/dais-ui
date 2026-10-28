@@ -137,7 +137,7 @@ export function useNativeGridSelection({
 
   const handleSelectionCleared = useCallback(
     () => handleGridSelectionChange(EMPTY_SELECTION),
-    [handleGridSelectionChange],
+    [handleGridSelectionChange]
   );
 
   const rangeSelect = useMemo<GlideProps['rangeSelect']>(() => {

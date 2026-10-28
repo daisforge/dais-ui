@@ -72,8 +72,8 @@ export function useColumnRowHighlightRegions({
       indexes: number[],
       mapRange: (
         start: number,
-        end: number,
-      ) => { x: number; y: number; width: number; height: number },
+        end: number
+      ) => { x: number; y: number; width: number; height: number }
     ) => {
       const [first, ...rest] = [...indexes].sort((a, b) => a - b);
       if (first === undefined) {
