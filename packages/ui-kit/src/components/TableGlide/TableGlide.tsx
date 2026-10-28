@@ -374,7 +374,6 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     dataRowCount: rows.length + summaryRowsLength,
     handleGridSelectionChange,
     handleSelectionCleared,
-    onSelectionEmit,
     highlightActiveRow,
     onHighlightActiveRowChange: handleHighlightActiveRowChange,
     isHighlightActiveRowControlled: highlightActiveRowControlled,

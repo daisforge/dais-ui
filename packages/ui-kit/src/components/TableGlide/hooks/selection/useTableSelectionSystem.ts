@@ -38,12 +38,16 @@ interface UseTableSelectionSystemParams<
   leadingServiceColumnsCount: number;
   /** Всего строк (данные + summary) — высота нативного range при column-select. */
   dataRowCount: number;
-  /** Базовый обработчик glide-выделения (из useNativeGridSelection). */
-  handleGridSelectionChange: (next: GridSelection) => void;
+  /**
+   * Базовый обработчик glide-выделения (из useNativeGridSelection). `emitted` — что отдать
+   * потребителю, если итог не совпадает с нативным (несмежные колонки/строки — оверлей).
+   */
+  handleGridSelectionChange: (
+    next: GridSelection,
+    emitted?: GridSelection,
+  ) => void;
   /** Базовый обработчик сброса выделения (из useNativeGridSelection). */
   handleSelectionCleared: () => void;
-  /** Канал наружу: отдаём выделенные колонки/строки потребителю для copy/paste. */
-  onSelectionEmit?: (next: GridSelection) => void;
   /** Controlled-значение подсвеченной строки (highlightActiveType='row'). */
   highlightActiveRow?: number;
   /** Сеттер/эмиттер подсвеченной строки. Вызывается на каждый коммит подсветки. */
@@ -69,6 +73,30 @@ const toFirstDataCell = (
   },
 });
 
+/** Без нативного диапазона: несмежные колонки/строки (их рисует оверлей) или пусто */
+const axisSelection = ({
+  columns = CompactSelection.empty(),
+  rows = CompactSelection.empty(),
+}: {
+  columns?: CompactSelection;
+  rows?: CompactSelection;
+} = {}): GridSelection => ({ current: undefined, columns, rows });
+
+/** Нативный вертикальный диапазон колонок `fromCol..toCol` на все строки */
+const columnsRangeSelection = (
+  fromCol: number,
+  toCol: number,
+  rowCount: number,
+): GridSelection => ({
+  current: {
+    cell: [fromCol, 0],
+    range: { x: fromCol, y: 0, width: toCol - fromCol + 1, height: rowCount },
+    rangeStack: [],
+  },
+  rows: CompactSelection.empty(),
+  columns: CompactSelection.empty(),
+});
+
 /**
  * Оркестратор трёх независимых от glide осей выделения TableCanvas:
  *  - выделение КОЛОНОК по клику на шапку (`useColumnAxisSelection`);
@@ -78,8 +106,8 @@ const toFirstDataCell = (
  * Состояние каждой оси владеется своим хуком; здесь — общая логика клика/драга и
  * ЕДИНОЕ место инварианта взаимоисключения: выбор одной оси (или обычное
  * выделение ячеек) сбрасывает остальные. Рендер осей — собственным оверлеем
- * (см. `useColumnRowHighlightRegions`); наружу для copy/paste отдаём через
- * `onSelectionEmit`.
+ * (см. `useColumnRowHighlightRegions`); наружу для copy/paste итог уходит вторым
+ * аргументом `handleGridSelectionChange` — один вызов на изменение.
  */
 export function useTableSelectionSystem<
   R extends ObjectForExtending,
@@ -96,7 +124,6 @@ export function useTableSelectionSystem<
   dataRowCount,
   handleGridSelectionChange,
   handleSelectionCleared,
-  onSelectionEmit,
   highlightActiveRow,
   onHighlightActiveRowChange,
   isHighlightActiveRowControlled,
@@ -147,13 +174,7 @@ export function useTableSelectionSystem<
       const { range } = current;
       if (range.x >= firstDataCol) return next;
       const nextWidth = range.x + range.width - firstDataCol;
-      if (nextWidth <= 0) {
-        return {
-          current: undefined,
-          rows: CompactSelection.empty(),
-          columns: CompactSelection.empty(),
-        };
-      }
+      if (nextWidth <= 0) return axisSelection();
       return {
         ...next,
         current: {
@@ -238,23 +259,21 @@ export function useTableSelectionSystem<
           setSelectedRows(rows);
           commitActiveRow(undefined);
           setIsNativeColumnSelection(false);
-          handleGridSelectionChange({
-            ...raw,
-            current: {
-              ...current,
-              range: {
-                x: firstDataCol,
-                y: current.range.y,
-                width: 0,
-                height: current.range.height,
+          handleGridSelectionChange(
+            {
+              ...raw,
+              current: {
+                ...current,
+                range: {
+                  x: firstDataCol,
+                  y: current.range.y,
+                  width: 0,
+                  height: current.range.height,
+                },
               },
             },
-          });
-          onSelectionEmit?.({
-            current: undefined,
-            rows,
-            columns: CompactSelection.empty(),
-          });
+            axisSelection({ rows }),
+          );
           return;
         }
 
@@ -319,7 +338,6 @@ export function useTableSelectionSystem<
       enableRowSelection,
       leadingServiceColumnsCount,
       highlightActiveType,
-      onSelectionEmit,
       commitActiveRow,
       ctrlGestureRef,
       ctrlBaseRowsRef,
@@ -418,20 +436,9 @@ export function useTableSelectionSystem<
         setSelectedRows(CompactSelection.empty());
         commitActiveRow(undefined);
         setIsNativeColumnSelection(true); // гасим focus-ring на якоре
-        handleGridSelectionChange({
-          current: {
-            cell: [firstDataCol, 0],
-            range: {
-              x: firstDataCol,
-              y: 0,
-              width: dataWidth,
-              height: dataRowCount,
-            },
-            rangeStack: [],
-          },
-          rows: CompactSelection.empty(),
-          columns: CompactSelection.empty(),
-        });
+        handleGridSelectionChange(
+          columnsRangeSelection(firstDataCol, columns.length - 1, dataRowCount),
+        );
         return;
       }
 
@@ -469,16 +476,10 @@ export function useTableSelectionSystem<
         setSelectedRows(CompactSelection.empty());
         commitActiveRow(undefined);
         setIsNativeColumnSelection(false);
-        handleGridSelectionChange({
-          current: undefined,
-          rows: CompactSelection.empty(),
-          columns: CompactSelection.empty(),
-        });
-        onSelectionEmit?.({
-          current: undefined,
-          rows: CompactSelection.empty(),
-          columns: nextColumns,
-        });
+        handleGridSelectionChange(
+          axisSelection(),
+          axisSelection({ columns: nextColumns }),
+        );
         return;
       }
 
@@ -501,20 +502,9 @@ export function useTableSelectionSystem<
       setSelectedRows(CompactSelection.empty());
       commitActiveRow(undefined);
       setIsNativeColumnSelection(true);
-      handleGridSelectionChange({
-        current: {
-          cell: [fromCol, 0],
-          range: {
-            x: fromCol,
-            y: 0,
-            width: toCol - fromCol + 1,
-            height: dataRowCount,
-          },
-          rangeStack: [],
-        },
-        rows: CompactSelection.empty(),
-        columns: CompactSelection.empty(),
-      });
+      handleGridSelectionChange(
+        columnsRangeSelection(fromCol, toCol, dataRowCount),
+      );
     },
     [
       enableColumnSelection,
@@ -528,7 +518,6 @@ export function useTableSelectionSystem<
       selectedColumns,
       dataRowCount,
       handleGridSelectionChange,
-      onSelectionEmit,
       commitActiveRow,
       lastSelectedColumnRef,
       setSelectedColumns,
@@ -555,11 +544,7 @@ export function useTableSelectionSystem<
       if (indexes.length === 0) {
         setSelectedColumns(CompactSelection.empty());
         setIsNativeColumnSelection(false);
-        handleGridSelectionChange({
-          current: undefined,
-          rows: CompactSelection.empty(),
-          columns: CompactSelection.empty(),
-        });
+        handleGridSelectionChange(axisSelection());
         return;
       }
 
@@ -574,34 +559,22 @@ export function useTableSelectionSystem<
       if (isContiguous) {
         setSelectedColumns(CompactSelection.empty());
         setIsNativeColumnSelection(true);
-        handleGridSelectionChange({
-          current: {
-            cell: [fromCol, 0],
-            range: {
-              x: fromCol,
-              y: 0,
-              width: toCol - fromCol + 1,
-              height: dataRowCount,
-            },
-            rangeStack: [],
-          },
-          rows: CompactSelection.empty(),
-          columns: CompactSelection.empty(),
-        });
+        handleGridSelectionChange(
+          columnsRangeSelection(fromCol, toCol, dataRowCount),
+        );
         return;
       }
 
-      let nextColumns = CompactSelection.empty();
-      indexes.forEach((index) => {
-        nextColumns = nextColumns.add(index);
-      });
+      const nextColumns = indexes.reduce(
+        (acc, index) => acc.add(index),
+        CompactSelection.empty(),
+      );
       setSelectedColumns(nextColumns);
       setIsNativeColumnSelection(false);
-      handleGridSelectionChange({
-        current: undefined,
-        rows: CompactSelection.empty(),
-        columns: CompactSelection.empty(),
-      });
+      handleGridSelectionChange(
+        axisSelection(),
+        axisSelection({ columns: nextColumns }),
+      );
     },
     [
       columns,
