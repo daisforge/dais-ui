@@ -353,16 +353,13 @@ export type TableGlideInstanceProps<
   stickyRowsConfig?: StickyRowsConfig<R>;
 } & TableGlideInstanceContextMenu<R, SR, CustomCtxs>;
 
-export type CommonFormat = {
-  alignContent?: 'right' | 'left' | 'center';
-};
-
 /** Без `customFormat` значение выводится как есть: так задаётся только выравнивание */
-export type CustomFormat = CommonFormat & {
+export type CustomFormat = {
+  alignContent?: 'right' | 'left' | 'center';
   customFormat?: (value: string) => React.ReactNode;
 };
 
-export type NumberFormatOptions = CommonFormat & {
+export type NumberFormatOptions = {
   type: 'number';
   /** Кастомный разделитель дробной части (по умолчанию ',') */
   decimalSeparator?: string;
