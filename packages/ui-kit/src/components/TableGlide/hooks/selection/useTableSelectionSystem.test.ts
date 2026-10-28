@@ -63,6 +63,7 @@ function setupWithNative() {
   const view = renderHook(() => {
     const native = useNativeGridSelection({
       cellsSelectionMode: 'range-cell',
+      columns: COLUMNS,
       onSelectionEmit,
     });
     return useTableSelectionSystem({

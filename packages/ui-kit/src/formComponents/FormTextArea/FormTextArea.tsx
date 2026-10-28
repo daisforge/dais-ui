@@ -4,6 +4,8 @@ import type { FieldValues } from 'react-hook-form';
 import { Controller } from 'react-hook-form';
 
 import {
+  getErrorHelper,
+  getErrorView,
   getPriorityRequired,
   getRuleValue,
   useChangedFormContext,
@@ -55,7 +57,7 @@ export const FormTextArea = <TFieldValues extends FieldValues>({
           {...fieldRest}
           label={label}
           labelPlacement="outer"
-          leftHelper={error?.message || leftHelper}
+          leftHelper={getErrorHelper(error, leftHelper)}
           leftHelperPlacement="inner"
           name={name}
           required={!!newOptions.required || undefined}
@@ -79,7 +81,7 @@ export const FormTextArea = <TFieldValues extends FieldValues>({
             )
           }
           size="s"
-          view={error?.type ? 'negative' : view ?? 'default'}
+          view={getErrorView(error, view)}
           onBlur={(e) => {
             if (e.relatedTarget) {
               return;

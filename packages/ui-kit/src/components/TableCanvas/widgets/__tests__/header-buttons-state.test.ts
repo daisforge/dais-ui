@@ -8,7 +8,6 @@ const bothAvailable = {
   sortAvailable: true,
   filterActive: false,
   sortActive: false,
-  columnIsSelected: false,
 };
 
 describe('getHeaderButtonsState', () => {
@@ -58,18 +57,6 @@ describe('getHeaderButtonsState', () => {
       ...bothAvailable,
       filterActive: true,
       hoverAmount: 0.3,
-    });
-
-    expect(state.showFilterButton).toBe(true);
-    expect(state.showSortButton).toBe(true);
-    expect(state.isSliding).toBe(false);
-  });
-
-  it('у выделенной колонки кнопки видны сразу', () => {
-    const state = getHeaderButtonsState({
-      ...bothAvailable,
-      columnIsSelected: true,
-      hoverAmount: 0,
     });
 
     expect(state.showFilterButton).toBe(true);

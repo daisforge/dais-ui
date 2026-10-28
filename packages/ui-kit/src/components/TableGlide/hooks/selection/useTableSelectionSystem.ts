@@ -174,7 +174,21 @@ export function useTableSelectionSystem<
       const { range } = current;
       if (range.x >= firstDataCol) return next;
       const nextWidth = range.x + range.width - firstDataCol;
-      if (nextWidth <= 0) return axisSelection();
+      if (nextWidth <= 0) {
+        // Клик целиком по служебной зоне (чекбокс, индикатор ошибок). Выделение
+        // не обнуляем, а оставляем якорь в кликнутой ячейке с диапазоном
+        // нулевой ширины: glide ничего не рисует (как при Ctrl-выборе строк),
+        // а current остаётся задан. Пустой current нельзя: на фокусе glide сам
+        // ставит курсор в ячейку [0, 0], то есть в нумерацию первой строки, и
+        // клик по чекбоксу превращался в выделение первой строки.
+        return {
+          ...next,
+          current: {
+            ...current,
+            range: { ...range, x: firstDataCol, width: 0 },
+          },
+        };
+      }
       return {
         ...next,
         current: {
@@ -311,6 +325,18 @@ export function useTableSelectionSystem<
         current.cell[0] < leadingServiceColumnsCount
           ? toFirstDataCell(raw, leadingServiceColumnsCount, current.cell[1])
           : clampSelectionToData(raw);
+      // Клик целиком по служебной зоне (см. clampSelectionToData): якорь с
+      // нулевой шириной. Выделение колонок/строк и подсветку активной строки
+      // не трогаем, как и раньше, когда такой клик обнулял current.
+      const isServiceOnlyClick =
+        next.current !== undefined &&
+        next.current.range.width === 0 &&
+        next.current.cell[0] < leadingServiceColumnsCount;
+      if (isServiceOnlyClick) {
+        setIsNativeColumnSelection(false);
+        handleGridSelectionChange(next, axisSelection());
+        return;
+      }
       if (next.current !== undefined || next.rows.length > 0) {
         setSelectedColumns(CompactSelection.empty());
         setSelectedRows(CompactSelection.empty());

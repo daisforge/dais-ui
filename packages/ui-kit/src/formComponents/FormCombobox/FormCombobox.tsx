@@ -3,7 +3,12 @@ import React from 'react';
 import type { FieldValues } from 'react-hook-form';
 import { Controller } from 'react-hook-form';
 
-import { getPriorityRequired, useChangedFormContext } from '../utils';
+import {
+  getErrorHelper,
+  getErrorView,
+  getPriorityRequired,
+  useChangedFormContext,
+} from '../utils';
 import type { FormComboboxProps } from './types';
 /**
  *  FormAutocomplete относится к группе mutation-form элементов. Он расширяет возможности
@@ -52,7 +57,7 @@ export const FormCombobox = <TFieldValues extends FieldValues>({
             {...fieldRest}
             multiple={calcMultiple}
             disabled={disabled}
-            helperText={error?.message || helperText}
+            helperText={getErrorHelper(error, helperText)}
             items={items}
             label={label}
             placeholder={placeholder}
@@ -60,7 +65,7 @@ export const FormCombobox = <TFieldValues extends FieldValues>({
             requiredPlacement="right"
             hasRequiredIndicator={!!newOptions.required || undefined}
             size="s"
-            view={error?.type ? 'negative' : view ?? 'default'}
+            view={getErrorView(error, view)}
             onChange={(valueList: string | string[]) => {
               fieldRest.onChange(valueList);
               // eslint-disable-next-line @typescript-eslint/no-explicit-any

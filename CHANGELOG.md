@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.25.0](https://github.com/daisforge/dais-ui/compare/v1.24.0...v1.25.0) (2026-10-24)
+
+### Bug Fixes
+
+- **FiltersActions:** уголок ресайза поповера фильтров не отрывается от карточки при настройке размеров через resizable ([5ae3036](https://github.com/daisforge/dais-ui/commit/5ae30365206f7324f76b88617d335dceb57f5208))
+- **TableCanvas:** в Popover колоночных фильтров исправлены лишние отступы, тени и фон ([d25c2c4](https://github.com/daisforge/dais-ui/commit/d25c2c4446a02a2559642f97aea05177776c29b8))
+- **TableGlide:** выделение сдвигается вместе с колонками при смене числа служебных столбцов ([03a4212](https://github.com/daisforge/dais-ui/commit/03a42120d484fa88728fd57d4bb811574aa979b7))
+
+### Features
+
+- **formComponents:** подсветка поля при ошибке без текста ([bcfbad4](https://github.com/daisforge/dais-ui/commit/bcfbad4a00ff69ea63b47cb0b87985185e9cd4a7))
+- **TableCanvas:** добавлен режим cover у loadingOverlay для блокировки таблицы без её перемонтирования ([77c5442](https://github.com/daisforge/dais-ui/commit/77c5442de193c7b57207905393f7dac542d6f534))
+- **TableCanvas:** панель системных сообщений TableCanvasLogger для нижней панели таблицы ([#120](https://github.com/daisforge/dais-ui/issues/120)) ([036ab3a](https://github.com/daisforge/dais-ui/commit/036ab3ad3ccb437126a669a7fc2e1fb7bb1031b6))
+- **TableCanvas:** столбец-индикатор ошибок строки, тултипы ошибок и ошибка всей строки ([17e1565](https://github.com/daisforge/dais-ui/commit/17e1565a49e8ea50514f5907da4104f596565c98))
+
 # [1.24.0](https://github.com/daisforge/dais-ui/compare/v1.23.0...v1.24.0) (2026-10-19)
 
 ### Bug Fixes

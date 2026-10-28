@@ -4,7 +4,7 @@ import { type CompPopoverProps, Popover } from '@ui-kit/components/Popover';
 import type { TextFieldProps } from '@ui-kit/components/TextField';
 import { TextFieldSearch } from '@ui-kit/components/TextField';
 import { BodyM, BodyXS } from '@ui-kit/components/Typography';
-import { IconClose, IconResizeCorneredFill } from '@ui-kit/icons';
+import { IconClose } from '@ui-kit/icons';
 import {
   backgroundPrimary,
   borderRadiusM,
@@ -20,6 +20,8 @@ import {
   FiltersActionsFiltersButton,
   type FiltersActionsFiltersButtonProps,
 } from './FiltersButton';
+import { FILTERS_POPOVER_SIZE } from './FiltersButtonWithPopover.constants';
+import { getFiltersPopoverResizable } from './FiltersButtonWithPopover.utils';
 import { RedDot } from './RedDot';
 
 /**
@@ -96,7 +98,16 @@ export type FiltersActionsFiltersButtonWithPopoverProps = {
    */
   emptySearchContent?: React.ReactNode;
   /**
-   * Пропсы для popover
+   * Пропсы для popover.
+   *
+   * `resizable` по умолчанию включён: ширина 360–700px, высота от 430px до 80%
+   * окна, стартовый размер 360×430. Свой объект накладывается поверх этих
+   * значений. Размеры меняйте здесь (`minWidth`, `maxWidth`, `minHeight`,
+   * `maxHeight`, `defaultSize`), а не стилями: при ресайзе CSS-ограничения
+   * разводят карточку и уголок ресайза.
+   *
+   * `resizable: false` выключает ресайз: ширина по содержимому 360–700px,
+   * высота по содержимому до 80% окна, дальше прокрутка.
    */
   popoverProps?: Omit<CompPopoverProps, 'opened' | 'target' | 'onToggle'>;
   /** Пропсы для кнопки-таргета FiltersActionsFiltersButton. onClick декорируется: сначала вызовется внешний, потом внутренний toggle. */
@@ -142,14 +153,21 @@ const StyledPopover = styled(Popover)`
   }
 `;
 
-// Контейнер внутри Popover
-const PopoverContentContainer = styled.div`
+// Контейнер внутри Popover. С ресайзом размер ограничивает resizable-конфиг,
+// своих границ у карточки нет: иначе она упрётся в них раньше, чем слой
+// ресайза, и уголок ресайза уедет от карточки.
+const PopoverContentContainer = styled.div<{ $resizable: boolean }>`
   background-color: ${C.surfaceSolidCard};
   border-radius: ${C.borderRadiusM};
   box-shadow: ${C.shadowDownHardS};
-  min-width: 360px;
-  max-width: 700px;
-  max-height: 80dvh;
+  ${({ $resizable }) =>
+    $resizable
+      ? ''
+      : `
+    min-width: ${FILTERS_POPOVER_SIZE.minWidth}px;
+    max-width: ${FILTERS_POPOVER_SIZE.maxWidth}px;
+    max-height: ${FILTERS_POPOVER_SIZE.maxHeightViewportRatio * 100}dvh;
+  `}
   height: 100%;
   box-sizing: border-box;
   display: flex;
@@ -202,29 +220,13 @@ const PopoverFooter = styled.div`
   align-items: center;
 `;
 
-const DEFAULT_RESIZABLE_CONFIG: CompPopoverProps['resizable'] = {
-  minHeight: 430,
-  minWidth: 360,
-  maxWidth: 700,
-  maxHeight: typeof window !== 'undefined' ? window.innerHeight * 0.8 : 600,
-  defaultSize: { width: 360, height: 430 },
-  directions: ['bottom-right'],
-  icons: {
-    topRight: null,
-    bottomRight: <IconResizeCorneredFill color={textTertiary} />,
-    bottomLeft: null,
-    topLeft: null,
-  },
-  hiddenIcons: ['bottom-left', 'top-left', 'top-right'],
-};
-
 /**
  * Компонент FiltersActionsPopup
  * - Использует Popover (вместо Popup)
  * - Кнопка фильтров является target для Popover
  * - Структура: header, content, опциональный footer
  * - Контент передается извне как ReactNode
- * - Resizable функционал временно закомментирован (будет добавлен позже)
+ * - Ресайз включён по умолчанию, размеры задаются через `popoverProps.resizable`
  */
 export const FiltersActionsFiltersButtonWithPopover: React.FC<
   FiltersActionsFiltersButtonWithPopoverProps
@@ -247,24 +249,7 @@ export const FiltersActionsFiltersButtonWithPopover: React.FC<
 }) => {
   const { resizable: externalResizable, ...restPopoverProps } = popoverProps;
 
-  // Определяем финальное значение для пропса `resizable`
-  const getFinalResizable = (external: unknown) => {
-    // Явное отключение
-    if (external === false) return false;
-
-    // Включение с настройками по умолчанию
-    if (external === true || external == null) return DEFAULT_RESIZABLE_CONFIG;
-
-    // Кастомная конфигурация через объект
-    if (typeof external === 'object' && external !== null) {
-      return { ...DEFAULT_RESIZABLE_CONFIG, ...external };
-    }
-
-    // Защита от неожиданных типов
-    return DEFAULT_RESIZABLE_CONFIG;
-  };
-
-  const finalResizable = getFinalResizable(externalResizable);
+  const finalResizable = getFiltersPopoverResizable(externalResizable);
 
   // Внутреннее состояние (используется если нет externalState)
   const [internalState, setInternalState] = useState(false);
@@ -336,7 +321,7 @@ export const FiltersActionsFiltersButtonWithPopover: React.FC<
       resizable={finalResizable}
       {...restPopoverProps}
     >
-      <PopoverContentContainer>
+      <PopoverContentContainer $resizable={finalResizable !== false}>
         {/* Header */}
         <PopoverHeader>
           <PopoverHeaderTop>

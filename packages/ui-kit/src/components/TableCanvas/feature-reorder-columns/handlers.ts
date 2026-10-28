@@ -1,5 +1,6 @@
 import { getCols } from '../feature-key-text';
 import { KeyText, KeyTextMap } from '../feature-key-text/types';
+import { ROW_ERRORS_COLUMN_KEY } from '../feature-row-errors';
 import {
   isRowInstrumentsColumn,
   ROW_I_COLUMN_KEY,
@@ -26,6 +27,7 @@ export const orderWithUpdatedDefaultColsDeleteDuplicates = ({
   [
     ROW_MARKER_COLUMN_KEY,
     CHECKBOX_COLUMN_KEY,
+    ROW_ERRORS_COLUMN_KEY,
     ROW_I_COLUMN_KEY,
     KEY_GROUPED_COL,
   ].forEach((k) => {
@@ -232,6 +234,7 @@ export const sortedInOrder = <T extends ObjectForExtending, V>({
   tableConfigDefaultOrder,
   rowMarkersIsActive,
   selectingRowsIsActive,
+  rowErrorsIsActive = false,
   rowsGroupingIsActive,
   showRowInstruments,
   colsWithKeyTextMap,
@@ -241,6 +244,7 @@ export const sortedInOrder = <T extends ObjectForExtending, V>({
   tableConfigDefaultOrder: string[] | undefined;
   rowMarkersIsActive: boolean;
   selectingRowsIsActive: boolean;
+  rowErrorsIsActive?: boolean;
   rowsGroupingIsActive: boolean;
   showRowInstruments: boolean;
   colsWithKeyTextMap: KeyTextMap;
@@ -254,6 +258,9 @@ export const sortedInOrder = <T extends ObjectForExtending, V>({
   }
   if (selectingRowsIsActive) {
     resultOrder.push(CHECKBOX_COLUMN_KEY);
+  }
+  if (rowErrorsIsActive) {
+    resultOrder.push(ROW_ERRORS_COLUMN_KEY);
   }
   if (showRowInstruments) {
     resultOrder.push(ROW_I_COLUMN_KEY);
@@ -269,6 +276,7 @@ export const sortedInOrder = <T extends ObjectForExtending, V>({
       if (
         key === ROW_MARKER_COLUMN_KEY ||
         key === CHECKBOX_COLUMN_KEY ||
+        key === ROW_ERRORS_COLUMN_KEY ||
         isRowInstrumentsColumn(key) ||
         key === KEY_GROUPED_COL
       ) {

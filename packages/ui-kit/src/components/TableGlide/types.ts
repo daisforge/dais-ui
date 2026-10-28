@@ -202,6 +202,20 @@ export type CellActiveState = {
   rowActive: boolean;
 };
 
+/**
+ * Сводка ошибок строки. Есть у ячеек строки, в которой найдена хотя бы одна
+ * ошибка (поячеечная или ошибка всей строки), и только когда таблица собирает
+ * сводки (проп `collectRowErrors`).
+ */
+export type RowErrorsSummary = {
+  /** Сколько ячеек строки с ошибкой (по всем колонкам, не только видимым). */
+  errorCellsCount: number;
+  /** Ключи колонок с ошибкой в порядке колонок таблицы. */
+  errorColumnKeys: readonly string[];
+  /** Строка целиком помечена ошибкой (`isErrorRow`). */
+  isErrorRow: boolean;
+};
+
 export type CellInfo<R extends ObjectForExtending, SR = unknown> = {
   row: R;
   column: ColumnGlideLast<R, SR>;
@@ -217,6 +231,8 @@ export type CellInfo<R extends ObjectForExtending, SR = unknown> = {
   // блока (пусто = по центру). По нему ячейка-select расставляет контент и
   // уголок по высоте всего блока.
   __mergedCell?: { align?: SpanCellAlign };
+  /** Сводка ошибок строки ({@link RowErrorsSummary}). Нет у строк без ошибок. */
+  rowErrors?: RowErrorsSummary;
 };
 export type EditingCellInfoGlide<
   R extends ObjectForExtending,
@@ -287,6 +303,11 @@ export type ColumnGlideCustoms<R extends ObjectForExtending, SR = unknown> = {
   isServiceColumn?: boolean;
   /** Внутренний helper для cell-level error outline, совпадающий по семантике с Table editing error. */
   isErrorCell?: (row: R) => boolean;
+  /**
+   * Тултип ячейки с ошибкой. Вызывается только при наведении и только если
+   * `isErrorCell(row)` вернул true. Приоритетнее `cellTooltip`.
+   */
+  errorCellTooltip?: (row: R) => CanvasNodeTooltipConfig | null | undefined;
   renderHeaderCell?: (cellInfo: HeaderCellInfo<R, SR>) => CanvasContent;
   /** Текстовое представление ячейки для копирования в clipboard (Ctrl+C). */
   copyData?: string | ((row: R) => string);
@@ -476,6 +497,19 @@ export type TableGlideCustomProps<
   appearance?: AppearanceConfig;
   /** Включает компенсацию тонких canvas-линий при browser zoom ниже 100% / DPR < 1. */
   enableLowDprHairline?: boolean;
+  /**
+   * Ошибка всей строки: одна красная рамка по всей ширине данных вместо
+   * поячеечных рамок этой строки. Проверяется только для строк в окне
+   * видимости, как и `isErrorCell`.
+   */
+  isErrorRow?: (row: R) => boolean;
+  /**
+   * Собирать сводку ошибок по строкам окна видимости ({@link RowErrorsSummary}
+   * в `cellInfo.rowErrors`). Для сводки колонки с `isErrorCell` обходятся все,
+   * а не только видимые, поэтому включается только когда сводка кому-то нужна
+   * (столбец-индикатор ошибок).
+   */
+  collectRowErrors?: boolean;
 };
 
 export type TableGlideProps<R extends ObjectForExtending, SR> = Omit<

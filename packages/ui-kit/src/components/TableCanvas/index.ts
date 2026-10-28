@@ -29,6 +29,7 @@ export {
   TableFilterSelectTotalListItemContainer,
 } from './feature-filtering';
 export { addSkeletonToCellInRow } from './feature-infinity-scroll';
+export * from './feature-logger';
 export type {
   TableNotification,
   TableNotificationCode,

@@ -17,6 +17,10 @@ interface UseBaseHighlightRegionsParams {
    */
   highlightActiveRow?: number;
   errorCellRanges?: readonly Rectangle[];
+  /** Строки с ошибкой всей строки: одна рамка по всей ширине данных. */
+  errorRowIndexes?: readonly number[];
+  /** Всего колонок (с служебными): нужно для ширины рамки строки. */
+  columnsCount?: number;
   highlightRegionsExternal?: GlideProps['highlightRegions'];
   /** Служебная зона следует за строкой: регионы её выделения стилем 'accent'. */
   serviceZoneFollowsRow?: boolean;
@@ -32,6 +36,8 @@ export function useBaseHighlightRegions({
   checkboxSelectedRowIndexes,
   highlightActiveRow,
   errorCellRanges,
+  errorRowIndexes,
+  columnsCount = 0,
   highlightRegionsExternal,
   serviceZoneFollowsRow = false,
 }: UseBaseHighlightRegionsParams): GlideProps['highlightRegions'] {
@@ -43,17 +49,33 @@ export function useBaseHighlightRegions({
     const current = selection.current;
 
     const pushErrorCellRegions = () => {
-      if (!errorCellRanges?.length) {
-        return;
-      }
-
       // Ошибки рисуем ровно на конкретных ячейках, как в обычном Table:
       // отдельный red outline на cell-level, без service-area.
       // drawAboveSelection: рамка ошибки поверх нативной рамки выделения.
-      for (const range of errorCellRanges) {
+      for (const range of errorCellRanges ?? []) {
         regions.push({
           color: baseTheme.errorOutlineColor,
           range,
+          style: 'solid-outline',
+          drawAboveSelection: true,
+        });
+      }
+
+      // Ошибка всей строки: одна рамка по области данных, как у строки,
+      // выделенной по нумерации, только без заливки. Служебная зона не входит.
+      const dataWidth = columnsCount - serviceColumnsCount;
+      if (dataWidth <= 0) {
+        return;
+      }
+      for (const rowIndex of errorRowIndexes ?? []) {
+        regions.push({
+          color: baseTheme.errorOutlineColor,
+          range: {
+            x: serviceColumnsCount,
+            y: rowIndex,
+            width: dataWidth,
+            height: 1,
+          },
           style: 'solid-outline',
           drawAboveSelection: true,
         });
@@ -138,6 +160,8 @@ export function useBaseHighlightRegions({
     checkboxSelectedRowIndexes,
     highlightActiveRow,
     errorCellRanges,
+    errorRowIndexes,
+    columnsCount,
     serviceZoneFollowsRow,
     highlightRegionsExternal,
   ]);
