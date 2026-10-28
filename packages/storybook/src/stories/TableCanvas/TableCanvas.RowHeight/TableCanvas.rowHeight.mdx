@@ -29,7 +29,7 @@ import * as TableRowHeightStories from './TableCanvas.rowHeight.stories';
 
 Ячейка сообщает высоту своего дерева Canvas, когда таблица её рисует (`Canvas.Text wordWrap` переносит слова и растит строку). Отдельного замера нет: рисуются и меряются только видимые ячейки. Вертикальные отступы ячейки (`cellVerticalPadding` темы) ui-kit добавляет к высоте строки, в дереве ячейки их задавать не нужно. Содержимое центрируйте по вертикали (`alignItems="center"`): у выровненного по верху весь запас окажется снизу. Подсветку фрагментов текста с переносом по строкам делает [`Canvas.Mark`](?path=/docs/локальные-компоненты-tablecanvas-canvaselements-canvasmark--docs) внутри `Canvas.Text`.
 
-- Высота не ниже высоты по `rowSize` и не выше `tableConfig.maxAutoRowHeight` (по умолчанию **480px**): более длинный текст обрезается
+- Высота не ниже высоты по `rowSize` и не выше `tableConfig.maxAutoRowHeight` (по умолчанию **480px**, не больше 65534): более длинный текст обрезается. Новое значение сразу применяется ко всем измеренным строкам
 
 ```tsx
 <TableCanvas tableConfig={{ rowHeight: 'auto', maxAutoRowHeight: 800 }} columnConfig={columnConfig} rows={rows} />

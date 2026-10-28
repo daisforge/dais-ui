@@ -21,6 +21,11 @@ export class RowHeightIndex<R> {
     return height === UNRESOLVED ? null : height;
   }
 
+  /** Все высоты придётся искать заново */
+  reset(): void {
+    this.heights.fill(UNRESOLVED);
+  }
+
   /** Обновляет высоту, если строка `row` всё ещё стоит по этому индексу */
   set(rowIndex: number, row: R, height: number): void {
     if (this.rows[rowIndex] === row) this.heights[rowIndex] = height;

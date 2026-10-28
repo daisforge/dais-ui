@@ -74,14 +74,17 @@ export class AutoRowHeightStore<R extends object> {
     this.baseHeight = height;
   }
 
-  /** Новый потолок пересчитывает высоту строки из ячеек, когда строка снова на экране */
+  /**
+   * Потолок применяется к уже известным высотам всех строк, и видимых, и за экраном:
+   * ячейки не перемеряются. Не выше `MAX_STORED_ROW_HEIGHT`; NaN — `MAX_AUTO_ROW_HEIGHT`.
+   */
   setMaxHeight(height: number): void {
     const max = Number.isNaN(height)
       ? MAX_AUTO_ROW_HEIGHT
-      : Math.min(Math.max(height, 0), MAX_STORED_ROW_HEIGHT);
+      : Math.ceil(Math.min(Math.max(height, 0), MAX_STORED_ROW_HEIGHT));
     if (max === this.maxHeight) return;
     this.maxHeight = max;
-    this.generation += 1;
+    this.index.reset();
   }
 
   /** Вызывается на каждый запрос высоты: тот же массив отсекается по ссылке */
@@ -164,25 +167,26 @@ export class AutoRowHeightStore<R extends object> {
 
   /** @returns на сколько изменилась высота строки для glide */
   private commitRow(row: R, rowIndex: number): number {
-    const before = this.rows.get(row)?.height ?? 0;
+    const before = Math.min(this.rows.get(row)?.height ?? 0, this.maxHeight);
     const after = this.computeRowHeight(row);
     this.index.set(rowIndex, row, after);
     return Math.max(after, this.baseHeight) - Math.max(before, this.baseHeight);
   }
 
-  /** Высота строки; с `fresh` устаревшая пересчитывается из высот ячеек */
+  /** Высота строки под потолком; с `fresh` устаревшая пересчитывается из высот ячеек */
   private rowHeight(row: R, fresh: boolean): number {
     const known = this.rows.get(row);
     if (!known) return 0;
-    if (!fresh || known.generation === this.generation) return known.height;
+    if (!fresh || known.generation === this.generation) {
+      return Math.min(known.height, this.maxHeight);
+    }
     return this.computeRowHeight(row);
   }
 
+  /** Хранит высоту по содержимому без потолка, чтобы смена потолка обходилась без перемера */
   private computeRowHeight(row: R): number {
-    const height = Math.ceil(
-      Math.min(this.cells.maxHeight(row, this.columnIds), this.maxHeight),
-    );
+    const height = Math.ceil(this.cells.maxHeight(row, this.columnIds));
     this.rows.set(row, { height, generation: this.generation });
-    return height;
+    return Math.min(height, this.maxHeight);
   }
 }

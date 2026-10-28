@@ -10,8 +10,6 @@ import {
   MAX_AUTO_ROW_HEIGHT,
 } from './autoRowHeight/AutoRowHeightStore';
 
-export { MAX_AUTO_ROW_HEIGHT };
-
 /** Строк в окне до первого сообщения glide о видимой области */
 const INITIAL_VISIBLE_ROWS = 50;
 
@@ -82,6 +80,7 @@ export function useAutoRowHeight<R extends object>({
     );
   }
   prevRef.current = { theme, columns };
+  store.setMaxHeight(maxHeight);
 
   const columnIds = useMemo(
     () => columns.map((column) => column.id),
@@ -91,7 +90,6 @@ export function useAutoRowHeight<R extends object>({
   const heightOf = useCallback(
     (rowIndex: number, baseHeight: number): number => {
       store.setBaseHeight(baseHeight);
-      store.setMaxHeight(maxHeight);
       store.setColumns(columnIds);
       const { from, to } = visibleRowsRef.current;
       const height = store.heightAt(
@@ -101,6 +99,8 @@ export function useAutoRowHeight<R extends object>({
       );
       return Math.max(baseHeight, height ?? 0);
     },
+    // maxHeight: с новым потолком glide должен заново спросить высоты
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [store, rows, columnIds, maxHeight],
   );
 

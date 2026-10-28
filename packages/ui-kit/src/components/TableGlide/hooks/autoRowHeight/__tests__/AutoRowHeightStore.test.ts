@@ -65,20 +65,32 @@ describe('AutoRowHeightStore', () => {
     expect(store.heightAt(rows, 0, false)).toBe(41);
   });
 
-  it('новый потолок: видимая строка пересчитывается сразу, невидимая — когда снова на экране', () => {
+  it('новый потолок сразу применяется и к видимым строкам, и к строкам за экраном', () => {
     const { store, rows, report } = setup();
     report(0, 'a', 1000);
-    report(1, 'a', 1000);
-
-    store.setMaxHeight(600);
-
-    expect(store.heightAt(rows, 0, true)).toBe(600);
-    expect(store.heightAt(rows, 1, false)).toBe(MAX_AUTO_ROW_HEIGHT);
-    expect(store.heightAt(rows, 1, true)).toBe(600);
+    report(1, 'a', 300);
 
     store.setMaxHeight(100);
 
     expect(store.heightAt(rows, 0, true)).toBe(100);
+    expect(store.heightAt(rows, 1, false)).toBe(100);
+
+    store.setMaxHeight(600);
+
+    expect(store.heightAt(rows, 0, false)).toBe(600);
+    expect(store.heightAt(rows, 1, false)).toBe(300);
+    expect(store.reporter(rows[0]!, 0, 'a', false).needsHeight(100)).toBe(false);
+  });
+
+  it('высота строки до смены потолка считается для glide под тем же потолком', () => {
+    const { store, rows, report, onChange } = setup();
+    report(0, 'a', 1000);
+    store.setMaxHeight(100);
+    onChange.mockClear();
+
+    report(0, 'b', 50);
+
+    expect(onChange).not.toHaveBeenCalled();
   });
 
   it('потолок не выше 0xFFFE, NaN — потолок по умолчанию', () => {
