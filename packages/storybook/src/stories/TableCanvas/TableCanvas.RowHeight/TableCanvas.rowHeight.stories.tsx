@@ -429,3 +429,90 @@ export const AutoRowHeightWideTable: StoryObj = {
     );
   },
 };
+
+type HugeRow = { id: number };
+
+const HUGE_ROWS = 1_000_000;
+const HUGE_COLUMNS = 1000;
+const HUGE_TEXTS = [
+  'Коротко',
+  'Плановое значение пересмотрено',
+  'Плановое значение пересмотрено после квартального комитета, факт уточняется',
+  'Плановое значение пересмотрено после квартального комитета, факт уточняется у подразделения и будет обновлён в следующем отчётном периоде',
+];
+
+const createHugeRows = (): HugeRow[] =>
+  Array.from({ length: HUGE_ROWS }, (_, index) => ({ id: index + 1 }));
+
+const hugeRowHeightCode = `
+// Строка — только id, значения ячеек считаются при отрисовке
+const rows = Array.from({ length: 1_000_000 }, (_, index) => ({ id: index + 1 }));
+
+const columnConfig = [
+  { key: 'id', name: '№', width: 100 },
+  ...Array.from({ length: 999 }, (_, index) => ({
+    key: \`c\${index}\`,
+    name: \`Колонка \${index + 1}\`,
+    width: index % 10 === 0 ? 240 : 110,
+    renderCell: ({ row, theme }) => (
+      <Canvas.Container alignItems="center" padding={{ left: 8, right: 8 }}>
+        {index % 10 === 0 ? (
+          <Canvas.Text font={theme.baseFontStyle} wordWrap>
+            {TEXTS[(row.id + index) % TEXTS.length]}
+          </Canvas.Text>
+        ) : (
+          <Canvas.Text>{(row.id * 31 + index) % 100_000}</Canvas.Text>
+        )}
+      </Canvas.Container>
+    ),
+  })),
+];
+
+<TableCanvas tableConfig={{ rowHeight: 'auto' }} columnConfig={columnConfig} rows={rows} />
+`;
+
+/** Миллион строк и тысяча колонок: меряются только видимые ячейки */
+export const AutoRowHeightHuge: StoryObj = {
+  ...storySourceDoc({ code: hugeRowHeightCode, previewSource: 'shown' }),
+  name: 'Auto row height: 1 000 000 строк × 1000 колонок',
+  render: () => {
+    const [rows] = useState(createHugeRows);
+
+    const columnConfig = useMemo<readonly ColumnConfig<HugeRow>[]>(
+      () => [
+        { key: 'id', name: '№', width: 100 },
+        ...Array.from(
+          { length: HUGE_COLUMNS - 1 },
+          (_, index): ColumnConfig<HugeRow> => ({
+            key: `c${index}`,
+            name: `Колонка ${index + 1}`,
+            width: index % 10 === 0 ? 240 : 110,
+            renderCell: ({ row, theme }) => (
+              <Canvas.Container
+                alignItems="center"
+                padding={{ left: 8, right: 8 }}
+              >
+                {index % 10 === 0 ? (
+                  <Canvas.Text font={theme.baseFontStyle} wordWrap>
+                    {HUGE_TEXTS[(row.id + index) % HUGE_TEXTS.length]}
+                  </Canvas.Text>
+                ) : (
+                  <Canvas.Text>{(row.id * 31 + index) % 100_000}</Canvas.Text>
+                )}
+              </Canvas.Container>
+            ),
+          }),
+        ),
+      ],
+      [],
+    );
+
+    return (
+      <TableCanvas
+        tableConfig={{ containerStyle: { height: 700 }, rowHeight: 'auto' }}
+        columnConfig={columnConfig}
+        rows={rows}
+      />
+    );
+  },
+};

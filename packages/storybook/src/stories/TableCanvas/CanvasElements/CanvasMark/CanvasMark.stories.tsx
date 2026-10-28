@@ -9,9 +9,6 @@ import {
 import { TextField } from '@ui-kit/components/TextField';
 import React, { type ReactNode, useMemo, useState } from 'react';
 
-/** Цвет пластины задаёт потребитель — например, цвет совпадения поиска */
-const MARK_COLOR = '#ffe27a';
-
 interface CanvasMarkRow {
   id: number;
   text: string;
@@ -39,8 +36,6 @@ export default meta;
 const canvasMarkCode = `
 import { Canvas, ColumnConfig, TableCanvas } from '@daisforge/ui/components/TableCanvas';
 
-const MARK_COLOR = '#ffe27a';
-
 const columnConfig: ColumnConfig[] = [
   {
     key: 'text',
@@ -49,7 +44,7 @@ const columnConfig: ColumnConfig[] = [
     renderCell: ({ row, theme }) => (
       <Canvas.Container alignItems="center" padding={{ left: 8, right: 8 }}>
         <Canvas.Text font={theme.baseFontStyle} wordWrap>
-          Подсветка <Canvas.Mark color={MARK_COLOR}>фрагмента</Canvas.Mark> внутри строки
+          Подсветка <Canvas.Mark color={theme.tokens.surfaceWarningMinor56}>фрагмента</Canvas.Mark> внутри строки
         </Canvas.Text>
       </Canvas.Container>
     ),
@@ -80,14 +75,16 @@ export const Default: StoryObj = {
                 {row.id === 1 && (
                   <>
                     Подсветка{' '}
-                    <Canvas.Mark color={MARK_COLOR}>фрагмента</Canvas.Mark>{' '}
+                    <Canvas.Mark color={theme.tokens.surfaceWarningMinor56}>
+                      фрагмента
+                    </Canvas.Mark>{' '}
                     внутри строки
                   </>
                 )}
                 {row.id === 2 && (
                   <>
                     Длинный текст с{' '}
-                    <Canvas.Mark color={MARK_COLOR}>
+                    <Canvas.Mark color={theme.tokens.surfaceWarningMinor56}>
                       выделенным фрагментом
                     </Canvas.Mark>{' '}
                     переносится на несколько строк, и пластина ложится на каждую
@@ -144,8 +141,8 @@ const tribeRows: TribeRow[] = [
   },
 ];
 
-/** Текст с совпадениями `query`, обёрнутыми в `Canvas.Mark` */
-const withMarks = (text: string, query: string): ReactNode => {
+/** Текст с совпадениями `query`, обёрнутыми в `Canvas.Mark` цвета `color` */
+const withMarks = (text: string, query: string, color: string): ReactNode => {
   const needle = query.trim().toLowerCase();
   if (!needle) return text;
   const parts: ReactNode[] = [];
@@ -159,7 +156,7 @@ const withMarks = (text: string, query: string): ReactNode => {
     if (start > cursor) parts.push(text.slice(cursor, start));
     const end = start + needle.length;
     parts.push(
-      <Canvas.Mark key={start} color={MARK_COLOR}>
+      <Canvas.Mark key={start} color={color}>
         {text.slice(start, end)}
       </Canvas.Mark>,
     );
@@ -172,19 +169,17 @@ const withMarks = (text: string, query: string): ReactNode => {
 const inLinksAndBadgesCode = `
 import { Canvas, ColumnConfig, TableCanvas } from '@daisforge/ui/components/TableCanvas';
 
-const MARK_COLOR = '#ffe27a';
-
-// withMarks(text, query) оборачивает совпадения в <Canvas.Mark color={MARK_COLOR}>
+// withMarks(text, query, color) оборачивает совпадения в <Canvas.Mark color={color}>
 
 const columnConfig: ColumnConfig[] = [
   {
     key: 'tribe',
     name: 'Бейдж',
-    renderCell: ({ row }) => (
+    renderCell: ({ row, theme }) => (
       <Canvas.Container alignItems="center" padding={{ left: 8, right: 8 }}>
         {/* разметка — в children */}
         <Canvas.Badge size="s" view="accent" transparent>
-          {withMarks(row.tribe, query)}
+          {withMarks(row.tribe, query, theme.tokens.surfaceWarningMinor56)}
         </Canvas.Badge>
       </Canvas.Container>
     ),
@@ -192,16 +187,18 @@ const columnConfig: ColumnConfig[] = [
   {
     key: 'report',
     name: 'Ссылка',
-    renderCell: ({ row }) => (
+    renderCell: ({ row, theme }) => (
       <Canvas.Container alignItems="center" padding={{ left: 8, right: 8 }}>
-        <Canvas.Link onClick={openReport}>{withMarks(row.report, query)}</Canvas.Link>
+        <Canvas.Link onClick={openReport}>
+          {withMarks(row.report, query, theme.tokens.surfaceWarningMinor56)}
+        </Canvas.Link>
       </Canvas.Container>
     ),
   },
 ];
 
 // Бейдж принимает разметку и в text:
-<Canvas.Badge text={withMarks(row.tribe, query)} />
+<Canvas.Badge text={withMarks(row.tribe, query, theme.tokens.surfaceWarningMinor56)} />
 `;
 
 export const InLinksAndBadges: StoryObj = {
@@ -216,13 +213,17 @@ export const InLinksAndBadges: StoryObj = {
           key: 'tribe',
           name: 'Бейдж (children)',
           width: 260,
-          renderCell: ({ row }) => (
+          renderCell: ({ row, theme }) => (
             <Canvas.Container
               alignItems="center"
               padding={{ left: 8, right: 8 }}
             >
               <Canvas.Badge size="s" view="accent" transparent>
-                {withMarks(row.tribe, query)}
+                {withMarks(
+                  row.tribe,
+                  query,
+                  theme.tokens.surfaceWarningMinor56,
+                )}
               </Canvas.Badge>
             </Canvas.Container>
           ),
@@ -231,7 +232,7 @@ export const InLinksAndBadges: StoryObj = {
           key: 'tribeText',
           name: 'Бейдж (text)',
           width: 260,
-          renderCell: ({ row }) => (
+          renderCell: ({ row, theme }) => (
             <Canvas.Container
               alignItems="center"
               padding={{ left: 8, right: 8 }}
@@ -240,7 +241,11 @@ export const InLinksAndBadges: StoryObj = {
                 size="s"
                 view="positive"
                 transparent
-                text={withMarks(row.tribe, query)}
+                text={withMarks(
+                  row.tribe,
+                  query,
+                  theme.tokens.surfaceWarningMinor56,
+                )}
               />
             </Canvas.Container>
           ),
@@ -249,12 +254,18 @@ export const InLinksAndBadges: StoryObj = {
           key: 'report',
           name: 'Ссылка',
           width: 220,
-          renderCell: ({ row }) => (
+          renderCell: ({ row, theme }) => (
             <Canvas.Container
               alignItems="center"
               padding={{ left: 8, right: 8 }}
             >
-              <Canvas.Link>{withMarks(row.report, query)}</Canvas.Link>
+              <Canvas.Link>
+                {withMarks(
+                  row.report,
+                  query,
+                  theme.tokens.surfaceWarningMinor56,
+                )}
+              </Canvas.Link>
             </Canvas.Container>
           ),
         },
@@ -262,12 +273,14 @@ export const InLinksAndBadges: StoryObj = {
           key: 'note',
           name: 'Ссылка с переносом',
           width: 240,
-          renderCell: ({ row }) => (
+          renderCell: ({ row, theme }) => (
             <Canvas.Container
               alignItems="center"
               padding={{ left: 8, right: 8 }}
             >
-              <Canvas.Link wordWrap>{withMarks(row.note, query)}</Canvas.Link>
+              <Canvas.Link wordWrap>
+                {withMarks(row.note, query, theme.tokens.surfaceWarningMinor56)}
+              </Canvas.Link>
             </Canvas.Container>
           ),
         },
@@ -294,6 +307,105 @@ export const InLinksAndBadges: StoryObj = {
           }}
           columnConfig={columnConfig}
           rows={tribeRows}
+        />
+      </div>
+    );
+  },
+};
+
+type HugeRow = { id: number };
+
+const HUGE_ROWS = 1_000_000;
+const HUGE_COLUMNS = 1000;
+const HUGE_TEXTS = [
+  'Открыть свод',
+  'Отчёт по платежам',
+  'Вклады и накопительные счета: открытие, пополнение, закрытие',
+  'Кредиты малому и среднему бизнесу, отчёт за квартал',
+];
+
+const createHugeRows = (): HugeRow[] =>
+  Array.from({ length: HUGE_ROWS }, (_, index) => ({ id: index + 1 }));
+
+const hugeCode = `
+// Строка — только id, текст ячейки считается при отрисовке
+const rows = Array.from({ length: 1_000_000 }, (_, index) => ({ id: index + 1 }));
+
+const columnConfig = [
+  { key: 'id', name: '№', width: 100 },
+  ...Array.from({ length: 999 }, (_, index) => ({
+    key: \`c\${index}\`,
+    name: \`Колонка \${index + 1}\`,
+    width: 220,
+    renderCell: ({ row, theme }) => (
+      <Canvas.Container alignItems="center" padding={{ left: 8, right: 8 }}>
+        <Canvas.Text font={theme.baseFontStyle} wordWrap={index % 10 === 0}>
+          {withMarks(TEXTS[(row.id + index) % TEXTS.length], query, theme.tokens.surfaceWarningMinor56)}
+        </Canvas.Text>
+      </Canvas.Container>
+    ),
+  })),
+];
+
+<TableCanvas tableConfig={{ rowHeight: 'auto' }} columnConfig={columnConfig} rows={rows} />
+`;
+
+/** Миллион строк и тысяча колонок с подсветкой: разметка строится только для видимых ячеек */
+export const Huge: StoryObj = {
+  name: '1 000 000 строк × 1000 колонок',
+  ...storySourceDoc({ code: hugeCode, previewSource: 'shown' }),
+  render: () => {
+    const [query, setQuery] = useState('отч');
+    const [rows] = useState(createHugeRows);
+
+    const columnConfig = useMemo<readonly ColumnConfig<HugeRow>[]>(
+      () => [
+        { key: 'id', name: '№', width: 100 },
+        ...Array.from(
+          { length: HUGE_COLUMNS - 1 },
+          (_, index): ColumnConfig<HugeRow> => ({
+            key: `c${index}`,
+            name: `Колонка ${index + 1}`,
+            width: 220,
+            renderCell: ({ row, theme }) => (
+              <Canvas.Container
+                alignItems="center"
+                padding={{ left: 8, right: 8 }}
+              >
+                <Canvas.Text
+                  font={theme.baseFontStyle}
+                  wordWrap={index % 10 === 0}
+                >
+                  {withMarks(
+                    HUGE_TEXTS[(row.id + index) % HUGE_TEXTS.length]!,
+                    query,
+                    theme.tokens.surfaceWarningMinor56,
+                  )}
+                </Canvas.Text>
+              </Canvas.Container>
+            ),
+          }),
+        ),
+      ],
+      [query],
+    );
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <div style={{ width: 320 }}>
+          <TextField
+            size="s"
+            label="Поиск"
+            labelPlacement="outer"
+            placeholder="Например: отч"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+          />
+        </div>
+        <TableCanvas
+          tableConfig={{ containerStyle: { height: 700 }, rowHeight: 'auto' }}
+          columnConfig={columnConfig}
+          rows={rows}
         />
       </div>
     );

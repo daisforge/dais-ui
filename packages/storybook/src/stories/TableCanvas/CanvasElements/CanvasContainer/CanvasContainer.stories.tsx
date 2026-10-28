@@ -12,12 +12,6 @@ const DIRECTIONS = ['row', 'column'] as const;
 const ALIGN_ITEMS = ['flex-start', 'center', 'flex-end', 'stretch'] as const;
 const JUSTIFY = ['flex-start', 'center', 'flex-end', 'space-between'] as const;
 
-/** Фон карточек в примерах — подложка задаёт потребитель */
-const CARD_BG = '#eef3ff';
-const ALIGN_BG = '#f4f6f9';
-/** Цвет второстепенного текста */
-const SECONDARY_TEXT = '#7d838f';
-
 /** Шрифт темы с весом 600: baseFontStyle начинается с веса ('400 normal …') */
 const boldFont = (font: string) => font.replace(/^\d+/, '600');
 
@@ -48,7 +42,7 @@ const columnConfig: ColumnConfig<Row>[] = [
     key: 'card',
     name: 'Карточка',
     width: 520,
-    renderCell: ({ row }) => (
+    renderCell: ({ row, theme }) => (
       // Корневой контейнер занимает всю ячейку: его padding — отступ карточки от границ ячейки
       <Canvas.Container alignItems="center" padding={{ top: 8, right: 12, bottom: 8, left: 12 }}>
         {/* Вложенный контейнер — карточка по размеру содержимого */}
@@ -57,7 +51,7 @@ const columnConfig: ColumnConfig<Row>[] = [
           alignItems="center"
           gap={8}
           padding={{ top: 8, right: 12, bottom: 8, left: 12 }}
-          backgroundColor="#eef3ff"
+          backgroundColor={theme.tokens.surfaceAccentMinor}
         >
           <Canvas.Badge text={row.status} view="accent" size="s" />
           <Canvas.Text>{row.title}</Canvas.Text>
@@ -88,7 +82,7 @@ export const Default: StoryObj = {
     padding: 12,
     width: 0,
     height: 0,
-    backgroundColor: CARD_BG,
+    backgroundColor: '',
   },
   argTypes: {
     direction: { control: 'select', options: DIRECTIONS },
@@ -105,7 +99,10 @@ export const Default: StoryObj = {
     },
     width: { control: { type: 'range', min: 0, max: 480, step: 10 } },
     height: { control: { type: 'range', min: 0, max: 120, step: 10 } },
-    backgroundColor: { control: 'color' },
+    backgroundColor: {
+      name: 'backgroundColor (пусто — токен темы)',
+      control: 'color',
+    },
   },
   render: (args) => {
     const {
@@ -137,7 +134,7 @@ export const Default: StoryObj = {
           key: 'card',
           name: 'Карточка',
           width: 520,
-          renderCell: ({ row }) => (
+          renderCell: ({ row, theme }) => (
             <Canvas.Container
               alignItems="center"
               padding={{
@@ -162,7 +159,9 @@ export const Default: StoryObj = {
                   ...(width > 0 ? { width } : {}),
                   ...(height > 0 ? { height } : {}),
                 }}
-                backgroundColor={backgroundColor}
+                backgroundColor={
+                  backgroundColor || theme.tokens.surfaceAccentMinor
+                }
               >
                 <Canvas.Badge text={row.status} view="accent" size="s" />
                 <Canvas.Text>{row.title}</Canvas.Text>
@@ -266,7 +265,6 @@ const taskRows: TaskRow[] = [
 const taskCardCode = `
 import { Canvas, ColumnConfig, TableCanvas } from '@daisforge/ui/components/TableCanvas';
 
-const SECONDARY_TEXT = '#7d838f';
 // baseFontStyle начинается с веса: '400 normal …'
 const boldFont = (font: string) => font.replace(/^\\d+/, '600');
 
@@ -281,7 +279,7 @@ const columnConfig: ColumnConfig<TaskRow>[] = [
         <Canvas.Avatar name={row.assignee} size="m" />
         <Canvas.Container direction="column" gap={4}>
           <Canvas.Text font={boldFont(theme.baseFontStyle)}>{row.title}</Canvas.Text>
-          <Canvas.Text color={SECONDARY_TEXT}>{row.project}</Canvas.Text>
+          <Canvas.Text color={theme.tokens.textSecondary}>{row.project}</Canvas.Text>
         </Canvas.Container>
       </Canvas.Container>
     ),
@@ -297,7 +295,7 @@ const columnConfig: ColumnConfig<TaskRow>[] = [
           <Canvas.Badge text={STATUS[row.status].label} view={STATUS[row.status].view} size="s" />
           {row.tags.map((tag) => <Canvas.Badge key={tag} text={tag} view="light" size="s" />)}
         </Canvas.Container>
-        <Canvas.Text color={SECONDARY_TEXT}>{row.due}</Canvas.Text>
+        <Canvas.Text color={theme.tokens.textSecondary}>{row.due}</Canvas.Text>
       </Canvas.Container>
     ),
   },
@@ -340,7 +338,9 @@ export const TaskCard: StoryObj = {
                 <Canvas.Text font={boldFont(theme.baseFontStyle)}>
                   {row.title}
                 </Canvas.Text>
-                <Canvas.Text color={SECONDARY_TEXT}>{row.project}</Canvas.Text>
+                <Canvas.Text color={theme.tokens.textSecondary}>
+                  {row.project}
+                </Canvas.Text>
               </Canvas.Container>
             </Canvas.Container>
           ),
@@ -349,7 +349,7 @@ export const TaskCard: StoryObj = {
           key: 'assignee',
           name: 'Исполнитель',
           width: 200,
-          renderCell: ({ row }) => (
+          renderCell: ({ row, theme }) => (
             <Canvas.Container
               direction="column"
               justifyContent="center"
@@ -357,7 +357,9 @@ export const TaskCard: StoryObj = {
               padding={{ left: 12, right: 12 }}
             >
               <Canvas.Text>{row.assignee}</Canvas.Text>
-              <Canvas.Text color={SECONDARY_TEXT}>{row.role}</Canvas.Text>
+              <Canvas.Text color={theme.tokens.textSecondary}>
+                {row.role}
+              </Canvas.Text>
             </Canvas.Container>
           ),
         },
@@ -365,7 +367,7 @@ export const TaskCard: StoryObj = {
           key: 'status',
           name: 'Статус',
           width: 220,
-          renderCell: ({ row }) => (
+          renderCell: ({ row, theme }) => (
             <Canvas.Container
               direction="column"
               justifyContent="center"
@@ -382,7 +384,9 @@ export const TaskCard: StoryObj = {
                   <Canvas.Badge key={tag} text={tag} view="light" size="s" />
                 ))}
               </Canvas.Container>
-              <Canvas.Text color={SECONDARY_TEXT}>{row.due}</Canvas.Text>
+              <Canvas.Text color={theme.tokens.textSecondary}>
+                {row.due}
+              </Canvas.Text>
             </Canvas.Container>
           ),
         },
@@ -435,13 +439,13 @@ const alignRows: AlignRow[] = JUSTIFY.map((justifyContent, index) => ({
 const alignmentCode = `
 // Корневой контейнер растягивается на всю ячейку, поэтому justifyContent
 // и alignItems выравнивают содержимое внутри ячейки
-renderCell: ({ row }) => (
+renderCell: ({ row, theme }) => (
   <Canvas.Container
     justifyContent={row.justifyContent}
     alignItems="center"
     gap={8}
     padding={{ left: 12, right: 12 }}
-    backgroundColor='#f4f6f9'
+    backgroundColor={theme.tokens.surfaceTransparentSecondary}
   >
     <Canvas.Badge text="Badge" view="accent" size="s" />
     <Canvas.Text>Text</Canvas.Text>
@@ -461,9 +465,9 @@ export const Alignment: StoryObj = {
           key: 'justifyContent',
           name: 'justifyContent',
           width: 160,
-          renderCell: ({ row }) => (
+          renderCell: ({ row, theme }) => (
             <Canvas.Container alignItems="center" padding={{ left: 12 }}>
-              <Canvas.Text color={SECONDARY_TEXT}>
+              <Canvas.Text color={theme.tokens.textSecondary}>
                 {row.justifyContent}
               </Canvas.Text>
             </Canvas.Container>
@@ -473,13 +477,13 @@ export const Alignment: StoryObj = {
           key: 'content',
           name: 'Содержимое',
           width: 480,
-          renderCell: ({ row }) => (
+          renderCell: ({ row, theme }) => (
             <Canvas.Container
               justifyContent={row.justifyContent}
               alignItems="center"
               gap={8}
               padding={{ left: 12, right: 12 }}
-              backgroundColor={ALIGN_BG}
+              backgroundColor={theme.tokens.surfaceTransparentSecondary}
             >
               <Canvas.Badge text="Badge" view="accent" size="s" />
               <Canvas.Text>Text</Canvas.Text>
