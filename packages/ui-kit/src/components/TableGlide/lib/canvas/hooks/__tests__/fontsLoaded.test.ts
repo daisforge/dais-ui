@@ -48,11 +48,8 @@ afterEach(() => {
 });
 
 /** Подписка и ожидание первой загрузки шрифтов */
-const subscribeLoaded = async (
-  onLoaded = vi.fn(),
-  options?: Parameters<typeof subscribeFontsLoaded>[1],
-) => {
-  const unsubscribe = subscribeFontsLoaded(onLoaded, options);
+const subscribeLoaded = async (onLoaded = vi.fn()) => {
+  const unsubscribe = subscribeFontsLoaded(onLoaded);
   await vi.waitFor(() => expect(onLoaded).toHaveBeenCalledTimes(1));
   onLoaded.mockClear();
   vi.clearAllMocks();
@@ -113,29 +110,14 @@ describe('subscribeFontsLoaded', () => {
     expect(invalidateTextCache).not.toHaveBeenCalled();
   });
 
-  it('загрузка чужого семейства не уведомляет и не сбрасывает кеши', async () => {
-    const { onLoaded } = await subscribeLoaded(vi.fn(), {
-      fontFamily: () => '"SB Sans Text", sans-serif',
-    });
-
-    loadingDone(['Material Icons']);
-    await nextFrame();
-    expect(onLoaded).not.toHaveBeenCalled();
-    expect(invalidateTextCache).not.toHaveBeenCalled();
-
-    loadingDone(['"SB Sans Text"']);
-    await nextFrame();
-    expect(onLoaded).toHaveBeenCalledTimes(1);
-    expect(invalidateTextCache).toHaveBeenCalledTimes(1);
-  });
-
-  it('подписчик без fontFamily уведомляется о любом семействе', async () => {
+  it('загрузка любого семейства уведомляет: у ячейки может быть свой шрифт, не из темы', async () => {
     const { onLoaded } = await subscribeLoaded();
 
     loadingDone(['Material Icons']);
     await nextFrame();
 
     expect(onLoaded).toHaveBeenCalledTimes(1);
+    expect(invalidateTextCache).toHaveBeenCalledTimes(1);
   });
 
   it('событие без загруженных начертаний игнорируется', async () => {

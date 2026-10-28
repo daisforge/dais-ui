@@ -1,5 +1,5 @@
 import type { DataEditorRef } from '@glideappsfinal/glide-data-grid';
-import { type RefObject, useLayoutEffect, useRef } from 'react';
+import { type RefObject, useLayoutEffect } from 'react';
 
 import { subscribeFontsLoaded } from './fontsLoaded';
 import { createRafUpdate, updateGridCells } from './gridUpdateUtils';
@@ -9,7 +9,6 @@ interface UseFontLoadRedrawParams {
   rowCount: number;
   columnCount: number;
   headerAndGroupHeaderRowsCount: number;
-  fontFamily?: string;
 }
 
 export function useFontLoadRedraw({
@@ -17,11 +16,7 @@ export function useFontLoadRedraw({
   rowCount,
   columnCount,
   headerAndGroupHeaderRowsCount,
-  fontFamily,
 }: UseFontLoadRedrawParams): void {
-  const fontFamilyRef = useRef(fontFamily);
-  fontFamilyRef.current = fontFamily;
-
   useLayoutEffect(() => {
     const redraw = createRafUpdate(() => {
       updateGridCells({
@@ -32,8 +27,6 @@ export function useFontLoadRedraw({
       });
     });
 
-    return subscribeFontsLoaded(redraw, {
-      fontFamily: () => fontFamilyRef.current,
-    });
+    return subscribeFontsLoaded(redraw);
   }, [dataEditorRef, rowCount, columnCount, headerAndGroupHeaderRowsCount]);
 }

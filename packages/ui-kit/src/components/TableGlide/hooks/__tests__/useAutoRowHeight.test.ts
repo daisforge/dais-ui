@@ -4,11 +4,9 @@ import { describe, expect, it, vi } from 'vitest';
 import { useAutoRowHeight } from '../useAutoRowHeight';
 
 let fontsLoaded: () => void = () => {};
-let fontsLoadedOptions: unknown;
 vi.mock('../../lib/canvas/hooks/fontsLoaded', () => ({
-  subscribeFontsLoaded: (onLoaded: () => void, options?: unknown) => {
+  subscribeFontsLoaded: (onLoaded: () => void) => {
     fontsLoaded = onLoaded;
-    fontsLoadedOptions = options;
     return () => {};
   },
 }));
@@ -117,12 +115,6 @@ describe('useAutoRowHeight', () => {
     expect(result.current.heightOf(0, BASE)).toBe(60);
     expect(needsHeight(result, 'a')).toBe(true);
     expect(needsHeight(result, 'b')).toBe(true);
-  });
-
-  it('подписка на шрифты без фильтра по семейству темы: у ячейки может быть свой шрифт', () => {
-    setup();
-
-    expect(fontsLoadedOptions).toBeUndefined();
   });
 
   it('смена темы (rowSize, шрифт, отступы) перемеряет все ячейки', async () => {
