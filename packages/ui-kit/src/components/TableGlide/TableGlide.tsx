@@ -69,6 +69,7 @@ import {
 import { findBlockOrigin } from './utils/findBlockOrigin';
 import { getSpan } from './utils/getSpan';
 import { getRowSpan, spansSeveralRows } from './utils/getRowSpan';
+import { GroupHeaderParts } from './utils/groupHeaderParts';
 import { isCanvasContent, isPrimitive } from './utils/typeGuards';
 
 /** Функция-болванка. Ничего не делает */
@@ -1007,16 +1008,17 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     () => new Map<string, CellCanvasRoot>(),
     []
   );
-  // Части заголовка группы по ключу: закреплённые колонки рисуют группу двумя
-  // частями с одним ключом, клик ищет свою часть по колонке.
-  const groupHeaderPartsMap = useMemo(
-    () =>
-      new Map<
-        string,
-        { span: readonly [number, number]; root: CellCanvasRoot }[]
-      >(),
+  const groupHeaderParts = useMemo(
+    () => new GroupHeaderParts<CellCanvasRoot>(),
     []
   );
+  useEffect(() => {
+    groupHeaderParts.retain(
+      new Set(
+        columnsForRender.flatMap((column) => getColumnGroupPath(column.group))
+      )
+    );
+  }, [groupHeaderParts, columnsForRender]);
   const overlayPortalRef = useRef<HTMLDivElement>(null);
   // div-обертка над Glide для DOM-поиска элементов
   const containerRefInternal = useRef<HTMLDivElement>(null);
@@ -1193,11 +1195,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       // Клик сначала получают canvas-ноды заголовка группы (как у листовой шапки):
       // если под точкой интерактивная нода, это клик по ней — группу не выделяем.
       const [clickedCol] = event.location;
-      const groupRoot = groupHeaderPartsMap
-        .get(event.group)
-        ?.find(
-          ({ span: [start, end] }) => clickedCol >= start && clickedCol <= end
-        )?.root;
+      const groupRoot = groupHeaderParts.rootAt(event.group, clickedCol);
       if (groupRoot) {
         const interaction = groupRoot.getInteractionAtPoint(
           event.localEventX,
@@ -1256,7 +1254,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       columnsForRender,
       selectColumnsByKeys,
       onGroupHeaderClickedExternal,
-      groupHeaderPartsMap,
+      groupHeaderParts,
     ]
   );
 
@@ -1423,22 +1421,24 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   const drawGroupHeader = useMemo((): GlideProps['drawGroupHeader'] => {
     if (!renderGroupHeader) return undefined;
     return (args, drawContent) => {
+      const { groupName, rect, ctx, span } = args;
       const result = renderGroupHeader(args);
       if (result === 'default') {
+        groupHeaderParts.drop(groupName, span);
         return drawContent();
       }
 
       const customGroupName = 'defaultWithCustomGroupName' in result;
 
       if (customGroupName) {
+        groupHeaderParts.drop(groupName, span);
         return drawContent(result.defaultWithCustomGroupName);
       }
-
-      const { groupName, rect, ctx, span } = args;
 
       let jsxElement = result;
 
       if (!isCanvasContent(jsxElement)) {
+        groupHeaderParts.drop(groupName, span);
         return drawContent();
       }
 
@@ -1476,14 +1476,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         portalEventTargetRef?.current ?? null
       );
 
-      // Часть, перекрытая новой (после перестановки колонок), устарела
-      const otherParts = (groupHeaderPartsMap.get(nodeId) ?? []).filter(
-        (part) => part.span[1] < span[0] || part.span[0] > span[1]
-      );
-      groupHeaderPartsMap.set(nodeId, [
-        ...otherParts,
-        { span, root: canvasRootInstance },
-      ]);
+      groupHeaderParts.set(nodeId, span, canvasRootInstance);
 
       // Позиция курсора — из аргументов Glide, как у шапки колонки.
       const hoverPos =
@@ -1502,7 +1495,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       return canvasRootInstance.render(ctx, rect, hoverPos, absoluteBounds);
     };
   }, [
-    groupHeaderPartsMap,
+    groupHeaderParts,
     renderGroupHeader,
     theme,
     portalEventTargetRef,
