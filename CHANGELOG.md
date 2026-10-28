@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.26.0](https://github.com/daisforge/dais-ui/compare/v1.25.0...v1.26.0) (2026-10-28)
+
+### Features
+
+- **utils/PlatformNavigation:** добавлен тип и контекст для PlatformNavigation ([#138](https://github.com/daisforge/dais-ui/issues/138)) ([2470e8e](https://github.com/daisforge/dais-ui/commit/2470e8e57f05fa72bc2a25bc7c569b3bc1d9c803))
+
 # [1.25.0](https://github.com/daisforge/dais-ui/compare/v1.24.0...v1.25.0) (2026-10-24)
 
 ### Bug Fixes
