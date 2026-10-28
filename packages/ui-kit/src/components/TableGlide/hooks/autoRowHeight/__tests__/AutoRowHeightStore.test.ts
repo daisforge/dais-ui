@@ -56,6 +56,15 @@ describe('AutoRowHeightStore', () => {
     expect(store.heightAt(rows, 1, true)).toBe(MAX_AUTO_ROW_HEIGHT);
   });
 
+  it('дробная высота округляется вверх до целого пикселя', () => {
+    const { store, rows, report } = setup();
+
+    report(0, 'a', 40.2);
+
+    expect(store.heightAt(rows, 0, true)).toBe(41);
+    expect(store.heightAt(rows, 0, false)).toBe(41);
+  });
+
   it('внутри кадра высоты не меняются: все колонки кадра рисуются с одними высотами', () => {
     const { store, rows, onChange, endFrame } = setup();
     store.reporter(rows[0]!, 0, 'a', false).report(100, 70);

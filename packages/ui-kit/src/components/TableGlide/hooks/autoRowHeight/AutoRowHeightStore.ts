@@ -164,9 +164,8 @@ export class AutoRowHeightStore<R extends object> {
   }
 
   private computeRowHeight(row: R): number {
-    const height = Math.min(
-      this.cells.maxHeight(row, this.columnIds),
-      MAX_AUTO_ROW_HEIGHT,
+    const height = Math.ceil(
+      Math.min(this.cells.maxHeight(row, this.columnIds), MAX_AUTO_ROW_HEIGHT),
     );
     this.rows.set(row, { height, generation: this.generation });
     return height;
