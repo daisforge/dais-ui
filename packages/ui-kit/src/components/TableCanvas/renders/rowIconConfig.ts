@@ -23,6 +23,24 @@ export const ROW_ICON_BUTTON_CONFIG: Record<
   },
 };
 
+/** Зазор между текстом и стрелкой внутри триггера селекта */
+export const SELECT_TRIGGER_GAP = 8;
+
+/**
+ * Геометрия стрелки селекта, одна для canvas (withSelectIcon) и редактора
+ * (selectArrowStyles): иконка стоит по центру квадрата кнопки, квадрат прижат
+ * к правому отступу ячейки.
+ */
+export const getSelectArrowBox = (size: RowSize) => {
+  const { overrideSquareSize, overrideIconSize } = ROW_ICON_BUTTON_CONFIG[size];
+  return {
+    squareSize: overrideSquareSize,
+    iconSize: overrideIconSize,
+    edgeInset: (overrideSquareSize - overrideIconSize) / 2,
+    gapToText: SELECT_TRIGGER_GAP,
+  };
+};
+
 /** Зазор между шевроном раскрытия строки и текстом ячейки */
 export const TREE_BUTTON_GAP: Record<RowSize, number> = {
   big: 8,

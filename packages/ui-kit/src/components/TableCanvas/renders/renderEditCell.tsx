@@ -64,6 +64,8 @@ function CustomEditCellSeed<
   return <>{render(info, lvl, disableLeftOffset)}</>;
 }
 
+// Контейнеры с шевроном или кнопкой деталей получают ширину ячейки: оверлей
+// Glide растёт по содержимому, и без этого редактор выходил за колонку.
 export const RenderEditCell = <
   FilterStateType extends ObjectForExtending,
   RowIdType extends string | number,
@@ -176,7 +178,10 @@ export const RenderEditCell = <
     }
 
     return (
-      <StyledCellContainer className={CLASS.editableCellWithExpandButton}>
+      <StyledCellContainer
+        className={CLASS.editableCellWithExpandButton}
+        style={{ width: editingCellInfo.cellWidth }}
+      >
         {defaultLvl0RenderElement()}
 
         <ExpandDetailButtonComponent
@@ -212,7 +217,10 @@ export const RenderEditCell = <
 
     if (!columnHasArrow && hasExpandDetailButton) {
       return (
-        <StyledCellContainer className={CLASS.editableCellWithExpandButton}>
+        <StyledCellContainer
+          className={CLASS.editableCellWithExpandButton}
+          style={{ width: editingCellInfo.cellWidth }}
+        >
           {defaultLvl0RenderElement()}
 
           <ExpandDetailButtonComponent
@@ -225,6 +233,7 @@ export const RenderEditCell = <
     }
     return (
       <SubRowContainer
+        style={{ width: editingCellInfo.cellWidth }}
         className={CLASS.editableCellWithExpandButton}
         $lvl={lvl}
         $editingMode={{
@@ -346,7 +355,10 @@ export const RenderEditCell = <
 
   if (!columnHasArrow && columnHasExpandButton) {
     return (
-      <StyledCellContainer className={CLASS.editableCellWithExpandButton}>
+      <StyledCellContainer
+        className={CLASS.editableCellWithExpandButton}
+        style={{ width: editingCellInfo.cellWidth }}
+      >
         {defaultLvlNot0RenderElement()}
 
         <ExpandDetailButtonComponent
@@ -360,6 +372,7 @@ export const RenderEditCell = <
 
   return (
     <SubRowContainer
+      style={{ width: editingCellInfo.cellWidth }}
       className={CLASS.editableCellWithExpandButton}
       $lvl={lvl}
       $editingMode={{

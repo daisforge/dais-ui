@@ -112,4 +112,12 @@ export const TABLE_GLIDE_SIZES = {
 } as const satisfies Record<SIZE, TableGlideSizeConfig>;
 
 export const COLUMN_MIN_WIDTH = 80;
+/**
+ * Glide отдаёт оверлею редактора границы ячейки с запасом: ширина колонки и
+ * высота строки плюс GLIDE_EDITOR_TARGET_EXTRA под линию сетки. Сверху к этому
+ * ничего не добавляем (bloom ноль), рамку рисует StyledOverlayPortal, а запас
+ * по ширине учитывают стили редактора (feature-edit/cellFieldStyles).
+ */
+export const EDITOR_BLOOM: readonly [number, number] = [0, 0];
+export const GLIDE_EDITOR_TARGET_EXTRA = 1;
 export const DEFAULT_HEADER_HEIGHT = 33;
