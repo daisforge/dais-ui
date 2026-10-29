@@ -141,4 +141,30 @@ rowErrors: {
 
 Типы `RowErrorsConfig` и `RowErrorsInfo` описаны в разделе [API](/docs/локальные-компоненты-tablecanvas-editing-api--docs).
 
+## Select с подгрузкой по скроллу
+
+Когда вариантов много (сотни и тысячи) и они приходят с бэкенда страницами, используйте кастомный редактор на `CellEditorCombobox`. Он принимает все пропсы `Combobox`, поэтому подгрузку собирают из них:
+
+- `virtual` — виртуализация списка;
+- `onScroll` — подгрузка следующей страницы у конца списка;
+- `afterList` — лоадер под списком;
+- `onChangeValue` и `filter={() => true}` — поиск на бэкенде вместо локального фильтра.
+
+Выбранное значение строки добавляйте в `items` сами, иначе редактор откроется пустым, если оно не попало в загруженную страницу. Чтобы в ячейке был шеврон, как у `component: 'select'`, передайте `showSelectIcon: true`.
+
+```tsx
+{
+  key: 'counterpartyName',
+  name: 'Контрагент',
+  editingCell: {
+    component: (info, _lvl, disableLeftOffset) => (
+      <CounterpartyCellEditor info={info} disableLeftOffset={disableLeftOffset} />
+    ),
+    showSelectIcon: true,
+  },
+}
+```
+
+У кастомного редактора опции не известны таблице, поэтому вставка и протягивание значения не проверяют. Проверяйте их в `onRowsChange`. Полный код редактора — в стори «Select с подгрузкой по скроллу».
+
 <Stories />
