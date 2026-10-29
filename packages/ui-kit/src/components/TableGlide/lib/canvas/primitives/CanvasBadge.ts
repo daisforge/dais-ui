@@ -3,6 +3,7 @@ import type { Tokens } from '../../../tokens';
 import { type ButtonIcon, drawIcon } from '../cells/buttons';
 import { CanvasLeaf } from '../core/CanvasLeaf';
 import { DrawBatcher } from '../core/DrawBatcher';
+import { resolveOverflowText } from '../utils/textOverflow';
 
 // Badge view types based on sdds_finai__light theme
 export type BadgeView =
@@ -226,13 +227,37 @@ export class CanvasBadge extends CanvasLeaf {
       currentX += iconSize + ICON_TEXT_SPACING;
     }
 
-    // Draw text
-    batcher.fillText(this.text, currentX, centerY, font, textColor, 'middle');
+    // Layout мог сжать бейдж: резервируем место под отступы и обе иконки.
+    const hasText = this.text.length > 0;
+    const iconSpacing = hasText ? ICON_TEXT_SPACING : 0;
+    const iconsWidth =
+      (this.leftIcon ? iconSize + iconSpacing : 0) +
+      (this.rightIcon ? iconSize + iconSpacing : 0);
+    const textWidth = Math.max(0, width - sizeConfig.paddingX * 2 - iconsWidth);
+    const resolvedText = resolveOverflowText({
+      ctx: _ctx,
+      text: this.text,
+      font,
+      maxWidth: textWidth,
+      textOverflow: 'ellipsis',
+      ellipsis: '…',
+    });
+
+    if (resolvedText.text.length > 0) {
+      batcher.fillTextClipped(
+        resolvedText.text,
+        currentX,
+        centerY,
+        font,
+        textColor,
+        { x: currentX, y, width: textWidth, height },
+        'middle',
+      );
+    }
 
     // Draw right icon
     if (this.rightIcon) {
-      const textWidth = getCachedTextWidth(_ctx, font, this.text);
-      const rightIconX = currentX + textWidth + ICON_TEXT_SPACING;
+      const rightIconX = currentX + resolvedText.width + iconSpacing;
       const iconY = centerY - iconSize / 2;
       drawIcon(batcher, this.rightIcon, rightIconX, iconY, iconSize, textColor);
     }

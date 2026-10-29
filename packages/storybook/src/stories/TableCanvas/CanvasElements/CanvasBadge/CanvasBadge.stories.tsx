@@ -281,3 +281,51 @@ export const IconOnly: StoryObj = {
     );
   },
 };
+
+export const NarrowColumns: StoryObj = {
+  name: 'Длинный текст в узких колонках',
+  render: () => {
+    const icon = useMemo(() => Canvas.icon(<IconSearch />), []);
+    const columnConfig = useMemo<readonly ColumnConfig<ViewRow>[]>(
+      () =>
+        SIZES.map((size) => ({
+          key: size,
+          name: size,
+          width: 160,
+          minWidth: 40,
+          renderCell: ({ row }) => (
+            <Canvas.Container direction="row" alignItems="center" padding={8}>
+              <Canvas.Badge
+                text="Очень длинный статус согласования"
+                view={row.view}
+                size={size}
+                leftIcon={row.view === 'positive' ? icon : undefined}
+                rightIcon={row.view === 'warning' ? icon : undefined}
+                transparent={row.view === 'negative'}
+                clear={row.view === 'dark'}
+                pilled={row.view === 'light'}
+              />
+            </Canvas.Container>
+          ),
+        })),
+      [icon],
+    );
+
+    return (
+      <>
+        <p>
+          Сужайте и расширяйте колонки за границу заголовка: текст должен
+          заканчиваться многоточием внутри бейджа.
+        </p>
+        <TableCanvas
+          tableConfig={{
+            containerStyle: { height: '400px' },
+            resizableColumn: true,
+          }}
+          columnConfig={columnConfig}
+          rows={rows}
+        />
+      </>
+    );
+  },
+};
