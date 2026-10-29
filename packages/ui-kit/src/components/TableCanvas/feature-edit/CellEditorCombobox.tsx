@@ -16,6 +16,7 @@ import { CellEditorTextArea } from './CellEditorTextArea';
 import {
   type CellFieldGeometry,
   cellFieldStyles,
+  FieldBox,
   selectArrowStyles,
 } from './cellFieldStyles';
 import type { CellEditorComboboxProps, EmptyObj } from './types';
@@ -58,6 +59,7 @@ export const CellEditorCombobox = forwardRef(
       disableLeftOffset,
       paddingInline,
       paddingBlock,
+      verticalAlign,
       name,
       items,
       multiple,
@@ -87,6 +89,7 @@ export const CellEditorCombobox = forwardRef(
       paddingInline,
       paddingBlock,
       disableLeftOffset,
+      verticalAlign,
     };
     /* undefined: ширина списка равна ширине поля */
     const listWidth =
@@ -100,7 +103,6 @@ export const CellEditorCombobox = forwardRef(
           cellHeight={cellHeight}
           cellWidth={cellWidth}
           paddingInline={paddingInline}
-          paddingBlock={paddingBlock}
           value={restProps.value ?? restProps.defaultValue ?? ''}
           onChange={() => {}}
         />
@@ -108,27 +110,29 @@ export const CellEditorCombobox = forwardRef(
     }
 
     return (
-      <StyledCombobox<T>
-        $geometry={geometry}
-        /* просы с переопределенными типами -  нужны для устраненения ts-несоостветствий */
-        name={name as string}
-        multiple={multiple as true}
-        items={items}
-        //
-        ref={mergeRefs(ref, refExternal)}
-        /* portal="portal2" - данный id поставлен как исключение в isOutsideClick в TableGlideInstance.
+      <FieldBox $cellWidth={cellWidth}>
+        <StyledCombobox<T>
+          $geometry={geometry}
+          /* просы с переопределенными типами -  нужны для устраненения ts-несоостветствий */
+          name={name as string}
+          multiple={multiple as true}
+          items={items}
+          //
+          ref={mergeRefs(ref, refExternal)}
+          /* portal="portal2" - данный id поставлен как исключение в isOutsideClick в TableGlideInstance.
       Клики по нему не будут преждевременно закрывать режим редактирования */
-        portal="portal2"
-        flip
-        readOnly={readOnly}
-        alwaysOpened={!readOnly}
-        listWidth={listWidth}
-        listMaxHeight="350px"
-        zIndex={9001}
-        size={SIZES[rowSize].input}
-        /* типы из-за styled или по др причине не встают один в один */
-        {...(restProps as unknown as EmptyObj)}
-      />
+          portal="portal2"
+          flip
+          readOnly={readOnly}
+          alwaysOpened={!readOnly}
+          listWidth={listWidth}
+          listMaxHeight="350px"
+          zIndex={9001}
+          size={SIZES[rowSize].input}
+          /* типы из-за styled или по др причине не встают один в один */
+          {...(restProps as unknown as EmptyObj)}
+        />
+      </FieldBox>
     );
   },
 ) as <T extends ComboboxItemOption>(
@@ -216,6 +220,7 @@ export function CellEditorComboboxInternal<
       }}
       items={items}
       placement={placement}
+      verticalAlign={verticalAlign}
       /* rest external props */
       {...selectProps}
     />

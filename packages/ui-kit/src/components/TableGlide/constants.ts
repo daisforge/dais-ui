@@ -113,8 +113,11 @@ export const TABLE_GLIDE_SIZES = {
 
 export const COLUMN_MIN_WIDTH = 80;
 /**
- * На сколько пикселей оверлей редактора выходит за границы ячейки. Ноль:
- * редактор совпадает с ячейкой, рамку рисует StyledOverlayPortal.
+ * Glide отдаёт оверлею редактора границы ячейки с запасом: ширина колонки и
+ * высота строки плюс GLIDE_EDITOR_TARGET_EXTRA под линию сетки. Сверху к этому
+ * ничего не добавляем (bloom ноль), рамку рисует StyledOverlayPortal, а запас
+ * по ширине учитывают стили редактора (feature-edit/cellFieldStyles).
  */
 export const EDITOR_BLOOM: readonly [number, number] = [0, 0];
+export const GLIDE_EDITOR_TARGET_EXTRA = 1;
 export const DEFAULT_HEADER_HEIGHT = 33;

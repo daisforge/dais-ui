@@ -16,7 +16,11 @@ import { useRowContext } from '../contexts';
 import { SIZES } from '../styles/styles.constants';
 import { ContentFormat, NumberFormatOptions } from '../TableGlideInstance/type';
 import type { EditingCellInfo, ObjectForExtending } from '../types';
-import { type CellFieldGeometry, cellFieldStyles } from './cellFieldStyles';
+import {
+  type CellFieldGeometry,
+  cellFieldStyles,
+  FieldBox,
+} from './cellFieldStyles';
 import type {
   CellEditorNumberFormatProps,
   CustomCellStyleNumberFormatProps,
@@ -68,6 +72,7 @@ export const CellEditorNumberFormat = forwardRef<
       disableLeftOffset,
       paddingInline,
       paddingBlock,
+      verticalAlign,
       align = 'right',
       autoFocusType,
 
@@ -86,6 +91,7 @@ export const CellEditorNumberFormat = forwardRef<
       paddingInline,
       paddingBlock,
       disableLeftOffset,
+      verticalAlign,
     };
 
     /**
@@ -127,20 +133,22 @@ export const CellEditorNumberFormat = forwardRef<
     }, []);
 
     return (
-      <StyledNumberFormat
-        $geometry={geometry}
-        align={align}
-        ref={mergeRefs(inputRef, refExternal) as React.Ref<HTMLInputElement>}
-        size={SIZES[rowSize].input}
-        placeholder=""
-        allowNegative
-        /** в типах нет, но на логику отображения влияет  */
-        view={'clear' as never}
-        autoComplete={'false' as never}
-        enumerationType={undefined}
-        /* типы из-за styled или по др причине не встают один в один */
-        {...(props as unknown as EmptyObj)}
-      />
+      <FieldBox $cellWidth={cellWidth}>
+        <StyledNumberFormat
+          $geometry={geometry}
+          align={align}
+          ref={mergeRefs(inputRef, refExternal) as React.Ref<HTMLInputElement>}
+          size={SIZES[rowSize].input}
+          placeholder=""
+          allowNegative
+          /** в типах нет, но на логику отображения влияет  */
+          view={'clear' as never}
+          autoComplete={'false' as never}
+          enumerationType={undefined}
+          /* типы из-за styled или по др причине не встают один в один */
+          {...(props as unknown as EmptyObj)}
+        />
+      </FieldBox>
     );
   },
 );

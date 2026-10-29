@@ -4,48 +4,40 @@ import React, { forwardRef, useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 
 import { useRowContext } from '../contexts';
-import { CSS_VARIABLES } from '../renders/constants';
 import { type SIZE, SIZES } from '../styles';
 import type { EditingCellInfo, ObjectForExtending } from '../types';
 import { resolveCellFieldPadding } from './cellFieldStyles';
-import type { CustomCellStyleProps } from './types';
 import { CellEditorTextAreaProps } from './types';
 
-const TextAreaWrap = styled.div<
-  {
-    paddingInline: number;
-    size: SIZE;
-  } & Omit<CustomCellStyleProps, 'paddingInline' | 'paddingBlock'>
->`
+const TextAreaWrap = styled.div<{
+  $paddingInline: number;
+  $size: SIZE;
+  $disableLeftOffset: boolean | undefined;
+}>`
   /* Поле по центру ячейки любой высоты: без своих вертикальных отступов
      (у Glide сверху 6px), центрирует auto-margin внутри оверлея. */
   margin-block: auto;
-  padding-inline: ${({ paddingInline }) => paddingInline}px;
+  padding-inline: ${({ $paddingInline }) => $paddingInline}px;
   .gdg-growing-entry {
     margin-block: 0;
   }
   * {
-    ${({ size }) => css(SIZES[size].font())}
+    ${({ $size }) => css(SIZES[$size].font())}
   }
 
-  ${({ disableLeftOffset, paddingInline, cellWidth }) =>
-    disableLeftOffset &&
+  /* В древовидной ячейке перед полем стоят отступ уровня и шеврон, поле
+     берёт остаток ширины ячейки. */
+  ${({ $disableLeftOffset }) =>
+    $disableLeftOffset &&
     css`
       margin-left: 0px;
       padding-left: 0px;
+      flex: 1 1 0;
+      min-width: 0;
       & > div {
         margin-block: auto;
         height: fit-content;
-        min-width: calc(
-          min(${cellWidth}px, 400px) -
-            var(${CSS_VARIABLES.subrowContainerPaddingLeft}) - 32px -
-            ${paddingInline}px
-        );
-        max-width: calc(
-          max(${cellWidth}px, 400px) -
-            var(${CSS_VARIABLES.subrowContainerPaddingLeft}) - 32px -
-            ${paddingInline}px
-        );
+        width: 100%;
       }
     `}
 `;
@@ -61,7 +53,6 @@ export const CellEditorTextArea = forwardRef<
       disableLeftOffset,
       autoFocusType,
       paddingInline,
-      paddingBlock: _paddingBlock,
       containerClassName,
       //
       ...props
@@ -73,12 +64,10 @@ export const CellEditorTextArea = forwardRef<
 
     return (
       <TextAreaWrap
-        size={rowSize}
-        paddingInline={inline}
+        $size={rowSize}
+        $paddingInline={inline}
+        $disableLeftOffset={disableLeftOffset}
         className={mergeClasses('tableCanvasTextAreaWrap', containerClassName)}
-        cellHeight={cellHeight}
-        cellWidth={cellWidth}
-        disableLeftOffset={disableLeftOffset}
         onClick={(e) => {
           const ta = e.currentTarget?.getElementsByTagName('textarea')?.[0];
           const isClickFromTextArea = e.target === ta;

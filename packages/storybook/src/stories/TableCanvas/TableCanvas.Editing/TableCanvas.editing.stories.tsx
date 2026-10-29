@@ -67,10 +67,16 @@ export const Editing: Story = {
                   return 'block';
               }
             },
+            // Вложенные уровни тоже селект: так видно, как шеврон дерева
+            // и стрелка селекта уживаются в редакторе на каждом уровне.
             editingCell: {
-              component: 'inputString',
-              inputProps: {
-                placeholder: 'Введите значение',
+              component: 'select',
+              options: {
+                type: 'constant',
+                options: [...TRIBES, ...PRODUCTS].map((i) => ({
+                  text: i,
+                  value: i,
+                })),
               },
             },
 
@@ -837,6 +843,81 @@ export const EditingRowErrors: Story = {
           rows={rows}
         />
       </>
+    );
+  },
+};
+
+type MergedRow = { id: string; dept: string; status: string; name: string };
+
+const DEPTS = ['Платформа', 'Данные', 'Клиенты'];
+const STATUSES = ['В работе', 'Готово', 'Пауза'];
+
+const MERGED_ROWS: MergedRow[] = [
+  { id: '1', dept: 'Платформа', status: 'В работе', name: 'Альфа' },
+  { id: '2', dept: 'Платформа', status: 'В работе', name: 'Бета' },
+  { id: '3', dept: 'Платформа', status: 'Готово', name: 'Гамма' },
+  { id: '4', dept: 'Данные', status: 'Готово', name: 'Дельта' },
+  { id: '5', dept: 'Данные', status: 'Готово', name: 'Эпсилон' },
+  { id: '6', dept: 'Клиенты', status: 'Пауза', name: 'Дзета' },
+  { id: '7', dept: 'Клиенты', status: 'Пауза', name: 'Эта' },
+  { id: '8', dept: 'Клиенты', status: 'Пауза', name: 'Тета' },
+];
+
+// Объединённые ячейки с селектом: подпись блока прижата к верху, к центру и
+// к низу, чтобы сверить положение текста и стрелки в просмотре и редакторе.
+export const EditingMergedCells: Story = {
+  name: 'Объединённые ячейки с селектом',
+  render: () => {
+    const [rows, setRows] = useState(MERGED_ROWS);
+    const columns = useMemo(
+      (): readonly ColumnConfig<MergedRow>[] => [
+        {
+          key: 'dept',
+          name: 'Отдел (к верху)',
+          mergedCellsAlign: { vertical: 'top', horizontal: 'left' },
+          editingCell: {
+            component: 'select',
+            options: {
+              type: 'constant',
+              options: DEPTS.map((i) => ({ text: i, value: i })),
+            },
+          },
+        },
+        {
+          key: 'status',
+          name: 'Статус (к низу)',
+          mergedCellsAlign: { vertical: 'bottom', horizontal: 'left' },
+          editingCell: {
+            component: 'select',
+            options: {
+              type: 'constant',
+              options: STATUSES.map((i) => ({ text: i, value: i })),
+            },
+          },
+        },
+        {
+          key: 'name',
+          name: 'Проект',
+          editingCell: { component: 'inputString' },
+        },
+      ],
+      [],
+    );
+
+    return (
+      <TableCanvas
+        tableConfig={{
+          containerStyle: { height: '420px' },
+          rowSize: { showInControl: true, default: 'big' },
+          mergeCells: { mergeByCellValues: ['dept', 'status'] },
+          editing: {
+            onRowsChange: setRows,
+            rowKeyGetter: (r) => r.id,
+          },
+        }}
+        columnConfig={columns}
+        rows={rows}
+      />
     );
   },
 };
