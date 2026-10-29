@@ -30,8 +30,8 @@ const SOURCES = {
       dark: '#1A9E3233',
       betaCoreLight: '#21A0381F',
       betaCoreDark: '#21A03833',
-      highContrastLight: '#198A001F',
-      highContrastDark: '#1A9E3233', // своих значений у дизайнера нет, исходный цвет — как в тёмной
+      highContrastLight: '#198A004D',
+      highContrastDark: '#1A9E3233',
     },
   },
   surfaceNegativeMinor: {
@@ -47,10 +47,8 @@ const SOURCES = {
       dark: '#4A0D13',
       betaCoreLight: '#FEDFDE',
       betaCoreDark: '#480B11',
-      // highContrastLight нет специально: в контрастной теме этого токена
-      // нет, и палитра для неё не считается формулой, а копируется из
-      // светлой (emit-table-colors.ts) — сравнивать не с чем.
-      highContrastDark: '#4A0D13', // своих значений у дизайнера нет, исходный цвет — как в тёмной
+      highContrastLight: '#F8BDC4',
+      highContrastDark: '#4A0D13',
     },
   },
   surfaceAccentMinor: {
@@ -67,7 +65,7 @@ const SOURCES = {
       betaCoreLight: '#EFF8FF',
       betaCoreDark: '#0C1A24',
       highContrastLight: '#CFE5F2FF',
-      highContrastDark: '#071A26FF', // своих значений у дизайнера нет, исходный цвет — как в тёмной
+      highContrastDark: '#071A26FF',
     },
   },
 } as const;

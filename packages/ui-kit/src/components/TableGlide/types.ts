@@ -273,7 +273,7 @@ export type RowSpan<R extends ObjectForExtending, SR> = (
 export type SpanCellAlign = {
   /** По горизонтали. @default из contentAlign колонки, иначе 'left' */
   horizontal?: 'left' | 'center' | 'right';
-  /** По вертикали. @default 'center' */
+  /** По вертикали. @default 'top' у блока в несколько строк, иначе 'center' */
   vertical?: 'top' | 'center' | 'bottom';
 };
 
@@ -308,6 +308,11 @@ export type ColumnGlideCustoms<R extends ObjectForExtending, SR = unknown> = {
   rowSpan?: RowSpan<R, SR>;
   /** Выравнивание контента в объединённых ячейках колонки; функция — если нужно задавать для каждого блока отдельно. */
   spanAlign?: SpanCellAlign | ((cellInfo: CellInfo<R, SR>) => SpanCellAlign | undefined);
+  /**
+   * Подпись объединённой ячейки остаётся в видимой части блока при прокрутке.
+   * @default true, если у колонки нет renderCell
+   */
+  spanContentSticky?: boolean;
   /** Тултип для ячеек этой колонки. Строка, объект или функция (context) => config | null. */
   cellTooltip?:
     | CanvasNodeTooltipConfig

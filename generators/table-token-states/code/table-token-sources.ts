@@ -2,10 +2,10 @@
  * Исходные данные для генератора table-token-states.ts: настройки шести тем, семантические токены
  * с hex по темам и карта цветов таблицы — какой токен и в каком состоянии стоит за каждым ключом кода.
  *
- * Источники hex: CSS тем @salutejs/sdds-themes 0.79.1 (light, dark) и
- * @salutejs-ds/sdds_finai_beta_core 0.1.0 (betaCoreLight, betaCoreDark); highContrastLight —
- * TableGlide/tokens.ts (в npm этой темы нет); highContrastDark — темы нет и не планируется,
- * заглушка: значения обычной тёмной темы.
+ * Источники hex: CSS тем @salutejs/sdds-themes 0.79.1 (light, dark; значения сверены с 0.83.0),
+ * @salutejs-ds/sdds_finai_beta_core 0.1.0 (betaCoreLight, betaCoreDark) и
+ * @salutejs-ds/sdds_finai_high_contrast 0.1.2 (highContrastLight, highContrastDark; с v1.3 обе темы настоящие).
+ * В beta core и контрастной семья data-*-light называется data-*-on-light — имя по темам в поле names.
  *
  * ЧЕРНОВИК ПРИВЯЗКИ: пары «токен + состояние» сверяются с дизайнером по списку table-tokens-list.md.
  */
@@ -17,7 +17,7 @@ import {
   type ThemeValues,
 } from './table-token-states';
 
-/** hex по темам: light, dark, betaCoreLight, betaCoreDark, highContrastLight, highContrastDark (по умолчанию = dark, заглушка). */
+/** hex по темам: light, dark, betaCoreLight, betaCoreDark, highContrastLight, highContrastDark (по умолчанию = dark: у контрастной тёмной 0.1.2 эти токены совпадают с dark). */
 const v = (
   light: string | null,
   dark: string | null,
@@ -46,11 +46,19 @@ export const THEME_SETTINGS: ThemeSettings = {
   },
   highContrastDark: {
     mode: 'dark',
-    note: 'темы нет и не планируется — заглушка, копия dark',
+    note: 'sdds_finai_high_contrast 0.1.2; множитель как у dark, уточнить на стенде',
   },
 };
 
 const src = <T extends Record<string, SourceToken>>(tokens: T) => tokens;
+
+/** Имя токена в beta core и контрастной теме (в них семья data-*-light называется data-*-on-light). */
+const ON_LIGHT = (name: string): SourceToken['names'] => ({
+  betaCoreLight: name,
+  betaCoreDark: name,
+  highContrastLight: name,
+  highContrastDark: name,
+});
 
 /** Семантические токены, от которых считается таблица. Имена — как в CSS темы. */
 export const SEMANTIC = src({
@@ -58,15 +66,13 @@ export const SEMANTIC = src({
     name: 'surface-solid-card',
     values: v('#FFFFFFFF', '#060A0C', '#FFFFFF', '#060A0D', '#FFFFFF'),
   },
-  // TODO HC: --surface-solid-primary контрастной темы
   surfaceSolidPrimary: {
     name: 'surface-solid-primary',
-    values: v('#F2F5F8', '#13181B', '#F3F7FA', '#14191D'),
+    values: v('#F2F5F8', '#13181B', '#F3F7FA', '#14191D', '#D6DFE7'),
   },
-  // TODO HC: --background-primary контрастной темы
   backgroundPrimary: {
     name: 'background-primary',
-    values: v('#F2F5F8', '#060A0C', '#F3F7FA', '#060A0D'),
+    values: v('#F2F5F8', '#060A0C', '#F3F7FA', '#060A0D', '#E5EBF1'),
   },
   surfaceAccentMinor: {
     name: 'surface-accent-minor',
@@ -74,7 +80,7 @@ export const SEMANTIC = src({
   },
   surfaceAccent: {
     name: 'surface-accent',
-    values: v('#199AF0', '#199AF0', '#1F9EEB', '#1F9EEB', '#0076D2'),
+    values: v('#199AF0', '#199AF0', '#1F9EEB', '#1F9EEB', '#0076D2', '#118CDF'),
   },
   outlineAccent: {
     name: 'outline-accent',
@@ -82,53 +88,57 @@ export const SEMANTIC = src({
   },
   outlineSolidPrimary: {
     name: 'outline-solid-primary',
-    values: v('#D5DFE6', '#23292D', '#CFDBE4', '#262626', '#C4CFD7'),
+    values: v('#D5DFE6', '#23292D', '#CFDBE4', '#262626', '#A3ACB4', '#25262D'),
   },
   surfaceNegative: {
     name: 'surface-negative',
     values: v('#FF293E', '#FF293E', '#F81C42', '#F81C42', '#E7002F'),
   },
   // выделение: полупрозрачная акцентная заливка, накладывается на цвет покоя (макет «Выделение ячеек»)
+  // в контрастной светлой заливки плотнее: выделение 25 %, статусы 30 %
   surfaceTransparentAccent: {
     name: 'surface-transparent-accent',
-    values: v('#118CDF1F', '#118CDF33', '#0090DA1F', '#0090DA33', '#0076D21F'),
+    values: v('#118CDF1F', '#118CDF33', '#0090DA1F', '#0090DA33', '#0076D240'),
   },
   // статусные заливки: в макете positive и warning — полупрозрачные surface-transparent-*, negative — surface-negative-minor
   surfaceTransparentPositive: {
     name: 'surface-transparent-positive',
-    values: v('#1A9E321F', '#1A9E3233', '#21A0381F', '#21A03833', '#198A001F'),
+    values: v('#1A9E321F', '#1A9E3233', '#21A0381F', '#21A03833', '#198A004D'),
   },
   surfaceTransparentWarning: {
     name: 'surface-transparent-warning',
-    values: v('#FA5F051F', '#FA5F0533', '#E154001F', '#E1540033', '#D958001F'),
+    values: v('#FA5F051F', '#FA5F0533', '#E154001F', '#E1540033', '#D958004D'),
   },
-  // минорные статусные заливки — есть во всех четырёх темах; HC light в tokens.ts их нет
+  // минорные статусные заливки — есть во всех шести темах
   surfacePositiveMinor: {
     name: 'surface-positive-minor',
-    values: v('#9EFAAF', '#0A2B10', '#AFFFB1', '#0F2D11'),
+    values: v('#9EFAAF', '#0A2B10', '#AFFFB1', '#0F2D11', '#96DAA1'),
   },
   surfaceNegativeMinor: {
     name: 'surface-negative-minor',
-    values: v('#FFE0E3', '#4A0D13', '#FEDFDE', '#480B11'),
+    values: v('#FFE0E3', '#4A0D13', '#FEDFDE', '#480B11', '#F8BDC4'),
   },
   surfaceWarningMinor: {
     name: 'surface-warning-minor',
-    values: v('#FEE2D2', '#3D1D0A', '#FEE1D6', '#3C1C0F'),
+    values: v('#FEE2D2', '#3D1D0A', '#FEE1D6', '#3C1C0F', '#F7C29D'),
   },
   surfaceInfoMinor: {
     name: 'surface-info-minor',
-    values: v('#CFECFF', '#0C283B', '#D3EBFF', '#09283D'),
+    values: v('#CFECFF', '#0C283B', '#D3EBFF', '#09283D', '#9CD5FF'),
   },
-  // в beta-темах токенов *-light нет — значения null, пока их не добавят или не выберут другой токен
+  // редактирование: в beta core и контрастной семья называется data-*-on-light (поле names).
+  // light: в теме amber-150 #FFE4AE, по решению дизайнера нужен amber-100 #FFF6E5 — запрошено, до исправления таблица
+  // использует временное #FFF6E5; beta light: в теме amber/150 #FFE3BD, запрошен amber/100 #FFF5E7, временное #FFF5E7
   dataYellowLight: {
     name: 'data-yellow-light',
-    values: v('#FFE4AE', '#211807', null, null, null),
+    names: ON_LIGHT('data-yellow-on-light'),
+    values: v('#FFE4AE', '#211807', '#FFE3BD', '#211607', '#F1DDB8', '#211807'),
   },
   dataBlueLight: {
     name: 'data-blue-light',
-    values: v('#EDF8FF', '#0A1924', null, null, null),
+    names: ON_LIGHT('data-blue-on-light'),
+    values: v('#EDF8FF', '#0A1924', '#EFF8FF', '#0C1A24', '#DAE8F1', '#0A1924'),
   },
-  // TODO HC: в tokens.ts значение названо dataOrange — подтвердить, что это data-yellow контрастной темы
   dataYellow: {
     name: 'data-yellow',
     values: v('#F3A912', '#A16B00', '#E9A431', '#9A6700', '#D49100'),

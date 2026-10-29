@@ -8,8 +8,8 @@
 `packages/ui-kit/src/components/TableGlide/theming/table-colors.generated.ts`,
 и только его видит остальной код.
 
-Автор модели и формул — дизайн-система (Вероника Малышева, сборка от
-18.09.2026); расчётный код в `code/` — её, слой интеграции
+Автор модели и формул — дизайн-система (Вероника Малышева, сборка v1.3 от
+19.10.2026); расчётный код в `code/` — её, слой интеграции
 (`emit-table-colors.ts`) — наш.
 
 ## Зачем это нужно
@@ -37,8 +37,10 @@ hex: меняется тема → меняются входные токены 
 `data-blue-light` и т.д.). Для каждого выписан hex по шести темам: `light`,
 `dark`, `betaCoreLight`, `betaCoreDark`, `highContrastLight`,
 `highContrastDark`. Источник значений — CSS тем атомарной команды
-(`@salutejs/sdds-themes` 0.79.1, beta core 0.1.0); для `highContrastDark`
-своих значений у дизайнера нет — это договорённая копия dark. Всё это лежит в
+(`@salutejs/sdds-themes` 0.83.0, beta core 0.1.0, контрастная тема
+`sdds_finai_high_contrast` 0.1.2; обе контрастные темы настоящие с v1.3).
+В beta core и контрастной теме токены редактирования называются
+`data-yellow-on-light` / `data-blue-on-light` (поле `names`). Всё это лежит в
 `code/table-token-sources.ts` (объект `SEMANTIC`), там же — настройки тем
 (`THEME_SETTINGS`: светлая или тёмная, множитель шага) и карта ключей
 (о ней ниже).

@@ -1,26 +1,74 @@
-/* eslint-disable @typescript-eslint/no-use-before-define */
+import type { Tokens } from '../../../../tokens';
+
 import {
-  DANGER_COLOR,
-  DANGER_TEXT_COLOR,
-  DEFAULT_ACCENT_FG,
-  DEFAULT_SECONDARY_HOVER,
-  DISABLED_BG_COLOR,
-  DISABLED_BORDER_COLOR,
-  DISABLED_TEXT_COLOR,
-  LIGHTEN_AMOUNT,
+  DISABLED_OPACITY,
+  getButtonViewColors,
+  getEmbedIconButtonViewColors,
+  LEGACY_VARIANT_VIEW,
+  resolveTokens,
 } from './constants';
 import type {
   ButtonVariant,
+  ButtonView,
+  EmbedViewColors,
   GlideThemeForRender,
   ResolvedColors,
   ViewColors,
 } from './types';
-import { colorWithOpacity, lightenColor, lightenColorCached } from './utils';
+import { withOpacity } from './utils';
 
-// Pre-computed danger hover color
-const DANGER_COLOR_HOVER = lightenColor(DANGER_COLOR, LIGHTEN_AMOUNT);
+/** Все цвета контрола на 40 %: недоступное состояние, как у контролов SDDS. */
+function disabledColors(colors: ResolvedColors): ResolvedColors {
+  return {
+    bgColor: withOpacity(colors.bgColor, DISABLED_OPACITY),
+    borderColor: withOpacity(colors.borderColor, DISABLED_OPACITY),
+    textColor: withOpacity(colors.textColor, DISABLED_OPACITY),
+    iconColor: withOpacity(colors.iconColor, DISABLED_OPACITY),
+  };
+}
+
+type DerivedViewColors = { hover: ResolvedColors; disabled: ResolvedColors };
+
+// Цвета под курсором и недоступные считаются один раз на палитру вида:
+// палитры видов сами запомнены по токенам темы (constants.ts).
+const derivedViewColorsCache = new WeakMap<ViewColors, DerivedViewColors>();
+
+function getDerivedViewColors(viewColors: ViewColors): DerivedViewColors {
+  let derived = derivedViewColorsCache.get(viewColors);
+  if (derived === undefined) {
+    derived = {
+      hover: {
+        bgColor: viewColors.bgColorHover,
+        borderColor: viewColors.borderColor,
+        textColor: viewColors.textColorHover ?? viewColors.textColor,
+        iconColor: viewColors.iconColorHover ?? viewColors.iconColor,
+      },
+      disabled: disabledColors(viewColors),
+    };
+    derivedViewColorsCache.set(viewColors, derived);
+  }
+  return derived;
+}
+
 /**
- * Resolve colors for theme-based buttons
+ * Цвета кнопки по её виду: покой или под курсором; недоступная кнопка
+ * рисуется цветами покоя с непрозрачностью 40 % и на курсор не реагирует.
+ */
+export function resolveViewColors(
+  viewColors: ViewColors,
+  disabled: boolean,
+  isHovered: boolean
+): ResolvedColors {
+  if (!disabled && !isHovered) {
+    return viewColors;
+  }
+  const derived = getDerivedViewColors(viewColors);
+  return disabled ? derived.disabled : derived.hover;
+}
+
+/**
+ * Цвета кнопки старого способа подключения (`variant`): тот же вид из
+ * токенов темы, что у новых кнопок (LEGACY_VARIANT_VIEW).
  */
 export function resolveButtonColors(
   theme: GlideThemeForRender,
@@ -28,29 +76,88 @@ export function resolveButtonColors(
   disabled: boolean,
   isHovered: boolean
 ): ResolvedColors {
-  if (disabled) {
-    return {
-      bgColor: theme.bgCell,
-      borderColor: theme.borderColor,
-      textColor: theme.textLight,
-      iconColor: theme.textLight,
-    };
-  }
-
-  switch (variant) {
-    case 'primary':
-      return resolvePrimaryColors(theme, isHovered);
-    case 'secondary':
-      return resolveSecondaryColors(theme, isHovered);
-    case 'danger':
-      return resolveDangerColors(isHovered);
-    default:
-      return resolvePrimaryColors(theme, isHovered);
-  }
+  const view = LEGACY_VARIANT_VIEW[variant] ?? LEGACY_VARIANT_VIEW.primary;
+  const viewColors = getButtonViewColors(resolveTokens(theme))[view];
+  return resolveViewColors(viewColors, disabled, isHovered);
 }
 
 /**
- * Resolve colors for primary variant
+ * Цвета кнопки-иконки без подложки по её виду. Переопределения цвета
+ * иконки (например, акцент активной сортировки) приоритетнее вида; hover
+ * без своего переопределения берёт цвет покоя переопределения.
+ */
+export function resolveEmbedIconButtonColors(
+  viewColors: EmbedViewColors,
+  disabled: boolean,
+  isHovered: boolean,
+  overrides?: { iconColor?: string; iconColorHovered?: string }
+): ResolvedColors {
+  if (
+    overrides?.iconColor === undefined &&
+    overrides?.iconColorHovered === undefined
+  ) {
+    return resolveViewColors(viewColors, disabled, isHovered);
+  }
+  const restColor = overrides.iconColor ?? viewColors.iconColor;
+  const color =
+    isHovered && !disabled
+      ? overrides.iconColorHovered ?? overrides.iconColor ?? viewColors.iconColorHover
+      : restColor;
+  const colors: ResolvedColors = {
+    bgColor: viewColors.bgColor,
+    borderColor: viewColors.borderColor,
+    textColor: color,
+    iconColor: color,
+  };
+  return disabled ? disabledColors(colors) : colors;
+}
+
+export function getEmbedIconButtonColors(
+  theme: GlideThemeForRender | undefined,
+  view: ButtonView
+): EmbedViewColors {
+  return getEmbedIconButtonViewColors(resolveTokens(theme))[view];
+}
+
+type CheckboxStateColors = { rest: ResolvedColors; disabled: ResolvedColors };
+
+// Цвета чекбокса считаются один раз на токены темы.
+const checkboxColorsCache = new WeakMap<
+  Tokens,
+  { checked: CheckboxStateColors; unchecked: CheckboxStateColors }
+>();
+
+function getCheckboxColors(tokens: Tokens) {
+  let colors = checkboxColorsCache.get(tokens);
+  if (colors === undefined) {
+    const checked: ResolvedColors = {
+      bgColor: tokens.textAccent,
+      borderColor: tokens.textAccent,
+      textColor: tokens.onDarkTextPrimary,
+      iconColor: tokens.onDarkTextPrimary,
+    };
+    const unchecked: ResolvedColors = {
+      bgColor: tokens.surfaceSolidCard,
+      borderColor: tokens.textSecondary,
+      textColor: tokens.onDarkTextPrimary,
+      iconColor: tokens.onDarkTextPrimary,
+    };
+    colors = {
+      checked: { rest: checked, disabled: disabledColors(checked) },
+      unchecked: { rest: unchecked, disabled: disabledColors(unchecked) },
+    };
+    checkboxColorsCache.set(tokens, colors);
+  }
+  return colors;
+}
+
+/**
+ * Цвета чекбокса, как у Checkbox в SDDS. У неотмеченного фон карточки
+ * `surface-solid-card` и рамка `text-secondary`. У отмеченного или частично
+ * отмеченного заливка `text-accent`, галочка `on-dark-text-primary`, без
+ * рамки. Недоступный рисуется теми же цветами на 40 %.
+ * Фон неотмеченного не прозрачный: чекбокс стоит в служебной колонке с
+ * голубым фоном, и прозрачный просвечивал бы его.
  */
 export function resolveCheckboxColors(
   theme: GlideThemeForRender,
@@ -59,112 +166,7 @@ export function resolveCheckboxColors(
   _isHovered: boolean,
   disabled: boolean
 ): ResolvedColors {
-  const { accentColor } = theme;
-  const textColor = theme.accentFg || DEFAULT_ACCENT_FG;
-  const iconColor = theme.accentFg || DEFAULT_ACCENT_FG;
-  const disabledOpacity = 0.4;
-
-  if (checked || indeterminate) {
-    const bgColor = disabled
-      ? colorWithOpacity(accentColor, disabledOpacity)
-      : accentColor;
-    return {
-      bgColor,
-      borderColor: bgColor,
-      textColor,
-      iconColor,
-    };
-  }
-  const borderColorRoot = '#485056B0';
-
-  const bgColor = 'white';
-  const borderColor = disabled
-    ? colorWithOpacity(borderColorRoot, disabledOpacity)
-    : borderColorRoot;
-  return {
-    bgColor,
-    borderColor,
-    textColor,
-    iconColor,
-  };
-}
-
-/**
- * Resolve colors for primary variant
- */
-export function resolvePrimaryColors(
-  theme: GlideThemeForRender,
-  isHovered: boolean
-): ResolvedColors {
-  const { accentColor } = theme;
-  const bgColor = isHovered
-    ? lightenColorCached(accentColor, LIGHTEN_AMOUNT)
-    : accentColor;
-  return {
-    bgColor,
-    borderColor: bgColor,
-    textColor: theme.accentFg || DEFAULT_ACCENT_FG,
-    iconColor: theme.accentFg || DEFAULT_ACCENT_FG,
-  };
-}
-
-/**
- * Resolve colors for secondary variant
- */
-export function resolveSecondaryColors(
-  theme: GlideThemeForRender,
-  isHovered: boolean
-): ResolvedColors {
-  return {
-    bgColor: isHovered
-      ? theme.accentLight || DEFAULT_SECONDARY_HOVER
-      : theme.bgCell,
-    borderColor: theme.accentColor,
-    textColor: theme.accentColor,
-    iconColor: theme.accentColor,
-  };
-}
-
-/**
- * Resolve colors for danger variant
- */
-export function resolveDangerColors(isHovered: boolean): ResolvedColors {
-  const bgColor = isHovered ? DANGER_COLOR_HOVER : DANGER_COLOR;
-  return {
-    bgColor,
-    borderColor: bgColor,
-    textColor: DANGER_TEXT_COLOR,
-    iconColor: DANGER_TEXT_COLOR,
-  };
-}
-
-/**
- * Resolve colors for view-based buttons (sdds_finai__light theme)
- */
-export function resolveViewColors(
-  viewColors: ViewColors,
-  disabled: boolean,
-  isHovered: boolean
-): ResolvedColors {
-  if (disabled) {
-    return {
-      bgColor: DISABLED_BG_COLOR,
-      borderColor: DISABLED_BORDER_COLOR,
-      textColor: DISABLED_TEXT_COLOR,
-      iconColor: DISABLED_TEXT_COLOR,
-    };
-  }
-
-  return {
-    bgColor: isHovered ? viewColors.bgColorHover : viewColors.bgColor,
-    borderColor: viewColors.borderColor,
-    textColor:
-      isHovered && viewColors.textColorHover
-        ? viewColors.textColorHover
-        : viewColors.textColor,
-    iconColor:
-      isHovered && viewColors.iconColorHover
-        ? viewColors.iconColorHover
-        : viewColors.iconColor,
-  };
+  const colors = getCheckboxColors(resolveTokens(theme));
+  const state = checked || indeterminate ? colors.checked : colors.unchecked;
+  return disabled ? state.disabled : state.rest;
 }

@@ -87,16 +87,17 @@ const mismatches = sourceTokens.flatMap((token) =>
     if (values === undefined) {
       return [];
     }
-    const variable = `${token.name}${suffix}`;
     return (Object.keys(values) as ThemeName[])
-      .map((theme) =>
-        describeMismatch(
+      .map((theme) => {
+        // В beta и контрастной теме часть токенов называется иначе (поле names).
+        const variable = `${token.names?.[theme] ?? token.name}${suffix}`;
+        return describeMismatch(
           variable,
           theme,
           values[theme] ?? null,
           varsByTheme[theme][variable],
-        ),
-      )
+        );
+      })
       .filter((line): line is string => line !== undefined);
   }),
 );

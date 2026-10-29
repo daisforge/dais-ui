@@ -39,7 +39,7 @@ const render = (overrides: Partial<Parameters<typeof useColoringLayers>[0]>) =>
 
 describe('useColoringLayers: служебная зона следует за строкой (clean)', () => {
   it('по умолчанию hover служебной зоны рисуется слоем своим цветом', () => {
-    const regions = render({ hoverRow: 2 });
+    const regions = render({ hoverRows: { from: 2, to: 2 } });
     expect(regions?.[0]).toMatchObject({
       color: 'service-hover',
       range: { x: 0, y: 2, width: 1, height: 1 },
@@ -47,8 +47,15 @@ describe('useColoringLayers: служебная зона следует за с�
     });
   });
 
+  it('курсор на объединённом блоке: hover служебной зоны на все строки блока', () => {
+    const regions = render({ hoverRows: { from: 1, to: 3 } });
+    expect(regions?.[0]).toMatchObject({
+      range: { x: 0, y: 1, width: 1, height: 3 },
+    });
+  });
+
   it('serviceZoneFollowsRow: слоя hover служебной зоны нет', () => {
-    const regions = render({ hoverRow: 2, serviceZoneFollowsRow: true });
+    const regions = render({ hoverRows: { from: 2, to: 2 }, serviceZoneFollowsRow: true });
     expect(regions).toBeUndefined();
   });
 

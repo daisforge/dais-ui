@@ -22,6 +22,8 @@ export type DefaultOmittedKeys = Extract<
   | 'rowSpan'
   // Выравнивание блока публично задаётся через mergedCellsAlign / mergeCells.align.
   | 'spanAlign'
+  // Прилипание подписи блока таблица решает сама.
+  | 'spanContentSticky'
 >;
 
 export type ColumnDefaultOmitted<

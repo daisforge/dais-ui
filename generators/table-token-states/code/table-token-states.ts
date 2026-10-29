@@ -86,6 +86,8 @@ export type ThemeValues = Partial<Record<ThemeName, string | null>>;
 /** Семантический токен темы: имя как в CSS темы и hex по темам. */
 export type SourceToken = {
   name: string;
+  /** Имя токена в темах, где оно отличается: в beta core и контрастной семья data-*-light называется data-*-on-light. */
+  names?: Partial<Record<ThemeName, string>>;
   values: ThemeValues;
   /** Собственные состояния темы — используются для text / outline (например text-primary-hover). */
   hover?: ThemeValues;
@@ -198,10 +200,13 @@ export const flattenHex = (hex: string, backgroundHex = '#FFFFFF'): string => {
   const fg = parseHex(hex);
   const bg = parseHex(backgroundHex);
   const a = fg[3];
-  return `#${[0, 1, 2]
-    .map((i) => toHex2(Math.round((fg[i] * a + bg[i] * (1 - a)) * 255) / 255))
-    .join('')
-    .toUpperCase()}`;
+  return (
+    '#' +
+    [0, 1, 2]
+      .map((i) => toHex2(Math.round((fg[i] * a + bg[i] * (1 - a)) * 255) / 255))
+      .join('')
+      .toUpperCase()
+  );
 };
 
 export const hexToOklch = (hex: string): Oklch => {
@@ -249,10 +254,13 @@ export const oklchToHex = (color: Oklch): string => {
     }
     rgb = toLinearRgb({ ...base, c: lo });
   }
-  return `#${rgb
-    .map((v) => toHex2(toGamma(Math.min(1, Math.max(0, v)))))
-    .join('')
-    .toUpperCase()}`;
+  return (
+    '#' +
+    rgb
+      .map((v) => toHex2(toGamma(Math.min(1, Math.max(0, v)))))
+      .join('')
+      .toUpperCase()
+  );
 };
 
 // ─── Формула ───

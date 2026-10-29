@@ -41,7 +41,11 @@ export interface UseItemHoveredHandlerParams<R extends ObjectForExtending, SR> {
    * стороне вызывающего (setState с prev-проверкой). Не передан — фича
    * выключена, ветка не выполняется.
    */
-  onHoverRowChange?: (rowInd: number | undefined) => void;
+  onHoverRowChange?: (
+    rowInd: number | undefined,
+    /** Главная ячейка блока под курсором (у обычной ячейки она сама). */
+    origin?: readonly [number, number],
+  ) => void;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -158,11 +162,14 @@ export function useItemHoveredHandler<R extends ObjectForExtending, SR>(
       // не-cell (header/group-header/out-of-bounds) → сброс.
       // rawLocation это физическая строка под мышью: у объединённой ячейки
       // location указывает на первую ячейку блока, а подсвечивать надо строку курсора.
-      onHoverRowChange?.(
-        args.kind === 'cell'
-          ? (args.rawLocation?.[1] ?? args.location[1])
-          : undefined,
-      );
+      if (args.kind === 'cell') {
+        onHoverRowChange?.(
+          args.rawLocation?.[1] ?? args.location[1],
+          args.location,
+        );
+      } else {
+        onHoverRowChange?.(undefined);
+      }
 
       const portalTarget = portalEventTargetRef?.current ?? null;
 

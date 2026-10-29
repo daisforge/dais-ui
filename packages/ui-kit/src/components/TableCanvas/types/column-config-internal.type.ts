@@ -15,4 +15,6 @@ export type ColumnConfigInternal<
     spanAlign?:
       | SpanCellAlign
       | ((cellInfo: CellInfo<R, SR>) => SpanCellAlign | undefined);
+    // Внутреннее: прилипает ли подпись объединённой ячейки.
+    spanContentSticky?: boolean;
   };

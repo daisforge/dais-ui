@@ -56,7 +56,7 @@ import { ColumnConfig, ObjectForExtending } from '../types';
 import { ColumnConfigInternal } from '../types/column-config-internal.type';
 import type { MergedCellsAlign } from '../types/merged-cells.type';
 import { TableConfig } from '../types/table-config.type';
-import { calculateMinColumnWidth } from '../utils';
+import { calculateMinColumnWidth, resolveSpanVerticalAlign } from '../utils';
 import { renderFilterSortHeader } from '../widgets/filter-sort-header';
 import { createMergeByValueRowSpan } from './createMergeByValueRowSpan';
 import { createMergedRegionsResolver } from './createMergedRegionsResolver';
@@ -519,28 +519,6 @@ export const useColumns = <
                 : errorTooltipSub?.(clearRow, lvl);
             };
 
-      const renderEditCell: ColumnX['renderEditCell'] = (() => {
-        if (isServiceEditableColumn(el)) {
-          return el.renderEditCell;
-        }
-
-        if (!tableConfigEditing || isLoadingTable) {
-          return undefined;
-        }
-
-        // eslint-disable-next-line react/no-unstable-nested-components
-        return (renderEditCellProps) => (
-          <RenderEditCell
-            editingCellInfo={renderEditCellProps}
-            column={el}
-            tableConfigSubRows={tableConfig.subRows}
-            tableConfigRowDetailPanel={undefined}
-            currIndex={currIndex}
-            indexZeroColKey={indexZeroColKey}
-            keyText={keyText}
-          />
-        );
-      })();
       // && el.resizable - теперь нет точечной настройки для колонки
       const resizable = getColumnIsService(el)
         ? false
@@ -609,6 +587,33 @@ export const useColumns = <
           typeof columnAlign === 'function' ? resolveColumnAlign : columnAlign;
       }
 
+      const renderEditCell: ColumnX['renderEditCell'] = (() => {
+        if (isServiceEditableColumn(el)) {
+          return el.renderEditCell;
+        }
+
+        if (!tableConfigEditing || isLoadingTable) {
+          return undefined;
+        }
+
+        // eslint-disable-next-line react/no-unstable-nested-components
+        return (renderEditCellProps) => (
+          <RenderEditCell
+            editingCellInfo={renderEditCellProps}
+            column={el}
+            mergedVerticalAlign={resolveSpanVerticalAlign(
+              spanAlign,
+              renderEditCellProps,
+            )}
+            tableConfigSubRows={tableConfig.subRows}
+            tableConfigRowDetailPanel={undefined}
+            currIndex={currIndex}
+            indexZeroColKey={indexZeroColKey}
+            keyText={keyText}
+          />
+        );
+      })();
+
       const userThemeOverride = el.themeOverride;
       const columnThemeOverride = userThemeOverride
         ? (cellInfo: Parameters<typeof userThemeOverride>[0]) => {
@@ -665,6 +670,8 @@ export const useColumns = <
         ...(colSpan && { colSpan }),
         ...(rowSpan && { rowSpan }),
         ...(spanAlign && { spanAlign }),
+        // Подпись объединённой ячейки прилипает только без своего renderCell.
+        spanContentSticky: !el.renderCell || getColumnIsService(el),
       };
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps

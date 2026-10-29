@@ -1,5 +1,7 @@
+import { type GlideThemeForRender, resolveTokens } from '../cells/buttons';
 import { CanvasLeaf } from '../core/CanvasLeaf';
 import { DrawBatcher } from '../core/DrawBatcher';
+import type { Tokens } from '../../../tokens';
 
 /** Точка остановки градиента (color stop) */
 export interface CanvasSkeletonGradientStop {
@@ -30,6 +32,9 @@ export interface CanvasSkeletonOptions {
 
   /** Длительность цикла анимации в мс (по умолчанию: 4000) */
   shimmerDuration?: number;
+
+  /** Тема таблицы: из её токенов берутся цвета градиента. */
+  theme?: GlideThemeForRender;
 }
 
 /** Маппинг roundness: ключ → rem-значение */
@@ -52,19 +57,25 @@ export type Roundness = keyof typeof ROUNDNESS_MAP;
 const DEFAULT_ROUNDNESS: Roundness = 16;
 const REM_BASE_PX = 16;
 const DEFAULT_GRADIENT_ANGLE = 90;
-const DEFAULT_FALLBACK_COLOR = 'rgba(8, 8, 8, 0.08)';
 const DEFAULT_SHIMMER_DURATION = 4000;
 
 /** Виртуальная ширина viewport для эмуляции CSS vw-анимации */
 const VIRTUAL_VIEWPORT_WIDTH = 1920;
 
-/** Градиент (light тема) — симметричный, 0%=50%=100% */
-const DEFAULT_GRADIENT =
-  'linear-gradient( 90deg, rgba(8, 8, 8, 0.09) 0%, rgba(8, 8, 8, 0.08) 6.25%, rgba(8, 8, 8, 0.05) 12.5%, rgba(8, 8, 8, 0.01) 25%, rgba(8, 8, 8, 0.05) 37.5%, rgba(8, 8, 8, 0.08) 43.75%, rgba(8, 8, 8, 0.09) 50%, rgba(8, 8, 8, 0.08) 56.25%, rgba(8, 8, 8, 0.05) 62.5%, rgba(8, 8, 8, 0.01) 75%, rgba(8, 8, 8, 0.05) 87.5%, rgba(8, 8, 8, 0.08) 93.75%, rgba(8, 8, 8, 0.09) 100% )';
-
-/** Контрастный градиент */
-const DEFAULT_GRADIENT_LIGHTER =
-  'linear-gradient( 90deg, rgba(8, 8, 8, 0.36) 0%, rgba(8, 8, 8, 0.32) 6.25%, rgba(8, 8, 8, 0.20) 12.5%, rgba(8, 8, 8, 0.04) 25%, rgba(8, 8, 8, 0.20) 37.5%, rgba(8, 8, 8, 0.32) 43.75%, rgba(8, 8, 8, 0.36) 50%, rgba(8, 8, 8, 0.08) 56.25%, rgba(8, 8, 8, 0.20) 62.5%, rgba(8, 8, 8, 0.04) 75%, rgba(8, 8, 8, 0.20) 87.5%, rgba(8, 8, 8, 0.32) 93.75%, rgba(8, 8, 8, 0.36) 100% )';
+/**
+ * Градиент скелетона, как у Skeleton в SDDS: поверх фона ячейки от
+ * `surface-transparent-secondary` к `surface-transparent-tertiary` своей
+ * темы, симметричный (0 % = 50 % = 100 %), чтобы бегущая подсветка
+ * повторялась без шва. Контрастный вариант (`lighter`) вместо третичного
+ * берёт `surface-transparent-deep`.
+ */
+function buildSkeletonGradient(tokens: Tokens, lighter: boolean): string {
+  const from = tokens.surfaceTransparentSecondary;
+  const to = lighter
+    ? tokens.surfaceTransparentDeep
+    : tokens.surfaceTransparentTertiary;
+  return `linear-gradient(90deg, ${from} 0%, ${to} 25%, ${from} 50%, ${to} 75%, ${from} 100%)`;
+}
 
 /** Глобальное время старта для синхронизации всех скелетонов */
 let globalShimmerStartTime: number | null = null;
@@ -90,6 +101,7 @@ const DIRECTION_MAP: Record<string, number> = {
  */
 export class CanvasSkeleton extends CanvasLeaf {
   private borderRadius: number;
+  private fallbackColor: string;
   private _gradientStops: CanvasSkeletonGradientStop[] | null = null;
   private _gradientAngle: number = DEFAULT_GRADIENT_ANGLE;
   private animated: boolean;
@@ -98,10 +110,12 @@ export class CanvasSkeleton extends CanvasLeaf {
   constructor(id: string, options?: CanvasSkeletonOptions) {
     super(id);
 
-    // Выбираем градиент: custom > lighter > default
+    // Градиент: свой у потребителя, иначе из токенов темы (контрастный по lighter)
+    const tokens = resolveTokens(options?.theme);
+    this.fallbackColor = tokens.surfaceTransparentSecondary;
     const gradientSource =
       options?.customGradientColor ??
-      (options?.lighter ? DEFAULT_GRADIENT_LIGHTER : DEFAULT_GRADIENT);
+      buildSkeletonGradient(tokens, options?.lighter ?? false);
 
     const parsed = parseLinearGradient(gradientSource);
     if (parsed) {
@@ -136,10 +150,10 @@ export class CanvasSkeleton extends CanvasLeaf {
     if (!gradientStops || gradientStops.length < 2) {
       if (borderRadius > 0) {
         batcher.roundedRect(x, y, width, height, borderRadius, {
-          fillStyle: DEFAULT_FALLBACK_COLOR,
+          fillStyle: this.fallbackColor,
         });
       } else {
-        batcher.fillRect(x, y, width, height, DEFAULT_FALLBACK_COLOR);
+        batcher.fillRect(x, y, width, height, this.fallbackColor);
       }
       return;
     }

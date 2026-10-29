@@ -40,7 +40,7 @@ type EditableCellTheme = {
 };
 
 /** Поля темы с тремя ступенями фона выбранной строки. */
-type ActiveRowBgTheme = {
+export type ActiveRowBgTheme = {
   selectionCheckboxBg: string;
   bgSelectedRowHovered: string;
   bgSelectedRowActiveHovered: string;
@@ -92,9 +92,13 @@ export const resolveConsumerFillOverride = (
   bgCell: string,
   theme: TableColorTheme,
   context: CellFillContext,
+  stepFactor?: number,
 ): CellFillOverride => {
   try {
-    return resolveCellFillOverride(getCellFillStates(bgCell, theme), context);
+    return resolveCellFillOverride(
+      getCellFillStates(bgCell, theme, stepFactor),
+      context,
+    );
   } catch {
     return { bgCell };
   }

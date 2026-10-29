@@ -246,13 +246,16 @@ const CACHE_LIMIT = 1024;
 export const getCellFillStates = (
   hex: string,
   theme: TableColorTheme,
+  /** Свой множитель шага вместо множителя темы (стенд подбора цветов). */
+  stepFactorOverride?: number,
 ): CellFillStates => {
-  const key = `${theme}/${hex}`;
+  const params = TABLE_FILL_PARAMS[theme];
+  const stepFactor = stepFactorOverride ?? params.stepFactor;
+  const key = `${theme}/${stepFactor}/${hex}`;
   const hit = cache.get(key);
   if (hit) return hit;
-  const params = TABLE_FILL_PARAMS[theme];
   const states = fillStates(hex, params.mode, {
-    stepFactor: params.stepFactor,
+    stepFactor,
     cardHex: params.cardHex,
     primaryHex: params.primaryHex,
     selectionHex: params.selectionHex,

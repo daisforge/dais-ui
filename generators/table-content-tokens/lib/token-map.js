@@ -59,6 +59,7 @@ export const KEYS = [
   'textNegativeHover',
   'textNegativeActive',
   'inverseTextPrimary',
+  'inverseTextPrimaryHover',
   'onDarkTextPrimary',
   'onDarkTextPrimaryHover',
   'onDarkTextPrimaryActive',
@@ -71,6 +72,7 @@ export const KEYS = [
   'surfaceSolidCard',
   'surfaceAccentMinor',
   'surfaceSolidDefault',
+  'surfaceSolidDefaultHover',
   'surfaceSolidTertiary',
   'surfaceAccent',
   'surfaceAccentHover',
@@ -105,8 +107,11 @@ export const KEYS = [
   'surfaceTransparentNegative12',
   'surfaceTransparentNegative20',
   'onLightSurfaceSolidDefault',
+  'onLightSurfaceSolidDefaultHover',
   'onLightSurfaceTransparentDeep',
+  'onLightSurfaceTransparentDeepHover',
   'onDarkSurfaceSolidDefault',
+  'onDarkSurfaceSolidDefaultHover',
   'onDarkSurfaceTransparentCard',
   'outlineAccent',
   'outlineSolidPrimary',
@@ -182,24 +187,15 @@ export const MAPPING = {
   outlineSolidPrimary26: { alpha: ['outline-solid-primary', '42'] },
   surfaceWarningMinor56: { alpha: ['data-yellow', '8E'] },
 
-  // Цвета, заданные руками. Значения перенесены из старого, написанного
-  // руками tokens.ts. Темы без своего значения берут значение светлой темы.
-  // Ни один из этих ключей сейчас не используется в коде таблицы; они
-  // оставлены, чтобы не сломать потребителей, читающих theme.tokens.
-  // dataTeal — решение дизайнера есть (см. why); onDarkTextPrimary* дизайнер
-  // ещё не разбирала.
-  onDarkTextPrimary96: {
-    pin: { light: '#F7F9FBF4' },
-    why: 'похожий --on-dark-text-primary другого оттенка (#F2F5F8, а не #F7F9FB) — откуда взят этот цвет, неизвестно',
-  },
-  onDarkTextPrimary56: {
-    pin: { light: '#F7F9FB8E' },
-    why: 'похожий --on-dark-text-primary другого оттенка (#F2F5F8, а не #F7F9FB) — откуда взят этот цвет, неизвестно',
-  },
-  onDarkTextPrimary28: {
-    pin: { light: '#F7F9FB47' },
-    why: 'похожий --on-dark-text-primary другого оттенка (#F2F5F8, а не #F7F9FB) — откуда взят этот цвет, неизвестно',
-  },
+  // Три старых ключа почти белого текста с непрозрачностью 96/56/28 %:
+  // берут токены темы по роли.
+  onDarkTextPrimary96: { var: 'on-dark-text-primary' },
+  onDarkTextPrimary56: { var: 'on-dark-text-secondary' },
+  onDarkTextPrimary28: { var: 'on-dark-text-tertiary' },
+
+  // Цвет, заданный руками: в темах подходящего токена пока нет. Темы без
+  // своего значения берут значение светлой темы. В коде таблицы не
+  // используется; оставлен, чтобы не сломать потребителей, читающих theme.tokens.
   dataTeal: {
     pin: { light: '#14CC98', highContrastLight: '#00B082' },
     why: 'временно: решение дизайнера — оставить arctic-300 #14CC98 до появления токена data-arctic-minor в темах SDDS (запрос через дизайн), потом заменить на var',

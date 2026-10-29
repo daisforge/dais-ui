@@ -30,7 +30,7 @@
     "storybook": "nx storybook storybook",
     "storybook-docs": "nx storybook storybook dev --docs",
     "prestorybook:build": "npm run prestorybook",
-    "storybook:build": "NODE_OPTIONS=\"--max_old_space_size=4096\" nx build-storybook storybook",
+    "storybook:build": "NODE_OPTIONS=\"--max_old_space_size=4096\" NODE_ENV=production nx build-storybook storybook",
     "ui-kit:circular-check": "npx madge --circular --extensions ts,tsx --ts-config packages/ui-kit/tsconfig.json packages/ui-kit/src",
     "ui-kit:generate-tokens": "node ./generators/generate-ui-kit-tokens-named-exports.js",
     "table-colors:test": "cd generators/table-token-states && vitest run code",

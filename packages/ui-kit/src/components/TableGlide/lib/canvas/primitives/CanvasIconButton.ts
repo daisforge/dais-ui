@@ -4,8 +4,13 @@ import {
   type ButtonView,
   drawIconButton,
   drawIconButtonWithView,
+  FALLBACK_THEME,
+  getButtonViewColors,
+  type GlideThemeForRender,
   ICON_SIZE_ADJUSTMENT,
+  resolveTokens,
   SIZE_CONFIG,
+  type ViewColors,
 } from '../cells/buttons';
 import type { ButtonIcon } from '../cells/iconSprites';
 import { CanvasLeaf } from '../core/CanvasLeaf';
@@ -17,19 +22,6 @@ const DEFAULT_VIEW: ButtonView = 'default';
 const DEFAULT_SIZE: ButtonSize = 's';
 const DEFAULT_CURSOR = 'pointer';
 const MAX_ICON_SIZE = 20;
-
-// Legacy theme for backward compatibility
-const BUTTON_THEME = {
-  accentColor: '#1e88e5',
-  accentLight: 'rgba(30, 136, 229, 0.16)',
-  accentFg: '#ffffff',
-  bgCell: '#ffffff',
-  borderColor: '#e0e0e0',
-  textLight: '#9e9e9e',
-  textDark: '#1f1f1f',
-  baseFontFull:
-    "13px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-};
 
 interface ButtonMetrics {
   height: number;
@@ -50,6 +42,8 @@ export interface CanvasIconButtonOptions {
   buttonSize?: ButtonSize;
   disabled?: boolean;
   onClick?: (event: CanvasEvent) => void;
+  /** Тема таблицы: из её токенов берутся цвета видов. */
+  theme?: GlideThemeForRender;
 }
 
 export class CanvasIconButton extends CanvasLeaf {
@@ -71,12 +65,18 @@ export class CanvasIconButton extends CanvasLeaf {
 
   private useNewApi = false;
 
+  private theme: GlideThemeForRender;
+
+  private viewColors: Record<ButtonView, ViewColors>;
+
   constructor(id: string, icon: ButtonIcon, options?: CanvasIconButtonOptions) {
     super(id);
     this.icon = icon;
     this.size = options?.size ?? 'auto';
     this.variant = options?.variant ?? 'primary';
     this.disabled = options?.disabled ?? false;
+    this.theme = options?.theme ?? FALLBACK_THEME;
+    this.viewColors = getButtonViewColors(resolveTokens(this.theme));
     super.style = { ...super.style, cursor: DEFAULT_CURSOR };
 
     if (options?.view !== undefined) {
@@ -128,7 +128,8 @@ export class CanvasIconButton extends CanvasLeaf {
         this.view,
         this.buttonSize,
         this.disabled,
-        this.isHovered
+        this.isHovered,
+        this.viewColors
       );
     } else {
       drawIconButton(
@@ -138,7 +139,7 @@ export class CanvasIconButton extends CanvasLeaf {
         width,
         height,
         this.icon,
-        BUTTON_THEME,
+        this.theme,
         this.variant,
         this.disabled,
         this.isHovered

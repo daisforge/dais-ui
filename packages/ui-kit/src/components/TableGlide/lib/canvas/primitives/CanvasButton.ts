@@ -1,12 +1,14 @@
-import type { Theme } from '../../../theming/types';
 import {
   type ButtonIcon,
   type ButtonSize,
   type ButtonView,
   type ViewColors,
-  buildButtonViewColors,
   drawButton,
   drawButtonWithView,
+  FALLBACK_THEME,
+  getButtonViewColors,
+  type GlideThemeForRender,
+  resolveTokens,
   SIZE_CONFIG,
 } from '../cells/buttons';
 import { CanvasLeaf } from '../core/CanvasLeaf';
@@ -17,19 +19,6 @@ const DEFAULT_VIEW: ButtonView = 'default';
 const DEFAULT_SIZE: ButtonSize = 's';
 const DEFAULT_CURSOR = 'pointer';
 const ICON_TEXT_SPACING = 8;
-
-// Legacy theme for backward compatibility
-const BUTTON_THEME = {
-  accentColor: '#1e88e5',
-  accentLight: 'rgba(30, 136, 229, 0.16)',
-  accentFg: '#ffffff',
-  bgCell: '#ffffff',
-  borderColor: '#e0e0e0',
-  textLight: '#9e9e9e',
-  textDark: '#1f1f1f',
-  baseFontFull:
-    "13px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-};
 
 const textWidthCache = new Map<string, number>();
 
@@ -46,7 +35,8 @@ export interface CanvasButtonOptions {
   rightIcon?: ButtonIcon;
   disabled?: boolean;
   onClick?: (event: CanvasEvent) => void;
-  theme?: Theme;
+  /** Тема таблицы: из её токенов берутся цвета видов. */
+  theme?: GlideThemeForRender;
 }
 
 export class CanvasButton extends CanvasLeaf {
@@ -69,7 +59,11 @@ export class CanvasButton extends CanvasLeaf {
 
   private useNewApi = false;
 
-  private viewColors: Record<ButtonView, ViewColors> | undefined;
+  private theme: GlideThemeForRender = FALLBACK_THEME;
+
+  private viewColors: Record<ButtonView, ViewColors> = getButtonViewColors(
+    resolveTokens(FALLBACK_THEME),
+  );
 
   constructor(id: string, text: string, options?: CanvasButtonOptions) {
     super(id);
@@ -91,8 +85,9 @@ export class CanvasButton extends CanvasLeaf {
 
       if (options.disabled !== undefined) this.disabled = options.disabled;
       if (options.onClick) this.onClick = options.onClick;
-      if (options.theme?.tokens) {
-        this.viewColors = buildButtonViewColors(options.theme.tokens);
+      if (options.theme) {
+        this.theme = options.theme;
+        this.viewColors = getButtonViewColors(resolveTokens(options.theme));
       }
     }
   }
@@ -143,7 +138,7 @@ export class CanvasButton extends CanvasLeaf {
         this.viewColors
       );
     } else {
-      // Legacy API for backward compatibility
+      // Старый способ подключения (variant): цвета берутся из токенов темы.
       const sizeConfig = SIZE_CONFIG[this.size];
       drawButton(
         batcher,
@@ -152,7 +147,7 @@ export class CanvasButton extends CanvasLeaf {
         width,
         sizeConfig.height,
         this.text,
-        BUTTON_THEME,
+        this.theme,
         this.variant,
         this.disabled,
         this.isHovered,
