@@ -257,7 +257,12 @@ export const GroupHeaderClick: Story = {
         {
           key: 'progress',
           name: (
-            <Canvas.Container direction="row" alignItems="center" gap={4}>
+            <Canvas.Container
+              direction="row"
+              alignItems="center"
+              gap={4}
+              padding={{ left: 8, right: 8 }}
+            >
               <Canvas.Text font={tableCanvasFonts.bodyXSBold}>
                 Прогресс
               </Canvas.Text>
