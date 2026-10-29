@@ -3,7 +3,11 @@ import { createRows, Row } from '@df-storybook/data/tableData';
 import DocStoryTemplate from '@df-storybook/templates/DocStoryTemplate.mdx';
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
 import type { Meta, StoryObj } from '@storybook/react';
-import { ColumnConfig, TableCanvas } from '@ui-kit/components/TableCanvas';
+import {
+  ColumnConfig,
+  ColumnOrColumnGroupConfig,
+  TableCanvas,
+} from '@ui-kit/components/TableCanvas';
 import React, { useMemo, useState } from 'react';
 
 const meta: Meta = {
@@ -19,6 +23,58 @@ const meta: Meta = {
 export default meta;
 
 type Story = StoryObj;
+
+export const ResizeIndicator: Story = {
+  name: 'Линия наведения и изменения ширины',
+  ...storySourceDoc({ previewSource: 'shown' }),
+  render: () => {
+    const [rows] = useState(createRows);
+    const selectingState = useState<ReadonlySet<number | string>>(new Set());
+    const columns = useMemo<ColumnOrColumnGroupConfig<Row>[]>(
+      () => [
+        { key: 'id', name: 'ID', width: 90, frozen: true },
+        {
+          key: 'details',
+          name: 'Задача',
+          children: [
+            {
+              key: 'task',
+              name: 'Название',
+              width: 250,
+              minWidth: 150,
+              maxWidth: 400,
+            },
+            {
+              key: 'priority',
+              name: 'Приоритет (без ресайза)',
+              width: 220,
+              resizable: false,
+            },
+          ],
+        },
+        { key: 'loremIpsum', name: 'Описание', width: 300 },
+        { key: 'complete', name: 'Готовность', width: 150 },
+      ],
+      [],
+    );
+    return (
+      <TableCanvas
+        tableConfig={{
+          containerStyle: { height: 400, width: 640, maxWidth: '100%' },
+          selecting: { state: selectingState, rowKeyGetter: (row) => row.id },
+        }}
+        columnConfig={columns}
+        rows={rows}
+      />
+    );
+  },
+};
+
+export const ResizeIndicatorDark: Story = {
+  ...ResizeIndicator,
+  name: 'Линия — тёмная тема',
+  parameters: { forcedTheme: 'FinAI:dark' },
+};
 
 export const MinMaxWidth: Story = {
   name: 'minWidth / maxWidth',

@@ -24,6 +24,7 @@ import { useErrorCellRanges } from './hooks/useErrorCellRanges';
 import { useCanvasContextMenuInteraction } from './hooks/useCanvasContextMenuInteraction';
 import { useCanvasEditorActivation } from './hooks/useCanvasEditorActivation';
 import { useCanvasInteractionSession } from './hooks/useCanvasInteractionSession';
+import { useColumnResizeHover } from './hooks/useColumnResizeHover';
 import { useCustomRenderers } from './hooks/useCustomRenderers';
 import { useGlideElements } from './hooks/useGlideElements';
 import { useHoverState } from './hooks/useHoverState';
@@ -130,6 +131,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   ctxs = CTXS_EMPTY,
   freezeColumns,
   onColumnResize,
+  onColumnResizeStart: onColumnResizeStartExternal,
   renderGroupHeader,
   groupAlignMap,
   refTable,
@@ -1308,6 +1310,18 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     renderInContainer,
   } = useGlideElements(containerRefInternal, fullScreened);
 
+  const {
+    lineStyle: resizeHoverLineStyle,
+    onMouseMove: onResizeHoverMouseMove,
+    onColumnResizeStart,
+  } = useColumnResizeHover({
+    enabled: resizableColumn && !hideGrid,
+    columns: columnsForRender,
+    container: glideContainerEl,
+    dataEditorRef,
+    onColumnResizeStart: onColumnResizeStartExternal,
+  });
+
   const isEditorOverlayInside = editorOverlayPortal === 'inside';
   useOverlayPortalFix(containerRefInternal, isEditorOverlayInside);
 
@@ -1345,6 +1359,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
 
   const onMouseMove: NonNullable<GlideProps['onMouseMove']> = useCallback(
     (event) => {
+      onResizeHoverMouseMove(event);
       onMouseMoveExternal?.(event);
 
       if (event.kind === 'cell') {
@@ -1368,7 +1383,13 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         setHoveredCell(null);
       }
     },
-    [columnsForRender, onMouseMoveExternal, rows, setHoveredCell],
+    [
+      columnsForRender,
+      onMouseMoveExternal,
+      onResizeHoverMouseMove,
+      rows,
+      setHoveredCell,
+    ],
   );
 
   const loadRedrawOptions = {
@@ -1699,6 +1720,10 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
           onItemHovered={onItemHovered}
           onVisibleRegionChanged={handleVisibleRegionChanged}
           {...restProps}
+          onColumnResizeStart={
+            resizableColumn ? onColumnResizeStart : undefined
+          }
+          resizeIndicator="full"
           experimental={experimental}
           // Copy/paste glide отключены, обрабатываются нашей реализацией
           // (feature-cell-transfer), которая поддерживает subRow, tree, copyData,
@@ -1708,6 +1733,28 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
           onPaste={false}
         />
       )}
+      {resizeHoverLineStyle &&
+        renderInContainer(
+          <div
+            aria-hidden="true"
+            style={{
+              position: 'absolute',
+              inset: 0,
+              overflow: 'hidden',
+              pointerEvents: 'none',
+            }}
+          >
+            <div
+              data-column-resize-hover="true"
+              style={{
+                position: 'absolute',
+                width: 2,
+                backgroundColor: theme.resizeIndicatorColor,
+                ...resizeHoverLineStyle,
+              }}
+            />
+          </div>,
+        )}
       {/* EmptyState, ErrorState */}
       {contentStateNode}
       {containerSlot}

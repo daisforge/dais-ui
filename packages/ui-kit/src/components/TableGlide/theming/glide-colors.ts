@@ -10,6 +10,7 @@ import { TABLE_STATE_COLORS } from './table-colors.generated';
  */
 export const getGlideColors = (activeTheme: ActiveTheme) => ({
   accentColor: TABLE_STATE_COLORS.accentColor[activeTheme],
+  resizeIndicatorColor: TABLE_STATE_COLORS.accentColor[activeTheme],
   accentLight: TABLE_STATE_COLORS.accentLight[activeTheme],
   textDark: TABLE_STATE_COLORS.textDark[activeTheme],
   textHeader: TABLE_STATE_COLORS.textHeader[activeTheme],

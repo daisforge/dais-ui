@@ -7,6 +7,17 @@ import {
 } from './table-colors.generated';
 
 describe('getTheme: «чистый» вид (appearance.variant = clean)', () => {
+  it.each(TABLE_COLOR_THEMES)(
+    'тема %s: линия ресайза акцентная',
+    (activeTheme) => {
+      expect(getTheme('big', activeTheme).resizeIndicatorColor).toBe(
+        getTheme('big', activeTheme).accentColor,
+      );
+      expect(getTheme('big', activeTheme, 'clean').resizeIndicatorColor).toBe(
+        getTheme('big', activeTheme, 'clean').accentColor,
+      );
+    },
+  );
   it('default без варианта и с variant=default совпадают', () => {
     expect(getTheme('big', 'light', 'default')).toEqual(
       getTheme('big', 'light'),
