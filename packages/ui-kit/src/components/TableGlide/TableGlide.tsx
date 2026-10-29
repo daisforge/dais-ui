@@ -49,8 +49,10 @@ import { resolveCanvasCellInteractionTargetFromRenderData } from './lib/canvas/i
 import { StyledGlideDataEditor, StyledOverlayPortal } from './styled';
 import { getTheme } from './theming';
 import {
+  getEditableCellFillStates,
   resolveActiveRowBg,
-  resolveCellFill,
+  resolveCellFillOverride,
+  resolveConsumerFillOverride,
 } from './theming/cell-fill-override';
 import type {
   CellInfo,
@@ -770,13 +772,15 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         rowHover: isRowHoverEnabled && cellInfo.hovered.rowHover,
         rowActive: rowInd === activeRow,
       };
-      const fillOverride = resolveCellFill({
-        consumerBg: columnThemeOverrideResult?.bgCell,
-        isEditable: cellIsEditable,
-        editableTheme: theme,
-        colorTheme: activeTheme,
-        context: fillContext,
-      });
+      const fillOverride = cellIsEditable
+        ? resolveCellFillOverride(getEditableCellFillStates(theme), fillContext)
+        : columnThemeOverrideResult?.bgCell
+        ? resolveConsumerFillOverride(
+            columnThemeOverrideResult.bgCell,
+            activeTheme,
+            fillContext,
+          )
+        : undefined;
 
       // Кликнутая ячейка на выбранной строке: показываем только рамку, фон
       // остаётся как у строки (правило дизайнера).
