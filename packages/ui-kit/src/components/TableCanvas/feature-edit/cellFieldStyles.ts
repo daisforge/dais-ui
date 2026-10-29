@@ -62,20 +62,20 @@ export const cellFieldStyles = (geometry: CellFieldGeometry) => {
 };
 
 /**
- * Стрелка селекта там же, где на canvas: тот же размер иконки, тот же зазор
- * от текста и тот же отступ от правого края ячейки.
+ * Стрелка селекта там же и того же размера, что на canvas: тот же зазор от
+ * текста и тот же отступ от правого края ячейки. Глиф стрелки SDDS занимает
+ * меньшую долю своей коробки, чем шеврон на canvas (24 px дают 10 px, 16 px
+ * всего 6 px), поэтому коробку берём равной квадрату иконки canvas
+ * (24/24/20): глиф выходит той же ширины, что в просмотре (10/10/8).
  */
 export const selectArrowStyles = (rowSize: SIZE) => {
-  const { overrideSquareSize, overrideIconSize } =
-    ROW_ICON_BUTTON_CONFIG[rowSize];
-  const edge = (overrideSquareSize - overrideIconSize) / 2;
+  const { overrideSquareSize } = ROW_ICON_BUTTON_CONFIG[rowSize];
 
   return css`
     && {
-      --plasma-select-disclosure-icon-size: ${overrideIconSize}px;
+      --plasma-select-disclosure-icon-size: ${overrideSquareSize}px;
       --plasma-select-disclosure-icon-margin: 0;
-      --plasma-textfield__right-content-margin: 0 ${edge}px 0
-        ${SELECT_TRIGGER_GAP}px;
+      --plasma-textfield__right-content-margin: 0 0 0 ${SELECT_TRIGGER_GAP}px;
       --plasma-textfield-content-right-wrapper-margin: 0;
       --plasma-textfield-content-right-wrapper-gap: 0;
     }
