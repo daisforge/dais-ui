@@ -41,6 +41,19 @@ const SELECT_ARROW_ICON_BY_ROW_SIZE = {
   small: IconChevronDown,
 } as const;
 
+/** Ячейка с селектом: встроенный select или кастомный редактор с showSelectIcon. */
+export const isSelectEditingCell = (editingCell: unknown): boolean => {
+  if (!editingCell || typeof editingCell !== 'object') return false;
+  const { component, showSelectIcon } = editingCell as {
+    component?: unknown;
+    showSelectIcon?: boolean;
+  };
+  return (
+    component === 'select' ||
+    (typeof component === 'function' && showSelectIcon === true)
+  );
+};
+
 export const withSelectIcon = (
   content: CanvasContent,
   {
