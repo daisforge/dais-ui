@@ -40,8 +40,8 @@ const columnConfig: ColumnConfig[] = [
     key: 'status',
     name: 'Статус',
     width: 200,
-    renderCell: ({ row }) => (
-      <Canvas.Container direction="row" alignItems="center" padding={{ left: 8, right: 8 }}>
+    renderCell: ({ row, theme }) => (
+      <Canvas.Container direction="row" alignItems="center" padding={{ left: theme.cellHorizontalPadding, right: theme.cellHorizontalPadding }}>
         <Canvas.Badge
           text={row.status}
           view="default"
@@ -112,11 +112,14 @@ export const CustomColors: StoryObj = {
           key: 'solid',
           name: 'Solid',
           width: 200,
-          renderCell: ({ row }) => (
+          renderCell: ({ row, theme }) => (
             <Canvas.Container
               direction="row"
               alignItems="center"
-              padding={{ left: 8, right: 8 }}
+              padding={{
+                left: theme.cellHorizontalPadding,
+                right: theme.cellHorizontalPadding,
+              }}
             >
               <Canvas.Badge
                 text={row.label}
@@ -131,11 +134,14 @@ export const CustomColors: StoryObj = {
           key: 'pilled',
           name: 'Pilled',
           width: 200,
-          renderCell: ({ row }) => (
+          renderCell: ({ row, theme }) => (
             <Canvas.Container
               direction="row"
               alignItems="center"
-              padding={{ left: 8, right: 8 }}
+              padding={{
+                left: theme.cellHorizontalPadding,
+                right: theme.cellHorizontalPadding,
+              }}
             >
               <Canvas.Badge
                 text={row.label}
@@ -151,11 +157,14 @@ export const CustomColors: StoryObj = {
           key: 'transparent',
           name: 'Transparent',
           width: 200,
-          renderCell: ({ row }) => (
+          renderCell: ({ row, theme }) => (
             <Canvas.Container
               direction="row"
               alignItems="center"
-              padding={{ left: 8, right: 8 }}
+              padding={{
+                left: theme.cellHorizontalPadding,
+                right: theme.cellHorizontalPadding,
+              }}
             >
               <Canvas.Badge
                 text={row.label}
