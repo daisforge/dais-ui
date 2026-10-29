@@ -36,6 +36,8 @@ import {
   type BadgeSize,
   type BadgeView,
   CanvasBadge,
+  getBadgeIconSize,
+  resolveBadgeSize,
 } from '../primitives/CanvasBadge';
 import { CanvasButton } from '../primitives/CanvasButton';
 import {
@@ -281,7 +283,7 @@ interface BadgeProps extends CanvasInteractionProps, CanvasLayerProps {
   text: string;
   /** Badge view style */
   view?: BadgeView;
-  /** Badge size */
+  /** Явный размер имеет приоритет. Без size следует размеру таблицы: small → xs (16), medium → m (24), big → l (28). */
   size?: BadgeSize;
   /** Use transparent background */
   transparent?: boolean;
@@ -714,10 +716,8 @@ function buildNode(
         size: iconSize,
       });
   } else if (canvasType === 'Badge') {
-    // Badge icon sizes: xs=10, s=12, m=14, l=16
-    const badgeSize = props['size'] ?? 's';
-    const iconSizeMap: Record<string, number> = { xs: 10, s: 12, m: 14, l: 16 };
-    const iconSize = iconSizeMap[badgeSize] ?? 12;
+    const badgeSize = resolveBadgeSize(props['size'], theme.rowSize);
+    const iconSize = getBadgeIconSize(badgeSize);
     if (props['leftIcon'])
       iconsToPreload.push({
         icon: normalizeIconForPreload(props['leftIcon']),

@@ -40,8 +40,8 @@ const columnConfig: ColumnConfig[] = [
     key: 'status',
     name: 'Статус',
     width: 200,
-    renderCell: ({ row }) => (
-      <Canvas.Container direction="row" alignItems="center" padding={8}>
+    renderCell: ({ row, theme }) => (
+      <Canvas.Container direction="row" alignItems="center" padding={{ left: theme.cellHorizontalPadding, right: theme.cellHorizontalPadding }}>
         <Canvas.Badge
           text={row.status}
           view="default"
@@ -54,7 +54,10 @@ const columnConfig: ColumnConfig[] = [
 ];
 
 <TableCanvas
-  tableConfig={{ containerStyle: { height: '300px' } }}
+  tableConfig={{
+    containerStyle: { height: '300px' },
+    rowSize: { showInControl: true },
+  }}
   columnConfig={columnConfig}
   rows={rows}
 />
@@ -109,8 +112,15 @@ export const CustomColors: StoryObj = {
           key: 'solid',
           name: 'Solid',
           width: 200,
-          renderCell: ({ row }) => (
-            <Canvas.Container direction="row" alignItems="center" padding={8}>
+          renderCell: ({ row, theme }) => (
+            <Canvas.Container
+              direction="row"
+              alignItems="center"
+              padding={{
+                left: theme.cellHorizontalPadding,
+                right: theme.cellHorizontalPadding,
+              }}
+            >
               <Canvas.Badge
                 text={row.label}
                 view="default"
@@ -124,8 +134,15 @@ export const CustomColors: StoryObj = {
           key: 'pilled',
           name: 'Pilled',
           width: 200,
-          renderCell: ({ row }) => (
-            <Canvas.Container direction="row" alignItems="center" padding={8}>
+          renderCell: ({ row, theme }) => (
+            <Canvas.Container
+              direction="row"
+              alignItems="center"
+              padding={{
+                left: theme.cellHorizontalPadding,
+                right: theme.cellHorizontalPadding,
+              }}
+            >
               <Canvas.Badge
                 text={row.label}
                 view="default"
@@ -140,8 +157,15 @@ export const CustomColors: StoryObj = {
           key: 'transparent',
           name: 'Transparent',
           width: 200,
-          renderCell: ({ row }) => (
-            <Canvas.Container direction="row" alignItems="center" padding={8}>
+          renderCell: ({ row, theme }) => (
+            <Canvas.Container
+              direction="row"
+              alignItems="center"
+              padding={{
+                left: theme.cellHorizontalPadding,
+                right: theme.cellHorizontalPadding,
+              }}
+            >
               <Canvas.Badge
                 text={row.label}
                 view="default"
@@ -158,7 +182,10 @@ export const CustomColors: StoryObj = {
 
     return (
       <TableCanvas
-        tableConfig={{ containerStyle: { height: '300px' } }}
+        tableConfig={{
+          containerStyle: { height: '300px' },
+          rowSize: { showInControl: true },
+        }}
         columnConfig={columnConfig}
         rows={customRows}
       />
