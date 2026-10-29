@@ -12,7 +12,11 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import { glideCellRenderer } from './cellRenderer';
-import { DEFAULT_HEADER_HEIGHT, DEFAULT_ROW_HEIGHT } from './constants';
+import {
+  DEFAULT_HEADER_HEIGHT,
+  DEFAULT_ROW_HEIGHT,
+  EDITOR_BLOOM,
+} from './constants';
 import {
   useColoringLayers,
   useNativeGridSelection,
@@ -1694,6 +1698,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
           smoothScrollY
           // overscrollX={16}
           headerHeight={DEFAULT_HEADER_HEIGHT}
+          editorBloom={EDITOR_BLOOM}
           onCellClicked={handleCellClickedBridge}
           onCellContextMenu={handleCellContextMenuBridge}
           onItemHovered={onItemHovered}

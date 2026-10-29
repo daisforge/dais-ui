@@ -13,11 +13,12 @@ import { useRowContext } from '../contexts';
 import { SIZES } from '../styles';
 import { EditingCellInfo, ObjectForExtending } from '../types';
 import { CellEditorTextArea } from './CellEditorTextArea';
-import type {
-  CellEditorComboboxProps,
-  CustomCellStyleProps,
-  EmptyObj,
-} from './types';
+import {
+  type CellFieldGeometry,
+  cellFieldStyles,
+  selectArrowStyles,
+} from './cellFieldStyles';
+import type { CellEditorComboboxProps, EmptyObj } from './types';
 
 /*
 ПЕРЕОПРЕДЕЛЕНИЯ КАК НИЖЕ НУЖНЫ ДЛЯ СОХРАНЕНИЯ GENERIC-а и уменьшения нагрузки на ts-сервер
@@ -36,15 +37,17 @@ as <T extends ComboboxItemOption>(
 {...(props as unknown as EmptyObj)}
 */
 
-const StyledCombobox = styled(Combobox)<CustomCellStyleProps>`
-  && {
-    .input-wrapper {
-      box-shadow: none;
-      background-color: inherit;
-    }
-  }
+/** Ширина списка не меньше этой: в узкой ячейке пункты иначе не прочитать. */
+const MIN_LIST_WIDTH = 200;
+
+const StyledCombobox = styled(Combobox)<{ $geometry: CellFieldGeometry }>`
+  ${({ $geometry }) => cellFieldStyles($geometry)}
+  ${({ $geometry }) => selectArrowStyles($geometry.rowSize)}
 ` as <T extends ComboboxItemOption>(
-  p: Omit<CellEditorComboboxProps<T>, 'autoFocusType' | 'paddingInline'>,
+  p: Omit<
+    CellEditorComboboxProps<T>,
+    'autoFocusType' | 'paddingInline' | 'paddingBlock'
+  > & { $geometry: CellFieldGeometry },
 ) => ReactElement;
 
 export const CellEditorCombobox = forwardRef(
@@ -53,13 +56,13 @@ export const CellEditorCombobox = forwardRef(
       cellWidth,
       cellHeight,
       disableLeftOffset,
+      paddingInline,
+      paddingBlock,
       name,
       items,
       multiple,
       autoFocusType,
-      style,
       readOnly,
-      paddingInline,
       ...restProps
     }: CellEditorComboboxProps<T>,
     refExternal: ForwardedRef<HTMLInputElement>,
@@ -76,11 +79,18 @@ export const CellEditorCombobox = forwardRef(
       // autoFocus только во время первого маунта
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-    const inputWidth = cellWidth + 2;
+
+    const geometry: CellFieldGeometry = {
+      rowSize,
+      cellWidth,
+      cellHeight,
+      paddingInline,
+      paddingBlock,
+      disableLeftOffset,
+    };
+    /* undefined: ширина списка равна ширине поля */
     const listWidth =
-      cellWidth < 200
-        ? '202px'
-        : undefined; /* undefined - при undefined ширина listWidth=inputWidth */
+      cellWidth < MIN_LIST_WIDTH ? `${MIN_LIST_WIDTH}px` : undefined;
 
     if (readOnly) {
       return (
@@ -90,6 +100,7 @@ export const CellEditorCombobox = forwardRef(
           cellHeight={cellHeight}
           cellWidth={cellWidth}
           paddingInline={paddingInline}
+          paddingBlock={paddingBlock}
           value={restProps.value ?? restProps.defaultValue ?? ''}
           onChange={() => {}}
         />
@@ -98,17 +109,13 @@ export const CellEditorCombobox = forwardRef(
 
     return (
       <StyledCombobox<T>
-        /* CustomCellStyleProps */
-        cellHeight={cellHeight}
-        cellWidth={cellWidth}
-        disableLeftOffset={disableLeftOffset}
+        $geometry={geometry}
         /* просы с переопределенными типами -  нужны для устраненения ts-несоостветствий */
         name={name as string}
         multiple={multiple as true}
         items={items}
         //
         ref={mergeRefs(ref, refExternal)}
-        style={{ maxWidth: inputWidth, ...style }}
         /* portal="portal2" - данный id поставлен как исключение в isOutsideClick в TableGlideInstance.
       Клики по нему не будут преждевременно закрывать режим редактирования */
         portal="portal2"
@@ -194,6 +201,7 @@ export function CellEditorComboboxInternal<
     <CellEditorCombobox
       readOnly={readOnly}
       paddingInline={theme.cellHorizontalPadding}
+      paddingBlock={theme.cellVerticalPadding}
       /* CustomCellStyleProps */
       cellWidth={cellWidth}
       cellHeight={cellHeight}

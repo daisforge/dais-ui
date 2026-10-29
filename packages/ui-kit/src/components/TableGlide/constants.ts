@@ -112,4 +112,9 @@ export const TABLE_GLIDE_SIZES = {
 } as const satisfies Record<SIZE, TableGlideSizeConfig>;
 
 export const COLUMN_MIN_WIDTH = 80;
+/**
+ * На сколько пикселей оверлей редактора выходит за границы ячейки. Ноль:
+ * редактор совпадает с ячейкой, рамку рисует StyledOverlayPortal.
+ */
+export const EDITOR_BLOOM: readonly [number, number] = [0, 0];
 export const DEFAULT_HEADER_HEIGHT = 33;

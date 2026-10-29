@@ -23,6 +23,9 @@ export const ROW_ICON_BUTTON_CONFIG: Record<
   },
 };
 
+/** Зазор между текстом и стрелкой внутри триггера селекта */
+export const SELECT_TRIGGER_GAP = 8;
+
 /** Зазор между шевроном раскрытия строки и текстом ячейки */
 export const TREE_BUTTON_GAP: Record<RowSize, number> = {
   big: 8,

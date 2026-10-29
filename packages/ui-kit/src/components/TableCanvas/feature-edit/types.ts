@@ -11,6 +11,10 @@ export type CustomCellStyleProps = {
   cellWidth: number;
   cellHeight: number;
   disableLeftOffset?: boolean | undefined;
+  /** Горизонтальный отступ ячейки из темы. Без него берётся токен размера строки. */
+  paddingInline?: number | undefined;
+  /** Вертикальный отступ ячейки из темы. Без него берётся токен размера строки. */
+  paddingBlock?: number | undefined;
 };
 export type EmptyObj = Record<string, never>;
 
@@ -46,7 +50,6 @@ export type CellEditorComboboxProps<T extends ComboboxItemOption> =
   ComboboxCompProps<T> &
     CustomCellStyleProps & {
       autoFocusType: 'autoFocus' | 'none';
-      paddingInline: number;
     };
 
 export type CellEditorTextAreaProps = Omit<
@@ -54,6 +57,5 @@ export type CellEditorTextAreaProps = Omit<
   'highlight'
 > & {
   autoFocusType?: 'autoFocus' | 'autoFocusAndSelect' | 'none';
-  paddingInline: number;
   containerClassName?: string;
 } & CustomCellStyleProps;

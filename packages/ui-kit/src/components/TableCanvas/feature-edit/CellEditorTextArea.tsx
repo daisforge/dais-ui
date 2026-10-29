@@ -1,34 +1,31 @@
 import { TextCellEntry } from '@glideappsfinal/glide-data-grid';
-import { bodyM, bodyS, bodyXS } from '@ui-kit/tokens';
 import { mergeClasses } from '@ui-kit/utils';
 import React, { forwardRef, useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 
 import { useRowContext } from '../contexts';
 import { CSS_VARIABLES } from '../renders/constants';
+import { type SIZE, SIZES } from '../styles';
 import type { EditingCellInfo, ObjectForExtending } from '../types';
+import { resolveCellFieldPadding } from './cellFieldStyles';
 import type { CustomCellStyleProps } from './types';
 import { CellEditorTextAreaProps } from './types';
-
-const mapperSizeToFont = {
-  small: () => bodyXS,
-  medium: () => bodyS,
-  big: () => bodyM,
-};
 
 const TextAreaWrap = styled.div<
   {
     paddingInline: number;
-    size: keyof typeof mapperSizeToFont;
-  } & CustomCellStyleProps
+    size: SIZE;
+  } & Omit<CustomCellStyleProps, 'paddingInline' | 'paddingBlock'>
 >`
+  /* Поле по центру ячейки любой высоты: без своих вертикальных отступов
+     (у Glide сверху 6px), центрирует auto-margin внутри оверлея. */
   margin-block: auto;
   padding-inline: ${({ paddingInline }) => paddingInline}px;
   .gdg-growing-entry {
-    margin-block: 6px;
+    margin-block: 0;
   }
   * {
-    ${({ size }) => css(mapperSizeToFont[size])}
+    ${({ size }) => css(SIZES[size].font())}
   }
 
   ${({ disableLeftOffset, paddingInline, cellWidth }) =>
@@ -64,6 +61,7 @@ export const CellEditorTextArea = forwardRef<
       disableLeftOffset,
       autoFocusType,
       paddingInline,
+      paddingBlock: _paddingBlock,
       containerClassName,
       //
       ...props
@@ -71,11 +69,12 @@ export const CellEditorTextArea = forwardRef<
     refExternal,
   ) => {
     const { rowSize } = useRowContext();
+    const { inline } = resolveCellFieldPadding({ rowSize, paddingInline });
 
     return (
       <TextAreaWrap
         size={rowSize}
-        paddingInline={paddingInline}
+        paddingInline={inline}
         className={mergeClasses('tableCanvasTextAreaWrap', containerClassName)}
         cellHeight={cellHeight}
         cellWidth={cellWidth}

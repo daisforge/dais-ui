@@ -3,7 +3,7 @@ import { IconChevronDown, IconDisclosureDownOutline } from '@ui-kit/icons';
 import { Canvas } from '../../TableGlide';
 import { CanvasContent, isCanvasString } from '../TableGlideInstance';
 import type { RowSize } from './rowIconConfig';
-import { ROW_ICON_BUTTON_CONFIG } from './rowIconConfig';
+import { ROW_ICON_BUTTON_CONFIG, SELECT_TRIGGER_GAP } from './rowIconConfig';
 
 type SelectCellVisual = {
   rowSize: RowSize;
@@ -31,9 +31,6 @@ const SELECT_CONTENT_HORIZONTAL_ALIGN = {
   center: 'center',
   right: 'flex-end',
 } as const;
-
-// Зазор между текстом и шевроном внутри триггера.
-const SELECT_TRIGGER_GAP = 8;
 
 const SELECT_ARROW_ICON_BY_ROW_SIZE = {
   big: IconDisclosureDownOutline,
