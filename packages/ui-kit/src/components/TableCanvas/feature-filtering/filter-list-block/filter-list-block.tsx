@@ -65,6 +65,9 @@ export const FilterListBlock = <
         setFilters((prev) => ({ ...(prev ?? EMPTY_OBJ), [key]: newValue }));
       }
     },
+    updateAllFilters: (nextFilters) => {
+      setFilters?.(nextFilters as FilterStateType);
+    },
     filtersInfo,
     order: filtersOrder,
   });
