@@ -57,7 +57,7 @@ export const FilterListBlock = <
     headerContextValue,
   });
 
-  const { filterList, clearAll } = useFiltersList({
+  const { filterList } = useFiltersList({
     filters: filters ?? EMPTY_OBJ, // empty object if filters is undefined
     options,
     updateFilters: (key, newValue) => {
@@ -68,6 +68,17 @@ export const FilterListBlock = <
     filtersInfo,
     order: filtersOrder,
   });
+
+  const clearAll = () => {
+    const clearedFilters = Object.fromEntries(
+      Object.entries(filtersInfo).map(([key, info]) => [
+        key,
+        info.clearedValue,
+      ]),
+    ) as FilterStateType;
+
+    setFilters?.(clearedFilters);
+  };
 
   if (!tableConfig.filtering) {
     return null;
