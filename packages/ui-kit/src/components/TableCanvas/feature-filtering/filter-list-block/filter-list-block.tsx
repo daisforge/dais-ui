@@ -57,7 +57,7 @@ export const FilterListBlock = <
     headerContextValue,
   });
 
-  const { filterList } = useFiltersList({
+  const { filterList, clearAll } = useFiltersList({
     filters: filters ?? EMPTY_OBJ, // empty object if filters is undefined
     options,
     updateFilters: (key, newValue) => {
@@ -65,20 +65,12 @@ export const FilterListBlock = <
         setFilters((prev) => ({ ...(prev ?? EMPTY_OBJ), [key]: newValue }));
       }
     },
+    updateAllFilters: (nextFilters) => {
+      setFilters?.(nextFilters as FilterStateType);
+    },
     filtersInfo,
     order: filtersOrder,
   });
-
-  const clearAll = () => {
-    const clearedFilters = Object.fromEntries(
-      Object.entries(filtersInfo).map(([key, info]) => [
-        key,
-        info.clearedValue,
-      ]),
-    ) as FilterStateType;
-
-    setFilters?.(clearedFilters);
-  };
 
   if (!tableConfig.filtering) {
     return null;
