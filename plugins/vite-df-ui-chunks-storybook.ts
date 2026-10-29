@@ -1,4 +1,3 @@
-/* eslint-disable no-restricted-syntax */
 import { Plugin } from 'vite';
 
 import PackageJson from '../package.json' with { type: 'json' };
@@ -14,36 +13,24 @@ const filteredUIKitChunks = ALL_MANUAL_UIKIT_CHUNKS.filter(
 );
 
 const manualStorybookChunks = (id: string) => {
-  let currentManualChunkName;
-
-  for (const el of filteredUIKitChunks) {
-    if (el.modulePaths.some((path) => id.includes(path))) {
-      currentManualChunkName = el.chunkName;
-      // eslint-disable-next-line no-console
-      console.log('========:filteredUIKitChunk', currentManualChunkName);
-
-      return currentManualChunkName;
-    }
+  const uiKitChunk = filteredUIKitChunks.find((el) =>
+    el.modulePaths.some((path) => id.includes(path)),
+  );
+  if (uiKitChunk) {
+    return uiKitChunk.chunkName;
   }
 
   // chunks from package.json.dependencies
-  for (const packageName of packages) {
-    if (id.includes(`node_modules/${packageName}/`)) {
-      currentManualChunkName = packageName;
-      // eslint-disable-next-line no-console
-      console.log('========:packageNameChunk', currentManualChunkName);
-
-      return currentManualChunkName;
-    }
+  const packageName = packages.find((name) =>
+    id.includes(`node_modules/${name}/`),
+  );
+  if (packageName) {
+    return packageName;
   }
 
   // vendors
   if (id.includes('node_modules')) {
-    currentManualChunkName = 'vendor';
-    // eslint-disable-next-line no-console
-    console.log('========:vendors children', id);
-
-    return currentManualChunkName;
+    return 'vendor';
   }
 
   return undefined;
