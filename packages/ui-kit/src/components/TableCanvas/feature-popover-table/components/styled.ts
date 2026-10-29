@@ -9,15 +9,24 @@ import {
 } from '../constants';
 
 /**
- * Контейнер для позиционирования поповера.
+ * Якорь поповера: невидимый DOM-элемент на месте canvas-элемента.
  * position: absolute внутри основного контейнера таблицы (не скроллящегося).
+ * Фильтр открывается от точки (1×1), canvas-поповер от прямоугольника ноды
+ * или ячейки. У canvas-якоря `$passThrough`: клики сквозь него проходят на canvas.
  */
-export const StyledPopoverContainer = styled.div<{ $x: number; $y: number }>`
+export const StyledPopoverContainer = styled.div<{
+  $x: number;
+  $y: number;
+  $width?: number;
+  $height?: number;
+  $passThrough?: boolean;
+}>`
   position: absolute;
   left: ${({ $x }) => $x}px;
   top: ${({ $y }) => $y}px;
-  width: 1px;
-  height: 1px;
+  width: ${({ $width }) => $width ?? 1}px;
+  height: ${({ $height }) => $height ?? 1}px;
+  ${({ $passThrough }) => ($passThrough ? 'pointer-events: none;' : '')}
 `;
 
 /**

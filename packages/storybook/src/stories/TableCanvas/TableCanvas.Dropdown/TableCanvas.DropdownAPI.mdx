@@ -1,0 +1,68 @@
+import { Meta } from '@storybook/blocks';
+import { TypeSourceViewer } from '@df-storybook/utils/TypeSourceViewer';
+
+<Meta title="Локальные компоненты/TableCanvas/Dropdown/API" />
+
+# Dropdown API
+
+Под капотом атомарный `Dropdown` из `@salutejs/sdds-finai`: пункты, `placement`, `offset`, `listWidth`, `variant`, `size` и `closeOnSelect` работают как в нём, описание в [документации SDDS Dropdown](https://plasma.sberdevices.ru/sdds-finai/components/dropdown/). Открытие, якорь и закрытие таблица берёт на себя, поэтому наружу отдаётся собственный набор типов ниже.
+
+## CanvasNodeDropdownConfig
+
+Проп `dropdown` на Canvas-элементе.
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/TableGlide/lib/canvas/utils/dropdownConfig.ts"
+  typeName="CanvasNodeDropdownConfig"
+/>
+
+## CanvasNodeDropdownItems
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/TableGlide/lib/canvas/utils/dropdownConfig.ts"
+  typeName="CanvasNodeDropdownItems"
+/>
+
+## CanvasNodeDropdownProps
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/TableGlide/lib/canvas/utils/dropdownConfig.ts"
+  typeName="CanvasNodeDropdownProps"
+/>
+
+## CanvasDropdownItem
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/TableGlide/lib/canvas/utils/dropdownConfig.ts"
+  typeName="CanvasDropdownItem"
+/>
+
+## CanvasDropdownApi
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/TableGlide/lib/canvas/utils/dropdownConfig.ts"
+  typeName="CanvasDropdownApi"
+/>
+
+## CanvasDropdownErrorApi
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/TableGlide/lib/canvas/utils/dropdownConfig.ts"
+  typeName="CanvasDropdownErrorApi"
+/>
+
+## TableConfigDropdown
+
+Значения по умолчанию в `tableConfig.dropdown`.
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/TableCanvas/types/table-config.type.ts"
+  typeName="TableConfigDropdown"
+/>

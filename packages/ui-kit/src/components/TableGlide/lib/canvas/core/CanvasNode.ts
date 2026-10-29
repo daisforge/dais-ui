@@ -2,6 +2,8 @@
 /* eslint-disable no-plusplus */
 /* eslint-disable no-underscore-dangle */
 import { FlexStyle } from '../miniflex/types';
+import type { CanvasNodeDropdownConfig } from '../utils/dropdownConfig';
+import type { CanvasNodePopoverConfig } from '../utils/portalClickEvents';
 import type { CanvasNodeTooltipConfig } from '../utils/portalHoverEvents';
 import {
   CanvasEvent,
@@ -155,6 +157,12 @@ export abstract class CanvasNode implements ICanvasNode {
   /** Конфиг тултипа с ноды (проп tooltip на Canvas-элементе). */
   tooltip?: CanvasNodeTooltipConfig;
 
+  /** Конфиг поповера с ноды (проп popover на Canvas-элементе): по клику или наведению, см. trigger. */
+  popover?: CanvasNodePopoverConfig;
+
+  /** Конфиг дропдауна с ноды (проп dropdown на Canvas-элементе): по клику или наведению, см. trigger. */
+  dropdown?: CanvasNodeDropdownConfig;
+
   interaction?: ResolvedCanvasInteractionConfig;
 
   constructor(id: string) {
@@ -234,7 +242,7 @@ export abstract class CanvasNode implements ICanvasNode {
         this.rect.width,
         this.rect.height,
         this.debugColor,
-        1
+        1,
       );
     }
 
@@ -250,7 +258,7 @@ export abstract class CanvasNode implements ICanvasNode {
     // Порядок кликов синхронизирован с накопленным порядком слоев при paint.
     // Выход за границы parent пока не расширяет область hit-test.
     candidates.sort(
-      (a, b) => b.cumulativeZIndex - a.cumulativeZIndex || b.order - a.order
+      (a, b) => b.cumulativeZIndex - a.cumulativeZIndex || b.order - a.order,
     );
 
     return candidates.map(({ node }) => node);
@@ -284,7 +292,7 @@ export abstract class CanvasNode implements ICanvasNode {
 
   private attachChild(
     child: CanvasNode,
-    insert: (list: CanvasNode[], node: CanvasNode) => void
+    insert: (list: CanvasNode[], node: CanvasNode) => void,
   ) {
     child.parent = this;
     insert(this.children, child);
@@ -296,7 +304,7 @@ export abstract class CanvasNode implements ICanvasNode {
     y: number,
     parentZIndex: number,
     orderCounter: HitOrderCounter,
-    candidates: HitCandidate[]
+    candidates: HitCandidate[],
   ): void {
     // containsHitPoint отвечает только за bounds конкретной ноды. Порядок
     // кликов по zIndex/source-order считается уже после сбора кандидатов.
@@ -318,9 +326,19 @@ export abstract class CanvasNode implements ICanvasNode {
         y,
         cumulativeZIndex,
         orderCounter,
-        candidates
+        candidates,
       );
     }
+  }
+
+  /**
+   * Прямоугольник, который нода реально рисует, в координатах ячейки. По нему
+   * ставится якорь тултипа, поповера и дропдауна. По умолчанию это layout-rect;
+   * нода, которая рисует себя меньше своего rect (кнопка в растянутом
+   * контейнере), переопределяет.
+   */
+  getAnchorRect(): Rect {
+    return this.rect;
   }
 
   protected containsHitPoint(x: number, y: number): boolean {

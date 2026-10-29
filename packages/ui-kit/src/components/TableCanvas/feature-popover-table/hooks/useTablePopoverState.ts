@@ -3,6 +3,7 @@ import { useCallback, useMemo, useRef, useState } from 'react';
 
 import type {
   TablePopoverContextValue,
+  TablePopoverOpenParams,
   TablePopoverState,
 } from '../context/TablePopoverContext';
 
@@ -26,23 +27,27 @@ const REOPEN_GUARD_MS = 300;
  * canvas (glide), поэтому floating-ui useDismiss считает клик по ней «кликом мимо»
  * и закрывает поповер уже на pointerdown. Сам клик по иконке приходит позже, на
  * mouseup, и без защёлки снова открыл бы поповер. Поэтому при закрытии по
- * клику-мимо запоминаем колонку и гасим следующий open() для неё.
+ * клику-мимо запоминаем ключ источника и гасим следующий open() для него.
+ * Так же работает canvas-поповер по клику: его якорь пропускает клики на canvas.
  */
 export const useTablePopoverState = (): TablePopoverContextValue => {
   const [state, setState] = useState<TablePopoverState>({
     isOpen: false,
     position: null,
+    anchorSize: null,
     contentType: null,
     contentData: undefined,
-    columnId: null,
+    render: undefined,
+    behavior: null,
+    sourceKey: null,
   });
 
-  // Колонка, для которой поповер открыт сейчас.
-  const openColumnIdRef = useRef<string | null>(null);
+  // Источник, для которого поповер открыт сейчас.
+  const openSourceKeyRef = useRef<string | null>(null);
   // Поповер только что закрылся по клику-мимо (floating-ui useDismiss).
   const justClosedByOutsidePressRef = useRef(false);
-  // Колонка, для которой сработало это закрытие.
-  const lastClosedColumnIdRef = useRef<string | null>(null);
+  // Источник, для которого сработало это закрытие.
+  const lastClosedSourceKeyRef = useRef<string | null>(null);
   const guardTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const disarmReopenGuard = useCallback(() => {
@@ -56,37 +61,38 @@ export const useTablePopoverState = (): TablePopoverContextValue => {
   const open = useCallback(
     ({
       position,
+      anchorSize,
       contentType,
       contentData,
-      columnId,
-    }: {
-      position: { x: number; y: number };
-      contentType: 'filter' | 'custom';
-      contentData?: unknown;
-      columnId?: string;
-    }) => {
-      const nextColumnId = columnId ?? null;
+      render,
+      behavior,
+      sourceKey,
+    }: TablePopoverOpenParams) => {
+      const nextSourceKey = sourceKey ?? null;
 
       // Повторный клик по той же иконке: поповер уже закрыт на pointerdown, а этот
       // open() пришёл на mouseup. Оставляем закрытым (toggle).
       if (
         justClosedByOutsidePressRef.current &&
-        nextColumnId !== null &&
-        lastClosedColumnIdRef.current === nextColumnId
+        nextSourceKey !== null &&
+        lastClosedSourceKeyRef.current === nextSourceKey
       ) {
         disarmReopenGuard();
         return;
       }
       disarmReopenGuard();
 
-      popoverDebug(PFX, 'OPEN called', { position, contentType, columnId });
-      openColumnIdRef.current = nextColumnId;
+      popoverDebug(PFX, 'OPEN called', { position, contentType, sourceKey });
+      openSourceKeyRef.current = nextSourceKey;
       setState({
         isOpen: true,
         position,
+        anchorSize: anchorSize ?? null,
         contentType,
         contentData,
-        columnId: nextColumnId,
+        render,
+        behavior: behavior ?? null,
+        sourceKey: nextSourceKey,
       });
     },
     [disarmReopenGuard],
@@ -96,7 +102,7 @@ export const useTablePopoverState = (): TablePopoverContextValue => {
     if (options?.outsidePress) {
       // Взводим защёлку: запоминаем колонку, чтобы догоняющий open() для неё
       // не переоткрыл поповер.
-      lastClosedColumnIdRef.current = openColumnIdRef.current;
+      lastClosedSourceKeyRef.current = openSourceKeyRef.current;
       justClosedByOutsidePressRef.current = true;
       if (guardTimerRef.current !== null) {
         clearTimeout(guardTimerRef.current);
@@ -106,7 +112,7 @@ export const useTablePopoverState = (): TablePopoverContextValue => {
         guardTimerRef.current = null;
       }, REOPEN_GUARD_MS);
     }
-    openColumnIdRef.current = null;
+    openSourceKeyRef.current = null;
     setState((prev: TablePopoverState) => ({
       ...prev,
       isOpen: false,

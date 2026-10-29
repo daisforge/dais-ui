@@ -1,5 +1,7 @@
 import type { CanvasNode } from '../core/CanvasNode';
 import type { TooltipProps } from '@ui-kit/components/Tooltip';
+import type { CanvasNodeDropdownConfig } from './dropdownConfig';
+import type { CanvasNodePopoverConfig } from './portalClickEvents';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Interaction Lock (pauses portal hover during drag/resize)
@@ -31,11 +33,49 @@ export function isPortalHoverLocked(): boolean {
 }
 
 export function subscribeToPortalHoverLock(
-  listener: InteractionLockListener
+  listener: InteractionLockListener,
 ): () => void {
   lockListeners.add(listener);
   return () => {
     lockListeners.delete(listener);
+  };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Reset (anchors of one table are stale)
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const CANVAS_PORTAL_RESET_EVENT = 'basic-grid-canvas-portal-reset';
+
+/**
+ * Якоря тултипов и поповеров одной таблицы устарели: начался ресайз колонки,
+ * колонки переставлены. В отличие от lockPortalHover касается только таблицы,
+ * на контейнере которой отправлено.
+ * @param target — контейнер таблицы. Если не передан, событие идёт на window.
+ */
+export function dispatchCanvasPortalReset(target?: EventTarget | null): void {
+  if (typeof window === 'undefined') return;
+  (target ?? window).dispatchEvent(new CustomEvent(CANVAS_PORTAL_RESET_EVENT));
+}
+
+/**
+ * Подписка на устаревание якорей таблицы.
+ * @param target — контейнер таблицы. Если не передан, слушаем window.
+ */
+export function subscribeToCanvasPortalReset(
+  listener: () => void,
+  target?: EventTarget | null,
+): () => void {
+  if (typeof window === 'undefined') {
+    return () => {};
+  }
+
+  const eventTarget = target ?? window;
+  const handler = () => listener();
+  eventTarget.addEventListener(CANVAS_PORTAL_RESET_EVENT, handler);
+
+  return () => {
+    eventTarget.removeEventListener(CANVAS_PORTAL_RESET_EVENT, handler);
   };
 }
 
@@ -102,7 +142,7 @@ export type CanvasNodeTooltipConfig =
     });
 
 export interface CanvasPortalHoverDetail<
-  TContext extends TooltipContextShape = TooltipContextShape
+  TContext extends TooltipContextShape = TooltipContextShape,
 > {
   visible: boolean;
   x: number;
@@ -117,6 +157,10 @@ export interface CanvasPortalHoverDetail<
   tooltipContext?: TContext;
   /** Конфиг с ноды (проп tooltip на Canvas-элементе). */
   tooltipFromNode?: CanvasNodeTooltipConfig;
+  /** Конфиг поповера с ноды (проп popover на Canvas-элементе), нужен для `trigger: 'hover'`. */
+  popoverFromNode?: CanvasNodePopoverConfig;
+  /** Конфиг дропдауна с ноды (проп dropdown на Canvas-элементе). */
+  dropdownFromNode?: CanvasNodeDropdownConfig;
   /**
    * Приоритет события. usePortalHover не заменяет активный тултип с бо́льшим приоритетом.
    * - 1 — canvas-нода (CanvasHoverController)
@@ -127,7 +171,7 @@ export interface CanvasPortalHoverDetail<
 }
 
 export type CanvasPortalHoverListener = (
-  detail: CanvasPortalHoverDetail
+  detail: CanvasPortalHoverDetail,
 ) => void;
 
 export const CANVAS_PORTAL_EVENT = 'basic-grid-canvas-portal-hover';
@@ -156,7 +200,7 @@ function getSourceKey(source?: CanvasPortalSource, originId?: string): string {
 
 function dispatchEvent(
   detail: CanvasPortalHoverDetail,
-  target: EventTarget | null | undefined
+  target: EventTarget | null | undefined,
 ): void {
   const event = new CustomEvent<CanvasPortalHoverDetail>(CANVAS_PORTAL_EVENT, {
     detail,
@@ -190,7 +234,7 @@ function cancelAllPendingHidesForTarget(targetKey: string): void {
 function scheduleHide(
   key: string,
   detail: CanvasPortalHoverDetail,
-  target: EventTarget | null | undefined
+  target: EventTarget | null | undefined,
 ): void {
   const timeoutId = window.setTimeout(() => {
     hideTimeouts.delete(key);
@@ -212,7 +256,7 @@ function scheduleHide(
 export function dispatchCanvasPortalHover(
   detail: CanvasPortalHoverDetail,
   target?: EventTarget | null,
-  immediate?: boolean
+  immediate?: boolean,
 ): void {
   if (typeof window === 'undefined') return;
 
@@ -240,7 +284,7 @@ export function dispatchCanvasPortalHover(
  */
 export function subscribeToCanvasPortalHover(
   listener: CanvasPortalHoverListener,
-  target?: EventTarget | null
+  target?: EventTarget | null,
 ): () => void {
   if (typeof window === 'undefined') {
     return () => {};
@@ -260,7 +304,7 @@ export function subscribeToCanvasPortalHover(
   return () => {
     eventTarget.removeEventListener(
       CANVAS_PORTAL_EVENT,
-      handler as EventListener
+      handler as EventListener,
     );
   };
 }

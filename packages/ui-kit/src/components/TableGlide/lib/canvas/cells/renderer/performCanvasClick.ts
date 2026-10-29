@@ -3,6 +3,7 @@ import {
   handleCellClick,
   handleClickHandlers,
 } from './clickHandlers';
+import type { CellCanvasPointerDispatchOptions } from '../CellCanvasRoot';
 import type { RelativePoint } from './types';
 import type { CanvasCell, CanvasRenderResult, RectBounds } from '../types';
 
@@ -33,6 +34,11 @@ export interface CanvasClickDispatchResult {
    * table-default, второе только останавливает всплытие до `onCellClicked`.
    */
   suppressGridDefault: boolean;
+
+  /**
+   * Клик попал в canvas-ноду с пропом popover: событие поповера уже отправлено.
+   */
+  portalClickDispatched?: boolean;
 }
 
 interface PerformCanvasClickArgs {
@@ -94,6 +100,9 @@ interface PerformCanvasClickArgs {
    * native событии.
    */
   event?: MouseEvent | React.MouseEvent;
+
+  /** Кнопка и свежие границы ячейки для поповера (см. CellCanvasPointerDispatchOptions). */
+  pointerOptions?: CellCanvasPointerDispatchOptions;
 }
 
 /**
@@ -124,12 +133,14 @@ export function performCanvasClick({
   rowData,
   rowIndex,
   event,
+  pointerOptions,
 }: PerformCanvasClickArgs): CanvasClickDispatchResult {
   // Сначала даем обработать клик самому canvasRoot и его нодам.
   const rootClickResult = handleCanvasRootClick(
     renderData,
     relativePoint,
-    event
+    event,
+    pointerOptions,
   );
 
   // Если внутри canvas-примитива вызвали stopPropagation, дальше по цепочке не идем.
@@ -138,6 +149,7 @@ export function performCanvasClick({
       handled: true,
       propagationStopped: true,
       suppressGridDefault: rootClickResult.suppressGridDefault,
+      portalClickDispatched: rootClickResult.portalClickDispatched,
     };
   }
 
@@ -147,6 +159,7 @@ export function performCanvasClick({
       handled: true,
       propagationStopped: false,
       suppressGridDefault: rootClickResult.suppressGridDefault,
+      portalClickDispatched: rootClickResult.portalClickDispatched,
     };
   }
 
@@ -158,6 +171,7 @@ export function performCanvasClick({
       handled: true,
       propagationStopped: false,
       suppressGridDefault: rootClickResult.suppressGridDefault,
+      portalClickDispatched: rootClickResult.portalClickDispatched,
     };
   }
 
@@ -166,5 +180,6 @@ export function performCanvasClick({
     handled: false,
     propagationStopped: false,
     suppressGridDefault: rootClickResult.suppressGridDefault,
+    portalClickDispatched: rootClickResult.portalClickDispatched,
   };
 }

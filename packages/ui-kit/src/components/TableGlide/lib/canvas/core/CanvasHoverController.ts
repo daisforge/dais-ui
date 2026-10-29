@@ -9,11 +9,11 @@ export interface CanvasHoverControllerOptions {
   onCursorChange?: (cursor: string) => void;
   onPortalTargetChange?: (
     target: CanvasNode | null,
-    baseEvent: CanvasEvent | null
+    baseEvent: CanvasEvent | null,
   ) => void;
   portalHoverDispatch?: (
     detail: CanvasPortalHoverDetail,
-    target?: EventTarget | null
+    target?: EventTarget | null,
   ) => void;
   getPortalEventTarget?: () => EventTarget | null;
   portalSource?: CanvasPortalSource;
@@ -61,7 +61,7 @@ export class CanvasHoverController {
   computeCursor(
     relativeX: number,
     relativeY: number,
-    rootNode: CanvasNode
+    rootNode: CanvasNode,
   ): string {
     const hits = rootNode.hitTest(relativeX, relativeY);
     for (const node of hits) {
@@ -79,7 +79,7 @@ export class CanvasHoverController {
 
   private transitionHover(
     target: CanvasNode | undefined,
-    baseEvent: CanvasEvent | null
+    baseEvent: CanvasEvent | null,
   ) {
     if (this.hoveredNode === target) {
       this.updatePortalHover(target, baseEvent);
@@ -88,7 +88,7 @@ export class CanvasHoverController {
 
     if (this.hoveredNode) {
       this.hoveredNode.onMouseLeave(
-        this.buildEvent('mouseleave', this.hoveredNode, baseEvent)
+        this.buildEvent('mouseleave', this.hoveredNode, baseEvent),
       );
     }
 
@@ -103,7 +103,7 @@ export class CanvasHoverController {
   private buildEvent(
     type: CanvasEvent['type'],
     node: CanvasNode,
-    baseEvent: CanvasEvent | null
+    baseEvent: CanvasEvent | null,
   ): CanvasEvent {
     if (baseEvent) {
       return {
@@ -156,10 +156,11 @@ export class CanvasHoverController {
 
   private updatePortalHover(
     target: CanvasNode | undefined,
-    baseEvent: CanvasEvent | null = null
+    baseEvent: CanvasEvent | null = null,
   ) {
     const portalTarget = this.findPortalTarget(target);
-    const rect = portalTarget ? { ...portalTarget.rect } : null;
+    // Якорь по нарисованному прямоугольнику, а не по layout-rect.
+    const rect = portalTarget ? { ...portalTarget.getAnchorRect() } : null;
     const previousActive = this.activePortalNode;
     const next = portalTarget && rect ? { id: portalTarget.id, rect } : null;
 
@@ -188,6 +189,8 @@ export class CanvasHoverController {
         source: this.options.portalSource,
         tooltipContext,
         tooltipFromNode: portalTarget.getTooltip(),
+        popoverFromNode: portalTarget.popover,
+        dropdownFromNode: portalTarget.dropdown,
         priority: 1,
       });
     } else if (previousActive) {

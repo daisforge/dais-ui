@@ -71,6 +71,17 @@ export class CanvasAvatar extends CanvasLeaf {
     this.rect.height = this.metrics.diameter;
   }
 
+  /** Аватар рисует круг своего диаметра от левого верхнего угла rect. */
+  override getAnchorRect() {
+    const { diameter } = this.metrics;
+    return {
+      x: this.rect.x,
+      y: this.rect.y,
+      width: diameter,
+      height: diameter,
+    };
+  }
+
   onPaint(batcher: DrawBatcher) {
     const { diameter: d, fontSize } = this.metrics;
     const rect = { x: this.rect.x, y: this.rect.y, width: d, height: d };

@@ -1206,6 +1206,14 @@ export function TableCanvas<
                           loadingOverlayConfig={tableConfig.loadingOverlay}
                           containerStyle={tableConfig.containerStyle}
                           tooltip={tableConfig.tooltip}
+                          popover={tableConfig.popover}
+                          dropdown={tableConfig.dropdown}
+                          rowKeyGetter={
+                            tableConfig.editing?.rowKeyGetter ??
+                            tableConfig.selecting?.rowKeyGetter ??
+                            tableConfig.subRows?.rowKeyGetter ??
+                            tableConfig.mergeCells?.rowKeyGetter
+                          }
                           massActionPanel={
                             tableConfig?.controlBlock?.massActionPanel
                           }

@@ -193,6 +193,8 @@ export const glideCellRenderer = <R extends ObjectForExtending, SR>({
       row: cellInfo.row,
       ctxs: cellInfo.ctxs,
       refTable: options.refTable,
+      colInd: cellInfo.colInd,
+      rowInd: cellInfo.rowInd,
     });
 
     canvasRootInstance.render(

@@ -160,7 +160,7 @@ export function useItemHoveredHandler<R extends ObjectForExtending, SR>(
       // location указывает на первую ячейку блока, а подсвечивать надо строку курсора.
       onHoverRowChange?.(
         args.kind === 'cell'
-          ? (args.rawLocation?.[1] ?? args.location[1])
+          ? args.rawLocation?.[1] ?? args.location[1]
           : undefined,
       );
 

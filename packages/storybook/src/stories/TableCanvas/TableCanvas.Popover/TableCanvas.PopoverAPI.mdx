@@ -1,0 +1,52 @@
+import { Meta } from '@storybook/blocks';
+import { TypeSourceViewer } from '@df-storybook/utils/TypeSourceViewer';
+
+<Meta title="Локальные компоненты/TableCanvas/Popover/API" />
+
+# Popover API
+
+Под капотом атомарный `PopoverBeta` из `@salutejs/sdds-finai`: `placement`, `offset`, `hasTail`, `flip`, `shift` и `resizable` работают как в нём, описание в [документации SDDS Popover](https://plasma.sberdevices.ru/sdds-finai/beta/popover/). Открытие, якорь и закрытие таблица берёт на себя, поэтому наружу отдаётся собственный набор типов ниже.
+
+## CanvasNodePopoverConfig
+
+Проп `popover` на Canvas-элементе.
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/TableGlide/lib/canvas/utils/portalClickEvents.ts"
+  typeName="CanvasNodePopoverConfig"
+/>
+
+## CanvasNodePopoverContent
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/TableGlide/lib/canvas/utils/portalClickEvents.ts"
+  typeName="CanvasNodePopoverContent"
+/>
+
+## CanvasNodePopoverProps
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/TableGlide/lib/canvas/utils/portalClickEvents.ts"
+  typeName="CanvasNodePopoverProps"
+/>
+
+## CanvasPopoverRenderApi
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/TableGlide/lib/canvas/utils/portalClickEvents.ts"
+  typeName="CanvasPopoverRenderApi"
+/>
+
+## TableConfigPopover
+
+Значения по умолчанию в `tableConfig.popover`.
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/TableCanvas/types/table-config.type.ts"
+  typeName="TableConfigPopover"
+/>

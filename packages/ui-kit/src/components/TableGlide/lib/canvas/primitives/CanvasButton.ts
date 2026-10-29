@@ -5,6 +5,7 @@ import {
   type ButtonView,
   type ViewColors,
   buildButtonViewColors,
+  BUTTON_PADDING_Y,
   drawButton,
   drawButtonWithView,
   SIZE_CONFIG,
@@ -120,6 +121,23 @@ export class CanvasButton extends CanvasLeaf {
 
     this.rect.width = textWidth + iconsWidth + sizeConfig.paddingX * 2;
     this.rect.height = sizeConfig.height;
+  }
+
+  /**
+   * Кнопка рисует себя высотой из SIZE_CONFIG, даже если контейнер растянул
+   * rect. Старый API (variant) к тому же отступает по BUTTON_PADDING_Y сверху
+   * и снизу: пилюля ниже своих 32 px на 8 px.
+   */
+  override getAnchorRect() {
+    const { x, y, width } = this.rect;
+    const { height } = SIZE_CONFIG[this.size];
+    if (this.useNewApi) return { x, y, width, height };
+    return {
+      x,
+      y: y + BUTTON_PADDING_Y,
+      width,
+      height: height - BUTTON_PADDING_Y * 2,
+    };
   }
 
   onPaint(batcher: DrawBatcher, ctx: CanvasRenderingContext2D) {

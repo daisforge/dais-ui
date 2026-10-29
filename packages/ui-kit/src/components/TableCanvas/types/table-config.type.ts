@@ -2,6 +2,10 @@ import type { GridSelection } from '@glideappsfinal/glide-data-grid';
 import { Group, Item, ItemOrGroup } from '@ui-kit/components/ListOfFilters';
 import type { MassActionsSize } from '@ui-kit/components/MassActions';
 import { SIZE } from '@ui-kit/components/TableCanvas';
+import type {
+  CanvasNodeDropdownProps,
+  CanvasNodePopoverProps,
+} from '@ui-kit/components/TableGlide';
 // FIXME: Ждем адаптации фичи RowInstauments
 // import { RowInstrumentsType, SIZE } from '@ui-kit/components/TableCanvas';
 import { CSSProperties, ReactNode } from 'react';
@@ -852,6 +856,50 @@ export type TableConfigTooltip = {
   maxWidth?: number | string;
 };
 
+/**
+ * Значения по умолчанию для поповеров на canvas-элементах таблицы (проп
+ * `popover` на элементе). Конфиг на элементе важнее. `trigger` задаётся
+ * только на элементе.
+ */
+export type TableConfigPopover = Pick<
+  CanvasNodePopoverProps,
+  | 'placement'
+  | 'offset'
+  | 'hasTail'
+  | 'flip'
+  | 'shift'
+  | 'zIndex'
+  | 'closeOnScroll'
+  | 'closeOnOutsideClick'
+  | 'closeOnEsc'
+  | 'mouseEnterDelay'
+  | 'mouseLeaveDelay'
+>;
+
+/**
+ * Значения по умолчанию для дропдаунов на canvas-элементах таблицы (проп
+ * `dropdown` на элементе). Конфиг на элементе важнее. `trigger` задаётся
+ * только на элементе.
+ */
+export type TableConfigDropdown = Pick<
+  CanvasNodeDropdownProps,
+  | 'placement'
+  | 'offset'
+  | 'listWidth'
+  | 'listMaxHeight'
+  | 'variant'
+  | 'size'
+  | 'zIndex'
+  | 'closeOnSelect'
+  | 'closeOnScroll'
+  | 'closeOnOutsideClick'
+  | 'closeOnEsc'
+  | 'mouseEnterDelay'
+  | 'mouseLeaveDelay'
+  | 'loadingItems'
+  | 'renderError'
+>;
+
 export type InfinityScrollConfig<RowType extends ObjectForExtending> = {
   /** Триггер достижения скроллом зоны подгрузки данных. */
   onTrigger: (rows: RowType[]) => Promise<void> | void;
@@ -1344,6 +1392,14 @@ export type TableConfig<
    * а также добавить нужные изменения в Canvas-элементах или в конфиге колонки.
    */
   tooltip?: TableConfigTooltip;
+
+  /** Значения по умолчанию для поповеров на canvas-элементах (проп `popover`
+   *  на элементе). Сам поповер включается пропом на элементе, конфиг не обязателен.
+   */
+  popover?: TableConfigPopover;
+  /** Значения по умолчанию для дропдаунов на canvas-элементах (проп `dropdown`
+   * на элементе). Конфиг на элементе важнее. */
+  dropdown?: TableConfigDropdown;
 
   /**
    * infinityScroll - бесконечная подгрузка данных при скролле.
