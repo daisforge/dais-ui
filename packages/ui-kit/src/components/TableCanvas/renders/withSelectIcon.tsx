@@ -2,6 +2,7 @@ import { IconChevronDown, IconDisclosureDownOutline } from '@ui-kit/icons';
 
 import { Canvas } from '../../TableGlide';
 import { CanvasContent, isCanvasString } from '../TableGlideInstance';
+import type { Editing, ObjectForExtending } from '../types';
 import type { RowSize } from './rowIconConfig';
 import { ROW_ICON_BUTTON_CONFIG } from './rowIconConfig';
 
@@ -40,6 +41,14 @@ const SELECT_ARROW_ICON_BY_ROW_SIZE = {
   medium: IconChevronDown,
   small: IconChevronDown,
 } as const;
+
+/** Ячейка с селектом: встроенный select или кастомный редактор с showSelectIcon. */
+export const isSelectEditingCell = <R extends ObjectForExtending, SR>(
+  editingCell: Editing<R, SR> | null | undefined,
+): boolean =>
+  !!editingCell &&
+  (editingCell.component === 'select' ||
+    ('showSelectIcon' in editingCell && editingCell.showSelectIcon === true));
 
 export const withSelectIcon = (
   content: CanvasContent,

@@ -41,7 +41,7 @@ import {
   DEFAULT_CELL_PADDING_INLINE,
   getPaddingLeftFinal,
 } from './styleConstants';
-import { withSelectIcon } from './withSelectIcon';
+import { isSelectEditingCell, withSelectIcon } from './withSelectIcon';
 
 const getTreeButton = (
   expanded: boolean,
@@ -182,7 +182,7 @@ export const RenderCellGlide = <
   } = expandedRowsCtx;
 
   const isSelectColumn =
-    editModeEnabled && column?.editingCell?.component === 'select';
+    editModeEnabled && isSelectEditingCell(column?.editingCell);
   const rowSize = theme.rowSize ?? 'big';
   const cellPaddingInline =
     theme.cellHorizontalPadding ?? DEFAULT_CELL_PADDING_INLINE;
@@ -444,8 +444,7 @@ export const RenderCellGlide = <
   if (!isCanvasContent(defaultLvlNot0RenderElement)) {
     return defaultLvlNot0RenderElement;
   }
-  const isSubRowSelectColumn =
-    column.subRow?.editingCell?.component === 'select';
+  const isSubRowSelectColumn = isSelectEditingCell(column.subRow?.editingCell);
 
   const subRows = tableConfigSubRows?.getSubRows?.(row);
 
