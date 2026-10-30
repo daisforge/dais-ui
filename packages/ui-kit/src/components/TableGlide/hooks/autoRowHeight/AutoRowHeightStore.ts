@@ -1,4 +1,5 @@
 import type { CellHeightReporter } from '../../cellRenderer';
+import type { VisibleRows } from './anchorShift';
 import { ColumnHeights } from './ColumnHeights';
 import { RowHeightIndex } from './RowHeightIndex';
 
@@ -53,6 +54,9 @@ export class AutoRowHeightStore<R extends object> {
 
   private maxHeight = MAX_AUTO_ROW_HEIGHT;
 
+  /** Строки на экране: их устаревшая высота пересчитывается из ячеек */
+  private visible: VisibleRows = { from: 0, to: 0 };
+
   /** Строки с новыми высотами ячеек, ждущие коммита, и их индексы */
   private readonly pending = new Map<R, number>();
 
@@ -70,8 +74,22 @@ export class AutoRowHeightStore<R extends object> {
       queueMicrotask(commit),
   ) {}
 
+  /** Индекс хранит высоты не ниже базовой: с новой базовой их придётся искать заново */
   setBaseHeight(height: number): void {
+    if (height === this.baseHeight) return;
     this.baseHeight = height;
+    this.index.reset();
+  }
+
+  /** Строки `from..to` на экране: их устаревшие высоты пересчитаются при следующем запросе */
+  setVisibleRows(from: number, to: number): void {
+    if (from === this.visible.from && to === this.visible.to) return;
+    this.visible = { from, to };
+    this.forgetStaleVisible();
+  }
+
+  get visibleRows(): VisibleRows {
+    return this.visible;
   }
 
   /**
@@ -87,7 +105,7 @@ export class AutoRowHeightStore<R extends object> {
     this.index.reset();
   }
 
-  /** Вызывается на каждый запрос высоты: тот же массив отсекается по ссылке */
+  /** Вызывается на каждый рендер и замер ячейки: тот же массив отсекается по ссылке */
   setColumns(ids: readonly string[]): void {
     if (ids === this.columnIds) return;
     const changed = !sameIds(ids, this.columnIds);
@@ -96,6 +114,7 @@ export class AutoRowHeightStore<R extends object> {
 
     this.cells.retain(ids);
     this.generation += 1;
+    this.forgetStaleVisible();
   }
 
   /**
@@ -106,23 +125,25 @@ export class AutoRowHeightStore<R extends object> {
     this.cells.invalidate(columnIds);
   }
 
-  /**
-   * Высота строки по индексу; undefined — индекса нет. `visible` — строка на экране:
-   * её устаревшая высота пересчитывается из ячеек.
-   */
-  heightAt(
-    rows: readonly R[],
-    rowIndex: number,
-    visible: boolean,
-  ): number | undefined {
+  /** Высота строки по индексу, не ниже базовой; undefined — индекса нет */
+  heightAt(rows: readonly R[], rowIndex: number): number | undefined {
     const cached = this.index.get(rows, rowIndex);
-    if (cached === undefined) return undefined;
-    if (cached !== null && !visible) return cached;
+    if (cached !== null) return cached;
 
     const row = rows[rowIndex]!;
-    const height = this.rowHeight(row, visible);
+    const visible =
+      rowIndex >= this.visible.from && rowIndex <= this.visible.to;
+    const height = Math.max(this.rowHeight(row, visible), this.baseHeight);
     this.index.set(rowIndex, row, height);
     return height;
+  }
+
+  /** Устаревшие высоты видимых строк убираются из индекса: следующий запрос пересчитает их из ячеек */
+  private forgetStaleVisible(): void {
+    this.index.forget(this.visible.from, this.visible.to, (row) => {
+      const known = this.rows.get(row);
+      return known !== undefined && known.generation !== this.generation;
+    });
   }
 
   /** Приёмник высоты ячейки строки `row` в колонке `columnId` */
@@ -154,12 +175,12 @@ export class AutoRowHeightStore<R extends object> {
     if (this.resizedInFrame) {
       this.resizedInFrame = false;
       this.generation += 1;
+      this.forgetStaleVisible();
     }
-    const changes = [...this.pending]
-      .map(([row, rowIndex]) => ({
-        rowIndex,
-        delta: this.commitRow(row, rowIndex),
-      }))
+    const changes = [...this.pending].map(([row, rowIndex]) => ({
+      rowIndex,
+      delta: this.commitRow(row, rowIndex),
+    }));
     this.pending.clear();
 
     if (changes.some(({ delta }) => delta !== 0)) this.onChange(changes);
@@ -169,7 +190,7 @@ export class AutoRowHeightStore<R extends object> {
   private commitRow(row: R, rowIndex: number): number {
     const before = Math.min(this.rows.get(row)?.height ?? 0, this.maxHeight);
     const after = this.computeRowHeight(row);
-    this.index.set(rowIndex, row, after);
+    this.index.set(rowIndex, row, Math.max(after, this.baseHeight));
     return Math.max(after, this.baseHeight) - Math.max(before, this.baseHeight);
   }
 

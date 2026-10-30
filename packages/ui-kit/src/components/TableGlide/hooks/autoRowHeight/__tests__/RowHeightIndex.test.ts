@@ -25,6 +25,19 @@ describe('RowHeightIndex', () => {
     expect(index.get(rows, 1)).toBeNull();
   });
 
+  it('forget убирает высоты устаревших строк диапазона, за его границами не трогает', () => {
+    const index = new RowHeightIndex<Row>();
+    index.get(rows, 0);
+    index.set(0, rows[0]!, 40);
+    index.set(1, rows[1]!, 70);
+
+    index.forget(-5, 0, () => true);
+    index.forget(1, 10, () => false);
+
+    expect(index.get(rows, 0)).toBeNull();
+    expect(index.get(rows, 1)).toBe(70);
+  });
+
   it('новый массив строк начинает индекс заново', () => {
     const index = new RowHeightIndex<Row>();
     index.get(rows, 0);

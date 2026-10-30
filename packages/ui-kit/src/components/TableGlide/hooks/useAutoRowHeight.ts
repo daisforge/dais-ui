@@ -21,6 +21,8 @@ interface Params<R extends object> {
   theme?: object;
   /** Потолок высоты строки, по умолчанию `MAX_AUTO_ROW_HEIGHT` */
   maxHeight?: number;
+  /** Высота строки по размеру строк: ниже строка не бывает */
+  baseHeight: number;
 }
 
 /**
@@ -39,20 +41,18 @@ export function useAutoRowHeight<R extends object>({
   columns,
   theme,
   maxHeight = MAX_AUTO_ROW_HEIGHT,
+  baseHeight,
 }: Params<R>) {
   const [version, setVersion] = useState(0);
-  const visibleRowsRef = useRef({ from: 0, to: INITIAL_VISIBLE_ROWS });
   const anchorShiftRef = useRef(0);
-  const [store] = useState(
-    () =>
-      new AutoRowHeightStore<R>((changes) => {
-        anchorShiftRef.current += anchorShiftOf(
-          changes,
-          visibleRowsRef.current,
-        );
-        flushSync(() => setVersion((value) => value + 1));
-      }),
-  );
+  const [store] = useState(() => {
+    const created = new AutoRowHeightStore<R>((changes) => {
+      anchorShiftRef.current += anchorShiftOf(changes, created.visibleRows);
+      flushSync(() => setVersion((value) => value + 1));
+    });
+    created.setVisibleRows(0, INITIAL_VISIBLE_ROWS);
+    return created;
+  });
 
   // Шрифт у Canvas.Text может быть свой, не из темы: ждём загрузки любого семейства
   useEffect(() => {
@@ -80,36 +80,28 @@ export function useAutoRowHeight<R extends object>({
     );
   }
   prevRef.current = { theme, columns };
-  store.setMaxHeight(maxHeight);
 
   const columnIds = useMemo(
     () => columns.map((column) => column.id),
     [columns],
   );
 
+  store.setMaxHeight(maxHeight);
+  store.setBaseHeight(baseHeight);
+  store.setColumns(columnIds);
+
+  // Glide зовёт для всех строк при каждой смене высот: найденная высота читается из индекса store
   const heightOf = useCallback(
-    (rowIndex: number, baseHeight: number): number => {
-      store.setBaseHeight(baseHeight);
-      store.setColumns(columnIds);
-      const { from, to } = visibleRowsRef.current;
-      const height = store.heightAt(
-        rows,
-        rowIndex,
-        rowIndex >= from && rowIndex <= to,
-      );
-      return Math.max(baseHeight, height ?? 0);
-    },
-    // maxHeight: с новым потолком glide должен заново спросить высоты
+    (rowIndex: number): number => store.heightAt(rows, rowIndex) ?? baseHeight,
+    // maxHeight, columnIds, version: высоты в store изменились, glide должен спросить их заново
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [store, rows, columnIds, maxHeight],
+    [store, rows, baseHeight, columnIds, maxHeight, version],
   );
 
-  const trackVisibleRegion = useCallback((range: Rectangle) => {
-    visibleRowsRef.current = {
-      from: range.y,
-      to: range.y + range.height,
-    };
-  }, []);
+  const trackVisibleRegion = useCallback(
+    (range: Rectangle) => store.setVisibleRows(range.y, range.y + range.height),
+    [store],
+  );
 
   const reporterFor = useCallback(
     (

@@ -69,6 +69,7 @@ import {
   TextCellOptions,
 } from './utils/createCell';
 import { findBlockOrigin } from './utils/findBlockOrigin';
+import { mergeThemeOverrides } from './utils/mergeThemeOverrides';
 import { getSpan } from './utils/getSpan';
 import { getRowSpan, spansSeveralRows } from './utils/getRowSpan';
 import { GroupHeaderParts } from './utils/groupHeaderParts';
@@ -513,6 +514,16 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     theme.bgHeaderSelectedHovered,
   ]);
 
+  // Блок колонок может начинаться только на колонке с colSpan: findBlockOrigin
+  // обходит их, а не все колонки левее ячейки.
+  const spanColumnIndexes = useMemo(
+    () =>
+      columnsForRender.flatMap((column, columnIndex) =>
+        column.colSpan ? [columnIndex] : [],
+      ),
+    [columnsForRender],
+  );
+
   // ─── hoverEffects.row: подсветка строки под курсором (цвета из темы).
   // По умолчанию ВКЛЮЧЕНА (решение дизайн-системы — строка под курсором
   // показывает hover-ступень); выключается явно hoverEffects: { row: false }.
@@ -676,6 +687,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       const [originColInd, originRowInd] = findBlockOrigin(
         colInd,
         rowInd,
+        spanColumnIndexes,
         (c, r) => {
           const col = columnsForRender[c];
           return col?.colSpan
@@ -806,6 +818,12 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
             }
           : undefined;
 
+      const themeOverride = mergeThemeOverrides(
+        columnThemeOverrideResult,
+        fillOverride,
+        soloActiveCellOverride,
+      );
+
       const options = {
         data: row[id]?.toString?.() ?? 'NOT FOUND',
         ...(cellIsEditable
@@ -818,11 +836,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
               ...(column.hasPreview === true && { allowOverlay: true }),
               ...(column.hasPreview === 'none' && { allowOverlay: false }),
             }),
-        themeOverride: {
-          ...columnThemeOverrideResult,
-          ...fillOverride,
-          ...soloActiveCellOverride,
-        },
+        ...(themeOverride && { themeOverride }),
         contentAlign,
         ...(span && { span }),
         ...(spanRows && { spanRows }),
@@ -875,6 +889,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       rows,
       autoHeightReporter,
       columnsForRender,
+      spanColumnIndexes,
       ctxs,
       theme,
       activeTheme,

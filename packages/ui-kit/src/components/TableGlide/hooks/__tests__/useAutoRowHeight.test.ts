@@ -28,10 +28,16 @@ const SMALL = { fontFamily: 'Inter', size: 'small' };
 const setup = (initial = { columns: COLUMNS, theme: SMALL as object }) => {
   const hook = renderHook(
     ({ columns, theme }) =>
-      useAutoRowHeight({ enabled: true, rows: ROWS, columns, theme }),
+      useAutoRowHeight({
+        enabled: true,
+        rows: ROWS,
+        columns,
+        theme,
+        baseHeight: BASE,
+      }),
     { initialProps: initial },
   );
-  hook.result.current.heightOf(0, BASE);
+  hook.result.current.heightOf(0);
   return hook;
 };
 
@@ -59,8 +65,8 @@ describe('useAutoRowHeight', () => {
       result.current.reporterFor(ROWS[1]!, 1, 'a', false).report(100, 5);
     });
 
-    expect(result.current.heightOf(0, BASE)).toBe(60);
-    expect(result.current.heightOf(1, BASE)).toBe(BASE);
+    expect(result.current.heightOf(0)).toBe(60);
+    expect(result.current.heightOf(1)).toBe(BASE);
   });
 
   it('высоты за кадр — одно обновление для glide', async () => {
@@ -112,7 +118,7 @@ describe('useAutoRowHeight', () => {
     });
 
     expect(result.current.version).toBe(versionBefore + 1);
-    expect(result.current.heightOf(0, BASE)).toBe(60);
+    expect(result.current.heightOf(0)).toBe(60);
     expect(needsHeight(result, 'a')).toBe(true);
     expect(needsHeight(result, 'b')).toBe(true);
   });
@@ -124,7 +130,7 @@ describe('useAutoRowHeight', () => {
 
     expect(needsHeight(result, 'a')).toBe(true);
     expect(needsHeight(result, 'b')).toBe(true);
-    expect(result.current.heightOf(0, BASE)).toBe(60);
+    expect(result.current.heightOf(0)).toBe(60);
   });
 
   it('новый renderCell колонки при тех же строках перемеряет только её ячейки', async () => {
@@ -168,21 +174,22 @@ describe('useAutoRowHeight', () => {
           columns: COLUMNS,
           theme: SMALL,
           maxHeight,
+          baseHeight: BASE,
         }),
       { initialProps: { maxHeight: 50 } },
     );
-    result.current.heightOf(0, BASE);
+    result.current.heightOf(0);
     await act(async () => {
       result.current.reporterFor(ROWS[0]!, 0, 'a', false).report(100, 900);
     });
 
-    expect(result.current.heightOf(0, BASE)).toBe(50);
+    expect(result.current.heightOf(0)).toBe(50);
 
     const heightOfBefore = result.current.heightOf;
     rerender({ maxHeight: 700 });
 
     expect(result.current.heightOf).not.toBe(heightOfBefore);
-    expect(result.current.heightOf(0, BASE)).toBe(700);
+    expect(result.current.heightOf(0)).toBe(700);
     expect(needsHeight(result, 'a')).toBe(false);
   });
 });

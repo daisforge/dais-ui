@@ -16,6 +16,7 @@ const setup = (rowCount = 3, columnIds = ['a', 'b']) => {
   const endFrame = () => commits.splice(0).forEach((commit) => commit());
   store.setBaseHeight(BASE);
   store.setColumns(columnIds);
+  store.setVisibleRows(0, rowCount - 1);
   const rows: Row[] = Array.from({ length: rowCount }, (_, id) => ({ id }));
   /** Ячейка сообщает высоту, как при отрисовке, и кадр заканчивается */
   const report = (
@@ -38,11 +39,25 @@ const setup = (rowCount = 3, columnIds = ['a', 'b']) => {
 };
 
 describe('AutoRowHeightStore', () => {
-  it('строка, которую не рисовали, — 0; индекса нет — undefined', () => {
+  it('строка, которую не рисовали, — базовая высота; индекса нет — undefined', () => {
     const { store, rows } = setup();
 
-    expect(store.heightAt(rows, 0, true)).toBe(0);
-    expect(store.heightAt(rows, 10, true)).toBeUndefined();
+    expect(store.heightAt(rows, 0)).toBe(BASE);
+    expect(store.heightAt(rows, 10)).toBeUndefined();
+  });
+
+  it('строка не ниже базовой высоты, новая базовая применяется ко всем строкам', () => {
+    const { store, rows, report } = setup();
+    report(0, 'a', 15);
+    report(1, 'a', 40);
+
+    expect(store.heightAt(rows, 0)).toBe(BASE);
+    expect(store.heightAt(rows, 1)).toBe(40);
+
+    store.setBaseHeight(50);
+
+    expect(store.heightAt(rows, 0)).toBe(50);
+    expect(store.heightAt(rows, 1)).toBe(50);
   });
 
   it('высота строки — максимум по ячейкам, не выше потолка', () => {
@@ -52,8 +67,8 @@ describe('AutoRowHeightStore', () => {
     report(0, 'b', 70);
     report(1, 'a', 10_000);
 
-    expect(store.heightAt(rows, 0, true)).toBe(70);
-    expect(store.heightAt(rows, 1, true)).toBe(MAX_AUTO_ROW_HEIGHT);
+    expect(store.heightAt(rows, 0)).toBe(70);
+    expect(store.heightAt(rows, 1)).toBe(MAX_AUTO_ROW_HEIGHT);
   });
 
   it('дробная высота округляется вверх до целого пикселя', () => {
@@ -61,8 +76,7 @@ describe('AutoRowHeightStore', () => {
 
     report(0, 'a', 40.2);
 
-    expect(store.heightAt(rows, 0, true)).toBe(41);
-    expect(store.heightAt(rows, 0, false)).toBe(41);
+    expect(store.heightAt(rows, 0)).toBe(41);
   });
 
   it('новый потолок сразу применяется и к видимым строкам, и к строкам за экраном', () => {
@@ -72,14 +86,16 @@ describe('AutoRowHeightStore', () => {
 
     store.setMaxHeight(100);
 
-    expect(store.heightAt(rows, 0, true)).toBe(100);
-    expect(store.heightAt(rows, 1, false)).toBe(100);
+    expect(store.heightAt(rows, 0)).toBe(100);
+    expect(store.heightAt(rows, 1)).toBe(100);
 
     store.setMaxHeight(600);
 
-    expect(store.heightAt(rows, 0, false)).toBe(600);
-    expect(store.heightAt(rows, 1, false)).toBe(300);
-    expect(store.reporter(rows[0]!, 0, 'a', false).needsHeight(100)).toBe(false);
+    expect(store.heightAt(rows, 0)).toBe(600);
+    expect(store.heightAt(rows, 1)).toBe(300);
+    expect(store.reporter(rows[0]!, 0, 'a', false).needsHeight(100)).toBe(
+      false,
+    );
   });
 
   it('высота строки до смены потолка считается для glide под тем же потолком', () => {
@@ -98,23 +114,23 @@ describe('AutoRowHeightStore', () => {
     store.setMaxHeight(Infinity);
     report(0, 'a', 100_000);
 
-    expect(store.heightAt(rows, 0, true)).toBe(0xfffe);
+    expect(store.heightAt(rows, 0)).toBe(0xfffe);
 
     store.setMaxHeight(NaN);
 
-    expect(store.heightAt(rows, 0, true)).toBe(MAX_AUTO_ROW_HEIGHT);
+    expect(store.heightAt(rows, 0)).toBe(MAX_AUTO_ROW_HEIGHT);
   });
 
   it('внутри кадра высоты не меняются: все колонки кадра рисуются с одними высотами', () => {
     const { store, rows, onChange, endFrame } = setup();
     store.reporter(rows[0]!, 0, 'a', false).report(100, 70);
 
-    expect(store.heightAt(rows, 0, true)).toBe(0);
+    expect(store.heightAt(rows, 0)).toBe(BASE);
     expect(onChange).not.toHaveBeenCalled();
 
     endFrame();
 
-    expect(store.heightAt(rows, 0, true)).toBe(70);
+    expect(store.heightAt(rows, 0)).toBe(70);
     expect(onChange).toHaveBeenCalledTimes(1);
   });
 
@@ -126,8 +142,8 @@ describe('AutoRowHeightStore', () => {
 
     endFrame();
 
-    expect(store.heightAt(rows, 0, true)).toBe(70);
-    expect(store.heightAt(rows, 1, true)).toBe(90);
+    expect(store.heightAt(rows, 0)).toBe(70);
+    expect(store.heightAt(rows, 1)).toBe(90);
     expect(onChange).toHaveBeenCalledTimes(1);
   });
 
@@ -161,7 +177,7 @@ describe('AutoRowHeightStore', () => {
 
     report(0, 'a', 40, 300);
 
-    expect(store.heightAt(rows, 0, true)).toBe(60);
+    expect(store.heightAt(rows, 0)).toBe(60);
   });
 
   it('ресайз сбрасывает замеры только этой колонки', () => {
@@ -182,13 +198,17 @@ describe('AutoRowHeightStore', () => {
     report(0, 'b', 90);
     report(1, 'a', 40);
     report(1, 'b', 90);
-    store.heightAt(rows, 1, false);
+    store.setVisibleRows(0, 0);
+    store.heightAt(rows, 1);
 
     store.setColumns(['a']);
 
-    expect(store.heightAt(rows, 0, true)).toBe(40);
-    expect(store.heightAt(rows, 1, false)).toBe(90);
-    expect(store.heightAt(rows, 1, true)).toBe(40);
+    expect(store.heightAt(rows, 0)).toBe(40);
+    expect(store.heightAt(rows, 1)).toBe(90);
+
+    store.setVisibleRows(1, 1);
+
+    expect(store.heightAt(rows, 1)).toBe(40);
   });
 
   it('блок на несколько колонок хранится со своей шириной', () => {
@@ -196,7 +216,7 @@ describe('AutoRowHeightStore', () => {
     report(0, 'a', 40, 100);
     report(1, 'a', 80, 250, true);
 
-    expect(store.heightAt(rows, 1, true)).toBe(80);
+    expect(store.heightAt(rows, 1)).toBe(80);
     expect(store.reporter(rows[1]!, 1, 'a', true).needsHeight(250)).toBe(false);
     expect(store.reporter(rows[1]!, 1, 'a', true).needsHeight(300)).toBe(true);
     expect(store.reporter(rows[0]!, 0, 'a', false).needsHeight(100)).toBe(
@@ -209,10 +229,10 @@ describe('AutoRowHeightStore', () => {
 
     report(0, 'a', 100, 200, true);
     report(0, 'a', 40, 100);
-    expect(store.heightAt(rows, 0, true)).toBe(40);
+    expect(store.heightAt(rows, 0)).toBe(40);
 
     report(0, 'a', 30, 200, true);
-    expect(store.heightAt(rows, 0, true)).toBe(30);
+    expect(store.heightAt(rows, 0)).toBe(30);
   });
 
   it('новый массив строк (сортировка, подгрузка): высоты по объекту строки сохраняются', () => {
@@ -222,8 +242,8 @@ describe('AutoRowHeightStore', () => {
 
     const sorted = [rows[2]!, rows[1]!, rows[0]!];
 
-    expect(store.heightAt(sorted, 0, false)).toBe(70);
-    expect(store.heightAt(sorted, 2, false)).toBe(40);
+    expect(store.heightAt(sorted, 0)).toBe(70);
+    expect(store.heightAt(sorted, 2)).toBe(40);
   });
 
   it('invalidate: до перемера строка держит прежнюю высоту, после — свежую', () => {
@@ -233,13 +253,13 @@ describe('AutoRowHeightStore', () => {
 
     store.invalidate();
 
-    expect(store.heightAt(rows, 0, true)).toBe(120);
+    expect(store.heightAt(rows, 0)).toBe(120);
     expect(onChange).not.toHaveBeenCalled();
     expect(store.reporter(rows[0]!, 0, 'a', false).needsHeight(100)).toBe(true);
 
     report(0, 'a', 40);
 
-    expect(store.heightAt(rows, 0, true)).toBe(40);
+    expect(store.heightAt(rows, 0)).toBe(40);
     expect(onChange).toHaveBeenCalledTimes(1);
   });
 

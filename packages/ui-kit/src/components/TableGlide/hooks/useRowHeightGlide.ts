@@ -53,18 +53,15 @@ export function useRowHeightGlide<R extends object>({
     columns,
     theme,
     maxHeight: maxAutoRowHeight,
+    baseHeight: DEFAULT_ROW_HEIGHT[rowSize],
   });
 
+  // auto.heightOf меняется с новыми измерениями: glide должен заново спросить высоты
   const rowHeightGlide = useMemo<NonNullable<RowHeightGlide>>(() => {
+    if (isAuto) return auto.heightOf;
     const baseOf = baseHeightOf(rowHeight, rows, rowSize);
-    if (isAuto) {
-      const base = baseOf(0);
-      return (rowIndex) => auto.heightOf(rowIndex, base);
-    }
     return typeof rowHeight === 'function' ? baseOf : baseOf(0);
-    // auto.heightOf и auto.version меняются с новыми измерениями: glide должен заново спросить высоты
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rowHeight, isAuto, rows, rowSize, auto.heightOf, auto.version]);
+  }, [rowHeight, isAuto, rows, rowSize, auto.heightOf]);
 
   return {
     rowHeightGlide,

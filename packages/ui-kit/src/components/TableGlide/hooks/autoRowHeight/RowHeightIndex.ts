@@ -26,6 +26,14 @@ export class RowHeightIndex<R> {
     this.heights.fill(UNRESOLVED);
   }
 
+  /** Строки `from..to`, для которых `isStale`, придётся искать заново */
+  forget(from: number, to: number, isStale: (row: R) => boolean): void {
+    const last = Math.min(to, this.rows.length - 1);
+    for (let i = Math.max(from, 0); i <= last; i += 1) {
+      if (isStale(this.rows[i]!)) this.heights[i] = UNRESOLVED;
+    }
+  }
+
   /** Обновляет высоту, если строка `row` всё ещё стоит по этому индексу */
   set(rowIndex: number, row: R, height: number): void {
     if (this.rows[rowIndex] === row) this.heights[rowIndex] = height;
