@@ -8,6 +8,7 @@ import { anchorShiftOf } from './autoRowHeight/anchorShift';
 import {
   AutoRowHeightStore,
   MAX_AUTO_ROW_HEIGHT,
+  sameIds,
 } from './autoRowHeight/AutoRowHeightStore';
 
 /** Строк в окне до первого сообщения glide о видимой области */
@@ -81,10 +82,15 @@ export function useAutoRowHeight<R extends object>({
   }
   prevRef.current = { theme, columns };
 
-  const columnIds = useMemo(
-    () => columns.map((column) => column.id),
-    [columns],
-  );
+  // Смена ширины даёт новый массив колонок с теми же id: ссылку не меняем, иначе
+  // glide заново пересчитает позиции всех строк
+  const columnIdsRef = useRef<readonly string[]>([]);
+  const columnIds = useMemo(() => {
+    const ids = columns.map((column) => column.id);
+    if (sameIds(ids, columnIdsRef.current)) return columnIdsRef.current;
+    columnIdsRef.current = ids;
+    return ids;
+  }, [columns]);
 
   store.setMaxHeight(maxHeight);
   store.setBaseHeight(baseHeight);

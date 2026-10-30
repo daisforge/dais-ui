@@ -23,7 +23,7 @@ export interface RowHeightChange {
   delta: number;
 }
 
-const sameIds = (a: readonly string[], b: readonly string[]) =>
+export const sameIds = (a: readonly string[], b: readonly string[]) =>
   a.length === b.length && a.every((id, i) => id === b[i]);
 
 /**
