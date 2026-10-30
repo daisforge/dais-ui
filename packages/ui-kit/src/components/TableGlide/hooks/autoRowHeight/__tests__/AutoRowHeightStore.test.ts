@@ -214,6 +214,31 @@ describe('AutoRowHeightStore', () => {
     expect(onChange).toHaveBeenLastCalledWith([{ rowIndex: 1, delta: -50 }]);
   });
 
+  it('колонку расширили, пока высокая строка за экраном: при возврате к ней высота меняется только коммитом с onChange', () => {
+    const { store, rows, report, onChange, endFrame } = setup(100);
+    store.setVisibleRows(65, 75);
+    report(70, 'a', 144, 140);
+    report(70, 'b', 20);
+    report(5, 'a', 20, 140);
+    expect(store.heightAt(rows, 70)).toBe(144);
+
+    store.setVisibleRows(0, 10);
+    report(5, 'a', 20, 640);
+    onChange.mockClear();
+
+    store.setVisibleRows(65, 75);
+    expect(store.heightAt(rows, 70)).toBe(144);
+    endFrame();
+    report(70, 'a', 48, 640);
+
+    expect(store.heightAt(rows, 70)).toBe(48);
+    const delta = onChange.mock.calls
+      .flatMap(([changes]) => changes)
+      .filter(({ rowIndex }) => rowIndex === 70)
+      .reduce((sum, { delta }) => sum + delta, 0);
+    expect(delta).toBe(48 - 144);
+  });
+
   it('блок на несколько колонок хранится со своей шириной', () => {
     const { store, rows, report } = setup();
     report(0, 'a', 40, 100);
