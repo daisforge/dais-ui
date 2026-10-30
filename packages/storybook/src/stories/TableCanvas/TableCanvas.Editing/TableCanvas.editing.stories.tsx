@@ -7,6 +7,7 @@ import {
   TRIBES,
 } from '@df-storybook/data/tableData';
 import DocStoryTemplate from '@df-storybook/templates/DocStoryTemplate.mdx';
+import { getFuncAsString } from '@df-storybook/utils/getFuncAsString';
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Button } from '@ui-kit/components/Button';
@@ -19,14 +20,9 @@ import {
   EditingCellInfo,
   TableCanvas,
 } from '@ui-kit/components/TableCanvas';
-import {
-  UIEvent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { useDebouncedValue } from '@ui-kit/utils';
+import { UIEvent, useMemo, useRef, useState } from 'react';
+import useSWRInfinite from 'swr/infinite';
 
 const meta: Meta = {
   title: 'Локальные компоненты/TableCanvas/Editing',
@@ -878,6 +874,8 @@ const COUNTERPARTIES: Counterparty[] = Array.from({ length: 1000 }, (_, i) =>
 
 const COUNTERPARTIES_PAGE_SIZE = 50;
 
+type CounterpartyPage = { items: Counterparty[]; hasMore: boolean };
+
 // Имитация бэкенда: поиск по названию и постраничная выдача с задержкой.
 const fetchCounterparties = ({
   search,
@@ -886,7 +884,7 @@ const fetchCounterparties = ({
   search: string;
   offset: number;
 }) =>
-  new Promise<{ items: Counterparty[]; hasMore: boolean }>((resolve) => {
+  new Promise<CounterpartyPage>((resolve) => {
     setTimeout(() => {
       const query = search.trim().toLowerCase();
       const filtered = query
@@ -900,39 +898,40 @@ const fetchCounterparties = ({
     }, 500);
   });
 
-const useCounterpartyOptions = () => {
+// Кеш SWR живёт вне редактора, поэтому страницы переживают закрытие ячейки.
+// Ключ включает поисковый запрос: для каждого запроса свой набор страниц.
+function useCounterpartyOptions() {
   const [search, setSearch] = useState('');
-  const [items, setItems] = useState<Counterparty[]>([]);
-  const [hasMore, setHasMore] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
-  // Ответ на устаревший запрос (поиск уже сменился) отбрасываем.
-  const requestIdRef = useRef(0);
+  const debouncedSearch = useDebouncedValue(search, 300);
 
-  const load = useCallback((query: string, offset: number) => {
-    requestIdRef.current += 1;
-    const requestId = requestIdRef.current;
-    setIsLoading(true);
-    fetchCounterparties({ search: query, offset }).then((page) => {
-      if (requestId !== requestIdRef.current) return;
-      setItems((prev) =>
-        offset === 0 ? page.items : [...prev, ...page.items],
-      );
-      setHasMore(page.hasMore);
-      setIsLoading(false);
-    });
-  }, []);
+  const { data, size, setSize, isValidating } = useSWRInfinite(
+    (pageIndex, previousPage: CounterpartyPage | null) =>
+      previousPage && !previousPage.hasMore
+        ? null
+        : (['story-counterparties', debouncedSearch, pageIndex] as const),
+    ([, query, pageIndex]) =>
+      fetchCounterparties({
+        search: query,
+        offset: pageIndex * COUNTERPARTIES_PAGE_SIZE,
+      }),
+    {
+      keepPreviousData: true,
+      revalidateFirstPage: false,
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
+  );
 
-  useEffect(() => {
-    const timer = setTimeout(() => load(search, 0), 300);
-    return () => clearTimeout(timer);
-  }, [search, load]);
+  const items = data?.flatMap((page) => page.items) ?? [];
+  const hasMore = data?.[data.length - 1]?.hasMore ?? true;
 
   const loadNext = () => {
-    if (!isLoading && hasMore) load(search, items.length);
+    if (!isValidating && hasMore) setSize(size + 1);
   };
 
-  return { items, isLoading, setSearch, loadNext };
-};
+  return { items, isLoading: isValidating, setSearch, loadNext };
+}
 
 type ContractRow = {
   id: string;
@@ -954,13 +953,13 @@ const CONTRACT_ROWS: ContractRow[] = [3, 17, 128, 402, 777, 999].map(
   }),
 );
 
-const CounterpartyCellEditor = ({
+function CounterpartyCellEditor({
   info: { row, cellWidth, cellHeight, onRowChange, readOnly, theme },
   disableLeftOffset,
 }: {
   info: EditingCellInfo<ContractRow>;
   disableLeftOffset: boolean | undefined;
-}) => {
+}) {
   const { items, isLoading, setSearch, loadNext } = useCounterpartyOptions();
 
   // Текущее значение строки всегда в списке, даже если его страница ещё не загружена.
@@ -992,7 +991,7 @@ const CounterpartyCellEditor = ({
       onChangeValue={setSearch}
       onScroll={handleScroll}
       afterList={
-        isLoading && items.length > 0 ? (
+        isLoading ? (
           <div
             style={{ display: 'flex', justifyContent: 'center', padding: 8 }}
           >
@@ -1000,7 +999,6 @@ const CounterpartyCellEditor = ({
           </div>
         ) : null
       }
-      emptyStateDescription={isLoading ? 'Загрузка…' : undefined}
       onChange={(value: unknown) => {
         if (typeof value !== 'string') return;
         const label = options.find((o) => o.value === value)?.label;
@@ -1015,10 +1013,30 @@ const CounterpartyCellEditor = ({
       }}
     />
   );
-};
+}
+
+const selectInfiniteScrollPreCode = `
+import { Spinner } from '@daisforge/ui/components/Spinner';
+import { CellEditorCombobox, ColumnConfig, EditingCellInfo, TableCanvas } from '@daisforge/ui/components/TableCanvas';
+import { useDebouncedValue } from '@daisforge/ui/utils';
+import { UIEvent, useMemo, useState } from 'react';
+import useSWRInfinite from 'swr/infinite';
+
+${getFuncAsString(
+  'packages/storybook/src/stories/TableCanvas/TableCanvas.Editing/TableCanvas.editing.stories.tsx',
+  'useCounterpartyOptions',
+)}
+
+${getFuncAsString(
+  'packages/storybook/src/stories/TableCanvas/TableCanvas.Editing/TableCanvas.editing.stories.tsx',
+  'CounterpartyCellEditor',
+)}
+
+`;
 
 export const EditingSelectInfiniteScroll: Story = {
   ...storySourceDoc({
+    preCode: selectInfiniteScrollPreCode,
     previewSource: 'shown',
     type: 'code',
   }),

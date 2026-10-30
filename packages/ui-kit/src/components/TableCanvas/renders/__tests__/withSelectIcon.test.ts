@@ -27,10 +27,12 @@ describe('isSelectEditingCell', () => {
     ).toBe(false);
   });
 
-  it('showSelectIcon у инпутов игнорируется', () => {
-    expect(
-      isSelectEditingCell({ component: 'inputString', showSelectIcon: true }),
-    ).toBe(false);
+  it('showSelectIcon у инпутов запрещён типом', () => {
+    isSelectEditingCell({
+      component: 'inputString',
+      // @ts-expect-error showSelectIcon есть только у кастомного редактора
+      showSelectIcon: true,
+    });
   });
 
   it('нет editingCell — шеврона нет', () => {
