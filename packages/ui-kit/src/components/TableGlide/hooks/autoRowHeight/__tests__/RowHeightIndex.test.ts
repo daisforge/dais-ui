@@ -38,6 +38,22 @@ describe('RowHeightIndex', () => {
     expect(index.get(rows, 1)).toBe(70);
   });
 
+  it('each обходит только строки текущего массива в границах', () => {
+    const index = new RowHeightIndex<Row>();
+    index.get(rows, 0);
+    const visited: number[] = [];
+
+    index.each(-5, 1, (row, rowIndex) => {
+      expect(row).toBe(rows[rowIndex]);
+      visited.push(rowIndex);
+    });
+    index.each(rows.length - 1, rows.length + 5, (_, rowIndex) =>
+      visited.push(rowIndex),
+    );
+
+    expect(visited).toEqual([0, 1, rows.length - 1]);
+  });
+
   it('новый массив строк начинает индекс заново', () => {
     const index = new RowHeightIndex<Row>();
     index.get(rows, 0);

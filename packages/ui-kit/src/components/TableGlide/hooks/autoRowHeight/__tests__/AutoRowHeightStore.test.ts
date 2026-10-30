@@ -192,8 +192,8 @@ describe('AutoRowHeightStore', () => {
     );
   });
 
-  it('убрали колонку: видимая строка пересчитывается, строка за экраном — до показа прежняя', () => {
-    const { store, rows, report } = setup();
+  it('убрали колонку: видимая строка пересчитывается, строка за экраном — до показа прежняя, при показе — коммитом', () => {
+    const { store, rows, report, onChange, endFrame } = setup();
     report(0, 'a', 40);
     report(0, 'b', 90);
     report(1, 'a', 40);
@@ -208,7 +208,10 @@ describe('AutoRowHeightStore', () => {
 
     store.setVisibleRows(1, 1);
 
+    expect(store.heightAt(rows, 1)).toBe(90);
+    endFrame();
     expect(store.heightAt(rows, 1)).toBe(40);
+    expect(onChange).toHaveBeenLastCalledWith([{ rowIndex: 1, delta: -50 }]);
   });
 
   it('блок на несколько колонок хранится со своей шириной', () => {

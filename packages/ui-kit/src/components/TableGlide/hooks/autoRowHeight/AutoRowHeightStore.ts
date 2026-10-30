@@ -81,11 +81,14 @@ export class AutoRowHeightStore<R extends object> {
     this.index.reset();
   }
 
-  /** Строки `from..to` на экране: их устаревшие высоты пересчитаются при следующем запросе */
+  /**
+   * Строки `from..to` на экране. Их устаревшие высоты пересчитываются коммитом, а не при запросе:
+   * glide кеширует позиции строк по `rowHeight` и узнает о новых высотах только через `onChange`.
+   */
   setVisibleRows(from: number, to: number): void {
     if (from === this.visible.from && to === this.visible.to) return;
     this.visible = { from, to };
-    this.forgetStaleVisible();
+    this.refreshStaleVisible();
   }
 
   get visibleRows(): VisibleRows {
@@ -138,12 +141,26 @@ export class AutoRowHeightStore<R extends object> {
     return height;
   }
 
-  /** Устаревшие высоты видимых строк убираются из индекса: следующий запрос пересчитает их из ячеек */
+  /**
+   * Устаревшие высоты видимых строк убираются из индекса: следующий запрос пересчитает их из ячеек.
+   * Только когда glide и так переспросит все высоты — при смене колонок.
+   */
   private forgetStaleVisible(): void {
-    this.index.forget(this.visible.from, this.visible.to, (row) => {
-      const known = this.rows.get(row);
-      return known !== undefined && known.generation !== this.generation;
+    this.index.forget(this.visible.from, this.visible.to, (row) =>
+      this.isStale(row),
+    );
+  }
+
+  /** Устаревшие высоты видимых строк ждут коммита: изменившиеся уйдут в `onChange` */
+  private refreshStaleVisible(): void {
+    this.index.each(this.visible.from, this.visible.to, (row, rowIndex) => {
+      if (this.isStale(row)) this.markPending(row, rowIndex);
     });
+  }
+
+  private isStale(row: R): boolean {
+    const known = this.rows.get(row);
+    return known !== undefined && known.generation !== this.generation;
   }
 
   /** Приёмник высоты ячейки строки `row` в колонке `columnId` */
@@ -175,7 +192,7 @@ export class AutoRowHeightStore<R extends object> {
     if (this.resizedInFrame) {
       this.resizedInFrame = false;
       this.generation += 1;
-      this.forgetStaleVisible();
+      this.refreshStaleVisible();
     }
     const changes = [...this.pending].map(([row, rowIndex]) => ({
       rowIndex,

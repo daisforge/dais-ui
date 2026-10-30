@@ -519,9 +519,9 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   const spanColumnIndexes = useMemo(
     () =>
       columnsForRender.flatMap((column, columnIndex) =>
-        column.colSpan ? [columnIndex] : [],
+        column.colSpan ? [columnIndex] : []
       ),
-    [columnsForRender],
+    [columnsForRender]
   );
 
   // ─── hoverEffects.row: подсветка строки под курсором (цвета из темы).
@@ -821,7 +821,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       const themeOverride = mergeThemeOverrides(
         columnThemeOverrideResult,
         fillOverride,
-        soloActiveCellOverride,
+        soloActiveCellOverride
       );
 
       const options = {

@@ -26,12 +26,21 @@ export class RowHeightIndex<R> {
     this.heights.fill(UNRESOLVED);
   }
 
+  /** Строки `from..to` текущего массива с их индексами */
+  each(
+    from: number,
+    to: number,
+    visit: (row: R, rowIndex: number) => void,
+  ): void {
+    const last = Math.min(to, this.rows.length - 1);
+    for (let i = Math.max(from, 0); i <= last; i += 1) visit(this.rows[i]!, i);
+  }
+
   /** Строки `from..to`, для которых `isStale`, придётся искать заново */
   forget(from: number, to: number, isStale: (row: R) => boolean): void {
-    const last = Math.min(to, this.rows.length - 1);
-    for (let i = Math.max(from, 0); i <= last; i += 1) {
-      if (isStale(this.rows[i]!)) this.heights[i] = UNRESOLVED;
-    }
+    this.each(from, to, (row, rowIndex) => {
+      if (isStale(row)) this.heights[rowIndex] = UNRESOLVED;
+    });
   }
 
   /** Обновляет высоту, если строка `row` всё ещё стоит по этому индексу */

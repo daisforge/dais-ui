@@ -95,12 +95,12 @@ export function useAutoRowHeight<R extends object>({
     (rowIndex: number): number => store.heightAt(rows, rowIndex) ?? baseHeight,
     // maxHeight, columnIds, version: высоты в store изменились, glide должен спросить их заново
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [store, rows, baseHeight, columnIds, maxHeight, version],
+    [store, rows, baseHeight, columnIds, maxHeight, version]
   );
 
   const trackVisibleRegion = useCallback(
     (range: Rectangle) => store.setVisibleRows(range.y, range.y + range.height),
-    [store],
+    [store]
   );
 
   const reporterFor = useCallback(
