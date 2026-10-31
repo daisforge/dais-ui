@@ -97,7 +97,7 @@ import {
 import { findBlockOrigin } from './utils/findBlockOrigin';
 import { mergeThemeOverrides } from './utils/mergeThemeOverrides';
 import { queryGlideElements } from './utils/queryGlideElements';
-import type { ResolveHoverRows } from './hooks/useHoverState';
+import type { HoverRows, ResolveHoverRows } from './hooks/useHoverState';
 import { getSpan } from './utils/getSpan';
 import {
   getColumnGroupPath,
@@ -626,8 +626,13 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   // ─── appearance.zebra: строки с чётным индексом с серым фоном (см. getRowThemeOverride).
   const isZebra = appearance?.zebra === true;
 
+  // Видимые строки для дорисовки строк под курсором и фон открытого редактора
+  // при смене строк под курсором (обе ссылки заполняются ниже).
+  const visibleRowsRef = useRef<HoverRows>();
+  const updateEditorBgRef = useRef<() => void>();
+
   // Единый источник ховера: логическая ячейка (контент-флаги, ref) и
-  // физическая строка (фон, state). Разница семантик описана в useHoverState.
+  // физическая строка (фон, ссылка). Разница семантик описана в useHoverState.
   // Данные ячейки без наведения и выделения: по ним считаются границы
   // объединённых блоков (colSpan, rowSpan).
   const getProbeInfo = useCallback(
@@ -687,20 +692,16 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     [columnsForRender, rows, getProbeInfo, findCellBlockOrigin],
   );
 
-  const { hoveredCellRef, setHoveredCell, hoverRows, onHoverRowChange } =
+  const { hoveredCellRef, setHoveredCell, hoverRowsRef, onHoverRowChange } =
     useHoverState({
       isRowHoverEnabled,
       dataEditorRef,
       columnsCount: columnsForRender.length,
       rowsCount: rows.length,
       resolveHoverRows,
+      visibleRowsRef,
+      onHoverRowsChange: () => updateEditorBgRef.current?.(),
     });
-  // Строки под курсором для фона: только в режиме hoverEffects.row.
-  const activeHoverRows = isRowHoverEnabled ? hoverRows : undefined;
-  // Содержимое ячеек читает строки под курсором из ссылки: при их смене
-  // таблица и так перерисовывается целиком через getRowThemeOverride.
-  const activeHoverRowsRef = useRef(activeHoverRows);
-  activeHoverRowsRef.current = activeHoverRows;
 
   // Регионы ошибок (ячейки и строки) и сводка по строкам считаются по окну
   // видимой области (см. JSDoc хука).
@@ -763,6 +764,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       };
       trackVisibleRegion(range);
       trackAutoRowHeightRegion(range);
+      visibleRowsRef.current = { from: range.y, to: range.y + range.height - 1 };
       onVisibleRegionChangedExternal?.(range, tx, ty, extras);
 
       const scrollPosition = `${range.x}:${range.y}:${tx}:${ty}`;
@@ -939,7 +941,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       const blockRows: readonly [number, number] = spanRows ?? [rowInd, rowInd];
       const isBlock = !!span || !!spanRows;
       // Строки под курсором проходят через ячейку или блок.
-      const hoverRowsNow = activeHoverRowsRef.current;
+      const hoverRowsNow = isRowHoverEnabled ? hoverRowsRef.current : undefined;
       const rowsHovered =
         hoverRowsNow !== undefined &&
         rangesOverlap(
@@ -1093,11 +1095,22 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
             }
           : undefined;
 
+      // Служебная колонка строки под курсором: свой цвет поверх серого ховера
+      // строки (тема ячейки сильнее темы строки). Раньше это был регион
+      // подсветки, но массив регионов менялся на каждое движение мыши, и glide
+      // перерисовывал весь экран. В «чистом» виде служебная зона красится
+      // вместе со строкой, своего цвета у неё нет.
+      const serviceHoverOverride =
+        column.isServiceColumn && appearanceVariant !== 'clean' && rowsHovered
+          ? { bgCell: theme.bgServiceRowHovered }
+          : undefined;
+
       const themeOverride = mergeThemeOverrides(
         columnThemeOverrideResult,
         blockRowOverride,
         fillOverride,
-        soloActiveCellOverride
+        soloActiveCellOverride,
+        serviceHoverOverride
       );
 
       const options = {
@@ -1191,6 +1204,8 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       theme,
       activeTheme,
       paletteOverride,
+      isRowHoverEnabled,
+      appearanceVariant,
       activeRow,
       checkboxSelectedRowIndexes,
       blockHasCheckedRow,
@@ -1835,21 +1850,22 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     [theme, checkboxSelectedRowIndexes, activeRow, isZebra],
   );
 
+  // Строки под курсором читаются из ссылки при каждом вызове: функция не
+  // пересоздаётся при наведении, иначе glide считал бы, что менялось всё, и
+  // перерисовывал весь экран. Прежние и новые строки дорисовываются точечно
+  // (useHoverState).
   const getRowThemeOverride = useMemo((): GlideProps['getRowThemeOverride'] => {
     const hasSelectedRows = !!checkboxSelectedRowIndexes?.size;
-    const hoverFrom = activeHoverRows?.from;
-    const hoverTo = activeHoverRows?.to;
-    const isHoveredRow = (rowInd: number) =>
-      hoverFrom !== undefined &&
-      hoverTo !== undefined &&
-      rowInd >= hoverFrom &&
-      rowInd <= hoverTo;
+    const isHoveredRow = (rowInd: number) => {
+      const hover = isRowHoverEnabled ? hoverRowsRef.current : undefined;
+      return hover !== undefined && rowInd >= hover.from && rowInd <= hover.to;
+    };
 
     if (
       !summaryRowsLength &&
       !hasSelectedRows &&
       !isZebra &&
-      activeHoverRows === undefined &&
+      !isRowHoverEnabled &&
       activeRow === undefined
     ) {
       return undefined;
@@ -1861,17 +1877,20 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     // (в getCellContentGlide). Фон строки Glide растянул бы вниз, на пустое
     // место под данными, и при горизонтальной прокрутке он перекрыл бы текст
     // итоговой строки.
+    // Обычной строке своя тема не нужна: undefined, а не пустой объект. Пустой
+    // объект glide считает темой и на каждую ячейку такой строки собирал бы
+    // полную копию темы.
     return (rowInd) =>
       rowInd >= dataRowsLength
-        ? {}
-        : resolveRowTheme(rowInd, isHoveredRow(rowInd)) ?? {};
+        ? undefined
+        : resolveRowTheme(rowInd, isHoveredRow(rowInd));
   }, [
     resolveRowTheme,
     summaryRowsLength,
     checkboxSelectedRowIndexes,
     isZebra,
     rows.length,
-    activeHoverRows,
+    isRowHoverEnabled,
     activeRow,
   ]);
 
@@ -1880,7 +1899,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   // открытого редактора обновляем сами, прямо в его элементе.
   const getEditorBgRef = useRef<(col: number, row: number) => string>();
   getEditorBgRef.current = (col, row) => {
-    const hover = activeHoverRowsRef.current;
+    const hover = hoverRowsRef.current;
     const rowHovered =
       hover !== undefined && row >= hover.from && row <= hover.to;
     return (
@@ -1929,7 +1948,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     if (!overlay || !scroller) return;
     syncEditorFrame(overlay, frame, scroller.scrollTop);
   };
-  useLayoutEffect(() => {
+  updateEditorBgRef.current = () => {
     const cell = editorCellRef.current;
     const overlay = cell
       ? overlayPortalRef.current?.querySelector<HTMLElement>(
@@ -1945,7 +1964,11 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       '--gdg-bg-cell',
       getEditorBgRef.current?.(cell[0], cell[1]) ?? null,
     );
-  }, [activeHoverRows, activeRow, checkboxSelectedRowIndexes, theme]);
+  };
+  // Смена строк под курсором рендер не вызывает, её сообщает useHoverState.
+  useLayoutEffect(() => {
+    updateEditorBgRef.current?.();
+  }, [activeRow, checkboxSelectedRowIndexes, theme]);
   // Ссылка постоянная: новая функция заставила бы форк пересоздать открытый редактор.
   const provideEditorExternalRef = useRef(restProps.provideEditor);
   provideEditorExternalRef.current = restProps.provideEditor;
@@ -2101,9 +2124,6 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     outlineEachRange,
     totalRows: rows.length + summaryRowsLength,
     columnsCount: columnsLast.length,
-    isRowHoverEnabled,
-    hoverRows,
-    dataRowsCount: rows.length,
     serviceZoneFollowsRow: appearanceVariant === 'clean',
   });
 
