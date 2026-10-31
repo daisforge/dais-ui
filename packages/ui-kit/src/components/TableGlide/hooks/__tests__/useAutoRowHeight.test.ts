@@ -193,3 +193,143 @@ describe('useAutoRowHeight', () => {
     expect(needsHeight(result, 'a')).toBe(false);
   });
 });
+
+describe('useAutoRowHeight: подсказка changes для glide', () => {
+  type Props = { rows: Row[]; baseHeight: number; maxHeight?: number };
+  const ROWS_MANY: Row[] = Array.from({ length: 10 }, (_, id) => ({ id }));
+
+  const setupMany = (initial: Props = { rows: ROWS_MANY, baseHeight: BASE }) => {
+    const hook = renderHook(
+      ({ rows, baseHeight, maxHeight }: Props) =>
+        useAutoRowHeight({
+          enabled: true,
+          rows,
+          columns: COLUMNS,
+          theme: SMALL,
+          baseHeight,
+          maxHeight,
+        }),
+      { initialProps: initial },
+    );
+    for (let i = 0; i < 10; i += 1) hook.result.current.heightOf(i);
+    return hook;
+  };
+
+  const report = async (
+    hook: ReturnType<typeof setupMany>,
+    rows: Row[],
+    rowIndex: number,
+    height: number,
+  ) => {
+    await act(async () => {
+      hook.result.current
+        .reporterFor(rows[rowIndex]!, rowIndex, 'a', false)
+        .report(100, height);
+    });
+  };
+
+  it('новые высоты строк: подсказка от прежней версии с диапазоном этих строк', async () => {
+    const hook = setupMany();
+    const before = hook.result.current.heightOf;
+
+    await act(async () => {
+      hook.result.current.reporterFor(ROWS_MANY[3]!, 3, 'a', false).report(100, 60);
+      hook.result.current.reporterFor(ROWS_MANY[6]!, 6, 'a', false).report(100, 70);
+    });
+
+    const after = hook.result.current.heightOf;
+    expect(after).not.toBe(before);
+    expect(after.changes).toEqual({
+      previousVersion: before.version,
+      from: 3,
+      to: 6,
+    });
+  });
+
+  it('следующий шаг: подсказка только от предыдущей версии, диапазон не копится', async () => {
+    const hook = setupMany();
+    await report(hook, ROWS_MANY, 3, 60);
+    const second = hook.result.current.heightOf;
+
+    await report(hook, ROWS_MANY, 8, 50);
+    expect(hook.result.current.heightOf.changes).toEqual({
+      previousVersion: second.version,
+      from: 8,
+      to: 8,
+    });
+  });
+
+  it('сортировка (новый массив строк той же длины): без подсказки', async () => {
+    const hook = setupMany();
+    await report(hook, ROWS_MANY, 3, 60);
+
+    const sorted = [...ROWS_MANY].reverse();
+    hook.rerender({ rows: sorted, baseHeight: BASE });
+    expect(hook.result.current.heightOf.changes).toBeUndefined();
+    expect(hook.result.current.heightOf(6)).toBe(60);
+    expect(hook.result.current.heightOf(3)).toBe(BASE);
+  });
+
+  it('смена базовой высоты или потолка: без подсказки', () => {
+    const hook = setupMany();
+    hook.rerender({ rows: ROWS_MANY, baseHeight: BASE + 10 });
+    expect(hook.result.current.heightOf.changes).toBeUndefined();
+
+    hook.rerender({ rows: ROWS_MANY, baseHeight: BASE + 10, maxHeight: 40 });
+    expect(hook.result.current.heightOf.changes).toBeUndefined();
+  });
+
+  it('догрузка шрифта: без подсказки, иначе glide не перерисует и ячейки не перемеряются', async () => {
+    const hook = setupMany();
+    await report(hook, ROWS_MANY, 3, 60);
+    const before = hook.result.current.heightOf;
+
+    act(() => fontsLoaded());
+    const after = hook.result.current.heightOf;
+    expect(after).not.toBe(before);
+    expect(after.changes).toBeUndefined();
+
+    await report(hook, ROWS_MANY, 5, 70);
+    expect(hook.result.current.heightOf.changes).toEqual({
+      previousVersion: after.version,
+      from: 5,
+      to: 5,
+    });
+  });
+
+  it('смена набора колонок: без подсказки', async () => {
+    const hook = renderHook(
+      ({ columns }: { columns: Column[] }) =>
+        useAutoRowHeight({
+          enabled: true,
+          rows: ROWS_MANY,
+          columns,
+          theme: SMALL,
+          baseHeight: BASE,
+        }),
+      { initialProps: { columns: COLUMNS } },
+    );
+    for (let i = 0; i < 10; i += 1) hook.result.current.heightOf(i);
+    await act(async () => {
+      hook.result.current.reporterFor(ROWS_MANY[3]!, 3, 'a', false).report(100, 60);
+    });
+    expect(hook.result.current.heightOf.changes).toBeDefined();
+
+    hook.rerender({ columns: [COLUMNS[0]!] });
+    expect(hook.result.current.heightOf.changes).toBeUndefined();
+  });
+
+  it('у каждой новой функции heightOf свой номер версии, номера растут', async () => {
+    const hook = setupMany();
+    const versions = [hook.result.current.heightOf.version!];
+    await report(hook, ROWS_MANY, 3, 60);
+    versions.push(hook.result.current.heightOf.version!);
+    hook.rerender({ rows: [...ROWS_MANY], baseHeight: BASE });
+    versions.push(hook.result.current.heightOf.version!);
+    act(() => fontsLoaded());
+    versions.push(hook.result.current.heightOf.version!);
+
+    expect(new Set(versions).size).toBe(versions.length);
+    expect([...versions].sort((a, b) => a - b)).toEqual(versions);
+  });
+});

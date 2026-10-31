@@ -1,5 +1,15 @@
-import type { Rectangle } from '@glideappsfinal/glide-data-grid';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import type {
+  Rectangle,
+  RowHeightCallback,
+} from '@glideappsfinal/glide-data-grid';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { flushSync } from 'react-dom';
 
 import type { CellHeightReporter } from '../cellRenderer';
@@ -10,9 +20,20 @@ import {
   MAX_AUTO_ROW_HEIGHT,
   sameIds,
 } from './autoRowHeight/AutoRowHeightStore';
+import { useRowHeightChangesCheck } from './autoRowHeight/useRowHeightChangesCheck';
 
 /** Строк в окне до первого сообщения glide о видимой области */
 const INITIAL_VISIBLE_ROWS = 50;
+
+/** Что накопилось после показанного `heightOf`: строки с новой высотой и признак устаревших замеров */
+interface PendingChanges {
+  from: number;
+  to: number;
+  /** Замеры помечены устаревшими (догрузка шрифта): следующий `heightOf` идёт без подсказки */
+  stale: boolean;
+}
+
+const NO_CHANGES: PendingChanges = { from: Infinity, to: -1, stale: false };
 
 interface Params<R extends object> {
   enabled: boolean;
@@ -46,20 +67,31 @@ export function useAutoRowHeight<R extends object>({
 }: Params<R>) {
   const [version, setVersion] = useState(0);
   const anchorShiftRef = useRef(0);
+  // Объект заменяется целиком: эффект после показа сбрасывает его, только если с рендера ничего не добавилось
+  const pendingRef = useRef<PendingChanges>(NO_CHANGES);
   const [store] = useState(() => {
     const created = new AutoRowHeightStore<R>((changes) => {
       anchorShiftRef.current += anchorShiftOf(changes, created.visibleRows);
+      let { from, to } = pendingRef.current;
+      changes.forEach(({ rowIndex }) => {
+        from = Math.min(from, rowIndex);
+        to = Math.max(to, rowIndex);
+      });
+      pendingRef.current = { ...pendingRef.current, from, to };
       flushSync(() => setVersion((value) => value + 1));
     });
     created.setVisibleRows(0, INITIAL_VISIBLE_ROWS);
     return created;
   });
 
-  // Шрифт у Canvas.Text может быть свой, не из темы: ждём загрузки любого семейства
+  // Шрифт у Canvas.Text может быть свой, не из темы: ждём загрузки любого семейства. Пропсы glide при
+  // этом не меняются, а ячейки перемеряются только при отрисовке, поэтому следующий heightOf идёт
+  // без подсказки, и glide перерисовывает экран целиком
   useEffect(() => {
     if (!enabled) return undefined;
     return subscribeFontsLoaded(() => {
       store.invalidate();
+      pendingRef.current = { ...pendingRef.current, stale: true };
       setVersion((value) => value + 1);
     });
   }, [enabled, store]);
@@ -96,13 +128,49 @@ export function useAutoRowHeight<R extends object>({
   store.setBaseHeight(baseHeight);
   store.setColumns(columnIds);
 
-  // Glide зовёт для всех строк при каждой смене высот: найденная высота читается из индекса store
-  const heightOf = useCallback(
-    (rowIndex: number): number => store.heightAt(rows, rowIndex) ?? baseHeight,
-    // maxHeight, columnIds, version: высоты в store изменились, glide должен спросить их заново
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [store, rows, baseHeight, columnIds, maxHeight, version]
+  // Показанной считается версия с теми же строками, базовой высотой, колонками и потолком
+  const depsToken = useMemo(
+    () => [rows, baseHeight, columnIds, maxHeight] as const,
+    [rows, baseHeight, columnIds, maxHeight],
   );
+
+  // Glide зовёт для всех строк при каждой смене высот: найденная высота читается из индекса store.
+  // Если с показанной версии изменились только высоты строк, функция несёт `changes`, и glide спросит
+  // и перерисует лишь эти строки; иначе пересчитает и перерисует всё
+  const versionRef = useRef(0);
+  const renderedRef = useRef(pendingRef.current);
+  const shownRef = useRef<{ version: number; token: unknown }>();
+  const heightOf = useMemo<RowHeightCallback>(() => {
+    versionRef.current += 1;
+    const read = (rowIndex: number) =>
+      store.heightAt(rows, rowIndex) ?? baseHeight;
+    const shown = shownRef.current;
+    const pending = pendingRef.current;
+    renderedRef.current = pending;
+    return Object.assign(read, {
+      version: versionRef.current,
+      changes:
+        shown !== undefined && shown.token === depsToken && !pending.stale
+          ? {
+              previousVersion: shown.version,
+              from: pending.from,
+              to: pending.to,
+            }
+          : undefined,
+    });
+    // version: высоты в store изменились, glide должен спросить их заново
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [store, rows, baseHeight, depsToken, version]);
+
+  useRowHeightChangesCheck(heightOf, enabled ? rows.length : 0);
+
+  useLayoutEffect(() => {
+    shownRef.current = { version: heightOf.version ?? 0, token: depsToken };
+    // Замеры и инвалидации, пришедшие после рендера, останутся в следующей подсказке
+    if (pendingRef.current === renderedRef.current) {
+      pendingRef.current = NO_CHANGES;
+    }
+  }, [heightOf, depsToken]);
 
   const trackVisibleRegion = useCallback(
     (range: Rectangle) => store.setVisibleRows(range.y, range.y + range.height),
