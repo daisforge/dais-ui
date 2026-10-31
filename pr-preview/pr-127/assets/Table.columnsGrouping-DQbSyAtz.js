@@ -1,0 +1,14 @@
+import{j as o}from"./react-D2T61mpp.js";import{cf as t,cg as m,c9 as e}from"./vendor-DIjqEUEl.js";import{T as p}from"./Table.columnsGroup.stories-DOOxVDdg.js";import"./react-is-Clcustum.js";import"./styled-components-C6nqWEvq.js";import"./@tanstack/react-virtual-BrusU8ao.js";import"./tslib-DoU9Jm1N.js";import"./tableData-DVJFoYoT.js";import"./DocStoryTemplate-CnJlkrRG.js";import"./storySourceDoc-tVKyHcEN.js";import"./Table-DD5S3q2_.js";import"./FiltersActions-BUI_3aO5.js";import"./IconButton-D4JlXDHj.js";import"./@salutejs/plasma-icons-lvaNTfmN.js";import"./@salutejs/sdds-finai-BWYHBdru.js";import"./@salutejs/sdds-themes-DPwMcFh9.js";import"./utils-BjF6Dnvr.js";import"./constants-DatVHdkd.js";import"./sharedUtilsDebug-BX_KjCjW.js";import"./Box-B7h5WACJ.js";import"./TextField-B0qvwLth.js";import"./sharedUtilsInputs-BwzWYv9Q.js";import"./AiAgentPopup-FHVHh5-Y.js";import"./TextArea-B6NUS0ln.js";import"./sharedUtilsResizable-DAkmtp1h.js";import"./Collapse-CpJlFoZJ.js";import"./react-data-grid-sYi6Azdk.js";import"./TableTabs-C_Q-8k6E.js";import"./TableCanvasSharedConstants-B2qJZwC8.js";import"./TableGlide-BP2zkk_Q.js";import"./@glideappsfinal/glide-data-grid-CGEa7Q2A.js";import"./canvas-hypertxt-DsokSIOX.js";import"./sharedUiSearch-BJpy-u8-.js";import"./ListOfFilters-Cx4JAoK1.js";import"./lodash.isequal-DD0Lfcik.js";import"./NumberFormat-DFLG2Si3.js";import"./EmptyState-DfriD_Tm.js";import"./MassActions-BW1U2iNA.js";import"./Autocomplete-BgcWKOea.js";function n(r){const i={a:"a",code:"code",h1:"h1",h2:"h2",li:"li",p:"p",ul:"ul",...t(),...r.components};return o.jsxs(o.Fragment,{children:[o.jsx(m,{of:p,name:"Docs"}),`
+`,o.jsx(i.h1,{id:"columnsgrouping",children:"ColumnsGrouping"}),`
+`,o.jsx(i.p,{children:"Вложенная структура шапки таблицы через групповые колонки."}),`
+`,o.jsx(i.h2,{id:"ключевые-особенности",children:"Ключевые особенности"}),`
+`,o.jsxs(i.ul,{children:[`
+`,o.jsxs(i.li,{children:[o.jsx(i.code,{children:"columnConfig"})," может содержать обычные колонки и группы колонок"]}),`
+`,o.jsxs(i.li,{children:["Группа задается через ",o.jsx(i.code,{children:"children"})]}),`
+`,o.jsx(i.li,{children:"Поддерживает несколько уровней вложенности шапки"}),`
+`,o.jsxs(i.li,{children:["Совместима с ",o.jsx(i.code,{children:"columnsControl"})," и ",o.jsx(i.code,{children:"resizableColumn"})]}),`
+`]}),`
+`,o.jsx(i.h2,{id:"особенности",children:"Особенности"}),`
+`,o.jsxs(i.p,{children:["У групповой колонки нет данных строки. Данные отображают leaf-колонки, которые находятся внутри ",o.jsx(i.code,{children:"children"}),"."]}),`
+`,o.jsxs(i.p,{children:["Описание типов - в разделе ",o.jsx(i.a,{href:"?path=/docs/%D0%BB%D0%BE%D0%BA%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D1%8B-table-columnsgrouping-api--docs",children:"API"}),"."]}),`
+`,o.jsx(e,{})]})}function Q(r={}){const{wrapper:i}={...t(),...r.components};return i?o.jsx(i,{...r,children:o.jsx(n,{...r})}):n(r)}export{Q as default};
