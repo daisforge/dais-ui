@@ -1,6 +1,4 @@
 import type { GridSelection, Rectangle } from '@glideappsfinal/glide-data-grid';
-import { useMemo } from 'react';
-
 import type { CellsSelectionMode, GlideProps, Theme } from '../../types';
 import { useBaseHighlightRegions } from './useBaseHighlightRegions';
 import { useColumnRowHighlightRegions } from './useColumnRowHighlightRegions';
@@ -29,21 +27,24 @@ import { useColumnRowHighlightRegions } from './useColumnRowHighlightRegions';
  *
  * Часть 2. ПОВЕРХ выбранного фона рисуются прямоугольники этого хука.
  * Порядок в массиве равен порядку отрисовки, первый элемент самый нижний:
- *   1) ховер сервис-зоны (нумерация и чекбокс под курсором);
- *   2) внешние регионы потребителя (highlightRegionsExternal);
- *   3) базовое выделение (useBaseHighlightRegions): затемнение сервис-зоны
+ *   1) внешние регионы потребителя (highlightRegionsExternal);
+ *   2) базовое выделение (useBaseHighlightRegions): затемнение сервис-зоны
  *      активного диапазона, заливка и обводка одиночной активной ячейки,
  *      кольца ошибок (поячеечные и на всю строку);
- *   4) выделение колонок и строк, затемнение нумерации под rangeStack
+ *   3) выделение колонок и строк, затемнение нумерации под rangeStack
  *      (useColumnRowHighlightRegions). Выбранная строка регионами не
  *      красится — её фон задают темы (часть 1).
+ * Ховер сервис-зоны (нумерация и чекбокс под курсором) регионом не рисуется:
+ * это тема ячейки сервис-колонки под курсором (getCellContent в
+ * TableGlide.tsx). Регион менял бы массив на каждое движение мыши, и glide
+ * перерисовывал бы весь экран.
  * Дальше рисует форк: заливки регионов накладываются на фон, потом линии сетки,
  * после линий кольца (solid-outline: ошибки, активная ячейка), сверху
  * фокус-ринг и fill-handle.
  */
 interface UseColoringLayersParams {
   theme: Theme;
-  /* Слои 2 и 3: базовое выделение. */
+  /* Слои 1 и 2: базовое выделение. */
   cellsSelectionMode: CellsSelectionMode;
   selection: GridSelection;
   /** Число ведущих сервис-колонок (нумерация, чекбокс). */
@@ -62,7 +63,7 @@ interface UseColoringLayersParams {
   /** Строки с ошибкой всей строки (одна рамка на строку). */
   errorRowIndexes?: readonly number[];
   highlightRegionsExternal?: GlideProps['highlightRegions'];
-  /* Слой 4: выделение колонок и строк. */
+  /* Слой 3: выделение колонок и строк. */
   selectedColumnIndexes: number[];
   headerSelectedRowIndexes: number[];
   /** Рамка у каждого Ctrl-диапазона ячеек, а не только у активного. */
@@ -70,16 +71,11 @@ interface UseColoringLayersParams {
   /** Всего строк (данные + summary). */
   totalRows: number;
   columnsCount: number;
-  /* Слой 1: ховер сервис-зоны. */
-  isRowHoverEnabled: boolean;
-  hoverRow?: number;
-  /** Строк данных без summary: summary ховер не получает. */
-  dataRowsCount: number;
   /**
    * Служебные колонки красятся вместе со строкой (appearance.variant='clean'):
-   * у них нет своего голубого фона. Слой ховера сервис-зоны не нужен (иначе
-   * он перекрыл бы зебру и отмеченную строку серым), а регионы выделения
-   * сервис-зоны рисуются стилем 'accent' — цветом выделения своей строки.
+   * у них нет своего голубого фона и своего цвета под курсором, а регионы
+   * выделения сервис-зоны рисуются стилем 'accent' — цветом выделения своей
+   * строки.
    */
   serviceZoneFollowsRow?: boolean;
 }
@@ -101,12 +97,9 @@ export function useColoringLayers({
   outlineEachRange,
   totalRows,
   columnsCount,
-  isRowHoverEnabled,
-  hoverRow,
-  dataRowsCount,
   serviceZoneFollowsRow = false,
 }: UseColoringLayersParams): GlideProps['highlightRegions'] {
-  // Слои 2 и 3: внешние регионы и базовое выделение.
+  // Слои 1 и 2: внешние регионы и базовое выделение.
   const baseRegions = useBaseHighlightRegions({
     cellsSelectionMode,
     selection,
@@ -123,7 +116,7 @@ export function useColoringLayers({
     serviceZoneFollowsRow,
   });
 
-  // Слой 4: выделение колонок и строк поверх базы. Шапки выделенных колонок
+  // Слой 3: выделение колонок и строк поверх базы. Шапки выделенных колонок
   // красятся отдельно, через bgHeader в columnsForRender.
   const withColumnsAndRows = useColumnRowHighlightRegions({
     baseRegions,
@@ -139,36 +132,5 @@ export function useColoringLayers({
     serviceZoneFollowsRow,
   });
 
-  // Слой 1: ховер сервис-зоны, первым в массиве (самый нижний). Голубой фон
-  // сервис-колонок задан темой колонки, а серый ховер строки задан темой
-  // строки и в glide перекрывает колоночную, поэтому сервис-зоне возвращаем
-  // цвет регионом поверх. Цвет тот же, что затемнение при селектинге.
-  return useMemo((): GlideProps['highlightRegions'] | undefined => {
-    if (
-      !isRowHoverEnabled ||
-      serviceZoneFollowsRow ||
-      hoverRow === undefined ||
-      hoverRow > dataRowsCount - 1 || // summary-строки ховер не получают
-      serviceColumnsCount === 0
-    ) {
-      return withColumnsAndRows;
-    }
-
-    return [
-      {
-        color: theme.bgServiceRowHovered,
-        range: { x: 0, y: hoverRow, width: serviceColumnsCount, height: 1 },
-        style: 'no-outline',
-      },
-      ...(withColumnsAndRows ?? []),
-    ];
-  }, [
-    withColumnsAndRows,
-    serviceColumnsCount,
-    isRowHoverEnabled,
-    serviceZoneFollowsRow,
-    hoverRow,
-    dataRowsCount,
-    theme.bgServiceRowHovered,
-  ]);
+  return withColumnsAndRows;
 }
