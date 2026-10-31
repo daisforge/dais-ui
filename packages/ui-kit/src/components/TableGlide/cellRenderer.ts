@@ -6,6 +6,7 @@ import {
 } from './lib/canvas';
 import type { CanvasRenderArgs } from './lib/canvas/cells/types';
 import { CanvasContainer } from './lib/canvas/core/CanvasContainer';
+import { measureNodeHeight } from './lib/canvas/core/measureNodeHeight';
 import { CanvasAvatar } from './lib/canvas/primitives/CanvasAvatar';
 import { CanvasAvatarGroup } from './lib/canvas/primitives/CanvasAvatarGroup';
 import { CanvasImage } from './lib/canvas/primitives/CanvasImage';
@@ -26,16 +27,92 @@ import {
 
 type CanvasCacheKey = string | number | boolean | null;
 
+/** Отступ обрезки от левого и верхнего края ячейки: там линии сетки (как у glide) */
+const CELL_EDGE_INSET = 1;
+
+/**
+ * Приёмник высоты содержимого ячейки для `rowHeight: 'auto'`. Ячейка снимает
+ * высоту с уже построенного при отрисовке дерева, если её ещё нет при этой ширине.
+ */
+export interface CellHeightReporter {
+  needsHeight: (width: number) => boolean;
+  report: (width: number, height: number) => void;
+}
+
 interface CanvasCellCacheEntry {
   cacheKey: CanvasCacheKey;
   canvasRoot: CellCanvasRoot;
 }
+
+/**
+ * Дерево ячейки. CellCanvasRoot задаёт корневой ноде размеры всей ячейки. Обёртка принимает
+ * эти размеры на себя, а изображение, аватар или группа внутри получают
+ * собственные размеры через layout. Так область hover/click и обрезка
+ * группы соответствуют элементу, а не растягиваются на всю ячейку.
+ */
+const buildCellNode = (
+  element: Parameters<typeof buildCanvasTree>[0]['element'],
+  idPrefix: string,
+  theme: GlideThemeForRender
+) => {
+  const node = buildCanvasTree({ element, idPrefix, theme });
+  if (
+    node instanceof CanvasImage ||
+    node instanceof CanvasAvatar ||
+    node instanceof CanvasAvatarGroup
+  ) {
+    const container = new CanvasContainer(`${node.id}:cell-root`);
+    container.addChild(node);
+    return container;
+  }
+  return node;
+};
+
+/**
+ * Отступы ячейки при `rowHeight: 'auto'`: высота строки — содержимое плюс вертикальные
+ * отступы темы, поэтому содержимое раскладывается между ними, а не от верхнего края.
+ * Обёртка занимает всю ячейку, так что координаты hover и click не сдвигаются.
+ */
+const withVerticalInset = (
+  node: ReturnType<typeof buildCellNode>,
+  inset: number
+) => {
+  const container = new CanvasContainer(`${node.id}:auto-row-inset`);
+  container.setFlexOptions({
+    direction: 'column',
+    padding: { top: inset, bottom: inset },
+  });
+  node.style = { ...node.style, width: '100%', height: '100%' };
+  container.addChild(node);
+  return container;
+};
+
+/**
+ * Ячейка строки с `rowHeight: 'auto'`: сообщает высоту содержимого с отступами,
+ * если её ещё нет при этой ширине, и раскладывает содержимое между отступами.
+ * Высота снимается с того же дерева, что пойдёт в отрисовку.
+ */
+const withAutoHeight = (
+  node: ReturnType<typeof buildCellNode>,
+  reporter: CellHeightReporter,
+  {
+    ctx,
+    width,
+    inset,
+  }: { ctx: CanvasRenderingContext2D; width: number; inset: number }
+) => {
+  if (reporter.needsHeight(width)) {
+    reporter.report(width, measureNodeHeight(ctx, node, width) + inset * 2);
+  }
+  return withVerticalInset(node, inset);
+};
 
 export const glideCellRenderer = <R extends ObjectForExtending, SR>({
   jsxElement,
   canvasCellCache,
   cellInfo,
   options,
+  autoHeight,
 }: {
   jsxElement: CellContent;
   cellInfo: CellInfo<R, SR>;
@@ -50,6 +127,8 @@ export const glideCellRenderer = <R extends ObjectForExtending, SR>({
     getPortalEventTarget?: () => EventTarget | null;
     refTable?: unknown;
   };
+  /** Строка с `rowHeight: 'auto'`: ячейка сообщает высоту содержимого и рисует его между вертикальными отступами */
+  autoHeight?: CellHeightReporter;
 }) => {
   let canvasBounds: DOMRect | null = null;
 
@@ -76,6 +155,7 @@ export const glideCellRenderer = <R extends ObjectForExtending, SR>({
 
   let cellCanvasRoot: CellCanvasRoot | null = null;
   const cellPortalOriginId = `cell-${colInd}-${rowInd}`;
+  const nodeIdPrefix = `cell-${colInd}-${rowInd}-${id}`;
 
   const render = (
     ctx: CanvasRenderingContext2D,
@@ -120,25 +200,14 @@ export const glideCellRenderer = <R extends ObjectForExtending, SR>({
         return {};
       }
 
-      let node = buildCanvasTree({
-        element: jsxElement,
-        idPrefix: `cell-${colInd}-${rowInd}-${id}`,
-        theme,
-      });
-
-      // CellCanvasRoot задаёт корневой ноде размеры всей ячейки. Обёртка принимает
-      // эти размеры на себя, а изображение, аватар или группа внутри получают
-      // собственные размеры через layout. Так область hover/click и обрезка
-      // группы соответствуют элементу, а не растягиваются на всю ячейку.
-      if (
-        node instanceof CanvasImage ||
-        node instanceof CanvasAvatar ||
-        node instanceof CanvasAvatarGroup
-      ) {
-        const container = new CanvasContainer(`${node.id}:cell-root`);
-        container.addChild(node);
-        node = container;
-      }
+      const cellNode = buildCellNode(jsxElement, nodeIdPrefix, theme);
+      const node = autoHeight
+        ? withAutoHeight(cellNode, autoHeight, {
+            ctx,
+            width: rect.width,
+            inset: theme.cellVerticalPadding ?? 0,
+          })
+        : cellNode;
 
       if (!canvasRootInstance) {
         canvasRootInstance = new CellCanvasRoot(node, cellPortalOriginId);
@@ -195,17 +264,36 @@ export const glideCellRenderer = <R extends ObjectForExtending, SR>({
       refTable: options.refTable,
     });
 
-    canvasRootInstance.render(
-      ctx,
-      rect,
-      hoverPos,
-      absoluteBounds,
-      {
-        frameTime: renderArgs?.frameTime,
-        requestAnimationFrame: renderArgs?.requestAnimationFrame,
-      },
-      renderArgs?.imageResources,
+    // Содержимое обрезается по ячейке: glide обрезает только по колонке, и при перерисовке
+    // одной ячейки (hover, выделение) хвост текста лёг бы поверх соседних строк.
+    // Левый и верхний пиксель — линии сетки и край рамки выделения соседа. При частичной
+    // перерисовке glide их не обновляет и сам заливает фон с отступом 1px; так же
+    // обрезаем и мы, иначе фон контейнера стирает линии и рамку.
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(
+      rect.x + CELL_EDGE_INSET,
+      rect.y + CELL_EDGE_INSET,
+      rect.width - CELL_EDGE_INSET,
+      rect.height - CELL_EDGE_INSET
     );
+    ctx.clip();
+
+    try {
+      canvasRootInstance.render(
+        ctx,
+        rect,
+        hoverPos,
+        absoluteBounds,
+        {
+          frameTime: renderArgs?.frameTime,
+          requestAnimationFrame: renderArgs?.requestAnimationFrame,
+        },
+        renderArgs?.imageResources
+      );
+    } finally {
+      ctx.restore();
+    }
 
     if (!isCacheable || rebuilt) {
       cellCanvasRoot = canvasRootInstance;

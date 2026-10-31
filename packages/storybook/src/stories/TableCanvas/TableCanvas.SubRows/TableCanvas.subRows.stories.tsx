@@ -416,8 +416,7 @@ export const LazyLoadChildren: Story = {
           name: 'Группа / Элемент',
           // Без width колонка растягивается на свободное место, minWidth — нижняя граница.
           minWidth: 320,
-          resizable: true,
-          renderCell: ({ row }) => row.name,
+          renderCell: ({ row }) => row.name ?? '',
           // Фон служебной строки.
           themeOverride: ({ row, theme }) =>
             row.kind === 'loadMore' ? { bgCell: theme.bgZebraRow } : undefined,
@@ -426,7 +425,7 @@ export const LazyLoadChildren: Story = {
             renderSubRowCell: ({ row, theme }) => {
               const lazyRow = row as LazyRow;
               if (lazyRow.kind !== 'loadMore') {
-                return lazyRow.name;
+                return lazyRow.name ?? '';
               }
               const loaded = lazyRow.loaded ?? 0;
               const total = lazyRow.total ?? 0;

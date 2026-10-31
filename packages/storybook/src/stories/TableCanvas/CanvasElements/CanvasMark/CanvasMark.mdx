@@ -1,0 +1,48 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as CanvasMarkStories from './CanvasMark.stories';
+
+<Meta of={CanvasMarkStories} name="Docs" />
+
+# Canvas.Mark
+
+Подсветка фрагмента текста внутри `Canvas.Text`, `Canvas.Link` или `Canvas.Badge`: цветная пластина под частью строки.
+
+## Ключевые особенности
+
+- Работает только внутри `Canvas.Text`, `Canvas.Link` и `Canvas.Badge`, отдельно не используется
+- Подсветка идёт по исходному тексту, поэтому корректно ложится на строки переноса (`wordWrap`)
+- Фрагмент, разорванный переносом, получает отдельную пластину на каждой строке
+- Несколько фрагментов в одном тексте — несколько `Canvas.Mark`
+- Если последняя видимая строка обрезана многоточием, пластина обрезается по ширине
+
+## Использование
+
+```tsx
+<Canvas.Text wordWrap>
+  до <Canvas.Mark color="#ffe27a">фрагмент</Canvas.Mark> после
+</Canvas.Text>
+```
+
+Выделяйте фрагмент, оборачивая его в `Canvas.Mark`. Остальной текст остаётся обычными строками.
+
+В ссылке и бейдже — так же:
+
+```tsx
+<Canvas.Link onClick={openReport}>
+  <Canvas.Mark color="#ffe27a">Откр</Canvas.Mark>ыть свод
+</Canvas.Link>
+
+<Canvas.Badge>
+  Трайб «<Canvas.Mark color="#ffe27a">Диджитал</Canvas.Mark> вкладов»
+</Canvas.Badge>
+```
+
+Пример с поиском по тексту ссылок и бейджей — сторис «В ссылках и бейджах».
+
+## Высота строки
+
+Подсветка не меняет размеры текста. Чтобы строка таблицы вмещала перенесённый текст, задайте `tableConfig.rowHeight: 'auto'` — см. [RowHeight](?path=/docs/локальные-компоненты-tablecanvas-rowheight--docs).
+
+Описание типов — в разделе [API](?path=/docs/локальные-компоненты-tablecanvas-canvaselements-canvasmark-api--docs).
+
+<Stories />

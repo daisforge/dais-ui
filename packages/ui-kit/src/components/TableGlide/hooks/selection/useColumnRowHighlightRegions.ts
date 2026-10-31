@@ -2,6 +2,7 @@ import type { Rectangle } from '@glideappsfinal/glide-data-grid';
 import { useMemo } from 'react';
 
 import type { GlideProps, Theme } from '../../types';
+import { rectContainsRect } from './rectGeometry';
 
 interface UseColumnRowHighlightRegionsParams {
   /** Базовые регионы подсветки (из useBaseHighlightRegions) — расширяем их. */
@@ -12,10 +13,13 @@ interface UseColumnRowHighlightRegionsParams {
   headerSelectedRowIndexes: number[];
   /**
    * Диапазоны rangeStack (multi-range-cell). glide рисует рамку только вокруг
-   * current.range, поэтому предыдущие Ctrl-диапазоны остаются без обводки —
-   * дорисовываем её сами.
+   * current.range, предыдущие Ctrl-диапазоны — только заливкой.
    */
   selectionRangeStack?: readonly Rectangle[];
+  /** Активный диапазон current.range: накопленный диапазон внутри него не обводим. */
+  activeRange?: Rectangle;
+  /** Обводить каждый диапазон rangeStack (иначе рамка только у активного). */
+  outlineEachRange?: boolean;
   /** Всего строк (данные + summary). */
   totalRows: number;
   /** Индекс первой колонки данных (= кол-во ведущих сервисных колонок). */
@@ -38,6 +42,8 @@ export function useColumnRowHighlightRegions({
   selectedColumnIndexes,
   headerSelectedRowIndexes,
   selectionRangeStack,
+  activeRange,
+  outlineEachRange = false,
   totalRows,
   firstDataCol,
   columnsCount,
@@ -157,24 +163,43 @@ export function useColumnRowHighlightRegions({
     // строки (getRowThemeOverride в TableGlide.tsx), фон цветных ячеек —
     // тема самой ячейки (theming/cell-fill-override.ts).
 
-    // Несколько диапазонов, выбранных с Ctrl (rangeStack): здесь только
-    // затемняем нумерацию их строк.
-    // Подробнее: рамку glide рисует только вокруг последнего диапазона, а
-    // заливку прежних красит сам. Свою рамку не добавляем — иначе между
-    // соседними ячейками видны швы, а рамка остаётся, когда новый диапазон
-    // поглощает старый.
-    if (hasRangeStack && selectionRangeStack && firstDataCol > 0) {
+    // Диапазоны rangeStack (multi-range-cell): заливку красит glide, рамку —
+    // только вокруг активного current.range; затемняем нумерацию покрытых строк.
+    // С outlineEachRange обводим и накопленные Ctrl-диапазоны, кроме поглощённых
+    // другим (протянули поверх) — иначе рамка «залипает». Без опции рамок нет:
+    // у Г-образного выбора на стыках прямоугольников видны лишние линии.
+    if (hasRangeStack && selectionRangeStack) {
       const coveredRows = new Set<number>();
-      for (const rect of selectionRangeStack) {
+      // Поглощён: лежит в активном диапазоне или в более позднем из стека.
+      const isAbsorbed = (rect: Rectangle, index: number) => {
+        if (activeRange !== undefined && rectContainsRect(activeRange, rect)) {
+          return true;
+        }
+        for (let i = index + 1; i < selectionRangeStack.length; i += 1) {
+          if (rectContainsRect(selectionRangeStack[i]!, rect)) return true;
+        }
+        return false;
+      };
+      selectionRangeStack.forEach((rect, index) => {
         const x = Math.max(rect.x, firstDataCol);
         const width = rect.x + rect.width - x;
         if (width <= 0 || rect.height <= 0) {
-          continue;
+          return;
+        }
+        if (outlineEachRange && !isAbsorbed(rect, index)) {
+          regions.push({
+            color: theme.accentColor,
+            range: { x, y: rect.y, width, height: rect.height },
+            style: 'solid-outline' as const,
+          });
+        }
+        if (firstDataCol === 0) {
+          return;
         }
         for (let row = rect.y; row < rect.y + rect.height; row += 1) {
           coveredRows.add(row);
         }
-      }
+      });
       for (const row of coveredRows) {
         regions.push({
           color: theme.selectionServiceActiveBg,
@@ -190,6 +215,8 @@ export function useColumnRowHighlightRegions({
     selectedColumnIndexes,
     headerSelectedRowIndexes,
     selectionRangeStack,
+    activeRange,
+    outlineEachRange,
     totalRows,
     firstDataCol,
     columnsCount,

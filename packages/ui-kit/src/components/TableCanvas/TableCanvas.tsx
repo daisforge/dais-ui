@@ -18,7 +18,10 @@ import {
   useColumnsControl,
   useHiddenColumnsIndicator,
 } from './feature-column-control';
-import { useLastLvlColumnConfig } from './feature-columns-grouping';
+import {
+  adaptGroupHeaderHandler,
+  useLastLvlColumnConfig,
+} from './feature-columns-grouping';
 import { useContentStateOverlay } from './feature-content-state/useContentStateOverlay';
 import { useCloseContextMenuOnRegionChange } from './feature-context-menu';
 import { CellReadOnlyEditor, getEditingEnabledState } from './feature-edit';
@@ -139,7 +142,21 @@ export function TableCanvas<
   const columnConfigWithGroupsInfo = useLastLvlColumnConfig(
     colsOrGroupColsConfig,
   );
-  const { columnConfig, columnsGroupingIsActive } = columnConfigWithGroupsInfo;
+  const { columnConfig, columnsGroupingIsActive, allGroupsMap } =
+    columnConfigWithGroupsInfo;
+  const onGroupHeaderClicked = useMemo(
+    () =>
+      adaptGroupHeaderHandler(tableConfig.onGroupHeaderClicked, allGroupsMap),
+    [tableConfig.onGroupHeaderClicked, allGroupsMap],
+  );
+  const onGroupHeaderContextMenu = useMemo(
+    () =>
+      adaptGroupHeaderHandler(
+        tableConfig.onGroupHeaderContextMenu,
+        allGroupsMap,
+      ),
+    [tableConfig.onGroupHeaderContextMenu, allGroupsMap],
+  );
 
   // ------------------------------------------------  isLoadingTable ------------------------------------------------
   const { isLoadingTable, skeletonRowsCount } = useIsLoadingTable({
@@ -263,10 +280,13 @@ export function TableCanvas<
    *
    * Также в зависимости от rowSize - устанавливается размер высоты строк.
    * Но если передан tableConfig.rowHeight, tableConfig.rowHeight - будет приоритетнее
+   *
+   * Контролируемый режим: tableConfig.rowSize.state - размер хранит потребитель (переключатель вне таблицы).
    * */
-  const [rowSize, setRowSize] = useState<SIZE>(() =>
+  const innerRowSizeState = useState<SIZE>(() =>
     getDefuaultRowSize(tableConfig.rowSize),
   );
+  const [rowSize, setRowSize] = tableConfig.rowSize?.state ?? innerRowSizeState;
 
   // ------------------------------------------------ columns reConfig -----------------------------------------
   const {
@@ -385,7 +405,8 @@ export function TableCanvas<
     useCloseContextMenuOnRegionChange(contextMenuCtxVal);
 
   // Композитный обработчик смены видимого региона: закрытие поповера (X),
-  // закрытие контекстного меню (Y) и подгрузка данных при infinity scroll.
+  // закрытие контекстного меню (Y), подгрузка данных при infinity scroll и потребитель.
+  const onVisibleRegionChangedExternal = tableConfig.onVisibleRegionChanged;
   const handleVisibleRegionChange = useCallback<
     NonNullable<typeof handlePopoverRegionChange>
   >(
@@ -395,12 +416,14 @@ export function TableCanvas<
       if (isHaveActiveInfinityScroll) {
         handleInfinityScrollRegionChange(...args);
       }
+      onVisibleRegionChangedExternal?.(...args);
     },
     [
       handlePopoverRegionChange,
       handleContextMenuRegionChange,
       handleInfinityScrollRegionChange,
       isHaveActiveInfinityScroll,
+      onVisibleRegionChangedExternal,
     ],
   );
 
@@ -535,13 +558,19 @@ export function TableCanvas<
     onNotification: tableConfig.notifications?.onNotification,
   });
 
-  // Объединяем onGridSelectionChange от cellTransfer и fill handle
+  // Объединяем onGridSelectionChange от cellTransfer, fill handle и потребителя
+  const onCellsSelectionChange = tableConfig.cellsSelection?.onChange;
   const combinedOnGridSelectionChange = useCallback(
     (selection: Parameters<typeof cellTransferOnSelectionChange>[0]) => {
       cellTransferOnSelectionChange(selection);
       onSelectionChangeForFill(selection);
+      onCellsSelectionChange?.(selection);
     },
-    [cellTransferOnSelectionChange, onSelectionChangeForFill],
+    [
+      cellTransferOnSelectionChange,
+      onSelectionChangeForFill,
+      onCellsSelectionChange,
+    ],
   );
 
   // ------------------------------------------------  data-grid props ------------------------------------------------
@@ -1063,7 +1092,11 @@ export function TableCanvas<
                             ...(resultRowHeight && {
                               rowHeight: resultRowHeight,
                             }),
+                            maxAutoRowHeight:
+                              tableConfig.maxAutoRowHeight ?? undefined,
                             headerHeight: tableConfig.headerRowHeight ?? 33,
+                            groupHeaderRowHeight:
+                              tableConfig.groupHeaderRowHeight ?? undefined,
 
                             ...(tableConfig.editing &&
                               !isLoadingTable && {
@@ -1157,6 +1190,9 @@ export function TableCanvas<
                               onVisibleRegionChanged: handleVisibleRegionChange, // Для TableGlideInstance
                               // enableVirtualization,
                               onCellClicked: tableConfig.onCellClicked,
+                              onItemHovered: tableConfig.onItemHovered,
+                              onGroupHeaderClicked,
+                              onGroupHeaderContextMenu,
                               unstickyHeader: tableConfig.unstickyHeader,
                               stickyColumnsConfig: tableConfig.stickyColumns,
                               stickyRowsConfig: tableConfig.stickyRows,
@@ -1192,9 +1228,15 @@ export function TableCanvas<
                               enableSelectAll:
                                 tableConfig.cellsSelection?.enableSelectAll ??
                                 true,
+                              outlineEachRange:
+                                tableConfig.cellsSelection?.outlineEachRange ??
+                                false,
                               cellsSelectionMode:
                                 tableConfig.cellsSelection?.mode ??
                                 'range-cell',
+                              focusOnStateChange:
+                                tableConfig.cellsSelection
+                                  ?.focusOnStateChange ?? true,
                               hoverEffects: tableConfig.hoverEffects,
                               appearance: tableConfig.appearance,
                               enableLowDprHairline:

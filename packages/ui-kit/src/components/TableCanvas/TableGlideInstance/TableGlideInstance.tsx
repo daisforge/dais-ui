@@ -7,7 +7,7 @@ import {
   TableGlideProps,
   Theme,
 } from '@ui-kit/components/TableGlide';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 
 import {
   HeaderContextValueTypeInstance,
@@ -32,6 +32,7 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
   columns,
   className,
   headerHeight = 33,
+  groupHeaderRowHeight,
   onColumnResize,
   onVisibleRegionChanged,
   refTable,
@@ -158,8 +159,12 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
   );
 
   const groupHeaderHeightArr = useMemo(
-    () => Array.from({ length: groupMaxLength }, () => headerHeight),
-    [groupMaxLength, headerHeight],
+    () =>
+      Array.from(
+        { length: groupMaxLength },
+        () => groupHeaderRowHeight ?? headerHeight,
+      ),
+    [groupMaxLength, groupHeaderRowHeight, headerHeight],
   );
   const shouldRenderFullContentState =
     contentStateOverlay?.displayMode === 'full-content';
@@ -227,17 +232,21 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
   const handleCellClicked = useCallback<
     NonNullable<TableGlideProps<R, SR>['onCellClicked']>
   >(
-    (cell, _event) => {
+    (cell, event) => {
       if (!onCellClickedExternal) return;
       const currentColumn = columnsInGlideOrder[cell[0]];
       const currentRow = rows[cell[1]];
       if (currentColumn && currentRow) {
-        onCellClickedExternal(cell, {
-          column: currentColumn,
-          row: currentRow,
-          ctxs,
-          refTable,
-        });
+        onCellClickedExternal(
+          cell,
+          {
+            column: currentColumn,
+            row: currentRow,
+            ctxs,
+            refTable,
+          },
+          event,
+        );
       }
     },
     [columnsInGlideOrder, rows, onCellClickedExternal, ctxs, refTable],
@@ -310,7 +319,7 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
     };
   }, [columnsInGlideOrder, onRowsChange, rows]);
 
-  const provideEditor = useCallback<ProvideEditorCallback<GridCell>>(
+  const provideEditorLatest = useCallback<ProvideEditorCallback<GridCell>>(
     (gridCell) => {
       const { location } = gridCell;
 
@@ -484,6 +493,15 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
       return undefined;
     },
     [CellReadOnlyEditor, columnsInGlideOrder, ctxs, rows],
+  );
+  // Оверлей glide пересоздаёт редактор при смене provideEditor: со свежей ссылкой
+  // открытый редактор размонтировался бы на любом ререндере таблицы (выделение,
+  // строки, колонки) и терял ввод. Ссылка стабильная, открытие — по свежим данным.
+  const provideEditorRef = useRef(provideEditorLatest);
+  provideEditorRef.current = provideEditorLatest;
+  const provideEditor = useCallback<ProvideEditorCallback<GridCell>>(
+    (gridCell) => provideEditorRef.current(gridCell),
+    [],
   );
 
   const isOutsideClick = useMemo((): TableGlideProps<
