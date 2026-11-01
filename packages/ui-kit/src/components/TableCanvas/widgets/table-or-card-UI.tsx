@@ -287,6 +287,7 @@ export const TableOrCardsUI = <
                   highlightActiveType={$highlightActiveType}
                   enableLowDprHairline={restDataGridProps.enableLowDprHairline}
                   headerHeight={restDataGridProps.headerHeight}
+                  groupHeaderRowHeight={restDataGridProps.groupHeaderRowHeight}
                   rowHeight={restDataGridProps.rowHeight}
                   bottomSummaryRows={restDataGridProps.bottomSummaryRows}
                   refTable={refTable}
@@ -363,6 +364,10 @@ export const TableOrCardsUI = <
                   contentStateOverlay={restDataGridProps.contentStateOverlay}
                   onCellClicked={restDataGridProps.onCellClicked}
                   onItemHovered={restDataGridProps.onItemHovered}
+                  onGroupHeaderClicked={restDataGridProps.onGroupHeaderClicked}
+                  onGroupHeaderContextMenu={
+                    restDataGridProps.onGroupHeaderContextMenu
+                  }
                   editorOverlayPortal={restDataGridProps.editorOverlayPortal}
                   fullScreened={fullScreened}
                   CellReadOnlyEditor={CellReadOnlyEditor}

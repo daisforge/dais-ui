@@ -18,7 +18,10 @@ import {
   useColumnsControl,
   useHiddenColumnsIndicator,
 } from './feature-column-control';
-import { useLastLvlColumnConfig } from './feature-columns-grouping';
+import {
+  adaptGroupHeaderHandler,
+  useLastLvlColumnConfig,
+} from './feature-columns-grouping';
 import { useContentStateOverlay } from './feature-content-state/useContentStateOverlay';
 import { useCloseContextMenuOnRegionChange } from './feature-context-menu';
 import { CellReadOnlyEditor, getEditingEnabledState } from './feature-edit';
@@ -139,7 +142,21 @@ export function TableCanvas<
   const columnConfigWithGroupsInfo = useLastLvlColumnConfig(
     colsOrGroupColsConfig,
   );
-  const { columnConfig, columnsGroupingIsActive } = columnConfigWithGroupsInfo;
+  const { columnConfig, columnsGroupingIsActive, allGroupsMap } =
+    columnConfigWithGroupsInfo;
+  const onGroupHeaderClicked = useMemo(
+    () =>
+      adaptGroupHeaderHandler(tableConfig.onGroupHeaderClicked, allGroupsMap),
+    [tableConfig.onGroupHeaderClicked, allGroupsMap],
+  );
+  const onGroupHeaderContextMenu = useMemo(
+    () =>
+      adaptGroupHeaderHandler(
+        tableConfig.onGroupHeaderContextMenu,
+        allGroupsMap,
+      ),
+    [tableConfig.onGroupHeaderContextMenu, allGroupsMap],
+  );
 
   // ------------------------------------------------  isLoadingTable ------------------------------------------------
   const { isLoadingTable, skeletonRowsCount } = useIsLoadingTable({
@@ -1076,6 +1093,8 @@ export function TableCanvas<
                               rowHeight: resultRowHeight,
                             }),
                             headerHeight: tableConfig.headerRowHeight ?? 33,
+                            groupHeaderRowHeight:
+                              tableConfig.groupHeaderRowHeight ?? undefined,
 
                             ...(tableConfig.editing &&
                               !isLoadingTable && {
@@ -1170,6 +1189,8 @@ export function TableCanvas<
                               // enableVirtualization,
                               onCellClicked: tableConfig.onCellClicked,
                               onItemHovered: tableConfig.onItemHovered,
+                              onGroupHeaderClicked,
+                              onGroupHeaderContextMenu,
                               unstickyHeader: tableConfig.unstickyHeader,
                               stickyColumnsConfig: tableConfig.stickyColumns,
                               stickyRowsConfig: tableConfig.stickyRows,

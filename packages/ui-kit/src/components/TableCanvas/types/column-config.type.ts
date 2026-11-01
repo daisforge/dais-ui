@@ -449,7 +449,11 @@ export declare interface ColumnGroupConfig<
 > {
   /** Уникальный ключ группы. */
   readonly key: string;
-  /** Название группы, отображается в ячейке шапки. Строка или JSX. */
+  /**
+   * Название группы, отображается в ячейке шапки. Строка или JSX.
+   * JSX рисуется на всю ячейку без отступов: горизонтальный отступ задаёт сам
+   * потребитель, например `<Canvas.Container padding={{ left: 8, right: 8 }}>`.
+   */
   readonly name: string | ReactElement;
   // readonly headerCellClass?: Maybe<string>;
   /** Вложенные колонки и подгруппы этой группы. */

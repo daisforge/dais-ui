@@ -1,6 +1,7 @@
 import type {
   CellClickedEventArgs,
   GridSelection,
+  GroupHeaderClickedEventArgs,
 } from '@glideappsfinal/glide-data-grid';
 import { Group, Item, ItemOrGroup } from '@ui-kit/components/ListOfFilters';
 import type { MassActionsSize } from '@ui-kit/components/MassActions';
@@ -58,6 +59,7 @@ import type { MassActionButtonProps } from '../widgets/mass-actions/types';
 import { DomMetadata } from './additional.type';
 import type {
   ColumnConfig,
+  ColumnOrColumnGroupConfig,
   EditingCellInfo,
   SortColumn,
 } from './column-config.type';
@@ -1134,6 +1136,12 @@ export type TableConfig<
    */
   headerRowHeight?: Maybe<number>;
   /**
+   * groupHeaderRowHeight - высота каждого уровня объединённых (групповых) заголовков (в px).
+   * По умолчанию равна `headerRowHeight`. Нужна, когда нижний ряд шапки выше уровней групп,
+   * например при переносе названий колонок на несколько строк.
+   */
+  groupHeaderRowHeight?: Maybe<number>;
+  /**
    * sorting - активация сортировки. Условие активации - это наличие данного свойства. Нужно также сконфигурировать колонки.
    *
    * Пример:
@@ -1506,7 +1514,38 @@ export type TableConfig<
     /** Событие клика glide: позиция в ячейке, модификаторы, кнопка */
     event: CellClickedEventArgs,
   ) => void;
+  /**
+   * Клик по заголовку группы колонок.
+   *
+   * `info` — группа из columnConfig: `key` и `children` (вложенные колонки и
+   * подгруппы). `colIndex` — колонка под курсором в координатах грида: служебные
+   * колонки слева (нумерация, чекбоксы) входят в счёт.
+   */
+  onGroupHeaderClicked?: GroupHeaderHandler<RowType, SummaryRowType>;
+  /** Правый клик по заголовку группы колонок. Аргументы — как у onGroupHeaderClicked. */
+  onGroupHeaderContextMenu?: GroupHeaderHandler<RowType, SummaryRowType>;
 } & GlideInstanceOmitted<RowType, SummaryRowType>;
+
+/** Группа шапки из columnConfig, по которой кликнули */
+export type GroupHeaderInfo<
+  RowType extends ObjectForExtending,
+  SummaryRowType = unknown,
+> = {
+  /** Ключ группы (ColumnGroupConfig.key) */
+  key: string;
+  /** Вложенные колонки и подгруппы группы */
+  children: readonly ColumnOrColumnGroupConfig<RowType, SummaryRowType>[];
+};
+
+export type GroupHeaderHandler<
+  RowType extends ObjectForExtending,
+  SummaryRowType = unknown,
+> = (
+  colIndex: number,
+  info: GroupHeaderInfo<RowType, SummaryRowType>,
+  /** Событие клика glide: позиция, модификаторы, кнопка; `event.group` — ключ группы */
+  event: GroupHeaderClickedEventArgs,
+) => void;
 
 type GlideInstanceOmitted<
   RowType extends ObjectForExtending,
@@ -1523,8 +1562,9 @@ type GlideInstanceOmitted<
   | 'maxColumnWidth'
   | 'maxColumnAutoWidth'
   | 'onVisibleRegionChanged'
+  // onCellClicked и onGroupHeader* объявлены в TableConfig явно — с info и событием
   // | 'CellReadOnlyEditor'
-  // | 'onGroupHeaderClicked'
+  // Сигнатуры glide: индекс колонки — в координатах грида (сервисные колонки включены)
   | 'onHeaderClicked'
   | 'onItemHovered'
   | 'trapFocus'
