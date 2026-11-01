@@ -289,6 +289,7 @@ export const TableOrCardsUI = <
                   headerHeight={restDataGridProps.headerHeight}
                   groupHeaderRowHeight={restDataGridProps.groupHeaderRowHeight}
                   rowHeight={restDataGridProps.rowHeight}
+                  maxAutoRowHeight={restDataGridProps.maxAutoRowHeight}
                   bottomSummaryRows={restDataGridProps.bottomSummaryRows}
                   refTable={refTable}
                   portalEventTargetRef={refTableGlobalContainer}

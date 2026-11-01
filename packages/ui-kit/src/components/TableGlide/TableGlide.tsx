@@ -12,13 +12,15 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import { glideCellRenderer } from './cellRenderer';
-import { DEFAULT_HEADER_HEIGHT, DEFAULT_ROW_HEIGHT } from './constants';
+import { DEFAULT_HEADER_HEIGHT } from './constants';
 import {
   useColoringLayers,
   useNativeGridSelection,
   useSelectionGeometry,
   useTableSelectionSystem,
 } from './hooks/selection';
+import { useKeepCellInView } from './hooks/autoRowHeight/useKeepCellInView';
+import { useScrollAnchor } from './hooks/autoRowHeight/useScrollAnchor';
 import { useAnimatedRowHeight } from './hooks/useAnimatedRowHeight';
 import { useErrorCellRanges } from './hooks/useErrorCellRanges';
 import { useCanvasContextMenuInteraction } from './hooks/useCanvasContextMenuInteraction';
@@ -29,6 +31,7 @@ import { useGlideElements } from './hooks/useGlideElements';
 import { useHoverState } from './hooks/useHoverState';
 import { useOverlayPortalFix } from './hooks/useOverlayPortalFix';
 import { useItemHoveredHandler } from './hooks/useItemHoveredHandler';
+import { useRowHeightGlide } from './hooks/useRowHeightGlide';
 import { useUnstickyHeader } from './hooks/useUnstickyHeader';
 import {
   buildCanvasTree,
@@ -58,7 +61,6 @@ import type {
   GlideThemeForRender,
   HeaderCellInfo,
   ObjectForExtending,
-  RowHeightGlide,
   TableGlideProps,
 } from './types';
 import {
@@ -67,8 +69,9 @@ import {
   TextCellOptions,
 } from './utils/createCell';
 import { findBlockOrigin } from './utils/findBlockOrigin';
+import { mergeThemeOverrides } from './utils/mergeThemeOverrides';
 import { getSpan } from './utils/getSpan';
-import { getRowSpan } from './utils/getRowSpan';
+import { getRowSpan, spansSeveralRows } from './utils/getRowSpan';
 import { GroupHeaderParts } from './utils/groupHeaderParts';
 import { isCanvasContent, isPrimitive } from './utils/typeGuards';
 
@@ -126,6 +129,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   rows,
   bottomSummaryRows,
   rowHeight,
+  maxAutoRowHeight,
   width,
   rowSize = 'medium',
   ctxs = CTXS_EMPTY,
@@ -207,41 +211,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     [rowSize, activeTheme, appearanceVariant],
   );
 
-  const rowHeightGlide = useMemo<RowHeightGlide>(() => {
-    const baseNumber = typeof rowHeight === 'number' ? rowHeight : undefined;
-    if (baseNumber) {
-      return baseNumber;
-    }
-    const DEF_HEIGHT = DEFAULT_ROW_HEIGHT[rowSize];
-
-    const baseFunction =
-      typeof rowHeight === 'function' ? rowHeight : undefined;
-
-    if (baseFunction) {
-      return (rowIndex: number) => {
-        const row = rows[rowIndex];
-        if (!row) {
-          return baseNumber ?? DEF_HEIGHT;
-        }
-        const currentRowSize = {
-          rowSizeName: rowSize,
-          rowSizeValue: DEF_HEIGHT,
-        };
-        const value = baseFunction(row, currentRowSize, rowIndex);
-
-        return typeof value === 'number' && !Number.isNaN(value)
-          ? value
-          : DEF_HEIGHT;
-      };
-    }
-
-    return DEF_HEIGHT;
-  }, [rows, rowHeight, rowSize]);
-  // ---------------------------
-
   const summaryRowsLength = bottomSummaryRows?.length ?? 0;
-
-  const rowH = useAnimatedRowHeight(rowHeightGlide);
 
   const [resizedColsMap, setResizedColsMap] = useState(
     new Map<string, number>(),
@@ -298,6 +268,21 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     });
   }, [columns, resizedColsMap]);
 
+  const {
+    rowHeightGlide,
+    trackAutoRowHeightRegion,
+    autoHeightReporter,
+    takeAnchorShift,
+  } = useRowHeightGlide({
+    rowHeight,
+    rows,
+    rowSize,
+    columns: columnsLast,
+    theme,
+    maxAutoRowHeight,
+  });
+  const rowH = useAnimatedRowHeight(rowHeightGlide);
+
   const [updateVersion, _setUpdateVersion] = useState(0);
   const canvasCellCache = useMemo(
     () => new WeakMap<R, Map<string, CanvasCellCacheEntry>>(),
@@ -338,6 +323,15 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     gridSelection: gridSelectionExternal,
     onGridSelectionChange: onGridSelectionChangeExternal,
     onSelectionEmit,
+  });
+
+  // Прыжок с клавиатуры через ещё не измеренные строки: докручиваем к ячейке,
+  // когда строки дорастут до своей высоты
+  useKeepCellInView({
+    enabled: rowHeight === 'auto',
+    dataEditorRef,
+    cell: selection.current?.cell,
+    rowHeights: rowHeightGlide,
   });
 
   const selectionVisualState = useSelectionGeometry({
@@ -568,9 +562,14 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   >(
     (range, tx, ty, extras) => {
       trackVisibleRegion(range);
+      trackAutoRowHeightRegion(range);
       onVisibleRegionChangedExternal?.(range, tx, ty, extras);
     },
-    [trackVisibleRegion, onVisibleRegionChangedExternal],
+    [
+      trackVisibleRegion,
+      trackAutoRowHeightRegion,
+      onVisibleRegionChangedExternal,
+    ]
   );
 
   const getCellContentGlide = useCallback(
@@ -819,6 +818,12 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
             }
           : undefined;
 
+      const themeOverride = mergeThemeOverrides(
+        columnThemeOverrideResult,
+        fillOverride,
+        soloActiveCellOverride
+      );
+
       const options = {
         data: row[id]?.toString?.() ?? 'NOT FOUND',
         ...(cellIsEditable
@@ -831,11 +836,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
               ...(column.hasPreview === true && { allowOverlay: true }),
               ...(column.hasPreview === 'none' && { allowOverlay: false }),
             }),
-        themeOverride: {
-          ...columnThemeOverrideResult,
-          ...fillOverride,
-          ...soloActiveCellOverride,
-        },
+        ...(themeOverride && { themeOverride }),
         contentAlign,
         ...(span && { span }),
         ...(spanRows && { spanRows }),
@@ -874,13 +875,19 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
             getPortalEventTarget: () => portalEventTargetRef?.current ?? null,
             refTable,
           },
-        }),
+          // Блок на несколько строк высоту строки не растит — и отступа не получает
+          autoHeight:
+            autoHeightReporter && !spansSeveralRows(spanRows)
+              ? autoHeightReporter(row, rowInd, id, !!span)
+              : undefined,
+        })
       );
     },
     [
       updateVersion,
       bottomSummaryRows,
       rows,
+      autoHeightReporter,
       columnsForRender,
       spanColumnIndexes,
       ctxs,
@@ -1053,6 +1060,13 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   const overlayPortalRef = useRef<HTMLDivElement>(null);
   // div-обертка над Glide для DOM-поиска элементов
   const containerRefInternal = useRef<HTMLDivElement>(null);
+
+  useScrollAnchor({
+    enabled: rowHeight === 'auto',
+    containerRef: containerRefInternal,
+    rowHeights: rowHeightGlide,
+    takeShift: takeAnchorShift,
+  });
   const mergedContainerRef = useMemo(
     () => mergeRefs(containerRefInternal, containerRefExternal),
     [containerRefExternal],

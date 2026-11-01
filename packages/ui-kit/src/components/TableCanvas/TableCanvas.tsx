@@ -1092,6 +1092,8 @@ export function TableCanvas<
                             ...(resultRowHeight && {
                               rowHeight: resultRowHeight,
                             }),
+                            maxAutoRowHeight:
+                              tableConfig.maxAutoRowHeight ?? undefined,
                             headerHeight: tableConfig.headerRowHeight ?? 33,
                             groupHeaderRowHeight:
                               tableConfig.groupHeaderRowHeight ?? undefined,
