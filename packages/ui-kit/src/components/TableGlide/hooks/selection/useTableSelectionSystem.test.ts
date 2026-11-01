@@ -126,6 +126,7 @@ describe('useTableSelectionSystem — выделение строк по нум�
     const { view, handleGridSelectionChange } = setup();
 
     act(() => {
+      window.dispatchEvent(new Event('pointerdown'));
       // клик по колонке нумерации (x=0), строки 2..3
       view.result.current.handleGridSelectionWithColumnReset(
         gridSel([0, 2], { x: 0, y: 2, width: 1, height: 2 })
@@ -142,5 +143,85 @@ describe('useTableSelectionSystem — выделение строк по нум�
     );
     // Смежные строки идут нативным путём — своё состояние строк пустое.
     expect(view.result.current.headerSelectedRowIndexes).toEqual([]);
+  });
+
+  it('правый клик по строке из Ctrl-набора не сбрасывает выделенные строки', () => {
+    const { view, handleGridSelectionChange } = setup();
+
+    for (const row of [1, 3]) {
+      act(() => {
+        window.dispatchEvent(new MouseEvent('pointerdown', { ctrlKey: true }));
+        view.result.current.handleGridSelectionWithColumnReset(
+          gridSel([0, row], { x: 0, y: row, width: 1, height: 1 })
+        );
+      });
+    }
+    handleGridSelectionChange.mockClear();
+
+    act(() => {
+      window.dispatchEvent(new MouseEvent('pointerdown', { button: 2 }));
+      view.result.current.handleGridSelectionWithColumnReset(
+        gridSel([0, 3], { x: 0, y: 3, width: 1, height: 1 })
+      );
+    });
+
+    expect(view.result.current.headerSelectedRowIndexes).toEqual([1, 3]);
+    expect(handleGridSelectionChange).not.toHaveBeenCalled();
+  });
+
+  it('правый клик внутри нативного диапазона строк не сужает его до одной строки', () => {
+    const { view, handleGridSelectionChange } = setup({
+      selection: gridSel([0, 0], { x: 1, y: 0, width: 3, height: 3 }),
+    });
+
+    act(() => {
+      window.dispatchEvent(new MouseEvent('pointerdown', { button: 2 }));
+      view.result.current.handleGridSelectionWithColumnReset(
+        gridSel([0, 1], { x: 0, y: 1, width: 1, height: 1 })
+      );
+    });
+
+    expect(handleGridSelectionChange).not.toHaveBeenCalled();
+  });
+
+  it('правый клик по строке вне выделения выбирает эту строку', () => {
+    const { view, handleGridSelectionChange } = setup({
+      selection: gridSel([0, 0], { x: 1, y: 0, width: 3, height: 3 }),
+    });
+
+    act(() => {
+      window.dispatchEvent(new MouseEvent('pointerdown', { button: 2 }));
+      view.result.current.handleGridSelectionWithColumnReset(
+        gridSel([0, 4], { x: 0, y: 4, width: 1, height: 1 })
+      );
+    });
+
+    expect(handleGridSelectionChange).toHaveBeenCalledWith(
+      expect.objectContaining({
+        current: expect.objectContaining({
+          range: { x: 1, y: 4, width: 3, height: 1 },
+        }),
+      })
+    );
+  });
+
+  it('фокус грида без выделения (активная ячейка в нумерации, без мыши) → первая ячейка данных, а не строка', () => {
+    const { view, handleGridSelectionChange } = setup();
+
+    act(() => {
+      window.dispatchEvent(new Event('pointerup'));
+      view.result.current.handleGridSelectionWithColumnReset(
+        gridSel([0, 0], { x: 0, y: 0, width: 1, height: 1 })
+      );
+    });
+
+    expect(handleGridSelectionChange).toHaveBeenCalledWith(
+      expect.objectContaining({
+        current: expect.objectContaining({
+          cell: [1, 0],
+          range: { x: 1, y: 0, width: 1, height: 1 },
+        }),
+      })
+    );
   });
 });

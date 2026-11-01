@@ -55,6 +55,20 @@ interface UseTableSelectionSystemParams<
   isHighlightActiveRowControlled?: boolean;
 }
 
+/** Выделение с активной ячейкой в первой колонке данных строки `row` */
+const toFirstDataCell = (
+  selection: GridSelection,
+  firstDataCol: number,
+  row: number
+): GridSelection => ({
+  ...selection,
+  current: {
+    cell: [firstDataCol, row],
+    range: { x: firstDataCol, y: row, width: 1, height: 1 },
+    rangeStack: [],
+  },
+});
+
 /**
  * Оркестратор трёх независимых от glide осей выделения TableCanvas:
  *  - выделение КОЛОНОК по клику на шапку (`useColumnAxisSelection`);
@@ -103,6 +117,8 @@ export function useTableSelectionSystem<
     ctrlGestureRef,
     ctrlBaseRowsRef,
     pointerGestureRef,
+    rightClickGestureRef,
+    selectedRowsRef,
   } = useRowAxisSelection();
 
   const { activeRow, commitActiveRow } = useActiveRowHighlight({
@@ -167,15 +183,33 @@ export function useTableSelectionSystem<
       // glide ничего не рисует для current (ни рамки на нумерации при драге, ни
       // двойной заливки), а cell-якорь НЕ трогаем — нативный drag glide (он
       // ведётся от позиции мыши) продолжает работать.
+      // Только жест мышью: при фокусе грида без выделения glide сам ставит
+      // активную ячейку в первую колонку (у нас это нумерация) — это не выбор
+      // строки, такое выделение ниже обрезается до первой ячейки данных.
       if (
         enableRowSelection &&
         numberingColumnIndex >= 0 &&
         current &&
-        current.cell[0] === numberingColumnIndex
+        current.cell[0] === numberingColumnIndex &&
+        pointerGestureRef.current
       ) {
         const firstDataCol = leadingServiceColumnsCount;
         const startRow = current.range.y;
         const endRow = startRow + Math.max(current.range.height, 1);
+
+        // Правый клик по уже выбранной строке открывает меню над всем
+        // выделением — выделение не трогаем.
+        if (rightClickGestureRef.current) {
+          const prev = selection.current;
+          const isInRowRange =
+            prev?.cell[0] === numberingColumnIndex &&
+            startRow >= prev.range.y &&
+            startRow < prev.range.y + prev.range.height;
+
+          if (isInRowRange || selectedRowsRef.current.hasIndex(startRow)) {
+            return;
+          }
+        }
 
         // Ctrl/Meta → НЕсмежный накопительный выбор строк. Одного нативного
         // range для разрозненных строк не существует → рисуем СВОИМ оверлеем
@@ -258,7 +292,14 @@ export function useTableSelectionSystem<
       }
 
       // Иначе: исключаем сервисные колонки + сбрасываем выделение колонок/строк.
-      const next = clampSelectionToData(raw);
+      // Без мыши (фокус грида, стрелки) активная ячейка в сервисной колонке
+      // переносится на первую ячейку данных строки, а не сбрасывается.
+      const next =
+        !pointerGestureRef.current &&
+        current &&
+        current.cell[0] < leadingServiceColumnsCount
+          ? toFirstDataCell(raw, leadingServiceColumnsCount, current.cell[1])
+          : clampSelectionToData(raw);
       // Клик целиком по служебной зоне (см. clampSelectionToData): якорь с
       // нулевой шириной. Выделение колонок/строк и подсветку активной строки
       // не трогаем, как и раньше, когда такой клик обнулял current.
@@ -303,6 +344,8 @@ export function useTableSelectionSystem<
       ctrlGestureRef,
       ctrlBaseRowsRef,
       pointerGestureRef,
+      rightClickGestureRef,
+      selectedRowsRef,
       setSelectedColumns,
       setSelectedRows,
       setIsNativeColumnSelection,
