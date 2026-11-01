@@ -154,6 +154,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   // Режим фактического выделения ячеек (нативный glide). Независим от
   // highlightActiveType: по нему идут copy/paste, рамка, fill-handle, затемнение.
   cellsSelectionMode = 'range-cell',
+  focusOnStateChange = true,
   // Выделение колонок — независимая ось (НЕ через highlightActiveType).
   // По умолчанию включено; работает при любом highlightActiveType.
   enableColumnSelection = true,
@@ -306,10 +307,13 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   // «активная ячейка, грид не сфокусирован»). Фокусируем грид, чтобы выделение
   // выглядело как обычное. На интеракции мышью грид уже в фокусе -> focus().
   useEffect(() => {
-    if (gridSelectionExternal?.current !== undefined) {
+    if (
+      focusOnStateChange &&
+      gridSelectionExternal?.current !== undefined
+    ) {
       dataEditorRef.current?.focus();
     }
-  }, [gridSelectionExternal]);
+  }, [gridSelectionExternal, focusOnStateChange]);
 
   const {
     interactionSessionStore,

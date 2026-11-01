@@ -327,6 +327,7 @@ export const TableOrCardsUI = <
                   enableRowSelection={restDataGridProps.enableRowSelection}
                   enableSelectAll={restDataGridProps.enableSelectAll}
                   cellsSelectionMode={restDataGridProps.cellsSelectionMode}
+                  focusOnStateChange={restDataGridProps.focusOnStateChange}
                   hoverEffects={restDataGridProps.hoverEffects}
                   appearance={restDataGridProps.appearance}
                   isErrorRow={restDataGridProps.isErrorRow}
