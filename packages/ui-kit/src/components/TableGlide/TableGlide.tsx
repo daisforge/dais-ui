@@ -520,6 +520,16 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     theme.bgHeaderSelectedHovered,
   ]);
 
+  // Блок колонок может начинаться только на колонке с colSpan: findBlockOrigin
+  // обходит их, а не все колонки левее ячейки.
+  const spanColumnIndexes = useMemo(
+    () =>
+      columnsForRender.flatMap((column, columnIndex) =>
+        column.colSpan ? [columnIndex] : []
+      ),
+    [columnsForRender]
+  );
+
   // ─── hoverEffects.row: подсветка строки под курсором (цвета из темы).
   // По умолчанию ВКЛЮЧЕНА (решение дизайн-системы — строка под курсором
   // показывает hover-ступень); выключается явно hoverEffects: { row: false }.
@@ -678,6 +688,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       const [originColInd, originRowInd] = findBlockOrigin(
         colInd,
         rowInd,
+        spanColumnIndexes,
         (c, r) => {
           const col = columnsForRender[c];
           return col?.colSpan
@@ -871,6 +882,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       bottomSummaryRows,
       rows,
       columnsForRender,
+      spanColumnIndexes,
       ctxs,
       theme,
       activeTheme,
