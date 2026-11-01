@@ -541,13 +541,19 @@ export function TableCanvas<
     onNotification: tableConfig.notifications?.onNotification,
   });
 
-  // Объединяем onGridSelectionChange от cellTransfer и fill handle
+  // Объединяем onGridSelectionChange от cellTransfer, fill handle и потребителя
+  const onCellsSelectionChange = tableConfig.cellsSelection?.onChange;
   const combinedOnGridSelectionChange = useCallback(
     (selection: Parameters<typeof cellTransferOnSelectionChange>[0]) => {
       cellTransferOnSelectionChange(selection);
       onSelectionChangeForFill(selection);
+      onCellsSelectionChange?.(selection);
     },
-    [cellTransferOnSelectionChange, onSelectionChangeForFill],
+    [
+      cellTransferOnSelectionChange,
+      onSelectionChangeForFill,
+      onCellsSelectionChange,
+    ],
   );
 
   // ------------------------------------------------  data-grid props ------------------------------------------------
@@ -1199,6 +1205,9 @@ export function TableCanvas<
                               enableSelectAll:
                                 tableConfig.cellsSelection?.enableSelectAll ??
                                 true,
+                              outlineEachRange:
+                                tableConfig.cellsSelection?.outlineEachRange ??
+                                false,
                               cellsSelectionMode:
                                 tableConfig.cellsSelection?.mode ??
                                 'range-cell',
