@@ -58,7 +58,7 @@ export function useHoverState({
   columnsCount,
   rowsCount,
   resolveHoverRows,
-  visibleRowsRef,
+  visibleRegionRef,
   onHoverRowsChange,
 }: {
   isRowHoverEnabled: boolean;
@@ -69,8 +69,8 @@ export function useHoverState({
   columnsCount: number;
   /** Число строк данных (без итоговой summary-строки). */
   rowsCount: number;
-  /** Видимые строки: дорисовка диапазона строк блока обрезается по ним. */
-  visibleRowsRef?: RefObject<HoverRows | undefined>;
+  /** Видимая область: дорисовка строк блока обрезается по её строкам. */
+  visibleRegionRef?: RefObject<{ y: number; height: number } | null>;
   /** Строки под курсором сменились (рендера React при этом нет). */
   onHoverRowsChange?: () => void;
 }) {
@@ -85,16 +85,14 @@ export function useHoverState({
   // "Название", а иконка должна появиться в соседней колонке действий.
   const damageRowRanges = useCallback(
     (...ranges: Array<HoverRows | undefined>) => {
-      const visible = visibleRowsRef?.current;
+      const visible = visibleRegionRef?.current;
+      const visibleFrom = visible ? visible.y : 0;
+      const visibleTo = visible ? visible.y + visible.height : rowsCount - 1;
       const toUpdate: number[] = [];
       ranges.forEach((range) => {
         if (!range) return;
-        const from = Math.max(range.from, 0, visible?.from ?? 0);
-        const to = Math.min(
-          range.to,
-          rowsCount - 1,
-          visible?.to ?? rowsCount - 1,
-        );
+        const from = Math.max(range.from, 0, visibleFrom);
+        const to = Math.min(range.to, rowsCount - 1, visibleTo);
         for (let rowInd = from; rowInd <= to; rowInd += 1) {
           toUpdate.push(rowInd);
         }
@@ -120,7 +118,7 @@ export function useHoverState({
       }
       toUpdate.forEach((rowInd) => pendingRowsRef.current?.add(rowInd));
     },
-    [dataEditorRef, columnsCount, rowsCount, visibleRowsRef],
+    [dataEditorRef, columnsCount, rowsCount, visibleRegionRef],
   );
 
   const damageRows = useCallback(
@@ -194,6 +192,9 @@ export function useHoverState({
     hoveredCellRef,
     setHoveredCell,
     hoverRowsRef,
+    // Та же склейка дорисовок для других причин перерисовать строки (смена
+    // активной строки и выделенного диапазона), чтобы за одно событие уходил
+    // один вызов updateCells.
     damageRows,
     // Если наведение на строку выключено, наружу не отдаём функцию, и тогда
     // слежение за строкой не ведётся вовсе.

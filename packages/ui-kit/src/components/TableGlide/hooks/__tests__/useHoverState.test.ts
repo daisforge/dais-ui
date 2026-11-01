@@ -2,26 +2,22 @@ import type { DataEditorRef } from '@glideappsfinal/glide-data-grid';
 import { act, renderHook } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
-import {
-  type HoverRows,
-  type ResolveHoverRows,
-  useHoverState,
-} from '../useHoverState';
+import { type ResolveHoverRows, useHoverState } from '../useHoverState';
 
 const setup = ({
   isRowHoverEnabled = true,
   resolveHoverRows,
-  visibleRows,
+  visibleRegion,
 }: {
   isRowHoverEnabled?: boolean;
   resolveHoverRows?: ResolveHoverRows;
-  visibleRows?: HoverRows;
+  visibleRegion?: { y: number; height: number };
 } = {}) => {
   const updateCells = vi.fn();
   const dataEditorRef = {
     current: { updateCells } as unknown as DataEditorRef,
   };
-  const visibleRowsRef = { current: visibleRows };
+  const visibleRegionRef = { current: visibleRegion ?? null };
   const onHoverRowsChange = vi.fn();
   const hook = renderHook(
     (props: { resolveHoverRows?: ResolveHoverRows }) =>
@@ -31,7 +27,7 @@ const setup = ({
         columnsCount: 3,
         rowsCount: 10,
         resolveHoverRows: props.resolveHoverRows,
-        visibleRowsRef,
+        visibleRegionRef,
         onHoverRowsChange,
       }),
     { initialProps: { resolveHoverRows } },
@@ -130,7 +126,7 @@ describe('useHoverState: объединённый блок под курсоро
   it('дорисовка блока обрезается по видимым строкам', async () => {
     const { hook, updateCells } = setup({
       resolveHoverRows: () => ({ from: 0, to: 9 }),
-      visibleRows: { from: 4, to: 6 },
+      visibleRegion: { y: 4, height: 2 },
     });
 
     hook.result.current.onHoverRowChange!([0, 5]);
