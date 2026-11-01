@@ -1632,7 +1632,9 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         return { bgCell: hoverBg, accentLight: theme.selectionActiveHoveredBg };
       }
 
-      return {};
+      // Обычной строке своя тема не нужна. Пустой объект glide считает темой и
+      // на каждую ячейку такой строки собирал бы полную копию темы.
+      return undefined;
     };
   }, [
     summaryRowsLength,
