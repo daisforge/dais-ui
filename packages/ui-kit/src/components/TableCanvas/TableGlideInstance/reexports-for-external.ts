@@ -14,6 +14,7 @@ import type {
 import { Canvas as InternalCanvas } from './index';
 
 export type {
+  CanvasMarkProps,
   CanvasNodeTooltipConfig,
   CanvasNodeTooltipProps,
   CanvasPortalHoverDetail,
