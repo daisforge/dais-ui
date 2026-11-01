@@ -26,6 +26,9 @@ import {
 
 type CanvasCacheKey = string | number | boolean | null;
 
+/** Отступ обрезки от левого и верхнего края ячейки: там линии сетки (как у glide) */
+const CELL_EDGE_INSET = 1;
+
 interface CanvasCellCacheEntry {
   cacheKey: CanvasCacheKey;
   canvasRoot: CellCanvasRoot;
@@ -195,17 +198,36 @@ export const glideCellRenderer = <R extends ObjectForExtending, SR>({
       refTable: options.refTable,
     });
 
-    canvasRootInstance.render(
-      ctx,
-      rect,
-      hoverPos,
-      absoluteBounds,
-      {
-        frameTime: renderArgs?.frameTime,
-        requestAnimationFrame: renderArgs?.requestAnimationFrame,
-      },
-      renderArgs?.imageResources,
+    // Содержимое обрезается по ячейке: glide обрезает только по колонке, и при перерисовке
+    // одной ячейки (hover, выделение) хвост текста лёг бы поверх соседних строк.
+    // Левый и верхний пиксель — линии сетки и край рамки выделения соседа. При частичной
+    // перерисовке glide их не обновляет и сам заливает фон с отступом 1px; так же
+    // обрезаем и мы, иначе фон контейнера стирает линии и рамку.
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(
+      rect.x + CELL_EDGE_INSET,
+      rect.y + CELL_EDGE_INSET,
+      rect.width - CELL_EDGE_INSET,
+      rect.height - CELL_EDGE_INSET
     );
+    ctx.clip();
+
+    try {
+      canvasRootInstance.render(
+        ctx,
+        rect,
+        hoverPos,
+        absoluteBounds,
+        {
+          frameTime: renderArgs?.frameTime,
+          requestAnimationFrame: renderArgs?.requestAnimationFrame,
+        },
+        renderArgs?.imageResources
+      );
+    } finally {
+      ctx.restore();
+    }
 
     if (!isCacheable || rebuilt) {
       cellCanvasRoot = canvasRootInstance;

@@ -1,4 +1,4 @@
-import { split } from 'canvas-hypertxt';
+import { clearCache as clearHypertxtCache, split } from 'canvas-hypertxt';
 
 import { CanvasNode } from '../core/CanvasNode';
 import { DrawBatcher } from '../core/DrawBatcher';
@@ -767,5 +767,7 @@ export function invalidateTextCache(): void {
   fontMetricsCache.clear();
   textWidthCache.clear();
   splitLinesCache.clear();
+  // canvas-hypertxt хранит свои переносы и ширины символов — их тоже считали старым шрифтом.
+  clearHypertxtCache();
   invalidateOverflowTextCache();
 }
