@@ -1,4 +1,7 @@
-import type { GridSelection } from '@glideappsfinal/glide-data-grid';
+import type {
+  CellClickedEventArgs,
+  GridSelection,
+} from '@glideappsfinal/glide-data-grid';
 import { Group, Item, ItemOrGroup } from '@ui-kit/components/ListOfFilters';
 import type { MassActionsSize } from '@ui-kit/components/MassActions';
 import { SIZE } from '@ui-kit/components/TableCanvas';
@@ -1463,10 +1466,14 @@ export type TableConfig<
    *
    * Получает `cell` readonly [colIndex, rowIndex] от glide, и `info` обогащённый объект
    * с row, column, ctxs, refTable (аналогично onCellContextMenu).
+   * `colIndex` — в координатах грида: служебные колонки слева (нумерация, чекбоксы)
+   * входят в счёт; колонку надёжнее брать из `info.column`.
    */
   onCellClicked?: (
     cell: readonly [number, number],
     info: TableInfoWithRow<RowType, SummaryRowType>,
+    /** Событие клика glide: позиция в ячейке, модификаторы, кнопка */
+    event: CellClickedEventArgs,
   ) => void;
 } & GlideInstanceOmitted<RowType, SummaryRowType>;
 
@@ -1485,7 +1492,6 @@ type GlideInstanceOmitted<
   | 'maxColumnWidth'
   | 'maxColumnAutoWidth'
   | 'onVisibleRegionChanged'
-  | 'onCellClicked'
   // | 'CellReadOnlyEditor'
   // | 'onGroupHeaderClicked'
   | 'onHeaderClicked'
