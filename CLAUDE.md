@@ -321,6 +321,9 @@ npm run screenshot:update -- TableCanvas # Принять намеренные �
 Без фильтра команда обрабатывает все сценарии. Проверка сохраняет diff и не меняет
 эталоны; автоматических повторов нет. Правила сравнения, пропуски PNG и устройство
 инфраструктуры описаны в [основной инструкции](packages/storybook/test/screenshot-tests.md).
+Перед изменением тестов прочитай [скилл write-tests](.claude/skills/write-tests/SKILL.md).
+В GitHub Actions предусмотрен ручной необязательный workflow `Screenshots`; порядок
+его активации и выбора ветки описан в основной инструкции.
 
 ## Юнит-тесты (Vitest)
 
@@ -597,7 +600,7 @@ fp:
 | `react-hook-form`                 | ^7.54.2       | Формы                        |
 | `swr`                             | ^2.3.3        | Загрузка данных              |
 | `zod`                             | ^3.24.2       | Валидация                    |
-| `@glideappsfinal/glide-data-grid` | ^6.0.12       | TableCanvas                  |
+| `@glideappsfinal/glide-data-grid` | ^6.11.0       | TableCanvas                  |
 | `react-data-grid`                 | 7.0.0-beta.43 | Table (устаревшая)           |
 
 ### Peer зависимости

@@ -233,8 +233,9 @@ npm run screenshot:update    # Обновление скриншотов
 
 Нужен Docker с Linux-контейнерами; отдельный сервер Storybook не требуется.
 Проверка сохраняет различия для ревью и не обновляет эталоны автоматически.
-В GitHub Actions доступен необязательный ручной workflow **Screenshots**: можно
-выбрать ветку PR и фильтр story-файлов. Отчёт и изображения хранятся семь дней.
+Для GitHub Actions добавлен необязательный ручной workflow **Screenshots**. После
+попадания workflow в `main` можно выбрать ветку PR и фильтр story-файлов через
+**Run workflow**. Отчёт и изображения хранятся семь дней.
 
 [Команды, устройство тестов и обновление эталонов](packages/storybook/test/screenshot-tests.md).
 
@@ -539,7 +540,7 @@ export type TMutationRegister<TFieldValues extends FieldValues> = {
 | `react-hook-form`                 | ^7.54.2       | Формы                        |
 | `swr`                             | ^2.3.3        | Data fetching                |
 | `zod`                             | ^3.24.2       | Валидация                    |
-| `@glideappsfinal/glide-data-grid` | ^6.0.12       | TableCanvas                  |
+| `@glideappsfinal/glide-data-grid` | ^6.11.0       | TableCanvas                  |
 | `react-data-grid`                 | 7.0.0-beta.43 | Table (альтернатива)         |
 
 ### Peer Dependencies
