@@ -99,6 +99,13 @@ export class FlexBox extends FlexNode {
 
   public padding: PaddingBox = { top: 0, right: 0, bottom: 0, left: 0 };
 
+  /**
+   * Главный размер задаёт содержимое (колонка без заданной высоты): дети не сжимаются,
+   * а контейнер дорастает до них. Иначе перенесённый текст, выросший после measure,
+   * сжимал бы соседей и съедал отступы.
+   */
+  public sizedByContent = false;
+
   constructor(width: number, height: number, opts: FlexBoxOptions = {}) {
     super({});
     this.size.width = width;
@@ -348,7 +355,11 @@ export class FlexBox extends FlexNode {
 
       if (lineFreeSpace > 0 && totalGrow > 0) {
         main += (lineFreeSpace * style.flexGrow) / totalGrow;
-      } else if (lineFreeSpace < 0 && totalWeightedShrink > 0) {
+      } else if (
+        lineFreeSpace < 0 &&
+        totalWeightedShrink > 0 &&
+        !this.sizedByContent
+      ) {
         main += (lineFreeSpace * style.flexShrink * main) / totalWeightedShrink;
       }
 
@@ -417,7 +428,11 @@ export class FlexBox extends FlexNode {
     initialHeight: number,
     horizontal: boolean
   ): number {
-    if (this.wrap !== 'nowrap') {
+    // В колонке поперечная ось — ширина, и линия равна ширине контейнера: широкий ребёнок
+    // её переполняет, а не раздвигает. Иначе stretch раздаёт его ширину соседям, и текст
+    // с переносом раскладывается по чужой ширине. В строке поперечная ось — высота,
+    // она растёт по содержимому (перенесённый текст выше строки).
+    if (this.wrap !== 'nowrap' || !horizontal) {
       return initialHeight;
     }
 

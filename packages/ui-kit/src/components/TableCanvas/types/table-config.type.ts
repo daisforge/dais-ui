@@ -1,4 +1,8 @@
-import type { GridSelection } from '@glideappsfinal/glide-data-grid';
+import type {
+  CellClickedEventArgs,
+  GridSelection,
+  GroupHeaderClickedEventArgs,
+} from '@glideappsfinal/glide-data-grid';
 import { Group, Item, ItemOrGroup } from '@ui-kit/components/ListOfFilters';
 import type { MassActionsSize } from '@ui-kit/components/MassActions';
 import { SIZE } from '@ui-kit/components/TableCanvas';
@@ -55,6 +59,7 @@ import type { MassActionButtonProps } from '../widgets/mass-actions/types';
 import { DomMetadata } from './additional.type';
 import type {
   ColumnConfig,
+  ColumnOrColumnGroupConfig,
   EditingCellInfo,
   SortColumn,
 } from './column-config.type';
@@ -118,6 +123,11 @@ export type RowSize = {
    * Показывать кнопку в блоке управления
    */
   showInControl: boolean;
+  /**
+   * Контролируемый размер строк: таблица читает размер из state и меняет его через setter
+   * (кнопка в блоке управления тоже). Без state размер хранится внутри таблицы, начальное значение - default.
+   */
+  state?: [SIZE, React.Dispatch<React.SetStateAction<SIZE>>];
   /**
    * Значение по умолчанию
    */
@@ -906,12 +916,43 @@ export type CellsSelectionConfig = {
    */
   enableSelectAll?: boolean;
   /**
+   * Рамка у каждого диапазона несмежного Ctrl-выбора ячеек (`multi-range-cell`).
+   * По умолчанию рамку рисует только активный (последний) диапазон, остальные
+   * показываются заливкой. Ограничение: соседние диапазоны дают общую линию на
+   * стыке; диапазон, поглощённый более поздним, не обводится.
+   * @default false
+   */
+  outlineEachRange?: boolean;
+  /**
    * Внешний (controlled) контроль НАТИВНОГО выделения (ячейки/диапазон/смежные
    * строки и колонки). `state` — кортеж `[value, setter]` как у `selecting.state`.
    * Сброс: `setter({ current: undefined, rows: empty, columns: empty })`.
-   * Несмежный Ctrl-выбор колонок/строк (own-state) сюда не входит — он внутренний.
+   * Несмежный Ctrl-выбор колонок/строк (own-state) сюда не входит — см. `onChange`.
    */
   state?: [GridSelection, React.Dispatch<React.SetStateAction<GridSelection>>];
+  /**
+   * Итоговое выделение после каждого действия пользователя — в том числе
+   * несмежный Ctrl-выбор колонок (`columns`) и строк (`rows`), которого нет в
+   * `state`. Срабатывает с `state` и без него.
+   *
+   * Срабатывает и без действия пользователя, когда слева появляется или исчезает
+   * служебная колонка (например, столбец ошибок): выделение остаётся на тех же
+   * ячейках, а их индексы сдвигаются. Программная смена `state` снаружи
+   * `onChange` не вызывает.
+   *
+   * Индексы колонок — в координатах грида: служебные колонки слева (нумерация
+   * `rowMarkers`, чекбоксы `selecting`) входят в счёт. Колонка, `i`-я по порядку
+   * на экране, имеет индекс `i` + число служебных колонок.
+   */
+  onChange?: (selection: GridSelection) => void;
+  /**
+   * Фокусировать грид, когда выделение с ячейкой приходит снаружи через `state`
+   * (иначе glide рисует якорную ячейку как у несфокусированного грида).
+   * Выключите, если выделение меняется программно и фокус должен остаться,
+   * где был (например, переход по результатам поиска из поля ввода).
+   * @default true
+   */
+  focusOnStateChange?: boolean;
 };
 
 /** Один объединённый блок: какие строки и колонки слить. */
@@ -1082,9 +1123,26 @@ export type TableConfig<
    */
   rowSize?: Prettify<RowSize>;
   /**
-   * rowHeight - размер высоты строк таблицы
+   * rowHeight - размер высоты строк таблицы: число, функция или `'auto'`.
+   * `'auto'` — высота строки по содержимому: ячейка сообщает высоту своего дерева Canvas, когда
+   * таблица её рисует (перенос слов в `Canvas.Text wordWrap` растит строку), но не ниже высоты
+   * по `rowSize` и не выше `maxAutoRowHeight`. Рисуются только видимые ячейки: строка,
+   * показанная впервые, дорастает на следующем кадре, колонка, до которой ещё не прокрутили,
+   * высоту не меняет.
+   * Высота кешируется по ячейке (объект строки + колонка) при ширине колонки: чтобы перемерить
+   * строку после изменения данных, передайте новый объект строки. Смена `rowSize` или темы,
+   * загрузка шрифта — перемеряют все ячейки, новый `renderCell` колонки — ячейки этой колонки;
+   * до перемера строка держит прежнюю высоту.
+   * Ячейки, объединённые на несколько строк, строку не растят.
+   * С панелью детализации строки не растут: `'auto'` там равен высоте по `rowSize`.
    */
-  rowHeight?: Maybe<number | RowHeightFunc<RowType>>;
+  rowHeight?: Maybe<number | 'auto' | RowHeightFunc<RowType>>;
+  /**
+   * Потолок высоты строки при `rowHeight: 'auto'` (в px), по умолчанию 480: содержимое выше
+   * обрезается. Смена значения сразу меняет высоты всех измеренных строк, без перемера ячеек.
+   * Больше 65534 не бывает (`Infinity` — 65534), нечисловое значение — 480.
+   */
+  maxAutoRowHeight?: Maybe<number>;
   /**
    * headerRowHeight - высота одного ряда шапки (в px). По умолчанию 33.
    *
@@ -1094,6 +1152,12 @@ export type TableConfig<
    * Например, headerRowHeight={50} при 2 уровнях групп даст шапку 50 + 50 + 50 = 150px.
    */
   headerRowHeight?: Maybe<number>;
+  /**
+   * groupHeaderRowHeight - высота каждого уровня объединённых (групповых) заголовков (в px).
+   * По умолчанию равна `headerRowHeight`. Нужна, когда нижний ряд шапки выше уровней групп,
+   * например при переносе названий колонок на несколько строк.
+   */
+  groupHeaderRowHeight?: Maybe<number>;
   /**
    * sorting - активация сортировки. Условие активации - это наличие данного свойства. Нужно также сконфигурировать колонки.
    *
@@ -1210,6 +1274,29 @@ export type TableConfig<
     >;
     /** Список блоков, заданных снаружи (по ключам строк и колонок). */
     mergedCellsRegions?: MergedCellsRegion[];
+    /**
+     * Ленивый резолвер блоков: для ячейки строки `row` в колонке `colKey`
+     * возвращает первую и последнюю строку её блока (включительно) или null.
+     * Вызывается при отрисовке только для видимых ячеек — для больших и ленивых
+     * данных, где обход всех строк (mergeByCellValues) дорог. Ответ кешируется
+     * до смены отображаемых строк (новые `rows`, сортировка, фильтр), найденный
+     * блок — сразу для всех своих строк. Должна быть стабильной функцией.
+     * Колонки из mergedCellsRegions, mergeByCellValues и группировки со слиянием
+     * берут блоки оттуда.
+     *
+     * `rowInd` и границы блока — индексы в отображаемых строках: после сортировки,
+     * фильтров и группировки они не совпадают с индексами в `rows`. Отображаемые
+     * строки приходят в `ctx.rows` — по ним ищут соседей блока.
+     */
+    lazyRowSpan?: (
+      row: RowType,
+      colKey: string,
+      rowInd: number,
+      ctx: {
+        /** Отображаемые строки в порядке на экране; `rows[rowInd] === row` */
+        rows: readonly RowType[];
+      },
+    ) => readonly [number, number] | null;
     /**
      * Нужен для mergedCellsRegions: находит строку по её ключу. Должна быть
      * стабильной функцией; менять её на лету не нужно — в пересборку таблицы она
@@ -1458,12 +1545,47 @@ export type TableConfig<
    *
    * Получает `cell` readonly [colIndex, rowIndex] от glide, и `info` обогащённый объект
    * с row, column, ctxs, refTable (аналогично onCellContextMenu).
+   * `colIndex` — в координатах грида: служебные колонки слева (нумерация, чекбоксы)
+   * входят в счёт; колонку надёжнее брать из `info.column`.
    */
   onCellClicked?: (
     cell: readonly [number, number],
     info: TableInfoWithRow<RowType, SummaryRowType>,
+    /** Событие клика glide: позиция в ячейке, модификаторы, кнопка */
+    event: CellClickedEventArgs,
   ) => void;
+  /**
+   * Клик по заголовку группы колонок.
+   *
+   * `info` — группа из columnConfig: `key` и `children` (вложенные колонки и
+   * подгруппы). `colIndex` — колонка под курсором в координатах грида: служебные
+   * колонки слева (нумерация, чекбоксы) входят в счёт.
+   */
+  onGroupHeaderClicked?: GroupHeaderHandler<RowType, SummaryRowType>;
+  /** Правый клик по заголовку группы колонок. Аргументы — как у onGroupHeaderClicked. */
+  onGroupHeaderContextMenu?: GroupHeaderHandler<RowType, SummaryRowType>;
 } & GlideInstanceOmitted<RowType, SummaryRowType>;
+
+/** Группа шапки из columnConfig, по которой кликнули */
+export type GroupHeaderInfo<
+  RowType extends ObjectForExtending,
+  SummaryRowType = unknown,
+> = {
+  /** Ключ группы (ColumnGroupConfig.key) */
+  key: string;
+  /** Вложенные колонки и подгруппы группы */
+  children: readonly ColumnOrColumnGroupConfig<RowType, SummaryRowType>[];
+};
+
+export type GroupHeaderHandler<
+  RowType extends ObjectForExtending,
+  SummaryRowType = unknown,
+> = (
+  colIndex: number,
+  info: GroupHeaderInfo<RowType, SummaryRowType>,
+  /** Событие клика glide: позиция, модификаторы, кнопка; `event.group` — ключ группы */
+  event: GroupHeaderClickedEventArgs,
+) => void;
 
 type GlideInstanceOmitted<
   RowType extends ObjectForExtending,
@@ -1480,9 +1602,9 @@ type GlideInstanceOmitted<
   | 'maxColumnWidth'
   | 'maxColumnAutoWidth'
   | 'onVisibleRegionChanged'
-  | 'onCellClicked'
+  // onCellClicked и onGroupHeader* объявлены в TableConfig явно — с info и событием
   // | 'CellReadOnlyEditor'
-  // | 'onGroupHeaderClicked'
+  // Сигнатуры glide: индекс колонки — в координатах грида (сервисные колонки включены)
   | 'onHeaderClicked'
   | 'onItemHovered'
   | 'trapFocus'

@@ -88,15 +88,17 @@ export function useNativeGridSelection({
 
   // Храним glide selection как источник истины нативного выделения. В controlled-
   // режиме значение владеется снаружи (onGridSelectionChange — сеттер), иначе —
-  // внутренний state. Параллельно ВСЕГДА отдаём выделение в onSelectionEmit (copy).
+  // внутренний state. Наружу (onSelectionEmit) — ровно один раз за изменение;
+  // `emitted` — итог, если он не совпадает с нативным (несмежные колонки/строки
+  // рисует оверлей, нативное при этом пустое).
   const handleGridSelectionChange = useCallback(
-    (next: GridSelection) => {
+    (next: GridSelection, emitted: GridSelection = next) => {
       if (isControlled) {
         onGridSelectionChangeExternal?.(next);
       } else {
         setGridSelectionInternal(next);
       }
-      onSelectionEmit?.(next);
+      onSelectionEmit?.(emitted);
     },
     [isControlled, onGridSelectionChangeExternal, onSelectionEmit],
   );
@@ -133,14 +135,10 @@ export function useNativeGridSelection({
     onSelectionEmit,
   ]);
 
-  const handleSelectionCleared = useCallback(() => {
-    if (isControlled) {
-      onGridSelectionChangeExternal?.(EMPTY_SELECTION);
-    } else {
-      setGridSelectionInternal(EMPTY_SELECTION);
-    }
-    onSelectionEmit?.(EMPTY_SELECTION);
-  }, [isControlled, onGridSelectionChangeExternal, onSelectionEmit]);
+  const handleSelectionCleared = useCallback(
+    () => handleGridSelectionChange(EMPTY_SELECTION),
+    [handleGridSelectionChange]
+  );
 
   const rangeSelect = useMemo<GlideProps['rangeSelect']>(() => {
     // range-cell → нативный rect-selection; multi-range-cell → несколько
