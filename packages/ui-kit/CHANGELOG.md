@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.27.0](https://github.com/daisforge/dais-ui/compare/v1.26.0...v1.27.0) (2026-11-02)
+
+### Bug Fixes
+
+- **TableCanvas:** колонка нумерации — фокус на таблице не выделяет первую строку целиком, правый клик по номеру строки не сбрасывает выделение ([09b5b0d](https://github.com/daisforge/dais-ui/commit/09b5b0d9ae2501f89424e243fb5f651574b1dcf0))
+- **TableCanvas:** открепление шапки в прокрученной таблице применяется сразу, без прокрутки ([414c736](https://github.com/daisforge/dais-ui/commit/414c736afe99f81994e98d2a981f191c23906aad))
+- **TableCanvas:** открытый редактор ячейки больше не закрывается и не теряет введённый текст при обновлении данных или настроек таблицы ([1aabd71](https://github.com/daisforge/dais-ui/commit/1aabd71d3fbbe7b56e8f5b42469a366f00945b98))
+- **TableCanvas:** отрисовка ячеек — фон не закрашивает линии сетки и соседние строки, текст перемеряется после загрузки шрифтов, Canvas.Container не раздвигает колонку длинным содержимым ([5ccefa7](https://github.com/daisforge/dais-ui/commit/5ccefa75c17ccc2a1c65d128e69bcd401a4cc97b))
+
+### Features
+
+- **TableCanvas:** cellsSelection.focusOnStateChange — выделение можно менять из кода, не забирая фокус, например у поля поиска ([6b736a5](https://github.com/daisforge/dais-ui/commit/6b736a55620be8f62ab888c68e49fa4b226c35c5))
+- **TableCanvas:** mergeCells.lazyRowSpan — объединение ячеек на больших данных, блоки считаются только для видимых строк и не ломаются после сортировки ([fc9ebc7](https://github.com/daisforge/dais-ui/commit/fc9ebc71d5cfe8f4261b9be259b3b58baf07965c))
+- **TableCanvas:** tableConfig.rowSize.state — размером строк можно управлять снаружи, например из своей панели инструментов ([409afd9](https://github.com/daisforge/dais-ui/commit/409afd9b02ad59a74a0f88306eed7d5ba2c3e57f))
+- **TableCanvas:** выравнивание колонки без своего форматирования — contentFormat: { alignContent } больше не требует customFormat ([88f95c5](https://github.com/daisforge/dais-ui/commit/88f95c53d98e3642de4d67d5c71306fd2616ad36))
+- **TableCanvas:** высота строки по содержимому — rowHeight: 'auto', строка растёт под перенесённый текст и любое дерево Canvas, потолок задаётся maxAutoRowHeight ([bc8996f](https://github.com/daisforge/dais-ui/commit/bc8996f0df34f3dabf8c9c5d6a888ba1638e3b04))
+- **TableCanvas:** кнопки внутри ячейки — interaction у Canvas.Button, Canvas.IconButton, Canvas.EmbedIconButton, Canvas.Link и Canvas.Container, клик не выделяет ячейку и не вызывает onCellClicked ([310654e](https://github.com/daisforge/dais-ui/commit/310654e3200d44e8db4e56aab33a5673829aea2c))
+- **TableCanvas:** многоуровневая шапка — своя высота уровней групп (groupHeaderRowHeight), клик и контекстное меню по заголовку группы (onGroupHeaderClicked, onGroupHeaderContextMenu) ([98357e6](https://github.com/daisforge/dais-ui/commit/98357e644f5fac16e21825c184620163c088991f))
+- **TableCanvas:** несколько выделенных диапазонов — рамка у каждого (cellsSelection.outlineEachRange) и всё выделение наружу (cellsSelection.onChange) ([007beb3](https://github.com/daisforge/dais-ui/commit/007beb3472e348c0e27987d77fcf029e5f1f70b3))
+- **TableCanvas:** новый canvas-элемент Canvas.Mark — подсветка части текста внутри Canvas.Text, Canvas.Link и Canvas.Badge, в том числе в тексте, перенесённом на несколько строк ([e431eb4](https://github.com/daisforge/dais-ui/commit/e431eb42e5fe733b6b8ceff2648a8fd2a754c2f0)), closes [#ffe066](https://github.com/daisforge/dais-ui/issues/ffe066)
+- **TableCanvas:** события ячеек — onCellClicked получает событие клика (позиция, Ctrl/Shift), заработал tableConfig.onItemHovered для подсказок при наведении ([9cde985](https://github.com/daisforge/dais-ui/commit/9cde985de4f7d872ddecb1bb934dacc40fff3e1e))
+
 # [1.26.0](https://github.com/daisforge/dais-ui/compare/v1.25.0...v1.26.0) (2026-10-28)
 
 ### Features
