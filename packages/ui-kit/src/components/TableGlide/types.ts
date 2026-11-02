@@ -45,6 +45,18 @@ export type GlideProps = ComponentProps<typeof DataEditor>;
 
 export type RowHeightGlide = GlideProps['rowHeight'];
 
+/** Высота строки: число, функция по строке или `'auto'` — по содержимому ячеек. */
+export type RowHeightProp<R> =
+  | ((
+      row: R,
+      currentRowSize: { rowSizeName: SIZE; rowSizeValue: number },
+      rowIndex: number
+    ) => number)
+  | number
+  | 'auto'
+  | undefined
+  | null;
+
 /**
  * Подсветка активной сущности (визуальная ось).
  * @deprecated Значения 'cell' и 'range-cell' устарели — режим выделения теперь
@@ -382,18 +394,9 @@ export type TableGlideCustomProps<
   rows: readonly R[];
   bottomSummaryRows?: readonly SR[];
   rowSize?: SIZE;
-  rowHeight?:
-    | ((
-        row: R,
-        currentRowSize: {
-          rowSizeName: SIZE;
-          rowSizeValue: number;
-        },
-        rowIndex: number
-      ) => number)
-    | number
-    | undefined
-    | null;
+  rowHeight?: RowHeightProp<R>;
+  /** Потолок высоты строки при `rowHeight: 'auto'`, по умолчанию 480 */
+  maxAutoRowHeight?: number;
   ctxs?: ObjectForExtending;
   renderGroupHeader?: (
     args: RenderGroupHeaderArgs
@@ -434,6 +437,8 @@ export type TableGlideCustomProps<
   highlightActiveType?: HighlightActiveType;
   /** Режим выделения ячеек (нативный glide selection). По умолчанию 'range-cell'. */
   cellsSelectionMode?: CellsSelectionMode;
+  /** Фокусировать грид при внешней смене controlled gridSelection. По умолчанию true. */
+  focusOnStateChange?: boolean;
   /** Канал для copy/paste (selectionRef потребителя), отдельно от controlled gridSelection. */
   onSelectionEmit?: (selection: GridSelection) => void;
   /**
@@ -471,6 +476,8 @@ export type TableGlideCustomProps<
   enableRowSelection?: boolean;
   /** Выделение всей таблицы кликом по шапке колонки нумерации. По умолчанию true. */
   enableSelectAll?: boolean;
+  /** Рамка у каждого Ctrl-диапазона ячеек (multi-range-cell), а не только у активного. По умолчанию false. */
+  outlineEachRange?: boolean;
   /** Индексы строк, выбранных через checkbox selection. */
   checkboxSelectedRowIndexes?: ReadonlySet<number>;
   /**

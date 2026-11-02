@@ -287,7 +287,9 @@ export const TableOrCardsUI = <
                   highlightActiveType={$highlightActiveType}
                   enableLowDprHairline={restDataGridProps.enableLowDprHairline}
                   headerHeight={restDataGridProps.headerHeight}
+                  groupHeaderRowHeight={restDataGridProps.groupHeaderRowHeight}
                   rowHeight={restDataGridProps.rowHeight}
+                  maxAutoRowHeight={restDataGridProps.maxAutoRowHeight}
                   bottomSummaryRows={restDataGridProps.bottomSummaryRows}
                   refTable={refTable}
                   portalEventTargetRef={refTableGlobalContainer}
@@ -326,7 +328,9 @@ export const TableOrCardsUI = <
                   }
                   enableRowSelection={restDataGridProps.enableRowSelection}
                   enableSelectAll={restDataGridProps.enableSelectAll}
+                  outlineEachRange={restDataGridProps.outlineEachRange}
                   cellsSelectionMode={restDataGridProps.cellsSelectionMode}
+                  focusOnStateChange={restDataGridProps.focusOnStateChange}
                   hoverEffects={restDataGridProps.hoverEffects}
                   appearance={restDataGridProps.appearance}
                   isErrorRow={restDataGridProps.isErrorRow}
@@ -360,6 +364,11 @@ export const TableOrCardsUI = <
                   onFillPattern={restDataGridProps.onFillPattern}
                   contentStateOverlay={restDataGridProps.contentStateOverlay}
                   onCellClicked={restDataGridProps.onCellClicked}
+                  onItemHovered={restDataGridProps.onItemHovered}
+                  onGroupHeaderClicked={restDataGridProps.onGroupHeaderClicked}
+                  onGroupHeaderContextMenu={
+                    restDataGridProps.onGroupHeaderContextMenu
+                  }
                   editorOverlayPortal={restDataGridProps.editorOverlayPortal}
                   fullScreened={fullScreened}
                   CellReadOnlyEditor={CellReadOnlyEditor}
