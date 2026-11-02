@@ -53,11 +53,20 @@ const verifyWidthByTab = async (
       Math.round(workspace.getBoundingClientRect().width * 0.35 + 44),
     ),
   );
-  await userEvent.click(canvas.getByLabelText('Отчёты'));
+  const reportsTab = canvas.getByLabelText('Отчёты');
+  await userEvent.click(reportsTab);
   await waitFor(() =>
     expect(Math.round(sidebar.getBoundingClientRect().width)).toBe(
       reportsWidth + 44,
     ),
+  );
+  // Виртуальное наведение userEvent не связано с настоящим указателем Playwright.
+  // Завершаем его явно и ждём исчезновения подсказки: здесь проверяем геометрию панели.
+  await userEvent.unhover(reportsTab);
+  await waitFor(() =>
+    expect(
+      within(canvasElement.ownerDocument.body).queryByRole('tooltip'),
+    ).not.toBeInTheDocument(),
   );
 };
 

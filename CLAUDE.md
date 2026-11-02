@@ -39,7 +39,7 @@ lib-3/
 │   │   │   ├── mixins/      # CSS-миксины
 │   │   │   └── index.ts     # Основной экспорт
 │   │   └── vite.config.ts   # Конфигурация сборки библиотеки с ручными чанками
-│   ├── storybook/           # Storybook для документации и скриншотных тестов (135+ сторис)
+│   ├── storybook/           # Storybook для документации и скриншотных тестов
 │   ├── vite-project/        # Тестовое приложение на Vite
 │   ├── webpack-finportal-platform/  # Тестовое приложение на Webpack (Finportal)
 │   └── webpack-project-finalheader/ # Тестовое приложение на Webpack (Finalheader)
@@ -103,14 +103,11 @@ npm run storybook:build
 # Юнит-тесты Vitest
 npm run test
 
-# Скриншотные тесты (требует запущенный Storybook на порту 4400)
+# Скриншотные тесты в Docker (отдельный сервер Storybook не нужен)
 npm run screenshot:test
 
 # Обновление скриншотов
 npm run screenshot:update
-
-# Очистка скриншотов
-npm run screenshot:clean
 ```
 
 ### Тестовые проекты
@@ -314,19 +311,16 @@ import { ModalDF } from '@ui-kit/components';
 
 ### Скриншотные тесты
 
-- **Тест-раннер**: `@storybook/test-runner` + `pixelmatch`
-- **Сторис**: 135+ тестированных сторис
-- **Расположение снапшотов**: `packages/storybook/__snapshots__/`
-- **Отображение diff**: `baseline | diff | received`
-- **Порог**: 0.1 (локально), 0.01 (CI)
-
-**Команды**:
+Проверка и обновление выполняются в Docker с фиксированными Linux и Chromium.
 
 ```bash
-npm run screenshot:test      # Запуск тестов
-npm run screenshot:update    # Обновление снапшотов
-npm run screenshot:clean     # Удаление снапшотов
+npm run screenshot:test -- TableCanvas   # Проверить выбранные story-файлы
+npm run screenshot:update -- TableCanvas # Принять намеренные изменения после ревью
 ```
+
+Без фильтра команда обрабатывает все сценарии. Проверка сохраняет diff и не меняет
+эталоны; автоматических повторов нет. Правила сравнения, пропуски PNG и устройство
+инфраструктуры описаны в [основной инструкции](packages/storybook/test/screenshot-tests.md).
 
 ## Юнит-тесты (Vitest)
 

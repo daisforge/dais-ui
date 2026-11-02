@@ -7,6 +7,7 @@ import {
 import DocStoryTemplate from '@df-storybook/templates/DocStoryTemplate.mdx';
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
 import type { Meta, StoryObj } from '@storybook/react';
+import { expect, within } from '@storybook/test';
 import { Calendar } from '@ui-kit/components/Calendar';
 import { DatePicker } from '@ui-kit/components/DatePicker';
 import { ModalDF } from '@ui-kit/components/ModalDF';
@@ -306,11 +307,25 @@ export const Filtering: Story = {
   },
 };
 
+const filteringInModalDocs = storySourceDoc({
+  preCode,
+  previewSource: 'shown',
+});
 export const FilteringInModal: Story = {
-  ...storySourceDoc({
-    preCode,
-    previewSource: 'shown',
-  }),
+  ...filteringInModalDocs,
+  parameters: {
+    ...('parameters' in filteringInModalDocs
+      ? filteringInModalDocs.parameters
+      : {}),
+    screenshot: { capture: 'page', keepState: true },
+  },
+  play: async ({ canvasElement }) => {
+    await expect(
+      await within(canvasElement.ownerDocument.body).findByTestId(
+        'filtering-modal-content',
+      ),
+    ).toBeVisible();
+  },
   render: () => {
     const [rows] = useState(() => {
       const seededRandom = createSeededRandom(42);
@@ -562,7 +577,7 @@ export const FilteringInModal: Story = {
       />
     );
 
-    const [modalOpened, setModalOpened] = useState(false);
+    const [modalOpened, setModalOpened] = useState(true);
 
     return (
       <ModalDF
@@ -573,6 +588,7 @@ export const FilteringInModal: Story = {
         <ModalDF.Main>
           <ModalDF.Header />
           <ModalDF.Content
+            data-testid="filtering-modal-content"
             $css={{
               '&&': {
                 overflow: 'visible',

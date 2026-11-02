@@ -227,15 +227,16 @@ coverage: provider: v8;
 
 ```bash
 npm run screenshot:test      # Запуск тестов
+npm run screenshot:test -- TableCanvas  # Только подходящие story-файлы
 npm run screenshot:update    # Обновление скриншотов
 ```
 
-**Особенности**:
+Нужен Docker с Linux-контейнерами; отдельный сервер Storybook не требуется.
+Проверка сохраняет различия для ревью и не обновляет эталоны автоматически.
+В GitHub Actions доступен необязательный ручной workflow **Screenshots**: можно
+выбрать ветку PR и фильтр story-файлов. Отчёт и изображения хранятся семь дней.
 
-- Кастомный снапшот-дир: `packages/storybook/__snapshots__/`
-- Composite diff: `baseline | diff | received`
-- Threshold: 0.1 (игнорирует антиалиасинг)
-- CI threshold: 0.01, local: 0.04
+[Команды, устройство тестов и обновление эталонов](packages/storybook/test/screenshot-tests.md).
 
 ---
 
@@ -380,7 +381,7 @@ MANUAL_UIKIT_COMP_CHUNKS = [
 
 ### Stories
 
-- **135 story-файлов** в `packages/storybook/src/stories/`
+- Story-файлы находятся в `packages/storybook/src/stories/`
 - Покрытие: почти все компоненты
 - Теги: `hideInSidebar`, `subItems`
 
@@ -622,7 +623,8 @@ npm run ui-kit:generate-tokens         # Генерация токенов
 - `convertToISO.test.ts`
 - `validateDate.test.ts`
 
-**Скриншотные**: 135 stories покрыты тестами
+**Скриншотные**: фактическое число проверенных сценариев и PNG-пропусков указано
+в отчёте каждого запуска. [Описание покрытия и правил пропуска](packages/storybook/test/screenshot-tests.md).
 
 ---
 

@@ -15,6 +15,8 @@ const meta: Meta = {
     },
     screenshot: {
       skip: true,
+      skipReason:
+        'Пробел покрытия: нужно проверить готовность данных старого fetcher и MSW',
     },
   },
   component: TableContract,

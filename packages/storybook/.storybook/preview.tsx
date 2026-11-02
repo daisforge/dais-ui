@@ -1,10 +1,12 @@
 import type { Preview } from '@storybook/react';
+import { configure } from '@storybook/test';
 import storybookTheme from './theme';
 
 import { mswInitialize, mswLoader } from '../src/msw';
 import { previewSourceTransform } from './sourceCode/previewSourceTransform';
 import { globalTypeTheme, withTheme } from './decoratorThemes';
 import { docsPage } from './docsPage';
+import { withCanvasSnapshots } from './decoratorCanvasSnapshots';
 
 // Workaround: to make VoiceOver read russian text properly
 if (typeof document !== 'undefined') {
@@ -12,6 +14,11 @@ if (typeof document !== 'undefined') {
 }
 
 mswInitialize();
+
+if (process.env.STORYBOOK_SCREENSHOT_TEST === '1') {
+  // В CI ждём фактическое состояние до 10 секунд; фиксированную задержку не добавляем.
+  configure({ asyncUtilTimeout: 10000 });
+}
 
 const preview: Preview = {
   parameters: {
@@ -73,7 +80,12 @@ const preview: Preview = {
   globalTypes: {
     theme: globalTypeTheme,
   },
-  decorators: [withTheme],
+  decorators: [
+    withTheme,
+    ...(process.env.STORYBOOK_SCREENSHOT_TEST === '1'
+      ? [withCanvasSnapshots]
+      : []),
+  ],
 
   tags: ['autodocs'],
 };

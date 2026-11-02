@@ -7,7 +7,7 @@
  *
  * Каждая стори доводит грид до ОДНОГО состояния (одна стори = один скриншот).
  * `parameters.screenshot.keepState` — не сбрасывать состояние/мышь перед скрином.
- * Эталонные PNG генерятся первым прогоном test-runner (`-u`) на стороне CI.
+ * Эталонные PNG обновляются явно через npm run screenshot:update в Docker.
  */
 import { createRows, type Row } from '@df-storybook/data/tableData';
 import type { Meta, StoryObj } from '@storybook/react';

@@ -71,12 +71,11 @@
     "vite-project:ui-kit-build-check": "node scripts/test-project-ui-kit-build-check.js",
     "vite-project:clear-after": "node scripts/test-project-clear-after.js --verbose",
     "prepare": "husky",
-    "screenshot:test": "npx test-storybook --url http://localhost:4400 --config-dir packages/storybook/.storybook",
-    "screenshot:test:one": "npx test-storybook --url http://localhost:4400 --config-dir packages/storybook/.storybook -- --testPathPattern",
-    "screenshot:clean": "npx rimraf packages/storybook/__snapshots__/*.png",
-    "screenshot:update": "npm run screenshot:clean && npx test-storybook -u --url http://localhost:4400 --config-dir packages/storybook/.storybook",
-    "screenshot:update:one": "npx test-storybook -u --url http://localhost:4400 --config-dir packages/storybook/.storybook -- --testPathPattern",
-    "mcp:search-eval": "node ./packages/mcp-server/ab/search-eval.mjs"
+    "screenshot:test": "node scripts/screenshots/docker.js compare",
+    "screenshot:update": "node scripts/screenshots/docker.js update",
+    "mcp:search-eval": "node ./packages/mcp-server/ab/search-eval.mjs",
+    "storybook:build:screenshots": "node scripts/screenshots/build.js",
+    "screenshot:typecheck": "tsc -p packages/storybook/test/screenshots/tsconfig.json"
   },
   "private": true,
   "devDependencies": {
@@ -149,7 +148,8 @@
     "vite-plugin-dts": "~3.8.1",
     "vite-plugin-lib-inject-css": "^2.1.1",
     "vite-tsconfig-paths": "^4.3.2",
-    "vitest": "^1.3.1"
+    "vitest": "^1.3.1",
+    "playwright": "1.62.0"
   },
   "dependencies": {
     "@glideappsfinal/glide-data-grid": "^6.11.0",

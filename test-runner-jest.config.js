@@ -1,37 +1,27 @@
 const fs = require('fs');
+const path = require('node:path');
 const { getJestConfig } = require('@storybook/test-runner');
 const defaultConfig = getJestConfig();
-
-const isWindows = process.platform === 'win32';
-
-// Браузер для скриншотов, по приоритету:
-//  1) путь из переменной окружения SCREENSHOT_BROWSER_PATH;
-//  2) SberBrowser, если он установлен;
-//  3) chromium, который ставит Playwright.
-// Эталоны сравниваются только с тем же браузером, которым сняты: шрифты
-// разные браузеры рисуют чуть по-разному.
-const sberBrowserPath = isWindows
-  ? 'C:\\Program Files\\SberBrowser\\Application\\sberbrowser.exe'
-  : '/opt/Sberbrowser/sberbrowser/sberbrowser';
-
-const executablePath =
-  process.env.SCREENSHOT_BROWSER_PATH ||
-  (fs.existsSync(sberBrowserPath) ? sberBrowserPath : undefined);
-
+// Эталоны сравниваем только в зафиксированном Linux-образе с Chromium.
+if (!fs.existsSync('/opt/screenshot-environment.json'))
+  throw new Error(
+    'Запускайте скриншотные тесты в Docker: npm run screenshot:test.',
+  );
 module.exports = {
   ...defaultConfig,
-  globals: {
-    UPDATE_SNAPSHOTS: process.argv.includes('-u') ? 'true' : 'false',
-  },
+  testEnvironment: path.resolve(
+    __dirname,
+    'packages/storybook/test/screenshots/environment.cjs',
+  ),
   testTimeout: 120000,
-  maxWorkers: 6,
+  maxWorkers: 1,
+  // Передаём Math в среду Jest напрямую, чтобы ускорить сравнение больших Canvas-скриншотов.
+  sandboxInjectedGlobals: ['Math'],
   testPathIgnorePatterns: [
     ...(defaultConfig.testPathIgnorePatterns || []),
     '/API/',
     '\\.mdx$',
   ],
-  // Без этого раннер падает при запуске: @swc/jest на Node 18+ просит
-  // версию JS es2023, а установленный @swc/core 1.3.x её не знает.
   transform: {
     ...defaultConfig.transform,
     '^.+\\.[jt]sx?$': ['@swc/jest', { jsc: { target: 'es2022' } }],
@@ -41,19 +31,16 @@ module.exports = {
     'jest-playwright': {
       ...defaultConfig.testEnvironmentOptions?.['jest-playwright'],
       launchOptions: {
-        executablePath,
-        // headless: false,
-        args: [
-          '--force-device-scale-factor=1', // фиксирует DPI=100%, убирает различия между мониторами
-          '--disable-gpu', // отключает GPU-рендеринг, стабильнее на слабых машинах
-          '--disable-font-subpixel-positioning', // убирает субпиксельный сдвиг текста
-        ],
+        headless: true,
+        args: require('./scripts/screenshots/chromium-args.json'),
       },
       contextOptions: {
-        viewport: {
-          width: 1440,
-          height: 900,
-        },
+        viewport: { width: 1440, height: 900 },
+        deviceScaleFactor: 1,
+        locale: 'ru-RU',
+        timezoneId: 'UTC',
+        reducedMotion: 'no-preference',
+        colorScheme: 'light',
       },
     },
   },

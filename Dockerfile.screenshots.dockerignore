@@ -1,0 +1,13 @@
+.git
+**/node_modules
+**/dist
+**/.DS_Store
+.nx
+artifacts
+README.md
+packages/storybook/test/screenshot-tests.md
+certs
+**/*.pem
+**/*.tgz
+packages/storybook/__snapshots__
+packages/mcp-server/ab

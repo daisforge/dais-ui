@@ -8,7 +8,7 @@ description: Пишет и правит автотесты (юнит и скри
 - **Тип**: UI-библиотека (React 18 + TypeScript)
 - **Юнит-тесты**: Vitest (globals + jsdom)
 - **Скриншотные тесты**: Storybook test-runner + pixelmatch
-- **Контекст**: 100+ компонентов, 135+ Storybook-историй
+- **Контекст**: UI-компоненты и их сценарии в Storybook
 
 ## Где писать тесты
 
@@ -70,18 +70,18 @@ export const Default = {
 
 ### Правила
 
-- 135+ сторис уже покрыты тестами
-- Ограничение diff: 0.1 (локально), 0.01 (CI)
-- Diff-файлы: `baseline | diff | received`
-- Обновление: `npm run screenshot:update`
+- Проверка и обновление выполняются в Docker с фиксированными Linux и Chromium.
+- Изменённые PNG принимаются только после просмотра различий; проверка не обновляет их автоматически.
+- Правила сравнения, настройки stories и пропуски PNG описаны в [основной инструкции](../../../packages/storybook/test/screenshot-tests.md).
 
 ### Запуск
 
 ```bash
-npm run screenshot:test      # проверка
-npm run screenshot:update    # обновление снапшотов
-npm run screenshot:clean     # удаление
+npm run screenshot:test -- TableCanvas   # проверка выбранных story-файлов
+npm run screenshot:update -- TableCanvas # обновление после ревью различий
 ```
+
+Без фильтра команда обрабатывает все сценарии. Отдельный сервер Storybook не нужен.
 
 ## Паттерны для компонентов
 

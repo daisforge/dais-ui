@@ -1,0 +1,230 @@
+{
+  "schema": 1,
+  "baseImage": "sha256:baed2032d533817f3dbe6425de795788430ba345e819a1201337009ba17c9d07",
+  "platform": "linux",
+  "arch": "x64",
+  "node": "v24.18.0",
+  "npm": "10.8.2",
+  "playwright": "1.62.0",
+  "browsers": [
+    {
+      "name": "chromium",
+      "revision": "1234",
+      "installByDefault": true,
+      "browserVersion": "151.0.7922.34",
+      "title": "Chrome for Testing"
+    },
+    {
+      "name": "chromium-headless-shell",
+      "revision": "1234",
+      "installByDefault": true,
+      "browserVersion": "151.0.7922.34",
+      "title": "Chrome Headless Shell"
+    },
+    {
+      "name": "chromium-tip-of-tree",
+      "revision": "1433",
+      "installByDefault": false,
+      "browserVersion": "151.0.7893.0",
+      "title": "Chrome Canary for Testing"
+    },
+    {
+      "name": "chromium-tip-of-tree-headless-shell",
+      "revision": "1433",
+      "installByDefault": false,
+      "browserVersion": "151.0.7893.0",
+      "title": "Chrome Canary Headless Shell"
+    },
+    {
+      "name": "firefox",
+      "revision": "1538",
+      "installByDefault": true,
+      "browserVersion": "153.0",
+      "title": "Firefox"
+    },
+    {
+      "name": "firefox-beta",
+      "revision": "1526",
+      "installByDefault": false,
+      "browserVersion": "152.0b1",
+      "title": "Firefox Beta"
+    },
+    {
+      "name": "webkit",
+      "revision": "2336",
+      "installByDefault": true,
+      "revisionOverrides": {
+        "mac14": "2251",
+        "mac14-arm64": "2251",
+        "ubuntu20.04-x64": "2092",
+        "ubuntu20.04-arm64": "2092"
+      },
+      "browserVersion": "26.5",
+      "title": "WebKit"
+    },
+    {
+      "name": "ffmpeg",
+      "revision": "1011",
+      "installByDefault": true
+    },
+    {
+      "name": "winldd",
+      "revision": "1007",
+      "installByDefault": false
+    },
+    {
+      "name": "android",
+      "revision": "1001",
+      "installByDefault": false
+    }
+  ],
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "deviceScaleFactor": 1,
+  "locale": "ru-RU",
+  "timezoneId": "UTC",
+  "reducedMotion": "reduce",
+  "colorScheme": "light",
+  "chromiumArgs": [
+    "--enable-gpu",
+    "--use-gl=angle",
+    "--use-angle=swiftshader",
+    "--enable-unsafe-swiftshader"
+  ],
+  "comparison": {
+    "threshold": 0.02,
+    "includeAA": false
+  },
+  "fonts": [
+    {
+      "file": "SBSansText-Light.woff2",
+      "url": "https://cdn-app.sberdevices.ru/shared-static/0.0.0/fonts/SBSansText.0.2.0/SBSansText-Light.woff2",
+      "family": "SB Sans Text",
+      "weight": 300,
+      "style": "normal",
+      "sha256": "004697ded1bc1002f44abf86ac9e07b6f58eaabdd0899fb86afc881fa68e90d4"
+    },
+    {
+      "file": "SBSansText-Italic.woff2",
+      "url": "https://cdn-app.sberdevices.ru/shared-static/0.0.0/fonts/SBSansText.0.2.0/SBSansText-Italic.woff2",
+      "family": "SB Sans Text",
+      "weight": 400,
+      "style": "italic",
+      "sha256": "2b2d6dfd3b07dafa16e9d0b64d2713491f9338a6c04760f20652050ecac75168"
+    },
+    {
+      "file": "SBSansText-SemiboldItalic.woff2",
+      "url": "https://cdn-app.sberdevices.ru/shared-static/0.0.0/fonts/SBSansText.0.2.0/SBSansText-SemiboldItalic.woff2",
+      "family": "SB Sans Text",
+      "weight": 600,
+      "style": "italic",
+      "sha256": "f8e8d4a4b0894fef5d77da87fb8c2557351c28953364c6c9275d464eed47e2b6"
+    },
+    {
+      "file": "SBSansText-Thin.woff2",
+      "url": "https://cdn-app.sberdevices.ru/shared-static/0.0.0/fonts/SBSansText.0.2.0/SBSansText-Thin.woff2",
+      "family": "SB Sans Text",
+      "weight": 100,
+      "style": "normal",
+      "sha256": "fbadff9f628f2b4e99825988978b16a3a6eba77cf5ebe9eb897a28f2721d207e"
+    },
+    {
+      "file": "SBSansText-Regular.woff2",
+      "url": "https://cdn-app.sberdevices.ru/shared-static/0.0.0/fonts/SBSansText.0.2.0/SBSansText-Regular.woff2",
+      "family": "SB Sans Text",
+      "weight": 400,
+      "style": "normal",
+      "sha256": "79f582f8322ed6b504af4960333fca24dfc6d206ebe92a07ca6dbbf46b55a289"
+    },
+    {
+      "file": "SBSansText-Semibold.woff2",
+      "url": "https://cdn-app.sberdevices.ru/shared-static/0.0.0/fonts/SBSansText.0.2.0/SBSansText-Semibold.woff2",
+      "family": "SB Sans Text",
+      "weight": 600,
+      "style": "normal",
+      "sha256": "44fec0fbbe87a73b27d026fae5d206eb121193dc7430e2849594623abe8acd8d"
+    },
+    {
+      "file": "SBSansText-LightItalic.woff2",
+      "url": "https://cdn-app.sberdevices.ru/shared-static/0.0.0/fonts/SBSansText.0.2.0/SBSansText-LightItalic.woff2",
+      "family": "SB Sans Text",
+      "weight": 300,
+      "style": "italic",
+      "sha256": "161f1c2ffae94d30a444d09c502925abfbc090811a338e800a9b9eb7065665b0"
+    },
+    {
+      "file": "SBSansText-Bold.woff2",
+      "url": "https://cdn-app.sberdevices.ru/shared-static/0.0.0/fonts/SBSansText.0.2.0/SBSansText-Bold.woff2",
+      "family": "SB Sans Text",
+      "weight": 700,
+      "style": "normal",
+      "sha256": "b0f72bac7362ff37cff2c3ec06920b31df4a09f806a56bef1ea076104b7bda4d"
+    },
+    {
+      "file": "SBSansText-BoldItalic.woff2",
+      "url": "https://cdn-app.sberdevices.ru/shared-static/0.0.0/fonts/SBSansText.0.2.0/SBSansText-BoldItalic.woff2",
+      "family": "SB Sans Text",
+      "weight": 700,
+      "style": "italic",
+      "sha256": "629a0d466353b32054331b12da77082fc60fc20b7f657eb5827c00980d5d20ef"
+    },
+    {
+      "file": "SBSansText-Medium.woff2",
+      "url": "https://cdn-app.sberdevices.ru/shared-static/0.0.0/fonts/SBSansText.0.2.0/SBSansText-Medium.woff2",
+      "family": "SB Sans Text",
+      "weight": 500,
+      "style": "normal",
+      "sha256": "e9d247693a763a50a98d5dcebd5619f30ecade84b8153dcd1cb16ed379686be4"
+    },
+    {
+      "file": "SBSansDisplay-Light.woff2",
+      "url": "https://cdn-app.sberdevices.ru/shared-static/0.0.0/fonts/SBSansDisplay.0.2.0/SBSansDisplay-Light.woff2",
+      "family": "SB Sans Display",
+      "weight": 300,
+      "style": "normal",
+      "sha256": "dcddfa143817eb5310a4fd7e7af6114e49e9b5481cbcde2eb4ad54ca64b827da"
+    },
+    {
+      "file": "SBSansDisplay-Thin.woff2",
+      "url": "https://cdn-app.sberdevices.ru/shared-static/0.0.0/fonts/SBSansDisplay.0.2.0/SBSansDisplay-Thin.woff2",
+      "family": "SB Sans Display",
+      "weight": 100,
+      "style": "normal",
+      "sha256": "eca82af6e6a450d06e273f45776d6ec0ffea725f557d70e17f50fd56187961ba"
+    },
+    {
+      "file": "SBSansDisplay-Bold.woff2",
+      "url": "https://cdn-app.sberdevices.ru/shared-static/0.0.0/fonts/SBSansDisplay.0.2.0/SBSansDisplay-Bold.woff2",
+      "family": "SB Sans Display",
+      "weight": 700,
+      "style": "normal",
+      "sha256": "d9efa4bed54b226cdba843a3b7b3754cd8efaca11876a8839ba0ac58a32dc950"
+    },
+    {
+      "file": "SBSansDisplay-Semibold.woff2",
+      "url": "https://cdn-app.sberdevices.ru/shared-static/0.0.0/fonts/SBSansDisplay.0.2.0/SBSansDisplay-Semibold.woff2",
+      "family": "SB Sans Display",
+      "weight": 600,
+      "style": "normal",
+      "sha256": "fbad9079fbef813a5591c388e36b3dfab45edbf740e37df2ad5075ae4851e8ba"
+    },
+    {
+      "file": "SBSansDisplay-Regular.woff2",
+      "url": "https://cdn-app.sberdevices.ru/shared-static/0.0.0/fonts/SBSansDisplay.0.2.0/SBSansDisplay-Regular.woff2",
+      "family": "SB Sans Display",
+      "weight": 400,
+      "style": "normal",
+      "sha256": "0b4bce768b91f77e384b3088fdcbf71af94ce8b3b331175d81c45f0e1648a6c8"
+    },
+    {
+      "file": "SBSansDisplay-Medium.woff2",
+      "url": "https://cdn-app.sberdevices.ru/shared-static/0.0.0/fonts/SBSansDisplay.0.2.0/SBSansDisplay-Medium.woff2",
+      "family": "SB Sans Display",
+      "weight": 500,
+      "style": "normal",
+      "sha256": "24490496e06316d75565b080989e959f275f5cfb73261cc6aa12da6236e080aa"
+    }
+  ]
+}
