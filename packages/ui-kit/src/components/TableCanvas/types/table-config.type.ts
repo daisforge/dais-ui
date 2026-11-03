@@ -866,11 +866,23 @@ export type TableConfigTooltip = {
   maxWidth?: number | string;
 };
 
+/** Ключ строки для Popover и Dropdown на canvas-элементах. */
+type TableConfigOverlayRowKey<RowType> = {
+  /**
+   * Ключ строки. Если после обновления `rows` на месте строки, где открыто
+   * окно, стоит строка с тем же ключом, окно остаётся открытым, с другим
+   * ключом закрывается. Не задан: берётся `rowKeyGetter` из `editing`,
+   * `selecting`, `subRows` или `mergeCells`, а без него строки сравниваются
+   * по ссылке, и новый массив с теми же данными тоже закроет окно.
+   */
+  rowKeyGetter?: (row: RowType) => string | number;
+};
+
 /**
  * Значения по умолчанию для Popover на canvas-элементах (проп `popover`).
  * Настройки на элементе важнее. `trigger` задаётся только на элементе.
  */
-export type TableConfigPopover = Pick<
+export type TableConfigPopover<RowType = ObjectForExtending> = Pick<
   CanvasNodePopoverProps,
   | 'placement'
   | 'offset'
@@ -883,13 +895,14 @@ export type TableConfigPopover = Pick<
   | 'closeOnEsc'
   | 'mouseEnterDelay'
   | 'mouseLeaveDelay'
->;
+> &
+  TableConfigOverlayRowKey<RowType>;
 
 /**
  * Значения по умолчанию для Dropdown на canvas-элементах (проп `dropdown`).
  * Настройки на элементе важнее. `trigger` задаётся только на элементе.
  */
-export type TableConfigDropdown = Pick<
+export type TableConfigDropdown<RowType = ObjectForExtending> = Pick<
   CanvasNodeDropdownProps,
   | 'placement'
   | 'offset'
@@ -906,7 +919,8 @@ export type TableConfigDropdown = Pick<
   | 'mouseLeaveDelay'
   | 'loadingItems'
   | 'renderError'
->;
+> &
+  TableConfigOverlayRowKey<RowType>;
 
 export type InfinityScrollConfig<RowType extends ObjectForExtending> = {
   /** Триггер достижения скроллом зоны подгрузки данных. */
@@ -1482,12 +1496,12 @@ export type TableConfig<
    * Значения по умолчанию для Popover на canvas-элементах. Сам Popover
    * включается пропом `popover` на элементе, этот конфиг не обязателен.
    */
-  popover?: TableConfigPopover;
+  popover?: TableConfigPopover<RowType>;
   /**
    * Значения по умолчанию для Dropdown на canvas-элементах (проп `dropdown`).
    * Настройки на элементе важнее.
    */
-  dropdown?: TableConfigDropdown;
+  dropdown?: TableConfigDropdown<RowType>;
 
   /**
    * infinityScroll - бесконечная подгрузка данных при скролле.

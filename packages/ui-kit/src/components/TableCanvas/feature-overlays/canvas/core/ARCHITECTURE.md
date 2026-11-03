@@ -332,8 +332,9 @@ Esc в другом месте страницы и Esc при `closeOnEsc: false
 - ресайз или перестановка колонки: сброс из `TableGlide`, см. выше;
 - на месте строки под якорем другая строка (сортировка, новые данные):
   слушатель сравнивает `rows[rowInd]` со строкой на момент открытия по
-  `rowKeyGetter` (`editing`, `selecting`, `subRows`, `mergeCells`), без него по
-  ссылке;
+  ключу: `rowKeyGetter` из `tableConfig.popover` или `tableConfig.dropdown`
+  (по типу открытого окна), иначе из `editing`, `selecting`, `subRows`,
+  `mergeCells`, без него по ссылке;
 - уход курсора при `trigger: 'hover'`: `useHoverLeaveClose`;
 - размонтирование таблицы (смена вида, оверлей загрузки): слушатель закрывает
   окно и вызывает `onClose`.

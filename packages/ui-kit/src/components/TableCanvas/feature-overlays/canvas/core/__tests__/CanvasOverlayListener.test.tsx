@@ -44,13 +44,26 @@ const StateProbe = () => {
   return null;
 };
 
-const Table = ({ rows = [rowA] }: { rows?: readonly unknown[] }) => {
+const Table = ({
+  rows = [rowA],
+  popoverRowKey,
+  dropdownRowKey,
+}: {
+  rows?: readonly unknown[];
+  popoverRowKey?: (row: unknown) => string | number;
+  dropdownRowKey?: (row: unknown) => string | number;
+}) => {
   const value = useTablePopoverState();
   const containerRef = useRef<HTMLDivElement>(null);
   return (
     <TablePopoverProvider value={value}>
       <div ref={containerRef} data-testid="table">
-        <CanvasOverlayListener containerRef={containerRef} rows={rows} />
+        <CanvasOverlayListener
+          containerRef={containerRef}
+          rows={rows}
+          config={popoverRowKey && { rowKeyGetter: popoverRowKey }}
+          dropdownConfig={dropdownRowKey && { rowKeyGetter: dropdownRowKey }}
+        />
         <StateProbe />
       </div>
     </TablePopoverProvider>
@@ -130,6 +143,48 @@ describe('CanvasOverlayListener: открытие по клику и жизне�
     rerender(<Table rows={[rowB]} />);
     expect(lastState?.isOpen).toBe(false);
     expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it('rowKeyGetter из tableConfig.popover: та же строка в новом объекте не закрывает', () => {
+    const rowKey = (row: unknown) => (row as { id: string }).id;
+    const { getByTestId, rerender } = render(
+      <Table rows={[{ id: 'a' }]} popoverRowKey={rowKey} />,
+    );
+    click(getByTestId('table'), clickDetail({ content: 'x' }, 0, { id: 'a' }));
+    rerender(<Table rows={[{ id: 'a' }]} popoverRowKey={rowKey} />);
+    expect(lastState?.isOpen).toBe(true);
+    rerender(<Table rows={[{ id: 'b' }]} popoverRowKey={rowKey} />);
+    expect(lastState?.isOpen).toBe(false);
+  });
+
+  it('без ключа строки сравниваются по ссылке: новый объект закрывает', () => {
+    const { getByTestId, rerender } = render(<Table rows={[{ id: 'a' }]} />);
+    click(getByTestId('table'), clickDetail({ content: 'x' }, 0, { id: 'a' }));
+    rerender(<Table rows={[{ id: 'a' }]} />);
+    expect(lastState?.isOpen).toBe(false);
+  });
+
+  it('у Dropdown свой ключ: ключ из tableConfig.popover на него не действует', () => {
+    const rowKey = (row: unknown) => (row as { id: string }).id;
+    const openDropdown = (table: HTMLElement) =>
+      click(table, {
+        ...clickDetail({ content: 'x' }, 0, { id: 'a' }),
+        popoverFromNode: undefined,
+        dropdownFromNode: { items: [{ value: 1, label: 'Открыть' }] },
+      });
+
+    const first = render(<Table rows={[{ id: 'a' }]} popoverRowKey={rowKey} />);
+    openDropdown(first.getByTestId('table'));
+    first.rerender(<Table rows={[{ id: 'a' }]} popoverRowKey={rowKey} />);
+    expect(lastState?.isOpen).toBe(false);
+    first.unmount();
+
+    const second = render(
+      <Table rows={[{ id: 'a' }]} dropdownRowKey={rowKey} />,
+    );
+    openDropdown(second.getByTestId('table'));
+    second.rerender(<Table rows={[{ id: 'a' }]} dropdownRowKey={rowKey} />);
+    expect(lastState?.isOpen).toBe(true);
   });
 
   it('клик по ноде с dropdown открывает дропдаун', () => {

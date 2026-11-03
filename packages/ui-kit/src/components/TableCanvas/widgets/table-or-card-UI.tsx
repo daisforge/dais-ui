@@ -174,8 +174,8 @@ export const TableOrCardsUI = <
     size?: MassActionsSize;
   };
   tooltip?: TableConfigTooltip;
-  popover?: TableConfigPopover;
-  dropdown?: TableConfigDropdown;
+  popover?: TableConfigPopover<RowType>;
+  dropdown?: TableConfigDropdown<RowType>;
   /** Ключ строки: по нему Popover понимает, что под якорем теперь другая строка. */
   rowKeyGetter?: (row: RowType) => unknown;
   fullScreened?: boolean;

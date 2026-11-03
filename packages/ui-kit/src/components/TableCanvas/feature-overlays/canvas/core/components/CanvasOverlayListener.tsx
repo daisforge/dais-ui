@@ -30,9 +30,9 @@ export interface CanvasOverlayListenerProps<RowType = unknown> {
   /** Контейнер таблицы: на нём слушаем клики и наведение на canvas-элементы. */
   containerRef: RefObject<HTMLElement | null>;
   /** Значения по умолчанию для Popover: tableConfig.popover. */
-  config?: TableConfigPopover;
+  config?: TableConfigPopover<RowType>;
   /** Значения по умолчанию для Dropdown: tableConfig.dropdown. */
-  dropdownConfig?: TableConfigDropdown;
+  dropdownConfig?: TableConfigDropdown<RowType>;
   /**
    * Строки, которые рисует таблица. Если на месте строки, где открыт Popover,
    * оказалась другая (сортировка, новые данные), он закрывается.
@@ -179,20 +179,27 @@ export const CanvasOverlayListener = <RowType,>({
     openOverlay,
   });
 
-  const rowKeyGetterRef = useRef(rowKeyGetter);
-  rowKeyGetterRef.current = rowKeyGetter;
+  // Свой ключ у Popover и Dropdown важнее общего ключа таблицы.
+  const rowKeyGetters = {
+    popover: config?.rowKeyGetter ?? rowKeyGetter,
+    dropdown: dropdownConfig?.rowKeyGetter ?? rowKeyGetter,
+  };
+  const rowKeyGettersRef = useRef(rowKeyGetters);
+  rowKeyGettersRef.current = rowKeyGetters;
 
   // На месте строки, где открыт Popover, другая строка: содержимое устарело.
   useEffect(() => {
-    const anchorRow = getOpenCanvasOverlay(stateRef.current)?.anchorRow;
+    const opened = getOpenCanvasOverlay(stateRef.current);
+    const anchorRow = opened?.anchorRow;
     if (
+      opened &&
       anchorRow &&
       rows &&
       // Строка якоря взята из rows этой же таблицы, поэтому она того же типа.
       !isSameRow(
         anchorRow.row as RowType,
         rows[anchorRow.rowInd],
-        rowKeyGetterRef.current,
+        rowKeyGettersRef.current[opened.overlay.kind],
       )
     ) {
       close();
