@@ -14,9 +14,19 @@ import type {
 import { Canvas as InternalCanvas } from './index';
 
 export type {
+  CanvasDropdownApi,
+  CanvasDropdownErrorApi,
+  CanvasDropdownItem,
   CanvasMarkProps,
+  CanvasNodeDropdownConfig,
+  CanvasNodeDropdownItems,
+  CanvasNodeDropdownProps,
+  CanvasNodePopoverConfig,
+  CanvasNodePopoverContent,
+  CanvasNodePopoverProps,
   CanvasNodeTooltipConfig,
   CanvasNodeTooltipProps,
+  CanvasPopoverRenderApi,
   CanvasPortalHoverDetail,
   CanvasPortalSource,
 } from '../../TableGlide';

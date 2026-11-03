@@ -16,7 +16,7 @@ import {
   calculateFilterPopoverPositionX,
   calculateFilterPopoverPositionY,
   TablePopoverContextValue,
-} from '../feature-popover-table';
+} from '../feature-overlays';
 import { useReorderDragable } from '../feature-reorder-columns/useReorderDragable';
 import {
   getDetailPanelColSpanFunc,
@@ -129,12 +129,16 @@ export const useColumns = <
   ) => 'isServiceColumn' in column && column.isServiceColumn === true;
 
   // -------------- onOpenFilter callback -----------------
+  // Берём только open, он не меняется. Весь контекст меняется при каждом
+  // открытии окна, а от onOpenFilter зависят колонки: их смена перерисовала
+  // бы всю таблицу.
+  const { open: openTablePopover } = tablePopoverValue;
   const onOpenFilter = useCallback(
     (
       columnConfig: ColumnConfig<RowType, SummaryRowType>,
       event: CanvasEvent,
     ) => {
-      tablePopoverValue.open({
+      openTablePopover({
         // Формируем координату через координату ячейки + смещение таргета (иконка фильтра)
         position: {
           x: calculateFilterPopoverPositionX(event),
@@ -145,10 +149,10 @@ export const useColumns = <
           columnConfig,
         },
         // Передаем ID колонки для отслеживания ресайза
-        columnId: columnConfig.key,
+        sourceKey: columnConfig.key,
       });
     },
-    [tablePopoverValue],
+    [openTablePopover],
   );
 
   const tableConfigFiltering = !!tableConfig.filtering;

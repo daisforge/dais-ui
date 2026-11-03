@@ -21,9 +21,9 @@ import { ContextMenu } from '../feature-context-menu';
 import { TableCoverOverlay } from '../feature-loading-overlay/TableCoverOverlay';
 import { TableLoadingOverlay } from '../feature-loading-overlay/TableLoadingOverlay';
 import type { LoadingOverlayConfig } from '../feature-loading-overlay/types';
+import { CanvasOverlayListener, PopoverInTable } from '../feature-overlays';
 import { TablePagination } from '../feature-pagination';
 import type { PaginationProps } from '../feature-pagination/types';
-import { PopoverInTable } from '../feature-popover-table/components/PopoverContainer';
 import { BottomSheet } from '../feature-sidebar/ui/BottomSheet';
 import { CanvasTooltipOverlay } from '../feature-tooltip';
 import { ContainerStyled, SIZES, tableClassNames as cls } from '../styles';
@@ -41,6 +41,8 @@ import type {
   ControlBlockSize,
   Key,
   ObjectForExtending,
+  TableConfigDropdown,
+  TableConfigPopover,
   TableConfigTooltip,
   View,
   ViewMods,
@@ -105,6 +107,9 @@ export const TableOrCardsUI = <
   containerStyle,
   massActionPanel,
   tooltip,
+  popover,
+  dropdown,
+  rowKeyGetter,
   fullScreened,
 }: {
   containerProps: {
@@ -169,6 +174,10 @@ export const TableOrCardsUI = <
     size?: MassActionsSize;
   };
   tooltip?: TableConfigTooltip;
+  popover?: TableConfigPopover<RowType>;
+  dropdown?: TableConfigDropdown<RowType>;
+  /** Ключ строки: по нему Popover понимает, что под якорем теперь другая строка. */
+  rowKeyGetter?: (row: RowType) => unknown;
   fullScreened?: boolean;
 }) => {
   const tooltipCustomEnabled = tooltip?.enabled ?? false;
@@ -398,6 +407,15 @@ export const TableOrCardsUI = <
                     <>
                       {renderInContainer(
                         <PopoverInTable containerEl={containerElement} />,
+                      )}
+                      {renderInContainer(
+                        <CanvasOverlayListener
+                          containerRef={refTableGlobalContainer}
+                          config={popover}
+                          dropdownConfig={dropdown}
+                          rows={restDataGridProps.rows}
+                          rowKeyGetter={rowKeyGetter}
+                        />,
                       )}
                       {renderInContainer(
                         <CanvasTooltipOverlay

@@ -319,7 +319,9 @@ export type ColumnGlideCustoms<R extends ObjectForExtending, SR = unknown> = {
   colSpan?: ColSpan<R, SR>;
   rowSpan?: RowSpan<R, SR>;
   /** Выравнивание контента в объединённых ячейках колонки; функция — если нужно задавать для каждого блока отдельно. */
-  spanAlign?: SpanCellAlign | ((cellInfo: CellInfo<R, SR>) => SpanCellAlign | undefined);
+  spanAlign?:
+    | SpanCellAlign
+    | ((cellInfo: CellInfo<R, SR>) => SpanCellAlign | undefined);
   /** Тултип для ячеек этой колонки. Строка, объект или функция (context) => config | null. */
   cellTooltip?:
     | CanvasNodeTooltipConfig
