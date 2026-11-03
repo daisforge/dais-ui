@@ -151,4 +151,47 @@ describe('CanvasDropdown на настоящем Dropdown', () => {
     expect(await screen.findByText('Открыть')).toBeTruthy();
     expect(getItems).toHaveBeenCalledTimes(2);
   });
+
+  it('обёртки Dropdown вокруг якоря растянуты на весь якорь', async () => {
+    const { table } = createTable();
+    renderDropdown(table);
+    await screen.findByText('Открыть');
+    const anchor = screen.getByRole('combobox', { hidden: true });
+    // Список считает положение от этих обёрток: без размеров он раскрылся бы
+    // от точки, а не от границ кнопки.
+    const wrappers = [
+      anchor.parentElement,
+      anchor.parentElement?.parentElement,
+    ];
+    wrappers.forEach((wrapper) => {
+      expect(wrapper).toBeTruthy();
+      const style = getComputedStyle(wrapper as HTMLElement);
+      expect(style.width).toBe('100%');
+      expect(style.height).toBe('100%');
+    });
+  });
+
+  it('по наведению: курсор над вложенным списком не закрывает дропдаун', async () => {
+    const { table } = createTable();
+    const close = renderDropdown(table, {
+      trigger: 'hover',
+      mouseLeaveDelay: 20,
+      items: [
+        {
+          value: 'export',
+          label: 'Экспорт',
+          items: [{ value: 'csv', label: 'Скачать CSV' }],
+        },
+      ],
+    });
+    fireEvent.click(await screen.findByText('Экспорт'));
+    const nested = await screen.findByText('Скачать CSV');
+    // Вложенный список стоит сбоку, координаты курсора вне основного списка.
+    fireEvent.pointerMove(nested, { clientX: 900, clientY: 900 });
+    fireEvent.pointerDown(nested, { clientX: 900, clientY: 900 });
+    await new Promise((resolve) => {
+      setTimeout(resolve, 60);
+    });
+    expect(close).not.toHaveBeenCalled();
+  });
 });

@@ -56,7 +56,12 @@ export function useHoverLeaveClose({
       }, delay);
     };
 
-    const isInside = (x: number, y: number) => {
+    // Внутренний элемент окна тоже считается зоной. Вложенный список Dropdown
+    // стоит сбоку от основного и в его прямоугольник не входит.
+    const isInside = (x: number, y: number, target?: EventTarget | null) => {
+      if (target instanceof Node && popoverRef.current?.contains(target)) {
+        return true;
+      }
       const rects = [anchorRef.current, popoverRef.current]
         .filter((el): el is HTMLElement => !!el)
         .map((el): PopoverRect => el.getBoundingClientRect());
@@ -65,7 +70,7 @@ export function useHoverLeaveClose({
     };
 
     const handlePointerMove = (event: PointerEvent) => {
-      if (isInside(event.clientX, event.clientY)) {
+      if (isInside(event.clientX, event.clientY, event.target)) {
         cancel();
       } else {
         schedule();
@@ -80,7 +85,7 @@ export function useHoverLeaveClose({
     // Нажатие снаружи закрывает сразу: на сенсорном экране курсор между
     // касаниями не двигается, и Popover иначе остался бы открытым.
     const handlePointerDown = (event: PointerEvent) => {
-      if (!isInside(event.clientX, event.clientY)) {
+      if (!isInside(event.clientX, event.clientY, event.target)) {
         cancel();
         onLeaveRef.current();
       }

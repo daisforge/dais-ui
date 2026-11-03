@@ -80,6 +80,10 @@ canvas/dropdown/
 │    )}                                                                       │
 │  </DropdownRoot>                                                            │
 │                                                                             │
+│  Dropdown оборачивает DropdownAnchor в две обёртки без размеров, от них     │
+│  floating-ui считает положение списка. DropdownRoot растягивает их на весь  │
+│  якорь, иначе список раскрывался бы от точки, а не от границ элемента.      │
+│                                                                             │
 │  Пункты: useDropdownItems(config)          hooks/useDropdownItems.ts        │
 │    { status: 'ready' | 'loading' | 'error', items, error, retry }           │
 │    shownItems: loading → loadingItems                                       │

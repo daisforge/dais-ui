@@ -110,6 +110,32 @@ describe('useHoverLeaveClose: закрытие поповера по уходу 
     expect(onLeave).not.toHaveBeenCalled();
   });
 
+  it('курсор над элементом внутри поповера вне его прямоугольника не закрывает', () => {
+    // Так стоит вложенный список Dropdown: сбоку от основного.
+    const nested = document.createElement('div');
+    popover.appendChild(nested);
+    document.body.appendChild(popover);
+    renderLeaveHook();
+    nested.dispatchEvent(
+      new MouseEvent('pointermove', {
+        clientX: 900,
+        clientY: 900,
+        bubbles: true,
+      }),
+    );
+    nested.dispatchEvent(
+      new MouseEvent('pointerdown', {
+        clientX: 900,
+        clientY: 900,
+        bubbles: true,
+      }),
+    );
+    vi.advanceTimersByTime(500);
+    expect(onLeave).not.toHaveBeenCalled();
+    popover.remove();
+    nested.remove();
+  });
+
   it('открылся, когда курсор уже снаружи: закрывается без движения мыши', () => {
     pointer('pointermove', 900, 900);
     renderLeaveHook();
