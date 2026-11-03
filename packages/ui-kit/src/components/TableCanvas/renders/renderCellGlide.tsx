@@ -15,7 +15,7 @@ import { CHECKBOX_COLUMN_KEY } from '../feature-select-row';
 import { SUBROWS_KEY } from '../feature-tree/constants';
 import { getHasArrow, getTreeIdAndLvlOfRow } from '../feature-tree/handlers';
 import {
-  getTreeIconWidth,
+  getTreeButtonBox,
   IconTreeCollapsed,
   IconTreeExpanded,
 } from '../feature-tree/tree-disclosure-icons';
@@ -32,11 +32,7 @@ import {
 import { ContentFormat } from '../TableGlideInstance/type';
 import { ColumnConfig, ObjectForExtending, TableConfig } from '../types';
 import { FormattedContent } from './formatCell';
-import {
-  ROW_ICON_BUTTON_CONFIG,
-  RowSize,
-  TREE_BUTTON_GAP,
-} from './rowIconConfig';
+import { RowSize, TREE_BUTTON_GAP } from './rowIconConfig';
 import {
   DEFAULT_CELL_PADDING_INLINE,
   getPaddingLeftFinal,
@@ -48,7 +44,7 @@ const getTreeButton = (
   toggleExpand: () => void,
   rowSize: RowSize = 'big',
 ) => {
-  const { overrideSquareSize } = ROW_ICON_BUTTON_CONFIG[rowSize];
+  const { squareSize, layoutWidth } = getTreeButtonBox(rowSize);
   const Icon = expanded ? IconTreeExpanded : IconTreeCollapsed;
 
   return (
@@ -66,9 +62,9 @@ const getTreeButton = (
       // размер глифа задан во viewBox (см. tree-disclosure-icons).
       // В раскладке кнопка уже квадрата на убранную пустоту слева — справа
       // от глифа места столько же, сколько у исходной иконки
-      overrideSquareSize={overrideSquareSize}
-      overrideIconSize={overrideSquareSize}
-      overrideWidth={getTreeIconWidth(rowSize)}
+      overrideSquareSize={squareSize}
+      overrideIconSize={squareSize}
+      overrideWidth={layoutWidth}
       onClick={toggleExpand}
       style={{
         flexShrink: 0,
