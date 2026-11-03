@@ -1,4 +1,0 @@
-import{j as n}from"./react-D2T61mpp.js";import{cf as s,cg as r}from"./vendor-BA2uJqm3.js";import{T as o}from"./TypeSourceViewer-ClFmxyG3.js";import"./react-is-Clcustum.js";import"./styled-components-DI0RiSri.js";import"./@tanstack/react-virtual-DMW_htbC.js";import"./tslib-DoU9Jm1N.js";function a(e){const t={h1:"h1",h2:"h2",...s(),...e.components};return n.jsxs(n.Fragment,{children:[n.jsx(r,{title:"Локальные компоненты/TableCanvas/CanvasElements/CanvasMark/API"}),`
-`,n.jsx(t.h1,{id:"canvasmark-api",children:"Canvas.Mark API"}),`
-`,n.jsx(t.h2,{id:"markprops",children:"MarkProps"}),`
-`,n.jsx(o,{language:"ts",filePath:"packages/ui-kit/src/components/TableGlide/lib/canvas/components/index.tsx",typeName:"MarkProps"})]})}function u(e={}){const{wrapper:t}={...s(),...e.components};return t?n.jsx(t,{...e,children:n.jsx(a,{...e})}):a(e)}export{u as default};
