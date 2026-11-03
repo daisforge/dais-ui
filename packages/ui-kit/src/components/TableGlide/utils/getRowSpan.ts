@@ -10,3 +10,8 @@ export const getRowSpan = <R extends ObjectForExtending, SR = unknown>(
 
   return rowSpan(cellInfo);
 };
+
+/** Ячейка — часть блока, объединённого на несколько строк */
+export const spansSeveralRows = (
+  spanRows: readonly [number, number] | null | undefined
+): boolean => !!spanRows && spanRows[1] > spanRows[0];

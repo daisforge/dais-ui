@@ -34,6 +34,7 @@ export { isStructuredCloneSupported } from './isStructuredCloneSupported';
 export * from './mergeClasses';
 export { default as mergeRefs } from './mergeRefs';
 export * from './numberUtils';
+export * from './platformNavigation';
 export * from './react';
 export * from './styles';
 export { throttle, throttleWithLastCall } from './throttle';

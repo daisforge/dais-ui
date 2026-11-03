@@ -407,6 +407,7 @@
         "CanvasElements/CanvasIconButton",
         "CanvasElements/CanvasImage",
         "CanvasElements/CanvasLink",
+        "CanvasElements/CanvasMark",
         "CanvasElements/CanvasSkeleton",
         "CanvasElements/CanvasText",
         "TableCanvas.CellsMerging",
@@ -1555,6 +1556,17 @@
         "гиперссылка",
         "переход по клику",
         "canvas hyperlink"
+      ]
+    },
+    {
+      "name": "CanvasMark",
+      "type": "standalone",
+      "category": "Локальные компоненты",
+      "description": "Подсветка фрагмента текста внутри Canvas.Text и Canvas.Link: пластина на каждой строке переноса",
+      "keywords": [
+        "подсветка фрагмента",
+        "выделение совпадения поиска",
+        "text highlight"
       ]
     },
     {
