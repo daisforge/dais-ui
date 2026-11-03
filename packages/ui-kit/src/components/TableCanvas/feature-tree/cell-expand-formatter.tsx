@@ -3,15 +3,53 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { useRowContext } from '../contexts';
-import { IconTreeCollapsed, IconTreeExpanded } from './tree-disclosure-icons';
+import type { RowSize } from '../renders/rowIconConfig';
+import {
+  getTreeButtonBox,
+  IconTreeCollapsed,
+  IconTreeExpanded,
+} from './tree-disclosure-icons';
 
-const CellExpand = styled.div`
+/**
+ * Шеврон дерева в редакторе того же размера и на том же месте, что на canvas.
+ * Размеры берутся из getTreeButtonBox. Кнопка SDDS растягивает svg на свою
+ * ширину и сжимается в flex, поэтому размеры кнопки и svg заданы жёстко,
+ * а лишнюю пустоту справа обрезает обёртка.
+ */
+const CellExpand = styled.div<{ $rowSize: RowSize }>`
+  ${({ $rowSize }) => {
+    const { squareSize, layoutWidth, gapToText } = getTreeButtonBox($rowSize);
+    return `
+      width: ${layoutWidth}px;
+      height: ${squareSize}px;
+      margin-right: ${gapToText}px;
+
+      > button {
+        width: ${squareSize}px !important;
+        height: ${squareSize}px !important;
+      }
+
+      svg {
+        width: ${squareSize}px !important;
+        height: ${squareSize}px !important;
+      }
+    `;
+  }}
   display: inline-flex;
   align-items: center;
-  margin-right: 8px;
+  flex-shrink: 0;
+  overflow: hidden;
+
   > button {
-    //     width: 24px !important;
-    height: 24px !important;
+    min-width: 0 !important;
+    padding: 0 !important;
+    justify-content: flex-start;
+    overflow: visible;
+    flex: 0 0 auto;
+  }
+
+  svg {
+    flex-shrink: 0;
   }
 `;
 
@@ -38,6 +76,7 @@ export function CellExpandFormatter({
 
   return (
     <CellExpand
+      $rowSize={rowSize}
       className={className}
       onClick={onCellExpand}
       onKeyDown={handleKeyDown}
