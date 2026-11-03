@@ -13,7 +13,7 @@
 | Категория            | Технология                                                  |
 | -------------------- | ----------------------------------------------------------- |
 | **Фреймворк**        | React 18.3.1 + TypeScript 5.4.2                             |
-| **Стилизация**       | styled-components 5.3.1                                     |
+| **Стилизация**       | styled-components 5.3.11                                     |
 | **UI-основа**        | `@salutejs/sdds-finai` (дизайн-система Plasma)              |
 | **Сборка**           | Vite 5.0 + Nx                                               |
 | **Моно-репо**        | Lerna 8 + Nx 19                                             |
@@ -591,12 +591,13 @@ fp:
 
 | Пакет                             | Версия        | Назначение                   |
 | --------------------------------- | ------------- | ---------------------------- |
-| `@salutejs/sdds-finai`            | ^0.340.0      | Базовые атомарные компоненты |
-| `@salutejs/plasma-icons`          | ^1.237.0      | Иконки                       |
-| `@salutejs/plasma-typo`           | ^0.42.0       | Токены типографики           |
-| `@salutejs/sdds-themes`           | ^0.64.0       | Цветовые и темовые токены    |
+| `@salutejs/sdds-finai`            | ^0.367.0      | Базовые атомарные компоненты |
+| `@salutejs/plasma-icons`          | ^1.257.0      | Иконки                       |
+| `@salutejs/plasma-typo`           | ^0.59.0       | Токены типографики           |
+| `@sddsjs/sdds_finai` | 0.2.0 | Темы и токены |
+| `@salutejs/sdds-themes`           | ^0.86.0       | Совместимость shadowGradient    |
 | `react` / `react-dom`             | 18.3.1        | Core                         |
-| `styled-components`               | ^5.3.1        | CSS-in-JS                    |
+| `styled-components`               | ^5.3.11        | CSS-in-JS                    |
 | `react-hook-form`                 | ^7.54.2       | Формы                        |
 | `swr`                             | ^2.3.3        | Загрузка данных              |
 | `zod`                             | ^3.24.2       | Валидация                    |
@@ -609,7 +610,7 @@ fp:
 - `react-dom` (>=17.0.0)
 - `react-grid-layout` (^1.5.2)
 - `react-hook-form` (^7.54.2)
-- `styled-components` (5.3.1)
+- `styled-components` (5.3.11)
 - `swr` (^2.3.3)
 
 ---

@@ -5,12 +5,11 @@ export {
   compatible as compatible_typo_theme,
   standard as standard_typo_theme,
 } from '@salutejs/plasma-typo';
-export { sdds_finai__dark, sdds_finai__light } from '@salutejs/sdds-themes';
-// themes sdds-finai high contrast
-// Импорт из /theme — минуя компоненты пакета, которые тянут plasma-new-hope и styled-components
-export { sdds_finai_high_contrast__dark } from '@salutejs-ds/sdds_finai_high_contrast/theme/themes/sdds_finai_high_contrast__dark';
-export { sdds_finai_high_contrast__light } from '@salutejs-ds/sdds_finai_high_contrast/theme/themes/sdds_finai_high_contrast__light';
-// themes sdds-finai beta core
-// Импорт из /theme — минуя компоненты пакета (тянут canary plasma-new-hope и styled-components)
-export { sdds_finai_beta_core__dark } from '@salutejs-ds/sdds_finai_beta_core/theme/themes/sdds_finai_beta_core__dark';
-export { sdds_finai_beta_core__light } from '@salutejs-ds/sdds_finai_beta_core/theme/themes/sdds_finai_beta_core__light';
+// Сохраняем публичные имена dais-ui после объединения тем SDDS в одном пакете.
+// Конкретные пути нужны и в runtime: у theme/themes есть только index.d.ts.
+export { sdds_finai_beta_core__dark } from '@sddsjs/sdds_finai/theme/themes/sdds_finai_beta_core__dark';
+export { sdds_finai_beta_core__light } from '@sddsjs/sdds_finai/theme/themes/sdds_finai_beta_core__light';
+export { sdds_finai_default__dark as sdds_finai__dark } from '@sddsjs/sdds_finai/theme/themes/sdds_finai_default__dark';
+export { sdds_finai_default__light as sdds_finai__light } from '@sddsjs/sdds_finai/theme/themes/sdds_finai_default__light';
+export { sdds_finai_high_contrast__dark } from '@sddsjs/sdds_finai/theme/themes/sdds_finai_high_contrast__dark';
+export { sdds_finai_high_contrast__light } from '@sddsjs/sdds_finai/theme/themes/sdds_finai_high_contrast__light';

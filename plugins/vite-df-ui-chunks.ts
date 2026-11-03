@@ -304,14 +304,8 @@ export const MANUAL_UIKIT_COMP_CHUNKS = [
  *  Другая библиотека вся не тянется
  */
 
-export const EXTERNAL_PACKAGE_MODULES_AS_CHUNK = [
-  {
-    chunkName: 'EXTERNAL_PACKAGE_MODULE_sdds_finai_high_contrast__light_theme',
-    modulePaths: [
-      '@salutejs-ds/sdds_finai_high_contrast/theme/themes/sdds_finai_high_contrast__light.js',
-    ],
-  },
-] as const;
+// Темы теперь являются внешней зависимостью @sddsjs/sdds_finai, как и остальные токены.
+export const EXTERNAL_PACKAGE_MODULES_AS_CHUNK = [] as const;
 
 /** Нежелательный чанк.
  * Что подпадает под этот чанк - мы устраняем с помощью "отметить пакет как external deps"

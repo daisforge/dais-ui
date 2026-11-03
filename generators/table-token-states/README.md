@@ -210,3 +210,57 @@ npm run table-colors:check-sdds     # сверка исходных цветов
   менять только синхронно с `code/table-token-states.ts`, защищено тестом.
 - Текущие нерешённые вопросы — `INTEGRATION-STATUS.md`; задачи после
   интеграции палитры — `BACKLOG.md`.
+
+## Сверка с SDDS 0.367.0 / темами 0.2.0 (2026-11-03)
+
+`npm run table-colors:check-sdds` обнаружил 48 расхождений с ручной дизайнерской палитрой.
+Значения в `code/table-token-sources.ts` сохранены; изменения требуют согласования с дизайнером.
+
+- highContrastDark: --surface-solid-card в палитре #060A0C, в SDDS #060A0D
+- highContrastLight: --surface-solid-primary в SDDS есть (#E9EFF3), в палитре пусто — сейчас стоит временный цвет
+- highContrastDark: --surface-solid-primary в палитре #13181B, в SDDS #171D22
+- highContrastLight: --background-primary в SDDS есть (#E9EFF3), в палитре пусто — сейчас стоит временный цвет
+- highContrastDark: --background-primary в палитре #060A0C, в SDDS #060A0D
+- highContrastLight: --surface-accent-minor в палитре #CFE5F2FF, в SDDS #E0F1FE
+- highContrastDark: --surface-accent-minor в палитре #071A26FF, в SDDS #0D1E2B
+- highContrastLight: --surface-accent в палитре #0076D2, в SDDS #0073B1
+- highContrastDark: --surface-accent в палитре #199AF0, в SDDS #0073B1
+- highContrastLight: --outline-accent в палитре #0058A2, в SDDS #005481
+- highContrastDark: --outline-accent в палитре #199AF0, в SDDS #23A1EE
+- betaCoreDark: --outline-solid-primary в палитре #262626, в SDDS #20272C
+- highContrastLight: --outline-solid-primary в палитре #C4CFD7, в SDDS #8997A0
+- highContrastDark: --outline-solid-primary в палитре #23292D, в SDDS #535F67
+- highContrastLight: --surface-negative в палитре #E7002F, в SDDS #DA0035
+- highContrastDark: --surface-negative в палитре #FF293E, в SDDS #DA0035
+- highContrastLight: --surface-transparent-accent в палитре #0076D21F, в SDDS #0890D63E
+- highContrastDark: --surface-transparent-accent в палитре #118CDF33, в SDDS #00537D76
+- highContrastLight: --surface-transparent-positive в палитре #198A001F, в SDDS #29983E3E
+- highContrastDark: --surface-transparent-positive в палитре #1A9E3233, в SDDS #16A14140
+- highContrastLight: --surface-transparent-warning в палитре #D958001F, в SDDS #D256083E
+- highContrastDark: --surface-transparent-warning в палитре #FA5F0533, в SDDS #E157013F
+- highContrastLight: --surface-positive-minor в SDDS есть (#71F17A), в палитре пусто — сейчас стоит временный цвет
+- highContrastDark: --surface-positive-minor в палитре #0A2B10, в SDDS #103613
+- highContrastLight: --surface-negative-minor в SDDS есть (#F8C0BF), в палитре пусто — сейчас стоит временный цвет
+- highContrastDark: --surface-negative-minor в палитре #4A0D13, в SDDS #560C14
+- highContrastLight: --surface-warning-minor в SDDS есть (#F8C4B0), в палитре пусто — сейчас стоит временный цвет
+- highContrastDark: --surface-warning-minor в палитре #3D1D0A, в SDDS #492110
+- highContrastLight: --surface-info-minor в SDDS есть (#AAD6FA), в палитре пусто — сейчас стоит временный цвет
+- highContrastDark: --surface-info-minor в палитре #0C283B, в SDDS #07304A
+- light: --data-yellow-light в палитре #FFE4AE, в SDDS #FFF6E5
+- betaCoreLight: --data-yellow-light в SDDS есть (#FFF5E7), в палитре пусто — сейчас стоит временный цвет
+- betaCoreDark: --data-yellow-light в SDDS есть (#352103), в палитре пусто — сейчас стоит временный цвет
+- highContrastLight: --data-yellow-light в SDDS есть (#FEEBD1), в палитре пусто — сейчас стоит временный цвет
+- highContrastDark: --data-yellow-light в палитре #211807, в SDDS #3F2805
+- betaCoreLight: --data-blue-light в SDDS есть (#EFF8FF), в палитре пусто — сейчас стоит временный цвет
+- betaCoreDark: --data-blue-light в SDDS есть (#09283D), в палитре пусто — сейчас стоит временный цвет
+- highContrastLight: --data-blue-light в SDDS есть (#E0F1FE), в палитре пусто — сейчас стоит временный цвет
+- highContrastDark: --data-blue-light в палитре #0A1924, в SDDS #07304A
+- betaCoreLight: --data-yellow в палитре #E9A431, в SDDS #C88700
+- highContrastLight: --data-yellow в палитре #D49100, в SDDS #C88700
+- highContrastDark: --data-yellow в палитре #A16B00, в SDDS #9A6700
+- highContrastLight: --text-primary в палитре #13181BF5, в SDDS #14191DF5
+- highContrastDark: --text-primary в палитре #F2F5F8F5, в SDDS #F3F7FAF5
+- highContrastLight: --text-primary-hover в палитре #13181B93, в SDDS #151A1E93
+- highContrastDark: --text-primary-hover в палитре #F2F5F893, в SDDS #F4F8FA93
+- highContrastLight: --text-primary-active в палитре #13181BC4, в SDDS #151A1EC4
+- highContrastDark: --text-primary-active в палитре #F2F5F8C4, в SDDS #F4F8FAC4

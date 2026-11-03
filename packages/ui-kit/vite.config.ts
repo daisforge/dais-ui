@@ -123,12 +123,11 @@ export default defineConfig(() => {
           const somePkgsWithDeps = [
             'react/jsx-runtime',
             /react-dom/, // данный пакет есть в pkgJSONDeps, но не удаляется на 100%. Поэтому regexp-ом
-            '@salutejs/sdds-finai/tokens',
-            '@salutejs/sdds-finai/mixins',
             'swr/mutation',
             /@salutejs\/plasma-core/,
             /@salutejs\/sdds-finai/,
             /@salutejs\/sdds-themes/,
+            /@sddsjs\/sdds_finai/,
             /@salutejs\/plasma-new-hope/,
           ];
 

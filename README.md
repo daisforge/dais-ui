@@ -51,7 +51,7 @@
 | **Сборка**       | Vite (v5.0.0) с плагинами                          |
 | **Язык**         | TypeScript 5.4.2                                   |
 | **React**        | 18.3.1                                             |
-| **Стили**        | styled-components 5.3.1                            |
+| **Стили**        | styled-components 5.3.11                            |
 | **UI-фреймворк** | @salutejs/sdds-finai (Plasma Design System)        |
 | **Тестирование** | Vitest + @storybook/test-runner (screenshot tests) |
 | **Линтинг**      | ESLint + Prettier + Husky                          |
@@ -530,13 +530,14 @@ export type TMutationRegister<TFieldValues extends FieldValues> = {
 
 | Пакет                             | Версия        | Назначение                   |
 | --------------------------------- | ------------- | ---------------------------- |
-| `@salutejs/sdds-finai`            | ^0.338.0      | Базовые атомарные компоненты |
-| `@salutejs/plasma-icons`          | ^1.235.0      | Иконки                       |
-| `@salutejs/plasma-typo`           | ^0.42.0       | Typo tokens                  |
-| `@salutejs/sdds-themes`           | ^0.62.0       | Цветовые и прочие токены     |
+| `@salutejs/sdds-finai`            | ^0.367.0      | Базовые атомарные компоненты |
+| `@salutejs/plasma-icons`          | ^1.257.0      | Иконки                       |
+| `@salutejs/plasma-typo`           | ^0.59.0       | Typo tokens                  |
+| `@salutejs/sdds-themes`           | ^0.86.0       | Совместимость градиентных теней |
+| `@sddsjs/sdds_finai` | 0.2.0 | Темы и дизайн-токены FinAI |
 | `react`                           | 18.3.1        | Core                         |
 | `react-dom`                       | 18.3.1        | Core                         |
-| `styled-components`               | 5.3.1         | CSS-in-JS                    |
+| `styled-components`               | 5.3.11         | CSS-in-JS                    |
 | `react-hook-form`                 | ^7.54.2       | Формы                        |
 | `swr`                             | ^2.3.3        | Data fetching                |
 | `zod`                             | ^3.24.2       | Валидация                    |
