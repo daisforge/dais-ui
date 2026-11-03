@@ -50,8 +50,15 @@ function ExampleNodePopover() {
         key: 'action',
         name: 'Действие',
         width: 160,
-        renderCell: ({ row }) => (
-          <Canvas.Container direction="row" alignItems="center" padding={8}>
+        renderCell: ({ row, theme }) => (
+          <Canvas.Container
+            direction="row"
+            alignItems="center"
+            padding={{
+              left: theme.cellHorizontalPadding,
+              right: theme.cellHorizontalPadding,
+            }}
+          >
             <Canvas.Button
               view="secondary"
               popover={{
@@ -101,11 +108,14 @@ function ExampleGlobalDefaults() {
         key: 'task',
         name: 'Title',
         width: 200,
-        renderCell: ({ row }) => (
+        renderCell: ({ row, theme }) => (
           <Canvas.Container
             direction="row"
             alignItems="center"
-            padding={8}
+            padding={{
+              left: theme.cellHorizontalPadding,
+              right: theme.cellHorizontalPadding,
+            }}
             gap={8}
           >
             <Canvas.Text>{row.task}</Canvas.Text>
@@ -123,11 +133,14 @@ function ExampleGlobalDefaults() {
         key: 'priority',
         name: 'Priority',
         width: 200,
-        renderCell: ({ row }) => (
+        renderCell: ({ row, theme }) => (
           <Canvas.Container
             direction="row"
             alignItems="center"
-            padding={8}
+            padding={{
+              left: theme.cellHorizontalPadding,
+              right: theme.cellHorizontalPadding,
+            }}
             gap={8}
           >
             <Canvas.Text>{row.priority}</Canvas.Text>
@@ -179,8 +192,15 @@ function ExamplePopoverWithCallbacks() {
         key: 'action',
         name: 'Действие',
         width: 160,
-        renderCell: ({ row }) => (
-          <Canvas.Container direction="row" alignItems="center" padding={8}>
+        renderCell: ({ row, theme }) => (
+          <Canvas.Container
+            direction="row"
+            alignItems="center"
+            padding={{
+              left: theme.cellHorizontalPadding,
+              right: theme.cellHorizontalPadding,
+            }}
+          >
             <Canvas.IconButton
               icon={<IconInfoCircleOutline />}
               popover={{
@@ -230,11 +250,14 @@ function ExampleClickAndHoverPopover({
         key: 'priority',
         name: 'Priority (наведение на иконку)',
         width: 220,
-        renderCell: ({ row }) => (
+        renderCell: ({ row, theme }) => (
           <Canvas.Container
             direction="row"
             alignItems="center"
-            padding={8}
+            padding={{
+              left: theme.cellHorizontalPadding,
+              right: theme.cellHorizontalPadding,
+            }}
             gap={8}
           >
             <Canvas.Text>{row.priority}</Canvas.Text>
@@ -271,8 +294,15 @@ function ExampleClickAndHoverPopover({
         key: 'action',
         name: 'Действие (клик по кнопке)',
         width: 200,
-        renderCell: ({ row }) => (
-          <Canvas.Container direction="row" alignItems="center" padding={8}>
+        renderCell: ({ row, theme }) => (
+          <Canvas.Container
+            direction="row"
+            alignItems="center"
+            padding={{
+              left: theme.cellHorizontalPadding,
+              right: theme.cellHorizontalPadding,
+            }}
+          >
             <Canvas.Button
               view="secondary"
               popover={{

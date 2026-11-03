@@ -55,12 +55,15 @@ function ExampleNodeDropdown() {
         key: 'action',
         name: 'Действие',
         width: 80,
-        renderCell: ({ row }) => (
+        renderCell: ({ row, theme }) => (
           <Canvas.Container
             direction="row"
             alignItems="center"
             justifyContent="center"
-            padding={8}
+            padding={{
+              left: theme.cellHorizontalPadding,
+              right: theme.cellHorizontalPadding,
+            }}
           >
             <Canvas.IconButton
               icon={<IconDotsVerticalCenteredOutline />}
@@ -109,11 +112,14 @@ function ExampleClickAndHoverDropdown() {
         key: 'priority',
         name: 'Priority (наведение на кнопку)',
         width: 240,
-        renderCell: ({ row }) => (
+        renderCell: ({ row, theme }) => (
           <Canvas.Container
             direction="row"
             alignItems="center"
-            padding={8}
+            padding={{
+              left: theme.cellHorizontalPadding,
+              right: theme.cellHorizontalPadding,
+            }}
             gap={8}
           >
             <Canvas.Text>{row.priority}</Canvas.Text>
@@ -140,8 +146,15 @@ function ExampleClickAndHoverDropdown() {
         key: 'action',
         name: 'Действие (клик по кнопке)',
         width: 200,
-        renderCell: ({ row }) => (
-          <Canvas.Container direction="row" alignItems="center" padding={8}>
+        renderCell: ({ row, theme }) => (
+          <Canvas.Container
+            direction="row"
+            alignItems="center"
+            padding={{
+              left: theme.cellHorizontalPadding,
+              right: theme.cellHorizontalPadding,
+            }}
+          >
             <Canvas.Button
               view="secondary"
               dropdown={{
@@ -242,12 +255,15 @@ function ExampleAsyncDropdown({ shouldFail }: { shouldFail: boolean }) {
         key: 'action',
         name: 'Действие',
         width: 80,
-        renderCell: ({ row }) => (
+        renderCell: ({ row, theme }) => (
           <Canvas.Container
             direction="row"
             alignItems="center"
             justifyContent="center"
-            padding={8}
+            padding={{
+              left: theme.cellHorizontalPadding,
+              right: theme.cellHorizontalPadding,
+            }}
           >
             <Canvas.IconButton
               icon={<IconDotsVerticalCenteredOutline />}
@@ -308,11 +324,14 @@ function ExampleGlobalDefaults() {
         key: 'task',
         name: 'Title',
         width: 220,
-        renderCell: ({ row }) => (
+        renderCell: ({ row, theme }) => (
           <Canvas.Container
             direction="row"
             alignItems="center"
-            padding={8}
+            padding={{
+              left: theme.cellHorizontalPadding,
+              right: theme.cellHorizontalPadding,
+            }}
             gap={8}
           >
             <Canvas.Text>{row.task}</Canvas.Text>
@@ -333,11 +352,14 @@ function ExampleGlobalDefaults() {
         key: 'status',
         name: 'Status',
         width: 200,
-        renderCell: ({ row }) => (
+        renderCell: ({ row, theme }) => (
           <Canvas.Container
             direction="row"
             alignItems="center"
-            padding={8}
+            padding={{
+              left: theme.cellHorizontalPadding,
+              right: theme.cellHorizontalPadding,
+            }}
             gap={8}
           >
             <Canvas.Text>{row.status}</Canvas.Text>
@@ -435,8 +457,15 @@ function ExampleAllVariants() {
         key: 'click',
         name: 'Клик',
         width: 130,
-        renderCell: ({ row }) => (
-          <Canvas.Container direction="row" alignItems="center" padding={8}>
+        renderCell: ({ row, theme }) => (
+          <Canvas.Container
+            direction="row"
+            alignItems="center"
+            padding={{
+              left: theme.cellHorizontalPadding,
+              right: theme.cellHorizontalPadding,
+            }}
+          >
             <Canvas.Button
               view="secondary"
               dropdown={{ items: ACTIONS, ...events('Клик', row) }}
@@ -450,12 +479,15 @@ function ExampleAllVariants() {
         key: 'nested',
         name: 'Вложенные',
         width: 100,
-        renderCell: ({ row }) => (
+        renderCell: ({ row, theme }) => (
           <Canvas.Container
             direction="row"
             alignItems="center"
             justifyContent="center"
-            padding={8}
+            padding={{
+              left: theme.cellHorizontalPadding,
+              right: theme.cellHorizontalPadding,
+            }}
           >
             <Canvas.IconButton
               icon={<IconDotsVerticalCenteredOutline />}
@@ -472,8 +504,15 @@ function ExampleAllVariants() {
         key: 'hover',
         name: 'Наведение',
         width: 130,
-        renderCell: ({ row }) => (
-          <Canvas.Container direction="row" alignItems="center" padding={8}>
+        renderCell: ({ row, theme }) => (
+          <Canvas.Container
+            direction="row"
+            alignItems="center"
+            padding={{
+              left: theme.cellHorizontalPadding,
+              right: theme.cellHorizontalPadding,
+            }}
+          >
             <Canvas.Button
               view="secondary"
               dropdown={{
@@ -491,11 +530,14 @@ function ExampleAllVariants() {
         key: 'hoverIcon',
         name: 'Наведение (иконка)',
         width: 150,
-        renderCell: ({ row }) => (
+        renderCell: ({ row, theme }) => (
           <Canvas.Container
             direction="row"
             alignItems="center"
-            padding={8}
+            padding={{
+              left: theme.cellHorizontalPadding,
+              right: theme.cellHorizontalPadding,
+            }}
             gap={8}
           >
             <Canvas.Text>{row.priority}</Canvas.Text>
@@ -521,12 +563,15 @@ function ExampleAllVariants() {
         key: 'async',
         name: 'Async',
         width: 90,
-        renderCell: ({ row }) => (
+        renderCell: ({ row, theme }) => (
           <Canvas.Container
             direction="row"
             alignItems="center"
             justifyContent="center"
-            padding={8}
+            padding={{
+              left: theme.cellHorizontalPadding,
+              right: theme.cellHorizontalPadding,
+            }}
           >
             <Canvas.IconButton
               icon={<IconDotsVerticalCenteredOutline />}
@@ -555,12 +600,15 @@ function ExampleAllVariants() {
         key: 'asyncError',
         name: 'Async: ошибка',
         width: 120,
-        renderCell: ({ row }) => (
+        renderCell: ({ row, theme }) => (
           <Canvas.Container
             direction="row"
             alignItems="center"
             justifyContent="center"
-            padding={8}
+            padding={{
+              left: theme.cellHorizontalPadding,
+              right: theme.cellHorizontalPadding,
+            }}
           >
             <Canvas.IconButton
               icon={<IconDotsVerticalCenteredOutline />}
@@ -598,8 +646,15 @@ function ExampleAllVariants() {
         key: 'keepOpen',
         name: 'closeOnSelect: false',
         width: 170,
-        renderCell: ({ row }) => (
-          <Canvas.Container direction="row" alignItems="center" padding={8}>
+        renderCell: ({ row, theme }) => (
+          <Canvas.Container
+            direction="row"
+            alignItems="center"
+            padding={{
+              left: theme.cellHorizontalPadding,
+              right: theme.cellHorizontalPadding,
+            }}
+          >
             <Canvas.Button
               view="secondary"
               dropdown={{
@@ -617,8 +672,15 @@ function ExampleAllVariants() {
         key: 'noOutside',
         name: 'Без клика мимо и Esc',
         width: 180,
-        renderCell: ({ row }) => (
-          <Canvas.Container direction="row" alignItems="center" padding={8}>
+        renderCell: ({ row, theme }) => (
+          <Canvas.Container
+            direction="row"
+            alignItems="center"
+            padding={{
+              left: theme.cellHorizontalPadding,
+              right: theme.cellHorizontalPadding,
+            }}
+          >
             <Canvas.Button
               view="secondary"
               dropdown={{
@@ -638,8 +700,15 @@ function ExampleAllVariants() {
         key: 'popover',
         name: 'Поповер рядом',
         width: 140,
-        renderCell: ({ row }) => (
-          <Canvas.Container direction="row" alignItems="center" padding={8}>
+        renderCell: ({ row, theme }) => (
+          <Canvas.Container
+            direction="row"
+            alignItems="center"
+            padding={{
+              left: theme.cellHorizontalPadding,
+              right: theme.cellHorizontalPadding,
+            }}
+          >
             <Canvas.Button
               view="secondary"
               popover={{

@@ -107,8 +107,15 @@ function ExampleClick() {
         key: 'action',
         name: 'Действие',
         width: 160,
-        renderCell: () => (
-          <Canvas.Container direction="row" alignItems="center" padding={8}>
+        renderCell: ({ theme }) => (
+          <Canvas.Container
+            direction="row"
+            alignItems="center"
+            padding={{
+              left: theme.cellHorizontalPadding,
+              right: theme.cellHorizontalPadding,
+            }}
+          >
             <Canvas.Button view="secondary" dropdown={{ items: ITEMS }}>
               Действия
             </Canvas.Button>
@@ -136,8 +143,15 @@ function ExampleHoverIconButton() {
         key: 'menu',
         name: 'Меню',
         width: 80,
-        renderCell: () => (
-          <Canvas.Container direction="row" alignItems="center" padding={8}>
+        renderCell: ({ theme }) => (
+          <Canvas.Container
+            direction="row"
+            alignItems="center"
+            padding={{
+              left: theme.cellHorizontalPadding,
+              right: theme.cellHorizontalPadding,
+            }}
+          >
             <Canvas.IconButton
               icon={<IconDotsVerticalCenteredOutline />}
               dropdown={{
@@ -171,8 +185,15 @@ function ExampleLoading() {
         key: 'action',
         name: 'Действие',
         width: 160,
-        renderCell: () => (
-          <Canvas.Container direction="row" alignItems="center" padding={8}>
+        renderCell: ({ theme }) => (
+          <Canvas.Container
+            direction="row"
+            alignItems="center"
+            padding={{
+              left: theme.cellHorizontalPadding,
+              right: theme.cellHorizontalPadding,
+            }}
+          >
             <Canvas.Button
               view="secondary"
               dropdown={{

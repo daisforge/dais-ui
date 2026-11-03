@@ -12,6 +12,7 @@ import {
   Canvas,
   ColumnConfig,
   TableCanvas,
+  tableCanvasTheme,
 } from '@ui-kit/components/TableCanvas';
 import { IconInfoCircleOutline } from '@ui-kit/icons';
 import React, { useMemo } from 'react';
@@ -101,8 +102,15 @@ function ExampleClick() {
         key: 'action',
         name: 'Действие',
         width: 160,
-        renderCell: ({ row }) => (
-          <Canvas.Container direction="row" alignItems="center" padding={8}>
+        renderCell: ({ row, theme }) => (
+          <Canvas.Container
+            direction="row"
+            alignItems="center"
+            padding={{
+              left: theme.cellHorizontalPadding,
+              right: theme.cellHorizontalPadding,
+            }}
+          >
             <Canvas.Button
               view="secondary"
               popover={{
@@ -135,8 +143,15 @@ function ExampleHoverIcon() {
         key: 'info',
         name: 'Инфо',
         width: 80,
-        renderCell: ({ row }) => (
-          <Canvas.Container direction="row" alignItems="center" padding={8}>
+        renderCell: ({ row, theme }) => (
+          <Canvas.Container
+            direction="row"
+            alignItems="center"
+            padding={{
+              left: theme.cellHorizontalPadding,
+              right: theme.cellHorizontalPadding,
+            }}
+          >
             <Canvas.Icon
               icon={<IconInfoCircleOutline />}
               size={16}
@@ -171,7 +186,14 @@ function ExampleGroupHeader() {
       {
         key: 'work',
         name: (
-          <Canvas.Container direction="row" alignItems="center" padding={8}>
+          <Canvas.Container
+            direction="row"
+            alignItems="center"
+            padding={{
+              left: tableCanvasTheme.cellHorizontalPadding,
+              right: tableCanvasTheme.cellHorizontalPadding,
+            }}
+          >
             <Canvas.Icon
               icon={<IconInfoCircleOutline />}
               size={16}
@@ -213,7 +235,7 @@ export const HoverIconPopover: Story = {
   ...screenshot,
   render: () => <ExampleHoverIcon />,
   play: async ({ canvasElement }) => {
-    await hoverAt(canvasElement, 60 + 160 + 16, rowCenter(1));
+    await hoverAt(canvasElement, 60 + 160 + 24, rowCenter(1));
     await waitForText(canvasElement, 'Приоритет: Средний');
   },
 };
@@ -223,7 +245,7 @@ export const GroupHeaderPopover: Story = {
   ...screenshot,
   render: () => <ExampleGroupHeader />,
   play: async ({ canvasElement }) => {
-    await clickAt(canvasElement, 60 + 16, HEADER_HEIGHT / 2);
+    await clickAt(canvasElement, 60 + 24, HEADER_HEIGHT / 2);
     await waitForText(canvasElement, 'Группа «Работа»');
   },
 };
