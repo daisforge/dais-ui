@@ -2,6 +2,7 @@ import {
   HEADER_LEFT_ICONS_CONFIG,
   ROW_ICON_BUTTON_CONFIG,
   RowSize,
+  TREE_BUTTON_GAP,
 } from '../renders/rowIconConfig';
 
 const GRID = 24;
@@ -127,6 +128,18 @@ export const getTreeIconViewBox = (size: RowSize) =>
 
 export const getTreeIconWidth = (size: RowSize) =>
   getFlushLeftWidth(getTreeIconGlyph(size), getRowIconBox(size));
+
+/**
+ * Размеры кнопки дерева, общие для canvas и редактора.
+ * squareSize: квадрат кнопки по размеру строки.
+ * layoutWidth: сколько кнопка занимает в строке (меньше квадрата, без пустоты справа от значка).
+ * gapToText: зазор до текста.
+ */
+export const getTreeButtonBox = (size: RowSize) => ({
+  squareSize: getRowIconBox(size).squareSize,
+  layoutWidth: getTreeIconWidth(size),
+  gapToText: TREE_BUTTON_GAP[size],
+});
 
 /**
  * Минимальный отступ глифа от линии уровня (px) — тот же, что у свёрнутого
