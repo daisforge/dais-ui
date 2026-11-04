@@ -1,0 +1,16 @@
+import{j as n}from"./react-CAOzMBF_.js";import{cf as r,cg as e,c9 as c}from"./vendor-DmWczWMC.js";import{C as s}from"./CanvasIconButton.stories-P-lTkTUw.js";import"./react-is-vVGXX3JE.js";import"./styled-components-DCFsnh-i.js";import"./@tanstack/react-virtual-vLM_tzFQ.js";import"./tslib-DoU9Jm1N.js";import"./getFuncAsString-DwlnUpBS.js";import"./storySourceDoc-tVKyHcEN.js";import"./TableCanvas-CXslNPgb.js";import"./@salutejs/sdds-themes-BhHTXq_6.js";import"./utils-BRhO4Lv3.js";import"./constants-BTEQz0S6.js";import"./sharedUtilsDebug-BX_KjCjW.js";import"./@salutejs/sdds-finai-Bupqgw5V.js";import"./@salutejs/plasma-icons-Do5ggeDI.js";import"./sharedUtilsCopy-CGH-mx0N.js";import"./FiltersActions-DC5OcLmm.js";import"./IconButton-DrFnI92n.js";import"./Box-DvvYTz20.js";import"./TextField-DIWm63dp.js";import"./sharedUtilsInputs-BEaEboVP.js";import"./AiAgentPopup-1SjAhyCf.js";import"./TextArea-XMbR00Hf.js";import"./sharedUtilsResizable-CmwXdA8D.js";import"./Table-IHr9AgFh.js";import"./Collapse-BWM9xDkM.js";import"./react-data-grid-BKw4Q-W8.js";import"./TableTabs-BoRZJG4K.js";import"./TableCanvasSharedConstants-B2qJZwC8.js";import"./TableGlide-B5SQpGfi.js";import"./@glideappsfinal/glide-data-grid-B6Bq93xZ.js";import"./canvas-hypertxt-DsokSIOX.js";import"./sharedUiSearch-B_fYt99y.js";import"./ListOfFilters-fm7QmTqx.js";import"./lodash.isequal-DxetvuAY.js";import"./NumberFormat-CfsVK-wQ.js";import"./EmptyState-B4-5g1DV.js";import"./MassActions-BM0rVr1a.js";import"./Autocomplete-MjUZ7zQX.js";import"./ErrorPage-CBLM2yRR.js";function t(i){const o={a:"a",code:"code",h1:"h1",h2:"h2",li:"li",p:"p",ul:"ul",...r(),...i.components};return n.jsxs(n.Fragment,{children:[n.jsx(e,{of:s,name:"Docs"}),`
+`,n.jsx(o.h1,{id:"canvasiconbutton",children:"Canvas.IconButton"}),`
+`,n.jsxs(o.p,{children:["Кнопка-иконка внутри canvas-ячейки ",n.jsx(o.code,{children:"TableCanvas"}),"."]}),`
+`,n.jsx(o.h2,{id:"ключевые-особенности",children:"Ключевые особенности"}),`
+`,n.jsxs(o.ul,{children:[`
+`,n.jsxs(o.li,{children:["Иконка через ",n.jsx(o.code,{children:"Canvas.icon(<IconName />)"})]}),`
+`,n.jsxs(o.li,{children:["Несколько вариантов ",n.jsx(o.code,{children:"view"})," и ",n.jsx(o.code,{children:"buttonSize"})]}),`
+`,n.jsxs(o.li,{children:["Поддержка ",n.jsx(o.code,{children:"disabled"})]}),`
+`,n.jsxs(o.li,{children:[n.jsx(o.code,{children:"interaction"}),` — как клик по кнопке влияет на таблицу:
+`,n.jsx(o.code,{children:"interaction={{ selection: 'keep', cellClick: 'stop' }}"}),` — клик не переносит
+выделение и не вызывает `,n.jsx(o.code,{children:"onCellClicked"}),` (шеврон дерева, действие в строке).
+Так же работает у `,n.jsx(o.code,{children:"Canvas.Button"}),", ",n.jsx(o.code,{children:"Canvas.EmbedIconButton"}),", ",n.jsx(o.code,{children:"Canvas.Link"}),` и
+`,n.jsx(o.code,{children:"Canvas.Container"})]}),`
+`]}),`
+`,n.jsxs(o.p,{children:["Описание типов — в разделе ",n.jsx(o.a,{href:"?path=/docs/%D0%BB%D0%BE%D0%BA%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D1%8B-tablecanvas-canvaselements-canvasiconbutton-api--docs",children:"API"}),"."]}),`
+`,n.jsx(c,{})]})}function V(i={}){const{wrapper:o}={...r(),...i.components};return o?n.jsx(o,{...i,children:n.jsx(t,{...i})}):t(i)}export{V as default};

@@ -1,0 +1,14 @@
+import{j as i}from"./react-CAOzMBF_.js";import{cf as n,cg as e,c9 as m}from"./vendor-DmWczWMC.js";import{T as p}from"./Table.rowHeight.stories-Chnx-vvl.js";import"./react-is-vVGXX3JE.js";import"./styled-components-DCFsnh-i.js";import"./@tanstack/react-virtual-vLM_tzFQ.js";import"./tslib-DoU9Jm1N.js";import"./tableData-DVJFoYoT.js";import"./DocStoryTemplate-Cf946dgV.js";import"./storySourceDoc-tVKyHcEN.js";import"./Box-DvvYTz20.js";import"./StoriesUtils-B4SPjLjF.js";import"./Table-IHr9AgFh.js";import"./FiltersActions-DC5OcLmm.js";import"./IconButton-DrFnI92n.js";import"./@salutejs/plasma-icons-Do5ggeDI.js";import"./@salutejs/sdds-finai-Bupqgw5V.js";import"./@salutejs/sdds-themes-BhHTXq_6.js";import"./utils-BRhO4Lv3.js";import"./constants-BTEQz0S6.js";import"./sharedUtilsDebug-BX_KjCjW.js";import"./TextField-DIWm63dp.js";import"./sharedUtilsInputs-BEaEboVP.js";import"./AiAgentPopup-1SjAhyCf.js";import"./TextArea-XMbR00Hf.js";import"./sharedUtilsResizable-CmwXdA8D.js";import"./Collapse-BWM9xDkM.js";import"./react-data-grid-BKw4Q-W8.js";import"./TableTabs-BoRZJG4K.js";import"./TableCanvasSharedConstants-B2qJZwC8.js";import"./TableGlide-B5SQpGfi.js";import"./@glideappsfinal/glide-data-grid-B6Bq93xZ.js";import"./canvas-hypertxt-DsokSIOX.js";import"./sharedUiSearch-B_fYt99y.js";import"./ListOfFilters-fm7QmTqx.js";import"./lodash.isequal-DxetvuAY.js";import"./NumberFormat-CfsVK-wQ.js";import"./EmptyState-B4-5g1DV.js";import"./MassActions-BM0rVr1a.js";import"./Autocomplete-MjUZ7zQX.js";function t(r){const o={a:"a",code:"code",h1:"h1",h2:"h2",li:"li",p:"p",ul:"ul",...n(),...r.components};return i.jsxs(i.Fragment,{children:[i.jsx(e,{of:p,name:"Docs"}),`
+`,i.jsx(o.h1,{id:"rowheight",children:"RowHeight"}),`
+`,i.jsxs(o.p,{children:["Настройка высоты строк legacy ",i.jsx(o.code,{children:"Table"}),"."]}),`
+`,i.jsx(o.h2,{id:"ключевые-особенности",children:"Ключевые особенности"}),`
+`,i.jsxs(o.ul,{children:[`
+`,i.jsx(o.li,{children:"Фиксированная высота через число"}),`
+`,i.jsxs(o.li,{children:["Динамическая высота через функцию ",i.jsx(o.code,{children:"RowHeightFunc"})]}),`
+`,i.jsx(o.li,{children:"Доступ к текущему размеру строки при расчете высоты"}),`
+`,i.jsx(o.li,{children:"Возможность подстраивать высоту под многострочный контент"}),`
+`]}),`
+`,i.jsx(o.h2,{id:"особенности",children:"Особенности"}),`
+`,i.jsx(o.p,{children:"Функция высоты вызывается для строк таблицы, поэтому держите вычисления легкими и мемоизируйте конфигурацию колонок."}),`
+`,i.jsxs(o.p,{children:["Описание типов - в разделе ",i.jsx(o.a,{href:"?path=/docs/%D0%BB%D0%BE%D0%BA%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D1%8B-table-rowheight-api--docs",children:"API"}),"."]}),`
+`,i.jsx(m,{})]})}function U(r={}){const{wrapper:o}={...n(),...r.components};return o?i.jsx(o,{...r,children:i.jsx(t,{...r})}):t(r)}export{U as default};
