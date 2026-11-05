@@ -328,8 +328,9 @@ export type ColumnGlideCustoms<R extends ObjectForExtending, SR = unknown> = {
     | SpanCellAlign
     | ((cellInfo: CellInfo<R, SR>) => SpanCellAlign | undefined);
   /**
-   * Подпись объединённой ячейки остаётся в видимой части блока при прокрутке.
-   * @default true, если у колонки нет renderCell
+   * Содержимое объединённой ячейки, в том числе свой renderCell, остаётся в
+   * видимой части блока при прокрутке.
+   * @default true
    */
   spanContentSticky?: boolean;
   /** Тултип для ячеек этой колонки. Строка, объект или функция (context) => config | null. */

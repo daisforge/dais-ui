@@ -113,6 +113,7 @@ export const glideCellRenderer = <R extends ObjectForExtending, SR>({
   cellInfo,
   options,
   autoHeight,
+  reportStickyContentHeight,
 }: {
   jsxElement: CellContent;
   cellInfo: CellInfo<R, SR>;
@@ -127,6 +128,11 @@ export const glideCellRenderer = <R extends ObjectForExtending, SR>({
     getPortalEventTarget?: () => EventTarget | null;
     refTable?: unknown;
   };
+  /**
+   * Блок с прилипанием: ячейка сообщает высоту своего содержимого. Вернёт true, если
+   * высота изменилась и нужен ещё один кадр.
+   */
+  reportStickyContentHeight?: (height: number) => boolean;
   /** Строка с `rowHeight: 'auto'`: ячейка сообщает высоту содержимого и рисует его между вертикальными отступами */
   autoHeight?: CellHeightReporter;
 }) => {
@@ -201,6 +207,13 @@ export const glideCellRenderer = <R extends ObjectForExtending, SR>({
       }
 
       const cellNode = buildCellNode(jsxElement, nodeIdPrefix, theme);
+      if (
+        reportStickyContentHeight?.(
+          measureNodeHeight(ctx, cellNode, rect.width)
+        )
+      ) {
+        renderArgs?.requestAnimationFrame?.();
+      }
       const node = autoHeight
         ? withAutoHeight(cellNode, autoHeight, {
             ctx,

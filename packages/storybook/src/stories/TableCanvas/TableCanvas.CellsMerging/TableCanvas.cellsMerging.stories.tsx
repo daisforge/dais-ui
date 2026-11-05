@@ -2148,6 +2148,12 @@ const SUMMARY: SummaryRow[] = [{ values: { person: \`Всего: \${ROWS.length}
 
 type Vertical = 'top' | 'center' | 'bottom';
 
+const FLEX_BY_VERTICAL = {
+  top: 'flex-start',
+  center: 'center',
+  bottom: 'flex-end',
+} as const;
+
 export const Example = () => {
   const [vertical, setVertical] = useState<Vertical>('top');
   const [rows, setRows] = useState<Row[]>(ROWS);
@@ -2171,10 +2177,22 @@ export const Example = () => {
         key: 'deptCustom',
         name: 'Отдел (свой renderCell)',
         width: 200,
-        // Кастомная отрисовка получает весь блок: прилипания у неё нет.
+        // Прилипает как подпись, выравнивание и отступы задаёт сам.
         renderCell: ({ row, theme }) => (
-          <Canvas.Container padding={8} alignItems="flex-start">
+          <Canvas.Container
+            direction="column"
+            justifyContent={FLEX_BY_VERTICAL[vertical]}
+            alignItems="flex-start"
+            gap={4}
+            padding={{
+              top: theme.cellVerticalPadding,
+              bottom: theme.cellVerticalPadding,
+              left: theme.cellHorizontalPadding,
+              right: theme.cellHorizontalPadding,
+            }}
+          >
             <Canvas.Text color={theme.textDark}>{row.deptCustom}</Canvas.Text>
+            <Canvas.Badge text="Отдел" view="accent" size="s" />
           </Canvas.Container>
         ),
       },
@@ -2185,7 +2203,7 @@ export const Example = () => {
         renderSummaryCell: ({ row }) => row.values.person ?? '',
       },
     ],
-    [],
+    [vertical],
   );
 
   return (
@@ -2252,7 +2270,14 @@ const STICKY_ROWS: StickyRow[] = Array.from({ length: 60 }, (_, i) => {
 const STICKY_SUMMARY: StickySummaryRow[] = [
   { values: { person: `Всего: ${STICKY_ROWS.length}` } },
 ];
-const STICKY_COLUMNS: ColumnConfig<StickyRow, StickySummaryRow>[] = [
+const STICKY_FLEX_BY_VERTICAL = {
+  top: 'flex-start',
+  center: 'center',
+  bottom: 'flex-end',
+} as const;
+const getStickyColumns = (
+  vertical: StickyVertical,
+): ColumnConfig<StickyRow, StickySummaryRow>[] => [
   { key: 'dept', name: 'Отдел (текст)', width: 160 },
   {
     key: 'team',
@@ -2271,8 +2296,20 @@ const STICKY_COLUMNS: ColumnConfig<StickyRow, StickySummaryRow>[] = [
     name: 'Отдел (свой renderCell)',
     width: 200,
     renderCell: ({ row, theme }) => (
-      <Canvas.Container padding={8} alignItems="flex-start">
+      <Canvas.Container
+        direction="column"
+        justifyContent={STICKY_FLEX_BY_VERTICAL[vertical]}
+        alignItems="flex-start"
+        gap={4}
+        padding={{
+          top: theme.cellVerticalPadding,
+          bottom: theme.cellVerticalPadding,
+          left: theme.cellHorizontalPadding,
+          right: theme.cellHorizontalPadding,
+        }}
+      >
         <Canvas.Text color={theme.textDark}>{row.deptCustom}</Canvas.Text>
+        <Canvas.Badge text="Отдел" view="accent" size="s" />
       </Canvas.Container>
     ),
   },
@@ -2294,14 +2331,15 @@ export const StickyContent: Story = {
   render: () => {
     const [vertical, setVertical] = useState<StickyVertical>('top');
     const [rows, setRows] = useState<StickyRow[]>(STICKY_ROWS);
+    const columns = useMemo(() => getStickyColumns(vertical), [vertical]);
 
     return (
       <div>
         <StoryHint>
-          Прокрути таблицу: подпись «Отдела» и «Команды» держится в видимой
-          части блока по выбранному выравниванию, у конца блока уезжает вместе с
-          ним. Колонка со своим renderCell получает весь блок, её подпись уходит
-          за край. Клик по «Команде» открывает Select.
+          Прокрути таблицу: содержимое всех колонок держится в видимой части
+          блока по выбранному выравниванию, у конца блока уезжает вместе с ним и
+          не обрезается. Свой renderCell выравнивает содержимое сам, отступы
+          берёт из theme. Клик по «Команде» открывает Select.
         </StoryHint>
         <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
           {(['top', 'center', 'bottom'] as const).map((v) => (
@@ -2331,7 +2369,7 @@ export const StickyContent: Story = {
               mergedCellsAlign: { vertical },
             },
           }}
-          columnConfig={STICKY_COLUMNS}
+          columnConfig={columns}
           bottomSummaryRows={STICKY_SUMMARY}
           rows={rows}
         />

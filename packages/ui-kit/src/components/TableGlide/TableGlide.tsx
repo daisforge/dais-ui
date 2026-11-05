@@ -302,6 +302,9 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     () => new WeakMap<R, Map<string, CanvasCellCacheEntry>>(),
     [],
   );
+  // Высота содержимого блоков с прилипанием, снимается при отрисовке. Форк не сжимает
+  // содержимое меньше неё, а уводит его целиком вместе с краем блока.
+  const stickyContentHeights = useRef(new Map<string, number>());
   const dataEditorRef = useRef<DataEditorRef | null>(null);
 
   // Controlled-выделение приходит, когда грид НЕ в фокусе (напр. клик по внешней
@@ -871,12 +874,23 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
           : undefined;
       // Подпись блока в несколько строк по умолчанию сверху и остаётся
       // в видимой части блока при прокрутке.
+      const stickyBlockKey =
+        spanRows &&
+        spanRows[0] !== spanRows[1] &&
+        (column.spanContentSticky ?? true)
+          ? `${id}:${spanRows[0]}`
+          : undefined;
+      const stickyContentHeight =
+        stickyBlockKey !== undefined
+          ? stickyContentHeights.current.get(stickyBlockKey)
+          : undefined;
       const spanAlign: GridCell['spanAlign'] =
         spanRows && spanRows[0] !== spanRows[1]
           ? {
               vertical: DEFAULT_SPAN_VERTICAL_ALIGN,
               ...configuredSpanAlign,
-              sticky: column.spanContentSticky ?? !renderCell,
+              sticky: stickyBlockKey !== undefined,
+              ...(stickyContentHeight !== undefined && { stickyContentHeight }),
             }
           : configuredSpanAlign;
 
@@ -1025,6 +1039,18 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
           autoHeight:
             autoHeightReporter && !spansSeveralRows(spanRows)
               ? autoHeightReporter(row, rowInd, id, !!span)
+              : undefined,
+          reportStickyContentHeight:
+            stickyBlockKey !== undefined
+              ? (height) => {
+                  if (
+                    stickyContentHeights.current.get(stickyBlockKey) === height
+                  ) {
+                    return false;
+                  }
+                  stickyContentHeights.current.set(stickyBlockKey, height);
+                  return true;
+                }
               : undefined,
         })
       );
