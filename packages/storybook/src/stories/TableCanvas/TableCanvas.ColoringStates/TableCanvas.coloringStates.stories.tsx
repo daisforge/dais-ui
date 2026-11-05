@@ -7,13 +7,26 @@ import {
   type HighlightActiveType,
   TableCanvas,
 } from '@ui-kit/components/TableCanvas';
-import React, { useMemo, useState } from 'react';
+import { setTablePaletteOverride } from '@ui-kit/components/TableGlide/theming/palette-override';
+import React, { useEffect, useMemo, useState } from 'react';
+
+import {
+  buildHcPalette,
+  defaultStepFactor,
+  HC_THEMES,
+} from './stepFactorPalette';
 
 /**
  * Универсальный стенд состояний цветов таблицы: hover строки, выделение
  * (диапазон/колонка/строка), highlightActiveType, чекбокс-строки,
  * редактируемые ячейки, ячейки с ошибкой и статусные цвета потребителя.
- * Темы переключаются глобальным тулбаром Storybook.
+ * Темы переключаются глобальным тулбаром Storybook. Колонки «Отдел» и
+ * «Команда» объединяются по значению (переключатель «объединённые строки»).
+ *
+ * Ползунки «множитель шага» пересчитывают палитру контрастных тем на лету
+ * формулой генератора: насколько заметно ячейка темнеет под курсором. Нужны
+ * для подбора значения вместе с дизайнером; выбранное число вносится в
+ * THEME_SETTINGS генератора, затем npm run table-colors:palette.
  */
 
 type ColoringArgs = {
@@ -23,12 +36,20 @@ type ColoringArgs = {
   checkboxSelecting: boolean;
   editingEnabled: boolean;
   rowMarkers: boolean;
+  mergedCells: boolean;
+  hcLightStepFactor: number;
+  hcDarkStepFactor: number;
 };
+
+const STEP_FACTOR_CONTROL = {
+  control: { type: 'range', min: 0.5, max: 2.5, step: 0.05 },
+} as const;
 
 const meta: Meta<ColoringArgs> = {
   title: 'Локальные компоненты/TableCanvas/ColoringStates',
-  // Стенд для ручной проверки цветов, в сайдбаре не нужен, там только визуальные тесты
-  tags: ['!autodocs', 'hideInSidebar'],
+  // Стенд виден в меню: у скрытой тегом hideInSidebar стори Storybook не
+  // показывает панель контролов, а без неё не работают переключатели и ползунки.
+  tags: ['!autodocs'],
   args: {
     hoverRow: true,
     highlightActiveType: 'row',
@@ -36,8 +57,19 @@ const meta: Meta<ColoringArgs> = {
     checkboxSelecting: true,
     editingEnabled: true,
     rowMarkers: true,
+    mergedCells: true,
+    hcLightStepFactor: defaultStepFactor('highContrastLight'),
+    hcDarkStepFactor: defaultStepFactor('highContrastDark'),
   },
   argTypes: {
+    hcLightStepFactor: {
+      name: 'множитель шага: контрастная светлая',
+      ...STEP_FACTOR_CONTROL,
+    },
+    hcDarkStepFactor: {
+      name: 'множитель шага: контрастная тёмная',
+      ...STEP_FACTOR_CONTROL,
+    },
     hoverRow: {
       name: 'hoverEffects.row',
       control: 'boolean',
@@ -62,6 +94,10 @@ const meta: Meta<ColoringArgs> = {
     },
     rowMarkers: {
       name: 'rowMarkers (нумерация)',
+      control: 'boolean',
+    },
+    mergedCells: {
+      name: 'объединённые строки (Отдел, Команда)',
       control: 'boolean',
     },
   },
@@ -106,10 +142,24 @@ const priorityBgCell = (
   return key ? { bgCell: theme[key] } : undefined;
 };
 
+// Строки стенда с колонками для объединения: «Отдел» по 12 строк и вложенная
+// в него «Команда» по 4 строки, как блоки группировки.
+type StandRow = Row & { dept: string; team: string };
+const DEPTS = ['Продажи', 'Разработка', 'Поддержка', 'Финансы'];
+const TEAMS = ['Север', 'Юг', 'Запад'];
+const withBlocks = (rows: Row[]): StandRow[] =>
+  rows.map((row, index) => ({
+    ...row,
+    dept: DEPTS[Math.floor(index / 12) % DEPTS.length] ?? '',
+    team: TEAMS[Math.floor(index / 4) % TEAMS.length] ?? '',
+  }));
+
 export const ColoringStates: Story = {
   name: 'Состояния цветов (универсальный)',
   render: (args) => {
-    const [rows, setRows] = useState<Row[]>(() => createRows(0, 40));
+    const [rows, setRows] = useState<StandRow[]>(() =>
+      withBlocks(createRows(0, 40)),
+    );
     const selectingState = useState<ReadonlySet<string | number>>(
       () => new Set(),
     );
@@ -129,7 +179,9 @@ export const ColoringStates: Story = {
     );
 
     const columnConfig = useMemo(
-      (): ColumnConfig<Row, SummaryRow>[] => [
+      (): ColumnConfig<StandRow, SummaryRow>[] => [
+        { key: 'dept', name: 'Отдел', width: 130, renderSummaryCell },
+        { key: 'team', name: 'Команда', width: 120, renderSummaryCell },
         { key: 'id', name: 'ID', width: 70, renderSummaryCell },
         {
           key: 'task',
@@ -164,25 +216,53 @@ export const ColoringStates: Story = {
       [],
     );
 
+    // Палитра контрастных тем с множителями из ползунков. Подмена ставится
+    // до отрисовки таблицы, а key пересоздаёт таблицу, чтобы тема собралась
+    // заново с новыми цветами.
+    const factors = {
+      highContrastLight: args.hcLightStepFactor,
+      highContrastDark: args.hcDarkStepFactor,
+    };
+    const paletteKey = `${factors.highContrastLight}/${factors.highContrastDark}`;
+    useMemo(() => {
+      const palette = buildHcPalette(factors);
+      HC_THEMES.forEach((theme) => {
+        setTablePaletteOverride(theme, {
+          colors: palette[theme],
+          stepFactor: factors[theme],
+        });
+      });
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [paletteKey]);
+    useEffect(
+      () => () =>
+        HC_THEMES.forEach((theme) => setTablePaletteOverride(theme, undefined)),
+      [],
+    );
+
     return (
       <TableCanvas
+        key={paletteKey}
         tableConfig={{
           containerStyle: { height: '560px' },
           hoverEffects: { row: args.hoverRow },
           summaryRows: { showDefault: true, showInControl: false },
           highlightActiveType: args.highlightActiveType,
           cellsSelection: { mode: args.cellsSelectionMode },
+          ...(args.mergedCells && {
+            mergeCells: { mergeByCellValues: ['dept', 'team'] },
+          }),
           ...(args.rowMarkers && { rowMarkers: { startIndex: 1 } }),
           ...(args.checkboxSelecting && {
             selecting: {
               state: selectingState,
-              rowKeyGetter: (r: Row) => r.id,
+              rowKeyGetter: (r: StandRow) => r.id,
             },
           }),
           ...(args.editingEnabled && {
             editing: {
-              onRowsChange: (newRows: Row[]) => setRows([...newRows]),
-              rowKeyGetter: (r: Row) => r.id,
+              onRowsChange: (newRows: StandRow[]) => setRows([...newRows]),
+              rowKeyGetter: (r: StandRow) => r.id,
               defaultEnabled: true,
             },
           }),
