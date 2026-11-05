@@ -6,6 +6,7 @@ export type {
   ButtonVariant,
   ButtonView,
   EmbedIconButtonSize,
+  EmbedViewColors,
   GlideThemeForRender,
   ResolvedColors,
   SizeConfig,
@@ -15,29 +16,28 @@ export type {
 // Re-export constants
 export {
   BUTTON_PADDING_Y,
+  buildButtonViewColors,
+  buildEmbedIconButtonViewColors,
   CACHE_SEPARATOR,
-  DANGER_COLOR,
-  DANGER_TEXT_COLOR,
-  DEFAULT_ACCENT_FG,
   DEFAULT_BORDER_WIDTH,
   DEFAULT_BUTTON_RADIUS,
   DEFAULT_ICON_SIZE,
   DEFAULT_ICON_SPACING,
-  DEFAULT_SECONDARY_HOVER,
   DEFAULT_SIZE,
   DEFAULT_TEXT_PADDING,
   DEFAULT_VIEW,
-  DISABLED_BG_COLOR,
-  DISABLED_BORDER_COLOR,
-  DISABLED_TEXT_COLOR,
+  DISABLED_OPACITY,
+  FALLBACK_THEME,
+  getButtonViewColors,
+  getEmbedIconButtonViewColors,
   HEX_COLOR_CHAR_CODE,
   HEX_COLOR_PREFIX,
   ICON_SIZE_ADJUSTMENT,
-  LIGHTEN_AMOUNT,
+  LEGACY_VARIANT_VIEW,
   MAX_ICON_SIZE,
+  resolveTokens,
   SIZE_CONFIG,
   VIEW_COLORS,
-  buildButtonViewColors,
 } from './constants';
 
 // Re-export utility functions
@@ -48,20 +48,24 @@ export {
   getCachedTextWidth,
   lightenColor,
   lightenColorCached,
+  withOpacity,
 } from './utils';
 
 // Re-export color resolvers
 export {
+  getEmbedIconButtonColors,
   resolveButtonColors,
-  resolveDangerColors,
-  resolvePrimaryColors,
-  resolveSecondaryColors,
+  resolveCheckboxColors,
+  resolveEmbedIconButtonColors,
   resolveViewColors,
 } from './colorResolvers';
 
 // Re-export drawing functions
 export { drawButton, drawButtonWithView } from './drawButton';
-export { drawEmbedIconButtonWithView } from './drawEmbedIconButton';
+export {
+  drawEmbedIconButton,
+  drawEmbedIconButtonWithView,
+} from './drawEmbedIconButton';
 export { drawIcon } from './drawIcon';
 export { drawIconButton, drawIconButtonWithView } from './drawIconButton';
 
