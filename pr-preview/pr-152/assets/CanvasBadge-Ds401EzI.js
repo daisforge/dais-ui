@@ -1,0 +1,18 @@
+import{j as r}from"./react-D2T61mpp.js";import{cg as i,ch as s,ca as t}from"./vendor-6eBWuSjz.js";import{C as c}from"./CanvasBadge.stories-DLB0t5y0.js";import"./react-is-Clcustum.js";import"./styled-components-BMGTmUgW.js";import"./@tanstack/react-virtual-MDtUeDVT.js";import"./tslib-DoU9Jm1N.js";import"./storySourceDoc-tVKyHcEN.js";import"./TableCanvas-u1pEgSxb.js";import"./@sddsjs/sdds_finai-DNELm_9o.js";import"./utils-Mo0b1AE1.js";import"./constants-AGfDpPJ5.js";import"./sharedUtilsDebug-BX_KjCjW.js";import"./@salutejs/sdds-finai-Bq94c94L.js";import"./@salutejs/plasma-icons-DDZ7vpYp.js";import"./sharedUtilsCopy-CGH-mx0N.js";import"./FiltersActions-D_JavMlz.js";import"./IconButton-CVfJD9ZB.js";import"./Box-RIpr-WH3.js";import"./TextField-DdSLBvHq.js";import"./sharedUtilsInputs-D-o7mT-p.js";import"./AiAgentPopup-CAwNB9IH.js";import"./TextArea-D5pq0Nz3.js";import"./sharedUtilsResizable-BHwU7PNv.js";import"./@salutejs/sdds-themes-xIOWIAKk.js";import"./Table-Deq5A059.js";import"./Collapse-DCuD2Q45.js";import"./react-data-grid-C5E-kGD5.js";import"./TableTabs-CPhmfmwG.js";import"./TableCanvasSharedConstants-B2qJZwC8.js";import"./TableGlide-B5cJAa2K.js";import"./@glideappsfinal/glide-data-grid-BR6y2PD1.js";import"./canvas-hypertxt-DsokSIOX.js";import"./sharedUiSearch-DATKPIpc.js";import"./ListOfFilters-DCdhGoco.js";import"./lodash.isequal-DD0Lfcik.js";import"./NumberFormat-BS5yTrJL.js";import"./EmptyState-B35jMMW8.js";import"./MassActions-C3WrpNpv.js";import"./Autocomplete-B8n71FNk.js";import"./ErrorPage-BTb2kRb9.js";function o(n){const e={a:"a",code:"code",h1:"h1",h2:"h2",li:"li",p:"p",pre:"pre",ul:"ul",...i(),...n.components};return r.jsxs(r.Fragment,{children:[r.jsx(s,{of:c,name:"Docs"}),`
+`,r.jsx(e.h1,{id:"canvasbadge",children:"Canvas.Badge"}),`
+`,r.jsxs(e.p,{children:["Бейдж для отображения статусов и меток в ячейках ",r.jsx(e.code,{children:"TableCanvas"}),"."]}),`
+`,r.jsx(e.h2,{id:"ключевые-особенности",children:"Ключевые особенности"}),`
+`,r.jsxs(e.ul,{children:[`
+`,r.jsxs(e.li,{children:["Несколько встроенных ",r.jsx(e.code,{children:"view"})," и ",r.jsx(e.code,{children:"size"})]}),`
+`,r.jsxs(e.li,{children:["Режимы ",r.jsx(e.code,{children:"transparent"}),", ",r.jsx(e.code,{children:"clear"}),", ",r.jsx(e.code,{children:"pilled"})]}),`
+`,r.jsxs(e.li,{children:["Кастомные цвета через ",r.jsx(e.code,{children:"customColor"})," / ",r.jsx(e.code,{children:"customBackgroundColor"})]}),`
+`,r.jsxs(e.li,{children:["Поддержка ",r.jsx(e.code,{children:"leftIcon"})," / ",r.jsx(e.code,{children:"rightIcon"})]}),`
+`,r.jsxs(e.li,{children:["Подсветка фрагмента текста ",r.jsx(e.a,{href:"?path=/docs/%D0%BB%D0%BE%D0%BA%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D1%8B-tablecanvas-canvaselements-canvasmark--docs",children:r.jsx(e.code,{children:"Canvas.Mark"})}),": текст с разметкой передаётся в ",r.jsx(e.code,{children:"children"}),", ",r.jsx(e.code,{children:"text"})," — только строка (если заданы оба — используются ",r.jsx(e.code,{children:"children"}),")"]}),`
+`]}),`
+`,r.jsx(e.pre,{children:r.jsx(e.code,{className:"language-tsx",children:`<Canvas.Badge text="Трайб «Диджитал вкладов»" />
+<Canvas.Badge>
+  Трайб «<Canvas.Mark color="#ffe27a">Диджитал</Canvas.Mark> вкладов»
+</Canvas.Badge>
+`})}),`
+`,r.jsxs(e.p,{children:["Описание типов — в разделе ",r.jsx(e.a,{href:"?path=/docs/%D0%BB%D0%BE%D0%BA%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D1%8B-tablecanvas-canvaselements-canvasbadge-api--docs",children:"API"}),"."]}),`
+`,r.jsx(t,{})]})}function V(n={}){const{wrapper:e}={...i(),...n.components};return e?r.jsx(e,{...n,children:r.jsx(o,{...n})}):o(n)}export{V as default};
