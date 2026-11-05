@@ -83,11 +83,10 @@ type TempFillGroup = {
 
 const TEMP_FILLS: TempFillGroup[] = [
   {
-    // data-yellow-light: в теме amber-150 #FFE4AE (ошибка релиза 0.78.0), по решению
-    // дизайнера нужен amber-100 #FFF6E5. В beta light то же: в теме amber/150 #FFE3BD,
-    // нужен amber/100 #FFF5E7. Запрос в SDDS отправлен дизайнером 19.10.2026; когда
-    // темы исправят, группу убрать. Остальные темы берут значение темы
-    // (в beta и контрастной токен называется data-yellow-on-light).
+    // data-yellow-light: в теме amber-150 #FFE4AE, нужен amber-100 #FFF6E5. В beta
+    // light то же: в теме amber/150 #FFE3BD, нужен amber/100 #FFF5E7. Когда темы SDDS
+    // исправят, группу убрать. Остальные темы берут значение темы (в beta и
+    // контрастной токен называется data-yellow-on-light).
     keys: {
       rest: 'bgEditableCell',
       hover: 'bgEditableCellHovered',
@@ -99,7 +98,7 @@ const TEMP_FILLS: TempFillGroup[] = [
       light: '#FFF6E5',
       betaCoreLight: '#FFF5E7',
     },
-    why: 'временно: в теме data-yellow-light стоит amber-150, по решению дизайнера нужен amber-100; запрос в SDDS отправлен',
+    why: 'временно: в теме data-yellow-light стоит amber-150, нужен amber-100; ждём исправления в SDDS',
   },
 ];
 

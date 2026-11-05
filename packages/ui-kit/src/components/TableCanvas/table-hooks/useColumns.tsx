@@ -62,6 +62,7 @@ import { createLazyRowSpan } from './createLazyRowSpan';
 import { createMergeByValueRowSpan } from './createMergeByValueRowSpan';
 import { createMergedRegionsResolver } from './createMergedRegionsResolver';
 import { resolveMergedView } from './resolveMergedView';
+import { resolveSpanVerticalAlign } from './resolveSpanVerticalAlign';
 
 export const useColumns = <
   FilterStateType extends ObjectForExtending,
@@ -524,28 +525,6 @@ export const useColumns = <
                 : errorTooltipSub?.(clearRow, lvl);
             };
 
-      const renderEditCell: ColumnX['renderEditCell'] = (() => {
-        if (isServiceEditableColumn(el)) {
-          return el.renderEditCell;
-        }
-
-        if (!tableConfigEditing || isLoadingTable) {
-          return undefined;
-        }
-
-        // eslint-disable-next-line react/no-unstable-nested-components
-        return (renderEditCellProps) => (
-          <RenderEditCell
-            editingCellInfo={renderEditCellProps}
-            column={el}
-            tableConfigSubRows={tableConfig.subRows}
-            tableConfigRowDetailPanel={undefined}
-            currIndex={currIndex}
-            indexZeroColKey={indexZeroColKey}
-            keyText={keyText}
-          />
-        );
-      })();
       // && el.resizable - теперь нет точечной настройки для колонки
       const resizable = getColumnIsService(el)
         ? false
@@ -617,6 +596,33 @@ export const useColumns = <
           typeof columnAlign === 'function' ? resolveColumnAlign : columnAlign;
       }
 
+      const renderEditCell: ColumnX['renderEditCell'] = (() => {
+        if (isServiceEditableColumn(el)) {
+          return el.renderEditCell;
+        }
+
+        if (!tableConfigEditing || isLoadingTable) {
+          return undefined;
+        }
+
+        // eslint-disable-next-line react/no-unstable-nested-components
+        return (renderEditCellProps) => (
+          <RenderEditCell
+            editingCellInfo={renderEditCellProps}
+            column={el}
+            mergedVerticalAlign={resolveSpanVerticalAlign(
+              spanAlign,
+              renderEditCellProps,
+            )}
+            tableConfigSubRows={tableConfig.subRows}
+            tableConfigRowDetailPanel={undefined}
+            currIndex={currIndex}
+            indexZeroColKey={indexZeroColKey}
+            keyText={keyText}
+          />
+        );
+      })();
+
       const userThemeOverride = el.themeOverride;
       const columnThemeOverride = userThemeOverride
         ? (cellInfo: Parameters<typeof userThemeOverride>[0]) => {
@@ -673,13 +679,8 @@ export const useColumns = <
         ...(colSpan && { colSpan }),
         ...(rowSpan && { rowSpan }),
         ...(spanAlign && { spanAlign }),
-        // Каждая колонка TableCanvas рисуется через общий renderCell, поэтому
-        // «встроенная ли отрисовка» решается здесь: прилипание содержимого
-        // объединённой ячейки только без кастомного renderCell потребителя.
-        // У служебных колонок (чекбокс, номер) renderCell наш.
-        ...(rowSpan && {
-          spanContentSticky: !el.renderCell || getColumnIsService(el),
-        }),
+        // Подпись объединённой ячейки прилипает только без своего renderCell.
+        spanContentSticky: !el.renderCell || getColumnIsService(el),
       };
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps

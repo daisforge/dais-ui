@@ -22,7 +22,7 @@ export type DefaultOmittedKeys = Extract<
   | 'rowSpan'
   // Выравнивание блока публично задаётся через mergedCellsAlign / mergeCells.align.
   | 'spanAlign'
-  // Прилипание вычисляет сама таблица: есть ли у колонки кастомный renderCell.
+  // Прилипание подписи блока таблица решает сама.
   | 'spanContentSticky'
 >;
 
