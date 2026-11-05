@@ -9,7 +9,6 @@ import {
 } from 'react';
 import styled from 'styled-components';
 
-import { DEFAULT_SPAN_VERTICAL_ALIGN } from '../../TableGlide/constants';
 import { useRowContext } from '../contexts';
 import { SIZES } from '../styles';
 import { EditingCellInfo, ObjectForExtending } from '../types';
@@ -167,11 +166,9 @@ export function CellEditorComboboxInternal<
 
   const value = row[column.key as keyof TRow];
 
-  // У объединённой ячейки с подписью внизу список открывается вверх.
-  const placement =
-    (mergedVerticalAlign ?? DEFAULT_SPAN_VERTICAL_ALIGN) === 'bottom'
-      ? 'top'
-      : 'bottom';
+  // По выравниванию блока ставим поле, а при подписи внизу список открывается вверх.
+  const verticalAlign = mergedVerticalAlign;
+  const placement = verticalAlign === 'bottom' ? 'top' : 'bottom';
 
   const options = (() => {
     if (
