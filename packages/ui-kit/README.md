@@ -58,7 +58,7 @@ SDDS и приложение теперь используют одну тему
 
 Ручная палитра состояний таблиц автоматически не меняется.
 `npm run table-colors:check-sdds` показывает её расхождения с новыми темами
-([результат сверки](../../generators/table-token-states/README.md#сверка-с-sdds-03670--темами-020-2026-11-03));
+([результат сверки](../../generators/table-token-states/README.md#сверка-с-sdds-03671-dev0--темами-021-2026-11-05));
 [отчёт генератора цветов содержимого](../../generators/table-content-tokens/report.md)
 фиксирует обновлённые источники и сохранённые ручные значения.
 
@@ -71,12 +71,17 @@ SDDS и приложение теперь используют одну тему
 
 Метаданные компонентов перегенерированы по установленным типам, документация
 SDDS — по тегу 0.367.1-dev.0. Vendor-снимок MCP остаётся на 0.367.0:
-проверка CDN для 0.367.1-dev.0 с `--on-missing=keep` подтвердила его отсутствие.
+при проверке 5 ноября 2026 года CDN-снимок 0.367.1-dev.0 был недоступен,
+поэтому `--on-missing=keep` сохранил предыдущий снимок.
 5 ноября 2026 года vendor-снимок MCP обновлён с CDN
 до 0.367.0 командой `npm run mcp:vendor-atomic -- --version=0.367.0 --on-missing=fail`.
 Источник и контрольные суммы записаны в `packages/mcp-server/vendor/atomic-mcp-data/provenance.json`.
 Обновление снимка не устраняет автоматически существующие ошибки нашего индекса
 и валидатора (публичные импорты, Canvas-примитивы, обязательность свойств).
+На коммите `9d6047f68` наполненность индекса проходит (260 компонентов),
+`mcp:validate-index` выдаёт 505 атрибутированных диагностик из 640 tsc,
+search-eval — 8/12; эти результаты не изменились от dev-обновления.
+Exit code 0 у валидатора не означает отсутствие диагностик.
 Актуальные результаты проверок приведены в [PR №152](https://github.com/daisforge/dais-ui/pull/152).
 
 Переход с `0.367.0` на `0.367.1-dev.0` включён в этот PR по решению 5 ноября.
@@ -86,7 +91,28 @@ SDDS — по тегу 0.367.1-dev.0. Vendor-снимок MCP остаётся �
 сгенерированные цвета содержимого Canvas остались прежними. Отчёт генератора
 сравнивает наличие имён переменных, а не все значения CSS; подробности обновления
 и проверок — в PR №152.
+[Changelog dev-релиза](https://github.com/salute-developers/plasma/releases/tag/%40salutejs/sdds-finai%400.367.1-dev.0).
 Проверка/исправление загрузки шрифтов остаётся задачей отдельной ветки.
+
+### Результаты проверок обновления (5 ноября 2026, коммит `9d6047f68`)
+
+Типы, unit-тесты (88 файлов / 797 тестов), проверки генератора (19 тестов),
+сборка с postbuild и production Storybook, установка tgz и сборка изолированного
+Vite-потребителя прошли. Lint: 0 ошибок, 34 предупреждения; для ui-kit
+после OOM потребовался heap 4 GB. Webpack-проекты в репозитории отсутствуют.
+
+Полный Docker compare: **564/566 сценариев**, совпали **536/538 PNG**,
+28 прежних PNG-skip. Приняты 39 просмотренных изменений PNG; допуски и пропуски
+не менялись. Прогон остаётся красным: `SummaryRowsOnChange` — 31 пиксель
+в подписи «Итоговые строки»; `HighlightActiveTypePlayground` — 98 пикселей
+в нижней панели «Выбрано 2 / Сбросить всё». Точная причина нестабильности
+между запусками и её связь со шрифтами не установлены.
+
+[Storybook PR №152](https://daisforge.github.io/dais-ui/pr-preview/pr-152/).
+Сравнение размеров 0.367.0 → 0.367.1-dev.0 приведено в
+[описании PR](https://github.com/daisforge/dais-ui/pull/152):
+архив SDDS вырос на 9 174 байта (+0,72%), JS Vite-потребителя в gzip —
+на 369 байт (+0,035%). Новых имён пакетов в зависимостях не появилось.
 
 ## Настройка
 
@@ -117,16 +143,18 @@ root.render(
 import React from 'react';
 import { createGlobalStyle } from 'styled-components';
 
-import { compatible_typo_theme, light_sdds_serv_theme, light_web_theme, standard_typo_theme } from '../themes';
+import {
+  compatible_typo_theme,
+  sdds_finai__light,
+  standard_typo_theme,
+} from '@daisforge/ui/themes';
 
-const WebTheme = createGlobalStyle(light_web_theme);
 const StandardTypoTheme = createGlobalStyle(standard_typo_theme);
 const CompatibleTypoTheme = createGlobalStyle(compatible_typo_theme);
-const SDDSTheme = createGlobalStyle(light_sdds_serv_theme);
+const SDDSTheme = createGlobalStyle(sdds_finai__light);
 
 export const GlobalStyle = () => (
   <>
-    <WebTheme />
     <StandardTypoTheme />
     <CompatibleTypoTheme />
     <SDDSTheme />
@@ -150,11 +178,10 @@ import { textAccent } from '@daisforge/ui/tokens';
 
 export const App = () => {
     return (
-        <Button>Hello!</Button>
-
-        <p style={{color: textAccent}}>
-            Token usage example
-        </p>
+        <>
+            <Button>Hello!</Button>
+            <p style={{color: textAccent}}>Token usage example</p>
+        </>
     );
 };
 ```
@@ -174,11 +201,12 @@ export const App = () => {
 };
 ```
 
-## Возможное решение проблем:
+## Предупреждение source-map-loader в Webpack
 
-`Failed to parse source map from ...`
-
-Решение: Добавить в конфиг вебпака
+Этот раздел относится к приложениям-потребителям на Webpack. Предупреждение
+`Failed to parse source map from ...` не было выявлено как регрессия обновления SDDS.
+Если проблема подтверждена именно в сторонних source maps, можно подавить
+предупреждения этого loader в конфигурации потребителя:
 
 ```js
 module.exports = {

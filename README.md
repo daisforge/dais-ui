@@ -12,9 +12,10 @@
 
 #### Структура
 
-Библиотека пользовательских компонентов состоит из 2-х пакетов: ui-kit, storybook.
+Основные пакеты: ui-kit, storybook и mcp-server; vite-project — отдельное тестовое приложение.
 
 - ui-kit - основной проект из которого собирается npm-пакет. В данной директории находятся переиспользуемые компоненты, утилиты, иконки, и др., которые в последствии предоставляются пользователям.
+- mcp-server — MCP-сервер с индексом компонентов и примерами для кодовых агентов.
 - storybook - пакет, в котором размещаются story для компонентов. Для визуального тестирования компонентов и для ознакомления пользователей с ними. Данный пакет выкладывается на [стенд библиотеки][stend-storybook]
   ​
 
@@ -37,9 +38,8 @@
 ├── packages/
 │   ├── ui-kit/           # Основной npm-пакет с компонентами
 │   ├── storybook/        # Storybook для документации и тестирования
-│   ├── vite-project/     # Тестовый проект на Vite
-│   ├── webpack-finportal-platform/  # Тестовый проект на Webpack (Finportal)
-│   └── webpack-project-finalheader/ # Тестовый проект на Webpack (Finalheader)
+│   ├── mcp-server/       # MCP-сервер и индекс компонентов
+│   └── vite-project/     # Тестовый проект на Vite
 └── generators/           # Скрипты генерации кода
 ```
 
@@ -530,11 +530,11 @@ export type TMutationRegister<TFieldValues extends FieldValues> = {
 
 | Пакет                             | Версия        | Назначение                   |
 | --------------------------------- | ------------- | ---------------------------- |
-| `@salutejs/sdds-finai`            | ^0.367.0      | Базовые атомарные компоненты |
+| `@salutejs/sdds-finai`            | 0.367.1-dev.0      | Базовые атомарные компоненты |
 | `@salutejs/plasma-icons`          | ^1.257.0      | Иконки                       |
 | `@salutejs/plasma-typo`           | ^0.59.0       | Typo tokens                  |
 | `@salutejs/sdds-themes`           | ^0.86.0       | Совместимость градиентных теней |
-| `@sddsjs/sdds_finai` | 0.2.0 | Темы и дизайн-токены FinAI |
+| `@sddsjs/sdds_finai` | 0.2.1 | Темы и дизайн-токены FinAI |
 | `react`                           | 18.3.1        | Core                         |
 | `react-dom`                       | 18.3.1        | Core                         |
 | `styled-components`               | 5.3.11         | CSS-in-JS                    |
@@ -551,6 +551,11 @@ export type TMutationRegister<TFieldValues extends FieldValues> = {
 - `react-grid-layout`
 
 ---
+
+SDDS dev-версия закреплена точно; в корне используется override
+`@salutejs/plasma-new-hope 0.388.1-dev.0`. Для приложений-потребителей требуется
+`styled-components ^5.3.11`. Совместимость тем, Dropdown, MCP и результаты
+обновления описаны в [README ui-kit](packages/ui-kit/README.md#обновление-sdds-до-03671-dev0).
 
 ## 🛠️ Скрипты и утилиты
 
@@ -574,10 +579,13 @@ npm run ui-kit:updateX
 ### Test projects
 
 ```bash
-npm run vite-project:*     # Запуск Vite тестов
-npm run webpack-project:*  # Запуск Webpack тестов
-npm run finportal:*        # Запуск Finportal тестов
+npm run vite-project:build # Сборка тестового Vite-приложения
 ```
+
+Webpack-каталогов `packages/webpack-project-finalheader` и
+`packages/webpack-finportal-platform` в этой ветке нет. Сохранённые команды
+`webpack-project:*` / `finportal:*` требуют отдельных копий этих проектов;
+их сборки не входят в выполненные проверки обновления SDDS.
 
 ### Generates
 

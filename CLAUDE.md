@@ -40,9 +40,8 @@ lib-3/
 │   │   │   └── index.ts     # Основной экспорт
 │   │   └── vite.config.ts   # Конфигурация сборки библиотеки с ручными чанками
 │   ├── storybook/           # Storybook для документации и скриншотных тестов
-│   ├── vite-project/        # Тестовое приложение на Vite
-│   ├── webpack-finportal-platform/  # Тестовое приложение на Webpack (Finportal)
-│   └── webpack-project-finalheader/ # Тестовое приложение на Webpack (Finalheader)
+│   ├── mcp-server/          # MCP-сервер и индекс компонентов
+│   └── vite-project/        # Тестовое приложение на Vite
 ├── generators/              # Скрипты генерации кода
 ├── scripts/                 # Скрипты сборки/тестирования
 ├── .nx/                     # Кэш Nx
@@ -118,7 +117,7 @@ npm run vite-project:dev      # Запуск dev-сервера
 npm run vite-project:build    # Сборка
 npm run vite-project:preview  # Предпросмотр собранного
 
-# Тестовые проекты Webpack (Finportal/Finalheader)
+# Команды для внешних копий Webpack-проектов (каталогов в этой ветке нет)
 npm run webpack-project:dev
 npm run finportal:dev
 ```
@@ -305,7 +304,7 @@ import { ModalDF } from '@ui-kit/components';
 
 ### Юнит-тесты (Vitest)
 
-- Ограниченное покрытие (~5 файлов тестов на момент анализа)
+- На проверенном коммите `9d6047f68`: 88 файлов, 797 пройденных тестов; это результат запуска, а не оценка покрытия.
 - Конфигурация: `vitest.workspace.ts`, `packages/ui-kit/vite.config.ts`
 - Globals включены, среда jsdom, coverage V8
 
@@ -591,10 +590,10 @@ fp:
 
 | Пакет                             | Версия        | Назначение                   |
 | --------------------------------- | ------------- | ---------------------------- |
-| `@salutejs/sdds-finai`            | ^0.367.0      | Базовые атомарные компоненты |
+| `@salutejs/sdds-finai`            | 0.367.1-dev.0      | Базовые атомарные компоненты |
 | `@salutejs/plasma-icons`          | ^1.257.0      | Иконки                       |
 | `@salutejs/plasma-typo`           | ^0.59.0       | Токены типографики           |
-| `@sddsjs/sdds_finai` | 0.2.0 | Темы и токены |
+| `@sddsjs/sdds_finai` | 0.2.1 | Темы и токены |
 | `@salutejs/sdds-themes`           | ^0.86.0       | Совместимость shadowGradient    |
 | `react` / `react-dom`             | 18.3.1        | Core                         |
 | `styled-components`               | ^5.3.11        | CSS-in-JS                    |
@@ -604,13 +603,18 @@ fp:
 | `@glideappsfinal/glide-data-grid` | ^6.11.0       | TableCanvas                  |
 | `react-data-grid`                 | 7.0.0-beta.43 | Table (устаревшая)           |
 
+SDDS dev-версия закреплена точно; в корне используется override
+`@salutejs/plasma-new-hope 0.388.1-dev.0`. Для приложений-потребителей требуется
+`styled-components ^5.3.11`. Совместимость тем, Dropdown, MCP и результаты
+обновления описаны в [README ui-kit](packages/ui-kit/README.md#обновление-sdds-до-03671-dev0).
+
 ### Peer зависимости
 
 - `react` (>=17.0.0)
 - `react-dom` (>=17.0.0)
 - `react-grid-layout` (^1.5.2)
 - `react-hook-form` (^7.54.2)
-- `styled-components` (5.3.11)
+- `styled-components` (^5.3.11)
 - `swr` (^2.3.3)
 
 ---
