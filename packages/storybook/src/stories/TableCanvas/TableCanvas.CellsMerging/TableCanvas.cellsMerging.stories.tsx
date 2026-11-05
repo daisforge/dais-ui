@@ -2113,136 +2113,45 @@ export const LazyRowSpanSorted: Story = {
 
 // ── Прилипание подписи в высоком блоке ──────────────────────────────────────
 
-const STICKY_CONTENT_CODE = `
-import { useMemo, useState } from 'react';
+const STICKY_CONTENT_PRE_CODE = `
 import { Button } from '@daisforge/ui';
 import {
   Canvas,
   type ColumnConfig,
   TableCanvas,
 } from '@daisforge/ui/components/TableCanvas';
+import { useMemo, useState } from 'react';
 
-type Row = {
+type StickyRow = {
   id: number;
   dept: string;
   deptCustom: string;
   team: string;
   person: string;
 };
-type SummaryRow = { values: Record<string, string> };
+type StickySummaryRow = { values: Record<string, string> };
+type StickyVertical = 'top' | 'center' | 'bottom';
 
-// Отдел: блоки по 15 строк, команда: по 5 строк внутри отдела.
-const DEPTS = ['Продажи', 'Разработка', 'Поддержка', 'Финансы'];
-const TEAMS = ['Север', 'Юг', 'Запад'];
-const ROWS: Row[] = Array.from({ length: 60 }, (_, i) => {
-  const dept = DEPTS[Math.floor(i / 15)];
+const STICKY_DEPTS = ['Продажи', 'Разработка', 'Поддержка', 'Финансы'];
+const STICKY_TEAMS = ['Север', 'Юг', 'Запад'];
+const STICKY_ROWS: StickyRow[] = Array.from({ length: 60 }, (_, i) => {
+  const dept = STICKY_DEPTS[Math.floor(i / 15)] ?? '';
   return {
     id: i + 1,
     dept,
     deptCustom: dept,
-    team: TEAMS[Math.floor(i / 5) % TEAMS.length],
+    team: STICKY_TEAMS[Math.floor(i / 5) % STICKY_TEAMS.length] ?? '',
     person: \`Сотрудник \${i + 1}\`,
   };
 });
-const SUMMARY: SummaryRow[] = [{ values: { person: \`Всего: \${ROWS.length}\` } }];
-
-type Vertical = 'top' | 'center' | 'bottom';
-
-const FLEX_BY_VERTICAL = {
+const STICKY_SUMMARY: StickySummaryRow[] = [
+  { values: { person: \`Всего: \${STICKY_ROWS.length}\` } },
+];
+const STICKY_FLEX_BY_VERTICAL = {
   top: 'flex-start',
   center: 'center',
   bottom: 'flex-end',
 } as const;
-
-export const Example = () => {
-  const [vertical, setVertical] = useState<Vertical>('top');
-  const [rows, setRows] = useState<Row[]>(ROWS);
-
-  const columns = useMemo(
-    (): ColumnConfig<Row, SummaryRow>[] => [
-      { key: 'dept', name: 'Отдел (текст)', width: 160 },
-      {
-        key: 'team',
-        name: 'Команда (Select)',
-        width: 180,
-        editingCell: {
-          component: 'select',
-          options: {
-            type: 'constant',
-            options: TEAMS.map((t) => ({ text: t, value: t })),
-          },
-        },
-      },
-      {
-        key: 'deptCustom',
-        name: 'Отдел (свой renderCell)',
-        width: 200,
-        // Прилипает как подпись, выравнивание и отступы задаёт сам.
-        renderCell: ({ row, theme }) => (
-          <Canvas.Container
-            direction="column"
-            justifyContent={FLEX_BY_VERTICAL[vertical]}
-            alignItems="flex-start"
-            gap={4}
-            padding={{
-              top: theme.cellVerticalPadding,
-              bottom: theme.cellVerticalPadding,
-              left: theme.cellHorizontalPadding,
-              right: theme.cellHorizontalPadding,
-            }}
-          >
-            <Canvas.Text color={theme.textDark}>{row.deptCustom}</Canvas.Text>
-            <Canvas.Badge text="Отдел" view="accent" size="s" />
-          </Canvas.Container>
-        ),
-      },
-      {
-        key: 'person',
-        name: 'Сотрудник',
-        width: 200,
-        renderSummaryCell: ({ row }) => row.values.person ?? '',
-      },
-    ],
-    [vertical],
-  );
-
-  return (
-    <div>
-      <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
-        {(['top', 'center', 'bottom'] as const).map((v) => (
-          <Button
-            key={v}
-            size="s"
-            view={vertical === v ? 'accent' : 'secondary'}
-            onClick={() => setVertical(v)}
-          >
-            {v}
-          </Button>
-        ))}
-      </div>
-      <TableCanvas
-        tableConfig={{
-          containerStyle: { height: '480px' },
-          rowMarkers: { startIndex: 1 },
-          hoverEffects: { row: true },
-          summaryRows: { showDefault: true, showInControl: false },
-          editing: {
-            onRowsChange: (next: Row[]) => setRows([...next]),
-            rowKeyGetter: (r: Row) => r.id,
-            defaultEnabled: true,
-          },
-          mergeCells: {
-            mergeByCellValues: ['dept', 'deptCustom', 'team'],
-            mergedCellsAlign: { vertical },
-          },
-        }}
-        columnConfig={columns}
-        bottomSummaryRows={SUMMARY}
-        rows={rows}
-      />
-    </div>
-  );
-};
 `;
 
 type StickyRow = {
@@ -2275,72 +2184,79 @@ const STICKY_FLEX_BY_VERTICAL = {
   center: 'center',
   bottom: 'flex-end',
 } as const;
-const getStickyColumns = (
-  vertical: StickyVertical,
-): ColumnConfig<StickyRow, StickySummaryRow>[] => [
-  { key: 'dept', name: 'Отдел (текст)', width: 160 },
-  {
-    key: 'team',
-    name: 'Команда (Select)',
-    width: 180,
-    editingCell: {
-      component: 'select',
-      options: {
-        type: 'constant',
-        options: STICKY_TEAMS.map((t) => ({ text: t, value: t })),
-      },
-    },
-  },
-  {
-    key: 'deptCustom',
-    name: 'Отдел (свой renderCell)',
-    width: 200,
-    renderCell: ({ row, theme }) => (
-      <Canvas.Container
-        direction="column"
-        justifyContent={STICKY_FLEX_BY_VERTICAL[vertical]}
-        alignItems="flex-start"
-        gap={4}
-        padding={{
-          top: theme.cellVerticalPadding,
-          bottom: theme.cellVerticalPadding,
-          left: theme.cellHorizontalPadding,
-          right: theme.cellHorizontalPadding,
-        }}
-      >
-        <Canvas.Text color={theme.textDark}>{row.deptCustom}</Canvas.Text>
-        <Canvas.Badge text="Отдел" view="accent" size="s" />
-      </Canvas.Container>
-    ),
-  },
-  {
-    key: 'person',
-    name: 'Сотрудник',
-    width: 200,
-    renderSummaryCell: ({ row }) => row.values['person'] ?? '',
-  },
-];
 
 export const StickyContent: Story = {
   name: 'Прилипание подписи в высоком блоке',
   ...storySourceDoc({
-    code: STICKY_CONTENT_CODE,
+    preCode: STICKY_CONTENT_PRE_CODE,
     type: 'code',
     previewSource: 'shown',
   }),
-  render: () => {
-    const [vertical, setVertical] = useState<StickyVertical>('top');
-    const [rows, setRows] = useState<StickyRow[]>(STICKY_ROWS);
-    const columns = useMemo(() => getStickyColumns(vertical), [vertical]);
-
-    return (
-      <div>
+  decorators: [
+    (Story) => (
+      <>
         <StoryHint>
           Прокрути таблицу: содержимое всех колонок держится в видимой части
           блока по выбранному выравниванию, у конца блока уезжает вместе с ним и
           не обрезается. Свой renderCell выравнивает содержимое сам, отступы
           берёт из theme. Клик по «Команде» открывает Select.
         </StoryHint>
+        <Story />
+      </>
+    ),
+  ],
+  render: () => {
+    const [vertical, setVertical] = useState<StickyVertical>('top');
+    const [rows, setRows] = useState<StickyRow[]>(STICKY_ROWS);
+    const columns = useMemo(
+      (): ColumnConfig<StickyRow, StickySummaryRow>[] => [
+        { key: 'dept', name: 'Отдел (текст)', width: 160 },
+        {
+          key: 'team',
+          name: 'Команда (Select)',
+          width: 180,
+          editingCell: {
+            component: 'select',
+            options: {
+              type: 'constant',
+              options: STICKY_TEAMS.map((t) => ({ text: t, value: t })),
+            },
+          },
+        },
+        {
+          key: 'deptCustom',
+          name: 'Отдел (свой renderCell)',
+          width: 200,
+          renderCell: ({ row, theme }) => (
+            <Canvas.Container
+              direction="column"
+              justifyContent={STICKY_FLEX_BY_VERTICAL[vertical]}
+              alignItems="flex-start"
+              gap={4}
+              padding={{
+                top: theme.cellVerticalPadding,
+                bottom: theme.cellVerticalPadding,
+                left: theme.cellHorizontalPadding,
+                right: theme.cellHorizontalPadding,
+              }}
+            >
+              <Canvas.Text color={theme.textDark}>{row.deptCustom}</Canvas.Text>
+              <Canvas.Badge text="Отдел" view="accent" size="s" />
+            </Canvas.Container>
+          ),
+        },
+        {
+          key: 'person',
+          name: 'Сотрудник',
+          width: 200,
+          renderSummaryCell: ({ row }) => row.values['person'] ?? '',
+        },
+      ],
+      [vertical],
+    );
+
+    return (
+      <div>
         <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
           {(['top', 'center', 'bottom'] as const).map((v) => (
             <Button
