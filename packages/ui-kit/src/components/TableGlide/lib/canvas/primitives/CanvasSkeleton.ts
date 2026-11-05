@@ -1,5 +1,4 @@
-import type { Theme } from '../../../theming/types';
-import { resolveTokens } from '../cells/buttons';
+import { type GlideThemeForRender, resolveTokens } from '../cells/buttons';
 import { CanvasLeaf } from '../core/CanvasLeaf';
 import { DrawBatcher } from '../core/DrawBatcher';
 import type { Tokens } from '../../../tokens';
@@ -35,7 +34,7 @@ export interface CanvasSkeletonOptions {
   shimmerDuration?: number;
 
   /** Тема таблицы: из её токенов берутся цвета градиента. */
-  theme?: Theme;
+  theme?: GlideThemeForRender;
 }
 
 /** Маппинг roundness: ключ → rem-значение */

@@ -2,89 +2,27 @@ import { DrawBatcher } from '../../core/DrawBatcher';
 import { isHoveringBounds } from '../helpers';
 import type { ButtonIcon } from '../iconSprites';
 import type { HoverState } from '../types';
+import { resolveEmbedIconButtonColors } from './colorResolvers';
 import {
-  resolveButtonColors,
-  resolveEmbedIconButtonColors,
-} from './colorResolvers';
-import {
-  BUTTON_PADDING_Y,
-  DEFAULT_BORDER_WIDTH,
-  DEFAULT_BUTTON_RADIUS,
   DEFAULT_SIZE,
   DEFAULT_VIEW,
   getEmbedIconButtonViewColors,
-  ICON_SIZE_ADJUSTMENT,
-  MAX_ICON_SIZE,
-  resolveTokens,
+  LIGHT_THEME_TOKENS,
   SIZE_CONFIG,
 } from './constants';
 import { drawIcon } from './drawIcon';
 import type {
   ButtonBounds,
   ButtonSize,
-  ButtonVariant,
   ButtonView,
   EmbedViewColors,
-  GlideThemeForRender,
 } from './types';
 
 /**
- * Кнопка-иконка старого способа подключения (`variant`): рисуется с
- * подложкой, цвета — те же виды из токенов темы, что у новых кнопок.
- */
-export function drawEmbedIconButton(
-  batcher: DrawBatcher,
-  x: number,
-  y: number,
-  size: number | 'auto',
-  height: number,
-  icon: ButtonIcon,
-  theme: GlideThemeForRender,
-  variant: ButtonVariant = 'primary',
-  disabled = false,
-  hovered: HoverState = false
-): ButtonBounds {
-  const paddingY = BUTTON_PADDING_Y;
-  const buttonHeight = height - paddingY * 2;
-  const iconSize = Math.min(buttonHeight - ICON_SIZE_ADJUSTMENT, MAX_ICON_SIZE);
-  const actualSize = size === 'auto' ? iconSize : size;
-  const buttonY = y + paddingY;
-  const isHovered = isHoveringBounds(hovered, {
-    x,
-    y,
-    width: actualSize,
-    height,
-  });
-  const colors = resolveButtonColors(theme, variant, disabled, isHovered);
-
-  const centerX = x + actualSize * 0.5;
-  const centerY = buttonY + buttonHeight * 0.5;
-  const iconX = centerX - iconSize * 0.5;
-  const iconY = centerY - iconSize * 0.5;
-
-  const hasBorder = colors.borderColor !== 'transparent';
-  batcher.roundedRect(
-    x,
-    buttonY,
-    actualSize,
-    buttonHeight,
-    DEFAULT_BUTTON_RADIUS,
-    {
-      fillStyle: colors.bgColor,
-      strokeStyle: hasBorder ? colors.borderColor : undefined,
-      lineWidth: hasBorder ? DEFAULT_BORDER_WIDTH : 0,
-    }
-  );
-
-  drawIcon(batcher, icon, iconX, iconY, iconSize, colors.iconColor);
-
-  return { x, y: buttonY, width: actualSize, height: buttonHeight };
-}
-
-/**
  * Кнопка-иконка без подложки по виду и размеру: иконка красится токенами
- * текста своей темы (viewColorsMap), без карты — токены светлой темы.
- * Недоступная — цвет покоя на 40 %, без hover.
+ * текста своей темы (viewColorsMap), без карты токенами светлой темы.
+ * Недоступная: цвет покоя на 40 %, без hover. Фон у такой кнопки прозрачный
+ * (surface-clear), подложку не рисуем.
  */
 export function drawEmbedIconButtonWithView(
   batcher: DrawBatcher,
@@ -107,7 +45,7 @@ export function drawEmbedIconButtonWithView(
 ): ButtonBounds {
   const sizeConfig = SIZE_CONFIG[size];
   const viewColors = (
-    viewColorsMap ?? getEmbedIconButtonViewColors(resolveTokens(undefined))
+    viewColorsMap ?? getEmbedIconButtonViewColors(LIGHT_THEME_TOKENS)
   )[view];
   const buttonSize = overrides?.overrideSquareSize ?? sizeConfig.height;
   const iconSizeFinal = overrides?.overrideIconSize ?? sizeConfig.iconSize;
@@ -128,15 +66,6 @@ export function drawEmbedIconButtonWithView(
   const centerY = y + buttonSize * 0.5;
   const iconX = centerX - iconSizeFinal * 0.5;
   const iconY = centerY - iconSizeFinal * 0.5;
-
-  // Фон у кнопки без подложки — surface-clear (прозрачный): подложку не рисуем.
-  if (colors.borderColor !== 'transparent') {
-    batcher.roundedRect(x, y, buttonSize, buttonSize, sizeConfig.borderRadius, {
-      fillStyle: colors.bgColor,
-      strokeStyle: colors.borderColor,
-      lineWidth: DEFAULT_BORDER_WIDTH,
-    });
-  }
 
   drawIcon(batcher, icon, iconX, iconY, iconSizeFinal, colors.iconColor);
 
