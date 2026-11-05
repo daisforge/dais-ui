@@ -12,9 +12,10 @@ import {
 
 import type { DropdownItemOption, DropdownProps } from './Dropdown.types';
 
-// Совместимость с dais-ui до SDDS 0.367: upstream удалил placement без суффикса.
+// Совместимость с dais-ui до SDDS 0.367: upstream убрал placement без суффикса из типов.
 // Они означали именно *-start, а не *-center. Сохраняем старый API, включая items.
-// TODO(review): на ревью решить, оставляем адаптер или объявляем миграцию API.
+// TODO(SDDS): ждём решения команды Атомарки по совместимости placement.
+// До этого сохраняем адаптер; после обновления upstream повторно сверить типы и поведение.
 const normalizePlacement = (
   placement: DropdownProps['placement'],
 ): SDDSItemOption['placement'] => {
