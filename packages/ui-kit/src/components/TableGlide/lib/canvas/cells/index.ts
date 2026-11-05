@@ -19,6 +19,7 @@ export {
   isPointInArea,
   normalizeHoverPoint,
   resolveClickPoint,
+  toContentPoint,
   toRelativePoint,
 } from './helpers';
 export type {
