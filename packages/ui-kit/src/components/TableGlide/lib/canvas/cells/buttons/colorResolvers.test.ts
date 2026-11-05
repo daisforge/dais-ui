@@ -93,9 +93,12 @@ describe('кнопка-иконка без подложки', () => {
 });
 
 describe('resolveCheckboxColors', () => {
-  it('неотмеченный: прозрачный фон и рамка text-secondary своей темы', () => {
+  it('неотмеченный: фон карточки и рамка text-secondary своей темы', () => {
     const colors = resolveCheckboxColors(darkTheme, false, false, false, false);
-    expect(colors.bgColor).toBe('transparent');
+    expect(colors.bgColor).toBe(dark.surfaceSolidCard);
+    expect(
+      resolveCheckboxColors(FALLBACK_THEME, false, false, false, false).bgColor,
+    ).toBe(light.surfaceSolidCard);
     expect(colors.borderColor).toBe(dark.textSecondary);
   });
 
