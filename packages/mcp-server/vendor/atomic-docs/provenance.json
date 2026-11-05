@@ -1,12 +1,13 @@
 {
   "repo": "https://github.com/salute-developers/plasma.git",
-  "ref": "@salutejs/sdds-finai@0.367.0",
-  "installedLibVersion": "0.367.0",
+  "ref": "@salutejs/sdds-finai@0.367.1-dev.0",
+  "installedLibVersion": "0.367.1-dev.0",
   "generatedBy": "website/sdds-finai-docs/./scripts/generateIndex/index.mjs",
-  "fetchedAt": "2026-11-03T10:00:32.074Z",
-  "pages": 88,
-  "chars": 739773,
+  "fetchedAt": "2026-11-05T11:10:54.875Z",
+  "pages": 89,
+  "chars": 745398,
   "byCategory": {
+    "_tenants": 1,
     "beta": 3,
     "components": 74,
     "form": 3,
@@ -15,6 +16,7 @@
     "utils": 1
   },
   "files": {
+    "_tenants.json": "a9bbd43702ea8fb8aa323c9724e3fa89bf2509a48c69de321faad95212917868",
     "beta/embedded-button.json": "0168a65bfd85eabbb1132af950c9bcc1921e033b9bef0fbee67ba4c23131a1ba",
     "beta/popover.json": "911d04edede341217f1927a13925225db8500aab22186b8531ea2ca3becaf8bf",
     "beta/tooltip.json": "f7034854d960cd4fe5fcae10d8423c660fa71834f467e1dc48dc806f910310fd",
@@ -99,10 +101,10 @@
     "guides/how-to-icons.json": "d76fcaf89306c57d42bd98a32837455bce7a14e6d02df456bb09b004aafddf26",
     "guides/how-to-mcp.json": "21f91d8ae4cd1f2b78cdaf7c858c8a69b823080896423ae19b41a6ae24a4c3ea",
     "guides/how-to-plasma-icons.json": "1b6bcb27d05fb9716986e342afe5bddc5390e79e42a3b4a68b46964cd8d2816a",
-    "guides/next.json": "a1a1f62454f757cfef9fe906ebe4bce5410ac142496792f19bedcfb1665f51f0",
+    "guides/next.json": "634527be29f8259b32b14a69bb7c95e0897aa1672522d4a7eb405f977c7ebb9b",
     "guides/react_17.json": "08f7209ea358a6cba65b6d1f8db3959858d924c061888584239ef35bbad3a876",
-    "intro.json": "b428ae30117e688120d8189d8d596b50d4419299c7ef58f88df1356cd3165ffb",
-    "pages.json": "7f420d505339457327c6719054c7a7f3d755adae86ee15a858930fa464018eeb",
+    "intro.json": "ee2299653d620696caf0b2824a415b916aed8e36eec805c8cecdaa4a8de20447",
+    "pages.json": "4b26e8bbe42419847db952ff2549633063ba78bcb6fcc7116addd854970d1535",
     "utils/mixins.json": "22569bca570e5d530704297c3cc5b3e05e9ebe522ca262adbfa359f0db2c6935"
   }
 }

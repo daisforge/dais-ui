@@ -1,5 +1,12 @@
 [
   {
+    "name": "tenants",
+    "slug": "_tenants",
+    "category": "_tenants",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/_tenants//",
+    "chars": 2501
+  },
+  {
     "name": "EmbeddedButton",
     "slug": "beta/embedded-button",
     "category": "beta",
@@ -592,7 +599,7 @@
     "slug": "guides/next",
     "category": "guides",
     "url": "https://plasma.sberdevices.ru/sdds-finai/guides/next/",
-    "chars": 2461
+    "chars": 2670
   },
   {
     "name": "react_17",
@@ -606,7 +613,7 @@
     "slug": "intro",
     "category": "intro",
     "url": "https://plasma.sberdevices.ru/sdds-finai/",
-    "chars": 11212
+    "chars": 14127
   },
   {
     "name": "mixins",
