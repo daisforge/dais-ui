@@ -35,3 +35,24 @@ export const MODE_BASE = {
   highContrastLight: 'light',
   highContrastDark: 'dark',
 };
+
+/**
+ * Темы, в которых семья data-*-light называется data-*-on-light, а
+ * data-yellow-dark — data-yellow-on-dark (beta core и контрастная). Это
+ * одна семья на тех же ступенях палитры, просто другое имя (ответ
+ * дизайнера от 19.10.2026).
+ */
+export const ON_LIGHT_NAMING_THEMES = [
+  'betaCoreLight',
+  'betaCoreDark',
+  'highContrastLight',
+  'highContrastDark',
+];
+
+/** Имя переменной в конкретной теме: data-red-light → data-red-on-light в beta и контрастной. */
+export const variableNameInTheme = (variableName, theme) => {
+  if (!ON_LIGHT_NAMING_THEMES.includes(theme)) {
+    return variableName;
+  }
+  return variableName.replace(/^(data-[a-z-]+)-(light|dark)$/, '$1-on-$2');
+};
