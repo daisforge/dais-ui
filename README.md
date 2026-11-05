@@ -554,8 +554,8 @@ export type TMutationRegister<TFieldValues extends FieldValues> = {
 
 SDDS dev-версия закреплена точно; в корне используется override
 `@salutejs/plasma-new-hope 0.388.1-dev.0`. Для приложений-потребителей требуется
-`styled-components ^5.3.11`. Совместимость тем, Dropdown, MCP и результаты
-обновления описаны в [README ui-kit](packages/ui-kit/README.md#обновление-sdds-до-03671-dev0).
+`styled-components ^5.3.11`. Особенности тем и Dropdown
+описаны в [README ui-kit](packages/ui-kit/README.md#совместимость-и-темы).
 
 ## 🛠️ Скрипты и утилиты
 
@@ -584,8 +584,7 @@ npm run vite-project:build # Сборка тестового Vite-приложе
 
 Webpack-каталогов `packages/webpack-project-finalheader` и
 `packages/webpack-finportal-platform` в этой ветке нет. Сохранённые команды
-`webpack-project:*` / `finportal:*` требуют отдельных копий этих проектов;
-их сборки не входят в выполненные проверки обновления SDDS.
+`webpack-project:*` / `finportal:*` требуют отдельных копий этих проектов.
 
 ### Generates
 

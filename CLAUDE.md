@@ -304,7 +304,6 @@ import { ModalDF } from '@ui-kit/components';
 
 ### Юнит-тесты (Vitest)
 
-- На проверенном коммите `9d6047f68`: 88 файлов, 797 пройденных тестов; это результат запуска, а не оценка покрытия.
 - Конфигурация: `vitest.workspace.ts`, `packages/ui-kit/vite.config.ts`
 - Globals включены, среда jsdom, coverage V8
 
@@ -605,8 +604,8 @@ fp:
 
 SDDS dev-версия закреплена точно; в корне используется override
 `@salutejs/plasma-new-hope 0.388.1-dev.0`. Для приложений-потребителей требуется
-`styled-components ^5.3.11`. Совместимость тем, Dropdown, MCP и результаты
-обновления описаны в [README ui-kit](packages/ui-kit/README.md#обновление-sdds-до-03671-dev0).
+`styled-components ^5.3.11`. Особенности тем и Dropdown
+описаны в [README ui-kit](packages/ui-kit/README.md#совместимость-и-темы).
 
 ### Peer зависимости
 
