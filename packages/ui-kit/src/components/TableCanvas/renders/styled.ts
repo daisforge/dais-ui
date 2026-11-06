@@ -15,6 +15,20 @@ const containerStyles = css`
   overflow-x: hidden;
 `;
 
+/* Редактор текста растёт вниз, а шеврон и кнопка деталей остаются у первой строки. */
+const editorContainerStyles = css`
+  &.${CLASS.editableCellWithExpandButton} {
+    align-items: flex-start;
+
+    & > .${CLASS.expandTreeButton}, & > .${CLASS.expandDetailButton} {
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+      height: var(${CSS_VARIABLES.editorCellHeight});
+    }
+  }
+`;
+
 const cellContentStyles = css({
   ...overflowDotsStyle,
   flexGrow: 1,
@@ -55,6 +69,7 @@ type SubRowContainerProps = {
 };
 export const SubRowContainer = styled.div<SubRowContainerProps>`
   ${containerStyles}
+  ${editorContainerStyles}
   ${CSS_VARIABLES.subrowContainerPaddingLeft}: calc(${getPaddingLeft}px + ${getPaddingLeftForArrowColumnInEditingMode});
   padding-left: var(${CSS_VARIABLES.subrowContainerPaddingLeft});
   & span.${CLASS.cellContent} {
@@ -72,6 +87,7 @@ export const SubRowContainer = styled.div<SubRowContainerProps>`
 
 export const StyledCellContainer = styled(Box)`
   ${containerStyles}
+  ${editorContainerStyles}
   justify-content: space-between;
 
   & span.${CLASS.cellContent} {
