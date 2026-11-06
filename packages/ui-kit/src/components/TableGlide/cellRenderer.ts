@@ -262,6 +262,8 @@ export const glideCellRenderer = <R extends ObjectForExtending, SR>({
       row: cellInfo.row,
       ctxs: cellInfo.ctxs,
       refTable: options.refTable,
+      colInd: cellInfo.colInd,
+      rowInd: cellInfo.rowInd,
     });
 
     // Содержимое обрезается по ячейке: glide обрезает только по колонке, и при перерисовке

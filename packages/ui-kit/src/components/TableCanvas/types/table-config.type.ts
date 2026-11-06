@@ -6,6 +6,10 @@ import type {
 import { Group, Item, ItemOrGroup } from '@ui-kit/components/ListOfFilters';
 import type { MassActionsSize } from '@ui-kit/components/MassActions';
 import { SIZE } from '@ui-kit/components/TableCanvas';
+import type {
+  CanvasNodeDropdownProps,
+  CanvasNodePopoverProps,
+} from '@ui-kit/components/TableGlide';
 // FIXME: Ждем адаптации фичи RowInstauments
 // import { RowInstrumentsType, SIZE } from '@ui-kit/components/TableCanvas';
 import { CSSProperties, ReactNode } from 'react';
@@ -862,6 +866,62 @@ export type TableConfigTooltip = {
   maxWidth?: number | string;
 };
 
+/** Ключ строки для Popover и Dropdown на canvas-элементах. */
+type TableConfigOverlayRowKey<RowType> = {
+  /**
+   * Ключ строки. Если после обновления `rows` на месте строки, где открыто
+   * окно, стоит строка с тем же ключом, окно остаётся открытым, с другим
+   * ключом закрывается. Не задан: берётся `rowKeyGetter` из `editing`,
+   * `selecting`, `subRows` или `mergeCells`, а без него строки сравниваются
+   * по ссылке, и новый массив с теми же данными тоже закроет окно.
+   */
+  rowKeyGetter?: (row: RowType) => string | number;
+};
+
+/**
+ * Значения по умолчанию для Popover на canvas-элементах (проп `popover`).
+ * Настройки на элементе важнее. `trigger` задаётся только на элементе.
+ */
+export type TableConfigPopover<RowType = ObjectForExtending> = Pick<
+  CanvasNodePopoverProps,
+  | 'placement'
+  | 'offset'
+  | 'hasTail'
+  | 'flip'
+  | 'shift'
+  | 'zIndex'
+  | 'closeOnScroll'
+  | 'closeOnOutsideClick'
+  | 'closeOnEsc'
+  | 'mouseEnterDelay'
+  | 'mouseLeaveDelay'
+> &
+  TableConfigOverlayRowKey<RowType>;
+
+/**
+ * Значения по умолчанию для Dropdown на canvas-элементах (проп `dropdown`).
+ * Настройки на элементе важнее. `trigger` задаётся только на элементе.
+ */
+export type TableConfigDropdown<RowType = ObjectForExtending> = Pick<
+  CanvasNodeDropdownProps,
+  | 'placement'
+  | 'offset'
+  | 'listWidth'
+  | 'listMaxHeight'
+  | 'variant'
+  | 'size'
+  | 'zIndex'
+  | 'closeOnSelect'
+  | 'closeOnScroll'
+  | 'closeOnOutsideClick'
+  | 'closeOnEsc'
+  | 'mouseEnterDelay'
+  | 'mouseLeaveDelay'
+  | 'loadingItems'
+  | 'renderError'
+> &
+  TableConfigOverlayRowKey<RowType>;
+
 export type InfinityScrollConfig<RowType extends ObjectForExtending> = {
   /** Триггер достижения скроллом зоны подгрузки данных. */
   onTrigger: (rows: RowType[]) => Promise<void> | void;
@@ -1431,6 +1491,17 @@ export type TableConfig<
    * а также добавить нужные изменения в Canvas-элементах или в конфиге колонки.
    */
   tooltip?: TableConfigTooltip;
+
+  /**
+   * Значения по умолчанию для Popover на canvas-элементах. Сам Popover
+   * включается пропом `popover` на элементе, этот конфиг не обязателен.
+   */
+  popover?: TableConfigPopover<RowType>;
+  /**
+   * Значения по умолчанию для Dropdown на canvas-элементах (проп `dropdown`).
+   * Настройки на элементе важнее.
+   */
+  dropdown?: TableConfigDropdown<RowType>;
 
   /**
    * infinityScroll - бесконечная подгрузка данных при скролле.

@@ -14,6 +14,7 @@ import { RowDetailConfig } from '../feature-row-detail/types';
 import { ChevronTreeBtn } from '../feature-tree';
 import { SUBROWS_KEY } from '../feature-tree/constants';
 import { getHasArrow, getTreeIdAndLvlOfRow } from '../feature-tree/handlers';
+import { getTreeButtonBox } from '../feature-tree/tree-disclosure-icons';
 import {
   ColumnConfig,
   EditingCellInfo,
@@ -22,7 +23,21 @@ import {
   TableConfig,
 } from '../types';
 import { CLASS } from './constants';
+import { getPaddingLeftFinal } from './styleConstants';
 import { StyledCellContainer, SubRowContainer } from './styled';
+
+/**
+ * Самое узкое поле ввода в редакторе.
+ * Если в узкой колонке шеврон, отступ уровня или кнопка деталей оставляют полю
+ * меньше места, редактор открывается шире ячейки, вправо.
+ */
+export const MIN_EDITOR_FIELD_WIDTH = 120;
+/** Кнопка деталей строки: IconButton размера s (40px) и отступ слева 8px. */
+const DETAIL_BUTTON_WIDTH = 48;
+
+/** Ширина редактора: как у ячейки, но так, чтобы полю осталось не меньше MIN_EDITOR_FIELD_WIDTH. */
+const getEditorWidth = (cellWidth: number, occupiedWidth: number) =>
+  Math.max(cellWidth, occupiedWidth + MIN_EDITOR_FIELD_WIDTH);
 
 /**
  * Обёртка для кастомных редакторов (`editingCell.component` в виде функции).
@@ -64,6 +79,8 @@ function CustomEditCellSeed<
   return <>{render(info, lvl, disableLeftOffset)}</>;
 }
 
+// Ширина редактора с шевроном или кнопкой деталей задана явно (getEditorWidth).
+// Иначе оверлей Glide растёт по содержимому и выходит за колонку.
 export const RenderEditCell = <
   FilterStateType extends ObjectForExtending,
   RowIdType extends string | number,
@@ -176,7 +193,12 @@ export const RenderEditCell = <
     }
 
     return (
-      <StyledCellContainer className={CLASS.editableCellWithExpandButton}>
+      <StyledCellContainer
+        className={CLASS.editableCellWithExpandButton}
+        style={{
+          width: getEditorWidth(editingCellInfo.cellWidth, DETAIL_BUTTON_WIDTH),
+        }}
+      >
         {defaultLvl0RenderElement()}
 
         <ExpandDetailButtonComponent
@@ -192,6 +214,19 @@ export const RenderEditCell = <
 
   const columnHasArrow = getHasArrow(column.subRow?.isColumnWithArrow, keyText);
   const columnHasExpandButton = cellIsHaveDetailExpandButton();
+
+  /** Сколько места в древовидной ячейке занято до поля и после него. */
+  const getTreeOccupiedWidth = (
+    hasChevron: boolean,
+    hasDetailButton: boolean,
+  ) => {
+    const { layoutWidth, gapToText } = getTreeButtonBox(rowSize);
+    return (
+      getPaddingLeftFinal(0, lvl, rowSize, { columnHasArrow, rowSize }) +
+      (hasChevron ? layoutWidth + gapToText : 0) +
+      (hasDetailButton ? DETAIL_BUTTON_WIDTH : 0)
+    );
+  };
 
   // ------------------------------- LVL 0 RENDER ---------------------------------------
   if (lvl === 0) {
@@ -212,7 +247,15 @@ export const RenderEditCell = <
 
     if (!columnHasArrow && hasExpandDetailButton) {
       return (
-        <StyledCellContainer className={CLASS.editableCellWithExpandButton}>
+        <StyledCellContainer
+          className={CLASS.editableCellWithExpandButton}
+          style={{
+            width: getEditorWidth(
+              editingCellInfo.cellWidth,
+              DETAIL_BUTTON_WIDTH,
+            ),
+          }}
+        >
           {defaultLvl0RenderElement()}
 
           <ExpandDetailButtonComponent
@@ -225,6 +268,12 @@ export const RenderEditCell = <
     }
     return (
       <SubRowContainer
+        style={{
+          width: getEditorWidth(
+            editingCellInfo.cellWidth,
+            getTreeOccupiedWidth(hasChildrenAndArrow, hasExpandDetailButton),
+          ),
+        }}
         className={CLASS.editableCellWithExpandButton}
         $lvl={lvl}
         $editingMode={{
@@ -346,7 +395,12 @@ export const RenderEditCell = <
 
   if (!columnHasArrow && columnHasExpandButton) {
     return (
-      <StyledCellContainer className={CLASS.editableCellWithExpandButton}>
+      <StyledCellContainer
+        className={CLASS.editableCellWithExpandButton}
+        style={{
+          width: getEditorWidth(editingCellInfo.cellWidth, DETAIL_BUTTON_WIDTH),
+        }}
+      >
         {defaultLvlNot0RenderElement()}
 
         <ExpandDetailButtonComponent
@@ -360,6 +414,12 @@ export const RenderEditCell = <
 
   return (
     <SubRowContainer
+      style={{
+        width: getEditorWidth(
+          editingCellInfo.cellWidth,
+          getTreeOccupiedWidth(hasChildrenAndArrow, columnHasExpandButton),
+        ),
+      }}
       className={CLASS.editableCellWithExpandButton}
       $lvl={lvl}
       $editingMode={{

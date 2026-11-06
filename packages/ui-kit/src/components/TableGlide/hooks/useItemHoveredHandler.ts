@@ -4,7 +4,8 @@ import { useCallback, useRef } from 'react';
 
 import { HEADER_TOOLTIP_HIDDEN_COLS_ID } from '@ui-kit/components/TableCanvasSharedConstants';
 
-import { dispatchCanvasPortalHover } from '../lib/canvas';
+import { CANVAS_PORTAL_PRIORITY } from '../lib/canvas/utils/portalClickEvents';
+import { dispatchCanvasPortalHover } from '../lib/canvas/utils/portalHoverEvents';
 import type {
   ColumnGlideLast,
   GlideProps,
@@ -98,7 +99,7 @@ export interface UseItemHoveredHandlerParams<R extends ObjectForExtending, SR> {
 export function useItemHoveredHandler<R extends ObjectForExtending, SR>(
   params: UseItemHoveredHandlerParams<R, SR>,
   dataEditorRef: RefObject<DataEditorRef | null>,
-): { onItemHovered: OnItemHovered; hideTooltip: () => void } {
+): { onItemHovered: OnItemHovered } {
   const {
     columnsLast,
     rows,
@@ -160,7 +161,7 @@ export function useItemHoveredHandler<R extends ObjectForExtending, SR>(
       // location указывает на первую ячейку блока, а подсвечивать надо строку курсора.
       onHoverRowChange?.(
         args.kind === 'cell'
-          ? (args.rawLocation?.[1] ?? args.location[1])
+          ? args.rawLocation?.[1] ?? args.location[1]
           : undefined,
       );
 
@@ -207,7 +208,7 @@ export function useItemHoveredHandler<R extends ObjectForExtending, SR>(
             source: 'header',
             originId: HEADER_TOOLTIP_HIDDEN_COLS_ID,
             nodeId: HEADER_TOOLTIP_HIDDEN_COLS_ID,
-            priority: 1,
+            priority: CANVAS_PORTAL_PRIORITY.NODE,
           },
           portalTarget,
         );
@@ -250,7 +251,7 @@ export function useItemHoveredHandler<R extends ObjectForExtending, SR>(
             source: 'header',
             originId: headerId,
             nodeId: headerId,
-            priority: 0,
+            priority: CANVAS_PORTAL_PRIORITY.COLUMN,
             tooltipContext: {
               column,
               ctxs,
@@ -309,7 +310,7 @@ export function useItemHoveredHandler<R extends ObjectForExtending, SR>(
             source: 'cell',
             originId: cellId,
             nodeId: cellId,
-            priority: 0,
+            priority: CANVAS_PORTAL_PRIORITY.COLUMN,
             ...(errorTooltip && { tooltipFromNode: errorTooltip }),
             tooltipContext: {
               column,
@@ -343,11 +344,5 @@ export function useItemHoveredHandler<R extends ObjectForExtending, SR>(
     ],
   );
 
-  // Явное скрытие текущего тултипа (например, на старте ресайза колонки, когда
-  // наведение уже произошло, а тултип не должен висеть/ехать за границей).
-  const hideTooltip = useCallback(() => {
-    hideCurrentTooltip(portalEventTargetRef?.current ?? null);
-  }, [hideCurrentTooltip, portalEventTargetRef]);
-
-  return { onItemHovered, hideTooltip };
+  return { onItemHovered };
 }
