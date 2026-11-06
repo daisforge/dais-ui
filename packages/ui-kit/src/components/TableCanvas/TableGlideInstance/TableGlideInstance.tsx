@@ -11,10 +11,15 @@ import {
 import { useCallback, useMemo, useRef } from 'react';
 
 import {
+  EDITOR_BLOCK_BOTTOM_VAR,
+  EDITOR_BLOCK_TOP_VAR,
+} from '../../TableGlide/constants';
+import {
   HeaderContextValueTypeInstance,
   useColumnGroupContext,
   useExpandedRowsContext,
   useHeaderContext,
+  useRefTableContext,
   useRowContext,
 } from '../contexts';
 import type { TransferColumnConfig } from '../feature-cell-transfer/types';
@@ -501,9 +506,30 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
   // строки, колонки) и терял ввод. Ссылка стабильная, открытие — по свежим данным.
   const provideEditorRef = useRef(provideEditorLatest);
   provideEditorRef.current = provideEditorLatest;
+  const refTableForBounds = useRefTableContext();
   const provideEditor = useCallback<ProvideEditorCallback<GridCell>>(
-    (gridCell) => provideEditorRef.current(gridCell),
-    [],
+    (gridCell) => {
+      const editor = provideEditorRef.current(gridCell);
+      const { location, spanRows } = gridCell;
+      if (!location || !editor || typeof editor === 'function') return editor;
+
+      // getBounds у объединённой ячейки отдаёт одну строку, блок собираем по краям.
+      const [col, row] = location;
+      const [firstRow, lastRow] = spanRows ?? [row, row];
+      const first = refTableForBounds?.current?.getBounds(col, firstRow);
+      const last = refTableForBounds?.current?.getBounds(col, lastRow);
+      if (!first || !last) return editor;
+
+      return {
+        ...editor,
+        styleOverride: {
+          ...editor.styleOverride,
+          [EDITOR_BLOCK_TOP_VAR]: `${first.y}px`,
+          [EDITOR_BLOCK_BOTTOM_VAR]: `${last.y + last.height}px`,
+        },
+      };
+    },
+    [refTableForBounds],
   );
 
   const isOutsideClick = useMemo((): TableGlideProps<
