@@ -1,7 +1,7 @@
 [
   {
-    "name": "/",
-    "href": "_.json",
+    "name": "intro",
+    "href": "intro.json",
     "summary": "Требуются react и react-dom версии 16.13.1 или выше.",
     "category": "intro"
   }

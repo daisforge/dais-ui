@@ -10,7 +10,7 @@ const TS_HEADER = `/**
  *
  * Готовые цвета содержимого ячеек (текст, бейджи, кнопки) для canvas-рендеров
  * таблицы по шести темам — выписаны из тем атомарной команды
- * (@salutejs/sdds-themes, beta core, high contrast).
+ * (@sddsjs/sdds_finai: default, beta core, high contrast).
  * Какие цвета и где их искать — generators/table-content-tokens/lib/token-map.js;
  * значения, взятые не напрямую из своей темы, — generators/table-content-tokens/report.md.
  */

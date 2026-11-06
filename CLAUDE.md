@@ -13,7 +13,7 @@
 | Категория            | Технология                                                  |
 | -------------------- | ----------------------------------------------------------- |
 | **Фреймворк**        | React 18.3.1 + TypeScript 5.4.2                             |
-| **Стилизация**       | styled-components 5.3.1                                     |
+| **Стилизация**       | styled-components 5.3.11                                     |
 | **UI-основа**        | `@salutejs/sdds-finai` (дизайн-система Plasma)              |
 | **Сборка**           | Vite 5.0 + Nx                                               |
 | **Моно-репо**        | Lerna 8 + Nx 19                                             |
@@ -40,9 +40,8 @@ lib-3/
 │   │   │   └── index.ts     # Основной экспорт
 │   │   └── vite.config.ts   # Конфигурация сборки библиотеки с ручными чанками
 │   ├── storybook/           # Storybook для документации и скриншотных тестов
-│   ├── vite-project/        # Тестовое приложение на Vite
-│   ├── webpack-finportal-platform/  # Тестовое приложение на Webpack (Finportal)
-│   └── webpack-project-finalheader/ # Тестовое приложение на Webpack (Finalheader)
+│   ├── mcp-server/          # MCP-сервер и индекс компонентов
+│   └── vite-project/        # Тестовое приложение на Vite
 ├── generators/              # Скрипты генерации кода
 ├── scripts/                 # Скрипты сборки/тестирования
 ├── .nx/                     # Кэш Nx
@@ -118,7 +117,7 @@ npm run vite-project:dev      # Запуск dev-сервера
 npm run vite-project:build    # Сборка
 npm run vite-project:preview  # Предпросмотр собранного
 
-# Тестовые проекты Webpack (Finportal/Finalheader)
+# Команды для внешних копий Webpack-проектов (каталогов в этой ветке нет)
 npm run webpack-project:dev
 npm run finportal:dev
 ```
@@ -305,7 +304,6 @@ import { ModalDF } from '@ui-kit/components';
 
 ### Юнит-тесты (Vitest)
 
-- Ограниченное покрытие (~5 файлов тестов на момент анализа)
 - Конфигурация: `vitest.workspace.ts`, `packages/ui-kit/vite.config.ts`
 - Globals включены, среда jsdom, coverage V8
 
@@ -591,17 +589,23 @@ fp:
 
 | Пакет                             | Версия        | Назначение                   |
 | --------------------------------- | ------------- | ---------------------------- |
-| `@salutejs/sdds-finai`            | ^0.340.0      | Базовые атомарные компоненты |
-| `@salutejs/plasma-icons`          | ^1.237.0      | Иконки                       |
-| `@salutejs/plasma-typo`           | ^0.42.0       | Токены типографики           |
-| `@salutejs/sdds-themes`           | ^0.64.0       | Цветовые и темовые токены    |
+| `@salutejs/sdds-finai`            | 0.367.1-dev.0      | Базовые атомарные компоненты |
+| `@salutejs/plasma-icons`          | ^1.257.0      | Иконки                       |
+| `@salutejs/plasma-typo`           | ^0.59.0       | Токены типографики           |
+| `@sddsjs/sdds_finai` | 0.2.1 | Темы и токены |
+| `@salutejs/sdds-themes`           | ^0.86.0       | Совместимость shadowGradient    |
 | `react` / `react-dom`             | 18.3.1        | Core                         |
-| `styled-components`               | ^5.3.1        | CSS-in-JS                    |
+| `styled-components`               | 5.3.11        | CSS-in-JS                    |
 | `react-hook-form`                 | ^7.54.2       | Формы                        |
 | `swr`                             | ^2.3.3        | Загрузка данных              |
 | `zod`                             | ^3.24.2       | Валидация                    |
 | `@glideappsfinal/glide-data-grid` | ^6.11.0       | TableCanvas                  |
 | `react-data-grid`                 | 7.0.0-beta.43 | Table (устаревшая)           |
+
+SDDS dev-версия закреплена точно и сама требует
+`@salutejs/plasma-new-hope 0.388.1-dev.0`; отдельный override не нужен. Для приложений-потребителей требуется
+`styled-components 5.3.11`. Особенности тем и Dropdown
+описаны в [README ui-kit](packages/ui-kit/README.md#совместимость-и-темы).
 
 ### Peer зависимости
 
@@ -609,7 +613,7 @@ fp:
 - `react-dom` (>=17.0.0)
 - `react-grid-layout` (^1.5.2)
 - `react-hook-form` (^7.54.2)
-- `styled-components` (5.3.1)
+- `styled-components` (5.3.11)
 - `swr` (^2.3.3)
 
 ---
