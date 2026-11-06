@@ -24,7 +24,10 @@ import { glideCellRenderer } from './cellRenderer';
 import {
   DEFAULT_HEADER_HEIGHT,
   DEFAULT_SPAN_VERTICAL_ALIGN,
+  EDITOR_BLOCK_BOTTOM_VAR,
+  EDITOR_BLOCK_TOP_VAR,
   EDITOR_BLOOM,
+  EDITOR_SCROLLED_ATTR,
 } from './constants';
 import {
   useColoringLayers,
@@ -654,6 +657,12 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     collectRowErrors,
   });
 
+  const overlayPortalRef = useRef<HTMLDivElement>(null);
+  const scrollPositionRef = useRef('');
+  // Положение прокрутки, при котором открыли редактор: края блока для рамки
+  // посчитаны для него.
+  const editorOpenScrollRef = useRef('');
+
   const handleVisibleRegionChanged = useCallback<
     NonNullable<GlideProps['onVisibleRegionChanged']>
   >(
@@ -661,6 +670,17 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       trackVisibleRegion(range);
       trackAutoRowHeightRegion(range);
       onVisibleRegionChangedExternal?.(range, tx, ty, extras);
+
+      const scrollPosition = `${range.x}:${range.y}:${tx}:${ty}`;
+      if (scrollPosition !== scrollPositionRef.current) {
+        scrollPositionRef.current = scrollPosition;
+        overlayPortalRef.current
+          ?.querySelector("[id^='gdg-overlay-']")
+          ?.toggleAttribute(
+            EDITOR_SCROLLED_ATTR,
+            scrollPosition !== editorOpenScrollRef.current,
+          );
+      }
     },
     [
       trackVisibleRegion,
@@ -1255,7 +1275,6 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       )
     );
   }, [groupHeaderParts, columnsForRender]);
-  const overlayPortalRef = useRef<HTMLDivElement>(null);
   // div-обертка над Glide для DOM-поиска элементов
   const containerRefInternal = useRef<HTMLDivElement>(null);
 
@@ -1749,6 +1768,22 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     );
   };
   const editorCellRef = useRef<readonly [number, number]>();
+  // Края объединённого блока для рамки редактора (styled.ts): за блоком редактор
+  // рисует свою линию. getBounds у блока отдаёт одну строку, поэтому берём первую
+  // и последнюю строки отдельно.
+  const getEditorBlockEdges = (
+    col: number,
+    spanRows: readonly [number, number] | undefined,
+  ) => {
+    const first = spanRows && dataEditorRef.current?.getBounds(col, spanRows[0]);
+    const last = spanRows && dataEditorRef.current?.getBounds(col, spanRows[1]);
+    return first && last
+      ? {
+          [EDITOR_BLOCK_TOP_VAR]: `${first.y}px`,
+          [EDITOR_BLOCK_BOTTOM_VAR]: `${last.y + last.height}px`,
+        }
+      : undefined;
+  };
   useLayoutEffect(() => {
     const cell = editorCellRef.current;
     const overlay = cell
@@ -1780,10 +1815,12 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
             }
             const [col, row] = cell.location;
             editorCellRef.current = cell.location;
+            editorOpenScrollRef.current = scrollPositionRef.current;
             return {
               ...editor,
               styleOverride: {
                 ...editor.styleOverride,
+                ...getEditorBlockEdges(col, cell.spanRows),
                 '--gdg-bg-cell': getEditorBgRef.current?.(col, row),
               } as CSSProperties,
             };
@@ -1854,13 +1891,18 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         ? createPortal(
             <StyledOverlayPortal
               ref={overlayPortalRef}
+              data-focus-ring={drawFocusRing}
               onAnimationEndCapture={(e) => e.stopPropagation()} // важно, чтобы слушатели модальных окон не перехватывали фокус
               id="portal"
             />,
             containerRefInternal?.current ?? document.body,
           )
         : createPortal(
-            <StyledOverlayPortal id="portal" ref={overlayPortalRef} />,
+            <StyledOverlayPortal
+              id="portal"
+              ref={overlayPortalRef}
+              data-focus-ring={drawFocusRing}
+            />,
             document.body,
           )}
       {
