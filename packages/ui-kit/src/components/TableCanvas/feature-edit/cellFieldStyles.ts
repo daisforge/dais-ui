@@ -12,8 +12,6 @@ export type CellFieldGeometry = {
   paddingInline?: number | undefined;
   paddingBlock?: number | undefined;
   disableLeftOffset?: boolean | undefined;
-  /** Куда прижат текст объединённого блока. Пусто или center: по центру. */
-  verticalAlign?: 'top' | 'center' | 'bottom' | undefined;
 };
 
 /**
@@ -28,12 +26,6 @@ export const resolveCellFieldPadding = ({
   inline: paddingInline ?? ROW_SIZE_TOKENS[rowSize].cellHorizontalPadding,
   block: paddingBlock ?? ROW_SIZE_TOKENS[rowSize].cellVerticalPadding,
 });
-
-const FIELD_ALIGN_ITEMS = {
-  top: 'flex-start',
-  center: 'center',
-  bottom: 'flex-end',
-} as const;
 
 /**
  * Обёртка поля шириной с ячейку.
@@ -61,7 +53,7 @@ export const FieldBox = styled.div<{ $cellWidth: number }>`
  */
 export const cellFieldStyles = (geometry: CellFieldGeometry) => {
   const { inline, block } = resolveCellFieldPadding(geometry);
-  const { rowSize, cellHeight, disableLeftOffset, verticalAlign } = geometry;
+  const { rowSize, cellHeight, disableLeftOffset } = geometry;
 
   return css`
     && {
@@ -76,7 +68,7 @@ export const cellFieldStyles = (geometry: CellFieldGeometry) => {
         border-radius: 0;
         box-shadow: none;
         background-color: transparent;
-        align-items: ${FIELD_ALIGN_ITEMS[verticalAlign ?? 'center']};
+        align-items: center;
         ${disableLeftOffset &&
         css`
           padding-left: 0;

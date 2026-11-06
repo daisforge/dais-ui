@@ -1,4 +1,5 @@
 import { Combobox, type ComboboxItemOption } from '@ui-kit/components/Combobox';
+import { SELECT_LIST_PORTAL_ID } from '@ui-kit/components/TableCanvasSharedConstants';
 import { mergeRefs } from '@ui-kit/utils';
 import {
   ForwardedRef,
@@ -9,7 +10,7 @@ import {
 } from 'react';
 import styled from 'styled-components';
 
-import { useRowContext } from '../contexts';
+import { useRefTableContext, useRowContext } from '../contexts';
 import { SIZES } from '../styles';
 import { EditingCellInfo, ObjectForExtending } from '../types';
 import { CellEditorTextArea } from './CellEditorTextArea';
@@ -20,6 +21,7 @@ import {
   selectArrowStyles,
 } from './cellFieldStyles';
 import type { CellEditorComboboxProps, EmptyObj } from './types';
+import { useSelectListPlacement } from './useSelectListPlacement';
 
 /*
 ПЕРЕОПРЕДЕЛЕНИЯ КАК НИЖЕ НУЖНЫ ДЛЯ СОХРАНЕНИЯ GENERIC-а и уменьшения нагрузки на ts-сервер
@@ -59,7 +61,6 @@ export const CellEditorCombobox = forwardRef(
       disableLeftOffset,
       paddingInline,
       paddingBlock,
-      verticalAlign,
       name,
       items,
       multiple,
@@ -89,7 +90,6 @@ export const CellEditorCombobox = forwardRef(
       paddingInline,
       paddingBlock,
       disableLeftOffset,
-      verticalAlign,
     };
     /* undefined: ширина списка равна ширине поля */
     const listWidth =
@@ -118,9 +118,9 @@ export const CellEditorCombobox = forwardRef(
           items={items}
           //
           ref={mergeRefs(ref, refExternal)}
-          /* portal="portal2" - данный id поставлен как исключение в isOutsideClick в TableGlideInstance.
+          /* данный id поставлен как исключение в isOutsideClick в TableGlideInstance.
       Клики по нему не будут преждевременно закрывать режим редактирования */
-          portal="portal2"
+          portal={SELECT_LIST_PORTAL_ID}
           flip
           readOnly={readOnly}
           alwaysOpened={!readOnly}
@@ -151,12 +151,14 @@ export function CellEditorComboboxInternal<
   readOnly,
   theme,
   mergedVerticalAlign,
+  cellY,
 }: EditingCellInfo<TRow, TSummaryRow> & {
   disableLeftOffset: boolean | undefined;
-  /** Вертикальное выравнивание объединённого блока. */
+  /** Вертикальное выравнивание объединённого блока: выбирает сторону списка. */
   mergedVerticalAlign?: 'top' | 'center' | 'bottom';
 }) {
   const rowContextValue = useRowContext();
+  const refTable = useRefTableContext();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const selectProps = (column as any)?.editingCell?.selectProps;
 
@@ -165,10 +167,6 @@ export function CellEditorComboboxInternal<
   >;
 
   const value = row[column.key as keyof TRow];
-
-  // По выравниванию блока ставим поле, а при подписи внизу список открывается вверх.
-  const verticalAlign = mergedVerticalAlign;
-  const placement = verticalAlign === 'bottom' ? 'top' : 'bottom';
 
   const options = (() => {
     if (
@@ -197,6 +195,17 @@ export function CellEditorComboboxInternal<
     })),
   ];
 
+  const placement = useSelectListPlacement({
+    preferTop: mergedVerticalAlign === 'bottom' && !readOnly,
+    getSpaceAbove: () => {
+      // Шапка отдаёт верх области данных: row -1 у Glide это строка заголовков.
+      const headerBounds = refTable?.current?.getBounds(0, -1);
+      return cellY !== undefined && headerBounds
+        ? cellY - (headerBounds.y + headerBounds.height)
+        : undefined;
+    },
+  });
+
   return (
     <CellEditorCombobox
       readOnly={readOnly}
@@ -216,7 +225,6 @@ export function CellEditorComboboxInternal<
       }}
       items={items}
       placement={placement}
-      verticalAlign={verticalAlign}
       /* rest external props */
       {...selectProps}
     />

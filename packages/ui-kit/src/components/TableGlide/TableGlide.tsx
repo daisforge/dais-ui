@@ -7,6 +7,7 @@ import {
   GridColumn,
 } from '@glideappsfinal/glide-data-grid';
 import type { CSSProperties } from 'react';
+import { SELECT_LIST_PORTAL_ID } from '@ui-kit/components/TableCanvasSharedConstants';
 import { mergeRefs, useActiveTheme } from '@ui-kit/utils';
 import {
   useCallback,
@@ -1777,9 +1778,9 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
           )}
       {
         createPortal(
-          <StyledOverlayPortal id="portal2" />,
+          <StyledOverlayPortal id={SELECT_LIST_PORTAL_ID} />,
           document.body,
-        ) /* id="portal2" создан для выпадающего списка CellEditorCombobox, поскольку id=portal не удовлетворяет внутри модальных окон
+        ) /* этот портал создан для выпадающего списка CellEditorCombobox, поскольку id=portal не удовлетворяет внутри модальных окон
           у него должен быть  document.body
         */
       }

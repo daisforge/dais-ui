@@ -1,3 +1,4 @@
+import { SELECT_LIST_PORTAL_ID } from '@ui-kit/components/TableCanvasSharedConstants';
 import {
   type ColumnGlideLast,
   GridCell,
@@ -468,6 +469,7 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
                 readOnly={readonly}
                 cellWidth={target.width}
                 cellHeight={target.height}
+                cellY={target.y}
                 colInd={colInd}
                 activation={activation}
                 initialValue={initialValue}
@@ -514,7 +516,10 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
     return (e) => {
       const target = e.target as HTMLElement;
       // если клик внутри вашего portal / dropdown — не считать его “вне”
-      return !target.closest('#portal') && !target.closest('#portal2');
+      return (
+        !target.closest('#portal') &&
+        !target.closest(`#${SELECT_LIST_PORTAL_ID}`)
+      );
     };
   }, [onCellsEdited]);
   const contentStateNode = useMemo(() => {
