@@ -113,7 +113,7 @@ export const glideCellRenderer = <R extends ObjectForExtending, SR>({
   cellInfo,
   options,
   autoHeight,
-  reportStickyContentHeight,
+  stickyContent,
 }: {
   jsxElement: CellContent;
   cellInfo: CellInfo<R, SR>;
@@ -129,10 +129,14 @@ export const glideCellRenderer = <R extends ObjectForExtending, SR>({
     refTable?: unknown;
   };
   /**
-   * Блок с прилипанием: ячейка сообщает высоту своего содержимого. Вернёт true, если
-   * высота изменилась и нужен ещё один кадр.
+   * Высота содержимого блока с прилипанием. Нужна форку, только пока блок обрезан
+   * краем области данных, поэтому замер идёт только в этом случае. `report` вернёт
+   * true, если высота изменилась и нужен ещё один кадр.
    */
-  reportStickyContentHeight?: (height: number) => boolean;
+  stickyContent?: {
+    isCut: (visibleHeight: number) => boolean;
+    report: (height: number) => boolean;
+  };
   /** Строка с `rowHeight: 'auto'`: ячейка сообщает высоту содержимого и рисует его между вертикальными отступами */
   autoHeight?: CellHeightReporter;
 }) => {
@@ -208,9 +212,8 @@ export const glideCellRenderer = <R extends ObjectForExtending, SR>({
 
       const cellNode = buildCellNode(jsxElement, nodeIdPrefix, theme);
       if (
-        reportStickyContentHeight?.(
-          measureNodeHeight(ctx, cellNode, rect.width)
-        )
+        stickyContent?.isCut(rect.height) &&
+        stickyContent.report(measureNodeHeight(ctx, cellNode, rect.width))
       ) {
         renderArgs?.requestAnimationFrame?.();
       }

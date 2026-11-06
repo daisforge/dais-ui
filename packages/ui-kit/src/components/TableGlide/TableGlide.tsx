@@ -44,6 +44,7 @@ import { useHoverState } from './hooks/useHoverState';
 import { useOverlayPortalFix } from './hooks/useOverlayPortalFix';
 import { useItemHoveredHandler } from './hooks/useItemHoveredHandler';
 import { useRowHeightGlide } from './hooks/useRowHeightGlide';
+import { useStickyContentHeights } from './hooks/useStickyContentHeights';
 import { useUnstickyHeader } from './hooks/useUnstickyHeader';
 import { useColumnPortalReset } from './hooks/useColumnPortalReset';
 import {
@@ -93,7 +94,12 @@ import {
 } from './utils/groupHeaderClick';
 import { getRowSpan, spansSeveralRows } from './utils/getRowSpan';
 import { GroupHeaderParts } from './utils/groupHeaderParts';
-import { rangesOverlap, setHasAnyInRange } from './utils/blockRanges';
+import {
+  isBlockCut,
+  isBlockRowHovered,
+  rangesOverlap,
+  setHasAnyInRange,
+} from './utils/blockRanges';
 import { isCanvasContent, isPrimitive } from './utils/typeGuards';
 
 /** Функция-болванка. Ничего не делает */
@@ -305,7 +311,10 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   );
   // Высота содержимого блоков с прилипанием, снимается при отрисовке. Форк не сжимает
   // содержимое меньше неё, а уводит его целиком вместе с краем блока.
-  const stickyContentHeights = useRef(new Map<string, number>());
+  const stickyContentHeights = useStickyContentHeights(rows, columnsLast);
+  // Отрисовка читает высоту строк из ссылки: её смена сама перерисовывает таблицу.
+  const rowHeightRef = useRef(rowH);
+  rowHeightRef.current = rowH;
   const dataEditorRef = useRef<DataEditorRef | null>(null);
 
   // Controlled-выделение приходит, когда грид НЕ в фокусе (напр. клик по внешней
@@ -825,16 +834,11 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
           blockRows[1],
         );
       // Флаг содержимого совпадает с фоном: все строки блока под курсором.
-      cellInfo.hovered.rowHover =
-        !!hoveredPosition &&
-        (hoverRowsNow !== undefined
-          ? rowsHovered
-          : rangesOverlap(
-              hoveredPosition.rowInd,
-              hoveredPosition.rowInd,
-              blockRows[0],
-              blockRows[1],
-            ));
+      cellInfo.hovered.rowHover = isBlockRowHovered(
+        hoveredPosition?.rowInd,
+        hoverRowsNow,
+        blockRows,
+      );
       if (isBlock) {
         const range = selectionVisualState.activeDataRange;
         const rangeHitsRows =
@@ -1041,16 +1045,21 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
             autoHeightReporter && !spansSeveralRows(spanRows)
               ? autoHeightReporter(row, rowInd, id, !!span)
               : undefined,
-          reportStickyContentHeight:
-            stickyBlockKey !== undefined
-              ? (height) => {
-                  if (
-                    stickyContentHeights.current.get(stickyBlockKey) === height
-                  ) {
-                    return false;
-                  }
-                  stickyContentHeights.current.set(stickyBlockKey, height);
-                  return true;
+          stickyContent:
+            spanRows && stickyBlockKey !== undefined
+              ? {
+                  isCut: (visibleHeight) =>
+                    isBlockCut(rowHeightRef.current, spanRows, visibleHeight),
+                  report: (height) => {
+                    if (
+                      stickyContentHeights.current.get(stickyBlockKey) ===
+                      height
+                    ) {
+                      return false;
+                    }
+                    stickyContentHeights.current.set(stickyBlockKey, height);
+                    return true;
+                  },
                 }
               : undefined,
         })
