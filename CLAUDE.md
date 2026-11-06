@@ -595,16 +595,16 @@ fp:
 | `@sddsjs/sdds_finai` | 0.2.1 | Темы и токены |
 | `@salutejs/sdds-themes`           | ^0.86.0       | Совместимость shadowGradient    |
 | `react` / `react-dom`             | 18.3.1        | Core                         |
-| `styled-components`               | ^5.3.11        | CSS-in-JS                    |
+| `styled-components`               | 5.3.11        | CSS-in-JS                    |
 | `react-hook-form`                 | ^7.54.2       | Формы                        |
 | `swr`                             | ^2.3.3        | Загрузка данных              |
 | `zod`                             | ^3.24.2       | Валидация                    |
 | `@glideappsfinal/glide-data-grid` | ^6.11.0       | TableCanvas                  |
 | `react-data-grid`                 | 7.0.0-beta.43 | Table (устаревшая)           |
 
-SDDS dev-версия закреплена точно; в корне используется override
-`@salutejs/plasma-new-hope 0.388.1-dev.0`. Для приложений-потребителей требуется
-`styled-components ^5.3.11`. Особенности тем и Dropdown
+SDDS dev-версия закреплена точно и сама требует
+`@salutejs/plasma-new-hope 0.388.1-dev.0`; отдельный override не нужен. Для приложений-потребителей требуется
+`styled-components 5.3.11`. Особенности тем и Dropdown
 описаны в [README ui-kit](packages/ui-kit/README.md#совместимость-и-темы).
 
 ### Peer зависимости
@@ -613,7 +613,7 @@ SDDS dev-версия закреплена точно; в корне испол�
 - `react-dom` (>=17.0.0)
 - `react-grid-layout` (^1.5.2)
 - `react-hook-form` (^7.54.2)
-- `styled-components` (^5.3.11)
+- `styled-components` (5.3.11)
 - `swr` (^2.3.3)
 
 ---

@@ -1,4 +1,5 @@
 /* eslint-disable simple-import-sort/exports */
+/* eslint-disable import/extensions -- Полные JS-пути обязательны для ESM-потребителей на webpack. */
 
 /**
  * Это автоматический сгенерированый файл
@@ -18,7 +19,7 @@ export {
   shadowUpSoftL,
   shadowUpSoftM,
   shadowUpSoftS,
-} from '@sddsjs/sdds_finai/theme/tokens';
+} from '@sddsjs/sdds_finai/theme/tokens/index.js';
 
 // Совместимость публичных экспортов: в новой теме SDDS этих двух токенов нет.
 export {

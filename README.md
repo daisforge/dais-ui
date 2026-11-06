@@ -113,13 +113,13 @@ tokens/
 └── spacing/      # Отступы (padding, margin)
 ```
 
-**Автогенерация**: Токены генерируются автоматически из `@salutejs/sdds-themes` через скрипт `generate-ui-kit-tokens-named-exports.js`.
+**Автогенерация**: Токены генерируются автоматически из `@sddsjs/sdds_finai` через скрипт `generate-ui-kit-tokens-named-exports.js`.
 
 ### Стилизация
 
 - **Основной CSS-in-JS**: `styled-components`
 - **Плагин**: `babel-plugin-styled-components` (displayName: true)
-- **Целевые библиотеки**: `@salutejs/plasma-typo`, `@salutejs/sdds-finai`, `@salutejs/sdds-themes`
+- **Целевые библиотеки**: `@salutejs/plasma-typo`, `@salutejs/sdds-finai`, `@sddsjs/sdds_finai`; `@salutejs/sdds-themes` сохраняет две градиентные тени
 
 ---
 
@@ -552,9 +552,9 @@ export type TMutationRegister<TFieldValues extends FieldValues> = {
 
 ---
 
-SDDS dev-версия закреплена точно; в корне используется override
-`@salutejs/plasma-new-hope 0.388.1-dev.0`. Для приложений-потребителей требуется
-`styled-components ^5.3.11`. Особенности тем и Dropdown
+SDDS dev-версия закреплена точно и сама требует
+`@salutejs/plasma-new-hope 0.388.1-dev.0`; отдельный override не нужен. Для приложений-потребителей требуется
+`styled-components 5.3.11`. Особенности тем и Dropdown
 описаны в [README ui-kit](packages/ui-kit/README.md#совместимость-и-темы).
 
 ## 🛠️ Скрипты и утилиты

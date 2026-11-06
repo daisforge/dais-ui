@@ -12,6 +12,14 @@ import {
 
 import type { DropdownItemOption, DropdownProps } from './Dropdown.types';
 
+// SDDS клонирует родительские пункты в getVisibleItems через {...item, items}.
+// Enumerable Symbol переносится вместе с клоном и не конфликтует с полями
+// пользователя; WeakMap по ссылке на нормализованный пункт здесь недостаточно.
+const originalItemKey = Symbol('daisDropdownOriginalItem');
+type NormalizedItem = SDDSItemOption & {
+  [originalItemKey]: DropdownItemOption;
+};
+
 // Совместимость с dais-ui до SDDS 0.367: upstream убрал placement без суффикса из типов.
 // Они означали именно *-start, а не *-center. Сохраняем старый API, включая items.
 // TODO(SDDS): ждём решения команды Атомарки по совместимости placement.
@@ -42,21 +50,21 @@ function DropdownComponent<T extends DropdownItemOption>(
   ref: ForwardedRef<HTMLButtonElement>,
 ) {
   const { normalizedItems, originalItem } = useMemo(() => {
-    const originals = new WeakMap<SDDSItemOption, DropdownItemOption>();
-    const normalize = (item: DropdownItemOption): SDDSItemOption => {
-      const normalized: SDDSItemOption = {
+    const normalize = (item: DropdownItemOption): NormalizedItem => {
+      const normalized: NormalizedItem = {
         ...item,
+        [originalItemKey]: item,
         placement: normalizePlacement(item.placement),
         items: item.items?.map(normalize),
       };
-      originals.set(normalized, item);
       return normalized;
     };
     return {
       normalizedItems: items.map(normalize),
       // Как и upstream, callbacks параметризованы T. Возвращаем исходный объект:
       // пользовательские поля, placement и ссылочная идентичность сохраняются.
-      originalItem: (item: SDDSItemOption) => originals.get(item) as T,
+      originalItem: (item: SDDSItemOption) =>
+        ((item as NormalizedItem)[originalItemKey] ?? item) as T,
     };
   }, [items]);
 

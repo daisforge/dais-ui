@@ -36,10 +36,12 @@ log(
   tokens.default ? Object.keys(tokens.default) : 'No default export',
 );
 
-const exportTokensPath = '@sddsjs/sdds_finai/theme/tokens';
+// Полный путь нужен webpack при импорте из опубликованных .mjs.
+const exportTokensPath = '@sddsjs/sdds_finai/theme/tokens/index.js';
 const tokenValues = tokens.default ?? tokens;
 
 const heading = `/* eslint-disable simple-import-sort/exports */
+/* eslint-disable import/extensions -- Полные JS-пути обязательны для ESM-потребителей на webpack. */
 
 /**
  * Это автоматический сгенерированый файл

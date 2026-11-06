@@ -304,8 +304,14 @@ export const MANUAL_UIKIT_COMP_CHUNKS = [
  *  Другая библиотека вся не тянется
  */
 
-// Темы теперь являются внешней зависимостью @sddsjs/sdds_finai, как и остальные токены.
-export const EXTERNAL_PACKAGE_MODULES_AS_CHUNK = [] as const;
+// Новые темы остаются external, а из старого sdds-themes встраиваются только
+// shadowGradientLight/Dark. ESM-источник и исключение из external заданы в vite.config.ts.
+export const EXTERNAL_PACKAGE_MODULES_AS_CHUNK = [
+  {
+    chunkName: 'shadowGradients',
+    modulePaths: ['node_modules/@salutejs/sdds-themes/es/tokens/sdds_finai/'],
+  },
+] as const;
 
 /** Нежелательный чанк.
  * Что подпадает под этот чанк - мы устраняем с помощью "отметить пакет как external deps"

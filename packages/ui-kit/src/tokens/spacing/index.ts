@@ -1,4 +1,5 @@
 /* eslint-disable simple-import-sort/exports */
+/* eslint-disable import/extensions -- Полные JS-пути обязательны для ESM-потребителей на webpack. */
 
 /**
  * Это автоматический сгенерированый файл
@@ -21,4 +22,4 @@ export {
   spacing60x,
   spacing6x,
   spacing8x,
-} from '@sddsjs/sdds_finai/theme/tokens';
+} from '@sddsjs/sdds_finai/theme/tokens/index.js';
