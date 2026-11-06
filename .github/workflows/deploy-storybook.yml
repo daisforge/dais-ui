@@ -36,6 +36,8 @@ jobs:
         run: npm run storybook:build
         env:
           NODE_OPTIONS: '--max_old_space_size=4096'
+          # На общем стенде нет визуальных историй, в превью PR они остаются (см. .storybook/main.ts)
+          NODE_ENV: production
           # GitHub Pages для project-страниц отдаёт сайт с /<repo>/, а не с корня домена
           STORYBOOK_BASE_PATH: '/${{ github.event.repository.name }}/'
 
