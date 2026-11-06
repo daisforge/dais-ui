@@ -10,10 +10,7 @@ import {
 } from '@ui-kit/components/TableGlide';
 import { useCallback, useMemo, useRef } from 'react';
 
-import {
-  EDITOR_BLOCK_BOTTOM_VAR,
-  EDITOR_BLOCK_TOP_VAR,
-} from '../../TableGlide/constants';
+import { EDITOR_BLOCK_BOTTOM_VAR } from '../../TableGlide/constants';
 import {
   HeaderContextValueTypeInstance,
   useColumnGroupContext,
@@ -513,18 +510,18 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
       const { location, spanRows } = gridCell;
       if (!location || !editor || typeof editor === 'function') return editor;
 
-      // getBounds у объединённой ячейки отдаёт одну строку, блок собираем по краям.
+      // getBounds у объединённой ячейки отдаёт одну строку, низ блока берём по последней.
       const [col, row] = location;
-      const [firstRow, lastRow] = spanRows ?? [row, row];
-      const first = refTableForBounds?.current?.getBounds(col, firstRow);
-      const last = refTableForBounds?.current?.getBounds(col, lastRow);
-      if (!first || !last) return editor;
+      const last = refTableForBounds?.current?.getBounds(
+        col,
+        spanRows?.[1] ?? row,
+      );
+      if (!last) return editor;
 
       return {
         ...editor,
         styleOverride: {
           ...editor.styleOverride,
-          [EDITOR_BLOCK_TOP_VAR]: `${first.y}px`,
           [EDITOR_BLOCK_BOTTOM_VAR]: `${last.y + last.height}px`,
         },
       };

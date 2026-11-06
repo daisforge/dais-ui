@@ -1776,13 +1776,18 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         ? createPortal(
             <StyledOverlayPortal
               ref={overlayPortalRef}
+              data-focus-ring={drawFocusRing}
               onAnimationEndCapture={(e) => e.stopPropagation()} // важно, чтобы слушатели модальных окон не перехватывали фокус
               id="portal"
             />,
             containerRefInternal?.current ?? document.body,
           )
         : createPortal(
-            <StyledOverlayPortal id="portal" ref={overlayPortalRef} />,
+            <StyledOverlayPortal
+              id="portal"
+              ref={overlayPortalRef}
+              data-focus-ring={drawFocusRing}
+            />,
             document.body,
           )}
       {

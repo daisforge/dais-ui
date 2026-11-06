@@ -124,8 +124,7 @@ export const EDITOR_BLOOM: readonly [number, number] = [0, 0];
  * Glide прибавляет 1 px к ширине и высоте под линию сетки, стили редактора
  * учитывают этот пиксель (feature-edit/cellFieldStyles).
  */
-/** Верх и низ блока под редактором, из них оверлей собирает свою рамку. */
-export const EDITOR_BLOCK_TOP_VAR = '--table-editor-block-top';
+/** Низ блока под редактором: ниже него рамку рисует сам редактор. */
 export const EDITOR_BLOCK_BOTTOM_VAR = '--table-editor-block-bottom';
 
 export const GLIDE_EDITOR_TARGET_EXTRA = 1;
