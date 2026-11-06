@@ -12,7 +12,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import { glideCellRenderer } from './cellRenderer';
-import { DEFAULT_HEADER_HEIGHT } from './constants';
+import { DEFAULT_HEADER_HEIGHT, EDITOR_BLOOM } from './constants';
 import {
   useColoringLayers,
   useNativeGridSelection,
@@ -34,6 +34,7 @@ import { useOverlayPortalFix } from './hooks/useOverlayPortalFix';
 import { useItemHoveredHandler } from './hooks/useItemHoveredHandler';
 import { useRowHeightGlide } from './hooks/useRowHeightGlide';
 import { useUnstickyHeader } from './hooks/useUnstickyHeader';
+import { useColumnPortalReset } from './hooks/useColumnPortalReset';
 import {
   buildCanvasTree,
   Canvas,
@@ -72,6 +73,10 @@ import {
 import { findBlockOrigin } from './utils/findBlockOrigin';
 import { mergeThemeOverrides } from './utils/mergeThemeOverrides';
 import { getSpan } from './utils/getSpan';
+import {
+  getColumnGroupPath,
+  handleGroupHeaderClick,
+} from './utils/groupHeaderClick';
 import { getRowSpan, spansSeveralRows } from './utils/getRowSpan';
 import { GroupHeaderParts } from './utils/groupHeaderParts';
 import { isCanvasContent, isPrimitive } from './utils/typeGuards';
@@ -109,14 +114,6 @@ export class CellContentCache {
 }
 
 const CTXS_EMPTY = {};
-
-// Путь групп колонки: string → [string], string[] → как есть, иначе [].
-const getColumnGroupPath = (group: unknown): string[] =>
-  Array.isArray(group)
-    ? group.filter((g): g is string => typeof g === 'string')
-    : typeof group === 'string'
-    ? [group]
-    : [];
 
 type CanvasCacheKey = string | number | boolean | null;
 
@@ -218,9 +215,8 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     new Map<string, number>(),
   );
 
-  // Скрытие тултипа на старте ресайза. Присваивается ниже из useItemHoveredHandler
-  // (объявлен позже по коду), поэтому дёргаем через ref.
-  const hideTooltipRef = useRef<(() => void) | null>(null);
+  const { onColumnResizeStep, onColumnMoved: resetOnColumnMoved } =
+    useColumnPortalReset(portalEventTargetRef);
 
   const onColumnResizeInternal = useCallback(
     (
@@ -243,9 +239,9 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         return;
       }
 
-      // Наведение уже произошло до старта перетаскивания, прячем тултип, чтобы он
-      // не висел на месте (за границей во время ресайза он не едет).
-      hideTooltipRef.current?.();
+      // Ширину колонки меняют: якоря сдвинулись, тултип и открытый Popover
+      // прячем, наведение на время ресайза выключаем.
+      onColumnResizeStep();
 
       onColumnResize?.(col, newSize, colIndex, newSizeWithGrow);
 
@@ -254,7 +250,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         return new Map(prev);
       });
     },
-    [onColumnResize],
+    [onColumnResize, onColumnResizeStep],
   );
 
   const columnsLast = useMemo(() => {
@@ -987,6 +983,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         renderData,
         rowData: rows[cell[1]],
         rowIndex: cell[1],
+        pointerOptions: { button: event.button, cellBounds: event.bounds },
       });
       const outcome = session
         ? buildEffectiveInteractionOutcome({
@@ -1204,6 +1201,8 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
             'click',
             event.localEventX,
             event.localEventY,
+            undefined,
+            { button: event.button, cellBounds: event.bounds },
           );
           if (interaction) return;
         }
@@ -1227,79 +1226,19 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     selectColumnFromHeader,
   ]);
 
-  // Клик по шапке группы выделяет все листовые колонки этой группы.
-  //
-  // У каждой колонки есть group-путь — имена групп сверху вниз (напр.
-  // ['Метрики','Продажи']). Берём путь кликнутой колонки, обрезаем до уровня, по
-  // которому кликнули, — это префикс, однозначно задающий группу. Колонки одной
-  // группы всегда идут в ряд, поэтому от кликнутой расширяем диапазон влево и
-  // вправо, пока у соседа тот же префикс; листья диапазона выделяем разом.
-  //
-  // Префикс сравниваем как строку — путь склеиваем через '\0' (символ NUL). NUL
-  // взят разделителем, потому что он не может встретиться в имени группы, и склейка
-  // получается без коллизий: пути ['A','B'] и ['AB'] дают разные ключи ('A\0B' и
-  // 'AB'), тогда как join('/') или join('') их бы схлопнули в один.
   const onGroupHeaderClicked = useCallback<
     NonNullable<GlideProps['onGroupHeaderClicked']>
   >(
-    (colIndex, event) => {
-      // Клик сначала получают canvas-ноды заголовка группы (как у листовой шапки):
-      // если под точкой интерактивная нода, это клик по ней — группу не выделяем.
-      const [clickedCol] = event.location;
-      const groupRoot = groupHeaderParts.rootAt(event.group, clickedCol);
-      if (groupRoot) {
-        const interaction = groupRoot.getInteractionAtPoint(
-          event.localEventX,
-          event.localEventY
-        );
-        groupRoot.dispatchPointerEvent(
-          'click',
-          event.localEventX,
-          event.localEventY
-        );
-        if (interaction) return;
-      }
-
-      const clickedColumn = columnsForRender[colIndex];
-      if (!enableColumnSelection || !clickedColumn) {
-        onGroupHeaderClickedExternal?.(colIndex, event);
-        return;
-      }
-
-      // путь кликнутой колонки и уровень клика
-      const clickedPath = getColumnGroupPath(clickedColumn.group);
-      const clickedLevel = Math.max(0, clickedPath.indexOf(event.group));
-      // ключ группы — префикс пути до уровня клика (про '\0' см. выше)
-      const prefixKey = clickedPath.slice(0, clickedLevel + 1).join('\0');
-
-      // у колонки тот же префикс, что у кликнутой?
-      const hasSamePrefix = (index: number): boolean => {
-        const column = columnsForRender[index];
-        return (
-          column !== undefined &&
-          getColumnGroupPath(column.group)
-            .slice(0, clickedLevel + 1)
-            .join('\0') === prefixKey
-        );
-      };
-
-      // растим диапазон влево и вправо, пока префикс совпадает
-      let start = colIndex;
-      let end = colIndex;
-      while (start - 1 >= 0 && hasSamePrefix(start - 1)) start -= 1;
-      while (end + 1 < columnsForRender.length && hasSamePrefix(end + 1))
-        end += 1;
-
-      // ключи листьев диапазона (без служебных) → выделяем
-      const keys: string[] = [];
-      for (let i = start; i <= end; i += 1) {
-        const column = columnsForRender[i];
-        if (column && !column.isServiceColumn) keys.push(column.id);
-      }
-      if (keys.length > 0) selectColumnsByKeys(keys);
-
-      onGroupHeaderClickedExternal?.(colIndex, event);
-    },
+    (colIndex, event) =>
+      handleGroupHeaderClick({
+        colIndex,
+        event,
+        groupRoot: groupHeaderParts.rootAt(event.group, event.location[0]),
+        columns: columnsForRender,
+        enableColumnSelection,
+        selectColumnsByKeys,
+        onGroupHeaderClicked: onGroupHeaderClickedExternal,
+      }),
     [
       enableColumnSelection,
       columnsForRender,
@@ -1463,11 +1402,15 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       if (typeof sourceKey !== 'string' || typeof targetKey !== 'string')
         return;
 
+      // Колонки переставлены, и якоря сдвинулись: прячем тултип и закрываем
+      // открытый Popover этой таблицы.
+      resetOnColumnMoved();
+
       onColumnsReorder(sourceKey, targetKey);
     };
 
     return onColumnMoved;
-  }, [columnsForRender, onColumnsReorder]);
+  }, [columnsForRender, onColumnsReorder, resetOnColumnMoved]);
 
   const drawGroupHeader = useMemo((): GlideProps['drawGroupHeader'] => {
     if (!renderGroupHeader) return undefined;
@@ -1650,7 +1593,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   ]);
 
   // ─── onItemHovered: единый агрегатор hover-логики (тултипы, окрашивание строки)
-  const { onItemHovered, hideTooltip } = useItemHoveredHandler(
+  const { onItemHovered } = useItemHoveredHandler(
     {
       columnsLast: columnsForRender,
       rows,
@@ -1663,7 +1606,6 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     },
     dataEditorRef,
   );
-  hideTooltipRef.current = hideTooltip;
 
   // Все прямоугольники подсветки собирает один модуль, там же описан порядок
   // слоёв целиком (см. карту в useColoringLayers).
@@ -1767,6 +1709,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
           smoothScrollY
           // overscrollX={16}
           headerHeight={DEFAULT_HEADER_HEIGHT}
+          editorBloom={EDITOR_BLOOM}
           onCellClicked={handleCellClickedBridge}
           onCellContextMenu={handleCellContextMenuBridge}
           onItemHovered={onItemHovered}

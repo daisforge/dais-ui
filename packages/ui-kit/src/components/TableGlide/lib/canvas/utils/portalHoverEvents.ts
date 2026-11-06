@@ -1,41 +1,139 @@
 import type { CanvasNode } from '../core/CanvasNode';
 import type { TooltipProps } from '@ui-kit/components/Tooltip';
+import type { CanvasNodeDropdownConfig } from './dropdownConfig';
+import type {
+  CanvasNodePopoverConfig,
+  CanvasPortalPriority,
+} from './portalClickEvents';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Interaction Lock (pauses portal hover during drag/resize)
 // ─────────────────────────────────────────────────────────────────────────────
 
-let interactionLockCount = 0;
 type InteractionLockListener = (locked: boolean) => void;
-const lockListeners = new Set<InteractionLockListener>();
 
-export function lockPortalHover(): () => void {
-  interactionLockCount++;
-  if (interactionLockCount === 1) {
-    lockListeners.forEach((listener) => listener(true));
-  }
+/**
+ * Таблица, к которой относится блокировка, подписка или проверка. Без таблицы
+ * (`undefined` или `null`) смысл у них разный, и он описан у каждой функции:
+ * блокировка без таблицы действует на всю страницу, подписка и проверка без
+ * таблицы учитывают блокировку любой таблицы.
+ */
+type LockTarget = EventTarget | null | undefined;
+
+/** Ключ блокировки на всю страницу. */
+const PAGE_LOCK = null;
+
+/** Сколько блокировок взято на каждую таблицу и на всю страницу (PAGE_LOCK). */
+const lockCounts = new Map<EventTarget | typeof PAGE_LOCK, number>();
+
+interface LockSubscription {
+  listener: InteractionLockListener;
+  target: LockTarget;
+  locked: boolean;
+}
+const lockSubscriptions = new Set<LockSubscription>();
+
+/** Заблокирована ли таблица (своей блокировкой или блокировкой страницы). Без таблицы: есть ли блокировка хоть где-то. */
+function isLocked(target: LockTarget): boolean {
+  if (target === undefined || target === null) return lockCounts.size > 0;
+  return lockCounts.has(target) || lockCounts.has(PAGE_LOCK);
+}
+
+function notifyLockListeners(): void {
+  lockSubscriptions.forEach((subscription) => {
+    const locked = isLocked(subscription.target);
+    if (locked === subscription.locked) return;
+    subscription.locked = locked;
+    subscription.listener(locked);
+  });
+}
+
+/**
+ * Выключает тултипы и открытие по наведению, пока колонку тянут или меняют ей
+ * ширину.
+ * @param target контейнер таблицы: блокировка действует только на неё. Без
+ * него блокируется вся страница: так бывает у TableGlide без контейнера
+ * событий (`portalEventTargetRef` не передан), его ресайз выключает наведение
+ * во всех таблицах страницы.
+ * @returns функция снятия блокировки, повторный вызов ничего не делает.
+ */
+export function lockPortalHover(target?: LockTarget): () => void {
+  const key = target ?? PAGE_LOCK;
+  lockCounts.set(key, (lockCounts.get(key) ?? 0) + 1);
+  notifyLockListeners();
 
   let released = false;
   return () => {
     if (released) return;
     released = true;
-    interactionLockCount--;
-    if (interactionLockCount === 0) {
-      lockListeners.forEach((listener) => listener(false));
-    }
+    const count = (lockCounts.get(key) ?? 1) - 1;
+    if (count > 0) lockCounts.set(key, count);
+    else lockCounts.delete(key);
+    notifyLockListeners();
   };
 }
 
-export function isPortalHoverLocked(): boolean {
-  return interactionLockCount > 0;
+/**
+ * @param target контейнер таблицы: заблокирована ли она (своей блокировкой
+ * или блокировкой всей страницы). Без него: есть ли блокировка хоть где-то.
+ */
+export function isPortalHoverLocked(target?: LockTarget): boolean {
+  return isLocked(target);
 }
 
+/**
+ * Подписка на блокировку наведения. Слушателя зовут только при смене
+ * состояния, текущее состояние на момент подписки берите из
+ * `isPortalHoverLocked(target)`.
+ * @param target контейнер таблицы: слушаем её блокировку и блокировку всей
+ * страницы. Без него слушаем блокировку любой таблицы.
+ */
 export function subscribeToPortalHoverLock(
-  listener: InteractionLockListener
+  listener: InteractionLockListener,
+  target?: LockTarget
 ): () => void {
-  lockListeners.add(listener);
+  const subscription: LockSubscription = {
+    listener,
+    target,
+    locked: isLocked(target)
+  };
+  lockSubscriptions.add(subscription);
   return () => {
-    lockListeners.delete(listener);
+    lockSubscriptions.delete(subscription);
+  };
+}
+
+export const CANVAS_PORTAL_RESET_EVENT = 'basic-grid-canvas-portal-reset';
+
+/**
+ * Сообщает, что тултипы и Popover таблицы привязаны к старым координатам:
+ * начали менять ширину колонки или переставили колонки. Действует только на
+ * таблицу, в контейнер которой отправлено.
+ * @param target контейнер таблицы. Если не передан, событие отправляется на window.
+ */
+export function dispatchCanvasPortalReset(target?: EventTarget | null): void {
+  if (typeof window === 'undefined') return;
+  (target ?? window).dispatchEvent(new CustomEvent(CANVAS_PORTAL_RESET_EVENT));
+}
+
+/**
+ * Подписка на событие dispatchCanvasPortalReset.
+ * @param target контейнер таблицы. Если не передан, слушаем window.
+ */
+export function subscribeToCanvasPortalReset(
+  listener: () => void,
+  target?: EventTarget | null,
+): () => void {
+  if (typeof window === 'undefined') {
+    return () => {};
+  }
+
+  const eventTarget = target ?? window;
+  const handler = () => listener();
+  eventTarget.addEventListener(CANVAS_PORTAL_RESET_EVENT, handler);
+
+  return () => {
+    eventTarget.removeEventListener(CANVAS_PORTAL_RESET_EVENT, handler);
   };
 }
 
@@ -117,13 +215,16 @@ export interface CanvasPortalHoverDetail<
   tooltipContext?: TContext;
   /** Конфиг с ноды (проп tooltip на Canvas-элементе). */
   tooltipFromNode?: CanvasNodeTooltipConfig;
+  /** Проп popover с Canvas-элемента, нужен для `trigger: 'hover'`. */
+  popoverFromNode?: CanvasNodePopoverConfig;
+  /** Проп dropdown с Canvas-элемента. */
+  dropdownFromNode?: CanvasNodeDropdownConfig;
   /**
-   * Приоритет события. usePortalHover не заменяет активный тултип с бо́льшим приоритетом.
-   * - 1 — canvas-нода (CanvasHoverController)
-   * - 0 — колоночный тултип (useItemHoveredHandler)
-   * @default 0
+   * Приоритет события, см. CANVAS_PORTAL_PRIORITY. usePortalHover не заменяет
+   * активный тултип с бо́льшим приоритетом.
+   * @default COLUMN
    */
-  priority?: number;
+  priority?: CanvasPortalPriority;
 }
 
 export type CanvasPortalHoverListener = (

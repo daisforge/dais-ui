@@ -1,4 +1,6 @@
 import { FlexStyle } from '../miniflex/types';
+import type { CanvasNodeDropdownConfig } from '../utils/dropdownConfig';
+import type { CanvasNodePopoverConfig } from '../utils/portalClickEvents';
 import { DrawBatcher } from './DrawBatcher';
 
 // --- Вспомогательные типы данных ---
@@ -50,6 +52,8 @@ export interface ICanvasNode {
   borderWidth: number;
   portalHoverEnabled: boolean;
   tooltip?: string | { text: string; [key: string]: unknown };
+  popover?: CanvasNodePopoverConfig;
+  dropdown?: CanvasNodeDropdownConfig;
   /**
    * Минимальная ширина, которую нода считает для себя сама по своему
    * содержимому. Нужна, чтобы при нехватке места содержимое не сжималось в

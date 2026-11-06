@@ -130,8 +130,18 @@ export {
 
 // Utils
 export type {
+  CanvasDropdownApi,
+  CanvasDropdownErrorApi,
+  CanvasDropdownItem,
+  CanvasNodeDropdownConfig,
+  CanvasNodeDropdownItems,
+  CanvasNodeDropdownProps,
+  CanvasNodePopoverConfig,
+  CanvasNodePopoverContent,
+  CanvasNodePopoverProps,
   CanvasNodeTooltipConfig,
   CanvasNodeTooltipProps,
+  CanvasPopoverRenderApi,
   CanvasPortalHoverDetail,
   CanvasPortalHoverListener,
   CanvasPortalSource,
