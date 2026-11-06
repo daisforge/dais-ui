@@ -1,6 +1,6 @@
 import type { DataEditorRef } from '@glideappsfinal/glide-data-grid';
 import type { RefObject } from 'react';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useRef } from 'react';
 
 /** Ячейка с данными под курсором. */
 export interface HoveredCell {
@@ -20,12 +20,19 @@ export interface HoveredCell {
  * Когда курсор переходит на другую ячейку, перерисовываются только две строки:
  * прежняя и новая. Значение записывается при движении мыши.
  *
- * Второе значение (hoverRow) это номер строки под курсором. Внутри
+ * Второе значение (hoverRowRef) это номер строки под курсором. Внутри
  * объединённого блока это строка прямо под мышью, а не главная ячейка блока.
- * Служебные колонки тут учитываются. Значение лежит в состоянии, потому что от
- * него зависит фон строки и подсветка служебных колонок, а смена фона это
- * перерисовка. Меняется только когда включён эффект наведения на строку
- * (hoverEffects.row), иначе движение мыши перерисовок не вызывает.
+ * Служебные колонки тут учитываются. От него зависят фон строки и цвет
+ * служебных колонок, и их тоже читают при отрисовке (getRowThemeOverride и
+ * getCellContent), поэтому значение лежит в ссылке, а не в состоянии: рендер
+ * React не нужен, достаточно дорисовать прежнюю и новую строки. Полная
+ * перерисовка экрана на каждое движение мыши была главной причиной лага
+ * наведения на больших таблицах. Меняется только когда включён эффект
+ * наведения на строку (hoverEffects.row), иначе движение мыши дорисовок
+ * строк не вызывает.
+ *
+ * Дорисовки строк от обоих значений за одно событие мыши склеиваются в один
+ * вызов updateCells (микрозадача), чтобы не рисовать одни и те же строки дважды.
  */
 export function useHoverState({
   isRowHoverEnabled,
@@ -43,35 +50,38 @@ export function useHoverState({
   // Ячейка под курсором (для признаков наведения в содержимом ячеек).
   const hoveredCellRef = useRef<HoveredCell | null>(null);
 
+  // Строки, которые ждут дорисовки до конца текущей задачи.
+  const pendingRowsRef = useRef<Set<number> | null>(null);
+
   // Перерисовываем строки целиком, а не только ячейку под курсором: наведение
   // может влиять на любую колонку этой строки. Например, курсор на ячейке
   // "Название", а иконка должна появиться в соседней колонке действий.
   const damageRows = useCallback(
     (...rowIndexes: Array<number | undefined>) => {
-      const ref = dataEditorRef.current;
-      if (!ref) {
-        return;
+      const valid = rowIndexes.filter(
+        (rowInd): rowInd is number =>
+          typeof rowInd === 'number' && rowInd >= 0 && rowInd < rowsCount,
+      );
+      if (valid.length === 0) return;
+
+      if (pendingRowsRef.current === null) {
+        pendingRowsRef.current = new Set();
+        queueMicrotask(() => {
+          const rowsToUpdate = pendingRowsRef.current;
+          pendingRowsRef.current = null;
+          const ref = dataEditorRef.current;
+          if (!rowsToUpdate || !ref) return;
+
+          const cells: Array<{ cell: [number, number] }> = [];
+          rowsToUpdate.forEach((rowInd) => {
+            for (let colInd = 0; colInd < columnsCount; colInd += 1) {
+              cells.push({ cell: [colInd, rowInd] });
+            }
+          });
+          ref.updateCells?.(cells);
+        });
       }
-
-      const rowIndexesToUpdate = new Set<number>();
-
-      rowIndexes.forEach((rowInd) => {
-        if (typeof rowInd === 'number' && rowInd >= 0 && rowInd < rowsCount) {
-          rowIndexesToUpdate.add(rowInd);
-        }
-      });
-
-      const cells: Array<{ cell: [number, number] }> = [];
-
-      rowIndexesToUpdate.forEach((rowInd) => {
-        for (let colInd = 0; colInd < columnsCount; colInd += 1) {
-          cells.push({ cell: [colInd, rowInd] });
-        }
-      });
-
-      if (cells.length > 0) {
-        ref.updateCells?.(cells);
-      }
+      valid.forEach((rowInd) => pendingRowsRef.current?.add(rowInd));
     },
     [dataEditorRef, columnsCount, rowsCount],
   );
@@ -95,16 +105,22 @@ export function useHoverState({
   );
 
   // Номер строки под курсором (для фона строки и подсветки служебных колонок).
-  const [hoverRow, setHoverRow] = useState<number | undefined>(undefined);
+  const hoverRowRef = useRef<number | undefined>(undefined);
 
-  const handleHoverRowChange = useCallback((nextRow: number | undefined) => {
-    setHoverRow((prev) => (prev === nextRow ? prev : nextRow));
-  }, []);
+  const handleHoverRowChange = useCallback(
+    (nextRow: number | undefined) => {
+      const prevRow = hoverRowRef.current;
+      if (prevRow === nextRow) return;
+      hoverRowRef.current = nextRow;
+      damageRows(prevRow, nextRow);
+    },
+    [damageRows],
+  );
 
   return {
     hoveredCellRef,
     setHoveredCell,
-    hoverRow,
+    hoverRowRef,
     // Если наведение на строку выключено, наружу не отдаём функцию, и тогда
     // слежение за строкой не ведётся вовсе.
     onHoverRowChange: isRowHoverEnabled ? handleHoverRowChange : undefined,

@@ -530,7 +530,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
 
   // Единый источник ховера: логическая ячейка (контент-флаги, ref) и
   // физическая строка (фон, state). Разница семантик описана в useHoverState.
-  const { hoveredCellRef, setHoveredCell, hoverRow, onHoverRowChange } =
+  const { hoveredCellRef, setHoveredCell, hoverRowRef, onHoverRowChange } =
     useHoverState({
       isRowHoverEnabled,
       dataEditorRef,
@@ -814,10 +814,24 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
             }
           : undefined;
 
+      // Служебная колонка строки под курсором: свой цвет поверх серого ховера
+      // строки (тема ячейки сильнее темы строки). Раньше это был регион
+      // подсветки, но массив регионов менялся на каждое движение мыши, и glide
+      // перерисовывал весь экран. В «чистом» виде служебная зона красится
+      // вместе со строкой, своего цвета у неё нет.
+      const serviceHoverOverride =
+        column.isServiceColumn &&
+        isRowHoverEnabled &&
+        appearanceVariant !== 'clean' &&
+        rowInd === hoverRowRef.current
+          ? { bgCell: theme.bgServiceRowHovered }
+          : undefined;
+
       const themeOverride = mergeThemeOverrides(
         columnThemeOverrideResult,
         fillOverride,
-        soloActiveCellOverride
+        soloActiveCellOverride,
+        serviceHoverOverride
       );
 
       const options = {
@@ -890,6 +904,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       theme,
       activeTheme,
       isRowHoverEnabled,
+      appearanceVariant,
       activeRow,
       checkboxSelectedRowIndexes,
       selectionVisualState,
@@ -1472,15 +1487,18 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     portalEventTargetRef,
   ]);
 
+  // Строка под курсором читается из ref при каждом вызове: функция не
+  // пересоздаётся при наведении, иначе glide считал бы, что менялось всё, и
+  // перерисовывал весь экран. Прежняя и новая строки дорисовываются точечно
+  // (useHoverState).
   const getRowThemeOverride = useMemo((): GlideProps['getRowThemeOverride'] => {
     const hasSelectedRows = !!checkboxSelectedRowIndexes?.size;
-    const hoveredRow = isRowHoverEnabled ? hoverRow : undefined;
 
     if (
       !summaryRowsLength &&
       !hasSelectedRows &&
       !isZebra &&
-      hoveredRow === undefined &&
+      !isRowHoverEnabled &&
       activeRow === undefined
     ) {
       return undefined;
@@ -1492,6 +1510,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     const hoverBg = theme.bgRowHovered;
 
     return (rowInd) => {
+      const hoveredRow = isRowHoverEnabled ? hoverRowRef.current : undefined;
       // Итоговые строки здесь намеренно НЕ красим: их фон задаётся по ячейкам
       // (в getCellContentGlide). Если вернуть фон на уровне строки, библиотека
       // таблицы растянет его вниз, в пустое место под данными, и при
@@ -1556,7 +1575,9 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         return { bgCell: hoverBg, accentLight: theme.selectionActiveHoveredBg };
       }
 
-      return {};
+      // Обычной строке своя тема не нужна. Пустой объект glide считает темой и
+      // на каждую ячейку такой строки собирал бы полную копию темы.
+      return undefined;
     };
   }, [
     summaryRowsLength,
@@ -1575,7 +1596,6 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     isRowHoverEnabled,
     isZebra,
     rows.length,
-    hoverRow,
     activeRow,
   ]);
 
@@ -1613,9 +1633,6 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     outlineEachRange,
     totalRows: rows.length + summaryRowsLength,
     columnsCount: columnsLast.length,
-    isRowHoverEnabled,
-    hoverRow,
-    dataRowsCount: rows.length,
     serviceZoneFollowsRow: appearanceVariant === 'clean',
   });
 
