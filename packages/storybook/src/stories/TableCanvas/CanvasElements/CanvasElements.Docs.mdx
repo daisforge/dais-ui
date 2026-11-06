@@ -38,8 +38,18 @@ const columnConfig = [
     key: 'name',
     name: 'Имя',
     width: 200,
-    renderCell: ({ row }) => (
-      <Canvas.Container direction="row" alignItems="center" padding={8} gap={8}>
+    renderCell: ({ row, theme }) => (
+      <Canvas.Container
+        direction="row"
+        alignItems="center"
+        gap={8}
+        padding={{
+          top: theme.cellVerticalPadding,
+          bottom: theme.cellVerticalPadding,
+          left: theme.cellHorizontalPadding,
+          right: theme.cellHorizontalPadding,
+        }}
+      >
         <Canvas.Link view="accent" href={`/users/${row.id}`}>
           {row.name}
         </Canvas.Link>

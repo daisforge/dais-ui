@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { type CSSProperties, useEffect } from 'react';
 
 import { useRowContext } from '../contexts';
 import {
@@ -6,6 +6,7 @@ import {
   CellEditorNumberFormatInternal,
   CellEditorTextAreaInternal,
 } from '../feature-edit';
+import { MIN_EDITOR_FIELD_WIDTH } from '../feature-edit/utils';
 import type { KeyText } from '../feature-key-text/types';
 import { ExpandDetailButtonComponent } from '../feature-row-detail';
 import { useRowDetailHandlerContext } from '../feature-row-detail/ctx';
@@ -22,22 +23,25 @@ import {
   RenderRowCustomEditCell,
   TableConfig,
 } from '../types';
-import { CLASS } from './constants';
+import { CLASS, CSS_VARIABLES } from './constants';
 import { getPaddingLeftFinal } from './styleConstants';
 import { StyledCellContainer, SubRowContainer } from './styled';
 
-/**
- * Самое узкое поле ввода в редакторе.
- * Если в узкой колонке шеврон, отступ уровня или кнопка деталей оставляют полю
- * меньше места, редактор открывается шире ячейки, вправо.
- */
-export const MIN_EDITOR_FIELD_WIDTH = 120;
 /** Кнопка деталей строки: IconButton размера s (40px) и отступ слева 8px. */
 const DETAIL_BUTTON_WIDTH = 48;
 
-/** Ширина редактора: как у ячейки, но так, чтобы полю осталось не меньше MIN_EDITOR_FIELD_WIDTH. */
-const getEditorWidth = (cellWidth: number, occupiedWidth: number) =>
-  Math.max(cellWidth, occupiedWidth + MIN_EDITOR_FIELD_WIDTH);
+/**
+ * Ширина редактора: как у ячейки, но так, чтобы полю осталось не меньше
+ * MIN_EDITOR_FIELD_WIDTH. Высота ячейки нужна шеврону и кнопке деталей.
+ */
+const getEditorBoxStyle = (
+  { cellWidth, cellHeight }: { cellWidth: number; cellHeight: number },
+  occupiedWidth: number,
+) =>
+  ({
+    width: Math.max(cellWidth, occupiedWidth + MIN_EDITOR_FIELD_WIDTH),
+    [CSS_VARIABLES.editorCellHeight]: `${cellHeight}px`,
+  } as CSSProperties);
 
 /**
  * Обёртка для кастомных редакторов (`editingCell.component` в виде функции).
@@ -92,9 +96,12 @@ export const RenderEditCell = <
   tableConfigSubRows,
   tableConfigRowDetailPanel,
   keyText,
+  mergedVerticalAlign,
 }: {
   editingCellInfo: EditingCellInfo<RowType, SummaryRowType>;
   column: ColumnConfig<RowType, SummaryRowType>;
+  /** Вертикальное выравнивание объединённого блока. */
+  mergedVerticalAlign?: 'top' | 'center' | 'bottom';
   tableConfigSubRows: TableConfig<
     RowType,
     SummaryRowType,
@@ -162,6 +169,7 @@ export const RenderEditCell = <
         <CellEditorComboboxInternal
           {...editingCellInfo}
           disableLeftOffset={disableLeftOffset}
+          mergedVerticalAlign={mergedVerticalAlign}
         />
       );
     }
@@ -195,9 +203,7 @@ export const RenderEditCell = <
     return (
       <StyledCellContainer
         className={CLASS.editableCellWithExpandButton}
-        style={{
-          width: getEditorWidth(editingCellInfo.cellWidth, DETAIL_BUTTON_WIDTH),
-        }}
+        style={getEditorBoxStyle(editingCellInfo, DETAIL_BUTTON_WIDTH)}
       >
         {defaultLvl0RenderElement()}
 
@@ -249,12 +255,7 @@ export const RenderEditCell = <
       return (
         <StyledCellContainer
           className={CLASS.editableCellWithExpandButton}
-          style={{
-            width: getEditorWidth(
-              editingCellInfo.cellWidth,
-              DETAIL_BUTTON_WIDTH,
-            ),
-          }}
+          style={getEditorBoxStyle(editingCellInfo, DETAIL_BUTTON_WIDTH)}
         >
           {defaultLvl0RenderElement()}
 
@@ -268,12 +269,10 @@ export const RenderEditCell = <
     }
     return (
       <SubRowContainer
-        style={{
-          width: getEditorWidth(
-            editingCellInfo.cellWidth,
-            getTreeOccupiedWidth(hasChildrenAndArrow, hasExpandDetailButton),
-          ),
-        }}
+        style={getEditorBoxStyle(
+          editingCellInfo,
+          getTreeOccupiedWidth(hasChildrenAndArrow, hasExpandDetailButton),
+        )}
         className={CLASS.editableCellWithExpandButton}
         $lvl={lvl}
         $editingMode={{
@@ -370,6 +369,7 @@ export const RenderEditCell = <
         <CellEditorComboboxInternal
           {...renderSubRowEditCellProps}
           disableLeftOffset={disableLeftOffset}
+          mergedVerticalAlign={mergedVerticalAlign}
         />
       );
     }
@@ -397,9 +397,7 @@ export const RenderEditCell = <
     return (
       <StyledCellContainer
         className={CLASS.editableCellWithExpandButton}
-        style={{
-          width: getEditorWidth(editingCellInfo.cellWidth, DETAIL_BUTTON_WIDTH),
-        }}
+        style={getEditorBoxStyle(editingCellInfo, DETAIL_BUTTON_WIDTH)}
       >
         {defaultLvlNot0RenderElement()}
 
@@ -414,12 +412,10 @@ export const RenderEditCell = <
 
   return (
     <SubRowContainer
-      style={{
-        width: getEditorWidth(
-          editingCellInfo.cellWidth,
-          getTreeOccupiedWidth(hasChildrenAndArrow, columnHasExpandButton),
-        ),
-      }}
+      style={getEditorBoxStyle(
+        editingCellInfo,
+        getTreeOccupiedWidth(hasChildrenAndArrow, columnHasExpandButton),
+      )}
       className={CLASS.editableCellWithExpandButton}
       $lvl={lvl}
       $editingMode={{

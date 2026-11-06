@@ -229,6 +229,57 @@ export const fillStates = (
   };
 };
 
+// ─── Запись цвета потребителя ───
+
+const CSS_RGB =
+  /^rgba?\(\s*([\d.]+%?)[\s,]+([\d.]+%?)[\s,]+([\d.]+%?)(?:\s*[,/]\s*([\d.]+%?))?\s*\)$/i;
+
+/** Канал rgb(): число 0–255 или проценты. */
+const rgbChannel = (v: string) =>
+  v.endsWith('%') ? (parseFloat(v) / 100) * 255 : parseFloat(v);
+
+/** Прозрачность rgba(): число 0–1 или проценты. */
+const alphaChannel = (v: string | undefined) => {
+  if (v === undefined) return 1;
+  return v.endsWith('%') ? parseFloat(v) / 100 : parseFloat(v);
+};
+
+const toByteHex = (v: number) =>
+  Math.round(Math.min(255, Math.max(0, v)))
+    .toString(16)
+    .padStart(2, '0')
+    .toUpperCase();
+
+/**
+ * Цвет потребителя в записи, которую понимает формула: #RRGGBB или
+ * #RRGGBBAA.
+ *
+ * Подробнее. rgb(), rgba() и короткий #RGBA переводятся в #RRGGBBAA.
+ * Прозрачность учитывает сама формула: кладёт цвет на фон ячейки темы,
+ * поэтому в покое ячейка выглядит так же, как полупрозрачный цвет на
+ * таблице. Остальные записи (hsl(), var(), названия цветов) не поддерживаются:
+ * они возвращаются как есть, формула их не примет.
+ */
+export const toHexColor = (color: string): string => {
+  const value = color.trim();
+  const rgb = CSS_RGB.exec(value);
+  if (rgb) {
+    const [, r = '0', g = '0', b = '0', a] = rgb;
+    return `#${toByteHex(rgbChannel(r))}${toByteHex(rgbChannel(g))}${toByteHex(
+      rgbChannel(b),
+    )}${toByteHex(alphaChannel(a) * 255)}`;
+  }
+  if (/^#[0-9a-fA-F]{4}$/.test(value)) {
+    return `#${value
+      .slice(1)
+      .split('')
+      .map((ch) => ch + ch)
+      .join('')
+      .toUpperCase()}`;
+  }
+  return value;
+};
+
 // ─── Запоминание результата ───
 
 const cache = new Map<string, CellFillStates>();
@@ -240,19 +291,24 @@ const cache = new Map<string, CellFillStates>();
 const CACHE_LIMIT = 1024;
 
 /**
- * Состояния цвета ячейки в текущей теме. Результат запоминается: для одного
- * и того же цвета расчёт выполняется один раз.
+ * Состояния цвета ячейки в текущей теме. Цвет может быть hex, rgb() или
+ * rgba() (см. toHexColor). Результат запоминается: для одного и того же
+ * цвета расчёт выполняется один раз.
  */
 export const getCellFillStates = (
-  hex: string,
+  color: string,
   theme: TableColorTheme,
+  /** Свой множитель шага вместо множителя темы (стенд подбора цветов). */
+  stepFactorOverride?: number,
 ): CellFillStates => {
-  const key = `${theme}/${hex}`;
+  const hex = toHexColor(color);
+  const params = TABLE_FILL_PARAMS[theme];
+  const stepFactor = stepFactorOverride ?? params.stepFactor;
+  const key = `${theme}/${stepFactor}/${hex}`;
   const hit = cache.get(key);
   if (hit) return hit;
-  const params = TABLE_FILL_PARAMS[theme];
   const states = fillStates(hex, params.mode, {
-    stepFactor: params.stepFactor,
+    stepFactor,
     cardHex: params.cardHex,
     primaryHex: params.primaryHex,
     selectionHex: params.selectionHex,

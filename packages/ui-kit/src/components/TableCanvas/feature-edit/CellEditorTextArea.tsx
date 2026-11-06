@@ -1,51 +1,72 @@
 import { TextCellEntry } from '@glideappsfinal/glide-data-grid';
 import { mergeClasses } from '@ui-kit/utils';
-import React, { forwardRef, useEffect, useState } from 'react';
+import React, {
+  forwardRef,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 import styled, { css } from 'styled-components';
 
 import { useRowContext } from '../contexts';
+import { CLASS } from '../renders/constants';
 import { type SIZE, SIZES } from '../styles';
 import type { EditingCellInfo, ObjectForExtending } from '../types';
 import { resolveCellFieldPadding } from './cellFieldStyles';
+import { getTextEditorMaxHeight } from './getTextEditorMaxHeight';
 import { CellEditorTextAreaProps } from './types';
+import { MIN_EDITOR_FIELD_WIDTH } from './utils';
 
 const TextAreaWrap = styled.div<{
   $paddingInline: number;
+  $cellHeight: number;
+  $width: number;
   $size: SIZE;
   $disableLeftOffset: boolean | undefined;
   $maxHeight: number;
 }>`
-  /* Поле стоит по центру ячейки.
-     Свой отступ сверху у Glide (6px) убран, центрирует auto-margin в оверлее. */
-  margin-block: auto;
+  /* Ширина как у ячейки. Отступ сверху ставит первую строку по центру ячейки, на
+     место текста, а длинный текст переносится и растит редактор вниз. */
+  box-sizing: border-box;
+  width: ${({ $width }) => $width}px;
   padding-inline: ${({ $paddingInline }) => $paddingInline}px;
+  padding-block: calc((${({ $cellHeight }) => $cellHeight}px - 1lh) / 2);
 
-  /* Поле не выше ячейки, длинный текст прокручивается внутри самого поля.
-     Иначе Glide растит оверлей, и при прокрутке уезжает шеврон дерева.
-     Высоту поля задаёт скрытая копия текста, она обрезается по ячейке,
-     а textarea растянут на всю обёртку и прокручивается сам. */
+  /* Высоту поля задаёт скрытая копия текста, у неё свои отступы Glide убраны.
+     Дойдя до предела, поле перестаёт расти, и textarea прокручивается сам. */
   .gdg-growing-entry {
     margin-block: 0;
-    max-height: ${({ $maxHeight }) => $maxHeight}px;
+    max-height: calc(
+      ${({ $maxHeight }) => $maxHeight}px -
+        (${({ $cellHeight }) => $cellHeight}px - 1lh)
+    );
     overflow: hidden;
+  }
+  .gdg-growing-entry > div {
+    padding-bottom: 0;
   }
   .gdg-growing-entry textarea {
     overflow-y: auto;
   }
+  &,
   * {
     ${({ $size }) => css(SIZES[$size].font())}
   }
 
-  /* В древовидной ячейке поле занимает место справа от шеврона. */
+  /* Рядом с шевроном или кнопкой деталей поле занимает оставшееся место. */
+  .${CLASS.editableCellWithExpandButton} & {
+    width: auto;
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
   ${({ $disableLeftOffset }) =>
     $disableLeftOffset &&
     css`
       margin-left: 0px;
       padding-left: 0px;
-      flex: 1 1 0;
-      min-width: 0;
       & > div {
-        margin-block: auto;
         height: fit-content;
         width: 100%;
       }
@@ -72,12 +93,28 @@ export const CellEditorTextArea = forwardRef<
     const { rowSize } = useRowContext();
     const { inline } = resolveCellFieldPadding({ rowSize, paddingInline });
 
+    const wrapRef = useRef<HTMLDivElement>(null);
+    const [maxHeight, setMaxHeight] = useState(cellHeight);
+
+    useLayoutEffect(() => {
+      setMaxHeight(
+        getTextEditorMaxHeight({
+          cellHeight,
+          editorTop: wrapRef.current?.getBoundingClientRect().top ?? 0,
+          windowHeight: window.innerHeight,
+        }),
+      );
+    }, [cellHeight]);
+
     return (
       <TextAreaWrap
+        ref={wrapRef}
         $size={rowSize}
         $paddingInline={inline}
+        $cellHeight={cellHeight}
+        $width={Math.max(cellWidth, MIN_EDITOR_FIELD_WIDTH)}
         $disableLeftOffset={disableLeftOffset}
-        $maxHeight={cellHeight}
+        $maxHeight={maxHeight}
         className={mergeClasses('tableCanvasTextAreaWrap', containerClassName)}
         onClick={(e) => {
           const ta = e.currentTarget?.getElementsByTagName('textarea')?.[0];

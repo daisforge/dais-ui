@@ -5,6 +5,8 @@ import { SIZE } from '@ui-kit/components/TableCanvas';
 import { useCallback, useMemo, useRef } from 'react';
 
 import type { CellInfo } from '../../TableGlide';
+import { DEFAULT_SPAN_VERTICAL_ALIGN } from '../../TableGlide/constants';
+import { spansSeveralRows } from '../../TableGlide/utils/getRowSpan';
 import { hideRowServiceKeysHandler } from '../data/hideServiceKeysHanlder';
 import { frozenFirst } from '../feature-column-control/columnsRenderOrder';
 import { isServiceEditableColumn } from '../feature-edit';
@@ -56,7 +58,7 @@ import { ColumnConfig, ObjectForExtending } from '../types';
 import { ColumnConfigInternal } from '../types/column-config-internal.type';
 import type { MergedCellsAlign } from '../types/merged-cells.type';
 import { TableConfig } from '../types/table-config.type';
-import { calculateMinColumnWidth } from '../utils';
+import { calculateMinColumnWidth, resolveSpanVerticalAlign } from '../utils';
 import { renderFilterSortHeader } from '../widgets/filter-sort-header';
 import { createLazyRowSpan } from './createLazyRowSpan';
 import { createMergeByValueRowSpan } from './createMergeByValueRowSpan';
@@ -524,28 +526,6 @@ export const useColumns = <
                 : errorTooltipSub?.(clearRow, lvl);
             };
 
-      const renderEditCell: ColumnX['renderEditCell'] = (() => {
-        if (isServiceEditableColumn(el)) {
-          return el.renderEditCell;
-        }
-
-        if (!tableConfigEditing || isLoadingTable) {
-          return undefined;
-        }
-
-        // eslint-disable-next-line react/no-unstable-nested-components
-        return (renderEditCellProps) => (
-          <RenderEditCell
-            editingCellInfo={renderEditCellProps}
-            column={el}
-            tableConfigSubRows={tableConfig.subRows}
-            tableConfigRowDetailPanel={undefined}
-            currIndex={currIndex}
-            indexZeroColKey={indexZeroColKey}
-            keyText={keyText}
-          />
-        );
-      })();
       // && el.resizable - теперь нет точечной настройки для колонки
       const resizable = getColumnIsService(el)
         ? false
@@ -616,6 +596,45 @@ export const useColumns = <
         spanAlign =
           typeof columnAlign === 'function' ? resolveColumnAlign : columnAlign;
       }
+
+      // Константа нужна, чтобы функция была доступна в замыкании редактора.
+      const rowSpanOfCell = rowSpan;
+
+      const renderEditCell: ColumnX['renderEditCell'] = (() => {
+        if (isServiceEditableColumn(el)) {
+          return el.renderEditCell;
+        }
+
+        if (!tableConfigEditing || isLoadingTable) {
+          return undefined;
+        }
+
+        // eslint-disable-next-line react/no-unstable-nested-components
+        return (renderEditCellProps) => {
+          // Ячейка в блоке встаёт по его выравниванию, как и при просмотре: верх по
+          // умолчанию только у блока в несколько строк.
+          const blockRows = rowSpanOfCell?.(renderEditCellProps);
+          const mergedVerticalAlign = blockRows
+            ? resolveSpanVerticalAlign(spanAlign, renderEditCellProps) ??
+              (spansSeveralRows(blockRows)
+                ? DEFAULT_SPAN_VERTICAL_ALIGN
+                : undefined)
+            : undefined;
+
+          return (
+            <RenderEditCell
+              editingCellInfo={renderEditCellProps}
+              column={el}
+              mergedVerticalAlign={mergedVerticalAlign}
+              tableConfigSubRows={tableConfig.subRows}
+              tableConfigRowDetailPanel={undefined}
+              currIndex={currIndex}
+              indexZeroColKey={indexZeroColKey}
+              keyText={keyText}
+            />
+          );
+        };
+      })();
 
       const userThemeOverride = el.themeOverride;
       const columnThemeOverride = userThemeOverride

@@ -36,13 +36,13 @@ export interface UseItemHoveredHandlerParams<R extends ObjectForExtending, SR> {
   externalOnItemHovered?: OnItemHovered;
   /**
    * Колбэк трекинга строки под курсором (hoverEffects.row). Вызывается на
-   * каждое hover-событие: для `kind === 'cell'` — с индексом строки, для
+   * каждое hover-событие: для `kind === 'cell'` — с ячейкой прямо под мышью, для
    * остальных (header, group-header, out-of-bounds — включая уход мыши с
    * таблицы) — с undefined (сброс). Дедупликация повторных значений — на
    * стороне вызывающего (setState с prev-проверкой). Не передан — фича
    * выключена, ветка не выполняется.
    */
-  onHoverRowChange?: (rowInd: number | undefined) => void;
+  onHoverRowChange?: (rawCell: readonly [number, number] | undefined) => void;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -157,13 +157,14 @@ export function useItemHoveredHandler<R extends ObjectForExtending, SR>(
 
       // Трекинг строки под курсором (hoverEffects.row): cell → строка,
       // не-cell (header/group-header/out-of-bounds) → сброс.
-      // rawLocation это физическая строка под мышью: у объединённой ячейки
-      // location указывает на первую ячейку блока, а подсвечивать надо строку курсора.
-      onHoverRowChange?.(
-        args.kind === 'cell'
-          ? args.rawLocation?.[1] ?? args.location[1]
-          : undefined,
-      );
+      // rawLocation это физическая ячейка под мышью: у объединённой ячейки
+      // location указывает на первую ячейку блока, а при смене данных блок под
+      // курсором может стать другим.
+      if (args.kind === 'cell') {
+        onHoverRowChange?.(args.rawLocation ?? args.location);
+      } else {
+        onHoverRowChange?.(undefined);
+      }
 
       const portalTarget = portalEventTargetRef?.current ?? null;
 

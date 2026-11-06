@@ -1,3 +1,4 @@
+import { SELECT_LIST_PORTAL_ID } from '@ui-kit/components/TableCanvasSharedConstants';
 import {
   type ColumnGlideLast,
   GridCell,
@@ -9,11 +10,13 @@ import {
 } from '@ui-kit/components/TableGlide';
 import { useCallback, useMemo, useRef } from 'react';
 
+import { EDITOR_BLOCK_BOTTOM_VAR } from '../../TableGlide/constants';
 import {
   HeaderContextValueTypeInstance,
   useColumnGroupContext,
   useExpandedRowsContext,
   useHeaderContext,
+  useRefTableContext,
   useRowContext,
 } from '../contexts';
 import type { TransferColumnConfig } from '../feature-cell-transfer/types';
@@ -468,6 +471,7 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
                 readOnly={readonly}
                 cellWidth={target.width}
                 cellHeight={target.height}
+                cellY={target.y}
                 colInd={colInd}
                 activation={activation}
                 initialValue={initialValue}
@@ -499,9 +503,30 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
   // строки, колонки) и терял ввод. Ссылка стабильная, открытие — по свежим данным.
   const provideEditorRef = useRef(provideEditorLatest);
   provideEditorRef.current = provideEditorLatest;
+  const refTableForBounds = useRefTableContext();
   const provideEditor = useCallback<ProvideEditorCallback<GridCell>>(
-    (gridCell) => provideEditorRef.current(gridCell),
-    [],
+    (gridCell) => {
+      const editor = provideEditorRef.current(gridCell);
+      const { location, spanRows } = gridCell;
+      if (!location || !editor || typeof editor === 'function') return editor;
+
+      // getBounds у объединённой ячейки отдаёт одну строку, низ блока берём по последней.
+      const [col, row] = location;
+      const last = refTableForBounds?.current?.getBounds(
+        col,
+        spanRows?.[1] ?? row,
+      );
+      if (!last) return editor;
+
+      return {
+        ...editor,
+        styleOverride: {
+          ...editor.styleOverride,
+          [EDITOR_BLOCK_BOTTOM_VAR]: `${last.y + last.height}px`,
+        },
+      };
+    },
+    [refTableForBounds],
   );
 
   const isOutsideClick = useMemo((): TableGlideProps<
@@ -514,7 +539,10 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
     return (e) => {
       const target = e.target as HTMLElement;
       // если клик внутри вашего portal / dropdown — не считать его “вне”
-      return !target.closest('#portal') && !target.closest('#portal2');
+      return (
+        !target.closest('#portal') &&
+        !target.closest(`#${SELECT_LIST_PORTAL_ID}`)
+      );
     };
   }, [onCellsEdited]);
   const contentStateNode = useMemo(() => {

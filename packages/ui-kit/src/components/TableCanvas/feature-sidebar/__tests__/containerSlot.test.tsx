@@ -5,6 +5,7 @@ import {
   screen,
   waitFor,
 } from '@testing-library/react';
+import { SELECT_LIST_PORTAL_ID } from '@ui-kit/components/TableCanvasSharedConstants';
 import React, { createRef, useState } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -85,7 +86,9 @@ describe('TableGlide container slot', () => {
     expect(screen.queryByTestId('data-editor')).toBeNull();
     expect(renderOverlayFeatures).not.toHaveBeenCalled();
     expect(document.querySelectorAll('#portal')).toHaveLength(1);
-    expect(document.querySelectorAll('#portal2')).toHaveLength(1);
+    expect(document.querySelectorAll(`#${SELECT_LIST_PORTAL_ID}`)).toHaveLength(
+      1,
+    );
     fireEvent.click(slot);
 
     rerender(<TableGlide {...props} />);
@@ -110,11 +113,13 @@ describe('TableGlide container slot', () => {
     expect(containerRef.current).toBe(wrapper);
     expect(slot.parentElement).toBe(wrapper);
     expect(document.querySelectorAll('#portal')).toHaveLength(1);
-    expect(document.querySelectorAll('#portal2')).toHaveLength(1);
+    expect(document.querySelectorAll(`#${SELECT_LIST_PORTAL_ID}`)).toHaveLength(
+      1,
+    );
 
     unmount();
     expect(containerRef.current).toBeNull();
     expect(document.querySelector('#portal')).toBeNull();
-    expect(document.querySelector('#portal2')).toBeNull();
+    expect(document.querySelector(`#${SELECT_LIST_PORTAL_ID}`)).toBeNull();
   });
 });

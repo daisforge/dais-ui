@@ -1,6 +1,14 @@
-import type { Tokens } from '../../../../tokens';
+import { getTokens, type Tokens } from '../../../../tokens';
 
-import type { ButtonSize, ButtonView, SizeConfig, ViewColors } from './types';
+import type {
+  ButtonSize,
+  ButtonVariant,
+  ButtonView,
+  EmbedViewColors,
+  GlideThemeForRender,
+  SizeConfig,
+  ViewColors,
+} from './types';
 
 // Size configurations for each button size
 export const SIZE_CONFIG: Record<ButtonSize, SizeConfig> = {
@@ -10,24 +18,35 @@ export const SIZE_CONFIG: Record<ButtonSize, SizeConfig> = {
   l: { height: 48, fontSize: 16, borderRadius: 10, paddingX: 20, iconSize: 20 },
 };
 
+/**
+ * Недоступный контрол рисуется в своих обычных цветах целиком (фон, рамка,
+ * текст, иконка) с непрозрачностью 40 % и без hover. Так у Button,
+ * IconButton, EmbedIconButton и Checkbox в SDDS (`--plasma-*-disabled-opacity`).
+ */
+export const DISABLED_OPACITY = 0.4;
+
+/**
+ * Цвета видов кнопки с подложкой (Button и IconButton): токены компонента
+ * Button в SDDS. У каждого вида свой фон под курсором; у видов с текстом
+ * «на тёмном» или «на светлом» под курсором меняется и текст.
+ * Вида `primary` в SDDS нет, он повторяет `default`; `success` и `critical`
+ * соответствуют `positive` и `negative`.
+ */
 export function buildButtonViewColors(
   tokens: Tokens
 ): Record<ButtonView, ViewColors> {
+  const solidDefault: ViewColors = {
+    bgColor: tokens.surfaceSolidDefault,
+    bgColorHover: tokens.surfaceSolidDefaultHover,
+    borderColor: tokens.surfaceSolidDefault,
+    textColor: tokens.inverseTextPrimary,
+    textColorHover: tokens.inverseTextPrimaryHover,
+    iconColor: tokens.inverseTextPrimary,
+    iconColorHover: tokens.inverseTextPrimaryHover,
+  };
   return {
-    default: {
-      bgColor: tokens.surfaceSolidDefault,
-      bgColorHover: tokens.surfaceSolidDefault,
-      borderColor: tokens.surfaceSolidDefault,
-      textColor: tokens.inverseTextPrimary,
-      iconColor: tokens.inverseTextPrimary,
-    },
-    primary: {
-      bgColor: tokens.surfaceSolidDefault,
-      bgColorHover: tokens.surfaceSolidDefault,
-      borderColor: tokens.surfaceSolidDefault,
-      textColor: tokens.inverseTextPrimary,
-      iconColor: tokens.inverseTextPrimary,
-    },
+    default: solidDefault,
+    primary: solidDefault,
     accent: {
       bgColor: tokens.surfaceAccent,
       bgColorHover: tokens.surfaceAccentHover,
@@ -72,134 +91,141 @@ export function buildButtonViewColors(
     },
     dark: {
       bgColor: tokens.onLightSurfaceTransparentDeep,
-      bgColorHover: tokens.onLightSurfaceTransparentDeep,
-      borderColor: tokens.onLightSurfaceTransparentDeep,
+      bgColorHover: tokens.onLightSurfaceTransparentDeepHover,
+      borderColor: 'transparent',
       textColor: tokens.onDarkTextPrimary,
+      textColorHover: tokens.onDarkTextPrimaryHover,
       iconColor: tokens.onDarkTextPrimary,
+      iconColorHover: tokens.onDarkTextPrimaryHover,
     },
     black: {
       bgColor: tokens.onLightSurfaceSolidDefault,
-      bgColorHover: tokens.onLightSurfaceSolidDefault,
+      bgColorHover: tokens.onLightSurfaceSolidDefaultHover,
       borderColor: tokens.onLightSurfaceSolidDefault,
       textColor: tokens.onDarkTextPrimary,
+      textColorHover: tokens.onDarkTextPrimaryHover,
       iconColor: tokens.onDarkTextPrimary,
+      iconColorHover: tokens.onDarkTextPrimaryHover,
     },
     white: {
       bgColor: tokens.onDarkSurfaceSolidDefault,
-      bgColorHover: tokens.onDarkSurfaceSolidDefault,
+      bgColorHover: tokens.onDarkSurfaceSolidDefaultHover,
       borderColor: tokens.onDarkSurfaceSolidDefault,
       textColor: tokens.onLightTextPrimary,
+      textColorHover: tokens.onLightTextPrimaryHover,
       iconColor: tokens.onLightTextPrimary,
+      iconColorHover: tokens.onLightTextPrimaryHover,
     },
   };
 }
 
-const BLACK: ViewColors = {
-  bgColor: '#060A0C',
-  bgColorHover: '#13181B',
-  borderColor: 'transparent',
-  textColor: '#FFFFFF',
-  /**
-   *#F2F5F893 --on-dark-text-primary-hover
-   */
-  textColorHover: '#F2F5F893',
-  iconColor: '#FFFFFF',
-  /**
-   *#F2F5F893 --on-dark-text-primary-hover
-   */
-  iconColorHover: '#F2F5F893',
+/**
+ * Цвета видов кнопки-иконки без подложки (EmbedIconButton): токены
+ * компонента EmbedIconButton в SDDS. Иконка красится токенами текста, а не
+ * фоном кнопки; фон всегда прозрачный (`surface-clear`).
+ * Видов `clear`, `dark`, `black` и `white` у EmbedIconButton в SDDS нет:
+ * `clear` повторяет `secondary`, `dark` и `black` берут текст «на светлом»,
+ * `white` текст «на тёмном».
+ */
+export function buildEmbedIconButtonViewColors(
+  tokens: Tokens
+): Record<ButtonView, EmbedViewColors> {
+  const embed = (iconColor: string, iconColorHover: string): EmbedViewColors => ({
+    bgColor: tokens.surfaceClear,
+    bgColorHover: tokens.surfaceClear,
+    borderColor: 'transparent',
+    textColor: iconColor,
+    textColorHover: iconColorHover,
+    iconColor,
+    iconColorHover,
+  });
+  const primary = embed(tokens.textPrimary, tokens.textPrimaryHover);
+  const secondary = embed(tokens.textSecondary, tokens.textSecondaryHover);
+  const onLight = embed(tokens.onLightTextPrimary, tokens.onLightTextPrimaryHover);
+  return {
+    default: primary,
+    primary,
+    accent: embed(tokens.textAccent, tokens.textAccentHover),
+    secondary,
+    clear: secondary,
+    success: embed(tokens.textPositive, tokens.textPositiveHover),
+    warning: embed(tokens.textWarning, tokens.textWarningHover),
+    critical: embed(tokens.textNegative, tokens.textNegativeHover),
+    dark: onLight,
+    black: onLight,
+    white: embed(tokens.onDarkTextPrimary, tokens.onDarkTextPrimaryHover),
+  };
+}
+
+// Палитры видов считаются один раз на объект токенов темы: токены темы
+// не меняются, а кнопки перерисовываются на каждом кадре.
+const buttonViewColorsCache = new WeakMap<Tokens, Record<ButtonView, ViewColors>>();
+const embedViewColorsCache = new WeakMap<Tokens, Record<ButtonView, EmbedViewColors>>();
+
+export function getButtonViewColors(tokens: Tokens): Record<ButtonView, ViewColors> {
+  let colors = buttonViewColorsCache.get(tokens);
+  if (colors === undefined) {
+    colors = buildButtonViewColors(tokens);
+    buttonViewColorsCache.set(tokens, colors);
+  }
+  return colors;
+}
+
+export function getEmbedIconButtonViewColors(
+  tokens: Tokens
+): Record<ButtonView, EmbedViewColors> {
+  let colors = embedViewColorsCache.get(tokens);
+  if (colors === undefined) {
+    colors = buildEmbedIconButtonViewColors(tokens);
+    embedViewColorsCache.set(tokens, colors);
+  }
+  return colors;
+}
+
+/** Токены светлой темы: для контролов, нарисованных без темы таблицы. */
+export const LIGHT_THEME_TOKENS: Tokens = getTokens('light');
+
+/** Токены темы для отрисовки контрола, без темы токены светлой темы. */
+export function resolveTokens(theme: { tokens?: Tokens } | undefined): Tokens {
+  return theme?.tokens ?? LIGHT_THEME_TOKENS;
+}
+
+/**
+ * Старый способ подключения кнопок (`variant`) красится теми же видами,
+ * что новый (`view`): основная как accent, второстепенная как secondary,
+ * опасная как critical.
+ */
+export const LEGACY_VARIANT_VIEW: Record<ButtonVariant, ButtonView> = {
+  primary: 'accent',
+  secondary: 'secondary',
+  danger: 'critical',
 };
 
 /**
- * @deprecated Use buildButtonViewColors(tokens) instead.
- * Kept for backward compatibility with drawIconButton/drawEmbedIconButton.
+ * Тема для примитивов, созданных без темы таблицы (прямой `new CanvasButton(...)`):
+ * шрифт по умолчанию и токены светлой темы.
  */
-export const VIEW_COLORS: Record<ButtonView, ViewColors> = {
-  default: BLACK,
-  primary: {
-    bgColor: '#060A0C',
-    bgColorHover: '#111C22',
-    borderColor: 'transparent',
-    textColor: '#FFFFFF',
-    iconColor: '#FFFFFF',
-  },
-  accent: {
-    bgColor: '#118CDF',
-    bgColorHover: '#1798EE',
-    borderColor: 'transparent',
-    textColor: '#FFFFFF',
-    iconColor: '#FFFFFF',
-  },
-  secondary: {
-    /**
-     * surface transparent secondary
-     */
-    bgColor: '#ADB9C238',
-    /**
-     * surface transparent secondary hover
-     */
-    bgColorHover: '#ADB9C247',
-    borderColor: 'transparent',
-    textColor: '#060A0C',
-    iconColor: '#060A0C',
-  },
-  clear: {
-    bgColor: 'transparent',
-    bgColorHover: 'rgba(6, 10, 12, 0.08)',
-    borderColor: 'transparent',
-    textColor: '#060A0C',
-    iconColor: '#060A0C',
-  },
-  success: {
-    bgColor: '#1A9E32',
-    bgColorHover: '#1EB83A',
-    borderColor: 'transparent',
-    textColor: '#FFFFFF',
-    iconColor: '#FFFFFF',
-  },
-  warning: {
-    bgColor: '#FA5F05',
-    bgColorHover: '#FB782D',
-    borderColor: 'transparent',
-    textColor: '#FFFFFF',
-    iconColor: '#FFFFFF',
-  },
-  critical: {
-    bgColor: '#FF293E',
-    bgColorHover: '#FF5263',
-    borderColor: 'transparent',
-    textColor: '#FFFFFF',
-    iconColor: '#FFFFFF',
-  },
-  dark: {
-    /**
-     * #30373CC7 --on-light-surface-transparent-deep
-     */
-    bgColor: '#30373CC7',
-    bgColorHover: '#30373CC7',
-    borderColor: 'transparent',
-    textColor: '#FFFFFF',
-    textColorHover: '#F2F5F893',
-    iconColor: '#FFFFFF',
-    iconColorHover: '#F2F5F893',
-  },
-  black: BLACK,
-  white: {
-    bgColor: '#FFFFFF',
-    bgColorHover: '#FFFFFF',
-    borderColor: 'transparent',
-    textColor: '#060A0C',
-    /**
-     * #13181B93 --on-light-text-primary-hover
-     */
-    textColorHover: '#13181B93',
-    iconColor: '#060A0C',
-    /**
-     * #13181B93 --on-light-text-primary-hover
-     */
-    iconColorHover: '#13181B93',
-  },
-};
+export const FALLBACK_THEME: GlideThemeForRender = (() => {
+  const tokens = LIGHT_THEME_TOKENS;
+  return {
+    accentColor: tokens.textAccent,
+    accentFg: tokens.onDarkTextPrimary,
+    bgCell: tokens.surfaceSolidCard,
+    borderColor: tokens.outlineSolidPrimary,
+    textLight: tokens.textSecondary,
+    textDark: tokens.textPrimary,
+    baseFontFull:
+      "13px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+    tokens,
+  };
+})();
+
+/**
+ * @deprecated Цвета видов светлой темы. Берите `getButtonViewColors(theme.tokens)`:
+ * палитра зависит от темы таблицы.
+ */
+export const VIEW_COLORS: Record<ButtonView, ViewColors> =
+  getButtonViewColors(LIGHT_THEME_TOKENS);
 
 // Button layout constants
 export const BUTTON_PADDING_Y = 4;
@@ -215,19 +241,7 @@ export const DEFAULT_TEXT_PADDING = 4;
 export const DEFAULT_SIZE: ButtonSize = 's';
 export const DEFAULT_VIEW: ButtonView = 'default';
 
-// Color constants
-export const DANGER_COLOR = '#d32f2f';
-export const DEFAULT_ACCENT_FG = '#ffffff';
-export const DEFAULT_SECONDARY_HOVER = 'rgba(30, 136, 229, 0.08)';
-export const DANGER_TEXT_COLOR = '#ffffff';
-
-// Disabled state colors
-export const DISABLED_BG_COLOR = '#E8EEF2';
-export const DISABLED_BORDER_COLOR = '#D5DFE6';
-export const DISABLED_TEXT_COLOR = '#8A959D';
-
 // Cache constants
 export const CACHE_SEPARATOR = '|';
 export const HEX_COLOR_PREFIX = '#';
 export const HEX_COLOR_CHAR_CODE = 35;
-export const LIGHTEN_AMOUNT = 15;

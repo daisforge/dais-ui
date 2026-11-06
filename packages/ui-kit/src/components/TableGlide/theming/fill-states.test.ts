@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { getCellFillStates } from './fill-states';
+import { getCellFillStates, toHexColor } from './fill-states';
 import {
   TABLE_COLOR_THEMES,
   TABLE_STATE_COLORS,
@@ -30,8 +30,8 @@ const SOURCES = {
       dark: '#1A9E3233',
       betaCoreLight: '#21A0381F',
       betaCoreDark: '#21A03833',
-      highContrastLight: '#198A001F',
-      highContrastDark: '#1A9E3233', // своих значений у дизайнера нет, исходный цвет — как в тёмной
+      highContrastLight: '#198A004D',
+      highContrastDark: '#1A9E3233',
     },
   },
   surfaceNegativeMinor: {
@@ -47,10 +47,8 @@ const SOURCES = {
       dark: '#4A0D13',
       betaCoreLight: '#FEDFDE',
       betaCoreDark: '#480B11',
-      // highContrastLight нет специально: в контрастной теме этого токена
-      // нет, и палитра для неё не считается формулой, а копируется из
-      // светлой (emit-table-colors.ts) — сравнивать не с чем.
-      highContrastDark: '#4A0D13', // своих значений у дизайнера нет, исходный цвет — как в тёмной
+      highContrastLight: '#F8BDC4',
+      highContrastDark: '#4A0D13',
     },
   },
   surfaceAccentMinor: {
@@ -67,7 +65,7 @@ const SOURCES = {
       betaCoreLight: '#EFF8FF',
       betaCoreDark: '#0C1A24',
       highContrastLight: '#CFE5F2FF',
-      highContrastDark: '#071A26FF', // своих значений у дизайнера нет, исходный цвет — как в тёмной
+      highContrastDark: '#071A26FF',
     },
   },
 } as const;
@@ -107,5 +105,36 @@ describe('fill-states: эквивалентность рантайм-форму�
       const states = getCellFillStates('#FF0000', theme);
       expect(states.rest).toMatch(/^#[0-9A-F]{6}$/);
     }
+  });
+});
+
+describe('toHexColor: запись цвета потребителя', () => {
+  it('rgba() и rgb() переводятся в #RRGGBBAA', () => {
+    expect(toHexColor('rgba(255, 100, 100, 0.15)')).toBe('#FF646426');
+    expect(toHexColor('rgb(0, 128, 255)')).toBe('#0080FFFF');
+    expect(toHexColor('rgb(0 128 255 / 50%)')).toBe('#0080FF80');
+    expect(toHexColor('rgba(100%, 0%, 0%, 1)')).toBe('#FF0000FF');
+  });
+
+  it('короткий #RGBA раскрывается, остальные записи не меняются', () => {
+    expect(toHexColor('#abcd')).toBe('#AABBCCDD');
+    expect(toHexColor('#ABC')).toBe('#ABC');
+    expect(toHexColor('#AABBCC')).toBe('#AABBCC');
+    expect(toHexColor('var(--surface)')).toBe('var(--surface)');
+  });
+
+  it('rgba() даёт те же состояния, что и тот же цвет в hex', () => {
+    for (const theme of TABLE_COLOR_THEMES) {
+      expect(getCellFillStates('rgba(255, 100, 100, 0.15)', theme)).toEqual(
+        getCellFillStates('#FF646426', theme),
+      );
+    }
+  });
+
+  it('у полупрозрачного цвета есть hover и цвет выделения', () => {
+    const states = getCellFillStates('rgba(100, 255, 100, 0.15)', 'dark');
+    expect(states.rest).toMatch(/^#[0-9A-F]{6}$/);
+    expect(states.hover).toMatch(/^#[0-9A-F]{6}$/);
+    expect(states.active).toMatch(/^#[0-9A-F]{6}$/);
   });
 });

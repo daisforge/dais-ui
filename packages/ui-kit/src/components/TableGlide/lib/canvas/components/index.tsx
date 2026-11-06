@@ -585,15 +585,17 @@ type IconToPreload = { icon: ButtonIcon; size: number };
  *
  * Ключ спрайта — `svg + цвет @ размер * dpr` (см. IconSpriteManager.resolveKey),
  * а preload ниже зовётся без color. При отрисовке drawIcon запрашивает спрайт
- * уже с цветом из view-палитры (для EmbedIconButton secondary это #485056B0, на
- * hover #485056FF), то есть ключи не совпадают и в кэш всегда промах: спрайт
- * грузится асинхронно (Image.decode) и иконка появляется кадром позже — на
- * первой отрисовке и ещё раз на первом hover. Заметно в основном локально в
- * dev-сборке, на стенде эффект в пределах кадра.
+ * уже с цветом из палитры вида (для EmbedIconButton secondary это
+ * text-secondary темы, на hover text-secondary-hover), то есть ключи не
+ * совпадают и в кэш всегда промах: спрайт грузится асинхронно (Image.decode)
+ * и иконка появляется кадром позже: на первой отрисовке и ещё раз на первом
+ * hover. Заметно в основном локально в dev-сборке, на стенде эффект в
+ * пределах кадра.
  *
  * Чинить одним из двух способов:
- * 1) собирать иконки вместе с цветами (покой + hover) из VIEW_COLORS /
- *    VIEW_COLORS_EMBED и iconColor-override ноды — тогда ключи сойдутся;
+ * 1) собирать иконки вместе с цветами (покой + hover) из палитр видов
+ *    (getButtonViewColors / getEmbedIconButtonViewColors) и iconColor-override
+ *    ноды, тогда ключи сойдутся;
  * 2) убрать цвет из ключа: держать в кэше одноцветный спрайт и красить его при
  *    отрисовке (globalCompositeOperation), тогда прогрев не зависит от палитры.
  */
@@ -1042,7 +1044,8 @@ function createNode(
       const node = new CanvasText(id, text, {
         font: fontResult,
         ...textMetrics,
-        color,
+        // Без своего цвета текст красится как обычная ячейка: цветом темы.
+        color: color ?? theme.textDark,
         wordWrap,
         lineHeight,
         overflow,
@@ -1128,7 +1131,7 @@ function createNode(
         leftIcon: normalizedLeftIcon,
         rightIcon: normalizedRightIcon,
         disabled,
-        theme: theme as Theme,
+        theme,
       });
       if (position) node.position = position;
       if (left !== undefined) node.left = left;
@@ -1172,6 +1175,7 @@ function createNode(
         overrideSquareSize,
         overrideIconSize,
         disabled,
+        theme,
       });
       // Цветовой override иконки и overrideWidth поддерживает только EmbedIconButton.
       if (node instanceof CanvasEmbedIconButton) {
@@ -1339,6 +1343,7 @@ function createNode(
         customGradientColor,
         shimmerDuration,
         animated,
+        theme,
       });
 
       node.style = mergedStyle;

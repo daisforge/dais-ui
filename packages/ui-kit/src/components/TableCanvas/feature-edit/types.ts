@@ -15,8 +15,6 @@ export type CustomCellStyleProps = {
   paddingInline?: number | undefined;
   /** Вертикальный отступ ячейки из темы. Без него берётся токен размера строки. */
   paddingBlock?: number | undefined;
-  /** Куда прижат текст объединённого блока. Пусто или center: по центру. */
-  verticalAlign?: 'top' | 'center' | 'bottom' | undefined;
 };
 export type EmptyObj = Record<string, never>;
 
@@ -60,4 +58,4 @@ export type CellEditorTextAreaProps = Omit<
 > & {
   autoFocusType?: 'autoFocus' | 'autoFocusAndSelect' | 'none';
   containerClassName?: string;
-} & Omit<CustomCellStyleProps, 'paddingBlock' | 'verticalAlign'>;
+} & Omit<CustomCellStyleProps, 'paddingBlock'>;
