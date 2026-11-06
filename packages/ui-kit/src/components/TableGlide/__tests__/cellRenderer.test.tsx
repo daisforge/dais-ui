@@ -74,8 +74,9 @@ describe('glideCellRenderer: обрезка по ячейке', () => {
 });
 
 describe('glideCellRenderer: высота содержимого блока с прилипанием', () => {
-  const paintStickyCell = (heightChanged: boolean) => {
+  const paintStickyCell = (heightChanged: boolean, cut = true) => {
     const report = vi.fn((_height: number) => heightChanged);
+    const isCut = vi.fn((_visibleHeight: number) => cut);
     const requestAnimationFrame = vi.fn();
     vi.spyOn(CellCanvasRoot.prototype, 'render').mockReturnValue(
       undefined as never,
@@ -91,7 +92,7 @@ describe('glideCellRenderer: высота содержимого блока с �
         ctxs: {},
       } as unknown as CellInfo<ObjectForExtending, unknown>,
       options: { data: undefined },
-      reportStickyContentHeight: report,
+      stickyContent: { isCut, report },
     });
     ((cell as CanvasCell).data as CanvasCellData).render(
       createCtx().ctx,
@@ -101,7 +102,7 @@ describe('glideCellRenderer: высота содержимого блока с �
       undefined,
       { requestAnimationFrame } as never,
     );
-    return { report, requestAnimationFrame };
+    return { report, isCut, requestAnimationFrame };
   };
 
   it('сообщает высоту содержимого, а не высоту прямоугольника отрисовки', () => {
@@ -116,6 +117,17 @@ describe('glideCellRenderer: высота содержимого блока с �
 
   it('высота та же: лишнего кадра нет', () => {
     expect(paintStickyCell(false).requestAnimationFrame).not.toHaveBeenCalled();
+  });
+
+  it('блок виден целиком: высота не замеряется и кадр не просится', () => {
+    const { report, isCut, requestAnimationFrame } = paintStickyCell(
+      true,
+      false,
+    );
+
+    expect(isCut).toHaveBeenCalledWith(40);
+    expect(report).not.toHaveBeenCalled();
+    expect(requestAnimationFrame).not.toHaveBeenCalled();
   });
 });
 

@@ -72,7 +72,6 @@ export const CellEditorNumberFormat = forwardRef<
       disableLeftOffset,
       paddingInline,
       paddingBlock,
-      verticalAlign,
       align = 'right',
       autoFocusType,
 
@@ -91,7 +90,6 @@ export const CellEditorNumberFormat = forwardRef<
       paddingInline,
       paddingBlock,
       disableLeftOffset,
-      verticalAlign,
     };
 
     /**
