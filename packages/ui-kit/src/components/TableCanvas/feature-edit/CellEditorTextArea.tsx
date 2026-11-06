@@ -9,6 +9,7 @@ import React, {
 } from 'react';
 import styled, { css } from 'styled-components';
 
+import { getRowHeightBySize } from '../../TableGlide/theming/size-tokens';
 import { useRowContext } from '../contexts';
 import { CLASS } from '../renders/constants';
 import { type SIZE, SIZES } from '../styles';
@@ -18,29 +19,50 @@ import { getTextEditorMaxHeight } from './getTextEditorMaxHeight';
 import { CellEditorTextAreaProps } from './types';
 import { MIN_EDITOR_FIELD_WIDTH } from './utils';
 
+type VerticalAlign = 'top' | 'center' | 'bottom';
+
+/* По центру отступ ставит первую строку на место текста ячейки, длинный текст растёт
+   вниз. Сверху и снизу отступ как у ячейки, а строка держит высоту ячейки. */
+const blockPadding = ({
+  $verticalAlign,
+  $cellHeight,
+  $paddingBlock,
+}: {
+  $verticalAlign: VerticalAlign;
+  $cellHeight: number;
+  $paddingBlock: number;
+}) =>
+  $verticalAlign === 'center'
+    ? `calc((${$cellHeight}px - 1lh) / 2)`
+    : `${$paddingBlock}px`;
+
 const TextAreaWrap = styled.div<{
   $paddingInline: number;
+  $paddingBlock: number;
+  $verticalAlign: VerticalAlign;
   $cellHeight: number;
   $width: number;
   $size: SIZE;
   $disableLeftOffset: boolean | undefined;
   $maxHeight: number;
 }>`
-  /* Ширина как у ячейки. Отступ сверху ставит первую строку по центру ячейки, на
-     место текста, а длинный текст переносится и растит редактор вниз. */
+  /* Ширина как у ячейки, длинный текст переносится и растит редактор вниз. */
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: ${({ $verticalAlign }) =>
+    $verticalAlign === 'bottom' ? 'flex-end' : 'flex-start'};
   width: ${({ $width }) => $width}px;
+  min-height: ${({ $cellHeight }) => $cellHeight}px;
   padding-inline: ${({ $paddingInline }) => $paddingInline}px;
-  padding-block: calc((${({ $cellHeight }) => $cellHeight}px - 1lh) / 2);
+  padding-block: ${blockPadding};
 
   /* Высоту поля задаёт скрытая копия текста, у неё свои отступы Glide убраны.
      Дойдя до предела, поле перестаёт расти, и textarea прокручивается сам. */
   .gdg-growing-entry {
+    flex: 0 0 auto;
     margin-block: 0;
-    max-height: calc(
-      ${({ $maxHeight }) => $maxHeight}px -
-        (${({ $cellHeight }) => $cellHeight}px - 1lh)
-    );
+    max-height: calc(${({ $maxHeight }) => $maxHeight}px - 2 * ${blockPadding});
     overflow: hidden;
   }
   .gdg-growing-entry > div {
@@ -49,9 +71,11 @@ const TextAreaWrap = styled.div<{
   .gdg-growing-entry textarea {
     overflow-y: auto;
   }
+  /* Canvas рисует буквы без сжатия из токена шрифта, иначе строки переносятся по-разному. */
   &,
   * {
     ${({ $size }) => css(SIZES[$size].font())}
+    letter-spacing: normal;
   }
 
   /* Рядом с шевроном или кнопкой деталей поле занимает оставшееся место. */
@@ -84,6 +108,8 @@ export const CellEditorTextArea = forwardRef<
       disableLeftOffset,
       autoFocusType,
       paddingInline,
+      paddingBlock,
+      verticalAlign = 'center',
       containerClassName,
       //
       ...props
@@ -91,7 +117,11 @@ export const CellEditorTextArea = forwardRef<
     refExternal,
   ) => {
     const { rowSize } = useRowContext();
-    const { inline } = resolveCellFieldPadding({ rowSize, paddingInline });
+    const { inline, block } = resolveCellFieldPadding({
+      rowSize,
+      paddingInline,
+      paddingBlock,
+    });
 
     const wrapRef = useRef<HTMLDivElement>(null);
     const [maxHeight, setMaxHeight] = useState(cellHeight);
@@ -111,6 +141,8 @@ export const CellEditorTextArea = forwardRef<
         ref={wrapRef}
         $size={rowSize}
         $paddingInline={inline}
+        $paddingBlock={block}
+        $verticalAlign={verticalAlign}
         $cellHeight={cellHeight}
         $width={Math.max(cellWidth, MIN_EDITOR_FIELD_WIDTH)}
         $disableLeftOffset={disableLeftOffset}
@@ -150,10 +182,16 @@ export function CellEditorTextAreaInternal<
   disableLeftOffset,
   theme,
   contentAlign,
+  verticalAlign,
 }: EditingCellInfo<TRow, TSummaryRow> & {
   disableLeftOffset: boolean | undefined;
   contentAlign?: 'left' | 'right' | 'center';
 }) {
+  // Блок ставит текст по своему выравниванию. Своя отрисовка колонки в строке выше
+  // обычной рисует текст сверху (перенос строк), а обычная ячейка по центру.
+  const isTallRow = cellHeight > getRowHeightBySize(theme.rowSize ?? 'big') + 1;
+  const resolvedVerticalAlign =
+    verticalAlign ?? (column.renderCell && isTallRow ? 'top' : 'center');
   const inputProps = (
     column?.editingCell as { inputProps?: Partial<CellEditorTextAreaProps> }
   )?.inputProps;
@@ -189,6 +227,8 @@ export function CellEditorTextAreaInternal<
       cellHeight={cellHeight}
       cellWidth={cellWidth}
       paddingInline={theme.cellHorizontalPadding}
+      paddingBlock={theme.cellVerticalPadding}
+      verticalAlign={resolvedVerticalAlign}
       value={v ?? ''}
       onChange={onChange}
       {...inputProps}

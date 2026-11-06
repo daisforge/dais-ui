@@ -6,6 +6,7 @@ import type { NumberFormatCompProps } from '@ui-kit/components/NumberFormat';
 import { ComponentProps } from 'react';
 
 import type { TextCellEntry } from '../TableGlideInstance';
+import type { FieldVerticalAlign } from './cellFieldStyles';
 
 export type CustomCellStyleProps = {
   cellWidth: number;
@@ -39,16 +40,21 @@ export type CustomCellStyleNumberFormatProps = {
     | 'none';
 } & CustomCellStyleProps;
 
+/** Где стоит поле по высоте ячейки выше обычной строки, по выравниванию блока. */
+type FieldVerticalAlignProps = { verticalAlign?: FieldVerticalAlign };
+
 export type CellEditorNumberFormatProps = Omit<
   NumberFormatCompProps,
   'view' | 'size'
 > &
-  CustomCellStyleNumberFormatProps;
+  CustomCellStyleNumberFormatProps &
+  FieldVerticalAlignProps;
 
 export type { ComboboxItemOption };
 export type CellEditorComboboxProps<T extends ComboboxItemOption> =
   ComboboxCompProps<T> &
-    CustomCellStyleProps & {
+    CustomCellStyleProps &
+    FieldVerticalAlignProps & {
       autoFocusType: 'autoFocus' | 'none';
     };
 
@@ -58,4 +64,6 @@ export type CellEditorTextAreaProps = Omit<
 > & {
   autoFocusType?: 'autoFocus' | 'autoFocusAndSelect' | 'none';
   containerClassName?: string;
-} & Omit<CustomCellStyleProps, 'paddingBlock'>;
+  /** Где стоит текст по высоте ячейки. По центру первая строка на месте текста ячейки. */
+  verticalAlign?: 'top' | 'center' | 'bottom';
+} & CustomCellStyleProps;

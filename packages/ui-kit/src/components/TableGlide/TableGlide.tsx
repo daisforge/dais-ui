@@ -13,6 +13,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -1672,6 +1673,23 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     portalEventTargetRef,
   ]);
 
+  // Состояние строки без наведения и с ним. Порядок состояний описан в
+  // theming/row-state-override.ts; тот же порядок у объединённых блоков.
+  const resolveRowTheme = useCallback(
+    (rowInd: number, rowHover: boolean) => {
+      const checked = checkboxSelectedRowIndexes?.has(rowInd) ?? false;
+      const active = rowInd === activeRow;
+      return resolveRowStateOverride(theme, {
+        rowHover,
+        active,
+        activeChecked: active && checked,
+        checked,
+        zebra: isZebra && rowInd % 2 === 0,
+      });
+    },
+    [theme, checkboxSelectedRowIndexes, activeRow, isZebra],
+  );
+
   const getRowThemeOverride = useMemo((): GlideProps['getRowThemeOverride'] => {
     const hasSelectedRows = !!checkboxSelectedRowIndexes?.size;
     const hoverFrom = activeHoverRows?.from;
@@ -1699,33 +1717,80 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     // таблицы растянет его вниз, в пустое место под данными, и при
     // горизонтальном скролле эта заливка наедет на итоговую строку и
     // перекроет её текст.
-    // Порядок состояний строки и цвет выделения в ней описаны в
-    // theming/row-state-override.ts; тот же порядок у объединённых блоков.
-    return (rowInd) => {
-      if (rowInd >= dataRowsLength) {
-        return {};
-      }
-      const checked = checkboxSelectedRowIndexes?.has(rowInd) ?? false;
-      const active = rowInd === activeRow;
-      return (
-        resolveRowStateOverride(theme, {
-          rowHover: isHoveredRow(rowInd),
-          active,
-          activeChecked: active && checked,
-          checked,
-          zebra: isZebra && rowInd % 2 === 0,
-        }) ?? {}
-      );
-    };
+    return (rowInd) =>
+      rowInd >= dataRowsLength
+        ? {}
+        : resolveRowTheme(rowInd, isHoveredRow(rowInd)) ?? {};
   }, [
+    resolveRowTheme,
     summaryRowsLength,
-    theme,
     checkboxSelectedRowIndexes,
     isZebra,
     rows.length,
     activeHoverRows,
     activeRow,
   ]);
+
+  // Фон редактора следует за состоянием ячейки под ним: наведение, выбранная строка,
+  // отметка, тема. Форк берёт тему редактора один раз при открытии, поэтому фон
+  // открытого редактора обновляем сами, прямо в его элементе.
+  const getEditorBgRef = useRef<(col: number, row: number) => string>();
+  getEditorBgRef.current = (col, row) => {
+    const hover = activeHoverRowsRef.current;
+    const rowHovered =
+      hover !== undefined && row >= hover.from && row <= hover.to;
+    return (
+      getCellContentGlide([col, row], { applyCanvasEditorActivation: false })
+        .themeOverride?.bgCell ??
+      (row < rows.length
+        ? resolveRowTheme(row, rowHovered)?.bgCell
+        : undefined) ??
+      theme.bgCell
+    );
+  };
+  const editorCellRef = useRef<readonly [number, number]>();
+  useLayoutEffect(() => {
+    const cell = editorCellRef.current;
+    const overlay = cell
+      ? overlayPortalRef.current?.querySelector<HTMLElement>(
+          "[id^='gdg-overlay-']",
+        )
+      : null;
+    if (!cell) return;
+    if (!overlay) {
+      editorCellRef.current = undefined;
+      return;
+    }
+    overlay.style.setProperty(
+      '--gdg-bg-cell',
+      getEditorBgRef.current?.(cell[0], cell[1]) ?? null,
+    );
+  }, [activeHoverRows, activeRow, checkboxSelectedRowIndexes, theme]);
+  // Ссылка постоянная: новая функция заставила бы форк пересоздать открытый редактор.
+  const provideEditorExternalRef = useRef(restProps.provideEditor);
+  provideEditorExternalRef.current = restProps.provideEditor;
+  const hasProvideEditor = restProps.provideEditor !== undefined;
+  const provideEditor = useMemo<GlideProps['provideEditor']>(
+    () =>
+      hasProvideEditor
+        ? (cell) => {
+            const editor = provideEditorExternalRef.current?.(cell);
+            if (!editor || typeof editor === 'function' || !cell.location) {
+              return editor;
+            }
+            const [col, row] = cell.location;
+            editorCellRef.current = cell.location;
+            return {
+              ...editor,
+              styleOverride: {
+                ...editor.styleOverride,
+                '--gdg-bg-cell': getEditorBgRef.current?.(col, row),
+              } as CSSProperties,
+            };
+          }
+        : undefined,
+    [hasProvideEditor],
+  );
 
   // ─── onItemHovered: единый агрегатор hover-логики (тултипы, окрашивание строки)
   const { onItemHovered } = useItemHoveredHandler(
@@ -1850,6 +1915,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
           onItemHovered={onItemHovered}
           onVisibleRegionChanged={handleVisibleRegionChanged}
           {...restProps}
+          provideEditor={provideEditor}
           experimental={experimental}
           // Copy/paste glide отключены, обрабатываются нашей реализацией
           // (feature-cell-transfer), которая поддерживает subRow, tree, copyData,

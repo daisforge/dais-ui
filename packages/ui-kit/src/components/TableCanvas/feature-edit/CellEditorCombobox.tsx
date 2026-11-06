@@ -61,6 +61,7 @@ export const CellEditorCombobox = forwardRef(
       disableLeftOffset,
       paddingInline,
       paddingBlock,
+      verticalAlign,
       name,
       items,
       multiple,
@@ -110,7 +111,11 @@ export const CellEditorCombobox = forwardRef(
     }
 
     return (
-      <FieldBox $cellWidth={cellWidth}>
+      <FieldBox
+        $cellWidth={cellWidth}
+        $cellHeight={cellHeight}
+        $verticalAlign={verticalAlign}
+      >
         <StyledCombobox<T>
           $geometry={geometry}
           name={name as string}
@@ -211,6 +216,7 @@ export function CellEditorComboboxInternal<
       readOnly={readOnly}
       paddingInline={theme.cellHorizontalPadding}
       paddingBlock={theme.cellVerticalPadding}
+      verticalAlign={mergedVerticalAlign}
       /* CustomCellStyleProps */
       cellWidth={cellWidth}
       cellHeight={cellHeight}
