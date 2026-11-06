@@ -9,7 +9,7 @@ import React, {
 } from 'react';
 import styled, { css } from 'styled-components';
 
-import { useRefTableContainerContext, useRowContext } from '../contexts';
+import { useRowContext } from '../contexts';
 import { CLASS } from '../renders/constants';
 import { type SIZE, SIZES } from '../styles';
 import type { EditingCellInfo, ObjectForExtending } from '../types';
@@ -94,20 +94,17 @@ export const CellEditorTextArea = forwardRef<
     const { inline } = resolveCellFieldPadding({ rowSize, paddingInline });
 
     const wrapRef = useRef<HTMLDivElement>(null);
-    const refTableContainer = useRefTableContainerContext();
     const [maxHeight, setMaxHeight] = useState(cellHeight);
 
     useLayoutEffect(() => {
       setMaxHeight(
         getTextEditorMaxHeight({
           cellHeight,
-          tableHeight:
-            refTableContainer?.current?.getBoundingClientRect().height,
           editorTop: wrapRef.current?.getBoundingClientRect().top ?? 0,
           windowHeight: window.innerHeight,
         }),
       );
-    }, [cellHeight, refTableContainer]);
+    }, [cellHeight]);
 
     return (
       <TextAreaWrap
