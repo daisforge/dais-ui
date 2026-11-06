@@ -165,6 +165,7 @@ export function CellEditorNumberFormatInternal<
   formatOptions,
   disableLeftOffset,
   theme,
+  contentAlign,
 }: EditingCellInfo<TRow, TSummaryRow> & {
   formatOptions: ContentFormat | undefined;
   disableLeftOffset: boolean | undefined;
@@ -256,7 +257,7 @@ export function CellEditorNumberFormatInternal<
       disableLeftOffset={disableLeftOffset}
       paddingInline={theme.cellHorizontalPadding}
       paddingBlock={theme.cellVerticalPadding}
-      align={alignContent}
+      align={contentAlign ?? alignContent}
       autoFocusType={
         isOverwriteEntry ? 'autoFocusBeforeDecimals' : 'autoFocusAndSelect'
       }

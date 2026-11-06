@@ -335,6 +335,7 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
       if (!column) return undefined;
       const EditCellComp = column.renderEditCell;
       const { readonly } = gridCell as { readonly?: boolean };
+      const spanHorizontalAlign = gridCell.spanAlign?.horizontal;
 
       /* ------------------- render preview cell ------------------- */
       if (readonly) {
@@ -357,6 +358,7 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
               return (
                 <EditCellComp
                   readOnly
+                  contentAlign={spanHorizontalAlign}
                   cellWidth={target.width}
                   cellHeight={target.height}
                   colInd={colInd}
@@ -420,7 +422,8 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
               activation,
             } = props;
 
-            const contentAlign = column.contentAlign ?? 'left';
+            const contentAlign =
+              spanHorizontalAlign ?? column.contentAlign ?? 'left';
             const { contentFormat } = column as unknown as {
               contentFormat?: ContentFormat;
             };
@@ -469,6 +472,7 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
             return (
               <EditCellComp
                 readOnly={readonly}
+                contentAlign={spanHorizontalAlign}
                 cellWidth={target.width}
                 cellHeight={target.height}
                 cellY={target.y}

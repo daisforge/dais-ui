@@ -129,6 +129,8 @@ export type EditingCellInfoGlideInstance<
   cellY?: number;
   /** readOnly=true - будет значить, что активен не режим редактирования, а режим превью */
   readOnly: boolean | undefined;
+  /** Выравнивание по горизонтали, заданное объединённому блоку: важнее выравнивания колонки. */
+  contentAlign?: 'left' | 'right' | 'center';
   // onClose: (commitChanges?: boolean, shouldFocusCell?: boolean) => void;
 };
 
