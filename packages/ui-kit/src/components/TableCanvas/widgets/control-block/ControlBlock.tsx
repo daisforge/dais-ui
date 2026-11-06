@@ -287,12 +287,18 @@ export const ControlBlock = ({
 
   useTableResizeObserver(throttledHandleResize);
 
-  // Этап 5: useLayoutEffect вместо useEffect для начального compress
+  useEffect(
+    () => () => throttledHandleResize.cancel(),
+    [throttledHandleResize],
+  );
+
+  // compress стабилен: новые замеры запускают пересчёт явно, не пересоздавая
+  // throttle и ResizeObserver. Сохранённый resize читает актуальные refs хука.
   useLayoutEffect(() => {
     if (containerRef.current) {
       compress(containerRef.current.clientWidth);
     }
-  }, [compress]);
+  }, [compress, mergedWidths]);
 
   // Пересчитываем компрессию при смене режима редактирования
   useEffect(() => {

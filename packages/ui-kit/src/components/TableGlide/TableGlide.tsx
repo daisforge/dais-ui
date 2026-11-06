@@ -290,6 +290,10 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     [],
   );
   const dataEditorRef = useRef<DataEditorRef | null>(null);
+  // Только скриншотный Storybook (STORYBOOK_SCREENSHOT_TEST=1) подключает
+  // withCanvasSnapshots: useSnapshotRepaint регистрирует этот callback в нём.
+  // Runner вызывает его перед PNG через window.daisScreenshotRepaint;
+  // в приложении провайдера нет, поэтому дополнительной перерисовки нет.
   const repaintSnapshot = useCallback(() => {
     if (!dataEditorRef.current) return false;
     // Новая версия getCellContent заставляет Glide перерисовать всю видимую область.

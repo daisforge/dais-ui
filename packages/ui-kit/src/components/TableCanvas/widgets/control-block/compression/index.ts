@@ -80,7 +80,7 @@ export const useCompressionFeatures = (
     spacingRef.current = spacing;
     optionsRef.current = options;
     measuredWidthsRef.current = measuredWidths;
-  }, [initialState, spacing, options, measuredWidths]);
+  });
 
   // Кэш живёт по DOM элементу таблицы и переживает ремаунт контрл-блока
   const cacheRef = useRef<CompressionCache>({ cache: new Map() });
@@ -108,13 +108,11 @@ export const useCompressionFeatures = (
       JSON.stringify({
         state: originalStateRef.current,
         measuredWidths: measuredWidthsRef.current,
+        spacing: spacingRef.current,
         editModeEnabled: optionsRef.current?.editModeEnabled,
         hasEditModeLeftSlot: optionsRef.current?.hasEditModeLeftSlot,
       }),
-    // Новые замеры запускают useLayoutEffect вызывающего компонента.
-    // Ранее сохранённые обработчики читают актуальные замеры через ref.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [measuredWidths],
+    [],
   );
 
   const calculateCurrentWidth = useCallback(
@@ -125,8 +123,7 @@ export const useCompressionFeatures = (
         spacingRef.current,
         breakdown,
       ),
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- Причина зависимости описана у getCacheKey выше.
-    [measuredWidths],
+    [],
   );
 
   const compress = useCallback(

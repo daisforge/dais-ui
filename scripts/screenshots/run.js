@@ -5,6 +5,9 @@ import http from 'node:http';
 import { createRequire } from 'node:module';
 import path from 'node:path';
 
+// eslint-disable-next-line import/extensions -- Node.js ESM требует расширение файла.
+import { writeHtmlReport } from './report.js';
+
 // Точка входа готового Docker-контейнера: раздаёт Storybook, запускает проверки
 // и собирает отчёт. Перенос эталонов в проект выполняет docker.js на хосте.
 const require = createRequire(import.meta.url);
@@ -174,61 +177,7 @@ fs.writeFileSync(
   path.join(artifacts, 'summary.json'),
   JSON.stringify(summary, null, 2),
 );
-// Тексты ошибок и названия stories выводим как текст, а не как HTML-разметку.
-const escaped = (value) =>
-  String(value).replace(
-    /[&<>"']/g,
-    (c) =>
-      ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[
-        c
-      ]),
-  );
-// Автономный HTML-отчёт можно скачать из CI и открыть вместе с PNG без сервера.
-// Эти стили оформляют только отчёт: они не попадают в Storybook и не меняют снимки.
-fs.writeFileSync(
-  path.join(artifacts, 'index.html'),
-  `<!doctype html>
-<meta charset="utf-8">
-<title>Screenshot report</title>
-<style>
-  body { font: 16px system-ui; margin: 32px; }
-  img { max-width: 100%; }
-  article { border-top: 1px solid #ccc; padding: 16px 0; }
-  pre { white-space: pre-wrap; }
-</style>
-<h1>Screenshot report</h1>
-<p>${escaped(
-    JSON.stringify({
-      ...summary,
-      records: undefined,
-      skipped: summary.skipped.length,
-    }),
-  )}</p>
-${records
-  .map((r) => {
-    const preview = ['composite.png', 'failure-page.png'].find((name) =>
-      fs.existsSync(path.join(artifacts, r.id, name)),
-    );
-    const actual = [
-      'actual.png',
-      'failure-page.png',
-      'unstable-2.png',
-      'unstable-0.png',
-    ].find((name) => fs.existsSync(path.join(artifacts, r.id, name)));
-    const url = (name) => `${encodeURIComponent(r.id)}/${name}`;
-    return `<article>
-<h2>${escaped(r.id)} — ${escaped(r.status)}</h2>
-<pre>${escaped(r.error ?? r.skipReason ?? '')}</pre>
-${
-  preview
-    ? `<a href="${url(preview)}"><img loading="lazy" src="${url(preview)}"></a>`
-    : ''
-}
-${actual ? `<a href="${url(actual)}">${actual}</a>` : ''}
-</article>`;
-  })
-  .join('')}`,
-);
+writeHtmlReport(artifacts, summary);
 // Нулевой код Jest недостаточен: каждая выполненная story должна попасть в отчёт.
 // Пустой или неполный запуск не разрешает заменять эталоны.
 if (
