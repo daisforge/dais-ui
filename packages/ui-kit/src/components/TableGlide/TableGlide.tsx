@@ -29,6 +29,7 @@ import { useCanvasInteractionSession } from './hooks/useCanvasInteractionSession
 import { useCustomRenderers } from './hooks/useCustomRenderers';
 import { useGlideElements } from './hooks/useGlideElements';
 import { useHoverState } from './hooks/useHoverState';
+import { useSnapshotRepaint } from './hooks/useSnapshotRepaint';
 import { useOverlayPortalFix } from './hooks/useOverlayPortalFix';
 import { useItemHoveredHandler } from './hooks/useItemHoveredHandler';
 import { useRowHeightGlide } from './hooks/useRowHeightGlide';
@@ -279,12 +280,24 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   });
   const rowH = useAnimatedRowHeight(rowHeightGlide);
 
-  const [updateVersion, _setUpdateVersion] = useState(0);
+  const [updateVersion, setUpdateVersion] = useState(0);
   const canvasCellCache = useMemo(
     () => new WeakMap<R, Map<string, CanvasCellCacheEntry>>(),
     [],
   );
   const dataEditorRef = useRef<DataEditorRef | null>(null);
+  // Только скриншотный Storybook (STORYBOOK_SCREENSHOT_TEST=1) подключает
+  // withCanvasSnapshots: useSnapshotRepaint регистрирует этот callback в нём.
+  // Runner вызывает его перед PNG через window.daisScreenshotRepaint;
+  // в приложении провайдера нет, поэтому дополнительной перерисовки нет.
+  const repaintSnapshot = useCallback(() => {
+    if (!dataEditorRef.current) return false;
+    // Новая версия getCellContent заставляет Glide перерисовать всю видимую область.
+    // Частичный updateCells может накапливать пиксели по краям обрезанных ячеек.
+    setUpdateVersion((version) => version + 1);
+    return true;
+  }, []);
+  useSnapshotRepaint(repaintSnapshot);
 
   // Controlled-выделение приходит, когда грид НЕ в фокусе (напр. клик по внешней
   // кнопке) — тогда glide рисует якорную ячейку без заливки (нативный стиль

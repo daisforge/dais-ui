@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - develop
+      - codex/screenshot-testing
     paths:
       - 'packages/storybook/**'
       - 'packages/ui-kit/**'

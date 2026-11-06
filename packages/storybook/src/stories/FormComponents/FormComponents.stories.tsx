@@ -1,3 +1,4 @@
+import { FIXED_DATE_TIMESTAMP } from '@df-storybook/data/tableData';
 /* eslint-disable no-alert */
 /* eslint-disable react-hooks/rules-of-hooks */
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
@@ -304,11 +305,11 @@ export const ExampleWithoutValidator: Story = {
             options={{
               required: 'обязательное поле',
               max: {
-                value: new Date().getTime(),
+                value: FIXED_DATE_TIMESTAMP,
                 message: 'указанная дата за пределами максимально доступной',
               },
               min: {
-                value: new Date().getTime() - 20 * 24 * 60 * 60 * 1000,
+                value: FIXED_DATE_TIMESTAMP - 20 * 24 * 60 * 60 * 1000,
                 message: 'указанная дата за пределами минимально доступной',
               },
             }}
@@ -533,7 +534,7 @@ export const WithZod: Story = {
             label="DateRange"
             invalidFormatMessage="incorrect date"
             isDoubleCalendar
-            max={new Date(new Date().setDate(new Date().getDate() + 2))}
+            max={new Date(FIXED_DATE_TIMESTAMP + 2 * 24 * 60 * 60 * 1000)}
             size="s"
             style={{
               maxWidth: '559px',

@@ -14,6 +14,11 @@ import { avatarItems } from './avatarFixtures';
 const meta: Meta = {
   title: 'Локальные компоненты/TableCanvas/CanvasElements/CanvasAvatar',
   tags: ['!autodocs'],
+  parameters: {
+    // Намеренно отсутствующее фото проверяет запасное отображение аватара.
+    // Остальные ошибки изображений и шрифтов по-прежнему завершают тест ошибкой.
+    screenshot: { allowedResourceErrors: ['/canvas-images/missing.png'] },
+  },
 };
 export default meta;
 function AvatarContentAndSizesExample() {

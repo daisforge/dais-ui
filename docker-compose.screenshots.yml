@@ -1,0 +1,17 @@
+services:
+  screenshots:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile.screenshots
+    network_mode: none
+    init: true
+    shm_size: 1gb
+    environment:
+      SCREENSHOT_MODE: ${SCREENSHOT_MODE:-compare}
+      SCREENSHOT_FILTER: ${SCREENSHOT_FILTER:-}
+      SCREENSHOT_ARTIFACTS_DIR: /artifacts
+    volumes:
+      - ./packages/storybook/__snapshots__:/app/packages/storybook/__snapshots__:ro
+      - ${SCREENSHOT_ARTIFACTS_HOST:-./artifacts/screenshots/manual}:/artifacts
+      - ${SCREENSHOT_STAGING_HOST:-./artifacts/screenshots/staging}:/staging
