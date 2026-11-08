@@ -2102,6 +2102,8 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
           {...restProps}
           provideEditor={provideEditor}
           onKeyDown={handleKeyDownBridge}
+          // В режиме cell квадратика автозаполнения нет, рамка блока его не включает.
+          fillHandle={cellsSelectionMode === 'cell' ? false : restProps.fillHandle}
           experimental={experimental}
           // Copy/paste glide отключены, обрабатываются нашей реализацией
           // (feature-cell-transfer), которая поддерживает subRow, tree, copyData,
