@@ -5,6 +5,7 @@ import {
   DataEditorRef,
   GridCell,
   GridColumn,
+  isReadWriteCell,
 } from '@glideappsfinal/glide-data-grid';
 import type { CSSProperties } from 'react';
 import { SELECT_LIST_PORTAL_ID } from '@ui-kit/components/TableCanvasSharedConstants';
@@ -91,6 +92,7 @@ import {
 } from './utils/createCell';
 import { findBlockOrigin } from './utils/findBlockOrigin';
 import { mergeThemeOverrides } from './utils/mergeThemeOverrides';
+import { queryGlideElements } from './utils/queryGlideElements';
 import type { ResolveHoverRows } from './hooks/useHoverState';
 import { getSpan } from './utils/getSpan';
 import {
@@ -1121,6 +1123,29 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     ],
   );
 
+  // Помещается ли ячейка целиком в прокручиваемую часть таблицы: без
+  // закреплённых колонок и липких колонок левее неё, как считает scrollTo в Glide.
+  const fitsScrollArea = useCallback(
+    (col: number, width: number) => {
+      const { scroller } = queryGlideElements(containerRefInternal.current);
+      if (!scroller) return false;
+      const widthOf = (index: number) => {
+        const column = columnsForRender[index];
+        return column && 'width' in column ? column.width : 0;
+      };
+      let pinnedWidth = 0;
+      for (let i = 0; i < (freezeColumns ?? 0); i++) pinnedWidth += widthOf(i);
+      for (const stickyColumn of restProps.stickyColumns ?? []) {
+        if (stickyColumn >= col) break;
+        if (stickyColumn >= (freezeColumns ?? 0)) {
+          pinnedWidth += widthOf(stickyColumn);
+        }
+      }
+      return width <= scroller.clientWidth - pinnedWidth;
+    },
+    [columnsForRender, freezeColumns, restProps.stickyColumns],
+  );
+
   const handleCellClickedBridge = useCallback<
     NonNullable<GlideProps['onCellClicked']>
   >(
@@ -1131,6 +1156,30 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       const glideCell = getCellContentGlide(cell as [number, number], {
         applyCanvasEditorActivation: false,
       });
+
+      // Редактируемую ячейку, частично ушедшую за край или под закреплённые
+      // колонки, докручиваем в видимую часть, как Glide делает при выборе
+      // стрелками. Иначе редактор откроется во всю ширину ячейки и ляжет поверх
+      // закреплённых колонок.
+      //
+      // Подробнее. Ячейку шире видимой части не докручиваем: Glide прокрутил бы
+      // к её началу, и при каждом клике содержимое уезжало бы из-под курсора.
+      // Только по горизонтали: у высокого блока Glide даёт первую строку, и по
+      // вертикали таблица прыгала бы к началу блока. Если таблица сдвинулась,
+      // этот клик редактор не открывает: Glide поставил бы его по старому месту
+      // ячейки. Следующий клик откроет его уже на месте.
+      if (
+        glideCell.allowOverlay &&
+        isReadWriteCell(glideCell) &&
+        fitsScrollArea(cell[0], event.bounds.width)
+      ) {
+        const { scroller } = queryGlideElements(containerRefInternal.current);
+        const scrollLeft = scroller?.scrollLeft;
+        dataEditorRef.current?.scrollTo(cell[0], cell[1], 'horizontal');
+        if (scroller && scroller.scrollLeft !== scrollLeft) {
+          event.preventDefault();
+        }
+      }
 
       // Для обычной не-canvas ячейки оставляем стандартное поведение.
       if (!isCanvasCell(glideCell)) {
@@ -1237,7 +1286,13 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         return;
       }
     },
-    [getCellContentGlide, interactionSessionStore, onCellClickedExternal, rows],
+    [
+      fitsScrollArea,
+      getCellContentGlide,
+      interactionSessionStore,
+      onCellClickedExternal,
+      rows,
+    ],
   );
 
   const handleCellContextMenuBridge = useCallback<
@@ -1829,6 +1884,94 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     [hasProvideEditor],
   );
 
+  // Нажатие, которое откроет редактор в частично спрятанной редактируемой
+  // ячейке: сначала докручиваем ячейку, как по клику, потом повторяем нажатие.
+  // Сразу открывать нельзя: Glide поставит редактор по положению ячейки до
+  // прокрутки.
+  //
+  // Подробнее. Спрятана ли ячейка, видно по тому, сдвинул ли scrollTo
+  // скроллер. Повтор ждёт, пока Glide узнает о прокрутке (положение ячейки
+  // в getBounds сменится), но не дольше нескольких кадров. Своё повторное
+  // нажатие узнаём по ссылке на событие: внешний обработчик его не получает,
+  // он уже получил настоящее.
+  const onKeyDownExternalRef = useRef(restProps.onKeyDown);
+  onKeyDownExternalRef.current = restProps.onKeyDown;
+  const repeatedKeyRef = useRef<KeyboardEvent>();
+  const editOnType = restProps.editOnType !== false;
+  const handleKeyDownBridge = useCallback<
+    NonNullable<GlideProps['onKeyDown']>
+  >(
+    (event) => {
+      const { location, bounds, rawEvent } = event;
+      if (rawEvent && rawEvent.nativeEvent === repeatedKeyRef.current) {
+        repeatedKeyRef.current = undefined;
+        return;
+      }
+      let cancelled = false;
+      onKeyDownExternalRef.current?.({
+        ...event,
+        cancel: () => {
+          cancelled = true;
+          event.cancel();
+        },
+      });
+      if (
+        cancelled ||
+        !location ||
+        !bounds ||
+        !rawEvent ||
+        event.ctrlKey ||
+        event.metaKey ||
+        (event.key !== 'Enter' && event.key.length !== 1)
+      ) {
+        return;
+      }
+      const cell = getCellContentGlide([location[0], location[1]], {
+        applyCanvasEditorActivation: false,
+      });
+      const activates = event.key === 'Enter' || event.key === ' ';
+      if (
+        !cell.allowOverlay ||
+        !isReadWriteCell(cell) ||
+        (!activates && !editOnType) ||
+        !fitsScrollArea(location[0], bounds.width)
+      ) {
+        return;
+      }
+      const { scroller } = queryGlideElements(containerRefInternal.current);
+      const scrollLeft = scroller?.scrollLeft;
+      dataEditorRef.current?.scrollTo(location[0], location[1], 'horizontal');
+      if (!scroller || scroller.scrollLeft === scrollLeft) return;
+
+      event.cancel();
+      event.preventDefault();
+      const { target } = rawEvent;
+      const repeated = new KeyboardEvent('keydown', {
+        key: rawEvent.key,
+        code: rawEvent.code,
+        shiftKey: rawEvent.shiftKey,
+        altKey: rawEvent.altKey,
+        bubbles: true,
+        cancelable: true,
+      });
+      let framesLeft = 10;
+      const repeatWhenMoved = () => {
+        const moved =
+          dataEditorRef.current?.getBounds(location[0], location[1])?.x !==
+          bounds.x;
+        framesLeft -= 1;
+        if (moved || framesLeft === 0) {
+          repeatedKeyRef.current = repeated;
+          target.dispatchEvent(repeated);
+        } else {
+          requestAnimationFrame(repeatWhenMoved);
+        }
+      };
+      requestAnimationFrame(repeatWhenMoved);
+    },
+    [editOnType, fitsScrollArea, getCellContentGlide],
+  );
+
   // ─── onItemHovered: единый агрегатор hover-логики (тултипы, окрашивание строки)
   const { onItemHovered } = useItemHoveredHandler(
     {
@@ -1958,6 +2101,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
           onVisibleRegionChanged={handleVisibleRegionChanged}
           {...restProps}
           provideEditor={provideEditor}
+          onKeyDown={handleKeyDownBridge}
           experimental={experimental}
           // Copy/paste glide отключены, обрабатываются нашей реализацией
           // (feature-cell-transfer), которая поддерживает subRow, tree, copyData,
