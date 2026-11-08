@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { ColumnsControlConfig } from '../feature-column-control/types';
 import { KeyText, KeyTextMap } from '../feature-key-text/types';
@@ -7,6 +7,7 @@ import { ColumnConfigInternal } from '../types/column-config-internal.type';
 import {
   insertNewKeysByDefaultOrder,
   orderWithUpdatedDefaultColsDeleteDuplicates,
+  sameOrder,
   sortedInOrder,
   updateOrderWithKeyText,
 } from './handlers';
@@ -21,6 +22,7 @@ export const useReorderDragable = <
   RowType extends ObjectForExtending,
   SummaryRowType,
 >({
+  allColumns,
   columns,
   reorderIsActive,
   tableConfigColumnsControl,
@@ -35,6 +37,9 @@ export const useReorderDragable = <
   colsWithKeyTextMap,
   pinnedCols,
 }: {
+  /** Все столбцы, включая скрытые. От них зависит порядок. */
+  allColumns: readonly ColumnConfigInternal<RowType, SummaryRowType>[];
+  /** Видимые столбцы, из них собирается reorderedColumns. */
   columns: readonly ColumnConfigInternal<RowType, SummaryRowType>[];
   reorderIsActive: boolean;
   tableConfigColumnsControl: ColumnsControlConfig | undefined;
@@ -80,42 +85,50 @@ export const useReorderDragable = <
       showRowInstruments,
     });
 
-  // обновление columnsOrder при обновлении columns
-  useEffect(() => {
-    setColumnsOrder((prev) => {
-      const defaultOrder = getDefaultColumnsOrder();
+  const getActualOrder = (prev: string[]) => {
+    const defaultOrder = getDefaultColumnsOrder();
 
-      // Колонки, исчезнувшие из конфига, выбрасываем из порядка: иначе при
-      // динамическом уменьшении columnConfig список колонок (сайдбар)
-      // продолжает показывать удалённые ключи.
-      const actualKeys = new Set(defaultOrder);
-      const actualPrev = prev.filter((key) => actualKeys.has(key));
+    // Колонки, исчезнувшие из конфига, выбрасываем из порядка: иначе при
+    // динамическом уменьшении columnConfig список колонок (сайдбар)
+    // продолжает показывать удалённые ключи.
+    const actualKeys = new Set(defaultOrder);
+    const actualPrev = prev.filter((key) => actualKeys.has(key));
 
-      // Новые колонки встают на своё место относительно соседей из columnConfig, а не в конец.
-      const copyOfPrev = insertNewKeysByDefaultOrder({
-        prevOrder: actualPrev,
-        defaultOrder,
-      });
-
-      // keyText mutation -  после всех других обработок
-      updateOrderWithKeyText({
-        keyText,
-        orderArrayForChanging: copyOfPrev,
-        colsWithKeyTextMap,
-      });
-
-      const resultСopyOfPrevWithoutDouble =
-        orderWithUpdatedDefaultColsDeleteDuplicates({
-          orderArrayForChanging: copyOfPrev,
-        });
-
-      return resultСopyOfPrevWithoutDouble;
+    // Новые колонки встают на своё место относительно соседей из columnConfig, а не в конец.
+    const copyOfPrev = insertNewKeysByDefaultOrder({
+      prevOrder: actualPrev,
+      defaultOrder,
     });
-    // массив зависимостей специально оставлен, т.к. columns меняется при обновление columnConfig/hiddenCols/keyText. getDefaultColumnsOrder - берет всегда актуальные значения
-    // исключен keyText - уже имеется в зависимостях у columns,
-    // исключен colsWithKeyTextMap - не должен вызывать рендер новый. изменения columns достаточно для расчета.
+
+    // keyText mutation -  после всех других обработок
+    updateOrderWithKeyText({
+      keyText,
+      orderArrayForChanging: copyOfPrev,
+      colsWithKeyTextMap,
+    });
+
+    return orderWithUpdatedDefaultColsDeleteDuplicates({
+      orderArrayForChanging: copyOfPrev,
+    });
+  };
+
+  const columnsOrderRef = useRef(columnsOrder);
+  columnsOrderRef.current = columnsOrder;
+
+  // Порядок сверяем с набором столбцов. Сеттер зовём только когда порядок
+  // действительно изменился, иначе каждая пересборка столбцов давала бы
+  // лишний проход рендера всей таблицы.
+  useEffect(() => {
+    const nextOrder = getActualOrder(columnsOrderRef.current);
+    if (!sameOrder(nextOrder, columnsOrderRef.current)) {
+      setColumnsOrder(nextOrder);
+    }
+    // Зависим от allColumns, а не от видимых columns: скрытие на порядок не
+    // влияет. allColumns меняется при обновлении columnConfig, служебных
+    // столбцов и keyText. getDefaultColumnsOrder берёт актуальные значения сам,
+    // colsWithKeyTextMap отдельно рендер вызывать не должен.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [columns]);
+  }, [allColumns]);
 
   const reorderedColumns = useMemo(() => {
     if (!reorderIsActive) {
@@ -133,10 +146,7 @@ export const useReorderDragable = <
 
       return acc;
     }, [] as (typeof columns)[number][]);
-
-    // columns зависимость убрана из-за того, что columnsOrder уже всегда меняется при измении сolumns
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [columnsOrder, reorderIsActive]);
+  }, [columns, columnsOrder, reorderIsActive]);
 
   const onColumnsReorder = useCallback(
     (sourceKey: string, targetKey: string) => {

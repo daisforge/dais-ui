@@ -1,7 +1,13 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 
 import { ColumnConfig, ObjectForExtending, TableConfig } from '../types';
-import { isBlank, numberComparator, stringComparator } from './sort-handlers';
+import {
+  getSortPlan,
+  isBlank,
+  isSameSortPlan,
+  numberComparator,
+  stringComparator,
+} from './sort-handlers';
 
 export const useSortedRows = <
   RowType extends ObjectForExtending,
@@ -27,44 +33,47 @@ export const useSortedRows = <
   const tableConfigSortingBoolean = !!tableConfig.sorting;
   const manualSorting = !!tableConfig.sorting?.manualSorting;
 
+  // На порядок строк влияют только ключ, направление и компаратор активных
+  // столбцов сортировки. Пока они те же, план сохраняет прежнюю ссылку, и
+  // скрытие столбцов или вход в редактирование не пересортировывают строки.
+  const nextSortPlan = getSortPlan(sortColumns, columns);
+  const sortPlanRef = useRef(nextSortPlan);
+  if (!isSameSortPlan(sortPlanRef.current, nextSortPlan)) {
+    sortPlanRef.current = nextSortPlan;
+  }
+  const sortPlan = sortPlanRef.current;
+
   const sortedRows = useMemo((): readonly RowType[] => {
     if (!tableConfigSortingBoolean) return rows;
     if (manualSorting) return rows;
     if (infinityScrollActiveInConfig || paginationActiveInConfig) return rows;
 
-    if (!sortColumns || sortColumns.length === 0) return rows;
-
-    const columnsWithSorting = columns.filter((col) => !!col.sortingType);
-
-    if (columnsWithSorting.length === 0) return rows;
+    if (!sortPlan.some((sort) => !!sort.sortingType)) return rows;
 
     return [...rows].sort((a, b) => {
       // eslint-disable-next-line no-restricted-syntax
-      for (const sort of sortColumns) {
-        const currColumnConfig = columnsWithSorting.find(
-          (c) => c.key === sort.columnKey,
-        );
+      for (const sort of sortPlan) {
+        const { sortingType } = sort;
 
-        if (!currColumnConfig || !currColumnConfig.sortingType) {
+        if (!sortingType) {
           return 0;
         }
         const comparator = (() => {
-          if (currColumnConfig.sortingType === 'stringSort') {
+          if (sortingType === 'stringSort') {
             return stringComparator<RowType>(sort.columnKey);
           }
-          if (currColumnConfig.sortingType === 'numberSort') {
+          if (sortingType === 'numberSort') {
             return numberComparator<RowType>(sort.columnKey);
           }
 
-          return currColumnConfig.sortingType;
+          return sortingType;
         })();
 
         const compResult = comparator(a, b);
         if (compResult !== 0) {
           // Обработка пустых значений при DESC
           const isBuiltInComparator =
-            currColumnConfig.sortingType === 'stringSort' ||
-            currColumnConfig.sortingType === 'numberSort';
+            sortingType === 'stringSort' || sortingType === 'numberSort';
           const oneOfValuesBlank =
             isBlank(a[sort.columnKey as keyof RowType]) ||
             isBlank(b[sort.columnKey as keyof RowType]);
@@ -79,9 +88,8 @@ export const useSortedRows = <
       return 0;
     });
   }, [
-    columns,
     rows,
-    sortColumns,
+    sortPlan,
     manualSorting,
     infinityScrollActiveInConfig,
     paginationActiveInConfig,

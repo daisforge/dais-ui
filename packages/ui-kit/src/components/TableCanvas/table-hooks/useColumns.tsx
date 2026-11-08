@@ -190,7 +190,7 @@ export const useColumns = <
   // Нужен, чтобы во время отрисовки перевести объединения, заданные снаружи, в
   // индексы. Обновляется ниже, после reorderedColumns.
   const renderColKeysRef = useRef<readonly string[]>([]);
-  const columns = useMemo((): readonly ColumnX[] => {
+  const allColumns = useMemo((): readonly ColumnX[] => {
     const colsAfterRowsGroupingCheck = getColsAfterRowsGrouping({
       rowsGroupingIsActiveInConfig: tableConfigRowsGroupingBoolean,
       groupByArr: groupedCols ?? [],
@@ -259,12 +259,6 @@ export const useColumns = <
       ? getColsWithKeyText(colsAfterSelectingCheck, keyText)
       : colsAfterSelectingCheck;
 
-    const hiddenColsSet = new Set(hiddenCols);
-
-    const colsAfterHideCheck = hiddenColsSet.size
-      ? colsAfterKeyTextCheck.filter((c) => !hiddenColsSet.has(c.key))
-      : colsAfterKeyTextCheck;
-
     const pinnedColsSet = new Set(pinnedCols);
 
     // mergeCells.mergeByCellValues: для каждой колонки — функция, дающая значение
@@ -326,7 +320,7 @@ export const useColumns = <
       return errorRowCacheValue;
     };
 
-    return colsAfterHideCheck.map((el, currIndex, arr) => {
+    return colsAfterKeyTextCheck.map((el, currIndex, arr) => {
       const columnIsPinned = pinnedColsSet.has(el.key);
 
       const indexZeroColKey = arr[0]?.key;
@@ -706,7 +700,6 @@ export const useColumns = <
     reorderInHeaderIsActive,
     groupedCols,
     pinnedCols,
-    hiddenCols,
     showRowInstruments,
     keyText,
     tableConfigKeyTextBoolean,
@@ -716,6 +709,14 @@ export const useColumns = <
     rowSize,
   ]);
 
+  // Скрытие только отфильтровывает готовые столбцы: объекты остаются прежними,
+  // и смена скрытых не пересобирает столбцы и не пересортировывает строки.
+  const columns = useMemo(() => {
+    if (!hiddenCols.length) return allColumns;
+    const hiddenColsSet = new Set(hiddenCols);
+    return allColumns.filter((c) => !hiddenColsSet.has(c.key));
+  }, [allColumns, hiddenCols]);
+
   const {
     reorderedColumns,
     onColumnsReorder,
@@ -723,6 +724,7 @@ export const useColumns = <
     columnsOrder,
     getDefaultColumnsOrder,
   } = useReorderDragable({
+    allColumns,
     columns,
     reorderIsActive,
     tableConfigColumnsControl: tableConfig.columnsControl,
