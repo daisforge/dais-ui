@@ -596,6 +596,16 @@ export const useColumns = <
         spanAlign =
           typeof columnAlign === 'function' ? resolveColumnAlign : columnAlign;
       }
+      // Строка без пары в колонке, объединённой по значениям, для таблицы не блок,
+      // но по горизонтали встаёт как блоки колонки. Выравнивание функцией по строке
+      // сюда не попадает.
+      const singleRowHorizontal =
+        mergeByValueOf &&
+        !isRegionCol &&
+        !getColumnIsService(el) &&
+        typeof columnAlign === 'object'
+          ? columnAlign.horizontal
+          : undefined;
 
       // Константа нужна, чтобы функция была доступна в замыкании редактора.
       const rowSpanOfCell = rowSpan;
@@ -649,7 +659,7 @@ export const useColumns = <
         // useSortedRows смотрит на sortingType — убираем его у группирующих
         // колонок, чтобы вид со слиянием по ним не сортировался (как в дереве).
         ...(stripGroupColumnSort && { sortingType: undefined }),
-        contentAlign: getAlignment(el.contentFormat),
+        contentAlign: singleRowHorizontal ?? getAlignment(el.contentFormat),
         renderHeaderCell,
         columnThemeOverride,
         // Минимальная ширина колонки: чтобы в шапке всегда помещались иконки,

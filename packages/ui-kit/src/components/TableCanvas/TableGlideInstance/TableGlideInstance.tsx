@@ -333,7 +333,11 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
       if (!column) return undefined;
       const EditCellComp = column.renderEditCell;
       const { readonly } = gridCell as { readonly?: boolean };
-      const spanHorizontalAlign = gridCell.spanAlign?.horizontal;
+      // Без блока редактор встаёт как текст ячейки на canvas.
+      const spanHorizontalAlign =
+        gridCell.spanAlign?.horizontal ??
+        (gridCell as { contentAlign?: 'left' | 'right' | 'center' })
+          .contentAlign;
       const spanVerticalAlign = gridCell.spanAlign?.vertical;
 
       /* ------------------- render preview cell ------------------- */
