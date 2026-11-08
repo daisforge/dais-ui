@@ -6,6 +6,7 @@ import {
   PinningActionCtx,
   unpinColumns,
 } from '../widgets/control-block/pinning-menu/pinning-actions';
+import { expandKeyTextKeys } from './expandKeyTextKeys';
 import { ColumnsControlConfig } from './types';
 
 export const useColumnsControl = ({
@@ -48,47 +49,40 @@ export const useColumnsControl = ({
       columnsControlConfig.reorderingAside
     );
 
-  const [pinnedCols, setPinnedCols] = useState(() => {
-    const def =
+  const [pinnedCols, setPinnedCols] = useState(() =>
+    expandKeyTextKeys(
       (columnsControlConfig.pinning &&
         tableConfigColumnsControl?.pinnedDefault) ||
-      [];
+        [],
+      colsWithKeyTextMap,
+      tableConfigKeyTextBoolean,
+    ),
+  );
 
-    const res = def.reduce((acc, val) => {
-      if (tableConfigKeyTextBoolean) {
-        const isKeyText = colsWithKeyTextMap.get(val);
-        if (isKeyText) {
-          acc.push(...Object.values(isKeyText));
-          return acc;
-        }
-      }
-      acc.push(val);
-      return acc;
-    }, [] as string[]);
-
-    return res;
-  });
-
-  const [hiddenCols, setHiddenCols] = useState(() => {
-    const def =
+  const innerHiddenState = useState(() =>
+    expandKeyTextKeys(
       (columnsControlConfig.hiding &&
         tableConfigColumnsControl?.hiddenDefault) ||
-      [];
-
-    const res = def.reduce((acc, val) => {
-      if (tableConfigKeyTextBoolean) {
-        const isKeyText = colsWithKeyTextMap.get(val);
-        if (isKeyText) {
-          acc.push(...Object.values(isKeyText));
-          return acc;
-        }
-      }
-      acc.push(val);
-      return acc;
-    }, [] as string[]);
-
-    return res;
-  });
+        [],
+      colsWithKeyTextMap,
+      tableConfigKeyTextBoolean,
+    ),
+  );
+  // Внешнее состояние читаем всегда, когда оно передано: флаг hiding отвечает
+  // только за элементы интерфейса (свитчи, индикатор).
+  const [hiddenColsRaw, setHiddenCols] =
+    tableConfigColumnsControl?.hiddenState ?? innerHiddenState;
+  // Снаружи могут прийти исходные ключи столбцов с парой key/text. Для
+  // внутреннего состояния (уже развёрнутого) вернётся та же ссылка.
+  const hiddenCols = useMemo(
+    () =>
+      expandKeyTextKeys(
+        hiddenColsRaw,
+        colsWithKeyTextMap,
+        tableConfigKeyTextBoolean,
+      ),
+    [hiddenColsRaw, colsWithKeyTextMap, tableConfigKeyTextBoolean],
+  );
 
   const [openControlModal, setOpenControlModal] = useState(false);
 
