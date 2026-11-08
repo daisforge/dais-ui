@@ -4,6 +4,7 @@ import {
   isBlockCut,
   isBlockRowHovered,
   rangesOverlap,
+  createSetRangeHitCache,
   setHasAnyInRange,
 } from '../blockRanges';
 
@@ -75,5 +76,36 @@ describe('setHasAnyInRange', () => {
     expect(setHasAnyInRange(new Set([5]), 6, 100)).toBe(false);
     expect(setHasAnyInRange(new Set([1, 2, 3, 4, 50]), 5, 7)).toBe(false);
     expect(setHasAnyInRange(undefined, 0, 10)).toBe(false);
+  });
+});
+
+describe('createSetRangeHitCache', () => {
+  it('отвечает как setHasAnyInRange и не перебирает набор повторно', () => {
+    class CountingSet extends Set<number> {
+      reads = 0;
+
+      override has(value: number) {
+        this.reads += 1;
+        return super.has(value);
+      }
+
+      override [Symbol.iterator]() {
+        this.reads += 1;
+        return super[Symbol.iterator]();
+      }
+    }
+    const set = new CountingSet([5, 40]);
+    const hasAny = createSetRangeHitCache(set);
+
+    expect(hasAny(0, 10)).toBe(true);
+    expect(hasAny(6, 30)).toBe(false);
+    const readsAfterFirst = set.reads;
+    expect(hasAny(0, 10)).toBe(true);
+    expect(hasAny(6, 30)).toBe(false);
+    expect(set.reads).toBe(readsAfterFirst);
+  });
+
+  it('пустой набор', () => {
+    expect(createSetRangeHitCache(undefined)(0, 10)).toBe(false);
   });
 });

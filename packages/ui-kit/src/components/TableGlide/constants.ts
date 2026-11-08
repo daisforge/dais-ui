@@ -124,11 +124,11 @@ export const EDITOR_BLOOM: readonly [number, number] = [0, 0];
  * Glide прибавляет 1 px к ширине и высоте под линию сетки, стили редактора
  * учитывают этот пиксель (feature-edit/cellFieldStyles).
  */
+export const GLIDE_EDITOR_TARGET_EXTRA = 1;
 /** Край объединённого блока под редактором: за блоком редактор рисует свою линию. */
 export const EDITOR_BLOCK_TOP_VAR = '--table-editor-block-top';
 export const EDITOR_BLOCK_BOTTOM_VAR = '--table-editor-block-bottom';
 /** Таблица прокручена не так, как при открытии редактора: края блока устарели, нужны все линии. */
 export const EDITOR_SCROLLED_ATTR = 'data-editor-scrolled';
 
-export const GLIDE_EDITOR_TARGET_EXTRA = 1;
 export const DEFAULT_HEADER_HEIGHT = 33;

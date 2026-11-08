@@ -20,8 +20,9 @@ export const SIZE_CONFIG: Record<ButtonSize, SizeConfig> = {
 
 /**
  * Недоступный контрол рисуется в своих обычных цветах целиком (фон, рамка,
- * текст, иконка) с непрозрачностью 40 % и без hover. Так у Button,
- * IconButton, EmbedIconButton и Checkbox в SDDS (`--plasma-*-disabled-opacity`).
+ * текст, иконка) с непрозрачностью 40 % и не реагирует на курсор. Так
+ * у Button, IconButton, EmbedIconButton и Checkbox в SDDS
+ * (`--plasma-*-disabled-opacity`).
  */
 export const DISABLED_OPACITY = 0.4;
 

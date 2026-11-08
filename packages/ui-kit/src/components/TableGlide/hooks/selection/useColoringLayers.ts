@@ -149,7 +149,7 @@ export function useColoringLayers({
       !isRowHoverEnabled ||
       serviceZoneFollowsRow ||
       hoverRows === undefined ||
-      hoverRows.from > dataRowsCount - 1 || // summary-строки ховер не получают
+      hoverRows.from > dataRowsCount - 1 || // итоговые строки не подсвечиваются
       serviceColumnsCount === 0
     ) {
       return withColumnsAndRows;

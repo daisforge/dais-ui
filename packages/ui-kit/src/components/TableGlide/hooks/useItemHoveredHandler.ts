@@ -36,7 +36,7 @@ export interface UseItemHoveredHandlerParams<R extends ObjectForExtending, SR> {
   externalOnItemHovered?: OnItemHovered;
   /**
    * Колбэк трекинга строки под курсором (hoverEffects.row). Вызывается на
-   * каждое hover-событие: для `kind === 'cell'` — с ячейкой прямо под мышью, для
+   * каждое наведение: для `kind === 'cell'` с ячейкой прямо под мышью, для
    * остальных (header, group-header, out-of-bounds — включая уход мыши с
    * таблицы) — с undefined (сброс). Дедупликация повторных значений — на
    * стороне вызывающего (setState с prev-проверкой). Не передан — фича

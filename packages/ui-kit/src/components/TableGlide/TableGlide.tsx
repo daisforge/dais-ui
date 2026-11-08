@@ -105,7 +105,7 @@ import {
   isBlockCut,
   isBlockRowHovered,
   rangesOverlap,
-  setHasAnyInRange,
+  createSetRangeHitCache,
 } from './utils/blockRanges';
 import { isCanvasContent, isPrimitive } from './utils/typeGuards';
 
@@ -691,6 +691,12 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     ]
   );
 
+  // Есть ли в блоке отмеченные строки: ответ на блок запоминается до смены отметок.
+  const blockHasCheckedRow = useMemo(
+    () => createSetRangeHitCache(checkboxSelectedRowIndexes),
+    [checkboxSelectedRowIndexes],
+  );
+
   const getCellContentGlide = useCallback(
     (
       [colInd, rowInd]: [number, number],
@@ -972,9 +978,9 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
 
       // Фон блока по строкам, проходящим через него (выбранная, отмеченная
       // чекбоксом, под курсором). У ячейки со своим цветом состояния уже
-      // учтены в fillOverride. Свой bgCell у блока отключает в гриде
-      // построчные полосы фона внутри блока. Зебру блок не берёт: её полосы
-      // по строкам рисует грид.
+      // учтены в fillOverride. Свой bgCell у блока отключает построчные
+      // полосы фона внутри блока. Зебру блок не берёт: её полосы по строкам
+      // рисует Glide.
       const blockActiveRowChecked =
         blockActiveRow !== undefined &&
         (checkboxSelectedRowIndexes?.has(blockActiveRow) ?? false);
@@ -984,11 +990,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
               rowHover: rowsHovered,
               active: blockActiveRow !== undefined,
               activeChecked: blockActiveRowChecked,
-              checked: setHasAnyInRange(
-                checkboxSelectedRowIndexes,
-                blockRows[0],
-                blockRows[1],
-              ),
+              checked: blockHasCheckedRow(blockRows[0], blockRows[1]),
               zebra: false,
             })
           : undefined;
@@ -1115,6 +1117,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       getProbeInfo,
       activeRow,
       checkboxSelectedRowIndexes,
+      blockHasCheckedRow,
       selectionVisualState,
       rowErrorsByIndex,
       canvasCellCache,
@@ -1786,11 +1789,10 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
 
     const dataRowsLength = rows.length;
 
-    // Итоговые строки здесь намеренно НЕ красим: их фон задаётся по ячейкам
-    // (в getCellContentGlide). Если вернуть фон на уровне строки, библиотека
-    // таблицы растянет его вниз, в пустое место под данными, и при
-    // горизонтальном скролле эта заливка наедет на итоговую строку и
-    // перекроет её текст.
+    // Итоговые строки здесь не красим: их фон задаётся по ячейкам
+    // (в getCellContentGlide). Фон строки Glide растянул бы вниз, на пустое
+    // место под данными, и при горизонтальной прокрутке он перекрыл бы текст
+    // итоговой строки.
     return (rowInd) =>
       rowInd >= dataRowsLength
         ? {}
@@ -2052,7 +2054,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         createPortal(
           <StyledOverlayPortal id={SELECT_LIST_PORTAL_ID} />,
           document.body,
-        ) /* этот портал создан для выпадающего списка CellEditorCombobox, поскольку id=portal не удовлетворяет внутри модальных окон
+        ) /* Этот портал нужен списку CellEditorCombobox: внутри модальных окон общий id=portal не подходит,
           у него должен быть  document.body
         */
       }

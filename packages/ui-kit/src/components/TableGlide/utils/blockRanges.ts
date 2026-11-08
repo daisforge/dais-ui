@@ -80,3 +80,32 @@ export const setHasAnyInRange = (
   }
   return false;
 };
+
+const RANGE_HIT_CACHE_LIMIT = 10_000;
+
+/**
+ * То же, что setHasAnyInRange, но ответ запоминается для каждого отрезка.
+ *
+ * Блок спрашивают из каждой его видимой ячейки в каждом кадре, а перебор при
+ * большом наборе дорогой. Для нового набора создаётся новая функция, так что
+ * старые ответы уходят вместе со старым набором.
+ */
+export const createSetRangeHitCache = (set: ReadonlySet<number> | undefined) => {
+  const answers = new Map<string, boolean>();
+  return (from: number, to: number): boolean => {
+    if (!set?.size) {
+      return false;
+    }
+    const key = `${from}:${to}`;
+    const cached = answers.get(key);
+    if (cached !== undefined) {
+      return cached;
+    }
+    if (answers.size >= RANGE_HIT_CACHE_LIMIT) {
+      answers.clear();
+    }
+    const hit = setHasAnyInRange(set, from, to);
+    answers.set(key, hit);
+    return hit;
+  };
+};

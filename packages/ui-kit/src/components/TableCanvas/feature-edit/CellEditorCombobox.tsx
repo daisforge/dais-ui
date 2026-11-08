@@ -123,7 +123,7 @@ export const CellEditorCombobox = forwardRef(
           items={items}
           //
           ref={mergeRefs(ref, refExternal)}
-          /* данный id поставлен как исключение в isOutsideClick в TableGlideInstance.
+          /* Этот id стоит исключением в isOutsideClick в TableGlideInstance.
       Клики по нему не будут преждевременно закрывать режим редактирования */
           portal={SELECT_LIST_PORTAL_ID}
           flip
@@ -155,12 +155,10 @@ export function CellEditorComboboxInternal<
   disableLeftOffset,
   readOnly,
   theme,
-  mergedVerticalAlign,
+  verticalAlign,
   cellY,
 }: EditingCellInfo<TRow, TSummaryRow> & {
   disableLeftOffset: boolean | undefined;
-  /** Вертикальное выравнивание объединённого блока: выбирает сторону списка. */
-  mergedVerticalAlign?: 'top' | 'center' | 'bottom';
 }) {
   const rowContextValue = useRowContext();
   const refTable = useRefTableContext();
@@ -201,7 +199,7 @@ export function CellEditorComboboxInternal<
   ];
 
   const placement = useSelectListPlacement({
-    preferTop: mergedVerticalAlign === 'bottom' && !readOnly,
+    preferTop: verticalAlign === 'bottom' && !readOnly,
     getSpaceAbove: () => {
       // Шапка отдаёт верх области данных: row -1 у Glide это строка заголовков.
       const headerBounds = refTable?.current?.getBounds(0, -1);
@@ -216,7 +214,7 @@ export function CellEditorComboboxInternal<
       readOnly={readOnly}
       paddingInline={theme.cellHorizontalPadding}
       paddingBlock={theme.cellVerticalPadding}
-      verticalAlign={mergedVerticalAlign}
+      verticalAlign={verticalAlign}
       /* CustomCellStyleProps */
       cellWidth={cellWidth}
       cellHeight={cellHeight}

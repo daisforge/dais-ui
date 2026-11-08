@@ -86,7 +86,7 @@ describe('fill-states: эквивалентность рантайм-форму�
             TABLE_STATE_COLORS[paletteKey][
               theme as keyof typeof TABLE_STATE_COLORS.bgCell
             ];
-          expect(states[state], `${paletteKey}.${theme}`).toBe(expected);
+          expect(states?.[state], `${paletteKey}.${theme}`).toBe(expected);
         }
       });
     }
@@ -100,10 +100,17 @@ describe('fill-states: эквивалентность рантайм-форму�
     expect(c).not.toBe(a);
   });
 
+  it('для неподдерживаемой записи null, и он тоже запоминается', () => {
+    expect(getCellFillStates('var(--x)', 'light')).toBeNull();
+    expect(getCellFillStates('hsl(0, 100%, 50%)', 'dark')).toBeNull();
+    const a = getCellFillStates('rgba(1, 2, 3, 0.5)', 'light');
+    expect(getCellFillStates('rgba(1, 2, 3, 0.5)', 'light')).toBe(a);
+  });
+
   it('покрывает все шесть тем без исключений', () => {
     for (const theme of TABLE_COLOR_THEMES) {
       const states = getCellFillStates('#FF0000', theme);
-      expect(states.rest).toMatch(/^#[0-9A-F]{6}$/);
+      expect(states?.rest).toMatch(/^#[0-9A-F]{6}$/);
     }
   });
 });
@@ -133,8 +140,8 @@ describe('toHexColor: запись цвета потребителя', () => {
 
   it('у полупрозрачного цвета есть hover и цвет выделения', () => {
     const states = getCellFillStates('rgba(100, 255, 100, 0.15)', 'dark');
-    expect(states.rest).toMatch(/^#[0-9A-F]{6}$/);
-    expect(states.hover).toMatch(/^#[0-9A-F]{6}$/);
-    expect(states.active).toMatch(/^#[0-9A-F]{6}$/);
+    expect(states?.rest).toMatch(/^#[0-9A-F]{6}$/);
+    expect(states?.hover).toMatch(/^#[0-9A-F]{6}$/);
+    expect(states?.active).toMatch(/^#[0-9A-F]{6}$/);
   });
 });

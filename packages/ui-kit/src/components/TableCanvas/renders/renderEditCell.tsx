@@ -96,12 +96,9 @@ export const RenderEditCell = <
   tableConfigSubRows,
   tableConfigRowDetailPanel,
   keyText,
-  mergedVerticalAlign,
 }: {
   editingCellInfo: EditingCellInfo<RowType, SummaryRowType>;
   column: ColumnConfig<RowType, SummaryRowType>;
-  /** Вертикальное выравнивание объединённого блока. */
-  mergedVerticalAlign?: 'top' | 'center' | 'bottom';
   tableConfigSubRows: TableConfig<
     RowType,
     SummaryRowType,
@@ -169,7 +166,6 @@ export const RenderEditCell = <
         <CellEditorComboboxInternal
           {...editingCellInfo}
           disableLeftOffset={disableLeftOffset}
-          mergedVerticalAlign={mergedVerticalAlign}
         />
       );
     }
@@ -369,7 +365,6 @@ export const RenderEditCell = <
         <CellEditorComboboxInternal
           {...renderSubRowEditCellProps}
           disableLeftOffset={disableLeftOffset}
-          mergedVerticalAlign={mergedVerticalAlign}
         />
       );
     }
