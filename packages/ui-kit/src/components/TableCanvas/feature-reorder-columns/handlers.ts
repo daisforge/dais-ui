@@ -14,6 +14,7 @@ import {
   replaceAllFromArray,
   swapItemsByIndex,
 } from '../utils/arrayMutationHandlers';
+
 /** Одинаковый ли порядок ключей в двух списках. */
 export const sameOrder = (a: readonly string[], b: readonly string[]) =>
   a === b || (a.length === b.length && a.every((key, i) => key === b[i]));

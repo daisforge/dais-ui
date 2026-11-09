@@ -117,12 +117,21 @@ export const useReorderDragable = <
 
   // Порядок сверяем с набором столбцов. Сеттер зовём только когда порядок
   // действительно изменился, иначе каждая пересборка столбцов давала бы
-  // лишний проход рендера всей таблицы.
+  // лишний проход рендера всей таблицы. Внутри сеттера считаем от настоящего
+  // prev: в том же коммите порядок мог поменять потребитель через onConfirm.
   useEffect(() => {
-    const nextOrder = getActualOrder(columnsOrderRef.current);
-    if (!sameOrder(nextOrder, columnsOrderRef.current)) {
-      setColumnsOrder(nextOrder);
+    if (
+      sameOrder(
+        getActualOrder(columnsOrderRef.current),
+        columnsOrderRef.current,
+      )
+    ) {
+      return;
     }
+    setColumnsOrder((prev) => {
+      const next = getActualOrder(prev);
+      return sameOrder(next, prev) ? prev : next;
+    });
     // Зависим от allColumns, а не от видимых columns: скрытие на порядок не
     // влияет. allColumns меняется при обновлении columnConfig, служебных
     // столбцов и keyText. getDefaultColumnsOrder берёт актуальные значения сам,

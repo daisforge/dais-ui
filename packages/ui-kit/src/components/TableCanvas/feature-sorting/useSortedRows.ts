@@ -36,7 +36,10 @@ export const useSortedRows = <
   // На порядок строк влияют только ключ, направление и компаратор активных
   // столбцов сортировки. Пока они те же, план сохраняет прежнюю ссылку, и
   // скрытие столбцов или вход в редактирование не пересортировывают строки.
-  const nextSortPlan = getSortPlan(sortColumns, columns);
+  const nextSortPlan = useMemo(
+    () => getSortPlan(sortColumns, columns),
+    [sortColumns, columns],
+  );
   const sortPlanRef = useRef(nextSortPlan);
   if (!isSameSortPlan(sortPlanRef.current, nextSortPlan)) {
     sortPlanRef.current = nextSortPlan;
