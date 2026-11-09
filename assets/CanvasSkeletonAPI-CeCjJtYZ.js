@@ -1,8 +1,0 @@
-import{j as e}from"./react-CAOzMBF_.js";import{cg as i,ch as o}from"./vendor-Dh4d6dCz.js";import{T as t}from"./TypeSourceViewer-LZY4AA3E.js";import"./react-is-vVGXX3JE.js";import"./styled-components-BD-2WP2k.js";import"./@tanstack/react-virtual-4Nv0GpZT.js";import"./tslib-DoU9Jm1N.js";function a(s){const n={h1:"h1",h2:"h2",...i(),...s.components};return e.jsxs(e.Fragment,{children:[e.jsx(o,{title:"Локальные компоненты/TableCanvas/CanvasElements/CanvasSkeleton/API"}),`
-`,e.jsx(n.h1,{id:"canvasskeleton-api",children:"Canvas.Skeleton API"}),`
-`,e.jsx(n.h2,{id:"canvasskeletonoptions",children:"CanvasSkeletonOptions"}),`
-`,e.jsx(t,{language:"ts",filePath:"packages/ui-kit/src/components/TableGlide/lib/canvas/primitives/CanvasSkeleton.ts",typeName:"CanvasSkeletonOptions"}),`
-`,e.jsx(n.h2,{id:"roundness",children:"Roundness"}),`
-`,e.jsx(t,{language:"ts",filePath:"packages/ui-kit/src/components/TableGlide/lib/canvas/primitives/CanvasSkeleton.ts",typeName:"Roundness"}),`
-`,e.jsx(n.h2,{id:"roundness_map",children:"ROUNDNESS_MAP"}),`
-`,e.jsx(t,{language:"ts",filePath:"packages/ui-kit/src/components/TableGlide/lib/canvas/primitives/CanvasSkeleton.ts",typeName:"ROUNDNESS_MAP"})]})}function h(s={}){const{wrapper:n}={...i(),...s.components};return n?e.jsx(n,{...s,children:e.jsx(a,{...s})}):a(s)}export{h as default};

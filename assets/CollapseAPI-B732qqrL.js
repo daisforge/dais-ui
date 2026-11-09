@@ -1,0 +1,4 @@
+import{j as e}from"./react-CAOzMBF_.js";import{cg as n,ch as r}from"./vendor-CvBXOjQ8.js";import{T as a}from"./TypeSourceViewer-BOeu3x8L.js";import"./react-is-vVGXX3JE.js";import"./styled-components-BAnxJVQm.js";import"./@tanstack/react-virtual-Dq53HtnB.js";import"./tslib-DoU9Jm1N.js";function s(o){const t={h1:"h1",h2:"h2",...n(),...o.components};return e.jsxs(e.Fragment,{children:[e.jsx(r,{title:"Локальные компоненты/Collapse/API"}),`
+`,e.jsx(t.h1,{id:"collapse-api",children:"Collapse API"}),`
+`,e.jsx(t.h2,{id:"collapseprops",children:"CollapseProps"}),`
+`,e.jsx(a,{language:"ts",filePath:"packages/ui-kit/src/components/Collapse/Collapse.tsx",typeName:"CollapseProps"})]})}function u(o={}){const{wrapper:t}={...n(),...o.components};return t?e.jsx(t,{...o,children:e.jsx(s,{...o})}):s(o)}export{u as default};
