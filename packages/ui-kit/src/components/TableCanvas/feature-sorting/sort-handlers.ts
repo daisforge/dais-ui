@@ -1,4 +1,5 @@
-import { ObjectForExtending } from '../types';
+import type { ColumnConfig, ObjectForExtending } from '../types';
+import type { SortColumn } from './types';
 
 /**
  * Локаль для сортировки.
@@ -144,3 +145,43 @@ export const numberComparator =
 
     return av - bv;
   };
+
+export type SortPlanItem<RowType extends ObjectForExtending> = SortColumn & {
+  sortingType: ColumnConfig<RowType>['sortingType'];
+};
+
+/**
+ * Активные сортировки вместе с компаратором своего столбца. Если столбца нет
+ * среди переданных (например, он скрыт), sortingType будет undefined.
+ */
+export const getSortPlan = <RowType extends ObjectForExtending>(
+  sortColumns: readonly SortColumn[] | undefined,
+  columns: readonly Pick<ColumnConfig<RowType>, 'key' | 'sortingType'>[],
+): SortPlanItem<RowType>[] => {
+  if (!sortColumns?.length) return [];
+
+  const sortingTypeByKey = new Map(columns.map((c) => [c.key, c.sortingType]));
+
+  return sortColumns.map(({ columnKey, direction }) => ({
+    columnKey,
+    direction,
+    sortingType: sortingTypeByKey.get(columnKey),
+  }));
+};
+
+/** Совпадают ли планы сортировки. Компараторы-функции сравниваются по ссылке. */
+export const isSameSortPlan = <RowType extends ObjectForExtending>(
+  a: readonly SortPlanItem<RowType>[],
+  b: readonly SortPlanItem<RowType>[],
+) =>
+  a === b ||
+  (a.length === b.length &&
+    a.every((item, i) => {
+      const other = b[i];
+      return (
+        !!other &&
+        item.columnKey === other.columnKey &&
+        item.direction === other.direction &&
+        item.sortingType === other.sortingType
+      );
+    }));

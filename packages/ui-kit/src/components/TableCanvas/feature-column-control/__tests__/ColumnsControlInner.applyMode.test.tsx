@@ -44,6 +44,13 @@ const Harness = ({ config }: { config: ColumnsControlConfig }) => {
   return (
     <>
       <div data-testid="table-hidden">{hiddenCols.join(',')}</div>
+      {/* Изменение снаружи панели: так потребитель меняет hiddenState. */}
+      <button
+        type="button"
+        onClick={() => setHiddenCols((prev) => [...prev, 'c'])}
+      >
+        скрыть c снаружи
+      </button>
       <ColumnsControlInner
         opened
         onClose={() => {}}
@@ -105,6 +112,25 @@ describe('ColumnsControlInner: режим применения', () => {
       order: ['a', 'b', 'c'],
       pinned: [],
       hidden: ['b'],
+      changed: { hidden: 'hidden' },
+    });
+  });
+
+  it('в режиме instant изменение снаружи панели не вызывает onConfirm', () => {
+    const onConfirm = vi.fn();
+    render(
+      <Harness config={{ ...baseConfig, applyMode: 'instant', onConfirm }} />,
+    );
+
+    fireEvent.click(screen.getByText('скрыть c снаружи'));
+    expect(screen.getByTestId('table-hidden').textContent).toBe('c');
+    expect(onConfirm).not.toHaveBeenCalled();
+
+    // После внешнего изменения действие в панели по-прежнему доходит до onConfirm.
+    fireEvent.click(screen.getByText('скрыть b'));
+    expect(onConfirm).toHaveBeenCalledTimes(1);
+    expect(onConfirm.mock.calls[0][0]).toMatchObject({
+      hidden: ['c', 'b'],
       changed: { hidden: 'hidden' },
     });
   });

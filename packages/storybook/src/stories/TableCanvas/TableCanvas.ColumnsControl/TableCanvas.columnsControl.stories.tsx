@@ -264,6 +264,135 @@ export const ColumnsControlInstantApply: Story = {
   },
 };
 
+/** Столбцы, которые видны только в режиме редактирования. */
+const EDIT_ONLY_COLUMNS = ['tr', 'loremIpsum'];
+
+/**
+ * Тест стори hiddenState: вне редактирования столбцов TR и Comment нет, после
+ * входа в редактирование оба появляются, после выхода снова скрыты.
+ */
+const playHiddenState: Story['play'] = async ({ canvasElement }) => {
+  const canvas = within(canvasElement);
+
+  await waitFor(
+    () => expect(getHeaderNames(canvasElement)).toContain('Title'),
+    { timeout: 5000 },
+  );
+  await expect(getHeaderNames(canvasElement)).not.toContain('TR');
+  await expect(getHeaderNames(canvasElement)).not.toContain('Comment');
+
+  await userEvent.click(
+    canvas.getByRole('button', { name: 'Войти в редактирование' }),
+  );
+  await waitFor(
+    () => {
+      const names = getHeaderNames(canvasElement);
+      expect(names).toContain('TR');
+      expect(names).toContain('Comment');
+    },
+    { timeout: 5000 },
+  );
+
+  await userEvent.click(
+    canvas.getByRole('button', { name: 'Выйти из редактирования' }),
+  );
+  await waitFor(
+    () => {
+      const names = getHeaderNames(canvasElement);
+      expect(names).not.toContain('TR');
+      expect(names).not.toContain('Comment');
+    },
+    { timeout: 5000 },
+  );
+};
+
+/**
+ * ### Управление скрытыми столбцами извне (hiddenState)
+ *
+ * Список скрытых столбцов хранится у потребителя и передаётся в таблицу парой
+ * `columnsControl.hiddenState`. Столбцы TR и Comment нужны только при
+ * редактировании: кнопка над таблицей в одном обработчике включает режим
+ * редактирования и показывает их, при выходе снова скрывает. Таблица не
+ * пересоздаётся, прокрутка и выделение сохраняются.
+ *
+ * Свитчи в настройках столбцов пишут в то же состояние: строка над таблицей
+ * показывает, что скрыто сейчас. Столбцы, которые скрыл пользователь, при
+ * входе и выходе из редактирования не трогаются.
+ */
+export const ColumnsControlHiddenState: Story = {
+  ...storySourceDoc({
+    preCode,
+    previewSource: 'shown',
+  }),
+  name: 'ColumnsControl: управление скрытыми столбцами извне',
+  play: playHiddenState,
+  render: () => {
+    const [rows, setRows] = useState(createRows);
+    const [editOn, setEditOn] = useState(false);
+    const [hidden, setHidden] = useState<string[]>(EDIT_ONLY_COLUMNS);
+
+    const toggleEdit = () => {
+      setEditOn(!editOn);
+      setHidden((prev) =>
+        editOn
+          ? [...new Set([...prev, ...EDIT_ONLY_COLUMNS])]
+          : prev.filter((key) => !EDIT_ONLY_COLUMNS.includes(key)),
+      );
+    };
+
+    const columnConfig = useMemo<readonly ColumnConfig<Row>[]>(
+      () => [
+        { key: 'id', name: 'ID' },
+        { key: 'task', name: 'Title' },
+        { key: 'priority', name: 'Priority' },
+        { key: 'issueType', name: 'Issue Type' },
+        {
+          key: 'tr',
+          name: 'TR',
+          editingCell: { component: 'inputString' },
+        },
+        {
+          key: 'loremIpsum',
+          name: 'Comment',
+          width: 300,
+          editingCell: { component: 'inputString' },
+        },
+        { key: 'complete', name: '% Complete' },
+      ],
+      [],
+    );
+
+    return (
+      <Box $css={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        <Box $css={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <Button onClick={toggleEdit}>
+            {editOn ? 'Выйти из редактирования' : 'Войти в редактирование'}
+          </Button>
+          <span>Скрыто: {hidden.length ? hidden.join(', ') : 'ничего'}</span>
+        </Box>
+        <TableCanvas
+          tableConfig={{
+            containerStyle: { height: 600 },
+            editing: {
+              // Режим включает только кнопка над таблицей: она же показывает столбцы.
+              enabled: editOn,
+              onRowsChange: setRows,
+              rowKeyGetter: (row: Row) => row.id,
+            },
+            columnsControl: {
+              enable: true,
+              applyMode: 'instant',
+              hiddenState: [hidden, setHidden],
+            },
+          }}
+          columnConfig={columnConfig}
+          rows={rows}
+        />
+      </Box>
+    );
+  },
+};
+
 /**
  * ### Динамическое добавление колонки
  *
