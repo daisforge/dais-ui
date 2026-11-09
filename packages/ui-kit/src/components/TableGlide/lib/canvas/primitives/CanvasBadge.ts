@@ -22,6 +22,19 @@ export type BadgeView =
 // Badge size types
 export type BadgeSize = 'xs' | 's' | 'm' | 'l';
 
+const BADGE_SIZE_BY_ROW_SIZE: Record<Theme['rowSize'], BadgeSize> = {
+  small: 'xs',
+  medium: 'm',
+  big: 'l',
+};
+
+export function resolveBadgeSize(
+  size?: BadgeSize,
+  rowSize?: Theme['rowSize'],
+): BadgeSize {
+  return size ?? (rowSize ? BADGE_SIZE_BY_ROW_SIZE[rowSize] : 's');
+}
+
 // Size configuration
 interface SizeConfig {
   height: number;
@@ -104,8 +117,13 @@ const ICON_SIZE_CONFIG: Record<BadgeSize, number> = {
   l: 16,
 };
 
+export function getBadgeIconSize(size: BadgeSize): number {
+  return ICON_SIZE_CONFIG[size];
+}
+
 export interface CanvasBadgeOptions {
   view?: BadgeView;
+  /** Явный размер имеет приоритет. По умолчанию: small → xs (16), medium → m (24), big → l (28); без rowSize — s (20). */
   size?: BadgeSize;
   transparent?: boolean;
   clear?: boolean;
@@ -153,9 +171,9 @@ export class CanvasBadge extends CanvasLeaf {
   constructor(id: string, text: string, options?: CanvasBadgeOptions) {
     super(id);
     this.text = text;
+    this.size = resolveBadgeSize(options?.size, options?.theme?.rowSize);
     if (options) {
       if (options.view !== undefined) this.view = options.view;
-      if (options.size !== undefined) this.size = options.size;
       if (options.transparent !== undefined)
         this.transparent = options.transparent;
       if (options.clear !== undefined) this.clear = options.clear;
@@ -173,7 +191,7 @@ export class CanvasBadge extends CanvasLeaf {
 
   measure(ctx: CanvasRenderingContext2D) {
     const sizeConfig = SIZE_CONFIG[this.size];
-    const iconSize = ICON_SIZE_CONFIG[this.size];
+    const iconSize = getBadgeIconSize(this.size);
     const font = `${sizeConfig.fontSize}px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif`;
     const textWidth = getCachedTextWidth(ctx, this.text, font);
 
@@ -194,7 +212,7 @@ export class CanvasBadge extends CanvasLeaf {
   onPaint(batcher: DrawBatcher, ctx: CanvasRenderingContext2D) {
     const { x, y, width, height } = this.rect;
     const sizeConfig = SIZE_CONFIG[this.size];
-    const iconSize = ICON_SIZE_CONFIG[this.size];
+    const iconSize = getBadgeIconSize(this.size);
     const viewColors = this.viewColors[this.view];
 
     if (!viewColors) return;
