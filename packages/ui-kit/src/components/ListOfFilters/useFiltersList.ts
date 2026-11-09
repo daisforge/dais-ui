@@ -25,6 +25,7 @@ export const useFiltersList = <
   filtersInfo,
   options,
   updateFilters,
+  updateAllFilters,
   order,
 }: {
   filters: Record<FilterKey, unknown>;
@@ -37,6 +38,12 @@ export const useFiltersList = <
   >;
   options: Record<FilterKey, Option[]>;
   updateFilters: (updatedKey: FilterKey, value: unknown) => void;
+  /**
+   * Обновляет все фильтры одним вызовом при clearAll.
+   * Если не передан, clearAll вызывает updateFilters для каждого поля.
+   * Очистка отдельных чипов всегда использует updateFilters.
+   */
+  updateAllFilters?: (filters: Record<FilterKey, unknown>) => void;
   order?: 'default' | OrderKey[] | ((groups: ItemOrGroup[]) => ItemOrGroup[]);
 }) => {
   const { labelFromValueMaps } = useMemo(() => {
@@ -56,6 +63,17 @@ export const useFiltersList = <
   }, [options]);
 
   const clearAll = useCallback(() => {
+    if (updateAllFilters) {
+      const clearedFilters = Object.fromEntries(
+        Object.entries<(typeof filtersInfo)[FilterKey]>(filtersInfo).map(
+          ([key, info]) => [key, info.clearedValue],
+        ),
+      ) as Record<FilterKey, unknown>;
+
+      updateAllFilters(clearedFilters);
+      return;
+    }
+
     // eslint-disable-next-line no-restricted-syntax
     for (const option of Object.entries<(typeof filtersInfo)[FilterKey]>(
       filtersInfo,
@@ -63,7 +81,7 @@ export const useFiltersList = <
       const [key, value] = option;
       updateFilters(key as FilterKey, value.clearedValue);
     }
-  }, [filtersInfo, updateFilters]);
+  }, [filtersInfo, updateFilters, updateAllFilters]);
 
   const filterListData = useMemo(() => {
     const filterList = Object.entries(filters).reduce(

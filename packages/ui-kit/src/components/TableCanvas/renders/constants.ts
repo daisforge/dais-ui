@@ -10,5 +10,6 @@ export const CLASS = {
 } as const;
 
 export const CSS_VARIABLES = {
+  editorCellHeight: '--table-editor-cell-height',
   subrowContainerPaddingLeft: '--subrow-container-padding-left',
 };

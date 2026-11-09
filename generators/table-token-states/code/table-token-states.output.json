@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-07, table-token-states.ts v1.2 (модель «токен + состояние»; hover на выделении +1δ; hover2 = +2δ для выбранной строки под курсором) + table-token-sources.ts",
+  "generated": "2026-10-19, table-token-states.ts v1.3 (модель «токен + состояние»; hover2 для выбранной строки; контрастная тема из пакета 0.1.2; имена data-*-on-light в beta и контрастной) + table-token-sources.ts",
   "themes": [
     "light",
     "dark",
@@ -8,7 +8,7 @@
     "highContrastLight",
     "highContrastDark"
   ],
-  "note": "null — нет данных темы: highContrastLight без surface-solid-primary и background-primary; data-yellow-light / data-blue-light и surface-*-minor отсутствуют в beta или HC; highContrastDark — заглушка, копия dark",
+  "note": "null не ожидается: у всех 19 токенов есть значения в шести темах (проверено тестом). В beta core и контрастной data-yellow-light и data-blue-light называются data-*-on-light — поле names у токена",
   "bySemanticToken": {
     "surfaceSolidCard": {
       "light": {
@@ -41,10 +41,10 @@
       },
       "highContrastLight": {
         "rest": "#FFFFFF",
-        "hover": null,
-        "hover2": null,
-        "active": "#E0EEFA",
-        "hoverActive": "#D3E7F8"
+        "hover": "#F5F7F9",
+        "hover2": "#EBEFF3",
+        "active": "#BFDDF4",
+        "hoverActive": "#B2D6F2"
       },
       "highContrastDark": {
         "rest": "#060A0C",
@@ -83,7 +83,13 @@
         "active": "#103143",
         "hoverActive": "#14394D"
       },
-      "highContrastLight": null,
+      "highContrastLight": {
+        "rest": "#D6DFE7",
+        "hover": "#CCD7E1",
+        "hover2": "#C2CFDB",
+        "active": "#A0C5E2",
+        "hoverActive": "#94BEDE"
+      },
       "highContrastDark": {
         "rest": "#13181B",
         "hover": "#191F23",
@@ -121,7 +127,13 @@
         "active": "#060A0D",
         "hoverActive": "#060A0D"
       },
-      "highContrastLight": null,
+      "highContrastLight": {
+        "rest": "#E5EBF1",
+        "hover": "#E5EBF1",
+        "hover2": "#E5EBF1",
+        "active": "#E5EBF1",
+        "hoverActive": "#E5EBF1"
+      },
       "highContrastDark": {
         "rest": "#060A0C",
         "hover": "#060A0C",
@@ -163,8 +175,8 @@
         "rest": "#CFE5F2",
         "hover": "#C2DEEE",
         "hover2": "#B5D7EA",
-        "active": "#B6D8EE",
-        "hoverActive": "#A9D1EB"
+        "active": "#9BC9EA",
+        "hoverActive": "#8EC2E7"
       },
       "highContrastDark": {
         "rest": "#071A26",
@@ -211,11 +223,11 @@
         "hoverActive": "#006FC6"
       },
       "highContrastDark": {
-        "rest": "#199AF0",
-        "hover": "#1BA3FE",
-        "hover2": "#41ACFF",
-        "active": "#1797ED",
-        "hoverActive": "#19A0FB"
+        "rest": "#118CDF",
+        "hover": "#1395ED",
+        "hover2": "#159EFB",
+        "active": "#118CDF",
+        "hoverActive": "#1395ED"
       }
     },
     "outlineAccent": {
@@ -292,18 +304,18 @@
         "hoverActive": "#262626"
       },
       "highContrastLight": {
-        "rest": "#C4CFD7",
-        "hover": "#C4CFD7",
-        "hover2": "#C4CFD7",
-        "active": "#C4CFD7",
-        "hoverActive": "#C4CFD7"
+        "rest": "#A3ACB4",
+        "hover": "#A3ACB4",
+        "hover2": "#A3ACB4",
+        "active": "#A3ACB4",
+        "hoverActive": "#A3ACB4"
       },
       "highContrastDark": {
-        "rest": "#23292D",
-        "hover": "#23292D",
-        "hover2": "#23292D",
-        "active": "#23292D",
-        "hoverActive": "#23292D"
+        "rest": "#25262D",
+        "hover": "#25262D",
+        "hover2": "#25262D",
+        "active": "#25262D",
+        "hoverActive": "#25262D"
       }
     },
     "surfaceNegative": {
@@ -339,8 +351,8 @@
         "rest": "#E7002F",
         "hover": "#DC002C",
         "hover2": "#D10029",
-        "active": "#CB0E43",
-        "hoverActive": "#C1003E"
+        "active": "#AD1E58",
+        "hoverActive": "#A80351"
       },
       "highContrastDark": {
         "rest": "#FF293E",
@@ -380,11 +392,11 @@
         "hoverActive": "#054262"
       },
       "highContrastLight": {
-        "rest": "#E0EEFA",
-        "hover": "#D3E7F8",
-        "hover2": "#C6E0F6",
-        "active": "#C5DFF5",
-        "hoverActive": "#B9D8F3"
+        "rest": "#BFDDF4",
+        "hover": "#B2D6F2",
+        "hover2": "#A5CFF0",
+        "active": "#8FC3EB",
+        "hoverActive": "#82BCE8"
       },
       "highContrastDark": {
         "rest": "#082436",
@@ -424,11 +436,11 @@
         "hoverActive": "#0C4646"
       },
       "highContrastLight": {
-        "rest": "#E3F1E0",
-        "hover": "#D8EBD4",
-        "hover2": "#CDE5C8",
-        "active": "#C7E2DE",
-        "hoverActive": "#BADCD7"
+        "rest": "#BADCB2",
+        "hover": "#AFD6A6",
+        "hover2": "#A4D09A",
+        "active": "#8BC2BA",
+        "hoverActive": "#7EBCB3"
       },
       "highContrastDark": {
         "rest": "#0A2814",
@@ -468,11 +480,11 @@
         "hoverActive": "#2F393C"
       },
       "highContrastLight": {
-        "rest": "#FAEBE0",
-        "hover": "#F8E2D2",
-        "hover2": "#F6D9C4",
-        "active": "#DCDDDE",
-        "hoverActive": "#D4D5D6"
+        "rest": "#F4CDB2",
+        "hover": "#F2C4A4",
+        "hover2": "#EFBB96",
+        "active": "#B7B7BA",
+        "hoverActive": "#AFAFB2"
       },
       "highContrastDark": {
         "rest": "#371B0B",
@@ -511,7 +523,13 @@
         "active": "#0C4139",
         "hoverActive": "#0F4A41"
       },
-      "highContrastLight": null,
+      "highContrastLight": {
+        "rest": "#96DAA1",
+        "hover": "#88D595",
+        "hover2": "#79D089",
+        "active": "#70C1AD",
+        "hoverActive": "#60BBA5"
+      },
       "highContrastDark": {
         "rest": "#0A2B10",
         "hover": "#0D3314",
@@ -549,7 +567,13 @@
         "active": "#3A2639",
         "hoverActive": "#432C42"
       },
-      "highContrastLight": null,
+      "highContrastLight": {
+        "rest": "#F8BDC4",
+        "hover": "#F6B3BB",
+        "hover2": "#F4A9B2",
+        "active": "#BAABC8",
+        "hoverActive": "#B3A3C2"
+      },
       "highContrastDark": {
         "rest": "#4A0D13",
         "hover": "#561117",
@@ -587,7 +611,13 @@
         "active": "#303338",
         "hoverActive": "#373B40"
       },
-      "highContrastLight": null,
+      "highContrastLight": {
+        "rest": "#F7C29D",
+        "hover": "#F5B98E",
+        "hover2": "#F3B07F",
+        "active": "#B9AFAA",
+        "hoverActive": "#B2A7A2"
+      },
       "highContrastDark": {
         "rest": "#3D1D0A",
         "hover": "#47230D",
@@ -625,7 +655,13 @@
         "active": "#073D5C",
         "hoverActive": "#094567"
       },
-      "highContrastLight": null,
+      "highContrastLight": {
+        "rest": "#9CD5FF",
+        "hover": "#8DCFFF",
+        "hover2": "#7DC9FE",
+        "active": "#75BDF4",
+        "hoverActive": "#66B6F2"
+      },
       "highContrastDark": {
         "rest": "#0C283B",
         "hover": "#103045",
@@ -649,9 +685,27 @@
         "active": "#1E2F32",
         "hoverActive": "#24373A"
       },
-      "betaCoreLight": null,
-      "betaCoreDark": null,
-      "highContrastLight": null,
+      "betaCoreLight": {
+        "rest": "#FFE3BD",
+        "hover": "#FFDBAA",
+        "hover2": "#FFD397",
+        "active": "#E0D9C1",
+        "hoverActive": "#DAD1B4"
+      },
+      "betaCoreDark": {
+        "rest": "#211607",
+        "hover": "#291C0A",
+        "hover2": "#32230E",
+        "active": "#1A2E31",
+        "hoverActive": "#1F3639"
+      },
+      "highContrastLight": {
+        "rest": "#F1DDB8",
+        "hover": "#EED5A8",
+        "hover2": "#EBCD97",
+        "active": "#B5C3BF",
+        "hoverActive": "#ACBCB7"
+      },
       "highContrastDark": {
         "rest": "#211807",
         "hover": "#291F0A",
@@ -675,9 +729,27 @@
         "active": "#0B3049",
         "hoverActive": "#0E3854"
       },
-      "betaCoreLight": null,
-      "betaCoreDark": null,
-      "highContrastLight": null,
+      "betaCoreLight": {
+        "rest": "#EFF8FF",
+        "hover": "#E1F2FF",
+        "hover2": "#D3ECFF",
+        "active": "#D2EBFB",
+        "hoverActive": "#C4E5FA"
+      },
+      "betaCoreDark": {
+        "rest": "#0C1A24",
+        "hover": "#11212D",
+        "hover2": "#162836",
+        "active": "#0A3248",
+        "hoverActive": "#0D3A53"
+      },
+      "highContrastLight": {
+        "rest": "#DAE8F1",
+        "hover": "#CEE1ED",
+        "hover2": "#C2DAE9",
+        "active": "#A3CBE9",
+        "hoverActive": "#97C4E6"
+      },
       "highContrastDark": {
         "rest": "#0A1924",
         "hover": "#0E202D",
@@ -719,8 +791,8 @@
         "rest": "#D49100",
         "hover": "#CB8B00",
         "hover2": "#C28500",
-        "active": "#BA8E1A",
-        "hoverActive": "#B38700"
+        "active": "#9F8A35",
+        "hoverActive": "#998222"
       },
       "highContrastDark": {
         "rest": "#A16B00",
@@ -789,7 +861,7 @@
       "dark": "#0C1013",
       "betaCoreLight": "#F4F8FA",
       "betaCoreDark": "#0C1013",
-      "highContrastLight": null,
+      "highContrastLight": "#F5F7F9",
       "highContrastDark": "#0C1013"
     },
     "bgHeader": {
@@ -837,7 +909,7 @@
       "dark": "#09314B",
       "betaCoreLight": "#D2EBFB",
       "betaCoreDark": "#0A3248",
-      "highContrastLight": "#B6D8EE",
+      "highContrastLight": "#9BC9EA",
       "highContrastDark": "#09314B"
     },
     "bgHeaderSelectedHovered": {
@@ -845,7 +917,7 @@
       "dark": "#0C3956",
       "betaCoreLight": "#C4E5FA",
       "betaCoreDark": "#0D3A53",
-      "highContrastLight": "#A9D1EB",
+      "highContrastLight": "#8EC2E7",
       "highContrastDark": "#0C3956"
     },
     "selectionCheckboxBg": {
@@ -893,7 +965,7 @@
       "dark": "#0C3956",
       "betaCoreLight": "#C4E5FA",
       "betaCoreDark": "#0D3A53",
-      "highContrastLight": "#A9D1EB",
+      "highContrastLight": "#8EC2E7",
       "highContrastDark": "#0C3956"
     },
     "selectionActiveBg": {
@@ -901,7 +973,7 @@
       "dark": "#082436",
       "betaCoreLight": "#E0F2FB",
       "betaCoreDark": "#052536",
-      "highContrastLight": "#E0EEFA",
+      "highContrastLight": "#BFDDF4",
       "highContrastDark": "#082436"
     },
     "accentLight": {
@@ -909,7 +981,7 @@
       "dark": "#082436",
       "betaCoreLight": "#E0F2FB",
       "betaCoreDark": "#052536",
-      "highContrastLight": "#E0EEFA",
+      "highContrastLight": "#BFDDF4",
       "highContrastDark": "#082436"
     },
     "selectionActiveCheckboxBg": {
@@ -917,7 +989,7 @@
       "dark": "#09314B",
       "betaCoreLight": "#D2EBFB",
       "betaCoreDark": "#0A3248",
-      "highContrastLight": "#B6D8EE",
+      "highContrastLight": "#9BC9EA",
       "highContrastDark": "#09314B"
     },
     "selectionActiveHoveredBg": {
@@ -925,7 +997,7 @@
       "dark": "#0B2B40",
       "betaCoreLight": "#D2ECF9",
       "betaCoreDark": "#072D40",
-      "highContrastLight": "#D3E7F8",
+      "highContrastLight": "#B2D6F2",
       "highContrastDark": "#0B2B40"
     },
     "selectionActiveCheckboxHoveredBg": {
@@ -933,87 +1005,87 @@
       "dark": "#0C3956",
       "betaCoreLight": "#C4E5FA",
       "betaCoreDark": "#0D3A53",
-      "highContrastLight": "#A9D1EB",
+      "highContrastLight": "#8EC2E7",
       "highContrastDark": "#0C3956"
     },
     "bgEditableCell": {
       "light": "#FFE4AE",
       "dark": "#211807",
-      "betaCoreLight": null,
-      "betaCoreDark": null,
-      "highContrastLight": null,
+      "betaCoreLight": "#FFE3BD",
+      "betaCoreDark": "#211607",
+      "highContrastLight": "#F1DDB8",
       "highContrastDark": "#211807"
     },
     "bgEditableCellHovered": {
       "light": "#FFDD99",
       "dark": "#291F0A",
-      "betaCoreLight": null,
-      "betaCoreDark": null,
-      "highContrastLight": null,
+      "betaCoreLight": "#FFDBAA",
+      "betaCoreDark": "#291C0A",
+      "highContrastLight": "#EED5A8",
       "highContrastDark": "#291F0A"
     },
     "bgEditableCellActive": {
       "light": "#E2D9B4",
       "dark": "#1E2F32",
-      "betaCoreLight": null,
-      "betaCoreDark": null,
-      "highContrastLight": null,
+      "betaCoreLight": "#E0D9C1",
+      "betaCoreDark": "#1A2E31",
+      "highContrastLight": "#B5C3BF",
       "highContrastDark": "#1E2F32"
     },
     "bgEditableCellActiveHovered": {
       "light": "#DCD2A5",
       "dark": "#24373A",
-      "betaCoreLight": null,
-      "betaCoreDark": null,
-      "highContrastLight": null,
+      "betaCoreLight": "#DAD1B4",
+      "betaCoreDark": "#1F3639",
+      "highContrastLight": "#ACBCB7",
       "highContrastDark": "#24373A"
     },
     "bgEditableCellRowActiveHovered": {
       "light": "#FFD683",
       "dark": "#31260E",
-      "betaCoreLight": null,
-      "betaCoreDark": null,
-      "highContrastLight": null,
+      "betaCoreLight": "#FFD397",
+      "betaCoreDark": "#32230E",
+      "highContrastLight": "#EBCD97",
       "highContrastDark": "#31260E"
     },
     "editedSuccessfullyCellColor": {
       "light": "#EDF8FF",
       "dark": "#0A1924",
-      "betaCoreLight": null,
-      "betaCoreDark": null,
-      "highContrastLight": null,
+      "betaCoreLight": "#EFF8FF",
+      "betaCoreDark": "#0C1A24",
+      "highContrastLight": "#DAE8F1",
       "highContrastDark": "#0A1924"
     },
     "editedSuccessfullyCellHoverColor": {
       "light": "#DEF2FF",
       "dark": "#0E202D",
-      "betaCoreLight": null,
-      "betaCoreDark": null,
-      "highContrastLight": null,
+      "betaCoreLight": "#E1F2FF",
+      "betaCoreDark": "#11212D",
+      "highContrastLight": "#CEE1ED",
       "highContrastDark": "#0E202D"
     },
     "editedSuccessfullyCellActiveColor": {
       "light": "#D2EBFB",
       "dark": "#0B3049",
-      "betaCoreLight": null,
-      "betaCoreDark": null,
-      "highContrastLight": null,
+      "betaCoreLight": "#D2EBFB",
+      "betaCoreDark": "#0A3248",
+      "highContrastLight": "#A3CBE9",
       "highContrastDark": "#0B3049"
     },
     "editedSuccessfullyCellActiveHoverColor": {
       "light": "#C4E5FA",
       "dark": "#0E3854",
-      "betaCoreLight": null,
-      "betaCoreDark": null,
-      "highContrastLight": null,
+      "betaCoreLight": "#C4E5FA",
+      "betaCoreDark": "#0D3A53",
+      "highContrastLight": "#97C4E6",
       "highContrastDark": "#0E3854"
     },
     "editedSuccessfullyCellRowActiveHoverColor": {
       "light": "#CFECFF",
       "dark": "#122736",
-      "betaCoreLight": null,
-      "betaCoreDark": null,
-      "highContrastLight": null,
+      "betaCoreLight": "#D3ECFF",
+      "betaCoreDark": "#162836",
+      "highContrastLight": "#C2DAE9",
       "highContrastDark": "#122736"
     },
     "bgCellPositive": {
@@ -1021,7 +1093,7 @@
       "dark": "#0A2814",
       "betaCoreLight": "#E4F3E7",
       "betaCoreDark": "#0B2816",
-      "highContrastLight": "#E3F1E0",
+      "highContrastLight": "#BADCB2",
       "highContrastDark": "#0A2814"
     },
     "bgCellPositiveHovered": {
@@ -1029,7 +1101,7 @@
       "dark": "#0E3019",
       "betaCoreLight": "#D8EEDC",
       "betaCoreDark": "#0F301B",
-      "highContrastLight": "#D8EBD4",
+      "highContrastLight": "#AFD6A6",
       "highContrastDark": "#0E3019"
     },
     "bgCellPositiveActive": {
@@ -1037,7 +1109,7 @@
       "dark": "#0B3C3D",
       "betaCoreLight": "#C8E7E5",
       "betaCoreDark": "#093D3D",
-      "highContrastLight": "#C7E2DE",
+      "highContrastLight": "#8BC2BA",
       "highContrastDark": "#0B3C3D"
     },
     "bgCellPositiveActiveHovered": {
@@ -1045,7 +1117,7 @@
       "dark": "#0E4546",
       "betaCoreLight": "#BAE1DF",
       "betaCoreDark": "#0C4646",
-      "highContrastLight": "#BADCD7",
+      "highContrastLight": "#7EBCB3",
       "highContrastDark": "#0E4546"
     },
     "bgCellPositiveRowActiveHovered": {
@@ -1053,7 +1125,7 @@
       "dark": "#12381E",
       "betaCoreLight": "#CCE9D1",
       "betaCoreDark": "#133821",
-      "highContrastLight": "#CDE5C8",
+      "highContrastLight": "#A4D09A",
       "highContrastDark": "#12381E"
     },
     "bgCellNegative": {
@@ -1061,7 +1133,7 @@
       "dark": "#4A0D13",
       "betaCoreLight": "#FEDFDE",
       "betaCoreDark": "#480B11",
-      "highContrastLight": null,
+      "highContrastLight": "#F8BDC4",
       "highContrastDark": "#4A0D13"
     },
     "bgCellNegativeHovered": {
@@ -1069,7 +1141,7 @@
       "dark": "#561117",
       "betaCoreLight": "#FDD5D4",
       "betaCoreDark": "#540E15",
-      "highContrastLight": null,
+      "highContrastLight": "#F6B3BB",
       "highContrastDark": "#561117"
     },
     "bgCellNegativeActive": {
@@ -1077,7 +1149,7 @@
       "dark": "#3F263C",
       "betaCoreLight": "#DFD5DE",
       "betaCoreDark": "#3A2639",
-      "highContrastLight": null,
+      "highContrastLight": "#BAABC8",
       "highContrastDark": "#3F263C"
     },
     "bgCellNegativeActiveHovered": {
@@ -1085,7 +1157,7 @@
       "dark": "#482C45",
       "betaCoreLight": "#D8CCD7",
       "betaCoreDark": "#432C42",
-      "highContrastLight": null,
+      "highContrastLight": "#B3A3C2",
       "highContrastDark": "#482C45"
     },
     "bgCellNegativeRowActiveHovered": {
@@ -1093,7 +1165,7 @@
       "dark": "#62151B",
       "betaCoreLight": "#FCCBCA",
       "betaCoreDark": "#601119",
-      "highContrastLight": null,
+      "highContrastLight": "#F4A9B2",
       "highContrastDark": "#62151B"
     },
     "bgCellWarning": {
@@ -1101,7 +1173,7 @@
       "dark": "#371B0B",
       "betaCoreLight": "#FBEAE0",
       "betaCoreDark": "#32190A",
-      "highContrastLight": "#FAEBE0",
+      "highContrastLight": "#F4CDB2",
       "highContrastDark": "#371B0B"
     },
     "bgCellWarningHovered": {
@@ -1109,7 +1181,7 @@
       "dark": "#41210F",
       "betaCoreLight": "#F9E1D2",
       "betaCoreDark": "#3C1F0E",
-      "highContrastLight": "#F8E2D2",
+      "highContrastLight": "#F2C4A4",
       "highContrastDark": "#41210F"
     },
     "bgCellWarningActive": {
@@ -1117,7 +1189,7 @@
       "dark": "#2F3235",
       "betaCoreLight": "#DCDFDF",
       "betaCoreDark": "#283134",
-      "highContrastLight": "#DCDDDE",
+      "highContrastLight": "#B7B7BA",
       "highContrastDark": "#2F3235"
     },
     "bgCellWarningActiveHovered": {
@@ -1125,7 +1197,7 @@
       "dark": "#363A3D",
       "betaCoreLight": "#C7D9E7",
       "betaCoreDark": "#2F393C",
-      "highContrastLight": "#D4D5D6",
+      "highContrastLight": "#AFAFB2",
       "highContrastDark": "#363A3D"
     },
     "bgCellWarningRowActiveHovered": {
@@ -1133,7 +1205,7 @@
       "dark": "#4B2713",
       "betaCoreLight": "#F7D8C4",
       "betaCoreDark": "#462512",
-      "highContrastLight": "#F6D9C4",
+      "highContrastLight": "#EFBB96",
       "highContrastDark": "#4B2713"
     },
     "bgCellInfo": {
@@ -1141,7 +1213,7 @@
       "dark": "#0C283B",
       "betaCoreLight": "#D3EBFF",
       "betaCoreDark": "#09283D",
-      "highContrastLight": null,
+      "highContrastLight": "#9CD5FF",
       "highContrastDark": "#0C283B"
     },
     "bgCellInfoHovered": {
@@ -1149,7 +1221,7 @@
       "dark": "#103045",
       "betaCoreLight": "#C5E5FF",
       "betaCoreDark": "#0C3048",
-      "highContrastLight": null,
+      "highContrastLight": "#8DCFFF",
       "highContrastDark": "#103045"
     },
     "bgCellInfoActive": {
@@ -1157,7 +1229,7 @@
       "dark": "#0D3C5C",
       "betaCoreLight": "#B9E0FB",
       "betaCoreDark": "#073D5C",
-      "highContrastLight": null,
+      "highContrastLight": "#75BDF4",
       "highContrastDark": "#0D3C5C"
     },
     "bgCellInfoActiveHovered": {
@@ -1165,7 +1237,7 @@
       "dark": "#104467",
       "betaCoreLight": "#ABDAFA",
       "betaCoreDark": "#094567",
-      "highContrastLight": null,
+      "highContrastLight": "#66B6F2",
       "highContrastDark": "#104467"
     },
     "bgCellInfoRowActiveHovered": {
@@ -1173,7 +1245,7 @@
       "dark": "#14384F",
       "betaCoreLight": "#B7DFFF",
       "betaCoreDark": "#0F3853",
-      "highContrastLight": null,
+      "highContrastLight": "#7DC9FE",
       "highContrastDark": "#14384F"
     },
     "textDark": {
@@ -1213,8 +1285,8 @@
       "dark": "#23292D",
       "betaCoreLight": "#CFDBE4",
       "betaCoreDark": "#262626",
-      "highContrastLight": "#C4CFD7",
-      "highContrastDark": "#23292D"
+      "highContrastLight": "#A3ACB4",
+      "highContrastDark": "#25262D"
     },
     "accentColor": {
       "light": "#0B7ECB",
@@ -1253,7 +1325,7 @@
       "dark": "#060A0C",
       "betaCoreLight": "#F3F7FA",
       "betaCoreDark": "#060A0D",
-      "highContrastLight": null,
+      "highContrastLight": "#E5EBF1",
       "highContrastDark": "#060A0C"
     }
   }

@@ -40,8 +40,8 @@ const columnConfig: ColumnConfig[] = [
     key: 'status',
     name: 'Статус',
     width: 200,
-    renderCell: ({ row }) => (
-      <Canvas.Container direction="row" alignItems="center" padding={8}>
+    renderCell: ({ row, theme }) => (
+      <Canvas.Container direction="row" alignItems="center" padding={{ left: theme.cellHorizontalPadding, right: theme.cellHorizontalPadding }}>
         <Canvas.Badge
           text={row.status}
           view="default"
@@ -54,7 +54,10 @@ const columnConfig: ColumnConfig[] = [
 ];
 
 <TableCanvas
-  tableConfig={{ containerStyle: { height: '300px' } }}
+  tableConfig={{
+    containerStyle: { height: '300px' },
+    rowSize: { showInControl: true },
+  }}
   columnConfig={columnConfig}
   rows={rows}
 />
@@ -109,8 +112,15 @@ export const CustomColors: StoryObj = {
           key: 'solid',
           name: 'Solid',
           width: 200,
-          renderCell: ({ row }) => (
-            <Canvas.Container direction="row" alignItems="center" padding={8}>
+          renderCell: ({ row, theme }) => (
+            <Canvas.Container
+              direction="row"
+              alignItems="center"
+              padding={{
+                left: theme.cellHorizontalPadding,
+                right: theme.cellHorizontalPadding,
+              }}
+            >
               <Canvas.Badge
                 text={row.label}
                 view="default"
@@ -124,8 +134,15 @@ export const CustomColors: StoryObj = {
           key: 'pilled',
           name: 'Pilled',
           width: 200,
-          renderCell: ({ row }) => (
-            <Canvas.Container direction="row" alignItems="center" padding={8}>
+          renderCell: ({ row, theme }) => (
+            <Canvas.Container
+              direction="row"
+              alignItems="center"
+              padding={{
+                left: theme.cellHorizontalPadding,
+                right: theme.cellHorizontalPadding,
+              }}
+            >
               <Canvas.Badge
                 text={row.label}
                 view="default"
@@ -140,8 +157,15 @@ export const CustomColors: StoryObj = {
           key: 'transparent',
           name: 'Transparent',
           width: 200,
-          renderCell: ({ row }) => (
-            <Canvas.Container direction="row" alignItems="center" padding={8}>
+          renderCell: ({ row, theme }) => (
+            <Canvas.Container
+              direction="row"
+              alignItems="center"
+              padding={{
+                left: theme.cellHorizontalPadding,
+                right: theme.cellHorizontalPadding,
+              }}
+            >
               <Canvas.Badge
                 text={row.label}
                 view="default"
@@ -158,7 +182,10 @@ export const CustomColors: StoryObj = {
 
     return (
       <TableCanvas
-        tableConfig={{ containerStyle: { height: '300px' } }}
+        tableConfig={{
+          containerStyle: { height: '300px' },
+          rowSize: { showInControl: true },
+        }}
         columnConfig={columnConfig}
         rows={customRows}
       />
@@ -278,6 +305,54 @@ export const IconOnly: StoryObj = {
         columnConfig={columnConfig}
         rows={rows}
       />
+    );
+  },
+};
+
+export const NarrowColumns: StoryObj = {
+  name: 'Длинный текст в узких колонках',
+  render: () => {
+    const icon = useMemo(() => Canvas.icon(<IconSearch />), []);
+    const columnConfig = useMemo<readonly ColumnConfig<ViewRow>[]>(
+      () =>
+        SIZES.map((size) => ({
+          key: size,
+          name: size,
+          width: 160,
+          minWidth: 40,
+          renderCell: ({ row }) => (
+            <Canvas.Container direction="row" alignItems="center" padding={8}>
+              <Canvas.Badge
+                text="Очень длинный статус согласования"
+                view={row.view}
+                size={size}
+                leftIcon={row.view === 'positive' ? icon : undefined}
+                rightIcon={row.view === 'warning' ? icon : undefined}
+                transparent={row.view === 'negative'}
+                clear={row.view === 'dark'}
+                pilled={row.view === 'light'}
+              />
+            </Canvas.Container>
+          ),
+        })),
+      [icon],
+    );
+
+    return (
+      <>
+        <p>
+          Сужайте и расширяйте колонки за границу заголовка: текст должен
+          заканчиваться многоточием внутри бейджа.
+        </p>
+        <TableCanvas
+          tableConfig={{
+            containerStyle: { height: '400px' },
+            resizableColumn: true,
+          }}
+          columnConfig={columnConfig}
+          rows={rows}
+        />
+      </>
     );
   },
 };

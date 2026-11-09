@@ -1,6 +1,6 @@
 # Отчёт генератора цветов содержимого ячеек таблицы
 
-Сгенерировано: 2026-11-05.
+Сгенерировано: 2026-11-09.
 
 Это не список ошибок, а список мест, на которые стоит смотреть при обновлении
 тем атомарной команды (SDDS): что в них поменялось с прошлого запуска, не
@@ -9,7 +9,7 @@
 
 ## Изменения в темах SDDS с прошлого запуска
 
-Цветовых переменных в темах: 1629, из них таблица берёт 83.
+Цветовых переменных в темах: 1629, из них таблица берёт 90.
 
 Изменений нет.
 
@@ -19,14 +19,14 @@
 (token-map.js: `pin` → `var`). Значение может отличаться от ручного —
 сверить с дизайнером.
 
-| Ключ       | Переменная            | Тема              | Значение в теме |
-| ---------- | --------------------- | ----------------- | --------------- |
-| `dataTeal` | `--data-arctic-minor` | light             | `#14CC98`       |
-| `dataTeal` | `--data-arctic-minor` | dark              | `#0E5944`       |
-| `dataTeal` | `--data-arctic-minor` | betaCoreLight     | `#00D2A1`       |
-| `dataTeal` | `--data-arctic-minor` | betaCoreDark      | `#005E47`       |
-| `dataTeal` | `--data-arctic-minor` | highContrastLight | `#00D2A1`       |
-| `dataTeal` | `--data-arctic-minor` | highContrastDark  | `#005E47`       |
+| Ключ | Переменная | Тема | Значение в теме |
+|---|---|---|---|
+| `dataTeal` | `--data-arctic-minor` | light | `#14CC98` |
+| `dataTeal` | `--data-arctic-minor` | dark | `#0E5944` |
+| `dataTeal` | `--data-arctic-minor` | betaCoreLight | `#00D2A1` |
+| `dataTeal` | `--data-arctic-minor` | betaCoreDark | `#005E47` |
+| `dataTeal` | `--data-arctic-minor` | highContrastLight | `#00D2A1` |
+| `dataTeal` | `--data-arctic-minor` | highContrastDark | `#005E47` |
 
 ## Цвета, взятые не напрямую из своей темы
 
@@ -37,29 +37,11 @@
 
 Цвета, найденные в своей теме напрямую, сюда не попадают — их большинство.
 
-| Ключ                  | Тема              | Значение    | Происхождение                                                                                                                                                           |
-| --------------------- | ----------------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `onDarkTextPrimary96` | light             | `#F7F9FBF4` | задан руками: похожий --on-dark-text-primary другого оттенка (#F2F5F8, а не #F7F9FB) — откуда взят этот цвет, неизвестно                                                |
-| `onDarkTextPrimary96` | dark              | `#F7F9FBF4` | задан руками: похожий --on-dark-text-primary другого оттенка (#F2F5F8, а не #F7F9FB) — откуда взят этот цвет, неизвестно                                                |
-| `onDarkTextPrimary96` | betaCoreLight     | `#F7F9FBF4` | задан руками: похожий --on-dark-text-primary другого оттенка (#F2F5F8, а не #F7F9FB) — откуда взят этот цвет, неизвестно                                                |
-| `onDarkTextPrimary96` | betaCoreDark      | `#F7F9FBF4` | задан руками: похожий --on-dark-text-primary другого оттенка (#F2F5F8, а не #F7F9FB) — откуда взят этот цвет, неизвестно                                                |
-| `onDarkTextPrimary96` | highContrastLight | `#F7F9FBF4` | задан руками: похожий --on-dark-text-primary другого оттенка (#F2F5F8, а не #F7F9FB) — откуда взят этот цвет, неизвестно                                                |
-| `onDarkTextPrimary96` | highContrastDark  | `#F7F9FBF4` | задан руками: похожий --on-dark-text-primary другого оттенка (#F2F5F8, а не #F7F9FB) — откуда взят этот цвет, неизвестно                                                |
-| `onDarkTextPrimary56` | light             | `#F7F9FB8E` | задан руками: похожий --on-dark-text-primary другого оттенка (#F2F5F8, а не #F7F9FB) — откуда взят этот цвет, неизвестно                                                |
-| `onDarkTextPrimary56` | dark              | `#F7F9FB8E` | задан руками: похожий --on-dark-text-primary другого оттенка (#F2F5F8, а не #F7F9FB) — откуда взят этот цвет, неизвестно                                                |
-| `onDarkTextPrimary56` | betaCoreLight     | `#F7F9FB8E` | задан руками: похожий --on-dark-text-primary другого оттенка (#F2F5F8, а не #F7F9FB) — откуда взят этот цвет, неизвестно                                                |
-| `onDarkTextPrimary56` | betaCoreDark      | `#F7F9FB8E` | задан руками: похожий --on-dark-text-primary другого оттенка (#F2F5F8, а не #F7F9FB) — откуда взят этот цвет, неизвестно                                                |
-| `onDarkTextPrimary56` | highContrastLight | `#F7F9FB8E` | задан руками: похожий --on-dark-text-primary другого оттенка (#F2F5F8, а не #F7F9FB) — откуда взят этот цвет, неизвестно                                                |
-| `onDarkTextPrimary56` | highContrastDark  | `#F7F9FB8E` | задан руками: похожий --on-dark-text-primary другого оттенка (#F2F5F8, а не #F7F9FB) — откуда взят этот цвет, неизвестно                                                |
-| `onDarkTextPrimary28` | light             | `#F7F9FB47` | задан руками: похожий --on-dark-text-primary другого оттенка (#F2F5F8, а не #F7F9FB) — откуда взят этот цвет, неизвестно                                                |
-| `onDarkTextPrimary28` | dark              | `#F7F9FB47` | задан руками: похожий --on-dark-text-primary другого оттенка (#F2F5F8, а не #F7F9FB) — откуда взят этот цвет, неизвестно                                                |
-| `onDarkTextPrimary28` | betaCoreLight     | `#F7F9FB47` | задан руками: похожий --on-dark-text-primary другого оттенка (#F2F5F8, а не #F7F9FB) — откуда взят этот цвет, неизвестно                                                |
-| `onDarkTextPrimary28` | betaCoreDark      | `#F7F9FB47` | задан руками: похожий --on-dark-text-primary другого оттенка (#F2F5F8, а не #F7F9FB) — откуда взят этот цвет, неизвестно                                                |
-| `onDarkTextPrimary28` | highContrastLight | `#F7F9FB47` | задан руками: похожий --on-dark-text-primary другого оттенка (#F2F5F8, а не #F7F9FB) — откуда взят этот цвет, неизвестно                                                |
-| `onDarkTextPrimary28` | highContrastDark  | `#F7F9FB47` | задан руками: похожий --on-dark-text-primary другого оттенка (#F2F5F8, а не #F7F9FB) — откуда взят этот цвет, неизвестно                                                |
-| `dataTeal`            | light             | `#14CC98`   | задан руками: временно: решение дизайнера — оставить arctic-300 #14CC98 до появления токена data-arctic-minor в темах SDDS (запрос через дизайн), потом заменить на var |
-| `dataTeal`            | dark              | `#14CC98`   | задан руками: временно: решение дизайнера — оставить arctic-300 #14CC98 до появления токена data-arctic-minor в темах SDDS (запрос через дизайн), потом заменить на var |
-| `dataTeal`            | betaCoreLight     | `#14CC98`   | задан руками: временно: решение дизайнера — оставить arctic-300 #14CC98 до появления токена data-arctic-minor в темах SDDS (запрос через дизайн), потом заменить на var |
-| `dataTeal`            | betaCoreDark      | `#14CC98`   | задан руками: временно: решение дизайнера — оставить arctic-300 #14CC98 до появления токена data-arctic-minor в темах SDDS (запрос через дизайн), потом заменить на var |
-| `dataTeal`            | highContrastLight | `#00B082`   | задан руками: временно: решение дизайнера — оставить arctic-300 #14CC98 до появления токена data-arctic-minor в темах SDDS (запрос через дизайн), потом заменить на var |
-| `dataTeal`            | highContrastDark  | `#14CC98`   | задан руками: временно: решение дизайнера — оставить arctic-300 #14CC98 до появления токена data-arctic-minor в темах SDDS (запрос через дизайн), потом заменить на var |
+| Ключ | Тема | Значение | Происхождение |
+|---|---|---|---|
+| `dataTeal` | light | `#14CC98` | задан руками: временно: решение дизайнера — оставить arctic-300 #14CC98 до появления токена data-arctic-minor в темах SDDS (запрос через дизайн), потом заменить на var |
+| `dataTeal` | dark | `#14CC98` | задан руками: временно: решение дизайнера — оставить arctic-300 #14CC98 до появления токена data-arctic-minor в темах SDDS (запрос через дизайн), потом заменить на var |
+| `dataTeal` | betaCoreLight | `#14CC98` | задан руками: временно: решение дизайнера — оставить arctic-300 #14CC98 до появления токена data-arctic-minor в темах SDDS (запрос через дизайн), потом заменить на var |
+| `dataTeal` | betaCoreDark | `#14CC98` | задан руками: временно: решение дизайнера — оставить arctic-300 #14CC98 до появления токена data-arctic-minor в темах SDDS (запрос через дизайн), потом заменить на var |
+| `dataTeal` | highContrastLight | `#00B082` | задан руками: временно: решение дизайнера — оставить arctic-300 #14CC98 до появления токена data-arctic-minor в темах SDDS (запрос через дизайн), потом заменить на var |
+| `dataTeal` | highContrastDark | `#14CC98` | задан руками: временно: решение дизайнера — оставить arctic-300 #14CC98 до появления токена data-arctic-minor в темах SDDS (запрос через дизайн), потом заменить на var |

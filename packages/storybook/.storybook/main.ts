@@ -33,9 +33,10 @@ function isSyntaxValid(code: string, filePath: string): boolean {
 }
 
 // Визуальные (скриншотные) тесты — `*.visual.stories.tsx`. Исключаем их ТОЛЬКО из
-// прод-билда публичного стенда: `storybook:build` запускается с NODE_ENV=production.
+// сборки общего стенда: шаг в deploy-storybook.yml задаёт NODE_ENV=production.
 // В остальных случаях стори НУЖНЫ и включаются:
 //   - локальный dev-сервер (`storybook`);
+//   - превью PR (pr-preview-storybook.yml);
 //   - прогон скриншот-тестов (test-runner читает этот конфиг под jest — там
 //     NODE_ENV=test, НЕ production), иначе он их не находит (0 matches).
 // Постоянный флаг отдельной тестовой сборки: локальные ресурсы и визуальные stories.

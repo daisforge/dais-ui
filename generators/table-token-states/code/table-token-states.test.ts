@@ -259,12 +259,21 @@ describe('модель «токен + состояние» против спек
     );
   });
 
-  it('редактирование — токены data-yellow-light / data-blue-light, в beta их нет', () => {
+  it('редактирование — data-yellow-light / data-blue-light; в beta и контрастной это data-*-on-light', () => {
     expect(colors.bgEditableCell.light).toBe('#FFE4AE');
     expect(colors.bgEditableCell.dark).toBe('#211807');
     expect(colors.editedSuccessfullyCellColor.light).toBe('#EDF8FF');
-    expect(colors.bgEditableCell.betaCoreLight).toBeNull();
-    expect(colors.editedSuccessfullyCellColor.betaCoreDark).toBeNull();
+    expect(colors.bgEditableCell.betaCoreLight).toBe('#FFE3BD');
+    expect(colors.editedSuccessfullyCellColor.betaCoreDark).toBe('#0C1A24');
+    expect(colors.bgEditableCell.highContrastLight).toBe('#F1DDB8');
+    expect(colors.editedSuccessfullyCellColor.highContrastDark).toBe('#0A1924');
+    expect(SEMANTIC.dataYellowLight.names?.betaCoreLight).toBe(
+      'data-yellow-on-light',
+    );
+    expect(SEMANTIC.dataBlueLight.names?.highContrastDark).toBe(
+      'data-blue-on-light',
+    );
+    expect(SEMANTIC.surfaceAccentMinor.names).toBeUndefined();
   });
 });
 
@@ -274,25 +283,29 @@ describe('шесть тем', () => {
       expect(Object.keys(record)).toEqual([...THEMES]);
   });
 
-  it('highContrastDark — заглушка, копия dark', () => {
-    for (const record of Object.values(colors))
-      expect(record.highContrastDark).toBe(record.dark);
+  it('highContrastDark (пакет 0.1.2) отличается от dark только сеткой: outline-solid-primary #25262D', () => {
+    for (const [key, record] of Object.entries(colors)) {
+      if (key === 'borderColor')
+        expect(record.highContrastDark).toBe('#25262D');
+      else expect(record.highContrastDark, key).toBe(record.dark);
+    }
   });
 
-  it('highContrastLight: null только там, где нет данных темы (hover фона — без surface-solid-primary)', () => {
+  it('highContrastLight (пакет 0.1.2): данные есть у всех ключей, выделение плотнее', () => {
     expect(colors.bgCell.highContrastLight).toBe('#FFFFFF');
-    for (const [key, record] of Object.entries(colors)) {
-      const e = TABLE_COLORS[key];
-      const src = SEMANTIC[e.source] as {
-        values: Record<string, string | null | undefined>;
-      };
-      const shouldBeNull =
-        src.values.highContrastLight == null ||
-        (e.source === 'surfaceSolidCard' && e.state === 'hover');
-      if (shouldBeNull) expect(record.highContrastLight, key).toBeNull();
-      else expect(record.highContrastLight, key).not.toBeNull();
-    }
+    for (const [key, record] of Object.entries(colors))
+      expect(record.highContrastLight, key).not.toBeNull();
     expect(colors.bgHeader.highContrastLight).toBe('#CFE5F2');
+    expect(colors.bgRowHovered.highContrastLight).not.toBe('#FFFFFF');
+    expect(colors.selectionActiveBg.highContrastLight).toBe(
+      flattenHex('#0076D240', '#FFFFFF'),
+    );
+    expect(colors.fadeGray.highContrastLight).toBe('#E5EBF1');
+  });
+
+  it('null в результате нет ни у одного ключа ни в одной теме', () => {
+    for (const [key, record] of Object.entries(colors))
+      for (const t of THEMES) expect(record[t], key + ' ' + t).not.toBeNull();
   });
 });
 

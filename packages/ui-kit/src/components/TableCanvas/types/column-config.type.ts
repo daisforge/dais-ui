@@ -199,6 +199,12 @@ export type Editing<RowType extends ObjectForExtending, SummaryRowType> = {
        * Кастомный рендер ячейки редактирования
        */
       component: RenderRowCustomEditCell<RowType, SummaryRowType>;
+      /**
+       * Показывать шеврон селекта в ячейке (как у `component: 'select'`).
+       * Нужен, когда кастомный редактор — селект, например на `CellEditorCombobox`.
+       * @default false
+       */
+      showSelectIcon?: boolean;
     }
 );
 

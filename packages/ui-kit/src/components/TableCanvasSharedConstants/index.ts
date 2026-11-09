@@ -30,3 +30,9 @@ export const COLLAPSE_DECOR_FADE = 0.15;
  * общем слое, чтобы оба брали его отсюда, а не друг у друга.
  */
 export const HEADER_TOOLTIP_HIDDEN_COLS_ID = 'header-tooltip-hidden-cols';
+
+/**
+ * Id портала списка Select в редакторе ячейки. Портал создаёт TableGlide, а список
+ * и проверку клика снаружи ведёт TableCanvas.
+ */
+export const SELECT_LIST_PORTAL_ID = 'portal2';

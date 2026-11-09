@@ -91,7 +91,6 @@ export const CellEditorNumberFormat = forwardRef<
       paddingInline,
       paddingBlock,
       disableLeftOffset,
-      verticalAlign,
     };
 
     /**
@@ -133,7 +132,11 @@ export const CellEditorNumberFormat = forwardRef<
     }, []);
 
     return (
-      <FieldBox $cellWidth={cellWidth}>
+      <FieldBox
+        $cellWidth={cellWidth}
+        $cellHeight={cellHeight}
+        $verticalAlign={verticalAlign}
+      >
         <StyledNumberFormat
           $geometry={geometry}
           align={align}
@@ -167,6 +170,8 @@ export function CellEditorNumberFormatInternal<
   formatOptions,
   disableLeftOffset,
   theme,
+  contentAlign,
+  verticalAlign,
 }: EditingCellInfo<TRow, TSummaryRow> & {
   formatOptions: ContentFormat | undefined;
   disableLeftOffset: boolean | undefined;
@@ -258,7 +263,8 @@ export function CellEditorNumberFormatInternal<
       disableLeftOffset={disableLeftOffset}
       paddingInline={theme.cellHorizontalPadding}
       paddingBlock={theme.cellVerticalPadding}
-      align={alignContent}
+      verticalAlign={verticalAlign}
+      align={contentAlign ?? alignContent}
       autoFocusType={
         isOverwriteEntry ? 'autoFocusBeforeDecimals' : 'autoFocusAndSelect'
       }

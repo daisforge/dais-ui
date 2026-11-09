@@ -180,6 +180,11 @@ export type CanvasContent = ReactElement | string;
 export type CellContent = CanvasContent | GridCell;
 
 export type CellThemeOverrideResult = Partial<{
+  /**
+   * Цвет фона ячейки: hex (#RGB, #RGBA, #RRGGBB, #RRGGBBAA), rgb() или rgba().
+   * Для других записей (hsl(), var(), названия цветов) таблица не считает цвет
+   * под курсором и при выделении.
+   */
   bgCell: string;
   cellHorizontalPadding: number;
   cellVerticalPadding: number;
@@ -285,7 +290,7 @@ export type RowSpan<R extends ObjectForExtending, SR> = (
 export type SpanCellAlign = {
   /** По горизонтали. @default из contentAlign колонки, иначе 'left' */
   horizontal?: 'left' | 'center' | 'right';
-  /** По вертикали. @default 'center' */
+  /** По вертикали. @default 'top' у блока в несколько строк, иначе 'center' */
   vertical?: 'top' | 'center' | 'bottom';
 };
 
@@ -322,6 +327,12 @@ export type ColumnGlideCustoms<R extends ObjectForExtending, SR = unknown> = {
   spanAlign?:
     | SpanCellAlign
     | ((cellInfo: CellInfo<R, SR>) => SpanCellAlign | undefined);
+  /**
+   * Содержимое объединённой ячейки, в том числе свой renderCell, остаётся в
+   * видимой части блока при прокрутке.
+   * @default true
+   */
+  spanContentSticky?: boolean;
   /** Тултип для ячеек этой колонки. Строка, объект или функция (context) => config | null. */
   cellTooltip?:
     | CanvasNodeTooltipConfig
@@ -352,12 +363,12 @@ export type ColumnGlideCustoms<R extends ObjectForExtending, SR = unknown> = {
    * они свои для каждой темы. Фиксированный hex в тёмной теме останется
    * таким же светлым, как в светлой.
    *
-   * Подробнее. Если вернуть `bgCell` hex-цветом (`#RGB`, `#RRGGBB`,
-   * `#RRGGBBAA` — прозрачный цвет сначала смешивается с фоном ячейки),
-   * таблица сама посчитает его состояния (под курсором, в выбранной строке,
-   * в выделении) — цвет ведёт себя как встроенные. Не-hex значение
-   * (`rgba()`, `var()` и т. п.) применяется как есть, без состояний: ячейка
-   * не отреагирует на курсор и выделение.
+   * Подробнее. Если вернуть `bgCell` в виде hex (`#RGB`, `#RGBA`, `#RRGGBB`,
+   * `#RRGGBBAA`), `rgb()` или `rgba()`, таблица сама посчитает его состояния
+   * (под курсором, в выбранной строке, в выделении), и цвет будет вести себя
+   * как встроенные. Прозрачный цвет сначала смешивается с фоном ячейки. Другие
+   * записи (`hsl()`, `var()`, названия цветов) не поддерживаются: они
+   * применяются как есть, ячейка не отреагирует на курсор и выделение.
    */
   columnThemeOverride?: (
     cellInfo: CellInfo<R, SR>

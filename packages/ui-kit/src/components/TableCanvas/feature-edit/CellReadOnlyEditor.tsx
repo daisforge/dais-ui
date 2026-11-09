@@ -14,7 +14,9 @@ export const CellReadOnlyEditor = <R extends ObjectForExtending, SR>(
   props: CellReadOnlyEditorProps<R, SR>,
 ) => {
   // eslint-disable-next-line react/destructuring-assignment
-  const { contentFormat, contentAlign = 'left' } = props?.column ?? {};
+  const { contentFormat, contentAlign: columnAlign } = props?.column ?? {};
+  // eslint-disable-next-line react/destructuring-assignment
+  const contentAlign = props?.contentAlign ?? columnAlign ?? 'left';
   const isNumberPreview =
     !!contentFormat &&
     (contentFormat === 'number' ||

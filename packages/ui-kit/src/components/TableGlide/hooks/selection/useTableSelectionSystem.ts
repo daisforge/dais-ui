@@ -431,9 +431,17 @@ export function useTableSelectionSystem<
   // focus-ring рисуем в range-cell / multi-range-cell, КРОМЕ случая, когда
   // активный якорь — в сервисной колонке (выделение строк по нумерации): иначе
   // glide рисует яркую рамку на ячейке-якоре нумерации.
+  // В режиме cell диапазон больше одной ячейки бывает только у объединённого
+  // блока: glide расширяет выделение до его границ. Блок обводим как в range-cell,
+  // иначе редактор в блоке рисует рамку одной строки поверх заливки выделения.
+  const isCellModeBlock =
+    cellsSelectionMode === 'cell' &&
+    selection.current !== undefined &&
+    selection.current.range.width * selection.current.range.height > 1;
   const drawFocusRing =
     (cellsSelectionMode === 'range-cell' ||
-      cellsSelectionMode === 'multi-range-cell') &&
+      cellsSelectionMode === 'multi-range-cell' ||
+      isCellModeBlock) &&
     !isNativeColumnSelection &&
     !(
       selection.current !== undefined &&

@@ -114,16 +114,14 @@ describe('CanvasBadge: подсветка', () => {
     badge.measure(ctx);
     const batcher = new DrawBatcher();
     badge.onPaint(batcher, ctx);
-    const commands = (
-      batcher as unknown as {
-        commands: { type: string; x: number; width: number }[];
-      }
-    ).commands;
+    const { commands } = batcher as unknown as {
+      commands: { type: string; x: number; width: number }[];
+    };
     const plateIndex = commands.findIndex(
       (command) => command.type === 'fillRect',
     );
     const textIndex = commands.findIndex(
-      (command) => command.type === 'fillText',
+      (command) => command.type === 'fillTextClipped',
     );
 
     expect(plateIndex).toBeGreaterThanOrEqual(0);

@@ -27,7 +27,6 @@ import {
 } from '@ui-kit/icons';
 import {
   outlineSolidPrimary,
-  surfaceInfoMinor,
   textNegative,
   textSecondary,
 } from '@ui-kit/tokens';
@@ -970,7 +969,7 @@ export function AllFeaturesExample(options: AllFeaturesExampleProps = {}) {
         themeOverride: settings.theme
           ? (props) =>
               props.row.priority === 'Critical'
-                ? { bgCell: surfaceInfoMinor }
+                ? { bgCell: props.theme.bgCellNegative }
                 : undefined
           : undefined,
         subRow: {
