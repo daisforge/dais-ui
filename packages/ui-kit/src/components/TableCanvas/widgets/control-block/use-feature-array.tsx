@@ -301,7 +301,6 @@ export const useFeatureArray = <
       text: 'Отменить',
       tooltipText: 'Отменить',
       view: 'secondary',
-      style: { marginRight: '4px' },
       skipRightDivider: true,
       contentLeft: <IconClose size="xs" color="inherit" />,
       ...editingButtons?.cancel,
