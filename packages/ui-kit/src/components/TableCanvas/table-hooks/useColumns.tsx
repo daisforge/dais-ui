@@ -692,8 +692,6 @@ export const useColumns = <
         ...(colSpan && { colSpan }),
         ...(rowSpan && { rowSpan }),
         ...(spanAlign && { spanAlign }),
-        // Подпись объединённой ячейки прилипает только без своего renderCell.
-        spanContentSticky: !el.renderCell || getColumnIsService(el),
       };
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
