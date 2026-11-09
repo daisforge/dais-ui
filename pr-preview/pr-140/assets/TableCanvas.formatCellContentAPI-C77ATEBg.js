@@ -1,4 +1,0 @@
-import{j as t}from"./react-D2T61mpp.js";import{cg as a,ch as r}from"./vendor-D9yMgLPo.js";import{T as s}from"./TypeSourceViewer-BbsDxKxn.js";import"./react-is-Clcustum.js";import"./styled-components-OgUQMZXz.js";import"./@tanstack/react-virtual-BM_5ionr.js";import"./tslib-DoU9Jm1N.js";function o(n){const e={h1:"h1",h2:"h2",...a(),...n.components};return t.jsxs(t.Fragment,{children:[t.jsx(r,{title:"Локальные компоненты/TableCanvas/FormatCellContent/API"}),`
-`,t.jsx(e.h1,{id:"formatcellcontent-api",children:"FormatCellContent API"}),`
-`,t.jsx(e.h2,{id:"contentformat",children:"ContentFormat"}),`
-`,t.jsx(s,{language:"ts",filePath:"packages/ui-kit/src/components/TableCanvas/TableGlideInstance/type.ts",typeName:"ContentFormat"})]})}function x(n={}){const{wrapper:e}={...a(),...n.components};return e?t.jsx(e,{...n,children:t.jsx(o,{...n})}):o(n)}export{x as default};
