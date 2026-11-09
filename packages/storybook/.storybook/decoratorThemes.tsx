@@ -31,6 +31,7 @@ const FINAI_THEMES = {
   DARK_THEME: 'FinAI:dark',
   BOTH_THEMES: 'FinAI:both',
   HC_LIGHT_THEME: 'FinAI HC:light',
+  HC_DARK_THEME: 'FinAI HC:dark',
   BETA_LIGHT_THEME: 'FinAI Beta:light',
   BETA_DARK_THEME: 'FinAI Beta:dark',
 } as const;
@@ -45,6 +46,7 @@ const globalStylesThemeMapper: Record<
   [FINAI_THEMES.LIGHT_THEME]: 'light',
   [FINAI_THEMES.DARK_THEME]: 'dark',
   [FINAI_THEMES.HC_LIGHT_THEME]: 'highContrastLight',
+  [FINAI_THEMES.HC_DARK_THEME]: 'highContrastDark',
   [FINAI_THEMES.BETA_LIGHT_THEME]: 'betaCoreLight',
   [FINAI_THEMES.BETA_DARK_THEME]: 'betaCoreDark',
 };
@@ -106,6 +108,7 @@ export const globalTypeTheme = {
       FINAI_THEMES.LIGHT_THEME,
       FINAI_THEMES.DARK_THEME,
       FINAI_THEMES.HC_LIGHT_THEME,
+      FINAI_THEMES.HC_DARK_THEME,
       FINAI_THEMES.BETA_LIGHT_THEME,
       FINAI_THEMES.BETA_DARK_THEME,
       FINAI_THEMES.BOTH_THEMES,

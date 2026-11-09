@@ -51,6 +51,10 @@ import { resolveCanvasCellInteractionTargetFromRenderData } from './lib/canvas/i
 import { StyledGlideDataEditor, StyledOverlayPortal } from './styled';
 import { getTheme } from './theming';
 import {
+  rangeHasAny,
+  resolveBlockRowOverride,
+} from './theming/block-row-override';
+import {
   getEditableCellFillStates,
   resolveActiveRowBg,
   resolveCellFillOverride,
@@ -72,6 +76,7 @@ import {
 } from './utils/createCell';
 import { findBlockOrigin } from './utils/findBlockOrigin';
 import { mergeThemeOverrides } from './utils/mergeThemeOverrides';
+import type { ResolveHoverRows } from './hooks/useHoverState';
 import { getSpan } from './utils/getSpan';
 import {
   getColumnGroupPath,
@@ -543,13 +548,42 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
 
   // Единый источник ховера: логическая ячейка (контент-флаги, ref) и
   // физическая строка (фон, state). Разница семантик описана в useHoverState.
-  const { hoveredCellRef, setHoveredCell, hoverRow, onHoverRowChange } =
+  // Строки, которые подсвечивает курсор: на объединённом блоке все строки
+  // блока (ответ дизайнера от 27.10.2026), иначе строка под мышью.
+  const resolveHoverRows = useCallback<ResolveHoverRows>(
+    (originColInd, originRowInd, rawRowInd) => {
+      const column = columnsForRender[originColInd];
+      const row = rows[originRowInd];
+      if (!column?.rowSpan || !row) {
+        return { from: rawRowInd, to: rawRowInd };
+      }
+      const blockRows = getRowSpan(column.rowSpan, {
+        row,
+        column,
+        colInd: originColInd,
+        rowInd: originRowInd,
+        ctxs,
+        theme,
+        hovered: { cellHover: false, rowHover: false },
+        active: { cellActive: false, rowActive: false },
+      } as CellInfo<R, SR>);
+      return blockRows
+        ? { from: blockRows[0], to: blockRows[1] }
+        : { from: rawRowInd, to: rawRowInd };
+    },
+    [columnsForRender, rows, ctxs, theme],
+  );
+
+  const { hoveredCellRef, setHoveredCell, hoverRows, onHoverRowChange } =
     useHoverState({
       isRowHoverEnabled,
       dataEditorRef,
       columnsCount: columnsForRender.length,
       rowsCount: rows.length,
+      resolveHoverRows,
     });
+  // Строки под курсором для фона: только в режиме hoverEffects.row.
+  const activeHoverRows = isRowHoverEnabled ? hoverRows : undefined;
 
   // Регионы ошибок (ячейки и строки) и сводка по строкам считаются по окну
   // видимой области (см. JSDoc хука).
@@ -761,14 +795,58 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
 
       const span = getSpan(colSpan, cellInfo);
       const spanRows = getRowSpan(rowSpan, cellInfo);
+
+      // Объединённый блок ведёт себя и красится целиком (решение дизайнера
+      // от 19.10.2026): курсор на любой его ячейке — hover всего блока;
+      // выделение или выбранная строка, задевшие блок, — состояние всего блока.
+      const blockCols: readonly [number, number] = span ?? [colInd, colInd];
+      const blockRows: readonly [number, number] = spanRows ?? [rowInd, rowInd];
+      const isBlock = !!span || !!spanRows;
+      if (isBlock) {
+        const inBlockCols = (c: number) => c >= blockCols[0] && c <= blockCols[1];
+        const inBlockRows = (r: number) => r >= blockRows[0] && r <= blockRows[1];
+        cellInfo.hovered = {
+          cellHover:
+            !!hoveredPosition &&
+            inBlockCols(hoveredPosition.colInd) &&
+            inBlockRows(hoveredPosition.rowInd),
+          rowHover: !!hoveredPosition && inBlockRows(hoveredPosition.rowInd),
+        };
+        cellInfo.active = {
+          cellActive: rangeHasAny(blockRows[0], blockRows[1], (r) =>
+            rangeHasAny(blockCols[0], blockCols[1], (c) =>
+              selectionVisualState.isActiveDataCell(c, r),
+            ),
+          ),
+          rowActive: rangeHasAny(
+            blockRows[0],
+            blockRows[1],
+            selectionVisualState.isActiveRow,
+          ),
+        };
+      }
+      // Выбранная строка (highlightActiveType='row'), проходящая через ячейку
+      // или блок.
+      const blockActiveRow =
+        activeRow !== undefined &&
+        activeRow >= blockRows[0] &&
+        activeRow <= blockRows[1]
+          ? activeRow
+          : undefined;
       // Только для ячеек внутри блока: spanAlign на одиночной ячейке переключил бы
       // её в форке на путь отрисовки для объединённых ячеек.
-      const spanAlign =
+      const configuredSpanAlign =
         (span || spanRows) && spanAlignConfig
           ? typeof spanAlignConfig === 'function'
             ? spanAlignConfig(cellInfo)
             : spanAlignConfig
           : undefined;
+      // Подпись многострочного блока по умолчанию по верхнему краю и прилипает
+      // к верху видимой части (ответ дизайнера от 27.10.2026, п. 6).
+      const spanAlign =
+        spanRows && spanRows[0] !== spanRows[1]
+          ? { vertical: 'top' as const, ...configuredSpanAlign }
+          : configuredSpanAlign;
 
       const cellIsEditable = (() => {
         if (!editable) {
@@ -789,9 +867,13 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       // Состояния ячейки со своим цветом — см. theming/cell-fill-override.ts.
       // rowActive — выбранная строка (highlightActiveType='row'): цветная
       // ячейка в ней показывает свой hover, под курсором — hover2.
+      // Под курсором, если строки под курсором проходят через ячейку или блок.
       const fillContext = {
-        rowHover: isRowHoverEnabled && cellInfo.hovered.rowHover,
-        rowActive: rowInd === activeRow,
+        rowHover:
+          activeHoverRows !== undefined &&
+          activeHoverRows.from <= blockRows[1] &&
+          activeHoverRows.to >= blockRows[0],
+        rowActive: blockActiveRow !== undefined,
       };
       const fillOverride = cellIsEditable
         ? resolveCellFillOverride(getEditableCellFillStates(theme), fillContext)
@@ -802,6 +884,26 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
             fillContext,
           )
         : undefined;
+
+      // Фон блока по строкам, проходящим через него (выбранная, отмеченная
+      // чекбоксом, под курсором). У ячейки со своим цветом состояния уже
+      // учтены в fillOverride. Свой bgCell у блока отключает в гриде
+      // построчные полосы фона внутри блока.
+      const blockRowOverride =
+        isBlock && !fillOverride
+          ? resolveBlockRowOverride(theme, {
+              rowHover: fillContext.rowHover,
+              activeRow: blockActiveRow,
+              checkboxRow: rangeHasAny(
+                blockRows[0],
+                blockRows[1],
+                (r) => checkboxSelectedRowIndexes?.has(r) ?? false,
+              ),
+              activeRowChecked:
+                blockActiveRow !== undefined &&
+                (checkboxSelectedRowIndexes?.has(blockActiveRow) ?? false),
+            })
+          : undefined;
 
       // Кликнутая ячейка на выбранной строке: показываем только рамку, фон
       // остаётся как у строки (правило дизайнера).
@@ -814,21 +916,25 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       const soloActiveCellOverride =
         fillContext.rowActive &&
         soloDataCell !== undefined &&
-        soloDataCell[0] === colInd &&
-        soloDataCell[1] === rowInd
+        soloDataCell[0] >= blockCols[0] &&
+        soloDataCell[0] <= blockCols[1] &&
+        soloDataCell[1] >= blockRows[0] &&
+        soloDataCell[1] <= blockRows[1]
           ? {
               accentLight: fillOverride
                 ? fillOverride.bgCell
                 : resolveActiveRowBg(theme, {
                     rowHover: fillContext.rowHover,
                     checkboxChecked:
-                      checkboxSelectedRowIndexes?.has(rowInd) ?? false,
+                      blockActiveRow !== undefined &&
+                      (checkboxSelectedRowIndexes?.has(blockActiveRow) ?? false),
                   }),
             }
           : undefined;
 
       const themeOverride = mergeThemeOverrides(
         columnThemeOverrideResult,
+        blockRowOverride,
         fillOverride,
         soloActiveCellOverride
       );
@@ -903,6 +1009,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       theme,
       activeTheme,
       isRowHoverEnabled,
+      activeHoverRows,
       activeRow,
       checkboxSelectedRowIndexes,
       selectionVisualState,
@@ -1487,13 +1594,19 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
 
   const getRowThemeOverride = useMemo((): GlideProps['getRowThemeOverride'] => {
     const hasSelectedRows = !!checkboxSelectedRowIndexes?.size;
-    const hoveredRow = isRowHoverEnabled ? hoverRow : undefined;
+    const hoverFrom = activeHoverRows?.from;
+    const hoverTo = activeHoverRows?.to;
+    const isHoveredRow = (rowInd: number) =>
+      hoverFrom !== undefined &&
+      hoverTo !== undefined &&
+      rowInd >= hoverFrom &&
+      rowInd <= hoverTo;
 
     if (
       !summaryRowsLength &&
       !hasSelectedRows &&
       !isZebra &&
-      hoveredRow === undefined &&
+      activeHoverRows === undefined &&
       activeRow === undefined
     ) {
       return undefined;
@@ -1518,7 +1631,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       // accentLight нужен на случай, когда выделение мышью заходит на эту
       // строку: там ячейки красятся как выделение отмеченной строки.
       if (rowInd === activeRow) {
-        const hovered = rowInd === hoveredRow;
+        const hovered = isHoveredRow(rowInd);
         return {
           bgCell: resolveActiveRowBg(theme, {
             rowHover: hovered,
@@ -1535,7 +1648,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       // обычный серый фон строки под курсором к ней не применяется.
       // accentLight — цвет её ячеек, когда они попадают в выделение.
       if (checkboxSelectedRowIndexes?.has(rowInd)) {
-        const hovered = rowInd === hoveredRow;
+        const hovered = isHoveredRow(rowInd);
         return {
           bgCell: hovered
             ? theme.bgSelectedRowHovered
@@ -1551,7 +1664,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       // accentLight — цвет её ячеек в выделении (считается от цвета зебры).
       // Отмеченная и выбранная строки выше по приоритету и обработаны раньше.
       if (isZebra && rowInd % 2 === 0 && rowInd < dataRowsLength) {
-        const hovered = rowInd === hoveredRow;
+        const hovered = isHoveredRow(rowInd);
         return {
           bgCell: hovered ? theme.bgZebraRowHovered : theme.bgZebraRow,
           accentLight: hovered
@@ -1565,7 +1678,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       // (на ступень темнее обычного выделения). Итоговые строки hover не
       // получают: их ячейки красятся сами, а фон строки залил бы серым
       // пустое место справа от колонок.
-      if (rowInd === hoveredRow && rowInd < dataRowsLength) {
+      if (isHoveredRow(rowInd) && rowInd < dataRowsLength) {
         return { bgCell: hoverBg, accentLight: theme.selectionActiveHoveredBg };
       }
 
@@ -1588,7 +1701,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     isRowHoverEnabled,
     isZebra,
     rows.length,
-    hoverRow,
+    activeHoverRows,
     activeRow,
   ]);
 
@@ -1627,7 +1740,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     totalRows: rows.length + summaryRowsLength,
     columnsCount: columnsLast.length,
     isRowHoverEnabled,
-    hoverRow,
+    hoverRows,
     dataRowsCount: rows.length,
     serviceZoneFollowsRow: appearanceVariant === 'clean',
   });
