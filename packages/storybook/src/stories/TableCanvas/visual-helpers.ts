@@ -13,11 +13,21 @@
  * Колонку нумерации и угол select-all реф адресовать не умеет — для них
  * всегда раскладка.
  */
-import { fireEvent, waitFor } from '@storybook/test';
+import { expect, fireEvent, waitFor, within } from '@storybook/test';
 import type { DataEditorRef } from '@ui-kit/components/TableCanvas/TableGlideInstance/type';
 import type { RefObject } from 'react';
 
 export type Point = { x: number; y: number };
+
+/** Ждём итоговое состояние асинхронного примера, чтобы не снять временный экран загрузки. */
+export const waitForCanvasState =
+  (title: string) =>
+  async ({ canvasElement }: { canvasElement: HTMLElement }) => {
+    await waitFor(
+      () => expect(within(canvasElement).getByText(title)).toBeVisible(),
+      { timeout: 10000 },
+    );
+  };
 
 export type Mods = { ctrlKey?: boolean; shiftKey?: boolean; metaKey?: boolean };
 
@@ -71,14 +81,15 @@ const refCenter = (
 };
 
 /**
- * Дать grid'у смериться, чтобы ref-getBounds стал конечным. Не падаем, если
- * так и не смерился — сработает fallback на раскладку.
+ * Дождаться реальной геометрии грида; при ошибке не кликать по выдуманным координатам.
  */
 export const gridReady = async (ref: RefObject<DataEditorRef>) => {
-  await settle();
-  await waitFor(() => refCenter(ref, 0, 0) !== undefined, {
-    timeout: 1500,
-  }).catch(() => undefined);
+  await waitFor(
+    () => {
+      if (!refCenter(ref, 0, 0)) throw new Error('Grid bounds are not ready');
+    },
+    { timeout: 5000 },
+  );
 };
 
 /** Точки взаимодействия грида: ячейки/шапки ref-first, сервис-зона — раскладка. */

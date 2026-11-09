@@ -10,6 +10,96 @@ import {
   HeightCalculationExample,
 } from './TableCanvas.bottomSheet.layout-fixtures';
 
+// Проверяем промежуточную геометрию перехода в заданных точках его шкалы времени.
+// Скорость машины не должна определять, какие кадры успеет увидеть проверка.
+async function verifyHeightAnimation(
+  element: HTMLElement,
+  minimum: number,
+  maximum: number,
+  options: {
+    start: () => Promise<void>;
+    direction?: 'opening' | 'closing';
+    progress?: number[];
+    finish?: boolean;
+    onFrame?: (progress: number) => void;
+  },
+) {
+  // Временно растягиваем переход, чтобы успеть поставить его на паузу.
+  // На загруженной машине даже transitionrun может прийти после короткого перехода.
+  // Эти 60 секунд не ожидаются: ниже тест сам задаёт currentTime и завершает переход.
+  const style = document.createElement('style');
+  element.setAttribute('data-visual-animation', '');
+  style.textContent =
+    '[data-visual-animation], [data-visual-animation] * { transition-duration: 60s !important; }';
+  document.head.appendChild(style);
+  element.getBoundingClientRect(); // Применяем исходные стили до изменения состояния.
+  try {
+    await new Promise<void>((resolve) => {
+      requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+    });
+    await options.start();
+    let animations: Animation[] = [];
+    await waitFor(
+      () => {
+        animations = element
+          .getAnimations()
+          .filter(
+            (animation) =>
+              (animation as CSSTransition).transitionProperty === 'height',
+          );
+        expect(animations.length).toBeGreaterThan(0);
+      },
+      { interval: 16 },
+    );
+    // Останавливаем переходы потомков вместе: пагинация и рабочая область
+    // должны соответствовать одному и тому же моменту анимации.
+    animations = element
+      .getAnimations({ subtree: true })
+      .filter(
+        (animation) =>
+          typeof (animation as CSSTransition).transitionProperty === 'string',
+      );
+    animations.forEach((animation) => animation.pause());
+    const heights: number[] = [];
+    await (options.progress ?? [0.1, 0.5, 0.9]).reduce(
+      async (previous, progress) => {
+        await previous;
+        animations.forEach((animation) => {
+          animation.currentTime =
+            Number(animation.effect?.getTiming().duration) * progress;
+        });
+        await new Promise<void>((resolve) => {
+          requestAnimationFrame(() => resolve());
+        });
+        const { height } = element.getBoundingClientRect();
+        expect(height).toBeGreaterThan(minimum + 0.1);
+        expect(height).toBeLessThan(maximum - 0.1);
+        heights.push(height);
+        options.onFrame?.(progress);
+      },
+      Promise.resolve(),
+    );
+    if (options.direction) {
+      heights.slice(1).forEach((height, index) => {
+        const previousHeight = heights[index];
+        if (previousHeight === undefined)
+          throw new Error('Missing animation frame');
+        if (options.direction === 'opening') {
+          expect(height).toBeGreaterThan(previousHeight);
+        } else {
+          expect(height).toBeLessThan(previousHeight);
+        }
+      });
+    }
+    if (options.finish !== false) {
+      animations.forEach((animation) => animation.finish());
+    }
+  } finally {
+    element.removeAttribute('data-visual-animation');
+    style.remove();
+  }
+}
+
 const clipboardTableRef = React.createRef<DataEditorRef>();
 
 const meta: Meta = {
@@ -36,19 +126,13 @@ export const DynamicBottomSheet: StoryObj = {
       expect(Math.round(sheet.getBoundingClientRect().height)).toBe(32),
     );
     const initialHeight = viewport.getBoundingClientRect().height;
-    await userEvent.click(canvas.getByRole('button', { name: 'Открыть лог' }));
-    const intermediateHeights: number[] = [];
-    await waitFor(
-      () => {
-        const currentHeight = sheet.getBoundingClientRect().height;
-        intermediateHeights.push(currentHeight);
-        expect(Math.round(root.getBoundingClientRect().height)).toBe(620);
-        expect(Math.round(currentHeight)).toBe(220);
-      },
-      { interval: 16 },
-    );
-    expect(intermediateHeights.some((value) => value > 32 && value < 219)).toBe(
-      true,
+    await verifyHeightAnimation(sheet, 32, 220, {
+      start: () =>
+        userEvent.click(canvas.getByRole('button', { name: 'Открыть лог' })),
+      direction: 'opening',
+    });
+    await waitFor(() =>
+      expect(Math.round(sheet.getBoundingClientRect().height)).toBe(220),
     );
     expect(Math.round(root.getBoundingClientRect().height)).toBe(620);
     expect(
@@ -128,75 +212,6 @@ export const DynamicBottomSheet: StoryObj = {
   },
 };
 
-const verifyHeightAnimation = async (
-  element: HTMLElement,
-  minimum: number,
-  maximum: number,
-  options: {
-    direction?: 'opening' | 'closing';
-    progress?: number[];
-    finish?: boolean;
-    onFrame?: (progress: number) => void;
-  } = {},
-) => {
-  let animations: Animation[] = [];
-  await waitFor(
-    () => {
-      animations = element
-        .getAnimations()
-        .filter(
-          (animation) =>
-            (animation as CSSTransition).transitionProperty === 'height',
-        );
-      expect(animations.length).toBeGreaterThan(0);
-    },
-    { interval: 16 },
-  );
-  // Freeze descendants together so pagination and workspace use the same frame.
-  animations = element
-    .getAnimations({ subtree: true })
-    .filter((animation) =>
-      ['height', 'max-height', 'opacity'].includes(
-        (animation as CSSTransition).transitionProperty,
-      ),
-    );
-  animations.forEach((animation) => animation.pause());
-  const heights: number[] = [];
-  await (options.progress ?? [0.1, 0.5, 0.9]).reduce(
-    async (previous, progress) => {
-      await previous;
-      animations.forEach((animation) => {
-        animation.currentTime =
-          Number(animation.effect?.getTiming().duration) * progress;
-      });
-      await new Promise<void>((resolve) => {
-        requestAnimationFrame(() => resolve());
-      });
-      const { height } = element.getBoundingClientRect();
-      expect(height).toBeGreaterThan(minimum + 0.1);
-      expect(height).toBeLessThan(maximum - 0.1);
-      heights.push(height);
-      options.onFrame?.(progress);
-    },
-    Promise.resolve(),
-  );
-  if (options.direction) {
-    heights.slice(1).forEach((height, index) => {
-      const previousHeight = heights[index];
-      if (previousHeight === undefined)
-        throw new Error('Missing animation frame');
-      if (options.direction === 'opening') {
-        expect(height).toBeGreaterThan(previousHeight);
-      } else {
-        expect(height).toBeLessThan(previousHeight);
-      }
-    });
-  }
-  if (options.finish !== false) {
-    animations.forEach((animation) => animation.finish());
-  }
-};
-
 const verifyCollapsedLayout = async (
   canvasElement: HTMLElement,
   expandedHeight: number,
@@ -220,7 +235,7 @@ const verifyCollapsedLayout = async (
   const pagination = root.lastElementChild as HTMLElement;
   const paginationContent = pagination.firstElementChild;
   if (!paginationContent) throw new Error('Missing pagination content');
-  // The initial fallback is replaced with the observed inner border-box size.
+  // Начальный резервный размер заменяется измеренным размером внутреннего блока с рамкой.
   await waitFor(() => {
     expect(
       Math.abs(
@@ -262,8 +277,9 @@ const verifyCollapsedLayout = async (
     expect(paginationOpacity).toBeGreaterThan(0);
     expect(paginationOpacity).toBeLessThan(1);
   };
-  await userEvent.click(canvas.getByRole('button', { name: /^Collapse$/ }));
   await verifyHeightAnimation(root, collapsedHeight, expandedHeight, {
+    start: () =>
+      userEvent.click(canvas.getByRole('button', { name: /^Collapse$/ })),
     direction: 'closing',
     onFrame: () => verifyFrame(true),
   });
@@ -285,8 +301,9 @@ const verifyCollapsedLayout = async (
   sidebars.forEach((sidebar, index) => {
     expect(getComputedStyle(sidebar).backgroundColor).toBe(backgrounds[index]);
   });
-  await userEvent.click(canvas.getByRole('button', { name: /^Collapse$/ }));
   await verifyHeightAnimation(root, collapsedHeight, expandedHeight, {
+    start: () =>
+      userEvent.click(canvas.getByRole('button', { name: /^Collapse$/ })),
     direction: 'opening',
     onFrame: () => verifyFrame(false),
   });
@@ -299,7 +316,13 @@ const verifyCollapsedLayout = async (
 
 export const HeightCalculations: StoryObj = {
   name: 'Численные размеры контейнера, canvas и панелей',
-  parameters: { screenshot: { skip: true } },
+  parameters: {
+    screenshot: {
+      skip: true,
+      skipReason:
+        'Проверка численной геометрии и состояния; внешний вид покрыт соседними визуальными сценариями',
+    },
+  },
   render: () => <HeightCalculationExample />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -356,7 +379,13 @@ export const HeightCalculations: StoryObj = {
 
 export const AutoHeightContent: StoryObj = {
   name: 'Автоматическая высота и прокрутка содержимого',
-  parameters: { screenshot: { skip: true } },
+  parameters: {
+    screenshot: {
+      skip: true,
+      skipReason:
+        'Проверка численной геометрии и состояния; внешний вид покрыт соседними визуальными сценариями',
+    },
+  },
   render: () => <AutoHeightExample />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -406,8 +435,8 @@ export const AutoHeightContent: StoryObj = {
       );
     };
     const open = async (height: number) => {
-      await click('Открыть авто-панель');
       await verifyHeightAnimation(sheet, 32, height, {
+        start: () => click('Открыть авто-панель'),
         direction: 'opening',
         onFrame: () => verifyMountedBody(true),
       });
@@ -415,8 +444,8 @@ export const AutoHeightContent: StoryObj = {
       verifyMountedBody(true);
     };
     const close = async (height: number) => {
-      await click('Закрыть авто-панель');
       await verifyHeightAnimation(sheet, 32, height, {
+        start: () => click('Закрыть авто-панель'),
         direction: 'closing',
         onFrame: () => verifyMountedBody(false),
       });
@@ -464,15 +493,15 @@ export const AutoHeightContent: StoryObj = {
     await close(availableHeight);
     await click('Короткий журнал');
     const shortHeight = intrinsicHeight();
-    await click('Открыть авто-панель');
     await verifyHeightAnimation(sheet, 32, shortHeight, {
+      start: () => click('Открыть авто-панель'),
       progress: [0.35],
       finish: false,
       onFrame: () => verifyMountedBody(true),
     });
     const reversedHeight = sheet.getBoundingClientRect().height;
-    await click('Закрыть авто-панель');
     await verifyHeightAnimation(sheet, 32, reversedHeight, {
+      start: () => click('Закрыть авто-панель'),
       direction: 'closing',
       onFrame: () => verifyMountedBody(false),
     });
@@ -484,7 +513,13 @@ export const AutoHeightContent: StoryObj = {
 
 export const AutoHeightBounds: StoryObj = {
   name: 'Численные пределы автоматической высоты',
-  parameters: { screenshot: { skip: true } },
+  parameters: {
+    screenshot: {
+      skip: true,
+      skipReason:
+        'Проверка численной геометрии и состояния; внешний вид покрыт соседними визуальными сценариями',
+    },
+  },
   render: () => <AutoHeightBoundsExample />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -517,7 +552,7 @@ export const AutoHeightBounds: StoryObj = {
     await verify(50, 350);
     await click('Максимум 10000');
     await click('Контент 1000');
-    // Fixed height remains 50 regardless of content size.
+    // Фиксированная высота остаётся равной 50 независимо от размера содержимого.
     await verify(50, 350);
     await click('Автоматическая');
     await verify(280, 120);
@@ -740,7 +775,13 @@ export const BothSidebarsAndFullscreen: StoryObj = {
 
 export const MassActionsBothSidebars: StoryObj = {
   name: 'Массовые действия при закрытии обеих панелей',
-  parameters: { screenshot: { skip: true } },
+  parameters: {
+    screenshot: {
+      skip: true,
+      skipReason:
+        'Проверка численной геометрии и состояния; внешний вид покрыт соседними визуальными сценариями',
+    },
+  },
   render: () => <AllFeaturesExample />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -754,7 +795,7 @@ export const MassActionsBothSidebars: StoryObj = {
       '[data-table-sidebar="right"]',
     );
     if (!grid || !left || !right) throw new Error('Missing sidebar layout');
-    // Identify the actual panel by its layout, excluding offscreen measurements.
+    // Находим отображаемую панель по её положению, исключая скрытые измерительные копии.
     const getMassActions = () => {
       const panel = Array.from(grid.querySelectorAll<HTMLElement>('div')).find(
         (element) => {
@@ -832,7 +873,7 @@ export const ClipboardBetweenPages: StoryObj = {
         fireEvent.pointerDown(getGrid(), { ...point, button: 0, buttons: 1 });
         fireEvent.pointerUp(getGrid(), { ...point, button: 0, buttons: 0 });
       };
-      // Two service columns precede ID; select Task and Priority of two rows.
+      // Перед ID идут две служебные колонки; выделяем «Задача» и «Приоритет» двух строк.
       clickCell(3, 0);
       await new Promise<void>((resolve) => {
         window.setTimeout(resolve, 120);

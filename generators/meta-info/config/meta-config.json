@@ -407,6 +407,7 @@
         "CanvasElements/CanvasIconButton",
         "CanvasElements/CanvasImage",
         "CanvasElements/CanvasLink",
+        "CanvasElements/CanvasMark",
         "CanvasElements/CanvasSkeleton",
         "CanvasElements/CanvasText",
         "TableCanvas.CellsMerging",
@@ -419,6 +420,7 @@
         "TableCanvas.CopyPasteFill",
         "TableCanvas.CustomRender",
         "TableCanvas.DomMetadata",
+        "TableCanvas.Dropdown",
         "TableCanvas.Editing",
         "TableCanvas.EmptyState",
         "TableCanvas.ErrorState",
@@ -435,6 +437,7 @@
         "TableCanvas.KeyText",
         "TableCanvas.Notifications",
         "TableCanvas.Pagination",
+        "TableCanvas.Popover",
         "TableCanvas.CellPreview",
         "TableCanvas.RowHeight",
         "TableCanvas.RowMarkers",
@@ -1553,6 +1556,17 @@
         "гиперссылка",
         "переход по клику",
         "canvas hyperlink"
+      ]
+    },
+    {
+      "name": "CanvasMark",
+      "type": "standalone",
+      "category": "Локальные компоненты",
+      "description": "Подсветка фрагмента текста внутри Canvas.Text и Canvas.Link: пластина на каждой строке переноса",
+      "keywords": [
+        "подсветка фрагмента",
+        "выделение совпадения поиска",
+        "text highlight"
       ]
     },
     {

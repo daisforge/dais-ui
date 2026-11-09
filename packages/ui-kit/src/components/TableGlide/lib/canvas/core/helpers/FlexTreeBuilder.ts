@@ -183,6 +183,7 @@ export class FlexTreeBuilder {
     parentFlexBox: FlexBox
   ): void {
     const childBox = new FlexBox(0, 0, child.flexOptions);
+    childBox.sizedByContent = child.isSizedByContent();
     childBox.size.width = child.rect.width;
     childBox.size.height = child.rect.height;
 

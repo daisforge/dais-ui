@@ -7,7 +7,10 @@ import { DrawBatcher } from '../../core/DrawBatcher';
 import { invalidateOverflowTextCache } from '../../utils/textOverflow';
 import { CanvasBadge, type CanvasBadgeOptions } from '../CanvasBadge';
 
-vi.mock('../../cells/buttons', () => ({ drawIcon: vi.fn() }));
+vi.mock('../../cells/buttons', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('../../cells/buttons')>()),
+  drawIcon: vi.fn(),
+}));
 
 const ctx = {
   font: '',
@@ -28,9 +31,10 @@ function renderBadge(
   container.performLayout(ctx);
   const batcher = new DrawBatcher();
   const fillText = vi.spyOn(batcher, 'fillText');
+  const fillRect = vi.spyOn(batcher, 'fillRect');
   const clippedText = vi.spyOn(batcher, 'fillTextClipped');
   badge.onPaint(batcher, ctx);
-  return { badge, clippedText, fillText, batcher, container };
+  return { badge, clippedText, fillText, fillRect, batcher, container };
 }
 
 beforeEach(() => {
@@ -75,6 +79,24 @@ describe('CanvasBadge overflow', () => {
     const { clippedText, fillText } = renderBadge(32);
     expect(clippedText).not.toHaveBeenCalled();
     expect(fillText).not.toHaveBeenCalled();
+  });
+
+  it('подсвечивает только видимые символы перед многоточием', () => {
+    const { badge, clippedText, fillRect } = renderBadge(100, {
+      marks: [
+        { start: 4, end: 9, color: 'yellow' },
+        { start: 7, end: 11, color: 'red' },
+      ],
+    });
+    expect(clippedText.mock.calls[0]?.[0]).toBe('Long s…');
+    expect(fillRect).toHaveBeenCalledTimes(1);
+    expect(fillRect).toHaveBeenCalledWith(
+      badge.rect.x + 6 + 40,
+      expect.any(Number),
+      20,
+      expect.any(Number),
+      'yellow',
+    );
   });
 
   it('возвращает полный текст после расширения колонки', () => {

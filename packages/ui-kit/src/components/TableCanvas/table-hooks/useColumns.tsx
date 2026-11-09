@@ -16,7 +16,7 @@ import {
   calculateFilterPopoverPositionX,
   calculateFilterPopoverPositionY,
   TablePopoverContextValue,
-} from '../feature-popover-table';
+} from '../feature-overlays';
 import { useReorderDragable } from '../feature-reorder-columns/useReorderDragable';
 import {
   getDetailPanelColSpanFunc,
@@ -58,6 +58,7 @@ import type { MergedCellsAlign } from '../types/merged-cells.type';
 import { TableConfig } from '../types/table-config.type';
 import { calculateMinColumnWidth } from '../utils';
 import { renderFilterSortHeader } from '../widgets/filter-sort-header';
+import { createLazyRowSpan } from './createLazyRowSpan';
 import { createMergeByValueRowSpan } from './createMergeByValueRowSpan';
 import { createMergedRegionsResolver } from './createMergedRegionsResolver';
 import { resolveMergedView } from './resolveMergedView';
@@ -128,12 +129,16 @@ export const useColumns = <
   ) => 'isServiceColumn' in column && column.isServiceColumn === true;
 
   // -------------- onOpenFilter callback -----------------
+  // Берём только open, он не меняется. Весь контекст меняется при каждом
+  // открытии окна, а от onOpenFilter зависят колонки: их смена перерисовала
+  // бы всю таблицу.
+  const { open: openTablePopover } = tablePopoverValue;
   const onOpenFilter = useCallback(
     (
       columnConfig: ColumnConfig<RowType, SummaryRowType>,
       event: CanvasEvent,
     ) => {
-      tablePopoverValue.open({
+      openTablePopover({
         // Формируем координату через координату ячейки + смещение таргета (иконка фильтра)
         position: {
           x: calculateFilterPopoverPositionX(event),
@@ -144,10 +149,10 @@ export const useColumns = <
           columnConfig,
         },
         // Передаем ID колонки для отслеживания ресайза
-        columnId: columnConfig.key,
+        sourceKey: columnConfig.key,
       });
     },
-    [tablePopoverValue],
+    [openTablePopover],
   );
 
   const tableConfigFiltering = !!tableConfig.filtering;
@@ -547,7 +552,7 @@ export const useColumns = <
         : tableConfig.resizableColumn;
 
       // Объединение ячеек тела задаётся только через tableConfig.mergeCells.
-      // Приоритет: сначала mergedCellsRegions, потом mergeByCellValues. Задавать
+      // Приоритет: mergedCellsRegions, затем mergeByCellValues, затем lazyRowSpan. Задавать
       // colSpan/rowSpan прямо на колонке внешний API больше не даёт (см.
       // DefaultOmittedKeys). Resolver вешаем на все колонки региона: какая из них
       // верхняя-левая ячейка блока, он определяет во время отрисовки.
@@ -561,7 +566,7 @@ export const useColumns = <
         rowSpan = regionsResolver.rowSpan(el.key);
       } else {
         // colSpan задаёт только служебная detail-panel (снаружи columnColSpan
-        // нет); rowSpan берётся только из mergeByCellValues.
+        // нет); rowSpan — из mergeByCellValues, иначе из lazyRowSpan.
         colSpan = tableConfigRowDetailBoolean
           ? getDetailPanelColSpanFunc<RowType, SummaryRowType>({
               indexZeroColKey,
@@ -570,9 +575,12 @@ export const useColumns = <
               columnColSpan: undefined,
             })
           : undefined;
-        rowSpan = mergeByValueOf
-          ? createMergeByValueRowSpan(mergeByValueOf, rowsRef)
-          : undefined;
+        const lazyRowSpan = tableConfig.mergeCells?.lazyRowSpan;
+        if (mergeByValueOf) {
+          rowSpan = createMergeByValueRowSpan(mergeByValueOf, rowsRef);
+        } else if (lazyRowSpan && !getColumnIsService(el)) {
+          rowSpan = createLazyRowSpan(lazyRowSpan, el.key, rowsRef);
+        }
       }
 
       // Выравнивание контента в блоках. Приоритет: сначала регион, потом колонка,
@@ -675,6 +683,7 @@ export const useColumns = <
     // сюда намеренно не входит — это стабильная функция (см. JSDoc в table-config).
     tableConfig.mergeCells?.mergeByCellValues,
     tableConfig.mergeCells?.mergedCellsRegions,
+    tableConfig.mergeCells?.lazyRowSpan,
 
     selectingRowsIsActive,
     rowErrorsIsActive,

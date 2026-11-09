@@ -32,8 +32,11 @@ useNativeGridSelection ──selection──┬─► useSelectionGeometry ─�
 
 ### `useNativeGridSelection`
 Стор нативного glide-выделения ячеек. Держит `GridSelection` (internal в
-uncontrolled или отдаёт наружу в controlled) и всегда дублирует изменение в
-`onSelectionEmit` (канал copy/paste). Выводит режим `rangeSelect` из `selectionMode`.
+uncontrolled или отдаёт наружу в controlled) и на каждое изменение ровно один раз
+зовёт `onSelectionEmit` (канал copy/paste и `cellsSelection.onChange`).
+`handleGridSelectionChange(next, emitted?)`: `emitted` — итоговое выделение, когда оно
+не совпадает с нативным (несмежные Ctrl-колонки/строки: нативное пустое, наружу —
+набор). Выводит режим `rangeSelect` из `selectionMode`.
 Возвращает: `selection`, `handleGridSelectionChange`, `handleSelectionCleared`,
 `rangeSelect`.
 

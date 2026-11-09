@@ -1,0 +1,31 @@
+{
+  "name": "Carousel",
+  "package": "sdds-finai",
+  "category": "components",
+  "summary": "Carousel",
+  "api": {
+    "props": []
+  },
+  "examples": [
+    {
+      "title": "Example 1",
+      "snippet": "export interface CarouselNewProps extends HTMLAttributes<HTMLDivElement> {\n    /**\n     * Номер слайда.\n     * Controlled-режим.\n     */\n    index?: number;\n    /**\n     * Callback для изменения слайда;\n     */\n    onChangeIndex?: (index: number) => void;\n    /**\n     * Номер слайда по-умолчанию.\n     * Только при uncontrolled-режиме.\n     * @default 0\n     */\n    defaultIndex?: number;\n    /**\n     * Центрирование активного элемента при скролле.\n     * @default start\n     */\n    scrollAlign?: ScrollAlign;\n    /**\n     * Опции управления пагинацией.\n     */\n    paginationOptions?: {\n        /**\n         * Включение/выключение пагинации.\n         * @default false\n         */\n        disabled?: boolean;\n        /**\n         * Количество видимых точек пагинации.\n         * @default 10\n         */\n        visibleDots?: number;\n        /**\n         * Центрирование активной точки.\n         * @default false\n         */\n        centered?: boolean;\n    };\n    /**\n     * Включение/выключение стрелок управления слайдами.\n     * @default false\n     */\n    controlArrowsDisabled?: boolean;\n    /**\n     * Отступ между слайдами.\n     * @default 20px\n     */\n    gap?: CSSProperties['gap'];\n    /**\n     * Зацикливание карусели.\n     * При включении после последнего слайда идет первый, и наоборот.\n     * @default false\n     */\n    loop?: boolean;\n    /**\n     * Автоматическое пролистывание карусели.\n     * @default false\n     */\n    autoPlay?: boolean;\n    /**\n     * Интервал автоматического пролистывания в мс.\n     * @default 5000\n     */\n    autoPlayInterval?: number;\n    /**\n     * Включение свайпа/drag для touch- и pointer-устройств.\n     * @default false\n     */\n    swipeEnabled?: boolean;\n    /**\n     * Включение виртуализации слайдов.\n     * @default false\n     */\n    virtual?: boolean;\n    /**\n     * Размер контрола.\n     */\n    size?: string;\n    /**\n     * Вид контрола.\n     * @default default\n     */\n    view?: string;\n}"
+    },
+    {
+      "title": "Примеры Примеры",
+      "snippet": "import React from 'react';\nimport { Carousel } from '@salutejs/sdds-finai';\nimport styled from 'styled-components';\nexport function App() {\n    const StyledCard = styled.div`\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        border: 1px solid #d6d6d6;\n        border-radius: 12px;\n        width: 320px;\n        height: 180px;\n        background-color: #f4f5f7;\n        color: #1b1f23;\n        font-size: 20px;\n        font-weight: 600;\n    `;\n    const items = Array(10).fill(0).map((_, i) => `Слайд ${i + 1}`);\n    return (\n        <div style={{ display: 'block', width: '500px' }}>\n            <Carousel gap=\"16px\">\n                {items.map((item) => (\n                    <StyledCard key={item}>{item}</StyledCard>\n                ))}\n            </Carousel>\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Примеры Примеры",
+      "snippet": "import React from 'react';\nimport { Carousel } from '@salutejs/sdds-finai';\nimport styled from 'styled-components';\nexport function App() {\n    const StyledCard = styled.div`\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        border: 1px solid #d6d6d6;\n        border-radius: 12px;\n        width: 320px;\n        height: 180px;\n        background-color: #f4f5f7;\n        color: #1b1f23;\n        font-size: 20px;\n        font-weight: 600;\n    `;\n    const items = Array(10).fill(0).map((_, i) => `Слайд ${i + 1}`);\n    return (\n        <div style={{ display: 'block', width: '500px' }}>\n            <Carousel paginationOptions={{ visibleDots: 4, centered: true }} gap=\"16px\">\n                {items.map((item) => (\n                    <StyledCard key={item}>{item}</StyledCard>\n                ))}\n            </Carousel>\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Примеры Примеры",
+      "snippet": "import React from 'react';\nimport { Carousel } from '@salutejs/sdds-finai';\nimport styled from 'styled-components';\nexport function App() {\n    const StyledCard = styled.div`\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        border: 1px solid #d6d6d6;\n        border-radius: 12px;\n        width: 320px;\n        height: 180px;\n        background-color: #f4f5f7;\n        color: #1b1f23;\n        font-size: 20px;\n        font-weight: 600;\n    `;\n    const items = Array(10).fill(0).map((_, i) => `Слайд ${i + 1}`);\n    return (\n        <div style={{ display: 'block', width: '500px' }}>\n            <Carousel loop autoPlay autoPlayInterval={2500} gap=\"16px\">\n                {items.map((item) => (\n                    <StyledCard key={item}>{item}</StyledCard>\n                ))}\n            </Carousel>\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Примеры Примеры",
+      "snippet": "import React from 'react';\nimport { Carousel } from '@salutejs/sdds-finai';\nimport styled from 'styled-components';\nexport function App() {\n    const StyledCard = styled.div`\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        border: 1px solid #d6d6d6;\n        border-radius: 12px;\n        width: 320px;\n        height: 180px;\n        background-color: #f4f5f7;\n        color: #1b1f23;\n        font-size: 20px;\n        font-weight: 600;\n    `;\n    const items = Array(10).fill(0).map((_, i) => `Слайд ${i + 1}`);\n    return (\n        <div style={{ display: 'block', width: '500px' }}>\n            <Carousel swipeEnabled gap=\"16px\">\n                {items.map((item) => (\n                    <StyledCard key={item}>{item}</StyledCard>\n                ))}\n            </Carousel>\n        </div>\n    );\n}"
+    }
+  ]
+}

@@ -9,6 +9,7 @@ import {
 import DocStoryTemplate from '@df-storybook/templates/DocStoryTemplate.mdx';
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
 import type { Meta, StoryObj } from '@storybook/react';
+import { expect, within } from '@storybook/test';
 import { ModalDF } from '@ui-kit/components/ModalDF';
 import {
   autoFocusAndSelect,
@@ -249,11 +250,22 @@ export const Editing: Story = {
   },
 };
 
+const editingInModalDocs = storySourceDoc({ preCode, previewSource: 'shown' });
 export const EditingInModal: Story = {
-  ...storySourceDoc({
-    preCode,
-    previewSource: 'shown',
-  }),
+  ...editingInModalDocs,
+  parameters: {
+    ...('parameters' in editingInModalDocs
+      ? editingInModalDocs.parameters
+      : {}),
+    screenshot: { capture: 'page', keepState: true },
+  },
+  play: async ({ canvasElement }) => {
+    await expect(
+      await within(canvasElement.ownerDocument.body).findByTestId(
+        'editing-modal-content',
+      ),
+    ).toBeVisible();
+  },
   render: () => {
     const [rows, setRows] = useState(() => createRowsTree());
 
@@ -416,13 +428,13 @@ export const EditingInModal: Story = {
       }),
       [],
     );
-    const [modalOpened, setModalOpened] = useState(false);
+    const [modalOpened, setModalOpened] = useState(true);
 
     return (
       <ModalDF opened={modalOpened} onClose={() => setModalOpened(false)}>
         <ModalDF.Main>
           <ModalDF.Header />
-          <ModalDF.Content>
+          <ModalDF.Content data-testid="editing-modal-content">
             <Table
               tableConfig={{
                 containerStyle: { height: '700px', width: '700px' },

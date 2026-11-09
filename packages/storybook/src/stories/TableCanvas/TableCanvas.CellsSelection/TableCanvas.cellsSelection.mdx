@@ -24,7 +24,10 @@ import * as CellsSelectionStories from './TableCanvas.cellsSelection.stories';
 
 При `cellsSelection: { mode: 'multi-range-cell' }` можно выделить несколько прямоугольных
 диапазонов: тянем мышкой первый, затем **Ctrl/Cmd + клик/драг** докидываем
-остальные. Заливка и рамка — у всех выделенных.
+остальные. Заливка — у всех выделенных, рамка — только у последнего диапазона.
+Рамку у каждого диапазона включает `cellsSelection.outlineEachRange` (как в Google
+Sheets): диапазон, целиком поглощённый более поздним, не обводится, у соседних
+диапазонов на стыке остаётся общая линия.
 
 **Copy (Ctrl+C)** работает для разрозненного выбора, если все ячейки лежат:
 
@@ -88,7 +91,7 @@ copy/paste (**Ctrl+C / Ctrl+V**) по текущему выделению.
       enableRowSelection: false, // клик по нумерации не выделяет строку
     },
   }}
-/>;
+/>
 ```
 
 Оба флага по умолчанию `true`. Выделение ячеек/диапазона при этом продолжает
@@ -111,6 +114,11 @@ const gridSelectionState = useState<GridSelection>(EMPTY_SELECTION);
 Сброс: `setter({ current: undefined, rows: CompactSelection.empty(), columns: CompactSelection.empty() })`.
 Контролируется нативное выделение (ячейки/диапазон/смежные строки и колонки);
 несмежный Ctrl-выбор колонок/строк — внутренний (own-state), снаружи не задаётся.
+
+Итоговое выделение, включая несмежный Ctrl-выбор, приходит в `cellsSelection.onChange`
+(с `state` и без него). Индексы колонок в нём — в координатах грида: служебные колонки
+слева (нумерация `rowMarkers`, чекбоксы `selecting`) входят в счёт, поэтому колонка,
+`i`-я по порядку на экране, имеет индекс `i` + число служебных колонок.
 
 `CompactSelection` и тип `GridSelection` реэкспортируются из
 `@daisforge/ui/components/TableCanvas`.

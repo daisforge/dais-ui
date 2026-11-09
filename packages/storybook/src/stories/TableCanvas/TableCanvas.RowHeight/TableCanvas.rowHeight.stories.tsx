@@ -114,3 +114,405 @@ export const RowHeight: StoryObj = {
     );
   },
 };
+
+export const AutoRowHeight: StoryObj = {
+  ...storySourceDoc({
+    preCode,
+    previewSource: 'shown',
+  }),
+  name: 'Auto row height (перенос текста)',
+  render: () => {
+    const [rows] = useState(createRows);
+
+    const columnConfig = useMemo<readonly ColumnConfig<Row>[]>(
+      () => [
+        { key: 'id', name: 'id' },
+        { key: 'task', name: 'Title' },
+        {
+          key: 'loremIpsum',
+          name: 'Длинный текст',
+          width: 360,
+          renderCell: ({ row, theme }) => (
+            <Canvas.Container
+              alignItems="center"
+              padding={{ left: 8, right: 8 }}
+            >
+              <Canvas.Text font={theme.baseFontStyle} wordWrap>
+                {row.loremIpsum}
+              </Canvas.Text>
+            </Canvas.Container>
+          ),
+        },
+        {
+          key: 'short',
+          name: 'Без переноса',
+          width: 160,
+          renderCell: ({ row }) => row.task,
+        },
+      ],
+      [],
+    );
+
+    return (
+      <TableCanvas
+        tableConfig={{
+          containerStyle: { height: 700 },
+          rowHeight: 'auto',
+        }}
+        columnConfig={columnConfig}
+        rows={rows}
+      />
+    );
+  },
+};
+
+type TaskRow = {
+  id: string;
+  title: string;
+  description: string;
+  status: 'Новая' | 'В работе' | 'Готово';
+  tags: string[];
+};
+
+const STATUS_VIEW = {
+  Новая: 'default',
+  'В работе': 'accent',
+  Готово: 'positive',
+} as const;
+
+const TAGS = [
+  'дизайн',
+  'frontend',
+  'релиз',
+  'backend',
+  'аналитика',
+  'тестирование',
+];
+
+const createTaskRows = (): TaskRow[] =>
+  Array.from({ length: 60 }, (_, index) => ({
+    id: String(index + 1),
+    title: `Задача ${
+      index + 1
+    }: ${'согласовать макет и уточнить требования '.repeat((index % 3) + 1)}`,
+    description:
+      index % 4 === 0
+        ? 'Короткое описание'
+        : 'Подробное описание задачи: что нужно сделать, кого позвать на ревью и какие риски учесть до релиза.',
+    status: (['Новая', 'В работе', 'Готово'] as const)[index % 3]!,
+    tags: TAGS.slice(0, TAGS.length - (index % TAGS.length)),
+  }));
+
+export const FlexLayoutCell: StoryObj = {
+  ...storySourceDoc({
+    preCode,
+    previewSource: 'shown',
+  }),
+  name: 'Вёрстка ячейки на flex (кнопки, бейджи, перенос, wrap)',
+  render: () => {
+    const [rows] = useState(createTaskRows);
+
+    const columnConfig = useMemo<readonly ColumnConfig<TaskRow>[]>(
+      () => [
+        { key: 'id', name: '#', width: 56 },
+        {
+          key: 'title',
+          name: 'Задача',
+          width: 480,
+          renderCell: ({ row, theme }) => (
+            <Canvas.Container
+              direction="column"
+              justifyContent="center"
+              gap={6}
+              padding={{ left: 8, right: 8 }}
+              style={{ width: '100%' }}
+            >
+              <Canvas.Container
+                direction="row"
+                alignItems="center"
+                gap={8}
+                style={{ width: '100%' }}
+              >
+                <Canvas.Text
+                  font={theme.baseFontStyle}
+                  wordWrap
+                  style={{ flexGrow: 1, flexShrink: 1 }}
+                >
+                  {row.title}
+                </Canvas.Text>
+                <Canvas.Badge
+                  text={row.status}
+                  view={STATUS_VIEW[row.status]}
+                  size="s"
+                  style={{ flexShrink: 0 }}
+                />
+              </Canvas.Container>
+              <Canvas.Text
+                font={theme.baseFontStyle}
+                color={theme.textLight}
+                wordWrap
+              >
+                {row.description}
+              </Canvas.Text>
+              <Canvas.Container
+                direction="row"
+                alignItems="center"
+                gap={8}
+                style={{ width: '100%' }}
+              >
+                <Canvas.Container
+                  wrap="wrap"
+                  gap={6}
+                  style={{ flexGrow: 1, flexShrink: 1 }}
+                >
+                  {row.tags.map((tag) => (
+                    <Canvas.Badge key={tag} text={tag} view="light" size="xs" />
+                  ))}
+                </Canvas.Container>
+                <Canvas.Button
+                  view="accent"
+                  size="xs"
+                  style={{ flexShrink: 0 }}
+                  // eslint-disable-next-line no-console
+                  onClick={() => console.debug('open', row.id)}
+                >
+                  Открыть
+                </Canvas.Button>
+                <Canvas.Button
+                  view="secondary"
+                  size="xs"
+                  style={{ flexShrink: 0 }}
+                  // eslint-disable-next-line no-console
+                  onClick={() => console.debug('assign', row.id)}
+                >
+                  Назначить
+                </Canvas.Button>
+              </Canvas.Container>
+            </Canvas.Container>
+          ),
+        },
+        {
+          key: 'status',
+          name: 'Статус',
+          width: 120,
+          renderCell: ({ row }) => row.status,
+        },
+      ],
+      [],
+    );
+
+    return (
+      <TableCanvas
+        tableConfig={{
+          containerStyle: { height: 700 },
+          rowHeight: 'auto',
+        }}
+        columnConfig={columnConfig}
+        rows={rows}
+      />
+    );
+  },
+};
+
+type ReportRow = {
+  id: number;
+  direction: string;
+  division: string;
+  comment: string;
+  values: number[];
+};
+
+const REPORT_METRICS = 120;
+const DIRECTIONS = [
+  'Цифровизация',
+  'Стратегическое направление «Розничный бизнес»',
+  'Развитие корпоративного сегмента и работа с ключевыми клиентами',
+  'ИТ',
+];
+const DIVISIONS = [
+  'Центральный аппарат',
+  'Территориальный банк: Северо-Западный',
+  'Управление по работе с крупнейшими клиентами и холдингами',
+];
+
+const createReportRows = (): ReportRow[] =>
+  Array.from({ length: 5000 }, (_, id) => ({
+    id,
+    direction: DIRECTIONS[id % DIRECTIONS.length]!,
+    division: DIVISIONS[id % DIVISIONS.length]!,
+    comment:
+      id % 5 === 0
+        ? 'Плановое значение пересмотрено после квартального комитета, факт уточняется'
+        : '',
+    values: Array.from(
+      { length: REPORT_METRICS },
+      (__, index) => (id * 7919 + index * 104729) % 1_000_000,
+    ),
+  }));
+
+type ReportCellRender = NonNullable<ColumnConfig<ReportRow>['renderCell']>;
+
+/** Текст строки с переносом по словам */
+const wrappedText =
+  (key: 'direction' | 'division' | 'comment'): ReportCellRender =>
+  ({ row, theme }) =>
+    (
+      <Canvas.Container alignItems="center" padding={{ left: 8, right: 8 }}>
+        <Canvas.Text font={theme.baseFontStyle} wordWrap>
+          {row[key]}
+        </Canvas.Text>
+      </Canvas.Container>
+    );
+
+export const AutoRowHeightWideTable: StoryObj = {
+  ...storySourceDoc({
+    preCode,
+    previewSource: 'shown',
+  }),
+  name: 'Auto row height: широкая таблица (120 показателей)',
+  render: () => {
+    const [rows] = useState(createReportRows);
+
+    const columnConfig = useMemo<readonly ColumnConfig<ReportRow>[]>(
+      () => [
+        {
+          key: 'direction',
+          name: 'Направление',
+          width: 220,
+          renderCell: wrappedText('direction'),
+        },
+        {
+          key: 'division',
+          name: 'Подразделение',
+          width: 200,
+          renderCell: wrappedText('division'),
+        },
+        ...Array.from(
+          { length: REPORT_METRICS },
+          (_, index): ColumnConfig<ReportRow> => ({
+            key: `metric${index}`,
+            name: `Показатель ${index + 1}`,
+            width: 120,
+            renderCell: ({ row }) => (
+              <Canvas.Container
+                alignItems="center"
+                justifyContent="flex-end"
+                padding={{ left: 8, right: 8 }}
+              >
+                <Canvas.Text>
+                  {row.values[index]!.toLocaleString('ru-RU')}
+                </Canvas.Text>
+              </Canvas.Container>
+            ),
+          }),
+        ),
+        // Колонка с переносом в конце таблицы: строки дорастут, когда до неё прокрутят
+        {
+          key: 'comment',
+          name: 'Комментарий',
+          width: 240,
+          renderCell: wrappedText('comment'),
+        },
+      ],
+      [],
+    );
+
+    return (
+      <TableCanvas
+        tableConfig={{
+          containerStyle: { height: 700 },
+          rowHeight: 'auto',
+        }}
+        columnConfig={columnConfig}
+        rows={rows}
+      />
+    );
+  },
+};
+
+type HugeRow = { id: number };
+
+const HUGE_ROWS = 1_000_000;
+const HUGE_COLUMNS = 1000;
+const HUGE_TEXTS = [
+  'Коротко',
+  'Плановое значение пересмотрено',
+  'Плановое значение пересмотрено после квартального комитета, факт уточняется',
+  'Плановое значение пересмотрено после квартального комитета, факт уточняется у подразделения и будет обновлён в следующем отчётном периоде',
+];
+
+const createHugeRows = (): HugeRow[] =>
+  Array.from({ length: HUGE_ROWS }, (_, index) => ({ id: index + 1 }));
+
+const hugeRowHeightCode = `
+// Строка — только id, значения ячеек считаются при отрисовке
+const rows = Array.from({ length: 1_000_000 }, (_, index) => ({ id: index + 1 }));
+
+const columnConfig = [
+  { key: 'id', name: '№', width: 100 },
+  ...Array.from({ length: 999 }, (_, index) => ({
+    key: \`c\${index}\`,
+    name: \`Колонка \${index + 1}\`,
+    width: index % 10 === 0 ? 240 : 110,
+    renderCell: ({ row, theme }) => (
+      <Canvas.Container alignItems="center" padding={{ left: 8, right: 8 }}>
+        {index % 10 === 0 ? (
+          <Canvas.Text font={theme.baseFontStyle} wordWrap>
+            {TEXTS[(row.id + index) % TEXTS.length]}
+          </Canvas.Text>
+        ) : (
+          <Canvas.Text>{(row.id * 31 + index) % 100_000}</Canvas.Text>
+        )}
+      </Canvas.Container>
+    ),
+  })),
+];
+
+<TableCanvas tableConfig={{ rowHeight: 'auto' }} columnConfig={columnConfig} rows={rows} />
+`;
+
+/** Миллион строк и тысяча колонок: меряются только видимые ячейки */
+export const AutoRowHeightHuge: StoryObj = {
+  ...storySourceDoc({ code: hugeRowHeightCode, previewSource: 'shown' }),
+  name: 'Auto row height: 1 000 000 строк × 1000 колонок',
+  render: () => {
+    const [rows] = useState(createHugeRows);
+
+    const columnConfig = useMemo<readonly ColumnConfig<HugeRow>[]>(
+      () => [
+        { key: 'id', name: '№', width: 100 },
+        ...Array.from(
+          { length: HUGE_COLUMNS - 1 },
+          (_, index): ColumnConfig<HugeRow> => ({
+            key: `c${index}`,
+            name: `Колонка ${index + 1}`,
+            width: index % 10 === 0 ? 240 : 110,
+            renderCell: ({ row, theme }) => (
+              <Canvas.Container
+                alignItems="center"
+                padding={{ left: 8, right: 8 }}
+              >
+                {index % 10 === 0 ? (
+                  <Canvas.Text font={theme.baseFontStyle} wordWrap>
+                    {HUGE_TEXTS[(row.id + index) % HUGE_TEXTS.length]}
+                  </Canvas.Text>
+                ) : (
+                  <Canvas.Text>{(row.id * 31 + index) % 100_000}</Canvas.Text>
+                )}
+              </Canvas.Container>
+            ),
+          }),
+        ),
+      ],
+      [],
+    );
+
+    return (
+      <TableCanvas
+        tableConfig={{ containerStyle: { height: 700 }, rowHeight: 'auto' }}
+        columnConfig={columnConfig}
+        rows={rows}
+      />
+    );
+  },
+};

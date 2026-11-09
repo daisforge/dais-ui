@@ -27,7 +27,11 @@ const meta: Meta = {
     docs: {
       page: DocStoryTemplate,
     },
-    screenshot: { skip: true },
+    screenshot: {
+      skip: true,
+      skipReason:
+        'Пробел покрытия: у DOM ColumnsControl нет PNG-эталона; Canvas проверяет другой компонент',
+    },
   },
 };
 
