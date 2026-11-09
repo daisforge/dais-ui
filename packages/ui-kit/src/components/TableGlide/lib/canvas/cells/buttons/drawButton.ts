@@ -12,8 +12,9 @@ import {
   DEFAULT_SIZE,
   DEFAULT_VIEW,
   ICON_SIZE_ADJUSTMENT,
+  getButtonViewColors,
+  resolveTokens,
   SIZE_CONFIG,
-  VIEW_COLORS,
 } from './constants';
 import { drawIcon } from './drawIcon';
 import type {
@@ -31,7 +32,8 @@ import {
 } from './utils';
 
 /**
- * Draw a button with theme-based styling
+ * Кнопка старого способа подключения (`variant`): геометрия по высоте
+ * строки, цвета — те же виды из токенов темы, что у новых кнопок.
  */
 export function drawButton(
   batcher: DrawBatcher,
@@ -80,6 +82,7 @@ export function drawButton(
   const centerX = x + actualWidth * 0.5;
   const centerY = buttonY + buttonHeight * 0.5;
 
+  const hasBorder = colors.borderColor !== 'transparent';
   batcher.roundedRect(
     x,
     buttonY,
@@ -88,8 +91,8 @@ export function drawButton(
     DEFAULT_BUTTON_RADIUS,
     {
       fillStyle: colors.bgColor,
-      strokeStyle: colors.borderColor,
-      lineWidth: DEFAULT_BORDER_WIDTH,
+      strokeStyle: hasBorder ? colors.borderColor : undefined,
+      lineWidth: hasBorder ? DEFAULT_BORDER_WIDTH : 0,
     }
   );
 
@@ -134,7 +137,8 @@ export function drawButton(
 }
 
 /**
- * Draw a button with view and size support (sdds_finai__light theme)
+ * Кнопка по виду и размеру; цвета видов — из токенов темы таблицы
+ * (viewColorsMap), без карты — токены светлой темы.
  */
 export function drawButtonWithView(
   batcher: DrawBatcher,
@@ -153,7 +157,9 @@ export function drawButtonWithView(
   viewColorsMap?: Record<ButtonView, ViewColors>
 ): ButtonResult {
   const sizeConfig = SIZE_CONFIG[size];
-  const viewColors = viewColorsMap ? viewColorsMap[view] : VIEW_COLORS[view];
+  const viewColors = (viewColorsMap ?? getButtonViewColors(resolveTokens(undefined)))[
+    view
+  ];
   const font = `${sizeConfig.fontSize}px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif`;
 
   const textWidth = measureCtx
