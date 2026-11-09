@@ -11,8 +11,9 @@ import {
   DEFAULT_VIEW,
   ICON_SIZE_ADJUSTMENT,
   MAX_ICON_SIZE,
+  getButtonViewColors,
+  LIGHT_THEME_TOKENS,
   SIZE_CONFIG,
-  VIEW_COLORS,
 } from './constants';
 import { drawIcon } from './drawIcon';
 import type {
@@ -21,10 +22,12 @@ import type {
   ButtonVariant,
   ButtonView,
   GlideThemeForRender,
+  ViewColors,
 } from './types';
 
 /**
- * Draw an icon-only button with theme-based styling
+ * Кнопка-иконка старого способа подключения (`variant`): цвета те же
+ * виды из токенов темы, что у новых кнопок.
  */
 export function drawIconButton(
   batcher: DrawBatcher,
@@ -56,6 +59,7 @@ export function drawIconButton(
   const iconX = centerX - iconSize * 0.5;
   const iconY = centerY - iconSize * 0.5;
 
+  const hasBorder = colors.borderColor !== 'transparent';
   batcher.roundedRect(
     x,
     buttonY,
@@ -64,8 +68,8 @@ export function drawIconButton(
     DEFAULT_BUTTON_RADIUS,
     {
       fillStyle: colors.bgColor,
-      strokeStyle: colors.borderColor,
-      lineWidth: DEFAULT_BORDER_WIDTH,
+      strokeStyle: hasBorder ? colors.borderColor : undefined,
+      lineWidth: hasBorder ? DEFAULT_BORDER_WIDTH : 0,
     }
   );
 
@@ -75,7 +79,8 @@ export function drawIconButton(
 }
 
 /**
- * Draw an icon-only button with view and size support (sdds_finai__light theme)
+ * Кнопка-иконка с подложкой по виду и размеру: виды как у Button, цвета
+ * из токенов темы таблицы (viewColorsMap), без карты из токенов светлой темы.
  */
 export function drawIconButtonWithView(
   batcher: DrawBatcher,
@@ -85,10 +90,13 @@ export function drawIconButtonWithView(
   view: ButtonView = DEFAULT_VIEW,
   size: ButtonSize = DEFAULT_SIZE,
   disabled = false,
-  hovered: HoverState = false
+  hovered: HoverState = false,
+  viewColorsMap?: Record<ButtonView, ViewColors>
 ): ButtonBounds {
   const sizeConfig = SIZE_CONFIG[size];
-  const viewColors = VIEW_COLORS[view];
+  const viewColors = (viewColorsMap ?? getButtonViewColors(LIGHT_THEME_TOKENS))[
+    view
+  ];
   const buttonSize = sizeConfig.height;
   const isHovered = isHoveringBounds(hovered, {
     x,

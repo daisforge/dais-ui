@@ -13,6 +13,9 @@ export const DEFAULT_ROW_HEIGHT = {
   medium: ROW_SIZE_TOKENS.medium.rowHeight,
   big: ROW_SIZE_TOKENS.big.rowHeight,
 } as const;
+/** Вертикальное выравнивание блока в несколько строк по умолчанию. */
+export const DEFAULT_SPAN_VERTICAL_ALIGN = 'top' as const;
+
 export const EMPTY_CELL_OBJ: TextCell = {
   kind: GridCellKind.Text,
   data: '',
@@ -122,4 +125,15 @@ export const EDITOR_BLOOM: readonly [number, number] = [0, 0];
  * учитывают этот пиксель (feature-edit/cellFieldStyles).
  */
 export const GLIDE_EDITOR_TARGET_EXTRA = 1;
+/**
+ * Края рамки редактора в объединённом блоке: пока редактор открыт, рамку всего
+ * блока рисует он сам, а не canvas. Края уже обрезаны по области данных
+ * (шапка сверху, итоговые строки снизу), чтобы рамка на них не легла.
+ */
+export const EDITOR_BLOCK_TOP_VAR = '--table-editor-block-top';
+export const EDITOR_BLOCK_BOTTOM_VAR = '--table-editor-block-bottom';
+/** Рисовать ли верхнюю и нижнюю линию рамки: 1px, если край блока виден, 0px, если он за областью данных. */
+export const EDITOR_TOP_LINE_VAR = '--table-editor-top-line';
+export const EDITOR_BOTTOM_LINE_VAR = '--table-editor-bottom-line';
+
 export const DEFAULT_HEADER_HEIGHT = 33;

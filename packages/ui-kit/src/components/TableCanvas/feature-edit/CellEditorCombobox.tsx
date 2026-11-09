@@ -1,4 +1,5 @@
 import { Combobox, type ComboboxItemOption } from '@ui-kit/components/Combobox';
+import { SELECT_LIST_PORTAL_ID } from '@ui-kit/components/TableCanvasSharedConstants';
 import { mergeRefs } from '@ui-kit/utils';
 import {
   ForwardedRef,
@@ -9,7 +10,7 @@ import {
 } from 'react';
 import styled from 'styled-components';
 
-import { useRowContext } from '../contexts';
+import { useRefTableContext, useRowContext } from '../contexts';
 import { SIZES } from '../styles';
 import { EditingCellInfo, ObjectForExtending } from '../types';
 import { CellEditorTextArea } from './CellEditorTextArea';
@@ -20,6 +21,7 @@ import {
   selectArrowStyles,
 } from './cellFieldStyles';
 import type { CellEditorComboboxProps, EmptyObj } from './types';
+import { useSelectListPlacement } from './useSelectListPlacement';
 
 /*
 ПЕРЕОПРЕДЕЛЕНИЯ КАК НИЖЕ НУЖНЫ ДЛЯ СОХРАНЕНИЯ GENERIC-а и уменьшения нагрузки на ts-сервер
@@ -89,7 +91,6 @@ export const CellEditorCombobox = forwardRef(
       paddingInline,
       paddingBlock,
       disableLeftOffset,
-      verticalAlign,
     };
     /* undefined: ширина списка равна ширине поля */
     const listWidth =
@@ -110,7 +111,11 @@ export const CellEditorCombobox = forwardRef(
     }
 
     return (
-      <FieldBox $cellWidth={cellWidth}>
+      <FieldBox
+        $cellWidth={cellWidth}
+        $cellHeight={cellHeight}
+        $verticalAlign={verticalAlign}
+      >
         <StyledCombobox<T>
           $geometry={geometry}
           name={name as string}
@@ -118,9 +123,9 @@ export const CellEditorCombobox = forwardRef(
           items={items}
           //
           ref={mergeRefs(ref, refExternal)}
-          /* portal="portal2" - данный id поставлен как исключение в isOutsideClick в TableGlideInstance.
+          /* Этот id стоит исключением в isOutsideClick в TableGlideInstance.
       Клики по нему не будут преждевременно закрывать режим редактирования */
-          portal="portal2"
+          portal={SELECT_LIST_PORTAL_ID}
           flip
           readOnly={readOnly}
           alwaysOpened={!readOnly}
@@ -150,10 +155,13 @@ export function CellEditorComboboxInternal<
   disableLeftOffset,
   readOnly,
   theme,
+  verticalAlign,
+  cellY,
 }: EditingCellInfo<TRow, TSummaryRow> & {
   disableLeftOffset: boolean | undefined;
 }) {
   const rowContextValue = useRowContext();
+  const refTable = useRefTableContext();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const selectProps = (column as any)?.editingCell?.selectProps;
 
@@ -162,16 +170,6 @@ export function CellEditorComboboxInternal<
   >;
 
   const value = row[column.key as keyof TRow];
-
-  // Куда раскрывается список в объединённой ячейке: если контент прижат к нижнему
-  // краю блока, список открывается вверх (placement 'top'), иначе вниз.
-  // mergedCellsAlign может быть функцией по данным строки — вычисляем по row.
-  const columnAlign = column.mergedCellsAlign;
-  const verticalAlign =
-    typeof columnAlign === 'function'
-      ? columnAlign(row)?.vertical
-      : columnAlign?.vertical;
-  const placement = verticalAlign === 'bottom' ? 'top' : 'bottom';
 
   const options = (() => {
     if (
@@ -200,11 +198,23 @@ export function CellEditorComboboxInternal<
     })),
   ];
 
+  const placement = useSelectListPlacement({
+    preferTop: verticalAlign === 'bottom' && !readOnly,
+    getSpaceAbove: () => {
+      // Шапка отдаёт верх области данных: row -1 у Glide это строка заголовков.
+      const headerBounds = refTable?.current?.getBounds(0, -1);
+      return cellY !== undefined && headerBounds
+        ? cellY - (headerBounds.y + headerBounds.height)
+        : undefined;
+    },
+  });
+
   return (
     <CellEditorCombobox
       readOnly={readOnly}
       paddingInline={theme.cellHorizontalPadding}
       paddingBlock={theme.cellVerticalPadding}
+      verticalAlign={verticalAlign}
       /* CustomCellStyleProps */
       cellWidth={cellWidth}
       cellHeight={cellHeight}
@@ -219,7 +229,6 @@ export function CellEditorComboboxInternal<
       }}
       items={items}
       placement={placement}
-      verticalAlign={verticalAlign}
       /* rest external props */
       {...selectProps}
     />

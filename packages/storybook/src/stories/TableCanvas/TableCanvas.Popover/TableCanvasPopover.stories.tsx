@@ -425,8 +425,11 @@ export const ClickAndHoverFullScreenStory: StoryObj = {
   tags: ['!autodocs'],
   parameters: {
     docs: { disable: true },
-    // Тот же пример, что «Клик и наведение»; отдельный эталон не нужен.
-    screenshot: { skip: true },
+    screenshot: {
+      skip: true,
+      skipReason:
+        'Тот же пример, что «Клик и наведение», отдельный эталон не нужен',
+    },
   },
   render: () => <ExampleClickAndHoverPopover fullScreen />,
 };

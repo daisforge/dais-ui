@@ -40,11 +40,13 @@ type EditableCellTheme = {
 };
 
 /** Поля темы с тремя ступенями фона выбранной строки. */
-type ActiveRowBgTheme = {
+export type ActiveRowBgTheme = {
   selectionCheckboxBg: string;
   bgSelectedRowHovered: string;
   bgSelectedRowActiveHovered: string;
 };
+
+let unsupportedColorWarned = false;
 
 // ─── Функции ───
 
@@ -84,20 +86,30 @@ export const resolveCellFillOverride = (
  * (themeOverride.bgCell).
  *
  * Подробнее. Состояния такого цвета считаются формулой (fill-states.ts),
- * дальше — как в resolveCellFillOverride. Если значение не цвет вида #…, а,
- * например, rgba() или var(), оно возвращается как есть — без hover и без
- * цвета выделения.
+ * дальше как в resolveCellFillOverride. Цвет может быть hex, rgb() или
+ * rgba(): полупрозрачный цвет формула кладёт на фон ячейки темы. Другие
+ * записи не поддерживаются: они возвращаются как есть, без цвета под курсором
+ * и при выделении.
  */
 export const resolveConsumerFillOverride = (
   bgCell: string,
   theme: TableColorTheme,
   context: CellFillContext,
+  stepFactor?: number,
 ): CellFillOverride => {
-  try {
-    return resolveCellFillOverride(getCellFillStates(bgCell, theme), context);
-  } catch {
-    return { bgCell };
+  const states = getCellFillStates(bgCell, theme, stepFactor);
+  if (states) return resolveCellFillOverride(states, context);
+  // Расчёт идёт на каждую ячейку, поэтому предупреждаем один раз.
+  if (!unsupportedColorWarned) {
+    unsupportedColorWarned = true;
+    // eslint-disable-next-line no-console
+    console.warn(
+      `[TableCanvas] themeOverride: цвет "${bgCell}" не поддерживается. ` +
+        'Нужен hex, rgb() или rgba(), иначе у ячейки не будет цвета под курсором и при выделении. ' +
+        'Предупреждение выводится один раз, дальше такие случаи не выводятся.',
+    );
   }
+  return { bgCell };
 };
 
 /**

@@ -1,3 +1,4 @@
+import { SELECT_LIST_PORTAL_ID } from '@ui-kit/components/TableCanvasSharedConstants';
 import {
   type ColumnGlideLast,
   GridCell,
@@ -332,6 +333,10 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
       if (!column) return undefined;
       const EditCellComp = column.renderEditCell;
       const { readonly } = gridCell as { readonly?: boolean };
+      // Без блока редактор встаёт как текст ячейки на canvas.
+      const spanHorizontalAlign =
+        gridCell.spanAlign?.horizontal ?? gridCell.contentAlign;
+      const spanVerticalAlign = gridCell.spanAlign?.vertical;
 
       /* ------------------- render preview cell ------------------- */
       if (readonly) {
@@ -354,6 +359,8 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
               return (
                 <EditCellComp
                   readOnly
+                  contentAlign={spanHorizontalAlign}
+                  verticalAlign={spanVerticalAlign}
                   cellWidth={target.width}
                   cellHeight={target.height}
                   colInd={colInd}
@@ -417,7 +424,8 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
               activation,
             } = props;
 
-            const contentAlign = column.contentAlign ?? 'left';
+            const contentAlign =
+              spanHorizontalAlign ?? column.contentAlign ?? 'left';
             const { contentFormat } = column as unknown as {
               contentFormat?: ContentFormat;
             };
@@ -427,6 +435,7 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
                 readOnly // !!!! важно readOnly=true
                 formatOptions={contentFormat}
                 contentAlign={contentAlign}
+                verticalAlign={spanVerticalAlign}
                 disableLeftOffset={false}
                 cellWidth={target.width}
                 cellHeight={target.height}
@@ -466,8 +475,11 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
             return (
               <EditCellComp
                 readOnly={readonly}
+                contentAlign={spanHorizontalAlign}
+                verticalAlign={spanVerticalAlign}
                 cellWidth={target.width}
                 cellHeight={target.height}
+                cellY={target.y}
                 colInd={colInd}
                 activation={activation}
                 initialValue={initialValue}
@@ -514,7 +526,10 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
     return (e) => {
       const target = e.target as HTMLElement;
       // если клик внутри вашего portal / dropdown — не считать его “вне”
-      return !target.closest('#portal') && !target.closest('#portal2');
+      return (
+        !target.closest('#portal') &&
+        !target.closest(`#${SELECT_LIST_PORTAL_ID}`)
+      );
     };
   }, [onCellsEdited]);
   const contentStateNode = useMemo(() => {

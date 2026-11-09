@@ -7,7 +7,7 @@
  *  3) иначе — переменная по имени (своё имя из MAPPING или имя ключа через
  *     дефис). Если в этой теме её нет — берём из запасной темы.
  */
-import { MODE_BASE } from './theme-sources.js';
+import { MODE_BASE, variableNameInTheme } from './theme-sources.js';
 
 /** Имя ключа → имя CSS-переменной: textPrimary → text-primary, surfaceAccent20 → surface-accent-20. */
 export const toKebabCase = (key) =>
@@ -68,12 +68,18 @@ const resolveAlpha = (rule, varsByTheme, theme, baseTheme) => {
 
 const resolveVariable = (key, rule, varsByTheme, theme, baseTheme) => {
   const variableName = rule.var ?? toKebabCase(key);
-  const ownValue = varsByTheme[theme][variableName];
+  // В beta и контрастной теме семья data-*-light называется data-*-on-light.
+  const ownName = variableNameInTheme(variableName, theme);
+  const ownValue = varsByTheme[theme][ownName];
   const originPrefix = rule.var
     ? `--${variableName} (имя у атомарной команды другое)`
     : `--${variableName}`;
   if (ownValue !== undefined) {
-    return { value: ownValue, source: SOURCE.direct, origin: originPrefix };
+    const origin =
+      ownName === variableName
+        ? originPrefix
+        : `${originPrefix}: в этой теме называется --${ownName}`;
+    return { value: ownValue, source: SOURCE.direct, origin };
   }
   const inheritedFromBase = varsByTheme[baseTheme][variableName];
   return {
