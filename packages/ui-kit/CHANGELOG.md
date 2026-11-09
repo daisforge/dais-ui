@@ -3,6 +3,39 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.28.0](https://github.com/daisforge/dais-ui/compare/v1.27.0...v1.28.0) (2026-11-09)
+
+### Bug Fixes
+
+- **Table,TableCanvas:** исправлен общий сброс зависимых фильтров ([#144](https://github.com/daisforge/dais-ui/issues/144)) ([a50737c](https://github.com/daisforge/dais-ui/commit/a50737cb7fd598d2b8010f9617b74ceca3f3a6a0))
+- **TableCanvas:** Canvas.Text без своего цвета берёт цвет текста текущей темы ([bfc00c3](https://github.com/daisforge/dais-ui/commit/bfc00c3924fb43659be5797e15355eeb2352f3e4))
+- **TableCanvas:** в колонке с объединением одинаковых значений ячейка без пары выравнивается так же, как объединённые, раньше, например, число в ней стояло справа, а объединённые слева ([5b8e226](https://github.com/daisforge/dais-ui/commit/5b8e226ce6dcb306ae3584b13e68c9849593b011))
+- **TableCanvas:** в объединённой ячейке рамка редактора и предпросмотра обводит всю ячейку одной линией, раньше рамка была высотой в одну строку, линия двоилась и меняла толщину ([27540d2](https://github.com/daisforge/dais-ui/commit/27540d2e4ffb47c6d9e26cd0a40b098367cd5a65))
+- **TableCanvas:** в режиме выделения одной ячейки (cell) объединённая ячейка обводится рамкой целиком, раньше рамка была на одну строку, а выше и ниже оставалась заливка выделения ([8e07d24](https://github.com/daisforge/dais-ui/commit/8e07d24d07b358f3208a0da6f693e0e707e2446e))
+- **TableCanvas:** в режиме редактирования поле Select открывается на месте подписи объединённой ячейки, а не в её первой строке ([5aa458d](https://github.com/daisforge/dais-ui/commit/5aa458d284f1975c7c02dc05c000498afa5d1412))
+- **TableCanvas:** в режиме редактирования список Select в объединённой ячейке раскрывается вверх, если поле прижато к низу ячейки и сверху хватает места, иначе вниз ([838483a](https://github.com/daisforge/dais-ui/commit/838483abfd0b13707cc1a923c9eb81fb0a75f2c9))
+- **TableCanvas:** добавлено многоточие для длинного текста Canvas.Badge [#145](https://github.com/daisforge/dais-ui/issues/145) ([183fb62](https://github.com/daisforge/dais-ui/commit/183fb62691e8842702cb7d8bcb63ae982fa9be1a))
+- **TableCanvas:** кнопки, чекбокс и скелетон в ячейках окрашены в цвета текущей темы, пустой чекбокс в тёмной теме больше не белый ([d4cf993](https://github.com/daisforge/dais-ui/commit/d4cf9932e7f48f5670869a55129d9ecc5599dbbb))
+- **TableCanvas:** наведение на объединённую ячейку срабатывает в любой её строке и не сбивается при обновлении данных ([e4de864](https://github.com/daisforge/dais-ui/commit/e4de8649c635ff316c6ca3f58ff99456d09c3c74))
+- **TableCanvas:** объединённая ячейка окрашивается целиком при наведении, выделении и отметке строки, а не полосой по высоте одной строки ([74a8dbc](https://github.com/daisforge/dais-ui/commit/74a8dbc97a621d923a19152f364646b72fd3ba2c))
+- **TableCanvas:** при переходе в редактирование ячейка не меняет вид, текст остаётся на том же месте и в том же начертании, фон совпадает с фоном ячейки, в том числе при наведении и выделении ([8a768ad](https://github.com/daisforge/dais-ui/commit/8a768adac1d552cfdf43716418e4d4ceec264985))
+- **TableCanvas:** редактор ячейки повторяет ячейку в просмотре ([b999c18](https://github.com/daisforge/dais-ui/commit/b999c18729378d056112ab3916665b994cc4a5ee))
+- **TableCanvas:** свой цвет ячейки в rgb() и rgba() меняется при наведении и выделении, как цвета палитры ([36c5d86](https://github.com/daisforge/dais-ui/commit/36c5d8687e1e0d8dd7322a1de69d5f0894cbf5b4))
+- **TableCanvas:** убран лишний отступ между кнопками «Отменить» и «Сохранить» в режиме редактирования ([bdcae68](https://github.com/daisforge/dais-ui/commit/bdcae685b3a7882deca3efbf0a713c6a304a08b8))
+- **TableCanvas:** частично скрытая ячейка прокручивается в видимую часть перед редактированием, редактор больше не ложится поверх закреплённых колонок ([174d3f3](https://github.com/daisforge/dais-ui/commit/174d3f391f9c58418f68384c73fd116b280e3f39))
+
+### Features
+
+- **TableCanvas:** editingCell.showSelectIcon — шеврон селекта для кастомного редактора ([#143](https://github.com/daisforge/dais-ui/issues/143)) ([b3e1574](https://github.com/daisforge/dais-ui/commit/b3e15745dc9db1937031fe64966d0038072378df))
+- **TableCanvas:** Popover и Dropdown на canvas-элементах таблицы ([07e49fc](https://github.com/daisforge/dais-ui/commit/07e49fc52ebe7ff148022910f2c0295ff9b8e1e8))
+- **TableCanvas:** новая палитра таблицы во всех темах, включая контрастные ([64face0](https://github.com/daisforge/dais-ui/commit/64face00d9499913635b76382eae544748be57fa))
+- **TableCanvas:** при вводе длинного текста редактор растёт вниз в пределах ширины ячейки, не выше четверти окна, дальше текст прокручивается внутри поля ([a768994](https://github.com/daisforge/dais-ui/commit/a768994ba34fff065086248b0e465a2b3975dea3))
+- **TableCanvas:** размер Canvas.Badge по умолчанию задан таблицей ([#140](https://github.com/daisforge/dais-ui/issues/140)) ([9a29e42](https://github.com/daisforge/dais-ui/commit/9a29e422bdf6d4f7f7f663560f4102fb34ce013d))
+- **TableCanvas:** свой renderCell объединённой ячейки тоже остаётся на экране при прокрутке ([59d1410](https://github.com/daisforge/dais-ui/commit/59d1410e6074114bac56cd1714eb8e1d1e458e8d))
+- **TableCanvas:** содержимое объединённой ячейки по умолчанию прижато к верху и остаётся на экране при прокрутке (эффект sticky) ([9adc7bf](https://github.com/daisforge/dais-ui/commit/9adc7bf14eb9148f2b45b4030befcfd5188da385))
+- **TableCanvas:** управление скрытыми столбцами извне через columnsControl.hiddenState ([7fc67f8](https://github.com/daisforge/dais-ui/commit/7fc67f876f1e8d6d905a70cc178374261ccbe07b))
+- обновление SDDS до 0.367.1 и источников тем; переход на styled-components 5.3.11 ([2d82667](https://github.com/daisforge/dais-ui/commit/2d826679fd0885a5ffa4d37c8665fdbe91de7a2d))
+
 # [1.27.0](https://github.com/daisforge/dais-ui/compare/v1.26.0...v1.27.0) (2026-11-02)
 
 ### Bug Fixes
