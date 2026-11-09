@@ -16,6 +16,8 @@ const meta: Meta = {
     },
     screenshot: {
       skip: true,
+      skipReason:
+        'Пробел покрытия: пока нет фиксированного состояния загрузчика и проверок в play',
     },
   },
 };

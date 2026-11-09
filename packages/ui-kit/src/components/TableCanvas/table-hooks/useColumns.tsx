@@ -16,7 +16,7 @@ import {
   calculateFilterPopoverPositionX,
   calculateFilterPopoverPositionY,
   TablePopoverContextValue,
-} from '../feature-popover-table';
+} from '../feature-overlays';
 import { useReorderDragable } from '../feature-reorder-columns/useReorderDragable';
 import {
   getDetailPanelColSpanFunc,
@@ -129,12 +129,16 @@ export const useColumns = <
   ) => 'isServiceColumn' in column && column.isServiceColumn === true;
 
   // -------------- onOpenFilter callback -----------------
+  // Берём только open, он не меняется. Весь контекст меняется при каждом
+  // открытии окна, а от onOpenFilter зависят колонки: их смена перерисовала
+  // бы всю таблицу.
+  const { open: openTablePopover } = tablePopoverValue;
   const onOpenFilter = useCallback(
     (
       columnConfig: ColumnConfig<RowType, SummaryRowType>,
       event: CanvasEvent,
     ) => {
-      tablePopoverValue.open({
+      openTablePopover({
         // Формируем координату через координату ячейки + смещение таргета (иконка фильтра)
         position: {
           x: calculateFilterPopoverPositionX(event),
@@ -145,10 +149,10 @@ export const useColumns = <
           columnConfig,
         },
         // Передаем ID колонки для отслеживания ресайза
-        columnId: columnConfig.key,
+        sourceKey: columnConfig.key,
       });
     },
-    [tablePopoverValue],
+    [openTablePopover],
   );
 
   const tableConfigFiltering = !!tableConfig.filtering;
@@ -159,6 +163,9 @@ export const useColumns = <
 
   const tableConfigSubRows = !!tableConfig.subRows;
   // FIXME
+  // Перед включением панели деталей: currIndex и indexZeroColKey в сборке
+  // столбцов считаются по всем столбцам, включая скрытые, и colSpan панели
+  // начнёт их учитывать. Их нужно будет брать из видимых столбцов.
   const tableConfigRowDetailBoolean = false; // !!tableConfig.rowDetailPanel;
 
   const groupedCols = (tableConfig.rowsGrouping ?? {})?.groupByState?.[0];
@@ -186,7 +193,7 @@ export const useColumns = <
   // Нужен, чтобы во время отрисовки перевести объединения, заданные снаружи, в
   // индексы. Обновляется ниже, после reorderedColumns.
   const renderColKeysRef = useRef<readonly string[]>([]);
-  const columns = useMemo((): readonly ColumnX[] => {
+  const allColumns = useMemo((): readonly ColumnX[] => {
     const colsAfterRowsGroupingCheck = getColsAfterRowsGrouping({
       rowsGroupingIsActiveInConfig: tableConfigRowsGroupingBoolean,
       groupByArr: groupedCols ?? [],
@@ -255,12 +262,6 @@ export const useColumns = <
       ? getColsWithKeyText(colsAfterSelectingCheck, keyText)
       : colsAfterSelectingCheck;
 
-    const hiddenColsSet = new Set(hiddenCols);
-
-    const colsAfterHideCheck = hiddenColsSet.size
-      ? colsAfterKeyTextCheck.filter((c) => !hiddenColsSet.has(c.key))
-      : colsAfterKeyTextCheck;
-
     const pinnedColsSet = new Set(pinnedCols);
 
     // mergeCells.mergeByCellValues: для каждой колонки — функция, дающая значение
@@ -322,7 +323,7 @@ export const useColumns = <
       return errorRowCacheValue;
     };
 
-    return colsAfterHideCheck.map((el, currIndex, arr) => {
+    return colsAfterKeyTextCheck.map((el, currIndex, arr) => {
       const columnIsPinned = pinnedColsSet.has(el.key);
 
       const indexZeroColKey = arr[0]?.key;
@@ -612,6 +613,16 @@ export const useColumns = <
         spanAlign =
           typeof columnAlign === 'function' ? resolveColumnAlign : columnAlign;
       }
+      // Строка без пары в колонке, объединённой по значениям, для таблицы не блок,
+      // но по горизонтали встаёт как блоки колонки. Выравнивание функцией по строке
+      // сюда не попадает.
+      const singleRowHorizontal =
+        mergeByValueOf &&
+        !isRegionCol &&
+        !getColumnIsService(el) &&
+        typeof columnAlign === 'object'
+          ? columnAlign.horizontal
+          : undefined;
 
       const userThemeOverride = el.themeOverride;
       const columnThemeOverride = userThemeOverride
@@ -626,7 +637,7 @@ export const useColumns = <
         // useSortedRows смотрит на sortingType — убираем его у группирующих
         // колонок, чтобы вид со слиянием по ним не сортировался (как в дереве).
         ...(stripGroupColumnSort && { sortingType: undefined }),
-        contentAlign: getAlignment(el.contentFormat),
+        contentAlign: singleRowHorizontal ?? getAlignment(el.contentFormat),
         renderHeaderCell,
         columnThemeOverride,
         // Минимальная ширина колонки: чтобы в шапке всегда помещались иконки,
@@ -657,6 +668,7 @@ export const useColumns = <
         }),
 
         renderCell,
+        hasOwnRenderCell: el.renderCell !== undefined,
         editable,
         isErrorCell,
         errorCellTooltip,
@@ -702,7 +714,6 @@ export const useColumns = <
     reorderInHeaderIsActive,
     groupedCols,
     pinnedCols,
-    hiddenCols,
     showRowInstruments,
     keyText,
     tableConfigKeyTextBoolean,
@@ -712,6 +723,14 @@ export const useColumns = <
     rowSize,
   ]);
 
+  // Скрытие только отфильтровывает готовые столбцы: объекты остаются прежними,
+  // и смена скрытых не пересобирает столбцы и не пересортировывает строки.
+  const columns = useMemo(() => {
+    if (!hiddenCols.length) return allColumns;
+    const hiddenColsSet = new Set(hiddenCols);
+    return allColumns.filter((c) => !hiddenColsSet.has(c.key));
+  }, [allColumns, hiddenCols]);
+
   const {
     reorderedColumns,
     onColumnsReorder,
@@ -719,6 +738,7 @@ export const useColumns = <
     columnsOrder,
     getDefaultColumnsOrder,
   } = useReorderDragable({
+    allColumns,
     columns,
     reorderIsActive,
     tableConfigColumnsControl: tableConfig.columnsControl,

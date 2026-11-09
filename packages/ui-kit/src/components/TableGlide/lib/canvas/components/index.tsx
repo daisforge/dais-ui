@@ -41,6 +41,8 @@ import {
   type BadgeSize,
   type BadgeView,
   CanvasBadge,
+  getBadgeIconSize,
+  resolveBadgeSize,
 } from '../primitives/CanvasBadge';
 import { CanvasButton } from '../primitives/CanvasButton';
 import {
@@ -62,7 +64,7 @@ import { CanvasText, CanvasTextOptions } from '../primitives/CanvasText';
 import type { CanvasTextMark } from '../primitives/textMarks';
 import { normalizeDimensionValue } from '../utils';
 import { isReactIcon, normalizeIcon } from '../utils/iconUtils';
-import type { CanvasNodeTooltipConfig } from '../utils/portalHoverEvents';
+import type { CanvasOverlayProps } from '../utils/canvasOverlayProps';
 
 interface CanvasInteractionProps {
   /**
@@ -90,7 +92,8 @@ interface CanvasLayerProps {
 interface ContainerProps
   extends CanvasInteractionProps,
     CanvasLayerProps,
-    Omit<FlexBoxOptions, 'columnGap' | 'rowGap'> {
+    Omit<FlexBoxOptions, 'columnGap' | 'rowGap'>,
+    CanvasOverlayProps {
   children?: ReactNode;
   style?: Partial<CanvasFlexStyle>;
   backgroundColor?: string;
@@ -104,8 +107,6 @@ interface ContainerProps
   top?: PositionValue;
   right?: PositionValue;
   bottom?: PositionValue;
-  /** Конфиг тултипа при hover: строка (текст) или объект с text и опциональными пропсами Tooltip */
-  tooltip?: CanvasNodeTooltipConfig;
   onClick?: (event: CanvasEvent<CanvasContainer>) => void;
   onMouseEnter?: (event: CanvasEvent<CanvasContainer>) => void;
   onMouseLeave?: (event: CanvasEvent<CanvasContainer>) => void;
@@ -133,7 +134,8 @@ interface TextProps
     Omit<
       CanvasTextOptions,
       'font' | 'fontSize' | 'lineHeightPx' | 'color' | 'marks'
-    > {
+    >,
+    CanvasOverlayProps {
   children?: ReactNode;
   font?: string;
   color?: string;
@@ -145,7 +147,6 @@ interface TextProps
   top?: PositionValue;
   right?: PositionValue;
   bottom?: PositionValue;
-  tooltip?: CanvasNodeTooltipConfig;
 }
 
 interface MarkProps {
@@ -154,7 +155,10 @@ interface MarkProps {
   children?: ReactNode;
 }
 
-interface IconProps extends CanvasInteractionProps, CanvasLayerProps {
+interface IconProps
+  extends CanvasInteractionProps,
+    CanvasLayerProps,
+    CanvasOverlayProps {
   icon: ButtonIcon;
   size?: number;
   color?: string;
@@ -171,10 +175,12 @@ interface IconProps extends CanvasInteractionProps, CanvasLayerProps {
   onMouseDown?: (event: CanvasEvent<CanvasIcon>) => void;
   id?: string;
   portalHoverEnabled?: boolean;
-  tooltip?: CanvasNodeTooltipConfig;
 }
 
-interface ButtonProps extends CanvasInteractionProps, CanvasLayerProps {
+interface ButtonProps
+  extends CanvasInteractionProps,
+    CanvasLayerProps,
+    CanvasOverlayProps {
   children: string;
   /** @deprecated Use `view` instead */
   variant?: 'primary' | 'secondary' | 'danger';
@@ -196,10 +202,12 @@ interface ButtonProps extends CanvasInteractionProps, CanvasLayerProps {
   bottom?: PositionValue;
   id?: string;
   portalHoverEnabled?: boolean;
-  tooltip?: CanvasNodeTooltipConfig;
 }
 
-interface IconButtonProps extends CanvasInteractionProps, CanvasLayerProps {
+interface IconButtonProps
+  extends CanvasInteractionProps,
+    CanvasLayerProps,
+    CanvasOverlayProps {
   icon: ButtonIcon;
   /** @deprecated Use `buttonSize` with ButtonSize type instead */
   size?: number | 'auto';
@@ -219,11 +227,11 @@ interface IconButtonProps extends CanvasInteractionProps, CanvasLayerProps {
   bottom?: PositionValue;
   id?: string;
   portalHoverEnabled?: boolean;
-  tooltip?: CanvasNodeTooltipConfig;
 }
 interface EmbedIconButtonProps
   extends CanvasInteractionProps,
-    CanvasLayerProps {
+    CanvasLayerProps,
+    CanvasOverlayProps {
   icon: ButtonIcon;
   /** @deprecated Use `buttonSize` with ButtonSize type instead */
   size?: number | 'auto';
@@ -256,9 +264,11 @@ interface EmbedIconButtonProps
   bottom?: PositionValue;
   id?: string;
   portalHoverEnabled?: boolean;
-  tooltip?: CanvasNodeTooltipConfig;
 }
-interface CheckboxProps extends CanvasInteractionProps, CanvasLayerProps {
+interface CheckboxProps
+  extends CanvasInteractionProps,
+    CanvasLayerProps,
+    CanvasOverlayProps {
   checked: boolean;
   indeterminate?: boolean;
   size?: number | 'auto';
@@ -273,10 +283,12 @@ interface CheckboxProps extends CanvasInteractionProps, CanvasLayerProps {
   bottom?: PositionValue;
   id?: string;
   portalHoverEnabled?: boolean;
-  tooltip?: CanvasNodeTooltipConfig;
 }
 
-interface RectProps extends CanvasInteractionProps, CanvasLayerProps {
+interface RectProps
+  extends CanvasInteractionProps,
+    CanvasLayerProps,
+    CanvasOverlayProps {
   color?: string;
   borderColor?: string;
   borderWidth?: number;
@@ -288,17 +300,19 @@ interface RectProps extends CanvasInteractionProps, CanvasLayerProps {
   bottom?: PositionValue;
   id?: string;
   portalHoverEnabled?: boolean;
-  tooltip?: CanvasNodeTooltipConfig;
 }
 
-interface BadgeProps extends CanvasInteractionProps, CanvasLayerProps {
+interface BadgeProps
+  extends CanvasInteractionProps,
+    CanvasLayerProps,
+    CanvasOverlayProps {
   /** Текст бейджа. Если заданы `children`, используются они */
   text?: string;
   /** Текст бейджа разметкой, как у `Canvas.Text`: `<Canvas.Badge>до <Canvas.Mark color="…">фрагмент</Canvas.Mark></Canvas.Badge>` */
   children?: ReactNode;
   /** Badge view style */
   view?: BadgeView;
-  /** Badge size */
+  /** Явный размер имеет приоритет. Без size следует размеру таблицы: small → xs (16), medium → m (24), big → l (28). */
   size?: BadgeSize;
   /** Use transparent background */
   transparent?: boolean;
@@ -320,7 +334,6 @@ interface BadgeProps extends CanvasInteractionProps, CanvasLayerProps {
   bottom?: PositionValue;
   id?: string;
   portalHoverEnabled?: boolean;
-  tooltip?: CanvasNodeTooltipConfig;
   pilled?: boolean;
 }
 
@@ -356,7 +369,8 @@ interface LinkProps
     Omit<
       CanvasTextOptions,
       'font' | 'fontSize' | 'lineHeightPx' | 'color' | 'marks'
-    > {
+    >,
+    CanvasOverlayProps {
   children?: ReactNode;
   href?: string;
   target?: string;
@@ -373,12 +387,12 @@ interface LinkProps
   top?: PositionValue;
   right?: PositionValue;
   bottom?: PositionValue;
-  tooltip?: CanvasNodeTooltipConfig;
 }
 
 interface ImageElementProps<T extends CanvasNode>
   extends CanvasInteractionProps,
-    CanvasLayerProps {
+    CanvasLayerProps,
+    CanvasOverlayProps {
   /** Идентификатор canvas-ноды; при отсутствии генерируется при построении дерева. */
   id?: string;
   /** Дочерние JSX-элементы запрещены: содержимое задаётся через свойства примитива. */
@@ -395,8 +409,6 @@ interface ImageElementProps<T extends CanvasNode>
   right?: PositionValue;
   /** Отступ от нижнего края родителя при абсолютном позиционировании. */
   bottom?: PositionValue;
-  /** Подсказка элемента, отображаемая через портал таблицы. */
-  tooltip?: CanvasNodeTooltipConfig;
   /** Включает передачу hover-событий в портал; наличие tooltip также включает её. */
   portalHoverEnabled?: boolean;
   /** Обработчик клика по элементу; дополняет внутреннее поведение примитива. */
@@ -575,15 +587,17 @@ type IconToPreload = { icon: ButtonIcon; size: number };
  *
  * Ключ спрайта — `svg + цвет @ размер * dpr` (см. IconSpriteManager.resolveKey),
  * а preload ниже зовётся без color. При отрисовке drawIcon запрашивает спрайт
- * уже с цветом из view-палитры (для EmbedIconButton secondary это #485056B0, на
- * hover #485056FF), то есть ключи не совпадают и в кэш всегда промах: спрайт
- * грузится асинхронно (Image.decode) и иконка появляется кадром позже — на
- * первой отрисовке и ещё раз на первом hover. Заметно в основном локально в
- * dev-сборке, на стенде эффект в пределах кадра.
+ * уже с цветом из палитры вида (для EmbedIconButton secondary это
+ * text-secondary темы, под курсором text-secondary-hover). Ключи не совпадают,
+ * готового спрайта нет, он грузится асинхронно (Image.decode), и иконка
+ * появляется кадром позже: при первой отрисовке и ещё раз при первом наведении.
+ * Заметно в основном при локальной разработке, на стенде задержка не больше
+ * кадра.
  *
  * Чинить одним из двух способов:
- * 1) собирать иконки вместе с цветами (покой + hover) из VIEW_COLORS /
- *    VIEW_COLORS_EMBED и iconColor-override ноды — тогда ключи сойдутся;
+ * 1) собирать иконки вместе с цветами покоя и наведения из палитр видов
+ *    (getButtonViewColors / getEmbedIconButtonViewColors) и из своего цвета
+ *    иконки у узла (iconColor), тогда ключи сойдутся;
  * 2) убрать цвет из ключа: держать в кэше одноцветный спрайт и красить его при
  *    отрисовке (globalCompositeOperation), тогда прогрев не зависит от палитры.
  */
@@ -696,6 +710,9 @@ function resolveCanvasTextMetrics(
   };
 }
 
+// Предупреждение о popover вместе с dropdown уже выводили.
+let overlayConflictWarned = false;
+
 function buildNode(
   element: ReactElement,
   idPrefix: string,
@@ -774,10 +791,8 @@ function buildNode(
         size: iconSize,
       });
   } else if (canvasType === 'Badge') {
-    // Badge icon sizes: xs=10, s=12, m=14, l=16
-    const badgeSize = props['size'] ?? 's';
-    const iconSizeMap: Record<string, number> = { xs: 10, s: 12, m: 14, l: 16 };
-    const iconSize = iconSizeMap[badgeSize] ?? 12;
+    const badgeSize = resolveBadgeSize(props['size'], theme.rowSize);
+    const iconSize = getBadgeIconSize(badgeSize);
     if (props['leftIcon'])
       iconsToPreload.push({
         icon: normalizeIconForPreload(props['leftIcon']),
@@ -801,6 +816,44 @@ function buildNode(
   if (props['tooltip'] !== undefined) {
     node.tooltip = props['tooltip'];
     node.portalHoverEnabled = true;
+  }
+
+  if (props['popover'] !== undefined) {
+    node.popover = props['popover'];
+  }
+  if (props['dropdown'] !== undefined) {
+    node.dropdown = props['dropdown'];
+  }
+  // Popover и Dropdown открываются одинаково. Если заданы оба, побеждает Popover.
+  // Дерево собирается на каждую ячейку, поэтому предупреждаем один раз.
+  if (
+    !overlayConflictWarned &&
+    props['popover'] !== undefined &&
+    props['dropdown'] !== undefined
+  ) {
+    overlayConflictWarned = true;
+    // eslint-disable-next-line no-console
+    console.warn(
+      `[TableCanvas] Canvas.${canvasType} (${nodeId}): заданы и popover, и dropdown. ` +
+        'Откроется только Popover, dropdown будет пропущен. ' +
+        'Предупреждение выводится один раз, дальше такие случаи не выводятся.'
+    );
+  }
+  const overlay = props['popover'] ?? props['dropdown'];
+  if (overlay !== undefined) {
+    if (overlay?.trigger === 'hover') {
+      // Наведение отслеживается так же, как для тултипа.
+      node.portalHoverEnabled = true;
+    } else {
+      // Клик по такому элементу не меняет выделение таблицы, как у кнопки
+      // фильтра в шапке. Если interaction задан явно, берём его.
+      if (props['interaction'] === undefined) {
+        node.interaction = normalizeCanvasInteraction({ selection: 'keep' });
+      }
+      if (!node.style.cursor) {
+        node.style = { ...node.style, cursor: 'pointer' };
+      }
+    }
   }
 
   // autoTooltip делает текстовую ноду hover-таргетом (если не выключен явно).
@@ -991,7 +1044,8 @@ function createNode(
       const node = new CanvasText(id, text, {
         font: fontResult,
         ...textMetrics,
-        color,
+        // Без своего цвета текст красится как обычная ячейка: цветом темы.
+        color: color ?? theme.textDark,
         wordWrap,
         lineHeight,
         overflow,
@@ -1077,7 +1131,7 @@ function createNode(
         leftIcon: normalizedLeftIcon,
         rightIcon: normalizedRightIcon,
         disabled,
-        theme: theme as Theme,
+        theme,
       });
       if (position) node.position = position;
       if (left !== undefined) node.left = left;
@@ -1121,6 +1175,7 @@ function createNode(
         overrideSquareSize,
         overrideIconSize,
         disabled,
+        theme,
       });
       // Цветовой override иконки и overrideWidth поддерживает только EmbedIconButton.
       if (node instanceof CanvasEmbedIconButton) {
@@ -1288,6 +1343,7 @@ function createNode(
         customGradientColor,
         shimmerDuration,
         animated,
+        theme,
       });
 
       node.style = mergedStyle;

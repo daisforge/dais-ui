@@ -128,15 +128,21 @@ export const ControlBlockWithoutResize = ({
             {/* <SummaryCheckbox isHaveRightDivider={!!leftSideInner?.length} /> */}
 
             {resultLeftSightInner?.map((props, i, arr) => (
-              <ControlBlockButton
-                key={props['key'] ?? `${props['text']}${i}` ?? i}
-                {...props}
-                index={i}
-                isLastButtonInnArray={i === arr.length - 1}
-                buttonSize={sizeMap.sideInnerButton}
-                iconSize={sizeMap.sideInnerIcon}
-                showLabel
-              />
+              <React.Fragment key={props['key'] ?? `${props['text']}${i}` ?? i}>
+                <ControlBlockButton
+                  {...props}
+                  index={i}
+                  isLastButtonInnArray={i === arr.length - 1}
+                  buttonSize={sizeMap.sideInnerButton}
+                  iconSize={sizeMap.sideInnerIcon}
+                  showLabel
+                />
+                {/* Кнопку без разделителя («Отменить» перед «Сохранить») отделяет
+                    промежуток, как gap контейнера в адаптивной панели. */}
+                {props.skipRightDivider && i < arr.length - 1 && (
+                  <Box $css={`flex: none; width: ${spacing.leftPartGap}px;`} />
+                )}
+              </React.Fragment>
             ))}
           </LefSideStyled>
         </Flow>

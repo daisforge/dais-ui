@@ -4,7 +4,7 @@
  * Визуальные (скриншотные) тесты контекстного меню.
  * Стори доводит грид до ОДНОГО состояния (меню открыто) — один скриншот.
  * `play` эмулирует ПКМ по шапке, `screenshot.keepState` не сбрасывает состояние
- * перед снимком. Эталонные PNG генерит test-runner (`-u`) на стороне CI.
+ * перед снимком. Эталонные PNG обновляются явно через npm run screenshot:update в Docker.
  */
 import { createRows, type Row } from '@df-storybook/data/tableData';
 import type { Meta, StoryObj } from '@storybook/react';
@@ -21,7 +21,9 @@ export default meta;
 
 type Story = StoryObj;
 
-const screenshot = { parameters: { screenshot: { keepState: true } } };
+const screenshot = {
+  parameters: { screenshot: { keepState: true, capture: 'page' } },
+};
 
 function ExampleAllFeatures() {
   const [rows] = useState(createRows);

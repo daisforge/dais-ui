@@ -73,6 +73,64 @@ describe('glideCellRenderer: обрезка по ячейке', () => {
   });
 });
 
+describe('glideCellRenderer: высота содержимого блока с прилипанием', () => {
+  const paintStickyCell = (heightChanged: boolean, cut = true) => {
+    const report = vi.fn((_height: number) => heightChanged);
+    const isCut = vi.fn((_visibleHeight: number) => cut);
+    const requestAnimationFrame = vi.fn();
+    vi.spyOn(CellCanvasRoot.prototype, 'render').mockReturnValue(
+      undefined as never,
+    );
+    const cell = glideCellRenderer({
+      jsxElement: <Canvas.Container padding={{ top: 10, bottom: 10 }} />,
+      canvasCellCache: new WeakMap(),
+      cellInfo: {
+        row: { id: 1 },
+        column: { id: 'col' },
+        colInd: 0,
+        rowInd: 0,
+        ctxs: {},
+      } as unknown as CellInfo<ObjectForExtending, unknown>,
+      options: { data: undefined },
+      stickyContent: { isCut, report },
+    });
+    ((cell as CanvasCell).data as CanvasCellData).render(
+      createCtx().ctx,
+      { x: 0, y: 0, width: 100, height: 40 },
+      {} as GlideThemeForRender,
+      undefined,
+      undefined,
+      { requestAnimationFrame } as never,
+    );
+    return { report, isCut, requestAnimationFrame };
+  };
+
+  it('сообщает высоту содержимого, а не высоту прямоугольника отрисовки', () => {
+    const { report } = paintStickyCell(false);
+
+    expect(report).toHaveBeenCalledWith(20);
+  });
+
+  it('высота изменилась: просит ещё один кадр', () => {
+    expect(paintStickyCell(true).requestAnimationFrame).toHaveBeenCalledTimes(1);
+  });
+
+  it('высота та же: лишнего кадра нет', () => {
+    expect(paintStickyCell(false).requestAnimationFrame).not.toHaveBeenCalled();
+  });
+
+  it('блок виден целиком: высота не замеряется и кадр не просится', () => {
+    const { report, isCut, requestAnimationFrame } = paintStickyCell(
+      true,
+      false,
+    );
+
+    expect(isCut).toHaveBeenCalledWith(40);
+    expect(report).not.toHaveBeenCalled();
+    expect(requestAnimationFrame).not.toHaveBeenCalled();
+  });
+});
+
 describe('glideCellRenderer: высота для rowHeight auto', () => {
   /** Ячейка с отступами содержимого 10 + 10 и приёмником высоты */
   const renderAutoHeightCell = (needsHeight: boolean) => {

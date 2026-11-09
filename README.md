@@ -12,9 +12,10 @@
 
 #### Структура
 
-Библиотека пользовательских компонентов состоит из 2-х пакетов: ui-kit, storybook.
+Основные пакеты: ui-kit, storybook и mcp-server; vite-project — отдельное тестовое приложение.
 
 - ui-kit - основной проект из которого собирается npm-пакет. В данной директории находятся переиспользуемые компоненты, утилиты, иконки, и др., которые в последствии предоставляются пользователям.
+- mcp-server — MCP-сервер с индексом компонентов и примерами для кодовых агентов.
 - storybook - пакет, в котором размещаются story для компонентов. Для визуального тестирования компонентов и для ознакомления пользователей с ними. Данный пакет выкладывается на [стенд библиотеки][stend-storybook]
   ​
 
@@ -37,9 +38,8 @@
 ├── packages/
 │   ├── ui-kit/           # Основной npm-пакет с компонентами
 │   ├── storybook/        # Storybook для документации и тестирования
-│   ├── vite-project/     # Тестовый проект на Vite
-│   ├── webpack-finportal-platform/  # Тестовый проект на Webpack (Finportal)
-│   └── webpack-project-finalheader/ # Тестовый проект на Webpack (Finalheader)
+│   ├── mcp-server/       # MCP-сервер и индекс компонентов
+│   └── vite-project/     # Тестовый проект на Vite
 └── generators/           # Скрипты генерации кода
 ```
 
@@ -51,7 +51,7 @@
 | **Сборка**       | Vite (v5.0.0) с плагинами                          |
 | **Язык**         | TypeScript 5.4.2                                   |
 | **React**        | 18.3.1                                             |
-| **Стили**        | styled-components 5.3.1                            |
+| **Стили**        | styled-components 5.3.11                            |
 | **UI-фреймворк** | @salutejs/sdds-finai (Plasma Design System)        |
 | **Тестирование** | Vitest + @storybook/test-runner (screenshot tests) |
 | **Линтинг**      | ESLint + Prettier + Husky                          |
@@ -113,13 +113,13 @@ tokens/
 └── spacing/      # Отступы (padding, margin)
 ```
 
-**Автогенерация**: Токены генерируются автоматически из `@salutejs/sdds-themes` через скрипт `generate-ui-kit-tokens-named-exports.js`.
+**Автогенерация**: Токены генерируются автоматически из `@sddsjs/sdds_finai` через скрипт `generate-ui-kit-tokens-named-exports.js`.
 
 ### Стилизация
 
 - **Основной CSS-in-JS**: `styled-components`
 - **Плагин**: `babel-plugin-styled-components` (displayName: true)
-- **Целевые библиотеки**: `@salutejs/plasma-typo`, `@salutejs/sdds-finai`, `@salutejs/sdds-themes`
+- **Целевые библиотеки**: `@salutejs/plasma-typo`, `@salutejs/sdds-finai`, `@sddsjs/sdds_finai`; `@salutejs/sdds-themes` сохраняет две градиентные тени
 
 ---
 
@@ -227,15 +227,17 @@ coverage: provider: v8;
 
 ```bash
 npm run screenshot:test      # Запуск тестов
+npm run screenshot:test -- TableCanvas  # Только подходящие story-файлы
 npm run screenshot:update    # Обновление скриншотов
 ```
 
-**Особенности**:
+Нужен Docker с Linux-контейнерами; отдельный сервер Storybook не требуется.
+Проверка сохраняет различия для ревью и не обновляет эталоны автоматически.
+Для GitHub Actions добавлен необязательный ручной workflow **Screenshots**. После
+попадания workflow в `main` можно выбрать ветку PR и фильтр story-файлов через
+**Run workflow**. Отчёт и изображения хранятся семь дней.
 
-- Кастомный снапшот-дир: `packages/storybook/__snapshots__/`
-- Composite diff: `baseline | diff | received`
-- Threshold: 0.1 (игнорирует антиалиасинг)
-- CI threshold: 0.01, local: 0.04
+[Команды, устройство тестов и обновление эталонов](packages/storybook/test/screenshot-tests.md).
 
 ---
 
@@ -380,7 +382,7 @@ MANUAL_UIKIT_COMP_CHUNKS = [
 
 ### Stories
 
-- **135 story-файлов** в `packages/storybook/src/stories/`
+- Story-файлы находятся в `packages/storybook/src/stories/`
 - Покрытие: почти все компоненты
 - Теги: `hideInSidebar`, `subItems`
 
@@ -528,17 +530,18 @@ export type TMutationRegister<TFieldValues extends FieldValues> = {
 
 | Пакет                             | Версия        | Назначение                   |
 | --------------------------------- | ------------- | ---------------------------- |
-| `@salutejs/sdds-finai`            | ^0.338.0      | Базовые атомарные компоненты |
-| `@salutejs/plasma-icons`          | ^1.235.0      | Иконки                       |
-| `@salutejs/plasma-typo`           | ^0.42.0       | Typo tokens                  |
-| `@salutejs/sdds-themes`           | ^0.62.0       | Цветовые и прочие токены     |
+| `@salutejs/sdds-finai`            | 0.367.1-dev.0      | Базовые атомарные компоненты |
+| `@salutejs/plasma-icons`          | ^1.257.0      | Иконки                       |
+| `@salutejs/plasma-typo`           | ^0.59.0       | Typo tokens                  |
+| `@salutejs/sdds-themes`           | ^0.86.0       | Совместимость градиентных теней |
+| `@sddsjs/sdds_finai` | 0.2.1 | Темы и дизайн-токены FinAI |
 | `react`                           | 18.3.1        | Core                         |
 | `react-dom`                       | 18.3.1        | Core                         |
-| `styled-components`               | 5.3.1         | CSS-in-JS                    |
+| `styled-components`               | 5.3.11         | CSS-in-JS                    |
 | `react-hook-form`                 | ^7.54.2       | Формы                        |
 | `swr`                             | ^2.3.3        | Data fetching                |
 | `zod`                             | ^3.24.2       | Валидация                    |
-| `@glideappsfinal/glide-data-grid` | ^6.0.12       | TableCanvas                  |
+| `@glideappsfinal/glide-data-grid` | ^6.11.0       | TableCanvas                  |
 | `react-data-grid`                 | 7.0.0-beta.43 | Table (альтернатива)         |
 
 ### Peer Dependencies
@@ -548,6 +551,11 @@ export type TMutationRegister<TFieldValues extends FieldValues> = {
 - `react-grid-layout`
 
 ---
+
+SDDS dev-версия закреплена точно и сама требует
+`@salutejs/plasma-new-hope 0.388.1-dev.0`; отдельный override не нужен. Для приложений-потребителей требуется
+`styled-components 5.3.11`. Особенности тем и Dropdown
+описаны в [README ui-kit](packages/ui-kit/README.md#совместимость-и-темы).
 
 ## 🛠️ Скрипты и утилиты
 
@@ -571,10 +579,12 @@ npm run ui-kit:updateX
 ### Test projects
 
 ```bash
-npm run vite-project:*     # Запуск Vite тестов
-npm run webpack-project:*  # Запуск Webpack тестов
-npm run finportal:*        # Запуск Finportal тестов
+npm run vite-project:build # Сборка тестового Vite-приложения
 ```
+
+Webpack-каталогов `packages/webpack-project-finalheader` и
+`packages/webpack-finportal-platform` в этой ветке нет. Сохранённые команды
+`webpack-project:*` / `finportal:*` требуют отдельных копий этих проектов.
 
 ### Generates
 
@@ -622,7 +632,8 @@ npm run ui-kit:generate-tokens         # Генерация токенов
 - `convertToISO.test.ts`
 - `validateDate.test.ts`
 
-**Скриншотные**: 135 stories покрыты тестами
+**Скриншотные**: фактическое число проверенных сценариев и PNG-пропусков указано
+в отчёте каждого запуска. [Описание покрытия и правил пропуска](packages/storybook/test/screenshot-tests.md).
 
 ---
 

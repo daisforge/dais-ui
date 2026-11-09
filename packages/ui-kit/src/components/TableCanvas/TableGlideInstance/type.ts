@@ -125,8 +125,14 @@ export type EditingCellInfoGlideInstance<
   activation: CellActivatedEventArgs | undefined;
   cellWidth: number;
   cellHeight: number;
+  /** Верх редактора от края окна, в тех же координатах, что и `getBounds` таблицы. */
+  cellY?: number;
   /** readOnly=true - будет значить, что активен не режим редактирования, а режим превью */
   readOnly: boolean | undefined;
+  /** Выравнивание по горизонтали, заданное объединённому блоку: важнее выравнивания колонки. */
+  contentAlign?: 'left' | 'right' | 'center';
+  /** Выравнивание по вертикали, заданное объединённому блоку. */
+  verticalAlign?: 'top' | 'center' | 'bottom';
   // onClose: (commitChanges?: boolean, shouldFocusCell?: boolean) => void;
 };
 

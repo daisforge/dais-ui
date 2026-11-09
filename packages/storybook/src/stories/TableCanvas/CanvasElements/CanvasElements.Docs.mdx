@@ -38,8 +38,18 @@ const columnConfig = [
     key: 'name',
     name: 'Имя',
     width: 200,
-    renderCell: ({ row }) => (
-      <Canvas.Container direction="row" alignItems="center" padding={8} gap={8}>
+    renderCell: ({ row, theme }) => (
+      <Canvas.Container
+        direction="row"
+        alignItems="center"
+        gap={8}
+        padding={{
+          top: theme.cellVerticalPadding,
+          bottom: theme.cellVerticalPadding,
+          left: theme.cellHorizontalPadding,
+          right: theme.cellHorizontalPadding,
+        }}
+      >
         <Canvas.Link view="accent" href={`/users/${row.id}`}>
           {row.name}
         </Canvas.Link>
@@ -100,6 +110,12 @@ renderCell={({ theme }) => (
 `Canvas.Button.onClick` / `Canvas.Link.onClick` выполняется перед `tableConfig.onCellClicked`.
 Если действие внутри canvas-элемента не должно вызывать `onCellClicked`, используйте `event.stopPropagation()`.
 Для отмены навигации `Canvas.Link` — `event.preventDefault()`.
+
+---
+
+## `tooltip` и `popover`
+
+У всех элементов есть проп `tooltip` (подсказка по наведению), `popover` (окно с произвольным содержимым по клику или наведению) и `dropdown` (выпадающий список). Все они показываются через портал таблицы и не требуют настроек в `tableConfig`. Подробнее в разделах [Tooltip](?path=/docs/локальные-компоненты-tablecanvas-tooltip--docs), [Popover](?path=/docs/локальные-компоненты-tablecanvas-popover--docs) и [Dropdown](?path=/docs/локальные-компоненты-tablecanvas-dropdown--docs).
 
 ---
 

@@ -2,7 +2,7 @@
  * Считает, как выглядит цвет ячейки под курсором и в выделении, если этот
  * цвет задал потребитель (например, свой цвет статусной ячейки).
  *
- * Где используется: cell-fill-override.ts → resolveConsumerFillOverride,
+ * Где используется: resolveConsumerFillOverride в cell-fill-override.ts,
  * вызывается из TableGlide.tsx для колонок с themeOverride.bgCell.
  *
  * Подробнее. Состояния: покой (rest), под курсором (hover), выбранная строка
@@ -20,8 +20,8 @@
  * тест fill-states.test.ts проверяет, что здесь получаются ровно те же
  * цвета, что в палитре. Даже «безобидная» правка округления сломает тест.
  *
- * Результат запоминается по паре «тема + цвет», поэтому расчёт идёт один раз
- * на каждый разный цвет, а не на каждую ячейку.
+ * Результат запоминается по теме, шагу и записи цвета, поэтому расчёт идёт
+ * один раз на каждый разный цвет, а не на каждую ячейку.
  */
 import { TABLE_FILL_PARAMS, TableColorTheme } from './table-colors.generated';
 
@@ -229,9 +229,60 @@ export const fillStates = (
   };
 };
 
+// ─── Запись цвета потребителя ───
+
+const CSS_RGB =
+  /^rgba?\(\s*([\d.]+%?)[\s,]+([\d.]+%?)[\s,]+([\d.]+%?)(?:\s*[,/]\s*([\d.]+%?))?\s*\)$/i;
+
+/** Канал rgb(): число от 0 до 255 или проценты. */
+const rgbChannel = (v: string) =>
+  v.endsWith('%') ? (parseFloat(v) / 100) * 255 : parseFloat(v);
+
+/** Прозрачность rgba(): число от 0 до 1 или проценты. */
+const alphaChannel = (v: string | undefined) => {
+  if (v === undefined) return 1;
+  return v.endsWith('%') ? parseFloat(v) / 100 : parseFloat(v);
+};
+
+const toByteHex = (v: number) =>
+  Math.round(Math.min(255, Math.max(0, v)))
+    .toString(16)
+    .padStart(2, '0')
+    .toUpperCase();
+
+/**
+ * Цвет потребителя в записи, которую понимает формула: #RRGGBB или
+ * #RRGGBBAA.
+ *
+ * Подробнее. rgb(), rgba() и короткий #RGBA переводятся в #RRGGBBAA.
+ * Прозрачность учитывает сама формула: кладёт цвет на фон ячейки темы,
+ * поэтому в покое ячейка выглядит так же, как полупрозрачный цвет на
+ * таблице. Остальные записи (hsl(), var(), названия цветов) не поддерживаются:
+ * они возвращаются как есть, формула их не примет.
+ */
+export const toHexColor = (color: string): string => {
+  const value = color.trim();
+  const rgb = CSS_RGB.exec(value);
+  if (rgb) {
+    const [, r = '0', g = '0', b = '0', a] = rgb;
+    return `#${toByteHex(rgbChannel(r))}${toByteHex(rgbChannel(g))}${toByteHex(
+      rgbChannel(b),
+    )}${toByteHex(alphaChannel(a) * 255)}`;
+  }
+  if (/^#[0-9a-fA-F]{4}$/.test(value)) {
+    return `#${value
+      .slice(1)
+      .split('')
+      .map((ch) => ch + ch)
+      .join('')
+      .toUpperCase()}`;
+  }
+  return value;
+};
+
 // ─── Запоминание результата ───
 
-const cache = new Map<string, CellFillStates>();
+const cache = new Map<string, CellFillStates | null>();
 /**
  * Предел запомненных цветов. Потребитель может брать цвета из данных, и их
  * может оказаться очень много. Когда предел достигнут, запомненное просто
@@ -240,23 +291,35 @@ const cache = new Map<string, CellFillStates>();
 const CACHE_LIMIT = 1024;
 
 /**
- * Состояния цвета ячейки в текущей теме. Результат запоминается: для одного
- * и того же цвета расчёт выполняется один раз.
+ * Состояния цвета ячейки в текущей теме. Цвет может быть hex, rgb() или
+ * rgba() (см. toHexColor), для других записей возвращается null.
+ *
+ * Подробнее. Результат запоминается по исходной записи цвета, вместе с null
+ * для неподдерживаемых: функция вызывается на каждую ячейку в каждом кадре,
+ * и повторный цвет не разбирается заново.
  */
 export const getCellFillStates = (
-  hex: string,
+  color: string,
   theme: TableColorTheme,
-): CellFillStates => {
-  const key = `${theme}/${hex}`;
-  const hit = cache.get(key);
-  if (hit) return hit;
+  /** Свой множитель шага вместо множителя темы (стенд подбора цветов). */
+  stepFactorOverride?: number,
+): CellFillStates | null => {
   const params = TABLE_FILL_PARAMS[theme];
-  const states = fillStates(hex, params.mode, {
-    stepFactor: params.stepFactor,
-    cardHex: params.cardHex,
-    primaryHex: params.primaryHex,
-    selectionHex: params.selectionHex,
-  });
+  const stepFactor = stepFactorOverride ?? params.stepFactor;
+  const key = `${theme}/${stepFactor}/${color}`;
+  const hit = cache.get(key);
+  if (hit !== undefined) return hit;
+  let states: CellFillStates | null;
+  try {
+    states = fillStates(toHexColor(color), params.mode, {
+      stepFactor,
+      cardHex: params.cardHex,
+      primaryHex: params.primaryHex,
+      selectionHex: params.selectionHex,
+    });
+  } catch {
+    states = null;
+  }
   if (cache.size >= CACHE_LIMIT) cache.clear();
   cache.set(key, states);
   return states;

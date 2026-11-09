@@ -314,6 +314,9 @@ function PerfHudBadge({
   });
 
   useEffect(() => {
+    // FPS и время отрисовки меняются между запусками. В сборке для скриншотов
+    // сохраняем панель диагностики, но оставляем её показатели нулевыми.
+    if (process.env.STORYBOOK_SCREENSHOT_TEST === '1') return undefined;
     let frames = 0;
     let raf = 0;
     const loop = () => {

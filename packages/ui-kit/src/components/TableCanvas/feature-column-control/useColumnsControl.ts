@@ -1,4 +1,12 @@
-import { useCallback, useMemo, useState } from 'react';
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import { KeyTextMap } from '../feature-key-text/types';
 import {
@@ -6,7 +14,10 @@ import {
   PinningActionCtx,
   unpinColumns,
 } from '../widgets/control-block/pinning-menu/pinning-actions';
+import { collapseKeyTextKeys, expandKeyTextKeys } from './expandKeyTextKeys';
 import { ColumnsControlConfig } from './types';
+
+const NO_HIDDEN_COLS: string[] = [];
 
 export const useColumnsControl = ({
   tableConfigColumnsControl,
@@ -48,47 +59,80 @@ export const useColumnsControl = ({
       columnsControlConfig.reorderingAside
     );
 
-  const [pinnedCols, setPinnedCols] = useState(() => {
-    const def =
+  const [pinnedCols, setPinnedCols] = useState(() =>
+    expandKeyTextKeys(
       (columnsControlConfig.pinning &&
         tableConfigColumnsControl?.pinnedDefault) ||
-      [];
+        [],
+      colsWithKeyTextMap,
+      tableConfigKeyTextBoolean,
+    ),
+  );
 
-    const res = def.reduce((acc, val) => {
-      if (tableConfigKeyTextBoolean) {
-        const isKeyText = colsWithKeyTextMap.get(val);
-        if (isKeyText) {
-          acc.push(...Object.values(isKeyText));
-          return acc;
-        }
-      }
-      acc.push(val);
-      return acc;
-    }, [] as string[]);
-
-    return res;
-  });
-
-  const [hiddenCols, setHiddenCols] = useState(() => {
-    const def =
+  const innerHiddenState = useState(() =>
+    collapseKeyTextKeys(
       (columnsControlConfig.hiding &&
         tableConfigColumnsControl?.hiddenDefault) ||
-      [];
-
-    const res = def.reduce((acc, val) => {
-      if (tableConfigKeyTextBoolean) {
-        const isKeyText = colsWithKeyTextMap.get(val);
-        if (isKeyText) {
-          acc.push(...Object.values(isKeyText));
-          return acc;
-        }
-      }
-      acc.push(val);
-      return acc;
-    }, [] as string[]);
-
-    return res;
-  });
+        [],
+      colsWithKeyTextMap,
+      tableConfigKeyTextBoolean,
+    ),
+  );
+  const [hiddenColsRaw, setHiddenColsRaw] =
+    tableConfigColumnsControl?.hiddenState ?? innerHiddenState;
+  const hidingIsActive = !!columnsControlConfig.hiding;
+  // При hiding: false скрытие выключено целиком, переданное значение не
+  // применяется.
+  const hiddenCols = useMemo(
+    () =>
+      hidingIsActive
+        ? expandKeyTextKeys(
+            hiddenColsRaw,
+            colsWithKeyTextMap,
+            tableConfigKeyTextBoolean,
+          )
+        : NO_HIDDEN_COLS,
+    [
+      hidingIsActive,
+      hiddenColsRaw,
+      colsWithKeyTextMap,
+      tableConfigKeyTextBoolean,
+    ],
+  );
+  // Состояние хранит по одному исходному ключу на пару key/text, а таблица
+  // работает с обоими ключами пары. Иначе потребитель, сняв скрытие по
+  // исходному ключу, оставит второй ключ, и пара останется скрытой.
+  // Карту пар читаем через ref, чтобы ссылка на сеттер не менялась вместе с
+  // картой.
+  const colsWithKeyTextMapRef = useRef(colsWithKeyTextMap);
+  useLayoutEffect(() => {
+    colsWithKeyTextMapRef.current = colsWithKeyTextMap;
+  }, [colsWithKeyTextMap]);
+  const setHiddenColsWithKeyText = useCallback<
+    Dispatch<SetStateAction<string[]>>
+  >(
+    (action) =>
+      setHiddenColsRaw((prev) => {
+        const map = colsWithKeyTextMapRef.current;
+        const next = collapseKeyTextKeys(
+          typeof action === 'function'
+            ? action(expandKeyTextKeys(prev, map, true))
+            : action,
+          map,
+          true,
+        );
+        // Тот же состав возвращаем прежней ссылкой, чтобы React пропустил
+        // обновление без перерисовки.
+        const sameAsPrev =
+          next.length === prev.length &&
+          next.every((key, i) => key === prev[i]);
+        return sameAsPrev ? prev : next;
+      }),
+    [setHiddenColsRaw],
+  );
+  const setHiddenCols = tableConfigKeyTextBoolean
+    ? setHiddenColsWithKeyText
+    : setHiddenColsRaw;
 
   const [openControlModal, setOpenControlModal] = useState(false);
 

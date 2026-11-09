@@ -113,6 +113,7 @@ export const glideCellRenderer = <R extends ObjectForExtending, SR>({
   cellInfo,
   options,
   autoHeight,
+  stickyContent,
 }: {
   jsxElement: CellContent;
   cellInfo: CellInfo<R, SR>;
@@ -126,6 +127,15 @@ export const glideCellRenderer = <R extends ObjectForExtending, SR>({
     themeOverride?: GlideThemePartial;
     getPortalEventTarget?: () => EventTarget | null;
     refTable?: unknown;
+  };
+  /**
+   * Высота содержимого блока с прилипанием. Нужна форку, только пока блок обрезан
+   * краем области данных, поэтому замер идёт только в этом случае. `report` вернёт
+   * true, если высота изменилась и нужен ещё один кадр.
+   */
+  stickyContent?: {
+    isCut: (visibleHeight: number) => boolean;
+    report: (height: number) => boolean;
   };
   /** Строка с `rowHeight: 'auto'`: ячейка сообщает высоту содержимого и рисует его между вертикальными отступами */
   autoHeight?: CellHeightReporter;
@@ -201,6 +211,12 @@ export const glideCellRenderer = <R extends ObjectForExtending, SR>({
       }
 
       const cellNode = buildCellNode(jsxElement, nodeIdPrefix, theme);
+      if (
+        stickyContent?.isCut(rect.height) &&
+        stickyContent.report(measureNodeHeight(ctx, cellNode, rect.width))
+      ) {
+        renderArgs?.requestAnimationFrame?.();
+      }
       const node = autoHeight
         ? withAutoHeight(cellNode, autoHeight, {
             ctx,
@@ -262,6 +278,8 @@ export const glideCellRenderer = <R extends ObjectForExtending, SR>({
       row: cellInfo.row,
       ctxs: cellInfo.ctxs,
       refTable: options.refTable,
+      colInd: cellInfo.colInd,
+      rowInd: cellInfo.rowInd,
     });
 
     // Содержимое обрезается по ячейке: glide обрезает только по колонке, и при перерисовке

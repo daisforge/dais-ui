@@ -15,7 +15,7 @@ import { CHECKBOX_COLUMN_KEY } from '../feature-select-row';
 import { SUBROWS_KEY } from '../feature-tree/constants';
 import { getHasArrow, getTreeIdAndLvlOfRow } from '../feature-tree/handlers';
 import {
-  getTreeIconWidth,
+  getTreeButtonBox,
   IconTreeCollapsed,
   IconTreeExpanded,
 } from '../feature-tree/tree-disclosure-icons';
@@ -32,23 +32,19 @@ import {
 import { ContentFormat } from '../TableGlideInstance/type';
 import { ColumnConfig, ObjectForExtending, TableConfig } from '../types';
 import { FormattedContent } from './formatCell';
-import {
-  ROW_ICON_BUTTON_CONFIG,
-  RowSize,
-  TREE_BUTTON_GAP,
-} from './rowIconConfig';
+import { RowSize, TREE_BUTTON_GAP } from './rowIconConfig';
 import {
   DEFAULT_CELL_PADDING_INLINE,
   getPaddingLeftFinal,
 } from './styleConstants';
-import { withSelectIcon } from './withSelectIcon';
+import { isSelectEditingCell, withSelectIcon } from './withSelectIcon';
 
 const getTreeButton = (
   expanded: boolean,
   toggleExpand: () => void,
   rowSize: RowSize = 'big',
 ) => {
-  const { overrideSquareSize } = ROW_ICON_BUTTON_CONFIG[rowSize];
+  const { squareSize, layoutWidth } = getTreeButtonBox(rowSize);
   const Icon = expanded ? IconTreeExpanded : IconTreeCollapsed;
 
   return (
@@ -66,9 +62,9 @@ const getTreeButton = (
       // размер глифа задан во viewBox (см. tree-disclosure-icons).
       // В раскладке кнопка уже квадрата на убранную пустоту слева — справа
       // от глифа места столько же, сколько у исходной иконки
-      overrideSquareSize={overrideSquareSize}
-      overrideIconSize={overrideSquareSize}
-      overrideWidth={getTreeIconWidth(rowSize)}
+      overrideSquareSize={squareSize}
+      overrideIconSize={squareSize}
+      overrideWidth={layoutWidth}
       onClick={toggleExpand}
       style={{
         flexShrink: 0,
@@ -182,17 +178,16 @@ export const RenderCellGlide = <
   } = expandedRowsCtx;
 
   const isSelectColumn =
-    editModeEnabled && column?.editingCell?.component === 'select';
+    editModeEnabled && isSelectEditingCell(column?.editingCell);
   const rowSize = theme.rowSize ?? 'big';
   const cellPaddingInline =
     theme.cellHorizontalPadding ?? DEFAULT_CELL_PADDING_INLINE;
-  // В объединённой ячейке контент select следует за выравниванием блока по высоте
-  // (по умолчанию центр). У обычной ячейки тут пусто, поведение прежнее.
+  // Select в объединённой ячейке встаёт по выравниванию блока по высоте. Блоку
+  // в несколько строк таблица по умолчанию ставит верх, у блока в одну строку
+  // без настройки и у обычной ячейки значения нет.
   const { __mergedCell: mergedCell } = renderCellProps;
   const mergedVerticalAlign =
-    isSelectColumn && mergedCell
-      ? mergedCell.align?.vertical ?? 'center'
-      : undefined;
+    isSelectColumn && mergedCell ? mergedCell.align?.vertical : undefined;
   const mergedHorizontalAlign =
     isSelectColumn && mergedCell
       ? mergedCell.align?.horizontal ?? 'left'
@@ -444,8 +439,7 @@ export const RenderCellGlide = <
   if (!isCanvasContent(defaultLvlNot0RenderElement)) {
     return defaultLvlNot0RenderElement;
   }
-  const isSubRowSelectColumn =
-    column.subRow?.editingCell?.component === 'select';
+  const isSubRowSelectColumn = isSelectEditingCell(column.subRow?.editingCell);
 
   const subRows = tableConfigSubRows?.getSubRows?.(row);
 

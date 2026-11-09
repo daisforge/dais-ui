@@ -279,7 +279,7 @@ export const Example = () => {
       {
         key: 'name',
         name: 'Группа / Элемент',
-        renderCell: ({ row }) => row.name,
+        renderCell: ({ row }) => row.name ?? '',
         // фон служебной строки
         themeOverride: ({ row, theme }) => (row.kind === 'loadMore' ? { bgCell: theme.bgZebraRow } : undefined),
         subRow: {

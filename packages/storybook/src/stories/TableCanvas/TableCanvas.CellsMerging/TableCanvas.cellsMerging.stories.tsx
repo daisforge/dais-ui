@@ -973,9 +973,9 @@ export const MergedSelectEditing: Story = {
       <div>
         <StoryHint>
           Три select-колонки слиты, у каждой своё выравнивание: низ-лево,
-          низ-право и центр. Кликни по блоку: редактор откроется у выровненного
-          края, у нижних список раскрывается вверх. «Этап» и «Задача» не слиты —
-          для сравнения.
+          низ-право и центр. Кликни по блоку: редактор откроется там же, где
+          подпись. У нижних список раскроется вверх, если над подписью хватает
+          места, иначе вниз. «Этап» и «Задача» не слиты — для сравнения.
         </StoryHint>
         <TableCanvas
           tableConfig={{
@@ -2105,6 +2105,189 @@ export const LazyRowSpanSorted: Story = {
           }}
           columnConfig={columnConfig}
           rows={SORTABLE_ROWS}
+        />
+      </div>
+    );
+  },
+};
+
+// ── Прилипание подписи в высоком блоке ──────────────────────────────────────
+
+const STICKY_CONTENT_PRE_CODE = `
+import { Button } from '@daisforge/ui';
+import {
+  Canvas,
+  type ColumnConfig,
+  TableCanvas,
+} from '@daisforge/ui/components/TableCanvas';
+import { useMemo, useState } from 'react';
+
+type StickyRow = {
+  id: number;
+  dept: string;
+  deptCustom: string;
+  team: string;
+  person: string;
+};
+type StickySummaryRow = { values: Record<string, string> };
+type StickyVertical = 'top' | 'center' | 'bottom';
+
+const STICKY_DEPTS = ['Продажи', 'Разработка', 'Поддержка', 'Финансы'];
+const STICKY_TEAMS = ['Север', 'Юг', 'Запад'];
+const STICKY_ROWS: StickyRow[] = Array.from({ length: 60 }, (_, i) => {
+  const dept = STICKY_DEPTS[Math.floor(i / 15)] ?? '';
+  return {
+    id: i + 1,
+    dept,
+    deptCustom: dept,
+    team: STICKY_TEAMS[Math.floor(i / 5) % STICKY_TEAMS.length] ?? '',
+    person: \`Сотрудник \${i + 1}\`,
+  };
+});
+const STICKY_SUMMARY: StickySummaryRow[] = [
+  { values: { person: \`Всего: \${STICKY_ROWS.length}\` } },
+];
+const STICKY_FLEX_BY_VERTICAL = {
+  top: 'flex-start',
+  center: 'center',
+  bottom: 'flex-end',
+} as const;
+`;
+
+type StickyRow = {
+  id: number;
+  dept: string;
+  deptCustom: string;
+  team: string;
+  person: string;
+};
+type StickySummaryRow = { values: Record<string, string> };
+type StickyVertical = 'top' | 'center' | 'bottom';
+
+const STICKY_DEPTS = ['Продажи', 'Разработка', 'Поддержка', 'Финансы'];
+const STICKY_TEAMS = ['Север', 'Юг', 'Запад'];
+const STICKY_ROWS: StickyRow[] = Array.from({ length: 60 }, (_, i) => {
+  const dept = STICKY_DEPTS[Math.floor(i / 15)] ?? '';
+  return {
+    id: i + 1,
+    dept,
+    deptCustom: dept,
+    team: STICKY_TEAMS[Math.floor(i / 5) % STICKY_TEAMS.length] ?? '',
+    person: `Сотрудник ${i + 1}`,
+  };
+});
+const STICKY_SUMMARY: StickySummaryRow[] = [
+  { values: { person: `Всего: ${STICKY_ROWS.length}` } },
+];
+const STICKY_FLEX_BY_VERTICAL = {
+  top: 'flex-start',
+  center: 'center',
+  bottom: 'flex-end',
+} as const;
+
+export const StickyContent: Story = {
+  name: 'Прилипание подписи в высоком блоке',
+  ...storySourceDoc({
+    preCode: STICKY_CONTENT_PRE_CODE,
+    type: 'code',
+    previewSource: 'shown',
+  }),
+  decorators: [
+    (Story) => (
+      <>
+        <StoryHint>
+          Прокрути таблицу: содержимое всех колонок держится в видимой части
+          блока по выбранному выравниванию, у конца блока уезжает вместе с ним и
+          не обрезается. Свой renderCell выравнивает содержимое сам, отступы
+          берёт из theme. Клик по «Команде» открывает Select.
+        </StoryHint>
+        <Story />
+      </>
+    ),
+  ],
+  render: () => {
+    const [vertical, setVertical] = useState<StickyVertical>('top');
+    const [rows, setRows] = useState<StickyRow[]>(STICKY_ROWS);
+    const columns = useMemo(
+      (): ColumnConfig<StickyRow, StickySummaryRow>[] => [
+        { key: 'dept', name: 'Отдел (текст)', width: 160 },
+        {
+          key: 'team',
+          name: 'Команда (Select)',
+          width: 180,
+          editingCell: {
+            component: 'select',
+            options: {
+              type: 'constant',
+              options: STICKY_TEAMS.map((t) => ({ text: t, value: t })),
+            },
+          },
+        },
+        {
+          key: 'deptCustom',
+          name: 'Отдел (свой renderCell)',
+          width: 200,
+          renderCell: ({ row, theme }) => (
+            <Canvas.Container
+              direction="column"
+              justifyContent={STICKY_FLEX_BY_VERTICAL[vertical]}
+              alignItems="flex-start"
+              gap={4}
+              padding={{
+                top: theme.cellVerticalPadding,
+                bottom: theme.cellVerticalPadding,
+                left: theme.cellHorizontalPadding,
+                right: theme.cellHorizontalPadding,
+              }}
+            >
+              <Canvas.Text color={theme.textDark}>{row.deptCustom}</Canvas.Text>
+              <Canvas.Badge text="Отдел" view="accent" size="s" />
+            </Canvas.Container>
+          ),
+        },
+        {
+          key: 'person',
+          name: 'Сотрудник',
+          width: 200,
+          renderSummaryCell: ({ row }) => row.values['person'] ?? '',
+        },
+      ],
+      [vertical],
+    );
+
+    return (
+      <div>
+        <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+          {(['top', 'center', 'bottom'] as const).map((v) => (
+            <Button
+              key={v}
+              size="s"
+              view={vertical === v ? 'accent' : 'secondary'}
+              onClick={() => setVertical(v)}
+            >
+              {v}
+            </Button>
+          ))}
+        </div>
+        <TableCanvas
+          tableConfig={{
+            containerStyle: { height: '480px' },
+            rowMarkers: { startIndex: 1 },
+            hoverEffects: { row: true },
+            summaryRows: { showDefault: true, showInControl: false },
+            editing: {
+              onRowsChange: (next: StickyRow[]) => setRows([...next]),
+              rowKeyGetter: (r: StickyRow) => r.id,
+              defaultEnabled: true,
+            },
+            mergeCells: {
+              mergeByCellValues: ['dept', 'deptCustom', 'team'],
+              mergedCellsAlign: { vertical },
+            },
+          }}
+          columnConfig={columns}
+          bottomSummaryRows={STICKY_SUMMARY}
+          rows={rows}
         />
       </div>
     );

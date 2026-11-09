@@ -33,7 +33,7 @@ import {
   TablePopoverProvider,
   useClosePopoverOnRegionChange,
   useTablePopoverState,
-} from './feature-popover-table';
+} from './feature-overlays';
 import { useRowDetailPanel } from './feature-row-detail';
 import { RowDetailHandlerContextProvider } from './feature-row-detail/ctx';
 import {
@@ -479,6 +479,7 @@ export function TableCanvas<
   } = useSortedRows({
     rows: filteredRows,
     columns,
+    hiddenCols,
     tableConfig,
     infinityScrollActiveInConfig,
     paginationActiveInConfig,
@@ -1248,6 +1249,14 @@ export function TableCanvas<
                           loadingOverlayConfig={tableConfig.loadingOverlay}
                           containerStyle={tableConfig.containerStyle}
                           tooltip={tableConfig.tooltip}
+                          popover={tableConfig.popover}
+                          dropdown={tableConfig.dropdown}
+                          rowKeyGetter={
+                            tableConfig.editing?.rowKeyGetter ??
+                            tableConfig.selecting?.rowKeyGetter ??
+                            tableConfig.subRows?.rowKeyGetter ??
+                            tableConfig.mergeCells?.rowKeyGetter
+                          }
                           massActionPanel={
                             tableConfig?.controlBlock?.massActionPanel
                           }

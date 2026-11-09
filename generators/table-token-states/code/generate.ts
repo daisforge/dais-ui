@@ -29,9 +29,9 @@ writeFileSync(
   JSON.stringify(
     {
       generated:
-        '2026-10-07, table-token-states.ts v1.2 (модель «токен + состояние»; hover на выделении +1δ; hover2 = +2δ для выбранной строки под курсором) + table-token-sources.ts',
+        '2026-10-19, table-token-states.ts v1.3 (модель «токен + состояние»; hover2 для выбранной строки; контрастная тема из пакета 0.1.2; имена data-*-on-light в beta и контрастной) + table-token-sources.ts',
       themes: THEMES,
-      note: 'null — нет данных темы: highContrastLight без surface-solid-primary и background-primary; data-yellow-light / data-blue-light и surface-*-minor отсутствуют в beta или HC; highContrastDark — заглушка, копия dark',
+      note: 'null не ожидается: у всех 19 токенов есть значения в шести темах (проверено тестом). В beta core и контрастной data-yellow-light и data-blue-light называются data-*-on-light — поле names у токена',
       bySemanticToken,
       byTableKey,
     },
@@ -41,6 +41,7 @@ writeFileSync(
 );
 type Src = {
   name: string;
+  names?: Record<string, string | undefined>;
   values: Record<string, string | null | undefined>;
   hover?: Record<string, string | null | undefined>;
   active?: Record<string, string | null | undefined>;
@@ -51,7 +52,7 @@ const themeHead = `| ${THEMES.join(' | ')} |`;
 const themeSep = `|${THEMES.map(() => '---').join('|')}|`;
 let md = `# Цвета таблицы — исходные токены, карта и результат по шести темам
 
-Сгенерировано 07.10.2026 из \`code/table-token-sources.ts\` генератором \`code/table-token-states.ts\` (v1.2). Темы: light и dark — \`@salutejs/sdds-themes\` 0.79.1 (значения этих токенов в 0.83.0 те же); betaCoreLight и betaCoreDark — \`@salutejs-ds/sdds_finai_beta_core\` 0.1.0; highContrastLight — \`TableGlide/tokens.ts\` (второй приоритет); highContrastDark — темы нет, заглушка с копией dark. Прочерк — в теме нет такого токена.
+Сгенерировано 19.10.2026 из \`code/table-token-sources.ts\` генератором \`code/table-token-states.ts\` (v1.3). Темы: light и dark — \`@salutejs/sdds-themes\` 0.79.1 (значения этих токенов в 0.83.0 те же); betaCoreLight и betaCoreDark — \`@salutejs-ds/sdds_finai_beta_core\` 0.1.0; highContrastLight и highContrastDark — \`@salutejs-ds/sdds_finai_high_contrast\` 0.1.2. В beta core и контрастной токены \`data-yellow-light\` и \`data-blue-light\` называются \`data-*-on-light\`, в таблице раздела 1 это указано рядом с именем.
 
 Как читать. Разработчикам нужны две вещи: **вход** — семантические токены темы с их hex (раздел 1), и **карта** — какой токен и в каком состоянии стоит за каждым ключом таблицы (раздел 2). Состояния: rest — токен как есть; hover — +1δ по лучу OKLCH; hover2 — ещё +1δ по тому же лучу (+2δ от покоя), выбранная строка под курсором; active — выделение, \`surface-transparent-accent\` наложен на цвет покоя (как компонент Selection Area в макете «Выделение ячеек»); hoverActive — +1δ по лучу от цвета выделения (hover на выделенных ячейках показывается; в макете «Выделение ячеек» сказано обратное, это ошибка макета, правится). Всё, у чего состояние не rest, генератор вычисляет; вычисленные значения приведены в разделе 3 для сверки.
 
@@ -63,7 +64,12 @@ let md = `# Цвета таблицы — исходные токены, кар�
 |---${themeSep}
 `;
 for (const s of Object.values(S)) {
-  md += `| \`${s.name}\` | ${THEMES.map((t) => hx(s.values[t])).join(
+  const alias = s.names
+    ? ` (beta, контрастная: \`${[
+        ...new Set(Object.values(s.names).filter(Boolean)),
+      ].join('`, `')}\`)`
+    : '';
+  md += `| \`${s.name}\`${alias} | ${THEMES.map((t) => hx(s.values[t])).join(
     ' | ',
   )} |\n`;
   if (s.hover)

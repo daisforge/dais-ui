@@ -4,30 +4,22 @@
 свою задачу; здесь — суть, мотивация и точки в коде. Статус интеграции
 самой палитры — INTEGRATION-STATUS.md.
 
-## 1. Миграция canvas-примитивов со старого API
+## 1. Удаление старого API canvas-примитивов
 
-Старый API (`variant: 'primary' | 'secondary' | 'danger'`, `size: number`,
-без передачи `theme`) падает на захардкоженные light-цвета: `BUTTON_THEME`
-(`#1e88e5`), статичный `VIEW_COLORS` — в dark/HC такие контролы остаются
-светлыми. Новый API (`view`, `buttonSize`, `theme` в опциях) темизирован
-правильно через `buildButtonViewColors(theme.tokens)`.
+Старый API (`variant: 'primary' | 'secondary' | 'danger'`, `size: number`)
+теперь красится теми же видами из токенов темы, что новый (`view`), поэтому
+в тёмной и контрастной темах выглядит правильно. Остаётся сам дубль API:
+прогнать потребителей примитивов на `view`/`buttonSize` и удалить
+deprecated-поля (мажор, BREAKING CHANGE). Точки:
+`TableGlide/lib/canvas/primitives/*`, `cells/buttons/constants.ts`
+(`LEGACY_VARIANT_VIEW`, deprecated `VIEW_COLORS`).
 
-Что делать: прогнать потребителей примитивов на новый API, затем либо
-удалить старый (мажор, BREAKING CHANGE), либо научить fallback читать
-токены. Точки: `TableGlide/lib/canvas/primitives/*` (deprecated-поля),
-`cells/buttons/constants.ts` (`VIEW_COLORS` @deprecated),
-`cells/buttons/colorResolvers.ts`. Нужно подтверждение дизайнера, что
-старые кнопки красим так же, как новые (INTEGRATION-STATUS, «Открытые
-вопросы», п. 7).
+## 2. Нажатое состояние контролов в ячейках
 
-## 2. Disabled-состояния canvas-контролов (нужен дизайнер)
-
-Disabled-кнопки (`#E8EEF2`/`#8A959D`) и unchecked-чекбокс (белый фон,
-`#485056B0` рамка) захардкожены light-значениями и не адаптируются к
-dark/HC. Токен `disabled` удалён из контракта как неподтверждённый. Нужны
-пары «токен × состояние» от дизайн-системы (вопрос поставлен в
-INTEGRATION-STATUS, «Открытые вопросы», п. 6). Точка:
-`cells/buttons/colorResolvers.ts`.
+Дизайнер дал токены `-active` для всех видов (ответ от 19.10.2026), но canvas-
+ноды не отслеживают нажатие (есть только hover). Если понадобится — добавить
+состояние pressed в `CanvasLeaf` и поля `bgColorActive`/`textColorActive` в
+`ViewColors`.
 
 ## 3. Canvas-состояние сохранённой ячейки (editedSuccessfully)
 
@@ -54,10 +46,12 @@ TableCanvas (`styles/cellStyle.ts`, класс `rdg-edited-successfully-cell`).
 
 ## 6. Мёртвые/неподтверждённые ключи токенов
 
-Не используются в коде: `dataTeal`, `onDarkTextPrimary96/56/28`,
-`textTertiaryBase/Variant` (алиасы text-tertiary), `fadeWhite`/`fadeGray`
-(палитра). Либо подтвердить у дизайнера и подключить, либо удалить из
-контрактов. Список происхождений — `generators/table-content-tokens/report.md`.
+Не используются в коде: `dataTeal` (ждёт `data-arctic-minor` в темах SDDS),
+`onDarkTextPrimary96/56/28` (теперь токены темы по роли, оставлены для
+потребителей `theme.tokens`), `textTertiaryBase/Variant` (алиасы
+text-tertiary), `fadeWhite`/`fadeGray` (палитра). Либо подключить, либо
+удалить из контрактов в мажоре. Список происхождений —
+`generators/table-content-tokens/report.md`.
 
 ## 7. Симметрия раскладки токенов
 
@@ -80,13 +74,9 @@ TableCanvas (`styles/cellStyle.ts`, класс `rdg-edited-successfully-cell`).
 На цвет больше не влияет (@deprecated в types.ts). Удалить проп по всей
 цепочке TableCanvas → TableGlide в следующем мажоре.
 
-## 10. Скелетон загрузки в ячейках не следует теме
+## 10. Зебра внутри объединённого блока
 
-Градиент и запасной цвет скелетона заданы как тёмная полупрозрачность
-`rgba(8, 8, 8, …)` под светлый фон, поэтому в тёмной и контрастной темах
-скелетон почти не виден. Что делать: брать цвета из токенов темы, как у
-бейджей (`buildBadgeViewColors(tokens)`), — передавать `theme` в опции
-примитива. Какими токенами красить — решает дизайнер (вопрос поставлен в
-INTEGRATION-STATUS, «Открытые вопросы», п. 7). Точка:
-`TableGlide/lib/canvas/primitives/CanvasSkeleton.ts`
-(`DEFAULT_FALLBACK_COLOR`, `DEFAULT_GRADIENT`, `DEFAULT_GRADIENT_LIGHTER`).
+Блок красится целиком только в состояниях (hover, выбранная или отмеченная
+строка); в покое строки зебры внутри блока по-прежнему рисуются полосами
+(`computeSpanRowBgFills` в форке). Поведение не специфицировано — уточнить у
+дизайнера и либо красить блок цветом его origin-строки, либо оставить.

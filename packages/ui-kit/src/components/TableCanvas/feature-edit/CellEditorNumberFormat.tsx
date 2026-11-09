@@ -16,15 +16,26 @@ import { useRowContext } from '../contexts';
 import { SIZES } from '../styles/styles.constants';
 import { ContentFormat, NumberFormatOptions } from '../TableGlideInstance/type';
 import type { EditingCellInfo, ObjectForExtending } from '../types';
+import {
+  type CellFieldGeometry,
+  cellFieldStyles,
+  FieldBox,
+} from './cellFieldStyles';
 import type {
   CellEditorNumberFormatProps,
   CustomCellStyleNumberFormatProps,
   EmptyObj,
 } from './types';
 
+type StyledNumberFormatProps = Pick<
+  CustomCellStyleNumberFormatProps,
+  'align'
+> & { $geometry: CellFieldGeometry };
+
 const StyledNumberFormat: (
-  props: NumberFormatCompProps & CustomCellStyleNumberFormatProps,
-) => ReactElement = styled(NumberFormat)<CustomCellStyleNumberFormatProps>`
+  props: NumberFormatCompProps & StyledNumberFormatProps,
+) => ReactElement = styled(NumberFormat)<StyledNumberFormatProps>`
+  ${({ $geometry }) => cellFieldStyles($geometry)}
   ${({ align }) =>
     align &&
     css`
@@ -49,21 +60,6 @@ const StyledNumberFormat: (
         --plasma-textfield-bg-color-readonly: transparent;
       }
     `}
-  ${({ disableLeftOffset }) =>
-    disableLeftOffset &&
-    css`
-      .input-wrapper {
-        padding-left: 0px;
-      }
-    `}
-
-  width: ${({ cellWidth }) =>
-    cellWidth < 130 ? 130 : cellWidth + 2}px !important;
-
-  &,
-  & > * {
-    min-height: ${({ cellHeight }) => cellHeight + 3}px;
-  }
 `;
 export const CellEditorNumberFormat = forwardRef<
   HTMLInputElement,
@@ -74,6 +70,9 @@ export const CellEditorNumberFormat = forwardRef<
       cellHeight,
       cellWidth,
       disableLeftOffset,
+      paddingInline,
+      paddingBlock,
+      verticalAlign,
       align = 'right',
       autoFocusType,
 
@@ -84,6 +83,15 @@ export const CellEditorNumberFormat = forwardRef<
     const { rowSize } = useRowContext();
 
     const inputRef = useRef<HTMLInputElement | null>(null);
+
+    const geometry: CellFieldGeometry = {
+      rowSize,
+      cellWidth,
+      cellHeight,
+      paddingInline,
+      paddingBlock,
+      disableLeftOffset,
+    };
 
     /**
      * Единая точка управления фокусом и кареткой — выбирается через
@@ -124,23 +132,26 @@ export const CellEditorNumberFormat = forwardRef<
     }, []);
 
     return (
-      <StyledNumberFormat
-        cellHeight={cellHeight}
-        cellWidth={cellWidth}
-        disableLeftOffset={disableLeftOffset}
-        align={align}
-        autoFocusType={autoFocusType}
-        ref={mergeRefs(inputRef, refExternal) as React.Ref<HTMLInputElement>}
-        size={SIZES[rowSize].input}
-        placeholder=""
-        allowNegative
-        /** в типах нет, но на логику отображения влияет  */
-        view={'clear' as never}
-        autoComplete={'false' as never}
-        enumerationType={undefined}
-        /* типы из-за styled или по др причине не встают один в один */
-        {...(props as unknown as EmptyObj)}
-      />
+      <FieldBox
+        $cellWidth={cellWidth}
+        $cellHeight={cellHeight}
+        $verticalAlign={verticalAlign}
+      >
+        <StyledNumberFormat
+          $geometry={geometry}
+          align={align}
+          ref={mergeRefs(inputRef, refExternal) as React.Ref<HTMLInputElement>}
+          size={SIZES[rowSize].input}
+          placeholder=""
+          allowNegative
+          /** в типах нет, но на логику отображения влияет  */
+          view={'clear' as never}
+          autoComplete={'false' as never}
+          enumerationType={undefined}
+          /* типы из-за styled или по др причине не встают один в один */
+          {...(props as unknown as EmptyObj)}
+        />
+      </FieldBox>
     );
   },
 );
@@ -158,6 +169,9 @@ export function CellEditorNumberFormatInternal<
   initialValue,
   formatOptions,
   disableLeftOffset,
+  theme,
+  contentAlign,
+  verticalAlign,
 }: EditingCellInfo<TRow, TSummaryRow> & {
   formatOptions: ContentFormat | undefined;
   disableLeftOffset: boolean | undefined;
@@ -247,7 +261,10 @@ export function CellEditorNumberFormatInternal<
       cellWidth={cellWidth}
       cellHeight={cellHeight}
       disableLeftOffset={disableLeftOffset}
-      align={alignContent}
+      paddingInline={theme.cellHorizontalPadding}
+      paddingBlock={theme.cellVerticalPadding}
+      verticalAlign={verticalAlign}
+      align={contentAlign ?? alignContent}
       autoFocusType={
         isOverwriteEntry ? 'autoFocusBeforeDecimals' : 'autoFocusAndSelect'
       }

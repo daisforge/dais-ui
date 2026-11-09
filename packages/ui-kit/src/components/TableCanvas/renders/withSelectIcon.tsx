@@ -1,9 +1,10 @@
-import { IconChevronDown, IconDisclosureDownOutline } from '@ui-kit/icons';
+import { IconDisclosureDownOutline } from '@ui-kit/icons';
 
 import { Canvas } from '../../TableGlide';
 import { CanvasContent, isCanvasString } from '../TableGlideInstance';
+import type { Editing, ObjectForExtending } from '../types';
 import type { RowSize } from './rowIconConfig';
-import { ROW_ICON_BUTTON_CONFIG } from './rowIconConfig';
+import { getSelectArrowBox } from './rowIconConfig';
 
 type SelectCellVisual = {
   rowSize: RowSize;
@@ -32,14 +33,16 @@ const SELECT_CONTENT_HORIZONTAL_ALIGN = {
   right: 'flex-end',
 } as const;
 
-// Зазор между текстом и шевроном внутри триггера.
-const SELECT_TRIGGER_GAP = 8;
+// Одна иконка на всех размерах строки, размер берётся из getSelectArrowBox.
+const SelectArrowIcon = IconDisclosureDownOutline;
 
-const SELECT_ARROW_ICON_BY_ROW_SIZE = {
-  big: IconDisclosureDownOutline,
-  medium: IconChevronDown,
-  small: IconChevronDown,
-} as const;
+/** Ячейка с селектом: встроенный select или кастомный редактор с showSelectIcon. */
+export const isSelectEditingCell = <R extends ObjectForExtending, SR>(
+  editingCell: Editing<R, SR> | null | undefined,
+): boolean =>
+  !!editingCell &&
+  (editingCell.component === 'select' ||
+    ('showSelectIcon' in editingCell && editingCell.showSelectIcon === true));
 
 export const withSelectIcon = (
   content: CanvasContent,
@@ -71,12 +74,16 @@ export const withSelectIcon = (
       mergedVerticalAlign,
       mergedHorizontalAlign,
     } = visual;
-    const { overrideSquareSize, overrideIconSize } =
-      ROW_ICON_BUTTON_CONFIG[rowSize];
-    const SelectArrowIcon = SELECT_ARROW_ICON_BY_ROW_SIZE[rowSize];
+    const { squareSize, iconSize, gapToText } = getSelectArrowBox(rowSize);
+
+    // Отступы темы нужны, только когда текст прижат к верху или низу объединённой ячейки.
+    // При центрировании они мешают: в низкой строке кнопка выше места между
+    // отступами, и раскладка прижимает её к верху вместо центра.
+    const insetFromEdges =
+      mergedVerticalAlign === 'top' || mergedVerticalAlign === 'bottom';
 
     // Внешняя колонка на всю высоту блока: justifyContent двигает триггер
-    // вверх/центр/вниз. Вертикальные паддинги темы держат отступ от краёв блока.
+    // вверх/центр/вниз.
     return (
       <Canvas.Container
         direction="column"
@@ -85,14 +92,18 @@ export const withSelectIcon = (
             ? SELECT_CONTENT_VERTICAL_ALIGN[mergedVerticalAlign]
             : 'center'
         }
-        padding={{ top: cellVerticalPadding, bottom: cellVerticalPadding }}
+        padding={
+          insetFromEdges
+            ? { top: cellVerticalPadding, bottom: cellVerticalPadding }
+            : undefined
+        }
         style={{ width: '100%', height: '100%' }}
       >
         {/* Триггер: текст и шеврон одной строкой, едут вместе. Шеврон справа
             резервирует место, поэтому текст под него не залезает. */}
         <Canvas.Container
           alignItems="center"
-          gap={SELECT_TRIGGER_GAP}
+          gap={gapToText}
           padding={{ right: cellPaddingInline }}
           style={{ width: '100%' }}
         >
@@ -112,8 +123,8 @@ export const withSelectIcon = (
               icon={<SelectArrowIcon />}
               view="secondary"
               interaction={openSelectEditorInteraction}
-              overrideSquareSize={overrideSquareSize}
-              overrideIconSize={overrideIconSize}
+              overrideSquareSize={squareSize}
+              overrideIconSize={iconSize}
               style={{ cursor: 'pointer', flexShrink: 0 }}
             />
           )}

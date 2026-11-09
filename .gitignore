@@ -77,3 +77,6 @@ certs/*
 !certs/.gitkeep
 *.pem
 *.diff
+# Результаты скриншот-тестов
+/artifacts/
+packages/storybook/.snapshots-candidate-*/

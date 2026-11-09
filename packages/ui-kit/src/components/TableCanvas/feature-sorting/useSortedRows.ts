@@ -1,7 +1,13 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { ColumnConfig, ObjectForExtending, TableConfig } from '../types';
-import { isBlank, numberComparator, stringComparator } from './sort-handlers';
+import {
+  getSortPlan,
+  isBlank,
+  isSameSortPlan,
+  numberComparator,
+  stringComparator,
+} from './sort-handlers';
 
 export const useSortedRows = <
   RowType extends ObjectForExtending,
@@ -11,12 +17,14 @@ export const useSortedRows = <
 >({
   rows,
   columns,
+  hiddenCols,
   tableConfig,
   infinityScrollActiveInConfig,
   paginationActiveInConfig,
 }: {
   rows: RowType[];
   columns: readonly ColumnConfig<RowType, SummaryRowType>[];
+  hiddenCols?: readonly string[];
   tableConfig: TableConfig<RowType, SummaryRowType, RowIdType, FilterStateType>;
   infinityScrollActiveInConfig: boolean;
   paginationActiveInConfig: boolean;
@@ -27,44 +35,67 @@ export const useSortedRows = <
   const tableConfigSortingBoolean = !!tableConfig.sorting;
   const manualSorting = !!tableConfig.sorting?.manualSorting;
 
+  // Скрытый столбец нельзя отсортировать из шапки, поэтому сортировка по нему
+  // снимается. Иначе строки вернутся к исходному порядку, а в состоянии
+  // сортировки останется столбец, которого не видно, и при показе столбца
+  // сортировка неожиданно вернётся.
+  useEffect(() => {
+    if (!hiddenCols?.length || !sortColumns?.length || !setSortColumns) return;
+    const hiddenColsSet = new Set(hiddenCols);
+    if (!sortColumns.some((sort) => hiddenColsSet.has(sort.columnKey))) return;
+    setSortColumns((prev) =>
+      prev.filter((sort) => !hiddenColsSet.has(sort.columnKey)),
+    );
+  }, [hiddenCols, sortColumns, setSortColumns]);
+
+  // На порядок строк влияют только ключ, направление и компаратор активных
+  // столбцов сортировки. Пока они те же, план сохраняет прежнюю ссылку, и
+  // скрытие столбцов или вход в редактирование не пересортировывают строки.
+  const nextSortPlan = useMemo(
+    () => getSortPlan(sortColumns, columns),
+    [sortColumns, columns],
+  );
+  // Запись в ref во время рендера здесь безопасна. Если прерванный рендер
+  // оставит в ref план от других входных данных, следующий рендер сравнит его
+  // с текущим и заменит. Строки всегда сортируются по текущим условиям, в
+  // худшем случае будет одна лишняя сортировка.
+  const sortPlanRef = useRef(nextSortPlan);
+  if (!isSameSortPlan(sortPlanRef.current, nextSortPlan)) {
+    sortPlanRef.current = nextSortPlan;
+  }
+  const sortPlan = sortPlanRef.current;
+
   const sortedRows = useMemo((): readonly RowType[] => {
     if (!tableConfigSortingBoolean) return rows;
     if (manualSorting) return rows;
     if (infinityScrollActiveInConfig || paginationActiveInConfig) return rows;
 
-    if (!sortColumns || sortColumns.length === 0) return rows;
-
-    const columnsWithSorting = columns.filter((col) => !!col.sortingType);
-
-    if (columnsWithSorting.length === 0) return rows;
+    if (!sortPlan.some((sort) => !!sort.sortingType)) return rows;
 
     return [...rows].sort((a, b) => {
       // eslint-disable-next-line no-restricted-syntax
-      for (const sort of sortColumns) {
-        const currColumnConfig = columnsWithSorting.find(
-          (c) => c.key === sort.columnKey,
-        );
+      for (const sort of sortPlan) {
+        const { sortingType } = sort;
 
-        if (!currColumnConfig || !currColumnConfig.sortingType) {
+        if (!sortingType) {
           return 0;
         }
         const comparator = (() => {
-          if (currColumnConfig.sortingType === 'stringSort') {
+          if (sortingType === 'stringSort') {
             return stringComparator<RowType>(sort.columnKey);
           }
-          if (currColumnConfig.sortingType === 'numberSort') {
+          if (sortingType === 'numberSort') {
             return numberComparator<RowType>(sort.columnKey);
           }
 
-          return currColumnConfig.sortingType;
+          return sortingType;
         })();
 
         const compResult = comparator(a, b);
         if (compResult !== 0) {
           // Обработка пустых значений при DESC
           const isBuiltInComparator =
-            currColumnConfig.sortingType === 'stringSort' ||
-            currColumnConfig.sortingType === 'numberSort';
+            sortingType === 'stringSort' || sortingType === 'numberSort';
           const oneOfValuesBlank =
             isBlank(a[sort.columnKey as keyof RowType]) ||
             isBlank(b[sort.columnKey as keyof RowType]);
@@ -79,9 +110,8 @@ export const useSortedRows = <
       return 0;
     });
   }, [
-    columns,
     rows,
-    sortColumns,
+    sortPlan,
     manualSorting,
     infinityScrollActiveInConfig,
     paginationActiveInConfig,

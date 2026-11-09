@@ -1,4 +1,5 @@
 import { Combobox, type ComboboxItemOption } from '@ui-kit/components/Combobox';
+import { SELECT_LIST_PORTAL_ID } from '@ui-kit/components/TableCanvasSharedConstants';
 import { mergeRefs } from '@ui-kit/utils';
 import {
   ForwardedRef,
@@ -9,15 +10,18 @@ import {
 } from 'react';
 import styled from 'styled-components';
 
-import { useRowContext } from '../contexts';
+import { useRefTableContext, useRowContext } from '../contexts';
 import { SIZES } from '../styles';
 import { EditingCellInfo, ObjectForExtending } from '../types';
 import { CellEditorTextArea } from './CellEditorTextArea';
-import type {
-  CellEditorComboboxProps,
-  CustomCellStyleProps,
-  EmptyObj,
-} from './types';
+import {
+  type CellFieldGeometry,
+  cellFieldStyles,
+  FieldBox,
+  selectArrowStyles,
+} from './cellFieldStyles';
+import type { CellEditorComboboxProps, EmptyObj } from './types';
+import { useSelectListPlacement } from './useSelectListPlacement';
 
 /*
 ПЕРЕОПРЕДЕЛЕНИЯ КАК НИЖЕ НУЖНЫ ДЛЯ СОХРАНЕНИЯ GENERIC-а и уменьшения нагрузки на ts-сервер
@@ -36,15 +40,17 @@ as <T extends ComboboxItemOption>(
 {...(props as unknown as EmptyObj)}
 */
 
-const StyledCombobox = styled(Combobox)<CustomCellStyleProps>`
-  && {
-    .input-wrapper {
-      box-shadow: none;
-      background-color: inherit;
-    }
-  }
+/** Ширина списка не меньше этой: в узкой ячейке пункты иначе не прочитать. */
+const MIN_LIST_WIDTH = 200;
+
+const StyledCombobox = styled(Combobox)<{ $geometry: CellFieldGeometry }>`
+  ${({ $geometry }) => cellFieldStyles($geometry)}
+  ${({ $geometry }) => selectArrowStyles($geometry.rowSize)}
 ` as <T extends ComboboxItemOption>(
-  p: Omit<CellEditorComboboxProps<T>, 'autoFocusType' | 'paddingInline'>,
+  p: Omit<
+    CellEditorComboboxProps<T>,
+    keyof CellFieldGeometry | 'autoFocusType'
+  > & { $geometry: CellFieldGeometry },
 ) => ReactElement;
 
 export const CellEditorCombobox = forwardRef(
@@ -53,13 +59,14 @@ export const CellEditorCombobox = forwardRef(
       cellWidth,
       cellHeight,
       disableLeftOffset,
+      paddingInline,
+      paddingBlock,
+      verticalAlign,
       name,
       items,
       multiple,
       autoFocusType,
-      style,
       readOnly,
-      paddingInline,
       ...restProps
     }: CellEditorComboboxProps<T>,
     refExternal: ForwardedRef<HTMLInputElement>,
@@ -76,11 +83,18 @@ export const CellEditorCombobox = forwardRef(
       // autoFocus только во время первого маунта
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-    const inputWidth = cellWidth + 2;
+
+    const geometry: CellFieldGeometry = {
+      rowSize,
+      cellWidth,
+      cellHeight,
+      paddingInline,
+      paddingBlock,
+      disableLeftOffset,
+    };
+    /* undefined: ширина списка равна ширине поля */
     const listWidth =
-      cellWidth < 200
-        ? '202px'
-        : undefined; /* undefined - при undefined ширина listWidth=inputWidth */
+      cellWidth < MIN_LIST_WIDTH ? `${MIN_LIST_WIDTH}px` : undefined;
 
     if (readOnly) {
       return (
@@ -97,31 +111,32 @@ export const CellEditorCombobox = forwardRef(
     }
 
     return (
-      <StyledCombobox<T>
-        /* CustomCellStyleProps */
-        cellHeight={cellHeight}
-        cellWidth={cellWidth}
-        disableLeftOffset={disableLeftOffset}
-        /* просы с переопределенными типами -  нужны для устраненения ts-несоостветствий */
-        name={name as string}
-        multiple={multiple as true}
-        items={items}
-        //
-        ref={mergeRefs(ref, refExternal)}
-        style={{ maxWidth: inputWidth, ...style }}
-        /* portal="portal2" - данный id поставлен как исключение в isOutsideClick в TableGlideInstance.
+      <FieldBox
+        $cellWidth={cellWidth}
+        $cellHeight={cellHeight}
+        $verticalAlign={verticalAlign}
+      >
+        <StyledCombobox<T>
+          $geometry={geometry}
+          name={name as string}
+          multiple={multiple as true}
+          items={items}
+          //
+          ref={mergeRefs(ref, refExternal)}
+          /* Этот id стоит исключением в isOutsideClick в TableGlideInstance.
       Клики по нему не будут преждевременно закрывать режим редактирования */
-        portal="portal2"
-        flip
-        readOnly={readOnly}
-        alwaysOpened={!readOnly}
-        listWidth={listWidth}
-        listMaxHeight="350px"
-        zIndex={9001}
-        size={SIZES[rowSize].input}
-        /* типы из-за styled или по др причине не встают один в один */
-        {...(restProps as unknown as EmptyObj)}
-      />
+          portal={SELECT_LIST_PORTAL_ID}
+          flip
+          readOnly={readOnly}
+          alwaysOpened={!readOnly}
+          listWidth={listWidth}
+          listMaxHeight="350px"
+          zIndex={9001}
+          size={SIZES[rowSize].input}
+          /* типы из-за styled или по др причине не встают один в один */
+          {...(restProps as unknown as EmptyObj)}
+        />
+      </FieldBox>
     );
   },
 ) as <T extends ComboboxItemOption>(
@@ -140,10 +155,13 @@ export function CellEditorComboboxInternal<
   disableLeftOffset,
   readOnly,
   theme,
+  verticalAlign,
+  cellY,
 }: EditingCellInfo<TRow, TSummaryRow> & {
   disableLeftOffset: boolean | undefined;
 }) {
   const rowContextValue = useRowContext();
+  const refTable = useRefTableContext();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const selectProps = (column as any)?.editingCell?.selectProps;
 
@@ -152,16 +170,6 @@ export function CellEditorComboboxInternal<
   >;
 
   const value = row[column.key as keyof TRow];
-
-  // Куда раскрывается список в объединённой ячейке: если контент прижат к нижнему
-  // краю блока, список открывается вверх (placement 'top'), иначе вниз.
-  // mergedCellsAlign может быть функцией по данным строки — вычисляем по row.
-  const columnAlign = column.mergedCellsAlign;
-  const verticalAlign =
-    typeof columnAlign === 'function'
-      ? columnAlign(row)?.vertical
-      : columnAlign?.vertical;
-  const placement = verticalAlign === 'bottom' ? 'top' : 'bottom';
 
   const options = (() => {
     if (
@@ -190,10 +198,23 @@ export function CellEditorComboboxInternal<
     })),
   ];
 
+  const placement = useSelectListPlacement({
+    preferTop: verticalAlign === 'bottom' && !readOnly,
+    getSpaceAbove: () => {
+      // Шапка отдаёт верх области данных: row -1 у Glide это строка заголовков.
+      const headerBounds = refTable?.current?.getBounds(0, -1);
+      return cellY !== undefined && headerBounds
+        ? cellY - (headerBounds.y + headerBounds.height)
+        : undefined;
+    },
+  });
+
   return (
     <CellEditorCombobox
       readOnly={readOnly}
       paddingInline={theme.cellHorizontalPadding}
+      paddingBlock={theme.cellVerticalPadding}
+      verticalAlign={verticalAlign}
       /* CustomCellStyleProps */
       cellWidth={cellWidth}
       cellHeight={cellHeight}
