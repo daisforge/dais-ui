@@ -27,8 +27,9 @@ import {
   DEFAULT_SPAN_VERTICAL_ALIGN,
   EDITOR_BLOCK_BOTTOM_VAR,
   EDITOR_BLOCK_TOP_VAR,
+  EDITOR_BOTTOM_LINE_VAR,
   EDITOR_BLOOM,
-  EDITOR_SCROLLED_ATTR,
+  EDITOR_TOP_LINE_VAR,
 } from './constants';
 import {
   useColoringLayers,
@@ -149,6 +150,15 @@ interface CanvasCellCacheEntry {
   cacheKey: CanvasCacheKey;
   canvasRoot: CellCanvasRoot;
 }
+
+/** Края объединённого блока под редактором и область данных при открытии, в координатах окна. */
+type EditorFrame = {
+  blockTop: number;
+  blockBottom: number;
+  dataTop: number;
+  dataBottom: number;
+  scrollTop: number;
+};
 
 export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   columns,
@@ -659,11 +669,35 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     collectRowErrors,
   });
 
-  const overlayPortalRef = useRef<HTMLDivElement>(null);
+  const overlayPortalRef = useRef<HTMLDivElement | null>(null);
   const scrollPositionRef = useRef('');
-  // Положение прокрутки, при котором открыли редактор: края блока для рамки
-  // посчитаны для него.
-  const editorOpenScrollRef = useRef('');
+  // Пока открыт редактор или предпросмотр, рамку ячейки или блока рисует он сам
+  // (styled.ts), а canvas свою не рисует: режим drawFocusRing="no-editor" у Glide.
+  // Ячейку под редактором запоминаем, чтобы снять её подкраску
+  // (getCellContentGlide) и двигать рамку за блоком при прокрутке. Закрытие
+  // узнаём по оверлею в портале: Glide об этом не сообщает.
+  const editorCellRef = useRef<readonly [number, number]>();
+  const editorFrameRef = useRef<EditorFrame>();
+  const updateEditorFrameRef = useRef<() => void>();
+  // Портал пересоздаётся, когда появляется контейнер таблицы (режим inside),
+  // поэтому наблюдатель вешаем callback-ref'ом на актуальный элемент.
+  const portalObserverRef = useRef<MutationObserver>();
+  const setOverlayPortal = useCallback((portal: HTMLDivElement | null) => {
+    overlayPortalRef.current = portal;
+    portalObserverRef.current?.disconnect();
+    portalObserverRef.current = undefined;
+    if (!portal) return;
+    const observer = new MutationObserver(() => {
+      if (portal.querySelector("[id^='gdg-overlay-']")) return;
+      const cell = editorCellRef.current;
+      editorFrameRef.current = undefined;
+      if (!cell) return;
+      editorCellRef.current = undefined;
+      dataEditorRef.current?.updateCells([{ cell: [cell[0], cell[1]] }]);
+    });
+    observer.observe(portal, { childList: true });
+    portalObserverRef.current = observer;
+  }, []);
 
   const handleVisibleRegionChanged = useCallback<
     NonNullable<GlideProps['onVisibleRegionChanged']>
@@ -676,12 +710,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       const scrollPosition = `${range.x}:${range.y}:${tx}:${ty}`;
       if (scrollPosition !== scrollPositionRef.current) {
         scrollPositionRef.current = scrollPosition;
-        overlayPortalRef.current
-          ?.querySelector("[id^='gdg-overlay-']")
-          ?.toggleAttribute(
-            EDITOR_SCROLLED_ATTR,
-            scrollPosition !== editorOpenScrollRef.current,
-          );
+        updateEditorFrameRef.current?.();
       }
     },
     [
@@ -1020,12 +1049,29 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
             }
           : undefined;
 
-      const themeOverride = mergeThemeOverrides(
+      const mergedThemeOverride = mergeThemeOverrides(
         columnThemeOverrideResult,
         blockRowOverride,
         fillOverride,
         soloActiveCellOverride
       );
+      // Пока в блоке в несколько строк открыт редактор, Glide в режиме no-editor
+      // считает блок задетым выделением и красит его accentLight. Рамку рисует
+      // редактор, подкраска не нужна. Блок рисует та его строка, что первой попала
+      // в отрисовку, поэтому override ставим всем строкам блока. У одиночной
+      // ячейки подкраски нет. Техдолг: снять, когда в форке появится проп,
+      // который прячет только рамку фокуса, не трогая заливку.
+      const editing = editorCellRef.current;
+      const editorInBlock =
+        editing !== undefined &&
+        editing[0] === colInd &&
+        spanRows != null &&
+        spanRows[1] > spanRows[0] &&
+        editing[1] >= spanRows[0] &&
+        editing[1] <= spanRows[1];
+      const themeOverride = editorInBlock
+        ? { ...mergedThemeOverride, accentLight: 'transparent' }
+        : mergedThemeOverride;
 
       const options = {
         data: row[id]?.toString?.() ?? 'NOT FOUND',
@@ -1824,22 +1870,67 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       theme.bgCell
     );
   };
-  const editorCellRef = useRef<readonly [number, number]>();
-  // Края объединённого блока для рамки редактора (styled.ts): за блоком редактор
-  // рисует свою линию. getBounds у блока отдаёт одну строку, поэтому берём первую
-  // и последнюю строки отдельно.
-  const getEditorBlockEdges = (
+  // Края рамки редактора в объединённом блоке (styled.ts): рамка обводит весь
+  // блок, поэтому края обрезаем по области данных, а линию у обрезанного края
+  // не рисуем. getBounds у блока отдаёт одну строку, поэтому берём первую и
+  // последнюю строки отдельно; строка -1 это шапка, ниже неё начинаются данные.
+  const measureEditorBlock = (
     col: number,
     spanRows: readonly [number, number] | undefined,
-  ) => {
-    const first = spanRows && dataEditorRef.current?.getBounds(col, spanRows[0]);
-    const last = spanRows && dataEditorRef.current?.getBounds(col, spanRows[1]);
-    return first && last
-      ? {
-          [EDITOR_BLOCK_TOP_VAR]: `${first.y}px`,
-          [EDITOR_BLOCK_BOTTOM_VAR]: `${last.y + last.height}px`,
-        }
-      : undefined;
+  ): EditorFrame | undefined => {
+    const grid = dataEditorRef.current;
+    const first = spanRows && grid?.getBounds(col, spanRows[0]);
+    const last = spanRows && grid?.getBounds(col, spanRows[1]);
+    const { scroller } = queryGlideElements(containerRefInternal.current);
+    if (!first || !last || !grid || !scroller) return undefined;
+    const header = grid.getBounds(col, -1);
+    const scrollerRect = scroller.getBoundingClientRect();
+    const firstSummary =
+      summaryRowsLength > 0 ? grid.getBounds(col, rows.length) : undefined;
+    return {
+      blockTop: first.y,
+      blockBottom: last.y + last.height,
+      dataTop: header ? header.y + header.height : scrollerRect.top,
+      dataBottom: firstSummary
+        ? firstSummary.y
+        : scrollerRect.top + scroller.clientHeight,
+      scrollTop: scroller.scrollTop,
+    };
+  };
+  const editorFrameVars = (
+    frame: EditorFrame,
+    shift: number,
+  ): Record<string, string> => {
+    const blockTop = frame.blockTop - shift;
+    const blockBottom = frame.blockBottom - shift;
+    return {
+      [EDITOR_BLOCK_TOP_VAR]: `${Math.max(blockTop, frame.dataTop)}px`,
+      [EDITOR_BLOCK_BOTTOM_VAR]: `${Math.min(blockBottom, frame.dataBottom)}px`,
+      [EDITOR_TOP_LINE_VAR]: blockTop >= frame.dataTop ? '1px' : '0px',
+      [EDITOR_BOTTOM_LINE_VAR]: blockBottom <= frame.dataBottom ? '1px' : '0px',
+    };
+  };
+  // При прокрутке оверлей Glide остаётся на месте, а блок уезжает ровно на
+  // величину прокрутки: сдвигаем края, замеренные при открытии. Пока блок и
+  // редактор пересекаются, рамка обводит их вместе; разошлись, рамка только
+  // вокруг редактора.
+  updateEditorFrameRef.current = () => {
+    const frame = editorFrameRef.current;
+    if (!frame) return;
+    const overlay = overlayPortalRef.current?.querySelector<HTMLElement>(
+      "[id^='gdg-overlay-']",
+    );
+    const { scroller } = queryGlideElements(containerRefInternal.current);
+    if (!overlay || !scroller) return;
+    const shift = scroller.scrollTop - frame.scrollTop;
+    const rect = overlay.getBoundingClientRect();
+    const keep =
+      frame.blockBottom - shift >= rect.top &&
+      frame.blockTop - shift <= rect.bottom;
+    const vars = editorFrameVars(frame, shift);
+    for (const name of Object.keys(vars)) {
+      overlay.style.setProperty(name, keep ? vars[name] ?? null : null);
+    }
   };
   useLayoutEffect(() => {
     const cell = editorCellRef.current;
@@ -1866,18 +1957,27 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     () =>
       hasProvideEditor
         ? (cell) => {
-            const editor = provideEditorExternalRef.current?.(cell);
-            if (!editor || typeof editor === 'function' || !cell.location) {
-              return editor;
-            }
+            const provided = provideEditorExternalRef.current?.(cell);
+            if (!cell.location) return provided;
             const [col, row] = cell.location;
+            // Пока оверлей открыт, canvas рамку не рисует (no-editor), поэтому
+            // ячейку запоминаем при любом редакторе, даже встроенном у Glide.
             editorCellRef.current = cell.location;
-            editorOpenScrollRef.current = scrollPositionRef.current;
+            // Перерисовать блок с открытым редактором без подкраски выделения.
+            requestAnimationFrame(() =>
+              dataEditorRef.current?.updateCells([{ cell: [col, row] }]),
+            );
+            if (!provided) return provided;
+            // Редактор-функцию оборачиваем, чтобы задать ему те же стили и рамку.
+            const editor =
+              typeof provided === 'function' ? { editor: provided } : provided;
+            const frame = measureEditorBlock(col, cell.spanRows);
+            editorFrameRef.current = frame;
             return {
               ...editor,
               styleOverride: {
                 ...editor.styleOverride,
-                ...getEditorBlockEdges(col, cell.spanRows),
+                ...(frame && editorFrameVars(frame, 0)),
                 '--gdg-bg-cell': getEditorBgRef.current?.(col, row),
               } as CSSProperties,
             };
@@ -2035,7 +2135,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       {isEditorOverlayInside
         ? createPortal(
             <StyledOverlayPortal
-              ref={overlayPortalRef}
+              ref={setOverlayPortal}
               data-focus-ring={drawFocusRing}
               onAnimationEndCapture={(e) => e.stopPropagation()} // важно, чтобы слушатели модальных окон не перехватывали фокус
               id="portal"
@@ -2045,7 +2145,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         : createPortal(
             <StyledOverlayPortal
               id="portal"
-              ref={overlayPortalRef}
+              ref={setOverlayPortal}
               data-focus-ring={drawFocusRing}
             />,
             document.body,
@@ -2081,7 +2181,8 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
           maxColumnWidth={maxColumnWidth}
           columnSelect="none"
           columnSelectionBlending="exclusive"
-          drawFocusRing={drawFocusRing}
+          // Пока открыт редактор, рамку рисует он сам (styled.ts), canvas нет.
+          drawFocusRing={drawFocusRing ? 'no-editor' : false}
           gridSelection={selection}
           onGridSelectionChange={handleGridSelectionWithColumnReset}
           onSelectionCleared={handleSelectionClearedWithColumns}
