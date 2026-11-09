@@ -19,10 +19,8 @@ export interface HoverRows {
  * подсвечивает её строку, на объединённом блоке все строки блока.
  */
 export type ResolveHoverRows = (
-  /** Главная ячейка блока под курсором или сама ячейка, если блока нет. */
-  originColInd: number,
-  originRowInd: number,
-  /** Строка прямо под мышью. */
+  /** Ячейка прямо под мышью. Блок по ней ищется заново при каждом расчёте. */
+  rawColInd: number,
   rawRowInd: number,
 ) => HoverRows;
 
@@ -122,9 +120,7 @@ export function useHoverState({
 
   // Последнее наведение и свежий расчёт строк: при смене данных блок под
   // курсором может стать другим, строки пересчитываются без движения мыши.
-  const lastHoverRef = useRef<
-    { rawRowInd: number; origin?: readonly [number, number] } | undefined
-  >(undefined);
+  const lastHoverRef = useRef<readonly [number, number] | undefined>(undefined);
   const resolveHoverRowsRef = useRef(resolveHoverRows);
   resolveHoverRowsRef.current = resolveHoverRows;
 
@@ -133,21 +129,17 @@ export function useHoverState({
     const resolve = resolveHoverRowsRef.current;
     const next: HoverRows | undefined = !last
       ? undefined
-      : last.origin && resolve
-      ? resolve(last.origin[0], last.origin[1], last.rawRowInd)
-      : { from: last.rawRowInd, to: last.rawRowInd };
+      : resolve
+      ? resolve(last[0], last[1])
+      : { from: last[1], to: last[1] };
     setHoverRows((prev) =>
       prev?.from === next?.from && prev?.to === next?.to ? prev : next,
     );
   }, []);
 
   const handleHoverRowChange = useCallback(
-    (
-      rawRowInd: number | undefined,
-      origin?: readonly [number, number],
-    ) => {
-      lastHoverRef.current =
-        rawRowInd === undefined ? undefined : { rawRowInd, origin };
+    (rawCell: readonly [number, number] | undefined) => {
+      lastHoverRef.current = rawCell;
       applyHoverRows();
     },
     [applyHoverRows],

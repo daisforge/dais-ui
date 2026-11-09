@@ -581,17 +581,33 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   // Строки, которые подсвечивает курсор: на объединённом блоке все строки
   // блока, иначе строка под мышью.
   const resolveHoverRows = useCallback<ResolveHoverRows>(
-    (originColInd, originRowInd, rawRowInd) => {
+    (rawColInd, rawRowInd) => {
+      const single = { from: rawRowInd, to: rawRowInd };
+      if (!rows[rawRowInd]) {
+        return single;
+      }
+      const [originColInd, originRowInd] = findBlockOrigin(
+        rawColInd,
+        rawRowInd,
+        spanColumnIndexes,
+        (c, r) => {
+          const col = columnsForRender[c];
+          return col?.colSpan ? getSpan(col.colSpan, getProbeInfo(c, r)) : null;
+        },
+        (c, r) => {
+          const col = columnsForRender[c];
+          return col?.rowSpan
+            ? getRowSpan(col.rowSpan, getProbeInfo(c, r))
+            : null;
+        },
+      );
       const rowSpan = columnsForRender[originColInd]?.rowSpan;
-      const blockRows =
-        rowSpan && rows[originRowInd]
-          ? getRowSpan(rowSpan, getProbeInfo(originColInd, originRowInd))
-          : null;
-      return blockRows
-        ? { from: blockRows[0], to: blockRows[1] }
-        : { from: rawRowInd, to: rawRowInd };
+      const blockRows = rowSpan
+        ? getRowSpan(rowSpan, getProbeInfo(originColInd, originRowInd))
+        : null;
+      return blockRows ? { from: blockRows[0], to: blockRows[1] } : single;
     },
-    [columnsForRender, rows, getProbeInfo],
+    [columnsForRender, rows, getProbeInfo, spanColumnIndexes],
   );
 
   const { hoveredCellRef, setHoveredCell, hoverRows, onHoverRowChange } =
@@ -817,6 +833,17 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
           blockRows[0],
           blockRows[1],
         );
+      // Флаг содержимого совпадает с фоном: все строки блока под курсором.
+      cellInfo.hovered.rowHover =
+        !!hoveredPosition &&
+        (hoverRowsNow !== undefined
+          ? rowsHovered
+          : rangesOverlap(
+              hoveredPosition.rowInd,
+              hoveredPosition.rowInd,
+              blockRows[0],
+              blockRows[1],
+            ));
       if (isBlock) {
         const range = selectionVisualState.activeDataRange;
         const rangeHitsRows =
@@ -827,16 +854,6 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
             blockRows[0],
             blockRows[1],
           );
-        cellInfo.hovered.rowHover =
-          !!hoveredPosition &&
-          (hoverRowsNow !== undefined
-            ? rowsHovered
-            : rangesOverlap(
-                hoveredPosition.rowInd,
-                hoveredPosition.rowInd,
-                blockRows[0],
-                blockRows[1],
-              ));
         cellInfo.active = {
           cellActive:
             rangeHitsRows &&
