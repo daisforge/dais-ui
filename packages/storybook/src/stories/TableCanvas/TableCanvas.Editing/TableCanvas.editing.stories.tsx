@@ -7,16 +7,22 @@ import {
   TRIBES,
 } from '@df-storybook/data/tableData';
 import DocStoryTemplate from '@df-storybook/templates/DocStoryTemplate.mdx';
+import { getFuncAsString } from '@df-storybook/utils/getFuncAsString';
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Button } from '@ui-kit/components/Button';
 import { ModalDF } from '@ui-kit/components/ModalDF';
+import { Spinner } from '@ui-kit/components/Spinner';
 import {
+  CellEditorCombobox,
   CellEditorNumberFormat,
   ColumnConfig,
+  EditingCellInfo,
   TableCanvas,
 } from '@ui-kit/components/TableCanvas';
-import { useMemo, useRef, useState } from 'react';
+import { useDebouncedValue } from '@ui-kit/utils';
+import { UIEvent, useMemo, useRef, useState } from 'react';
+import useSWRInfinite from 'swr/infinite';
 
 const meta: Meta = {
   title: 'Локальные компоненты/TableCanvas/Editing',
@@ -837,6 +843,249 @@ export const EditingRowErrors: Story = {
           rows={rows}
         />
       </>
+    );
+  },
+};
+
+type Counterparty = { id: string; name: string };
+
+const COUNTERPARTY_FORMS = ['ООО', 'АО', 'ПАО', 'ИП'];
+const COUNTERPARTY_WORDS = [
+  'Альфа',
+  'Вектор',
+  'Гранит',
+  'Дельта',
+  'Север',
+  'Орбита',
+  'Прогресс',
+  'Сигма',
+];
+
+const makeCounterparty = (i: number): Counterparty => ({
+  id: `cp-${i + 1}`,
+  name: `${COUNTERPARTY_FORMS[i % COUNTERPARTY_FORMS.length]} «${
+    COUNTERPARTY_WORDS[i % COUNTERPARTY_WORDS.length]
+  } ${String(i + 1).padStart(4, '0')}»`,
+});
+
+const COUNTERPARTIES: Counterparty[] = Array.from({ length: 1000 }, (_, i) =>
+  makeCounterparty(i),
+);
+
+const COUNTERPARTIES_PAGE_SIZE = 50;
+
+type CounterpartyPage = { items: Counterparty[]; hasMore: boolean };
+
+// Имитация бэкенда: поиск по названию и постраничная выдача с задержкой.
+const fetchCounterparties = ({
+  search,
+  offset,
+}: {
+  search: string;
+  offset: number;
+}) =>
+  new Promise<CounterpartyPage>((resolve) => {
+    setTimeout(() => {
+      const query = search.trim().toLowerCase();
+      const filtered = query
+        ? COUNTERPARTIES.filter((c) => c.name.toLowerCase().includes(query))
+        : COUNTERPARTIES;
+      const items = filtered.slice(offset, offset + COUNTERPARTIES_PAGE_SIZE);
+      resolve({
+        items,
+        hasMore: offset + items.length < filtered.length,
+      });
+    }, 500);
+  });
+
+// Кеш SWR живёт вне редактора, поэтому страницы переживают закрытие ячейки.
+// Ключ включает поисковый запрос: для каждого запроса свой набор страниц.
+function useCounterpartyOptions() {
+  const [search, setSearch] = useState('');
+  const debouncedSearch = useDebouncedValue(search, 300);
+
+  const { data, size, setSize, isValidating } = useSWRInfinite(
+    (pageIndex, previousPage: CounterpartyPage | null) =>
+      previousPage && !previousPage.hasMore
+        ? null
+        : (['story-counterparties', debouncedSearch, pageIndex] as const),
+    ([, query, pageIndex]) =>
+      fetchCounterparties({
+        search: query,
+        offset: pageIndex * COUNTERPARTIES_PAGE_SIZE,
+      }),
+    {
+      keepPreviousData: true,
+      revalidateFirstPage: false,
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
+  );
+
+  const items = data?.flatMap((page) => page.items) ?? [];
+  const hasMore = data?.[data.length - 1]?.hasMore ?? true;
+
+  const loadNext = () => {
+    if (!isValidating && hasMore) setSize(size + 1);
+  };
+
+  return { items, isLoading: isValidating, setSearch, loadNext };
+}
+
+type ContractRow = {
+  id: string;
+  contract: string;
+  counterpartyId: string;
+  counterpartyName: string;
+  amount: number;
+};
+
+// Часть контрагентов взята из дальних страниц: их нет в первой порции,
+// но редактор всё равно открывается с выбранным значением.
+const CONTRACT_ROWS: ContractRow[] = [3, 17, 128, 402, 777, 999].map(
+  (cpIndex, i) => ({
+    id: `${i + 1}`,
+    contract: `Договор № ${100 + i}`,
+    counterpartyId: makeCounterparty(cpIndex).id,
+    counterpartyName: makeCounterparty(cpIndex).name,
+    amount: (i + 1) * 125000,
+  }),
+);
+
+function CounterpartyCellEditor({
+  info: { row, cellWidth, cellHeight, onRowChange, readOnly, theme },
+  disableLeftOffset,
+}: {
+  info: EditingCellInfo<ContractRow>;
+  disableLeftOffset: boolean | undefined;
+}) {
+  const { items, isLoading, setSearch, loadNext } = useCounterpartyOptions();
+
+  // Текущее значение строки всегда в списке, даже если его страница ещё не загружена.
+  const options = [
+    { value: row.counterpartyId, label: row.counterpartyName },
+    ...items
+      .filter((c) => c.id !== row.counterpartyId)
+      .map((c) => ({ value: c.id, label: c.name })),
+  ];
+
+  const handleScroll = (e: UIEvent<HTMLElement>) => {
+    const el = e.currentTarget;
+    if (el.scrollTop + el.clientHeight >= el.scrollHeight - 50) loadNext();
+  };
+
+  return (
+    <CellEditorCombobox
+      autoFocusType="autoFocus"
+      cellWidth={cellWidth}
+      cellHeight={cellHeight}
+      disableLeftOffset={disableLeftOffset}
+      paddingInline={theme.cellHorizontalPadding}
+      readOnly={readOnly}
+      items={options}
+      defaultValue={row.counterpartyId}
+      virtual
+      // Фильтрует бэкенд, локальный фильтр Combobox отключён.
+      filter={() => true}
+      onChangeValue={setSearch}
+      onScroll={handleScroll}
+      afterList={
+        isLoading ? (
+          <div
+            style={{ display: 'flex', justifyContent: 'center', padding: 8 }}
+          >
+            <Spinner size="s" />
+          </div>
+        ) : null
+      }
+      onChange={(value: unknown) => {
+        if (typeof value !== 'string') return;
+        const label = options.find((o) => o.value === value)?.label;
+        onRowChange(
+          {
+            ...row,
+            counterpartyId: value,
+            counterpartyName: label ?? row.counterpartyName,
+          },
+          true,
+        );
+      }}
+    />
+  );
+}
+
+const selectInfiniteScrollPreCode = `
+import { Spinner } from '@daisforge/ui/components/Spinner';
+import { CellEditorCombobox, ColumnConfig, EditingCellInfo, TableCanvas } from '@daisforge/ui/components/TableCanvas';
+import { useDebouncedValue } from '@daisforge/ui/utils';
+import { UIEvent, useMemo, useState } from 'react';
+import useSWRInfinite from 'swr/infinite';
+
+${getFuncAsString(
+  'packages/storybook/src/stories/TableCanvas/TableCanvas.Editing/TableCanvas.editing.stories.tsx',
+  'useCounterpartyOptions',
+)}
+
+${getFuncAsString(
+  'packages/storybook/src/stories/TableCanvas/TableCanvas.Editing/TableCanvas.editing.stories.tsx',
+  'CounterpartyCellEditor',
+)}
+
+`;
+
+export const EditingSelectInfiniteScroll: Story = {
+  ...storySourceDoc({
+    preCode: selectInfiniteScrollPreCode,
+    previewSource: 'shown',
+    type: 'code',
+  }),
+  name: 'Select с подгрузкой по скроллу (кастомный редактор)',
+  render: () => {
+    const [rows, setRows] = useState<ContractRow[]>(CONTRACT_ROWS);
+
+    const columnConfig = useMemo(
+      (): ColumnConfig<ContractRow>[] => [
+        { key: 'contract', name: 'Договор' },
+        {
+          key: 'counterpartyName',
+          name: 'Контрагент',
+          width: 280,
+          editingCell: {
+            component: (info, _lvl, disableLeftOffset) => (
+              <CounterpartyCellEditor
+                info={info}
+                disableLeftOffset={disableLeftOffset}
+              />
+            ),
+            // Шеврон селекта в ячейке, как у component: 'select'.
+            showSelectIcon: true,
+          },
+        },
+        {
+          key: 'amount',
+          name: 'Сумма',
+          contentFormat: 'number',
+          editingCell: { component: 'inputNumber' },
+        },
+      ],
+      [],
+    );
+
+    return (
+      <TableCanvas
+        tableConfig={{
+          containerStyle: { height: '400px' },
+          rowSize: { showInControl: true, default: 'big' },
+          editing: {
+            defaultEnabled: true,
+            onRowsChange: setRows,
+            rowKeyGetter: (r) => r.id,
+          },
+        }}
+        columnConfig={columnConfig}
+        rows={rows}
+      />
     );
   },
 };
