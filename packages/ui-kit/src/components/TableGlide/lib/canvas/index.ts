@@ -123,6 +123,7 @@ export {
   retrieveRenderData,
   SIZE_CONFIG,
   storeRenderData,
+  toContentPoint,
   toRelativePoint,
   updateHoverState,
   VIEW_COLORS,
