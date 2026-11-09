@@ -671,6 +671,7 @@ export const useColumns = <
         }),
 
         renderCell,
+        hasOwnRenderCell: el.renderCell !== undefined,
         editable,
         isErrorCell,
         errorCellTooltip,

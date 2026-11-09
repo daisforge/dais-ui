@@ -15,4 +15,7 @@ export type ColumnConfigInternal<
     spanAlign?:
       | SpanCellAlign
       | ((cellInfo: CellInfo<R, SR>) => SpanCellAlign | undefined);
+    // Внутреннее: renderCell задан в конфиге колонки. Таблица оборачивает
+    // отрисовку у каждой колонки, поэтому по самому renderCell этого не видно.
+    hasOwnRenderCell?: boolean;
   };

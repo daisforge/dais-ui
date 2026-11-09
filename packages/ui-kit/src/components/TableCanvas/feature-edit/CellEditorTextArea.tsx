@@ -214,8 +214,10 @@ export function CellEditorTextAreaInternal<
   // Блок ставит текст по своему выравниванию. Своя отрисовка колонки в строке выше
   // обычной рисует текст сверху (перенос строк), а обычная ячейка по центру.
   const isTallRow = cellHeight > getRowHeightBySize(theme.rowSize ?? 'big') + 1;
+  const hasOwnRenderCell =
+    'hasOwnRenderCell' in column && column.hasOwnRenderCell === true;
   const resolvedVerticalAlign =
-    verticalAlign ?? (column.renderCell && isTallRow ? 'top' : 'center');
+    verticalAlign ?? (hasOwnRenderCell && isTallRow ? 'top' : 'center');
   const inputProps = (
     column?.editingCell as { inputProps?: Partial<CellEditorTextAreaProps> }
   )?.inputProps;
