@@ -1,0 +1,120 @@
+import{r as e,d as n}from"./react-D2T61mpp.js";import{c as f}from"./tableData-DVJFoYoT.js";import E from"./DocStoryTemplate-Boo91cU6.js";import{s as w}from"./storySourceDoc-tVKyHcEN.js";import{S}from"./FiltersActions-BARjbImM.js";import{T as k}from"./TableCanvas-CWwlmQ0L.js";const R={title:"Локальные компоненты/TableCanvas/IsLoading",tags:["!autodocs"],parameters:{docs:{page:E},screenshot:{skip:!0,skipReason:"Пробел покрытия: пока нет фиксированного состояния загрузчика и проверок в play"}}},L=`
+import { ColumnConfig, TableCanvas } from '@daisforge/ui/components/TableCanvas';
+
+`,s={...w({preCode:L,previewSource:"shown"}),name:"IsLoading",render:()=>{const[r]=e.useState(f),[u,a]=e.useState(!1),i=e.useMemo(()=>[{key:"id",name:"ID"},{key:"task",name:"Title"},{key:"priority",name:"Priority"}],[]);return n.jsxDEV(n.Fragment,{children:[n.jsxDEV(S,{style:{width:"fit-content"},label:u?"Скрыть overlay":"Показать overlay",checked:u,onChange:()=>a(l=>!l)},void 0,!1,{fileName:"/home/runner/work/dais-ui/dais-ui/packages/storybook/src/stories/TableCanvas/TableCanvas.IsLoading/TableCanvas.isLoading.stories.tsx",lineNumber:61,columnNumber:9},void 0),n.jsxDEV(k,{tableConfig:{containerStyle:{height:500},isLoading:{boolean:!0,skeletonRowsCount:5},loadingOverlay:{active:u,showSubtitleDelay:3e3,subtitle:"Данные обрабатываются, обычно это занимает не более 10 секунд"}},columnConfig:i,rows:r},void 0,!1,{fileName:"/home/runner/work/dais-ui/dais-ui/packages/storybook/src/stories/TableCanvas/TableCanvas.IsLoading/TableCanvas.isLoading.stories.tsx",lineNumber:69,columnNumber:9},void 0)]},void 0,!0,{fileName:"/home/runner/work/dais-ui/dais-ui/packages/storybook/src/stories/TableCanvas/TableCanvas.IsLoading/TableCanvas.isLoading.stories.tsx",lineNumber:60,columnNumber:7},void 0)}},I=`
+import { Switch } from '@daisforge/ui/components/Switch';
+import { ColumnConfig, TableCanvas } from '@daisforge/ui/components/TableCanvas';
+import React, { useMemo, useRef, useState } from 'react';
+
+`,t={...w({preCode:I,previewSource:"shown"}),name:"Оверлей поверх таблицы (mode: cover)",render:()=>{const[r,u]=e.useState(f),a=e.useState(()=>new Set),[i,l]=a,[d,c]=e.useState(!1),m=e.useRef(),h=e.useMemo(()=>[{key:"id",name:"ID"},{key:"task",name:"Title"},{key:"priority",name:"Priority"},{key:"issueType",name:"Issue Type"},{key:"developer",name:"Developer"}],[]),T=()=>{c(!0),clearTimeout(m.current),m.current=setTimeout(()=>{u(o=>o.filter(D=>!i.has(D.id))),l(new Set),c(!1)},3e3)};return n.jsxDEV(n.Fragment,{children:[n.jsxDEV(S,{style:{width:"fit-content"},label:"Показать оверлей",checked:d,onChange:()=>c(o=>!o)},void 0,!1,{fileName:"/home/runner/work/dais-ui/dais-ui/packages/storybook/src/stories/TableCanvas/TableCanvas.IsLoading/TableCanvas.isLoading.stories.tsx",lineNumber:135,columnNumber:9},void 0),n.jsxDEV(k,{tableConfig:{containerStyle:{height:500},fullScreenEnabled:!0,selecting:{state:a,rowKeyGetter:o=>o.id},controlBlock:{massActionPanel:{buttons:[{type:"button",text:"Удалить выбранные",view:"secondary",onClick:T}]}},loadingOverlay:{mode:"cover",active:d,showSubtitleDelay:1e3,subtitle:"Обычно это занимает не более 10 секунд"}},columnConfig:h,rows:r},void 0,!1,{fileName:"/home/runner/work/dais-ui/dais-ui/packages/storybook/src/stories/TableCanvas/TableCanvas.IsLoading/TableCanvas.isLoading.stories.tsx",lineNumber:141,columnNumber:9},void 0)]},void 0,!0,{fileName:"/home/runner/work/dais-ui/dais-ui/packages/storybook/src/stories/TableCanvas/TableCanvas.IsLoading/TableCanvas.isLoading.stories.tsx",lineNumber:134,columnNumber:7},void 0)}};var g,b,y;s.parameters={...s.parameters,docs:{...(g=s.parameters)==null?void 0:g.docs,source:{originalSource:`{
+  ...storySourceDoc({
+    preCode,
+    previewSource: 'shown'
+  }),
+  name: 'IsLoading',
+  render: () => {
+    const [rows] = useState(createRows);
+    const [isVisibleLoadingOverlay, setIsVisibleLoadingOverlay] = useState(false);
+    const columnConfig = useMemo<readonly ColumnConfig<Row>[]>(() => [{
+      key: 'id',
+      name: 'ID'
+    }, {
+      key: 'task',
+      name: 'Title'
+    }, {
+      key: 'priority',
+      name: 'Priority'
+    }], []);
+    return <>
+        <Switch style={{
+        width: 'fit-content'
+      }} label={isVisibleLoadingOverlay ? 'Скрыть overlay' : 'Показать overlay'} checked={isVisibleLoadingOverlay} onChange={() => setIsVisibleLoadingOverlay(prev => !prev)} />
+        <TableCanvas tableConfig={{
+        containerStyle: {
+          height: 500
+        },
+        isLoading: {
+          boolean: true,
+          skeletonRowsCount: 5
+        },
+        loadingOverlay: {
+          active: isVisibleLoadingOverlay,
+          showSubtitleDelay: 3000,
+          subtitle: 'Данные обрабатываются, обычно это занимает не более 10 секунд'
+        }
+      }} columnConfig={columnConfig} rows={rows} />
+      </>;
+  }
+}`,...(y=(b=s.parameters)==null?void 0:b.docs)==null?void 0:y.source}}};var v,p,C;t.parameters={...t.parameters,docs:{...(v=t.parameters)==null?void 0:v.docs,source:{originalSource:`{
+  ...storySourceDoc({
+    preCode: coverPreCode,
+    previewSource: 'shown'
+  }),
+  name: 'Оверлей поверх таблицы (mode: cover)',
+  render: () => {
+    const [rows, setRows] = useState(createRows);
+    const selectingRowStateAndSetter = useState((): ReadonlySet<string | number> => new Set());
+    const [selectedRows, setSelectedRows] = selectingRowStateAndSetter;
+    const [isUpdating, setIsUpdating] = useState(false);
+    const timerRef = useRef<ReturnType<typeof setTimeout>>();
+    const columnConfig = useMemo<readonly ColumnConfig<Row>[]>(() => [{
+      key: 'id',
+      name: 'ID'
+    }, {
+      key: 'task',
+      name: 'Title'
+    }, {
+      key: 'priority',
+      name: 'Priority'
+    }, {
+      key: 'issueType',
+      name: 'Issue Type'
+    }, {
+      key: 'developer',
+      name: 'Developer'
+    }], []);
+
+    // Имитация запроса на удаление: пока он идёт, таблица закрыта оверлеем,
+    // но не размонтируется — прокрутка и выделение остаются на месте.
+    const deleteSelected = () => {
+      setIsUpdating(true);
+      clearTimeout(timerRef.current);
+      timerRef.current = setTimeout(() => {
+        setRows(prev => prev.filter(row => !selectedRows.has(row.id)));
+        setSelectedRows(new Set());
+        setIsUpdating(false);
+      }, 3000);
+    };
+    return <>
+        <Switch style={{
+        width: 'fit-content'
+      }} label="Показать оверлей" checked={isUpdating} onChange={() => setIsUpdating(prev => !prev)} />
+        <TableCanvas tableConfig={{
+        containerStyle: {
+          height: 500
+        },
+        fullScreenEnabled: true,
+        selecting: {
+          state: selectingRowStateAndSetter,
+          rowKeyGetter: row => row.id
+        },
+        controlBlock: {
+          massActionPanel: {
+            buttons: [{
+              type: 'button',
+              text: 'Удалить выбранные',
+              view: 'secondary',
+              onClick: deleteSelected
+            }]
+          }
+        },
+        loadingOverlay: {
+          mode: 'cover',
+          active: isUpdating,
+          showSubtitleDelay: 1000,
+          subtitle: 'Обычно это занимает не более 10 секунд'
+        }
+      }} columnConfig={columnConfig} rows={rows} />
+      </>;
+  }
+}`,...(C=(p=t.parameters)==null?void 0:p.docs)==null?void 0:C.source}}};const B=["IsLoading","CoverOverlay"],j=Object.freeze(Object.defineProperty({__proto__:null,CoverOverlay:t,IsLoading:s,__namedExportsOrder:B,default:R},Symbol.toStringTag,{value:"Module"}));export{j as T};
