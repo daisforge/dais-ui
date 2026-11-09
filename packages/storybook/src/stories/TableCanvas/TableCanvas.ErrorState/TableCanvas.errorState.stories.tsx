@@ -8,6 +8,8 @@ import {
 import type { ErrorPageProps } from '@ui-kit/layouts/ErrorPage';
 import React, { ReactNode, useEffect, useState } from 'react';
 
+import { waitForCanvasState } from '../visual-helpers';
+
 type Row = {
   id: string;
   name: string;
@@ -194,6 +196,7 @@ function useLoadingColumns(
 `;
 
 export const DefaultErrorState: Story = {
+  play: waitForCanvasState('Не удалось загрузить данные'),
   name: 'Default Error State',
   ...storySourceDoc({
     preCode,
@@ -227,6 +230,7 @@ export const DefaultErrorState: Story = {
 };
 
 export const CustomErrorState: Story = {
+  play: waitForCanvasState('Не удалось получить актуальные данные'),
   name: 'Custom Error State',
   ...storySourceDoc({
     preCode,
@@ -276,6 +280,7 @@ export const CustomErrorState: Story = {
 };
 
 export const GroupedColumnsErrorState: Story = {
+  play: waitForCanvasState('Сервис временно недоступен'),
   name: 'Grouped Columns Error State',
   ...storySourceDoc({
     preCode,
@@ -322,6 +327,7 @@ export const GroupedColumnsErrorState: Story = {
 };
 
 export const FullContentErrorStateWithoutHeaders: Story = {
+  play: waitForCanvasState('Не удалось получить схему таблицы'),
   name: 'Full Content Error State Without Headers',
   ...storySourceDoc({
     preCode,
@@ -365,6 +371,7 @@ export const FullContentErrorStateWithoutHeaders: Story = {
 };
 
 export const ErrorStateWithControlBlockAndPagination: Story = {
+  play: waitForCanvasState('Не удалось получить список сотрудников'),
   name: 'Error State With Control Block And Pagination',
   ...storySourceDoc({
     preCode,

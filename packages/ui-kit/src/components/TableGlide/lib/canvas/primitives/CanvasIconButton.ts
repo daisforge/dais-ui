@@ -116,6 +116,16 @@ export class CanvasIconButton extends CanvasLeaf {
     }
   }
 
+  /** Новый API рисует квадрат из SIZE_CONFIG; старый рисует rect без вертикальных отступов. */
+  override getAnchorRect() {
+    if (this.useNewApi) {
+      const side = SIZE_CONFIG[this.buttonSize].height;
+      return { x: this.rect.x, y: this.rect.y, width: side, height: side };
+    }
+    const metrics = resolveButtonMetrics(this.size, this.rect.height);
+    return getInteractiveBounds(this.rect.x, this.rect.y, metrics);
+  }
+
   onPaint(batcher: DrawBatcher, _ctx: CanvasRenderingContext2D) {
     const { x, y, width, height } = this.rect;
 

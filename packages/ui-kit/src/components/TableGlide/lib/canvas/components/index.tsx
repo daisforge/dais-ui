@@ -1,6 +1,11 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable @typescript-eslint/no-use-before-define */
-import React, { ReactElement, ReactNode, useLayoutEffect } from 'react';
+import React, {
+  Fragment,
+  ReactElement,
+  ReactNode,
+  useLayoutEffect,
+} from 'react';
 
 import type { FontMetrics } from '../../../fonts';
 import { Theme } from '../../../theming/types';
@@ -56,9 +61,10 @@ import { CanvasLink, type LinkView } from '../primitives/CanvasLink';
 import { CanvasRect } from '../primitives/CanvasRect';
 import { CanvasSkeleton } from '../primitives/CanvasSkeleton';
 import { CanvasText, CanvasTextOptions } from '../primitives/CanvasText';
+import type { CanvasTextMark } from '../primitives/textMarks';
 import { normalizeDimensionValue } from '../utils';
 import { isReactIcon, normalizeIcon } from '../utils/iconUtils';
-import type { CanvasNodeTooltipConfig } from '../utils/portalHoverEvents';
+import type { CanvasOverlayProps } from '../utils/canvasOverlayProps';
 
 interface CanvasInteractionProps {
   /**
@@ -86,7 +92,8 @@ interface CanvasLayerProps {
 interface ContainerProps
   extends CanvasInteractionProps,
     CanvasLayerProps,
-    Omit<FlexBoxOptions, 'columnGap' | 'rowGap'> {
+    Omit<FlexBoxOptions, 'columnGap' | 'rowGap'>,
+    CanvasOverlayProps {
   children?: ReactNode;
   style?: Partial<CanvasFlexStyle>;
   backgroundColor?: string;
@@ -100,8 +107,6 @@ interface ContainerProps
   top?: PositionValue;
   right?: PositionValue;
   bottom?: PositionValue;
-  /** Конфиг тултипа при hover: строка (текст) или объект с text и опциональными пропсами Tooltip */
-  tooltip?: CanvasNodeTooltipConfig;
   onClick?: (event: CanvasEvent<CanvasContainer>) => void;
   onMouseEnter?: (event: CanvasEvent<CanvasContainer>) => void;
   onMouseLeave?: (event: CanvasEvent<CanvasContainer>) => void;
@@ -126,7 +131,11 @@ const resolveContainerBackgroundColor = (
 interface TextProps
   extends CanvasInteractionProps,
     CanvasLayerProps,
-    Omit<CanvasTextOptions, 'font' | 'fontSize' | 'lineHeightPx' | 'color'> {
+    Omit<
+      CanvasTextOptions,
+      'font' | 'fontSize' | 'lineHeightPx' | 'color' | 'marks'
+    >,
+    CanvasOverlayProps {
   children?: ReactNode;
   font?: string;
   color?: string;
@@ -138,10 +147,18 @@ interface TextProps
   top?: PositionValue;
   right?: PositionValue;
   bottom?: PositionValue;
-  tooltip?: CanvasNodeTooltipConfig;
 }
 
-interface IconProps extends CanvasInteractionProps, CanvasLayerProps {
+interface MarkProps {
+  /** Цвет пластины под фрагментом */
+  color: string;
+  children?: ReactNode;
+}
+
+interface IconProps
+  extends CanvasInteractionProps,
+    CanvasLayerProps,
+    CanvasOverlayProps {
   icon: ButtonIcon;
   size?: number;
   color?: string;
@@ -158,10 +175,12 @@ interface IconProps extends CanvasInteractionProps, CanvasLayerProps {
   onMouseDown?: (event: CanvasEvent<CanvasIcon>) => void;
   id?: string;
   portalHoverEnabled?: boolean;
-  tooltip?: CanvasNodeTooltipConfig;
 }
 
-interface ButtonProps extends CanvasInteractionProps, CanvasLayerProps {
+interface ButtonProps
+  extends CanvasInteractionProps,
+    CanvasLayerProps,
+    CanvasOverlayProps {
   children: string;
   /** @deprecated Use `view` instead */
   variant?: 'primary' | 'secondary' | 'danger';
@@ -183,10 +202,12 @@ interface ButtonProps extends CanvasInteractionProps, CanvasLayerProps {
   bottom?: PositionValue;
   id?: string;
   portalHoverEnabled?: boolean;
-  tooltip?: CanvasNodeTooltipConfig;
 }
 
-interface IconButtonProps extends CanvasInteractionProps, CanvasLayerProps {
+interface IconButtonProps
+  extends CanvasInteractionProps,
+    CanvasLayerProps,
+    CanvasOverlayProps {
   icon: ButtonIcon;
   /** @deprecated Use `buttonSize` with ButtonSize type instead */
   size?: number | 'auto';
@@ -206,11 +227,11 @@ interface IconButtonProps extends CanvasInteractionProps, CanvasLayerProps {
   bottom?: PositionValue;
   id?: string;
   portalHoverEnabled?: boolean;
-  tooltip?: CanvasNodeTooltipConfig;
 }
 interface EmbedIconButtonProps
   extends CanvasInteractionProps,
-    CanvasLayerProps {
+    CanvasLayerProps,
+    CanvasOverlayProps {
   icon: ButtonIcon;
   /** @deprecated Use `buttonSize` with ButtonSize type instead */
   size?: number | 'auto';
@@ -243,9 +264,11 @@ interface EmbedIconButtonProps
   bottom?: PositionValue;
   id?: string;
   portalHoverEnabled?: boolean;
-  tooltip?: CanvasNodeTooltipConfig;
 }
-interface CheckboxProps extends CanvasInteractionProps, CanvasLayerProps {
+interface CheckboxProps
+  extends CanvasInteractionProps,
+    CanvasLayerProps,
+    CanvasOverlayProps {
   checked: boolean;
   indeterminate?: boolean;
   size?: number | 'auto';
@@ -260,10 +283,12 @@ interface CheckboxProps extends CanvasInteractionProps, CanvasLayerProps {
   bottom?: PositionValue;
   id?: string;
   portalHoverEnabled?: boolean;
-  tooltip?: CanvasNodeTooltipConfig;
 }
 
-interface RectProps extends CanvasInteractionProps, CanvasLayerProps {
+interface RectProps
+  extends CanvasInteractionProps,
+    CanvasLayerProps,
+    CanvasOverlayProps {
   color?: string;
   borderColor?: string;
   borderWidth?: number;
@@ -275,12 +300,16 @@ interface RectProps extends CanvasInteractionProps, CanvasLayerProps {
   bottom?: PositionValue;
   id?: string;
   portalHoverEnabled?: boolean;
-  tooltip?: CanvasNodeTooltipConfig;
 }
 
-interface BadgeProps extends CanvasInteractionProps, CanvasLayerProps {
-  /** Badge text content */
-  text: string;
+interface BadgeProps
+  extends CanvasInteractionProps,
+    CanvasLayerProps,
+    CanvasOverlayProps {
+  /** Текст бейджа. Если заданы `children`, используются они */
+  text?: string;
+  /** Текст бейджа разметкой, как у `Canvas.Text`: `<Canvas.Badge>до <Canvas.Mark color="…">фрагмент</Canvas.Mark></Canvas.Badge>` */
+  children?: ReactNode;
   /** Badge view style */
   view?: BadgeView;
   /** Явный размер имеет приоритет. Без size следует размеру таблицы: small → xs (16), medium → m (24), big → l (28). */
@@ -305,7 +334,6 @@ interface BadgeProps extends CanvasInteractionProps, CanvasLayerProps {
   bottom?: PositionValue;
   id?: string;
   portalHoverEnabled?: boolean;
-  tooltip?: CanvasNodeTooltipConfig;
   pilled?: boolean;
 }
 
@@ -338,7 +366,11 @@ interface SkeletonProps extends CanvasInteractionProps, CanvasLayerProps {
 interface LinkProps
   extends CanvasInteractionProps,
     CanvasLayerProps,
-    Omit<CanvasTextOptions, 'font' | 'fontSize' | 'lineHeightPx' | 'color'> {
+    Omit<
+      CanvasTextOptions,
+      'font' | 'fontSize' | 'lineHeightPx' | 'color' | 'marks'
+    >,
+    CanvasOverlayProps {
   children?: ReactNode;
   href?: string;
   target?: string;
@@ -355,12 +387,12 @@ interface LinkProps
   top?: PositionValue;
   right?: PositionValue;
   bottom?: PositionValue;
-  tooltip?: CanvasNodeTooltipConfig;
 }
 
 interface ImageElementProps<T extends CanvasNode>
   extends CanvasInteractionProps,
-    CanvasLayerProps {
+    CanvasLayerProps,
+    CanvasOverlayProps {
   /** Идентификатор canvas-ноды; при отсутствии генерируется при построении дерева. */
   id?: string;
   /** Дочерние JSX-элементы запрещены: содержимое задаётся через свойства примитива. */
@@ -377,8 +409,6 @@ interface ImageElementProps<T extends CanvasNode>
   right?: PositionValue;
   /** Отступ от нижнего края родителя при абсолютном позиционировании. */
   bottom?: PositionValue;
-  /** Подсказка элемента, отображаемая через портал таблицы. */
-  tooltip?: CanvasNodeTooltipConfig;
   /** Включает передачу hover-событий в портал; наличие tooltip также включает её. */
   portalHoverEnabled?: boolean;
   /** Обработчик клика по элементу; дополняет внутреннее поведение примитива. */
@@ -415,7 +445,8 @@ type CanvasComponentType =
   | 'Rect'
   | 'Badge'
   | 'Skeleton'
-  | 'Link';
+  | 'Link'
+  | 'Mark';
 
 type CanvasComponentMarker = { __canvasType: CanvasComponentType };
 
@@ -496,6 +527,7 @@ const RectComponent = createCanvasComponent<RectProps>('Rect');
 const BadgeComponent = createCanvasComponent<BadgeProps>('Badge');
 const CheckboxComponent = createCanvasComponent<CheckboxProps>('Checkbox');
 const LinkComponent = createCanvasComponent<LinkProps>('Link');
+const MarkComponent = createCanvasComponent<MarkProps>('Mark');
 
 export const Canvas = {
   Image: createCanvasComponent<CanvasImageProps>('Image'),
@@ -512,6 +544,12 @@ export const Canvas = {
   Badge: BadgeComponent,
   Skeleton: SkeletonComponent,
   Link: LinkComponent,
+  /**
+   * Подсветка фрагмента текста. Используется только внутри `Canvas.Text`, `Canvas.Link` и `Canvas.Badge`:
+   * `<Canvas.Text>до <Canvas.Mark color="#ff0">фрагмент</Canvas.Mark> после</Canvas.Text>`.
+   * При переносе пластина рисуется на каждой строке, куда попал фрагмент.
+   */
+  Mark: MarkComponent,
   /**
    * Convert a React icon component to SVG string.
    * Results are cached for performance.
@@ -593,15 +631,47 @@ export function buildCanvasTree({
   return node;
 }
 
-function extractTextFromChildren(children: ReactNode): string {
-  if (children === null || children === undefined) return '';
-  if (typeof children === 'string' || typeof children === 'number')
-    return String(children);
-  if (Array.isArray(children)) {
-    return children.map(extractTextFromChildren).join('');
-  }
-
-  return '';
+/** Текст из children; фрагменты в `Canvas.Mark` становятся диапазонами подсветки. */
+function extractTextWithMarks(children: ReactNode): {
+  text: string;
+  marks: readonly CanvasTextMark[] | undefined;
+} {
+  const marks: CanvasTextMark[] = [];
+  let text = '';
+  const walk = (node: ReactNode, markColor?: string) => {
+    if (node === null || node === undefined || typeof node === 'boolean')
+      return;
+    if (typeof node === 'string' || typeof node === 'number') {
+      const value = String(node);
+      if (markColor !== undefined && value) {
+        marks.push({
+          start: text.length,
+          end: text.length + value.length,
+          color: markColor,
+        });
+      }
+      text += value;
+      return;
+    }
+    if (Array.isArray(node)) {
+      node.forEach((child) => walk(child, markColor));
+      return;
+    }
+    const element = node as ReactElement<{
+      color?: string;
+      children?: ReactNode;
+    }>;
+    if (element.type === Fragment) {
+      walk(element.props.children, markColor);
+      return;
+    }
+    const elementType = element.type as CanvasComponent<unknown> | undefined;
+    if (elementType?.__canvasType === 'Mark') {
+      walk(element.props.children, element.props.color);
+    }
+  };
+  walk(children);
+  return { text, marks: marks.length > 0 ? marks : undefined };
 }
 
 function resolveCanvasTextMetrics(
@@ -637,6 +707,9 @@ function resolveCanvasTextMetrics(
     ...(lineHeight === undefined ? { lineHeightPx: metrics.lineHeightPx } : {}),
   };
 }
+
+// Предупреждение о popover вместе с dropdown уже выводили.
+let overlayConflictWarned = false;
 
 function buildNode(
   element: ReactElement,
@@ -741,6 +814,44 @@ function buildNode(
   if (props['tooltip'] !== undefined) {
     node.tooltip = props['tooltip'];
     node.portalHoverEnabled = true;
+  }
+
+  if (props['popover'] !== undefined) {
+    node.popover = props['popover'];
+  }
+  if (props['dropdown'] !== undefined) {
+    node.dropdown = props['dropdown'];
+  }
+  // Popover и Dropdown открываются одинаково. Если заданы оба, побеждает Popover.
+  // Дерево собирается на каждую ячейку, поэтому предупреждаем один раз.
+  if (
+    !overlayConflictWarned &&
+    props['popover'] !== undefined &&
+    props['dropdown'] !== undefined
+  ) {
+    overlayConflictWarned = true;
+    // eslint-disable-next-line no-console
+    console.warn(
+      `[TableCanvas] Canvas.${canvasType} (${nodeId}): заданы и popover, и dropdown. ` +
+        'Откроется только Popover, dropdown будет пропущен. ' +
+        'Предупреждение выводится один раз, дальше такие случаи не выводятся.'
+    );
+  }
+  const overlay = props['popover'] ?? props['dropdown'];
+  if (overlay !== undefined) {
+    if (overlay?.trigger === 'hover') {
+      // Наведение отслеживается так же, как для тултипа.
+      node.portalHoverEnabled = true;
+    } else {
+      // Клик по такому элементу не меняет выделение таблицы, как у кнопки
+      // фильтра в шапке. Если interaction задан явно, берём его.
+      if (props['interaction'] === undefined) {
+        node.interaction = normalizeCanvasInteraction({ selection: 'keep' });
+      }
+      if (!node.style.cursor) {
+        node.style = { ...node.style, cursor: 'pointer' };
+      }
+    }
   }
 
   // autoTooltip делает текстовую ноду hover-таргетом (если не выключен явно).
@@ -909,7 +1020,7 @@ function createNode(
         bottom,
         portalHoverEnabled: _phe,
       } = props;
-      const text = extractTextFromChildren(children);
+      const { text, marks } = extractTextWithMarks(children);
       const defaultFontFamily =
         theme.fontFamily ||
         '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
@@ -940,6 +1051,7 @@ function createNode(
         maxLines,
         autoTooltip,
         minWidthByContent,
+        marks,
       });
       if (position) node.position = position;
       if (left !== undefined) node.left = left;
@@ -1150,7 +1262,8 @@ function createNode(
 
     case 'Badge': {
       const {
-        text,
+        text: textProp,
+        children,
         view,
         size,
         transparent,
@@ -1174,7 +1287,9 @@ function createNode(
       const normalizedRightIcon = isReactIcon(rightIcon)
         ? normalizeIcon(rightIcon)
         : rightIcon;
+      const { text, marks } = extractTextWithMarks(children ?? textProp);
       const node = new CanvasBadge(id, text, {
+        marks,
         view,
         size,
         transparent,
@@ -1254,7 +1369,7 @@ function createNode(
         onClick,
         portalHoverEnabled: _phe,
       } = props;
-      const text = extractTextFromChildren(children);
+      const { text, marks } = extractTextWithMarks(children);
       const defaultFontFamily =
         theme.fontFamily ||
         '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
@@ -1282,6 +1397,7 @@ function createNode(
         textOverflow,
         ellipsis,
         maxLines,
+        marks,
         autoTooltip,
         href,
         target,
@@ -1301,6 +1417,11 @@ function createNode(
       return node;
     }
 
+    case 'Mark':
+      throw new Error(
+        'Canvas.Mark используется только внутри Canvas.Text, Canvas.Link и Canvas.Badge'
+      );
+
     default:
       throw new Error(`Unknown canvas component type: ${type}`);
   }
@@ -1314,6 +1435,7 @@ export type {
   IconButtonProps as CanvasIconButtonProps,
   IconProps as CanvasIconProps,
   LinkProps as CanvasLinkProps,
+  MarkProps as CanvasMarkProps,
   RectProps as CanvasRectProps,
   SkeletonProps as CanvasSkeletonProps,
   TextProps as CanvasTextProps,

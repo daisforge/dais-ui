@@ -17,6 +17,7 @@ Canvas-элементы — примитивы для отрисовки сод�
 
 - [**Canvas.Container**](?path=/docs/локальные-компоненты-tablecanvas-canvaselements-canvascontainer--docs) — Flex-контейнер для расположения элементов
 - [**Canvas.Text**](?path=/docs/локальные-компоненты-tablecanvas-canvaselements-canvastext--docs) — Текст с ellipsis и multiline clamp
+- [**Canvas.Mark**](?path=/docs/локальные-компоненты-tablecanvas-canvaselements-canvasmark--docs) — Подсветка фрагмента текста внутри Canvas.Text
 - [**Canvas.Link**](?path=/docs/локальные-компоненты-tablecanvas-canvaselements-canvaslink--docs) — Ссылка с навигацией и underline
 - [**Canvas.Button**](?path=/docs/локальные-компоненты-tablecanvas-canvaselements-canvasbutton--docs) — Кнопка
 - [**Canvas.IconButton**](?path=/docs/локальные-компоненты-tablecanvas-canvaselements-canvasiconbutton--docs) — Кнопка-иконка
@@ -99,6 +100,12 @@ renderCell={({ theme }) => (
 `Canvas.Button.onClick` / `Canvas.Link.onClick` выполняется перед `tableConfig.onCellClicked`.
 Если действие внутри canvas-элемента не должно вызывать `onCellClicked`, используйте `event.stopPropagation()`.
 Для отмены навигации `Canvas.Link` — `event.preventDefault()`.
+
+---
+
+## `tooltip` и `popover`
+
+У всех элементов есть проп `tooltip` (подсказка по наведению), `popover` (окно с произвольным содержимым по клику или наведению) и `dropdown` (выпадающий список). Все они показываются через портал таблицы и не требуют настроек в `tableConfig`. Подробнее в разделах [Tooltip](?path=/docs/локальные-компоненты-tablecanvas-tooltip--docs), [Popover](?path=/docs/локальные-компоненты-tablecanvas-popover--docs) и [Dropdown](?path=/docs/локальные-компоненты-tablecanvas-dropdown--docs).
 
 ---
 

@@ -32,6 +32,7 @@ const base = {
   columnsCount: 4,
   isRowHoverEnabled: true,
   dataRowsCount: 5,
+  outlineEachRange: false,
 };
 
 const render = (overrides: Partial<Parameters<typeof useColoringLayers>[0]>) =>

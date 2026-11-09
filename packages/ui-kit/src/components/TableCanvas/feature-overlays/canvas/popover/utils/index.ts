@@ -1,0 +1,1 @@
+export { normalizePopoverConfig } from './normalizePopoverConfig';

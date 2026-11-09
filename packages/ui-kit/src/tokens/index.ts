@@ -1,4 +1,5 @@
 /* eslint-disable simple-import-sort/exports */
+/* eslint-disable import/extensions -- Полные JS-пути обязательны для ESM-потребителей на webpack. */
 
 /**
  * Это автоматический сгенерированый файл

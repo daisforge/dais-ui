@@ -38,7 +38,11 @@ function isSyntaxValid(code: string, filePath: string): boolean {
 //   - локальный dev-сервер (`storybook`);
 //   - прогон скриншот-тестов (test-runner читает этот конфиг под jest — там
 //     NODE_ENV=test, НЕ production), иначе он их не находит (0 matches).
-const isProductionBuild = process.env.NODE_ENV === 'production';
+// Постоянный флаг отдельной тестовой сборки: локальные ресурсы и визуальные stories.
+// В обычной сборке Storybook и в приложениях-потребителях он не включается.
+const isScreenshotBuild = process.env.STORYBOOK_SCREENSHOT_TEST === '1';
+const isProductionBuild =
+  process.env.NODE_ENV === 'production' && !isScreenshotBuild;
 
 const config: StorybookConfig = {
   stories: [
@@ -53,7 +57,26 @@ const config: StorybookConfig = {
     getAbsolutePath('@storybook/addon-interactions'),
     getAbsolutePath('@storybook/addon-links'),
   ],
-  staticDirs: ['../static'],
+  staticDirs: [
+    '../static',
+    // Stories ожидают изображения по этому адресу; контейнер отдаёт их без внешнего сервера.
+    ...(isScreenshotBuild
+      ? [
+          {
+            from: '../../ui-kit/src/images',
+            to: '/pl/static-res/finportal_icons/images',
+          },
+        ]
+      : []),
+  ],
+  // В тестовом стенде заменяем CDN-шрифты локальными файлами из закреплённой версии Plasma.
+  previewHead: (head) =>
+    isScreenshotBuild
+      ? (head ?? '').replace(
+          /<link\b[^>]*href="https:\/\/cdn-app\.sberdevices\.ru[^"]*"[^>]*>/g,
+          '',
+        ) + '<link rel="stylesheet" href="/screenshot-fonts/fonts.css" />'
+      : head,
 
   framework: {
     name: getAbsolutePath('@storybook/react-vite'),
@@ -70,6 +93,12 @@ const config: StorybookConfig = {
   },
   async viteFinal(config, { configType }) {
     const { mergeConfig } = await import('vite');
+    config.define = {
+      ...config.define,
+      'process.env.STORYBOOK_SCREENSHOT_TEST': JSON.stringify(
+        isScreenshotBuild ? '1' : '0',
+      ),
+    };
 
     if (configType === 'DEVELOPMENT') {
       // 🔁 Хранилище состояния: нормализованный путь → был ли в ошибке

@@ -1,0 +1,175 @@
+{
+  "name": "Checkbox",
+  "package": "sdds-finai",
+  "category": "components",
+  "summary": "Checkbox Свойства description и label могут принимать JSX элементы.",
+  "api": {
+    "props": [
+      {
+        "name": "size",
+        "type": "\"s\" | \"l\" | \"m\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "view",
+        "type": "\"default\" | \"accent\" | \"positive\" | \"warning\" | \"negative\" | \"secondary\" | \"tertiary\" | \"paragraph\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "name",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "type",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "onChange",
+        "type": "ChangeEventHandler<HTMLInputElement>",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "defaultChecked",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "placeholder",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "onFocus",
+        "type": "FocusEventHandler<HTMLInputElement>",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "onBlur",
+        "type": "FocusEventHandler<HTMLInputElement>",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "checked",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "maxLength",
+        "type": "number",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "minLength",
+        "type": "number",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "required",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "value",
+        "type": "string | number | readonly string[]",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "label",
+        "type": "ReactNode",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "description",
+        "type": "ReactNode",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "singleLine",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "indeterminate",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "checkIcon",
+        "type": "ReactNode",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "indeterminateIcon",
+        "type": "ReactNode",
+        "required": false,
+        "default": "",
+        "description": ""
+      }
+    ]
+  },
+  "examples": [
+    {
+      "title": "Использование Использование Компонент  Checkbox  может содержать лейбл и описание.",
+      "snippet": "import React from 'react';\nimport { Checkbox } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <Checkbox label=\"Чекбокс\" description=\"Описание\" defaultChecked />\n    );\n}"
+    },
+    {
+      "title": "Использование Использование Компонент  Checkbox  может содержать лейбл и описание.",
+      "snippet": "import React from 'react';\nimport { Checkbox } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <Checkbox\n            label={<div>Чекбокс со <a href=\"/#\">ссылкой</a></div>}\n            description={<div>Описание чекбокса со <a href=\"/#\">ссылкой</a></div>}\n        />\n    );\n}"
+    },
+    {
+      "title": "Использование Использование Компонент  Checkbox  может содержать лейбл и описание.",
+      "snippet": "import React from 'react';\nimport { Checkbox } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <Checkbox label=\"Чекбокс\" description=\"Описание\" defaultChecked indeterminate checked={false} />\n    );\n}"
+    },
+    {
+      "title": "Группа чекбоксов",
+      "snippet": "import { useState } from 'react';\nimport { Checkbox, List, ListItem } from '@salutejs/sdds-finai';\nexport function App() {\n    const items = [\n        { value: 'russian', label: 'Русский', description: 'Родной язык для 150 млн человек' },\n        { value: 'english', label: 'Английский', description: 'Самый распространённый язык в мире' },\n        { value: 'french', label: 'Французский' },\n        { value: 'chinese', label: 'Китайский' },\n    ];\n    const [values, setValues] = useState({ russian: true, english: true });\n    const checkedCount = items.filter((item) => values[item.value]).length;\n    const isAllChecked = checkedCount === items.length;\n    const isIndeterminate = checkedCount > 0 && !isAllChecked;\n    const onParentChange = (event) => {\n        const { checked } = event.target;\n        setValues(items.reduce((acc, item) => ({ ...acc, [item.value]: checked }), values));\n    };\n    const onChildChange = (value) => (event) => setValues({ ...values, [value]: event.target.checked });\n    return (\n        <List role=\"group\" aria-label=\"Языки\" variant=\"tight\">\n            <ListItem tabIndex={-1}>\n                <Checkbox\n                    label=\"Языки\"\n                    description={`Выбрано: ${checkedCount} из ${items.length}`}\n                    checked={isAllChecked}\n                    indeterminate={isIndeterminate}\n                    onChange={onParentChange}\n                />\n            </ListItem>\n            {items.map((item) => (\n                <ListItem key={item.value} tabIndex={-1} style={{ paddingLeft: 36 }}>\n                    <Checkbox\n                        label={item.label}\n                        description={item.description}\n                        checked={Boolean(values[item.value])}\n                        onChange={onChildChange(item.value)}\n                    />\n                </ListItem>\n            ))}\n        </List>\n    );\n}"
+    }
+  ]
+}

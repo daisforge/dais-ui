@@ -15,6 +15,14 @@ import * as CanvasBadgeStories from './CanvasBadge.stories';
 - Поддержка `leftIcon` / `rightIcon`
 - Без `size` размер следует текущему размеру таблицы: XS (`small`) — 16 px (`xs`), S (`medium`) — 24 px (`m`), M (`big`) — 28 px (`l`). Переключение размера таблицы обновляет бейдж автоматически.
 - Явный `size` имеет приоритет; без размера таблицы используется `s` (20 px).
+- Подсветка фрагмента текста [`Canvas.Mark`](?path=/docs/локальные-компоненты-tablecanvas-canvaselements-canvasmark--docs): текст с разметкой передаётся в `children`, `text` — только строка (если заданы оба — используются `children`)
+
+```tsx
+<Canvas.Badge text="Трайб «Диджитал вкладов»" />
+<Canvas.Badge>
+  Трайб «<Canvas.Mark color="#ffe27a">Диджитал</Canvas.Mark> вкладов»
+</Canvas.Badge>
+```
 
 Описание типов — в разделе [API](?path=/docs/локальные-компоненты-tablecanvas-canvaselements-canvasbadge-api--docs).
 

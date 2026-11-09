@@ -1,5 +1,8 @@
 /* eslint-disable @typescript-eslint/ban-types */
-import { CellActivatedEventArgs } from '@glideappsfinal/glide-data-grid';
+import {
+  CellActivatedEventArgs,
+  CellClickedEventArgs,
+} from '@glideappsfinal/glide-data-grid';
 import type { DropdownProps } from '@ui-kit/components/Dropdown';
 import type {
   AppearanceConfig,
@@ -310,7 +313,7 @@ export type TableGlideInstanceProps<
   CustomCtxs extends ObjectForExtending = {},
 > = Omit<
   TableGlideProps<R, SR>,
-  'columns' | 'onHeaderContextMenu' | 'onCellContextMenu'
+  'columns' | 'onHeaderContextMenu' | 'onCellContextMenu' | 'onCellClicked'
 > & {
   columns: readonly ColumnGlideInstance<R, SR, CustomCtxs>[];
   onHeaderContextMenuDropdown?: HeaderContextMenuDropdownProps<
@@ -319,6 +322,8 @@ export type TableGlideInstanceProps<
     CustomCtxs
   >;
   onCellContextMenuDropdown?: CellContextMenuDropdownProps<R, SR>;
+  /** Высота каждого уровня групповых заголовков; по умолчанию `headerHeight` */
+  groupHeaderRowHeight?: number;
   containerProps?: {
     className?: string;
     style?: React.CSSProperties;
@@ -339,6 +344,8 @@ export type TableGlideInstanceProps<
   onCellClicked?: (
     cell: readonly [number, number],
     info: TableInfoWithRow<R, SR, CustomCtxs>,
+    /** Событие клика glide: позиция в ячейке, модификаторы, кнопка */
+    event: CellClickedEventArgs,
   ) => void;
   stickyColumnsConfig?: StickyColumnsConfig<
     ColumnGlideInstance<R, SR, CustomCtxs>
@@ -346,15 +353,13 @@ export type TableGlideInstanceProps<
   stickyRowsConfig?: StickyRowsConfig<R>;
 } & TableGlideInstanceContextMenu<R, SR, CustomCtxs>;
 
-export type CommonFormat = {
+/** Без `customFormat` значение выводится как есть: так задаётся только выравнивание */
+export type CustomFormat = {
   alignContent?: 'right' | 'left' | 'center';
+  customFormat?: (value: string) => React.ReactNode;
 };
 
-export type CustomFormat = CommonFormat & {
-  customFormat: (value: string) => React.ReactNode;
-};
-
-export type NumberFormatOptions = CommonFormat & {
+export type NumberFormatOptions = {
   type: 'number';
   /** Кастомный разделитель дробной части (по умолчанию ',') */
   decimalSeparator?: string;

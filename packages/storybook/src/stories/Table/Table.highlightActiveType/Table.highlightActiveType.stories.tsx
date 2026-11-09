@@ -4,14 +4,14 @@ import { createRows, Row } from '@df-storybook/data/tableData';
 import DocStoryTemplate from '@df-storybook/templates/DocStoryTemplate.mdx';
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
 import type { Meta, StoryObj } from '@storybook/react';
+import { expect, userEvent, waitFor, within } from '@storybook/test';
 import { Select } from '@ui-kit/components/Select';
 import {
   ColumnConfig,
   HighlightActiveType,
   Table,
 } from '@ui-kit/components/Table';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import type { DataGridHandle } from 'react-data-grid';
+import React, { useMemo, useState } from 'react';
 
 const meta: Meta = {
   title: 'Локальные компоненты/Table/HighlightActiveType',
@@ -45,6 +45,22 @@ import { IconAddOutline, IconBoxOutline, IconSber } from '@daisforge/ui/icons';
 `;
 
 export const HighlightActiveTypeTable: StoryObj = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const cell = await canvas.findByRole(
+      'gridcell',
+      { name: /^2$/ },
+      { timeout: 10000 },
+    );
+    await userEvent.click(cell);
+    await waitFor(
+      () =>
+        expect(
+          canvas.getByRole('gridcell', { selected: true }),
+        ).toHaveTextContent(/^2$/),
+      { timeout: 10000 },
+    );
+  },
   ...storySourceDoc({
     preCode,
     previewSource: 'hidden',
@@ -87,14 +103,6 @@ export const HighlightActiveTypeTable: StoryObj = {
       ],
       [],
     );
-    const refTable = useRef<DataGridHandle>(null);
-
-    useEffect(() => {
-      setTimeout(() => {
-        refTable.current?.selectCell({ idx: 0, rowIdx: 1 });
-      }, 1000);
-    }, []);
-
     return (
       <>
         Выбрать тип выделения
@@ -112,7 +120,6 @@ export const HighlightActiveTypeTable: StoryObj = {
             containerStyle: { height: 700 },
             highlightActiveType,
           }}
-          refTable={refTable}
           columnConfig={columnConfig}
           rows={rows}
         />

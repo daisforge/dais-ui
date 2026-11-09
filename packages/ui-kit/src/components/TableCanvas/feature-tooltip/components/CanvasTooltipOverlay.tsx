@@ -2,6 +2,8 @@ import { Tooltip } from '@ui-kit/components/Tooltip';
 import React, { useMemo } from 'react';
 import { createPortal } from 'react-dom';
 
+import { getOpenCanvasOverlay } from '../../feature-overlays/canvas/core';
+import { useOptionalTablePopover } from '../../feature-overlays/context';
 import type { CanvasPortalHoverDetail } from '../../TableGlideInstance';
 import { viewportToContainerPosition } from '../../utils';
 import { DEFAULT_MOUSE_ENTER_DELAY } from '../constants';
@@ -52,7 +54,13 @@ export const CanvasTooltipOverlay: React.FC<CanvasTooltipOverlayProps> =
         getDelays,
       });
 
-      if (!state.visible) return null;
+      // Пока открыт Popover или Dropdown на canvas, подсказки таблицы прячем, чтобы они не
+      // висели рядом с ним. После закрытия подсказка вернётся, если курсор над элементом.
+      const tablePopover = useOptionalTablePopover();
+      const canvasPopoverOpen =
+        !!tablePopover && getOpenCanvasOverlay(tablePopover.state) !== null;
+
+      if (!state.visible || canvasPopoverOpen) return null;
 
       const containerEl = containerRef?.current;
       if (!containerEl || !(containerEl instanceof HTMLElement)) return null;

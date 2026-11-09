@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 /* eslint-disable import/extensions */
 // eslint-disable-next-line import/no-unresolved
-import * as tokens from '@salutejs/sdds-themes/tokens/sdds_finai/index.js';
+import * as tokens from '@sddsjs/sdds_finai/theme/tokens/index.js';
 import fs from 'fs';
 import { join } from 'path';
 import util from 'util';
@@ -33,12 +33,15 @@ log('Script started', {
 log('Imported tokens keys', Object.keys(tokens));
 log(
   'Tokens default export keys',
-  tokens.default ? Object.keys(tokens.default) : 'No default export'
+  tokens.default ? Object.keys(tokens.default) : 'No default export',
 );
 
-const exportTokensPath = '@salutejs/sdds-themes/tokens/sdds_finai';
+// Полный путь нужен webpack при импорте из опубликованных .mjs.
+const exportTokensPath = '@sddsjs/sdds_finai/theme/tokens/index.js';
+const tokenValues = tokens.default ?? tokens;
 
 const heading = `/* eslint-disable simple-import-sort/exports */
+/* eslint-disable import/extensions -- Полные JS-пути обязательны для ESM-потребителей на webpack. */
 
 /**
  * Это автоматический сгенерированый файл
@@ -51,7 +54,7 @@ export {
 } from '${path}';`;
 
 // Все токены, может пригодится
-// const themeTokenNames = Object.entries(tokens.default)
+// const themeTokenNames = Object.entries(tokenValues)
 //     .filter(([_, value]) => typeof value === 'string')
 //     .map((el) => el[0]).join(`,
 //     `);
@@ -68,14 +71,14 @@ const TOKENS = [
   {
     dirName: 'color',
     dir: join(dirname, ...tokensPath, 'color'),
-    tokenNames: Object.entries(tokens.default)
+    tokenNames: Object.entries(tokenValues)
       .filter(
         ([_, value]) =>
           typeof value === 'string' &&
           !value.includes('-gradient') &&
           !value.includes('--border') &&
           !value.includes('--shadow') &&
-          !value.includes('--spacing')
+          !value.includes('--spacing'),
       )
       .map((el) => el[0])
       .join(JOIN_STR),
@@ -83,7 +86,7 @@ const TOKENS = [
   {
     dirName: 'typography',
     dir: join(dirname, ...tokensPath, 'typography'),
-    tokenNames: Object.entries(tokens.default)
+    tokenNames: Object.entries(tokenValues)
       .filter(([key, value]) => typeof value === 'object' && key !== 'default')
       .map((el) => el[0])
       .join(JOIN_STR),
@@ -91,7 +94,7 @@ const TOKENS = [
   {
     dirName: 'gradient',
     dir: join(dirname, ...tokensPath, 'gradient'),
-    tokenNames: Object.entries(tokens.default)
+    tokenNames: Object.entries(tokenValues)
       // Исключаем shadow/border/spacing: их значения тоже могут содержать
       // подстроку `-gradient` (напр. тень `--shadow-gradient-*`), из-за чего
       // токен попадал бы сразу в две корзины и давал дубль ре-экспорта.
@@ -101,7 +104,7 @@ const TOKENS = [
           value.includes('-gradient') &&
           !value.includes('--shadow') &&
           !value.includes('--border') &&
-          !value.includes('--spacing')
+          !value.includes('--spacing'),
       )
       .map((el) => el[0])
       .join(JOIN_STR),
@@ -109,9 +112,9 @@ const TOKENS = [
   {
     dirName: 'border',
     dir: join(dirname, ...tokensPath, 'border'),
-    tokenNames: Object.entries(tokens.default)
+    tokenNames: Object.entries(tokenValues)
       .filter(
-        ([_, value]) => typeof value === 'string' && value.includes('--border')
+        ([_, value]) => typeof value === 'string' && value.includes('--border'),
       )
       .map((el) => el[0])
       .join(JOIN_STR),
@@ -119,9 +122,9 @@ const TOKENS = [
   {
     dirName: 'shadow',
     dir: join(dirname, ...tokensPath, 'shadow'),
-    tokenNames: Object.entries(tokens.default)
+    tokenNames: Object.entries(tokenValues)
       .filter(
-        ([_, value]) => typeof value === 'string' && value.includes('--shadow')
+        ([_, value]) => typeof value === 'string' && value.includes('--shadow'),
       )
       .map((el) => el[0])
       .join(JOIN_STR),
@@ -129,9 +132,10 @@ const TOKENS = [
   {
     dirName: 'spacing',
     dir: join(dirname, ...tokensPath, 'spacing'),
-    tokenNames: Object.entries(tokens.default)
+    tokenNames: Object.entries(tokenValues)
       .filter(
-        ([_, value]) => typeof value === 'string' && value.includes('--spacing')
+        ([_, value]) =>
+          typeof value === 'string' && value.includes('--spacing'),
       )
       .map((el) => el[0])
       .join(JOIN_STR),
@@ -145,12 +149,21 @@ async function generate(tokensDir, tokens) {
 
   await Promise.all(files.map((cPath) => unlink(join(tokensDir, cPath))));
 
-  await writeFile(join(tokensDir, 'index.ts'), getTokensExportsData(tokens));
+  const legacyShadows = tokensDir.endsWith('shadow')
+    ? `
+// Совместимость публичных экспортов: в новой теме SDDS этих двух токенов нет.
+export { shadowGradientDark, shadowGradientLight } from '@salutejs/sdds-themes/tokens/sdds_finai';
+`
+    : '';
+  await writeFile(
+    join(tokensDir, 'index.ts'),
+    getTokensExportsData(tokens) + legacyShadows,
+  );
 }
 
 async function generateTokensIndexFile() {
   const indexFileInner = `${heading}\n\n${TOKENS.map(
-    (t) => `export * from './${t.dirName}';\n`
+    (t) => `export * from './${t.dirName}';\n`,
   ).join('')}`;
 
   await writeFile(tokensIndexFilePath, indexFileInner);

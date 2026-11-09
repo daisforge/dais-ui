@@ -7,7 +7,7 @@ import { ViewContainer } from '@salutejs/sdds-finai';
 import { BreakpointProvider } from '../../ui-kit/src/utils';
 
 // @ts-ignore
-import styles from '@salutejs/sdds-themes/css/sdds_finai.module.css';
+import styles from '@sddsjs/sdds_finai/css/sdds_finai_default.module.css';
 
 const DocumentStyle = createGlobalStyle`
     html:root {

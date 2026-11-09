@@ -1,9 +1,18 @@
 {
-  "builtAt": "2026-09-30T10:22:24.923Z",
-  "version": "0.361.0",
+  "builtAt": "2026-11-04T12:20:13.738Z",
+  "version": "0.367.0",
   "source": {
     "repo": "https://github.com/salute-developers/plasma"
   },
+  "tools": [
+    "list_components",
+    "search_icons",
+    "get_installation_guide",
+    "get_nextjs_guide",
+    "get_form_guide",
+    "get_tokens",
+    "get_component"
+  ],
   "paths": {
     "beta": "beta/index.json",
     "components": "components/index.json",

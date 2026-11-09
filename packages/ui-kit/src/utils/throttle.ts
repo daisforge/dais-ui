@@ -35,22 +35,25 @@ export const throttleWithLastCall = <R, A extends unknown[]>(
       inThrottle = true;
 
       timeoutId = setTimeout(() => {
+        // Освобождаем старый id до trailing-вызова: он может создать новый
+        // таймер, который cancel() должен видеть (например при unmount).
+        timeoutId = null;
         inThrottle = false;
         if (lastArgs !== args) {
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           throttledFn(...lastArgs!);
         }
-        timeoutId = null;
       }, delay);
     }
   };
 
   throttledFn.cancel = () => {
-    if (timeoutId) {
+    if (timeoutId !== null) {
       clearTimeout(timeoutId);
-      inThrottle = false;
-      timeoutId = null;
     }
+    inThrottle = false;
+    timeoutId = null;
+    lastArgs = null;
   };
 
   return throttledFn;

@@ -113,7 +113,11 @@ export default defineConfig(() => {
         external: (() => {
           const pkgJSONDeps = [
             ...Object.keys(pkgJSON.peerDependencies),
-            ...Object.keys(pkgJSON.dependencies),
+            // Две legacy-тени встраиваем из ESM: CJS deep-import сохраняет
+            // весь файл токенов в Vite-потребителе (~287 КБ вместо двух строк).
+            ...Object.keys(pkgJSON.dependencies).filter(
+              (name) => name !== '@salutejs/sdds-themes',
+            ),
           ];
           const cssInSomeLibs = [
             'react-data-grid/lib/styles.css',
@@ -123,12 +127,10 @@ export default defineConfig(() => {
           const somePkgsWithDeps = [
             'react/jsx-runtime',
             /react-dom/, // данный пакет есть в pkgJSONDeps, но не удаляется на 100%. Поэтому regexp-ом
-            '@salutejs/sdds-finai/tokens',
-            '@salutejs/sdds-finai/mixins',
             'swr/mutation',
             /@salutejs\/plasma-core/,
             /@salutejs\/sdds-finai/,
-            /@salutejs\/sdds-themes/,
+            /@sddsjs\/sdds_finai/,
             /@salutejs\/plasma-new-hope/,
           ];
 
@@ -139,6 +141,12 @@ export default defineConfig(() => {
     resolve: {
       alias: {
         '@ui-kit': path.resolve(__dirname, '../ui-kit/src'),
+        // У ESM-пути upstream нет .d.ts. В исходниках оставляем типизированный
+        // публичный путь; только сборщик читает ESM и удаляет лишние экспорты.
+        '@salutejs/sdds-themes/tokens/sdds_finai': path.resolve(
+          __dirname,
+          '../../node_modules/@salutejs/sdds-themes/es/tokens/sdds_finai/index.js',
+        ),
       },
     },
 

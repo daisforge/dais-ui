@@ -2,6 +2,8 @@
 /* eslint-disable no-plusplus */
 /* eslint-disable no-underscore-dangle */
 import { FlexStyle } from '../miniflex/types';
+import type { CanvasNodeDropdownConfig } from '../utils/dropdownConfig';
+import type { CanvasNodePopoverConfig } from '../utils/portalClickEvents';
 import type { CanvasNodeTooltipConfig } from '../utils/portalHoverEvents';
 import {
   CanvasEvent,
@@ -154,6 +156,12 @@ export abstract class CanvasNode implements ICanvasNode {
 
   /** Конфиг тултипа с ноды (проп tooltip на Canvas-элементе). */
   tooltip?: CanvasNodeTooltipConfig;
+
+  /** Проп popover с Canvas-элемента. */
+  popover?: CanvasNodePopoverConfig;
+
+  /** Проп dropdown с Canvas-элемента. */
+  dropdown?: CanvasNodeDropdownConfig;
 
   interaction?: ResolvedCanvasInteractionConfig;
 
@@ -321,6 +329,15 @@ export abstract class CanvasNode implements ICanvasNode {
         candidates
       );
     }
+  }
+
+  /**
+   * Прямоугольник, который нода на самом деле рисует, в координатах ячейки. По
+   * нему ставится якорь тултипа, Popover и Dropdown. По умолчанию это rect из
+   * раскладки; ноды, которые рисуют себя меньше rect, его переопределяют.
+   */
+  getAnchorRect(): Rect {
+    return this.rect;
   }
 
   protected containsHitPoint(x: number, y: number): boolean {
