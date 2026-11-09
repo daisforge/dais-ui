@@ -1044,7 +1044,8 @@ function createNode(
       const node = new CanvasText(id, text, {
         font: fontResult,
         ...textMetrics,
-        color,
+        // Без своего цвета текст красится как обычная ячейка: цветом темы.
+        color: color ?? theme.textDark,
         wordWrap,
         lineHeight,
         overflow,
