@@ -2,7 +2,9 @@ import {
   Dispatch,
   SetStateAction,
   useCallback,
+  useLayoutEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 
@@ -78,11 +80,6 @@ export const useColumnsControl = ({
   );
   const [hiddenColsRaw, setHiddenColsRaw] =
     tableConfigColumnsControl?.hiddenState ?? innerHiddenState;
-  // Состояние хранит по одному исходному ключу на пару key/text, а таблица
-  // работает с обоими ключами пары. Иначе потребитель, сняв скрытие по
-  // исходному ключу, оставит второй ключ, и пара останется скрытой.
-  const keyTextPairsExist =
-    tableConfigKeyTextBoolean && colsWithKeyTextMap.size > 0;
   const hidingIsActive = !!columnsControlConfig.hiding;
   // При hiding: false скрытие выключено целиком, переданное значение не
   // применяется.
@@ -102,35 +99,40 @@ export const useColumnsControl = ({
       tableConfigKeyTextBoolean,
     ],
   );
-  const setHiddenCols = useMemo<Dispatch<SetStateAction<string[]>>>(
-    () =>
-      keyTextPairsExist
-        ? (action) =>
-            setHiddenColsRaw((prev) => {
-              const next =
-                typeof action === 'function'
-                  ? action(
-                      expandKeyTextKeys(
-                        prev,
-                        colsWithKeyTextMap,
-                        tableConfigKeyTextBoolean,
-                      ),
-                    )
-                  : action;
-              return collapseKeyTextKeys(
-                next,
-                colsWithKeyTextMap,
-                tableConfigKeyTextBoolean,
-              );
-            })
-        : setHiddenColsRaw,
-    [
-      keyTextPairsExist,
-      setHiddenColsRaw,
-      colsWithKeyTextMap,
-      tableConfigKeyTextBoolean,
-    ],
+  // Состояние хранит по одному исходному ключу на пару key/text, а таблица
+  // работает с обоими ключами пары. Иначе потребитель, сняв скрытие по
+  // исходному ключу, оставит второй ключ, и пара останется скрытой.
+  // Карту пар читаем через ref, чтобы ссылка на сеттер не менялась вместе с
+  // картой.
+  const colsWithKeyTextMapRef = useRef(colsWithKeyTextMap);
+  useLayoutEffect(() => {
+    colsWithKeyTextMapRef.current = colsWithKeyTextMap;
+  }, [colsWithKeyTextMap]);
+  const setHiddenColsWithKeyText = useCallback<
+    Dispatch<SetStateAction<string[]>>
+  >(
+    (action) =>
+      setHiddenColsRaw((prev) => {
+        const map = colsWithKeyTextMapRef.current;
+        const next = collapseKeyTextKeys(
+          typeof action === 'function'
+            ? action(expandKeyTextKeys(prev, map, true))
+            : action,
+          map,
+          true,
+        );
+        // Тот же состав возвращаем прежней ссылкой, чтобы React пропустил
+        // обновление без перерисовки.
+        const sameAsPrev =
+          next.length === prev.length &&
+          next.every((key, i) => key === prev[i]);
+        return sameAsPrev ? prev : next;
+      }),
+    [setHiddenColsRaw],
   );
+  const setHiddenCols = tableConfigKeyTextBoolean
+    ? setHiddenColsWithKeyText
+    : setHiddenColsRaw;
 
   const [openControlModal, setOpenControlModal] = useState(false);
 

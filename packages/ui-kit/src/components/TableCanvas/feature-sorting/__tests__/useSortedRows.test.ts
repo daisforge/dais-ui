@@ -1,4 +1,5 @@
 import { renderHook } from '@testing-library/react';
+import { useState } from 'react';
 import { describe, expect, it } from 'vitest';
 
 import type { ColumnConfig } from '../../types';
@@ -158,5 +159,80 @@ describe('useSortedRows: пересортировка только при сме
       sortColumns: [],
     });
     expect(result.current.sortedRows).toBe(rows);
+  });
+});
+
+describe('useSortedRows: сортировка по скрытому столбцу', () => {
+  const renderWithSortState = (
+    initialSort: readonly SortColumn[],
+    initialHidden: readonly string[],
+  ) =>
+    renderHook(
+      ({ hiddenCols }: { hiddenCols: readonly string[] }) => {
+        const sortState = useState(initialSort);
+        const hiddenSet = new Set(hiddenCols);
+        const sorted = useSortedRows({
+          rows,
+          columns: [idCol, nameCol].filter((c) => !hiddenSet.has(c.key)),
+          hiddenCols,
+          tableConfig: { sorting: { state: sortState } },
+          infinityScrollActiveInConfig: false,
+          paginationActiveInConfig: false,
+        });
+        return { sortState, sorted };
+      },
+      { initialProps: { hiddenCols: initialHidden } },
+    );
+
+  it('скрытие отсортированного столбца снимает сортировку', () => {
+    const { result, rerender } = renderWithSortState(
+      [{ columnKey: 'id', direction: 'ASC' }],
+      [],
+    );
+    expect(ids(result.current.sorted.sortedRows)).toEqual([1, 2, 3]);
+
+    rerender({ hiddenCols: ['id'] });
+
+    expect(result.current.sortState[0]).toEqual([]);
+    expect(ids(result.current.sorted.sortedRows)).toEqual(ids(rows));
+
+    // Столбец снова показан, но сортировка не возвращается сама.
+    rerender({ hiddenCols: [] });
+    expect(result.current.sortState[0]).toEqual([]);
+    expect(ids(result.current.sorted.sortedRows)).toEqual(ids(rows));
+  });
+
+  it('скрытие другого столбца сортировку не трогает', () => {
+    const sort: SortColumn[] = [{ columnKey: 'id', direction: 'ASC' }];
+    const { result, rerender } = renderWithSortState(sort, []);
+
+    rerender({ hiddenCols: ['name'] });
+
+    expect(result.current.sortState[0]).toBe(sort);
+    expect(ids(result.current.sorted.sortedRows)).toEqual([1, 2, 3]);
+  });
+
+  it('сортировка по столбцу, скрытому с самого начала, снимается', () => {
+    const { result } = renderWithSortState(
+      [{ columnKey: 'id', direction: 'DESC' }],
+      ['id'],
+    );
+    expect(result.current.sortState[0]).toEqual([]);
+  });
+});
+
+describe('useSortedRows: несколько столбцов в сортировке', () => {
+  it('столбец без компаратора первым в списке не даёт применить следующие', () => {
+    const plainCol: Col = { key: 'plain', name: 'Plain' };
+    const { result } = renderSorted({
+      columns: [plainCol, idCol],
+      sortColumns: [
+        { columnKey: 'plain', direction: 'ASC' },
+        { columnKey: 'id', direction: 'ASC' },
+      ],
+    });
+    // Так было и до плана сортировки: сравнение останавливается на первом
+    // столбце без компаратора.
+    expect(ids(result.current.sortedRows)).toEqual(ids(rows));
   });
 });

@@ -479,6 +479,7 @@ export function TableCanvas<
   } = useSortedRows({
     rows: filteredRows,
     columns,
+    hiddenCols,
     tableConfig,
     infinityScrollActiveInConfig,
     paginationActiveInConfig,

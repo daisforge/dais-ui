@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { ColumnConfig, ObjectForExtending, TableConfig } from '../types';
 import {
@@ -17,12 +17,14 @@ export const useSortedRows = <
 >({
   rows,
   columns,
+  hiddenCols,
   tableConfig,
   infinityScrollActiveInConfig,
   paginationActiveInConfig,
 }: {
   rows: RowType[];
   columns: readonly ColumnConfig<RowType, SummaryRowType>[];
+  hiddenCols?: readonly string[];
   tableConfig: TableConfig<RowType, SummaryRowType, RowIdType, FilterStateType>;
   infinityScrollActiveInConfig: boolean;
   paginationActiveInConfig: boolean;
@@ -32,6 +34,19 @@ export const useSortedRows = <
 
   const tableConfigSortingBoolean = !!tableConfig.sorting;
   const manualSorting = !!tableConfig.sorting?.manualSorting;
+
+  // Скрытый столбец нельзя отсортировать из шапки, поэтому сортировка по нему
+  // снимается. Иначе строки вернутся к исходному порядку, а в состоянии
+  // сортировки останется столбец, которого не видно, и при показе столбца
+  // сортировка неожиданно вернётся.
+  useEffect(() => {
+    if (!hiddenCols?.length || !sortColumns?.length || !setSortColumns) return;
+    const hiddenColsSet = new Set(hiddenCols);
+    if (!sortColumns.some((sort) => hiddenColsSet.has(sort.columnKey))) return;
+    setSortColumns((prev) =>
+      prev.filter((sort) => !hiddenColsSet.has(sort.columnKey)),
+    );
+  }, [hiddenCols, sortColumns, setSortColumns]);
 
   // На порядок строк влияют только ключ, направление и компаратор активных
   // столбцов сортировки. Пока они те же, план сохраняет прежнюю ссылку, и

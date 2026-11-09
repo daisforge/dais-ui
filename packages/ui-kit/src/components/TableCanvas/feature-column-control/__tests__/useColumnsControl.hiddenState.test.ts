@@ -22,22 +22,31 @@ const renderControl = (config: ColumnsControlConfig, keyText = false) =>
     }),
   );
 
+type ExternalProps = { map?: KeyTextMap; hiding?: boolean };
+
 /** Состояние потребителя и таблица в одном хуке, как в реальном использовании. */
 const renderWithExternalState = (
   initialHidden: string[],
   config: Omit<ColumnsControlConfig, 'hiddenState'> = { enable: true },
   keyText = false,
 ) =>
-  renderHook(() => {
-    const hiddenState = useState(initialHidden);
-    const control = useColumnsControl({
-      tableConfigColumnsControl: { ...config, hiddenState },
-      tableConfigKeyTextBoolean: keyText,
-      colsWithKeyTextMap: keyText ? keyTextMap : new Map(),
-      columnsGroupingIsActive: false,
-    });
-    return { hiddenState, control };
-  });
+  renderHook(
+    ({ map, hiding }: ExternalProps = {}) => {
+      const hiddenState = useState(initialHidden);
+      const control = useColumnsControl({
+        tableConfigColumnsControl: {
+          ...config,
+          ...(hiding === undefined ? {} : { hiding }),
+          hiddenState,
+        },
+        tableConfigKeyTextBoolean: keyText,
+        colsWithKeyTextMap: map ?? (keyText ? keyTextMap : new Map()),
+        columnsGroupingIsActive: false,
+      });
+      return { hiddenState, control };
+    },
+    { initialProps: {} as ExternalProps },
+  );
 
 describe('useColumnsControl: hiddenState', () => {
   it('без hiddenState работает hiddenDefault и внутреннее состояние', () => {
@@ -156,6 +165,54 @@ describe('useColumnsControl: hiddenState', () => {
 
     act(() => result.current.control.setHiddenCols(['name_key', 'name']));
     expect(result.current.hiddenState[0]).toEqual(['name']);
+  });
+
+  it('при enable: false скрытие тоже выключено', () => {
+    const { result } = renderWithExternalState(['a'], { enable: false });
+    expect(result.current.control.hiddenCols).toEqual([]);
+  });
+
+  it('hiding можно выключить и включить на лету, значение сохраняется', () => {
+    const { result, rerender } = renderWithExternalState(['a']);
+    expect(result.current.control.hiddenCols).toEqual(['a']);
+
+    rerender({ hiding: false });
+    expect(result.current.control.hiddenCols).toEqual([]);
+    expect(result.current.hiddenState[0]).toEqual(['a']);
+
+    rerender({ hiding: true });
+    expect(result.current.control.hiddenCols).toEqual(['a']);
+  });
+
+  it('с парами key/text ссылка на сеттер не меняется при новой карте пар', () => {
+    const { result, rerender } = renderWithExternalState(
+      ['name'],
+      { enable: true },
+      true,
+    );
+    const before = result.current.control.setHiddenCols;
+
+    rerender({ map: new Map(keyTextMap) });
+    expect(result.current.control.setHiddenCols).toBe(before);
+  });
+
+  it('с парами key/text обновление без изменений не меняет значение', () => {
+    const { result } = renderWithExternalState(
+      ['name', 'a'],
+      { enable: true },
+      true,
+    );
+    const before = result.current.hiddenState[0];
+
+    act(() => result.current.control.setHiddenCols((prev) => prev));
+    expect(result.current.hiddenState[0]).toBe(before);
+
+    act(() =>
+      result.current.control.setHiddenCols((prev) =>
+        prev.filter((key) => key !== 'missing'),
+      ),
+    );
+    expect(result.current.hiddenState[0]).toBe(before);
   });
 
   it('при неизменном значении ссылка на hiddenCols не меняется', () => {

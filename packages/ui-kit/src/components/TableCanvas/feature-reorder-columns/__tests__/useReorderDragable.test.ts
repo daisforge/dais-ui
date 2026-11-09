@@ -101,6 +101,20 @@ describe('useReorderDragable: скрытие столбцов', () => {
     expect(result.current.reorderedColumns).toEqual(withD);
   });
 
+  it('удалённый из конфига столбец уходит из порядка, скрытый остаётся', () => {
+    const { result, rerender } = renderReorder({
+      allColumns: [a, b, c],
+      columns: [a, b, c],
+    });
+
+    rerender({ allColumns: [a, b, c], columns: [a, c] });
+    expect(result.current.columnsOrder).toEqual(['a', 'b', 'c']);
+
+    rerender({ allColumns: [a, c], columns: [a, c] });
+    expect(result.current.columnsOrder).toEqual(['a', 'c']);
+    expect(result.current.reorderedColumns).toEqual([a, c]);
+  });
+
   it('без перестановки reorderedColumns совпадает с видимыми столбцами', () => {
     const { result, rerender } = renderReorder({
       allColumns: [a, b, c],
