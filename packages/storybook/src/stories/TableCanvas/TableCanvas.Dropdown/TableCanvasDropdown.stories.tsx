@@ -852,8 +852,10 @@ export const AsyncErrorStory: StoryObj = {
     code: asyncPreCode,
   }),
   parameters: {
-    // Тот же пример, что «успех»; отдельный эталон не нужен.
-    screenshot: { skip: true },
+    screenshot: {
+      skip: true,
+      skipReason: 'Тот же пример, что «успех», отдельный эталон не нужен',
+    },
   },
   render: () => <ExampleAsyncDropdown shouldFail />,
 };
@@ -871,7 +873,10 @@ export const AllVariantsStory: StoryObj = {
   name: 'Все варианты (стенд)',
   parameters: {
     docs: { disable: true },
-    screenshot: { skip: true },
+    screenshot: {
+      skip: true,
+      skipReason: 'Стенд для ручной проверки всех вариантов, не для снимков',
+    },
   },
   render: ExampleAllVariants,
 };
