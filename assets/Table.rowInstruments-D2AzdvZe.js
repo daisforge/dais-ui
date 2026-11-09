@@ -1,0 +1,15 @@
+import{j as o}from"./react-CAOzMBF_.js";import{cg as n,ch as m,ca as s}from"./vendor-CvBXOjQ8.js";import{T as e}from"./Table.rowInstruments.stories-Dsk44kdf.js";import"./react-is-vVGXX3JE.js";import"./styled-components-BAnxJVQm.js";import"./@tanstack/react-virtual-Dq53HtnB.js";import"./tslib-DoU9Jm1N.js";import"./tableData-DVJFoYoT.js";import"./DocStoryTemplate-DUx_jmLE.js";import"./storySourceDoc-tVKyHcEN.js";import"./Box-DBguVV_s.js";import"./Table-SVNZ7evu.js";import"./FiltersActions-DJ_qKXv0.js";import"./IconButton-LdqUAZ_9.js";import"./@salutejs/plasma-icons-DBF9uERs.js";import"./@salutejs/sdds-finai-CrMFu5No.js";import"./@sddsjs/sdds_finai-Clnx3I02.js";import"./utils-D7J-sht1.js";import"./constants-ChwOYBdp.js";import"./sharedUtilsDebug-BX_KjCjW.js";import"./TextField-DO4OQIdm.js";import"./sharedUtilsInputs-DgLlM9Qo.js";import"./AiAgentPopup-9N84at4I.js";import"./TextArea-DNeH37UW.js";import"./sharedUtilsResizable-Bp8tiGu6.js";import"./@salutejs/sdds-themes-xIOWIAKk.js";import"./Collapse-DYelOQTz.js";import"./react-data-grid-C2AVEiS5.js";import"./TableTabs-BIBArlcM.js";import"./TableCanvasSharedConstants-CqGDn8zL.js";import"./TableGlide-Bt2AHBg8.js";import"./@glideappsfinal/glide-data-grid-CbEI6hQN.js";import"./canvas-hypertxt-DsokSIOX.js";import"./sharedUiSearch-BgmPP3IQ.js";import"./ListOfFilters-BzoKI2Dx.js";import"./lodash.isequal-DxetvuAY.js";import"./NumberFormat-C4qjotdA.js";import"./EmptyState-URIS918_.js";import"./MassActions-Dbng_nqT.js";import"./Autocomplete-D6XelC9c.js";function i(t){const r={a:"a",code:"code",h1:"h1",h2:"h2",li:"li",p:"p",ul:"ul",...n(),...t.components};return o.jsxs(o.Fragment,{children:[o.jsx(m,{of:e,name:"Docs"}),`
+`,o.jsx(r.h1,{id:"rowinstruments",children:"RowInstruments"}),`
+`,o.jsxs(r.p,{children:["Инструменты действий над строкой в legacy ",o.jsx(r.code,{children:"Table"}),"."]}),`
+`,o.jsx(r.h2,{id:"ключевые-особенности",children:"Ключевые особенности"}),`
+`,o.jsxs(r.ul,{children:[`
+`,o.jsxs(r.li,{children:["Конфигурация действий через ",o.jsx(r.code,{children:"getRowDropdownConfig"})]}),`
+`,o.jsx(r.li,{children:"Кнопка действий может быть открыта по умолчанию"}),`
+`,o.jsx(r.li,{children:"Управление видимостью через control block"}),`
+`,o.jsx(r.li,{children:"Поддержка внешнего состояния открытия"}),`
+`,o.jsx(r.li,{children:"Доступ к данным строки и индексу строки"}),`
+`]}),`
+`,o.jsx(r.h2,{id:"особенности",children:"Особенности"}),`
+`,o.jsxs(r.p,{children:["Row instruments подходят для действий над одной строкой. Для действий над выбранным набором строк используйте ",o.jsx(r.code,{children:"controlBlock.massActionPanel"}),"."]}),`
+`,o.jsxs(r.p,{children:["Описание типов - в разделе ",o.jsx(r.a,{href:"?path=/docs/%D0%BB%D0%BE%D0%BA%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D1%8B-table-rowinstruments-api--docs",children:"API"}),"."]}),`
+`,o.jsx(s,{})]})}function U(t={}){const{wrapper:r}={...n(),...t.components};return r?o.jsx(r,{...t,children:o.jsx(i,{...t})}):i(t)}export{U as default};
