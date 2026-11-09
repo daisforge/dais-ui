@@ -28,3 +28,23 @@ export const expandKeyTextKeys = (
 
   return nothingToExpand ? keys : Array.from(expanded);
 };
+
+/**
+ * Обратное к expandKeyTextKeys: оба ключа пары key/text сводятся к исходному
+ * ключу столбца (textKey). Так в состоянии всегда один ключ на пару, и
+ * потребитель снимает скрытие одним ключом.
+ */
+export const collapseKeyTextKeys = (
+  keys: string[],
+  colsWithKeyTextMap: KeyTextMap,
+  tableConfigKeyTextBoolean: boolean,
+): string[] => {
+  if (!tableConfigKeyTextBoolean || !colsWithKeyTextMap.size) return keys;
+
+  const collapsed = new Set<string>();
+  keys.forEach((key) => {
+    collapsed.add(colsWithKeyTextMap.get(key)?.textKey ?? key);
+  });
+
+  return Array.from(collapsed);
+};

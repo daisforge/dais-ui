@@ -56,7 +56,7 @@ describe('useColumnsControl: hiddenState', () => {
     expect(result.current.control.hiddenCols).toEqual(['b']);
   });
 
-  it('сеттер таблицы и есть сеттер потребителя', () => {
+  it('без пар key/text сеттер таблицы и есть сеттер потребителя', () => {
     const { result } = renderWithExternalState(['a']);
     expect(result.current.control.setHiddenCols).toBe(
       result.current.hiddenState[1],
@@ -71,12 +71,21 @@ describe('useColumnsControl: hiddenState', () => {
     expect(result.current.control.hiddenCols).toEqual([]);
   });
 
-  it('hiddenState применяется и при hiding: false', () => {
+  it('при hiding: false скрытие выключено, hiddenState не применяется', () => {
     const { result } = renderWithExternalState(['a'], {
       enable: true,
       hiding: false,
     });
-    expect(result.current.control.hiddenCols).toEqual(['a']);
+    expect(result.current.control.hiddenCols).toEqual([]);
+  });
+
+  it('при hiding: false hiddenDefault тоже не применяется', () => {
+    const { result } = renderControl({
+      enable: true,
+      hiding: false,
+      hiddenDefault: ['a'],
+    });
+    expect(result.current.hiddenCols).toEqual([]);
   });
 
   it('исходный ключ столбца с парой key/text скрывает оба столбца пары', () => {
@@ -102,6 +111,51 @@ describe('useColumnsControl: hiddenState', () => {
       ),
     );
     expect(result.current.control.hiddenCols).toEqual(['a']);
+  });
+
+  it('свитч сайдбара пишет в значение только исходный ключ пары', () => {
+    const { result } = renderWithExternalState(['a'], { enable: true }, true);
+
+    // Так свитч в ColumnsList скрывает столбец с парой key/text.
+    act(() =>
+      result.current.control.setHiddenCols((prev) => [
+        ...prev,
+        pair.keyKey,
+        pair.textKey,
+      ]),
+    );
+    expect(result.current.hiddenState[0]).toEqual(['a', 'name']);
+    expect(result.current.control.hiddenCols).toEqual([
+      'a',
+      'name_key',
+      'name',
+    ]);
+  });
+
+  it('потребитель снимает скрытие пары одним исходным ключом', () => {
+    const { result } = renderWithExternalState(['a'], { enable: true }, true);
+
+    act(() =>
+      result.current.control.setHiddenCols((prev) => [
+        ...prev,
+        pair.keyKey,
+        pair.textKey,
+      ]),
+    );
+    // Как в примере из документации к hiddenState.
+    act(() =>
+      result.current.hiddenState[1]((prev) =>
+        prev.filter((key) => key !== 'name'),
+      ),
+    );
+    expect(result.current.control.hiddenCols).toEqual(['a']);
+  });
+
+  it('значение сеттером без функции тоже сводится к исходному ключу', () => {
+    const { result } = renderWithExternalState([], { enable: true }, true);
+
+    act(() => result.current.control.setHiddenCols(['name_key', 'name']));
+    expect(result.current.hiddenState[0]).toEqual(['name']);
   });
 
   it('при неизменном значении ссылка на hiddenCols не меняется', () => {

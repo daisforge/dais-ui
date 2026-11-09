@@ -1,4 +1,10 @@
-import { useCallback, useMemo, useState } from 'react';
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useMemo,
+  useState,
+} from 'react';
 
 import { KeyTextMap } from '../feature-key-text/types';
 import {
@@ -6,8 +12,10 @@ import {
   PinningActionCtx,
   unpinColumns,
 } from '../widgets/control-block/pinning-menu/pinning-actions';
-import { expandKeyTextKeys } from './expandKeyTextKeys';
+import { collapseKeyTextKeys, expandKeyTextKeys } from './expandKeyTextKeys';
 import { ColumnsControlConfig } from './types';
+
+const NO_HIDDEN_COLS: string[] = [];
 
 export const useColumnsControl = ({
   tableConfigColumnsControl,
@@ -60,7 +68,7 @@ export const useColumnsControl = ({
   );
 
   const innerHiddenState = useState(() =>
-    expandKeyTextKeys(
+    collapseKeyTextKeys(
       (columnsControlConfig.hiding &&
         tableConfigColumnsControl?.hiddenDefault) ||
         [],
@@ -68,20 +76,60 @@ export const useColumnsControl = ({
       tableConfigKeyTextBoolean,
     ),
   );
-  // Внешнее состояние читаем всегда, когда оно передано: флаг hiding отвечает
-  // только за элементы интерфейса (свитчи, индикатор).
-  const [hiddenColsRaw, setHiddenCols] =
+  const [hiddenColsRaw, setHiddenColsRaw] =
     tableConfigColumnsControl?.hiddenState ?? innerHiddenState;
-  // Снаружи могут прийти исходные ключи столбцов с парой key/text. Для
-  // внутреннего состояния (уже развёрнутого) вернётся та же ссылка.
+  // Состояние хранит по одному исходному ключу на пару key/text, а таблица
+  // работает с обоими ключами пары. Иначе потребитель, сняв скрытие по
+  // исходному ключу, оставит второй ключ, и пара останется скрытой.
+  const keyTextPairsExist =
+    tableConfigKeyTextBoolean && colsWithKeyTextMap.size > 0;
+  const hidingIsActive = !!columnsControlConfig.hiding;
+  // При hiding: false скрытие выключено целиком, переданное значение не
+  // применяется.
   const hiddenCols = useMemo(
     () =>
-      expandKeyTextKeys(
-        hiddenColsRaw,
-        colsWithKeyTextMap,
-        tableConfigKeyTextBoolean,
-      ),
-    [hiddenColsRaw, colsWithKeyTextMap, tableConfigKeyTextBoolean],
+      hidingIsActive
+        ? expandKeyTextKeys(
+            hiddenColsRaw,
+            colsWithKeyTextMap,
+            tableConfigKeyTextBoolean,
+          )
+        : NO_HIDDEN_COLS,
+    [
+      hidingIsActive,
+      hiddenColsRaw,
+      colsWithKeyTextMap,
+      tableConfigKeyTextBoolean,
+    ],
+  );
+  const setHiddenCols = useMemo<Dispatch<SetStateAction<string[]>>>(
+    () =>
+      keyTextPairsExist
+        ? (action) =>
+            setHiddenColsRaw((prev) => {
+              const next =
+                typeof action === 'function'
+                  ? action(
+                      expandKeyTextKeys(
+                        prev,
+                        colsWithKeyTextMap,
+                        tableConfigKeyTextBoolean,
+                      ),
+                    )
+                  : action;
+              return collapseKeyTextKeys(
+                next,
+                colsWithKeyTextMap,
+                tableConfigKeyTextBoolean,
+              );
+            })
+        : setHiddenColsRaw,
+    [
+      keyTextPairsExist,
+      setHiddenColsRaw,
+      colsWithKeyTextMap,
+      tableConfigKeyTextBoolean,
+    ],
   );
 
   const [openControlModal, setOpenControlModal] = useState(false);

@@ -163,6 +163,9 @@ export const useColumns = <
 
   const tableConfigSubRows = !!tableConfig.subRows;
   // FIXME
+  // Перед включением панели деталей: currIndex и indexZeroColKey в сборке
+  // столбцов считаются по всем столбцам, включая скрытые, и colSpan панели
+  // начнёт их учитывать. Их нужно будет брать из видимых столбцов.
   const tableConfigRowDetailBoolean = false; // !!tableConfig.rowDetailPanel;
 
   const groupedCols = (tableConfig.rowsGrouping ?? {})?.groupByState?.[0];

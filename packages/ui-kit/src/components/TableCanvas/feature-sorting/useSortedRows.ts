@@ -40,6 +40,10 @@ export const useSortedRows = <
     () => getSortPlan(sortColumns, columns),
     [sortColumns, columns],
   );
+  // Запись в ref во время рендера здесь безопасна. Если прерванный рендер
+  // оставит в ref план от других входных данных, следующий рендер сравнит его
+  // с текущим и заменит. Строки всегда сортируются по текущим условиям, в
+  // худшем случае будет одна лишняя сортировка.
   const sortPlanRef = useRef(nextSortPlan);
   if (!isSameSortPlan(sortPlanRef.current, nextSortPlan)) {
     sortPlanRef.current = nextSortPlan;

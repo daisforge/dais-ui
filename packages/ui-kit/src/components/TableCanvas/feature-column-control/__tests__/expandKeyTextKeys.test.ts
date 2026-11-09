@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import type { KeyTextMap } from '../../feature-key-text/types';
-import { expandKeyTextKeys } from '../expandKeyTextKeys';
+import { collapseKeyTextKeys, expandKeyTextKeys } from '../expandKeyTextKeys';
 
 // Карта key/text содержит обе записи пары, как в useColsWithKeyTextMap:
 // исходный ключ столбца совпадает с textKey.
@@ -37,5 +37,24 @@ describe('expandKeyTextKeys', () => {
       'name',
     ]);
     expect(expandKeyTextKeys(['a', 'a'], map, true)).toEqual(['a']);
+  });
+});
+
+describe('collapseKeyTextKeys', () => {
+  it('без key/text возвращает тот же массив', () => {
+    const keys = ['a', 'name_key'];
+    expect(collapseKeyTextKeys(keys, map, false)).toBe(keys);
+    expect(collapseKeyTextKeys(keys, new Map(), true)).toBe(keys);
+  });
+
+  it('оба ключа пары сводятся к исходному ключу без повторов', () => {
+    expect(collapseKeyTextKeys(['a', 'name_key', 'name'], map, true)).toEqual([
+      'a',
+      'name',
+    ]);
+  });
+
+  it('один ключ пары тоже сводится к исходному', () => {
+    expect(collapseKeyTextKeys(['name_key'], map, true)).toEqual(['name']);
   });
 });
