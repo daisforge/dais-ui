@@ -9,6 +9,11 @@ import React, {
 } from 'react';
 import styled, { css } from 'styled-components';
 
+import {
+  EDITOR_BLOCK_BOTTOM_VAR,
+  EDITOR_BOTTOM_LINE_VAR,
+  EDITOR_TOP_LINE_VAR,
+} from '../../TableGlide/constants';
 import { getRowHeightBySize } from '../../TableGlide/theming/size-tokens';
 import { useRowContext } from '../contexts';
 import { CLASS } from '../renders/constants';
@@ -20,6 +25,24 @@ import { CellEditorTextAreaProps } from './types';
 import { MIN_EDITOR_FIELD_WIDTH } from './utils';
 
 type VerticalAlign = 'top' | 'center' | 'bottom';
+
+/**
+ * Низ объединённого блока, если блок виден целиком. Края блока TableGlide кладёт
+ * в переменные оверлея для рамки; линии сверху и снизу есть, только когда край
+ * блока не ушёл за область данных.
+ */
+const getVisibleBlockBottom = (el: HTMLElement | null) => {
+  const style = el?.closest<HTMLElement>("[id^='gdg-overlay-']")?.style;
+  if (
+    !style ||
+    style.getPropertyValue(EDITOR_TOP_LINE_VAR) !== '1px' ||
+    style.getPropertyValue(EDITOR_BOTTOM_LINE_VAR) !== '1px'
+  ) {
+    return undefined;
+  }
+  const bottom = parseFloat(style.getPropertyValue(EDITOR_BLOCK_BOTTOM_VAR));
+  return Number.isFinite(bottom) ? bottom : undefined;
+};
 
 /* По центру отступ ставит первую строку на место текста ячейки, длинный текст растёт
    вниз. Сверху и снизу отступ как у ячейки, а строка держит высоту ячейки. */
@@ -132,6 +155,7 @@ export const CellEditorTextArea = forwardRef<
           cellHeight,
           editorTop: wrapRef.current?.getBoundingClientRect().top ?? 0,
           windowHeight: window.innerHeight,
+          blockBottom: getVisibleBlockBottom(wrapRef.current),
         }),
       );
     }, [cellHeight]);
