@@ -1,3 +1,5 @@
+import { createContext } from 'react';
+
 import type {
   TableColorTheme,
   TableStateColorKey,
@@ -17,20 +19,11 @@ export type TablePaletteOverride = {
   stepFactor?: number;
 };
 
-const overrides: Partial<Record<TableColorTheme, TablePaletteOverride>> = {};
+export type TablePaletteOverrides = Partial<
+  Record<TableColorTheme, TablePaletteOverride>
+>;
 
-/** Задать или снять (undefined) подмену палитры темы. */
-export const setTablePaletteOverride = (
-  theme: TableColorTheme,
-  override: TablePaletteOverride | undefined,
-) => {
-  if (override) {
-    overrides[theme] = override;
-  } else {
-    delete overrides[theme];
-  }
-};
-
-export const getTablePaletteOverride = (
-  theme: TableColorTheme,
-): TablePaletteOverride | undefined => overrides[theme];
+/** Подмена палитры по темам для таблиц внутри провайдера. */
+export const TablePaletteOverrideContext = createContext<
+  TablePaletteOverrides | undefined
+>(undefined);

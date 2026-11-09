@@ -12,7 +12,7 @@ import { FALLBACK_THEME, getButtonViewColors } from './constants';
 import { withOpacity } from './utils';
 
 // Цвета контролов в ячейках берутся из токенов темы таблицы, как у
-// компонентов SDDS; недоступный контрол — те же цвета на 40 %.
+// компонентов SDDS; недоступный контрол рисуется теми же цветами на 40 %.
 
 const light = getTokens('light');
 const dark = getTokens('dark');

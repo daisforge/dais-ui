@@ -56,13 +56,12 @@ import { ColumnConfig, ObjectForExtending } from '../types';
 import { ColumnConfigInternal } from '../types/column-config-internal.type';
 import type { MergedCellsAlign } from '../types/merged-cells.type';
 import { TableConfig } from '../types/table-config.type';
-import { calculateMinColumnWidth } from '../utils';
+import { calculateMinColumnWidth, resolveSpanVerticalAlign } from '../utils';
 import { renderFilterSortHeader } from '../widgets/filter-sort-header';
 import { createLazyRowSpan } from './createLazyRowSpan';
 import { createMergeByValueRowSpan } from './createMergeByValueRowSpan';
 import { createMergedRegionsResolver } from './createMergedRegionsResolver';
 import { resolveMergedView } from './resolveMergedView';
-import { resolveSpanVerticalAlign } from './resolveSpanVerticalAlign';
 
 export const useColumns = <
   FilterStateType extends ObjectForExtending,

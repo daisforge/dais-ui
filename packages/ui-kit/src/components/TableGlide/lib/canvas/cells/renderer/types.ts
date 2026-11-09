@@ -39,8 +39,6 @@ export interface RendererDrawArgs {
   // Поля для анимации из Glide DrawArgs
   frameTime?: number;
   requestAnimationFrame?: () => void;
-  /** Сдвиг содержимого объединённой ячейки с прилипанием от верха блока (форк). */
-  contentOffsetY?: number;
 }
 
 /** Click arguments passed from glide-data-grid renderer */

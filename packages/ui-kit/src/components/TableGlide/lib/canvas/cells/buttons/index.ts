@@ -34,6 +34,7 @@ export {
   HEX_COLOR_PREFIX,
   ICON_SIZE_ADJUSTMENT,
   LEGACY_VARIANT_VIEW,
+  LIGHT_THEME_TOKENS,
   MAX_ICON_SIZE,
   resolveTokens,
   SIZE_CONFIG,
@@ -46,8 +47,6 @@ export {
   calculateContentWidth,
   clearButtonCaches,
   getCachedTextWidth,
-  lightenColor,
-  lightenColorCached,
   withOpacity,
 } from './utils';
 
@@ -62,10 +61,7 @@ export {
 
 // Re-export drawing functions
 export { drawButton, drawButtonWithView } from './drawButton';
-export {
-  drawEmbedIconButton,
-  drawEmbedIconButtonWithView,
-} from './drawEmbedIconButton';
+export { drawEmbedIconButtonWithView } from './drawEmbedIconButton';
 export { drawIcon } from './drawIcon';
 export { drawIconButton, drawIconButtonWithView } from './drawIconButton';
 

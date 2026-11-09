@@ -4,8 +4,8 @@
  * Код генератора (code/*) — источник истины дизайн-системы, он не правится.
  * Этот скрипт — слой интеграции библиотеки: считает палитру через
  * buildTableColors(), подставляет временные значения для токенов, у которых
- * в темах пока неверный цвет (согласованы с дизайнером; список —
- * INTEGRATION-STATUS.md, «Открытые вопросы»), и пишет готовый файл
+ * в темах пока неверный цвет (список в INTEGRATION-STATUS.md, «Открытые
+ * вопросы»), и пишет готовый файл
  * packages/ui-kit/src/components/TableGlide/theming/table-colors.generated.ts.
  *
  * Состояния временных цветов считаются той же формулой (fillStates),
@@ -19,19 +19,21 @@ import { fileURLToPath } from 'node:url';
 
 import { CLEAN_VIEW_COLORS, CLEAN_VIEW_SEMANTIC } from './clean-view-colors';
 import {
-  CELL,
   SEMANTIC as DESIGNER_SEMANTIC,
   TABLE_COLORS as DESIGNER_COLORS,
   THEME_SETTINGS,
 } from './code/table-token-sources';
 import {
-  buildTableColors,
   fillStates,
   type StateName,
   type States,
   type ThemeName,
   THEMES,
 } from './code/table-token-states';
+import {
+  buildIntegrationPalette,
+  themeStepFactor,
+} from './integration-palette';
 
 const OUT_PATH = resolve(
   dirname(fileURLToPath(import.meta.url)),
@@ -45,12 +47,7 @@ const OUT_PATH = resolve(
 const SEMANTIC = { ...DESIGNER_SEMANTIC, ...CLEAN_VIEW_SEMANTIC };
 const TABLE_COLORS = { ...DESIGNER_COLORS, ...CLEAN_VIEW_COLORS };
 
-const byTableKey = buildTableColors(
-  TABLE_COLORS,
-  SEMANTIC,
-  THEME_SETTINGS,
-  CELL,
-);
+const byTableKey = buildIntegrationPalette();
 
 // Комментарии к значениям, подставленным слоем интеграции: ключ → тема → причина.
 const notes = new Map<string, Map<ThemeName, string>>();
@@ -151,7 +148,7 @@ if (missing.length > 0) {
 // цвет статусной ячейки в themeOverride.bgCell): его нет в палитре.
 const fillParams = THEMES.map((theme) => {
   const setting = THEME_SETTINGS[theme];
-  const stepFactor = setting.stepFactor ?? (setting.mode === 'dark' ? 1.2 : 1);
+  const stepFactor = themeStepFactor(theme);
   const q = (v: string | null | undefined) => (v ? `'${v}'` : 'null');
   return `  ${theme}: { mode: '${
     setting.mode

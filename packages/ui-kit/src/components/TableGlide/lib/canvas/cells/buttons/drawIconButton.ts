@@ -12,7 +12,7 @@ import {
   ICON_SIZE_ADJUSTMENT,
   MAX_ICON_SIZE,
   getButtonViewColors,
-  resolveTokens,
+  LIGHT_THEME_TOKENS,
   SIZE_CONFIG,
 } from './constants';
 import { drawIcon } from './drawIcon';
@@ -26,7 +26,7 @@ import type {
 } from './types';
 
 /**
- * Кнопка-иконка старого способа подключения (`variant`): цвета — те же
+ * Кнопка-иконка старого способа подключения (`variant`): цвета те же
  * виды из токенов темы, что у новых кнопок.
  */
 export function drawIconButton(
@@ -79,8 +79,8 @@ export function drawIconButton(
 }
 
 /**
- * Кнопка-иконка с подложкой по виду и размеру: виды как у Button, цвета —
- * из токенов темы таблицы (viewColorsMap), без карты — токены светлой темы.
+ * Кнопка-иконка с подложкой по виду и размеру: виды как у Button, цвета
+ * из токенов темы таблицы (viewColorsMap), без карты из токенов светлой темы.
  */
 export function drawIconButtonWithView(
   batcher: DrawBatcher,
@@ -94,7 +94,7 @@ export function drawIconButtonWithView(
   viewColorsMap?: Record<ButtonView, ViewColors>
 ): ButtonBounds {
   const sizeConfig = SIZE_CONFIG[size];
-  const viewColors = (viewColorsMap ?? getButtonViewColors(resolveTokens(undefined)))[
+  const viewColors = (viewColorsMap ?? getButtonViewColors(LIGHT_THEME_TOKENS))[
     view
   ];
   const buttonSize = sizeConfig.height;

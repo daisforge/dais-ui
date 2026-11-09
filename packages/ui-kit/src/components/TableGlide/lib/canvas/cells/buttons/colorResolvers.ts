@@ -1,3 +1,5 @@
+import type { Tokens } from '../../../../tokens';
+
 import {
   DISABLED_OPACITY,
   getButtonViewColors,
@@ -15,7 +17,7 @@ import type {
 } from './types';
 import { withOpacity } from './utils';
 
-/** Все цвета контрола на 40 %: недоступное состояние по правилу SDDS. */
+/** Все цвета контрола на 40 %: недоступное состояние, как у контролов SDDS. */
 function disabledColors(colors: ResolvedColors): ResolvedColors {
   return {
     bgColor: withOpacity(colors.bgColor, DISABLED_OPACITY),
@@ -23,6 +25,29 @@ function disabledColors(colors: ResolvedColors): ResolvedColors {
     textColor: withOpacity(colors.textColor, DISABLED_OPACITY),
     iconColor: withOpacity(colors.iconColor, DISABLED_OPACITY),
   };
+}
+
+type DerivedViewColors = { hover: ResolvedColors; disabled: ResolvedColors };
+
+// Цвета под курсором и недоступные считаются один раз на палитру вида:
+// палитры видов сами запомнены по токенам темы (constants.ts).
+const derivedViewColorsCache = new WeakMap<ViewColors, DerivedViewColors>();
+
+function getDerivedViewColors(viewColors: ViewColors): DerivedViewColors {
+  let derived = derivedViewColorsCache.get(viewColors);
+  if (derived === undefined) {
+    derived = {
+      hover: {
+        bgColor: viewColors.bgColorHover,
+        borderColor: viewColors.borderColor,
+        textColor: viewColors.textColorHover ?? viewColors.textColor,
+        iconColor: viewColors.iconColorHover ?? viewColors.iconColor,
+      },
+      disabled: disabledColors(viewColors),
+    };
+    derivedViewColorsCache.set(viewColors, derived);
+  }
+  return derived;
 }
 
 /**
@@ -34,27 +59,11 @@ export function resolveViewColors(
   disabled: boolean,
   isHovered: boolean
 ): ResolvedColors {
-  if (disabled) {
-    return disabledColors({
-      bgColor: viewColors.bgColor,
-      borderColor: viewColors.borderColor,
-      textColor: viewColors.textColor,
-      iconColor: viewColors.iconColor,
-    });
+  if (!disabled && !isHovered) {
+    return viewColors;
   }
-
-  return {
-    bgColor: isHovered ? viewColors.bgColorHover : viewColors.bgColor,
-    borderColor: viewColors.borderColor,
-    textColor:
-      isHovered && viewColors.textColorHover
-        ? viewColors.textColorHover
-        : viewColors.textColor,
-    iconColor:
-      isHovered && viewColors.iconColorHover
-        ? viewColors.iconColorHover
-        : viewColors.iconColor,
-  };
+  const derived = getDerivedViewColors(viewColors);
+  return disabled ? derived.disabled : derived.hover;
 }
 
 /**
@@ -83,23 +92,24 @@ export function resolveEmbedIconButtonColors(
   isHovered: boolean,
   overrides?: { iconColor?: string; iconColorHovered?: string }
 ): ResolvedColors {
-  const iconColor = overrides?.iconColor ?? viewColors.iconColor;
-  const iconColorHover =
-    overrides?.iconColorHovered ??
-    overrides?.iconColor ??
-    viewColors.iconColorHover;
-  const colors = resolveViewColors(
-    {
-      ...viewColors,
-      textColor: iconColor,
-      textColorHover: iconColorHover,
-      iconColor,
-      iconColorHover,
-    },
-    disabled,
-    isHovered
-  );
-  return colors;
+  if (
+    overrides?.iconColor === undefined &&
+    overrides?.iconColorHovered === undefined
+  ) {
+    return resolveViewColors(viewColors, disabled, isHovered);
+  }
+  const restColor = overrides.iconColor ?? viewColors.iconColor;
+  const color =
+    isHovered && !disabled
+      ? overrides.iconColorHovered ?? overrides.iconColor ?? viewColors.iconColorHover
+      : restColor;
+  const colors: ResolvedColors = {
+    bgColor: viewColors.bgColor,
+    borderColor: viewColors.borderColor,
+    textColor: color,
+    iconColor: color,
+  };
+  return disabled ? disabledColors(colors) : colors;
 }
 
 export function getEmbedIconButtonColors(
@@ -109,11 +119,43 @@ export function getEmbedIconButtonColors(
   return getEmbedIconButtonViewColors(resolveTokens(theme))[view];
 }
 
+type CheckboxStateColors = { rest: ResolvedColors; disabled: ResolvedColors };
+
+// Цвета чекбокса считаются один раз на токены темы.
+const checkboxColorsCache = new WeakMap<
+  Tokens,
+  { checked: CheckboxStateColors; unchecked: CheckboxStateColors }
+>();
+
+function getCheckboxColors(tokens: Tokens) {
+  let colors = checkboxColorsCache.get(tokens);
+  if (colors === undefined) {
+    const checked: ResolvedColors = {
+      bgColor: tokens.textAccent,
+      borderColor: tokens.textAccent,
+      textColor: tokens.onDarkTextPrimary,
+      iconColor: tokens.onDarkTextPrimary,
+    };
+    const unchecked: ResolvedColors = {
+      bgColor: tokens.surfaceSolidCard,
+      borderColor: tokens.textSecondary,
+      textColor: tokens.onDarkTextPrimary,
+      iconColor: tokens.onDarkTextPrimary,
+    };
+    colors = {
+      checked: { rest: checked, disabled: disabledColors(checked) },
+      unchecked: { rest: unchecked, disabled: disabledColors(unchecked) },
+    };
+    checkboxColorsCache.set(tokens, colors);
+  }
+  return colors;
+}
+
 /**
- * Цвета чекбокса, как у Checkbox в SDDS: неотмеченный — фон карточки
- * `surface-solid-card` и рамка `text-secondary`; отмеченный или частично
- * отмеченный — заливка `text-accent`, галочка `on-dark-text-primary`, без
- * рамки. Недоступный — те же цвета на 40 %.
+ * Цвета чекбокса, как у Checkbox в SDDS. У неотмеченного фон карточки
+ * `surface-solid-card` и рамка `text-secondary`. У отмеченного или частично
+ * отмеченного заливка `text-accent`, галочка `on-dark-text-primary`, без
+ * рамки. Недоступный рисуется теми же цветами на 40 %.
  * Фон неотмеченного не прозрачный: чекбокс стоит в служебной колонке с
  * голубым фоном, и прозрачный просвечивал бы его.
  */
@@ -124,20 +166,7 @@ export function resolveCheckboxColors(
   _isHovered: boolean,
   disabled: boolean
 ): ResolvedColors {
-  const tokens = resolveTokens(theme);
-  const colors: ResolvedColors =
-    checked || indeterminate
-      ? {
-          bgColor: tokens.textAccent,
-          borderColor: tokens.textAccent,
-          textColor: tokens.onDarkTextPrimary,
-          iconColor: tokens.onDarkTextPrimary,
-        }
-      : {
-          bgColor: tokens.surfaceSolidCard,
-          borderColor: tokens.textSecondary,
-          textColor: tokens.onDarkTextPrimary,
-          iconColor: tokens.onDarkTextPrimary,
-        };
-  return disabled ? disabledColors(colors) : colors;
+  const colors = getCheckboxColors(resolveTokens(theme));
+  const state = checked || indeterminate ? colors.checked : colors.unchecked;
+  return disabled ? state.disabled : state.rest;
 }

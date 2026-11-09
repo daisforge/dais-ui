@@ -92,9 +92,13 @@ export const resolveConsumerFillOverride = (
   bgCell: string,
   theme: TableColorTheme,
   context: CellFillContext,
+  stepFactor?: number,
 ): CellFillOverride => {
   try {
-    return resolveCellFillOverride(getCellFillStates(bgCell, theme), context);
+    return resolveCellFillOverride(
+      getCellFillStates(bgCell, theme, stepFactor),
+      context,
+    );
   } catch {
     return { bgCell };
   }

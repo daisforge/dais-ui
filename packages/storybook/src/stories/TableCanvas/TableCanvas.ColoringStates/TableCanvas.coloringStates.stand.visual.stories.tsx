@@ -7,8 +7,11 @@ import {
   type HighlightActiveType,
   TableCanvas,
 } from '@ui-kit/components/TableCanvas';
-import { setTablePaletteOverride } from '@ui-kit/components/TableGlide/theming/palette-override';
-import React, { useEffect, useMemo, useState } from 'react';
+import {
+  TablePaletteOverrideContext,
+  type TablePaletteOverrides,
+} from '@ui-kit/components/TableGlide/theming/palette-override';
+import React, { useMemo, useState } from 'react';
 
 import {
   buildHcPalette,
@@ -47,8 +50,9 @@ const STEP_FACTOR_CONTROL = {
 
 const meta: Meta<ColoringArgs> = {
   title: 'Локальные компоненты/TableCanvas/ColoringStates',
-  // Стенд виден в меню: у скрытой тегом hideInSidebar стори Storybook не
-  // показывает панель контролов, а без неё не работают переключатели и ползунки.
+  // Стенд лежит в файле *.visual.stories: как и визуальные тесты, он есть
+  // в локальном Storybook и в прогоне снимков, но не в опубликованной сборке.
+  // Тег hideInSidebar не подходит: у скрытой им стори нет панели контролов.
   tags: ['!autodocs'],
   args: {
     hoverRow: true,
@@ -216,61 +220,54 @@ export const ColoringStates: Story = {
       [],
     );
 
-    // Палитра контрастных тем с множителями из ползунков. Подмена ставится
-    // до отрисовки таблицы, а key пересоздаёт таблицу, чтобы тема собралась
-    // заново с новыми цветами.
-    const factors = {
-      highContrastLight: args.hcLightStepFactor,
-      highContrastDark: args.hcDarkStepFactor,
-    };
-    const paletteKey = `${factors.highContrastLight}/${factors.highContrastDark}`;
-    useMemo(() => {
+    // Палитра контрастных тем с множителями из ползунков: таблица берёт её
+    // из провайдера и сразу перерисовывается с новыми цветами.
+    const paletteOverrides = useMemo((): TablePaletteOverrides => {
+      const factors = {
+        highContrastLight: args.hcLightStepFactor,
+        highContrastDark: args.hcDarkStepFactor,
+      };
       const palette = buildHcPalette(factors);
-      HC_THEMES.forEach((theme) => {
-        setTablePaletteOverride(theme, {
-          colors: palette[theme],
-          stepFactor: factors[theme],
-        });
-      });
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [paletteKey]);
-    useEffect(
-      () => () =>
-        HC_THEMES.forEach((theme) => setTablePaletteOverride(theme, undefined)),
-      [],
-    );
+      return Object.fromEntries(
+        HC_THEMES.map((theme) => [
+          theme,
+          { colors: palette[theme], stepFactor: factors[theme] },
+        ]),
+      );
+    }, [args.hcLightStepFactor, args.hcDarkStepFactor]);
 
     return (
-      <TableCanvas
-        key={paletteKey}
-        tableConfig={{
-          containerStyle: { height: '560px' },
-          hoverEffects: { row: args.hoverRow },
-          summaryRows: { showDefault: true, showInControl: false },
-          highlightActiveType: args.highlightActiveType,
-          cellsSelection: { mode: args.cellsSelectionMode },
-          ...(args.mergedCells && {
-            mergeCells: { mergeByCellValues: ['dept', 'team'] },
-          }),
-          ...(args.rowMarkers && { rowMarkers: { startIndex: 1 } }),
-          ...(args.checkboxSelecting && {
-            selecting: {
-              state: selectingState,
-              rowKeyGetter: (r: StandRow) => r.id,
-            },
-          }),
-          ...(args.editingEnabled && {
-            editing: {
-              onRowsChange: (newRows: StandRow[]) => setRows([...newRows]),
-              rowKeyGetter: (r: StandRow) => r.id,
-              defaultEnabled: true,
-            },
-          }),
-        }}
-        columnConfig={columnConfig}
-        bottomSummaryRows={bottomSummaryRows}
-        rows={rows}
-      />
+      <TablePaletteOverrideContext.Provider value={paletteOverrides}>
+        <TableCanvas
+          tableConfig={{
+            containerStyle: { height: '560px' },
+            hoverEffects: { row: args.hoverRow },
+            summaryRows: { showDefault: true, showInControl: false },
+            highlightActiveType: args.highlightActiveType,
+            cellsSelection: { mode: args.cellsSelectionMode },
+            ...(args.mergedCells && {
+              mergeCells: { mergeByCellValues: ['dept', 'team'] },
+            }),
+            ...(args.rowMarkers && { rowMarkers: { startIndex: 1 } }),
+            ...(args.checkboxSelecting && {
+              selecting: {
+                state: selectingState,
+                rowKeyGetter: (r: StandRow) => r.id,
+              },
+            }),
+            ...(args.editingEnabled && {
+              editing: {
+                onRowsChange: (newRows: StandRow[]) => setRows([...newRows]),
+                rowKeyGetter: (r: StandRow) => r.id,
+                defaultEnabled: true,
+              },
+            }),
+          }}
+          columnConfig={columnConfig}
+          bottomSummaryRows={bottomSummaryRows}
+          rows={rows}
+        />
+      </TablePaletteOverrideContext.Provider>
     );
   },
 };

@@ -13,6 +13,9 @@ export const DEFAULT_ROW_HEIGHT = {
   medium: ROW_SIZE_TOKENS.medium.rowHeight,
   big: ROW_SIZE_TOKENS.big.rowHeight,
 } as const;
+/** Вертикальное выравнивание блока в несколько строк по умолчанию. */
+export const DEFAULT_SPAN_VERTICAL_ALIGN = 'top' as const;
+
 export const EMPTY_CELL_OBJ: TextCell = {
   kind: GridCellKind.Text,
   data: '',

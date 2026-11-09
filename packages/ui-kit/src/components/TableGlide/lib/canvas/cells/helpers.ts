@@ -109,20 +109,6 @@ export function toRelativePoint(point: Point, rect: RectBounds): Point {
   return point;
 }
 
-/**
- * Точка клика относительно нарисованного содержимого canvas-ячейки. У
- * объединённой ячейки с прилипанием содержимое нарисовано в видимой части
- * блока, а клик приходит относительно всего блока: сдвигаем на contentOffsetY
- * из последней отрисовки. У остальных ячеек точка не меняется.
- */
-export function toContentPoint(
-  point: { x: number; y: number },
-  renderData: { contentOffsetY?: number } | undefined
-): { x: number; y: number } {
-  const offset = renderData?.contentOffsetY ?? 0;
-  return { x: point.x, y: point.y - offset };
-}
-
 export function normalizeHoverPoint(
   hoverX: number | undefined,
   hoverY: number | undefined,

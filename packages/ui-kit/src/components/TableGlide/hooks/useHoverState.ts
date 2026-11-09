@@ -1,6 +1,6 @@
 import type { DataEditorRef } from '@glideappsfinal/glide-data-grid';
 import type { RefObject } from 'react';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 /** Ячейка с данными под курсором. */
 export interface HoveredCell {
@@ -120,23 +120,42 @@ export function useHoverState({
   // Строки под курсором (для фона строк и подсветки служебных колонок).
   const [hoverRows, setHoverRows] = useState<HoverRows | undefined>(undefined);
 
+  // Последнее наведение и свежий расчёт строк: при смене данных блок под
+  // курсором может стать другим, строки пересчитываются без движения мыши.
+  const lastHoverRef = useRef<
+    { rawRowInd: number; origin?: readonly [number, number] } | undefined
+  >(undefined);
+  const resolveHoverRowsRef = useRef(resolveHoverRows);
+  resolveHoverRowsRef.current = resolveHoverRows;
+
+  const applyHoverRows = useCallback(() => {
+    const last = lastHoverRef.current;
+    const resolve = resolveHoverRowsRef.current;
+    const next: HoverRows | undefined = !last
+      ? undefined
+      : last.origin && resolve
+      ? resolve(last.origin[0], last.origin[1], last.rawRowInd)
+      : { from: last.rawRowInd, to: last.rawRowInd };
+    setHoverRows((prev) =>
+      prev?.from === next?.from && prev?.to === next?.to ? prev : next,
+    );
+  }, []);
+
   const handleHoverRowChange = useCallback(
     (
       rawRowInd: number | undefined,
       origin?: readonly [number, number],
     ) => {
-      const next: HoverRows | undefined =
-        rawRowInd === undefined
-          ? undefined
-          : origin && resolveHoverRows
-          ? resolveHoverRows(origin[0], origin[1], rawRowInd)
-          : { from: rawRowInd, to: rawRowInd };
-      setHoverRows((prev) =>
-        prev?.from === next?.from && prev?.to === next?.to ? prev : next,
-      );
+      lastHoverRef.current =
+        rawRowInd === undefined ? undefined : { rawRowInd, origin };
+      applyHoverRows();
     },
-    [resolveHoverRows],
+    [applyHoverRows],
   );
+
+  useEffect(() => {
+    applyHoverRows();
+  }, [resolveHoverRows, applyHoverRows]);
 
   return {
     hoveredCellRef,
