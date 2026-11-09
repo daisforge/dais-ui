@@ -1,8 +1,9 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import {
   resolveActiveRowBg,
   resolveCellFillOverride,
+  resolveConsumerFillOverride,
 } from './cell-fill-override';
 
 const STATES = {
@@ -81,5 +82,38 @@ describe('resolveActiveRowBg: фон выбранной строки', () => {
     expect(
       resolveActiveRowBg(THEME, { rowHover: true, checkboxChecked: true }),
     ).toBe('step2');
+  });
+});
+
+describe('resolveConsumerFillOverride: свой цвет потребителя', () => {
+  const REST = { rowHover: false, rowActive: false };
+
+  it('rgba() получает непрозрачный фон и цвет выделения', () => {
+    const result = resolveConsumerFillOverride(
+      'rgba(255, 100, 100, 0.15)',
+      'light',
+      REST,
+    );
+    expect(result.bgCell).toMatch(/^#[0-9A-F]{6}$/);
+    expect(result.accentLight).toMatch(/^#[0-9A-F]{6}$/);
+    expect(result.accentLight).not.toBe(result.bgCell);
+  });
+
+  it('другая запись возвращается как есть, предупреждение один раз', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    vi.resetModules();
+    const { resolveConsumerFillOverride: resolve } = await import(
+      './cell-fill-override'
+    );
+
+    expect(resolve('var(--x)', 'light', REST)).toEqual({ bgCell: 'var(--x)' });
+    expect(resolve('hsl(0, 100%, 50%)', 'light', REST)).toEqual({
+      bgCell: 'hsl(0, 100%, 50%)',
+    });
+    expect(resolve('red', 'light', REST)).toEqual({ bgCell: 'red' });
+    expect(warn).toHaveBeenCalledTimes(1);
+    expect(warn.mock.calls[0]?.[0]).toContain('var(--x)');
+
+    warn.mockRestore();
   });
 });

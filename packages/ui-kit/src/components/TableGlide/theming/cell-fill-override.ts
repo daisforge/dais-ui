@@ -46,6 +46,8 @@ export type ActiveRowBgTheme = {
   bgSelectedRowActiveHovered: string;
 };
 
+let unsupportedColorWarned = false;
+
 // ─── Функции ───
 
 /**
@@ -84,9 +86,10 @@ export const resolveCellFillOverride = (
  * (themeOverride.bgCell).
  *
  * Подробнее. Состояния такого цвета считаются формулой (fill-states.ts),
- * дальше — как в resolveCellFillOverride. Если значение не цвет вида #…, а,
- * например, rgba() или var(), оно возвращается как есть — без hover и без
- * цвета выделения.
+ * дальше — как в resolveCellFillOverride. Цвет может быть hex, rgb() или
+ * rgba(): полупрозрачный цвет формула кладёт на фон ячейки темы. Другие
+ * записи не поддерживаются: они возвращаются как есть, без hover и без цвета
+ * выделения.
  */
 export const resolveConsumerFillOverride = (
   bgCell: string,
@@ -100,6 +103,16 @@ export const resolveConsumerFillOverride = (
       context,
     );
   } catch {
+    // Расчёт идёт на каждую ячейку, поэтому предупреждаем один раз.
+    if (!unsupportedColorWarned) {
+      unsupportedColorWarned = true;
+      // eslint-disable-next-line no-console
+      console.warn(
+        `[TableCanvas] themeOverride: цвет "${bgCell}" не поддерживается. ` +
+          'Нужен hex, rgb() или rgba(), иначе у ячейки не будет цвета под курсором и при выделении. ' +
+          'Предупреждение выводится один раз, дальше такие случаи не выводятся.',
+      );
+    }
     return { bgCell };
   }
 };

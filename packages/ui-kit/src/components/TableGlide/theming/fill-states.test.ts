@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { getCellFillStates } from './fill-states';
+import { getCellFillStates, toHexColor } from './fill-states';
 import {
   TABLE_COLOR_THEMES,
   TABLE_STATE_COLORS,
@@ -105,5 +105,36 @@ describe('fill-states: эквивалентность рантайм-форму�
       const states = getCellFillStates('#FF0000', theme);
       expect(states.rest).toMatch(/^#[0-9A-F]{6}$/);
     }
+  });
+});
+
+describe('toHexColor: запись цвета потребителя', () => {
+  it('rgba() и rgb() переводятся в #RRGGBBAA', () => {
+    expect(toHexColor('rgba(255, 100, 100, 0.15)')).toBe('#FF646426');
+    expect(toHexColor('rgb(0, 128, 255)')).toBe('#0080FFFF');
+    expect(toHexColor('rgb(0 128 255 / 50%)')).toBe('#0080FF80');
+    expect(toHexColor('rgba(100%, 0%, 0%, 1)')).toBe('#FF0000FF');
+  });
+
+  it('короткий #RGBA раскрывается, остальные записи не меняются', () => {
+    expect(toHexColor('#abcd')).toBe('#AABBCCDD');
+    expect(toHexColor('#ABC')).toBe('#ABC');
+    expect(toHexColor('#AABBCC')).toBe('#AABBCC');
+    expect(toHexColor('var(--surface)')).toBe('var(--surface)');
+  });
+
+  it('rgba() даёт те же состояния, что и тот же цвет в hex', () => {
+    for (const theme of TABLE_COLOR_THEMES) {
+      expect(getCellFillStates('rgba(255, 100, 100, 0.15)', theme)).toEqual(
+        getCellFillStates('#FF646426', theme),
+      );
+    }
+  });
+
+  it('у полупрозрачного цвета есть hover и цвет выделения', () => {
+    const states = getCellFillStates('rgba(100, 255, 100, 0.15)', 'dark');
+    expect(states.rest).toMatch(/^#[0-9A-F]{6}$/);
+    expect(states.hover).toMatch(/^#[0-9A-F]{6}$/);
+    expect(states.active).toMatch(/^#[0-9A-F]{6}$/);
   });
 });
