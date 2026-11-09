@@ -112,4 +112,14 @@ export const TABLE_GLIDE_SIZES = {
 } as const satisfies Record<SIZE, TableGlideSizeConfig>;
 
 export const COLUMN_MIN_WIDTH = 80;
+/**
+ * Редактор ячейки открывается ровно в границах ячейки, без расширения наружу.
+ */
+export const EDITOR_BLOOM: readonly [number, number] = [0, 0];
+/**
+ * На сколько пикселей редактор у Glide больше ячейки.
+ * Glide прибавляет 1 px к ширине и высоте под линию сетки, стили редактора
+ * учитывают этот пиксель (feature-edit/cellFieldStyles).
+ */
+export const GLIDE_EDITOR_TARGET_EXTRA = 1;
 export const DEFAULT_HEADER_HEIGHT = 33;

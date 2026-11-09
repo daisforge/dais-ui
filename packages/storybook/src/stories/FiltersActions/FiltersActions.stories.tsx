@@ -1584,7 +1584,13 @@ function ScrollArrowsExample() {
  */
 export const ScrollArrowsAppearWithoutManualScrollStory: Story = {
   name: 'Список применённых фильтров: стрелки-скролл появляются сами при переполнении',
-  parameters: { screenshot: { skip: true } },
+  parameters: {
+    screenshot: {
+      skip: true,
+      skipReason:
+        'Автопрокрутка меняется во времени; итоговое состояние проверяется в play',
+    },
+  },
   render: () => <ScrollArrowsExample />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);

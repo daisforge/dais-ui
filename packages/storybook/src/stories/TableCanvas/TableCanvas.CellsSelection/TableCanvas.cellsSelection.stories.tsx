@@ -220,8 +220,9 @@ export const MultiRangeSelect: Story = {
       <div>
         <StoryHint>
           <b>multi-range-cell</b>: тяни мышкой диапазон, затем <b>Ctrl/Cmd</b> +
-          клик/драг — докидывай ещё диапазоны. У всех выделенных — заливка и
-          рамка.
+          клик/драг — докидывай ещё диапазоны. Заливка — у всех выделенных,
+          рамка — у последнего (рамку у каждого включает{' '}
+          <code>outlineEachRange</code>, см. ниже).
           <br />
           <b>Copy (Ctrl+C):</b> работает, если разрозненный выбор в пределах{' '}
           <b>одной колонки</b> или <b>одной строки</b> — промежутки схлопываются
@@ -259,6 +260,47 @@ export const MultiRangeSelect: Story = {
                   `[${event.type}/${event.level}] ${event.message} (${event.code})`,
                 ),
             },
+          }}
+          columnConfig={columnConfig}
+          rows={rows}
+        />
+      </div>
+    );
+  },
+};
+
+export const OutlineEachRange: Story = {
+  name: 'Рамка у каждого Ctrl-диапазона (outlineEachRange)',
+  ...storySourceDoc({ preCode, previewSource: 'shown' }),
+  render: () => {
+    const [rows] = useState(createRows);
+    const columnConfig = useMemo(() => COLUMN_CONFIG, []);
+    const [outlineEachRange, setOutlineEachRange] = useState(true);
+
+    return (
+      <div>
+        <div style={{ marginBottom: 12 }}>
+          <Checkbox
+            checked={outlineEachRange}
+            onChange={(e) => setOutlineEachRange(e.target.checked)}
+            label={<div>cellsSelection.outlineEachRange</div>}
+          />
+        </div>
+
+        <StoryHint>
+          Выдели диапазон, затем с <b>Ctrl/Cmd</b> добавь ещё несколько. С
+          опцией рамка есть у каждого диапазона (как в Google Sheets), без неё —
+          только у последнего, остальные показаны заливкой.
+          <br />
+          Протяни новый диапазон поверх старого: поглощённый диапазон рамку не
+          получает. У соседних диапазонов на стыке видна общая линия.
+        </StoryHint>
+
+        <TableCanvas
+          tableConfig={{
+            containerStyle: { height: '600px' },
+            cellsSelection: { mode: 'multi-range-cell', outlineEachRange },
+            rowMarkers: { startIndex: 1 },
           }}
           columnConfig={columnConfig}
           rows={rows}

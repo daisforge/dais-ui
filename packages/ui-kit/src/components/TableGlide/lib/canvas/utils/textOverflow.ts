@@ -1,3 +1,5 @@
+import { countWhile } from '@ui-kit/shared/utils/search';
+
 export type CanvasTextOverflow = 'clip' | 'ellipsis';
 
 export interface ResolvedOverflowText {
@@ -166,32 +168,23 @@ function getTruncatedText(
   }
 
   const graphemes = splitGraphemes(text);
-  let low = 0;
-  let high = graphemes.length;
-  let bestText = ellipsis;
-  let bestWidth = ellipsisWidth;
+  const withEllipsis = (count: number) =>
+    `${graphemes.slice(0, count).join('')}${ellipsis}`;
 
-  // Бинарный поиск нужен, чтобы не удалять символы по одному на длинных строках таблицы.
-  while (low <= high) {
-    const mid = Math.floor((low + high) / 2);
-    // Проверяем префикс длины mid плюс ellipsis. Если он помещается,
-    // пробуем взять больше grapheme clusters; если нет - сужаем диапазон.
-    const candidate = `${graphemes.slice(0, mid).join('')}${ellipsis}`;
-    const candidateWidth = getCachedTextWidth(ctx, candidate, font);
-
-    if (candidateWidth <= maxWidth) {
-      bestText = candidate;
-      bestWidth = candidateWidth;
-      low = mid + 1;
-    } else {
-      high = mid - 1;
-    }
-  }
+  // Сколько первых символов помещается вместе с ellipsis. Бинарный поиск нужен, чтобы
+  // не удалять символы по одному на длинных строках таблицы; ellipsis без символов
+  // помещается всегда (проверено выше).
+  const count =
+    countWhile(
+      graphemes.length + 1,
+      (n) => getCachedTextWidth(ctx, withEllipsis(n), font) <= maxWidth
+    ) - 1;
+  const truncated = withEllipsis(count);
 
   return {
-    text: bestText,
+    text: truncated,
     didTruncate: true,
-    width: bestWidth,
+    width: getCachedTextWidth(ctx, truncated, font),
   };
 }
 

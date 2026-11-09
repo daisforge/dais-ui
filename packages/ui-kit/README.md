@@ -13,7 +13,7 @@
 ```
 
 ```sh
-    npm install --save styled-components@5.3.1
+    npm install --save-exact styled-components@5.3.11
 ```
 
 ```sh
@@ -23,6 +23,38 @@
 ```sh
     npm install --save @daisforge/ui
 ```
+
+## Совместимость и темы
+
+Приложению нужен `styled-components 5.3.11`. Наследуемые типы атомарных
+компонентов следуют установленной версии SDDS; при обновлении библиотеки
+проверяйте типы приложения.
+
+- Default, beta core и high contrast поступают из `@sddsjs/sdds_finai`.
+  Публичные экспорты `sdds_finai__light/dark` являются алиасами
+  `sdds_finai_default__light/dark`.
+- `GlobalStyle.theme` принимает `light`, `dark`, `betaCoreLight`, `betaCoreDark`,
+  `highContrastLight` и `highContrastDark`.
+- `shadowGradientDark` и `shadowGradientLight` экспортируются через
+  `@salutejs/sdds-themes`. При сборке dais-ui из ESM встраиваются только эти
+  две константы; остальные токены старого пакета в JS библиотеки не входят.
+  Их CSS-fallback работает и без соответствующих переменных в теме.
+- `Dropdown` поддерживает прежние placement `top/bottom/left/right`:
+  адаптер преобразует их в `*-start`, включая вложенные пункты.
+  Новые `*-start/center/end` и `auto` передаются без изменения.
+  Обработчики и `renderItem` получают исходные объекты пунктов.
+
+В отдельном минимальном потребителе на webpack 5 сборка прошла без новых
+preloader и без отключения `resolve.fullySpecified`: ESM-импорты тем в сборке
+библиотеки содержат `.js` и `/index.js`. Корпоративные webpack-конфиги недоступны
+и не проверены. При обновлении сохраните существующие правила загрузки CSS таблиц,
+установите `styled-components` точной версии `5.3.11` (`npm install --save-exact
+styled-components@5.3.11`), обновите lockfile и выполните typecheck и production-сборку
+своего приложения. Подтверждённой необходимости менять webpack-конфиг нет.
+
+Ручная палитра состояний Canvas-таблиц не обновляется автоматически вместе
+с темами SDDS. Её изменения согласуются с дизайнером. Устройство палитры
+и команды генерации описаны в [документации генератора](../../generators/table-token-states/README.md).
 
 ## Настройка
 
@@ -53,16 +85,18 @@ root.render(
 import React from 'react';
 import { createGlobalStyle } from 'styled-components';
 
-import { compatible_typo_theme, light_sdds_serv_theme, light_web_theme, standard_typo_theme } from '../themes';
+import {
+  compatible_typo_theme,
+  sdds_finai__light,
+  standard_typo_theme,
+} from '@daisforge/ui/themes';
 
-const WebTheme = createGlobalStyle(light_web_theme);
 const StandardTypoTheme = createGlobalStyle(standard_typo_theme);
 const CompatibleTypoTheme = createGlobalStyle(compatible_typo_theme);
-const SDDSTheme = createGlobalStyle(light_sdds_serv_theme);
+const SDDSTheme = createGlobalStyle(sdds_finai__light);
 
 export const GlobalStyle = () => (
   <>
-    <WebTheme />
     <StandardTypoTheme />
     <CompatibleTypoTheme />
     <SDDSTheme />
@@ -86,11 +120,10 @@ import { textAccent } from '@daisforge/ui/tokens';
 
 export const App = () => {
     return (
-        <Button>Hello!</Button>
-
-        <p style={{color: textAccent}}>
-            Token usage example
-        </p>
+        <>
+            <Button>Hello!</Button>
+            <p style={{color: textAccent}}>Token usage example</p>
+        </>
     );
 };
 ```
@@ -110,11 +143,11 @@ export const App = () => {
 };
 ```
 
-## Возможное решение проблем:
+## Предупреждение source-map-loader в Webpack
 
-`Failed to parse source map from ...`
-
-Решение: Добавить в конфиг вебпака
+В приложениях на Webpack предупреждение `Failed to parse source map from ...`
+может возникать при обработке сторонних source maps. Если причина подтверждена,
+можно подавить предупреждения этого loader в конфигурации потребителя:
 
 ```js
 module.exports = {

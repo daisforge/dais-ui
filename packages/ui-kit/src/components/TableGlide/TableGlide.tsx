@@ -12,13 +12,15 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import { glideCellRenderer } from './cellRenderer';
-import { DEFAULT_HEADER_HEIGHT, DEFAULT_ROW_HEIGHT } from './constants';
+import { DEFAULT_HEADER_HEIGHT, EDITOR_BLOOM } from './constants';
 import {
   useColoringLayers,
   useNativeGridSelection,
   useSelectionGeometry,
   useTableSelectionSystem,
 } from './hooks/selection';
+import { useKeepCellInView } from './hooks/autoRowHeight/useKeepCellInView';
+import { useScrollAnchor } from './hooks/autoRowHeight/useScrollAnchor';
 import { useAnimatedRowHeight } from './hooks/useAnimatedRowHeight';
 import { useErrorCellRanges } from './hooks/useErrorCellRanges';
 import { useCanvasContextMenuInteraction } from './hooks/useCanvasContextMenuInteraction';
@@ -27,9 +29,12 @@ import { useCanvasInteractionSession } from './hooks/useCanvasInteractionSession
 import { useCustomRenderers } from './hooks/useCustomRenderers';
 import { useGlideElements } from './hooks/useGlideElements';
 import { useHoverState } from './hooks/useHoverState';
+import { useSnapshotRepaint } from './hooks/useSnapshotRepaint';
 import { useOverlayPortalFix } from './hooks/useOverlayPortalFix';
 import { useItemHoveredHandler } from './hooks/useItemHoveredHandler';
+import { useRowHeightGlide } from './hooks/useRowHeightGlide';
 import { useUnstickyHeader } from './hooks/useUnstickyHeader';
+import { useColumnPortalReset } from './hooks/useColumnPortalReset';
 import {
   buildCanvasTree,
   Canvas,
@@ -58,7 +63,6 @@ import type {
   GlideThemeForRender,
   HeaderCellInfo,
   ObjectForExtending,
-  RowHeightGlide,
   TableGlideProps,
 } from './types';
 import {
@@ -67,8 +71,14 @@ import {
   TextCellOptions,
 } from './utils/createCell';
 import { findBlockOrigin } from './utils/findBlockOrigin';
+import { mergeThemeOverrides } from './utils/mergeThemeOverrides';
 import { getSpan } from './utils/getSpan';
-import { getRowSpan } from './utils/getRowSpan';
+import {
+  getColumnGroupPath,
+  handleGroupHeaderClick,
+} from './utils/groupHeaderClick';
+import { getRowSpan, spansSeveralRows } from './utils/getRowSpan';
+import { GroupHeaderParts } from './utils/groupHeaderParts';
 import { isCanvasContent, isPrimitive } from './utils/typeGuards';
 
 /** Функция-болванка. Ничего не делает */
@@ -105,14 +115,6 @@ export class CellContentCache {
 
 const CTXS_EMPTY = {};
 
-// Путь групп колонки: string → [string], string[] → как есть, иначе [].
-const getColumnGroupPath = (group: unknown): string[] =>
-  Array.isArray(group)
-    ? group.filter((g): g is string => typeof g === 'string')
-    : typeof group === 'string'
-    ? [group]
-    : [];
-
 type CanvasCacheKey = string | number | boolean | null;
 
 interface CanvasCellCacheEntry {
@@ -125,6 +127,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   rows,
   bottomSummaryRows,
   rowHeight,
+  maxAutoRowHeight,
   width,
   rowSize = 'medium',
   ctxs = CTXS_EMPTY,
@@ -154,6 +157,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   // Режим фактического выделения ячеек (нативный glide). Независим от
   // highlightActiveType: по нему идут copy/paste, рамка, fill-handle, затемнение.
   cellsSelectionMode = 'range-cell',
+  focusOnStateChange = true,
   // Выделение колонок — независимая ось (НЕ через highlightActiveType).
   // По умолчанию включено; работает при любом highlightActiveType.
   enableColumnSelection = true,
@@ -161,6 +165,8 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   enableRowSelection = true,
   // Выделение всей таблицы кликом по шапке колонки нумерации. По умолчанию включено.
   enableSelectAll = true,
+  // Рамка у каждого Ctrl-диапазона ячеек, а не только у активного.
+  outlineEachRange = false,
   enableLowDprHairline,
   // Controlled нативное выделение (значение + сеттер).
   gridSelection: gridSelectionExternal,
@@ -203,49 +209,14 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     [rowSize, activeTheme, appearanceVariant],
   );
 
-  const rowHeightGlide = useMemo<RowHeightGlide>(() => {
-    const baseNumber = typeof rowHeight === 'number' ? rowHeight : undefined;
-    if (baseNumber) {
-      return baseNumber;
-    }
-    const DEF_HEIGHT = DEFAULT_ROW_HEIGHT[rowSize];
-
-    const baseFunction =
-      typeof rowHeight === 'function' ? rowHeight : undefined;
-
-    if (baseFunction) {
-      return (rowIndex: number) => {
-        const row = rows[rowIndex];
-        if (!row) {
-          return baseNumber ?? DEF_HEIGHT;
-        }
-        const currentRowSize = {
-          rowSizeName: rowSize,
-          rowSizeValue: DEF_HEIGHT,
-        };
-        const value = baseFunction(row, currentRowSize, rowIndex);
-
-        return typeof value === 'number' && !Number.isNaN(value)
-          ? value
-          : DEF_HEIGHT;
-      };
-    }
-
-    return DEF_HEIGHT;
-  }, [rows, rowHeight, rowSize]);
-  // ---------------------------
-
   const summaryRowsLength = bottomSummaryRows?.length ?? 0;
-
-  const rowH = useAnimatedRowHeight(rowHeightGlide);
 
   const [resizedColsMap, setResizedColsMap] = useState(
     new Map<string, number>(),
   );
 
-  // Скрытие тултипа на старте ресайза. Присваивается ниже из useItemHoveredHandler
-  // (объявлен позже по коду), поэтому дёргаем через ref.
-  const hideTooltipRef = useRef<(() => void) | null>(null);
+  const { onColumnResizeStep, onColumnMoved: resetOnColumnMoved } =
+    useColumnPortalReset(portalEventTargetRef);
 
   const onColumnResizeInternal = useCallback(
     (
@@ -268,9 +239,9 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         return;
       }
 
-      // Наведение уже произошло до старта перетаскивания, прячем тултип, чтобы он
-      // не висел на месте (за границей во время ресайза он не едет).
-      hideTooltipRef.current?.();
+      // Ширину колонки меняют: якоря сдвинулись, тултип и открытый Popover
+      // прячем, наведение на время ресайза выключаем.
+      onColumnResizeStep();
 
       onColumnResize?.(col, newSize, colIndex, newSizeWithGrow);
 
@@ -279,7 +250,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         return new Map(prev);
       });
     },
-    [onColumnResize],
+    [onColumnResize, onColumnResizeStep],
   );
 
   const columnsLast = useMemo(() => {
@@ -294,22 +265,52 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     });
   }, [columns, resizedColsMap]);
 
-  const [updateVersion, _setUpdateVersion] = useState(0);
+  const {
+    rowHeightGlide,
+    trackAutoRowHeightRegion,
+    autoHeightReporter,
+    takeAnchorShift,
+  } = useRowHeightGlide({
+    rowHeight,
+    rows,
+    rowSize,
+    columns: columnsLast,
+    theme,
+    maxAutoRowHeight,
+  });
+  const rowH = useAnimatedRowHeight(rowHeightGlide);
+
+  const [updateVersion, setUpdateVersion] = useState(0);
   const canvasCellCache = useMemo(
     () => new WeakMap<R, Map<string, CanvasCellCacheEntry>>(),
     [],
   );
   const dataEditorRef = useRef<DataEditorRef | null>(null);
+  // Только скриншотный Storybook (STORYBOOK_SCREENSHOT_TEST=1) подключает
+  // withCanvasSnapshots: useSnapshotRepaint регистрирует этот callback в нём.
+  // Runner вызывает его перед PNG через window.daisScreenshotRepaint;
+  // в приложении провайдера нет, поэтому дополнительной перерисовки нет.
+  const repaintSnapshot = useCallback(() => {
+    if (!dataEditorRef.current) return false;
+    // Новая версия getCellContent заставляет Glide перерисовать всю видимую область.
+    // Частичный updateCells может накапливать пиксели по краям обрезанных ячеек.
+    setUpdateVersion((version) => version + 1);
+    return true;
+  }, []);
+  useSnapshotRepaint(repaintSnapshot);
 
   // Controlled-выделение приходит, когда грид НЕ в фокусе (напр. клик по внешней
   // кнопке) — тогда glide рисует якорную ячейку без заливки (нативный стиль
   // «активная ячейка, грид не сфокусирован»). Фокусируем грид, чтобы выделение
   // выглядело как обычное. На интеракции мышью грид уже в фокусе -> focus().
   useEffect(() => {
-    if (gridSelectionExternal?.current !== undefined) {
+    if (
+      focusOnStateChange &&
+      gridSelectionExternal?.current !== undefined
+    ) {
       dataEditorRef.current?.focus();
     }
-  }, [gridSelectionExternal]);
+  }, [gridSelectionExternal, focusOnStateChange]);
 
   const {
     interactionSessionStore,
@@ -331,6 +332,15 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     gridSelection: gridSelectionExternal,
     onGridSelectionChange: onGridSelectionChangeExternal,
     onSelectionEmit,
+  });
+
+  // Прыжок с клавиатуры через ещё не измеренные строки: докручиваем к ячейке,
+  // когда строки дорастут до своей высоты
+  useKeepCellInView({
+    enabled: rowHeight === 'auto',
+    dataEditorRef,
+    cell: selection.current?.cell,
+    rowHeights: rowHeightGlide,
   });
 
   const selectionVisualState = useSelectionGeometry({
@@ -381,7 +391,6 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     dataRowCount: rows.length + summaryRowsLength,
     handleGridSelectionChange,
     handleSelectionCleared,
-    onSelectionEmit,
     highlightActiveRow,
     onHighlightActiveRowChange: handleHighlightActiveRowChange,
     isHighlightActiveRowControlled: highlightActiveRowControlled,
@@ -514,6 +523,16 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     theme.bgHeaderSelectedHovered,
   ]);
 
+  // Блок колонок может начинаться только на колонке с colSpan: findBlockOrigin
+  // обходит их, а не все колонки левее ячейки.
+  const spanColumnIndexes = useMemo(
+    () =>
+      columnsForRender.flatMap((column, columnIndex) =>
+        column.colSpan ? [columnIndex] : []
+      ),
+    [columnsForRender]
+  );
+
   // ─── hoverEffects.row: подсветка строки под курсором (цвета из темы).
   // По умолчанию ВКЛЮЧЕНА (решение дизайн-системы — строка под курсором
   // показывает hover-ступень); выключается явно hoverEffects: { row: false }.
@@ -552,9 +571,14 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   >(
     (range, tx, ty, extras) => {
       trackVisibleRegion(range);
+      trackAutoRowHeightRegion(range);
       onVisibleRegionChangedExternal?.(range, tx, ty, extras);
     },
-    [trackVisibleRegion, onVisibleRegionChangedExternal],
+    [
+      trackVisibleRegion,
+      trackAutoRowHeightRegion,
+      onVisibleRegionChangedExternal,
+    ]
   );
 
   const getCellContentGlide = useCallback(
@@ -672,6 +696,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       const [originColInd, originRowInd] = findBlockOrigin(
         colInd,
         rowInd,
+        spanColumnIndexes,
         (c, r) => {
           const col = columnsForRender[c];
           return col?.colSpan
@@ -802,6 +827,12 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
             }
           : undefined;
 
+      const themeOverride = mergeThemeOverrides(
+        columnThemeOverrideResult,
+        fillOverride,
+        soloActiveCellOverride
+      );
+
       const options = {
         data: row[id]?.toString?.() ?? 'NOT FOUND',
         ...(cellIsEditable
@@ -814,11 +845,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
               ...(column.hasPreview === true && { allowOverlay: true }),
               ...(column.hasPreview === 'none' && { allowOverlay: false }),
             }),
-        themeOverride: {
-          ...columnThemeOverrideResult,
-          ...fillOverride,
-          ...soloActiveCellOverride,
-        },
+        ...(themeOverride && { themeOverride }),
         contentAlign,
         ...(span && { span }),
         ...(spanRows && { spanRows }),
@@ -857,14 +884,21 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
             getPortalEventTarget: () => portalEventTargetRef?.current ?? null,
             refTable,
           },
-        }),
+          // Блок на несколько строк высоту строки не растит — и отступа не получает
+          autoHeight:
+            autoHeightReporter && !spansSeveralRows(spanRows)
+              ? autoHeightReporter(row, rowInd, id, !!span)
+              : undefined,
+        })
       );
     },
     [
       updateVersion,
       bottomSummaryRows,
       rows,
+      autoHeightReporter,
       columnsForRender,
+      spanColumnIndexes,
       ctxs,
       theme,
       activeTheme,
@@ -949,6 +983,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         renderData,
         rowData: rows[cell[1]],
         rowIndex: cell[1],
+        pointerOptions: { button: event.button, cellBounds: event.bounds },
       });
       const outcome = session
         ? buildEffectiveInteractionOutcome({
@@ -1021,13 +1056,27 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     () => new Map<string, CellCanvasRoot>(),
     [],
   );
-  const columnsGroupHeaderCanvasRootInstanceMap = useMemo(
-    () => new Map<string, CellCanvasRoot>(),
-    [],
+  const groupHeaderParts = useMemo(
+    () => new GroupHeaderParts<CellCanvasRoot>(),
+    []
   );
+  useEffect(() => {
+    groupHeaderParts.retain(
+      new Set(
+        columnsForRender.flatMap((column) => getColumnGroupPath(column.group))
+      )
+    );
+  }, [groupHeaderParts, columnsForRender]);
   const overlayPortalRef = useRef<HTMLDivElement>(null);
   // div-обертка над Glide для DOM-поиска элементов
   const containerRefInternal = useRef<HTMLDivElement>(null);
+
+  useScrollAnchor({
+    enabled: rowHeight === 'auto',
+    containerRef: containerRefInternal,
+    rowHeights: rowHeightGlide,
+    takeShift: takeAnchorShift,
+  });
   const mergedContainerRef = useMemo(
     () => mergeRefs(containerRefInternal, containerRefExternal),
     [containerRefExternal],
@@ -1152,6 +1201,8 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
             'click',
             event.localEventX,
             event.localEventY,
+            undefined,
+            { button: event.button, cellBounds: event.bounds },
           );
           if (interaction) return;
         }
@@ -1175,68 +1226,26 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     selectColumnFromHeader,
   ]);
 
-  // Клик по шапке группы выделяет все листовые колонки этой группы.
-  //
-  // У каждой колонки есть group-путь — имена групп сверху вниз (напр.
-  // ['Метрики','Продажи']). Берём путь кликнутой колонки, обрезаем до уровня, по
-  // которому кликнули, — это префикс, однозначно задающий группу. Колонки одной
-  // группы всегда идут в ряд, поэтому от кликнутой расширяем диапазон влево и
-  // вправо, пока у соседа тот же префикс; листья диапазона выделяем разом.
-  //
-  // Префикс сравниваем как строку — путь склеиваем через '\0' (символ NUL). NUL
-  // взят разделителем, потому что он не может встретиться в имени группы, и склейка
-  // получается без коллизий: пути ['A','B'] и ['AB'] дают разные ключи ('A\0B' и
-  // 'AB'), тогда как join('/') или join('') их бы схлопнули в один.
   const onGroupHeaderClicked = useCallback<
     NonNullable<GlideProps['onGroupHeaderClicked']>
   >(
-    (colIndex, event) => {
-      const clickedColumn = columnsForRender[colIndex];
-      if (!enableColumnSelection || !clickedColumn) {
-        onGroupHeaderClickedExternal?.(colIndex, event);
-        return;
-      }
-
-      // путь кликнутой колонки и уровень клика
-      const clickedPath = getColumnGroupPath(clickedColumn.group);
-      const clickedLevel = Math.max(0, clickedPath.indexOf(event.group));
-      // ключ группы — префикс пути до уровня клика (про '\0' см. выше)
-      const prefixKey = clickedPath.slice(0, clickedLevel + 1).join('\0');
-
-      // у колонки тот же префикс, что у кликнутой?
-      const hasSamePrefix = (index: number): boolean => {
-        const column = columnsForRender[index];
-        return (
-          column !== undefined &&
-          getColumnGroupPath(column.group)
-            .slice(0, clickedLevel + 1)
-            .join('\0') === prefixKey
-        );
-      };
-
-      // растим диапазон влево и вправо, пока префикс совпадает
-      let start = colIndex;
-      let end = colIndex;
-      while (start - 1 >= 0 && hasSamePrefix(start - 1)) start -= 1;
-      while (end + 1 < columnsForRender.length && hasSamePrefix(end + 1))
-        end += 1;
-
-      // ключи листьев диапазона (без служебных) → выделяем
-      const keys: string[] = [];
-      for (let i = start; i <= end; i += 1) {
-        const column = columnsForRender[i];
-        if (column && !column.isServiceColumn) keys.push(column.id);
-      }
-      if (keys.length > 0) selectColumnsByKeys(keys);
-
-      onGroupHeaderClickedExternal?.(colIndex, event);
-    },
+    (colIndex, event) =>
+      handleGroupHeaderClick({
+        colIndex,
+        event,
+        groupRoot: groupHeaderParts.rootAt(event.group, event.location[0]),
+        columns: columnsForRender,
+        enableColumnSelection,
+        selectColumnsByKeys,
+        onGroupHeaderClicked: onGroupHeaderClickedExternal,
+      }),
     [
       enableColumnSelection,
       columnsForRender,
       selectColumnsByKeys,
       onGroupHeaderClickedExternal,
-    ],
+      groupHeaderParts,
+    ]
   );
 
   // Групп-ячейка подсвечивается, если ВСЕ её листья выделены (транзитивно вверх —
@@ -1393,31 +1402,37 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       if (typeof sourceKey !== 'string' || typeof targetKey !== 'string')
         return;
 
+      // Колонки переставлены, и якоря сдвинулись: прячем тултип и закрываем
+      // открытый Popover этой таблицы.
+      resetOnColumnMoved();
+
       onColumnsReorder(sourceKey, targetKey);
     };
 
     return onColumnMoved;
-  }, [columnsForRender, onColumnsReorder]);
+  }, [columnsForRender, onColumnsReorder, resetOnColumnMoved]);
 
   const drawGroupHeader = useMemo((): GlideProps['drawGroupHeader'] => {
     if (!renderGroupHeader) return undefined;
     return (args, drawContent) => {
+      const { groupName, rect, ctx, span } = args;
       const result = renderGroupHeader(args);
       if (result === 'default') {
+        groupHeaderParts.drop(groupName, span);
         return drawContent();
       }
 
       const customGroupName = 'defaultWithCustomGroupName' in result;
 
       if (customGroupName) {
+        groupHeaderParts.drop(groupName, span);
         return drawContent(result.defaultWithCustomGroupName);
       }
-
-      const { groupName, rect, ctx } = args;
 
       let jsxElement = result;
 
       if (!isCanvasContent(jsxElement)) {
+        groupHeaderParts.drop(groupName, span);
         return drawContent();
       }
 
@@ -1445,7 +1460,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         portalEventTargetRef?.current ?? null,
       );
 
-      columnsGroupHeaderCanvasRootInstanceMap.set(nodeId, canvasRootInstance);
+      groupHeaderParts.set(nodeId, span, canvasRootInstance);
 
       // Позиция курсора — из аргументов Glide, как у шапки колонки.
       const hoverPos =
@@ -1464,7 +1479,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       return canvasRootInstance.render(ctx, rect, hoverPos, absoluteBounds);
     };
   }, [
-    columnsGroupHeaderCanvasRootInstanceMap,
+    groupHeaderParts,
     renderGroupHeader,
     theme,
     portalEventTargetRef,
@@ -1578,7 +1593,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   ]);
 
   // ─── onItemHovered: единый агрегатор hover-логики (тултипы, окрашивание строки)
-  const { onItemHovered, hideTooltip } = useItemHoveredHandler(
+  const { onItemHovered } = useItemHoveredHandler(
     {
       columnsLast: columnsForRender,
       rows,
@@ -1591,7 +1606,6 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     },
     dataEditorRef,
   );
-  hideTooltipRef.current = hideTooltip;
 
   // Все прямоугольники подсветки собирает один модуль, там же описан порядок
   // слоёв целиком (см. карту в useColoringLayers).
@@ -1609,6 +1623,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     selectedColumnIndexes,
     headerSelectedRowIndexes,
     activeRow,
+    outlineEachRange,
     totalRows: rows.length + summaryRowsLength,
     columnsCount: columnsLast.length,
     isRowHoverEnabled,
@@ -1694,6 +1709,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
           smoothScrollY
           // overscrollX={16}
           headerHeight={DEFAULT_HEADER_HEIGHT}
+          editorBloom={EDITOR_BLOOM}
           onCellClicked={handleCellClickedBridge}
           onCellContextMenu={handleCellContextMenuBridge}
           onItemHovered={onItemHovered}
