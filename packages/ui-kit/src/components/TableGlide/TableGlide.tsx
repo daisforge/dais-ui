@@ -608,17 +608,12 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     [rows, columnsForRender, ctxs, theme],
   );
 
-  // Строки, которые подсвечивает курсор: на объединённом блоке все строки
-  // блока, иначе строка под мышью.
-  const resolveHoverRows = useCallback<ResolveHoverRows>(
-    (rawColInd, rawRowInd) => {
-      const single = { from: rawRowInd, to: rawRowInd };
-      if (!rows[rawRowInd]) {
-        return single;
-      }
-      const [originColInd, originRowInd] = findBlockOrigin(
-        rawColInd,
-        rawRowInd,
+  // Верхняя левая ячейка объединённого блока, в который попала ячейка.
+  const findCellBlockOrigin = useCallback(
+    (colInd: number, rowInd: number) =>
+      findBlockOrigin(
+        colInd,
+        rowInd,
         spanColumnIndexes,
         (c, r) => {
           const col = columnsForRender[c];
@@ -630,6 +625,21 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
             ? getRowSpan(col.rowSpan, getProbeInfo(c, r))
             : null;
         },
+      ),
+    [columnsForRender, getProbeInfo, spanColumnIndexes],
+  );
+
+  // Строки, которые подсвечивает курсор: на объединённом блоке все строки
+  // блока, иначе строка под мышью.
+  const resolveHoverRows = useCallback<ResolveHoverRows>(
+    (rawColInd, rawRowInd) => {
+      const single = { from: rawRowInd, to: rawRowInd };
+      if (!rows[rawRowInd]) {
+        return single;
+      }
+      const [originColInd, originRowInd] = findCellBlockOrigin(
+        rawColInd,
+        rawRowInd,
       );
       const rowSpan = columnsForRender[originColInd]?.rowSpan;
       const blockRows = rowSpan
@@ -637,7 +647,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         : null;
       return blockRows ? { from: blockRows[0], to: blockRows[1] } : single;
     },
-    [columnsForRender, rows, getProbeInfo, spanColumnIndexes],
+    [columnsForRender, rows, getProbeInfo, findCellBlockOrigin],
   );
 
   const { hoveredCellRef, setHoveredCell, hoverRows, onHoverRowChange } =
@@ -820,21 +830,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       // Ячейка, покрытая блоком, отдаёт контент верхней-левой ячейки блока: у всех
       // ячеек блока одинаковые span/spanRows и значение. Форк убирает повторы и
       // сводит клик, навигацию и редактирование к верхней-левой ячейке.
-      const [originColInd, originRowInd] = findBlockOrigin(
-        colInd,
-        rowInd,
-        spanColumnIndexes,
-        (c, r) => {
-          const col = columnsForRender[c];
-          return col?.colSpan ? getSpan(col.colSpan, getProbeInfo(c, r)) : null;
-        },
-        (c, r) => {
-          const col = columnsForRender[c];
-          return col?.rowSpan
-            ? getRowSpan(col.rowSpan, getProbeInfo(c, r))
-            : null;
-        },
-      );
+      const [originColInd, originRowInd] = findCellBlockOrigin(colInd, rowInd);
       if (originColInd !== colInd || originRowInd !== rowInd) {
         // eslint-disable-next-line no-use-before-define
         return getCellContentGlide(
@@ -1136,12 +1132,11 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       rows,
       autoHeightReporter,
       columnsForRender,
-      spanColumnIndexes,
+      findCellBlockOrigin,
       ctxs,
       theme,
       activeTheme,
       paletteOverride,
-      getProbeInfo,
       activeRow,
       checkboxSelectedRowIndexes,
       blockHasCheckedRow,
