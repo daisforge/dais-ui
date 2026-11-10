@@ -1,7 +1,11 @@
 import { describe, expect, it } from 'vitest';
 
 import type { KeyTextMap } from '../../feature-key-text/types';
-import { collapseKeyTextKeys, expandKeyTextKeys } from '../expandKeyTextKeys';
+import {
+  collapseKeyTextKeys,
+  expandHiddenKeys,
+  expandKeyTextKeys,
+} from '../expandKeyTextKeys';
 
 // Карта key/text содержит обе записи пары, как в useColsWithKeyTextMap:
 // исходный ключ столбца совпадает с textKey.
@@ -56,5 +60,43 @@ describe('collapseKeyTextKeys', () => {
 
   it('один ключ пары тоже сводится к исходному', () => {
     expect(collapseKeyTextKeys(['name_key'], map, true)).toEqual(['name']);
+  });
+});
+
+describe('expandHiddenKeys', () => {
+  it('без key/text возвращает тот же массив', () => {
+    const keys = ['a', 'name_key'];
+    expect(expandHiddenKeys(keys, map, false)).toBe(keys);
+    expect(expandHiddenKeys(keys, new Map(), true)).toBe(keys);
+  });
+
+  it('исходный ключ разворачивается в оба ключа пары', () => {
+    expect(expandHiddenKeys(['a', 'name'], map, true)).toEqual([
+      'a',
+      'name_key',
+      'name',
+    ]);
+  });
+
+  it('одинокий второй ключ пары пропускается', () => {
+    expect(expandHiddenKeys(['a', 'name_key'], map, true)).toEqual(['a']);
+  });
+
+  it('с двумя парами одинокий ключ одной и исходный ключ другой разворачиваются верно', () => {
+    const dept = { keyKey: 'dept_code', textKey: 'dept' };
+    const twoPairs: KeyTextMap = new Map([
+      ...map,
+      [dept.keyKey, dept],
+      [dept.textKey, dept],
+    ]);
+    expect(expandHiddenKeys(['dept', 'name_key'], twoPairs, true)).toEqual([
+      'dept_code',
+      'dept',
+    ]);
+  });
+
+  it('пара с обоими ключами возвращается той же ссылкой', () => {
+    const keys = ['name_key', 'name', 'a'];
+    expect(expandHiddenKeys(keys, map, true)).toBe(keys);
   });
 });
