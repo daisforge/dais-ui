@@ -28,6 +28,7 @@ import {
   EDITOR_BLOCK_BOTTOM_VAR,
   EDITOR_BLOCK_TOP_VAR,
   EDITOR_BOTTOM_LINE_VAR,
+  EDITOR_FRAME_CHANGE_EVENT,
   EDITOR_BLOOM,
   EDITOR_TOP_LINE_VAR,
 } from './constants';
@@ -673,9 +674,9 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   const scrollPositionRef = useRef('');
   // Пока открыт редактор или предпросмотр, рамку ячейки или блока рисует он сам
   // (styled.ts), а canvas свою не рисует: режим drawFocusRing="no-editor" у Glide.
-  // Ячейку под редактором запоминаем, чтобы снять её подкраску
-  // (getCellContentGlide) и двигать рамку за блоком при прокрутке. Закрытие
-  // узнаём по оверлею в портале: Glide об этом не сообщает.
+  // Ячейку под редактором запоминаем, чтобы обновлять фон редактора и двигать
+  // рамку за блоком при прокрутке. Закрытие узнаём по оверлею в портале: Glide
+  // об этом не сообщает.
   const editorCellRef = useRef<readonly [number, number]>();
   const editorFrameRef = useRef<EditorFrame>();
   const updateEditorFrameRef = useRef<() => void>();
@@ -689,11 +690,8 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     if (!portal) return;
     const observer = new MutationObserver(() => {
       if (portal.querySelector("[id^='gdg-overlay-']")) return;
-      const cell = editorCellRef.current;
       editorFrameRef.current = undefined;
-      if (!cell) return;
       editorCellRef.current = undefined;
-      dataEditorRef.current?.updateCells([{ cell: [cell[0], cell[1]] }]);
     });
     observer.observe(portal, { childList: true });
     portalObserverRef.current = observer;
@@ -1049,29 +1047,12 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
             }
           : undefined;
 
-      const mergedThemeOverride = mergeThemeOverrides(
+      const themeOverride = mergeThemeOverrides(
         columnThemeOverrideResult,
         blockRowOverride,
         fillOverride,
         soloActiveCellOverride
       );
-      // Пока в блоке в несколько строк открыт редактор, Glide в режиме no-editor
-      // считает блок задетым выделением и красит его accentLight. Рамку рисует
-      // редактор, подкраска не нужна. Блок рисует та его строка, что первой попала
-      // в отрисовку, поэтому override ставим всем строкам блока. У одиночной
-      // ячейки подкраски нет. Техдолг: снять, когда в форке появится проп,
-      // который прячет только рамку фокуса, не трогая заливку.
-      const editing = editorCellRef.current;
-      const editorInBlock =
-        editing !== undefined &&
-        editing[0] === colInd &&
-        spanRows != null &&
-        spanRows[1] > spanRows[0] &&
-        editing[1] >= spanRows[0] &&
-        editing[1] <= spanRows[1];
-      const themeOverride = editorInBlock
-        ? { ...mergedThemeOverride, accentLight: 'transparent' }
-        : mergedThemeOverride;
 
       const options = {
         data: row[id]?.toString?.() ?? 'NOT FOUND',
@@ -1931,6 +1912,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     for (const name of Object.keys(vars)) {
       overlay.style.setProperty(name, keep ? vars[name] ?? null : null);
     }
+    overlay.dispatchEvent(new Event(EDITOR_FRAME_CHANGE_EVENT));
   };
   useLayoutEffect(() => {
     const cell = editorCellRef.current;
@@ -1963,10 +1945,6 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
             // Пока оверлей открыт, canvas рамку не рисует (no-editor), поэтому
             // ячейку запоминаем при любом редакторе, даже встроенном у Glide.
             editorCellRef.current = cell.location;
-            // Перерисовать блок с открытым редактором без подкраски выделения.
-            requestAnimationFrame(() =>
-              dataEditorRef.current?.updateCells([{ cell: [col, row] }]),
-            );
             if (!provided) return provided;
             // Редактор-функцию оборачиваем, чтобы задать ему те же стили и рамку.
             const editor =

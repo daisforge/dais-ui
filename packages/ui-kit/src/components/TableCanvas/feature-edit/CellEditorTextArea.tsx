@@ -12,7 +12,7 @@ import styled, { css } from 'styled-components';
 import {
   EDITOR_BLOCK_BOTTOM_VAR,
   EDITOR_BOTTOM_LINE_VAR,
-  EDITOR_TOP_LINE_VAR,
+  EDITOR_FRAME_CHANGE_EVENT,
 } from '../../TableGlide/constants';
 import { getRowHeightBySize } from '../../TableGlide/theming/size-tokens';
 import { useRowContext } from '../contexts';
@@ -26,18 +26,17 @@ import { MIN_EDITOR_FIELD_WIDTH } from './utils';
 
 type VerticalAlign = 'top' | 'center' | 'bottom';
 
+const getEditorOverlay = (el: HTMLElement | null) =>
+  el?.closest<HTMLElement>("[id^='gdg-overlay-']") ?? null;
+
 /**
- * Низ объединённого блока, если блок виден целиком. Края блока TableGlide кладёт
- * в переменные оверлея для рамки; линии сверху и снизу есть, только когда край
- * блока не ушёл за область данных.
+ * Низ объединённого блока, если он виден. Края блока TableGlide кладёт в переменные
+ * оверлея для рамки; нижняя линия есть, только когда низ блока не ушёл за область
+ * данных. Верх блока не важен: он может уйти под шапку, редактор всё равно ниже.
  */
 const getVisibleBlockBottom = (el: HTMLElement | null) => {
-  const style = el?.closest<HTMLElement>("[id^='gdg-overlay-']")?.style;
-  if (
-    !style ||
-    style.getPropertyValue(EDITOR_TOP_LINE_VAR) !== '1px' ||
-    style.getPropertyValue(EDITOR_BOTTOM_LINE_VAR) !== '1px'
-  ) {
+  const style = getEditorOverlay(el)?.style;
+  if (!style || style.getPropertyValue(EDITOR_BOTTOM_LINE_VAR) !== '1px') {
     return undefined;
   }
   const bottom = parseFloat(style.getPropertyValue(EDITOR_BLOCK_BOTTOM_VAR));
@@ -150,14 +149,24 @@ export const CellEditorTextArea = forwardRef<
     const [maxHeight, setMaxHeight] = useState(cellHeight);
 
     useLayoutEffect(() => {
-      setMaxHeight(
-        getTextEditorMaxHeight({
-          cellHeight,
-          editorTop: wrapRef.current?.getBoundingClientRect().top ?? 0,
-          windowHeight: window.innerHeight,
-          blockBottom: getVisibleBlockBottom(wrapRef.current),
-        }),
-      );
+      const updateMaxHeight = () =>
+        setMaxHeight(
+          getTextEditorMaxHeight({
+            cellHeight,
+            editorTop: wrapRef.current?.getBoundingClientRect().top ?? 0,
+            windowHeight: window.innerHeight,
+            blockBottom: getVisibleBlockBottom(wrapRef.current),
+          }),
+        );
+      updateMaxHeight();
+      // При прокрутке низ блока уезжает, TableGlide сдвигает его в оверлее и сообщает.
+      const overlay = getEditorOverlay(wrapRef.current);
+      overlay?.addEventListener(EDITOR_FRAME_CHANGE_EVENT, updateMaxHeight);
+      return () =>
+        overlay?.removeEventListener(
+          EDITOR_FRAME_CHANGE_EVENT,
+          updateMaxHeight,
+        );
     }, [cellHeight]);
 
     return (

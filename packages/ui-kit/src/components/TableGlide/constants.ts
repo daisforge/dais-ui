@@ -135,5 +135,7 @@ export const EDITOR_BLOCK_BOTTOM_VAR = '--table-editor-block-bottom';
 /** Рисовать ли верхнюю и нижнюю линию рамки: 1px, если край блока виден, 0px, если он за областью данных. */
 export const EDITOR_TOP_LINE_VAR = '--table-editor-top-line';
 export const EDITOR_BOTTOM_LINE_VAR = '--table-editor-bottom-line';
+/** Событие на оверлее редактора: края блока сдвинулись при прокрутке. */
+export const EDITOR_FRAME_CHANGE_EVENT = 'table-editor-frame-change';
 
 export const DEFAULT_HEADER_HEIGHT = 33;

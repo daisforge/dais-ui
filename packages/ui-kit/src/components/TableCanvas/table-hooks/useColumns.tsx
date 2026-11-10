@@ -203,6 +203,15 @@ export const useColumns = <
       pinnedCols,
       mergedView: rowsGroupingMergedView,
     });
+    // Группировка подменяет renderCell у всех колонок из настроек, поэтому признак
+    // своей отрисовки для них берём из настроек до группировки.
+    const ownRenderCellByKey = new Map<unknown, boolean>(
+      columnConfig.map((c) => [c.key, c.renderCell !== undefined]),
+    );
+    ownRenderCellByKey.set(
+      KEY_GROUPED_COL,
+      tableConfig.rowsGrouping?.groupedColumnProps?.renderCell !== undefined,
+    );
 
     const checkboxColumn = selectingRowsIsActive
       ? (createCheckboxColumn({
@@ -668,7 +677,8 @@ export const useColumns = <
         }),
 
         renderCell,
-        hasOwnRenderCell: el.renderCell !== undefined,
+        hasOwnRenderCell:
+          ownRenderCellByKey.get(el.key) ?? el.renderCell !== undefined,
         editable,
         isErrorCell,
         errorCellTooltip,

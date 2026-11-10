@@ -327,7 +327,7 @@ export const RenderEditCell = <
     const { column: parentColumn, ...restRenderEditCellProps } =
       editingCellInfo;
 
-    const columnFinal: typeof column = {
+    const columnFinal: typeof column & { hasOwnRenderCell: boolean } = {
       ...parentColumn,
       // для subRow переопределяем ключ
       ...(!parentKeyAsSubKey && {
@@ -335,6 +335,8 @@ export const RenderEditCell = <
       }),
       // для subRow переопределяем editingCell
       editingCell: column.subRow.editingCell,
+      // Ячейку подстроки рисует renderSubRowCell, а не renderCell колонки.
+      hasOwnRenderCell: column.subRow.renderSubRowCell !== undefined,
     };
 
     const renderSubRowEditCellProps = {
