@@ -9,39 +9,19 @@ import React, {
 } from 'react';
 import styled, { css } from 'styled-components';
 
-import {
-  EDITOR_BLOCK_BOTTOM_VAR,
-  EDITOR_BOTTOM_LINE_VAR,
-  EDITOR_FRAME_CHANGE_EVENT,
-} from '../../TableGlide/constants';
+import { EDITOR_FRAME_CHANGE_EVENT } from '../../TableGlide/constants';
 import { getRowHeightBySize } from '../../TableGlide/theming/size-tokens';
 import { useRowContext } from '../contexts';
 import { CLASS } from '../renders/constants';
 import { type SIZE, SIZES } from '../styles';
 import type { EditingCellInfo, ObjectForExtending } from '../types';
 import { resolveCellFieldPadding } from './cellFieldStyles';
+import { getBlockBottom, getEditorOverlay } from './editorOverlay';
 import { getTextEditorMaxHeight } from './getTextEditorMaxHeight';
 import { CellEditorTextAreaProps } from './types';
 import { MIN_EDITOR_FIELD_WIDTH } from './utils';
 
 type VerticalAlign = 'top' | 'center' | 'bottom';
-
-const getEditorOverlay = (el: HTMLElement | null) =>
-  el?.closest<HTMLElement>("[id^='gdg-overlay-']") ?? null;
-
-/**
- * Низ объединённого блока, если он виден. Края блока TableGlide кладёт в переменные
- * оверлея для рамки; нижняя линия есть, только когда низ блока не ушёл за область
- * данных. Верх блока не важен: он может уйти под шапку, редактор всё равно ниже.
- */
-const getVisibleBlockBottom = (el: HTMLElement | null) => {
-  const style = getEditorOverlay(el)?.style;
-  if (!style || style.getPropertyValue(EDITOR_BOTTOM_LINE_VAR) !== '1px') {
-    return undefined;
-  }
-  const bottom = parseFloat(style.getPropertyValue(EDITOR_BLOCK_BOTTOM_VAR));
-  return Number.isFinite(bottom) ? bottom : undefined;
-};
 
 /* По центру отступ ставит первую строку на место текста ячейки, длинный текст растёт
    вниз. Сверху и снизу отступ как у ячейки, а строка держит высоту ячейки. */
@@ -147,26 +127,40 @@ export const CellEditorTextArea = forwardRef<
 
     const wrapRef = useRef<HTMLDivElement>(null);
     const [maxHeight, setMaxHeight] = useState(cellHeight);
+    // Последний известный низ блока, переживает смену высоты ячейки.
+    const blockBottomRef = useRef<number | undefined>(undefined);
 
     useLayoutEffect(() => {
-      const updateMaxHeight = () =>
+      // Оверлей при прокрутке стоит на месте, поэтому верх поля замеряем один раз.
+      const editorTop = wrapRef.current?.getBoundingClientRect().top ?? 0;
+      const updateMaxHeight = () => {
+        const frame = getBlockBottom(wrapRef.current);
+        // Разошёлся с блоком: держим последний низ, иначе предел прыгнул бы к четверти окна.
+        if (frame.kind !== 'noFrame') {
+          blockBottomRef.current =
+            frame.kind === 'visible' ? frame.bottom : undefined;
+        }
         setMaxHeight(
           getTextEditorMaxHeight({
             cellHeight,
-            editorTop: wrapRef.current?.getBoundingClientRect().top ?? 0,
+            editorTop,
             windowHeight: window.innerHeight,
-            blockBottom: getVisibleBlockBottom(wrapRef.current),
+            blockBottom: blockBottomRef.current,
           }),
         );
+      };
       updateMaxHeight();
       // При прокрутке низ блока уезжает, TableGlide сдвигает его в оверлее и сообщает.
       const overlay = getEditorOverlay(wrapRef.current);
       overlay?.addEventListener(EDITOR_FRAME_CHANGE_EVENT, updateMaxHeight);
-      return () =>
+      window.addEventListener('resize', updateMaxHeight);
+      return () => {
         overlay?.removeEventListener(
           EDITOR_FRAME_CHANGE_EVENT,
           updateMaxHeight,
         );
+        window.removeEventListener('resize', updateMaxHeight);
+      };
     }, [cellHeight]);
 
     return (

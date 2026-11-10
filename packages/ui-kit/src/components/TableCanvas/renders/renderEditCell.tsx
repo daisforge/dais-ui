@@ -336,7 +336,9 @@ export const RenderEditCell = <
       // для subRow переопределяем editingCell
       editingCell: column.subRow.editingCell,
       // Ячейку подстроки рисует renderSubRowCell, а не renderCell колонки.
-      hasOwnRenderCell: column.subRow.renderSubRowCell !== undefined,
+      hasOwnRenderCell:
+        'subRowHasOwnRenderCell' in column &&
+        column.subRowHasOwnRenderCell === true,
     };
 
     const renderSubRowEditCellProps = {

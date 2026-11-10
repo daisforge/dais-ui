@@ -25,12 +25,7 @@ import { glideCellRenderer } from './cellRenderer';
 import {
   DEFAULT_HEADER_HEIGHT,
   DEFAULT_SPAN_VERTICAL_ALIGN,
-  EDITOR_BLOCK_BOTTOM_VAR,
-  EDITOR_BLOCK_TOP_VAR,
-  EDITOR_BOTTOM_LINE_VAR,
-  EDITOR_FRAME_CHANGE_EVENT,
   EDITOR_BLOOM,
-  EDITOR_TOP_LINE_VAR,
 } from './constants';
 import {
   useColoringLayers,
@@ -92,6 +87,11 @@ import {
   createTextCellGlide,
   TextCellOptions,
 } from './utils/createCell';
+import {
+  EditorFrame,
+  getEditorFrameVars,
+  syncEditorFrame,
+} from './utils/editorFrame';
 import { findBlockOrigin } from './utils/findBlockOrigin';
 import { mergeThemeOverrides } from './utils/mergeThemeOverrides';
 import { queryGlideElements } from './utils/queryGlideElements';
@@ -151,15 +151,6 @@ interface CanvasCellCacheEntry {
   cacheKey: CanvasCacheKey;
   canvasRoot: CellCanvasRoot;
 }
-
-/** Края объединённого блока под редактором и область данных при открытии, в координатах окна. */
-type EditorFrame = {
-  blockTop: number;
-  blockBottom: number;
-  dataTop: number;
-  dataBottom: number;
-  scrollTop: number;
-};
 
 export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   columns,
@@ -374,6 +365,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     handleGridSelectionChange,
     handleSelectionCleared,
     rangeSelect,
+    spanRangeBehavior,
   } = useNativeGridSelection({
     cellsSelectionMode,
     columns: columnsLast,
@@ -1873,23 +1865,6 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       scrollTop: scroller.scrollTop,
     };
   };
-  const editorFrameVars = (
-    frame: EditorFrame,
-    shift: number,
-  ): Record<string, string> => {
-    const blockTop = frame.blockTop - shift;
-    const blockBottom = frame.blockBottom - shift;
-    return {
-      [EDITOR_BLOCK_TOP_VAR]: `${Math.max(blockTop, frame.dataTop)}px`,
-      [EDITOR_BLOCK_BOTTOM_VAR]: `${Math.min(blockBottom, frame.dataBottom)}px`,
-      [EDITOR_TOP_LINE_VAR]: blockTop >= frame.dataTop ? '1px' : '0px',
-      [EDITOR_BOTTOM_LINE_VAR]: blockBottom <= frame.dataBottom ? '1px' : '0px',
-    };
-  };
-  // При прокрутке оверлей Glide остаётся на месте, а блок уезжает ровно на
-  // величину прокрутки: сдвигаем края, замеренные при открытии. Пока блок и
-  // редактор пересекаются, рамка обводит их вместе; разошлись, рамка только
-  // вокруг редактора.
   updateEditorFrameRef.current = () => {
     const frame = editorFrameRef.current;
     if (!frame) return;
@@ -1898,16 +1873,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     );
     const { scroller } = queryGlideElements(containerRefInternal.current);
     if (!overlay || !scroller) return;
-    const shift = scroller.scrollTop - frame.scrollTop;
-    const rect = overlay.getBoundingClientRect();
-    const keep =
-      frame.blockBottom - shift >= rect.top &&
-      frame.blockTop - shift <= rect.bottom;
-    const vars = editorFrameVars(frame, shift);
-    for (const name of Object.keys(vars)) {
-      overlay.style.setProperty(name, keep ? vars[name] ?? null : null);
-    }
-    overlay.dispatchEvent(new Event(EDITOR_FRAME_CHANGE_EVENT));
+    syncEditorFrame(overlay, frame, scroller.scrollTop);
   };
   useLayoutEffect(() => {
     const cell = editorCellRef.current;
@@ -1950,7 +1916,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
               ...editor,
               styleOverride: {
                 ...editor.styleOverride,
-                ...(frame && editorFrameVars(frame, 0)),
+                ...(frame && getEditorFrameVars(frame, 0)),
                 '--gdg-bg-cell': getEditorBgRef.current?.(col, row),
               } as CSSProperties,
             };
@@ -2166,6 +2132,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
           rowHeight={rowH}
           highlightRegions={highlightRegionsFinal}
           rangeSelect={rangeSelect}
+          spanRangeBehavior={spanRangeBehavior}
           smoothScrollX
           smoothScrollY
           // overscrollX={16}
