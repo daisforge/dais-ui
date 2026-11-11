@@ -347,6 +347,8 @@ export function TableCanvas<
       setHiddenCols,
       renderColKeys,
       groupPathByKey,
+      colsWithKeyTextMap,
+      tableConfigKeyTextBoolean,
       onExpand: columnsControlConfig.onHiddenColumnsIndicatorExpand,
     });
 
