@@ -249,8 +249,14 @@ export const useContextMenuValues = <
 
   // Извлекаем пропсы для Dropdown из конфигов контекстного меню
   // (всё кроме type, getDropdownItems, onItemSelect — они обрабатываются отдельно)
+  const openedMenuType = state.context?.type;
   const dropdownProps = useMemo(() => {
-    const source = onCellContextMenuDropdown ?? onHeaderContextMenuDropdown;
+    // Настройки вида берём у открытого меню: если заданы оба, меню заголовка
+    // не должно получать ширину, renderItem и beforeList меню ячейки
+    const source =
+      openedMenuType === 'header'
+        ? onHeaderContextMenuDropdown
+        : onCellContextMenuDropdown ?? onHeaderContextMenuDropdown;
     if (!source) return {};
     const {
       type: _type,
@@ -260,7 +266,7 @@ export const useContextMenuValues = <
       ...rest
     } = source;
     return rest;
-  }, [onCellContextMenuDropdown, onHeaderContextMenuDropdown]);
+  }, [openedMenuType, onCellContextMenuDropdown, onHeaderContextMenuDropdown]);
 
   // items в async-режиме перечитываются реактивно из getDropdownItems (по
   // сохранённым asyncParams) на каждый рендер, пока меню открыто; в обычном

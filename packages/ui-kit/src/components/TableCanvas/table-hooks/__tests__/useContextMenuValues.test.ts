@@ -156,6 +156,40 @@ describe('useContextMenuValues', () => {
   });
 });
 
+describe('useContextMenuValues: настройки вида при двух меню', () => {
+  const config = {
+    onCellContextMenuDropdown: {
+      type: 'dropdown',
+      getDropdownItems: () => ITEMS,
+      listWidth: '240px',
+      beforeList: 'ошибка ячейки',
+    },
+    onHeaderContextMenuDropdown: {
+      type: 'dropdown',
+      getDropdownItems: () => ITEMS,
+      listWidth: '400px',
+    },
+  };
+
+  it('меню заголовка берёт свои настройки, а не настройки ячейки', () => {
+    const { result } = setup(config);
+
+    openHeader(result);
+
+    expect(result.current.listWidth).toBe('400px');
+    expect(result.current.beforeList).toBeUndefined();
+  });
+
+  it('меню ячейки берёт свои настройки', () => {
+    const { result } = setup(config);
+
+    openCell(result);
+
+    expect(result.current.listWidth).toBe('240px');
+    expect(result.current.beforeList).toBe('ошибка ячейки');
+  });
+});
+
 const STALE_ITEMS = [{ value: 'old', label: 'Действие для прежнего статуса' }];
 const LOADING_ITEMS = [{ value: '__skeleton', label: '' }];
 

@@ -287,8 +287,14 @@ export const useContextMenuValues = <
   // Пропсы Dropdown из конфига контекстного меню (всё кроме служебных полей),
   // чтобы beforeList/afterList/renderItem и т.п. доходили до Dropdown и были
   // реактивны — нужно для async-подгрузки (скелетоны, состояние ошибки).
+  const openedMenuType = state.context?.type;
   const dropdownProps = useMemo(() => {
-    const source = onCellContextMenuDropDown ?? onHeaderContextMenuDropDown;
+    // Настройки вида берём у открытого меню: если заданы оба, меню заголовка
+    // не должно получать ширину, renderItem и beforeList меню ячейки
+    const source =
+      openedMenuType === 'header'
+        ? onHeaderContextMenuDropDown
+        : onCellContextMenuDropDown ?? onHeaderContextMenuDropDown;
     if (!source) return {};
     const {
       type: _type,
@@ -298,7 +304,7 @@ export const useContextMenuValues = <
       ...rest
     } = source;
     return rest;
-  }, [onCellContextMenuDropDown, onHeaderContextMenuDropDown]);
+  }, [openedMenuType, onCellContextMenuDropDown, onHeaderContextMenuDropDown]);
 
   // items в async-режиме перечитываются реактивно из getDropDownItems (по
   // сохранённым asyncParams) на каждый рендер, пока меню открыто; в синхронном

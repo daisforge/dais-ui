@@ -66,3 +66,54 @@ describe('useContextMenuValues (Table)', () => {
     expect(result.current.items).toEqual(ITEMS);
   });
 });
+
+describe('useContextMenuValues (Table): настройки вида при двух меню', () => {
+  const config = {
+    onCellContextMenuDropDown: {
+      type: 'dropdown',
+      getDropDownItems: () => ITEMS,
+      listWidth: '240px',
+      beforeList: 'ошибка ячейки',
+    },
+    onHeaderContextMenuDropDown: {
+      type: 'dropdown',
+      getDropDownItems: () => ITEMS,
+      listWidth: '400px',
+    },
+  };
+
+  const openHeader = (result: ReturnType<typeof setup>['result']) => {
+    const header = document.createElement('div');
+    header.setAttribute('role', 'columnheader');
+    // В jsdom нет innerText, а по нему хук берёт подпись колонки
+    Object.defineProperty(header, 'innerText', { value: 'Название' });
+    act(() => {
+      result.current.openHeaderContextMenu({
+        target: header,
+        currentTarget: header,
+        clientX: 10,
+        clientY: 20,
+        preventDefault: vi.fn(),
+      } as never);
+    });
+  };
+
+  it('меню заголовка берёт свои настройки, а не настройки ячейки', () => {
+    const { result } = setup(config);
+
+    openHeader(result);
+
+    expect(result.current.isOpen).toBe(true);
+    expect(result.current.listWidth).toBe('400px');
+    expect(result.current.beforeList).toBeUndefined();
+  });
+
+  it('меню ячейки берёт свои настройки', () => {
+    const { result } = setup(config);
+
+    openCell(result);
+
+    expect(result.current.listWidth).toBe('240px');
+    expect(result.current.beforeList).toBe('ошибка ячейки');
+  });
+});
