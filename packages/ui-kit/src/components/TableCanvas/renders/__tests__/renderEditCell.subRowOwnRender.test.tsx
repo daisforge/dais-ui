@@ -27,6 +27,8 @@ const editorMock = vi.mocked(CellEditorTextAreaInternal);
 const editorColumn = () =>
   editorMock.mock.lastCall?.[0].column as { hasOwnRenderCell?: boolean };
 
+// Как в useColumns: в проп column уходит колонка из настроек, а редактор
+// получает от таблицы итоговую колонку с внутренними признаками.
 const renderSubRowEditor = (subRowHasOwnRenderCell: boolean | undefined) => {
   const column = {
     key: 'name',
@@ -36,12 +38,17 @@ const renderSubRowEditor = (subRowHasOwnRenderCell: boolean | undefined) => {
       // Группировка ставит свою отрисовку подстрок каждой колонке.
       renderSubRowCell: () => '',
     },
-    ...(subRowHasOwnRenderCell !== undefined && { subRowHasOwnRenderCell }),
   } as unknown as ColumnConfig<Row>;
+  const tableColumn = {
+    ...column,
+    ...(subRowHasOwnRenderCell !== undefined && { subRowHasOwnRenderCell }),
+  };
   const row: Row = { name: 'a', [TREE_LVL_KEY]: 1 };
   render(
     <RenderEditCell
-      editingCellInfo={{ row, column } as EditingCellInfo<Row, unknown>}
+      editingCellInfo={
+        { row, column: tableColumn } as EditingCellInfo<Row, unknown>
+      }
       column={column}
       tableConfigSubRows={{ getSubRows: () => undefined } as never}
       tableConfigRowDetailPanel={undefined}
