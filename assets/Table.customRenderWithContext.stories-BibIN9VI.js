@@ -1,0 +1,60 @@
+import{r as c,j as o}from"./react-CAOzMBF_.js";import{c as C}from"./tableData-DVJFoYoT.js";import d from"./DocStoryTemplate-B68YIrJ_.js";import{s as x}from"./storySourceDoc-tVKyHcEN.js";import{B as l}from"./Box-V-E_7_e1.js";import{f as h,u as f,g as p}from"./Table-Df8TShI7.js";import{A as g,t as k,m as w}from"./@salutejs/sdds-finai-Yd8FRL4L.js";import"./vendor-Dh4d6dCz.js";import"./react-is-vVGXX3JE.js";import"./styled-components-BD-2WP2k.js";import"./@tanstack/react-virtual-4Nv0GpZT.js";import"./tslib-DoU9Jm1N.js";import"./FiltersActions-C1cIIXAL.js";import"./IconButton-BY5jSHYi.js";import"./@salutejs/plasma-icons-CkR551sF.js";import"./utils-I85SwEfQ.js";import"./constants-ChwOYBdp.js";import"./@sddsjs/sdds_finai-Clnx3I02.js";import"./sharedUtilsDebug-BX_KjCjW.js";import"./TextField-DU1R_gtM.js";import"./sharedUtilsInputs-C3919g4u.js";import"./AiAgentPopup-GQs-IAp5.js";import"./TextArea-CeV4EuOw.js";import"./sharedUtilsResizable-CBJT9eg4.js";import"./@salutejs/sdds-themes-xIOWIAKk.js";import"./Collapse-CcEN_5QW.js";import"./react-data-grid-BG41yzHd.js";import"./TableTabs-BC4rHx7P.js";import"./TableCanvasSharedConstants-CqGDn8zL.js";import"./TableGlide-zZ1mupmy.js";import"./@glideappsfinal/glide-data-grid-gV_BbKzF.js";import"./canvas-hypertxt-DsokSIOX.js";import"./sharedUiSearch-BDOhBaAU.js";import"./ListOfFilters-DuG7GQT_.js";import"./lodash.isequal-DxetvuAY.js";import"./NumberFormat-C_muNst-.js";import"./EmptyState-DS3f5Djm.js";import"./MassActions-nvob83TA.js";import"./Autocomplete-Ce-yJoLc.js";const pe={title:"Локальные компоненты/Table/Custom render/Cell Context",tags:["!autodocs"],parameters:{docs:{page:d}}},y=`
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  Badge,
+  Box,
+  Button,
+  ColumnConfig,
+  ColumnOrColumnGroupConfig,
+  RenderCellProps,
+  RowHeightFunc,
+  SIZES,
+  Select,
+  Switch,
+  Table,
+  TextField,
+} from '@daisforge/ui';
+import { IconAddOutline, IconBoxOutline, IconSber } from '@daisforge/ui/icons';
+`,b=C(0,20),S=({children:e})=>o.jsx(l,{$css:{display:"flex",justifyContent:"center",alignItems:"center",width:"100%",height:"100%"},children:e}),T=()=>{const{rowSize:e,setRowSize:r}=p(),t={big:"small",small:"medium",medium:"big"};return o.jsx(l,{$css:{display:"flex",justifyContent:"center",alignItems:"center",width:"100%",height:"100%"},children:o.jsxs(k,{view:"accent",size:"xxs",onClick:()=>r(t[e]),children:["Изменить размер строк на ",t[e]]})})},j=({tabIndex:e})=>{const{checkbox:r}=f(),[t,n]=r;return o.jsx(g,{tabIndex:e,checked:t,label:`${t?"Выключить":"Включить"} чекбокс`,onChange:i=>n(i.target.checked)})},I=()=>{const{rowSize:e}=p();return o.jsx(S,{children:o.jsxs(w,{bold:!0,children:["Размер строки ",e]})})},s={...x({preCode:y,previewSource:"shown"}),name:"Работа с контекстом в кастомных ячейках",args:{rows:b,columnConfig:[{key:"id",name:o.jsx(T,{}),renderCell:({tabIndex:e})=>o.jsx(j,{tabIndex:e})},{key:"task",width:200,name:"Title",renderCell:()=>o.jsx(I,{})},{key:"priority",name:"Priority"},{key:"issueType",name:"Issue Type"}]},argTypes:{},render:({rows:e,columnConfig:r})=>{const[t,n]=c.useState(!1),i=c.useMemo(()=>({checkbox:[t,n]}),[t,n]);return o.jsx(h,{tableConfig:{containerStyle:{height:700}},columnConfig:r,rows:e,rowContextValue:i})}};var m,u,a;s.parameters={...s.parameters,docs:{...(m=s.parameters)==null?void 0:m.docs,source:{originalSource:`{
+  ...storySourceDoc({
+    preCode,
+    previewSource: 'shown'
+  }),
+  name: 'Работа с контекстом в кастомных ячейках',
+  args: {
+    rows,
+    columnConfig: [{
+      key: 'id',
+      name: <HeaderComponent />,
+      renderCell: ({
+        tabIndex
+      }) => <CheckboxCell tabIndex={tabIndex} />
+    }, {
+      key: 'task',
+      width: 200,
+      name: 'Title',
+      renderCell: () => <TextCell />
+    }, {
+      key: 'priority',
+      name: 'Priority'
+    }, {
+      key: 'issueType',
+      name: 'Issue Type'
+    }]
+  },
+  argTypes: {},
+  render: ({
+    rows,
+    columnConfig
+  }) => {
+    const [checked, setChecked] = useState(false);
+    const rowContextValue = useMemo<ICheckboxCtx>(() => ({
+      checkbox: [checked, setChecked]
+    }), [checked, setChecked]);
+    return <Table tableConfig={{
+      containerStyle: {
+        height: 700
+      }
+    }} columnConfig={columnConfig} rows={rows} rowContextValue={rowContextValue} />;
+  }
+}`,...(a=(u=s.parameters)==null?void 0:u.docs)==null?void 0:a.source}}};const Ce=["CellContext"];export{s as CellContext,Ce as __namedExportsOrder,pe as default};
