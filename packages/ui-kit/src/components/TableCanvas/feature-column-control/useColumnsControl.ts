@@ -14,7 +14,11 @@ import {
   PinningActionCtx,
   unpinColumns,
 } from '../widgets/control-block/pinning-menu/pinning-actions';
-import { collapseKeyTextKeys, expandKeyTextKeys } from './expandKeyTextKeys';
+import {
+  collapseKeyTextKeys,
+  expandHiddenKeys,
+  expandKeyTextKeys,
+} from './expandKeyTextKeys';
 import { ColumnsControlConfig } from './types';
 
 const NO_HIDDEN_COLS: string[] = [];
@@ -86,7 +90,7 @@ export const useColumnsControl = ({
   const hiddenCols = useMemo(
     () =>
       hidingIsActive
-        ? expandKeyTextKeys(
+        ? expandHiddenKeys(
             hiddenColsRaw,
             colsWithKeyTextMap,
             tableConfigKeyTextBoolean,
@@ -100,8 +104,8 @@ export const useColumnsControl = ({
     ],
   );
   // Состояние хранит по одному исходному ключу на пару key/text, а таблица
-  // работает с обоими ключами пары. Иначе потребитель, сняв скрытие по
-  // исходному ключу, оставит второй ключ, и пара останется скрытой.
+  // работает с обоими ключами пары. Пару скрывает только исходный ключ, поэтому
+  // одинокий второй ключ при записи из таблицы уходит из состояния.
   // Карту пар читаем через ref, чтобы ссылка на сеттер не менялась вместе с
   // картой.
   const colsWithKeyTextMapRef = useRef(colsWithKeyTextMap);
@@ -116,7 +120,7 @@ export const useColumnsControl = ({
         const map = colsWithKeyTextMapRef.current;
         const next = collapseKeyTextKeys(
           typeof action === 'function'
-            ? action(expandKeyTextKeys(prev, map, true))
+            ? action(expandHiddenKeys(prev, map, true))
             : action,
           map,
           true,

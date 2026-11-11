@@ -88,7 +88,6 @@ export const ControlBlock = ({
     },
   },
   $borderTopRounded,
-  setCompressionVisibility,
   controlBlockLeftSideDropdownProps,
   controlBlockRightSideDropdownProps,
   collapseButtonPlacement = 'inside',
@@ -118,9 +117,6 @@ export const ControlBlock = ({
     };
   };
   $borderTopRounded: boolean;
-  setCompressionVisibility: React.Dispatch<
-    React.SetStateAction<ToolsMenuState | undefined>
-  >;
   controlBlockLeftSideDropdownProps?: TableDropdownConfigProps;
   controlBlockRightSideDropdownProps?: TableDropdownConfigProps;
   collapseButtonPlacement?: 'inside' | 'above';
@@ -315,11 +311,6 @@ export const ControlBlock = ({
       compress(containerRef.current.clientWidth);
     }
   }, [hasGroupingCounter, compress]);
-
-  // Передаём state компрессии наверх
-  useEffect(() => {
-    setCompressionVisibility(compressionVisibilityState);
-  }, [compressionVisibilityState, setCompressionVisibility]);
 
   // ============ Данные для рендера (Этап 6) ============
   const { overflowItems, isOverflowTriggerVisible } =
