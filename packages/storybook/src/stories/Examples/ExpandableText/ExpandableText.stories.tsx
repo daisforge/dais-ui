@@ -91,10 +91,19 @@ function ExpandableText({
 
   const handleTransitionEnd = (event: React.TransitionEvent) => {
     if (event.target !== event.currentTarget) return;
-    // В покое высота снова по содержимому: блок подстраивается под ширину
-    if (wrapperRef.current) wrapperRef.current.style.height = '';
-    if (!expanded) setClamped(true);
+    if (expanded) {
+      // В покое высота снова по содержимому: блок подстраивается под ширину
+      if (wrapperRef.current) wrapperRef.current.style.height = '';
+      return;
+    }
+    // Высоту снимаем в эффекте ниже, в одном кадре с включением многоточия.
+    // Если снять её здесь, на кадр виден весь текст без обрезки
+    setClamped(true);
   };
+
+  useLayoutEffect(() => {
+    if (clamped && wrapperRef.current) wrapperRef.current.style.height = '';
+  }, [clamped]);
 
   return (
     <div
