@@ -2,6 +2,7 @@
 /* eslint-disable react/jsx-boolean-value */
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
 import type { Meta, StoryObj } from '@storybook/react';
+import { Badge } from '@ui-kit/components/Badge';
 import { Button } from '@ui-kit/components/Button';
 import { Flow } from '@ui-kit/components/Flow';
 import type {
@@ -22,7 +23,7 @@ type Story = StoryObj<PageTitleProps>;
 
 const preCode = `
 import { PageTitle } from '@daisforge/ui';
-import { Button, Flow, IconButton } from '@daisforge/ui';
+import { Badge, Button, Flow, IconButton } from '@daisforge/ui';
 import { IconPlus } from '@daisforge/ui/icons';
 import type { PageTitleSlotSizesProps } from '@daisforge/ui';
 
@@ -77,13 +78,9 @@ export const WithTitleSlot: Story = {
       }}
       showBackButton
       onBackClick={() => alert('onBackClick')}
-      title="Заголовок страницы"
-      subtitle="Описание страницы или подзаголовок"
-      titleSlot={
-        <Button size="xs" view="secondary">
-          Действие
-        </Button>
-      }
+      title="Заголовок"
+      subtitle="Длинное описание страницы, шире заголовка: слот стоит сразу за заголовком"
+      titleSlot={<Badge size="m" view="default" text="Черновик" />}
       rightSlot={({ buttonSize }: PageTitleSlotSizesProps) => (
         <Flow mainAxisGap={8}>
           <Button size={buttonSize} view="secondary">

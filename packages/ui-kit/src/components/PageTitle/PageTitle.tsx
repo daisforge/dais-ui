@@ -20,6 +20,7 @@ import {
   StyledSubtitle,
   StyledTitle,
   StyledTitleBlock,
+  StyledTitleRow,
   StyledTitleSlot,
 } from './PageTitle.styled';
 import type {
@@ -174,22 +175,24 @@ export const PageTitle = forwardRef<
                 onClick={onBackClick}
               />
             )}
-            {(title || subtitle) && (
+            {(title || subtitle || renderedTitleSlot) && (
               <StyledTitleBlock>
-                <PageTitleHeading
-                  title={title}
-                  titleTypographyProps={titleTypographyProps}
-                />
+                {(title || renderedTitleSlot) && (
+                  <StyledTitleRow>
+                    <PageTitleHeading
+                      title={title}
+                      titleTypographyProps={titleTypographyProps}
+                    />
+                    {renderedTitleSlot && (
+                      <StyledTitleSlot>{renderedTitleSlot}</StyledTitleSlot>
+                    )}
+                  </StyledTitleRow>
+                )}
                 <PageTitleSubtitle
                   subtitle={subtitle}
                   subtitleTypographyProps={subtitleTypographyProps}
                 />
               </StyledTitleBlock>
-            )}
-            {renderedTitleSlot && (
-              <StyledTitleSlot $isAdaptive1280={isAdaptive1280}>
-                {renderedTitleSlot}
-              </StyledTitleSlot>
             )}
           </StyledLeftBlock>
 
