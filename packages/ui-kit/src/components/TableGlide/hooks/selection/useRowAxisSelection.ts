@@ -38,8 +38,10 @@ export function useRowAxisSelection() {
   const pointerGestureRef = useRef(false);
   // Жест правой кнопкой (открытие контекстного меню). Живёт дольше pointerup:
   // на Windows браузер шлёт contextmenu после отпускания кнопки, и glide меняет
-  // выделение, когда pointerGestureRef уже снят. Снимается следующим
-  // pointerdown или нажатием клавиши.
+  // выделение, когда pointerGestureRef уже снят. Снимается следующей задачей
+  // после contextmenu (glide обрабатывает его синхронно), а также следующим
+  // pointerdown или нажатием клавиши, иначе чужие смены выделения без мыши
+  // (сдвиг служебных колонок, обрезка строк) считались бы правым кликом.
   const rightClickGestureRef = useRef(false);
 
   useEffect(() => {
@@ -60,13 +62,23 @@ export function useRowAxisSelection() {
       rightClickGestureRef.current = false;
       ctrlGestureRef.current = false;
     };
+    let contextMenuTimer: ReturnType<typeof setTimeout> | undefined;
+    const onContextMenu = () => {
+      clearTimeout(contextMenuTimer);
+      contextMenuTimer = setTimeout(() => {
+        rightClickGestureRef.current = false;
+      }, 0);
+    };
     window.addEventListener('pointerdown', onPointerDown, true);
     window.addEventListener('pointerup', onPointerUp, true);
     window.addEventListener('keydown', onKeyDown, true);
+    window.addEventListener('contextmenu', onContextMenu);
     return () => {
+      clearTimeout(contextMenuTimer);
       window.removeEventListener('pointerdown', onPointerDown, true);
       window.removeEventListener('pointerup', onPointerUp, true);
       window.removeEventListener('keydown', onKeyDown, true);
+      window.removeEventListener('contextmenu', onContextMenu);
     };
   }, []);
 

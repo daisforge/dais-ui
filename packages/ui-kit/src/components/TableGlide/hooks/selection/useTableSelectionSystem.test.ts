@@ -553,3 +553,48 @@ describe('useTableSelectionSystem — наружу одно итоговое в�
     });
   });
 });
+
+describe('useTableSelectionSystem — признак правой кнопки снимается после contextmenu', () => {
+  it('после contextmenu и следующей задачи смена выделения без мыши клавиатурная', () => {
+    vi.useFakeTimers();
+    try {
+      const { view, onSelectionEmit } = setupWithNative();
+      act(() => {
+        window.dispatchEvent(new MouseEvent('pointerdown', { button: 2 }));
+        window.dispatchEvent(new Event('pointerup'));
+        window.dispatchEvent(new MouseEvent('contextmenu', { button: 2 }));
+        view.result.current.handleGridSelectionWithColumnReset(
+          gridSel([0, 4], { x: 0, y: 4, width: 1, height: 1 })
+        );
+      });
+      // Правый клик по нумерации ещё считается жестом мышью: строка выделена
+      expect(onSelectionEmit.mock.lastCall?.[0].current.range).toEqual({
+        x: 1,
+        y: 4,
+        width: 3,
+        height: 1,
+      });
+      act(() => {
+        vi.runAllTimers();
+      });
+      onSelectionEmit.mockClear();
+      // Фокус грида без мыши: якорь в нумерации переносится на данные
+      act(() => {
+        view.result.current.handleSelectionClearedWithColumns();
+      });
+      act(() => {
+        view.result.current.handleGridSelectionWithColumnReset(
+          gridSel([0, 0], { x: 0, y: 0, width: 1, height: 1 })
+        );
+      });
+      expect(onSelectionEmit.mock.lastCall?.[0].current.range).toEqual({
+        x: 1,
+        y: 0,
+        width: 1,
+        height: 1,
+      });
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+});
