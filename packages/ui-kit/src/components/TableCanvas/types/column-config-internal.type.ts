@@ -18,4 +18,6 @@ export type ColumnConfigInternal<
     // Внутреннее: renderCell задан в конфиге колонки. Таблица оборачивает
     // отрисовку у каждой колонки, поэтому по самому renderCell этого не видно.
     hasOwnRenderCell?: boolean;
+    // Внутреннее: то же для ячейки подстроки дерева.
+    subRowHasOwnRenderCell?: boolean;
   };

@@ -61,6 +61,10 @@ import { renderFilterSortHeader } from '../widgets/filter-sort-header';
 import { createLazyRowSpan } from './createLazyRowSpan';
 import { createMergeByValueRowSpan } from './createMergeByValueRowSpan';
 import { createMergedRegionsResolver } from './createMergedRegionsResolver';
+import {
+  getOwnRenderCellByKey,
+  getSubRowHasOwnRenderCell,
+} from './getOwnRenderCellByKey';
 import { resolveMergedView } from './resolveMergedView';
 
 export const useColumns = <
@@ -203,6 +207,12 @@ export const useColumns = <
       pinnedCols,
       mergedView: rowsGroupingMergedView,
     });
+    const ownRenderCellByKey = getOwnRenderCellByKey(
+      columnConfig,
+      tableConfig.rowsGrouping?.groupedColumnProps?.renderCell,
+    );
+    // Группировка вернула новые колонки со своей отрисовкой.
+    const columnsRegrouped = colsAfterRowsGroupingCheck !== columnConfig;
 
     const checkboxColumn = selectingRowsIsActive
       ? (createCheckboxColumn({
@@ -668,7 +678,14 @@ export const useColumns = <
         }),
 
         renderCell,
-        hasOwnRenderCell: el.renderCell !== undefined,
+        hasOwnRenderCell:
+          ownRenderCellByKey.get(el.key) ?? el.renderCell !== undefined,
+        subRowHasOwnRenderCell: getSubRowHasOwnRenderCell({
+          columnsRegrouped,
+          ownRenderCellByKey,
+          key: el.key,
+          renderSubRowCell: el.subRow?.renderSubRowCell,
+        }),
         editable,
         isErrorCell,
         errorCellTooltip,

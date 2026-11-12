@@ -25,11 +25,7 @@ import { glideCellRenderer } from './cellRenderer';
 import {
   DEFAULT_HEADER_HEIGHT,
   DEFAULT_SPAN_VERTICAL_ALIGN,
-  EDITOR_BLOCK_BOTTOM_VAR,
-  EDITOR_BLOCK_TOP_VAR,
-  EDITOR_BOTTOM_LINE_VAR,
   EDITOR_BLOOM,
-  EDITOR_TOP_LINE_VAR,
 } from './constants';
 import {
   useColoringLayers,
@@ -91,6 +87,11 @@ import {
   createTextCellGlide,
   TextCellOptions,
 } from './utils/createCell';
+import {
+  EditorFrame,
+  getEditorFrameVars,
+  syncEditorFrame,
+} from './utils/editorFrame';
 import { findBlockOrigin } from './utils/findBlockOrigin';
 import { mergeThemeOverrides } from './utils/mergeThemeOverrides';
 import { queryGlideElements } from './utils/queryGlideElements';
@@ -150,15 +151,6 @@ interface CanvasCellCacheEntry {
   cacheKey: CanvasCacheKey;
   canvasRoot: CellCanvasRoot;
 }
-
-/** Края объединённого блока под редактором и область данных при открытии, в координатах окна. */
-type EditorFrame = {
-  blockTop: number;
-  blockBottom: number;
-  dataTop: number;
-  dataBottom: number;
-  scrollTop: number;
-};
 
 export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   columns,
@@ -373,6 +365,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     handleGridSelectionChange,
     handleSelectionCleared,
     rangeSelect,
+    spanRangeBehavior,
   } = useNativeGridSelection({
     cellsSelectionMode,
     columns: columnsLast,
@@ -607,17 +600,12 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     [rows, columnsForRender, ctxs, theme],
   );
 
-  // Строки, которые подсвечивает курсор: на объединённом блоке все строки
-  // блока, иначе строка под мышью.
-  const resolveHoverRows = useCallback<ResolveHoverRows>(
-    (rawColInd, rawRowInd) => {
-      const single = { from: rawRowInd, to: rawRowInd };
-      if (!rows[rawRowInd]) {
-        return single;
-      }
-      const [originColInd, originRowInd] = findBlockOrigin(
-        rawColInd,
-        rawRowInd,
+  // Верхняя левая ячейка объединённого блока, в который попала ячейка.
+  const findCellBlockOrigin = useCallback(
+    (colInd: number, rowInd: number) =>
+      findBlockOrigin(
+        colInd,
+        rowInd,
         spanColumnIndexes,
         (c, r) => {
           const col = columnsForRender[c];
@@ -629,6 +617,21 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
             ? getRowSpan(col.rowSpan, getProbeInfo(c, r))
             : null;
         },
+      ),
+    [columnsForRender, getProbeInfo, spanColumnIndexes],
+  );
+
+  // Строки, которые подсвечивает курсор: на объединённом блоке все строки
+  // блока, иначе строка под мышью.
+  const resolveHoverRows = useCallback<ResolveHoverRows>(
+    (rawColInd, rawRowInd) => {
+      const single = { from: rawRowInd, to: rawRowInd };
+      if (!rows[rawRowInd]) {
+        return single;
+      }
+      const [originColInd, originRowInd] = findCellBlockOrigin(
+        rawColInd,
+        rawRowInd,
       );
       const rowSpan = columnsForRender[originColInd]?.rowSpan;
       const blockRows = rowSpan
@@ -636,7 +639,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         : null;
       return blockRows ? { from: blockRows[0], to: blockRows[1] } : single;
     },
-    [columnsForRender, rows, getProbeInfo, spanColumnIndexes],
+    [columnsForRender, rows, getProbeInfo, findCellBlockOrigin],
   );
 
   const { hoveredCellRef, setHoveredCell, hoverRows, onHoverRowChange } =
@@ -673,9 +676,9 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   const scrollPositionRef = useRef('');
   // Пока открыт редактор или предпросмотр, рамку ячейки или блока рисует он сам
   // (styled.ts), а canvas свою не рисует: режим drawFocusRing="no-editor" у Glide.
-  // Ячейку под редактором запоминаем, чтобы снять её подкраску
-  // (getCellContentGlide) и двигать рамку за блоком при прокрутке. Закрытие
-  // узнаём по оверлею в портале: Glide об этом не сообщает.
+  // Ячейку под редактором запоминаем, чтобы обновлять фон редактора и двигать
+  // рамку за блоком при прокрутке. Закрытие узнаём по оверлею в портале: Glide
+  // об этом не сообщает.
   const editorCellRef = useRef<readonly [number, number]>();
   const editorFrameRef = useRef<EditorFrame>();
   const updateEditorFrameRef = useRef<() => void>();
@@ -689,11 +692,8 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     if (!portal) return;
     const observer = new MutationObserver(() => {
       if (portal.querySelector("[id^='gdg-overlay-']")) return;
-      const cell = editorCellRef.current;
       editorFrameRef.current = undefined;
-      if (!cell) return;
       editorCellRef.current = undefined;
-      dataEditorRef.current?.updateCells([{ cell: [cell[0], cell[1]] }]);
     });
     observer.observe(portal, { childList: true });
     portalObserverRef.current = observer;
@@ -822,21 +822,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       // Ячейка, покрытая блоком, отдаёт контент верхней-левой ячейки блока: у всех
       // ячеек блока одинаковые span/spanRows и значение. Форк убирает повторы и
       // сводит клик, навигацию и редактирование к верхней-левой ячейке.
-      const [originColInd, originRowInd] = findBlockOrigin(
-        colInd,
-        rowInd,
-        spanColumnIndexes,
-        (c, r) => {
-          const col = columnsForRender[c];
-          return col?.colSpan ? getSpan(col.colSpan, getProbeInfo(c, r)) : null;
-        },
-        (c, r) => {
-          const col = columnsForRender[c];
-          return col?.rowSpan
-            ? getRowSpan(col.rowSpan, getProbeInfo(c, r))
-            : null;
-        },
-      );
+      const [originColInd, originRowInd] = findCellBlockOrigin(colInd, rowInd);
       if (originColInd !== colInd || originRowInd !== rowInd) {
         // eslint-disable-next-line no-use-before-define
         return getCellContentGlide(
@@ -1049,29 +1035,12 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
             }
           : undefined;
 
-      const mergedThemeOverride = mergeThemeOverrides(
+      const themeOverride = mergeThemeOverrides(
         columnThemeOverrideResult,
         blockRowOverride,
         fillOverride,
         soloActiveCellOverride
       );
-      // Пока в блоке в несколько строк открыт редактор, Glide в режиме no-editor
-      // считает блок задетым выделением и красит его accentLight. Рамку рисует
-      // редактор, подкраска не нужна. Блок рисует та его строка, что первой попала
-      // в отрисовку, поэтому override ставим всем строкам блока. У одиночной
-      // ячейки подкраски нет. Техдолг: снять, когда в форке появится проп,
-      // который прячет только рамку фокуса, не трогая заливку.
-      const editing = editorCellRef.current;
-      const editorInBlock =
-        editing !== undefined &&
-        editing[0] === colInd &&
-        spanRows != null &&
-        spanRows[1] > spanRows[0] &&
-        editing[1] >= spanRows[0] &&
-        editing[1] <= spanRows[1];
-      const themeOverride = editorInBlock
-        ? { ...mergedThemeOverride, accentLight: 'transparent' }
-        : mergedThemeOverride;
 
       const options = {
         data: row[id]?.toString?.() ?? 'NOT FOUND',
@@ -1155,12 +1124,11 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       rows,
       autoHeightReporter,
       columnsForRender,
-      spanColumnIndexes,
+      findCellBlockOrigin,
       ctxs,
       theme,
       activeTheme,
       paletteOverride,
-      getProbeInfo,
       activeRow,
       checkboxSelectedRowIndexes,
       blockHasCheckedRow,
@@ -1897,23 +1865,6 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       scrollTop: scroller.scrollTop,
     };
   };
-  const editorFrameVars = (
-    frame: EditorFrame,
-    shift: number,
-  ): Record<string, string> => {
-    const blockTop = frame.blockTop - shift;
-    const blockBottom = frame.blockBottom - shift;
-    return {
-      [EDITOR_BLOCK_TOP_VAR]: `${Math.max(blockTop, frame.dataTop)}px`,
-      [EDITOR_BLOCK_BOTTOM_VAR]: `${Math.min(blockBottom, frame.dataBottom)}px`,
-      [EDITOR_TOP_LINE_VAR]: blockTop >= frame.dataTop ? '1px' : '0px',
-      [EDITOR_BOTTOM_LINE_VAR]: blockBottom <= frame.dataBottom ? '1px' : '0px',
-    };
-  };
-  // При прокрутке оверлей Glide остаётся на месте, а блок уезжает ровно на
-  // величину прокрутки: сдвигаем края, замеренные при открытии. Пока блок и
-  // редактор пересекаются, рамка обводит их вместе; разошлись, рамка только
-  // вокруг редактора.
   updateEditorFrameRef.current = () => {
     const frame = editorFrameRef.current;
     if (!frame) return;
@@ -1922,15 +1873,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     );
     const { scroller } = queryGlideElements(containerRefInternal.current);
     if (!overlay || !scroller) return;
-    const shift = scroller.scrollTop - frame.scrollTop;
-    const rect = overlay.getBoundingClientRect();
-    const keep =
-      frame.blockBottom - shift >= rect.top &&
-      frame.blockTop - shift <= rect.bottom;
-    const vars = editorFrameVars(frame, shift);
-    for (const name of Object.keys(vars)) {
-      overlay.style.setProperty(name, keep ? vars[name] ?? null : null);
-    }
+    syncEditorFrame(overlay, frame, scroller.scrollTop);
   };
   useLayoutEffect(() => {
     const cell = editorCellRef.current;
@@ -1963,10 +1906,6 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
             // Пока оверлей открыт, canvas рамку не рисует (no-editor), поэтому
             // ячейку запоминаем при любом редакторе, даже встроенном у Glide.
             editorCellRef.current = cell.location;
-            // Перерисовать блок с открытым редактором без подкраски выделения.
-            requestAnimationFrame(() =>
-              dataEditorRef.current?.updateCells([{ cell: [col, row] }]),
-            );
             if (!provided) return provided;
             // Редактор-функцию оборачиваем, чтобы задать ему те же стили и рамку.
             const editor =
@@ -1977,7 +1916,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
               ...editor,
               styleOverride: {
                 ...editor.styleOverride,
-                ...(frame && editorFrameVars(frame, 0)),
+                ...(frame && getEditorFrameVars(frame, 0)),
                 '--gdg-bg-cell': getEditorBgRef.current?.(col, row),
               } as CSSProperties,
             };
@@ -2193,6 +2132,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
           rowHeight={rowH}
           highlightRegions={highlightRegionsFinal}
           rangeSelect={rangeSelect}
+          spanRangeBehavior={spanRangeBehavior}
           smoothScrollX
           smoothScrollY
           // overscrollX={16}

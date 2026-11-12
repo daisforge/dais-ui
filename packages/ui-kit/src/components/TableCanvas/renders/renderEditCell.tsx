@@ -23,6 +23,7 @@ import {
   RenderRowCustomEditCell,
   TableConfig,
 } from '../types';
+import type { ColumnConfigInternal } from '../types/column-config-internal.type';
 import { CLASS, CSS_VARIABLES } from './constants';
 import { getPaddingLeftFinal } from './styleConstants';
 import { StyledCellContainer, SubRowContainer } from './styled';
@@ -326,8 +327,14 @@ export const RenderEditCell = <
 
     const { column: parentColumn, ...restRenderEditCellProps } =
       editingCellInfo;
+    // Колонку для редактора собрала таблица, в ней есть внутренние признаки.
+    // В пропе column лежит колонка из настроек, без них.
+    const { subRowHasOwnRenderCell } = parentColumn as ColumnConfigInternal<
+      RowType,
+      SummaryRowType
+    >;
 
-    const columnFinal: typeof column = {
+    const columnFinal: typeof column & { hasOwnRenderCell: boolean } = {
       ...parentColumn,
       // для subRow переопределяем ключ
       ...(!parentKeyAsSubKey && {
@@ -335,6 +342,8 @@ export const RenderEditCell = <
       }),
       // для subRow переопределяем editingCell
       editingCell: column.subRow.editingCell,
+      // Ячейку подстроки рисует renderSubRowCell, а не renderCell колонки.
+      hasOwnRenderCell: subRowHasOwnRenderCell === true,
     };
 
     const renderSubRowEditCellProps = {
