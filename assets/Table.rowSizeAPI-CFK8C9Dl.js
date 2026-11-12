@@ -1,4 +1,0 @@
-import{j as e}from"./react-CAOzMBF_.js";import{cg as i,ch as s}from"./vendor-Dh4d6dCz.js";import{T as r}from"./TypeSourceViewer-rB6Si0zw.js";import"./react-is-vVGXX3JE.js";import"./styled-components-BD-2WP2k.js";import"./@tanstack/react-virtual-4Nv0GpZT.js";import"./tslib-DoU9Jm1N.js";function n(t){const o={h1:"h1",h2:"h2",...i(),...t.components};return e.jsxs(e.Fragment,{children:[e.jsx(s,{title:"Локальные компоненты/Table/RowSize/API"}),`
-`,e.jsx(o.h1,{id:"row-size-api",children:"Row Size API"}),`
-`,e.jsx(o.h2,{id:"rowsize",children:"RowSize"}),`
-`,e.jsx(r,{language:"ts",filePath:"packages/ui-kit/src/components/Table/types/table-config.type.ts",typeName:"RowSize"})]})}function x(t={}){const{wrapper:o}={...i(),...t.components};return o?e.jsx(o,{...t,children:e.jsx(n,{...t})}):n(t)}export{x as default};

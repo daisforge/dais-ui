@@ -1,4 +1,0 @@
-import{j as t}from"./react-CAOzMBF_.js";import{cg as n,ch as r}from"./vendor-Dh4d6dCz.js";import{T as o}from"./TypeSourceViewer-rB6Si0zw.js";import"./react-is-vVGXX3JE.js";import"./styled-components-BD-2WP2k.js";import"./@tanstack/react-virtual-4Nv0GpZT.js";import"./tslib-DoU9Jm1N.js";function i(e){const a={h1:"h1",h2:"h2",...n(),...e.components};return t.jsxs(t.Fragment,{children:[t.jsx(r,{title:"Локальные компоненты/Table/Virtualization/API"}),`
-`,t.jsx(a.h1,{id:"virtualization-api",children:"Virtualization API"}),`
-`,t.jsx(a.h2,{id:"datagridpropsdefault",children:"DataGridPropsDefault"}),`
-`,t.jsx(o,{language:"ts",filePath:"packages/ui-kit/src/components/Table/types/data-grid.type.ts",typeName:"DataGridPropsDefault"})]})}function h(e={}){const{wrapper:a}={...n(),...e.components};return a?t.jsx(a,{...e,children:t.jsx(i,{...e})}):i(e)}export{h as default};
