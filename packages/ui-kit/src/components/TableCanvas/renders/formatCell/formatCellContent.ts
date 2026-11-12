@@ -71,18 +71,20 @@ export const formatCellValue = (
 ): string => {
   if (format === undefined) return safeStringFormat(value);
 
-  // Кастомное форматирование имеет приоритет
-  if (typeof format === 'object' && 'customFormat' in format) {
-    if (typeof format.customFormat === 'function') {
-      // TODO в типах format.customFormat должен возвращать string
-      const v = format.customFormat(safeStringFormat(value));
+  // Кастомное форматирование имеет приоритет. Ключ без функции
+  // (`customFormat: undefined` из спреда или условия) формат не отключает.
+  if (
+    typeof format === 'object' &&
+    'customFormat' in format &&
+    typeof format.customFormat === 'function'
+  ) {
+    // TODO в типах format.customFormat должен возвращать string
+    const v = format.customFormat(safeStringFormat(value));
 
-      if (typeof v !== 'string') {
-        throw new Error('format.customFormat должен возвращать string');
-      }
-      return v;
+    if (typeof v !== 'string') {
+      throw new Error('format.customFormat должен возвращать string');
     }
-    return safeStringFormat(value);
+    return v;
   }
 
   // Базовые типы форматирования
