@@ -23,7 +23,10 @@ export interface RowHeightChange {
   delta: number;
 }
 
-export const sameIds = (a: readonly string[], b: readonly string[]) =>
+export const sameIds = <T extends string | number>(
+  a: readonly T[],
+  b: readonly T[],
+) =>
   a.length === b.length && a.every((id, i) => id === b[i]);
 
 /**
@@ -56,6 +59,9 @@ export class AutoRowHeightStore<R extends object> {
 
   /** Строки на экране: их устаревшая высота пересчитывается из ячеек */
   private visible: VisibleRows = { from: 0, to: 0 };
+
+  /** Прилипшие строки: glide рисует их всегда, но в видимую область не включает */
+  private pinned: readonly number[] = [];
 
   /** Строки с новыми высотами ячеек, ждущие коммита, и их индексы */
   private readonly pending = new Map<R, number>();
@@ -93,6 +99,13 @@ export class AutoRowHeightStore<R extends object> {
 
   get visibleRows(): VisibleRows {
     return this.visible;
+  }
+
+  /** Прилипшие строки считаются видимыми: их устаревшие высоты тоже пересчитываются коммитом */
+  setPinnedRows(indexes: readonly number[]): void {
+    if (sameIds(indexes, this.pinned)) return;
+    this.pinned = indexes;
+    this.refreshStaleVisible();
   }
 
   /**
@@ -134,9 +147,10 @@ export class AutoRowHeightStore<R extends object> {
     if (cached !== null) return cached;
 
     const row = rows[rowIndex]!;
-    const visible =
-      rowIndex >= this.visible.from && rowIndex <= this.visible.to;
-    const height = Math.max(this.rowHeight(row, visible), this.baseHeight);
+    const height = Math.max(
+      this.rowHeight(row, this.isVisible(rowIndex)),
+      this.baseHeight,
+    );
     this.index.set(rowIndex, row, height);
     return height;
   }
@@ -146,16 +160,35 @@ export class AutoRowHeightStore<R extends object> {
    * Только когда glide и так переспросит все высоты — при смене колонок.
    */
   private forgetStaleVisible(): void {
-    this.index.forget(this.visible.from, this.visible.to, (row) =>
-      this.isStale(row),
+    const isStale = (row: R) => this.isStale(row);
+    this.index.forget(this.visible.from, this.visible.to, isStale);
+    this.pinnedOutsideVisible().forEach((rowIndex) =>
+      this.index.forget(rowIndex, rowIndex, isStale),
     );
   }
 
   /** Устаревшие высоты видимых строк ждут коммита: изменившиеся уйдут в `onChange` */
   private refreshStaleVisible(): void {
-    this.index.each(this.visible.from, this.visible.to, (row, rowIndex) => {
+    const visit = (row: R, rowIndex: number) => {
       if (this.isStale(row)) this.markPending(row, rowIndex);
-    });
+    };
+    this.index.each(this.visible.from, this.visible.to, visit);
+    this.pinnedOutsideVisible().forEach((rowIndex) =>
+      this.index.each(rowIndex, rowIndex, visit),
+    );
+  }
+
+  private isVisible(rowIndex: number): boolean {
+    return (
+      (rowIndex >= this.visible.from && rowIndex <= this.visible.to) ||
+      this.pinned.includes(rowIndex)
+    );
+  }
+
+  private pinnedOutsideVisible(): readonly number[] {
+    return this.pinned.filter(
+      (rowIndex) => rowIndex < this.visible.from || rowIndex > this.visible.to,
+    );
   }
 
   private isStale(row: R): boolean {

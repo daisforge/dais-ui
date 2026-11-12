@@ -261,6 +261,24 @@ describe('AutoRowHeightStore', () => {
     );
   });
 
+  it('прилипшая строка вне видимой области пересчитывается после скрытия колонки, как видимая', () => {
+    const { store, rows, report } = setup(10);
+    store.setVisibleRows(5, 9);
+    store.setPinnedRows([0]);
+    for (const rowIndex of [0, 3, 5]) {
+      report(rowIndex, 'a', 80);
+      report(rowIndex, 'b', 30);
+    }
+    expect(store.heightAt(rows, 0)).toBe(80);
+
+    store.setColumns(['b']);
+
+    expect(store.heightAt(rows, 5)).toBe(30);
+    expect(store.heightAt(rows, 0)).toBe(30);
+    // Строка 3 не видна и не прилипла: до показа прежняя высота
+    expect(store.heightAt(rows, 3)).toBe(80);
+  });
+
   it('блок на несколько колонок хранится со своей шириной', () => {
     const { store, rows, report } = setup();
     report(0, 'a', 40, 100);

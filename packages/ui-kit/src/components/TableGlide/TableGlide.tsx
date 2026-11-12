@@ -310,6 +310,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     columns: columnsLast,
     theme,
     maxAutoRowHeight,
+    stickyRows: restProps.stickyRows,
   });
   const rowH = useAnimatedRowHeight(rowHeightGlide);
 
