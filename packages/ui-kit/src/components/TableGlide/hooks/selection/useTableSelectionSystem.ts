@@ -446,6 +446,14 @@ export function useTableSelectionSystem<
     setIsNativeColumnSelection,
   ]);
 
+  // Выделение сменили программно (controlled state): несмежные колонки и строки
+  // своего состояния к нему не относятся, снимаем их без onChange.
+  const resetAxes = useCallback(() => {
+    setSelectedColumns(CompactSelection.empty());
+    setSelectedRows(CompactSelection.empty());
+    setIsNativeColumnSelection(false);
+  }, [setSelectedColumns, setSelectedRows, setIsNativeColumnSelection]);
+
   // Объединённое множество выделенных КОЛОНОК (ключи) для внешних потребителей
   // (например «Закрепить столбцы» в контрл-блоке). Два канала выделения колонок:
   //  - Ctrl/Meta-мультивыбор → кастомный selectedColumns (→ selectedColumnIndexes);
@@ -690,5 +698,6 @@ export function useTableSelectionSystem<
     selectColumnFromHeader,
     handleGridSelectionWithColumnReset,
     handleSelectionClearedWithColumns,
+    resetAxes,
   };
 }

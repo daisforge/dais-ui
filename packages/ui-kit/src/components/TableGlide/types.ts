@@ -455,6 +455,11 @@ export type TableGlideCustomProps<
   /** Канал для copy/paste (selectionRef потребителя), отдельно от controlled gridSelection. */
   onSelectionEmit?: (selection: GridSelection) => void;
   /**
+   * Controlled gridSelection сменили снаружи, не действием пользователя.
+   * В `onSelectionEmit` не идёт, а copy/paste и fill-handle должны знать.
+   */
+  onSelectionSync?: (selection: GridSelection) => void;
+  /**
    * Ключи выделенных КОЛОНОК (объединение: одиночный клик/Shift/select-all +
    * Ctrl-мультивыбор), без сервисных колонок. Канал наверх для контрл-блока
    * (например «Закрепить столбцы»). Обычное выделение ячеек сюда не попадает.

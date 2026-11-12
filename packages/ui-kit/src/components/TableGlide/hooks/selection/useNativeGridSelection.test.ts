@@ -148,3 +148,50 @@ describe('useNativeGridSelection: растягивание выбора до о�
     },
   );
 });
+
+describe('useNativeGridSelection: программная смена controlled-выделения', () => {
+  const renderControlled = () => {
+    const onSelectionEmit = vi.fn();
+    const onExternalSelectionChange = vi.fn();
+    const setState = vi.fn();
+    const hook = renderHook(
+      ({ gridSelection }: { gridSelection: GridSelection }) =>
+        useNativeGridSelection({
+          cellsSelectionMode: 'range-cell',
+          columns: ONE_SERVICE,
+          gridSelection,
+          onGridSelectionChange: setState,
+          onSelectionEmit,
+          onExternalSelectionChange,
+        }),
+      { initialProps: { gridSelection: cellSelection(1, 0) } },
+    );
+    return { hook, onSelectionEmit, onExternalSelectionChange, setState };
+  };
+
+  it('выделение из state уходит во внутренний канал, но не в onSelectionEmit', () => {
+    const { hook, onSelectionEmit, onExternalSelectionChange } =
+      renderControlled();
+    expect(onExternalSelectionChange).toHaveBeenCalledTimes(1);
+
+    const programmatic = cellSelection(2, 3);
+    hook.rerender({ gridSelection: programmatic });
+
+    expect(onExternalSelectionChange).toHaveBeenCalledTimes(2);
+    expect(onExternalSelectionChange).toHaveBeenLastCalledWith(programmatic);
+    expect(onSelectionEmit).not.toHaveBeenCalled();
+  });
+
+  it('выделение, отданное в сеттер и вернувшееся из state, программным не считается', () => {
+    const { hook, onExternalSelectionChange, setState } = renderControlled();
+    onExternalSelectionChange.mockClear();
+
+    const next = cellSelection(3, 1);
+    act(() => hook.result.current.handleGridSelectionChange(next));
+    expect(setState).toHaveBeenCalledWith(next);
+    // Потребитель положил в state копию объекта
+    hook.rerender({ gridSelection: { ...next } });
+
+    expect(onExternalSelectionChange).not.toHaveBeenCalled();
+  });
+});

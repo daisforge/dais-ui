@@ -5,6 +5,7 @@ import {
   DataEditorRef,
   GridCell,
   GridColumn,
+  GridSelection,
   isReadWriteCell,
 } from '@glideappsfinal/glide-data-grid';
 import type { CSSProperties } from 'react';
@@ -203,6 +204,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   onGridSelectionChange: onGridSelectionChangeExternal,
   // Канал для copy/paste (selectionRef потребителя) — отдельно от controlled.
   onSelectionEmit,
+  onSelectionSync,
   // Канал наверх: индексы выделенных колонок (объединённые) для контрл-блока.
   onColumnSelectionChange,
   // Follow: после реордера (закрепление) заново выделить эти ключи.
@@ -361,6 +363,18 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     interactionSessionStore,
   );
 
+  // Программная смена выделения: свои оси (Ctrl-колонки и строки) к новому
+  // выделению не относятся, а copy/paste и fill-handle должны его узнать.
+  // Сброс осей живёт в системе выделения, она объявлена ниже.
+  const resetAxesRef = useRef<() => void>();
+  const handleExternalSelectionChange = useCallback(
+    (next: GridSelection) => {
+      if (next.current !== undefined) resetAxesRef.current?.();
+      onSelectionSync?.(next);
+    },
+    [onSelectionSync],
+  );
+
   const {
     selection,
     handleGridSelectionChange,
@@ -373,6 +387,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     gridSelection: gridSelectionExternal,
     onGridSelectionChange: onGridSelectionChangeExternal,
     onSelectionEmit,
+    onExternalSelectionChange: handleExternalSelectionChange,
   });
 
   // div-обертка над Glide для DOM-поиска элементов
@@ -433,6 +448,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     selectColumnFromHeader,
     handleGridSelectionWithColumnReset,
     handleSelectionClearedWithColumns,
+    resetAxes,
   } = useTableSelectionSystem({
     columns: columnsLast,
     selection,
@@ -449,6 +465,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     onHighlightActiveRowChange: handleHighlightActiveRowChange,
     isHighlightActiveRowControlled: highlightActiveRowControlled,
   });
+  resetAxesRef.current = resetAxes;
 
   // Отдаём объединённое выделение колонок (ключи) наверх (контрл-блок). Эффект,
   // а не вызов в рендере: колбэк потребителя может быть нестабильным.
