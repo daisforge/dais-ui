@@ -28,17 +28,26 @@ export function paintActiveHeaderBackground(
   }
 }
 
-/** Шапки каких колонок перерисовать: закреплённые и видимые с запасом в колонку. */
+/**
+ * Шапки каких колонок перерисовать: закреплённые, прилипшие (видны и за краем области)
+ * и видимые с запасом в колонку.
+ */
 export function headerCellsToRedraw(
   visible: Rectangle | null,
   columnsCount: number,
   freezeColumns: number,
+  stickyColumns: readonly number[] = [],
 ): Array<{ cell: [number, number] }> {
   const cells: Array<{ cell: [number, number] }> = [];
+  const pushed = new Set<number>();
   const push = (col: number) => {
-    if (col >= 0 && col < columnsCount) cells.push({ cell: [col, -1] });
+    if (col >= 0 && col < columnsCount && !pushed.has(col)) {
+      pushed.add(col);
+      cells.push({ cell: [col, -1] });
+    }
   };
   for (let col = 0; col < Math.min(freezeColumns, columnsCount); col += 1) push(col);
+  stickyColumns.forEach(push);
   if (visible === null) {
     for (let col = freezeColumns; col < Math.min(columnsCount, MAX_COLUMNS_WITHOUT_REGION); col += 1) push(col);
     return cells;
@@ -64,6 +73,7 @@ export function useActiveHeadersRedraw({
   visibleRegionRef,
   columnsCount,
   freezeColumns,
+  stickyColumns,
 }: {
   /** Колонки, выделенные по шапке; при смене набора шапки перерисовываются. */
   selectedColumns: ReadonlySet<number>;
@@ -72,6 +82,8 @@ export function useActiveHeadersRedraw({
   visibleRegionRef: RefObject<Rectangle | null>;
   columnsCount: number;
   freezeColumns: number;
+  /** Прилипшие колонки: их шапки видны и вне области. */
+  stickyColumns?: readonly number[];
 }) {
   const firstRunRef = useRef(true);
 
@@ -81,7 +93,20 @@ export function useActiveHeadersRedraw({
       firstRunRef.current = false;
       return;
     }
-    const cells = headerCellsToRedraw(visibleRegionRef.current, columnsCount, freezeColumns);
+    const cells = headerCellsToRedraw(
+      visibleRegionRef.current,
+      columnsCount,
+      freezeColumns,
+      stickyColumns,
+    );
     if (cells.length > 0) dataEditorRef.current?.updateCells?.(cells);
-  }, [selectedColumns, hasSelectedRows, dataEditorRef, visibleRegionRef, columnsCount, freezeColumns]);
+  }, [
+    selectedColumns,
+    hasSelectedRows,
+    dataEditorRef,
+    visibleRegionRef,
+    columnsCount,
+    freezeColumns,
+    stickyColumns,
+  ]);
 }

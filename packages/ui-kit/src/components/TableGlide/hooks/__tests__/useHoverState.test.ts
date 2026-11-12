@@ -168,3 +168,30 @@ describe('useHoverState: объединённый блок под курсоро
     );
   });
 });
+
+describe('useHoverState: прилипшие строки', () => {
+  it('прилипшая строка вне видимой области дорисовывается', async () => {
+    const updateCells = vi.fn();
+    const dataEditorRef = {
+      current: { updateCells } as unknown as DataEditorRef,
+    };
+    const hook = renderHook(() =>
+      useHoverState({
+        isRowHoverEnabled: true,
+        dataEditorRef,
+        columnsCount: 1,
+        rowsCount: 10,
+        resolveHoverRows: () => ({ from: 0, to: 9 }),
+        visibleRegionRef: { current: { y: 5, height: 2 } },
+        getPinnedRows: () => [0, 8],
+      }),
+    );
+
+    hook.result.current.onHoverRowChange!([0, 6]);
+    await nextTask();
+
+    expect(new Set(rowsOf(updateCells.mock.calls[0]!))).toEqual(
+      new Set([0, 5, 6, 7, 8]),
+    );
+  });
+});

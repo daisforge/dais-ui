@@ -178,8 +178,35 @@ describe('useNativeGridSelection: программная смена controlled-�
     hook.rerender({ gridSelection: programmatic });
 
     expect(onExternalSelectionChange).toHaveBeenCalledTimes(2);
-    expect(onExternalSelectionChange).toHaveBeenLastCalledWith(programmatic);
+    expect(onExternalSelectionChange).toHaveBeenLastCalledWith(
+      programmatic,
+      false,
+    );
+    expect(onExternalSelectionChange.mock.calls[0]?.[1]).toBe(true);
     expect(onSelectionEmit).not.toHaveBeenCalled();
+  });
+
+  it('после выделения со своими осями программное «снять всё» отличается от эха по объекту', () => {
+    const { hook, onExternalSelectionChange, setState } = renderControlled();
+    onExternalSelectionChange.mockClear();
+    const empty: GridSelection = {
+      current: undefined,
+      rows: CompactSelection.empty(),
+      columns: CompactSelection.empty(),
+    };
+    const emitted: GridSelection = {
+      ...empty,
+      columns: CompactSelection.fromSingleSelection([1, 3]),
+    };
+    // Ctrl-колонки: в сеттер уходит пустое нативное выделение, наружу оси
+    act(() => hook.result.current.handleGridSelectionChange(empty, emitted));
+    expect(setState).toHaveBeenLastCalledWith(empty);
+    // Эхо тем же объектом не считается сменой
+    hook.rerender({ gridSelection: empty });
+    expect(onExternalSelectionChange).not.toHaveBeenCalled();
+    // Программное пустое выделение другим объектом это смена
+    hook.rerender({ gridSelection: { ...empty } });
+    expect(onExternalSelectionChange).toHaveBeenCalledTimes(1);
   });
 
   it('выделение, отданное в сеттер и вернувшееся из state, программным не считается', () => {

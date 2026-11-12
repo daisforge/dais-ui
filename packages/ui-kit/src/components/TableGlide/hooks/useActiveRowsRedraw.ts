@@ -39,15 +39,21 @@ export function changedActiveRows(prev: ActiveRowsState, next: ActiveRowsState):
   return Array.from(changed);
 }
 
-/** Из списка строк оставляет видимые с запасом; без известной области режет по числу. */
+/**
+ * Из списка строк оставляет видимые с запасом и прилипшие (glide рисует их всегда, но в
+ * видимую область не включает); без известной области режет по числу.
+ */
 export function rowsToRedraw(
   rows: readonly number[],
   visible: VisibleRows | null,
+  pinned: readonly number[] = [],
 ): number[] {
   if (visible === null) return rows.slice(0, MAX_ROWS_WITHOUT_REGION);
   const from = visible.y - VISIBLE_MARGIN;
   const to = visible.y + visible.height + VISIBLE_MARGIN;
-  return rows.filter((row) => row >= from && row <= to);
+  return rows.filter(
+    (row) => (row >= from && row <= to) || pinned.includes(row),
+  );
 }
 
 /**
@@ -64,9 +70,12 @@ export function useActiveRowsRedraw({
   activeRows,
   damageRows,
   visibleRowsRef,
+  pinnedRows,
 }: ActiveRowsState & {
   damageRows: (...rowIndexes: Array<number | undefined>) => void;
   visibleRowsRef: RefObject<VisibleRows | null>;
+  /** Прилипшие строки: дорисовываются и вне видимой области. */
+  pinnedRows?: readonly number[];
 }) {
   const prevRef = useRef<ActiveRowsState | null>(null);
 
@@ -78,6 +87,6 @@ export function useActiveRowsRedraw({
     if (prev === null) return;
     const changed = changedActiveRows(prev, next);
     if (changed.length === 0) return;
-    damageRows(...rowsToRedraw(changed, visibleRowsRef.current));
-  }, [activeRow, activeRows, damageRows, visibleRowsRef]);
+    damageRows(...rowsToRedraw(changed, visibleRowsRef.current, pinnedRows));
+  }, [activeRow, activeRows, damageRows, visibleRowsRef, pinnedRows]);
 }

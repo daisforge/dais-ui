@@ -103,3 +103,11 @@ describe('useActiveRowsRedraw', () => {
     expect(damageRows.mock.calls[2]).toEqual([106]);
   });
 });
+
+describe('rowsToRedraw: прилипшие строки', () => {
+  it('прилипшая строка вне области остаётся в списке', () => {
+    expect(rowsToRedraw([0, 3, 50, 51, 90], { y: 48, height: 5 }, [0, 90])).toEqual(
+      [0, 50, 51, 90],
+    );
+  });
+});

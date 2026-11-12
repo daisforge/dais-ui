@@ -52,6 +52,10 @@ export type ResolveHoverRows = (
  * Строки блока за пределами видимой области не дорисовываются: glide нарисует
  * их заново, когда они появятся на экране.
  */
+/** Если видимая область ещё неизвестна, дорисовываем не больше стольких строк. */
+const MAX_ROWS_WITHOUT_REGION = 200;
+const NO_ROWS: readonly number[] = [];
+
 export function useHoverState({
   isRowHoverEnabled,
   dataEditorRef,
@@ -59,6 +63,7 @@ export function useHoverState({
   rowsCount,
   resolveHoverRows,
   visibleRegionRef,
+  getPinnedRows,
   onHoverRowsChange,
 }: {
   isRowHoverEnabled: boolean;
@@ -71,6 +76,8 @@ export function useHoverState({
   rowsCount: number;
   /** Видимая область: дорисовка строк блока обрезается по её строкам. */
   visibleRegionRef?: RefObject<{ y: number; height: number } | null>;
+  /** Прилипшие строки: glide рисует их всегда, но в видимую область не включает. */
+  getPinnedRows?: () => readonly number[] | undefined;
   /** Строки под курсором сменились (рендера React при этом нет). */
   onHoverRowsChange?: () => void;
 }) {
@@ -87,7 +94,11 @@ export function useHoverState({
     (...ranges: Array<HoverRows | undefined>) => {
       const visible = visibleRegionRef?.current;
       const visibleFrom = visible ? visible.y : 0;
-      const visibleTo = visible ? visible.y + visible.height : rowsCount - 1;
+      // Без известной области (первый кадр) дорисовываем не больше первых строк
+      const visibleTo = visible
+        ? visible.y + visible.height
+        : MAX_ROWS_WITHOUT_REGION - 1;
+      const pinned = getPinnedRows?.() ?? NO_ROWS;
       const toUpdate: number[] = [];
       ranges.forEach((range) => {
         if (!range) return;
@@ -96,6 +107,17 @@ export function useHoverState({
         for (let rowInd = from; rowInd <= to; rowInd += 1) {
           toUpdate.push(rowInd);
         }
+        // Прилипшие строки диапазона видны и вне области
+        pinned.forEach((rowInd) => {
+          if (
+            rowInd >= range.from &&
+            rowInd <= range.to &&
+            rowInd < rowsCount &&
+            (rowInd < from || rowInd > to)
+          ) {
+            toUpdate.push(rowInd);
+          }
+        });
       });
       if (toUpdate.length === 0) return;
 
@@ -118,7 +140,7 @@ export function useHoverState({
       }
       toUpdate.forEach((rowInd) => pendingRowsRef.current?.add(rowInd));
     },
-    [dataEditorRef, columnsCount, rowsCount, visibleRegionRef],
+    [dataEditorRef, columnsCount, rowsCount, visibleRegionRef, getPinnedRows],
   );
 
   const damageRows = useCallback(

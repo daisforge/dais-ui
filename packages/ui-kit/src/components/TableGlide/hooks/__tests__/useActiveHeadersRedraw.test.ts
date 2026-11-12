@@ -73,3 +73,11 @@ describe('useActiveHeadersRedraw', () => {
     expect(updateCells).toHaveBeenCalledTimes(2);
   });
 });
+
+describe('headerCellsToRedraw: прилипшие колонки', () => {
+  it('шапка прилипшей колонки вне области перерисовывается один раз', () => {
+    const cells = headerCellsToRedraw({ x: 10, y: 0, width: 3, height: 5 }, 100, 1, [1, 7, 11]);
+    const cols = cells.map(({ cell }) => cell[0]);
+    expect(cols).toEqual([0, 1, 7, 11, 9, 10, 12, 13, 14]);
+  });
+});

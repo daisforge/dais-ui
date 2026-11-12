@@ -113,7 +113,16 @@ import {
   getColumnGroupPath,
   handleGroupHeaderClick,
 } from './utils/groupHeaderClick';
-import { getRowSpan, spansSeveralRows } from './utils/getRowSpan';
+import { getRowSpan } from './utils/getRowSpan';
+
+import { GroupHeaderParts } from './utils/groupHeaderParts';
+import {
+  isBlockCut,
+  isBlockRowHovered,
+  rangesOverlap,
+  createSetRangeHitCache,
+} from './utils/blockRanges';
+import { isCanvasContent, isPrimitive } from './utils/typeGuards';
 
 /** Отступы обрезки содержимого ячейки, см. CellEdgeInset в cellRenderer */
 const cellEdgeInset = ({
@@ -142,23 +151,21 @@ const hasGridLine = (
   index: number,
 ): boolean => (typeof border === 'function' ? border(index) : border ?? true);
 
-/** Ячейка блока по строкам высоту не сообщает, а её прежний замер забывается */
+/**
+ * Ячейка блока по строкам высоту не сообщает, а прежние замеры всех строк блока
+ * забываются: glide спрашивает только главную ячейку, покрытые строки сами не придут.
+ */
 const blockAutoHeight = (
   reporter: CellHeightReporter,
-  isRowBlock: boolean,
+  spanRows: readonly [number, number] | null | undefined,
+  forgetRow: (rowIndex: number) => void,
 ): CellHeightReporter | undefined => {
-  if (!isRowBlock) return reporter;
-  reporter.forget();
+  if (!spanRows || spanRows[0] === spanRows[1]) return reporter;
+  for (let rowIndex = spanRows[0]; rowIndex <= spanRows[1]; rowIndex += 1) {
+    forgetRow(rowIndex);
+  }
   return undefined;
 };
-import { GroupHeaderParts } from './utils/groupHeaderParts';
-import {
-  isBlockCut,
-  isBlockRowHovered,
-  rangesOverlap,
-  createSetRangeHitCache,
-} from './utils/blockRanges';
-import { isCanvasContent, isPrimitive } from './utils/typeGuards';
 
 /** Функция-болванка. Ничего не делает */
 function noop(..._: unknown[]) {
@@ -416,12 +423,18 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   // Сброс осей живёт в системе выделения, она объявлена ниже.
   const resetAxesRef = useRef<() => void>();
   const handleExternalSelectionChange = useCallback(
-    (next: GridSelection) => {
-      if (next.current !== undefined) resetAxesRef.current?.();
+    (next: GridSelection, initial: boolean) => {
+      // При монтировании осей ещё нет, сбрасывать нечего
+      if (!initial) resetAxesRef.current?.();
       onSelectionSync?.(next);
     },
     [onSelectionSync],
   );
+  // Прилипшие строки для дорисовок: glide рисует их всегда, но в видимую
+  // область не включает. Читаются через функцию, чтобы не пересоздавать хуки.
+  const stickyRowsRef = useRef(restProps.stickyRows);
+  stickyRowsRef.current = restProps.stickyRows;
+  const getStickyRows = useCallback(() => stickyRowsRef.current, []);
 
   const {
     selection,
@@ -736,6 +749,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     rowsCount: rows.length,
     resolveHoverRows,
     visibleRegionRef,
+    getPinnedRows: getStickyRows,
     onHoverRowsChange: () => updateEditorBgRef.current?.(),
   });
 
@@ -827,6 +841,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     activeRows: selectionVisualState.activeRows,
     damageRows,
     visibleRowsRef: visibleRegionRef,
+    pinnedRows: restProps.stickyRows,
   });
 
   useActiveHeadersRedraw({
@@ -836,6 +851,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     visibleRegionRef,
     columnsCount: columnsForRender.length,
     freezeColumns: freezeColumns ?? 0,
+    stickyColumns: restProps.stickyColumns,
   });
 
   const getCellContentGlide = useCallback(
@@ -1249,7 +1265,13 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
           autoHeight: autoHeightReporter
             ? blockAutoHeight(
                 autoHeightReporter(row, rowInd, id, !!span),
-                spansSeveralRows(spanRows),
+                spanRows,
+                (rowIndex) => {
+                  const blockRow = rows[rowIndex];
+                  if (blockRow) {
+                    autoHeightReporter(blockRow, rowIndex, id, false).forget();
+                  }
+                },
               )
             : undefined,
           stickyContent:
