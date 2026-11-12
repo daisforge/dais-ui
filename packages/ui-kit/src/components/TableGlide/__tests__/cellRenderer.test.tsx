@@ -149,7 +149,7 @@ describe('glideCellRenderer: высота для rowHeight auto', () => {
         ctxs: {},
       } as unknown as CellInfo<ObjectForExtending, unknown>,
       options: { data: undefined },
-      autoHeight: { needsHeight: () => needsHeight, report },
+      autoHeight: { needsHeight: () => needsHeight, report, forget: () => {} },
     });
     ((cell as CanvasCell).data as CanvasCellData).render(
       createCtx().ctx,

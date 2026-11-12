@@ -212,6 +212,9 @@ export class AutoRowHeightStore<R extends object> {
         }
         this.markPending(row, rowIndex);
       },
+      forget: () => {
+        if (this.cells.forget(row, columnId)) this.markPending(row, rowIndex);
+      },
     };
   }
 

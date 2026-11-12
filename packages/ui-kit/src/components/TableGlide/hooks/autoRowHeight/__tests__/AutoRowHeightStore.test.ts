@@ -279,6 +279,26 @@ describe('AutoRowHeightStore', () => {
     expect(store.heightAt(rows, 3)).toBe(80);
   });
 
+  it('ячейка вошла в блок по строкам: прежний замер забывается, строка пересчитывается', () => {
+    const { store, rows, report, onChange, endFrame } = setup();
+    report(0, 'a', 80);
+    report(0, 'b', 30);
+    expect(store.heightAt(rows, 0)).toBe(80);
+    onChange.mockClear();
+
+    store.reporter(rows[0]!, 0, 'a', false).forget();
+    endFrame();
+
+    expect(store.heightAt(rows, 0)).toBe(30);
+    expect(onChange).toHaveBeenLastCalledWith([{ rowIndex: 0, delta: -50 }]);
+
+    // Повторный вызов без замера ничего не меняет и коммита не даёт
+    onChange.mockClear();
+    store.reporter(rows[0]!, 0, 'a', false).forget();
+    endFrame();
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
   it('блок на несколько колонок хранится со своей шириной', () => {
     const { store, rows, report } = setup();
     report(0, 'a', 40, 100);

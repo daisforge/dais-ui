@@ -70,6 +70,20 @@ export class ColumnHeights {
     return resized;
   }
 
+  /**
+   * Забывает высоту ячейки: она вошла в блок по строкам и высоту больше не сообщает,
+   * а прежний замер иначе держал бы строку высокой навсегда.
+   * @returns true — замер был и удалён
+   */
+  forget(row: object, columnId: string): boolean {
+    const column = this.columns.get(columnId);
+    if (!column) return false;
+    const had = column.cells.delete(row);
+    const hadSpan = column.spans.delete(row);
+    column.fresh.delete(row);
+    return had || hadSpan;
+  }
+
   /** Наибольшая известная высота ячеек строки в колонках `columnIds` */
   maxHeight(row: object, columnIds: readonly string[]): number {
     return columnIds.reduce((max, id) => {

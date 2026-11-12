@@ -37,6 +37,8 @@ const CELL_EDGE_INSET = 1;
 export interface CellHeightReporter {
   needsHeight: (width: number) => boolean;
   report: (width: number, height: number) => void;
+  /** Ячейка больше высоту не сообщает (вошла в блок по строкам): прежний замер забыть */
+  forget: () => void;
 }
 
 interface CanvasCellCacheEntry {

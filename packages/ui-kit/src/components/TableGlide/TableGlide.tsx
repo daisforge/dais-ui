@@ -22,7 +22,7 @@ import {
 } from 'react';
 import { createPortal } from 'react-dom';
 
-import { glideCellRenderer } from './cellRenderer';
+import { type CellHeightReporter, glideCellRenderer } from './cellRenderer';
 import {
   DEFAULT_HEADER_HEIGHT,
   DEFAULT_SPAN_VERTICAL_ALIGN,
@@ -103,6 +103,16 @@ import {
   handleGroupHeaderClick,
 } from './utils/groupHeaderClick';
 import { getRowSpan, spansSeveralRows } from './utils/getRowSpan';
+
+/** Ячейка блока по строкам высоту не сообщает, а её прежний замер забывается */
+const blockAutoHeight = (
+  reporter: CellHeightReporter,
+  isRowBlock: boolean,
+): CellHeightReporter | undefined => {
+  if (!isRowBlock) return reporter;
+  reporter.forget();
+  return undefined;
+};
 import { GroupHeaderParts } from './utils/groupHeaderParts';
 import {
   isBlockCut,
@@ -1127,11 +1137,15 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
             getPortalEventTarget: () => portalEventTargetRef?.current ?? null,
             refTable,
           },
-          // Блок на несколько строк высоту строки не растит — и отступа не получает
-          autoHeight:
-            autoHeightReporter && !spansSeveralRows(spanRows)
-              ? autoHeightReporter(row, rowInd, id, !!span)
-              : undefined,
+          // Блок на несколько строк высоту строки не растит — и отступа не получает.
+          // Прежний замер обычной ячейки, попавшей в блок, забываем, иначе он
+          // держал бы строку высокой.
+          autoHeight: autoHeightReporter
+            ? blockAutoHeight(
+                autoHeightReporter(row, rowInd, id, !!span),
+                spansSeveralRows(spanRows),
+              )
+            : undefined,
           stickyContent:
             spanRows && stickyBlockKey !== undefined
               ? {
