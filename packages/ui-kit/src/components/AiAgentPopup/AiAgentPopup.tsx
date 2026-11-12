@@ -11,7 +11,7 @@ import {
 } from './AiAgentPopup.constants';
 import { StyledPopup } from './AiAgentPopup.styled';
 import type { AiAgentPopupProps } from './AiAgentPopup.types';
-import { inflateDragBoundary } from './AiAgentPopup.utils';
+import { inflateDragBoundary, isLeftPanelSection } from './AiAgentPopup.utils';
 import { AiAgentSurface } from './AiAgentSurface';
 import { useDrag } from './hooks/useDrag';
 import { usePopupPosition } from './hooks/usePopupPosition';
@@ -80,7 +80,9 @@ export const AiAgentPopup = forwardRef<HTMLDivElement, AiAgentPopupProps>(
     const isSectionOpen = Boolean(
       leftPanel &&
         sectionKey != null &&
-        leftPanel.items.some((item) => item.key === sectionKey),
+        leftPanel.items.some(
+          (item) => isLeftPanelSection(item) && item.key === sectionKey,
+        ),
     );
 
     const handleSectionChange = useCallback(

@@ -18,6 +18,9 @@ import {
   IconMessageAddOutline,
   IconSearchAIOutline,
   IconSendOutline,
+  IconSettingsOutline,
+  IconStar,
+  IconTrashOutline,
 } from '@ui-kit/icons';
 import {
   backgroundPrimary,
@@ -56,6 +59,9 @@ import {
   IconMessageAddOutline,
   IconSearchAIOutline,
   IconSendOutline,
+  IconSettingsOutline,
+  IconStar,
+  IconTrashOutline,
 } from '@daisforge/ui/icons';
 
 // Весь контент окна на стороне потребителя, ниже один из вариантов сборки.
@@ -214,8 +220,9 @@ const sectionBodyStyle = {
 };
 
 
-// Разделы левой панели окна: иконка в полосе, заголовок и контент раздела
-const leftPanelItems = [
+// Пункты левой панели: разделы сверху, выключенный раздел, снизу раздел
+// настроек и кнопка-действие без раздела (только onClick)
+const getLeftPanelItems = (onClearChat) => [
   {
     key: 'history',
     icon: <IconHistory size="s" />,
@@ -246,6 +253,33 @@ const leftPanelItems = [
         <Typography variant="BodyS">Сегодня: созвон в 15:00</Typography>
       </div>
     ),
+  },  {
+    key: 'favorites',
+    icon: <IconStar size="s" />,
+    title: 'Избранное',
+    disabled: true,
+    content: (
+      <div style={sectionBodyStyle}>
+        <Typography variant="BodyS">Избранных ответов пока нет</Typography>
+      </div>
+    ),
+  },
+  {
+    key: 'settings',
+    icon: <IconSettingsOutline size="s" />,
+    title: 'Настройки',
+    placement: 'bottom',
+    content: (
+      <div style={sectionBodyStyle}>
+        <Typography variant="BodyS">Язык ответов: русский</Typography>
+      </div>
+    ),
+  },
+  {
+    key: 'clear',
+    icon: <IconTrashOutline size="s" />,
+    placement: 'bottom',
+    onClick: onClearChat,
   },
 ];
 `;
@@ -286,7 +320,7 @@ function Example() {
           opened={opened}
           targetRef={targetRef}
           leftPanel={{
-            items: leftPanelItems,
+            items: getLeftPanelItems(() => setMessages([])),
             activeKey: activeSection,
             onActiveKeyChange: setActiveSection,
           }}
@@ -481,7 +515,7 @@ const initialMessages: ChatMessage[] = [
     text: 'Окно не заезжает на серый сайдбар слева: левая граница перетаскивания (dragBoundary) равна его ширине.',
   },
   {
-    text: 'Иконки слева в окне открывают разделы: история, задачи, календарь. Из раздела назад к иконкам ведёт крестик.',
+    text: 'Иконки слева в окне открывают разделы: история, задачи, календарь. Из раздела назад к иконкам ведёт крестик. Избранное выключено, внизу настройки и корзина: она очищает чат без открытия раздела.',
   },
   {
     text: 'Поле ввода авторастёт: набери несколько строк через Shift+Enter, свечение поднимется вместе с верхним краем поля.',
@@ -492,7 +526,9 @@ const initialMessages: ChatMessage[] = [
   { text: 'Анализирую ваш запрос…', system: true },
 ];
 
-const leftPanelItems: AiAgentLeftPanelItem[] = [
+// Пункты левой панели: разделы сверху, выключенный раздел, снизу раздел
+// настроек и кнопка-действие без раздела (только onClick)
+const getLeftPanelItems = (onClearChat: () => void): AiAgentLeftPanelItem[] => [
   {
     key: 'history',
     icon: <IconHistory size="s" />,
@@ -526,6 +562,34 @@ const leftPanelItems: AiAgentLeftPanelItem[] = [
         <Typography variant="BodyS">Завтра: демо в 12:00</Typography>
       </div>
     ),
+  },
+  {
+    key: 'favorites',
+    icon: <IconStar size="s" />,
+    title: 'Избранное',
+    disabled: true,
+    content: (
+      <div style={sectionBodyStyle}>
+        <Typography variant="BodyS">Избранных ответов пока нет</Typography>
+      </div>
+    ),
+  },
+  {
+    key: 'settings',
+    icon: <IconSettingsOutline size="s" />,
+    title: 'Настройки',
+    placement: 'bottom',
+    content: (
+      <div style={sectionBodyStyle}>
+        <Typography variant="BodyS">Язык ответов: русский</Typography>
+      </div>
+    ),
+  },
+  {
+    key: 'clear',
+    icon: <IconTrashOutline size="s" />,
+    placement: 'bottom',
+    onClick: onClearChat,
   },
 ];
 
@@ -695,7 +759,7 @@ function AiAgentExample({
             targetRef={targetRef}
             frame={frameRef}
             leftPanel={{
-              items: leftPanelItems,
+              items: getLeftPanelItems(() => setMessages([])),
               activeKey: activeSection,
               onActiveKeyChange: setActiveSection,
             }}
