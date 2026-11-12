@@ -22,6 +22,8 @@ export interface MarkedLine {
   x: number;
   y: number;
   height: number;
+  /** Ширина места под текст: пластина за неё не выходит (текст там обрезан) */
+  maxWidth?: number;
 }
 
 /**
@@ -35,14 +37,17 @@ export function paintTextMarks(
   measureWidth: (text: string) => number,
 ): void {
   const { text, start, shownLength, x, y, height } = line;
+  const maxRight = line.maxWidth ?? Infinity;
   for (let i = 0, len = marks.length; i < len; i += 1) {
     const mark = marks[i]!;
     const from = Math.max(mark.start, start) - start;
     const to = Math.min(mark.end, start + shownLength) - start;
     if (to > from) {
-      const left = measureWidth(text.slice(0, from));
-      const right = measureWidth(text.slice(0, to));
-      batcher.fillRect(x + left, y, right - left, height, mark.color);
+      const left = Math.min(measureWidth(text.slice(0, from)), maxRight);
+      const right = Math.min(measureWidth(text.slice(0, to)), maxRight);
+      if (right > left) {
+        batcher.fillRect(x + left, y, right - left, height, mark.color);
+      }
     }
   }
 }
