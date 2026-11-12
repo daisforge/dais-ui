@@ -74,33 +74,34 @@ export const StyledBackButtonContainer = styled.div.attrs({
     `}
 `;
 
+/*
+ * Строка заголовка: слот стоит сразу за текстом заголовка, а не за более
+ * длинным подзаголовком, и выровнен по центру строки.
+ */
+export const StyledTitleRow = styled.div.attrs({
+  className: cls.titleRow as string,
+})`
+  display: flex;
+  align-items: center;
+  gap: ${() => s.x8};
+  min-width: 0;
+`;
+
 export const StyledTitle = styled.div.attrs({
   className: cls.title as string,
-})``;
+})`
+  min-width: 0;
+`;
 
 export const StyledSubtitle = styled.div.attrs({
   className: cls.subtitle as string,
 })``;
 
-/*
- * Кастомный слот правее заголовка. Отступ сверху под высоту текста H2, по тем
- * же вьюпортам, что и у кнопки назад (см. StyledBackButtonContainer).
- * Ступени включаются в адаптивном режиме (isAdaptive1280).
- */
 export const StyledTitleSlot = styled.div.attrs({
   className: cls.titleSlot as string,
-})<{ $isAdaptive1280?: boolean }>`
-  margin-top: 4px;
-  ${({ $isAdaptive1280 }) =>
-    $isAdaptive1280 &&
-    css`
-      ${media.exact(960, 1280)`
-        margin-top: 3px;
-      `}
-      ${media.exact(0, 959)`
-        margin-top: 2px;
-      `}
-    `}
+})`
+  display: flex;
+  flex-shrink: 0;
 `;
 
 export const StyledRightBlock = styled.div.attrs({
