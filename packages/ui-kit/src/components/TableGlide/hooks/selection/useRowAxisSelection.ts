@@ -1,6 +1,8 @@
 import { CompactSelection } from '@glideappsfinal/glide-data-grid';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
+const MODIFIER_KEYS = new Set(['Control', 'Meta', 'Shift', 'Alt']);
+
 /**
  * Ось выделения СТРОК по клику/драгу на колонке нумерации (независимая от glide).
  *
@@ -34,7 +36,10 @@ export function useRowAxisSelection() {
   // Признак «изменение выделения вызвано кликом мыши» (а не стрелками) — нужен
   // для sticky-подсветки строки: true между pointerdown и pointerup.
   const pointerGestureRef = useRef(false);
-  // Жест правой кнопкой (открытие контекстного меню).
+  // Жест правой кнопкой (открытие контекстного меню). Живёт дольше pointerup:
+  // на Windows браузер шлёт contextmenu после отпускания кнопки, и glide меняет
+  // выделение, когда pointerGestureRef уже снят. Снимается следующим
+  // pointerdown или нажатием клавиши.
   const rightClickGestureRef = useRef(false);
 
   useEffect(() => {
@@ -47,11 +52,21 @@ export function useRowAxisSelection() {
     const onPointerUp = () => {
       pointerGestureRef.current = false;
     };
+    // Клавиатура это не жест мышью: признаки правой кнопки и Ctrl с прошлого
+    // клика не должны менять смысл стрелок. Сами модификаторы не считаются,
+    // иначе автоповтор зажатого Ctrl сбрасывал бы признак посреди протяжки.
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (MODIFIER_KEYS.has(event.key)) return;
+      rightClickGestureRef.current = false;
+      ctrlGestureRef.current = false;
+    };
     window.addEventListener('pointerdown', onPointerDown, true);
     window.addEventListener('pointerup', onPointerUp, true);
+    window.addEventListener('keydown', onKeyDown, true);
     return () => {
       window.removeEventListener('pointerdown', onPointerDown, true);
       window.removeEventListener('pointerup', onPointerUp, true);
+      window.removeEventListener('keydown', onKeyDown, true);
     };
   }, []);
 

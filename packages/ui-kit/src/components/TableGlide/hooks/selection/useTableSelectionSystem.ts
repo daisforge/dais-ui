@@ -204,21 +204,31 @@ export function useTableSelectionSystem<
   const handleGridSelectionWithColumnReset = useCallback(
     (raw: GridSelection) => {
       const current = raw.current;
+      // Жест мышью: между pointerdown и pointerup, а для правой кнопки и после
+      // pointerup, пока не пришёл следующий клик или клавиша (contextmenu на
+      // Windows приходит после отпускания).
+      const isMouseGesture =
+        pointerGestureRef.current || rightClickGestureRef.current;
+      // Клавиатура при выбранной строке: glide держит якорь в колонке нумерации
+      // и двигает или растит диапазон, это по-прежнему выбор строк.
+      const isRowSelectionAnchored =
+        selection.current?.cell[0] === numberingColumnIndex;
       // Выделение СТРОК по колонке нумерации. Из range glide берём строки в свой
       // selectedRows и рисуем их СВОИМ оверлеем (заливка + рамка, как у колонок).
       // Сам диапазон glide схлопываем в НУЛЕВУЮ ширину в области данных: тогда
       // glide ничего не рисует для current (ни рамки на нумерации при драге, ни
       // двойной заливки), а cell-якорь НЕ трогаем — нативный drag glide (он
       // ведётся от позиции мыши) продолжает работать.
-      // Только жест мышью: при фокусе грида без выделения glide сам ставит
-      // активную ячейку в первую колонку (у нас это нумерация) — это не выбор
-      // строки, такое выделение ниже обрезается до первой ячейки данных.
+      // Жест мышью или клавиатура при уже выбранной строке: при фокусе грида
+      // без выделения glide сам ставит активную ячейку в первую колонку (у нас
+      // это нумерация) — это не выбор строки, такое выделение ниже обрезается
+      // до первой ячейки данных.
       if (
         enableRowSelection &&
         numberingColumnIndex >= 0 &&
         current &&
         current.cell[0] === numberingColumnIndex &&
-        pointerGestureRef.current
+        (isMouseGesture || isRowSelectionAnchored)
       ) {
         const firstDataCol = leadingServiceColumnsCount;
         const startRow = current.range.y;
@@ -320,7 +330,7 @@ export function useTableSelectionSystem<
       // Без мыши (фокус грида, стрелки) активная ячейка в сервисной колонке
       // переносится на первую ячейку данных строки, а не сбрасывается.
       const next =
-        !pointerGestureRef.current &&
+        !isMouseGesture &&
         current &&
         current.cell[0] < leadingServiceColumnsCount
           ? toFirstDataCell(raw, leadingServiceColumnsCount, current.cell[1])
@@ -347,7 +357,7 @@ export function useTableSelectionSystem<
       // ТОЛЬКО на клик мышью (pointerGestureRef), чтобы навигация стрелками её
       // не двигала. Источник — строка активной (кликнутой) ячейки.
       if (highlightActiveType === 'row') {
-        if (pointerGestureRef.current && next.current) {
+        if (isMouseGesture && next.current) {
           commitActiveRow(next.current.cell[1]);
         }
       } else {

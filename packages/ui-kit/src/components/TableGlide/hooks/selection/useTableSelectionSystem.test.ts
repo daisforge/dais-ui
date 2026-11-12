@@ -269,6 +269,134 @@ describe('useTableSelectionSystem — выделение строк по нум�
   });
 });
 
+describe('useTableSelectionSystem — клавиатура и правый клик после выбора строки', () => {
+  /** Клик по нумерации строки `row`: pointerdown, выделение от glide, pointerup */
+  const clickNumbering = (
+    view: ReturnType<typeof setupWithNative>['view'],
+    row: number
+  ) => {
+    act(() => {
+      window.dispatchEvent(new MouseEvent('pointerdown', { button: 0 }));
+      view.result.current.handleGridSelectionWithColumnReset(
+        gridSel([0, row], { x: 0, y: row, width: 1, height: 1 })
+      );
+      window.dispatchEvent(new Event('pointerup'));
+    });
+  };
+
+  it('Shift+стрелка вниз после клика по нумерации растит диапазон строк', () => {
+    const { view, onSelectionEmit } = setupWithNative();
+    clickNumbering(view, 2);
+    onSelectionEmit.mockClear();
+
+    // glide держит якорь в нумерации и растит range на вторую строку
+    act(() => {
+      window.dispatchEvent(
+        new KeyboardEvent('keydown', { key: 'ArrowDown', shiftKey: true })
+      );
+      view.result.current.handleGridSelectionWithColumnReset(
+        gridSel([0, 2], { x: 1, y: 2, width: 3, height: 2 })
+      );
+    });
+
+    expect(onSelectionEmit.mock.lastCall?.[0].current.range).toEqual({
+      x: 1,
+      y: 2,
+      width: 3,
+      height: 2,
+    });
+  });
+
+  it('стрелка вниз после клика по нумерации выделяет следующую строку', () => {
+    const { view, onSelectionEmit } = setupWithNative();
+    clickNumbering(view, 2);
+    onSelectionEmit.mockClear();
+
+    act(() => {
+      window.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown' }));
+      view.result.current.handleGridSelectionWithColumnReset(
+        gridSel([0, 3], { x: 0, y: 3, width: 1, height: 1 })
+      );
+    });
+
+    expect(onSelectionEmit.mock.lastCall?.[0].current.range).toEqual({
+      x: 1,
+      y: 3,
+      width: 3,
+      height: 1,
+    });
+  });
+
+  it('правый клик по нумерации, contextmenu после pointerup (Windows): строка выделяется', () => {
+    const { view, onSelectionEmit } = setupWithNative();
+
+    act(() => {
+      window.dispatchEvent(new MouseEvent('pointerdown', { button: 2 }));
+      window.dispatchEvent(new Event('pointerup'));
+      view.result.current.handleGridSelectionWithColumnReset(
+        gridSel([0, 4], { x: 0, y: 4, width: 1, height: 1 })
+      );
+    });
+
+    expect(onSelectionEmit.mock.lastCall?.[0].current.range).toEqual({
+      x: 1,
+      y: 4,
+      width: 3,
+      height: 1,
+    });
+  });
+
+  it('правый клик внутри выделенных строк после pointerup не сужает выделение', () => {
+    const { view, onSelectionEmit } = setupWithNative();
+    act(() => {
+      window.dispatchEvent(new MouseEvent('pointerdown', { button: 0 }));
+      view.result.current.handleGridSelectionWithColumnReset(
+        gridSel([0, 0], { x: 0, y: 0, width: 1, height: 3 })
+      );
+      window.dispatchEvent(new Event('pointerup'));
+    });
+    onSelectionEmit.mockClear();
+
+    act(() => {
+      window.dispatchEvent(new MouseEvent('pointerdown', { button: 2 }));
+      window.dispatchEvent(new Event('pointerup'));
+      view.result.current.handleGridSelectionWithColumnReset(
+        gridSel([0, 1], { x: 0, y: 1, width: 1, height: 1 })
+      );
+    });
+
+    expect(onSelectionEmit).not.toHaveBeenCalled();
+  });
+
+  it('клавиша после правого клика снова считается клавиатурой: Shift+стрелка растит диапазон', () => {
+    const { view, onSelectionEmit } = setupWithNative();
+    act(() => {
+      window.dispatchEvent(new MouseEvent('pointerdown', { button: 2 }));
+      window.dispatchEvent(new Event('pointerup'));
+      view.result.current.handleGridSelectionWithColumnReset(
+        gridSel([0, 2], { x: 0, y: 2, width: 1, height: 1 })
+      );
+    });
+    onSelectionEmit.mockClear();
+
+    act(() => {
+      window.dispatchEvent(
+        new KeyboardEvent('keydown', { key: 'ArrowDown', shiftKey: true })
+      );
+      view.result.current.handleGridSelectionWithColumnReset(
+        gridSel([0, 2], { x: 1, y: 2, width: 3, height: 2 })
+      );
+    });
+
+    expect(onSelectionEmit.mock.lastCall?.[0].current.range).toEqual({
+      x: 1,
+      y: 2,
+      width: 3,
+      height: 2,
+    });
+  });
+});
+
 describe('useTableSelectionSystem — наружу одно итоговое выделение на действие', () => {
   it('Ctrl+клик по шапке → один onChange с выбранной колонкой, без промежуточного пустого', () => {
     const { view, onSelectionEmit } = setupWithNative();
