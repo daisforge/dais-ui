@@ -23,7 +23,11 @@ import {
 } from 'react';
 import { createPortal } from 'react-dom';
 
-import { type CellHeightReporter, glideCellRenderer } from './cellRenderer';
+import {
+  type CellEdgeInset,
+  type CellHeightReporter,
+  glideCellRenderer,
+} from './cellRenderer';
 import {
   DEFAULT_HEADER_HEIGHT,
   DEFAULT_SPAN_VERTICAL_ALIGN,
@@ -110,6 +114,33 @@ import {
   handleGroupHeaderClick,
 } from './utils/groupHeaderClick';
 import { getRowSpan, spansSeveralRows } from './utils/getRowSpan';
+
+/** Отступы обрезки содержимого ячейки, см. CellEdgeInset в cellRenderer */
+const cellEdgeInset = ({
+  hasLeftLine,
+  hasTopLine,
+  keepsRing,
+  isLastColumn,
+  isLastRow,
+}: {
+  hasLeftLine: boolean;
+  hasTopLine: boolean;
+  /** На краю ячейки рамка выделения или ошибки: пиксель за ней */
+  keepsRing: boolean;
+  isLastColumn: boolean;
+  isLastRow: boolean;
+}): CellEdgeInset => ({
+  left: hasLeftLine || keepsRing ? 1 : 0,
+  top: hasTopLine || keepsRing ? 1 : 0,
+  right: isLastColumn ? 1 : 0,
+  bottom: isLastRow ? 1 : 0,
+});
+
+/** Есть ли линия сетки по настройке glide: число или функция от индекса */
+const hasGridLine = (
+  border: boolean | ((index: number) => boolean) | undefined,
+  index: number,
+): boolean => (typeof border === 'function' ? border(index) : border ?? true);
 
 /** Ячейка блока по строкам высоту не сообщает, а её прежний замер забывается */
 const blockAutoHeight = (
@@ -879,6 +910,14 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
           data: '',
           themeOverride: summaryThemeOverride,
           ...(span && { span }),
+          edgeInset: cellEdgeInset({
+            hasLeftLine: true,
+            hasTopLine: true,
+            keepsRing: true,
+            isLastColumn:
+              (span ? span[1] : colInd) === columnsForRender.length - 1,
+            isLastRow: rowInd === rows.length + summaryRowsLength - 1,
+          }),
         };
 
         return applyPendingSelfEditorActivation(
@@ -1136,6 +1175,22 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         serviceHoverOverride
       );
 
+      // Где слева или сверху нет линии сетки, содержимое доходит до края ячейки.
+      // Точечные рамки ячеек (getCellBorder) по сторонам не разбираем: отступ
+      // остаётся. Линия слева от колонки это линия справа от предыдущей,
+      // у первой колонки её нет.
+      const borderPerCell = restProps.getCellBorder !== undefined;
+      const edgeInset = cellEdgeInset({
+        hasLeftLine:
+          borderPerCell ||
+          (colInd > 0 && hasGridLine(restProps.verticalBorder, colInd)),
+        hasTopLine:
+          borderPerCell || hasGridLine(restProps.horizontalBorder, rowInd),
+        keepsRing: cellInfo.active.cellActive || rowErrors !== undefined,
+        isLastColumn: blockCols[1] === columnsForRender.length - 1,
+        isLastRow: blockRows[1] === rows.length + summaryRowsLength - 1,
+      });
+
       const options = {
         data: row[id]?.toString?.() ?? 'NOT FOUND',
         ...(cellIsEditable
@@ -1184,6 +1239,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
           cellInfo: cellInfoWithThemeOverride,
           options: {
             ...options,
+            edgeInset,
             getPortalEventTarget: () => portalEventTargetRef?.current ?? null,
             refTable,
           },
@@ -1235,6 +1291,10 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       canvasCellCache,
       portalEventTargetRef,
       applyCanvasEditorActivation,
+      summaryRowsLength,
+      restProps.verticalBorder,
+      restProps.horizontalBorder,
+      restProps.getCellBorder,
     ],
   );
 
