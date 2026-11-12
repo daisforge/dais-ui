@@ -458,14 +458,17 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
 
   // Follow: перевыделяем по ключам после закрепления. Порядок колонок после
   // пина обновляется с ЛАГОМ в рендер (columnsOrder в useReorderDragable
-  // синкается эффектом), поэтому columnsLast сначала ещё старый. Применяем на
-  // КАЖДУЮ смену columnsLast, а pending гасим отложенно — таймаут сбрасывается
-  // на каждом новом columnsLast, так что реально гаснет, когда порядок устоялся
-  // (на финальном, уже переставленном, columnsLast).
+  // синкается эффектом), поэтому columnsLast сначала ещё старый. Таймаут
+  // сбрасывается на каждом новом columnsLast и срабатывает, когда порядок
+  // устоялся: тогда выделение применяется один раз по финальному порядку и
+  // наружу уходит один onChange с новыми индексами, а не два (сначала со
+  // старыми).
   useEffect(() => {
     if (!pendingColumnSelectionKeys) return undefined;
-    selectColumnsByKeys(pendingColumnSelectionKeys);
-    const timer = setTimeout(() => onColumnSelectionApplied?.(), 0);
+    const timer = setTimeout(() => {
+      selectColumnsByKeys(pendingColumnSelectionKeys);
+      onColumnSelectionApplied?.();
+    }, 0);
     return () => clearTimeout(timer);
   }, [
     pendingColumnSelectionKeys,
