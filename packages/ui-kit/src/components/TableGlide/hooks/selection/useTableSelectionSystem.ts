@@ -73,6 +73,12 @@ const toFirstDataCell = (
   },
 });
 
+/** Ни активной ячейки, ни выбранных glide строк и колонок */
+const isEmptySelection = (selection: GridSelection): boolean =>
+  selection.current === undefined &&
+  selection.rows.length === 0 &&
+  selection.columns.length === 0;
+
 /** Без нативного диапазона: несмежные колонки/строки (их рисует оверлей) или пусто */
 const axisSelection = ({
   columns = CompactSelection.empty(),
@@ -201,9 +207,21 @@ export function useTableSelectionSystem<
     [leadingServiceColumnsCount]
   );
 
+  // Glide сбрасывает выделение (Escape, клик по пустой области) двумя вызовами
+  // подряд: сначала пустое выделение в onGridSelectionChange, потом
+  // onSelectionCleared. Наружу должен уйти один onChange: если первый вызов
+  // уже отдал пустое выделение, второй только сбрасывает оси.
+  const emptyEmittedRef = useRef(false);
+
   const handleGridSelectionWithColumnReset = useCallback(
     (raw: GridSelection) => {
       const current = raw.current;
+      emptyEmittedRef.current = false;
+      if (isEmptySelection(raw)) {
+        // Пустое поверх пустого: нечего отдавать, оси сбросит onSelectionCleared.
+        if (isEmptySelection(selection)) return;
+        emptyEmittedRef.current = true;
+      }
       // Жест мышью: между pointerdown и pointerup, а для правой кнопки и после
       // pointerup, пока не пришёл следующий клик или клавиша (contextmenu на
       // Windows приходит после отпускания).
@@ -326,6 +344,21 @@ export function useTableSelectionSystem<
         return;
       }
 
+      // Правый клик по ячейке внутри Ctrl-выбранных строк или колонок: в
+      // выделении glide этих строк и колонок нет, и он ставит одиночную
+      // ячейку. Набор оставляем, меню относится к нему, как при обычном
+      // диапазоне.
+      if (
+        rightClickGestureRef.current &&
+        current &&
+        current.range.width === 1 &&
+        current.range.height === 1 &&
+        (selectedRowsRef.current.hasIndex(current.cell[1]) ||
+          selectedColumnSet.has(current.cell[0]))
+      ) {
+        return;
+      }
+
       // Иначе: исключаем сервисные колонки + сбрасываем выделение колонок/строк.
       // Без мыши (фокус грида, стрелки) активная ячейка в сервисной колонке
       // переносится на первую ячейку данных строки, а не сбрасывается.
@@ -380,6 +413,7 @@ export function useTableSelectionSystem<
       pointerGestureRef,
       rightClickGestureRef,
       selectedRowsRef,
+      selectedColumnSet,
       setSelectedColumns,
       setSelectedRows,
       setIsNativeColumnSelection,
@@ -387,12 +421,24 @@ export function useTableSelectionSystem<
   );
 
   const handleSelectionClearedWithColumns = useCallback(() => {
+    // Пустое выделение уже ушло наружу первым вызовом glide, или сбрасывать
+    // нечего (ни нативного выделения, ни своих колонок и строк): тогда наружу
+    // ничего не отдаём, иначе Escape давал два onChange или onChange без выделения.
+    const alreadyEmitted = emptyEmittedRef.current;
+    emptyEmittedRef.current = false;
+    const nothingSelected =
+      isEmptySelection(selection) &&
+      selectedColumns.length === 0 &&
+      selectedRowsRef.current.length === 0;
     setSelectedColumns(CompactSelection.empty());
     setSelectedRows(CompactSelection.empty());
     commitActiveRow(undefined);
     setIsNativeColumnSelection(false);
-    handleSelectionCleared();
+    if (!alreadyEmitted && !nothingSelected) handleSelectionCleared();
   }, [
+    selection,
+    selectedColumns,
+    selectedRowsRef,
     handleSelectionCleared,
     commitActiveRow,
     setSelectedColumns,
