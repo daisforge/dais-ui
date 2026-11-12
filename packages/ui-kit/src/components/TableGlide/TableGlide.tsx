@@ -374,6 +374,19 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     onSelectionEmit,
   });
 
+  // div-обертка над Glide для DOM-поиска элементов
+  const containerRefInternal = useRef<HTMLDivElement>(null);
+
+  // Порядок важен: сначала якорь сдвигает прокрутку на рост строк выше него,
+  // потом докрутка к активной ячейке. Иначе докрутка видела бы ячейку в кадре,
+  // а якорь после неё уводил бы верх строки за край на величину роста.
+  useScrollAnchor({
+    enabled: rowHeight === 'auto',
+    containerRef: containerRefInternal,
+    rowHeights: rowHeightGlide,
+    takeShift: takeAnchorShift,
+  });
+
   // Прыжок с клавиатуры через ещё не измеренные строки: докручиваем к ячейке,
   // когда строки дорастут до своей высоты
   useKeepCellInView({
@@ -1347,15 +1360,6 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       )
     );
   }, [groupHeaderParts, columnsForRender]);
-  // div-обертка над Glide для DOM-поиска элементов
-  const containerRefInternal = useRef<HTMLDivElement>(null);
-
-  useScrollAnchor({
-    enabled: rowHeight === 'auto',
-    containerRef: containerRefInternal,
-    rowHeights: rowHeightGlide,
-    takeShift: takeAnchorShift,
-  });
   const mergedContainerRef = useMemo(
     () => mergeRefs(containerRefInternal, containerRefExternal),
     [containerRefExternal],
