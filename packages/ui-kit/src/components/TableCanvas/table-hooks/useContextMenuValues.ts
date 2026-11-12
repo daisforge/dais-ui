@@ -172,8 +172,6 @@ export const useContextMenuValues = <
       if (!onHeaderContextMenuDropdown) return;
 
       const params = { column, refTable, ctxs };
-      const itemsOptions = onHeaderContextMenuDropdown.getDropdownItems(params);
-
       const position = {
         x: event.bounds.x + event.localEventX,
         y: event.bounds.y + event.localEventY,
@@ -183,14 +181,21 @@ export const useContextMenuValues = <
         data: { header: { column, ctxs } },
       };
 
+      // Async-режим: onOpen на каждое открытие, даже если пункты уже есть,
+      // иначе потребитель не узнает об открытии и покажет загруженные ранее.
+      // onOpen раньше open: меню отрисуется уже со сброшенным состоянием
+      // потребителя, даже если React не объединит обновления в одну отрисовку
+      if (onHeaderContextMenuDropdown.onOpen) {
+        event.preventDefault();
+        onHeaderContextMenuDropdown.onOpen(params);
+        open({ position, asyncParams: { type: 'header', params }, context });
+        return;
+      }
+
+      const itemsOptions = onHeaderContextMenuDropdown.getDropdownItems(params);
       if (itemsOptions && itemsOptions.length > 0) {
         event.preventDefault();
         open({ position, items: itemsOptions, context });
-      } else if (onHeaderContextMenuDropdown.onOpen) {
-        // Async-режим: открываем даже при пустых items, потребитель грузит сам
-        event.preventDefault();
-        open({ position, asyncParams: { type: 'header', params }, context });
-        onHeaderContextMenuDropdown.onOpen(params);
       }
     },
     [onHeaderContextMenu, onHeaderContextMenuDropdown, open],
@@ -213,8 +218,6 @@ export const useContextMenuValues = <
       if (!onCellContextMenuDropdown) return;
 
       const params = { row, column, refTable, ctxs };
-      const itemsOptions = onCellContextMenuDropdown.getDropdownItems(params);
-
       const position = {
         x: event.bounds.x + event.localEventX,
         y: event.bounds.y + event.localEventY,
@@ -224,14 +227,21 @@ export const useContextMenuValues = <
         data: { cell: { row, column, ctxs } },
       };
 
+      // Async-режим: onOpen на каждое открытие, даже если пункты уже есть,
+      // иначе потребитель не узнает об открытии и покажет загруженные ранее.
+      // onOpen раньше open: меню отрисуется уже со сброшенным состоянием
+      // потребителя, даже если React не объединит обновления в одну отрисовку
+      if (onCellContextMenuDropdown.onOpen) {
+        event.preventDefault();
+        onCellContextMenuDropdown.onOpen(params);
+        open({ position, asyncParams: { type: 'cell', params }, context });
+        return;
+      }
+
+      const itemsOptions = onCellContextMenuDropdown.getDropdownItems(params);
       if (itemsOptions && itemsOptions.length > 0) {
         event.preventDefault();
         open({ position, items: itemsOptions, context });
-      } else if (onCellContextMenuDropdown.onOpen) {
-        // Async-режим: открываем даже при пустых items, потребитель грузит сам
-        event.preventDefault();
-        open({ position, asyncParams: { type: 'cell', params }, context });
-        onCellContextMenuDropdown.onOpen(params);
       }
     },
     [onCellContextMenu, onCellContextMenuDropdown, open],
@@ -239,8 +249,14 @@ export const useContextMenuValues = <
 
   // Извлекаем пропсы для Dropdown из конфигов контекстного меню
   // (всё кроме type, getDropdownItems, onItemSelect — они обрабатываются отдельно)
+  const openedMenuType = state.context?.type;
   const dropdownProps = useMemo(() => {
-    const source = onCellContextMenuDropdown ?? onHeaderContextMenuDropdown;
+    // Настройки вида берём у открытого меню: если заданы оба, меню заголовка
+    // не должно получать ширину, renderItem и beforeList меню ячейки
+    const source =
+      openedMenuType === 'header'
+        ? onHeaderContextMenuDropdown
+        : onCellContextMenuDropdown ?? onHeaderContextMenuDropdown;
     if (!source) return {};
     const {
       type: _type,
@@ -250,7 +266,7 @@ export const useContextMenuValues = <
       ...rest
     } = source;
     return rest;
-  }, [onCellContextMenuDropdown, onHeaderContextMenuDropdown]);
+  }, [openedMenuType, onCellContextMenuDropdown, onHeaderContextMenuDropdown]);
 
   // items в async-режиме перечитываются реактивно из getDropdownItems (по
   // сохранённым asyncParams) на каждый рендер, пока меню открыто; в обычном
