@@ -102,6 +102,24 @@ import { TypeSourceViewer } from '@df-storybook/utils/TypeSourceViewer';
   filePath="packages/ui-kit/src/components/AiAgentPopup/AiAgentPopup.types.ts"
   typeName="AiAgentLeftPanelItem"
 />
-> Один раздел левой панели: `icon` в полосе, `title` и `content` в раскрытом разделе.
+> Пункт левой панели. Раздел: `icon` в полосе, `title` и `content` в раскрытом разделе.
 Шапку с иконкой, заголовком и крестиком компонент рисует сам; наполнение раздела
-под шапкой задаёт потребитель.
+под шапкой задаёт потребитель. Кнопка-действие: `icon` и `onClick` без `content`,
+раздел не открывается. У обоих видов есть `placement` (сверху или снизу полосы) и
+`disabled`.
+
+## AiAgentLeftPanelSectionItem
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/AiAgentPopup/AiAgentPopup.types.ts"
+  typeName="AiAgentLeftPanelSectionItem"
+/>
+
+## AiAgentLeftPanelActionItem
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/AiAgentPopup/AiAgentPopup.types.ts"
+  typeName="AiAgentLeftPanelActionItem"
+/>

@@ -6,6 +6,8 @@ import {
   FALLBACK_POSITION_INDENT,
 } from './AiAgentPopup.constants';
 import type {
+  AiAgentLeftPanelItem,
+  AiAgentLeftPanelSectionItem,
   AiAgentPopupDragBoundary,
   AiAgentPopupFrame,
   AiAgentPopupFrameMetrics,
@@ -219,3 +221,11 @@ export const buildResizableConfig = (
     minWidth: DEFAULT_MIN_WIDTH,
     minHeight: DEFAULT_MIN_HEIGHT,
   });
+
+/**
+ * Пункт левой панели открывает раздел, только если у него есть content.
+ * Пункт без content это кнопка-действие с onClick.
+ */
+export const isLeftPanelSection = (
+  item: AiAgentLeftPanelItem,
+): item is AiAgentLeftPanelSectionItem => item.content !== undefined;

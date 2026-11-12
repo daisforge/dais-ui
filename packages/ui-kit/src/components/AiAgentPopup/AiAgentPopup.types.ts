@@ -4,6 +4,7 @@ import type {
   ComponentProps,
   Dispatch,
   HTMLAttributes,
+  MouseEvent,
   ReactElement,
   ReactNode,
   RefObject,
@@ -76,12 +77,13 @@ export type AiAgentPopupResizeCorner =
   | 'bottom-right';
 
 /**
- * Один раздел левой панели: иконка в полосе (свёрнутое состояние) и контент,
- * который раскрывается при клике по ней.
+ * Группа кнопок в полосе левой панели: сверху или прижатые к нижнему краю.
  */
-export type AiAgentLeftPanelItem = {
+export type AiAgentLeftPanelItemPlacement = 'top' | 'bottom';
+
+type AiAgentLeftPanelItemBase = {
   /**
-   * Уникальный ключ раздела: по нему определяется открытый раздел
+   * Уникальный ключ пункта. У раздела по нему определяется открытый раздел
    * (activeKey) и приходит смена в onActiveKeyChange.
    */
   key: string;
@@ -89,6 +91,25 @@ export type AiAgentLeftPanelItem = {
    * Иконка в полосе (свёрнутое состояние левой панели).
    */
   icon: ReactNode;
+  /**
+   * Группа кнопки в полосе. Кнопки bottom прижаты к нижнему краю панели,
+   * порядок внутри группы как в items.
+   * @default top
+   */
+  placement?: AiAgentLeftPanelItemPlacement;
+  /**
+   * Выключить кнопку в полосе. Уже открытый раздел остаётся открытым
+   * и закрывается крестиком.
+   * @default false
+   */
+  disabled?: boolean;
+};
+
+/**
+ * Пункт-раздел: иконка в полосе и контент, который раскрывается при клике
+ * по ней.
+ */
+export type AiAgentLeftPanelSectionItem = AiAgentLeftPanelItemBase & {
   /**
    * Иконка слева в шапке открытого раздела, компонент ставит её по центру
    * квадрата 40x40. Если не задана, берётся icon.
@@ -103,7 +124,32 @@ export type AiAgentLeftPanelItem = {
    * полностью на стороне потребителя.
    */
   content: ReactNode;
+  /**
+   * Клик по кнопке раздела. Вызывается перед открытием раздела.
+   */
+  onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
 };
+
+/**
+ * Пункт-действие: кнопка в полосе без раздела. Клик вызывает onClick,
+ * раздел не открывается, onActiveKeyChange не вызывается.
+ */
+export type AiAgentLeftPanelActionItem = AiAgentLeftPanelItemBase & {
+  /**
+   * Клик по кнопке.
+   */
+  onClick: (event: MouseEvent<HTMLButtonElement>) => void;
+  titleIcon?: never;
+  title?: never;
+  content?: never;
+};
+
+/**
+ * Пункт левой панели: раздел (есть content) или действие (только onClick).
+ */
+export type AiAgentLeftPanelItem =
+  | AiAgentLeftPanelSectionItem
+  | AiAgentLeftPanelActionItem;
 
 /**
  * Левая панель окна: узкая полоса иконок, при клике по иконке раскрывается
@@ -113,7 +159,7 @@ export type AiAgentLeftPanelItem = {
  */
 export type AiAgentLeftPanelProps = {
   /**
-   * Разделы панели: иконки в полосе и их контент.
+   * Пункты панели: разделы с контентом и кнопки-действия с onClick.
    */
   items: AiAgentLeftPanelItem[];
   /**
@@ -128,7 +174,7 @@ export type AiAgentLeftPanelProps = {
   defaultActiveKey?: string | null;
   /**
    * Смена открытого раздела: ключ раздела при клике по иконке, null
-   * при закрытии крестиком.
+   * при закрытии крестиком. Клик по пункту-действию сюда не приходит.
    */
   onActiveKeyChange?: (key: string | null) => void;
 };
