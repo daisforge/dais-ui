@@ -39,7 +39,10 @@ export class ColumnHeights {
   /**
    * Запоминает высоту ячейки. Замер другого вида (блок ↔ обычная ячейка) для этой строки
    * отбрасывается: ячейку объединили или разъединили, прежняя высота неактуальна.
-   * @returns true — у колонки новая ширина, прежние высоты её ячеек отброшены
+   * При новой ширине колонки прежние высоты её ячеек не стираются, а помечаются
+   * устаревшими: строка за экраном держит прежнюю высоту, пока её не перемерят,
+   * иначе при возврате к ней высота сначала падала бы до остальных колонок.
+   * @returns true — у колонки новая ширина, её ячейки ждут перемера
    */
   set(
     row: object,
@@ -49,8 +52,8 @@ export class ColumnHeights {
     height: number,
   ): boolean {
     const column = this.entry(columnId);
-    column.fresh.add(row);
     if (isSpan) {
+      column.fresh.add(row);
       column.cells.delete(row);
       column.spans.set(row, { width, height });
       return false;
@@ -60,8 +63,9 @@ export class ColumnHeights {
     const resized = column.width !== undefined && column.width !== width;
     if (column.width !== width) {
       column.width = width;
-      column.cells = new WeakMap();
+      column.fresh = new WeakSet();
     }
+    column.fresh.add(row);
     column.cells.set(row, height);
     return resized;
   }

@@ -239,6 +239,28 @@ describe('AutoRowHeightStore', () => {
     expect(delta).toBe(48 - 144);
   });
 
+  it('колонку расширили, пока высокая строка за экраном: до перемера строка держит прежнюю высоту без onChange', () => {
+    const { store, rows, report, onChange, endFrame } = setup(100);
+    store.setVisibleRows(65, 75);
+    report(70, 'a', 144, 140);
+    report(70, 'b', 20);
+    expect(store.heightAt(rows, 70)).toBe(144);
+
+    store.setVisibleRows(0, 10);
+    report(5, 'a', 30, 640);
+    report(5, 'b', 20);
+    onChange.mockClear();
+
+    store.setVisibleRows(65, 75);
+    endFrame();
+
+    expect(onChange).not.toHaveBeenCalled();
+    expect(store.heightAt(rows, 70)).toBe(144);
+    expect(store.reporter(rows[70]!, 70, 'a', false).needsHeight(640)).toBe(
+      true,
+    );
+  });
+
   it('блок на несколько колонок хранится со своей шириной', () => {
     const { store, rows, report } = setup();
     report(0, 'a', 40, 100);
