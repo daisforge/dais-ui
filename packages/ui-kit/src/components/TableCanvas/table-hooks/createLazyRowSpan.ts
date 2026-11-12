@@ -42,6 +42,26 @@ class SpanCache {
   }
 }
 
+/**
+ * Ответ резолвера приводится к контракту: блок это хотя бы две строки внутри таблицы,
+ * и своя строка должна в него входить. Блок из одной строки, как и у mergeByCellValues,
+ * блоком не считается: иначе одиночная ячейка шла бы по пути объединённой (выравнивание
+ * блока, уголок редактора). Ответ без своей строки считается ошибкой резолвера и
+ * отбрасывается: по нему ячейка переадресовывалась бы на чужую строку, а при цикле
+ * ответов отрисовка уходила бы в бесконечную рекурсию.
+ */
+const normalizeSpan = (
+  span: Block | null,
+  rowInd: number,
+  rowsCount: number,
+): Block | null => {
+  if (!span) return null;
+  const from = Math.max(span[0], 0);
+  const to = Math.min(span[1], rowsCount - 1);
+  if (to <= from || rowInd < from || rowInd > to) return null;
+  return from === span[0] && to === span[1] ? span : [from, to];
+};
+
 // rowSpan колонки из mergeCells.lazyRowSpan. Строки не из отображаемых (скелетоны) не сливаются.
 // Glide спрашивает rowSpan на каждую отрисовку видимой ячейки, поэтому ответы кешируются
 // для каждого массива отображаемых строк.
@@ -65,7 +85,11 @@ export function createLazyRowSpan<R extends ObjectForExtending>(
     const cached = cache.get(rowInd);
     if (cached !== undefined) return cached;
 
-    const span = lazyRowSpan(row, colKey, rowInd, { rows });
+    const span = normalizeSpan(
+      lazyRowSpan(row, colKey, rowInd, { rows }),
+      rowInd,
+      rows.length,
+    );
     cache.set(rowInd, span);
     return span;
   };
