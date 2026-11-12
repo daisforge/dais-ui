@@ -20,6 +20,16 @@ import { ObjectForExtending, TableConfig } from '../types';
  */
 const PARENT_ROW_KEY = '__parentRowKey';
 
+/**
+ * Копии дочерних строк по исходному объекту и месту в дереве. Раскрытие или
+ * сворачивание любой строки пересобирает плоский список, и без кеша каждая
+ * дочерняя строка была бы новым объектом. По объекту строки ключуются кеши
+ * высот (rowHeight 'auto'), отрисованных ячеек и блоков: новый объект для них
+ * это новая строка, замеры терялись, таблица прыгала. Корневые строки не
+ * копируются вовсе: служебных ключей у них нет.
+ */
+type RowCopyCache<RowType> = WeakMap<object, Map<string, RowType>>;
+
 const getRecursivelyRowAndOpenedSubRows = <
   RowType,
   RowIdType extends string | number,
@@ -31,9 +41,11 @@ const getRecursivelyRowAndOpenedSubRows = <
   getRowIsExpanded,
   rowKeyGetter,
   getSubRows,
+  copyCache,
 }: {
   r: RowType;
   getRowIsExpanded: (key: string | number) => boolean;
+  copyCache: RowCopyCache<RowType>;
   rowKeyGetter: ((row: RowType) => RowIdType) | undefined;
   getSubRows: ((row: RowType) => RowType[] | undefined) | undefined;
   parentId?: string;
@@ -46,24 +58,8 @@ const getRecursivelyRowAndOpenedSubRows = <
   const hasChildren = !!subRows?.length;
 
   const rowAndAllOpenedSubRows = [
-    {
-      ...r,
-      ...(parentId && {
-        [TREE_ID_KEY]: `${parentId}`,
-      }),
-      // Записываем ключ родителя для вычисления parentKey в allRowsMap.
-      // Для root-строк parentRowKey === undefined → поле не добавляется.
-      ...(parentRowKey != null && {
-        [PARENT_ROW_KEY]: parentRowKey,
-      }),
-      // Кеш уровня вложенности. Записываем только для subRows (lvl > 0),
-      // чтобы root-строки не мутировались. getTreeIdAndLvlOfRow для root
-      // возвращает 0 без split, поэтому кеш на root не нужен.
-      ...(lvl > 0 && {
-        [TREE_LVL_KEY]: lvl,
-      }),
-    },
-  ] as RowType[];
+    lvl === 0 ? r : copyOfSubRow(r, copyCache, parentId, parentRowKey, lvl),
+  ];
 
   if (!hasChildren) {
     return rowAndAllOpenedSubRows;
@@ -90,6 +86,7 @@ const getRecursivelyRowAndOpenedSubRows = <
       getRowIsExpanded,
       rowKeyGetter,
       getSubRows,
+      copyCache,
       // keyOfRow текущей строки = parentRowKey для дочерних (любая глубина)
       parentRowKey: keyOfRow,
       lvl: lvl + 1,
@@ -101,6 +98,40 @@ const getRecursivelyRowAndOpenedSubRows = <
   });
 
   return rowAndAllOpenedSubRows;
+};
+
+const copyOfSubRow = <RowType, RowIdType extends string | number>(
+  r: RowType,
+  copyCache: RowCopyCache<RowType>,
+  parentId: string | undefined,
+  parentRowKey: RowIdType | undefined,
+  lvl: number,
+): RowType => {
+  const place = `${parentId ?? ''}|${parentRowKey ?? ''}|${lvl}`;
+  const copies = copyCache.get(r as object);
+  const cached = copies?.get(place);
+  if (cached) {
+    return cached;
+  }
+  const copy = {
+    ...r,
+    ...(parentId && {
+      [TREE_ID_KEY]: `${parentId}`,
+    }),
+    // Ключ родителя для вычисления parentKey в allRowsMap.
+    ...(parentRowKey != null && {
+      [PARENT_ROW_KEY]: parentRowKey,
+    }),
+    // Кеш уровня вложенности. getTreeIdAndLvlOfRow для корневой строки
+    // возвращает 0 без split, поэтому у корня его нет.
+    [TREE_LVL_KEY]: lvl,
+  } as RowType;
+  if (copies) {
+    copies.set(place, copy);
+  } else {
+    copyCache.set(r as object, new Map([[place, copy]]));
+  }
+  return copy;
 };
 
 export const useFlattenedRows = <
@@ -136,6 +167,8 @@ export const useFlattenedRows = <
 
   const tableConfigSubRowsBoolean = !!tableConfig.subRows;
 
+  const [copyCache] = useState<RowCopyCache<RowType>>(() => new WeakMap());
+
   // subRows со слиянием: дерево разворачивается в плоский список листьев, а
   // колонки-предки рисуются объединёнными ячейками (чекбокс и номер — на весь
   // блок). Раскрытие по expandedRowsIds тут не используется.
@@ -170,6 +203,7 @@ export const useFlattenedRows = <
         getRowIsExpanded: () => true,
         rowKeyGetter,
         getSubRows,
+        copyCache,
       });
 
       rowAndAllOpenedSubRows.forEach((r) => {
@@ -255,6 +289,7 @@ export const useFlattenedRows = <
         },
         rowKeyGetter,
         getSubRows,
+        copyCache,
       });
 
       acc.push(...rowAndAllOpenedSubRows);
