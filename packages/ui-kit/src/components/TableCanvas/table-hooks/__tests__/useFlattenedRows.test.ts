@@ -92,3 +92,33 @@ describe('useFlattenedRows: объекты строк при раскрытии'
     expect(auto.result.current.heightOf(3)).toBe(120);
   });
 });
+
+describe('useFlattenedRows: смена поля дочерней строки на месте', () => {
+  it('новый массив строк отдаёт копию с новым значением', () => {
+    const child = { id: 10, text: 'b1' };
+    const rows: Row[] = [{ id: 1, text: 'b', children: [child] }];
+    const { result, rerender } = renderHook(
+      ({ data }: { data: Row[] }) =>
+        useFlattenedRows<never, number, Row>({
+          rows: data,
+          tableConfig,
+          groupedCols: undefined as never,
+        }),
+      { initialProps: { data: rows } },
+    );
+    act(() => result.current.expandedRowsIdsStateAndSetter[1](new Set([1])));
+    const before = result.current.flattenedRows[1]!;
+    expect(before.text).toBe('b1');
+
+    child.text = 'b1 новое';
+    rerender({ data: [...rows] });
+
+    const after = result.current.flattenedRows[1]!;
+    expect(after.text).toBe('b1 новое');
+    expect(after).not.toBe(before);
+
+    // Без изменений копия та же
+    rerender({ data: [...rows] });
+    expect(result.current.flattenedRows[1]).toBe(after);
+  });
+});

@@ -26,7 +26,8 @@ const PARENT_ROW_KEY = '__parentRowKey';
  * дочерняя строка была бы новым объектом. По объекту строки ключуются кеши
  * высот (rowHeight 'auto'), отрисованных ячеек и блоков: новый объект для них
  * это новая строка, замеры терялись, таблица прыгала. Корневые строки не
- * копируются вовсе: служебных ключей у них нет.
+ * копируются вовсе: служебных ключей у них нет. Копия отдаётся, пока поля
+ * исходной строки те же (поверхностная сверка).
  */
 type RowCopyCache<RowType> = WeakMap<object, Map<string, RowType>>;
 
@@ -100,6 +101,14 @@ const getRecursivelyRowAndOpenedSubRows = <
   return rowAndAllOpenedSubRows;
 };
 
+const sameFields = (source: object, copy: object): boolean => {
+  const sourceRecord = source as Record<string, unknown>;
+  const copyRecord = copy as Record<string, unknown>;
+  return Object.keys(sourceRecord).every(
+    (key) => copyRecord[key] === sourceRecord[key],
+  );
+};
+
 const copyOfSubRow = <RowType, RowIdType extends string | number>(
   r: RowType,
   copyCache: RowCopyCache<RowType>,
@@ -110,7 +119,9 @@ const copyOfSubRow = <RowType, RowIdType extends string | number>(
   const place = `${parentId ?? ''}|${parentRowKey ?? ''}|${lvl}`;
   const copies = copyCache.get(r as object);
   const cached = copies?.get(place);
-  if (cached) {
+  // Копия годится, пока поля исходной строки те же: потребитель мог поменять
+  // поле на месте и отдать новый массив, тогда копия пересобирается.
+  if (cached && sameFields(r as object, cached as object)) {
     return cached;
   }
   const copy = {
