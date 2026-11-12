@@ -1,0 +1,4 @@
+import{j as t}from"./react-CAOzMBF_.js";import{cg as i,ch as r}from"./vendor-Dh4d6dCz.js";import{T as s}from"./TypeSourceViewer-rB6Si0zw.js";import"./react-is-vVGXX3JE.js";import"./styled-components-BD-2WP2k.js";import"./@tanstack/react-virtual-4Nv0GpZT.js";import"./tslib-DoU9Jm1N.js";function o(e){const n={h1:"h1",h2:"h2",...i(),...e.components};return t.jsxs(t.Fragment,{children:[t.jsx(r,{title:"Локальные компоненты/Table/RowHeight/API"}),`
+`,t.jsx(n.h1,{id:"row-height-api",children:"Row Height API"}),`
+`,t.jsx(n.h2,{id:"rowheightfunc",children:"RowHeightFunc"}),`
+`,t.jsx(s,{language:"ts",filePath:"packages/ui-kit/src/components/Table/types/table-config.type.ts",typeName:"RowHeightFunc"})]})}function l(e={}){const{wrapper:n}={...i(),...e.components};return n?t.jsx(n,{...e,children:t.jsx(o,{...e})}):o(e)}export{l as default};
