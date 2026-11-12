@@ -2,13 +2,19 @@ import type { DataEditorRef } from '@glideappsfinal/glide-data-grid';
 import { type RefObject, useLayoutEffect } from 'react';
 
 import { subscribeFontsLoaded } from './fontsLoaded';
-import { createRafUpdate, updateGridCells } from './gridUpdateUtils';
+import {
+  createRafUpdate,
+  updateGridCells,
+  type VisibleRows,
+} from './gridUpdateUtils';
 
 interface UseFontLoadRedrawParams {
   dataEditorRef: RefObject<DataEditorRef>;
   rowCount: number;
   columnCount: number;
   headerAndGroupHeaderRowsCount: number;
+  /** Видимые строки на момент перерисовки; без них перерисовываются первые строки */
+  getVisibleRows?: () => VisibleRows | null;
 }
 
 export function useFontLoadRedraw({
@@ -16,6 +22,7 @@ export function useFontLoadRedraw({
   rowCount,
   columnCount,
   headerAndGroupHeaderRowsCount,
+  getVisibleRows,
 }: UseFontLoadRedrawParams): void {
   useLayoutEffect(() => {
     const redraw = createRafUpdate(() => {
@@ -24,9 +31,16 @@ export function useFontLoadRedraw({
         rowCount,
         columnCount,
         headerAndGroupHeaderRowsCount,
+        visibleRows: getVisibleRows?.() ?? null,
       });
     });
 
     return subscribeFontsLoaded(redraw);
-  }, [dataEditorRef, rowCount, columnCount, headerAndGroupHeaderRowsCount]);
+  }, [
+    dataEditorRef,
+    rowCount,
+    columnCount,
+    headerAndGroupHeaderRowsCount,
+    getVisibleRows,
+  ]);
 }

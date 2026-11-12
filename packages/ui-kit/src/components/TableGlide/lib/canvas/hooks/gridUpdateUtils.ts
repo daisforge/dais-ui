@@ -1,11 +1,22 @@
 import type { DataEditorRef } from '@glideappsfinal/glide-data-grid';
 import { type RefObject } from 'react';
 
+/** Строки на экране по последнему onVisibleRegionChanged */
+export interface VisibleRows {
+  from: number;
+  to: number;
+}
+
+/** Если видимая область ещё неизвестна (первый кадр), перерисовываются первые строки */
+const ROWS_WITHOUT_REGION = 30;
+
 interface GridUpdateParams {
   dataEditorRef: RefObject<DataEditorRef>;
   rowCount: number;
   columnCount: number;
   headerAndGroupHeaderRowsCount: number;
+  /** Видимые строки: шрифт или иконка догрузились, перерисовать нужно экран, а не начало таблицы */
+  visibleRows?: VisibleRows | null;
 }
 
 export function updateGridCells({
@@ -13,17 +24,26 @@ export function updateGridCells({
   rowCount,
   columnCount,
   headerAndGroupHeaderRowsCount,
+  visibleRows = null,
 }: GridUpdateParams): void {
   const ref = dataEditorRef.current;
   if (!ref) {
     return;
   }
 
-  const numRows = Math.min(30, rowCount);
+  const firstRow = visibleRows ? Math.max(visibleRows.from, 0) : 0;
+  const lastRow = visibleRows
+    ? Math.min(visibleRows.to, rowCount - 1)
+    : Math.min(ROWS_WITHOUT_REGION, rowCount) - 1;
   const numCols = columnCount;
   const cells: Array<{ cell: [number, number] }> = [];
-  /* row = 0 - headerAndGroupHeaderRowsCount ---- для того, чтобы иконки в header and groupheader тоже были загружены и обновлены */
-  for (let row = 0 - headerAndGroupHeaderRowsCount; row < numRows; row += 1) {
+  /* строки от -headerAndGroupHeaderRowsCount: шапка и шапки групп тоже перерисовываются */
+  for (let row = 0 - headerAndGroupHeaderRowsCount; row < 0; row += 1) {
+    for (let col = 0; col < numCols; col += 1) {
+      cells.push({ cell: [col, row] });
+    }
+  }
+  for (let row = firstRow; row <= lastRow; row += 1) {
     for (let col = 0; col < numCols; col += 1) {
       cells.push({ cell: [col, row] });
     }

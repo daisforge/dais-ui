@@ -62,6 +62,7 @@ import {
   buildCellId,
 } from './lib/canvas';
 import { useFontLoadRedraw, useIconLoadRedraw } from './lib/canvas/hooks';
+import type { VisibleRows } from './lib/canvas/hooks/gridUpdateUtils';
 import { buildEffectiveInteractionOutcome } from './lib/canvas/interaction/interactionManager';
 import { resolveCanvasCellInteractionTargetFromRenderData } from './lib/canvas/interaction/resolveCanvasCellInteractionTarget';
 import { StyledGlideDataEditor, StyledOverlayPortal } from './styled';
@@ -743,10 +744,23 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     portalObserverRef.current = observer;
   }, []);
 
+  // Догрузка шрифта или иконки перерисовывает строки на экране, а не начало
+  // таблицы: раньше перерисовывались строки 0-29, и прокрученная таблица
+  // оставалась запасным шрифтом до наведения или прокрутки.
+  const visibleRowsForRedrawRef = useRef<VisibleRows | null>(null);
+  const getVisibleRowsForRedraw = useCallback(
+    () => visibleRowsForRedrawRef.current,
+    [],
+  );
+
   const handleVisibleRegionChanged = useCallback<
     NonNullable<GlideProps['onVisibleRegionChanged']>
   >(
     (range, tx, ty, extras) => {
+      visibleRowsForRedrawRef.current = {
+        from: range.y,
+        to: range.y + range.height,
+      };
       trackVisibleRegion(range);
       trackAutoRowHeightRegion(range);
       onVisibleRegionChangedExternal?.(range, tx, ty, extras);
@@ -1704,6 +1718,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     columnCount: columnsForRender.length,
     headerAndGroupHeaderRowsCount:
       1 + (restProps.groupHeaderHeight ?? []).length /* 1 - это сам header */,
+    getVisibleRows: getVisibleRowsForRedraw,
   };
   useIconLoadRedraw(loadRedrawOptions);
 
