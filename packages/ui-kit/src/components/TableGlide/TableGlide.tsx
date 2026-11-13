@@ -23,7 +23,7 @@ import {
 } from 'react';
 import { createPortal } from 'react-dom';
 
-import { type CellHeightReporter, glideCellRenderer } from './cellRenderer';
+import { glideCellRenderer } from './cellRenderer';
 import {
   DEFAULT_HEADER_HEIGHT,
   DEFAULT_SPAN_VERTICAL_ALIGN,
@@ -35,6 +35,7 @@ import {
   useSelectionGeometry,
   useTableSelectionSystem,
 } from './hooks/selection';
+import { BlockAutoHeight } from './hooks/autoRowHeight/BlockAutoHeight';
 import { useKeepCellInView } from './hooks/autoRowHeight/useKeepCellInView';
 import { useScrollAnchor } from './hooks/autoRowHeight/useScrollAnchor';
 import {
@@ -119,27 +120,6 @@ import {
   createSetRangeHitCache,
 } from './utils/blockRanges';
 import { isCanvasContent, isPrimitive } from './utils/typeGuards';
-
-/**
- * Приёмник автовысоты для ячейки. Ячейка блока на несколько строк высоту строки
- * не задаёт, поэтому приёмника не получает.
- *
- * Прежние замеры всех строк блока при этом забываются: если ячейка раньше была
- * обычной и высокой, её замер держал бы строку высокой и после объединения.
- * Забываем сразу все строки блока, потому что glide спрашивает только главную
- * ячейку блока, покрытые строки сами не придут.
- */
-const blockAutoHeight = (
-  reporter: CellHeightReporter,
-  spanRows: readonly [number, number] | null | undefined,
-  forgetRow: (rowIndex: number) => void,
-): CellHeightReporter | undefined => {
-  if (!spanRows || spanRows[0] === spanRows[1]) return reporter;
-  for (let rowIndex = spanRows[0]; rowIndex <= spanRows[1]; rowIndex += 1) {
-    forgetRow(rowIndex);
-  }
-  return undefined;
-};
 
 /** Функция-болванка. Ничего не делает */
 function noop(..._: unknown[]) {
@@ -853,6 +833,13 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     stickyColumns: restProps.stickyColumns,
   });
 
+  // Автовысота ячеек блоков по строкам (см. BlockAutoHeight). Новый экземпляр
+  // на новые строки и колонки: прежние блоки к ним не относятся.
+  const blockAutoHeight = useMemo(
+    () => new BlockAutoHeight(),
+    [rows, columnsForRender, autoHeightReporter],
+  );
+
   const getCellContentGlide = useCallback(
     (
       [colInd, rowInd]: [number, number],
@@ -1264,10 +1251,11 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
             refTable,
           },
           // Автовысота: ячейка сообщает свою высоту, а ячейка блока на
-          // несколько строк нет (см. blockAutoHeight).
+          // несколько строк нет (см. BlockAutoHeight).
           autoHeight: autoHeightReporter
-            ? blockAutoHeight(
+            ? blockAutoHeight.reporterFor(
                 autoHeightReporter(row, rowInd, id, !!span),
+                id,
                 spanRows,
                 (rowIndex) => {
                   const blockRow = rows[rowIndex];
@@ -1302,6 +1290,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       bottomSummaryRows,
       rows,
       autoHeightReporter,
+      blockAutoHeight,
       columnsForRender,
       findCellBlockOrigin,
       ctxs,
