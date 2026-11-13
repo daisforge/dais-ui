@@ -110,6 +110,12 @@ import {
   createSetRangeHitCache,
 } from './utils/blockRanges';
 import { isCanvasContent, isPrimitive } from './utils/typeGuards';
+import {
+  EMPTY_RESIZED_WIDTHS,
+  reconcileResizedWidths,
+  recordResizedWidth,
+  type ResizedWidthsMap,
+} from './utils/resizedColumnWidths';
 
 /** Функция-болванка. Ничего не делает */
 function noop(..._: unknown[]) {
@@ -244,9 +250,15 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
 
   const summaryRowsLength = bottomSummaryRows?.length ?? 0;
 
-  const [resizedColsMap, setResizedColsMap] = useState(
-    new Map<string, number>(),
+  // Glide обновляет собственное состояние ширины во время drag. Храним этот resize,
+  // пока владелец таблицы не вернёт новую ширину через columns.
+  const [resizedColsMap, setResizedColsMap] = useState<ResizedWidthsMap>(
+    EMPTY_RESIZED_WIDTHS,
   );
+  // Обработчик resize стабилен, поэтому читает последние columns через ref,
+  // не добавляя их в зависимости useCallback.
+  const columnsRef = useRef(columns);
+  columnsRef.current = columns;
 
   const { onColumnResizeStep, onColumnMoved: resetOnColumnMoved } =
     useColumnPortalReset(portalEventTargetRef);
@@ -278,25 +290,31 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
 
       onColumnResize?.(col, newSize, colIndex, newSizeWithGrow);
 
-      setResizedColsMap((prev) => {
-        prev.set(col.id, newSize);
-        return new Map(prev);
-      });
+      // Сохраняем ширину вместе с текущей шириной из props. Это позволяет отличить
+      // временный локальный resize от ширины, уже принятой владельцем таблицы.
+      // colIndex позволяет взять исходную ширину без поиска по всем колонкам на каждом шаге drag.
+      setResizedColsMap((prev) =>
+        recordResizedWidth(prev, columnsRef.current, colIndex, col.id, newSize),
+      );
     },
     [onColumnResize, onColumnResizeStep],
   );
 
-  const columnsLast = useMemo(() => {
-    if (resizedColsMap.size === 0) {
-      return columns;
-    }
-    return columns.map((c) => {
-      if (resizedColsMap.has(c.id)) {
-        return { ...c, width: resizedColsMap.get(c.id), grow: 0 };
-      }
-      return c;
-    });
-  }, [columns, resizedColsMap]);
+  // За один проход применяем локальные ширины и находим записи кеша,
+  // которые props уже обновили или для которых колонка была удалена.
+  const { columns: columnsLast, resizedWidths: reconciledResizedWidths } = useMemo(
+    () => reconcileResizedWidths(columns, resizedColsMap),
+    [columns, resizedColsMap],
+  );
+
+  // Сбрасываем устаревшие временные ширины после commit, не обновляя состояние во время render.
+  // Проверка текущей карты защищает resize, который мог произойти после вычисления результата.
+  useEffect(() => {
+    if (reconciledResizedWidths === resizedColsMap) return;
+    setResizedColsMap((prev) =>
+      prev === resizedColsMap ? reconciledResizedWidths : prev,
+    );
+  }, [reconciledResizedWidths, resizedColsMap]);
 
   const {
     rowHeightGlide,
