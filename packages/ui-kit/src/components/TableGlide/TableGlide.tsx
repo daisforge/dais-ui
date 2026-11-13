@@ -543,23 +543,28 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   // Follow: перевыделяем по ключам после закрепления. Порядок колонок после
   // пина обновляется с ЛАГОМ в рендер (columnsOrder в useReorderDragable
   // синкается эффектом), поэтому columnsLast сначала ещё старый. Таймаут
-  // сбрасывается на каждом новом columnsLast и срабатывает, когда порядок
+  // сбрасывается при смене порядка колонок и срабатывает, когда порядок
   // устоялся: тогда выделение применяется один раз по финальному порядку и
   // наружу уходит один onChange с новыми индексами, а не два (сначала со
-  // старыми).
+  // старыми). Следим за порядком ключей, а не за ссылкой на массив и
+  // колбэки: новый массив с тем же порядком на каждом рендере иначе
+  // откладывал бы применение без конца.
+  const columnsOrderKey = useMemo(
+    () => columnsLast.map((column) => column.id).join('|'),
+    [columnsLast],
+  );
+  const selectColumnsByKeysRef = useRef(selectColumnsByKeys);
+  selectColumnsByKeysRef.current = selectColumnsByKeys;
+  const onColumnSelectionAppliedRef = useRef(onColumnSelectionApplied);
+  onColumnSelectionAppliedRef.current = onColumnSelectionApplied;
   useEffect(() => {
     if (!pendingColumnSelectionKeys) return undefined;
     const timer = setTimeout(() => {
-      selectColumnsByKeys(pendingColumnSelectionKeys);
-      onColumnSelectionApplied?.();
+      selectColumnsByKeysRef.current(pendingColumnSelectionKeys);
+      onColumnSelectionAppliedRef.current?.();
     }, 0);
     return () => clearTimeout(timer);
-  }, [
-    pendingColumnSelectionKeys,
-    columnsLast,
-    selectColumnsByKeys,
-    onColumnSelectionApplied,
-  ]);
+  }, [pendingColumnSelectionKeys, columnsOrderKey]);
 
   // При выделении строк по нумерации вся строка активна по всем колонкам —
   // используется для затемнения шапок data-колонок (как нативный 'row').

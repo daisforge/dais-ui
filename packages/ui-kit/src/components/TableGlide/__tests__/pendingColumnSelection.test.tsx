@@ -67,4 +67,30 @@ describe('TableGlide: выделение колонок по ключам пос
     ]);
     expect(applied).toHaveBeenCalledTimes(1);
   });
+
+  it('новый массив колонок с тем же порядком и новый колбэк не откладывают применение', () => {
+    const onSelectionEmit = vi.fn();
+    const columns = [MARKERS, col('a'), col('b')];
+    const props = { rows: ROWS, onSelectionEmit, pendingColumnSelectionKeys: ['b'] };
+    const { rerender } = render(
+      <TableGlide {...props} columns={columns} onColumnSelectionApplied={vi.fn()} />,
+    );
+    const timeoutSpy = vi.spyOn(globalThis, 'setTimeout');
+    const applied = vi.fn();
+    for (let i = 0; i < 3; i += 1) {
+      rerender(
+        <TableGlide {...props} columns={[...columns]} onColumnSelectionApplied={applied} />,
+      );
+    }
+    // Таймер применения не перезапускался
+    expect(timeoutSpy).not.toHaveBeenCalled();
+    act(() => {
+      vi.runAllTimers();
+    });
+
+    expect(onSelectionEmit.mock.calls.map(([s]) => s.current?.range)).toEqual([
+      { x: 2, y: 0, width: 1, height: 3 },
+    ]);
+    expect(applied).toHaveBeenCalledTimes(1);
+  });
 });
