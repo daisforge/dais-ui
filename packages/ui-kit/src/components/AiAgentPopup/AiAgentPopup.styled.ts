@@ -250,6 +250,15 @@ export const StyledRail = styled.div<{ $active: boolean }>`
   gap: 4px;
 `;
 
+/* Группа кнопок полосы. Нижняя группа прижата к нижнему краю панели */
+export const StyledRailGroup = styled.div<{ $bottom?: boolean }>`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  ${({ $bottom }) => $bottom && 'margin-top: auto;'}
+`;
+
 export const StyledSection = styled.div<{ $active: boolean }>`
   ${panelLayer};
   width: ${LEFT_PANEL_SECTION_WIDTH}px;

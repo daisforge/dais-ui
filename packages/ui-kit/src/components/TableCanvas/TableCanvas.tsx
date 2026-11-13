@@ -80,7 +80,6 @@ import { pasteOnlyKeysWithNotUndefinedValue } from './utils';
 import { ControlBlockLazy, TableOrCardsUI } from './widgets';
 import { ControlBlockWithoutResize } from './widgets/control-block';
 import { ControlBlockStyled } from './widgets/control-block/styled';
-import { ToolsMenuState } from './widgets/control-block/types';
 import { useFeatureArray } from './widgets/control-block/use-feature-array';
 
 export interface Props {
@@ -348,6 +347,8 @@ export function TableCanvas<
       setHiddenCols,
       renderColKeys,
       groupPathByKey,
+      colsWithKeyTextMap,
+      tableConfigKeyTextBoolean,
       onExpand: columnsControlConfig.onHiddenColumnsIndicatorExpand,
     });
 
@@ -657,10 +658,6 @@ export function TableCanvas<
   // ------------------------------------------------ table in TableTabs ------------------------------------------------
   const { isInTabs: isTableInTabs } = useTableTabsContext();
 
-  // ------------------------------------------------ compressing visibility state ------------------------------------------------
-  // Значение пока никем не читается (источник истины — внутри ControlBlock),
-  // сеттер нужен ControlBlock для подъёма состояния компрессии наверх
-  const [, setCompressionVisibility] = useState<ToolsMenuState>();
   const enableAdaptiveCompress =
     tableConfig.controlBlock?.enableAdaptiveCompress ?? true;
 
@@ -923,9 +920,6 @@ export function TableCanvas<
                                       featuresObj={featuresObj}
                                       $borderTopRounded={
                                         !isTableInTabs || fullScreened
-                                      }
-                                      setCompressionVisibility={
-                                        setCompressionVisibility
                                       }
                                       editModeEnabled={editModeEnabled}
                                       editModeLeftSlot={

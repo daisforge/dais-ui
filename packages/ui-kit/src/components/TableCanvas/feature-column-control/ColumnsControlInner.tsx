@@ -23,8 +23,13 @@ import { CHECKBOX_COLUMN_KEY } from '../feature-select-row';
 import { ChangeAllButtonsBlock } from './ChangeAllButtonsBlock';
 import { ColumnsList } from './ColumnsList';
 import { correctedDisabled } from './ColumnsList/handlers';
-import { getColumnsStateChanged } from './columnsStateDiff';
+import {
+  ColumnsState,
+  getColumnsStateChanged,
+  isSameColumnsStatePart,
+} from './columnsStateDiff';
 import { ConfirmOrResetBlock } from './ConfirmOrResetBlock';
+import { expandKeyTextKeys } from './expandKeyTextKeys';
 import { ColumnsControlConfig } from './types';
 
 const SERVICE_COLS_SET = new Set([
@@ -80,16 +85,28 @@ export const ColumnsControlInner = <
   const [localHiddensState, setLocalHiddensState] = useState(hiddenCols);
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Флаг «изменение пришло из панели». Нужен, чтобы в режиме instant вызывать
-  // onConfirm только на действия пользователя в панели, а не на любые внешние
-  // изменения состояния колонок (пин в шапке, перенос заголовка и т.п.).
-  const changedFromPanelRef = useRef(false);
+  // Что панель попросила записать в состояние таблицы, по частям. Нужно, чтобы
+  // в режиме instant вызывать onConfirm только на действия пользователя в
+  // панели, а не на внешние изменения (пин в шапке, перенос заголовка,
+  // hiddenState потребителя). Запоминаем само значение, а не флаг: если сеттер
+  // потребителя изменение не применил, следующее внешнее изменение с просьбой
+  // панели не совпадёт и onConfirm не вызовет. Запоминаем внутри функции
+  // обновления: так просьба появляется, только если сеттер её вызвал, и
+  // совпадает с тем, что он получил. Повторный вызов функции (StrictMode)
+  // запишет то же значение.
+  const requestedFromPanelRef = useRef<Partial<ColumnsState>>({});
 
   const markChangedFromPanel = useCallback(
-    (setter: React.Dispatch<React.SetStateAction<string[]>>) =>
+    (
+        part: keyof ColumnsState,
+        setter: React.Dispatch<React.SetStateAction<string[]>>,
+      ) =>
       (value: React.SetStateAction<string[]>) => {
-        changedFromPanelRef.current = true;
-        setter(value);
+        setter((prev) => {
+          const next = typeof value === 'function' ? value(prev) : value;
+          requestedFromPanelRef.current[part] = next;
+          return next;
+        });
       },
     [],
   );
@@ -101,28 +118,28 @@ export const ColumnsControlInner = <
   const setLocalOrder = useMemo(
     () =>
       isInstantApply
-        ? markChangedFromPanel(setColumnsOrder)
+        ? markChangedFromPanel('order', setColumnsOrder)
         : setLocalOrderState,
     [isInstantApply, markChangedFromPanel, setColumnsOrder],
   );
   const setLocalPinned = useMemo(
     () =>
       isInstantApply
-        ? markChangedFromPanel(setPinnedCols)
+        ? markChangedFromPanel('pinned', setPinnedCols)
         : setLocalPinnedState,
     [isInstantApply, markChangedFromPanel, setPinnedCols],
   );
   const setLocalHiddens = useMemo(
     () =>
       isInstantApply
-        ? markChangedFromPanel(setHiddenCols)
+        ? markChangedFromPanel('hidden', setHiddenCols)
         : setLocalHiddensState,
     [isInstantApply, markChangedFromPanel, setHiddenCols],
   );
 
   // Предыдущее применённое состояние таблицы: от него считаем `changed`
   // для onConfirm в режиме instant.
-  const appliedStateRef = useRef({
+  const appliedStateRef = useRef<ColumnsState>({
     order: columnsOrder,
     pinned: pinnedCols,
     hidden: hiddenCols,
@@ -130,20 +147,45 @@ export const ColumnsControlInner = <
 
   useEffect(() => {
     const prev = appliedStateRef.current;
-    const next = {
+    const next: ColumnsState = {
       order: columnsOrder,
       pinned: pinnedCols,
       hidden: hiddenCols,
     };
     appliedStateRef.current = next;
 
-    if (!isInstantApply || !changedFromPanelRef.current) {
+    if (!isInstantApply) {
+      requestedFromPanelRef.current = {};
       return;
     }
-    changedFromPanelRef.current = false;
 
     const changed = getColumnsStateChanged(prev, next);
-    if (Object.keys(changed).length === 0) {
+    const changedParts = Object.keys(changed) as (keyof ColumnsState)[];
+
+    // Изменение пришло из панели, если часть стала ровно такой, какую просила
+    // панель. Просьбу по изменившейся части забываем в любом случае. Скрытые
+    // и закреплённые сравниваем с обоими ключами пар key/text: состояние может
+    // хранить один ключ пары, а панель просить оба.
+    const withPairs = (keys: string[]) =>
+      expandKeyTextKeys(keys, colsWithKeyTextMap, tableConfigKeyTextBoolean);
+    const requested = requestedFromPanelRef.current;
+    let changedFromPanel = false;
+    changedParts.forEach((part) => {
+      const requestedPart = requested[part];
+      delete requested[part];
+      if (!requestedPart) return;
+      const samePart =
+        part === 'order'
+          ? isSameColumnsStatePart(part, requestedPart, next[part])
+          : isSameColumnsStatePart(
+              part,
+              withPairs(requestedPart),
+              withPairs(next[part]),
+            );
+      changedFromPanel = changedFromPanel || samePart;
+    });
+
+    if (!changedFromPanel) {
       return;
     }
 

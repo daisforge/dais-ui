@@ -17,14 +17,33 @@ export type ColumnsStateChanged = {
   hidden?: 'hidden';
 };
 
-const sameSet = (a: string[], b: string[]) =>
-  [...a].sort().join() === [...b].sort().join();
+const sameSet = (a: string[], b: string[]) => {
+  const setA = new Set(a);
+  const setB = new Set(b);
+  return setA.size === setB.size && [...setA].every((key) => setB.has(key));
+};
+
+/**
+ * Совпадает ли часть состояния колонок: порядок сравниваем по
+ * последовательности, закреплённые и скрытые по составу.
+ */
+export const isSameColumnsStatePart = (
+  part: keyof ColumnsState,
+  a: string[],
+  b: string[],
+) => (part === 'order' ? a.join() === b.join() : sameSet(a, b));
 
 export const getColumnsStateChanged = (
   prev: ColumnsState,
   next: ColumnsState,
 ): ColumnsStateChanged => ({
-  ...(!sameSet(prev.pinned, next.pinned) && { pinned: 'pinned' as const }),
-  ...(prev.order.join() !== next.order.join() && { order: 'order' as const }),
-  ...(!sameSet(prev.hidden, next.hidden) && { hidden: 'hidden' as const }),
+  ...(!isSameColumnsStatePart('pinned', prev.pinned, next.pinned) && {
+    pinned: 'pinned' as const,
+  }),
+  ...(!isSameColumnsStatePart('order', prev.order, next.order) && {
+    order: 'order' as const,
+  }),
+  ...(!isSameColumnsStatePart('hidden', prev.hidden, next.hidden) && {
+    hidden: 'hidden' as const,
+  }),
 });

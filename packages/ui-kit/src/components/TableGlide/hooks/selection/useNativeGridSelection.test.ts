@@ -126,3 +126,25 @@ describe('useNativeGridSelection: смена числа ведущих служ�
     expect(onSelectionEmit).not.toHaveBeenCalled();
   });
 });
+
+describe('useNativeGridSelection: растягивание выбора до объединённого блока', () => {
+  it('выделение ячеек выключено: блок не растягиваем, как и одиночную ячейку', () => {
+    const { result } = renderHook(() =>
+      useNativeGridSelection({
+        cellsSelectionMode: 'disabled',
+        columns: ONE_SERVICE,
+      }),
+    );
+    expect(result.current.spanRangeBehavior).toBe('allowPartial');
+  });
+
+  it.each(['cell', 'range-cell', 'multi-range-cell'] as const)(
+    'режим %s: выбор растягивается до блока',
+    (cellsSelectionMode) => {
+      const { result } = renderHook(() =>
+        useNativeGridSelection({ cellsSelectionMode, columns: ONE_SERVICE }),
+      );
+      expect(result.current.spanRangeBehavior).toBe('default');
+    },
+  );
+});

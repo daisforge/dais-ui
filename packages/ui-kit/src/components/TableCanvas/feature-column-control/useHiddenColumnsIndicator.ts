@@ -1,6 +1,8 @@
 import { SetStateAction, useCallback, useMemo, useRef } from 'react';
 
+import { KeyTextMap } from '../feature-key-text/types';
 import { frozenFirst } from './columnsRenderOrder';
+import { expandKeyTextKeys } from './expandKeyTextKeys';
 import { computeGroupDepth, getMaxGroupLevels } from './groupDepth';
 import { computeHiddenBoundaries } from './hiddenBoundaries';
 import type { HiddenColumnsIndicatorExpandInfo } from './types';
@@ -19,6 +21,8 @@ export const useHiddenColumnsIndicator = ({
   setHiddenCols,
   renderColKeys,
   groupPathByKey,
+  colsWithKeyTextMap,
+  tableConfigKeyTextBoolean,
   onExpand,
 }: {
   enabled: boolean;
@@ -32,6 +36,8 @@ export const useHiddenColumnsIndicator = ({
   renderColKeys: readonly string[];
   /** Ключ листа -> путь групп над ним. Для высоты полосы в сгруппированной шапке. */
   groupPathByKey: ReadonlyMap<string, string[]>;
+  colsWithKeyTextMap: KeyTextMap;
+  tableConfigKeyTextBoolean: boolean;
   /** Внешнее уведомление о раскрытии промежутка по двойному клику. */
   onExpand?: (info: HiddenColumnsIndicatorExpandInfo) => void;
 }) => {
@@ -91,6 +97,8 @@ export const useHiddenColumnsIndicator = ({
   renderColKeysRef.current = renderColKeys;
   const onExpandRef = useRef(onExpand);
   onExpandRef.current = onExpand;
+  const keyTextRef = useRef({ colsWithKeyTextMap, tableConfigKeyTextBoolean });
+  keyTextRef.current = { colsWithKeyTextMap, tableConfigKeyTextBoolean };
 
   const hiddenColumnsIndicator = useMemo(() => {
     if (!boundaries || boundaries.size === 0) return undefined;
@@ -117,7 +125,15 @@ export const useHiddenColumnsIndicator = ({
         rightKey: col < cols.length ? cols[col] : undefined,
       });
 
-      const gap = new Set(keys);
+      // В режимах «Ключ» и «Текст» на экране один столбец пары key/text, а
+      // скрыты оба: раскрываем пару целиком, иначе второй ключ снова её скроет.
+      const gap = new Set(
+        expandKeyTextKeys(
+          keys,
+          keyTextRef.current.colsWithKeyTextMap,
+          keyTextRef.current.tableConfigKeyTextBoolean,
+        ),
+      );
       setHiddenCols((prev) => prev.filter((k) => !gap.has(k)));
     },
     [setHiddenCols],

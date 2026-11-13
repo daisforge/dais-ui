@@ -160,6 +160,79 @@ describe('useColumnsControl: hiddenState', () => {
     expect(result.current.control.hiddenCols).toEqual(['a']);
   });
 
+  it('скрытие пары, засеянное из onConfirm.hidden, снимается одним исходным ключом', () => {
+    // onConfirm.hidden отдаёт оба ключа пары, продукт сохранил их как есть.
+    const { result } = renderWithExternalState(
+      ['a', pair.keyKey, pair.textKey],
+      { enable: true },
+      true,
+    );
+    expect(result.current.control.hiddenCols).toEqual([
+      'a',
+      pair.keyKey,
+      pair.textKey,
+    ]);
+
+    act(() =>
+      result.current.hiddenState[1]((prev) =>
+        prev.filter((key) => key !== pair.textKey),
+      ),
+    );
+    expect(result.current.hiddenState[0]).toEqual(['a', pair.keyKey]);
+    expect(result.current.control.hiddenCols).toEqual(['a']);
+  });
+
+  it('одинокий второй ключ пары не скрывает пару и уходит при записи из таблицы', () => {
+    const { result } = renderWithExternalState(
+      [pair.keyKey],
+      { enable: true },
+      true,
+    );
+    expect(result.current.control.hiddenCols).toEqual([]);
+
+    act(() => result.current.control.setHiddenCols((prev) => [...prev, 'a']));
+    expect(result.current.hiddenState[0]).toEqual(['a']);
+    expect(result.current.control.hiddenCols).toEqual(['a']);
+  });
+
+  it('с двумя парами показ одной пары не скрывает другую', () => {
+    const dept = { keyKey: 'dept_code', textKey: 'dept' };
+    const twoPairs: KeyTextMap = new Map([
+      ...keyTextMap,
+      [dept.keyKey, dept],
+      [dept.textKey, dept],
+    ]);
+    // Свой ключ dept продукт записал сам, пару name засеял из onConfirm.hidden
+    // и снял исходным ключом, остался одинокий name_key.
+    const { result, rerender } = renderWithExternalState(
+      [dept.textKey, pair.keyKey],
+      { enable: true },
+      true,
+    );
+    rerender({ map: twoPairs });
+    expect(result.current.control.hiddenCols).toEqual([
+      dept.keyKey,
+      dept.textKey,
+    ]);
+
+    // Пользователь показывает «dept» свитчем.
+    act(() =>
+      result.current.control.setHiddenCols((prev) =>
+        prev.filter((key) => key !== dept.keyKey && key !== dept.textKey),
+      ),
+    );
+    expect(result.current.hiddenState[0]).toEqual([]);
+    expect(result.current.control.hiddenCols).toEqual([]);
+  });
+
+  it('hiddenDefault по-прежнему скрывает пару любым её ключом', () => {
+    const { result } = renderControl(
+      { enable: true, hiddenDefault: [pair.keyKey] },
+      true,
+    );
+    expect(result.current.hiddenCols).toEqual([pair.keyKey, pair.textKey]);
+  });
+
   it('значение сеттером без функции тоже сводится к исходному ключу', () => {
     const { result } = renderWithExternalState([], { enable: true }, true);
 

@@ -487,6 +487,9 @@ function AsyncCellDropdownExample({ shouldFail }: { shouldFail: boolean }) {
   });
   // В демо-режиме ошибки: падаем на первой попытке, на «Обновить» отдаём успех
   const attempts = useRef(0);
+  // Меню перезапрашивает пункты на каждое открытие: принимаем только ответ
+  // последнего запроса, иначе медленный старый ответ перезапишет свежий
+  const lastRequest = useRef(0);
 
   const columnConfig = useMemo<readonly ColumnConfig<Row>[]>(
     () => [
@@ -503,6 +506,8 @@ function AsyncCellDropdownExample({ shouldFail }: { shouldFail: boolean }) {
       setMenu({ status: 'loading', items: [], key, row });
       const willFail = shouldFail && attempts.current === 0;
       attempts.current += 1;
+      lastRequest.current += 1;
+      const request = lastRequest.current;
 
       new Promise<{ value: string; label: string }[]>((resolve, reject) => {
         setTimeout(() => {
@@ -517,14 +522,14 @@ function AsyncCellDropdownExample({ shouldFail }: { shouldFail: boolean }) {
           ]);
         }, 1200);
       }).then(
-        (items) =>
-          setMenu((prev) =>
-            prev.key === key ? { ...prev, status: 'success', items } : prev,
-          ),
-        () =>
-          setMenu((prev) =>
-            prev.key === key ? { ...prev, status: 'error', items: [] } : prev,
-          ),
+        (items) => {
+          if (request !== lastRequest.current) return;
+          setMenu((prev) => ({ ...prev, status: 'success', items }));
+        },
+        () => {
+          if (request !== lastRequest.current) return;
+          setMenu((prev) => ({ ...prev, status: 'error', items: [] }));
+        },
       );
     },
     [shouldFail],

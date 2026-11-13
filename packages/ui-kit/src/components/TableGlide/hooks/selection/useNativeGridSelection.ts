@@ -150,10 +150,17 @@ export function useNativeGridSelection({
     return 'cell';
   }, [cellsSelectionMode]);
 
+  // Glide растягивает выбор ячейки до объединённого блока, и без рамки фокуса
+  // такой диапазон заливает блок. Когда выделение ячеек выключено, одиночная
+  // ячейка не заливается, поэтому и блок не растягиваем.
+  const spanRangeBehavior: GlideProps['spanRangeBehavior'] =
+    cellsSelectionMode === 'disabled' ? 'allowPartial' : 'default';
+
   return {
     selection,
     handleGridSelectionChange,
     handleSelectionCleared,
     rangeSelect,
+    spanRangeBehavior,
   };
 }

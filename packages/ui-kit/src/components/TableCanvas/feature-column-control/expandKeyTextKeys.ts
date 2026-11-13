@@ -30,6 +30,39 @@ export const expandKeyTextKeys = (
 };
 
 /**
+ * Разворачивает скрытые столбцы в оба ключа пары key/text. Пара скрыта, только
+ * если в списке есть её исходный ключ (textKey), одинокий ключ keyKey
+ * пропускается. Так потребитель, который взял оба ключа из onConfirm.hidden,
+ * снимает скрытие пары одним исходным ключом. Если менять нечего, возвращается
+ * тот же массив.
+ */
+export const expandHiddenKeys = (
+  keys: string[],
+  colsWithKeyTextMap: KeyTextMap,
+  tableConfigKeyTextBoolean: boolean,
+): string[] => {
+  if (!tableConfigKeyTextBoolean || !colsWithKeyTextMap.size) return keys;
+
+  const expanded = new Set<string>();
+  keys.forEach((key) => {
+    const pair = colsWithKeyTextMap.get(key);
+    if (!pair) {
+      expanded.add(key);
+    } else if (key === pair.textKey) {
+      expanded.add(pair.keyKey);
+      expanded.add(pair.textKey);
+    }
+  });
+
+  // Размеров мало: выпавший второй ключ одной пары и добавленный второй ключ
+  // другой пары дают тот же размер при другом составе.
+  const nothingToChange =
+    expanded.size === keys.length && keys.every((key) => expanded.has(key));
+
+  return nothingToChange ? keys : Array.from(expanded);
+};
+
+/**
  * Обратное к expandKeyTextKeys: оба ключа пары key/text сводятся к исходному
  * ключу столбца (textKey). Так в состоянии всегда один ключ на пару, и
  * потребитель снимает скрытие одним ключом.
