@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.29.0](https://github.com/daisforge/dais-ui/compare/v1.28.0...v1.29.0) (2026-11-13)
+
+### Bug Fixes
+
+- **PageTitle:** titleSlot стоит сразу за заголовком, а не за подзаголовком ([bbe2cc8](https://github.com/daisforge/dais-ui/commit/bbe2cc83f7c6a40982e8e2ee06e2183b85caa78b))
+- **Table,TableCanvas:** контекстное меню не показывает устаревшие пункты при повторном открытии ([951b608](https://github.com/daisforge/dais-ui/commit/951b608afbe247c0d2a70d4bd2cc0ed5ac5891e9))
+- **TableCanvas:** скрытый столбец с парой key/text снова можно показать ([0e1cf89](https://github.com/daisforge/dais-ui/commit/0e1cf8996fb955eebc3c8e9ca9ad8b43648ac72f))
+
+### Features
+
+- **AiAgentPopup:** кнопки снизу левой панели, onClick и disabled у кнопок ([b944146](https://github.com/daisforge/dais-ui/commit/b9441467039afe7ec7a201d7a66e34c7f30b07b2))
+
 # [1.28.0](https://github.com/daisforge/dais-ui/compare/v1.27.0...v1.28.0) (2026-11-09)
 
 ### Bug Fixes
