@@ -2,7 +2,11 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { expect, userEvent, waitFor, within } from '@storybook/test';
 import { Button } from '@ui-kit/components/Button';
 import { DrawerDF } from '@ui-kit/components/DrawerDF';
-import { Dropdown, type DropdownProps } from '@ui-kit/components/Dropdown';
+import {
+  Dropdown,
+  type DropdownItemOption,
+  DropdownProps,
+} from '@ui-kit/components/Dropdown';
 import { ModalDF } from '@ui-kit/components/ModalDF';
 
 const meta = {
@@ -14,7 +18,9 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const Alignment = ({ placement }: Pick<DropdownProps, 'placement'>) => (
+const Alignment = ({
+  placement,
+}: Pick<DropdownProps<DropdownItemOption>, 'placement'>) => (
   <div style={{ width: 700, height: 400, padding: '150px 250px' }}>
     <Dropdown
       placement={placement}
@@ -72,7 +78,7 @@ export const NestedLegacyPlacement: Story = {
   },
 };
 
-const overlayDropdownProps: DropdownProps = {
+const overlayDropdownProps: DropdownProps<DropdownItemOption> = {
   placement: 'bottom',
   listWidth: '220px',
   items: [{ value: 'export', label: 'Экспортировать данные' }],

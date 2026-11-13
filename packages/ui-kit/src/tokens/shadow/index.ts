@@ -13,6 +13,8 @@ export {
   shadowDownSoftL,
   shadowDownSoftM,
   shadowDownSoftS,
+  shadowGradientDark,
+  shadowGradientLight,
   shadowUpHardL,
   shadowUpHardM,
   shadowUpHardS,
@@ -20,9 +22,3 @@ export {
   shadowUpSoftM,
   shadowUpSoftS,
 } from '@sddsjs/sdds_finai/theme/tokens/index.js';
-
-// Совместимость публичных экспортов: в новой теме SDDS этих двух токенов нет.
-export {
-  shadowGradientDark,
-  shadowGradientLight,
-} from '@salutejs/sdds-themes/tokens/sdds_finai';

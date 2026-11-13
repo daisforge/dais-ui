@@ -24,10 +24,12 @@ describe('Публичные темы после обновления SDDS', () 
       expect(Array.isArray(theme)).toBe(true);
       expect(theme.join('')).toContain('--background-primary:');
       expect(theme.join('')).toContain('--text-primary:');
+      expect(theme.join('')).toContain('--shadow-gradient-dark:');
+      expect(theme.join('')).toContain('--shadow-gradient-light:');
     },
   );
 
-  it('сохраняет градиентные тени с fallback для новых тем без этих CSS-переменных', () => {
+  it('сохраняет публичные градиентные тени и их fallback', () => {
     expect(shadowGradientDark).toBe(
       'var(--shadow-gradient-dark, 0.1689rem 0.2252rem 0.6756rem 0rem #2969E399,-0.1126rem -0.1689rem 1.1823rem -0.1689rem #12C2F399)',
     );

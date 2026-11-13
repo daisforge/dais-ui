@@ -1,13 +1,12 @@
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { Dropdown } from './Dropdown';
-import type { DropdownItemOption } from './Dropdown.types';
+import { Dropdown, type DropdownItemOption } from './index';
 
 afterEach(cleanup);
 
 describe('Dropdown: настоящие вложенные меню SDDS', () => {
-  it('возвращает исходные пункты после фильтрации и клонирования SDDS', async () => {
+  it('сохраняет пользовательские поля и исходные данные при фильтрации вложенных пунктов', async () => {
     type Item = DropdownItemOption & { action: string };
     const child: Item = {
       value: 'child',
@@ -35,6 +34,10 @@ describe('Dropdown: настоящие вложенные меню SDDS', () => 
       action: 'empty',
       items: [hidden],
     };
+    const items = [parent, emptyParent];
+    const originalItems = structuredClone(items);
+    const visibleParent = { ...parent, items: [child] };
+    const visibleEmptyParent = { ...emptyParent, items: undefined };
     const select = vi.fn();
     const hover = vi.fn();
     const renderItem = vi.fn((item: Item) => (
@@ -44,7 +47,7 @@ describe('Dropdown: настоящие вложенные меню SDDS', () => 
     ));
     render(
       <Dropdown<Item>
-        items={[parent, emptyParent]}
+        items={items}
         alwaysOpened
         closeOnSelect={false}
         onItemSelect={select}
@@ -57,11 +60,11 @@ describe('Dropdown: настоящие вложенные меню SDDS', () => 
     const parentElement = await screen.findByRole('option', {
       name: 'Родительский',
     });
-    expect(renderItem.mock.calls.some(([item]) => item === parent)).toBe(true);
+    expect(renderItem).toHaveBeenCalledWith(visibleParent);
     fireEvent.mouseEnter(parentElement);
-    expect(hover).toHaveBeenCalledWith(0, parent);
+    expect(hover).toHaveBeenCalledWith(0, visibleParent);
     fireEvent.click(parentElement);
-    expect(select).toHaveBeenLastCalledWith(parent, expect.anything());
+    expect(select).toHaveBeenLastCalledWith(visibleParent, expect.anything());
     const childElement = await screen.findByRole('option', {
       name: 'Дочерний: edit',
     });
@@ -70,9 +73,11 @@ describe('Dropdown: настоящие вложенные меню SDDS', () => 
     fireEvent.click(
       screen.getByRole('option', { name: 'Без видимых потомков: empty' }),
     );
-    expect(select).toHaveBeenLastCalledWith(emptyParent, expect.anything());
-    expect(parent.items).toEqual([child, hidden]);
-    expect(parent.placement).toBe('right');
+    expect(select).toHaveBeenLastCalledWith(
+      visibleEmptyParent,
+      expect.anything(),
+    );
+    expect(items).toEqual(originalItems);
     expect(screen.queryByText('Скрытый: hide')).toBeNull();
   });
 });

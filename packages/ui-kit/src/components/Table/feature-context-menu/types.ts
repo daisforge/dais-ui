@@ -1,12 +1,15 @@
-import type { DropdownProps } from '@ui-kit/components/Dropdown';
+import type {
+  DropdownItemOption,
+  DropdownProps,
+} from '@ui-kit/components/Dropdown';
 import { CalculatedColumn } from 'react-data-grid';
 
 export type ContextMenuDropdownItem = NonNullable<
-  DropdownProps['items']
+  DropdownProps<DropdownItemOption>['items']
 >[number];
 
 export type ContextMenuDropDownProps = Omit<
-  DropdownProps,
+  DropdownProps<DropdownItemOption>,
   | 'children'
   | 'items'
   | 'placement'
@@ -24,7 +27,9 @@ export type ContextMenuDropDownProps = Omit<
 
 export type DropdownContextMenu = {
   type: 'dropdown';
-  getDropDownItems: (params: { columnLabel: string }) => DropdownProps['items'];
+  getDropDownItems: (params: {
+    columnLabel: string;
+  }) => DropdownProps<DropdownItemOption>['items'];
 } & ContextMenuDropDownProps;
 
 export type HeaderContextMenuProps = (
@@ -38,7 +43,7 @@ export type CellContextMenuDropDownProps<RowType, SummaryRowType> = {
   getDropDownItems: (params: {
     row: RowType;
     column: CalculatedColumn<RowType, SummaryRowType>;
-  }) => DropdownProps['items'];
+  }) => DropdownProps<DropdownItemOption>['items'];
   /**
    * Колбэк открытия меню для асинхронной подгрузки. Вызывается при каждом
    * открытии, в том числе повторном на той же ячейке: потребитель здесь
@@ -70,7 +75,7 @@ export type HeaderContextMenuDropDownProps = {
   type: 'dropdown';
   getDropDownItems: (params: {
     columnLabel: string | undefined;
-  }) => DropdownProps['items'];
+  }) => DropdownProps<DropdownItemOption>['items'];
   /**
    * Колбэк открытия меню для асинхронной подгрузки. Вызывается при каждом
    * открытии, в том числе повторном на той же ячейке: потребитель здесь

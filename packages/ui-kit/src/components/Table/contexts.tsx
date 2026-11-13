@@ -17,7 +17,7 @@ import {
   SortColumn,
 } from 'react-data-grid';
 
-import { DropdownProps } from '../Dropdown';
+import { DropdownItemOption, DropdownProps } from '../Dropdown';
 import type {
   ContextMenuDropdownItem,
   ContextMenuDropDownProps,
@@ -112,11 +112,11 @@ export const useHeaderContext = <
 
 type CommonContextMenuProps = {
   isOpen: boolean;
-  items: DropdownProps['items'] | null;
+  items: DropdownProps<DropdownItemOption>['items'] | null;
   position: { x: number; y: number } | null;
   open: (params: {
     position: { x: number; y: number };
-    items?: DropdownProps['items'] | null;
+    items?: DropdownProps<DropdownItemOption>['items'] | null;
     targetElement?: HTMLElement;
   }) => void;
   close: () => void;

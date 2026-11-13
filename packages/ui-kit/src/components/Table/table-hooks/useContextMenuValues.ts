@@ -1,4 +1,4 @@
-import { DropdownProps } from '@ui-kit/components/Dropdown';
+import { DropdownItemOption, DropdownProps } from '@ui-kit/components/Dropdown';
 import React, { useCallback, useMemo, useState } from 'react';
 import {
   CalculatedColumn,
@@ -19,7 +19,7 @@ const ATTR_NAMES = {
 
 interface ContextMenuState<RowType, SummaryRowType> {
   isOpen: boolean;
-  items: DropdownProps['items'] | null;
+  items: DropdownProps<DropdownItemOption>['items'] | null;
   position: { x: number; y: number } | null;
   targetElement: HTMLElement | undefined;
   // В async-режиме храним тег header/cell + параметры для соответствующего
@@ -83,7 +83,7 @@ export const useContextMenuValues = <
       context,
     }: {
       position: { x: number; y: number };
-      items?: DropdownProps['items'] | null;
+      items?: DropdownProps<DropdownItemOption>['items'] | null;
       asyncParams?: ContextMenuState<RowType, SummaryRowType>['asyncParams'];
       targetElement?: HTMLElement;
       context?: ContextMenuState<RowType, SummaryRowType>['context'];
@@ -309,7 +309,9 @@ export const useContextMenuValues = <
   // items в async-режиме перечитываются реактивно из getDropDownItems (по
   // сохранённым asyncParams) на каждый рендер, пока меню открыто; в синхронном
   // режиме — снапшот из стейта.
-  const items = useMemo<DropdownProps['items'] | null>(() => {
+  const items = useMemo<
+    DropdownProps<DropdownItemOption>['items'] | null
+  >(() => {
     if (!state.isOpen) return null;
     const pending = state.asyncParams;
     if (!pending) return state.items;

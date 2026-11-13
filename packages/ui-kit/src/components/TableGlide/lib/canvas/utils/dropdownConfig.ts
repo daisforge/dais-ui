@@ -24,7 +24,7 @@ export interface CanvasDropdownErrorApi extends CanvasDropdownApi {
  * `beforeList`, `afterList` передаются в атомарный Dropdown как есть.
  */
 export type CanvasNodeDropdownProps = Pick<
-  DropdownProps,
+  DropdownProps<DropdownItemOption>,
   | 'placement'
   | 'offset'
   | 'listWidth'

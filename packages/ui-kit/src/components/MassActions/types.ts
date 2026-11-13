@@ -1,5 +1,5 @@
 import type { ButtonCompProps } from '@ui-kit/components/Button';
-import { DropdownProps } from '@ui-kit/components/Dropdown';
+import { DropdownItemOption, DropdownProps } from '@ui-kit/components/Dropdown';
 import { LinkButton } from '@ui-kit/components/LinkButton';
 import { TooltipProps } from '@ui-kit/components/Tooltip';
 import { ComponentProps, MutableRefObject, ReactNode, RefObject } from 'react';
@@ -29,9 +29,9 @@ export type MassActionsButtonPropsButton = DataAttributes &
     view?: ButtonCompProps['view'];
     /**
      * Dropdown для кнопки.
-     * Используется универсальный DropdownProps, который работает и с обычным Dropdown, и с TableDropdown
+     * Используется универсальный DropdownProps<DropdownItemOption>, который работает и с обычным Dropdown, и с TableDropdown
      */
-    dropdown?: DropdownProps & { $css?: CSSObject };
+    dropdown?: DropdownProps<DropdownItemOption> & { $css?: CSSObject };
     disabledTooltipProps?: TooltipProps;
   };
 
@@ -42,9 +42,9 @@ export type MassActionsButtonPropsLinkButton = DataAttributes &
     view?: LinkView<LinkButtonView>;
     /**
      * Dropdown для кнопки.
-     * Используется универсальный DropdownProps, который работает и с обычным Dropdown, и с TableDropdown
+     * Используется универсальный DropdownProps<DropdownItemOption>, который работает и с обычным Dropdown, и с TableDropdown
      */
-    dropdown?: DropdownProps & { $css?: CSSObject };
+    dropdown?: DropdownProps<DropdownItemOption> & { $css?: CSSObject };
     disabledTooltipProps?: TooltipProps;
   };
 

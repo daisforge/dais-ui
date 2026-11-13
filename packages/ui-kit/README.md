@@ -27,26 +27,38 @@
 ## Совместимость и темы
 
 Приложению нужен `styled-components 5.3.11`. Наследуемые типы атомарных
-компонентов следуют установленной версии SDDS; при обновлении библиотеки
+компонентов следуют SDDS `0.369.0`; при обновлении библиотеки
 проверяйте типы приложения.
 
-- Default, beta core и high contrast поступают из `@sddsjs/sdds_finai`.
+- Default, beta core и high contrast поступают из `@sddsjs/sdds_finai@0.2.3`.
   Публичные экспорты `sdds_finai__light/dark` являются алиасами
   `sdds_finai_default__light/dark`.
 - `GlobalStyle.theme` принимает `light`, `dark`, `betaCoreLight`, `betaCoreDark`,
   `highContrastLight` и `highContrastDark`.
-- `shadowGradientDark` и `shadowGradientLight` экспортируются через
-  `@salutejs/sdds-themes`. При сборке dais-ui из ESM встраиваются только эти
-  две константы; остальные токены старого пакета в JS библиотеки не входят.
-  Их CSS-fallback работает и без соответствующих переменных в теме.
-- `Dropdown` поддерживает прежние placement `top/bottom/left/right`:
-  адаптер преобразует их в `*-start`, включая вложенные пункты.
-  Новые `*-start/center/end` и `auto` передаются без изменения.
-  Обработчики и `renderItem` получают исходные объекты пунктов.
+- `shadowGradientDark` и `shadowGradientLight` сохраняют публичные имена и
+  fallback-значения и экспортируются из `@sddsjs/sdds_finai/theme/tokens/index.js`.
+  Обе CSS-переменные присутствуют во всех шести темах. Все темы и токены остаются
+  external при сборке библиотеки.
+- `Dropdown`, `DropdownProps` и `DropdownItemOption` реэкспортируются из SDDS
+  напрямую. Тип `DropdownProps` требует параметр пункта:
+  `DropdownProps<DropdownItemOption>` или `DropdownProps<MyItem>`. Короткие placement
+  `top/bottom/left/right` поддерживаются upstream
+  как `*-start`, включая вложенные пункты, но помечены deprecated. Для нового
+  кода используйте `*-start/center/end` или `auto`.
+- При миграции учитывайте: SDDS фильтрует скрытые дочерние пункты и клонирует
+  родителей. В `onItemSelect`, `onHover` и `renderItem` сохраняются пользовательские
+  поля, но ссылочная идентичность с исходным родителем не гарантируется.
+  Сопоставляйте пункты по `value`, а не через `===` или `Map` с ключами-объектами.
 
-В отдельном минимальном потребителе на webpack 5 сборка прошла без новых
-preloader и без отключения `resolve.fullySpecified`: ESM-импорты тем в сборке
-библиотеки содержат `.js` и `/index.js`. Корпоративные webpack-конфиги недоступны
+В изолированном потребителе проверены типы, production-сборки Vite и webpack 5
+и работа вложенного Dropdown в браузере с корневыми импортами `@daisforge/ui`.
+Webpack собирается без новых preloader и без отключения `resolve.fullySpecified`:
+ESM-импорты тем в сборке библиотеки содержат `.js` и `/index.js`.
+Для явного выбора формата публичного подпути используйте `/index.mjs` или
+`/index.cjs`; разрешение подпутей без расширений зависит от сборщика.
+Прямой запуск ESM Dropdown в Node без сборщика ограничен импортами каталогов
+в самом SDDS (`ERR_UNSUPPORTED_DIR_IMPORT`); CJS-импорты Dropdown, тем и теней
+проверены в Node. Корпоративные webpack-конфиги недоступны
 и не проверены. При обновлении сохраните существующие правила загрузки CSS таблиц,
 установите `styled-components` точной версии `5.3.11` (`npm install --save-exact
 styled-components@5.3.11`), обновите lockfile и выполните typecheck и production-сборку

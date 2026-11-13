@@ -1,5 +1,5 @@
 import { Checkbox } from '@ui-kit/components/Checkbox';
-import { DropdownProps } from '@ui-kit/components/Dropdown';
+import { DropdownItemOption, DropdownProps } from '@ui-kit/components/Dropdown';
 import { IconClose, IconCubeOutline } from '@ui-kit/icons';
 import { textSecondary } from '@ui-kit/tokens';
 import React, { useMemo } from 'react';
@@ -83,32 +83,33 @@ export const useGetRowsGroupingBtnProps = <
       visible: [] as string[],
       hidden: [] as string[],
     };
-    const dropdownOptions: DropdownProps['items'] = columnConfig
-      .filter((col) => {
-        const enabled = col.rowsGrouping
-          ? col.rowsGrouping.groupByColumn ?? true // @default true -   при наличии пропса col.rowsGrouping
-          : false;
+    const dropdownOptions: DropdownProps<DropdownItemOption>['items'] =
+      columnConfig
+        .filter((col) => {
+          const enabled = col.rowsGrouping
+            ? col.rowsGrouping.groupByColumn ?? true // @default true -   при наличии пропса col.rowsGrouping
+            : false;
 
-        columns[enabled ? 'visible' : 'hidden'].push(col.key);
+          columns[enabled ? 'visible' : 'hidden'].push(col.key);
 
-        return enabled;
-      })
-      .map((col) => {
-        const indexInGrouped =
-          groupedCols?.findIndex((k) => k === col.key) ?? -1;
-        const checked = indexInGrouped > -1;
+          return enabled;
+        })
+        .map((col) => {
+          const indexInGrouped =
+            groupedCols?.findIndex((k) => k === col.key) ?? -1;
+          const checked = indexInGrouped > -1;
 
-        const label = col.rowsGrouping?.columnGroupLabel ?? col.key;
-        return {
-          value: col.key,
-          label,
-          contentLeft: <CheckBoxI checked={checked} />,
+          const label = col.rowsGrouping?.columnGroupLabel ?? col.key;
+          return {
+            value: col.key,
+            label,
+            contentLeft: <CheckBoxI checked={checked} />,
 
-          ...(checked && {
-            contentRight: <BadgeI text={indexInGrouped + 1} />,
-          }),
-        };
-      });
+            ...(checked && {
+              contentRight: <BadgeI text={indexInGrouped + 1} />,
+            }),
+          };
+        });
 
     const customOptions = (defaultCustomItemsExternal ?? []).map((i) => {
       columns.visible.push(i.value.toString());
