@@ -1,11 +1,7 @@
 import type { DataEditorRef } from '@glideappsfinal/glide-data-grid';
 import { type RefObject } from 'react';
 
-/** Строки на экране по последнему onVisibleRegionChanged */
-export interface VisibleRows {
-  from: number;
-  to: number;
-}
+import type { RowRange } from '../../../hooks/visibleRows';
 
 /** Если видимая область ещё неизвестна (первый кадр), перерисовываются первые строки */
 const ROWS_WITHOUT_REGION = 30;
@@ -16,7 +12,7 @@ interface GridUpdateParams {
   columnCount: number;
   headerAndGroupHeaderRowsCount: number;
   /** Видимые строки: шрифт или иконка догрузились, перерисовать нужно экран, а не начало таблицы */
-  visibleRows?: VisibleRows | null;
+  visibleRows?: RowRange | null;
 }
 
 export function updateGridCells({

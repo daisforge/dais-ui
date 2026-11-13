@@ -2,11 +2,8 @@ import type { DataEditorRef } from '@glideappsfinal/glide-data-grid';
 import { type RefObject, useEffect } from 'react';
 
 import { onAnyIconLoad } from '../cells';
-import {
-  createRafUpdate,
-  updateGridCells,
-  type VisibleRows,
-} from './gridUpdateUtils';
+import type { RowRange } from '../../../hooks/visibleRows';
+import { createRafUpdate, updateGridCells } from './gridUpdateUtils';
 
 interface UseIconLoadRedrawParams {
   dataEditorRef: RefObject<DataEditorRef>;
@@ -14,7 +11,7 @@ interface UseIconLoadRedrawParams {
   columnCount: number;
   headerAndGroupHeaderRowsCount: number;
   /** Видимые строки на момент перерисовки; без них перерисовываются первые строки */
-  getVisibleRows?: () => VisibleRows | null;
+  getVisibleRows?: () => RowRange | null;
 }
 
 export function useIconLoadRedraw({

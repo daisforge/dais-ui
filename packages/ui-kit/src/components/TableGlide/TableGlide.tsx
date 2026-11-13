@@ -41,6 +41,11 @@ import {
 } from './hooks/selection';
 import { useKeepCellInView } from './hooks/autoRowHeight/useKeepCellInView';
 import { useScrollAnchor } from './hooks/autoRowHeight/useScrollAnchor';
+import {
+  paintActiveHeaderBackground,
+  useActiveHeadersRedraw,
+} from './hooks/useActiveHeadersRedraw';
+import { useActiveRowsRedraw } from './hooks/useActiveRowsRedraw';
 import { useAnimatedRowHeight } from './hooks/useAnimatedRowHeight';
 import { useErrorCellRanges } from './hooks/useErrorCellRanges';
 import { useCanvasContextMenuInteraction } from './hooks/useCanvasContextMenuInteraction';
@@ -48,12 +53,8 @@ import { useCanvasEditorActivation } from './hooks/useCanvasEditorActivation';
 import { useCanvasInteractionSession } from './hooks/useCanvasInteractionSession';
 import { useCustomRenderers } from './hooks/useCustomRenderers';
 import { useGlideElements } from './hooks/useGlideElements';
-import {
-  paintActiveHeaderBackground,
-  useActiveHeadersRedraw,
-} from './hooks/useActiveHeadersRedraw';
-import { useActiveRowsRedraw } from './hooks/useActiveRowsRedraw';
 import { useHoverState } from './hooks/useHoverState';
+import type { RowRange } from './hooks/visibleRows';
 import { useSnapshotRepaint } from './hooks/useSnapshotRepaint';
 import { useOverlayPortalFix } from './hooks/useOverlayPortalFix';
 import { useItemHoveredHandler } from './hooks/useItemHoveredHandler';
@@ -72,7 +73,6 @@ import {
   buildCellId,
 } from './lib/canvas';
 import { useFontLoadRedraw, useIconLoadRedraw } from './lib/canvas/hooks';
-import type { VisibleRows } from './lib/canvas/hooks/gridUpdateUtils';
 import { buildEffectiveInteractionOutcome } from './lib/canvas/interaction/interactionManager';
 import { resolveCanvasCellInteractionTargetFromRenderData } from './lib/canvas/interaction/resolveCanvasCellInteractionTarget';
 import { StyledGlideDataEditor, StyledOverlayPortal } from './styled';
@@ -114,7 +114,6 @@ import {
   handleGroupHeaderClick,
 } from './utils/groupHeaderClick';
 import { getRowSpan } from './utils/getRowSpan';
-
 import { GroupHeaderParts } from './utils/groupHeaderParts';
 import {
   isBlockCut,
@@ -803,7 +802,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   // Догрузка шрифта или иконки перерисовывает строки на экране, а не начало
   // таблицы: раньше перерисовывались строки 0-29, и прокрученная таблица
   // оставалась запасным шрифтом до наведения или прокрутки.
-  const getVisibleRowsForRedraw = useCallback((): VisibleRows | null => {
+  const getVisibleRowsForRedraw = useCallback((): RowRange | null => {
     const region = visibleRegionRef.current;
     return region ? { from: region.y, to: region.y + region.height } : null;
   }, []);

@@ -1,5 +1,5 @@
 import type { CellHeightReporter } from '../../cellRenderer';
-import type { VisibleRows } from './anchorShift';
+import type { RowRange } from '../visibleRows';
 import { ColumnHeights } from './ColumnHeights';
 import { RowHeightIndex } from './RowHeightIndex';
 
@@ -58,7 +58,7 @@ export class AutoRowHeightStore<R extends object> {
   private maxHeight = MAX_AUTO_ROW_HEIGHT;
 
   /** Строки на экране: их устаревшая высота пересчитывается из ячеек */
-  private visible: VisibleRows = { from: 0, to: 0 };
+  private visible: RowRange = { from: 0, to: 0 };
 
   /** Прилипшие строки: glide рисует их всегда, но в видимую область не включает */
   private pinned: readonly number[] = [];
@@ -97,7 +97,7 @@ export class AutoRowHeightStore<R extends object> {
     this.refreshStaleVisible();
   }
 
-  get visibleRows(): VisibleRows {
+  get visibleRows(): RowRange {
     return this.visible;
   }
 

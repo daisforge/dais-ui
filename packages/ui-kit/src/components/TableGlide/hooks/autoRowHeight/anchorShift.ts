@@ -1,11 +1,7 @@
+import type { RowRange } from '../visibleRows';
 import type { RowHeightChange } from './AutoRowHeightStore';
 
-export interface VisibleRows {
-  from: number;
-  to: number;
-}
-
-const rangeOf = ({ from, to }: VisibleRows) =>
+const rangeOf = ({ from, to }: RowRange) =>
   Array.from(
     { length: Math.max(to - from + 1, 0) },
     (_, index) => from + index,
@@ -21,7 +17,7 @@ const rangeOf = ({ from, to }: VisibleRows) =>
  */
 export function anchorShiftOf(
   changes: readonly RowHeightChange[],
-  visible: VisibleRows,
+  visible: RowRange,
 ): number {
   const measured = new Set(changes.map(({ rowIndex }) => rowIndex));
   const anchor = rangeOf(visible).find((rowIndex) => !measured.has(rowIndex));

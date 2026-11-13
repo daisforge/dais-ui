@@ -2,16 +2,16 @@ import type { DataEditorRef } from '@glideappsfinal/glide-data-grid';
 import type { RefObject } from 'react';
 import { useCallback, useEffect, useRef } from 'react';
 
+import {
+  MAX_ROWS_WITHOUT_REGION,
+  type RowRange,
+  type VisibleRegion,
+} from './visibleRows';
+
 /** Ячейка с данными под курсором. */
 export interface HoveredCell {
   colInd: number;
   rowInd: number;
-}
-
-/** Строки под курсором: от первой до последней включительно. */
-export interface HoverRows {
-  from: number;
-  to: number;
 }
 
 /**
@@ -22,7 +22,7 @@ export type ResolveHoverRows = (
   /** Ячейка прямо под мышью. Блок по ней ищется заново при каждом расчёте. */
   rawColInd: number,
   rawRowInd: number,
-) => HoverRows;
+) => RowRange;
 
 /**
  * Единый источник наведения курсора для таблицы. Хранит два значения. У них
@@ -52,8 +52,6 @@ export type ResolveHoverRows = (
  * Строки блока за пределами видимой области не дорисовываются: glide нарисует
  * их заново, когда они появятся на экране.
  */
-/** Если видимая область ещё неизвестна, дорисовываем не больше стольких строк. */
-const MAX_ROWS_WITHOUT_REGION = 200;
 const NO_ROWS: readonly number[] = [];
 
 export function useHoverState({
@@ -75,7 +73,7 @@ export function useHoverState({
   /** Число строк данных (без итоговой summary-строки). */
   rowsCount: number;
   /** Видимая область: дорисовка строк блока обрезается по её строкам. */
-  visibleRegionRef?: RefObject<{ y: number; height: number } | null>;
+  visibleRegionRef?: RefObject<VisibleRegion | null>;
   /** Прилипшие строки: glide рисует их всегда, но в видимую область не включает. */
   getPinnedRows?: () => readonly number[] | undefined;
   /** Строки под курсором сменились (рендера React при этом нет). */
@@ -91,7 +89,7 @@ export function useHoverState({
   // может влиять на любую колонку этой строки. Например, курсор на ячейке
   // "Название", а иконка должна появиться в соседней колонке действий.
   const damageRowRanges = useCallback(
-    (...ranges: Array<HoverRows | undefined>) => {
+    (...ranges: Array<RowRange | undefined>) => {
       const visible = visibleRegionRef?.current;
       const visibleFrom = visible ? visible.y : 0;
       // Без известной области (первый кадр) дорисовываем не больше первых строк
@@ -173,7 +171,7 @@ export function useHoverState({
   );
 
   // Строки под курсором (для фона строк и подсветки служебных колонок).
-  const hoverRowsRef = useRef<HoverRows | undefined>(undefined);
+  const hoverRowsRef = useRef<RowRange | undefined>(undefined);
 
   // Последнее наведение и свежий расчёт строк: при смене данных блок под
   // курсором может стать другим, строки пересчитываются без движения мыши.
@@ -186,7 +184,7 @@ export function useHoverState({
   const applyHoverRows = useCallback(() => {
     const last = lastHoverRef.current;
     const resolve = resolveHoverRowsRef.current;
-    const next: HoverRows | undefined = !last
+    const next: RowRange | undefined = !last
       ? undefined
       : resolve
       ? resolve(last[0], last[1])
