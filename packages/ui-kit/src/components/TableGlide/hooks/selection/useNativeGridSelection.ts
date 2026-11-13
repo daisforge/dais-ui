@@ -71,7 +71,47 @@ interface UseNativeGridSelectionParams {
    * (включая own-state колонок/строк, которые в gridSelection не пишутся).
    */
   onSelectionEmit?: (selection: GridSelection) => void;
+  /**
+   * Выделение сменили из кода (controlled `state`), а не действием
+   * пользователя.
+   *
+   * В `onSelectionEmit` такая смена не идёт: это канал действий пользователя. А
+   * копирование, вставка и протяжка заполнения должны знать и о смене из кода.
+   */
+  onExternalSelectionChange?: (
+    selection: GridSelection,
+    /** Первое значение при монтировании, а не смена */
+    initial: boolean,
+  ) => void;
 }
+
+/** Одно и то же выделение по содержимому: потребитель мог положить в state копию объекта */
+export const sameSelection = (a: GridSelection, b: GridSelection): boolean => {
+  if (a === b) return true;
+  if (!a.rows.equals(b.rows) || !a.columns.equals(b.columns)) return false;
+  const ca = a.current;
+  const cb = b.current;
+  if (ca === undefined || cb === undefined) return ca === cb;
+  return (
+    ca.cell[0] === cb.cell[0] &&
+    ca.cell[1] === cb.cell[1] &&
+    ca.range.x === cb.range.x &&
+    ca.range.y === cb.range.y &&
+    ca.range.width === cb.range.width &&
+    ca.range.height === cb.range.height &&
+    ca.rangeStack.length === cb.rangeStack.length &&
+    ca.rangeStack.every((r, i) => {
+      const o = cb.rangeStack[i];
+      return (
+        o !== undefined &&
+        r.x === o.x &&
+        r.y === o.y &&
+        r.width === o.width &&
+        r.height === o.height
+      );
+    })
+  );
+};
 
 export function useNativeGridSelection({
   cellsSelectionMode,
@@ -79,12 +119,50 @@ export function useNativeGridSelection({
   gridSelection: gridSelectionExternal,
   onGridSelectionChange: onGridSelectionChangeExternal,
   onSelectionEmit,
+  onExternalSelectionChange,
 }: UseNativeGridSelectionParams) {
   const [gridSelectionInternal, setGridSelectionInternal] =
     useState<GridSelection>(EMPTY_SELECTION);
 
   const isControlled = gridSelectionExternal !== undefined;
   const selection = gridSelectionExternal ?? gridSelectionInternal;
+
+  // Узнаём, что выделение сменили из кода, а не через наш сеттер.
+  //
+  // Запоминаем последнее выделение, отданное в controlled-сеттер. Если снаружи
+  // вернулось оно же (эхо), это наша смена. Если пришло другое, выделение
+  // сменили из кода. Сравниваем по содержимому: потребитель мог положить в
+  // state копию объекта (redux, immer, setSel({ ...s })).
+  //
+  // Исключение: Ctrl-выбор колонок или строк. Он хранится у нас, а в сеттер
+  // уходит пустое нативное выделение, и «снять всё» из кода по содержимому от
+  // него не отличить. Поэтому после такой отправки эхом считаем только первое
+  // совпавшее по содержимому значение (это ответ сеттера, копия или тот же
+  // объект), а дальше сравниваем по тождеству с ним.
+  const lastSentRef = useRef<GridSelection | null>(null);
+  const lastSentWithAxesRef = useRef(false);
+  const axesEchoPendingRef = useRef(false);
+  const onExternalSelectionChangeRef = useRef(onExternalSelectionChange);
+  onExternalSelectionChangeRef.current = onExternalSelectionChange;
+  useEffect(() => {
+    if (gridSelectionExternal === undefined) return;
+    const sent = lastSentRef.current;
+    const isEcho =
+      sent !== null &&
+      (sent === gridSelectionExternal ||
+        ((!lastSentWithAxesRef.current || axesEchoPendingRef.current) &&
+          sameSelection(sent, gridSelectionExternal)));
+    if (isEcho) {
+      lastSentRef.current = gridSelectionExternal;
+      axesEchoPendingRef.current = false;
+      return;
+    }
+    const initial = sent === null;
+    lastSentRef.current = gridSelectionExternal;
+    lastSentWithAxesRef.current = false;
+    axesEchoPendingRef.current = false;
+    onExternalSelectionChangeRef.current?.(gridSelectionExternal, initial);
+  }, [gridSelectionExternal]);
 
   // Храним glide selection как источник истины нативного выделения. В controlled-
   // режиме значение владеется снаружи (onGridSelectionChange — сеттер), иначе —
@@ -94,6 +172,9 @@ export function useNativeGridSelection({
   const handleGridSelectionChange = useCallback(
     (next: GridSelection, emitted: GridSelection = next) => {
       if (isControlled) {
+        lastSentRef.current = next;
+        lastSentWithAxesRef.current = emitted !== next;
+        axesEchoPendingRef.current = emitted !== next;
         onGridSelectionChangeExternal?.(next);
       } else {
         setGridSelectionInternal(next);
@@ -123,6 +204,9 @@ export function useNativeGridSelection({
       return;
     }
     if (isControlled) {
+      lastSentRef.current = shifted;
+      lastSentWithAxesRef.current = false;
+      axesEchoPendingRef.current = false;
       onGridSelectionChangeExternal?.(shifted);
     } else {
       setGridSelectionInternal(shifted);

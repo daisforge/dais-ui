@@ -32,6 +32,8 @@ interface Params<R extends object> {
   theme?: object;
   /** Потолок высоты строки в `'auto'` */
   maxAutoRowHeight?: number;
+  /** Прилипшие строки: в `'auto'` их высоты пересчитываются наравне с видимыми */
+  stickyRows?: readonly number[];
 }
 
 /**
@@ -45,6 +47,7 @@ export function useRowHeightGlide<R extends object>({
   columns,
   theme,
   maxAutoRowHeight,
+  stickyRows,
 }: Params<R>) {
   const isAuto = rowHeight === 'auto';
   const auto = useAutoRowHeight({
@@ -54,6 +57,7 @@ export function useRowHeightGlide<R extends object>({
     theme,
     maxHeight: maxAutoRowHeight,
     baseHeight: DEFAULT_ROW_HEIGHT[rowSize],
+    pinnedRows: stickyRows,
   });
 
   // auto.heightOf меняется с новыми измерениями: glide должен заново спросить высоты

@@ -6,7 +6,6 @@ import type { Theme } from '../../types';
 import { useColoringLayers } from './useColoringLayers';
 
 const THEME = {
-  bgServiceRowHovered: 'service-hover',
   selectionServiceActiveBg: 'service-active',
   selectionActiveBg: 'active',
   selectionActiveCheckboxBg: 'active-checkbox',
@@ -30,8 +29,6 @@ const base = {
   headerSelectedRowIndexes: [] as number[],
   totalRows: 5,
   columnsCount: 4,
-  isRowHoverEnabled: true,
-  dataRowsCount: 5,
   outlineEachRange: false,
 };
 
@@ -39,25 +36,9 @@ const render = (overrides: Partial<Parameters<typeof useColoringLayers>[0]>) =>
   renderHook(() => useColoringLayers({ ...base, ...overrides })).result.current;
 
 describe('useColoringLayers: служебная зона следует за строкой (clean)', () => {
-  it('по умолчанию hover служебной зоны рисуется слоем своим цветом', () => {
-    const regions = render({ hoverRows: { from: 2, to: 2 } });
-    expect(regions?.[0]).toMatchObject({
-      color: 'service-hover',
-      range: { x: 0, y: 2, width: 1, height: 1 },
-      style: 'no-outline',
-    });
-  });
-
-  it('курсор на объединённом блоке: hover служебной зоны на все строки блока', () => {
-    const regions = render({ hoverRows: { from: 1, to: 3 } });
-    expect(regions?.[0]).toMatchObject({
-      range: { x: 0, y: 1, width: 1, height: 3 },
-    });
-  });
-
-  it('serviceZoneFollowsRow: слоя hover служебной зоны нет', () => {
-    const regions = render({ hoverRows: { from: 2, to: 2 }, serviceZoneFollowsRow: true });
-    expect(regions).toBeUndefined();
+  it('без выделения и ошибок регионов нет: наведение регионов не даёт', () => {
+    expect(render({})).toBeUndefined();
+    expect(render({ serviceZoneFollowsRow: true })).toBeUndefined();
   });
 
   it('по умолчанию служебная зона выделенной по нумерации строки — фиксированным цветом', () => {

@@ -1,6 +1,8 @@
 import { CompactSelection } from '@glideappsfinal/glide-data-grid';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
+const MODIFIER_KEYS = new Set(['Control', 'Meta', 'Shift', 'Alt']);
+
 /**
  * Ось выделения СТРОК по клику/драгу на колонке нумерации (независимая от glide).
  *
@@ -34,7 +36,14 @@ export function useRowAxisSelection() {
   // Признак «изменение выделения вызвано кликом мыши» (а не стрелками) — нужен
   // для sticky-подсветки строки: true между pointerdown и pointerup.
   const pointerGestureRef = useRef(false);
-  // Жест правой кнопкой (открытие контекстного меню).
+  // Признак «идёт правый клик» (открытие контекстного меню).
+  //
+  // Живёт дольше pointerup: на Windows браузер шлёт contextmenu после
+  // отпускания кнопки, и glide меняет выделение, когда pointerGestureRef уже
+  // снят. Снимается следующей задачей после contextmenu (glide обрабатывает его
+  // синхронно), а также следующим pointerdown или нажатием клавиши, иначе
+  // чужие смены выделения без мыши (сдвиг служебных колонок, обрезка строк)
+  // считались бы правым кликом.
   const rightClickGestureRef = useRef(false);
 
   useEffect(() => {
@@ -47,11 +56,33 @@ export function useRowAxisSelection() {
     const onPointerUp = () => {
       pointerGestureRef.current = false;
     };
+    // Клавиатура это не жест мышью: признаки правой кнопки и Ctrl с прошлого
+    // клика не должны менять смысл стрелок. Сами модификаторы не считаются,
+    // иначе автоповтор зажатого Ctrl сбрасывал бы признак посреди протяжки.
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (MODIFIER_KEYS.has(event.key)) return;
+      rightClickGestureRef.current = false;
+      ctrlGestureRef.current = false;
+    };
+    // Признак правого клика снимается сразу после contextmenu. Слушаем в фазе
+    // захвата: stopPropagation на элементе слушателю не мешает.
+    let contextMenuTimer: ReturnType<typeof setTimeout> | undefined;
+    const onContextMenu = () => {
+      clearTimeout(contextMenuTimer);
+      contextMenuTimer = setTimeout(() => {
+        rightClickGestureRef.current = false;
+      }, 0);
+    };
     window.addEventListener('pointerdown', onPointerDown, true);
     window.addEventListener('pointerup', onPointerUp, true);
+    window.addEventListener('keydown', onKeyDown, true);
+    window.addEventListener('contextmenu', onContextMenu, true);
     return () => {
+      clearTimeout(contextMenuTimer);
       window.removeEventListener('pointerdown', onPointerDown, true);
       window.removeEventListener('pointerup', onPointerUp, true);
+      window.removeEventListener('keydown', onKeyDown, true);
+      window.removeEventListener('contextmenu', onContextMenu, true);
     };
   }, []);
 

@@ -27,8 +27,29 @@ import {
 
 type CanvasCacheKey = string | number | boolean | null;
 
-/** Отступ обрезки от левого и верхнего края ячейки: там линии сетки (как у glide) */
-const CELL_EDGE_INSET = 1;
+/**
+ * Сколько пикселей у каждого края ячейки содержимое не закрашивает.
+ *
+ * Слева и сверху пиксель оставляем, где есть линия сетки или рамка выделения
+ * самой ячейки: при точечной перерисовке glide их не обновляет и сам заливает
+ * фон с таким же отступом. Где линии и рамки нет, отступа нет, иначе фон
+ * Canvas.Container не доходил бы до края ячейки на 1 px. Справа и снизу отступа
+ * нет, кроме последней колонки и строки: там glide заливает на пиксель короче,
+ * на этом пикселе лежит край рамки выделения.
+ */
+export interface CellEdgeInset {
+  left: number;
+  top: number;
+  right: number;
+  bottom: number;
+}
+
+const DEFAULT_EDGE_INSET: CellEdgeInset = {
+  left: 1,
+  top: 1,
+  right: 0,
+  bottom: 0,
+};
 
 /**
  * Приёмник высоты содержимого ячейки для `rowHeight: 'auto'`. Ячейка снимает
@@ -37,6 +58,8 @@ const CELL_EDGE_INSET = 1;
 export interface CellHeightReporter {
   needsHeight: (width: number) => boolean;
   report: (width: number, height: number) => void;
+  /** Ячейка больше высоту не сообщает (вошла в блок по строкам): прежний замер забыть */
+  forget: () => void;
 }
 
 interface CanvasCellCacheEntry {
@@ -127,6 +150,7 @@ export const glideCellRenderer = <R extends ObjectForExtending, SR>({
     themeOverride?: GlideThemePartial;
     getPortalEventTarget?: () => EventTarget | null;
     refTable?: unknown;
+    edgeInset?: CellEdgeInset;
   };
   /**
    * Высота содержимого блока с прилипанием. Нужна форку, только пока блок обрезан
@@ -284,16 +308,15 @@ export const glideCellRenderer = <R extends ObjectForExtending, SR>({
 
     // Содержимое обрезается по ячейке: glide обрезает только по колонке, и при перерисовке
     // одной ячейки (hover, выделение) хвост текста лёг бы поверх соседних строк.
-    // Левый и верхний пиксель — линии сетки и край рамки выделения соседа. При частичной
-    // перерисовке glide их не обновляет и сам заливает фон с отступом 1px; так же
-    // обрезаем и мы, иначе фон контейнера стирает линии и рамку.
+    // Отступы от краёв см. CellEdgeInset.
+    const inset = options.edgeInset ?? DEFAULT_EDGE_INSET;
     ctx.save();
     ctx.beginPath();
     ctx.rect(
-      rect.x + CELL_EDGE_INSET,
-      rect.y + CELL_EDGE_INSET,
-      rect.width - CELL_EDGE_INSET,
-      rect.height - CELL_EDGE_INSET
+      rect.x + inset.left,
+      rect.y + inset.top,
+      rect.width - inset.left - inset.right,
+      rect.height - inset.top - inset.bottom,
     );
     ctx.clip();
 

@@ -19,3 +19,12 @@ describe('contentFormat только с выравниванием', () => {
     expect(getAlignment({})).toBe('left');
   });
 });
+
+describe('customFormat без функции', () => {
+  it('customFormat: undefined не отключает числовой формат', () => {
+    expect(
+      formatCellValue(1234.5, { type: 'number', customFormat: undefined }),
+    ).toBe(formatCellValue(1234.5, { type: 'number' }));
+    expect(formatCellValue(1234.5, { customFormat: undefined })).toBe('1234.5');
+  });
+});

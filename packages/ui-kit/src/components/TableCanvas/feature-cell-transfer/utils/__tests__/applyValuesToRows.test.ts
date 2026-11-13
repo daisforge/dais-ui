@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
+import { createLazyRowSpan } from '../../../table-hooks/createLazyRowSpan';
 import type { TransferColumnConfig } from '../../types';
 import { applyValuesToRows } from '../applyValuesToRows';
 
@@ -230,5 +231,65 @@ describe('applyValuesToRows — fill handle (source range)', () => {
     expect(res.newRows[0]?.a).toBe('src'); // внутри source — пропущена
     expect(res.newRows[1]?.a).toBe('F'); // ниже source — заполнена
     expect(res.affectedIndexes).toEqual([1]);
+  });
+});
+
+describe('applyValuesToRows — блок lazyRowSpan', () => {
+  type Row = { region: string; person: string };
+  const makeRows = (): Row[] => [
+    { region: 'N', person: 'p0' },
+    { region: 'N', person: 'p1' },
+    { region: 'N', person: 'p2' },
+  ];
+  const lazy = (_row: Row, colKey: string) =>
+    colKey === 'region' ? ([0, 2] as const) : null;
+
+  it('вставка столбика в блок пишет во все строки блока первое значение', () => {
+    const rows = makeRows();
+    const columns = [
+      dcol('region', true, {
+        rowSpan: createLazyRowSpan<Row>(lazy, 'region', { current: rows }),
+      }),
+      dcol('person'),
+    ];
+
+    const res = applyValuesToRows({
+      ...BASE,
+      rows,
+      columns,
+      rowTargets: [0, 1, 2],
+      colTargets: [0],
+      getValue: (r) => ['X', 'Y', 'Z'][r] ?? '',
+      resolveBlocks: true,
+    });
+
+    expect(res.newRows.map((r) => (r as Row).region)).toEqual(['X', 'X', 'X']);
+  });
+
+  it('блок распознаётся и после записи в соседнюю обычную колонку той же строки', () => {
+    const rows = makeRows();
+    const columns = [
+      dcol('person'),
+      dcol('region', true, {
+        rowSpan: createLazyRowSpan<Row>(lazy, 'region', { current: rows }),
+      }),
+    ];
+
+    const res = applyValuesToRows({
+      ...BASE,
+      rows,
+      columns,
+      rowTargets: [0, 1, 2],
+      colTargets: [0, 1],
+      getValue: (r, c) => (c === 0 ? `q${r}` : ['X', 'Y', 'Z'][r] ?? ''),
+      resolveBlocks: true,
+    });
+
+    expect(res.newRows.map((r) => (r as Row).region)).toEqual(['X', 'X', 'X']);
+    expect(res.newRows.map((r) => (r as Row).person)).toEqual([
+      'q0',
+      'q1',
+      'q2',
+    ]);
   });
 });

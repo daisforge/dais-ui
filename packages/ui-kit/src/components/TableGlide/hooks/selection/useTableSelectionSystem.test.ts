@@ -1,4 +1,7 @@
-import type { GridSelection } from '@glideappsfinal/glide-data-grid';
+import {
+  CompactSelection,
+  type GridSelection,
+} from '@glideappsfinal/glide-data-grid';
 import { act, renderHook } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
@@ -14,7 +17,11 @@ const COLUMNS = [
   { id: 'c', isServiceColumn: false },
 ] as unknown as readonly ColumnGlideLast<ObjectForExtending, unknown>[];
 
-const EMPTY_SELECTION = { current: undefined } as unknown as GridSelection;
+const EMPTY_SELECTION: GridSelection = {
+  current: undefined,
+  rows: CompactSelection.empty(),
+  columns: CompactSelection.empty(),
+};
 
 /** Мок glide-выделения с current.range. */
 const gridSel = (
@@ -269,6 +276,251 @@ describe('useTableSelectionSystem — выделение строк по нум�
   });
 });
 
+describe('useTableSelectionSystem — клавиатура и правый клик после выбора строки', () => {
+  /** Клик по нумерации строки `row`: pointerdown, выделение от glide, pointerup */
+  const clickNumbering = (
+    view: ReturnType<typeof setupWithNative>['view'],
+    row: number,
+  ) => {
+    act(() => {
+      window.dispatchEvent(new MouseEvent('pointerdown', { button: 0 }));
+      view.result.current.handleGridSelectionWithColumnReset(
+        gridSel([0, row], { x: 0, y: row, width: 1, height: 1 }),
+      );
+      window.dispatchEvent(new Event('pointerup'));
+    });
+  };
+
+  it('Shift+стрелка вниз после клика по нумерации растит диапазон строк', () => {
+    const { view, onSelectionEmit } = setupWithNative();
+    clickNumbering(view, 2);
+    onSelectionEmit.mockClear();
+
+    // glide держит якорь в нумерации и растит range на вторую строку
+    act(() => {
+      window.dispatchEvent(
+        new KeyboardEvent('keydown', { key: 'ArrowDown', shiftKey: true }),
+      );
+      view.result.current.handleGridSelectionWithColumnReset(
+        gridSel([0, 2], { x: 1, y: 2, width: 3, height: 2 }),
+      );
+    });
+
+    expect(onSelectionEmit.mock.lastCall?.[0].current.range).toEqual({
+      x: 1,
+      y: 2,
+      width: 3,
+      height: 2,
+    });
+  });
+
+  it('стрелка вниз после клика по нумерации выделяет следующую строку', () => {
+    const { view, onSelectionEmit } = setupWithNative();
+    clickNumbering(view, 2);
+    onSelectionEmit.mockClear();
+
+    act(() => {
+      window.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown' }));
+      view.result.current.handleGridSelectionWithColumnReset(
+        gridSel([0, 3], { x: 0, y: 3, width: 1, height: 1 }),
+      );
+    });
+
+    expect(onSelectionEmit.mock.lastCall?.[0].current.range).toEqual({
+      x: 1,
+      y: 3,
+      width: 3,
+      height: 1,
+    });
+  });
+
+  it('правый клик по нумерации, contextmenu после pointerup (Windows): строка выделяется', () => {
+    const { view, onSelectionEmit } = setupWithNative();
+
+    act(() => {
+      window.dispatchEvent(new MouseEvent('pointerdown', { button: 2 }));
+      window.dispatchEvent(new Event('pointerup'));
+      view.result.current.handleGridSelectionWithColumnReset(
+        gridSel([0, 4], { x: 0, y: 4, width: 1, height: 1 }),
+      );
+    });
+
+    expect(onSelectionEmit.mock.lastCall?.[0].current.range).toEqual({
+      x: 1,
+      y: 4,
+      width: 3,
+      height: 1,
+    });
+  });
+
+  it('правый клик внутри выделенных строк после pointerup не сужает выделение', () => {
+    const { view, onSelectionEmit } = setupWithNative();
+    act(() => {
+      window.dispatchEvent(new MouseEvent('pointerdown', { button: 0 }));
+      view.result.current.handleGridSelectionWithColumnReset(
+        gridSel([0, 0], { x: 0, y: 0, width: 1, height: 3 }),
+      );
+      window.dispatchEvent(new Event('pointerup'));
+    });
+    onSelectionEmit.mockClear();
+
+    act(() => {
+      window.dispatchEvent(new MouseEvent('pointerdown', { button: 2 }));
+      window.dispatchEvent(new Event('pointerup'));
+      view.result.current.handleGridSelectionWithColumnReset(
+        gridSel([0, 1], { x: 0, y: 1, width: 1, height: 1 }),
+      );
+    });
+
+    expect(onSelectionEmit).not.toHaveBeenCalled();
+  });
+
+  it('клавиша после правого клика снова считается клавиатурой: Shift+стрелка растит диапазон', () => {
+    const { view, onSelectionEmit } = setupWithNative();
+    act(() => {
+      window.dispatchEvent(new MouseEvent('pointerdown', { button: 2 }));
+      window.dispatchEvent(new Event('pointerup'));
+      view.result.current.handleGridSelectionWithColumnReset(
+        gridSel([0, 2], { x: 0, y: 2, width: 1, height: 1 }),
+      );
+    });
+    onSelectionEmit.mockClear();
+
+    act(() => {
+      window.dispatchEvent(
+        new KeyboardEvent('keydown', { key: 'ArrowDown', shiftKey: true }),
+      );
+      view.result.current.handleGridSelectionWithColumnReset(
+        gridSel([0, 2], { x: 1, y: 2, width: 3, height: 2 }),
+      );
+    });
+
+    expect(onSelectionEmit.mock.lastCall?.[0].current.range).toEqual({
+      x: 1,
+      y: 2,
+      width: 3,
+      height: 2,
+    });
+  });
+});
+
+describe('useTableSelectionSystem — сброс выделения и правый клик по Ctrl-набору', () => {
+  it('Escape и клик по пустой области: пустое выделение и onSelectionCleared дают один onChange', () => {
+    const { view, onSelectionEmit } = setupWithNative();
+    act(() => {
+      window.dispatchEvent(new MouseEvent('pointerdown', { button: 0 }));
+      view.result.current.handleGridSelectionWithColumnReset(
+        gridSel([2, 2], { x: 2, y: 2, width: 1, height: 1 }),
+      );
+      window.dispatchEvent(new Event('pointerup'));
+    });
+    onSelectionEmit.mockClear();
+
+    // Порядок вызовов glide: сначала пустое выделение, потом onSelectionCleared
+    act(() => {
+      view.result.current.handleGridSelectionWithColumnReset(EMPTY_SELECTION);
+      view.result.current.handleSelectionClearedWithColumns();
+    });
+
+    expect(onSelectionEmit).toHaveBeenCalledTimes(1);
+    expect(onSelectionEmit.mock.lastCall?.[0].current).toBeUndefined();
+  });
+
+  it('Escape без выделения ничего не эмитит', () => {
+    const { view, onSelectionEmit } = setupWithNative();
+
+    act(() => {
+      view.result.current.handleGridSelectionWithColumnReset(EMPTY_SELECTION);
+      view.result.current.handleSelectionClearedWithColumns();
+    });
+
+    expect(onSelectionEmit).not.toHaveBeenCalled();
+  });
+
+  it('сброс при Ctrl-выбранных колонках: один onChange, уже без колонок', () => {
+    const { view, onSelectionEmit } = setupWithNative();
+    act(() => {
+      view.result.current.selectColumnFromHeader(
+        1,
+        headerEvent({ ctrlKey: true }),
+      );
+    });
+    act(() => {
+      view.result.current.selectColumnFromHeader(
+        3,
+        headerEvent({ ctrlKey: true }),
+      );
+    });
+    expect(view.result.current.selectedColumnIndexes).toEqual([1, 3]);
+    onSelectionEmit.mockClear();
+
+    act(() => {
+      view.result.current.handleGridSelectionWithColumnReset(EMPTY_SELECTION);
+      view.result.current.handleSelectionClearedWithColumns();
+    });
+
+    expect(onSelectionEmit).toHaveBeenCalledTimes(1);
+    expect(onSelectionEmit.mock.lastCall?.[0].columns.length).toBe(0);
+    expect(view.result.current.selectedColumnIndexes).toEqual([]);
+  });
+
+  it('правый клик по ячейке внутри Ctrl-выбранных строк сохраняет набор', () => {
+    const { view, onSelectionEmit } = setupWithNative();
+    for (const row of [1, 3]) {
+      act(() => {
+        window.dispatchEvent(
+          new MouseEvent('pointerdown', { button: 0, ctrlKey: true }),
+        );
+        view.result.current.handleGridSelectionWithColumnReset(
+          gridSel([0, row], { x: 0, y: row, width: 1, height: 1 }),
+        );
+        window.dispatchEvent(new Event('pointerup'));
+      });
+    }
+    expect(view.result.current.headerSelectedRowIndexes).toEqual([1, 3]);
+    onSelectionEmit.mockClear();
+
+    act(() => {
+      window.dispatchEvent(new MouseEvent('pointerdown', { button: 2 }));
+      window.dispatchEvent(new Event('pointerup'));
+      view.result.current.handleGridSelectionWithColumnReset(
+        gridSel([2, 3], { x: 2, y: 3, width: 1, height: 1 }),
+      );
+    });
+
+    expect(view.result.current.headerSelectedRowIndexes).toEqual([1, 3]);
+    expect(onSelectionEmit).not.toHaveBeenCalled();
+  });
+
+  it('правый клик по ячейке внутри Ctrl-выбранных колонок сохраняет набор', () => {
+    const { view, onSelectionEmit } = setupWithNative();
+    act(() => {
+      view.result.current.selectColumnFromHeader(
+        1,
+        headerEvent({ ctrlKey: true }),
+      );
+    });
+    act(() => {
+      view.result.current.selectColumnFromHeader(
+        3,
+        headerEvent({ ctrlKey: true }),
+      );
+    });
+    onSelectionEmit.mockClear();
+
+    act(() => {
+      window.dispatchEvent(new MouseEvent('pointerdown', { button: 2 }));
+      window.dispatchEvent(new Event('pointerup'));
+      view.result.current.handleGridSelectionWithColumnReset(
+        gridSel([3, 2], { x: 3, y: 2, width: 1, height: 1 }),
+      );
+    });
+
+    expect(view.result.current.selectedColumnIndexes).toEqual([1, 3]);
+    expect(onSelectionEmit).not.toHaveBeenCalled();
+  });
+});
+
 describe('useTableSelectionSystem — наружу одно итоговое выделение на действие', () => {
   it('Ctrl+клик по шапке → один onChange с выбранной колонкой, без промежуточного пустого', () => {
     const { view, onSelectionEmit } = setupWithNative();
@@ -311,5 +563,71 @@ describe('useTableSelectionSystem — наружу одно итоговое в�
       width: 1,
       height: 5,
     });
+  });
+});
+
+describe('useTableSelectionSystem — признак правой кнопки снимается после contextmenu', () => {
+  const checkFlagClearedAfter = (fireContextMenu: () => void) => {
+    vi.useFakeTimers();
+    try {
+      const { view, onSelectionEmit } = setupWithNative();
+      act(() => {
+        window.dispatchEvent(new MouseEvent('pointerdown', { button: 2 }));
+        window.dispatchEvent(new Event('pointerup'));
+        fireContextMenu();
+        view.result.current.handleGridSelectionWithColumnReset(
+          gridSel([0, 4], { x: 0, y: 4, width: 1, height: 1 }),
+        );
+      });
+      // Правый клик по нумерации ещё считается жестом мышью: строка выделена
+      expect(onSelectionEmit.mock.lastCall?.[0].current.range).toEqual({
+        x: 1,
+        y: 4,
+        width: 3,
+        height: 1,
+      });
+      act(() => {
+        vi.runAllTimers();
+      });
+      onSelectionEmit.mockClear();
+      // Фокус грида без мыши: якорь в нумерации переносится на данные
+      act(() => {
+        view.result.current.handleSelectionClearedWithColumns();
+      });
+      act(() => {
+        view.result.current.handleGridSelectionWithColumnReset(
+          gridSel([0, 0], { x: 0, y: 0, width: 1, height: 1 }),
+        );
+      });
+      expect(onSelectionEmit.mock.lastCall?.[0].current.range).toEqual({
+        x: 1,
+        y: 0,
+        width: 1,
+        height: 1,
+      });
+    } finally {
+      vi.useRealTimers();
+    }
+  };
+
+  it('после contextmenu и следующей задачи смена выделения без мыши клавиатурная', () => {
+    checkFlagClearedAfter(() => {
+      window.dispatchEvent(new MouseEvent('contextmenu', { button: 2 }));
+    });
+  });
+
+  it('contextmenu, остановленный на элементе, тоже снимает признак', () => {
+    const target = document.createElement('div');
+    document.body.appendChild(target);
+    target.addEventListener('contextmenu', (event) => event.stopPropagation());
+    try {
+      checkFlagClearedAfter(() => {
+        target.dispatchEvent(
+          new MouseEvent('contextmenu', { button: 2, bubbles: true }),
+        );
+      });
+    } finally {
+      target.remove();
+    }
   });
 });

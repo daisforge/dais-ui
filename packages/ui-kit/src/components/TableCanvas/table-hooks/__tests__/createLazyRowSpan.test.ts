@@ -116,3 +116,30 @@ describe('createLazyRowSpan', () => {
     });
   });
 });
+
+describe('createLazyRowSpan: приведение ответа к контракту', () => {
+  const make = (answer: (rowInd: number) => readonly [number, number] | null) =>
+    createLazyRowSpan<Row>((_row, _key, rowInd) => answer(rowInd), 'region', {
+      current: rows,
+    });
+
+  it('блок из одной строки блоком не считается', () => {
+    const rowSpan = make(() => [1, 1]);
+    expect(rowSpan({ rowInd: 1, row: rows[1]! })).toBeNull();
+  });
+
+  it('ответ без своей строки отбрасывается', () => {
+    const rowSpan = make((rowInd) => (rowInd === 0 ? [1, 2] : [0, 0]));
+    expect(rowSpan({ rowInd: 0, row: rows[0]! })).toBeNull();
+  });
+
+  it('блок за краем таблицы обрезается по строкам', () => {
+    const rowSpan = make(() => [-3, 10]);
+    expect(rowSpan({ rowInd: 1, row: rows[1]! })).toEqual([0, 2]);
+  });
+
+  it('перевёрнутый диапазон отбрасывается', () => {
+    const rowSpan = make(() => [2, 0]);
+    expect(rowSpan({ rowInd: 1, row: rows[1]! })).toBeNull();
+  });
+});

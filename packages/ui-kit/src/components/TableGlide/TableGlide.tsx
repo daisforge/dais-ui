@@ -5,7 +5,9 @@ import {
   DataEditorRef,
   GridCell,
   GridColumn,
+  GridSelection,
   isReadWriteCell,
+  Rectangle,
 } from '@glideappsfinal/glide-data-grid';
 import type { CSSProperties } from 'react';
 import { SELECT_LIST_PORTAL_ID } from '@ui-kit/components/TableCanvasSharedConstants';
@@ -33,8 +35,14 @@ import {
   useSelectionGeometry,
   useTableSelectionSystem,
 } from './hooks/selection';
+import { BlockAutoHeight } from './hooks/autoRowHeight/BlockAutoHeight';
 import { useKeepCellInView } from './hooks/autoRowHeight/useKeepCellInView';
 import { useScrollAnchor } from './hooks/autoRowHeight/useScrollAnchor';
+import {
+  paintActiveHeaderBackground,
+  useActiveHeadersRedraw,
+} from './hooks/useActiveHeadersRedraw';
+import { useActiveRowsRedraw } from './hooks/useActiveRowsRedraw';
 import { useAnimatedRowHeight } from './hooks/useAnimatedRowHeight';
 import { useErrorCellRanges } from './hooks/useErrorCellRanges';
 import { useCanvasContextMenuInteraction } from './hooks/useCanvasContextMenuInteraction';
@@ -43,6 +51,7 @@ import { useCanvasInteractionSession } from './hooks/useCanvasInteractionSession
 import { useCustomRenderers } from './hooks/useCustomRenderers';
 import { useGlideElements } from './hooks/useGlideElements';
 import { useHoverState } from './hooks/useHoverState';
+import type { RowRange } from './hooks/visibleRows';
 import { useSnapshotRepaint } from './hooks/useSnapshotRepaint';
 import { useOverlayPortalFix } from './hooks/useOverlayPortalFix';
 import { useItemHoveredHandler } from './hooks/useItemHoveredHandler';
@@ -92,6 +101,7 @@ import {
   getEditorFrameVars,
   syncEditorFrame,
 } from './utils/editorFrame';
+import { cellEdgeInset, gridLinesAroundCell } from './utils/cellEdgeInset';
 import { findBlockOrigin } from './utils/findBlockOrigin';
 import { mergeThemeOverrides } from './utils/mergeThemeOverrides';
 import { queryGlideElements } from './utils/queryGlideElements';
@@ -101,7 +111,7 @@ import {
   getColumnGroupPath,
   handleGroupHeaderClick,
 } from './utils/groupHeaderClick';
-import { getRowSpan, spansSeveralRows } from './utils/getRowSpan';
+import { getRowSpan } from './utils/getRowSpan';
 import { GroupHeaderParts } from './utils/groupHeaderParts';
 import {
   isBlockCut,
@@ -203,6 +213,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   onGridSelectionChange: onGridSelectionChangeExternal,
   // Канал для copy/paste (selectionRef потребителя) — отдельно от controlled.
   onSelectionEmit,
+  onSelectionSync,
   // Канал наверх: индексы выделенных колонок (объединённые) для контрл-блока.
   onColumnSelectionChange,
   // Follow: после реордера (закрепление) заново выделить эти ключи.
@@ -310,6 +321,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     columns: columnsLast,
     theme,
     maxAutoRowHeight,
+    stickyRows: restProps.stickyRows,
   });
   const rowH = useAnimatedRowHeight(rowHeightGlide);
 
@@ -360,6 +372,30 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     interactionSessionStore,
   );
 
+  // Выделение сменили из кода (controlled state), а не мышью или клавиатурой.
+  // Снимаем свой Ctrl-выбор колонок и строк и сообщаем копированию, вставке и
+  // протяжке заполнения о новом выделении.
+  //
+  // Ctrl-выбор к новому выделению не относится. Сбрасывает его система
+  // выделения, она объявлена ниже, поэтому функция сброса приходит через ref.
+  const resetAxesRef = useRef<() => void>();
+  const handleExternalSelectionChange = useCallback(
+    (next: GridSelection, initial: boolean) => {
+      // При монтировании осей ещё нет, сбрасывать нечего
+      if (!initial) resetAxesRef.current?.();
+      onSelectionSync?.(next);
+    },
+    [onSelectionSync],
+  );
+  // Прилипшие строки (stickyRows) для точечных дорисовок.
+  //
+  // glide рисует их всегда, но в видимую область не включает, поэтому
+  // дорисовки добавляют их отдельно. Читаются через функцию с постоянной
+  // ссылкой, чтобы новый массив от потребителя не пересоздавал хуки.
+  const stickyRowsRef = useRef(restProps.stickyRows);
+  stickyRowsRef.current = restProps.stickyRows;
+  const getStickyRows = useCallback(() => stickyRowsRef.current, []);
+
   const {
     selection,
     handleGridSelectionChange,
@@ -372,6 +408,23 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     gridSelection: gridSelectionExternal,
     onGridSelectionChange: onGridSelectionChangeExternal,
     onSelectionEmit,
+    onExternalSelectionChange: handleExternalSelectionChange,
+  });
+
+  // div-обертка над Glide для DOM-поиска элементов
+  const containerRefInternal = useRef<HTMLDivElement>(null);
+
+  // Якорь прокрутки при автовысоте: строки выше экрана выросли, а видимое
+  // содержимое остаётся на месте.
+  //
+  // Порядок важен: сначала якорь сдвигает прокрутку на рост строк выше него,
+  // потом докрутка к активной ячейке. Иначе докрутка видела бы ячейку в кадре,
+  // а якорь после неё уводил бы верх строки за край на величину роста.
+  useScrollAnchor({
+    enabled: rowHeight === 'auto',
+    containerRef: containerRefInternal,
+    rowHeights: rowHeightGlide,
+    takeShift: takeAnchorShift,
   });
 
   // Прыжок с клавиатуры через ещё не измеренные строки: докручиваем к ячейке,
@@ -389,6 +442,15 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     cellsSelectionMode,
     checkboxSelectedRowIndexes,
   });
+  // Выделение для отрисовки ячеек. Лежит в ref, чтобы функция содержимого
+  // ячеек не менялась на каждый клик.
+  //
+  // Для glide новая функция getCellContent значит «поменялось всё», и он
+  // перерисовывал весь экран. Ref обновляется в рендере, до эффектов glide.
+  // Строки, у которых сменился признак active, дорисовываются отдельно
+  // (useActiveRowsRedraw).
+  const selectionVisualStateRef = useRef(selectionVisualState);
+  selectionVisualStateRef.current = selectionVisualState;
 
   // Обогащаем controlled-сеттер подсветки самим объектом строки (rows[index]),
   // чтобы потребитель получал узел напрямую и не слушал onCellClicked. Если
@@ -419,6 +481,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     selectColumnFromHeader,
     handleGridSelectionWithColumnReset,
     handleSelectionClearedWithColumns,
+    resetAxes,
   } = useTableSelectionSystem({
     columns: columnsLast,
     selection,
@@ -435,6 +498,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     onHighlightActiveRowChange: handleHighlightActiveRowChange,
     isHighlightActiveRowControlled: highlightActiveRowControlled,
   });
+  resetAxesRef.current = resetAxes;
 
   // Отдаём объединённое выделение колонок (ключи) наверх (контрл-блок). Эффект,
   // а не вызов в рендере: колбэк потребителя может быть нестабильным.
@@ -442,23 +506,32 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     onColumnSelectionChange?.(selectedColumnKeysAll);
   }, [selectedColumnKeysAll, onColumnSelectionChange]);
 
-  // Follow: перевыделяем по ключам после закрепления. Порядок колонок после
-  // пина обновляется с ЛАГОМ в рендер (columnsOrder в useReorderDragable
-  // синкается эффектом), поэтому columnsLast сначала ещё старый. Применяем на
-  // КАЖДУЮ смену columnsLast, а pending гасим отложенно — таймаут сбрасывается
-  // на каждом новом columnsLast, так что реально гаснет, когда порядок устоялся
-  // (на финальном, уже переставленном, columnsLast).
+  // После закрепления колонок выделяем те же колонки заново, по ключам.
+  // Делаем это один раз, когда порядок колонок устоялся.
+  //
+  // Порядок колонок после закрепления доходит до рендера с задержкой
+  // (columnsOrder в useReorderDragable синкается эффектом), поэтому
+  // columnsLast сначала ещё старый. Таймер сбрасывается при смене порядка и
+  // срабатывает, когда порядок больше не меняется: наружу уходит один
+  // onChange с новыми индексами, а не два (первый со старыми). Следим за
+  // порядком ключей, а не за ссылкой на массив и колбэки: новый массив с тем
+  // же порядком на каждом рендере иначе откладывал бы применение без конца.
+  const columnsOrderKey = useMemo(
+    () => columnsLast.map((column) => column.id).join('|'),
+    [columnsLast],
+  );
+  const selectColumnsByKeysRef = useRef(selectColumnsByKeys);
+  selectColumnsByKeysRef.current = selectColumnsByKeys;
+  const onColumnSelectionAppliedRef = useRef(onColumnSelectionApplied);
+  onColumnSelectionAppliedRef.current = onColumnSelectionApplied;
   useEffect(() => {
     if (!pendingColumnSelectionKeys) return undefined;
-    selectColumnsByKeys(pendingColumnSelectionKeys);
-    const timer = setTimeout(() => onColumnSelectionApplied?.(), 0);
+    const timer = setTimeout(() => {
+      selectColumnsByKeysRef.current(pendingColumnSelectionKeys);
+      onColumnSelectionAppliedRef.current?.();
+    }, 0);
     return () => clearTimeout(timer);
-  }, [
-    pendingColumnSelectionKeys,
-    columnsLast,
-    selectColumnsByKeys,
-    onColumnSelectionApplied,
-  ]);
+  }, [pendingColumnSelectionKeys, columnsOrderKey]);
 
   // При выделении строк по нумерации вся строка активна по всем колонкам —
   // используется для затемнения шапок data-колонок (как нативный 'row').
@@ -498,6 +571,13 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     [selectionVisualState, selectedColumnSet, rangeStackColumnSet],
   );
 
+  // Признаки выделения для шапки. В ref, чтобы drawHeader не менялся на каждый
+  // клик (подробнее у drawHeader).
+  const isColumnInSelectionRef = useRef(isColumnInSelection);
+  isColumnInSelectionRef.current = isColumnInSelection;
+  const hasSelectedRowsRef = useRef(hasSelectedRows);
+  hasSelectedRowsRef.current = hasSelectedRows;
+
   const columnsForRender = useMemo(() => {
     return columnsLast.map((column, columnIndex) => {
       const themeOverride = { ...(column.themeOverride ?? {}) };
@@ -523,25 +603,11 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         hasThemeOverride = true;
       }
 
-      // Шапка темнеет единым активным цветом, когда колонка участвует в
-      // выделении любым способом: активная колонка текущего диапазона;
-      // выделенная по шапке (selection.columns намеренно пуст, glide не красит
-      // accentColor, и наш bgHeader виден); покрытая ячейками rangeStack
-      // (multi-range-cell); либо выделены строки по нумерации, тогда темнеют
-      // шапки всех data-колонок, как нативный highlightActiveType='row'.
-      const headerIsActive =
-        isColumnInSelection(columnIndex) ||
-        (hasSelectedRows && !column.isServiceColumn);
-
-      if (headerIsActive) {
-        themeOverride.bgHeader = theme.selectionServiceActiveBg;
-        themeOverride.bgHeaderHasFocus = theme.selectionServiceActiveBg;
-        // Выделенная шапка под курсором темнеет на ступень (hoverActive-пара),
-        // а не светлеет штатным ховером — иначе hover визуально «снимал» бы
-        // выделение.
-        themeOverride.bgHeaderHovered = theme.bgHeaderSelectedHovered;
-        hasThemeOverride = true;
-      }
+      // Шапку выделенной колонки здесь не красим, это делает drawHeader.
+      //
+      // Если красить через тему колонки, на каждый клик пересобирался бы весь
+      // массив колонок, и glide при числе колонок больше ста перерисовывал бы
+      // весь экран.
 
       if (!hasThemeOverride) {
         return column;
@@ -554,13 +620,9 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     });
   }, [
     columnsLast,
-    isColumnInSelection,
-    hasSelectedRows,
     numberingColumnIndex,
     appearanceVariant,
     theme.selectionServiceBg,
-    theme.selectionServiceActiveBg,
-    theme.bgHeaderSelectedHovered,
   ]);
 
   // Блок колонок может начинаться только на колонке с colSpan: findBlockOrigin
@@ -581,8 +643,16 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   // ─── appearance.zebra: строки с чётным индексом с серым фоном (см. getRowThemeOverride).
   const isZebra = appearance?.zebra === true;
 
+  // Видимая область таблицы и обновление фона открытого редактора.
+  //
+  // Обе ссылки заполняются ниже, а нужны уже здесь: видимой областью
+  // ограничиваются точечные дорисовки строк, а фон редактора меняется вместе
+  // со строками под курсором.
+  const visibleRegionRef = useRef<Rectangle | null>(null);
+  const updateEditorBgRef = useRef<() => void>();
+
   // Единый источник ховера: логическая ячейка (контент-флаги, ref) и
-  // физическая строка (фон, state). Разница семантик описана в useHoverState.
+  // физическая строка (фон, ссылка). Разница семантик описана в useHoverState.
   // Данные ячейки без наведения и выделения: по ним считаются границы
   // объединённых блоков (colSpan, rowSpan).
   const getProbeInfo = useCallback(
@@ -642,20 +712,22 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     [columnsForRender, rows, getProbeInfo, findCellBlockOrigin],
   );
 
-  const { hoveredCellRef, setHoveredCell, hoverRows, onHoverRowChange } =
-    useHoverState({
-      isRowHoverEnabled,
-      dataEditorRef,
-      columnsCount: columnsForRender.length,
-      rowsCount: rows.length,
-      resolveHoverRows,
-    });
-  // Строки под курсором для фона: только в режиме hoverEffects.row.
-  const activeHoverRows = isRowHoverEnabled ? hoverRows : undefined;
-  // Содержимое ячеек читает строки под курсором из ссылки: при их смене
-  // таблица и так перерисовывается целиком через getRowThemeOverride.
-  const activeHoverRowsRef = useRef(activeHoverRows);
-  activeHoverRowsRef.current = activeHoverRows;
+  const {
+    hoveredCellRef,
+    setHoveredCell,
+    hoverRowsRef,
+    onHoverRowChange,
+    damageRows,
+  } = useHoverState({
+    isRowHoverEnabled,
+    dataEditorRef,
+    columnsCount: columnsForRender.length,
+    rowsCount: rows.length,
+    resolveHoverRows,
+    visibleRegionRef,
+    getPinnedRows: getStickyRows,
+    onHoverRowsChange: () => updateEditorBgRef.current?.(),
+  });
 
   // Регионы ошибок (ячейки и строки) и сводка по строкам считаются по окну
   // видимой области (см. JSDoc хука).
@@ -699,10 +771,25 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     portalObserverRef.current = observer;
   }, []);
 
+  // Подсвеченная строка для отрисовки. В ref по той же причине, что и
+  // выделение выше.
+  const activeRowRef = useRef(activeRow);
+  activeRowRef.current = activeRow;
+
+  // Строки на экране, их перерисовываем после догрузки шрифта или иконки.
+  //
+  // Раньше перерисовывались строки 0-29, и прокрученная таблица оставалась
+  // запасным шрифтом до наведения или прокрутки.
+  const getVisibleRowsForRedraw = useCallback((): RowRange | null => {
+    const region = visibleRegionRef.current;
+    return region ? { from: region.y, to: region.y + region.height } : null;
+  }, []);
+
   const handleVisibleRegionChanged = useCallback<
     NonNullable<GlideProps['onVisibleRegionChanged']>
   >(
     (range, tx, ty, extras) => {
+      visibleRegionRef.current = range;
       trackVisibleRegion(range);
       trackAutoRowHeightRegion(range);
       onVisibleRegionChangedExternal?.(range, tx, ty, extras);
@@ -724,6 +811,33 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   const blockHasCheckedRow = useMemo(
     () => createSetRangeHitCache(checkboxSelectedRowIndexes),
     [checkboxSelectedRowIndexes],
+  );
+
+  // Выделение и подсвеченная строка лежат в ref, glide об их смене не знает.
+  // Эти хуки сами дорисовывают строки и шапки, у которых сменилось выделение.
+  useActiveRowsRedraw({
+    activeRow,
+    activeRowsRange: selectionVisualState.activeRowsRange,
+    damageRows,
+    visibleRowsRef: visibleRegionRef,
+    pinnedRows: restProps.stickyRows,
+  });
+
+  useActiveHeadersRedraw({
+    selectedColumns: selectedColumnSet,
+    hasSelectedRows,
+    dataEditorRef,
+    visibleRegionRef,
+    columnsCount: columnsForRender.length,
+    freezeColumns: freezeColumns ?? 0,
+    stickyColumns: restProps.stickyColumns,
+  });
+
+  // Автовысота ячеек блоков по строкам (см. BlockAutoHeight). Новый экземпляр
+  // на новые строки и колонки: прежние блоки к ним не относятся.
+  const blockAutoHeight = useMemo(
+    () => new BlockAutoHeight(),
+    [rows, columnsForRender, autoHeightReporter],
   );
 
   const getCellContentGlide = useCallback(
@@ -798,6 +912,14 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
           data: '',
           themeOverride: summaryThemeOverride,
           ...(span && { span }),
+          edgeInset: cellEdgeInset({
+            hasLeftLine: true,
+            hasTopLine: true,
+            keepsRing: true,
+            isLastColumn:
+              (span ? span[1] : colInd) === columnsForRender.length - 1,
+            isLastRow: rowInd === rows.length + summaryRowsLength - 1,
+          }),
         };
 
         return applyPendingSelfEditorActivation(
@@ -832,6 +954,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       }
 
       const hoveredPosition = hoveredCellRef.current;
+      const selectionState = selectionVisualStateRef.current;
       // Эти флаги считаются для каждой рендеримой ячейки с данными.
       // Так пользователь renderCell не зависит от координат курсора и внутренней модели выделения.
       const cellInfo: CellInfo<R, SR> = {
@@ -849,8 +972,8 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         },
         active: {
           // Источник активного состояния тот же, что используется для визуальной подсветки таблицы.
-          cellActive: selectionVisualState.isActiveDataCell(colInd, rowInd),
-          rowActive: selectionVisualState.isActiveRow(rowInd),
+          cellActive: selectionState.isActiveDataCell(colInd, rowInd),
+          rowActive: selectionState.isActiveRow(rowInd),
         },
       };
       // Сводка ошибок строки есть только у строк с ошибками и только когда
@@ -881,7 +1004,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       const blockRows: readonly [number, number] = spanRows ?? [rowInd, rowInd];
       const isBlock = !!span || !!spanRows;
       // Строки под курсором проходят через ячейку или блок.
-      const hoverRowsNow = activeHoverRowsRef.current;
+      const hoverRowsNow = isRowHoverEnabled ? hoverRowsRef.current : undefined;
       const rowsHovered =
         hoverRowsNow !== undefined &&
         rangesOverlap(
@@ -897,7 +1020,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         blockRows,
       );
       if (isBlock) {
-        const range = selectionVisualState.activeDataRange;
+        const range = selectionState.activeDataRange;
         const rangeHitsRows =
           !!range &&
           rangesOverlap(
@@ -920,11 +1043,12 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       }
       // Выбранная строка (highlightActiveType='row'), проходящая через ячейку
       // или блок.
+      const activeRowNow = activeRowRef.current;
       const blockActiveRow =
-        activeRow !== undefined &&
-        activeRow >= blockRows[0] &&
-        activeRow <= blockRows[1]
-          ? activeRow
+        activeRowNow !== undefined &&
+        activeRowNow >= blockRows[0] &&
+        activeRowNow <= blockRows[1]
+          ? activeRowNow
           : undefined;
       // Только для ячеек внутри блока: spanAlign на одиночной ячейке переключил бы
       // её в форке на путь отрисовки для объединённых ячеек.
@@ -1017,7 +1141,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       // выделения становится невидимой (непрозрачный цвет glide не смешивает,
       // а просто подставляет). Работает только для одной выделенной ячейки:
       // если выделено больше, пересечение со строкой красится как выделение.
-      const { soloDataCell } = selectionVisualState;
+      const { soloDataCell } = selectionState;
       const soloActiveCellOverride =
         fillContext.rowActive &&
         soloDataCell !== undefined &&
@@ -1035,12 +1159,44 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
             }
           : undefined;
 
+      // Служебные колонки (нумерация, чекбокс) у строки под курсором: свой
+      // цвет наведения.
+      //
+      // Тема ячейки сильнее темы строки, поэтому цвет ложится поверх серого
+      // наведения строки. Раньше это был регион подсветки, но массив регионов
+      // менялся на каждое движение мыши, и glide перерисовывал весь экран. В
+      // «чистом» виде (appearance 'clean') служебные колонки красятся вместе
+      // со строкой, своего цвета у них нет.
+      const serviceHoverOverride =
+        column.isServiceColumn && appearanceVariant !== 'clean' && rowsHovered
+          ? { bgCell: theme.bgServiceRowHovered }
+          : undefined;
+
       const themeOverride = mergeThemeOverrides(
         columnThemeOverrideResult,
         blockRowOverride,
         fillOverride,
-        soloActiveCellOverride
+        soloActiveCellOverride,
+        serviceHoverOverride,
       );
+
+      // Сколько пикселей у краёв ячейки содержимое не закрашивает (см.
+      // CellEdgeInset). Где слева или сверху нет линии сетки, содержимое
+      // доходит до края ячейки.
+      const edgeInset = cellEdgeInset({
+        ...gridLinesAroundCell(
+          {
+            verticalBorder: restProps.verticalBorder,
+            horizontalBorder: restProps.horizontalBorder,
+            hasCellBorders: restProps.getCellBorder !== undefined,
+          },
+          colInd,
+          rowInd,
+        ),
+        keepsRing: cellInfo.active.cellActive || rowErrors !== undefined,
+        isLastColumn: blockCols[1] === columnsForRender.length - 1,
+        isLastRow: blockRows[1] === rows.length + summaryRowsLength - 1,
+      });
 
       const options = {
         data: row[id]?.toString?.() ?? 'NOT FOUND',
@@ -1090,14 +1246,25 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
           cellInfo: cellInfoWithThemeOverride,
           options: {
             ...options,
+            edgeInset,
             getPortalEventTarget: () => portalEventTargetRef?.current ?? null,
             refTable,
           },
-          // Блок на несколько строк высоту строки не растит — и отступа не получает
-          autoHeight:
-            autoHeightReporter && !spansSeveralRows(spanRows)
-              ? autoHeightReporter(row, rowInd, id, !!span)
-              : undefined,
+          // Автовысота: ячейка сообщает свою высоту, а ячейка блока на
+          // несколько строк нет (см. BlockAutoHeight).
+          autoHeight: autoHeightReporter
+            ? blockAutoHeight.reporterFor(
+                autoHeightReporter(row, rowInd, id, !!span),
+                id,
+                spanRows,
+                (rowIndex) => {
+                  const blockRow = rows[rowIndex];
+                  if (blockRow) {
+                    autoHeightReporter(blockRow, rowIndex, id, false).forget();
+                  }
+                },
+              )
+            : undefined,
           stickyContent:
             spanRows && stickyBlockKey !== undefined
               ? {
@@ -1123,20 +1290,25 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       bottomSummaryRows,
       rows,
       autoHeightReporter,
+      blockAutoHeight,
       columnsForRender,
       findCellBlockOrigin,
       ctxs,
       theme,
       activeTheme,
       paletteOverride,
-      activeRow,
+      isRowHoverEnabled,
+      appearanceVariant,
       checkboxSelectedRowIndexes,
       blockHasCheckedRow,
-      selectionVisualState,
       rowErrorsByIndex,
       canvasCellCache,
       portalEventTargetRef,
       applyCanvasEditorActivation,
+      summaryRowsLength,
+      restProps.verticalBorder,
+      restProps.horizontalBorder,
+      restProps.getCellBorder,
     ],
   );
 
@@ -1347,15 +1519,6 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       )
     );
   }, [groupHeaderParts, columnsForRender]);
-  // div-обертка над Glide для DOM-поиска элементов
-  const containerRefInternal = useRef<HTMLDivElement>(null);
-
-  useScrollAnchor({
-    enabled: rowHeight === 'auto',
-    containerRef: containerRefInternal,
-    rowHeights: rowHeightGlide,
-    takeShift: takeAnchorShift,
-  });
   const mergedContainerRef = useMemo(
     () => mergeRefs(containerRefInternal, containerRefExternal),
     [containerRefExternal],
@@ -1368,14 +1531,56 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       const { ctx, rect, columnIndex } = drawArgs;
       const column = columnsForRender[columnIndex];
 
+      // Шапка выделенной колонки заливается цветом выделения.
+      //
+      // Колонка считается выделенной, если участвует в выделении любым
+      // способом: активная колонка текущего диапазона; выделенная по шапке
+      // (selection.columns намеренно пуст); покрытая ячейками rangeStack; либо
+      // выделены строки по нумерации, тогда темнеют шапки всех колонок данных.
+      // Под курсором шапка темнеет ещё на ступень, а не светлеет штатным
+      // наведением, иначе наведение визуально снимало бы выделение. Признаки
+      // читаются из ref, и glide об их смене не знает: шапки дорисовывает
+      // useActiveHeadersRedraw.
+      const columnIsSelected = isColumnInSelectionRef.current(columnIndex);
+      const isActiveHeader =
+        columnIsSelected ||
+        (hasSelectedRowsRef.current && !column?.isServiceColumn);
+      if (isActiveHeader) {
+        paintActiveHeaderBackground(
+          ctx,
+          rect,
+          columnIndex,
+          drawArgs.hoverAmount,
+          {
+            active: theme.selectionServiceActiveBg,
+            hovered: theme.bgHeaderSelectedHovered,
+          },
+        );
+      }
+
       if (!column || !column.renderHeaderCell) {
         return drawContent();
       }
 
+      // Своя отрисовка шапки (renderHeaderCell) получает цвет выделения в
+      // теме. Шапка, которая сама заливает фон по теме, иначе потеряла бы его:
+      // раньше этот цвет приходил через themeOverride колонки.
+      const headerDrawArgs = isActiveHeader
+        ? {
+            ...drawArgs,
+            theme: {
+              ...drawArgs.theme,
+              bgHeader: theme.selectionServiceActiveBg,
+              bgHeaderHasFocus: theme.selectionServiceActiveBg,
+              bgHeaderHovered: theme.bgHeaderSelectedHovered,
+            },
+          }
+        : drawArgs;
+
       const headerCellInfo: HeaderCellInfo<R, SR> = {
         column,
-        drawArgs,
-        columnIsSelected: isColumnInSelection(columnIndex),
+        drawArgs: headerDrawArgs,
+        columnIsSelected,
         ctxs,
         theme,
       };
@@ -1497,7 +1702,6 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     columnsForRender,
     ctxs,
     theme,
-    isColumnInSelection,
     columnsHeaderCanvasRootInstanceMap,
     portalEventTargetRef,
     dataEditorRef,
@@ -1665,6 +1869,8 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     columnCount: columnsForRender.length,
     headerAndGroupHeaderRowsCount:
       1 + (restProps.groupHeaderHeight ?? []).length /* 1 - это сам header */,
+    getVisibleRows: getVisibleRowsForRedraw,
+    getPinnedRows: getStickyRows,
   };
   useIconLoadRedraw(loadRedrawOptions);
 
@@ -1769,7 +1975,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   const resolveRowTheme = useCallback(
     (rowInd: number, rowHover: boolean) => {
       const checked = checkboxSelectedRowIndexes?.has(rowInd) ?? false;
-      const active = rowInd === activeRow;
+      const active = rowInd === activeRowRef.current;
       return resolveRowStateOverride(theme, {
         rowHover,
         active,
@@ -1778,25 +1984,36 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         zebra: isZebra && rowInd % 2 === 0,
       });
     },
-    [theme, checkboxSelectedRowIndexes, activeRow, isZebra],
+    [theme, checkboxSelectedRowIndexes, isZebra],
   );
 
+  // Включена ли подсветка выбранной строки.
+  //
+  // Если включена, функция темы строк нужна, даже пока строка не выбрана: сама
+  // строка читается из ref при вызове, чтобы функция не пересоздавалась на
+  // каждый клик.
+  const hasActiveRowHighlight =
+    highlightActiveType === 'row' || activeRow !== undefined;
+
+  // Тема строки: наведение, выбранная строка, отмеченные строки, зебра.
+  //
+  // Строки под курсором и подсвеченная строка читаются из ref при каждом
+  // вызове. Функция не пересоздаётся при наведении и клике, иначе glide считал
+  // бы, что поменялось всё, и перерисовывал весь экран. Прежние и новые строки
+  // дорисовываются точечно (useHoverState, useActiveRowsRedraw).
   const getRowThemeOverride = useMemo((): GlideProps['getRowThemeOverride'] => {
     const hasSelectedRows = !!checkboxSelectedRowIndexes?.size;
-    const hoverFrom = activeHoverRows?.from;
-    const hoverTo = activeHoverRows?.to;
-    const isHoveredRow = (rowInd: number) =>
-      hoverFrom !== undefined &&
-      hoverTo !== undefined &&
-      rowInd >= hoverFrom &&
-      rowInd <= hoverTo;
+    const isHoveredRow = (rowInd: number) => {
+      const hover = isRowHoverEnabled ? hoverRowsRef.current : undefined;
+      return hover !== undefined && rowInd >= hover.from && rowInd <= hover.to;
+    };
 
     if (
       !summaryRowsLength &&
       !hasSelectedRows &&
       !isZebra &&
-      activeHoverRows === undefined &&
-      activeRow === undefined
+      !isRowHoverEnabled &&
+      !hasActiveRowHighlight
     ) {
       return undefined;
     }
@@ -1807,18 +2024,22 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     // (в getCellContentGlide). Фон строки Glide растянул бы вниз, на пустое
     // место под данными, и при горизонтальной прокрутке он перекрыл бы текст
     // итоговой строки.
+    // Обычной строке своя тема не нужна, отдаём undefined.
+    //
+    // Пустой объект glide считает темой и для каждой ячейки такой строки
+    // собирал бы полную копию темы.
     return (rowInd) =>
       rowInd >= dataRowsLength
-        ? {}
-        : resolveRowTheme(rowInd, isHoveredRow(rowInd)) ?? {};
+        ? undefined
+        : resolveRowTheme(rowInd, isHoveredRow(rowInd));
   }, [
     resolveRowTheme,
     summaryRowsLength,
     checkboxSelectedRowIndexes,
     isZebra,
     rows.length,
-    activeHoverRows,
-    activeRow,
+    isRowHoverEnabled,
+    hasActiveRowHighlight,
   ]);
 
   // Фон редактора следует за состоянием ячейки под ним: наведение, выбранная строка,
@@ -1826,7 +2047,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   // открытого редактора обновляем сами, прямо в его элементе.
   const getEditorBgRef = useRef<(col: number, row: number) => string>();
   getEditorBgRef.current = (col, row) => {
-    const hover = activeHoverRowsRef.current;
+    const hover = hoverRowsRef.current;
     const rowHovered =
       hover !== undefined && row >= hover.from && row <= hover.to;
     return (
@@ -1875,7 +2096,8 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     if (!overlay || !scroller) return;
     syncEditorFrame(overlay, frame, scroller.scrollTop);
   };
-  useLayoutEffect(() => {
+  // Фон открытого редактора по состоянию ячейки под ним.
+  updateEditorBgRef.current = () => {
     const cell = editorCellRef.current;
     const overlay = cell
       ? overlayPortalRef.current?.querySelector<HTMLElement>(
@@ -1891,7 +2113,11 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       '--gdg-bg-cell',
       getEditorBgRef.current?.(cell[0], cell[1]) ?? null,
     );
-  }, [activeHoverRows, activeRow, checkboxSelectedRowIndexes, theme]);
+  };
+  // Смена строк под курсором рендер не вызывает, её сообщает useHoverState.
+  useLayoutEffect(() => {
+    updateEditorBgRef.current?.();
+  }, [activeRow, checkboxSelectedRowIndexes, theme]);
   // Ссылка постоянная: новая функция заставила бы форк пересоздать открытый редактор.
   const provideEditorExternalRef = useRef(restProps.provideEditor);
   provideEditorExternalRef.current = restProps.provideEditor;
@@ -2047,9 +2273,6 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     outlineEachRange,
     totalRows: rows.length + summaryRowsLength,
     columnsCount: columnsLast.length,
-    isRowHoverEnabled,
-    hoverRows,
-    dataRowsCount: rows.length,
     serviceZoneFollowsRow: appearanceVariant === 'clean',
   });
 
