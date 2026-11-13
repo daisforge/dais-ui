@@ -207,10 +207,11 @@ export function useTableSelectionSystem<
     [leadingServiceColumnsCount]
   );
 
-  // Glide сбрасывает выделение (Escape, клик по пустой области) двумя вызовами
-  // подряд: сначала пустое выделение в onGridSelectionChange, потом
-  // onSelectionCleared. Наружу должен уйти один onChange: если первый вызов
-  // уже отдал пустое выделение, второй только сбрасывает оси.
+  // Сброс выделения (Escape, клик по пустой области) даёт наружу один onChange.
+  //
+  // glide сбрасывает выделение двумя вызовами подряд: сначала пустое выделение
+  // в onGridSelectionChange, потом onSelectionCleared. Если первый вызов уже
+  // отдал пустое выделение, второй только сбрасывает Ctrl-выбор.
   const emptyEmittedRef = useRef(false);
 
   const handleGridSelectionWithColumnReset = useCallback(
@@ -344,9 +345,10 @@ export function useTableSelectionSystem<
         return;
       }
 
-      // Правый клик по ячейке внутри Ctrl-выбранных строк или колонок: в
-      // выделении glide этих строк и колонок нет, и он ставит одиночную
-      // ячейку. Набор оставляем, меню относится к нему, как при обычном
+      // Правый клик внутри Ctrl-выбранных строк или колонок набор не сбрасывает.
+      //
+      // В выделении glide этих строк и колонок нет, и он ставит одиночную
+      // ячейку. Набор оставляем: меню относится к нему, как при обычном
       // диапазоне.
       if (
         rightClickGestureRef.current &&
@@ -421,9 +423,11 @@ export function useTableSelectionSystem<
   );
 
   const handleSelectionClearedWithColumns = useCallback(() => {
-    // Пустое выделение уже ушло наружу первым вызовом glide, или сбрасывать
-    // нечего (ни нативного выделения, ни своих колонок и строк): тогда наружу
-    // ничего не отдаём, иначе Escape давал два onChange или onChange без выделения.
+    // Пустое выделение отдаём наружу, только если его ещё не отдали и было что
+    // снимать.
+    //
+    // Иначе Escape давал два onChange (первый уже ушёл из onGridSelectionChange)
+    // или onChange без выделения.
     const alreadyEmitted = emptyEmittedRef.current;
     emptyEmittedRef.current = false;
     const nothingSelected =
@@ -446,8 +450,9 @@ export function useTableSelectionSystem<
     setIsNativeColumnSelection,
   ]);
 
-  // Выделение сменили программно (controlled state): несмежные колонки и строки
-  // своего состояния к нему не относятся, снимаем их без onChange.
+  // Снять свой Ctrl-выбор колонок и строк без onChange. Нужно, когда выделение
+  // сменили из кода (controlled state): Ctrl-выбор к новому выделению не
+  // относится.
   const resetAxes = useCallback(() => {
     setSelectedColumns(CompactSelection.empty());
     setSelectedRows(CompactSelection.empty());

@@ -71,8 +71,10 @@ export const formatCellValue = (
 ): string => {
   if (format === undefined) return safeStringFormat(value);
 
-  // Кастомное форматирование имеет приоритет. Ключ без функции
-  // (`customFormat: undefined` из спреда или условия) формат не отключает.
+  // Кастомное форматирование имеет приоритет.
+  //
+  // Ключ без функции (`customFormat: undefined` из спреда или условия) обычный
+  // формат не отключает.
   if (
     typeof format === 'object' &&
     'customFormat' in format &&

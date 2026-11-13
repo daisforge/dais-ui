@@ -154,9 +154,11 @@ export function applyValuesToRows<R extends ObjectForExtending>({
       const value = getValue(rowOffset, colOffset);
 
       // Ячейка в объединённом блоке: пишем значение во весь блок один раз,
-      // валидируем/нормализуем по origin-колонке. Блок ищем по исходным
-      // строкам: запись значений геометрию блоков не меняет, а lazyRowSpan
-      // узнаёт строку по объекту и копию из newRows блоком не считает.
+      // валидируем/нормализуем по origin-колонке.
+      //
+      // Блок ищем по исходным строкам rows, а не по рабочей копии newRows:
+      // lazyRowSpan узнаёт строку по объекту, и копию блоком не признал бы.
+      // Геометрию блоков запись значений не меняет.
       const block = resolveBlocks
         ? resolveBlock(colIndex, rowIndex, columns, rows)
         : null;

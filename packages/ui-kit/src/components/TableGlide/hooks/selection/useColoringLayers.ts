@@ -117,7 +117,7 @@ export function useColoringLayers({
   });
 
   // Слой 3: выделение колонок и строк поверх базы. Шапки выделенных колонок
-  // красятся отдельно, через bgHeader в columnsForRender.
+  // красит drawHeader в TableGlide.tsx.
   const withColumnsAndRows = useColumnRowHighlightRegions({
     baseRegions,
     selectedColumnIndexes,

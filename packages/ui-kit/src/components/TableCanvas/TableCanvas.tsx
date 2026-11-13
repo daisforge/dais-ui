@@ -560,8 +560,9 @@ export function TableCanvas<
     onNotification: tableConfig.notifications?.onNotification,
   });
 
-  // Программная смена выделения (cellsSelection.state): copy/paste и fill
-  // handle узнают о ней, а onChange потребителя не зовётся.
+  // Выделение сменили из кода (cellsSelection.state), а не мышью.
+  // Копирование, вставка и протяжка заполнения узнают о нём, а onChange
+  // потребителя не зовётся: это не действие пользователя.
   const syncInternalSelection = useCallback(
     (selection: Parameters<typeof cellTransferOnSelectionChange>[0]) => {
       cellTransferOnSelectionChange(selection);

@@ -121,8 +121,13 @@ import {
 import { isCanvasContent, isPrimitive } from './utils/typeGuards';
 
 /**
- * Ячейка блока по строкам высоту не сообщает, а прежние замеры всех строк блока
- * забываются: glide спрашивает только главную ячейку, покрытые строки сами не придут.
+ * Приёмник автовысоты для ячейки. Ячейка блока на несколько строк высоту строки
+ * не задаёт, поэтому приёмника не получает.
+ *
+ * Прежние замеры всех строк блока при этом забываются: если ячейка раньше была
+ * обычной и высокой, её замер держал бы строку высокой и после объединения.
+ * Забываем сразу все строки блока, потому что glide спрашивает только главную
+ * ячейку блока, покрытые строки сами не придут.
  */
 const blockAutoHeight = (
   reporter: CellHeightReporter,
@@ -387,9 +392,12 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     interactionSessionStore,
   );
 
-  // Программная смена выделения: свои оси (Ctrl-колонки и строки) к новому
-  // выделению не относятся, а copy/paste и fill-handle должны его узнать.
-  // Сброс осей живёт в системе выделения, она объявлена ниже.
+  // Выделение сменили из кода (controlled state), а не мышью или клавиатурой.
+  // Снимаем свой Ctrl-выбор колонок и строк и сообщаем копированию, вставке и
+  // протяжке заполнения о новом выделении.
+  //
+  // Ctrl-выбор к новому выделению не относится. Сбрасывает его система
+  // выделения, она объявлена ниже, поэтому функция сброса приходит через ref.
   const resetAxesRef = useRef<() => void>();
   const handleExternalSelectionChange = useCallback(
     (next: GridSelection, initial: boolean) => {
@@ -399,8 +407,11 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     },
     [onSelectionSync],
   );
-  // Прилипшие строки для дорисовок: glide рисует их всегда, но в видимую
-  // область не включает. Читаются через функцию, чтобы не пересоздавать хуки.
+  // Прилипшие строки (stickyRows) для точечных дорисовок.
+  //
+  // glide рисует их всегда, но в видимую область не включает, поэтому
+  // дорисовки добавляют их отдельно. Читаются через функцию с постоянной
+  // ссылкой, чтобы новый массив от потребителя не пересоздавал хуки.
   const stickyRowsRef = useRef(restProps.stickyRows);
   stickyRowsRef.current = restProps.stickyRows;
   const getStickyRows = useCallback(() => stickyRowsRef.current, []);
@@ -423,6 +434,9 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   // div-обертка над Glide для DOM-поиска элементов
   const containerRefInternal = useRef<HTMLDivElement>(null);
 
+  // Якорь прокрутки при автовысоте: строки выше экрана выросли, а видимое
+  // содержимое остаётся на месте.
+  //
   // Порядок важен: сначала якорь сдвигает прокрутку на рост строк выше него,
   // потом докрутка к активной ячейке. Иначе докрутка видела бы ячейку в кадре,
   // а якорь после неё уводил бы верх строки за край на величину роста.
@@ -448,11 +462,13 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     cellsSelectionMode,
     checkboxSelectedRowIndexes,
   });
-  // Геометрия выделения читается при отрисовке ячеек из ref, чтобы функция
-  // содержимого не пересоздавалась на каждый клик: для glide новая функция
-  // значит «поменялось всё», и он перерисовывал весь экран. Ref обновляется в
-  // рендере, до эффектов glide. Строки, у которых сменились признаки active,
-  // дорисовываются отдельно (useActiveRowsRedraw).
+  // Выделение для отрисовки ячеек. Лежит в ref, чтобы функция содержимого
+  // ячеек не менялась на каждый клик.
+  //
+  // Для glide новая функция getCellContent значит «поменялось всё», и он
+  // перерисовывал весь экран. Ref обновляется в рендере, до эффектов glide.
+  // Строки, у которых сменился признак active, дорисовываются отдельно
+  // (useActiveRowsRedraw).
   const selectionVisualStateRef = useRef(selectionVisualState);
   selectionVisualStateRef.current = selectionVisualState;
 
@@ -510,15 +526,16 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     onColumnSelectionChange?.(selectedColumnKeysAll);
   }, [selectedColumnKeysAll, onColumnSelectionChange]);
 
-  // Follow: перевыделяем по ключам после закрепления. Порядок колонок после
-  // пина обновляется с ЛАГОМ в рендер (columnsOrder в useReorderDragable
-  // синкается эффектом), поэтому columnsLast сначала ещё старый. Таймаут
-  // сбрасывается при смене порядка колонок и срабатывает, когда порядок
-  // устоялся: тогда выделение применяется один раз по финальному порядку и
-  // наружу уходит один onChange с новыми индексами, а не два (сначала со
-  // старыми). Следим за порядком ключей, а не за ссылкой на массив и
-  // колбэки: новый массив с тем же порядком на каждом рендере иначе
-  // откладывал бы применение без конца.
+  // После закрепления колонок выделяем те же колонки заново, по ключам.
+  // Делаем это один раз, когда порядок колонок устоялся.
+  //
+  // Порядок колонок после закрепления доходит до рендера с задержкой
+  // (columnsOrder в useReorderDragable синкается эффектом), поэтому
+  // columnsLast сначала ещё старый. Таймер сбрасывается при смене порядка и
+  // срабатывает, когда порядок больше не меняется: наружу уходит один
+  // onChange с новыми индексами, а не два (первый со старыми). Следим за
+  // порядком ключей, а не за ссылкой на массив и колбэки: новый массив с тем
+  // же порядком на каждом рендере иначе откладывал бы применение без конца.
   const columnsOrderKey = useMemo(
     () => columnsLast.map((column) => column.id).join('|'),
     [columnsLast],
@@ -574,7 +591,8 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     [selectionVisualState, selectedColumnSet, rangeStackColumnSet],
   );
 
-  // Шапка читает признак выделения колонки из ref при отрисовке (см. drawHeader).
+  // Признаки выделения для шапки. В ref, чтобы drawHeader не менялся на каждый
+  // клик (подробнее у drawHeader).
   const isColumnInSelectionRef = useRef(isColumnInSelection);
   isColumnInSelectionRef.current = isColumnInSelection;
   const hasSelectedRowsRef = useRef(hasSelectedRows);
@@ -605,10 +623,11 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         hasThemeOverride = true;
       }
 
-      // Затемнение шапки выделенной колонки сюда намеренно не входит: оно
-      // рисуется в drawHeader по признаку из ref. Иначе на каждый клик
-      // пересобирался бы весь массив колонок, и glide при числе колонок
-      // больше ста перерисовывал бы весь экран.
+      // Шапку выделенной колонки здесь не красим, это делает drawHeader.
+      //
+      // Если красить через тему колонки, на каждый клик пересобирался бы весь
+      // массив колонок, и glide при числе колонок больше ста перерисовывал бы
+      // весь экран.
 
       if (!hasThemeOverride) {
         return column;
@@ -644,8 +663,11 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   // ─── appearance.zebra: строки с чётным индексом с серым фоном (см. getRowThemeOverride).
   const isZebra = appearance?.zebra === true;
 
-  // Видимая область (дорисовки строк ограничиваем ею) и фон открытого
-  // редактора при смене строк под курсором; обе ссылки заполняются ниже.
+  // Видимая область таблицы и обновление фона открытого редактора.
+  //
+  // Обе ссылки заполняются ниже, а нужны уже здесь: видимой областью
+  // ограничиваются точечные дорисовки строк, а фон редактора меняется вместе
+  // со строками под курсором.
   const visibleRegionRef = useRef<Rectangle | null>(null);
   const updateEditorBgRef = useRef<() => void>();
 
@@ -769,14 +791,15 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     portalObserverRef.current = observer;
   }, []);
 
-  // Подсвеченная строка тоже читается при отрисовке из ref (см. выше про
-  // геометрию выделения).
+  // Подсвеченная строка для отрисовки. В ref по той же причине, что и
+  // выделение выше.
   const activeRowRef = useRef(activeRow);
   activeRowRef.current = activeRow;
 
-  // Догрузка шрифта или иконки перерисовывает строки на экране, а не начало
-  // таблицы: раньше перерисовывались строки 0-29, и прокрученная таблица
-  // оставалась запасным шрифтом до наведения или прокрутки.
+  // Строки на экране, их перерисовываем после догрузки шрифта или иконки.
+  //
+  // Раньше перерисовывались строки 0-29, и прокрученная таблица оставалась
+  // запасным шрифтом до наведения или прокрутки.
   const getVisibleRowsForRedraw = useCallback((): RowRange | null => {
     const region = visibleRegionRef.current;
     return region ? { from: region.y, to: region.y + region.height } : null;
@@ -810,6 +833,8 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     [checkboxSelectedRowIndexes],
   );
 
+  // Выделение и подсвеченная строка лежат в ref, glide об их смене не знает.
+  // Эти хуки сами дорисовывают строки и шапки, у которых сменилось выделение.
   useActiveRowsRedraw({
     activeRow,
     activeRowsRange: selectionVisualState.activeRowsRange,
@@ -1147,11 +1172,14 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
             }
           : undefined;
 
-      // Служебная колонка строки под курсором: свой цвет поверх серого ховера
-      // строки (тема ячейки сильнее темы строки). Раньше это был регион
-      // подсветки, но массив регионов менялся на каждое движение мыши, и glide
-      // перерисовывал весь экран. В «чистом» виде служебная зона красится
-      // вместе со строкой, своего цвета у неё нет.
+      // Служебные колонки (нумерация, чекбокс) у строки под курсором: свой
+      // цвет наведения.
+      //
+      // Тема ячейки сильнее темы строки, поэтому цвет ложится поверх серого
+      // наведения строки. Раньше это был регион подсветки, но массив регионов
+      // менялся на каждое движение мыши, и glide перерисовывал весь экран. В
+      // «чистом» виде (appearance 'clean') служебные колонки красятся вместе
+      // со строкой, своего цвета у них нет.
       const serviceHoverOverride =
         column.isServiceColumn && appearanceVariant !== 'clean' && rowsHovered
           ? { bgCell: theme.bgServiceRowHovered }
@@ -1165,7 +1193,9 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         serviceHoverOverride,
       );
 
-      // Где слева или сверху нет линии сетки, содержимое доходит до края ячейки.
+      // Сколько пикселей у краёв ячейки содержимое не закрашивает (см.
+      // CellEdgeInset). Где слева или сверху нет линии сетки, содержимое
+      // доходит до края ячейки.
       const edgeInset = cellEdgeInset({
         ...gridLinesAroundCell(
           {
@@ -1233,9 +1263,8 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
             getPortalEventTarget: () => portalEventTargetRef?.current ?? null,
             refTable,
           },
-          // Блок на несколько строк высоту строки не растит — и отступа не получает.
-          // Прежний замер обычной ячейки, попавшей в блок, забываем, иначе он
-          // держал бы строку высокой.
+          // Автовысота: ячейка сообщает свою высоту, а ячейка блока на
+          // несколько строк нет (см. blockAutoHeight).
           autoHeight: autoHeightReporter
             ? blockAutoHeight(
                 autoHeightReporter(row, rowInd, id, !!span),
@@ -1513,12 +1542,16 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       const { ctx, rect, columnIndex } = drawArgs;
       const column = columnsForRender[columnIndex];
 
-      // Шапка темнеет единым активным цветом, когда колонка участвует в
-      // выделении любым способом: активная колонка текущего диапазона;
-      // выделенная по шапке (selection.columns намеренно пуст); покрытая
-      // ячейками rangeStack; либо выделены строки по нумерации, тогда темнеют
-      // шапки всех data-колонок. Под курсором темнеет ещё на ступень, а не
-      // светлеет штатным ховером, иначе ховер визуально снимал бы выделение.
+      // Шапка выделенной колонки заливается цветом выделения.
+      //
+      // Колонка считается выделенной, если участвует в выделении любым
+      // способом: активная колонка текущего диапазона; выделенная по шапке
+      // (selection.columns намеренно пуст); покрытая ячейками rangeStack; либо
+      // выделены строки по нумерации, тогда темнеют шапки всех колонок данных.
+      // Под курсором шапка темнеет ещё на ступень, а не светлеет штатным
+      // наведением, иначе наведение визуально снимало бы выделение. Признаки
+      // читаются из ref, и glide об их смене не знает: шапки дорисовывает
+      // useActiveHeadersRedraw.
       const columnIsSelected = isColumnInSelectionRef.current(columnIndex);
       const isActiveHeader =
         columnIsSelected ||
@@ -1540,8 +1573,9 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         return drawContent();
       }
 
-      // Шапка, которая сама заливает фон по теме, должна получить цвет
-      // выделения в теме, как раньше через themeOverride колонки.
+      // Своя отрисовка шапки (renderHeaderCell) получает цвет выделения в
+      // теме. Шапка, которая сама заливает фон по теме, иначе потеряла бы его:
+      // раньше этот цвет приходил через themeOverride колонки.
       const headerDrawArgs = isActiveHeader
         ? {
             ...drawArgs,
@@ -1963,15 +1997,19 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     [theme, checkboxSelectedRowIndexes, isZebra],
   );
 
-  // Подсветка строки включена: функция темы нужна, даже пока строка не выбрана.
-  // Сама строка читается из ссылки при вызове, чтобы функция не пересоздавалась
-  // на каждый клик.
+  // Включена ли подсветка выбранной строки.
+  //
+  // Если включена, функция темы строк нужна, даже пока строка не выбрана: сама
+  // строка читается из ref при вызове, чтобы функция не пересоздавалась на
+  // каждый клик.
   const hasActiveRowHighlight =
     highlightActiveType === 'row' || activeRow !== undefined;
 
-  // Строки под курсором и подсвеченная строка читаются из ссылки при каждом
-  // вызове: функция не пересоздаётся при наведении и клике, иначе glide считал
-  // бы, что менялось всё, и перерисовывал весь экран. Прежние и новые строки
+  // Тема строки: наведение, выбранная строка, отмеченные строки, зебра.
+  //
+  // Строки под курсором и подсвеченная строка читаются из ref при каждом
+  // вызове. Функция не пересоздаётся при наведении и клике, иначе glide считал
+  // бы, что поменялось всё, и перерисовывал весь экран. Прежние и новые строки
   // дорисовываются точечно (useHoverState, useActiveRowsRedraw).
   const getRowThemeOverride = useMemo((): GlideProps['getRowThemeOverride'] => {
     const hasSelectedRows = !!checkboxSelectedRowIndexes?.size;
@@ -1996,9 +2034,10 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     // (в getCellContentGlide). Фон строки Glide растянул бы вниз, на пустое
     // место под данными, и при горизонтальной прокрутке он перекрыл бы текст
     // итоговой строки.
-    // Обычной строке своя тема не нужна: undefined, а не пустой объект. Пустой
-    // объект glide считает темой и на каждую ячейку такой строки собирал бы
-    // полную копию темы.
+    // Обычной строке своя тема не нужна, отдаём undefined.
+    //
+    // Пустой объект glide считает темой и для каждой ячейки такой строки
+    // собирал бы полную копию темы.
     return (rowInd) =>
       rowInd >= dataRowsLength
         ? undefined
@@ -2067,6 +2106,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     if (!overlay || !scroller) return;
     syncEditorFrame(overlay, frame, scroller.scrollTop);
   };
+  // Фон открытого редактора по состоянию ячейки под ним.
   updateEditorBgRef.current = () => {
     const cell = editorCellRef.current;
     const overlay = cell

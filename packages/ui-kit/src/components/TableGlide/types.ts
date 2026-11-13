@@ -455,8 +455,9 @@ export type TableGlideCustomProps<
   /** Канал для copy/paste (selectionRef потребителя), отдельно от controlled gridSelection. */
   onSelectionEmit?: (selection: GridSelection) => void;
   /**
-   * Controlled gridSelection сменили снаружи, не действием пользователя.
-   * В `onSelectionEmit` не идёт, а copy/paste и fill-handle должны знать.
+   * Выделение сменили из кода (controlled gridSelection), а не действием
+   * пользователя. В `onSelectionEmit` такая смена не идёт, а копирование,
+   * вставка и протяжка заполнения должны о ней знать.
    */
   onSelectionSync?: (selection: GridSelection) => void;
   /**
