@@ -129,10 +129,13 @@ export function useNativeGridSelection({
   // и с ним не совпадает, сменили программно. Потребитель мог положить в state
   // копию объекта, поэтому сравнение по содержимому. Исключение: когда вместе
   // с нативным выделением наружу ушли свои оси (несмежные колонки или строки),
-  // нативное пустое, и программное «снять всё» по содержимию от него не
-  // отличить; тогда эхо узнаём только по тождеству объекта.
+  // нативное пустое, и программное «снять всё» по содержимому от него не
+  // отличить. Тогда эхом считаем только первое совпавшее по содержимому
+  // значение (оно и есть ответ сеттера, хоть копия, хоть тот же объект),
+  // а дальше сравниваем по тождеству с ним.
   const lastSentRef = useRef<GridSelection | null>(null);
   const lastSentWithAxesRef = useRef(false);
+  const axesEchoPendingRef = useRef(false);
   const onExternalSelectionChangeRef = useRef(onExternalSelectionChange);
   onExternalSelectionChangeRef.current = onExternalSelectionChange;
   useEffect(() => {
@@ -141,12 +144,17 @@ export function useNativeGridSelection({
     const isEcho =
       sent !== null &&
       (sent === gridSelectionExternal ||
-        (!lastSentWithAxesRef.current &&
+        ((!lastSentWithAxesRef.current || axesEchoPendingRef.current) &&
           sameSelection(sent, gridSelectionExternal)));
-    if (isEcho) return;
+    if (isEcho) {
+      lastSentRef.current = gridSelectionExternal;
+      axesEchoPendingRef.current = false;
+      return;
+    }
     const initial = sent === null;
     lastSentRef.current = gridSelectionExternal;
     lastSentWithAxesRef.current = false;
+    axesEchoPendingRef.current = false;
     onExternalSelectionChangeRef.current?.(gridSelectionExternal, initial);
   }, [gridSelectionExternal]);
 
@@ -160,6 +168,7 @@ export function useNativeGridSelection({
       if (isControlled) {
         lastSentRef.current = next;
         lastSentWithAxesRef.current = emitted !== next;
+        axesEchoPendingRef.current = emitted !== next;
         onGridSelectionChangeExternal?.(next);
       } else {
         setGridSelectionInternal(next);
@@ -191,6 +200,7 @@ export function useNativeGridSelection({
     if (isControlled) {
       lastSentRef.current = shifted;
       lastSentWithAxesRef.current = false;
+      axesEchoPendingRef.current = false;
       onGridSelectionChangeExternal?.(shifted);
     } else {
       setGridSelectionInternal(shifted);

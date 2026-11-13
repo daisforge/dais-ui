@@ -209,6 +209,26 @@ describe('useNativeGridSelection: программная смена controlled-�
     expect(onExternalSelectionChange).toHaveBeenCalledTimes(1);
   });
 
+  it('после выделения со своими осями копия от сеттера считается эхом, следующее «снять всё» сменой', () => {
+    const { hook, onExternalSelectionChange } = renderControlled();
+    onExternalSelectionChange.mockClear();
+    const empty: GridSelection = {
+      current: undefined,
+      rows: CompactSelection.empty(),
+      columns: CompactSelection.empty(),
+    };
+    const emitted: GridSelection = {
+      ...empty,
+      columns: CompactSelection.fromSingleSelection([1, 3]),
+    };
+    act(() => hook.result.current.handleGridSelectionChange(empty, emitted));
+    // Сеттер потребителя кладёт в state копию (redux, immer, setSel({ ...s }))
+    hook.rerender({ gridSelection: { ...empty } });
+    expect(onExternalSelectionChange).not.toHaveBeenCalled();
+    hook.rerender({ gridSelection: { ...empty } });
+    expect(onExternalSelectionChange).toHaveBeenCalledTimes(1);
+  });
+
   it('выделение, отданное в сеттер и вернувшееся из state, программным не считается', () => {
     const { hook, onExternalSelectionChange, setState } = renderControlled();
     onExternalSelectionChange.mockClear();
