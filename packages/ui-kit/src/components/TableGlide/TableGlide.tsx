@@ -23,11 +23,7 @@ import {
 } from 'react';
 import { createPortal } from 'react-dom';
 
-import {
-  type CellEdgeInset,
-  type CellHeightReporter,
-  glideCellRenderer,
-} from './cellRenderer';
+import { type CellHeightReporter, glideCellRenderer } from './cellRenderer';
 import {
   DEFAULT_HEADER_HEIGHT,
   DEFAULT_SPAN_VERTICAL_ALIGN,
@@ -104,6 +100,7 @@ import {
   getEditorFrameVars,
   syncEditorFrame,
 } from './utils/editorFrame';
+import { cellEdgeInset, gridLinesAroundCell } from './utils/cellEdgeInset';
 import { findBlockOrigin } from './utils/findBlockOrigin';
 import { mergeThemeOverrides } from './utils/mergeThemeOverrides';
 import { queryGlideElements } from './utils/queryGlideElements';
@@ -122,33 +119,6 @@ import {
   createSetRangeHitCache,
 } from './utils/blockRanges';
 import { isCanvasContent, isPrimitive } from './utils/typeGuards';
-
-/** Отступы обрезки содержимого ячейки, см. CellEdgeInset в cellRenderer */
-const cellEdgeInset = ({
-  hasLeftLine,
-  hasTopLine,
-  keepsRing,
-  isLastColumn,
-  isLastRow,
-}: {
-  hasLeftLine: boolean;
-  hasTopLine: boolean;
-  /** На краю ячейки рамка выделения или ошибки: пиксель за ней */
-  keepsRing: boolean;
-  isLastColumn: boolean;
-  isLastRow: boolean;
-}): CellEdgeInset => ({
-  left: hasLeftLine || keepsRing ? 1 : 0,
-  top: hasTopLine || keepsRing ? 1 : 0,
-  right: isLastColumn ? 1 : 0,
-  bottom: isLastRow ? 1 : 0,
-});
-
-/** Есть ли линия сетки по настройке glide: число или функция от индекса */
-const hasGridLine = (
-  border: boolean | ((index: number) => boolean) | undefined,
-  index: number,
-): boolean => (typeof border === 'function' ? border(index) : border ?? true);
 
 /**
  * Ячейка блока по строкам высоту не сообщает, а прежние замеры всех строк блока
@@ -1196,16 +1166,16 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       );
 
       // Где слева или сверху нет линии сетки, содержимое доходит до края ячейки.
-      // Точечные рамки ячеек (getCellBorder) по сторонам не разбираем: отступ
-      // остаётся. Линия слева от колонки это линия справа от предыдущей,
-      // у первой колонки её нет.
-      const borderPerCell = restProps.getCellBorder !== undefined;
       const edgeInset = cellEdgeInset({
-        hasLeftLine:
-          borderPerCell ||
-          (colInd > 0 && hasGridLine(restProps.verticalBorder, colInd)),
-        hasTopLine:
-          borderPerCell || hasGridLine(restProps.horizontalBorder, rowInd),
+        ...gridLinesAroundCell(
+          {
+            verticalBorder: restProps.verticalBorder,
+            horizontalBorder: restProps.horizontalBorder,
+            hasCellBorders: restProps.getCellBorder !== undefined,
+          },
+          colInd,
+          rowInd,
+        ),
         keepsRing: cellInfo.active.cellActive || rowErrors !== undefined,
         isLastColumn: blockCols[1] === columnsForRender.length - 1,
         isLastRow: blockRows[1] === rows.length + summaryRowsLength - 1,
