@@ -24,33 +24,11 @@
     npm install --save @daisforge/ui
 ```
 
-## Совместимость и темы
+## Темы
 
-Приложению нужен `styled-components 5.3.11`. Наследуемые типы атомарных
-компонентов следуют установленной версии SDDS; при обновлении библиотеки
-проверяйте типы приложения.
-
-- Default, beta core и high contrast поступают из `@sddsjs/sdds_finai`.
-  Публичные экспорты `sdds_finai__light/dark` являются алиасами
-  `sdds_finai_default__light/dark`.
-- `GlobalStyle.theme` принимает `light`, `dark`, `betaCoreLight`, `betaCoreDark`,
-  `highContrastLight` и `highContrastDark`.
-- `shadowGradientDark` и `shadowGradientLight` экспортируются через
-  `@salutejs/sdds-themes`. При сборке dais-ui из ESM встраиваются только эти
-  две константы; остальные токены старого пакета в JS библиотеки не входят.
-  Их CSS-fallback работает и без соответствующих переменных в теме.
-- `Dropdown` поддерживает прежние placement `top/bottom/left/right`:
-  адаптер преобразует их в `*-start`, включая вложенные пункты.
-  Новые `*-start/center/end` и `auto` передаются без изменения.
-  Обработчики и `renderItem` получают исходные объекты пунктов.
-
-В отдельном минимальном потребителе на webpack 5 сборка прошла без новых
-preloader и без отключения `resolve.fullySpecified`: ESM-импорты тем в сборке
-библиотеки содержат `.js` и `/index.js`. Корпоративные webpack-конфиги недоступны
-и не проверены. При обновлении сохраните существующие правила загрузки CSS таблиц,
-установите `styled-components` точной версии `5.3.11` (`npm install --save-exact
-styled-components@5.3.11`), обновите lockfile и выполните typecheck и production-сборку
-своего приложения. Подтверждённой необходимости менять webpack-конфиг нет.
+Темы и дизайн-токены доступны из `@daisforge/ui/themes` и `@daisforge/ui/tokens`.
+`GlobalStyle.theme` принимает `light`, `dark`, `betaCoreLight`, `betaCoreDark`,
+`highContrastLight` и `highContrastDark`.
 
 Ручная палитра состояний Canvas-таблиц не обновляется автоматически вместе
 с темами SDDS. Её изменения согласуются с дизайнером. Устройство палитры

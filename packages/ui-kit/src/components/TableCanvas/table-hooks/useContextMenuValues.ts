@@ -1,4 +1,4 @@
-import { DropdownProps } from '@ui-kit/components/Dropdown';
+import { DropdownItemOption, DropdownProps } from '@ui-kit/components/Dropdown';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { ContextMenuDropdownItem } from '../feature-context-menu';
@@ -19,7 +19,7 @@ interface ContextMenuState<
   CustomCtxs extends ObjectForExtending = {},
 > {
   isOpen: boolean;
-  items: DropdownProps['items'] | null;
+  items: DropdownProps<DropdownItemOption>['items'] | null;
   position: { x: number; y: number } | null;
   // В async-режиме храним тег header/cell + параметры для соответствующего
   // getDropdownItems. Тег — литеральный дискриминант: по нему TS сужает тип,
@@ -127,7 +127,7 @@ export const useContextMenuValues = <
       context,
     }: {
       position: { x: number; y: number };
-      items?: DropdownProps['items'] | null;
+      items?: DropdownProps<DropdownItemOption>['items'] | null;
       asyncParams?: ContextMenuState<RowType, SummaryRowType>['asyncParams'];
       context?: ContextMenuState<RowType, SummaryRowType>['context'];
     }) => {
@@ -271,7 +271,9 @@ export const useContextMenuValues = <
   // items в async-режиме перечитываются реактивно из getDropdownItems (по
   // сохранённым asyncParams) на каждый рендер, пока меню открыто; в обычном
   // (синхронном) режиме используется снапшот из стейта.
-  const items = useMemo<DropdownProps['items'] | null>(() => {
+  const items = useMemo<
+    DropdownProps<DropdownItemOption>['items'] | null
+  >(() => {
     if (!state.isOpen) return null;
     const pending = state.asyncParams;
     if (!pending) return state.items;

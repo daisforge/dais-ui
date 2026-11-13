@@ -113,11 +113,7 @@ export default defineConfig(() => {
         external: (() => {
           const pkgJSONDeps = [
             ...Object.keys(pkgJSON.peerDependencies),
-            // Две legacy-тени встраиваем из ESM: CJS deep-import сохраняет
-            // весь файл токенов в Vite-потребителе (~287 КБ вместо двух строк).
-            ...Object.keys(pkgJSON.dependencies).filter(
-              (name) => name !== '@salutejs/sdds-themes',
-            ),
+            ...Object.keys(pkgJSON.dependencies),
           ];
           const cssInSomeLibs = [
             'react-data-grid/lib/styles.css',
@@ -141,12 +137,6 @@ export default defineConfig(() => {
     resolve: {
       alias: {
         '@ui-kit': path.resolve(__dirname, '../ui-kit/src'),
-        // У ESM-пути upstream нет .d.ts. В исходниках оставляем типизированный
-        // публичный путь; только сборщик читает ESM и удаляет лишние экспорты.
-        '@salutejs/sdds-themes/tokens/sdds_finai': path.resolve(
-          __dirname,
-          '../../node_modules/@salutejs/sdds-themes/es/tokens/sdds_finai/index.js',
-        ),
       },
     },
 

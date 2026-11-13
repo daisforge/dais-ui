@@ -589,11 +589,10 @@ fp:
 
 | Пакет                             | Версия        | Назначение                   |
 | --------------------------------- | ------------- | ---------------------------- |
-| `@salutejs/sdds-finai`            | 0.367.1-dev.0      | Базовые атомарные компоненты |
-| `@salutejs/plasma-icons`          | ^1.257.0      | Иконки                       |
-| `@salutejs/plasma-typo`           | ^0.59.0       | Токены типографики           |
-| `@sddsjs/sdds_finai` | 0.2.1 | Темы и токены |
-| `@salutejs/sdds-themes`           | ^0.86.0       | Совместимость shadowGradient    |
+| `@salutejs/sdds-finai`            | 0.369.0      | Базовые атомарные компоненты |
+| `@salutejs/plasma-icons`          | ^1.258.0      | Иконки                       |
+| `@salutejs/plasma-typo`           | ^0.60.0       | Токены типографики           |
+| `@sddsjs/sdds_finai` | 0.2.3 | Темы и токены |
 | `react` / `react-dom`             | 18.3.1        | Core                         |
 | `styled-components`               | 5.3.11        | CSS-in-JS                    |
 | `react-hook-form`                 | ^7.54.2       | Формы                        |
@@ -602,10 +601,7 @@ fp:
 | `@glideappsfinal/glide-data-grid` | ^6.11.0       | TableCanvas                  |
 | `react-data-grid`                 | 7.0.0-beta.43 | Table (устаревшая)           |
 
-SDDS dev-версия закреплена точно и сама требует
-`@salutejs/plasma-new-hope 0.388.1-dev.0`; отдельный override не нужен. Для приложений-потребителей требуется
-`styled-components 5.3.11`. Особенности тем и Dropdown
-описаны в [README ui-kit](packages/ui-kit/README.md#совместимость-и-темы).
+Подключение тем и глобальных стилей описано в [README ui-kit](packages/ui-kit/README.md#темы).
 
 ### Peer зависимости
 

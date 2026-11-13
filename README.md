@@ -119,7 +119,7 @@ tokens/
 
 - **Основной CSS-in-JS**: `styled-components`
 - **Плагин**: `babel-plugin-styled-components` (displayName: true)
-- **Целевые библиотеки**: `@salutejs/plasma-typo`, `@salutejs/sdds-finai`, `@sddsjs/sdds_finai`; `@salutejs/sdds-themes` сохраняет две градиентные тени
+- **Целевые библиотеки**: `@salutejs/plasma-typo`, `@salutejs/sdds-finai`, `@sddsjs/sdds_finai`; темы и градиентные тени поступают из `@sddsjs/sdds_finai`
 
 ---
 
@@ -530,11 +530,10 @@ export type TMutationRegister<TFieldValues extends FieldValues> = {
 
 | Пакет                             | Версия        | Назначение                   |
 | --------------------------------- | ------------- | ---------------------------- |
-| `@salutejs/sdds-finai`            | 0.367.1-dev.0      | Базовые атомарные компоненты |
-| `@salutejs/plasma-icons`          | ^1.257.0      | Иконки                       |
-| `@salutejs/plasma-typo`           | ^0.59.0       | Typo tokens                  |
-| `@salutejs/sdds-themes`           | ^0.86.0       | Совместимость градиентных теней |
-| `@sddsjs/sdds_finai` | 0.2.1 | Темы и дизайн-токены FinAI |
+| `@salutejs/sdds-finai`            | 0.369.0      | Базовые атомарные компоненты |
+| `@salutejs/plasma-icons`          | ^1.258.0      | Иконки                       |
+| `@salutejs/plasma-typo`           | ^0.60.0       | Typo tokens                  |
+| `@sddsjs/sdds_finai` | 0.2.3 | Темы и дизайн-токены FinAI |
 | `react`                           | 18.3.1        | Core                         |
 | `react-dom`                       | 18.3.1        | Core                         |
 | `styled-components`               | 5.3.11         | CSS-in-JS                    |
@@ -552,10 +551,7 @@ export type TMutationRegister<TFieldValues extends FieldValues> = {
 
 ---
 
-SDDS dev-версия закреплена точно и сама требует
-`@salutejs/plasma-new-hope 0.388.1-dev.0`; отдельный override не нужен. Для приложений-потребителей требуется
-`styled-components 5.3.11`. Особенности тем и Dropdown
-описаны в [README ui-kit](packages/ui-kit/README.md#совместимость-и-темы).
+Подключение тем и глобальных стилей описано в [README ui-kit](packages/ui-kit/README.md#темы).
 
 ## 🛠️ Скрипты и утилиты
 

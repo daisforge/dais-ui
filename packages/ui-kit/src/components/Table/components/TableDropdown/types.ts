@@ -1,7 +1,9 @@
-import { DropdownProps } from '@ui-kit/components/Dropdown';
+import { DropdownItemOption, DropdownProps } from '@ui-kit/components/Dropdown';
 import { CSSObject } from 'styled-components';
 
-export type TableDropdownProps = DropdownProps & { $css?: CSSObject };
+export type TableDropdownProps = DropdownProps<DropdownItemOption> & {
+  $css?: CSSObject;
+};
 
 /**
  * Пропсы для конфигурации дропдауна в таблице.
