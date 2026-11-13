@@ -1,0 +1,15 @@
+import{j as i}from"./react-D2T61mpp.js";import{cg as r,ch as e,ca as m}from"./vendor-DUKY-ZmD.js";import{T as p}from"./Table.editing.stories-BQaE4DJt.js";import"./react-is-Clcustum.js";import"./styled-components-DexUWfrL.js";import"./@tanstack/react-virtual-Cr0lIrFi.js";import"./tslib-DoU9Jm1N.js";import"./tableData-DVJFoYoT.js";import"./DocStoryTemplate-fem7FPN4.js";import"./storySourceDoc-tVKyHcEN.js";import"./ModalDF-BeLt3Fi5.js";import"./@salutejs/sdds-finai-BlXmPeRI.js";import"./@sddsjs/sdds_finai-DdXz3JHO.js";import"./@salutejs/plasma-icons-Dih4v0gS.js";import"./constants-BxGpUxiJ.js";import"./Container-BgzubZ4O.js";import"./utils-B7bM75xW.js";import"./sharedUtilsDebug-BX_KjCjW.js";import"./Box-DzoDF2Cl.js";import"./Table-RvW8Zx2O.js";import"./FiltersActions-D-_B-hw1.js";import"./IconButton-2EYMx7xU.js";import"./TextField-DTWtGsZA.js";import"./sharedUtilsInputs-nTDdyG6d.js";import"./AiAgentPopup-B3a2_caC.js";import"./TextArea-CRKH8gvq.js";import"./sharedUtilsResizable-BNivU2A4.js";import"./Collapse-dGbLemZS.js";import"./react-data-grid-UAUG1bC3.js";import"./TableTabs-COpRDDVL.js";import"./TableCanvasSharedConstants-CqGDn8zL.js";import"./TableGlide-CR1B7ydz.js";import"./@glideappsfinal/glide-data-grid-B3ucdcmY.js";import"./canvas-hypertxt-DsokSIOX.js";import"./sharedUiSearch-DiIgDDKz.js";import"./ListOfFilters-L7YV_Ybl.js";import"./lodash.isequal-DD0Lfcik.js";import"./NumberFormat-odUQWjcD.js";import"./EmptyState-Bicjyxvj.js";import"./MassActions-BRGBzJ8j.js";import"./Autocomplete-BBqSmVvF.js";function o(n){const t={a:"a",code:"code",h1:"h1",h2:"h2",li:"li",p:"p",strong:"strong",ul:"ul",...r(),...n.components};return i.jsxs(i.Fragment,{children:[i.jsx(e,{of:p,name:"Docs"}),`
+`,i.jsx(t.h1,{id:"tableediting",children:"TableEditing"}),`
+`,i.jsx(t.h2,{id:"ключевые-особенности",children:"Ключевые особенности"}),`
+`,i.jsxs(t.ul,{children:[`
+`,i.jsx(t.li,{children:"Редактирование ячеек через columnConfig.editing"}),`
+`,i.jsx(t.li,{children:"Управление изменением строк через tableConfig.editing"}),`
+`,i.jsx(t.li,{children:"Поддержка input, number и select editor-ов"}),`
+`]}),`
+`,i.jsx(t.p,{children:"Таблица поддерживает редактирование."}),`
+`,i.jsxs(t.p,{children:["Условие активации - наличие свойства ",i.jsx(t.code,{children:"editing"})," в ",i.jsx(t.code,{children:"tableConfig"})," или, если есть ",i.jsx(t.code,{children:"tableConfig.editing.defaultEnabled"}),", то значение ",i.jsx(t.code,{children:"tableConfig.editing.defaultEnabled"}),"."]}),`
+`,i.jsx(t.p,{children:"Помимо этого также необходимо сконфигурировать колонки."}),`
+`,i.jsx(t.p,{children:i.jsx(t.strong,{children:"tableConfig.editing"})}),`
+`,i.jsx(t.p,{children:i.jsx(t.strong,{children:"columnConfig.editingCell"})}),`
+`,i.jsxs(t.p,{children:["Описание типов - в разделе ",i.jsx(t.a,{href:"?path=/docs/%D0%BB%D0%BE%D0%BA%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D1%8B-table-editing-api--docs",children:"API"}),"."]}),`
+`,i.jsx(m,{})]})}function V(n={}){const{wrapper:t}={...r(),...n.components};return t?i.jsx(t,{...n,children:i.jsx(o,{...n})}):o(n)}export{V as default};
