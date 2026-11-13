@@ -86,6 +86,10 @@ export function useActiveHeadersRedraw({
   stickyColumns?: readonly number[];
 }) {
   const firstRunRef = useRef(true);
+  // Сами по себе прилипшие колонки дорисовки не вызывают: их читаем при смене
+  // выделения, и новый массив с теми же колонками эффект не перезапускает.
+  const stickyColumnsRef = useRef(stickyColumns);
+  stickyColumnsRef.current = stickyColumns;
 
   useEffect(() => {
     // Первый кадр glide рисует целиком, дорисовывать нечего.
@@ -97,7 +101,7 @@ export function useActiveHeadersRedraw({
       visibleRegionRef.current,
       columnsCount,
       freezeColumns,
-      stickyColumns,
+      stickyColumnsRef.current,
     );
     if (cells.length > 0) dataEditorRef.current?.updateCells?.(cells);
   }, [
@@ -107,6 +111,5 @@ export function useActiveHeadersRedraw({
     visibleRegionRef,
     columnsCount,
     freezeColumns,
-    stickyColumns,
   ]);
 }

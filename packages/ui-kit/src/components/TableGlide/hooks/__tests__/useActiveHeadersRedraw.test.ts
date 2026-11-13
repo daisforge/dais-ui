@@ -72,6 +72,29 @@ describe('useActiveHeadersRedraw', () => {
     hook.rerender({ selectedColumns: five, hasSelectedRows: true });
     expect(updateCells).toHaveBeenCalledTimes(2);
   });
+
+  it('новый массив прилипших колонок с теми же колонками шапки не перерисовывает', () => {
+    const updateCells = vi.fn();
+    const dataEditorRef = { current: { updateCells } as unknown as DataEditorRef };
+    const visibleRegionRef = { current: { x: 4, y: 0, width: 3, height: 10 } };
+    const five = new Set([5]);
+    const hook = renderHook(
+      ({ stickyColumns }: { stickyColumns: number[] }) =>
+        useActiveHeadersRedraw({
+          selectedColumns: five,
+          hasSelectedRows: false,
+          dataEditorRef,
+          visibleRegionRef,
+          columnsCount: 100,
+          freezeColumns: 1,
+          stickyColumns,
+        }),
+      { initialProps: { stickyColumns: [20] } },
+    );
+    hook.rerender({ stickyColumns: [20] });
+    hook.rerender({ stickyColumns: [20] });
+    expect(updateCells).not.toHaveBeenCalled();
+  });
 });
 
 describe('headerCellsToRedraw: прилипшие колонки', () => {
