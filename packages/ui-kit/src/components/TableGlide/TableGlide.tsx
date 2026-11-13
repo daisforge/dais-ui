@@ -1546,23 +1546,43 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       // шапки всех data-колонок. Под курсором темнеет ещё на ступень, а не
       // светлеет штатным ховером, иначе ховер визуально снимал бы выделение.
       const columnIsSelected = isColumnInSelectionRef.current(columnIndex);
-      if (
+      const isActiveHeader =
         columnIsSelected ||
-        (hasSelectedRowsRef.current && !column?.isServiceColumn)
-      ) {
-        paintActiveHeaderBackground(ctx, rect, columnIndex, drawArgs.hoverAmount, {
-          active: theme.selectionServiceActiveBg,
-          hovered: theme.bgHeaderSelectedHovered,
-        });
+        (hasSelectedRowsRef.current && !column?.isServiceColumn);
+      if (isActiveHeader) {
+        paintActiveHeaderBackground(
+          ctx,
+          rect,
+          columnIndex,
+          drawArgs.hoverAmount,
+          {
+            active: theme.selectionServiceActiveBg,
+            hovered: theme.bgHeaderSelectedHovered,
+          },
+        );
       }
 
       if (!column || !column.renderHeaderCell) {
         return drawContent();
       }
 
+      // Шапка, которая сама заливает фон по теме, должна получить цвет
+      // выделения в теме, как раньше через themeOverride колонки.
+      const headerDrawArgs = isActiveHeader
+        ? {
+            ...drawArgs,
+            theme: {
+              ...drawArgs.theme,
+              bgHeader: theme.selectionServiceActiveBg,
+              bgHeaderHasFocus: theme.selectionServiceActiveBg,
+              bgHeaderHovered: theme.bgHeaderSelectedHovered,
+            },
+          }
+        : drawArgs;
+
       const headerCellInfo: HeaderCellInfo<R, SR> = {
         column,
-        drawArgs,
+        drawArgs: headerDrawArgs,
         columnIsSelected,
         ctxs,
         theme,
