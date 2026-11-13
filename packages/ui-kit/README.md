@@ -24,45 +24,11 @@
     npm install --save @daisforge/ui
 ```
 
-## Совместимость и темы
+## Темы
 
-Приложению нужен `styled-components 5.3.11`. Наследуемые типы атомарных
-компонентов следуют SDDS `0.369.0`; при обновлении библиотеки
-проверяйте типы приложения.
-
-- Default, beta core и high contrast поступают из `@sddsjs/sdds_finai@0.2.3`.
-  Публичные экспорты `sdds_finai__light/dark` являются алиасами
-  `sdds_finai_default__light/dark`.
-- `GlobalStyle.theme` принимает `light`, `dark`, `betaCoreLight`, `betaCoreDark`,
-  `highContrastLight` и `highContrastDark`.
-- `shadowGradientDark` и `shadowGradientLight` сохраняют публичные имена и
-  fallback-значения и экспортируются из `@sddsjs/sdds_finai/theme/tokens/index.js`.
-  Обе CSS-переменные присутствуют во всех шести темах. Все темы и токены остаются
-  external при сборке библиотеки.
-- `Dropdown`, `DropdownProps` и `DropdownItemOption` реэкспортируются из SDDS
-  напрямую. Тип `DropdownProps` требует параметр пункта:
-  `DropdownProps<DropdownItemOption>` или `DropdownProps<MyItem>`. Короткие placement
-  `top/bottom/left/right` поддерживаются upstream
-  как `*-start`, включая вложенные пункты, но помечены deprecated. Для нового
-  кода используйте `*-start/center/end` или `auto`.
-- При миграции учитывайте: SDDS фильтрует скрытые дочерние пункты и клонирует
-  родителей. В `onItemSelect`, `onHover` и `renderItem` сохраняются пользовательские
-  поля, но ссылочная идентичность с исходным родителем не гарантируется.
-  Сопоставляйте пункты по `value`, а не через `===` или `Map` с ключами-объектами.
-
-В изолированном потребителе проверены типы, production-сборки Vite и webpack 5
-и работа вложенного Dropdown в браузере с корневыми импортами `@daisforge/ui`.
-Webpack собирается без новых preloader и без отключения `resolve.fullySpecified`:
-ESM-импорты тем в сборке библиотеки содержат `.js` и `/index.js`.
-Для явного выбора формата публичного подпути используйте `/index.mjs` или
-`/index.cjs`; разрешение подпутей без расширений зависит от сборщика.
-Прямой запуск ESM Dropdown в Node без сборщика ограничен импортами каталогов
-в самом SDDS (`ERR_UNSUPPORTED_DIR_IMPORT`); CJS-импорты Dropdown, тем и теней
-проверены в Node. Корпоративные webpack-конфиги недоступны
-и не проверены. При обновлении сохраните существующие правила загрузки CSS таблиц,
-установите `styled-components` точной версии `5.3.11` (`npm install --save-exact
-styled-components@5.3.11`), обновите lockfile и выполните typecheck и production-сборку
-своего приложения. Подтверждённой необходимости менять webpack-конфиг нет.
+Темы и дизайн-токены доступны из `@daisforge/ui/themes` и `@daisforge/ui/tokens`.
+`GlobalStyle.theme` принимает `light`, `dark`, `betaCoreLight`, `betaCoreDark`,
+`highContrastLight` и `highContrastDark`.
 
 Ручная палитра состояний Canvas-таблиц не обновляется автоматически вместе
 с темами SDDS. Её изменения согласуются с дизайнером. Устройство палитры

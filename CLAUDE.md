@@ -601,10 +601,7 @@ fp:
 | `@glideappsfinal/glide-data-grid` | ^6.11.0       | TableCanvas                  |
 | `react-data-grid`                 | 7.0.0-beta.43 | Table (устаревшая)           |
 
-SDDS 0.369.0 закреплена точно и сама требует
-`@salutejs/plasma-new-hope 0.390.0`; отдельный override не нужен. Для приложений-потребителей требуется
-`styled-components 5.3.11`. Особенности тем и Dropdown
-описаны в [README ui-kit](packages/ui-kit/README.md#совместимость-и-темы).
+Подключение тем и глобальных стилей описано в [README ui-kit](packages/ui-kit/README.md#темы).
 
 ### Peer зависимости
 

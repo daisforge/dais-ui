@@ -551,10 +551,7 @@ export type TMutationRegister<TFieldValues extends FieldValues> = {
 
 ---
 
-SDDS 0.369.0 закреплена точно и сама требует
-`@salutejs/plasma-new-hope 0.390.0`; отдельный override не нужен. Для приложений-потребителей требуется
-`styled-components 5.3.11`. Особенности тем и Dropdown
-описаны в [README ui-kit](packages/ui-kit/README.md#совместимость-и-темы).
+Подключение тем и глобальных стилей описано в [README ui-kit](packages/ui-kit/README.md#темы).
 
 ## 🛠️ Скрипты и утилиты
 
