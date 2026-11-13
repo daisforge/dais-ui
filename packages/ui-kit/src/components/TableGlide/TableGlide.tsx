@@ -837,7 +837,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
 
   useActiveRowsRedraw({
     activeRow,
-    activeRows: selectionVisualState.activeRows,
+    activeRowsRange: selectionVisualState.activeRowsRange,
     damageRows,
     visibleRowsRef: visibleRegionRef,
     pinnedRows: restProps.stickyRows,

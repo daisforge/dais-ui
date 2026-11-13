@@ -2,77 +2,107 @@ import { renderHook } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
 import {
-  changedActiveRows,
+  changedActiveRanges,
   rowsToRedraw,
   useActiveRowsRedraw,
 } from '../useActiveRowsRedraw';
 
-const set = (...rows: number[]) => new Set(rows);
-const NONE = new Set<number>();
+const range = (from: number, to: number) => ({ from, to });
 
-describe('changedActiveRows: строки, у которых сменилась активность', () => {
+describe('changedActiveRanges: строки, у которых сменилась активность', () => {
   it('смена подсвеченной строки даёт прежнюю и новую', () => {
     expect(
-      changedActiveRows(
-        { activeRow: 2, activeRows: NONE },
-        { activeRow: 5, activeRows: NONE },
+      changedActiveRanges(
+        { activeRow: 2, activeRowsRange: undefined },
+        { activeRow: 5, activeRowsRange: undefined },
       ),
-    ).toEqual([2, 5]);
+    ).toEqual([range(2, 2), range(5, 5)]);
     expect(
-      changedActiveRows(
-        { activeRow: undefined, activeRows: NONE },
-        { activeRow: 5, activeRows: NONE },
+      changedActiveRanges(
+        { activeRow: undefined, activeRowsRange: undefined },
+        { activeRow: 5, activeRowsRange: undefined },
       ),
-    ).toEqual([5]);
+    ).toEqual([range(5, 5)]);
   });
 
   it('у диапазона меняются только вошедшие и вышедшие строки', () => {
     expect(
-      changedActiveRows(
-        { activeRow: undefined, activeRows: set(3, 4, 5) },
-        { activeRow: undefined, activeRows: set(4, 5, 6) },
+      changedActiveRanges(
+        { activeRow: undefined, activeRowsRange: range(3, 5) },
+        { activeRow: undefined, activeRowsRange: range(4, 6) },
       ),
-    ).toEqual([3, 6]);
+    ).toEqual([range(3, 3), range(6, 6)]);
+    // Диапазон сузился с обеих сторон
+    expect(
+      changedActiveRanges(
+        { activeRow: undefined, activeRowsRange: range(0, 9) },
+        { activeRow: undefined, activeRowsRange: range(3, 5) },
+      ),
+    ).toEqual([range(0, 2), range(6, 9)]);
+    // Диапазоны не пересекаются
+    expect(
+      changedActiveRanges(
+        { activeRow: undefined, activeRowsRange: range(0, 1) },
+        { activeRow: undefined, activeRowsRange: range(5, 6) },
+      ),
+    ).toEqual([range(0, 1), range(5, 6)]);
   });
 
-  it('без изменений пусто, одинаковые строки не дублируются', () => {
-    const rows = set(3, 4);
+  it('протяжка на всю колонку в миллион строк: один кусок, строки не перебираются', () => {
     expect(
-      changedActiveRows(
-        { activeRow: 3, activeRows: rows },
-        { activeRow: 3, activeRows: rows },
+      changedActiveRanges(
+        { activeRow: undefined, activeRowsRange: range(0, 999_998) },
+        { activeRow: undefined, activeRowsRange: range(0, 999_999) },
+      ),
+    ).toEqual([range(999_999, 999_999)]);
+  });
+
+  it('тот же диапазон другим объектом и та же строка: пусто', () => {
+    expect(
+      changedActiveRanges(
+        { activeRow: 3, activeRowsRange: range(3, 4) },
+        { activeRow: 3, activeRowsRange: range(3, 4) },
       ),
     ).toEqual([]);
-    expect(
-      changedActiveRows(
-        { activeRow: 3, activeRows: set(3) },
-        { activeRow: 7, activeRows: set(7) },
-      ),
-    ).toEqual([3, 7]);
   });
 });
 
 describe('rowsToRedraw: только видимые строки', () => {
-  it('режет по видимой области с запасом в строку', () => {
-    expect(rowsToRedraw([0, 9, 10, 20, 31, 32, 500], { y: 10, height: 20 })).toEqual([
-      9, 10, 20, 31,
-    ]);
+  it('режет по видимой области с запасом в строку, без повторов и по возрастанию', () => {
+    expect(
+      rowsToRedraw(
+        [range(0, 0), range(9, 10), range(20, 20), range(31, 32), range(10, 10)],
+        { y: 10, height: 20 },
+      ),
+    ).toEqual([9, 10, 20, 31]);
+  });
+
+  it('огромный кусок разворачивается только в видимые строки', () => {
+    expect(
+      rowsToRedraw([range(0, 999_999)], { y: 500_000, height: 2 }),
+    ).toEqual([499_999, 500_000, 500_001, 500_002, 500_003]);
   });
 
   it('без известной области ограничивает число строк', () => {
-    const many = Array.from({ length: 1000 }, (_, i) => i);
-    expect(rowsToRedraw(many, null)).toHaveLength(200);
+    expect(rowsToRedraw([range(0, 999)], null)).toHaveLength(200);
   });
 });
 
 describe('useActiveRowsRedraw', () => {
-  const setup = () => {
+  type Props = { activeRow?: number; activeRowsRange?: { from: number; to: number } };
+  const setup = (pinnedRows?: readonly number[]) => {
     const damageRows = vi.fn();
     const visibleRowsRef = { current: { y: 0, height: 50 } };
     const hook = renderHook(
-      ({ activeRow, activeRows }: { activeRow?: number; activeRows: Set<number> }) =>
-        useActiveRowsRedraw({ activeRow, activeRows, damageRows, visibleRowsRef }),
-      { initialProps: { activeRow: undefined, activeRows: NONE } },
+      ({ activeRow, activeRowsRange, pinned }: Props & { pinned?: readonly number[] }) =>
+        useActiveRowsRedraw({
+          activeRow,
+          activeRowsRange,
+          damageRows,
+          visibleRowsRef,
+          pinnedRows: pinned,
+        }),
+      { initialProps: { pinned: pinnedRows } as Props & { pinned?: readonly number[] } },
     );
     return { hook, damageRows, visibleRowsRef };
   };
@@ -81,33 +111,45 @@ describe('useActiveRowsRedraw', () => {
     const { hook, damageRows } = setup();
     expect(damageRows).not.toHaveBeenCalled();
 
-    hook.rerender({ activeRow: 4, activeRows: set(4) });
+    hook.rerender({ activeRow: 4, activeRowsRange: range(4, 4) });
     expect(damageRows).toHaveBeenCalledTimes(1);
     expect(damageRows.mock.calls[0]).toEqual([4]);
 
-    hook.rerender({ activeRow: 8, activeRows: set(8) });
+    hook.rerender({ activeRow: 8, activeRowsRange: range(8, 8) });
     expect(damageRows.mock.calls[1]).toEqual([4, 8]);
   });
 
-  it('тот же набор строк другим объектом: дорисовки нет; строки за видимой областью отбрасываются', () => {
+  it('тот же диапазон другим объектом: дорисовки нет; строки за видимой областью отбрасываются', () => {
     const { hook, damageRows, visibleRowsRef } = setup();
-    hook.rerender({ activeRow: 4, activeRows: set(4) });
-    hook.rerender({ activeRow: 4, activeRows: set(4) });
+    hook.rerender({ activeRow: 4, activeRowsRange: range(4, 4) });
+    hook.rerender({ activeRow: 4, activeRowsRange: range(4, 4) });
     expect(damageRows).toHaveBeenCalledTimes(1);
 
     // прежняя строка 4 и новая 500 вне видимых строк 100..110, остаётся только 105
     visibleRowsRef.current = { y: 100, height: 10 };
-    hook.rerender({ activeRow: 500, activeRows: set(500, 105) });
+    hook.rerender({ activeRow: 105, activeRowsRange: range(105, 105) });
     expect(damageRows.mock.calls[1]).toEqual([105]);
-    hook.rerender({ activeRow: 500, activeRows: set(500, 105, 106) });
+    hook.rerender({ activeRow: 105, activeRowsRange: range(105, 106) });
     expect(damageRows.mock.calls[2]).toEqual([106]);
+  });
+
+  it('новый массив прилипших строк с теми же строками дорисовки не вызывает', () => {
+    const { hook, damageRows } = setup([0]);
+    hook.rerender({ activeRow: 4, activeRowsRange: range(4, 4), pinned: [0] });
+    expect(damageRows).toHaveBeenCalledTimes(1);
+    hook.rerender({ activeRow: 4, activeRowsRange: range(4, 4), pinned: [0] });
+    expect(damageRows).toHaveBeenCalledTimes(1);
   });
 });
 
 describe('rowsToRedraw: прилипшие строки', () => {
   it('прилипшая строка вне области остаётся в списке', () => {
-    expect(rowsToRedraw([0, 3, 50, 51, 90], { y: 48, height: 5 }, [0, 90])).toEqual(
-      [0, 50, 51, 90],
-    );
+    expect(
+      rowsToRedraw(
+        [range(0, 0), range(3, 3), range(50, 51), range(90, 90)],
+        { y: 48, height: 5 },
+        [0, 90],
+      ),
+    ).toEqual([0, 50, 51, 90]);
   });
 });
