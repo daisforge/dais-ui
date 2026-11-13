@@ -72,13 +72,13 @@ export function useRowAxisSelection() {
     window.addEventListener('pointerdown', onPointerDown, true);
     window.addEventListener('pointerup', onPointerUp, true);
     window.addEventListener('keydown', onKeyDown, true);
-    window.addEventListener('contextmenu', onContextMenu);
+    window.addEventListener('contextmenu', onContextMenu, true);
     return () => {
       clearTimeout(contextMenuTimer);
       window.removeEventListener('pointerdown', onPointerDown, true);
       window.removeEventListener('pointerup', onPointerUp, true);
       window.removeEventListener('keydown', onKeyDown, true);
-      window.removeEventListener('contextmenu', onContextMenu);
+      window.removeEventListener('contextmenu', onContextMenu, true);
     };
   }, []);
 

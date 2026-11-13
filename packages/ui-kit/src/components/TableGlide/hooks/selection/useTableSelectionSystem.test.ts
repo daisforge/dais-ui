@@ -555,14 +555,14 @@ describe('useTableSelectionSystem — наружу одно итоговое в�
 });
 
 describe('useTableSelectionSystem — признак правой кнопки снимается после contextmenu', () => {
-  it('после contextmenu и следующей задачи смена выделения без мыши клавиатурная', () => {
+  const checkFlagClearedAfter = (fireContextMenu: () => void) => {
     vi.useFakeTimers();
     try {
       const { view, onSelectionEmit } = setupWithNative();
       act(() => {
         window.dispatchEvent(new MouseEvent('pointerdown', { button: 2 }));
         window.dispatchEvent(new Event('pointerup'));
-        window.dispatchEvent(new MouseEvent('contextmenu', { button: 2 }));
+        fireContextMenu();
         view.result.current.handleGridSelectionWithColumnReset(
           gridSel([0, 4], { x: 0, y: 4, width: 1, height: 1 })
         );
@@ -595,6 +595,27 @@ describe('useTableSelectionSystem — признак правой кнопки �
       });
     } finally {
       vi.useRealTimers();
+    }
+  };
+
+  it('после contextmenu и следующей задачи смена выделения без мыши клавиатурная', () => {
+    checkFlagClearedAfter(() => {
+      window.dispatchEvent(new MouseEvent('contextmenu', { button: 2 }));
+    });
+  });
+
+  it('contextmenu, остановленный на элементе, тоже снимает признак', () => {
+    const target = document.createElement('div');
+    document.body.appendChild(target);
+    target.addEventListener('contextmenu', (event) => event.stopPropagation());
+    try {
+      checkFlagClearedAfter(() => {
+        target.dispatchEvent(
+          new MouseEvent('contextmenu', { button: 2, bubbles: true })
+        );
+      });
+    } finally {
+      target.remove();
     }
   });
 });
