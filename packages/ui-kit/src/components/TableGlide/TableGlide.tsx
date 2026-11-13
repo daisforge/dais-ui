@@ -1881,6 +1881,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     headerAndGroupHeaderRowsCount:
       1 + (restProps.groupHeaderHeight ?? []).length /* 1 - это сам header */,
     getVisibleRows: getVisibleRowsForRedraw,
+    getPinnedRows: getStickyRows,
   };
   useIconLoadRedraw(loadRedrawOptions);
 

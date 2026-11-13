@@ -12,6 +12,8 @@ interface UseFontLoadRedrawParams {
   headerAndGroupHeaderRowsCount: number;
   /** Видимые строки на момент перерисовки; без них перерисовываются первые строки */
   getVisibleRows?: () => RowRange | null;
+  /** Прилипшие строки: перерисовываются и вне видимой области */
+  getPinnedRows?: () => readonly number[] | undefined;
 }
 
 export function useFontLoadRedraw({
@@ -20,6 +22,7 @@ export function useFontLoadRedraw({
   columnCount,
   headerAndGroupHeaderRowsCount,
   getVisibleRows,
+  getPinnedRows,
 }: UseFontLoadRedrawParams): void {
   useLayoutEffect(() => {
     const redraw = createRafUpdate(() => {
@@ -29,6 +32,7 @@ export function useFontLoadRedraw({
         columnCount,
         headerAndGroupHeaderRowsCount,
         visibleRows: getVisibleRows?.() ?? null,
+        getPinnedRows,
       });
     });
 
@@ -39,5 +43,6 @@ export function useFontLoadRedraw({
     columnCount,
     headerAndGroupHeaderRowsCount,
     getVisibleRows,
+    getPinnedRows,
   ]);
 }

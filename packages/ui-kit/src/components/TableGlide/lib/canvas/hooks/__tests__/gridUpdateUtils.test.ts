@@ -64,4 +64,23 @@ describe('updateGridCells', () => {
     const rows = rowsOf(updateCells);
     expect(Math.max(...rows)).toBe(9);
   });
+
+  it('прилипшие строки вне видимой области тоже перерисовываются', () => {
+    const { updateCells, dataEditorRef } = setup();
+    updateGridCells({
+      dataEditorRef,
+      rowCount: 200,
+      columnCount: 1,
+      headerAndGroupHeaderRowsCount: 1,
+      visibleRows: { from: 100, to: 110 },
+      getPinnedRows: () => [0, 105, 500],
+    });
+    const cells = (
+      updateCells.mock.calls[0]![0] as Array<{ cell: [number, number] }>
+    ).map(({ cell }) => cell[1]);
+    expect(cells).toContain(0);
+    // Прилипшая строка внутри области не дублируется, за концом таблицы не берётся
+    expect(cells.filter((row) => row === 105)).toHaveLength(1);
+    expect(cells).not.toContain(500);
+  });
 });

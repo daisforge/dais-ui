@@ -13,6 +13,8 @@ interface GridUpdateParams {
   headerAndGroupHeaderRowsCount: number;
   /** Видимые строки: шрифт или иконка догрузились, перерисовать нужно экран, а не начало таблицы */
   visibleRows?: RowRange | null;
+  /** Прилипшие строки: glide рисует их всегда, но в видимую область не включает */
+  getPinnedRows?: () => readonly number[] | undefined;
 }
 
 export function updateGridCells({
@@ -21,6 +23,7 @@ export function updateGridCells({
   columnCount,
   headerAndGroupHeaderRowsCount,
   visibleRows = null,
+  getPinnedRows,
 }: GridUpdateParams): void {
   const ref = dataEditorRef.current;
   if (!ref) {
@@ -39,11 +42,21 @@ export function updateGridCells({
       cells.push({ cell: [col, row] });
     }
   }
-  for (let row = firstRow; row <= lastRow; row += 1) {
+  const pinnedOutside = (getPinnedRows?.() ?? []).filter(
+    (row) => row >= 0 && row < rowCount && (row < firstRow || row > lastRow),
+  );
+  const rowsToUpdate = [
+    ...new Set(pinnedOutside),
+    ...Array.from(
+      { length: Math.max(lastRow - firstRow + 1, 0) },
+      (_, index) => firstRow + index,
+    ),
+  ];
+  rowsToUpdate.forEach((row) => {
     for (let col = 0; col < numCols; col += 1) {
       cells.push({ cell: [col, row] });
     }
-  }
+  });
 
   if (cells.length > 0) {
     ref.updateCells(cells);
