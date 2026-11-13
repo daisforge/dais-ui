@@ -216,6 +216,12 @@
     "category": "components"
   },
   {
+    "name": "Editable",
+    "href": "Editable.json",
+    "summary": "Editable",
+    "category": "components"
+  },
+  {
     "name": "EmbedIconButton",
     "href": "EmbedIconButton.json",
     "summary": "EmbedIconButton Кнопки могут отображаться в нескольких размерах и цветах, могут содержать иконку.",
@@ -327,6 +333,12 @@
     "name": "Grid",
     "href": "Grid.json",
     "summary": "Grid Набор компонентов для создания сетки.",
+    "category": "components"
+  },
+  {
+    "name": "Group",
+    "href": "Group.json",
+    "summary": "Group Скругление внутренних углов и растягивание применяются только к этим компонентам.",
     "category": "components"
   },
   {

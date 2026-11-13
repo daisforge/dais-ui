@@ -5,9 +5,23 @@ MCP-сервер для `@daisforge/ui` — даёт кодовому агент
 ## Источники данных
 
 Метаданные ui-kit извлекаются из установленных типов, текст документации SDDS —
-из Git-тега, API-снимок — с CDN. Если нужная версия недоступна,
-`--on-missing=keep` сохраняет предыдущий снимок, поэтому версии источников
-могут различаться.
+из Git-тега, API-снимок — с CDN. Оба vendor-снимка обновлены до SDDS `0.369.0`
+с `--on-missing=fail`; происхождение и хеши каждого файла записаны в provenance.
+Для согласованного обновления сначала запускайте обе проверки:
+
+```bash
+npm run mcp:vendor-atomic:check -- --version 0.369.0 --on-missing=fail
+npm run mcp:harvest-docs:check -- --version 0.369.0 --on-missing=fail
+npm run mcp:vendor-atomic -- --version 0.369.0 --on-missing=fail
+npm run mcp:harvest-docs -- --version 0.369.0 --on-missing=fail
+npm run mcp:build-index
+npm run mcp:validate-index
+```
+
+По умолчанию `--on-missing=keep` сохраняет предыдущий снимок при недоступности
+версии, поэтому без `fail` версии источников могут различаться. В секциях вне
+`components` поле `summary` может содержать полную страницу, а не короткую аннотацию.
+Тексты `atomic-docs` остаются отдельным сырьём и не выдаются инструментами MCP.
 
 Версии, источники и контрольные суммы записаны в
 `vendor/atomic-docs/provenance.json` и `vendor/atomic-mcp-data/provenance.json`.
