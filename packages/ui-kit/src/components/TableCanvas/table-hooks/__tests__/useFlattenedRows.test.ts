@@ -121,4 +121,27 @@ describe('useFlattenedRows: смена поля дочерней строки н
     rerender({ data: [...rows] });
     expect(result.current.flattenedRows[1]).toBe(after);
   });
+
+  it('удалённое поле исходной строки пропадает и из копии', () => {
+    type OptionalRow = { id: number; text?: string; children?: OptionalRow[] };
+    const child: OptionalRow = { id: 10, text: 'устаревший текст' };
+    const rows: OptionalRow[] = [{ id: 1, children: [child] }];
+    const { result, rerender } = renderHook(
+      ({ data }: { data: OptionalRow[] }) =>
+        useFlattenedRows<never, number, OptionalRow>({
+          rows: data,
+          tableConfig,
+          groupedCols: undefined as never,
+        }),
+      { initialProps: { data: rows } },
+    );
+    act(() => result.current.expandedRowsIdsStateAndSetter[1](new Set([1])));
+    expect(result.current.flattenedRows[1]?.text).toBe('устаревший текст');
+
+    delete child.text;
+    rerender({ data: [...rows] });
+
+    expect(result.current.flattenedRows[1]?.text).toBeUndefined();
+    expect(result.current.flattenedRows[1]).not.toHaveProperty('text');
+  });
 });

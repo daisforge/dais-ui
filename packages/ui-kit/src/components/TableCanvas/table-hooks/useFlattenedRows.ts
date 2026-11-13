@@ -105,11 +105,27 @@ const getRecursivelyRowAndOpenedSubRows = <
   return rowAndAllOpenedSubRows;
 };
 
+/** Служебные ключи дерева, которые копия добавляет к полям исходной строки */
+const TREE_SERVICE_KEYS = new Set<string>([
+  TREE_ID_KEY,
+  PARENT_ROW_KEY,
+  TREE_LVL_KEY,
+]);
+
+/**
+ * Копия соответствует исходной строке: те же значения полей, и у копии нет
+ * полей, которые у исходной строки удалили (кроме служебных ключей дерева).
+ */
 const sameFields = (source: object, copy: object): boolean => {
   const sourceRecord = source as Record<string, unknown>;
   const copyRecord = copy as Record<string, unknown>;
-  return Object.keys(sourceRecord).every(
-    (key) => copyRecord[key] === sourceRecord[key],
+  return (
+    Object.keys(sourceRecord).every(
+      (key) => copyRecord[key] === sourceRecord[key],
+    ) &&
+    Object.keys(copyRecord).every(
+      (key) => key in sourceRecord || TREE_SERVICE_KEYS.has(key),
+    )
   );
 };
 
