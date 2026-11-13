@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-13T12:05:02.929Z",
+  "generatedAt": "2026-11-13T12:55:39.727Z",
   "libVersion": "1.28.0",
   "components": {
     "Accordion": {
@@ -11808,10 +11808,10 @@
         },
         {
           "exportName": "Usage2",
-          "displayName": "Использование в Dropdown.visual.stories.tsx",
+          "displayName": "Использование в DrawerDF.stories.tsx",
           "type": "usage",
-          "code": "<DrawerDF.Content>\n          Меню доступно поверх содержимого панели.\n        </DrawerDF.Content>",
-          "sourceFile": "packages/storybook/src/stories/Dropdown/Dropdown.visual.stories.tsx"
+          "code": "<DrawerDF.Content key=\"left\" fixedWidth=\"150px\">\n            <Button view=\"accent\" size=\"xs\">\n              Обосновать\n            </Button>\n            {shortLorem}\n          </DrawerDF.Content>",
+          "sourceFile": "packages/storybook/src/stories/DrawerDF/DrawerDF.stories.tsx"
         }
       ]
     },
@@ -12466,10 +12466,10 @@
         },
         {
           "exportName": "Usage2",
-          "displayName": "Использование в Dropdown.visual.stories.tsx",
+          "displayName": "Использование в DrawerDF.stories.tsx",
           "type": "usage",
-          "code": "<DrawerDF.Header\n          title=\"Документ\"\n          rightBlock={\n            <DrawerDF.DotsIconButton\n              aria-label=\"Действия документа\"\n              dropdownProps={overlayDropdownProps}\n            />\n          }\n        />",
-          "sourceFile": "packages/storybook/src/stories/Dropdown/Dropdown.visual.stories.tsx"
+          "code": "<DrawerDF.Header\n            title=\"Заголовок дровера\"\n            subTitle=\"Подзаголовок здесь\"\n            badge={{ text: 'Label' }}\n            rightBlock={\n              <Flow\n                mainAxisGap={s.x1}\n                style={{ flexWrap: 'nowrap', gap: s.x4 }}\n              >\n                <DrawerDF.DotsIconButton />\n                <Button text=\"Вторичная 1\" size=\"xs\" view=\"secondary\" />\n                <Button text=\"Главная кнопка\" size=\"xs\" view=\"accent\" />\n              </Flow>\n            }\n            footerBlock={<TabsComp stretch />}\n          />",
+          "sourceFile": "packages/storybook/src/stories/DrawerDF/DrawerDF.stories.tsx"
         }
       ]
     },
@@ -12700,17 +12700,17 @@
       "examples": [
         {
           "exportName": "Usage1",
-          "displayName": "Использование в Dropdown.visual.stories.tsx",
-          "type": "usage",
-          "code": "<Dropdown\n      placement={placement}\n      alwaysOpened\n      listWidth=\"160px\"\n      items={[\n        { value: 'edit', label: 'Редактировать' },\n        { value: 'copy', label: 'Копировать' },\n      ]}\n    >\n      <Button text=\"Действия\" style={{ width: 200 }} />\n    </Dropdown>",
-          "sourceFile": "packages/storybook/src/stories/Dropdown/Dropdown.visual.stories.tsx"
-        },
-        {
-          "exportName": "Usage2",
           "displayName": "Использование в PageLayout.stories.tsx",
           "type": "usage",
           "code": "<Dropdown items={navItems} portal=\"document\">\n      <IconButton size=\"s\" view=\"secondary\">\n        <IconHierarchy />\n      </IconButton>\n    </Dropdown>",
           "sourceFile": "packages/storybook/src/stories/PageLayout/PageLayout.stories.tsx"
+        },
+        {
+          "exportName": "Usage2",
+          "displayName": "Использование в LeftPanel.stories.tsx",
+          "type": "usage",
+          "code": "<Dropdown items={contentItems} portal=\"document\">\n                <IconButton size={buttonSize} view=\"secondary\">\n                  <IconHierarchy />\n                </IconButton>\n              </Dropdown>",
+          "sourceFile": "packages/storybook/src/stories/LeftPanel/LeftPanel.stories.tsx"
         },
         {
           "exportName": "Vendor1",
@@ -17979,16 +17979,16 @@
       "examples": [
         {
           "exportName": "Usage1",
-          "displayName": "Использование в Dropdown.visual.stories.tsx",
+          "displayName": "Использование в ModalDF.stories.tsx",
           "type": "usage",
-          "code": "<ModalDF.DotsIconButton\n              aria-label=\"Действия документа\"\n              dropdownProps={overlayDropdownProps}\n            />",
-          "sourceFile": "packages/storybook/src/stories/Dropdown/Dropdown.visual.stories.tsx"
+          "code": "<ModalDF.DotsIconButton size=\"s\" />",
+          "sourceFile": "packages/storybook/src/stories/ModalDF/ModalDF.stories.tsx"
         },
         {
           "exportName": "Usage2",
           "displayName": "Использование в ModalDF.stories.tsx",
           "type": "usage",
-          "code": "<ModalDF.DotsIconButton size=\"s\" />",
+          "code": "<ModalDF.DotsIconButton />",
           "sourceFile": "packages/storybook/src/stories/ModalDF/ModalDF.stories.tsx"
         },
         {
