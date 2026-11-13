@@ -49,7 +49,10 @@ describe('useHoverState: строки под курсором без ренде�
     const { hook, updateCells, onHoverRowsChange } = setup();
 
     hook.result.current.onHoverRowChange!([0, 2]);
-    expect(hook.result.current.hoverRowsRef.current).toEqual({ from: 2, to: 2 });
+    expect(hook.result.current.hoverRowsRef.current).toEqual({
+      from: 2,
+      to: 2,
+    });
     expect(onHoverRowsChange).toHaveBeenCalledTimes(1);
     expect(updateCells).not.toHaveBeenCalled();
 
@@ -109,7 +112,10 @@ describe('useHoverState: объединённый блок под курсоро
     });
 
     hook.result.current.onHoverRowChange!([0, 2]);
-    expect(hook.result.current.hoverRowsRef.current).toEqual({ from: 1, to: 3 });
+    expect(hook.result.current.hoverRowsRef.current).toEqual({
+      from: 1,
+      to: 3,
+    });
     await nextTask();
     expect(new Set(rowsOf(updateCells.mock.calls[0]!))).toEqual(
       new Set([1, 2, 3]),
@@ -147,7 +153,10 @@ describe('useHoverState: объединённый блок под курсоро
     });
 
     hook.result.current.onHoverRowChange!([0, 4]);
-    expect(hook.result.current.hoverRowsRef.current).toEqual({ from: 0, to: 4 });
+    expect(hook.result.current.hoverRowsRef.current).toEqual({
+      from: 0,
+      to: 4,
+    });
     await nextTask();
 
     act(() =>
@@ -160,7 +169,10 @@ describe('useHoverState: объединённый блок под курсоро
     );
 
     expect(calls.at(-1)).toEqual([0, 4]);
-    expect(hook.result.current.hoverRowsRef.current).toEqual({ from: 2, to: 4 });
+    expect(hook.result.current.hoverRowsRef.current).toEqual({
+      from: 2,
+      to: 4,
+    });
     await nextTask();
     // Прежний блок целиком и новый: строки 0-4.
     expect(new Set(rowsOf(updateCells.mock.calls[1]!))).toEqual(

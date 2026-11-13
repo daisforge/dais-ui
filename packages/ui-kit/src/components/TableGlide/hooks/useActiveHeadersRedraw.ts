@@ -46,10 +46,16 @@ export function headerCellsToRedraw(
       cells.push({ cell: [col, -1] });
     }
   };
-  for (let col = 0; col < Math.min(freezeColumns, columnsCount); col += 1) push(col);
+  for (let col = 0; col < Math.min(freezeColumns, columnsCount); col += 1)
+    push(col);
   stickyColumns.forEach(push);
   if (visible === null) {
-    for (let col = freezeColumns; col < Math.min(columnsCount, MAX_COLUMNS_WITHOUT_REGION); col += 1) push(col);
+    for (
+      let col = freezeColumns;
+      col < Math.min(columnsCount, MAX_COLUMNS_WITHOUT_REGION);
+      col += 1
+    )
+      push(col);
     return cells;
   }
   const from = Math.max(freezeColumns, visible.x - 1);

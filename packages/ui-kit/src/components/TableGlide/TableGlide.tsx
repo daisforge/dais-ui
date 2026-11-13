@@ -1162,7 +1162,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         blockRowOverride,
         fillOverride,
         soloActiveCellOverride,
-        serviceHoverOverride
+        serviceHoverOverride,
       );
 
       // Где слева или сверху нет линии сетки, содержимое доходит до края ячейки.

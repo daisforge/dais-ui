@@ -45,7 +45,11 @@ describe('gridLinesAroundCell: линии сетки слева и сверху 
   it('с точечными рамками ячеек линии считаются есть', () => {
     expect(
       gridLinesAroundCell(
-        { verticalBorder: false, horizontalBorder: false, hasCellBorders: true },
+        {
+          verticalBorder: false,
+          horizontalBorder: false,
+          hasCellBorders: true,
+        },
         2,
         2,
       ),
@@ -62,7 +66,12 @@ describe('cellEdgeInset', () => {
       isLastColumn: false,
       isLastRow: false,
     };
-    expect(cellEdgeInset(base)).toEqual({ left: 0, top: 0, right: 0, bottom: 0 });
+    expect(cellEdgeInset(base)).toEqual({
+      left: 0,
+      top: 0,
+      right: 0,
+      bottom: 0,
+    });
     expect(cellEdgeInset({ ...base, keepsRing: true })).toEqual({
       left: 1,
       top: 1,
@@ -70,7 +79,12 @@ describe('cellEdgeInset', () => {
       bottom: 0,
     });
     expect(
-      cellEdgeInset({ ...base, hasLeftLine: true, isLastColumn: true, isLastRow: true }),
+      cellEdgeInset({
+        ...base,
+        hasLeftLine: true,
+        isLastColumn: true,
+        isLastRow: true,
+      }),
     ).toEqual({ left: 1, top: 0, right: 1, bottom: 1 });
   });
 });

@@ -46,17 +46,33 @@ describe('TableGlide: выделение колонок по ключам пос
     const applied = vi.fn();
     const before = [MARKERS, col('a'), col('b'), col('c'), col('d')];
     const after = [MARKERS, col('c'), col('a'), col('b'), col('d')];
-    const props = { rows: ROWS, onSelectionEmit, onColumnSelectionApplied: applied };
+    const props = {
+      rows: ROWS,
+      onSelectionEmit,
+      onColumnSelectionApplied: applied,
+    };
 
     const { rerender } = render(
-      <TableGlide {...props} columns={before} pendingColumnSelectionKeys={null} />,
+      <TableGlide
+        {...props}
+        columns={before}
+        pendingColumnSelectionKeys={null}
+      />,
     );
     rerender(
-      <TableGlide {...props} columns={before} pendingColumnSelectionKeys={['c']} />,
+      <TableGlide
+        {...props}
+        columns={before}
+        pendingColumnSelectionKeys={['c']}
+      />,
     );
     // Порядок после пина приходит следующим рендером
     rerender(
-      <TableGlide {...props} columns={after} pendingColumnSelectionKeys={['c']} />,
+      <TableGlide
+        {...props}
+        columns={after}
+        pendingColumnSelectionKeys={['c']}
+      />,
     );
     act(() => {
       vi.runAllTimers();
@@ -71,15 +87,27 @@ describe('TableGlide: выделение колонок по ключам пос
   it('новый массив колонок с тем же порядком и новый колбэк не откладывают применение', () => {
     const onSelectionEmit = vi.fn();
     const columns = [MARKERS, col('a'), col('b')];
-    const props = { rows: ROWS, onSelectionEmit, pendingColumnSelectionKeys: ['b'] };
+    const props = {
+      rows: ROWS,
+      onSelectionEmit,
+      pendingColumnSelectionKeys: ['b'],
+    };
     const { rerender } = render(
-      <TableGlide {...props} columns={columns} onColumnSelectionApplied={vi.fn()} />,
+      <TableGlide
+        {...props}
+        columns={columns}
+        onColumnSelectionApplied={vi.fn()}
+      />,
     );
     const timeoutSpy = vi.spyOn(globalThis, 'setTimeout');
     const applied = vi.fn();
     for (let i = 0; i < 3; i += 1) {
       rerender(
-        <TableGlide {...props} columns={[...columns]} onColumnSelectionApplied={applied} />,
+        <TableGlide
+          {...props}
+          columns={[...columns]}
+          onColumnSelectionApplied={applied}
+        />,
       );
     }
     // Таймер применения не перезапускался

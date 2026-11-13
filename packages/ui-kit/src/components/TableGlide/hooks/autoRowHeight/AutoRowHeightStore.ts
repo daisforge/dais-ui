@@ -26,8 +26,7 @@ export interface RowHeightChange {
 export const sameIds = <T extends string | number>(
   a: readonly T[],
   b: readonly T[],
-) =>
-  a.length === b.length && a.every((id, i) => id === b[i]);
+) => a.length === b.length && a.every((id, i) => id === b[i]);
 
 /**
  * Высоты строк для `rowHeight: 'auto'` из высот ячеек, которые ячейки сообщают

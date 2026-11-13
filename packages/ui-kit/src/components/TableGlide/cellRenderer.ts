@@ -43,7 +43,12 @@ export interface CellEdgeInset {
   bottom: number;
 }
 
-const DEFAULT_EDGE_INSET: CellEdgeInset = { left: 1, top: 1, right: 0, bottom: 0 };
+const DEFAULT_EDGE_INSET: CellEdgeInset = {
+  left: 1,
+  top: 1,
+  right: 0,
+  bottom: 0,
+};
 
 /**
  * Приёмник высоты содержимого ячейки для `rowHeight: 'auto'`. Ячейка снимает
@@ -310,7 +315,7 @@ export const glideCellRenderer = <R extends ObjectForExtending, SR>({
       rect.x + inset.left,
       rect.y + inset.top,
       rect.width - inset.left - inset.right,
-      rect.height - inset.top - inset.bottom
+      rect.height - inset.top - inset.bottom,
     );
     ctx.clip();
 

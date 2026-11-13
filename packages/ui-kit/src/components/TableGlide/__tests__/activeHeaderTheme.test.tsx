@@ -72,7 +72,11 @@ describe('TableGlide: тема шапки выделенной колонки', 
         key: id,
         title: id,
         width: 100,
-        renderHeaderCell: ({ drawArgs }: { drawArgs: { theme: { bgHeader?: string } } }) => {
+        renderHeaderCell: ({
+          drawArgs,
+        }: {
+          drawArgs: { theme: { bgHeader?: string } };
+        }) => {
           themes.push({ col: id, bgHeader: drawArgs.theme.bgHeader });
           return null;
         },

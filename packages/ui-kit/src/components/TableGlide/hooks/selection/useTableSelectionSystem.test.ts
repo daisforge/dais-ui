@@ -280,12 +280,12 @@ describe('useTableSelectionSystem — клавиатура и правый кл�
   /** Клик по нумерации строки `row`: pointerdown, выделение от glide, pointerup */
   const clickNumbering = (
     view: ReturnType<typeof setupWithNative>['view'],
-    row: number
+    row: number,
   ) => {
     act(() => {
       window.dispatchEvent(new MouseEvent('pointerdown', { button: 0 }));
       view.result.current.handleGridSelectionWithColumnReset(
-        gridSel([0, row], { x: 0, y: row, width: 1, height: 1 })
+        gridSel([0, row], { x: 0, y: row, width: 1, height: 1 }),
       );
       window.dispatchEvent(new Event('pointerup'));
     });
@@ -299,10 +299,10 @@ describe('useTableSelectionSystem — клавиатура и правый кл�
     // glide держит якорь в нумерации и растит range на вторую строку
     act(() => {
       window.dispatchEvent(
-        new KeyboardEvent('keydown', { key: 'ArrowDown', shiftKey: true })
+        new KeyboardEvent('keydown', { key: 'ArrowDown', shiftKey: true }),
       );
       view.result.current.handleGridSelectionWithColumnReset(
-        gridSel([0, 2], { x: 1, y: 2, width: 3, height: 2 })
+        gridSel([0, 2], { x: 1, y: 2, width: 3, height: 2 }),
       );
     });
 
@@ -322,7 +322,7 @@ describe('useTableSelectionSystem — клавиатура и правый кл�
     act(() => {
       window.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown' }));
       view.result.current.handleGridSelectionWithColumnReset(
-        gridSel([0, 3], { x: 0, y: 3, width: 1, height: 1 })
+        gridSel([0, 3], { x: 0, y: 3, width: 1, height: 1 }),
       );
     });
 
@@ -341,7 +341,7 @@ describe('useTableSelectionSystem — клавиатура и правый кл�
       window.dispatchEvent(new MouseEvent('pointerdown', { button: 2 }));
       window.dispatchEvent(new Event('pointerup'));
       view.result.current.handleGridSelectionWithColumnReset(
-        gridSel([0, 4], { x: 0, y: 4, width: 1, height: 1 })
+        gridSel([0, 4], { x: 0, y: 4, width: 1, height: 1 }),
       );
     });
 
@@ -358,7 +358,7 @@ describe('useTableSelectionSystem — клавиатура и правый кл�
     act(() => {
       window.dispatchEvent(new MouseEvent('pointerdown', { button: 0 }));
       view.result.current.handleGridSelectionWithColumnReset(
-        gridSel([0, 0], { x: 0, y: 0, width: 1, height: 3 })
+        gridSel([0, 0], { x: 0, y: 0, width: 1, height: 3 }),
       );
       window.dispatchEvent(new Event('pointerup'));
     });
@@ -368,7 +368,7 @@ describe('useTableSelectionSystem — клавиатура и правый кл�
       window.dispatchEvent(new MouseEvent('pointerdown', { button: 2 }));
       window.dispatchEvent(new Event('pointerup'));
       view.result.current.handleGridSelectionWithColumnReset(
-        gridSel([0, 1], { x: 0, y: 1, width: 1, height: 1 })
+        gridSel([0, 1], { x: 0, y: 1, width: 1, height: 1 }),
       );
     });
 
@@ -381,17 +381,17 @@ describe('useTableSelectionSystem — клавиатура и правый кл�
       window.dispatchEvent(new MouseEvent('pointerdown', { button: 2 }));
       window.dispatchEvent(new Event('pointerup'));
       view.result.current.handleGridSelectionWithColumnReset(
-        gridSel([0, 2], { x: 0, y: 2, width: 1, height: 1 })
+        gridSel([0, 2], { x: 0, y: 2, width: 1, height: 1 }),
       );
     });
     onSelectionEmit.mockClear();
 
     act(() => {
       window.dispatchEvent(
-        new KeyboardEvent('keydown', { key: 'ArrowDown', shiftKey: true })
+        new KeyboardEvent('keydown', { key: 'ArrowDown', shiftKey: true }),
       );
       view.result.current.handleGridSelectionWithColumnReset(
-        gridSel([0, 2], { x: 1, y: 2, width: 3, height: 2 })
+        gridSel([0, 2], { x: 1, y: 2, width: 3, height: 2 }),
       );
     });
 
@@ -410,7 +410,7 @@ describe('useTableSelectionSystem — сброс выделения и прав�
     act(() => {
       window.dispatchEvent(new MouseEvent('pointerdown', { button: 0 }));
       view.result.current.handleGridSelectionWithColumnReset(
-        gridSel([2, 2], { x: 2, y: 2, width: 1, height: 1 })
+        gridSel([2, 2], { x: 2, y: 2, width: 1, height: 1 }),
       );
       window.dispatchEvent(new Event('pointerup'));
     });
@@ -440,10 +440,16 @@ describe('useTableSelectionSystem — сброс выделения и прав�
   it('сброс при Ctrl-выбранных колонках: один onChange, уже без колонок', () => {
     const { view, onSelectionEmit } = setupWithNative();
     act(() => {
-      view.result.current.selectColumnFromHeader(1, headerEvent({ ctrlKey: true }));
+      view.result.current.selectColumnFromHeader(
+        1,
+        headerEvent({ ctrlKey: true }),
+      );
     });
     act(() => {
-      view.result.current.selectColumnFromHeader(3, headerEvent({ ctrlKey: true }));
+      view.result.current.selectColumnFromHeader(
+        3,
+        headerEvent({ ctrlKey: true }),
+      );
     });
     expect(view.result.current.selectedColumnIndexes).toEqual([1, 3]);
     onSelectionEmit.mockClear();
@@ -463,10 +469,10 @@ describe('useTableSelectionSystem — сброс выделения и прав�
     for (const row of [1, 3]) {
       act(() => {
         window.dispatchEvent(
-          new MouseEvent('pointerdown', { button: 0, ctrlKey: true })
+          new MouseEvent('pointerdown', { button: 0, ctrlKey: true }),
         );
         view.result.current.handleGridSelectionWithColumnReset(
-          gridSel([0, row], { x: 0, y: row, width: 1, height: 1 })
+          gridSel([0, row], { x: 0, y: row, width: 1, height: 1 }),
         );
         window.dispatchEvent(new Event('pointerup'));
       });
@@ -478,7 +484,7 @@ describe('useTableSelectionSystem — сброс выделения и прав�
       window.dispatchEvent(new MouseEvent('pointerdown', { button: 2 }));
       window.dispatchEvent(new Event('pointerup'));
       view.result.current.handleGridSelectionWithColumnReset(
-        gridSel([2, 3], { x: 2, y: 3, width: 1, height: 1 })
+        gridSel([2, 3], { x: 2, y: 3, width: 1, height: 1 }),
       );
     });
 
@@ -489,10 +495,16 @@ describe('useTableSelectionSystem — сброс выделения и прав�
   it('правый клик по ячейке внутри Ctrl-выбранных колонок сохраняет набор', () => {
     const { view, onSelectionEmit } = setupWithNative();
     act(() => {
-      view.result.current.selectColumnFromHeader(1, headerEvent({ ctrlKey: true }));
+      view.result.current.selectColumnFromHeader(
+        1,
+        headerEvent({ ctrlKey: true }),
+      );
     });
     act(() => {
-      view.result.current.selectColumnFromHeader(3, headerEvent({ ctrlKey: true }));
+      view.result.current.selectColumnFromHeader(
+        3,
+        headerEvent({ ctrlKey: true }),
+      );
     });
     onSelectionEmit.mockClear();
 
@@ -500,7 +512,7 @@ describe('useTableSelectionSystem — сброс выделения и прав�
       window.dispatchEvent(new MouseEvent('pointerdown', { button: 2 }));
       window.dispatchEvent(new Event('pointerup'));
       view.result.current.handleGridSelectionWithColumnReset(
-        gridSel([3, 2], { x: 3, y: 2, width: 1, height: 1 })
+        gridSel([3, 2], { x: 3, y: 2, width: 1, height: 1 }),
       );
     });
 
@@ -564,7 +576,7 @@ describe('useTableSelectionSystem — признак правой кнопки �
         window.dispatchEvent(new Event('pointerup'));
         fireContextMenu();
         view.result.current.handleGridSelectionWithColumnReset(
-          gridSel([0, 4], { x: 0, y: 4, width: 1, height: 1 })
+          gridSel([0, 4], { x: 0, y: 4, width: 1, height: 1 }),
         );
       });
       // Правый клик по нумерации ещё считается жестом мышью: строка выделена
@@ -584,7 +596,7 @@ describe('useTableSelectionSystem — признак правой кнопки �
       });
       act(() => {
         view.result.current.handleGridSelectionWithColumnReset(
-          gridSel([0, 0], { x: 0, y: 0, width: 1, height: 1 })
+          gridSel([0, 0], { x: 0, y: 0, width: 1, height: 1 }),
         );
       });
       expect(onSelectionEmit.mock.lastCall?.[0].current.range).toEqual({
@@ -611,7 +623,7 @@ describe('useTableSelectionSystem — признак правой кнопки �
     try {
       checkFlagClearedAfter(() => {
         target.dispatchEvent(
-          new MouseEvent('contextmenu', { button: 2, bubbles: true })
+          new MouseEvent('contextmenu', { button: 2, bubbles: true }),
         );
       });
     } finally {

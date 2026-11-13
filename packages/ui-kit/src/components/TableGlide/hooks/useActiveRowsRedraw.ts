@@ -67,7 +67,11 @@ export function rowsToRedraw(
   const rows = new Set<number>();
   if (visible === null) {
     ranges.forEach(({ from, to }) => {
-      for (let row = from; row <= to && rows.size < MAX_ROWS_WITHOUT_REGION; row += 1) {
+      for (
+        let row = from;
+        row <= to && rows.size < MAX_ROWS_WITHOUT_REGION;
+        row += 1
+      ) {
         rows.add(row);
       }
     });
@@ -75,7 +79,11 @@ export function rowsToRedraw(
     const top = visible.y - VISIBLE_MARGIN;
     const bottom = visible.y + visible.height + VISIBLE_MARGIN;
     ranges.forEach(({ from, to }) => {
-      for (let row = Math.max(from, top); row <= Math.min(to, bottom); row += 1) {
+      for (
+        let row = Math.max(from, top);
+        row <= Math.min(to, bottom);
+        row += 1
+      ) {
         rows.add(row);
       }
       pinned.forEach((row) => {

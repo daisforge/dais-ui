@@ -71,7 +71,13 @@ describe('rowsToRedraw: только видимые строки', () => {
   it('режет по видимой области с запасом в строку, без повторов и по возрастанию', () => {
     expect(
       rowsToRedraw(
-        [range(0, 0), range(9, 10), range(20, 20), range(31, 32), range(10, 10)],
+        [
+          range(0, 0),
+          range(9, 10),
+          range(20, 20),
+          range(31, 32),
+          range(10, 10),
+        ],
         { y: 10, height: 20 },
       ),
     ).toEqual([9, 10, 20, 31]);
@@ -89,12 +95,19 @@ describe('rowsToRedraw: только видимые строки', () => {
 });
 
 describe('useActiveRowsRedraw', () => {
-  type Props = { activeRow?: number; activeRowsRange?: { from: number; to: number } };
+  type Props = {
+    activeRow?: number;
+    activeRowsRange?: { from: number; to: number };
+  };
   const setup = (pinnedRows?: readonly number[]) => {
     const damageRows = vi.fn();
     const visibleRowsRef = { current: { y: 0, height: 50 } };
     const hook = renderHook(
-      ({ activeRow, activeRowsRange, pinned }: Props & { pinned?: readonly number[] }) =>
+      ({
+        activeRow,
+        activeRowsRange,
+        pinned,
+      }: Props & { pinned?: readonly number[] }) =>
         useActiveRowsRedraw({
           activeRow,
           activeRowsRange,
@@ -102,7 +115,11 @@ describe('useActiveRowsRedraw', () => {
           visibleRowsRef,
           pinnedRows: pinned,
         }),
-      { initialProps: { pinned: pinnedRows } as Props & { pinned?: readonly number[] } },
+      {
+        initialProps: { pinned: pinnedRows } as Props & {
+          pinned?: readonly number[];
+        },
+      },
     );
     return { hook, damageRows, visibleRowsRef };
   };
