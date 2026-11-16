@@ -123,6 +123,38 @@ const gridSelectionState = useState<GridSelection>(EMPTY_SELECTION);
 `CompactSelection` и тип `GridSelection` реэкспортируются из
 `@daisforge/ui/components/TableCanvas`.
 
+### Скорость в controlled-режиме
+
+В controlled-режиме каждый клик и каждая стрелка меняют состояние вашего компонента, и он
+перерисовывается. Если при этом `columnConfig`, строки или функции в конфиге колонок создаются
+заново, таблица получает новые ссылки и перерисовывает весь экран, а не только прежнее и новое
+выделение. На больших таблицах это заметно: клики и стрелки начинают отставать.
+
+Держите конфиг колонок и строки стабильными: `useMemo` для массивов, `useCallback` или функции вне
+компонента для `renderCell` и других обработчиков в колонках. То же для вложенных объектов
+`tableConfig`: часть из них таблица сравнивает по ссылке (например, `subRows` при новом объекте
+пересобирает строки), поэтому их лучше выносить в константы или `useMemo`.
+
+```tsx
+const SUB_ROWS = { /* ... */ };
+
+const columnConfig = useMemo(() => buildColumns(), []);
+const rows = useMemo(() => prepareRows(data), [data]);
+const gridSelectionState = useState<GridSelection>(EMPTY_SELECTION);
+
+<TableCanvas
+  columnConfig={columnConfig}
+  rows={rows}
+  tableConfig={{
+    subRows: SUB_ROWS,
+    cellsSelection: { mode: 'range-cell', state: gridSelectionState },
+  }}
+/>;
+```
+
+Без `state` выделение хранится внутри таблицы, клик ваш компонент не перерисовывает, и это
+правило не так важно. Наведение мыши компонент не перерисовывает ни в каком режиме.
+
 > Подробнее о типах — [CellsSelection API](?path=/docs/локальные-компоненты-tablecanvas-cellsselection-api--docs)
 
 <Stories />
