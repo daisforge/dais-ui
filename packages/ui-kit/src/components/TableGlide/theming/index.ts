@@ -96,6 +96,10 @@ export const getTheme = (
     ? withPaletteOverride(generated, paletteOverride)
     : generated;
 
+  // Hover и drag используют outline-accent, как рамка выделения.
+  // Берём итоговый accentColor, включая подмену палитры в Storybook.
+  theme.resizeIndicatorColor = theme.accentColor;
+
   return variant === 'clean' ? withCleanAppearance(theme) : theme;
 };
 
