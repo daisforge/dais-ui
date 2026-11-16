@@ -30,6 +30,8 @@ try {
       cwd: root,
       env,
       stdio: 'inherit',
+      // Node на Windows запускает npm.cmd только через оболочку.
+      shell: process.platform === 'win32',
     });
     if (result.error) throw result.error;
     if (result.status !== 0)
