@@ -44,7 +44,8 @@ export type PageTitleProps = {
     'children' | 'variant'
   >;
   /**
-   * Кастомный слот правее заголовка.
+   * Кастомный слот правее заголовка, обычно для Badge.
+   * Стоит сразу за текстом `title` и выровнен по центру его строки.
    * Можно передать ReactNode или callback с размерами для адаптива.
    */
   titleSlot?: PageTitleAdaptiveSlot;
