@@ -5,6 +5,7 @@ import {
   EMPTY_RESIZED_WIDTHS,
   reconcileResizedWidths,
   recordResizedWidth,
+  widthOfColumn,
 } from '../resizedColumnWidths';
 
 const column = (id: string, width?: number): GridColumn =>
@@ -26,10 +27,9 @@ describe('resizedColumnWidths — локальное состояние шири
     const columns = [column('a', 100), column('b', 100)];
     const resized = recordResizedWidth(
       EMPTY_RESIZED_WIDTHS,
-      columns,
-      0,
       'a',
       150,
+      100,
     );
 
     expect(widthsOf(reconcileResizedWidths(columns, resized).columns)).toEqual([
@@ -42,10 +42,9 @@ describe('resizedColumnWidths — локальное состояние шири
     const columns = [column('a')];
     const resized = recordResizedWidth(
       EMPTY_RESIZED_WIDTHS,
-      columns,
-      0,
       'a',
       150,
+      undefined,
     );
 
     expect(widthsOf(reconcileResizedWidths(columns, resized).columns)).toEqual([
@@ -57,10 +56,9 @@ describe('resizedColumnWidths — локальное состояние шири
     const before = [column('a', 100), column('b', 100)];
     const resized = recordResizedWidth(
       EMPTY_RESIZED_WIDTHS,
-      before,
-      0,
       'a',
       150,
+      100,
     );
     const after = [column('a', 200), column('b', 200)];
 
@@ -77,8 +75,13 @@ describe('resizedColumnWidths — локальное состояние шири
     const resizeMetricColumn = (id: string, width: number) => {
       // Glide сообщает об изменении одного столбца, а потребитель обновляет
       // ширину всего набора в ответ на этот callback.
-      const columnIndex = props.findIndex((item) => item.id === id);
-      resized = recordResizedWidth(resized, props, columnIndex, id, width);
+      const currentColumn = props.find((item) => item.id === id);
+      resized = recordResizedWidth(
+        resized,
+        id,
+        width,
+        currentColumn ? widthOfColumn(currentColumn) : undefined,
+      );
       props = props.map((item) => ({ ...item, width }));
 
       // Новые ширины из props применяются сразу, а принятые значения
@@ -104,26 +107,23 @@ describe('resizedColumnWidths — локальное состояние шири
   });
 
   it('берёт исходную ширину из props, а не из локального переопределения', () => {
-    const columns = [column('a', 100)];
     const first = recordResizedWidth(
       EMPTY_RESIZED_WIDTHS,
-      columns,
-      0,
       'a',
       150,
+      100,
     );
-    const second = recordResizedWidth(first, columns, 0, 'a', 170);
+    const second = recordResizedWidth(first, 'a', 170, 100);
 
-    expect(second.get('a')).toEqual({ width: 170, base: 100 });
+    expect(second.get('a')).toEqual({ width: 170, propsWidth: 100 });
   });
 
   it('очищает локальную ширину после обновления колонки потребителем', () => {
     const resized = recordResizedWidth(
       EMPTY_RESIZED_WIDTHS,
-      [column('a', 100)],
-      0,
       'a',
       150,
+      100,
     );
     const pruned = reconcileResizedWidths([column('a', 150)], resized)
       .resizedWidths;
@@ -134,10 +134,9 @@ describe('resizedColumnWidths — локальное состояние шири
   it('после принятия новой ширины позволяет вернуть колонку к исходной', () => {
     const resized = recordResizedWidth(
       EMPTY_RESIZED_WIDTHS,
-      [column('a', 100)],
-      0,
       'a',
       150,
+      100,
     );
     const pruned = reconcileResizedWidths([column('a', 150)], resized)
       .resizedWidths;
@@ -147,27 +146,23 @@ describe('resizedColumnWidths — локальное состояние шири
     ).toEqual([100]);
   });
 
-  it('удаляет записи о ширине удалённых колонок', () => {
+  it('сохраняет кеш ширины колонки, которой нет в текущем columns', () => {
     const resized = recordResizedWidth(
       EMPTY_RESIZED_WIDTHS,
-      [column('a', 100)],
-      0,
       'a',
       150,
+      100,
     );
 
-    expect(reconcileResizedWidths([], resized).resizedWidths.has('a')).toBe(
-      false,
-    );
+    expect(reconcileResizedWidths([], resized).resizedWidths).toBe(resized);
   });
 
-  it('возвращает исходную карту, если очищать нечего', () => {
+  it('возвращает исходную карту, пока props не приняли новую ширину', () => {
     const resized = recordResizedWidth(
       EMPTY_RESIZED_WIDTHS,
-      [column('a', 100)],
-      0,
       'a',
       150,
+      100,
     );
 
     expect(

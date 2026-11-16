@@ -114,6 +114,8 @@ import {
   EMPTY_RESIZED_WIDTHS,
   reconcileResizedWidths,
   recordResizedWidth,
+  widthOfColumn,
+  type ActiveColumnResize,
   type ResizedWidthsMap,
 } from './utils/resizedColumnWidths';
 
@@ -231,6 +233,8 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   onCellClicked: onCellClickedExternal,
   onCellContextMenu: onCellContextMenuExternal,
   onGroupHeaderClicked: onGroupHeaderClickedExternal,
+  onColumnResizeStart: onColumnResizeStartExternal,
+  onColumnResizeEnd: onColumnResizeEndExternal,
   // TODO: внешний getGroupDetails пока не прокидываем (см. композицию ниже).
   // getGroupDetails: getGroupDetailsExternal,
   onMouseMove: onMouseMoveExternal,
@@ -250,8 +254,8 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
 
   const summaryRowsLength = bottomSummaryRows?.length ?? 0;
 
-  // Glide обновляет собственное состояние ширины во время drag. Храним этот resize,
-  // пока владелец таблицы не вернёт новую ширину через columns.
+  // Glide обновляет ширину во время drag. Локальная копия удерживает её на экране,
+  // пока props владельца не подтвердят итоговую ширину.
   const [resizedColsMap, setResizedColsMap] = useState<ResizedWidthsMap>(
     EMPTY_RESIZED_WIDTHS,
   );
@@ -259,6 +263,52 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   // не добавляя их в зависимости useCallback.
   const columnsRef = useRef(columns);
   columnsRef.current = columns;
+  const activeColumnResizeRef = useRef<ActiveColumnResize | null>(null);
+
+  const columnWidthAt = useCallback((columnIndex: number, id: string) => {
+    const column = columnsRef.current[columnIndex];
+    return column?.id === id ? widthOfColumn(column) : undefined;
+  }, []);
+
+  const onColumnResizeStartInternal = useCallback<
+    NonNullable<TableGlideProps<R, SR>['onColumnResizeStart']>
+  >(
+    (column, newSize, colIndex, newSizeWithGrow) => {
+      activeColumnResizeRef.current = column.id
+        ? {
+          id: column.id,
+          startWidth: columnWidthAt(colIndex, column.id),
+        }
+        : null;
+
+      onColumnResizeStartExternal?.(column, newSize, colIndex, newSizeWithGrow);
+    },
+    [columnWidthAt, onColumnResizeStartExternal],
+  );
+
+  const onColumnResizeEndInternal = useCallback<
+    NonNullable<TableGlideProps<R, SR>['onColumnResizeEnd']>
+  >(
+    (column, newSize, colIndex, newSizeWithGrow) => {
+      onColumnResizeEndExternal?.(
+        column,
+        newSize,
+        colIndex,
+        newSizeWithGrow,
+      );
+
+      // Glide вызывает этот обработчик для перетаскиваемой колонки и затем
+      // для остальных выделенных. Завершаем сессию только для колонки, с которой
+      // начался drag; внешние callbacks при этом получают все вызовы.
+      if (column.id && activeColumnResizeRef.current?.id === column.id) {
+        activeColumnResizeRef.current = null;
+        setResizedColsMap((prev) =>
+          reconcileResizedWidths(columnsRef.current, prev).resizedWidths,
+        );
+      }
+    },
+    [onColumnResizeEndExternal],
+  );
 
   const { onColumnResizeStep, onColumnMoved: resetOnColumnMoved } =
     useColumnPortalReset(portalEventTargetRef);
@@ -290,20 +340,33 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
 
       onColumnResize?.(col, newSize, colIndex, newSizeWithGrow);
 
-      // Сохраняем ширину вместе с текущей шириной из props. Это позволяет отличить
-      // временный локальный resize от ширины, уже принятой владельцем таблицы.
-      // colIndex позволяет взять исходную ширину без поиска по всем колонкам на каждом шаге drag.
-      setResizedColsMap((prev) =>
-        recordResizedWidth(prev, columnsRef.current, colIndex, col.id, newSize),
-      );
+      // Базовую ширину фиксируем при начале drag, а не на каждом его шаге:
+      // владелец может обновлять props с задержкой или ограничивать ширину.
+      setResizedColsMap((prev) => {
+        const activeResize = activeColumnResizeRef.current;
+        const previousResize = prev.get(col.id);
+        const propsWidth =
+          activeResize?.id === col.id
+            ? activeResize.startWidth
+            : previousResize
+              ? previousResize.propsWidth
+              : columnWidthAt(colIndex, col.id);
+
+        return recordResizedWidth(prev, col.id, newSize, propsWidth);
+      });
     },
-    [onColumnResize, onColumnResizeStep],
+    [columnWidthAt, onColumnResize, onColumnResizeStep],
   );
 
-  // За один проход применяем локальные ширины и находим записи кеша,
-  // которые props уже обновили или для которых колонка была удалена.
+  // Применяем локальные ширины; обновлённые владельцем значения удаляются из кеша.
+  // Неизвестные сейчас колонки сохраняются: TableCanvas может скрыть их и позже показать снова.
   const { columns: columnsLast, resizedWidths: reconciledResizedWidths } = useMemo(
-    () => reconcileResizedWidths(columns, resizedColsMap),
+    () =>
+      reconcileResizedWidths(
+        columns,
+        resizedColsMap,
+        activeColumnResizeRef.current ?? undefined,
+      ),
     [columns, resizedColsMap],
   );
 
@@ -2161,6 +2224,12 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
           onItemHovered={onItemHovered}
           onVisibleRegionChanged={handleVisibleRegionChanged}
           {...restProps}
+          onColumnResizeStart={
+            resizableColumn ? onColumnResizeStartInternal : undefined
+          }
+          onColumnResizeEnd={
+            resizableColumn ? onColumnResizeEndInternal : undefined
+          }
           provideEditor={provideEditor}
           onKeyDown={handleKeyDownBridge}
           // В режиме cell квадратика автозаполнения нет, рамка блока его не включает.

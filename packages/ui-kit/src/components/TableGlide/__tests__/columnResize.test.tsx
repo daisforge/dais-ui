@@ -15,6 +15,18 @@ type EditorProps = {
     columnIndex: number,
     newSizeWithGrow: number,
   ) => void;
+  onColumnResizeStart?: (
+    column: GridColumn,
+    newSize: number,
+    columnIndex: number,
+    newSizeWithGrow: number,
+  ) => void;
+  onColumnResizeEnd?: (
+    column: GridColumn,
+    newSize: number,
+    columnIndex: number,
+    newSizeWithGrow: number,
+  ) => void;
 };
 
 vi.mock('../styled', async (importOriginal) => {
@@ -28,18 +40,44 @@ vi.mock('../styled', async (importOriginal) => {
               ?.map((column) => ('width' in column ? column.width : undefined))
               .join(',')}
           </output>
-          {props.columns?.map((column, columnIndex) =>
-            [150, 220].map((width) => (
+          {props.columns?.map((column, columnIndex) => (
+            <React.Fragment key={column.id}>
               <button
-                key={`${column.id}-${width}`}
                 type="button"
-                aria-label={`изменить колонку ${column.id} на ${width}px`}
+                aria-label={`начать изменение колонки ${column.id}`}
                 onClick={() =>
-                  props.onColumnResize?.(column, width, columnIndex, width)
+                  props.onColumnResizeStart?.(
+                    column,
+                    'width' in column ? column.width : 100,
+                    columnIndex,
+                    'width' in column ? column.width : 100,
+                  )
                 }
               />
-            )),
-          )}
+              {[150, 160, 220].map((width) => (
+                <button
+                  key={width}
+                  type="button"
+                  aria-label={`изменить колонку ${column.id} на ${width}px`}
+                  onClick={() =>
+                    props.onColumnResize?.(column, width, columnIndex, width)
+                  }
+                />
+              ))}
+              <button
+                type="button"
+                aria-label={`завершить изменение колонки ${column.id}`}
+                onClick={() =>
+                  props.onColumnResizeEnd?.(
+                    column,
+                    'width' in column ? column.width : 100,
+                    columnIndex,
+                    'width' in column ? column.width : 100,
+                  )
+                }
+              />
+            </React.Fragment>
+          ))}
         </div>
       );
     },
@@ -87,6 +125,32 @@ function ControlledTableWithSelectedColumns() {
   );
 }
 
+function ControlledTableWithWidthLimit() {
+  const [columns, setColumns] = useState(createColumns);
+
+  const handleColumnResize: NonNullable<
+    TableGlideProps<Row, unknown>['onColumnResize']
+  > = (resizedColumn, width) => {
+    if (resizedColumn.id !== 'a') return;
+
+    // Имитируем потребителя, который ограничивает ширину колонки сверху.
+    setColumns((current) =>
+      current.map((column) =>
+        column.id === 'a' ? { ...column, width: Math.min(width, 150) } : column,
+      ),
+    );
+  };
+
+  return (
+    <TableGlide
+      columns={columns}
+      rows={[]}
+      onColumnResize={handleColumnResize}
+      resizableColumn
+    />
+  );
+}
+
 describe('TableGlide — обновление ширины выбранных колонок', () => {
   beforeEach(() => {
     // jsdom не рисует canvas; тест проверяет связь callback и обновлённых props.
@@ -110,5 +174,108 @@ describe('TableGlide — обновление ширины выбранных к
       screen.getByRole('button', { name: 'изменить колонку b на 220px' }),
     );
     expect(screen.getByTestId('column-widths').textContent).toBe('220,220,100');
+  });
+
+  it('сохраняет локальную ширину после скрытия и повторного показа колонки', () => {
+    const columns = createColumns();
+    const { rerender } = render(
+      <TableGlide columns={columns} rows={[]} resizableColumn />,
+    );
+
+    fireEvent.click(
+      screen.getByRole('button', { name: 'изменить колонку a на 150px' }),
+    );
+    expect(screen.getByTestId('column-widths').textContent).toBe('150,100,100');
+
+    rerender(
+      <TableGlide columns={columns.slice(1)} rows={[]} resizableColumn />,
+    );
+    expect(screen.getByTestId('column-widths').textContent).toBe('100,100');
+
+    rerender(
+      <TableGlide columns={columns} rows={[]} resizableColumn />,
+    );
+    expect(screen.getByTestId('column-widths').textContent).toBe('150,100,100');
+  });
+
+  it('после окончания resize показывает ширину, ограниченную потребителем', () => {
+    render(<ControlledTableWithWidthLimit />);
+
+    fireEvent.click(
+      screen.getByRole('button', { name: 'начать изменение колонки a' }),
+    );
+    fireEvent.click(
+      screen.getByRole('button', { name: 'изменить колонку a на 160px' }),
+    );
+    expect(screen.getByTestId('column-widths').textContent).toBe(
+      '160,100,100',
+    );
+
+    fireEvent.click(
+      screen.getByRole('button', { name: 'завершить изменение колонки a' }),
+    );
+    expect(screen.getByTestId('column-widths').textContent).toBe(
+      '150,100,100',
+    );
+  });
+
+  it('не применяет промежуточные props до окончания drag', () => {
+    const initialColumns = createColumns();
+    const { rerender } = render(
+      <TableGlide columns={initialColumns} rows={[]} resizableColumn />,
+    );
+
+    fireEvent.click(
+      screen.getByRole('button', { name: 'начать изменение колонки a' }),
+    );
+    fireEvent.click(
+      screen.getByRole('button', { name: 'изменить колонку a на 160px' }),
+    );
+
+    rerender(
+      <TableGlide
+        columns={initialColumns.map((column, index) =>
+          index === 0 ? { ...column, width: 140 } : column,
+        )}
+        rows={[]}
+        resizableColumn
+      />,
+    );
+    expect(screen.getByTestId('column-widths').textContent).toBe(
+      '160,100,100',
+    );
+
+    fireEvent.click(
+      screen.getByRole('button', { name: 'завершить изменение колонки a' }),
+    );
+    expect(screen.getByTestId('column-widths').textContent).toBe(
+      '140,100,100',
+    );
+  });
+
+  it('сохраняет внешние callbacks начала и конца изменения ширины', () => {
+    const columns = createColumns();
+    const onResizeStart = vi.fn();
+    const onResizeEnd = vi.fn();
+
+    render(
+      <TableGlide
+        columns={columns}
+        rows={[]}
+        onColumnResizeStart={onResizeStart}
+        onColumnResizeEnd={onResizeEnd}
+        resizableColumn
+      />,
+    );
+
+    fireEvent.click(
+      screen.getByRole('button', { name: 'начать изменение колонки a' }),
+    );
+    fireEvent.click(
+      screen.getByRole('button', { name: 'завершить изменение колонки a' }),
+    );
+
+    expect(onResizeStart).toHaveBeenCalledOnce();
+    expect(onResizeEnd).toHaveBeenCalledOnce();
   });
 });
