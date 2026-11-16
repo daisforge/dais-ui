@@ -341,8 +341,9 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   const dataEditorRef = useRef<DataEditorRef | null>(null);
   // Только скриншотный Storybook (STORYBOOK_SCREENSHOT_TEST=1) подключает
   // withCanvasSnapshots: useSnapshotRepaint регистрирует этот callback в нём.
-  // Runner вызывает его перед PNG через window.daisScreenshotRepaint;
-  // в приложении провайдера нет, поэтому дополнительной перерисовки нет.
+  // Runner вызывает его перед PNG через window.daisScreenshotRepaint, тесты
+  // перерисовки сверяют с ним частичный кадр; в приложении провайдера нет,
+  // поэтому дополнительной перерисовки нет и отметки о кадрах glide не даёт.
   const repaintSnapshot = useCallback(() => {
     if (!dataEditorRef.current) return false;
     // Новая версия getCellContent заставляет Glide перерисовать всю видимую область.
@@ -350,7 +351,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     setUpdateVersion((version) => version + 1);
     return true;
   }, []);
-  useSnapshotRepaint(repaintSnapshot);
+  const onFrameDrawn = useSnapshotRepaint(repaintSnapshot, dataEditorRef);
 
   // Controlled-выделение приходит, когда грид НЕ в фокусе (напр. клик по внешней
   // кнопке) — тогда glide рисует якорную ячейку без заливки (нативный стиль
@@ -1843,15 +1844,16 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   );
 
   const experimental = useMemo<GlideProps['experimental']>(() => {
-    if (enableLowDprHairline === undefined) {
+    if (enableLowDprHairline === undefined && onFrameDrawn === undefined) {
       return mergedExperimental;
     }
 
     return {
       ...mergedExperimental,
-      enableLowDprHairline,
+      ...(enableLowDprHairline !== undefined && { enableLowDprHairline }),
+      ...(onFrameDrawn !== undefined && { onFrameDrawn }),
     };
-  }, [enableLowDprHairline, mergedExperimental]);
+  }, [enableLowDprHairline, mergedExperimental, onFrameDrawn]);
 
   const onMouseMove: NonNullable<GlideProps['onMouseMove']> = useCallback(
     (event) => {

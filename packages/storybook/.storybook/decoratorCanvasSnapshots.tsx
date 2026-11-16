@@ -1,37 +1,59 @@
+import type { DataEditorRef } from '@glideappsfinal/glide-data-grid';
 import type { Decorator } from '@storybook/react';
-import { CanvasSnapshotContext } from '@ui-kit/components/TableGlide/hooks/useSnapshotRepaint';
+import {
+  type CanvasSnapshotHooks,
+  CanvasSnapshotContext,
+} from '@ui-kit/components/TableGlide/hooks/useSnapshotRepaint';
 import React from 'react';
+import type { RefObject } from 'react';
 import { flushSync } from 'react-dom';
 
-// Каждая смонтированная таблица регистрирует свою перерисовку через React-контекст.
-// При размонтировании истории обработчик удаляется и не попадает в следующий снимок.
+import { createRedrawPageApi } from './redrawPageApi';
+
+// Каждая смонтированная таблица регистрирует свою перерисовку и ссылку на грид
+// через React-контекст. При размонтировании истории регистрация снимается и
+// не попадает в следующий снимок.
 const repaints = new Set<() => boolean>();
-const register = (repaint: () => boolean) => {
-  repaints.add(repaint);
-  return () => {
-    repaints.delete(repaint);
-  };
+const grids = new Set<RefObject<DataEditorRef | null>>();
+
+// Полная перерисовка всех таблиц истории: перед PNG и в тестах перерисовки.
+// Обновления React применяем до ожидания кадров и захвата.
+const repaintAll = () => {
+  if (!repaints.size) return 0;
+  let count = 0;
+  flushSync(() => {
+    repaints.forEach((repaint) => {
+      if (repaint()) count += 1;
+    });
+  });
+  return count;
 };
 
-// Точка входа для Playwright существует только в сборке скриншот-тестов.
+const redraw = createRedrawPageApi({ repaint: repaintAll, grids });
+
+const hooks: CanvasSnapshotHooks = {
+  register: (repaint, grid) => {
+    repaints.add(repaint);
+    grids.add(grid);
+    return () => {
+      repaints.delete(repaint);
+      grids.delete(grid);
+    };
+  },
+  onFrameDrawn: redraw.record,
+};
+
+// Точки входа для Playwright существуют только в сборке скриншот-тестов:
+// daisScreenshotRepaint у раннера снимков, daisRedraw у тестов перерисовки.
 if (process.env.STORYBOOK_SCREENSHOT_TEST === '1') {
   Object.assign(window, {
-    daisScreenshotRepaint: () => {
-      if (!repaints.size) return 0;
-      let grids = 0;
-      // Применяем обновления React до ожидания кадров и захвата PNG.
-      flushSync(() => {
-        repaints.forEach((repaint) => {
-          if (repaint()) grids += 1;
-        });
-      });
-      return grids;
-    },
+    daisScreenshotRepaint: repaintAll,
+    daisRedraw: redraw,
   });
 }
 
 export const withCanvasSnapshots: Decorator = (Story) => (
-  <CanvasSnapshotContext.Provider value={register}>
+  <CanvasSnapshotContext.Provider value={hooks}>
     <Story />
   </CanvasSnapshotContext.Provider>
 );
