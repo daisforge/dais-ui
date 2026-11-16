@@ -1,0 +1,14 @@
+import{j as i}from"./react-D2T61mpp.js";import{cg as n,ch as m,ca as e}from"./vendor-C2wfsRrl.js";import{T as p}from"./Table.rowHeight.stories-v2Ay0cP7.js";import"./react-is-Clcustum.js";import"./styled-components-ClAFA1pS.js";import"./@tanstack/react-virtual-Cxq0PS7B.js";import"./tslib-DoU9Jm1N.js";import"./tableData-DVJFoYoT.js";import"./DocStoryTemplate-C2lVLKWV.js";import"./storySourceDoc-tVKyHcEN.js";import"./Box-a_ZxBekU.js";import"./StoriesUtils-DgzrErk7.js";import"./Table-B92nXydU.js";import"./FiltersActions-Cmf1HmdR.js";import"./IconButton-DeWJOMej.js";import"./@salutejs/plasma-icons-DBwPuxT_.js";import"./@salutejs/sdds-finai-mb0_wFqo.js";import"./@sddsjs/sdds_finai-Clnx3I02.js";import"./utils-B1BgiuVf.js";import"./constants-ChwOYBdp.js";import"./sharedUtilsDebug-BX_KjCjW.js";import"./TextField-BjiTsV6X.js";import"./sharedUtilsInputs-BHgzGTRE.js";import"./AiAgentPopup-esetPzD1.js";import"./TextArea-D0ReWZFC.js";import"./sharedUtilsResizable-HEc-nR9h.js";import"./@salutejs/sdds-themes-xIOWIAKk.js";import"./Collapse-O6nU6Hfe.js";import"./react-data-grid-CH1UaqJV.js";import"./TableTabs-wcVNwTrN.js";import"./TableCanvasSharedConstants-CqGDn8zL.js";import"./TableGlide-BcK1DyIg.js";import"./@glideappsfinal/glide-data-grid-ivCXHXtO.js";import"./canvas-hypertxt-DsokSIOX.js";import"./sharedUiSearch-DgTmRMhl.js";import"./ListOfFilters-BFjaWVZN.js";import"./lodash.isequal-DD0Lfcik.js";import"./NumberFormat-DP7BgNDX.js";import"./EmptyState--CB9xCUL.js";import"./MassActions-DN5qFUTC.js";import"./Autocomplete-Dr5YKrqX.js";function t(r){const o={a:"a",code:"code",h1:"h1",h2:"h2",li:"li",p:"p",ul:"ul",...n(),...r.components};return i.jsxs(i.Fragment,{children:[i.jsx(m,{of:p,name:"Docs"}),`
+`,i.jsx(o.h1,{id:"rowheight",children:"RowHeight"}),`
+`,i.jsxs(o.p,{children:["Настройка высоты строк legacy ",i.jsx(o.code,{children:"Table"}),"."]}),`
+`,i.jsx(o.h2,{id:"ключевые-особенности",children:"Ключевые особенности"}),`
+`,i.jsxs(o.ul,{children:[`
+`,i.jsx(o.li,{children:"Фиксированная высота через число"}),`
+`,i.jsxs(o.li,{children:["Динамическая высота через функцию ",i.jsx(o.code,{children:"RowHeightFunc"})]}),`
+`,i.jsx(o.li,{children:"Доступ к текущему размеру строки при расчете высоты"}),`
+`,i.jsx(o.li,{children:"Возможность подстраивать высоту под многострочный контент"}),`
+`]}),`
+`,i.jsx(o.h2,{id:"особенности",children:"Особенности"}),`
+`,i.jsx(o.p,{children:"Функция высоты вызывается для строк таблицы, поэтому держите вычисления легкими и мемоизируйте конфигурацию колонок."}),`
+`,i.jsxs(o.p,{children:["Описание типов - в разделе ",i.jsx(o.a,{href:"?path=/docs/%D0%BB%D0%BE%D0%BA%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D1%8B-table-rowheight-api--docs",children:"API"}),"."]}),`
+`,i.jsx(e,{})]})}function V(r={}){const{wrapper:o}={...n(),...r.components};return o?i.jsx(o,{...r,children:i.jsx(t,{...r})}):t(r)}export{V as default};
