@@ -11,6 +11,7 @@ export interface GetComponentArgs {
 }
 
 interface GetComponentPayload {
+  apiKind?: 'namespace';
   name: string;
   type: string;
   category?: string;
@@ -140,6 +141,7 @@ export function getComponent(
 
   return {
     name: record.name,
+    apiKind: record.apiKind,
     type: record.type,
     category: record.category,
     description: record.description || undefined,

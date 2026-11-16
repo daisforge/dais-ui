@@ -265,6 +265,9 @@ function normalizeElementGeneric(typeText: string): string {
 
 /** true — считаем пропс шумом (унаследованный DOM-атрибут без переопределения). */
 export function isNoiseProp(name: string, typeText: string): boolean {
+  // Содержимое компонента — часть API, даже если его тип совпадает с DOM.
+  // Иначе Canvas.Text/Container теряют основной способ передать содержимое.
+  if (name === 'children') return false;
   if (REACT_STATIC_MEMBER_NAMES.has(name)) return true;
   if (UNCONDITIONAL_NOISE_NAMES.has(name)) return true;
   if (UNCONDITIONAL_NOISE_PATTERNS.some((re) => re.test(name))) return true;

@@ -1,0 +1,48 @@
+name: MCP checks
+
+on:
+  pull_request:
+    paths:
+      - 'packages/mcp-server/**'
+      - 'packages/ui-kit/**'
+      - 'packages/storybook/src/**'
+      - 'generators/**'
+      - 'package*.json'
+      - 'tsconfig*.json'
+      - '.github/workflows/mcp-check.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  mcp:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      NX_DAEMON: 'false'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            packages/mcp-server/package-lock.json
+      - run: npm ci --ignore-scripts
+      - run: npm ci --prefix packages/mcp-server --ignore-scripts
+      - run: npm run mcp:build-index
+      - run: npx nx lint @daisforge/ui-mcp
+      - run: npm test --prefix packages/mcp-server
+      - run: npm run mcp:validate-index
+      - run: npm run mcp:search-eval
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mcp-validation
+          path: |
+            packages/mcp-server/.probe/validation-report.json
+            packages/mcp-server/.probe/validation-tsc.log
+          include-hidden-files: true
+          retention-days: 7

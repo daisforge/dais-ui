@@ -19,6 +19,11 @@ import { Node, SymbolFlags, SyntaxKind, ts } from 'ts-morph';
 import type { CompoundPart, PropRecord } from '../types.js';
 import type { ComponentEntry } from './discoverComponents.js';
 import { isNoiseProp, isReactDomDescription } from './htmlAttributeDenylist.js';
+import {
+  getPublicContract,
+  isNamespace,
+  isOpenContract,
+} from './publicContract.js';
 import { getRootExportNames } from './resolveImportPath.js';
 import { getProject, UI_KIT_SRC } from './tsProject.js';
 
@@ -78,6 +83,8 @@ export interface ParsedComponent {
   rawType?: string;
   isGeneric?: true;
   compoundParts?: CompoundPart[];
+  openProps?: true;
+  apiKind?: 'namespace';
 }
 
 export interface ParseFailure {
@@ -381,8 +388,8 @@ function isInPackage(sourceFile: SourceFile, pkgName: string): boolean {
 
 /**
  * Находит тип пропсов компонента среди экспортов barrel-файла: по
- * соглашению имени (`${Name}Props`, `${Name}CompProps`) либо — если не
- * нашли — среди всех экспортов, заканчивающихся на "Props".
+ * точному соглашению имени (`${Name}Props`, `${Name}CompProps`). Совпадение
+ * подстроки небезопасно: TableContractControlBlockButtonProps — не TableContract.
  */
 function findPropsDeclaration(
   barrelSourceFile: SourceFile,
@@ -394,16 +401,6 @@ function findPropsDeclaration(
   for (const candidate of candidates) {
     const decl = map.get(candidate)?.[0];
     if (decl) return { name: candidate, decl };
-  }
-
-  for (const [name, decls] of map.entries()) {
-    if (
-      name.endsWith('Props') &&
-      name.toLowerCase().includes(componentName.toLowerCase()) &&
-      decls[0]
-    ) {
-      return { name, decl: decls[0] };
-    }
   }
 
   return undefined;
@@ -544,6 +541,32 @@ function extractPropsFromType(
   const ownFilePath = atLocationNode.getSourceFile().getFilePath();
   const entries: { record: PropRecord; ownFile: boolean }[] = [];
 
+  if (type.isUnion()) {
+    const variants = type
+      .getUnionTypes()
+      .map((variant) =>
+        extractPropsFromType(variant, atLocationNode, defaultsMap),
+      );
+    const names = [
+      ...new Set(variants.flatMap((props) => props.map((prop) => prop.name))),
+    ];
+    return names.map((name) => {
+      const props = variants.map((variant) =>
+        variant.find((prop) => prop.name === name),
+      );
+      const present = props.filter((prop): prop is PropRecord => Boolean(prop));
+      return {
+        ...present[0],
+        description: present[0]?.description ?? '',
+        name,
+        required: props.every((prop) => prop?.required),
+        type: clip(
+          [...new Set(present.map((prop) => prop.type))].join(' | '),
+          MAX_PROP_TYPE_CHARS,
+        ) as string,
+      };
+    });
+  }
   for (const symbol of type.getProperties()) {
     const decl: Node | undefined =
       symbol.getValueDeclaration() ?? symbol.getDeclarations()[0];
@@ -1002,7 +1025,9 @@ export function parseComponent({
   name,
   barrelPath,
   dir,
+  ...entryRest
 }: ComponentEntry): ParsedComponent | ParseFailure {
+  const entry = { name, barrelPath, dir, ...entryRest };
   const project = getProject();
   const barrelSourceFile = project.getSourceFileOrThrow(barrelPath);
 
@@ -1076,12 +1101,68 @@ export function parseComponent({
 
   const localMainFile = declaredInUiKit ? mainSourceFile : undefined;
   const compoundAssignments = findCompoundAssignments(localMainFile, name);
-  const compoundParts = compoundAssignments.map((assignment) =>
-    resolveCompoundPart(barrelSourceFile, name, assignment, dir),
-  );
+  const namespace = isNamespace(entry);
+  const contract = getPublicContract(entry);
+  // Проверенный публичный тип определяет наличие/required/type; объявленный
+  // Props сохраняет описания и defaults. Открытый индексный тип не доказывает API.
+  const refine = (
+    type: Type | undefined,
+    original: PropRecord[],
+  ): PropRecord[] => {
+    if (!type || isOpenContract(type)) return original;
+    if (type.isNever()) throw new Error(`Не удалось извлечь контракт ${name}`);
+    const actual = extractPropsFromType(type, mainDecl, defaultsMap);
+    const previous = new Map(original.map((prop) => [prop.name, prop]));
+    return actual.map((prop) => {
+      const own = previous.get(prop.name);
+      return {
+        ...own,
+        ...prop,
+        description: own?.description || prop.description,
+        ...(own?.default ? { default: own.default } : {}),
+      };
+    });
+  };
+  propsResolved.props = namespace ? [] : refine(contract, propsResolved.props);
+  const compoundParts = namespace
+    ? mainDecl
+        .getType()
+        .getProperties()
+        .flatMap((symbol) => {
+          const type = getPublicContract(entry, symbol.getName());
+          return type && !type.isNever()
+            ? [
+                {
+                  name: symbol.getName(),
+                  props: refine(type, []),
+                  openProps: isOpenContract(type) ? (true as const) : undefined,
+                },
+              ]
+            : [];
+        })
+    : compoundAssignments.map((assignment) => {
+        const part = resolveCompoundPart(
+          barrelSourceFile,
+          name,
+          assignment,
+          dir,
+        );
+        const partContract = getPublicContract(entry, part.name);
+        return {
+          ...part,
+          openProps:
+            partContract && isOpenContract(partContract)
+              ? (true as const)
+              : undefined,
+          props: refine(partContract, part.props),
+        };
+      });
 
   return {
     name,
+    apiKind: namespace ? 'namespace' : undefined,
+    openProps:
+      !namespace && contract && isOpenContract(contract) ? true : undefined,
     description,
     deprecated,
     deprecationReason,

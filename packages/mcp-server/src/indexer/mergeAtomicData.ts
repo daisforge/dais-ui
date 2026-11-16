@@ -147,17 +147,8 @@ function dropEmptyStrings(p: AtomicPropRecord): AtomicPropRecord {
   return cleaned;
 }
 
-/**
- * Вендор беднее собственного резолва ts-morph: замер на 40 wrapper-компонентах
- * — 0 описаний, 0 default, 0 required:true во всём снэпшоте, при 454 реальных
- * русских описаниях и 8 required:true, потерянных прежним "own минус
- * inherited"-дедупом (см. TASKS.md T14). Поэтому там, где имя совпало,
- * описание и required берём из own (ts-morph — источник точнее), а текст типа
- * и сам факт наличия пропса — из вендора (он ближе к тому, как атом реально
- * типизирован публично, без внутренних деталей ui-kit-обёртки). `default`
- * (TASKS.md T6) вендор не несёт вовсе (см. dropEmptyStrings) — own всегда
- * побеждает, если он его резолвил (деструктуризация/`@default`).
- */
+/** Тип, required и наличие пропса определяет установленный публичный API.
+ * Vendor дополняет описания, но не может расширять контракт обёртки. */
 function mergeWithOwn(
   vendorProp: AtomicPropRecord,
   ownProp: PropRecord | undefined,
@@ -165,6 +156,7 @@ function mergeWithOwn(
   if (!ownProp) return vendorProp;
   return {
     ...vendorProp,
+    type: ownProp.type,
     required: ownProp.required,
     description: ownProp.description || vendorProp.description,
     default: ownProp.default ?? vendorProp.default,
@@ -218,11 +210,13 @@ export function mergeAtomicData(
   const ownByName = new Map((record.props || []).map((p) => [p.name, p]));
 
   const inheritedProps = sortInheritedProps(
-    (atomicComponent.api?.props || []).map((p) => ({
-      ...mergeWithOwn(dropEmptyStrings(p), ownByName.get(p.name)),
-      inheritedFrom: record.atomicBase as string,
-      inheritedPackage: '@salutejs/sdds-finai',
-    })),
+    (atomicComponent.api?.props || [])
+      .filter((p) => ownByName.has(p.name))
+      .map((p) => ({
+        ...mergeWithOwn(dropEmptyStrings(p), ownByName.get(p.name)),
+        inheritedFrom: record.atomicBase as string,
+        inheritedPackage: '@salutejs/sdds-finai',
+      })),
   );
 
   const inheritedNames = new Set(inheritedProps.map((p) => p.name));

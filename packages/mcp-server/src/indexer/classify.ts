@@ -121,6 +121,9 @@ function findPromotionCandidate(
       imported &&
       imported.type === 'wrapper' &&
       imported.atomicBase &&
+      record.props?.some((prop) =>
+        imported.props?.some((baseProp) => baseProp.name === prop.name),
+      ) &&
       lower.includes(importedName.toLowerCase())
     );
   });

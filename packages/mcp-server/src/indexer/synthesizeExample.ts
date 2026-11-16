@@ -28,10 +28,19 @@ function placeholderForType(typeText: string | undefined): string {
  */
 export function synthesizeMinimalUsage(record: {
   name: string;
+  apiKind?: 'namespace';
   props?: PropRecord[];
   inheritedProps?: InheritedPropRecord[];
   compoundParts?: { name: string }[];
 }): string {
+  if (record.apiKind === 'namespace') {
+    const part =
+      record.compoundParts?.find((p) => p.name === 'Container') ??
+      record.compoundParts?.[0];
+    return part
+      ? `<${record.name}.${part.name} />`
+      : `// ${record.name}: объект с компонентами`;
+  }
   const requiredProps = [
     ...(record.props || []),
     ...(record.inheritedProps || []),

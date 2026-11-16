@@ -1,336 +1,279 @@
 /* eslint-disable no-console */
-import { execFileSync } from 'node:child_process';
+import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
+import { PUBLIC_PROPS_HELPERS } from '../indexer/publicContract.js';
 import { REPO_ROOT } from '../indexer/tsProject.js';
 import { resolveIndex } from '../resolveIndex.js';
-import type { ComponentRecord } from '../types.js';
+import type { ComponentIndex, ComponentRecord } from '../types.js';
 import { isOkComponent } from '../types.js';
 import {
   checkIndexCompleteness,
   formatCompletenessReport,
 } from './checkCompleteness.js';
+import { KNOWN_OPEN_CONTRACTS } from './knownOpenContracts.js';
 
-const PROBE_DIR = path.join(REPO_ROOT, 'packages/mcp-server/.probe');
-const PROBE_FILE = path.join(PROBE_DIR, 'validate.ts');
-const PROBE_TSCONFIG = path.join(
-  REPO_ROOT,
-  'packages/mcp-server/probe.tsconfig.json',
-);
-const TSC_BIN = path.join(REPO_ROOT, 'node_modules/.bin/tsc');
-
-type CheckKind = 'import' | 'exists' | 'required';
-
+type CheckKind =
+  | 'import'
+  | 'contract'
+  | 'open-contract'
+  | 'exists'
+  | 'required';
 interface CheckMeta {
   kind: CheckKind;
   component: string;
   part?: string;
-  prop: string;
-  isGeneric: boolean;
+  prop?: string;
 }
-
-function sanitize(id: string): string {
-  return id.replace(/[^A-Za-z0-9_]/g, '_');
-}
-
-/**
- * Индекс отдаёт importPath как реальный публикуемый путь ('@daisforge/ui'
- * или '@daisforge/ui/components/TableCanvas') — внутри монорепо он не
- * резолвится по типам (в node_modules лежит symlink без собранного .d.ts).
- * Переводим на алиас '@ui-kit/*' из tsconfig.base.json, который ведёт на
- * реальные исходники и типизируется корректно — так пробник проверяет
- * именно то, что реально вычислил resolveImportPath, а не всегда корень.
- */
-function toInternalImportSource(importPath: string): string {
-  if (importPath === '@daisforge/ui') return '@ui-kit/index';
-  return `@ui-kit/${importPath.replace(/^@daisforge\/ui\//, '')}`;
-}
-
-/**
- * Генерирует .ts-пробник: для каждого компонента — реальный value-импорт из
- * `@ui-kit/index` + type-level проверки на существование и required каждого
- * пропа через настоящий тайпчекер, без единого сгенерированного значения
- * (в отличие от synthesizeMinimalUsage — там плейсхолдеры дают ложные срабатывания
- * на нераспознанных типах). Несуществующий проп/экспорт — реальная ошибка tsc,
- * не наша эвристика.
- */
-function generateProbe(components: Record<string, ComponentRecord>): {
+export interface Diagnostic {
+  file?: string;
+  line?: number;
   code: string;
-  lineMeta: Map<number, CheckMeta>;
-  totalChecks: number;
-  coveredComponents: number;
-} {
-  const lines: string[] = [];
+  message: string;
+  check?: CheckMeta;
+}
+const PROBE_DIR = path.join(REPO_ROOT, 'packages/mcp-server/.probe');
+const PROBE_FILE = path.join(PROBE_DIR, 'validate.ts');
+
+function internalImport(importPath: string): string {
+  if (importPath === '@daisforge/ui') return '@ui-kit/index';
+  if (!importPath.startsWith('@daisforge/ui/'))
+    throw new Error(`Неизвестный importPath: ${importPath}`);
+  return `@ui-kit/${importPath.slice('@daisforge/ui/'.length)}`;
+}
+
+/** Проверяем реальные экспорты, включая записи с пустым props и все ветви union. */
+export function generateProbe(components: Record<string, ComponentRecord>) {
+  const lines = PUBLIC_PROPS_HELPERS.trim().split('\n');
+  lines.push(
+    'type Expect<T extends true> = T;',
+    'type IsAny<T> = 0 extends (1 & T) ? true : false;',
+    'type IsOpen<T> = IsAny<T> extends true ? true : unknown extends T ? true : string extends McpKeys<T> ? true : false;',
+    'type ValidContract<T> = [T] extends [never] ? false : true;',
+    'type RequiredMatches<T, K extends PropertyKey, Optional extends boolean> = IsOpen<T> extends true ? true : true extends McpOptional<T, K> ? Optional : Optional extends false ? true : false;',
+  );
   const lineMeta = new Map<number, CheckMeta>();
-  let counter = 0;
-  let coveredComponents = 0;
-
-  const push = (line: string, meta?: CheckMeta): void => {
-    lines.push(line);
-    if (meta) lineMeta.set(lines.length, meta);
+  let checks = 0;
+  const nextCheck = () => {
+    checks += 1;
+    return checks;
   };
-
-  push('/* eslint-disable */');
-  push(
-    '// АВТОГЕНЕРИРОВАНО validateIndex.ts — не редактировать руками, перегенерируется каждым запуском.',
-  );
-  push("import type { ComponentProps } from 'react';");
-  push('');
-  push('type Expect<T extends true> = T;');
-  push(
-    'type PropOptionality<T, K extends string> = K extends keyof T ? ({} extends Pick<T, K> ? true : false) : "missing";',
-  );
-  push(
-    'type MatchesRequired<Actual extends boolean | "missing", ExpectedOptional extends boolean> = Actual extends "missing" ? true : Actual extends ExpectedOptional ? true : false;',
-  );
-  push('');
-
-  const emitPropChecks = (
-    propsAlias: string,
-    propName: string,
-    required: boolean,
+  const push = (code: string, meta: CheckMeta) => {
+    lines.push(code);
+    lineMeta.set(lines.length, meta);
+  };
+  const props = (
+    alias: string,
+    values: { name: string; required: boolean }[],
     component: string,
-    part: string | undefined,
-    isGeneric: boolean,
-  ): void => {
-    const key = JSON.stringify(propName);
-
-    counter += 1;
-    push(`type _c${counter} = ${propsAlias}[${key}];`, {
-      kind: 'exists',
+    part?: string,
+  ) => {
+    values.forEach((prop) => {
+      const key = JSON.stringify(prop.name);
+      push(
+        `type Check${nextCheck()} = Expect<${key} extends McpKeys<${alias}> ? true : false>;`,
+        { kind: 'exists', component, part, prop: prop.name },
+      );
+      push(
+        `type Check${nextCheck()} = Expect<RequiredMatches<${alias}, ${key}, ${!prop.required}>>;`,
+        { kind: 'required', component, part, prop: prop.name },
+      );
+    });
+  };
+  const contract = (
+    alias: string,
+    expression: string,
+    component: string,
+    part?: string,
+  ) => {
+    push(`type ${alias} = McpProps<${expression}>;`, {
+      kind: 'contract',
       component,
       part,
-      prop: propName,
-      isGeneric,
     });
-
-    counter += 1;
-    const expectedOptional = !required;
+    push(`type Check${nextCheck()} = Expect<ValidContract<${alias}>>;`, {
+      kind: 'contract',
+      component,
+      part,
+    });
+    // Открытая индексная сигнатура допускает любые поля: required для неё
+    // недоказуем. Отдельное предупреждение вместо ложного результата проверки.
     push(
-      `type _c${counter} = Expect<MatchesRequired<PropOptionality<${propsAlias}, ${key}>, ${expectedOptional}>>;`,
-      { kind: 'required', component, part, prop: propName, isGeneric },
+      `type Check${nextCheck()} = Expect<IsOpen<${alias}> extends true ? false : true>;`,
+      { kind: 'open-contract', component, part },
     );
   };
-
-  for (const name of Object.keys(components).sort()) {
-    const record = components[name] as ComponentRecord;
-    const ownAndInherited = [
-      ...(record.props || []).map((p) => ({ ...p })),
-      ...(record.inheritedProps || []).map((p) => ({ ...p })),
-    ];
-    const hasCompound = (record.compoundParts || []).length > 0;
-    if (ownAndInherited.length === 0 && !hasCompound) {
-      // eslint-disable-next-line no-continue -- пустой props[] без compound-частей: нечего проверять
-      continue;
-    }
-
-    coveredComponents += 1;
-    const isGeneric = Boolean(record.isGeneric);
-    const varName = `C_${sanitize(name)}`;
-
-    const importSource = toInternalImportSource(record.importPath);
-    push(`import { ${name} as ${varName} } from '${importSource}';`, {
-      kind: 'import',
-      component: name,
-      prop: '',
-      isGeneric,
-    });
-
-    const propsAlias = `P_${sanitize(name)}`;
-    push(`type ${propsAlias} = ComponentProps<typeof ${varName}>;`);
-
-    for (const p of ownAndInherited) {
-      emitPropChecks(
-        propsAlias,
-        p.name,
-        p.required,
-        name,
-        undefined,
-        isGeneric,
-      );
-    }
-
-    for (const part of record.compoundParts || []) {
-      const partIsGeneric = Boolean(part.isGeneric) || isGeneric;
-      const partPropsAlias = `P_${sanitize(name)}__${sanitize(part.name)}`;
+  Object.keys(components)
+    .sort()
+    .forEach((name, i) => {
+      const rec = components[name] as ComponentRecord;
+      const value = `C${i}`;
       push(
-        `type ${partPropsAlias} = ComponentProps<typeof ${varName}.${part.name}>;`,
-        {
-          kind: 'exists',
-          component: name,
-          part: part.name,
-          prop: '(compound-part)',
-          isGeneric: partIsGeneric,
-        },
+        `import { ${name} as ${value} } from ${JSON.stringify(
+          internalImport(rec.importPath),
+        )};`,
+        { kind: 'import', component: name },
       );
-
-      for (const p of part.props || []) {
-        emitPropChecks(
-          partPropsAlias,
-          p.name,
-          p.required,
+      if (rec.apiKind !== 'namespace') {
+        contract(`P${i}`, `typeof ${value}`, name);
+        props(`P${i}`, [...rec.props, ...(rec.inheritedProps || [])], name);
+      }
+      (rec.compoundParts || []).forEach((part, j) => {
+        const alias = `P${i}_${j}`;
+        contract(
+          alias,
+          `typeof ${value}[${JSON.stringify(part.name)}]`,
           name,
           part.name,
-          partIsGeneric,
         );
-      }
-    }
-
-    push('');
-  }
-
+        props(alias, part.props, name, part.name);
+      });
+    });
   return {
     code: `${lines.join('\n')}\n`,
     lineMeta,
-    totalChecks: counter,
-    coveredComponents,
+    checks,
+    coveredComponents: Object.keys(components).length,
   };
 }
 
-function runTsc(): string {
-  try {
-    return execFileSync(
-      TSC_BIN,
-      ['-p', PROBE_TSCONFIG, '--noEmit', '--pretty', 'false'],
-      { cwd: REPO_ROOT, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 },
-    );
-  } catch (e) {
-    const err = e as { stdout?: string; stderr?: string };
-    return (err.stdout || '') + (err.stderr || '');
-  }
-}
-
-interface ParsedError {
-  line: number;
-  code: string;
-  message: string;
-}
-
-function parseTscOutput(output: string): ParsedError[] {
-  const re = /\.probe[/\\]validate\.ts\((\d+),\d+\): error (TS\d+): (.+)$/;
-  const errors: ParsedError[] = [];
-  for (const raw of output.split(/\r?\n/)) {
-    const m = re.exec(raw);
-    if (m) {
-      errors.push({
-        line: Number(m[1]),
-        code: m[2] as string,
-        message: m[3] as string,
+/** Сохраняем и ошибки исходников/конфига, и многострочные пояснения tsc. */
+export function parseTscOutput(
+  output: string,
+  lineMeta = new Map<number, CheckMeta>(),
+): Diagnostic[] {
+  const diagnostics: Diagnostic[] = [];
+  output.split(/\r?\n/).forEach((line) => {
+    const match = /^(?:(.+)\((\d+),\d+\): )?error (TS\d+): (.*)$/.exec(line);
+    if (match) {
+      const number = match[2] ? Number(match[2]) : undefined;
+      diagnostics.push({
+        file: match[1],
+        line: number,
+        code: match[3] as string,
+        message: match[4] as string,
+        check:
+          match[1]?.replace(/\\/g, '/').endsWith('/.probe/validate.ts') &&
+          number
+            ? lineMeta.get(number)
+            : undefined,
       });
+    } else if (line.trim() && diagnostics.length) {
+      const last = diagnostics[diagnostics.length - 1] as Diagnostic;
+      last.message += `\n${line}`;
     }
-  }
-  return errors;
+  });
+  return diagnostics;
 }
 
-interface Finding extends CheckMeta {
-  code: string;
-  message: string;
-}
-
-interface Buckets {
-  importMissing: Finding[];
-  propNotFound: Finding[];
-  requiredMismatch: Finding[];
-  genericBestEffort: Finding[];
-}
-
-function buildReport(
-  errors: ParsedError[],
-  lineMeta: Map<number, CheckMeta>,
-): Buckets {
-  const findings: Finding[] = errors
-    .map((err) => {
-      const meta = lineMeta.get(err.line);
-      return meta
-        ? { ...meta, code: err.code, message: err.message }
-        : undefined;
-    })
-    .filter((f): f is Finding => f !== undefined);
-
-  // Если сломался сам импорт компонента — все его дальнейшие findings это
-  // каскад одной и той же причины, а не отдельные баги. Схлопываем.
-  const brokenImportComponents = new Set(
-    findings.filter((f) => f.kind === 'import').map((f) => f.component),
+export function assessDiagnostics(
+  diagnostics: Diagnostic[],
+  status: number | null,
+  executionError?: string,
+) {
+  const warnings = diagnostics.filter(
+    (d) =>
+      d.check?.kind === 'open-contract' &&
+      d.code === 'TS2344' &&
+      KNOWN_OPEN_CONTRACTS.has(
+        `${d.check.component}${d.check.part ? `.${d.check.part}` : ''}`,
+      ),
   );
-  const collapsed = findings.filter(
-    (f) => f.kind === 'import' || !brokenImportComponents.has(f.component),
-  );
-
+  const errors = diagnostics.filter((d) => !warnings.includes(d));
+  // tsc обязан завершиться штатно: ошибка запуска/сигнал/неразобранный вывод — провал.
+  const compilerFailure =
+    executionError ||
+    (status === null || status > 2 || (status !== 0 && diagnostics.length === 0)
+      ? `tsc завершился со статусом ${status}, результат нельзя подтвердить`
+      : undefined);
   return {
-    importMissing: collapsed.filter((f) => f.kind === 'import'),
-    propNotFound: collapsed.filter((f) => f.kind === 'exists' && !f.isGeneric),
-    requiredMismatch: collapsed.filter(
-      (f) => f.kind === 'required' && !f.isGeneric,
-    ),
-    genericBestEffort: collapsed.filter((f) => f.isGeneric),
+    errors,
+    warnings,
+    compilerFailure,
+    ok: errors.length === 0 && !compilerFailure,
   };
 }
 
-function printBucket(title: string, items: Finding[], limit: number): void {
-  console.log(`\n--- ${title} (${items.length}) ---`);
-  for (const f of items.slice(0, limit)) {
-    const loc = f.part
-      ? `${f.component}.${f.part}.${f.prop}`
-      : `${f.component}.${f.prop}`;
-    console.log(`  ${f.code} ${loc} — ${f.message}`);
-  }
-  if (items.length > limit) {
-    console.log(`  … и ещё ${items.length - limit}`);
-  }
-}
-
-function main(): void {
-  const resolved = resolveIndex();
-
-  // Проверка наполненности идёт ПЕРЕД дорогим tsc-пробником: пробник отвечает
-  // на вопрос "правда ли то, что в индексе есть", и на выпотрошенном индексе
-  // честно отрапортует "0 ошибок" просто потому, что проверять там нечего.
-  const completeness = checkIndexCompleteness(resolved.index);
-  console.log(formatCompletenessReport(completeness));
-  if (completeness.failures.length > 0) {
-    process.exitCode = 1;
-  }
-
-  const components: Record<string, ComponentRecord> = {};
-  for (const [name, rec] of Object.entries(resolved.index.components)) {
-    if (isOkComponent(rec)) components[name] = rec;
-  }
-
+export function validateIndex(index: ComponentIndex) {
+  const completeness = checkIndexCompleteness(index);
+  const records = Object.fromEntries(
+    Object.entries(index.components).filter(([, rec]) => isOkComponent(rec)),
+  ) as Record<string, ComponentRecord>;
+  const probe = generateProbe(records);
   fs.mkdirSync(PROBE_DIR, { recursive: true });
-  const { code, lineMeta, totalChecks, coveredComponents } =
-    generateProbe(components);
-  fs.writeFileSync(PROBE_FILE, code, 'utf8');
-
-  console.log(
-    `Пробник сгенерирован: ${totalChecks} type-level проверок, ${coveredComponents} из ${
-      Object.keys(components).length
-    } компонентов покрыто (остальные — пустой props[] без compound-частей).`,
+  fs.writeFileSync(PROBE_FILE, probe.code);
+  const tsc = spawnSync(
+    path.join(REPO_ROOT, 'node_modules/.bin/tsc'),
+    [
+      '-p',
+      path.join(REPO_ROOT, 'packages/mcp-server/probe.tsconfig.json'),
+      '--noEmit',
+      '--pretty',
+      'false',
+    ],
+    { cwd: REPO_ROOT, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 },
   );
-  console.log('Запуск tsc...');
-
-  const output = runTsc();
-  const errors = parseTscOutput(output);
-  const buckets = buildReport(errors, lineMeta);
-
-  console.log('\n═══ Отчёт валидатора индекса @daisforge/ui-mcp ═══');
-  printBucket('IMPORT / EXPORT-MISSING', buckets.importMissing, Infinity);
-  printBucket('PROP-NOT-FOUND', buckets.propNotFound, 40);
-  printBucket('REQUIRED-MISMATCH', buckets.requiredMismatch, 40);
-  printBucket(
-    'GENERIC BEST-EFFORT (не считается провалом прогона)',
-    buckets.genericBestEffort,
-    20,
+  const output = (tsc.stdout || '') + (tsc.stderr || '');
+  const diagnostics = parseTscOutput(output, probe.lineMeta);
+  const assessed = assessDiagnostics(
+    diagnostics,
+    tsc.status,
+    tsc.error?.message ||
+      (tsc.signal ? `tsc остановлен сигналом ${tsc.signal}` : undefined),
   );
-
-  const attributed =
-    buckets.importMissing.length +
-    buckets.propNotFound.length +
-    buckets.requiredMismatch.length +
-    buckets.genericBestEffort.length;
-  console.log(
-    `\nВсего диагностик tsc: ${errors.length}, атрибутировано: ${attributed}.`,
+  const indexErrors = Object.entries(index.components)
+    .filter(([, rec]) => !isOkComponent(rec))
+    .map(([name, rec]) => `${name}: ${rec.error}`);
+  const report = {
+    ...assessed,
+    ok:
+      assessed.ok &&
+      completeness.failures.length === 0 &&
+      indexErrors.length === 0,
+    completeness,
+    indexErrors,
+    checks: probe.checks,
+    coveredComponents: probe.coveredComponents,
+    diagnostics,
+    compilerStatus: tsc.status,
+  };
+  fs.writeFileSync(
+    path.join(PROBE_DIR, 'validation-report.json'),
+    `${JSON.stringify(report, null, 2)}\n`,
   );
+  fs.writeFileSync(path.join(PROBE_DIR, 'validation-tsc.log'), output);
+  return report;
 }
 
-main();
+function main() {
+  const report = validateIndex(resolveIndex().index);
+  console.log(formatCompletenessReport(report.completeness));
+  console.log(
+    `Проверено ${report.coveredComponents} компонентов, ${report.checks} проверок.`,
+  );
+  report.diagnostics.forEach((d) =>
+    console.log(
+      `${d.check?.kind || 'compiler'} ${d.check?.component || d.file || ''}${
+        d.check?.part ? `.${d.check.part}` : ''
+      }${d.check?.prop ? `.${d.check.prop}` : ''}: ${d.code} ${d.message}`,
+    ),
+  );
+  report.indexErrors.forEach((error) => console.error(error));
+  if (report.compilerFailure) console.error(report.compilerFailure);
+  console.log(
+    `Ошибок: ${report.errors.length}; открытых контрактов: ${
+      report.warnings.length
+    }; результат: ${report.ok ? 'OK' : 'FAIL'}.`,
+  );
+  console.log(
+    'Полный отчёт: packages/mcp-server/.probe/validation-report.json',
+  );
+  if (!report.ok) process.exitCode = 1;
+}
+if (
+  process.argv[1] &&
+  path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)
+)
+  main();

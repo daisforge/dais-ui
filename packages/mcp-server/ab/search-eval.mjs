@@ -30,7 +30,7 @@ const { searchComponents } = await import(
 );
 
 /** [запрос, любое из этих имён должно попасть в топ-3]. Фича записывается как "Компонент/Фича". */
-const CASES = [
+export const CASES = [
   ['редактирование ячеек таблицы', ['TableCanvas', 'TableCanvas/Editing']],
   [
     'конфигурация группировки колонок',
@@ -51,13 +51,36 @@ const CASES = [
   ['таблица внутри модального окна', ['TableCanvas', 'ModalDF']],
   [
     'формат числа в колонке таблицы',
-    ['NumberFormatOptions', 'ContentFormat', 'TableCanvas.ContentFormat'],
+    [
+      'NumberFormatOptions',
+      'TableCanvas.NumberFormatOptions',
+      'ContentFormat',
+      'TableCanvas.ContentFormat',
+    ],
   ],
   [
     'бесконечная прокрутка строк',
     ['TableCanvas/InfinityScroll', 'TableCanvas'],
   ],
   ['уведомление тост', ['Toast', 'Notification', 'ToastProvider']],
+  ['группировка столбцов', ['TableCanvas/ColumnsGrouping']],
+  ['column grouping', ['TableCanvas/ColumnsGrouping']],
+  ['infinite scroll', ['TableCanvas/InfinityScroll']],
+  ['подгрузка строк', ['TableCanvas/InfinityScroll', 'TableCanvas']],
+  ['form date input', ['FormDatePicker']],
+  ['диапазон дат в форме', ['FormDatePickerRange']],
+  [
+    'number column formatting',
+    [
+      'NumberFormatOptions',
+      'TableCanvas.NumberFormatOptions',
+      'ContentFormat',
+      'TableCanvas.ContentFormat',
+    ],
+  ],
+  ['TableCanvas', ['TableCanvas']],
+  ['Dropdown', ['Dropdown']],
+  ['Box', ['Box']],
 ];
 
 const label = (r) =>
@@ -87,3 +110,5 @@ console.log(
 if (misses.length > 0) {
   console.log(`\nпромахи:\n    ${misses.join('\n    ')}`);
 }
+
+if (misses.length > 0) process.exitCode = 1;

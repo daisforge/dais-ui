@@ -48,7 +48,10 @@ interface ComponentPropsPayload {
 function genericEmptyPropsWarning(
   isGeneric: boolean | undefined,
   propsLength: number,
+  openProps?: boolean,
 ): string | undefined {
+  if (openProps)
+    return 'Публичный тип допускает произвольные ключи. Индекс показывает известные поля; их полноту и обязательность нельзя подтвердить полностью.';
   if (!isGeneric || propsLength > 0) return undefined;
   return (
     'Пропсы не резолвлены (сложный generic-тип) — пустой props[] не значит, ' +
@@ -94,6 +97,7 @@ export function getComponentProps(
       warning: genericEmptyPropsWarning(
         compoundPart.isGeneric,
         compoundPartProps.length,
+        compoundPart.openProps,
       ),
     };
   }
@@ -110,6 +114,10 @@ export function getComponentProps(
     atomicDataMissing: record.atomicDataMissing || undefined,
     compoundPartOf: record.compoundPartOf,
     dataVersionNotice: index.dataVersionNotice,
-    warning: genericEmptyPropsWarning(record.isGeneric, props.length),
+    warning: genericEmptyPropsWarning(
+      record.isGeneric,
+      props.length,
+      record.openProps,
+    ),
   };
 }

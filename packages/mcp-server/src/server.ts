@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 /* eslint-disable import/extensions -- @modelcontextprotocol/sdk requires explicit .js subpaths under NodeNext resolution */
+import fs from 'node:fs';
+
 import type { ToolCallback } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
@@ -43,7 +45,12 @@ function loadIndex(): RuntimeIndex {
  * дискриминированный union content-блоков SDK.
  */
 function toToolResult(payload: unknown): CallToolResult {
-  return { content: [{ type: 'text', text: truncateForResponse(payload) }] };
+  return {
+    content: [{ type: 'text', text: truncateForResponse(payload) }],
+    ...(payload && typeof payload === 'object' && 'error' in payload
+      ? { isError: true }
+      : {}),
+  };
 }
 
 /** Хендлер тулза: индекс + args, выведенные из той же zod-схемы, что уходит в SDK. */
@@ -82,7 +89,10 @@ function registerJsonTool<Shape extends ZodRawShapeCompat>(
 function main(): void {
   const index = loadIndex();
 
-  const server = new McpServer({ name: '@daisforge/ui-mcp', version: '0.1.0' });
+  const pkg = JSON.parse(
+    fs.readFileSync(new URL('../package.json', import.meta.url), 'utf8'),
+  ) as { name: string; version: string };
+  const server = new McpServer({ name: pkg.name, version: pkg.version });
 
   registerJsonTool(
     server,
