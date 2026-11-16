@@ -77,6 +77,7 @@ npm run mcp:inspect
 ```bash
 npx nx typecheck @daisforge/ui-mcp   # tsc --noEmit
 npx nx lint @daisforge/ui-mcp        # eslint (тот же конфиг, что и у остальных пакетов монорепо)
+npx nx test @daisforge/ui-mcp        # регрессии индекса типов и ответов get_type
 npx nx build @daisforge/ui-mcp       # tsc -p tsconfig.lib.json → dist/
 ```
 

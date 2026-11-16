@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-13T12:55:39.727Z",
+  "generatedAt": "2026-11-16T10:27:36.289Z",
   "libVersion": "1.28.0",
   "components": {
     "Accordion": {
@@ -59132,6 +59132,13 @@
       "importStatement": "import { DataAttributes } from '@daisforge/ui';",
       "sourceFile": "packages/ui-kit/src/components/Table/types/utils.type.ts"
     },
+    "PopupInfo": {
+      "name": "PopupInfo",
+      "definition": "export interface PopupInfo {\n    id: string;\n    info?: Record<string, any>;\n}",
+      "importPath": "@daisforge/ui",
+      "importStatement": "import { PopupInfo } from '@daisforge/ui';",
+      "sourceFile": "node_modules/@salutejs/plasma-new-hope/types/components/Popup/Popup.types.d.ts"
+    },
     "AiAgentLeftPanelProps": {
       "name": "AiAgentLeftPanelProps",
       "definition": "export type AiAgentLeftPanelProps = {\n  /**\n   * Пункты панели: разделы с контентом и кнопки-действия с onClick.\n   */\n  items: AiAgentLeftPanelItem[];\n  /**\n   * Ключ открытого раздела. null или undefined — открыта полоса иконок,\n   * раздел закрыт. Управляемый режим: значение задаёт потребитель.\n   */\n  activeKey?: string | null;\n  /**\n   * Начальный открытый раздел в неуправляемом режиме (когда activeKey\n   * не передан).\n   */\n  defaultActiveKey?: string | null;\n  /**\n   * Смена открытого раздела: ключ раздела при клике по иконке, null\n   * при закрытии крестиком. Клик по пункту-действию сюда не приходит.\n   */\n  onActiveKeyChange?: (key: string | null) => void;\n};",
@@ -59223,6 +59230,13 @@
       "importStatement": "import { BlockTitleAdaptiveSlot } from '@daisforge/ui';",
       "sourceFile": "packages/ui-kit/src/components/BlockTitle/BlockTitle.types.ts"
     },
+    "DatePickerPlacementBasic": {
+      "name": "DatePickerPlacementBasic",
+      "definition": "export type DatePickerPlacementBasic = 'top' | 'bottom' | 'right' | 'left';",
+      "importPath": "@daisforge/ui",
+      "importStatement": "import { DatePickerPlacementBasic } from '@daisforge/ui';",
+      "sourceFile": "node_modules/@salutejs/plasma-new-hope/types/components/DatePicker/SingleDate/SingleDate.types.d.ts"
+    },
     "EmptyStateButtonProps": {
       "name": "EmptyStateButtonProps",
       "definition": "export type EmptyStateButtonProps = ButtonVariant | LinkButtonVariant;",
@@ -59250,6 +59264,13 @@
       "importPath": "@daisforge/ui",
       "importStatement": "import { EmptyStateClasses } from '@daisforge/ui';",
       "sourceFile": "packages/ui-kit/src/components/EmptyState/EmptyState.types.ts"
+    },
+    "ScreenConfig": {
+      "name": "ScreenConfig",
+      "definition": "export interface ScreenConfig {\n    /**\n     * Размер ячейки.\n     */\n    size?: number;\n    /**\n     * Отступ ячейки.\n     */\n    offset?: number;\n}",
+      "importPath": "@daisforge/ui",
+      "importStatement": "import { ScreenConfig } from '@daisforge/ui';",
+      "sourceFile": "node_modules/@salutejs/plasma-new-hope/types/components/Grid/ui/Col/Col.types.d.ts"
     },
     "GridDNDItems": {
       "name": "GridDNDItems",
@@ -59314,6 +59335,13 @@
       "importNotice": "Тип \"TableDropdownConfigProps\" не экспортируется из публичной точки входа — импортировать его нельзя. Определение приведено для понимания структуры: опишите нужную форму по месту либо возьмите её из типа, который экспортирован.",
       "sourceFile": "packages/ui-kit/src/components/TableCanvas/components/TableDropdown/types.ts"
     },
+    "TooltipProps": {
+      "name": "TooltipProps",
+      "definition": "export interface TooltipProps extends React.HTMLAttributes<HTMLDivElement> {\n    /**\n     * Текст тултипа.\n     */\n    text: ReactNode;\n    /**\n     * Видимость тултипа.\n     */\n    opened?: boolean;\n    /**\n     * Элемент, рядом с которым произойдет вызов всплывающего окна.\n     */\n    target?: ReactNode | Ref<HTMLElement>;\n    /**\n     * Направление раскрытия тултипа.\n     */\n    placement?: PopoverPlacement | Array<PopoverPlacementBasic>;\n    /**\n     * Видимость стрелки (хвоста).\n     */\n    hasArrow?: boolean;\n    /**\n     * Анимированное появление/сокрытие.\n     */\n    animated?: boolean;\n    /**\n     * Отступ окна относительно элемента, у которого оно вызвано.\n     * @default\n     * [0, 8]\n     */\n    offset?: [number, number];\n    /**\n     * В каком контейнере позиционируется(по умолчанию document), можно также указать id элемента или ref для него.\n     */\n    frame?: 'document' | string | React.RefObject<HTMLElement>;\n    /**\n     * Находится ли в портале.\n     * @default\n     * true\n     */\n    usePortal?: boolean;\n    /**\n     * Минимальная ширина окна (в rem).\n     */\n    minWidth?: number | string;\n    /**\n     * Максимальная ширина окна (в rem).\n     */\n    maxWidth?: number | string;\n    /**\n     * Событие закрытия тултипа по кнопке Esc.\n     */\n    onDismiss?: () => void;\n    /**\n     * Слот для контента слева, например `Icon`.\n     */\n    contentLeft?: ReactNode;\n    /**\n     * Значение z-index для Tooltip.\n     * @default\n     * 9200\n     */\n    zIndex?: string;\n    /**\n     * Размер тултипа.\n     */\n    size?: string;\n    /**\n     * Вид тултипа.\n     */\n    view?: string;\n    /**\n     * Действие по target для отображения тултипа\n     */\n    trigger?: 'click' | 'hover' | 'none';\n    /**\n     * Задержка открытия тултипа в ms.\n     * @default 0\n     */\n    mouseEnterDelay?: number;\n    /**\n     * Задержка скрытия тултипа в ms.\n     * @default 300\n     */\n    mouseLeaveDelay?: number;\n    /**\n     * Время автоматического скрытия тултипа по ховеру в ms\n     * @default 300\n     * @deprecated использовать mouseLeaveDelay\n     */\n    hoverTimeout?: number;\n    /**\n     * Свойство устарело, вместо этого нужно использовать target\n     * @deprecated\n     */\n    children?: ReactNode;\n    /**\n     * Видимость стрелки (хвоста).\n     * @deprecated\n     */\n    arrow?: boolean;\n    /**\n     * Видимость тултипа.\n     * @deprecated\n     */\n    isVisible?: boolean;\n    /**\n     * Видимость тултипа.\n     * @deprecated\n     */\n    isOpen?: boolean;\n}",
+      "importPath": "@daisforge/ui",
+      "importStatement": "import { TooltipProps } from '@daisforge/ui';",
+      "sourceFile": "node_modules/@salutejs/plasma-new-hope/types/components/Tooltip/Tooltip.types.d.ts"
+    },
     "ModalDFConfirmationContent": {
       "name": "ModalDFConfirmationContent",
       "definition": "export type ModalDFConfirmationContent = {\n  /**\n   * заголовок\n   */\n  header?: ReactNode;\n  /**\n   * информационный текст\n   */\n  body?: ReactNode;\n  /**\n   * отступы сверху и снизу информационного текста (по умолчанию: `bodyMarginBlock ?? (typeof body === 'string' ? s.x4 : undefined);`)\n   */\n  bodyMarginBlock?: string;\n  /**\n   * пропсы для самой правой главной кнопки, по умолчанию `view=\"accent\"`\n   */\n  mainButton?: ButtonCompProps;\n  /**\n   * пропсы для вторичной кнопки, по умолчанию `view=\"secondary\"`\n   */\n  secondaryButton?: ButtonCompProps;\n  /**\n   * если `mainButton` или `secondaryButton` не подходят, то можно полностью заменить footer на кастомный\n   */\n  footer?: ReactNode;\n};",
@@ -59321,12 +59349,26 @@
       "importNotice": "Тип \"ModalDFConfirmationContent\" не экспортируется из публичной точки входа — импортировать его нельзя. Определение приведено для понимания структуры: опишите нужную форму по месту либо возьмите её из типа, который экспортирован.",
       "sourceFile": "packages/ui-kit/src/components/ModalDFConfirmation/ModalDFConfirmation.tsx"
     },
+    "ImageProps": {
+      "name": "ImageProps",
+      "definition": "export type ImageProps = ImgHTMLAttributes<HTMLImageElement> & CustomImageProps;",
+      "importPath": "@daisforge/ui",
+      "importStatement": "import { ImageProps } from '@daisforge/ui';",
+      "sourceFile": "node_modules/@salutejs/plasma-new-hope/types/components/Image/Image.types.d.ts"
+    },
     "PageTitleAdaptiveSlot": {
       "name": "PageTitleAdaptiveSlot",
       "definition": "export type PageTitleAdaptiveSlot =\n  | ReactNode\n  | ((props: PageTitleSlotSizesProps) => ReactNode);",
       "importPath": "@daisforge/ui",
       "importStatement": "import { PageTitleAdaptiveSlot } from '@daisforge/ui';",
       "sourceFile": "packages/ui-kit/src/components/PageTitle/PageTitle.types.ts"
+    },
+    "StepItemProps": {
+      "name": "StepItemProps",
+      "definition": "export interface StepItemProps {\n    /**\n     * Отображение выполненного шага\n     */\n    completedItemView?: string;\n    /**\n     * Диаметр индикатора шага в пикселях, перекрывает размер индикатора из Steps.size\n     */\n    indicatorSize?: number;\n    /**\n     * Кастомная высота шага (применяется в вертикальной ориентации)\n     */\n    height?: string;\n    /**\n     * Кастомная ширина шага (применяется в горизонтальной ориентации)\n     */\n    width?: string;\n    /**\n     * Заголовок\n     */\n    title?: string;\n    /**\n     * Контент, может быть как React компонентом, так и функцией\n     */\n    content?: string | ReactNode | ((status: StepStatus, index: number, items: StepItemProps[]) => ReactNode);\n    /**\n     * Индикатор шага, может быть как React компонентом, так и функцией\n     */\n    indicator?: number | string | ReactNode | StepIndicatorFunc;\n    /**\n     * Статус шага\n     * @description\n     * active - активный шаг\n     * inactive - не пройденный шаг\n     * completed - завершенный шаг\n     */\n    status?: StepStatus;\n    /**\n     * Отключенный шаг\n     * @default false\n     */\n    disabled?: boolean;\n    /**\n     * Classname для шага\n     */\n    className?: string;\n    /**\n     * Стили для шага\n     */\n    style?: CSSProperties;\n}",
+      "importPath": "@daisforge/ui",
+      "importStatement": "import { StepItemProps } from '@daisforge/ui';",
+      "sourceFile": "node_modules/@salutejs/plasma-new-hope/types/components/Steps/ui/StepItem/StepItem.types.d.ts"
     },
     "StorySlide": {
       "name": "StorySlide",
@@ -59341,6 +59383,20 @@
       "importPath": "@daisforge/ui",
       "importStatement": "import { ColumnConfig } from '@daisforge/ui';",
       "sourceFile": "packages/ui-kit/src/components/Table/types/column-config.type.ts"
+    },
+    "DropdownItemOption": {
+      "name": "DropdownItemOption",
+      "definition": "export type DropdownItemOption = {\n    /**\n     *  Значение у item.\n     */\n    value: string | number;\n    /**\n     * Label у item.\n     */\n    label: string;\n    /**\n     * Сторона открытия вложенного выпадающего списка относительно текущего элемента.\n     * Значения `top`, `bottom`, `left` и `right` устарели (deprecated) и будут удалены.\n     */\n    placement?: DropdownPlacement;\n    /**\n     * Список дочерних items.\n     */\n    items?: DropdownItemOption[];\n    /**\n     * Слот в начале дочернего выпадающего списка.\n     */\n    beforeList?: ReactNode;\n    /**\n     * Item не активен.\n     */\n    disabled?: boolean;\n    /**\n     * Слот для контента слева.\n     */\n    contentLeft?: ReactNode;\n    /**\n     * Слот для контента справа.\n     */\n    contentRight?: ReactNode;\n    /**\n     * Отобразить ли разделитель до элемента.\n     */\n    dividerBefore?: boolean;\n    /**\n     * Отобразить ли разделитель после элемента.\n     */\n    dividerAfter?: boolean;\n    /**\n     * Classname для item.\n     */\n    className?: string;\n    /**\n     * Способ открытия дочернего списка.\n     */\n    trigger?: DropdownTrigger;\n    /**\n     * Максимальная высота дочернего выпадающего списка.\n     */\n    listMaxHeight?: CSSProperties['height'];\n    /**\n     * Скрытие элемента, а также всех его дочерних элементов.\n     */\n    hidden?: boolean;\n};",
+      "importPath": "@daisforge/ui",
+      "importStatement": "import { DropdownItemOption } from '@daisforge/ui';",
+      "sourceFile": "node_modules/@salutejs/plasma-new-hope/types/components/Dropdown/Dropdown.types.d.ts"
+    },
+    "Table.DropdownItemOption": {
+      "name": "DropdownItemOption",
+      "definition": "export type DropdownItemOption = {\n  /**\n   *  Значение у item\n   */\n  value: string | number;\n  /**\n   * Метка-подпись к item\n   */\n  label: string;\n  /**\n   * Список дочерних items.\n   */\n  items?: Array<DropdownItemOption>;\n  /**\n   * Item не активен\n   */\n  disabled?: boolean;\n  /**\n   * Слот для контента слева\n   */\n  contentLeft?: ReactNode;\n  /**\n   * Слот для контента справа\n   */\n  contentRight?: ReactNode;\n  /**\n   * Отобразить ли разделитель до элемента\n   */\n  dividerBefore?: boolean;\n  /**\n   * Отобразить ли разделитель после элемента\n   */\n  dividerAfter?: boolean;\n  /**\n   * Выбранный item.\n   * @deprecated использовать ContentLeft || ContentRight\n   */\n  isActive?: boolean;\n  /**\n   * Кастомный цвет текста\n   * @deprecated\n   */\n  color?: string;\n  /**\n   * Item не активен\n   * @deprecated использовать disabled\n   */\n  isDisabled?: boolean;\n};",
+      "internal": true,
+      "importNotice": "Тип \"DropdownItemOption\" не экспортируется из публичной точки входа — импортировать его нельзя. Определение приведено для понимания структуры: опишите нужную форму по месту либо возьмите её из типа, который экспортирован.",
+      "sourceFile": "packages/ui-kit/src/components/Table/types/additional.type.ts"
     },
     "TableCanvasLoggerGroupItem": {
       "name": "TableCanvasLoggerGroupItem",
@@ -59517,12 +59573,26 @@
       "importStatement": "import { TableTabsCollapseConfig } from '@daisforge/ui';",
       "sourceFile": "packages/ui-kit/src/components/TableTabs/TableTabs.types.ts"
     },
+    "TreeItem": {
+      "name": "TreeItem",
+      "definition": "export type TreeItem = {\n    /**\n     * Уникальный идентификатор элемента.\n     */\n    key: Key;\n    /**\n     * Заголовок элемента.\n     */\n    title?: ReactNode | ((data: TreeItem) => ReactNode);\n    /**\n     * Classname для текущего элемента.\n     */\n    className?: string;\n    /**\n     * Стиль для текущего элемента.\n     */\n    style?: CSSProperties;\n    /**\n     * Флаг выключения элемента.\n     * @default false\n     */\n    disabled?: boolean;\n    /**\n     * Иконка для текущего элемента.\n     */\n    icon?: ReactNode;\n    /**\n     * Дочерние items.\n     */\n    children?: TreeItem[];\n    /**\n     * Контент справа.\n     */\n    contentRight?: ReactNode;\n    /**\n     * Определяет, является ли элемент конечным узлом дерева.\n     * Полезно для асинхронной подгрузки элементов.\n     */\n    isLeaf?: boolean;\n};",
+      "importPath": "@daisforge/ui",
+      "importStatement": "import { TreeItem } from '@daisforge/ui';",
+      "sourceFile": "node_modules/@salutejs/plasma-new-hope/types/components/Tree/Tree.types.d.ts"
+    },
     "THandleChange": {
       "name": "THandleChange",
       "definition": "export type THandleChange<T> = (\n  newValue: T,\n  formCtx: TReturnUseChangedFormContext,\n) => void;",
       "internal": true,
       "importNotice": "Тип \"THandleChange\" не экспортируется из публичной точки входа — импортировать его нельзя. Определение приведено для понимания структуры: опишите нужную форму по месту либо возьмите её из типа, который экспортирован.",
       "sourceFile": "packages/ui-kit/src/formComponents/types.ts"
+    },
+    "ComboboxItemOption": {
+      "name": "ComboboxItemOption",
+      "definition": "export type ComboboxItemOption = {\n    /**\n     * Значение у item.\n     */\n    value: string;\n    /**\n     * Метка-подпись к item.\n     */\n    label: string;\n    /**\n     * Сторона открытия вложенного выпадающего списка относительно текущего элемента.\n     * @default bottom-start\n     */\n    placement?: Placement;\n    /**\n     * Список дочерних items.\n     */\n    items?: ComboboxItemOption[];\n    /**\n     * Item не активен.\n     */\n    disabled?: boolean;\n    /**\n     * Слот для контента слева.\n     */\n    contentLeft?: ReactNode;\n    /**\n     * Слот для контента справа.\n     */\n    contentRight?: ReactNode;\n    /**\n     * Classname для item.\n     */\n    className?: string;\n    /**\n     * Максимальная высота дочернего выпадающего списка.\n     */\n    listMaxHeight?: CSSProperties['height'];\n};",
+      "importPath": "@daisforge/ui",
+      "importStatement": "import { ComboboxItemOption } from '@daisforge/ui';",
+      "sourceFile": "node_modules/@salutejs/plasma-new-hope/types/components/Combobox/Combobox.types.d.ts"
     },
     "StatusCode": {
       "name": "StatusCode",
@@ -59558,6 +59628,13 @@
       "importPath": "@daisforge/ui",
       "importStatement": "import { LayoutClasses } from '@daisforge/ui';",
       "sourceFile": "packages/ui-kit/src/layouts/Layout/Layout.types.ts"
+    },
+    "PopoverProps": {
+      "name": "PopoverProps",
+      "definition": "export type PopoverProps = HTMLAttributes<HTMLDivElement> & CustomPopoverProps;",
+      "importPath": "@daisforge/ui",
+      "importStatement": "import { PopoverProps } from '@daisforge/ui';",
+      "sourceFile": "node_modules/@salutejs/plasma-new-hope/types/components/Popover/Popover.types.d.ts"
     },
     "AiAgentPopoverCustomPlacement": {
       "name": "AiAgentPopoverCustomPlacement",
@@ -59670,6 +59747,13 @@
       "importPath": "@daisforge/ui",
       "importStatement": "import { MassActionsButtonPropsLinkButton } from '@daisforge/ui';",
       "sourceFile": "packages/ui-kit/src/components/MassActions/types.ts"
+    },
+    "PopoverPlacement": {
+      "name": "PopoverPlacement",
+      "definition": "export declare type PopoverPlacement = AutoPlacement | BasePlacement | VariationPlacement;",
+      "importPath": "@daisforge/ui",
+      "importStatement": "import { PopoverPlacement } from '@daisforge/ui';",
+      "sourceFile": "node_modules/@popperjs/core/lib/enums.d.ts"
     },
     "PageTitleSlotSizesProps": {
       "name": "PageTitleSlotSizesProps",
@@ -59923,6 +60007,13 @@
       "importStatement": "import { TableInfoBase } from '@daisforge/ui/components/TableCanvas';",
       "sourceFile": "packages/ui-kit/src/components/TableCanvas/TableGlideInstance/type.ts"
     },
+    "DropdownProps": {
+      "name": "DropdownProps",
+      "definition": "type Props<T extends DropdownItemOption> = Omit<DropdownProps<T>, 'size' | 'view'> & Pick<ComponentProps<typeof DropdownNewHope>, 'size' | 'view'>;\nexport type { Props as DropdownProps };",
+      "importPath": "@daisforge/ui",
+      "importStatement": "import { DropdownProps } from '@daisforge/ui';",
+      "sourceFile": "node_modules/@salutejs/sdds-finai/types/components/Dropdown/Dropdown.d.ts"
+    },
     "TableCanvas.ContextMenuDropdownItem": {
       "name": "ContextMenuDropdownItem",
       "definition": "export type ContextMenuDropdownItem = NonNullable<\n  DropdownProps<DropdownItemOption>['items']\n>[number];",
@@ -60049,12 +60140,19 @@
       "importNotice": "Тип \"TextAreaProps\" не экспортируется из публичной точки входа — импортировать его нельзя. Определение приведено для понимания структуры: опишите нужную форму по месту либо возьмите её из типа, который экспортирован.",
       "sourceFile": "packages/ui-kit/src/components/AiAgentPopup/AiAgentPopup.types.ts"
     },
-    "PopupProps": {
+    "AiAgentPopup.PopupProps": {
       "name": "PopupProps",
       "definition": "type PopupProps = ComponentProps<typeof Popup>;",
       "internal": true,
       "importNotice": "Тип \"PopupProps\" не экспортируется из публичной точки входа — импортировать его нельзя. Определение приведено для понимания структуры: опишите нужную форму по месту либо возьмите её из типа, который экспортирован.",
       "sourceFile": "packages/ui-kit/src/components/AiAgentPopup/AiAgentPopup.types.ts"
+    },
+    "PopupProps": {
+      "name": "PopupProps",
+      "definition": "export interface PopupProps extends React.HTMLAttributes<HTMLDivElement> {\n    /**\n     * @deprecated Отображение Popup.\n     */\n    isOpen?: boolean;\n    /**\n     * Отображение Popup.\n     */\n    opened?: boolean;\n    /** Позиция на экране\n     * center - по умолчанию\n     * left, right, top, bottom и их комбинации\n     */\n    placement?: PopupPlacement;\n    /** Смещение относительно текущей позиции.\n     * (x, y) - [number, number], [string, string].\n     * При передаче number расчёт в rem.\n     */\n    offset?: [number, number] | [string, string];\n    /**\n     * В каком контейнере позиционируется (по умолчанию document), можно также указать id элемента или ref для него.\n     */\n    frame?: 'document' | string | React.RefObject<HTMLElement | null>;\n    /**\n     * Если `frame` отличается от `document` применяет `position='fixed'`\n     *  @description Может быть полезно, когда во frame происходит дополнительная стилизация содержимого компонента,\n     * но при этом необходимо отобразить компонент как будто бы в document\n     * @default false\n     */\n    positionFixed?: boolean;\n    /**\n     * Содержимое Popup.\n     */\n    children?: ReactNode;\n    /**\n     * Соседний элемент для окна в портале.\n     */\n    overlay?: ReactNode;\n    /**\n     * Значение z-index для Popup.\n     */\n    zIndex?: string;\n    /**\n     * Дополнительная информация для программного взаимодействия с окном через контекст.\n     */\n    popupInfo?: PopupInfo;\n    /**\n     * Использовать ли анимацию.\n     */\n    withAnimation?: boolean;\n    /**\n     * Настройка draggable-режима.\n     */\n    draggable?: boolean;\n    /**\n     * Настройка resizable-режима.\n     */\n    resizable?: boolean | {\n        /**\n         * Включение/выключение ресайза.\n         * @default false\n         */\n        disabled?: boolean;\n        /**\n         * Направления для ресайза.\n         */\n        directions?: ResizeDirections;\n        /**\n         * Начальный размер окна ресайза.\n         */\n        defaultSize?: {\n            width?: number;\n            height?: number;\n        };\n        /**\n         * Размер окна в контролируемом режиме в px.\n         */\n        size?: {\n            width?: number;\n            height?: number;\n        };\n        /**\n         * Минимальная ширина ресайза в px.\n         */\n        minWidth?: number;\n        /**\n         * Минимальная высота ресайза в px.\n         */\n        minHeight?: number;\n        /**\n         * Максимальная ширина ресайза в px.\n         */\n        maxWidth?: number;\n        /**\n         * Максимальная высота ресайза в px.\n         */\n        maxHeight?: number;\n        /**\n         * Кастомные иконки ресайза.\n         */\n        icons?: {\n            topRight?: ReactNode;\n            bottomRight?: ReactNode;\n            bottomLeft?: ReactNode;\n            topLeft?: ReactNode;\n        };\n        /**\n         * Размер иконки ресайза.\n         * @default s\n         */\n        iconSize?: 'xs' | 's' | 'm';\n        /**\n         * Скрывать ли иконку для ресайза.\n         * @default false\n         */\n        hiddenIcons?: PopupPlacementMixed[];\n        /**\n         * Обработчик начала ресайза.\n         */\n        onResizeStart?: (resizableContainer?: RefObject<ResizableType>) => void;\n        /**\n         * Обработчик изменения размера. Текущий размер доступен в resizableContainer.current.size.\n         */\n        onResize?: (resizableContainer?: RefObject<ResizableType>) => void;\n        /**\n         * Обработчик остановки ресайза.\n         */\n        onResizeEnd?: (resizableContainer?: RefObject<ResizableType>) => void;\n    };\n}",
+      "importPath": "@daisforge/ui",
+      "importStatement": "import { PopupProps } from '@daisforge/ui';",
+      "sourceFile": "node_modules/@salutejs/plasma-new-hope/types/components/Popup/Popup.types.d.ts"
     },
     "AiAgentPopupFrame": {
       "name": "AiAgentPopupFrame",
@@ -60104,6 +60202,13 @@
       "importPath": "@daisforge/ui",
       "importStatement": "import { TypographyWithAutoTooltipProps } from '@daisforge/ui';",
       "sourceFile": "packages/ui-kit/src/components/Typography/TypographyWithAutoTooltip.types.ts"
+    },
+    "CalendarBaseProps": {
+      "name": "CalendarBaseProps",
+      "definition": "export type CalendarBaseProps = Calendar & CalendarConfigProps & {\n    /**\n     * Выравнивание переключателя периода в одиночном календаре.\n     * @default start\n     */\n    periodSelectorAlign?: 'start' | 'center';\n};",
+      "importPath": "@daisforge/ui",
+      "importStatement": "import { CalendarBaseProps } from '@daisforge/ui';",
+      "sourceFile": "node_modules/@salutejs/plasma-new-hope/types/components/Calendar/CalendarBase/CalendarBase.d.ts"
     },
     "DrawerProps": {
       "name": "DrawerProps",
@@ -60231,6 +60336,20 @@
       "importStatement": "import { ModalDFProps } from '@daisforge/ui';",
       "sourceFile": "packages/ui-kit/src/components/ModalDF/types.ts"
     },
+    "NotificationLayout": {
+      "name": "NotificationLayout",
+      "definition": "export type NotificationLayout = keyof typeof layouts;",
+      "importPath": "@daisforge/ui",
+      "importStatement": "import { NotificationLayout } from '@daisforge/ui';",
+      "sourceFile": "node_modules/@salutejs/plasma-new-hope/types/components/Notification/Notification.types.d.ts"
+    },
+    "NotificationIconPlacement": {
+      "name": "NotificationIconPlacement",
+      "definition": "export type NotificationIconPlacement = keyof typeof placements;",
+      "importPath": "@daisforge/ui",
+      "importStatement": "import { NotificationIconPlacement } from '@daisforge/ui';",
+      "sourceFile": "node_modules/@salutejs/plasma-new-hope/types/components/Notification/Notification.types.d.ts"
+    },
     "NumberFormatBaseProps": {
       "name": "NumberFormatBaseProps",
       "definition": "type NumberFormatBaseProps = ComponentProps<typeof BaseNumberFormat>;",
@@ -60258,6 +60377,13 @@
       "internal": true,
       "importNotice": "Тип \"PopoverDFBaseProps\" не экспортируется из публичной точки входа — импортировать его нельзя. Определение приведено для понимания структуры: опишите нужную форму по месту либо возьмите её из типа, который экспортирован.",
       "sourceFile": "packages/ui-kit/src/components/PopoverDF/types.ts"
+    },
+    "PopupPlacement": {
+      "name": "PopupPlacement",
+      "definition": "export type PopupPlacement = PopupPlacementBasic | PopupPlacementMixed;",
+      "importPath": "@daisforge/ui",
+      "importStatement": "import { PopupPlacement } from '@daisforge/ui';",
+      "sourceFile": "node_modules/@salutejs/plasma-new-hope/types/components/Popup/Popup.types.d.ts"
     },
     "PopupDFSize": {
       "name": "PopupDFSize",
@@ -60664,6 +60790,13 @@
       "internal": true,
       "importNotice": "Тип \"CanvasTextOptions\" не экспортируется из публичной точки входа — импортировать его нельзя. Определение приведено для понимания структуры: опишите нужную форму по месту либо возьмите её из типа, который экспортирован.",
       "sourceFile": "packages/ui-kit/src/components/TableGlide/lib/canvas/primitives/CanvasText.ts"
+    },
+    "TableSDDSProps": {
+      "name": "TableSDDSProps",
+      "definition": "export interface TableSDDSProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onChange'> {\n    /**\n     * Основной контент\n     */\n    data: TableRowData[];\n    /**\n     * Настройка колонок\n     */\n    columns: TableColumnData[];\n    /**\n     * Обработчик изменения состояния\n     */\n    onChange?: (data: {\n        selected: TableSDDSProps['selected'];\n        filtered: TableSDDSProps['filtered'];\n        sorted: TableSDDSProps['sorted'];\n    }) => void;\n    /**\n     * Вариант отображения border\n     * @default all\n     */\n    borderVariant?: 'all' | 'rows' | 'header';\n    /**\n     * Включение функционала выбора строк\n     * @default false\n     */\n    enableSelection?: boolean;\n    /**\n     * Состояние параметров выбранных строк\n     */\n    selected?: RowSelectionState;\n    /**\n     * Состояние параметров фильтрации\n     */\n    filtered?: {\n        id: string;\n        value: unknown;\n    }[];\n    /**\n     * Состояние параметров сортировки\n     */\n    sorted?: {\n        id: string;\n        desc: boolean;\n    }[];\n    /**\n     * Максимальная высота таблицы\n     */\n    maxHeight?: CSSProperties['maxHeight'];\n    /**\n     * Прилипание шапки при скролле\n     * @default false\n     */\n    stickyHeader?: boolean;\n    /**\n     * Обработчик обновления контента ячейки\n     */\n    onCellUpdate?: (rowId: string, columnId: string, value: unknown) => void;\n    /**\n     * Сеттер свойств для строки\n     */\n    setRowProps?: (row: TableRowData) => HTMLAttributes<any> & ThHTMLAttributes<any>;\n    /**\n     * Слот для контента над таблицей.\n     */\n    topContent?: ReactNode;\n    /**\n     * Слот для контента под таблицей.\n     */\n    bottomContent?: ReactNode;\n    /**\n     * Слот для лоадинга под контентом.\n     */\n    loadingSlot?: ReactNode;\n    /**\n     * Обработчик сколла контента.\n     */\n    onScroll?: (e: React.UIEvent<HTMLElement>) => void;\n    /**\n     * Возможность указать className для различных семантических узлов внутри компонента.\n     */\n    classNames?: {\n        /**\n         * Корневой верхнеуровневый контейнер.\n         */\n        root?: string;\n        /**\n         * Элемент со стилями таблицы, такими как font-size, width, border и тд.\n         */\n        table?: string;\n        header?: {\n            /**\n             * Элемент шапки таблицы.\n             */\n            wrapper?: string;\n            /**\n             * Элемент строки шапки таблицы.\n             */\n            row?: string;\n            /**\n             * Элемент ячейки шапки таблицы.\n             */\n            cell?: string;\n        };\n        body?: {\n            /**\n             * Элемент главного контейнера с контентом.\n             */\n            wrapper?: string;\n            /**\n             * Элемент строки основного контента таблицы.\n             */\n            row?: string;\n            /**\n             * Элемент ячейки основного контента таблицы.\n             */\n            cell?: string;\n        };\n    };\n    /**\n     * Размер таблицы\n     */\n    size?: string;\n    /**\n     * Внешний вид таблицы\n     */\n    view?: string;\n}",
+      "importPath": "@daisforge/ui",
+      "importStatement": "import { TableSDDSProps } from '@daisforge/ui';",
+      "sourceFile": "node_modules/@salutejs/plasma-new-hope/types/components/Table/Table.types.d.ts"
     },
     "TTabsProps": {
       "name": "TTabsProps",
@@ -61085,6 +61218,13 @@
       "importStatement": "import { RenderSubRowEditCell } from '@daisforge/ui';",
       "sourceFile": "packages/ui-kit/src/components/Table/types/column-config.type.ts"
     },
+    "RenderCellProps": {
+      "name": "RenderCellProps",
+      "definition": "export declare interface RenderCellProps<TRow, TSummaryRow = unknown> {\n    column: CalculatedColumn<TRow, TSummaryRow>;\n    row: TRow;\n    rowIdx: number;\n    isCellEditable: boolean;\n    tabIndex: number;\n    onRowChange: (row: TRow) => void;\n}",
+      "importPath": "@daisforge/ui",
+      "importStatement": "import { RenderCellProps } from '@daisforge/ui';",
+      "sourceFile": "node_modules/react-data-grid/lib/index.d.ts"
+    },
     "RenderGroupCellProps": {
       "name": "RenderGroupCellProps",
       "definition": "export type RenderGroupCellProps<RowType, SummaryRowType = unknown> = {\n  column: CalculatedColumn<RowType, SummaryRowType>;\n  tabIndex: number;\n  // TODO isExpanded: boolean;\n  // TODO toggleGroup: () => void;\n} & GroupRow<RowType>;",
@@ -61315,6 +61455,20 @@
       "importPath": "@daisforge/ui",
       "importStatement": "import { RowHeightFunc } from '@daisforge/ui';",
       "sourceFile": "packages/ui-kit/src/components/Table/types/table-config.type.ts"
+    },
+    "SortColumn": {
+      "name": "SortColumn",
+      "definition": "export declare interface SortColumn {\n    readonly columnKey: string;\n    readonly direction: SortDirection;\n}",
+      "importPath": "@daisforge/ui",
+      "importStatement": "import { SortColumn } from '@daisforge/ui';",
+      "sourceFile": "node_modules/react-data-grid/lib/index.d.ts"
+    },
+    "TableCanvas.SortColumn": {
+      "name": "SortColumn",
+      "definition": "export interface SortColumn {\n  readonly columnKey: string;\n  readonly direction: SortDirection;\n}",
+      "importPath": "@daisforge/ui/components/TableCanvas",
+      "importStatement": "import { SortColumn } from '@daisforge/ui/components/TableCanvas';",
+      "sourceFile": "packages/ui-kit/src/components/TableCanvas/feature-sorting/types.ts"
     },
     "View": {
       "name": "View",
@@ -61778,6 +61932,20 @@
       "importNotice": "Тип \"AiAgentLeftPanelItemBase\" не экспортируется из публичной точки входа — импортировать его нельзя. Определение приведено для понимания структуры: опишите нужную форму по месту либо возьмите её из типа, который экспортирован.",
       "sourceFile": "packages/ui-kit/src/components/AiAgentPopup/AiAgentPopup.types.ts"
     },
+    "RenderSummaryCellProps": {
+      "name": "RenderSummaryCellProps",
+      "definition": "export declare interface RenderSummaryCellProps<TSummaryRow, TRow = unknown> {\n    column: CalculatedColumn<TRow, TSummaryRow>;\n    row: TSummaryRow;\n    tabIndex: number;\n}",
+      "importPath": "@daisforge/ui",
+      "importStatement": "import { RenderSummaryCellProps } from '@daisforge/ui';",
+      "sourceFile": "node_modules/react-data-grid/lib/index.d.ts"
+    },
+    "RenderEditCellProps": {
+      "name": "RenderEditCellProps",
+      "definition": "export declare interface RenderEditCellProps<TRow, TSummaryRow = unknown> {\n    column: CalculatedColumn<TRow, TSummaryRow>;\n    row: TRow;\n    onRowChange: (row: TRow, commitChanges?: boolean) => void;\n    onClose: (commitChanges?: boolean, shouldFocusCell?: boolean) => void;\n}",
+      "importPath": "@daisforge/ui",
+      "importStatement": "import { RenderEditCellProps } from '@daisforge/ui';",
+      "sourceFile": "node_modules/react-data-grid/lib/index.d.ts"
+    },
     "Table.ActiveViewModsType": {
       "name": "ActiveViewModsType",
       "definition": "export type ActiveViewModsType = Exclude<keyof ViewMods, 'bothTypes'>;",
@@ -61848,13 +62016,6 @@
       "importStatement": "import { FlattenedRowsArrAndMap } from '@daisforge/ui/components/TableCanvas';",
       "sourceFile": "packages/ui-kit/src/components/TableCanvas/feature-select-row/types.ts"
     },
-    "SortColumn": {
-      "name": "SortColumn",
-      "definition": "export interface SortColumn {\n  readonly columnKey: string;\n  readonly direction: SortDirection;\n}",
-      "importPath": "@daisforge/ui/components/TableCanvas",
-      "importStatement": "import { SortColumn } from '@daisforge/ui/components/TableCanvas';",
-      "sourceFile": "packages/ui-kit/src/components/TableCanvas/feature-sorting/types.ts"
-    },
     "GlideSizeConfig": {
       "name": "GlideSizeConfig",
       "definition": "export type GlideSizeConfig = GlideSizes[SIZE];",
@@ -61917,13 +62078,6 @@
       "importPath": "@daisforge/ui",
       "importStatement": "import { RowsChangeData } from '@daisforge/ui';",
       "sourceFile": "packages/ui-kit/src/components/Table/types/table-config.type.ts"
-    },
-    "DropdownItemOption": {
-      "name": "DropdownItemOption",
-      "definition": "export type DropdownItemOption = {\n  /**\n   *  Значение у item\n   */\n  value: string | number;\n  /**\n   * Метка-подпись к item\n   */\n  label: string;\n  /**\n   * Список дочерних items.\n   */\n  items?: Array<DropdownItemOption>;\n  /**\n   * Item не активен\n   */\n  disabled?: boolean;\n  /**\n   * Слот для контента слева\n   */\n  contentLeft?: ReactNode;\n  /**\n   * Слот для контента справа\n   */\n  contentRight?: ReactNode;\n  /**\n   * Отобразить ли разделитель до элемента\n   */\n  dividerBefore?: boolean;\n  /**\n   * Отобразить ли разделитель после элемента\n   */\n  dividerAfter?: boolean;\n  /**\n   * Выбранный item.\n   * @deprecated использовать ContentLeft || ContentRight\n   */\n  isActive?: boolean;\n  /**\n   * Кастомный цвет текста\n   * @deprecated\n   */\n  color?: string;\n  /**\n   * Item не активен\n   * @deprecated использовать disabled\n   */\n  isDisabled?: boolean;\n};",
-      "internal": true,
-      "importNotice": "Тип \"DropdownItemOption\" не экспортируется из публичной точки входа — импортировать его нельзя. Определение приведено для понимания структуры: опишите нужную форму по месту либо возьмите её из типа, который экспортирован.",
-      "sourceFile": "packages/ui-kit/src/components/Table/types/additional.type.ts"
     },
     "ControlBlockButtonProps": {
       "name": "ControlBlockButtonProps",
@@ -62001,6 +62155,13 @@
       "internal": true,
       "importNotice": "Тип \"DefaultColumnOptions\" не экспортируется из публичной точки входа — импортировать его нельзя. Определение приведено для понимания структуры: опишите нужную форму по месту либо возьмите её из типа, который экспортирован.",
       "sourceFile": "packages/ui-kit/src/components/Table/types/data-grid.type.ts"
+    },
+    "CellMouseEvent": {
+      "name": "CellMouseEvent",
+      "definition": "export declare type CellMouseEvent = CellEvent<React.MouseEvent<HTMLDivElement>>;",
+      "importPath": "@daisforge/ui",
+      "importStatement": "import { CellMouseEvent } from '@daisforge/ui';",
+      "sourceFile": "node_modules/react-data-grid/lib/index.d.ts"
     },
     "CellTransferCellInfo": {
       "name": "CellTransferCellInfo",
