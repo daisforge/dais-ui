@@ -154,6 +154,8 @@ export class CellContentCache {
 }
 
 const CTXS_EMPTY = {};
+/** Разделитель имён групп в ключе выделенных групп, в именах не встречается */
+const GROUP_KEY_SEPARATOR = '\u0000';
 
 type CanvasCacheKey = string | number | boolean | null;
 
@@ -499,6 +501,11 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     isHighlightActiveRowControlled: highlightActiveRowControlled,
   });
   resetAxesRef.current = resetAxes;
+  // selectColumnFromHeader пересоздаётся на каждую смену выделения. Клик по шапке
+  // зовёт его через ref, чтобы drawHeader оставался прежним и glide не перерисовывал
+  // шапку на каждый клик.
+  const selectColumnFromHeaderRef = useRef(selectColumnFromHeader);
+  selectColumnFromHeaderRef.current = selectColumnFromHeader;
 
   // Отдаём объединённое выделение колонок (ключи) наверх (контрл-блок). Эффект,
   // а не вызов в рендере: колбэк потребителя может быть нестабильным.
@@ -1694,7 +1701,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
 
       // 2) Выделение столбца (включается/сбрасывается внутри хука; работает при
       //    любом highlightActiveType — независимая ось).
-      selectColumnFromHeader(columnIndex, event);
+      selectColumnFromHeaderRef.current(columnIndex, event);
     };
 
     return { drawHeader, onHeaderClicked };
@@ -1705,8 +1712,6 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     columnsHeaderCanvasRootInstanceMap,
     portalEventTargetRef,
     dataEditorRef,
-    // onHeaderClicked: column-select делегирован useTableSelectionSystem
-    selectColumnFromHeader,
   ]);
 
   const onGroupHeaderClicked = useCallback<
@@ -1736,7 +1741,11 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   // ровно те же условия, что затемняют bgHeader листовой колонки в
   // columnsForRender: активный диапазон ячеек, column-select, rangeStack,
   // выделение строк. Поэтому подсветка группы симметрична подсветке её шапок.
-  const fullySelectedGroupNames = useMemo(() => {
+  //
+  // Набор считается заново на каждый клик, поэтому сначала собираем ключ по
+  // содержимому. getGroupDetails пересоздаётся только при смене самих групп:
+  // каждая его новая ссылка заставляет glide перерисовать шапку.
+  const fullySelectedGroupsKey = useMemo(() => {
     const groupAllSelected = new Map<string, boolean>();
     columnsForRender.forEach((column, columnIndex) => {
       if (column.isServiceColumn) return;
@@ -1752,11 +1761,11 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       });
     });
 
-    const result = new Set<string>();
+    const result: string[] = [];
     groupAllSelected.forEach((allSelected, name) => {
-      if (allSelected) result.add(name);
+      if (allSelected) result.push(name);
     });
-    return result;
+    return result.join(GROUP_KEY_SEPARATOR);
   }, [
     columnsForRender,
     selectionVisualState,
@@ -1764,6 +1773,15 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     rangeStackColumnSet,
     hasSelectedRows,
   ]);
+  const fullySelectedGroupNames = useMemo(
+    () =>
+      new Set(
+        fullySelectedGroupsKey === ''
+          ? []
+          : fullySelectedGroupsKey.split(GROUP_KEY_SEPARATOR)
+      ),
+    [fullySelectedGroupsKey]
+  );
 
   // Фон полностью выделенной группы повторяет выделенную листовую шапку:
   // idle — тёмный selected (selectionServiceActiveBg), под курсором — на
