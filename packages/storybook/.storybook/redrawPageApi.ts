@@ -72,7 +72,7 @@ function toPng(image: ImageData) {
  */
 const NOISE_DELTA = 12;
 const NOISE_LIMIT = 500;
-/** Короткий штрих кромки (до NOISE_EDGE_RUN px в ряд) с разницей до этой: сглаживание при другом порядке заливок или обрезке. */
+/** Короткий штрих кромки (до NOISE_EDGE_RUN px в ряд на масштабе 1) с разницей до этой: сглаживание при другом порядке заливок или обрезке. */
 const NOISE_DELTA_EDGE = 48;
 const NOISE_EDGE_RUN = 4;
 
@@ -91,6 +91,8 @@ function diffImages(
   full: ImageData,
   /** Строки сверху, скрытые холстом шапки: их не сравниваем. */
   ignoreTop = 0,
+  /** Масштаб холста: размеры штриха кромки считаются в его пикселях. */
+  scale = 1,
 ): CanvasDiff {
   if (partial.width !== full.width || partial.height !== full.height) {
     throw new Error(
@@ -112,16 +114,27 @@ function diffImages(
     deltas[i] = Math.min(255, delta);
     kind[i] = delta <= NOISE_DELTA ? 1 : 2;
   }
-  const quiet = (j: number) => j < 0 || j >= a.length || kind[j] < 2;
-  /** Длина горизонтального штриха заметных пикселей, в который входит i. */
-  const runLength = (i: number) => {
-    const x = i % width;
-    let left = i;
-    while (left - 1 >= i - x && kind[left - 1] === 2) left -= 1;
-    let right = i;
-    while (right + 1 < i - x + width && kind[right + 1] === 2) right += 1;
-    return right - left + 1;
+  /** Длина штриха заметных пикселей через i: по горизонтали (step 1) или вертикали (step width). */
+  const runLength = (i: number, step: number, limit: number) => {
+    let length = 1;
+    for (
+      let j = i - step;
+      j >= 0 && kind[j] === 2 && length <= limit;
+      j -= step
+    ) {
+      length += 1;
+    }
+    for (
+      let j = i + step;
+      j < a.length && kind[j] === 2 && length <= limit;
+      j += step
+    ) {
+      length += 1;
+    }
+    return length;
   };
+  const edgeHeight = Math.ceil(scale);
+  const edgeRun = NOISE_EDGE_RUN * edgeHeight;
   let pixels = 0;
   let noise = 0;
   let minX = Infinity;
@@ -144,9 +157,8 @@ function diffImages(
     const edge =
       kind[i] === 2 &&
       deltas[i] <= NOISE_DELTA_EDGE &&
-      quiet(i - width) &&
-      quiet(i + width) &&
-      runLength(i) <= NOISE_EDGE_RUN;
+      runLength(i, width, edgeHeight) <= edgeHeight &&
+      runLength(i, 1, edgeRun) <= edgeRun;
     if (kind[i] === 1 || edge) {
       noise += 1;
       // жёлтый: шум, в итог не входит
@@ -246,7 +258,11 @@ export function createRedrawPageApi(deps: {
           // Ряд сразу под шапкой это кромка обрезки: кадр целиком рисует обрезанную
           // шапкой ячейку с обрезкой, сдвинутый кадр нёс её нарисованной без обрезки,
           // и сглаживание скруглённых углов на этой кромке расходится на ряд пикселей.
-          item.name === 'body' ? headerHeight + 1 : 0,
+          item.name === 'body'
+            ? headerHeight +
+                Math.ceil(item.canvas.width / item.canvas.clientWidth)
+            : 0,
+          item.canvas.width / item.canvas.clientWidth,
         ),
       );
       return {

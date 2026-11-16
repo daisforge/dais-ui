@@ -39,15 +39,11 @@ const chromium = (
   name,
   use: {
     browserName: 'chromium',
-    launchOptions: {
-      executablePath: browserPath,
-      // Настоящий масштаб устройства, а не эмуляция контекста: glide берёт
-      // devicePixelRatio и толщину линий из него.
-      args:
-        options.dpr === undefined
-          ? []
-          : [`--force-device-scale-factor=${options.dpr}`],
-    },
+    launchOptions: { executablePath: browserPath },
+    // Масштаб через контекст: флаг --force-device-scale-factor в безголовом
+    // Chromium devicePixelRatio не меняет. glide берёт devicePixelRatio и
+    // округляет его вверх для холста, так что 1.25 рисуется в 2x, а 0.8 в 1x.
+    ...(options.dpr !== undefined && { deviceScaleFactor: options.dpr }),
     ...(options.checkEachStep !== undefined && {
       checkEachStep: options.checkEachStep,
     }),
