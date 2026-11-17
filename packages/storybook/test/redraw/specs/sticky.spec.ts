@@ -118,25 +118,29 @@ test.describe('закреплённые колонки и строки', () => {
       () => grid.hover([2, 20]),
       rowsOnly,
     );
-    await grid.step('клик по прилипшей строке', () => grid.click([3, 4]), {
-      kinds: ['full', 'selection', 'damage'],
-    });
     await grid.step(
+      'клик по прилипшей строке',
+      () => grid.click([3, 4]),
+      partial(true),
+    );
+    await grid.step(
+      // строка под полосой: таблица прокручивается, а прокрутка с прилипшими
+      // строками идёт кадром целиком
       'стрелка вниз из прилипшей',
       () => grid.press('ArrowDown'),
       {
         kinds: ['full', 'blit', 'selection', 'damage'],
       },
     );
-    await grid.step('клик по обычной строке', () => grid.click([3, 21]), {
-      kinds: ['full', 'selection', 'damage'],
-    });
+    await grid.step(
+      'клик по обычной строке',
+      () => grid.click([3, 21]),
+      partial(false),
+    );
     await grid.step(
       'Shift+клик по прилипшей',
       () => grid.click([5, 11], { modifiers: ['Shift'] }),
-      {
-        kinds: ['full', 'selection', 'damage'],
-      },
+      partial(true),
     );
     await grid.finish();
   });

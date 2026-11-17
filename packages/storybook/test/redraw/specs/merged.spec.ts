@@ -10,11 +10,10 @@ const blockRows: FrameExpectation = {
   header: false,
   maxShare: 0.8,
 };
-// Пока блок с прилипающим содержимым обрезан краем экрана, glide по своему правилу
-// рисует смену выделения кадром целиком (разделы 4 и 9 selection-partial-redraw.md
-// в форке). Сужение правила обсуждается отдельно, здесь кадр целиком допускается.
+// Шапку не проверяем: обводка выделенного блока в первой строке лежит на холсте
+// шапки, и переход на другой блок её перерисовывает.
 const partial = (_header: boolean): FrameExpectation => ({
-  kinds: ['full', 'selection', 'damage'],
+  kinds: ['selection', 'damage'],
 });
 
 test.describe('объединённые ячейки', () => {
