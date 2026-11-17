@@ -27,6 +27,12 @@ import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+// Намеренный относительный импорт из корня монорепо: таблицу замен делят этот
+// скрипт и scripts/white-label/rename-artifact.mjs, чтобы зеркало MCP и
+// переименованная библиотека называли друг друга одинаково. Скрипт
+// запускается только из монорепо; импорт по имени корневого пакета
+// (@dais-ui/source/…) в Node не работает — у него нет поля "exports".
+/* eslint-disable import/no-relative-packages */
 import {
   applyReplacements as applyBrandReplacements,
   BrandError,
@@ -37,6 +43,7 @@ import {
   toFlatName,
   walkFiles,
 } from '../../../scripts/white-label/brand.mjs';
+/* eslint-enable import/no-relative-packages */
 
 const PKG_ROOT = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -297,8 +304,9 @@ function assertNoOriginalBrand() {
   const hits = findBrandLeftovers(STAGING_DIR);
   if (hits.length > 0) {
     fail(
-      `В зеркальном пакете остался исходный бренд (${hits.length} строк):\n` +
-        formatHits(hits),
+      `В зеркальном пакете остался исходный бренд (${
+        hits.length
+      } строк):\n${formatHits(hits)}`,
     );
   }
 }
