@@ -20,12 +20,10 @@ const full: FrameExpectation = { kinds: ['full', 'selection', 'damage'] };
 const scrolled: FrameExpectation = { kinds: ['blit', 'selection', 'damage'] };
 
 test.describe('первый клик после загрузки', () => {
-  // Кадр целиком допускается: см. GridPage.prime. Когда обёртка перестанет
-  // пересоздавать содержимое при смене признака редактируемости, ужесточить.
-  test('кадр целиком один раз, дальше частично', async ({ grid }) => {
+  test('частичный с первого клика', async ({ grid }) => {
     await grid.open(STAND, { serviceColumns: 1 });
     await grid.step('первый клик', () => grid.click([2, 3]), {
-      kinds: ['full', 'selection', 'damage'],
+      kinds: ['selection', 'damage'],
     });
     await grid.step('второй клик', () => grid.click([2, 5]), partial(false));
     await grid.step('стрелка', () => grid.press('ArrowDown'), partial(false));
