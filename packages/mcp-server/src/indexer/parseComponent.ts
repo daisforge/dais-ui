@@ -26,8 +26,8 @@ import {
 } from './publicContract.js';
 import { getRootExportNames } from './resolveImportPath.js';
 import { getProject, UI_KIT_SRC } from './tsProject.js';
+import { canonicalTypeText, formatPropType } from './typeDisplay.js';
 
-const MAX_PROP_TYPE_CHARS = 400;
 export const MAX_RAW_TYPE_CHARS = 6000;
 
 type RenderFunction = FunctionDeclaration | ArrowFunction | FunctionExpression;
@@ -537,7 +537,10 @@ function extractPropsFromType(
   type: Type,
   atLocationNode: Node,
   defaultsMap?: Map<string, string>,
+  truncate = true,
 ): PropRecord[] {
+  // Сначала объединяем полные типы ветвей; обрезаем только итог для ответа.
+  const displayType = truncate ? formatPropType : canonicalTypeText;
   const ownFilePath = atLocationNode.getSourceFile().getFilePath();
   const entries: { record: PropRecord; ownFile: boolean }[] = [];
 
@@ -545,7 +548,7 @@ function extractPropsFromType(
     const variants = type
       .getUnionTypes()
       .map((variant) =>
-        extractPropsFromType(variant, atLocationNode, defaultsMap),
+        extractPropsFromType(variant, atLocationNode, defaultsMap, false),
       );
     const names = [
       ...new Set(variants.flatMap((props) => props.map((prop) => prop.name))),
@@ -560,10 +563,11 @@ function extractPropsFromType(
         description: present[0]?.description ?? '',
         name,
         required: props.every((prop) => prop?.required),
-        type: clip(
-          [...new Set(present.map((prop) => prop.type))].join(' | '),
-          MAX_PROP_TYPE_CHARS,
-        ) as string,
+        type: displayType(
+          [...new Set(present.map((prop) => prop.type))]
+            .map((text) => `(${text})`)
+            .join(' | '),
+        ),
       };
     });
   }
@@ -619,7 +623,7 @@ function extractPropsFromType(
 
     const record: PropRecord = {
       name,
-      type: clip(stripImportPaths(fullTypeText), MAX_PROP_TYPE_CHARS) as string,
+      type: displayType(fullTypeText),
       required: !optional,
       description,
       ...(deprecated ? { deprecated: true as const } : {}),
@@ -1109,11 +1113,11 @@ export function parseComponent({
     type: Type | undefined,
     original: PropRecord[],
   ): PropRecord[] => {
-    if (!type || isOpenContract(type)) return original;
+    if (!type) return original;
     if (type.isNever()) throw new Error(`Не удалось извлечь контракт ${name}`);
     const actual = extractPropsFromType(type, mainDecl, defaultsMap);
     const previous = new Map(original.map((prop) => [prop.name, prop]));
-    return actual.map((prop) => {
+    const refined = actual.map((prop) => {
       const own = previous.get(prop.name);
       return {
         ...own,
@@ -1122,6 +1126,12 @@ export function parseComponent({
         ...(own?.default ? { default: own.default } : {}),
       };
     });
+    // Открытая сигнатура не отменяет проверяемые явно объявленные поля.
+    // Поля, стёртые публичным типом, сохраняются с предупреждением.
+    const names = new Set(refined.map((prop) => prop.name));
+    return isOpenContract(type)
+      ? [...refined, ...original.filter((prop) => !names.has(prop.name))]
+      : refined;
   };
   propsResolved.props = namespace ? [] : refine(contract, propsResolved.props);
   const compoundParts = namespace

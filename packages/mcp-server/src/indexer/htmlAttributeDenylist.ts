@@ -2,6 +2,7 @@
 import { ts } from 'ts-morph';
 
 import { getProject } from './tsProject.js';
+import { canonicalTypeText } from './typeDisplay.js';
 
 /**
  * Статические поля React-компонента (React.ComponentClass / FunctionComponent) —
@@ -274,6 +275,7 @@ export function isNoiseProp(name: string, typeText: string): boolean {
   const denyType = getDenylistMap().get(name);
   if (denyType === undefined) return false;
   return (
-    normalizeElementGeneric(denyType) === normalizeElementGeneric(typeText)
+    canonicalTypeText(normalizeElementGeneric(denyType)) ===
+    canonicalTypeText(normalizeElementGeneric(typeText))
   );
 }

@@ -12,7 +12,8 @@
       "error",
       {
         "devDependencies": [
-          "packages/mcp-server/src/indexer/**/*.ts"
+          "packages/mcp-server/src/indexer/**/*.ts",
+          "packages/mcp-server/src/validate/**/*.ts"
         ]
       }
     ]
@@ -65,6 +66,17 @@
       "rules": {
         "react/function-component-definition": "off",
         "import/no-extraneous-dependencies": "off"
+      }
+    },
+    {
+      "files": [
+        "test/*.test.tsx"
+      ],
+      "rules": {
+        "react/function-component-definition": "off",
+        "import/no-unresolved": "off",
+        "import/no-extraneous-dependencies": "off",
+        "react/jsx-props-no-spreading": "off"
       }
     }
   ]

@@ -4,6 +4,7 @@ import { test } from 'node:test';
 
 import { getComponent } from '../dist/tools/getComponent.js';
 import { getComponentProps } from '../dist/tools/getComponentProps.js';
+import { auditContracts } from '../dist/validate/auditContracts.js';
 import { checkIndexCompleteness } from '../dist/validate/checkCompleteness.js';
 import {
   assessDiagnostics,
@@ -120,9 +121,12 @@ test('пробник проверяет импорт даже у компоне�
 });
 
 test(
-  'реальный tsc ловит подменённые импорт, пропс, required и compound-часть',
-  { timeout: 180_000 },
+  'валидатор ловит подмены импорта, типа, required и потерю полей, включая открытые контракты',
+  { timeout: 300_000 },
   () => {
+    // Сначала oracle обязан принять настоящий индекс: иначе общий ложный отказ
+    // мог бы замаскировать отсутствие проверки конкретной подмены.
+    assert.deepEqual(auditContracts(index).issues, []);
     const broken = structuredClone(index);
     broken.components.MissingMcpExport = {
       ...broken.components.TableContract,
@@ -145,8 +149,48 @@ test(
       name: 'MissingMcpPart',
       props: [],
     });
+    broken.components.TableContract.props =
+      broken.components.TableContract.props.filter(
+        (p) => p.name !== 'stylesBeforeLoad',
+      );
+    fetcher.type = 'number';
+    const chips = broken.components.AnalyticalWidget.compoundParts.find(
+      (p) => p.name === 'Chips',
+    );
+    chips.props = chips.props.filter((p) => p.name !== 'chips');
+    chips.props.find((p) => p.name === 'opened').required = false;
+    broken.components.DrawerDF.compoundParts
+      .find((p) => p.name === 'Content')
+      .props.find((p) => p.name === 'fixedWidth').type = 'number';
+    broken.components.DrawerDF.compoundParts
+      .find((p) => p.name === 'Content')
+      .props.push({
+        name: 'inventedOpenProp',
+        type: 'string',
+        required: false,
+        description: '',
+      });
     const report = validateIndex(broken);
     assert.equal(report.ok, false);
+    for (const [component, part, prop, kind] of [
+      ['TableContract', undefined, 'stylesBeforeLoad', 'missing-prop'],
+      ['TableContract', undefined, 'fetcher', 'type'],
+      ['DrawerDF', 'Content', 'inventedOpenProp', 'unexpected-prop'],
+      ['AnalyticalWidget', 'Chips', 'chips', 'missing-prop'],
+      ['AnalyticalWidget', 'Chips', 'opened', 'required'],
+      ['DrawerDF', 'Content', 'fixedWidth', 'type'],
+    ]) {
+      assert.ok(
+        report.errors.some(
+          (e) =>
+            e.check?.component === component &&
+            e.check?.part === part &&
+            e.check?.prop === prop &&
+            e.check?.kind === kind,
+        ),
+        `${component}.${part ?? ''}.${prop}: ${kind}`,
+      );
+    }
     assert.ok(
       report.errors.some(
         (error) =>

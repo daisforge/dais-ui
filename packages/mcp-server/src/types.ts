@@ -47,7 +47,7 @@ export interface CompoundPart {
   typeName?: string;
   rawType?: string;
   isGeneric?: true;
-  /** Публичный тип допускает произвольные ключи: полнота и required недоказуемы. */
+  /** Публичный тип допускает произвольные ключи; явно объявленные поля проверяются отдельно. */
   openProps?: true;
   props: PropRecord[];
 }
@@ -157,7 +157,7 @@ export interface ComponentRecord {
   propsTypeName?: string;
   rawType?: string;
   isGeneric?: true;
-  /** Публичный тип допускает произвольные ключи: полнота и required недоказуемы. */
+  /** Публичный тип допускает произвольные ключи; явно объявленные поля проверяются отдельно. */
   openProps?: true;
   compoundParts?: CompoundPart[];
   /** Объект с компонентами (Canvas), сам не является JSX-компонентом. */

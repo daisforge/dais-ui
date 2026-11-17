@@ -9,6 +9,7 @@ import { REPO_ROOT } from '../indexer/tsProject.js';
 import { resolveIndex } from '../resolveIndex.js';
 import type { ComponentIndex, ComponentRecord } from '../types.js';
 import { isOkComponent } from '../types.js';
+import { auditContracts } from './auditContracts.js';
 import {
   checkIndexCompleteness,
   formatCompletenessReport,
@@ -20,7 +21,10 @@ type CheckKind =
   | 'contract'
   | 'open-contract'
   | 'exists'
-  | 'required';
+  | 'required'
+  | 'missing-prop'
+  | 'unexpected-prop'
+  | 'type';
 interface CheckMeta {
   kind: CheckKind;
   component: string;
@@ -217,6 +221,17 @@ export function validateIndex(index: ComponentIndex) {
   );
   const output = (tsc.stdout || '') + (tsc.stderr || '');
   const diagnostics = parseTscOutput(output, probe.lineMeta);
+  const contractAudit = auditContracts(index);
+  contractAudit.issues.forEach(
+    ({ kind, component, part, prop, expected, actual }) =>
+      diagnostics.push({
+        code: 'MCP_CONTRACT',
+        message: `Ожидалось: ${expected ?? '(нет)'}; получено: ${
+          actual ?? '(нет)'
+        }`,
+        check: { kind, component, part, prop },
+      }),
+  );
   const assessed = assessDiagnostics(
     diagnostics,
     tsc.status,
@@ -228,6 +243,7 @@ export function validateIndex(index: ComponentIndex) {
     .map(([name, rec]) => `${name}: ${rec.error}`);
   const report = {
     ...assessed,
+    contractCoverage: contractAudit.coverage,
     ok:
       assessed.ok &&
       completeness.failures.length === 0 &&
@@ -252,6 +268,20 @@ function main() {
   console.log(formatCompletenessReport(report.completeness));
   console.log(
     `Проверено ${report.coveredComponents} компонентов, ${report.checks} проверок.`,
+  );
+  console.log(
+    `Независимый аудит: ${
+      report.contractCoverage.length
+    } контрактов, ${report.contractCoverage.reduce(
+      (total, record) => total + record.checkedProps.length,
+      0,
+    )} пар компонент/поле; ${report.contractCoverage.reduce(
+      (total, record) => total + record.declaredProps.length,
+      0,
+    )} полей по именованным Props; ${report.contractCoverage.reduce(
+      (total, record) => total + record.truncatedProps.length,
+      0,
+    )} обрезанных типов.`,
   );
   report.diagnostics.forEach((d) =>
     console.log(

@@ -1,0 +1,12 @@
+{
+  "extends": "../probe.tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": "../../..",
+    "paths": {
+      "@ui-kit/*": ["packages/ui-kit/src/*"],
+      "@daisforge/ui": ["packages/ui-kit/src/index.ts"],
+      "@daisforge/ui/*": ["packages/ui-kit/src/*"]
+    }
+  },
+  "include": ["consumer.test.tsx"]
+}

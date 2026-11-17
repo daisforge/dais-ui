@@ -12,9 +12,10 @@ import { getProject, UI_KIT_SRC } from './tsProject.js';
  */
 export const PUBLIC_PROPS_HELPERS = `
 import type { ComponentProps, ElementType } from 'react';
+type McpStyledProps<P> = P extends unknown ? Omit<P, 'as' | 'forwardedAs'> & { as?: ElementType; forwardedAs?: ElementType } : never;
 type McpProps<C> = C extends { withComponent: unknown }
   ? C extends { (props: infer P): unknown; (props: never): unknown }
-    ? Omit<P, 'as' | 'forwardedAs'> & { as?: ElementType; forwardedAs?: ElementType }
+    ? McpStyledProps<P>
     : never
   : C extends ElementType ? ComponentProps<C> : never;
 type McpKeys<T> = T extends unknown ? keyof T : never;
