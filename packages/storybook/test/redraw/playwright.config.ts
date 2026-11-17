@@ -16,8 +16,7 @@ const externalUrl = process.env.REDRAW_URL;
 const port = Number(process.env.REDRAW_PORT ?? 4401);
 const baseURL = externalUrl ?? `http://127.0.0.1:${port}`;
 
-// Свой Chromium-браузер (например, SberBrowser во внутреннем контуре): тогда только
-// chromium-проекты, Firefox и WebKit с таким путём не запустить.
+// Свой Chromium-браузер (например, SberBrowser во внутреннем контуре).
 const browserPath = process.env.REDRAW_BROWSER;
 
 // Отчёты каждого запуска в своём каталоге; в Docker каталог задаёт контейнер.
@@ -49,13 +48,6 @@ const chromium = (
     }),
   },
 });
-
-const otherBrowsers: PlaywrightTestProject<RedrawOptions>[] = browserPath
-  ? []
-  : [
-      { name: 'firefox', use: { browserName: 'firefox' } },
-      { name: 'webkit', use: { browserName: 'webkit' } },
-    ];
 
 export default defineConfig<RedrawOptions>({
   testDir: './specs',
@@ -95,6 +87,5 @@ export default defineConfig<RedrawOptions>({
     chromium('chromium-dpr-1.25', { dpr: 1.25 }),
     chromium('chromium-dpr-2', { dpr: 2 }),
     chromium('chromium-dpr-0.8', { dpr: 0.8 }),
-    ...otherBrowsers,
   ],
 });

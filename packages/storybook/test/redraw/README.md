@@ -65,14 +65,14 @@ REDRAW_URL=http://localhost:4400 npm run redraw:test:local
 - `chromium`: сверка после каждого шага.
 - `chromium-accumulate`: одна сверка в конце серии. Ловит следы, которые копятся
   несколько шагов и стираются полной перерисовкой между шагами.
-- `chromium-dpr-1.25`, `chromium-dpr-2`, `chromium-dpr-0.8`: настоящий масштаб
-  устройства через флаг браузера, в том числе меньше единицы.
-- `firefox`, `webkit`.
+- `chromium-dpr-1.25`, `chromium-dpr-2`, `chromium-dpr-0.8`: масштаб устройства,
+  в том числе меньше единицы. Таблица живёт только в Chromium-движках, других
+  браузеров в проектах нет.
 
 ## Свой браузер
 
-`REDRAW_BROWSER=<путь>` запускает chromium-проекты на этом браузере (любой на
-основе Chromium), Firefox и WebKit при этом не запускаются:
+`REDRAW_BROWSER=<путь>` запускает проекты на этом браузере (любой на основе
+Chromium):
 
 ```
 REDRAW_BROWSER="C:\Program Files\SberBrowser\Application\sberbrowser.exe" npm run redraw:test:local
