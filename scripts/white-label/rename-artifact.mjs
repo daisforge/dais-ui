@@ -73,22 +73,62 @@ export const PACKAGE_JSON_FIELDS_TO_DROP = [
 ];
 
 /**
- * Точные строки, которые совпадают с /dais/i, но остаются в результате
- * осознанно. Список короткий: любое новое совпадение должно сначала упасть и
- * быть разобрано вручную.
+ * Строки, которые совпадают с /dais/i, но остаются как есть: замена их не
+ * трогает, проверка на остатки бренда не считает ошибкой. Список точный и
+ * короткий: любое новое совпадение должно сначала упасть и быть разобрано
+ * вручную.
  */
-export const ALLOWED_LEFTOVERS = [
-  // Сторонний код в vendor-чанках Storybook, к бренду отношения не имеет:
-  //   - aria-query: relatedConcepts ссылаются на стандарт доступности DAISY;
-  'DAISY',
-  //   - список японских топонимов в одной из зависимостей.
-  'kosakadaisenkazuno',
+export const PRESERVED_TOKENS = [
+  // Страница AI-чата (packages/storybook/src/stories/AiChatDAIS) внутри
+  // называется так же, поэтому в ней ничего не переименовывается. Следы
+  // страницы вне её чанка: путь и имя чанка в карте импортов превью, запись
+  // в index.json и CSS иконки в manager-head.html.
+  'AiChatDAIS',
+  'dais--docs',
+  '"title":"DAIS"',
   // Страница Changelog в Storybook оставлена как есть: ссылки на коммиты,
   // issues и compare в репозитории и имя корневого пакета монорепо из
   // сообщений lerna («Version bump only for package …»).
   'https://github.com/daisforge/dais-ui',
   '@dais-ui/source',
+  // Сторонний код в vendor-чанках Storybook, к бренду отношения не имеет:
+  //   - aria-query: relatedConcepts ссылаются на стандарт доступности DAISY;
+  'DAISY',
+  //   - список японских топонимов в одной из зависимостей.
+  'kosakadaisenkazuno',
 ];
+
+/**
+ * Файлы, которые не меняются и не проверяются целиком (по имени файла):
+ * собственный чанк страницы AI-чата.
+ */
+export const PRESERVED_FILES = [/^AiChatDAIS-[\w-]+\.js$/];
+
+/**
+ * Хеш Vite в имени чанка ('…stories-DaiSi7z1.js') случаен и может совпасть с
+ * /dais/i. При проверке он вырезается; бренд в остальной части имени
+ * по-прежнему находится.
+ */
+const HASHED_ASSET_RE = /-[\w-]{8}\.(?:m?js|css)\b/g;
+
+const isPreservedFile = (file) =>
+  PRESERVED_FILES.some((re) => re.test(path.basename(file)));
+
+/**
+ * Применяет замены, не трогая PRESERVED_TOKENS: они на время замены
+ * подменяются плейсхолдерами, которых нет ни в одном правиле.
+ */
+function applyPreserving(text, replacements) {
+  const tokens = [...PRESERVED_TOKENS].sort((a, b) => b.length - a.length);
+  const masked = tokens.reduce(
+    (acc, token, i) => acc.split(token).join(`\u0000${i}\u0000`),
+    text,
+  );
+  return tokens.reduce(
+    (acc, token, i) => acc.split(`\u0000${i}\u0000`).join(token),
+    applyReplacements(masked, replacements),
+  );
+}
 
 const SOURCE_MAP_LINK_RE =
   /^[ \t]*(?:\/\/[#@] sourceMappingURL=.*|\/\*[#@] sourceMappingURL=.*?\*\/)[ \t]*\r?\n?/gm;
@@ -126,10 +166,10 @@ export function renameArtifact(dir, names) {
       removedMaps += 1;
       continue;
     }
-    if (!isTextFile(file)) continue;
+    if (!isTextFile(file) || isPreservedFile(file)) continue;
 
     const source = fs.readFileSync(file, 'utf8');
-    const result = applyReplacements(
+    const result = applyPreserving(
       source.replace(SOURCE_MAP_LINK_RE, ''),
       replacements,
     );
@@ -140,12 +180,11 @@ export function renameArtifact(dir, names) {
   }
 
   // Имена файлов меняются по той же таблице, что и содержимое: ссылки на них
-  // (например, чанк AiChatDAIS-*.js в карте импортов Storybook) уже заменены
-  // выше, поэтому файл обязан называться так же.
+  // в других файлах уже заменены выше, поэтому файл обязан называться так же.
   let renamedFiles = 0;
   for (const file of walkFiles(root)) {
     const base = path.basename(file);
-    const renamed = applyReplacements(base, replacements);
+    const renamed = applyPreserving(base, replacements);
     if (renamed !== base) {
       fs.renameSync(file, path.join(path.dirname(file), renamed));
       renamedFiles += 1;
@@ -154,14 +193,21 @@ export function renameArtifact(dir, names) {
 
   const packageJson = cleanPackageJson(root);
 
+  const stripAllowed = (text) =>
+    PRESERVED_TOKENS.reduce(
+      (acc, token) => acc.split(token).join(''),
+      text.replace(HASHED_ASSET_RE, ''),
+    );
   const leftovers = [
     ...walkFiles(root)
+      .filter((file) => !isPreservedFile(file))
       .map((file) => path.relative(root, file))
-      .filter((rel) => BRAND_RE.test(rel))
+      .filter((rel) => BRAND_RE.test(stripAllowed(rel)))
       .map((rel) => `${rel}: бренд в имени файла`),
     ...findBrandLeftovers(root, {
-      filter: isTextFile,
-      ignore: ALLOWED_LEFTOVERS,
+      filter: (file) => isTextFile(file) && !isPreservedFile(file),
+      ignore: PRESERVED_TOKENS,
+      ignorePatterns: [HASHED_ASSET_RE],
     }),
   ];
 

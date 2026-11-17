@@ -138,19 +138,22 @@ export function walkFiles(dir) {
 /**
  * Ищет остатки исходного бренда в содержимом файлов.
  * @param {string} dir
- * @param {{ filter?: (file: string) => boolean, ignore?: string[] }} [options]
- *   filter — какие файлы читать (по умолчанию все); ignore — точные строки
- *   стороннего кода, которые совпадают с /dais/i, но брендом не являются.
- *   Вырезаются из строки перед проверкой, так что настоящий бренд в той же
- *   строке всё равно будет найден.
+ * @param {{ filter?: (file: string) => boolean, ignore?: string[], ignorePatterns?: RegExp[] }} [options]
+ *   filter — какие файлы читать (по умолчанию все); ignore — точные строки,
+ *   которые совпадают с /dais/i, но остаются осознанно; ignorePatterns — то же
+ *   регулярками (с флагом g). Вырезаются из строки перед проверкой, так что
+ *   настоящий бренд в той же строке всё равно будет найден.
  * @returns {string[]} строки вида 'относительный/путь:строка: текст'
  */
 export function findBrandLeftovers(
   dir,
-  { filter = () => true, ignore = [] } = {},
+  { filter = () => true, ignore = [], ignorePatterns = [] } = {},
 ) {
   const strip = (line) =>
-    ignore.reduce((acc, token) => acc.split(token).join(''), line);
+    ignore.reduce(
+      (acc, token) => acc.split(token).join(''),
+      ignorePatterns.reduce((acc, re) => acc.replace(re, ''), line),
+    );
   const hits = [];
   for (const file of walkFiles(dir)) {
     if (!filter(file)) continue;

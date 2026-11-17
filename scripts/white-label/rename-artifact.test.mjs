@@ -92,8 +92,8 @@ describe('renameArtifact', () => {
 
   it('переименовывает файлы по той же таблице, что и ссылки на них', () => {
     const dir = makeTmp({
-      'index.json': '{"importPath":"./assets/AiChatDAIS-x1.js"}',
-      'assets/AiChatDAIS-x1.js': 'export default 1;',
+      'index.json': '{"importPath":"./assets/daisforge-ui-icons-x1.js"}',
+      'assets/daisforge-ui-icons-x1.js': 'export default 1;',
     });
 
     const result = renameArtifact(dir, names);
@@ -101,11 +101,49 @@ describe('renameArtifact', () => {
     expect(result.renamedFiles).toBe(1);
     expect(result.leftovers).toEqual([]);
     expect(read(dir, 'index.json')).toBe(
-      '{"importPath":"./assets/AiChatAssistant-x1.js"}',
+      '{"importPath":"./assets/acme-ds-icons-x1.js"}',
     );
-    expect(fs.existsSync(path.join(dir, 'assets/AiChatAssistant-x1.js'))).toBe(
+    expect(fs.existsSync(path.join(dir, 'assets/acme-ds-icons-x1.js'))).toBe(
       true,
     );
+  });
+
+  it('страницу AI-чата не меняет: ни её чанк, ни ссылки на неё', () => {
+    const chunk =
+      'const t = "DAIS"; const c = "dais-chat-contentType"; import "@daisforge/ui";';
+    const dir = makeTmp({
+      'assets/AiChatDAIS-BQrARqWR.js': chunk,
+      'assets/iframe-9Ykls_x0.js':
+        '{"./packages/storybook/src/stories/AiChatDAIS/AiChatDAIS.mdx":()=>import("./AiChatDAIS-BQrARqWR.js"),"x":"@daisforge/ui"}',
+      'index.json':
+        '{"dais--docs":{"id":"dais--docs","title":"DAIS","importPath":"./packages/storybook/src/stories/AiChatDAIS/AiChatDAIS.mdx"}}',
+      'index.html': '<style>#dais--docs svg { display: none; }</style>',
+    });
+
+    const result = renameArtifact(dir, names);
+
+    expect(result.leftovers).toEqual([]);
+    expect(result.renamedFiles).toBe(0);
+    expect(read(dir, 'assets/AiChatDAIS-BQrARqWR.js')).toBe(chunk);
+    expect(read(dir, 'assets/iframe-9Ykls_x0.js')).toBe(
+      '{"./packages/storybook/src/stories/AiChatDAIS/AiChatDAIS.mdx":()=>import("./AiChatDAIS-BQrARqWR.js"),"x":"@acme/ds"}',
+    );
+    expect(read(dir, 'index.json')).toContain('"title":"DAIS"');
+    expect(read(dir, 'index.html')).toContain('#dais--docs');
+  });
+
+  it('случайный хеш Vite в имени чанка не считается брендом, бренд перед хешем — считается', () => {
+    const dir = makeTmp({
+      'assets/Table.stories-DaiSi7z1.js': 'export default 1;',
+      'assets/iframe-x1234567.js': 'import("./Table.stories-DaiSi7z1.js");',
+      'assets/dais-widget-Ab3dEf9h.js': 'export default 2;',
+    });
+
+    const { leftovers } = renameArtifact(dir, names);
+
+    expect(leftovers).toEqual([
+      `${path.join('assets', 'dais-widget-Ab3dEf9h.js')}: бренд в имени файла`,
+    ]);
   });
 
   it('пропускает разрешённые строки, но сообщает о настоящих остатках', () => {
