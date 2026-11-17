@@ -34,7 +34,17 @@ const BIN_FILES = [
   ['scripts/white-label/brand.mjs', null],
   ['scripts/white-label/rename-artifact.mjs', 'white-label-rename'],
   ['scripts/storybook-package/add-pages.mjs', 'storybook-add-pages'],
+  ['scripts/storybook-package/build-pages.mjs', 'storybook-build-pages'],
+  // Список модулей для страниц — тот же, что зашит в эту сборку Storybook.
+  ['packages/storybook/src/stories/_external/shared-modules.json', null],
 ];
+
+/**
+ * esbuild нужен только для сборки страниц (build-pages.mjs). Необязательная
+ * peerDependency: кому нужна лишь статика, его не ставит и предупреждений не
+ * видит; проект со страницами ставит его сам.
+ */
+const ESBUILD_RANGE = '>=0.20.0 <1';
 
 const STORYBOOK_DIR = path.resolve(
   REPO_ROOT,
@@ -115,6 +125,8 @@ function stagePackageJson() {
     repository: lib.repository,
     homepage: lib.homepage,
     bugs: lib.bugs,
+    peerDependencies: { esbuild: ESBUILD_RANGE },
+    peerDependenciesMeta: { esbuild: { optional: true } },
     engines: { node: '>=20.0.0' },
     publishConfig: { access: 'public' },
   };
@@ -143,30 +155,39 @@ tar -xzf *.tgz            # → package/static
 ## Внутренние страницы
 
 Страницы, которых нет в исходниках, добавляются в готовую статику без сборки
-и встают в общее дерево сайдбара как обычные docs-страницы:
-
-1. \`static/internal/<file>.js\` — ES-модуль, default export которого —
-   React-компонент. React, styled-components и модули библиотеки страница
-   получает из уже загруженного Storybook через \`globalThis.__SB_SHARED__\`
-   (ключи \`react\`, \`react/jsx-runtime\`, \`react-dom\`, \`styled-components\`,
-   \`lib\`, \`lib/constants\`, \`lib/icons\`, \`lib/mixins\`, \`lib/styles\`,
-   \`lib/tokens\`, \`lib/utils\`), поэтому повторно они не загружаются.
-2. \`bin/add-pages.mjs\` (bin \`storybook-add-pages\`) вставляет записи в
-   \`static/index.json\`:
+Storybook и встают в общее дерево сайдбара как обычные docs-страницы. Проект со
+страницами ставит этот пакет, библиотеку (ради типов) и esbuild той же версии:
 
 \`\`\`bash
-node package/bin/add-pages.mjs package/static pages.json
+npm i -D ${pkg.name}@${pkg.version} <библиотека>@${pkg.version} esbuild
 \`\`\`
+
+Страница — \`pages/<file>.tsx\` с default export React-компонента; импорты
+\`react\`, \`styled-components\` и библиотеки (вместе с подпутями) — как в любом
+проекте. Расположение в дереве — \`pages/pages.json\`:
 
 \`\`\`json
 [{ "file": "page1", "title": "Название", "before": "changelog--docs" }]
 \`\`\`
 
-Поля: \`file\` — имя модуля в \`static/internal/\` (\`[a-z0-9-]\`); \`title\` — путь
-в дереве (\`Раздел/Страница\`); \`name\` — подпись внутри узла существующего
-компонента (по умолчанию \`Docs\`); \`before\`/\`after\` — id записи index.json,
-рядом с которой встать (без них — в конец). Так страницу можно поставить в
-любое место дерева: на верхний уровень, в раздел или внутрь компонента.
+Поля: \`file\` — имя страницы (\`[a-z0-9-]\`); \`title\` — путь в дереве
+(\`Раздел/Страница\`); \`name\` — подпись внутри узла существующего компонента
+(по умолчанию \`Docs\`); \`before\`/\`after\` — id записи index.json, рядом с
+которой встать (без них — в конец). Так страницу можно поставить в любое место
+дерева: на верхний уровень, в раздел или внутрь компонента.
+
+\`\`\`bash
+cp -R node_modules/${pkg.name}/static ./static
+npx storybook-build-pages --pages pages --out static/internal
+npx storybook-add-pages static pages/pages.json
+\`\`\`
+
+\`storybook-build-pages\` не кладёт в бандл React, styled-components и
+библиотеку: страница получает их из уже загруженного Storybook через
+\`globalThis.__SB_SHARED__\` (список — \`bin/shared-modules.json\`) и работает с
+тем же экземпляром React и той же темой. Имя библиотеки берётся из \`--lib\`,
+\`ALT_LIB_PACKAGE_NAME\` или из зависимостей проекта (по \`mcp-data\`).
+\`--watch\` пересобирает страницы при изменениях.
 
 ## Переименование
 

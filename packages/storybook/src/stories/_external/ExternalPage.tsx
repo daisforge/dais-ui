@@ -30,8 +30,12 @@ import * as jsxRuntime from 'react/jsx-runtime';
 import * as ReactDOM from 'react-dom';
 import * as styledComponents from 'styled-components';
 
+// Список ключей — общий с build-pages.mjs, который собирает страницы под эту
+// сборку Storybook. Оба файла публикуются в одном пакете одной версии.
+import sharedModules from './shared-modules.json';
+
 /** Модули, которые страница берёт из Storybook. Ключи нейтральные. */
-const shared = {
+const MODULES: Record<string, unknown> = {
   react: React,
   'react/jsx-runtime': jsxRuntime,
   'react-dom': ReactDOM,
@@ -45,9 +49,34 @@ const shared = {
   'lib/utils': utils,
 };
 
+const SHARED_KEYS = [
+  ...sharedModules.external,
+  'lib',
+  ...sharedModules.libSubpaths.map((sub) => `lib/${sub}`),
+];
+
+/**
+ * Расхождение MODULES и shared-modules.json значит, что страницы соберутся под
+ * один набор модулей, а получат другой. Падаем сразу, а не в рантайме страницы.
+ */
+const mismatch = [
+  ...SHARED_KEYS.filter((key) => !(key in MODULES)).map((key) => `нет ${key}`),
+  ...Object.keys(MODULES)
+    .filter((key) => !SHARED_KEYS.includes(key))
+    .map((key) => `лишний ${key}`),
+];
+if (mismatch.length) {
+  throw new Error(
+    `ExternalPage: модули расходятся с shared-modules.json: ${mismatch.join(
+      ', ',
+    )}`,
+  );
+}
+
 // Имя глобала — договорённость с внешним кодом страниц, менять нельзя.
 // eslint-disable-next-line no-underscore-dangle
-(globalThis as { __SB_SHARED__?: typeof shared }).__SB_SHARED__ = shared;
+(globalThis as { __SB_SHARED__?: Record<string, unknown> }).__SB_SHARED__ =
+  MODULES;
 
 /**
  * Имя модуля страницы — только из поля записи index.json и только такого
