@@ -1,0 +1,97 @@
+name: Publish Storybook package
+
+# Публикует @daisforge/ui-storybook — собранный Storybook той же версии, что
+# и @daisforge/ui. Нужен там, где Storybook разворачивают из готовой статики,
+# без сборки из исходников (см. scripts/storybook-package/stage.mjs).
+#
+# Вызывается хвостом publish-npm.yml после выхода новой версии библиотеки.
+# Вручную (workflow_dispatch) — для перевыпуска, если этот шаг упал: версия
+# берётся из тега, библиотеку это не затрагивает. Ничего не пушит.
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Тег релиза библиотеки, например v1.29.0'
+        required: true
+        type: string
+      dry_run:
+        description: 'Тестовый прогон (npm publish --dry-run), без реальной публикации'
+        required: true
+        type: boolean
+        default: true
+  workflow_call:
+    inputs:
+      ref:
+        description: 'Тег релиза библиотеки, например v1.29.0'
+        required: true
+        type: string
+      dry_run:
+        description: 'Тестовый прогон (npm publish --dry-run), без реальной публикации'
+        required: false
+        type: boolean
+        default: false
+    secrets:
+      NPM_TOKEN:
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          registry-url: 'https://registry.npmjs.org'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      # Повторный запуск с той же версией не должен падать на npm publish.
+      - name: Check whether version is already published
+        id: published
+        run: |
+          VERSION=$(node -p "require('./packages/ui-kit/package.json').version")
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          if npm view "@daisforge/ui-storybook@$VERSION" version >/dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::@daisforge/ui-storybook@$VERSION уже опубликован — пропускаю."
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build Storybook
+        if: steps.published.outputs.exists == 'false'
+        run: npm run storybook:build
+        env:
+          NODE_OPTIONS: '--max_old_space_size=4096'
+          # Как общий стенд: без визуальных историй (см. .storybook/main.ts).
+          NODE_ENV: production
+          # Относительная база: статику можно выложить по любому пути.
+          STORYBOOK_BASE_PATH: './'
+
+      - name: Stage package
+        if: steps.published.outputs.exists == 'false'
+        run: node scripts/storybook-package/stage.mjs
+
+      - name: Publish to npm
+        if: steps.published.outputs.exists == 'false'
+        working-directory: dist/storybook-package
+        run: |
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            npm publish --access public --dry-run
+          else
+            npm publish --access public
+          fi
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
