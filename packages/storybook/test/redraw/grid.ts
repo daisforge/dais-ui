@@ -144,6 +144,14 @@ export class GridPage {
     await Promise.all(modifiers.map((key) => this.page.keyboard.up(key)));
   }
 
+  /** Протяжка между точками окна: маркер растяжения, граница колонки в шапке. */
+  async dragPoints(from: Point, to: Point) {
+    await this.page.mouse.move(from.x, from.y);
+    await this.page.mouse.down();
+    await this.page.mouse.move(to.x, to.y, { steps: 8 });
+    await this.page.mouse.up();
+  }
+
   async press(key: string) {
     await this.page.keyboard.press(key);
   }
