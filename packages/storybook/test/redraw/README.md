@@ -40,13 +40,13 @@ npm run redraw:test -- --project chromium    # один проект
 npm run redraw:test -- --grep наведение      # по названию теста
 ```
 
-Локально, без Docker. Нужны браузеры Playwright (`npx playwright install`).
-Тестовый стенд Storybook (сборка в `dist/storybook` с точками входа для тестов)
-собирается сам, если его ещё нет; после правок кода пересобрать его `--build`:
+Локально, без Docker. Нужны браузеры Playwright (`npx playwright install`) и
+собранный тестовый стенд (Storybook в `dist/storybook` с точками входа для
+тестов, PNG-эталоны здесь ни при чём; после правок кода собрать заново):
 
 ```
+npm run storybook:build:screenshots
 npm run redraw:test:local
-npm run redraw:test:local -- --build
 npm run redraw:test:local -- --project chromium --repeat-each 3
 ```
 
