@@ -32,55 +32,65 @@ type EditorProps = {
 vi.mock('../styled', async (importOriginal) => {
   const { forwardRef } = await import('react');
   const MockDataEditor = forwardRef<HTMLDivElement, EditorProps>(
-    (props, _ref) => {
-      return (
-        <div className={props.className} data-testid="data-editor">
-          <output data-testid="column-widths">
-            {props.columns
-              ?.map((column) => ('width' in column ? column.width : undefined))
-              .join(',')}
-          </output>
-          {props.columns?.map((column, columnIndex) => (
-            <React.Fragment key={column.id}>
+    (props, _ref) => (
+      <div className={props.className} data-testid="data-editor">
+        <output data-testid="column-widths">
+          {props.columns
+            ?.map((column) => ('width' in column ? column.width : undefined))
+            .join(',')}
+        </output>
+        {props.columns?.map((column, columnIndex) => (
+          <React.Fragment key={column.id}>
+            <button
+              type="button"
+              aria-label={`начать изменение колонки ${column.id}`}
+              onClick={() =>
+                props.onColumnResizeStart?.(
+                  column,
+                  'width' in column ? column.width : 100,
+                  columnIndex,
+                  'width' in column ? column.width : 100,
+                )
+              }
+            />
+            <button
+              type="button"
+              aria-label={`начать изменение колонки ${column.id} с другим индексом`}
+              onClick={() =>
+                props.onColumnResizeStart?.(
+                  column,
+                  'width' in column ? column.width : 100,
+                  columnIndex + 1,
+                  'width' in column ? column.width : 100,
+                )
+              }
+            />
+            {[150, 160, 220].map((width) => (
               <button
+                key={width}
                 type="button"
-                aria-label={`начать изменение колонки ${column.id}`}
+                aria-label={`изменить колонку ${column.id} на ${width}px`}
                 onClick={() =>
-                  props.onColumnResizeStart?.(
-                    column,
-                    'width' in column ? column.width : 100,
-                    columnIndex,
-                    'width' in column ? column.width : 100,
-                  )
+                  props.onColumnResize?.(column, width, columnIndex, width)
                 }
               />
-              {[150, 160, 220].map((width) => (
-                <button
-                  key={width}
-                  type="button"
-                  aria-label={`изменить колонку ${column.id} на ${width}px`}
-                  onClick={() =>
-                    props.onColumnResize?.(column, width, columnIndex, width)
-                  }
-                />
-              ))}
-              <button
-                type="button"
-                aria-label={`завершить изменение колонки ${column.id}`}
-                onClick={() =>
-                  props.onColumnResizeEnd?.(
-                    column,
-                    'width' in column ? column.width : 100,
-                    columnIndex,
-                    'width' in column ? column.width : 100,
-                  )
-                }
-              />
-            </React.Fragment>
-          ))}
-        </div>
-      );
-    },
+            ))}
+            <button
+              type="button"
+              aria-label={`завершить изменение колонки ${column.id}`}
+              onClick={() =>
+                props.onColumnResizeEnd?.(
+                  column,
+                  'width' in column ? column.width : 100,
+                  columnIndex,
+                  'width' in column ? column.width : 100,
+                )
+              }
+            />
+          </React.Fragment>
+        ))}
+      </div>
+    ),
   );
   MockDataEditor.displayName = 'MockDataEditor';
 
@@ -192,10 +202,29 @@ describe('TableGlide — обновление ширины выбранных к
     );
     expect(screen.getByTestId('column-widths').textContent).toBe('100,100');
 
-    rerender(
-      <TableGlide columns={columns} rows={[]} resizableColumn />,
-    );
+    rerender(<TableGlide columns={columns} rows={[]} resizableColumn />);
     expect(screen.getByTestId('column-widths').textContent).toBe('150,100,100');
+  });
+
+  it('находит исходную ширину по id, если индекс колонки не совпал', () => {
+    const columns = createColumns().map((column) =>
+      column.id === 'b' ? { ...column, width: 120 } : column,
+    );
+    render(<TableGlide columns={columns} rows={[]} resizableColumn />);
+
+    fireEvent.click(
+      screen.getByRole('button', {
+        name: 'начать изменение колонки a с другим индексом',
+      }),
+    );
+    fireEvent.click(
+      screen.getByRole('button', { name: 'изменить колонку a на 150px' }),
+    );
+    fireEvent.click(
+      screen.getByRole('button', { name: 'завершить изменение колонки a' }),
+    );
+
+    expect(screen.getByTestId('column-widths').textContent).toBe('150,120,100');
   });
 
   it('после окончания resize показывает ширину, ограниченную потребителем', () => {
@@ -207,16 +236,12 @@ describe('TableGlide — обновление ширины выбранных к
     fireEvent.click(
       screen.getByRole('button', { name: 'изменить колонку a на 160px' }),
     );
-    expect(screen.getByTestId('column-widths').textContent).toBe(
-      '160,100,100',
-    );
+    expect(screen.getByTestId('column-widths').textContent).toBe('160,100,100');
 
     fireEvent.click(
       screen.getByRole('button', { name: 'завершить изменение колонки a' }),
     );
-    expect(screen.getByTestId('column-widths').textContent).toBe(
-      '150,100,100',
-    );
+    expect(screen.getByTestId('column-widths').textContent).toBe('150,100,100');
   });
 
   it('не применяет промежуточные props до окончания drag', () => {
@@ -241,16 +266,12 @@ describe('TableGlide — обновление ширины выбранных к
         resizableColumn
       />,
     );
-    expect(screen.getByTestId('column-widths').textContent).toBe(
-      '160,100,100',
-    );
+    expect(screen.getByTestId('column-widths').textContent).toBe('160,100,100');
 
     fireEvent.click(
       screen.getByRole('button', { name: 'завершить изменение колонки a' }),
     );
-    expect(screen.getByTestId('column-widths').textContent).toBe(
-      '140,100,100',
-    );
+    expect(screen.getByTestId('column-widths').textContent).toBe('140,100,100');
   });
 
   it('сохраняет внешние callbacks начала и конца изменения ширины', () => {

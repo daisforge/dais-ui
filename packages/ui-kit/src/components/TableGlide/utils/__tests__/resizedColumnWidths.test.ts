@@ -25,16 +25,10 @@ describe('resizedColumnWidths — локальное состояние шири
 
   it('сохраняет локальную ширину, пока потребитель не передал новую', () => {
     const columns = [column('a', 100), column('b', 100)];
-    const resized = recordResizedWidth(
-      EMPTY_RESIZED_WIDTHS,
-      'a',
-      150,
-      100,
-    );
+    const resized = recordResizedWidth(EMPTY_RESIZED_WIDTHS, 'a', 150, 100);
 
     expect(widthsOf(reconcileResizedWidths(columns, resized).columns)).toEqual([
-      150,
-      100,
+      150, 100,
     ]);
   });
 
@@ -54,17 +48,11 @@ describe('resizedColumnWidths — локальное состояние шири
 
   it('использует ширины из props после управляемого или массового изменения', () => {
     const before = [column('a', 100), column('b', 100)];
-    const resized = recordResizedWidth(
-      EMPTY_RESIZED_WIDTHS,
-      'a',
-      150,
-      100,
-    );
+    const resized = recordResizedWidth(EMPTY_RESIZED_WIDTHS, 'a', 150, 100);
     const after = [column('a', 200), column('b', 200)];
 
     expect(widthsOf(reconcileResizedWidths(after, resized).columns)).toEqual([
-      200,
-      200,
+      200, 200,
     ]);
   });
 
@@ -87,11 +75,7 @@ describe('resizedColumnWidths — локальное состояние шири
       // Новые ширины из props применяются сразу, а принятые значения
       // одновременно удаляются из локального кеша.
       const reconciled = reconcileResizedWidths(props, resized);
-      expect(widthsOf(reconciled.columns)).toEqual([
-        width,
-        width,
-        width,
-      ]);
+      expect(widthsOf(reconciled.columns)).toEqual([width, width, width]);
       resized = reconciled.resizedWidths;
     };
 
@@ -107,39 +91,28 @@ describe('resizedColumnWidths — локальное состояние шири
   });
 
   it('берёт исходную ширину из props, а не из локального переопределения', () => {
-    const first = recordResizedWidth(
-      EMPTY_RESIZED_WIDTHS,
-      'a',
-      150,
-      100,
-    );
+    const first = recordResizedWidth(EMPTY_RESIZED_WIDTHS, 'a', 150, 100);
     const second = recordResizedWidth(first, 'a', 170, 100);
 
     expect(second.get('a')).toEqual({ width: 170, propsWidth: 100 });
   });
 
   it('очищает локальную ширину после обновления колонки потребителем', () => {
-    const resized = recordResizedWidth(
-      EMPTY_RESIZED_WIDTHS,
-      'a',
-      150,
-      100,
-    );
-    const pruned = reconcileResizedWidths([column('a', 150)], resized)
-      .resizedWidths;
+    const resized = recordResizedWidth(EMPTY_RESIZED_WIDTHS, 'a', 150, 100);
+    const pruned = reconcileResizedWidths(
+      [column('a', 150)],
+      resized,
+    ).resizedWidths;
 
     expect(pruned.has('a')).toBe(false);
   });
 
   it('после принятия новой ширины позволяет вернуть колонку к исходной', () => {
-    const resized = recordResizedWidth(
-      EMPTY_RESIZED_WIDTHS,
-      'a',
-      150,
-      100,
-    );
-    const pruned = reconcileResizedWidths([column('a', 150)], resized)
-      .resizedWidths;
+    const resized = recordResizedWidth(EMPTY_RESIZED_WIDTHS, 'a', 150, 100);
+    const pruned = reconcileResizedWidths(
+      [column('a', 150)],
+      resized,
+    ).resizedWidths;
 
     expect(
       widthsOf(reconcileResizedWidths([column('a', 100)], pruned).columns),
@@ -147,23 +120,13 @@ describe('resizedColumnWidths — локальное состояние шири
   });
 
   it('сохраняет кеш ширины колонки, которой нет в текущем columns', () => {
-    const resized = recordResizedWidth(
-      EMPTY_RESIZED_WIDTHS,
-      'a',
-      150,
-      100,
-    );
+    const resized = recordResizedWidth(EMPTY_RESIZED_WIDTHS, 'a', 150, 100);
 
     expect(reconcileResizedWidths([], resized).resizedWidths).toBe(resized);
   });
 
   it('возвращает исходную карту, пока props не приняли новую ширину', () => {
-    const resized = recordResizedWidth(
-      EMPTY_RESIZED_WIDTHS,
-      'a',
-      150,
-      100,
-    );
+    const resized = recordResizedWidth(EMPTY_RESIZED_WIDTHS, 'a', 150, 100);
 
     expect(
       reconcileResizedWidths([column('a', 100)], resized).resizedWidths,
@@ -171,8 +134,6 @@ describe('resizedColumnWidths — локальное состояние шири
     expect(
       reconcileResizedWidths([column('a', 100)], EMPTY_RESIZED_WIDTHS)
         .resizedWidths,
-    ).toBe(
-      EMPTY_RESIZED_WIDTHS,
-    );
+    ).toBe(EMPTY_RESIZED_WIDTHS);
   });
 });
