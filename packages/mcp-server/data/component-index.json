@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-11-17T21:39:11.362Z",
-  "libVersion": "1.28.0",
+  "generatedAt": "2026-11-17T21:52:33.517Z",
+  "libVersion": "1.29.1",
   "components": {
     "Accordion": {
       "name": "Accordion",

@@ -110,6 +110,14 @@ import {
   createSetRangeHitCache,
 } from './utils/blockRanges';
 import { isCanvasContent, isPrimitive } from './utils/typeGuards';
+import {
+  EMPTY_RESIZED_WIDTHS,
+  reconcileResizedWidths,
+  recordResizedWidth,
+  widthOfColumn,
+  type ActiveColumnResize,
+  type ResizedWidthsMap,
+} from './utils/resizedColumnWidths';
 
 /** Функция-болванка. Ничего не делает */
 function noop(..._: unknown[]) {
@@ -225,6 +233,8 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   onCellClicked: onCellClickedExternal,
   onCellContextMenu: onCellContextMenuExternal,
   onGroupHeaderClicked: onGroupHeaderClickedExternal,
+  onColumnResizeStart: onColumnResizeStartExternal,
+  onColumnResizeEnd: onColumnResizeEndExternal,
   // TODO: внешний getGroupDetails пока не прокидываем (см. композицию ниже).
   // getGroupDetails: getGroupDetailsExternal,
   onMouseMove: onMouseMoveExternal,
@@ -244,8 +254,60 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
 
   const summaryRowsLength = bottomSummaryRows?.length ?? 0;
 
-  const [resizedColsMap, setResizedColsMap] = useState(
-    new Map<string, number>(),
+  // Glide обновляет ширину во время drag. Локальная копия удерживает её на экране,
+  // пока props владельца не подтвердят итоговую ширину.
+  const [resizedColsMap, setResizedColsMap] =
+    useState<ResizedWidthsMap>(EMPTY_RESIZED_WIDTHS);
+  // Обработчик resize стабилен, поэтому читает последние columns через ref,
+  // не добавляя их в зависимости useCallback.
+  const columnsRef = useRef(columns);
+  columnsRef.current = columns;
+  const activeColumnResizeRef = useRef<ActiveColumnResize | null>(null);
+
+  const columnWidthAt = useCallback((columnIndex: number, id: string) => {
+    const columns = columnsRef.current;
+    const column = columns[columnIndex];
+
+    if (column?.id === id) return widthOfColumn(column);
+
+    const columnById = columns.find((candidate) => candidate.id === id);
+    return columnById ? widthOfColumn(columnById) : undefined;
+  }, []);
+
+  const onColumnResizeStartInternal = useCallback<
+    NonNullable<TableGlideProps<R, SR>['onColumnResizeStart']>
+  >(
+    (column, newSize, colIndex, newSizeWithGrow) => {
+      activeColumnResizeRef.current = column.id
+        ? {
+            id: column.id,
+            startWidth: columnWidthAt(colIndex, column.id),
+          }
+        : null;
+
+      onColumnResizeStartExternal?.(column, newSize, colIndex, newSizeWithGrow);
+    },
+    [columnWidthAt, onColumnResizeStartExternal],
+  );
+
+  const onColumnResizeEndInternal = useCallback<
+    NonNullable<TableGlideProps<R, SR>['onColumnResizeEnd']>
+  >(
+    (column, newSize, colIndex, newSizeWithGrow) => {
+      onColumnResizeEndExternal?.(column, newSize, colIndex, newSizeWithGrow);
+
+      // Glide вызывает этот обработчик для перетаскиваемой колонки и затем
+      // для остальных выделенных. Завершаем сессию только для колонки, с которой
+      // начался drag; внешние callbacks при этом получают все вызовы.
+      if (column.id && activeColumnResizeRef.current?.id === column.id) {
+        activeColumnResizeRef.current = null;
+        setResizedColsMap(
+          (prev) =>
+            reconcileResizedWidths(columnsRef.current, prev).resizedWidths,
+        );
+      }
+    },
+    [onColumnResizeEndExternal],
   );
 
   const { onColumnResizeStep, onColumnMoved: resetOnColumnMoved } =
@@ -278,25 +340,46 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
 
       onColumnResize?.(col, newSize, colIndex, newSizeWithGrow);
 
+      // Базовую ширину фиксируем при начале drag, а не на каждом его шаге:
+      // владелец может обновлять props с задержкой или ограничивать ширину.
       setResizedColsMap((prev) => {
-        prev.set(col.id, newSize);
-        return new Map(prev);
+        const activeResize = activeColumnResizeRef.current;
+        const previousResize = prev.get(col.id);
+        let propsWidth = previousResize
+          ? previousResize.propsWidth
+          : columnWidthAt(colIndex, col.id);
+
+        if (activeResize?.id === col.id) {
+          propsWidth = activeResize.startWidth;
+        }
+
+        return recordResizedWidth(prev, col.id, newSize, propsWidth);
       });
     },
-    [onColumnResize, onColumnResizeStep],
+    [columnWidthAt, onColumnResize, onColumnResizeStep],
   );
 
-  const columnsLast = useMemo(() => {
-    if (resizedColsMap.size === 0) {
-      return columns;
-    }
-    return columns.map((c) => {
-      if (resizedColsMap.has(c.id)) {
-        return { ...c, width: resizedColsMap.get(c.id), grow: 0 };
-      }
-      return c;
-    });
-  }, [columns, resizedColsMap]);
+  // Применяем локальные ширины; обновлённые владельцем значения удаляются из кеша.
+  // Неизвестные сейчас колонки сохраняются: TableCanvas может скрыть их и позже показать снова.
+  const { columns: columnsLast, resizedWidths: reconciledResizedWidths } =
+    useMemo(
+      () =>
+        reconcileResizedWidths(
+          columns,
+          resizedColsMap,
+          activeColumnResizeRef.current ?? undefined,
+        ),
+      [columns, resizedColsMap],
+    );
+
+  // Сбрасываем устаревшие временные ширины после commit, не обновляя состояние во время render.
+  // Проверка текущей карты защищает resize, который мог произойти после вычисления результата.
+  useEffect(() => {
+    if (reconciledResizedWidths === resizedColsMap) return;
+    setResizedColsMap((prev) =>
+      prev === resizedColsMap ? reconciledResizedWidths : prev,
+    );
+  }, [reconciledResizedWidths, resizedColsMap]);
 
   const {
     rowHeightGlide,
@@ -2143,6 +2226,12 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
           onItemHovered={onItemHovered}
           onVisibleRegionChanged={handleVisibleRegionChanged}
           {...restProps}
+          onColumnResizeStart={
+            resizableColumn ? onColumnResizeStartInternal : undefined
+          }
+          onColumnResizeEnd={
+            resizableColumn ? onColumnResizeEndInternal : undefined
+          }
           provideEditor={provideEditor}
           onKeyDown={handleKeyDownBridge}
           // В режиме cell квадратика автозаполнения нет, рамка блока его не включает.
