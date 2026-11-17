@@ -1,8 +1,9 @@
 import { HTMLAttributes } from 'react';
 
-export type PageLoaderProps = Omit<HTMLAttributes<HTMLDivElement>, 'title'> & {
-  /** Показывать оверлей и блокировать взаимодействие с контентом. @default true */
-  active?: boolean;
+export type PageLoaderProps = Omit<
+  HTMLAttributes<HTMLDivElement>,
+  'title' | 'children'
+> & {
   /** Заголовок загрузки. @default 'Загрузка страницы' */
   title?: string;
   /**
