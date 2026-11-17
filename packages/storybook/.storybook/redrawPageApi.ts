@@ -73,7 +73,7 @@ function toPng(image: ImageData) {
 const NOISE_DELTA = 12;
 const NOISE_LIMIT = 500;
 /** Короткий штрих кромки (до NOISE_EDGE_RUN px в ряд на масштабе 1) с разницей до этой: сглаживание при другом порядке заливок или обрезке. */
-const NOISE_DELTA_EDGE = 48;
+const NOISE_DELTA_EDGE = 64;
 const NOISE_EDGE_RUN = 4;
 
 const channelDelta = (a: Uint8ClampedArray, b: Uint8ClampedArray, i: number) =>
