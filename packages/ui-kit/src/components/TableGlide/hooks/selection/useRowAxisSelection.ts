@@ -37,8 +37,7 @@ export function useRowAxisSelection() {
   // для sticky-подсветки строки: true между pointerdown и pointerup.
   const pointerGestureRef = useRef(false);
   // Признак «идёт правый клик» (открытие контекстного меню).
-  //
-  // Живёт дольше pointerup: на Windows браузер шлёт contextmenu после
+  // Подробнее: живёт дольше pointerup: на Windows браузер шлёт contextmenu после
   // отпускания кнопки, и glide меняет выделение, когда pointerGestureRef уже
   // снят. Снимается следующей задачей после contextmenu (glide обрабатывает его
   // синхронно), а также следующим pointerdown или нажатием клавиши, иначе

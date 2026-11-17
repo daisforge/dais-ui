@@ -666,8 +666,10 @@ export class CanvasText extends CanvasNode {
         return;
       }
 
-      // При clip текст рисуется целиком и обрезается по rect, поэтому видны все
-      // символы, а пластину режет maxWidth; при ellipsis видимая часть короче.
+      // Сколько символов видно, чтобы пометка не выходила за видимый текст.
+      // Подробнее: при textOverflow 'clip' текст рисуется целиком и обрезается
+      // по rect, видны все символы, а пометку обрезает maxWidth; при многоточии
+      // видимая часть короче.
       const truncatedByEllipsis =
         resolvedText.didTruncate && this.textOverflow !== 'clip';
       this.paintMarks(batcher, ctx, font, {

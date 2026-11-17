@@ -12,7 +12,7 @@ export const cellEdgeInset = ({
 }: {
   hasLeftLine: boolean;
   hasTopLine: boolean;
-  /** На краю ячейки рамка выделения или ошибки: пиксель за ней */
+  /** На краю ячейки рамка выделения или ошибки: под неё оставляем пиксель */
   keepsRing: boolean;
   isLastColumn: boolean;
   isLastRow: boolean;
@@ -30,7 +30,7 @@ const hasGridLine = (border: GridLineSetting, index: number): boolean =>
 /**
  * Есть ли линии сетки слева и сверху от ячейки.
  *
- * В glide verticalBorder(col) это линия у левого края колонки col (правый край
+ * Подробнее: в glide verticalBorder(col) это линия у левого края колонки col (правый край
  * колонки i он рисует по verticalBorder(i + 1)), horizontalBorder(row) это
  * линия у верхнего края строки row. У первой колонки линии слева нет. Точечные
  * рамки ячеек (getCellBorder) по сторонам не разбираем: считаем, что линии

@@ -208,8 +208,7 @@ export function useTableSelectionSystem<
   );
 
   // Сброс выделения (Escape, клик по пустой области) даёт наружу один onChange.
-  //
-  // glide сбрасывает выделение двумя вызовами подряд: сначала пустое выделение
+  // Подробнее: glide сбрасывает выделение двумя вызовами подряд: сначала пустое выделение
   // в onGridSelectionChange, потом onSelectionCleared. Если первый вызов уже
   // отдал пустое выделение, второй только сбрасывает Ctrl-выбор.
   const emptyEmittedRef = useRef(false);
@@ -219,7 +218,7 @@ export function useTableSelectionSystem<
       const current = raw.current;
       emptyEmittedRef.current = false;
       if (isEmptySelection(raw)) {
-        // Пустое поверх пустого: нечего отдавать, оси сбросит onSelectionCleared.
+        // Пустое поверх пустого: нечего отдавать, Ctrl-выбор сбросит onSelectionCleared.
         if (isEmptySelection(selection)) return;
         emptyEmittedRef.current = true;
       }
@@ -238,9 +237,10 @@ export function useTableSelectionSystem<
       // glide ничего не рисует для current (ни рамки на нумерации при драге, ни
       // двойной заливки), а cell-якорь НЕ трогаем — нативный drag glide (он
       // ведётся от позиции мыши) продолжает работать.
+      //
       // Жест мышью или клавиатура при уже выбранной строке: при фокусе грида
       // без выделения glide сам ставит активную ячейку в первую колонку (у нас
-      // это нумерация) — это не выбор строки, такое выделение ниже обрезается
+      // это нумерация): это не выбор строки, такое выделение ниже обрезается
       // до первой ячейки данных.
       if (
         enableRowSelection &&
@@ -346,8 +346,7 @@ export function useTableSelectionSystem<
       }
 
       // Правый клик внутри Ctrl-выбранных строк или колонок набор не сбрасывает.
-      //
-      // В выделении glide этих строк и колонок нет, и он ставит одиночную
+      // Подробнее: в выделении glide этих строк и колонок нет, и он ставит одиночную
       // ячейку. Набор оставляем: меню относится к нему, как при обычном
       // диапазоне.
       if (
@@ -425,8 +424,7 @@ export function useTableSelectionSystem<
   const handleSelectionClearedWithColumns = useCallback(() => {
     // Пустое выделение отдаём наружу, только если его ещё не отдали и было что
     // снимать.
-    //
-    // Иначе Escape давал два onChange (первый уже ушёл из onGridSelectionChange)
+    // Подробнее: иначе Escape давал два onChange (первый уже ушёл из onGridSelectionChange)
     // или onChange без выделения.
     const alreadyEmitted = emptyEmittedRef.current;
     emptyEmittedRef.current = false;

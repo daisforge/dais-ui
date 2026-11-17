@@ -23,6 +23,7 @@ export interface RowHeightChange {
   delta: number;
 }
 
+/** Одинаковые списки индексов в том же порядке. */
 export const sameIds = <T extends string | number>(
   a: readonly T[],
   b: readonly T[],

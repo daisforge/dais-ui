@@ -10,7 +10,7 @@ type Repaint = () => boolean;
 /**
  * Точки входа тестовой сборки Storybook в таблицу.
  *
- * .storybook/preview.tsx добавляет withCanvasSnapshots только при
+ * Подробнее: .storybook/preview.tsx добавляет withCanvasSnapshots только при
  * STORYBOOK_SCREENSHOT_TEST=1. Декоратор из decoratorCanvasSnapshots.tsx
  * предоставляет эти точки через контекст и хранит таблицы всех историй.
  * В обычном приложении и обычном Storybook провайдера нет (значение null).
@@ -34,13 +34,15 @@ export const CanvasSnapshotContext = createContext<CanvasSnapshotHooks | null>(
 );
 
 /**
- * TableGlide вызывает хук при каждом рендере, но эффект лишь регистрирует
- * таблицу, а не рисует. Перед захватом PNG runner вызывает
- * window.daisScreenshotRepaint(): декоратор выполняет перерисовки в flushSync,
- * затем capture.ts ждёт кадры браузера. Cleanup удаляет регистрацию при
- * смене callback или размонтировании, чтобы не затронуть следующую story.
+ * Подключает таблицу к тестовой сборке Storybook: регистрирует её полную
+ * перерисовку и ссылку на грид и отдаёт glide отметку о кадрах. В приложении
+ * провайдера нет, хук ничего не делает и возвращает undefined.
  *
- * Возвращает отметку о кадре для glide; без провайдера undefined.
+ * Подробнее: TableGlide вызывает хук при каждом рендере, но эффект лишь
+ * регистрирует таблицу, а не рисует. Перед снимком прогон вызывает
+ * window.daisScreenshotRepaint(), декоратор выполняет перерисовки внутри
+ * flushSync, затем capture.ts ждёт кадры браузера. При смене функции или
+ * размонтировании регистрация снимается, чтобы не задеть следующую историю.
  */
 export function useSnapshotRepaint(
   repaint: Repaint,

@@ -43,8 +43,8 @@ const hooks: CanvasSnapshotHooks = {
   onFrameDrawn: redraw.record,
 };
 
-// Точки входа для Playwright существуют только в сборке скриншот-тестов:
-// daisScreenshotRepaint у раннера снимков, daisRedraw у тестов перерисовки.
+// Точки входа для Playwright существуют только в тестовой сборке Storybook:
+// daisScreenshotRepaint для прогона снимков, daisRedraw у тестов перерисовки.
 if (process.env.STORYBOOK_SCREENSHOT_TEST === '1') {
   Object.assign(window, {
     daisScreenshotRepaint: repaintAll,
