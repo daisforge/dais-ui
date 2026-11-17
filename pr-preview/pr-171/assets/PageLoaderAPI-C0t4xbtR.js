@@ -1,6 +1,0 @@
-import{j as e}from"./react-D2T61mpp.js";import{cg as t,ch as s}from"./vendor-_h_CmnQT.js";import{T as a}from"./TypeSourceViewer-VBPFQpUu.js";import"./react-is-Clcustum.js";import"./styled-components-D7_wlBS0.js";import"./@tanstack/react-virtual-CcuGNpaY.js";import"./tslib-DoU9Jm1N.js";function n(r){const o={code:"code",h1:"h1",h2:"h2",p:"p",...t(),...r.components};return e.jsxs(e.Fragment,{children:[e.jsx(s,{title:"Композиции/PageLoader/API"}),`
-`,e.jsx(o.h1,{id:"pageloader-api",children:"PageLoader API"}),`
-`,e.jsx(o.h2,{id:"pageloaderprops",children:"PageLoaderProps"}),`
-`,e.jsx(a,{language:"ts",filePath:"packages/ui-kit/src/components/PageLoader/PageLoader.types.ts",typeName:"PageLoaderProps"}),`
-`,e.jsxs(o.p,{children:["Поддерживаются стандартные HTML-атрибуты контейнера, ",e.jsx(o.code,{children:"children"}),", ",e.jsx(o.code,{children:"style"}),", ",e.jsx(o.code,{children:"className"}),`
-и `,e.jsx(o.code,{children:"ref"})," на корневой ",e.jsx(o.code,{children:"div"}),". HTML-атрибут ",e.jsx(o.code,{children:"title"})," заменён текстом заголовка загрузки."]})]})}function x(r={}){const{wrapper:o}={...t(),...r.components};return o?e.jsx(o,{...r,children:e.jsx(n,{...r})}):n(r)}export{x as default};
