@@ -1,0 +1,38 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as PageLoaderStories from './PageLoader.stories';
+
+<Meta of={PageLoaderStories} name="Docs" />
+
+# PageLoader
+
+Оверлей загрузки области контента страницы. Размещайте заголовок и навигацию снаружи
+`PageLoader`, чтобы они оставались видимыми и доступными между переходами.
+
+`active` показывает оверлей. Контент в `children` всегда остаётся смонтированным:
+значения полей и локальное состояние сохраняются. Во время загрузки контент получает
+`inert` и `aria-hidden`, а фокус внутри него сбрасывается. Оверлей сообщает о загрузке
+через `role="status"`, контейнер — через `aria-busy`.
+
+Спиннер имеет размер 36×36 px, заголовок использует H3 Bold, описание — BodyM
+и цвет secondary. Отступы: 8 px после спиннера и 4 px перед описанием.
+Описание видно сразу; `subtitle={null}` или `subtitle=""` скрывает его.
+
+```tsx
+import { Box, PageLoader, PageTitle } from '@daisforge/ui';
+
+<Box display="flex" flexDirection="column" minHeight="480px" gap="24px">
+  <PageTitle title="Отчёты" />
+  <PageLoader active={isLoading}>
+    <Reports />
+  </PageLoader>
+</Box>;
+```
+
+Размер области задаёт приложение через родительский layout, `style`, `className`
+или `styled(PageLoader)`. Во flex-колонке компонент занимает свободное место.
+Оверлей перекрывает только свою область и использует фон страницы из темы.
+Портальные элементы (например, открытая модалка вне контейнера) управляются приложением.
+
+Описание типов — в разделе [API](?path=/docs/композиции-pageloader-api--docs).
+
+<Stories />

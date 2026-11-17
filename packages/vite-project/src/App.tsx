@@ -14,7 +14,10 @@ const PageLoader = () => (
 );
 
 function App() {
-  const [activePage, setActivePage] = useState<PageKey | null>(null);
+  const [activePage, setActivePage] = useState<PageKey | null>(() => {
+    const page = new URLSearchParams(window.location.search).get('page');
+    return page && Object.keys(pages).includes(page) ? (page as PageKey) : null;
+  });
   const [debugOutline, setDebugOutline] = useState(false);
   const [theme, setTheme] = useState<GlobalStyleTheme>('light');
 

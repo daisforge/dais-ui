@@ -1,0 +1,17 @@
+import { Meta } from '@storybook/blocks';
+import { TypeSourceViewer } from '@df-storybook/utils/TypeSourceViewer';
+
+<Meta title="Композиции/PageLoader/API" />
+
+# PageLoader API
+
+## PageLoaderProps
+
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/PageLoader/PageLoader.types.ts"
+  typeName="PageLoaderProps"
+/>
+
+Поддерживаются стандартные HTML-атрибуты контейнера, `children`, `style`, `className`
+и `ref` на корневой `div`. HTML-атрибут `title` заменён текстом заголовка загрузки.
