@@ -1,13 +1,15 @@
 /* eslint-disable no-restricted-syntax, no-console -- Скрипт Node.js запускает процесс и сообщает итог в терминал. */
 import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
+import path from 'node:path';
 
 // Точка входа контейнера тестов перерисовки: запускает Playwright против
 // собранного Storybook (его раздаёт webServer из конфига). Отчёт уходит в
 // /artifacts, смонтированный с хоста, см. docker-compose.screenshots.yml.
+// Пакет playwright не публикует cli.js в exports, путь берём от его входного файла.
 const require = createRequire(import.meta.url);
 const args = [
-  require.resolve('playwright/cli.js'),
+  path.join(path.dirname(require.resolve('playwright')), 'cli.js'),
   'test',
   '--config',
   'packages/storybook/test/redraw/playwright.config.ts',
