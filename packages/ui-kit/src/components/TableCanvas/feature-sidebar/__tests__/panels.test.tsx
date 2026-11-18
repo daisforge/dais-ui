@@ -13,7 +13,10 @@ import { TABLE_BUBBLES } from '../../constants';
 import type { useRightSidebar, useSidebar } from '../../contexts';
 import { getTableHeightStyles } from '../../styles/styles';
 import { useLeftSidebarState } from '../../table-hooks/useLeftSidebarValues';
-import { usePrepareTableConfig } from '../../table-hooks/usePrepareTableConfig';
+import {
+  prepareTableConfig,
+  usePrepareTableConfig,
+} from '../../table-hooks/usePrepareTableConfig';
 import { useSidebarState } from '../../table-hooks/useSidebarValues';
 import type {
   LeftSidebarConfig,
@@ -109,11 +112,11 @@ describe('right sidebar compatibility', () => {
       sidebarConfig: { defaultOpen: true },
     };
     expect(
-      usePrepareTableConfig({ tableConfigExternal: legacy }).tableConfig,
+      prepareTableConfig({ tableConfigExternal: legacy }).tableConfig,
     ).toBe(legacy);
     const rightSidebarConfig = { enabled: false };
     expect(
-      usePrepareTableConfig({
+      prepareTableConfig({
         tableConfigExternal: { ...legacy, rightSidebarConfig },
       }).tableConfig.sidebarConfig,
     ).toBe(rightSidebarConfig);

@@ -56,8 +56,8 @@ function makeLeanRows(count: number): Row[] {
     rows[i] = {
       id: i + 1,
       task: `Task ${i + 1}`,
-      priority: PRIORITIES[i % 4]!,
-      issueType: ISSUE_TYPES[Math.floor(i / 4) % 4]!,
+      priority: PRIORITIES[i % 4] ?? '',
+      issueType: ISSUE_TYPES[Math.floor(i / 4) % 4] ?? '',
       complete: (i * 37) % 101,
       developer: '',
       done: false,
@@ -457,7 +457,7 @@ function makeMergeRows(): MergeRow[] {
         id: i,
         region,
         team: `Команда ${t + 1}`,
-        dept: depts[Math.floor(t / 2) % 2]!,
+        dept: depts[Math.floor(t / 2) % 2] ?? '',
         metric: (i * 29) % 101,
         status: i % 2 ? 'OK' : 'Warn',
       });
