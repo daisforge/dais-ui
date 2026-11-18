@@ -1,0 +1,8 @@
+import{j as t}from"./react-Ch9mc9Aq.js";import{da as s,db as n}from"./vendor-Ch15MtLz.js";import{T as i}from"./TypeSourceViewer-B3iPodiL.js";import"./react-is-CJ4CjPIR.js";import"./styled-components-Bq12dC3g.js";import"./@tanstack/react-virtual-Csp9i2bR.js";import"./tslib-DoU9Jm1N.js";function l(o){const e={h1:"h1",h2:"h2",...s(),...o.components};return t.jsxs(t.Fragment,{children:[t.jsx(n,{title:"Композиции/BlockTitle/API"}),`
+`,t.jsx(e.h1,{id:"blocktitle-api",children:"BlockTitle API"}),`
+`,t.jsx(e.h2,{id:"blocktitleprops",children:"BlockTitleProps"}),`
+`,t.jsx(i,{language:"ts",filePath:"packages/ui-kit/src/components/BlockTitle/BlockTitle.types.ts",typeName:"BlockTitleProps"}),`
+`,t.jsx(e.h2,{id:"blocktitleslotsizesprops",children:"BlockTitleSlotSizesProps"}),`
+`,t.jsx(i,{language:"ts",filePath:"packages/ui-kit/src/components/BlockTitle/BlockTitle.types.ts",typeName:"BlockTitleSlotSizesProps"}),`
+`,t.jsx(e.h2,{id:"blocktitleadaptiveslot",children:"BlockTitleAdaptiveSlot"}),`
+`,t.jsx(i,{language:"ts",filePath:"packages/ui-kit/src/components/BlockTitle/BlockTitle.types.ts",typeName:"BlockTitleAdaptiveSlot"})]})}function h(o={}){const{wrapper:e}={...s(),...o.components};return e?t.jsx(e,{...o,children:t.jsx(l,{...o})}):l(o)}export{h as default};
