@@ -11,9 +11,10 @@ vi.mock('../../../TableGlide/lib/canvas/hooks/fontsLoaded', () => ({
 
 type Row = { id: number; text: string; children?: Row[] };
 
-const ROWS: Row[] = [
+const CHILD: Row = { id: 10, text: 'b1' };
+const ROWS: [Row, Row, Row] = [
   { id: 0, text: 'a' },
-  { id: 1, text: 'b', children: [{ id: 10, text: 'b1' }] },
+  { id: 1, text: 'b', children: [CHILD] },
   { id: 2, text: 'c' },
 ];
 const tableConfig = {
@@ -43,8 +44,8 @@ describe('useFlattenedRows: объекты строк при раскрытии'
     expect(expanded[0]).toBe(ROWS[0]);
     expect(expanded[1]).toBe(ROWS[1]);
     expect(expanded[3]).toBe(ROWS[2]);
-    const child = expanded[2]!;
-    expect(child).not.toBe(ROWS[1]!.children![0]);
+    const child = expanded[2];
+    expect(child).not.toBe(CHILD);
     expect(child).toMatchObject({
       id: 10,
       [TREE_ID_KEY]: '1.subRows.0',
@@ -76,10 +77,10 @@ describe('useFlattenedRows: объекты строк при раскрытии'
     for (let i = 0; i < 3; i += 1) auto.result.current.heightOf(i);
     await act(async () => {
       auto.result.current
-        .reporterFor(ROWS[1]!, 1, 'text', false)
+        .reporterFor(ROWS[1], 1, 'text', false)
         .report(200, 90);
       auto.result.current
-        .reporterFor(ROWS[2]!, 2, 'text', false)
+        .reporterFor(ROWS[2], 2, 'text', false)
         .report(200, 120);
     });
     expect(auto.result.current.heightOf(2)).toBe(120);
@@ -107,14 +108,14 @@ describe('useFlattenedRows: смена поля дочерней строки н
       { initialProps: { data: rows } },
     );
     act(() => result.current.expandedRowsIdsStateAndSetter[1](new Set([1])));
-    const before = result.current.flattenedRows[1]!;
-    expect(before.text).toBe('b1');
+    const before = result.current.flattenedRows[1];
+    expect(before?.text).toBe('b1');
 
     child.text = 'b1 новое';
     rerender({ data: [...rows] });
 
-    const after = result.current.flattenedRows[1]!;
-    expect(after.text).toBe('b1 новое');
+    const after = result.current.flattenedRows[1];
+    expect(after?.text).toBe('b1 новое');
     expect(after).not.toBe(before);
 
     // Без изменений копия та же
