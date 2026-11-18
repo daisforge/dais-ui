@@ -1,0 +1,4 @@
+import{j as t}from"./react-Ch9mc9Aq.js";import{da as s,db as a}from"./vendor-cmvNg_xr.js";import{T as r}from"./TypeSourceViewer-CJXsUlaM.js";import"./react-is-CJ4CjPIR.js";import"./styled-components-D5MvBPh5.js";import"./@tanstack/react-virtual-CWj59MZE.js";import"./tslib-DoU9Jm1N.js";function o(n){const e={h1:"h1",h2:"h2",...s(),...n.components};return t.jsxs(t.Fragment,{children:[t.jsx(a,{title:"Локальные компоненты/TableCanvas/SummaryRows/API"}),`
+`,t.jsx(e.h1,{id:"summary-rows-api",children:"Summary Rows API"}),`
+`,t.jsx(e.h2,{id:"summaryrowsconfig",children:"SummaryRowsConfig"}),`
+`,t.jsx(r,{language:"ts",filePath:"packages/ui-kit/src/components/TableCanvas/types/table-config.type.ts",typeName:"SummaryRowsConfig"})]})}function l(n={}){const{wrapper:e}={...s(),...n.components};return e?t.jsx(e,{...n,children:t.jsx(o,{...n})}):o(n)}export{l as default};
