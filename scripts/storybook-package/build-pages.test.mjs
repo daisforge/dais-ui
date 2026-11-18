@@ -42,7 +42,12 @@ const fakeShared = () => {
     react: { useState: (v) => [v, () => {}] },
     'react/jsx-runtime': { jsx, jsxs: jsx, Fragment: 'Fragment' },
     'react-dom': {},
-    'styled-components': { default: { div: 'StyledDiv' } },
+    // Как настоящий: default — функция styled со своими свойствами (styled.div),
+    // плюс именованные экспорты модуля (css).
+    'styled-components': {
+      default: Object.assign((tag) => `styled(${tag})`, { div: 'StyledDiv' }),
+      css: 'cssHelper',
+    },
     lib: { Button: 'LibButton', TableCanvas: 'LibTableCanvas' },
     'lib/icons': { IconPlus: 'LibIconPlus' },
     'lib/constants': {},
@@ -79,7 +84,7 @@ describe('sharedKey', () => {
 describe('buildPages', () => {
   const page = `
     import { useState } from 'react';
-    import styled from 'styled-components';
+    import styled, { css } from 'styled-components';
     import { Button } from '${LIB}';
     import { TableCanvas } from '${LIB}/components/TableCanvas';
     import { IconPlus } from '${LIB}/icons';
@@ -87,6 +92,7 @@ describe('buildPages', () => {
     import { greet } from './helper';
 
     const Title = styled.div;
+    const Wrapped = styled('section');
 
     export default function Page() {
       const [count] = useState(7);
@@ -95,41 +101,54 @@ describe('buildPages', () => {
           <Title>{greet(count)}</Title>
           <Button contentLeft={<IconPlus />} color={textAccent} />
           <TableCanvas />
+          <Wrapped data-css={css} />
         </>
       );
     }
   `;
 
-  it('подменяет импорты на модули Storybook и бандлит остальное', async () => {
-    const pagesDir = makeTmp({
-      'pages.json': JSON.stringify([{ file: 'demo', title: 'Демо' }]),
-      'demo.tsx': page,
-      'helper.ts': 'export const greet = (n: number) => `привет ${n}`;',
-    });
-    const outDir = path.join(makeTmp(), 'internal');
+  // "type": "module" в package.json страниц включает у esbuild node-режим
+  // подключения CommonJS: default = весь module.exports. Во внутреннем
+  // репозитории корень такой, и import styled ломался именно там.
+  it.each([
+    ['без "type"', {}],
+    ['в пакете с "type": "module"', { type: 'module' }],
+  ])(
+    'подменяет импорты на модули Storybook и бандлит остальное (%s)',
+    async (_, pkg) => {
+      const pagesDir = makeTmp({
+        'package.json': JSON.stringify(pkg),
+        'pages.json': JSON.stringify([{ file: 'demo', title: 'Демо' }]),
+        'demo.tsx': page,
+        'helper.ts': 'export const greet = (n: number) => `привет ${n}`;',
+      });
+      const outDir = path.join(makeTmp(), 'internal');
 
-    const { files } = await buildPages({ pagesDir, outDir, lib: LIB });
+      const { files } = await buildPages({ pagesDir, outDir, lib: LIB });
 
-    expect(files).toEqual([path.join(outDir, 'demo.js')]);
-    const code = fs.readFileSync(files[0], 'utf8');
-    // Ни React, ни библиотека в бандл не попали — только код страницы и
-    // shim'ы модулей (несколько КБ; один React весил бы больше 100 КБ).
-    expect(code.length).toBeLessThan(20_000);
-    expect(code).not.toContain('react.production');
-    expect(code).not.toContain(LIB);
+      expect(files).toEqual([path.join(outDir, 'demo.js')]);
+      const code = fs.readFileSync(files[0], 'utf8');
+      // Ни React, ни библиотека в бандл не попали — только код страницы и
+      // shim'ы модулей (несколько КБ; один React весил бы больше 100 КБ).
+      expect(code.length).toBeLessThan(20_000);
+      expect(code).not.toContain('react.production');
+      expect(code).not.toContain(LIB);
 
-    globalThis.__SB_SHARED__ = fakeShared();
-    const { default: Page } = await import(pathToFileURL(files[0]).href);
-    const tree = Page();
-    const [title, button, table] = tree.props.children;
+      globalThis.__SB_SHARED__ = fakeShared();
+      const { default: Page } = await import(pathToFileURL(files[0]).href);
+      const tree = Page();
+      const [title, button, table, wrapped] = tree.props.children;
 
-    expect(title.type).toBe('StyledDiv'); // default из namespace без __esModule
-    expect(title.props.children).toBe('привет 7'); // хелпер забандлен
-    expect(button.type).toBe('LibButton');
-    expect(button.props.contentLeft.type).toBe('LibIconPlus');
-    expect(button.props.color).toBe('var(--text-accent)');
-    expect(table.type).toBe('LibTableCanvas'); // глубокий путь → корень
-  });
+      expect(title.type).toBe('StyledDiv'); // styled.div из default
+      expect(wrapped.type).toBe('styled(section)'); // styled(...) вызывается
+      expect(wrapped.props['data-css']).toBe('cssHelper'); // именованный экспорт
+      expect(title.props.children).toBe('привет 7'); // хелпер забандлен
+      expect(button.type).toBe('LibButton');
+      expect(button.props.contentLeft.type).toBe('LibIconPlus');
+      expect(button.props.color).toBe('var(--text-accent)');
+      expect(table.type).toBe('LibTableCanvas'); // глубокий путь → корень
+    },
+  );
 
   it('страница падает с понятной ошибкой, если Storybook не дал модуль', async () => {
     const pagesDir = makeTmp({

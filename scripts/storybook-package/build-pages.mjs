@@ -95,9 +95,26 @@ if (!shared || !(${JSON.stringify(key)} in shared)) {
   throw new Error('Storybook не предоставил модуль ${key}: страница собрана под другую версию Storybook');
 }
 const mod = shared[${JSON.stringify(key)}];
-// Namespace ESM-модуля без __esModule esbuild отдал бы целиком как default:
-// import styled from 'styled-components' получил бы namespace, а не функцию.
-module.exports = mod.__esModule ? mod : Object.assign({ __esModule: true }, mod);
+// esbuild подключает этот CommonJS-модуль одним из двух способов:
+//  - обычный режим: default = module.exports.default, если есть __esModule;
+//  - node-режим (страница в пакете с "type": "module"): default = сам
+//    module.exports, флаг __esModule игнорируется.
+// Экспорт должен давать правильный default в обоих. Если default — функция
+// (styled из styled-components), отдаём вызываемую обёртку над ней, на которой
+// есть и её свойства (styled.h1), и именованные экспорты модуля (css).
+let exported;
+if (typeof mod.default === 'function') {
+  const fn = mod.default;
+  exported = Object.assign(
+    function sharedDefault() { return fn.apply(this, arguments); },
+    fn,
+    mod,
+    { __esModule: true },
+  );
+} else {
+  exported = Object.assign({ __esModule: true }, mod);
+}
+module.exports = exported;
 `,
           loader: 'js',
         }),
