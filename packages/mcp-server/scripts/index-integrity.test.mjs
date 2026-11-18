@@ -171,6 +171,7 @@ test(
         description: '',
       });
     const report = validateIndex(broken);
+    assert.equal(report.compilerFailure, undefined, report.compilerFailure);
     assert.equal(report.ok, false);
     for (const [component, part, prop, kind] of [
       ['TableContract', undefined, 'stylesBeforeLoad', 'missing-prop'],

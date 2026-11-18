@@ -21,6 +21,8 @@ jobs:
     timeout-minutes: 20
     env:
       NX_DAEMON: 'false'
+      # Full API probes can exceed Node 20's default ~2 GiB heap on hosted runners.
+      NODE_OPTIONS: '--max-old-space-size=4096'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
