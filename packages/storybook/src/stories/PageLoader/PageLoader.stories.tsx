@@ -1,4 +1,3 @@
-import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Box } from '@ui-kit/components/Box';
 import { PageLoader } from '@ui-kit/components/PageLoader';
@@ -16,12 +15,20 @@ const meta: Meta<typeof PageLoader> = {
 export default meta;
 type Story = StoryObj<typeof PageLoader>;
 
+const preCode = `import { Box, PageLoader } from '@daisforge/ui';`;
+
 export const Default: Story = {
   name: 'Загрузка страницы',
-  ...storySourceDoc({
-    preCode: "import { Box, PageLoader } from '@daisforge/ui';",
-    previewSource: 'shown',
-  }),
+  parameters: {
+    docs: {
+      canvas: { sourceState: 'shown' },
+      source: {
+        preCode,
+        type: 'dynamic',
+        transform: (source: string) => `${preCode}\n\n${source}`,
+      },
+    },
+  },
   render: (args) => (
     <Box display="flex" height="480px">
       <PageLoader {...args} />
