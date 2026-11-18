@@ -1,0 +1,32 @@
+[
+  {
+    "attempt": "drawer-table--2--after",
+    "events": [
+      "2026-11-18T08:11:55.254870Z  WARN codex_core::responses_retry: stream disconnected - retrying sampling request (1/5 in 305.999871042s)... turn_id=01a1edb6-43c9-7cd3-9e0d-e6ccf6a445a4 retries=1 max_retries=5 sampling_error=Selected model is at capacity. Please try a different model."
+    ]
+  },
+  {
+    "attempt": "modal-confirm--1--before",
+    "events": [
+      "2026-11-18T07:49:35.798471Z  WARN codex_core::responses_retry: stream disconnected - retrying sampling request (1/5 in 302.999799416s)... turn_id=01a1eda1-7d9f-72d0-9902-47bb7ef313d3 retries=1 max_retries=5 sampling_error=Selected model is at capacity. Please try a different model."
+    ]
+  },
+  {
+    "attempt": "table-canvas-basic--2--after",
+    "events": [
+      "2026-11-18T08:06:38.273307Z  WARN codex_core::responses_retry: stream disconnected - retrying sampling request (1/5 in 328.998058208s)... turn_id=01a1edb1-09ae-7543-abf1-d04773e30bb9 retries=1 max_retries=5 sampling_error=Selected model is at capacity. Please try a different model."
+    ]
+  },
+  {
+    "attempt": "table-filters-mass--3--after",
+    "events": [
+      "2026-11-18T08:28:06.797884Z  WARN codex_core::responses_retry: stream disconnected - retrying sampling request (1/5 in 325.999636375s)... turn_id=01a1edc4-a083-7462-851e-03e8efe7cd20 retries=1 max_retries=5 sampling_error=Selected model is at capacity. Please try a different model."
+    ]
+  },
+  {
+    "attempt": "tabs-sections--1--after",
+    "events": [
+      "2026-11-18T07:41:10.238823Z  WARN codex_core::responses_retry: stream disconnected - retrying sampling request (1/5 in 320.999898125s)... turn_id=01a1ed99-7e96-77d3-b9ad-6c0933593f2b retries=1 max_retries=5 sampling_error=Selected model is at capacity. Please try a different model."
+    ]
+  }
+]

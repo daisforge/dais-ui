@@ -1,0 +1,3 @@
+[33mThe CJS build of Vite's Node API is deprecated. See https://vitejs.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+datepicker-range--1--before: render OK, overlay null
+datepicker-range--1--after: render OK, overlay null
