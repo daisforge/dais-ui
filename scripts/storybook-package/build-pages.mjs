@@ -164,7 +164,8 @@ async function loadEsbuild() {
     return await import('esbuild');
   } catch {
     throw new BuildPagesError(
-      'Для сборки страниц нужен esbuild: npm i -D esbuild',
+      'Для сборки страниц нужен esbuild: npm i -D esbuild ' +
+        '(или npx -p esbuild@0.20 … при запуске через npx)',
     );
   }
 }

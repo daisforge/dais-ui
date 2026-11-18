@@ -162,10 +162,16 @@ tar -xzf *.tgz            # → package/static
   готовый к публикации; версию поднимать не нужно, она уже в package.json;
 - \`dist/storybook\` — статика Storybook с внутренними страницами.
 
+Пакет ставить в проект не нужно: \`npx\` скачивает нужную версию вместе со
+скриптом, а библиотека берётся той же версии.
+
 \`\`\`bash
-npm i -D -E ${pkg.name}@${pkg.version} esbuild
-ALT_LIB_PACKAGE_NAME=<имя> ALT_MCP_PACKAGE_NAME=<имя-mcp> npx white-label-prepare --pages pages
+ALT_LIB_PACKAGE_NAME=<имя> ALT_MCP_PACKAGE_NAME=<имя-mcp> \\
+  npx -y -p ${pkg.name}@latest -p esbuild@0.20 white-label-prepare --pages pages
 \`\`\`
+
+Вместо \`latest\` можно указать конкретную версию. esbuild нужен только для
+сборки внутренних страниц.
 
 Остальной \`dist/\` не трогается. \`--out\` меняет корень (по умолчанию \`dist\`),
 \`--pages\` можно не указывать, если внутренних страниц нет.
