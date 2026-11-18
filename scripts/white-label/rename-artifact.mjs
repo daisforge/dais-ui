@@ -228,8 +228,9 @@ function main(argv) {
 
   if (leftovers.length > 0) {
     throw new BrandError(
-      `После замены остался исходный бренд (${leftovers.length} строк):\n` +
-        formatHits(leftovers),
+      `После замены остался исходный бренд (${
+        leftovers.length
+      } строк):\n${formatHits(leftovers)}`,
     );
   }
 

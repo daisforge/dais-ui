@@ -78,7 +78,7 @@ export function fetchLibPackage(version, workDir) {
 }
 
 /** Распаковывает локальный архив библиотеки вместо скачивания. */
-export const fromLibTarball = (tarball) => (version, workDir) => {
+export const fromLibTarball = (tarball) => (_version, workDir) => {
   if (!fs.existsSync(tarball)) {
     throw new PrepareDistError(`Не найден архив библиотеки: ${tarball}`);
   }

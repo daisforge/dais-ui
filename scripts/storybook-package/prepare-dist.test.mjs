@@ -1,3 +1,4 @@
+import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -5,8 +6,6 @@ import path from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import { SERVICE_ENTRY_ID } from './add-pages.mjs';
-import { execFileSync } from 'node:child_process';
-
 import {
   fromLibTarball,
   prepareDist,

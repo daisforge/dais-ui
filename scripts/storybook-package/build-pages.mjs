@@ -178,6 +178,9 @@ function readPages(pagesDir) {
 
 async function loadEsbuild() {
   try {
+    // esbuild — необязательная peerDependency пакета: его ставит проект со
+    // страницами, а не этот пакет.
+    // eslint-disable-next-line import/no-extraneous-dependencies
     return await import('esbuild');
   } catch {
     throw new BuildPagesError(

@@ -120,6 +120,8 @@ describe('buildPages', () => {
         'package.json': JSON.stringify(pkg),
         'pages.json': JSON.stringify([{ file: 'demo', title: 'Демо' }]),
         'demo.tsx': page,
+        // Исходник хелпера на TS: ${n} — часть шаблонной строки в нём.
+        // eslint-disable-next-line no-template-curly-in-string
         'helper.ts': 'export const greet = (n: number) => `привет ${n}`;',
       });
       const outDir = path.join(makeTmp(), 'internal');
