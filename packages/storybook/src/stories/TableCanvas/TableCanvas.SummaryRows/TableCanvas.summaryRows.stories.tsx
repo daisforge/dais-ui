@@ -174,6 +174,16 @@ const playSummaryRowsOnChange: Story['play'] = async ({
       await userEvent.click(await canvas.findByTestId(TEST_ID.settingsTab));
     }
     const switchBlock = await canvas.findByTestId(TEST_ID.switch);
+    const sidebar = switchBlock.closest('[data-table-sidebar]');
+    if (!sidebar) throw new Error('Не найдена панель настроек таблицы');
+    // Дожидаемся конечного положения текста в панели перед нажатием тогла.
+    await waitFor(() =>
+      expect(
+        sidebar
+          .getAnimations({ subtree: true })
+          .some((animation) => animation.playState === 'running'),
+      ).toBe(false),
+    );
     await userEvent.click(within(switchBlock).getByText('Итоговые строки'));
   };
 
