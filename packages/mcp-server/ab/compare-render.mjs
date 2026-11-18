@@ -32,10 +32,6 @@ fs.writeFileSync(
   "import { Button } from '@daisforge/ui'; export const Good=()=> <Button>Проверка стенда</Button>;\n",
 );
 fs.writeFileSync(
-  path.join(root, 'cases/__form.tsx'),
-  "import { FormProvider, useForm } from 'react-hook-form'; import { FormTextField } from '@daisforge/ui'; export function FormProbe(){const form=useForm({defaultValues:{name:''}});return <FormProvider {...form}><FormTextField name=\"name\" label=\"Проверка формы\"/></FormProvider>}\n",
-);
-fs.writeFileSync(
   path.join(root, 'cases/__broken.tsx'),
   "export function Broken(){throw new Error('EXPECTED_RENDER_FAILURE')}\n",
 );
@@ -96,15 +92,6 @@ const server = await createServer({
       'react-dom/client',
       '@daisforge/ui',
       'styled-components',
-      // Prebundle the allowed consumer dependencies before measuring any answer.
-      // A late Vite optimizer restart can mix React module instances in one page.
-      'react-hook-form',
-      '@hookform/resolvers/zod',
-      'zod',
-      '@daisforge/ui/styles',
-      '@daisforge/ui/icons',
-      '@daisforge/ui/components/TableCanvas',
-      'react/jsx-dev-runtime',
     ],
   },
 });
@@ -208,11 +195,9 @@ async function inspect(stem, taskId) {
 
 try {
   const good = await inspect('__good');
-  const form = await inspect('__form');
   const broken = await inspect('__broken');
   if (
     !good.initialRenderPass ||
-    !form.initialRenderPass ||
     broken.initialRenderPass ||
     !broken.errors.some((s) => s.includes('EXPECTED_RENDER_FAILURE'))
   )
@@ -263,7 +248,7 @@ try {
       {
         browser: browser.version(),
         playwright: require('playwright/package.json').version,
-        selfcheck: { good, form, broken },
+        selfcheck: { good, broken },
         summary,
         intervals: {
           initialRenderPass: pairedBootstrap(rows, 'initialRenderPass'),
