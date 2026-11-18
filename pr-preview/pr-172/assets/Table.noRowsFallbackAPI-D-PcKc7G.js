@@ -1,0 +1,4 @@
+import{j as t}from"./react-Ch9mc9Aq.js";import{da as a,db as s}from"./vendor-Ch15MtLz.js";import{T as i}from"./TypeSourceViewer-MeXuZ6ZQ.js";import"./react-is-CJ4CjPIR.js";import"./styled-components-Bq12dC3g.js";import"./@tanstack/react-virtual-Csp9i2bR.js";import"./tslib-DoU9Jm1N.js";function o(e){const n={h1:"h1",h2:"h2",...a(),...e.components};return t.jsxs(t.Fragment,{children:[t.jsx(s,{title:"Локальные компоненты/Table/NoRowsFallback/API"}),`
+`,t.jsx(n.h1,{id:"no-rows-fallback-api",children:"No Rows Fallback API"}),`
+`,t.jsx(n.h2,{id:"tableconfig",children:"TableConfig"}),`
+`,t.jsx(i,{language:"ts",filePath:"packages/ui-kit/src/components/Table/types/table-config.type.ts",typeName:"TableConfig"})]})}function u(e={}){const{wrapper:n}={...a(),...e.components};return n?t.jsx(n,{...e,children:t.jsx(o,{...e})}):o(e)}export{u as default};

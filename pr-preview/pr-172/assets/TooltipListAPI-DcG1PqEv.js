@@ -1,0 +1,7 @@
+import{j as o}from"./react-Ch9mc9Aq.js";import{da as s,db as n}from"./vendor-Ch15MtLz.js";import{T as r}from"./TypeSourceViewer-MeXuZ6ZQ.js";import"./react-is-CJ4CjPIR.js";import"./styled-components-Bq12dC3g.js";import"./@tanstack/react-virtual-Csp9i2bR.js";import"./tslib-DoU9Jm1N.js";function i(e){const t={blockquote:"blockquote",code:"code",h1:"h1",h2:"h2",p:"p",...s(),...e.components};return o.jsxs(o.Fragment,{children:[o.jsx(n,{title:"Локальные компоненты/TooltipList/API"}),`
+`,o.jsx(t.h1,{id:"tooltiplist-api",children:"TooltipList API"}),`
+`,o.jsx(t.h2,{id:"tooltiplistprops",children:"TooltipListProps"}),`
+`,o.jsx(r,{language:"ts",filePath:"packages/ui-kit/src/components/Tooltip/TooltipList.tsx",typeName:"TooltipListProps"}),`
+`,o.jsxs(t.blockquote,{children:[`
+`,o.jsxs(t.p,{children:["Остальные пропсы наследуются от ",o.jsx(t.code,{children:"TooltipProps"})," (кроме ",o.jsx(t.code,{children:"text"}),", ",o.jsx(t.code,{children:"children"}),")"]}),`
+`]})]})}function h(e={}){const{wrapper:t}={...s(),...e.components};return t?o.jsx(t,{...e,children:o.jsx(i,{...e})}):i(e)}export{h as default};
