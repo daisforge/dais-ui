@@ -21,10 +21,24 @@ const overlayDropdownProps: DropdownProps = {
 const openOverlayMenu: NonNullable<Story['play']> = async ({
   canvasElement,
 }) => {
-  const page = within(canvasElement.ownerDocument.body);
-  await userEvent.click(
-    await page.findByRole('combobox', { name: 'Действия документа' }),
+  const document = canvasElement.ownerDocument;
+  const page = within(document.body);
+  const trigger = await page.findByRole('combobox', {
+    name: 'Действия документа',
+  });
+  // Открываем меню после анимации окна, когда якорь занял конечное положение.
+  await waitFor(() =>
+    expect(
+      document
+        .getAnimations()
+        .some(
+          (animation) =>
+            animation.playState === 'running' &&
+            Number.isFinite(animation.effect?.getComputedTiming().endTime),
+        ),
+    ).toBe(false),
   );
+  await userEvent.click(trigger);
   await waitFor(() =>
     expect(page.getByText('Экспортировать данные')).toBeVisible(),
   );
@@ -67,7 +81,10 @@ export const InsideDrawer: Story = {
           rightBlock={
             <DrawerDF.DotsIconButton
               aria-label="Действия документа"
-              dropdownProps={overlayDropdownProps}
+              dropdownProps={{
+                ...overlayDropdownProps,
+                placement: 'bottom-end',
+              }}
             />
           }
         />
