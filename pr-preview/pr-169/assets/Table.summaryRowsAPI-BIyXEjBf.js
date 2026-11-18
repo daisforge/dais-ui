@@ -1,0 +1,6 @@
+import{j as t}from"./react-B60MRyL7.js";import{ck as n}from"./vendor-ABAm7dM9.js";import{M as m}from"./WithTooltip-KJL26V4Q-DVjM17Xc.js";import{T as r}from"./TypeSourceViewer-DGQFKH0k.js";import"./_commonjsHelpers-BosuxZz1.js";import"./tslib-DoU9Jm1N.js";import"./_commonjs-dynamic-modules-TDtrdbi3.js";import"./react-is-Clcustum.js";import"./styled-components-JDoewyqD.js";import"./@tanstack/react-virtual-aXadwhme.js";import"./preload-helper-Bmf6XQY_.js";import"./index-Cu4lwwaE.js";import"./index-OE46t0bk.js";import"./@salutejs/plasma-icons-BjqIpdkS.js";function s(e){const o={h1:"h1",h2:"h2",...n(),...e.components};return t.jsxs(t.Fragment,{children:[t.jsx(m,{title:"Локальные компоненты/Table/SummaryRows/API"}),`
+`,t.jsx(o.h1,{id:"summary-rows-api",children:"Summary Rows API"}),`
+`,t.jsx(o.h2,{id:"summaryrowsconfig",children:"SummaryRowsConfig"}),`
+`,t.jsx(r,{language:"ts",filePath:"packages/ui-kit/src/components/Table/types/table-config.type.ts",typeName:"SummaryRowsConfig"}),`
+`,t.jsx(o.h2,{id:"tableprops",children:"TableProps"}),`
+`,t.jsx(r,{language:"ts",filePath:"packages/ui-kit/src/components/Table/types/table.type.ts",typeName:"TableProps"})]})}function w(e={}){const{wrapper:o}={...n(),...e.components};return o?t.jsx(o,{...e,children:t.jsx(s,{...e})}):s(e)}export{w as default};
