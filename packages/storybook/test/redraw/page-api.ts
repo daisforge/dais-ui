@@ -41,7 +41,7 @@ export interface CompareResult {
 }
 
 /**
- * API страницы для тестов перерисовки (window.daisRedraw). Ставит декоратор
+ * API страницы для тестов перерисовки (window.tableCanvasRedraw). Ставит декоратор
  * тестовой сборки Storybook, см. .storybook/redrawPageApi.ts.
  */
 export interface RedrawPageApi {
@@ -66,6 +66,6 @@ export interface RedrawPageApi {
 
 declare global {
   interface Window {
-    daisRedraw?: RedrawPageApi;
+    tableCanvasRedraw?: RedrawPageApi;
   }
 }

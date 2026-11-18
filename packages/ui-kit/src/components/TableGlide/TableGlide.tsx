@@ -343,8 +343,8 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   // для сверки в тестах перерисовки. В приложении её никто не вызывает.
   // Подробнее: функцию регистрирует useSnapshotRepaint, только если подключён
   // декоратор withCanvasSnapshots (STORYBOOK_SCREENSHOT_TEST=1). Вызывают её
-  // прогон снимков (window.daisScreenshotRepaint) и тесты перерисовки
-  // (window.daisRedraw). Без декоратора нет и отметок о кадрах (onFrameDrawn).
+  // прогон снимков (window.tableCanvasScreenshotRepaint) и тесты перерисовки
+  // (window.tableCanvasRedraw). Без декоратора нет и отметок о кадрах (onFrameDrawn).
   const repaintSnapshot = useCallback(() => {
     if (!dataEditorRef.current) return false;
     // Новая версия getCellContent заставляет Glide перерисовать всю видимую область.

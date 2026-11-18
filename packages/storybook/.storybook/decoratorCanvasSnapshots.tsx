@@ -44,11 +44,11 @@ const hooks: CanvasSnapshotHooks = {
 };
 
 // Точки входа для Playwright существуют только в тестовой сборке Storybook:
-// daisScreenshotRepaint для прогона снимков, daisRedraw у тестов перерисовки.
+// tableCanvasScreenshotRepaint для прогона снимков, tableCanvasRedraw у тестов перерисовки.
 if (process.env.STORYBOOK_SCREENSHOT_TEST === '1') {
   Object.assign(window, {
-    daisScreenshotRepaint: repaintAll,
-    daisRedraw: redraw,
+    tableCanvasScreenshotRepaint: repaintAll,
+    tableCanvasRedraw: redraw,
   });
 }
 

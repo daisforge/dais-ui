@@ -40,7 +40,7 @@ export const CanvasSnapshotContext = createContext<CanvasSnapshotHooks | null>(
  *
  * Подробнее: TableGlide вызывает хук при каждом рендере, но эффект лишь
  * регистрирует таблицу, а не рисует. Перед снимком прогон вызывает
- * window.daisScreenshotRepaint(), декоратор выполняет перерисовки внутри
+ * window.tableCanvasScreenshotRepaint(), декоратор выполняет перерисовки внутри
  * flushSync, затем capture.ts ждёт кадры браузера. При смене функции или
  * размонтировании регистрация снимается, чтобы не задеть следующую историю.
  */

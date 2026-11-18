@@ -16,8 +16,10 @@ test.describe('проверка механизма', () => {
   }) => {
     await grid.click([2, 3]);
     await grid.settle();
-    await page.evaluate(() => window.daisRedraw?.corrupt('body', 40, 120));
-    const body = await page.evaluate(() => window.daisRedraw!.compare());
+    await page.evaluate(() =>
+      window.tableCanvasRedraw?.corrupt('body', 40, 120),
+    );
+    const body = await page.evaluate(() => window.tableCanvasRedraw!.compare());
     expect(body.equal).toBe(false);
     expect(
       body.canvases.find((c) => c.name === 'body')?.pixels,
@@ -27,8 +29,12 @@ test.describe('проверка механизма', () => {
       'data:image/png',
     );
 
-    await page.evaluate(() => window.daisRedraw?.corrupt('header', 40, 10));
-    const header = await page.evaluate(() => window.daisRedraw!.compare());
+    await page.evaluate(() =>
+      window.tableCanvasRedraw?.corrupt('header', 40, 10),
+    );
+    const header = await page.evaluate(() =>
+      window.tableCanvasRedraw!.compare(),
+    );
     expect(header.equal).toBe(false);
     expect(
       header.canvases.find((c) => c.name === 'header')?.pixels,
@@ -36,7 +42,9 @@ test.describe('проверка механизма', () => {
     expect(header.canvases.find((c) => c.name === 'body')?.pixels).toBe(0);
 
     // после полной перерисовки холст совпадает сам с собой
-    const clean = await page.evaluate(() => window.daisRedraw!.compare());
+    const clean = await page.evaluate(() =>
+      window.tableCanvasRedraw!.compare(),
+    );
     expect(clean.equal).toBe(true);
   });
 
@@ -45,7 +53,9 @@ test.describe('проверка механизма', () => {
     page,
   }) => {
     await grid.prime();
-    const count = await page.evaluate(() => window.daisRedraw!.repaint());
+    const count = await page.evaluate(() =>
+      window.tableCanvasRedraw!.repaint(),
+    );
     expect(count).toBe(1);
     await grid.settle();
     const repaint = await grid.takeFrames();

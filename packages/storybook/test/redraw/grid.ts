@@ -30,7 +30,7 @@ const pngBody = (dataUrl: string) =>
 
 /**
  * Таблица в открытой истории: действия настоящей мышью и клавиатурой и
- * сверка частичного кадра с полным через window.daisRedraw.
+ * сверка частичного кадра с полным через window.tableCanvasRedraw.
  */
 export class GridPage {
   /** Служебных колонок слева (нумерация, чекбокс): сдвиг индексов колонок glide. */
@@ -50,7 +50,7 @@ export class GridPage {
     );
     await this.page.waitForFunction(
       () => {
-        const rect = window.daisRedraw?.bounds(0, 0);
+        const rect = window.tableCanvasRedraw?.bounds(0, 0);
         return rect !== undefined && rect.width > 0;
       },
       undefined,
@@ -78,7 +78,7 @@ export class GridPage {
   async bounds([col, row]: Cell): Promise<Rectangle> {
     const glideCol = col + this.serviceColumns;
     const rect = await this.page.evaluate(
-      ([c, r]) => window.daisRedraw?.bounds(c, r),
+      ([c, r]) => window.tableCanvasRedraw?.bounds(c, r),
       [glideCol, row] as const,
     );
     if (!rect) {
@@ -167,7 +167,7 @@ export class GridPage {
     const startedAt = await this.page.evaluate(() => performance.now());
     await this.page.waitForFunction(
       ([quiet, since]) => {
-        const api = window.daisRedraw;
+        const api = window.tableCanvasRedraw;
         if (api === undefined) return false;
         // Плавная прокрутка (Ctrl+End, PageDown) идёт кадрами браузера с паузами:
         // пока положение прокрутки меняется, таблица не спокойна.
@@ -195,13 +195,13 @@ export class GridPage {
   }
 
   async reset() {
-    await this.page.evaluate(() => window.daisRedraw?.reset());
+    await this.page.evaluate(() => window.tableCanvasRedraw?.reset());
   }
 
   /** Забрать накопленные кадры и очистить журнал. */
   async takeFrames(): Promise<DrawnFrame[]> {
     return this.page.evaluate(() => {
-      const api = window.daisRedraw;
+      const api = window.tableCanvasRedraw;
       if (!api) return [];
       const frames = api.frames();
       api.reset();
@@ -212,7 +212,7 @@ export class GridPage {
   /** Площадь тела таблицы в CSS px. */
   private async bodyArea() {
     const sizes = await this.page.evaluate(() =>
-      window.daisRedraw?.canvasSizes(),
+      window.tableCanvasRedraw?.canvasSizes(),
     );
     const body = sizes?.find((size) => size.name === 'body');
     if (!body) throw new Error('Холст тела не найден');
@@ -280,7 +280,7 @@ export class GridPage {
   /** Сверить то, что на холстах, с кадром целиком. При расхождении картинки в отчёте. */
   async check(label = 'сверка с полным кадром') {
     const result: CompareResult = await this.page.evaluate(() =>
-      window.daisRedraw!.compare(),
+      window.tableCanvasRedraw!.compare(),
     );
     await this.reset();
     expect(
