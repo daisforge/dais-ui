@@ -37,6 +37,15 @@ for (const job of manifest.jobs) {
     ...JSON.parse(fs.readFileSync(meta, 'utf8')),
     ...parseEvents(fs.readFileSync(path.join(out, `${stem}.jsonl`), 'utf8')),
   };
+  const stderr = fs.readFileSync(path.join(out, `${stem}.stderr`), 'utf8');
+  const providerRetryDelays = [
+    ...stderr.matchAll(/responses_retry:.*?in ([\d.]+)s/g),
+  ].map((match) => Number(match[1]));
+  row.providerRetries = providerRetryDelays.length;
+  row.scheduledProviderRetrySeconds = providerRetryDelays.reduce(
+    (sum, seconds) => sum + seconds,
+    0,
+  );
   if (row.infrastructureError)
     throw new Error(`Invalid attempt ${stem}: ${row.infrastructureError}`);
   const src = path.join(out, `${stem}.tsx`);
@@ -90,6 +99,17 @@ for (const job of manifest.jobs) {
     })`,
   );
 }
+const median = (input) => {
+  const values = input
+    .filter((value) => typeof value === 'number')
+    .sort((a, b) => a - b);
+  const middle = Math.floor(values.length / 2);
+  return values.length
+    ? values.length % 2
+      ? values[middle]
+      : (values[middle - 1] + values[middle]) / 2
+    : null;
+};
 const summary = ['before', 'after'].map((arm) => {
   const group = rows.filter((r) => r.arm === arm);
   const avg = (key) =>
@@ -101,12 +121,21 @@ const summary = ['before', 'after'].map((arm) => {
     cleanPasses: group.filter((r) => r.cleanPass).length,
     pickedExpected: group.filter((r) => r.pickedExpected).length,
     meanMcpCalls: avg('mcpCalls'),
+    medianMcpCalls: median(group.map((row) => row.mcpCalls)),
+    maxMcpCalls: Math.max(...group.map((row) => row.mcpCalls)),
     meanMcpErrors: avg('mcpErrors'),
     meanSeconds: avg('wallSeconds'),
+    medianSeconds: median(group.map((row) => row.wallSeconds)),
     meanInputTokens: avg('inputTokens'),
     meanCachedInputTokens: avg('cachedInputTokens'),
     meanUncachedInputTokens: avg('uncachedInputTokens'),
     attemptsWithUsage: group.filter((r) => r.usage).length,
+    attemptsWithProviderRetries: group.filter((r) => r.providerRetries > 0)
+      .length,
+    scheduledProviderRetrySeconds: group.reduce(
+      (sum, r) => sum + r.scheduledProviderRetrySeconds,
+      0,
+    ),
     meanOutputTokens: avg('outputTokens'),
     diagnostics: group.reduce((n, r) => n + r.diagnostics.length, 0),
   };
