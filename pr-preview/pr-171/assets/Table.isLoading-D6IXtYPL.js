@@ -1,0 +1,14 @@
+import{j as i}from"./react-D2T61mpp.js";import{cg as n,ch as e,ca as m}from"./vendor-BmL46prH.js";import{T as s}from"./Table.isLoading.stories-B6-gFC-O.js";import"./react-is-Clcustum.js";import"./styled-components-CyOceNjt.js";import"./@tanstack/react-virtual-CEJoHVNI.js";import"./tslib-DoU9Jm1N.js";import"./tableData-DVJFoYoT.js";import"./DocStoryTemplate-BYIkUkCL.js";import"./storySourceDoc-tVKyHcEN.js";import"./FiltersActions-B423Xt4W.js";import"./IconButton-DnjPgYWr.js";import"./@salutejs/plasma-icons-DbUQJRbT.js";import"./@salutejs/sdds-finai-B4e86Xc-.js";import"./@sddsjs/sdds_finai-Clnx3I02.js";import"./utils-6kvC9zOe.js";import"./constants-ChwOYBdp.js";import"./sharedUtilsDebug-BX_KjCjW.js";import"./Box-HfshwQ72.js";import"./TextField-D4EQU3D4.js";import"./sharedUtilsInputs-C8sO4urP.js";import"./AiAgentPopup-BC81awZJ.js";import"./TextArea-BqRvnq3h.js";import"./sharedUtilsResizable-ClSuuCqy.js";import"./@salutejs/sdds-themes-xIOWIAKk.js";import"./Table-mTQ85T_a.js";import"./Collapse-BiF_WNR3.js";import"./react-data-grid-DB-YTYp0.js";import"./TableTabs-U-NZ5xBR.js";import"./TableCanvasSharedConstants-CqGDn8zL.js";import"./TableGlide-ftJ7ps6J.js";import"./@glideappsfinal/glide-data-grid-RJ57Hb16.js";import"./canvas-hypertxt-DsokSIOX.js";import"./sharedUiSearch-gPdmbVPM.js";import"./ListOfFilters-DZepwfBB.js";import"./lodash.isequal-DD0Lfcik.js";import"./NumberFormat-cHgA1Txf.js";import"./EmptyState-CdAMnbo3.js";import"./MassActions-pOIXUe8R.js";import"./Autocomplete-D74rpNF3.js";function t(r){const o={a:"a",code:"code",h1:"h1",h2:"h2",li:"li",p:"p",ul:"ul",...n(),...r.components};return i.jsxs(i.Fragment,{children:[i.jsx(e,{of:s,name:"Docs"}),`
+`,i.jsx(o.h1,{id:"isloading",children:"IsLoading"}),`
+`,i.jsxs(o.p,{children:["Состояние загрузки legacy ",i.jsx(o.code,{children:"Table"}),"."]}),`
+`,i.jsx(o.h2,{id:"ключевые-особенности",children:"Ключевые особенности"}),`
+`,i.jsxs(o.ul,{children:[`
+`,i.jsxs(o.li,{children:["Простое состояние через ",i.jsx(o.code,{children:"tableConfig.isLoading: true"})]}),`
+`,i.jsx(o.li,{children:"Настройка количества skeleton-строк"}),`
+`,i.jsxs(o.li,{children:["Overlay загрузки через ",i.jsx(o.code,{children:"loadingOverlay"})]}),`
+`,i.jsx(o.li,{children:"Кастомизация заголовка, подзаголовка, задержки и спиннера overlay"}),`
+`]}),`
+`,i.jsx(o.h2,{id:"особенности",children:"Особенности"}),`
+`,i.jsx(o.p,{children:"Используйте skeleton-режим, когда нужно сохранить структуру таблицы во время загрузки. Overlay подходит для блокирующей загрузки поверх уже отображенных данных."}),`
+`,i.jsxs(o.p,{children:["Описание типов - в разделе ",i.jsx(o.a,{href:"?path=/docs/%D0%BB%D0%BE%D0%BA%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D1%8B-table-isloading-api--docs",children:"API"}),"."]}),`
+`,i.jsx(m,{})]})}function U(r={}){const{wrapper:o}={...n(),...r.components};return o?i.jsx(o,{...r,children:i.jsx(t,{...r})}):t(r)}export{U as default};
