@@ -5,7 +5,13 @@ import path from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import { SERVICE_ENTRY_ID } from './add-pages.mjs';
-import { prepareDist, PrepareDistError } from './prepare-dist.mjs';
+import { execFileSync } from 'node:child_process';
+
+import {
+  fromLibTarball,
+  prepareDist,
+  PrepareDistError,
+} from './prepare-dist.mjs';
 
 const names = { lib: '@acme/ds', mcp: '@acme/ds-mcp' };
 const VERSION = '1.30.0';
@@ -138,6 +144,39 @@ describe('prepareDist', () => {
       false,
     );
     expect(fs.existsSync(path.join(outDir, 'storybook/stale.js'))).toBe(false);
+  });
+
+  it('--lib-tarball: библиотека берётся из локального архива', async () => {
+    // Архив в формате npm pack: содержимое в каталоге package/.
+    const src = makeTmp();
+    fakeFetchLib()(VERSION, src);
+    const tarball = path.join(makeTmp(), 'daisforge-ui-1.30.0.tgz');
+    execFileSync('tar', ['-czf', tarball, '-C', src, 'package']);
+    const outDir = makeTmp();
+
+    await prepareDist({
+      version: VERSION,
+      storybookStatic: makeStorybook(),
+      outDir,
+      names,
+      fetchLib: fromLibTarball(tarball),
+    });
+
+    expect(
+      JSON.parse(read(outDir, 'packages', 'ui-kit', 'package.json')).name,
+    ).toBe('@acme/ds');
+  });
+
+  it('--lib-tarball: понятная ошибка, если архива нет', async () => {
+    await expect(
+      prepareDist({
+        version: VERSION,
+        storybookStatic: makeStorybook(),
+        outDir: makeTmp(),
+        names,
+        fetchLib: fromLibTarball('/no/such/file.tgz'),
+      }),
+    ).rejects.toThrowError(/Не найден архив библиотеки/);
   });
 
   it('без --pages готовит dist без внутренних страниц', async () => {

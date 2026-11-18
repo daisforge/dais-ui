@@ -15,7 +15,9 @@
  * Имена — из ALT_LIB_PACKAGE_NAME и ALT_MCP_PACKAGE_NAME. Пересоздаются только
  * эти два каталога, остальной dist/ не трогается.
  *
- * Запуск: white-label-prepare [--pages <каталог>] [--out dist]
+ * Запуск: white-label-prepare [--pages <каталог>] [--out dist] [--lib-tarball <файл.tgz>]
+ *   --lib-tarball — взять библиотеку из локального архива вместо скачивания
+ *                   (например, для проверки без доступа к реестру)
  */
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
@@ -74,6 +76,15 @@ export function fetchLibPackage(version, workDir) {
   execFileSync('tar', ['-xzf', path.join(workDir, filename), '-C', workDir]);
   return path.join(workDir, 'package');
 }
+
+/** Распаковывает локальный архив библиотеки вместо скачивания. */
+export const fromLibTarball = (tarball) => (version, workDir) => {
+  if (!fs.existsSync(tarball)) {
+    throw new PrepareDistError(`Не найден архив библиотеки: ${tarball}`);
+  }
+  execFileSync('tar', ['-xzf', tarball, '-C', workDir]);
+  return path.join(workDir, 'package');
+};
 
 function assertNoLeftovers(what, leftovers) {
   if (leftovers.length > 0) {
@@ -166,6 +177,7 @@ function parseArgs(argv) {
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
     if (arg === '--pages') args.pages = argv[(i += 1)];
+    else if (arg === '--lib-tarball') args.libTarball = argv[(i += 1)];
     else if (arg === '--out') args.out = argv[(i += 1)];
     else throw new PrepareDistError(`Неизвестный аргумент: ${arg}`);
   }
@@ -189,6 +201,9 @@ async function main(argv) {
     outDir: path.resolve(args.out),
     names,
     pagesDir: args.pages ? path.resolve(args.pages) : undefined,
+    ...(args.libTarball && {
+      fetchLib: fromLibTarball(path.resolve(args.libTarball)),
+    }),
   });
 
   const rel = (p) => path.relative(process.cwd(), p);
