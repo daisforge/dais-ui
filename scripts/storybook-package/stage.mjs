@@ -35,6 +35,7 @@ const BIN_FILES = [
   ['scripts/white-label/rename-artifact.mjs', 'white-label-rename'],
   ['scripts/storybook-package/add-pages.mjs', 'storybook-add-pages'],
   ['scripts/storybook-package/build-pages.mjs', 'storybook-build-pages'],
+  ['scripts/storybook-package/prepare-dist.mjs', 'white-label-prepare'],
   // Список модулей для страниц — тот же, что зашит в эту сборку Storybook.
   ['packages/storybook/src/stories/_external/shared-modules.json', null],
 ];
@@ -151,6 +152,23 @@ function stageReadme(pkg) {
 npm pack ${pkg.name}@${pkg.version}
 tar -xzf *.tgz            # → package/static
 \`\`\`
+
+## Подготовка dist без сборки
+
+\`white-label-prepare\` раскладывает в \`dist/\` то, что раньше давала сборка из
+исходников, — уже переименованным:
+
+- \`dist/packages/ui-kit\` — \`@daisforge/ui\` той же версии (${pkg.version}),
+  готовый к публикации; версию поднимать не нужно, она уже в package.json;
+- \`dist/storybook\` — статика Storybook с внутренними страницами.
+
+\`\`\`bash
+npm i -D -E ${pkg.name}@${pkg.version} esbuild
+ALT_LIB_PACKAGE_NAME=<имя> ALT_MCP_PACKAGE_NAME=<имя-mcp> npx white-label-prepare --pages pages
+\`\`\`
+
+Остальной \`dist/\` не трогается. \`--out\` меняет корень (по умолчанию \`dist\`),
+\`--pages\` можно не указывать, если внутренних страниц нет.
 
 ## Внутренние страницы
 
