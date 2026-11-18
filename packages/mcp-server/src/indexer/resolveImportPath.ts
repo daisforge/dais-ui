@@ -1,6 +1,6 @@
 import path from 'node:path';
 
-import type { ExportedDeclarations } from 'ts-morph';
+import type { ExportedDeclarations, Node } from 'ts-morph';
 
 import { getProject, UI_KIT_SRC } from './tsProject.js';
 
@@ -28,6 +28,24 @@ function getRootExportedDecls(): ReadonlyMap<string, ExportedDeclarations[]> {
     cachedRootExportedDecls = barrel.getExportedDeclarations();
   }
   return cachedRootExportedDecls;
+}
+
+let cachedRootExportNames: Map<Node, string[]> | undefined;
+
+/** Публичные имена декларации, включая переименованные реэкспорты из SDDS. */
+export function getRootExportNames(decl: Node): readonly string[] {
+  if (!cachedRootExportNames) {
+    const exportNames = new Map<Node, string[]>();
+    getRootExportedDecls().forEach((decls, name) => {
+      decls.forEach((node) => {
+        const names = exportNames.get(node) ?? [];
+        names.push(name);
+        exportNames.set(node, names);
+      });
+    });
+    cachedRootExportNames = exportNames;
+  }
+  return cachedRootExportNames.get(decl) ?? [];
 }
 
 /**
