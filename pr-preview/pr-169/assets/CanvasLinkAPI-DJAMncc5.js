@@ -1,0 +1,6 @@
+import{j as n}from"./react-B60MRyL7.js";import{ck as s}from"./vendor-ABAm7dM9.js";import{M as o}from"./WithTooltip-KJL26V4Q-DVjM17Xc.js";import{T as a}from"./TypeSourceViewer-CyYAdPVf.js";import"./_commonjsHelpers-BosuxZz1.js";import"./tslib-DoU9Jm1N.js";import"./_commonjs-dynamic-modules-TDtrdbi3.js";import"./react-is-Clcustum.js";import"./styled-components-JDoewyqD.js";import"./@tanstack/react-virtual-aXadwhme.js";import"./preload-helper-Bmf6XQY_.js";import"./index-Cu4lwwaE.js";import"./index-OE46t0bk.js";import"./@salutejs/plasma-icons-BjqIpdkS.js";function e(i){const t={h1:"h1",h2:"h2",...s(),...i.components};return n.jsxs(n.Fragment,{children:[n.jsx(o,{title:"Локальные компоненты/TableCanvas/CanvasElements/CanvasLink/API"}),`
+`,n.jsx(t.h1,{id:"canvaslink-api",children:"Canvas.Link API"}),`
+`,n.jsx(t.h2,{id:"canvaslinkoptions",children:"CanvasLinkOptions"}),`
+`,n.jsx(a,{language:"ts",filePath:"packages/ui-kit/src/components/TableGlide/lib/canvas/primitives/CanvasLink.ts",typeName:"CanvasLinkOptions"}),`
+`,n.jsx(t.h2,{id:"linkview",children:"LinkView"}),`
+`,n.jsx(a,{language:"ts",filePath:"packages/ui-kit/src/components/TableGlide/lib/canvas/primitives/CanvasLink.ts",typeName:"LinkView"})]})}function L(i={}){const{wrapper:t}={...s(),...i.components};return t?n.jsx(t,{...i,children:n.jsx(e,{...i})}):e(i)}export{L as default};
