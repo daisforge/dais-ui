@@ -2,7 +2,6 @@ import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Box } from '@ui-kit/components/Box';
 import { PageLoader } from '@ui-kit/components/PageLoader';
-import { PageTitle } from '@ui-kit/components/PageTitle';
 
 const meta: Meta<typeof PageLoader> = {
   title: 'Композиции/PageLoader',
@@ -21,8 +20,7 @@ export const Default: Story = {
   name: 'Загрузка страницы',
   ...storySourceDoc({ previewSource: 'shown' }),
   render: (args) => (
-    <Box display="flex" flexDirection="column" height="480px" gap="24px">
-      <PageTitle title="Отчёты" />
+    <Box display="flex" height="480px">
       <PageLoader {...args} />
     </Box>
   ),
