@@ -1,4 +1,0 @@
-import{j as e}from"./react-D2T61mpp.js";import{cg as a,ch as n}from"./vendor-BmL46prH.js";import{T as s}from"./TypeSourceViewer-CtYSqmqq.js";import"./react-is-Clcustum.js";import"./styled-components-CyOceNjt.js";import"./@tanstack/react-virtual-CEJoHVNI.js";import"./tslib-DoU9Jm1N.js";function r(o){const t={h1:"h1",h2:"h2",...a(),...o.components};return e.jsxs(e.Fragment,{children:[e.jsx(n,{title:"Композиции/PageLoader/API"}),`
-`,e.jsx(t.h1,{id:"pageloader-api",children:"PageLoader API"}),`
-`,e.jsx(t.h2,{id:"pageloaderprops",children:"PageLoaderProps"}),`
-`,e.jsx(s,{language:"ts",filePath:"packages/ui-kit/src/components/PageLoader/PageLoader.types.ts",typeName:"PageLoaderProps"})]})}function u(o={}){const{wrapper:t}={...a(),...o.components};return t?e.jsx(t,{...o,children:e.jsx(r,{...o})}):r(o)}export{u as default};
