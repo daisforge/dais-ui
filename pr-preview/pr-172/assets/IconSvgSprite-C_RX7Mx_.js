@@ -1,6 +1,0 @@
-import{d as i}from"./react-Ch9mc9Aq.js";import{q as t}from"./styled-components-Bq12dC3g.js";const s={xs:{scale:1,size:16},s:{scale:1.5,size:24},m:{scale:2.25,size:36}},l=t.div`
-  display: inline-flex;
-  width: var(--icon-size);
-  height: var(--icon-size);
-  flex: 0 0 var(--icon-size);
-`,o=({iconUrl:r,size:e="s",color:n,style:a,className:c})=>i.jsxDEV(l,{"aria-hidden":!0,style:{"--icon-size":`${s[e].scale}rem`,...a},className:c||"",children:i.jsxDEV("svg",{width:"100%",viewBox:`0 0 ${s[e].size} ${s[e].size}`,fill:"none",xmlns:"http://www.w3.org/2000/svg",color:n||"var(--plasma-colors-primary)",children:i.jsxDEV("use",{xlinkHref:r.replace(/\{size\}/g,e)},void 0,!1,{fileName:"/home/runner/work/dais-ui/dais-ui/packages/ui-kit/src/components/IconSvgSprite/IconSvgSprite.tsx",lineNumber:55,columnNumber:7},void 0)},void 0,!1,{fileName:"/home/runner/work/dais-ui/dais-ui/packages/ui-kit/src/components/IconSvgSprite/IconSvgSprite.tsx",lineNumber:48,columnNumber:5},void 0)},void 0,!1,{fileName:"/home/runner/work/dais-ui/dais-ui/packages/ui-kit/src/components/IconSvgSprite/IconSvgSprite.tsx",lineNumber:38,columnNumber:3},void 0);try{o.displayName="IconSvgSprite",o.__docgenInfo={description:"",displayName:"IconSvgSprite",props:{}}}catch{}export{o as I};
