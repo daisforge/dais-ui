@@ -26,7 +26,10 @@ const createCtx = () => {
   return { ctx: ctx as unknown as CanvasRenderingContext2D, calls };
 };
 
-const renderCell = (ctx: CanvasRenderingContext2D) => {
+const renderCell = (
+  ctx: CanvasRenderingContext2D,
+  edgeInset?: { left: number; top: number; right: number; bottom: number },
+) => {
   const row = { id: 1 };
   const cell = glideCellRenderer({
     jsxElement: <Canvas.Container backgroundColor="gray" />,
@@ -38,7 +41,7 @@ const renderCell = (ctx: CanvasRenderingContext2D) => {
       rowInd: 0,
       ctxs: {},
     } as unknown as CellInfo<ObjectForExtending, unknown>,
-    options: { data: undefined },
+    options: { data: undefined, edgeInset },
   });
   ((cell as CanvasCell).data as CanvasCellData).render(
     ctx,
@@ -70,6 +73,17 @@ describe('glideCellRenderer: обрезка по ячейке', () => {
       'paint',
       'restore',
     ]);
+  });
+
+  it('без линии слева и сверху содержимое доходит до края, у последней колонки и строки пиксель под рамку', () => {
+    const { ctx, calls } = createCtx();
+    vi.spyOn(CellCanvasRoot.prototype, 'render').mockImplementation(
+      () => undefined as never,
+    );
+
+    renderCell(ctx, { left: 0, top: 0, right: 1, bottom: 1 });
+
+    expect(calls).toContain('rect(10,20,99,39)');
   });
 });
 
@@ -149,7 +163,7 @@ describe('glideCellRenderer: высота для rowHeight auto', () => {
         ctxs: {},
       } as unknown as CellInfo<ObjectForExtending, unknown>,
       options: { data: undefined },
-      autoHeight: { needsHeight: () => needsHeight, report },
+      autoHeight: { needsHeight: () => needsHeight, report, forget: () => {} },
     });
     ((cell as CanvasCell).data as CanvasCellData).render(
       createCtx().ctx,

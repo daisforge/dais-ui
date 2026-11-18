@@ -1,12 +1,13 @@
 /* eslint-disable no-restricted-syntax, no-console -- Скрипт Node.js последовательно работает с файлами и процессами; ESM-импорты содержат расширения. */
 import { spawn } from 'node:child_process';
 import fs from 'node:fs';
-import http from 'node:http';
 import { createRequire } from 'node:module';
 import path from 'node:path';
 
 // eslint-disable-next-line import/extensions -- Node.js ESM требует расширение файла.
 import { writeHtmlReport } from './report.js';
+// eslint-disable-next-line import/extensions -- Node.js ESM требует расширение файла.
+import { serveStatic } from './serve.js';
 
 // Точка входа готового Docker-контейнера: раздаёт Storybook, запускает проверки
 // и собирает отчёт. Перенос эталонов в проект выполняет docker.js на хосте.
@@ -65,53 +66,9 @@ if (
 // 127.0.0.1 — адрес самого контейнера, 4400 — выбранный нами порт сервера.
 // Порт не публикуется на хост: соседние контейнеры и локальный Storybook ему не мешают.
 // Сервер и test-runner используют общий адрес, поэтому порт меняется в одном месте.
-const serverHost = '127.0.0.1';
-const serverPort = 4400;
-const serverUrl = `http://${serverHost}:${serverPort}`;
-const staticRoot = path.resolve('dist/storybook');
-
-// MIME-типы позволяют браузеру правильно загрузить JS, CSS, изображения и шрифты.
-const mime = {
-  '.html': 'text/html',
-  '.js': 'text/javascript',
-  '.mjs': 'text/javascript',
-  '.json': 'application/json',
-  '.css': 'text/css',
-  '.png': 'image/png',
-  '.svg': 'image/svg+xml',
-  '.woff2': 'font/woff2',
-  '.webp': 'image/webp',
-};
-const server = http.createServer((req, res) => {
-  let name;
-  try {
-    // Базовый адрес нужен только для разбора относительного URL, сетевого запроса здесь нет.
-    name = decodeURIComponent(new URL(req.url, serverUrl).pathname);
-  } catch {
-    res.writeHead(400).end();
-    return;
-  }
-  const file = path.resolve(
-    staticRoot,
-    `.${name === '/' ? '/index.html' : name}`,
-  );
-  // Отдаём только существующие файлы сборки; выход из её каталога запрещён.
-  if (
-    !file.startsWith(`${staticRoot}${path.sep}`) ||
-    !fs.existsSync(file) ||
-    !fs.statSync(file).isFile()
-  ) {
-    res.writeHead(404).end();
-    return;
-  }
-  res.setHeader(
-    'Content-Type',
-    mime[path.extname(file)] ?? 'application/octet-stream',
-  );
-  fs.createReadStream(file).pipe(res);
-});
-await new Promise((resolve) => {
-  server.listen(serverPort, serverHost, resolve);
+const { server, url: serverUrl } = await serveStatic({
+  root: 'dist/storybook',
+  port: 4400,
 });
 // Один worker использует фиксированные настройки Chromium; фильтр выбирает файлы stories.
 // jest.json нужен для сверки количества тестов, junit.xml — для просмотра результатов в CI.

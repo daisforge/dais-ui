@@ -75,7 +75,10 @@
     "screenshot:update": "node scripts/screenshots/docker.js update",
     "mcp:search-eval": "node ./packages/mcp-server/ab/search-eval.mjs",
     "storybook:build:screenshots": "node scripts/screenshots/build.js",
-    "screenshot:typecheck": "tsc -p packages/storybook/test/screenshots/tsconfig.json"
+    "screenshot:typecheck": "tsc -p packages/storybook/test/screenshots/tsconfig.json",
+    "redraw:test": "node scripts/redraw/docker.js",
+    "redraw:test:local": "playwright test --config packages/storybook/test/redraw/playwright.config.ts",
+    "redraw:typecheck": "tsc -p packages/storybook/test/redraw/tsconfig.json"
   },
   "private": true,
   "devDependencies": {
@@ -152,7 +155,7 @@
     "playwright": "1.62.0"
   },
   "dependencies": {
-    "@glideappsfinal/glide-data-grid": "^6.12.3",
+    "@glideappsfinal/glide-data-grid": "^6.13.0",
     "@hookform/resolvers": "3.10.0",
     "@salutejs/plasma-icons": "^1.257.0",
     "@salutejs/plasma-typo": "^0.59.0",

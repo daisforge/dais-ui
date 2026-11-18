@@ -36,7 +36,7 @@ describe('adaptGroupHeaderHandler', () => {
     );
     const event = eventOf('work');
 
-    adapted!(2, event);
+    adapted?.(2, event);
 
     expect(handler).toHaveBeenCalledWith(
       2,
@@ -49,7 +49,7 @@ describe('adaptGroupHeaderHandler', () => {
     const handler = vi.fn();
     const adapted = adaptGroupHeaderHandler<Row, unknown>(handler, new Map());
 
-    adapted!(0, eventOf('gone'));
+    adapted?.(0, eventOf('gone'));
 
     expect(handler).toHaveBeenCalledWith(
       0,

@@ -15,3 +15,21 @@ services:
       - ./packages/storybook/__snapshots__:/app/packages/storybook/__snapshots__:ro
       - ${SCREENSHOT_ARTIFACTS_HOST:-./artifacts/screenshots/manual}:/artifacts
       - ${SCREENSHOT_STAGING_HOST:-./artifacts/screenshots/staging}:/staging
+  # Тесты перерисовки TableCanvas на том же образе: Playwright против собранного
+  # Storybook, без эталонов. Отчёт в каталог запуска на хосте.
+  redraw:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile.screenshots
+    network_mode: none
+    init: true
+    shm_size: 1gb
+    command: ["node", "scripts/redraw/run.js"]
+    environment:
+      REDRAW_FILTER: ${REDRAW_FILTER:-}
+      REDRAW_PROJECT: ${REDRAW_PROJECT:-}
+      REDRAW_GREP: ${REDRAW_GREP:-}
+      REDRAW_ARTIFACTS_DIR: /artifacts
+    volumes:
+      - ${REDRAW_ARTIFACTS_HOST:-./artifacts/redraw/manual}:/artifacts
