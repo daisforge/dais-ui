@@ -9,6 +9,9 @@ import {
 } from '@daisforge/ui';
 import { useState } from 'react';
 
+const subtitle =
+  'Данные обрабатываются, обычно это занимает не более 10 секунд';
+
 export const PageLoaderExample = () => {
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [showSubtitle, setShowSubtitle] = useState(true);
@@ -33,7 +36,7 @@ export const PageLoaderExample = () => {
         }
       />
       {isInitialLoading ? (
-        <PageLoader subtitle={showSubtitle ? undefined : null} />
+        <PageLoader subtitle={showSubtitle ? subtitle : undefined} />
       ) : (
         <Box display="flex" flexDirection="column" gap="24px">
           <Typography variant="H3">Параметры отчёта</Typography>

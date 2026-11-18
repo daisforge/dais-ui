@@ -8,14 +8,7 @@ import { PageLoaderProps } from './PageLoader.types';
 
 /** Состояние первоначальной загрузки. Показывается вместо контента страницы. */
 export const PageLoader = forwardRef<HTMLDivElement, PageLoaderProps>(
-  (
-    {
-      title = 'Загрузка страницы',
-      subtitle = 'Данные обрабатываются, обычно это занимает не более 10 секунд',
-      ...props
-    },
-    ref,
-  ) => (
+  ({ title = 'Загрузка страницы', subtitle, ...props }, ref) => (
     <Root
       role="status"
       aria-live="polite"
@@ -25,7 +18,16 @@ export const PageLoader = forwardRef<HTMLDivElement, PageLoaderProps>(
     >
       <Spinner view="secondary" width={36} height={36} aria-hidden="true" />
       <TextContent>
-        <Typography variant="H3" as="h3" bold color={textPrimary} breakWord>
+        {/* SDDS добавляет семантику заголовка для H3 независимо от тега. */}
+        <Typography
+          variant="H3"
+          as="div"
+          role={undefined}
+          aria-level={undefined}
+          bold
+          color={textPrimary}
+          breakWord
+        >
           {title}
         </Typography>
         {subtitle && (

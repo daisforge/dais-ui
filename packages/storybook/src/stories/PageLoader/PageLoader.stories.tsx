@@ -18,7 +18,10 @@ type Story = StoryObj<typeof PageLoader>;
 
 export const Default: Story = {
   name: 'Загрузка страницы',
-  ...storySourceDoc({ previewSource: 'shown' }),
+  ...storySourceDoc({
+    preCode: "import { Box, PageLoader } from '@daisforge/ui';",
+    previewSource: 'shown',
+  }),
   render: (args) => (
     <Box display="flex" height="480px">
       <PageLoader {...args} />

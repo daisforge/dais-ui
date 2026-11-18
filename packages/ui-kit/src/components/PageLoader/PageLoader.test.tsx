@@ -7,15 +7,11 @@ import { PageLoader } from './PageLoader';
 afterEach(cleanup);
 
 describe('PageLoader', () => {
-  it('объявляет загрузку с заголовком и описанием по умолчанию', () => {
+  it('показывает только текст загрузки по умолчанию', () => {
     render(<PageLoader />);
 
-    expect(screen.getByRole('heading', { level: 3 }).textContent).toBe(
-      'Загрузка страницы',
-    );
-    expect(screen.getByRole('status').textContent).toContain(
-      'Данные обрабатываются, обычно это занимает не более 10 секунд',
-    );
+    expect(screen.getByRole('status').textContent).toBe('Загрузка страницы');
+    expect(screen.queryByRole('heading')).toBeNull();
   });
 
   it('позволяет заменить тексты и скрыть описание', () => {
@@ -25,9 +21,6 @@ describe('PageLoader', () => {
     expect(screen.getByRole('status').textContent).toBe(
       'Загрузка отчётаПодготавливаем данные',
     );
-
-    rerender(<PageLoader title="Загрузка отчёта" subtitle={null} />);
-    expect(screen.getByRole('status').textContent).toBe('Загрузка отчёта');
 
     rerender(<PageLoader title="Загрузка отчёта" subtitle="" />);
     expect(screen.getByRole('status').textContent).toBe('Загрузка отчёта');
