@@ -121,9 +121,72 @@ describe('prepareDist', () => {
       Object.keys(JSON.parse(read(storybook, 'index.json')).entries)[0],
     ).toBe('гайд--docs');
 
-    // Остальной dist не тронут.
+    // Остальной dist не тронут, временный каталог сборки не остался.
     expect(read(outDir, 'other', 'keep.txt')).toBe('не трогать');
+    expect(fs.readdirSync(outDir).sort()).toEqual([
+      'other',
+      'packages',
+      'storybook',
+    ]);
   });
+
+  it.each([
+    [
+      'остался бренд в Storybook',
+      (storybookStatic) =>
+        fs.writeFileSync(
+          path.join(storybookStatic, 'story.js'),
+          'title:"DAISX"',
+        ),
+      () => ({}),
+    ],
+    [
+      'не нашёлся якорь страницы',
+      () => {},
+      // Функцией: каталоги из makeTmp живут только в пределах одного теста.
+      () => ({
+        pagesDir: makeTmp({
+          'pages.json': JSON.stringify([
+            { file: 'guide', title: 'Гайд', before: 'no-such--docs' },
+          ]),
+          'guide.tsx': `export default () => null;`,
+        }),
+      }),
+    ],
+  ])(
+    'при ошибке (%s) dist остаётся прежним',
+    async (_, breakStorybook, makeOverride) => {
+      const outDir = makeTmp({
+        'packages/ui-kit/old.js': 'old',
+        'storybook/old.js': 'old',
+      });
+      const storybookStatic = makeStorybook();
+      breakStorybook(storybookStatic);
+
+      await expect(
+        prepareDist({
+          version: VERSION,
+          storybookStatic,
+          outDir,
+          names,
+          fetchLib: fakeFetchLib(),
+          ...makeOverride(),
+        }),
+      ).rejects.toThrowError();
+
+      // Прежние каталоги на месте, новые файлы в них не попали.
+      expect(read(outDir, 'packages/ui-kit/old.js')).toBe('old');
+      expect(read(outDir, 'storybook/old.js')).toBe('old');
+      expect(
+        fs.existsSync(path.join(outDir, 'packages/ui-kit/package.json')),
+      ).toBe(false);
+      expect(fs.existsSync(path.join(outDir, 'storybook/index.json'))).toBe(
+        false,
+      );
+      // Временный каталог сборки убран.
+      expect(fs.readdirSync(outDir).sort()).toEqual(['packages', 'storybook']);
+    },
+  );
 
   it('пересоздаёт свои каталоги: старые файлы из прошлого запуска не остаются', async () => {
     const outDir = makeTmp({

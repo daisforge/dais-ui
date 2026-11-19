@@ -13,7 +13,8 @@
  * dist/packages/ui-kit/package.json, поднимать её не нужно.
  *
  * Имена — из ALT_LIB_PACKAGE_NAME и ALT_MCP_PACKAGE_NAME. Пересоздаются только
- * эти два каталога, остальной dist/ не трогается.
+ * эти два каталога, остальной dist/ не трогается. Если что-то упало (остался
+ * бренд, не собралась страница), эти каталоги тоже остаются прежними.
  *
  * Запуск: white-label-prepare [--pages <каталог>] [--out dist] [--lib-tarball <файл.tgz>]
  *   --lib-tarball — взять библиотеку из локального архива вместо скачивания
@@ -128,6 +129,14 @@ export async function prepareDist({
   const libOut = path.join(outDir, LIB_DIST);
   const storybookOut = path.join(outDir, STORYBOOK_DIST);
   const workDir = fs.mkdtempSync(path.join(os.tmpdir(), 'white-label-'));
+  // Результат собирается во временном каталоге и попадает в dist/ только
+  // после всех проверок: при любой ошибке dist/ остаётся таким, каким был, а
+  // не наполовину переименованным. Каталог — внутри outDir, а не в tmp, чтобы
+  // перенос был переименованием в пределах одного диска.
+  fs.mkdirSync(outDir, { recursive: true });
+  const stageDir = fs.mkdtempSync(path.join(outDir, '.white-label-'));
+  const libStage = path.join(stageDir, 'lib');
+  const storybookStage = path.join(stageDir, 'storybook');
 
   try {
     // 1. Библиотека той же версии.
@@ -140,35 +149,43 @@ export async function prepareDist({
         `Скачан ${libPkg.name}@${libPkg.version}, ожидался ${LIB_PACKAGE}@${version}`,
       );
     }
-    fs.rmSync(libOut, { recursive: true, force: true });
-    fs.mkdirSync(path.dirname(libOut), { recursive: true });
-    fs.cpSync(libSource, libOut, { recursive: true });
-    assertNoLeftovers('Библиотека', renameArtifact(libOut, names).leftovers);
+    fs.cpSync(libSource, libStage, { recursive: true });
+    assertNoLeftovers('Библиотека', renameArtifact(libStage, names).leftovers);
 
     // 2. Storybook: переименовать, собрать и вставить внутренние страницы.
-    fs.rmSync(storybookOut, { recursive: true, force: true });
-    fs.cpSync(storybookStatic, storybookOut, { recursive: true });
+    fs.cpSync(storybookStatic, storybookStage, { recursive: true });
     assertNoLeftovers(
       'Storybook',
-      renameArtifact(storybookOut, names).leftovers,
+      renameArtifact(storybookStage, names).leftovers,
     );
 
     let pages = [];
     if (pagesDir) {
       await buildPages({
         pagesDir,
-        outDir: path.join(storybookOut, 'internal'),
+        outDir: path.join(storybookStage, 'internal'),
         lib: names.lib,
       });
       pages = addPages(
-        storybookOut,
+        storybookStage,
         JSON.parse(fs.readFileSync(path.join(pagesDir, 'pages.json'), 'utf8')),
       );
+    }
+
+    // 3. Всё проверено — заменяем каталоги в dist/.
+    for (const [from, to] of [
+      [libStage, libOut],
+      [storybookStage, storybookOut],
+    ]) {
+      fs.rmSync(to, { recursive: true, force: true });
+      fs.mkdirSync(path.dirname(to), { recursive: true });
+      fs.renameSync(from, to);
     }
 
     return { version, libOut, storybookOut, pages };
   } finally {
     fs.rmSync(workDir, { recursive: true, force: true });
+    fs.rmSync(stageDir, { recursive: true, force: true });
   }
 }
 
