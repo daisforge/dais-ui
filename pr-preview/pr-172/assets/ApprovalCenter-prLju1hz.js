@@ -1,0 +1,12 @@
+import{j as r}from"./react-UEdzNlUe.js";import{dd as n}from"./vendor-DnY5x8t2.js";import{M as t,S as s}from"./WithTooltip-KJL26V4Q-Cluo7wsc.js";import{A as c}from"./ApprovalCenter.stories-r2oCVUII.js";import"./_commonjsHelpers-BosuxZz1.js";import"./tslib-DoU9Jm1N.js";import"./_commonjs-dynamic-modules-TDtrdbi3.js";import"./react-is-CJ4CjPIR.js";import"./styled-components-C2sulCCv.js";import"./@tanstack/react-virtual-BA3RmMS7.js";import"./preload-helper-j-yXN3k7.js";import"./index-Cu4lwwaE.js";import"./index-BS0iAW2I.js";import"./ApprovalCenter-Bz2UeKNc.js";import"./@sddsjs/sdds_finai-D-xd8Ig6.js";import"./@salutejs/plasma-icons-67FHeKcG.js";import"./@salutejs/sdds-finai-2QW4XiOx.js";import"./EmptyState-Clcxu70W.js";import"./utils-NDBGknB_.js";import"./constants-DTh3jAtl.js";import"./sharedUtilsDebug-BX_KjCjW.js";import"./unidentified@3x-DP8hWoDe.js";import"./Typography-CTBLgXaA.js";function e(o){const i={code:"code",h1:"h1",h2:"h2",li:"li",p:"p",ul:"ul",...n(),...o.components};return r.jsxs(r.Fragment,{children:[r.jsx(t,{of:c,name:"Docs"}),`
+`,r.jsx(i.h1,{id:"approvalcenter",children:"ApprovalCenter"}),`
+`,r.jsx(i.p,{children:"Компонент согласований. Используется в случаях, когда необходимо необходимо отобразить последовательные согласования между группами лиц. Показывает текущее состояние, а также общую историю."}),`
+`,r.jsx(i.h2,{id:"ключевые-особенности",children:"Ключевые особенности"}),`
+`,r.jsxs(i.ul,{children:[`
+`,r.jsxs(i.li,{children:["Поддержка превью ",r.jsx(i.code,{children:"preview"})," - экран, необходимый для кейсов, когда данные ещё не были получены"]}),`
+`,r.jsxs(i.li,{children:["Возможность переключения и скрытия вкладок ",r.jsx(i.code,{children:"tabs"})," - управление состоянием вкладок (",r.jsx(i.code,{children:"Tabs"}),")"]}),`
+`,r.jsxs(i.li,{children:["Управление жизненным циклом ",r.jsx(i.code,{children:"lifeCycle"})," - параметры отображения вкладки жизненного цикла"]}),`
+`,r.jsxs(i.li,{children:["Управление историей ",r.jsx(i.code,{children:"history"})," - параметры отображения вкладки истории"]}),`
+`,r.jsxs(i.li,{children:["Кастомизация через ",r.jsx(i.code,{children:"$css"})," - передача собственных CSS стилей в корневой элемент компонента"]}),`
+`]}),`
+`,r.jsx(s,{})]})}function F(o={}){const{wrapper:i}={...n(),...o.components};return i?r.jsx(i,{...o,children:r.jsx(e,{...o})}):e(o)}export{F as default};

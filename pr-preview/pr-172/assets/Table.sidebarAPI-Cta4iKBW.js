@@ -1,0 +1,6 @@
+import{j as e}from"./react-UEdzNlUe.js";import{dd as r}from"./vendor-DnY5x8t2.js";import{M as a}from"./WithTooltip-KJL26V4Q-Cluo7wsc.js";import{T as n}from"./TypeSourceViewer-CgkII614.js";import"./_commonjsHelpers-BosuxZz1.js";import"./tslib-DoU9Jm1N.js";import"./_commonjs-dynamic-modules-TDtrdbi3.js";import"./react-is-CJ4CjPIR.js";import"./styled-components-C2sulCCv.js";import"./@tanstack/react-virtual-BA3RmMS7.js";import"./preload-helper-j-yXN3k7.js";import"./index-Cu4lwwaE.js";import"./index-BS0iAW2I.js";function o(t){const i={h1:"h1",h2:"h2",...r(),...t.components};return e.jsxs(e.Fragment,{children:[e.jsx(a,{title:"Локальные компоненты/Table/Sidebar/API"}),`
+`,e.jsx(i.h1,{id:"sidebar-api",children:"Sidebar API"}),`
+`,e.jsx(i.h2,{id:"sidebarconfig",children:"SidebarConfig"}),`
+`,e.jsx(n,{language:"ts",filePath:"packages/ui-kit/src/components/Table/types/table-config.type.ts",typeName:"SidebarConfig"}),`
+`,e.jsx(i.h2,{id:"sidebartab",children:"SidebarTab"}),`
+`,e.jsx(n,{language:"ts",filePath:"packages/ui-kit/src/components/Table/widgets/control-block/types.ts",typeName:"SidebarTab"})]})}function y(t={}){const{wrapper:i}={...r(),...t.components};return i?e.jsx(i,{...t,children:e.jsx(o,{...t})}):o(t)}export{y as default};
