@@ -1,11 +1,29 @@
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { createRef } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { Dropdown, type DropdownItemOption } from './index';
+import { Dropdown, type DropdownItemOption, type DropdownProps } from './index';
 
 afterEach(cleanup);
 
 describe('Dropdown: настоящие вложенные меню SDDS', () => {
+  it('принимает DropdownProps без явного типа пункта и с ref', async () => {
+    const ref = createRef<HTMLButtonElement>();
+    const props: DropdownProps = {
+      items: [{ value: 'open', label: 'Открыть' }],
+      placement: 'bottom',
+      alwaysOpened: true,
+      ref,
+    };
+    render(
+      <Dropdown {...props}>
+        <button type="button">Меню</button>
+      </Dropdown>,
+    );
+    const item = await screen.findByRole('option', { name: 'Открыть' });
+    expect(ref.current?.contains(item)).toBe(true);
+  });
+
   it('сохраняет пользовательские поля и исходные данные при фильтрации вложенных пунктов', async () => {
     type Item = DropdownItemOption & { action: string };
     const child: Item = {

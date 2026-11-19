@@ -12,6 +12,8 @@
     npm install --save react react-dom
 ```
 
+Пакет требует `styled-components` версии `5.3.11`.
+
 ```sh
     npm install --save-exact styled-components@5.3.11
 ```

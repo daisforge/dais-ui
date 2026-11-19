@@ -9,7 +9,7 @@
       "executor": "nx:run-commands",
       "options": {
         "cwd": "packages/mcp-server",
-        "commands": ["npm test"],
+        "commands": ["npm run test:index-types"],
         "forwardAllArgs": false
       }
     },

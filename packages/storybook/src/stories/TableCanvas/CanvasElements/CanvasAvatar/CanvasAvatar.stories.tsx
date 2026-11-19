@@ -34,13 +34,13 @@ function AvatarContentAndSizesExample() {
       renderCell: ({ row }) => <Canvas.Text>{row.size}</Canvas.Text>,
     },
     ...[
-      { key: 'photo', name: 'Фото', url: avatarItems[0]!.url },
+      { key: 'photo', name: 'Фото', url: avatarItems[0]?.url },
       { key: 'initials', name: 'Инициалы' },
       {
         key: 'custom',
         name: 'customText',
         customText: 'AI',
-        url: avatarItems[0]!.url,
+        url: avatarItems[0]?.url,
       },
       {
         key: 'broken',

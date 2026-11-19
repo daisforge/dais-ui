@@ -572,6 +572,10 @@ npm run updateX        # Обновление всех зависимостей
 npm run ui-kit:updateX
 ```
 
+Для `@sddsjs/sdds_finai` укажите точную версию из зависимостей выбранного
+`@salutejs/sdds-finai`. Её можно узнать командой
+`npm view @salutejs/sdds-finai@<версия> dependencies --json`.
+
 ### Test projects
 
 ```bash

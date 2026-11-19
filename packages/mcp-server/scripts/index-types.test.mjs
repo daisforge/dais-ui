@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import path from 'node:path';
 import { before, test } from 'node:test';
 
+/* eslint-disable import/no-unresolved -- test:index-types собирает dist перед запуском; lint работает и до сборки. */
 import { buildTypeIndex } from '../dist/indexer/indexTypes.js';
 import {
   expandCollectedTypeRefs,
@@ -9,6 +10,7 @@ import {
 } from '../dist/indexer/parseComponent.js';
 import { UI_KIT_SRC } from '../dist/indexer/tsProject.js';
 import { getType } from '../dist/tools/getType.js';
+/* eslint-enable import/no-unresolved */
 
 let index;
 
@@ -61,11 +63,15 @@ test('индексация реэкспортов не добавляет неп
   );
 });
 
-test('публичный алиас не превращает ссылку на другой тип в рекурсию', () => {
+test('MCP возвращает совместимый публичный алиас DropdownProps', () => {
   const result = getType(index, { name: 'DropdownProps' });
   assert.equal(result.error, undefined);
   assert.equal(result.importPath, '@daisforge/ui');
-  assert.match(result.definition, /type Props<T extends DropdownItemOption>/);
-  assert.match(result.definition, /Omit<DropdownProps<T>/);
-  assert.match(result.definition, /export type \{ Props as DropdownProps \}/);
+  assert.match(result.sourceFile, /components\/Dropdown\/index\.ts$/);
+  assert.match(
+    result.definition,
+    /T extends DropdownItemOption = DropdownItemOption/,
+  );
+  assert.match(result.definition, /SDDSDropdownProps<T>/);
+  assert.match(result.definition, /RefAttributes<HTMLButtonElement>/);
 });

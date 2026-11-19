@@ -3,10 +3,7 @@ import {
   CellActivatedEventArgs,
   CellClickedEventArgs,
 } from '@glideappsfinal/glide-data-grid';
-import type {
-  DropdownItemOption,
-  DropdownProps,
-} from '@ui-kit/components/Dropdown';
+import type { DropdownProps } from '@ui-kit/components/Dropdown';
 import type {
   AppearanceConfig,
   AppearanceVariant,
@@ -390,9 +387,9 @@ export type ContentFormat =
   | CustomFormat
   | NumberFormatOptions;
 
-/** Тип элемента контекстного меню (наследуется от DropdownProps<DropdownItemOption>['items']) */
+/** Тип элемента контекстного меню (наследуется от DropdownProps['items']) */
 export type ContextMenuDropdownItem = NonNullable<
-  DropdownProps<DropdownItemOption>['items']
+  DropdownProps['items']
 >[number];
 
 /**
@@ -401,7 +398,7 @@ export type ContextMenuDropdownItem = NonNullable<
  * Доступные пропсы: size, listWidth, closeOnSelect, offset и др.
  */
 export type ContextMenuDropdownProps = Omit<
-  DropdownProps<DropdownItemOption>,
+  DropdownProps,
   | 'children'
   | 'items'
   | 'placement'
@@ -418,9 +415,7 @@ export type ContextMenuDropdownProps = Omit<
 
 export type DropdownContextMenu = {
   type: 'Dropdown';
-  getDropdownItems: (params: {
-    columnLabel: string;
-  }) => DropdownProps<DropdownItemOption>['items'];
+  getDropdownItems: (params: { columnLabel: string }) => DropdownProps['items'];
 } & ContextMenuDropdownProps;
 
 /** Конфигурация контекстного меню для ячеек таблицы */
@@ -438,7 +433,7 @@ export type CellContextMenuDropdownProps<
    */
   getDropdownItems: (
     params: TableInfoWithRow<RowType, SummaryRowType, CustomCtxs>,
-  ) => DropdownProps<DropdownItemOption>['items'];
+  ) => DropdownProps['items'];
   /**
    * Колбэк открытия меню для асинхронной подгрузки. Вызывается при каждом
    * открытии, в том числе повторном на той же ячейке: потребитель здесь
@@ -477,7 +472,7 @@ export type HeaderContextMenuDropdownProps<
    */
   getDropdownItems: (
     params: TableInfoBase<RowType, SummaryRowType, CustomCtxs>,
-  ) => DropdownProps<DropdownItemOption>['items'];
+  ) => DropdownProps['items'];
   /**
    * Колбэк открытия меню для асинхронной подгрузки. Вызывается при каждом
    * открытии, в том числе повторном на той же ячейке: потребитель здесь

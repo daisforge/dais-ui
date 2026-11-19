@@ -30,7 +30,7 @@ const { searchComponents } = await import(
 );
 
 /** [запрос, любое из этих имён должно попасть в топ-3]. Фича записывается как "Компонент/Фича". */
-export const CASES = [
+const CASES = [
   ['редактирование ячеек таблицы', ['TableCanvas', 'TableCanvas/Editing']],
   [
     'конфигурация группировки колонок',

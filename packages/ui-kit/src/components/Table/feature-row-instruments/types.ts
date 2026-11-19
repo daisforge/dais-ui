@@ -21,7 +21,7 @@ export type RowInstrumentsType<RowType extends ObjectForExtending> =
     items: (DropdownItemOption & {
       onItemSelect?: (item: DropdownItemOption, event: SyntheticEvent) => void;
     })[];
-    dropdownProps?: Partial<DropdownProps<DropdownItemOption>> & {
+    dropdownProps?: Partial<DropdownProps> & {
       /**
        * При количестве item-ов = 1:  использовать ли contentLeft ?? contentRight
        * как иконку для основной кнопки и onItemSelect item-а как onClick основной кнопки

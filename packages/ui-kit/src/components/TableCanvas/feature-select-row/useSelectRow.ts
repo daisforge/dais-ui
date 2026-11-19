@@ -91,6 +91,36 @@ export function useSelectRow<
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rows, selectingRowsIsActive]);
 
+  // Объекты собираются заново только при смене классов или атрибутов: они
+  // уходят в контекст отметки строк, а он в контексты ячеек таблицы.
+  const controlBlockClassName =
+    tableConfig.selecting?.controlBlock?.domMetadata?.className;
+  const controlBlockDataAttributes =
+    tableConfig.selecting?.controlBlock?.domMetadata?.dataAttributes;
+  const controlBlock = useMemo(
+    () => ({
+      domMetadata: {
+        className: controlBlockClassName,
+        dataAttributes: controlBlockDataAttributes,
+      },
+    }),
+    [controlBlockClassName, controlBlockDataAttributes],
+  );
+
+  const sidebarClassName =
+    tableConfig.selecting?.sidebar?.domMetadata?.className;
+  const sidebarDataAttributes =
+    tableConfig.selecting?.sidebar?.domMetadata?.dataAttributes;
+  const sidebar = useMemo(
+    () => ({
+      domMetadata: {
+        className: sidebarClassName,
+        dataAttributes: sidebarDataAttributes,
+      },
+    }),
+    [sidebarClassName, sidebarDataAttributes],
+  );
+
   return {
     selectingRowsIsActive,
     setSelectingRowsIsActive,
@@ -102,19 +132,7 @@ export function useSelectRow<
     setIsSelectingRowLabelVisible,
     isSelectingRowCounterVisible,
     setIsSelectingRowCounterVisible,
-    controlBlock: {
-      domMetadata: {
-        className: tableConfig.selecting?.controlBlock?.domMetadata?.className,
-        dataAttributes:
-          tableConfig.selecting?.controlBlock?.domMetadata?.dataAttributes,
-      },
-    },
-    sidebar: {
-      domMetadata: {
-        className: tableConfig.selecting?.sidebar?.domMetadata?.className,
-        dataAttributes:
-          tableConfig.selecting?.sidebar?.domMetadata?.dataAttributes,
-      },
-    },
+    controlBlock,
+    sidebar,
   };
 }
