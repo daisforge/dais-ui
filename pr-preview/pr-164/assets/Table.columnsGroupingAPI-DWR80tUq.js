@@ -1,6 +1,0 @@
-import{j as o}from"./react-B60MRyL7.js";import{ck as i}from"./vendor-BOXbJjQW.js";import{M as m}from"./WithTooltip-KJL26V4Q-D1oqEq-B.js";import{T as e}from"./TypeSourceViewer-CtEHU1-A.js";import"./_commonjsHelpers-BosuxZz1.js";import"./tslib-DoU9Jm1N.js";import"./_commonjs-dynamic-modules-TDtrdbi3.js";import"./react-is-Clcustum.js";import"./styled-components-DN-dyp3E.js";import"./@tanstack/react-virtual--f9HMX-L.js";import"./preload-helper-Rbr_SUQB.js";import"./index-Cu4lwwaE.js";import"./index-B3szzMwc.js";import"./@salutejs/plasma-icons-LsCQzLxj.js";function r(n){const t={h1:"h1",h2:"h2",...i(),...n.components};return o.jsxs(o.Fragment,{children:[o.jsx(m,{title:"Локальные компоненты/Table/ColumnsGrouping/API"}),`
-`,o.jsx(t.h1,{id:"columns-grouping-api",children:"Columns Grouping API"}),`
-`,o.jsx(t.h2,{id:"columngroupconfig",children:"ColumnGroupConfig"}),`
-`,o.jsx(e,{language:"ts",filePath:"packages/ui-kit/src/components/Table/types/column-config.type.ts",typeName:"ColumnGroupConfig"}),`
-`,o.jsx(t.h2,{id:"columnorcolumngroupconfig",children:"ColumnOrColumnGroupConfig"}),`
-`,o.jsx(e,{language:"ts",filePath:"packages/ui-kit/src/components/Table/types/column-config.type.ts",typeName:"ColumnOrColumnGroupConfig"})]})}function G(n={}){const{wrapper:t}={...i(),...n.components};return t?o.jsx(t,{...n,children:o.jsx(r,{...n})}):r(n)}export{G as default};
