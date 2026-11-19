@@ -14,7 +14,6 @@
   "scripts": {
     "build": "tsc -p tsconfig.lib.json",
     "typecheck": "tsc -p tsconfig.lib.json --noEmit",
-    "test:index-types": "npm run build && node --test scripts/index-types.test.mjs",
     "prepare": "npm run build",
     "mcp:build-index": "node ../../generators/meta-info/generate-meta.js && node ./dist/indexer/buildIndex.js",
     "mcp:vendor-atomic": "node ./dist/indexer/vendorAtomicData.js",

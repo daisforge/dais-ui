@@ -158,6 +158,9 @@ function recordTypeSymbolIfNew(symbol: TsSymbol): Node | undefined {
     return undefined;
   }
   const filePath = decl.getSourceFile().getFilePath();
+  // После реэкспорта Dropdown из SDDS его ItemOption объявлен в зависимости.
+  // Берём имя из корневого экспорта, иначе get_type('DropdownItemOption')
+  // найдёт только одноимённый внутренний тип Table.
   const names = filePath.includes('/packages/ui-kit/src/')
     ? [symbol.getName()]
     : getRootExportNames(decl);
