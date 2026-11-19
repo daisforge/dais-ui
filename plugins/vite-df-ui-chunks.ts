@@ -175,6 +175,10 @@ export const MANUAL_UIKIT_COMP_CHUNKS = [
     modulePaths: ['packages/ui-kit/src/components/IconButton/'],
   },
   {
+    chunkName: 'PageLoader',
+    modulePaths: ['packages/ui-kit/src/components/PageLoader/'],
+  },
+  {
     chunkName: 'PageTitle',
     modulePaths: ['packages/ui-kit/src/components/PageTitle/'],
   },

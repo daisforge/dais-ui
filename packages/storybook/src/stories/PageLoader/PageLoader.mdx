@@ -1,0 +1,53 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as PageLoaderStories from './PageLoader.stories';
+
+<Meta of={PageLoaderStories} name="Docs" />
+
+# PageLoader
+
+Компонент первоначальной загрузки страницы. Показывается, пока данные ещё не получены.
+
+## Ключевые особенности
+
+- Заменяет контент страницы на время первоначальной загрузки.
+- Занимает свободное место во flex-контейнере и центрирует спиннер и текст. Размер области задаёт родитель.
+- Показывает описание, если передана непустая строка `subtitle`.
+- Использует `role="status"` для обозначения статуса загрузки.
+- Подходит для `fallback` в `Suspense`.
+
+## Первоначальная загрузка
+
+Заголовок страницы, приветствие и навигацию размещайте выше условного рендера,
+чтобы они оставались видимыми.
+
+```tsx
+import { Box, PageLoader, PageTitle } from '@daisforge/ui';
+
+<Box display="flex" flexDirection="column" height="480px" gap="24px">
+  <PageTitle title="Отчёты" />
+  {isInitialLoading ? <PageLoader /> : <Reports />}
+</Box>;
+```
+
+При повторном запросе с уже полученными данными оставляйте контент смонтированным
+и показывайте локальный индикатор обновления. Ошибку запроса обрабатывайте отдельно.
+
+## Suspense
+
+Чтобы центрировать fallback, разместите `Suspense` во flex-контейнере с заданной
+высотой.
+
+```tsx
+import { Box, PageLoader } from '@daisforge/ui';
+import { Suspense } from 'react';
+
+<Box display="flex" flexDirection="column" height="480px">
+  <Suspense fallback={<PageLoader />}>
+    <Reports />
+  </Suspense>
+</Box>;
+```
+
+Описание типов — в разделе [API](?path=/docs/композиции-pageloader-api--docs).
+
+<Stories />
