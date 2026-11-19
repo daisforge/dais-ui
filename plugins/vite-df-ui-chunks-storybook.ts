@@ -14,6 +14,16 @@ const filteredUIKitChunks = ALL_MANUAL_UIKIT_CHUNKS.filter(
 );
 
 const manualStorybookChunks = (id: string) => {
+  // Stories загружают @storybook/test динамически. Если он попадает в vendor,
+  // статический импорт vendor из iframe выполняет instrument() до setChannel.
+  // Instrumenter сохраняет временный mock-канал, и Interactions не видит шаги play.
+  if (
+    id.includes('node_modules/@storybook/') ||
+    id.includes('node_modules/storybook/')
+  ) {
+    return undefined;
+  }
+
   let currentManualChunkName;
 
   for (const el of filteredUIKitChunks) {
@@ -58,6 +68,12 @@ export function viteDFUIStorybookChunks(): Plugin {
           rollupOptions: {
             output: {
               manualChunks: manualStorybookChunks,
+              // Не втягиваем общие зависимости в ручные чанки. В частности,
+              // preload-helper остаётся вне vendor, поэтому iframe не тянет весь vendor сразу.
+              // TODO(Vite 8 / Rolldown): перенести правила в output.codeSplitting,
+              // исключить пакеты Storybook из групп и задать includeDependenciesRecursively: false.
+              // На превью проверить Interactions и статические импорты iframe.
+              onlyExplicitManualChunks: true,
             },
           },
         },
