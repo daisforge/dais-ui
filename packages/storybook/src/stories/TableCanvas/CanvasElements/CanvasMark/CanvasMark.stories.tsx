@@ -353,7 +353,7 @@ export const Huge: StoryObj = {
                   wordWrap={index % 10 === 0}
                 >
                   {withMarks(
-                    HUGE_TEXTS[(row.id + index) % HUGE_TEXTS.length]!,
+                    HUGE_TEXTS[(row.id + index) % HUGE_TEXTS.length] ?? '',
                     query,
                     theme.tokens.surfaceWarningMinor56,
                   )}

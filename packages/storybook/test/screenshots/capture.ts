@@ -116,8 +116,8 @@ async function prepareScreenshotFrame(page: Page, timeoutMs: number) {
     // Перерисовываем видимую область грида, чтобы проверять и повторную отрисовку фото.
     // Выделение, наведение и данные при этом не меняем.
     const repaint = (
-      window as Window & { daisScreenshotRepaint?: () => number }
-    ).daisScreenshotRepaint;
+      window as Window & { tableCanvasScreenshotRepaint?: () => number }
+    ).tableCanvasScreenshotRepaint;
     const grids = repaint?.() ?? 0;
     if (!grids && document.querySelector('.gdg-table'))
       throw new Error('Canvas snapshot repaint instrumentation is missing');

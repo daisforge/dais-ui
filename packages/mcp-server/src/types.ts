@@ -98,7 +98,7 @@ export interface FeatureRecord {
  * indexer/parseComponent.ts, collectNamedTypeRefs) — раскрывает то, что в
  * props[].type видно только как ссылка по имени (`ColumnConfig<T>[]`,
  * `MassActionsButtonProps[] | undefined`). Только типы, объявленные в самом
- * ui-kit — типы React/DOM и @salutejs/* уже приходят как inheritedProps.
+ * ui-kit, и внешние типы, публично реэкспортированные из корня библиотеки.
  */
 export interface TypeRecord {
   name: string;

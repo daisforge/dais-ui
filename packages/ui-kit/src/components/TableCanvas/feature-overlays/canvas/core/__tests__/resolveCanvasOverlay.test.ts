@@ -29,7 +29,7 @@ describe('resolveCanvasOverlay: что открыть по событию canvas
       trigger: 'hover',
       listWidth: 240,
       closeOnSelect: false,
-      placement: 'bottom',
+      placement: 'bottom-start',
     });
   });
 

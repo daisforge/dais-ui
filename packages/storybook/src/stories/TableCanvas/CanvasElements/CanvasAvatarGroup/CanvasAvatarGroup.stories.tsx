@@ -23,7 +23,8 @@ const meta: Meta = {
       handlers: [
         http.get('/canvas-images/virtual/:person', async ({ params }) => {
           const photo =
-            avatarPhotos[Number(params.person) % avatarPhotos.length]!;
+            avatarPhotos[Number(params.person) % avatarPhotos.length];
+          if (!photo) return new HttpResponse(null, { status: 404 });
           const response = await fetch(photo);
           return new HttpResponse(await response.arrayBuffer(), {
             headers: { 'Content-Type': 'image/png' },
@@ -49,7 +50,8 @@ function VirtualTable() {
       { label: 'visibleCount=0', items: avatarItems, total: 5, visible: 0 },
     ];
     return Array.from({ length: 700 }, (_, id) => {
-      const scenario = cases[id % cases.length]!;
+      const scenario = cases[id % cases.length];
+      if (!scenario) throw new Error('Нет сценария для строки');
       return {
         ...scenario,
         id,

@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.29.1](https://github.com/daisforge/dais-ui/compare/v1.29.0...v1.29.1) (2026-11-17)
+
+### Bug Fixes
+
+- **TableCanvas:** ширина колонок из columns не перекрывается локальной после ресайза ([19a8bf0](https://github.com/daisforge/dais-ui/commit/19a8bf0fccd2538ee51cc3d94c5a810f77fa8825))
+
 # [1.29.0](https://github.com/daisforge/dais-ui/compare/v1.28.0...v1.29.0) (2026-11-13)
 
 ### Bug Fixes

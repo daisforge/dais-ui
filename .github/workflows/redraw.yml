@@ -1,0 +1,71 @@
+name: Redraw
+
+# Тесты перерисовки TableCanvas: запуск из Actions с выбором ветки и объёма.
+# Основной проект около 15 минут, все проекты около 40 (вместе со сборкой образа).
+on:
+  workflow_dispatch:
+    inputs:
+      scope:
+        description: 'Объём: основной проект (масштаб 1, сверка после каждого шага) или все пять проектов'
+        required: true
+        default: 'основной'
+        type: choice
+        options:
+          - 'основной'
+          - 'все проекты'
+      filter:
+        description: 'Регулярное выражение имени файла сценария (например, hover); пусто — все сценарии'
+        required: false
+        default: ''
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: redraw-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  redraw:
+    name: Redraw tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - name: Получить выбранную ветку
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Подготовить Node.js для запуска Docker
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+
+      # Образ тот же, что у скриншотных тестов: зависимости и Storybook собираются
+      # внутри Docker, npm ci на хосте не нужен. shell: bash включает pipefail.
+      - name: Запустить тесты перерисовки
+        shell: bash
+        env:
+          REDRAW_SCOPE: ${{ inputs.scope }}
+          REDRAW_FILTER: ${{ inputs.filter }}
+        run: |
+          mkdir -p artifacts/redraw
+          args=()
+          if [ "$REDRAW_SCOPE" = 'основной' ]; then
+            args+=(--project chromium)
+          fi
+          if [ -n "$REDRAW_FILTER" ]; then
+            args+=("$REDRAW_FILTER")
+          fi
+          npm run redraw:test -- "${args[@]}" 2>&1 | tee artifacts/redraw/ci.log
+
+      # Отчёт Playwright, трассы и картинки расхождений, лог и при сбое сборки.
+      - name: Сохранить отчёт
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: redraw-${{ github.run_id }}-${{ github.run_attempt }}
+          path: artifacts/redraw/
+          retention-days: 7
+          if-no-files-found: warn

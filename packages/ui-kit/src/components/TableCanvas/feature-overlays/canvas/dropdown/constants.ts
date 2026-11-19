@@ -26,7 +26,7 @@ export const DROPDOWN_DEFAULTS: Pick<
   trigger: 'click',
   mouseEnterDelay: 300,
   mouseLeaveDelay: 200,
-  placement: 'bottom',
+  placement: 'bottom-start',
   offset: [0, 4],
   variant: 'normal',
   zIndex: POPOVER_Z_INDEX,

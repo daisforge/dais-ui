@@ -18,6 +18,14 @@ const meta: Meta = {
 };
 export default meta;
 
+// Округлённая ширина совпадает, пока панель ещё доезжает до неё. Перед снимком
+// ждём конца перехода, иначе контент панели снимается со сдвигом на доли пикселя.
+const waitForSettledWidth = (sidebar: HTMLElement, width: number) =>
+  waitFor(() => {
+    expect(sidebar.getAnimations()).toHaveLength(0);
+    expect(sidebar.getBoundingClientRect().width).toBe(width);
+  });
+
 const verifyWidthByTab = async (
   canvasElement: HTMLElement,
   side: 'left' | 'right',
@@ -55,11 +63,7 @@ const verifyWidthByTab = async (
   );
   const reportsTab = canvas.getByLabelText('Отчёты');
   await userEvent.click(reportsTab);
-  await waitFor(() =>
-    expect(Math.round(sidebar.getBoundingClientRect().width)).toBe(
-      reportsWidth + 44,
-    ),
-  );
+  await waitForSettledWidth(sidebar, reportsWidth + 44);
   // Виртуальное наведение userEvent не связано с настоящим указателем Playwright.
   // Завершаем его явно и ждём исчезновения подсказки: здесь проверяем геометрию панели.
   await userEvent.unhover(reportsTab);
@@ -88,12 +92,23 @@ function LegacyWidthControls() {
   return (
     <div style={{ padding: 16 }}>
       <BodyS>Ширина useSidebar: {width}</BodyS>
-      <Button size="xs" view="secondary" onClick={() => setWidth(360)}>
-        Внутренняя ширина 360
-      </Button>
-      <Button size="xs" view="secondary" onClick={() => setWidth(500)}>
-        Внутренняя ширина 500
-      </Button>
+      {/* Кнопки в столбик: в строке вторая начиналась бы с дробной координаты
+          после первой, и сглаживание её текста на снимке менялось от прогона к прогону. */}
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'flex-start',
+          gap: 8,
+        }}
+      >
+        <Button size="xs" view="secondary" onClick={() => setWidth(360)}>
+          Внутренняя ширина 360
+        </Button>
+        <Button size="xs" view="secondary" onClick={() => setWidth(500)}>
+          Внутренняя ширина 500
+        </Button>
+      </div>
     </div>
   );
 }
@@ -186,8 +201,6 @@ export const LegacyWidth: StoryObj = {
     await userEvent.click(
       canvas.getByRole('button', { name: 'Ширина из конфига' }),
     );
-    await waitFor(() =>
-      expect(Math.round(sidebar.getBoundingClientRect().width)).toBe(544),
-    );
+    await waitForSettledWidth(sidebar, 544);
   },
 };

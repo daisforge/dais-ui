@@ -149,16 +149,7 @@ async function generate(tokensDir, tokens) {
 
   await Promise.all(files.map((cPath) => unlink(join(tokensDir, cPath))));
 
-  const legacyShadows = tokensDir.endsWith('shadow')
-    ? `
-// Совместимость публичных экспортов: в новой теме SDDS этих двух токенов нет.
-export { shadowGradientDark, shadowGradientLight } from '@salutejs/sdds-themes/tokens/sdds_finai';
-`
-    : '';
-  await writeFile(
-    join(tokensDir, 'index.ts'),
-    getTokensExportsData(tokens) + legacyShadows,
-  );
+  await writeFile(join(tokensDir, 'index.ts'), getTokensExportsData(tokens));
 }
 
 async function generateTokensIndexFile() {

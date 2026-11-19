@@ -45,7 +45,11 @@ interface Params<R extends object> {
   maxHeight?: number;
   /** Высота строки по размеру строк: ниже строка не бывает */
   baseHeight: number;
+  /** Прилипшие строки: glide рисует их всегда, но в видимую область не включает */
+  pinnedRows?: readonly number[];
 }
+
+const NO_PINNED_ROWS: readonly number[] = [];
 
 /**
  * Высота строк по содержимому ячеек (`rowHeight: 'auto'`).
@@ -64,6 +68,7 @@ export function useAutoRowHeight<R extends object>({
   theme,
   maxHeight = MAX_AUTO_ROW_HEIGHT,
   baseHeight,
+  pinnedRows = NO_PINNED_ROWS,
 }: Params<R>) {
   const [version, setVersion] = useState(0);
   const anchorShiftRef = useRef(0);
@@ -127,6 +132,7 @@ export function useAutoRowHeight<R extends object>({
   store.setMaxHeight(maxHeight);
   store.setBaseHeight(baseHeight);
   store.setColumns(columnIds);
+  store.setPinnedRows(pinnedRows);
 
   // Показанной считается версия с теми же строками, базовой высотой, колонками и потолком
   const depsToken = useMemo(

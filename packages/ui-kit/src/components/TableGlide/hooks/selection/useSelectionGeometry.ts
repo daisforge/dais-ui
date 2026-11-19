@@ -10,6 +10,7 @@ import type {
   ObjectForExtending,
   CellsSelectionMode,
 } from '../../types';
+import type { RowRange } from '../visibleRows';
 import {
   clampRectToDataColumns,
   findFirstDataColumnIndex,
@@ -25,24 +26,6 @@ interface UseSelectionGeometryParams<
   cellsSelectionMode: CellsSelectionMode;
   checkboxSelectedRowIndexes?: ReadonlySet<number>;
 }
-
-const EMPTY_SET = new Set<number>();
-
-const buildIndexSet = ({
-  start,
-  length,
-}: {
-  start: number;
-  length: number;
-}): ReadonlySet<number> => {
-  const result = new Set<number>();
-
-  for (let index = 0; index < length; index += 1) {
-    result.add(start + index);
-  }
-
-  return result;
-};
 
 export function useSelectionGeometry<
   R extends ObjectForExtending,
@@ -70,8 +53,7 @@ export function useSelectionGeometry<
         hasAnyActiveSelection: false,
         firstDataColumnIndex,
         leadingServiceColumnsCount: firstDataColumnIndex,
-        activeRows: EMPTY_SET,
-        activeColumns: EMPTY_SET,
+        activeRowsRange: undefined as RowRange | undefined,
         activeDataRange: undefined as Rectangle | undefined,
         soloDataCell: undefined as Item | undefined,
         isSingleCellCustomHighlight: false,
@@ -109,8 +91,7 @@ export function useSelectionGeometry<
         hasAnyActiveSelection: false,
         firstDataColumnIndex,
         leadingServiceColumnsCount: firstDataColumnIndex,
-        activeRows: EMPTY_SET,
-        activeColumns: EMPTY_SET,
+        activeRowsRange: undefined as RowRange | undefined,
         activeDataRange: undefined as Rectangle | undefined,
         soloDataCell: undefined as Item | undefined,
         isSingleCellCustomHighlight: false,
@@ -124,21 +105,14 @@ export function useSelectionGeometry<
       };
     }
 
-    const activeRows =
-      activeDataRange?.height && activeDataRange.height > 0
-        ? buildIndexSet({
-            start: activeDataRange.y,
-            length: activeDataRange.height,
-          })
-        : EMPTY_SET;
-
-    const activeColumns =
-      activeDataRange?.width && activeDataRange.width > 0
-        ? buildIndexSet({
-            start: activeDataRange.x,
-            length: activeDataRange.width,
-          })
-        : EMPTY_SET;
+    // Границы, а не набор строк: диапазон бывает на всю колонку в миллион строк
+    const activeRowsRange: RowRange | undefined =
+      activeDataRange.height > 0
+        ? {
+            from: activeDataRange.y,
+            to: activeDataRange.y + activeDataRange.height - 1,
+          }
+        : undefined;
 
     // Координаты выбранной ячейки, если выделена ровно одна ячейка
     // (иначе undefined). Нужно, например, чтобы на выбранной строке не
@@ -152,8 +126,7 @@ export function useSelectionGeometry<
       hasAnyActiveSelection,
       firstDataColumnIndex,
       leadingServiceColumnsCount: firstDataColumnIndex,
-      activeRows,
-      activeColumns,
+      activeRowsRange,
       activeDataRange,
       soloDataCell,
       // Флаг: рисуем ли свою заливку/обводку (только одиночная ячейка в cell).
@@ -162,7 +135,10 @@ export function useSelectionGeometry<
       // (range-cell, строка по нумерации) обводит glide нативно.
       outlineRange: isSingleCellCustomHighlight ? activeDataRange : undefined,
       isServiceColumn: (colInd: number) => !!columns[colInd]?.isServiceColumn,
-      isActiveRow: (rowInd: number) => activeRows.has(rowInd),
+      isActiveRow: (rowInd: number) =>
+        activeRowsRange !== undefined &&
+        rowInd >= activeRowsRange.from &&
+        rowInd <= activeRowsRange.to,
       isCheckboxSelectedRow: (rowInd: number) =>
         checkboxSelectedRowIndexes?.has(rowInd) ?? false,
       isActiveDataCell: (colInd: number, rowInd: number) =>
@@ -174,7 +150,10 @@ export function useSelectionGeometry<
           return false;
         }
 
-        return activeColumns.has(colInd);
+        return (
+          colInd >= activeDataRange.x &&
+          colInd < activeDataRange.x + activeDataRange.width
+        );
       },
     };
   }, [columns, cellsSelectionMode, checkboxSelectedRowIndexes, selection]);

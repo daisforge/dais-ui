@@ -175,6 +175,10 @@ export const MANUAL_UIKIT_COMP_CHUNKS = [
     modulePaths: ['packages/ui-kit/src/components/IconButton/'],
   },
   {
+    chunkName: 'PageLoader',
+    modulePaths: ['packages/ui-kit/src/components/PageLoader/'],
+  },
+  {
     chunkName: 'PageTitle',
     modulePaths: ['packages/ui-kit/src/components/PageTitle/'],
   },
@@ -300,19 +304,6 @@ export const MANUAL_UIKIT_COMP_CHUNKS = [
   },
 ] as const;
 
-/** Часть других пакетов, которые мы сохраняем как наш чанк, чтобы выцепить из др либы нужную нам часть.
- *  Другая библиотека вся не тянется
- */
-
-// Новые темы остаются external, а из старого sdds-themes встраиваются только
-// shadowGradientLight/Dark. ESM-источник и исключение из external заданы в vite.config.ts.
-export const EXTERNAL_PACKAGE_MODULES_AS_CHUNK = [
-  {
-    chunkName: 'shadowGradients',
-    modulePaths: ['node_modules/@salutejs/sdds-themes/es/tokens/sdds_finai/'],
-  },
-] as const;
-
 /** Нежелательный чанк.
  * Что подпадает под этот чанк - мы устраняем с помощью "отметить пакет как external deps"
  * это делается в {@link  [ui-kit/vite.config.ts](../packages/ui-kit/vite.config.ts)} в config.rollupOptions.external
@@ -325,7 +316,6 @@ export const VENDOR_CHUNK = [
 ] as const;
 
 export const ALL_MANUAL_UIKIT_CHUNKS = [
-  ...EXTERNAL_PACKAGE_MODULES_AS_CHUNK,
   ...MANUAL_UIKIT_COMP_CHUNKS,
   ...VENDOR_CHUNK,
 ] as const;
