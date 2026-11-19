@@ -8,6 +8,7 @@ on:
     paths:
       - 'packages/storybook/**'
       - 'packages/ui-kit/**'
+      - 'plugins/**'
     types: [opened, reopened, synchronize, closed]
 
 permissions:
