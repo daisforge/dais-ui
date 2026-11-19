@@ -1,0 +1,21 @@
+import{j as r}from"./react-B60MRyL7.js";import{ck as n}from"./vendor-ABAm7dM9.js";import{M as t,S as m}from"./WithTooltip-KJL26V4Q-DNqkv6AN.js";import{T as s}from"./TableCanvas.customRenderCell.stories-WDlNWmYV.js";import"./_commonjsHelpers-BosuxZz1.js";import"./tslib-DoU9Jm1N.js";import"./_commonjs-dynamic-modules-TDtrdbi3.js";import"./react-is-Clcustum.js";import"./styled-components-JDoewyqD.js";import"./@tanstack/react-virtual-aXadwhme.js";import"./preload-helper-gfSbfbVk.js";import"./index-Cu4lwwaE.js";import"./index-OE46t0bk.js";import"./@salutejs/plasma-icons-BjqIpdkS.js";import"./tableData-DKA5H0bF.js";import"./DocStoryTemplate-DDVWy8jf.js";import"./getFuncAsString-Bjl1vUv4.js";import"./storySourceDoc-tVKyHcEN.js";import"./TableCanvas-BC-r5pnJ.js";import"./@sddsjs/sdds_finai-DkwmD3gE.js";import"./utils-CWW6sPYd.js";import"./constants-DHlp9b4t.js";import"./sharedUtilsDebug-BX_KjCjW.js";import"./@salutejs/sdds-finai-D8wK5fGe.js";import"./sharedUtilsCopy-CGH-mx0N.js";import"./index-DtotkDJi.js";import"./Box-bkXdsxp1.js";import"./Collapse-BC9SztdT.js";import"./TableCanvasSharedConstants-CqGDn8zL.js";import"./TableGlide-_4SaCD-p.js";import"./@glideappsfinal/glide-data-grid-DzB2WOB9.js";import"./canvas-hypertxt-DsokSIOX.js";import"./countWhile-blgVacgU.js";import"./Dropdown-OQAgfOXP.js";import"./TableTabs-BBnsWNxR.js";import"./sharedUiSearch-BTGm-BQU.js";import"./TextField-Bk21xWxf.js";import"./sharedUtilsInputs-DX1n1p66.js";import"./TypographyWithAutoTooltip-Cbl4XGOH.js";import"./Typography-DHR5p_-g.js";import"./ListOfFilters-89QZfQ5J.js";import"./Table-BHm7A_HS.js";import"./react-data-grid-a6lPhyw4.js";import"./lodash.isequal-mFNAsUE8.js";import"./Combobox-BgS9GVK7.js";import"./NumberFormat-D7THTU7Y.js";import"./EmptyState-Dr8_YlzM.js";import"./unidentified@3x-B0cgBGvv.js";import"./MassActions-DZOS8cH-.js";import"./Autocomplete-D4Dg924L.js";import"./FiltersActions-DMxqxWWU.js";import"./IconButton-CWgrxfM1.js";import"./TooltipList-CdTlGXww.js";import"./ErrorPage-q7KReVQy.js";function i(e){const o={a:"a",blockquote:"blockquote",code:"code",h1:"h1",h2:"h2",li:"li",p:"p",strong:"strong",ul:"ul",...n(),...e.components};return r.jsxs(r.Fragment,{children:[r.jsx(t,{of:s,name:"Docs"}),`
+`,r.jsx(o.h1,{id:"custom-render",children:"Custom Render"}),`
+`,r.jsx(o.p,{children:r.jsx(o.strong,{children:"columnConfig.renderCell / renderHeaderCell / renderSummaryCell"})}),`
+`,r.jsx(o.p,{children:"Кастомный рендеринг ячеек таблицы через Canvas-компоненты."}),`
+`,r.jsx(o.h2,{id:"ключевые-особенности",children:"Ключевые особенности"}),`
+`,r.jsxs(o.ul,{children:[`
+`,r.jsxs(o.li,{children:[r.jsx(o.code,{children:"renderCell"})," — кастомный рендер ячеек данных"]}),`
+`,r.jsxs(o.li,{children:[r.jsx(o.code,{children:"renderHeaderCell"})," — кастомный рендер заголовков колонок"]}),`
+`,r.jsxs(o.li,{children:[r.jsx(o.code,{children:"renderSummaryCell"})," — кастомный рендер итоговых строк"]}),`
+`,r.jsxs(o.li,{children:["Доступ к ",r.jsx(o.code,{children:"theme"}),", ",r.jsx(o.code,{children:"column"}),", ",r.jsx(o.code,{children:"row"})," и ",r.jsx(o.code,{children:"ctxs"})," внутри рендер-функций"]}),`
+`]}),`
+`,r.jsx(o.h2,{id:"особенности",children:"Особенности"}),`
+`,r.jsxs(o.ul,{children:[`
+`,r.jsxs(o.li,{children:["Каждая ячейка должна учитывать ",r.jsx(o.code,{children:"theme.cellHorizontalPadding"})," для корректных отступов"]}),`
+`,r.jsxs(o.li,{children:["В качестве ",r.jsx(o.code,{children:"name"})," колонки можно передать ",r.jsx(o.code,{children:"Canvas.Element"})," для кастомного заголовка"]}),`
+`,r.jsx(o.li,{children:"Доступны все Canvas-компоненты: Badge, Button, Text, Container и др."}),`
+`]}),`
+`,r.jsxs(o.blockquote,{children:[`
+`,r.jsxs(o.p,{children:["Подробнее о типах и пропсах — ",r.jsx(o.a,{href:"?path=/docs/%D0%BB%D0%BE%D0%BA%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D1%8B-tablecanvas-customrender-api--docs",children:"Custom Render API"})]}),`
+`]}),`
+`,r.jsx(m,{})]})}function lr(e={}){const{wrapper:o}={...n(),...e.components};return o?r.jsx(o,{...e,children:r.jsx(i,{...e})}):i(e)}export{lr as default};
