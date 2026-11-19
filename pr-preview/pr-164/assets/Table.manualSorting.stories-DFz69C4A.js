@@ -1,0 +1,79 @@
+import{r,b as d}from"./react-B60MRyL7.js";import{c as C}from"./tableData-DKA5H0bF.js";import b from"./DocStoryTemplate-DmnAHCX7.js";import{s as w}from"./storySourceDoc-tVKyHcEN.js";import{e as T}from"./Table-DIGhE2a4.js";import"./_commonjsHelpers-BosuxZz1.js";import"./vendor-qSGXd1Us.js";import"./tslib-DoU9Jm1N.js";import"./_commonjs-dynamic-modules-TDtrdbi3.js";import"./react-is-Clcustum.js";import"./styled-components-BH12kIqh.js";import"./@tanstack/react-virtual-CQvpRoFv.js";import"./WithTooltip-KJL26V4Q-Bf1S2iVs.js";import"./preload-helper-Rbr_SUQB.js";import"./index-Cu4lwwaE.js";import"./index-Cth5UJp1.js";import"./@salutejs/plasma-icons-Bl-ri76g.js";import"./index-D3ChpMdG.js";import"./@sddsjs/sdds_finai-QK2Yc4fI.js";import"./@salutejs/sdds-finai-B4W7VlQo.js";import"./Box-UVnFPpqO.js";import"./Collapse-D79jXGjm.js";import"./utils-B7_zEzfW.js";import"./constants-v491TRlQ.js";import"./sharedUtilsDebug-BX_KjCjW.js";import"./react-data-grid-DdOkLnO5.js";import"./TableTabs-DtRUI5Cu.js";import"./TableCanvasSharedConstants-CqGDn8zL.js";import"./TableGlide-CQMkrZrT.js";import"./@glideappsfinal/glide-data-grid-DdEoqChm.js";import"./canvas-hypertxt-DsokSIOX.js";import"./countWhile-blgVacgU.js";import"./sharedUiSearch-DfqdtoG7.js";import"./TextField-DLaZuQ-w.js";import"./sharedUtilsInputs-BqBMVrdC.js";import"./TypographyWithAutoTooltip-_xLnR82b.js";import"./Typography-CJsT5EYe.js";import"./ListOfFilters-DZZUxjxw.js";import"./FiltersActions-DFsmxhk6.js";import"./IconButton-D064SFCb.js";import"./TooltipList-Ur2omvrs.js";import"./lodash.isequal-mFNAsUE8.js";import"./Combobox-C_H9aUMK.js";import"./NumberFormat-CNWhwdNr.js";import"./EmptyState-D4xLHGxg.js";import"./unidentified@3x-DpaHf-Py.js";import"./MassActions-Dxo_syco.js";import"./Autocomplete-rviqS6oQ.js";const dt={title:"Локальные компоненты/Table/Sorting/Manual",tags:["!autodocs"],parameters:{docs:{page:b}}},R=`
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  Badge,
+  Box,
+  Button,
+  ColumnConfig,
+  ColumnOrColumnGroupConfig,
+  RenderCellProps,
+  RowHeightFunc,
+  SIZES,
+  Select,
+  Switch,
+  Table,
+  TextField,
+} from '@daisforge/ui';
+import { IconAddOutline, IconBoxOutline, IconSber } from '@daisforge/ui/icons';
+`,n={...w({preCode:R,previewSource:"shown"}),render:()=>{const s=r.useMemo(()=>C(),[]),[c,i]=r.useState(s),S=r.useMemo(()=>[{key:"id",name:"ID",sortingType:"numberSort"},{key:"task",name:"Title",sortingType:"stringSort"},{key:"priority",name:"Priority",sortingType:"stringSort"},{key:"issueType",name:"Issue Type",sortingType:"stringSort"},{key:"complete",name:"% Complete",sortingType:"numberSort"}],[]),a=r.useState([]),[m]=a;return r.useEffect(()=>{const o=m[0];if(!o){i(s);return}const g=[...s].sort((y,f)=>{const t=y[o.columnKey],e=f[o.columnKey];return typeof t=="number"&&typeof e=="number"?o.direction==="ASC"?t-e:e-t:typeof t=="string"&&typeof e=="string"&&t[0]&&e[0]?o.direction==="ASC"?t.localeCompare(e):e.localeCompare(t):0});i(g)},[m]),d.jsxDEV(T,{tableConfig:{containerStyle:{height:"700px"},sorting:{state:a,manualSorting:!0}},columnConfig:S,rows:c},void 0,!1,{fileName:"/home/runner/work/dais-ui/dais-ui/packages/storybook/src/stories/Table/Table.sorting/Table.manualSorting.stories.tsx",lineNumber:122,columnNumber:7},void 0)}};var p,u,l;n.parameters={...n.parameters,docs:{...(p=n.parameters)==null?void 0:p.docs,source:{originalSource:`{
+  ...storySourceDoc({
+    preCode,
+    previewSource: 'shown'
+  }),
+  render: () => {
+    const rows = useMemo(() => createRows(), []);
+    const [sortedRows, setSortedRows] = useState(rows);
+    const columnConfig = useMemo<readonly ColumnConfig<Row>[]>(() => [{
+      key: 'id',
+      name: 'ID',
+      sortingType: 'numberSort'
+    }, {
+      key: 'task',
+      name: 'Title',
+      sortingType: 'stringSort'
+    }, {
+      key: 'priority',
+      name: 'Priority',
+      sortingType: 'stringSort'
+    }, {
+      key: 'issueType',
+      name: 'Issue Type',
+      sortingType: 'stringSort'
+    }, {
+      key: 'complete',
+      name: '% Complete',
+      sortingType: 'numberSort'
+    }], []);
+    const sortingStateAndSetter = useState<readonly SortColumn[]>([]);
+    const [state] = sortingStateAndSetter;
+    useEffect(() => {
+      const sortColState = state[0];
+      if (!sortColState) {
+        setSortedRows(rows);
+        return;
+      }
+      const sortRows = [...rows].sort((a, b) => {
+        const aValue = a[sortColState.columnKey as keyof Row];
+        const bValue = b[sortColState.columnKey as keyof Row];
+        if (typeof aValue === 'number' && typeof bValue === 'number') {
+          return sortColState.direction === 'ASC' ? aValue - bValue : bValue - aValue;
+        }
+        if (typeof aValue === 'string' && typeof bValue === 'string' && aValue[0] && bValue[0]) {
+          return sortColState.direction === 'ASC' ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+        }
+        return 0;
+      });
+      setSortedRows(sortRows);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [state]);
+    return <Table tableConfig={{
+      containerStyle: {
+        height: '700px'
+      },
+      sorting: {
+        state: sortingStateAndSetter,
+        manualSorting: true
+      }
+    }} columnConfig={columnConfig} rows={sortedRows} />;
+  }
+}`,...(l=(u=n.parameters)==null?void 0:u.docs)==null?void 0:l.source}}};const Ct=["ManualSorting"];export{n as ManualSorting,Ct as __namedExportsOrder,dt as default};

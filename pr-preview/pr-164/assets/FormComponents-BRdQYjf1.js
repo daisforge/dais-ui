@@ -1,0 +1,27 @@
+import{j as o}from"./react-B60MRyL7.js";import{ck as c}from"./vendor-qSGXd1Us.js";import{M as n,S as d}from"./WithTooltip-KJL26V4Q-Bf1S2iVs.js";import{F as s}from"./FormComponents.stories-DHHLxBjN.js";import"./_commonjsHelpers-BosuxZz1.js";import"./tslib-DoU9Jm1N.js";import"./_commonjs-dynamic-modules-TDtrdbi3.js";import"./react-is-Clcustum.js";import"./styled-components-BH12kIqh.js";import"./@tanstack/react-virtual-CQvpRoFv.js";import"./preload-helper-Rbr_SUQB.js";import"./index-Cu4lwwaE.js";import"./index-Cth5UJp1.js";import"./@salutejs/plasma-icons-Bl-ri76g.js";import"./tableData-DKA5H0bF.js";import"./storySourceDoc-tVKyHcEN.js";import"./@hookform/resolvers-CxzUsDg0.js";import"./react-hook-form-DNPBjKRv.js";import"./FormAutocomplete-B45l8TQT.js";import"./Autocomplete-rviqS6oQ.js";import"./sharedUtilsInputs-BqBMVrdC.js";import"./constants-v491TRlQ.js";import"./@sddsjs/sdds_finai-QK2Yc4fI.js";import"./@salutejs/sdds-finai-B4W7VlQo.js";import"./FormUtils-DxovTQSU.js";import"./FormCheckbox-BY4RRW1C.js";import"./FormCombobox-B_KSYVbL.js";import"./Combobox-C_H9aUMK.js";import"./FormMask-FQV3KOAA.js";import"./FormNumberFormat-pxUzD-iT.js";import"./NumberFormat-CNWhwdNr.js";import"./FormRadioGroupBox-D9styBYQ.js";import"./utils-B7_zEzfW.js";import"./sharedUtilsDebug-BX_KjCjW.js";import"./TextField-DLaZuQ-w.js";import"./lodash.isequal-mFNAsUE8.js";import"./FormSelect-BMnaEMDA.js";import"./FormSwitch-Au6sEM73.js";import"./index-D3ChpMdG.js";import"./FormTextArea-DHk2T3Kz.js";import"./TextArea-a1XIbS-g.js";import"./FormTextField-B_WPhNgQ.js";import"./zod-mSkvzYyn.js";import"./FormDatePickers-CFGjxEVu.js";import"./DatePicker-xUCw2CrW.js";function i(r){const e={a:"a",code:"code",h1:"h1",h2:"h2",li:"li",p:"p",pre:"pre",ul:"ul",...c(),...r.components};return o.jsxs(o.Fragment,{children:[o.jsx(n,{of:s,name:"Docs"}),`
+`,o.jsx(e.h1,{id:"компоненты-формы",children:"Компоненты формы"}),`
+`,o.jsxs(e.p,{children:["Обёртки над атомарными компонентами, интегрированные с ",o.jsx(e.code,{children:"react-hook-form"})," через ",o.jsx(e.code,{children:"Controller"}),". Уменьшают boilerplate для управления значениями, валидацией и отображением ошибок."]}),`
+`,o.jsx(e.h2,{id:"ключевые-особенности",children:"Ключевые особенности"}),`
+`,o.jsxs(e.ul,{children:[`
+`,o.jsxs(e.li,{children:["14 компонентов-обёрток: ",o.jsx(e.code,{children:"FormTextField"}),", ",o.jsx(e.code,{children:"FormTextArea"}),", ",o.jsx(e.code,{children:"FormMask"}),", ",o.jsx(e.code,{children:"FormNumberFormat"}),", ",o.jsx(e.code,{children:"FormCheckbox"}),", ",o.jsx(e.code,{children:"FormSwitch"}),", ",o.jsx(e.code,{children:"FormSelect"}),", ",o.jsx(e.code,{children:"FormCombobox"}),", ",o.jsx(e.code,{children:"FormAutocomplete"}),", ",o.jsx(e.code,{children:"FormDatePicker"}),", ",o.jsx(e.code,{children:"FormDatePickerRange"}),", ",o.jsx(e.code,{children:"FormRadioGroup"})," + ",o.jsx(e.code,{children:"FormRadiobox"}),", ",o.jsx(e.code,{children:"FormSegmentGroup"})]}),`
+`,o.jsxs(e.li,{children:["Интеграция с ",o.jsx(e.code,{children:"react-hook-form"})," через ",o.jsx(e.code,{children:"Controller"})," — автоматическое управление значениями и ошибками"]}),`
+`,o.jsxs(e.li,{children:["Валидация через проп ",o.jsx(e.code,{children:"options"})," (правила ",o.jsx(e.code,{children:"react-hook-form"}),") или сторонние библиотеки (",o.jsx(e.code,{children:"zod"}),", ",o.jsx(e.code,{children:"yup"}),")"]}),`
+`,o.jsxs(e.li,{children:["Типизированные подсказки при вводе ",o.jsx(e.code,{children:"name"})," через generic: ",o.jsx(e.code,{children:'<FormCheckbox<FormValues> name="checkbox" />'})]}),`
+`]}),`
+`,o.jsx(e.h2,{id:"использование",children:"Использование"}),`
+`,o.jsxs(e.p,{children:["Оберните форму в ",o.jsx(e.code,{children:"FormProvider"})," и передайте каждому компоненту проп ",o.jsx(e.code,{children:"name"}),":"]}),`
+`,o.jsx(e.pre,{children:o.jsx(e.code,{className:"language-tsx",children:`<FormProvider {...form}>
+  <FormTextField name="fieldName" label="Лейбл" />
+</FormProvider>
+`})}),`
+`,o.jsx(e.h2,{id:"особенности",children:"Особенности"}),`
+`,o.jsxs(e.ul,{children:[`
+`,o.jsxs(e.li,{children:[o.jsx(e.code,{children:"value"})," не нужно передавать — управляется внутренне"]}),`
+`,o.jsxs(e.li,{children:[o.jsx(e.code,{children:"onChange"})," возвращает значение напрямую (не event)"]}),`
+`,o.jsxs(e.li,{children:[o.jsx(e.code,{children:"FormDatePicker"}),": при передаче ",o.jsx(e.code,{children:"validate"})," в ",o.jsx(e.code,{children:"options"})," внутренняя валидация отключается"]}),`
+`,o.jsxs(e.li,{children:[o.jsx(e.code,{children:"FormRadioGroup"}),": атрибут ",o.jsx(e.code,{children:"name"})," указывается ТОЛЬКО у группы, дочерние ",o.jsx(e.code,{children:"FormRadiobox"})," наследуют автоматически"]}),`
+`,o.jsxs(e.li,{children:[o.jsx(e.code,{children:"FormRadiobox"})," должны находиться на первом уровне вложенности внутри ",o.jsx(e.code,{children:"FormRadioGroup"})," (не оборачивать в ",o.jsx(e.code,{children:"div"}),")"]}),`
+`,o.jsxs(e.li,{children:[o.jsx(e.code,{children:"FormSelect"}),": ограничена максимальная ширина элемента, при 100% вложенные элементы могут не отобразиться"]}),`
+`]}),`
+`,o.jsxs(e.p,{children:["Описание пропсов и валидации — в разделе ",o.jsx(e.a,{href:"/docs/%D1%84%D0%BE%D1%80%D0%BC%D1%8B-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D1%8B-%D1%84%D0%BE%D1%80%D0%BC%D1%8B-api--docs",children:"API"}),"."]}),`
+`,o.jsx(d,{})]})}function $(r={}){const{wrapper:e}={...c(),...r.components};return e?o.jsx(e,{...r,children:o.jsx(i,{...r})}):i(r)}export{$ as default};
