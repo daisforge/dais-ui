@@ -36,6 +36,11 @@ export const pages = {
       default: m.PageTitleExample,
     }))
   ),
+  pageLoader: lazy(() =>
+    import('../pages/PageLoader').then((m) => ({
+      default: m.PageLoaderExample,
+    }))
+  ),
   tableCanvasFiltering: lazy(() =>
     import('../pages/TableCanvasFiltering').then((m) => ({
       default: m.TableCanvasFilteringExamples,
@@ -65,6 +70,7 @@ export const pageLabels: Record<PageKey, string> = {
   tableCanvasTooltip: 'TableCanvas Tooltip',
   splitView: 'SplitView & ListOfFilters',
   pageTitle: 'PageTitle',
+  pageLoader: 'PageLoader',
   tableCanvasFiltering: 'TableCanvas Filtering',
   tree: 'Tree',
   numberFormatAmount: 'NumberFormatAmount',
@@ -80,6 +86,7 @@ export const pageIcons: Record<PageKey, string> = {
   tableCanvasTooltip: '?',
   splitView: '/',
   pageTitle: 'T',
+  pageLoader: '↻',
   tableCanvasFiltering: 'F',
   tree: 'Tree',
   numberFormatAmount: '$',
