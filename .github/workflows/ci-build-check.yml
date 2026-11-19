@@ -25,6 +25,18 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      # Node-скрипты white-label и пакета Storybook не входят ни в один
+      # nx-проект, поэтому `npm run lint` их не видит. Без этих шагов поломка
+      # всплыла бы только на релизе (publish-npm → publish-storybook-package).
+      - name: Lint Node scripts
+        run: npm run lint:scripts
+
+      - name: Test white-label scripts
+        run: npm run white-label:test
+
+      - name: Test Storybook package scripts
+        run: npm run storybook-package:test
+
       - name: Build ui-kit
         run: npx nx build ui-kit
         env:

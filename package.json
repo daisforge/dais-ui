@@ -8,6 +8,7 @@
     "ci": "rm -rf node_modules && npm cache clean --force && npm ci --ignore-scripts --verbose",
     "lint": "nx run-many --target=lint --debug --verbose",
     "fix:lint": "nx run-many --target=lint --fix --verbose",
+    "lint:scripts": "eslint \"scripts/**/*.mjs\"",
     "typecheck": "nx run-many --target=typecheck --verbose",
     "test": "nx run-many --target=test --verbose",
     "build": "NODE_OPTIONS=\"--max_old_space_size=4096\" NODE_ENV=production NX_DAEMON=false nx run-many --target=build --parallel=1 --verbose",
