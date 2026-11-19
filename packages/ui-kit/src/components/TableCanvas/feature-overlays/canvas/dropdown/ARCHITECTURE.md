@@ -114,7 +114,7 @@ canvas/dropdown/
 `normalizeDropdownConfig(config, defaults)` берёт каждое поле сначала с
 элемента, затем из `tableConfig.dropdown`, затем из `DROPDOWN_DEFAULTS`:
 `trigger: 'click'`, `mouseEnterDelay: 300`, `mouseLeaveDelay: 200`,
-`placement: 'bottom'`, `offset: [0, 4]`, `variant: 'normal'`,
+`placement: 'bottom-start'`, `offset: [0, 4]`, `variant: 'normal'`,
 `zIndex: POPOVER_Z_INDEX`, `closeOnSelect`, `closeOnScroll`,
 `closeOnOutsideClick`, `closeOnEsc`, `loadingItems` (один неактивный пункт
 «Загрузка...»). `trigger` берётся только с элемента: нода решает, ловить ли

@@ -19,6 +19,7 @@ import { Node, SymbolFlags, SyntaxKind, ts } from 'ts-morph';
 import type { CompoundPart, PropRecord } from '../types.js';
 import type { ComponentEntry } from './discoverComponents.js';
 import { isNoiseProp, isReactDomDescription } from './htmlAttributeDenylist.js';
+import { getRootExportNames } from './resolveImportPath.js';
 import { getProject, UI_KIT_SRC } from './tsProject.js';
 
 const MAX_PROP_TYPE_CHARS = 400;
@@ -138,15 +139,11 @@ export function getCollectedTypeDecls(): CollectedTypeDecl[][] {
 
 /**
  * Записывает символ как найденный тип, если его декларация — type alias/
- * interface внутри самого ui-kit. Дедуп — по паре (имя, файл декларации):
+ * interface внутри ui-kit либо публично реэкспортированный внешний тип.
+ * Дедуп — по паре (имя, декларация):
  * разные типы с одинаковым именем в разных файлах сохраняются оба (см.
  * collectedTypeDecls), но повторные ссылки на ОДИН И ТОТ ЖЕ тип из разных
- * пропсов не плодят дубликаты. true, если что-то записано (или уже было) —
- * вызывающий код использует это, чтобы решить, надо ли ещё разворачивать
- * структуру типа (см. collectNamedTypeRefs).
- */
-/**
- * Общая часть записи символа: возвращает декларацию, если она ВПЕРВЫЕ попала
+ * пропсов не плодят дубликаты. Возвращает декларацию, если она ВПЕРВЫЕ попала
  * в индекс, и undefined, если тип не подходит или уже записан. Различать
  * "записал" и "уже было" нужно транзитивному раскрытию — иначе фронтир
  * зациклится на взаимно ссылающихся типах (их в TableCanvas достаточно).
@@ -160,37 +157,22 @@ function recordTypeSymbolIfNew(symbol: TsSymbol): Node | undefined {
   ) {
     return undefined;
   }
-  if (!decl.getSourceFile().getFilePath().includes('/packages/ui-kit/src/')) {
-    return undefined;
-  }
-
-  const name = symbol.getName();
   const filePath = decl.getSourceFile().getFilePath();
-  const existing = collectedTypeDecls.get(name) ?? [];
-  if (existing.some((e) => e.decl.getSourceFile().getFilePath() === filePath)) {
-    return undefined;
-  }
-
-  existing.push({ name, decl });
-  collectedTypeDecls.set(name, existing);
-  return decl;
-}
-
-function recordTypeSymbol(symbol: TsSymbol): boolean {
-  const decl = symbol.getDeclarations()[0];
-  if (!decl) return false;
-  if (
-    !Node.isTypeAliasDeclaration(decl) &&
-    !Node.isInterfaceDeclaration(decl)
-  ) {
-    return false;
-  }
-  if (!decl.getSourceFile().getFilePath().includes('/packages/ui-kit/src/')) {
-    return false;
-  }
-
-  recordTypeSymbolIfNew(symbol);
-  return true;
+  // После реэкспорта Dropdown из SDDS его ItemOption объявлен в зависимости.
+  // Берём имя из корневого экспорта, иначе get_type('DropdownItemOption')
+  // найдёт только одноимённый внутренний тип Table.
+  const names = filePath.includes('/packages/ui-kit/src/')
+    ? [symbol.getName()]
+    : getRootExportNames(decl);
+  let added = false;
+  names.forEach((name) => {
+    const existing = collectedTypeDecls.get(name) ?? [];
+    if (existing.some((entry) => entry.decl === decl)) return;
+    existing.push({ name, decl });
+    collectedTypeDecls.set(name, existing);
+    added = true;
+  });
+  return added ? decl : undefined;
 }
 
 /**
@@ -263,8 +245,9 @@ export function expandCollectedTypeRefs(maxDepth: number): void {
  * alias-символа — он есть только у элемента массива), останавливаясь, как
  * только находит именованную декларацию — без рекурсии в её собственное
  * тело (агент при необходимости запросит её отдельным вызовом get_type).
- * Индексируем только типы, объявленные в самом ui-kit — типы React/DOM и
- * @salutejs/* уже приходят как inheritedProps/готовые примитивы.
+ * Внешние типы индексируем только под публичными именами реэкспортов ui-kit:
+ * например, ItemOption из SDDS доступен потребителю как DropdownItemOption.
+ * Остальные типы зависимостей (React/DOM и т.п.) не собираем.
  */
 function collectNamedTypeRefs(type: Type, seen: Set<Type>): void {
   if (seen.has(type)) return;
@@ -280,7 +263,7 @@ function collectNamedTypeRefs(type: Type, seen: Set<Type>): void {
   // вызовом get_type, как и для обычных вложенных ссылок).
   const aliasSymbol = type.getAliasSymbol();
   if (aliasSymbol) {
-    recordTypeSymbol(aliasSymbol);
+    recordTypeSymbolIfNew(aliasSymbol);
     return;
   }
 
@@ -299,7 +282,7 @@ function collectNamedTypeRefs(type: Type, seen: Set<Type>): void {
   }
 
   const symbol = type.getSymbol();
-  if (symbol) recordTypeSymbol(symbol);
+  if (symbol) recordTypeSymbolIfNew(symbol);
 }
 
 function getJsDocs(node: Node): JSDoc[] {

@@ -1,3 +1,5 @@
+import { Node, SyntaxKind } from 'ts-morph';
+
 import type { TypeRecord } from '../types.js';
 import {
   clip,
@@ -9,6 +11,43 @@ import {
   deriveGroupAndFolder,
   resolveTypeImport,
 } from './resolveImportPath.js';
+
+/** Сохраняем публичное имя алиаса и рекурсивные ссылки, не меняя AST проекта. */
+function getTypeDefinition(name: string, decl: Node): string {
+  let text = decl.getText();
+  if (
+    (Node.isTypeAliasDeclaration(decl) || Node.isInterfaceDeclaration(decl)) &&
+    decl.getName() !== name
+  ) {
+    const allIdentifiers = decl.getDescendantsOfKind(SyntaxKind.Identifier);
+    const identifiers = allIdentifiers.filter((identifier) =>
+      identifier.getSymbol()?.getDeclarations().includes(decl),
+    );
+    // Props из SDDS может уже ссылаться на другой DropdownProps из new-hope.
+    // Переименование заголовка создало бы ложный рекурсивный тип; показываем
+    // исходную декларацию и её публичный алиас, как в barrel самого SDDS.
+    if (
+      allIdentifiers.some(
+        (identifier) =>
+          identifier.getText() === name && !identifiers.includes(identifier),
+      )
+    ) {
+      return clip(
+        stripImportPaths(
+          `${text}\nexport type { ${decl.getName()} as ${name} };`,
+        ),
+        MAX_RAW_TYPE_CHARS,
+      ) as string;
+    }
+    identifiers.reverse().forEach((identifier) => {
+      const start = identifier.getStart() - decl.getStart();
+      text = `${text.slice(0, start)}${name}${text.slice(
+        start + identifier.getWidth(),
+      )}`;
+    });
+  }
+  return clip(stripImportPaths(text), MAX_RAW_TYPE_CHARS) as string;
+}
 
 /**
  * Собирает Record<string, TypeRecord> из типов, которые parseComponent
@@ -23,6 +62,8 @@ import {
  * ключ вида "ПапкаКомпонента.Имя", а неоднозначный голый ключ не
  * регистрируется вовсе: тул get_type увидит отсутствие точного совпадения и
  * подскажет агенту квалифицированные варианты (см. tools/getType.ts).
+ * Внешний тип из корневого реэкспорта сохраняет публичное имя; локальные
+ * тёзки получают квалифицированные ключи (DropdownItemOption и Table.DropdownItemOption).
  */
 export function buildTypeIndex(): Record<string, TypeRecord> {
   const result: Record<string, TypeRecord> = {};
@@ -32,10 +73,7 @@ export function buildTypeIndex(): Record<string, TypeRecord> {
 
     for (const { name, decl } of group) {
       const sourceFile = decl.getSourceFile().getFilePath();
-      const definition = clip(
-        stripImportPaths(decl.getText()),
-        MAX_RAW_TYPE_CHARS,
-      ) as string;
+      const definition = getTypeDefinition(name, decl);
 
       const record: TypeRecord = {
         name,
