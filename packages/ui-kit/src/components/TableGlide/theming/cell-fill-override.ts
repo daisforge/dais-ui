@@ -39,6 +39,21 @@ type EditableCellTheme = {
   bgEditableCellActiveHovered: string;
 };
 
+/** Голубая палитра успешно изменённой ячейки. */
+export const getEditedCellFillStates = (theme: {
+  editedSuccessfullyCellColor: string;
+  editedSuccessfullyCellHoverColor: string;
+  editedSuccessfullyCellRowActiveHoverColor: string;
+  editedSuccessfullyCellActiveColor: string;
+  editedSuccessfullyCellActiveHoverColor: string;
+}): CellFillStates => ({
+  rest: theme.editedSuccessfullyCellColor,
+  hover: theme.editedSuccessfullyCellHoverColor,
+  hover2: theme.editedSuccessfullyCellRowActiveHoverColor,
+  active: theme.editedSuccessfullyCellActiveColor,
+  hoverActive: theme.editedSuccessfullyCellActiveHoverColor,
+});
+
 /** Поля темы с тремя ступенями фона выбранной строки. */
 export type ActiveRowBgTheme = {
   selectionCheckboxBg: string;

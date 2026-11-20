@@ -343,6 +343,7 @@ export const TableOrCardsUI = <
                   hoverEffects={restDataGridProps.hoverEffects}
                   appearance={restDataGridProps.appearance}
                   isErrorRow={restDataGridProps.isErrorRow}
+                  isCellEdited={restDataGridProps.isCellEdited}
                   collectRowErrors={restDataGridProps.collectRowErrors}
                   getCellsForSelection={restDataGridProps.getCellsForSelection}
                   onGridSelectionChange={

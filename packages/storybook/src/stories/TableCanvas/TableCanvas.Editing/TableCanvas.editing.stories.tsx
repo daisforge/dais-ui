@@ -8,20 +8,23 @@ import {
 } from '@df-storybook/data/tableData';
 import DocStoryTemplate from '@df-storybook/templates/DocStoryTemplate.mdx';
 import { getFuncAsString } from '@df-storybook/utils/getFuncAsString';
+import { getTypeAsString } from '@df-storybook/utils/getTypeAsString';
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Button } from '@ui-kit/components/Button';
 import { ModalDF } from '@ui-kit/components/ModalDF';
 import { Spinner } from '@ui-kit/components/Spinner';
+import { Switch } from '@ui-kit/components/Switch';
 import {
   CellEditorCombobox,
   CellEditorNumberFormat,
   ColumnConfig,
   EditingCellInfo,
   TableCanvas,
+  type TableCanvasEditedCells,
 } from '@ui-kit/components/TableCanvas';
 import { useDebouncedValue } from '@ui-kit/utils';
-import { UIEvent, useMemo, useRef, useState } from 'react';
+import { UIEvent, useCallback, useMemo, useRef, useState } from 'react';
 import useSWRInfinite from 'swr/infinite';
 
 const meta: Meta = {
@@ -38,9 +41,33 @@ export default meta;
 
 type Story = StoryObj;
 
+const treeEditingPreCode = `
+import { CellEditorNumberFormat, TableCanvas, type ColumnConfig } from '@daisforge/ui/components/TableCanvas';
+import { useMemo, useRef, useState } from 'react';
+import type * as React from 'react';
+
+`;
+
+const treeEditingDataPreCode = `
+${getTypeAsString('packages/storybook/src/data/tableData.ts', 'TreeRow')}
+
+const BLOCKS = ${JSON.stringify(BLOCKS)} as const;
+const TRIBES = ${JSON.stringify(TRIBES)} as const;
+const PRODUCTS = ${JSON.stringify(PRODUCTS)} as const;
+
+${getFuncAsString(
+  'packages/storybook/src/data/tableData.ts',
+  'createSeededRandom',
+)}
+
+${getFuncAsString('packages/storybook/src/data/tableData.ts', 'createRowsTree')}
+`;
+
 export const Editing: Story = {
   ...storySourceDoc({
+    preCode: treeEditingPreCode + treeEditingDataPreCode,
     previewSource: 'shown',
+    type: 'code',
   }),
   render: () => {
     const [rows, setRows] = useState(() => createRowsTree());
@@ -285,11 +312,24 @@ export const Editing: Story = {
 
 type SimpleRow = { id: string; name: string; value: number };
 
+const simpleRowPreCode = `
+${getTypeAsString(
+  'packages/storybook/src/stories/TableCanvas/TableCanvas.Editing/TableCanvas.editing.stories.tsx',
+  'SimpleRow',
+)}
+`;
+
 export const EditingButtonsControl: Story = {
   ...storySourceDoc({
+    preCode: `
+import { TableCanvas, type ColumnConfig } from '@daisforge/ui/components/TableCanvas';
+import { useMemo, useRef, useState } from 'react';
+${simpleRowPreCode}
+`,
     previewSource: 'shown',
+    type: 'code',
   }),
-  name: 'Buttons Control (disabled, isLoading)',
+  name: 'Кнопки и подсветка — внутреннее состояние',
   render: () => {
     const [rows, setRows] = useState<SimpleRow[]>([
       { id: '1', name: 'Альфа', value: 100 },
@@ -298,7 +338,6 @@ export const EditingButtonsControl: Story = {
     ]);
     const [isSaving, setIsSaving] = useState(false);
     const savedRowsRef = useRef<SimpleRow[] | null>(null);
-
     const columnConfig = useMemo(
       (): ColumnConfig<SimpleRow>[] => [
         {
@@ -359,9 +398,127 @@ export const EditingButtonsControl: Story = {
   },
 };
 
+export const EditingControlledHighlights: Story = {
+  ...storySourceDoc({
+    preCode: `
+import { Button, Switch } from '@daisforge/ui';
+import { TableCanvas, type ColumnConfig, type TableCanvasEditedCells } from '@daisforge/ui/components/TableCanvas';
+import { useCallback, useMemo, useRef, useState } from 'react';
+${simpleRowPreCode}
+`,
+    previewSource: 'shown',
+    type: 'code',
+  }),
+  name: 'Подсветка — внешнее состояние',
+  render: () => {
+    const [rows, setRows] = useState<SimpleRow[]>([
+      { id: '1', name: 'Альфа', value: 100 },
+      { id: '2', name: 'Бета', value: 200 },
+      { id: '3', name: 'Гамма', value: 300 },
+    ]);
+    const [editedCells, setEditedCells] = useState<
+      TableCanvasEditedCells<string>
+    >(() => new Map());
+    const [editModeEnabled, setEditModeEnabled] = useState(false);
+    const savedRowsRef = useRef<SimpleRow[] | null>(null);
+    const [highlightNewEdits, setHighlightNewEdits] = useState(true);
+    const onEditedCellsChange = useCallback<typeof setEditedCells>(
+      (update) => {
+        if (highlightNewEdits) setEditedCells(update);
+      },
+      [highlightNewEdits],
+    );
+    const columnConfig = useMemo(
+      (): ColumnConfig<SimpleRow>[] => [
+        {
+          key: 'name',
+          name: 'Название',
+          editingCell: { component: 'inputString' },
+        },
+        {
+          key: 'value',
+          name: 'Значение',
+          editingCell: { component: 'inputNumber' },
+        },
+      ],
+      [],
+    );
+
+    return (
+      <>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: 8,
+            marginBottom: 12,
+          }}
+        >
+          <Switch
+            size="s"
+            label="Подсвечивать новые правки"
+            disabled={!editModeEnabled}
+            checked={highlightNewEdits}
+            onChange={(event) => setHighlightNewEdits(event.target.checked)}
+          />
+          <Button
+            size="xs"
+            view="secondary"
+            disabled={!editModeEnabled}
+            onClick={() => setEditedCells(new Map([['1', new Set(['name'])]]))}
+          >
+            Подсветить только название первой строки
+          </Button>
+          <Button
+            size="xs"
+            view="secondary"
+            disabled={!editModeEnabled}
+            onClick={() => setEditedCells(new Map())}
+          >
+            Сбросить подсветку
+          </Button>
+        </div>
+        <TableCanvas
+          tableConfig={{
+            containerStyle: { height: '250px' },
+            editing: {
+              enabled: [editModeEnabled, setEditModeEnabled],
+              rowKeyGetter: (row) => row.id,
+              onRowsChange: setRows,
+              editedCellsState: [editedCells, onEditedCellsChange],
+              onEnableEditing(enableEditorMode) {
+                savedRowsRef.current = rows;
+                enableEditorMode();
+              },
+              onSave(disableEditorMode) {
+                savedRowsRef.current = null;
+                setEditedCells(new Map());
+                disableEditorMode();
+              },
+              onCancel(disableEditorMode) {
+                if (savedRowsRef.current) setRows(savedRowsRef.current);
+                savedRowsRef.current = null;
+                setEditedCells(new Map());
+                disableEditorMode();
+              },
+            },
+          }}
+          columnConfig={columnConfig}
+          rows={rows}
+        />
+      </>
+    );
+  },
+};
+
 export const EditingInModal: Story = {
   ...storySourceDoc({
+    preCode: `
+import { Button, ModalDF } from '@daisforge/ui';
+${treeEditingPreCode}${treeEditingDataPreCode}`,
     previewSource: 'shown',
+    type: 'code',
   }),
   render: () => {
     const [rows, setRows] = useState(() => createRowsTree());
@@ -660,86 +817,23 @@ const INVOICE_ROWS: InvoiceRow[] = [
   },
 ];
 
-const rowErrorsCode = `
-import { ColumnConfig, TableCanvas } from '@daisforge/ui/components/TableCanvas';
-import { useState } from 'react';
+const rowErrorsPreCode = `
+import { Button } from '@daisforge/ui';
+import { TableCanvas, type ColumnConfig } from '@daisforge/ui/components/TableCanvas';
+import { useMemo, useState } from 'react';
 
-type InvoiceRow = {
-  id: string;
-  name: string;
-  amount: number;
-  limit: number;
-  status: 'new' | 'approved' | 'rejected';
-};
+${getTypeAsString(
+  'packages/storybook/src/stories/TableCanvas/TableCanvas.Editing/TableCanvas.editing.stories.tsx',
+  'InvoiceRow',
+)}
 
-const columnConfig: ColumnConfig<InvoiceRow>[] = [
-  {
-    key: 'name',
-    name: 'Назначение',
-    editingCell: {
-      component: 'inputString',
-      error: {
-        value: (row) => row.name.trim() === '',
-        // Тултип считается только при наведении на ячейку с ошибкой.
-        tooltip: () => 'Назначение платежа не заполнено',
-      },
-    },
-  },
-  {
-    key: 'amount',
-    name: 'Сумма',
-    contentFormat: 'number',
-    editingCell: {
-      component: 'inputNumber',
-      error: {
-        value: (row) => row.amount > row.limit,
-        tooltip: (row) => ({
-          text: \`Сумма превышает лимит \${row.limit}\`,
-          placement: 'right',
-          maxWidth: 240,
-        }),
-      },
-    },
-  },
-  { key: 'limit', name: 'Лимит', contentFormat: 'number' },
-  { key: 'status', name: 'Статус' },
-];
-
-const App = () => {
-  const [rows, setRows] = useState<InvoiceRow[]>(initialRows);
-
-  return (
-    <TableCanvas
-      tableConfig={{
-        containerStyle: { height: '400px' },
-        rowMarkers: {},
-        rowSize: { showInControl: true, default: 'big' },
-        editing: {
-          defaultEnabled: true,
-          onRowsChange: setRows,
-          rowKeyGetter: (r) => r.id,
-          rowErrors: {
-            // Отклонённая строка подсвечивается целиком, одной рамкой.
-            isErrorRow: (row) => row.status === 'rejected',
-            // Свой текст тултипа индикатора. Без этой функции будет
-            // «Ошибок в строке: N» для поячеечных ошибок и ничего для строки.
-            tooltip: ({ isErrorRow, errorCellsCount }) =>
-              isErrorRow
-                ? 'Строка отклонена'
-                : \`Ошибок в строке: \${errorCellsCount}\`,
-          },
-        },
-      }}
-      columnConfig={columnConfig}
-      rows={rows}
-    />
-  );
-};
+const INVOICE_ROWS: InvoiceRow[] = ${JSON.stringify(INVOICE_ROWS)};
 `;
 
 export const EditingRowErrors: Story = {
   ...storySourceDoc({
-    code: rowErrorsCode,
+    preCode: rowErrorsPreCode,
+    previewSource: 'shown',
     type: 'code',
   }),
   name: 'Row Errors (индикатор и ошибка всей строки)',
@@ -861,12 +955,14 @@ const COUNTERPARTY_WORDS = [
   'Сигма',
 ];
 
-const makeCounterparty = (i: number): Counterparty => ({
-  id: `cp-${i + 1}`,
-  name: `${COUNTERPARTY_FORMS[i % COUNTERPARTY_FORMS.length]} «${
-    COUNTERPARTY_WORDS[i % COUNTERPARTY_WORDS.length]
-  } ${String(i + 1).padStart(4, '0')}»`,
-});
+function makeCounterparty(i: number): Counterparty {
+  return {
+    id: `cp-${i + 1}`,
+    name: `${COUNTERPARTY_FORMS[i % COUNTERPARTY_FORMS.length]} «${
+      COUNTERPARTY_WORDS[i % COUNTERPARTY_WORDS.length]
+    } ${String(i + 1).padStart(4, '0')}»`,
+  };
+}
 
 const COUNTERPARTIES: Counterparty[] = Array.from({ length: 1000 }, (_, i) =>
   makeCounterparty(i),
@@ -877,14 +973,14 @@ const COUNTERPARTIES_PAGE_SIZE = 50;
 type CounterpartyPage = { items: Counterparty[]; hasMore: boolean };
 
 // Имитация бэкенда: поиск по названию и постраничная выдача с задержкой.
-const fetchCounterparties = ({
+function fetchCounterparties({
   search,
   offset,
 }: {
   search: string;
   offset: number;
-}) =>
-  new Promise<CounterpartyPage>((resolve) => {
+}) {
+  return new Promise<CounterpartyPage>((resolve) => {
     setTimeout(() => {
       const query = search.trim().toLowerCase();
       const filtered = query
@@ -897,6 +993,7 @@ const fetchCounterparties = ({
       });
     }, 500);
   });
+}
 
 // Кеш SWR живёт вне редактора, поэтому страницы переживают закрытие ячейки.
 // Ключ включает поисковый запрос: для каждого запроса свой набор страниц.
@@ -1017,10 +1114,44 @@ function CounterpartyCellEditor({
 
 const selectInfiniteScrollPreCode = `
 import { Spinner } from '@daisforge/ui/components/Spinner';
-import { CellEditorCombobox, ColumnConfig, EditingCellInfo, TableCanvas } from '@daisforge/ui/components/TableCanvas';
+import { CellEditorCombobox, TableCanvas, type ColumnConfig, type EditingCellInfo } from '@daisforge/ui/components/TableCanvas';
 import { useDebouncedValue } from '@daisforge/ui/utils';
-import { UIEvent, useMemo, useState } from 'react';
+import { useMemo, useState, type UIEvent } from 'react';
 import useSWRInfinite from 'swr/infinite';
+
+${getTypeAsString(
+  'packages/storybook/src/stories/TableCanvas/TableCanvas.Editing/TableCanvas.editing.stories.tsx',
+  'Counterparty',
+)}
+
+${getTypeAsString(
+  'packages/storybook/src/stories/TableCanvas/TableCanvas.Editing/TableCanvas.editing.stories.tsx',
+  'CounterpartyPage',
+)}
+
+${getTypeAsString(
+  'packages/storybook/src/stories/TableCanvas/TableCanvas.Editing/TableCanvas.editing.stories.tsx',
+  'ContractRow',
+)}
+
+const COUNTERPARTY_FORMS = ${JSON.stringify(COUNTERPARTY_FORMS)};
+const COUNTERPARTY_WORDS = ${JSON.stringify(COUNTERPARTY_WORDS)};
+
+${getFuncAsString(
+  'packages/storybook/src/stories/TableCanvas/TableCanvas.Editing/TableCanvas.editing.stories.tsx',
+  'makeCounterparty',
+)}
+
+const COUNTERPARTIES: Counterparty[] = Array.from({ length: ${
+  COUNTERPARTIES.length
+} }, (_, i) => makeCounterparty(i));
+const COUNTERPARTIES_PAGE_SIZE = ${COUNTERPARTIES_PAGE_SIZE};
+const CONTRACT_ROWS: ContractRow[] = ${JSON.stringify(CONTRACT_ROWS)};
+
+${getFuncAsString(
+  'packages/storybook/src/stories/TableCanvas/TableCanvas.Editing/TableCanvas.editing.stories.tsx',
+  'fetchCounterparties',
+)}
 
 ${getFuncAsString(
   'packages/storybook/src/stories/TableCanvas/TableCanvas.Editing/TableCanvas.editing.stories.tsx',
@@ -1031,7 +1162,6 @@ ${getFuncAsString(
   'packages/storybook/src/stories/TableCanvas/TableCanvas.Editing/TableCanvas.editing.stories.tsx',
   'CounterpartyCellEditor',
 )}
-
 `;
 
 export const EditingSelectInfiniteScroll: Story = {

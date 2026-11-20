@@ -524,6 +524,8 @@ export type TableGlideCustomProps<
    * видимости, как и `isErrorCell`.
    */
   isErrorRow?: (row: R) => boolean;
+  /** Возвращает true, если ячейка отмечена для подсветки в текущей сессии. */
+  isCellEdited?: (row: R, columnKey: string) => boolean;
   /**
    * Собирать сводку ошибок по строкам окна видимости ({@link RowErrorsSummary}
    * в `cellInfo.rowErrors`). Для сводки колонки с `isErrorCell` обходятся все,

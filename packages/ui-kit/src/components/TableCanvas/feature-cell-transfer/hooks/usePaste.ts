@@ -1,8 +1,9 @@
 /* eslint-disable no-continue */
 import type { GridSelection } from '@glideappsfinal/glide-data-grid';
 import { createDebugLogger } from '@ui-kit/shared/utils/debug';
-import { useCallback } from 'react';
+import { useCallback, useLayoutEffect, useRef } from 'react';
 
+import { sameSelection } from '../../../TableGlide/hooks/selection/useNativeGridSelection';
 import {
   notifications,
   type TableNotification,
@@ -14,6 +15,7 @@ import type {
   PasteMeta,
   RowsChangeType,
   TransferColumnConfig,
+  WrittenCell,
 } from '../types';
 import { applyValuesToRows } from '../utils/applyValuesToRows';
 import { collectTextMatrix } from '../utils/collectTextMatrix';
@@ -47,6 +49,7 @@ interface UsePasteParams<R extends ObjectForExtending> {
     rows: R[],
     data: {
       indexes: number[];
+      writtenCells: WrittenCell[];
       column: TransferColumnConfig;
       rows?: { before: R; after: R }[];
       type: RowsChangeType;
@@ -55,31 +58,38 @@ interface UsePasteParams<R extends ObjectForExtending> {
   onNotification?: (event: TableNotification) => void;
 }
 
-export function usePaste<R extends ObjectForExtending>({
-  editModeEnabled,
-  cellTransferConfig,
-  columns,
-  flattenedRows,
-  selectionRef,
-  rowContextValue,
-  headerContextValue,
-  onRowsChange,
-  onNotification,
-}: UsePasteParams<R>) {
+export function usePaste<R extends ObjectForExtending>(
+  params: UsePasteParams<R>,
+) {
+  const { editModeEnabled, cellTransferConfig: config } = params;
+  const latest = useRef(params);
+  useLayoutEffect(() => {
+    latest.current = params;
+  }, [params]);
+  const clipboardEnabled = config?.enabled ?? editModeEnabled;
+  // Ответ буфера относится к той сессии, в которой пользователь начал вставку.
+  const session = useRef(0);
+  useLayoutEffect(
+    () => () => {
+      session.current += 1;
+    },
+    [editModeEnabled, clipboardEnabled],
+  );
+
   const handlePaste = useCallback(
     async (clipboardText?: string) => {
-      // Phase 1: чтение буфера и разбор TSV
-      const clipboardEnabled = cellTransferConfig?.enabled ?? editModeEnabled;
+      const startedIn = session.current;
       if (!clipboardEnabled) {
         clipboardDebug(PFX, 'skip: буфер отключён');
         return;
       }
-      if (!onRowsChange) {
+      const start = latest.current;
+      if (!start.onRowsChange) {
         clipboardDebug(PFX, 'skip: нет onRowsChange');
         return;
       }
 
-      const selection = selectionRef.current;
+      const selection = start.selectionRef.current;
       const hasColumnSelection = hasColumnsOnlySelection(selection);
       const hasRowSelection = hasRowsOnlySelection(selection);
       if (!selection?.current && !hasColumnSelection && !hasRowSelection) {
@@ -111,6 +121,51 @@ export function usePaste<R extends ObjectForExtending>({
         return;
       }
 
+      const {
+        columns,
+        flattenedRows,
+        selectionRef,
+        cellTransferConfig,
+        rowContextValue,
+        headerContextValue,
+        onRowsChange,
+        onNotification,
+      } = latest.current;
+      if (startedIn !== session.current || !onRowsChange) {
+        clipboardDebug(
+          PFX,
+          'skip: сессия завершилась или обработчик записи отключён',
+        );
+        return;
+      }
+      if (clipboardText === undefined) {
+        // Родитель может пересоздать конфиг без смены места вставки. Проверяем порядок
+        // колонок и строк, а права записи и обработчики берём из последнего рендера.
+        if (
+          columns !== start.columns &&
+          (columns.length !== start.columns.length ||
+            columns.some((col, i) => col.key !== start.columns[i]?.key))
+        ) {
+          clipboardDebug(PFX, 'skip: изменился набор или порядок колонок');
+          return;
+        }
+        if (
+          flattenedRows !== start.flattenedRows &&
+          (flattenedRows.length !== start.flattenedRows.length ||
+            flattenedRows.some((row, i) => row !== start.flattenedRows[i]))
+        ) {
+          clipboardDebug(PFX, 'skip: строки заменены или изменился их порядок');
+          return;
+        }
+        if (
+          !selectionRef.current ||
+          !sameSelection(selection, selectionRef.current)
+        ) {
+          clipboardDebug(PFX, 'skip: изменилось выделение');
+          return;
+        }
+      }
+
       if (!text) {
         clipboardDebug(PFX, 'skip: буфер пуст');
         return;
@@ -128,7 +183,6 @@ export function usePaste<R extends ObjectForExtending>({
         data,
       });
 
-      // Phase 2: тираж(broadcast) и проверка границ
       const pasteConfig: Required<PasteConfig> = {
         ...DEFAULT_PASTE_CONFIG,
         ...cellTransferConfig?.paste,
@@ -206,7 +260,6 @@ export function usePaste<R extends ObjectForExtending>({
         return;
       }
 
-      // Phase 3: onBeforePaste пользовательский перехват
       if (cellTransferConfig?.onBeforePaste) {
         const targetRange = {
           x: targetStartCol,
@@ -235,13 +288,12 @@ export function usePaste<R extends ObjectForExtending>({
 
       const cellContexts = { rowContextValue, headerContextValue };
 
-      // Phase 4-5: readonly-abort prescan + запись значений (общий core с fill).
-      // paste тайлит буфер по модулю его размеров; effective*Targets уже учли
-      // broadcast/несмежность.
+      // Если выделение больше буфера, повторяем его содержимое по строкам и колонкам.
       const {
         newRows,
         affectedIndexes,
         firstAffectedColumn,
+        writtenCells,
         skippedByValidation,
         aborted,
       } = applyValuesToRows({
@@ -283,20 +335,11 @@ export function usePaste<R extends ObjectForExtending>({
       onRowsChange(newRows, {
         column: firstAffectedColumn,
         indexes: affectedIndexes,
+        writtenCells,
         type: 'paste',
       });
     },
-    [
-      editModeEnabled,
-      cellTransferConfig,
-      columns,
-      flattenedRows,
-      selectionRef,
-      rowContextValue,
-      headerContextValue,
-      onRowsChange,
-      onNotification,
-    ],
+    [clipboardEnabled],
   );
 
   return { handlePaste };

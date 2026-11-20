@@ -16,6 +16,40 @@ const partial = (_header: boolean): FrameExpectation => ({
 // про useFillHandle). Внутри одной зоны редактируемости путь частичный.
 const crossing: FrameExpectation = { kinds: ['full', 'selection', 'damage'] };
 
+test('внешние отметки обновляют фон открытого редактора', async ({ page }) => {
+  await page.goto(
+    '/iframe.html?id=локальные-компоненты-tablecanvas-editing--editing-controlled-highlights&viewMode=story',
+  );
+  await page
+    .locator('button')
+    .filter({ hasText: /^Редактировать$/ })
+    .click();
+  const canvas = await page.getByTestId('data-grid-canvas').boundingBox();
+  if (!canvas) throw new Error('Таблица ещё не отображается');
+  await page.mouse.dblclick(canvas.x + 100, canvas.y + 54);
+  const editor = page.locator('textarea:visible');
+  await expect(editor).toHaveValue('Альфа');
+  await editor.fill('Черновик');
+  const background = () =>
+    page
+      .locator('[id^="gdg-overlay-"].gdg-style')
+      .evaluate((el) => getComputedStyle(el, '::before').backgroundColor);
+  const original = await background();
+  // Вызываем обработчик кнопки без перевода фокуса, как при внешнем обновлении отметок.
+  await page
+    .getByRole('button', { name: 'Подсветить только название первой строки' })
+    .evaluate((button: HTMLButtonElement) => button.click());
+  await expect
+    .poll(background)
+    .toMatch(/^rgb\((207, 236|222, 242|237, 248), 255\)$/);
+  await expect(editor).toHaveValue('Черновик');
+  await page
+    .getByRole('button', { name: 'Сбросить подсветку' })
+    .evaluate((button: HTMLButtonElement) => button.click());
+  await expect.poll(background).toBe(original);
+  await expect(editor).toBeFocused();
+});
+
 test.describe('редактирование', () => {
   test.beforeEach(async ({ grid }) => {
     await grid.open(STAND, { serviceColumns: 1 });
@@ -82,10 +116,46 @@ test.describe('редактирование', () => {
         some: false,
       },
     );
+    const editorFill = () =>
+      page
+        .locator('[id^="gdg-overlay-"].gdg-style')
+        .evaluate((el) => getComputedStyle(el, '::before').backgroundColor);
+    await expect.poll(editorFill).toBe('rgb(255, 232, 191)');
     await grid.step('ввод и Enter меняют данные', async () => {
-      await page.keyboard.type('Новое имя');
-      await page.keyboard.press('Enter');
+      const editor = page.locator('textarea:visible');
+      await expect(editor).toHaveValue('Запись 6');
+      await editor.fill('Новое имя');
+      await expect(editor).toHaveValue('Новое имя');
+      await editor.press('Enter');
+      await expect(editor).toHaveCount(0);
     });
+    await page.mouse.dblclick(point.x, point.y);
+    const savedEditor = page.locator('textarea:visible');
+    await expect(savedEditor).toHaveValue('Новое имя');
+    await expect.poll(editorFill).toBe('rgb(207, 236, 255)');
+    await grid.leave();
+    await expect.poll(editorFill).toBe('rgb(222, 242, 255)');
+    await savedEditor.press('Escape');
+    await grid.click([1, 7]);
+    await grid.leave();
+    await grid.settle();
+    const editedBounds = await grid.bounds([1, 5]);
+    const pixel = await page
+      .getByTestId('data-grid-canvas')
+      .evaluate((el, rect) => {
+        const canvas = el as HTMLCanvasElement;
+        const bounds = canvas.getBoundingClientRect();
+        const x = Math.floor(
+          ((rect.x + rect.width - 12 - bounds.x) * canvas.width) / bounds.width,
+        );
+        const y = Math.floor(
+          ((rect.y + 6 - bounds.y) * canvas.height) / bounds.height,
+        );
+        return Array.from(
+          canvas.getContext('2d')!.getImageData(x, y, 1, 1).data,
+        );
+      }, editedBounds);
+    expect(pixel).toEqual([237, 248, 255, 255]); // editedSuccessfullyCellColor светлой темы
     await grid.step('наведение после правки', () => grid.hover([1, 6]), {
       kinds: ['damage'],
       header: false,
