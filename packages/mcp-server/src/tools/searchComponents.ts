@@ -5,6 +5,12 @@ import type {
   TypeRecord,
 } from '../types.js';
 import { isOkComponent } from '../types.js';
+import {
+  COMPONENT_SEARCH_HINTS,
+  FEATURE_SEARCH_HINTS,
+  scoreSearchHints,
+  TYPE_SEARCH_HINTS,
+} from './searchVocabulary.js';
 
 export interface SearchComponentsArgs {
   query?: string;
@@ -93,7 +99,7 @@ function scoreComponent(component: ComponentRecord, tokens: string[]): number {
   const docs = (component.docs || '').toLowerCase();
   const category = (component.category || '').toLowerCase();
 
-  let score = 0;
+  let score = scoreSearchHints(COMPONENT_SEARCH_HINTS[component.name], tokens);
   tokens.forEach((w) => {
     if (name === w) score += 100;
     else if (name.includes(w)) score += 15;
@@ -121,7 +127,7 @@ function scoreFeature(feature: FeatureRecord, tokens: string[]): number {
   const docs = (feature.docs || '').toLowerCase();
   const apiDocs = (feature.apiDocs || '').toLowerCase();
 
-  let score = 0;
+  let score = scoreSearchHints(FEATURE_SEARCH_HINTS[feature.feature], tokens);
   tokens.forEach((w) => {
     if (featureName === w) score += 80;
     else if (featureName.includes(w)) score += 15;
@@ -151,7 +157,7 @@ function scoreType(record: TypeRecord, tokens: string[]): number {
   const name = record.name.toLowerCase();
   const definition = record.definition.toLowerCase();
 
-  let score = 0;
+  let score = scoreSearchHints(TYPE_SEARCH_HINTS[record.name], tokens);
   tokens.forEach((w) => {
     if (name === w) score += 90;
     else if (name.includes(w)) score += 15;

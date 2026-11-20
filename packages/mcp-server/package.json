@@ -28,7 +28,10 @@
     "mcp:ab:prepare-before": "node ./ab/prepare-before.mjs",
     "mcp:inspect:check-node": "node -e \"const [maj,min]=process.versions.node.split('.').map(Number);if(!(maj>22||(maj===22&&min>=12))){console.error('mcp:inspect нужна нода >=22.12 (сам inspector и его optional @rolldown/binding-* биндинг), сейчас '+process.version+'. Запусти: nvm use 22.19.0');process.exit(1)}\"",
     "mcp:inspect": "bash scripts/mcp-inspect.sh",
-    "mcp:search-eval": "node ./ab/search-eval.mjs"
+    "mcp:search-eval": "node ./ab/search-eval.mjs",
+    "test": "npm run build && npm run test:consumer && node --test --test-concurrency=1",
+    "test:consumer": "node scripts/prepare-consumer-types.mjs && tsc -p test/tsconfig.json --noEmit",
+    "test:consumer:report": "node scripts/report-minimal-usage.mjs"
   },
   "license": "MIT",
   "publishConfig": {

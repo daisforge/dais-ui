@@ -1,4 +1,27 @@
+import { ts } from 'ts-morph';
+
 import type { InheritedPropRecord, PropRecord } from '../types.js';
+
+function readTypeBranches(text: string): readonly ts.TypeNode[] {
+  const source = ts.createSourceFile(
+    'placeholder.ts',
+    `type Value = ${text};`,
+    ts.ScriptTarget.Latest,
+  );
+  const [alias] = source.statements;
+  if (!alias || !ts.isTypeAliasDeclaration(alias)) return [];
+  const { type } = alias;
+  return ts.isUnionTypeNode(type) ? type.types : [type];
+}
+
+function isArrayType(type: ts.TypeNode): boolean {
+  return (
+    ts.isArrayTypeNode(type) ||
+    (ts.isTypeOperatorNode(type) &&
+      type.operator === ts.SyntaxKind.ReadonlyKeyword &&
+      ts.isArrayTypeNode(type.type))
+  );
+}
 
 /** Грубая эвристика значения-заглушки по тексту типа — не точный резолвер, а стартовая точка для агента. */
 function placeholderForType(typeText: string | undefined): string {
@@ -9,16 +32,18 @@ function placeholderForType(typeText: string | undefined): string {
 
   if (t === 'boolean') return 'true';
   if (t === 'number') return '0';
-  if (t === 'string') return "'значение'";
+  const branches = readTypeBranches(t);
+  if (branches.some(isArrayType)) return '[]';
+  if (branches.some((type) => type.kind === ts.SyntaxKind.StringKeyword))
+    return "'значение'";
   if (/=>/.test(t)) return '() => {}';
-  if (t.endsWith('[]') || t.startsWith('readonly ')) return '[]';
   if (t.includes('ReactNode') || t.includes('ReactElement')) return "'Контент'";
   return '{}';
 }
 
 /**
  * Синтетический `<Component requiredProp={...} />` из обязательных пропсов —
- * дешёвая заглушка, не проверенный пример. Вычисляется для КАЖДОГО
+ * стартовая заготовка для агента. Вычисляется для каждого
  * компонента (в отличие от examples[], которые есть только там, где нашлась
  * curated-стори или реальное JSX-вхождение — см. collectUsageExamples.ts и
  * TASKS.md T3) и кладётся в отдельное поле ComponentRecord.minimalUsage, а не
@@ -26,19 +51,45 @@ function placeholderForType(typeText: string | undefined): string {
  * тратил вызов get_component_examples на строку, уже выводимую из
  * importStatement.
  */
-export function synthesizeMinimalUsage(record: {
-  name: string;
-  props?: PropRecord[];
-  inheritedProps?: InheritedPropRecord[];
-  compoundParts?: { name: string }[];
-}): string {
+export function synthesizeMinimalUsage(
+  record: {
+    name: string;
+    apiKind?: 'namespace';
+    props?: PropRecord[];
+    inheritedProps?: InheritedPropRecord[];
+    compoundParts?: { name: string }[];
+  },
+  readFullTypes: (names: ReadonlySet<string>) => PropRecord[],
+): string {
+  if (record.apiKind === 'namespace') {
+    const part =
+      record.compoundParts?.find((p) => p.name === 'Container') ??
+      record.compoundParts?.[0];
+    return part
+      ? `<${record.name}.${part.name} />`
+      : `// ${record.name}: объект с компонентами`;
+  }
   const requiredProps = [
     ...(record.props || []),
     ...(record.inheritedProps || []),
   ].filter((p) => p.required);
+  // Отображаемый тип может терять суффикс массива из-за лимита ответа MCP.
+  const clipped = new Set(
+    requiredProps.filter((p) => p.type.endsWith('…')).map((p) => p.name),
+  );
+  const fullTypes = new Map(
+    readFullTypes(clipped).map((p) => [p.name, p.type]),
+  );
 
   const attrs = requiredProps
-    .map((p) => `${p.name}={${placeholderForType(p.type)}}`)
+    .map((p) => {
+      // FetcherFunc — именованный callback, результат которого читает TableContract.
+      const value =
+        record.name === 'TableContract' && p.name === 'fetcher'
+          ? "async () => new Response('{}')"
+          : placeholderForType(fullTypes.get(p.name) ?? p.type);
+      return `${p.name}={${value}}`;
+    })
     .join(' ');
 
   const openTag = attrs ? `<${record.name} ${attrs}>` : `<${record.name}>`;

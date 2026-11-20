@@ -30,10 +30,12 @@ import { mergeAtomicData } from './mergeAtomicData.js';
 import { getInstallationGuide, mergeMeta } from './mergeMeta.js';
 import {
   expandCollectedTypeRefs,
+  extractSelectedPublicProps,
   isParsedComponent,
   parseComponent,
 } from './parseComponent.js';
-import { resolveImportPath } from './resolveImportPath.js';
+import { preparePublicContracts } from './publicContract.js';
+import { isRootCompoundAlias, resolveImportPath } from './resolveImportPath.js';
 import { synthesizeMinimalUsage } from './synthesizeExample.js';
 import { REPO_ROOT } from './tsProject.js';
 import { finalizeVendorExamples } from './vendorExamples.js';
@@ -166,18 +168,9 @@ function linkFolderRoles(records: WorkingComponentRecord[]): void {
     });
 }
 
-/**
- * 10 записей в индексе присутствуют одновременно и как top-level компонент,
- * и как элемент compoundParts родителя (DrawerDF/{Content,Header,Footer},
- * MassActions/Counter, Stories/Preview, FiltersActions/{FiltersButton,
- * DotsIconButton,ListOfFilters,Tabs,TabItem}, см. TASKS.md T12) — два
- * независимых пути резолва одного и того же типа (parseComponent для
- * top-level записи, resolveCompoundPart для части родителя), дающих РАЗНЫЙ
- * результат и вдвое расходующих бюджет ответа. Проставляет top-level записи
- * compoundPartOf и синхронизирует props в обе стороны — источником истины
- * становится тот путь резолва, что дал больше пропсов (полнее прошёл цепочку
- * фолбэков), а не оба сразу.
- */
+/** Связывает только настоящие алиасы одного экспорта с его compound-частью.
+ * Имя само по себе не доказывает идентичность (FiltersActionsDotsIconButton).
+ * Полноту метаданных объединяем после проверки идентичности публичных типов. */
 function linkCompoundPartDuplicates(records: WorkingComponentRecord[]): void {
   const byName = new Map(records.map((r) => [r.name, r]));
 
@@ -186,7 +179,13 @@ function linkCompoundPartDuplicates(records: WorkingComponentRecord[]): void {
 
     parent.compoundParts.forEach((part) => {
       const dup = byName.get(`${parent.name}${part.name}`);
-      if (!dup || dup === parent || dup.error) return;
+      if (
+        !dup ||
+        dup === parent ||
+        dup.error ||
+        !isRootCompoundAlias(parent.name, part.name, dup.name)
+      )
+        return;
 
       dup.compoundPartOf = { component: parent.name, part: part.name };
 
@@ -209,6 +208,8 @@ function linkCompoundPartDuplicates(records: WorkingComponentRecord[]): void {
 
 function buildComponentRecords(): WorkingComponentRecord[] {
   const entries = discoverComponents();
+  const entriesByName = new Map(entries.map((entry) => [entry.name, entry]));
+  preparePublicContracts(entries);
 
   // Денылист строится лениво при первом обращении (см. getDenylistMap) и
   // внутри создаёт/забывает служебный source file в общем ts-morph
@@ -238,6 +239,8 @@ function buildComponentRecords(): WorkingComponentRecord[] {
         description: parsed.description,
         deprecated: parsed.deprecated || undefined,
         deprecationReason: parsed.deprecationReason,
+        apiKind: parsed.apiKind,
+        openProps: parsed.openProps,
         props: parsed.props,
         propsTypeName: parsed.propsTypeName,
         rawType: parsed.rawType,
@@ -262,7 +265,12 @@ function buildComponentRecords(): WorkingComponentRecord[] {
   // heuristic) уже применён, parentComponent/relatedExports должны считаться
   // от финальной роли, а не от эвристики classifyRole в исходном виде.
   linkFolderRoles(records);
-  records = records.map((r) => (r.error ? r : mergeAtomicData(r)));
+  records = records.map((r) => {
+    const entry = entriesByName.get(r.name);
+    return r.error || !entry
+      ? r
+      : mergeAtomicData(r, (names) => extractSelectedPublicProps(entry, names));
+  });
   // После mergeAtomicData — top-level путь резолва уже обогащён атомарными
   // описаниями/required (T14) и расщеплён на own/inherited, поэтому именно
   // в этот момент справедливо сравнивать полноту с compoundParts-путём.
@@ -270,15 +278,18 @@ function buildComponentRecords(): WorkingComponentRecord[] {
 
   records = records.map((r) => {
     if (r.error) return r;
-    const { importPath, importStatement } = resolveImportPath(
-      r.name,
-      r.sourceFile ?? '',
-    );
+    const resolvedImport = resolveImportPath(r.name, r.sourceFile ?? '');
+    if (!resolvedImport)
+      throw new Error(`Нет публичного импорта для ${r.name}`);
+    const { importPath, importStatement } = resolvedImport;
+    const entry = entriesByName.get(r.name);
     return {
       ...r,
       importPath,
       importStatement,
-      minimalUsage: synthesizeMinimalUsage(r),
+      minimalUsage: synthesizeMinimalUsage(r, (names) =>
+        entry ? extractSelectedPublicProps(entry, names, false) : [],
+      ),
     };
   });
 

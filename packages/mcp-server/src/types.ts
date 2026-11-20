@@ -47,6 +47,8 @@ export interface CompoundPart {
   typeName?: string;
   rawType?: string;
   isGeneric?: true;
+  /** Публичный тип допускает произвольные ключи; явно объявленные поля проверяются отдельно. */
+  openProps?: true;
   props: PropRecord[];
 }
 
@@ -155,7 +157,11 @@ export interface ComponentRecord {
   propsTypeName?: string;
   rawType?: string;
   isGeneric?: true;
+  /** Публичный тип допускает произвольные ключи; явно объявленные поля проверяются отдельно. */
+  openProps?: true;
   compoundParts?: CompoundPart[];
+  /** Объект с компонентами (Canvas), сам не является JSX-компонентом. */
+  apiKind?: 'namespace';
 
   // из classify
   atomicBase?: string;
@@ -257,14 +263,16 @@ export interface RuntimeIndex extends ComponentIndex {
 
 /* ─────────────── Результаты тулзов ─────────────── */
 
-export interface ToolError {
-  error: string;
-}
+export class ToolError {
+  readonly error: string;
 
-export type ToolResult<T> = T | ToolError;
+  constructor(error: string) {
+    this.error = error;
+  }
 
-export function isToolError(result: unknown): result is ToolError {
-  return typeof result === 'object' && result !== null && 'error' in result;
+  toJSON(): { error: string } {
+    return { error: this.error };
+  }
 }
 
 /* ─────────────── Внешний контракт: _docs/meta/components-meta.json ─────────────── */

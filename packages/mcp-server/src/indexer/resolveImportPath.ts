@@ -88,19 +88,12 @@ export function deriveGroupAndFolder(
 export function resolveImportPath(
   exportedName: string,
   sourceFilePath: string,
-): { importPath: string; importStatement: string } {
-  let importPath = ROOT_IMPORT_PATH;
-
-  if (!isExportedFromRoot(exportedName, sourceFilePath)) {
-    const parts = deriveGroupAndFolder(sourceFilePath);
-    if (parts) {
-      importPath = `${ROOT_IMPORT_PATH}/${parts.group}/${parts.folderName}`;
-    }
-  }
-
+): { importPath: string; importStatement: string } | undefined {
+  const resolved = resolveTypeImport(exportedName, sourceFilePath);
+  if (!resolved.importPath || !resolved.importStatement) return undefined;
   return {
-    importPath,
-    importStatement: `import { ${exportedName} } from '${importPath}';`,
+    importPath: resolved.importPath,
+    importStatement: resolved.importStatement,
   };
 }
 
@@ -199,9 +192,9 @@ export interface ResolvedTypeImport {
 }
 
 /**
- * Импорт для ТИПА, а не для компонента. Разница принципиальная: у компонента
- * сабпас-ветка `resolveImportPath` всегда попадает в цель (компонент на то и
- * компонент, что экспортирован), а среди типов полно сугубо внутренних —
+ * Подтверждённая публичная точка экспорта. Используется и для компонентов:
+ * наличие декларации в node_modules не означает реэкспорт из корня ui-kit.
+ * Среди типов также много сугубо внутренних —
  * особенно после транзитивного раскрытия, которое доходит до вспомогательных
  * `ColumnDefaultOmitted`/`ContentFormat` в недрах TableCanvas. Отдать на них
  * синтезированный `import { ContentFormat } from '@daisforge/ui/components/
@@ -235,4 +228,20 @@ export function resolveTypeImport(
       'Определение приведено для понимания структуры: опишите нужную форму ' +
       'по месту либо возьмите её из типа, который экспортирован.',
   };
+}
+
+/** Совпадения имён недостаточно: FiltersActions.DotsIconButton — другой компонент. */
+export function isRootCompoundAlias(
+  parent: string,
+  part: string,
+  alias: string,
+): boolean {
+  const parentDecl = getRootExportedDecls().get(parent)?.[0];
+  const aliasDecl = getRootExportedDecls().get(alias)?.[0];
+  if (!parentDecl || !aliasDecl) return false;
+  const partType = parentDecl
+    .getType()
+    .getProperty(part)
+    ?.getTypeAtLocation(parentDecl);
+  return partType?.compilerType === aliasDecl.getType().compilerType;
 }

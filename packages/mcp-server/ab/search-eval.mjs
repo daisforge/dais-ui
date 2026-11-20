@@ -15,19 +15,8 @@
  * Ожидания намеренно мягкие (топ-3, несколько допустимых ответов на запрос):
  * задача — ловить деградацию, а не фиксировать текущую выдачу до строчки.
  */
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-
-const DIST = path.join(
-  path.dirname(fileURLToPath(import.meta.url)),
-  '..',
-  'dist',
-);
-
-const { resolveIndex } = await import(path.join(DIST, 'resolveIndex.js'));
-const { searchComponents } = await import(
-  path.join(DIST, 'tools/searchComponents.js')
-);
+import { resolveIndex } from '../dist/resolveIndex.js';
+import { searchComponents } from '../dist/tools/searchComponents.js';
 
 /** [запрос, любое из этих имён должно попасть в топ-3]. Фича записывается как "Компонент/Фича". */
 const CASES = [
@@ -51,13 +40,36 @@ const CASES = [
   ['таблица внутри модального окна', ['TableCanvas', 'ModalDF']],
   [
     'формат числа в колонке таблицы',
-    ['NumberFormatOptions', 'ContentFormat', 'TableCanvas.ContentFormat'],
+    [
+      'NumberFormatOptions',
+      'TableCanvas.NumberFormatOptions',
+      'ContentFormat',
+      'TableCanvas.ContentFormat',
+    ],
   ],
   [
     'бесконечная прокрутка строк',
     ['TableCanvas/InfinityScroll', 'TableCanvas'],
   ],
   ['уведомление тост', ['Toast', 'Notification', 'ToastProvider']],
+  ['группировка столбцов', ['TableCanvas/ColumnsGrouping']],
+  ['column grouping', ['TableCanvas/ColumnsGrouping']],
+  ['infinite scroll', ['TableCanvas/InfinityScroll']],
+  ['подгрузка строк', ['TableCanvas/InfinityScroll', 'TableCanvas']],
+  ['form date input', ['FormDatePicker']],
+  ['диапазон дат в форме', ['FormDatePickerRange']],
+  [
+    'number column formatting',
+    [
+      'NumberFormatOptions',
+      'TableCanvas.NumberFormatOptions',
+      'ContentFormat',
+      'TableCanvas.ContentFormat',
+    ],
+  ],
+  ['TableCanvas', ['TableCanvas']],
+  ['Dropdown', ['Dropdown']],
+  ['Box', ['Box']],
 ];
 
 const label = (r) =>
@@ -87,3 +99,5 @@ console.log(
 if (misses.length > 0) {
   console.log(`\nпромахи:\n    ${misses.join('\n    ')}`);
 }
+
+if (misses.length > 0) process.exitCode = 1;

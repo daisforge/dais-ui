@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 /* eslint-disable import/extensions -- @modelcontextprotocol/sdk requires explicit .js subpaths under NodeNext resolution */
+import fs from 'node:fs';
+
 import type { ToolCallback } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
@@ -7,10 +9,10 @@ import type {
   ShapeOutput,
   ZodRawShapeCompat,
 } from '@modelcontextprotocol/sdk/server/zod-compat.js';
-import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js';
 import { z } from 'zod';
 
 import { resolveIndex } from './resolveIndex.js';
+import { toToolResult } from './toolResponse.js';
 import { getComponent } from './tools/getComponent.js';
 import { getComponentExamples } from './tools/getComponentExamples.js';
 import { getComponentProps } from './tools/getComponentProps.js';
@@ -22,7 +24,6 @@ import { listCategories } from './tools/listCategories.js';
 import { listComponents } from './tools/listComponents.js';
 import { listFeatures } from './tools/listFeatures.js';
 import { searchComponents } from './tools/searchComponents.js';
-import { truncateForResponse } from './tools/truncate.js';
 import type { RuntimeIndex } from './types.js';
 
 function loadIndex(): RuntimeIndex {
@@ -35,15 +36,6 @@ function loadIndex(): RuntimeIndex {
     libNotInstalled: resolved.libNotInstalled,
     indexSource: resolved.source,
   };
-}
-
-/**
- * Явная аннотация возврата CallToolResult обязательна: без неё литерал
- * 'text' расширяется до string и объект перестаёт подходить под
- * дискриминированный union content-блоков SDK.
- */
-function toToolResult(payload: unknown): CallToolResult {
-  return { content: [{ type: 'text', text: truncateForResponse(payload) }] };
 }
 
 /** Хендлер тулза: индекс + args, выведенные из той же zod-схемы, что уходит в SDK. */
@@ -82,7 +74,10 @@ function registerJsonTool<Shape extends ZodRawShapeCompat>(
 function main(): void {
   const index = loadIndex();
 
-  const server = new McpServer({ name: '@daisforge/ui-mcp', version: '0.1.0' });
+  const pkg = JSON.parse(
+    fs.readFileSync(new URL('../package.json', import.meta.url), 'utf8'),
+  ) as { name: string; version: string };
+  const server = new McpServer({ name: pkg.name, version: pkg.version });
 
   registerJsonTool(
     server,

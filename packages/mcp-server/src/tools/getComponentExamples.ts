@@ -1,5 +1,5 @@
-import type { ExampleRecord, RuntimeIndex, ToolError } from '../types.js';
-import { isOkComponent } from '../types.js';
+import type { ExampleRecord, RuntimeIndex } from '../types.js';
+import { isOkComponent, ToolError } from '../types.js';
 import { findComponent } from './shared.js';
 
 export interface GetComponentExamplesArgs {
@@ -24,10 +24,10 @@ export function getComponentExamples(
 ): ExamplesListPayload | SingleExamplePayload | ToolError {
   const record = findComponent(index, name);
   if (!record) {
-    return { error: `Компонент "${name}" не найден.` };
+    return new ToolError(`Компонент "${name}" не найден.`);
   }
   if (!isOkComponent(record)) {
-    return { error: record.error };
+    return new ToolError(record.error);
   }
 
   const examples = record.examples || [];
@@ -45,11 +45,11 @@ export function getComponentExamples(
       (e.exportName || '').toLowerCase() === title.toLowerCase(),
   );
   if (!found) {
-    return {
-      error: `Пример "${title}" не найден у "${record.name}". Доступные: ${
+    return new ToolError(
+      `Пример "${title}" не найден у "${record.name}". Доступные: ${
         examples.map((e) => e.displayName || e.exportName).join(', ') || '(нет)'
       }`,
-    };
+    );
   }
   return { name: record.name, example: found };
 }
