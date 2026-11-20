@@ -1,0 +1,6 @@
+import{j as o}from"./react-UEdzNlUe.js";import{dd as r}from"./vendor-DKFmtNka.js";import{M as m}from"./WithTooltip-KJL26V4Q-DHpG5auW.js";import{T as i}from"./TypeSourceViewer-C6VzuaYx.js";import"./_commonjsHelpers-BosuxZz1.js";import"./tslib-DoU9Jm1N.js";import"./_commonjs-dynamic-modules-TDtrdbi3.js";import"./react-is-CJ4CjPIR.js";import"./styled-components-CDfPITHT.js";import"./@tanstack/react-virtual-0hY7ij6n.js";import"./preload-helper-j-yXN3k7.js";import"./index-Cu4lwwaE.js";import"./index-CLqcrFDJ.js";function a(n){const t={h1:"h1",h2:"h2",...r(),...n.components};return o.jsxs(o.Fragment,{children:[o.jsx(m,{title:"Локальные компоненты/ModalDFConfirmation/API"}),`
+`,o.jsx(t.h1,{id:"modaldfconfirmation-api",children:"ModalDFConfirmation API"}),`
+`,o.jsx(t.h2,{id:"modaldfconfirmationprops",children:"ModalDFConfirmationProps"}),`
+`,o.jsx(i,{language:"ts",filePath:"packages/ui-kit/src/components/ModalDFConfirmation/ModalDFConfirmation.tsx",typeName:"ModalDFConfirmationProps"}),`
+`,o.jsx(t.h2,{id:"modaldfconfirmationcontent",children:"ModalDFConfirmationContent"}),`
+`,o.jsx(i,{language:"ts",filePath:"packages/ui-kit/src/components/ModalDFConfirmation/ModalDFConfirmation.tsx",typeName:"ModalDFConfirmationContent"})]})}function j(n={}){const{wrapper:t}={...r(),...n.components};return t?o.jsx(t,{...n,children:o.jsx(a,{...n})}):a(n)}export{j as default};

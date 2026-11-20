@@ -1,5 +1,0 @@
-import{q as o}from"./styled-components-C2sulCCv.js";import{a5 as t}from"./@salutejs/sdds-finai-2QW4XiOx.js";const r=o(t)`
-  & .has-chips .textfield-input-text-ellipsis {
-    color: transparent;
-  }
-`;export{r as S};

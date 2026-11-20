@@ -1,8 +1,0 @@
-import{j as e}from"./react-UEdzNlUe.js";import{dd as n}from"./vendor-DnY5x8t2.js";import{M as i}from"./WithTooltip-KJL26V4Q-Cluo7wsc.js";import{T as o}from"./TypeSourceViewer-CgkII614.js";import"./_commonjsHelpers-BosuxZz1.js";import"./tslib-DoU9Jm1N.js";import"./_commonjs-dynamic-modules-TDtrdbi3.js";import"./react-is-CJ4CjPIR.js";import"./styled-components-C2sulCCv.js";import"./@tanstack/react-virtual-BA3RmMS7.js";import"./preload-helper-j-yXN3k7.js";import"./index-Cu4lwwaE.js";import"./index-BS0iAW2I.js";function r(s){const t={a:"a",code:"code",h1:"h1",h2:"h2",p:"p",...n(),...s.components};return e.jsxs(e.Fragment,{children:[e.jsx(i,{title:"Локальные компоненты/TextArea/API"}),`
-`,e.jsx(t.h1,{id:"textarea-api",children:"TextArea API"}),`
-`,e.jsxs(t.p,{children:["Обёртка над ",e.jsx(t.code,{children:"TextArea"})," из ",e.jsx(t.code,{children:"@salutejs/sdds-finai"}),". Добавляет ",e.jsx(t.code,{children:"onClear"}),"."]}),`
-`,e.jsx(t.h2,{id:"кастомные-пропсы-добавлены-в-обёртке",children:"Кастомные пропсы (добавлены в обёртке)"}),`
-`,e.jsx(o,{language:"ts",filePath:"packages/ui-kit/src/components/TextArea/TextArea.types.ts",typeName:"TextAreaProps"}),`
-`,e.jsx(t.h2,{id:"пропсы-из-salutejssdds-finai",children:"Пропсы из @salutejs/sdds-finai"}),`
-`,e.jsxs(t.p,{children:["Компонент принимает все пропсы атомарного ",e.jsx(t.code,{children:"TextArea"})," из ",e.jsx(t.code,{children:"@salutejs/sdds-finai"}),"."]}),`
-`,e.jsxs(t.p,{children:["Полное описание — в документации: ",e.jsx(t.a,{href:"https://plasma.sberdevices.ru/sdds-finai/components/textarea/",rel:"nofollow",children:"TextArea"})]})]})}function M(s={}){const{wrapper:t}={...n(),...s.components};return t?e.jsx(t,{...s,children:e.jsx(r,{...s})}):r(s)}export{M as default};

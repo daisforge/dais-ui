@@ -1,6 +1,0 @@
-import{j as t}from"./react-UEdzNlUe.js";import{dd as r}from"./vendor-DnY5x8t2.js";import{M as i}from"./WithTooltip-KJL26V4Q-Cluo7wsc.js";import{T as o}from"./TypeSourceViewer-CgkII614.js";import"./_commonjsHelpers-BosuxZz1.js";import"./tslib-DoU9Jm1N.js";import"./_commonjs-dynamic-modules-TDtrdbi3.js";import"./react-is-CJ4CjPIR.js";import"./styled-components-C2sulCCv.js";import"./@tanstack/react-virtual-BA3RmMS7.js";import"./preload-helper-j-yXN3k7.js";import"./index-Cu4lwwaE.js";import"./index-BS0iAW2I.js";function s(n){const e={h1:"h1",h2:"h2",...r(),...n.components};return t.jsxs(t.Fragment,{children:[t.jsx(i,{title:"Локальные компоненты/Table/RowInstruments/API"}),`
-`,t.jsx(e.h1,{id:"row-instruments-api",children:"Row Instruments API"}),`
-`,t.jsx(e.h2,{id:"rowinstrumentstype",children:"RowInstrumentsType"}),`
-`,t.jsx(o,{language:"ts",filePath:"packages/ui-kit/src/components/Table/feature-row-instruments/types.ts",typeName:"RowInstrumentsType"}),`
-`,t.jsx(e.h2,{id:"rowinstrumentsdropdownitemoption",children:"RowInstrumentsDropdownItemOption"}),`
-`,t.jsx(o,{language:"ts",filePath:"packages/ui-kit/src/components/Table/feature-row-instruments/types.ts",typeName:"RowInstrumentsDropdownItemOption"})]})}function y(n={}){const{wrapper:e}={...r(),...n.components};return e?t.jsx(e,{...n,children:t.jsx(s,{...n})}):s(n)}export{y as default};

@@ -1,0 +1,8 @@
+import{j as t}from"./react-UEdzNlUe.js";import{dd as e}from"./vendor-DKFmtNka.js";import{M as l}from"./WithTooltip-KJL26V4Q-DHpG5auW.js";import{T as i}from"./TypeSourceViewer-C6VzuaYx.js";import"./_commonjsHelpers-BosuxZz1.js";import"./tslib-DoU9Jm1N.js";import"./_commonjs-dynamic-modules-TDtrdbi3.js";import"./react-is-CJ4CjPIR.js";import"./styled-components-CDfPITHT.js";import"./@tanstack/react-virtual-0hY7ij6n.js";import"./preload-helper-j-yXN3k7.js";import"./index-Cu4lwwaE.js";import"./index-CLqcrFDJ.js";function n(o){const r={h1:"h1",h2:"h2",...e(),...o.components};return t.jsxs(t.Fragment,{children:[t.jsx(l,{title:"Локальные компоненты/BlockGradientScroll/API"}),`
+`,t.jsx(r.h1,{id:"blockgradientscroll-api",children:"BlockGradientScroll API"}),`
+`,t.jsx(r.h2,{id:"blockgradientscrollprops-компонент",children:"BlockGradientScrollProps (компонент)"}),`
+`,t.jsx(i,{language:"ts",filePath:"packages/ui-kit/src/components/BlockGradientScroll/BlockGradientScroll.tsx",typeName:"BlockGradientScrollProps"}),`
+`,t.jsx(r.h2,{id:"blockgradientscrollpadding-миксин",children:"BlockGradientScrollPadding (миксин)"}),`
+`,t.jsx(i,{language:"ts",filePath:"packages/ui-kit/src/mixins/blockGradientScroll/types.ts",typeName:"BlockGradientScrollPadding"}),`
+`,t.jsx(r.h2,{id:"blockgradientscrollvariant",children:"BlockGradientScrollVariant"}),`
+`,t.jsx(i,{language:"ts",filePath:"packages/ui-kit/src/mixins/blockGradientScroll/types.ts",typeName:"BlockGradientScrollVariant"})]})}function G(o={}){const{wrapper:r}={...e(),...o.components};return r?t.jsx(r,{...o,children:t.jsx(n,{...o})}):n(o)}export{G as default};
