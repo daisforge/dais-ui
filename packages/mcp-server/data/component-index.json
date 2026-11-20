@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-19T07:28:27.569Z",
+  "generatedAt": "2026-11-20T08:48:39.654Z",
   "libVersion": "1.29.1",
   "components": {
     "Accordion": {
@@ -31,6 +31,13 @@
         {
           "name": "defaultActiveEventKey",
           "type": "number[] | undefined",
+          "required": false,
+          "inheritedFrom": "Accordion",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean | undefined",
           "required": false,
           "inheritedFrom": "Accordion",
           "inheritedPackage": "@salutejs/sdds-finai"
@@ -71,7 +78,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Accordion } from '@daisforge/ui';",
       "minimalUsage": "<Accordion />",
@@ -223,7 +230,7 @@
         "раскрывающийся блок"
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { AccordionItem } from '@daisforge/ui';",
       "minimalUsage": "<AccordionItem children={'Контент'} />",
@@ -485,7 +492,7 @@
         }
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { AiAgentPopover } from '@daisforge/ui';",
       "minimalUsage": "<AiAgentPopover />",
@@ -777,7 +784,7 @@
       "propsTypeName": "AiAgentInputProps",
       "sourceFile": "packages/ui-kit/src/components/AiAgentPopup/AiAgentInput.tsx",
       "type": "composition",
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { AiAgentInput } from '@daisforge/ui';",
       "minimalUsage": "<AiAgentInput />",
@@ -962,7 +969,7 @@
         }
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { AiAgentPopup } from '@daisforge/ui';",
       "minimalUsage": "<AiAgentPopup />",
@@ -1449,7 +1456,7 @@
         }
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { AnalyticalWidget } from '@daisforge/ui';",
       "minimalUsage": "<AnalyticalWidget contentSlot={'Контент'} size={{}}>\n  {/* части: AnalyticalWidget.Header, AnalyticalWidget.FilterIconButton, AnalyticalWidget.DotsIconButton, AnalyticalWidget.Chips */}\n</AnalyticalWidget>",
@@ -1562,7 +1569,7 @@
         }
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { ApprovalCenter } from '@daisforge/ui';",
       "minimalUsage": "<ApprovalCenter tabs={{}} />",
@@ -1835,7 +1842,7 @@
       ],
       "hasCuratedMeta": true,
       "inheritedProps": [],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Attach } from '@daisforge/ui';",
       "minimalUsage": "<Attach />",
@@ -2108,6 +2115,14 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "label",
+          "type": "string | undefined",
+          "required": false,
+          "description": "Метка-подпись к элементу",
+          "inheritedFrom": "Autocomplete",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "leftHelper",
           "type": "React.ReactNode",
           "required": false,
@@ -2201,6 +2216,14 @@
           "type": "(() => React.ReactNode) | undefined",
           "required": false,
           "description": "Коллбэк для рендера элемента в конце выпадающего списка.",
+          "inheritedFrom": "Autocomplete",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "required",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Флаг обязательности поля",
           "inheritedFrom": "Autocomplete",
           "inheritedPackage": "@salutejs/sdds-finai"
         },
@@ -2311,6 +2334,13 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "disabled",
+          "type": "boolean | undefined",
+          "required": false,
+          "inheritedFrom": "Autocomplete",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "hintSize",
           "type": "\"m\" | \"s\" | undefined",
           "required": false,
@@ -2332,6 +2362,13 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "readOnly",
+          "type": "boolean | undefined",
+          "required": false,
+          "inheritedFrom": "Autocomplete",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "size",
           "type": "\"s\" | \"xs\" | undefined",
           "required": false,
@@ -2347,7 +2384,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Autocomplete } from '@daisforge/ui';",
       "minimalUsage": "<Autocomplete />",
@@ -2790,7 +2827,7 @@
         }
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { AutocompleteSearch } from '@daisforge/ui';",
       "minimalUsage": "<AutocompleteSearch />",
@@ -3036,6 +3073,13 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "name",
+          "type": "string | undefined",
+          "required": false,
+          "inheritedFrom": "Avatar",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "shape",
           "type": "\"circled\" | undefined",
           "required": false,
@@ -3057,7 +3101,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Avatar } from '@daisforge/ui';",
       "minimalUsage": "<Avatar />",
@@ -3117,7 +3161,7 @@
       ],
       "hasCuratedMeta": true,
       "inheritedProps": [],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { AvatarGroup } from '@daisforge/ui';",
       "minimalUsage": "<AvatarGroup children={'Контент'} />",
@@ -3126,7 +3170,7 @@
           "exportName": "Vendor",
           "displayName": "Example 1",
           "type": "vendor",
-          "code": "import React from 'react';\nimport { Avatar, AvatarGroup } from '@daisforge/ui';\nexport function App() {\n    return (\n        <div>\n            <AvatarGroup>\n                {Array(5)\n                    .fill(true)\n                    .map(() => (\n                        <Avatar size=\"xxl\" url=\"https://avatars.githubusercontent.com/u/1813468?v=4\" />\n                    ))}\n            </AvatarGroup>\n        </div>\n    );\n}"
+          "code": "import React from 'react';\nimport { Avatar, AvatarGroup } from '@daisforge/ui';\nexport function App() {\n    return (\n        <AvatarGroup>\n                {\n                    Array(5).fill(true).map(() => (\n                        <Avatar size=\"xxl\" url=\"https://avatars.githubusercontent.com/u/1813468?v=4\" />\n                    ))\n                }\n            </AvatarGroup>\n    );\n}"
         }
       ]
     },
@@ -3261,7 +3305,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Badge } from '@daisforge/ui';",
       "minimalUsage": "<Badge />",
@@ -3377,7 +3421,7 @@
         }
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { BlockGradientScroll } from '@daisforge/ui';",
       "minimalUsage": "<BlockGradientScroll />",
@@ -3529,7 +3573,7 @@
         }
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { BlockTitle } from '@daisforge/ui';",
       "minimalUsage": "<BlockTitle />",
@@ -3888,7 +3932,7 @@
         }
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Box } from '@daisforge/ui';",
       "minimalUsage": "<Box />",
@@ -3985,7 +4029,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Breadcrumbs } from '@daisforge/ui';",
       "minimalUsage": "<Breadcrumbs items={[]} />",
@@ -4073,6 +4117,13 @@
         {
           "name": "contentRight",
           "type": "React.ReactNode | undefined",
+          "required": false,
+          "inheritedFrom": "Button",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean | undefined",
           "required": false,
           "inheritedFrom": "Button",
           "inheritedPackage": "@salutejs/sdds-finai"
@@ -4176,7 +4227,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Button } from '@daisforge/ui';",
       "minimalUsage": "<Button />",
@@ -4245,7 +4296,7 @@
         "кастомная кнопка"
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { ButtonBase } from '@daisforge/ui';",
       "minimalUsage": "<ButtonBase />",
@@ -4339,7 +4390,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { ButtonGroup } from '@daisforge/ui';",
       "minimalUsage": "<ButtonGroup />",
@@ -4619,7 +4670,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Calendar } from '@daisforge/ui';",
       "minimalUsage": "<Calendar onChangeValue={() => {}} value={{}} />",
@@ -5493,9 +5544,16 @@
           "description": "Вид контрола.",
           "inheritedFrom": "Card",
           "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "selected",
+          "type": "boolean | undefined",
+          "required": false,
+          "inheritedFrom": "Card",
+          "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Card } from '@daisforge/ui';",
       "minimalUsage": "<Card />",
@@ -5557,7 +5615,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "Card",
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { CardContent } from '@daisforge/ui';",
       "minimalUsage": "<CardContent />",
@@ -5615,7 +5673,7 @@
       "relatedExports": [
         "CardContent"
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { CardInnerContent } from '@daisforge/ui';",
       "minimalUsage": "<CardInnerContent />",
@@ -5742,7 +5800,7 @@
       ],
       "hasCuratedMeta": true,
       "inheritedProps": [],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Carousel } from '@daisforge/ui';",
       "minimalUsage": "<Carousel />",
@@ -5810,7 +5868,7 @@
         "scroll snap"
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { CarouselItem } from '@daisforge/ui';",
       "minimalUsage": "<CarouselItem />",
@@ -5866,7 +5924,7 @@
         "содержимое строки списка"
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { CellTextbox } from '@daisforge/ui';",
       "minimalUsage": "<CellTextbox />",
@@ -5903,7 +5961,7 @@
         "подпись поля списка"
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { CellTextboxLabel } from '@daisforge/ui';",
       "minimalUsage": "<CellTextboxLabel />",
@@ -5940,7 +5998,7 @@
         "вторичный текст ячейки"
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { CellTextboxSubtitle } from '@daisforge/ui';",
       "minimalUsage": "<CellTextboxSubtitle />",
@@ -5977,7 +6035,7 @@
         "основной текст ячейки"
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { CellTextboxTitle } from '@daisforge/ui';",
       "minimalUsage": "<CellTextboxTitle />",
@@ -6072,7 +6130,7 @@
         },
         {
           "name": "label",
-          "type": "undefined",
+          "type": "string | undefined",
           "required": false,
           "description": "Слот для Label",
           "inheritedFrom": "Cell",
@@ -6111,7 +6169,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Cell } from '@daisforge/ui';",
       "minimalUsage": "<Cell />",
@@ -6177,6 +6235,14 @@
       "hasCuratedMeta": true,
       "inheritedProps": [
         {
+          "name": "checked",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Помечен ли заранее такой элемент формы, как флажок или переключатель",
+          "inheritedFrom": "Checkbox",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "checkIcon",
           "type": "React.ReactNode",
           "required": false,
@@ -6189,6 +6255,14 @@
           "type": "React.ReactNode",
           "required": false,
           "description": "Описание элемента",
+          "inheritedFrom": "Checkbox",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Компонент неактивен",
           "inheritedFrom": "Checkbox",
           "inheritedPackage": "@salutejs/sdds-finai"
         },
@@ -6217,10 +6291,66 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "maxLength",
+          "type": "number | undefined",
+          "required": false,
+          "description": "Максимальная длина значения поля",
+          "inheritedFrom": "Checkbox",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "minLength",
+          "type": "number | undefined",
+          "required": false,
+          "description": "Минимальная длина значения поля",
+          "inheritedFrom": "Checkbox",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "name",
+          "type": "string | undefined",
+          "required": false,
+          "description": "Определяет уникальное имя элемента формы",
+          "inheritedFrom": "Checkbox",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "onBlur",
+          "type": "React.FocusEventHandler<HTMLInputElement> | undefined",
+          "required": false,
+          "description": "Обработчик blur на элементе формы",
+          "inheritedFrom": "Checkbox",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "onChange",
           "type": "React.ChangeEventHandler<HTMLInputElement> | undefined",
           "required": false,
           "description": "Обработчик изменения элемента формы",
+          "inheritedFrom": "Checkbox",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "onFocus",
+          "type": "React.FocusEventHandler<HTMLInputElement> | undefined",
+          "required": false,
+          "description": "Обработчик focus на элементе формы",
+          "inheritedFrom": "Checkbox",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "placeholder",
+          "type": "string | undefined",
+          "required": false,
+          "description": "Выводит текст внутри поля формы, который исчезает при получении фокуса",
+          "inheritedFrom": "Checkbox",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "required",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Флаг обязательности поля",
           "inheritedFrom": "Checkbox",
           "inheritedPackage": "@salutejs/sdds-finai"
         },
@@ -6241,15 +6371,38 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "type",
+          "type": "string | undefined",
+          "required": false,
+          "description": "Тип элемента формы",
+          "inheritedFrom": "Checkbox",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "value",
+          "type": "number | readonly string[] | string | undefined",
+          "required": false,
+          "description": "Определяет значение элемента формы",
+          "inheritedFrom": "Checkbox",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "view",
           "type": "\"accent\" | \"default\" | \"negative\" | \"paragraph\" | \"positive\" | \"secondary\" | \"tertiary\" | \"warning\" | undefined",
           "required": false,
           "description": "Вид компонента",
           "inheritedFrom": "Checkbox",
           "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "defaultChecked",
+          "type": "boolean | undefined",
+          "required": false,
+          "inheritedFrom": "Checkbox",
+          "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Checkbox } from '@daisforge/ui';",
       "minimalUsage": "<Checkbox />",
@@ -6403,6 +6556,15 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "readOnly",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Компонент только для чтения",
+          "default": "'false'",
+          "inheritedFrom": "Chip",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "size",
           "type": "\"16xxs\" | \"28xs\" | \"m\" | \"s\" | \"xs\" | \"xxs\" | undefined",
           "required": false,
@@ -6434,9 +6596,16 @@
           "required": false,
           "inheritedFrom": "Chip",
           "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean | undefined",
+          "required": false,
+          "inheritedFrom": "Chip",
+          "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Chip } from '@daisforge/ui';",
       "minimalUsage": "<Chip />",
@@ -6547,7 +6716,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { ChipGroup } from '@daisforge/ui';",
       "minimalUsage": "<ChipGroup />",
@@ -6618,6 +6787,13 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "autoFocus",
+          "type": "boolean | undefined",
+          "required": false,
+          "inheritedFrom": "CodeField",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "caption",
           "type": "React.ReactNode",
           "required": false,
@@ -6641,6 +6817,13 @@
         {
           "name": "codeLength",
           "type": "4 | 5 | 6 | undefined",
+          "required": false,
+          "inheritedFrom": "CodeField",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean | undefined",
           "required": false,
           "inheritedFrom": "CodeField",
           "inheritedPackage": "@salutejs/sdds-finai"
@@ -6674,8 +6857,22 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "onClick",
+          "type": "React.MouseEventHandler<HTMLDivElement> | undefined",
+          "required": false,
+          "inheritedFrom": "CodeField",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "onFullCodeEnter",
           "type": "((code: string) => void) | undefined",
+          "required": false,
+          "inheritedFrom": "CodeField",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "placeholder",
+          "type": "string | undefined",
           "required": false,
           "inheritedFrom": "CodeField",
           "inheritedPackage": "@salutejs/sdds-finai"
@@ -6714,9 +6911,16 @@
           "required": false,
           "inheritedFrom": "CodeField",
           "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "width",
+          "type": "number | string | undefined",
+          "required": false,
+          "inheritedFrom": "CodeField",
+          "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { CodeField } from '@daisforge/ui';",
       "minimalUsage": "<CodeField />",
@@ -6775,6 +6979,13 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "autoFocus",
+          "type": "boolean | undefined",
+          "required": false,
+          "inheritedFrom": "CodeInput",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "caption",
           "type": "React.ReactNode",
           "required": false,
@@ -6798,6 +7009,20 @@
         {
           "name": "codeLength",
           "type": "4 | 5 | 6 | undefined",
+          "required": false,
+          "inheritedFrom": "CodeInput",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean | undefined",
+          "required": false,
+          "inheritedFrom": "CodeInput",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "hidden",
+          "type": "boolean | undefined",
           "required": false,
           "inheritedFrom": "CodeInput",
           "inheritedPackage": "@salutejs/sdds-finai"
@@ -6831,6 +7056,13 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "placeholder",
+          "type": "string | undefined",
+          "required": false,
+          "inheritedFrom": "CodeInput",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "setIsError",
           "type": "React.Dispatch<React.SetStateAction<boolean>> | undefined",
           "required": false,
@@ -6859,7 +7091,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { CodeInput } from '@daisforge/ui';",
       "minimalUsage": "<CodeInput />",
@@ -7006,7 +7238,7 @@
         }
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Collapse } from '@daisforge/ui';",
       "minimalUsage": "<Collapse />",
@@ -7067,6 +7299,12 @@
           "type": "React.HTMLInputTypeAttribute | undefined",
           "required": false,
           "description": ""
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "required": false,
+          "description": "Имя поля. Используется для нативной формы и react-hook-form register."
         }
       ],
       "propsTypeName": "ComboboxProps",
@@ -7301,6 +7539,14 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "label",
+          "type": "string | undefined",
+          "required": false,
+          "description": "Метка-подпись к элементу",
+          "inheritedFrom": "Combobox",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "labelPlacement",
           "type": "\"inner\" | \"outer\" | undefined",
           "required": false,
@@ -7374,6 +7620,14 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "placeholder",
+          "type": "string | undefined",
+          "required": false,
+          "description": "Placeholder.",
+          "inheritedFrom": "Combobox",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "placement",
           "type": "Placement | undefined",
           "required": false,
@@ -7403,6 +7657,14 @@
           "type": "((selected: \"indeterminate\" | boolean) => React.ReactNode) | undefined",
           "required": false,
           "description": "Callback для кастомной настройки иконки выбранного элемента.",
+          "inheritedFrom": "Combobox",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "required",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Флаг обязательности поля",
           "inheritedFrom": "Combobox",
           "inheritedPackage": "@salutejs/sdds-finai"
         },
@@ -7528,6 +7790,13 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "disabled",
+          "type": "boolean | undefined",
+          "required": false,
+          "inheritedFrom": "Combobox",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "hintSize",
           "type": "\"m\" | \"s\" | undefined",
           "required": false,
@@ -7558,6 +7827,13 @@
         {
           "name": "onChange",
           "type": "((value: string, item: ItemOption | null) => void) | ((value: string[], item: ItemOption | null) => void) | React.ChangeEventHandler<HTMLSelectElement> | undefined",
+          "required": false,
+          "inheritedFrom": "Combobox",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "readOnly",
+          "type": "boolean | undefined",
           "required": false,
           "inheritedFrom": "Combobox",
           "inheritedPackage": "@salutejs/sdds-finai"
@@ -7605,7 +7881,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Combobox } from '@daisforge/ui';",
       "minimalUsage": "<Combobox items={[]} />",
@@ -7708,7 +7984,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Counter } from '@daisforge/ui';",
       "minimalUsage": "<Counter count={0} />",
@@ -7850,6 +8126,14 @@
           "type": "Date | undefined",
           "required": false,
           "description": "Выбранное значение по умолчанию.",
+          "inheritedFrom": "DatePicker",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Компонент неактивен.",
           "inheritedFrom": "DatePicker",
           "inheritedPackage": "@salutejs/sdds-finai"
         },
@@ -8091,6 +8375,14 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "label",
+          "type": "string | undefined",
+          "required": false,
+          "description": "Метка-подпись к элементу",
+          "inheritedFrom": "DatePicker",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "labelPlacement",
           "type": "string | undefined",
           "required": false,
@@ -8231,6 +8523,14 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "readOnly",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Компонент доступен только для чтения.",
+          "inheritedFrom": "DatePicker",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "renderFromDate",
           "type": "Date | undefined",
           "required": false,
@@ -8360,14 +8660,42 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "autoComplete",
+          "type": "string | undefined",
+          "required": false,
+          "inheritedFrom": "DatePicker",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "eventTooltipSize",
           "type": "\"m\" | \"s\" | undefined",
           "required": false,
           "inheritedFrom": "DatePicker",
           "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "name",
+          "type": "string | undefined",
+          "required": false,
+          "inheritedFrom": "DatePicker",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "placeholder",
+          "type": "string | undefined",
+          "required": false,
+          "inheritedFrom": "DatePicker",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "required",
+          "type": "boolean | undefined",
+          "required": false,
+          "inheritedFrom": "DatePicker",
+          "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { DatePicker } from '@daisforge/ui';",
       "minimalUsage": "<DatePicker />",
@@ -9066,6 +9394,14 @@
       "hasCuratedMeta": true,
       "inheritedProps": [
         {
+          "name": "autoComplete",
+          "type": "string | undefined",
+          "required": false,
+          "description": "Автозаполнение полей.",
+          "inheritedFrom": "DateTimePicker",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "calendarContainerHeight",
           "type": "number | string | undefined",
           "required": false,
@@ -9261,6 +9597,14 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "label",
+          "type": "string | undefined",
+          "required": false,
+          "description": "Метка-подпись к элементу",
+          "inheritedFrom": "DateTimePicker",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "labelPlacement",
           "type": "string | undefined",
           "required": false,
@@ -9297,6 +9641,14 @@
           "type": "(Date & (number | string)) | undefined",
           "required": false,
           "description": "Минимальное значение даты.",
+          "inheritedFrom": "DateTimePicker",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "name",
+          "type": "string | undefined",
+          "required": false,
+          "description": "Свойство для названия поля при работе с формой",
           "inheritedFrom": "DateTimePicker",
           "inheritedPackage": "@salutejs/sdds-finai"
         },
@@ -9343,6 +9695,14 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "placeholder",
+          "type": "string | undefined",
+          "required": false,
+          "description": "Placeholder для поля ввода",
+          "inheritedFrom": "DateTimePicker",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "placement",
           "type": "DatePickerPlacement | DatePickerPlacementBasic[] | undefined",
           "required": false,
@@ -9373,6 +9733,14 @@
           "type": "Date | undefined",
           "required": false,
           "description": "Дата с которой начинается календарная сетка.",
+          "inheritedFrom": "DateTimePicker",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "required",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Флаг обязательности поля",
           "inheritedFrom": "DateTimePicker",
           "inheritedPackage": "@salutejs/sdds-finai"
         },
@@ -9498,6 +9866,13 @@
         {
           "name": "dateTimeSeparator",
           "type": "string | undefined",
+          "required": false,
+          "inheritedFrom": "DateTimePicker",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean | undefined",
           "required": false,
           "inheritedFrom": "DateTimePicker",
           "inheritedPackage": "@salutejs/sdds-finai"
@@ -9643,6 +10018,13 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "readOnly",
+          "type": "boolean | undefined",
+          "required": false,
+          "inheritedFrom": "DateTimePicker",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "size",
           "type": "\"s\" | \"xs\" | undefined",
           "required": false,
@@ -9664,7 +10046,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { DateTimePicker } from '@daisforge/ui';",
       "minimalUsage": "<DateTimePicker />",
@@ -9746,7 +10128,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Divider } from '@daisforge/ui';",
       "minimalUsage": "<Divider />",
@@ -9886,6 +10268,15 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "height",
+          "type": "number | string | undefined",
+          "required": false,
+          "description": "Высота компонента.",
+          "default": "100%",
+          "inheritedFrom": "Drawer",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "initialFocusRef",
           "type": "React.RefObject<HTMLElement> | undefined",
           "required": false,
@@ -9994,6 +10385,15 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "width",
+          "type": "number | string | undefined",
+          "required": false,
+          "description": "Ширина компонента.",
+          "default": "100%",
+          "inheritedFrom": "Drawer",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "withAnimation",
           "type": "boolean | undefined",
           "required": false,
@@ -10025,7 +10425,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Drawer } from '@daisforge/ui';",
       "minimalUsage": "<Drawer />",
@@ -11494,7 +11894,7 @@
         "DrawerDFFooter",
         "DrawerDFHeader"
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { DrawerDF } from '@daisforge/ui';",
       "minimalUsage": "<DrawerDF>\n  {/* части: DrawerDF.Content, DrawerDF.Header, DrawerDF.DotsIconButton, DrawerDF.Footer */}\n</DrawerDF>",
@@ -11833,7 +12233,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "DrawerDF",
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "compoundPartOf": {
         "component": "DrawerDF",
         "part": "Content"
@@ -12148,7 +12548,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "DrawerDF",
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "compoundPartOf": {
         "component": "DrawerDF",
         "part": "Footer"
@@ -12493,7 +12893,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "DrawerDF",
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "compoundPartOf": {
         "component": "DrawerDF",
         "part": "Header"
@@ -12513,7 +12913,7 @@
           "exportName": "Usage2",
           "displayName": "Использование в Dropdown.visual.stories.tsx",
           "type": "usage",
-          "code": "<DrawerDF.Header\n          title=\"Документ\"\n          rightBlock={\n            <DrawerDF.DotsIconButton\n              aria-label=\"Действия документа\"\n              dropdownProps={overlayDropdownProps}\n            />\n          }\n        />",
+          "code": "<DrawerDF.Header\n          title=\"Документ\"\n          rightBlock={\n            <DrawerDF.DotsIconButton\n              aria-label=\"Действия документа\"\n              dropdownProps={{\n                ...overlayDropdownProps,\n                placement: 'bottom-end',\n              }}\n            />\n          }\n        />",
           "sourceFile": "packages/storybook/src/stories/Dropdown/Dropdown.visual.stories.tsx"
         }
       ]
@@ -12595,6 +12995,14 @@
           "required": false,
           "description": "Закрыть выпадающий список после выбора.",
           "default": "true",
+          "inheritedFrom": "Dropdown",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Выпадающий список не активен.",
           "inheritedFrom": "Dropdown",
           "inheritedPackage": "@salutejs/sdds-finai"
         },
@@ -12732,7 +13140,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Dropdown } from '@daisforge/ui';",
       "minimalUsage": "<Dropdown items={[]} />",
@@ -12818,6 +13226,13 @@
         {
           "name": "description",
           "type": "React.ReactNode",
+          "required": false,
+          "inheritedFrom": "Dropzone",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean | undefined",
           "required": false,
           "inheritedFrom": "Dropzone",
           "inheritedPackage": "@salutejs/sdds-finai"
@@ -12914,7 +13329,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Dropzone } from '@daisforge/ui';",
       "minimalUsage": "<Dropzone />",
@@ -13002,6 +13417,13 @@
         {
           "name": "contentRight",
           "type": "React.ReactNode | undefined",
+          "required": false,
+          "inheritedFrom": "EmbedIconButton",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean | undefined",
           "required": false,
           "inheritedFrom": "EmbedIconButton",
           "inheritedPackage": "@salutejs/sdds-finai"
@@ -13105,7 +13527,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { EmbedIconButton } from '@daisforge/ui';",
       "minimalUsage": "<EmbedIconButton />",
@@ -13207,7 +13629,7 @@
       ],
       "hasCuratedMeta": true,
       "inheritedProps": [],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { EmbeddedButtonBeta } from '@daisforge/ui';",
       "minimalUsage": "<EmbeddedButtonBeta />",
@@ -13324,7 +13746,7 @@
         }
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { EmptyState } from '@daisforge/ui';",
       "minimalUsage": "<EmptyState size={\"l\"} />",
@@ -13436,9 +13858,23 @@
           "default": "`horizontal`",
           "inheritedFrom": "Flow",
           "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "className",
+          "type": "string | undefined",
+          "required": false,
+          "inheritedFrom": "Flow",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "style",
+          "type": "React.CSSProperties | undefined",
+          "required": false,
+          "inheritedFrom": "Flow",
+          "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Flow } from '@daisforge/ui';",
       "minimalUsage": "<Flow children={'Контент'} />",
@@ -13697,7 +14133,7 @@
         "responsive layout"
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Col } from '@daisforge/ui';",
       "minimalUsage": "<Col />",
@@ -13758,7 +14194,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Grid } from '@daisforge/ui';",
       "minimalUsage": "<Grid />",
@@ -13801,7 +14237,7 @@
         "horizontal layout"
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Row } from '@daisforge/ui';",
       "minimalUsage": "<Row />",
@@ -14104,7 +14540,7 @@
         }
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { GridDND } from '@daisforge/ui';",
       "minimalUsage": "<GridDND items={[]}>\n  {/* части: GridDND.ItemWrapper */}\n</GridDND>",
@@ -14210,6 +14646,13 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "disabled",
+          "type": "boolean | undefined",
+          "required": false,
+          "inheritedFrom": "IconButton",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "focused",
           "type": "boolean | undefined",
           "required": false,
@@ -14308,7 +14751,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { IconButton } from '@daisforge/ui';",
       "minimalUsage": "<IconButton />",
@@ -14510,7 +14953,7 @@
         "dropdown trigger"
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { IconButtonDots } from '@daisforge/ui';",
       "minimalUsage": "<IconButtonDots />",
@@ -14684,7 +15127,7 @@
         "индикатор активных фильтров"
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { IconButtonFilter } from '@daisforge/ui';",
       "minimalUsage": "<IconButtonFilter />",
@@ -14722,7 +15165,7 @@
       ],
       "docs": "# IconSvgSprite\n\n### Компонент для отрисовки SVG спрайтов\n\n---\n\n#### Использование\n\nВ `iconUrl` передается url `https://cdn.dddd.ru/FileWithSprites.svg` на файл содержащий спрайты иконок и ссылка на необходимую иконку `#IconId`.\nИспользуется в finai-admin, finai-header, finai-platform.\nДля этих микрофронтов url к картинке приходит в формате `/pl/static-res/finai_icons/sprite-{size}-1.svg#IconAvatar-{size}`,\nв которых плейсхолдер `{size}` в компоненте заменяется пропсом `size`. При отсутствии плейсхолдеров будет использоваться исходный url к спрайту.\n\n```jsx\n\n<IconSprite iconUrl=\"https://cdn.dddd.ru/FileWithSprites.svg#IconId\" />;\n```\n\n### Пропсы\n\n```js\ntype Props = {\n  // url иконки\n  iconUrl: string,\n  // размер иконки, default = 's'\n  size?: 'xs' | 's' | 'm',\n  // цвет иконки\n  color?: string,\n  // css класс\n  className?: string\n};\n```\n\n### Механизм работы SVG спрайтов\n\nДокументация [\\<symbol\\>](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/symbol) [\\<use\\>](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/use)\n\n    - `<symbol id=\"Icon-1\">` - определяем иконку внутри тэга `symbol`, атрибут `id` используется в качестве ссылки на иконку\n\n```svg\n<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" style=\"display: none;\" ... >\n  <symbol id=\"Icon1\" width=\"100%\" viewBox=\"0 0 24 24\" ... >\n    <g><path ... </g>\n  </symbol>\n  <symbol id=\"Icon2\" width=\"100%\" viewBox=\"0 0 24 24\" ... >\n     <g><path ... </g>\n  </symbol>\n</svg>\n```\n\n    - Используем иконку с помощью тэга `<use>`\n\n```svg\n<svg width=\"100%\" viewBox=\"0 0 16 16\" ... >\n  <use xlinkHref=\"https://cdn.dddd.ru/FileWithSprites.svg#Icon1\" />\n</svg>\n\n```",
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { IconSvgSprite } from '@daisforge/ui';",
       "minimalUsage": "<IconSvgSprite iconUrl={'значение'} />",
@@ -14802,7 +15245,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Image } from '@daisforge/ui';",
       "minimalUsage": "<Image />",
@@ -14860,7 +15303,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Indicator } from '@daisforge/ui';",
       "minimalUsage": "<Indicator size={\"l\"} view={\"accent\"} />",
@@ -14900,6 +15343,13 @@
       ],
       "hasCuratedMeta": true,
       "inheritedProps": [
+        {
+          "name": "disabled",
+          "type": "boolean | undefined",
+          "required": false,
+          "inheritedFrom": "InformationWrapper",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
         {
           "name": "hasRequiredIndicator",
           "type": "boolean | undefined",
@@ -14985,6 +15435,13 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "label",
+          "type": "string | undefined",
+          "required": false,
+          "inheritedFrom": "InformationWrapper",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "labelHtmlFor",
           "type": "string | undefined",
           "required": false,
@@ -15015,6 +15472,13 @@
         {
           "name": "optionalText",
           "type": "string | undefined",
+          "required": false,
+          "inheritedFrom": "InformationWrapper",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "readOnly",
+          "type": "boolean | undefined",
           "required": false,
           "inheritedFrom": "InformationWrapper",
           "inheritedPackage": "@salutejs/sdds-finai"
@@ -15055,7 +15519,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { InformationWrapper } from '@daisforge/ui';",
       "minimalUsage": "<InformationWrapper />",
@@ -15375,7 +15839,7 @@
       "relatedExports": [
         "LeftPanelToggleButton"
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { LeftPanel } from '@daisforge/ui';",
       "minimalUsage": "<LeftPanel>\n  {/* части: LeftPanel.LeftPanelToggleButton */}\n</LeftPanel>",
@@ -15586,7 +16050,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "LeftPanel",
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { LeftPanelToggleButton } from '@daisforge/ui';",
       "minimalUsage": "<LeftPanelToggleButton />",
@@ -15643,6 +16107,14 @@
       "hasCuratedMeta": true,
       "inheritedProps": [
         {
+          "name": "disabled",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Компонент неактивен.",
+          "inheritedFrom": "Link",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "size",
           "type": "string | undefined",
           "required": false,
@@ -15668,7 +16140,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Link } from '@daisforge/ui';",
       "minimalUsage": "<Link />",
@@ -15767,6 +16239,13 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "disabled",
+          "type": "boolean | undefined",
+          "required": false,
+          "inheritedFrom": "LinkButton",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "isLoading",
           "type": "boolean | undefined",
           "required": false,
@@ -15802,7 +16281,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { LinkButton } from '@daisforge/ui';",
       "minimalUsage": "<LinkButton />",
@@ -15908,9 +16387,16 @@
           "description": "Тип отображения для accordion",
           "inheritedFrom": "List",
           "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean | undefined",
+          "required": false,
+          "inheritedFrom": "List",
+          "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { List } from '@daisforge/ui';",
       "minimalUsage": "<List />",
@@ -15979,7 +16465,7 @@
         "list row"
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { ListItem } from '@daisforge/ui';",
       "minimalUsage": "<ListItem />",
@@ -16129,7 +16615,7 @@
         "сброс фильтров"
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { ListOfFilters } from '@daisforge/ui';",
       "minimalUsage": "<ListOfFilters clearAll={() => {}} items={[]} opened={true} />",
@@ -16198,6 +16684,22 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "checked",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Помечен ли заранее такой элемент формы, как флажок или переключатель",
+          "inheritedFrom": "Mask",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Компонент неактивен",
+          "inheritedFrom": "Mask",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "hasRequiredIndicator",
           "type": "boolean | undefined",
           "required": false,
@@ -16211,6 +16713,14 @@
           "type": "boolean | undefined",
           "required": false,
           "description": "Одновременно отображает label и placeholder (при пустом вводе)",
+          "inheritedFrom": "Mask",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "label",
+          "type": "string | undefined",
+          "required": false,
+          "description": "Метка-подпись к элементу",
           "inheritedFrom": "Mask",
           "inheritedPackage": "@salutejs/sdds-finai"
         },
@@ -16255,10 +16765,50 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "maxLength",
+          "type": "number | undefined",
+          "required": false,
+          "description": "Максимальная длина значения поля",
+          "inheritedFrom": "Mask",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "minLength",
+          "type": "number | undefined",
+          "required": false,
+          "description": "Минимальная длина значения поля",
+          "inheritedFrom": "Mask",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "name",
+          "type": "string | undefined",
+          "required": false,
+          "description": "Определяет уникальное имя элемента формы",
+          "inheritedFrom": "Mask",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "onBlur",
+          "type": "React.FocusEventHandler<HTMLInputElement> | undefined",
+          "required": false,
+          "description": "Обработчик blur на элементе формы",
+          "inheritedFrom": "Mask",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "onChange",
           "type": "React.ChangeEventHandler<HTMLInputElement> | undefined",
           "required": false,
           "description": "Обработчик изменения элемента формы",
+          "inheritedFrom": "Mask",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "onFocus",
+          "type": "React.FocusEventHandler<HTMLInputElement> | undefined",
+          "required": false,
+          "description": "Обработчик focus на элементе формы",
           "inheritedFrom": "Mask",
           "inheritedPackage": "@salutejs/sdds-finai"
         },
@@ -16287,10 +16837,34 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "placeholder",
+          "type": "string | undefined",
+          "required": false,
+          "description": "Выводит текст внутри поля формы, который исчезает при получении фокуса",
+          "inheritedFrom": "Mask",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "readOnly",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Элемент формы не может изменяться пользователем",
+          "inheritedFrom": "Mask",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "reformat",
           "type": "((params: { value: IInputValue[] | string; selection: ISelectRange; input?: string | undefined; }) => IInputState) | undefined",
           "required": false,
           "description": "Функция форматирования, которая позволяет задать собственные правила форматирования.",
+          "inheritedFrom": "Mask",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "required",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Флаг обязательности поля",
           "inheritedFrom": "Mask",
           "inheritedPackage": "@salutejs/sdds-finai"
         },
@@ -16316,6 +16890,22 @@
           "type": "boolean | undefined",
           "required": false,
           "description": "Отображать ли префикс маски. Например у маски телефона \"+7\"",
+          "inheritedFrom": "Mask",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "type",
+          "type": "string | undefined",
+          "required": false,
+          "description": "Тип элемента формы",
+          "inheritedFrom": "Mask",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "value",
+          "type": "number | readonly string[] | string | undefined",
+          "required": false,
+          "description": "Определяет значение элемента формы",
           "inheritedFrom": "Mask",
           "inheritedPackage": "@salutejs/sdds-finai"
         },
@@ -16537,7 +17127,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Mask } from '@daisforge/ui';",
       "minimalUsage": "<Mask />",
@@ -16742,7 +17332,7 @@
         }
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { MassActions } from '@daisforge/ui';",
       "minimalUsage": "<MassActions containerRef={() => {}} leftSection={'Контент'} selectedCount={0}>\n  {/* части: MassActions.Counter */}\n</MassActions>",
@@ -16971,7 +17561,7 @@
         "action button dropdown"
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { MassActionsButton } from '@daisforge/ui';",
       "minimalUsage": "<MassActionsButton />",
@@ -17026,7 +17616,7 @@
         "чекбокс выбора всех"
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "compoundPartOf": {
         "component": "MassActions",
         "part": "Counter"
@@ -17095,7 +17685,7 @@
         "fixed position"
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { MassActionsStatic } from '@daisforge/ui';",
       "minimalUsage": "<MassActionsStatic children={'Контент'} />",
@@ -17345,7 +17935,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Modal } from '@daisforge/ui';",
       "minimalUsage": "<Modal />",
@@ -17560,6 +18150,13 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "disabled",
+          "type": "boolean | undefined",
+          "required": false,
+          "inheritedFrom": "IconButton",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "focused",
           "type": "boolean | undefined",
           "required": false,
@@ -17658,7 +18255,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "compoundPartOf": {
         "component": "ModalDF",
         "part": "BackIconButton"
@@ -17774,7 +18371,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "compoundPartOf": {
         "component": "ModalDF",
         "part": "Divider"
@@ -18000,6 +18597,13 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "disabled",
+          "type": "boolean | undefined",
+          "required": false,
+          "inheritedFrom": "IconButton",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "focused",
           "type": "boolean | undefined",
           "required": false,
@@ -18098,7 +18702,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "compoundPartOf": {
         "component": "ModalDF",
         "part": "DotsIconButton"
@@ -18167,7 +18771,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "ModalDF",
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "compoundPartOf": {
         "component": "ModalDF",
         "part": "Footer"
@@ -18249,7 +18853,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "ModalDF",
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "compoundPartOf": {
         "component": "ModalDF",
         "part": "Header"
@@ -18300,7 +18904,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "ModalDF",
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "compoundPartOf": {
         "component": "ModalDF",
         "part": "ServiceButtons"
@@ -19845,7 +20449,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { ModalDF } from '@daisforge/ui';",
       "minimalUsage": "<ModalDF>\n  {/* части: ModalDF.Left, ModalDF.Main, ModalDF.Header, ModalDF.Footer, ModalDF.Content, ModalDF.Divider, ModalDF.ServiceButtons, ModalDF.DotsIconButton, ModalDF.BackIconButton */}\n</ModalDF>",
@@ -20165,7 +20769,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "ModalDF",
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "compoundPartOf": {
         "component": "ModalDF",
         "part": "Left"
@@ -20479,7 +21083,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "ModalDF",
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "compoundPartOf": {
         "component": "ModalDF",
         "part": "Main"
@@ -20793,7 +21397,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "ModalDF",
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "compoundPartOf": {
         "component": "ModalDF",
         "part": "Content"
@@ -21117,7 +21721,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { ModalDFConfirmation } from '@daisforge/ui';",
       "minimalUsage": "<ModalDFConfirmation>\n  {/* части: ModalDFConfirmation.Footer */}\n</ModalDFConfirmation>",
@@ -21181,7 +21785,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "ModalDFConfirmation",
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "compoundPartOf": {
         "component": "ModalDFConfirmation",
         "part": "Footer"
@@ -21261,6 +21865,13 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "height",
+          "type": "number | string | undefined",
+          "required": false,
+          "inheritedFrom": "Note",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "onCloseButtonClick",
           "type": "(() => void) | undefined",
           "required": false,
@@ -21308,9 +21919,16 @@
           "required": false,
           "inheritedFrom": "Note",
           "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "width",
+          "type": "number | string | undefined",
+          "required": false,
+          "inheritedFrom": "Note",
+          "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Note } from '@daisforge/ui';",
       "minimalUsage": "<Note />",
@@ -21542,7 +22160,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Notification } from '@daisforge/ui';",
       "minimalUsage": "<Notification />",
@@ -21756,6 +22374,14 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "label",
+          "type": "string | undefined",
+          "required": false,
+          "description": "Метка-подпись к элементу",
+          "inheritedFrom": "NumberFormat",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "labelPlacement",
           "type": "\"inner\" | \"outer\" | undefined",
           "required": false,
@@ -21764,10 +22390,26 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "onBlur",
+          "type": "React.FocusEventHandler<HTMLInputElement> | undefined",
+          "required": false,
+          "description": "Обработчик blur на элементе формы",
+          "inheritedFrom": "NumberFormat",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "onChange",
           "type": "(((event?: React.ChangeEvent<HTMLInputElement> | undefined, values?: NumberFormatValues | undefined) => void) & React.ChangeEventHandler<HTMLInputElement>) | undefined",
           "required": false,
           "description": "Callback, вызываемый при изменении значения в поле ввода.\nПринимает событие изменения (ChangeEvent) и объект NumberFormatValues:\n```\nfloatValue: number | undefined;\nformattedValue: string;\nvalue: string;\n```\nОбработчик изменения элемента формы",
+          "inheritedFrom": "NumberFormat",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "onFocus",
+          "type": "React.FocusEventHandler<HTMLInputElement> | undefined",
+          "required": false,
+          "description": "Обработчик focus на элементе формы",
           "inheritedFrom": "NumberFormat",
           "inheritedPackage": "@salutejs/sdds-finai"
         },
@@ -21784,6 +22426,14 @@
           "type": "string | undefined",
           "required": false,
           "description": "Подпись для указания необязательности поля",
+          "inheritedFrom": "NumberFormat",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "prefix",
+          "type": "string | undefined",
+          "required": false,
+          "description": "Префикс текста в поле ввода.",
           "inheritedFrom": "NumberFormat",
           "inheritedPackage": "@salutejs/sdds-finai"
         },
@@ -21818,6 +22468,14 @@
           "type": "\"lakh\" | \"none\" | \"thousand\" | \"wan\" | undefined",
           "required": false,
           "description": "Стиль группировки тысяч:\n- 'thousand' (123 456 789),\n- 'lakh' (индийский стиль, 12 34 56 789),\n- 'wan' (китайский стиль, 1 2345 6789),\n- 'none' (без группировки).",
+          "inheritedFrom": "NumberFormat",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "type",
+          "type": "string | undefined",
+          "required": false,
+          "description": "Тип элемента формы",
           "inheritedFrom": "NumberFormat",
           "inheritedPackage": "@salutejs/sdds-finai"
         },
@@ -22040,7 +22698,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { NumberFormat } from '@daisforge/ui';",
       "minimalUsage": "<NumberFormat />",
@@ -22411,7 +23069,7 @@
         }
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { NumberFormatAmount } from '@daisforge/ui';",
       "minimalUsage": "<NumberFormatAmount />",
@@ -22540,6 +23198,13 @@
         {
           "name": "defaultValue",
           "type": "number | string | undefined",
+          "required": false,
+          "inheritedFrom": "NumberInput",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean | undefined",
           "required": false,
           "inheritedFrom": "NumberInput",
           "inheritedPackage": "@salutejs/sdds-finai"
@@ -22720,7 +23385,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { NumberInput } from '@daisforge/ui';",
       "minimalUsage": "<NumberInput />",
@@ -22800,11 +23465,72 @@
         "оверлей под модалкой"
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Overlay } from '@daisforge/ui';",
       "minimalUsage": "<Overlay backgroundColorProperty={'значение'} zIndex={'значение'} />",
       "examples": []
+    },
+    "PageLoader": {
+      "name": "PageLoader",
+      "group": "components",
+      "folderName": "PageLoader",
+      "role": "primary",
+      "description": "Индикатор первоначальной загрузки, который занимает область контента страницы",
+      "props": [
+        {
+          "name": "subtitle",
+          "type": "string | undefined",
+          "required": false,
+          "description": "Описание загрузки. Отображается, если передана непустая строка."
+        }
+      ],
+      "propsTypeName": "PageLoaderProps",
+      "sourceFile": "packages/ui-kit/src/components/PageLoader/PageLoader.tsx",
+      "type": "composition",
+      "category": "Композиции",
+      "keywords": [
+        "загрузка страницы",
+        "loader",
+        "spinner"
+      ],
+      "docs": "# PageLoader\n\nКомпонент первоначальной загрузки страницы. Показывается, пока данные ещё не получены.\n\n## Ключевые особенности\n\n- Заменяет контент страницы на время первоначальной загрузки.\n- Занимает свободное место во flex-контейнере и центрирует спиннер и текст. Размер области задаёт родитель.\n- Показывает описание, если передана непустая строка `subtitle`.\n- Использует `role=\"status\"` для обозначения статуса загрузки.\n- Подходит для `fallback` в `Suspense`.\n\n## Первоначальная загрузка\n\nЗаголовок страницы, приветствие и навигацию размещайте выше условного рендера,\nчтобы они оставались видимыми.\n\n```tsx\n\n<Box display=\"flex\" flexDirection=\"column\" height=\"480px\" gap=\"24px\">\n  <PageTitle title=\"Отчёты\" />\n  {isInitialLoading ? <PageLoader /> : <Reports />}\n</Box>;\n```\n\nПри повторном запросе с уже полученными данными оставляйте контент смонтированным\nи показывайте локальный индикатор обновления. Ошибку запроса обрабатывайте отдельно.\n\n## Suspense\n\nЧтобы центрировать fallback, разместите `Suspense` во flex-контейнере с заданной\nвысотой.\n\n```tsx\n\n<Box display=\"flex\" flexDirection=\"column\" height=\"480px\">\n  <Suspense fallback={<PageLoader />}>\n    <Reports />\n  </Suspense>\n</Box>;\n```\n\nОписание типов — в разделе [API](?path=/docs/композиции-pageloader-api--docs).",
+      "apiDocs": "# PageLoader API\n\n## PageLoaderProps\n\n```typescript\ntype PageLoaderProps = Omit<\n  HTMLAttributes<HTMLDivElement>,\n  'title' | 'children'\n> & {\n  /** Заголовок загрузки. @default 'Загрузка страницы' */\n  title?: string;\n  /** Описание загрузки. Отображается, если передана непустая строка. */\n  subtitle?: string;\n};\n```",
+      "curatedStories": [
+        {
+          "exportName": "Default",
+          "displayName": "Загрузка страницы",
+          "type": "full-code",
+          "code": "import { Box, PageLoader } from '@daisforge/ui';\n\n(args) => (\n    <Box display=\"flex\" height=\"480px\">\n      <PageLoader {...args} />\n    </Box>\n  )"
+        }
+      ],
+      "hasCuratedMeta": true,
+      "atomicMcpVersion": "0.367.0",
+      "importPath": "@daisforge/ui",
+      "importStatement": "import { PageLoader } from '@daisforge/ui';",
+      "minimalUsage": "<PageLoader />",
+      "examples": [
+        {
+          "exportName": "Default",
+          "displayName": "Загрузка страницы",
+          "type": "full-code",
+          "code": "import { Box, PageLoader } from '@daisforge/ui';\n\n(args) => (\n    <Box display=\"flex\" height=\"480px\">\n      <PageLoader {...args} />\n    </Box>\n  )"
+        },
+        {
+          "exportName": "Usage1",
+          "displayName": "Использование в PageLoader.stories.tsx",
+          "type": "usage",
+          "code": "<PageLoader {...args} />",
+          "sourceFile": "packages/storybook/src/stories/PageLoader/PageLoader.stories.tsx"
+        },
+        {
+          "exportName": "Usage2",
+          "displayName": "Использование в PageLoader.tsx",
+          "type": "usage",
+          "code": "<PageLoader subtitle={showSubtitle ? subtitle : undefined} />",
+          "sourceFile": "packages/vite-project/src/pages/PageLoader.tsx"
+        }
+      ]
     },
     "PageTitle": {
       "name": "PageTitle",
@@ -22920,7 +23646,7 @@
         }
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { PageTitle } from '@daisforge/ui';",
       "minimalUsage": "<PageTitle />",
@@ -22963,6 +23689,20 @@
           "type": "React.ComponentType<any> | keyof JSX.IntrinsicElements | undefined",
           "required": false,
           "description": "Сменить рендер на другой тип компонента."
+        },
+        {
+          "name": "hasPageRange",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Показывать номера страниц.",
+          "default": "true"
+        },
+        {
+          "name": "hasTotalPages",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Показывать общее число страниц рядом с полем быстрого перехода.",
+          "default": "false"
         },
         {
           "name": "children",
@@ -23017,15 +23757,6 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
-          "name": "hasPageRange",
-          "type": "boolean | undefined",
-          "required": false,
-          "description": "Показывать номера страниц.",
-          "default": "true",
-          "inheritedFrom": "Pagination",
-          "inheritedPackage": "@salutejs/sdds-finai"
-        },
-        {
           "name": "hasPerPage",
           "type": "boolean | undefined",
           "required": false,
@@ -23038,15 +23769,6 @@
           "type": "boolean | undefined",
           "required": false,
           "description": "Выбор страницы через Input",
-          "inheritedFrom": "Pagination",
-          "inheritedPackage": "@salutejs/sdds-finai"
-        },
-        {
-          "name": "hasTotalPages",
-          "type": "boolean | undefined",
-          "required": false,
-          "description": "Показывать общее число страниц рядом с полем быстрого перехода.",
-          "default": "false",
           "inheritedFrom": "Pagination",
           "inheritedPackage": "@salutejs/sdds-finai"
         },
@@ -23241,7 +23963,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Pagination } from '@daisforge/ui';",
       "minimalUsage": "<Pagination />",
@@ -23452,7 +24174,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Popover } from '@daisforge/ui';",
       "minimalUsage": "<Popover />",
@@ -23638,7 +24360,7 @@
       "chooseWhen": "Новая проработанная версия — нужен изменяемый размер попапа, явный выбор триггера (hover/click/focus) или рендер в портал — иначе берите стабильный Popover.",
       "hasCuratedMeta": true,
       "inheritedProps": [],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { PopoverBeta } from '@daisforge/ui';",
       "minimalUsage": "<PopoverBeta children={'Контент'} target={'Контент'} />",
@@ -23936,7 +24658,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "PopoverDF",
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "compoundPartOf": {
         "component": "PopoverDF",
         "part": "Body"
@@ -24251,7 +24973,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "PopoverDF",
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "compoundPartOf": {
         "component": "PopoverDF",
         "part": "Footer"
@@ -24327,7 +25049,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "PopoverDF",
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "compoundPartOf": {
         "component": "PopoverDF",
         "part": "Header"
@@ -25126,7 +25848,7 @@
         "PopoverDFFooter",
         "PopoverDFHeader"
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { PopoverDF } from '@daisforge/ui';",
       "minimalUsage": "<PopoverDF target={'Контент'}>\n  {/* части: PopoverDF.Header, PopoverDF.Body, PopoverDF.Footer */}\n</PopoverDF>",
@@ -25194,7 +25916,7 @@
         "provider для окна"
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { PopupProvider } from '@daisforge/ui';",
       "minimalUsage": "<PopupProvider />",
@@ -25351,7 +26073,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Popup } from '@daisforge/ui';",
       "minimalUsage": "<Popup />",
@@ -25654,7 +26376,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "PopupDF",
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "compoundPartOf": {
         "component": "PopupDF",
         "part": "Body"
@@ -25969,7 +26691,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "PopupDF",
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "compoundPartOf": {
         "component": "PopupDF",
         "part": "Footer"
@@ -26057,7 +26779,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "PopupDF",
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "compoundPartOf": {
         "component": "PopupDF",
         "part": "Header"
@@ -26820,7 +27542,7 @@
         "PopupDFFooter",
         "PopupDFHeader"
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { PopupDF } from '@daisforge/ui';",
       "minimalUsage": "<PopupDF>\n  {/* части: PopupDF.Header, PopupDF.Body, PopupDF.Footer */}\n</PopupDF>",
@@ -26882,7 +27604,7 @@
         "рендер вне дерева"
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Portal } from '@daisforge/ui';",
       "minimalUsage": "<Portal />",
@@ -26983,7 +27705,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Price } from '@daisforge/ui';",
       "minimalUsage": "<Price children={0} />",
@@ -27044,6 +27766,14 @@
           "required": false,
           "description": "Отображать числовое значение прогресса.",
           "default": "'true'",
+          "inheritedFrom": "Progress",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "label",
+          "type": "string | undefined",
+          "required": false,
+          "description": "Текстовая метка прогресса.",
           "inheritedFrom": "Progress",
           "inheritedPackage": "@salutejs/sdds-finai"
         },
@@ -27134,7 +27864,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Progress } from '@daisforge/ui';",
       "minimalUsage": "<Progress value={0} />",
@@ -27239,7 +27969,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { ProgressBarCircular } from '@daisforge/ui';",
       "minimalUsage": "<ProgressBarCircular />",
@@ -27305,6 +28035,14 @@
       "hasCuratedMeta": true,
       "inheritedProps": [
         {
+          "name": "checked",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Помечен ли заранее такой элемент формы, как флажок или переключатель",
+          "inheritedFrom": "Radiobox",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "checkIcon",
           "type": "React.ReactNode",
           "required": false,
@@ -27317,6 +28055,14 @@
           "type": "React.ReactNode",
           "required": false,
           "description": "Описание элемента",
+          "inheritedFrom": "Radiobox",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Компонент неактивен",
           "inheritedFrom": "Radiobox",
           "inheritedPackage": "@salutejs/sdds-finai"
         },
@@ -27337,10 +28083,66 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "maxLength",
+          "type": "number | undefined",
+          "required": false,
+          "description": "Максимальная длина значения поля",
+          "inheritedFrom": "Radiobox",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "minLength",
+          "type": "number | undefined",
+          "required": false,
+          "description": "Минимальная длина значения поля",
+          "inheritedFrom": "Radiobox",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "name",
+          "type": "string | undefined",
+          "required": false,
+          "description": "Определяет уникальное имя элемента формы",
+          "inheritedFrom": "Radiobox",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "onBlur",
+          "type": "React.FocusEventHandler<HTMLInputElement> | undefined",
+          "required": false,
+          "description": "Обработчик blur на элементе формы",
+          "inheritedFrom": "Radiobox",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "onChange",
           "type": "React.ChangeEventHandler<HTMLInputElement> | undefined",
           "required": false,
           "description": "Обработчик изменения элемента формы",
+          "inheritedFrom": "Radiobox",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "onFocus",
+          "type": "React.FocusEventHandler<HTMLInputElement> | undefined",
+          "required": false,
+          "description": "Обработчик focus на элементе формы",
+          "inheritedFrom": "Radiobox",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "placeholder",
+          "type": "string | undefined",
+          "required": false,
+          "description": "Выводит текст внутри поля формы, который исчезает при получении фокуса",
+          "inheritedFrom": "Radiobox",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "required",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Флаг обязательности поля",
           "inheritedFrom": "Radiobox",
           "inheritedPackage": "@salutejs/sdds-finai"
         },
@@ -27361,15 +28163,38 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "type",
+          "type": "string | undefined",
+          "required": false,
+          "description": "Тип элемента формы",
+          "inheritedFrom": "Radiobox",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "value",
+          "type": "number | readonly string[] | string | undefined",
+          "required": false,
+          "description": "Определяет значение элемента формы",
+          "inheritedFrom": "Radiobox",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "view",
           "type": "\"accent\" | \"default\" | \"negative\" | \"paragraph\" | \"positive\" | \"secondary\" | \"tertiary\" | \"warning\" | undefined",
           "required": false,
           "description": "Вид компонента",
           "inheritedFrom": "Radiobox",
           "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "defaultChecked",
+          "type": "boolean | undefined",
+          "required": false,
+          "inheritedFrom": "Radiobox",
+          "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Radiobox } from '@daisforge/ui';",
       "minimalUsage": "<Radiobox />",
@@ -27413,7 +28238,7 @@
       ],
       "chooseWhen": "Вне react-hook-form — группа радиокнопок с value/onChange напрямую.",
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { RadioGroup } from '@daisforge/ui';",
       "minimalUsage": "<RadioGroup children={'Контент'} />",
@@ -27814,6 +28639,20 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "autoComplete",
+          "type": "string | undefined",
+          "required": false,
+          "inheritedFrom": "Range",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean | undefined",
+          "required": false,
+          "inheritedFrom": "Range",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "dividerIcon",
           "type": "React.ReactNode | undefined",
           "required": false,
@@ -27835,6 +28674,27 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "label",
+          "type": "string | undefined",
+          "required": false,
+          "inheritedFrom": "Range",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "readOnly",
+          "type": "boolean | undefined",
+          "required": false,
+          "inheritedFrom": "Range",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "required",
+          "type": "boolean | undefined",
+          "required": false,
+          "inheritedFrom": "Range",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "secondTextfieldTextBefore",
           "type": "string | undefined",
           "required": false,
@@ -27842,7 +28702,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Range } from '@daisforge/ui';",
       "minimalUsage": "<Range />",
@@ -27986,7 +28846,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Rating } from '@daisforge/ui';",
       "minimalUsage": "<Rating />",
@@ -28029,7 +28889,7 @@
         "скринридер"
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { SSRProvider } from '@daisforge/ui';",
       "minimalUsage": "<SSRProvider children={'Контент'} />",
@@ -28084,6 +28944,14 @@
           "required": false,
           "description": "При ограничении ширины разрешает скролл и отображает дополнительные элементы со стрелками",
           "default": "true",
+          "inheritedFrom": "SegmentGroup",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Группа сегментов неактивна",
           "inheritedFrom": "SegmentGroup",
           "inheritedPackage": "@salutejs/sdds-finai"
         },
@@ -28160,7 +29028,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { SegmentGroup } from '@daisforge/ui';",
       "minimalUsage": "<SegmentGroup />",
@@ -28441,7 +29309,7 @@
         "состояние выбора вкладки"
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { SegmentProvider } from '@daisforge/ui';",
       "minimalUsage": "<SegmentProvider />",
@@ -28492,6 +29360,12 @@
           "type": "\"button\" | \"reset\" | \"submit\" | undefined",
           "required": false,
           "description": ""
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "required": false,
+          "description": "Имя поля. Используется для нативной формы и react-hook-form register."
         }
       ],
       "propsTypeName": "ComponentProps<typeof Select>",
@@ -28589,6 +29463,15 @@
           "type": "React.ReactElement<any, React.JSXElementConstructor<any> | string> | undefined",
           "required": false,
           "description": "Слот для контента справа.",
+          "inheritedFrom": "Select",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Компонент неактивен.",
+          "default": "false",
           "inheritedFrom": "Select",
           "inheritedPackage": "@salutejs/sdds-finai"
         },
@@ -28750,6 +29633,14 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "label",
+          "type": "string | undefined",
+          "required": false,
+          "description": "Метка-подпись к элементу",
+          "inheritedFrom": "Select",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "labelPlacement",
           "type": "\"inner\" | \"outer\" | undefined",
           "required": false,
@@ -28815,6 +29706,14 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "placeholder",
+          "type": "string | undefined",
+          "required": false,
+          "description": "Placeholder.",
+          "inheritedFrom": "Select",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "placement",
           "type": "SelectPlacement | SelectPlacementBasic[] | undefined",
           "required": false,
@@ -28828,6 +29727,14 @@
           "type": "React.RefObject<HTMLElement | null> | string | undefined",
           "required": false,
           "description": "Портал для выпадающего списка. Принимает id контейнера или ref.",
+          "inheritedFrom": "Select",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "readOnly",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Компонент доступен только для чтения.",
           "inheritedFrom": "Select",
           "inheritedPackage": "@salutejs/sdds-finai"
         },
@@ -28865,7 +29772,7 @@
         },
         {
           "name": "required",
-          "type": "undefined",
+          "type": "boolean | undefined",
           "required": false,
           "description": "Флаг обязательности поля",
           "inheritedFrom": "Select",
@@ -29031,7 +29938,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Select } from '@daisforge/ui';",
       "minimalUsage": "<Select items={[]} />",
@@ -29258,7 +30165,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Sheet } from '@daisforge/ui';",
       "minimalUsage": "<Sheet onClose={() => {}} />",
@@ -29367,7 +30274,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { LineSkeleton } from '@daisforge/ui';",
       "minimalUsage": "<LineSkeleton />",
@@ -29407,6 +30314,18 @@
       "role": "primary",
       "description": "Прямоугольный плейсхолдер для блоков и изображений на время загрузки",
       "props": [
+        {
+          "name": "height",
+          "type": "number | string",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "width",
+          "type": "number | string",
+          "required": true,
+          "description": ""
+        },
         {
           "name": "animationDuration",
           "type": "number | undefined",
@@ -29467,10 +30386,10 @@
         "заглушка изображения"
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { RectSkeleton } from '@daisforge/ui';",
-      "minimalUsage": "<RectSkeleton />",
+      "minimalUsage": "<RectSkeleton height={'значение'} width={'значение'} />",
       "examples": [
         {
           "exportName": "Usage1",
@@ -29667,6 +30586,14 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "disabled",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Компонент неактивен",
+          "inheritedFrom": "Slider",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "hideMaxValueDiff",
           "type": "number | undefined",
           "required": false,
@@ -29679,6 +30606,14 @@
           "type": "number | undefined",
           "required": false,
           "description": "Разница между текущим значением и минимальным, при котором минимальное будет скрыто.",
+          "inheritedFrom": "Slider",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "label",
+          "type": "string | undefined",
+          "required": false,
+          "description": "Подпись к слайдеру",
           "inheritedFrom": "Slider",
           "inheritedPackage": "@salutejs/sdds-finai"
         },
@@ -29726,7 +30661,7 @@
         },
         {
           "name": "name",
-          "type": "undefined",
+          "type": "string | undefined",
           "required": false,
           "description": "Свойство для названия поля при работе с формой",
           "inheritedFrom": "Slider",
@@ -29809,7 +30744,7 @@
         },
         {
           "name": "reversed",
-          "type": "undefined",
+          "type": "boolean | undefined",
           "required": false,
           "description": "Изменяет направление слайдера",
           "inheritedFrom": "Slider",
@@ -29930,7 +30865,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Slider } from '@daisforge/ui';",
       "minimalUsage": "<Slider max={0} min={0} />",
@@ -30026,7 +30961,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Spinner } from '@daisforge/ui';",
       "minimalUsage": "<Spinner />",
@@ -30143,7 +31078,7 @@
         }
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { SplitView } from '@daisforge/ui';",
       "minimalUsage": "<SplitView mainContent={'Контент'} />",
@@ -30322,7 +31257,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Steps } from '@daisforge/ui';",
       "minimalUsage": "<Steps />",
@@ -30421,7 +31356,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "Stories",
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "compoundPartOf": {
         "component": "Stories",
         "part": "Preview"
@@ -30738,7 +31673,7 @@
       "relatedExports": [
         "StoriesPreview"
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Stories } from '@daisforge/ui';",
       "minimalUsage": "<Stories children={'Контент'}>\n  {/* части: Stories.Preview */}\n</Stories>",
@@ -30892,7 +31827,7 @@
       ],
       "chooseWhen": "Вне react-hook-form — тумблер вкл/выкл с value/onChange напрямую.",
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Switch } from '@daisforge/ui';",
       "minimalUsage": "<Switch />",
@@ -31004,10 +31939,10 @@
         "Canvas",
         "TextCellEntryType"
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { TableFilterSelect } from '@daisforge/ui/components/TableCanvas';",
-      "minimalUsage": "<TableFilterSelect onChange={() => {}} options={[]} value={[]} />",
+      "minimalUsage": "<TableFilterSelect onChange={() => {}} options={[]} value={{}} />",
       "examples": [
         {
           "exportName": "Usage",
@@ -31058,7 +31993,7 @@
         "Canvas",
         "TextCellEntryType"
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { TableFilterSelectList } from '@daisforge/ui/components/TableCanvas';",
       "minimalUsage": "<TableFilterSelectList />",
@@ -31113,7 +32048,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "TableCanvas",
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { TableFilterSelectListItem } from '@daisforge/ui/components/TableCanvas';",
       "minimalUsage": "<TableFilterSelectListItem />",
@@ -31423,7 +32358,7 @@
         "Canvas",
         "TextCellEntryType"
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { TableFilterSelectSearchTextfield } from '@daisforge/ui/components/TableCanvas';",
       "minimalUsage": "<TableFilterSelectSearchTextfield />",
@@ -31733,7 +32668,7 @@
         "Canvas",
         "TextCellEntryType"
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { TableFilterSelectTotalListItemContainer } from '@daisforge/ui/components/TableCanvas';",
       "minimalUsage": "<TableFilterSelectTotalListItemContainer $beforeList={true} $listIsNonEmpty={true} />",
@@ -31846,7 +32781,7 @@
         "NoRowsFallback",
         "ContainerStyled"
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Table } from '@daisforge/ui';",
       "minimalUsage": "<Table columnConfig={[]} rows={[]} />",
@@ -31885,6 +32820,12 @@
       "role": "internal",
       "description": "Неактивный переключатель-индикатор состояния в управляющем блоке строки Table",
       "props": [
+        {
+          "name": "checked",
+          "type": "boolean",
+          "required": true,
+          "description": "Помечен ли заранее такой элемент формы, как флажок или переключатель"
+        },
         {
           "name": "description",
           "type": "string | undefined",
@@ -31990,10 +32931,10 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "Table",
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { ControlBlockSwitch } from '@daisforge/ui';",
-      "minimalUsage": "<ControlBlockSwitch />",
+      "minimalUsage": "<ControlBlockSwitch checked={true} />",
       "examples": []
     },
     "NoRowsFallback": {
@@ -32021,7 +32962,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "Table",
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { NoRowsFallback } from '@daisforge/ui';",
       "minimalUsage": "<NoRowsFallback />",
@@ -32160,7 +33101,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "TableCanvas",
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { ContainerStyled } from '@daisforge/ui/components/TableCanvas';",
       "minimalUsage": "<ContainerStyled $activeTheme={\"betaCoreDark\"} $activeView={{}} $appearanceVariant={{}} $borderLeftBottomRadiusRounded={true} $borderLeftTopRadiusRounded={true} $borderRightBottomRadiusRounded={true} $borderRightTopRadiusRounded={true} $columnsGroupingIsActive={true} $fullScreened={true} $highlightActiveType={{}} $isHaveRowHeightAnimation={true} $rowHeight={\"big\"} />",
@@ -32271,7 +33212,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "TableCanvas",
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { SplitIconButton } from '@daisforge/ui/components/TableCanvas';",
       "minimalUsage": "<SplitIconButton icon={'Контент'} />",
@@ -32364,6 +33305,12 @@
           "type": "FieldVerticalAlign | undefined",
           "required": false,
           "description": ""
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "required": false,
+          "description": "Имя поля. Используется для нативной формы и react-hook-form register."
         }
       ],
       "propsTypeName": "CellEditorComboboxProps",
@@ -32598,6 +33545,14 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "label",
+          "type": "string | undefined",
+          "required": false,
+          "description": "Метка-подпись к элементу",
+          "inheritedFrom": "Combobox",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "labelPlacement",
           "type": "\"inner\" | \"outer\" | undefined",
           "required": false,
@@ -32671,6 +33626,14 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "placeholder",
+          "type": "string | undefined",
+          "required": false,
+          "description": "Placeholder.",
+          "inheritedFrom": "Combobox",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "placement",
           "type": "Placement | undefined",
           "required": false,
@@ -32700,6 +33663,14 @@
           "type": "((selected: \"indeterminate\" | boolean) => React.ReactNode) | undefined",
           "required": false,
           "description": "Callback для кастомной настройки иконки выбранного элемента.",
+          "inheritedFrom": "Combobox",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "required",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Флаг обязательности поля",
           "inheritedFrom": "Combobox",
           "inheritedPackage": "@salutejs/sdds-finai"
         },
@@ -32825,6 +33796,13 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "disabled",
+          "type": "boolean | undefined",
+          "required": false,
+          "inheritedFrom": "Combobox",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "hintSize",
           "type": "\"m\" | \"s\" | undefined",
           "required": false,
@@ -32855,6 +33833,13 @@
         {
           "name": "onChange",
           "type": "((value: string, item: ItemOption | null) => void) | ((value: string[], item: ItemOption | null) => void) | React.ChangeEventHandler<HTMLSelectElement> | undefined",
+          "required": false,
+          "inheritedFrom": "Combobox",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "readOnly",
+          "type": "boolean | undefined",
           "required": false,
           "inheritedFrom": "Combobox",
           "inheritedPackage": "@salutejs/sdds-finai"
@@ -32902,7 +33887,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { CellEditorCombobox } from '@daisforge/ui/components/TableCanvas';",
       "minimalUsage": "<CellEditorCombobox autoFocusType={\"autoFocus\"} cellHeight={0} cellWidth={0} items={[]} />",
@@ -33091,6 +34076,14 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "label",
+          "type": "string | undefined",
+          "required": false,
+          "description": "Метка-подпись к элементу",
+          "inheritedFrom": "NumberFormat",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "labelPlacement",
           "type": "\"inner\" | \"outer\" | undefined",
           "required": false,
@@ -33099,10 +34092,26 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "onBlur",
+          "type": "React.FocusEventHandler<HTMLInputElement> | undefined",
+          "required": false,
+          "description": "Обработчик blur на элементе формы",
+          "inheritedFrom": "NumberFormat",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "onChange",
           "type": "(((event?: React.ChangeEvent<HTMLInputElement> | undefined, values?: NumberFormatValues | undefined) => void) & React.ChangeEventHandler<HTMLInputElement>) | undefined",
           "required": false,
           "description": "Callback, вызываемый при изменении значения в поле ввода.\nПринимает событие изменения (ChangeEvent) и объект NumberFormatValues:\n```\nfloatValue: number | undefined;\nformattedValue: string;\nvalue: string;\n```\nОбработчик изменения элемента формы",
+          "inheritedFrom": "NumberFormat",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "onFocus",
+          "type": "React.FocusEventHandler<HTMLInputElement> | undefined",
+          "required": false,
+          "description": "Обработчик focus на элементе формы",
           "inheritedFrom": "NumberFormat",
           "inheritedPackage": "@salutejs/sdds-finai"
         },
@@ -33119,6 +34128,14 @@
           "type": "string | undefined",
           "required": false,
           "description": "Подпись для указания необязательности поля",
+          "inheritedFrom": "NumberFormat",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "prefix",
+          "type": "string | undefined",
+          "required": false,
+          "description": "Префикс текста в поле ввода.",
           "inheritedFrom": "NumberFormat",
           "inheritedPackage": "@salutejs/sdds-finai"
         },
@@ -33153,6 +34170,14 @@
           "type": "\"lakh\" | \"none\" | \"thousand\" | \"wan\" | undefined",
           "required": false,
           "description": "Стиль группировки тысяч:\n- 'thousand' (123 456 789),\n- 'lakh' (индийский стиль, 12 34 56 789),\n- 'wan' (китайский стиль, 1 2345 6789),\n- 'none' (без группировки).",
+          "inheritedFrom": "NumberFormat",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "type",
+          "type": "string | undefined",
+          "required": false,
+          "description": "Тип элемента формы",
           "inheritedFrom": "NumberFormat",
           "inheritedPackage": "@salutejs/sdds-finai"
         },
@@ -33360,7 +34385,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { CellEditorNumberFormat } from '@daisforge/ui/components/TableCanvas';",
       "minimalUsage": "<CellEditorNumberFormat autoFocusType={\"autoFocus\"} cellHeight={0} cellWidth={0} />",
@@ -33484,7 +34509,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "TableCanvas",
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { CellEditorTextArea } from '@daisforge/ui/components/TableCanvas';",
       "minimalUsage": "<CellEditorTextArea cellHeight={0} cellWidth={0} />",
@@ -33571,7 +34596,7 @@
         "Canvas",
         "TextCellEntryType"
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { TableCanvas } from '@daisforge/ui';",
       "minimalUsage": "<TableCanvas columnConfig={[]} rows={[]} />",
@@ -33644,7 +34669,7 @@
         "Canvas",
         "TextCellEntryType"
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { TableCanvasLoggerFilters } from '@daisforge/ui/components/TableCanvas';",
       "minimalUsage": "<TableCanvasLoggerFilters counts={{}} onChange={() => {}} value={{}} />",
@@ -33698,7 +34723,7 @@
         "Canvas",
         "TextCellEntryType"
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { TableCanvasLoggerGroup } from '@daisforge/ui/components/TableCanvas';",
       "minimalUsage": "<TableCanvasLoggerGroup item={{}} />",
@@ -33740,7 +34765,7 @@
         "Canvas",
         "TextCellEntryType"
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { TableCanvasLoggerItems } from '@daisforge/ui/components/TableCanvas';",
       "minimalUsage": "<TableCanvasLoggerItems items={[]} />",
@@ -33794,7 +34819,7 @@
         "Canvas",
         "TextCellEntryType"
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { TableCanvasLoggerMessage } from '@daisforge/ui/components/TableCanvas';",
       "minimalUsage": "<TableCanvasLoggerMessage item={{}} />",
@@ -33843,7 +34868,7 @@
         "Canvas",
         "TextCellEntryType"
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { TableCanvasLoggerStatusIcon } from '@daisforge/ui/components/TableCanvas';",
       "minimalUsage": "<TableCanvasLoggerStatusIcon status={{}} />",
@@ -34057,7 +35082,7 @@
         "Canvas",
         "TextCellEntryType"
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { TableCanvasLogger } from '@daisforge/ui/components/TableCanvas';",
       "minimalUsage": "<TableCanvasLogger />",
@@ -34220,7 +35245,7 @@
         "Canvas",
         "TextCellEntryType"
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { TableCanvasLoggerList } from '@daisforge/ui/components/TableCanvas';",
       "minimalUsage": "<TableCanvasLoggerList />",
@@ -34346,7 +35371,7 @@
         "Canvas",
         "TextCellEntryType"
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { TableCanvasLoggerProvider } from '@daisforge/ui/components/TableCanvas';",
       "minimalUsage": "<TableCanvasLoggerProvider children={'Контент'} expandedIds={[]} toggleExpanded={() => {}} />",
@@ -35059,6 +36084,12 @@
           "description": "Controls the resize indicator behavior.\n\n- `full` will show the resize indicator on the full height.\n- `header` will show the resize indicator only on the header.\n- `none` will not show the resize indicator."
         },
         {
+          "name": "resizeIndicatorOnHover",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Also shows the resize indicator while a mouse hovers over a resizable header edge.\nHover is limited to the complete header and uses `theme.resizeIndicatorColor`.\n`resizeIndicator` selects the drag height; \"none\" hides both states.\nDoes not enable column resizing by itself."
+        },
+        {
           "name": "rightElement",
           "type": "React.ReactNode",
           "required": false,
@@ -35434,7 +36465,7 @@
         "Canvas",
         "TextCellEntryType"
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { TableGlideInstance } from '@daisforge/ui/components/TableCanvas';",
       "minimalUsage": "<TableGlideInstance CellReadOnlyEditor={() => {}} columns={[]} rows={[]} />",
@@ -35494,7 +36525,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "TableCanvas",
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { TextCellEntry } from '@daisforge/ui/components/TableCanvas';",
       "minimalUsage": "<TextCellEntry highlight={true} />",
@@ -35512,6 +36543,12 @@
         {
           "name": "Image",
           "props": [
+            {
+              "name": "src",
+              "type": "string",
+              "required": true,
+              "description": "URL изображения, передаваемый загрузчику Glide."
+            },
             {
               "name": "bottom",
               "type": "PositionValue | undefined",
@@ -36649,6 +37686,12 @@
           "name": "Checkbox",
           "props": [
             {
+              "name": "checked",
+              "type": "boolean",
+              "required": true,
+              "description": ""
+            },
+            {
               "name": "dropdown",
               "type": "CanvasNodeDropdownConfig | undefined",
               "required": false,
@@ -37154,6 +38197,12 @@
           "name": "Mark",
           "props": [
             {
+              "name": "color",
+              "type": "string",
+              "required": true,
+              "description": "Цвет пластины под фрагментом"
+            },
+            {
               "name": "children",
               "type": "React.ReactNode",
               "required": false,
@@ -37172,7 +38221,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "TableCanvas",
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { Canvas } from '@daisforge/ui/components/TableCanvas';",
       "minimalUsage": "<Canvas.Container />",
@@ -37232,7 +38281,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "TableCanvas",
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { TextCellEntryType } from '@daisforge/ui/components/TableCanvas';",
       "minimalUsage": "<TextCellEntryType highlight={true} />",
@@ -37319,7 +38368,7 @@
         }
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { TableContract } from '@daisforge/ui';",
       "minimalUsage": "<TableContract fetcher={{}} />",
@@ -37532,7 +38581,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { TableSDDS } from '@daisforge/ui';",
       "minimalUsage": "<TableSDDS columns={[]} data={[]} />",
@@ -37949,7 +38998,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { TableTabs } from '@daisforge/ui';",
       "minimalUsage": "<TableTabs tabs={[]}>\n  {/* части: TableTabs.TabPanel */}\n</TableTabs>",
@@ -38299,6 +39348,15 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "disabled",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Табы неактивны",
+          "default": "false",
+          "inheritedFrom": "Tabs",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "dividerAlign",
           "type": "\"left\" | \"right\" | undefined",
           "required": false,
@@ -38375,7 +39433,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Tabs } from '@daisforge/ui';",
       "minimalUsage": "<Tabs />",
@@ -38824,7 +39882,7 @@
       ],
       "chooseWhen": "Вне react-hook-form — многострочное поле с value/onChange напрямую.",
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { TextArea } from '@daisforge/ui';",
       "minimalUsage": "<TextArea />",
@@ -38925,6 +39983,22 @@
       "hasCuratedMeta": true,
       "inheritedProps": [
         {
+          "name": "checked",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Помечен ли заранее такой элемент формы, как флажок или переключатель",
+          "inheritedFrom": "TextField",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Компонент неактивен",
+          "inheritedFrom": "TextField",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "hasRequiredIndicator",
           "type": "boolean | undefined",
           "required": false,
@@ -38942,6 +40016,14 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "label",
+          "type": "string | undefined",
+          "required": false,
+          "description": "Метка-подпись к элементу",
+          "inheritedFrom": "TextField",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "labelPlacement",
           "type": "\"inner\" | \"outer\" | undefined",
           "required": false,
@@ -38950,10 +40032,50 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "maxLength",
+          "type": "number | undefined",
+          "required": false,
+          "description": "Максимальная длина значения поля",
+          "inheritedFrom": "TextField",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "minLength",
+          "type": "number | undefined",
+          "required": false,
+          "description": "Минимальная длина значения поля",
+          "inheritedFrom": "TextField",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "name",
+          "type": "string | undefined",
+          "required": false,
+          "description": "Определяет уникальное имя элемента формы",
+          "inheritedFrom": "TextField",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "onBlur",
+          "type": "React.FocusEventHandler<HTMLInputElement> | undefined",
+          "required": false,
+          "description": "Обработчик blur на элементе формы",
+          "inheritedFrom": "TextField",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "onChange",
           "type": "React.ChangeEventHandler<HTMLInputElement> | undefined",
           "required": false,
           "description": "Обработчик изменения элемента формы",
+          "inheritedFrom": "TextField",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "onFocus",
+          "type": "React.FocusEventHandler<HTMLInputElement> | undefined",
+          "required": false,
+          "description": "Обработчик focus на элементе формы",
           "inheritedFrom": "TextField",
           "inheritedPackage": "@salutejs/sdds-finai"
         },
@@ -38974,11 +40096,51 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "placeholder",
+          "type": "string | undefined",
+          "required": false,
+          "description": "Выводит текст внутри поля формы, который исчезает при получении фокуса",
+          "inheritedFrom": "TextField",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "readOnly",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Элемент формы не может изменяться пользователем",
+          "inheritedFrom": "TextField",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "required",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Флаг обязательности поля",
+          "inheritedFrom": "TextField",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "requiredPlacement",
           "type": "\"left\" | \"right\" | undefined",
           "required": false,
           "description": "Задает выравнивание индикатора обязательности поля",
           "default": "right",
+          "inheritedFrom": "TextField",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "type",
+          "type": "string | undefined",
+          "required": false,
+          "description": "Тип элемента формы",
+          "inheritedFrom": "TextField",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "value",
+          "type": "number | readonly string[] | string | undefined",
+          "required": false,
+          "description": "Определяет значение элемента формы",
           "inheritedFrom": "TextField",
           "inheritedPackage": "@salutejs/sdds-finai"
         },
@@ -39201,7 +40363,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { TextField } from '@daisforge/ui';",
       "minimalUsage": "<TextField />",
@@ -39535,7 +40697,7 @@
         }
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { TextFieldSearch } from '@daisforge/ui';",
       "minimalUsage": "<TextFieldSearch />",
@@ -39636,7 +40798,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { TextFieldGroup } from '@daisforge/ui';",
       "minimalUsage": "<TextFieldGroup />",
@@ -39722,6 +40884,14 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "label",
+          "type": "string | undefined",
+          "required": false,
+          "description": "Метка-подпись к элементу",
+          "inheritedFrom": "TimePicker",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "labelPlacement",
           "type": "string | undefined",
           "required": false,
@@ -39787,6 +40957,13 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "autoComplete",
+          "type": "string | undefined",
+          "required": false,
+          "inheritedFrom": "TimePicker",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "columnsQuantity",
           "type": "2 | 3 | undefined",
           "required": false,
@@ -39810,6 +40987,13 @@
         {
           "name": "defaultValue",
           "type": "Date | undefined",
+          "required": false,
+          "inheritedFrom": "TimePicker",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean | undefined",
           "required": false,
           "inheritedFrom": "TimePicker",
           "inheritedPackage": "@salutejs/sdds-finai"
@@ -39983,7 +41167,21 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "placeholder",
+          "type": "string | undefined",
+          "required": false,
+          "inheritedFrom": "TimePicker",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "readonly",
+          "type": "boolean | undefined",
+          "required": false,
+          "inheritedFrom": "TimePicker",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "required",
           "type": "boolean | undefined",
           "required": false,
           "inheritedFrom": "TimePicker",
@@ -40067,7 +41265,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { TimePicker } from '@daisforge/ui';",
       "minimalUsage": "<TimePicker />",
@@ -40189,9 +41387,17 @@
           "description": "Вид блока подсказки",
           "inheritedFrom": "Toast",
           "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "width",
+          "type": "number | string | undefined",
+          "required": false,
+          "description": "Фиксированная ширина блока подсказки (если указана без единицы измерения - рассчитывается в процентах)",
+          "inheritedFrom": "Toast",
+          "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Toast } from '@daisforge/ui';",
       "minimalUsage": "<Toast />",
@@ -40325,7 +41531,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Toolbar } from '@daisforge/ui';",
       "minimalUsage": "<Toolbar children={'Контент'} />",
@@ -40657,7 +41863,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { TooltipList } from '@daisforge/ui';",
       "minimalUsage": "<TooltipList items={[]} children={'Контент'} />",
@@ -40909,7 +42115,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Tooltip } from '@daisforge/ui';",
       "minimalUsage": "<Tooltip text={'Контент'} />",
@@ -41065,7 +42271,7 @@
       "chooseWhen": "Новая версия с лучшей логикой работы слоев. Точно в новых проектах использовать его. Или в старых проектах, если не устроил обычный Tooltip. И точно если Нужен явный выбор триггера (клик/hover/фокус)",
       "hasCuratedMeta": true,
       "inheritedProps": [],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { TooltipBeta } from '@daisforge/ui';",
       "minimalUsage": "<TooltipBeta children={'значение'} target={'Контент'} />",
@@ -41189,6 +42395,14 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "open",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Флаг открытия тура",
+          "inheritedFrom": "Tour",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "overlayColor",
           "type": "Property.Color | undefined",
           "required": false,
@@ -41263,7 +42477,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Tour } from '@daisforge/ui';",
       "minimalUsage": "<Tour renderStep={() => {}} steps={[]} />",
@@ -41325,7 +42539,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "TourWidget",
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "compoundPartOf": {
         "component": "TourWidget",
         "part": "Bullet"
@@ -41366,7 +42580,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "TourWidget",
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "compoundPartOf": {
         "component": "TourWidget",
         "part": "Bullets"
@@ -41422,7 +42636,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "TourWidget",
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "compoundPartOf": {
         "component": "TourWidget",
         "part": "Content"
@@ -41478,7 +42692,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "TourWidget",
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "compoundPartOf": {
         "component": "TourWidget",
         "part": "Footer"
@@ -41546,7 +42760,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "TourWidget",
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "compoundPartOf": {
         "component": "TourWidget",
         "part": "Header"
@@ -41777,7 +42991,7 @@
         "TourWidgetFooter",
         "TourWidgetHeader"
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { TourWidget } from '@daisforge/ui';",
       "minimalUsage": "<TourWidget>\n  {/* части: TourWidget.Header, TourWidget.Content, TourWidget.Footer, TourWidget.Bullet, TourWidget.Bullets */}\n</TourWidget>",
@@ -41882,6 +43096,14 @@
           "type": "React.Key[] | undefined",
           "required": false,
           "description": "Выделенные элементы в controlled-варианте.",
+          "inheritedFrom": "Tree",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "className",
+          "type": "string | undefined",
+          "required": false,
+          "description": "Classname для дерева.",
           "inheritedFrom": "Tree",
           "inheritedPackage": "@salutejs/sdds-finai"
         },
@@ -41991,6 +43213,15 @@
           "required": false,
           "description": "Режим работы взаимодействия с элементами.\n- default: элемент можно выбрать и можно отменить его выбор.\n- radio: если элемент выбран, то отменить его выбор нельзя. Только для single-режима.",
           "default": "default",
+          "inheritedFrom": "Tree",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "multiple",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Флаг множественного выбора.",
+          "default": "false",
           "inheritedFrom": "Tree",
           "inheritedPackage": "@salutejs/sdds-finai"
         },
@@ -42134,7 +43365,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Tree } from '@daisforge/ui';",
       "minimalUsage": "<Tree items={[]} />",
@@ -42586,7 +43817,7 @@
         "ellipsis"
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { TypographyWithAutoTooltip } from '@daisforge/ui';",
       "minimalUsage": "<TypographyWithAutoTooltip children={'Контент'} variant={\"BodyL\"} />",
@@ -44847,7 +46078,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { ViewContainer } from '@daisforge/ui';",
       "minimalUsage": "<ViewContainer />",
@@ -44966,7 +46197,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "compoundPartOf": {
         "component": "Widget",
         "part": "Divider"
@@ -45298,7 +46529,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "Widget",
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "compoundPartOf": {
         "component": "Widget",
         "part": "Footer"
@@ -45446,7 +46677,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "Widget",
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "compoundPartOf": {
         "component": "Widget",
         "part": "Header"
@@ -45667,6 +46898,13 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "disabled",
+          "type": "boolean | undefined",
+          "required": false,
+          "inheritedFrom": "IconButton",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "focused",
           "type": "boolean | undefined",
           "required": false,
@@ -45765,7 +47003,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "compoundPartOf": {
         "component": "Widget",
         "part": "IconButtonBack"
@@ -45956,7 +47194,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "Widget",
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "compoundPartOf": {
         "component": "Widget",
         "part": "IconButtonDots"
@@ -46289,7 +47527,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "Widget",
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "compoundPartOf": {
         "component": "Widget",
         "part": "ServiceButtons"
@@ -46588,7 +47826,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "Widget",
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "compoundPartOf": {
         "component": "Widget",
         "part": "Content"
@@ -47998,7 +49236,7 @@
         "WidgetServiceButtons",
         "WidgetContent"
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Widget } from '@daisforge/ui';",
       "minimalUsage": "<Widget>\n  {/* части: Widget.Header, Widget.Footer, Widget.Content, Widget.Divider, Widget.ServiceButtons, Widget.IconButtonDots, Widget.IconButtonBack */}\n</Widget>",
@@ -48037,6 +49275,12 @@
       "role": "primary",
       "description": "Поле автодополнения с поиском по вариантам для форм на react-hook-form",
       "props": [
+        {
+          "name": "name",
+          "type": "string",
+          "required": true,
+          "description": ""
+        },
         {
           "name": "afterList",
           "type": "React.ReactNode",
@@ -48404,10 +49648,10 @@
       ],
       "chooseWhen": "Внутри формы на react-hook-form — принимает name/control/rules вместо value/onChange.",
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { FormAutocomplete } from '@daisforge/ui';",
-      "minimalUsage": "<FormAutocomplete />",
+      "minimalUsage": "<FormAutocomplete name={'значение'} />",
       "examples": [
         {
           "exportName": "Usage1",
@@ -48432,6 +49676,12 @@
       "role": "primary",
       "description": "Чекбокс (одиночный или группа) для react-hook-form, без встроенной валидации",
       "props": [
+        {
+          "name": "name",
+          "type": "string",
+          "required": true,
+          "description": ""
+        },
         {
           "name": "checkIcon",
           "type": "React.ReactNode",
@@ -48531,10 +49781,10 @@
       ],
       "chooseWhen": "Внутри формы на react-hook-form — одиночный чекбокс или группа через name/control, правила — через rules.",
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { FormCheckbox } from '@daisforge/ui';",
-      "minimalUsage": "<FormCheckbox />",
+      "minimalUsage": "<FormCheckbox name={'значение'} />",
       "examples": [
         {
           "exportName": "Usage1",
@@ -48569,6 +49819,12 @@
           "name": "multiselect",
           "type": "boolean | undefined",
           "required": false,
+          "description": ""
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "required": true,
           "description": ""
         },
         {
@@ -49004,10 +50260,10 @@
       ],
       "chooseWhen": "Внутри формы на react-hook-form — тот же мультивыбор с поиском через name/control/rules.",
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { FormCombobox } from '@daisforge/ui';",
-      "minimalUsage": "<FormCombobox items={[]} />",
+      "minimalUsage": "<FormCombobox items={[]} name={'значение'} />",
       "examples": [
         {
           "exportName": "Usage1",
@@ -49032,6 +50288,12 @@
       "role": "primary",
       "description": "Выбор одной даты с валидацией формата и диапазона min/max для форм",
       "props": [
+        {
+          "name": "name",
+          "type": "string",
+          "required": true,
+          "description": ""
+        },
         {
           "name": "calendarContainerHeight",
           "type": "number | string | undefined",
@@ -49530,10 +50792,10 @@
       ],
       "chooseWhen": "Внутри формы на react-hook-form — добавляет валидацию формата и диапазона min/max через rules.",
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { FormDatePicker } from '@daisforge/ui';",
-      "minimalUsage": "<FormDatePicker />",
+      "minimalUsage": "<FormDatePicker name={'значение'} />",
       "examples": [
         {
           "exportName": "Usage1",
@@ -49558,6 +50820,12 @@
       "role": "primary",
       "description": "Выбор диапазона дат (от-до) с валидацией периода для react-hook-form",
       "props": [
+        {
+          "name": "name",
+          "type": "string",
+          "required": true,
+          "description": ""
+        },
         {
           "name": "calendarContainerHeight",
           "type": "number | string | undefined",
@@ -50176,10 +51444,10 @@
       ],
       "chooseWhen": "Внутри формы на react-hook-form — тот же диапазон дат с валидацией периода через rules.",
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { FormDatePickerRange } from '@daisforge/ui';",
-      "minimalUsage": "<FormDatePickerRange />",
+      "minimalUsage": "<FormDatePickerRange name={'значение'} />",
       "examples": [
         {
           "exportName": "Usage1",
@@ -50206,6 +51474,12 @@
       "props": [
         {
           "name": "mask",
+          "type": "string",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "name",
           "type": "string",
           "required": true,
           "description": ""
@@ -50534,10 +51808,10 @@
       ],
       "chooseWhen": "Внутри формы на react-hook-form — то же поле с маской, плюс поддержка чипов, через name/control.",
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { FormMask } from '@daisforge/ui';",
-      "minimalUsage": "<FormMask mask={'значение'} />",
+      "minimalUsage": "<FormMask mask={'значение'} name={'значение'} />",
       "examples": [
         {
           "exportName": "Usage1",
@@ -50562,6 +51836,12 @@
       "role": "primary",
       "description": "Поле ввода чисел с форматированием (разряды, валюта) для react-hook-form",
       "props": [
+        {
+          "name": "name",
+          "type": "string",
+          "required": true,
+          "description": ""
+        },
         {
           "name": "allowLeadingZeros",
           "type": "boolean | undefined",
@@ -50894,10 +52174,10 @@
       ],
       "chooseWhen": "Внутри формы на react-hook-form — то же форматирование чисел через name/control/rules.",
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { FormNumberFormat } from '@daisforge/ui';",
-      "minimalUsage": "<FormNumberFormat />",
+      "minimalUsage": "<FormNumberFormat name={'значение'} />",
       "examples": [
         {
           "exportName": "Usage1",
@@ -51019,10 +52299,10 @@
       ],
       "chooseWhen": "Только как элемент внутри FormRadioGroup для форм на react-hook-form — не используется отдельно от группы.",
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { FormRadiobox } from '@daisforge/ui';",
-      "minimalUsage": "<FormRadiobox value={{}} />",
+      "minimalUsage": "<FormRadiobox value={'значение'} />",
       "examples": [
         {
           "exportName": "Usage1",
@@ -51050,6 +52330,12 @@
         {
           "name": "children",
           "type": "React.ReactNode",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "name",
+          "type": "string",
           "required": true,
           "description": ""
         },
@@ -51125,10 +52411,10 @@
       ],
       "chooseWhen": "Внутри формы на react-hook-form — та же группа радиокнопок с валидацией и подсказкой через name/control/rules.",
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { FormRadioGroup } from '@daisforge/ui';",
-      "minimalUsage": "<FormRadioGroup children={'Контент'} />",
+      "minimalUsage": "<FormRadioGroup children={'Контент'} name={'значение'} />",
       "examples": [
         {
           "exportName": "Usage1",
@@ -51156,6 +52442,12 @@
         {
           "name": "items",
           "type": "(PropsType<{ view: { none: PolymorphicClassName; secondary: PolymorphicClassName; primary: PolymorphicClassName; }; size: { xs: PolymorphicClassName; s: PolymorphicClassName; }; disabled: { true: PolymorphicClassName; }; pilled: { true: PolymorphicClassName; }; }> & React.ButtonHTMLAttributes<HTMLButtonElement> & React.RefAttributes<HTMLButtonElement> & { value: string; id?: string | undefined; la…",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "name",
+          "type": "string",
           "required": true,
           "description": ""
         },
@@ -51283,10 +52575,10 @@
       ],
       "chooseWhen": "Внутри формы на react-hook-form — тот же переключатель через name/control.",
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { FormSegmentGroup } from '@daisforge/ui';",
-      "minimalUsage": "<FormSegmentGroup items={{}} />",
+      "minimalUsage": "<FormSegmentGroup items={[]} name={'значение'} />",
       "examples": [
         {
           "exportName": "Usage1",
@@ -51323,6 +52615,12 @@
           "required": false,
           "description": "",
           "default": "false"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "required": true,
+          "description": ""
         },
         {
           "name": "afterList",
@@ -51736,10 +53034,10 @@
       ],
       "chooseWhen": "Внутри формы на react-hook-form — тот же список через name/control/rules.",
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { FormSelect } from '@daisforge/ui';",
-      "minimalUsage": "<FormSelect items={[]} />",
+      "minimalUsage": "<FormSelect items={[]} name={'значение'} />",
       "examples": [
         {
           "exportName": "Usage1",
@@ -51764,6 +53062,12 @@
       "role": "primary",
       "description": "Переключатель вкл/выкл для форм на react-hook-form, без встроенной валидации",
       "props": [
+        {
+          "name": "name",
+          "type": "string",
+          "required": true,
+          "description": ""
+        },
         {
           "name": "description",
           "type": "string | undefined",
@@ -51878,10 +53182,10 @@
       ],
       "chooseWhen": "Внутри формы на react-hook-form — тот же тумблер через name/control.",
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { FormSwitch } from '@daisforge/ui';",
-      "minimalUsage": "<FormSwitch />",
+      "minimalUsage": "<FormSwitch name={'значение'} />",
       "examples": [
         {
           "exportName": "Usage1",
@@ -51906,6 +53210,12 @@
       "role": "primary",
       "description": "Многострочное текстовое поле со счётчиком символов и кнопкой очистки",
       "props": [
+        {
+          "name": "name",
+          "type": "string",
+          "required": true,
+          "description": ""
+        },
         {
           "name": "onClear",
           "type": "(() => void) | undefined",
@@ -52169,10 +53479,10 @@
       ],
       "chooseWhen": "Внутри формы на react-hook-form — то же поле со счётчиком символов через name/control/rules.",
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { FormTextArea } from '@daisforge/ui';",
-      "minimalUsage": "<FormTextArea />",
+      "minimalUsage": "<FormTextArea name={'значение'} />",
       "examples": [
         {
           "exportName": "Usage1",
@@ -52197,6 +53507,12 @@
       "role": "primary",
       "description": "Однострочное текстовое поле с кнопкой очистки и выводом ошибки валидации",
       "props": [
+        {
+          "name": "name",
+          "type": "string",
+          "required": true,
+          "description": ""
+        },
         {
           "name": "hasRequiredIndicator",
           "type": "boolean | undefined",
@@ -52473,10 +53789,10 @@
       ],
       "chooseWhen": "Внутри формы на react-hook-form — то же поле с выводом ошибки валидации через name/control/rules.",
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { FormTextField } from '@daisforge/ui';",
-      "minimalUsage": "<FormTextField />",
+      "minimalUsage": "<FormTextField name={'значение'} />",
       "examples": [
         {
           "exportName": "Usage1",
@@ -52612,7 +53928,7 @@
         }
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Container } from '@daisforge/ui';",
       "minimalUsage": "<Container />",
@@ -52817,7 +54133,7 @@
         }
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { ErrorPage } from '@daisforge/ui';",
       "minimalUsage": "<ErrorPage />",
@@ -52936,6 +54252,13 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "disabled",
+          "type": "boolean | undefined",
+          "required": false,
+          "inheritedFrom": "IconButton",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "focused",
           "type": "boolean | undefined",
           "required": false,
@@ -53034,7 +54357,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { FiltersActionsDotsIconButton } from '@daisforge/ui';",
       "minimalUsage": "<FiltersActionsDotsIconButton />",
@@ -53233,7 +54556,7 @@
       "hasCuratedMeta": true,
       "parentComponent": "FiltersActions",
       "inheritedProps": [],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "compoundPartOf": {
         "component": "FiltersActions",
         "part": "FiltersButton"
@@ -53374,7 +54697,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "FiltersActions",
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "compoundPartOf": {
         "component": "FiltersActions",
         "part": "ListOfFilters"
@@ -53430,7 +54753,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "FiltersActions",
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { RedDot } from '@daisforge/ui';",
       "minimalUsage": "<RedDot />",
@@ -53692,7 +55015,7 @@
       "hasCuratedMeta": true,
       "parentComponent": "FiltersActions",
       "inheritedProps": [],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "compoundPartOf": {
         "component": "FiltersActions",
         "part": "Tabs"
@@ -55104,6 +56427,12 @@
           "typeName": "FiltersActionsFiltersButtonWithPopoverProps",
           "props": [
             {
+              "name": "title",
+              "type": "string",
+              "required": true,
+              "description": "Заголовок Popover"
+            },
+            {
               "name": "buttonProps",
               "type": "Partial<FiltersActionsFiltersButtonProps> | undefined",
               "required": false,
@@ -55195,6 +56524,12 @@
           "name": "FiltersButtonWithPopover",
           "typeName": "FiltersActionsFiltersButtonWithPopoverProps",
           "props": [
+            {
+              "name": "title",
+              "type": "string",
+              "required": true,
+              "description": "Заголовок Popover"
+            },
             {
               "name": "buttonProps",
               "type": "Partial<FiltersActionsFiltersButtonProps> | undefined",
@@ -55548,7 +56883,7 @@
         "FiltersActionsTabItem",
         "FiltersActionsTabs"
       ],
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { FiltersActions } from '@daisforge/ui';",
       "minimalUsage": "<FiltersActions>\n  {/* части: FiltersActions.FiltersButton, FiltersActions.DotsIconButton, FiltersActions.ListOfFilters, FiltersActions.TextFieldSearch, FiltersActions.Tabs, FiltersActions.TabItem, FiltersActions.SegmentItem, FiltersActions.Tooltip, FiltersActions.TooltipList, FiltersActions.FilterPopover, FiltersActions.FiltersButtonWithPopover, FiltersActions.ResetAllFiltersButton, FiltersActions.SwitcherFilter, FiltersActions.RedDot */}\n</FiltersActions>",
@@ -55755,7 +57090,7 @@
         }
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Layout } from '@daisforge/ui';",
       "minimalUsage": "<Layout />",
@@ -55888,7 +57223,7 @@
         }
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.369.0",
+      "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { PageLayout } from '@daisforge/ui';",
       "minimalUsage": "<PageLayout children={'Контент'} />",
@@ -56480,7 +57815,7 @@
       "feature": "ColumnResize",
       "legacy": false,
       "summary": "Ограничения ширины колонок. Задаются на уровне колонки (`columnConfig`) или глобально в `tableConfig`.",
-      "docs": "# Column Resize (minWidth / maxWidth / maxAutoWidth)\n\nОграничения ширины колонок. Задаются на уровне колонки (`columnConfig`) или глобально в `tableConfig`.\n\n## Быстрый старт\n\n```tsx\nconst columnConfig: ColumnConfig<Row>[] = [\n  {\n    key: 'name',\n    name: 'Название',\n    width: 250,\n    minWidth: 150,\n    maxWidth: 400,\n  },\n  {\n    key: 'description',\n    name: 'Описание',\n    maxAutoWidth: 500,\n  },\n];\n```\n\n## Поля колонки\n\n### minWidth\n\nМинимальная ширина колонки (px). Колонка не может стать уже этого значения — ни при ресайзе мышкой, ни при автоматическом расчёте ширины.\n\nУ каждой колонки есть ещё минимум по содержимому шапки, он считается автоматически и ниже него колонку сжать нельзя даже с меньшим `minWidth`. Подробнее в разделе «Минимум по содержимому шапки».\n\n### maxWidth\n\nМаксимальная ширина колонки (px). **Жёсткий потолок** — ограничивает всё: и автоматический расчёт ширины, и ручной ресайз мышкой. Колонка никогда не станет шире `maxWidth`.\n\nЕсли не задан — берётся глобальный `maxColumnWidth` из `tableConfig`.\n\n### maxAutoWidth\n\nМаксимальная ширина колонки при **автоматическом расчёте** (px). **Мягкий потолок** — колонка стремится не превышать это значение при автоматическом распределении ширин, но **пользователь может растянуть её шире** вручную.\n\nЕсли не задан — берётся глобальный `maxColumnAutoWidth` из `tableConfig`.\n\n#### Отличие maxAutoWidth от maxWidth\n\n- `maxWidth` — жёсткий потолок. Ограничивает и автоматическую ширину, и ручной ресайз.\n- `maxAutoWidth` — мягкий потолок. Ограничивает только автоматическую ширину. Ручной ресайз не ограничен.\n\nЕсли заданы оба — при автоматическом расчёте берётся **меньшее** из двух значений. При ручном ресайзе действует только `maxWidth`.\n\n## Начальная ширина\n\nЕсли у колонки задан `width`, она рендерится с этой шириной (клампится в диапазон `minWidth`..`maxWidth`).\n\nЕсли `width` не задан — начальная ширина вычисляется автоматически. Колонки без фиксированной ширины заполняют свободное место в контейнере. При этом `maxAutoWidth` ограничивает, насколько широко колонка может автоматически растянуться.\n\n## Минимум по содержимому шапки\n\nШапка колонки должна оставаться читаемой при любой ширине, поэтому таблица сама считает нижнюю границу ширины колонки. В неё входят:\n\n- отступы ячейки слева и справа по размеру строки (`rowSize`);\n- иконки слева от названия: пин закреплённой колонки, иконка перетаскивания за шапку, кнопка «раскрыть все» у колонки с подстроками;\n- место под одну букву названия с многоточием;\n- кнопки справа от названия: фильтр и сортировка, если они есть у колонки. Кнопки появляются при наведении, но место под них учитывается всегда, иначе при наведении они не поместились бы.\n\nПоэтому колонка с фильтром и сортировкой не сожмётся так же узко, как колонка без них, а на большой строке минимум выше, чем на малой. Свой `minWidth` колонки может только поднять эту границу: значение меньше автоматического минимума не действует. Фиксированный `width` меньше минимума тоже поднимается до него.\n\nЕсли название колонки всё же не помещается, оно сжимается до первой буквы с многоточием, а полное название показывается в тултипе.\n\n## Глобальные ограничения\n\nВ `tableConfig` можно задать ограничения по умолчанию для всех колонок:\n\n```tsx\n<TableCanvas\n  tableConfig={{\n    minColumnWidth: 80,\n    maxColumnWidth: 600,\n    maxColumnAutoWidth: 400,\n  }}\n  columnConfig={columnConfig}\n  rows={rows}\n/>\n```\n\nЕсли у конкретной колонки задано своё значение (`minWidth`, `maxWidth`, `maxAutoWidth`), оно перебивает глобальное.\n\nГлобальный `minColumnWidth` на колонки с данными сейчас не действует: у каждой такой колонки минимум всегда считается по содержимому шапки, и он приоритетнее. Параметр влияет только на служебные колонки.\n\n## Приоритеты\n\n- Колоночные значения (`minWidth`, `maxWidth`, `maxAutoWidth`) приоритетнее глобальных из `tableConfig`\n- `minWidth` не может быть ниже автоматического минимума по содержимому шапки\n- Если `minWidth` больше `maxWidth`, приоритет у `minWidth`\n- `maxAutoWidth` не влияет на ручной ресайз — пользователь всегда может растянуть колонку шире\n\nПолная типизация колонок: [columnConfig API](?path=/docs/локальные-компоненты-tablecanvas-api-columnconfig--docs).",
+      "docs": "# Column Resize (minWidth / maxWidth / maxAutoWidth)\n\nОграничения ширины колонок. Задаются на уровне колонки (`columnConfig`) или глобально в `tableConfig`.\n\nПри наведении на границу изменяемой колонки в шапке сразу появляется линия\nтолщиной 2 px на высоту шапки (включая групповые строки). Зона наведения\nсовпадает с зоной курсора изменения ширины: по 5 px с каждой стороны границы.\nКогда курсор уходит, линия исчезает без задержки и анимации.\n\nПри перетаскивании линия проходит на всю высоту таблицы. В обоих состояниях\nиспользуется `outline-accent` текущей темы — тот же цвет, что у рамки выделения.\nПоведение включается вместе с `tableConfig.resizableColumn`; у колонок\nс запрещённым ресайзом и фиксированными `minWidth = maxWidth` hover-линии нет.\nНа границе со скрытыми колонками в шапке остаётся их собственный индикатор.\n\n## Быстрый старт\n\n```tsx\nconst columnConfig: ColumnConfig<Row>[] = [\n  {\n    key: 'name',\n    name: 'Название',\n    width: 250,\n    minWidth: 150,\n    maxWidth: 400,\n  },\n  {\n    key: 'description',\n    name: 'Описание',\n    maxAutoWidth: 500,\n  },\n];\n```\n\n## Поля колонки\n\n### minWidth\n\nМинимальная ширина колонки (px). Колонка не может стать уже этого значения — ни при ресайзе мышкой, ни при автоматическом расчёте ширины.\n\nУ каждой колонки есть ещё минимум по содержимому шапки, он считается автоматически и ниже него колонку сжать нельзя даже с меньшим `minWidth`. Подробнее в разделе «Минимум по содержимому шапки».\n\n### maxWidth\n\nМаксимальная ширина колонки (px). **Жёсткий потолок** — ограничивает всё: и автоматический расчёт ширины, и ручной ресайз мышкой. Колонка никогда не станет шире `maxWidth`.\n\nЕсли не задан — берётся глобальный `maxColumnWidth` из `tableConfig`.\n\n### maxAutoWidth\n\nМаксимальная ширина колонки при **автоматическом расчёте** (px). **Мягкий потолок** — колонка стремится не превышать это значение при автоматическом распределении ширин, но **пользователь может растянуть её шире** вручную.\n\nЕсли не задан — берётся глобальный `maxColumnAutoWidth` из `tableConfig`.\n\n#### Отличие maxAutoWidth от maxWidth\n\n- `maxWidth` — жёсткий потолок. Ограничивает и автоматическую ширину, и ручной ресайз.\n- `maxAutoWidth` — мягкий потолок. Ограничивает только автоматическую ширину. Ручной ресайз не ограничен.\n\nЕсли заданы оба — при автоматическом расчёте берётся **меньшее** из двух значений. При ручном ресайзе действует только `maxWidth`.\n\n## Начальная ширина\n\nЕсли у колонки задан `width`, она рендерится с этой шириной (клампится в диапазон `minWidth`..`maxWidth`).\n\nЕсли `width` не задан — начальная ширина вычисляется автоматически. Колонки без фиксированной ширины заполняют свободное место в контейнере. При этом `maxAutoWidth` ограничивает, насколько широко колонка может автоматически растянуться.\n\n## Минимум по содержимому шапки\n\nШапка колонки должна оставаться читаемой при любой ширине, поэтому таблица сама считает нижнюю границу ширины колонки. В неё входят:\n\n- отступы ячейки слева и справа по размеру строки (`rowSize`);\n- иконки слева от названия: пин закреплённой колонки, иконка перетаскивания за шапку, кнопка «раскрыть все» у колонки с подстроками;\n- место под одну букву названия с многоточием;\n- кнопки справа от названия: фильтр и сортировка, если они есть у колонки. Кнопки появляются при наведении, но место под них учитывается всегда, иначе при наведении они не поместились бы.\n\nПоэтому колонка с фильтром и сортировкой не сожмётся так же узко, как колонка без них, а на большой строке минимум выше, чем на малой. Свой `minWidth` колонки может только поднять эту границу: значение меньше автоматического минимума не действует. Фиксированный `width` меньше минимума тоже поднимается до него.\n\nЕсли название колонки всё же не помещается, оно сжимается до первой буквы с многоточием, а полное название показывается в тултипе.\n\n## Глобальные ограничения\n\nВ `tableConfig` можно задать ограничения по умолчанию для всех колонок:\n\n```tsx\n<TableCanvas\n  tableConfig={{\n    minColumnWidth: 80,\n    maxColumnWidth: 600,\n    maxColumnAutoWidth: 400,\n  }}\n  columnConfig={columnConfig}\n  rows={rows}\n/>\n```\n\nЕсли у конкретной колонки задано своё значение (`minWidth`, `maxWidth`, `maxAutoWidth`), оно перебивает глобальное.\n\nГлобальный `minColumnWidth` на колонки с данными сейчас не действует: у каждой такой колонки минимум всегда считается по содержимому шапки, и он приоритетнее. Параметр влияет только на служебные колонки.\n\n## Приоритеты\n\n- Колоночные значения (`minWidth`, `maxWidth`, `maxAutoWidth`) приоритетнее глобальных из `tableConfig`\n- `minWidth` не может быть ниже автоматического минимума по содержимому шапки\n- Если `minWidth` больше `maxWidth`, приоритет у `minWidth`\n- `maxAutoWidth` не влияет на ручной ресайз — пользователь всегда может растянуть колонку шире\n\nПолная типизация колонок: [columnConfig API](?path=/docs/локальные-компоненты-tablecanvas-api-columnconfig--docs).",
       "apiDocs": "",
       "api": [],
       "stories": [

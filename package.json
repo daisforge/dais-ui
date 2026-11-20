@@ -79,7 +79,7 @@
     "redraw:test": "node scripts/redraw/docker.js",
     "redraw:test:local": "playwright test --config packages/storybook/test/redraw/playwright.config.ts",
     "redraw:typecheck": "tsc -p packages/storybook/test/redraw/tsconfig.json",
-    "mcp:check": "npm run mcp:build-index && npm test --prefix packages/mcp-server && npm run mcp:validate-index && npm run mcp:search-eval"
+    "mcp:check": "npm run mcp:build-index && nx lint @daisforge/ui-mcp && npm test --prefix packages/mcp-server && npm run mcp:validate-index && npm run mcp:search-eval"
   },
   "private": true,
   "devDependencies": {
@@ -156,7 +156,7 @@
     "playwright": "1.62.0"
   },
   "dependencies": {
-    "@glideappsfinal/glide-data-grid": "^6.13.0",
+    "@glideappsfinal/glide-data-grid": "^6.14.0",
     "@hookform/resolvers": "3.10.0",
     "@salutejs/plasma-icons": "^1.258.0",
     "@salutejs/plasma-typo": "^0.60.0",

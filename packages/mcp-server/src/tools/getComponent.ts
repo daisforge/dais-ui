@@ -1,5 +1,5 @@
-import type { PropRecord, RuntimeIndex, ToolError } from '../types.js';
-import { isOkComponent } from '../types.js';
+import type { PropRecord, RuntimeIndex } from '../types.js';
+import { isOkComponent, ToolError } from '../types.js';
 import {
   findComponent,
   listComponentFeatures,
@@ -99,12 +99,12 @@ export function getComponent(
 ): GetComponentPayload | ToolError {
   const record = findComponent(index, name);
   if (!record) {
-    return {
-      error: `Компонент "${name}" не найден. Используйте search_components или list_components.`,
-    };
+    return new ToolError(
+      `Компонент "${name}" не найден. Используйте search_components или list_components.`,
+    );
   }
   if (!isOkComponent(record)) {
-    return { error: record.error };
+    return new ToolError(record.error);
   }
 
   const features = listComponentFeatures(index, record.name);

@@ -165,6 +165,9 @@ function recordTypeSymbolIfNew(symbol: TsSymbol): Node | undefined {
     return undefined;
   }
   const filePath = decl.getSourceFile().getFilePath();
+  // После реэкспорта Dropdown из SDDS его ItemOption объявлен в зависимости.
+  // Берём имя из корневого экспорта, иначе get_type('DropdownItemOption')
+  // найдёт только одноимённый внутренний тип Table.
   const names = filePath.includes('/packages/ui-kit/src/')
     ? [symbol.getName()]
     : getRootExportNames(decl);
@@ -537,7 +540,13 @@ function extractPropsFromType(
   type: Type,
   atLocationNode: Node,
   defaultsMap?: Map<string, string>,
-  truncate = true,
+  {
+    truncate = true,
+    onlyNames,
+  }: {
+    truncate?: boolean;
+    onlyNames?: ReadonlySet<string>;
+  } = {},
 ): PropRecord[] {
   // Сначала объединяем полные типы ветвей; обрезаем только итог для ответа.
   const displayType = truncate ? formatPropType : canonicalTypeText;
@@ -545,11 +554,12 @@ function extractPropsFromType(
   const entries: { record: PropRecord; ownFile: boolean }[] = [];
 
   if (type.isUnion()) {
-    const variants = type
-      .getUnionTypes()
-      .map((variant) =>
-        extractPropsFromType(variant, atLocationNode, defaultsMap, false),
-      );
+    const variants = type.getUnionTypes().map((variant) =>
+      extractPropsFromType(variant, atLocationNode, defaultsMap, {
+        truncate: false,
+        onlyNames,
+      }),
+    );
     const names = [
       ...new Set(variants.flatMap((props) => props.map((prop) => prop.name))),
     ];
@@ -572,23 +582,22 @@ function extractPropsFromType(
     });
   }
   for (const symbol of type.getProperties()) {
+    const name = symbol.getName();
+    if (onlyNames && !onlyNames.has(name)) continue;
     const decl: Node | undefined =
       symbol.getValueDeclaration() ?? symbol.getDeclarations()[0];
     const propType = safeGetPropertyType(symbol, decl ?? atLocationNode);
     const fullTypeText = propType ? propType.getText() : 'unknown';
-    const name = symbol.getName();
-
-    // Шум от ComponentProps<typeof X>: ~300 унаследованных DOM/ARIA-атрибутов
-    // и React-статиков. Фильтруем по имени+типу, а не только по имени — иначе
-    // потеряли бы реально переопределённые пропсы вроде Switch.size: "s"|"m"|"l".
-    if (isNoiseProp(name, fullTypeText)) continue;
-
-    if (propType) collectNamedTypeRefs(propType, new Set());
 
     // SymbolFlags.Optional — сигнал от самого тайпчекера после резолва
     // union/intersection, надёжнее чем questionToken на одной из деклараций
     // (при пересечении типов может быть несколько деклараций одного символа).
     const optional = Boolean(symbol.getFlags() & SymbolFlags.Optional);
+    // Для обычного каталога убираем общий DOM API. При выборке по именам
+    // проверяем запрошенные поля напрямую по публичному контракту.
+    if (!onlyNames && isNoiseProp(name, fullTypeText, !optional)) continue;
+
+    if (propType) collectNamedTypeRefs(propType, new Set());
 
     let description = '';
     try {
@@ -634,6 +643,26 @@ function extractPropsFromType(
   }
 
   return sortProps(entries);
+}
+
+/** Выборка из полного публичного контракта до фильтрации DOM-полей. */
+export function extractSelectedPublicProps(
+  entry: ComponentEntry,
+  names: ReadonlySet<string>,
+  truncate = true,
+): PropRecord[] {
+  if (!names.size) return [];
+  const type = getPublicContract(entry);
+  const decl = getProject()
+    .getSourceFileOrThrow(entry.barrelPath)
+    .getExportedDeclarations()
+    .get(entry.name)?.[0];
+  return type && decl
+    ? extractPropsFromType(type, decl, undefined, {
+        truncate,
+        onlyNames: names,
+      })
+    : [];
 }
 
 /**

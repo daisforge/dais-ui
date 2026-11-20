@@ -8,5 +8,5 @@
       "@daisforge/ui/*": ["packages/ui-kit/src/*"]
     }
   },
-  "include": ["consumer.test.tsx"]
+  "include": ["consumer.test.tsx", "../.probe/consumer-minimal-usage.tsx"]
 }

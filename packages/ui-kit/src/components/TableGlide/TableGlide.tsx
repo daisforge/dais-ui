@@ -2449,6 +2449,8 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
           width={width ?? '100%'}
           onColumnMoved={onColumnMoved}
           onColumnResize={resizableColumn ? onColumnResizeInternal : undefined}
+          resizeIndicatorOnHover
+          resizeIndicator="full"
           customRenderers={customRenderers}
           rowHeight={rowH}
           highlightRegions={highlightRegionsFinal}

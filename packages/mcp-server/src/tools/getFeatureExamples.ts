@@ -1,4 +1,5 @@
-import type { ExampleRecord, RuntimeIndex, ToolError } from '../types.js';
+import type { ExampleRecord, RuntimeIndex } from '../types.js';
+import { ToolError } from '../types.js';
 import { findFeature } from './shared.js';
 
 export interface GetFeatureExamplesArgs {
@@ -26,9 +27,9 @@ export function getFeatureExamples(
 ): FeatureExamplesListPayload | FeatureExamplePayload | ToolError {
   const found = findFeature(index, component, feature);
   if (!found) {
-    return {
-      error: `Фича "${feature}" не найдена у "${component}". Используйте list_features({component}).`,
-    };
+    return new ToolError(
+      `Фича "${feature}" не найдена у "${component}". Используйте list_features({component}).`,
+    );
   }
 
   const stories = found.stories || [];
@@ -47,11 +48,11 @@ export function getFeatureExamples(
       (s.exportName || '').toLowerCase() === title.toLowerCase(),
   );
   if (!story) {
-    return {
-      error: `Пример "${title}" не найден у "${component}/${feature}". Доступные: ${
+    return new ToolError(
+      `Пример "${title}" не найден у "${component}/${feature}". Доступные: ${
         stories.map((s) => s.displayName || s.exportName).join(', ') || '(нет)'
       }`,
-    };
+    );
   }
   return { component: found.component, feature: found.feature, example: story };
 }

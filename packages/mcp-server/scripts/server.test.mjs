@@ -7,6 +7,9 @@ import { fileURLToPath } from 'node:url';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
 
+import { toToolResult } from '../dist/toolResponse.js';
+import { ToolError } from '../dist/types.js';
+
 const client = new Client({ name: 'mcp-regression', version: '1.0.0' });
 const transport = new StdioClientTransport({
   command: process.execPath,
@@ -67,4 +70,14 @@ test('ошибки аргументов и неизвестные сущност
     const result = await client.callTool({ name, arguments: args });
     assert.equal(result.isError, true, `${name}: ${JSON.stringify(args)}`);
   }
+});
+
+test('поле error в данных не превращает успешный ответ в ошибку инструмента', () => {
+  const data = { error: 'Сохранённая диагностика' };
+  const success = toToolResult(data);
+  const failure = toToolResult(new ToolError(data.error));
+  assert.equal(success.isError, undefined);
+  assert.equal(failure.isError, true);
+  assert.deepEqual(JSON.parse(success.content[0].text), data);
+  assert.deepEqual(JSON.parse(failure.content[0].text), data);
 });

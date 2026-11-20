@@ -9,10 +9,10 @@ import type {
   ShapeOutput,
   ZodRawShapeCompat,
 } from '@modelcontextprotocol/sdk/server/zod-compat.js';
-import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js';
 import { z } from 'zod';
 
 import { resolveIndex } from './resolveIndex.js';
+import { toToolResult } from './toolResponse.js';
 import { getComponent } from './tools/getComponent.js';
 import { getComponentExamples } from './tools/getComponentExamples.js';
 import { getComponentProps } from './tools/getComponentProps.js';
@@ -24,7 +24,6 @@ import { listCategories } from './tools/listCategories.js';
 import { listComponents } from './tools/listComponents.js';
 import { listFeatures } from './tools/listFeatures.js';
 import { searchComponents } from './tools/searchComponents.js';
-import { truncateForResponse } from './tools/truncate.js';
 import type { RuntimeIndex } from './types.js';
 
 function loadIndex(): RuntimeIndex {
@@ -36,20 +35,6 @@ function loadIndex(): RuntimeIndex {
     dataVersionNotice: resolved.dataVersionNotice,
     libNotInstalled: resolved.libNotInstalled,
     indexSource: resolved.source,
-  };
-}
-
-/**
- * Явная аннотация возврата CallToolResult обязательна: без неё литерал
- * 'text' расширяется до string и объект перестаёт подходить под
- * дискриминированный union content-блоков SDK.
- */
-function toToolResult(payload: unknown): CallToolResult {
-  return {
-    content: [{ type: 'text', text: truncateForResponse(payload) }],
-    ...(payload && typeof payload === 'object' && 'error' in payload
-      ? { isError: true }
-      : {}),
   };
 }
 

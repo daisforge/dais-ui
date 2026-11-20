@@ -6,6 +6,7 @@ import {
   getDenylistMap,
   isNoiseProp,
 } from '../indexer/htmlAttributeDenylist.js';
+import { loadAtomicComponent } from '../indexer/mergeAtomicData.js';
 import { getProject, UI_KIT_SRC } from '../indexer/tsProject.js';
 import { comparableType, formatPropType } from '../indexer/typeDisplay.js';
 import type { AtomicPropRecord, ComponentIndex, PropRecord } from '../types.js';
@@ -35,7 +36,11 @@ export interface ContractCoverage {
   truncatedProps: string[];
 }
 
-function readFields(type: Type, location: Node): Map<string, PropRecord> {
+function readFields(
+  type: Type,
+  location: Node,
+  documented: ReadonlySet<string> = new Set(),
+): Map<string, PropRecord> {
   const branches = type.isUnion() ? type.getUnionTypes() : [type];
   const variants = branches.map((branch) => {
     const fields = new Map<string, { type: string; required: boolean }>();
@@ -43,10 +48,12 @@ function readFields(type: Type, location: Node): Map<string, PropRecord> {
       const declaration =
         symbol.getValueDeclaration() ?? symbol.getDeclarations()[0] ?? location;
       const text = symbol.getTypeAtLocation(declaration).getText();
-      if (!isNoiseProp(symbol.getName(), text))
-        fields.set(symbol.getName(), {
+      const name = symbol.getName();
+      const required = !symbol.isOptional();
+      if (documented.has(name) || !isNoiseProp(name, text, required))
+        fields.set(name, {
           type: text,
-          required: !symbol.isOptional(),
+          required,
         });
     });
     return fields;
@@ -88,6 +95,7 @@ export function auditContracts(index: ComponentIndex) {
     decl: Node;
     props: AtomicPropRecord[];
     alias: string;
+    documented?: ReadonlySet<string>;
   }[] = [];
   const issues: ContractIssue[] = [];
   const lines = ["import type { ComponentProps } from 'react';"];
@@ -119,6 +127,10 @@ export function auditContracts(index: ComponentIndex) {
           part ? `[${JSON.stringify(part)}]` : ''
         }`;
         lines.push(`type ${alias} = ComponentProps<${expression}>;`);
+        const atom =
+          !part && record.atomicBase
+            ? loadAtomicComponent(record.atomicBase, record.atomicSubpath)
+            : undefined;
         targets.push({
           component: record.name,
           part,
@@ -126,6 +138,8 @@ export function auditContracts(index: ComponentIndex) {
           decl,
           props,
           alias,
+          documented:
+            atom && new Set(atom.api?.props?.map((prop) => prop.name)),
         });
       };
       if (
@@ -163,7 +177,7 @@ export function auditContracts(index: ComponentIndex) {
     { overwrite: true },
   );
   const coverage: ContractCoverage[] = [];
-  targets.forEach(({ component, part, decl, props, alias }) => {
+  targets.forEach(({ component, part, decl, props, alias, documented }) => {
     const type = part
       ? decl.getType().getPropertyOrThrow(part).getTypeAtLocation(decl)
       : decl.getType();
@@ -186,7 +200,7 @@ export function auditContracts(index: ComponentIndex) {
     const open = branches.some((branch) =>
       Boolean(branch.getStringIndexType()),
     );
-    const expected = readFields(contract, decl);
+    const expected = readFields(contract, decl, documented);
     if (styled)
       expected.set('as', {
         name: 'as',

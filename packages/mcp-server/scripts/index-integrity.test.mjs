@@ -67,6 +67,62 @@ test('footer не наследует управление модальным о�
   );
 });
 
+test('поля react-hook-form сохраняют обязательный name в ответе MCP', () => {
+  const forms = [
+    'FormAutocomplete',
+    'FormCheckbox',
+    'FormCombobox',
+    'FormDatePicker',
+    'FormDatePickerRange',
+    'FormMask',
+    'FormNumberFormat',
+    'FormRadioGroup',
+    'FormSegmentGroup',
+    'FormSelect',
+    'FormSwitch',
+    'FormTextArea',
+    'FormTextField',
+  ];
+  for (const name of forms) {
+    const prop = props(name).find((field) => field.name === 'name');
+    assert.equal(prop?.required, true, `${name}.name`);
+  }
+});
+
+test('публичные props SDDS из документации сохраняются, даже если совпадают с DOM', () => {
+  const expected = {
+    Button: ['disabled'],
+    IconButton: ['disabled'],
+    Tabs: ['disabled'],
+    TextField: ['label', 'placeholder', 'required', 'readOnly'],
+    Checkbox: ['checked', 'value', 'name'],
+    Radiobox: ['checked', 'value', 'name'],
+    Select: ['label', 'placeholder'],
+    Combobox: ['label', 'placeholder'],
+    DatePicker: ['label', 'placeholder'],
+    Autocomplete: ['label'],
+    Dropdown: ['disabled'],
+    Drawer: ['width', 'height'],
+    Note: ['width', 'height'],
+    Tour: ['open'],
+    Avatar: ['name'],
+  };
+  for (const [component, names] of Object.entries(expected)) {
+    const fields = props(component);
+    for (const name of names) {
+      const field = fields.find((prop) => prop.name === name);
+      assert.equal(field?.required, false, `${component}.${name}`);
+      assert.equal(field.inheritedFrom, component, `${component}.${name}`);
+      assert.notEqual(field.type, 'unknown', `${component}.${name}`);
+    }
+  }
+  assert.match(
+    props('TextField').find((field) => field.name === 'placeholder')
+      .description,
+    /[А-Яа-яЁё]/,
+  );
+});
+
 test('styled Box сохраняет необязательные CSS-пропсы', () => {
   const fields = props('Box');
   ['background', 'padding', '$css'].forEach((name) =>
@@ -153,6 +209,12 @@ test(
       broken.components.TableContract.props.filter(
         (p) => p.name !== 'stylesBeforeLoad',
       );
+    broken.components.FormTextField.props =
+      broken.components.FormTextField.props.filter((p) => p.name !== 'name');
+    broken.components.Button.inheritedProps =
+      broken.components.Button.inheritedProps.filter(
+        (p) => p.name !== 'disabled',
+      );
     fetcher.type = 'number';
     const chips = broken.components.AnalyticalWidget.compoundParts.find(
       (p) => p.name === 'Chips',
@@ -174,6 +236,8 @@ test(
     assert.equal(report.compilerFailure, undefined, report.compilerFailure);
     assert.equal(report.ok, false);
     for (const [component, part, prop, kind] of [
+      ['FormTextField', undefined, 'name', 'missing-prop'],
+      ['Button', undefined, 'disabled', 'missing-prop'],
       ['TableContract', undefined, 'stylesBeforeLoad', 'missing-prop'],
       ['TableContract', undefined, 'fetcher', 'type'],
       ['DrawerDF', 'Content', 'inventedOpenProp', 'unexpected-prop'],

@@ -2,9 +2,8 @@ import type {
   InheritedPropRecord,
   PropRecord,
   RuntimeIndex,
-  ToolError,
 } from '../types.js';
-import { isOkComponent } from '../types.js';
+import { isOkComponent, ToolError } from '../types.js';
 import { findComponent } from './shared.js';
 
 export interface GetComponentPropsArgs {
@@ -67,10 +66,10 @@ export function getComponentProps(
 ): CompoundPartPropsPayload | ComponentPropsPayload | ToolError {
   const record = findComponent(index, name);
   if (!record) {
-    return { error: `Компонент "${name}" не найден.` };
+    return new ToolError(`Компонент "${name}" не найден.`);
   }
   if (!isOkComponent(record)) {
-    return { error: record.error };
+    return new ToolError(record.error);
   }
 
   if (part) {
@@ -78,13 +77,11 @@ export function getComponentProps(
       (p) => p.name.toLowerCase() === part.toLowerCase(),
     );
     if (!compoundPart) {
-      return {
-        error: `Compound-часть "${part}" не найдена у "${
-          record.name
-        }". Доступные: ${
+      return new ToolError(
+        `Compound-часть "${part}" не найдена у "${record.name}". Доступные: ${
           (record.compoundParts || []).map((p) => p.name).join(', ') || '(нет)'
         }`,
-      };
+      );
     }
     const compoundPartProps = compoundPart.props || [];
     return {

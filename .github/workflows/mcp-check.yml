@@ -10,6 +10,7 @@ on:
       - 'package*.json'
       - 'tsconfig*.json'
       - '.github/workflows/mcp-check.yml'
+      - '.github/workflows/publish-mcp-server.yml'
   workflow_dispatch:
 
 permissions:
@@ -34,11 +35,7 @@ jobs:
             packages/mcp-server/package-lock.json
       - run: npm ci --ignore-scripts
       - run: npm ci --prefix packages/mcp-server --ignore-scripts
-      - run: npm run mcp:build-index
-      - run: npx nx lint @daisforge/ui-mcp
-      - run: npm test --prefix packages/mcp-server
-      - run: npm run mcp:validate-index
-      - run: npm run mcp:search-eval
+      - run: npm run mcp:check
       - uses: actions/upload-artifact@v4
         if: always()
         with:

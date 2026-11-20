@@ -136,6 +136,17 @@
       ]
     },
     {
+      "name": "PageLoader",
+      "type": "composition",
+      "category": "Композиции",
+      "description": "Индикатор первоначальной загрузки, который занимает область контента страницы",
+      "keywords": [
+        "загрузка страницы",
+        "loader",
+        "spinner"
+      ]
+    },
+    {
       "name": "PageTitle",
       "type": "composition",
       "category": "Композиции",

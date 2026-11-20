@@ -25,11 +25,6 @@ jobs:
       - name: Lint
         run: npm run lint
 
-      - name: Test MCP type index
-        run: |
-          npm ci --prefix packages/mcp-server --ignore-scripts
-          npx nx test @daisforge/ui-mcp
-
       - name: Build ui-kit
         run: npx nx build ui-kit
         env:

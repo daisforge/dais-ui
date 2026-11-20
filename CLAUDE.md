@@ -446,6 +446,20 @@ feat(Table): добавлен новый функционал MassActionPanel
 nfp-docs(DrawerDF): в story поправлены отступы между основными блоками
 ```
 
+### Описание Pull Request
+
+Если изменения видны в Storybook (компоненты, stories, MDX, сборка Storybook),
+добавь в описание PR готовые ссылки на конкретные страницы PR-превью:
+
+```
+https://daisforge.github.io/dais-ui/pr-preview/pr-<N>/?path=/story/<story-id>
+```
+
+Для сценариев с `play` добавляй `&addonPanel=storybook/interactions/panel`, чтобы
+ссылка сразу открывала панель Interactions. Номер PR известен только после создания,
+а превью публикуется workflow `PR Preview Storybook`, поэтому ссылки добавляются вторым шагом:
+дождись публикации и обнови описание через `gh pr edit <N> --body-file <файл>`.
+
 ### Pre-commit хуки (Husky)
 
 1. `prepare-commit-msg` — Нормализация сообщения коммита

@@ -1,4 +1,19 @@
+import { ts } from 'ts-morph';
+
 import type { InheritedPropRecord, PropRecord } from '../types.js';
+
+function isArrayType(text: string): boolean {
+  if (!text.endsWith('[]')) return false;
+  const source = ts.createSourceFile(
+    'placeholder.ts',
+    `type Value = ${text};`,
+    ts.ScriptTarget.Latest,
+  );
+  const [alias] = source.statements;
+  return Boolean(
+    alias && ts.isTypeAliasDeclaration(alias) && ts.isArrayTypeNode(alias.type),
+  );
+}
 
 /** Грубая эвристика значения-заглушки по тексту типа — не точный резолвер, а стартовая точка для агента. */
 function placeholderForType(typeText: string | undefined): string {
@@ -9,16 +24,16 @@ function placeholderForType(typeText: string | undefined): string {
 
   if (t === 'boolean') return 'true';
   if (t === 'number') return '0';
-  if (t === 'string') return "'значение'";
+  if (t === 'string' || t === 'number | string') return "'значение'";
+  if (isArrayType(t) || t.startsWith('readonly ')) return '[]';
   if (/=>/.test(t)) return '() => {}';
-  if (t.endsWith('[]') || t.startsWith('readonly ')) return '[]';
   if (t.includes('ReactNode') || t.includes('ReactElement')) return "'Контент'";
   return '{}';
 }
 
 /**
  * Синтетический `<Component requiredProp={...} />` из обязательных пропсов —
- * дешёвая заглушка, не проверенный пример. Вычисляется для КАЖДОГО
+ * стартовая заготовка для агента. Вычисляется для каждого
  * компонента (в отличие от examples[], которые есть только там, где нашлась
  * curated-стори или реальное JSX-вхождение — см. collectUsageExamples.ts и
  * TASKS.md T3) и кладётся в отдельное поле ComponentRecord.minimalUsage, а не
@@ -26,13 +41,16 @@ function placeholderForType(typeText: string | undefined): string {
  * тратил вызов get_component_examples на строку, уже выводимую из
  * importStatement.
  */
-export function synthesizeMinimalUsage(record: {
-  name: string;
-  apiKind?: 'namespace';
-  props?: PropRecord[];
-  inheritedProps?: InheritedPropRecord[];
-  compoundParts?: { name: string }[];
-}): string {
+export function synthesizeMinimalUsage(
+  record: {
+    name: string;
+    apiKind?: 'namespace';
+    props?: PropRecord[];
+    inheritedProps?: InheritedPropRecord[];
+    compoundParts?: { name: string }[];
+  },
+  readFullTypes: (names: ReadonlySet<string>) => PropRecord[],
+): string {
   if (record.apiKind === 'namespace') {
     const part =
       record.compoundParts?.find((p) => p.name === 'Container') ??
@@ -45,9 +63,19 @@ export function synthesizeMinimalUsage(record: {
     ...(record.props || []),
     ...(record.inheritedProps || []),
   ].filter((p) => p.required);
+  // Отображаемый тип может терять суффикс массива из-за лимита ответа MCP.
+  const clipped = new Set(
+    requiredProps.filter((p) => p.type.endsWith('…')).map((p) => p.name),
+  );
+  const fullTypes = new Map(
+    readFullTypes(clipped).map((p) => [p.name, p.type]),
+  );
 
   const attrs = requiredProps
-    .map((p) => `${p.name}={${placeholderForType(p.type)}}`)
+    .map(
+      (p) =>
+        `${p.name}={${placeholderForType(fullTypes.get(p.name) ?? p.type)}}`,
+    )
     .join(' ');
 
   const openTag = attrs ? `<${record.name} ${attrs}>` : `<${record.name}>`;

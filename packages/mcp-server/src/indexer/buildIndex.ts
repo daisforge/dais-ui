@@ -30,6 +30,7 @@ import { mergeAtomicData } from './mergeAtomicData.js';
 import { getInstallationGuide, mergeMeta } from './mergeMeta.js';
 import {
   expandCollectedTypeRefs,
+  extractSelectedPublicProps,
   isParsedComponent,
   parseComponent,
 } from './parseComponent.js';
@@ -207,6 +208,7 @@ function linkCompoundPartDuplicates(records: WorkingComponentRecord[]): void {
 
 function buildComponentRecords(): WorkingComponentRecord[] {
   const entries = discoverComponents();
+  const entriesByName = new Map(entries.map((entry) => [entry.name, entry]));
   preparePublicContracts(entries);
 
   // Денылист строится лениво при первом обращении (см. getDenylistMap) и
@@ -263,7 +265,12 @@ function buildComponentRecords(): WorkingComponentRecord[] {
   // heuristic) уже применён, parentComponent/relatedExports должны считаться
   // от финальной роли, а не от эвристики classifyRole в исходном виде.
   linkFolderRoles(records);
-  records = records.map((r) => (r.error ? r : mergeAtomicData(r)));
+  records = records.map((r) => {
+    const entry = entriesByName.get(r.name);
+    return r.error || !entry
+      ? r
+      : mergeAtomicData(r, (names) => extractSelectedPublicProps(entry, names));
+  });
   // После mergeAtomicData — top-level путь резолва уже обогащён атомарными
   // описаниями/required (T14) и расщеплён на own/inherited, поэтому именно
   // в этот момент справедливо сравнивать полноту с compoundParts-путём.
@@ -275,11 +282,14 @@ function buildComponentRecords(): WorkingComponentRecord[] {
     if (!resolvedImport)
       throw new Error(`Нет публичного импорта для ${r.name}`);
     const { importPath, importStatement } = resolvedImport;
+    const entry = entriesByName.get(r.name);
     return {
       ...r,
       importPath,
       importStatement,
-      minimalUsage: synthesizeMinimalUsage(r),
+      minimalUsage: synthesizeMinimalUsage(r, (names) =>
+        entry ? extractSelectedPublicProps(entry, names, false) : [],
+      ),
     };
   });
 
