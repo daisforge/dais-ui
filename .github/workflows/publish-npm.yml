@@ -23,6 +23,7 @@ jobs:
     outputs:
       released: ${{ steps.release_flags.outputs.released }}
       mcp_touched: ${{ steps.release_flags.outputs.mcp_touched }}
+      version: ${{ steps.release_flags.outputs.version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -63,6 +64,8 @@ jobs:
       - name: Resolve downstream release flags
         id: release_flags
         run: |
+          echo "version=$(node -p "require('./packages/ui-kit/package.json').version")" >> "$GITHUB_OUTPUT"
+
           if [ "${{ steps.before.outputs.sha }}" != "${{ steps.after.outputs.sha }}" ]; then
             echo "released=true" >> "$GITHUB_OUTPUT"
           else
@@ -117,6 +120,20 @@ jobs:
       - name: Push release commit and tag
         if: steps.before.outputs.sha != steps.after.outputs.sha
         run: git push --follow-tags origin main
+
+  # @daisforge/ui-storybook — собранный Storybook той же версии, для
+  # развёртывания без сборки. Чекаутит тег релиза, ничего не пушит, поэтому с
+  # publish-mcp не конфликтует. Если упадёт — библиотека уже выпущена, Storybook
+  # перевыпускается вручную: workflow_dispatch publish-storybook-package.yml с
+  # тем же тегом.
+  publish-storybook:
+    needs: publish
+    if: needs.publish.outputs.released == 'true'
+    uses: ./.github/workflows/publish-storybook-package.yml
+    with:
+      ref: v${{ needs.publish.outputs.version }}
+      dry_run: false
+    secrets: inherit
 
   # @daisforge/ui-mcp публикуется последним шагом релиза библиотеки: его
   # bundled-индекс собирается из исходников ui-kit, поэтому свежий ui-mcp имеет
