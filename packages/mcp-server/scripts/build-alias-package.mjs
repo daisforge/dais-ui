@@ -17,11 +17,33 @@
  *   ALT_LIB_PACKAGE_NAME — имя связанной библиотеки        (напр. @acme/ds)
  *
  * Запуск: npm run mcp:alias:stage --prefix packages/mcp-server
+ *
+ * Таблица замен и финальная проверка на остатки бренда — общие с
+ * scripts/white-label/rename-artifact.mjs (см. scripts/white-label/brand.mjs),
+ * чтобы зеркало MCP и переименованная библиотека называли друг друга одинаково.
  */
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+
+// Намеренный относительный импорт из корня монорепо: таблицу замен делят этот
+// скрипт и scripts/white-label/rename-artifact.mjs, чтобы зеркало MCP и
+// переименованная библиотека называли друг друга одинаково. Скрипт
+// запускается только из монорепо; импорт по имени корневого пакета
+// (@dais-ui/source/…) в Node не работает — у него нет поля "exports".
+/* eslint-disable import/no-relative-packages */
+import {
+  applyReplacements as applyBrandReplacements,
+  BrandError,
+  createReplacements,
+  findBrandLeftovers,
+  formatHits,
+  readEnvName as readBrandEnvName,
+  toFlatName,
+  walkFiles,
+} from '../../../scripts/white-label/brand.mjs';
+/* eslint-enable import/no-relative-packages */
 
 const PKG_ROOT = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -53,39 +75,18 @@ const STAGING_DIR = path.resolve(
     path.join(os.tmpdir(), 'mcp-alias-package'),
 );
 
-/** Имя пакета npm: со scope или без. */
-const NPM_NAME_RE = /^(@[a-z0-9-~][a-z0-9-._~]*\/)?[a-z0-9-~][a-z0-9-._~]*$/;
-
 function fail(message) {
   console.error(`\n✖ ${message}\n`);
   process.exit(1);
 }
 
 function readEnvName(varName) {
-  const value = (process.env[varName] ?? '').trim();
-  if (!value) {
-    fail(
-      `Не задана переменная окружения ${varName}. Она приходит из GitHub Secrets ` +
-        `(там же, где NPM_TOKEN); локально передайте её явно перед командой.`,
-    );
+  try {
+    return readBrandEnvName(varName);
+  } catch (e) {
+    if (e instanceof BrandError) fail(e.message);
+    throw e;
   }
-  if (!NPM_NAME_RE.test(value)) {
-    fail(`${varName}="${value}" не похоже на имя npm-пакета.`);
-  }
-  // Иначе финальный guard (греп на /dais/i) упадёт на самом же новом имени,
-  // и причина будет выглядеть как поломка замены, хотя дело в имени.
-  if (/dais/i.test(value)) {
-    fail(
-      `${varName}="${value}" содержит "dais" — зеркальное имя не должно ` +
-        `наследовать исходный бренд.`,
-    );
-  }
-  return value;
-}
-
-/** '@acme/ds-mcp' → 'acme-ds-mcp'. Годится и как имя bin, и как схема URI. */
-function toFlatName(packageName) {
-  return packageName.replace(/^@/, '').replace(/\//g, '-');
 }
 
 function countOccurrences(haystack, needle) {
@@ -93,63 +94,19 @@ function countOccurrences(haystack, needle) {
   return haystack.split(needle).length - 1;
 }
 
-function walkFiles(dir) {
-  const out = [];
-  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-    const full = path.join(dir, entry.name);
-    if (entry.isDirectory()) out.push(...walkFiles(full));
-    else out.push(full);
-  }
-  return out;
-}
-
 const ALT_MCP_PACKAGE_NAME = readEnvName('ALT_MCP_PACKAGE_NAME');
 const ALT_LIB_PACKAGE_NAME = readEnvName('ALT_LIB_PACKAGE_NAME');
 const ALT_MCP_BIN = toFlatName(ALT_MCP_PACKAGE_NAME);
 const ALT_URI_SCHEME = toFlatName(ALT_LIB_PACKAGE_NAME);
 
-/** Форма имени пакета внутри регулярки в коде: '@daisforge\/ui'. */
-const escapeForRegexLiteral = (name) => name.replace(/\//g, '\\/');
-
-/**
- * Порядок обязателен: длинные токены первыми. Если сначала заменить
- * '@daisforge/ui', то '@daisforge/ui-mcp' превратится в '<ALT_LIB>-mcp' —
- * то есть имя MCP-пакета склеится из имени библиотеки.
- * Правило на '@daisforge/ui' покрывает и подпути ('/icons', '/tokens',
- * '/components/…'): все они начинаются с '@daisforge/ui'.
- *
- * Список закрытый и проверяется гардом в конце: если в артефактах появится
- * новая форма бренда, которой здесь нет, сборка зеркала упадёт с указанием
- * файла и строки — тогда сюда добавляется правило.
- */
-const REPLACEMENTS = [
-  ['@daisforge/ui-mcp', ALT_MCP_PACKAGE_NAME],
-  [
-    escapeForRegexLiteral('@daisforge/ui-mcp'),
-    escapeForRegexLiteral(ALT_MCP_PACKAGE_NAME),
-  ],
-  ['daisforge-ui-mcp', ALT_MCP_BIN],
-  ['daisforge-ui://', `${ALT_URI_SCHEME}://`],
-  ['@daisforge/ui', ALT_LIB_PACKAGE_NAME],
-  [
-    escapeForRegexLiteral('@daisforge/ui'),
-    escapeForRegexLiteral(ALT_LIB_PACKAGE_NAME),
-  ],
-  ['daisforge-ui', ALT_URI_SCHEME],
-  // Упоминание монорепозитория в комментарии resolveIndex.ts.
-  ['dais/ui', ALT_URI_SCHEME],
-  // Стори-папка packages/storybook/src/stories/AiChatDAIS — не публичный API
-  // библиотеки, а имя файла, попадающее в sourceFile/displayName примеров типа
-  // 'usage'. Эти пути и так не резолвятся за пределами монорепо, но бренд в них
-  // виден, поэтому имя нейтрализуется.
-  ['AiChatDAIS', 'AiChatAssistant'],
-];
+/** Таблица замен и её порядок описаны в scripts/white-label/brand.mjs. */
+const REPLACEMENTS = createReplacements({
+  lib: ALT_LIB_PACKAGE_NAME,
+  mcp: ALT_MCP_PACKAGE_NAME,
+});
 
 function applyReplacements(text) {
-  return REPLACEMENTS.reduce(
-    (acc, [from, to]) => acc.split(from).join(to),
-    text,
-  );
+  return applyBrandReplacements(text, REPLACEMENTS);
 }
 
 function ensureSourcesExist() {
@@ -344,25 +301,12 @@ function stageReadme() {
  * ссылки, случайно добавленные позже строки).
  */
 function assertNoOriginalBrand() {
-  const hits = [];
-  for (const file of walkFiles(STAGING_DIR)) {
-    const text = fs.readFileSync(file, 'utf8');
-    if (!/dais/i.test(text)) continue;
-    text.split('\n').forEach((line, i) => {
-      if (/dais/i.test(line)) {
-        hits.push(
-          `${path.relative(STAGING_DIR, file)}:${i + 1}: ${line
-            .trim()
-            .slice(0, 160)}`,
-        );
-      }
-    });
-  }
+  const hits = findBrandLeftovers(STAGING_DIR);
   if (hits.length > 0) {
     fail(
-      `В зеркальном пакете остался исходный бренд (${hits.length} строк):\n` +
-        `${hits.slice(0, 20).join('\n')}` +
-        `${hits.length > 20 ? `\n… и ещё ${hits.length - 20}` : ''}`,
+      `В зеркальном пакете остался исходный бренд (${
+        hits.length
+      } строк):\n${formatHits(hits)}`,
     );
   }
 }

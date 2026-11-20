@@ -63,6 +63,22 @@
       "files": ["*.js", "*.jsx"],
       "extends": ["plugin:@nx/javascript"],
       "rules": {}
+    },
+    // CLI-скрипты для Node (ES-модули), не код библиотеки:
+    // - import/extensions: в Node расширение .mjs в импорте обязательно;
+    // - no-console: вывод в консоль — результат работы CLI;
+    // - no-restricted-syntax, no-continue: for…of и continue допустимы;
+    // - __SB_SHARED__ — имя договорённости со Storybook.
+    {
+      "files": ["scripts/**/*.mjs"],
+      "env": { "node": true, "es2022": true },
+      "rules": {
+        "import/extensions": "off",
+        "no-console": "off",
+        "no-restricted-syntax": "off",
+        "no-continue": "off",
+        "no-underscore-dangle": ["error", { "allow": ["__SB_SHARED__"] }]
+      }
     }
   ],
   "rules": {
