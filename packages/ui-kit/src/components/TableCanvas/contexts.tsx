@@ -15,6 +15,7 @@ import React, {
   PropsWithChildren,
   RefObject,
   useContext,
+  useMemo,
 } from 'react';
 
 import { DropdownProps } from '../Dropdown';
@@ -61,10 +62,17 @@ export const useExpandedRowsContext = () => {
   const expandedRowsIds = useContext(ExpandedRowsContext);
   const setExpandedRowsIds = useContext(ExpandedRowsChangeContext);
 
+  // Тот же объект, пока поля прежние: он входит в контексты ячеек, и новый
+  // объект на каждый рендер заставлял бы таблицу перерисовывать весь экран.
+  const value = useMemo(
+    () => ({ expandedRowsIds, setExpandedRowsIds }),
+    [expandedRowsIds, setExpandedRowsIds],
+  );
+
   if (expandedRowsIds === undefined || setExpandedRowsIds === undefined) {
     throw new Error('useExpandedRowsContext must be used within a Provider');
   }
-  return { expandedRowsIds, setExpandedRowsIds };
+  return value;
 };
 
 // ----------------------------------------------------------------

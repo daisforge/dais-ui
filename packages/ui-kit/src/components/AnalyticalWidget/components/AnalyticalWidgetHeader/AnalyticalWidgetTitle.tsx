@@ -9,7 +9,7 @@ export const AnalyticalWidgetTitle = ({
 }: AnalyticalWidgetTitleProps) => {
   // Произвольный ReactNode (например, Skeleton) рендерим как есть, без тултипа.
   if (typeof title !== 'string') {
-    return <>{title}</>;
+    return title ?? null;
   }
 
   return (

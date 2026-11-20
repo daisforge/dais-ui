@@ -148,3 +148,97 @@ describe('useNativeGridSelection: растягивание выбора до о�
     },
   );
 });
+
+describe('useNativeGridSelection: программная смена controlled-выделения', () => {
+  const renderControlled = () => {
+    const onSelectionEmit = vi.fn();
+    const onExternalSelectionChange = vi.fn();
+    const setState = vi.fn();
+    const hook = renderHook(
+      ({ gridSelection }: { gridSelection: GridSelection }) =>
+        useNativeGridSelection({
+          cellsSelectionMode: 'range-cell',
+          columns: ONE_SERVICE,
+          gridSelection,
+          onGridSelectionChange: setState,
+          onSelectionEmit,
+          onExternalSelectionChange,
+        }),
+      { initialProps: { gridSelection: cellSelection(1, 0) } },
+    );
+    return { hook, onSelectionEmit, onExternalSelectionChange, setState };
+  };
+
+  it('выделение из state уходит во внутренний канал, но не в onSelectionEmit', () => {
+    const { hook, onSelectionEmit, onExternalSelectionChange } =
+      renderControlled();
+    expect(onExternalSelectionChange).toHaveBeenCalledTimes(1);
+
+    const programmatic = cellSelection(2, 3);
+    hook.rerender({ gridSelection: programmatic });
+
+    expect(onExternalSelectionChange).toHaveBeenCalledTimes(2);
+    expect(onExternalSelectionChange).toHaveBeenLastCalledWith(
+      programmatic,
+      false,
+    );
+    expect(onExternalSelectionChange.mock.calls[0]?.[1]).toBe(true);
+    expect(onSelectionEmit).not.toHaveBeenCalled();
+  });
+
+  it('после выделения со своими осями программное «снять всё» отличается от эха по объекту', () => {
+    const { hook, onExternalSelectionChange, setState } = renderControlled();
+    onExternalSelectionChange.mockClear();
+    const empty: GridSelection = {
+      current: undefined,
+      rows: CompactSelection.empty(),
+      columns: CompactSelection.empty(),
+    };
+    const emitted: GridSelection = {
+      ...empty,
+      columns: CompactSelection.fromSingleSelection([1, 3]),
+    };
+    // Ctrl-колонки: в сеттер уходит пустое нативное выделение, наружу оси
+    act(() => hook.result.current.handleGridSelectionChange(empty, emitted));
+    expect(setState).toHaveBeenLastCalledWith(empty);
+    // Эхо тем же объектом не считается сменой
+    hook.rerender({ gridSelection: empty });
+    expect(onExternalSelectionChange).not.toHaveBeenCalled();
+    // Программное пустое выделение другим объектом это смена
+    hook.rerender({ gridSelection: { ...empty } });
+    expect(onExternalSelectionChange).toHaveBeenCalledTimes(1);
+  });
+
+  it('после выделения со своими осями копия от сеттера считается эхом, следующее «снять всё» сменой', () => {
+    const { hook, onExternalSelectionChange } = renderControlled();
+    onExternalSelectionChange.mockClear();
+    const empty: GridSelection = {
+      current: undefined,
+      rows: CompactSelection.empty(),
+      columns: CompactSelection.empty(),
+    };
+    const emitted: GridSelection = {
+      ...empty,
+      columns: CompactSelection.fromSingleSelection([1, 3]),
+    };
+    act(() => hook.result.current.handleGridSelectionChange(empty, emitted));
+    // Сеттер потребителя кладёт в state копию (redux, immer, setSel({ ...s }))
+    hook.rerender({ gridSelection: { ...empty } });
+    expect(onExternalSelectionChange).not.toHaveBeenCalled();
+    hook.rerender({ gridSelection: { ...empty } });
+    expect(onExternalSelectionChange).toHaveBeenCalledTimes(1);
+  });
+
+  it('выделение, отданное в сеттер и вернувшееся из state, программным не считается', () => {
+    const { hook, onExternalSelectionChange, setState } = renderControlled();
+    onExternalSelectionChange.mockClear();
+
+    const next = cellSelection(3, 1);
+    act(() => hook.result.current.handleGridSelectionChange(next));
+    expect(setState).toHaveBeenCalledWith(next);
+    // Потребитель положил в state копию объекта
+    hook.rerender({ gridSelection: { ...next } });
+
+    expect(onExternalSelectionChange).not.toHaveBeenCalled();
+  });
+});

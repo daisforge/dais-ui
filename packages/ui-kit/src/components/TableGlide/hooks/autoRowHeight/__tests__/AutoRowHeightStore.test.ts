@@ -239,6 +239,66 @@ describe('AutoRowHeightStore', () => {
     expect(delta).toBe(48 - 144);
   });
 
+  it('колонку расширили, пока высокая строка за экраном: до перемера строка держит прежнюю высоту без onChange', () => {
+    const { store, rows, report, onChange, endFrame } = setup(100);
+    store.setVisibleRows(65, 75);
+    report(70, 'a', 144, 140);
+    report(70, 'b', 20);
+    expect(store.heightAt(rows, 70)).toBe(144);
+
+    store.setVisibleRows(0, 10);
+    report(5, 'a', 30, 640);
+    report(5, 'b', 20);
+    onChange.mockClear();
+
+    store.setVisibleRows(65, 75);
+    endFrame();
+
+    expect(onChange).not.toHaveBeenCalled();
+    expect(store.heightAt(rows, 70)).toBe(144);
+    expect(store.reporter(rows[70]!, 70, 'a', false).needsHeight(640)).toBe(
+      true,
+    );
+  });
+
+  it('прилипшая строка вне видимой области пересчитывается после скрытия колонки, как видимая', () => {
+    const { store, rows, report } = setup(10);
+    store.setVisibleRows(5, 9);
+    store.setPinnedRows([0]);
+    for (const rowIndex of [0, 3, 5]) {
+      report(rowIndex, 'a', 80);
+      report(rowIndex, 'b', 30);
+    }
+    expect(store.heightAt(rows, 0)).toBe(80);
+
+    store.setColumns(['b']);
+
+    expect(store.heightAt(rows, 5)).toBe(30);
+    expect(store.heightAt(rows, 0)).toBe(30);
+    // Строка 3 не видна и не прилипла: до показа прежняя высота
+    expect(store.heightAt(rows, 3)).toBe(80);
+  });
+
+  it('ячейка вошла в блок по строкам: прежний замер забывается, строка пересчитывается', () => {
+    const { store, rows, report, onChange, endFrame } = setup();
+    report(0, 'a', 80);
+    report(0, 'b', 30);
+    expect(store.heightAt(rows, 0)).toBe(80);
+    onChange.mockClear();
+
+    store.reporter(rows[0]!, 0, 'a', false).forget();
+    endFrame();
+
+    expect(store.heightAt(rows, 0)).toBe(30);
+    expect(onChange).toHaveBeenLastCalledWith([{ rowIndex: 0, delta: -50 }]);
+
+    // Повторный вызов без замера ничего не меняет и коммита не даёт
+    onChange.mockClear();
+    store.reporter(rows[0]!, 0, 'a', false).forget();
+    endFrame();
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
   it('блок на несколько колонок хранится со своей шириной', () => {
     const { store, rows, report } = setup();
     report(0, 'a', 40, 100);

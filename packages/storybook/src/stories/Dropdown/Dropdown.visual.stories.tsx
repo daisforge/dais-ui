@@ -1,79 +1,19 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { expect, userEvent, waitFor, within } from '@storybook/test';
-import { Button } from '@ui-kit/components/Button';
 import { DrawerDF } from '@ui-kit/components/DrawerDF';
 import { Dropdown, type DropdownProps } from '@ui-kit/components/Dropdown';
 import { ModalDF } from '@ui-kit/components/ModalDF';
 
 const meta = {
-  title: 'Локальные компоненты/Dropdown/Совместимость SDDS',
+  title: 'Локальные компоненты/Dropdown/Меню поверх модалки и шторки',
   component: Dropdown,
   args: { items: [] },
-  parameters: { screenshot: { keepState: true } },
 } satisfies Meta<typeof Dropdown>;
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const Alignment = ({ placement }: Pick<DropdownProps, 'placement'>) => (
-  <div style={{ width: 700, height: 400, padding: '150px 250px' }}>
-    <Dropdown
-      placement={placement}
-      alwaysOpened
-      listWidth="160px"
-      items={[
-        { value: 'edit', label: 'Редактировать' },
-        { value: 'copy', label: 'Копировать' },
-      ]}
-    >
-      <Button text="Действия" style={{ width: 200 }} />
-    </Dropdown>
-  </div>
-);
-
-export const LegacyTop: Story = { render: () => <Alignment placement="top" /> };
-export const LegacyBottom: Story = {
-  render: () => <Alignment placement="bottom" />,
-};
-export const LegacyLeft: Story = {
-  render: () => <Alignment placement="left" />,
-};
-export const LegacyRight: Story = {
-  render: () => <Alignment placement="right" />,
-};
-export const NewCenter: Story = {
-  render: () => <Alignment placement="bottom-center" />,
-};
-
-export const NestedLegacyPlacement: Story = {
-  render: () => (
-    <div style={{ width: 700, height: 400, padding: '40px 160px' }}>
-      <Dropdown
-        placement="bottom"
-        alwaysOpened
-        listWidth="200px"
-        items={[
-          {
-            value: 'export',
-            label: 'Экспорт',
-            placement: 'right',
-            trigger: 'click',
-            items: [{ value: 'csv', label: 'Скачать CSV' }],
-          },
-        ]}
-      >
-        <Button text="Действия" />
-      </Dropdown>
-    </div>
-  ),
-  play: async ({ canvasElement }) => {
-    const page = within(canvasElement.ownerDocument.body);
-    await userEvent.click(await page.findByText('Экспорт'));
-    await waitFor(() => expect(page.getByText('Скачать CSV')).toBeVisible());
-  },
-};
-
 const overlayDropdownProps: DropdownProps = {
-  placement: 'bottom',
+  placement: 'bottom-start',
   listWidth: '220px',
   items: [{ value: 'export', label: 'Экспортировать данные' }],
 };
@@ -81,10 +21,24 @@ const overlayDropdownProps: DropdownProps = {
 const openOverlayMenu: NonNullable<Story['play']> = async ({
   canvasElement,
 }) => {
-  const page = within(canvasElement.ownerDocument.body);
-  await userEvent.click(
-    await page.findByRole('combobox', { name: 'Действия документа' }),
+  const document = canvasElement.ownerDocument;
+  const page = within(document.body);
+  const trigger = await page.findByRole('combobox', {
+    name: 'Действия документа',
+  });
+  // Открываем меню после анимации окна, когда якорь занял конечное положение.
+  await waitFor(() =>
+    expect(
+      document
+        .getAnimations()
+        .some(
+          (animation) =>
+            animation.playState === 'running' &&
+            Number.isFinite(animation.effect?.getComputedTiming().endTime),
+        ),
+    ).toBe(false),
   );
+  await userEvent.click(trigger);
   await waitFor(() =>
     expect(page.getByText('Экспортировать данные')).toBeVisible(),
   );
@@ -127,7 +81,10 @@ export const InsideDrawer: Story = {
           rightBlock={
             <DrawerDF.DotsIconButton
               aria-label="Действия документа"
-              dropdownProps={overlayDropdownProps}
+              dropdownProps={{
+                ...overlayDropdownProps,
+                placement: 'bottom-end',
+              }}
             />
           }
         />
