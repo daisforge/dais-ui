@@ -1,0 +1,6 @@
+import{j as t}from"./react-B60MRyL7.js";import{ck as r}from"./vendor-XfTeUJpE.js";import{M as a}from"./WithTooltip-KJL26V4Q-DjtuYyC3.js";import{T as o}from"./TypeSourceViewer-CIh92Gwz.js";import"./_commonjsHelpers-BosuxZz1.js";import"./tslib-DoU9Jm1N.js";import"./_commonjs-dynamic-modules-TDtrdbi3.js";import"./react-is-Clcustum.js";import"./styled-components-D98J-t6t.js";import"./@tanstack/react-virtual-x3DCBAvN.js";import"./preload-helper-BnDtJV8M.js";import"./index-Cu4lwwaE.js";import"./index-DOrxotJ8.js";import"./@salutejs/plasma-icons-DZ_qGP0a.js";import"./types.string-CtO2sHsM.js";function i(e){const n={h1:"h1",h2:"h2",...r(),...e.components};return t.jsxs(t.Fragment,{children:[t.jsx(a,{title:"Локальные компоненты/Table/ColumnResizing/API"}),`
+`,t.jsx(n.h1,{id:"column-resizing-api",children:"Column Resizing API"}),`
+`,t.jsx(n.h2,{id:"tableconfig",children:"TableConfig"}),`
+`,t.jsx(o,{language:"ts",filePath:"packages/ui-kit/src/components/Table/types/table-config.type.ts",typeName:"TableConfig"}),`
+`,t.jsx(n.h2,{id:"columndefault",children:"ColumnDefault"}),`
+`,t.jsx(o,{language:"ts",filePath:"packages/ui-kit/src/components/Table/types/data-grid.type.ts",typeName:"ColumnDefault"})]})}function T(e={}){const{wrapper:n}={...r(),...e.components};return n?t.jsx(n,{...e,children:t.jsx(i,{...e})}):i(e)}export{T as default};
