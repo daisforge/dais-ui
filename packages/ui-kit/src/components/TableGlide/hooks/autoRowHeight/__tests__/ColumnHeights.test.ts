@@ -15,13 +15,15 @@ describe('ColumnHeights', () => {
     expect(heights.needsHeight(row, 'a', 120, false)).toBe(true);
   });
 
-  it('новая ширина колонки отбрасывает высоты её ячеек и сообщает о ресайзе', () => {
+  it('новая ширина колонки сообщает о ресайзе: прежние высоты ждут перемера, но действуют', () => {
     const heights = new ColumnHeights();
     heights.set(row, 'a', 100, false, 40);
 
     expect(heights.set(other, 'a', 120, false, 30)).toBe(true);
-    expect(heights.maxHeight(row, ['a'])).toBe(0);
+    expect(heights.maxHeight(row, ['a'])).toBe(40);
+    expect(heights.needsHeight(row, 'a', 120, false)).toBe(true);
     expect(heights.maxHeight(other, ['a'])).toBe(30);
+    expect(heights.needsHeight(other, 'a', 120, false)).toBe(false);
   });
 
   it('первая ширина колонки — не ресайз, даже если раньше пришёл блок', () => {

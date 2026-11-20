@@ -199,7 +199,7 @@ const createTaskRows = (): TaskRow[] =>
       index % 4 === 0
         ? 'Короткое описание'
         : 'Подробное описание задачи: что нужно сделать, кого позвать на ревью и какие риски учесть до релиза.',
-    status: (['Новая', 'В работе', 'Готово'] as const)[index % 3]!,
+    status: (['Новая', 'В работе', 'Готово'] as const)[index % 3] ?? 'Новая',
     tags: TAGS.slice(0, TAGS.length - (index % TAGS.length)),
   }));
 
@@ -338,8 +338,8 @@ const DIVISIONS = [
 const createReportRows = (): ReportRow[] =>
   Array.from({ length: 5000 }, (_, id) => ({
     id,
-    direction: DIRECTIONS[id % DIRECTIONS.length]!,
-    division: DIVISIONS[id % DIVISIONS.length]!,
+    direction: DIRECTIONS[id % DIRECTIONS.length] ?? '',
+    division: DIVISIONS[id % DIVISIONS.length] ?? '',
     comment:
       id % 5 === 0
         ? 'Плановое значение пересмотрено после квартального комитета, факт уточняется'
@@ -400,7 +400,7 @@ export const AutoRowHeightWideTable: StoryObj = {
                 padding={{ left: 8, right: 8 }}
               >
                 <Canvas.Text>
-                  {row.values[index]!.toLocaleString('ru-RU')}
+                  {row.values[index]?.toLocaleString('ru-RU')}
                 </Canvas.Text>
               </Canvas.Container>
             ),

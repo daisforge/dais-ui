@@ -103,6 +103,50 @@ describe('CanvasText: перенос и подсветка', () => {
   });
 });
 
+describe('CanvasText: пластина при обрезке текста', () => {
+  const createClipped = (
+    ctx: CanvasRenderingContext2D,
+    text: string,
+    width: number,
+    textOverflow: 'clip' | 'ellipsis',
+    marks: CanvasText['marks'],
+  ) => {
+    const node = new CanvasText('t', text, {
+      font: '10px sans-serif',
+      lineHeightPx: 20,
+      overflow: 'hidden',
+      textOverflow,
+      marks,
+    });
+    node.measure(ctx);
+    // Место под текст задаёт раскладка, а не сам текст
+    node.rect.width = width;
+    node.rect.height = 20;
+    return node;
+  };
+
+  it('clip: пластина обрезается по ширине места, последний видимый символ подсвечен', () => {
+    const ctx = createCtx();
+    // Место под 5 символов, совпадение с 3-го по 8-й
+    const node = createClipped(ctx, 'aaaa bbbb cc', 50, 'clip', [
+      { start: 3, end: 8, color: 'yellow' },
+    ]);
+
+    const rects = paintedRects(node, ctx);
+    expect(rects).toHaveLength(1);
+    expect(rects[0]).toMatchObject({ x: 30, width: 20 });
+  });
+
+  it('clip: совпадение целиком за обрезкой пластины не даёт', () => {
+    const ctx = createCtx();
+    const node = createClipped(ctx, 'aaaa bbbb cc', 50, 'clip', [
+      { start: 9, end: 12, color: 'yellow' },
+    ]);
+
+    expect(paintedRects(node, ctx)).toHaveLength(0);
+  });
+});
+
 describe('CanvasBadge: подсветка', () => {
   it('пластина под фрагментом рисуется до текста, по центру бейджа', () => {
     const ctx = createCtx();

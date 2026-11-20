@@ -576,6 +576,8 @@ export class CanvasText extends CanvasNode {
             x: rect.x,
             y,
             height: lineHeightPx,
+            // Строка переноса бывает шире места (ширина меньше MIN_WRAP_WIDTH)
+            ...(this.overflow === 'hidden' && { maxWidth: rect.width }),
           });
         }
         // Рисуем строку по центру её слота (baseline middle), а не от верха
@@ -664,15 +666,22 @@ export class CanvasText extends CanvasNode {
         return;
       }
 
+      // Сколько символов видно, чтобы пометка не выходила за видимый текст.
+      // Подробнее: при textOverflow 'clip' текст рисуется целиком и обрезается
+      // по rect, видны все символы, а пометку обрезает maxWidth; при многоточии
+      // видимая часть короче.
+      const truncatedByEllipsis =
+        resolvedText.didTruncate && this.textOverflow !== 'clip';
       this.paintMarks(batcher, ctx, font, {
         text,
         start: 0,
-        shownLength: resolvedText.didTruncate
+        shownLength: truncatedByEllipsis
           ? Math.max(0, resolvedText.text.length - this.ellipsis.length)
           : text.length,
         x: rect.x,
         y: textY - lineHeightPx / 2,
         height: lineHeightPx,
+        maxWidth: rect.width,
       });
 
       batcher.fillTextClipped(

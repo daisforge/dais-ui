@@ -76,6 +76,9 @@ permissions:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    env:
+      NX_DAEMON: 'false'
+      NODE_OPTIONS: '--max-old-space-size=4096'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -126,11 +129,8 @@ jobs:
       # dist/packages/ui-kit в этом чекауте не собран — buildIndex.js запишет
       # только запасной "bundled" индекс в packages/mcp-server/data/, это и нужно
       # для публикации самого @daisforge/ui-mcp.
-      - name: Build component index
-        run: npm run mcp:build-index
-
-      - name: Validate component index
-        run: npm run mcp:validate-index
+      - name: Build and check MCP
+        run: npm run mcp:check
 
       - name: Bump version
         id: version

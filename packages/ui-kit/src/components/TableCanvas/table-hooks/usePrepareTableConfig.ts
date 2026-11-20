@@ -1,9 +1,11 @@
+import { useMemo } from 'react';
+
 import { getRowsGroupingSubrowsConfig } from '../feature-rows-grouping';
 import { wrapMergedGroupSelecting } from '../feature-rows-grouping/mergedView';
 import { ObjectForExtending, TableConfig } from '../types';
 import { resolveMergedView } from './resolveMergedView';
 
-export const usePrepareTableConfig = <
+export const prepareTableConfig = <
   FilterStateType extends ObjectForExtending,
   RowIdType extends string | number,
   RowType extends ObjectForExtending,
@@ -72,3 +74,30 @@ export const usePrepareTableConfig = <
     } as typeof tableConfigExternal,
   };
 };
+
+/**
+ * Готовит tableConfig для фич таблицы и отдаёт тот же объект, пока входной
+ * tableConfig прежний. Иначе при правой панели, слиянии или группировке строк
+ * каждый рендер давал бы новый объект, и таблица перерисовывала бы весь экран.
+ */
+export const usePrepareTableConfig = <
+  FilterStateType extends ObjectForExtending,
+  RowIdType extends string | number,
+  RowType extends ObjectForExtending,
+  SummaryRowType = unknown,
+>({
+  tableConfigExternal,
+  flattenedRowsRef,
+}: {
+  tableConfigExternal: TableConfig<
+    RowType,
+    SummaryRowType,
+    RowIdType,
+    FilterStateType
+  >;
+  flattenedRowsRef?: { readonly current: readonly RowType[] };
+}) =>
+  useMemo(
+    () => prepareTableConfig({ tableConfigExternal, flattenedRowsRef }),
+    [tableConfigExternal, flattenedRowsRef],
+  );

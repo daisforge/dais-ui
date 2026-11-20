@@ -64,6 +64,7 @@ export * from './components/NumberFormat';
 export * from './components/NumberFormatAmount';
 export * from './components/NumberInput';
 export * from './components/Overlay';
+export * from './components/PageLoader';
 export * from './components/PageTitle';
 export * from './components/Pagination';
 export * from './components/Popover';
@@ -93,6 +94,8 @@ export type {
   BottomSheetConfig,
   LeftSidebarConfig,
   RightSidebarConfig,
+  TableCanvasChangedCell,
+  TableCanvasEditedCells,
   TableCanvasSidebarConfig,
   TableCanvasSidebarTab,
 } from './components/TableCanvas';

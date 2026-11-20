@@ -110,7 +110,7 @@ export const ATOMIC_TABLE_ON_PARENT_PAGE: Record<string, string> = {
   TextSkeleton: 'Skeleton',
 };
 
-function loadAtomicComponent(
+export function loadAtomicComponent(
   atomicBase: string,
   atomicSubpath: 'beta' | undefined,
 ): AtomicComponentJson | undefined {
@@ -147,27 +147,20 @@ function dropEmptyStrings(p: AtomicPropRecord): AtomicPropRecord {
   return cleaned;
 }
 
-/**
- * Вендор беднее собственного резолва ts-morph: замер на 40 wrapper-компонентах
- * — 0 описаний, 0 default, 0 required:true во всём снэпшоте, при 454 реальных
- * русских описаниях и 8 required:true, потерянных прежним "own минус
- * inherited"-дедупом (см. TASKS.md T14). Поэтому там, где имя совпало,
- * описание и required берём из own (ts-morph — источник точнее), а текст типа
- * и сам факт наличия пропса — из вендора (он ближе к тому, как атом реально
- * типизирован публично, без внутренних деталей ui-kit-обёртки). `default`
- * (TASKS.md T6) вендор не несёт вовсе (см. dropEmptyStrings) — own всегда
- * побеждает, если он его резолвил (деструктуризация/`@default`).
- */
+/** Тип, required и наличие пропса определяет установленный публичный API.
+ * Vendor дополняет описания, но не может расширять контракт обёртки. */
 function mergeWithOwn(
   vendorProp: AtomicPropRecord,
+  publicProp: PropRecord,
   ownProp: PropRecord | undefined,
 ): AtomicPropRecord {
-  if (!ownProp) return vendorProp;
   return {
     ...vendorProp,
-    required: ownProp.required,
-    description: ownProp.description || vendorProp.description,
-    default: ownProp.default ?? vendorProp.default,
+    type: publicProp.type,
+    required: publicProp.required,
+    description:
+      ownProp?.description || publicProp.description || vendorProp.description,
+    default: ownProp?.default ?? publicProp.default ?? vendorProp.default,
   };
 }
 
@@ -202,6 +195,7 @@ function sortInheritedProps(
  */
 export function mergeAtomicData(
   record: WorkingComponentRecord,
+  readPublicProps: (names: ReadonlySet<string>) => PropRecord[],
 ): WorkingComponentRecord {
   if (!record.atomicBase) {
     return { ...record, atomicMcpVersion: getManifest()?.version };
@@ -215,14 +209,26 @@ export function mergeAtomicData(
     return { ...record, atomicDataMissing: true };
   }
 
+  const vendorProps = atomicComponent.api?.props || [];
+  const names = new Set(vendorProps.map((p) => p.name));
+  const publicByName = new Map(readPublicProps(names).map((p) => [p.name, p]));
   const ownByName = new Map((record.props || []).map((p) => [p.name, p]));
-
   const inheritedProps = sortInheritedProps(
-    (atomicComponent.api?.props || []).map((p) => ({
-      ...mergeWithOwn(dropEmptyStrings(p), ownByName.get(p.name)),
-      inheritedFrom: record.atomicBase as string,
-      inheritedPackage: '@salutejs/sdds-finai',
-    })),
+    vendorProps.flatMap((p) => {
+      const publicProp = publicByName.get(p.name);
+      if (!publicProp) return [];
+      return [
+        {
+          ...mergeWithOwn(
+            dropEmptyStrings(p),
+            publicProp,
+            ownByName.get(p.name),
+          ),
+          inheritedFrom: record.atomicBase as string,
+          inheritedPackage: '@salutejs/sdds-finai',
+        },
+      ];
+    }),
   );
 
   const inheritedNames = new Set(inheritedProps.map((p) => p.name));

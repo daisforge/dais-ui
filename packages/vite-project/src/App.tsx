@@ -1,17 +1,15 @@
 import { Suspense, useState } from 'react';
 
-import { GlobalStyle, type GlobalStyleTheme } from '@daisforge/ui';
+import {
+  Box,
+  GlobalStyle,
+  type GlobalStyleTheme,
+  PageLoader,
+} from '@daisforge/ui';
 
 import { Header } from './components/Header';
 import { pages, pageLabels, pageIcons, type PageKey } from './config/pages';
 import './shared/theme.css';
-
-const PageLoader = () => (
-  <div className="page-loader">
-    <div className="page-loader-spinner" />
-    <span>loading...</span>
-  </div>
-);
 
 function App() {
   const [activePage, setActivePage] = useState<PageKey | null>(null);
@@ -33,7 +31,13 @@ function App() {
       />
       <div className="main">
         {ActiveComponent ? (
-          <Suspense fallback={<PageLoader />}>
+          <Suspense
+            fallback={
+              <Box display="flex" height="480px">
+                <PageLoader />
+              </Box>
+            }
+          >
             <ActiveComponent />
           </Suspense>
         ) : (

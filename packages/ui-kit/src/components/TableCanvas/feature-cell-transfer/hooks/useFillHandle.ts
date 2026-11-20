@@ -16,6 +16,7 @@ import type {
   FillPatternEvent,
   RowsChangeType,
   TransferColumnConfig,
+  WrittenCell,
 } from '../types';
 import { applyValuesToRows } from '../utils/applyValuesToRows';
 import { collectTextMatrix } from '../utils/collectTextMatrix';
@@ -48,6 +49,7 @@ interface UseFillHandleParams<R extends ObjectForExtending> {
     rows: R[],
     data: {
       indexes: number[];
+      writtenCells: WrittenCell[];
       column: TransferColumnConfig;
       rows?: { before: R; after: R }[];
       type: RowsChangeType;
@@ -227,6 +229,7 @@ export function useFillHandle<R extends ObjectForExtending>({
         newRows,
         affectedIndexes,
         firstAffectedColumn,
+        writtenCells,
         skippedByValidation,
         aborted,
       } = applyValuesToRows({
@@ -275,6 +278,7 @@ export function useFillHandle<R extends ObjectForExtending>({
       onRowsChange(newRows, {
         column: firstAffectedColumn,
         indexes: affectedIndexes,
+        writtenCells,
         type: 'fill',
         fillMeta,
         fillResult,

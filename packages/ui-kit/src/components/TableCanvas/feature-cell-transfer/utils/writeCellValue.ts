@@ -1,6 +1,6 @@
 import type { ObjectForExtending } from '../../types';
 import type { TransferColumnConfig } from '../types';
-import { resolveSubRowKey } from './resolveSubRowKey';
+import { getColumnField } from './resolveSubRowKey';
 
 /**
  * Записывает значение в ячейку строки с учётом subRow-конфига.
@@ -15,11 +15,7 @@ export function writeCellValue<R extends ObjectForExtending>(
   lvl: number,
   value: string | number,
 ): R {
-  if (lvl > 0) {
-    const subKey = resolveSubRowKey(column, lvl);
-    if (subKey === undefined) return row;
-    return { ...row, [subKey]: value };
-  }
-
-  return { ...row, [column.key]: value };
+  const key = getColumnField(column, lvl);
+  if (key === undefined) return row;
+  return { ...row, [key]: value };
 }

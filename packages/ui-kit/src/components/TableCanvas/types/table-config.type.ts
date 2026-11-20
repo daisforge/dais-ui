@@ -105,7 +105,28 @@ export type ViewMods = {
     domMetadata?: DomMetadata;
   };
 };
-export interface RowsChangeData<R extends ObjectForExtending, SR = unknown> {
+export type TableCanvasChangedCell<RowId = string | number> = {
+  rowId: RowId;
+  columnKey: string;
+};
+
+export type TableCanvasEditedCells<RowId = string | number> = ReadonlyMap<
+  RowId,
+  ReadonlySet<string>
+>;
+
+export interface RowsChangeData<
+  R extends ObjectForExtending,
+  SR = unknown,
+  RowId = string | number,
+> {
+  /**
+   * Ячейки, значения которых изменились за одну правку, вставку или протяжку.
+   *
+   * Подстрока попадает в этот список, если rowKeyGetter возвращает для неё ID.
+   * columnKey указывает на колонку таблицы, даже если поле подстроки называется иначе.
+   */
+  changedCells?: readonly TableCanvasChangedCell<RowId>[];
   indexes: number[];
   column: ColumnConfig<R, SR>;
   rows: { before: R; after: R }[];
@@ -703,7 +724,10 @@ export type EditingConfig<
    * Функция обработки изменений в редактируемой строке
    */
   onRowsChange: Maybe<
-    (rows: RowType[], data: RowsChangeData<RowType, SummaryRowType>) => void
+    (
+      rows: RowType[],
+      data: RowsChangeData<RowType, SummaryRowType, RowIdType>,
+    ) => void
   >;
   /**
    * свойство, необходимое для корректного изменения дочерних строк.
@@ -715,6 +739,20 @@ export type EditingConfig<
    * @example "child" или "uvh367.children"
    */
   subRowsKey?: string;
+  /**
+   * Позволяет приложению выбирать, какие ячейки подсвечивать в текущей сессии.
+   * По умолчанию таблица сама хранит отметки и очищает их при выходе из редактирования.
+   *
+   * Для числовых ID передайте пару из `useState<TableCanvasEditedCells<number>>(() => new Map())`.
+   * Ключ карты берётся из rowKeyGetter, а множество содержит ключи отмеченных колонок.
+   * При выходе из редактирования и при размонтировании таблица вызывает сеттер,
+   * чтобы очистить отметки завершённой сессии. Если приложение одновременно
+   * заменило карту своей новой картой, таблица сохраняет её.
+   */
+  editedCellsState?: [
+    TableCanvasEditedCells<RowIdType>,
+    React.Dispatch<React.SetStateAction<TableCanvasEditedCells<RowIdType>>>,
+  ];
   /**
    * Глубокое копирование строк перед применением правки в режиме редактирования.
    *
@@ -998,7 +1036,8 @@ export type CellsSelectionConfig = {
    * Срабатывает и без действия пользователя, когда слева появляется или исчезает
    * служебная колонка (например, столбец ошибок): выделение остаётся на тех же
    * ячейках, а их индексы сдвигаются. Программная смена `state` снаружи
-   * `onChange` не вызывает.
+   * `onChange` не вызывает, но копирование, вставка и протяжка заполнения
+   * работают уже с новым выделением, а несмежный Ctrl-выбор снимается.
    *
    * Индексы колонок — в координатах грида: служебные колонки слева (нумерация
    * `rowMarkers`, чекбоксы `selecting`) входят в счёт. Колонка, `i`-я по порядку
@@ -1346,7 +1385,13 @@ export type TableConfig<
      *
      * `rowInd` и границы блока — индексы в отображаемых строках: после сортировки,
      * фильтров и группировки они не совпадают с индексами в `rows`. Отображаемые
-     * строки приходят в `ctx.rows` — по ним ищут соседей блока.
+     * строки приходят в `ctx.rows`, по ним ищут соседей блока. Среди них есть и
+     * служебные строки (заголовки групп, строки дерева): у них нет полей данных,
+     * и сравнение полей соседей их склеит, проверяйте строку.
+     *
+     * Блок это хотя бы две строки, и `rowInd` должен входить в ответ: блок из
+     * одной строки (`[rowInd, rowInd]`) и ответ без своей строки считаются
+     * `null`, границы за краем таблицы обрезаются.
      */
     lazyRowSpan?: (
       row: RowType,

@@ -368,7 +368,7 @@ function ExampleGlobalDefaults() {
               icon={<IconSettingsOutline />}
               size={16}
               dropdown={{
-                placement: 'bottom',
+                placement: 'bottom-start',
                 items: [
                   { value: 'new', label: 'Новая' },
                   { value: 'progress', label: 'В работе' },
@@ -390,7 +390,7 @@ function ExampleGlobalDefaults() {
         fullScreenEnabled: true,
         rowSize: { showInControl: true, default: 'big' },
         dropdown: {
-          placement: 'right',
+          placement: 'right-start',
           listWidth: 200,
           variant: 'tight',
           closeOnSelect: false,
@@ -546,7 +546,7 @@ function ExampleAllVariants() {
               size={16}
               dropdown={{
                 trigger: 'hover',
-                placement: 'right',
+                placement: 'right-start',
                 variant: 'tight',
                 items: ['Low', 'Medium', 'High', 'Critical'].map((value) => ({
                   value,

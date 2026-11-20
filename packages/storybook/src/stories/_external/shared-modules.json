@@ -1,0 +1,5 @@
+{
+  "//": "Модули, которые собранный Storybook отдаёт внутренним страницам через globalThis.__SB_SHARED__. Единый источник для ExternalPage.tsx рядом (что отдаём) и scripts/storybook-package/build-pages.mjs (во что превращаются импорты страниц). Ключ библиотеки — 'lib', подпути — 'lib/<подпуть>'.",
+  "external": ["react", "react/jsx-runtime", "react-dom", "styled-components"],
+  "libSubpaths": ["constants", "icons", "mixins", "styles", "tokens", "utils"]
+}

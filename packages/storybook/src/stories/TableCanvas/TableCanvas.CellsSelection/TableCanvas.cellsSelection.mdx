@@ -123,6 +123,33 @@ const gridSelectionState = useState<GridSelection>(EMPTY_SELECTION);
 `CompactSelection` и тип `GridSelection` реэкспортируются из
 `@daisforge/ui/components/TableCanvas`.
 
+### Быстрое выделение на больших таблицах
+
+При смене выделения (клик, стрелки, протяжка диапазона) таблица перерисовывает только
+прежнюю и новую область выделения, а при наведении мыши только строки под курсором, а не
+весь экран. Так работает и controlled-режим, и любая перерисовка вашего компонента, если
+данные и настройки таблицы при этом остались прежними, то есть теми же объектами.
+
+Если на каждый рендер передавать новый массив, объект или функцию в перечисленное ниже,
+таблица заново собирает колонки или содержимое ячеек и рисует весь экран. На нескольких
+сотнях колонок это заметно: клики и стрелки отстают. Держите эти значения стабильными:
+константа вне компонента, `useMemo` или `useCallback`.
+
+- `rows`, `bottomSummaryRows`, `columnConfig`, `headerContextValue`, `rowContextValue`;
+- в `tableConfig`: `selecting`, `filtering`, `borders`, `stickyRows`, `stickyColumns`,
+  `rowHeight` (если это функция), `rowSize.onRowSizeChange`, `mergeCells`,
+  `subRows.mergedColumns`, `editing.rowErrors`, `columnsControl.disablePinning`.
+
+Сам объект `tableConfig` можно собирать прямо в разметке: таблица смотрит на его поля.
+Исключение: слияние строк вместе с отметкой строк чекбоксами, тогда весь `tableConfig`
+передавайте через `useMemo`. Обработчики событий (`cellsSelection.onChange`,
+`onCellClicked` и другие) и функции `subRows` (`getSubRows`, `rowKeyGetter`) на скорость
+не влияют, их можно передавать как есть.
+
+Если выделение нужно только для действий (кнопки, экспорт), читайте его в
+`cellsSelection.onChange` и храните в `useRef`: так ваш компонент не будет
+перерисовываться на каждый клик.
+
 > Подробнее о типах — [CellsSelection API](?path=/docs/локальные-компоненты-tablecanvas-cellsselection-api--docs)
 
 <Stories />

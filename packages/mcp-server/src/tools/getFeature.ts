@@ -1,4 +1,5 @@
-import type { FeatureApiEntry, RuntimeIndex, ToolError } from '../types.js';
+import type { FeatureApiEntry, RuntimeIndex } from '../types.js';
+import { ToolError } from '../types.js';
 import { findFeature } from './shared.js';
 
 export interface GetFeatureArgs {
@@ -22,9 +23,9 @@ export function getFeature(
 ): GetFeaturePayload | ToolError {
   const found = findFeature(index, component, feature);
   if (!found) {
-    return {
-      error: `Фича "${feature}" не найдена у "${component}". Используйте list_features({component}).`,
-    };
+    return new ToolError(
+      `Фича "${feature}" не найдена у "${component}". Используйте list_features({component}).`,
+    );
   }
 
   return {

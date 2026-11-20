@@ -2,9 +2,8 @@ import type {
   InheritedPropRecord,
   PropRecord,
   RuntimeIndex,
-  ToolError,
 } from '../types.js';
-import { isOkComponent } from '../types.js';
+import { isOkComponent, ToolError } from '../types.js';
 import { findComponent } from './shared.js';
 
 export interface GetComponentPropsArgs {
@@ -48,7 +47,10 @@ interface ComponentPropsPayload {
 function genericEmptyPropsWarning(
   isGeneric: boolean | undefined,
   propsLength: number,
+  openProps?: boolean,
 ): string | undefined {
+  if (openProps)
+    return 'Публичный тип допускает произвольные ключи. Индекс перечисляет известные поля; это не закрытый контракт и не гарантия проверки произвольных JSX-пропсов.';
   if (!isGeneric || propsLength > 0) return undefined;
   return (
     'Пропсы не резолвлены (сложный generic-тип) — пустой props[] не значит, ' +
@@ -64,10 +66,10 @@ export function getComponentProps(
 ): CompoundPartPropsPayload | ComponentPropsPayload | ToolError {
   const record = findComponent(index, name);
   if (!record) {
-    return { error: `Компонент "${name}" не найден.` };
+    return new ToolError(`Компонент "${name}" не найден.`);
   }
   if (!isOkComponent(record)) {
-    return { error: record.error };
+    return new ToolError(record.error);
   }
 
   if (part) {
@@ -75,13 +77,11 @@ export function getComponentProps(
       (p) => p.name.toLowerCase() === part.toLowerCase(),
     );
     if (!compoundPart) {
-      return {
-        error: `Compound-часть "${part}" не найдена у "${
-          record.name
-        }". Доступные: ${
+      return new ToolError(
+        `Compound-часть "${part}" не найдена у "${record.name}". Доступные: ${
           (record.compoundParts || []).map((p) => p.name).join(', ') || '(нет)'
         }`,
-      };
+      );
     }
     const compoundPartProps = compoundPart.props || [];
     return {
@@ -94,6 +94,7 @@ export function getComponentProps(
       warning: genericEmptyPropsWarning(
         compoundPart.isGeneric,
         compoundPartProps.length,
+        compoundPart.openProps,
       ),
     };
   }
@@ -110,6 +111,10 @@ export function getComponentProps(
     atomicDataMissing: record.atomicDataMissing || undefined,
     compoundPartOf: record.compoundPartOf,
     dataVersionNotice: index.dataVersionNotice,
-    warning: genericEmptyPropsWarning(record.isGeneric, props.length),
+    warning: genericEmptyPropsWarning(
+      record.isGeneric,
+      props.length,
+      record.openProps,
+    ),
   };
 }

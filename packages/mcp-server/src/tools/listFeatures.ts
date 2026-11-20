@@ -1,4 +1,5 @@
-import type { RuntimeIndex, ToolError } from '../types.js';
+import type { RuntimeIndex } from '../types.js';
+import { ToolError } from '../types.js';
 import { listComponentFeatures } from './shared.js';
 
 export interface ListFeaturesArgs {
@@ -22,7 +23,7 @@ export function listFeatures(
   { component }: ListFeaturesArgs = {},
 ): ListFeaturesPayload | ToolError {
   if (!component) {
-    return { error: 'Параметр component обязателен.' };
+    return new ToolError('Параметр component обязателен.');
   }
   const features = listComponentFeatures(index, component);
   return {

@@ -1,5 +1,5 @@
-import type { RuntimeIndex, ToolError, TypeRecord } from '../types.js';
-import { isOkComponent } from '../types.js';
+import type { RuntimeIndex, TypeRecord } from '../types.js';
+import { isOkComponent, ToolError } from '../types.js';
 
 export interface GetTypeArgs {
   name?: string;
@@ -128,7 +128,7 @@ export function getType(
   { name }: GetTypeArgs = {},
 ): TypeRecord | ToolError {
   if (!name) {
-    return { error: 'Не указано имя типа.' };
+    return new ToolError('Не указано имя типа.');
   }
 
   const direct = index.types[name];
@@ -148,36 +148,33 @@ export function getType(
     const keys = candidates
       .map(([key, record]) => describeCandidate(key, record))
       .join('; ');
-    return {
-      error: `Тип "${name}" неоднозначен — в ui-kit несколько разных типов с этим именем в разных модулях. Уточните одним из ключей: ${keys}.`,
-    };
+    return new ToolError(
+      `Тип "${name}" неоднозначен — в ui-kit несколько разных типов с этим именем в разных модулях. Уточните одним из ключей: ${keys}.`,
+    );
   }
 
   const ownerComponent = findComponentByPropsTypeName(index, name);
   if (ownerComponent) {
-    return {
-      error:
-        `"${name}" — тип пропсов компонента ${ownerComponent}, в индексе типов его нет: ` +
+    return new ToolError(
+      `"${name}" — тип пропсов компонента ${ownerComponent}, в индексе типов его нет: ` +
         `пропсы разобраны по полям. Используйте get_component_props({name: "${ownerComponent}"}).`,
-    };
+    );
   }
 
   const similar = findSimilarKeys(index, lowerName);
   if (similar.length > 0) {
-    return {
-      error:
-        `Тип "${name}" не найден в индексе. Похожие имена: ${similar.join(
-          ', ',
-        )}. ` +
+    return new ToolError(
+      `Тип "${name}" не найден в индексе. Похожие имена: ${similar.join(
+        ', ',
+      )}. ` +
         'Если нужного нет и среди них — тип внутренний для ui-kit и наружу не экспортирован; ' +
         'его форму можно увидеть в определении типа, который на него ссылается.',
-    };
+    );
   }
 
-  return {
-    error:
-      `Тип "${name}" не найден в индексе. В индекс попадают типы, названные в пропсах компонентов, ` +
+  return new ToolError(
+    `Тип "${name}" не найден в индексе. В индекс попадают типы, названные в пропсах компонентов, ` +
       'и то, на что они ссылаются вглубь. Проверьте имя через get_component_props нужного компонента — ' +
       'там типы полей приведены ровно так, как их печатает тайпчекер.',
-  };
+  );
 }

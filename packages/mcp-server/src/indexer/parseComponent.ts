@@ -19,9 +19,15 @@ import { Node, SymbolFlags, SyntaxKind, ts } from 'ts-morph';
 import type { CompoundPart, PropRecord } from '../types.js';
 import type { ComponentEntry } from './discoverComponents.js';
 import { isNoiseProp, isReactDomDescription } from './htmlAttributeDenylist.js';
+import {
+  getPublicContract,
+  isNamespace,
+  isOpenContract,
+} from './publicContract.js';
+import { getRootExportNames } from './resolveImportPath.js';
 import { getProject, UI_KIT_SRC } from './tsProject.js';
+import { canonicalTypeText, formatPropType } from './typeDisplay.js';
 
-const MAX_PROP_TYPE_CHARS = 400;
 export const MAX_RAW_TYPE_CHARS = 6000;
 
 type RenderFunction = FunctionDeclaration | ArrowFunction | FunctionExpression;
@@ -77,6 +83,8 @@ export interface ParsedComponent {
   rawType?: string;
   isGeneric?: true;
   compoundParts?: CompoundPart[];
+  openProps?: true;
+  apiKind?: 'namespace';
 }
 
 export interface ParseFailure {
@@ -138,15 +146,11 @@ export function getCollectedTypeDecls(): CollectedTypeDecl[][] {
 
 /**
  * Записывает символ как найденный тип, если его декларация — type alias/
- * interface внутри самого ui-kit. Дедуп — по паре (имя, файл декларации):
+ * interface внутри ui-kit либо публично реэкспортированный внешний тип.
+ * Дедуп — по паре (имя, декларация):
  * разные типы с одинаковым именем в разных файлах сохраняются оба (см.
  * collectedTypeDecls), но повторные ссылки на ОДИН И ТОТ ЖЕ тип из разных
- * пропсов не плодят дубликаты. true, если что-то записано (или уже было) —
- * вызывающий код использует это, чтобы решить, надо ли ещё разворачивать
- * структуру типа (см. collectNamedTypeRefs).
- */
-/**
- * Общая часть записи символа: возвращает декларацию, если она ВПЕРВЫЕ попала
+ * пропсов не плодят дубликаты. Возвращает декларацию, если она ВПЕРВЫЕ попала
  * в индекс, и undefined, если тип не подходит или уже записан. Различать
  * "записал" и "уже было" нужно транзитивному раскрытию — иначе фронтир
  * зациклится на взаимно ссылающихся типах (их в TableCanvas достаточно).
@@ -160,37 +164,22 @@ function recordTypeSymbolIfNew(symbol: TsSymbol): Node | undefined {
   ) {
     return undefined;
   }
-  if (!decl.getSourceFile().getFilePath().includes('/packages/ui-kit/src/')) {
-    return undefined;
-  }
-
-  const name = symbol.getName();
   const filePath = decl.getSourceFile().getFilePath();
-  const existing = collectedTypeDecls.get(name) ?? [];
-  if (existing.some((e) => e.decl.getSourceFile().getFilePath() === filePath)) {
-    return undefined;
-  }
-
-  existing.push({ name, decl });
-  collectedTypeDecls.set(name, existing);
-  return decl;
-}
-
-function recordTypeSymbol(symbol: TsSymbol): boolean {
-  const decl = symbol.getDeclarations()[0];
-  if (!decl) return false;
-  if (
-    !Node.isTypeAliasDeclaration(decl) &&
-    !Node.isInterfaceDeclaration(decl)
-  ) {
-    return false;
-  }
-  if (!decl.getSourceFile().getFilePath().includes('/packages/ui-kit/src/')) {
-    return false;
-  }
-
-  recordTypeSymbolIfNew(symbol);
-  return true;
+  // После реэкспорта Dropdown из SDDS его ItemOption объявлен в зависимости.
+  // Берём имя из корневого экспорта, иначе get_type('DropdownItemOption')
+  // найдёт только одноимённый внутренний тип Table.
+  const names = filePath.includes('/packages/ui-kit/src/')
+    ? [symbol.getName()]
+    : getRootExportNames(decl);
+  let added = false;
+  names.forEach((name) => {
+    const existing = collectedTypeDecls.get(name) ?? [];
+    if (existing.some((entry) => entry.decl === decl)) return;
+    existing.push({ name, decl });
+    collectedTypeDecls.set(name, existing);
+    added = true;
+  });
+  return added ? decl : undefined;
 }
 
 /**
@@ -263,8 +252,9 @@ export function expandCollectedTypeRefs(maxDepth: number): void {
  * alias-символа — он есть только у элемента массива), останавливаясь, как
  * только находит именованную декларацию — без рекурсии в её собственное
  * тело (агент при необходимости запросит её отдельным вызовом get_type).
- * Индексируем только типы, объявленные в самом ui-kit — типы React/DOM и
- * @salutejs/* уже приходят как inheritedProps/готовые примитивы.
+ * Внешние типы индексируем только под публичными именами реэкспортов ui-kit:
+ * например, ItemOption из SDDS доступен потребителю как DropdownItemOption.
+ * Остальные типы зависимостей (React/DOM и т.п.) не собираем.
  */
 function collectNamedTypeRefs(type: Type, seen: Set<Type>): void {
   if (seen.has(type)) return;
@@ -280,7 +270,7 @@ function collectNamedTypeRefs(type: Type, seen: Set<Type>): void {
   // вызовом get_type, как и для обычных вложенных ссылок).
   const aliasSymbol = type.getAliasSymbol();
   if (aliasSymbol) {
-    recordTypeSymbol(aliasSymbol);
+    recordTypeSymbolIfNew(aliasSymbol);
     return;
   }
 
@@ -299,7 +289,7 @@ function collectNamedTypeRefs(type: Type, seen: Set<Type>): void {
   }
 
   const symbol = type.getSymbol();
-  if (symbol) recordTypeSymbol(symbol);
+  if (symbol) recordTypeSymbolIfNew(symbol);
 }
 
 function getJsDocs(node: Node): JSDoc[] {
@@ -401,8 +391,8 @@ function isInPackage(sourceFile: SourceFile, pkgName: string): boolean {
 
 /**
  * Находит тип пропсов компонента среди экспортов barrel-файла: по
- * соглашению имени (`${Name}Props`, `${Name}CompProps`) либо — если не
- * нашли — среди всех экспортов, заканчивающихся на "Props".
+ * точному соглашению имени (`${Name}Props`, `${Name}CompProps`). Совпадение
+ * подстроки небезопасно: TableContractControlBlockButtonProps — не TableContract.
  */
 function findPropsDeclaration(
   barrelSourceFile: SourceFile,
@@ -414,16 +404,6 @@ function findPropsDeclaration(
   for (const candidate of candidates) {
     const decl = map.get(candidate)?.[0];
     if (decl) return { name: candidate, decl };
-  }
-
-  for (const [name, decls] of map.entries()) {
-    if (
-      name.endsWith('Props') &&
-      name.toLowerCase().includes(componentName.toLowerCase()) &&
-      decls[0]
-    ) {
-      return { name, decl: decls[0] };
-    }
   }
 
   return undefined;
@@ -560,28 +540,64 @@ function extractPropsFromType(
   type: Type,
   atLocationNode: Node,
   defaultsMap?: Map<string, string>,
+  {
+    truncate = true,
+    onlyNames,
+  }: {
+    truncate?: boolean;
+    onlyNames?: ReadonlySet<string>;
+  } = {},
 ): PropRecord[] {
+  // Сначала объединяем полные типы ветвей; обрезаем только итог для ответа.
+  const displayType = truncate ? formatPropType : canonicalTypeText;
   const ownFilePath = atLocationNode.getSourceFile().getFilePath();
   const entries: { record: PropRecord; ownFile: boolean }[] = [];
 
+  if (type.isUnion()) {
+    const variants = type.getUnionTypes().map((variant) =>
+      extractPropsFromType(variant, atLocationNode, defaultsMap, {
+        truncate: false,
+        onlyNames,
+      }),
+    );
+    const names = [
+      ...new Set(variants.flatMap((props) => props.map((prop) => prop.name))),
+    ];
+    return names.map((name) => {
+      const props = variants.map((variant) =>
+        variant.find((prop) => prop.name === name),
+      );
+      const present = props.filter((prop): prop is PropRecord => Boolean(prop));
+      return {
+        ...present[0],
+        description: present[0]?.description ?? '',
+        name,
+        required: props.every((prop) => prop?.required),
+        type: displayType(
+          [...new Set(present.map((prop) => prop.type))]
+            .map((text) => `(${text})`)
+            .join(' | '),
+        ),
+      };
+    });
+  }
   for (const symbol of type.getProperties()) {
+    const name = symbol.getName();
+    if (onlyNames && !onlyNames.has(name)) continue;
     const decl: Node | undefined =
       symbol.getValueDeclaration() ?? symbol.getDeclarations()[0];
     const propType = safeGetPropertyType(symbol, decl ?? atLocationNode);
     const fullTypeText = propType ? propType.getText() : 'unknown';
-    const name = symbol.getName();
-
-    // Шум от ComponentProps<typeof X>: ~300 унаследованных DOM/ARIA-атрибутов
-    // и React-статиков. Фильтруем по имени+типу, а не только по имени — иначе
-    // потеряли бы реально переопределённые пропсы вроде Switch.size: "s"|"m"|"l".
-    if (isNoiseProp(name, fullTypeText)) continue;
-
-    if (propType) collectNamedTypeRefs(propType, new Set());
 
     // SymbolFlags.Optional — сигнал от самого тайпчекера после резолва
     // union/intersection, надёжнее чем questionToken на одной из деклараций
     // (при пересечении типов может быть несколько деклараций одного символа).
     const optional = Boolean(symbol.getFlags() & SymbolFlags.Optional);
+    // Для обычного каталога убираем общий DOM API. При выборке по именам
+    // проверяем запрошенные поля напрямую по публичному контракту.
+    if (!onlyNames && isNoiseProp(name, fullTypeText, !optional)) continue;
+
+    if (propType) collectNamedTypeRefs(propType, new Set());
 
     let description = '';
     try {
@@ -616,7 +632,7 @@ function extractPropsFromType(
 
     const record: PropRecord = {
       name,
-      type: clip(stripImportPaths(fullTypeText), MAX_PROP_TYPE_CHARS) as string,
+      type: displayType(fullTypeText),
       required: !optional,
       description,
       ...(deprecated ? { deprecated: true as const } : {}),
@@ -627,6 +643,26 @@ function extractPropsFromType(
   }
 
   return sortProps(entries);
+}
+
+/** Выборка из полного публичного контракта до фильтрации DOM-полей. */
+export function extractSelectedPublicProps(
+  entry: ComponentEntry,
+  names: ReadonlySet<string>,
+  truncate = true,
+): PropRecord[] {
+  if (!names.size) return [];
+  const type = getPublicContract(entry);
+  const decl = getProject()
+    .getSourceFileOrThrow(entry.barrelPath)
+    .getExportedDeclarations()
+    .get(entry.name)?.[0];
+  return type && decl
+    ? extractPropsFromType(type, decl, undefined, {
+        truncate,
+        onlyNames: names,
+      })
+    : [];
 }
 
 /**
@@ -947,8 +983,8 @@ function findLocalTypeDeclaration(
   typeName: string,
 ): NamedPropsRef | undefined {
   if (!compDir) return undefined;
-  for (const sourceFile of getProject().getSourceFiles()) {
-    if (!sourceFile.getFilePath().startsWith(compDir)) continue;
+  const directory = getProject().getDirectory(compDir);
+  for (const sourceFile of directory?.getDescendantSourceFiles() ?? []) {
     const decl =
       sourceFile.getTypeAlias(typeName) ?? sourceFile.getInterface(typeName);
     if (decl) return { name: typeName, decl };
@@ -1022,7 +1058,9 @@ export function parseComponent({
   name,
   barrelPath,
   dir,
+  ...entryRest
 }: ComponentEntry): ParsedComponent | ParseFailure {
+  const entry = { name, barrelPath, dir, ...entryRest };
   const project = getProject();
   const barrelSourceFile = project.getSourceFileOrThrow(barrelPath);
 
@@ -1096,12 +1134,74 @@ export function parseComponent({
 
   const localMainFile = declaredInUiKit ? mainSourceFile : undefined;
   const compoundAssignments = findCompoundAssignments(localMainFile, name);
-  const compoundParts = compoundAssignments.map((assignment) =>
-    resolveCompoundPart(barrelSourceFile, name, assignment, dir),
-  );
+  const namespace = isNamespace(entry);
+  const contract = getPublicContract(entry);
+  // Проверенный публичный тип определяет наличие/required/type; объявленный
+  // Props сохраняет описания и defaults. Открытый индексный тип не доказывает API.
+  const refine = (
+    type: Type | undefined,
+    original: PropRecord[],
+  ): PropRecord[] => {
+    if (!type) return original;
+    if (type.isNever()) throw new Error(`Не удалось извлечь контракт ${name}`);
+    const actual = extractPropsFromType(type, mainDecl, defaultsMap);
+    const previous = new Map(original.map((prop) => [prop.name, prop]));
+    const refined = actual.map((prop) => {
+      const own = previous.get(prop.name);
+      return {
+        ...own,
+        ...prop,
+        description: own?.description || prop.description,
+        ...(own?.default ? { default: own.default } : {}),
+      };
+    });
+    // Открытая сигнатура не отменяет проверяемые явно объявленные поля.
+    // Поля, стёртые публичным типом, сохраняются с предупреждением.
+    const names = new Set(refined.map((prop) => prop.name));
+    return isOpenContract(type)
+      ? [...refined, ...original.filter((prop) => !names.has(prop.name))]
+      : refined;
+  };
+  propsResolved.props = namespace ? [] : refine(contract, propsResolved.props);
+  const compoundParts = namespace
+    ? mainDecl
+        .getType()
+        .getProperties()
+        .flatMap((symbol) => {
+          const type = getPublicContract(entry, symbol.getName());
+          return type && !type.isNever()
+            ? [
+                {
+                  name: symbol.getName(),
+                  props: refine(type, []),
+                  openProps: isOpenContract(type) ? (true as const) : undefined,
+                },
+              ]
+            : [];
+        })
+    : compoundAssignments.map((assignment) => {
+        const part = resolveCompoundPart(
+          barrelSourceFile,
+          name,
+          assignment,
+          dir,
+        );
+        const partContract = getPublicContract(entry, part.name);
+        return {
+          ...part,
+          openProps:
+            partContract && isOpenContract(partContract)
+              ? (true as const)
+              : undefined,
+          props: refine(partContract, part.props),
+        };
+      });
 
   return {
     name,
+    apiKind: namespace ? 'namespace' : undefined,
+    openProps:
+      !namespace && contract && isOpenContract(contract) ? true : undefined,
     description,
     deprecated,
     deprecationReason,

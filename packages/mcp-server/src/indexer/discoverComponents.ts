@@ -4,9 +4,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 import type { Symbol as TsSymbol } from 'ts-morph';
-import { SymbolFlags } from 'ts-morph';
+import { Node, SymbolFlags } from 'ts-morph';
 
 import type { ComponentGroup } from '../types.js';
+import { resolveImportPath } from './resolveImportPath.js';
 import { getProject, UI_KIT_SRC } from './tsProject.js';
 
 export interface ComponentEntry {
@@ -87,6 +88,15 @@ function isComponentLikeSymbol(symbol: TsSymbol): boolean {
   if (!/^[A-Z]/.test(name) || isAllCaps(name)) return false;
 
   const real = symbol.isAlias() ? symbol.getAliasedSymbol() ?? symbol : symbol;
+  const decl = real.getDeclarations()[0];
+  // Классы движка Canvas не являются React class components.
+  if (decl && Node.isClassDeclaration(decl)) {
+    const instance = decl.getType();
+    if (!instance.getProperty('render') || !instance.getProperty('setState'))
+      return false;
+  }
+  if (!decl || !resolveImportPath(name, decl.getSourceFile().getFilePath()))
+    return false;
   const flags = real.getFlags();
   const isValueLike = Boolean(
     flags & (SymbolFlags.Variable | SymbolFlags.Function | SymbolFlags.Class),
