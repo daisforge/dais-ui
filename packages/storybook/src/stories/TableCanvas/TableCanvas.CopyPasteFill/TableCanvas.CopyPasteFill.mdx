@@ -149,8 +149,9 @@ cellTransfer: {
 
 ### SubRows при вставке
 
-Работает аналогично копированию — через `keyOfColumnInSubRow`. Если у subrow
-данные в другом поле, `writeCellValue` запишет в правильный ключ.
+При копировании, вставке и протяжке таблица выбирает то же поле подстроки, что и при редактировании.
+Если задано `subRow.parentKeyAsDefault: true`, используется `column.key`, даже когда указано
+`subRow.keyOfColumnInSubRow`. Чтобы использовать другое поле, задайте `keyOfColumnInSubRow` и оставьте `parentKeyAsDefault` выключенным.
 
 Отключить вставку в subrows: `paste: { allowSubRows: false }`.
 
@@ -421,7 +422,7 @@ window.__TABLE_CANVAS_CLIPBOARD_DEBUG__ = true;
 
 - `[TableCanvas/cellTransfer]` — перехват хоткеев
 - `[TableCanvas/copy]` — копирование
-- `[TableCanvas/paste]` — вставка (включая skipped by validation)
+- `[TableCanvas/paste]` — вставка, пропуски при валидации и причина отмены, если за время чтения буфера изменились сессия, колонки, строки или выделение. Замена объектов строк, в том числе через `rows.map(...)`, отменяет ожидающую вставку.
 - `[TableCanvas/fillHandle]` — fill handle (source, dest, affected rows)
 
 Полное описание API типов см. на странице **Clipboard / API**.

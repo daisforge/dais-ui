@@ -131,7 +131,13 @@ export function usePaste<R extends ObjectForExtending>(
         onRowsChange,
         onNotification,
       } = latest.current;
-      if (startedIn !== session.current || !onRowsChange) return;
+      if (startedIn !== session.current || !onRowsChange) {
+        clipboardDebug(
+          PFX,
+          'skip: сессия завершилась или обработчик записи отключён',
+        );
+        return;
+      }
       if (clipboardText === undefined) {
         // Родитель может пересоздать конфиг без смены места вставки. Проверяем порядок
         // колонок и строк, а права записи и обработчики берём из последнего рендера.
@@ -139,19 +145,25 @@ export function usePaste<R extends ObjectForExtending>(
           columns !== start.columns &&
           (columns.length !== start.columns.length ||
             columns.some((col, i) => col.key !== start.columns[i]?.key))
-        )
+        ) {
+          clipboardDebug(PFX, 'skip: изменился набор или порядок колонок');
           return;
+        }
         if (
           flattenedRows !== start.flattenedRows &&
           (flattenedRows.length !== start.flattenedRows.length ||
             flattenedRows.some((row, i) => row !== start.flattenedRows[i]))
-        )
+        ) {
+          clipboardDebug(PFX, 'skip: строки заменены или изменился их порядок');
           return;
+        }
         if (
           !selectionRef.current ||
           !sameSelection(selection, selectionRef.current)
-        )
+        ) {
+          clipboardDebug(PFX, 'skip: изменилось выделение');
           return;
+        }
       }
 
       if (!text) {

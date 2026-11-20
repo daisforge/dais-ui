@@ -1,3 +1,4 @@
+import { createDebugLogger } from '@ui-kit/shared/utils/debug';
 import { isStructuredCloneSupported } from '@ui-kit/utils';
 import { useMemo } from 'react';
 
@@ -11,6 +12,8 @@ import type {
 } from '../types';
 import { getValueInObj, setValueInObj } from '../utils/setValueInObj';
 import { getSubRowEditId } from './getSubRowEditId';
+
+const editingDebug = createDebugLogger('TABLE_CANVAS_EDITING');
 
 const getCopy = <T>(v: T): T => {
   if (typeof v === 'object') {
@@ -146,7 +149,14 @@ export const useOnRowsChange = <
             const before = getValueInObj(writableCurr, path) as
               | RowType
               | undefined;
-            if (!before) return;
+            if (!before) {
+              editingDebug(
+                '[TableCanvas/editing]',
+                'Подстрока по указанному пути отсутствует',
+                { path, treeId },
+              );
+              return;
+            }
             const after = restChangedRow as RowType;
 
             copyOfData.rows.push({ before: getCopy(before), after });

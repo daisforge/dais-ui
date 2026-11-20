@@ -8,6 +8,50 @@ import { useOnRowsChange } from './useOnRowsChange';
 type Row = { id: number; price: number; qty: number; subRows?: Row[] };
 
 describe('onRowsChange при изменении нескольких ячеек', () => {
+  it('пропускает правку при неверном subRowsKey и сообщает путь в debug-режиме', () => {
+    const child = { id: 2, price: 1, qty: 0 };
+    const root = { ...child, id: 1, subRows: [child] };
+    const flat = { ...child, treeId: '1.subRows.0' };
+    const onRowsChange = vi.fn();
+    const { result } = renderHook(() =>
+      useOnRowsChange({
+        rows: [root] as Row[],
+        flattenedRowsRef: { current: [root, flat] },
+        tableConfig: {
+          editing: {
+            rowKeyGetter: (row: Row) => row.id,
+            subRowsKey: 'children',
+            onRowsChange,
+          },
+        },
+        markEditedCells: vi.fn(),
+      }),
+    );
+    const debug = vi.spyOn(console, 'debug').mockImplementation(() => {});
+    vi.stubGlobal('__TABLE_CANVAS_EDITING_DEBUG__', true);
+    try {
+      result.current.onRowsChangeLastVersion([root, { ...flat, price: 8 }], {
+        column: { key: 'price', name: 'Цена' },
+        indexes: [1],
+        writtenCells: [{ rowIndex: 1, columnKey: 'price' }],
+      });
+      expect(debug).toHaveBeenCalledWith(
+        '[TableCanvas/editing]',
+        expect.any(String),
+        { path: 'children.0', treeId: flat.treeId },
+      );
+      expect(root).not.toHaveProperty('children');
+      expect(child.price).toBe(1);
+      expect(onRowsChange).toHaveBeenCalledWith(
+        [root],
+        expect.objectContaining({ indexes: [], rows: [], changedCells: [] }),
+      );
+    } finally {
+      debug.mockRestore();
+      vi.unstubAllGlobals();
+    }
+  });
+
   it('принимает прежнюю форму публичных метаданных', () => {
     const data = {
       indexes: [0],

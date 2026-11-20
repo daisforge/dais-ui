@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## Unreleased
+
+- **TableCanvas:** в сессии редактирования изменённые ячейки получают голубой фон при редактировании, вставке и протяжке. В подстроках копирование, вставка и протяжка используют `column.key`, если включён `subRow.parentKeyAsDefault`, даже при заданном `keyOfColumnInSubRow`. При редактировании объединённого блока таблица учитывает поле подстроки и пропускает служебные колонки.
+
 ## [1.29.1](https://github.com/daisforge/dais-ui/compare/v1.29.0...v1.29.1) (2026-11-17)
 
 ### Bug Fixes
