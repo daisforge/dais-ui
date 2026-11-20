@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.30.0](https://github.com/daisforge/dais-ui/compare/v1.29.1...v1.30.0) (2026-11-20)
+
+### Bug Fixes
+
+- **TableCanvas:** ускорены наведение и выделение ячеек, исправлен расчёт автовысоты строк ([a1af564](https://github.com/daisforge/dais-ui/commit/a1af5644decb29af9265e8363306e1d3346a7a95))
+
+### Features
+
+- **PageLoader:** добавлен компонент загрузки страницы ([64214c7](https://github.com/daisforge/dais-ui/commit/64214c792c1abed317c7e03f092245ca35e64743))
+- **TableCanvas:** в Column Resize добавлена линия при изменении ширины ([ede28e9](https://github.com/daisforge/dais-ui/commit/ede28e99f98ec82c1eba823fcd12aaecbfb79594))
+- **TableCanvas:** подсвечивать изменённые ячейки в сессии редактирования ([d4ce197](https://github.com/daisforge/dais-ui/commit/d4ce197f33e0930b5e50e454fd62ee5240458d06))
+- **utils/usePlatformLink:** добавлен хук для работы с ссылками на платформе ([#175](https://github.com/daisforge/dais-ui/issues/175)) ([a2c4dc1](https://github.com/daisforge/dais-ui/commit/a2c4dc1d96c302d482959b5eb9c401637a4a91b7))
+- обновление SDDS до 0.369.0 ([024a5b8](https://github.com/daisforge/dais-ui/commit/024a5b80902af0aa6dc7686e51ba9ba734949bb1))
+
 ## Unreleased
 
 - **TableCanvas:** в сессии редактирования изменённые ячейки получают голубой фон при редактировании, вставке и протяжке. В подстроках копирование, вставка и протяжка используют `column.key`, если включён `subRow.parentKeyAsDefault`, даже при заданном `keyOfColumnInSubRow`. При редактировании объединённого блока таблица учитывает поле подстроки и пропускает служебные колонки.
