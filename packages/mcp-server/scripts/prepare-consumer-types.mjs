@@ -37,7 +37,12 @@ const forms = Object.values(index.components).filter(
   (component) => component.group === 'formComponents',
 );
 assert.ok(forms.length > 0);
-const usageExamples = forms.map(({ name }) => {
+const examplesToCheck = [
+  ...forms.map(({ name }) => name),
+  'TableFilterSelect',
+  'TableContract',
+];
+const usageExamples = examplesToCheck.map((name) => {
   const response = getComponent(index, { name });
   assert.equal(response.error, undefined);
   assert.ok(response.importStatement, `${name}: нет импорта`);

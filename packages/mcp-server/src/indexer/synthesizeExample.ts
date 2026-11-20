@@ -2,16 +2,24 @@ import { ts } from 'ts-morph';
 
 import type { InheritedPropRecord, PropRecord } from '../types.js';
 
-function isArrayType(text: string): boolean {
-  if (!text.endsWith('[]')) return false;
+function readTypeBranches(text: string): readonly ts.TypeNode[] {
   const source = ts.createSourceFile(
     'placeholder.ts',
     `type Value = ${text};`,
     ts.ScriptTarget.Latest,
   );
   const [alias] = source.statements;
-  return Boolean(
-    alias && ts.isTypeAliasDeclaration(alias) && ts.isArrayTypeNode(alias.type),
+  if (!alias || !ts.isTypeAliasDeclaration(alias)) return [];
+  const { type } = alias;
+  return ts.isUnionTypeNode(type) ? type.types : [type];
+}
+
+function isArrayType(type: ts.TypeNode): boolean {
+  return (
+    ts.isArrayTypeNode(type) ||
+    (ts.isTypeOperatorNode(type) &&
+      type.operator === ts.SyntaxKind.ReadonlyKeyword &&
+      ts.isArrayTypeNode(type.type))
   );
 }
 
@@ -24,8 +32,10 @@ function placeholderForType(typeText: string | undefined): string {
 
   if (t === 'boolean') return 'true';
   if (t === 'number') return '0';
-  if (t === 'string' || t === 'number | string') return "'значение'";
-  if (isArrayType(t) || t.startsWith('readonly ')) return '[]';
+  const branches = readTypeBranches(t);
+  if (branches.some(isArrayType)) return '[]';
+  if (branches.some((type) => type.kind === ts.SyntaxKind.StringKeyword))
+    return "'значение'";
   if (/=>/.test(t)) return '() => {}';
   if (t.includes('ReactNode') || t.includes('ReactElement')) return "'Контент'";
   return '{}';
@@ -72,10 +82,14 @@ export function synthesizeMinimalUsage(
   );
 
   const attrs = requiredProps
-    .map(
-      (p) =>
-        `${p.name}={${placeholderForType(fullTypes.get(p.name) ?? p.type)}}`,
-    )
+    .map((p) => {
+      // FetcherFunc — именованный callback, результат которого читает TableContract.
+      const value =
+        record.name === 'TableContract' && p.name === 'fetcher'
+          ? "async () => new Response('{}')"
+          : placeholderForType(fullTypes.get(p.name) ?? p.type);
+      return `${p.name}={${value}}`;
+    })
     .join(' ');
 
   const openTag = attrs ? `<${record.name} ${attrs}>` : `<${record.name}>`;

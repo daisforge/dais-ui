@@ -201,6 +201,10 @@ test(
     );
     assert.ok(fetcher);
     fetcher.required = false;
+    broken.components.Canvas.compoundParts =
+      broken.components.Canvas.compoundParts.filter(
+        (part) => part.name !== 'Image',
+      );
     broken.components.Canvas.compoundParts.push({
       name: 'MissingMcpPart',
       props: [],
@@ -236,6 +240,7 @@ test(
     assert.equal(report.compilerFailure, undefined, report.compilerFailure);
     assert.equal(report.ok, false);
     for (const [component, part, prop, kind] of [
+      ['Canvas', 'Image', undefined, 'contract'],
       ['FormTextField', undefined, 'name', 'missing-prop'],
       ['Button', undefined, 'disabled', 'missing-prop'],
       ['TableContract', undefined, 'stylesBeforeLoad', 'missing-prop'],

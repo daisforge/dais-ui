@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
+import { createRequire } from 'node:module';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -40,6 +41,7 @@ export interface Diagnostic {
 }
 const PROBE_DIR = path.join(REPO_ROOT, 'packages/mcp-server/.probe');
 const PROBE_FILE = path.join(PROBE_DIR, 'validate.ts');
+const requireFromRoot = createRequire(path.join(REPO_ROOT, 'package.json'));
 
 function internalImport(importPath: string): string {
   if (importPath === '@daisforge/ui') return '@ui-kit/index';
@@ -209,8 +211,9 @@ export function validateIndex(index: ComponentIndex) {
   fs.mkdirSync(PROBE_DIR, { recursive: true });
   fs.writeFileSync(PROBE_FILE, probe.code);
   const tsc = spawnSync(
-    path.join(REPO_ROOT, 'node_modules/.bin/tsc'),
+    process.execPath,
     [
+      requireFromRoot.resolve('typescript/bin/tsc'),
       '-p',
       path.join(REPO_ROOT, 'packages/mcp-server/probe.tsconfig.json'),
       '--noEmit',

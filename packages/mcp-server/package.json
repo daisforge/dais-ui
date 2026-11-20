@@ -30,7 +30,8 @@
     "mcp:inspect": "bash scripts/mcp-inspect.sh",
     "mcp:search-eval": "node ./ab/search-eval.mjs",
     "test": "npm run build && npm run test:consumer && node --test --test-concurrency=1 scripts/*.test.mjs",
-    "test:consumer": "node scripts/prepare-consumer-types.mjs && tsc -p test/tsconfig.json --noEmit"
+    "test:consumer": "node scripts/prepare-consumer-types.mjs && tsc -p test/tsconfig.json --noEmit",
+    "test:consumer:report": "node scripts/report-minimal-usage.mjs"
   },
   "license": "MIT",
   "publishConfig": {

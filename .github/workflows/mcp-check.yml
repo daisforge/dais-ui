@@ -18,7 +18,11 @@ permissions:
 
 jobs:
   mcp:
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 20
     env:
       NX_DAEMON: 'false'
@@ -36,12 +40,14 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm ci --prefix packages/mcp-server --ignore-scripts
       - run: npm run mcp:check
+      - run: npm run test:consumer:report --prefix packages/mcp-server
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: mcp-validation
+          name: mcp-validation-${{ matrix.os }}
           path: |
             packages/mcp-server/.probe/validation-report.json
             packages/mcp-server/.probe/validation-tsc.log
+            packages/mcp-server/.probe/minimal-usage-report.json
           include-hidden-files: true
           retention-days: 7

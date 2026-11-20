@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-20T08:48:39.654Z",
+  "generatedAt": "2026-11-20T10:36:21.558Z",
   "libVersion": "1.29.1",
   "components": {
     "Accordion": {
@@ -29131,7 +29131,7 @@
       "atomicDataMissing": true,
       "importPath": "@daisforge/ui",
       "importStatement": "import { SegmentIconItem } from '@daisforge/ui';",
-      "minimalUsage": "<SegmentIconItem value={{}} />",
+      "minimalUsage": "<SegmentIconItem value={'значение'} />",
       "examples": [
         {
           "exportName": "Vendor",
@@ -29231,7 +29231,7 @@
       "atomicDataMissing": true,
       "importPath": "@daisforge/ui",
       "importStatement": "import { SegmentItem } from '@daisforge/ui';",
-      "minimalUsage": "<SegmentItem value={{}} />",
+      "minimalUsage": "<SegmentItem value={'значение'} />",
       "examples": [
         {
           "exportName": "Usage1",
@@ -31942,7 +31942,7 @@
       "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { TableFilterSelect } from '@daisforge/ui/components/TableCanvas';",
-      "minimalUsage": "<TableFilterSelect onChange={() => {}} options={[]} value={{}} />",
+      "minimalUsage": "<TableFilterSelect onChange={() => {}} options={[]} value={[]} />",
       "examples": [
         {
           "exportName": "Usage",
@@ -38371,7 +38371,7 @@
       "atomicMcpVersion": "0.367.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { TableContract } from '@daisforge/ui';",
-      "minimalUsage": "<TableContract fetcher={{}} />",
+      "minimalUsage": "<TableContract fetcher={async () => new Response('{}')} />",
       "examples": [
         {
           "exportName": "Simple",

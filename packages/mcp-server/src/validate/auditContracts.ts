@@ -142,23 +142,37 @@ export function auditContracts(index: ComponentIndex) {
             atom && new Set(atom.api?.props?.map((prop) => prop.name)),
         });
       };
-      if (
-        record.apiKind === 'namespace' &&
-        decl.getType().getCallSignatures().length
-      )
-        issues.push({
-          component: record.name,
-          kind: 'contract',
-          actual: 'Вызываемый компонент ошибочно помечен namespace',
+      const componentType = decl.getType();
+      const parts = record.compoundParts || [];
+      if (record.apiKind === 'namespace') {
+        if (componentType.getCallSignatures().length)
+          issues.push({
+            component: record.name,
+            kind: 'contract',
+            actual: 'Вызываемый компонент ошибочно помечен namespace',
+          });
+
+        // Ожидаемые части берём из публичного типа, даже если их нет в индексе.
+        const indexedNames = new Set(parts.map((part) => part.name));
+        componentType.getProperties().forEach((member) => {
+          const name = member.getName();
+          if (
+            /^[A-Z]/.test(name) &&
+            !indexedNames.has(name) &&
+            member.getTypeAtLocation(decl).getCallSignatures().length
+          )
+            issues.push({
+              component: record.name,
+              part: name,
+              kind: 'contract',
+              expected: 'Публичная JSX-часть',
+            });
         });
-      if (record.apiKind !== 'namespace')
-        add(decl.getType(), [
-          ...record.props,
-          ...(record.inheritedProps || []),
-        ]);
-      (record.compoundParts || []).forEach((part) => {
-        const type = decl
-          .getType()
+      } else {
+        add(componentType, [...record.props, ...(record.inheritedProps || [])]);
+      }
+      parts.forEach((part) => {
+        const type = componentType
           .getProperty(part.name)
           ?.getTypeAtLocation(decl);
         if (type) add(type, part.props, part.name);
