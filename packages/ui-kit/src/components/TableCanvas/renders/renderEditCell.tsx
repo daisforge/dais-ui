@@ -1,6 +1,7 @@
 import { type CSSProperties, useEffect } from 'react';
 
 import { useRowContext } from '../contexts';
+import { resolveSubRowKey } from '../feature-cell-transfer/utils/resolveSubRowKey';
 import {
   CellEditorComboboxInternal,
   CellEditorNumberFormatInternal,
@@ -311,20 +312,6 @@ export const RenderEditCell = <
     if (!column.subRow.editingCell) {
       return undefined;
     }
-    const parentKeyAsSubKey = column.subRow.parentKeyAsDefault;
-
-    const getSubRowColumnKey = (): string => {
-      if (column?.subRow?.keyOfColumnInSubRow) {
-        return typeof column.subRow.keyOfColumnInSubRow === 'function'
-          ? column.subRow.keyOfColumnInSubRow(lvl).toString()
-          : column.subRow.keyOfColumnInSubRow.toString();
-      }
-      if (column?.subRow?.parentKeyAsDefault) {
-        return column.key;
-      }
-      return '';
-    };
-
     const { column: parentColumn, ...restRenderEditCellProps } =
       editingCellInfo;
     // Колонку для редактора собрала таблица, в ней есть внутренние признаки.
@@ -336,10 +323,7 @@ export const RenderEditCell = <
 
     const columnFinal: typeof column & { hasOwnRenderCell: boolean } = {
       ...parentColumn,
-      // для subRow переопределяем ключ
-      ...(!parentKeyAsSubKey && {
-        key: getSubRowColumnKey(),
-      }),
+      key: String(resolveSubRowKey(column, lvl) ?? ''),
       // для subRow переопределяем editingCell
       editingCell: column.subRow.editingCell,
       // Ячейку подстроки рисует renderSubRowCell, а не renderCell колонки.

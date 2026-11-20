@@ -11,9 +11,11 @@
  */
 import { createRows, type Row } from '@df-storybook/data/tableData';
 import type { Meta, StoryObj } from '@storybook/react';
+import { expect, fn, waitFor } from '@storybook/test';
 import {
   type CellsSelectionMode,
   type ColumnConfig,
+  type GridSelection,
   type HighlightActiveType,
   TableCanvas,
 } from '@ui-kit/components/TableCanvas';
@@ -60,6 +62,7 @@ const renderGrid =
   (
     selectionMode: CellsSelectionMode,
     highlightActiveType: HighlightActiveType = 'disabled',
+    onSelectionChange?: (selection: GridSelection) => void,
   ) =>
   () =>
     (
@@ -75,6 +78,7 @@ const renderGrid =
               enableColumnSelection: true,
               enableRowSelection: true,
               enableSelectAll: true,
+              onChange: onSelectionChange,
             },
             highlightActiveType,
           }}
@@ -120,16 +124,23 @@ export const ColumnShiftRange: Story = {
   },
 };
 
+const onColumnSelectionChange = fn<[GridSelection], void>();
+
 export const ColumnCtrlMulti: Story = {
   name: 'Колонки — несмежные через Ctrl',
   ...screenshot,
-  render: renderGrid('range-cell'),
+  render: renderGrid('range-cell', 'disabled', onColumnSelectionChange),
   play: async (ctx: PlayCtx) => {
     const { el, p } = await gridPoints(ctx);
+    onColumnSelectionChange.mockClear();
+    // Сначала передаём фокус таблице. При первом фокусе Glide выбирает ячейку.
+    tableRef.current?.focus();
+    const selectedColumns = () =>
+      onColumnSelectionChange.mock.lastCall?.[0].columns.toArray();
     click(el, p.columnHeader(1), { ctrlKey: true });
-    await settle();
+    await waitFor(() => expect(selectedColumns()).toEqual([1]));
     click(el, p.columnHeader(3), { ctrlKey: true });
-    await settle();
+    await waitFor(() => expect(selectedColumns()).toEqual([1, 3]));
   },
 };
 

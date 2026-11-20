@@ -19,6 +19,7 @@ import {
 } from '../contexts';
 import type { TransferColumnConfig } from '../feature-cell-transfer/types';
 import { applyBlockEdit } from '../feature-cell-transfer/utils/applyBlockEdit';
+import { collectEditedFields } from '../feature-cell-transfer/utils/collectEditedFields';
 import { TableContentStateOverlay } from '../feature-content-state';
 import { useRowDetailHandlerContext } from '../feature-row-detail/ctx';
 import { useSelectingRowContext } from '../feature-select-row/selecting-contexts';
@@ -268,6 +269,8 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
         return true;
       }
 
+      const dataColumns =
+        columnsInGlideOrder as unknown as readonly TransferColumnConfig[];
       const { column, changedAllRows, indexes } = newValues.reduce(
         (acc, item) => {
           const colInd = item.location[0];
@@ -279,7 +282,7 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
           const newRow = item.value.data;
 
           /* row должен быть extends ObjectForExtending */
-          if (typeof newRow !== 'object') {
+          if (!newRow || typeof newRow !== 'object') {
             return acc;
           }
 
@@ -287,11 +290,9 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
           const blockIndexes = applyBlockEdit({
             colInd,
             rowInd,
-            columns:
-              columnsInGlideOrder as unknown as readonly TransferColumnConfig[],
+            columns: dataColumns,
             rows,
             editedRow: newRow as R,
-            editedValue: (newRow as ObjectForExtending)[column.key],
             targetRows: acc.changedAllRows,
           });
           if (blockIndexes) {
@@ -315,7 +316,17 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
         return true;
       }
 
-      onRowsChange(changedAllRows, { column, indexes, type: 'edit' });
+      onRowsChange(changedAllRows, {
+        column,
+        indexes,
+        writtenCells: collectEditedFields(
+          rows,
+          changedAllRows,
+          indexes,
+          dataColumns,
+        ),
+        type: 'edit',
+      });
       return true;
     };
   }, [columnsInGlideOrder, onRowsChange, rows]);
