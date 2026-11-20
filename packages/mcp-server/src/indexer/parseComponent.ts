@@ -983,8 +983,8 @@ function findLocalTypeDeclaration(
   typeName: string,
 ): NamedPropsRef | undefined {
   if (!compDir) return undefined;
-  for (const sourceFile of getProject().getSourceFiles()) {
-    if (!sourceFile.getFilePath().startsWith(compDir)) continue;
+  const directory = getProject().getDirectory(compDir);
+  for (const sourceFile of directory?.getDescendantSourceFiles() ?? []) {
     const decl =
       sourceFile.getTypeAlias(typeName) ?? sourceFile.getInterface(typeName);
     if (decl) return { name: typeName, decl };
