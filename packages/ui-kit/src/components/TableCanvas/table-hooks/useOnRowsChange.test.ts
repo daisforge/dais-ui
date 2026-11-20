@@ -36,6 +36,55 @@ describe('onRowsChange при изменении нескольких ячеек
   });
 
   it.each(['edit', 'paste', 'fill'] as const)(
+    'сохраняет подстроку без собственного ID (%s)',
+    (type) => {
+      type DocumentRow = {
+        price: number;
+        document?: { id: number };
+        subRows?: DocumentRow[];
+      };
+      const child = { price: 1 };
+      const parent = { document: { id: 4 }, price: 0, subRows: [child] };
+      const flat = { ...child, treeId: '4.subRows.0' };
+      const onRowsChange = vi.fn();
+      const markEditedCells = vi.fn();
+      const { result } = renderHook(() =>
+        useOnRowsChange({
+          rows: [parent] as DocumentRow[],
+          flattenedRowsRef: { current: [parent, flat] },
+          tableConfig: {
+            editing: {
+              rowKeyGetter: (r: DocumentRow) =>
+                (r.document as { id: number }).id,
+              onRowsChange,
+              deepCloneRows: true,
+            },
+          },
+          markEditedCells,
+        }),
+      );
+      const column = { key: 'price', name: 'Цена' };
+      result.current.onRowsChangeLastVersion([parent, { ...flat, price: 8 }], {
+        type,
+        column,
+        indexes: [1],
+        writtenCells: [{ rowIndex: 1, columnKey: 'price' }],
+      });
+      expect(onRowsChange).toHaveBeenCalledWith(
+        [{ ...parent, subRows: [{ price: 8 }] }],
+        {
+          type,
+          column,
+          indexes: [0],
+          rows: [{ before: child, after: { price: 8 } }],
+          changedCells: [],
+        },
+      );
+      expect(markEditedCells).toHaveBeenCalledWith([], new Map());
+    },
+  );
+
+  it.each(['edit', 'paste', 'fill'] as const)(
     'обновляет вложенную строку по составному subRowsKey (%s)',
     (type) => {
       type Nested = Row & { data?: { children: Nested[] } };

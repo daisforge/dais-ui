@@ -1,4 +1,7 @@
-import type { GridSelection } from '@glideappsfinal/glide-data-grid';
+import {
+  CompactSelection,
+  type GridSelection,
+} from '@glideappsfinal/glide-data-grid';
 import { renderHook } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
@@ -15,6 +18,66 @@ afterEach(() => {
 });
 
 describe('отложенное чтение буфера', () => {
+  it.each(['inline', 'readonly', 'reorder', 'selection'] as const)(
+    'проверяет актуальную цель после чтения буфера (%s)',
+    async (action) => {
+      let resolveRead!: (text: string) => void;
+      vi.stubGlobal('navigator', {
+        clipboard: {
+          readText: () =>
+            new Promise<string>((resolve) => {
+              resolveRead = resolve;
+            }),
+        },
+      });
+      const rows = [{ name: 'before', qty: '1' }];
+      const oldHandler = vi.fn();
+      const newHandler = vi.fn();
+      const { result, rerender } = renderHook(
+        ({ updated }) => {
+          const columns = ['name', 'qty'].map((key) => ({
+            key,
+            name: key,
+            editable: !(updated && action === 'readonly'),
+            editingCell: { component: 'inputString' as const },
+          }));
+          const x = updated && action === 'selection' ? 1 : 0;
+          const current: GridSelection = {
+            rows: CompactSelection.empty(),
+            columns: CompactSelection.empty(),
+            current: {
+              cell: [x, 0],
+              range: { x, y: 0, width: 1, height: 1 },
+              rangeStack: [],
+            },
+          };
+          return usePaste({
+            editModeEnabled: true,
+            flattenedRows: rows,
+            columns:
+              updated && action === 'reorder' ? columns.reverse() : columns,
+            selectionRef: { current },
+            onRowsChange: updated ? newHandler : oldHandler,
+          });
+        },
+        { initialProps: { updated: false } },
+      );
+      const pending = result.current.handlePaste();
+      rerender({ updated: true });
+      resolveRead('fresh');
+      await pending;
+      expect(oldHandler).not.toHaveBeenCalled();
+      if (action === 'inline') {
+        expect(newHandler).toHaveBeenCalledWith(
+          [{ name: 'fresh', qty: '1' }],
+          expect.objectContaining({ type: 'paste' }),
+        );
+      } else {
+        expect(newHandler).not.toHaveBeenCalled();
+      }
+    },
+  );
+
   it.each(['cancel', 'reopen', 'unmount', 'refresh'] as const)(
     'завершение сессии (%s) аннулирует ожидающую вставку',
     async (action) => {

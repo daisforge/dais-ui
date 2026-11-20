@@ -1,25 +1,29 @@
 import type { TransferColumnConfig } from '../types';
 
 /**
- * Определяет, в какое поле row писать/откуда читать значение для subrow.
- * Возвращает `undefined` если для уровня lvl=0 (не subrow) или если subRow-конфиг
- * не указывает на какое-то поле.
+ * Выбирает поле подстроки для отображения, редактирования и переноса данных.
+ * При включённом parentKeyAsDefault все три операции используют ключ родительской колонки.
  */
 export function resolveSubRowKey(
-  column: TransferColumnConfig,
+  column: {
+    key: string;
+    subRow?: Pick<
+      NonNullable<TransferColumnConfig['subRow']>,
+      'parentKeyAsDefault' | 'keyOfColumnInSubRow'
+    >;
+  },
   lvl: number,
 ): string | number | undefined {
   if (lvl === 0 || !column.subRow) return undefined;
 
   const { keyOfColumnInSubRow, parentKeyAsDefault } = column.subRow;
 
+  if (parentKeyAsDefault) return column.key;
   if (keyOfColumnInSubRow !== undefined) {
     return typeof keyOfColumnInSubRow === 'function'
       ? keyOfColumnInSubRow(lvl)
       : keyOfColumnInSubRow;
   }
-
-  if (parentKeyAsDefault) return column.key;
 
   return undefined;
 }

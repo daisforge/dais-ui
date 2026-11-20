@@ -1,4 +1,5 @@
 import { Canvas } from '../../TableGlide';
+import { resolveSubRowKey } from '../feature-cell-transfer/utils/resolveSubRowKey';
 import {
   SKELETON_CELLS_KEY,
   SKELETON_ROW_KEY,
@@ -420,21 +421,10 @@ export const RenderCellGlide = <
     const getContentFormat = (): ContentFormat | undefined =>
       column.subRow?.contentFormat ?? column.contentFormat;
 
-    if (column.subRow?.parentKeyAsDefault) {
-      return FormattedContent(row?.[column.key], getContentFormat());
-    }
-
-    if (column.subRow?.keyOfColumnInSubRow) {
-      const subKey =
-        typeof column.subRow.keyOfColumnInSubRow === 'function'
-          ? column.subRow.keyOfColumnInSubRow(lvl)
-          : column.subRow.keyOfColumnInSubRow;
-
-      return FormattedContent(row?.[subKey], getContentFormat());
-    }
-    return '';
-    // return 'NOT FOUND in RenderCellGlide';
-    // return row?.[column.key];
+    const field = resolveSubRowKey(column, lvl);
+    return field === undefined
+      ? ''
+      : FormattedContent(row?.[field], getContentFormat());
   })();
   if (!isCanvasContent(defaultLvlNot0RenderElement)) {
     return defaultLvlNot0RenderElement;

@@ -85,6 +85,36 @@ describe('отметки изменённых ячеек', () => {
     expect(store.result.current[0]).toBe(next);
   });
 
+  it('оставляет подстроку без ID без отметки, когда корневая строка подсвечена', () => {
+    type DocumentRow = { treeId?: string; document?: { id: number } };
+    const getter = (r: DocumentRow) => (r.document as { id: number }).id;
+    const { result } = renderHook(() => useEditedCells(true, getter));
+    act(() => result.current.markEditedCells(changes));
+    expect(
+      result.current.isCellEdited?.({ document: { id: 7 } }, 'price'),
+    ).toBe(true);
+    expect(
+      result.current.isCellEdited?.({ treeId: '7.subRows.0' }, 'price'),
+    ).toBe(false);
+  });
+
+  it('сохраняет явно переданную карту для следующей сессии при выключении режима', () => {
+    const next = new Map([[8, new Set(['qty'])]]);
+    const { result } = renderHook(() => {
+      const [enabled, setEnabled] = useState(true);
+      const state = useState<TableCanvasEditedCells<number>>(() => new Map());
+      return { ...useEditedCells(enabled, rowKey, state), state, setEnabled };
+    });
+    act(() => result.current.markEditedCells(changes));
+    act(() => {
+      result.current.setEnabled(false);
+      result.current.state[1](next);
+    });
+    expect(result.current.state[0]).toBe(next);
+    act(() => result.current.setEnabled(true));
+    expect(result.current.isCellEdited?.({ id: 8 }, 'qty')).toBe(true);
+  });
+
   it('переносит предыдущие отметки при изменении ключа строки', () => {
     const { result } = renderHook(() => useEditedCells(true, rowKey));
     act(() => result.current.markEditedCells(changes));

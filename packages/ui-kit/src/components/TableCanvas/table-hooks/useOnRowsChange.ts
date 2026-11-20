@@ -10,6 +10,7 @@ import type {
   TableConfig,
 } from '../types';
 import { getValueInObj, setValueInObj } from '../utils/setValueInObj';
+import { getSubRowEditId } from './getSubRowEditId';
 
 const getCopy = <T>(v: T): T => {
   if (typeof v === 'object') {
@@ -85,11 +86,14 @@ export const useOnRowsChange = <
 
       const committedIds = new Map<number, RowIdType>();
       const renamed = new Map<RowIdType, RowIdType>();
-      const recordRow = (index: number, before: RowType, after: RowType) => {
-        const oldId = tableConfigEditing.rowKeyGetter(before);
-        const newId = tableConfigEditing.rowKeyGetter(after);
+      const recordRow = (
+        index: number,
+        oldId: RowIdType | undefined,
+        newId: RowIdType | undefined,
+      ) => {
+        if (newId === undefined) return;
         committedIds.set(index, newId);
-        if (oldId !== newId) renamed.set(oldId, newId);
+        if (oldId !== undefined && oldId !== newId) renamed.set(oldId, newId);
       };
       const copyOfData: RowsChangeData<RowType, SummaryRowType, RowIdType> = {
         column: data.column,
@@ -147,7 +151,11 @@ export const useOnRowsChange = <
 
             copyOfData.rows.push({ before: getCopy(before), after });
             copyOfData.indexes.push(indexOfParentInRows);
-            recordRow(i, before, after);
+            recordRow(
+              i,
+              getSubRowEditId(before, tableConfigEditing.rowKeyGetter),
+              getSubRowEditId(after, tableConfigEditing.rowKeyGetter),
+            );
 
             setValueInObj(writableCurr, path, after);
             if (deepCloneRows) {
@@ -168,7 +176,11 @@ export const useOnRowsChange = <
           const after = changedRow as RowType;
 
           copyOfData.indexes.push(indexInRows);
-          recordRow(i, before, after);
+          recordRow(
+            i,
+            tableConfigEditing.rowKeyGetter(before),
+            tableConfigEditing.rowKeyGetter(after),
+          );
           copyOfData.rows.push({ before: getCopy(before), after });
 
           copyOfRows[indexInRows] = after;

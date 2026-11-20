@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import type { ObjectForExtending } from '../../../types';
 import type { TransferColumnConfig } from '../../types';
 import { applyBlockEdit } from '../applyBlockEdit';
+import { collectEditedFields } from '../collectEditedFields';
 
 // Контракт правки блока: одно значение уходит во ВСЕ ячейки блока (паритет с
 // paste/fill), покрытые строки обновляются копиями, одиночная ячейка — мимо.
@@ -152,6 +153,37 @@ describe('applyBlockEdit — запись правки во весь блок', 
     });
     expect(targetRows).toEqual([
       { treeId: '1.subRows.0', ca: 'NEW', cb: 'NEW' },
+    ]);
+  });
+
+  it('сохраняет значение по ключу родительской колонки, когда заданы обе привязки', () => {
+    const subRow = { parentKeyAsDefault: true, keyOfColumnInSubRow: 'other' };
+    const columns = [
+      { ...col('a'), colSpan: 1, subRow },
+      { ...col('b'), subRow },
+    ];
+    const child = {
+      treeId: '1.subRows.0',
+      a: 'A',
+      b: 'B',
+      other: 'отдельное поле',
+    };
+    const rows = [child];
+    const targetRows = [...rows];
+    applyBlockEdit({
+      columns,
+      rows,
+      colInd: 0,
+      rowInd: 0,
+      editedRow: { ...child, a: 'NEW' },
+      targetRows,
+    });
+    expect(targetRows).toEqual([
+      { treeId: '1.subRows.0', a: 'NEW', b: 'NEW', other: 'отдельное поле' },
+    ]);
+    expect(collectEditedFields(rows, targetRows, [0], columns)).toEqual([
+      { rowIndex: 0, columnKey: 'a' },
+      { rowIndex: 0, columnKey: 'b' },
     ]);
   });
 
