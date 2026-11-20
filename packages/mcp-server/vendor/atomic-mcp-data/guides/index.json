@@ -14,7 +14,7 @@
   {
     "name": "how-to-mcp",
     "href": "how-to-mcp.json",
-    "summary": "Сервер работает по stdio и предоставляет агенту доступ к документации, свойствам компонентов, примерам и гайдам по sdds-finai .",
+    "summary": "MCP-сервер @salutejs/sdds-mcp даёт ИИ-агенту (Claude Code, Cursor, VS Code и другим) доступ к актуальной документации sdds-finai .",
     "category": "guides"
   },
   {

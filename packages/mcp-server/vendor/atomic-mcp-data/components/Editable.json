@@ -1,0 +1,83 @@
+{
+  "name": "Editable",
+  "package": "sdds-finai",
+  "category": "components",
+  "summary": "Editable",
+  "api": {
+    "props": [
+      {
+        "name": "view",
+        "type": "\"default\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "size",
+        "type": "\"m\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "textComponent",
+        "type": "FC<Omit<DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>, \"ref\"> & { ref?: ((instance: HTMLDivElement | null) => void) | ... 2 more ... | undefined; }>",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "spellCheck",
+        "type": "\"true\" | \"false\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "maxLength",
+        "type": "number",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "icon",
+        "type": "ReactNode",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "placeholder",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "multiline",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      }
+    ]
+  },
+  "examples": [
+    {
+      "title": "Использование Использование Иконка передаётся в  icon . Чтобы цвет иконки менялся при наведении, укажите  color=\"inherit\" .",
+      "snippet": "import React from 'react';\nimport { BodyL, BodyM, BodyS, BodyXS, BodyXXS, Editable, H1, H2, H3, H4, H5, H6, editableTokens } from '@salutejs/sdds-finai';\nimport { EditOutline } from '@salutejs/sdds-icons/24';\nexport function App() {\n    function Example({ textComponent, iconSize, iconGap, value }) {\n        return (\n            <Editable\n                textComponent={textComponent}\n                value={value}\n                icon={<EditOutline width={iconSize} height={iconSize} color=\"inherit\" />}\n                style={{ [editableTokens.iconGap]: iconGap }}\n            />\n        );\n    }\n    return (\n        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>\n            <Example textComponent={H1} iconSize={54} iconGap=\"8px\" value=\"Header 1\" />\n            <Example textComponent={H2} iconSize={38} iconGap=\"8px\" value=\"Header 2\" />\n            <Example textComponent={H3} iconSize={30} iconGap=\"6px\" value=\"Header 3\" />\n            <Example textComponent={H4} iconSize={26} iconGap=\"6px\" value=\"Header 4\" />\n            <Example textComponent={H5} iconSize={24} iconGap=\"6px\" value=\"Header 5\" />\n            <Example textComponent={H6} iconSize={16} iconGap=\"2px\" value=\"Header 6\" />\n            <Example textComponent={BodyL} iconSize={22} iconGap=\"6px\" value=\"Body L\" />\n            <Example textComponent={BodyM} iconSize={20} iconGap=\"6px\" value=\"Body M\" />\n            <Example textComponent={BodyS} iconSize={18} iconGap=\"2px\" value=\"Body S\" />\n            <Example textComponent={BodyXS} iconSize={14} iconGap=\"2px\" value=\"Body XS\" />\n            <Example textComponent={BodyXXS} iconSize={12} iconGap=\"2px\" value=\"Body XXS\" />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Перенос строки",
+      "snippet": "import React from 'react';\nimport { Editable, H5, editableTokens } from '@salutejs/sdds-finai';\nimport { EditOutline } from '@salutejs/sdds-icons/24';\nexport function App() {\n    return (\n        <Editable\n            multiline\n            style={{ maxWidth: '20rem', [editableTokens.iconGap]: '6px' }}\n            icon={<EditOutline width={24} height={24} color=\"inherit\" />}\n            textComponent={H5}\n            value=\"Очень длинное название документа, которое не помещается в одну строку\"\n        />\n    );\n}"
+    }
+  ]
+}
