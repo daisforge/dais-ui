@@ -1,8 +1,0 @@
-import{j as e}from"./react-DYHuXpTF.js";import{dd as n}from"./vendor-Dy04e7eT.js";import{M as d}from"./WithTooltip-KJL26V4Q-Dieti3TI.js";import{T as o}from"./TypeSourceViewer-CYlpQ-Tg.js";import"./_commonjsHelpers-BosuxZz1.js";import"./tslib-DoU9Jm1N.js";import"./_commonjs-dynamic-modules-TDtrdbi3.js";import"./react-is-CT-rZfBU.js";import"./styled-components-D3uL8AgQ.js";import"./@tanstack/react-virtual-DpbU78q1.js";import"./preload-helper-DeA7wft2.js";import"./index-Cu4lwwaE.js";import"./index-BkX6kR9J.js";function i(t){const s={a:"a",code:"code",h1:"h1",h2:"h2",p:"p",...n(),...t.components};return e.jsxs(e.Fragment,{children:[e.jsx(d,{title:"Локальные компоненты/TextField/API"}),`
-`,e.jsx(s.h1,{id:"textfield-api",children:"TextField API"}),`
-`,e.jsxs(s.p,{children:["Обёртка над ",e.jsx(s.code,{children:"TextField"})," из ",e.jsx(s.code,{children:"@salutejs/sdds-finai"}),". Добавляет ",e.jsx(s.code,{children:"onClear"}),"."]}),`
-`,e.jsx(s.h2,{id:"кастомные-пропсы-добавлены-в-обёртке",children:"Кастомные пропсы (добавлены в обёртке)"}),`
-`,e.jsx(o,{language:"ts",filePath:"packages/ui-kit/src/components/TextField/TextField.tsx",typeName:"TextFieldProps"}),`
-`,e.jsx(s.h2,{id:"пропсы-из-salutejssdds-finai",children:"Пропсы из @salutejs/sdds-finai"}),`
-`,e.jsxs(s.p,{children:["Компонент принимает все пропсы атомарного ",e.jsx(s.code,{children:"TextField"})," из ",e.jsx(s.code,{children:"@salutejs/sdds-finai"}),"."]}),`
-`,e.jsxs(s.p,{children:["Полное описание — в документации: ",e.jsx(s.a,{href:"https://plasma.sberdevices.ru/sdds-finai/components/TextField/",rel:"nofollow",children:"TextField"})]})]})}function M(t={}){const{wrapper:s}={...n(),...t.components};return s?e.jsx(s,{...t,children:e.jsx(i,{...t})}):i(t)}export{M as default};
