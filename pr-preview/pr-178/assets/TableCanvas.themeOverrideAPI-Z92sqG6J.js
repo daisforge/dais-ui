@@ -1,8 +1,0 @@
-import{j as e}from"./react-B60MRyL7.js";import{ck as i}from"./vendor-OPtbd1lp.js";import{M as s}from"./WithTooltip-KJL26V4Q-D2QxBZA4.js";import{T as r}from"./TypeSourceViewer-C-P16r5y.js";import"./_commonjsHelpers-BosuxZz1.js";import"./tslib-DoU9Jm1N.js";import"./_commonjs-dynamic-modules-TDtrdbi3.js";import"./react-is-Clcustum.js";import"./styled-components-BRw6YPBr.js";import"./@tanstack/react-virtual-EFiood7F.js";import"./preload-helper-BnDtJV8M.js";import"./index-Cu4lwwaE.js";import"./index-B1pIjx6t.js";import"./@salutejs/plasma-icons-ByrhRzX2.js";import"./types.string-CtO2sHsM.js";function o(n){const t={code:"code",h1:"h1",h2:"h2",p:"p",...i(),...n.components};return e.jsxs(e.Fragment,{children:[e.jsx(s,{title:"Локальные компоненты/TableCanvas/Theme Override/API"}),`
-`,e.jsx(t.h1,{id:"theme-override-api",children:"Theme Override API"}),`
-`,e.jsxs(t.p,{children:["Переопределение темы настраивается через свойство ",e.jsx(t.code,{children:"themeOverride"})," в ",e.jsx(t.code,{children:"columnConfig"}),"."]}),`
-`,e.jsxs(t.p,{children:["Является частью ",e.jsx(t.code,{children:"ColumnConfig"}),"."]}),`
-`,e.jsx(t.h2,{id:"cellthemeoverrideresult",children:"CellThemeOverrideResult"}),`
-`,e.jsx(r,{filePath:"packages/ui-kit/src/components/TableGlide/types.ts",typeName:"CellThemeOverrideResult",language:"ts"}),`
-`,e.jsx(t.h2,{id:"cellinfo",children:"CellInfo"}),`
-`,e.jsx(r,{filePath:"packages/ui-kit/src/components/TableCanvas/types/column-config.type.ts",typeName:"CellInfo",language:"ts"})]})}function y(n={}){const{wrapper:t}={...i(),...n.components};return t?e.jsx(t,{...n,children:e.jsx(o,{...n})}):o(n)}export{y as default};

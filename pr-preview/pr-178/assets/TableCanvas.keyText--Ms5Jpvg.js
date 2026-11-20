@@ -1,0 +1,21 @@
+import{j as t}from"./react-UEdzNlUe.js";import{dd as e}from"./vendor-D2r4jgZf.js";import{M as n,S as m}from"./WithTooltip-KJL26V4Q-DxKQgBbT.js";import{T as p}from"./TableCanvas.keyText.stories-Bs5rRGvT.js";import"./_commonjsHelpers-BosuxZz1.js";import"./tslib-DoU9Jm1N.js";import"./_commonjs-dynamic-modules-TDtrdbi3.js";import"./react-is-CJ4CjPIR.js";import"./styled-components-C6Uw7ovB.js";import"./@tanstack/react-virtual-CK8aghAq.js";import"./preload-helper-BnDtJV8M.js";import"./index-Cu4lwwaE.js";import"./index-Bo2kqA7A.js";import"./tableData-DKA5H0bF.js";import"./DocStoryTemplate-uShfjxKV.js";import"./storySourceDoc-tVKyHcEN.js";import"./TableCanvas-DRsSoKrv.js";import"./@sddsjs/sdds_finai-CqI1dsZV.js";import"./utils-DSJLiokB.js";import"./constants-3UB8ZrMK.js";import"./sharedUtilsDebug-BX_KjCjW.js";import"./@salutejs/sdds-finai-mlEHigyJ.js";import"./@salutejs/plasma-icons-CWYH4jgn.js";import"./sharedUtilsCopy-CGH-mx0N.js";import"./index-DNoHAM3Q.js";import"./Box-Dwqy9xB3.js";import"./Collapse-CfxT3MfK.js";import"./TableCanvasSharedConstants-CqGDn8zL.js";import"./TableGlide-BoC8Z0mS.js";import"./@glideappsfinal/glide-data-grid-CB2ci4gd.js";import"./canvas-hypertxt-DsokSIOX.js";import"./countWhile-blgVacgU.js";import"./TableTabs-sXTgrZFv.js";import"./sharedUiSearch-CslEffuB.js";import"./TextField-D1vs_4gQ.js";import"./sharedUtilsInputs-vGW80U8K.js";import"./TypographyWithAutoTooltip-C6LiYAcO.js";import"./Typography-BcqUTUcc.js";import"./ListOfFilters-ev-6Wo4H.js";import"./Table-DBRyPiEr.js";import"./react-data-grid-CAmlt0FZ.js";import"./lodash.isequal-mFNAsUE8.js";import"./Combobox-DpIc9uqy.js";import"./NumberFormat--slBuKRg.js";import"./EmptyState-30QsGHhH.js";import"./unidentified@3x-DTMrHY6B.js";import"./MassActions-qqLLOBDH.js";import"./Autocomplete-BQvgClIG.js";import"./FiltersActions-B76xkbdA.js";import"./IconButton-Dl3DqcX6.js";import"./TooltipList-CeWvqtLg.js";import"./ErrorPage-D4Qpe5d4.js";function r(o){const i={a:"a",blockquote:"blockquote",code:"code",h1:"h1",h2:"h2",li:"li",p:"p",strong:"strong",ul:"ul",...e(),...o.components};return t.jsxs(t.Fragment,{children:[t.jsx(n,{of:p,name:"Docs"}),`
+`,t.jsx(i.h1,{id:"keytext-tablecanvas",children:"KeyText (TableCanvas)"}),`
+`,t.jsx(i.p,{children:t.jsx(i.strong,{children:"tableConfig.keyText"})}),`
+`,t.jsx(i.p,{children:"Режим отображения данных ячеек в формате «ключ — значение». Полезен для компактного представления сложных данных."}),`
+`,t.jsx(i.h2,{id:"ключевые-особенности",children:"Ключевые особенности"}),`
+`,t.jsxs(i.ul,{children:[`
+`,t.jsx(i.li,{children:"Переключение между обычным табличным и key-text представлением"}),`
+`,t.jsx(i.li,{children:"Кнопка переключения в controlBlock и/или sidebar"}),`
+`,t.jsxs(i.li,{children:["Кастомная конфигурация отображения через ",t.jsx(i.code,{children:"KeyTextConfig"})]}),`
+`,t.jsx(i.li,{children:"Поддержка кастомных ключей и значений для каждой колонки"}),`
+`]}),`
+`,t.jsx(i.h2,{id:"особенности",children:"Особенности"}),`
+`,t.jsxs(i.ul,{children:[`
+`,t.jsxs(i.li,{children:["При активации keyText колонки отображаются в формате ",t.jsx(i.code,{children:"название колонки: значение"})]}),`
+`,t.jsx(i.li,{children:"Переключение режима не влияет на данные, только на визуальное представление"}),`
+`,t.jsx(i.li,{children:"Работает совместно с другими фичами (сортировка, фильтрация, выделение)"}),`
+`]}),`
+`,t.jsxs(i.blockquote,{children:[`
+`,t.jsxs(i.p,{children:["Подробнее о типах — ",t.jsx(i.a,{href:"?path=/docs/%D0%BB%D0%BE%D0%BA%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D1%8B-tablecanvas-keytext-api--docs",children:"KeyText API"})]}),`
+`]}),`
+`,t.jsx(m,{})]})}function mt(o={}){const{wrapper:i}={...e(),...o.components};return i?t.jsx(i,{...o,children:t.jsx(r,{...o})}):r(o)}export{mt as default};
