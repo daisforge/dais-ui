@@ -1,8 +1,14 @@
 import { isStructuredCloneSupported } from '@ui-kit/utils';
 import { useMemo } from 'react';
 
+import type { WrittenCell } from '../feature-cell-transfer/types';
 import { SUBROWS_KEY, TREE_ID_KEY } from '../feature-tree/constants';
-import { ObjectForExtending, RowsChangeData, TableConfig } from '../types';
+import type {
+  ObjectForExtending,
+  RowsChangeData,
+  TableCanvasChangedCell,
+  TableConfig,
+} from '../types';
 import { getValueInObj, setValueInObj } from '../utils/setValueInObj';
 
 const getCopy = <T>(v: T): T => {
@@ -33,8 +39,13 @@ export const useOnRowsChange = <
   rows,
   tableConfig,
   flattenedRowsRef,
+  markEditedCells,
 }: {
   rows: readonly RowType[];
+  markEditedCells: (
+    cells: readonly TableCanvasChangedCell<RowIdType>[],
+    renamed: ReadonlyMap<RowIdType, RowIdType>,
+  ) => void;
   flattenedRowsRef: React.MutableRefObject<readonly RowType[]>;
   tableConfig: TableConfig<
     RowType,
@@ -63,13 +74,24 @@ export const useOnRowsChange = <
 
     return ((
       rowsFromCb: RowType[],
-      data: RowsChangeData<RowType, SummaryRowType>,
+      data: Omit<
+        RowsChangeData<RowType, SummaryRowType, RowIdType>,
+        'rows' | 'changedCells'
+      > & {
+        writtenCells?: WrittenCell[];
+      },
     ) => {
       const copyOfRows = [...rows];
 
-      const copyOfData: typeof data & {
-        rows: { before: RowType; after: RowType }[];
-      } = {
+      const committedIds = new Map<number, RowIdType>();
+      const renamed = new Map<RowIdType, RowIdType>();
+      const recordRow = (index: number, before: RowType, after: RowType) => {
+        const oldId = tableConfigEditing.rowKeyGetter(before);
+        const newId = tableConfigEditing.rowKeyGetter(after);
+        committedIds.set(index, newId);
+        if (oldId !== newId) renamed.set(oldId, newId);
+      };
+      const copyOfData: RowsChangeData<RowType, SummaryRowType, RowIdType> = {
         column: data.column,
         indexes: [],
         rows: [],
@@ -78,7 +100,6 @@ export const useOnRowsChange = <
         ...(data.fillResult !== undefined && { fillResult: data.fillResult }),
       };
 
-      // для каждой измененной строки...
       data.indexes.forEach((i: number) => {
         const changedRow = rowsFromCb[i] as RowType & {
           [TREE_ID_KEY]?: string;
@@ -92,30 +113,19 @@ export const useOnRowsChange = <
 
         const { treeId = undefined, ...restChangedRow } = changedRow;
 
-        // under - changing of subRows
         if (treeId) {
           let roadToChangedSubRow = treeId.split('.');
-          /*
-            Если дочерние строки переданы не под ключом subRows, то
-            перед попыткой изменить дочернюю строку, нужно найти правильный путь до нее. (roadToChangedSubRow)
-          */
+          // В treeId каждый уровень обозначен subRows. В данных приложения
+          // массив детей может лежать глубже, например в data.children.
           if (subRowsKey) {
             const subRowsKeyArr = subRowsKey.split('.');
 
-            roadToChangedSubRow = roadToChangedSubRow
-              .map((str) => {
-                if (str === SUBROWS_KEY) {
-                  return [subRowsKeyArr];
-                }
-                return str;
-              })
-              .flat(1) as string[];
+            roadToChangedSubRow = roadToChangedSubRow.flatMap((segment) =>
+              segment === SUBROWS_KEY ? subRowsKeyArr : [segment],
+            );
           }
 
-          // roadToChangedSubRow[0] — это сегмент treeId, который строится в
-          // useFlattenedRows через `.toString()`, поэтому он всегда строка.
-          // Нормализуем обе стороны к строке, иначе числовой ключ не сматчится
-          // (123 === '123' → false) и правка под-строки молча потеряется.
+          // В treeId ключ родителя записан строкой, даже если rowKeyGetter возвращает число.
           const indexOfParentInRows = copyOfRows.findIndex(
             (el) =>
               String(tableConfigEditing.rowKeyGetter(el)) ===
@@ -124,19 +134,20 @@ export const useOnRowsChange = <
           const curr = copyOfRows[indexOfParentInRows];
 
           if (isFinded(curr, indexOfParentInRows)) {
-            // Запись под-строки идёт ВНУТРЬ объекта родителя (setValueInObj
-            // мутирует curr.subRows). Если строки заморожены (Immer/RTK), это
-            // упадёт с "Cannot assign to read only property". По флагу
-            // deepCloneRows клонируем поддерево родителя — structuredClone
-            // глубокий, поэтому весь subRows-подграф становится размороженным.
+            // Для замороженных данных deepCloneRows создаёт копию родителя
+            // вместе с дочерними строками, которые обновляет setValueInObj.
             const writableCurr = deepCloneRows ? deepCloneRow(curr) : curr;
             const path = roadToChangedSubRow.slice(1).join('.');
 
-            const before = getValueInObj(writableCurr, path) as RowType;
+            const before = getValueInObj(writableCurr, path) as
+              | RowType
+              | undefined;
+            if (!before) return;
             const after = restChangedRow as RowType;
 
             copyOfData.rows.push({ before: getCopy(before), after });
             copyOfData.indexes.push(indexOfParentInRows);
+            recordRow(i, before, after);
 
             setValueInObj(writableCurr, path, after);
             if (deepCloneRows) {
@@ -145,11 +156,10 @@ export const useOnRowsChange = <
           }
           return;
         }
-        // under - changing of rows without subrows
+        // Ищем строку по прежнему ключу, потому что сама правка могла изменить её ключ.
         const indexInRows = copyOfRows.findIndex(
           (el) =>
             tableConfigEditing.rowKeyGetter(el) ===
-            // changedRowPrev - важно, для случаев rowKeyGetter = (r) => r.task + r.complete. и каждый из ключей меняется
             tableConfigEditing.rowKeyGetter(changedRowPrev),
         );
 
@@ -158,15 +168,28 @@ export const useOnRowsChange = <
           const after = changedRow as RowType;
 
           copyOfData.indexes.push(indexInRows);
+          recordRow(i, before, after);
           copyOfData.rows.push({ before: getCopy(before), after });
 
           copyOfRows[indexInRows] = after;
         }
       });
 
-      // main action of cb for changing state
+      const changedCells: TableCanvasChangedCell<RowIdType>[] = [];
+      const seen = new Map<RowIdType, Set<string>>();
+      data.writtenCells?.forEach(({ rowIndex, columnKey }) => {
+        const rowId = committedIds.get(rowIndex);
+        if (rowId === undefined) return;
+        const keys = seen.get(rowId) ?? new Set<string>();
+        if (keys.has(columnKey)) return;
+        keys.add(columnKey);
+        seen.set(rowId, keys);
+        changedCells.push({ rowId, columnKey });
+      });
+      copyOfData.changedCells = changedCells;
+      markEditedCells(changedCells, renamed);
+
       tableConfigOnRowsChange(copyOfRows, copyOfData);
-      //
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     }) as any;
 
@@ -177,6 +200,9 @@ export const useOnRowsChange = <
     flattenedRowsRef,
     tableConfigOnRowsChange,
     deepCloneRows,
+    subRowsKey,
+    tableConfigEditing?.rowKeyGetter,
+    markEditedCells,
   ]);
 
   return { onRowsChangeLastVersion };

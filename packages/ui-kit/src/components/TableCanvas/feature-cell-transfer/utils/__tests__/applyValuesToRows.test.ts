@@ -71,8 +71,59 @@ describe('applyValuesToRows — paste в прямоугольник', () => {
     expect(res.newRows[2]).toEqual({ a: '', b: '' }); // не в таргете
     expect(res.affectedIndexes).toEqual([0, 1]);
     expect(res.firstAffectedColumn?.key).toBe('a');
+    expect(res.writtenCells).toEqual([
+      { rowIndex: 0, columnKey: 'a' },
+      { rowIndex: 0, columnKey: 'b' },
+      { rowIndex: 1, columnKey: 'a' },
+      { rowIndex: 1, columnKey: 'b' },
+    ]);
     expect(res.aborted).toBe(false);
   });
+
+  it('пропускает совпавшие значения внутри одной массовой записи', () => {
+    const result = applyValuesToRows({
+      ...BASE,
+      rows: [
+        { a: 'X', b: '' },
+        { a: '', b: 'X' },
+      ],
+      columns: [dcol('a'), dcol('b')],
+      rowTargets: [0, 1],
+      colTargets: [0, 1],
+      getValue: () => 'X',
+    });
+    expect(result.writtenCells).toEqual([
+      { rowIndex: 0, columnKey: 'b' },
+      { rowIndex: 1, columnKey: 'a' },
+    ]);
+  });
+
+  it.each([
+    { values: ['B', 'A'], expected: [] },
+    {
+      values: ['B', 'B'],
+      expected: [
+        { rowIndex: 0, columnKey: 'a' },
+        { rowIndex: 0, columnKey: 'b' },
+      ],
+    },
+  ])(
+    'сравнивает итоговое значение общего поля подстроки ($values)',
+    ({ values, expected }) => {
+      const subRow = { keyOfColumnInSubRow: 'value' };
+      const result = applyValuesToRows({
+        ...BASE,
+        allowSubRows: true,
+        rows: [{ treeId: '1.subRows.0', value: 'A' }],
+        columns: [dcol('a', true, { subRow }), dcol('b', true, { subRow })],
+        rowTargets: [0],
+        colTargets: [0, 1],
+        getValue: (_, c) => values[c] ?? '',
+      });
+      expect(result.newRows[0]?.value).toBe(values[1]);
+      expect(result.writtenCells).toEqual(expected);
+    },
+  );
 
   it('broadcast: одно значение тиражируется на все целевые строки', () => {
     const columns = [svc(), dcol('a')];
@@ -144,6 +195,7 @@ describe('applyValuesToRows — служебные и readonly ячейки', ()
 
     expect(res.newRows[0]).toEqual({ a: 'V', ro: 'keep' });
     expect(res.affectedIndexes).toEqual([0]);
+    expect(res.writtenCells).toEqual([{ rowIndex: 0, columnKey: 'a' }]);
     expect(res.aborted).toBe(false);
   });
 
@@ -183,6 +235,7 @@ describe('applyValuesToRows — валидация type-check', () => {
     });
 
     expect(res.affectedIndexes).toEqual([]);
+    expect(res.writtenCells).toEqual([]);
     expect(res.newRows[0]?.n).toBe('orig');
     expect(res.skippedByValidation).toHaveLength(1);
     expect(res.skippedByValidation[0]).toMatchObject({

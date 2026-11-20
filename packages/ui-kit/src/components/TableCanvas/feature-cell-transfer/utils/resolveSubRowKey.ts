@@ -23,3 +23,7 @@ export function resolveSubRowKey(
 
   return undefined;
 }
+
+export function getColumnField(column: TransferColumnConfig, lvl: number) {
+  return lvl > 0 ? resolveSubRowKey(column, lvl) : column.key;
+}

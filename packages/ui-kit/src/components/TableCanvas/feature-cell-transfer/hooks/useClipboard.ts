@@ -8,6 +8,7 @@ import type {
   CellTransferConfig,
   RowsChangeType,
   TransferColumnConfig,
+  WrittenCell,
 } from '../types';
 import {
   DEFAULT_COPY_HOTKEY,
@@ -57,6 +58,7 @@ interface UseClipboardParams<R extends ObjectForExtending> {
     rows: R[],
     data: {
       indexes: number[];
+      writtenCells: WrittenCell[];
       column: TransferColumnConfig;
       rows?: { before: R; after: R }[];
       type: RowsChangeType;

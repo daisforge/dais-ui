@@ -73,6 +73,7 @@ import {
   useSidebarState,
   useTableCollapseValues,
 } from './table-hooks';
+import { useEditedCells } from './table-hooks/useEditedCells';
 import { useLeftSidebarState } from './table-hooks/useLeftSidebarValues';
 import { type DataEditorRef } from './TableGlideInstance/type';
 import { ActiveViewModsType, ObjectForExtending, TableProps } from './types';
@@ -519,7 +520,13 @@ export function TableCanvas<
   allRowsMapRef.current = allRowsMap;
 
   // ------------------------------------------------ changing rows ------------------------------------------------
+  const { isCellEdited, markEditedCells, clearSession } = useEditedCells(
+    !!tableConfig.editing && !!editModeEnabled,
+    tableConfig.editing?.rowKeyGetter,
+    tableConfig.editing?.editedCellsState,
+  );
   const { onRowsChangeLastVersion } = useOnRowsChange({
+    markEditedCells,
     tableConfig,
     rows,
     flattenedRowsRef,
@@ -706,6 +713,7 @@ export function TableCanvas<
     columnConfig,
     editModeEnabled,
     setEditModeEnabled,
+    clearEditedCells: clearSession,
     showSearchBlock,
     setShowSearchBlock,
     searchQueryLocalValue,
@@ -1107,6 +1115,7 @@ export function TableCanvas<
                             ...(tableConfig.editing &&
                               !isLoadingTable && {
                                 onRowsChange: onRowsChangeLastVersion,
+                                isCellEdited,
                               }),
                             isErrorRow,
                             collectRowErrors,

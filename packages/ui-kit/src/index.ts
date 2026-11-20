@@ -94,6 +94,8 @@ export type {
   BottomSheetConfig,
   LeftSidebarConfig,
   RightSidebarConfig,
+  TableCanvasChangedCell,
+  TableCanvasEditedCells,
   TableCanvasSidebarConfig,
   TableCanvasSidebarTab,
 } from './components/TableCanvas';

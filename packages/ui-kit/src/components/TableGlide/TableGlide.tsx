@@ -78,6 +78,7 @@ import { TablePaletteOverrideContext } from './theming/palette-override';
 import { resolveRowStateOverride } from './theming/row-state-override';
 import {
   getEditableCellFillStates,
+  getEditedCellFillStates,
   resolveActiveRowBg,
   resolveCellFillOverride,
   resolveConsumerFillOverride,
@@ -102,6 +103,7 @@ import {
   syncEditorFrame,
 } from './utils/editorFrame';
 import { cellEdgeInset, gridLinesAroundCell } from './utils/cellEdgeInset';
+import { createBlockEditedLookup } from './utils/hasEditedCellInBlock';
 import { findBlockOrigin } from './utils/findBlockOrigin';
 import { mergeThemeOverrides } from './utils/mergeThemeOverrides';
 import { queryGlideElements } from './utils/queryGlideElements';
@@ -241,6 +243,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   checkboxVisibleRowIndexes: _checkboxVisibleRowIndexes,
   hoverEffects,
   appearance,
+  isCellEdited,
   isErrorRow,
   collectRowErrors,
   onCellClicked: onCellClickedExternal,
@@ -927,6 +930,11 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     [rows, columnsForRender, autoHeightReporter],
   );
 
+  const blockEdited = useMemo(
+    () => isCellEdited && createBlockEditedLookup(rows, columnsForRender, isCellEdited),
+    [rows, columnsForRender, isCellEdited],
+  );
+
   const getCellContentGlide = useCallback(
     (
       [colInd, rowInd]: [number, number],
@@ -1194,7 +1202,12 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
         rowHover: rowsHovered,
         rowActive: blockActiveRow !== undefined,
       };
-      const fillOverride = cellIsEditable
+      const edited = isBlock
+        ? blockEdited?.(blockRows, blockCols)
+        : !column.isServiceColumn && isCellEdited?.(row, id);
+      const fillOverride = edited
+        ? resolveCellFillOverride(getEditedCellFillStates(theme), fillContext)
+        : cellIsEditable
         ? resolveCellFillOverride(getEditableCellFillStates(theme), fillContext)
         : columnThemeOverrideResult?.bgCell
         ? resolveConsumerFillOverride(
@@ -1386,6 +1399,8 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       theme,
       activeTheme,
       paletteOverride,
+      isCellEdited,
+      blockEdited,
       isRowHoverEnabled,
       appearanceVariant,
       checkboxSelectedRowIndexes,
@@ -2215,7 +2230,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   // Смена строк под курсором рендер не вызывает, её сообщает useHoverState.
   useLayoutEffect(() => {
     updateEditorBgRef.current?.();
-  }, [activeRow, checkboxSelectedRowIndexes, theme]);
+  }, [activeRow, checkboxSelectedRowIndexes, theme, isCellEdited]);
   // Ссылка постоянная: новая функция заставила бы форк пересоздать открытый редактор.
   const provideEditorExternalRef = useRef(restProps.provideEditor);
   provideEditorExternalRef.current = restProps.provideEditor;

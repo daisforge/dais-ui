@@ -96,6 +96,7 @@ export const useFeatureArray = <
   columnConfig,
   editModeEnabled,
   setEditModeEnabled,
+  clearEditedCells,
   showSearchBlock,
   setShowSearchBlock,
   searchQueryLocalValue,
@@ -146,6 +147,7 @@ export const useFeatureArray = <
   setGroupedCols: React.Dispatch<React.SetStateAction<string[]>> | undefined;
   columnConfig: readonly ColumnConfig<RowType, SummaryRowType>[];
   editModeEnabled: boolean;
+  clearEditedCells: () => void;
   setEditModeEnabled: React.Dispatch<React.SetStateAction<boolean>> | null;
   showSearchBlock: boolean;
   setShowSearchBlock: React.Dispatch<React.SetStateAction<boolean>>;
@@ -294,7 +296,12 @@ export const useFeatureArray = <
   });
 
   const enableEditMode = () => setEditModeEnabled?.(true);
-  const disableEditMode = () => setEditModeEnabled?.(false);
+  const disableEditMode = () => {
+    if (setEditModeEnabled) {
+      clearEditedCells();
+      setEditModeEnabled(false);
+    }
+  };
   const editingButtons = tableConfig.editing?.buttons;
   const featureLeftButtons: ControlBlockButtonProps[] = [
     ...ifTrueBtn(isActivated.editingMode && editModeEnabled, {

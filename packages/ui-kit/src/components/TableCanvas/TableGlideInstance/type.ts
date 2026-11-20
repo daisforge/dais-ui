@@ -30,7 +30,11 @@ import type {
 } from '@ui-kit/components/TableGlide';
 import { ReactNode } from 'react';
 
-import type { FillMeta, RowsChangeType } from '../feature-cell-transfer/types';
+import type {
+  FillMeta,
+  RowsChangeType,
+  WrittenCell,
+} from '../feature-cell-transfer/types';
 import type { TableContentStateOverlay } from '../feature-content-state/types';
 import type { StickyColumnsConfig, StickyRowsConfig } from '../feature-sticky';
 import { HeaderAlignment } from '../types/columns-grouping.type';
@@ -86,6 +90,8 @@ export interface RowsChangeDataGlideInstance<
   CustomCtxs extends ObjectForExtending = {},
 > {
   indexes: number[];
+  /** Адреса изменённых ячеек. rowIndex указывает на строку в плоском массиве Glide. */
+  writtenCells?: WrittenCell[];
   column: ColumnGlideInstance<R, SR, CustomCtxs>;
   /** Источник изменения: `'edit'` — ручное редактирование, `'paste'` — вставка, `'fill'` — fill handle */
   type: RowsChangeType;

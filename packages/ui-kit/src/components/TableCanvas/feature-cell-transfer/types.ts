@@ -161,6 +161,9 @@ export type PasteMeta = {
 /** Источник вызова `onRowsChange` — кто инициировал изменение строк */
 export type RowsChangeType = 'edit' | 'paste' | 'fill';
 
+/** Адрес изменённой ячейки до преобразования индекса строки в rowId для onRowsChange. */
+export type WrittenCell = { rowIndex: number; columnKey: string };
+
 /**
  * Метаданные для `onBeforeFill` — информация об источнике и цели fill handle.
  */

@@ -1,7 +1,7 @@
 /* eslint-disable no-continue */
 import type { GridSelection } from '@glideappsfinal/glide-data-grid';
 import { createDebugLogger } from '@ui-kit/shared/utils/debug';
-import { useCallback } from 'react';
+import { useCallback, useLayoutEffect, useRef } from 'react';
 
 import {
   notifications,
@@ -14,6 +14,7 @@ import type {
   PasteMeta,
   RowsChangeType,
   TransferColumnConfig,
+  WrittenCell,
 } from '../types';
 import { applyValuesToRows } from '../utils/applyValuesToRows';
 import { collectTextMatrix } from '../utils/collectTextMatrix';
@@ -47,6 +48,7 @@ interface UsePasteParams<R extends ObjectForExtending> {
     rows: R[],
     data: {
       indexes: number[];
+      writtenCells: WrittenCell[];
       column: TransferColumnConfig;
       rows?: { before: R; after: R }[];
       type: RowsChangeType;
@@ -66,10 +68,20 @@ export function usePaste<R extends ObjectForExtending>({
   onRowsChange,
   onNotification,
 }: UsePasteParams<R>) {
+  const clipboardEnabled = cellTransferConfig?.enabled ?? editModeEnabled;
+  // Отменяем запоздавшую вставку, если за время чтения буфера пользователь вышел
+  // из режима редактирования или приложение заменило строки либо колонки.
+  const session = useRef(0);
+  useLayoutEffect(
+    () => () => {
+      session.current += 1;
+    },
+    [editModeEnabled, clipboardEnabled, flattenedRows, columns],
+  );
+
   const handlePaste = useCallback(
     async (clipboardText?: string) => {
-      // Phase 1: чтение буфера и разбор TSV
-      const clipboardEnabled = cellTransferConfig?.enabled ?? editModeEnabled;
+      const startedIn = session.current;
       if (!clipboardEnabled) {
         clipboardDebug(PFX, 'skip: буфер отключён');
         return;
@@ -99,6 +111,7 @@ export function usePaste<R extends ObjectForExtending>({
         clipboardDebug(PFX, 'clipboard API доступен, используем readText');
         try {
           text = await navigator.clipboard.readText();
+          if (startedIn !== session.current) return;
         } catch (err) {
           clipboardDebug(PFX, 'ошибка чтения буфера', err);
           return;
@@ -128,7 +141,6 @@ export function usePaste<R extends ObjectForExtending>({
         data,
       });
 
-      // Phase 2: тираж(broadcast) и проверка границ
       const pasteConfig: Required<PasteConfig> = {
         ...DEFAULT_PASTE_CONFIG,
         ...cellTransferConfig?.paste,
@@ -206,7 +218,6 @@ export function usePaste<R extends ObjectForExtending>({
         return;
       }
 
-      // Phase 3: onBeforePaste пользовательский перехват
       if (cellTransferConfig?.onBeforePaste) {
         const targetRange = {
           x: targetStartCol,
@@ -235,13 +246,12 @@ export function usePaste<R extends ObjectForExtending>({
 
       const cellContexts = { rowContextValue, headerContextValue };
 
-      // Phase 4-5: readonly-abort prescan + запись значений (общий core с fill).
-      // paste тайлит буфер по модулю его размеров; effective*Targets уже учли
-      // broadcast/несмежность.
+      // Если выделение больше буфера, повторяем его содержимое по строкам и колонкам.
       const {
         newRows,
         affectedIndexes,
         firstAffectedColumn,
+        writtenCells,
         skippedByValidation,
         aborted,
       } = applyValuesToRows({
@@ -283,11 +293,12 @@ export function usePaste<R extends ObjectForExtending>({
       onRowsChange(newRows, {
         column: firstAffectedColumn,
         indexes: affectedIndexes,
+        writtenCells,
         type: 'paste',
       });
     },
     [
-      editModeEnabled,
+      clipboardEnabled,
       cellTransferConfig,
       columns,
       flattenedRows,

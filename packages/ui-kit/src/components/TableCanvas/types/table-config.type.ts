@@ -105,7 +105,28 @@ export type ViewMods = {
     domMetadata?: DomMetadata;
   };
 };
-export interface RowsChangeData<R extends ObjectForExtending, SR = unknown> {
+export type TableCanvasChangedCell<RowId = string | number> = {
+  rowId: RowId;
+  columnKey: string;
+};
+
+export type TableCanvasEditedCells<RowId = string | number> = ReadonlyMap<
+  RowId,
+  ReadonlySet<string>
+>;
+
+export interface RowsChangeData<
+  R extends ObjectForExtending,
+  SR = unknown,
+  RowId = string | number,
+> {
+  /**
+   * Ячейки, значения которых изменились за одну правку, вставку или протяжку.
+   *
+   * Для дочерней строки rowId берётся из неё самой. columnKey всегда указывает
+   * на колонку таблицы, даже если у подстроки значение хранится под другим ключом.
+   */
+  changedCells?: readonly TableCanvasChangedCell<RowId>[];
   indexes: number[];
   column: ColumnConfig<R, SR>;
   rows: { before: R; after: R }[];
@@ -703,7 +724,10 @@ export type EditingConfig<
    * Функция обработки изменений в редактируемой строке
    */
   onRowsChange: Maybe<
-    (rows: RowType[], data: RowsChangeData<RowType, SummaryRowType>) => void
+    (
+      rows: RowType[],
+      data: RowsChangeData<RowType, SummaryRowType, RowIdType>,
+    ) => void
   >;
   /**
    * свойство, необходимое для корректного изменения дочерних строк.
@@ -715,6 +739,18 @@ export type EditingConfig<
    * @example "child" или "uvh367.children"
    */
   subRowsKey?: string;
+  /**
+   * Позволяет приложению выбирать, какие ячейки подсвечивать в текущей сессии.
+   * По умолчанию таблица сама хранит отметки и очищает их при выходе из редактирования.
+   *
+   * Передайте карту и функцию её обновления, например пару из useState.
+   * Ключ карты берётся из rowKeyGetter, а множество содержит ключи отмеченных колонок.
+   * Таблица передаёт функции обновления предлагаемые изменения, в том числе очистку.
+   */
+  editedCellsState?: [
+    TableCanvasEditedCells<RowIdType>,
+    React.Dispatch<React.SetStateAction<TableCanvasEditedCells<RowIdType>>>,
+  ];
   /**
    * Глубокое копирование строк перед применением правки в режиме редактирования.
    *
