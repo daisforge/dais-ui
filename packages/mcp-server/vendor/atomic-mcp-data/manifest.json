@@ -1,6 +1,6 @@
 {
-  "builtAt": "2026-11-04T12:20:13.738Z",
-  "version": "0.367.0",
+  "builtAt": "2026-11-11T10:32:20.418Z",
+  "version": "0.369.0",
   "source": {
     "repo": "https://github.com/salute-developers/plasma"
   },
@@ -14,6 +14,7 @@
     "get_component"
   ],
   "paths": {
+    "_tenants": "_tenants/index.json",
     "beta": "beta/index.json",
     "components": "components/index.json",
     "form": "form/index.json",

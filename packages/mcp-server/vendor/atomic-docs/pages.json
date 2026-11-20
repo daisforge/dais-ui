@@ -46,7 +46,7 @@
     "slug": "components/data-display/avatarGroup",
     "category": "components",
     "url": "https://plasma.sberdevices.ru/sdds-finai/components/data-display/avatarGroup/",
-    "chars": 519
+    "chars": 556
   },
   {
     "name": "Badge",
@@ -74,14 +74,14 @@
     "slug": "components/data-display/chip",
     "category": "components",
     "url": "https://plasma.sberdevices.ru/sdds-finai/components/data-display/chip/",
-    "chars": 6345
+    "chars": 6443
   },
   {
     "name": "ChipGroup",
     "slug": "components/data-display/chipGroup",
     "category": "components",
     "url": "https://plasma.sberdevices.ru/sdds-finai/components/data-display/chipGroup/",
-    "chars": 3787
+    "chars": 3885
   },
   {
     "name": "Counter",
@@ -207,14 +207,14 @@
     "slug": "components/data-entry/button",
     "category": "components",
     "url": "https://plasma.sberdevices.ru/sdds-finai/components/data-entry/button/",
-    "chars": 6173
+    "chars": 6271
   },
   {
     "name": "ButtonGroup",
     "slug": "components/data-entry/buttonGroup",
     "category": "components",
     "url": "https://plasma.sberdevices.ru/sdds-finai/components/data-entry/buttonGroup/",
-    "chars": 3498
+    "chars": 3715
   },
   {
     "name": "Calendar",
@@ -270,7 +270,7 @@
     "slug": "components/data-entry/dropdown",
     "category": "components",
     "url": "https://plasma.sberdevices.ru/sdds-finai/components/data-entry/dropdown/",
-    "chars": 16182
+    "chars": 16373
   },
   {
     "name": "Dropzone",
@@ -278,6 +278,13 @@
     "category": "components",
     "url": "https://plasma.sberdevices.ru/sdds-finai/components/data-entry/dropzone/",
     "chars": 4687
+  },
+  {
+    "name": "Editable",
+    "slug": "components/data-entry/Editable",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/data-entry/Editable/",
+    "chars": 2530
   },
   {
     "name": "EmbedIconButton",
@@ -291,7 +298,7 @@
     "slug": "components/data-entry/IconButton",
     "category": "components",
     "url": "https://plasma.sberdevices.ru/sdds-finai/components/data-entry/IconButton/",
-    "chars": 3988
+    "chars": 4086
   },
   {
     "name": "LinkButton",
@@ -413,6 +420,13 @@
     "chars": 4054
   },
   {
+    "name": "Group",
+    "slug": "components/layout/group",
+    "category": "components",
+    "url": "https://plasma.sberdevices.ru/sdds-finai/components/layout/group/",
+    "chars": 4032
+  },
+  {
     "name": "Breadcrumbs",
     "slug": "components/navigation/breadcrumbs",
     "category": "components",
@@ -438,7 +452,7 @@
     "slug": "components/navigation/pagination",
     "category": "components",
     "url": "https://plasma.sberdevices.ru/sdds-finai/components/navigation/pagination/",
-    "chars": 9277
+    "chars": 11274
   },
   {
     "name": "Steps",
@@ -578,14 +592,14 @@
     "slug": "guides/how-to-icons",
     "category": "guides",
     "url": "https://plasma.sberdevices.ru/sdds-finai/guides/how-to-icons/",
-    "chars": 3905
+    "chars": 4065
   },
   {
     "name": "how-to-mcp",
     "slug": "guides/how-to-mcp",
     "category": "guides",
     "url": "https://plasma.sberdevices.ru/sdds-finai/guides/how-to-mcp/",
-    "chars": 2152
+    "chars": 6937
   },
   {
     "name": "how-to-plasma-icons",

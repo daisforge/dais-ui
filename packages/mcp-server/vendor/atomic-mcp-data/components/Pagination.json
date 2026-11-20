@@ -55,6 +55,13 @@
         "description": ""
       },
       {
+        "name": "hasPageRange",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
         "name": "count",
         "type": "number",
         "required": false,
@@ -77,6 +84,13 @@
       },
       {
         "name": "hasQuickJump",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "hasTotalPages",
         "type": "boolean",
         "required": false,
         "default": "",
@@ -237,6 +251,10 @@
     {
       "title": "Тип Тип С помощью свойства  type  можно выбрать тип отображения компонента",
       "snippet": "import React from 'react';\nimport { Pagination } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', gap: '1rem', flexDirection: 'column' }}>\n            <Pagination size=\"xs\" type=\"default\" slots={9} count={200} hasPerPage />\n            <Pagination size=\"xs\" type=\"compact\" slots={9} count={200} hasPerPage />\n        </div>\n    );\n}"
+    },
+    {
+      "title": "Диапазон страниц",
+      "snippet": "import React, { useState } from 'react';\nimport { Pagination, IconButton } from '@salutejs/sdds-finai';\nimport { IconDisclosureLeftOutline, IconDisclosureRightOutline } from '@salutejs/plasma-icons';\nexport function App() {\n    const [page, setPage] = useState(1);\n    const [perPage, setPerPage] = useState(20);\n    const count = 300;\n    const pages = Math.ceil(count / perPage);\n    return (\n        <div style={{ width: '20rem' }}>\n            <Pagination\n                size=\"xs\"\n                type=\"compact\"\n                hasPageRange={false}\n                hasTotalPages\n                textQuickJump=\"\"\n                textPerPage=\"\"\n                count={count}\n                value={page}\n                perPage={perPage}\n                leftContent={\n                    <IconButton view=\"clear\" size=\"xs\" disabled={page === 1} onClick={() => setPage(page - 1)}>\n                        <IconDisclosureLeftOutline color=\"inherit\" size=\"xs\" />\n                    </IconButton>\n                }\n                rightContent={\n                    <IconButton view=\"clear\" size=\"xs\" disabled={page === pages} onClick={() => setPage(page + 1)}>\n                        <IconDisclosureRightOutline color=\"inherit\" size=\"xs\" />\n                    </IconButton>\n                }\n                onChange={(newPage, newPerPage) => {\n                    setPage(newPage ?? page);\n                    setPerPage(newPerPage ?? perPage);\n                }}\n            />\n        </div>\n    );\n}"
     },
     {
       "title": "Форма кнопок",

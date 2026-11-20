@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-11-20T11:35:11.911Z",
-  "libVersion": "1.29.1",
+  "generatedAt": "2026-11-20T12:46:20.089Z",
+  "libVersion": "1.30.0",
   "components": {
     "Accordion": {
       "name": "Accordion",
@@ -78,7 +78,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Accordion } from '@daisforge/ui';",
       "minimalUsage": "<Accordion />",
@@ -230,7 +230,7 @@
         "раскрывающийся блок"
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { AccordionItem } from '@daisforge/ui';",
       "minimalUsage": "<AccordionItem children={'Контент'} />",
@@ -492,7 +492,7 @@
         }
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { AiAgentPopover } from '@daisforge/ui';",
       "minimalUsage": "<AiAgentPopover />",
@@ -784,7 +784,7 @@
       "propsTypeName": "AiAgentInputProps",
       "sourceFile": "packages/ui-kit/src/components/AiAgentPopup/AiAgentInput.tsx",
       "type": "composition",
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { AiAgentInput } from '@daisforge/ui';",
       "minimalUsage": "<AiAgentInput />",
@@ -969,7 +969,7 @@
         }
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { AiAgentPopup } from '@daisforge/ui';",
       "minimalUsage": "<AiAgentPopup />",
@@ -1456,7 +1456,7 @@
         }
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { AnalyticalWidget } from '@daisforge/ui';",
       "minimalUsage": "<AnalyticalWidget contentSlot={'Контент'} size={{}}>\n  {/* части: AnalyticalWidget.Header, AnalyticalWidget.FilterIconButton, AnalyticalWidget.DotsIconButton, AnalyticalWidget.Chips */}\n</AnalyticalWidget>",
@@ -1569,7 +1569,7 @@
         }
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { ApprovalCenter } from '@daisforge/ui';",
       "minimalUsage": "<ApprovalCenter tabs={{}} />",
@@ -1842,7 +1842,7 @@
       ],
       "hasCuratedMeta": true,
       "inheritedProps": [],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Attach } from '@daisforge/ui';",
       "minimalUsage": "<Attach />",
@@ -2384,7 +2384,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Autocomplete } from '@daisforge/ui';",
       "minimalUsage": "<Autocomplete />",
@@ -2804,57 +2804,24 @@
         "search field",
         "поиск с автодополнением"
       ],
-      "docs": "# AutocompleteSearch\n\nКомпонент AutocompleteSearch - обертка компонента Autocomplete со своими готовыми стилями для поля поиска. C примерами реализации подробно можно ознакомиться ниже в stories.\n\n## Ключевые особенности\n\n- Поле поиска с автодополнением на основе Autocomplete\n- Иконка лупы слева и крестик очистки справа\n- Доступные размеры: `s`, `xs`\n\n> Подробнее о типах и пропсах — [AutocompleteSearch API](?path=/docs/локальные-компоненты-autocompletesearch-api--docs)",
-      "apiDocs": "# AutocompleteSearch API\n\n## BaseAutocompliteSearchProps\n\n```typescript\ntype BaseAutocompliteSearchProps = {\n  /**\n   * Размер Поля ввода\n   */\n  size?: 'xs' | 's';\n  /**\n   * Показать/Скрыть count значение в начале выпадающего листа. Или указать собственное число\n   */\n  beforeListTotal?: number | boolean;\n  /**\n   * Добавление названия сущности в начале выпадающего списка\n   */\n  beforeListTotalEntity?: string;\n  /**\n   * Действие при выполнении нажатия на кнопку очистки поля ввода\n   * @deprecated Используйте onClear\n   */\n  handlerClear?: () => void;\n  /**\n   * Действие при выполнении нажатия на кнопку очистки поля ввода\n   */\n  onClear?: () => void;\n};\n```",
-      "curatedStories": [
-        {
-          "exportName": "Default",
-          "displayName": "Default",
-          "type": "full-code",
-          "code": "import { AutocompleteSearch } from '@daisforge/ui';\n\n(args: AutocompleteSearchProps) => {\n    const [value, setValue] = useState('');\n\n    return (\n      <div style={{ padding: '20px', minHeight: '500px', width: '500px' }}>\n        <AutocompleteSearch\n          {...args}\n          value={value}\n          onChange={(e: ChangeEvent<HTMLInputElement>) =>\n            setValue(e.target.value)\n          }\n          onSuggestionSelect={(item) => setValue(item.label)}\n          onClear={() => setValue('')}\n          suggestions={mockData}\n          beforeListTotal\n          beforeListTotalEntity=\"[сущность]\"\n        />\n      </div>\n    );\n  }"
-        },
-        {
-          "exportName": "Sizes",
-          "displayName": "Размеры",
-          "type": "full-code",
-          "code": "import { AutocompleteSearch } from '@daisforge/ui';\n\n(args: AutocompleteSearchProps) => {\n    const sizes = ['s', 'xs'] as const;\n    const [values, setValues] = useState<Record<string, string>>({\n      s: '',\n      xs: '',\n    });\n\n    return (\n      <div\n        style={{\n          padding: '20px',\n          display: 'flex',\n          flexDirection: 'column',\n          gap: '1rem',\n          width: '500px',\n          minHeight: '500px',\n        }}\n      >\n        {sizes.map((size) => (\n          <AutocompleteSearch\n            {...args}\n            key={size}\n            size={size}\n            placeholder={`Size: ${size}`}\n            value={values[size]}\n            onChange={(e: ChangeEvent<HTMLInputElement>) =>\n              setValues((prev) => ({ ...prev, [size]: e.target.value }))\n            }\n            onSuggestionSelect={(item) =>\n              setValues((prev) => ({ ...prev, [size]: item.label }))\n            }\n            onClear={() => setValues((prev) => ({ ...prev, [size]: '' }))}\n            suggestions={mockData}\n          />\n        ))}\n      </div>\n    );\n  }"
-        },
-        {
-          "exportName": "WithClear",
-          "displayName": "Различные варианты",
-          "type": "full-code",
-          "code": "import { AutocompleteSearch } from '@daisforge/ui';\n\n(args: AutocompleteSearchProps) => {\n    const [value1, setValue1] = useState('Алексей');\n    const [value2, setValue2] = useState('Екатерина');\n    const [value3, setValue3] = useState('');\n    const [value4, setValue4] = useState('Дмитрий');\n\n    return (\n      <div\n        style={{\n          padding: '20px',\n          display: 'flex',\n          flexDirection: 'column',\n          gap: '1rem',\n          width: '500px',\n          minHeight: '500px',\n        }}\n      >\n        {/* Сценарий 3: onClear + value → только крестик */}\n        <AutocompleteSearch\n          {...args}\n          placeholder=\"onClear + value → крестик\"\n          value={value1}\n          onChange={(e: ChangeEvent<HTMLInputElement>) =>\n            setValue1(e.target.value)\n          }\n          onSuggestionSelect={(item) => setValue1(item.label)}\n          onClear={() => setValue1('')}\n          suggestions={mockData}\n        />\n\n        {/* Сценарий 2: onClear + value + contentRight → [крестик | иконка] рядом */}\n        <AutocompleteSearch\n          {...args}\n          placeholder=\"onClear + value + contentRight → рядом\"\n          value={value2}\n          contentRight={<IconSb size=\"s\" />}\n          onChange={(e: ChangeEvent<HTMLInputElement>) =>\n            setValue2(e.target.value)\n          }\n          onSuggestionSelect={(item) => setValue2(item.label)}\n          onClear={() => setValue2('')}\n          suggestions={mockData}\n        />\n\n        {/* Сценарий 4: onClear без value → крестик скрыт, contentRight как есть */}\n        <AutocompleteSearch\n          {...args}\n          placeholder=\"Пустое значение — крестик скрыт\"\n          value={value3}\n          contentRight={<IconSb size=\"s\" />}\n          onChange={(e: ChangeEvent<HTMLInputElement>) =>\n            setValue3(e.target.value)\n          }\n          onSuggestionSelect={(item) => setValue3(item.label)}\n          onClear={() => setValue3('')}\n          suggestions={mockData}\n        />\n\n        {/* Сценарий 1: readOnly → замок (заменяет всё) */}\n        <AutocompleteSearch\n          {...args}\n          placeholder=\"ReadOnly — замок\"\n          value=\"Только для чтения\"\n          readOnly\n          contentRight={<IconSb size=\"s\" />}\n          onClear={() => {}}\n          suggestions={mockData}\n        />\n\n        {/* Сценарий 1: disabled → замок (заменяет всё) */}\n        <AutocompleteSearch\n          {...args}\n          placeholder=\"Disabled — замок\"\n          value=\"Заблокировано\"\n          disabled\n          contentRight={<IconSb size=\"s\" />}\n          onClear={() => {}}\n          suggestions={mockData}\n        />\n\n        {/* Сценарий 4: только contentRight, без onClear */}\n        <AutocompleteSearch\n          {...args}\n          placeholder=\"Только contentRight, без onClear\"\n          value={value4}\n          contentRight={<IconSb size=\"s\" />}\n          onChange={(e: ChangeEvent<HTMLInputElement>) =>\n            setValue4(e.target.value)\n          }\n          onSuggestionSelect={(item) => setValue4(item.label)}\n          suggestions={mockData}\n        />\n      </div>\n    );\n  }"
-        }
-      ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { AutocompleteSearch } from '@daisforge/ui';",
       "minimalUsage": "<AutocompleteSearch />",
       "examples": [
         {
-          "exportName": "Default",
-          "displayName": "Default",
-          "type": "full-code",
-          "code": "import { AutocompleteSearch } from '@daisforge/ui';\n\n(args: AutocompleteSearchProps) => {\n    const [value, setValue] = useState('');\n\n    return (\n      <div style={{ padding: '20px', minHeight: '500px', width: '500px' }}>\n        <AutocompleteSearch\n          {...args}\n          value={value}\n          onChange={(e: ChangeEvent<HTMLInputElement>) =>\n            setValue(e.target.value)\n          }\n          onSuggestionSelect={(item) => setValue(item.label)}\n          onClear={() => setValue('')}\n          suggestions={mockData}\n          beforeListTotal\n          beforeListTotalEntity=\"[сущность]\"\n        />\n      </div>\n    );\n  }"
-        },
-        {
-          "exportName": "Sizes",
-          "displayName": "Размеры",
-          "type": "full-code",
-          "code": "import { AutocompleteSearch } from '@daisforge/ui';\n\n(args: AutocompleteSearchProps) => {\n    const sizes = ['s', 'xs'] as const;\n    const [values, setValues] = useState<Record<string, string>>({\n      s: '',\n      xs: '',\n    });\n\n    return (\n      <div\n        style={{\n          padding: '20px',\n          display: 'flex',\n          flexDirection: 'column',\n          gap: '1rem',\n          width: '500px',\n          minHeight: '500px',\n        }}\n      >\n        {sizes.map((size) => (\n          <AutocompleteSearch\n            {...args}\n            key={size}\n            size={size}\n            placeholder={`Size: ${size}`}\n            value={values[size]}\n            onChange={(e: ChangeEvent<HTMLInputElement>) =>\n              setValues((prev) => ({ ...prev, [size]: e.target.value }))\n            }\n            onSuggestionSelect={(item) =>\n              setValues((prev) => ({ ...prev, [size]: item.label }))\n            }\n            onClear={() => setValues((prev) => ({ ...prev, [size]: '' }))}\n            suggestions={mockData}\n          />\n        ))}\n      </div>\n    );\n  }"
-        },
-        {
-          "exportName": "WithClear",
-          "displayName": "Различные варианты",
-          "type": "full-code",
-          "code": "import { AutocompleteSearch } from '@daisforge/ui';\n\n(args: AutocompleteSearchProps) => {\n    const [value1, setValue1] = useState('Алексей');\n    const [value2, setValue2] = useState('Екатерина');\n    const [value3, setValue3] = useState('');\n    const [value4, setValue4] = useState('Дмитрий');\n\n    return (\n      <div\n        style={{\n          padding: '20px',\n          display: 'flex',\n          flexDirection: 'column',\n          gap: '1rem',\n          width: '500px',\n          minHeight: '500px',\n        }}\n      >\n        {/* Сценарий 3: onClear + value → только крестик */}\n        <AutocompleteSearch\n          {...args}\n          placeholder=\"onClear + value → крестик\"\n          value={value1}\n          onChange={(e: ChangeEvent<HTMLInputElement>) =>\n            setValue1(e.target.value)\n          }\n          onSuggestionSelect={(item) => setValue1(item.label)}\n          onClear={() => setValue1('')}\n          suggestions={mockData}\n        />\n\n        {/* Сценарий 2: onClear + value + contentRight → [крестик | иконка] рядом */}\n        <AutocompleteSearch\n          {...args}\n          placeholder=\"onClear + value + contentRight → рядом\"\n          value={value2}\n          contentRight={<IconSb size=\"s\" />}\n          onChange={(e: ChangeEvent<HTMLInputElement>) =>\n            setValue2(e.target.value)\n          }\n          onSuggestionSelect={(item) => setValue2(item.label)}\n          onClear={() => setValue2('')}\n          suggestions={mockData}\n        />\n\n        {/* Сценарий 4: onClear без value → крестик скрыт, contentRight как есть */}\n        <AutocompleteSearch\n          {...args}\n          placeholder=\"Пустое значение — крестик скрыт\"\n          value={value3}\n          contentRight={<IconSb size=\"s\" />}\n          onChange={(e: ChangeEvent<HTMLInputElement>) =>\n            setValue3(e.target.value)\n          }\n          onSuggestionSelect={(item) => setValue3(item.label)}\n          onClear={() => setValue3('')}\n          suggestions={mockData}\n        />\n\n        {/* Сценарий 1: readOnly → замок (заменяет всё) */}\n        <AutocompleteSearch\n          {...args}\n          placeholder=\"ReadOnly — замок\"\n          value=\"Только для чтения\"\n          readOnly\n          contentRight={<IconSb size=\"s\" />}\n          onClear={() => {}}\n          suggestions={mockData}\n        />\n\n        {/* Сценарий 1: disabled → замок (заменяет всё) */}\n        <AutocompleteSearch\n          {...args}\n          placeholder=\"Disabled — замок\"\n          value=\"Заблокировано\"\n          disabled\n          contentRight={<IconSb size=\"s\" />}\n          onClear={() => {}}\n          suggestions={mockData}\n        />\n\n        {/* Сценарий 4: только contentRight, без onClear */}\n        <AutocompleteSearch\n          {...args}\n          placeholder=\"Только contentRight, без onClear\"\n          value={value4}\n          contentRight={<IconSb size=\"s\" />}\n          onChange={(e: ChangeEvent<HTMLInputElement>) =>\n            setValue4(e.target.value)\n          }\n          onSuggestionSelect={(item) => setValue4(item.label)}\n          suggestions={mockData}\n        />\n      </div>\n    );\n  }"
-        },
-        {
           "exportName": "Usage1",
           "displayName": "Использование в AutoCompleteSearch.stories.tsx",
           "type": "usage",
           "code": "<AutocompleteSearch\n            {...args}\n            key={size}\n            size={size}\n            placeholder={`Size: ${size}`}\n            value={values[size]}\n            onChange={(e: ChangeEvent<HTMLInputElement>) =>\n              setValues((prev) => ({ ...prev, [size]: e.target.value }))\n            }\n            onSuggestionSelect={(item) =>\n              setValues((prev) => ({ ...prev, [size]: item.label }))\n            }\n            onClear={() => setValues((prev) => ({ ...prev, [size]: '' }))}\n            suggestions={mockData}\n          />",
+          "sourceFile": "packages/storybook/src/stories/AutoCompleteSearch/AutoCompleteSearch.stories.tsx"
+        },
+        {
+          "exportName": "Usage2",
+          "displayName": "Использование в AutoCompleteSearch.stories.tsx",
+          "type": "usage",
+          "code": "<AutocompleteSearch\n          {...args}\n          value={value}\n          onChange={(e: ChangeEvent<HTMLInputElement>) =>\n            setValue(e.target.value)\n          }\n          onSuggestionSelect={(item) => setValue(item.label)}\n          onClear={() => setValue('')}\n          suggestions={mockData}\n          beforeListTotal\n          beforeListTotalEntity=\"[сущность]\"\n        />",
           "sourceFile": "packages/storybook/src/stories/AutoCompleteSearch/AutoCompleteSearch.stories.tsx"
         }
       ]
@@ -3101,7 +3068,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Avatar } from '@daisforge/ui';",
       "minimalUsage": "<Avatar />",
@@ -3161,7 +3128,7 @@
       ],
       "hasCuratedMeta": true,
       "inheritedProps": [],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { AvatarGroup } from '@daisforge/ui';",
       "minimalUsage": "<AvatarGroup children={'Контент'} />",
@@ -3170,7 +3137,7 @@
           "exportName": "Vendor",
           "displayName": "Example 1",
           "type": "vendor",
-          "code": "import React from 'react';\nimport { Avatar, AvatarGroup } from '@daisforge/ui';\nexport function App() {\n    return (\n        <AvatarGroup>\n                {\n                    Array(5).fill(true).map(() => (\n                        <Avatar size=\"xxl\" url=\"https://avatars.githubusercontent.com/u/1813468?v=4\" />\n                    ))\n                }\n            </AvatarGroup>\n    );\n}"
+          "code": "import React from 'react';\nimport { Avatar, AvatarGroup } from '@daisforge/ui';\nexport function App() {\n    return (\n        <div>\n            <AvatarGroup>\n                {Array(5)\n                    .fill(true)\n                    .map(() => (\n                        <Avatar size=\"xxl\" url=\"https://avatars.githubusercontent.com/u/1813468?v=4\" />\n                    ))}\n            </AvatarGroup>\n        </div>\n    );\n}"
         }
       ]
     },
@@ -3305,7 +3272,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Badge } from '@daisforge/ui';",
       "minimalUsage": "<Badge />",
@@ -3421,7 +3388,7 @@
         }
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { BlockGradientScroll } from '@daisforge/ui';",
       "minimalUsage": "<BlockGradientScroll />",
@@ -3573,7 +3540,7 @@
         }
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { BlockTitle } from '@daisforge/ui';",
       "minimalUsage": "<BlockTitle />",
@@ -3932,7 +3899,7 @@
         }
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Box } from '@daisforge/ui';",
       "minimalUsage": "<Box />",
@@ -4029,7 +3996,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Breadcrumbs } from '@daisforge/ui';",
       "minimalUsage": "<Breadcrumbs items={[]} />",
@@ -4227,7 +4194,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Button } from '@daisforge/ui';",
       "minimalUsage": "<Button />",
@@ -4296,7 +4263,7 @@
         "кастомная кнопка"
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { ButtonBase } from '@daisforge/ui';",
       "minimalUsage": "<ButtonBase />",
@@ -4390,7 +4357,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { ButtonGroup } from '@daisforge/ui';",
       "minimalUsage": "<ButtonGroup />",
@@ -4670,7 +4637,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Calendar } from '@daisforge/ui';",
       "minimalUsage": "<Calendar onChangeValue={() => {}} value={{}} />",
@@ -5553,7 +5520,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Card } from '@daisforge/ui';",
       "minimalUsage": "<Card />",
@@ -5615,7 +5582,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "Card",
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { CardContent } from '@daisforge/ui';",
       "minimalUsage": "<CardContent />",
@@ -5673,7 +5640,7 @@
       "relatedExports": [
         "CardContent"
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { CardInnerContent } from '@daisforge/ui';",
       "minimalUsage": "<CardInnerContent />",
@@ -5800,7 +5767,7 @@
       ],
       "hasCuratedMeta": true,
       "inheritedProps": [],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Carousel } from '@daisforge/ui';",
       "minimalUsage": "<Carousel />",
@@ -5868,7 +5835,7 @@
         "scroll snap"
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { CarouselItem } from '@daisforge/ui';",
       "minimalUsage": "<CarouselItem />",
@@ -5924,7 +5891,7 @@
         "содержимое строки списка"
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { CellTextbox } from '@daisforge/ui';",
       "minimalUsage": "<CellTextbox />",
@@ -5961,7 +5928,7 @@
         "подпись поля списка"
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { CellTextboxLabel } from '@daisforge/ui';",
       "minimalUsage": "<CellTextboxLabel />",
@@ -5998,7 +5965,7 @@
         "вторичный текст ячейки"
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { CellTextboxSubtitle } from '@daisforge/ui';",
       "minimalUsage": "<CellTextboxSubtitle />",
@@ -6035,7 +6002,7 @@
         "основной текст ячейки"
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { CellTextboxTitle } from '@daisforge/ui';",
       "minimalUsage": "<CellTextboxTitle />",
@@ -6169,7 +6136,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Cell } from '@daisforge/ui';",
       "minimalUsage": "<Cell />",
@@ -6402,7 +6369,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Checkbox } from '@daisforge/ui';",
       "minimalUsage": "<Checkbox />",
@@ -6605,7 +6572,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Chip } from '@daisforge/ui';",
       "minimalUsage": "<Chip />",
@@ -6716,7 +6683,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { ChipGroup } from '@daisforge/ui';",
       "minimalUsage": "<ChipGroup />",
@@ -6920,7 +6887,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { CodeField } from '@daisforge/ui';",
       "minimalUsage": "<CodeField />",
@@ -7091,7 +7058,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { CodeInput } from '@daisforge/ui';",
       "minimalUsage": "<CodeInput />",
@@ -7238,7 +7205,7 @@
         }
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Collapse } from '@daisforge/ui';",
       "minimalUsage": "<Collapse />",
@@ -7881,7 +7848,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Combobox } from '@daisforge/ui';",
       "minimalUsage": "<Combobox items={[]} />",
@@ -7984,7 +7951,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Counter } from '@daisforge/ui';",
       "minimalUsage": "<Counter count={0} />",
@@ -8695,7 +8662,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { DatePicker } from '@daisforge/ui';",
       "minimalUsage": "<DatePicker />",
@@ -10046,7 +10013,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { DateTimePicker } from '@daisforge/ui';",
       "minimalUsage": "<DateTimePicker />",
@@ -10128,7 +10095,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Divider } from '@daisforge/ui';",
       "minimalUsage": "<Divider />",
@@ -10425,7 +10392,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Drawer } from '@daisforge/ui';",
       "minimalUsage": "<Drawer />",
@@ -11894,7 +11861,7 @@
         "DrawerDFFooter",
         "DrawerDFHeader"
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { DrawerDF } from '@daisforge/ui';",
       "minimalUsage": "<DrawerDF>\n  {/* части: DrawerDF.Content, DrawerDF.Header, DrawerDF.DotsIconButton, DrawerDF.Footer */}\n</DrawerDF>",
@@ -12233,7 +12200,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "DrawerDF",
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "compoundPartOf": {
         "component": "DrawerDF",
         "part": "Content"
@@ -12548,7 +12515,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "DrawerDF",
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "compoundPartOf": {
         "component": "DrawerDF",
         "part": "Footer"
@@ -12893,7 +12860,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "DrawerDF",
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "compoundPartOf": {
         "component": "DrawerDF",
         "part": "Header"
@@ -13140,7 +13107,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Dropdown } from '@daisforge/ui';",
       "minimalUsage": "<Dropdown items={[]} />",
@@ -13329,7 +13296,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Dropzone } from '@daisforge/ui';",
       "minimalUsage": "<Dropzone />",
@@ -13527,7 +13494,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { EmbedIconButton } from '@daisforge/ui';",
       "minimalUsage": "<EmbedIconButton />",
@@ -13629,7 +13596,7 @@
       ],
       "hasCuratedMeta": true,
       "inheritedProps": [],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { EmbeddedButtonBeta } from '@daisforge/ui';",
       "minimalUsage": "<EmbeddedButtonBeta />",
@@ -13746,7 +13713,7 @@
         }
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { EmptyState } from '@daisforge/ui';",
       "minimalUsage": "<EmptyState size={\"l\"} />",
@@ -13874,7 +13841,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Flow } from '@daisforge/ui';",
       "minimalUsage": "<Flow children={'Контент'} />",
@@ -14133,7 +14100,7 @@
         "responsive layout"
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Col } from '@daisforge/ui';",
       "minimalUsage": "<Col />",
@@ -14194,7 +14161,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Grid } from '@daisforge/ui';",
       "minimalUsage": "<Grid />",
@@ -14237,7 +14204,7 @@
         "horizontal layout"
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Row } from '@daisforge/ui';",
       "minimalUsage": "<Row />",
@@ -14540,7 +14507,7 @@
         }
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { GridDND } from '@daisforge/ui';",
       "minimalUsage": "<GridDND items={[]}>\n  {/* части: GridDND.ItemWrapper */}\n</GridDND>",
@@ -14751,7 +14718,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { IconButton } from '@daisforge/ui';",
       "minimalUsage": "<IconButton />",
@@ -14953,7 +14920,7 @@
         "dropdown trigger"
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { IconButtonDots } from '@daisforge/ui';",
       "minimalUsage": "<IconButtonDots />",
@@ -15127,7 +15094,7 @@
         "индикатор активных фильтров"
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { IconButtonFilter } from '@daisforge/ui';",
       "minimalUsage": "<IconButtonFilter />",
@@ -15165,7 +15132,7 @@
       ],
       "docs": "# IconSvgSprite\n\n### Компонент для отрисовки SVG спрайтов\n\n---\n\n#### Использование\n\nВ `iconUrl` передается url `https://cdn.dddd.ru/FileWithSprites.svg` на файл содержащий спрайты иконок и ссылка на необходимую иконку `#IconId`.\nИспользуется в finai-admin, finai-header, finai-platform.\nДля этих микрофронтов url к картинке приходит в формате `/pl/static-res/finai_icons/sprite-{size}-1.svg#IconAvatar-{size}`,\nв которых плейсхолдер `{size}` в компоненте заменяется пропсом `size`. При отсутствии плейсхолдеров будет использоваться исходный url к спрайту.\n\n```jsx\n\n<IconSprite iconUrl=\"https://cdn.dddd.ru/FileWithSprites.svg#IconId\" />;\n```\n\n### Пропсы\n\n```js\ntype Props = {\n  // url иконки\n  iconUrl: string,\n  // размер иконки, default = 's'\n  size?: 'xs' | 's' | 'm',\n  // цвет иконки\n  color?: string,\n  // css класс\n  className?: string\n};\n```\n\n### Механизм работы SVG спрайтов\n\nДокументация [\\<symbol\\>](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/symbol) [\\<use\\>](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/use)\n\n    - `<symbol id=\"Icon-1\">` - определяем иконку внутри тэга `symbol`, атрибут `id` используется в качестве ссылки на иконку\n\n```svg\n<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" style=\"display: none;\" ... >\n  <symbol id=\"Icon1\" width=\"100%\" viewBox=\"0 0 24 24\" ... >\n    <g><path ... </g>\n  </symbol>\n  <symbol id=\"Icon2\" width=\"100%\" viewBox=\"0 0 24 24\" ... >\n     <g><path ... </g>\n  </symbol>\n</svg>\n```\n\n    - Используем иконку с помощью тэга `<use>`\n\n```svg\n<svg width=\"100%\" viewBox=\"0 0 16 16\" ... >\n  <use xlinkHref=\"https://cdn.dddd.ru/FileWithSprites.svg#Icon1\" />\n</svg>\n\n```",
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { IconSvgSprite } from '@daisforge/ui';",
       "minimalUsage": "<IconSvgSprite iconUrl={'значение'} />",
@@ -15245,7 +15212,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Image } from '@daisforge/ui';",
       "minimalUsage": "<Image />",
@@ -15303,7 +15270,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Indicator } from '@daisforge/ui';",
       "minimalUsage": "<Indicator size={\"l\"} view={\"accent\"} />",
@@ -15519,7 +15486,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { InformationWrapper } from '@daisforge/ui';",
       "minimalUsage": "<InformationWrapper />",
@@ -15839,7 +15806,7 @@
       "relatedExports": [
         "LeftPanelToggleButton"
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { LeftPanel } from '@daisforge/ui';",
       "minimalUsage": "<LeftPanel>\n  {/* части: LeftPanel.LeftPanelToggleButton */}\n</LeftPanel>",
@@ -16050,7 +16017,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "LeftPanel",
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { LeftPanelToggleButton } from '@daisforge/ui';",
       "minimalUsage": "<LeftPanelToggleButton />",
@@ -16140,7 +16107,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Link } from '@daisforge/ui';",
       "minimalUsage": "<Link />",
@@ -16281,7 +16248,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { LinkButton } from '@daisforge/ui';",
       "minimalUsage": "<LinkButton />",
@@ -16396,7 +16363,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { List } from '@daisforge/ui';",
       "minimalUsage": "<List />",
@@ -16465,7 +16432,7 @@
         "list row"
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { ListItem } from '@daisforge/ui';",
       "minimalUsage": "<ListItem />",
@@ -16615,7 +16582,7 @@
         "сброс фильтров"
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { ListOfFilters } from '@daisforge/ui';",
       "minimalUsage": "<ListOfFilters clearAll={() => {}} items={[]} opened={true} />",
@@ -17127,7 +17094,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Mask } from '@daisforge/ui';",
       "minimalUsage": "<Mask />",
@@ -17332,7 +17299,7 @@
         }
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { MassActions } from '@daisforge/ui';",
       "minimalUsage": "<MassActions containerRef={() => {}} leftSection={'Контент'} selectedCount={0}>\n  {/* части: MassActions.Counter */}\n</MassActions>",
@@ -17561,7 +17528,7 @@
         "action button dropdown"
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { MassActionsButton } from '@daisforge/ui';",
       "minimalUsage": "<MassActionsButton />",
@@ -17616,7 +17583,7 @@
         "чекбокс выбора всех"
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "compoundPartOf": {
         "component": "MassActions",
         "part": "Counter"
@@ -17685,7 +17652,7 @@
         "fixed position"
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { MassActionsStatic } from '@daisforge/ui';",
       "minimalUsage": "<MassActionsStatic children={'Контент'} />",
@@ -17935,7 +17902,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Modal } from '@daisforge/ui';",
       "minimalUsage": "<Modal />",
@@ -18255,7 +18222,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "compoundPartOf": {
         "component": "ModalDF",
         "part": "BackIconButton"
@@ -18371,7 +18338,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "compoundPartOf": {
         "component": "ModalDF",
         "part": "Divider"
@@ -18702,7 +18669,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "compoundPartOf": {
         "component": "ModalDF",
         "part": "DotsIconButton"
@@ -18771,7 +18738,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "ModalDF",
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "compoundPartOf": {
         "component": "ModalDF",
         "part": "Footer"
@@ -18853,7 +18820,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "ModalDF",
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "compoundPartOf": {
         "component": "ModalDF",
         "part": "Header"
@@ -18904,7 +18871,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "ModalDF",
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "compoundPartOf": {
         "component": "ModalDF",
         "part": "ServiceButtons"
@@ -20449,7 +20416,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { ModalDF } from '@daisforge/ui';",
       "minimalUsage": "<ModalDF>\n  {/* части: ModalDF.Left, ModalDF.Main, ModalDF.Header, ModalDF.Footer, ModalDF.Content, ModalDF.Divider, ModalDF.ServiceButtons, ModalDF.DotsIconButton, ModalDF.BackIconButton */}\n</ModalDF>",
@@ -20769,7 +20736,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "ModalDF",
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "compoundPartOf": {
         "component": "ModalDF",
         "part": "Left"
@@ -21083,7 +21050,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "ModalDF",
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "compoundPartOf": {
         "component": "ModalDF",
         "part": "Main"
@@ -21397,7 +21364,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "ModalDF",
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "compoundPartOf": {
         "component": "ModalDF",
         "part": "Content"
@@ -21721,7 +21688,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { ModalDFConfirmation } from '@daisforge/ui';",
       "minimalUsage": "<ModalDFConfirmation>\n  {/* части: ModalDFConfirmation.Footer */}\n</ModalDFConfirmation>",
@@ -21785,7 +21752,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "ModalDFConfirmation",
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "compoundPartOf": {
         "component": "ModalDFConfirmation",
         "part": "Footer"
@@ -21928,7 +21895,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Note } from '@daisforge/ui';",
       "minimalUsage": "<Note />",
@@ -22160,7 +22127,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Notification } from '@daisforge/ui';",
       "minimalUsage": "<Notification />",
@@ -22698,7 +22665,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { NumberFormat } from '@daisforge/ui';",
       "minimalUsage": "<NumberFormat />",
@@ -23069,7 +23036,7 @@
         }
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { NumberFormatAmount } from '@daisforge/ui';",
       "minimalUsage": "<NumberFormatAmount />",
@@ -23385,7 +23352,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { NumberInput } from '@daisforge/ui';",
       "minimalUsage": "<NumberInput />",
@@ -23465,7 +23432,7 @@
         "оверлей под модалкой"
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Overlay } from '@daisforge/ui';",
       "minimalUsage": "<Overlay backgroundColorProperty={'значение'} zIndex={'значение'} />",
@@ -23505,7 +23472,7 @@
         }
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { PageLoader } from '@daisforge/ui';",
       "minimalUsage": "<PageLoader />",
@@ -23646,7 +23613,7 @@
         }
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { PageTitle } from '@daisforge/ui';",
       "minimalUsage": "<PageTitle />",
@@ -23689,20 +23656,6 @@
           "type": "React.ComponentType<any> | keyof JSX.IntrinsicElements | undefined",
           "required": false,
           "description": "Сменить рендер на другой тип компонента."
-        },
-        {
-          "name": "hasPageRange",
-          "type": "boolean | undefined",
-          "required": false,
-          "description": "Показывать номера страниц.",
-          "default": "true"
-        },
-        {
-          "name": "hasTotalPages",
-          "type": "boolean | undefined",
-          "required": false,
-          "description": "Показывать общее число страниц рядом с полем быстрого перехода.",
-          "default": "false"
         },
         {
           "name": "children",
@@ -23757,6 +23710,15 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         },
         {
+          "name": "hasPageRange",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Показывать номера страниц.",
+          "default": "true",
+          "inheritedFrom": "Pagination",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
           "name": "hasPerPage",
           "type": "boolean | undefined",
           "required": false,
@@ -23769,6 +23731,15 @@
           "type": "boolean | undefined",
           "required": false,
           "description": "Выбор страницы через Input",
+          "inheritedFrom": "Pagination",
+          "inheritedPackage": "@salutejs/sdds-finai"
+        },
+        {
+          "name": "hasTotalPages",
+          "type": "boolean | undefined",
+          "required": false,
+          "description": "Показывать общее число страниц рядом с полем быстрого перехода.",
+          "default": "false",
           "inheritedFrom": "Pagination",
           "inheritedPackage": "@salutejs/sdds-finai"
         },
@@ -23963,7 +23934,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Pagination } from '@daisforge/ui';",
       "minimalUsage": "<Pagination />",
@@ -24174,7 +24145,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Popover } from '@daisforge/ui';",
       "minimalUsage": "<Popover />",
@@ -24360,7 +24331,7 @@
       "chooseWhen": "Новая проработанная версия — нужен изменяемый размер попапа, явный выбор триггера (hover/click/focus) или рендер в портал — иначе берите стабильный Popover.",
       "hasCuratedMeta": true,
       "inheritedProps": [],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { PopoverBeta } from '@daisforge/ui';",
       "minimalUsage": "<PopoverBeta children={'Контент'} target={'Контент'} />",
@@ -24658,7 +24629,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "PopoverDF",
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "compoundPartOf": {
         "component": "PopoverDF",
         "part": "Body"
@@ -24973,7 +24944,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "PopoverDF",
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "compoundPartOf": {
         "component": "PopoverDF",
         "part": "Footer"
@@ -25049,7 +25020,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "PopoverDF",
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "compoundPartOf": {
         "component": "PopoverDF",
         "part": "Header"
@@ -25848,7 +25819,7 @@
         "PopoverDFFooter",
         "PopoverDFHeader"
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { PopoverDF } from '@daisforge/ui';",
       "minimalUsage": "<PopoverDF target={'Контент'}>\n  {/* части: PopoverDF.Header, PopoverDF.Body, PopoverDF.Footer */}\n</PopoverDF>",
@@ -25916,7 +25887,7 @@
         "provider для окна"
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { PopupProvider } from '@daisforge/ui';",
       "minimalUsage": "<PopupProvider />",
@@ -26073,7 +26044,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Popup } from '@daisforge/ui';",
       "minimalUsage": "<Popup />",
@@ -26376,7 +26347,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "PopupDF",
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "compoundPartOf": {
         "component": "PopupDF",
         "part": "Body"
@@ -26691,7 +26662,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "PopupDF",
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "compoundPartOf": {
         "component": "PopupDF",
         "part": "Footer"
@@ -26779,7 +26750,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "PopupDF",
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "compoundPartOf": {
         "component": "PopupDF",
         "part": "Header"
@@ -27542,7 +27513,7 @@
         "PopupDFFooter",
         "PopupDFHeader"
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { PopupDF } from '@daisforge/ui';",
       "minimalUsage": "<PopupDF>\n  {/* части: PopupDF.Header, PopupDF.Body, PopupDF.Footer */}\n</PopupDF>",
@@ -27604,7 +27575,7 @@
         "рендер вне дерева"
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Portal } from '@daisforge/ui';",
       "minimalUsage": "<Portal />",
@@ -27705,7 +27676,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Price } from '@daisforge/ui';",
       "minimalUsage": "<Price children={0} />",
@@ -27864,7 +27835,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Progress } from '@daisforge/ui';",
       "minimalUsage": "<Progress value={0} />",
@@ -27969,7 +27940,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { ProgressBarCircular } from '@daisforge/ui';",
       "minimalUsage": "<ProgressBarCircular />",
@@ -28194,7 +28165,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Radiobox } from '@daisforge/ui';",
       "minimalUsage": "<Radiobox />",
@@ -28238,7 +28209,7 @@
       ],
       "chooseWhen": "Вне react-hook-form — группа радиокнопок с value/onChange напрямую.",
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { RadioGroup } from '@daisforge/ui';",
       "minimalUsage": "<RadioGroup children={'Контент'} />",
@@ -28702,7 +28673,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Range } from '@daisforge/ui';",
       "minimalUsage": "<Range />",
@@ -28846,7 +28817,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Rating } from '@daisforge/ui';",
       "minimalUsage": "<Rating />",
@@ -28889,7 +28860,7 @@
         "скринридер"
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { SSRProvider } from '@daisforge/ui';",
       "minimalUsage": "<SSRProvider children={'Контент'} />",
@@ -29028,7 +28999,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { SegmentGroup } from '@daisforge/ui';",
       "minimalUsage": "<SegmentGroup />",
@@ -29309,7 +29280,7 @@
         "состояние выбора вкладки"
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { SegmentProvider } from '@daisforge/ui';",
       "minimalUsage": "<SegmentProvider />",
@@ -29938,7 +29909,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Select } from '@daisforge/ui';",
       "minimalUsage": "<Select items={[]} />",
@@ -30165,7 +30136,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Sheet } from '@daisforge/ui';",
       "minimalUsage": "<Sheet onClose={() => {}} />",
@@ -30274,7 +30245,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { LineSkeleton } from '@daisforge/ui';",
       "minimalUsage": "<LineSkeleton />",
@@ -30386,7 +30357,7 @@
         "заглушка изображения"
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { RectSkeleton } from '@daisforge/ui';",
       "minimalUsage": "<RectSkeleton height={'значение'} width={'значение'} />",
@@ -30865,7 +30836,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Slider } from '@daisforge/ui';",
       "minimalUsage": "<Slider max={0} min={0} />",
@@ -30961,7 +30932,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Spinner } from '@daisforge/ui';",
       "minimalUsage": "<Spinner />",
@@ -31078,7 +31049,7 @@
         }
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { SplitView } from '@daisforge/ui';",
       "minimalUsage": "<SplitView mainContent={'Контент'} />",
@@ -31257,7 +31228,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Steps } from '@daisforge/ui';",
       "minimalUsage": "<Steps />",
@@ -31356,7 +31327,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "Stories",
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "compoundPartOf": {
         "component": "Stories",
         "part": "Preview"
@@ -31673,7 +31644,7 @@
       "relatedExports": [
         "StoriesPreview"
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Stories } from '@daisforge/ui';",
       "minimalUsage": "<Stories children={'Контент'}>\n  {/* части: Stories.Preview */}\n</Stories>",
@@ -31827,7 +31798,7 @@
       ],
       "chooseWhen": "Вне react-hook-form — тумблер вкл/выкл с value/onChange напрямую.",
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Switch } from '@daisforge/ui';",
       "minimalUsage": "<Switch />",
@@ -31939,7 +31910,7 @@
         "Canvas",
         "TextCellEntryType"
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { TableFilterSelect } from '@daisforge/ui/components/TableCanvas';",
       "minimalUsage": "<TableFilterSelect onChange={() => {}} options={[]} value={[]} />",
@@ -31993,7 +31964,7 @@
         "Canvas",
         "TextCellEntryType"
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { TableFilterSelectList } from '@daisforge/ui/components/TableCanvas';",
       "minimalUsage": "<TableFilterSelectList />",
@@ -32048,7 +32019,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "TableCanvas",
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { TableFilterSelectListItem } from '@daisforge/ui/components/TableCanvas';",
       "minimalUsage": "<TableFilterSelectListItem />",
@@ -32358,7 +32329,7 @@
         "Canvas",
         "TextCellEntryType"
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { TableFilterSelectSearchTextfield } from '@daisforge/ui/components/TableCanvas';",
       "minimalUsage": "<TableFilterSelectSearchTextfield />",
@@ -32668,7 +32639,7 @@
         "Canvas",
         "TextCellEntryType"
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { TableFilterSelectTotalListItemContainer } from '@daisforge/ui/components/TableCanvas';",
       "minimalUsage": "<TableFilterSelectTotalListItemContainer $beforeList={true} $listIsNonEmpty={true} />",
@@ -32781,7 +32752,7 @@
         "NoRowsFallback",
         "ContainerStyled"
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Table } from '@daisforge/ui';",
       "minimalUsage": "<Table columnConfig={[]} rows={[]} />",
@@ -32931,7 +32902,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "Table",
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { ControlBlockSwitch } from '@daisforge/ui';",
       "minimalUsage": "<ControlBlockSwitch checked={true} />",
@@ -32962,7 +32933,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "Table",
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { NoRowsFallback } from '@daisforge/ui';",
       "minimalUsage": "<NoRowsFallback />",
@@ -33101,7 +33072,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "TableCanvas",
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { ContainerStyled } from '@daisforge/ui/components/TableCanvas';",
       "minimalUsage": "<ContainerStyled $activeTheme={\"betaCoreDark\"} $activeView={{}} $appearanceVariant={{}} $borderLeftBottomRadiusRounded={true} $borderLeftTopRadiusRounded={true} $borderRightBottomRadiusRounded={true} $borderRightTopRadiusRounded={true} $columnsGroupingIsActive={true} $fullScreened={true} $highlightActiveType={{}} $isHaveRowHeightAnimation={true} $rowHeight={\"big\"} />",
@@ -33212,7 +33183,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "TableCanvas",
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { SplitIconButton } from '@daisforge/ui/components/TableCanvas';",
       "minimalUsage": "<SplitIconButton icon={'Контент'} />",
@@ -33887,7 +33858,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { CellEditorCombobox } from '@daisforge/ui/components/TableCanvas';",
       "minimalUsage": "<CellEditorCombobox autoFocusType={\"autoFocus\"} cellHeight={0} cellWidth={0} items={[]} />",
@@ -34385,7 +34356,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { CellEditorNumberFormat } from '@daisforge/ui/components/TableCanvas';",
       "minimalUsage": "<CellEditorNumberFormat autoFocusType={\"autoFocus\"} cellHeight={0} cellWidth={0} />",
@@ -34509,7 +34480,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "TableCanvas",
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { CellEditorTextArea } from '@daisforge/ui/components/TableCanvas';",
       "minimalUsage": "<CellEditorTextArea cellHeight={0} cellWidth={0} />",
@@ -34596,7 +34567,7 @@
         "Canvas",
         "TextCellEntryType"
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { TableCanvas } from '@daisforge/ui';",
       "minimalUsage": "<TableCanvas columnConfig={[]} rows={[]} />",
@@ -34669,7 +34640,7 @@
         "Canvas",
         "TextCellEntryType"
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { TableCanvasLoggerFilters } from '@daisforge/ui/components/TableCanvas';",
       "minimalUsage": "<TableCanvasLoggerFilters counts={{}} onChange={() => {}} value={{}} />",
@@ -34723,7 +34694,7 @@
         "Canvas",
         "TextCellEntryType"
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { TableCanvasLoggerGroup } from '@daisforge/ui/components/TableCanvas';",
       "minimalUsage": "<TableCanvasLoggerGroup item={{}} />",
@@ -34765,7 +34736,7 @@
         "Canvas",
         "TextCellEntryType"
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { TableCanvasLoggerItems } from '@daisforge/ui/components/TableCanvas';",
       "minimalUsage": "<TableCanvasLoggerItems items={[]} />",
@@ -34819,7 +34790,7 @@
         "Canvas",
         "TextCellEntryType"
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { TableCanvasLoggerMessage } from '@daisforge/ui/components/TableCanvas';",
       "minimalUsage": "<TableCanvasLoggerMessage item={{}} />",
@@ -34868,7 +34839,7 @@
         "Canvas",
         "TextCellEntryType"
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { TableCanvasLoggerStatusIcon } from '@daisforge/ui/components/TableCanvas';",
       "minimalUsage": "<TableCanvasLoggerStatusIcon status={{}} />",
@@ -35082,7 +35053,7 @@
         "Canvas",
         "TextCellEntryType"
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { TableCanvasLogger } from '@daisforge/ui/components/TableCanvas';",
       "minimalUsage": "<TableCanvasLogger />",
@@ -35245,7 +35216,7 @@
         "Canvas",
         "TextCellEntryType"
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { TableCanvasLoggerList } from '@daisforge/ui/components/TableCanvas';",
       "minimalUsage": "<TableCanvasLoggerList />",
@@ -35371,7 +35342,7 @@
         "Canvas",
         "TextCellEntryType"
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { TableCanvasLoggerProvider } from '@daisforge/ui/components/TableCanvas';",
       "minimalUsage": "<TableCanvasLoggerProvider children={'Контент'} expandedIds={[]} toggleExpanded={() => {}} />",
@@ -36471,7 +36442,7 @@
         "Canvas",
         "TextCellEntryType"
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { TableGlideInstance } from '@daisforge/ui/components/TableCanvas';",
       "minimalUsage": "<TableGlideInstance CellReadOnlyEditor={() => {}} columns={[]} rows={[]} />",
@@ -36531,7 +36502,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "TableCanvas",
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { TextCellEntry } from '@daisforge/ui/components/TableCanvas';",
       "minimalUsage": "<TextCellEntry highlight={true} />",
@@ -38227,7 +38198,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "TableCanvas",
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { Canvas } from '@daisforge/ui/components/TableCanvas';",
       "minimalUsage": "<Canvas.Container />",
@@ -38287,7 +38258,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "TableCanvas",
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui/components/TableCanvas",
       "importStatement": "import { TextCellEntryType } from '@daisforge/ui/components/TableCanvas';",
       "minimalUsage": "<TextCellEntryType highlight={true} />",
@@ -38374,7 +38345,7 @@
         }
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { TableContract } from '@daisforge/ui';",
       "minimalUsage": "<TableContract fetcher={async () => new Response('{}')} />",
@@ -38587,7 +38558,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { TableSDDS } from '@daisforge/ui';",
       "minimalUsage": "<TableSDDS columns={[]} data={[]} />",
@@ -39004,7 +38975,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { TableTabs } from '@daisforge/ui';",
       "minimalUsage": "<TableTabs tabs={[]}>\n  {/* части: TableTabs.TabPanel */}\n</TableTabs>",
@@ -39439,7 +39410,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Tabs } from '@daisforge/ui';",
       "minimalUsage": "<Tabs />",
@@ -39888,7 +39859,7 @@
       ],
       "chooseWhen": "Вне react-hook-form — многострочное поле с value/onChange напрямую.",
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { TextArea } from '@daisforge/ui';",
       "minimalUsage": "<TextArea />",
@@ -40369,7 +40340,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { TextField } from '@daisforge/ui';",
       "minimalUsage": "<TextField />",
@@ -40703,7 +40674,7 @@
         }
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { TextFieldSearch } from '@daisforge/ui';",
       "minimalUsage": "<TextFieldSearch />",
@@ -40804,7 +40775,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { TextFieldGroup } from '@daisforge/ui';",
       "minimalUsage": "<TextFieldGroup />",
@@ -41271,7 +41242,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { TimePicker } from '@daisforge/ui';",
       "minimalUsage": "<TimePicker />",
@@ -41403,7 +41374,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Toast } from '@daisforge/ui';",
       "minimalUsage": "<Toast />",
@@ -41537,7 +41508,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Toolbar } from '@daisforge/ui';",
       "minimalUsage": "<Toolbar children={'Контент'} />",
@@ -41869,7 +41840,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { TooltipList } from '@daisforge/ui';",
       "minimalUsage": "<TooltipList items={[]} children={'Контент'} />",
@@ -42121,7 +42092,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Tooltip } from '@daisforge/ui';",
       "minimalUsage": "<Tooltip text={'Контент'} />",
@@ -42277,7 +42248,7 @@
       "chooseWhen": "Новая версия с лучшей логикой работы слоев. Точно в новых проектах использовать его. Или в старых проектах, если не устроил обычный Tooltip. И точно если Нужен явный выбор триггера (клик/hover/фокус)",
       "hasCuratedMeta": true,
       "inheritedProps": [],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { TooltipBeta } from '@daisforge/ui';",
       "minimalUsage": "<TooltipBeta children={'значение'} target={'Контент'} />",
@@ -42483,7 +42454,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Tour } from '@daisforge/ui';",
       "minimalUsage": "<Tour renderStep={() => {}} steps={[]} />",
@@ -42545,7 +42516,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "TourWidget",
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "compoundPartOf": {
         "component": "TourWidget",
         "part": "Bullet"
@@ -42586,7 +42557,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "TourWidget",
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "compoundPartOf": {
         "component": "TourWidget",
         "part": "Bullets"
@@ -42642,7 +42613,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "TourWidget",
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "compoundPartOf": {
         "component": "TourWidget",
         "part": "Content"
@@ -42698,7 +42669,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "TourWidget",
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "compoundPartOf": {
         "component": "TourWidget",
         "part": "Footer"
@@ -42766,7 +42737,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "TourWidget",
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "compoundPartOf": {
         "component": "TourWidget",
         "part": "Header"
@@ -42997,7 +42968,7 @@
         "TourWidgetFooter",
         "TourWidgetHeader"
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { TourWidget } from '@daisforge/ui';",
       "minimalUsage": "<TourWidget>\n  {/* части: TourWidget.Header, TourWidget.Content, TourWidget.Footer, TourWidget.Bullet, TourWidget.Bullets */}\n</TourWidget>",
@@ -43371,7 +43342,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Tree } from '@daisforge/ui';",
       "minimalUsage": "<Tree items={[]} />",
@@ -43823,7 +43794,7 @@
         "ellipsis"
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { TypographyWithAutoTooltip } from '@daisforge/ui';",
       "minimalUsage": "<TypographyWithAutoTooltip children={'Контент'} variant={\"BodyL\"} />",
@@ -46084,7 +46055,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { ViewContainer } from '@daisforge/ui';",
       "minimalUsage": "<ViewContainer />",
@@ -46203,7 +46174,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "compoundPartOf": {
         "component": "Widget",
         "part": "Divider"
@@ -46535,7 +46506,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "Widget",
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "compoundPartOf": {
         "component": "Widget",
         "part": "Footer"
@@ -46683,7 +46654,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "Widget",
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "compoundPartOf": {
         "component": "Widget",
         "part": "Header"
@@ -47009,7 +46980,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "compoundPartOf": {
         "component": "Widget",
         "part": "IconButtonBack"
@@ -47200,7 +47171,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "Widget",
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "compoundPartOf": {
         "component": "Widget",
         "part": "IconButtonDots"
@@ -47533,7 +47504,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "Widget",
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "compoundPartOf": {
         "component": "Widget",
         "part": "ServiceButtons"
@@ -47832,7 +47803,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "Widget",
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "compoundPartOf": {
         "component": "Widget",
         "part": "Content"
@@ -49242,7 +49213,7 @@
         "WidgetServiceButtons",
         "WidgetContent"
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Widget } from '@daisforge/ui';",
       "minimalUsage": "<Widget>\n  {/* части: Widget.Header, Widget.Footer, Widget.Content, Widget.Divider, Widget.ServiceButtons, Widget.IconButtonDots, Widget.IconButtonBack */}\n</Widget>",
@@ -49654,7 +49625,7 @@
       ],
       "chooseWhen": "Внутри формы на react-hook-form — принимает name/control/rules вместо value/onChange.",
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { FormAutocomplete } from '@daisforge/ui';",
       "minimalUsage": "<FormAutocomplete name={'значение'} />",
@@ -49787,7 +49758,7 @@
       ],
       "chooseWhen": "Внутри формы на react-hook-form — одиночный чекбокс или группа через name/control, правила — через rules.",
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { FormCheckbox } from '@daisforge/ui';",
       "minimalUsage": "<FormCheckbox name={'значение'} />",
@@ -50266,7 +50237,7 @@
       ],
       "chooseWhen": "Внутри формы на react-hook-form — тот же мультивыбор с поиском через name/control/rules.",
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { FormCombobox } from '@daisforge/ui';",
       "minimalUsage": "<FormCombobox items={[]} name={'значение'} />",
@@ -50798,7 +50769,7 @@
       ],
       "chooseWhen": "Внутри формы на react-hook-form — добавляет валидацию формата и диапазона min/max через rules.",
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { FormDatePicker } from '@daisforge/ui';",
       "minimalUsage": "<FormDatePicker name={'значение'} />",
@@ -51450,7 +51421,7 @@
       ],
       "chooseWhen": "Внутри формы на react-hook-form — тот же диапазон дат с валидацией периода через rules.",
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { FormDatePickerRange } from '@daisforge/ui';",
       "minimalUsage": "<FormDatePickerRange name={'значение'} />",
@@ -51814,7 +51785,7 @@
       ],
       "chooseWhen": "Внутри формы на react-hook-form — то же поле с маской, плюс поддержка чипов, через name/control.",
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { FormMask } from '@daisforge/ui';",
       "minimalUsage": "<FormMask mask={'значение'} name={'значение'} />",
@@ -52180,7 +52151,7 @@
       ],
       "chooseWhen": "Внутри формы на react-hook-form — то же форматирование чисел через name/control/rules.",
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { FormNumberFormat } from '@daisforge/ui';",
       "minimalUsage": "<FormNumberFormat name={'значение'} />",
@@ -52305,7 +52276,7 @@
       ],
       "chooseWhen": "Только как элемент внутри FormRadioGroup для форм на react-hook-form — не используется отдельно от группы.",
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { FormRadiobox } from '@daisforge/ui';",
       "minimalUsage": "<FormRadiobox value={'значение'} />",
@@ -52417,7 +52388,7 @@
       ],
       "chooseWhen": "Внутри формы на react-hook-form — та же группа радиокнопок с валидацией и подсказкой через name/control/rules.",
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { FormRadioGroup } from '@daisforge/ui';",
       "minimalUsage": "<FormRadioGroup children={'Контент'} name={'значение'} />",
@@ -52581,7 +52552,7 @@
       ],
       "chooseWhen": "Внутри формы на react-hook-form — тот же переключатель через name/control.",
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { FormSegmentGroup } from '@daisforge/ui';",
       "minimalUsage": "<FormSegmentGroup items={[]} name={'значение'} />",
@@ -53040,7 +53011,7 @@
       ],
       "chooseWhen": "Внутри формы на react-hook-form — тот же список через name/control/rules.",
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { FormSelect } from '@daisforge/ui';",
       "minimalUsage": "<FormSelect items={[]} name={'значение'} />",
@@ -53188,7 +53159,7 @@
       ],
       "chooseWhen": "Внутри формы на react-hook-form — тот же тумблер через name/control.",
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { FormSwitch } from '@daisforge/ui';",
       "minimalUsage": "<FormSwitch name={'значение'} />",
@@ -53485,7 +53456,7 @@
       ],
       "chooseWhen": "Внутри формы на react-hook-form — то же поле со счётчиком символов через name/control/rules.",
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { FormTextArea } from '@daisforge/ui';",
       "minimalUsage": "<FormTextArea name={'значение'} />",
@@ -53795,7 +53766,7 @@
       ],
       "chooseWhen": "Внутри формы на react-hook-form — то же поле с выводом ошибки валидации через name/control/rules.",
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { FormTextField } from '@daisforge/ui';",
       "minimalUsage": "<FormTextField name={'значение'} />",
@@ -53934,7 +53905,7 @@
         }
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Container } from '@daisforge/ui';",
       "minimalUsage": "<Container />",
@@ -54139,7 +54110,7 @@
         }
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { ErrorPage } from '@daisforge/ui';",
       "minimalUsage": "<ErrorPage />",
@@ -54363,7 +54334,7 @@
           "inheritedPackage": "@salutejs/sdds-finai"
         }
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { FiltersActionsDotsIconButton } from '@daisforge/ui';",
       "minimalUsage": "<FiltersActionsDotsIconButton />",
@@ -54562,7 +54533,7 @@
       "hasCuratedMeta": true,
       "parentComponent": "FiltersActions",
       "inheritedProps": [],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "compoundPartOf": {
         "component": "FiltersActions",
         "part": "FiltersButton"
@@ -54703,7 +54674,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "FiltersActions",
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "compoundPartOf": {
         "component": "FiltersActions",
         "part": "ListOfFilters"
@@ -54759,7 +54730,7 @@
       ],
       "hasCuratedMeta": true,
       "parentComponent": "FiltersActions",
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { RedDot } from '@daisforge/ui';",
       "minimalUsage": "<RedDot />",
@@ -55021,7 +54992,7 @@
       "hasCuratedMeta": true,
       "parentComponent": "FiltersActions",
       "inheritedProps": [],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "compoundPartOf": {
         "component": "FiltersActions",
         "part": "Tabs"
@@ -56889,7 +56860,7 @@
         "FiltersActionsTabItem",
         "FiltersActionsTabs"
       ],
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { FiltersActions } from '@daisforge/ui';",
       "minimalUsage": "<FiltersActions>\n  {/* части: FiltersActions.FiltersButton, FiltersActions.DotsIconButton, FiltersActions.ListOfFilters, FiltersActions.TextFieldSearch, FiltersActions.Tabs, FiltersActions.TabItem, FiltersActions.SegmentItem, FiltersActions.Tooltip, FiltersActions.TooltipList, FiltersActions.FilterPopover, FiltersActions.FiltersButtonWithPopover, FiltersActions.ResetAllFiltersButton, FiltersActions.SwitcherFilter, FiltersActions.RedDot */}\n</FiltersActions>",
@@ -57096,7 +57067,7 @@
         }
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { Layout } from '@daisforge/ui';",
       "minimalUsage": "<Layout />",
@@ -57229,7 +57200,7 @@
         }
       ],
       "hasCuratedMeta": true,
-      "atomicMcpVersion": "0.367.0",
+      "atomicMcpVersion": "0.369.0",
       "importPath": "@daisforge/ui",
       "importStatement": "import { PageLayout } from '@daisforge/ui';",
       "minimalUsage": "<PageLayout children={'Контент'} />",

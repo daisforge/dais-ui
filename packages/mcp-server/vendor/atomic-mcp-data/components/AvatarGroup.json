@@ -9,7 +9,7 @@
   "examples": [
     {
       "title": "Example 1",
-      "snippet": "import React from 'react';\nimport { Avatar, AvatarGroup } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <AvatarGroup>\n                {\n                    Array(5).fill(true).map(() => (\n                        <Avatar size=\"xxl\" url=\"https://avatars.githubusercontent.com/u/1813468?v=4\" />\n                    ))\n                }\n            </AvatarGroup>\n    );\n}"
+      "snippet": "import React from 'react';\nimport { Avatar, AvatarGroup } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div>\n            <AvatarGroup>\n                {Array(5)\n                    .fill(true)\n                    .map(() => (\n                        <Avatar size=\"xxl\" url=\"https://avatars.githubusercontent.com/u/1813468?v=4\" />\n                    ))}\n            </AvatarGroup>\n        </div>\n    );\n}"
     }
   ]
 }
