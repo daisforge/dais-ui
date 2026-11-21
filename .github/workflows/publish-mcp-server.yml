@@ -58,24 +58,31 @@ on:
         required: false
         type: string
         default: ''
+    # Все секреты этого workflow (RELEASE_DEPLOY_KEY, ALT_*_PACKAGE_NAME) лежат
+    # в environment `release` и берутся job'ом напрямую — через workflow_call их
+    # не передать. Объявление ALT_* оставлено для совместимости, пока они не
+    # удалены из секретов репозитория: секрет environment имеет приоритет.
+    # Не required: без них шаги зеркала просто пропускаются (см. if ниже) —
+    # форк или прогон в репозитории без этих секретов не должен падать.
+    # npm-токенов нет: оба пакета публикуются через Trusted Publishing.
     secrets:
-      NPM_TOKEN:
-        required: true
-      # Не required: без них шаги зеркала просто пропускаются (см. if ниже) —
-      # форк или прогон в репозитории без этих секретов не должен падать.
       ALT_MCP_PACKAGE_NAME:
         required: false
       ALT_LIB_PACKAGE_NAME:
         required: false
-      ALT_NPM_TOKEN:
-        required: false
 
+# Пуш идёт по deploy key, GITHUB_TOKEN писать не нужно.
+# id-token: write — Trusted Publishing (OIDC) для @daisforge/ui-mcp.
 permissions:
-  contents: write
+  contents: read
+  id-token: write
 
 jobs:
   publish:
     runs-on: ubuntu-latest
+    # Пускает только ветку main (и ключ, и OIDC-публикация привязаны к нему):
+    # ручной запуск, в том числе dry_run, — только с main.
+    environment: release
     env:
       NX_DAEMON: 'false'
       NODE_OPTIONS: '--max-old-space-size=4096'
@@ -85,6 +92,27 @@ jobs:
         with:
           fetch-depth: 0
           ref: ${{ inputs.ref || github.ref }}
+          ssh-key: ${{ secrets.RELEASE_DEPLOY_KEY }}
+
+      # Та же проверка, что в publish-npm.yml: ключ обязан работать до любой
+      # публикации, иначе пакеты уехали бы в npm без коммита и тега.
+      - name: Verify release deploy key
+        env:
+          RELEASE_DEPLOY_KEY: ${{ secrets.RELEASE_DEPLOY_KEY }}
+        run: |
+          if [ -z "$RELEASE_DEPLOY_KEY" ]; then
+            echo "::error::Секрет RELEASE_DEPLOY_KEY не задан в environment release."
+            exit 1
+          fi
+          ORIGIN_URL=$(git remote get-url origin)
+          case "$ORIGIN_URL" in
+            git@github.com:*) ;;
+            *) echo "::error::origin не SSH ($ORIGIN_URL) — пуш по deploy key невозможен."; exit 1 ;;
+          esac
+          if ! git ls-remote --exit-code origin HEAD > /dev/null; then
+            echo "::error::GitHub не принял RELEASE_DEPLOY_KEY (ключ удалён из Deploy keys?)."
+            exit 1
+          fi
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -150,11 +178,11 @@ jobs:
       # Имена лежат в секретах, в репозитории их нет — см.
       # packages/mcp-server/scripts/build-alias-package.mjs.
       #
-      # Зеркало публикуется ПЕРВЫМ, до основного пакета: это новый путь (новый
-      # scope, отдельный токен, своя история версий), и если он падает, job
-      # обрывается до публикации @daisforge/ui-mcp и до git push — ничего не
-      # опубликовано, ничего не запушено, повтор чистый. В обратном порядке
-      # основной пакет уже уехал бы в npm без коммита и тега в репозитории.
+      # Зеркало публикуется ПЕРВЫМ, до основного пакета: у него своя настройка
+      # trusted publisher на npmjs.com и своя история версий, и если публикация
+      # падает, job обрывается до публикации @daisforge/ui-mcp и до git push —
+      # ничего не опубликовано, ничего не запушено, повтор чистый. В обратном
+      # порядке основной пакет уже уехал бы в npm без коммита и тега.
       #
       # Флаг считается отдельным шагом, а не прямо в `if`: контекст secrets в
       # условиях шагов недоступен, проверить «секрет не пуст» можно только
@@ -164,17 +192,21 @@ jobs:
         env:
           ALT_MCP_PACKAGE_NAME: ${{ secrets.ALT_MCP_PACKAGE_NAME }}
           ALT_LIB_PACKAGE_NAME: ${{ secrets.ALT_LIB_PACKAGE_NAME }}
-          ALT_NPM_TOKEN: ${{ secrets.ALT_NPM_TOKEN }}
         run: |
           if [ "${{ inputs.publish_alias }}" != "true" ]; then
             echo "enabled=false" >> "$GITHUB_OUTPUT"
             echo "::notice::Зеркальный пакет отключён параметром publish_alias."
-          elif [ -z "$ALT_MCP_PACKAGE_NAME" ] || [ -z "$ALT_LIB_PACKAGE_NAME" ] || [ -z "$ALT_NPM_TOKEN" ]; then
+          elif [ -z "$ALT_MCP_PACKAGE_NAME" ] || [ -z "$ALT_LIB_PACKAGE_NAME" ]; then
             echo "enabled=false" >> "$GITHUB_OUTPUT"
-            echo "::warning::Секреты ALT_MCP_PACKAGE_NAME / ALT_LIB_PACKAGE_NAME / ALT_NPM_TOKEN заданы не полностью — зеркальный пакет пропущен."
+            echo "::warning::Секреты ALT_MCP_PACKAGE_NAME / ALT_LIB_PACKAGE_NAME заданы не полностью — зеркальный пакет пропущен."
           else
             echo "enabled=true" >> "$GITHUB_OUTPUT"
           fi
+
+      # Trusted Publishing требует npm >= 11.5.1, а с Node 20 идёт npm 10.
+      # Обновляется после установки зависимостей — см. publish-npm.yml.
+      - name: Upgrade npm for trusted publishing
+        run: npm install -g npm@11
 
       # ALIAS_OUT_DIR обязателен и обязан быть вне рабочего дерева: npm ищет
       # .git вверх от каталога пакета и, найдя, штампует в манифест gitHead с
@@ -191,6 +223,11 @@ jobs:
           ALT_LIB_PACKAGE_NAME: ${{ secrets.ALT_LIB_PACKAGE_NAME }}
           ALIAS_OUT_DIR: ${{ runner.temp }}/mcp-alias-package
 
+      # Trusted Publishing (OIDC), как и у основного пакета: у зеркала на
+      # npmjs.com настроен trusted publisher на этот репозиторий. Provenance
+      # добавляется автоматически и указывает на этот репозиторий — это
+      # принято сознательно: зеркало публикуется тем же npm-аккаунтом, что и
+      # @daisforge/*, так что связь и без того видна в списке maintainers.
       - name: Publish alias package to npm
         if: steps.alias.outputs.enabled == 'true'
         working-directory: ${{ runner.temp }}/mcp-alias-package
@@ -200,9 +237,8 @@ jobs:
           else
             npm publish --access public
           fi
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.ALT_NPM_TOKEN }}
 
+      # Без NODE_AUTH_TOKEN — Trusted Publishing (OIDC), provenance автоматически.
       - name: Publish to npm
         working-directory: packages/mcp-server
         run: |
@@ -211,14 +247,11 @@ jobs:
           else
             npm publish --access public
           fi
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       # Пушим релизный коммит и тег ТОЛЬКО при реальной публикации (не dry-run) —
       # аналогично publish-npm.yml, чтобы не попадал коммит/тег без реально
-      # опубликованного пакета. В ту же ветку, откуда запустили workflow
-      # (не захардкожено в main — этот workflow, в отличие от publish-npm.yml,
-      # рассчитан на запуск с любой ветки через workflow_dispatch/workflow_call).
+      # опубликованного пакета. Пуш — по deploy key (см. checkout), в ветку
+      # запуска; environment release допускает только main.
       # Тег пушится явно по имени (не через --follow-tags — он молча пропускает
       # lightweight-теги, из-за чего тег v0.1.1 однажды не уехал на remote).
       - name: Push release commit and tag

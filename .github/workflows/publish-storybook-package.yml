@@ -31,16 +31,19 @@ on:
         required: false
         type: boolean
         default: false
-    secrets:
-      NPM_TOKEN:
-        required: true
 
+# id-token: write — публикация через Trusted Publishing (OIDC), без NPM_TOKEN.
 permissions:
   contents: read
+  id-token: write
 
 jobs:
   publish:
     runs-on: ubuntu-latest
+    # Trusted publisher пакета на npmjs.com привязан к environment `release`,
+    # а тот пускает только ветку main: ручной перевыпуск запускается с main,
+    # нужный тег передаётся параметром ref.
+    environment: release
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -84,6 +87,12 @@ jobs:
         if: steps.published.outputs.exists == 'false'
         run: node scripts/storybook-package/stage.mjs
 
+      # Trusted Publishing требует npm >= 11.5.1, а с Node 20 идёт npm 10.
+      - name: Upgrade npm for trusted publishing
+        if: steps.published.outputs.exists == 'false'
+        run: npm install -g npm@11
+
+      # Без NODE_AUTH_TOKEN — OIDC, provenance добавляется автоматически.
       - name: Publish to npm
         if: steps.published.outputs.exists == 'false'
         working-directory: dist/storybook-package
@@ -93,5 +102,3 @@ jobs:
           else
             npm publish --access public
           fi
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
