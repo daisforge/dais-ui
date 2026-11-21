@@ -6,8 +6,21 @@ on:
       - main
   workflow_dispatch: {}
 
+# GITHUB_TOKEN ничего не пушит: релизные коммиты и теги уходят в main по
+# deploy key (секрет RELEASE_DEPLOY_KEY), он стоит в bypass ruleset'а main.
+# id-token: write — для публикации в npm через Trusted Publishing (OIDC),
+# без долгоживущего NPM_TOKEN. Права наследуются вызываемыми workflow ниже.
 permissions:
-  contents: write
+  contents: read
+  id-token: write
+
+# Два релиза одновременно не идут: второй стартовал бы с main без релизного
+# коммита первого. Запуски от самих релизных коммитов (их job пропускается,
+# см. гард ниже) получают уникальную группу — иначе они вставали бы в очередь
+# за текущим релизом и вытесняли друг друга, засоряя историю отменёнными.
+concurrency:
+  group: ${{ contains(github.event.head_commit.message, 'chore(release') && format('release-skip-{0}', github.run_id) || 'release' }}
+  cancel-in-progress: false
 
 jobs:
   publish:
@@ -15,11 +28,15 @@ jobs:
     # 'chore(release):' от lerna, и 'chore(release-mcp):' от хвостового job'а
     # publish-mcp. Иначе релизный коммит ui-mcp проходил бы гард насквозь, а
     # его диффа (packages/mcp-server/**) хватает, чтобы mcp_touched снова стал
-    # true — то есть каждый релиз ui-mcp порождал бы следующий. Сейчас это
-    # не срабатывает только потому, что пуши под GITHUB_TOKEN не запускают
-    # workflow; замена токена на PAT без этой правки включила бы цикл.
+    # true — то есть каждый релиз ui-mcp порождал бы следующий. Гард рабочий:
+    # пуш по deploy key, в отличие от GITHUB_TOKEN, запускает workflow, и оба
+    # релизных пуша приходят сюда новым событием.
     if: "!contains(github.event.head_commit.message, 'chore(release')"
     runs-on: ubuntu-latest
+    # Секрет RELEASE_DEPLOY_KEY лежит в environment `release`, который пускает
+    # только ветку main: workflow из PR или с другой ветки ключ не получит.
+    # Это же имя environment указано у trusted publisher пакетов на npmjs.com.
+    environment: release
     outputs:
       released: ${{ steps.release_flags.outputs.released }}
       mcp_touched: ${{ steps.release_flags.outputs.mcp_touched }}
@@ -29,6 +46,31 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          # С ssh-key checkout ставит origin на git@github.com:… и настраивает
+          # git на этот ключ — `git push` ниже идёт по нему, а не по GITHUB_TOKEN.
+          ssh-key: ${{ secrets.RELEASE_DEPLOY_KEY }}
+
+      # До lerna и npm publish: без рабочего ключа релиз обязан упасть здесь,
+      # а не на `git push` после публикации — иначе версия оказалась бы в npm
+      # без коммита и тега. Пустой секрет checkout не замечает и молча берёт
+      # GITHUB_TOKEN по HTTPS, поэтому проверяется и сам секрет, и URL origin.
+      - name: Verify release deploy key
+        env:
+          RELEASE_DEPLOY_KEY: ${{ secrets.RELEASE_DEPLOY_KEY }}
+        run: |
+          if [ -z "$RELEASE_DEPLOY_KEY" ]; then
+            echo "::error::Секрет RELEASE_DEPLOY_KEY не задан в environment release."
+            exit 1
+          fi
+          ORIGIN_URL=$(git remote get-url origin)
+          case "$ORIGIN_URL" in
+            git@github.com:*) ;;
+            *) echo "::error::origin не SSH ($ORIGIN_URL) — пуш по deploy key невозможен."; exit 1 ;;
+          esac
+          if ! git ls-remote --exit-code origin HEAD > /dev/null; then
+            echo "::error::GitHub не принял RELEASE_DEPLOY_KEY (ключ удалён из Deploy keys?)."
+            exit 1
+          fi
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -107,12 +149,19 @@ jobs:
           npm run build --prefix packages/mcp-server
           node ./packages/mcp-server/dist/indexer/buildIndex.js
 
+      # Trusted Publishing требует npm >= 11.5.1, а с Node 20 идёт npm 10.
+      # Обновляется после `npm ci`, чтобы установка зависимостей шла тем же
+      # npm, что и локально, и lock-файл не расходился.
+      - name: Upgrade npm for trusted publishing
+        if: steps.before.outputs.sha != steps.after.outputs.sha
+        run: npm install -g npm@11
+
+      # Без NODE_AUTH_TOKEN: npm сам обменивает OIDC-токен job'а на разовый
+      # токен публикации. Provenance добавляется автоматически.
       - name: Publish to npm
         if: steps.before.outputs.sha != steps.after.outputs.sha
         working-directory: dist/packages/ui-kit
         run: npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       # Пушим релизный коммит и тег ТОЛЬКО после успешной публикации в npm.
       # Если сборка или publish упадут выше — job зафейлится раньше этого шага,
