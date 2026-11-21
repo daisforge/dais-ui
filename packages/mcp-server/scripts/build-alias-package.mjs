@@ -244,10 +244,33 @@ function stageIndex() {
  * раскрывают внутреннюю кухню, devDependencies потребителю не нужны, а
  * комментарий "//" описывает наши договорённости по нодам.
  */
-function stagePackageJson() {
-  const original = JSON.parse(
+function readOriginalPackageJson() {
+  return JSON.parse(
     fs.readFileSync(path.join(PKG_ROOT, 'package.json'), 'utf8'),
   );
+}
+
+/**
+ * repository переносится как есть, без замен: зеркало публикуется через npm
+ * Trusted Publishing, и registry отклоняет пакет (E422), если repository.url
+ * не совпадает с репозиторием из provenance. Связь с исходным репозиторием
+ * этим не раскрывается сверх уже раскрытого — provenance публична и сама
+ * указывает на него.
+ */
+function readRepositoryUrl(original) {
+  const url = original.repository?.url;
+  if (!url) {
+    fail(
+      'В packages/mcp-server/package.json нет repository.url — без него npm ' +
+        'отклонит публикацию с provenance (Trusted Publishing).',
+    );
+  }
+  return url;
+}
+
+function stagePackageJson() {
+  const original = readOriginalPackageJson();
+  readRepositoryUrl(original);
 
   const pkg = {
     name: ALT_MCP_PACKAGE_NAME,
@@ -257,6 +280,7 @@ function stagePackageJson() {
     bin: { [ALT_MCP_BIN]: './dist/server.js' },
     main: original.main,
     files: original.files,
+    repository: original.repository,
     license: original.license,
     publishConfig: original.publishConfig,
     dependencies: original.dependencies,
@@ -299,9 +323,16 @@ function stageReadme() {
  * Последний рубеж: ни один файл в тарболе не должен содержать исходный бренд
  * ни в каком виде — включая формы, которых нет в таблице замен (комментарии,
  * ссылки, случайно добавленные позже строки).
+ *
+ * Единственное исключение — repository.url (см. readRepositoryUrl): он обязан
+ * совпадать с репозиторием из provenance. Исключается ровно эта строка URL,
+ * а не всё поле и не весь package.json — любой другой след бренда, в том
+ * числе рядом с ним, по-прежнему валит сборку.
  */
 function assertNoOriginalBrand() {
-  const hits = findBrandLeftovers(STAGING_DIR);
+  const hits = findBrandLeftovers(STAGING_DIR, {
+    ignore: [readRepositoryUrl(readOriginalPackageJson())],
+  });
   if (hits.length > 0) {
     fail(
       `В зеркальном пакете остался исходный бренд (${
