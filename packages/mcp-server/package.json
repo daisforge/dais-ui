@@ -33,6 +33,11 @@
     "test:consumer": "node scripts/prepare-consumer-types.mjs && tsc -p test/tsconfig.json --noEmit",
     "test:consumer:report": "node scripts/report-minimal-usage.mjs"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/daisforge/dais-ui.git",
+    "directory": "packages/mcp-server"
+  },
   "license": "MIT",
   "publishConfig": {
     "access": "public"
