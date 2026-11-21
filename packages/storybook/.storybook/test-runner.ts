@@ -81,6 +81,7 @@ const config: TestRunnerConfig = {
     // стабильному расчёту. Отключаем переходы только в DOM-таблицах до play.
     // Canvas использует transitionend для размеров, поэтому её переходы сохраняем.
     await page.evaluate(() => {
+      document.documentElement.dataset.storybookTestRunner = 'true';
       if (document.getElementById('screenshot-motion')) return;
       const style = document.createElement('style');
       style.id = 'screenshot-motion';

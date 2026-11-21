@@ -179,6 +179,10 @@ export const MANUAL_UIKIT_COMP_CHUNKS = [
     modulePaths: ['packages/ui-kit/src/components/PageLoader/'],
   },
   {
+    chunkName: 'TextCollapsing',
+    modulePaths: ['packages/ui-kit/src/components/TextCollapsing/'],
+  },
+  {
     chunkName: 'PageTitle',
     modulePaths: ['packages/ui-kit/src/components/PageTitle/'],
   },
