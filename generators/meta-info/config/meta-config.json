@@ -147,6 +147,13 @@
       ]
     },
     {
+      "name": "TypographyWithCollapse",
+      "type": "composition",
+      "category": "Композиции",
+      "description": "Сворачиваемый текст с многоточием, настраиваемым числом видимых строк и кнопкой раскрытия при переполнении.",
+      "keywords": ["сворачиваемый текст", "показать полностью", "ограничение строк", "line clamp"]
+    },
+    {
       "name": "PageTitle",
       "type": "composition",
       "category": "Композиции",

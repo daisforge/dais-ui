@@ -109,6 +109,7 @@ export * from './components/TableSDDS';
 export * from './components/TableTabs';
 export * from './components/Tabs';
 export * from './components/TextArea';
+export * from './components/TypographyWithCollapse';
 export * from './components/TextField';
 export * from './components/TextFieldGroup';
 export * from './components/TimePicker';
