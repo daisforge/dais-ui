@@ -1,0 +1,18 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as TextCollapsingStories from './TextCollapsing.stories';
+
+<Meta of={TextCollapsingStories} name="Docs" />
+
+# TextCollapsing
+
+Показывает начало длинного текста с многоточием. Продукт задаёт число видимых строк через `collapsedLines` (по умолчанию 4). Кнопка появляется, когда текст превышает лимит. При изменении ширины блока компонент пересчитывает, помещается ли текст.
+
+```tsx
+import { TextCollapsing } from '@daisforge/ui';
+
+<TextCollapsing collapsedLines={2}>{description}</TextCollapsing>
+```
+
+При включённой системной настройке уменьшения движения текст раскрывается и сворачивается сразу.
+
+<Stories />
