@@ -1,0 +1,6 @@
+import{j as t}from"./react-DYHuXpTF.js";import{dd as r}from"./vendor-mp8l63Ho.js";import{M as s}from"./WithTooltip-KJL26V4Q-opuTDqCP.js";import{T as e}from"./TypeSourceViewer-DSZQq467.js";import"./_commonjsHelpers-BosuxZz1.js";import"./tslib-DoU9Jm1N.js";import"./_commonjs-dynamic-modules-TDtrdbi3.js";import"./react-is-CT-rZfBU.js";import"./styled-components-DJuuFW7o.js";import"./@tanstack/react-virtual-Bf_zwBlO.js";import"./preload-helper-DeA7wft2.js";import"./index-Cu4lwwaE.js";import"./index-Deim4iXY.js";import"./types.string-BR8eQOO_.js";function o(i){const n={h1:"h1",h2:"h2",...r(),...i.components};return t.jsxs(t.Fragment,{children:[t.jsx(s,{title:"Локальные компоненты/Table/Editing/API"}),`
+`,t.jsx(n.h1,{id:"editing-api",children:"Editing API"}),`
+`,t.jsx(n.h2,{id:"editingconfig",children:"EditingConfig"}),`
+`,t.jsx(e,{language:"ts",filePath:"packages/ui-kit/src/components/Table/types/table-config.type.ts",typeName:"EditingConfig"}),`
+`,t.jsx(n.h2,{id:"editing",children:"Editing"}),`
+`,t.jsx(e,{language:"ts",filePath:"packages/ui-kit/src/components/Table/types/column-config.type.ts",typeName:"Editing"})]})}function M(i={}){const{wrapper:n}={...r(),...i.components};return n?t.jsx(n,{...i,children:t.jsx(o,{...i})}):o(i)}export{M as default};
