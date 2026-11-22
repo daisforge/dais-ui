@@ -184,6 +184,12 @@ npm run generate-storybook-docs-utils
 }
 ```
 
+Для `*.md` действует `printWidth: 80` (оверрайд в `.prettierrc`). Код форматирует
+ESLint (`prettier/prettier`), Markdown — pre-commit хук через `lint-staged`
+(`prettier --write` по файлам коммита) и проверка `npm run format:md:check` в CI.
+Исправить всё сразу: `npm run format:md`. Генерируемые файлы (CHANGELOG, отчёт
+генератора цветов таблицы) и `.claude/` исключены в `.prettierignore`.
+
 **Соглашения по именованию**:
 
 - Переменные: `camelCase`, `PascalCase`, `UPPER_CASE`

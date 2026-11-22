@@ -8,6 +8,8 @@
     "ci": "rm -rf node_modules && npm cache clean --force && npm ci --ignore-scripts --verbose",
     "lint": "nx run-many --target=lint --debug --verbose",
     "fix:lint": "nx run-many --target=lint --fix --verbose",
+    "format:md": "prettier --write \"**/*.md\"",
+    "format:md:check": "prettier --check \"**/*.md\"",
     "lint:scripts": "eslint \"scripts/**/*.mjs\"",
     "typecheck": "nx run-many --target=typecheck --verbose",
     "test": "nx run-many --target=test --verbose",
@@ -140,10 +142,12 @@
     "husky": "^9.1.7",
     "jsdom": "~22.1.0",
     "lerna": "^8.1.2",
+    "lint-staged": "^15.5.2",
     "msw": "^2.10.2",
     "msw-storybook-addon": "^2.0.4",
     "nx": "19.0.2",
     "pixelmatch": "^5.3.0",
+    "playwright": "1.62.0",
     "pngjs": "^7.0.0",
     "prettier": "^2.6.2",
     "storybook": "8.1.1",
@@ -155,8 +159,7 @@
     "vite-plugin-dts": "~3.8.1",
     "vite-plugin-lib-inject-css": "^2.1.1",
     "vite-tsconfig-paths": "^4.3.2",
-    "vitest": "^1.3.1",
-    "playwright": "1.62.0"
+    "vitest": "^1.3.1"
   },
   "dependencies": {
     "@daisforge/glide-data-grid": "^6.14.0",
@@ -221,5 +224,8 @@
         "skipTypeImports": true
       }
     }
+  },
+  "lint-staged": {
+    "*.md": "prettier --write"
   }
 }
