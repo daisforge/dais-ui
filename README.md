@@ -51,7 +51,7 @@
 | **Сборка**       | Vite (v5.0.0) с плагинами                          |
 | **Язык**         | TypeScript 5.4.2                                   |
 | **React**        | 18.3.1                                             |
-| **Стили**        | styled-components 5.3.11                            |
+| **Стили**        | styled-components 5.3.11                           |
 | **UI-фреймворк** | @salutejs/sdds-finai (Plasma Design System)        |
 | **Тестирование** | Vitest + @storybook/test-runner (screenshot tests) |
 | **Линтинг**      | ESLint + Prettier + Husky                          |
@@ -353,9 +353,18 @@ dist/packages/ui-kit/
 
 ```typescript
 MANUAL_UIKIT_COMP_CHUNKS = [
-  { chunkName: 'Table', modulePaths: ['packages/ui-kit/src/components/Table/'] },
-  { chunkName: 'TableCanvas', modulePaths: ['packages/ui-kit/src/components/TableCanvas/'] },
-  { chunkName: 'DrawerDF', modulePaths: ['packages/ui-kit/src/components/DrawerDF/'] }
+  {
+    chunkName: 'Table',
+    modulePaths: ['packages/ui-kit/src/components/Table/'],
+  },
+  {
+    chunkName: 'TableCanvas',
+    modulePaths: ['packages/ui-kit/src/components/TableCanvas/'],
+  },
+  {
+    chunkName: 'DrawerDF',
+    modulePaths: ['packages/ui-kit/src/components/DrawerDF/'],
+  },
   // ... 50+ чанков
 ];
 ```
@@ -529,20 +538,20 @@ export type TMutationRegister<TFieldValues extends FieldValues> = {
 
 ### Dependencies
 
-| Пакет                             | Версия        | Назначение                   |
-| --------------------------------- | ------------- | ---------------------------- |
-| `@salutejs/sdds-finai`            | 0.369.0      | Базовые атомарные компоненты |
-| `@salutejs/plasma-icons`          | ^1.258.0      | Иконки                       |
-| `@salutejs/plasma-typo`           | ^0.60.0       | Typo tokens                  |
-| `@sddsjs/sdds_finai` | 0.2.3 | Темы и дизайн-токены FinAI |
-| `react`                           | 18.3.1        | Core                         |
-| `react-dom`                       | 18.3.1        | Core                         |
-| `styled-components`               | 5.3.11         | CSS-in-JS                    |
-| `react-hook-form`                 | ^7.54.2       | Формы                        |
-| `swr`                             | ^2.3.3        | Data fetching                |
-| `zod`                             | ^3.24.2       | Валидация                    |
-| `@daisforge/glide-data-grid`      | 6.14.0        | TableCanvas                  |
-| `react-data-grid`                 | 7.0.0-beta.43 | Table (альтернатива)         |
+| Пакет                        | Версия        | Назначение                   |
+| ---------------------------- | ------------- | ---------------------------- |
+| `@salutejs/sdds-finai`       | 0.369.0       | Базовые атомарные компоненты |
+| `@salutejs/plasma-icons`     | ^1.258.0      | Иконки                       |
+| `@salutejs/plasma-typo`      | ^0.60.0       | Typo tokens                  |
+| `@sddsjs/sdds_finai`         | 0.2.3         | Темы и дизайн-токены FinAI   |
+| `react`                      | 18.3.1        | Core                         |
+| `react-dom`                  | 18.3.1        | Core                         |
+| `styled-components`          | 5.3.11        | CSS-in-JS                    |
+| `react-hook-form`            | ^7.54.2       | Формы                        |
+| `swr`                        | ^2.3.3        | Data fetching                |
+| `zod`                        | ^3.24.2       | Валидация                    |
+| `@daisforge/glide-data-grid` | 6.14.0        | TableCanvas                  |
+| `react-data-grid`            | 7.0.0-beta.43 | Table (альтернатива)         |
 
 ### Peer Dependencies
 

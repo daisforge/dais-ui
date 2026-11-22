@@ -2,3 +2,14 @@
 /dist
 /coverage
 /.nx/cache
+# Генерируются автоматически и правятся только генераторами — их вывод не
+# прогоняется через Prettier, и проверка Markdown в CI падала бы после
+# каждой перегенерации:
+#   - CHANGELOG — lerna при релизе (релизные коммиты идут без git-хуков);
+#   - отчёт генератора цветов содержимого таблицы.
+**/CHANGELOG.md
+generators/table-content-tokens/report.md
+
+# Скиллы и агенты Claude Code: frontmatter читает сам Claude Code, перенос
+# длинного description на новую строку ради printWidth ему ни к чему.
+.claude/

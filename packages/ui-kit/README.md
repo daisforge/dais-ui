@@ -99,12 +99,12 @@ import { Button } from '@daisforge/ui';
 import { textAccent } from '@daisforge/ui/tokens';
 
 export const App = () => {
-    return (
-        <>
-            <Button>Hello!</Button>
-            <p style={{color: textAccent}}>Token usage example</p>
-        </>
-    );
+  return (
+    <>
+      <Button>Hello!</Button>
+      <p style={{ color: textAccent }}>Token usage example</p>
+    </>
+  );
 };
 ```
 

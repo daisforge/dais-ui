@@ -155,7 +155,7 @@ parameters: {
 | --------------------------------------------- | ---------------------------------------------------------------- |
 | `scripts/screenshots/docker.js`               | Команда на хосте: образ, контейнеры, фильтр, применение эталонов |
 | `scripts/screenshots/run.js`                  | Сервер внутри контейнера, запуск Jest, отчёт и проверка полноты  |
-| `scripts/screenshots/report.js`               | HTML-отчёт с превью сохранённых PNG                            |
+| `scripts/screenshots/report.js`               | HTML-отчёт с превью сохранённых PNG                              |
 | `scripts/screenshots/build.js`                | Чистая сборка через Storybook CLI и проверка её результата       |
 | `scripts/screenshots/transaction.js`          | Замена эталонов с откатом при ошибке                             |
 | `packages/storybook/static/screenshot-fonts/` | Локальные SBSans и CSS подключения для тестового стенда          |
