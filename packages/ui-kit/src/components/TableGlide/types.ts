@@ -399,6 +399,25 @@ export type RenderGroupHeaderArgs = Parameters<
   NonNullable<GlideProps['drawGroupHeader']>
 >[0];
 
+export interface SelectionView<R> {
+  rows: readonly R[];
+  rowKey?: (row: R) => string | number;
+  criteria: object;
+  expandedRows?: ReadonlySet<string | number>;
+  summaryCount?: number;
+  placeholderCount?: number;
+  revision?: string | number;
+  page?: number;
+  perPage?: number;
+  loading: boolean;
+}
+
+/** Последнее показанное представление. TableCanvas хранит его и при замене грида оверлеем. */
+export interface SelectionSnapshot<R> {
+  view: SelectionView<R> & { columns: readonly { id?: string; isServiceColumn?: boolean }[] };
+  controlled?: GridSelection;
+}
+
 export type TableGlideCustomProps<
   R extends ObjectForExtending,
   SR = unknown
@@ -450,6 +469,10 @@ export type TableGlideCustomProps<
   highlightActiveType?: HighlightActiveType;
   /** Режим выделения ячеек (нативный glide selection). По умолчанию 'range-cell'. */
   cellsSelectionMode?: CellsSelectionMode;
+  /** Данные и критерии TableCanvas, которым соответствуют координаты выделения. */
+  selectionView?: SelectionView<R> & {
+    history: React.MutableRefObject<SelectionSnapshot<R> | undefined>;
+  };
   /** Фокусировать грид при внешней смене controlled gridSelection. По умолчанию true. */
   focusOnStateChange?: boolean;
   /** Канал для copy/paste (selectionRef потребителя), отдельно от controlled gridSelection. */

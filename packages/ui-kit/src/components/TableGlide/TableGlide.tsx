@@ -104,6 +104,9 @@ import {
 } from './utils/editorFrame';
 import { cellEdgeInset, gridLinesAroundCell } from './utils/cellEdgeInset';
 import { createBlockEditedLookup } from './utils/hasEditedCellInBlock';
+import { EMPTY_SELECTION } from './hooks/selection/useNativeGridSelection';
+import { findFirstDataColumnIndex } from './hooks/selection/rectGeometry';
+import { useSelectionProjection } from './hooks/selection/useSelectionProjection';
 import { findBlockOrigin } from './utils/findBlockOrigin';
 import { mergeThemeOverrides } from './utils/mergeThemeOverrides';
 import { queryGlideElements } from './utils/queryGlideElements';
@@ -137,6 +140,9 @@ function noop(..._: unknown[]) {
 }
 
 // utils
+
+const EMPTY_AXIS_INDEXES: number[] = [];
+const EMPTY_COLUMN_SET = new Set<number>();
 
 export class CellContentCache {
   // column -> row -> value
@@ -226,6 +232,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   // Канал для copy/paste (selectionRef потребителя) — отдельно от controlled.
   onSelectionEmit,
   onSelectionSync,
+  selectionView,
   // Канал наверх: индексы выделенных колонок (объединённые) для контрл-блока.
   onColumnSelectionChange,
   // Follow: после реордера (закрепление) заново выделить эти ключи.
@@ -440,19 +447,6 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   }, []);
   const onFrameDrawn = useSnapshotRepaint(repaintSnapshot, dataEditorRef);
 
-  // Controlled-выделение приходит, когда грид НЕ в фокусе (напр. клик по внешней
-  // кнопке) — тогда glide рисует якорную ячейку без заливки (нативный стиль
-  // «активная ячейка, грид не сфокусирован»). Фокусируем грид, чтобы выделение
-  // выглядело как обычное. На интеракции мышью грид уже в фокусе -> focus().
-  useEffect(() => {
-    if (
-      focusOnStateChange &&
-      gridSelectionExternal?.current !== undefined
-    ) {
-      dataEditorRef.current?.focus();
-    }
-  }, [gridSelectionExternal, focusOnStateChange]);
-
   const {
     interactionSessionStore,
     beginOrGetInteractionSession,
@@ -469,9 +463,9 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   // поэтому функция сброса приходит через ref.
   const resetAxesRef = useRef<() => void>();
   const handleExternalSelectionChange = useCallback(
-    (next: GridSelection, initial: boolean) => {
+    (next: GridSelection, initial: boolean, preserveColumnSelection = false) => {
       // При монтировании Ctrl-выбора ещё нет, сбрасывать нечего
-      if (!initial) resetAxesRef.current?.();
+      if (!initial && !preserveColumnSelection) resetAxesRef.current?.();
       onSelectionSync?.(next);
     },
     [onSelectionSync],
@@ -484,15 +478,20 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   stickyRowsRef.current = restProps.stickyRows;
   const getStickyRows = useCallback(() => stickyRowsRef.current, []);
 
+  const snapshot = selectionView?.history.current;
   const {
-    selection,
+    selection: nativeSelection,
+    applyProjectedSelection,
+    isProjectedSelection,
     handleGridSelectionChange,
     handleSelectionCleared,
     rangeSelect,
     spanRangeBehavior,
   } = useNativeGridSelection({
     cellsSelectionMode,
-    columns: columnsLast,
+    columns: selectionView?.loading && snapshot ? snapshot.view.columns : columnsLast,
+    previousControlled: snapshot?.controlled,
+    previousLeadingColumns: snapshot && findFirstDataColumnIndex(snapshot.view.columns),
     gridSelection: gridSelectionExternal,
     onGridSelectionChange: onGridSelectionChangeExternal,
     onSelectionEmit,
@@ -514,31 +513,6 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     takeShift: takeAnchorShift,
   });
 
-  // Прыжок с клавиатуры через ещё не измеренные строки: докручиваем к ячейке,
-  // когда строки дорастут до своей высоты
-  useKeepCellInView({
-    enabled: rowHeight === 'auto',
-    dataEditorRef,
-    cell: selection.current?.cell,
-    rowHeights: rowHeightGlide,
-  });
-
-  const selectionVisualState = useSelectionGeometry({
-    columns: columnsLast,
-    selection,
-    cellsSelectionMode,
-    checkboxSelectedRowIndexes,
-  });
-  // Выделение для отрисовки ячеек. Лежит в ref, чтобы функция содержимого
-  // ячеек не менялась на каждый клик и glide не перерисовывал весь экран.
-  // Подробнее: для glide новая функция getCellContent значит «поменялось
-  // всё», и он перерисовывал весь экран. Ref обновляется в рендере, до
-  // эффектов glide.
-  // Строки, у которых сменился признак active, дорисовываются отдельно
-  // (useActiveRowsRedraw).
-  const selectionVisualStateRef = useRef(selectionVisualState);
-  selectionVisualStateRef.current = selectionVisualState;
-
   // Обогащаем controlled-сеттер подсветки самим объектом строки (rows[index]),
   // чтобы потребитель получал узел напрямую и не слушал onCellClicked. Если
   // сеттер не задан — оставляем undefined (uncontrolled-режим сохраняется).
@@ -557,11 +531,13 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   // Две независимые от glide оси выделения: колонки по клику на шапку и строки
   // по клику/драгу на нумерации. Стейты, хендлеры и drawFocusRing — в хуке.
   const {
-    selectedColumnIndexes,
+    hasAxisSelection,
+    isNativeColumnSelection,
+    selectedColumnIndexes: ownColumns,
     selectedColumnKeysAll,
     selectColumnsByKeys,
-    selectedColumnSet,
-    headerSelectedRowIndexes,
+    selectedColumnSet: ownColumnSet,
+    headerSelectedRowIndexes: ownRows,
     activeRow,
     numberingColumnIndex,
     drawFocusRing,
@@ -571,13 +547,13 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     resetAxes,
   } = useTableSelectionSystem({
     columns: columnsLast,
-    selection,
+    selection: nativeSelection,
     cellsSelectionMode,
     highlightActiveType,
     enableColumnSelection,
     enableRowSelection,
     enableSelectAll,
-    leadingServiceColumnsCount: selectionVisualState.leadingServiceColumnsCount,
+    leadingServiceColumnsCount: findFirstDataColumnIndex(columnsLast),
     dataRowCount: rows.length + summaryRowsLength,
     handleGridSelectionChange,
     handleSelectionCleared,
@@ -623,51 +599,6 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     }, 0);
     return () => clearTimeout(timer);
   }, [pendingColumnSelectionKeys, columnsOrderKey]);
-
-  // При выделении строк по нумерации вся строка активна по всем колонкам —
-  // используется для затемнения шапок data-колонок (как нативный 'row').
-  const hasSelectedRows = headerSelectedRowIndexes.length > 0;
-
-  // Data-колонки, покрытые ячейками rangeStack (multi-range-cell). Их шапки
-  // темнеем так же, как у активного диапазона — чтобы multi-range выглядел как
-  // выделение колонок/строк (current.range уже покрыт isActiveHeaderColumn).
-  const rangeStackColumnSet = useMemo(() => {
-    const set = new Set<number>();
-    const stack = selection.current?.rangeStack;
-    if (stack) {
-      const firstDataCol = selectionVisualState.firstDataColumnIndex;
-      for (const rect of stack) {
-        const startCol = Math.max(rect.x, firstDataCol);
-        for (let col = startCol; col < rect.x + rect.width; col += 1) {
-          set.add(col);
-        }
-      }
-    }
-    return set;
-  }, [selection, selectionVisualState.firstDataColumnIndex]);
-
-  // Выделена ли колонка. По этому признаку темнеет её шапка и показываются
-  // кнопки фильтра и сортировки.
-  //
-  // Подробнее: колонка считается выделенной, если она активная колонка
-  // текущего диапазона, выделена кликом по шапке (своё состояние, у Glide
-  // selection.columns намеренно пуст) или покрыта ячейками rangeStack.
-  // Выделение строк сюда не входит: оно темнит шапки всех колонок, но
-  // кнопки на всех шапках показывать незачем.
-  const isColumnInSelection = useCallback(
-    (columnIndex: number) =>
-      selectionVisualState.isActiveHeaderColumn(columnIndex) ||
-      selectedColumnSet.has(columnIndex) ||
-      rangeStackColumnSet.has(columnIndex),
-    [selectionVisualState, selectedColumnSet, rangeStackColumnSet],
-  );
-
-  // Признаки выделения для шапки. В ref, чтобы drawHeader не менялся на каждый
-  // клик (подробнее у drawHeader).
-  const isColumnInSelectionRef = useRef(isColumnInSelection);
-  isColumnInSelectionRef.current = isColumnInSelection;
-  const hasSelectedRowsRef = useRef(hasSelectedRows);
-  hasSelectedRowsRef.current = hasSelectedRows;
 
   const columnsForRender = useMemo(() => {
     return columnsLast.map((column, columnIndex) => {
@@ -777,6 +708,117 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       ),
     [columnsForRender, getProbeInfo, spanColumnIndexes],
   );
+
+  const projectedSelection = useSelectionProjection({
+    view: selectionView,
+    history: selectionView?.history,
+    columns: columnsLast,
+    selection: nativeSelection,
+    controlled: gridSelectionExternal,
+    hasAxes: hasAxisSelection,
+    selectedRows: ownRows,
+    columnsSelected: isNativeColumnSelection,
+    getBlock(col, row) {
+      const [x, y] = findCellBlockOrigin(col, row);
+      const column = columnsForRender[x];
+      const info = getProbeInfo(x, y);
+      const right = getSpan(column?.colSpan, info)?.[1] ?? x;
+      const bottom = getRowSpan(column?.rowSpan, info)?.[1] ?? y;
+      return { x, y, width: right - x + 1, height: bottom - y + 1 };
+    },
+    apply: applyProjectedSelection,
+  });
+
+  const selection = projectedSelection ?? nativeSelection;
+  // Controlled-выделение приходит, когда грид НЕ в фокусе (напр. клик по внешней
+  // кнопке) — тогда glide рисует якорную ячейку без заливки (нативный стиль
+  // «активная ячейка, грид не сфокусирован»). Фокусируем грид, чтобы выделение
+  // выглядело как обычное. На интеракции мышью грид уже в фокусе -> focus().
+  useEffect(() => {
+    if (
+      focusOnStateChange &&
+      gridSelectionExternal?.current !== undefined &&
+      !projectedSelection &&
+      !isProjectedSelection
+    ) {
+      dataEditorRef.current?.focus();
+    }
+  }, [gridSelectionExternal, focusOnStateChange, projectedSelection, isProjectedSelection]);
+
+  const hideAxes = projectedSelection === EMPTY_SELECTION;
+  const selectedColumnIndexes = hideAxes ? EMPTY_AXIS_INDEXES : ownColumns;
+  const selectedColumnSet = hideAxes ? EMPTY_COLUMN_SET : ownColumnSet;
+  const headerSelectedRowIndexes = hideAxes ? EMPTY_AXIS_INDEXES : ownRows;
+
+  const selectionVisualState = useSelectionGeometry({
+    columns: columnsLast,
+    selection,
+    cellsSelectionMode,
+    checkboxSelectedRowIndexes,
+  });
+  // Выделение для отрисовки ячеек. Лежит в ref, чтобы функция содержимого
+  // ячеек не менялась на каждый клик и glide не перерисовывал весь экран.
+  // Подробнее: для glide новая функция getCellContent значит «поменялось
+  // всё», и он перерисовывал весь экран. Ref обновляется в рендере, до
+  // эффектов glide.
+  // Строки, у которых сменился признак active, дорисовываются отдельно
+  // (useActiveRowsRedraw).
+  const selectionVisualStateRef = useRef(selectionVisualState);
+  selectionVisualStateRef.current = selectionVisualState;
+
+  // При выделении строк по нумерации вся строка активна по всем колонкам —
+  // используется для затемнения шапок data-колонок (как нативный 'row').
+  const hasSelectedRows = headerSelectedRowIndexes.length > 0;
+
+  // Data-колонки, покрытые ячейками rangeStack (multi-range-cell). Их шапки
+  // темнеем так же, как у активного диапазона — чтобы multi-range выглядел как
+  // выделение колонок/строк (current.range уже покрыт isActiveHeaderColumn).
+  const rangeStackColumnSet = useMemo(() => {
+    const set = new Set<number>();
+    const stack = selection.current?.rangeStack;
+    if (stack) {
+      const firstDataCol = selectionVisualState.firstDataColumnIndex;
+      for (const rect of stack) {
+        const startCol = Math.max(rect.x, firstDataCol);
+        for (let col = startCol; col < rect.x + rect.width; col += 1) {
+          set.add(col);
+        }
+      }
+    }
+    return set;
+  }, [selection, selectionVisualState.firstDataColumnIndex]);
+
+  // Выделена ли колонка. По этому признаку темнеет её шапка и показываются
+  // кнопки фильтра и сортировки.
+  //
+  // Подробнее: колонка считается выделенной, если она активная колонка
+  // текущего диапазона, выделена кликом по шапке (своё состояние, у Glide
+  // selection.columns намеренно пуст) или покрыта ячейками rangeStack.
+  // Выделение строк сюда не входит: оно темнит шапки всех колонок, но
+  // кнопки на всех шапках показывать незачем.
+  const isColumnInSelection = useCallback(
+    (columnIndex: number) =>
+      selectionVisualState.isActiveHeaderColumn(columnIndex) ||
+      selectedColumnSet.has(columnIndex) ||
+      rangeStackColumnSet.has(columnIndex),
+    [selectionVisualState, selectedColumnSet, rangeStackColumnSet],
+  );
+
+  // Признаки выделения для шапки. В ref, чтобы drawHeader не менялся на каждый
+  // клик (подробнее у drawHeader).
+  const isColumnInSelectionRef = useRef(isColumnInSelection);
+  isColumnInSelectionRef.current = isColumnInSelection;
+  const hasSelectedRowsRef = useRef(hasSelectedRows);
+  hasSelectedRowsRef.current = hasSelectedRows;
+
+  // Прыжок с клавиатуры через ещё не измеренные строки: докручиваем к ячейке,
+  // когда строки дорастут до своей высоты
+  useKeepCellInView({
+    enabled: rowHeight === 'auto' && !projectedSelection && !isProjectedSelection,
+    dataEditorRef,
+    cell: selection.current?.cell,
+    rowHeights: rowHeightGlide,
+  });
 
   // Строки, которые подсвечивает курсор: на объединённом блоке все строки
   // блока, иначе строка под мышью.
@@ -2481,6 +2523,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
           onItemHovered={onItemHovered}
           onVisibleRegionChanged={handleVisibleRegionChanged}
           {...restProps}
+          scrollToActiveCell={projectedSelection ? false : restProps.scrollToActiveCell}
           onColumnResizeStart={
             resizableColumn ? onColumnResizeStartInternal : undefined
           }

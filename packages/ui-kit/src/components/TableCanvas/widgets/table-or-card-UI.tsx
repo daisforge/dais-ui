@@ -350,6 +350,8 @@ export const TableOrCardsUI = <
                     restDataGridProps.onGridSelectionChange
                   }
                   onSelectionEmit={restDataGridProps.onSelectionEmit}
+                  onSelectionSync={restDataGridProps.onSelectionSync}
+                  selectionView={restDataGridProps.selectionView}
                   onColumnSelectionChange={
                     restDataGridProps.onColumnSelectionChange
                   }

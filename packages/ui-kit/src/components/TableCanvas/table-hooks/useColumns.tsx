@@ -779,15 +779,20 @@ export const useColumns = <
   // сдвигает в начало (columnsGlide в TableGlideInstance) — повторяем этот
   // порядок здесь, иначе при закреплении ширина блока считается по старым
   // индексам и объединение вылезает за массив колонок.
-  const renderColKeys = useMemo(
-    () => frozenFirst(reorderedColumns, (c) => !!c.frozen).map((c) => c.key),
+  const displayedColumns = useMemo(
+    () => frozenFirst(reorderedColumns, (c) => !!c.frozen),
     [reorderedColumns],
+  );
+  const renderColKeys = useMemo(
+    () => displayedColumns.map((column) => column.key),
+    [displayedColumns],
   );
   renderColKeysRef.current = renderColKeys;
 
   return {
     columns,
     reorderedColumns,
+    displayedColumns,
     renderColKeys,
     columnsOrder,
     getDefaultColumnsOrder,

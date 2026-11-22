@@ -43,11 +43,14 @@ export class GridPage {
   ) {}
 
   /** Открыть историю по id и дождаться измеренного грида. */
-  async open(storyId: string, options: { serviceColumns?: number } = {}) {
+  async open(
+    storyId: string,
+    options: { serviceColumns?: number; args?: string } = {},
+  ) {
     this.serviceColumns = options.serviceColumns ?? 0;
-    await this.page.goto(
-      `/iframe.html?id=${encodeURIComponent(storyId)}&viewMode=story`,
-    );
+    const query = new URLSearchParams({ id: storyId, viewMode: 'story' });
+    if (options.args) query.set('args', options.args);
+    await this.page.goto(`/iframe.html?${query}`);
     await this.page.waitForFunction(
       () => {
         const rect = window.tableCanvasRedraw?.bounds(0, 0);

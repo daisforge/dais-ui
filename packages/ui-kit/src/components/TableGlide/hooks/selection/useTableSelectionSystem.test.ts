@@ -84,6 +84,14 @@ function setupWithNative() {
 }
 
 describe('useTableSelectionSystem — выделение колонок', () => {
+  it('после сброса Shift начинает выбор с новой колонки', () => {
+    const { view, onSelectionEmit } = setupWithNative();
+    act(() => view.result.current.selectColumnFromHeader(3, headerEvent({})));
+    act(() => view.result.current.resetAxes());
+    act(() => view.result.current.selectColumnFromHeader(1, headerEvent({ shiftKey: true })));
+    expect(onSelectionEmit.mock.lastCall?.[0].current.range).toEqual({x: 1, y: 0, width: 1, height: 5});
+  });
+
   it('numberingColumnIndex вычисляется по служебной колонке row-markers', () => {
     const { view } = setup();
     expect(view.result.current.numberingColumnIndex).toBe(0);

@@ -386,6 +386,9 @@ export function useTableSelectionSystem<
         setSelectedRows(CompactSelection.empty());
       }
       // Обычное выделение ячеек/диапазона — это не column-select.
+      if (isEmptySelection(next) && selectedColumnSet.size === 0) {
+        lastSelectedColumnRef.current = undefined;
+      }
       setIsNativeColumnSelection(false);
       // Sticky-подсветка строки (highlightActiveType='row'): обновляем строку
       // ТОЛЬКО на клик мышью (pointerGestureRef), чтобы навигация стрелками её
@@ -414,6 +417,7 @@ export function useTableSelectionSystem<
       pointerGestureRef,
       rightClickGestureRef,
       selectedRowsRef,
+      lastSelectedColumnRef,
       selectedColumnSet,
       setSelectedColumns,
       setSelectedRows,
@@ -428,6 +432,7 @@ export function useTableSelectionSystem<
     // или onChange без выделения.
     const alreadyEmitted = emptyEmittedRef.current;
     emptyEmittedRef.current = false;
+    lastSelectedColumnRef.current = undefined;
     const nothingSelected =
       isEmptySelection(selection) &&
       selectedColumns.length === 0 &&
@@ -441,6 +446,7 @@ export function useTableSelectionSystem<
     selection,
     selectedColumns,
     selectedRowsRef,
+    lastSelectedColumnRef,
     handleSelectionCleared,
     commitActiveRow,
     setSelectedColumns,
@@ -452,10 +458,11 @@ export function useTableSelectionSystem<
   // сменили из кода (controlled state): Ctrl-выбор к новому выделению не
   // относится.
   const resetAxes = useCallback(() => {
+    lastSelectedColumnRef.current = undefined;
     setSelectedColumns(CompactSelection.empty());
     setSelectedRows(CompactSelection.empty());
     setIsNativeColumnSelection(false);
-  }, [setSelectedColumns, setSelectedRows, setIsNativeColumnSelection]);
+  }, [lastSelectedColumnRef, setSelectedColumns, setSelectedRows, setIsNativeColumnSelection]);
 
   // Объединённое множество выделенных КОЛОНОК (ключи) для внешних потребителей
   // (например «Закрепить столбцы» в контрл-блоке). Два канала выделения колонок:
@@ -572,7 +579,7 @@ export function useTableSelectionSystem<
         const nextColumns = baseColumns.hasIndex(columnIndex)
           ? baseColumns.remove(columnIndex)
           : baseColumns.add(columnIndex);
-        lastSelectedColumnRef.current = columnIndex;
+        lastSelectedColumnRef.current = nextColumns.length ? columnIndex : undefined;
         setSelectedColumns(nextColumns);
         setSelectedRows(CompactSelection.empty());
         commitActiveRow(undefined);
@@ -690,6 +697,8 @@ export function useTableSelectionSystem<
   );
 
   return {
+    isNativeColumnSelection,
+    hasAxisSelection: selectedColumns.length > 0 || headerSelectedRowIndexes.length > 0,
     selectedColumnIndexes,
     selectedColumnKeysAll,
     selectColumnsByKeys,

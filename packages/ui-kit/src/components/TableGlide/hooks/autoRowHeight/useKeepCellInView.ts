@@ -65,11 +65,11 @@ export function useKeepCellInView({
 
   useLayoutEffect(() => {
     const target = targetRef.current;
-    if (!target) return;
+    if (!enabled || !target) return;
     if (Date.now() > target.until) {
       targetRef.current = null;
       return;
     }
     dataEditorRef.current?.scrollTo(target.col, target.row);
-  }, [rowHeights, dataEditorRef]);
+  }, [enabled, rowHeights, dataEditorRef]);
 }

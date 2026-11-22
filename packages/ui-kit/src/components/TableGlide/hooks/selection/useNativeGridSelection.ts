@@ -2,12 +2,12 @@ import {
   CompactSelection,
   type GridSelection,
 } from '@glideappsfinal/glide-data-grid';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 
 import type { GlideProps, CellsSelectionMode } from '../../types';
 import { findFirstDataColumnIndex } from './rectGeometry';
 
-const EMPTY_SELECTION: GridSelection = {
+export const EMPTY_SELECTION: GridSelection = {
   columns: CompactSelection.empty(),
   rows: CompactSelection.empty(),
   current: undefined,
@@ -55,6 +55,8 @@ export const shiftSelectionColumns = (
 };
 
 interface UseNativeGridSelectionParams {
+  previousLeadingColumns?: number;
+  previousControlled?: GridSelection;
   cellsSelectionMode: CellsSelectionMode;
   /**
    * Колонки грида в текущем порядке. Нужны, чтобы при появлении и исчезновении
@@ -83,6 +85,7 @@ interface UseNativeGridSelectionParams {
     selection: GridSelection,
     /** Первое значение при монтировании, а не смена */
     initial: boolean,
+    preserveColumnSelection?: boolean,
   ) => void;
 }
 
@@ -117,6 +120,8 @@ export const sameSelection = (a: GridSelection, b: GridSelection): boolean => {
 export function useNativeGridSelection({
   cellsSelectionMode,
   columns,
+  previousLeadingColumns,
+  previousControlled,
   gridSelection: gridSelectionExternal,
   onGridSelectionChange: onGridSelectionChangeExternal,
   onSelectionEmit,
@@ -141,13 +146,22 @@ export function useNativeGridSelection({
   // только первое совпавшее по содержимому значение (это значение, которое
   // вернул потребитель, копия или тот же объект), а дальше сравниваем по
   // тождеству с ним.
+  const projectedSelectionRef = useRef<GridSelection>();
   const lastSentRef = useRef<GridSelection | null>(null);
   const lastSentWithAxesRef = useRef(false);
   const axesEchoPendingRef = useRef(false);
+  const leadingServiceColumnsCount = findFirstDataColumnIndex(columns);
+  const prevLeadingCountRef = useRef(previousLeadingColumns ?? leadingServiceColumnsCount);
+  const leadingCountRef = useRef(leadingServiceColumnsCount);
+  leadingCountRef.current = leadingServiceColumnsCount;
+  const mountedControlled = useRef(previousControlled);
   const onExternalSelectionChangeRef = useRef(onExternalSelectionChange);
   onExternalSelectionChangeRef.current = onExternalSelectionChange;
-  useEffect(() => {
-    if (gridSelectionExternal === undefined) return;
+  useLayoutEffect(() => {
+    if (gridSelectionExternal === undefined) {
+      if (lastSentRef.current === null) onExternalSelectionChangeRef.current?.(EMPTY_SELECTION, true);
+      return;
+    }
     const sent = lastSentRef.current;
     const isEcho =
       sent !== null &&
@@ -159,12 +173,20 @@ export function useNativeGridSelection({
       axesEchoPendingRef.current = false;
       return;
     }
+    projectedSelectionRef.current = undefined;
     const initial = sent === null;
+    const before = initial ? mountedControlled.current : sent;
+    // Внешнее выделение уже задано в координатах нового набора колонок.
+    if (before && !sameSelection(before, gridSelectionExternal)) {
+      prevLeadingCountRef.current = leadingCountRef.current;
+    }
     lastSentRef.current = gridSelectionExternal;
     lastSentWithAxesRef.current = false;
     axesEchoPendingRef.current = false;
     onExternalSelectionChangeRef.current?.(gridSelectionExternal, initial);
   }, [gridSelectionExternal]);
+
+
 
   // Храним glide selection как источник истины нативного выделения. В controlled-
   // режиме значение владеется снаружи (onGridSelectionChange — сеттер), иначе —
@@ -173,6 +195,7 @@ export function useNativeGridSelection({
   // рисует оверлей, нативное при этом пустое).
   const handleGridSelectionChange = useCallback(
     (next: GridSelection, emitted: GridSelection = next) => {
+      projectedSelectionRef.current = undefined;
       if (isControlled) {
         lastSentRef.current = next;
         lastSentWithAxesRef.current = emitted !== next;
@@ -186,13 +209,27 @@ export function useNativeGridSelection({
     [isControlled, onGridSelectionChangeExternal, onSelectionEmit],
   );
 
+  // Координаты уже приведены к отображаемым колонкам, включая служебные.
+  const applyProjectedSelection = useCallback((next: GridSelection, preserveColumnSelection = false) => {
+    prevLeadingCountRef.current = leadingServiceColumnsCount;
+    projectedSelectionRef.current = next;
+    if (isControlled) {
+      lastSentRef.current = next;
+      lastSentWithAxesRef.current = false;
+      axesEchoPendingRef.current = false;
+      onGridSelectionChangeExternal?.(next);
+    } else {
+      setGridSelectionInternal(next);
+    }
+    if (preserveColumnSelection) onExternalSelectionChangeRef.current?.(next, false, true);
+    else onExternalSelectionChangeRef.current?.(next, false);
+  }, [isControlled, onGridSelectionChangeExternal, leadingServiceColumnsCount]);
+
   // Выделение в glide хранится по индексам колонок. Когда ведущих служебных
   // колонок становится больше или меньше (столбец ошибок появляется вместе с
   // режимом правки и при первых ошибках), колонки данных сдвигаются, а индексы
   // выделения нет: активной оказалась бы соседняя ячейка. Сдвигаем выделение
   // на ту же разницу, чтобы оно осталось на той же ячейке данных.
-  const leadingServiceColumnsCount = findFirstDataColumnIndex(columns);
-  const prevLeadingCountRef = useRef(leadingServiceColumnsCount);
   const selectionRef = useRef(selection);
   selectionRef.current = selection;
   useEffect(() => {
@@ -246,6 +283,9 @@ export function useNativeGridSelection({
     selection,
     handleGridSelectionChange,
     handleSelectionCleared,
+    applyProjectedSelection,
+    isProjectedSelection: projectedSelectionRef.current !== undefined &&
+      sameSelection(selection, projectedSelectionRef.current),
     rangeSelect,
     spanRangeBehavior,
   };

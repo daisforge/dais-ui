@@ -983,7 +983,11 @@ export type { TableCanvasEmptyStateConfig, TableCanvasErrorStateConfig };
  * Настройка выделения ячеек/колонок/строк в TableCanvas — единый объект.
  * Это отдельная ось взаимодействия — не зависит от `highlightActiveType`.
  */
-export type CellsSelectionConfig = {
+export type CellsSelectionConfig<RowType = ObjectForExtending> = {
+  /** Постоянный ID записи для сохранения активной ячейки при перестановке строк. */
+  rowKeyGetter?: (row: RowType) => string | number;
+  /** Версия набора данных. Меняйте вместе с новым набором, сохраняйте при обновлении значений и дозагрузке. */
+  dataRevision?: string | number;
   /**
    * Режим фактического выделения ячеек (нативный glide selection). По нему
    * работают copy/paste, рамка, fill-handle и затемнение шапки/нумерации.
@@ -1155,7 +1159,7 @@ export type TableConfig<
    * (`enableColumnSelection`/`enableRowSelection`/`enableSelectAll`) и controlled
    * (`state`). См. {@link CellsSelectionConfig}.
    */
-  cellsSelection?: CellsSelectionConfig;
+  cellsSelection?: CellsSelectionConfig<RowType>;
   /**
    * Подсвеченная строка (`highlightActiveType='row'`).
    * `state` (опционально) — controlled-кортеж `[value, setter]`: задан — значением
