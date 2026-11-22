@@ -612,7 +612,7 @@ fp:
 | `react-hook-form`                 | ^7.54.2       | Формы                        |
 | `swr`                             | ^2.3.3        | Загрузка данных              |
 | `zod`                             | ^3.24.2       | Валидация                    |
-| `@daisforge/glide-data-grid` | ^6.11.0       | TableCanvas                  |
+| `@daisforge/glide-data-grid`      | 6.14.0        | TableCanvas                  |
 | `react-data-grid`                 | 7.0.0-beta.43 | Table (устаревшая)           |
 
 Подключение тем и глобальных стилей описано в [README ui-kit](packages/ui-kit/README.md#темы).
