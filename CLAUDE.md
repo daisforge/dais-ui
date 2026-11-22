@@ -13,7 +13,7 @@
 | Категория            | Технология                                                  |
 | -------------------- | ----------------------------------------------------------- |
 | **Фреймворк**        | React 18.3.1 + TypeScript 5.4.2                             |
-| **Стилизация**       | styled-components 5.3.11                                     |
+| **Стилизация**       | styled-components 5.3.11                                    |
 | **UI-основа**        | `@salutejs/sdds-finai` (дизайн-система Plasma)              |
 | **Сборка**           | Vite 5.0 + Nx                                               |
 | **Моно-репо**        | Lerna 8 + Nx 19                                             |
@@ -254,7 +254,11 @@ const color = getTokenValue('--color-primary');
 ```typescript
 import { FormTextField } from '@ui-kit/formComponents';
 
-<FormTextField name="fieldName" control={control} rules={{ required: 'Поле обязательно для заполнения' }} />;
+<FormTextField
+  name="fieldName"
+  control={control}
+  rules={{ required: 'Поле обязательно для заполнения' }}
+/>;
 ```
 
 **Пропсы**:
@@ -359,7 +363,7 @@ vi.mock('./components/DrawerX', () => ({
     <div data-testid="mock-drawer-x" data-props={JSON.stringify(props)}>
       {children}
     </div>
-  ))
+  )),
 }));
 
 import { DrawerDF } from './DrawerDF';
@@ -368,14 +372,31 @@ describe('DrawerDF', () => {
   const baseProps = { opened: true, onClose: vi.fn() };
 
   it('должен устанавливать $multipleContents в false когда main - одиночный элемент', () => {
-    const { container } = render(<DrawerDF {...baseProps} main={<DrawerDF.Content>Контент</DrawerDF.Content>} />);
-    const props = JSON.parse(container.querySelector('[data-testid="mock-drawer-x"]')!.dataset.props);
+    const { container } = render(
+      <DrawerDF
+        {...baseProps}
+        main={<DrawerDF.Content>Контент</DrawerDF.Content>}
+      />,
+    );
+    const props = JSON.parse(
+      container.querySelector('[data-testid="mock-drawer-x"]')!.dataset.props,
+    );
     expect(props.$multipleContents).toBe(false);
   });
 
   it('должен устанавливать $multipleContents в true когда main - массив', () => {
-    const { container } = render(<DrawerDF {...baseProps} main={[<DrawerDF.Content key="1">Контент 1</DrawerDF.Content>, <DrawerDF.Content key="2">Контент 2</DrawerDF.Content>]} />);
-    const props = JSON.parse(container.querySelector('[data-testid="mock-drawer-x"]')!.dataset.props);
+    const { container } = render(
+      <DrawerDF
+        {...baseProps}
+        main={[
+          <DrawerDF.Content key="1">Контент 1</DrawerDF.Content>,
+          <DrawerDF.Content key="2">Контент 2</DrawerDF.Content>,
+        ]}
+      />,
+    );
+    const props = JSON.parse(
+      container.querySelector('[data-testid="mock-drawer-x"]')!.dataset.props,
+    );
     expect(props.$multipleContents).toBe(true);
   });
 });
@@ -601,19 +622,19 @@ fp:
 
 ### Основные зависимости
 
-| Пакет                             | Версия        | Назначение                   |
-| --------------------------------- | ------------- | ---------------------------- |
-| `@salutejs/sdds-finai`            | 0.369.0      | Базовые атомарные компоненты |
-| `@salutejs/plasma-icons`          | ^1.258.0      | Иконки                       |
-| `@salutejs/plasma-typo`           | ^0.60.0       | Токены типографики           |
-| `@sddsjs/sdds_finai` | 0.2.3 | Темы и токены |
-| `react` / `react-dom`             | 18.3.1        | Core                         |
-| `styled-components`               | 5.3.11        | CSS-in-JS                    |
-| `react-hook-form`                 | ^7.54.2       | Формы                        |
-| `swr`                             | ^2.3.3        | Загрузка данных              |
-| `zod`                             | ^3.24.2       | Валидация                    |
-| `@daisforge/glide-data-grid`      | 6.14.0        | TableCanvas                  |
-| `react-data-grid`                 | 7.0.0-beta.43 | Table (устаревшая)           |
+| Пакет                        | Версия        | Назначение                   |
+| ---------------------------- | ------------- | ---------------------------- |
+| `@salutejs/sdds-finai`       | 0.369.0       | Базовые атомарные компоненты |
+| `@salutejs/plasma-icons`     | ^1.258.0      | Иконки                       |
+| `@salutejs/plasma-typo`      | ^0.60.0       | Токены типографики           |
+| `@sddsjs/sdds_finai`         | 0.2.3         | Темы и токены                |
+| `react` / `react-dom`        | 18.3.1        | Core                         |
+| `styled-components`          | 5.3.11        | CSS-in-JS                    |
+| `react-hook-form`            | ^7.54.2       | Формы                        |
+| `swr`                        | ^2.3.3        | Загрузка данных              |
+| `zod`                        | ^3.24.2       | Валидация                    |
+| `@daisforge/glide-data-grid` | 6.14.0        | TableCanvas                  |
+| `react-data-grid`            | 7.0.0-beta.43 | Table (устаревшая)           |
 
 Подключение тем и глобальных стилей описано в [README ui-kit](packages/ui-kit/README.md#темы).
 
