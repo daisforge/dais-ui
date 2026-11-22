@@ -257,7 +257,7 @@ ColoringStates (переключатели всех режимов, темы —
 # Часть 2. Карта кода и механики
 
 Таблица TableCanvas → обёртка TableGlide → Glide Data Grid
-(`@glideappsfinal/glide-data-grid`, canvas-рендер, наш форк). Пути ниже —
+(`@daisforge/glide-data-grid`, canvas-рендер, наш форк). Пути ниже —
 от корня библиотеки.
 
 ## Как устроена интеграция палитры

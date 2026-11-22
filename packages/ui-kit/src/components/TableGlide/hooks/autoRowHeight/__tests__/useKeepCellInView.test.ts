@@ -1,4 +1,4 @@
-import type { DataEditorRef } from '@glideappsfinal/glide-data-grid';
+import type { DataEditorRef } from '@daisforge/glide-data-grid';
 import { renderHook } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 

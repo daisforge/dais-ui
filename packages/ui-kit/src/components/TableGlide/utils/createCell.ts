@@ -1,4 +1,4 @@
-import { GridCellKind, type TextCell } from '@glideappsfinal/glide-data-grid';
+import { GridCellKind, type TextCell } from '@daisforge/glide-data-grid';
 
 export const DEFAULT_ROW_HEIGHT = 33;
 export const EMPTY_CELL_OBJ: TextCell = {

@@ -1,4 +1,4 @@
-import type { GridColumn } from '@glideappsfinal/glide-data-grid';
+import type { GridColumn } from '@daisforge/glide-data-grid';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import React, { useState } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';

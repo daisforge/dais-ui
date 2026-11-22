@@ -1,4 +1,4 @@
-import type { GridCell } from '@glideappsfinal/glide-data-grid';
+import type { GridCell } from '@daisforge/glide-data-grid';
 
 /**
  * Safely resolves display text for any basic grid cell.

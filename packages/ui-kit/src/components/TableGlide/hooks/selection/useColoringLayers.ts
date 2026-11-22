@@ -1,4 +1,4 @@
-import type { GridSelection, Rectangle } from '@glideappsfinal/glide-data-grid';
+import type { GridSelection, Rectangle } from '@daisforge/glide-data-grid';
 import type { CellsSelectionMode, GlideProps, Theme } from '../../types';
 import { useBaseHighlightRegions } from './useBaseHighlightRegions';
 import { useColumnRowHighlightRegions } from './useColumnRowHighlightRegions';

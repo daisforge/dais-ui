@@ -36492,7 +36492,7 @@
           "description": ""
         }
       ],
-      "sourceFile": "node_modules/@glideappsfinal/glide-data-grid/dist/dts/internal/growing-entry/growing-entry.d.ts",
+      "sourceFile": "node_modules/@daisforge/glide-data-grid/dist/dts/internal/growing-entry/growing-entry.d.ts",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -38248,7 +38248,7 @@
           "description": ""
         }
       ],
-      "sourceFile": "node_modules/@glideappsfinal/glide-data-grid/dist/dts/internal/growing-entry/growing-entry.d.ts",
+      "sourceFile": "node_modules/@daisforge/glide-data-grid/dist/dts/internal/growing-entry/growing-entry.d.ts",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [

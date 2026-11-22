@@ -31,5 +31,5 @@ export {
 } from '../../TableGlide';
 export { TableGlideInstance } from './TableGlideInstance';
 export type * from './type';
-export type { Rectangle } from '@glideappsfinal/glide-data-grid';
-export { TextCellEntry } from '@glideappsfinal/glide-data-grid';
+export type { Rectangle } from '@daisforge/glide-data-grid';
+export { TextCellEntry } from '@daisforge/glide-data-grid';

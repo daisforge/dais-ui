@@ -1,4 +1,4 @@
-import type { RowHeightCallback } from '@glideappsfinal/glide-data-grid';
+import type { RowHeightCallback } from '@daisforge/glide-data-grid';
 import { useLayoutEffect, useRef } from 'react';
 
 /** Сколько строк сверять между соседними версиями */

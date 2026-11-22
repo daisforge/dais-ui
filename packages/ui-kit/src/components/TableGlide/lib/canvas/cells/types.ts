@@ -1,4 +1,4 @@
-import { GridCellKind } from '@glideappsfinal/glide-data-grid';
+import { GridCellKind } from '@daisforge/glide-data-grid';
 
 import { GlideThemeForRender } from '../../../theming/types';
 import type { CanvasImageResources } from '../core/CanvasImageResources';

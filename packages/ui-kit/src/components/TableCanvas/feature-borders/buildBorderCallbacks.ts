@@ -1,4 +1,4 @@
-import type { CellBorders } from '@glideappsfinal/glide-data-grid';
+import type { CellBorders } from '@daisforge/glide-data-grid';
 
 import { getLvlOfRow } from '../feature-tree/handlers';
 import type { BordersConfig } from '../types/table-config.type';
