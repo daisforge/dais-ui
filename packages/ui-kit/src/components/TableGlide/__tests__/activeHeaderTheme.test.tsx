@@ -1,7 +1,7 @@
 import {
   CompactSelection,
   type GridSelection,
-} from '@glideappsfinal/glide-data-grid';
+} from '@daisforge/glide-data-grid';
 import { cleanup, render } from '@testing-library/react';
 import React from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';

@@ -57,7 +57,7 @@ export type { SidebarTab as TableCanvasSidebarTab } from './widgets/control-bloc
 // потребителю нужны CompactSelection (строить rows/columns) и тип GridSelection.
 export * from './TableGlideInstance/reexports-for-external';
 export * from './types';
-export type { GridSelection } from '@glideappsfinal/glide-data-grid';
-export { CompactSelection } from '@glideappsfinal/glide-data-grid';
+export type { GridSelection } from '@daisforge/glide-data-grid';
+export { CompactSelection } from '@daisforge/glide-data-grid';
 // export { ControlBlockSwitch } from './widgets/control-block';
 // export { NoRowsFallback } from './widgets/no-rows-fallback';

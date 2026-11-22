@@ -1,4 +1,4 @@
-import type { Rectangle } from '@glideappsfinal/glide-data-grid';
+import type { Rectangle } from '@daisforge/glide-data-grid';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import type {

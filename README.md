@@ -540,7 +540,7 @@ export type TMutationRegister<TFieldValues extends FieldValues> = {
 | `react-hook-form`                 | ^7.54.2       | Формы                        |
 | `swr`                             | ^2.3.3        | Data fetching                |
 | `zod`                             | ^3.24.2       | Валидация                    |
-| `@glideappsfinal/glide-data-grid` | ^6.11.0       | TableCanvas                  |
+| `@daisforge/glide-data-grid` | ^6.11.0       | TableCanvas                  |
 | `react-data-grid`                 | 7.0.0-beta.43 | Table (альтернатива)         |
 
 ### Peer Dependencies

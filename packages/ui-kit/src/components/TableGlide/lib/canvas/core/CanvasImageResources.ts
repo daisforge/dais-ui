@@ -1,4 +1,4 @@
-import type { ImageWindowLoader } from '@glideappsfinal/glide-data-grid';
+import type { ImageWindowLoader } from '@daisforge/glide-data-grid';
 
 /** Ресурсы текущей отрисовки; жизненным циклом загрузчика управляет Glide. */
 export interface CanvasImageResources {

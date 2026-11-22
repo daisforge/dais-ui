@@ -118,7 +118,7 @@ export default defineConfig(() => {
           const cssInSomeLibs = [
             'react-data-grid/lib/styles.css',
             'react-grid-layout/css/styles.css',
-            '@glideappsfinal/glide-data-grid/dist/index.css',
+            '@daisforge/glide-data-grid/dist/index.css',
           ];
           const somePkgsWithDeps = [
             'react/jsx-runtime',

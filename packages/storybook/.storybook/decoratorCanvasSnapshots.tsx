@@ -1,4 +1,4 @@
-import type { DataEditorRef } from '@glideappsfinal/glide-data-grid';
+import type { DataEditorRef } from '@daisforge/glide-data-grid';
 import type { Decorator } from '@storybook/react';
 import {
   type CanvasSnapshotHooks,

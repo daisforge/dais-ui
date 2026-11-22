@@ -7,8 +7,8 @@
  * сверяет частичный кадр glide с кадром целиком. PNG этих историй не снимаются:
  * вид таблицы здесь не проверяется, только совпадение частичной перерисовки.
  */
-import type { GridSelection } from '@glideappsfinal/glide-data-grid';
-import { CompactSelection } from '@glideappsfinal/glide-data-grid';
+import type { GridSelection } from '@daisforge/glide-data-grid';
+import { CompactSelection } from '@daisforge/glide-data-grid';
 import type { Meta, StoryObj } from '@storybook/react';
 import {
   Canvas,

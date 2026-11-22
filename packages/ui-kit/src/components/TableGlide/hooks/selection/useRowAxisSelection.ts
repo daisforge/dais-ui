@@ -1,4 +1,4 @@
-import { CompactSelection } from '@glideappsfinal/glide-data-grid';
+import { CompactSelection } from '@daisforge/glide-data-grid';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 const MODIFIER_KEYS = new Set(['Control', 'Meta', 'Shift', 'Alt']);

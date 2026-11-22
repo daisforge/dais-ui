@@ -1,4 +1,4 @@
-import { CompactSelection } from '@glideappsfinal/glide-data-grid';
+import { CompactSelection } from '@daisforge/glide-data-grid';
 import { useCallback, useMemo, useRef, useState } from 'react';
 
 import type { ColumnGlideLast, ObjectForExtending } from '../../types';

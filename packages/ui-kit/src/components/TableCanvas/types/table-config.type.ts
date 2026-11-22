@@ -2,7 +2,7 @@ import type {
   CellClickedEventArgs,
   GridSelection,
   GroupHeaderClickedEventArgs,
-} from '@glideappsfinal/glide-data-grid';
+} from '@daisforge/glide-data-grid';
 import { Group, Item, ItemOrGroup } from '@ui-kit/components/ListOfFilters';
 import type { MassActionsSize } from '@ui-kit/components/MassActions';
 import { SIZE } from '@ui-kit/components/TableCanvas';

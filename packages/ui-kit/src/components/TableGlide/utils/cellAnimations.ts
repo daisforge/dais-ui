@@ -1,4 +1,4 @@
-import type { DrawArgs, InnerGridCell } from '@glideappsfinal/glide-data-grid';
+import type { DrawArgs, InnerGridCell } from '@daisforge/glide-data-grid';
 
 export type AnimationEasing = (t: number) => number;
 

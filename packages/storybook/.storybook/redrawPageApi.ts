@@ -1,7 +1,7 @@
 import type {
   DataEditorRef,
   DrawnFrame,
-} from '@glideappsfinal/glide-data-grid';
+} from '@daisforge/glide-data-grid';
 import type { RefObject } from 'react';
 
 import type {

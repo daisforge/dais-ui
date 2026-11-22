@@ -2,7 +2,7 @@ import type {
   GridSelection,
   Item,
   Rectangle,
-} from '@glideappsfinal/glide-data-grid';
+} from '@daisforge/glide-data-grid';
 import { useMemo } from 'react';
 
 import type {

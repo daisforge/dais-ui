@@ -1,4 +1,4 @@
-import type { GridCell } from '@glideappsfinal/glide-data-grid';
+import type { GridCell } from '@daisforge/glide-data-grid';
 import { isValidElement } from 'react';
 
 import { CanvasEl, CellContent } from '../types';

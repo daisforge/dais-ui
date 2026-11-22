@@ -1,4 +1,4 @@
-import { TextCellEntry } from '@glideappsfinal/glide-data-grid';
+import { TextCellEntry } from '@daisforge/glide-data-grid';
 import { mergeClasses } from '@ui-kit/utils';
 import React, {
   forwardRef,

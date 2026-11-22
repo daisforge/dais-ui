@@ -1,4 +1,4 @@
-import type { GridSelection, Rectangle } from '@glideappsfinal/glide-data-grid';
+import type { GridSelection, Rectangle } from '@daisforge/glide-data-grid';
 import { useMemo } from 'react';
 
 import type { GlideProps, CellsSelectionMode, Theme } from '../../types';

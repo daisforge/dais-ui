@@ -1,4 +1,4 @@
-import type { DataEditorRef, Rectangle } from '@glideappsfinal/glide-data-grid';
+import type { DataEditorRef, Rectangle } from '@daisforge/glide-data-grid';
 import type { RefObject } from 'react';
 import { useEffect, useRef } from 'react';
 
