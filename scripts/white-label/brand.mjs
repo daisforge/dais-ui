@@ -33,6 +33,18 @@ export const NPM_NAME_RE =
 export const BRAND_RE = /dais/i;
 
 /**
+ * Внешние пакеты под scope исходного бренда, у которых нет зеркала: сборка
+ * ставит их из npm под собственным именем, поэтому имя не заменяется и
+ * проверкой на остатки бренда не считается. Подстрока покрывает и подпути
+ * ('…/dist/index.css'), и соседние пакеты ('-cells', '-source').
+ *
+ * Ни одно правило замены их не задевает: '@daisforge/ui' требует '/ui' сразу
+ * после scope. Добавлять сюда пакет можно только если у него действительно
+ * нет зеркала — иначе его нужно переименовывать правилом в createReplacements.
+ */
+export const PRESERVED_PACKAGE_NAMES = ['@daisforge/glide-data-grid'];
+
+/**
  * Читает и валидирует зеркальное имя пакета из окружения.
  * @param {string} varName
  * @param {Record<string, string | undefined>} [env]
