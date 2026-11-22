@@ -1,7 +1,28 @@
 name: Screenshots
 
-# Необязательный пилот: запуск из Actions с выбором ветки и фильтра stories.
+# Необязательная проверка: в обязательные (ruleset) не входит и merge не
+# блокирует. Запускается сама на PR в develop, если изменено то, что влияет на
+# картинки, — красный статус виден в PR сразу, а не только когда кто-то вспомнит
+# про ручной запуск. Обязательной её делать рано: полный прогон ~15 минут, и
+# есть известный редкий пустой кадр Canvas (см. screenshot-tests.md) — сначала
+# нужна статистика, сколько в красных запусках шума.
+# Вручную (workflow_dispatch) — с выбором ветки и фильтра stories, как раньше.
 on:
+  pull_request:
+    branches:
+      - develop
+    paths:
+      - 'packages/ui-kit/**'
+      - 'packages/storybook/**'
+      - 'plugins/**'
+      - 'scripts/screenshots/**'
+      - 'generators/**'
+      - 'Dockerfile.screenshots'
+      - 'Dockerfile.screenshots.dockerignore'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.npmrc'
+      - '.github/workflows/screenshots.yml'
   workflow_dispatch:
     inputs:
       filter:
@@ -13,6 +34,8 @@ on:
 permissions:
   contents: read
 
+# В PR github.ref — refs/pull/<N>/merge: новый пуш в PR отменяет прежний
+# прогон этого PR. При ручном запуске — ветка, как и раньше.
 concurrency:
   group: screenshots-${{ github.ref }}
   cancel-in-progress: true
