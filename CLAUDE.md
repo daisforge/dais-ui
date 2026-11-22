@@ -573,16 +573,12 @@ npx lerna publish
 
 ## CI/CD
 
-### Пайплайн (pipline.yml)
+Сборки и релизы — в GitHub Actions (`.github/workflows/`):
 
-```yaml
-fp:
-  groupId: CI00752881.KURSMOB.digital_finance_ui
-  artifactId: ci02918303
-  version: D-01.000.000
-  helm:
-    enable: true
-```
+- `ci-build-check.yml` — lint, тесты скриптов, проверка Markdown, сборка ui-kit (PR в `develop` и `main`);
+- `mcp-check.yml`, `screenshots.yml` — проверки MCP и скриншотов (необязательные);
+- `publish-npm.yml` — релиз при пуше в `main`: lerna-версия, публикация `@daisforge/ui`, `@daisforge/ui-storybook`, `@daisforge/ui-mcp` через npm Trusted Publishing (OIDC), релизный коммит и тег в `main` по deploy key;
+- `deploy-storybook.yml` — Storybook на GitHub Pages: https://daisforge.github.io/dais-ui/.
 
 ### Nx плагины
 
@@ -708,8 +704,8 @@ node ./scripts/clean--root--package-lock.js
 
 ## Внешние ссылки
 
-- **Storybook**: http://df-storybook.sh5.dev-gen1-ds.dddddd.ru/
-- **Документация по установке**: http://df-storybook.sh5.dev-gen1-ds.dddddd.ru/?path=/docs/%D1%83%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0-%D0%B8-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5--docs
+- **Storybook**: https://daisforge.github.io/dais-ui/
+- **Документация по установке**: https://daisforge.github.io/dais-ui/?path=/docs/%D1%83%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0-%D0%B8-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5--docs
 
 ---
 

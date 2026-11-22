@@ -23,8 +23,8 @@
 
 ##### С информацией по контрибьюту - можете ознакомиться в файле [Contributing.md](./Contributing.md)
 
-[stend-storybook]: http://df-storybook.sh5.dev-gen1-ds.dddddd.ru/?path=/docs/%D1%83%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0-%D0%B8-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5--docs
-[introStorybookSite]: http://df-storybook.sh5.dev-gen1-ds.dddddd.ru/?path=/docs/%D1%83%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0-%D0%B8-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5--docs
+[stend-storybook]: https://daisforge.github.io/dais-ui/?path=/docs/%D1%83%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0-%D0%B8-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5--docs
+[introStorybookSite]: https://daisforge.github.io/dais-ui/?path=/docs/%D1%83%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0-%D0%B8-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5--docs
 [introStorybook]: ./packages/storybook/src/storybook-intro/intro.mdx
 
 ## 📋 Детальный обзор проекта
@@ -411,26 +411,17 @@ MANUAL_UIKIT_COMP_CHUNKS = [
 ### Версионирование
 
 - **Lerna** с `conventionalCommits: true`
-- Version format: `0.X.Y`
-- Push: false (ручной push)
+- Релиз — автоматически при пуше в `main` (`.github/workflows/publish-npm.yml`)
 
-### npm registry
+### Публикация в npm
 
-```ini
-registry=https://nexus-ci.dddddd.ru/repository/npm-all/
-access=public
-```
+Пакеты публикуются в публичный npm (registry.npmjs.org) через Trusted Publishing
+(OIDC) из GitHub Actions — без npm-токенов, с provenance. Релизный коммит и тег
+пушатся в защищённый `main` по deploy key.
 
-### Пайплайн (pipline.yml)
+### Storybook
 
-```yaml
-fp:
-  groupId: CI00752881.KURSMOB.digital_finance_ui
-  artifactId: ci02918303
-  version: D-01.000.000
-  helm:
-    enable: true
-```
+Публикуется на GitHub Pages из `develop`: https://daisforge.github.io/dais-ui/.
 
 ---
 
@@ -681,5 +672,5 @@ npm run ui-kit:generate-tokens         # Генерация токенов
 
 1. Lerna version (conventional commits)
 2. Пакет: `@daisforge/ui`
-3. Registry: `https://nexus-ci.dddddd.ru/repository/npm-release/`
+3. Registry: `https://registry.npmjs.org/` (Trusted Publishing из GitHub Actions)
 4. Access: `public`
