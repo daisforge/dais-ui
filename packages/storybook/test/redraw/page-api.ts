@@ -1,4 +1,4 @@
-import type { DrawnFrame, Rectangle } from '@glideappsfinal/glide-data-grid';
+import type { DrawnFrame, Rectangle } from '@daisforge/glide-data-grid';
 
 export type { DrawnFrame, Rectangle };
 

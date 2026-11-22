@@ -1,7 +1,7 @@
 import type {
   Rectangle,
   RowHeightCallback,
-} from '@glideappsfinal/glide-data-grid';
+} from '@daisforge/glide-data-grid';
 import {
   useCallback,
   useEffect,

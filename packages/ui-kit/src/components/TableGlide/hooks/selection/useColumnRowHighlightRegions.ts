@@ -1,4 +1,4 @@
-import type { Rectangle } from '@glideappsfinal/glide-data-grid';
+import type { Rectangle } from '@daisforge/glide-data-grid';
 import { useMemo } from 'react';
 
 import type { GlideProps, Theme } from '../../types';

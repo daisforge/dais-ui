@@ -2,7 +2,7 @@
 import {
   CellActivatedEventArgs,
   CellClickedEventArgs,
-} from '@glideappsfinal/glide-data-grid';
+} from '@daisforge/glide-data-grid';
 import type { DropdownProps } from '@ui-kit/components/Dropdown';
 import type {
   AppearanceConfig,
@@ -41,7 +41,7 @@ import { HeaderAlignment } from '../types/columns-grouping.type';
 import type { CtxsType } from '../types/ctxs.type';
 import type { ObjectForExtending } from '../types/utils.type';
 
-export type { TextCellEntry as TextCellEntryType } from '@glideappsfinal/glide-data-grid';
+export type { TextCellEntry as TextCellEntryType } from '@daisforge/glide-data-grid';
 export type {
   ActiveTheme,
   AvatarContent,

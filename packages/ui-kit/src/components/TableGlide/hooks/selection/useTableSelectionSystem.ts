@@ -1,7 +1,7 @@
 import {
   CompactSelection,
   type GridSelection,
-} from '@glideappsfinal/glide-data-grid';
+} from '@daisforge/glide-data-grid';
 import { useCallback, useMemo, useRef } from 'react';
 
 import type {

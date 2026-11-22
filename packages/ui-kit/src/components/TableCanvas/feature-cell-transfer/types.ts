@@ -1,4 +1,4 @@
-import type { GridSelection, Rectangle } from '@glideappsfinal/glide-data-grid';
+import type { GridSelection, Rectangle } from '@daisforge/glide-data-grid';
 
 import type { ColumnConfigInternal } from '../types/column-config-internal.type';
 import type { ObjectForExtending } from '../types/utils.type';

@@ -1,4 +1,4 @@
-import type { GridSelection } from '@glideappsfinal/glide-data-grid';
+import type { GridSelection } from '@daisforge/glide-data-grid';
 import { createDebugLogger } from '@ui-kit/shared/utils/debug';
 import { useCallback, useEffect, useRef } from 'react';
 
