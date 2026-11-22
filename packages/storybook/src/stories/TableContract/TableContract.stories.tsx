@@ -17,6 +17,8 @@ const meta: Meta = {
   parameters: {
     screenshot: {
       skip: true,
+      skipReason:
+        'Пробел покрытия: перед снимком не проверяется готовность данных таблицы из MSW',
     },
   },
 

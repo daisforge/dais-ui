@@ -57,7 +57,7 @@ describe('flattenSubRowsToMergedLeaves — дерево в листья с де�
   it('листья идут в порядке обхода, значения предков проштампованы в колонки уровней', () => {
     // Уровень 0 пишет name узла в dept, уровень 1 — в role.
     const leaves = flattenSubRowsToMergedLeaves(
-      tree.map((n) => ({ ...n, dept: n.name })),
+      tree.map((n): Node => ({ ...n, dept: n.name })),
       (n) =>
         getSubRows(n as Node)?.map((c, i) => ({
           ...c,
@@ -74,8 +74,8 @@ describe('flattenSubRowsToMergedLeaves — дерево в листья с де�
       'Carol',
       'Dave',
     ]);
-    expect(leaves.map((l) => l.dept)).toEqual(['IT', 'IT', 'IT', 'HR']);
-    expect(leaves.map((l) => l.role)).toEqual(['Dev', 'Dev', 'QA', 'Rec']);
+    expect(leaves.map((l) => l['dept'])).toEqual(['IT', 'IT', 'IT', 'HR']);
+    expect(leaves.map((l) => l['role'])).toEqual(['Dev', 'Dev', 'QA', 'Rec']);
   });
 
   it('узел без детей на верхнем уровне сам становится листом', () => {
@@ -86,7 +86,7 @@ describe('flattenSubRowsToMergedLeaves — дерево в листья с де�
     );
     expect(leaves).toHaveLength(1);
     expect(leaves[0]?.name).toBe('Solo');
-    expect(leaves[0]?.dept).toBe('Ops');
+    expect(leaves[0]?.['dept']).toBe('Ops');
   });
 
   it('глубина больше mergedColumns: лишние уровни не штампуются, листья не теряются', () => {
@@ -105,7 +105,7 @@ describe('flattenSubRowsToMergedLeaves — дерево в листья с де�
     const leaves = flattenSubRowsToMergedLeaves(deep, getSubRows, ['dept']);
     expect(leaves).toHaveLength(1);
     expect(leaves[0]?.name).toBe('leaf');
-    expect(leaves[0]?.dept).toBe('A');
+    expect(leaves[0]?.['dept']).toBe('A');
   });
 
   it('служебные tree-ключи в листья не инжектятся', () => {
@@ -134,6 +134,6 @@ describe('flattenSubRowsToMergedLeaves — дерево в листья с де�
     );
     // Лист раскладывается как {...node, ...stamp}: штамп предка ложится ПОВЕРХ
     // собственного поля листа. Фиксируем фактическое поведение: побеждает предок.
-    expect(leaves[0]?.dept).toBe('IT');
+    expect(leaves[0]?.['dept']).toBe('IT');
   });
 });

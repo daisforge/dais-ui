@@ -13,7 +13,6 @@ import { useTableCollapse } from '../../contexts';
 import { CollapseTableButton } from '../../feature-collapse-table';
 import { SearchBlock } from '../../feature-searching';
 // import { SummaryCheckbox } from '../../feature-select-row/summary-checkbox';
-import { HEIGHT_CONTROL_BLOCK } from '../../styles';
 import { controlBlockClassNames as cls } from './control-block.classnames';
 import {
   getControlBlockSizeMap,
@@ -94,7 +93,7 @@ export const ControlBlockWithoutResize = ({
   return (
     <Collapse
       isOpen={isHaveControlBlock}
-      sizeOnOpen={HEIGHT_CONTROL_BLOCK}
+      sizeOnOpen={spacing.containerHeight}
       unMountOnClose
     >
       <ControlBlockStyled
@@ -113,6 +112,9 @@ export const ControlBlockWithoutResize = ({
           alignment="center"
           style={{
             flexWrap: 'nowrap',
+            // Левая группа не сжимается, иначе поиск заезжает на её кнопки
+            flexShrink: 0,
+            gap: spacing.collapseGap,
           }}
         >
           {collapseButtonPlacement === 'inside' && (
@@ -126,15 +128,21 @@ export const ControlBlockWithoutResize = ({
             {/* <SummaryCheckbox isHaveRightDivider={!!leftSideInner?.length} /> */}
 
             {resultLeftSightInner?.map((props, i, arr) => (
-              <ControlBlockButton
-                key={props['key'] ?? `${props['text']}${i}` ?? i}
-                {...props}
-                index={i}
-                isLastButtonInnArray={i === arr.length - 1}
-                buttonSize={sizeMap.sideInnerButton}
-                iconSize={sizeMap.sideInnerIcon}
-                showLabel
-              />
+              <React.Fragment key={props['key'] ?? `${props['text']}${i}` ?? i}>
+                <ControlBlockButton
+                  {...props}
+                  index={i}
+                  isLastButtonInnArray={i === arr.length - 1}
+                  buttonSize={sizeMap.sideInnerButton}
+                  iconSize={sizeMap.sideInnerIcon}
+                  showLabel
+                />
+                {/* Кнопку без разделителя («Отменить» перед «Сохранить») отделяет
+                    промежуток, как gap контейнера в адаптивной панели. */}
+                {props.skipRightDivider && i < arr.length - 1 && (
+                  <Box $css={`flex: none; width: ${spacing.leftPartGap}px;`} />
+                )}
+              </React.Fragment>
             ))}
           </LefSideStyled>
         </Flow>

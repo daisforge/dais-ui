@@ -2,7 +2,7 @@ import {
   CompactSelection,
   type GridSelection,
 } from '@glideappsfinal/glide-data-grid';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 
 import type {
   ColumnGlideLast,
@@ -38,12 +38,16 @@ interface UseTableSelectionSystemParams<
   leadingServiceColumnsCount: number;
   /** Всего строк (данные + summary) — высота нативного range при column-select. */
   dataRowCount: number;
-  /** Базовый обработчик glide-выделения (из useNativeGridSelection). */
-  handleGridSelectionChange: (next: GridSelection) => void;
+  /**
+   * Базовый обработчик glide-выделения (из useNativeGridSelection). `emitted` — что отдать
+   * потребителю, если итог не совпадает с нативным (несмежные колонки/строки — оверлей).
+   */
+  handleGridSelectionChange: (
+    next: GridSelection,
+    emitted?: GridSelection
+  ) => void;
   /** Базовый обработчик сброса выделения (из useNativeGridSelection). */
   handleSelectionCleared: () => void;
-  /** Канал наружу: отдаём выделенные колонки/строки потребителю для copy/paste. */
-  onSelectionEmit?: (next: GridSelection) => void;
   /** Controlled-значение подсвеченной строки (highlightActiveType='row'). */
   highlightActiveRow?: number;
   /** Сеттер/эмиттер подсвеченной строки. Вызывается на каждый коммит подсветки. */
@@ -55,6 +59,50 @@ interface UseTableSelectionSystemParams<
   isHighlightActiveRowControlled?: boolean;
 }
 
+/** Выделение с активной ячейкой в первой колонке данных строки `row` */
+const toFirstDataCell = (
+  selection: GridSelection,
+  firstDataCol: number,
+  row: number
+): GridSelection => ({
+  ...selection,
+  current: {
+    cell: [firstDataCol, row],
+    range: { x: firstDataCol, y: row, width: 1, height: 1 },
+    rangeStack: [],
+  },
+});
+
+/** Ни активной ячейки, ни выбранных glide строк и колонок */
+const isEmptySelection = (selection: GridSelection): boolean =>
+  selection.current === undefined &&
+  selection.rows.length === 0 &&
+  selection.columns.length === 0;
+
+/** Без нативного диапазона: несмежные колонки/строки (их рисует оверлей) или пусто */
+const axisSelection = ({
+  columns = CompactSelection.empty(),
+  rows = CompactSelection.empty(),
+}: {
+  columns?: CompactSelection;
+  rows?: CompactSelection;
+} = {}): GridSelection => ({ current: undefined, columns, rows });
+
+/** Нативный вертикальный диапазон колонок `fromCol..toCol` на все строки */
+const columnsRangeSelection = (
+  fromCol: number,
+  toCol: number,
+  rowCount: number
+): GridSelection => ({
+  current: {
+    cell: [fromCol, 0],
+    range: { x: fromCol, y: 0, width: toCol - fromCol + 1, height: rowCount },
+    rangeStack: [],
+  },
+  rows: CompactSelection.empty(),
+  columns: CompactSelection.empty(),
+});
+
 /**
  * Оркестратор трёх независимых от glide осей выделения TableCanvas:
  *  - выделение КОЛОНОК по клику на шапку (`useColumnAxisSelection`);
@@ -64,8 +112,8 @@ interface UseTableSelectionSystemParams<
  * Состояние каждой оси владеется своим хуком; здесь — общая логика клика/драга и
  * ЕДИНОЕ место инварианта взаимоисключения: выбор одной оси (или обычное
  * выделение ячеек) сбрасывает остальные. Рендер осей — собственным оверлеем
- * (см. `useColumnRowHighlightRegions`); наружу для copy/paste отдаём через
- * `onSelectionEmit`.
+ * (см. `useColumnRowHighlightRegions`); наружу для copy/paste итог уходит вторым
+ * аргументом `handleGridSelectionChange` — один вызов на изменение.
  */
 export function useTableSelectionSystem<
   R extends ObjectForExtending,
@@ -82,7 +130,6 @@ export function useTableSelectionSystem<
   dataRowCount,
   handleGridSelectionChange,
   handleSelectionCleared,
-  onSelectionEmit,
   highlightActiveRow,
   onHighlightActiveRowChange,
   isHighlightActiveRowControlled,
@@ -103,6 +150,8 @@ export function useTableSelectionSystem<
     ctrlGestureRef,
     ctrlBaseRowsRef,
     pointerGestureRef,
+    rightClickGestureRef,
+    selectedRowsRef,
   } = useRowAxisSelection();
 
   const { activeRow, commitActiveRow } = useActiveRowHighlight({
@@ -132,10 +181,18 @@ export function useTableSelectionSystem<
       if (range.x >= firstDataCol) return next;
       const nextWidth = range.x + range.width - firstDataCol;
       if (nextWidth <= 0) {
+        // Клик целиком по служебной зоне (чекбокс, индикатор ошибок). Выделение
+        // не обнуляем, а оставляем якорь в кликнутой ячейке с диапазоном
+        // нулевой ширины: glide ничего не рисует (как при Ctrl-выборе строк),
+        // а current остаётся задан. Пустой current нельзя: на фокусе glide сам
+        // ставит курсор в ячейку [0, 0], то есть в нумерацию первой строки, и
+        // клик по чекбоксу превращался в выделение первой строки.
         return {
-          current: undefined,
-          rows: CompactSelection.empty(),
-          columns: CompactSelection.empty(),
+          ...next,
+          current: {
+            ...current,
+            range: { ...range, x: firstDataCol, width: 0 },
+          },
         };
       }
       return {
@@ -150,24 +207,65 @@ export function useTableSelectionSystem<
     [leadingServiceColumnsCount]
   );
 
+  // Сброс выделения (Escape, клик по пустой области) даёт наружу один onChange.
+  // Подробнее: glide сбрасывает выделение двумя вызовами подряд: сначала пустое выделение
+  // в onGridSelectionChange, потом onSelectionCleared. Если первый вызов уже
+  // отдал пустое выделение, второй только сбрасывает Ctrl-выбор.
+  const emptyEmittedRef = useRef(false);
+
   const handleGridSelectionWithColumnReset = useCallback(
     (raw: GridSelection) => {
       const current = raw.current;
+      emptyEmittedRef.current = false;
+      if (isEmptySelection(raw)) {
+        // Пустое поверх пустого: нечего отдавать, Ctrl-выбор сбросит onSelectionCleared.
+        if (isEmptySelection(selection)) return;
+        emptyEmittedRef.current = true;
+      }
+      // Жест мышью: между pointerdown и pointerup, а для правой кнопки и после
+      // pointerup, пока не пришёл следующий клик или клавиша (contextmenu на
+      // Windows приходит после отпускания).
+      const isMouseGesture =
+        pointerGestureRef.current || rightClickGestureRef.current;
+      // Клавиатура при выбранной строке: glide держит якорь в колонке нумерации
+      // и двигает или растит диапазон, это по-прежнему выбор строк.
+      const isRowSelectionAnchored =
+        selection.current?.cell[0] === numberingColumnIndex;
       // Выделение СТРОК по колонке нумерации. Из range glide берём строки в свой
       // selectedRows и рисуем их СВОИМ оверлеем (заливка + рамка, как у колонок).
       // Сам диапазон glide схлопываем в НУЛЕВУЮ ширину в области данных: тогда
       // glide ничего не рисует для current (ни рамки на нумерации при драге, ни
       // двойной заливки), а cell-якорь НЕ трогаем — нативный drag glide (он
       // ведётся от позиции мыши) продолжает работать.
+      //
+      // Жест мышью или клавиатура при уже выбранной строке: при фокусе грида
+      // без выделения glide сам ставит активную ячейку в первую колонку (у нас
+      // это нумерация): это не выбор строки, такое выделение ниже обрезается
+      // до первой ячейки данных.
       if (
         enableRowSelection &&
         numberingColumnIndex >= 0 &&
         current &&
-        current.cell[0] === numberingColumnIndex
+        current.cell[0] === numberingColumnIndex &&
+        (isMouseGesture || isRowSelectionAnchored)
       ) {
         const firstDataCol = leadingServiceColumnsCount;
         const startRow = current.range.y;
         const endRow = startRow + Math.max(current.range.height, 1);
+
+        // Правый клик по уже выбранной строке открывает меню над всем
+        // выделением — выделение не трогаем.
+        if (rightClickGestureRef.current) {
+          const prev = selection.current;
+          const isInRowRange =
+            prev?.cell[0] === numberingColumnIndex &&
+            startRow >= prev.range.y &&
+            startRow < prev.range.y + prev.range.height;
+
+          if (isInRowRange || selectedRowsRef.current.hasIndex(startRow)) {
+            return;
+          }
+        }
 
         // Ctrl/Meta → НЕсмежный накопительный выбор строк. Одного нативного
         // range для разрозненных строк не существует → рисуем СВОИМ оверлеем
@@ -204,23 +302,21 @@ export function useTableSelectionSystem<
           setSelectedRows(rows);
           commitActiveRow(undefined);
           setIsNativeColumnSelection(false);
-          handleGridSelectionChange({
-            ...raw,
-            current: {
-              ...current,
-              range: {
-                x: firstDataCol,
-                y: current.range.y,
-                width: 0,
-                height: current.range.height,
+          handleGridSelectionChange(
+            {
+              ...raw,
+              current: {
+                ...current,
+                range: {
+                  x: firstDataCol,
+                  y: current.range.y,
+                  width: 0,
+                  height: current.range.height,
+                },
               },
             },
-          });
-          onSelectionEmit?.({
-            current: undefined,
-            rows,
-            columns: CompactSelection.empty(),
-          });
+            axisSelection({ rows })
+          );
           return;
         }
 
@@ -249,19 +345,56 @@ export function useTableSelectionSystem<
         return;
       }
 
+      // Правый клик внутри Ctrl-выбранных строк или колонок набор не сбрасывает.
+      // Подробнее: в выделении glide этих строк и колонок нет, и он ставит одиночную
+      // ячейку. Набор оставляем: меню относится к нему, как при обычном
+      // диапазоне.
+      if (
+        rightClickGestureRef.current &&
+        current &&
+        current.range.width === 1 &&
+        current.range.height === 1 &&
+        (selectedRowsRef.current.hasIndex(current.cell[1]) ||
+          selectedColumnSet.has(current.cell[0]))
+      ) {
+        return;
+      }
+
       // Иначе: исключаем сервисные колонки + сбрасываем выделение колонок/строк.
-      const next = clampSelectionToData(raw);
+      // Без мыши (фокус грида, стрелки) активная ячейка в сервисной колонке
+      // переносится на первую ячейку данных строки, а не сбрасывается.
+      const next =
+        !isMouseGesture &&
+        current &&
+        current.cell[0] < leadingServiceColumnsCount
+          ? toFirstDataCell(raw, leadingServiceColumnsCount, current.cell[1])
+          : clampSelectionToData(raw);
+      // Клик целиком по служебной зоне (см. clampSelectionToData): якорь с
+      // нулевой шириной. Выделение колонок/строк и подсветку активной строки
+      // не трогаем, как и раньше, когда такой клик обнулял current.
+      const isServiceOnlyClick =
+        next.current !== undefined &&
+        next.current.range.width === 0 &&
+        next.current.cell[0] < leadingServiceColumnsCount;
+      if (isServiceOnlyClick) {
+        setIsNativeColumnSelection(false);
+        handleGridSelectionChange(next, axisSelection());
+        return;
+      }
       if (next.current !== undefined || next.rows.length > 0) {
         setSelectedColumns(CompactSelection.empty());
         setSelectedRows(CompactSelection.empty());
       }
       // Обычное выделение ячеек/диапазона — это не column-select.
+      if (isEmptySelection(next) && selectedColumnSet.size === 0) {
+        lastSelectedColumnRef.current = undefined;
+      }
       setIsNativeColumnSelection(false);
       // Sticky-подсветка строки (highlightActiveType='row'): обновляем строку
       // ТОЛЬКО на клик мышью (pointerGestureRef), чтобы навигация стрелками её
       // не двигала. Источник — строка активной (кликнутой) ячейки.
       if (highlightActiveType === 'row') {
-        if (pointerGestureRef.current && next.current) {
+        if (isMouseGesture && next.current) {
           commitActiveRow(next.current.cell[1]);
         }
       } else {
@@ -278,11 +411,14 @@ export function useTableSelectionSystem<
       enableRowSelection,
       leadingServiceColumnsCount,
       highlightActiveType,
-      onSelectionEmit,
       commitActiveRow,
       ctrlGestureRef,
       ctrlBaseRowsRef,
       pointerGestureRef,
+      rightClickGestureRef,
+      selectedRowsRef,
+      lastSelectedColumnRef,
+      selectedColumnSet,
       setSelectedColumns,
       setSelectedRows,
       setIsNativeColumnSelection,
@@ -290,18 +426,43 @@ export function useTableSelectionSystem<
   );
 
   const handleSelectionClearedWithColumns = useCallback(() => {
+    // Пустое выделение отдаём наружу, только если его ещё не отдали и было что
+    // снимать.
+    // Подробнее: иначе Escape давал два onChange (первый уже ушёл из onGridSelectionChange)
+    // или onChange без выделения.
+    const alreadyEmitted = emptyEmittedRef.current;
+    emptyEmittedRef.current = false;
+    lastSelectedColumnRef.current = undefined;
+    const nothingSelected =
+      isEmptySelection(selection) &&
+      selectedColumns.length === 0 &&
+      selectedRowsRef.current.length === 0;
     setSelectedColumns(CompactSelection.empty());
     setSelectedRows(CompactSelection.empty());
     commitActiveRow(undefined);
     setIsNativeColumnSelection(false);
-    handleSelectionCleared();
+    if (!alreadyEmitted && !nothingSelected) handleSelectionCleared();
   }, [
+    selection,
+    selectedColumns,
+    selectedRowsRef,
+    lastSelectedColumnRef,
     handleSelectionCleared,
     commitActiveRow,
     setSelectedColumns,
     setSelectedRows,
     setIsNativeColumnSelection,
   ]);
+
+  // Снять свой Ctrl-выбор колонок и строк без onChange. Нужно, когда выделение
+  // сменили из кода (controlled state): Ctrl-выбор к новому выделению не
+  // относится.
+  const resetAxes = useCallback(() => {
+    lastSelectedColumnRef.current = undefined;
+    setSelectedColumns(CompactSelection.empty());
+    setSelectedRows(CompactSelection.empty());
+    setIsNativeColumnSelection(false);
+  }, [lastSelectedColumnRef, setSelectedColumns, setSelectedRows, setIsNativeColumnSelection]);
 
   // Объединённое множество выделенных КОЛОНОК (ключи) для внешних потребителей
   // (например «Закрепить столбцы» в контрл-блоке). Два канала выделения колонок:
@@ -311,6 +472,11 @@ export function useTableSelectionSystem<
   //    при нём isNativeColumnSelection === false.
   // Отдаём КЛЮЧИ (column.id === исходный key), а не индексы: индексы здесь — в
   // пространстве glide-колонок (frozen вынесены вперёд), наружу оно бессмысленно.
+  // Идентичность массива стабильна, пока не изменился состав ключей: selection
+  // меняется на каждый шаг протяжки рамки, и без этого каждый шаг рождал бы
+  // новый (обычно пустой) массив, дёргал onColumnSelectionChange и
+  // перерендеривал потребителей (контрл-блок, сайдбар).
+  const selectedColumnKeysRef = useRef<string[]>([]);
   const selectedColumnKeysAll = useMemo(() => {
     const indexSet = new Set<number>(selectedColumnIndexes);
     if (isNativeColumnSelection && selection.current) {
@@ -321,18 +487,35 @@ export function useTableSelectionSystem<
         }
       }
     }
-    return Array.from(indexSet)
+    const next = Array.from(indexSet)
       .sort((a, b) => a - b)
       .map((columnIndex) => columns[columnIndex]?.id)
       .filter((key): key is string => Boolean(key));
+    const prev = selectedColumnKeysRef.current;
+    if (
+      prev.length === next.length &&
+      prev.every((key, index) => key === next[index])
+    ) {
+      return prev;
+    }
+    selectedColumnKeysRef.current = next;
+    return next;
   }, [selectedColumnIndexes, isNativeColumnSelection, selection, columns]);
 
   // focus-ring рисуем в range-cell / multi-range-cell, КРОМЕ случая, когда
   // активный якорь — в сервисной колонке (выделение строк по нумерации): иначе
   // glide рисует яркую рамку на ячейке-якоре нумерации.
+  // В режиме cell диапазон больше одной ячейки бывает только у объединённого
+  // блока: glide расширяет выделение до его границ. Блок обводим как в range-cell,
+  // иначе редактор в блоке рисует рамку одной строки поверх заливки выделения.
+  const isCellModeBlock =
+    cellsSelectionMode === 'cell' &&
+    selection.current !== undefined &&
+    selection.current.range.width * selection.current.range.height > 1;
   const drawFocusRing =
     (cellsSelectionMode === 'range-cell' ||
-      cellsSelectionMode === 'multi-range-cell') &&
+      cellsSelectionMode === 'multi-range-cell' ||
+      isCellModeBlock) &&
     !isNativeColumnSelection &&
     !(
       selection.current !== undefined &&
@@ -361,20 +544,9 @@ export function useTableSelectionSystem<
         setSelectedRows(CompactSelection.empty());
         commitActiveRow(undefined);
         setIsNativeColumnSelection(true); // гасим focus-ring на якоре
-        handleGridSelectionChange({
-          current: {
-            cell: [firstDataCol, 0],
-            range: {
-              x: firstDataCol,
-              y: 0,
-              width: dataWidth,
-              height: dataRowCount,
-            },
-            rangeStack: [],
-          },
-          rows: CompactSelection.empty(),
-          columns: CompactSelection.empty(),
-        });
+        handleGridSelectionChange(
+          columnsRangeSelection(firstDataCol, columns.length - 1, dataRowCount)
+        );
         return;
       }
 
@@ -407,21 +579,15 @@ export function useTableSelectionSystem<
         const nextColumns = baseColumns.hasIndex(columnIndex)
           ? baseColumns.remove(columnIndex)
           : baseColumns.add(columnIndex);
-        lastSelectedColumnRef.current = columnIndex;
+        lastSelectedColumnRef.current = nextColumns.length ? columnIndex : undefined;
         setSelectedColumns(nextColumns);
         setSelectedRows(CompactSelection.empty());
         commitActiveRow(undefined);
         setIsNativeColumnSelection(false);
-        handleGridSelectionChange({
-          current: undefined,
-          rows: CompactSelection.empty(),
-          columns: CompactSelection.empty(),
-        });
-        onSelectionEmit?.({
-          current: undefined,
-          rows: CompactSelection.empty(),
-          columns: nextColumns,
-        });
+        handleGridSelectionChange(
+          axisSelection(),
+          axisSelection({ columns: nextColumns })
+        );
         return;
       }
 
@@ -444,20 +610,9 @@ export function useTableSelectionSystem<
       setSelectedRows(CompactSelection.empty());
       commitActiveRow(undefined);
       setIsNativeColumnSelection(true);
-      handleGridSelectionChange({
-        current: {
-          cell: [fromCol, 0],
-          range: {
-            x: fromCol,
-            y: 0,
-            width: toCol - fromCol + 1,
-            height: dataRowCount,
-          },
-          rangeStack: [],
-        },
-        rows: CompactSelection.empty(),
-        columns: CompactSelection.empty(),
-      });
+      handleGridSelectionChange(
+        columnsRangeSelection(fromCol, toCol, dataRowCount)
+      );
     },
     [
       enableColumnSelection,
@@ -471,7 +626,6 @@ export function useTableSelectionSystem<
       selectedColumns,
       dataRowCount,
       handleGridSelectionChange,
-      onSelectionEmit,
       commitActiveRow,
       lastSelectedColumnRef,
       setSelectedColumns,
@@ -498,11 +652,7 @@ export function useTableSelectionSystem<
       if (indexes.length === 0) {
         setSelectedColumns(CompactSelection.empty());
         setIsNativeColumnSelection(false);
-        handleGridSelectionChange({
-          current: undefined,
-          rows: CompactSelection.empty(),
-          columns: CompactSelection.empty(),
-        });
+        handleGridSelectionChange(axisSelection());
         return;
       }
 
@@ -517,34 +667,22 @@ export function useTableSelectionSystem<
       if (isContiguous) {
         setSelectedColumns(CompactSelection.empty());
         setIsNativeColumnSelection(true);
-        handleGridSelectionChange({
-          current: {
-            cell: [fromCol, 0],
-            range: {
-              x: fromCol,
-              y: 0,
-              width: toCol - fromCol + 1,
-              height: dataRowCount,
-            },
-            rangeStack: [],
-          },
-          rows: CompactSelection.empty(),
-          columns: CompactSelection.empty(),
-        });
+        handleGridSelectionChange(
+          columnsRangeSelection(fromCol, toCol, dataRowCount)
+        );
         return;
       }
 
-      let nextColumns = CompactSelection.empty();
-      indexes.forEach((index) => {
-        nextColumns = nextColumns.add(index);
-      });
+      const nextColumns = indexes.reduce(
+        (acc, index) => acc.add(index),
+        CompactSelection.empty()
+      );
       setSelectedColumns(nextColumns);
       setIsNativeColumnSelection(false);
-      handleGridSelectionChange({
-        current: undefined,
-        rows: CompactSelection.empty(),
-        columns: CompactSelection.empty(),
-      });
+      handleGridSelectionChange(
+        axisSelection(),
+        axisSelection({ columns: nextColumns })
+      );
     },
     [
       columns,
@@ -559,6 +697,8 @@ export function useTableSelectionSystem<
   );
 
   return {
+    isNativeColumnSelection,
+    hasAxisSelection: selectedColumns.length > 0 || headerSelectedRowIndexes.length > 0,
     selectedColumnIndexes,
     selectedColumnKeysAll,
     selectColumnsByKeys,
@@ -570,5 +710,6 @@ export function useTableSelectionSystem<
     selectColumnFromHeader,
     handleGridSelectionWithColumnReset,
     handleSelectionClearedWithColumns,
+    resetAxes,
   };
 }

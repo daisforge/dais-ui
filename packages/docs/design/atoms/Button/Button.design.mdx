@@ -1,0 +1,449 @@
+---
+id: button
+title: Button
+type: atom
+status: Stable
+version: 1.0
+lastUpdated: 2026-06-12
+pixsoLink: "{{Pixso URL Button}}"
+storybookLink: "{{Storybook URL Button}}"
+pixsoDocLink: "{{Pixso URL Button Doc Block 1}}"
+hasDesignDoc: true
+hasDevDoc: true
+hasMechanics: false
+hasCornerCases: false
+related:
+ - button-group
+ - icon-button
+ - embed-icon-button
+ - link-button
+ - chip
+tags:
+ - button
+ - interactive
+---
+
+# Button
+
+Кнопка запускает действие. Текст или иконка в кнопке информирует о том, что произойдёт после нажатия.
+
+Визуал: {{Pixso URL Button Doc Block 1}}
+
+Под общим названием Button собрано семейство кнопок. В дизайне они описаны в одной общей документации, поэтому здесь собраны все типы. Каждый тип вынесен в свою секцию ниже.
+
+| Тип | Назначение |
+|---|---|
+| **Button** (BasicButton) | Основная кнопка для действия — с текстом и/или иконкой. |
+| **IconButton** | Кнопка без текста, используется только иконка. |
+| **EmbedIconButton** | Прозрачная кнопка без текста, только иконка — для вложения в другие компоненты или самостоятельного использования. |
+| **LinkButton** | Кнопка, выглядящая как ссылка. |
+| **ButtonGroup** | Обёртка для объединения нескольких кнопок в группу. |
+
+---
+
+## Общие свойства
+
+Часть свойств совпадает у нескольких типов кнопок. Они вынесены сюда, чтобы не дублировать в каждой секции.
+
+### Вид (View)
+
+Вид отвечает за цветовое оформление кнопки. Полный набор видов доступен у Button и IconButton; у LinkButton и EmbedIconButton набор сокращён (см. их секции).
+
+| Вид | Назначение |
+|---|---|
+| **Default** | Кнопка дефолтная. |
+| **Accent** | Кнопка акцентная. |
+| **Secondary** | Кнопка второстепенная. |
+| **Clear** | Кнопка с прозрачным фоном (при смене состояний изменяется только цвет контента). |
+| **Positive** | Кнопка для позитивных сценариев. |
+| **Warning** | Кнопка для предупреждений. |
+| **Negative** | Кнопка для критических сценариев. |
+| **Dark** | Кнопка тёмная полупрозрачная, не изменяет цвет при переключении тем. |
+| **Black** | Кнопка чёрная, не изменяет цвет при переключении тем. |
+| **White** | Кнопка белая, не изменяет цвет при переключении тем (при смене состояний изменяется только цвет контента). |
+
+### Состояния
+
+Помимо обычного состояния, кнопки поддерживают два управляемых состояния:
+
+| Состояние | Описание |
+|---|---|
+| **Loading** | Состояние загрузки — кнопка показывает индикатор и не реагирует на нажатие. |
+| **Disabled** | Кнопка недоступна для нажатия. |
+
+---
+
+## Button
+
+Основная кнопка для действия — с текстом и/или иконкой. В дизайне базовый тип называется **BasicButton**.
+
+Визуал: {{Pixso URL Button Doc Block 2}}
+
+### Анатомия
+
+1. **Label** — основной текст кнопки.
+2. **ContentLeft** — иконка слева от текста (опционально).
+3. **ContentRight** — иконка справа от текста (опционально).
+4. **Value** — дополнительный текст справа от основного (опционально). Включается вместо иконки справа.
+
+### Размеры и отступы
+
+Размер задаётся свойством **Size**.
+
+| Размер | Высота | Corner Radius | Шрифт Label | Шрифт Value | IconSize |
+|---|---|---|---|---|---|
+| **S** | 40 | Calc:[m-2] (10) | Body/BodyS B | Body/BodyS B | 24px |
+| **XS** | 32 | S (8) | Body/BodyXS B | Body/BodyXS B | 16px |
+| **XXS** | 24 | S (6) | Body/BodyXS B | Body/BodyXS B | 12px |
+
+### Настройки (Props)
+
+> Здесь — визуальное поведение из дизайна. Полный список пропсов с типами — в dev-документации через `<PropsTable name="Button" />`.
+
+**View** — цветовое оформление, см. общую секцию «Вид (View)». Доступны все десять видов: Default, Accent, Secondary, Clear, Positive, Warning, Negative, Dark, Black, White.
+
+**Streching** — ширина кнопки:
+
+| Значение | Описание |
+|---|---|
+| **Auto** | Кнопка шириной по контенту. |
+| **Fixed** | Кнопка с настраиваемой шириной. |
+
+**ContentLeft** — иконка слева от текста:
+
+| Значение | Описание |
+|---|---|
+| **True** | Включает контент (иконку) слева. |
+| **False** | Выключает контент (иконку) слева. |
+
+**ContentRight** — контент справа от текста:
+
+| Значение | Описание |
+|---|---|
+| **None** | Выключает контент справа. |
+| **Icon** | Включает контент (иконку) справа. |
+| **Value** | Включает контент (дополнительный текст) справа. |
+
+**Spacing** — расстояние между текстовыми частями контента:
+
+| Значение | Описание |
+|---|---|
+| **Packed** | Минимальное расстояние от текстовых частей контента кнопки. |
+| **Space Between** | Появляется пространство между текстовыми частями контента. |
+
+**Loading / Disabled** — состояния, см. общую секцию «Состояния».
+
+### Маппинг: дизайн → код
+
+| Свойство в дизайне | Проп в коде | Значения | Примечание |
+|---|---|---|---|
+| Size | `size` | s / xs / xxs | S = `s`, XS = `xs`, XXS = `xxs`. |
+| View | `view` | default / accent / primary / secondary / clear / positive / warning / negative / dark / black / white | В коде у `view` есть также `primary` (основная). |
+| Streching (Auto / Fixed) | `stretching` | auto / fixed / filled | В коде у `stretching` есть также `filled` — кнопка растягивается на всю доступную ширину. |
+| Spacing (Packed / Space Between) | `contentPlacing` | default / relaxed | `default` — контент центрируется; `relaxed` — контент по краям. |
+| ContentLeft | `contentLeft` | иконка (ReactNode) | Иконка слева от текста. |
+| ContentRight: Icon | `contentRight` | иконка (ReactNode) | Иконка справа от текста. |
+| ContentRight: Value | `value` | строка | Дополнительный текст справа. `value` и `contentRight` взаимоисключающие. |
+| Label | `text` | строка | Основной текст. Вместо `text` можно передать любой контент через `children`. |
+| Corner Radius | `pin` | square / circle / clear (в комбинациях) | Скругление углов; задаётся парой угол-угол, например `square-square`, `clear-circle`. |
+| Loading | `isLoading` | boolean | Дополнительно `loader` — кастомный индикатор загрузки. |
+| Disabled | `disabled` | boolean | Стандартный атрибут. |
+| Гиперссылка | `as` | "a" | Вывод кнопки в виде тега `<a>`. |
+
+---
+
+## ButtonGroup
+
+Обёртка для объединения нескольких кнопок в группу. В дизайне группа задаёт общие размер, вид и форму всем вложенным кнопкам.
+
+### Настройки (Props)
+
+> Полный список пропсов с типами — в dev-документации через `<PropsTable name="ButtonGroup" />`.
+
+ButtonGroup управляет вложенными кнопками сразу по нескольким параметрам:
+
+- **Size** и **View** — общие размер и вид для всех кнопок группы.
+- **Общие стили** — можно отключить переопределение стилей для всех кнопок: тогда каждая кнопка имеет собственные размер и вид.
+- **Ориентация** — группа располагается вертикально или горизонтально.
+- **Отступы между кнопками** — три варианта отступов (без отступа / обычный / широкий).
+- **Форма (Shape)** — границы кнопок в группе: единый сегментированный блок либо отдельные кнопки.
+
+### Маппинг: дизайн → код
+
+| Свойство в дизайне | Проп в коде | Значения | Примечание |
+|---|---|---|---|
+| Size | `size` | s / xs / … | Общий размер для всех кнопок группы. |
+| View | `view` | default / secondary / … | Общий вид для всех кнопок группы. |
+| Общие стили | `isCommonButtonStyles` | boolean | `false` отключает переопределение стилей — каждая кнопка со своими размером и видом. |
+| Ориентация | `orientation` | horizontal / vertical | Горизонтальная или вертикальная раскладка. |
+| Отступы между кнопками | `gap` | none / … / wide | В примерах кода присутствуют `none` и `wide`; полный набор уточните в Storybook или в чате поддержки дизайн-системы. |
+| Форма | `shape` | default / segmented | `segmented` — единый сегментированный блок; `default` — отдельные кнопки. |
+
+---
+
+## IconButton
+
+Кнопка без текста, в которой используется только иконка.
+
+Визуал: {{Pixso URL IconButton Doc Block 1}}
+
+### Анатомия
+
+1. **Icon** — иконка, единственное содержимое кнопки.
+
+### Размеры и отступы
+
+Размер задаётся свойством **Size**. Скругление задаётся отдельно для квадратной (Cornered) и скруглённой (Pilled) формы.
+
+| Размер | Высота | Corner Radius (Cornered) | Corner Radius (Pilled) | IconSize |
+|---|---|---|---|---|
+| **S** | 40 | Calc:[m-2] (10) | 100% | 24px |
+| **XS** | 32 | S (8) | 100% | 16px |
+| **XXS** | 24 | S (6) | 100% | 12px |
+
+### Настройки (Props)
+
+> Полный список пропсов с типами — в dev-документации через `<PropsTable name="IconButton" />`.
+
+**View** — цветовое оформление. У IconButton доступны: Default, Accent, Secondary, Clear, Positive, Warning, Negative, Dark, Black, White (см. общую секцию «Вид (View)»).
+
+**Shape** — форма кнопки:
+
+| Значение | Описание |
+|---|---|
+| **Default** | Квадратная кнопка. |
+| **Pilled** | Скруглённая кнопка. |
+
+**Loading / Disabled** — состояния, см. общую секцию «Состояния».
+
+Иконка задаётся напрямую как содержимое кнопки.
+
+### Маппинг: дизайн → код
+
+| Свойство в дизайне | Проп в коде | Значения | Примечание |
+|---|---|---|---|
+| Size | `size` | s / xs / xxs | S = `s`, XS = `xs`, XXS = `xxs`. |
+| View | `view` | default / accent / secondary / clear / positive / warning / negative / dark / black / white | Цветовое оформление. |
+| Shape (Default / Pilled) | `pin` | square-square / circle-circle | В примерах кода форма задаётся через `pin`: `square-square` — квадратная, `circle-circle` — скруглённая. |
+| Иконка | `children` | иконка (ReactNode) | Иконка передаётся напрямую как содержимое. |
+| Loading | `isLoading` | boolean | Состояние загрузки. |
+| Disabled | `disabled` | boolean | Кнопка недоступна. |
+
+---
+
+## EmbedIconButton
+
+Прозрачная кнопка без текста, используется только иконка — для вложения в другие компоненты или самостоятельного использования.
+
+Визуал: {{Pixso URL EmbedIconButton Doc Block 1}}
+
+### Анатомия
+
+1. **Icon** — иконка, единственное содержимое кнопки.
+
+### Размеры и отступы
+
+EmbedIconButton использует увеличенную шкалу размеров (L / M / S). Размер задаётся свойством **Size**. Область нажатия можно расширить вручную через внутренние отступы (padding) — это особенность EmbedIconButton.
+
+| Размер | Высота | Corner Radius (Cornered) | IconSize |
+|---|---|---|---|
+| **L** | 56 | Calc:[m+2] (14) | 24px |
+| **M** | 48 | M (12px) | 24px |
+| **S** | 40 | Calc:[m-2] (10) | 16px |
+| **S** | 40 | Calc:[m-6] (6) | 12px |
+
+> В дизайн-источнике две нижние строки помечены как «40 S». Геометрия приведена как в источнике; уточните корректные имена размеров в Pixso или в чате поддержки.
+
+### Настройки (Props)
+
+> Полный список пропсов с типами — в dev-документации через `<PropsTable name="EmbedIconButton" />`.
+
+**View** — цветовое оформление. У EmbedIconButton набор видов сокращён: Default, Accent, Secondary, Clear, Positive, Warning, Negative (см. общую секцию «Вид (View)»).
+
+**Loading / Disabled** — состояния, см. общую секцию «Состояния».
+
+Иконка задаётся напрямую как содержимое кнопки.
+
+### Маппинг: дизайн → код
+
+| Свойство в дизайне | Проп в коде | Значения | Примечание |
+|---|---|---|---|
+| Size | `size` | l / m / s | EmbedIconButton использует шкалу L / M / S. |
+| View | `view` | default / accent / secondary / clear / positive / warning / negative | Сокращённый набор видов. |
+| Иконка | `children` | иконка (ReactNode) | Иконка передаётся напрямую как содержимое. |
+| Loading | `isLoading` | boolean | Состояние загрузки. |
+| Disabled | `disabled` | boolean | Кнопка недоступна. |
+
+---
+
+## LinkButton
+
+Кнопка, выглядящая как ссылка — с текстом и/или иконкой.
+
+Визуал: {{Pixso URL LinkButton Doc Block 1}}
+
+### Анатомия
+
+1. **Label** — основной текст кнопки-ссылки.
+2. **ContentLeft** — иконка слева от текста (опционально).
+3. **ContentRight** — иконка справа от текста (опционально).
+4. **Value** — дополнительный текст справа от основного (опционально).
+
+### Размеры и отступы
+
+Размер задаётся свойством **Size**.
+
+| Размер | Высота | Corner Radius | Шрифт Label | IconSize |
+|---|---|---|---|---|
+| **S** | 40 | Calc:[m-2] (10) | Body/BodyS B | 24px |
+| **XS** | 32 | S (8) | Body/BodyXS B | 16px |
+| **XXS** | 24 | S (6) | Body/BodyXS B | 12px |
+
+### Настройки (Props)
+
+> Полный список пропсов с типами — в dev-документации через `<PropsTable name="LinkButton" />`.
+
+**View** — цветовое оформление. У LinkButton набор видов сокращён: Default, Accent, Secondary, Positive, Warning, Negative (см. общую секцию «Вид (View)»).
+
+**ContentLeft** — иконка слева от текста:
+
+| Значение | Описание |
+|---|---|
+| **True** | Включает контент (иконку) слева. |
+| **False** | Выключает контент (иконку) слева. |
+
+**ContentRight** — контент справа от текста:
+
+| Значение | Описание |
+|---|---|
+| **None** | Выключает контент справа. |
+| **Icon** | Включает контент (иконку) справа. |
+| **Value** | Включает контент (дополнительный текст) справа. |
+
+**Loading / Disabled** — состояния, см. общую секцию «Состояния».
+
+### Маппинг: дизайн → код
+
+| Свойство в дизайне | Проп в коде | Значения | Примечание |
+|---|---|---|---|
+| Size | `size` | s / xs / xxs | S = `s`, XS = `xs`, XXS = `xxs`. |
+| View | `view` | default / accent / secondary / positive / warning / negative | Сокращённый набор видов. |
+| ContentLeft | `contentLeft` | иконка (ReactNode) | Иконка слева от текста. |
+| ContentRight: Icon | `contentRight` | иконка (ReactNode) | Иконка справа от текста. |
+| Label | `text` | строка | Основной текст. Вместо `text` можно передать любой контент через `children`. |
+| Loading | `isLoading` | boolean | Дополнительно `loader` — кастомный индикатор загрузки. |
+| Disabled | `disabled` | boolean | Кнопка недоступна. |
+
+> Дополнительный текст справа (Value) присутствует в дизайне LinkButton. Точный проп в коде уточните в Storybook или в чате поддержки дизайн-системы.
+
+---
+
+## Использование в коде
+
+Живые примеры кода — в Storybook каждого типа:
+
+- Button — в Storybook: {{Storybook URL Button}}
+- ButtonGroup — в Storybook: {{Storybook URL ButtonGroup}}
+- IconButton — в Storybook: {{Storybook URL IconButton}}
+- EmbedIconButton — в Storybook: {{Storybook URL EmbedIconButton}}
+- LinkButton — в Storybook: {{Storybook URL LinkButton}}
+
+---
+
+## Связанные компоненты
+
+- **ButtonGroup** — обёртка для объединения нескольких кнопок в группу (описана в этом же файле, раздел «ButtonGroup»). [Дизайн]({{Pixso URL ButtonGroup}}) · [Storybook]({{Storybook URL ButtonGroup}})
+- **IconButton** — кнопка только с иконкой (раздел «IconButton»). [Дизайн]({{Pixso URL IconButton}}) · [Storybook]({{Storybook URL IconButton}})
+- **EmbedIconButton** — кнопка-иконка для вложения в другие компоненты или самостоятельного использования (раздел «EmbedIconButton»). [Дизайн]({{Pixso URL EmbedIconButton}}) · [Storybook]({{Storybook URL EmbedIconButton}})
+- **LinkButton** — кнопка, выглядящая как ссылка (раздел «LinkButton»). [Дизайн]({{Pixso URL LinkButton}}) · [Storybook]({{Storybook URL LinkButton}})
+- **Chip** — близкий по виду интерактивный компонент-метка. [Дизайн]({{Pixso URL Chip}}) · [Storybook]({{Storybook URL Chip}})
+
+---
+
+## FAQ
+
+### Для дизайнеров
+
+**Q: Какие типы кнопок есть в семействе?**
+A: Button (BasicButton) — основная кнопка с текстом и/или иконкой; IconButton — только иконка; EmbedIconButton — прозрачная кнопка-иконка для вложения в другие компоненты или самостоятельного использования; LinkButton — кнопка-ссылка; ButtonGroup — обёртка для группы кнопок. Подробнее — в Pixso-документации компонента, блок «Типы»: {{Pixso URL Button Doc Block 1}}.
+
+**Q: Какие размеры есть у обычной кнопки?**
+A: Три размера, задаются свойством Size: S (40), XS (32), XXS (24). Каждый со своим скруглением углов, шрифтом и размером иконки. Подробнее — в Pixso-документации компонента, блок «Размеры и отступы»: {{Pixso URL Button Doc Block 2}}.
+
+**Q: Какая размерная шкала у EmbedIconButton?**
+A: EmbedIconButton использует шкалу L (56) / M (48) / S (40). Подробнее — в Pixso-документации компонента, блок «Размеры и отступы»: {{Pixso URL EmbedIconButton Doc Block 1}}.
+
+**Q: Как добавить иконку слева или справа от текста?**
+A: Через слоты ContentLeft (слева) и ContentRight (справа). ContentRight также может показывать дополнительный текст — значение Value вместо иконки. Подробнее — в Pixso-документации компонента, блок «Свойства»: {{Pixso URL Button Doc Block 1}}.
+
+**Q: Как показать дополнительный текст-значение справа от подписи?**
+A: В ContentRight выбрать вариант Value — справа от основного текста появится дополнительный текст. Подробнее — в Pixso-документации компонента, блок «Свойства»: {{Pixso URL Button Doc Block 1}}.
+
+**Q: Как растянуть кнопку на нужную ширину?**
+A: Через свойство Streching: Auto — ширина по контенту, Fixed — настраиваемая ширина. Подробнее — в Pixso-документации компонента, блок «Свойства»: {{Pixso URL Button Doc Block 1}}.
+
+**Q: Как расположить контент внутри кнопки по краям, а не по центру?**
+A: Через свойство Spacing: Packed — минимальное расстояние, Space Between — пространство между текстовыми частями контента. Подробнее — в Pixso-документации компонента, блок «Свойства»: {{Pixso URL Button Doc Block 1}}.
+
+**Q: Как сделать кнопку-иконку скруглённой?**
+A: У IconButton выбрать форму Shape → Pilled (скруглённая); Default — квадратная. Подробнее — в Pixso-документации компонента, блок «Свойства»: {{Pixso URL IconButton Doc Block 1}}.
+
+**Q: Какие виды (цвета) доступны у разных кнопок?**
+A: У Button и IconButton — полный набор: Default, Accent, Secondary, Clear, Positive, Warning, Negative, Dark, Black, White. У EmbedIconButton — Default, Accent, Secondary, Clear, Positive, Warning, Negative. У LinkButton — Default, Accent, Secondary, Positive, Warning, Negative. Подробнее — в Pixso-документации компонента, блок «View»: {{Pixso URL Button Doc Block 1}}.
+
+**Q: Как задать общий размер и вид для нескольких кнопок сразу?**
+A: Объединить их в ButtonGroup и задать ему Size, View, ориентацию, отступы и форму. Чтобы каждая кнопка сохранила собственные стили — отключить общие стили группы. Подробнее — в Pixso-документации компонента, блок «ButtonGroup»: {{Pixso URL ButtonGroup}}.
+
+**Q: Какие состояния поддерживает кнопка?**
+A: Помимо обычного — Loading (загрузка, кнопка не реагирует) и Disabled (недоступна). Подробнее — в Pixso-документации компонента, блок «Свойства»: {{Pixso URL Button Doc Block 1}}.
+
+### Для разработчиков
+
+**Q: Как задать размер кнопки?**
+A: Через проп `size`. У Button / IconButton / LinkButton — `s` / `xs` / `xxs`; у EmbedIconButton — `l` / `m` / `s`. Примеры кода — в Storybook: {{Storybook URL Button}}.
+
+**Q: Как добавить иконки и текст в Button?**
+A: Текст — через `text` (или любой контент через `children`); иконка слева — `contentLeft`, справа — `contentRight` (ReactNode). Примеры кода — в Storybook: {{Storybook URL Button}}.
+
+**Q: Как показать значение справа и почему оно не работает вместе с иконкой?**
+A: Дополнительный текст справа задаётся пропом `value`. `value` и `contentRight` взаимоисключающие: если передано одно, второе передать нельзя. Примеры кода — в Storybook: {{Storybook URL Button}}.
+
+**Q: Как управлять шириной кнопки?**
+A: Через `stretching`: `auto` — по контенту, `filled` — на всю доступную ширину, `fixed` — фиксированная ширина. Примеры кода — в Storybook: {{Storybook URL Button}}.
+
+**Q: Как расположить контент по центру или по краям?**
+A: Через `contentPlacing`: `default` — контент центрируется, `relaxed` — располагается по краям. Примеры кода — в Storybook: {{Storybook URL Button}}.
+
+**Q: Какие значения принимает `view` у Button?**
+A: `default`, `accent`, `primary`, `secondary`, `clear`, `positive`, `warning`, `negative`, `dark`, `black`, `white`. Примеры кода — в Storybook: {{Storybook URL Button}}.
+
+**Q: Как задать скругление углов?**
+A: Через `pin` — пара угол-угол: `square` (обычное скругление), `circle` (сильное скругление), `clear` (нет скругления), например `square-square`, `clear-circle`, `circle-circle`. Примеры кода — в Storybook: {{Storybook URL Button}}.
+
+**Q: Как сделать состояние загрузки и кастомный лоадер?**
+A: Передать `isLoading`; для своего индикатора — `loader`. Примеры кода — в Storybook: {{Storybook URL Button}}.
+
+**Q: Как вывести кнопку как ссылку (`<a>`)?**
+A: Передать проп `as="a"` — Button отрендерится тегом `<a>`. Примеры кода — в Storybook: {{Storybook URL Button}}.
+
+**Q: Как объединить кнопки в группу и настроить её?**
+A: Обернуть их в `ButtonGroup` и задать `size`, `view`, `orientation` (`horizontal` / `vertical`), `gap` и `shape` (`segmented` / `default`). `isCommonButtonStyles={false}` отключает переопределение стилей — каждая кнопка получает свои размер и вид. Примеры кода — в Storybook: {{Storybook URL ButtonGroup}}.
+
+**Q: Как сделать кнопку только с иконкой?**
+A: Использовать `IconButton` (или `EmbedIconButton` для вложения в другие компоненты) — иконка передаётся напрямую через `children`. Примеры кода — в Storybook: {{Storybook URL IconButton}}.
+
+---
+
+## Ссылки
+
+- **Storybook:** {{Storybook URL Button}}
+- **Документация в Pixso:** {{Pixso URL Button Doc Block 1}}
+- **Компонент в Pixso:** {{Pixso URL Button}}
+
+---
+
+## Changelog
+
+| Дата | Версия | Изменение |
+|---|---|---|
+| 2026-06-12 | 1.0 | Перенос дизайн-документации Button (Button/ButtonGroup/IconButton/EmbedIconButton/LinkButton) из Pixso/Sketch в MDX. Первая версия. |

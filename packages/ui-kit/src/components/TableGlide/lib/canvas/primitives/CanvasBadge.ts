@@ -1,8 +1,14 @@
 import type { Theme } from '../../../theming/types';
 import type { Tokens } from '../../../tokens';
-import { type ButtonIcon, drawIcon } from '../cells/buttons';
+import {
+  type ButtonIcon,
+  drawIcon,
+  getCachedTextWidth,
+} from '../cells/buttons';
 import { CanvasLeaf } from '../core/CanvasLeaf';
 import { DrawBatcher } from '../core/DrawBatcher';
+import { resolveOverflowText } from '../utils/textOverflow';
+import { type CanvasTextMark, paintTextMarks } from './textMarks';
 
 // Badge view types based on sdds_finai__light theme
 export type BadgeView =
@@ -16,6 +22,19 @@ export type BadgeView =
 
 // Badge size types
 export type BadgeSize = 'xs' | 's' | 'm' | 'l';
+
+const BADGE_SIZE_BY_ROW_SIZE: Record<Theme['rowSize'], BadgeSize> = {
+  small: 'xs',
+  medium: 'm',
+  big: 'l',
+};
+
+export function resolveBadgeSize(
+  size?: BadgeSize,
+  rowSize?: Theme['rowSize'],
+): BadgeSize {
+  return size ?? (rowSize ? BADGE_SIZE_BY_ROW_SIZE[rowSize] : 's');
+}
 
 // Size configuration
 interface SizeConfig {
@@ -87,9 +106,9 @@ function buildBadgeViewColors(tokens: Tokens): Record<BadgeView, ViewColors> {
   };
 }
 
-const CACHE_SEPARATOR = '|';
 const ICON_TEXT_SPACING = 6;
-const textWidthCache = new Map<string, number>();
+/** Высота пластины `Canvas.Mark` относительно размера шрифта бейджа */
+const MARK_HEIGHT_TO_FONT_SIZE = 1.4;
 
 // Icon sizes for each badge size
 const ICON_SIZE_CONFIG: Record<BadgeSize, number> = {
@@ -99,8 +118,13 @@ const ICON_SIZE_CONFIG: Record<BadgeSize, number> = {
   l: 16,
 };
 
+export function getBadgeIconSize(size: BadgeSize): number {
+  return ICON_SIZE_CONFIG[size];
+}
+
 export interface CanvasBadgeOptions {
   view?: BadgeView;
+  /** Явный размер имеет приоритет. По умолчанию: small → xs (16), medium → m (24), big → l (28); без rowSize — s (20). */
   size?: BadgeSize;
   transparent?: boolean;
   clear?: boolean;
@@ -116,6 +140,8 @@ export interface CanvasBadgeOptions {
    * Принимает конкретные значения цвета: hex (#0B7ECB), rgb(), rgba().
    * CSS-переменные (var(--...)) не поддерживаются — Canvas API работает только с конкретными цветами. */
   customBackgroundColor?: string;
+  /** Подсветка фрагментов текста (`Canvas.Mark`) */
+  marks?: readonly CanvasTextMark[];
 }
 
 export class CanvasBadge extends CanvasLeaf {
@@ -141,12 +167,14 @@ export class CanvasBadge extends CanvasLeaf {
 
   customBackgroundColor?: string;
 
+  marks?: readonly CanvasTextMark[];
+
   constructor(id: string, text: string, options?: CanvasBadgeOptions) {
     super(id);
     this.text = text;
+    this.size = resolveBadgeSize(options?.size, options?.theme?.rowSize);
     if (options) {
       if (options.view !== undefined) this.view = options.view;
-      if (options.size !== undefined) this.size = options.size;
       if (options.transparent !== undefined)
         this.transparent = options.transparent;
       if (options.clear !== undefined) this.clear = options.clear;
@@ -155,6 +183,7 @@ export class CanvasBadge extends CanvasLeaf {
       this.rightIcon = options.rightIcon;
       this.customColor = options.customColor;
       this.customBackgroundColor = options.customBackgroundColor;
+      this.marks = options.marks;
       if (options.theme?.tokens) {
         this.viewColors = buildBadgeViewColors(options.theme.tokens);
       }
@@ -163,22 +192,28 @@ export class CanvasBadge extends CanvasLeaf {
 
   measure(ctx: CanvasRenderingContext2D) {
     const sizeConfig = SIZE_CONFIG[this.size];
-    const iconSize = ICON_SIZE_CONFIG[this.size];
+    const iconSize = getBadgeIconSize(this.size);
     const font = `${sizeConfig.fontSize}px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif`;
-    const textWidth = getCachedTextWidth(ctx, font, this.text);
+    const textWidth = getCachedTextWidth(ctx, this.text, font);
 
+    // Отступ между иконкой и текстом нужен, только когда текст есть.
+    // Для бейджа без текста (одна иконка) отступ дал бы пустоту сбоку,
+    // из-за неё иконка выглядела прижатой к краю, а не по центру.
+    const hasText = this.text.length > 0;
     let iconsWidth = 0;
-    if (this.leftIcon) iconsWidth += iconSize + ICON_TEXT_SPACING;
-    if (this.rightIcon) iconsWidth += iconSize + ICON_TEXT_SPACING;
+    if (this.leftIcon)
+      iconsWidth += iconSize + (hasText ? ICON_TEXT_SPACING : 0);
+    if (this.rightIcon)
+      iconsWidth += iconSize + (hasText ? ICON_TEXT_SPACING : 0);
 
     this.rect.width = textWidth + iconsWidth + sizeConfig.paddingX * 2;
     this.rect.height = sizeConfig.height;
   }
 
-  onPaint(batcher: DrawBatcher, _ctx: CanvasRenderingContext2D) {
+  onPaint(batcher: DrawBatcher, ctx: CanvasRenderingContext2D) {
     const { x, y, width, height } = this.rect;
     const sizeConfig = SIZE_CONFIG[this.size];
-    const iconSize = ICON_SIZE_CONFIG[this.size];
+    const iconSize = getBadgeIconSize(this.size);
     const viewColors = this.viewColors[this.view];
 
     if (!viewColors) return;
@@ -212,38 +247,69 @@ export class CanvasBadge extends CanvasLeaf {
 
     const centerY = y + height / 2;
     let currentX = x + sizeConfig.paddingX;
+    const iconSpacing = this.text.length > 0 ? ICON_TEXT_SPACING : 0;
 
     // Draw left icon
     if (this.leftIcon) {
       const iconY = centerY - iconSize / 2;
       drawIcon(batcher, this.leftIcon, currentX, iconY, iconSize, textColor);
-      currentX += iconSize + ICON_TEXT_SPACING;
+      currentX += iconSize + iconSpacing;
     }
 
-    // Draw text
-    batcher.fillText(this.text, currentX, centerY, font, textColor, 'middle');
+    // Layout мог сжать бейдж: резервируем место под отступы и обе иконки.
+    const iconsWidth =
+      (this.leftIcon ? iconSize + iconSpacing : 0) +
+      (this.rightIcon ? iconSize + iconSpacing : 0);
+    const textWidth = Math.max(0, width - sizeConfig.paddingX * 2 - iconsWidth);
+    const ellipsis = '…';
+    const resolvedText = resolveOverflowText({
+      ctx,
+      text: this.text,
+      font,
+      maxWidth: textWidth,
+      textOverflow: 'ellipsis',
+      ellipsis,
+    });
+
+    if (this.marks) {
+      const markHeight = Math.min(
+        height,
+        Math.round(sizeConfig.fontSize * MARK_HEIGHT_TO_FONT_SIZE),
+      );
+      paintTextMarks(
+        batcher,
+        this.marks,
+        {
+          text: this.text,
+          start: 0,
+          shownLength: resolvedText.didTruncate
+            ? Math.max(0, resolvedText.text.length - ellipsis.length)
+            : this.text.length,
+          x: currentX,
+          y: centerY - markHeight / 2,
+          height: markHeight,
+        },
+        (text) => getCachedTextWidth(ctx, text, font),
+      );
+    }
+
+    if (resolvedText.text.length > 0) {
+      batcher.fillTextClipped(
+        resolvedText.text,
+        currentX,
+        centerY,
+        font,
+        textColor,
+        { x: currentX, y, width: textWidth, height },
+        'middle',
+      );
+    }
 
     // Draw right icon
     if (this.rightIcon) {
-      const textWidth = getCachedTextWidth(_ctx, font, this.text);
-      const rightIconX = currentX + textWidth + ICON_TEXT_SPACING;
+      const rightIconX = currentX + resolvedText.width + iconSpacing;
       const iconY = centerY - iconSize / 2;
       drawIcon(batcher, this.rightIcon, rightIconX, iconY, iconSize, textColor);
     }
   }
-}
-
-function getCachedTextWidth(
-  ctx: CanvasRenderingContext2D,
-  font: string,
-  text: string
-): number {
-  const cacheKey = `${font}${CACHE_SEPARATOR}${text}`;
-  let width = textWidthCache.get(cacheKey);
-  if (width === undefined) {
-    ctx.font = font;
-    width = ctx.measureText(text).width;
-    textWidthCache.set(cacheKey, width);
-  }
-  return width;
 }

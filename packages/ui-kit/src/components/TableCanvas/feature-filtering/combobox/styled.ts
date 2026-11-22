@@ -1,10 +1,14 @@
 import { Box } from '@ui-kit/components/Box';
-import { SIZE } from '@ui-kit/components/TableCanvas';
 import { TextFieldSearch } from '@ui-kit/components/TextField';
-import { bodyM, bodyS, bodyXS } from '@ui-kit/tokens';
+import {
+  bodyM,
+  bodyS,
+  bodyXS,
+  surfaceTransparentSecondaryHover,
+} from '@ui-kit/tokens';
 import styled, { css, FlattenSimpleInterpolation } from 'styled-components';
 
-import { COLORS } from '../../styles';
+import { COLORS, type SIZE } from '../../styles';
 
 export const StyledTotalListItemContainer = styled(Box)<{
   $listIsNonEmpty: boolean;
@@ -73,6 +77,7 @@ export const StyledList = styled.ul<{ $maxHeight?: string }>`
   margin: 0px;
   max-height: ${({ $maxHeight }) => $maxHeight || '360px'};
   overflow-y: auto;
+  overflow-x: hidden;
 `;
 export const StyledListItem = styled.li<{
   $css?: FlattenSimpleInterpolation;
@@ -82,6 +87,8 @@ export const StyledListItem = styled.li<{
   cursor: pointer;
   display: flex;
   align-items: center;
+  min-width: 0;
+  overflow-wrap: anywhere;
 
   ${({ $size = 'medium', $selected }) =>
     css({
@@ -91,7 +98,7 @@ export const StyledListItem = styled.li<{
       }),
       ...(!$selected && {
         '&:hover': {
-          backgroundColor: 'var(--surface-transparent-secondary-hover)',
+          backgroundColor: surfaceTransparentSecondaryHover,
         },
       }),
     })}

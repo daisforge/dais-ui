@@ -1,0 +1,152 @@
+import { describe, expect, it, vi } from 'vitest';
+
+import { createLazyRowSpan } from '../createLazyRowSpan';
+
+// Контракт mergeCells.lazyRowSpan: строка ячейки — первым аргументом, затем ключ
+// колонки и индекс на экране; отображаемые строки — в ctx.rows.
+
+type Row = { id: number; region: string };
+
+const rows: [Row, Row, Row] = [
+  { id: 0, region: 'Север' },
+  { id: 1, region: 'Север' },
+  { id: 2, region: 'Юг' },
+];
+
+// Строка по индексу из сгенерированного списка. Нет строки, тест падает сразу.
+const rowAt = (list: readonly Row[], index: number): Row => {
+  const row = list[index];
+  if (!row) throw new Error(`Нет строки с индексом ${index}`);
+  return row;
+};
+
+describe('createLazyRowSpan', () => {
+  it('передаёт строку, ключ колонки, индекс и отображаемые строки', () => {
+    const lazyRowSpan = vi.fn(() => [0, 1] as const);
+    const rowSpan = createLazyRowSpan<Row>(lazyRowSpan, 'region', {
+      current: rows,
+    });
+
+    expect(rowSpan({ rowInd: 1, row: rows[1] })).toEqual([0, 1]);
+    expect(lazyRowSpan).toHaveBeenCalledWith(rows[1], 'region', 1, { rows });
+  });
+
+  it('скелетон (строка не из отображаемых) не сливается и резолвер не вызывается', () => {
+    const lazyRowSpan = vi.fn(() => [0, 1] as const);
+    const rowSpan = createLazyRowSpan<Row>(lazyRowSpan, 'region', {
+      current: rows,
+    });
+
+    expect(rowSpan({ rowInd: 1, row: { id: -1, region: '' } })).toBeNull();
+    expect(lazyRowSpan).not.toHaveBeenCalled();
+  });
+
+  it('повторная отрисовка ячейки берёт ответ из кеша, резолвер не вызывается', () => {
+    const lazyRowSpan = vi.fn(() => null);
+    const rowSpan = createLazyRowSpan<Row>(lazyRowSpan, 'region', {
+      current: rows,
+    });
+
+    rowSpan({ rowInd: 2, row: rows[2] });
+    rowSpan({ rowInd: 2, row: rows[2] });
+
+    expect(lazyRowSpan).toHaveBeenCalledTimes(1);
+  });
+
+  it('найденный блок отвечает за все свои строки', () => {
+    const lazyRowSpan = vi.fn(() => [0, 1] as const);
+    const rowSpan = createLazyRowSpan<Row>(lazyRowSpan, 'region', {
+      current: rows,
+    });
+
+    expect(rowSpan({ rowInd: 0, row: rows[0] })).toEqual([0, 1]);
+    expect(rowSpan({ rowInd: 1, row: rows[1] })).toEqual([0, 1]);
+    expect(lazyRowSpan).toHaveBeenCalledTimes(1);
+  });
+
+  it('несколько блоков: строка находит свой, строка между блоками спрашивает резолвер', () => {
+    const many = Array.from({ length: 10 }, (_, id) => ({ id, region: '' }));
+    const lazyRowSpan = vi.fn((_row: Row, _colKey: string, rowInd: number) => {
+      if (rowInd < 3) return [0, 2] as const;
+      if (rowInd > 6) return [7, 9] as const;
+      return null;
+    });
+    const rowSpan = createLazyRowSpan<Row>(lazyRowSpan, 'region', {
+      current: many,
+    });
+
+    rowSpan({ rowInd: 8, row: rowAt(many, 8) });
+    rowSpan({ rowInd: 1, row: rowAt(many, 1) });
+    lazyRowSpan.mockClear();
+
+    expect(rowSpan({ rowInd: 9, row: rowAt(many, 9) })).toEqual([7, 9]);
+    expect(rowSpan({ rowInd: 0, row: rowAt(many, 0) })).toEqual([0, 2]);
+    expect(lazyRowSpan).not.toHaveBeenCalled();
+    expect(rowSpan({ rowInd: 4, row: rowAt(many, 4) })).toBeNull();
+    expect(lazyRowSpan).toHaveBeenCalledTimes(1);
+  });
+
+  it('блок, не содержащий строку, за другие строки не отвечает', () => {
+    const lazyRowSpan = vi.fn(() => [1, 2] as const);
+    const rowSpan = createLazyRowSpan<Row>(lazyRowSpan, 'region', {
+      current: rows,
+    });
+
+    rowSpan({ rowInd: 0, row: rows[0] });
+    rowSpan({ rowInd: 1, row: rows[1] });
+
+    expect(lazyRowSpan).toHaveBeenCalledTimes(2);
+  });
+
+  it('новый массив отображаемых строк сбрасывает кеш', () => {
+    const lazyRowSpan = vi.fn(() => null);
+    const rowsRef: { current: readonly Row[] } = { current: rows };
+    const rowSpan = createLazyRowSpan<Row>(lazyRowSpan, 'region', rowsRef);
+
+    rowSpan({ rowInd: 0, row: rows[0] });
+    rowsRef.current = [...rows];
+    rowSpan({ rowInd: 0, row: rows[0] });
+
+    expect(lazyRowSpan).toHaveBeenCalledTimes(2);
+  });
+
+  it('берёт текущие строки из ref: после сортировки ctx.rows — новый порядок', () => {
+    const lazyRowSpan = vi.fn(() => null);
+    const rowsRef: { current: readonly Row[] } = { current: rows };
+    const rowSpan = createLazyRowSpan<Row>(lazyRowSpan, 'region', rowsRef);
+    const sorted = [rows[2], rows[0], rows[1]];
+    rowsRef.current = sorted;
+
+    expect(rowSpan({ rowInd: 0, row: rows[2] })).toBeNull();
+    expect(lazyRowSpan).toHaveBeenCalledWith(rows[2], 'region', 0, {
+      rows: sorted,
+    });
+  });
+});
+
+describe('createLazyRowSpan: приведение ответа к контракту', () => {
+  const make = (answer: (rowInd: number) => readonly [number, number] | null) =>
+    createLazyRowSpan<Row>((_row, _key, rowInd) => answer(rowInd), 'region', {
+      current: rows,
+    });
+
+  it('блок из одной строки блоком не считается', () => {
+    const rowSpan = make(() => [1, 1]);
+    expect(rowSpan({ rowInd: 1, row: rows[1] })).toBeNull();
+  });
+
+  it('ответ без своей строки отбрасывается', () => {
+    const rowSpan = make((rowInd) => (rowInd === 0 ? [1, 2] : [0, 0]));
+    expect(rowSpan({ rowInd: 0, row: rows[0] })).toBeNull();
+  });
+
+  it('блок за краем таблицы обрезается по строкам', () => {
+    const rowSpan = make(() => [-3, 10]);
+    expect(rowSpan({ rowInd: 1, row: rows[1] })).toEqual([0, 2]);
+  });
+
+  it('перевёрнутый диапазон отбрасывается', () => {
+    const rowSpan = make(() => [2, 0]);
+    expect(rowSpan({ rowInd: 1, row: rows[1] })).toBeNull();
+  });
+});

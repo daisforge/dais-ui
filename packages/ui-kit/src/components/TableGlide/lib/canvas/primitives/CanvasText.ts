@@ -1,17 +1,23 @@
-import { split } from 'canvas-hypertxt';
+import { clearCache as clearHypertxtCache, split } from 'canvas-hypertxt';
 
 import { CanvasNode } from '../core/CanvasNode';
 import { DrawBatcher } from '../core/DrawBatcher';
 import {
-  type CanvasTextOverflow,
-  invalidateOverflowTextCache,
-  resolveOverflowText,
-  resolveWrappedOverflowText,
-} from '../utils/textOverflow';
+  type CanvasTextMark,
+  type MarkedLine,
+  paintTextMarks,
+} from './textMarks';
 import type {
   CanvasNodeTooltipConfig,
   CanvasNodeTooltipProps,
 } from '../utils/portalHoverEvents';
+import {
+  type CanvasTextOverflow,
+  getMinEllipsisWidth,
+  invalidateOverflowTextCache,
+  resolveOverflowText,
+  resolveWrappedOverflowText,
+} from '../utils/textOverflow';
 
 /*
  * ТУЛТИПЫ НА CanvasText — как это работает и что важно знать.
@@ -145,6 +151,18 @@ export interface CanvasTextOptions {
   ellipsis?: string;
   maxLines?: number;
   autoTooltip?: CanvasTextAutoTooltip;
+  /**
+   * Не давать тексту сжиматься в ноль. Когда места не хватает, от текста
+   * остаётся хотя бы первая буква с многоточием, а за границу уходят соседи.
+   *
+   * Подробнее: при измерении текст выставляет себе minContentWidth, равный
+   * ширине первого видимого символа с многоточием. Работает только для
+   * однострочного текста с overflow 'hidden' и textOverflow 'ellipsis', в
+   * остальных случаях minContentWidth не заполняется. Явный style.minWidth
+   * важнее. По умолчанию выключено.
+   */
+  minWidthByContent?: boolean;
+  marks?: readonly CanvasTextMark[];
 }
 
 function buildFontMetricsKey(
@@ -204,6 +222,9 @@ export class CanvasText extends CanvasNode {
 
   autoTooltip: CanvasTextAutoTooltip | undefined;
 
+  minWidthByContent = false;
+  marks: readonly CanvasTextMark[] | undefined;
+
   private lastMeasureKey = '';
 
   private cachedLines: string[] | null = null;
@@ -231,9 +252,14 @@ export class CanvasText extends CanvasNode {
       if (options.textOverflow !== undefined)
         this.textOverflow = options.textOverflow;
       if (options.ellipsis !== undefined) this.ellipsis = options.ellipsis;
+      if (options.minWidthByContent !== undefined) {
+        this.minWidthByContent = options.minWidthByContent;
+      }
       if (options.maxLines !== undefined) this.maxLines = options.maxLines;
       if (options.autoTooltip !== undefined)
         this.autoTooltip = options.autoTooltip;
+      if (options.marks !== undefined && options.marks.length > 0)
+        this.marks = options.marks;
     }
   }
 
@@ -253,6 +279,16 @@ export class CanvasText extends CanvasNode {
     } else {
       this.measureSingleLine(ctx, font, text, lineHeightPx, rect);
     }
+
+    // Минимум по содержимому: первая буква с многоточием, см. minWidthByContent.
+    this.minContentWidth =
+      this.minWidthByContent &&
+      !wordWrap &&
+      this.overflow === 'hidden' &&
+      this.textOverflow === 'ellipsis' &&
+      text.length > 0
+        ? getMinEllipsisWidth(ctx, text, font, this.ellipsis)
+        : undefined;
   }
 
   private measureWordWrap(
@@ -342,10 +378,28 @@ export class CanvasText extends CanvasNode {
   }
 
   protected getLastPaintedTextWidth(): number {
-    // Наследники вроде CanvasLink используют не исходную ширину строки,
-    // а ширину текста, который действительно ушел в DrawBatcher.
+    // Для наследников, использующих ширину фактически нарисованного однострочного текста.
     return this.lastPaintedTextWidth;
   }
+
+  protected measureTextWidth(
+    ctx: CanvasRenderingContext2D,
+    text: string
+  ): number {
+    return getCachedTextWidth(ctx, text, this.font);
+  }
+
+  /** Декорации получают фактически нарисованный текст после ellipsis и центр строки. */
+  // eslint-disable-next-line class-methods-use-this -- hook для наследников без декораций в базовом тексте
+  protected onPaintLine(
+    _batcher: DrawBatcher,
+    _ctx: CanvasRenderingContext2D,
+    _text: string,
+    _x: number,
+    _y: number,
+    _fontSize: number,
+    _lineHeightPx: number
+  ): void {}
 
   /**
    * Эффективный конфиг тултипа для hover-контроллера.
@@ -483,7 +537,7 @@ export class CanvasText extends CanvasNode {
     lines: string[],
     rect: { x: number; y: number; width: number; height: number }
   ) {
-    const { lineHeightPx } = getCachedFontMetrics(
+    const { fontSize, lineHeightPx } = getCachedFontMetrics(
       font,
       this.lineHeight,
       this.fontSize,
@@ -505,29 +559,72 @@ export class CanvasText extends CanvasNode {
     const contentHeight = visibleLines.length * lineHeightPx;
     let y = rect.y + Math.max(0, (rect.height - contentHeight) * 0.5);
     this.lastPaintedTextWidth = 0;
+    const lineStarts = this.marks ? computeLineStarts(this.text, lines) : null;
 
     for (let i = 0, len = visibleLines.length; i < len; i += 1) {
       const v = visibleLines[i];
       if (v !== undefined) {
+        const source = lineStarts?.[i];
+        if (source) {
+          const shownLength =
+            v === source.text ? v.length : v.length - this.ellipsis.length;
+
+          this.paintMarks(batcher, ctx, font, {
+            text: source.text,
+            start: source.start,
+            shownLength: Math.max(0, shownLength),
+            x: rect.x,
+            y,
+            height: lineHeightPx,
+            // Строка переноса бывает шире места (ширина меньше MIN_WRAP_WIDTH)
+            ...(this.overflow === 'hidden' && { maxWidth: rect.width }),
+          });
+        }
+        // Рисуем строку по центру её слота (baseline middle), а не от верха
+        // (baseline top). Иначе при lineHeight > 1 лишний интерлиньяж копится
+        // снизу каждой строки и текст визуально прижимается к верху блока.
+        // Центр слота распределяет интерлиньяж поровну сверху и снизу.
+        const lineY = y + lineHeightPx / 2;
         if (this.overflow === 'hidden') {
           // При maxLines высота измеряется по видимым строкам, а clip остается
           // защитой от overhang и слишком узких bounds.
           batcher.fillTextClipped(
             v,
             rect.x,
-            y,
+            lineY,
             font,
             color,
             rect,
-            'top',
+            'middle',
             'left'
           );
         } else {
-          batcher.fillText(v, rect.x, y, font, color, 'top');
+          batcher.fillText(v, rect.x, lineY, font, color, 'middle');
         }
+        this.onPaintLine(
+          batcher,
+          ctx,
+          v,
+          rect.x,
+          lineY,
+          fontSize,
+          lineHeightPx
+        );
         y += lineHeightPx;
       }
     }
+  }
+
+  private paintMarks(
+    batcher: DrawBatcher,
+    ctx: CanvasRenderingContext2D,
+    font: string,
+    line: MarkedLine
+  ) {
+    if (!this.marks) return;
+    paintTextMarks(batcher, this.marks, line, (text) =>
+      getCachedTextWidth(ctx, text, font)
+    );
   }
 
   private paintSingleLine(
@@ -539,6 +636,12 @@ export class CanvasText extends CanvasNode {
     rect: { x: number; y: number; width: number; height: number }
   ) {
     const textY = rect.y + rect.height * 0.5;
+    const { fontSize, lineHeightPx } = getCachedFontMetrics(
+      font,
+      this.lineHeight,
+      this.fontSize,
+      this.lineHeightPx
+    );
 
     if (this.overflow === 'hidden') {
       // Layout уже назначил этой ноде финальный rect, поэтому ellipsis считаем по rect.width.
@@ -563,6 +666,24 @@ export class CanvasText extends CanvasNode {
         return;
       }
 
+      // Сколько символов видно, чтобы пометка не выходила за видимый текст.
+      // Подробнее: при textOverflow 'clip' текст рисуется целиком и обрезается
+      // по rect, видны все символы, а пометку обрезает maxWidth; при многоточии
+      // видимая часть короче.
+      const truncatedByEllipsis =
+        resolvedText.didTruncate && this.textOverflow !== 'clip';
+      this.paintMarks(batcher, ctx, font, {
+        text,
+        start: 0,
+        shownLength: truncatedByEllipsis
+          ? Math.max(0, resolvedText.text.length - this.ellipsis.length)
+          : text.length,
+        x: rect.x,
+        y: textY - lineHeightPx / 2,
+        height: lineHeightPx,
+        maxWidth: rect.width,
+      });
+
       batcher.fillTextClipped(
         resolvedText.text,
         rect.x,
@@ -573,13 +694,31 @@ export class CanvasText extends CanvasNode {
         'middle',
         'left'
       );
+      this.onPaintLine(
+        batcher,
+        ctx,
+        resolvedText.text,
+        rect.x,
+        textY,
+        fontSize,
+        lineHeightPx
+      );
       return;
     }
 
     // В visible-режиме сохраняем старое поведение: текст рисуется целиком,
-    // а lastPaintedTextWidth нужен только для совместимости с CanvasLink.
+    // а lastPaintedTextWidth сохраняем для совместимости с наследниками.
+    this.paintMarks(batcher, ctx, font, {
+      text,
+      start: 0,
+      shownLength: text.length,
+      x: rect.x,
+      y: textY - lineHeightPx / 2,
+      height: lineHeightPx,
+    });
     this.lastPaintedTextWidth = getCachedTextWidth(ctx, text, font);
     batcher.fillText(text, rect.x, textY, font, color, 'middle');
+    this.onPaintLine(batcher, ctx, text, rect.x, textY, fontSize, lineHeightPx);
   }
 }
 
@@ -677,6 +816,19 @@ function hasRiskyTextForWrap(text: string): boolean {
   return RISKY_WRAP_TEXT_REGEX.test(text);
 }
 
+function computeLineStarts(
+  text: string,
+  lines: readonly string[]
+): { text: string; start: number }[] {
+  let cursor = 0;
+  return lines.map((line) => {
+    const found = text.indexOf(line, cursor);
+    const start = found === -1 ? cursor : found;
+    cursor = start + line.length;
+    return { text: line, start };
+  });
+}
+
 function normalizeSplitResult(result: ReturnType<typeof split>): string[] {
   if (Array.isArray(result)) {
     return result;
@@ -692,5 +844,7 @@ export function invalidateTextCache(): void {
   fontMetricsCache.clear();
   textWidthCache.clear();
   splitLinesCache.clear();
+  // canvas-hypertxt хранит свои переносы и ширины символов — их тоже считали старым шрифтом.
+  clearHypertxtCache();
   invalidateOverflowTextCache();
 }

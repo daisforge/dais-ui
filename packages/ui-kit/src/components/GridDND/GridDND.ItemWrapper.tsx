@@ -6,14 +6,15 @@ import { GridDNDItemConfig } from './GridDND.types';
 export interface GridDNDItemWrapperProps {
   item: GridDNDItemConfig;
   actionsSlot?: ReactNode;
-  actionsSlotStyle?: React.CSSProperties;
   children: React.ReactNode;
 }
 
+// actionsSlot рендерится в потоке relative-контейнера. Позиционирование берёт на
+// себя сам контент (напр. AnalyticalWidget.DotsIconButton с пропом absolute), а
+// не обёртка, поэтому отступы контролируются на стороне ui-kit.
 export const ItemWrapper = ({
   item,
   actionsSlot,
-  actionsSlotStyle,
   children,
 }: GridDNDItemWrapperProps) => (
   <div
@@ -21,19 +22,7 @@ export const ItemWrapper = ({
     id={item.id}
     className={GridDNDClassNames.gridItemWrapper}
   >
-    {actionsSlot && (
-      <div
-        style={{
-          position: 'absolute',
-          right: 16,
-          top: 16,
-          ...actionsSlotStyle,
-        }}
-        className={GridDNDClassNames.noDrag}
-      >
-        {actionsSlot}
-      </div>
-    )}
+    {actionsSlot}
     {children}
   </div>
 );

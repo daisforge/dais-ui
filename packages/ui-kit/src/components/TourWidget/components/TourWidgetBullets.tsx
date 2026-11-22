@@ -4,6 +4,7 @@ import { forwardRef } from 'react';
 import { tourWidgetClassNames as cls } from '../TourWidget.classNames';
 import { useTourWidgetContext } from '../TourWidget.context';
 import { StyledBullets, StyledBulletsTrack } from '../TourWidget.styled';
+import { tourWidgetTokens as tokens } from '../TourWidget.tokens';
 import type { TourWidgetBulletsProps } from '../types';
 import { TourWidgetBullet } from './TourWidgetBullet';
 
@@ -22,8 +23,8 @@ const getBulletsWidth = (count: number) =>
   count > 0 ? count * BULLET_SIZE + (count - 1) * BULLET_GAP : 0;
 
 type BulletsStyle = CSSProperties & {
-  '--tour-widget-bullets-offset'?: string;
-  '--tour-widget-bullets-width'?: string;
+  [tokens.bulletsOffset]?: string;
+  [tokens.bulletsWidth]?: string;
 };
 
 export const TourWidgetBullets = forwardRef<
@@ -52,8 +53,8 @@ export const TourWidgetBullets = forwardRef<
   const hasHiddenAfter = windowEnd < bulletsCount - 1;
   const bulletsStyle: BulletsStyle = {
     ...style,
-    '--tour-widget-bullets-offset': `-${windowStart * BULLET_STEP}px`,
-    '--tour-widget-bullets-width': `${getBulletsWidth(visibleBulletsCount)}px`,
+    [tokens.bulletsOffset]: `-${windowStart * BULLET_STEP}px`,
+    [tokens.bulletsWidth]: `${getBulletsWidth(visibleBulletsCount)}px`,
   };
 
   return (

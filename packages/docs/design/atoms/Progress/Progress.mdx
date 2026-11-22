@@ -1,0 +1,52 @@
+---
+id: progress
+title: Progress
+type: atom
+status: Stable
+version: 1.0
+lastUpdated: 2026-06-12
+pixsoLink: "{{Pixso URL Progress}}"
+storybookLink: "{{Storybook URL Progress}}"
+pixsoDocLink: "{{Pixso URL Progress Doc Block 1}}"
+hasDesignDoc: true
+hasDevDoc: true
+hasMechanics: false
+hasCornerCases: false
+related:
+ - progress-bar-circular
+ - spinner
+tags:
+ - progress
+ - feedback
+ - data-display
+---
+
+import { PropsTable, Description } from '@site/src/components';
+
+# Progress
+<Description name="Progress" />
+<PropsTable name="Progress" exclude={['css']} />
+
+##Примеры
+
+### Вид прогресса
+Вид прогресса задается с помощью свойства `view`. Возможные значения свойства `view`:
++ `"default"` – по умолчанию;
++ `"primary"` – основная;
++ `"secondary"` – вторичная;
++ `"accent"` – акцентная;
++ `"info"` – информирующая;
++ `"success"` – успешное завершение;
++ `"warning"` – предупреждение;
++ `"error"` – ошибка;
+
+```tsx live
+import React from 'react';
+import { Progress } from '@salutejs/sdds-finai';
+
+export function App() {
+    return (
+        <Progress value={25} view="success" displayValue />
+    );
+}
+```

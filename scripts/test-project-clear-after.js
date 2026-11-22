@@ -31,18 +31,14 @@ if (args.includes(WEBPACK_PROJECT_FLAG)) {
 const PROJECT_NAME = getProjectName(PROJECT);
 //  ------------------------------------------------
 
-const DELETE_ARR = [
-  'package.json',
-  'package-lock.json',
-  'node_modules',
-  TGZ_NAME,
-];
+// package.json не удаляем — он под контролем версий
+const DELETE_ARR = ['package-lock.json', 'node_modules', TGZ_NAME];
 
 function main() {
   console.log(
     `${greenColor}Удаление файлов ${DELETE_ARR.join(
-      ', '
-    )} в проекте ${PROJECT_NAME}...${defaultColor}`
+      ', ',
+    )} в проекте ${PROJECT_NAME}...${defaultColor}`,
   );
   try {
     DELETE_ARR.forEach((fileOrDir) => {
@@ -55,7 +51,7 @@ function main() {
     }
 
     console.log(
-      `${greenColor}Удаление файлов завершилось успешно!${defaultColor}`
+      `${greenColor}Удаление файлов завершилось успешно!${defaultColor}`,
     );
   } catch (error) {
     console.warn('Удаление завершилось с ошибкой', error);

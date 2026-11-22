@@ -1,9 +1,13 @@
+import { type CSSProperties, useEffect } from 'react';
+
 import { useRowContext } from '../contexts';
+import { resolveSubRowKey } from '../feature-cell-transfer/utils/resolveSubRowKey';
 import {
   CellEditorComboboxInternal,
   CellEditorNumberFormatInternal,
   CellEditorTextAreaInternal,
 } from '../feature-edit';
+import { MIN_EDITOR_FIELD_WIDTH } from '../feature-edit/utils';
 import type { KeyText } from '../feature-key-text/types';
 import { ExpandDetailButtonComponent } from '../feature-row-detail';
 import { useRowDetailHandlerContext } from '../feature-row-detail/ctx';
@@ -12,15 +16,77 @@ import { RowDetailConfig } from '../feature-row-detail/types';
 import { ChevronTreeBtn } from '../feature-tree';
 import { SUBROWS_KEY } from '../feature-tree/constants';
 import { getHasArrow, getTreeIdAndLvlOfRow } from '../feature-tree/handlers';
+import { getTreeButtonBox } from '../feature-tree/tree-disclosure-icons';
 import {
   ColumnConfig,
   EditingCellInfo,
   ObjectForExtending,
+  RenderRowCustomEditCell,
   TableConfig,
 } from '../types';
-import { CLASS } from './constants';
+import type { ColumnConfigInternal } from '../types/column-config-internal.type';
+import { CLASS, CSS_VARIABLES } from './constants';
+import { getPaddingLeftFinal } from './styleConstants';
 import { StyledCellContainer, SubRowContainer } from './styled';
 
+/** Кнопка деталей строки: IconButton размера s (40px) и отступ слева 8px. */
+const DETAIL_BUTTON_WIDTH = 48;
+
+/**
+ * Ширина редактора: как у ячейки, но так, чтобы полю осталось не меньше
+ * MIN_EDITOR_FIELD_WIDTH. Высота ячейки нужна шеврону и кнопке деталей.
+ */
+const getEditorBoxStyle = (
+  { cellWidth, cellHeight }: { cellWidth: number; cellHeight: number },
+  occupiedWidth: number,
+) =>
+  ({
+    width: Math.max(cellWidth, occupiedWidth + MIN_EDITOR_FIELD_WIDTH),
+    [CSS_VARIABLES.editorCellHeight]: `${cellHeight}px`,
+  } as CSSProperties);
+
+/**
+ * Обёртка для кастомных редакторов (`editingCell.component` в виде функции).
+ *
+ * При входе в редактирование «перезаписью» (набор символа на выделенной
+ * ячейке) Glide передаёт введённый символ как `initialValue`, но для кастомных
+ * ячеек НЕ триггерит onChange. Из-за этого черновик строки оставался старым и
+ * одиночный ввод не сохранялся (две цифры и более сохранялись, т.к. второй
+ * символ уже триггерил onChange). Засеиваем значение в `onRowChange` один раз
+ * на маунте — чтобы авторам кастомных редакторов не нужно было делать это
+ * руками. Встроенные редакторы (inputString/inputNumber) делают то же самое
+ * внутри себя.
+ */
+function CustomEditCellSeed<
+  RowType extends ObjectForExtending,
+  SummaryRowType,
+>({
+  info,
+  render,
+  lvl,
+  disableLeftOffset,
+}: {
+  info: EditingCellInfo<RowType, SummaryRowType>;
+  render: RenderRowCustomEditCell<RowType, SummaryRowType>;
+  lvl: number;
+  disableLeftOffset: boolean;
+}) {
+  const { initialValue, row, column, onRowChange } = info;
+
+  useEffect(() => {
+    if (initialValue === undefined || initialValue === null) return;
+    const str = String(initialValue);
+    if (str.trim() === '') return;
+    const seeded = Number.isNaN(Number(str)) ? str : Number(str);
+    onRowChange({ ...row, [column.key]: seeded });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return <>{render(info, lvl, disableLeftOffset)}</>;
+}
+
+// Ширина редактора с шевроном или кнопкой деталей задана явно (getEditorWidth).
+// Иначе оверлей Glide растёт по содержимому и выходит за колонку.
 export const RenderEditCell = <
   FilterStateType extends ObjectForExtending,
   RowIdType extends string | number,
@@ -106,7 +172,14 @@ export const RenderEditCell = <
       );
     }
 
-    return column.editingCell.component(editingCellInfo, 0, disableLeftOffset);
+    return (
+      <CustomEditCellSeed
+        info={editingCellInfo}
+        render={column.editingCell.component}
+        lvl={0}
+        disableLeftOffset={disableLeftOffset}
+      />
+    );
   };
 
   const tableConfigSubrowsActivated = !!tableConfigSubRows;
@@ -126,7 +199,10 @@ export const RenderEditCell = <
     }
 
     return (
-      <StyledCellContainer className={CLASS.editableCellWithExpandButton}>
+      <StyledCellContainer
+        className={CLASS.editableCellWithExpandButton}
+        style={getEditorBoxStyle(editingCellInfo, DETAIL_BUTTON_WIDTH)}
+      >
         {defaultLvl0RenderElement()}
 
         <ExpandDetailButtonComponent
@@ -142,6 +218,19 @@ export const RenderEditCell = <
 
   const columnHasArrow = getHasArrow(column.subRow?.isColumnWithArrow, keyText);
   const columnHasExpandButton = cellIsHaveDetailExpandButton();
+
+  /** Сколько места в древовидной ячейке занято до поля и после него. */
+  const getTreeOccupiedWidth = (
+    hasChevron: boolean,
+    hasDetailButton: boolean,
+  ) => {
+    const { layoutWidth, gapToText } = getTreeButtonBox(rowSize);
+    return (
+      getPaddingLeftFinal(0, lvl, rowSize, { columnHasArrow, rowSize }) +
+      (hasChevron ? layoutWidth + gapToText : 0) +
+      (hasDetailButton ? DETAIL_BUTTON_WIDTH : 0)
+    );
+  };
 
   // ------------------------------- LVL 0 RENDER ---------------------------------------
   if (lvl === 0) {
@@ -162,7 +251,10 @@ export const RenderEditCell = <
 
     if (!columnHasArrow && hasExpandDetailButton) {
       return (
-        <StyledCellContainer className={CLASS.editableCellWithExpandButton}>
+        <StyledCellContainer
+          className={CLASS.editableCellWithExpandButton}
+          style={getEditorBoxStyle(editingCellInfo, DETAIL_BUTTON_WIDTH)}
+        >
           {defaultLvl0RenderElement()}
 
           <ExpandDetailButtonComponent
@@ -175,9 +267,12 @@ export const RenderEditCell = <
     }
     return (
       <SubRowContainer
+        style={getEditorBoxStyle(
+          editingCellInfo,
+          getTreeOccupiedWidth(hasChildrenAndArrow, hasExpandDetailButton),
+        )}
         className={CLASS.editableCellWithExpandButton}
         $lvl={lvl}
-        $hasChildren={hasChildrenAndArrow}
         $editingMode={{
           $columnHasArrow: columnHasArrow,
           $rowSize: rowSize,
@@ -217,31 +312,22 @@ export const RenderEditCell = <
     if (!column.subRow.editingCell) {
       return undefined;
     }
-    const parentKeyAsSubKey = column.subRow.parentKeyAsDefault;
-
-    const getSubRowColumnKey = (): string => {
-      if (column?.subRow?.keyOfColumnInSubRow) {
-        return typeof column.subRow.keyOfColumnInSubRow === 'function'
-          ? column.subRow.keyOfColumnInSubRow(lvl).toString()
-          : column.subRow.keyOfColumnInSubRow.toString();
-      }
-      if (column?.subRow?.parentKeyAsDefault) {
-        return column.key;
-      }
-      return '';
-    };
-
     const { column: parentColumn, ...restRenderEditCellProps } =
       editingCellInfo;
+    // Колонку для редактора собрала таблица, в ней есть внутренние признаки.
+    // В пропе column лежит колонка из настроек, без них.
+    const { subRowHasOwnRenderCell } = parentColumn as ColumnConfigInternal<
+      RowType,
+      SummaryRowType
+    >;
 
-    const columnFinal: typeof column = {
+    const columnFinal: typeof column & { hasOwnRenderCell: boolean } = {
       ...parentColumn,
-      // для subRow переопределяем ключ
-      ...(!parentKeyAsSubKey && {
-        key: getSubRowColumnKey(),
-      }),
+      key: String(resolveSubRowKey(column, lvl) ?? ''),
       // для subRow переопределяем editingCell
       editingCell: column.subRow.editingCell,
+      // Ячейку подстроки рисует renderSubRowCell, а не renderCell колонки.
+      hasOwnRenderCell: subRowHasOwnRenderCell === true,
     };
 
     const renderSubRowEditCellProps = {
@@ -275,10 +361,13 @@ export const RenderEditCell = <
         />
       );
     }
-    return column.subRow.editingCell.component(
-      renderSubRowEditCellProps,
-      lvl,
-      disableLeftOffset,
+    return (
+      <CustomEditCellSeed
+        info={renderSubRowEditCellProps}
+        render={column.subRow.editingCell.component}
+        lvl={lvl}
+        disableLeftOffset={disableLeftOffset}
+      />
     );
   };
 
@@ -294,7 +383,10 @@ export const RenderEditCell = <
 
   if (!columnHasArrow && columnHasExpandButton) {
     return (
-      <StyledCellContainer className={CLASS.editableCellWithExpandButton}>
+      <StyledCellContainer
+        className={CLASS.editableCellWithExpandButton}
+        style={getEditorBoxStyle(editingCellInfo, DETAIL_BUTTON_WIDTH)}
+      >
         {defaultLvlNot0RenderElement()}
 
         <ExpandDetailButtonComponent
@@ -308,9 +400,12 @@ export const RenderEditCell = <
 
   return (
     <SubRowContainer
+      style={getEditorBoxStyle(
+        editingCellInfo,
+        getTreeOccupiedWidth(hasChildrenAndArrow, columnHasExpandButton),
+      )}
       className={CLASS.editableCellWithExpandButton}
       $lvl={lvl}
-      $hasChildren={hasChildrenAndArrow}
       $editingMode={{
         $columnHasArrow: columnHasArrow,
         $rowSize: rowSize,

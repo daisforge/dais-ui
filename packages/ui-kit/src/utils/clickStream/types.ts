@@ -25,8 +25,40 @@ export type TSendClickStreamEventParams = IClickStreamBaseItem &
 
 export type TSendClickStreamEvent = (
   params: TSendClickStreamEventParams,
-) => void;
+) => string | undefined;
 
 export abstract class ClickStream {
+  /**
+   * Отправляет событие в ClickStream и возвращает идентификатор операции.
+   * @returns идентификатор операции, привязанный к отправленному событию, или undefined если event не был создан.
+   */
   abstract sendClickStreamEvent: TSendClickStreamEvent;
+
+  /**
+   * Возвращает или создаёт идентификатор операции по её названию.
+   * @param action — название операции.
+   * @returns идентификатор операции.
+   */
+  abstract getOperationId: (action: string) => string;
+
+  /**
+   * Возвращает или создаёт идентификатор бизнес-процесса.
+   * @param name — имя процесса.
+   * @param isStart — если true, всегда создаёт новый идентификатор; если false или не передан — возвращает существующий или создаёт новый.
+   * @returns объект с ключом имени и сгенерированным или существующим идентификатором.
+   */
+  abstract getProcess: (name: string, isStart?: boolean) => TPropertyItem;
 }
+
+export interface IDigitalTraceContext {
+  operationName?: string;
+  operationId?: string;
+  processId?: string;
+  processName?: string;
+  properties?: Record<string, string>;
+}
+
+export type TWithDigitalTrace<T, E = IDigitalTraceContext> = {
+  data: T;
+  digitalTrace?: E;
+};

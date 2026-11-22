@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "types": [
+      "node",
+      "@nx/react/typings/cssmodule.d.ts",
+      "@nx/react/typings/image.d.ts",
+      "vite/client"
+    ],
+    "jsx": "react-jsx"
+  },
+  "include": [".probe/validate.ts"]
+}

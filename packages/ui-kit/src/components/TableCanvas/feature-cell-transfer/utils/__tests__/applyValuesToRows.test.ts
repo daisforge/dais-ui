@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
+import { createLazyRowSpan } from '../../../table-hooks/createLazyRowSpan';
 import type { TransferColumnConfig } from '../../types';
 import { applyValuesToRows } from '../applyValuesToRows';
 
@@ -70,8 +71,59 @@ describe('applyValuesToRows — paste в прямоугольник', () => {
     expect(res.newRows[2]).toEqual({ a: '', b: '' }); // не в таргете
     expect(res.affectedIndexes).toEqual([0, 1]);
     expect(res.firstAffectedColumn?.key).toBe('a');
+    expect(res.writtenCells).toEqual([
+      { rowIndex: 0, columnKey: 'a' },
+      { rowIndex: 0, columnKey: 'b' },
+      { rowIndex: 1, columnKey: 'a' },
+      { rowIndex: 1, columnKey: 'b' },
+    ]);
     expect(res.aborted).toBe(false);
   });
+
+  it('пропускает совпавшие значения внутри одной массовой записи', () => {
+    const result = applyValuesToRows({
+      ...BASE,
+      rows: [
+        { a: 'X', b: '' },
+        { a: '', b: 'X' },
+      ],
+      columns: [dcol('a'), dcol('b')],
+      rowTargets: [0, 1],
+      colTargets: [0, 1],
+      getValue: () => 'X',
+    });
+    expect(result.writtenCells).toEqual([
+      { rowIndex: 0, columnKey: 'b' },
+      { rowIndex: 1, columnKey: 'a' },
+    ]);
+  });
+
+  it.each([
+    { values: ['B', 'A'], expected: [] },
+    {
+      values: ['B', 'B'],
+      expected: [
+        { rowIndex: 0, columnKey: 'a' },
+        { rowIndex: 0, columnKey: 'b' },
+      ],
+    },
+  ])(
+    'сравнивает итоговое значение общего поля подстроки ($values)',
+    ({ values, expected }) => {
+      const subRow = { keyOfColumnInSubRow: 'value' };
+      const result = applyValuesToRows({
+        ...BASE,
+        allowSubRows: true,
+        rows: [{ treeId: '1.subRows.0', value: 'A' }],
+        columns: [dcol('a', true, { subRow }), dcol('b', true, { subRow })],
+        rowTargets: [0],
+        colTargets: [0, 1],
+        getValue: (_, c) => values[c] ?? '',
+      });
+      expect(result.newRows[0]?.value).toBe(values[1]);
+      expect(result.writtenCells).toEqual(expected);
+    },
+  );
 
   it('broadcast: одно значение тиражируется на все целевые строки', () => {
     const columns = [svc(), dcol('a')];
@@ -143,6 +195,7 @@ describe('applyValuesToRows — служебные и readonly ячейки', ()
 
     expect(res.newRows[0]).toEqual({ a: 'V', ro: 'keep' });
     expect(res.affectedIndexes).toEqual([0]);
+    expect(res.writtenCells).toEqual([{ rowIndex: 0, columnKey: 'a' }]);
     expect(res.aborted).toBe(false);
   });
 
@@ -182,6 +235,7 @@ describe('applyValuesToRows — валидация type-check', () => {
     });
 
     expect(res.affectedIndexes).toEqual([]);
+    expect(res.writtenCells).toEqual([]);
     expect(res.newRows[0]?.n).toBe('orig');
     expect(res.skippedByValidation).toHaveLength(1);
     expect(res.skippedByValidation[0]).toMatchObject({
@@ -230,5 +284,65 @@ describe('applyValuesToRows — fill handle (source range)', () => {
     expect(res.newRows[0]?.a).toBe('src'); // внутри source — пропущена
     expect(res.newRows[1]?.a).toBe('F'); // ниже source — заполнена
     expect(res.affectedIndexes).toEqual([1]);
+  });
+});
+
+describe('applyValuesToRows — блок lazyRowSpan', () => {
+  type Row = { region: string; person: string };
+  const makeRows = (): Row[] => [
+    { region: 'N', person: 'p0' },
+    { region: 'N', person: 'p1' },
+    { region: 'N', person: 'p2' },
+  ];
+  const lazy = (_row: Row, colKey: string) =>
+    colKey === 'region' ? ([0, 2] as const) : null;
+
+  it('вставка столбика в блок пишет во все строки блока первое значение', () => {
+    const rows = makeRows();
+    const columns = [
+      dcol('region', true, {
+        rowSpan: createLazyRowSpan<Row>(lazy, 'region', { current: rows }),
+      }),
+      dcol('person'),
+    ];
+
+    const res = applyValuesToRows({
+      ...BASE,
+      rows,
+      columns,
+      rowTargets: [0, 1, 2],
+      colTargets: [0],
+      getValue: (r) => ['X', 'Y', 'Z'][r] ?? '',
+      resolveBlocks: true,
+    });
+
+    expect(res.newRows.map((r) => (r as Row).region)).toEqual(['X', 'X', 'X']);
+  });
+
+  it('блок распознаётся и после записи в соседнюю обычную колонку той же строки', () => {
+    const rows = makeRows();
+    const columns = [
+      dcol('person'),
+      dcol('region', true, {
+        rowSpan: createLazyRowSpan<Row>(lazy, 'region', { current: rows }),
+      }),
+    ];
+
+    const res = applyValuesToRows({
+      ...BASE,
+      rows,
+      columns,
+      rowTargets: [0, 1, 2],
+      colTargets: [0, 1],
+      getValue: (r, c) => (c === 0 ? `q${r}` : ['X', 'Y', 'Z'][r] ?? ''),
+      resolveBlocks: true,
+    });
+
+    expect(res.newRows.map((r) => (r as Row).region)).toEqual(['X', 'X', 'X']);
+    expect(res.newRows.map((r) => (r as Row).person)).toEqual([
+      'q0',
+      'q1',
+      'q2',
+    ]);
   });
 });

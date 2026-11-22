@@ -11,6 +11,18 @@ export function getLvlFromTreeId(treeId: string | undefined) {
   return !treeId ? 0 : treeId.split(`.${SUBROWS_KEY}.`).length - 1;
 }
 
+// Кеш lvl записывается в useFlattenedRows при рекурсивном обходе дерева.
+// Для root-строк (без treeId) кеша нет, возвращаем 0 без split.
+export function getLvlOfRow<RowType extends ObjectForExtending>(
+  row: RowType,
+): number {
+  const cachedLvl = (row as { [TREE_LVL_KEY]?: number })?.[TREE_LVL_KEY];
+  if (typeof cachedLvl === 'number') return cachedLvl;
+
+  const treeId = (row as { [TREE_ID_KEY]?: string })?.[TREE_ID_KEY];
+  return getLvlFromTreeId(treeId);
+}
+
 export function getTreeIdAndLvlOfRow<RowType extends ObjectForExtending>(
   row: RowType,
 ) {
@@ -18,13 +30,7 @@ export function getTreeIdAndLvlOfRow<RowType extends ObjectForExtending>(
     | string
     | undefined;
 
-  // Кеш lvl записывается в useFlattenedRows при рекурсивном обходе дерева.
-  // Для root-строк (без treeId) кеша нет, возвращаем 0 без split.
-  const cachedLvl = (row as { [TREE_LVL_KEY]?: number })?.[TREE_LVL_KEY];
-  const lvl =
-    typeof cachedLvl === 'number' ? cachedLvl : getLvlFromTreeId(treeId);
-
-  return { treeId, lvl };
+  return { treeId, lvl: getLvlOfRow(row) };
 }
 
 export function getHasArrow(

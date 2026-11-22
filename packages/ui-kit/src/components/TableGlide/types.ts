@@ -38,15 +38,24 @@ export type {
   ProvideEditorComponent,
   SpanAlignment,
 };
-export type ThemeDynamicCustoms = {
-  rowSize: SIZE;
-  activeSizes: GlideSizeConfig;
-};
+export type { ThemeDynamicCustoms } from './theming/types';
 export type { Theme, ActiveTheme };
 
 export type GlideProps = ComponentProps<typeof DataEditor>;
 
 export type RowHeightGlide = GlideProps['rowHeight'];
+
+/** Высота строки: число, функция по строке или `'auto'` — по содержимому ячеек. */
+export type RowHeightProp<R> =
+  | ((
+      row: R,
+      currentRowSize: { rowSizeName: SIZE; rowSizeValue: number },
+      rowIndex: number
+    ) => number)
+  | number
+  | 'auto'
+  | undefined
+  | null;
 
 /**
  * Подсветка активной сущности (визуальная ось).
@@ -70,18 +79,48 @@ export type CellsSelectionMode =
   | 'disabled';
 
 /**
- * Эффекты при наведении (hover) — единый расширяемый конфиг.
- * Сейчас поддерживается подсветка строки (`row`); в будущем здесь же появятся
- * hover по ячейке, кастомные мапки наложения цветов и т.д.
+ * Эффекты при наведении (hover) — единый расширяемый конфиг
+ * `tableConfig.hoverEffects`. Сейчас поддерживается подсветка строки (`row`);
+ * в будущем здесь же появятся hover по ячейке, кастомные мапки цветов и т.д.
  */
 export type HoverEffectsConfig = {
   /**
-   * Подсветка строки под курсором.
-   * `true` — цвет data-ячеек из темы (`bgRowHovered`); объект — свой цвет.
-   * Служебные колонки темнеют `bgServiceRowHovered`, checkbox-строки —
-   * `bgSelectedRowHovered` (всегда из темы, `color` их не переопределяет).
+   * Подсветка строки под курсором. По умолчанию ВКЛЮЧЕНА.
+   * - не задано или `true` — включена, цвета из темы;
+   * - `false` — выключена явно.
+   *
+   * Цвета по зонам строки берутся из темы:
+   * - data-ячейки — `bgRowHovered`;
+   * - служебные колонки (нумерация, чекбокс) — `bgServiceRowHovered`, тот же
+   *   цвет, что у сервис-зоны при выделении;
+   * - строка, отмеченная чекбоксом, темнеет целиком `bgSelectedRowHovered`;
+   * - выбранная строка (`highlightActiveType: 'row'`) под курсором делает
+   *   шаг глубже: hover (с нажатым чекбоксом — hover2), цветные ячейки —
+   *   свой hover2.
+   *
+   * Hover — самый нижний слой: выделение ячеек, строк и колонок рисуется
+   * поверх и перекрывает его; после сброса выделения он снова виден.
+   * Summary-строки hover не получают.
    */
-  row?: boolean | { color?: string };
+  row?: boolean;
+};
+
+/** Вариант внешнего вида таблицы: `'default'` — как всегда, `'clean'` — «чистый» вид. */
+export type AppearanceVariant = 'default' | 'clean';
+
+/** Готовые варианты внешнего вида таблицы: «чистый» вид и зебра. */
+export type AppearanceConfig = {
+  /**
+   * `'clean'` — «чистый» вид: без линий сетки и внешних рамок, шапка на белом
+   * фоне с серым текстом.
+   * @default 'default'
+   */
+  variant?: AppearanceVariant;
+  /**
+   * Зебра: строки через одну окрашены серым. Работает в любом `variant`.
+   * @default false
+   */
+  zebra?: boolean;
 };
 
 // ---------------------------------------- COLUMNS
@@ -141,6 +180,11 @@ export type CanvasContent = ReactElement | string;
 export type CellContent = CanvasContent | GridCell;
 
 export type CellThemeOverrideResult = Partial<{
+  /**
+   * Цвет фона ячейки: hex (#RGB, #RGBA, #RRGGBB, #RRGGBBAA), rgb() или rgba().
+   * Для других записей (hsl(), var(), названия цветов) таблица не считает цвет
+   * под курсором и при выделении.
+   */
   bgCell: string;
   cellHorizontalPadding: number;
   cellVerticalPadding: number;
@@ -163,6 +207,20 @@ export type CellActiveState = {
   rowActive: boolean;
 };
 
+/**
+ * Сводка ошибок строки. Есть у ячеек строки, в которой найдена хотя бы одна
+ * ошибка (поячеечная или ошибка всей строки), и только когда таблица собирает
+ * сводки (проп `collectRowErrors`).
+ */
+export type RowErrorsSummary = {
+  /** Сколько ячеек строки с ошибкой (по всем колонкам, не только видимым). */
+  errorCellsCount: number;
+  /** Ключи колонок с ошибкой в порядке колонок таблицы. */
+  errorColumnKeys: readonly string[];
+  /** Строка целиком помечена ошибкой (`isErrorRow`). */
+  isErrorRow: boolean;
+};
+
 export type CellInfo<R extends ObjectForExtending, SR = unknown> = {
   row: R;
   column: ColumnGlideLast<R, SR>;
@@ -174,6 +232,12 @@ export type CellInfo<R extends ObjectForExtending, SR = unknown> = {
   hovered: CellHoverState;
   /** Состояние активного выделения для ячейки, которую сейчас рендерит renderCell. */
   active: CellActiveState;
+  // Есть только у верхней-левой ячейки объединённого блока. align — выравнивание
+  // блока (пусто = по центру). По нему ячейка-select расставляет контент и
+  // уголок по высоте всего блока.
+  __mergedCell?: { align?: SpanCellAlign };
+  /** Сводка ошибок строки ({@link RowErrorsSummary}). Нет у строк без ошибок. */
+  rowErrors?: RowErrorsSummary;
 };
 export type EditingCellInfoGlide<
   R extends ObjectForExtending,
@@ -197,6 +261,17 @@ type DrawHeaderArgs = Parameters<NonNullable<GlideProps['drawHeader']>>[0];
 export type HeaderCellInfo<R extends ObjectForExtending, SR> = {
   column: ColumnGlideLast<R, SR>;
   drawArgs: DrawHeaderArgs;
+  /**
+   * Колонка выделена в таблице. Шапка такой колонки ведёт себя как при
+   * наведении: показывает кнопки и подсвечивает название.
+   *
+   * Подробнее: считается в TableGlide через isColumnInSelection: клик по
+   * шапке, активная колонка текущего диапазона или колонка, покрытая
+   * ячейками rangeStack. Поле drawArgs.isSelected от Glide для этого не
+   * подходит: выделение колонок хранится отдельно, и selection.columns у
+   * Glide намеренно пуст.
+   */
+  columnIsSelected: boolean;
   ctxs: ObjectForExtending;
   theme: Theme;
 };
@@ -204,17 +279,18 @@ export type ColSpan<R extends ObjectForExtending, SR> =
   | number
   | ((cellInfo: CellInfo<R, SR>) => number);
 
-// Вертикальное объединение: функция возвращает ЯВНЫЙ диапазон строк блока
-// [startRow, endRow] (одинаковый для всех ячеек блока) либо null, если ячейка не слита.
+// Объединение строк: функция возвращает диапазон строк блока [перваяСтрока,
+// последняяСтрока] — один и тот же для всех ячеек блока — либо null, если ячейка
+// не объединена.
 export type RowSpan<R extends ObjectForExtending, SR> = (
   cellInfo: CellInfo<R, SR>
 ) => readonly [number, number] | null;
 
-/** 2D-выравнивание контента в слитой ячейке (блоке). */
+/** Выравнивание контента в объединённой ячейке (блоке) по обеим осям. */
 export type SpanCellAlign = {
   /** По горизонтали. @default из contentAlign колонки, иначе 'left' */
   horizontal?: 'left' | 'center' | 'right';
-  /** По вертикали. @default 'center' */
+  /** По вертикали. @default 'top' у блока в несколько строк, иначе 'center' */
   vertical?: 'top' | 'center' | 'bottom';
 };
 
@@ -232,6 +308,11 @@ export type ColumnGlideCustoms<R extends ObjectForExtending, SR = unknown> = {
   isServiceColumn?: boolean;
   /** Внутренний helper для cell-level error outline, совпадающий по семантике с Table editing error. */
   isErrorCell?: (row: R) => boolean;
+  /**
+   * Тултип ячейки с ошибкой. Вызывается только при наведении и только если
+   * `isErrorCell(row)` вернул true. Приоритетнее `cellTooltip`.
+   */
+  errorCellTooltip?: (row: R) => CanvasNodeTooltipConfig | null | undefined;
   renderHeaderCell?: (cellInfo: HeaderCellInfo<R, SR>) => CanvasContent;
   /** Текстовое представление ячейки для копирования в clipboard (Ctrl+C). */
   copyData?: string | ((row: R) => string);
@@ -242,8 +323,16 @@ export type ColumnGlideCustoms<R extends ObjectForExtending, SR = unknown> = {
   renderSummaryCell?: (summaryCellInfo: SummaryCellInfo<R, SR>) => CellContent;
   colSpan?: ColSpan<R, SR>;
   rowSpan?: RowSpan<R, SR>;
-  /** Выравнивание контента в слитых ячейках колонки; функция — для точечного (по блоку). */
-  spanAlign?: SpanCellAlign | ((cellInfo: CellInfo<R, SR>) => SpanCellAlign | undefined);
+  /** Выравнивание контента в объединённых ячейках колонки; функция — если нужно задавать для каждого блока отдельно. */
+  spanAlign?:
+    | SpanCellAlign
+    | ((cellInfo: CellInfo<R, SR>) => SpanCellAlign | undefined);
+  /**
+   * Содержимое объединённой ячейки, в том числе свой renderCell, остаётся в
+   * видимой части блока при прокрутке.
+   * @default true
+   */
+  spanContentSticky?: boolean;
   /** Тултип для ячеек этой колонки. Строка, объект или функция (context) => config | null. */
   cellTooltip?:
     | CanvasNodeTooltipConfig
@@ -266,12 +355,36 @@ export type ColumnGlideCustoms<R extends ObjectForExtending, SR = unknown> = {
         colInd?: number;
         theme?: Theme;
       }) => CanvasNodeTooltipConfig | null);
+  /**
+   * Свой цвет ячеек колонки (тема ячейки).
+   *
+   * Цвет лучше брать из темы (`cellInfo.theme`), например статусные
+   * `theme.bgCellPositive / bgCellNegative / bgCellWarning / bgCellInfo`:
+   * они свои для каждой темы. Фиксированный hex в тёмной теме останется
+   * таким же светлым, как в светлой.
+   *
+   * Подробнее. Если вернуть `bgCell` в виде hex (`#RGB`, `#RGBA`, `#RRGGBB`,
+   * `#RRGGBBAA`), `rgb()` или `rgba()`, таблица сама посчитает его состояния
+   * (под курсором, в выбранной строке, в выделении), и цвет будет вести себя
+   * как встроенные. Прозрачный цвет сначала смешивается с фоном ячейки. Другие
+   * записи (`hsl()`, `var()`, названия цветов) не поддерживаются: они
+   * применяются как есть, ячейка не отреагирует на курсор и выделение.
+   */
   columnThemeOverride?: (
     cellInfo: CellInfo<R, SR>
   ) => CellThemeOverrideResult | undefined;
   /** Управление preview для колонки. true — включить overlay, 'none' — отключить (в т.ч. стандартный). */
   hasPreview?: boolean | 'none';
-  /** Минимальная ширина колонки (px). Ограничивает ресайз и начальную ширину снизу. */
+  /**
+   * Минимальная ширина колонки в пикселях. Уже этого значения колонку нельзя
+   * сжать ни мышью, ни автоматическим расчётом ширины.
+   *
+   * Подробнее: у каждой колонки есть ещё минимум по содержимому шапки
+   * (отступы ячейки, иконки пина и перетаскивания, буква с многоточием,
+   * кнопки фильтра и сортировки), он считается в calculateMinColumnWidth.
+   * Итоговый минимум это большее из двух, поэтому значение меньше
+   * автоматического не действует.
+   */
   minWidth?: number;
   /** Максимальная ширина колонки (px). Ограничивает ресайз и начальную ширину сверху. */
   maxWidth?: number;
@@ -286,6 +399,25 @@ export type RenderGroupHeaderArgs = Parameters<
   NonNullable<GlideProps['drawGroupHeader']>
 >[0];
 
+export interface SelectionView<R> {
+  rows: readonly R[];
+  rowKey?: (row: R) => string | number;
+  criteria: object;
+  expandedRows?: ReadonlySet<string | number>;
+  summaryCount?: number;
+  placeholderCount?: number;
+  revision?: string | number;
+  page?: number;
+  perPage?: number;
+  loading: boolean;
+}
+
+/** Последнее показанное представление. TableCanvas хранит его и при замене грида оверлеем. */
+export interface SelectionSnapshot<R> {
+  view: SelectionView<R> & { columns: readonly { id?: string; isServiceColumn?: boolean }[] };
+  controlled?: GridSelection;
+}
+
 export type TableGlideCustomProps<
   R extends ObjectForExtending,
   SR = unknown
@@ -294,23 +426,14 @@ export type TableGlideCustomProps<
   rows: readonly R[];
   bottomSummaryRows?: readonly SR[];
   rowSize?: SIZE;
-  rowHeight?:
-    | ((
-        row: R,
-        currentRowSize: {
-          rowSizeName: SIZE;
-          rowSizeValue: number;
-        },
-        rowIndex: number
-      ) => number)
-    | number
-    | undefined
-    | null;
+  rowHeight?: RowHeightProp<R>;
+  /** Потолок высоты строки при `rowHeight: 'auto'`, по умолчанию 480 */
+  maxAutoRowHeight?: number;
   ctxs?: ObjectForExtending;
   renderGroupHeader?: (
     args: RenderGroupHeaderArgs
   ) => 'default' | { defaultWithCustomGroupName: string } | CanvasEl;
-  /** Выравнивание текста в слитой шапке по ключу группы (ColumnGroupConfig.key). */
+  /** Выравнивание текста в объединённой шапке по ключу группы (ColumnGroupConfig.key). */
   groupAlignMap?: Map<string, SpanAlignment>;
   refTable?: Ref<DataEditorRef>;
   onColumnsReorder?: (sourceKey: string, targetKey: string) => void;
@@ -335,6 +458,8 @@ export type TableGlideCustomProps<
   hideGrid?: boolean;
   /** DOM-узел content-state (empty/error), рендерится как прямой child контейнера. */
   contentStateNode?: ReactNode;
+  /** Дополнительный контент wrapper-div, не зависящий от готовности canvas-grid. */
+  containerSlot?: ReactNode;
   /** Флаг fullscreen - пересканирование DOM при переключении */
   fullScreened?: boolean;
   /** Переносит editor overlay внутрь контейнера (вместо document.body). Для модалок с CSS transform. */
@@ -344,14 +469,20 @@ export type TableGlideCustomProps<
   highlightActiveType?: HighlightActiveType;
   /** Режим выделения ячеек (нативный glide selection). По умолчанию 'range-cell'. */
   cellsSelectionMode?: CellsSelectionMode;
+  /** Данные и критерии TableCanvas, которым соответствуют координаты выделения. */
+  selectionView?: SelectionView<R> & {
+    history: React.MutableRefObject<SelectionSnapshot<R> | undefined>;
+  };
+  /** Фокусировать грид при внешней смене controlled gridSelection. По умолчанию true. */
+  focusOnStateChange?: boolean;
   /** Канал для copy/paste (selectionRef потребителя), отдельно от controlled gridSelection. */
   onSelectionEmit?: (selection: GridSelection) => void;
   /**
-   * Сигнал сброса выделения при смене проекции данных (сортировка/фильтр/пагинация).
-   * Новый token = применить nextSelection (по умолчанию пустое). Только для
-   * uncontrolled-режима: controlled сбрасывается сеттером потребителя выше.
+   * Выделение сменили из кода (controlled gridSelection), а не действием
+   * пользователя. В `onSelectionEmit` такая смена не идёт, а копирование,
+   * вставка и протяжка заполнения должны о ней знать.
    */
-  projectionResetSignal?: ProjectionResetSignal;
+  onSelectionSync?: (selection: GridSelection) => void;
   /**
    * Ключи выделенных КОЛОНОК (объединение: одиночный клик/Shift/select-all +
    * Ctrl-мультивыбор), без сервисных колонок. Канал наверх для контрл-блока
@@ -387,26 +518,45 @@ export type TableGlideCustomProps<
   enableRowSelection?: boolean;
   /** Выделение всей таблицы кликом по шапке колонки нумерации. По умолчанию true. */
   enableSelectAll?: boolean;
+  /** Рамка у каждого Ctrl-диапазона ячеек (multi-range-cell), а не только у активного. По умолчанию false. */
+  outlineEachRange?: boolean;
   /** Индексы строк, выбранных через checkbox selection. */
   checkboxSelectedRowIndexes?: ReadonlySet<number>;
-  /** Индексы строк, у которых ЕСТЬ (виден) чекбокс — для тёмной подсветки highlightActiveType='row'. */
+  /**
+   * Индексы строк, у которых ЕСТЬ (виден) чекбокс.
+   * @deprecated На цвет не влияет: наличие чекбокса не меняет цвет выбранной
+   * строки, ступень добавляет только НАЖАТЫЙ чекбокс
+   * (`checkboxSelectedRowIndexes`). Удалить в следующем мажоре.
+   */
   checkboxVisibleRowIndexes?: ReadonlySet<number>;
   /**
    * Эффекты при наведении. `hoverEffects.row` — подсветка строки под курсором:
    * рисуется через bgCell (getRowThemeOverride), т.е. лежит ПОД селектингом и
    * highlightActiveType — они рисуются поверх (highlightRegions) и визуально
-   * перекрывают hover. По умолчанию выключено.
+   * перекрывают hover. По умолчанию row-подсветка ВКЛЮЧЕНА; выключение —
+   * явное `{ row: false }`.
    */
   hoverEffects?: HoverEffectsConfig;
+  /** Внешний вид: «чистый» вариант и зебра. См. {@link AppearanceConfig}. */
+  appearance?: AppearanceConfig;
   /** Включает компенсацию тонких canvas-линий при browser zoom ниже 100% / DPR < 1. */
   enableLowDprHairline?: boolean;
+  /**
+   * Ошибка всей строки: одна красная рамка по всей ширине данных вместо
+   * поячеечных рамок этой строки. Проверяется только для строк в окне
+   * видимости, как и `isErrorCell`.
+   */
+  isErrorRow?: (row: R) => boolean;
+  /** Возвращает true, если ячейка отмечена для подсветки в текущей сессии. */
+  isCellEdited?: (row: R, columnKey: string) => boolean;
+  /**
+   * Собирать сводку ошибок по строкам окна видимости ({@link RowErrorsSummary}
+   * в `cellInfo.rowErrors`). Для сводки колонки с `isErrorCell` обходятся все,
+   * а не только видимые, поэтому включается только когда сводка кому-то нужна
+   * (столбец-индикатор ошибок).
+   */
+  collectRowErrors?: boolean;
 };
-
-/** Сигнал сброса нативного выделения при смене проекции данных. */
-export interface ProjectionResetSignal {
-  token: number;
-  nextSelection?: GridSelection;
-}
 
 export type TableGlideProps<R extends ObjectForExtending, SR> = Omit<
   GlideProps,

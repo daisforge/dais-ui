@@ -1,0 +1,1 @@
+export { getMFReactDOMClient } from './getMFReactDOMClient';

@@ -88,7 +88,6 @@ export const ControlBlock = ({
     },
   },
   $borderTopRounded,
-  setCompressionVisibility,
   controlBlockLeftSideDropdownProps,
   controlBlockRightSideDropdownProps,
   collapseButtonPlacement = 'inside',
@@ -118,9 +117,6 @@ export const ControlBlock = ({
     };
   };
   $borderTopRounded: boolean;
-  setCompressionVisibility: React.Dispatch<
-    React.SetStateAction<ToolsMenuState | undefined>
-  >;
   controlBlockLeftSideDropdownProps?: TableDropdownConfigProps;
   controlBlockRightSideDropdownProps?: TableDropdownConfigProps;
   collapseButtonPlacement?: 'inside' | 'above';
@@ -238,6 +234,7 @@ export const ControlBlock = ({
         containerPadding: spacing.containerPadding,
         leftPartGap: spacing.leftPartGap,
         leftPartPaddingRight: spacing.leftPartPaddingRight,
+        collapseGap: spacing.collapseGap,
         rightButtonsGap: spacing.rightButtonsGap,
         rightButtonsPaddingInline: spacing.rightButtonsPaddingInline,
       },
@@ -286,12 +283,18 @@ export const ControlBlock = ({
 
   useTableResizeObserver(throttledHandleResize);
 
-  // Этап 5: useLayoutEffect вместо useEffect для начального compress
+  useEffect(
+    () => () => throttledHandleResize.cancel(),
+    [throttledHandleResize],
+  );
+
+  // compress стабилен: новые замеры запускают пересчёт явно, не пересоздавая
+  // throttle и ResizeObserver. Сохранённый resize читает актуальные refs хука.
   useLayoutEffect(() => {
     if (containerRef.current) {
       compress(containerRef.current.clientWidth);
     }
-  }, [compress]);
+  }, [compress, mergedWidths]);
 
   // Пересчитываем компрессию при смене режима редактирования
   useEffect(() => {
@@ -308,11 +311,6 @@ export const ControlBlock = ({
       compress(containerRef.current.clientWidth);
     }
   }, [hasGroupingCounter, compress]);
-
-  // Передаём state компрессии наверх
-  useEffect(() => {
-    setCompressionVisibility(compressionVisibilityState);
-  }, [compressionVisibilityState, setCompressionVisibility]);
 
   // ============ Данные для рендера (Этап 6) ============
   const { overflowItems, isOverflowTriggerVisible } =
@@ -454,6 +452,9 @@ export const ControlBlock = ({
             alignment="center"
             style={{
               flexWrap: 'nowrap',
+              // Левая группа не сжимается, иначе поиск заезжает на её кнопки
+              flexShrink: 0,
+              gap: spacing.collapseGap,
             }}
           >
             {hasInlineCollapse && (

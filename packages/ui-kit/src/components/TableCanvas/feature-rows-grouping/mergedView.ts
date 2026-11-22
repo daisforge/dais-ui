@@ -2,8 +2,9 @@ import type { ObjectForExtending } from '../types/utils.type';
 import { rowGrouper } from './data-handlers';
 import type { RowsGrouping } from './types';
 
-// Merged-вид группировки: плоские строки вместо дерева, колонки уровней слиты по
-// границам групп. Хелперы модуля дают порядок строк, ключ пути, нумерацию и чекбокс.
+// Группировка со слиянием: вместо дерева — плоский список строк, а колонки
+// уровней объединены по границам групп. Функции модуля дают порядок строк, ключ
+// пути, нумерацию и групповой чекбокс.
 
 /** Разделитель в ключе пути (не встречается в данных). */
 const GROUP_PATH_SEP = String.fromCharCode(1);
@@ -31,8 +32,9 @@ export function flattenRowsByGroups<RowType extends ObjectForExtending>(
   return out;
 }
 
-// Ключ пути от корня до уровня depth. Одинаковое значение под разными родителями
-// даёт разные ключи, поэтому блок дочернего уровня рвётся на границе родителя.
+// Ключ пути от корня до уровня depth. У одинакового значения под разными
+// родителями ключи разные, поэтому блок нижнего уровня обрывается на границе
+// родителя.
 export function createGroupPathValue<RowType extends ObjectForExtending>(
   groupByArr: readonly string[],
   depth: number,
@@ -94,7 +96,7 @@ export function wrapMergedGroupSelecting<S>(
   const [value, setValue] = sel.state;
   const { rowKeyGetter } = sel;
 
-  // Карта «группа → ключи строк», кэш по идентичности массива строк.
+  // Карта «группа → ключи строк». Кэшируется по ссылке на массив строк.
   let cachedRows: readonly ObjectForExtending[] | null = null;
   let cachedGroups = new Map<unknown, Array<string | number>>();
   const groupsOf = (rows: readonly ObjectForExtending[]) => {

@@ -6,7 +6,9 @@ import type {
   Rectangle,
   TransferColumnConfig,
   ValidationMode,
+  WrittenCell,
 } from '../types';
+import { collectEditedFields } from './collectEditedFields';
 import { resolveBlock } from './resolveBlockOrigin';
 import { shouldSkipCell } from './shouldSkipCell';
 import { normalizePasteValue, validatePasteValue } from './validatePasteValue';
@@ -50,9 +52,11 @@ interface SkippedByValidation {
 interface ApplyValuesResult<R extends ObjectForExtending> {
   /** Новый массив строк (shallow copy с обновлёнными ячейками). */
   newRows: R[];
-  /** Индексы строк, которые реально изменились (порядок записи). */
+  /** Строки, в которые выполнялась запись, включая повторную запись того же значения. */
   affectedIndexes: number[];
-  /** Первая записанная колонка — для `onRowsChange({ column })`. */
+  /** Ячейки, в которых итоговое значение отличается от исходного. */
+  writtenCells: WrittenCell[];
+  /** Колонка первой записи. Её получает обработчик onRowsChange в поле data.column. */
   firstAffectedColumn?: TransferColumnConfig;
   /** Ячейки, пропущенные type-check валидацией (для debug). */
   skippedByValidation: SkippedByValidation[];
@@ -65,6 +69,7 @@ const EMPTY_RESULT = <R extends ObjectForExtending>(
 ): ApplyValuesResult<R> => ({
   newRows: [...rows],
   affectedIndexes: [],
+  writtenCells: [],
   firstAffectedColumn: undefined,
   skippedByValidation: [],
   aborted: false,
@@ -123,6 +128,7 @@ export function applyValuesToRows<R extends ObjectForExtending>({
 
   const newRows = [...rows];
   const affected = new Set<number>();
+  const writtenColumns = new Set<TransferColumnConfig>();
   let firstAffectedColumn: TransferColumnConfig | undefined;
   const skippedByValidation: SkippedByValidation[] = [];
   // Объединение ячеек: блок пишем один раз (ключ — origin `${startCol},${startRow}`).
@@ -154,9 +160,12 @@ export function applyValuesToRows<R extends ObjectForExtending>({
       const value = getValue(rowOffset, colOffset);
 
       // Ячейка в объединённом блоке: пишем значение во весь блок один раз,
-      // валидируем/нормализуем по origin-колонке.
+      // проверяем и приводим значение по главной колонке блока.
+      // Подробнее: блок ищем по исходным строкам rows, а не по рабочей копии newRows:
+      // lazyRowSpan узнаёт строку по объекту, и копию блоком не признал бы.
+      // Геометрию блоков запись значений не меняет.
       const block = resolveBlocks
-        ? resolveBlock(colIndex, rowIndex, columns, newRows)
+        ? resolveBlock(colIndex, rowIndex, columns, rows)
         : null;
       if (block) {
         const blockKey = `${block.startCol},${block.startRow}`;
@@ -182,8 +191,9 @@ export function applyValuesToRows<R extends ObjectForExtending>({
           const rLvl = getTreeIdAndLvlOfRow(workRow).lvl;
           for (let c = block.startCol; c <= block.endCol; c += 1) {
             const cc = columns[c];
-            if (cc) {
+            if (cc && !cc.isServiceColumn) {
               workRow = writeCellValue(workRow, cc, rLvl, normalizedValue);
+              writtenColumns.add(cc);
             }
           }
           newRows[r] = workRow;
@@ -211,15 +221,20 @@ export function applyValuesToRows<R extends ObjectForExtending>({
       if (!target) continue;
       const normalizedValue = normalizePasteValue(value, column);
       newRows[rowIndex] = writeCellValue(target, column, lvl, normalizedValue);
+      writtenColumns.add(column);
       affected.add(rowIndex);
 
       if (!firstAffectedColumn) firstAffectedColumn = column;
     }
   }
 
+  const affectedIndexes = Array.from(affected);
   return {
     newRows,
-    affectedIndexes: Array.from(affected),
+    affectedIndexes,
+    writtenCells: collectEditedFields(rows, newRows, affectedIndexes, columns, [
+      ...writtenColumns,
+    ]),
     firstAffectedColumn,
     skippedByValidation,
     aborted: false,

@@ -13,7 +13,7 @@
 | Категория            | Технология                                                  |
 | -------------------- | ----------------------------------------------------------- |
 | **Фреймворк**        | React 18.3.1 + TypeScript 5.4.2                             |
-| **Стилизация**       | styled-components 5.3.1                                     |
+| **Стилизация**       | styled-components 5.3.11                                     |
 | **UI-основа**        | `@salutejs/sdds-finai` (дизайн-система Plasma)              |
 | **Сборка**           | Vite 5.0 + Nx                                               |
 | **Моно-репо**        | Lerna 8 + Nx 19                                             |
@@ -39,10 +39,9 @@ lib-3/
 │   │   │   ├── mixins/      # CSS-миксины
 │   │   │   └── index.ts     # Основной экспорт
 │   │   └── vite.config.ts   # Конфигурация сборки библиотеки с ручными чанками
-│   ├── storybook/           # Storybook для документации и скриншотных тестов (135+ сторис)
-│   ├── vite-project/        # Тестовое приложение на Vite
-│   ├── webpack-finportal-platform/  # Тестовое приложение на Webpack (Finportal)
-│   └── webpack-project-finalheader/ # Тестовое приложение на Webpack (Finalheader)
+│   ├── storybook/           # Storybook для документации и скриншотных тестов
+│   ├── mcp-server/          # MCP-сервер и индекс компонентов
+│   └── vite-project/        # Тестовое приложение на Vite
 ├── generators/              # Скрипты генерации кода
 ├── scripts/                 # Скрипты сборки/тестирования
 ├── .nx/                     # Кэш Nx
@@ -103,14 +102,11 @@ npm run storybook:build
 # Юнит-тесты Vitest
 npm run test
 
-# Скриншотные тесты (требует запущенный Storybook на порту 4400)
+# Скриншотные тесты в Docker (отдельный сервер Storybook не нужен)
 npm run screenshot:test
 
 # Обновление скриншотов
 npm run screenshot:update
-
-# Очистка скриншотов
-npm run screenshot:clean
 ```
 
 ### Тестовые проекты
@@ -121,7 +117,7 @@ npm run vite-project:dev      # Запуск dev-сервера
 npm run vite-project:build    # Сборка
 npm run vite-project:preview  # Предпросмотр собранного
 
-# Тестовые проекты Webpack (Finportal/Finalheader)
+# Команды для внешних копий Webpack-проектов (каталогов в этой ветке нет)
 npm run webpack-project:dev
 npm run finportal:dev
 ```
@@ -308,25 +304,24 @@ import { ModalDF } from '@ui-kit/components';
 
 ### Юнит-тесты (Vitest)
 
-- Ограниченное покрытие (~5 файлов тестов на момент анализа)
 - Конфигурация: `vitest.workspace.ts`, `packages/ui-kit/vite.config.ts`
 - Globals включены, среда jsdom, coverage V8
 
 ### Скриншотные тесты
 
-- **Тест-раннер**: `@storybook/test-runner` + `pixelmatch`
-- **Сторис**: 135+ тестированных сторис
-- **Расположение снапшотов**: `packages/storybook/__snapshots__/`
-- **Отображение diff**: `baseline | diff | received`
-- **Порог**: 0.1 (локально), 0.01 (CI)
-
-**Команды**:
+Проверка и обновление выполняются в Docker с фиксированными Linux и Chromium.
 
 ```bash
-npm run screenshot:test      # Запуск тестов
-npm run screenshot:update    # Обновление снапшотов
-npm run screenshot:clean     # Удаление снапшотов
+npm run screenshot:test -- TableCanvas   # Проверить выбранные story-файлы
+npm run screenshot:update -- TableCanvas # Принять намеренные изменения после ревью
 ```
+
+Без фильтра команда обрабатывает все сценарии. Проверка сохраняет diff и не меняет
+эталоны; автоматических повторов нет. Правила сравнения, пропуски PNG и устройство
+инфраструктуры описаны в [основной инструкции](packages/storybook/test/screenshot-tests.md).
+Перед изменением тестов прочитай [скилл write-tests](.claude/skills/write-tests/SKILL.md).
+В GitHub Actions предусмотрен ручной необязательный workflow `Screenshots`; порядок
+его активации и выбора ветки описан в основной инструкции.
 
 ## Юнит-тесты (Vitest)
 
@@ -450,6 +445,20 @@ BREAKING CHANGE: проп colorScheme больше не поддерживает
 feat(Table): добавлен новый функционал MassActionPanel
 nfp-docs(DrawerDF): в story поправлены отступы между основными блоками
 ```
+
+### Описание Pull Request
+
+Если изменения видны в Storybook (компоненты, stories, MDX, сборка Storybook),
+добавь в описание PR готовые ссылки на конкретные страницы PR-превью:
+
+```
+https://daisforge.github.io/dais-ui/pr-preview/pr-<N>/?path=/story/<story-id>
+```
+
+Для сценариев с `play` добавляй `&addonPanel=storybook/interactions/panel`, чтобы
+ссылка сразу открывала панель Interactions. Номер PR известен только после создания,
+а превью публикуется workflow `PR Preview Storybook`, поэтому ссылки добавляются вторым шагом:
+дождись публикации и обнови описание через `gh pr edit <N> --body-file <файл>`.
 
 ### Pre-commit хуки (Husky)
 
@@ -594,17 +603,19 @@ fp:
 
 | Пакет                             | Версия        | Назначение                   |
 | --------------------------------- | ------------- | ---------------------------- |
-| `@salutejs/sdds-finai`            | ^0.340.0      | Базовые атомарные компоненты |
-| `@salutejs/plasma-icons`          | ^1.237.0      | Иконки                       |
-| `@salutejs/plasma-typo`           | ^0.42.0       | Токены типографики           |
-| `@salutejs/sdds-themes`           | ^0.64.0       | Цветовые и темовые токены    |
+| `@salutejs/sdds-finai`            | 0.369.0      | Базовые атомарные компоненты |
+| `@salutejs/plasma-icons`          | ^1.258.0      | Иконки                       |
+| `@salutejs/plasma-typo`           | ^0.60.0       | Токены типографики           |
+| `@sddsjs/sdds_finai` | 0.2.3 | Темы и токены |
 | `react` / `react-dom`             | 18.3.1        | Core                         |
-| `styled-components`               | ^5.3.1        | CSS-in-JS                    |
+| `styled-components`               | 5.3.11        | CSS-in-JS                    |
 | `react-hook-form`                 | ^7.54.2       | Формы                        |
 | `swr`                             | ^2.3.3        | Загрузка данных              |
 | `zod`                             | ^3.24.2       | Валидация                    |
-| `@glideappsfinal/glide-data-grid` | ^6.0.12       | TableCanvas                  |
+| `@glideappsfinal/glide-data-grid` | ^6.11.0       | TableCanvas                  |
 | `react-data-grid`                 | 7.0.0-beta.43 | Table (устаревшая)           |
+
+Подключение тем и глобальных стилей описано в [README ui-kit](packages/ui-kit/README.md#темы).
 
 ### Peer зависимости
 
@@ -612,7 +623,7 @@ fp:
 - `react-dom` (>=17.0.0)
 - `react-grid-layout` (^1.5.2)
 - `react-hook-form` (^7.54.2)
-- `styled-components` (5.3.1)
+- `styled-components` (5.3.11)
 - `swr` (^2.3.3)
 
 ---

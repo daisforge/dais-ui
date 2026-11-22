@@ -5,6 +5,7 @@ import { KeyText, KeyTextMap } from '../feature-key-text/types';
 import { ColumnConfig, ObjectForExtending } from '../types';
 import { ColumnConfigInternal } from '../types/column-config-internal.type';
 import {
+  insertNewKeysByDefaultOrder,
   orderWithUpdatedDefaultColsDeleteDuplicates,
   sortedInOrder,
   updateOrderWithKeyText,
@@ -72,15 +73,18 @@ export const useReorderDragable = <
   // обновление columnsOrder при обновлении columns
   useEffect(() => {
     setColumnsOrder((prev) => {
-      const prevAsSet = new Set(prev);
+      const defaultOrder = getDefaultColumnsOrder();
 
-      const copyOfPrev = [...prev];
+      // Колонки, исчезнувшие из конфига, выбрасываем из порядка: иначе при
+      // динамическом уменьшении columnConfig список колонок (сайдбар)
+      // продолжает показывать удалённые ключи.
+      const actualKeys = new Set(defaultOrder);
+      const actualPrev = prev.filter((key) => actualKeys.has(key));
 
-      getDefaultColumnsOrder().forEach((key) => {
-        const isNewCol = !prevAsSet.has(key);
-        if (isNewCol) {
-          copyOfPrev.push(key);
-        }
+      // Новые колонки встают на своё место относительно соседей из columnConfig, а не в конец.
+      const copyOfPrev = insertNewKeysByDefaultOrder({
+        prevOrder: actualPrev,
+        defaultOrder,
       });
 
       // keyText mutation -  после всех других обработок

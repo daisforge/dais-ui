@@ -1,7 +1,12 @@
 /* eslint-disable @typescript-eslint/ban-types */
-import { CellActivatedEventArgs } from '@glideappsfinal/glide-data-grid';
+import {
+  CellActivatedEventArgs,
+  CellClickedEventArgs,
+} from '@glideappsfinal/glide-data-grid';
 import type { DropdownProps } from '@ui-kit/components/Dropdown';
 import type {
+  AppearanceConfig,
+  AppearanceVariant,
   CanvasContent,
   CanvasEl,
   CanvasEvent,
@@ -17,6 +22,7 @@ import type {
   HighlightActiveType,
   HoverEffectsConfig,
   Justify,
+  SpanCellAlign,
   SummaryCellInfo,
   TableGlideCustomProps,
   TableGlideProps,
@@ -24,8 +30,13 @@ import type {
 } from '@ui-kit/components/TableGlide';
 import { ReactNode } from 'react';
 
-import type { FillMeta, RowsChangeType } from '../feature-cell-transfer/types';
+import type {
+  FillMeta,
+  RowsChangeType,
+  WrittenCell,
+} from '../feature-cell-transfer/types';
 import type { TableContentStateOverlay } from '../feature-content-state/types';
+import type { StickyColumnsConfig, StickyRowsConfig } from '../feature-sticky';
 import { HeaderAlignment } from '../types/columns-grouping.type';
 import type { CtxsType } from '../types/ctxs.type';
 import type { ObjectForExtending } from '../types/utils.type';
@@ -33,13 +44,22 @@ import type { ObjectForExtending } from '../types/utils.type';
 export type { TextCellEntry as TextCellEntryType } from '@glideappsfinal/glide-data-grid';
 export type {
   ActiveTheme,
+  AvatarContent,
+  AvatarGroupItemClick,
+  AvatarGroupOverflowClick,
+  AvatarSize,
+  CanvasAvatarGroupProps,
+  CanvasAvatarItem,
+  CanvasAvatarProps,
   CanvasBadgeProps,
   CanvasButtonProps,
   CanvasContainerProps,
   CanvasEmbedIconButtonProps,
   CanvasIconButtonProps,
   CanvasIconProps,
+  CanvasImageProps,
   CanvasTextProps,
+  ImageFit,
   ProvideEditorCallback,
   ProvideEditorCallbackResult,
   ProvideEditorComponent,
@@ -48,6 +68,8 @@ export type {
 } from '@ui-kit/components/TableGlide';
 
 export type {
+  AppearanceConfig,
+  AppearanceVariant,
   CanvasContent,
   CanvasEl,
   CanvasEvent,
@@ -68,6 +90,8 @@ export interface RowsChangeDataGlideInstance<
   CustomCtxs extends ObjectForExtending = {},
 > {
   indexes: number[];
+  /** Адреса изменённых ячеек. rowIndex указывает на строку в плоском массиве Glide. */
+  writtenCells?: WrittenCell[];
   column: ColumnGlideInstance<R, SR, CustomCtxs>;
   /** Источник изменения: `'edit'` — ручное редактирование, `'paste'` — вставка, `'fill'` — fill handle */
   type: RowsChangeType;
@@ -107,8 +131,14 @@ export type EditingCellInfoGlideInstance<
   activation: CellActivatedEventArgs | undefined;
   cellWidth: number;
   cellHeight: number;
+  /** Верх редактора от края окна, в тех же координатах, что и `getBounds` таблицы. */
+  cellY?: number;
   /** readOnly=true - будет значить, что активен не режим редактирования, а режим превью */
   readOnly: boolean | undefined;
+  /** Выравнивание по горизонтали, заданное объединённому блоку: важнее выравнивания колонки. */
+  contentAlign?: 'left' | 'right' | 'center';
+  /** Выравнивание по вертикали, заданное объединённому блоку. */
+  verticalAlign?: 'top' | 'center' | 'bottom';
   // onClose: (commitChanges?: boolean, shouldFocusCell?: boolean) => void;
 };
 
@@ -137,7 +167,15 @@ export type ColumnGlideInstance<
   readonly width?: number;
   isServiceColumn?: boolean;
   isErrorCell?: (row: R) => boolean;
+  /** Тултип ячейки с ошибкой (вызывается при наведении, если isErrorCell вернул true). */
+  errorCellTooltip?: (row: R) => CanvasNodeTooltipConfig | null | undefined;
   frozen?: boolean;
+  /**
+   * Внутреннее: разрешён ли ресайз колонки. `false` у служебных колонок, Glide
+   * тогда не показывает курсор ресайза у их границы. Публично ресайз включается
+   * только целиком через tableConfig.resizableColumn.
+   */
+  resizable?: boolean;
   /** Минимальная ширина колонки (px). Ограничивает ресайз и начальную ширину снизу. */
   minWidth?: number;
   /** Максимальная ширина колонки (px). Ограничивает ресайз и начальную ширину сверху. */
@@ -173,11 +211,17 @@ export type ColumnGlideInstance<
   colSpan?:
     | number
     | ((cellInfo: CellInfoGlideInstance<R, SR, CustomCtxs>) => number);
-  /** Вертикальное объединение: (cellInfo) => [startRow, endRow] | null (см. TableGlide RowSpan). */
+  /** Объединение строк: (cellInfo) => [перваяСтрока, последняяСтрока] | null (см. TableGlide RowSpan). */
   rowSpan?: (
-    cellInfo: CellInfoGlideInstance<R, SR, CustomCtxs>
+    cellInfo: CellInfoGlideInstance<R, SR, CustomCtxs>,
   ) => readonly [number, number] | null;
-  /** Выравнивание в слитой шапке; в adaptColumn → glide `spanGroupHeaderAlign`. */
+  /** Выравнивание контента в объединённой ячейке тела; в adaptColumn идёт в glide как `spanAlign`. */
+  spanAlign?:
+    | SpanCellAlign
+    | ((
+        cellInfo: CellInfoGlideInstance<R, SR, CustomCtxs>,
+      ) => SpanCellAlign | undefined);
+  /** Выравнивание в объединённой шапке; в adaptColumn идёт в glide как `spanGroupHeaderAlign`. */
   squashedHeaderAlign?: HeaderAlignment;
   /** Тултип для ячеек этой колонки. Строка, объект или функция (context) => config | null. */
   cellTooltip?:
@@ -281,7 +325,7 @@ export type TableGlideInstanceProps<
   CustomCtxs extends ObjectForExtending = {},
 > = Omit<
   TableGlideProps<R, SR>,
-  'columns' | 'onHeaderContextMenu' | 'onCellContextMenu'
+  'columns' | 'onHeaderContextMenu' | 'onCellContextMenu' | 'onCellClicked'
 > & {
   columns: readonly ColumnGlideInstance<R, SR, CustomCtxs>[];
   onHeaderContextMenuDropdown?: HeaderContextMenuDropdownProps<
@@ -290,6 +334,8 @@ export type TableGlideInstanceProps<
     CustomCtxs
   >;
   onCellContextMenuDropdown?: CellContextMenuDropdownProps<R, SR>;
+  /** Высота каждого уровня групповых заголовков; по умолчанию `headerHeight` */
+  groupHeaderRowHeight?: number;
   containerProps?: {
     className?: string;
     style?: React.CSSProperties;
@@ -310,18 +356,22 @@ export type TableGlideInstanceProps<
   onCellClicked?: (
     cell: readonly [number, number],
     info: TableInfoWithRow<R, SR, CustomCtxs>,
+    /** Событие клика glide: позиция в ячейке, модификаторы, кнопка */
+    event: CellClickedEventArgs,
   ) => void;
+  stickyColumnsConfig?: StickyColumnsConfig<
+    ColumnGlideInstance<R, SR, CustomCtxs>
+  >;
+  stickyRowsConfig?: StickyRowsConfig<R>;
 } & TableGlideInstanceContextMenu<R, SR, CustomCtxs>;
 
-export type CommonFormat = {
+/** Без `customFormat` значение выводится как есть: так задаётся только выравнивание */
+export type CustomFormat = {
   alignContent?: 'right' | 'left' | 'center';
+  customFormat?: (value: string) => React.ReactNode;
 };
 
-export type CustomFormat = CommonFormat & {
-  customFormat: (value: string) => React.ReactNode;
-};
-
-export type NumberFormatOptions = CommonFormat & {
+export type NumberFormatOptions = {
   type: 'number';
   /** Кастомный разделитель дробной части (по умолчанию ',') */
   decimalSeparator?: string;
@@ -391,9 +441,16 @@ export type CellContextMenuDropdownProps<
     params: TableInfoWithRow<RowType, SummaryRowType, CustomCtxs>,
   ) => DropdownProps['items'];
   /**
-   * Колбэк открытия меню для асинхронной подгрузки. Если getDropdownItems
-   * вернул пусто, но onOpen задан — меню всё равно открывается, а потребитель
-   * здесь стартует запрос и хранит своё состояние (loading/error/items).
+   * Колбэк открытия меню для асинхронной подгрузки. Вызывается при каждом
+   * открытии, в том числе повторном на той же ячейке: потребитель здесь
+   * синхронно переводит своё состояние в загрузку, стартует запрос и
+   * принимает только ответ последнего запроса. Меню открывается, даже если
+   * getDropdownItems пока возвращает пусто.
+   *
+   * С onOpen getDropdownItems вызывается при отрисовке, пока меню открыто,
+   * а не один раз при открытии: побочных действий в нём быть не должно.
+   * Пункты обновляются, когда меняется объект настроек меню, поэтому не
+   * мемоизируйте его без зависимости от состояния загрузки.
    */
   onOpen?: (
     params: TableInfoWithRow<RowType, SummaryRowType, CustomCtxs>,
@@ -423,9 +480,16 @@ export type HeaderContextMenuDropdownProps<
     params: TableInfoBase<RowType, SummaryRowType, CustomCtxs>,
   ) => DropdownProps['items'];
   /**
-   * Колбэк открытия меню для асинхронной подгрузки. Если getDropdownItems
-   * вернул пусто, но onOpen задан — меню всё равно открывается, а потребитель
-   * здесь стартует запрос и хранит своё состояние (loading/error/items).
+   * Колбэк открытия меню для асинхронной подгрузки. Вызывается при каждом
+   * открытии, в том числе повторном на той же ячейке: потребитель здесь
+   * синхронно переводит своё состояние в загрузку, стартует запрос и
+   * принимает только ответ последнего запроса. Меню открывается, даже если
+   * getDropdownItems пока возвращает пусто.
+   *
+   * С onOpen getDropdownItems вызывается при отрисовке, пока меню открыто,
+   * а не один раз при открытии: побочных действий в нём быть не должно.
+   * Пункты обновляются, когда меняется объект настроек меню, поэтому не
+   * мемоизируйте его без зависимости от состояния загрузки.
    */
   onOpen?: (params: TableInfoBase<RowType, SummaryRowType, CustomCtxs>) => void;
   /** Обработчик выбора пункта меню */

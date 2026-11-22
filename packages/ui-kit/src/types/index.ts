@@ -5,3 +5,4 @@ export type {
   TViewColor,
   TViewColors,
 } from './component';
+export type { Equals } from './utility';

@@ -8,7 +8,7 @@ export interface MergedViewInfo {
   keys: readonly string[];
 }
 
-// Какой merged-вид сейчас активен (группировка или subRows) или ни одного.
+// Какой вид со слиянием сейчас активен: группировка, subRows или ни одного.
 export function resolveMergedView<
   FilterStateType extends ObjectForExtending,
   RowIdType extends string | number,

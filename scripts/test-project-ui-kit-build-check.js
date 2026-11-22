@@ -39,14 +39,12 @@ const PROJECT_NAME = getProjectName(PROJECT);
  * В этом файле скрипт для тестирования билда ui-kit в тестовом изолированном проекте project
  */
 
-const PKG_JSON = 'package.json';
-
 /**
  * Скрипт для тестирования билда ui-kit в тестовом изолированном проекте project
  */
 async function main() {
   console.log(
-    `${greenColor}Проверка билда ui-kit в тестовом изолированном проекте ${PROJECT_NAME} запущена...${defaultColor}`
+    `${greenColor}Проверка билда ui-kit в тестовом изолированном проекте ${PROJECT_NAME} запущена...${defaultColor}`,
   );
 
   try {
@@ -71,11 +69,11 @@ async function main() {
     postClearing();
 
     console.log(
-      `${greenColor}👍 Проверка билда ui-kit в тестовом изолированном проекте ${PROJECT_NAME} прошла успешно!${defaultColor}`
+      `${greenColor}👍 Проверка билда ui-kit в тестовом изолированном проекте ${PROJECT_NAME} прошла успешно!${defaultColor}`,
     );
   } catch (error) {
     throw new Error(
-      `Произошла ошибка при попытке тестирования билда ui-kit на локальном проекте. Информация об ошибке: ${error.message}`
+      `Произошла ошибка при попытке тестирования билда ui-kit на локальном проекте. Информация об ошибке: ${error.message}`,
     );
   } finally {
     // Очистка в finally - но только если не было успешной очистки в try
@@ -99,7 +97,7 @@ function postClearing() {
   for (const file of tgzFiles) {
     rmrf(path.join(PROJECT, file));
   }
-  rmrf(path.join(PROJECT, PKG_JSON));
+  // package.json не удаляем — он под контролем версий
   rmrf(path.join(PROJECT, 'package-lock.json'));
   rmrf(path.join(PROJECT, 'dist'));
 

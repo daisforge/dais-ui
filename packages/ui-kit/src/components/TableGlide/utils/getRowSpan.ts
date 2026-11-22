@@ -1,6 +1,6 @@
 import type { CellInfo, ObjectForExtending, RowSpan } from '../types';
 
-// Вертикальное объединение: диапазон строк блока [начало, конец] или null.
+// Объединение строк: диапазон строк блока [начало, конец] или null.
 // Все ячейки блока должны вернуть один и тот же диапазон.
 export const getRowSpan = <R extends ObjectForExtending, SR = unknown>(
   rowSpan: RowSpan<R, SR> | null | undefined,
@@ -10,3 +10,8 @@ export const getRowSpan = <R extends ObjectForExtending, SR = unknown>(
 
   return rowSpan(cellInfo);
 };
+
+/** Ячейка — часть блока, объединённого на несколько строк */
+export const spansSeveralRows = (
+  spanRows: readonly [number, number] | null | undefined
+): boolean => !!spanRows && spanRows[1] > spanRows[0];

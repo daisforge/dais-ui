@@ -1,6 +1,7 @@
 import { GridCellKind } from '@glideappsfinal/glide-data-grid';
 
 import { GlideThemeForRender } from '../../../theming/types';
+import type { CanvasImageResources } from '../core/CanvasImageResources';
 import type { CellCanvasRoot } from './CellCanvasRoot';
 
 export const CANVAS_CELL_KIND = 'canvas-cell';
@@ -31,8 +32,12 @@ export type CanvasRenderResult = {
 
 /** Arguments passed to render function from the grid renderer */
 export interface CanvasRenderArgs {
+  /** Загрузчик и сохранённые координаты текущей ячейки для canvas-изображений. */
+  imageResources?: CanvasImageResources;
   canvasRoot?: CellCanvasRoot;
-  row?: Record<string, unknown>;
+  /** Индекс строки из draw Glide, а не объект данных. Контракт row у обработчиков клика остаётся отдельным. */
+  row?: number;
+  /** Бизнес-данные строки, если вызывающий код передал их явно; сам Glide в draw их не передаёт. */
   rowData?: Record<string, unknown>;
   event?: MouseEvent | React.MouseEvent;
   hoverX?: number;
@@ -59,7 +64,7 @@ export interface CanvasCellData {
     theme: GlideThemeForRender,
     hoverX: number | undefined,
     hoverY: number | undefined,
-    args?: CanvasRenderArgs
+    args?: CanvasRenderArgs,
   ) => CanvasRenderResult;
   onClick?: (
     x: number,
@@ -67,7 +72,7 @@ export interface CanvasCellData {
     rect: RectBounds,
     row?: Record<string, unknown>,
     rowIndex?: number,
-    renderData?: CanvasRenderResult
+    renderData?: CanvasRenderResult,
   ) => boolean;
   onMouseEnter?: () => void;
   onMouseLeave?: () => void;

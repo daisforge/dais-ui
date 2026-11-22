@@ -1,3 +1,5 @@
+import type { Theme } from '@ui-kit/components/TableGlide';
+
 import {
   CanvasContent,
   CellInfoGlideInstance,
@@ -26,25 +28,22 @@ export type RowsGrouping<
    */
   groupByState: [string[], React.Dispatch<React.SetStateAction<string[]>>];
   /**
-   * Вид отображения группировки.
-   * 'tree' — дерево с шевронами и колонкой «Группировка» (как раньше).
-   * 'merged' — плоский вид: строки упорядочены по группам, колонки уровней
-   * группировки слиты вертикально по границам своих групп; шевронов и
-   * сворачивания нет, сгруппированные колонки остаются на своих местах.
-   * Нумерация показывает номер группы верхнего уровня, чекбокс выделяет
-   * группу целиком.
+   * Как показывать группировку.
+   * 'tree' (по умолчанию) — дерево с раскрытием (шевроны) и колонкой группировки.
+   * 'merged' — плоский вид: строки идут по группам, а группирующие колонки
+   * показаны объединёнными ячейками. Раскрытия нет; чекбокс и номер — на всю
+   * группу верхнего уровня.
    * @default 'tree'
    */
   view?: 'tree' | 'merged';
   /**
-   * Только для `view: 'merged'`. Дефолт выравнивания контента в слитых ячейках
-   * группирующих колонок. Перекрывается колоночным `mergedCellsAlign`.
+   * Только для view: 'merged'. Выравнивание по умолчанию в объединённых ячейках
+   * группирующих колонок. Колоночный mergedCellsAlign важнее.
    */
   mergedCellsAlign?: MergedCellsAlign;
   /**
-   * Только для `view: 'merged'`. Снять сортировку с колонок, по которым идёт
-   * группировка (как в tree-виде: там сгруппированные колонки не сортируются).
-   * По группирующим колонкам сортировать нельзя, по листовым — можно.
+   * Только для view: 'merged'. Запретить сортировку по группирующим колонкам
+   * (как в дереве). По остальным колонкам сортировка остаётся.
    * @default false
    */
   disableGroupColumnsSort?: boolean;
@@ -60,6 +59,9 @@ export type RowsGrouping<
    */
   showInControl?: boolean;
   /**
+   * Настройки колонки «Группировка» (имя, ширина, свои рендеры). Работает только
+   * в виде дерева: при view: 'merged' эта колонка не создаётся, а сгруппированные
+   * колонки остаются на своих местах.
    * @default 'Группировка'
    */
   groupedColumnProps?: Partial<Pick<ColumnConfig, 'name' | 'width'>> & {
@@ -74,6 +76,7 @@ export type RowsGrouping<
       'renderGroupCell'
     >;
   };
+  /** Кнопка «развернуть всё». Работает только в виде дерева: при view: 'merged' шевронов нет. */
   expandAllBtn?: {
     /**
      * Функция для расчета состояния открытости всех раскрываемых строк. Функция должна быть чистой.
@@ -160,6 +163,7 @@ export type RenderGroupCellProps<
 > = {
   column: ColumnConfig;
   tabIndex: number;
+  theme?: Theme;
   // TODO isExpanded: boolean;
   // TODO toggleGroup: () => void;
 } & GroupRow<RowType>;
@@ -176,6 +180,11 @@ export type ColumnRowsGrouping<
    * @default ColumnConfig.key
    */
   columnGroupLabel?: string;
+  /**
+   * Свой контент ячейки строки-группы. Работает только в виде дерева: при
+   * view: 'merged' строк-групп нет (группы показаны объединёнными ячейками),
+   * поэтому этот рендер не вызывается.
+   */
   renderGroupCell?: (
     props: RenderGroupCellProps<RowType, ColumnConfig>,
   ) => CanvasContent;

@@ -243,6 +243,13 @@ export type SelectingRowConfig<
    */
   hideSummaryCheckbox?: boolean;
   /**
+   * summaryCounterMaxCount - максимальное отображаемое число в счётчике выбранных
+   * строк (в шапке и в панели массовых действий). Если выбрано больше — счётчик
+   * показывает «N+» (например, при значении 99 и 5000 выбранных отобразится «99+»).
+   * Не ограничивает само выделение, влияет только на отображение.
+   */
+  summaryCounterMaxCount?: number;
+  /**
    * summaryChecked - пропс, отвечающий за логику состояния checked у итогового чекбокса в левой части контролблока.
    */
   summaryChecked?: {
@@ -788,6 +795,13 @@ export type EditingConfig<RowType, RowIdType, SummaryRowType> = {
 export type SummaryRowsConfig = {
   showDefault: boolean;
   showInControl: boolean;
+  /**
+   * callback при переключении тогла «Итоговые строки» в настройках таблицы.
+   * Вызывается только по действию пользователя (не при монтировании),
+   * поэтому подходит для сохранения выбора, например, в localStorage.
+   * Сохранённое значение передавайте обратно в `showDefault`.
+   */
+  onChange?: (checked: boolean) => void;
 } & {
   /**
    * Метки для автоматизированного тестирования и аналитики

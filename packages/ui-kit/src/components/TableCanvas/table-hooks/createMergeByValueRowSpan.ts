@@ -1,7 +1,8 @@
 import type { ObjectForExtending } from '../types';
 
-// Объединяет подряд идущие строки с одинаковым значением (mergeByCellValues).
-// Карта блоков пересобирается при смене массива строк. Одиночные строки не сливаются.
+// Объединяет соседние строки с одинаковым значением (mergeByCellValues).
+// Карта блоков пересобирается, когда меняется массив строк. Одна строка сама по
+// себе не объединяется.
 export function createMergeByValueRowSpan<R extends ObjectForExtending>(
   valueOf: (row: R) => unknown,
   rowsRef: { readonly current: readonly R[] },
@@ -26,7 +27,7 @@ export function createMergeByValueRowSpan<R extends ObjectForExtending>(
         ) {
           j += 1;
         }
-        // Только пробег длиннее одной строки — это блок.
+        // Блоком считаем только группу из двух и более строк.
         if (j > i) {
           for (let k = i; k <= j; k += 1) cachedMap.set(k, [i, j]);
         }

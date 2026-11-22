@@ -20,6 +20,21 @@ import { ObjectForExtending, TableConfig } from '../types';
  */
 const PARENT_ROW_KEY = '__parentRowKey';
 
+/**
+ * Кеш копий дочерних строк: при раскрытии или сворачивании строки объекты
+ * строк остаются прежними, и замеры высот, отрисованные ячейки и блоки не
+ * теряются.
+ *
+ * Подробнее: раскрытие или сворачивание любой строки пересобирает плоский
+ * список, и без кеша каждая дочерняя строка стала бы новым объектом. По объекту
+ * строки привязаны кеши высот (rowHeight 'auto'), отрисованных ячеек и блоков:
+ * новый объект для них это новая строка, замеры терялись, таблица прыгала.
+ * Ключ кеша: исходный объект строки и её место в дереве. Корневые строки не
+ * копируются вовсе, служебных ключей у них нет. Копия отдаётся, пока поля
+ * исходной строки те же (поверхностная сверка), иначе собирается заново.
+ */
+type RowCopyCache<RowType> = WeakMap<object, Map<string, RowType>>;
+
 const getRecursivelyRowAndOpenedSubRows = <
   RowType,
   RowIdType extends string | number,
@@ -31,9 +46,11 @@ const getRecursivelyRowAndOpenedSubRows = <
   getRowIsExpanded,
   rowKeyGetter,
   getSubRows,
+  copyCache,
 }: {
   r: RowType;
   getRowIsExpanded: (key: string | number) => boolean;
+  copyCache: RowCopyCache<RowType>;
   rowKeyGetter: ((row: RowType) => RowIdType) | undefined;
   getSubRows: ((row: RowType) => RowType[] | undefined) | undefined;
   parentId?: string;
@@ -46,24 +63,8 @@ const getRecursivelyRowAndOpenedSubRows = <
   const hasChildren = !!subRows?.length;
 
   const rowAndAllOpenedSubRows = [
-    {
-      ...r,
-      ...(parentId && {
-        [TREE_ID_KEY]: `${parentId}`,
-      }),
-      // Записываем ключ родителя для вычисления parentKey в allRowsMap.
-      // Для root-строк parentRowKey === undefined → поле не добавляется.
-      ...(parentRowKey != null && {
-        [PARENT_ROW_KEY]: parentRowKey,
-      }),
-      // Кеш уровня вложенности. Записываем только для subRows (lvl > 0),
-      // чтобы root-строки не мутировались. getTreeIdAndLvlOfRow для root
-      // возвращает 0 без split, поэтому кеш на root не нужен.
-      ...(lvl > 0 && {
-        [TREE_LVL_KEY]: lvl,
-      }),
-    },
-  ] as RowType[];
+    lvl === 0 ? r : copyOfSubRow(r, copyCache, parentId, parentRowKey, lvl),
+  ];
 
   if (!hasChildren) {
     return rowAndAllOpenedSubRows;
@@ -90,6 +91,7 @@ const getRecursivelyRowAndOpenedSubRows = <
       getRowIsExpanded,
       rowKeyGetter,
       getSubRows,
+      copyCache,
       // keyOfRow текущей строки = parentRowKey для дочерних (любая глубина)
       parentRowKey: keyOfRow,
       lvl: lvl + 1,
@@ -101,6 +103,67 @@ const getRecursivelyRowAndOpenedSubRows = <
   });
 
   return rowAndAllOpenedSubRows;
+};
+
+/** Служебные ключи дерева, которые копия добавляет к полям исходной строки */
+const TREE_SERVICE_KEYS = new Set<string>([
+  TREE_ID_KEY,
+  PARENT_ROW_KEY,
+  TREE_LVL_KEY,
+]);
+
+/**
+ * Копия соответствует исходной строке: те же значения полей, и у копии нет
+ * полей, которые у исходной строки удалили (кроме служебных ключей дерева).
+ */
+const sameFields = (source: object, copy: object): boolean => {
+  const sourceRecord = source as Record<string, unknown>;
+  const copyRecord = copy as Record<string, unknown>;
+  return (
+    Object.keys(sourceRecord).every(
+      (key) => copyRecord[key] === sourceRecord[key],
+    ) &&
+    Object.keys(copyRecord).every(
+      (key) => key in sourceRecord || TREE_SERVICE_KEYS.has(key),
+    )
+  );
+};
+
+/** Копия дочерней строки со служебными ключами дерева, из кеша, если строка не менялась */
+const copyOfSubRow = <RowType, RowIdType extends string | number>(
+  r: RowType,
+  copyCache: RowCopyCache<RowType>,
+  parentId: string | undefined,
+  parentRowKey: RowIdType | undefined,
+  lvl: number,
+): RowType => {
+  const place = `${parentId ?? ''}|${parentRowKey ?? ''}|${lvl}`;
+  const copies = copyCache.get(r as object);
+  const cached = copies?.get(place);
+  // Копия годится, пока поля исходной строки те же: потребитель мог поменять
+  // поле на месте и отдать новый массив, тогда копия пересобирается.
+  if (cached && sameFields(r as object, cached as object)) {
+    return cached;
+  }
+  const copy = {
+    ...r,
+    ...(parentId && {
+      [TREE_ID_KEY]: `${parentId}`,
+    }),
+    // Ключ родителя для вычисления parentKey в allRowsMap.
+    ...(parentRowKey != null && {
+      [PARENT_ROW_KEY]: parentRowKey,
+    }),
+    // Кеш уровня вложенности. getTreeIdAndLvlOfRow для корневой строки
+    // возвращает 0 без split, поэтому у корня его нет.
+    [TREE_LVL_KEY]: lvl,
+  } as RowType;
+  if (copies) {
+    copies.set(place, copy);
+  } else {
+    copyCache.set(r as object, new Map([[place, copy]]));
+  }
+  return copy;
 };
 
 export const useFlattenedRows = <
@@ -136,8 +199,11 @@ export const useFlattenedRows = <
 
   const tableConfigSubRowsBoolean = !!tableConfig.subRows;
 
-  // Merged-вид subRows: дерево разворачивается в листья со слитыми колонками-предками
-  // (нативные чекбокс/индекс на блок), без tree-разворота по expandedRowsIds.
+  const [copyCache] = useState<RowCopyCache<RowType>>(() => new WeakMap());
+
+  // subRows со слиянием: дерево разворачивается в плоский список листьев, а
+  // колонки-предки рисуются объединёнными ячейками (чекбокс и номер — на весь
+  // блок). Раскрытие по expandedRowsIds тут не используется.
   const mergedSubRows = isMergedSubRowsView(tableConfig.subRows);
   const mergedColumns = tableConfig.subRows?.mergedColumns;
 
@@ -148,8 +214,8 @@ export const useFlattenedRows = <
     if (!tableConfigSubRowsBoolean) {
       return { expandedAllRowsIds: null, allRowsMap: null };
     }
-    // Merged-вид: нумерация идёт через ordinal-getter по верхнему уровню,
-    // allRowsMap не нужен (нет tree-разворота).
+    // Вид со слиянием: строки нумеруются по верхнему уровню отдельной функцией,
+    // allRowsMap не нужен (дерево не разворачивается).
     if (mergedSubRows) {
       return { expandedAllRowsIds: null, allRowsMap: null };
     }
@@ -169,6 +235,7 @@ export const useFlattenedRows = <
         getRowIsExpanded: () => true,
         rowKeyGetter,
         getSubRows,
+        copyCache,
       });
 
       rowAndAllOpenedSubRows.forEach((r) => {
@@ -212,15 +279,15 @@ export const useFlattenedRows = <
 
     return { expandedAllRowsIds: ids, allRowsMap: map };
     /**
-     * ⚠️ В зависимостях стоит tableConfigSubRowsBoolean, а НЕ сами функции
-     * getSubRows/rowKeyGetter. Причина: пользователи обычно передают их инлайн
-     * без useCallback, что вызывает пересчёт полного дерева на каждый рендер.
+     * Важно: в зависимостях стоит tableConfigSubRowsBoolean, а не сами функции
+     * getSubRows/rowKeyGetter. Причина: их обычно передают прямо в пропсах, без
+     * useCallback, и тогда всё дерево пересчитывалось бы на каждый рендер.
      *
-     * Следствие: если getSubRows/rowKeyGetter динамически изменятся (другая
-     * структура дерева) при том же subRows === true — allRowsMap и
-     * expandedAllRowsIds НЕ пересчитаются и будут содержать устаревшие данные.
+     * Побочный эффект: если getSubRows/rowKeyGetter поменяются на лету (другая
+     * структура дерева) при том же subRows === true, то allRowsMap и
+     * expandedAllRowsIds не пересчитаются и останутся устаревшими.
      *
-     * Функции getSubRows и rowKeyGetter должны быть чистыми и стабильными.
+     * Поэтому getSubRows и rowKeyGetter должны быть стабильными функциями.
      */
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
@@ -231,8 +298,9 @@ export const useFlattenedRows = <
   ]);
 
   const flattenedRows = useMemo(() => {
-    // Merged-вид subRows: всегда полностью разворачиваем дерево в листья с
-    // денормализацией предков (без учёта expandedRowsIds — collapse тут нет).
+    // subRows со слиянием: всегда полностью разворачиваем дерево в листья и
+    // переносим в них значения предков. expandedRowsIds не смотрим — сворачивать
+    // тут нечего.
     if (mergedSubRows && mergedColumns) {
       const getSubRows = tableConfig.subRows?.getSubRows;
       if (getSubRows) {
@@ -253,6 +321,7 @@ export const useFlattenedRows = <
         },
         rowKeyGetter,
         getSubRows,
+        copyCache,
       });
 
       acc.push(...rowAndAllOpenedSubRows);

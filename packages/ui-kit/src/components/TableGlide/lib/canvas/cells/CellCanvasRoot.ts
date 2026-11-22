@@ -1,8 +1,15 @@
 import { CanvasContainer } from '../core/CanvasContainer';
 import { CanvasHoverController } from '../core/CanvasHoverController';
+import type { CanvasImageResources } from '../core/CanvasImageResources';
 import type { ResolvedCanvasInteractionConfig } from '../core/canvasInteraction';
 import { type CanvasEvent, CanvasNode, type Rect } from '../core/CanvasNode';
 import { DrawBatcher } from '../core/DrawBatcher';
+import { findPopoverTarget } from '../core/popoverTarget';
+import {
+  CANVAS_PORTAL_PRIORITY,
+  type CanvasPortalRect,
+  dispatchCanvasPortalClick,
+} from '../utils/portalClickEvents';
 import {
   dispatchCanvasPortalHover,
   type TooltipContext,
@@ -11,6 +18,17 @@ import {
 const PORTAL_SOURCE = 'cell' as const;
 
 type PointerEventType = CanvasEvent['type'];
+
+/** Дополнительные данные клика от TableGlide. */
+export interface CellCanvasPointerDispatchOptions {
+  /** Кнопка мыши (MouseEvent.button). Popover открывает только левая. */
+  button?: number;
+  /**
+   * Границы ячейки на экране в момент клика (event.bounds от Glide). Они точнее
+   * границ с последней отрисовки: страница могла прокрутиться без перерисовки.
+   */
+  cellBounds?: CanvasPortalRect;
+}
 
 export interface CellCanvasPointerDispatchResult {
   propagationStopped: boolean;
@@ -21,6 +39,8 @@ export interface CellCanvasPointerDispatchResult {
    * использовать уже посчитанный hit-test вместо второго обхода canvas tree.
    */
   interaction?: ResolvedCanvasInteractionConfig;
+  /** Клик попал в элемент с Popover или Dropdown, событие уже отправлено. */
+  portalClickDispatched?: boolean;
 }
 
 export class CellCanvasRoot {
@@ -73,7 +93,8 @@ export class CellCanvasRoot {
     rect: Rect,
     hoverPos?: { x: number; y: number },
     absoluteBounds?: Rect,
-    animationCtx?: { frameTime?: number; requestAnimationFrame?: () => void }
+    animationCtx?: { frameTime?: number; requestAnimationFrame?: () => void },
+    imageResources?: CanvasImageResources,
   ): void {
     this.bounds = { ...(absoluteBounds ?? rect) };
     this.hoverController.setAbsoluteBounds(this.bounds);
@@ -91,8 +112,14 @@ export class CellCanvasRoot {
 
     this.batcher.clear();
     this.batcher.setAnimationContext(animationCtx);
-    this.rootNode.paint(this.batcher, ctx);
-    this.batcher.flush(ctx);
+    this.batcher.imageResources = imageResources;
+    this.batcher.imageTransitions.beginFrame(imageResources);
+    try {
+      this.rootNode.paint(this.batcher, ctx);
+      this.batcher.flush(ctx);
+    } finally {
+      this.batcher.imageTransitions.endFrame();
+    }
 
     ctx.restore();
   }
@@ -108,7 +135,8 @@ export class CellCanvasRoot {
     type: PointerEventType,
     x: number,
     y: number,
-    nativeEvent?: MouseEvent
+    nativeEvent?: MouseEvent,
+    options?: CellCanvasPointerDispatchOptions,
   ): CellCanvasPointerDispatchResult {
     if (!this.bounds) {
       return {
@@ -122,7 +150,7 @@ export class CellCanvasRoot {
     // же hits, поэтому старое поведение event dispatch не меняется.
     const hits = this.rootNode.hitTest(x, y);
     const interaction = hits.find(
-      (node) => node.interaction !== undefined
+      (node) => node.interaction !== undefined,
     )?.interaction;
     let propagationStopped = false;
     let suppressGridDefault = false;
@@ -157,17 +185,62 @@ export class CellCanvasRoot {
       };
     }
 
-    this.dispatchEventToNodes(hits, canvasEvent, type);
+    const reachedCount = this.dispatchEventToNodes(hits, canvasEvent, type);
 
     if (type === 'mousemove') {
       this.hoverController.handlePointerMove(hits, canvasEvent);
     }
 
+    const portalClickDispatched =
+      type === 'click' &&
+      (options?.button ?? 0) === 0 &&
+      this.dispatchPopoverClick(hits.slice(0, reachedCount), options);
+
     return {
       propagationStopped,
       suppressGridDefault,
       ...(interaction ? { interaction } : {}),
+      ...(portalClickDispatched ? { portalClickDispatched } : {}),
     };
+  }
+
+  /**
+   * Клик по элементу с Popover или Dropdown (или по его содержимому): шлём
+   * событие на контейнер таблицы, открытием занимается TableCanvas
+   * (feature-overlays/canvas/core).
+   * Якорь: нарисованный прямоугольник элемента (getAnchorRect) на экране.
+   *
+   * @param reached ноды, до которых дошёл клик: если дочерний onClick
+   *   вызвал stopPropagation, Popover родителя не открывается.
+   */
+  private dispatchPopoverClick(
+    reached: CanvasNode[],
+    options?: CellCanvasPointerDispatchOptions,
+  ): boolean {
+    const target = findPopoverTarget(reached[0]);
+    const origin = options?.cellBounds ?? this.bounds;
+    if (!target || !origin || !reached.includes(target)) {
+      return false;
+    }
+
+    const anchor = target.getAnchorRect();
+    dispatchCanvasPortalClick(
+      {
+        x: origin.x + anchor.x,
+        y: origin.y + anchor.y,
+        width: anchor.width,
+        height: anchor.height,
+        originId: target.id,
+        nodeId: target.id,
+        source: PORTAL_SOURCE,
+        tooltipContext: this.tooltipContext,
+        popoverFromNode: target.popover,
+        dropdownFromNode: target.dropdown,
+        priority: CANVAS_PORTAL_PRIORITY.NODE,
+      },
+      this.portalEventTarget,
+    );
+    return true;
   }
 
   /**
@@ -178,7 +251,7 @@ export class CellCanvasRoot {
    */
   getInteractionAtPoint(
     x: number,
-    y: number
+    y: number,
   ): ResolvedCanvasInteractionConfig | undefined {
     if (!this.bounds) {
       return undefined;
@@ -191,11 +264,12 @@ export class CellCanvasRoot {
       ?.interaction;
   }
 
+  /** Возвращает, сколько нод из hits получили событие до stopPropagation. */
   private dispatchEventToNodes(
     hits: CanvasNode[],
     canvasEvent: CanvasEvent,
-    type: PointerEventType
-  ): void {
+    type: PointerEventType,
+  ): number {
     let propagationStopped = false;
     const eventWithStop = {
       ...canvasEvent,
@@ -205,6 +279,7 @@ export class CellCanvasRoot {
       },
     };
 
+    let reachedCount = 0;
     // eslint-disable-next-line no-restricted-syntax
     for (const node of hits) {
       if (propagationStopped) {
@@ -216,14 +291,16 @@ export class CellCanvasRoot {
         currentTarget: node,
       };
       this.invokeNodeHandler(node, type, nodeEvent);
+      reachedCount += 1;
     }
+    return reachedCount;
   }
 
   // eslint-disable-next-line class-methods-use-this
   private invokeNodeHandler(
     node: CanvasNode,
     type: PointerEventType,
-    event: CanvasEvent
+    event: CanvasEvent,
   ): void {
     // eslint-disable-next-line default-case
     switch (type) {
@@ -272,7 +349,7 @@ export class CellCanvasRoot {
     return this.hoverController.computeCursor(
       relativeX,
       relativeY,
-      this.rootNode
+      this.rootNode,
     );
   }
 

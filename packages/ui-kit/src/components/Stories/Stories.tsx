@@ -5,6 +5,7 @@ import {
   ForwardRefExoticComponent,
   isValidElement,
   ReactElement,
+  ReactNode,
   Ref,
   RefAttributes,
   Suspense,
@@ -43,6 +44,50 @@ const isPreviewElement = (
   child: unknown,
 ): child is ReactElement<StoriesPreviewInternalProps> =>
   isValidElement(child) && child.type === StoriesPreview;
+
+/**
+ * Рекурсивно собирает все Stories.Preview вглубь дерева, сохраняя порядок.
+ * Позволяет оборачивать превью в Carousel и любые другие контейнеры, а не
+ * держать их строго прямыми детьми Stories.
+ */
+const collectPreviews = (
+  nodes: ReactNode,
+): ReactElement<StoriesPreviewInternalProps>[] => {
+  const previews: ReactElement<StoriesPreviewInternalProps>[] = [];
+  Children.forEach(nodes, (child) => {
+    if (isPreviewElement(child)) {
+      previews.push(child);
+    } else if (isValidElement(child) && child.props?.children) {
+      previews.push(...collectPreviews(child.props.children));
+    }
+  });
+  return previews;
+};
+
+/**
+ * Клонирует дерево как есть, впрыскивая сквозной __index в каждый Preview по
+ * порядку обхода. Порядок совпадает с collectPreviews, поэтому индексы бьются
+ * с groups. Обёртки (Carousel и пр.) сохраняются в разметке.
+ */
+const injectPreviewIndices = (
+  nodes: ReactNode,
+  counter: { value: number },
+): ReactNode =>
+  Children.map(nodes, (child) => {
+    if (isPreviewElement(child)) {
+      const index = counter.value;
+      counter.value += 1;
+      return cloneElement(child, { __index: index });
+    }
+    if (isValidElement(child) && child.props?.children) {
+      return cloneElement(
+        child,
+        undefined,
+        injectPreviewIndices(child.props.children, counter),
+      );
+    }
+    return child;
+  });
 
 /**
  * Гейт ленивого вьюера: подтягивает и монтирует тяжёлый чанк только после
@@ -99,9 +144,10 @@ const StoriesRender = (
     className,
   } = props;
 
-  // Нормализуем группы из компаунд-детей: props каждого Stories.Preview — это данные.
-  const childArray = Children.toArray(children).filter(isPreviewElement);
-  const groups: StoriesGroupMeta[] = childArray.map((child) => ({
+  // Нормализуем группы из компаунд-детей: props каждого Stories.Preview — это
+  // данные. Собираем превью рекурсивно, чтобы они могли лежать внутри обёрток.
+  const previewElements = collectPreviews(children);
+  const groups: StoriesGroupMeta[] = previewElements.map((child) => ({
     slides: child.props.slides ?? [],
     defaultDuration: child.props.defaultDuration,
   }));
@@ -316,9 +362,7 @@ const StoriesRender = (
           .filter(Boolean)
           .join(' ')}
       >
-        {childArray.map((child, index) =>
-          cloneElement(child, { __index: index }),
-        )}
+        {injectPreviewIndices(children, { value: 0 })}
       </StyledStories>
       <ViewerGate />
     </StoriesProvider>

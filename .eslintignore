@@ -3,3 +3,5 @@ node_modules
 *.config.js
 *.config.ts
 dist
+generators/table-token-states/code
+generators/table-token-states/demo

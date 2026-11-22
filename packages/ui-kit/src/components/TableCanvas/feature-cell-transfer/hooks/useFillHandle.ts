@@ -1,7 +1,7 @@
 /* eslint-disable no-continue */
 import type { GridSelection } from '@glideappsfinal/glide-data-grid';
 import { createDebugLogger } from '@ui-kit/shared/utils/debug';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
 
 import {
   notifications,
@@ -16,12 +16,13 @@ import type {
   FillPatternEvent,
   RowsChangeType,
   TransferColumnConfig,
+  WrittenCell,
 } from '../types';
 import { applyValuesToRows } from '../utils/applyValuesToRows';
 import { collectTextMatrix } from '../utils/collectTextMatrix';
-import { snapDestToRowBlocks } from '../utils/snapDestToRowBlocks';
 import { isCellEditable } from '../utils/isCellEditable';
 import { rangeToIndexes } from '../utils/rangeToIndexes';
+import { snapDestToRowBlocks } from '../utils/snapDestToRowBlocks';
 
 const clipboardDebug = createDebugLogger('TABLE_CANVAS_CLIPBOARD');
 const PFX = '[TableCanvas/fillHandle]';
@@ -48,6 +49,7 @@ interface UseFillHandleParams<R extends ObjectForExtending> {
     rows: R[],
     data: {
       indexes: number[];
+      writtenCells: WrittenCell[];
       column: TransferColumnConfig;
       rows?: { before: R; after: R }[];
       type: RowsChangeType;
@@ -82,25 +84,29 @@ export function useFillHandle<R extends ObjectForExtending>({
   onNotification,
 }: UseFillHandleParams<R>) {
   const [sourceCellEditable, setSourceCellEditable] = useState(true);
-
+  const source = useRef<readonly [number, number] | null>();
+  const refreshSource = useCallback(() => {
+    const cell = source.current;
+    if (cell === undefined) return;
+    const column = cell && columns[cell[0]];
+    const row = cell && flattenedRows[cell[1]];
+    setSourceCellEditable(
+      !!column &&
+        !!row &&
+        !column.isServiceColumn &&
+        isCellEditable(column, row),
+    );
+  }, [columns, flattenedRows]);
   const onSelectionChangeForFill = useCallback(
     (selection: GridSelection) => {
-      const { current } = selection;
-      if (!current) {
-        setSourceCellEditable(false);
-        return;
-      }
-      const [colIdx, rowIdx] = current.cell;
-      const column = columns[colIdx];
-      const row = flattenedRows[rowIdx];
-      if (!column || !row || column.isServiceColumn) {
-        setSourceCellEditable(false);
-        return;
-      }
-      setSourceCellEditable(isCellEditable(column, row));
+      source.current = selection.current?.cell ?? null;
+      refreshSource();
     },
-    [columns, flattenedRows],
+    [refreshSource],
   );
+
+  // После загрузки у той же ячейки могут измениться права на редактирование.
+  useLayoutEffect(refreshSource, [refreshSource]);
 
   const { enabled, fillHandleStyle, resolvedConfig } = useMemo(() => {
     const raw = cellTransferConfig?.fillHandle;
@@ -227,6 +233,7 @@ export function useFillHandle<R extends ObjectForExtending>({
         newRows,
         affectedIndexes,
         firstAffectedColumn,
+        writtenCells,
         skippedByValidation,
         aborted,
       } = applyValuesToRows({
@@ -275,6 +282,7 @@ export function useFillHandle<R extends ObjectForExtending>({
       onRowsChange(newRows, {
         column: firstAffectedColumn,
         indexes: affectedIndexes,
+        writtenCells,
         type: 'fill',
         fillMeta,
         fillResult,

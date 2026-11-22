@@ -1,3 +1,4 @@
+export { adaptGroupHeaderHandler } from './adaptGroupHeaderHandler';
 export * from './fromLastLvlToTree';
 export * from './fromTreeToLastLvl';
 export { useGetAllLvlColumnsConfig } from './useGetAllLvlColumnsConfig';

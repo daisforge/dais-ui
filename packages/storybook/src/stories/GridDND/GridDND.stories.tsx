@@ -52,7 +52,20 @@ export const DragDelay: Story = {
 
     const renderItem = useCallback(
       (item: GridDNDItemConfig, onRemove: () => void) => (
-        <GridDND.ItemWrapper item={item}>
+        <GridDND.ItemWrapper
+          item={item}
+          actionsSlot={
+            <AnalyticalWidget.DotsIconButton
+              absolute
+              dropdownProps={{
+                items: [{ label: 'Удалить', value: 'Удалить' }],
+                onItemSelect() {
+                  onRemove();
+                },
+              }}
+            />
+          }
+        >
           {item.type === 's' && <WidgetS id={item.id} onRemove={onRemove} />}
           {item.type === 'm' && <WidgetM id={item.id} onRemove={onRemove} />}
         </GridDND.ItemWrapper>
@@ -107,8 +120,7 @@ export const GridDNDClassic: Story = {
           item={item}
           actionsSlot={
             <AnalyticalWidget.DotsIconButton
-              size="xs"
-              iconSize="xs"
+              absolute
               dropdownProps={{
                 items: [{ label: 'Удалить', value: 'Удалить' }],
                 onItemSelect(m) {

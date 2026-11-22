@@ -1,0 +1,53 @@
+name: MCP checks
+
+on:
+  pull_request:
+    paths:
+      - 'packages/mcp-server/**'
+      - 'packages/ui-kit/**'
+      - 'packages/storybook/src/**'
+      - 'generators/**'
+      - 'package*.json'
+      - 'tsconfig*.json'
+      - '.github/workflows/mcp-check.yml'
+      - '.github/workflows/publish-mcp-server.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  mcp:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    env:
+      NX_DAEMON: 'false'
+      # Full API probes can exceed Node 20's default ~2 GiB heap on hosted runners.
+      NODE_OPTIONS: '--max-old-space-size=4096'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            packages/mcp-server/package-lock.json
+      - run: npm ci --ignore-scripts
+      - run: npm ci --prefix packages/mcp-server --ignore-scripts
+      - run: npm run mcp:check
+      - run: npm run test:consumer:report --prefix packages/mcp-server
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mcp-validation-${{ matrix.os }}
+          path: |
+            packages/mcp-server/.probe/validation-report.json
+            packages/mcp-server/.probe/validation-tsc.log
+            packages/mcp-server/.probe/minimal-usage-report.json
+          include-hidden-files: true
+          retention-days: 7

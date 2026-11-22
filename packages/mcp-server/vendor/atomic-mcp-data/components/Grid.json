@@ -1,0 +1,34 @@
+{
+  "name": "Grid",
+  "package": "sdds-finai",
+  "category": "components",
+  "summary": "Grid Набор компонентов для создания сетки.",
+  "api": {
+    "props": [
+      {
+        "name": "view",
+        "type": "\"default\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "maxWidth",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      }
+    ]
+  },
+  "examples": [
+    {
+      "title": "Базовое применение",
+      "snippet": "import React from 'react';\nimport { Grid, Row, Col } from '@salutejs/sdds-finai';\nexport function App() {\n    const Filler = ({children}) => {\n        return (\n            <div\n                style={{\n                    display: 'flex',\n                    alignItems: 'center',\n                    justifyContent: 'center',\n                    width: '100%',\n                    padding: '0.5rem 1rem',\n                    backgroundColor: '#f0f0f0',\n                }}\n            >\n                {children}\n            </div>\n        )\n    };\n    return (\n        <Grid>\n            <Row>\n                <Col size={3}>\n                    <Filler>3</Filler>\n                </Col>\n                <Col size={2}>\n                    <Filler>2</Filler>\n                </Col>\n                <Col size={3}>\n                    <Filler>3</Filler>\n                </Col>\n                <Col size={4}>\n                    <Filler>4</Filler>\n                </Col>\n                <Col size={6}>\n                    <Filler>6</Filler>\n                </Col>\n            </Row>\n            <Row>\n                <Col size={4} offset={1}>\n                    <Filler>4 offset 1</Filler>\n                </Col>\n                <Col size={6} offset={2}>\n                    <Filler>6 offset 2</Filler>\n                </Col>\n            </Row>\n        </Grid>\n    );\n}"
+    },
+    {
+      "title": "Адаптивные размеры и отступы колонок",
+      "snippet": "import React from 'react';\nimport { Grid, Row, Col } from '@salutejs/sdds-finai';\nexport function App() {\n    const Filler = ({children}) => {\n        return (\n            <div\n                style={{\n                    display: 'flex',\n                    alignItems: 'center',\n                    justifyContent: 'center',\n                    width: '100%',\n                    padding: '0.5rem 1rem',\n                    backgroundColor: '#f0f0f0',\n                }}\n            >\n                {children}\n            </div>\n        )\n    };\n    return (\n        <Grid>\n            <Row>\n                <Col smallM={{ size: 1 }} mediumS={{ size: 2 }} mediumM={{ size: 3 }} largeM={{ size: 4 }}>\n                    <Filler>1</Filler>\n                </Col>\n                <Col size={2} largeM={{ size: 4 }}>\n                    <Filler>2</Filler>\n                </Col>\n            </Row>\n            <Row>\n                <Col size={4} smallM={{ offset: 1 }} mediumS={{ offset: 2 }} mediumM={{ offset: 3 }} largeM={{ offset: 4 }}>\n                    <Filler>4 offset 1</Filler>\n                </Col>\n                <Col size={6} offset={2} largeM={{ offset: 4 }}>\n                    <Filler>6 offset 2</Filler>\n                </Col>\n            </Row>\n        </Grid>\n    );\n}"
+    }
+  ]
+}

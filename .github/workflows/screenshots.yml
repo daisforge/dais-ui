@@ -1,0 +1,55 @@
+name: Screenshots
+
+# Необязательный пилот: запуск из Actions с выбором ветки и фильтра stories.
+on:
+  workflow_dispatch:
+    inputs:
+      filter:
+        description: 'Регулярное выражение пути story-файла; пусто — все сценарии'
+        required: false
+        default: ''
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: screenshots-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  compare:
+    name: Compare screenshots
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - name: Получить выбранную ветку
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Подготовить Node.js для запуска Docker
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+
+      # Зависимости и Storybook собираются внутри Docker; npm ci на хосте не нужен.
+      # shell: bash включает pipefail: tee сохраняет лог, не скрывая ошибку тестов.
+      - name: Сравнить скриншоты
+        shell: bash
+        env:
+          SCREENSHOT_FILTER: ${{ inputs.filter }}
+        run: |
+          mkdir -p artifacts/screenshots
+          npm run screenshot:test -- "$SCREENSHOT_FILTER" 2>&1 | tee artifacts/screenshots/ci.log
+
+      # Лог доступен и при сбое сборки до появления PNG и HTML-отчёта.
+      - name: Сохранить отчёт и изображения
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots-${{ github.run_id }}-${{ github.run_attempt }}
+          path: artifacts/screenshots/
+          retention-days: 7
+          compression-level: 0
+          if-no-files-found: warn

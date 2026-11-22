@@ -154,7 +154,12 @@ function point(dataCol: number, row: number): Point {
 /** Ждём, пока grid смерится и getBounds начнёт отдавать конечные координаты. */
 async function ready(): Promise<void> {
   await settle();
-  await waitFor(() => cellCenter(NAME, 0) !== undefined, { timeout: 2000 });
+  await waitFor(
+    () => {
+      if (!cellCenter(NAME, 0)) throw new Error('Grid bounds are not ready');
+    },
+    { timeout: 5000 },
+  );
 }
 
 function click(

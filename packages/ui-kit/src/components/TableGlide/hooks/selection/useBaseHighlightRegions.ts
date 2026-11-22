@@ -11,8 +11,19 @@ interface UseBaseHighlightRegionsParams {
   activeDataRange?: Rectangle;
   outlineRange?: Rectangle;
   checkboxSelectedRowIndexes?: ReadonlySet<number>;
+  /**
+   * Номер выбранной строки (highlightActiveType='row'). Нужен, чтобы на этой
+   * строке не заливать кликнутую ячейку цветом выделения — только рамка.
+   */
+  highlightActiveRow?: number;
   errorCellRanges?: readonly Rectangle[];
+  /** Строки с ошибкой всей строки: одна рамка по всей ширине данных. */
+  errorRowIndexes?: readonly number[];
+  /** Всего колонок (с служебными): нужно для ширины рамки строки. */
+  columnsCount?: number;
   highlightRegionsExternal?: GlideProps['highlightRegions'];
+  /** Служебная зона следует за строкой: регионы её выделения стилем 'accent'. */
+  serviceZoneFollowsRow?: boolean;
 }
 
 export function useBaseHighlightRegions({
@@ -23,8 +34,12 @@ export function useBaseHighlightRegions({
   activeDataRange,
   outlineRange,
   checkboxSelectedRowIndexes,
+  highlightActiveRow,
   errorCellRanges,
+  errorRowIndexes,
+  columnsCount = 0,
   highlightRegionsExternal,
+  serviceZoneFollowsRow = false,
 }: UseBaseHighlightRegionsParams): GlideProps['highlightRegions'] {
   return useMemo(() => {
     // highlightRegions — это уже финальный слой canvas-overlay.
@@ -34,18 +49,35 @@ export function useBaseHighlightRegions({
     const current = selection.current;
 
     const pushErrorCellRegions = () => {
-      if (!errorCellRanges?.length) {
-        return;
-      }
-
       // Ошибки рисуем ровно на конкретных ячейках, как в обычном Table:
       // отдельный red outline на cell-level, без service-area.
-      // Добавляем его в самом конце, чтобы border не перекрывался active fill.
-      for (const range of errorCellRanges) {
+      // drawAboveSelection: рамка ошибки поверх нативной рамки выделения.
+      for (const range of errorCellRanges ?? []) {
         regions.push({
           color: baseTheme.errorOutlineColor,
           range,
           style: 'solid-outline',
+          drawAboveSelection: true,
+        });
+      }
+
+      // Ошибка всей строки: одна рамка по области данных, как у строки,
+      // выделенной по нумерации, только без заливки. Служебная зона не входит.
+      const dataWidth = columnsCount - serviceColumnsCount;
+      if (dataWidth <= 0) {
+        return;
+      }
+      for (const rowIndex of errorRowIndexes ?? []) {
+        regions.push({
+          color: baseTheme.errorOutlineColor,
+          range: {
+            x: serviceColumnsCount,
+            y: rowIndex,
+            width: dataWidth,
+            height: 1,
+          },
+          style: 'solid-outline',
+          drawAboveSelection: true,
         });
       }
     };
@@ -64,7 +96,9 @@ export function useBaseHighlightRegions({
     const serviceActiveFill = baseTheme.selectionServiceActiveBg;
 
     if (activeDataRange && serviceColumnsCount > 0) {
-      // Service-часть строки/диапазона подсвечиваем только фоном.
+      // Service-часть строки/диапазона подсвечиваем только фоном. Когда
+      // служебная зона следует за строкой, цвет берётся из accentLight каждой
+      // ячейки (стиль 'accent'), а не из региона.
       regions.push({
         color: serviceActiveFill,
         range: {
@@ -73,17 +107,20 @@ export function useBaseHighlightRegions({
           width: serviceColumnsCount,
           height: activeDataRange.height,
         },
-        style: 'no-outline',
+        style: serviceZoneFollowsRow ? 'accent' : 'no-outline',
       });
     }
 
     // Свою заливку рисуем ТОЛЬКО для одиночной ячейки в cell-режиме. Любой
     // реальный диапазон (range-cell, строка по нумерации) рисует glide нативно.
+    // Кроме выбранной строки (highlightActiveType='row'): там у кликнутой
+    // ячейки остаётся фон строки, а от выделения — только рамка.
     if (
       activeDataRange &&
       cellsSelectionMode === 'cell' &&
       activeDataRange.width === 1 &&
-      activeDataRange.height === 1
+      activeDataRange.height === 1 &&
+      activeDataRange.y !== highlightActiveRow
     ) {
       // Data fill активной сущности рисуем отдельно от outline,
       // чтобы спокойно комбинировать его с red error-outline.
@@ -121,7 +158,11 @@ export function useBaseHighlightRegions({
     activeDataRange,
     outlineRange,
     checkboxSelectedRowIndexes,
+    highlightActiveRow,
     errorCellRanges,
+    errorRowIndexes,
+    columnsCount,
+    serviceZoneFollowsRow,
     highlightRegionsExternal,
   ]);
 }

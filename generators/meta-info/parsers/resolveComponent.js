@@ -22,8 +22,14 @@ const isStoryFile = (name) =>
 export function resolveSimpleComponent(name, storiesBase) {
   const dir = join(storiesBase, name);
   if (!existsSync(dir)) {
-    console.warn(`[WARN] Папка не найдена: ${dir}`);
-    return null;
+    // Нет своей Storybook-папки — не роняем компонент, а отдаём минимальную
+    // запись без docs/api/stories: category/description/hint/keywords всё
+    // равно придут из конфига (см. TASKS.md T2). Раньше здесь возвращался
+    // null, который тихо схлопывался в processSimpleComponent (см. resolveComponent).
+    console.warn(
+      `[WARN] Папка не найдена: ${dir} — минимальная запись без docs/api/stories.`,
+    );
+    return { name, dir, docsMdx: [], apiMdx: [], storyFiles: [] };
   }
 
   const files = readdirSync(dir);
@@ -47,8 +53,15 @@ export function resolveComplexComponent(config, storiesBase) {
   const dir = join(storiesBase, name);
 
   if (!existsSync(dir)) {
-    console.warn(`[WARN] Папка не найдена: ${dir}`);
-    return null;
+    // См. комментарий в resolveSimpleComponent — та же логика: минимальная
+    // запись вместо null. Если у компонента без своей папки всё же указаны
+    // rootDocs/api.dir — они не резолвятся этой веткой (dir для них базовый
+    // якорь), но это не текущий случай ни для одной из 36 куратированных
+    // записей (T2, generators/meta-info/config/meta-config.json).
+    console.warn(
+      `[WARN] Папка не найдена: ${dir} — минимальная запись без docs/api/stories/features.`,
+    );
+    return { name, dir, docsMdx: [], apiMdx: [], storyFiles: [], features: [], config };
   }
 
   const result = {

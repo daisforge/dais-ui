@@ -2,7 +2,7 @@ import { BoxProps } from '@ui-kit/components/Box';
 import { Popup } from '@ui-kit/components/Popup';
 import type { ComponentProps, ReactNode } from 'react';
 
-export type PopupDFSize = 's' | 'm';
+export type PopupDFSize = 's' | 'm' | 'l';
 
 export type PopupDFResizableConfig = Exclude<
   ComponentProps<typeof Popup>['resizable'],
@@ -52,7 +52,8 @@ export type PopupDFHeaderProps = Omit<BoxProps, 'children'> & {
    * Кастомный слот в правой части header, слева от крестика закрытия.
    * Прижимается к крестику; если контент широкий — «давит» на title/description
    * (уходят в многоточие с тултипом). Максимальная высота — как у крестика
-   * (32px при `size='m'`, 24px при `size='s'`), ширина не ограничена.
+   * (32px при `size='l'` и `size='m'`, 24px при `size='s'`), ширина не
+   * ограничена.
    */
   rightBlock?: ReactNode;
   /**

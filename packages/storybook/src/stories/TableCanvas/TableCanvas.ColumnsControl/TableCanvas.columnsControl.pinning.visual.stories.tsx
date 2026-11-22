@@ -136,7 +136,12 @@ function refCenter(col: number, row: number): Point | undefined {
 /** Ждём, пока grid смерится и getBounds шапки станет конечным. */
 async function ready(): Promise<void> {
   await settle();
-  await waitFor(() => refCenter(LEADING, -1) !== undefined, { timeout: 3000 });
+  await waitFor(
+    () => {
+      if (!refCenter(LEADING, -1)) throw new Error('Grid bounds are not ready');
+    },
+    { timeout: 5000 },
+  );
 }
 
 /**
@@ -242,7 +247,7 @@ const screenshot = { parameters: { screenshot: { keepState: true } } };
 /** 1. Меню открывается и содержит оба нативных пункта (функционально, без скрина). */
 export const DropdownOpens: Story = {
   name: 'Меню закрепления — открывается с нужными пунктами',
-  parameters: { screenshot: { skip: true } },
+  parameters: { screenshot: { capture: 'page', keepState: true } },
   render: renderGrid(),
   play: async ({ canvasElement }) => {
     await getGridTarget(canvasElement);

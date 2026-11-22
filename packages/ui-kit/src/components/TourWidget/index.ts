@@ -5,6 +5,7 @@ export { TourWidgetFooter } from './components/TourWidgetFooter';
 export { TourWidgetHeader } from './components/TourWidgetHeader';
 export { TourWidget } from './TourWidget';
 export { tourWidgetClassNames } from './TourWidget.classNames';
+export { tourWidgetTokens } from './TourWidget.tokens';
 export type {
   TourWidgetBulletProps,
   TourWidgetBulletsProps,

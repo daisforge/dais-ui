@@ -1,51 +1,57 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { RowHeightGlide } from '../types';
 
-function changeNumberSmooth(
-  setter: (v: number) => void,
-  startValue: number,
-  endValue: number,
-  duration: number
-) {
-  const startTime = performance.now(); // High-resolution timestamp
+const ANIMATION_DURATION_MS = 300;
 
-  function update(currentTime: number) {
-    const elapsed = currentTime - startTime;
-    const progress = Math.min(elapsed / duration, 1); // Calculate animation progress (0 to 1)
+const prefersReducedMotion = () =>
+  typeof window !== 'undefined' &&
+  typeof window.matchMedia === 'function' &&
+  window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    // Linear interpolation: smoothly calculate current value
-    const currentValue = startValue + (endValue - startValue) * progress;
-
-    // Update NUMBER_STATE
-    setter(Math.round(currentValue));
-
-    // Continue the animation if not finished
-    if (progress < 1) {
-      requestAnimationFrame(update);
-    }
-  }
-
-  requestAnimationFrame(update); // Start the animation loop
-}
 export const useAnimatedRowHeight = (
   extRowHeight: RowHeightGlide
 ): RowHeightGlide => {
-  const isCanBeAnimated = typeof extRowHeight === 'number';
-  const [rowHeight, setRowHeight] = useState(() =>
-    isCanBeAnimated ? extRowHeight : 56
+  const [rowHeight, setRowHeight] = useState<number | null>(
+    typeof extRowHeight === 'number' ? extRowHeight : null
   );
+  const shownRef = useRef(rowHeight);
+
   useEffect(() => {
-    if (!isCanBeAnimated) {
+    const show = (value: number | null) => {
+      shownRef.current = value;
+      setRowHeight(value);
+    };
+
+    if (typeof extRowHeight !== 'number') {
+      show(null);
       return;
     }
-    changeNumberSmooth(setRowHeight, rowHeight, extRowHeight, 300);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
+    const from = shownRef.current;
+    if (from === null || from === extRowHeight || prefersReducedMotion()) {
+      show(extRowHeight);
+      return;
+    }
+
+    const startTime = performance.now();
+    let frame = 0;
+    const update = () => {
+      const progress = Math.min(
+        (performance.now() - startTime) / ANIMATION_DURATION_MS,
+        1
+      );
+      show(Math.round(from + (extRowHeight - from) * progress));
+      if (progress < 1) {
+        frame = requestAnimationFrame(update);
+      }
+    };
+    frame = requestAnimationFrame(update);
+
+    return () => cancelAnimationFrame(frame);
   }, [extRowHeight]);
 
-  if (!isCanBeAnimated) {
-    return extRowHeight;
-  }
-
-  return rowHeight;
+  return typeof extRowHeight === 'number'
+    ? rowHeight ?? extRowHeight
+    : extRowHeight;
 };

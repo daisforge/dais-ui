@@ -1,4 +1,5 @@
 /* eslint-disable simple-import-sort/exports */
+/* eslint-disable import/extensions -- Полные JS-пути обязательны для ESM-потребителей на webpack. */
 
 /**
  * Это автоматический сгенерированый файл
@@ -6,16 +7,18 @@
  */
 
 export {
-  shadowDownSoftS,
-  shadowDownSoftM,
-  shadowDownSoftL,
-  shadowDownHardS,
-  shadowDownHardM,
   shadowDownHardL,
-  shadowUpSoftS,
-  shadowUpSoftM,
-  shadowUpSoftL,
-  shadowUpHardS,
-  shadowUpHardM,
+  shadowDownHardM,
+  shadowDownHardS,
+  shadowDownSoftL,
+  shadowDownSoftM,
+  shadowDownSoftS,
+  shadowGradientDark,
+  shadowGradientLight,
   shadowUpHardL,
-} from '@salutejs/sdds-themes/tokens/sdds_finai';
+  shadowUpHardM,
+  shadowUpHardS,
+  shadowUpSoftL,
+  shadowUpSoftM,
+  shadowUpSoftS,
+} from '@sddsjs/sdds_finai/theme/tokens/index.js';

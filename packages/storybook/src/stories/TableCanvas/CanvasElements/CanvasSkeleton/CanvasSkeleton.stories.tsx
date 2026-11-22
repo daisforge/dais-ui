@@ -20,6 +20,8 @@ const meta: Meta = {
   parameters: {
     screenshot: {
       skip: true,
+      skipReason:
+        'Анимация Canvas-скелетона управляется requestAnimationFrame; фиксированный кадр пока не задан',
     },
   },
 };

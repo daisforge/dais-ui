@@ -344,6 +344,11 @@ export const ControlBlock = ({
 
   useTableResizeObserver(throttledHandleResize);
 
+  useEffect(
+    () => () => throttledHandleResize.cancel(),
+    [throttledHandleResize],
+  );
+
   // Первый вызов для получения начальной ширины
   useEffect(() => {
     if (containerRef.current) {
@@ -352,7 +357,7 @@ export const ControlBlock = ({
         compress(initialWidth);
       }
     }
-  }, [compress]);
+  }, [compress, initialWidths, initialVisibilityState]);
 
   /**
    * State видимости после компрессии (глобальный, на уровне таблицы)

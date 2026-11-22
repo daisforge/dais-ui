@@ -1,3 +1,4 @@
+import { ROW_ERRORS_COLUMN_KEY } from '../feature-row-errors';
 import { isRowInstrumentsColumn } from '../feature-row-instruments';
 import { ROW_MARKER_COLUMN_KEY } from '../feature-row-markers';
 import { KEY_GROUPED_COL } from '../feature-rows-grouping';
@@ -22,6 +23,7 @@ export const getSeparatedColWithAllParents = <
     col.key === ROW_MARKER_COLUMN_KEY ||
     isRowInstrumentsColumn(col.key) ||
     col.key === CHECKBOX_COLUMN_KEY ||
+    col.key === ROW_ERRORS_COLUMN_KEY ||
     col.key === KEY_GROUPED_COL
   ) {
     return col;

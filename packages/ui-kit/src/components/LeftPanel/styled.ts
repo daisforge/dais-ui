@@ -6,6 +6,7 @@ import {
   shadowDownSoftS,
   spacing6x,
   spacing8x,
+  spacing12x,
   spacing16x,
   surfaceSolidCard,
   surfaceSolidSecondary,
@@ -21,6 +22,7 @@ interface PanelProps {
   width?: number;
   showResizeable: boolean;
   $resizing?: boolean;
+  $isAdaptive1280?: boolean;
 }
 
 interface ToggleButtonTypeProps {
@@ -35,7 +37,8 @@ export const PanelContainer = styled(Box)<PanelProps>`
   min-width: ${({ minWidth }) => minWidth}px;
   display: flex;
   background-color: ${() => surfaceSolidCard};
-  margin-right: ${spacing8x};
+  margin-right: ${({ $isAdaptive1280 }) =>
+    $isAdaptive1280 ? spacing8x : spacing12x};
   border-radius: ${spacing8x};
   box-shadow: ${() => shadowDownSoftS};
   /* Во время активного ресайза transition ширины отключаем — иначе панель

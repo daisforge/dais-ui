@@ -1,4 +1,7 @@
-import { GridCellKind } from '@glideappsfinal/glide-data-grid';
+import {
+  GridCellKind,
+  type ImageWindowLoader,
+} from '@glideappsfinal/glide-data-grid';
 
 import type { GlideThemeForRender } from '../../../../theming/types';
 import type { CanvasCell, RectBounds } from '../types';
@@ -25,7 +28,12 @@ export interface RendererDrawArgs {
   overrideCursor?: (cursor: CursorType) => void;
   hoverX?: number;
   hoverY?: number;
-  row?: Record<string, unknown>;
+  /** Числовой индекс строки из Glide DrawArgs. Бизнес-данные строки передаются отдельно в rowData. */
+  row?: number;
+  /** Числовой индекс столбца из Glide DrawArgs в системе координат грида. */
+  col?: number;
+  /** Загрузчик изображений Glide; управляет кэшем и перерисовкой ячеек после загрузки. */
+  imageLoader?: ImageWindowLoader;
   rowData?: Record<string, unknown>;
   event?: MouseEvent | React.MouseEvent;
   // Поля для анимации из Glide DrawArgs

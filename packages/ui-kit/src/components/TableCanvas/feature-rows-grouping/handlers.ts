@@ -1,6 +1,7 @@
 import { SubRows } from '../feature-tree/types';
 import { ObjectForExtending } from '../types';
 import { KEYS_ROW_GROUPED } from './constants';
+import { isGroupRow } from './typeGuards';
 import { RowsGrouping } from './types';
 
 export function rowsGroupActiveInConfig<Row extends ObjectForExtending>(
@@ -15,7 +16,7 @@ export function rowKeyGetterForRowGroup<
 >(r: RowType, rowsGrouping: RowsGrouping<RowType, SummaryRowType>) {
   const groupKey = r?.[KEYS_ROW_GROUPED.groupKey] as string;
   // строка не сгруппированная, самая дочерняя
-  if (!groupKey) {
+  if (!groupKey && !isGroupRow(r)) {
     return rowsGrouping.rowKeyGetter(r);
   }
 
@@ -27,6 +28,22 @@ export function rowKeyGetterForRowGroup<
 
   return `${groupParents}-$$$-${groupKey}`;
 }
+
+/** Служебные строки групп получают собственный ключ. Потребитель видит только записи продукта. */
+export function getSelectionRowKey<R extends ObjectForExtending>(
+  recordKey: ((row: R) => string | number) | undefined,
+  treeGrouping: boolean,
+) {
+  if (!recordKey) return undefined;
+  return (row: R) => {
+    if (treeGrouping && isGroupRow(row)) {
+      return JSON.stringify([row.groupParents, row.groupByKey, row.groupKey]);
+    }
+    const key = recordKey(row);
+    return typeof key === 'string' ? `row:${key}` : key;
+  };
+}
+
 export function getRowsGroupingSubrowsConfig<
   RowType extends ObjectForExtending,
   RowIdType extends string | number,

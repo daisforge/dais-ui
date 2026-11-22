@@ -20,7 +20,13 @@
  * - debug.ts        отладочные логи [CB]
  * - measure.ts      замеры реальных ширин из DOM (хук для ControlBlock)
  */
-import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 
 import {
   CompressionCache,
@@ -56,23 +62,25 @@ export const useCompressionFeatures = (
 ) => {
   const originalStateRef = useRef(initialState);
 
-  useEffect(() => {
-    originalStateRef.current = initialState;
-  }, [initialState]);
-
   const [compressedState, setCompressedState] =
     useState<ToolsMenuState>(initialState);
 
-  // Объекты spacing и options приходят новыми каждый рендер,
-  // стабилизируем доступ к ним через refs
+  // Сохранённые обработчики resize читают актуальные входные данные через refs.
   const spacingRef = useRef(spacing);
-  spacingRef.current = spacing;
 
   const optionsRef = useRef(options);
-  optionsRef.current = options;
 
   const measuredWidthsRef = useRef(measuredWidths);
-  measuredWidthsRef.current = measuredWidths;
+
+  // Эффект объявлен до эффектов замера и compress в ControlBlock.
+  // Обновляем refs до расчёта геометрии, но только для применённого React-рендера:
+  // отложенный или отменённый рендер не должен менять данные обработчиков resize.
+  useLayoutEffect(() => {
+    originalStateRef.current = initialState;
+    spacingRef.current = spacing;
+    optionsRef.current = options;
+    measuredWidthsRef.current = measuredWidths;
+  });
 
   // Кэш живёт по DOM элементу таблицы и переживает ремаунт контрл-блока
   const cacheRef = useRef<CompressionCache>({ cache: new Map() });
@@ -99,17 +107,23 @@ export const useCompressionFeatures = (
     () =>
       JSON.stringify({
         state: originalStateRef.current,
-        measuredWidths,
+        measuredWidths: measuredWidthsRef.current,
+        spacing: spacingRef.current,
         editModeEnabled: optionsRef.current?.editModeEnabled,
         hasEditModeLeftSlot: optionsRef.current?.hasEditModeLeftSlot,
       }),
-    [measuredWidths],
+    [],
   );
 
   const calculateCurrentWidth = useCallback(
     (state: ToolsMenuState, breakdown?: Record<string, number>): number =>
-      calculateWidth(state, measuredWidths, spacingRef.current, breakdown),
-    [measuredWidths],
+      calculateWidth(
+        state,
+        measuredWidthsRef.current,
+        spacingRef.current,
+        breakdown,
+      ),
+    [],
   );
 
   const compress = useCallback(

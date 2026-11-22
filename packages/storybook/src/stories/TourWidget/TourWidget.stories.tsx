@@ -5,6 +5,7 @@ import { TourWidget } from '@ui-kit/components/TourWidget';
 
 import {
   HorizontalExample,
+  LineBreaksExample,
   PulseExample,
   TourWithoutContentExample,
   TourWithPulseExample,
@@ -26,18 +27,15 @@ export default meta;
 
 type Story = StoryObj<typeof TourWidget>;
 
-const tourImports = `import { ViewContainer } from '@daisforge/ui';
-import { Box, Button, LinkButton, TourWidget } from '@daisforge/ui';
+const tourImports = `import { Box, Button, LinkButton, TourWidget } from '@daisforge/ui';
 import React, { useState } from 'react';`;
 
-const tourWithPulseImports = `import { ViewContainer } from '@daisforge/ui';
-import { Box, Button, LinkButton, TourWidget } from '@daisforge/ui';
+const tourWithPulseImports = `import { Box, Button, LinkButton, TourWidget } from '@daisforge/ui';
 import { tourPulseMixin } from '@daisforge/ui/mixins';
 import React, { useState } from 'react';
 import { css } from 'styled-components';`;
 
-const pulseImports = `import { ViewContainer } from '@daisforge/ui';
-import { Box } from '@daisforge/ui';
+const pulseImports = `import { Box } from '@daisforge/ui';
 import { tourPulseMixin } from '@daisforge/ui/mixins';
 import React from 'react';
 import { css } from 'styled-components';`;
@@ -49,19 +47,11 @@ const tourHelpersCode = [
   ),
   getFuncAsString(
     'packages/storybook/src/stories/TourWidget/TourWidget.examples.tsx',
-    'TourView',
-  ),
-  getFuncAsString(
-    'packages/storybook/src/stories/TourWidget/TourWidget.examples.tsx',
     'MediaPlaceholder',
   ),
 ].join('\n\n');
 
 const pulseHelpersCode = [
-  getFuncAsString(
-    'packages/storybook/src/stories/TourWidget/TourWidget.examples.tsx',
-    'TourView',
-  ),
   getFuncAsString(
     'packages/storybook/src/stories/TourWidget/TourWidget.examples.tsx',
     'PulseTarget',
@@ -131,6 +121,21 @@ export const Horizontal: Story = {
   name: 'Горизонтальный тур',
   ...storySourceDoc({ code: horizontalCode, previewSource: 'shown' }),
   render: HorizontalExample,
+};
+
+export const LineBreaks: Story = {
+  name: 'Переносы строк',
+  ...storySourceDoc({
+    code: [
+      "import { TourWidget } from '@daisforge/ui';",
+      getFuncAsString(
+        'packages/storybook/src/stories/TourWidget/TourWidget.examples.tsx',
+        'LineBreaksExample',
+      ),
+    ].join('\n\n'),
+    previewSource: 'shown',
+  }),
+  render: LineBreaksExample,
 };
 
 export const TourWithPulse: Story = {

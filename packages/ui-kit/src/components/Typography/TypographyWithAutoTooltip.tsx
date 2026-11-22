@@ -9,6 +9,15 @@ import {
 } from './TypographyWithAutoTooltip.styled';
 import type { TypographyWithAutoTooltipComp } from './TypographyWithAutoTooltip.types';
 
+// Порог переполнения для Range-детекта — в ДЕВАЙС-пикселях. При дробном зуме / системном
+// масштабе (HiDPI) float-ширины текста (range) и контейнера (getBoundingClientRect)
+// снапятся к девайс-сетке разными путями и расходятся на доли пикселя — текст считается
+// «переполненным» без реального троеточия. Шум ограничен ~1 девайс-пикселем, но в CSS-px
+// его размер зависит от масштаба: на zoom-out (dpr<1) один девайс-пиксель «стоит» больше
+// CSS-px, поэтому фиксированный CSS-порог там не спасал. Порог в девайс-пикселях стабилен
+// на любом зуме.
+const OVERFLOW_THRESHOLD_DEVICE_PX = 1;
+
 export const TypographyWithAutoTooltip: TypographyWithAutoTooltipComp = ({
   tooltipText,
   tooltipProps,
@@ -39,21 +48,16 @@ export const TypographyWithAutoTooltip: TypographyWithAutoTooltipComp = ({
       );
     }
 
-    if (el.scrollWidth > el.clientWidth) return true;
+    /** Переполнение (для ellipsis) детектим по float-ширинам, а НЕ по целочисленным
+    scrollWidth/clientWidth: последние округляются (scrollWidth вверх, clientWidth вниз)
+    и на дробном зуме дают scrollWidth = clientWidth + 1 ЛОЖНО, когда бокс ужат по тексту
+    (flex shrink-to-fit, короткий текст) — тултип выскакивал без троеточия, скачками по зуму.
 
-    /** Sub-pixel overflow: CSS рисует ellipsis даже при переполнении < 1px,
-    но scrollWidth/clientWidth это целые числа, и при округлении оба
-    могут дать одинаковое значение, т.е. scrollWidth > clientWidth вернет false.
-  
-    Range API решает это: range.getBoundingClientRect().width возвращает float,
-    реальную ширину которую текст хочет занять (без обрезки).
-    el.getBoundingClientRect().width тоже float, доступная ширина контейнера.
-    Сравнение float vs float корректно учитывает субпиксельное переполнение.
-  
-    Раньше использовали micro-scroll (scrollLeft = 1, проверка, scrollLeft = 0),
-    но браузер мог успеть отрисовать кадр с измененным scrollLeft,
-    что вызывало видимое мигание текста. Range API только читает DOM,
-    ничего не меняет, визуальных артефактов нет. * */
+    Range API даёт float: range — сколько текст хочет занять (без обрезки),
+    getBoundingClientRect — сколько доступно. Разницу переводим в девайс-пиксели (× dpr)
+    и сравниваем с порогом — шум замеров при дробном зуме/DPR (особенно zoom-out) не
+    триггерит тултип. Range только читает DOM (в отличие от прежнего micro-scroll со
+    scrollLeft, который мигал текстом) — визуальных артефактов нет. * */
     try {
       const range = document.createRange();
       // Выбираем всё содержимое элемента (полный текст)
@@ -63,7 +67,10 @@ export const TypographyWithAutoTooltip: TypographyWithAutoTooltipComp = ({
       // float-ширина контейнера (сколько доступно)
       const containerWidth = el.getBoundingClientRect().width;
       range.detach();
-      return contentWidth > containerWidth;
+      const dpr = window.devicePixelRatio || 1;
+      return (
+        (contentWidth - containerWidth) * dpr > OVERFLOW_THRESHOLD_DEVICE_PX
+      );
     } catch {
       return false;
     }

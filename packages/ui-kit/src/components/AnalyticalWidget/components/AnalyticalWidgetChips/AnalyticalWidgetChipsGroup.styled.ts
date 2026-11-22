@@ -16,4 +16,5 @@ export const StyledChipGroup = styled(
 )`
   --analytical-widget-chips-gap: 4px;
   gap: var(--analytical-widget-chips-gap);
+  padding-top: 8px;
 `;

@@ -1,6 +1,7 @@
 import { mergeRefs } from '@ui-kit/utils';
 import { Suspense, useCallback, useMemo, useRef, useState } from 'react';
 
+import type { SelectionSnapshot } from '../TableGlide/types';
 import {
   ColumnGroupContext,
   ContextProviders,
@@ -10,9 +11,18 @@ import {
   RefTableGlobalContainerContext,
   TableResizeObserverProviderWrapper,
 } from './contexts';
+import { resolveBorders } from './feature-borders/resolveBorders';
+import { useBorders } from './feature-borders/useBorders';
 import { useClipboard, useFillHandle } from './feature-cell-transfer';
-import { useColumnsControl } from './feature-column-control';
-import { useLastLvlColumnConfig } from './feature-columns-grouping';
+import {
+  buildGroupPathByKey,
+  useColumnsControl,
+  useHiddenColumnsIndicator,
+} from './feature-column-control';
+import {
+  adaptGroupHeaderHandler,
+  useLastLvlColumnConfig,
+} from './feature-columns-grouping';
 import { useContentStateOverlay } from './feature-content-state/useContentStateOverlay';
 import { useCloseContextMenuOnRegionChange } from './feature-context-menu';
 import { CellReadOnlyEditor, getEditingEnabledState } from './feature-edit';
@@ -24,17 +34,22 @@ import {
   TablePopoverProvider,
   useClosePopoverOnRegionChange,
   useTablePopoverState,
-} from './feature-popover-table';
-import { TableSidebar } from './feature-right-sidebar';
+} from './feature-overlays';
 import { useRowDetailPanel } from './feature-row-detail';
 import { RowDetailHandlerContextProvider } from './feature-row-detail/ctx';
+import {
+  normalizeRowErrorsConfig,
+  useRowErrorsGlideProps,
+} from './feature-row-errors';
 import { RowInstrumentsCtxProvider } from './feature-row-instruments';
 import type { AllRowsMapEntry } from './feature-row-markers/types';
 import { getDefuaultRowSize } from './feature-row-size';
-import { useGroupedRows } from './feature-rows-grouping';
+import { getSelectionRowKey, useGroupedRows } from './feature-rows-grouping';
 import { SelectingContextProvider } from './feature-select-row/selecting-contexts';
 import { useCheckboxRowIndexes } from './feature-select-row/useCheckboxRowIndexes';
 import { useSelectRow } from './feature-select-row/useSelectRow';
+import { TableSidebar } from './feature-sidebar';
+import { getCustomSidebarTabs } from './feature-sidebar/getCustomSidebarTabs';
 import { useSortedRows } from './feature-sorting';
 import { useTableTabsContext } from './feature-tabs';
 import {
@@ -43,7 +58,6 @@ import {
 } from './feature-tree/mergedSubRows';
 import { SIZE, tableClassNames } from './styles';
 import {
-  resolveDataRevision,
   useColumns,
   useContextMenuValues,
   useContextsValues,
@@ -57,17 +71,17 @@ import {
   useRowInstruments,
   useRowsWithSkeletonsOrNot,
   useSearchValues,
-  useSelectionProjectionReset,
   useSidebarState,
   useTableCollapseValues,
 } from './table-hooks';
+import { useEditedCells } from './table-hooks/useEditedCells';
+import { useLeftSidebarState } from './table-hooks/useLeftSidebarValues';
 import { type DataEditorRef } from './TableGlideInstance/type';
 import { ActiveViewModsType, ObjectForExtending, TableProps } from './types';
 import { pasteOnlyKeysWithNotUndefinedValue } from './utils';
 import { ControlBlockLazy, TableOrCardsUI } from './widgets';
 import { ControlBlockWithoutResize } from './widgets/control-block';
 import { ControlBlockStyled } from './widgets/control-block/styled';
-import { ToolsMenuState } from './widgets/control-block/types';
 import { useFeatureArray } from './widgets/control-block/use-feature-array';
 
 export interface Props {
@@ -129,7 +143,21 @@ export function TableCanvas<
   const columnConfigWithGroupsInfo = useLastLvlColumnConfig(
     colsOrGroupColsConfig,
   );
-  const { columnConfig, columnsGroupingIsActive } = columnConfigWithGroupsInfo;
+  const { columnConfig, columnsGroupingIsActive, allGroupsMap } =
+    columnConfigWithGroupsInfo;
+  const onGroupHeaderClicked = useMemo(
+    () =>
+      adaptGroupHeaderHandler(tableConfig.onGroupHeaderClicked, allGroupsMap),
+    [tableConfig.onGroupHeaderClicked, allGroupsMap],
+  );
+  const onGroupHeaderContextMenu = useMemo(
+    () =>
+      adaptGroupHeaderHandler(
+        tableConfig.onGroupHeaderContextMenu,
+        allGroupsMap,
+      ),
+    [tableConfig.onGroupHeaderContextMenu, allGroupsMap],
+  );
 
   // ------------------------------------------------  isLoadingTable ------------------------------------------------
   const { isLoadingTable, skeletonRowsCount } = useIsLoadingTable({
@@ -232,6 +260,13 @@ export function TableCanvas<
     innerState,
   );
 
+  // Ошибки строки (рамка на всю строку, сводка для столбца-индикатора).
+  const { isErrorRow, collectRowErrors } = useRowErrorsGlideProps({
+    rowErrorsConfig: normalizeRowErrorsConfig(tableConfig.editing?.rowErrors),
+    editModeEnabled: !!editModeEnabled,
+    isLoadingTable,
+  });
+
   // ------------------------------------------------ filter popover  -----------------------------------------
   const tablePopoverValue = useTablePopoverState();
 
@@ -246,20 +281,24 @@ export function TableCanvas<
    *
    * Также в зависимости от rowSize - устанавливается размер высоты строк.
    * Но если передан tableConfig.rowHeight, tableConfig.rowHeight - будет приоритетнее
+   *
+   * Контролируемый режим: tableConfig.rowSize.state - размер хранит потребитель (переключатель вне таблицы).
    * */
-  const [rowSize, setRowSize] = useState<SIZE>(() =>
+  const innerRowSizeState = useState<SIZE>(() =>
     getDefuaultRowSize(tableConfig.rowSize),
   );
+  const [rowSize, setRowSize] = tableConfig.rowSize?.state ?? innerRowSizeState;
 
   // ------------------------------------------------ columns reConfig -----------------------------------------
   const {
     columns,
     reorderedColumns,
+    displayedColumns,
+    renderColKeys,
     columnsOrder,
     getDefaultColumnsOrder,
     setColumnsOrder,
     onColumnsReorder,
-    renderColKeysRef,
   } = useColumns({
     tableConfig,
     columnConfig,
@@ -287,6 +326,51 @@ export function TableCanvas<
   //   allColsFlattened,
   //   columnsGroupingIsActive
   // );
+
+  // ------------------------------------------------ hidden columns indicator -----------------------------------------
+  // Карта «ключ листа -> путь групп» по исходному дереву конфигурации: нужна для
+  // высоты полосы индикатора в сгруппированной шапке.
+  const groupPathByKey = useMemo(
+    () => buildGroupPathByKey(colsOrGroupColsConfig),
+    [colsOrGroupColsConfig],
+  );
+
+  const { hiddenColumnsIndicator, onHiddenColumnsIndicatorClicked } =
+    useHiddenColumnsIndicator({
+      enabled:
+        !!columnsControlConfig.hiding &&
+        (columnsControlConfig.hiddenColumnsIndicator ?? true),
+      // columnsOrder пуст до первого эффекта useReorderDragable, на этот случай
+      // берём полный порядок по умолчанию, иначе индикатор не считался бы.
+      fullColumnsOrder: columnsOrder.length
+        ? columnsOrder
+        : getDefaultColumnsOrder(),
+      hiddenCols,
+      pinnedCols,
+      setHiddenCols,
+      renderColKeys,
+      groupPathByKey,
+      colsWithKeyTextMap,
+      tableConfigKeyTextBoolean,
+      onExpand: columnsControlConfig.onHiddenColumnsIndicatorExpand,
+    });
+
+  // ------------------------------------------------ borders -----------------------------------------
+  // «Чистый» вид выключает линии сетки; явный tableConfig.borders сильнее.
+  const appearanceVariant = tableConfig.appearance?.variant ?? 'default';
+  const effectiveBorders = useMemo(
+    () => resolveBorders(appearanceVariant, tableConfig.borders),
+    [appearanceVariant, tableConfig.borders],
+  );
+  const {
+    verticalBorder: bordersVerticalBorder,
+    horizontalBorder: bordersHorizontalBorder,
+    getCellBorder: bordersGetCellBorder,
+  } = useBorders({
+    borders: effectiveBorders,
+    reorderedColumns,
+    rowsRef: flattenedRowsRef,
+  });
 
   // ------------------------------------------------ view type -----------------------------------------
   const view = tableConfig.view ?? { type: 'rows' };
@@ -325,7 +409,8 @@ export function TableCanvas<
     useCloseContextMenuOnRegionChange(contextMenuCtxVal);
 
   // Композитный обработчик смены видимого региона: закрытие поповера (X),
-  // закрытие контекстного меню (Y) и подгрузка данных при infinity scroll.
+  // закрытие контекстного меню (Y), подгрузка данных при infinity scroll и потребитель.
+  const onVisibleRegionChangedExternal = tableConfig.onVisibleRegionChanged;
   const handleVisibleRegionChange = useCallback<
     NonNullable<typeof handlePopoverRegionChange>
   >(
@@ -335,20 +420,37 @@ export function TableCanvas<
       if (isHaveActiveInfinityScroll) {
         handleInfinityScrollRegionChange(...args);
       }
+      onVisibleRegionChangedExternal?.(...args);
     },
     [
       handlePopoverRegionChange,
       handleContextMenuRegionChange,
       handleInfinityScrollRegionChange,
       isHaveActiveInfinityScroll,
+      onVisibleRegionChangedExternal,
     ],
   );
 
-  // ------------------------------------------------ sideBar ------------------------------------------------
-  const sideBarContextVal = useSidebarState({
+  // ------------------------------------------------ sidebars ------------------------------------------------
+  const rightSidebarContextVal = useSidebarState({
     tableConfig,
     refTableContainer: refTableContainerInternal,
   });
+  const leftSidebarContextVal = useLeftSidebarState(
+    tableConfig.leftSidebarConfig,
+    refTableContainerInternal,
+  );
+  const leftSidebarTabs = useMemo(
+    () => getCustomSidebarTabs(tableConfig.leftSidebarConfig),
+    [tableConfig.leftSidebarConfig],
+  );
+  const hasLeftSidebar =
+    (tableConfig.leftSidebarConfig?.enabled ?? true) &&
+    leftSidebarTabs.some((tab) => tab.showInSidebar);
+  const hasBottomSheet =
+    activeView === 'rows' &&
+    !!tableConfig.bottomSheetConfig &&
+    tableConfig.bottomSheetConfig.enabled !== false;
 
   // ------------------------------------------------ collapsing table ------------------------------------------------
   const tableCollapseContextVal = useTableCollapseValues({ tableConfig });
@@ -381,6 +483,7 @@ export function TableCanvas<
   } = useSortedRows({
     rows: filteredRows,
     columns,
+    hiddenCols,
     tableConfig,
     infinityScrollActiveInConfig,
     paginationActiveInConfig,
@@ -418,46 +521,50 @@ export function TableCanvas<
   flattenedRowsRef.current = flattenedRows;
   allRowsMapRef.current = allRowsMap;
 
-  // Сброс выделения при смене проекции данных; активная ячейка при возможности
-  // сохраняется по ключу строки и доскролливается.
-  const { projectionResetSignal, captureActiveCell } =
-    useSelectionProjectionReset({
-      projectionParts: [
-        sortColumns,
-        filters,
-        searchQuery,
-        groupedCols,
-        resolveDataRevision(tableConfig.cellsSelection?.dataRevision, rows),
-      ],
-      controlledSetter: tableConfig.cellsSelection?.state?.[1],
-      rowKeyGetter:
-        tableConfig.cellsSelection?.rowKeyGetter ??
-        tableConfig.selecting?.rowKeyGetter ??
-        tableConfig.subRows?.rowKeyGetter ??
-        tableConfig.mergeCells?.rowKeyGetter,
-      flattenedRowsRef,
-      renderColKeysRef,
-      columns: columns as unknown as Parameters<
-        typeof useSelectionProjectionReset
-      >[0]['columns'],
-      scrollTo: (col, row) => refTableX.current?.scrollTo(col, row),
-    });
+  const selectionHistory = useRef<SelectionSnapshot<RowType>>();
+  const recordKey =
+    tableConfig.cellsSelection?.rowKeyGetter ??
+    tableConfig.editing?.rowKeyGetter ??
+    tableConfig.selecting?.rowKeyGetter ??
+    tableConfig.subRows?.rowKeyGetter ??
+    tableConfig.mergeCells?.rowKeyGetter ??
+    tableConfig.rowsGrouping?.rowKeyGetter;
+  const treeGrouping =
+    !!tableConfig.rowsGrouping && tableConfig.rowsGrouping.view !== 'merged';
+  const selectionRowKey = useMemo(
+    () => getSelectionRowKey(recordKey, treeGrouping),
+    [recordKey, treeGrouping],
+  );
+  const selectionCriteria = useMemo(
+    () => ({ sortColumns, filters, searchQuery, groupedCols }),
+    [sortColumns, filters, searchQuery, groupedCols],
+  );
 
   // ------------------------------------------------ changing rows ------------------------------------------------
+  const { isCellEdited, markEditedCells, clearSession } = useEditedCells(
+    !!tableConfig.editing && !!editModeEnabled,
+    tableConfig.editing?.rowKeyGetter,
+    tableConfig.editing?.editedCellsState,
+  );
   const { onRowsChangeLastVersion } = useOnRowsChange({
+    markEditedCells,
     tableConfig,
     rows,
     flattenedRowsRef,
   });
 
   // ------------------------------------------------ cell transfer (copy/paste/fill) ------------------------------------------------
+  // Скелетоны скрывают выделение. До ответа сервера перенос данных недоступен.
+  const cellTransferConfig = isLoadingTable
+    ? { enabled: false }
+    : tableConfig.cellTransfer;
   const { onGridSelectionChange: cellTransferOnSelectionChange } = useClipboard(
     {
       editModeEnabled: !!editModeEnabled,
-      cellTransferConfig: tableConfig.cellTransfer,
+      cellTransferConfig,
       rowContextValue: rowContextValue as ObjectForExtending | undefined,
       headerContextValue: headerContextValue as ObjectForExtending | undefined,
-      columns: reorderedColumns as unknown as Parameters<
+      columns: displayedColumns as unknown as Parameters<
         typeof useClipboard
       >[0]['columns'],
       flattenedRows,
@@ -472,8 +579,8 @@ export function TableCanvas<
   // ------------------------------------------------ fill handle ------------------------------------------------
   const { fillHandleProps, onSelectionChangeForFill } = useFillHandle({
     editModeEnabled: !!editModeEnabled,
-    cellTransferConfig: tableConfig.cellTransfer,
-    columns: reorderedColumns as unknown as Parameters<
+    cellTransferConfig,
+    columns: displayedColumns as unknown as Parameters<
       typeof useFillHandle
     >[0]['columns'],
     flattenedRows,
@@ -485,18 +592,29 @@ export function TableCanvas<
     onNotification: tableConfig.notifications?.onNotification,
   });
 
-  // Объединяем onGridSelectionChange от cellTransfer, fill handle и запоминание
-  // активной ячейки (восстановление после смены проекции данных).
+  // Выделение сменили из кода (cellsSelection.state), а не мышью.
+  // Копирование, вставка и протяжка заполнения узнают о нём, а onChange
+  // потребителя не зовётся: это не действие пользователя.
+  const syncInternalSelection = useCallback(
+    (selection: Parameters<typeof cellTransferOnSelectionChange>[0]) => {
+      cellTransferOnSelectionChange(selection);
+      onSelectionChangeForFill(selection);
+    },
+    [cellTransferOnSelectionChange, onSelectionChangeForFill],
+  );
+
+  // Объединяем onGridSelectionChange от cellTransfer, fill handle и потребителя
+  const onCellsSelectionChange = tableConfig.cellsSelection?.onChange;
   const combinedOnGridSelectionChange = useCallback(
     (selection: Parameters<typeof cellTransferOnSelectionChange>[0]) => {
       cellTransferOnSelectionChange(selection);
       onSelectionChangeForFill(selection);
-      captureActiveCell(selection);
+      onCellsSelectionChange?.(selection);
     },
     [
       cellTransferOnSelectionChange,
       onSelectionChangeForFill,
-      captureActiveCell,
+      onCellsSelectionChange,
     ],
   );
 
@@ -583,10 +701,6 @@ export function TableCanvas<
   // ------------------------------------------------ table in TableTabs ------------------------------------------------
   const { isInTabs: isTableInTabs } = useTableTabsContext();
 
-  // ------------------------------------------------ compressing visibility state ------------------------------------------------
-  // Значение пока никем не читается (источник истины — внутри ControlBlock),
-  // сеттер нужен ControlBlock для подъёма состояния компрессии наверх
-  const [, setCompressionVisibility] = useState<ToolsMenuState>();
   const enableAdaptiveCompress =
     tableConfig.controlBlock?.enableAdaptiveCompress ?? true;
 
@@ -624,6 +738,7 @@ export function TableCanvas<
     columnConfig,
     editModeEnabled,
     setEditModeEnabled,
+    clearEditedCells: clearSession,
     showSearchBlock,
     setShowSearchBlock,
     searchQueryLocalValue,
@@ -663,15 +778,21 @@ export function TableCanvas<
     (!!featuresObj.isHaveSomeFeature || isHaveCustomButtons);
 
   const borderLeftTopRadiusRounded =
-    !isTableInTabs && !isHaveControlBlock && !filtersAreVisible;
+    !isTableInTabs &&
+    !isHaveControlBlock &&
+    !filtersAreVisible &&
+    !hasLeftSidebar;
   const borderRightTopRadiusRounded =
     !isTableInTabs &&
     !isHaveControlBlock &&
     !filtersAreVisible &&
     !featuresObj.isHaveSomeFeatureInSidebar;
-  const borderLeftBottomRadiusRounded = !paginationActiveInConfig;
+  const borderLeftBottomRadiusRounded =
+    !paginationActiveInConfig && !hasLeftSidebar && !hasBottomSheet;
   const borderRightBottomRadiusRounded =
-    !paginationActiveInConfig && !featuresObj.isHaveSomeFeatureInSidebar;
+    !paginationActiveInConfig &&
+    !featuresObj.isHaveSomeFeatureInSidebar &&
+    !hasBottomSheet;
 
   const errorStateConfig = tableConfig.errorState;
   const emptyStateConfig = tableConfig.emptyState;
@@ -707,6 +828,7 @@ export function TableCanvas<
     paginationHeight,
     refTableContainer: refTableContainerInternal,
     collapseButtonPlacement: tableConfig.collapsing?.collapseButtonPlacement,
+    hasBottomSheet,
   });
 
   // ------------------------------------------------ rows height ------------------------------------------------
@@ -761,7 +883,11 @@ export function TableCanvas<
             expandedRowCtxV={expandedRowsIdsStateAndSetter}
             searchCtxV={searchContextVal}
             contextMenuCtxV={contextMenuCtxVal}
-            sideBarCtxV={sideBarContextVal}
+            rightSidebarCtxV={rightSidebarContextVal}
+            leftSidebarCtxV={{
+              ...leftSidebarContextVal,
+              isOpen: hasLeftSidebar && leftSidebarContextVal.isOpen,
+            }}
             tableCollapseCtxV={tableCollapseContextVal}
           >
             <TablePopoverProvider value={tablePopoverValue}>
@@ -839,9 +965,6 @@ export function TableCanvas<
                                       $borderTopRounded={
                                         !isTableInTabs || fullScreened
                                       }
-                                      setCompressionVisibility={
-                                        setCompressionVisibility
-                                      }
                                       editModeEnabled={editModeEnabled}
                                       editModeLeftSlot={
                                         tableConfig.editing?.editModeLeftSlot
@@ -899,15 +1022,58 @@ export function TableCanvas<
                                 </Suspense>
                               </div>
                             ),
-                            sidebarBlock:
+                            leftSidebarBlock: hasLeftSidebar ? (
+                              <TableSidebar
+                                side="left"
+                                sidebarState={leftSidebarContextVal}
+                                $borderRightBottomRadiusRounded={
+                                  !paginationActiveInConfig
+                                }
+                                $borderRightTopRadiusRounded={
+                                  !isTableInTabs &&
+                                  !isHaveControlBlock &&
+                                  !filtersAreVisible
+                                }
+                                activeTabId={
+                                  leftSidebarTabs.find(
+                                    (tab) => tab.showInSidebar,
+                                  )?.id ?? null
+                                }
+                                sidebarTabs={leftSidebarTabs}
+                                defaultActiveTabId={
+                                  tableConfig.leftSidebarConfig
+                                    ?.defaultActiveTabId
+                                }
+                                activeTabState={
+                                  tableConfig.leftSidebarConfig?.activeTabState
+                                }
+                                onActiveTabChange={
+                                  tableConfig.leftSidebarConfig
+                                    ?.onActiveTabChange
+                                }
+                              />
+                            ) : null,
+                            bottomSheetConfig: hasBottomSheet
+                              ? tableConfig.bottomSheetConfig
+                              : undefined,
+                            rightSidebarWidth: tableConfig.sidebarConfig?.width,
+                            rightSidebarBlock:
                               (tableConfig.sidebarConfig?.enabled ?? true) &&
                               featuresObj.isHaveSomeFeatureInSidebar ? (
                                 <TableSidebar
+                                  sidebarState={{
+                                    ...rightSidebarContextVal,
+                                    width:
+                                      rightSidebarContextVal.effectiveWidth,
+                                  }}
+                                  preserveMinimumWidth={!hasLeftSidebar}
                                   $borderRightBottomRadiusRounded={
                                     !paginationActiveInConfig
                                   }
                                   $borderRightTopRadiusRounded={
-                                    !isTableInTabs && !isHaveControlBlock
+                                    !isTableInTabs &&
+                                    !isHaveControlBlock &&
+                                    !filtersAreVisible
                                   }
                                   activeTabId={featuresObj.activeSidebarTabId}
                                   sidebarTabs={featuresObj.sidebarTabs}
@@ -945,6 +1111,7 @@ export function TableCanvas<
                             $css: tableConfig.css,
                             $highlightActiveType:
                               tableConfig.highlightActiveType ?? 'disabled',
+                            $appearanceVariant: appearanceVariant,
                             collapseButtonPlacement:
                               tableCollapseContextVal.collapseButtonPlacement,
                             isHaveSomeFeatureInSidebar:
@@ -964,20 +1131,43 @@ export function TableCanvas<
                             ...(resultRowHeight && {
                               rowHeight: resultRowHeight,
                             }),
-                            headerHeight: 33,
+                            maxAutoRowHeight:
+                              tableConfig.maxAutoRowHeight ?? undefined,
+                            headerHeight: tableConfig.headerRowHeight ?? 33,
+                            groupHeaderRowHeight:
+                              tableConfig.groupHeaderRowHeight ?? undefined,
 
                             ...(tableConfig.editing &&
                               !isLoadingTable && {
                                 onRowsChange: onRowsChangeLastVersion,
+                                isCellEdited,
                               }),
+                            isErrorRow,
+                            collectRowErrors,
 
                             // --------- clipboard (copy support) + fill handle (source cell tracking)
                             // Канал для copy/paste (selectionRef) — отдельно от
                             // controlled gridSelection.
                             onSelectionEmit: combinedOnGridSelectionChange,
-
-                            // Сброс выделения при смене проекции данных.
-                            projectionResetSignal,
+                            onSelectionSync: syncInternalSelection,
+                            selectionView: {
+                              history: selectionHistory,
+                              criteria: selectionCriteria,
+                              expandedRows: expandedRowsIdsStateAndSetter[0],
+                              summaryCount: summaryRowsIsActive
+                                ? bottomSummaryRows?.length ?? 0
+                                : 0,
+                              page: pagination?.value,
+                              perPage: pagination?.perPage,
+                              revision:
+                                tableConfig.cellsSelection?.dataRevision,
+                              rows: rowsWithExpDetails,
+                              placeholderCount:
+                                rowsWithSkeletonsOrNot.length -
+                                rowsWithExpDetails.length,
+                              loading: isLoadingTable,
+                              rowKey: selectionRowKey,
+                            },
 
                             // Ключи выделенных колонок наверх → контрл-блок
                             // (нативный экшен «Закрепить столбцы»).
@@ -1059,7 +1249,12 @@ export function TableCanvas<
                               onVisibleRegionChanged: handleVisibleRegionChange, // Для TableGlideInstance
                               // enableVirtualization,
                               onCellClicked: tableConfig.onCellClicked,
+                              onItemHovered: tableConfig.onItemHovered,
+                              onGroupHeaderClicked,
+                              onGroupHeaderContextMenu,
                               unstickyHeader: tableConfig.unstickyHeader,
+                              stickyColumnsConfig: tableConfig.stickyColumns,
+                              stickyRowsConfig: tableConfig.stickyRows,
                               minColumnWidth: tableConfig.minColumnWidth,
                               maxColumnWidth: tableConfig.maxColumnWidth,
                               maxColumnAutoWidth:
@@ -1074,6 +1269,11 @@ export function TableCanvas<
                               spanAlign:
                                 tableConfig.columnsGrouping
                                   ?.squashedHeaderAlign,
+                              hiddenColumnsIndicator,
+                              onHiddenColumnsIndicatorClicked,
+                              verticalBorder: bordersVerticalBorder,
+                              horizontalBorder: bordersHorizontalBorder,
+                              getCellBorder: bordersGetCellBorder,
                               editorOverlayPortal:
                                 tableConfig.editorOverlayPortal,
                               checkboxSelectedRowIndexes,
@@ -1087,10 +1287,17 @@ export function TableCanvas<
                               enableSelectAll:
                                 tableConfig.cellsSelection?.enableSelectAll ??
                                 true,
+                              outlineEachRange:
+                                tableConfig.cellsSelection?.outlineEachRange ??
+                                false,
                               cellsSelectionMode:
                                 tableConfig.cellsSelection?.mode ??
                                 'range-cell',
+                              focusOnStateChange:
+                                tableConfig.cellsSelection
+                                  ?.focusOnStateChange ?? true,
                               hoverEffects: tableConfig.hoverEffects,
+                              appearance: tableConfig.appearance,
                               enableLowDprHairline:
                                 tableConfig.enableLowDprHairline,
                             }),
@@ -1100,6 +1307,14 @@ export function TableCanvas<
                           loadingOverlayConfig={tableConfig.loadingOverlay}
                           containerStyle={tableConfig.containerStyle}
                           tooltip={tableConfig.tooltip}
+                          popover={tableConfig.popover}
+                          dropdown={tableConfig.dropdown}
+                          rowKeyGetter={
+                            tableConfig.editing?.rowKeyGetter ??
+                            tableConfig.selecting?.rowKeyGetter ??
+                            tableConfig.subRows?.rowKeyGetter ??
+                            tableConfig.mergeCells?.rowKeyGetter
+                          }
                           massActionPanel={
                             tableConfig?.controlBlock?.massActionPanel
                           }

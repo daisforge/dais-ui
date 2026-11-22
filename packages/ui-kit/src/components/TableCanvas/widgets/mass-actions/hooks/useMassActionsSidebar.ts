@@ -1,89 +1,75 @@
-/* eslint-disable no-lonely-if */
 import React, { useEffect, useRef } from 'react';
 
-import { useSidebar, useTableResizeObserverWidth } from '../../../contexts';
+import { useLeftSidebar, useRightSidebar } from '../../../contexts';
+import { SIDEBAR_DURATION } from '../../../feature-sidebar/constants';
 
-export const useMassActionsSidebar = ({
-  isCollapsed,
-  setIsCollapsed,
-  calculatePositionForState,
-  calculatePosition,
-  setTranslateX,
-  shouldApplySidebarOffsetRef,
-}: {
+export const useMassActionsSidebar = (values: {
   isCollapsed: boolean;
+  isHaveSomeFeatureInSidebar?: boolean;
+  rightSidebarWidth?: string | number;
   setIsCollapsed: React.Dispatch<React.SetStateAction<boolean>>;
   calculatePositionForState: (targetCollapsed: boolean) => number | undefined;
   calculatePosition: () => void;
+  calculateCompression: () => void;
   setTranslateX: React.Dispatch<React.SetStateAction<number | undefined>>;
   shouldApplySidebarOffsetRef: React.MutableRefObject<boolean>;
 }) => {
-  const sidebar = useSidebar();
-  const { isOpen: isSidebarOpen, width: sidebarWidth } = sidebar;
-  const getTableContainerWidth = useTableResizeObserverWidth();
-  // Флаг для отслеживания автоматического сворачивания при открытии сайдбара
+  const rightSidebar = useRightSidebar();
+  const leftSidebar = useLeftSidebar();
+  // Скрытая правая оболочка не должна сворачивать массовые действия.
+  const rightIsOpen =
+    (values.isHaveSomeFeatureInSidebar ?? true) && rightSidebar.isOpen;
+  const leftIsOpen = leftSidebar.isOpen;
+  const isSidebarOpen = rightIsOpen || leftIsOpen;
+  const rightSidebarWidth = rightSidebar.width;
   const wasAutoCollapsedRef = useRef(false);
+  // Отложенные измерения используют текущие callbacks и состояние после рендера.
+  const valuesRef = useRef(values);
+  valuesRef.current = values;
 
-  // Логика взаимодействия с сайдбаром
+  // Учитываем каждую сторону отдельно: открытие второй панели тоже меняет ширину canvas.
   useEffect(() => {
-    if (isSidebarOpen) {
-      // Сайдбар открылся
-      if (!isCollapsed) {
-        // Если панель была развернута - сворачиваем её автоматически
-        wasAutoCollapsedRef.current = true;
-
-        // Сначала вычисляем и устанавливаем позицию для свернутого состояния,
-        // затем сворачиваем панель - CSS transition анимирует все изменения одновременно
-        const newTranslateX = calculatePositionForState(true);
-        if (newTranslateX !== undefined) {
-          setTranslateX(newTranslateX);
-          shouldApplySidebarOffsetRef.current = true;
-        }
-
-        // Сворачиваем панель - CSS transition анимирует изменение размера и позиции плавно одновременно
-        setIsCollapsed(true);
-
-        // После завершения анимации уточняем позицию (на случай погрешностей)
-        setTimeout(() => {
-          calculatePosition();
-        }, 550); // Немного больше времени анимации (300ms + запас)
-      } else {
-        // Панель уже свернута - применяем смещение с учетом сайдбара
-        calculatePosition();
-      }
+    const {
+      isCollapsed,
+      setIsCollapsed,
+      calculatePositionForState,
+      calculatePosition,
+      calculateCompression,
+      setTranslateX,
+      shouldApplySidebarOffsetRef,
+    } = valuesRef.current;
+    // Пока открыта хотя бы одна боковая панель, массовые действия остаются свёрнутыми.
+    const targetCollapsed = rightIsOpen || leftIsOpen;
+    if (targetCollapsed === isCollapsed) {
+      shouldApplySidebarOffsetRef.current = targetCollapsed;
+      calculatePosition();
+      calculateCompression();
     } else {
-      // Сайдбар закрылся
-      // Если панель была свернута (автоматически или вручную) - всегда раскрываем её
-      if (isCollapsed) {
-        wasAutoCollapsedRef.current = false;
-        shouldApplySidebarOffsetRef.current = false;
-
-        // Сначала вычисляем и устанавливаем позицию для развернутого состояния,
-        // затем раскрываем панель - CSS transition анимирует все изменения одновременно
-        const newTranslateX = calculatePositionForState(false);
-        if (newTranslateX !== undefined) {
-          setTranslateX(newTranslateX);
-        }
-
-        // Раскрываем панель - CSS transition анимирует изменение размера и позиции плавно одновременно
-        setIsCollapsed(false);
-
-        // После завершения анимации уточняем позицию
-        setTimeout(() => {
-          calculatePosition();
-        }, 550); // Немного больше времени анимации (300ms + запас)
-      } else {
-        // Панель уже была развернута - просто убираем смещение и пересчитываем позицию
-        shouldApplySidebarOffsetRef.current = false;
-        calculatePosition();
-      }
+      wasAutoCollapsedRef.current = targetCollapsed;
+      shouldApplySidebarOffsetRef.current = targetCollapsed;
+      // Задаём позицию до смены состояния, чтобы положение и размер менялись вместе.
+      const newTranslateX = calculatePositionForState(targetCollapsed);
+      if (newTranslateX !== undefined) setTranslateX(newTranslateX);
+      setIsCollapsed(targetCollapsed);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSidebarOpen, sidebarWidth, getTableContainerWidth]);
+
+    // Повторяем оба измерения после перехода, отменяя прежний таймер при смене панелей.
+    const timeoutId = setTimeout(() => {
+      valuesRef.current.calculatePosition();
+      valuesRef.current.calculateCompression();
+    }, SIDEBAR_DURATION * 1000 + 50);
+    return () => clearTimeout(timeoutId);
+  }, [
+    rightIsOpen,
+    leftIsOpen,
+    rightSidebarWidth,
+    values.rightSidebarWidth,
+    leftSidebar.width,
+  ]);
 
   return {
     isSidebarOpen,
-    sidebarWidth,
+    sidebarWidth: rightSidebarWidth,
     wasAutoCollapsedRef,
   };
 };

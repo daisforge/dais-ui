@@ -1,164 +1,131 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { createRows, type Row } from '@df-storybook/data/tableData';
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Button } from '@ui-kit/components/Button';
 import {
-  type ColumnConfig,
+  CompactSelection,
+  type GridSelection,
   type SortColumn,
   TableCanvas,
 } from '@ui-kit/components/TableCanvas';
 import { useMemo, useState } from 'react';
 
-const meta: Meta = {
-  title: 'Локальные компоненты/TableCanvas/CellsSelection/Сброс выделения',
+export default {
+  title: 'Локальные компоненты/TableCanvas/CellsSelection/Смена данных',
   tags: ['!autodocs'],
-};
+} satisfies Meta;
 
-export default meta;
-
-const preCode = `
-import { type ColumnConfig, type SortColumn, TableCanvas } from '@daisforge/ui/components/TableCanvas';
-`;
-
-type Story = StoryObj;
-
-const COLUMNS: readonly ColumnConfig<Row>[] = [
-  { key: 'id', name: 'ID', width: 90, sortingType: 'number' },
-  { key: 'task', name: 'Title', width: 240, sortingType: 'string' },
-  { key: 'priority', name: 'Priority', width: 160, sortingType: 'string' },
-  { key: 'issueType', name: 'Issue Type', width: 160 },
-  { key: 'complete', name: '% Complete', width: 140, sortingType: 'number' },
-];
-
-const PAGE_SIZE = 25;
-const allRows = createRows(0, 100);
-
-export const ProjectionResetDemo: Story = {
-  name: 'Сброс при смене данных (демо)',
-  ...storySourceDoc({ preCode, previewSource: 'shown' }),
-  render: () => {
-    const [sortColumns, setSortColumns] = useState<readonly SortColumn[]>([]);
-    const [page, setPage] = useState(0);
-    // «Версия данных» страницы/рефетча: меняется только когда состав строк другой.
-    const [revision, setRevision] = useState(0);
-    const [rows, setRows] = useState<Row[]>(() => allRows.slice(0, PAGE_SIZE));
-    const [selectedRows, setSelectedRows] = useState<ReadonlySet<number>>(
-      new Set(),
-    );
-
-    const goToPage = (next: number) => {
-      setPage(next);
-      setRows(allRows.slice(next * PAGE_SIZE, (next + 1) * PAGE_SIZE));
-      setRevision((r) => r + 1);
-    };
-
-    // Тот же состав строк, но новый массив: без dataRevision рамка бы сбросилась.
-    const refetchSame = () => {
-      setRows((prev) => prev.map((r) => ({ ...r })));
-    };
-
-    const refetchChanged = () => {
-      setRows((prev) => [...prev].reverse());
-      setRevision((r) => r + 1);
-    };
-
-    return (
-      <div style={{ display: 'grid', gap: 12 }}>
-        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-          <Button
-            size="xs"
-            disabled={page === 0}
-            onClick={() => goToPage(page - 1)}
-          >
-            ← Страница
-          </Button>
-          <Button
-            size="xs"
-            disabled={(page + 1) * PAGE_SIZE >= allRows.length}
-            onClick={() => goToPage(page + 1)}
-          >
-            Страница →
-          </Button>
-          <Button size="xs" view="secondary" onClick={refetchSame}>
-            Live-рефетч того же состава (рамка живёт)
-          </Button>
-          <Button size="xs" view="secondary" onClick={refetchChanged}>
-            Рефетч с новым составом (сброс)
-          </Button>
-          <span style={{ alignSelf: 'center', fontSize: 12 }}>
-            страница {page + 1} · выбрано строк: {selectedRows.size}
-          </span>
-        </div>
-        <div style={{ height: 420 }}>
-          <TableCanvas<Row>
-            rows={rows}
-            columnConfig={COLUMNS}
-            tableConfig={{
-              sorting: { state: [sortColumns, setSortColumns] },
-              cellsSelection: {
-                dataRevision: revision,
-                rowKeyGetter: (row) => (row as Row).id,
-              },
-              selecting: {
-                state: [selectedRows, setSelectedRows],
-                rowKeyGetter: (row) => row.id,
-              },
-              rowMarkers: {},
-            }}
-          />
-        </div>
-      </div>
-    );
+export const ServerSort: StoryObj<{
+  replaceOnLoad: boolean;
+  extraRows: number;
+}> = {
+  args: { replaceOnLoad: false, extraRows: 0 },
+  argTypes: {
+    replaceOnLoad: { name: 'Заменить таблицу оверлеем на время запроса' },
+    extraRows: {
+      name: 'Дополнительные строки',
+      control: { type: 'select' },
+      options: [0, 100],
+    },
   },
-};
-
-export const ColumnBreakDiagnostic: Story = {
-  name: 'Диагностика: колонки при активном выделении',
-  ...storySourceDoc({ preCode, previewSource: 'shown' }),
-  render: () => {
-    const [hiddenKey, setHiddenKey] = useState<string | null>(null);
-    const [swapped, setSwapped] = useState(false);
-    const rows = useMemo(() => createRows(0, 30), []);
-
+  name: 'Серверная сортировка',
+  ...storySourceDoc({
+    preCode: `import { useMemo, useState } from 'react';
+import { Button, TableCanvas } from '@daisforge/ui';
+import { CompactSelection, type GridSelection, type SortColumn } from '@daisforge/ui/components/TableCanvas';`,
+    previewSource: 'shown',
+  }),
+  render: ({ replaceOnLoad, extraRows }) => {
+    const [reversed, setReversed] = useState(false);
+    const rows = useMemo(() => {
+      const records = [
+        { id: 10, department: 'Учёт', name: 'Анна' },
+        { id: 20, department: 'Учёт', name: 'Борис' },
+        { id: 30, department: 'Склад', name: 'Вера' },
+        { id: 40, department: 'Склад', name: 'Глеб' },
+        ...Array.from({ length: extraRows }, (_, i) => ({
+          id: 50 + i,
+          department: `Отдел ${i}`,
+          name: `Сотрудник ${i}`,
+        })),
+      ];
+      return reversed ? records.reverse() : records;
+    }, [extraRows, reversed]);
+    const selection = useState<GridSelection>({
+      rows: CompactSelection.empty(),
+      columns: CompactSelection.empty(),
+    });
+    const [sortColumns, setSortColumns] = useState<readonly SortColumn[]>([]);
+    const [waiting, setWaiting] = useState(false);
+    const [nameFirst, setNameFirst] = useState(false);
     const columns = useMemo(() => {
-      let cols = COLUMNS.filter((c) => c.key !== hiddenKey);
-      if (swapped) {
-        cols = [...cols].reverse();
-      }
-      return cols;
-    }, [hiddenKey, swapped]);
-
+      const department = { key: 'department', name: 'Отдел', width: 130 };
+      const name = { key: 'name', name: 'Имя', width: 150 };
+      const id = {
+        key: 'id',
+        name: 'ID',
+        width: 100,
+        sortingType: 'numberSort' as const,
+      };
+      return nameFirst ? [name, department, id] : [department, name, id];
+    }, [nameFirst]);
+    const { current } = selection[0];
     return (
       <div style={{ display: 'grid', gap: 12 }}>
-        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+        <p>
+          Выделите несколько ячеек. Запросите сортировку, затем примените ответ
+          сервера.
+        </p>
+        <div style={{ display: 'flex', gap: 8 }}>
           <Button
-            size="xs"
-            view="secondary"
-            onClick={() =>
-              setHiddenKey((k) => (k === 'priority' ? null : 'priority'))
-            }
-          >
-            {hiddenKey ? 'Вернуть колонку Priority' : 'Скрыть колонку Priority'}
-          </Button>
-          <Button
-            size="xs"
-            view="secondary"
-            onClick={() => setSwapped((s) => !s)}
-          >
-            {swapped ? 'Вернуть порядок колонок' : 'Обратный порядок колонок'}
-          </Button>
-        </div>
-        <div style={{ height: 420 }}>
-          <TableCanvas<Row>
-            rows={rows}
-            columnConfig={columns}
-            tableConfig={{
-              cellsSelection: { rowKeyGetter: (row) => (row as Row).id },
-              rowMarkers: {},
+            disabled={waiting}
+            onClick={() => {
+              setSortColumns([
+                {
+                  columnKey: 'id',
+                  direction:
+                    sortColumns[0]?.direction === 'DESC' ? 'ASC' : 'DESC',
+                },
+              ]);
+              setWaiting(true);
             }}
-          />
+          >
+            Запросить сортировку
+          </Button>
+          <Button
+            disabled={!waiting}
+            onClick={() => {
+              setReversed((prev) => !prev);
+              setWaiting(false);
+            }}
+          >
+            Применить ответ
+          </Button>
+          <Button onClick={() => setNameFirst((prev) => !prev)}>
+            {nameFirst ? 'Вернуть порядок колонок' : 'Переместить имя в начало'}
+          </Button>
         </div>
+        <output>
+          {current
+            ? `ID ${rows[current.cell[1]]?.id}, колонка ${
+                current.cell[0] + 1
+              }, диапазон ${current.range.width} × ${current.range.height}`
+            : 'Выделение пусто'}
+        </output>
+        <TableCanvas
+          rows={rows}
+          columnConfig={columns}
+          tableConfig={{
+            containerStyle: { height: 280 },
+            loadingOverlay: { active: replaceOnLoad && waiting },
+            sorting: {
+              state: [sortColumns, setSortColumns],
+              manualSorting: true,
+            },
+            mergeCells: { mergeByCellValues: ['department'] },
+            cellsSelection: { rowKeyGetter: (row) => row.id, state: selection },
+          }}
+        />
       </div>
     );
   },

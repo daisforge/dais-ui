@@ -1,7 +1,13 @@
-# storybook
+# Storybook
 
-This library was generated with [Nx](https://nx.dev).
+Сценарии и документация компонентов находятся в `src/stories/`. Команды ниже
+выполняются из корня репозитория.
 
-## Running unit tests
+```bash
+npm run storybook                    # Локальный Storybook на порту 4400
+npm run screenshot:test -- TableCanvas # Проверка выбранных story-файлов в Docker
+```
 
-Run `nx test storybook` to execute the unit tests via [Jest](https://jestjs.io).
+[Инструкция по скриншотным тестам](test/screenshot-tests.md) описывает обновление
+эталонов, настройки stories, разбор ошибок и ручной GitHub Actions. Для
+скриншотных тестов отдельный сервер Storybook не нужен.

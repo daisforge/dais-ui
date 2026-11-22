@@ -53,6 +53,7 @@ export function resolveBlockOrigin<R extends ObjectForExtending>(
   return findBlockOrigin(
     colIndex,
     rowIndex,
+    columns.flatMap((column, c) => (column?.colSpan ? [c] : [])),
     (c, r) => {
       const extra = readColSpanExtra(columns[c], rows, c, r);
       return extra > 0 ? ([c, c + extra] as const) : null;

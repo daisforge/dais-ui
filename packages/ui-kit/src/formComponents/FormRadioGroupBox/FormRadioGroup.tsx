@@ -78,7 +78,7 @@ export const FormRadioGroup = <TFieldValues extends FieldValues>({
                       onChange(e.target.value);
                       handleChange?.(e.target.value, formCtx);
                     }}
-                    $isError={!!error?.message}
+                    $isError={!!error}
                   />
                 );
               }

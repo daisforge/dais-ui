@@ -1,11 +1,13 @@
 import type { LinkCompProps } from '@ui-kit/components/Link';
 import type { TooltipProps } from '@ui-kit/components/Tooltip';
+import type { ReactNode } from 'react';
 
 export interface AnalyticalWidgetTitleProps {
   /**
-   * Заголовок. При нехватке места будет обрезаться троеточием (truncated text) с Tooltip при наведении на обрезанный текст
+   * Заголовок. Строка обрезается троеточием с Tooltip; произвольный ReactNode
+   * (например, Skeleton) рендерится как есть.
    */
-  title?: string;
+  title?: ReactNode;
   /**
    * Пропсы для Tooltip заголовка
    */

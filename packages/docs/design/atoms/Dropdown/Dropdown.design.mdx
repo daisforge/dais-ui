@@ -1,0 +1,271 @@
+---
+id: dropdown
+title: Dropdown
+type: atom
+status: Stable
+version: 1.0
+lastUpdated: 2026-06-11
+pixsoLink: "{{Pixso URL Dropdown}}"
+storybookLink: "{{Storybook URL Dropdown}}"
+pixsoDocLink: "{{Pixso URL Dropdown Doc Block 1}}"
+hasDesignDoc: true
+hasDevDoc: true
+hasMechanics: true
+hasCornerCases: false
+related:
+ - list
+ - cell
+ - select
+tags:
+ - navigation
+ - dropdown
+ - selection
+---
+
+# Dropdown
+
+Раскрывающееся меню — отображает список пунктов поверх контента.
+
+Визуал: {{Pixso URL Dropdown Doc Block 1}}
+
+---
+
+## Анатомия
+
+1. **Item** — пункт, из которого состоит Dropdown. Внутри Item вложен компонент Cell с настраиваемыми свойствами.
+2. **Title** — текст пункта.
+3. **LazyLoading** — элемент подгрузки списка (ленивая загрузка пунктов): состояние «Загрузка» и кнопка «Обновить».
+
+Dropdown собирается на базе компонентов List и Cell: список пунктов строится из List, а каждый пункт (Item) использует Cell. Размеры Dropdown собраны в отдельный выпадающий список размеров.
+
+При hasTrigger=True Dropdown выведен в абсолют и не влияет на размер компонента. В этом варианте ширина задаётся боковыми отступами в Auto Layout DROPDOWN SIZE.
+
+---
+
+## Типы
+
+Item имеет два типа отображения.
+
+| Тип | Описание | Визуал |
+|---|---|---|
+| **Item** | Айтем, из которого состоит Dropdown. | {{Pixso URL Dropdown Doc Block 2}} |
+| **Item Tight** | Айтем, из которого состоит Dropdown, в плотной (Tight) раскладке. | {{Pixso URL Dropdown Doc Block 2}} |
+
+LazyLoading имеет два вида: с обычным Item и с Item Tight.
+
+| Вид | Описание | Визуал |
+|---|---|---|
+| **Loading** | Вид подзагрузки списка. | {{Pixso URL Dropdown Doc Block 3}} |
+| **Reload** | Кнопка перезагрузить список («Обновить»). | {{Pixso URL Dropdown Doc Block 3}} |
+
+---
+
+## Размеры и отступы
+
+Dropdown поддерживает три размера. В варианте без триггера высота зависит от количества включённых Item и контента; в варианте с триггером Dropdown выведен в абсолют и не влияет на высоту компонента.
+
+| Размер | Высота | Corner Radius | Шрифт Title |
+|---|---|---|---|
+| **M** | 48 | Calc[m-2] (10px) | BodyM N |
+| **S** | 40 | S (8px) | BodyS N |
+| **XS** | 32 | cRXS (6px) | BodyXS N |
+
+Размеры и отступы для Item Tight совпадают с обычным Item.
+
+---
+
+## Настройки (Props)
+
+> Здесь — визуальное поведение. Полный список пропсов с типами — в dev-документации через `<PropsTable name="Dropdown" />`.
+
+### hasTrigger
+
+Включает или выключает триггер.
+
+| Значение | Результат |
+|---|---|
+| True | Включает триггер. При hasTrigger=True Dropdown выведен в абсолют и не влияет на размер компонента; ширина задаётся боковыми отступами Auto Layout DROPDOWN SIZE. |
+| False | Выключает триггер. Высота зависит от количества включённых Item и контента. |
+
+### Trigger
+
+Тип триггера, по которому раскрывается Dropdown.
+
+| Значение | Назначение |
+|---|---|
+| LinkButton | Триггер LinkButton соответствующего размера. |
+| BasicButton | Триггер BasicButton соответствующего размера. |
+| IconButton | Триггер IconButton соответствующего размера. |
+
+### Placement
+
+Положение Dropdown относительно триггера.
+
+| Значение | Положение |
+|---|---|
+| Top | Сверху относительно триггера. |
+| Buttom | Снизу относительно триггера. |
+| Left | Слева относительно триггера. |
+| Right | Справа относительно триггера. |
+| None | Выключает положение. |
+
+### Align
+
+Выравнивание Dropdown относительно триггера.
+
+| Значение | Результат |
+|---|---|
+| Start | Выравнивание в начале триггера. |
+| Center | Выравнивание по центру триггера. |
+| End | Выравнивание в конце триггера. |
+| None | Выключает выравнивание. |
+
+### Opened
+
+| Значение | Результат |
+|---|---|
+| True | Раскрывает Dropdown. |
+| False | Скрывает Dropdown. |
+
+### Свойства Item
+
+Item построен на Cell и имеет собственные свойства состояния.
+
+| Свойство | Результат |
+|---|---|
+| **Focused** | Включает или выключает состояние Focused. |
+| **Disabled** | Включает или выключает состояние Disabled. |
+| **Disclosure** | Включает или выключает Disclosure справа (стрелку раскрытия вложенного списка). |
+| **Divider** | Включает или выключает Divider — разделитель списка. |
+
+### Свойства LazyLoading
+
+| Свойство | Результат |
+|---|---|
+| View → Loading | Вид подзагрузки списка. |
+| View → Reload | Кнопка перезагрузить список. |
+
+---
+
+## Состояния
+
+- **Default** — обычный пункт списка.
+- **Focused** — пункт в фокусе (Focused=True).
+- **Disabled** — пункт недоступен (Disabled=True).
+- **С Disclosure** — пункт со стрелкой раскрытия вложенного списка (Disclosure=True).
+- **Loading** — состояние подгрузки списка (LazyLoading View → Loading).
+- **Reload** — состояние «Обновить» для перезагрузки списка (LazyLoading View → Reload).
+
+---
+
+## Механика и взаимодействия
+
+Дизайн-суть взаимодействия:
+
+- **Раскрытие и закрытие меню.** Dropdown раскрывается по триггеру (Trigger: LinkButton / BasicButton / IconButton) и отображает список пунктов поверх контента. Состояние раскрытия отражает свойство Opened (True — раскрыт, False — скрыт). Положение меню относительно триггера задаёт Placement, выравнивание — Align.
+- **Вложенность.** Item может содержать вложенный список — на это указывает Disclosure справа. Раскрытие вложенного списка открывает дочерние пункты.
+- **Ленивая загрузка пунктов (LazyLoading).** Пока список подгружается, показывается вид Loading. При необходимости перезагрузки доступен вид Reload с кнопкой «Обновить».
+- **Абсолютное позиционирование.** При hasTrigger=True Dropdown выведен в абсолют и не влияет на размер компонента; ширина задаётся боковыми отступами Auto Layout DROPDOWN SIZE.
+
+Детали реализации (тайминги, клавиатурная навигация, портал) — в Storybook.
+
+---
+
+## Маппинг: дизайн → код
+
+| Свойство в дизайне | Проп в коде | Значения | Примечание |
+|---|---|---|---|
+| Item (список пунктов) | `items` | массив | Обязательный массив пунктов. Внутри пункта может быть вложенный массив `items` — это вложенный Dropdown. |
+| Title пункта | `label` (поле item) | строка | Метка-подпись пункта. |
+| Размер (M / S / XS) | `size` | m / s / xs | Прямое соответствие. |
+| Placement | `placement` | top / bottom / left / right / auto | Положение относительно триггера; значение по умолчанию — `bottom`. |
+| Trigger | `trigger` | click / hover | Способ раскрытия; значение по умолчанию — `click`. |
+| Disabled (Item) | `disabled` (поле item) | boolean | Пункт недоступен. |
+| Disclosure (Item) | вложенный `items` (поле item) | массив | Стрелка раскрытия появляется у пунктов с вложенным списком. |
+| Divider (Item) | `dividerBefore` / `dividerAfter` (поля item) | boolean | Разделитель до или после пункта. |
+| ContentLeft / ContentRight (Cell внутри Item) | `contentLeft` / `contentRight` (поля item) | ReactNode | Слоты для контента слева и справа в пункте. |
+
+Соответствие свойств hasTrigger, Trigger (LinkButton / BasicButton / IconButton), Align, Opened, состояний Focused и видов LazyLoading коду — уточните в Storybook или в чате поддержки ДС.
+
+---
+
+## Использование в коде
+
+Живые примеры кода — в Storybook: {{Storybook URL Dropdown}}.
+
+---
+
+## Связанные компоненты
+
+- **List** — список, на базе которого строится перечень пунктов Dropdown. [Дизайн]({{Pixso URL List}}) · [Storybook]({{Storybook URL List}})
+- **Cell** — ячейка, вложенная в каждый Item. [Дизайн]({{Pixso URL Cell}}) · [Storybook]({{Storybook URL Cell}})
+- **Select** — компонент выбора значения из списка. [Дизайн]({{Pixso URL Select}}) · [Storybook]({{Storybook URL Select}})
+
+---
+
+## FAQ
+
+### Для дизайнеров
+
+**Q: Из чего состоит Dropdown?**
+A: Из пунктов Item. Внутри каждого Item вложен компонент Cell с настраиваемыми свойствами, а сам список пунктов строится на базе List. Подробнее — в Pixso-документации компонента, блок «Анатомия»: {{Pixso URL Dropdown Doc Block 1}}.
+
+**Q: Какие размеры есть у Dropdown?**
+A: Три: M (48px, шрифт BodyM N), S (40px, BodyS N) и XS (32px, BodyXS N) — каждый со своим Corner Radius. Подробнее — в Pixso-документации компонента, блок «Размеры и отступы»: {{Pixso URL Dropdown Doc Block 1}}.
+
+**Q: Как задать положение меню относительно триггера?**
+A: Через свойство Placement (Top / Buttom / Left / Right) и Align (Start / Center / End). Подробнее — в Pixso-документации компонента, блок «Настройки (Props)»: {{Pixso URL Dropdown Doc Block 1}}.
+
+**Q: Как показать, что у пункта есть вложенный список?**
+A: Включить у Item свойство Disclosure — справа появится стрелка раскрытия. Подробнее — в Pixso-документации компонента, блок «Настройки (Props)»: {{Pixso URL Dropdown Doc Block 1}}.
+
+**Q: Как добавить разделитель между пунктами?**
+A: Включить у Item свойство Divider — разделитель списка. Подробнее — в Pixso-документации компонента, блок «Настройки (Props)»: {{Pixso URL Dropdown Doc Block 1}}.
+
+**Q: Как показать состояние загрузки списка?**
+A: Использовать элемент LazyLoading: вид Loading для подзагрузки списка и вид Reload с кнопкой «Обновить» для перезагрузки. Подробнее — в Pixso-документации компонента, блок «Типы»: {{Pixso URL Dropdown Doc Block 1}}.
+
+**Q: Как сделать пункт недоступным?**
+A: Включить у Item свойство Disabled. Подробнее — в Pixso-документации компонента, блок «Настройки (Props)»: {{Pixso URL Dropdown Doc Block 1}}.
+
+**Q: Какой триггер можно выбрать для раскрытия?**
+A: Trigger принимает LinkButton, BasicButton или IconButton соответствующего размера. Подробнее — в Pixso-документации компонента, блок «Настройки (Props)»: {{Pixso URL Dropdown Doc Block 1}}.
+
+### Для разработчиков
+
+**Q: Как задать пункты Dropdown?**
+A: Через обязательный массив `items`. Внутри пункта может быть вложенный массив `items` — это вложенный Dropdown. Примеры кода — в Storybook: {{Storybook URL Dropdown}}.
+
+**Q: Как задать размер Dropdown?**
+A: Через проп `size` со значениями `m` / `s` / `xs` — прямое соответствие размерам M / S / XS. Примеры кода — в Storybook: {{Storybook URL Dropdown}}.
+
+**Q: Как задать положение выпадающего списка?**
+A: Через проп `placement` со значениями `top` / `right` / `bottom` / `left` / `auto`; значение по умолчанию — `bottom`. Примеры кода — в Storybook: {{Storybook URL Dropdown}}.
+
+**Q: Как раскрывать список по наведению, а не по клику?**
+A: Через проп `trigger` со значениями `click` или `hover`; значение по умолчанию — `click`. Примеры кода — в Storybook: {{Storybook URL Dropdown}}.
+
+**Q: Как добавить разделитель и недоступный пункт?**
+A: В объекте пункта — `dividerBefore` / `dividerAfter` (boolean) для разделителя и `disabled` (boolean) для недоступного пункта. Примеры кода — в Storybook: {{Storybook URL Dropdown}}.
+
+**Q: Как добавить контент слева и справа в пункте?**
+A: В объекте пункта — слоты `contentLeft` и `contentRight` (ReactNode). Примеры кода — в Storybook: {{Storybook URL Dropdown}}.
+
+**Q: Как вынести выпадающий список выше по DOM?**
+A: Через проп `portal`, который принимает `ref` либо `id` html-тега — это удобно, когда у родительского блока есть scroll и список обрезается. Примеры кода — в Storybook: {{Storybook URL Dropdown}}.
+
+---
+
+## Ссылки
+
+- **Storybook:** {{Storybook URL Dropdown}}
+- **Документация в Pixso:** {{Pixso URL Dropdown Doc Block 1}}
+- **Компонент в Pixso:** {{Pixso URL Dropdown}}
+
+---
+
+## Changelog
+
+| Дата | Версия | Изменение |
+|---|---|---|
+| 2026-06-11 | 1.0 | Перенос дизайн-документации Dropdown из Pixso/Sketch в MDX. Первая версия. |

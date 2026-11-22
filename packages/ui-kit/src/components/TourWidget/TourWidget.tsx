@@ -7,6 +7,7 @@ import { TourWidgetContent } from './components/TourWidgetContent';
 import { TourWidgetFooter } from './components/TourWidgetFooter';
 import { TourWidgetGradient } from './components/TourWidgetGradient';
 import { TourWidgetHeader } from './components/TourWidgetHeader';
+import { useIsDarkTheme } from './hooks/useIsDarkTheme';
 import { tourWidgetClassNames as cls } from './TourWidget.classNames';
 import { TourWidgetProvider } from './TourWidget.context';
 import { StyledContainer } from './TourWidget.styled';
@@ -24,19 +25,24 @@ const TourWidgetWithRef = forwardRef<HTMLDivElement, TourWidgetProps>(
   (
     { children, orientation = 'vertical', activeStepIndex, className, ...rest },
     ref,
-  ) => (
-    <TourWidgetProvider value={{ activeStepIndex }}>
-      <StyledContainer
-        ref={ref}
-        $orientation={orientation}
-        className={mCls(orientationClassNames[orientation], className)}
-        {...rest}
-      >
-        <TourWidgetGradient orientation={orientation} />
-        {children}
-      </StyledContainer>
-    </TourWidgetProvider>
-  ),
+  ) => {
+    const isDarkTheme = useIsDarkTheme();
+
+    return (
+      <TourWidgetProvider value={{ activeStepIndex }}>
+        <StyledContainer
+          ref={ref}
+          $orientation={orientation}
+          $isDark={isDarkTheme}
+          className={mCls(orientationClassNames[orientation], className)}
+          {...rest}
+        >
+          <TourWidgetGradient orientation={orientation} />
+          {children}
+        </StyledContainer>
+      </TourWidgetProvider>
+    );
+  },
 );
 
 export const TourWidget = Object.assign(TourWidgetWithRef, {

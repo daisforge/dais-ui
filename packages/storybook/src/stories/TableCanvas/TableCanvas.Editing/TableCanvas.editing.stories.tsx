@@ -7,16 +7,25 @@ import {
   TRIBES,
 } from '@df-storybook/data/tableData';
 import DocStoryTemplate from '@df-storybook/templates/DocStoryTemplate.mdx';
+import { getFuncAsString } from '@df-storybook/utils/getFuncAsString';
+import { getTypeAsString } from '@df-storybook/utils/getTypeAsString';
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Button } from '@ui-kit/components/Button';
 import { ModalDF } from '@ui-kit/components/ModalDF';
+import { Spinner } from '@ui-kit/components/Spinner';
+import { Switch } from '@ui-kit/components/Switch';
 import {
+  CellEditorCombobox,
   CellEditorNumberFormat,
   ColumnConfig,
+  EditingCellInfo,
   TableCanvas,
+  type TableCanvasEditedCells,
 } from '@ui-kit/components/TableCanvas';
-import { useMemo, useRef, useState } from 'react';
+import { useDebouncedValue } from '@ui-kit/utils';
+import { UIEvent, useCallback, useMemo, useRef, useState } from 'react';
+import useSWRInfinite from 'swr/infinite';
 
 const meta: Meta = {
   title: 'Локальные компоненты/TableCanvas/Editing',
@@ -32,9 +41,33 @@ export default meta;
 
 type Story = StoryObj;
 
+const treeEditingPreCode = `
+import { CellEditorNumberFormat, TableCanvas, type ColumnConfig } from '@daisforge/ui/components/TableCanvas';
+import { useMemo, useRef, useState } from 'react';
+import type * as React from 'react';
+
+`;
+
+const treeEditingDataPreCode = `
+${getTypeAsString('packages/storybook/src/data/tableData.ts', 'TreeRow')}
+
+const BLOCKS = ${JSON.stringify(BLOCKS)} as const;
+const TRIBES = ${JSON.stringify(TRIBES)} as const;
+const PRODUCTS = ${JSON.stringify(PRODUCTS)} as const;
+
+${getFuncAsString(
+  'packages/storybook/src/data/tableData.ts',
+  'createSeededRandom',
+)}
+
+${getFuncAsString('packages/storybook/src/data/tableData.ts', 'createRowsTree')}
+`;
+
 export const Editing: Story = {
   ...storySourceDoc({
+    preCode: treeEditingPreCode + treeEditingDataPreCode,
     previewSource: 'shown',
+    type: 'code',
   }),
   render: () => {
     const [rows, setRows] = useState(() => createRowsTree());
@@ -279,11 +312,24 @@ export const Editing: Story = {
 
 type SimpleRow = { id: string; name: string; value: number };
 
+const simpleRowPreCode = `
+${getTypeAsString(
+  'packages/storybook/src/stories/TableCanvas/TableCanvas.Editing/TableCanvas.editing.stories.tsx',
+  'SimpleRow',
+)}
+`;
+
 export const EditingButtonsControl: Story = {
   ...storySourceDoc({
+    preCode: `
+import { TableCanvas, type ColumnConfig } from '@daisforge/ui/components/TableCanvas';
+import { useMemo, useRef, useState } from 'react';
+${simpleRowPreCode}
+`,
     previewSource: 'shown',
+    type: 'code',
   }),
-  name: 'Buttons Control (disabled, isLoading)',
+  name: 'Кнопки и подсветка — внутреннее состояние',
   render: () => {
     const [rows, setRows] = useState<SimpleRow[]>([
       { id: '1', name: 'Альфа', value: 100 },
@@ -292,7 +338,6 @@ export const EditingButtonsControl: Story = {
     ]);
     const [isSaving, setIsSaving] = useState(false);
     const savedRowsRef = useRef<SimpleRow[] | null>(null);
-
     const columnConfig = useMemo(
       (): ColumnConfig<SimpleRow>[] => [
         {
@@ -353,9 +398,127 @@ export const EditingButtonsControl: Story = {
   },
 };
 
+export const EditingControlledHighlights: Story = {
+  ...storySourceDoc({
+    preCode: `
+import { Button, Switch } from '@daisforge/ui';
+import { TableCanvas, type ColumnConfig, type TableCanvasEditedCells } from '@daisforge/ui/components/TableCanvas';
+import { useCallback, useMemo, useRef, useState } from 'react';
+${simpleRowPreCode}
+`,
+    previewSource: 'shown',
+    type: 'code',
+  }),
+  name: 'Подсветка — внешнее состояние',
+  render: () => {
+    const [rows, setRows] = useState<SimpleRow[]>([
+      { id: '1', name: 'Альфа', value: 100 },
+      { id: '2', name: 'Бета', value: 200 },
+      { id: '3', name: 'Гамма', value: 300 },
+    ]);
+    const [editedCells, setEditedCells] = useState<
+      TableCanvasEditedCells<string>
+    >(() => new Map());
+    const [editModeEnabled, setEditModeEnabled] = useState(false);
+    const savedRowsRef = useRef<SimpleRow[] | null>(null);
+    const [highlightNewEdits, setHighlightNewEdits] = useState(true);
+    const onEditedCellsChange = useCallback<typeof setEditedCells>(
+      (update) => {
+        if (highlightNewEdits) setEditedCells(update);
+      },
+      [highlightNewEdits],
+    );
+    const columnConfig = useMemo(
+      (): ColumnConfig<SimpleRow>[] => [
+        {
+          key: 'name',
+          name: 'Название',
+          editingCell: { component: 'inputString' },
+        },
+        {
+          key: 'value',
+          name: 'Значение',
+          editingCell: { component: 'inputNumber' },
+        },
+      ],
+      [],
+    );
+
+    return (
+      <>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: 8,
+            marginBottom: 12,
+          }}
+        >
+          <Switch
+            size="s"
+            label="Подсвечивать новые правки"
+            disabled={!editModeEnabled}
+            checked={highlightNewEdits}
+            onChange={(event) => setHighlightNewEdits(event.target.checked)}
+          />
+          <Button
+            size="xs"
+            view="secondary"
+            disabled={!editModeEnabled}
+            onClick={() => setEditedCells(new Map([['1', new Set(['name'])]]))}
+          >
+            Подсветить только название первой строки
+          </Button>
+          <Button
+            size="xs"
+            view="secondary"
+            disabled={!editModeEnabled}
+            onClick={() => setEditedCells(new Map())}
+          >
+            Сбросить подсветку
+          </Button>
+        </div>
+        <TableCanvas
+          tableConfig={{
+            containerStyle: { height: '250px' },
+            editing: {
+              enabled: [editModeEnabled, setEditModeEnabled],
+              rowKeyGetter: (row) => row.id,
+              onRowsChange: setRows,
+              editedCellsState: [editedCells, onEditedCellsChange],
+              onEnableEditing(enableEditorMode) {
+                savedRowsRef.current = rows;
+                enableEditorMode();
+              },
+              onSave(disableEditorMode) {
+                savedRowsRef.current = null;
+                setEditedCells(new Map());
+                disableEditorMode();
+              },
+              onCancel(disableEditorMode) {
+                if (savedRowsRef.current) setRows(savedRowsRef.current);
+                savedRowsRef.current = null;
+                setEditedCells(new Map());
+                disableEditorMode();
+              },
+            },
+          }}
+          columnConfig={columnConfig}
+          rows={rows}
+        />
+      </>
+    );
+  },
+};
+
 export const EditingInModal: Story = {
   ...storySourceDoc({
+    preCode: `
+import { Button, ModalDF } from '@daisforge/ui';
+${treeEditingPreCode}${treeEditingDataPreCode}`,
     previewSource: 'shown',
+    type: 'code',
   }),
   render: () => {
     const [rows, setRows] = useState(() => createRowsTree());
@@ -615,6 +778,444 @@ export const EditingInModal: Story = {
           </ModalDF.Main>
         </ModalDF>
       </>
+    );
+  },
+};
+
+type InvoiceRow = {
+  id: string;
+  name: string;
+  amount: number;
+  limit: number;
+  status: 'new' | 'approved' | 'rejected';
+};
+
+const INVOICE_ROWS: InvoiceRow[] = [
+  {
+    id: '1',
+    name: 'Аренда офиса',
+    amount: 120000,
+    limit: 150000,
+    status: 'approved',
+  },
+  { id: '2', name: '', amount: 48000, limit: 50000, status: 'new' },
+  { id: '3', name: 'Канцелярия', amount: 9000, limit: 5000, status: 'new' },
+  {
+    id: '4',
+    name: 'Командировка',
+    amount: 70000,
+    limit: 40000,
+    status: 'rejected',
+  },
+  { id: '5', name: '', amount: 99000, limit: 30000, status: 'new' },
+  {
+    id: '6',
+    name: 'Обучение',
+    amount: 15000,
+    limit: 20000,
+    status: 'approved',
+  },
+];
+
+const rowErrorsPreCode = `
+import { Button } from '@daisforge/ui';
+import { TableCanvas, type ColumnConfig } from '@daisforge/ui/components/TableCanvas';
+import { useMemo, useState } from 'react';
+
+${getTypeAsString(
+  'packages/storybook/src/stories/TableCanvas/TableCanvas.Editing/TableCanvas.editing.stories.tsx',
+  'InvoiceRow',
+)}
+
+const INVOICE_ROWS: InvoiceRow[] = ${JSON.stringify(INVOICE_ROWS)};
+`;
+
+export const EditingRowErrors: Story = {
+  ...storySourceDoc({
+    preCode: rowErrorsPreCode,
+    previewSource: 'shown',
+    type: 'code',
+  }),
+  name: 'Row Errors (индикатор и ошибка всей строки)',
+  render: () => {
+    const [rows, setRows] = useState<InvoiceRow[]>(INVOICE_ROWS);
+    const [indicatorColumn, setIndicatorColumn] = useState(true);
+    const [selectedRows, setSelectedRows] = useState<ReadonlySet<string>>(
+      () => new Set(),
+    );
+
+    const columnConfig = useMemo(
+      (): ColumnConfig<InvoiceRow>[] => [
+        {
+          key: 'name',
+          name: 'Назначение',
+          editingCell: {
+            component: 'inputString',
+            error: {
+              value: (row) => row.name.trim() === '',
+              tooltip: () => 'Назначение платежа не заполнено',
+            },
+          },
+        },
+        {
+          key: 'amount',
+          name: 'Сумма',
+          contentFormat: 'number',
+          editingCell: {
+            component: 'inputNumber',
+            error: {
+              value: (row) => row.amount > row.limit,
+              tooltip: (row) => ({
+                text: `Сумма превышает лимит ${row.limit}`,
+                placement: 'right',
+                maxWidth: 240,
+              }),
+            },
+          },
+        },
+        {
+          key: 'limit',
+          name: 'Лимит',
+          contentFormat: 'number',
+          editingCell: { component: 'inputNumber' },
+        },
+        {
+          key: 'status',
+          name: 'Статус',
+          editingCell: {
+            component: 'select',
+            options: {
+              type: 'constant',
+              options: [
+                { text: 'Новая', value: 'new' },
+                { text: 'Согласована', value: 'approved' },
+                { text: 'Отклонена', value: 'rejected' },
+              ],
+            },
+          },
+        },
+      ],
+      [],
+    );
+
+    return (
+      <>
+        <Button
+          size="s"
+          view="secondary"
+          style={{ marginBottom: 12 }}
+          onClick={() => setIndicatorColumn((v) => !v)}
+        >
+          {indicatorColumn
+            ? 'Скрыть столбец-индикатор'
+            : 'Показать столбец-индикатор'}
+        </Button>
+        <TableCanvas
+          tableConfig={{
+            containerStyle: { height: '400px' },
+            rowMarkers: {},
+            rowSize: { showInControl: true, default: 'big' },
+            selecting: {
+              state: [selectedRows, setSelectedRows],
+              rowKeyGetter: (r) => r.id,
+            },
+            editing: {
+              defaultEnabled: true,
+              onRowsChange: setRows,
+              rowKeyGetter: (r) => r.id,
+              rowErrors: {
+                indicatorColumn,
+                isErrorRow: (row) => row.status === 'rejected',
+                tooltip: ({ isErrorRow, errorCellsCount }) =>
+                  isErrorRow
+                    ? 'Строка отклонена'
+                    : `Ошибок в строке: ${errorCellsCount}`,
+              },
+            },
+          }}
+          columnConfig={columnConfig}
+          rows={rows}
+        />
+      </>
+    );
+  },
+};
+
+type Counterparty = { id: string; name: string };
+
+const COUNTERPARTY_FORMS = ['ООО', 'АО', 'ПАО', 'ИП'];
+const COUNTERPARTY_WORDS = [
+  'Альфа',
+  'Вектор',
+  'Гранит',
+  'Дельта',
+  'Север',
+  'Орбита',
+  'Прогресс',
+  'Сигма',
+];
+
+function makeCounterparty(i: number): Counterparty {
+  return {
+    id: `cp-${i + 1}`,
+    name: `${COUNTERPARTY_FORMS[i % COUNTERPARTY_FORMS.length]} «${
+      COUNTERPARTY_WORDS[i % COUNTERPARTY_WORDS.length]
+    } ${String(i + 1).padStart(4, '0')}»`,
+  };
+}
+
+const COUNTERPARTIES: Counterparty[] = Array.from({ length: 1000 }, (_, i) =>
+  makeCounterparty(i),
+);
+
+const COUNTERPARTIES_PAGE_SIZE = 50;
+
+type CounterpartyPage = { items: Counterparty[]; hasMore: boolean };
+
+// Имитация бэкенда: поиск по названию и постраничная выдача с задержкой.
+function fetchCounterparties({
+  search,
+  offset,
+}: {
+  search: string;
+  offset: number;
+}) {
+  return new Promise<CounterpartyPage>((resolve) => {
+    setTimeout(() => {
+      const query = search.trim().toLowerCase();
+      const filtered = query
+        ? COUNTERPARTIES.filter((c) => c.name.toLowerCase().includes(query))
+        : COUNTERPARTIES;
+      const items = filtered.slice(offset, offset + COUNTERPARTIES_PAGE_SIZE);
+      resolve({
+        items,
+        hasMore: offset + items.length < filtered.length,
+      });
+    }, 500);
+  });
+}
+
+// Кеш SWR живёт вне редактора, поэтому страницы переживают закрытие ячейки.
+// Ключ включает поисковый запрос: для каждого запроса свой набор страниц.
+function useCounterpartyOptions() {
+  const [search, setSearch] = useState('');
+  const debouncedSearch = useDebouncedValue(search, 300);
+
+  const { data, size, setSize, isValidating } = useSWRInfinite(
+    (pageIndex, previousPage: CounterpartyPage | null) =>
+      previousPage && !previousPage.hasMore
+        ? null
+        : (['story-counterparties', debouncedSearch, pageIndex] as const),
+    ([, query, pageIndex]) =>
+      fetchCounterparties({
+        search: query,
+        offset: pageIndex * COUNTERPARTIES_PAGE_SIZE,
+      }),
+    {
+      keepPreviousData: true,
+      revalidateFirstPage: false,
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
+  );
+
+  const items = data?.flatMap((page) => page.items) ?? [];
+  const hasMore = data?.[data.length - 1]?.hasMore ?? true;
+
+  const loadNext = () => {
+    if (!isValidating && hasMore) setSize(size + 1);
+  };
+
+  return { items, isLoading: isValidating, setSearch, loadNext };
+}
+
+type ContractRow = {
+  id: string;
+  contract: string;
+  counterpartyId: string;
+  counterpartyName: string;
+  amount: number;
+};
+
+// Часть контрагентов взята из дальних страниц: их нет в первой порции,
+// но редактор всё равно открывается с выбранным значением.
+const CONTRACT_ROWS: ContractRow[] = [3, 17, 128, 402, 777, 999].map(
+  (cpIndex, i) => ({
+    id: `${i + 1}`,
+    contract: `Договор № ${100 + i}`,
+    counterpartyId: makeCounterparty(cpIndex).id,
+    counterpartyName: makeCounterparty(cpIndex).name,
+    amount: (i + 1) * 125000,
+  }),
+);
+
+function CounterpartyCellEditor({
+  info: { row, cellWidth, cellHeight, onRowChange, readOnly, theme },
+  disableLeftOffset,
+}: {
+  info: EditingCellInfo<ContractRow>;
+  disableLeftOffset: boolean | undefined;
+}) {
+  const { items, isLoading, setSearch, loadNext } = useCounterpartyOptions();
+
+  // Текущее значение строки всегда в списке, даже если его страница ещё не загружена.
+  const options = [
+    { value: row.counterpartyId, label: row.counterpartyName },
+    ...items
+      .filter((c) => c.id !== row.counterpartyId)
+      .map((c) => ({ value: c.id, label: c.name })),
+  ];
+
+  const handleScroll = (e: UIEvent<HTMLElement>) => {
+    const el = e.currentTarget;
+    if (el.scrollTop + el.clientHeight >= el.scrollHeight - 50) loadNext();
+  };
+
+  return (
+    <CellEditorCombobox
+      autoFocusType="autoFocus"
+      cellWidth={cellWidth}
+      cellHeight={cellHeight}
+      disableLeftOffset={disableLeftOffset}
+      paddingInline={theme.cellHorizontalPadding}
+      readOnly={readOnly}
+      items={options}
+      defaultValue={row.counterpartyId}
+      virtual
+      // Фильтрует бэкенд, локальный фильтр Combobox отключён.
+      filter={() => true}
+      onChangeValue={setSearch}
+      onScroll={handleScroll}
+      afterList={
+        isLoading ? (
+          <div
+            style={{ display: 'flex', justifyContent: 'center', padding: 8 }}
+          >
+            <Spinner size="s" />
+          </div>
+        ) : null
+      }
+      onChange={(value: unknown) => {
+        if (typeof value !== 'string') return;
+        const label = options.find((o) => o.value === value)?.label;
+        onRowChange(
+          {
+            ...row,
+            counterpartyId: value,
+            counterpartyName: label ?? row.counterpartyName,
+          },
+          true,
+        );
+      }}
+    />
+  );
+}
+
+const selectInfiniteScrollPreCode = `
+import { Spinner } from '@daisforge/ui/components/Spinner';
+import { CellEditorCombobox, TableCanvas, type ColumnConfig, type EditingCellInfo } from '@daisforge/ui/components/TableCanvas';
+import { useDebouncedValue } from '@daisforge/ui/utils';
+import { useMemo, useState, type UIEvent } from 'react';
+import useSWRInfinite from 'swr/infinite';
+
+${getTypeAsString(
+  'packages/storybook/src/stories/TableCanvas/TableCanvas.Editing/TableCanvas.editing.stories.tsx',
+  'Counterparty',
+)}
+
+${getTypeAsString(
+  'packages/storybook/src/stories/TableCanvas/TableCanvas.Editing/TableCanvas.editing.stories.tsx',
+  'CounterpartyPage',
+)}
+
+${getTypeAsString(
+  'packages/storybook/src/stories/TableCanvas/TableCanvas.Editing/TableCanvas.editing.stories.tsx',
+  'ContractRow',
+)}
+
+const COUNTERPARTY_FORMS = ${JSON.stringify(COUNTERPARTY_FORMS)};
+const COUNTERPARTY_WORDS = ${JSON.stringify(COUNTERPARTY_WORDS)};
+
+${getFuncAsString(
+  'packages/storybook/src/stories/TableCanvas/TableCanvas.Editing/TableCanvas.editing.stories.tsx',
+  'makeCounterparty',
+)}
+
+const COUNTERPARTIES: Counterparty[] = Array.from({ length: ${
+  COUNTERPARTIES.length
+} }, (_, i) => makeCounterparty(i));
+const COUNTERPARTIES_PAGE_SIZE = ${COUNTERPARTIES_PAGE_SIZE};
+const CONTRACT_ROWS: ContractRow[] = ${JSON.stringify(CONTRACT_ROWS)};
+
+${getFuncAsString(
+  'packages/storybook/src/stories/TableCanvas/TableCanvas.Editing/TableCanvas.editing.stories.tsx',
+  'fetchCounterparties',
+)}
+
+${getFuncAsString(
+  'packages/storybook/src/stories/TableCanvas/TableCanvas.Editing/TableCanvas.editing.stories.tsx',
+  'useCounterpartyOptions',
+)}
+
+${getFuncAsString(
+  'packages/storybook/src/stories/TableCanvas/TableCanvas.Editing/TableCanvas.editing.stories.tsx',
+  'CounterpartyCellEditor',
+)}
+`;
+
+export const EditingSelectInfiniteScroll: Story = {
+  ...storySourceDoc({
+    preCode: selectInfiniteScrollPreCode,
+    previewSource: 'shown',
+    type: 'code',
+  }),
+  name: 'Select с подгрузкой по скроллу (кастомный редактор)',
+  render: () => {
+    const [rows, setRows] = useState<ContractRow[]>(CONTRACT_ROWS);
+
+    const columnConfig = useMemo(
+      (): ColumnConfig<ContractRow>[] => [
+        { key: 'contract', name: 'Договор' },
+        {
+          key: 'counterpartyName',
+          name: 'Контрагент',
+          width: 280,
+          editingCell: {
+            component: (info, _lvl, disableLeftOffset) => (
+              <CounterpartyCellEditor
+                info={info}
+                disableLeftOffset={disableLeftOffset}
+              />
+            ),
+            // Шеврон селекта в ячейке, как у component: 'select'.
+            showSelectIcon: true,
+          },
+        },
+        {
+          key: 'amount',
+          name: 'Сумма',
+          contentFormat: 'number',
+          editingCell: { component: 'inputNumber' },
+        },
+      ],
+      [],
+    );
+
+    return (
+      <TableCanvas
+        tableConfig={{
+          containerStyle: { height: '400px' },
+          rowSize: { showInControl: true, default: 'big' },
+          editing: {
+            defaultEnabled: true,
+            onRowsChange: setRows,
+            rowKeyGetter: (r) => r.id,
+          },
+        }}
+        columnConfig={columnConfig}
+        rows={rows}
+      />
     );
   },
 };

@@ -1,3 +1,4 @@
+import { subscribeToCanvasPortalReset } from '@ui-kit/components/TableGlide/lib/canvas/utils/portalHoverEvents';
 import type { RefObject } from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
@@ -6,6 +7,7 @@ import type {
   CanvasPortalSource,
 } from '../../TableGlideInstance';
 import {
+  isPortalHoverLocked,
   subscribeToCanvasPortalHover,
   subscribeToPortalHoverLock,
 } from '../../TableGlideInstance';
@@ -119,6 +121,8 @@ export function usePortalHover<T = unknown>(
 
   useEffect(() => {
     const eventTarget = containerRef?.current ?? undefined;
+    // Блокировку могли взять до подписки (таблица смонтирована во время ресайза).
+    lockedRef.current = isPortalHoverLocked(eventTarget);
 
     const unsubscribeHover = subscribeToCanvasPortalHover(
       (detail: CanvasPortalHoverDetail) => {
@@ -238,11 +242,18 @@ export function usePortalHover<T = unknown>(
       if (locked) {
         hideImmediately();
       }
-    });
+    }, eventTarget);
+
+    // Колонки переставили или начали менять ширину: тултип на старом месте.
+    const unsubscribeReset = subscribeToCanvasPortalReset(
+      hideImmediately,
+      eventTarget,
+    );
 
     return () => {
       unsubscribeHover();
       unsubscribeLock();
+      unsubscribeReset();
       clearAllTimers();
     };
   }, [

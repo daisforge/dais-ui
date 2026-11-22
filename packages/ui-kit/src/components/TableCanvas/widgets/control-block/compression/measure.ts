@@ -351,7 +351,7 @@ type MeasurementEffectsParams = MeasurementsParams & {
   // Состояние сворачивания таблицы. При его смене кнопка коллапса меняет
   // текст (Свернуть <-> Развернуть), а это разная ширина, поэтому нужен
   // перезамер. Дальше mergedWidths поменяется и компрессия пересчитается
-  // сама (calculateCurrentWidth зависит от замеров).
+  // в layout-эффекте ControlBlock, который явно зависит от mergedWidths.
   isCollapsed: boolean;
 };
 

@@ -13,6 +13,9 @@ export const StyledDragContainer = styled(Box)<{
   paddingRight: props.$hasScroll ? '8px' : '0',
   flexGrow: 1,
   minHeight: '40px',
+  // Виртуализация меняет отступы-спейсеры при сдвиге окна, а якорение скролла
+  // в ответ подравнивает scrollTop, и получается петля дрожания. Выключаем.
+  overflowAnchor: 'none',
 
   '& .drag-button': {
     cursor: 'grabbing',

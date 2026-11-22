@@ -142,6 +142,7 @@ export const LeftPanel = ({
       minWidth={minWidth}
       width={width}
       $resizing={isResizing}
+      $isAdaptive1280={isAdaptive1280}
       showResizeable={showResizeable}
       {...containerProps}
     >

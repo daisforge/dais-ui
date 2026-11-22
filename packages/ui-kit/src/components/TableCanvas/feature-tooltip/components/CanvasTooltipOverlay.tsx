@@ -2,6 +2,8 @@ import { Tooltip } from '@ui-kit/components/Tooltip';
 import React, { useMemo } from 'react';
 import { createPortal } from 'react-dom';
 
+import { getOpenCanvasOverlay } from '../../feature-overlays/canvas/core';
+import { useOptionalTablePopover } from '../../feature-overlays/context';
 import type { CanvasPortalHoverDetail } from '../../TableGlideInstance';
 import { viewportToContainerPosition } from '../../utils';
 import { DEFAULT_MOUSE_ENTER_DELAY } from '../constants';
@@ -11,6 +13,13 @@ import { LEAVE_ANIMATION_DURATION } from '../utils/normalizeTooltipConfig';
 import { resolveTooltipData } from '../utils/resolveTooltipData';
 import { StyledContainer } from './styled';
 
+// Tooltip подставляет ширину прямо в CSS (max-width: ...), поэтому голое число
+// без единицы браузер игнорирует. Число трактуем как px, строку отдаём как есть.
+const toCssWidth = (value: number | string | undefined): string | undefined => {
+  if (value === undefined) return undefined;
+  return typeof value === 'number' ? `${value}px` : value;
+};
+
 export const CanvasTooltipOverlay: React.FC<CanvasTooltipOverlayProps> =
   React.memo(
     ({
@@ -18,6 +27,8 @@ export const CanvasTooltipOverlay: React.FC<CanvasTooltipOverlayProps> =
       customEnabled = false,
       mouseEnterDelay,
       mouseLeaveDelay,
+      minWidth: globalMinWidth,
+      maxWidth: globalMaxWidth,
     }) => {
       const filter = useMemo(
         () =>
@@ -43,7 +54,13 @@ export const CanvasTooltipOverlay: React.FC<CanvasTooltipOverlayProps> =
         getDelays,
       });
 
-      if (!state.visible) return null;
+      // Пока открыт Popover или Dropdown на canvas, подсказки таблицы прячем, чтобы они не
+      // висели рядом с ним. После закрытия подсказка вернётся, если курсор над элементом.
+      const tablePopover = useOptionalTablePopover();
+      const canvasPopoverOpen =
+        !!tablePopover && getOpenCanvasOverlay(tablePopover.state) !== null;
+
+      if (!state.visible || canvasPopoverOpen) return null;
 
       const containerEl = containerRef?.current;
       if (!containerEl || !(containerEl instanceof HTMLElement)) return null;
@@ -58,7 +75,8 @@ export const CanvasTooltipOverlay: React.FC<CanvasTooltipOverlayProps> =
         <StyledContainer
           style={{
             position: 'absolute',
-            left: displayPosition.x,
+            // offsetX — сдвиг якоря, когда видимая часть ноды не по её центру
+            left: displayPosition.x + (state.data?.tooltipProps?.offsetX ?? 0),
             top: displayPosition.y,
             width: Math.max(0, state.width),
             height: Math.max(0, state.height),
@@ -71,8 +89,12 @@ export const CanvasTooltipOverlay: React.FC<CanvasTooltipOverlayProps> =
             placement={state.data?.tooltipProps?.placement ?? 'top'}
             text={state?.data?.tooltipText ?? ''}
             view={state.data?.tooltipProps?.view ?? 'default'}
-            minWidth={state.data?.tooltipProps?.minWidth}
-            maxWidth={state.data?.tooltipProps?.maxWidth}
+            minWidth={toCssWidth(
+              state.data?.tooltipProps?.minWidth ?? globalMinWidth,
+            )}
+            maxWidth={toCssWidth(
+              state.data?.tooltipProps?.maxWidth ?? globalMaxWidth,
+            )}
             style={{
               position: 'relative',
               ...(state.data?.tooltipProps?.preserveLineBreaks && {

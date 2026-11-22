@@ -1,0 +1,37 @@
+---
+id: spinner
+title: Spinner
+type: atom
+status: Stable
+version: 1.0
+lastUpdated: 2026-06-12
+pixsoLink: "{{Pixso URL Spinner}}"
+storybookLink: "{{Storybook URL Spinner}}"
+pixsoDocLink: "{{Pixso URL Spinner Doc Block 1}}"
+hasDesignDoc: true
+hasDevDoc: true
+hasMechanics: false
+hasCornerCases: false
+related:
+ - progress
+tags:
+ - spinner
+ - feedback
+---
+
+import { PropsTable, Description } from '@site/src/components';
+
+# Spinner
+<Description name="Spinner" />
+<PropsTable name="Spinner" exclude={['css', 'focused']}/>
+
+```tsx live
+import React from 'react';
+import { Spinner } from '@salutejs/sdds-finai';
+
+export function App() {
+    return (
+        <Spinner size={l} />
+    );
+}
+```

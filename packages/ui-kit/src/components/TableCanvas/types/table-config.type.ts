@@ -1,7 +1,15 @@
-import type { GridSelection } from '@glideappsfinal/glide-data-grid';
+import type {
+  CellClickedEventArgs,
+  GridSelection,
+  GroupHeaderClickedEventArgs,
+} from '@glideappsfinal/glide-data-grid';
 import { Group, Item, ItemOrGroup } from '@ui-kit/components/ListOfFilters';
 import type { MassActionsSize } from '@ui-kit/components/MassActions';
 import { SIZE } from '@ui-kit/components/TableCanvas';
+import type {
+  CanvasNodeDropdownProps,
+  CanvasNodePopoverProps,
+} from '@ui-kit/components/TableGlide';
 // FIXME: Ждем адаптации фичи RowInstauments
 // import { RowInstrumentsType, SIZE } from '@ui-kit/components/TableCanvas';
 import { CSSProperties, ReactNode } from 'react';
@@ -20,16 +28,23 @@ import {
 } from '../feature-content-state/types';
 import { FullScreen } from '../feature-full-screen/types';
 import { KeyTextConfig } from '../feature-key-text/types';
+import type { LoadingOverlayConfig } from '../feature-loading-overlay/types';
 import type { TableNotificationsConfig } from '../feature-notifications';
 import { PaginationProps } from '../feature-pagination/types';
+import type { RowErrorsOption } from '../feature-row-errors/types';
 import { RowsGrouping } from '../feature-rows-grouping/types';
 import { SearchingProps } from '../feature-searching/types';
 import {
   FlattenedRowsArrAndMap,
   SelectingRowConfig,
 } from '../feature-select-row/types';
+import type {
+  StickyColumnsConfig,
+  StickyRowsConfig,
+} from '../feature-sticky/types';
 import { SubRows } from '../feature-tree/types';
 import type {
+  AppearanceConfig,
   CellReadOnlyEditorGlideInstanceStaticProps,
   CellsSelectionMode,
   HighlightActiveType,
@@ -48,12 +63,18 @@ import type { MassActionButtonProps } from '../widgets/mass-actions/types';
 import { DomMetadata } from './additional.type';
 import type {
   ColumnConfig,
+  ColumnOrColumnGroupConfig,
   EditingCellInfo,
   SortColumn,
 } from './column-config.type';
 import { ColumnsGroupingConfig } from './columns-grouping.type';
 import { MergedCellsAlign } from './merged-cells.type';
 import { Maybe, ObjectForExtending, Prettify } from './utils.type';
+
+export type {
+  ColumnsGroupingConfig,
+  HeaderAlignment,
+} from './columns-grouping.type';
 /** @deprecated Свойство view не используется и будет удалено в следующей мажорной версии. */
 export type ViewMods = {
   rows: {
@@ -84,7 +105,28 @@ export type ViewMods = {
     domMetadata?: DomMetadata;
   };
 };
-export interface RowsChangeData<R extends ObjectForExtending, SR = unknown> {
+export type TableCanvasChangedCell<RowId = string | number> = {
+  rowId: RowId;
+  columnKey: string;
+};
+
+export type TableCanvasEditedCells<RowId = string | number> = ReadonlyMap<
+  RowId,
+  ReadonlySet<string>
+>;
+
+export interface RowsChangeData<
+  R extends ObjectForExtending,
+  SR = unknown,
+  RowId = string | number,
+> {
+  /**
+   * Ячейки, значения которых изменились за одну правку, вставку или протяжку.
+   *
+   * Подстрока попадает в этот список, если rowKeyGetter возвращает для неё ID.
+   * columnKey указывает на колонку таблицы, даже если поле подстроки называется иначе.
+   */
+  changedCells?: readonly TableCanvasChangedCell<RowId>[];
   indexes: number[];
   column: ColumnConfig<R, SR>;
   rows: { before: R; after: R }[];
@@ -106,6 +148,11 @@ export type RowSize = {
    * Показывать кнопку в блоке управления
    */
   showInControl: boolean;
+  /**
+   * Контролируемый размер строк: таблица читает размер из state и меняет его через setter
+   * (кнопка в блоке управления тоже). Без state размер хранится внутри таблицы, начальное значение - default.
+   */
+  state?: [SIZE, React.Dispatch<React.SetStateAction<SIZE>>];
   /**
    * Значение по умолчанию
    */
@@ -435,9 +482,9 @@ export type FilteringConfig<T> = {
 export type DefaultSidebarTabIds = 'columns' | 'tableSettings' | 'filtering';
 
 /**
- * Конфигурация sidebar
+ * Общие настройки пользовательских вкладок левой и правой панели TableCanvas.
  */
-export type SidebarConfig = {
+export type TableCanvasSidebarConfig = {
   /**
    * Включен ли sidebar. Отвечает только за UI. Не влияет на перерасчёт фичей.
    * @default true
@@ -484,6 +531,17 @@ export type SidebarConfig = {
    * Порядок отображения кастомных вкладок
    */
   customTabsOrder?: Array<Exclude<string, DefaultSidebarTabIds>>;
+  /**
+   * Ширина контента без полоски вкладок (44px). Число — px, строка — CSS.
+   * Проценты считаются от ширины рабочей области TableCanvas.
+   * Изменение пропса сразу меняет ширину открытой панели.
+   * По умолчанию: 300px слева, 400px справа.
+   */
+  width?: string | number;
+};
+
+/** Настройки правой панели; встроенные вкладки доступны только справа. */
+export type SidebarConfig = TableCanvasSidebarConfig & {
   defaultTabs?: Array<
     | {
         id: 'filtering' | 'columns';
@@ -532,6 +590,26 @@ export type SidebarConfig = {
         iconTooltipText?: string;
       }
   >;
+};
+
+/** Конфигурация правой панели. SidebarConfig сохранён для совместимости. */
+export type RightSidebarConfig = SidebarConfig;
+
+/** Пользовательские вкладки слева; встроенных вкладок настроек нет. */
+export type LeftSidebarConfig = TableCanvasSidebarConfig;
+
+/** Нижний слот под canvas, над пагинацией, между боковыми панелями. */
+export type BottomSheetConfig = {
+  /** @default true */
+  enabled?: boolean;
+  /** Число — px, строка — CSS; 'auto' — по содержимому. Проценты — от рабочей области. @default 32 */
+  height?: string | number;
+  /** Минимальная высота, ограниченная доступным пространством. @default 32 */
+  minHeight?: string | number;
+  /** Максимальная высота в px или CSS, дополнительно ограниченная доступным пространством. */
+  maxHeight?: string | number;
+  /** Пользователь управляет содержимым и раскрытием; при height: 'auto' панель прокручивается сама. */
+  content: React.ReactNode;
 };
 
 export function activeViewIs<T extends 'cards' | 'rows'>(
@@ -646,7 +724,10 @@ export type EditingConfig<
    * Функция обработки изменений в редактируемой строке
    */
   onRowsChange: Maybe<
-    (rows: RowType[], data: RowsChangeData<RowType, SummaryRowType>) => void
+    (
+      rows: RowType[],
+      data: RowsChangeData<RowType, SummaryRowType, RowIdType>,
+    ) => void
   >;
   /**
    * свойство, необходимое для корректного изменения дочерних строк.
@@ -658,6 +739,20 @@ export type EditingConfig<
    * @example "child" или "uvh367.children"
    */
   subRowsKey?: string;
+  /**
+   * Позволяет приложению выбирать, какие ячейки подсвечивать в текущей сессии.
+   * По умолчанию таблица сама хранит отметки и очищает их при выходе из редактирования.
+   *
+   * Для числовых ID передайте пару из `useState<TableCanvasEditedCells<number>>(() => new Map())`.
+   * Ключ карты берётся из rowKeyGetter, а множество содержит ключи отмеченных колонок.
+   * При выходе из редактирования и при размонтировании таблица вызывает сеттер,
+   * чтобы очистить отметки завершённой сессии. Если приложение одновременно
+   * заменило карту своей новой картой, таблица сохраняет её.
+   */
+  editedCellsState?: [
+    TableCanvasEditedCells<RowIdType>,
+    React.Dispatch<React.SetStateAction<TableCanvasEditedCells<RowIdType>>>,
+  ];
   /**
    * Глубокое копирование строк перед применением правки в режиме редактирования.
    *
@@ -692,6 +787,15 @@ export type EditingConfig<
    * @returns
    */
   rowEditable?: (row: RowType) => boolean;
+  /**
+   * Ошибки на уровне строки: служебный столбец с индикатором (иконка с
+   * тултипом) и ошибка всей строки. `true` включает столбец с настройками
+   * по умолчанию, объект позволяет их задать. Столбец появляется только
+   * в режиме правки и исчезает при выходе из него.
+   *
+   * @see {@link RowErrorsConfig} — полное описание и пример.
+   */
+  rowErrors?: RowErrorsOption<RowType>;
   /**
    * defaultEnabled - пропс, отвечающий за то, будет ли активен режим редактирования или нет. По умолчанию - не активно.
    * @default false
@@ -753,6 +857,13 @@ export type EditingConfig<
 export type SummaryRowsConfig = {
   showDefault: boolean;
   showInControl: boolean;
+  /**
+   * callback при переключении тогла «Итоговые строки» в настройках таблицы.
+   * Вызывается только по действию пользователя (не при монтировании),
+   * поэтому подходит для сохранения выбора, например, в localStorage.
+   * Сохранённое значение передавайте обратно в `showDefault`.
+   */
+  onChange?: (checked: boolean) => void;
 } & {
   /**
    * Метки для автоматизированного тестирования и аналитики
@@ -777,7 +888,77 @@ export type TableConfigTooltip = {
   mouseEnterDelay?: number;
   /** Глобальная задержка перед скрытием тултипа (мс). Per-node переопределяет. @default 0 */
   mouseLeaveDelay?: number;
+  /**
+   * Минимальная ширина тултипа. Число трактуется как px, строка с единицей
+   * (например '20rem', '50%') отдаётся как есть. Действует на все canvas-тултипы,
+   * включая авто-тултип Canvas.Text. Если ширина задана на самом тултипе
+   * (per-node), приоритет у неё.
+   */
+  minWidth?: number | string;
+  /**
+   * Максимальная ширина тултипа. Число трактуется как px, строка с единицей
+   * (например '20rem', '50%') отдаётся как есть. Действует на все canvas-тултипы,
+   * включая авто-тултип Canvas.Text. Если ширина задана на самом тултипе
+   * (per-node), приоритет у неё.
+   */
+  maxWidth?: number | string;
 };
+
+/** Ключ строки для Popover и Dropdown на canvas-элементах. */
+type TableConfigOverlayRowKey<RowType> = {
+  /**
+   * Ключ строки. Если после обновления `rows` на месте строки, где открыто
+   * окно, стоит строка с тем же ключом, окно остаётся открытым, с другим
+   * ключом закрывается. Не задан: берётся `rowKeyGetter` из `editing`,
+   * `selecting`, `subRows` или `mergeCells`, а без него строки сравниваются
+   * по ссылке, и новый массив с теми же данными тоже закроет окно.
+   */
+  rowKeyGetter?: (row: RowType) => string | number;
+};
+
+/**
+ * Значения по умолчанию для Popover на canvas-элементах (проп `popover`).
+ * Настройки на элементе важнее. `trigger` задаётся только на элементе.
+ */
+export type TableConfigPopover<RowType = ObjectForExtending> = Pick<
+  CanvasNodePopoverProps,
+  | 'placement'
+  | 'offset'
+  | 'hasTail'
+  | 'flip'
+  | 'shift'
+  | 'zIndex'
+  | 'closeOnScroll'
+  | 'closeOnOutsideClick'
+  | 'closeOnEsc'
+  | 'mouseEnterDelay'
+  | 'mouseLeaveDelay'
+> &
+  TableConfigOverlayRowKey<RowType>;
+
+/**
+ * Значения по умолчанию для Dropdown на canvas-элементах (проп `dropdown`).
+ * Настройки на элементе важнее. `trigger` задаётся только на элементе.
+ */
+export type TableConfigDropdown<RowType = ObjectForExtending> = Pick<
+  CanvasNodeDropdownProps,
+  | 'placement'
+  | 'offset'
+  | 'listWidth'
+  | 'listMaxHeight'
+  | 'variant'
+  | 'size'
+  | 'zIndex'
+  | 'closeOnSelect'
+  | 'closeOnScroll'
+  | 'closeOnOutsideClick'
+  | 'closeOnEsc'
+  | 'mouseEnterDelay'
+  | 'mouseLeaveDelay'
+  | 'loadingItems'
+  | 'renderError'
+> &
+  TableConfigOverlayRowKey<RowType>;
 
 export type InfinityScrollConfig<RowType extends ObjectForExtending> = {
   /** Триггер достижения скроллом зоны подгрузки данных. */
@@ -802,7 +983,11 @@ export type { TableCanvasEmptyStateConfig, TableCanvasErrorStateConfig };
  * Настройка выделения ячеек/колонок/строк в TableCanvas — единый объект.
  * Это отдельная ось взаимодействия — не зависит от `highlightActiveType`.
  */
-export type CellsSelectionConfig = {
+export type CellsSelectionConfig<RowType = ObjectForExtending> = {
+  /** Постоянный ID записи для сохранения активной ячейки при перестановке строк. */
+  rowKeyGetter?: (row: RowType) => string | number;
+  /** Версия набора данных. Меняйте вместе с новым набором, сохраняйте при обновлении значений и дозагрузке. */
+  dataRevision?: string | number;
   /**
    * Режим фактического выделения ячеек (нативный glide selection). По нему
    * работают copy/paste, рамка, fill-handle и затемнение шапки/нумерации.
@@ -833,36 +1018,121 @@ export type CellsSelectionConfig = {
    */
   enableSelectAll?: boolean;
   /**
+   * Рамка у каждого диапазона несмежного Ctrl-выбора ячеек (`multi-range-cell`).
+   * По умолчанию рамку рисует только активный (последний) диапазон, остальные
+   * показываются заливкой. Ограничение: соседние диапазоны дают общую линию на
+   * стыке; диапазон, поглощённый более поздним, не обводится.
+   * @default false
+   */
+  outlineEachRange?: boolean;
+  /**
    * Внешний (controlled) контроль НАТИВНОГО выделения (ячейки/диапазон/смежные
    * строки и колонки). `state` — кортеж `[value, setter]` как у `selecting.state`.
    * Сброс: `setter({ current: undefined, rows: empty, columns: empty })`.
-   * Несмежный Ctrl-выбор колонок/строк (own-state) сюда не входит — он внутренний.
+   * Несмежный Ctrl-выбор колонок/строк (own-state) сюда не входит — см. `onChange`.
    */
   state?: [GridSelection, React.Dispatch<React.SetStateAction<GridSelection>>];
   /**
-   * «Версия данных» для сброса выделения при пагинации/рефетче. Таблица значение
-   * не интерпретирует, только сравнивает с прошлым через ===: изменилось — рамка
-   * выделения сбрасывается. Примеры: `${page}:${pageSize}`, счётчик рефетчей.
-   * Если не задано, версией служит сам массив rows (новый массив = сброс);
-   * live-обновлению без сброса нужен dataRevision. Сортировка/фильтр/поиск/
-   * группировка (включая manual-режимы) сбрасывают выделение сами, без этого поля.
+   * Итоговое выделение после каждого действия пользователя — в том числе
+   * несмежный Ctrl-выбор колонок (`columns`) и строк (`rows`), которого нет в
+   * `state`. Срабатывает с `state` и без него.
+   *
+   * Срабатывает и без действия пользователя, когда слева появляется или исчезает
+   * служебная колонка (например, столбец ошибок): выделение остаётся на тех же
+   * ячейках, а их индексы сдвигаются. Программная смена `state` снаружи
+   * `onChange` не вызывает, но копирование, вставка и протяжка заполнения
+   * работают уже с новым выделением, а несмежный Ctrl-выбор снимается.
+   *
+   * Индексы колонок — в координатах грида: служебные колонки слева (нумерация
+   * `rowMarkers`, чекбоксы `selecting`) входят в счёт. Колонка, `i`-я по порядку
+   * на экране, имеет индекс `i` + число служебных колонок.
    */
-  dataRevision?: unknown;
+  onChange?: (selection: GridSelection) => void;
   /**
-   * Ключ строки для восстановления активной ячейки после смены проекции
-   * (сортировка/фильтр: ячейка остаётся на своей записи, таблица доскролливает).
-   * Без ключа (здесь или в selecting/subRows/mergeCells) выделение просто
-   * сбрасывается.
+   * Фокусировать грид, когда выделение с ячейкой приходит снаружи через `state`
+   * (иначе glide рисует якорную ячейку как у несфокусированного грида).
+   * Выключите, если выделение меняется программно и фокус должен остаться,
+   * где был (например, переход по результатам поиска из поля ввода).
+   * @default true
    */
-  rowKeyGetter?: (row: ObjectForExtending) => string | number;
+  focusOnStateChange?: boolean;
 };
 
-/** Регион структурного объединения ячеек: ключи строк + ключи колонок. */
+/** Один объединённый блок: какие строки и колонки слить. */
 export type MergedCellsRegion = {
   rowKeys: Array<string | number>;
   colKeys: string[];
-  /** Точечное выравнивание контента этого объединения. Важнее колоночного и общего. */
-  align?: MergedCellsAlign;
+  /** Выравнивание контента этого блока. Важнее колоночного и общего. */
+  mergedCellsAlign?: MergedCellsAlign;
+};
+
+/**
+ * Видимость сторон рамки ячейки: true рисовать, false не рисовать, не задано -
+ * работает уровень ниже (настройка колонки, строки или общая).
+ */
+export type CellBorderVisibility = {
+  top?: boolean;
+  right?: boolean;
+  bottom?: boolean;
+  left?: boolean;
+};
+
+/**
+ * Управление рамками (линиями) таблицы: включение и выключение. Уровни, от
+ * слабого к сильному: общие настройки (vertical, horizontal), затем колонка
+ * (getVerticalBorder) и строка (getHorizontalBorder), затем ячейка
+ * (getCellBorder).
+ */
+export type BordersConfig<RowType = ObjectForExtending> = {
+  /** Рисовать ли вертикальные линии между колонками. @default true */
+  vertical?: boolean;
+  /** Рисовать ли горизонтальные линии между строками тела. @default true */
+  horizontal?: boolean;
+  /**
+   * Точечное управление вертикальной линией справа от колонки (разделитель
+   * после неё). Вернуть true или false, чтобы переопределить общую настройку
+   * vertical, или undefined, чтобы оставить её. Зовётся на каждую видимую
+   * колонку при перерисовке, поэтому функция должна быть быстрой.
+   */
+  getVerticalBorder?: (params: {
+    /** Ключ колонки, справа от которой рисуется линия. */
+    columnKey: string;
+    /** Индекс колонки в порядке отрисовки (закреплённые в начале). */
+    columnIndex: number;
+  }) => boolean | undefined;
+  /**
+   * Точечное управление горизонтальной линией сверху строки. Вернуть true или
+   * false, чтобы переопределить общую настройку horizontal, или undefined,
+   * чтобы оставить её. Для summary-строк не вызывается. Зовётся на каждую
+   * видимую строку при перерисовке, поэтому функция должна быть быстрой.
+   */
+  getHorizontalBorder?: (params: {
+    /** Строка под линией (линия рисуется сверху этой строки). */
+    row: RowType;
+    /** Индекс строки среди отображаемых. При раскрытии subRows индексы сдвигаются. */
+    rowIndex: number;
+    /** Уровень вложенности subRows: 0 корень, 1 и больше дочерние. */
+    treeLvl: number;
+  }) => boolean | undefined;
+  /**
+   * Стороны рамки конкретной ячейки, вкл и выкл. Для ячеек без переопределений
+   * возвращать undefined. Включает отрисовку линий с разбивкой по ячейкам,
+   * поэтому функция должна быть быстрой: без тяжёлых вычислений и с готовыми
+   * объектами-константами вместо новых на каждый вызов. Для summary-строк не
+   * вызывается.
+   */
+  getCellBorder?: (params: {
+    /** Индекс колонки среди отображаемых (без служебных). */
+    col: number;
+    /** Ключ колонки. */
+    columnKey: string | undefined;
+    /** Строка ячейки. */
+    row: RowType;
+    /** Индекс строки среди отображаемых. */
+    rowIndex: number;
+    /** Уровень вложенности subRows: 0 корень, 1 и больше дочерние. */
+    treeLvl: number;
+  }) => CellBorderVisibility | undefined;
 };
 
 export type TableConfig<
@@ -874,8 +1144,8 @@ export type TableConfig<
 > = {
   /**
    * Группировка колонок (многоуровневая шапка через `columnConfig.children`):
-   * слияние пустых ячеек шапки (`squashEmptyCells`, по умолчанию включено) и
-   * дефолт выравнивания в слитых ячейках (`squashedHeaderAlign`).
+   * объединение пустых ячеек шапки (`squashEmptyCells`, по умолчанию включено) и
+   * дефолт выравнивания в объединённых ячейках (`squashedHeaderAlign`).
    */
   columnsGrouping?: ColumnsGroupingConfig;
   /**
@@ -889,7 +1159,7 @@ export type TableConfig<
    * (`enableColumnSelection`/`enableRowSelection`/`enableSelectAll`) и controlled
    * (`state`). См. {@link CellsSelectionConfig}.
    */
-  cellsSelection?: CellsSelectionConfig;
+  cellsSelection?: CellsSelectionConfig<RowType>;
   /**
    * Подсвеченная строка (`highlightActiveType='row'`).
    * `state` (опционально) — controlled-кортеж `[value, setter]`: задан — значением
@@ -919,9 +1189,8 @@ export type TableConfig<
    * рисуются ПОВЕРХ hover-подсветки и визуально перекрывают её (hover
    * «остаётся под ними» и снова виден после сброса выделения).
    *
-   * `{ row: true }` — включить с цветами из темы;
-   * `{ row: { color: '#F7F9FB' } }` — переопределить цвет data-ячеек.
-   * @default undefined (выключено)
+   * По умолчанию row-подсветка ВКЛЮЧЕНА (цвета из темы);
+   * `{ row: false }` — выключить явно.
    */
   hoverEffects?: HoverEffectsConfig;
   /**
@@ -931,13 +1200,67 @@ export type TableConfig<
    */
   enableLowDprHairline?: boolean;
   /**
+   * Управление рамками (линиями) таблицы: включение и выключение.
+   *
+   * Уровни, от слабого к сильному: общие настройки (vertical, horizontal),
+   * затем колонка (getVerticalBorder) и строка (getHorizontalBorder), затем
+   * ячейка (getCellBorder).
+   *
+   * `vertical: false` и `horizontal: false` убирают все вертикальные или
+   * горизонтальные линии тела. `getCellBorder` включает и выключает стороны
+   * рамки конкретной ячейки; при его использовании линии рисуются с разбивкой
+   * по ячейкам.
+   */
+  borders?: BordersConfig<RowType>;
+  /**
+   * Готовые варианты внешнего вида таблицы.
+   *
+   * `variant: 'clean'` — без линий сетки и внешних рамок, шапка на белом фоне
+   * с серым текстом. Отдельные линии можно вернуть через `borders`.
+   *
+   * `zebra: true` — строки через одну окрашены серым, работает в любом варианте.
+   */
+  appearance?: AppearanceConfig;
+  /**
    * rowSize - размеры строк таблицы
    */
   rowSize?: Prettify<RowSize>;
   /**
-   * rowHeight - размер высоты строк таблицы
+   * rowHeight - размер высоты строк таблицы: число, функция или `'auto'`.
+   * `'auto'` — высота строки по содержимому: ячейка сообщает высоту своего дерева Canvas, когда
+   * таблица её рисует (перенос слов в `Canvas.Text wordWrap` растит строку), но не ниже высоты
+   * по `rowSize` и не выше `maxAutoRowHeight`. Рисуются только видимые ячейки: строка,
+   * показанная впервые, дорастает на следующем кадре, колонка, до которой ещё не прокрутили,
+   * высоту не меняет.
+   * Высота кешируется по ячейке (объект строки + колонка) при ширине колонки: чтобы перемерить
+   * строку после изменения данных, передайте новый объект строки. Смена `rowSize` или темы,
+   * загрузка шрифта — перемеряют все ячейки, новый `renderCell` колонки — ячейки этой колонки;
+   * до перемера строка держит прежнюю высоту.
+   * Ячейки, объединённые на несколько строк, строку не растят.
+   * С панелью детализации строки не растут: `'auto'` там равен высоте по `rowSize`.
    */
-  rowHeight?: Maybe<number | RowHeightFunc<RowType>>;
+  rowHeight?: Maybe<number | 'auto' | RowHeightFunc<RowType>>;
+  /**
+   * Потолок высоты строки при `rowHeight: 'auto'` (в px), по умолчанию 480: содержимое выше
+   * обрезается. Смена значения сразу меняет высоты всех измеренных строк, без перемера ячеек.
+   * Больше 65534 не бывает (`Infinity` — 65534), нечисловое значение — 480.
+   */
+  maxAutoRowHeight?: Maybe<number>;
+  /**
+   * headerRowHeight - высота одного ряда шапки (в px). По умолчанию 33.
+   *
+   * Значение применяется к КАЖДОМУ уровню шапки: как к листовому (нижнему) ряду
+   * колонок, так и к каждому уровню объединённых (групповых) заголовков. Поэтому
+   * при N уровнях группировки итоговая высота шапки = headerRowHeight * (1 + N).
+   * Например, headerRowHeight={50} при 2 уровнях групп даст шапку 50 + 50 + 50 = 150px.
+   */
+  headerRowHeight?: Maybe<number>;
+  /**
+   * groupHeaderRowHeight - высота каждого уровня объединённых (групповых) заголовков (в px).
+   * По умолчанию равна `headerRowHeight`. Нужна, когда нижний ряд шапки выше уровней групп,
+   * например при переносе названий колонок на несколько строк.
+   */
+  groupHeaderRowHeight?: Maybe<number>;
   /**
    * sorting - активация сортировки. Условие активации - это наличие данного свойства. Нужно также сконфигурировать колонки.
    *
@@ -1035,41 +1358,65 @@ export type TableConfig<
   /**
    * Объединение ячеек тела таблицы.
    *
-   * `mergeByCellValues` — колонки, объединяемые по ПОДРЯД ИДУЩИМ одинаковым
-   * значениям в текущем ВИДИМОМ порядке (после сортировки/фильтрации). Обёртка
-   * сама считает «пробеги» одинаковых (O(n) на смену данных, lookup O(1)) и
-   * проставляет вертикальное объединение. Данные НЕ мутируются: значение уже
-   * повторяется в строках, merge лишь схлопывает его визуально. Сортировка и
-   * фильтр пересобирают блоки автоматически.
+   * mergeByCellValues — колонки, в которых подряд идущие одинаковые значения
+   * сливаются в один блок (по вертикали). Границы блоков таблица считает сама из
+   * данных; сортировка и фильтр их пересобирают. Данные не меняются — значение и
+   * так повторяется в строках, объединение лишь показывает его одной ячейкой.
    *
-   * `mergedCellsRegions` — controlled-список СТРУКТУРНЫХ объединений (управляется
-   * извне, как `selected`): каждый регион задаётся стабильными идентификаторами —
-   * ключами строк (`rowKeys`) и ключами колонок (`colKeys`). Обёртка резолвит их
-   * в текущие видимые индексы; если после сортировки/реордера/скрытия строки или
-   * колонки региона перестали быть СМЕЖНЫМИ — регион не рисуется (как ограничения
-   * sort в Excel). Требует `rowKeyGetter`. Приоритетнее `mergeByCellValues`.
+   * mergedCellsRegions — список блоков, заданных снаружи (как выделение): каждый
+   * блок описан ключами строк (rowKeys) и колонок (colKeys). Нужен rowKeyGetter.
+   * Если после сортировки или скрытия колонок строки/колонки блока перестали идти
+   * подряд — блок не рисуется. Важнее mergeByCellValues.
    *
-   * Примеры: `mergeCells={{ mergeByCellValues: ['dept', 'role'] }}`,
-   * `mergeCells={{ mergedCellsRegions, rowKeyGetter: (r) => r.id }}`.
+   * Примеры: mergeCells={{ mergeByCellValues: ['dept', 'role'] }},
+   * mergeCells={{ mergedCellsRegions, rowKeyGetter: (r) => r.id }}.
    */
   mergeCells?: {
     mergeByCellValues?: Array<
       string | { colKey: string; value: (row: RowType) => unknown }
     >;
-    /** Controlled-список структурных объединений по ключам строк + колонок. */
+    /** Список блоков, заданных снаружи (по ключам строк и колонок). */
     mergedCellsRegions?: MergedCellsRegion[];
     /**
-     * Нужен для `mergedCellsRegions`: сопоставление `rowKeys` со строками.
-     * Должна быть ЧИСТОЙ и стабильной функцией от строки. Намеренно НЕ входит в
-     * зависимости пересчёта колонок (как и rowKeyGetter других фич) — её замена
-     * на лету не пересобирает таблицу.
+     * Ленивый резолвер блоков: для ячейки строки `row` в колонке `colKey`
+     * возвращает первую и последнюю строку её блока (включительно) или null.
+     * Вызывается при отрисовке только для видимых ячеек — для больших и ленивых
+     * данных, где обход всех строк (mergeByCellValues) дорог. Ответ кешируется
+     * до смены отображаемых строк (новые `rows`, сортировка, фильтр), найденный
+     * блок — сразу для всех своих строк. Должна быть стабильной функцией.
+     * Колонки из mergedCellsRegions, mergeByCellValues и группировки со слиянием
+     * берут блоки оттуда.
+     *
+     * `rowInd` и границы блока — индексы в отображаемых строках: после сортировки,
+     * фильтров и группировки они не совпадают с индексами в `rows`. Отображаемые
+     * строки приходят в `ctx.rows`, по ним ищут соседей блока. Среди них есть и
+     * служебные строки (заголовки групп, строки дерева): у них нет полей данных,
+     * и сравнение полей соседей их склеит, проверяйте строку.
+     *
+     * Блок это хотя бы две строки, и `rowInd` должен входить в ответ: блок из
+     * одной строки (`[rowInd, rowInd]`) и ответ без своей строки считаются
+     * `null`, границы за краем таблицы обрезаются.
+     */
+    lazyRowSpan?: (
+      row: RowType,
+      colKey: string,
+      rowInd: number,
+      ctx: {
+        /** Отображаемые строки в порядке на экране; `rows[rowInd] === row` */
+        rows: readonly RowType[];
+      },
+    ) => readonly [number, number] | null;
+    /**
+     * Нужен для mergedCellsRegions: находит строку по её ключу. Должна быть
+     * стабильной функцией; менять её на лету не нужно — в пересборку таблицы она
+     * не входит.
      */
     rowKeyGetter?: (row: RowType) => string | number;
     /**
-     * Общий дефолт выравнивания контента в объединённых ячейках. Перекрывается
-     * колоночным `mergedCellsAlign` и `align` конкретного региона.
+     * Выравнивание по умолчанию для всех блоков. Колоночный mergedCellsAlign и
+     * выравнивание конкретного региона важнее.
      */
-    align?: MergedCellsAlign;
+    mergedCellsAlign?: MergedCellsAlign;
   };
 
   /**
@@ -1162,11 +1509,48 @@ export type TableConfig<
    */
   unstickyHeader?: boolean;
 
+  /**
+   * stickyColumns - колонки, которые прилипают к левому краю при горизонтальной прокрутке,
+   * как `position: sticky`. Ключи колонок или предикат по колонке.
+   *
+   * ```tsx
+   * tableConfig={{ stickyColumns: ['region', 'total'] }}
+   * tableConfig={{ stickyColumns: (column) => column.key.startsWith('total') }}
+   * ```
+   */
+  stickyColumns?: StickyColumnsConfig<ColumnConfig<RowType, SummaryRowType>>;
+
+  /**
+   * stickyRows - строки, которые прилипают под шапкой при вертикальной прокрутке.
+   * Предикат проверяется для каждой отображаемой строки данных (результаты кешируются); строки групп
+   * (`rowsGrouping`) и заглушки загрузки в него не попадают и липкими не становятся.
+   * Индексы передаются как есть — удобно для больших таблиц, где позиции известны заранее. Они
+   * считаются по итоговому отображаемому списку: сортировка, фильтры, группировка и раскрытые узлы
+   * дерева (`subRows`) сдвигают нумерацию — тогда индексы нужно пересчитывать или передать предикат.
+   *
+   * ```tsx
+   * tableConfig={{ stickyRows: (row) => row.isSubtotal }}
+   * tableConfig={{ stickyRows: [0, 41, 82] }}
+   * ```
+   */
+  stickyRows?: StickyRowsConfig<RowType>;
+
   /** Тултип при hover по canvas-элементам.
    *  Для активации фичи необходимо заполнить данный конфиг,
    * а также добавить нужные изменения в Canvas-элементах или в конфиге колонки.
    */
   tooltip?: TableConfigTooltip;
+
+  /**
+   * Значения по умолчанию для Popover на canvas-элементах. Сам Popover
+   * включается пропом `popover` на элементе, этот конфиг не обязателен.
+   */
+  popover?: TableConfigPopover<RowType>;
+  /**
+   * Значения по умолчанию для Dropdown на canvas-элементах (проп `dropdown`).
+   * Настройки на элементе важнее.
+   */
+  dropdown?: TableConfigDropdown<RowType>;
 
   /**
    * infinityScroll - бесконечная подгрузка данных при скролле.
@@ -1186,35 +1570,10 @@ export type TableConfig<
   isLoading?: boolean | { boolean: boolean; skeletonRowsCount: number };
   /**
    * loadingOverlay - конфигурация для отображения оверлея загрузки.
-   * Показывает индикатор загрузки поверх таблицы с возможностью кастомизации.
+   * mode: 'replace' (по умолчанию) показывает оверлей вместо таблицы,
+   * mode: 'cover' — поверх таблицы без её размонтирования.
    */
-  loadingOverlay?: {
-    /**
-     * Активен ли оверлей загрузки
-     * @default true
-     */
-    active?: boolean;
-    /**
-     * Кастомный компонент спиннера
-     * @default <Spinner view="secondary" size="36" /> (внутренний компонент)
-     */
-    spinner?: ReactNode;
-    /**
-     * Основной заголовок оверлея
-     * @default "Загрузка таблицы"
-     */
-    title?: string;
-    /**
-     * Подзаголовок, который появится после задержки, пустая строка - значит он не появится
-     * @default ""
-     */
-    subtitle?: string;
-    /**
-     * Задержка перед показом подзаголовка (мс)
-     * @default 10000 (10 секунд)
-     */
-    showSubtitleDelay?: number;
-  };
+  loadingOverlay?: LoadingOverlayConfig;
   /**
    * Empty state внутри content-области canvas-таблицы.
    * Не заменяет control block, header или pagination.
@@ -1273,7 +1632,14 @@ export type TableConfig<
   /**
    * Конфигурация табов в сайдбаре
    */
+  /** @deprecated Используйте rightSidebarConfig. При наличии обоих приоритет у rightSidebarConfig. */
   sidebarConfig?: SidebarConfig;
+  /** Конфигурация правой панели. */
+  rightSidebarConfig?: RightSidebarConfig;
+  /** Конфигурация пользовательских вкладок левой панели (режим строк). */
+  leftSidebarConfig?: LeftSidebarConfig;
+  /** Нижний слот в режиме строк. Не увеличивает внешний контейнер таблицы. */
+  bottomSheetConfig?: BottomSheetConfig;
   searching?: SearchingProps;
   /**
    * onHeaderContextMenu - callback открытия контекстного меню.
@@ -1299,12 +1665,47 @@ export type TableConfig<
    *
    * Получает `cell` readonly [colIndex, rowIndex] от glide, и `info` обогащённый объект
    * с row, column, ctxs, refTable (аналогично onCellContextMenu).
+   * `colIndex` — в координатах грида: служебные колонки слева (нумерация, чекбоксы)
+   * входят в счёт; колонку надёжнее брать из `info.column`.
    */
   onCellClicked?: (
     cell: readonly [number, number],
     info: TableInfoWithRow<RowType, SummaryRowType>,
+    /** Событие клика glide: позиция в ячейке, модификаторы, кнопка */
+    event: CellClickedEventArgs,
   ) => void;
+  /**
+   * Клик по заголовку группы колонок.
+   *
+   * `info` — группа из columnConfig: `key` и `children` (вложенные колонки и
+   * подгруппы). `colIndex` — колонка под курсором в координатах грида: служебные
+   * колонки слева (нумерация, чекбоксы) входят в счёт.
+   */
+  onGroupHeaderClicked?: GroupHeaderHandler<RowType, SummaryRowType>;
+  /** Правый клик по заголовку группы колонок. Аргументы — как у onGroupHeaderClicked. */
+  onGroupHeaderContextMenu?: GroupHeaderHandler<RowType, SummaryRowType>;
 } & GlideInstanceOmitted<RowType, SummaryRowType>;
+
+/** Группа шапки из columnConfig, по которой кликнули */
+export type GroupHeaderInfo<
+  RowType extends ObjectForExtending,
+  SummaryRowType = unknown,
+> = {
+  /** Ключ группы (ColumnGroupConfig.key) */
+  key: string;
+  /** Вложенные колонки и подгруппы группы */
+  children: readonly ColumnOrColumnGroupConfig<RowType, SummaryRowType>[];
+};
+
+export type GroupHeaderHandler<
+  RowType extends ObjectForExtending,
+  SummaryRowType = unknown,
+> = (
+  colIndex: number,
+  info: GroupHeaderInfo<RowType, SummaryRowType>,
+  /** Событие клика glide: позиция, модификаторы, кнопка; `event.group` — ключ группы */
+  event: GroupHeaderClickedEventArgs,
+) => void;
 
 type GlideInstanceOmitted<
   RowType extends ObjectForExtending,
@@ -1321,9 +1722,9 @@ type GlideInstanceOmitted<
   | 'maxColumnWidth'
   | 'maxColumnAutoWidth'
   | 'onVisibleRegionChanged'
-  | 'onCellClicked'
+  // onCellClicked и onGroupHeader* объявлены в TableConfig явно — с info и событием
   // | 'CellReadOnlyEditor'
-  // | 'onGroupHeaderClicked'
+  // Сигнатуры glide: индекс колонки — в координатах грида (сервисные колонки включены)
   | 'onHeaderClicked'
   | 'onItemHovered'
   | 'trapFocus'
@@ -1426,7 +1827,7 @@ export type RowMarkersTableConfig<
     isSubRow: boolean;
     /**
      * Индекс строки в **видимых** строках.
-     * ⚠️ **Нестабильный** — меняется при сворачивании/разворачивании веток.
+     * **Нестабильный** — меняется при сворачивании и разворачивании веток.
      */
     rowIndex: number;
     /**
@@ -1462,3 +1863,8 @@ export type RowMarkersTableConfig<
     rows: readonly RowType[];
   }) => string | number;
 };
+
+export type {
+  RowErrorsConfig,
+  RowErrorsInfo,
+} from '../feature-row-errors/types';

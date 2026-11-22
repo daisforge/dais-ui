@@ -1,11 +1,5 @@
-import {
-  IconChevronDown,
-  IconChevronRight,
-  IconDisclosureDownOutline,
-  IconDisclosureRightOutline,
-} from '@ui-kit/icons';
-
 import { Canvas } from '../../TableGlide';
+import { resolveSubRowKey } from '../feature-cell-transfer/utils/resolveSubRowKey';
 import {
   SKELETON_CELLS_KEY,
   SKELETON_ROW_KEY,
@@ -15,11 +9,17 @@ import type { KeyText } from '../feature-key-text/types';
 import { ExpandDetailButton } from '../feature-row-detail/ExpandDetailButton';
 import { rowIsHaveDetailPanel } from '../feature-row-detail/handlers';
 import { RowDetailConfig } from '../feature-row-detail/types';
+import { ROW_ERRORS_COLUMN_KEY } from '../feature-row-errors';
 import { ROW_I_COLUMN_KEY } from '../feature-row-instruments';
 import { ROW_MARKER_COLUMN_KEY } from '../feature-row-markers';
 import { CHECKBOX_COLUMN_KEY } from '../feature-select-row';
 import { SUBROWS_KEY } from '../feature-tree/constants';
 import { getHasArrow, getTreeIdAndLvlOfRow } from '../feature-tree/handlers';
+import {
+  getTreeButtonBox,
+  IconTreeCollapsed,
+  IconTreeExpanded,
+} from '../feature-tree/tree-disclosure-icons';
 import {
   CanvasContent,
   CellContent,
@@ -33,46 +33,24 @@ import {
 import { ContentFormat } from '../TableGlideInstance/type';
 import { ColumnConfig, ObjectForExtending, TableConfig } from '../types';
 import { FormattedContent } from './formatCell';
-import { ROW_ICON_BUTTON_CONFIG } from './rowIconConfig';
+import { RowSize, TREE_BUTTON_GAP } from './rowIconConfig';
 import {
   DEFAULT_CELL_PADDING_INLINE,
   getPaddingLeftFinal,
 } from './styleConstants';
-import { withSelectIcon } from './withSelectIcon';
-
-const TREE_BUTTON_CONFIG = {
-  big: {
-    ...ROW_ICON_BUTTON_CONFIG.big,
-    gap: 8,
-    ExpandedIcon: IconDisclosureDownOutline,
-    CollapsedIcon: IconDisclosureRightOutline,
-  },
-  medium: {
-    ...ROW_ICON_BUTTON_CONFIG.medium,
-    gap: 2,
-    ExpandedIcon: IconChevronDown,
-    CollapsedIcon: IconChevronRight,
-  },
-  small: {
-    ...ROW_ICON_BUTTON_CONFIG.small,
-    gap: 0,
-    ExpandedIcon: IconChevronDown,
-    CollapsedIcon: IconChevronRight,
-  },
-};
+import { isSelectEditingCell, withSelectIcon } from './withSelectIcon';
 
 const getTreeButton = (
   expanded: boolean,
   toggleExpand: () => void,
-  rowSize: 'big' | 'medium' | 'small' = 'big',
+  rowSize: RowSize = 'big',
 ) => {
-  const { overrideSquareSize, overrideIconSize, ExpandedIcon, CollapsedIcon } =
-    TREE_BUTTON_CONFIG[rowSize];
-  const Icon = expanded ? ExpandedIcon : CollapsedIcon;
+  const { squareSize, layoutWidth } = getTreeButtonBox(rowSize);
+  const Icon = expanded ? IconTreeExpanded : IconTreeCollapsed;
 
   return (
     <Canvas.EmbedIconButton
-      icon={<Icon />}
+      icon={<Icon size={rowSize} />}
       view="secondary"
       interaction={{
         selection: 'keep',
@@ -81,8 +59,13 @@ const getTreeButton = (
         contextMenu: 'keep-selection',
       }}
       // buttonSize="xs"
-      overrideSquareSize={overrideSquareSize}
-      overrideIconSize={overrideIconSize}
+      // Иконка занимает весь квадрат: глиф прижат к его левому краю,
+      // размер глифа задан во viewBox (см. tree-disclosure-icons).
+      // В раскладке кнопка уже квадрата на убранную пустоту слева — справа
+      // от глифа места столько же, сколько у исходной иконки
+      overrideSquareSize={squareSize}
+      overrideIconSize={squareSize}
+      overrideWidth={layoutWidth}
       onClick={toggleExpand}
       style={{
         flexShrink: 0,
@@ -196,25 +179,32 @@ export const RenderCellGlide = <
   } = expandedRowsCtx;
 
   const isSelectColumn =
-    editModeEnabled && column?.editingCell?.component === 'select';
+    editModeEnabled && isSelectEditingCell(column?.editingCell);
   const rowSize = theme.rowSize ?? 'big';
   const cellPaddingInline =
     theme.cellHorizontalPadding ?? DEFAULT_CELL_PADDING_INLINE;
+  // Select в объединённой ячейке встаёт по выравниванию блока по высоте. Блоку
+  // в несколько строк таблица по умолчанию ставит верх, у блока в одну строку
+  // без настройки и у обычной ячейки значения нет.
+  const { __mergedCell: mergedCell } = renderCellProps;
+  const mergedVerticalAlign =
+    isSelectColumn && mergedCell ? mergedCell.align?.vertical : undefined;
+  const mergedHorizontalAlign =
+    isSelectColumn && mergedCell
+      ? mergedCell.align?.horizontal ?? 'left'
+      : undefined;
+  const { cellVerticalPadding } = theme;
   const selectCellVisual = {
     rowSize,
     cellPaddingInline,
-    overlayRightOffset: 0,
+    cellVerticalPadding,
+    mergedVerticalAlign,
+    mergedHorizontalAlign,
   };
-  const selectCellVisualInPaddedContainer = {
-    ...selectCellVisual,
-    overlayRightOffset: cellPaddingInline,
-  };
-  // Select-trigger должен лежать внутри hit-bounds своего canvas-parent.
-  // Поэтому правый padding wrapper-а отдаем overlay, а не выводим chevron за parent.
+  // Правый padding wrapper-а отдаём триггеру: chevron лежит внутри hit-bounds
+  // своего canvas-parent, а не выводится за него.
   const getSelectAwareWrapperPadding = (select: boolean): CellPaddingInline =>
     select ? { left: cellPaddingInline, right: 0 } : cellPaddingInline;
-  const getSelectAwareVisual = (select: boolean): typeof selectCellVisual =>
-    select ? selectCellVisual : selectCellVisualInPaddedContainer;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   if ((row as any)?.[SKELETON_ROW_KEY]) {
@@ -240,6 +230,9 @@ export const RenderCellGlide = <
     return column.renderCell(renderCellProps);
   }
   if (column.key === ROW_MARKER_COLUMN_KEY && column.renderCell) {
+    return column.renderCell(renderCellProps);
+  }
+  if (column.key === ROW_ERRORS_COLUMN_KEY && column.renderCell) {
     return column.renderCell(renderCellProps);
   }
 
@@ -271,7 +264,7 @@ export const RenderCellGlide = <
       withSelectIcon(defaultLvl0RenderElement, {
         isSelect: isSelectColumn,
         editModeEnabled,
-        visual: getSelectAwareVisual(isSelectColumn),
+        visual: selectCellVisual,
       }),
       getSelectAwareWrapperPadding(isSelectColumn),
     );
@@ -285,7 +278,7 @@ export const RenderCellGlide = <
         withSelectIcon(defaultLvl0RenderElement, {
           isSelect: isSelectColumn,
           editModeEnabled,
-          visual: getSelectAwareVisual(isSelectColumn),
+          visual: selectCellVisual,
         }),
         getSelectAwareWrapperPadding(isSelectColumn),
       );
@@ -296,7 +289,7 @@ export const RenderCellGlide = <
           isSelect: isSelectColumn,
           editModeEnabled,
           textInCanvasText: 'textInCanvasText',
-          visual: selectCellVisualInPaddedContainer,
+          visual: selectCellVisual,
         })}
         {ExpandDetailButton({ row, handleExpandRowDetail })}
       </>,
@@ -330,7 +323,7 @@ export const RenderCellGlide = <
         withSelectIcon(defaultLvl0RenderElement, {
           isSelect: isSelectColumn,
           editModeEnabled,
-          visual: getSelectAwareVisual(isSelectColumn),
+          visual: selectCellVisual,
         }),
         getSelectAwareWrapperPadding(isSelectColumn),
       );
@@ -349,7 +342,7 @@ export const RenderCellGlide = <
         withSelectIcon(defaultLvl0RenderElement, {
           isSelect: isSelectColumn,
           editModeEnabled,
-          visual: getSelectAwareVisual(isSelectColumn),
+          visual: selectCellVisual,
         }),
         getSelectAwareWrapperPadding(isSelectColumn),
       );
@@ -361,7 +354,7 @@ export const RenderCellGlide = <
             isSelect: isSelectColumn,
             editModeEnabled,
             textInCanvasText: 'textInCanvasText',
-            visual: selectCellVisualInPaddedContainer,
+            visual: selectCellVisual,
           })}
           {ExpandDetailButton({ row, handleExpandRowDetail })}
         </>,
@@ -369,9 +362,7 @@ export const RenderCellGlide = <
       );
     }
 
-    const treeGap = hasChildrenAndArrow
-      ? TREE_BUTTON_CONFIG[theme.rowSize ?? 'big'].gap
-      : 8;
+    const treeGap = hasChildrenAndArrow ? TREE_BUTTON_GAP[rowSize] : 8;
 
     return (
       <Canvas.Container
@@ -379,12 +370,7 @@ export const RenderCellGlide = <
         alignItems="center"
         columnGap={treeGap}
         padding={{
-          left: getPaddingLeftFinal(
-            effectivePadding,
-            lvl,
-            hasChildrenAndArrow,
-            false,
-          ),
+          left: getPaddingLeftFinal(effectivePadding, lvl, rowSize, false),
         }}
       >
         {hasChildrenAndArrow &&
@@ -422,6 +408,9 @@ export const RenderCellGlide = <
     if (column.key === ROW_MARKER_COLUMN_KEY && column.renderCell) {
       return column.renderCell(renderCellProps);
     }
+    if (column.key === ROW_ERRORS_COLUMN_KEY && column.renderCell) {
+      return column.renderCell(renderCellProps);
+    }
 
     if (column.subRow?.renderSubRowCell) {
       // FIXME
@@ -432,27 +421,15 @@ export const RenderCellGlide = <
     const getContentFormat = (): ContentFormat | undefined =>
       column.subRow?.contentFormat ?? column.contentFormat;
 
-    if (column.subRow?.parentKeyAsDefault) {
-      return FormattedContent(row?.[column.key], getContentFormat());
-    }
-
-    if (column.subRow?.keyOfColumnInSubRow) {
-      const subKey =
-        typeof column.subRow.keyOfColumnInSubRow === 'function'
-          ? column.subRow.keyOfColumnInSubRow(lvl)
-          : column.subRow.keyOfColumnInSubRow;
-
-      return FormattedContent(row?.[subKey], getContentFormat());
-    }
-    return '';
-    // return 'NOT FOUND in RenderCellGlide';
-    // return row?.[column.key];
+    const field = resolveSubRowKey(column, lvl);
+    return field === undefined
+      ? ''
+      : FormattedContent(row?.[field], getContentFormat());
   })();
   if (!isCanvasContent(defaultLvlNot0RenderElement)) {
     return defaultLvlNot0RenderElement;
   }
-  const isSubRowSelectColumn =
-    column.subRow?.editingCell?.component === 'select';
+  const isSubRowSelectColumn = isSelectEditingCell(column.subRow?.editingCell);
 
   const subRows = tableConfigSubRows?.getSubRows?.(row);
 
@@ -465,7 +442,7 @@ export const RenderCellGlide = <
       withSelectIcon(defaultLvlNot0RenderElement, {
         isSelect: isSubRowSelectColumn,
         editModeEnabled,
-        visual: getSelectAwareVisual(isSubRowSelectColumn),
+        visual: selectCellVisual,
       }),
       getSelectAwareWrapperPadding(isSubRowSelectColumn),
     );
@@ -478,16 +455,14 @@ export const RenderCellGlide = <
           isSelect: isSubRowSelectColumn,
           editModeEnabled,
           textInCanvasText: 'textInCanvasText',
-          visual: selectCellVisualInPaddedContainer,
+          visual: selectCellVisual,
         })}
         {ExpandDetailButton({ row, handleExpandRowDetail })}
       </>,
       effectivePadding,
     );
   }
-  const treeGapSub = hasChildrenAndArrow
-    ? TREE_BUTTON_CONFIG[theme.rowSize ?? 'big'].gap
-    : 8;
+  const treeGapSub = hasChildrenAndArrow ? TREE_BUTTON_GAP[rowSize] : 8;
 
   return (
     <Canvas.Container
@@ -495,12 +470,7 @@ export const RenderCellGlide = <
       alignItems="center"
       columnGap={treeGapSub}
       padding={{
-        left: getPaddingLeftFinal(
-          effectivePadding,
-          lvl,
-          hasChildrenAndArrow,
-          false,
-        ),
+        left: getPaddingLeftFinal(effectivePadding, lvl, rowSize, false),
       }}
     >
       {hasChildrenAndArrow &&

@@ -1,0 +1,18 @@
+# Инструкции для агентов
+
+Общие соглашения и команды проекта описаны в [CLAUDE.md](CLAUDE.md).
+
+При работе с тестами используй [write-tests](.claude/skills/write-tests/SKILL.md),
+а при ревью — [code-review](.claude/skills/code-review/SKILL.md).
+
+Перед изменением скриншотных сценариев, инфраструктуры или PNG-эталонов прочитай
+[основную инструкцию](packages/storybook/test/screenshot-tests.md). В ней находятся
+актуальные команды, порядок обновления эталонов, ограничения Canvas и запуск
+необязательного CI. Поддерживай её и соответствующий скилл в актуальном состоянии
+при изменении этого процесса.
+
+Если изменения PR видны в Storybook, добавь в описание PR готовые ссылки на конкретные
+story в превью `https://daisforge.github.io/dais-ui/pr-preview/pr-<N>/?path=/story/<story-id>`
+(для `play` — с `&addonPanel=storybook/interactions/panel`). Превью появляется после
+создания PR, поэтому обнови описание через `gh pr edit` после публикации. Подробнее —
+в разделе «Описание Pull Request» в [CLAUDE.md](CLAUDE.md).

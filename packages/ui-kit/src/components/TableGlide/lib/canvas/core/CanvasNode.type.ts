@@ -1,4 +1,6 @@
 import { FlexStyle } from '../miniflex/types';
+import type { CanvasNodeDropdownConfig } from '../utils/dropdownConfig';
+import type { CanvasNodePopoverConfig } from '../utils/portalClickEvents';
 import { DrawBatcher } from './DrawBatcher';
 
 // --- Вспомогательные типы данных ---
@@ -50,6 +52,20 @@ export interface ICanvasNode {
   borderWidth: number;
   portalHoverEnabled: boolean;
   tooltip?: string | { text: string; [key: string]: unknown };
+  popover?: CanvasNodePopoverConfig;
+  dropdown?: CanvasNodeDropdownConfig;
+  /**
+   * Минимальная ширина, которую нода считает для себя сама по своему
+   * содержимому. Нужна, чтобы при нехватке места содержимое не сжималось в
+   * ноль: например, от текста с многоточием остаётся первая буква.
+   *
+   * Подробнее: заполняется нодой при измерении (measure) и читается
+   * раскладкой как minWidth, если style.minWidth не задан явно. Явный
+   * style.minWidth важнее. Действует только по главной оси при направлении
+   * row. Сейчас значение считает только CanvasText с включённой опцией
+   * minWidthByContent.
+   */
+  minContentWidth?: number;
 
   // Аксессоры (get/set описываются просто как свойства)
   style: CanvasFlexStyle;

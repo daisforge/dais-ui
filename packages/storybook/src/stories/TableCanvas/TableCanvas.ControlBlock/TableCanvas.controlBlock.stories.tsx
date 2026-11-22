@@ -4,8 +4,10 @@
 import { createRows, type Row } from '@df-storybook/data/tableData';
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
 import type { Meta, StoryObj } from '@storybook/react';
+import { Select } from '@ui-kit/components/Select';
 import {
   ColumnConfig,
+  type SIZE,
   SplitIconButton,
   TableCanvas,
 } from '@ui-kit/components/TableCanvas';
@@ -625,6 +627,50 @@ export const TitleBlockInline: Story = {
         columnConfig={columnConfig}
         rows={rows}
       />
+    );
+  },
+};
+
+const ROW_SIZE_OPTIONS: Array<{ label: string; value: SIZE }> = [
+  { label: 'small', value: 'small' },
+  { label: 'medium', value: 'medium' },
+  { label: 'big', value: 'big' },
+];
+
+/**
+ * ### 6. Размер строк снаружи (rowSize.state)
+ *
+ * `rowSize.state` — кортеж `[size, setSize]`: размер строк хранит потребитель. Переключатель
+ * вне таблицы и кнопка в controlBlock меняют одно и то же значение.
+ */
+export const ControlledRowSize: Story = {
+  ...storySourceDoc({ preCode, previewSource: 'shown' }),
+  name: '6. Размер строк снаружи (rowSize.state)',
+  render: () => {
+    const { rows, columnConfig } = useBaseSetup();
+    const rowSizeState = useState<SIZE>('medium');
+    const [rowSize, setRowSize] = rowSizeState;
+
+    return (
+      <div>
+        <div style={{ maxWidth: 320, marginBottom: 12 }}>
+          <Select
+            label="Размер строк (вне таблицы)"
+            value={rowSize}
+            onChange={(value) => setRowSize(value as SIZE)}
+            items={ROW_SIZE_OPTIONS}
+          />
+        </div>
+        <TableCanvas
+          tableConfig={{
+            containerStyle: { height: '60vh' },
+            rowSize: { state: rowSizeState, showInControl: true },
+            controlBlock: { show: true, size: 'm' },
+          }}
+          columnConfig={columnConfig}
+          rows={rows}
+        />
+      </div>
     );
   },
 };

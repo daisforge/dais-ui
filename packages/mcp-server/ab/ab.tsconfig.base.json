@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "target": "es2015",
+    "lib": ["es2020", "dom"],
+    "baseUrl": "../../..",
+    "strict": true,
+    "alwaysStrict": true,
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "noUncheckedIndexedAccess": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "types": [],
+    "paths": {
+      "@ui-kit/*": ["packages/ui-kit/src/*"],
+      "@df-storybook/*": ["packages/storybook/src/*"],
+      "@daisforge/ui": ["packages/ui-kit/src/index.ts"],
+      "@daisforge/ui/*": ["packages/ui-kit/src/*"]
+    }
+  }
+}

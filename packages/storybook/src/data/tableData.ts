@@ -300,6 +300,90 @@ export function createRowsTree<T extends string = 'subRows'>(childsKeyX?: T) {
   return rows as TreeRow<T extends string ? T : 'subRows'>[];
 }
 
+/** Форма поддерева: массив форм детей, `[]` — лист */
+type TreeShape = readonly TreeShape[];
+
+const RAGGED_TREE_MAX_LVL = 5;
+
+// Фиксированные corner-кейсы для отступов subRows (идут первыми в таблице)
+const RAGGED_TREE_CORNER_CASES: readonly TreeShape[] = [
+  // корневой лист без детей
+  [],
+  // один дочерний лист
+  [[]],
+  // несколько дочерних листьев
+  [[], [], []],
+  // родитель на 1 уровне и его лист на 2, затем лист на 1 уровне
+  [[[]], []],
+  // цепочка до максимальной глубины, затем резкий возврат на верхний уровень
+  [[[[[[]]]]]],
+  [],
+  // перемешанные листья и ветки разной глубины среди соседей
+  [[], [[[], []], []], [], [[[[]]], []]],
+  // каждый уровень — несколько детей
+  [
+    [
+      [[], []],
+      [[], []],
+    ],
+    [
+      [[], []],
+      [[], []],
+    ],
+  ],
+];
+
+/**
+ * Дерево с неравномерной глубиной (до 6 уровней) и разным числом детей —
+ * «рваная лестница» для проверки отступов subRows. Первые строки —
+ * фиксированные corner-кейсы, дальше — случайное дерево (seeded, стабильно
+ * для скриншотов).
+ */
+export function createRaggedRowsTree(): TreeRow[] {
+  const random = createSeededRandom(7);
+  const pick = <T>(list: readonly T[]): T =>
+    list[Math.floor(random() * list.length)]!;
+  const quarter = () => Math.min(10000, Math.round(random() * 11000));
+
+  const createRandomShape = (lvl: number): TreeShape => {
+    if (lvl >= RAGGED_TREE_MAX_LVL || random() < 0.3 + lvl * 0.12) {
+      return [];
+    }
+    const childrenCount = 1 + Math.floor(random() * 4);
+    return Array.from({ length: childrenCount }, () =>
+      createRandomShape(lvl + 1),
+    );
+  };
+
+  const buildNode = (shape: TreeShape, id: string): TreeRow => {
+    const subRows = shape.map((child, i) => buildNode(child, `${id}-${i + 1}`));
+    return {
+      id,
+      block: pick(BLOCKS),
+      blockActivity: pick(['Активный', 'В стоп-листе']),
+      tribe: pick(TRIBES),
+      tribeZone: pick([
+        'Москва',
+        'Самара',
+        'Екатеринбург',
+        'Московская область',
+      ]),
+      product: pick(PRODUCTS),
+      q1: quarter(),
+      q2: quarter(),
+      q3: quarter(),
+      q4: quarter(),
+      ...(subRows.length ? { subRows } : {}),
+    };
+  };
+
+  const randomShapes = Array.from({ length: 40 }, () => createRandomShape(0));
+
+  return [...RAGGED_TREE_CORNER_CASES, ...randomShapes].map((shape, i) =>
+    buildNode(shape, `${i + 1}`),
+  );
+}
+
 // --------------------------------------------- columns --------------------------------
 
 const lvl3 = [

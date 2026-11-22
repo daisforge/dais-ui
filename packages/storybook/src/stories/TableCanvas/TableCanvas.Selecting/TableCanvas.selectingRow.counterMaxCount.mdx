@@ -1,0 +1,42 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as TableSelectingRowCounterMaxCountStories from './TableCanvas.selectingRow.counterMaxCount.stories';
+
+<Meta of={TableSelectingRowCounterMaxCountStories} name="Docs" />
+
+# SelectingRow — ограничение счётчика (99+)
+
+**tableConfig.selecting.summaryCounterMaxCount**
+
+Ограничивает максимальное отображаемое число в счётчике выбранных строк — и в шапке
+таблицы, и в панели массовых действий. Если выбрано больше — счётчик показывает «N+».
+
+Не ограничивает само выделение (выбрать можно сколько угодно), влияет только на
+отображение числа.
+
+## Использование
+
+```tsx
+<TableCanvas
+  tableConfig={{
+    selecting: {
+      state: selectingRowState,
+      rowKeyGetter: (r) => r.id,
+      // при > 99 выбранных счётчик покажет «99+»
+      summaryCounterMaxCount: 99,
+    },
+  }}
+  columnConfig={columns}
+  rows={rows}
+/>
+```
+
+## Поведение
+
+- `selectedCount <= summaryCounterMaxCount` — показывается точное число.
+- `selectedCount > summaryCounterMaxCount` — показывается `«summaryCounterMaxCount+»`
+  (например, `99+`).
+- Поле опционально: без него счётчик показывает точное число без ограничения.
+
+> Типы SelectingRow — [SelectingRow API](?path=/docs/локальные-компоненты-tablecanvas-selectingrow-api--docs)
+
+<Stories />

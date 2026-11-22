@@ -16,7 +16,10 @@ useNativeGridSelection ──selection──┬─► useSelectionGeometry ─�
                     │                    активная строка)                   │
                     │ indexes, drawFocusRing                                │
                     ▼                                                       ▼
-        useBaseHighlightRegions ──────────► useColumnRowHighlightRegions
+                          useColoringLayers (единая точка сборки слоёв)
+                          внутри: useBaseHighlightRegions,
+                                  useColumnRowHighlightRegions,
+                                  ховер сервис-зоны
                                                      │
                                                      ▼
                               DataEditor.highlightRegions (в TableGlide.tsx)
@@ -29,8 +32,11 @@ useNativeGridSelection ──selection──┬─► useSelectionGeometry ─�
 
 ### `useNativeGridSelection`
 Стор нативного glide-выделения ячеек. Держит `GridSelection` (internal в
-uncontrolled или отдаёт наружу в controlled) и всегда дублирует изменение в
-`onSelectionEmit` (канал copy/paste). Выводит режим `rangeSelect` из `selectionMode`.
+uncontrolled или отдаёт наружу в controlled) и на каждое изменение ровно один раз
+зовёт `onSelectionEmit` (канал copy/paste и `cellsSelection.onChange`).
+`handleGridSelectionChange(next, emitted?)`: `emitted` — итоговое выделение, когда оно
+не совпадает с нативным (несмежные Ctrl-колонки/строки: нативное пустое, наружу —
+набор). Выводит режим `rangeSelect` из `selectionMode`.
 Возвращает: `selection`, `handleGridSelectionChange`, `handleSelectionCleared`,
 `rangeSelect`.
 
@@ -82,25 +88,43 @@ uncontrolled или отдаёт наружу в controlled) и всегда д�
 
 ## Отрисовка (highlightRegions)
 
+### `useColoringLayers`
+Здесь собираются все цветные слои, которые ложатся поверх ячеек: выделение,
+подсветка строк и колонок, рамки. Это же место — карта окрашивания: в
+комментарии в начале файла по порядку расписано, какой слой лежит выше какого.
+С него и стоит начинать чтение.
+
+Сам хук ничего не придумывает. Он по очереди зовёт два хука ниже и добавляет
+подсветку служебных колонок под курсором самым нижним слоем. Наружу отдаётся
+только этот хук, остальные два спрятаны внутри.
+
 ### `useBaseHighlightRegions`
 Базовый слой прямоугольников: затемнение сервис-зоны под активным диапазоном, своя
 заливка+обводка **одиночной** ячейки (в `cell`), outline ошибок (cell-level, `1×1`),
 внешние регионы. Диапазоны range-cell обводит сам glide — не дублируем.
 Error-outline добавляется в конец (чтобы active-fill его не перекрыл).
+На выбранной строке (`highlightActiveType='row'`) заливку одиночной ячейки не
+рисует — остаётся фон строки и обводка.
 
 ### `useColumnRowHighlightRegions`
-Надстройка над базой: заливка + **слитая** обводка выбранных колонок/строк
-(`pushMergedOutlines`), затемнение шапки/нумерации, подсветка активной строки (bg с
-вырезом под текущий селектинг), затемнение нумерации под ячейками `rangeStack`.
-Свою обводку `rangeStack` **не рисует** (см. функциональную доку, раздел про
-multi-range).
+Рисует выделение колонок (клик по шапке) и строк (клик по нумерации):
+заливку и общую рамку вокруг соседних выделенных колонок/строк, затемнение
+нумерации.
 
-## Барьель
+Подробнее. Соседние выделенные колонки обводятся одной рамкой, без
+двойной линии между ними (`pushMergedOutlines`). Ячейки, накопленные через
+Ctrl (`rangeStack`), получают затемнение нумерации, но свою рамку не
+получают (см. функциональную доку, раздел про multi-range). Выбранную
+строку (`highlightActiveType='row'`) этот хук **не рисует**: её фон задаёт
+тема строки (`getRowThemeOverride`), цветные ячейки в ней — тема ячейки
+(`cell-fill-override`).
+
+## Барьер
 
 ### `index.ts`
 Экспортит наружу (в `TableGlide.tsx`) то, что нужно движку: `useNativeGridSelection`,
-`useSelectionGeometry`, `useBaseHighlightRegions`, `useColumnRowHighlightRegions`,
-`useTableSelectionSystem`, `rectContainsCell`. Оси и `rectGeometry` — внутренние.
+`useSelectionGeometry`, `useColoringLayers`, `useTableSelectionSystem`,
+`rectContainsCell`. Оси, `rectGeometry` и оба региона-хука — внутренние.
 
 ## Словарь
 

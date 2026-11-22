@@ -2,6 +2,7 @@ import type { Rectangle } from '@glideappsfinal/glide-data-grid';
 import { useMemo } from 'react';
 
 import type { GlideProps, Theme } from '../../types';
+import { rectContainsRect } from './rectGeometry';
 
 interface UseColumnRowHighlightRegionsParams {
   /** Базовые регионы подсветки (из useBaseHighlightRegions) — расширяем их. */
@@ -11,20 +12,14 @@ interface UseColumnRowHighlightRegionsParams {
   /** Индексы выделенных по нумерации строк. */
   headerSelectedRowIndexes: number[];
   /**
-   * Подсвеченная строка (highlightActiveType='row') — только bg, без рамки.
-   * Перекрывается селектингом: ячейки текущего диапазона из заливки вырезаются.
-   */
-  activeRow?: number;
-  /** Текущий диапазон выделения (для выреза под селектинг на подсвеченной строке). */
-  activeRange?: Rectangle;
-  /**
    * Диапазоны rangeStack (multi-range-cell). glide рисует рамку только вокруг
-   * current.range, поэтому предыдущие Ctrl-диапазоны остаются без обводки —
-   * дорисовываем её сами.
+   * current.range, предыдущие Ctrl-диапазоны — только заливкой.
    */
   selectionRangeStack?: readonly Rectangle[];
-  /** Строки, у которых ЕСТЬ чекбокс — подсвеченная строка тогда темнее. */
-  checkboxAvailableRowIndexes?: ReadonlySet<number>;
+  /** Активный диапазон current.range: накопленный диапазон внутри него не обводим. */
+  activeRange?: Rectangle;
+  /** Обводить каждый диапазон rangeStack (иначе рамка только у активного). */
+  outlineEachRange?: boolean;
   /** Всего строк (данные + summary). */
   totalRows: number;
   /** Индекс первой колонки данных (= кол-во ведущих сервисных колонок). */
@@ -32,6 +27,8 @@ interface UseColumnRowHighlightRegionsParams {
   /** Всего колонок (вместе с сервисными). */
   columnsCount: number;
   theme: Theme;
+  /** Служебная зона следует за строкой: регионы её выделения стилем 'accent'. */
+  serviceZoneFollowsRow?: boolean;
 }
 
 /**
@@ -44,21 +41,25 @@ export function useColumnRowHighlightRegions({
   baseRegions,
   selectedColumnIndexes,
   headerSelectedRowIndexes,
-  activeRow,
-  activeRange,
   selectionRangeStack,
-  checkboxAvailableRowIndexes,
+  activeRange,
+  outlineEachRange = false,
   totalRows,
   firstDataCol,
   columnsCount,
   theme,
+  serviceZoneFollowsRow = false,
 }: UseColumnRowHighlightRegionsParams): GlideProps['highlightRegions'] {
+  // Цвет заливки служебной зоны: из региона (фиксированный голубой) или из
+  // accentLight каждой ячейки, когда служебная зона следует за строкой.
+  const serviceStyle = serviceZoneFollowsRow
+    ? ('accent' as const)
+    : ('no-outline' as const);
   return useMemo<GlideProps['highlightRegions']>(() => {
     const hasColumns = selectedColumnIndexes.length > 0;
     const hasRows = headerSelectedRowIndexes.length > 0;
-    const hasHighlightRow = activeRow !== undefined;
     const hasRangeStack = (selectionRangeStack?.length ?? 0) > 0;
-    if (!hasColumns && !hasRows && !hasHighlightRow && !hasRangeStack) {
+    if (!hasColumns && !hasRows && !hasRangeStack) {
       return baseRegions;
     }
 
@@ -101,20 +102,24 @@ export function useColumnRowHighlightRegions({
 
     // Колонки: заливка поколоночно + объединённая обводка блоков.
     if (hasColumns) {
-      // Service-зона (нумерация/чекбокс) затемняется как при нативном selecting:
-      // выделенная колонка покрывает ВСЕ строки → темнеет вся service-зона.
+      // Служебные колонки (нумерация, чекбокс) темнеют так же, как при
+      // обычном выделении мышью. Выделенная колонка занимает все строки,
+      // поэтому темнеют служебные колонки всех строк.
       if (firstDataCol > 0) {
         regions.push({
           color: theme.selectionServiceActiveBg,
           range: { x: 0, y: 0, width: firstDataCol, height: totalRows },
-          style: 'no-outline' as const,
+          style: serviceStyle,
         });
       }
+      // Стиль 'accent' (наша доработка форка): цвет заливки берётся не из
+      // региона, а из accentLight темы каждой ячейки. Так жёлтые и статусные
+      // ячейки показывают свой цвет «в выделении», а не общий синий.
       for (const colInd of selectedColumnIndexes) {
         regions.push({
           color: theme.selectionActiveBg,
           range: { x: colInd, y: 0, width: 1, height: totalRows },
-          style: 'no-outline' as const,
+          style: 'accent' as const,
         });
       }
       pushMergedOutlines(selectedColumnIndexes, (start, end) => ({
@@ -126,15 +131,15 @@ export function useColumnRowHighlightRegions({
     }
 
     // Строки: заливка по данным построчно + объединённая обводка блоков строк.
-    // Сервисные колонки (нумерация) в заливку/рамку не входят (x = firstDataCol),
-    // но саму нумерацию выделенных строк затемняем как при нативном selecting.
+    // Служебные колонки (нумерация) в заливку и рамку не входят
+    // (x = firstDataCol), но темнеют так же, как при обычном выделении мышью.
     if (hasRows && dataWidth > 0) {
       if (firstDataCol > 0) {
         for (const rowInd of headerSelectedRowIndexes) {
           regions.push({
             color: theme.selectionServiceActiveBg,
             range: { x: 0, y: rowInd, width: firstDataCol, height: 1 },
-            style: 'no-outline' as const,
+            style: serviceStyle,
           });
         }
       }
@@ -142,7 +147,7 @@ export function useColumnRowHighlightRegions({
         regions.push({
           color: theme.selectionActiveBg,
           range: { x: firstDataCol, y: rowInd, width: dataWidth, height: 1 },
-          style: 'no-outline' as const,
+          style: 'accent' as const,
         });
       }
       pushMergedOutlines(headerSelectedRowIndexes, (start, end) => ({
@@ -153,62 +158,53 @@ export function useColumnRowHighlightRegions({
       }));
     }
 
-    // Подсветка строки (highlightActiveType='row') — только bg по данным, без
-    // рамки. Ячейки активного селектинга на этой строке ВЫРЕЗАЕМ, чтобы glide
-    // показал поверх свой selection (цвет+рамка+fill-handle). Цвет строки без
-    // чекбокса — светло-голубой, как у шапки (selectionCheckboxBg); если у строки
-    // ЕСТЬ чекбокс — темнее (selectionActiveCheckboxBg), независимо от того,
-    // отмечен он или нет.
-    if (activeRow !== undefined && dataWidth > 0) {
-      const rowFill = checkboxAvailableRowIndexes?.has(activeRow)
-        ? theme.selectionActiveCheckboxBg
-        : theme.selectionCheckboxBg;
-      const pushRowFill = (x: number, width: number) => {
-        if (width > 0) {
-          regions.push({
-            color: rowFill,
-            range: { x, y: activeRow, width, height: 1 },
-            style: 'no-outline' as const,
-          });
-        }
-      };
-      const intersectsRow =
-        activeRange &&
-        activeRow >= activeRange.y &&
-        activeRow < activeRange.y + activeRange.height;
-      if (!intersectsRow) {
-        pushRowFill(firstDataCol, dataWidth);
-      } else {
-        const selStart = Math.max(activeRange.x, firstDataCol);
-        const selEnd = activeRange.x + activeRange.width;
-        pushRowFill(firstDataCol, selStart - firstDataCol);
-        pushRowFill(selEnd, columnsCount - selEnd);
-      }
-    }
+    // Выбранную строку (highlightActiveType='row') здесь НЕ рисуем: это не
+    // выделение, поверх неё ничего не накладывается. Её фон задаёт тема
+    // строки (getRowThemeOverride в TableGlide.tsx), фон цветных ячеек —
+    // тема самой ячейки (theming/cell-fill-override.ts).
 
-    // Диапазоны rangeStack (multi-range-cell). Свою обводку НЕ рисуем: рамку
-    // ставит glide только вокруг активного current.range, а накопленные Ctrl-
-    // ячейки показываем заливкой (её красит glide) + затемнением нумерации, как
-    // у выделения строк. Так нет швов между смежными ячейками и «залипших» рамок
-    // при поглощении диапазоном. Собираем только покрытые строки для затемнения
-    // левой service-зоны (нумерации).
-    if (hasRangeStack && selectionRangeStack && firstDataCol > 0) {
+    // Диапазоны rangeStack (multi-range-cell): заливку красит glide, рамку —
+    // только вокруг активного current.range; затемняем нумерацию покрытых строк.
+    // С outlineEachRange обводим и накопленные Ctrl-диапазоны, кроме поглощённых
+    // другим (протянули поверх) — иначе рамка «залипает». Без опции рамок нет:
+    // у Г-образного выбора на стыках прямоугольников видны лишние линии.
+    if (hasRangeStack && selectionRangeStack) {
       const coveredRows = new Set<number>();
-      for (const rect of selectionRangeStack) {
+      // Поглощён: лежит в активном диапазоне или в более позднем из стека.
+      const isAbsorbed = (rect: Rectangle, index: number) => {
+        if (activeRange !== undefined && rectContainsRect(activeRange, rect)) {
+          return true;
+        }
+        for (let i = index + 1; i < selectionRangeStack.length; i += 1) {
+          if (rectContainsRect(selectionRangeStack[i]!, rect)) return true;
+        }
+        return false;
+      };
+      selectionRangeStack.forEach((rect, index) => {
         const x = Math.max(rect.x, firstDataCol);
         const width = rect.x + rect.width - x;
         if (width <= 0 || rect.height <= 0) {
-          continue;
+          return;
+        }
+        if (outlineEachRange && !isAbsorbed(rect, index)) {
+          regions.push({
+            color: theme.accentColor,
+            range: { x, y: rect.y, width, height: rect.height },
+            style: 'solid-outline' as const,
+          });
+        }
+        if (firstDataCol === 0) {
+          return;
         }
         for (let row = rect.y; row < rect.y + rect.height; row += 1) {
           coveredRows.add(row);
         }
-      }
+      });
       for (const row of coveredRows) {
         regions.push({
           color: theme.selectionServiceActiveBg,
           range: { x: 0, y: row, width: firstDataCol, height: 1 },
-          style: 'no-outline' as const,
+          style: serviceStyle,
         });
       }
     }
@@ -218,17 +214,15 @@ export function useColumnRowHighlightRegions({
     baseRegions,
     selectedColumnIndexes,
     headerSelectedRowIndexes,
-    activeRow,
-    activeRange,
     selectionRangeStack,
-    checkboxAvailableRowIndexes,
+    activeRange,
+    outlineEachRange,
     totalRows,
     firstDataCol,
     columnsCount,
     theme.selectionActiveBg,
-    theme.selectionActiveCheckboxBg,
-    theme.selectionCheckboxBg,
     theme.selectionServiceActiveBg,
     theme.accentColor,
+    serviceStyle,
   ]);
 }

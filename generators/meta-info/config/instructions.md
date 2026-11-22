@@ -99,6 +99,7 @@
 
 - **Таблица**: если пользователь говорит "таблица" — скорее всего TableCanvas (основная). Table — для legacy. TableTabs — вкладки между таблицами, не сама таблица.
 - **Popover**: PopoverDF — универсальный. AiAgentPopover — только для команды AI-агента (scope: internal).
+- **AI-помощник**: AiAgentPopup — окно помощника под новый дизайн (перетаскивание, ресайз, свечение поля ввода). AiAgentPopover — старая плавающая кнопка с поповером, остаётся как есть. Оба scope: internal.
 - **Widget**: Widget — универсальный. AnalyticalWidget — layout для рабочих столов (scope: internal).
 - **Формы**: FormTextField ≠ TextField. FormTextField — для react-hook-form, TextField — обёртка над атомарным.
 

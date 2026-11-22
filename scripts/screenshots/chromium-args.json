@@ -1,0 +1,6 @@
+[
+  "--enable-gpu",
+  "--use-gl=angle",
+  "--use-angle=swiftshader",
+  "--enable-unsafe-swiftshader"
+]

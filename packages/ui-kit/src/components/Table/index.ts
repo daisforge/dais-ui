@@ -6,7 +6,13 @@ export {
 } from './contexts';
 export { hideRowServiceKeysHandler as getRowWithoutServiceKeys } from './data/hideServiceKeysHanlder';
 export { autoFocusAndSelect } from './feature-edit';
-export { TableFilterSelectListItem } from './feature-filtering';
+export {
+  TableFilterSelect,
+  TableFilterSelectList,
+  TableFilterSelectListItem,
+  TableFilterSelectSearchTextfield,
+  TableFilterSelectTotalListItemContainer,
+} from './feature-filtering';
 export { addSkeletonToCellInRow } from './feature-infinity-scroll';
 export {
   type DetailPanelRow,

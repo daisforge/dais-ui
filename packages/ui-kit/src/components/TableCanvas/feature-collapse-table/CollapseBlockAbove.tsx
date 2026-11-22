@@ -9,6 +9,7 @@ import {
   COLLAPSE_DECOR_FADE,
   COLORS,
   DURATION,
+  outerBorderColor,
   TABLE_BORDER_RADIUS,
 } from '../styles';
 import { ActiveViewModsType, ControlBlockSize } from '../types';
@@ -62,14 +63,16 @@ const CollapseBlockAboveStyled = styled(Box)<{
     css({
       ...($activeView === 'rows' && {
         backgroundColor: COLORS.white,
-        borderColor: COLORS.border,
+        borderColor: outerBorderColor,
       }),
       ...($activeView === 'cards' && {
         borderColor: 'transparent',
       }),
     })}
   border-bottom-color: ${({ $collapsedTable, $activeView }) =>
-    $collapsedTable && $activeView === 'rows' ? COLORS.border : 'transparent'};
+    $collapsedTable && $activeView === 'rows'
+      ? outerBorderColor
+      : 'transparent'};
 
   overflow-y: hidden;
 `;

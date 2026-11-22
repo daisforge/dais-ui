@@ -6,8 +6,10 @@ export type DefaultOmittedKeys = Extract<
   keyof ColumnGlideInstance<ObjectForExtending, unknown, ObjectForExtending>,
   | 'editable'
   | 'frozen'
+  | 'resizable'
   | 'isServiceColumn'
   | 'isErrorCell'
+  | 'errorCellTooltip'
   | 'renderEditCell'
   | 'renderCellPreview'
   | 'renderCell'

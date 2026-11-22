@@ -18,6 +18,7 @@ import { ColumnConfig, ObjectForExtending, TableConfig } from '../../types';
 import { FiltersVariables } from '../filtering.type';
 import { useFilterManagement } from '../hooks/use-filter-management';
 import { useFilterRenderer } from '../hooks/use-filter-renderer';
+import { RenderSlot } from '../render-slot';
 import { tableSidebarFilterBlockClassNames as cls } from './SideBarFilter.classnames';
 import { ConfirmOrReset } from './SidebarFilterReset';
 import { SidebarFilterContainerStyled, SidebarFiltersStyled } from './styled';
@@ -166,8 +167,13 @@ export const SidebarFilters = <
         globalFilters.push({
           key,
           label: config?.label || key,
-          render: () =>
-            config?.customRenderFn?.(localFilters, setLocalFilters) || null,
+          render: () => (
+            <RenderSlot
+              render={() =>
+                config?.customRenderFn?.(localFilters, setLocalFilters) || null
+              }
+            />
+          ),
         });
       });
     }

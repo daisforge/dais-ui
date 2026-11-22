@@ -24,6 +24,7 @@ const defaultStyle: FlexStyle = {
   alignSelf: 'auto',
   width: undefined,
   height: undefined,
+  minWidth: undefined,
   // Обычный элемент участвует в расчете размера линии.
   crossAxisSizing: 'auto',
 };
@@ -63,6 +64,7 @@ abstract class FlexNode {
       alignSelf: style.alignSelf ?? 'auto',
       width: style.width,
       height: style.height,
+      minWidth: style.minWidth,
       crossAxisSizing: style.crossAxisSizing ?? 'auto',
       id: style.id,
       metadata: style.metadata,
@@ -96,6 +98,13 @@ export class FlexBox extends FlexNode {
   public alignContent: AlignContent = 'stretch';
 
   public padding: PaddingBox = { top: 0, right: 0, bottom: 0, left: 0 };
+
+  /**
+   * Главный размер задаёт содержимое (колонка без заданной высоты): дети не сжимаются,
+   * а контейнер дорастает до них. Иначе перенесённый текст, выросший после measure,
+   * сжимал бы соседей и съедал отступы.
+   */
+  public sizedByContent = false;
 
   constructor(width: number, height: number, opts: FlexBoxOptions = {}) {
     super({});
@@ -131,6 +140,7 @@ export class FlexBox extends FlexNode {
         boxStyle.alignSelf = arg2.alignSelf ?? 'auto';
         boxStyle.width = arg2.width;
         boxStyle.height = arg2.height;
+        boxStyle.minWidth = arg2.minWidth;
         boxStyle.crossAxisSizing = arg2.crossAxisSizing ?? 'auto';
       }
       this.children.push(box);
@@ -345,11 +355,22 @@ export class FlexBox extends FlexNode {
 
       if (lineFreeSpace > 0 && totalGrow > 0) {
         main += (lineFreeSpace * style.flexGrow) / totalGrow;
-      } else if (lineFreeSpace < 0 && totalWeightedShrink > 0) {
+      } else if (
+        lineFreeSpace < 0 &&
+        totalWeightedShrink > 0 &&
+        !this.sizedByContent
+      ) {
         main += (lineFreeSpace * style.flexShrink * main) / totalWeightedShrink;
       }
 
       if (main < 0) main = 0;
+
+      // Минимальная ширина важнее нехватки места: элемент остаётся читаемым,
+      // а лишнее выходит за границу контейнера. Остальных детей после этого
+      // заново не ужимаем, это осознанное отличие от CSS.
+      if (horizontal && style.minWidth !== undefined && main < style.minWidth) {
+        main = style.minWidth;
+      }
 
       if (horizontal) {
         child.size.width = main;
@@ -407,7 +428,11 @@ export class FlexBox extends FlexNode {
     initialHeight: number,
     horizontal: boolean
   ): number {
-    if (this.wrap !== 'nowrap') {
+    // В колонке поперечная ось — ширина, и линия равна ширине контейнера: широкий ребёнок
+    // её переполняет, а не раздвигает. Иначе stretch раздаёт его ширину соседям, и текст
+    // с переносом раскладывается по чужой ширине. В строке поперечная ось — высота,
+    // она растёт по содержимому (перенесённый текст выше строки).
+    if (this.wrap !== 'nowrap' || !horizontal) {
       return initialHeight;
     }
 

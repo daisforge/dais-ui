@@ -98,6 +98,10 @@ export const MANUAL_UIKIT_COMP_CHUNKS = [
     modulePaths: ['packages/ui-kit/src/components/AiAgentPopover/'],
   },
   {
+    chunkName: 'AiAgentPopup',
+    modulePaths: ['packages/ui-kit/src/components/AiAgentPopup/'],
+  },
+  {
     chunkName: 'TourWidget',
     modulePaths: ['packages/ui-kit/src/components/TourWidget/'],
   },
@@ -169,6 +173,10 @@ export const MANUAL_UIKIT_COMP_CHUNKS = [
   {
     chunkName: 'IconButton',
     modulePaths: ['packages/ui-kit/src/components/IconButton/'],
+  },
+  {
+    chunkName: 'PageLoader',
+    modulePaths: ['packages/ui-kit/src/components/PageLoader/'],
   },
   {
     chunkName: 'PageTitle',
@@ -278,6 +286,12 @@ export const MANUAL_UIKIT_COMP_CHUNKS = [
     chunkName: 'sharedUtilsCopy',
     modulePaths: ['packages/ui-kit/src/shared/utils/copy/'],
   },
+  {
+    // Общая сборка resizable-конфига атомарного Popup: используют PopupDF
+    // и AiAgentPopup, отдельный чанк, чтобы они не тянули друг друга
+    chunkName: 'sharedUtilsResizable',
+    modulePaths: ['packages/ui-kit/src/shared/utils/resizable/'],
+  },
   // utils chunk
   {
     chunkName: 'utils',
@@ -287,19 +301,6 @@ export const MANUAL_UIKIT_COMP_CHUNKS = [
   {
     chunkName: 'styles',
     modulePaths: ['packages/ui-kit/src/styles/'],
-  },
-] as const;
-
-/** Часть других пакетов, которые мы сохраняем как наш чанк, чтобы выцепить из др либы нужную нам часть.
- *  Другая библиотека вся не тянется
- */
-
-export const EXTERNAL_PACKAGE_MODULES_AS_CHUNK = [
-  {
-    chunkName: 'EXTERNAL_PACKAGE_MODULE_sdds_finai_high_contrast__light_theme',
-    modulePaths: [
-      '@salutejs-ds/sdds_finai_high_contrast/theme/themes/sdds_finai_high_contrast__light.js',
-    ],
   },
 ] as const;
 
@@ -315,7 +316,6 @@ export const VENDOR_CHUNK = [
 ] as const;
 
 export const ALL_MANUAL_UIKIT_CHUNKS = [
-  ...EXTERNAL_PACKAGE_MODULES_AS_CHUNK,
   ...MANUAL_UIKIT_COMP_CHUNKS,
   ...VENDOR_CHUNK,
 ] as const;
@@ -329,7 +329,7 @@ const calledChunks = new Set();
 const manualChunks = (id: string) => {
   const notCalledChunks = () =>
     ALL_MANUAL_UIKIT_CHUNKS.filter(
-      (m) => !new Set(calledChunks).has(m.chunkName)
+      (m) => !new Set(calledChunks).has(m.chunkName),
     ).map((m) => m.chunkName);
 
   let currentManualChunkName;

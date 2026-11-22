@@ -8,6 +8,8 @@ import {
 } from '@ui-kit/components/TableCanvas';
 import React, { ReactNode, useEffect, useState } from 'react';
 
+import { waitForCanvasState } from '../visual-helpers';
+
 type Row = {
   id: string;
   name: string;
@@ -194,6 +196,7 @@ function useLoadingColumns(
 `;
 
 export const DefaultEmptyState: Story = {
+  play: waitForCanvasState('Нет данных по заданным параметрам'),
   name: 'Default Empty State',
   ...storySourceDoc({
     preCode,
@@ -227,6 +230,7 @@ export const DefaultEmptyState: Story = {
 };
 
 export const CustomEmptyState: Story = {
+  play: waitForCanvasState('Нет заявок для выбранного периода'),
   name: 'Custom Empty State',
   ...storySourceDoc({
     preCode,
@@ -277,6 +281,7 @@ export const CustomEmptyState: Story = {
 };
 
 export const GroupedColumnsEmptyState: Story = {
+  play: waitForCanvasState('Нет результатов по выбранным фильтрам'),
   name: 'Grouped Columns Empty State',
   ...storySourceDoc({
     preCode,
@@ -319,6 +324,7 @@ export const GroupedColumnsEmptyState: Story = {
 };
 
 export const FullContentEmptyStateWithoutHeaders: Story = {
+  play: waitForCanvasState('Не удалось получить схему таблицы'),
   name: 'Full Content Empty State Without Headers',
   ...storySourceDoc({
     preCode,
@@ -361,6 +367,7 @@ export const FullContentEmptyStateWithoutHeaders: Story = {
 };
 
 export const EmptyStateWithControlBlockAndPagination: Story = {
+  play: waitForCanvasState('Нет записей на текущей странице'),
   name: 'Empty State With Control Block And Pagination',
   ...storySourceDoc({
     preCode,

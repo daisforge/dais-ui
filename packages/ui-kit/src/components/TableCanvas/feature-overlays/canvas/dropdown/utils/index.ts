@@ -1,0 +1,1 @@
+export { normalizeDropdownConfig } from './normalizeDropdownConfig';

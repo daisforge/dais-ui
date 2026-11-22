@@ -1,3 +1,4 @@
+import { SELECT_LIST_PORTAL_ID } from '@ui-kit/components/TableCanvasSharedConstants';
 import {
   type ColumnGlideLast,
   GridCell,
@@ -7,7 +8,7 @@ import {
   TableGlideProps,
   Theme,
 } from '@ui-kit/components/TableGlide';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 
 import {
   HeaderContextValueTypeInstance,
@@ -18,9 +19,11 @@ import {
 } from '../contexts';
 import type { TransferColumnConfig } from '../feature-cell-transfer/types';
 import { applyBlockEdit } from '../feature-cell-transfer/utils/applyBlockEdit';
+import { collectEditedFields } from '../feature-cell-transfer/utils/collectEditedFields';
 import { TableContentStateOverlay } from '../feature-content-state';
 import { useRowDetailHandlerContext } from '../feature-row-detail/ctx';
 import { useSelectingRowContext } from '../feature-select-row/selecting-contexts';
+import { useStickyColumnIndexes, useStickyRowIndexes } from '../feature-sticky';
 import { CtxsType } from '../types/ctxs.type';
 import { ObjectForExtending } from '../types/utils.type';
 import { adaptColumn } from './adapters';
@@ -31,6 +34,7 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
   columns,
   className,
   headerHeight = 33,
+  groupHeaderRowHeight,
   onColumnResize,
   onVisibleRegionChanged,
   refTable,
@@ -45,6 +49,8 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
   onRowsChange,
   CellReadOnlyEditor,
   onCellClicked: onCellClickedExternal,
+  stickyColumnsConfig,
+  stickyRowsConfig,
   ...rest
 }: TableGlideInstanceProps<R, SR>) => {
   const { columnsGlide, columnsInGlideOrder, frozenColsCount, groupMaxLength } =
@@ -103,6 +109,12 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
       };
     }, [columns]);
 
+  const stickyColumns = useStickyColumnIndexes(
+    columnsInGlideOrder,
+    stickyColumnsConfig,
+  );
+  const stickyRows = useStickyRowIndexes(rows, stickyRowsConfig);
+
   // ctxs
   const expandedRowsCtx = useExpandedRowsContext();
   const rowCtx = useRowContext();
@@ -149,8 +161,12 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
   );
 
   const groupHeaderHeightArr = useMemo(
-    () => Array.from({ length: groupMaxLength }, () => headerHeight),
-    [groupMaxLength, headerHeight],
+    () =>
+      Array.from(
+        { length: groupMaxLength },
+        () => groupHeaderRowHeight ?? headerHeight,
+      ),
+    [groupMaxLength, groupHeaderRowHeight, headerHeight],
   );
   const shouldRenderFullContentState =
     contentStateOverlay?.displayMode === 'full-content';
@@ -218,17 +234,21 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
   const handleCellClicked = useCallback<
     NonNullable<TableGlideProps<R, SR>['onCellClicked']>
   >(
-    (cell, _event) => {
+    (cell, event) => {
       if (!onCellClickedExternal) return;
       const currentColumn = columnsInGlideOrder[cell[0]];
       const currentRow = rows[cell[1]];
       if (currentColumn && currentRow) {
-        onCellClickedExternal(cell, {
-          column: currentColumn,
-          row: currentRow,
-          ctxs,
-          refTable,
-        });
+        onCellClickedExternal(
+          cell,
+          {
+            column: currentColumn,
+            row: currentRow,
+            ctxs,
+            refTable,
+          },
+          event,
+        );
       }
     },
     [columnsInGlideOrder, rows, onCellClickedExternal, ctxs, refTable],
@@ -249,6 +269,8 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
         return true;
       }
 
+      const dataColumns =
+        columnsInGlideOrder as unknown as readonly TransferColumnConfig[];
       const { column, changedAllRows, indexes } = newValues.reduce(
         (acc, item) => {
           const colInd = item.location[0];
@@ -260,7 +282,7 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
           const newRow = item.value.data;
 
           /* row должен быть extends ObjectForExtending */
-          if (typeof newRow !== 'object') {
+          if (!newRow || typeof newRow !== 'object') {
             return acc;
           }
 
@@ -268,11 +290,9 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
           const blockIndexes = applyBlockEdit({
             colInd,
             rowInd,
-            columns:
-              columnsInGlideOrder as unknown as readonly TransferColumnConfig[],
+            columns: dataColumns,
             rows,
             editedRow: newRow as R,
-            editedValue: (newRow as ObjectForExtending)[column.key],
             targetRows: acc.changedAllRows,
           });
           if (blockIndexes) {
@@ -296,12 +316,22 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
         return true;
       }
 
-      onRowsChange(changedAllRows, { column, indexes, type: 'edit' });
+      onRowsChange(changedAllRows, {
+        column,
+        indexes,
+        writtenCells: collectEditedFields(
+          rows,
+          changedAllRows,
+          indexes,
+          dataColumns,
+        ),
+        type: 'edit',
+      });
       return true;
     };
   }, [columnsInGlideOrder, onRowsChange, rows]);
 
-  const provideEditor = useCallback<ProvideEditorCallback<GridCell>>(
+  const provideEditorLatest = useCallback<ProvideEditorCallback<GridCell>>(
     (gridCell) => {
       const { location } = gridCell;
 
@@ -314,6 +344,10 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
       if (!column) return undefined;
       const EditCellComp = column.renderEditCell;
       const { readonly } = gridCell as { readonly?: boolean };
+      // Без блока редактор встаёт как текст ячейки на canvas.
+      const spanHorizontalAlign =
+        gridCell.spanAlign?.horizontal ?? gridCell.contentAlign;
+      const spanVerticalAlign = gridCell.spanAlign?.vertical;
 
       /* ------------------- render preview cell ------------------- */
       if (readonly) {
@@ -336,6 +370,8 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
               return (
                 <EditCellComp
                   readOnly
+                  contentAlign={spanHorizontalAlign}
+                  verticalAlign={spanVerticalAlign}
                   cellWidth={target.width}
                   cellHeight={target.height}
                   colInd={colInd}
@@ -399,7 +435,8 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
               activation,
             } = props;
 
-            const contentAlign = column.contentAlign ?? 'left';
+            const contentAlign =
+              spanHorizontalAlign ?? column.contentAlign ?? 'left';
             const { contentFormat } = column as unknown as {
               contentFormat?: ContentFormat;
             };
@@ -409,6 +446,7 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
                 readOnly // !!!! важно readOnly=true
                 formatOptions={contentFormat}
                 contentAlign={contentAlign}
+                verticalAlign={spanVerticalAlign}
                 disableLeftOffset={false}
                 cellWidth={target.width}
                 cellHeight={target.height}
@@ -448,8 +486,11 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
             return (
               <EditCellComp
                 readOnly={readonly}
+                contentAlign={spanHorizontalAlign}
+                verticalAlign={spanVerticalAlign}
                 cellWidth={target.width}
                 cellHeight={target.height}
+                cellY={target.y}
                 colInd={colInd}
                 activation={activation}
                 initialValue={initialValue}
@@ -476,6 +517,15 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
     },
     [CellReadOnlyEditor, columnsInGlideOrder, ctxs, rows],
   );
+  // Оверлей glide пересоздаёт редактор при смене provideEditor: со свежей ссылкой
+  // открытый редактор размонтировался бы на любом ререндере таблицы (выделение,
+  // строки, колонки) и терял ввод. Ссылка стабильная, открытие — по свежим данным.
+  const provideEditorRef = useRef(provideEditorLatest);
+  provideEditorRef.current = provideEditorLatest;
+  const provideEditor = useCallback<ProvideEditorCallback<GridCell>>(
+    (gridCell) => provideEditorRef.current(gridCell),
+    [],
+  );
 
   const isOutsideClick = useMemo((): TableGlideProps<
     R,
@@ -487,7 +537,10 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
     return (e) => {
       const target = e.target as HTMLElement;
       // если клик внутри вашего portal / dropdown — не считать его “вне”
-      return !target.closest('#portal') && !target.closest('#portal2');
+      return (
+        !target.closest('#portal') &&
+        !target.closest(`#${SELECT_LIST_PORTAL_ID}`)
+      );
     };
   }, [onCellsEdited]);
   const contentStateNode = useMemo(() => {
@@ -515,6 +568,8 @@ export const TableGlideInstance = <R extends ObjectForExtending, SR = unknown>({
       className={`gdg-table ${className}`}
       headerHeight={headerHeight}
       freezeColumns={frozenColsCount}
+      stickyColumns={stickyColumns}
+      stickyRows={stickyRows}
       ctxs={ctxs}
       groupHeaderHeight={groupHeaderHeightArr}
       renderGroupHeader={renderGroupHeader}

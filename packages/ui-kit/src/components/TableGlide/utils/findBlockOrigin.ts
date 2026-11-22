@@ -2,18 +2,23 @@ export type SpanRange = readonly [number, number] | null;
 
 /**
  * Левый верхний угол блока для ячейки (col, row). Объединение объявлено на этом
- * углу, поэтому колонку ищем сканом влево, строку берём по rowSpan найденной колонки.
+ * углу, поэтому колонку ищем сканом влево по колонкам с colSpan, строку берём
+ * по rowSpan найденной колонки.
  */
 export const findBlockOrigin = (
   col: number,
   row: number,
+  /** Индексы колонок с colSpan по возрастанию: только с них может начинаться блок. */
+  spanColumns: readonly number[],
   /** Диапазон колонок блока [начало, конец] или null. */
   getColRange: (c: number, r: number) => SpanRange,
   /** Диапазон строк блока [начало, конец] или null. */
   getRowRange: (c: number, r: number) => SpanRange,
 ): readonly [number, number] => {
   let originCol = col;
-  for (let c = col; c >= 0; c -= 1) {
+  for (let i = spanColumns.length - 1; i >= 0; i -= 1) {
+    const c = spanColumns[i];
+    if (c === undefined || c > col) continue;
     const range = getColRange(c, row);
     if (range && range[0] <= col && range[1] >= col) {
       originCol = range[0];

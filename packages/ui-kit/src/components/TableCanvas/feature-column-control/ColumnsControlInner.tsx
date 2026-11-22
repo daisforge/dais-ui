@@ -5,18 +5,42 @@ import {
 } from '@ui-kit/components/TableCanvas';
 import { IconClose, IconSearch } from '@ui-kit/icons';
 import { StyledClearBtn, StyledSearchBlock } from '@ui-kit/shared/ui/Search';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import { KeyText, KeyTextMap } from '../feature-key-text/types';
 import { reorderHandler } from '../feature-reorder-columns/reorderHandler';
+import { ROW_ERRORS_COLUMN_KEY } from '../feature-row-errors';
 import { ROW_I_COLUMN_KEY } from '../feature-row-instruments';
 import { ROW_MARKER_COLUMN_KEY } from '../feature-row-markers';
+import { KEY_GROUPED_COL } from '../feature-rows-grouping';
 import { CHECKBOX_COLUMN_KEY } from '../feature-select-row';
 import { ChangeAllButtonsBlock } from './ChangeAllButtonsBlock';
 import { ColumnsList } from './ColumnsList';
 import { correctedDisabled } from './ColumnsList/handlers';
+import {
+  ColumnsState,
+  getColumnsStateChanged,
+  isSameColumnsStatePart,
+} from './columnsStateDiff';
 import { ConfirmOrResetBlock } from './ConfirmOrResetBlock';
+import { expandKeyTextKeys } from './expandKeyTextKeys';
 import { ColumnsControlConfig } from './types';
+
+const SERVICE_COLS_SET = new Set([
+  ROW_MARKER_COLUMN_KEY,
+  ROW_I_COLUMN_KEY,
+  CHECKBOX_COLUMN_KEY,
+  ROW_ERRORS_COLUMN_KEY,
+  KEY_GROUPED_COL,
+]);
+const withoutServiceCols = (cols: string[]) =>
+  cols.filter((cKey) => !SERVICE_COLS_SET.has(cKey));
 
 export const ColumnsControlInner = <
   Row extends ObjectForExtending,
@@ -51,10 +75,132 @@ export const ColumnsControlInner = <
   keyText: KeyText;
   tableConfigKeyTextBoolean: boolean;
 }) => {
-  const [localOrder, setLocalOrder] = useState(columnsOrder);
-  const [localPinned, setLocalPinned] = useState(pinnedCols);
-  const [localHiddens, setLocalHiddens] = useState(hiddenCols);
+  const isInstantApply = columnsControlConfig.applyMode === 'instant';
+
+  // В режиме confirm панель копит изменения в локальном состоянии, а в таблицу
+  // они уходят по кнопке «Применить». В режиме instant локального состояния нет:
+  // панель читает и меняет состояние таблицы напрямую.
+  const [localOrderState, setLocalOrderState] = useState(columnsOrder);
+  const [localPinnedState, setLocalPinnedState] = useState(pinnedCols);
+  const [localHiddensState, setLocalHiddensState] = useState(hiddenCols);
   const [searchQuery, setSearchQuery] = useState('');
+
+  // Что панель попросила записать в состояние таблицы, по частям. Нужно, чтобы
+  // в режиме instant вызывать onConfirm только на действия пользователя в
+  // панели, а не на внешние изменения (пин в шапке, перенос заголовка,
+  // hiddenState потребителя). Запоминаем само значение, а не флаг: если сеттер
+  // потребителя изменение не применил, следующее внешнее изменение с просьбой
+  // панели не совпадёт и onConfirm не вызовет. Запоминаем внутри функции
+  // обновления: так просьба появляется, только если сеттер её вызвал, и
+  // совпадает с тем, что он получил. Повторный вызов функции (StrictMode)
+  // запишет то же значение.
+  const requestedFromPanelRef = useRef<Partial<ColumnsState>>({});
+
+  const markChangedFromPanel = useCallback(
+    (
+        part: keyof ColumnsState,
+        setter: React.Dispatch<React.SetStateAction<string[]>>,
+      ) =>
+      (value: React.SetStateAction<string[]>) => {
+        setter((prev) => {
+          const next = typeof value === 'function' ? value(prev) : value;
+          requestedFromPanelRef.current[part] = next;
+          return next;
+        });
+      },
+    [],
+  );
+
+  const localOrder = isInstantApply ? columnsOrder : localOrderState;
+  const localPinned = isInstantApply ? pinnedCols : localPinnedState;
+  const localHiddens = isInstantApply ? hiddenCols : localHiddensState;
+
+  const setLocalOrder = useMemo(
+    () =>
+      isInstantApply
+        ? markChangedFromPanel('order', setColumnsOrder)
+        : setLocalOrderState,
+    [isInstantApply, markChangedFromPanel, setColumnsOrder],
+  );
+  const setLocalPinned = useMemo(
+    () =>
+      isInstantApply
+        ? markChangedFromPanel('pinned', setPinnedCols)
+        : setLocalPinnedState,
+    [isInstantApply, markChangedFromPanel, setPinnedCols],
+  );
+  const setLocalHiddens = useMemo(
+    () =>
+      isInstantApply
+        ? markChangedFromPanel('hidden', setHiddenCols)
+        : setLocalHiddensState,
+    [isInstantApply, markChangedFromPanel, setHiddenCols],
+  );
+
+  // Предыдущее применённое состояние таблицы: от него считаем `changed`
+  // для onConfirm в режиме instant.
+  const appliedStateRef = useRef<ColumnsState>({
+    order: columnsOrder,
+    pinned: pinnedCols,
+    hidden: hiddenCols,
+  });
+
+  useEffect(() => {
+    const prev = appliedStateRef.current;
+    const next: ColumnsState = {
+      order: columnsOrder,
+      pinned: pinnedCols,
+      hidden: hiddenCols,
+    };
+    appliedStateRef.current = next;
+
+    if (!isInstantApply) {
+      requestedFromPanelRef.current = {};
+      return;
+    }
+
+    const changed = getColumnsStateChanged(prev, next);
+    const changedParts = Object.keys(changed) as (keyof ColumnsState)[];
+
+    // Изменение пришло из панели, если часть стала ровно такой, какую просила
+    // панель. Просьбу по изменившейся части забываем в любом случае. Скрытые
+    // и закреплённые сравниваем с обоими ключами пар key/text: состояние может
+    // хранить один ключ пары, а панель просить оба.
+    const withPairs = (keys: string[]) =>
+      expandKeyTextKeys(keys, colsWithKeyTextMap, tableConfigKeyTextBoolean);
+    const requested = requestedFromPanelRef.current;
+    let changedFromPanel = false;
+    changedParts.forEach((part) => {
+      const requestedPart = requested[part];
+      delete requested[part];
+      if (!requestedPart) return;
+      const samePart =
+        part === 'order'
+          ? isSameColumnsStatePart(part, requestedPart, next[part])
+          : isSameColumnsStatePart(
+              part,
+              withPairs(requestedPart),
+              withPairs(next[part]),
+            );
+      changedFromPanel = changedFromPanel || samePart;
+    });
+
+    if (!changedFromPanel) {
+      return;
+    }
+
+    columnsControlConfig.onConfirm?.(
+      {
+        order: withoutServiceCols(next.order),
+        pinned: withoutServiceCols(next.pinned),
+        hidden: withoutServiceCols(next.hidden),
+        changed,
+      },
+      { setColumnsOrder, setHiddenCols, setPinnedCols },
+    );
+    // onConfirm и сеттеры стабильны по смыслу: реагируем только на изменение состояния колонок
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [columnsOrder, pinnedCols, hiddenCols, isInstantApply]);
 
   // отображаем блок поиска в настройках столбцов в случае, если колонок больше 10
   const isVisibleSearchColumnBlock = Object.keys(columnConfig).length >= 10;
@@ -72,11 +218,7 @@ export const ColumnsControlInner = <
 
   const orderIsNotChanged = useMemo(
     () => {
-      const notCheckingKeysSet = new Set([
-        ROW_MARKER_COLUMN_KEY,
-        ROW_I_COLUMN_KEY,
-        CHECKBOX_COLUMN_KEY,
-      ]);
+      const notCheckingKeysSet = SERVICE_COLS_SET;
       const global = getDefaultColumnsOrder()
         .filter((k) => !notCheckingKeysSet.has(k))
         .join();
@@ -100,7 +242,13 @@ export const ColumnsControlInner = <
         colsWithKeyTextMap,
         pinnedCols: localPinned,
       }),
-    [colsWithKeyTextMap, keyText, tableConfigKeyTextBoolean, localPinned],
+    [
+      colsWithKeyTextMap,
+      keyText,
+      tableConfigKeyTextBoolean,
+      localPinned,
+      setLocalOrder,
+    ],
   );
 
   const confirmOrResetHandlers = {
@@ -110,27 +258,16 @@ export const ColumnsControlInner = <
       setHiddenCols(localHiddens);
 
       if (columnsControlConfig?.onConfirm) {
-        const orderIsChanged =
-          columnsOrder.join() !== localOrder.join() && ('order' as const);
-
-        const pinnedIsChanged =
-          [...localPinned].sort().join() !== [...pinnedCols].sort().join() &&
-          ('pinned' as const);
-        const hiddenIsChanged =
-          [...localHiddens].sort().join() !== [...hiddenCols].sort().join() &&
-          ('hidden' as const);
-
-        const changed = {
-          ...(pinnedIsChanged && { pinned: pinnedIsChanged }),
-          ...(orderIsChanged && { order: orderIsChanged }),
-          ...(hiddenIsChanged && { hidden: hiddenIsChanged }),
-        };
+        const changed = getColumnsStateChanged(
+          { order: columnsOrder, pinned: pinnedCols, hidden: hiddenCols },
+          { order: localOrder, pinned: localPinned, hidden: localHiddens },
+        );
 
         columnsControlConfig.onConfirm(
           {
-            order: localOrder,
-            pinned: localPinned,
-            hidden: localHiddens,
+            order: withoutServiceCols(localOrder),
+            pinned: withoutServiceCols(localPinned),
+            hidden: withoutServiceCols(localHiddens),
             changed,
           },
           { setColumnsOrder, setHiddenCols, setPinnedCols },
@@ -156,11 +293,7 @@ export const ColumnsControlInner = <
     // показываются в списке колонок, поэтому не должны попадать в «скрыть все».
     // Иначе, например, чекбокс-колонка выбора застревает в hiddenCols — и выбор
     // строк перестаёт работать.
-    if (
-      k === CHECKBOX_COLUMN_KEY ||
-      k === ROW_I_COLUMN_KEY ||
-      k === ROW_MARKER_COLUMN_KEY
-    ) {
+    if (SERVICE_COLS_SET.has(k)) {
       return false;
     }
     const correctedDisabledHidingKeyText = correctedDisabled(disableHidingSet, {
@@ -219,16 +352,18 @@ export const ColumnsControlInner = <
       }),
     );
 
+  // Состояние таблицы поменялось снаружи панели (пин в шапке, перенос заголовка,
+  // раскрытие скрытых столбцов) — подтягиваем его в локальные копии.
   useEffect(() => {
-    setLocalOrder(columnsOrder);
+    setLocalOrderState(columnsOrder);
   }, [columnsOrder]);
 
   useEffect(() => {
-    setLocalPinned(pinnedCols);
+    setLocalPinnedState(pinnedCols);
   }, [pinnedCols]);
 
   useEffect(() => {
-    setLocalHiddens(hiddenCols);
+    setLocalHiddensState(hiddenCols);
   }, [hiddenCols]);
 
   return (
@@ -283,7 +418,7 @@ export const ColumnsControlInner = <
         pinnedColsSet={pinnedColsSet}
         hiddenColsSet={hiddenColsSet}
       />
-      <ConfirmOrResetBlock {...confirmOrResetHandlers} />
+      {!isInstantApply && <ConfirmOrResetBlock {...confirmOrResetHandlers} />}
     </>
   );
 };

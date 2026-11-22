@@ -1,6 +1,6 @@
 import type { GlideThemeForRender } from '../../../../theming/types';
 
-// Button view types based on sdds_finai__light theme
+// Виды кнопки, как у Button в SDDS (primary повторяет default)
 export type ButtonView =
   | 'default'
   | 'primary'
@@ -27,7 +27,7 @@ export interface SizeConfig {
   iconSize: number;
 }
 
-// View colors based on sdds_finai__light theme
+// Цвета вида кнопки: токены темы таблицы (buildButtonViewColors)
 export interface ViewColors {
   bgColor: string;
   bgColorHover: string;
@@ -36,6 +36,12 @@ export interface ViewColors {
   textColorHover?: string;
   iconColor: string;
   iconColorHover?: string;
+}
+
+// Цвета вида кнопки-иконки без подложки: цвет иконки под курсором обязателен
+export interface EmbedViewColors extends ViewColors {
+  textColorHover: string;
+  iconColorHover: string;
 }
 
 // Resolved button colors

@@ -1,0 +1,8 @@
+[
+  {
+    "name": "tenants",
+    "href": "tenants.json",
+    "summary": "Тенант задаёт набор значений дизайн-токенов.",
+    "category": "_tenants"
+  }
+]

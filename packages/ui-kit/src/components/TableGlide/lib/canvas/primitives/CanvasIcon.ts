@@ -30,6 +30,16 @@ export class CanvasIcon extends CanvasLeaf {
     this.rect.height = this.size;
   }
 
+  /** Иконка рисуется квадратом size от левого верхнего угла rect. */
+  override getAnchorRect() {
+    return {
+      x: this.rect.x,
+      y: this.rect.y,
+      width: this.size,
+      height: this.size,
+    };
+  }
+
   onPaint(batcher: DrawBatcher, _ctx: CanvasRenderingContext2D) {
     const { x, y, width, height } = this.rect;
 

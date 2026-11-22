@@ -1,11 +1,12 @@
+import { type Link } from '@ui-kit/components/Link';
 import { ComponentProps } from 'react';
+
 import type { Theme } from '../../../theming/types';
 import type { Tokens } from '../../../tokens';
 import { CanvasEvent, CanvasFlexStyle } from '../core/CanvasNode';
 import { DrawBatcher } from '../core/DrawBatcher';
 import { applyAlpha } from '../utils/colors';
 import { CanvasText, CanvasTextOptions } from './CanvasText';
-import { type Link } from '@ui-kit/components/Link';
 
 type LinkAllProps = ComponentProps<typeof Link>;
 export type LinkView = Extract<LinkAllProps['view'], string>;
@@ -169,38 +170,57 @@ export class CanvasLink extends CanvasText {
     const originalColor = this.color;
     this.color = this.resolveColor();
 
-    super.onPaint(batcher, ctx);
-
-    const { view, isHovered, wordWrap } = this;
-    // default, clear — underline always (even when disabled)
-    // others — underline only on hover (hidden when disabled)
-    // wordWrap — no underline (multiline not supported yet)
-    const alwaysUnderline = view === 'default' || view === 'clear';
-    const showUnderline =
-      !wordWrap && (alwaysUnderline || (!this.disabled && isHovered));
-    // CanvasText уже мог заменить строку на shortened + ellipsis.
-    // Underline должен идти под видимой строкой, а не под исходным полным текстом.
-    const underlineWidth = this.getLastPaintedTextWidth();
-
-    if (showUnderline && underlineWidth > 0) {
-      this.paintUnderline(batcher, underlineWidth);
+    try {
+      super.onPaint(batcher, ctx);
+    } finally {
+      this.color = originalColor;
     }
-
-    this.color = originalColor;
   }
 
-  private paintUnderline(batcher: DrawBatcher, underlineWidth: number) {
-    const { x, y, height } = this.rect;
-    const underlineY = y + height + UNDERLINE_OFFSET;
-    const resolvedColor = this.resolveColor();
+  protected override onPaintLine(
+    batcher: DrawBatcher,
+    ctx: CanvasRenderingContext2D,
+    text: string,
+    x: number,
+    y: number,
+    fontSize: number,
+    lineHeightPx: number,
+  ): void {
+    const { view, isHovered } = this;
+    // default, clear — underline always (even when disabled)
+    // others — underline only on hover (hidden when disabled)
+    const alwaysUnderline = view === 'default' || view === 'clear';
+    const showUnderline = alwaysUnderline || (!this.disabled && isHovered);
+    if (!showUnderline || text.length === 0) return;
+
+    const underlineWidth = this.measureTextWidth(ctx, text);
+    if (underlineWidth <= 0) return;
+    // Линия находится под текстом, но внутри слота строки, включая lineHeight=1.
+    // Это сохраняет underline последней строки при overflow="hidden".
+    const underlineY =
+      y +
+      Math.min(
+        fontSize / 2 + UNDERLINE_OFFSET,
+        lineHeightPx / 2 - UNDERLINE_WIDTH / 2,
+      );
+    const { color } = this;
+    const clipRect = this.overflow === 'hidden' ? { ...this.rect } : undefined;
 
     batcher.custom((ctx) => {
+      ctx.save();
+      if (clipRect) {
+        ctx.beginPath();
+        ctx.rect(clipRect.x, clipRect.y, clipRect.width, clipRect.height);
+        ctx.clip();
+      }
       ctx.beginPath();
       ctx.moveTo(x, underlineY);
       ctx.lineTo(x + underlineWidth, underlineY);
-      ctx.strokeStyle = resolvedColor;
+      ctx.strokeStyle = color;
       ctx.lineWidth = UNDERLINE_WIDTH;
+      ctx.lineCap = 'butt';
       ctx.stroke();
+      ctx.restore();
     });
   }
 

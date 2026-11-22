@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-types */
+import type { CanvasNodeTooltipConfig } from '@ui-kit/components/TableGlide';
 import { ReactElement, ReactNode } from 'react';
 
 import type {
@@ -113,9 +114,20 @@ export type SelectOptions = {
 
 export type Editing<RowType extends ObjectForExtending, SummaryRowType> = {
   /**
-   * Если `error.value(row) === true`, то у ячейки появляется красная рамка
+   * Если `error.value(row) === true`, то у ячейки появляется красная рамка.
+   *
+   * `tooltip` задаёт тултип при наведении на такую ячейку: строка или конфиг
+   * (placement, maxWidth, задержки). Вызывается только при наведении и только
+   * для ячейки с ошибкой; вернуть `null`, чтобы тултипа не было. Приоритетнее
+   * `cellTooltip` колонки, от `tableConfig.tooltip.enabled` не зависит.
    */
-  error?: { value: (row: RowType, treeLevel: number) => boolean };
+  error?: {
+    value: (row: RowType, treeLevel: number) => boolean;
+    tooltip?: (
+      row: RowType,
+      treeLevel: number,
+    ) => CanvasNodeTooltipConfig | null;
+  };
   editedSuccessfully?: { value: (row: RowType, treeLevel: number) => boolean };
   /**
    * Функция для определения возможности редактирования  ячейки на основе данных строки (приоритетнее, чем rowEditable в tableConfig.editing)
@@ -187,6 +199,12 @@ export type Editing<RowType extends ObjectForExtending, SummaryRowType> = {
        * Кастомный рендер ячейки редактирования
        */
       component: RenderRowCustomEditCell<RowType, SummaryRowType>;
+      /**
+       * Показывать шеврон селекта в ячейке (как у `component: 'select'`).
+       * Нужен, когда кастомный редактор — селект, например на `CellEditorCombobox`.
+       * @default false
+       */
+      showSelectIcon?: boolean;
     }
 );
 
@@ -253,7 +271,42 @@ export type ColumnConfig<
       }
     | {
         component: 'select';
+        /**
+         * Произвольное содержимое над списком опций фильтра.
+         *
+         * Рендерится и в поповере фильтра в шапке колонки, и в сайдбаре
+         * фильтров. Рендерится как компонент, поэтому внутри можно
+         * использовать хуки и локальное состояние.
+         *
+         * @example
+         * beforeList: ({ headerContextState }) => (
+         *   <TableFilterSelectListItem $size={headerContextState.rowSize}>
+         *     Подсказка над списком
+         *   </TableFilterSelectListItem>
+         * )
+         */
         beforeList?: (
+          props: FilterComponentInPopoverProps<
+            ObjectForExtending,
+            ColumnConfig<Row, SummRow>
+          >,
+        ) => ReactNode;
+        /**
+         * Произвольное содержимое под списком опций фильтра.
+         *
+         * Рендерится и в поповере фильтра в шапке колонки, и в сайдбаре
+         * фильтров. Рендерится как компонент, поэтому внутри можно
+         * использовать хуки и локальное состояние — например, чтобы держать
+         * черновик выбора и применять его по кнопке.
+         *
+         * @example
+         * afterList: ({ headerContextState, setPopoverIsOpen }) => (
+         *   <TableFilterSelectListItem $size={headerContextState.rowSize}>
+         *     Подсказка под списком
+         *   </TableFilterSelectListItem>
+         * )
+         */
+        afterList?: (
           props: FilterComponentInPopoverProps<
             ObjectForExtending,
             ColumnConfig<Row, SummRow>
@@ -318,6 +371,12 @@ export type ColumnConfig<
 
   editingCell?: Editing<Row, SummRow>;
 
+  /**
+   * Настройки колонки для дерева subRows (шеврон, свой контент и редактор на
+   * вложенных уровнях). Работает только в виде дерева. При
+   * `subRows.view: 'merged'` не действует: там листья рисуются как обычные
+   * строки, вложенных уровней нет.
+   */
   subRow?: {
     /**
      * @default false
@@ -367,17 +426,22 @@ export type ColumnConfig<
     lvl: number,
   ) => CellThemeOverrideResult | undefined;
   /**
-   * Выравнивание текста в слитой шапке этой колонки. Действует, когда шапка колонки
-   * слита (`tableConfig.columnsGrouping.squashEmptyCells`); перекрывает табличный
-   * `columnsGrouping.squashedHeaderAlign`.
+   * Выравнивание текста в объединённой шапке этой колонки. Действует, когда шапка
+   * колонки объединена (`tableConfig.columnsGrouping.squashEmptyCells`); перекрывает
+   * табличный `columnsGrouping.squashedHeaderAlign`.
    */
   squashedHeaderAlign?: HeaderAlignment;
   /**
-   * Выравнивание контента в слитых ячейках тела этой колонки (mergeCells,
-   * merged-виды группировки/subRows). Перекрывает дефолт фичи; точечнее — только
-   * `align` конкретного региона в `mergeCells.mergedCellsRegions`.
+   * Выравнивание контента в объединённых ячейках этой колонки. Перекрывает общий
+   * дефолт; важнее только выравнивание конкретного региона.
+   *
+   * Значение — одинаково для всех блоков колонки. Функция (row) => выравнивание —
+   * по данным строки: разным блокам можно задать разное выравнивание (в том числе
+   * в merged-видах группировки/subRows, где блоки формирует таблица).
    */
-  mergedCellsAlign?: MergedCellsAlign;
+  mergedCellsAlign?:
+    | MergedCellsAlign
+    | ((row: Row) => MergedCellsAlign | undefined);
 };
 
 export type ColumnOrColumnGroupConfig<
@@ -391,11 +455,15 @@ export declare interface ColumnGroupConfig<
 > {
   /** Уникальный ключ группы. */
   readonly key: string;
-  /** Название группы, отображается в ячейке шапки. Строка или JSX. */
+  /**
+   * Название группы, отображается в ячейке шапки. Строка или JSX.
+   * JSX рисуется на всю ячейку без отступов: горизонтальный отступ задаёт сам
+   * потребитель, например `<Canvas.Container padding={{ left: 8, right: 8 }}>`.
+   */
   readonly name: string | ReactElement;
   // readonly headerCellClass?: Maybe<string>;
   /** Вложенные колонки и подгруппы этой группы. */
   readonly children: readonly ColumnOrColumnGroupConfig<R, SR>[];
-  /** Выравнивание текста в слитой шапке группы. Действует при squashEmptyCells. */
+  /** Выравнивание текста в объединённой шапке группы. Действует при squashEmptyCells. */
   readonly squashedHeaderAlign?: HeaderAlignment;
 }

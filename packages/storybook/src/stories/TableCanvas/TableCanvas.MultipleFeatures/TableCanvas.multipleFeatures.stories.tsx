@@ -18,8 +18,9 @@ import {
   TableCanvas,
   TableFilterSelectListItem,
 } from '@ui-kit/components/TableCanvas';
+import { CanvasNode } from '@ui-kit/components/TableGlide/lib/canvas';
 import { IconInfo, IconRefresh, IconSb, IconStar } from '@ui-kit/icons';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 const meta: Meta = {
   title: 'Локальные компоненты/TableCanvas/MultipleFeatures',
@@ -239,6 +240,16 @@ export const MultipleFeatures: Story = {
     const [isVisibleLoadingOverlay, setIsVisibleLoadingOverlay] =
       useState(false);
     const [unstickyHeader, setUnstickyHeader] = useState(false);
+    // Обводка границ canvas-нод (текст, кнопки, контейнеры в ячейках и шапке).
+    // Флаг глобальный и читается при отрисовке, поэтому после переключения
+    // таблицу пересоздаём через key, а при уходе со стори флаг сбрасываем.
+    const [debugBounds, setDebugBounds] = useState(false);
+    useEffect(() => {
+      CanvasNode.DEBUG = debugBounds;
+      return () => {
+        CanvasNode.DEBUG = false;
+      };
+    }, [debugBounds]);
 
     const bottomSummaryRowsData: TSummaryRowData[] = useMemo(
       () => [
@@ -307,7 +318,14 @@ export const MultipleFeatures: Story = {
           checked={unstickyHeader}
           onChange={() => setUnstickyHeader((prev) => !prev)}
         />
+        <Switch
+          style={{ width: 'fit-content' }}
+          label="Обводка canvas-нод (CanvasNode.DEBUG)"
+          checked={debugBounds}
+          onChange={() => setDebugBounds((prev) => !prev)}
+        />
         <TableCanvas
+          key={debugBounds ? 'debug-bounds' : 'plain'}
           tableConfig={{
             editing: {
               onRowsChange: setRows,

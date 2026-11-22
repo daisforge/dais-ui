@@ -8,7 +8,12 @@ import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import type { Meta, StoryObj } from '@storybook/react';
 import type { AnalyticalWidgetProps } from '@ui-kit/components/AnalyticalWidget';
-import { AnalyticalWidget } from '@ui-kit/components/AnalyticalWidget';
+import {
+  AnalyticalWidget,
+  analyticalWidgetClassNames,
+} from '@ui-kit/components/AnalyticalWidget';
+import { Button } from '@ui-kit/components/Button';
+import { Collapse } from '@ui-kit/components/Collapse';
 import { Flow } from '@ui-kit/components/Flow';
 import { useFiltersList } from '@ui-kit/components/ListOfFilters';
 import {
@@ -16,8 +21,9 @@ import {
   SegmentItem,
   SegmentProvider,
 } from '@ui-kit/components/Segment';
-import { TabItem, Tabs } from '@ui-kit/components/Tabs';
-import React, { useReducer, useState } from 'react';
+import { Select } from '@ui-kit/components/Select';
+import { LineSkeleton } from '@ui-kit/components/Skeleton';
+import React, { useReducer, useRef, useState } from 'react';
 import styled from 'styled-components';
 
 import type { Filters } from './lib/utils';
@@ -51,8 +57,6 @@ import {
   TooltipList,
   useFiltersList,
   IconDone,
-  TabItem,
-  Tabs,
   SegmentItem,
   AnalyticalWidget,
   textInfo
@@ -138,8 +142,6 @@ import {
   TooltipList,
   useFiltersList,
   IconDone,
-  TabItem,
-  Tabs,
   SegmentItem,
   AnalyticalWidget,
   textInfo
@@ -225,8 +227,6 @@ import {
   TooltipList,
   useFiltersList,
   IconDone,
-  TabItem,
-  Tabs,
   SegmentItem,
   AnalyticalWidget,
   textInfo
@@ -347,8 +347,6 @@ export const AnalyticalWidgetL: Story = {
     const filtersTribesOption = useFetch('tribes', 15);
     const filtersAllocationOption = useFetch('allocation', 10);
     const someItems = Array(3).fill(0);
-    const tabItems = Array(6).fill(0);
-    const [tabIndex, setTabIndex] = useState(0);
 
     const { filterList, filterListOpened } = useFiltersList({
       filters,
@@ -370,6 +368,25 @@ export const AnalyticalWidgetL: Story = {
         dotsButton: { label: 'Меню', clearedValue: '' },
       },
     });
+
+    const chipsList = filterList
+      .map((item) => {
+        if ('groupLabel' in item) {
+          return item.items.map((innerItem) => ({
+            text: String(innerItem.label),
+            view: 'default' as const,
+            hasClear: false as const,
+            onClick: innerItem.onClick,
+          }));
+        }
+        return {
+          text: String(item.label),
+          view: 'default' as const,
+          hasClear: false as const,
+          onClick: item.onClick,
+        };
+      })
+      .flat();
 
     return (
       <GridContainerL>
@@ -420,53 +437,9 @@ export const AnalyticalWidgetL: Story = {
                     isWrapped
                     gap="wide"
                     isCommonChipStyles={false}
-                    chips={filterList
-                      .map((item) => {
-                        if ('groupLabel' in item) {
-                          return item.items.map((innerItem) => ({
-                            text: String(innerItem.label),
-                            view: 'default' as const,
-                            hasClear: false as const,
-                            onClick: innerItem.onClick,
-                          }));
-                        }
-                        return {
-                          text: String(item.label),
-                          view: 'default' as const,
-                          hasClear: false as const,
-                          onClick: item.onClick,
-                        };
-                      })
-                      .flat()}
+                    chips={chipsList}
                   />
                 </Flow>
-              }
-              middleSlot={
-                <Tabs
-                  style={{
-                    width: '100%',
-                  }}
-                  view="divider"
-                  orientation="horizontal"
-                  size="xs"
-                >
-                  {tabItems.map((_, i) => (
-                    <TabItem
-                      view="divider"
-                      orientation="horizontal"
-                      // eslint-disable-next-line react/no-array-index-key
-                      key={`item:${i}`}
-                      size="xs"
-                      selected={i === tabIndex}
-                      tabIndex={0}
-                      onClick={() => setTabIndex(i)}
-                    >
-                      {i === 0
-                        ? 'Длинное наименование данных'
-                        : `Label${i + 1}`}
-                    </TabItem>
-                  ))}
-                </Tabs>
               }
               contentSlot={
                 <div
@@ -484,33 +457,24 @@ export const AnalyticalWidgetL: Story = {
                 root: 'myCustomClassForRoot',
               }}
             />
-            <div
-              style={{
-                position: 'absolute',
-                top: '16px',
-                right: '16px',
+            <AnalyticalWidget.DotsIconButton
+              absolute
+              dropdownProps={{
+                items: generateButtonItems(
+                  'dotsButton',
+                  dotsButtonOptions,
+                  filterList,
+                ),
+                onItemSelect(item) {
+                  updateFilters({
+                    dotsButton:
+                      filters.dotsButton === item.value?.toString()
+                        ? ''
+                        : item.value?.toString() ?? '',
+                  });
+                },
               }}
-            >
-              <AnalyticalWidget.DotsIconButton
-                size="xs"
-                iconSize="xs"
-                dropdownProps={{
-                  items: generateButtonItems(
-                    'dotsButton',
-                    dotsButtonOptions,
-                    filterList,
-                  ),
-                  onItemSelect(item) {
-                    updateFilters({
-                      dotsButton:
-                        filters.dotsButton === item.value?.toString()
-                          ? ''
-                          : item.value?.toString() ?? '',
-                    });
-                  },
-                }}
-              />
-            </div>
+            />
           </div>
         </SegmentProvider>
       </GridContainerL>
@@ -581,6 +545,27 @@ export const AnalyticalWidgetM: Story = {
       },
     });
 
+    const chipsList = filterList
+      .map((item, index) => {
+        if ('groupLabel' in item) {
+          return item.items.map((innerItem, innerIdex) => ({
+            text: String(innerItem.label),
+            view: 'default' as const,
+            hasClear: false as const,
+            onClick: innerItem.onClick,
+            key: `chip-key${index}-${innerIdex}-${innerItem.label}`,
+          }));
+        }
+        return {
+          text: String(item.label),
+          view: 'default' as const,
+          hasClear: false as const,
+          onClick: item.onClick,
+          key: `chip-key-${index}-${item.label}`,
+        };
+      })
+      .flat();
+
     return (
       <GridContainerM>
         <SegmentProvider defaultSelected={['item_0']}>
@@ -630,26 +615,7 @@ export const AnalyticalWidgetM: Story = {
                     isWrapped
                     gap="wide"
                     isCommonChipStyles={false}
-                    chips={filterList
-                      .map((item, index) => {
-                        if ('groupLabel' in item) {
-                          return item.items.map((innerItem, innerIdex) => ({
-                            text: String(innerItem.label),
-                            view: 'default' as const,
-                            hasClear: false as const,
-                            onClick: innerItem.onClick,
-                            key: `chip-key${index}-${innerIdex}-${innerItem.label}`,
-                          }));
-                        }
-                        return {
-                          text: String(item.label),
-                          view: 'default' as const,
-                          hasClear: false as const,
-                          onClick: item.onClick,
-                          key: `chip-key-${index}-${item.label}`,
-                        };
-                      })
-                      .flat()}
+                    chips={chipsList}
                   />
                 </Flow>
               }
@@ -669,33 +635,24 @@ export const AnalyticalWidgetM: Story = {
                 root: 'myCustomClassForRoot',
               }}
             />
-            <div
-              style={{
-                position: 'absolute',
-                top: '16px',
-                right: '16px',
+            <AnalyticalWidget.DotsIconButton
+              absolute
+              dropdownProps={{
+                items: generateButtonItems(
+                  'dotsButton',
+                  dotsButtonOptions,
+                  filterList,
+                ),
+                onItemSelect(item) {
+                  updateFilters({
+                    dotsButton:
+                      filters.dotsButton === item.value?.toString()
+                        ? ''
+                        : item.value?.toString() ?? '',
+                  });
+                },
               }}
-            >
-              <AnalyticalWidget.DotsIconButton
-                size="xs"
-                iconSize="xs"
-                dropdownProps={{
-                  items: generateButtonItems(
-                    'dotsButton',
-                    dotsButtonOptions,
-                    filterList,
-                  ),
-                  onItemSelect(item) {
-                    updateFilters({
-                      dotsButton:
-                        filters.dotsButton === item.value?.toString()
-                          ? ''
-                          : item.value?.toString() ?? '',
-                    });
-                  },
-                }}
-              />
-            </div>
+            />
           </div>
         </SegmentProvider>
       </GridContainerM>
@@ -784,8 +741,6 @@ export const AnalyticalWidgetS: Story = {
       })
       .flat();
 
-    const isHaveChips = chipsList.length > 0;
-
     return (
       <GridContainerS>
         <SegmentProvider defaultSelected={['item_0']}>
@@ -807,17 +762,15 @@ export const AnalyticalWidgetS: Story = {
                 />
               }
               topSlot={
-                isHaveChips && (
-                  <Flow orientation="vertical" mainAxisGap={8}>
-                    <AnalyticalWidget.Chips
-                      opened={filterListOpened}
-                      isWrapped
-                      gap="wide"
-                      isCommonChipStyles={false}
-                      chips={chipsList}
-                    />
-                  </Flow>
-                )
+                <Flow orientation="vertical" mainAxisGap={8}>
+                  <AnalyticalWidget.Chips
+                    opened={filterListOpened}
+                    isWrapped
+                    gap="wide"
+                    isCommonChipStyles={false}
+                    chips={chipsList}
+                  />
+                </Flow>
               }
               contentSlot={
                 <div
@@ -835,36 +788,218 @@ export const AnalyticalWidgetS: Story = {
                 root: 'myCustomClassForRoot',
               }}
             />
-            <div
-              style={{
-                position: 'absolute',
-                top: '16px',
-                right: '16px',
+            <AnalyticalWidget.DotsIconButton
+              absolute
+              dropdownProps={{
+                items: generateButtonItems(
+                  'dotsButton',
+                  dotsButtonOptions,
+                  filterList,
+                ),
+                onItemSelect(item) {
+                  updateFilters({
+                    dotsButton:
+                      filters.dotsButton === item.value?.toString()
+                        ? ''
+                        : item.value?.toString() ?? '',
+                  });
+                },
               }}
-            >
-              <AnalyticalWidget.DotsIconButton
-                size="xs"
-                iconSize="xs"
-                dropdownProps={{
-                  items: generateButtonItems(
-                    'dotsButton',
-                    dotsButtonOptions,
-                    filterList,
-                  ),
-                  onItemSelect(item) {
-                    updateFilters({
-                      dotsButton:
-                        filters.dotsButton === item.value?.toString()
-                          ? ''
-                          : item.value?.toString() ?? '',
-                    });
-                  },
-                }}
-              />
-            </div>
+            />
           </div>
         </SegmentProvider>
       </GridContainerS>
+    );
+  },
+};
+
+/**
+ * Custom topSlot (свои чипы потребителя) + rightSlot.
+ * Слева блок title/тег/ⓘ/subtitle с margin-right:16, справа генерик-rightSlot
+ * (здесь Select), кнопка-троеточие — абсолютом от потребителя.
+ */
+export const AnalyticalWidgetCustomTopSlot: Story = {
+  name: 'Custom topSlot + rightSlot',
+  render: () => {
+    const [filters, updateFilters] = useReducer(
+      filtersReducer,
+      DEFAULT_FILTERS,
+    );
+    const filtersBlocksOption = useFetch('blocks', 10);
+    const filtersTribesOption = useFetch('tribes', 15);
+    const filtersAllocationOption = useFetch('allocation', 10);
+    const [period, setPeriod] = useState('month');
+
+    const { filterList } = useFiltersList({
+      filters,
+      options: {
+        blocks: filtersBlocksOption,
+        tribes: filtersTribesOption,
+        allocation: filtersAllocationOption,
+        filterButton: filterButtonOptions,
+        dotsButton: dotsButtonOptions,
+      } as Record<keyof Filters, { label: string; value: string }[]>,
+      updateFilters: (key, newV) => updateFilters({ [key]: newV }),
+      filtersInfo: {
+        searchedV: { label: 'Поиск', clearedValue: '' },
+        blocks: { label: 'Блок', clearedValue: [] },
+        tribes: { label: 'Трайб', clearedValue: [] },
+        allocation: { label: 'Аллокация', clearedValue: '' },
+        year: { label: 'Год', clearedValue: null },
+        filterButton: { label: 'Фильтр', clearedValue: '' },
+        dotsButton: { label: 'Меню', clearedValue: '' },
+      },
+    });
+
+    const customChips = filterList.flatMap((item) =>
+      'groupLabel' in item
+        ? item.items.map((inner) => ({
+            label: String(inner.label),
+            onClick: inner.onClick,
+          }))
+        : [{ label: String(item.label), onClick: item.onClick }],
+    );
+    const hasChips = customChips.length > 0;
+    const lastRef = useRef(customChips);
+    if (hasChips) {
+      lastRef.current = customChips;
+    }
+    const renderedChips = hasChips ? customChips : lastRef.current;
+
+    return (
+      <div style={{ padding: 20, background: 'grey' }}>
+        <div style={{ position: 'relative', width: 600, height: 512 }}>
+          <AnalyticalWidget
+            size="l"
+            headerSlot={
+              <AnalyticalWidget.Header
+                title="Custom topSlot"
+                badge="TA"
+                subtitle="Свои чипы + Select в rightSlot"
+                infoTooltipText="Info"
+                rightSlot={
+                  <Select
+                    size="xs"
+                    value={period}
+                    onChange={(v) => setPeriod(v as string)}
+                    items={[
+                      { label: 'Месяц', value: 'month' },
+                      { label: 'Квартал', value: 'quarter' },
+                      { label: 'Год', value: 'year' },
+                    ]}
+                  />
+                }
+              />
+            }
+            topSlot={
+              <div className={analyticalWidgetClassNames.selfSpacedTopSlot}>
+                <Collapse isOpen={hasChips} unMountOnClose>
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexWrap: 'wrap',
+                      gap: 4,
+                      paddingTop: 8,
+                    }}
+                  >
+                    {renderedChips.map((chip, index) => (
+                      <button
+                        type="button"
+                        // eslint-disable-next-line react/no-array-index-key
+                        key={`${chip.label}-${index}`}
+                        onClick={chip.onClick}
+                        style={{
+                          padding: '2px 8px',
+                          borderRadius: 12,
+                          background: 'rgba(0, 0, 0, 0.06)',
+                          border: 'none',
+                          fontSize: 12,
+                          lineHeight: '16px',
+                          whiteSpace: 'nowrap',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        {chip.label}
+                      </button>
+                    ))}
+                  </div>
+                </Collapse>
+              </div>
+            }
+            contentSlot={
+              <div style={{ minHeight: 'fit-content' }}>{longText()}</div>
+            }
+          />
+          <AnalyticalWidget.DotsIconButton
+            absolute
+            dropdownProps={{
+              items: generateButtonItems(
+                'dotsButton',
+                dotsButtonOptions,
+                filterList,
+              ),
+              onItemSelect(item) {
+                updateFilters({
+                  dotsButton:
+                    filters.dotsButton === item.value?.toString()
+                      ? ''
+                      : item.value?.toString() ?? '',
+                });
+              },
+            }}
+          />
+        </div>
+      </div>
+    );
+  },
+};
+
+/**
+ * Скелетон title/subtitle: данные шапки приходят с бэкенда, на время загрузки
+ * в title/subtitle прокидывается ReactNode (Skeleton) — рендерится как есть,
+ * без типографики и тултипа. Кнопка «Загрузить» имитирует ответ бэка.
+ */
+export const AnalyticalWidgetHeaderSkeleton: Story = {
+  name: 'Header: skeleton title/subtitle',
+  render: () => {
+    const [loading, setLoading] = useState(true);
+
+    return (
+      <div style={{ padding: 20, background: 'grey' }}>
+        <div style={{ marginBottom: 12 }}>
+          <Button size="s" onClick={() => setLoading((v) => !v)}>
+            {loading ? 'Загрузить данные' : 'Показать скелетон'}
+          </Button>
+        </div>
+        <div style={{ position: 'relative', width: 600, height: 512 }}>
+          <AnalyticalWidget
+            size="l"
+            headerSlot={
+              <AnalyticalWidget.Header
+                title={
+                  loading ? (
+                    <LineSkeleton size="bodyM" style={{ width: 180 }} />
+                  ) : (
+                    'Аналитический виджет'
+                  )
+                }
+                badge={loading ? undefined : 'TA'}
+                subtitle={
+                  loading ? (
+                    <LineSkeleton size="bodyXS" style={{ width: 120 }} />
+                  ) : (
+                    'Данные за месяц'
+                  )
+                }
+                infoTooltipText="Info"
+              />
+            }
+            contentSlot={
+              <div style={{ minHeight: 'fit-content' }}>{longText()}</div>
+            }
+          />
+        </div>
+      </div>
     );
   },
 };

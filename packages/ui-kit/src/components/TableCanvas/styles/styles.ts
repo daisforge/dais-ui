@@ -11,7 +11,6 @@ import styled, { css, CSSObject } from 'styled-components';
 
 import { CLASS_PINNED_RIGHT_COL } from '../feature-column-control/constantsUI';
 import { FULL_SCREEN } from '../feature-full-screen/constants';
-import { getPaginationHeight } from '../feature-pagination/handlers';
 import { PaginationSize } from '../feature-pagination/types';
 import {
   ROW_I_COL_ACTIVE,
@@ -22,8 +21,13 @@ import {
   CHECKBOX_COL_CLASS_CUSTOM,
   CHECKBOX_HEADER_COL_CLASS_CUSTOM,
 } from '../feature-select-row';
+import { SIDEBAR_TABS_WIDTH } from '../feature-sidebar/constants';
 import { CLASS } from '../renders/constants';
-import { ActiveTheme, HighlightActiveType } from '../TableGlideInstance/type';
+import {
+  ActiveTheme,
+  AppearanceVariant,
+  HighlightActiveType,
+} from '../TableGlideInstance/type';
 import { ActiveViewModsType } from '../types';
 import {
   editableCellStyle,
@@ -32,6 +36,12 @@ import {
   selectionStyleForCell,
 } from './cellStyle';
 import { tableClassNames as cls, tableClassNames } from './classNames';
+import {
+  getReservedTableHeight,
+  HEIGHT_CONTROL_BLOCK,
+  HEIGHT_TABLE_DEFAULT,
+  MIN_CONTENT_HEIGHT,
+} from './getReservedTableHeight';
 import { headerCellDividerStyles } from './headerCellDivider';
 import {
   headerCellRightIconsBaseStyle,
@@ -45,6 +55,8 @@ import {
   DURATION,
   FIRST_ROW,
   LVL_1_ROW_CLASS,
+  OUTER_BORDER_COLOR_VAR,
+  outerBorderColor,
   SIZES,
   TABLE_BORDER_RADIUS,
 } from './styles.constants';
@@ -140,6 +152,8 @@ const globalColorAndStyles = (theme: ActiveTheme) => css`
   --rdg-cell-frozen-box-shadow: ${FROZEN_BOX_SHADOW()};
 `;
 
+// Линии-разделители треков скролла идут той же переменной, что внешние рамки:
+// в «чистом» виде они тоже гаснут.
 export const scrollbarStyles = css`
   &::-webkit-scrollbar {
     width: 16px;
@@ -156,7 +170,7 @@ export const scrollbarStyles = css`
         border-bottom-left-radius: 0px;
         border-top-right-radius: inherit;
         border-bottom-right-radius: inherit;
-        border-left: 1px solid ${COLORS.border};
+        border-left: 1px solid ${outerBorderColor};
       }
       &:horizontal {
         border-top-right-radius: 0px;
@@ -164,7 +178,7 @@ export const scrollbarStyles = css`
 
         border-bottom-left-radius: inherit;
         border-bottom-right-radius: inherit;
-        border-top: 1px solid ${COLORS.border};
+        border-top: 1px solid ${outerBorderColor};
       }
     }
 
@@ -199,7 +213,7 @@ export const scrollbarStyles = css`
     }
 
     &-corner {
-      border-left: 1px solid ${COLORS.border};
+      border-left: 1px solid ${outerBorderColor};
       background-color: ${COLORS.white};
     }
   }
@@ -344,7 +358,13 @@ export const ContainerStyled = styled.div<{
   $isEnabledCollapse?: boolean;
   $highlightActiveType: HighlightActiveType;
   $activeTheme: ActiveTheme;
+  $appearanceVariant: AppearanceVariant;
+  $isCoverOverlayActive?: boolean;
 }>`
+  // Внешние рамки: в «чистом» виде прозрачные (см. OUTER_BORDER_COLOR_VAR)
+  ${OUTER_BORDER_COLOR_VAR}: ${({ $appearanceVariant }) =>
+    $appearanceVariant === 'clean' ? 'transparent' : COLORS.border};
+
   // Collapsing таблицы
   // Для collapse таблицы плавное изменений высот
   ${({ $isEnabledCollapse }) =>
@@ -357,24 +377,51 @@ export const ContainerStyled = styled.div<{
     overflow: ${$isCollapsed ? 'hidden' : 'unset'};
   `}
 
-  // RightSidebar
+  // Рабочая область с боковыми панелями и нижним слотом.
   & .${cls.tableSidebarLayout} {
     position: relative;
 
-    // Collapsing (если есть RightSidebar)
+    // Collapsing всей рабочей области.
     // Для collapse таблицы плавное изменений высот
     ${({ $isEnabledCollapse }) =>
       $isEnabledCollapse &&
       css`
-        transition: height 0.5s ease, max-height 0.5s ease, opacity 0.5s ease;
+        transition: height 0.5s ease, max-height 0.5s ease;
       `}
     display: flex;
+    min-width: 0;
+    min-height: 0;
+
+    & > .${cls.tableCenterColumn} {
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 0;
+      min-width: 0;
+      min-height: 0;
+      height: 100%;
+
+      &[data-has-bottom-sheet='true'] {
+        // На узком контейнере сжимаем контент сайдбаров, сохраняя область canvas.
+        min-width: max(
+          0px,
+          min(120px, calc(100% - ${SIDEBAR_TABS_WIDTH * 2}px))
+        );
+
+        & > .${cls.tableSidebarTableContainer} {
+          // Canvas занимает оставшуюся высоту над нижней панелью.
+          flex: 1 1 0;
+          height: 0;
+        }
+      }
+    }
 
     & .${cls.tableSidebarTableContainer} {
-      position: 'relative'
+      position: relative;
       ${() => transitions()}
       flex-grow: 1;
       min-width: 0;
+      min-height: 0;
+      height: 100%;
     }
   }
 
@@ -417,7 +464,7 @@ export const ContainerStyled = styled.div<{
       ${globalColorAndStyles($activeTheme)}
       
       & .${tableClassNames.table} {
-        border: 1px solid var(--rdg-border-color);
+        border: 1px solid ${outerBorderColor};
       }
       & .${tableClassNames.tableAndTableScroller} {
         ${scrollbarStyles}
@@ -431,7 +478,7 @@ export const ContainerStyled = styled.div<{
       }
 
       & .rdg {
-        border: 1px solid var(--rdg-border-color);
+        border: 1px solid ${outerBorderColor};
         ${globalColorAndStyles($activeTheme)}
         ${() => transitions()}
     
@@ -664,16 +711,26 @@ export const ContainerStyled = styled.div<{
       }
     `;
   }}
+  // Оверлей loadingOverlay mode: 'cover' растягивается на корневой контейнер,
+  // а его слои не выходят за пределы таблицы. В fullscreen position задаёт fullScreenStyles.
+  ${({ $isCoverOverlayActive }) =>
+    $isCoverOverlayActive &&
+    css`
+      position: relative;
+      isolation: isolate;
+    `}
+
   & {
     ${({ $containerCss }) => $containerCss}
     ${({ $fullScreened }) => $fullScreened && fullScreenStyles}
   }
 `;
-// По дизайну 40px (fallback для m/s, xs использует SPACING_MAP.xs.containerHeight = 32)
-export const HEIGHT_CONTROL_BLOCK = 40;
-export const HEIGHT_FILTERLIST_BLOCK = 33;
-export const HEIGHT_TABLE_DEFAULT = 350;
-export const MIN_CONTENT_HEIGHT = 316;
+export {
+  HEIGHT_CONTROL_BLOCK,
+  HEIGHT_FILTERLIST_BLOCK,
+  HEIGHT_TABLE_DEFAULT,
+  MIN_CONTENT_HEIGHT,
+} from './getReservedTableHeight';
 
 const getHeightOfTable = (
   tableContainerHeight: string | number | undefined,
@@ -689,6 +746,7 @@ const getHeightOfTable = (
   // всегда брали HEIGHT_CONTROL_BLOCK (40), из-за чего в xs таблица
   // недосчитывала 8px на каждый блок и часть оставалась не свёрнутой.
   controlBlockHeight: number = HEIGHT_CONTROL_BLOCK,
+  minContentHeight: number = MIN_CONTENT_HEIGHT,
 ) => {
   // Если таблица свернута - высота 0 (кроме controlBlock)
   if (isCollapsed) {
@@ -699,41 +757,26 @@ const getHeightOfTable = (
 
   // Гарантируем минимальную высоту контентной части
   const height =
-    typeof initialHeight === 'number' && initialHeight < MIN_CONTENT_HEIGHT
-      ? MIN_CONTENT_HEIGHT
+    typeof initialHeight === 'number' && initialHeight < minContentHeight
+      ? minContentHeight
       : initialHeight;
 
   if (typeof height === 'number' || typeof height === 'string') {
     const heightConverted = typeof height === 'number' ? `${height}px` : height;
 
-    const heightOfControlBlock = isHaveControlBlock ? controlBlockHeight : 0;
+    // Вычитаем элементы вне рабочей области из высоты внешнего контейнера.
+    const reservedHeight = getReservedTableHeight({
+      isHaveControlBlock,
+      controlBlockHeight,
+      collapseButtonPlacement,
+      filtersAreVisible,
+      isSearchingBellow,
+      paginationActiveInConfig,
+      paginationHeight,
+      paginationCustomSize,
+    });
 
-    // Если кнопка коллапсинга сверху - добавляем еще один блок той же высоты
-    const heightOfCollapseBlockAbove =
-      collapseButtonPlacement === 'above' ? controlBlockHeight : 0;
-
-    const filterListHeight = filtersAreVisible ? HEIGHT_FILTERLIST_BLOCK : 0;
-
-    // Если paginationHeight === 0 - значит эффект вычисляющий высоту блока пагинации не отработал еще, используем в качестве fallback старую логику (getPaginationHeight)
-    // Если это не делать, то так как у нас стоит анимация на изменения высоты таблицы, блок пагинации изменится с 0 до условных 56px - сработает анимация и будет плавное визуальное уменьшение основной высоты таблицы. В этих случаях отработает fallback.
-    const heightOfPagination =
-      paginationHeight === 0
-        ? getPaginationHeight(paginationActiveInConfig, paginationCustomSize)
-        : paginationHeight;
-
-    // ControlBlock heights
-    // If searching is active and move bellow - that's means control block multiply own height
-    const calculatedControlBlockHeight = isSearchingBellow
-      ? heightOfControlBlock * 2
-      : heightOfControlBlock;
-
-    const totalHeightToSubtract =
-      calculatedControlBlockHeight +
-      heightOfCollapseBlockAbove +
-      filterListHeight +
-      heightOfPagination;
-
-    return `max(${MIN_CONTENT_HEIGHT}px, calc(${heightConverted} - ${totalHeightToSubtract}px))`;
+    return `max(${minContentHeight}px, calc(${heightConverted} - ${reservedHeight}px))`;
   }
   return undefined;
 };
@@ -753,6 +796,9 @@ export const getTableHeightStyles = (
   // Реальная высота контрл-блока (m/s = 40, xs = 32), прокидывается в
   // расчёт высоты таблицы
   controlBlockHeight: number = HEIGHT_CONTROL_BLOCK,
+  // При нижнем слоте минимум canvas задаётся внутри центральной колонки.
+  // Общая рабочая область должна помещаться в контейнер вместе с пагинацией.
+  minContentHeight: number = MIN_CONTENT_HEIGHT,
 ) => {
   if (fullScreened) {
     const height = getHeightOfTable(
@@ -766,6 +812,7 @@ export const getTableHeightStyles = (
       isCollapsed,
       collapseButtonPlacement,
       controlBlockHeight,
+      minContentHeight,
     );
     return {
       height,
@@ -784,6 +831,7 @@ export const getTableHeightStyles = (
       isCollapsed,
       collapseButtonPlacement,
       controlBlockHeight,
+      minContentHeight,
     );
 
   const height = getH(tableContainerHeight);

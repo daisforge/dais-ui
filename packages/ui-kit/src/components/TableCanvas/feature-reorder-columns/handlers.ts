@@ -1,5 +1,6 @@
 import { getCols } from '../feature-key-text';
 import { KeyText, KeyTextMap } from '../feature-key-text/types';
+import { ROW_ERRORS_COLUMN_KEY } from '../feature-row-errors';
 import {
   isRowInstrumentsColumn,
   ROW_I_COLUMN_KEY,
@@ -13,6 +14,11 @@ import {
   replaceAllFromArray,
   swapItemsByIndex,
 } from '../utils/arrayMutationHandlers';
+
+/** Одинаковый ли порядок ключей в двух списках. */
+export const sameOrder = (a: readonly string[], b: readonly string[]) =>
+  a === b || (a.length === b.length && a.every((key, i) => key === b[i]));
+
 /**
  * Функция для добавления вперед колонок CHECKBOX_COLUMN_KEY, KEY_GROUPED_COL, для удаления дубликатов
  */
@@ -26,6 +32,7 @@ export const orderWithUpdatedDefaultColsDeleteDuplicates = ({
   [
     ROW_MARKER_COLUMN_KEY,
     CHECKBOX_COLUMN_KEY,
+    ROW_ERRORS_COLUMN_KEY,
     ROW_I_COLUMN_KEY,
     KEY_GROUPED_COL,
   ].forEach((k) => {
@@ -40,6 +47,38 @@ export const orderWithUpdatedDefaultColsDeleteDuplicates = ({
   });
 
   return Array.from(newSet);
+};
+
+/**
+ * Добавляет в текущий порядок ключи, которых в нём ещё нет (колонки, появившиеся в columnConfig).
+ * Новый ключ встаёт сразу после ближайшего соседа слева по defaultOrder, поэтому колонка,
+ * добавленная в середину конфига, появляется рядом со своим соседом, а не в конце таблицы.
+ * Порядок уже существующих ключей (в т.ч. переставленных пользователем) не меняется.
+ */
+export const insertNewKeysByDefaultOrder = ({
+  prevOrder,
+  defaultOrder,
+}: {
+  prevOrder: readonly string[];
+  defaultOrder: readonly string[];
+}): string[] => {
+  const result = [...prevOrder];
+  const resultSet = new Set(result);
+  let leftNeighborKey: string | undefined;
+
+  defaultOrder.forEach((key) => {
+    if (!resultSet.has(key)) {
+      const insertIndex =
+        leftNeighborKey === undefined ? 0 : result.indexOf(leftNeighborKey) + 1;
+
+      result.splice(insertIndex, 0, key);
+      resultSet.add(key);
+    }
+
+    leftNeighborKey = key;
+  });
+
+  return result;
 };
 
 export const updateOrderWithKeyText = ({
@@ -200,6 +239,7 @@ export const sortedInOrder = <T extends ObjectForExtending, V>({
   tableConfigDefaultOrder,
   rowMarkersIsActive,
   selectingRowsIsActive,
+  rowErrorsIsActive = false,
   rowsGroupingIsActive,
   showRowInstruments,
   colsWithKeyTextMap,
@@ -209,6 +249,7 @@ export const sortedInOrder = <T extends ObjectForExtending, V>({
   tableConfigDefaultOrder: string[] | undefined;
   rowMarkersIsActive: boolean;
   selectingRowsIsActive: boolean;
+  rowErrorsIsActive?: boolean;
   rowsGroupingIsActive: boolean;
   showRowInstruments: boolean;
   colsWithKeyTextMap: KeyTextMap;
@@ -222,6 +263,9 @@ export const sortedInOrder = <T extends ObjectForExtending, V>({
   }
   if (selectingRowsIsActive) {
     resultOrder.push(CHECKBOX_COLUMN_KEY);
+  }
+  if (rowErrorsIsActive) {
+    resultOrder.push(ROW_ERRORS_COLUMN_KEY);
   }
   if (showRowInstruments) {
     resultOrder.push(ROW_I_COLUMN_KEY);
@@ -237,6 +281,7 @@ export const sortedInOrder = <T extends ObjectForExtending, V>({
       if (
         key === ROW_MARKER_COLUMN_KEY ||
         key === CHECKBOX_COLUMN_KEY ||
+        key === ROW_ERRORS_COLUMN_KEY ||
         isRowInstrumentsColumn(key) ||
         key === KEY_GROUPED_COL
       ) {
@@ -397,7 +442,7 @@ export function keyTextUpdateAfterReorder({
     const isSameKeyText = sourceKeyKey === targetKeyKey;
     const isSwappedKeyAndText = isSameKeyText;
 
-    /* source и target - один и тот же keyText, нужно обратно поменять. 
+    /* source и target - один и тот же keyText, нужно обратно поменять.
         Так как изменение keyText не было, то и колонки не должны меняться местами. */
     if (isSwappedKeyAndText) {
       newColumnsOrder[sourceColumnOrderIndex] = sourceKey;
@@ -406,7 +451,7 @@ export function keyTextUpdateAfterReorder({
     }
     /* если активирован одиночный режим:
         Например, один ключ поменялся с другим ключим, то ничего обратно не меняем.
-        Колонки должны вести себя как обычные и меняться друг с другом. 
+        Колонки должны вести себя как обычные и меняться друг с другом.
         Никаких последующих корректировок не надо делать */
     if (keyText === 'key' || keyText === 'text') {
       return;

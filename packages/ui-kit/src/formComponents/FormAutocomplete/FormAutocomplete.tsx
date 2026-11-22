@@ -3,7 +3,12 @@ import React from 'react';
 import type { FieldValues } from 'react-hook-form';
 import { Controller } from 'react-hook-form';
 
-import { getPriorityRequired, useChangedFormContext } from '../utils';
+import {
+  getErrorHelper,
+  getErrorView,
+  getPriorityRequired,
+  useChangedFormContext,
+} from '../utils';
 import type { FormAutocompleteProps } from './types';
 
 /**
@@ -45,11 +50,11 @@ export const FormAutocomplete = <TFieldValues extends FieldValues>({
         <Autocomplete
           {...fieldRest}
           label={label}
-          leftHelper={error?.message || leftHelper}
+          leftHelper={getErrorHelper(error, leftHelper)}
           required={!!newOptions.required || undefined}
           requiredPlacement="right"
           hasRequiredIndicator={!!newOptions.required || undefined}
-          view={error?.type ? 'negative' : view ?? 'default'}
+          view={getErrorView(error, view)}
           onChange={async ({ target: { value } }) => {
             await onChange(value);
             handleChangeInput?.(value, formCtx);

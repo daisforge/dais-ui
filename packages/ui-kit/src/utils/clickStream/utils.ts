@@ -1,4 +1,4 @@
-import { TPropertyItem } from './types';
+import { IDigitalTraceContext, TPropertyItem } from './types';
 
 export const createClickStreamEventValue = (
   values: string[],
@@ -29,3 +29,18 @@ export const transformClickStreamPropertyValuesToString = (
 
   return values ?? 'null';
 };
+
+export function injectDigitalTraceContextHeader(
+  headers: Headers,
+  context?: IDigitalTraceContext,
+): Headers {
+  if (!context) {
+    return headers;
+  }
+
+  const payload = JSON.stringify(context);
+  const encoded = btoa(payload);
+  headers.set('X-Digital-Trace-Context', encoded);
+
+  return headers;
+}

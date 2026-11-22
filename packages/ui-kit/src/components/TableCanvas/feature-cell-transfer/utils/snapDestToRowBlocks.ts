@@ -33,7 +33,7 @@ export function snapDestToRowBlocks<R extends ObjectForExtending>(
           ? readRowSpanBlock(columns[c], rows, c, top)
           : null;
       if (topBlock && topBlock[0] < top) {
-        top = topBlock[0];
+        [top] = topBlock;
         changed = true;
       }
 
@@ -42,7 +42,7 @@ export function snapDestToRowBlocks<R extends ObjectForExtending>(
           ? readRowSpanBlock(columns[c], rows, c, bottom)
           : null;
       if (bottomBlock && bottomBlock[1] > bottom) {
-        bottom = bottomBlock[1];
+        [, bottom] = bottomBlock;
         changed = true;
       }
     }

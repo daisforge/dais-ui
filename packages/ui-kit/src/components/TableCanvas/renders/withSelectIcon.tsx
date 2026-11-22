@@ -1,39 +1,48 @@
-import { IconChevronDown, IconDisclosureDownOutline } from '@ui-kit/icons';
+import { IconDisclosureDownOutline } from '@ui-kit/icons';
 
 import { Canvas } from '../../TableGlide';
 import { CanvasContent, isCanvasString } from '../TableGlideInstance';
+import type { Editing, ObjectForExtending } from '../types';
 import type { RowSize } from './rowIconConfig';
-import { ROW_HEIGHT_BY_SIZE, ROW_ICON_BUTTON_CONFIG } from './rowIconConfig';
+import { getSelectArrowBox } from './rowIconConfig';
 
 type SelectCellVisual = {
   rowSize: RowSize;
   cellPaddingInline: number;
-  overlayRightOffset: number;
+  cellVerticalPadding: number;
+  // Куда прижать триггер (текст со стрелкой) в объединённом блоке. Пусто = ячейка не объединена.
+  mergedVerticalAlign?: 'top' | 'center' | 'bottom';
+  mergedHorizontalAlign?: 'left' | 'center' | 'right';
 };
 
 const openSelectEditorInteraction = {
   editor: 'open-on-click',
 } as const;
 
-const SELECT_TRIGGER_LEFT_GAP_BY_SIZE: Record<RowSize, number> = {
-  big: 10,
-  medium: 8,
-  small: 6,
-};
-
-const SELECT_TRIGGER_VERTICAL_INSET = 1;
-
-const selectOverlayBackgroundProps = {
-  // Цвет выбранной/активной ячейки появляется только в draw-фазе как cellFillColor.
-  // Поэтому select overlay использует приватный resolver, не расширяя публичный backgroundColor API.
-  __backgroundColorResolver: (theme: { bgCell: string }) => theme.bgCell,
-};
-
-const SELECT_ARROW_ICON_BY_ROW_SIZE = {
-  big: IconDisclosureDownOutline,
-  medium: IconChevronDown,
-  small: IconChevronDown,
+// Верх / центр / низ блока -> justifyContent внешней колонки (двигает триггер).
+const SELECT_CONTENT_VERTICAL_ALIGN = {
+  top: 'flex-start',
+  center: 'center',
+  bottom: 'flex-end',
 } as const;
+
+// Лево / центр / право -> justifyContent зоны текста внутри триггера.
+const SELECT_CONTENT_HORIZONTAL_ALIGN = {
+  left: 'flex-start',
+  center: 'center',
+  right: 'flex-end',
+} as const;
+
+// Одна иконка на всех размерах строки, размер берётся из getSelectArrowBox.
+const SelectArrowIcon = IconDisclosureDownOutline;
+
+/** Ячейка с селектом: встроенный select или кастомный редактор с showSelectIcon. */
+export const isSelectEditingCell = <R extends ObjectForExtending, SR>(
+  editingCell: Editing<R, SR> | null | undefined,
+): boolean =>
+  !!editingCell &&
+  (editingCell.component === 'select' ||
+    ('showSelectIcon' in editingCell && editingCell.showSelectIcon === true));
 
 export const withSelectIcon = (
   content: CanvasContent,
@@ -51,64 +60,75 @@ export const withSelectIcon = (
 ): CanvasContent => {
   if (isSelect) {
     const changedContent = isCanvasString(content) ? (
-      <Canvas.Text>{content}</Canvas.Text>
+      <Canvas.Text overflow="hidden" textOverflow="ellipsis" autoTooltip>
+        {content}
+      </Canvas.Text>
     ) : (
       content
     );
 
-    const { rowSize, cellPaddingInline, overlayRightOffset } = visual;
-    const { overrideSquareSize, overrideIconSize } =
-      ROW_ICON_BUTTON_CONFIG[rowSize];
-    const triggerLeftGap = SELECT_TRIGGER_LEFT_GAP_BY_SIZE[rowSize];
-    const triggerWidth =
-      triggerLeftGap + overrideSquareSize + cellPaddingInline;
-    const triggerHeight =
-      ROW_HEIGHT_BY_SIZE[rowSize] - SELECT_TRIGGER_VERTICAL_INSET * 2;
-    const iconTopInsideTrigger = (triggerHeight - overrideSquareSize) / 2;
-    const overlayRight = -overlayRightOffset;
-    const SelectArrowIcon = SELECT_ARROW_ICON_BY_ROW_SIZE[rowSize];
+    const {
+      rowSize,
+      cellPaddingInline,
+      cellVerticalPadding,
+      mergedVerticalAlign,
+      mergedHorizontalAlign,
+    } = visual;
+    const { squareSize, iconSize, gapToText } = getSelectArrowBox(rowSize);
 
+    // Отступы темы нужны, только когда текст прижат к верху или низу объединённой ячейки.
+    // При центрировании они мешают: в низкой строке кнопка выше места между
+    // отступами, и раскладка прижимает её к верху вместо центра.
+    const insetFromEdges =
+      mergedVerticalAlign === 'top' || mergedVerticalAlign === 'bottom';
+
+    // Внешняя колонка на всю высоту блока: justifyContent двигает триггер
+    // вверх/центр/вниз.
     return (
       <Canvas.Container
-        alignItems="center"
-        position="relative"
+        direction="column"
+        justifyContent={
+          mergedVerticalAlign
+            ? SELECT_CONTENT_VERTICAL_ALIGN[mergedVerticalAlign]
+            : 'center'
+        }
+        padding={
+          insetFromEdges
+            ? { top: cellVerticalPadding, bottom: cellVerticalPadding }
+            : undefined
+        }
         style={{ width: '100%', height: '100%' }}
       >
-        {changedContent}
-
-        {editModeEnabled && (
+        {/* Триггер: текст и шеврон одной строкой, едут вместе. Шеврон справа
+            резервирует место, поэтому текст под него не залезает. */}
+        <Canvas.Container
+          alignItems="center"
+          gap={gapToText}
+          padding={{ right: cellPaddingInline }}
+          style={{ width: '100%' }}
+        >
           <Canvas.Container
-            key="select-trigger"
-            position="absolute"
-            top={SELECT_TRIGGER_VERTICAL_INSET}
-            right={overlayRight}
-            zIndex={1}
-            {...selectOverlayBackgroundProps}
-            onClick={(event) => {
-              event.stopPropagation();
-            }}
-            style={{
-              width: triggerWidth,
-              // Фиксированная высота в одну строку вместо растяжки top/bottom.
-              // У объединённой ячейки родитель height:100% = высота всего блока,
-              // и растянутый триггер с непрозрачным фоном закрывал заливку выделения
-              // вертикальной полосой на весь блок. Одна строка = как у не-слитых ячеек.
-              height: triggerHeight,
-            }}
+            justifyContent={
+              mergedHorizontalAlign
+                ? SELECT_CONTENT_HORIZONTAL_ALIGN[mergedHorizontalAlign]
+                : undefined
+            }
+            style={{ flexGrow: 1, flexShrink: 1 }}
           >
+            {changedContent}
+          </Canvas.Container>
+
+          {editModeEnabled && (
             <Canvas.EmbedIconButton
               icon={<SelectArrowIcon />}
               view="secondary"
-              position="absolute"
-              top={iconTopInsideTrigger}
-              right={cellPaddingInline}
               interaction={openSelectEditorInteraction}
-              overrideSquareSize={overrideSquareSize}
-              overrideIconSize={overrideIconSize}
-              style={{ cursor: 'pointer' }}
+              overrideSquareSize={squareSize}
+              overrideIconSize={iconSize}
+              style={{ cursor: 'pointer', flexShrink: 0 }}
             />
-          </Canvas.Container>
-        )}
+          )}
+        </Canvas.Container>
       </Canvas.Container>
     );
   }

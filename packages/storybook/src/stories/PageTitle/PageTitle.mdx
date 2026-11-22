@@ -12,7 +12,7 @@ import * as PageTitleStories from './PageTitle.stories';
 - Опциональные breadcrumbs с настраиваемым размером (по умолчанию `size='m'`)
 - Кнопка «назад» слева от заголовка (`showBackButton`, `onBackClick`)
 - Заголовок и подзаголовок с автоматическим тултипом при обрезке текста
-- Кастомный слот правее заголовка (`titleSlot`)
+- Кастомный слот правее заголовка (`titleSlot`), обычно для Badge. Стоит сразу за текстом заголовка, а не за подзаголовком, и выровнен по центру строки заголовка
 - Правый блок действий (`rightSlot`), прижатый к правому краю
 
 ## Особенности
@@ -30,11 +30,7 @@ import * as PageTitleStories from './PageTitle.stories';
 ```tsx
 <PageTitle
   title="Заголовок страницы"
-  titleSlot={
-    <Button size="xs" view="secondary">
-      Действие
-    </Button>
-  }
+  titleSlot={<Badge size="m" view="default" text="Черновик" />}
 />
 ```
 

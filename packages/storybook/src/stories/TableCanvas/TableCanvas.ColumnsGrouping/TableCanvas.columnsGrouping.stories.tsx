@@ -1,16 +1,20 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { createRows, type Row } from '@df-storybook/data/tableData';
 import DocStoryTemplate from '@df-storybook/templates/DocStoryTemplate.mdx';
+import { StoryHint } from '@df-storybook/utils/StoryHint';
 import { storySourceDoc } from '@df-storybook/utils/storySourceDoc';
 import type { Meta, StoryObj } from '@storybook/react';
 import { Switch } from '@ui-kit/components/Switch';
 import {
   Canvas,
   ColumnOrColumnGroupConfig,
+  type GroupHeaderInfo,
+  type SortColumn,
   TableCanvas,
   tableCanvasFonts,
   tableCanvasTheme,
 } from '@ui-kit/components/TableCanvas';
+import { IconStar } from '@ui-kit/icons';
 import React, { useMemo, useState } from 'react';
 
 const meta: Meta = {
@@ -29,8 +33,9 @@ const preCode = `
 import {
   Canvas,
   ColumnOrColumnGroupConfig,
+  type GroupHeaderInfo,
   TableCanvas,
-} from '@sber-digital-finance-ui/ui-kit/components/TableCanvas';
+} from '@daisforge/ui/components/TableCanvas';
 `;
 
 const spanRows = createRows(0, 40);
@@ -44,17 +49,34 @@ type Story = StoryObj;
  * Переключатель включает и выключает поведение, видно, как появляются и исчезают пустые
  * полосы. Также здесь: кастомный `name` группы (canvas-элемент), реордер колонок за шапку.
  */
+/** Пустые значения фильтров: по ним кнопка фильтра понимает, активна ли она. */
+const CLEARED_FILTERS = { id: '', tr: '' };
+
 export const Playground: Story = {
   ...storySourceDoc({ preCode, previewSource: 'shown', type: 'code' }),
   name: 'Группировка (squash)',
   render: () => {
     const [rows] = useState(createRows);
     const [squash, setSquash] = useState(true);
+    const filteringStateAndSetter = useState(CLEARED_FILTERS);
+    const sortingStateAndSetter = useState<readonly SortColumn[]>([]);
 
     const columnConfig = useMemo<ColumnOrColumnGroupConfig<Row>[]>(
       () => [
         // Одиночная колонка без группы: при squash её шапка тянется вверх.
-        { key: 'id', name: 'ID', width: 90, resizable: true },
+        {
+          key: 'id',
+          name: 'ID',
+          width: 90,
+          resizable: true,
+          sortingType: 'numberSort',
+          filtering: {
+            component: 'input',
+            keyInFilterState: 'id',
+            valueInRow: (r) => String(r.id),
+            filter: 'startWith',
+          },
+        },
         // Глубокая группа (3 уровня) для реордера.
         {
           key: 'metrics',
@@ -93,7 +115,21 @@ export const Playground: Story = {
               </Canvas.Text>
             </Canvas.Container>
           ),
-          children: [{ key: 'tr', name: 'TR', width: 130, resizable: true }],
+          children: [
+            {
+              key: 'tr',
+              name: 'TR',
+              width: 130,
+              resizable: true,
+              sortingType: 'stringSort',
+              filtering: {
+                component: 'input',
+                keyInFilterState: 'tr',
+                valueInRow: (r) => r.tr,
+                filter: 'startWith',
+              },
+            },
+          ],
         },
       ],
       [],
@@ -121,6 +157,11 @@ export const Playground: Story = {
             columnsGrouping: { squashEmptyCells: squash },
             columnsControl: { enable: true },
             resizableColumn: true,
+            sorting: { state: sortingStateAndSetter },
+            filtering: {
+              state: filteringStateAndSetter,
+              clearedValue: CLEARED_FILTERS,
+            },
           }}
           columnConfig={columnConfig}
           rows={rows}
@@ -179,6 +220,103 @@ export const HeaderAlign: Story = {
         columnConfig={columnConfig}
         rows={spanRows}
       />
+    );
+  },
+};
+
+/**
+ * Клик и контекстное меню по заголовку группы: `tableConfig.onGroupHeaderClicked` и
+ * `onGroupHeaderContextMenu` (во втором аргументе — `key` и `children` группы). Кнопка внутри заголовка
+ * группы с `interaction` получает клик сама: группа не выделяется, обработчик группы
+ * не вызывается.
+ */
+export const GroupHeaderClick: Story = {
+  ...storySourceDoc({ preCode, previewSource: 'shown', type: 'code' }),
+  name: 'Клик по заголовку группы',
+  render: () => {
+    const [rows] = useState(createRows);
+    const [log, setLog] = useState<string[]>([]);
+    const pushLog = (message: string) =>
+      setLog((prev) => [message, ...prev].slice(0, 5));
+    const describeGroup = ({ key, children }: GroupHeaderInfo<Row>) =>
+      `группа «${key}», колонки: ${children
+        .map((child) => child.key)
+        .join(', ')}`;
+
+    const columnConfig = useMemo<ColumnOrColumnGroupConfig<Row>[]>(
+      () => [
+        { key: 'id', name: 'ID', width: 90 },
+        {
+          key: 'work',
+          name: 'Работа',
+          children: [
+            { key: 'task', name: 'Задача', width: 200 },
+            { key: 'priority', name: 'Приоритет', width: 140 },
+          ],
+        },
+        {
+          key: 'progress',
+          name: (
+            <Canvas.Container
+              direction="row"
+              alignItems="center"
+              gap={4}
+              padding={{ left: 8, right: 8 }}
+            >
+              <Canvas.Text font={tableCanvasFonts.bodyXSBold}>
+                Прогресс
+              </Canvas.Text>
+              <Canvas.IconButton
+                icon={<IconStar />}
+                view="clear"
+                buttonSize="xs"
+                interaction={{ selection: 'keep', cellClick: 'stop' }}
+                onClick={() => pushLog('кнопка в заголовке группы «Прогресс»')}
+              />
+            </Canvas.Container>
+          ),
+          children: [
+            { key: 'developer', name: 'Исполнитель', width: 160 },
+            { key: 'complete', name: '% Готовности', width: 140 },
+          ],
+        },
+      ],
+      [],
+    );
+
+    return (
+      <div>
+        <StoryHint>
+          Кликни по заголовку группы — придёт <code>onGroupHeaderClicked</code>{' '}
+          и выделятся её колонки. Правый клик —{' '}
+          <code>onGroupHeaderContextMenu</code>. Кнопка-звёздочка в группе
+          «Прогресс» обрабатывает клик сама и группу не выделяет.
+        </StoryHint>
+        <p style={{ minHeight: 100, fontSize: 13, marginBottom: 8 }}>
+          {log.length === 0
+            ? 'событий пока нет'
+            : log.map((line, index) => (
+                // eslint-disable-next-line react/no-array-index-key
+                <span key={index} style={{ display: 'block' }}>
+                  {line}
+                </span>
+              ))}
+        </p>
+        <TableCanvas
+          tableConfig={{
+            containerStyle: { height: 400 },
+            rowMarkers: { startIndex: 1 },
+            onGroupHeaderClicked: (_colIndex, group) =>
+              pushLog(`onGroupHeaderClicked: ${describeGroup(group)}`),
+            onGroupHeaderContextMenu: (_colIndex, group, event) => {
+              event.preventDefault();
+              pushLog(`onGroupHeaderContextMenu: ${describeGroup(group)}`);
+            },
+          }}
+          columnConfig={columnConfig}
+          rows={rows}
+        />
+      </div>
     );
   },
 };

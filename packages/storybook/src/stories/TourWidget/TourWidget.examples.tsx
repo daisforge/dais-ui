@@ -2,17 +2,12 @@ import { Box } from '@ui-kit/components/Box';
 import { Button } from '@ui-kit/components/Button';
 import { LinkButton } from '@ui-kit/components/LinkButton';
 import { TourWidget } from '@ui-kit/components/TourWidget';
-import { ViewContainer } from '@ui-kit/components/ViewContainer';
 import { tourPulseMixin } from '@ui-kit/mixins/tourPulse';
 import React, { useState } from 'react';
 import { css } from 'styled-components';
 
 function clampStep(step: number, stepsCount: number) {
   return Math.min(Math.max(step, 0), stepsCount - 1);
-}
-
-function TourView({ children }: React.PropsWithChildren) {
-  return <ViewContainer view="onDark">{children}</ViewContainer>;
 }
 
 function MediaPlaceholder({
@@ -72,64 +67,80 @@ function PulseTarget() {
   );
 }
 
+function LineBreaksExample() {
+  return (
+    <TourWidget $css={{ width: '340px', paddingBottom: '24px' }}>
+      <TourWidget.Header
+        title={'Знакомьтесь:\nновые возможности'}
+        description={
+          'Режимы просмотра\nОбщий реестр — все пилоты со статусом «В реестре»\n• Мои пилоты — только ваши проекты, включая черновики'
+        }
+      />
+    </TourWidget>
+  );
+}
+
 function VerticalExample() {
   const tourStepsCount = 14;
   const [activeStepIndex, setActiveStepIndex] = useState(0);
 
   return (
-    <TourView>
-      <TourWidget
-        activeStepIndex={activeStepIndex}
-        $css={{ width: '286px', height: '480px' }}
-      >
-        <TourWidget.Content>
-          <MediaPlaceholder width={266} height={266} />
-        </TourWidget.Content>
-        <TourWidget.Header title="Title" />
-        <TourWidget.Footer>
+    <TourWidget activeStepIndex={activeStepIndex} $css={{ width: '298px' }}>
+      <TourWidget.Content>
+        <MediaPlaceholder width={266} height={266} />
+      </TourWidget.Content>
+      <TourWidget.Header title="Title" description="Description" />
+      <TourWidget.Footer>
+        <Box
+          $css={{
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          <TourWidget.Bullets
+            count={tourStepsCount}
+            $css={{ marginInline: 'auto' }}
+          />
+          <Box
+            $css={{
+              display: 'flex',
+              flexDirection: 'row',
+              gap: '4px',
+              marginTop: '20px',
+            }}
+          >
+            <Button
+              size="s"
+              stretching="filled"
+              view="secondary"
+              onClick={() =>
+                setActiveStepIndex((current) =>
+                  clampStep(current - 1, tourStepsCount),
+                )
+              }
+            >
+              Назад
+            </Button>
+            <Button
+              stretching="filled"
+              size="s"
+              view="default"
+              onClick={() =>
+                setActiveStepIndex((current) =>
+                  clampStep(current + 1, tourStepsCount),
+                )
+              }
+            >
+              Далее
+            </Button>
+          </Box>
           <Box
             $css={{
               display: 'flex',
               flexDirection: 'column',
+              marginTop: '4px',
             }}
           >
-            <TourWidget.Bullets
-              count={tourStepsCount}
-              $css={{ marginInline: 'auto' }}
-            />
-            <Box
-              $css={{
-                display: 'flex',
-                flexDirection: 'row',
-                gap: '4px',
-                marginTop: '20px',
-              }}
-            >
-              <Button
-                size="s"
-                stretching="filled"
-                view="secondary"
-                onClick={() =>
-                  setActiveStepIndex((current) =>
-                    clampStep(current - 1, tourStepsCount),
-                  )
-                }
-              >
-                Назад
-              </Button>
-              <Button
-                stretching="filled"
-                size="s"
-                view="white"
-                onClick={() =>
-                  setActiveStepIndex((current) =>
-                    clampStep(current + 1, tourStepsCount),
-                  )
-                }
-              >
-                Далее
-              </Button>
-            </Box>
             <LinkButton
               size="s"
               view="default"
@@ -138,9 +149,9 @@ function VerticalExample() {
               Пропустить всё
             </LinkButton>
           </Box>
-        </TourWidget.Footer>
-      </TourWidget>
-    </TourView>
+        </Box>
+      </TourWidget.Footer>
+    </TourWidget>
   );
 }
 
@@ -149,11 +160,105 @@ function HorizontalExample() {
   const [activeStepIndex, setActiveStepIndex] = useState(5);
 
   return (
-    <TourView>
+    <TourWidget
+      orientation="horizontal"
+      activeStepIndex={activeStepIndex}
+      $css={{ width: '732px', height: '272px' }}
+    >
+      <TourWidget.Content>
+        <MediaPlaceholder width={240} height={240} />
+      </TourWidget.Content>
+      <TourWidget.Header title="Title" description="Description" />
+      <TourWidget.Footer>
+        <Box
+          $css={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '32px',
+            width: '100%',
+          }}
+        >
+          <Box
+            $css={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '32px',
+              minWidth: 0,
+            }}
+          >
+            <LinkButton
+              size="s"
+              view="default"
+              onClick={() => setActiveStepIndex(0)}
+            >
+              Пропустить всё
+            </LinkButton>
+            <TourWidget.Bullets count={tourStepsCount} />
+          </Box>
+          <Box
+            $css={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+            }}
+          >
+            <Button
+              size="s"
+              view="secondary"
+              onClick={() =>
+                setActiveStepIndex((current) =>
+                  clampStep(current - 1, tourStepsCount),
+                )
+              }
+            >
+              Назад
+            </Button>
+            <Button
+              size="s"
+              view="default"
+              onClick={() =>
+                setActiveStepIndex((current) =>
+                  clampStep(current + 1, tourStepsCount),
+                )
+              }
+            >
+              Далее
+            </Button>
+          </Box>
+        </Box>
+      </TourWidget.Footer>
+    </TourWidget>
+  );
+}
+
+function TourWithPulseExample() {
+  const tourStepsCount = 14;
+  const [activeStepIndex, setActiveStepIndex] = useState(2);
+
+  return (
+    <Box
+      $css={{
+        display: 'grid',
+        gridTemplateColumns: '220px minmax(0, max-content)',
+        gap: '14px',
+        alignItems: 'center',
+      }}
+    >
+      <Box
+        $css={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: '300px',
+        }}
+      >
+        <PulseTarget />
+      </Box>
       <TourWidget
         orientation="horizontal"
         activeStepIndex={activeStepIndex}
-        $css={{ width: '720px', height: '260px' }}
+        $css={{ width: '732px', height: '272px' }}
       >
         <TourWidget.Content>
           <MediaPlaceholder width={240} height={240} />
@@ -206,7 +311,7 @@ function HorizontalExample() {
               </Button>
               <Button
                 size="s"
-                view="white"
+                view="default"
                 onClick={() =>
                   setActiveStepIndex((current) =>
                     clampStep(current + 1, tourStepsCount),
@@ -219,105 +324,7 @@ function HorizontalExample() {
           </Box>
         </TourWidget.Footer>
       </TourWidget>
-    </TourView>
-  );
-}
-
-function TourWithPulseExample() {
-  const tourStepsCount = 14;
-  const [activeStepIndex, setActiveStepIndex] = useState(2);
-
-  return (
-    <TourView>
-      <Box
-        $css={{
-          display: 'grid',
-          gridTemplateColumns: '220px minmax(0, max-content)',
-          gap: '14px',
-          alignItems: 'center',
-        }}
-      >
-        <Box
-          $css={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            minHeight: '300px',
-          }}
-        >
-          <PulseTarget />
-        </Box>
-        <TourWidget
-          orientation="horizontal"
-          activeStepIndex={activeStepIndex}
-          $css={{ width: '720px', height: '264px' }}
-        >
-          <TourWidget.Content>
-            <MediaPlaceholder width={240} height={240} />
-          </TourWidget.Content>
-          <TourWidget.Header title="Title" description="Description" />
-          <TourWidget.Footer>
-            <Box
-              $css={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                gap: '32px',
-                width: '100%',
-              }}
-            >
-              <Box
-                $css={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '32px',
-                  minWidth: 0,
-                }}
-              >
-                <LinkButton
-                  size="s"
-                  view="default"
-                  onClick={() => setActiveStepIndex(0)}
-                >
-                  Пропустить всё
-                </LinkButton>
-                <TourWidget.Bullets count={tourStepsCount} />
-              </Box>
-              <Box
-                $css={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '4px',
-                }}
-              >
-                <Button
-                  size="s"
-                  view="secondary"
-                  onClick={() =>
-                    setActiveStepIndex((current) =>
-                      clampStep(current - 1, tourStepsCount),
-                    )
-                  }
-                >
-                  Назад
-                </Button>
-                <Button
-                  size="s"
-                  view="white"
-                  onClick={() =>
-                    setActiveStepIndex((current) =>
-                      clampStep(current + 1, tourStepsCount),
-                    )
-                  }
-                >
-                  Далее
-                </Button>
-              </Box>
-            </Box>
-          </TourWidget.Footer>
-        </TourWidget>
-      </Box>
-    </TourView>
+    </Box>
   );
 }
 
@@ -326,98 +333,14 @@ function TourWithoutContentExample() {
   const [activeStepIndex, setActiveStepIndex] = useState(2);
 
   return (
-    <TourView>
-      <Box
-        $css={{
-          display: 'grid',
-          gridTemplateColumns: '220px minmax(0, max-content)',
-          gap: '14px',
-          alignItems: 'center',
-        }}
-      >
-        <Box
-          $css={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            minHeight: '300px',
-          }}
-        >
-          <PulseTarget />
-        </Box>
-        <TourWidget
-          orientation="horizontal"
-          activeStepIndex={activeStepIndex}
-          $css={{ width: '480px' }}
-        >
-          <TourWidget.Header title="Title" description="Description" />
-          <TourWidget.Footer>
-            <Box
-              $css={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                gap: '32px',
-                width: '100%',
-              }}
-            >
-              <Box
-                $css={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '32px',
-                  minWidth: 0,
-                }}
-              >
-                <LinkButton
-                  size="s"
-                  view="default"
-                  onClick={() => setActiveStepIndex(0)}
-                >
-                  Пропустить всё
-                </LinkButton>
-              </Box>
-              <Box
-                $css={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '4px',
-                }}
-              >
-                <Button
-                  size="s"
-                  view="secondary"
-                  onClick={() =>
-                    setActiveStepIndex((current) =>
-                      clampStep(current - 1, tourStepsCount),
-                    )
-                  }
-                >
-                  Назад
-                </Button>
-                <Button
-                  size="s"
-                  view="white"
-                  onClick={() =>
-                    setActiveStepIndex((current) =>
-                      clampStep(current + 1, tourStepsCount),
-                    )
-                  }
-                >
-                  Далее
-                </Button>
-              </Box>
-            </Box>
-          </TourWidget.Footer>
-        </TourWidget>
-      </Box>
-    </TourView>
-  );
-}
-
-function PulseExample() {
-  return (
-    <TourView>
+    <Box
+      $css={{
+        display: 'grid',
+        gridTemplateColumns: '220px minmax(0, max-content)',
+        gap: '14px',
+        alignItems: 'center',
+      }}
+    >
       <Box
         $css={{
           display: 'flex',
@@ -428,17 +351,97 @@ function PulseExample() {
       >
         <PulseTarget />
       </Box>
-    </TourView>
+      <TourWidget
+        orientation="horizontal"
+        activeStepIndex={activeStepIndex}
+        $css={{ width: '500px' }}
+      >
+        <TourWidget.Header title="Title" description="Description" />
+        <TourWidget.Footer>
+          <Box
+            $css={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '32px',
+              width: '100%',
+            }}
+          >
+            <Box
+              $css={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '32px',
+                minWidth: 0,
+              }}
+            >
+              <LinkButton
+                size="s"
+                view="default"
+                onClick={() => setActiveStepIndex(0)}
+              >
+                Пропустить всё
+              </LinkButton>
+            </Box>
+            <Box
+              $css={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+              }}
+            >
+              <Button
+                size="s"
+                view="secondary"
+                onClick={() =>
+                  setActiveStepIndex((current) =>
+                    clampStep(current - 1, tourStepsCount),
+                  )
+                }
+              >
+                Назад
+              </Button>
+              <Button
+                size="s"
+                view="default"
+                onClick={() =>
+                  setActiveStepIndex((current) =>
+                    clampStep(current + 1, tourStepsCount),
+                  )
+                }
+              >
+                Далее
+              </Button>
+            </Box>
+          </Box>
+        </TourWidget.Footer>
+      </TourWidget>
+    </Box>
+  );
+}
+
+function PulseExample() {
+  return (
+    <Box
+      $css={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: '300px',
+      }}
+    >
+      <PulseTarget />
+    </Box>
   );
 }
 
 export {
   clampStep,
   HorizontalExample,
+  LineBreaksExample,
   MediaPlaceholder,
   PulseExample,
   PulseTarget,
-  TourView,
   TourWithoutContentExample,
   TourWithPulseExample,
   VerticalExample,

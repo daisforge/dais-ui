@@ -36,6 +36,38 @@ export const orderWithUpdatedDefaultColsDeleteDuplicates = ({
   return Array.from(newSet);
 };
 
+/**
+ * Добавляет в текущий порядок ключи, которых в нём ещё нет (колонки, появившиеся в columnConfig).
+ * Новый ключ встаёт сразу после ближайшего соседа слева по defaultOrder, поэтому колонка,
+ * добавленная в середину конфига, появляется рядом со своим соседом, а не в конце таблицы.
+ * Порядок уже существующих ключей (в т.ч. переставленных пользователем) не меняется.
+ */
+export const insertNewKeysByDefaultOrder = ({
+  prevOrder,
+  defaultOrder,
+}: {
+  prevOrder: readonly string[];
+  defaultOrder: readonly string[];
+}): string[] => {
+  const result = [...prevOrder];
+  const resultSet = new Set(result);
+  let leftNeighborKey: string | undefined;
+
+  defaultOrder.forEach((key) => {
+    if (!resultSet.has(key)) {
+      const insertIndex =
+        leftNeighborKey === undefined ? 0 : result.indexOf(leftNeighborKey) + 1;
+
+      result.splice(insertIndex, 0, key);
+      resultSet.add(key);
+    }
+
+    leftNeighborKey = key;
+  });
+
+  return result;
+};
+
 export const updateOrderWithKeyText = ({
   keyText,
   orderArrayForChanging,

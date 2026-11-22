@@ -31,6 +31,13 @@ export const rectContainsCell = (
   );
 };
 
+/** Целиком ли прямоугольник `inner` лежит внутри `outer` (совпадение — тоже). */
+export const rectContainsRect = (outer: Rectangle, inner: Rectangle): boolean =>
+  inner.x >= outer.x &&
+  inner.y >= outer.y &&
+  inner.x + inner.width <= outer.x + outer.width &&
+  inner.y + inner.height <= outer.y + outer.height;
+
 /**
  * Индекс первой НЕсервисной (data-) колонки. Если все колонки служебные —
  * возвращает длину массива (data-колонок нет). Предполагается, что ведущие

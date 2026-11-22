@@ -1,5 +1,12 @@
 import { isStructuredCloneSupported } from '@ui-kit/utils';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import {
   CompressionAction,
@@ -52,10 +59,12 @@ export const useCompressionFeatures = (
 ) => {
   const originalStateRef = useRef(initialState);
 
-  // Синхронизируем ref при изменении initialState
-  useEffect(() => {
+  // Сохранённый resize читает данные последнего применённого рендера.
+  const measuredWidthsRef = useRef(measuredWidths);
+  useLayoutEffect(() => {
     originalStateRef.current = initialState;
-  }, [initialState]);
+    measuredWidthsRef.current = measuredWidths;
+  });
 
   const [compressedState, setCompressedState] =
     useState<ToolsMenuState>(initialState);
@@ -91,9 +100,9 @@ export const useCompressionFeatures = (
     () =>
       JSON.stringify({
         state: originalStateRef.current,
-        measuredWidths,
+        measuredWidths: measuredWidthsRef.current,
       }),
-    [measuredWidths],
+    [],
   );
 
   const findCachedState = useCallback(
@@ -191,67 +200,66 @@ export const useCompressionFeatures = (
    * - targetAction (синие кнопки) никогда не скрывают свой лейбл
    * - Обычные кнопки могут скрывать лейбл в compact-режиме
    */
-  const calculateLeftWidth = useCallback(
-    (state: ToolsMenuState): number => {
-      let width = 0;
-      /**
-       * Фичи Collapse block (самая левая опциональная)
-       */
-      if (state.leftSide.collapsingBlock.isActive) {
-        width += measuredWidths?.collapseBlock?.[0] ?? WIDTH.COLLAPSING_LABEL;
+  const calculateLeftWidth = useCallback((state: ToolsMenuState): number => {
+    let width = 0;
+    /**
+     * Фичи Collapse block (самая левая опциональная)
+     */
+    if (state.leftSide.collapsingBlock.isActive) {
+      width +=
+        measuredWidthsRef.current?.collapseBlock?.[0] ?? WIDTH.COLLAPSING_LABEL;
+    }
+
+    /**
+     * Selecting
+     * Особенность в том, что у selecting есть помимо лейбла счётчик, которые начинает показываться только после выбора
+     * Он влияет на ширину tools menu, его нужно учитывать в расчёте
+     */
+    if (state.leftSide.selectingRowFeature.isActive) {
+      width += state.leftSide.selectingRowFeature.isLabelVisible
+        ? WIDTH.SELECTING.SELECTING_ROW
+        : WIDTH.SELECTING.SELECTING_ICON; // Иконка selecting
+
+      if (state.leftSide.selectingRowFeature.isCounterVisible) {
+        width += WIDTH.SELECTING.SELECTING_ROW_COUNTER;
       }
+    }
 
-      /**
-       * Selecting
-       * Особенность в том, что у selecting есть помимо лейбла счётчик, которые начинает показываться только после выбора
-       * Он влияет на ширину tools menu, его нужно учитывать в расчёте
-       */
-      if (state.leftSide.selectingRowFeature.isActive) {
-        width += state.leftSide.selectingRowFeature.isLabelVisible
-          ? WIDTH.SELECTING.SELECTING_ROW
-          : WIDTH.SELECTING.SELECTING_ICON; // Иконка selecting
-
-        if (state.leftSide.selectingRowFeature.isCounterVisible) {
-          width += WIDTH.SELECTING.SELECTING_ROW_COUNTER;
-        }
-      }
-
-      /**
-       * EditRow
-       */
-      // editRowFeature активна
-      if (state.leftSide.editRowFeature.isActive) {
-        // editRowFeature с label
-        if (state.leftSide.editRowFeature.isLabelVisible) {
-          // editRowFeature ВКЛЮЧЕН режим редактирования
-          if (state.leftSide.editRowFeature.editModeEnabled) {
-            width += WIDTH.FEATURE_EDITING.EDIT_MODE_ENABLED;
-          } else {
-            // editRowFeature ВЫКЛЮЧЕН режим редактирования
-            width += WIDTH.FEATURE_EDITING.EDIT_MODE_DISABLED;
-          }
+    /**
+     * EditRow
+     */
+    // editRowFeature активна
+    if (state.leftSide.editRowFeature.isActive) {
+      // editRowFeature с label
+      if (state.leftSide.editRowFeature.isLabelVisible) {
+        // editRowFeature ВКЛЮЧЕН режим редактирования
+        if (state.leftSide.editRowFeature.editModeEnabled) {
+          width += WIDTH.FEATURE_EDITING.EDIT_MODE_ENABLED;
         } else {
-          // editRowFeature без видимого label
-          width += WIDTH.FEATURE_EDITING.ICON;
+          // editRowFeature ВЫКЛЮЧЕН режим редактирования
+          width += WIDTH.FEATURE_EDITING.EDIT_MODE_DISABLED;
         }
-      }
-
-      /**
-       * Фичи правее Selecting и EditRow
-       */
-      if (state.leftSide.isLeftSideInnerInsideDropdown) {
-        width += WIDTH.IS_LEFT_SIDE_INNER_INSIDE_DROPDOWN;
       } else {
-        state.leftSide.leftSideInner.forEach((btn, i) => {
-          const btnWidth =
-            measuredWidths?.leftSideInner?.[i] ?? WIDTH.BUTTON_WITH_LABEL;
-          width += btn.isLabelVisible ? btnWidth : WIDTH.BUTTON_ICON_ONLY;
-        });
+        // editRowFeature без видимого label
+        width += WIDTH.FEATURE_EDITING.ICON;
       }
-      return width;
-    },
-    [measuredWidths?.collapseBlock, measuredWidths?.leftSideInner],
-  );
+    }
+
+    /**
+     * Фичи правее Selecting и EditRow
+     */
+    if (state.leftSide.isLeftSideInnerInsideDropdown) {
+      width += WIDTH.IS_LEFT_SIDE_INNER_INSIDE_DROPDOWN;
+    } else {
+      state.leftSide.leftSideInner.forEach((btn, i) => {
+        const btnWidth =
+          measuredWidthsRef.current?.leftSideInner?.[i] ??
+          WIDTH.BUTTON_WITH_LABEL;
+        width += btn.isLabelVisible ? btnWidth : WIDTH.BUTTON_ICON_ONLY;
+      });
+    }
+    return width;
+  }, []);
 
   /**
    * ╔══════════════════════════════════════════════════════════════════════════════════╗
@@ -294,55 +302,52 @@ export const useCompressionFeatures = (
    * - Группировка может показывать только иконку, но со счетчиком
    * - CustomFeatures могут "уезжать" в правый сайдбар, а также некоторые кнопки могут быть скрыты в toolsMenu в кнопке Dropdown
    */
-  const calculateRightWidth = useCallback(
-    (state: ToolsMenuState): number => {
-      let width = 0;
-      /**
-       * RightSideInner (button with icon + label)
-       */
-      state.rightSide.rightSideInner.forEach((btn, i) => {
-        const btnWidth =
-          measuredWidths?.rightSideInner?.[i] ??
-          WIDTH.RIGHT_SIDE_INNER.BUTTON_WITH_LABEL;
+  const calculateRightWidth = useCallback((state: ToolsMenuState): number => {
+    let width = 0;
+    /**
+     * RightSideInner (button with icon + label)
+     */
+    state.rightSide.rightSideInner.forEach((btn, i) => {
+      const btnWidth =
+        measuredWidthsRef.current?.rightSideInner?.[i] ??
+        WIDTH.RIGHT_SIDE_INNER.BUTTON_WITH_LABEL;
 
-        width +=
-          btn.isLabelVisible || btn.isTargetAction
-            ? btnWidth
-            : WIDTH.RIGHT_SIDE_INNER.BUTTON_ICON_ONLY;
-      });
-
-      /**
-       * CustomFeatures (btn-icons)
-       */
       width +=
-        state.rightSide.customFeatures.filter((f) => !f.isMovedToRightSidebar)
-          .length * WIDTH.FEATURE_ICON;
+        btn.isLabelVisible || btn.isTargetAction
+          ? btnWidth
+          : WIDTH.RIGHT_SIDE_INNER.BUTTON_ICON_ONLY;
+    });
 
-      /**
-       * RowGrouping
-       */
-      if (state.rightSide.groupingRowsFeature.isActive) {
-        // Видим label
-        if (state.rightSide.groupingRowsFeature.isVisibleLabel) {
-          // Видим счётчик
-          if (state.rightSide.groupingRowsFeature.isCounterVisible) {
-            width += WIDTH.GROUPING.GROUPING_ROW_WITH_COUNTER;
-          } else {
-            // label без счётчика
-            width += WIDTH.GROUPING.GROUPING_ROW;
-          }
-          // Нет label, но есть счётчик
-        } else if (state.rightSide.groupingRowsFeature.isCounterVisible) {
-          width += WIDTH.GROUPING.ICON_WITH_COUNTER;
-          // Нет label и нет счётчика
+    /**
+     * CustomFeatures (btn-icons)
+     */
+    width +=
+      state.rightSide.customFeatures.filter((f) => !f.isMovedToRightSidebar)
+        .length * WIDTH.FEATURE_ICON;
+
+    /**
+     * RowGrouping
+     */
+    if (state.rightSide.groupingRowsFeature.isActive) {
+      // Видим label
+      if (state.rightSide.groupingRowsFeature.isVisibleLabel) {
+        // Видим счётчик
+        if (state.rightSide.groupingRowsFeature.isCounterVisible) {
+          width += WIDTH.GROUPING.GROUPING_ROW_WITH_COUNTER;
         } else {
-          width += WIDTH.GROUPING.ICON_WITHOUT_COUNTER;
+          // label без счётчика
+          width += WIDTH.GROUPING.GROUPING_ROW;
         }
+        // Нет label, но есть счётчик
+      } else if (state.rightSide.groupingRowsFeature.isCounterVisible) {
+        width += WIDTH.GROUPING.ICON_WITH_COUNTER;
+        // Нет label и нет счётчика
+      } else {
+        width += WIDTH.GROUPING.ICON_WITHOUT_COUNTER;
       }
-      return width;
-    },
-    [measuredWidths?.rightSideInner],
-  );
+    }
+    return width;
+  }, []);
 
   const calculateCurrentWidth = useCallback(
     (state: ToolsMenuState): number => {

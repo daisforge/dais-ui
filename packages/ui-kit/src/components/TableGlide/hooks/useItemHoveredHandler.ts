@@ -2,7 +2,10 @@ import type { DataEditorRef } from '@glideappsfinal/glide-data-grid';
 import type { Ref, RefObject } from 'react';
 import { useCallback, useRef } from 'react';
 
-import { dispatchCanvasPortalHover } from '../lib/canvas';
+import { HEADER_TOOLTIP_HIDDEN_COLS_ID } from '@ui-kit/components/TableCanvasSharedConstants';
+
+import { CANVAS_PORTAL_PRIORITY } from '../lib/canvas/utils/portalClickEvents';
+import { dispatchCanvasPortalHover } from '../lib/canvas/utils/portalHoverEvents';
 import type {
   ColumnGlideLast,
   GlideProps,
@@ -33,13 +36,13 @@ export interface UseItemHoveredHandlerParams<R extends ObjectForExtending, SR> {
   externalOnItemHovered?: OnItemHovered;
   /**
    * Колбэк трекинга строки под курсором (hoverEffects.row). Вызывается на
-   * каждое hover-событие: для `kind === 'cell'` — с индексом строки, для
+   * каждое наведение: для `kind === 'cell'` с ячейкой прямо под мышью, для
    * остальных (header, group-header, out-of-bounds — включая уход мыши с
    * таблицы) — с undefined (сброс). Дедупликация повторных значений — на
    * стороне вызывающего (setState с prev-проверкой). Не передан — фича
    * выключена, ветка не выполняется.
    */
-  onHoverRowChange?: (rowInd: number | undefined) => void;
+  onHoverRowChange?: (rawCell: readonly [number, number] | undefined) => void;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -95,8 +98,8 @@ export interface UseItemHoveredHandlerParams<R extends ObjectForExtending, SR> {
  */
 export function useItemHoveredHandler<R extends ObjectForExtending, SR>(
   params: UseItemHoveredHandlerParams<R, SR>,
-  dataEditorRef: RefObject<DataEditorRef | null>
-): OnItemHovered {
+  dataEditorRef: RefObject<DataEditorRef | null>,
+): { onItemHovered: OnItemHovered } {
   const {
     columnsLast,
     rows,
@@ -141,7 +144,7 @@ export function useItemHoveredHandler<R extends ObjectForExtending, SR>(
         nodeId: currentOrigin ?? undefined,
       },
       portalTarget,
-      true // immediate — без debounce
+      true, // immediate — без debounce
     );
   }, []);
 
@@ -154,13 +157,64 @@ export function useItemHoveredHandler<R extends ObjectForExtending, SR>(
 
       // Трекинг строки под курсором (hoverEffects.row): cell → строка,
       // не-cell (header/group-header/out-of-bounds) → сброс.
-      onHoverRowChange?.(args.kind === 'cell' ? args.location[1] : undefined);
+      // rawLocation это физическая ячейка под мышью: у объединённой ячейки
+      // location указывает на первую ячейку блока, а при смене данных блок под
+      // курсором может стать другим.
+      if (args.kind === 'cell') {
+        onHoverRowChange?.(args.rawLocation ?? args.location);
+      } else {
+        onHoverRowChange?.(undefined);
+      }
 
       const portalTarget = portalEventTargetRef?.current ?? null;
 
       // Общие данные из location (переиспользуются в header и cell)
       const colInd = args.location?.[0] as number | undefined;
       const column = colInd != null ? columnsLast[colInd] : undefined;
+
+      // ─── индикатор скрытых столбцов: полосатая линия на границе шапки ───
+      if (
+        (args.kind === 'header' || args.kind === 'group-header') &&
+        args.hiddenIndicatorCol != null
+      ) {
+        const boundary = args.hiddenIndicatorCol;
+        const isSame = lastHoveredRef.current === HEADER_TOOLTIP_HIDDEN_COLS_ID;
+        if (!isSame) {
+          hideCurrentTooltip(portalTarget);
+        }
+
+        // Якорь — узкий прямоугольник полоски: граница слева от колонки boundary,
+        // для правого края таблицы (boundary за последней колонкой) — правый
+        // край последней видимой.
+        const colCount = columnsLast.length;
+        const anchorCol = Math.min(boundary, colCount - 1);
+        const bounds = dataEditorRef.current?.getBounds(anchorCol, -1);
+        if (!bounds) return;
+        const borderX =
+          boundary >= colCount ? bounds.x + bounds.width : bounds.x;
+        // Полоса может быть выше листового ряда (сгруппированная шапка): поднимаем якорь
+        // на её верх, чтобы подсказка рисовалась над полосой, а не в её нижней части.
+        const aboveLeaf = args.hiddenIndicatorAboveLeaf ?? 0;
+
+        lastHoveredRef.current = HEADER_TOOLTIP_HIDDEN_COLS_ID;
+
+        // priority: 1 — как canvas-ноды: выигрывает у колоночного headerCellTooltip.
+        dispatchCanvasPortalHover(
+          {
+            visible: true,
+            x: borderX - 2,
+            y: bounds.y - aboveLeaf,
+            width: 4,
+            height: bounds.height + aboveLeaf,
+            source: 'header',
+            originId: HEADER_TOOLTIP_HIDDEN_COLS_ID,
+            nodeId: HEADER_TOOLTIP_HIDDEN_COLS_ID,
+            priority: CANVAS_PORTAL_PRIORITY.NODE,
+          },
+          portalTarget,
+        );
+        return;
+      }
 
       // ─── header: тултип для шапки колонки ───
       if (args.kind === 'header') {
@@ -198,7 +252,7 @@ export function useItemHoveredHandler<R extends ObjectForExtending, SR>(
             source: 'header',
             originId: headerId,
             nodeId: headerId,
-            priority: 0,
+            priority: CANVAS_PORTAL_PRIORITY.COLUMN,
             tooltipContext: {
               column,
               ctxs,
@@ -207,7 +261,7 @@ export function useItemHoveredHandler<R extends ObjectForExtending, SR>(
               theme,
             },
           },
-          portalTarget
+          portalTarget,
         );
         return;
       }
@@ -217,8 +271,17 @@ export function useItemHoveredHandler<R extends ObjectForExtending, SR>(
         const rowInd = args.location[1];
         const row = rows[rowInd];
 
-        // У колонки нет cellTooltip или строка/колонка не найдены → скрываем.
-        if (!column || !row || !column.cellTooltip) {
+        // Тултип ошибки: только у ячейки с ошибкой и только если текст задан.
+        // Считается здесь, при наведении, а не при отрисовке. Он приоритетнее
+        // колоночного cellTooltip и не зависит от tableConfig.tooltip.enabled.
+        const errorTooltip =
+          column && row && column.errorCellTooltip && column.isErrorCell?.(row)
+            ? column.errorCellTooltip(row)
+            : undefined;
+
+        // Нет ни тултипа ошибки, ни cellTooltip, или строка/колонка не
+        // найдены: скрываем.
+        if (!column || !row || (!errorTooltip && !column.cellTooltip)) {
           hideCurrentTooltip(portalTarget);
           return;
         }
@@ -248,7 +311,8 @@ export function useItemHoveredHandler<R extends ObjectForExtending, SR>(
             source: 'cell',
             originId: cellId,
             nodeId: cellId,
-            priority: 0,
+            priority: CANVAS_PORTAL_PRIORITY.COLUMN,
+            ...(errorTooltip && { tooltipFromNode: errorTooltip }),
             tooltipContext: {
               column,
               row,
@@ -259,7 +323,7 @@ export function useItemHoveredHandler<R extends ObjectForExtending, SR>(
               theme,
             },
           },
-          portalTarget
+          portalTarget,
         );
         return;
       }
@@ -278,8 +342,8 @@ export function useItemHoveredHandler<R extends ObjectForExtending, SR>(
       onHoverRowChange,
       hideCurrentTooltip,
       dataEditorRef,
-    ]
+    ],
   );
 
-  return onItemHovered;
+  return { onItemHovered };
 }

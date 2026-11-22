@@ -1,0 +1,50 @@
+/** Шесть тем из единого пакета SDDS; пути от корня репозитория. */
+export const THEME_SOURCES = {
+  light: 'node_modules/@sddsjs/sdds_finai/css/sdds_finai_default__light.css',
+  dark: 'node_modules/@sddsjs/sdds_finai/css/sdds_finai_default__dark.css',
+  betaCoreLight:
+    'node_modules/@sddsjs/sdds_finai/css/sdds_finai_beta_core__light.css',
+  betaCoreDark:
+    'node_modules/@sddsjs/sdds_finai/css/sdds_finai_beta_core__dark.css',
+  highContrastLight:
+    'node_modules/@sddsjs/sdds_finai/css/sdds_finai_high_contrast__light.css',
+  highContrastDark:
+    'node_modules/@sddsjs/sdds_finai/css/sdds_finai_high_contrast__dark.css',
+};
+
+export const THEMES = Object.keys(THEME_SOURCES);
+
+/**
+ * Запасная тема для каждой темы. В beta и high contrast есть не все
+ * переменные: если нужной нет, цвет берётся из обычной светлой или тёмной
+ * темы (смотря, светлая это тема или тёмная). Каждый такой случай
+ * записывается в report.md.
+ */
+export const MODE_BASE = {
+  light: 'light',
+  dark: 'dark',
+  betaCoreLight: 'light',
+  betaCoreDark: 'dark',
+  highContrastLight: 'light',
+  highContrastDark: 'dark',
+};
+
+/**
+ * Темы, в которых семья data-*-light называется data-*-on-light, а
+ * data-yellow-dark называется data-yellow-on-dark (beta core и контрастная). Это
+ * одна семья на тех же ступенях палитры, просто другое имя.
+ */
+export const ON_LIGHT_NAMING_THEMES = [
+  'betaCoreLight',
+  'betaCoreDark',
+  'highContrastLight',
+  'highContrastDark',
+];
+
+/** Имя переменной в конкретной теме: data-red-light в beta и контрастной называется data-red-on-light. */
+export const variableNameInTheme = (variableName, theme) => {
+  if (!ON_LIGHT_NAMING_THEMES.includes(theme)) {
+    return variableName;
+  }
+  return variableName.replace(/^(data-[a-z-]+)-(light|dark)$/, '$1-on-$2');
+};

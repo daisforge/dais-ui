@@ -1,66 +1,84 @@
+import { SIZE_CONFIG } from '@ui-kit/components/TableGlide/lib/canvas';
+import { ROW_SIZE_TOKENS } from '@ui-kit/components/TableGlide/theming/size-tokens';
+
+import { getExpandAllIconWidth } from '../feature-tree/tree-disclosure-icons';
+import { HEADER_LEFT_ICONS_CONFIG, RowSize } from '../renders/rowIconConfig';
+
+/** Отступ между текстом шапки и блоком кнопок справа, px: кнопки не липнут к тексту. */
+export const HEADER_TEXT_TO_ICONS_GAP = 6;
+/** Отступ между кнопками фильтра и сортировки, px. */
+export const HEADER_ICONS_GAP = 4;
 /**
- * Рассчитывает минимальную ширину колонки на основе переданных опций.
+ * Сколько места оставляем названию колонки при минимальной ширине, px.
+ * Хватает на одну широкую букву с многоточием.
  *
- * @typedef {Object} ColumnWidthOptions
- * @property {boolean} [isHaveFiltering=false] - Есть ли фильтрация (иконка справа от текста).
- * @property {boolean} [isHaveSorting=false] - Есть ли сортировка (иконка справа от текста).
- * @property {boolean} [columnIsPinned=false] - Закреплена ли колонка (иконка слева от текста).
- * @property {boolean} [subRowIsActiveAndColumnWithArrow=false] - Есть ли стрелка подрядков (иконка слева от текста).
- * @property {boolean} [reorderForColIsActive=false] - Активен ли реордер колонки (иконка слева от текста).
- * @property {number} [customMinWidth] - Кастомная минимальная ширина (если нужно переопределить расчет).
+ * Подробнее: оценка сверху для полужирного шрифта шапки большой строки, где
+ * «Ш…» занимает около 22 px; для средней и малой строки выходит меньше.
+ * Точный минимум название считает само при измерении (minContentWidth у
+ * CanvasText), а эта оценка нужна заранее, до отрисовки, для минимума колонки.
+ */
+const HEADER_TEXT_MIN_WIDTH = 24;
+/** Кнопки фильтра и сортировки в шапке рисуются размером xs. */
+const HEADER_BUTTON_SIZE = 'xs';
+
+/**
+ * Сколько места в шапке занимает блок кнопок справа от названия, px.
  *
- * @param {ColumnWidthOptions} options - Опции для расчета ширины.
- * @returns {number} - Рассчитанная минимальная ширина колонки.
+ * Подробнее: отступ от названия, квадраты кнопок размера xs и зазоры между
+ * ними. Для нуля кнопок возвращает 0, без отступа.
+ */
+export function getHeaderButtonsBlockWidth(buttonsCount: number): number {
+  if (buttonsCount <= 0) {
+    return 0;
+  }
+  return (
+    HEADER_TEXT_TO_ICONS_GAP +
+    buttonsCount * SIZE_CONFIG[HEADER_BUTTON_SIZE].height +
+    (buttonsCount - 1) * HEADER_ICONS_GAP
+  );
+}
+
+/**
+ * Минимальная ширина колонки, при которой её шапка остаётся читаемой.
+ * Уже этой ширины колонку не сжать: иначе кнопки съедают правый отступ.
  *
+ * Подробнее: считается для состояния с наведением, когда показаны все
+ * кнопки. Складывается из отступов ячейки по размеру строки, квадратов левых
+ * иконок с отступом до названия, места под букву с многоточием и блока кнопок
+ * справа. Результат идёт в minWidth колонки, см. useColumns.
  */
 export function calculateMinColumnWidth(options: {
+  rowSize: RowSize;
   isHaveFiltering: boolean;
   isHaveSorting: boolean;
   columnIsPinned: boolean;
   subRowIsActiveAndColumnWithArrow: boolean;
   reorderForColIsActive?: boolean;
-  customMinWidth?: number;
 }): number {
   const {
+    rowSize,
     isHaveFiltering,
     isHaveSorting,
     columnIsPinned,
     subRowIsActiveAndColumnWithArrow,
     reorderForColIsActive = false,
-    customMinWidth,
   } = options;
 
-  // Базовые константы
-  const PADDING_SIDES = 16 * 2; // 16 слева и справа
-  const TEXT_BLOCK_WIDTH = 36;
-  const FEATURE_WIDTH = 16; // ширина одной фичи (иконки)
-  const GAP_BETWEEN_FEATURES = 4; // отступ между фичами
-  const GAP_BEFORE_AFTER_TEXT = 6; // отступ до и после текста
+  const paddingSides = ROW_SIZE_TOKENS[rowSize].cellHorizontalPadding * 2;
+  const leftIconsCfg = HEADER_LEFT_ICONS_CONFIG[rowSize];
 
-  // Логика расчёта ширины левой части (до текста)
-  const leftFeatures = [
-    subRowIsActiveAndColumnWithArrow,
-    reorderForColIsActive,
-    columnIsPinned,
-  ].filter(Boolean).length;
-
+  // Левые иконки стоят вплотную друг к другу, после них отступ до текста.
+  const leftIconsWidth =
+    (subRowIsActiveAndColumnWithArrow ? getExpandAllIconWidth(rowSize) : 0) +
+    (reorderForColIsActive ? leftIconsCfg.squareSize : 0) +
+    (columnIsPinned ? leftIconsCfg.squareSize : 0);
   const leftWidth =
-    leftFeatures * FEATURE_WIDTH + // ширина всех фичей слева
-    Math.max(0, leftFeatures - 1) * GAP_BETWEEN_FEATURES + // отступы между ними
-    GAP_BEFORE_AFTER_TEXT; // отступ перед текстом
+    leftIconsWidth > 0 ? leftIconsWidth + leftIconsCfg.gapToText : 0;
 
-  // Логика расчёта правой части (после текста)
-  const rightFeatures = [isHaveFiltering, isHaveSorting].filter(Boolean).length;
+  // Кнопки справа квадратные, между ними зазор, перед блоком отступ от текста.
+  const rightWidth = getHeaderButtonsBlockWidth(
+    [isHaveFiltering, isHaveSorting].filter(Boolean).length,
+  );
 
-  const rightWidth =
-    rightFeatures * FEATURE_WIDTH + // ширина всех фичей справа
-    Math.max(0, rightFeatures - 1) * GAP_BETWEEN_FEATURES + // отступы между ними
-    GAP_BEFORE_AFTER_TEXT; // отступ после текста
-
-  // Общая минимальная ширина
-  const totalMinWidth =
-    PADDING_SIDES + leftWidth + TEXT_BLOCK_WIDTH + rightWidth;
-
-  // Возвращаем кастомную ширину, если передана, или рассчитанную
-  return customMinWidth ?? totalMinWidth;
+  return paddingSides + leftWidth + HEADER_TEXT_MIN_WIDTH + rightWidth;
 }

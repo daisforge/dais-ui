@@ -1,2 +1,9 @@
-export { ComboboxX } from './combobox';
-export { StyledListItem as TableFilterSelectListItem } from './styled';
+import { ComboboxX } from './combobox';
+
+export { ComboboxX, ComboboxX as TableFilterSelect };
+export {
+  StyledList as TableFilterSelectList,
+  StyledListItem as TableFilterSelectListItem,
+  StyledSearchBlockFilter as TableFilterSelectSearchTextfield,
+  StyledTotalListItemContainer as TableFilterSelectTotalListItemContainer,
+} from './styled';

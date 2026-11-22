@@ -127,8 +127,27 @@ export class CanvasContainer extends CanvasNode implements ICanvasContainer {
     this._intrinsicHeight = contentHeight + padding.top + padding.bottom;
   }
 
+  /**
+   * Ширина задана снаружи и не растёт под содержимое: 100% или корень,
+   * которому ширину дал прямоугольник ячейки. Число — минимальная ширина.
+   */
+  hasFixedWidth(): boolean {
+    return this.style.width === '100%' || this.parent === null;
+  }
+
+  /** Колонка без заданной высоты: её высоту задаёт содержимое */
+  isSizedByContent(): boolean {
+    this.ensureOptionsCache();
+    const { height } = this.style;
+    return (
+      !this.cachedIsRow && typeof height !== 'number' && height !== '100%'
+    );
+  }
+
   private applySizeConstraints(): void {
     const { style } = this;
+    // Корень получает прямоугольник ячейки до layout: это доступная ему ширина
+    const rootAvailableWidth = this.parent === null ? this.rect.width : 0;
     const resolvedWidth = this.resolveStyleDimension(style.width, 'width');
     const resolvedHeight = this.resolveStyleDimension(style.height, 'height');
 
@@ -136,6 +155,9 @@ export class CanvasContainer extends CanvasNode implements ICanvasContainer {
     this.rect.height = resolvedHeight ?? this._intrinsicHeight;
     if (resolvedWidth === undefined) {
       this.clampWidthToParent();
+      if (rootAvailableWidth > 0 && this.rect.width > rootAvailableWidth) {
+        this.rect.width = rootAvailableWidth;
+      }
     }
   }
 
@@ -217,6 +239,7 @@ export class CanvasContainer extends CanvasNode implements ICanvasContainer {
       this.rect.height,
       this.flexOptionsValue
     );
+    root.sizedByContent = this.isSizedByContent();
     this.flexTreeBuilder.build(this, root, layoutChildren);
     let pass = 0;
     let needsAnotherPass: boolean;

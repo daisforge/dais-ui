@@ -1,3 +1,4 @@
+import { CANVAS_PORTAL_PRIORITY } from '../utils/portalClickEvents';
 import type { CanvasEvent, CanvasNode, Rect } from './CanvasNode';
 import type {
   CanvasPortalHoverDetail,
@@ -159,7 +160,8 @@ export class CanvasHoverController {
     baseEvent: CanvasEvent | null = null
   ) {
     const portalTarget = this.findPortalTarget(target);
-    const rect = portalTarget ? { ...portalTarget.rect } : null;
+    // Привязываем к тому, что реально нарисовано: оно может не совпадать с областью элемента.
+    const rect = portalTarget ? { ...portalTarget.getAnchorRect() } : null;
     const previousActive = this.activePortalNode;
     const next = portalTarget && rect ? { id: portalTarget.id, rect } : null;
 
@@ -188,7 +190,9 @@ export class CanvasHoverController {
         source: this.options.portalSource,
         tooltipContext,
         tooltipFromNode: portalTarget.getTooltip(),
-        priority: 1,
+        popoverFromNode: portalTarget.popover,
+        dropdownFromNode: portalTarget.dropdown,
+        priority: CANVAS_PORTAL_PRIORITY.NODE,
       });
     } else if (previousActive) {
       this.dispatchPortalHover({

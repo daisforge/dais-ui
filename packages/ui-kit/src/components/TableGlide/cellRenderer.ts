@@ -4,10 +4,17 @@ import {
   CellCanvasRoot,
   createCanvasCell,
 } from './lib/canvas';
+import type { CanvasRenderArgs } from './lib/canvas/cells/types';
+import { CanvasContainer } from './lib/canvas/core/CanvasContainer';
+import { measureNodeHeight } from './lib/canvas/core/measureNodeHeight';
+import { CanvasAvatar } from './lib/canvas/primitives/CanvasAvatar';
+import { CanvasAvatarGroup } from './lib/canvas/primitives/CanvasAvatarGroup';
+import { CanvasImage } from './lib/canvas/primitives/CanvasImage';
 import {
   CellContent,
   CellInfo,
   GlideThemeForRender,
+  GlideThemePartial,
   ObjectForExtending,
 } from './types';
 import { createEmptyCellGlide, createTextCellGlide } from './utils/createCell';
@@ -20,16 +27,117 @@ import {
 
 type CanvasCacheKey = string | number | boolean | null;
 
+/**
+ * Сколько пикселей у краёв ячейки содержимое оставляет незакрашенными, чтобы не
+ * затереть линии сетки и рамку выделения.
+ *
+ * Подробнее: слева и сверху пиксель оставляем, где есть линия сетки или рамка выделения
+ * самой ячейки: при точечной перерисовке glide их не обновляет и сам заливает
+ * фон с таким же отступом. Где линии и рамки нет, отступа нет, иначе фон
+ * Canvas.Container не доходил бы до края ячейки на 1 px. Справа и снизу отступа
+ * нет, кроме последней колонки и строки: там glide заливает на пиксель короче,
+ * на этом пикселе лежит край рамки выделения.
+ */
+export interface CellEdgeInset {
+  left: number;
+  top: number;
+  right: number;
+  bottom: number;
+}
+
+const DEFAULT_EDGE_INSET: CellEdgeInset = {
+  left: 1,
+  top: 1,
+  right: 0,
+  bottom: 0,
+};
+
+/**
+ * Приёмник высоты содержимого ячейки для `rowHeight: 'auto'`. Ячейка снимает
+ * высоту с уже построенного при отрисовке дерева, если её ещё нет при этой ширине.
+ */
+export interface CellHeightReporter {
+  needsHeight: (width: number) => boolean;
+  report: (width: number, height: number) => void;
+  /** Ячейка больше высоту не сообщает (вошла в блок по строкам): прежний замер забыть */
+  forget: () => void;
+}
+
 interface CanvasCellCacheEntry {
   cacheKey: CanvasCacheKey;
   canvasRoot: CellCanvasRoot;
 }
+
+/**
+ * Дерево ячейки. CellCanvasRoot задаёт корневой ноде размеры всей ячейки. Обёртка принимает
+ * эти размеры на себя, а изображение, аватар или группа внутри получают
+ * собственные размеры через layout. Так область hover/click и обрезка
+ * группы соответствуют элементу, а не растягиваются на всю ячейку.
+ */
+const buildCellNode = (
+  element: Parameters<typeof buildCanvasTree>[0]['element'],
+  idPrefix: string,
+  theme: GlideThemeForRender
+) => {
+  const node = buildCanvasTree({ element, idPrefix, theme });
+  if (
+    node instanceof CanvasImage ||
+    node instanceof CanvasAvatar ||
+    node instanceof CanvasAvatarGroup
+  ) {
+    const container = new CanvasContainer(`${node.id}:cell-root`);
+    container.addChild(node);
+    return container;
+  }
+  return node;
+};
+
+/**
+ * Отступы ячейки при `rowHeight: 'auto'`: высота строки — содержимое плюс вертикальные
+ * отступы темы, поэтому содержимое раскладывается между ними, а не от верхнего края.
+ * Обёртка занимает всю ячейку, так что координаты hover и click не сдвигаются.
+ */
+const withVerticalInset = (
+  node: ReturnType<typeof buildCellNode>,
+  inset: number
+) => {
+  const container = new CanvasContainer(`${node.id}:auto-row-inset`);
+  container.setFlexOptions({
+    direction: 'column',
+    padding: { top: inset, bottom: inset },
+  });
+  node.style = { ...node.style, width: '100%', height: '100%' };
+  container.addChild(node);
+  return container;
+};
+
+/**
+ * Ячейка строки с `rowHeight: 'auto'`: сообщает высоту содержимого с отступами,
+ * если её ещё нет при этой ширине, и раскладывает содержимое между отступами.
+ * Высота снимается с того же дерева, что пойдёт в отрисовку.
+ */
+const withAutoHeight = (
+  node: ReturnType<typeof buildCellNode>,
+  reporter: CellHeightReporter,
+  {
+    ctx,
+    width,
+    inset,
+  }: { ctx: CanvasRenderingContext2D; width: number; inset: number }
+) => {
+  if (reporter.needsHeight(width)) {
+    reporter.report(width, measureNodeHeight(ctx, node, width) + inset * 2);
+  }
+  return withVerticalInset(node, inset);
+};
 
 export const glideCellRenderer = <R extends ObjectForExtending, SR>({
   jsxElement,
   canvasCellCache,
   cellInfo,
   options,
+  autoHeight,
+  stickyContent,
 }: {
   jsxElement: CellContent;
   cellInfo: CellInfo<R, SR>;
@@ -40,9 +148,22 @@ export const glideCellRenderer = <R extends ObjectForExtending, SR>({
   options: {
     span?: readonly [number, number] | undefined;
     data: string | undefined;
+    themeOverride?: GlideThemePartial;
     getPortalEventTarget?: () => EventTarget | null;
     refTable?: unknown;
+    edgeInset?: CellEdgeInset;
   };
+  /**
+   * Высота содержимого блока с прилипанием. Нужна форку, только пока блок обрезан
+   * краем области данных, поэтому замер идёт только в этом случае. `report` вернёт
+   * true, если высота изменилась и нужен ещё один кадр.
+   */
+  stickyContent?: {
+    isCut: (visibleHeight: number) => boolean;
+    report: (height: number) => boolean;
+  };
+  /** Строка с `rowHeight: 'auto'`: ячейка сообщает высоту содержимого и рисует его между вертикальными отступами */
+  autoHeight?: CellHeightReporter;
 }) => {
   let canvasBounds: DOMRect | null = null;
 
@@ -65,10 +186,11 @@ export const glideCellRenderer = <R extends ObjectForExtending, SR>({
   }
   const { colInd, rowInd, row, column } = cellInfo;
   const { id } = column;
-  const getPortalEventTarget = options.getPortalEventTarget;
+  const { getPortalEventTarget } = options;
 
   let cellCanvasRoot: CellCanvasRoot | null = null;
   const cellPortalOriginId = `cell-${colInd}-${rowInd}`;
+  const nodeIdPrefix = `cell-${colInd}-${rowInd}-${id}`;
 
   const render = (
     ctx: CanvasRenderingContext2D,
@@ -76,11 +198,7 @@ export const glideCellRenderer = <R extends ObjectForExtending, SR>({
     theme: GlideThemeForRender,
     _hoverX: number | undefined,
     _hoverY: number | undefined,
-    renderArgs?: {
-      canvasRoot?: CellCanvasRoot;
-      frameTime?: number;
-      requestAnimationFrame?: () => void;
-    }
+    renderArgs?: CanvasRenderArgs,
   ): CanvasRenderResult => {
     const cacheKeyValue = undefined;
     const isCacheable = cacheKeyValue !== undefined && cacheKeyValue !== null;
@@ -117,11 +235,20 @@ export const glideCellRenderer = <R extends ObjectForExtending, SR>({
         return {};
       }
 
-      const node = buildCanvasTree({
-        element: jsxElement,
-        idPrefix: `cell-${colInd}-${rowInd}-${id}`,
-        theme,
-      });
+      const cellNode = buildCellNode(jsxElement, nodeIdPrefix, theme);
+      if (
+        stickyContent?.isCut(rect.height) &&
+        stickyContent.report(measureNodeHeight(ctx, cellNode, rect.width))
+      ) {
+        renderArgs?.requestAnimationFrame?.();
+      }
+      const node = autoHeight
+        ? withAutoHeight(cellNode, autoHeight, {
+            ctx,
+            width: rect.width,
+            inset: theme.cellVerticalPadding ?? 0,
+          })
+        : cellNode;
 
       if (!canvasRootInstance) {
         canvasRootInstance = new CellCanvasRoot(node, cellPortalOriginId);
@@ -176,12 +303,39 @@ export const glideCellRenderer = <R extends ObjectForExtending, SR>({
       row: cellInfo.row,
       ctxs: cellInfo.ctxs,
       refTable: options.refTable,
+      colInd: cellInfo.colInd,
+      rowInd: cellInfo.rowInd,
     });
 
-    canvasRootInstance.render(ctx, rect, hoverPos, absoluteBounds, {
-      frameTime: renderArgs?.frameTime,
-      requestAnimationFrame: renderArgs?.requestAnimationFrame,
-    });
+    // Содержимое обрезается по ячейке: glide обрезает только по колонке, и при перерисовке
+    // одной ячейки (hover, выделение) хвост текста лёг бы поверх соседних строк.
+    // Отступы от краёв см. CellEdgeInset.
+    const inset = options.edgeInset ?? DEFAULT_EDGE_INSET;
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(
+      rect.x + inset.left,
+      rect.y + inset.top,
+      rect.width - inset.left - inset.right,
+      rect.height - inset.top - inset.bottom,
+    );
+    ctx.clip();
+
+    try {
+      canvasRootInstance.render(
+        ctx,
+        rect,
+        hoverPos,
+        absoluteBounds,
+        {
+          frameTime: renderArgs?.frameTime,
+          requestAnimationFrame: renderArgs?.requestAnimationFrame,
+        },
+        renderArgs?.imageResources
+      );
+    } finally {
+      ctx.restore();
+    }
 
     if (!isCacheable || rebuilt) {
       cellCanvasRoot = canvasRootInstance;
@@ -192,11 +346,13 @@ export const glideCellRenderer = <R extends ObjectForExtending, SR>({
     };
   };
   const { data: _data, ...restOptions } = options;
-  const copyData = column.copyData
-    ? typeof column.copyData === 'function'
-      ? column.copyData(row)
-      : column.copyData
-    : _data;
+  let copyData = _data;
+  if (column.copyData) {
+    copyData =
+      typeof column.copyData === 'function'
+        ? column.copyData(row)
+        : column.copyData;
+  }
 
   return createCanvasCell(render, undefined, copyData, restOptions);
 };

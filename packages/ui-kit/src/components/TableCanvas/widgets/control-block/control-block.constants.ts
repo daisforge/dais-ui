@@ -56,13 +56,17 @@ export type ControlBlockSizeMap = (typeof SIZE_MAP)['m'];
 export const getControlBlockSizeMap = (size: ControlBlockSize = 'm') =>
   SIZE_MAP[size];
 
+// collapseGap — отступ между кнопкой сворачивания и левой группой, такой же,
+// как у заголовка (padding-inline: 8px). leftPartPaddingRight = 0: отступ от
+// левой группы до поиска даёт сам поиск (padding-inline: 8px).
 const SPACING_MAP = {
   m: {
     // containerHeight: было 41, но точно не помним с чем связано, возможно с бордерами таблицы. Пока не замечаем причину, возвращаемся к 40
     containerHeight: 40,
     containerPadding: 4,
     leftPartGap: 4,
-    leftPartPaddingRight: 8,
+    leftPartPaddingRight: 0,
+    collapseGap: 8,
     rightButtonsGap: 4,
     rightButtonsPaddingInline: 8,
     rightFeaturesGap: 0,
@@ -72,7 +76,8 @@ const SPACING_MAP = {
     containerHeight: 40,
     containerPadding: 4,
     leftPartGap: 4,
-    leftPartPaddingRight: 8,
+    leftPartPaddingRight: 0,
+    collapseGap: 8,
     rightButtonsGap: 4,
     rightButtonsPaddingInline: 8,
     rightFeaturesGap: 0,
@@ -82,7 +87,8 @@ const SPACING_MAP = {
     containerHeight: 32,
     containerPadding: 4,
     leftPartGap: 4,
-    leftPartPaddingRight: 8,
+    leftPartPaddingRight: 0,
+    collapseGap: 8,
     rightButtonsGap: 4,
     rightButtonsPaddingInline: 8,
     rightFeaturesGap: 0,

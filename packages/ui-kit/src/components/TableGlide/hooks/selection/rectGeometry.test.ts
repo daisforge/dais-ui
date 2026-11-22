@@ -4,6 +4,7 @@ import {
   clampRectToDataColumns,
   findFirstDataColumnIndex,
   rectContainsCell,
+  rectContainsRect,
 } from './rectGeometry';
 
 describe('rectContainsCell', () => {
@@ -86,5 +87,25 @@ describe('clampRectToDataColumns', () => {
 
   it('undefined для undefined-прямоугольника', () => {
     expect(clampRectToDataColumns(undefined, 1)).toBeUndefined();
+  });
+});
+
+describe('rectContainsRect', () => {
+  const outer = { x: 1, y: 1, width: 3, height: 3 };
+
+  it('true для вложенного и совпадающего', () => {
+    expect(rectContainsRect(outer, { x: 2, y: 2, width: 1, height: 1 })).toBe(
+      true
+    );
+    expect(rectContainsRect(outer, outer)).toBe(true);
+  });
+
+  it('false, если выходит за границу', () => {
+    expect(rectContainsRect(outer, { x: 3, y: 3, width: 2, height: 1 })).toBe(
+      false
+    );
+    expect(rectContainsRect(outer, { x: 0, y: 1, width: 1, height: 1 })).toBe(
+      false
+    );
   });
 });

@@ -6,23 +6,76 @@ on:
       - main
   workflow_dispatch: {}
 
+# GITHUB_TOKEN ничего не пушит: релизные коммиты и теги уходят в main по
+# deploy key (секрет RELEASE_DEPLOY_KEY), он стоит в bypass ruleset'а main.
+# id-token: write — для публикации в npm через Trusted Publishing (OIDC),
+# без долгоживущего NPM_TOKEN. Права наследуются вызываемыми workflow ниже.
 permissions:
-  contents: write
+  contents: read
+  id-token: write
+
+# Два релиза одновременно не идут: второй стартовал бы с main без релизного
+# коммита первого. Запуски от самих релизных коммитов (их job пропускается,
+# см. гард ниже) получают уникальную группу — иначе они вставали бы в очередь
+# за текущим релизом и вытесняли друг друга, засоряя историю отменёнными.
+concurrency:
+  group: ${{ contains(github.event.head_commit.message, 'chore(release') && format('release-skip-{0}', github.run_id) || 'release' }}
+  cancel-in-progress: false
 
 jobs:
   publish:
-    if: "!contains(github.event.head_commit.message, 'chore(release)')"
+    # Без закрывающей скобки в подстроке — намеренно: гард обязан покрывать и
+    # 'chore(release):' от lerna, и 'chore(release-mcp):' от хвостового job'а
+    # publish-mcp. Иначе релизный коммит ui-mcp проходил бы гард насквозь, а
+    # его диффа (packages/mcp-server/**) хватает, чтобы mcp_touched снова стал
+    # true — то есть каждый релиз ui-mcp порождал бы следующий. Гард рабочий:
+    # пуш по deploy key, в отличие от GITHUB_TOKEN, запускает workflow, и оба
+    # релизных пуша приходят сюда новым событием.
+    if: "!contains(github.event.head_commit.message, 'chore(release')"
     runs-on: ubuntu-latest
+    # Секрет RELEASE_DEPLOY_KEY лежит в environment `release`, который пускает
+    # только ветку main: workflow из PR или с другой ветки ключ не получит.
+    # Это же имя environment указано у trusted publisher пакетов на npmjs.com.
+    environment: release
+    outputs:
+      released: ${{ steps.release_flags.outputs.released }}
+      mcp_touched: ${{ steps.release_flags.outputs.mcp_touched }}
+      version: ${{ steps.release_flags.outputs.version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          # С ssh-key checkout ставит origin на git@github.com:… и настраивает
+          # git на этот ключ — `git push` ниже идёт по нему, а не по GITHUB_TOKEN.
+          ssh-key: ${{ secrets.RELEASE_DEPLOY_KEY }}
+
+      # До lerna и npm publish: без рабочего ключа релиз обязан упасть здесь,
+      # а не на `git push` после публикации — иначе версия оказалась бы в npm
+      # без коммита и тега. Пустой секрет checkout не замечает и молча берёт
+      # GITHUB_TOKEN по HTTPS, поэтому проверяется и сам секрет, и URL origin.
+      - name: Verify release deploy key
+        env:
+          RELEASE_DEPLOY_KEY: ${{ secrets.RELEASE_DEPLOY_KEY }}
+        run: |
+          if [ -z "$RELEASE_DEPLOY_KEY" ]; then
+            echo "::error::Секрет RELEASE_DEPLOY_KEY не задан в environment release."
+            exit 1
+          fi
+          ORIGIN_URL=$(git remote get-url origin)
+          case "$ORIGIN_URL" in
+            git@github.com:*) ;;
+            *) echo "::error::origin не SSH ($ORIGIN_URL) — пуш по deploy key невозможен."; exit 1 ;;
+          esac
+          if ! git ls-remote --exit-code origin HEAD > /dev/null; then
+            echo "::error::GitHub не принял RELEASE_DEPLOY_KEY (ключ удалён из Deploy keys?)."
+            exit 1
+          fi
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version-file: '.nvmrc'
           registry-url: 'https://registry.npmjs.org'
           cache: npm
 
@@ -45,6 +98,30 @@ jobs:
         id: after
         run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
+      # Признаки для хвостового job'а publish-mcp (см. конец файла). Считаются
+      # по явным SHA исходного пуша, поэтому локальный lerna-коммит на них не
+      # влияет. `mcp_touched` нужен отдельно от `released`: @daisforge/ui-mcp не
+      # входит в npm workspaces, лерна его не версионирует, и мерж, тронувший
+      # только packages/mcp-server, иначе не привёл бы к релизу ui-mcp никогда.
+      - name: Resolve downstream release flags
+        id: release_flags
+        run: |
+          echo "version=$(node -p "require('./packages/ui-kit/package.json').version")" >> "$GITHUB_OUTPUT"
+
+          if [ "${{ steps.before.outputs.sha }}" != "${{ steps.after.outputs.sha }}" ]; then
+            echo "released=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "released=false" >> "$GITHUB_OUTPUT"
+          fi
+
+          BEFORE="${{ github.event.before }}"
+          if [ -n "$BEFORE" ] && git cat-file -e "$BEFORE^{commit}" 2>/dev/null &&
+             git diff --name-only "$BEFORE" "${{ github.sha }}" -- packages/mcp-server | grep -q .; then
+            echo "mcp_touched=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "mcp_touched=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Build ui-kit
         if: steps.before.outputs.sha != steps.after.outputs.sha
         run: npx nx build ui-kit
@@ -52,12 +129,39 @@ jobs:
           NODE_OPTIONS: '--max_old_space_size=4096'
           NODE_ENV: production
 
+      # buildIndex.js пишет component-index.json в dist/packages/ui-kit/mcp-data
+      # только если dist/packages/ui-kit уже существует (см. buildIndex.ts) — на этом
+      # шаге он уже собран предыдущим шагом. У ui-kit/package.json нет поля "files",
+      # поэтому mcp-data уедет в npm-тарболл вместе с остальным dist как есть.
+      # Без этого шага tier "installed" в resolveIndex.ts (@daisforge/ui-mcp)
+      # никогда не сработает ни для одной опубликованной версии @daisforge/ui.
+      #
+      # `npm run meta` обязателен и идёт первым: _docs/meta лежит в .gitignore,
+      # в CI-чекауте его нет, а без него индексер терял features/guides/curated-
+      # описания/full-code примеры — ровно так выпотрошенный индекс однажды уехал
+      # в npm. Сейчас индексер на отсутствующей мете падает (assertMetaAvailable),
+      # то есть без этой строки шаг просто не пройдёт.
+      - name: Embed MCP component index into ui-kit dist
+        if: steps.before.outputs.sha != steps.after.outputs.sha
+        run: |
+          npm run meta
+          npm run mcp:ci
+          npm run build --prefix packages/mcp-server
+          node ./packages/mcp-server/dist/indexer/buildIndex.js
+
+      # Trusted Publishing требует npm >= 11.5.1, а с Node 20 идёт npm 10.
+      # Обновляется после `npm ci`, чтобы установка зависимостей шла тем же
+      # npm, что и локально, и lock-файл не расходился.
+      - name: Upgrade npm for trusted publishing
+        if: steps.before.outputs.sha != steps.after.outputs.sha
+        run: npm install -g npm@11
+
+      # Без NODE_AUTH_TOKEN: npm сам обменивает OIDC-токен job'а на разовый
+      # токен публикации. Provenance добавляется автоматически.
       - name: Publish to npm
         if: steps.before.outputs.sha != steps.after.outputs.sha
         working-directory: dist/packages/ui-kit
         run: npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       # Пушим релизный коммит и тег ТОЛЬКО после успешной публикации в npm.
       # Если сборка или publish упадут выше — job зафейлится раньше этого шага,
@@ -65,3 +169,37 @@ jobs:
       - name: Push release commit and tag
         if: steps.before.outputs.sha != steps.after.outputs.sha
         run: git push --follow-tags origin main
+
+  # @daisforge/ui-storybook — собранный Storybook той же версии, для
+  # развёртывания без сборки. Чекаутит тег релиза, ничего не пушит, поэтому с
+  # publish-mcp не конфликтует. Если упадёт — библиотека уже выпущена, Storybook
+  # перевыпускается вручную: workflow_dispatch publish-storybook-package.yml с
+  # тем же тегом.
+  publish-storybook:
+    needs: publish
+    if: needs.publish.outputs.released == 'true'
+    uses: ./.github/workflows/publish-storybook-package.yml
+    with:
+      ref: v${{ needs.publish.outputs.version }}
+      dry_run: false
+    secrets: inherit
+
+  # @daisforge/ui-mcp публикуется последним шагом релиза библиотеки: его
+  # bundled-индекс собирается из исходников ui-kit, поэтому свежий ui-mcp имеет
+  # смысл ровно после выхода новой версии @daisforge/ui. Отдельным push-триггером
+  # это не делается сознательно — оба workflow пушили бы коммиты в main
+  # одновременно, и второй получал бы non-fast-forward.
+  #
+  # ref: main — обязательно: к этому моменту lerna-коммит уже в main, а
+  # github.sha события указывает на состояние до него.
+  publish-mcp:
+    needs: publish
+    if: needs.publish.outputs.released == 'true' || needs.publish.outputs.mcp_touched == 'true'
+    uses: ./.github/workflows/publish-mcp-server.yml
+    with:
+      bump: patch
+      dry_run: false
+      publish_alias: true
+      refresh_vendor: true
+      ref: main
+    secrets: inherit

@@ -1,3 +1,4 @@
+import { CellInfo, SpanCellAlign } from '../../TableGlide';
 import { ColumnGlideInstance } from '../TableGlideInstance/type';
 import { ColumnConfig } from './column-config.type';
 import { DefaultOmittedKeys } from './glide-type';
@@ -8,4 +9,15 @@ import { ObjectForExtending } from './utils.type';
 export type ColumnConfigInternal<
   R extends ObjectForExtending,
   SR = unknown,
-> = ColumnConfig<R, SR> & Pick<ColumnGlideInstance<R, SR>, DefaultOmittedKeys>;
+> = ColumnConfig<R, SR> &
+  Pick<ColumnGlideInstance<R, SR>, DefaultOmittedKeys> & {
+    // Внутреннее: выравнивание объединённой ячейки. Уходит в форк как spanAlign.
+    spanAlign?:
+      | SpanCellAlign
+      | ((cellInfo: CellInfo<R, SR>) => SpanCellAlign | undefined);
+    // Внутреннее: renderCell задан в конфиге колонки. Таблица оборачивает
+    // отрисовку у каждой колонки, поэтому по самому renderCell этого не видно.
+    hasOwnRenderCell?: boolean;
+    // Внутреннее: то же для ячейки подстроки дерева.
+    subRowHasOwnRenderCell?: boolean;
+  };

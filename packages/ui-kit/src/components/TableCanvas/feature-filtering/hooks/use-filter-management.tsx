@@ -42,23 +42,24 @@ export const useFilterManagement = <
     const globalFilterKeys: string[] = [];
     const columnFilterKeys: string[] = [];
 
-    // 1. Собираем глобальные фильтры из sidebarConfig
-    if (tableConfig.filtering?.sidebarConfig?.items) {
-      Object.keys(tableConfig.filtering.sidebarConfig.items).forEach((key) => {
-        globalFilterKeys.push(key);
-      });
-    }
-
-    // 2. Собираем колоночные фильтры
+    // 1. Собираем колоночные фильтры
     columnConfig.forEach((column) => {
       if (column.filtering) {
-        const key = column.filtering.keyInFilterState || column.key;
-        // Проверяем, что этот ключ еще не добавлен как глобальный
-        if (!globalFilterKeys.includes(key)) {
-          columnFilterKeys.push(key);
-        }
+        columnFilterKeys.push(column.filtering.keyInFilterState || column.key);
       }
     });
+
+    // 2. Собираем глобальные фильтры из sidebarConfig. Ключ, совпадающий с
+    // колоночным фильтром, — это переопределение колонки (label/customRenderFn),
+    // а не отдельный глобальный фильтр: он остаётся на своём месте среди
+    // колоночных (так же он классифицируется в SidebarFilter).
+    if (tableConfig.filtering?.sidebarConfig?.items) {
+      Object.keys(tableConfig.filtering.sidebarConfig.items).forEach((key) => {
+        if (!columnFilterKeys.includes(key)) {
+          globalFilterKeys.push(key);
+        }
+      });
+    }
 
     // 3. Сортируем согласно order (как в сайдбаре)
     const ordered: string[] = [];

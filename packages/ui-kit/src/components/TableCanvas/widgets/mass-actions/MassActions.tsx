@@ -103,6 +103,7 @@ const renderMassActionButton = (
 export const MassActions = ({
   buttons,
   isHaveSomeFeatureInSidebar = false,
+  rightSidebarWidth,
   collapsedDropdownProps,
   bottom = 24,
   forceShow = false,
@@ -111,6 +112,7 @@ export const MassActions = ({
   buttons?: MassActionButtonProps[];
   collapsedDropdownProps?: TableDropdownConfigProps;
   isHaveSomeFeatureInSidebar?: boolean;
+  rightSidebarWidth?: string | number;
   bottom?: number;
   forceShow?: boolean;
   size?: MassActionsSize;
@@ -174,10 +176,13 @@ export const MassActions = ({
     });
 
   const { isSidebarOpen, wasAutoCollapsedRef } = useMassActionsSidebar({
+    isHaveSomeFeatureInSidebar,
+    rightSidebarWidth,
     isCollapsed,
     setIsCollapsed,
     calculatePositionForState,
     calculatePosition,
+    calculateCompression,
     setTranslateX,
     shouldApplySidebarOffsetRef,
   });

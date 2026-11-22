@@ -1,4 +1,9 @@
-import React, { createContext, PropsWithChildren, useContext } from 'react';
+import React, {
+  createContext,
+  PropsWithChildren,
+  useContext,
+  useMemo,
+} from 'react';
 
 import { hideRowServiceKeysHandler } from '../data/hideServiceKeysHanlder';
 import { isDetailPanelRow } from '../feature-row-detail/handlers';
@@ -68,7 +73,23 @@ export const SelectingContextProvider = <
   RowType extends ObjectForExtending,
 >({
   children,
-  ...rest
+  rows,
+  selectingRowConfig,
+  flattenedRowsArrAndMap,
+  selectedRows,
+  setSelectedRows,
+  rowKeyGetter,
+  rowsGroupingIsActive,
+  isRowsGroupingLabelVisible,
+  setIsRowsGroupingLabelVisible,
+  isRowsGroupingCounterVisible,
+  setIsRowsGroupingCounterVisible,
+  isSelectingRowLabelVisible,
+  setIsSelectingRowLabelVisible,
+  isSelectingRowCounterVisible,
+  setIsSelectingRowCounterVisible,
+  controlBlock,
+  sidebar,
 }: PropsWithChildren & {
   rows: RowType[];
   selectingRowConfig: SelectingRowConfig<RowType, RowIdType> & {
@@ -99,15 +120,62 @@ export const SelectingContextProvider = <
   sidebar?: {
     domMetadata?: DomMetadata;
   };
-}) => (
-  <SelectingContext.Provider
-    value={
-      rest as React.ComponentProps<typeof SelectingContext.Provider>['value']
-    }
-  >
-    {children}
-  </SelectingContext.Provider>
-);
+}) => {
+  // Тот же объект, пока поля прежние: он входит в контексты ячеек, и новый
+  // объект на каждый рендер заставлял бы таблицу перерисовывать весь экран.
+  // Подробнее: поля сравниваются по ссылке, поэтому передавать сюда нужно
+  // запомненные значения (состояние, useMemo), а не собранные на месте.
+  const value = useMemo(
+    () => ({
+      rows,
+      selectingRowConfig,
+      flattenedRowsArrAndMap,
+      selectedRows,
+      setSelectedRows,
+      rowKeyGetter,
+      rowsGroupingIsActive,
+      isRowsGroupingLabelVisible,
+      setIsRowsGroupingLabelVisible,
+      isRowsGroupingCounterVisible,
+      setIsRowsGroupingCounterVisible,
+      isSelectingRowLabelVisible,
+      setIsSelectingRowLabelVisible,
+      isSelectingRowCounterVisible,
+      setIsSelectingRowCounterVisible,
+      controlBlock,
+      sidebar,
+    }),
+    [
+      rows,
+      selectingRowConfig,
+      flattenedRowsArrAndMap,
+      selectedRows,
+      setSelectedRows,
+      rowKeyGetter,
+      rowsGroupingIsActive,
+      isRowsGroupingLabelVisible,
+      setIsRowsGroupingLabelVisible,
+      isRowsGroupingCounterVisible,
+      setIsRowsGroupingCounterVisible,
+      isSelectingRowLabelVisible,
+      setIsSelectingRowLabelVisible,
+      isSelectingRowCounterVisible,
+      setIsSelectingRowCounterVisible,
+      controlBlock,
+      sidebar,
+    ],
+  );
+
+  return (
+    <SelectingContext.Provider
+      value={
+        value as React.ComponentProps<typeof SelectingContext.Provider>['value']
+      }
+    >
+      {children}
+    </SelectingContext.Provider>
+  );
+};
 export function useSelectingRowContext<
   R extends ObjectForExtending = ObjectForExtending,
 >() {
@@ -428,8 +496,15 @@ export const getRowSelectingInfo = <RowType extends ObjectForExtending>(
         );
     const getRowParentsInfo = () => {
       const allParentsEntries = Array.from(allParents);
-      const getShouldBeSelectedInfo = (actualSelecteds: typeof selectedRows) =>
-        allParentsEntries.reduce<{
+      const getShouldBeSelectedInfo = (
+        actualSelecteds: typeof selectedRows,
+      ) => {
+        // Предки идут снизу вверх (ближайший родитель первым, корень последним).
+        // Ведём рабочую копию набора и по ходу обхода помечаем в ней уже
+        // решённого предка, чтобы вышестоящий предок видел актуальное состояние
+        // нижестоящего. Иначе корень не переселектится при возврате потомка.
+        const working = new Set(actualSelecteds);
+        return allParentsEntries.reduce<{
           shouldBeSelected: (string | number)[];
           shouldNotBeSelected: (string | number)[];
         }>(
@@ -447,19 +522,22 @@ export const getRowSelectingInfo = <RowType extends ObjectForExtending>(
             const subRows = parent?.[SUBROWS_KEY] as ObjectForExtending[];
 
             const parentIsShouldBeSelected = subRows.every((subRow) =>
-              actualSelecteds?.has(rowKeyGetter(subRow)),
+              working.has(rowKeyGetter(subRow)),
             );
 
             if (parentIsShouldBeSelected && isCurrLevelInLevels) {
               acc.shouldBeSelected.push(keyOfParent);
+              working.add(keyOfParent);
               return acc;
             }
 
             acc.shouldNotBeSelected.push(keyOfParent);
+            working.delete(keyOfParent);
             return acc;
           },
           { shouldBeSelected: [], shouldNotBeSelected: [] },
         );
+      };
       return {
         all: allParentsEntries.map(([_, v]) => v),
         getShouldBeSelectedInfo,

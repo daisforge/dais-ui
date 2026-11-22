@@ -6,31 +6,56 @@ import type { NumberFormatCompProps } from '@ui-kit/components/NumberFormat';
 import { ComponentProps } from 'react';
 
 import type { TextCellEntry } from '../TableGlideInstance';
+import type { FieldVerticalAlign } from './cellFieldStyles';
 
 export type CustomCellStyleProps = {
   cellWidth: number;
   cellHeight: number;
   disableLeftOffset?: boolean | undefined;
+  /** Горизонтальный отступ ячейки из темы. Без него берётся токен размера строки. */
+  paddingInline?: number | undefined;
+  /** Вертикальный отступ ячейки из темы. Без него берётся токен размера строки. */
+  paddingBlock?: number | undefined;
 };
 export type EmptyObj = Record<string, never>;
 
 export type CustomCellStyleNumberFormatProps = {
   align?: 'left' | 'center' | 'right';
-  autoFocusType: 'autoFocus' | 'autoFocusAndSelect' | 'none';
+  /**
+   * Поведение фокуса/каретки при открытии редактора:
+   * - `autoFocus` — фокус, каретка в конец значения;
+   * - `autoFocusAndSelect` — фокус и выделение всего значения (вход через
+   *   Enter/двойной клик — набор заменяет значение целиком);
+   * - `autoFocusBeforeDecimals` — фокус, каретка в конец целой части (перед
+   *   дробной). Для входа «перезаписью»: после набранной цифры можно сразу
+   *   продолжать ввод, не попадая в нули дробной части. Длина дробной части
+   *   берётся из `decimalScale`/`fixedDecimalScale` и не зависит от символа
+   *   разделителя;
+   * - `none` — фокусом/кареткой компонент не управляет.
+   */
+  autoFocusType:
+    | 'autoFocus'
+    | 'autoFocusAndSelect'
+    | 'autoFocusBeforeDecimals'
+    | 'none';
 } & CustomCellStyleProps;
+
+/** Где стоит поле по высоте ячейки выше обычной строки, по выравниванию блока. */
+type FieldVerticalAlignProps = { verticalAlign?: FieldVerticalAlign };
 
 export type CellEditorNumberFormatProps = Omit<
   NumberFormatCompProps,
   'view' | 'size'
 > &
-  CustomCellStyleNumberFormatProps;
+  CustomCellStyleNumberFormatProps &
+  FieldVerticalAlignProps;
 
 export type { ComboboxItemOption };
 export type CellEditorComboboxProps<T extends ComboboxItemOption> =
   ComboboxCompProps<T> &
-    CustomCellStyleProps & {
+    CustomCellStyleProps &
+    FieldVerticalAlignProps & {
       autoFocusType: 'autoFocus' | 'none';
-      paddingInline: number;
     };
 
 export type CellEditorTextAreaProps = Omit<
@@ -38,6 +63,7 @@ export type CellEditorTextAreaProps = Omit<
   'highlight'
 > & {
   autoFocusType?: 'autoFocus' | 'autoFocusAndSelect' | 'none';
-  paddingInline: number;
   containerClassName?: string;
+  /** Где стоит текст по высоте ячейки. По центру первая строка на месте текста ячейки. */
+  verticalAlign?: 'top' | 'center' | 'bottom';
 } & CustomCellStyleProps;

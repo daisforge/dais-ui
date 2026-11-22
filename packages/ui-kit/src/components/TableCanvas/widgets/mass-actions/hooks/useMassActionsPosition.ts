@@ -1,10 +1,10 @@
 /* eslint-disable no-lonely-if */
 import React, { useCallback, useRef } from 'react';
 
-import { useSidebar, useTableResizeObserverWidth } from '../../../contexts';
+import { useLeftSidebar, useRightSidebar } from '../../../contexts';
+import { useMassActionsCanvasWidth } from './useMassActionsCanvasWidth';
 
 // Константы для позиционирования
-const TOGGLE_SIDEBAR_PANEL_WIDTH = 44;
 const MIN_PADDING = 24; // Минимальный отступ слева и справа
 
 export const useMassActionsPosition = ({
@@ -24,9 +24,11 @@ export const useMassActionsPosition = ({
   visibleButtonsCount: number;
   setTranslateX: React.Dispatch<React.SetStateAction<number | undefined>>;
 }) => {
-  const getTableContainerWidth = useTableResizeObserverWidth();
-  const sidebar = useSidebar();
-  const { isOpen: isSidebarOpen, width: sidebarWidth } = sidebar;
+  const getTableContainerWidth = useMassActionsCanvasWidth();
+  const rightSidebar = useRightSidebar();
+  const leftSidebar = useLeftSidebar();
+  const isSidebarOpen =
+    (isHaveSomeFeatureInSidebar && rightSidebar.isOpen) || leftSidebar.isOpen;
   const shouldApplySidebarOffsetRef = useRef(false);
 
   // Функция для расчета позиции панели для будущего состояния (collapsed/expanded)
@@ -37,11 +39,8 @@ export const useMassActionsPosition = ({
         return undefined;
       }
 
-      const totalSidebarWidth = sidebarWidth + TOGGLE_SIDEBAR_PANEL_WIDTH;
-      const availableWidth =
-        tableWidth -
-        (isHaveSomeFeatureInSidebar ? TOGGLE_SIDEBAR_PANEL_WIDTH : 0) -
-        (isSidebarOpen ? totalSidebarWidth : 0);
+      // Измеряем canvas, поэтому ширины панелей повторно не вычитаем.
+      const availableWidth = tableWidth;
 
       // Вычисляем приблизительную ширину панели для целевого состояния
       let estimatedPanelWidth: number;
@@ -108,9 +107,6 @@ export const useMassActionsPosition = ({
     },
     [
       getTableContainerWidth,
-      isHaveSomeFeatureInSidebar,
-      isSidebarOpen,
-      sidebarWidth,
       visibleButtonsCount,
       containerRef,
       summaryCheckboxElRef,
@@ -126,13 +122,7 @@ export const useMassActionsPosition = ({
       return;
     }
 
-    const totalSidebarWidth = sidebarWidth + TOGGLE_SIDEBAR_PANEL_WIDTH;
-
-    // Вычисляем доступную ширину с учетом сайдбара, если он открыт
-    const availableWidth =
-      tableWidth -
-      (isHaveSomeFeatureInSidebar ? TOGGLE_SIDEBAR_PANEL_WIDTH : 0) -
-      (isSidebarOpen ? totalSidebarWidth : 0);
+    const availableWidth = tableWidth;
 
     const panelWidth = containerRef.current.getBoundingClientRect().width;
 
@@ -170,14 +160,7 @@ export const useMassActionsPosition = ({
     } else {
       shouldApplySidebarOffsetRef.current = false;
     }
-  }, [
-    getTableContainerWidth,
-    isHaveSomeFeatureInSidebar,
-    isSidebarOpen,
-    sidebarWidth,
-    containerRef,
-    setTranslateX,
-  ]);
+  }, [getTableContainerWidth, isSidebarOpen, containerRef, setTranslateX]);
 
   return {
     calculatePosition,

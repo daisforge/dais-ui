@@ -12,8 +12,10 @@
     npm install --save react react-dom
 ```
 
+Пакет требует `styled-components` версии `5.3.11`.
+
 ```sh
-    npm install --save styled-components@5.3.1
+    npm install --save-exact styled-components@5.3.11
 ```
 
 ```sh
@@ -23,6 +25,16 @@
 ```sh
     npm install --save @daisforge/ui
 ```
+
+## Темы
+
+Темы и дизайн-токены доступны из `@daisforge/ui/themes` и `@daisforge/ui/tokens`.
+`GlobalStyle.theme` принимает `light`, `dark`, `betaCoreLight`, `betaCoreDark`,
+`highContrastLight` и `highContrastDark`.
+
+Ручная палитра состояний Canvas-таблиц не обновляется автоматически вместе
+с темами SDDS. Её изменения согласуются с дизайнером. Устройство палитры
+и команды генерации описаны в [документации генератора](../../generators/table-token-states/README.md).
 
 ## Настройка
 
@@ -53,16 +65,18 @@ root.render(
 import React from 'react';
 import { createGlobalStyle } from 'styled-components';
 
-import { compatible_typo_theme, light_sdds_serv_theme, light_web_theme, standard_typo_theme } from '../themes';
+import {
+  compatible_typo_theme,
+  sdds_finai__light,
+  standard_typo_theme,
+} from '@daisforge/ui/themes';
 
-const WebTheme = createGlobalStyle(light_web_theme);
 const StandardTypoTheme = createGlobalStyle(standard_typo_theme);
 const CompatibleTypoTheme = createGlobalStyle(compatible_typo_theme);
-const SDDSTheme = createGlobalStyle(light_sdds_serv_theme);
+const SDDSTheme = createGlobalStyle(sdds_finai__light);
 
 export const GlobalStyle = () => (
   <>
-    <WebTheme />
     <StandardTypoTheme />
     <CompatibleTypoTheme />
     <SDDSTheme />
@@ -86,11 +100,10 @@ import { textAccent } from '@daisforge/ui/tokens';
 
 export const App = () => {
     return (
-        <Button>Hello!</Button>
-
-        <p style={{color: textAccent}}>
-            Token usage example
-        </p>
+        <>
+            <Button>Hello!</Button>
+            <p style={{color: textAccent}}>Token usage example</p>
+        </>
     );
 };
 ```
@@ -110,11 +123,11 @@ export const App = () => {
 };
 ```
 
-## Возможное решение проблем:
+## Предупреждение source-map-loader в Webpack
 
-`Failed to parse source map from ...`
-
-Решение: Добавить в конфиг вебпака
+В приложениях на Webpack предупреждение `Failed to parse source map from ...`
+может возникать при обработке сторонних source maps. Если причина подтверждена,
+можно подавить предупреждения этого loader в конфигурации потребителя:
 
 ```js
 module.exports = {

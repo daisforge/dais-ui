@@ -1,4 +1,5 @@
 import { mergeClasses } from '@ui-kit/utils';
+import { isValidElement } from 'react';
 
 import {
   analyticalWidgetClassNames as cls,
@@ -29,11 +30,20 @@ export const AnalyticalWidget = ({
   $css,
 }: AnalyticalWidgetProps) => {
   const slotVisibility = SLOT_VISIBILITY[size];
+  // rightSlot шапки заполнен? Знаем только мы (у потребителя нет доступа к контенту).
+  // Вешаем маркер на корень, чтобы абсолютная dots-кнопка подняла top до 16 через CSS.
+  const hasRightSlot =
+    isValidElement<{ rightSlot?: unknown }>(headerSlot) &&
+    Boolean(headerSlot.props.rightSlot);
   return (
     <StyledWidget
       $size={size}
       $css={$css}
-      className={mergeClasses(cls.root, classes?.root)}
+      className={mergeClasses(
+        cls.root,
+        hasRightSlot ? cls.hasRightSlot : undefined,
+        classes?.root,
+      )}
     >
       {/* // TODO: временно добавленная обертка
       // Шапка не может быть меньше 32px, даже если ее нет, контейнер с данной высотой должен существовать, чтобы кнопка троеточия, внедряемые микрофронтендом другой команды с абсолютным позиционированием не ломала верстку */}

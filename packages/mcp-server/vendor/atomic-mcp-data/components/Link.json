@@ -1,0 +1,48 @@
+{
+  "name": "Link",
+  "package": "sdds-finai",
+  "category": "components",
+  "summary": "Link",
+  "api": {
+    "props": [
+      {
+        "name": "view",
+        "type": "\"clear\" | \"default\" | \"accent\" | \"positive\" | \"warning\" | \"negative\" | \"secondary\" | \"tertiary\" | \"paragraph\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "underline",
+        "type": "\"none\" | \"hover\" | \"always\"",
+        "required": false,
+        "default": "",
+        "description": ""
+      },
+      {
+        "name": "size",
+        "type": "string",
+        "required": false,
+        "default": "",
+        "description": ""
+      }
+    ]
+  },
+  "examples": [
+    {
+      "title": "Использование Использование",
+      "snippet": "import React from 'react';\nimport { TextS, Link } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <TextS>\n            Скачайте <Link href=\"/\" target=\"_blank\">приложение.</Link>\n        </TextS>\n    );\n}"
+    },
+    {
+      "title": "Подчёркивание Подчёркивание Prop  underline  управляет режимом подчёркивания ссылки",
+      "snippet": "import React from 'react';\nimport { TextS, Link } from '@salutejs/sdds-finai';\nexport function App() {\n    return (\n        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>\n            <TextS><Link href=\"/\" underline=\"none\">Без подчёркивания</Link></TextS>\n            <TextS><Link href=\"/\" underline=\"hover\">Подчёркивание при наведении</Link></TextS>\n            <TextS><Link href=\"/\" underline=\"always\">Всегда подчёркнута</Link></TextS>\n        </div>\n    );\n}"
+    }
+  ]
+}

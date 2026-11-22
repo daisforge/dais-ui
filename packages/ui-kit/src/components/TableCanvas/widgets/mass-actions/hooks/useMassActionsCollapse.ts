@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 
 export const useMassActionsCollapse = ({
   isCollapsed,
@@ -19,6 +19,16 @@ export const useMassActionsCollapse = ({
   shouldApplySidebarOffsetRef: React.MutableRefObject<boolean>;
   wasAutoCollapsedRef: React.MutableRefObject<boolean>;
 }) => {
+  const positionRef = useRef(calculatePosition);
+  positionRef.current = calculatePosition;
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(
+    () => () => {
+      if (timeoutRef.current !== null) clearTimeout(timeoutRef.current);
+    },
+    [],
+  );
+
   // Обработчик сворачивания/разворачивания панели
   const handleToggleCollapse = useCallback(() => {
     const newCollapsedState = !isCollapsed;
@@ -44,14 +54,15 @@ export const useMassActionsCollapse = ({
     setIsCollapsed(newCollapsedState);
 
     // После завершения анимации уточняем позицию (на случай погрешностей)
-    setTimeout(() => {
-      calculatePosition();
+    if (timeoutRef.current !== null) clearTimeout(timeoutRef.current);
+    timeoutRef.current = setTimeout(() => {
+      timeoutRef.current = null;
+      positionRef.current();
     }, 550);
   }, [
     isCollapsed,
     isSidebarOpen,
     calculatePositionForState,
-    calculatePosition,
     setTranslateX,
     shouldApplySidebarOffsetRef,
     wasAutoCollapsedRef,

@@ -4,6 +4,11 @@ import {
   drawEmbedIconButtonWithView,
   drawIconButton,
   EmbedIconButtonSize,
+  type EmbedViewColors,
+  FALLBACK_THEME,
+  getEmbedIconButtonViewColors,
+  type GlideThemeForRender,
+  resolveTokens,
   ICON_SIZE_ADJUSTMENT,
   SIZE_CONFIG,
 } from '../cells/buttons';
@@ -17,19 +22,6 @@ const DEFAULT_VIEW: ButtonView = 'default';
 const DEFAULT_SIZE: EmbedIconButtonSize = 's';
 const DEFAULT_CURSOR = 'pointer';
 const MAX_ICON_SIZE = 20;
-
-// Legacy theme for backward compatibility
-const BUTTON_THEME = {
-  accentColor: '#1e88e5',
-  accentLight: 'rgba(30, 136, 229, 0.16)',
-  accentFg: '#ffffff',
-  bgCell: '#ffffff',
-  borderColor: '#e0e0e0',
-  textLight: '#9e9e9e',
-  textDark: '#1f1f1f',
-  baseFontFull:
-    "13px -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-};
 
 interface ButtonMetrics {
   height: number;
@@ -52,12 +44,20 @@ export interface CanvasEmbedIconButtonOptions {
   overrideSquareSize?: number;
   /** Переопределяет размер иконки внутри кнопки (px), приоритет над SIZE_CONFIG */
   overrideIconSize?: number;
+  /**
+   * Ширина кнопки в раскладке и hit-area (px), по умолчанию — сторона квадрата.
+   * Иконка по-прежнему рисуется в квадрате от левого края: позволяет не
+   * резервировать место под пустую правую часть иконки.
+   */
+  overrideWidth?: number;
   /** Переопределяет цвет иконки в покое (иначе — цвет из view-палитры) */
   iconColor?: string;
   /** Переопределяет цвет иконки при hover (иначе — iconColor override или view) */
   iconColorHovered?: string;
   disabled?: boolean;
   onClick?: (event: CanvasEvent) => void;
+  /** Тема таблицы: из её токенов берутся цвета видов. */
+  theme?: GlideThemeForRender;
 }
 
 export class CanvasEmbedIconButton extends CanvasLeaf {
@@ -79,6 +79,8 @@ export class CanvasEmbedIconButton extends CanvasLeaf {
 
   overrideIconSize?: number;
 
+  overrideWidth?: number;
+
   iconColor?: string;
 
   iconColorHovered?: string;
@@ -86,6 +88,10 @@ export class CanvasEmbedIconButton extends CanvasLeaf {
   isHovered = false;
 
   private useNewApi = false;
+
+  private theme: GlideThemeForRender;
+
+  private viewColors: Record<ButtonView, EmbedViewColors>;
 
   private getDisabled = () => (this.disabled ? 'default' : DEFAULT_CURSOR);
 
@@ -99,6 +105,8 @@ export class CanvasEmbedIconButton extends CanvasLeaf {
     this.size = options?.size ?? 'auto';
     this.variant = options?.variant ?? 'primary';
     this.disabled = options?.disabled ?? false;
+    this.theme = options?.theme ?? FALLBACK_THEME;
+    this.viewColors = getEmbedIconButtonViewColors(resolveTokens(this.theme));
     super.style = {
       ...super.style,
       cursor: this.getDisabled(),
@@ -117,6 +125,9 @@ export class CanvasEmbedIconButton extends CanvasLeaf {
     }
     if (options?.overrideIconSize !== undefined) {
       this.overrideIconSize = options.overrideIconSize;
+    }
+    if (options?.overrideWidth !== undefined) {
+      this.overrideWidth = options.overrideWidth;
     }
     if (options?.iconColor !== undefined) {
       this.iconColor = options.iconColor;
@@ -150,12 +161,31 @@ export class CanvasEmbedIconButton extends CanvasLeaf {
       const sizeConfig = SIZE_CONFIG[this.buttonSize];
       const h = this.overrideSquareSize ?? sizeConfig.height;
       this.rect.height = h;
-      this.rect.width = h; // Square button
+      this.rect.width = this.overrideWidth ?? h; // Square button by default
     } else {
       const metrics = resolveButtonMetrics(this.size);
       this.rect.height = metrics.height;
       this.rect.width = metrics.width;
     }
+  }
+
+  /**
+   * Новый API рисует квадрат (или ширину overrideWidth) от угла rect, старый
+   * рисует rect без вертикальных отступов BUTTON_PADDING_Y.
+   */
+  override getAnchorRect() {
+    const { x, y, width, height } = this.rect;
+    if (this.useNewApi) {
+      const side =
+        this.overrideSquareSize ?? SIZE_CONFIG[this.buttonSize].height;
+      return { x, y, width: this.overrideWidth ?? side, height: side };
+    }
+    return {
+      x,
+      y: y + BUTTON_PADDING_Y,
+      width,
+      height: height - BUTTON_PADDING_Y * 2,
+    };
   }
 
   onPaint(batcher: DrawBatcher, _ctx: CanvasRenderingContext2D) {
@@ -183,7 +213,8 @@ export class CanvasEmbedIconButton extends CanvasLeaf {
         this.buttonSize,
         this.disabled,
         this.isHovered,
-        overrides
+        overrides,
+        this.viewColors
       );
       if (CanvasNode.DEBUG) {
         const sizeConfig = SIZE_CONFIG[this.buttonSize];
@@ -201,7 +232,7 @@ export class CanvasEmbedIconButton extends CanvasLeaf {
         width,
         height,
         this.icon,
-        BUTTON_THEME,
+        this.theme,
         this.variant,
         this.disabled,
         this.isHovered
@@ -226,7 +257,7 @@ export class CanvasEmbedIconButton extends CanvasLeaf {
       const bounds = {
         x: this.rect.x,
         y: this.rect.y,
-        width: h,
+        width: this.overrideWidth ?? h,
         height: h,
       };
       return isPointInBounds(x, y, bounds);

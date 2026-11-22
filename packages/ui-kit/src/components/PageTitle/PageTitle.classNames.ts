@@ -6,6 +6,7 @@ export const pageTitleClassNames = {
   content: `${PRE}content`,
   leftBlock: `${PRE}left-block`,
   titleBlock: `${PRE}title-block`,
+  titleRow: `${PRE}title-row`,
   title: `${PRE}title`,
   subtitle: `${PRE}subtitle`,
   titleSlot: `${PRE}title-slot`,

@@ -17,6 +17,8 @@ const meta: Meta = {
     docs: {},
     screenshot: {
       skip: true,
+      skipReason:
+        'Пробел покрытия: для асинхронной пагинации пока нет ожидания завершения и проверок в play',
     },
   },
   tags: ['!autodocs'],

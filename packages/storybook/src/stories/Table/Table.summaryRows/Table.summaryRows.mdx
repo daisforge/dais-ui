@@ -14,6 +14,33 @@ import * as TableSummaryRowsStories from './Table.summaryRows.stories';
 - Отображение итогов через `topSummaryRows` и `bottomSummaryRows` пропсы
 - Кнопка переключения видимости в control block (`showInControl: true`)
 - Кастомный рендер через `renderSummaryCell` в `columnConfig`
+- Колбэк `onChange(checked)`: вызывается, когда пользователь переключает тогл «Итоговые строки» в настройках таблицы. Не вызывается при монтировании
+
+## Сохранение выбора пользователя
+
+Сохраните значение в `onChange` и передайте его обратно в `showDefault`:
+
+```tsx
+const STORAGE_KEY = 'my-table:summary-rows';
+
+const [showSummary] = useState(
+  () => localStorage.getItem(STORAGE_KEY) !== 'false',
+);
+
+<Table
+  tableConfig={{
+    summaryRows: {
+      showDefault: showSummary,
+      showInControl: true,
+      onChange: (checked) =>
+        localStorage.setItem(STORAGE_KEY, String(checked)),
+    },
+  }}
+  ...
+/>;
+```
+
+> `showDefault` читается только при монтировании таблицы. Если поменять его позже, текущее состояние тогла не изменится.
 
 ## Особенности
 

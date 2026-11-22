@@ -70,7 +70,11 @@ export const createCheckboxColumn = ({
     name: ' ',
     isServiceColumn: true,
     width: columnWidth,
+    // Ширина колонки чекбоксов фиксирована: minWidth и maxWidth совпадают с
+    // width. Glide при перетаскивании границы не выходит за эти пределы, а
+    // TableGlide не запоминает ресайз колонки с фиксированной шириной.
     minWidth: columnWidth,
+    maxWidth: columnWidth,
     frozen: true,
     renderCell,
     renderHeaderCell: renderSummaryCheckbox,

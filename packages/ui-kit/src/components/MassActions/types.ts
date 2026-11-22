@@ -62,6 +62,11 @@ export type StyledButtonProps = {
 export type MassActionsCounterProps = {
   /** Количество выбранных элементов */
   selectedCount: number;
+  /**
+   * Максимальное отображаемое число. Если selectedCount больше — показывается «N+»
+   * (например, при maxCount={99} и selectedCount={5000} отобразится «99+»).
+   */
+  maxCount?: number;
   /** Текст метки (по умолчанию "Выбрано") */
   label?: string;
   /** Показывать ли чекбокс */

@@ -1,5 +1,7 @@
 import { s } from '@ui-kit/constants';
+import { media } from '@ui-kit/utils/breakpoint';
 import styled, {
+  css,
   CSSObject,
   FlattenSimpleInterpolation,
 } from 'styled-components';
@@ -48,25 +50,58 @@ export const StyledTitleBlock = styled.div.attrs({
   min-width: 0;
 `;
 
+/*
+ * Отступ сверху компенсирует разницу высоты текстовой коробки заголовка H2
+ * между макетом и вёрсткой. Высота H2 bold меняется по вьюпортам (тема
+ * sdds-finai): от 1281px это 38px, от 960 до 1280px это 34px, до 959px это
+ * 30px. Под каждую высоту свой отступ, чтобы кнопка была выровнена по заголовку.
+ * Ступени включаются в адаптивном режиме (isAdaptive1280). Десктоп (>=1281px)
+ * и disableMediaAdaptive дают отступ как для 38px, без ступеней вниз.
+ */
 export const StyledBackButtonContainer = styled.div.attrs({
   className: cls.backIconButton as string,
-})<{ $isAdaptive1280: boolean }>`
-  margin-top: ${({ $isAdaptive1280 }) => ($isAdaptive1280 ? '1px' : '6px')};
+})<{ $isAdaptive1280?: boolean }>`
+  margin-top: 4px;
+  ${({ $isAdaptive1280 }) =>
+    $isAdaptive1280 &&
+    css`
+      ${media.exact(960, 1280)`
+        margin-top: 2px;
+      `}
+      ${media.exact(0, 959)`
+        margin-top: 0;
+      `}
+    `}
+`;
+
+/*
+ * Строка заголовка: слот стоит сразу за текстом заголовка, а не за более
+ * длинным подзаголовком, и выровнен по центру строки.
+ */
+export const StyledTitleRow = styled.div.attrs({
+  className: cls.titleRow as string,
+})`
+  display: flex;
+  align-items: center;
+  gap: ${() => s.x8};
+  min-width: 0;
 `;
 
 export const StyledTitle = styled.div.attrs({
   className: cls.title as string,
-})``;
+})`
+  min-width: 0;
+`;
 
 export const StyledSubtitle = styled.div.attrs({
   className: cls.subtitle as string,
 })``;
 
-/* Кастомный слот правее заголовка */
 export const StyledTitleSlot = styled.div.attrs({
   className: cls.titleSlot as string,
 })`
-  margin-top: 3px;
+  display: flex;
+  flex-shrink: 0;
 `;
 
 export const StyledRightBlock = styled.div.attrs({

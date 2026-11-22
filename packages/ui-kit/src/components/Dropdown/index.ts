@@ -1,6 +1,11 @@
-import { Dropdown, type DropdownItemOption } from '@salutejs/sdds-finai';
-import { ComponentProps } from 'react';
+import type {
+  DropdownItemOption,
+  DropdownProps as SDDSDropdownProps,
+} from '@salutejs/sdds-finai';
+import type { RefAttributes } from 'react';
 
-type DropdownProps = ComponentProps<typeof Dropdown>;
+export type { DropdownItemOption } from '@salutejs/sdds-finai';
+export { Dropdown } from '@salutejs/sdds-finai';
 
-export { Dropdown, type DropdownItemOption, type DropdownProps };
+export type DropdownProps<T extends DropdownItemOption = DropdownItemOption> =
+  SDDSDropdownProps<T> & RefAttributes<HTMLButtonElement>;

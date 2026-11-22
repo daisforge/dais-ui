@@ -1,0 +1,223 @@
+{
+  "$comment": "Набор задач A/B-замера (T10). level: single — один компонент, form — форма с валидацией, table — таблица, composition — сборка нескольких компонентов. hint — чем задача интересна для замера, в промпт агенту НЕ попадает. expect — профильные компоненты задачи: считается, нашёл ли агент хотя бы один из них (метрика «выбран профильный компонент»); агенту не показывается.",
+  "tasks": [
+    {
+      "id": "button-toolbar",
+      "level": "single",
+      "prompt": "Панель действий над списком: три кнопки — основная «Создать», второстепенная «Обновить» и иконочная кнопка «Настройки». Кнопки в одну строку, между ними отступы.",
+      "hint": "простейший случай; проверяет, придумает ли агент несуществующие view/size",
+      "expect": [
+        "Button",
+        "IconButton",
+        "ButtonGroup"
+      ]
+    },
+    {
+      "id": "textfield-search",
+      "level": "single",
+      "prompt": "Поле поиска по договорам: подпись «Поиск», плейсхолдер, кнопка очистки значения и текст ошибки под полем, когда введено меньше трёх символов. Значение хранится в состоянии.",
+      "hint": "TextField: onClear/hintText/status — типовые выдумываемые пропсы",
+      "expect": [
+        "TextFieldSearch",
+        "TextField",
+        "AutocompleteSearch"
+      ]
+    },
+    {
+      "id": "select-multi",
+      "level": "single",
+      "prompt": "Выпадающий список статусов заявки с множественным выбором из пяти вариантов и подписью «Статус». Выбранные значения хранятся в состоянии и выводятся под списком строкой через запятую.",
+      "hint": "Select: items/value/multiselect — форма items часто выдумывается",
+      "expect": [
+        "Select",
+        "Combobox"
+      ]
+    },
+    {
+      "id": "autocomplete-city",
+      "level": "single",
+      "prompt": "Поле с автодополнением города из заранее заданного массива из десяти городов: по мере ввода показываются подходящие подсказки, выбранный город сохраняется в состоянии.",
+      "hint": "Autocomplete: suggestions/filter/onChange",
+      "expect": [
+        "Autocomplete",
+        "AutocompleteSearch",
+        "Combobox"
+      ]
+    },
+    {
+      "id": "datepicker-range",
+      "level": "single",
+      "prompt": "Выбор периода отчёта — диапазон дат с подписью «Период» и ограничением: нельзя выбрать дату позже сегодняшней. Выбранный диапазон хранится в состоянии.",
+      "hint": "DatePickerRange vs DatePicker с range — реальная развилка выбора",
+      "expect": [
+        "DatePickerRange",
+        "DatePicker",
+        "Calendar"
+      ]
+    },
+    {
+      "id": "attach-upload",
+      "level": "single",
+      "prompt": "Загрузка вложения к заявке: выбор одного файла, отображение имени выбранного файла и текст ошибки, если файл больше 5 МБ.",
+      "hint": "Attach — 170 сырых пропсов до T4, тяжёлый для чтения из исходников",
+      "expect": [
+        "Attach",
+        "Dropzone"
+      ]
+    },
+    {
+      "id": "notification-toast",
+      "level": "single",
+      "prompt": "Кнопка «Сохранить», по нажатию на которую показывается уведомление об успешном сохранении с заголовком и текстом; уведомление можно закрыть.",
+      "hint": "Notification/Toast/ToastProvider — легко перепутать провайдер и компонент",
+      "expect": [
+        "Notification",
+        "Toast",
+        "ToastProvider",
+        "NotificationsProvider"
+      ]
+    },
+    {
+      "id": "tooltip-icon",
+      "level": "single",
+      "prompt": "Заголовок раздела «Лимиты» и рядом иконка-вопрос: при наведении показывается всплывающая подсказка с пояснением, что такое лимит.",
+      "hint": "Tooltip vs TooltipBeta — группа chooseWhen из T9",
+      "expect": [
+        "Tooltip",
+        "TooltipBeta"
+      ]
+    },
+    {
+      "id": "tabs-sections",
+      "level": "single",
+      "prompt": "Три вкладки — «Общее», «Реквизиты», «История»; под вкладками отображается текстовая заглушка активного раздела. Активная вкладка хранится в состоянии.",
+      "hint": "Tabs/TabItem — compound-части (T12)",
+      "expect": [
+        "Tabs",
+        "TabItem",
+        "TabsController"
+      ]
+    },
+    {
+      "id": "pagination-list",
+      "level": "single",
+      "prompt": "Список из двадцати строк с постраничным выводом по пять строк и переключателем страниц под списком.",
+      "hint": "Pagination — до T2 не находился по слову «пагинация»",
+      "expect": [
+        "Pagination"
+      ]
+    },
+    {
+      "id": "accordion-faq",
+      "level": "single",
+      "prompt": "Блок «Частые вопросы»: четыре раскрывающихся пункта с вопросом в заголовке и ответом внутри; открытым может быть только один пункт.",
+      "hint": "AccordionItem — дыра вендорного снэпшота (T15), примеры добраны из родителя (T3)",
+      "expect": [
+        "Accordion",
+        "AccordionItem"
+      ]
+    },
+    {
+      "id": "breadcrumbs-nav",
+      "level": "single",
+      "prompt": "Хлебные крошки навигации: «Главная / Договоры / Договор № 42», последний элемент неактивный.",
+      "hint": "простая проверка формы items",
+      "expect": [
+        "Breadcrumbs"
+      ]
+    },
+    {
+      "id": "form-profile",
+      "level": "form",
+      "prompt": "Форма профиля пользователя на react-hook-form: ФИО, e-mail, дата рождения, город (выпадающий список) и кнопка «Сохранить». Обязательны все поля, e-mail проверяется на формат; ошибки показываются под полями.",
+      "hint": "Form*-компоненты, пары chooseWhen из T9",
+      "expect": [
+        "FormTextField",
+        "FormSelect",
+        "FormDatePicker"
+      ]
+    },
+    {
+      "id": "form-payment",
+      "level": "form",
+      "prompt": "Форма платежа на react-hook-form с валидацией через zod: сумма (положительное число), назначение платежа, чекбокс согласия с условиями и кнопка «Оплатить», неактивная до согласия.",
+      "hint": "zod + FormTextField + FormCheckbox",
+      "expect": [
+        "FormTextField",
+        "FormCheckbox",
+        "FormNumberFormat"
+      ]
+    },
+    {
+      "id": "form-nested-array",
+      "level": "form",
+      "prompt": "Форма списка получателей на react-hook-form: динамический список строк (имя и счёт), кнопки «Добавить получателя» и «Удалить» у каждой строки, валидация обязательности обоих полей.",
+      "hint": "useFieldArray + Form*-компоненты — самая сложная из форм",
+      "expect": [
+        "FormTextField"
+      ]
+    },
+    {
+      "id": "table-canvas-basic",
+      "level": "table",
+      "prompt": "Таблица договоров на TableCanvas: колонки «Номер», «Контрагент», «Сумма», «Дата», данные — массив из десяти объектов в файле. Таблица должна отрисовываться в приложении.",
+      "hint": "TableCanvas — standalone, огромный API",
+      "expect": [
+        "TableCanvas"
+      ]
+    },
+    {
+      "id": "table-filters-mass",
+      "level": "table",
+      "prompt": "Реестр заявок на TableCanvas: таблица с чекбоксами выбора строк, панель фильтров над таблицей и панель массовых действий, которая появляется при выборе строк и показывает количество выбранных.",
+      "hint": "FiltersActions + MassActions + таблица — compound-части нескольких семейств",
+      "expect": [
+        "TableCanvas",
+        "FiltersActions",
+        "MassActions",
+        "ListOfFilters"
+      ]
+    },
+    {
+      "id": "modal-confirm",
+      "level": "composition",
+      "prompt": "Кнопка «Удалить договор», открывающая модальное окно подтверждения: заголовок, поясняющий текст и две кнопки в подвале — «Отмена» и «Удалить».",
+      "hint": "ModalDF — compound-паттерн из CLAUDE.md",
+      "expect": [
+        "ModalDF",
+        "ModalDFConfirmation"
+      ]
+    },
+    {
+      "id": "modal-table-canvas",
+      "level": "composition",
+      "prompt": "Кнопка «Реестр сделок», открывающая модальное окно на весь экран: в шапке — заголовок и подзаголовок, в теле — таблица сделок на TableCanvas с моковыми данными (не меньше 50 строк), колонка «Статус» отрисована кастомно, в подвале — итоговая сумма слева и кнопка «Закрыть» справа.",
+      "hint": "повторяет реальный прогон агента на потребительском проекте: compound-части ModalDF плюс кастомный renderCell в TableCanvas — оба места, где агент выдумывал API",
+      "expect": [
+        "ModalDF",
+        "TableCanvas"
+      ]
+    },
+    {
+      "id": "drawer-table",
+      "level": "composition",
+      "prompt": "Боковая панель с деталями договора: открывается по кнопке, в шапке — номер договора, в теле — таблица платежей на TableCanvas, в подвале — кнопки «Закрыть» и «Скачать».",
+      "hint": "DrawerDF + TableCanvas внутри — самая тяжёлая композиция",
+      "expect": [
+        "DrawerDF",
+        "TableCanvas"
+      ]
+    },
+    {
+      "id": "page-wizard",
+      "level": "composition",
+      "prompt": "Страница создания заявки: шапка с заголовком, индикатор шагов из трёх шагов, содержимое активного шага и кнопки «Назад»/«Далее» внизу. Активный шаг хранится в состоянии.",
+      "hint": "PageLayout/Container + Steps — макетные компоненты",
+      "expect": [
+        "Steps",
+        "PageLayout",
+        "Container"
+      ]
+    }
+  ]
+}

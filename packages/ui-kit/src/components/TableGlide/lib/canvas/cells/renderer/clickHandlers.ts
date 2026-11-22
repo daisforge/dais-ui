@@ -1,4 +1,5 @@
 import {
+  type CellCanvasPointerDispatchOptions,
   CellCanvasRoot,
   type CellCanvasPointerDispatchResult,
 } from '../CellCanvasRoot';
@@ -16,7 +17,8 @@ type RelativePoint = ReturnType<typeof toRelativePoint>;
 export function handleCanvasRootClick(
   renderData: RenderData,
   relativePoint: RelativePoint,
-  event: MouseEvent | React.MouseEvent | undefined
+  event: MouseEvent | React.MouseEvent | undefined,
+  pointerOptions?: CellCanvasPointerDispatchOptions
 ): CellCanvasPointerDispatchResult {
   if (renderData?.canvasRoot instanceof CellCanvasRoot) {
     // Normalize React.MouseEvent to native MouseEvent if available
@@ -30,7 +32,8 @@ export function handleCanvasRootClick(
       'click',
       relativePoint.x,
       relativePoint.y,
-      nativeEvent
+      nativeEvent,
+      pointerOptions
     );
   }
   return {

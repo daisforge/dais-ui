@@ -40,6 +40,7 @@ import {
   setRowSizeCb,
 } from '../../feature-row-size';
 import { useGetRowsGroupingBtnProps } from '../../feature-rows-grouping';
+import { getCustomSidebarTabs } from '../../feature-sidebar/getCustomSidebarTabs';
 import {
   DEFAULT_TABS_INFO,
   type DefaultTabInfo,
@@ -95,6 +96,7 @@ export const useFeatureArray = <
   columnConfig,
   editModeEnabled,
   setEditModeEnabled,
+  clearEditedCells,
   showSearchBlock,
   setShowSearchBlock,
   searchQueryLocalValue,
@@ -145,6 +147,7 @@ export const useFeatureArray = <
   setGroupedCols: React.Dispatch<React.SetStateAction<string[]>> | undefined;
   columnConfig: readonly ColumnConfig<RowType, SummaryRowType>[];
   editModeEnabled: boolean;
+  clearEditedCells: () => void;
   setEditModeEnabled: React.Dispatch<React.SetStateAction<boolean>> | null;
   showSearchBlock: boolean;
   setShowSearchBlock: React.Dispatch<React.SetStateAction<boolean>>;
@@ -293,14 +296,18 @@ export const useFeatureArray = <
   });
 
   const enableEditMode = () => setEditModeEnabled?.(true);
-  const disableEditMode = () => setEditModeEnabled?.(false);
+  const disableEditMode = () => {
+    if (setEditModeEnabled) {
+      clearEditedCells();
+      setEditModeEnabled(false);
+    }
+  };
   const editingButtons = tableConfig.editing?.buttons;
   const featureLeftButtons: ControlBlockButtonProps[] = [
     ...ifTrueBtn(isActivated.editingMode && editModeEnabled, {
       text: 'Отменить',
       tooltipText: 'Отменить',
       view: 'secondary',
-      style: { marginRight: '4px' },
       skipRightDivider: true,
       contentLeft: <IconClose size="xs" color="inherit" />,
       ...editingButtons?.cancel,
@@ -650,8 +657,10 @@ export const useFeatureArray = <
               label: 'Итоговые строки',
               checked: summaryRowsIsActive,
               className: tableConfig.summaryRows?.domMetadata?.className,
-              onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
-                setSummaryRowsIsActive(e.target.checked),
+              onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+                setSummaryRowsIsActive(e.target.checked);
+                tableConfig.summaryRows?.onChange?.(e.target.checked);
+              },
               ...tableConfig.summaryRows?.domMetadata?.dataAttributes,
             },
           },
@@ -821,24 +830,7 @@ export const useFeatureArray = <
     // Всегда начинаем с дефолтных вкладок
     const resultTabs = [...defaultSidebarTabs];
 
-    // Добавляем кастомные если есть
-    if (tableConfig.sidebarConfig?.customTabs) {
-      const { customTabs, customTabsOrder } = tableConfig.sidebarConfig;
-
-      // Применяем порядок если указан
-      if (customTabsOrder) {
-        const orderedTabs = customTabsOrder
-          .map((id) => customTabs.find((tab) => tab.id === id))
-          .filter(Boolean) as SidebarTab[];
-
-        const remainingTabs = customTabs.filter(
-          (tab) => !customTabsOrder.includes(tab.id),
-        );
-        resultTabs.push(...orderedTabs, ...remainingTabs);
-      } else {
-        resultTabs.push(...customTabs);
-      }
-    }
+    resultTabs.push(...getCustomSidebarTabs(tableConfig.sidebarConfig));
 
     return resultTabs;
   })();

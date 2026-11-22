@@ -20,6 +20,7 @@ import {
   StyledSubtitle,
   StyledTitle,
   StyledTitleBlock,
+  StyledTitleRow,
   StyledTitleSlot,
 } from './PageTitle.styled';
 import type {
@@ -28,14 +29,10 @@ import type {
 } from './PageTitle.types';
 import { getPageTitleSlotSizes, renderPageTitleSlot } from './utils';
 
-type PageTitleBackIconButtonProps = PageTitleIconButtonProps & {
-  isAdaptive1280: boolean;
-};
-
 const PageTitleBackIconButton = ({
   isAdaptive1280,
   ...props
-}: PageTitleBackIconButtonProps) => (
+}: PageTitleIconButtonProps & { isAdaptive1280?: boolean }) => (
   <StyledBackButtonContainer $isAdaptive1280={isAdaptive1280}>
     <IconButton
       size="xs"
@@ -178,20 +175,24 @@ export const PageTitle = forwardRef<
                 onClick={onBackClick}
               />
             )}
-            {(title || subtitle) && (
+            {(title || subtitle || renderedTitleSlot) && (
               <StyledTitleBlock>
-                <PageTitleHeading
-                  title={title}
-                  titleTypographyProps={titleTypographyProps}
-                />
+                {(title || renderedTitleSlot) && (
+                  <StyledTitleRow>
+                    <PageTitleHeading
+                      title={title}
+                      titleTypographyProps={titleTypographyProps}
+                    />
+                    {renderedTitleSlot && (
+                      <StyledTitleSlot>{renderedTitleSlot}</StyledTitleSlot>
+                    )}
+                  </StyledTitleRow>
+                )}
                 <PageTitleSubtitle
                   subtitle={subtitle}
                   subtitleTypographyProps={subtitleTypographyProps}
                 />
               </StyledTitleBlock>
-            )}
-            {renderedTitleSlot && (
-              <StyledTitleSlot>{renderedTitleSlot}</StyledTitleSlot>
             )}
           </StyledLeftBlock>
 

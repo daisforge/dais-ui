@@ -3,6 +3,293 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.30.0](https://github.com/daisforge/dais-ui/compare/v1.29.1...v1.30.0) (2026-11-20)
+
+### Bug Fixes
+
+- **TableCanvas:** ускорены наведение и выделение ячеек, исправлен расчёт автовысоты строк ([a1af564](https://github.com/daisforge/dais-ui/commit/a1af5644decb29af9265e8363306e1d3346a7a95))
+
+### Features
+
+- **mcp:** улучшен поиск компонентов ([c80b2e7](https://github.com/daisforge/dais-ui/commit/c80b2e7af74a154306dd2c2af47beb2c9596627d))
+- **PageLoader:** добавлен компонент загрузки страницы ([64214c7](https://github.com/daisforge/dais-ui/commit/64214c792c1abed317c7e03f092245ca35e64743))
+- **TableCanvas:** в Column Resize добавлена линия при изменении ширины ([ede28e9](https://github.com/daisforge/dais-ui/commit/ede28e99f98ec82c1eba823fcd12aaecbfb79594))
+- **TableCanvas:** подсвечивать изменённые ячейки в сессии редактирования ([d4ce197](https://github.com/daisforge/dais-ui/commit/d4ce197f33e0930b5e50e454fd62ee5240458d06))
+- **utils/usePlatformLink:** добавлен хук для работы с ссылками на платформе ([#175](https://github.com/daisforge/dais-ui/issues/175)) ([a2c4dc1](https://github.com/daisforge/dais-ui/commit/a2c4dc1d96c302d482959b5eb9c401637a4a91b7))
+- обновление SDDS до 0.369.0 ([024a5b8](https://github.com/daisforge/dais-ui/commit/024a5b80902af0aa6dc7686e51ba9ba734949bb1))
+
+## Unreleased
+
+- **TableCanvas:** в сессии редактирования изменённые ячейки получают голубой фон при редактировании, вставке и протяжке. В подстроках копирование, вставка и протяжка используют `column.key`, если включён `subRow.parentKeyAsDefault`, даже при заданном `keyOfColumnInSubRow`. При редактировании объединённого блока таблица учитывает поле подстроки и пропускает служебные колонки.
+
+## [1.29.1](https://github.com/daisforge/dais-ui/compare/v1.29.0...v1.29.1) (2026-11-17)
+
+### Bug Fixes
+
+- **TableCanvas:** ширина колонок из columns не перекрывается локальной после ресайза ([19a8bf0](https://github.com/daisforge/dais-ui/commit/19a8bf0fccd2538ee51cc3d94c5a810f77fa8825))
+
+# [1.29.0](https://github.com/daisforge/dais-ui/compare/v1.28.0...v1.29.0) (2026-11-13)
+
+### Bug Fixes
+
+- **PageTitle:** titleSlot стоит сразу за заголовком, а не за подзаголовком ([bbe2cc8](https://github.com/daisforge/dais-ui/commit/bbe2cc83f7c6a40982e8e2ee06e2183b85caa78b))
+- **Table,TableCanvas:** контекстное меню не показывает устаревшие пункты при повторном открытии ([951b608](https://github.com/daisforge/dais-ui/commit/951b608afbe247c0d2a70d4bd2cc0ed5ac5891e9))
+- **TableCanvas:** скрытый столбец с парой key/text снова можно показать ([0e1cf89](https://github.com/daisforge/dais-ui/commit/0e1cf8996fb955eebc3c8e9ca9ad8b43648ac72f))
+
+### Features
+
+- **AiAgentPopup:** кнопки снизу левой панели, onClick и disabled у кнопок ([b944146](https://github.com/daisforge/dais-ui/commit/b9441467039afe7ec7a201d7a66e34c7f30b07b2))
+
+# [1.28.0](https://github.com/daisforge/dais-ui/compare/v1.27.0...v1.28.0) (2026-11-09)
+
+### Bug Fixes
+
+- **Table,TableCanvas:** исправлен общий сброс зависимых фильтров ([#144](https://github.com/daisforge/dais-ui/issues/144)) ([a50737c](https://github.com/daisforge/dais-ui/commit/a50737cb7fd598d2b8010f9617b74ceca3f3a6a0))
+- **TableCanvas:** Canvas.Text без своего цвета берёт цвет текста текущей темы ([bfc00c3](https://github.com/daisforge/dais-ui/commit/bfc00c3924fb43659be5797e15355eeb2352f3e4))
+- **TableCanvas:** в колонке с объединением одинаковых значений ячейка без пары выравнивается так же, как объединённые, раньше, например, число в ней стояло справа, а объединённые слева ([5b8e226](https://github.com/daisforge/dais-ui/commit/5b8e226ce6dcb306ae3584b13e68c9849593b011))
+- **TableCanvas:** в объединённой ячейке рамка редактора и предпросмотра обводит всю ячейку одной линией, раньше рамка была высотой в одну строку, линия двоилась и меняла толщину ([27540d2](https://github.com/daisforge/dais-ui/commit/27540d2e4ffb47c6d9e26cd0a40b098367cd5a65))
+- **TableCanvas:** в режиме выделения одной ячейки (cell) объединённая ячейка обводится рамкой целиком, раньше рамка была на одну строку, а выше и ниже оставалась заливка выделения ([8e07d24](https://github.com/daisforge/dais-ui/commit/8e07d24d07b358f3208a0da6f693e0e707e2446e))
+- **TableCanvas:** в режиме редактирования поле Select открывается на месте подписи объединённой ячейки, а не в её первой строке ([5aa458d](https://github.com/daisforge/dais-ui/commit/5aa458d284f1975c7c02dc05c000498afa5d1412))
+- **TableCanvas:** в режиме редактирования список Select в объединённой ячейке раскрывается вверх, если поле прижато к низу ячейки и сверху хватает места, иначе вниз ([838483a](https://github.com/daisforge/dais-ui/commit/838483abfd0b13707cc1a923c9eb81fb0a75f2c9))
+- **TableCanvas:** добавлено многоточие для длинного текста Canvas.Badge [#145](https://github.com/daisforge/dais-ui/issues/145) ([183fb62](https://github.com/daisforge/dais-ui/commit/183fb62691e8842702cb7d8bcb63ae982fa9be1a))
+- **TableCanvas:** кнопки, чекбокс и скелетон в ячейках окрашены в цвета текущей темы, пустой чекбокс в тёмной теме больше не белый ([d4cf993](https://github.com/daisforge/dais-ui/commit/d4cf9932e7f48f5670869a55129d9ecc5599dbbb))
+- **TableCanvas:** наведение на объединённую ячейку срабатывает в любой её строке и не сбивается при обновлении данных ([e4de864](https://github.com/daisforge/dais-ui/commit/e4de8649c635ff316c6ca3f58ff99456d09c3c74))
+- **TableCanvas:** объединённая ячейка окрашивается целиком при наведении, выделении и отметке строки, а не полосой по высоте одной строки ([74a8dbc](https://github.com/daisforge/dais-ui/commit/74a8dbc97a621d923a19152f364646b72fd3ba2c))
+- **TableCanvas:** при переходе в редактирование ячейка не меняет вид, текст остаётся на том же месте и в том же начертании, фон совпадает с фоном ячейки, в том числе при наведении и выделении ([8a768ad](https://github.com/daisforge/dais-ui/commit/8a768adac1d552cfdf43716418e4d4ceec264985))
+- **TableCanvas:** редактор ячейки повторяет ячейку в просмотре ([b999c18](https://github.com/daisforge/dais-ui/commit/b999c18729378d056112ab3916665b994cc4a5ee))
+- **TableCanvas:** свой цвет ячейки в rgb() и rgba() меняется при наведении и выделении, как цвета палитры ([36c5d86](https://github.com/daisforge/dais-ui/commit/36c5d8687e1e0d8dd7322a1de69d5f0894cbf5b4))
+- **TableCanvas:** убран лишний отступ между кнопками «Отменить» и «Сохранить» в режиме редактирования ([bdcae68](https://github.com/daisforge/dais-ui/commit/bdcae685b3a7882deca3efbf0a713c6a304a08b8))
+- **TableCanvas:** частично скрытая ячейка прокручивается в видимую часть перед редактированием, редактор больше не ложится поверх закреплённых колонок ([174d3f3](https://github.com/daisforge/dais-ui/commit/174d3f391f9c58418f68384c73fd116b280e3f39))
+
+### Features
+
+- **TableCanvas:** editingCell.showSelectIcon — шеврон селекта для кастомного редактора ([#143](https://github.com/daisforge/dais-ui/issues/143)) ([b3e1574](https://github.com/daisforge/dais-ui/commit/b3e15745dc9db1937031fe64966d0038072378df))
+- **TableCanvas:** Popover и Dropdown на canvas-элементах таблицы ([07e49fc](https://github.com/daisforge/dais-ui/commit/07e49fc52ebe7ff148022910f2c0295ff9b8e1e8))
+- **TableCanvas:** новая палитра таблицы во всех темах, включая контрастные ([64face0](https://github.com/daisforge/dais-ui/commit/64face00d9499913635b76382eae544748be57fa))
+- **TableCanvas:** при вводе длинного текста редактор растёт вниз в пределах ширины ячейки, не выше четверти окна, дальше текст прокручивается внутри поля ([a768994](https://github.com/daisforge/dais-ui/commit/a768994ba34fff065086248b0e465a2b3975dea3))
+- **TableCanvas:** размер Canvas.Badge по умолчанию задан таблицей ([#140](https://github.com/daisforge/dais-ui/issues/140)) ([9a29e42](https://github.com/daisforge/dais-ui/commit/9a29e422bdf6d4f7f7f663560f4102fb34ce013d))
+- **TableCanvas:** свой renderCell объединённой ячейки тоже остаётся на экране при прокрутке ([59d1410](https://github.com/daisforge/dais-ui/commit/59d1410e6074114bac56cd1714eb8e1d1e458e8d))
+- **TableCanvas:** содержимое объединённой ячейки по умолчанию прижато к верху и остаётся на экране при прокрутке (эффект sticky) ([9adc7bf](https://github.com/daisforge/dais-ui/commit/9adc7bf14eb9148f2b45b4030befcfd5188da385))
+- **TableCanvas:** управление скрытыми столбцами извне через columnsControl.hiddenState ([7fc67f8](https://github.com/daisforge/dais-ui/commit/7fc67f876f1e8d6d905a70cc178374261ccbe07b))
+- обновление SDDS до 0.367.1 и источников тем; переход на styled-components 5.3.11 ([2d82667](https://github.com/daisforge/dais-ui/commit/2d826679fd0885a5ffa4d37c8665fdbe91de7a2d))
+
+# [1.27.0](https://github.com/daisforge/dais-ui/compare/v1.26.0...v1.27.0) (2026-11-02)
+
+### Bug Fixes
+
+- **TableCanvas:** колонка нумерации — фокус на таблице не выделяет первую строку целиком, правый клик по номеру строки не сбрасывает выделение ([09b5b0d](https://github.com/daisforge/dais-ui/commit/09b5b0d9ae2501f89424e243fb5f651574b1dcf0))
+- **TableCanvas:** открепление шапки в прокрученной таблице применяется сразу, без прокрутки ([414c736](https://github.com/daisforge/dais-ui/commit/414c736afe99f81994e98d2a981f191c23906aad))
+- **TableCanvas:** открытый редактор ячейки больше не закрывается и не теряет введённый текст при обновлении данных или настроек таблицы ([1aabd71](https://github.com/daisforge/dais-ui/commit/1aabd71d3fbbe7b56e8f5b42469a366f00945b98))
+- **TableCanvas:** отрисовка ячеек — фон не закрашивает линии сетки и соседние строки, текст перемеряется после загрузки шрифтов, Canvas.Container не раздвигает колонку длинным содержимым ([5ccefa7](https://github.com/daisforge/dais-ui/commit/5ccefa75c17ccc2a1c65d128e69bcd401a4cc97b))
+
+### Features
+
+- **TableCanvas:** cellsSelection.focusOnStateChange — выделение можно менять из кода, не забирая фокус, например у поля поиска ([6b736a5](https://github.com/daisforge/dais-ui/commit/6b736a55620be8f62ab888c68e49fa4b226c35c5))
+- **TableCanvas:** mergeCells.lazyRowSpan — объединение ячеек на больших данных, блоки считаются только для видимых строк и не ломаются после сортировки ([fc9ebc7](https://github.com/daisforge/dais-ui/commit/fc9ebc71d5cfe8f4261b9be259b3b58baf07965c))
+- **TableCanvas:** tableConfig.rowSize.state — размером строк можно управлять снаружи, например из своей панели инструментов ([409afd9](https://github.com/daisforge/dais-ui/commit/409afd9b02ad59a74a0f88306eed7d5ba2c3e57f))
+- **TableCanvas:** выравнивание колонки без своего форматирования — contentFormat: { alignContent } больше не требует customFormat ([88f95c5](https://github.com/daisforge/dais-ui/commit/88f95c53d98e3642de4d67d5c71306fd2616ad36))
+- **TableCanvas:** высота строки по содержимому — rowHeight: 'auto', строка растёт под перенесённый текст и любое дерево Canvas, потолок задаётся maxAutoRowHeight ([bc8996f](https://github.com/daisforge/dais-ui/commit/bc8996f0df34f3dabf8c9c5d6a888ba1638e3b04))
+- **TableCanvas:** кнопки внутри ячейки — interaction у Canvas.Button, Canvas.IconButton, Canvas.EmbedIconButton, Canvas.Link и Canvas.Container, клик не выделяет ячейку и не вызывает onCellClicked ([310654e](https://github.com/daisforge/dais-ui/commit/310654e3200d44e8db4e56aab33a5673829aea2c))
+- **TableCanvas:** многоуровневая шапка — своя высота уровней групп (groupHeaderRowHeight), клик и контекстное меню по заголовку группы (onGroupHeaderClicked, onGroupHeaderContextMenu) ([98357e6](https://github.com/daisforge/dais-ui/commit/98357e644f5fac16e21825c184620163c088991f))
+- **TableCanvas:** несколько выделенных диапазонов — рамка у каждого (cellsSelection.outlineEachRange) и всё выделение наружу (cellsSelection.onChange) ([007beb3](https://github.com/daisforge/dais-ui/commit/007beb3472e348c0e27987d77fcf029e5f1f70b3))
+- **TableCanvas:** новый canvas-элемент Canvas.Mark — подсветка части текста внутри Canvas.Text, Canvas.Link и Canvas.Badge, в том числе в тексте, перенесённом на несколько строк ([e431eb4](https://github.com/daisforge/dais-ui/commit/e431eb42e5fe733b6b8ceff2648a8fd2a754c2f0)), closes [#ffe066](https://github.com/daisforge/dais-ui/issues/ffe066)
+- **TableCanvas:** события ячеек — onCellClicked получает событие клика (позиция, Ctrl/Shift), заработал tableConfig.onItemHovered для подсказок при наведении ([9cde985](https://github.com/daisforge/dais-ui/commit/9cde985de4f7d872ddecb1bb934dacc40fff3e1e))
+
+# [1.26.0](https://github.com/daisforge/dais-ui/compare/v1.25.0...v1.26.0) (2026-10-28)
+
+### Features
+
+- **utils/PlatformNavigation:** добавлен тип и контекст для PlatformNavigation ([#138](https://github.com/daisforge/dais-ui/issues/138)) ([2470e8e](https://github.com/daisforge/dais-ui/commit/2470e8e57f05fa72bc2a25bc7c569b3bc1d9c803))
+
+# [1.25.0](https://github.com/daisforge/dais-ui/compare/v1.24.0...v1.25.0) (2026-10-24)
+
+### Bug Fixes
+
+- **FiltersActions:** уголок ресайза поповера фильтров не отрывается от карточки при настройке размеров через resizable ([5ae3036](https://github.com/daisforge/dais-ui/commit/5ae30365206f7324f76b88617d335dceb57f5208))
+- **TableCanvas:** в Popover колоночных фильтров исправлены лишние отступы, тени и фон ([d25c2c4](https://github.com/daisforge/dais-ui/commit/d25c2c4446a02a2559642f97aea05177776c29b8))
+- **TableGlide:** выделение сдвигается вместе с колонками при смене числа служебных столбцов ([03a4212](https://github.com/daisforge/dais-ui/commit/03a42120d484fa88728fd57d4bb811574aa979b7))
+
+### Features
+
+- **formComponents:** подсветка поля при ошибке без текста ([bcfbad4](https://github.com/daisforge/dais-ui/commit/bcfbad4a00ff69ea63b47cb0b87985185e9cd4a7))
+- **TableCanvas:** добавлен режим cover у loadingOverlay для блокировки таблицы без её перемонтирования ([77c5442](https://github.com/daisforge/dais-ui/commit/77c5442de193c7b57207905393f7dac542d6f534))
+- **TableCanvas:** панель системных сообщений TableCanvasLogger для нижней панели таблицы ([#120](https://github.com/daisforge/dais-ui/issues/120)) ([036ab3a](https://github.com/daisforge/dais-ui/commit/036ab3ad3ccb437126a669a7fc2e1fb7bb1031b6))
+- **TableCanvas:** столбец-индикатор ошибок строки, тултипы ошибок и ошибка всей строки ([17e1565](https://github.com/daisforge/dais-ui/commit/17e1565a49e8ea50514f5907da4104f596565c98))
+
+# [1.24.0](https://github.com/daisforge/dais-ui/compare/v1.23.0...v1.24.0) (2026-10-19)
+
+### Bug Fixes
+
+- **TableCanvas:** колонка чекбоксов выбора строк больше не меняет ширину при перетаскивании границы в шапке ([9040210](https://github.com/daisforge/dais-ui/commit/9040210ae151c2027daa14c3b06cf6b840fd5a84))
+
+### Features
+
+- **TableCanvas, Table:** добавлен режим columnsControl.applyMode у настройки колонок в правом сайдбаре. Новый режим позволяет применять изменения по столбцам (пин, порядок, видимость) мгновенно, также визуально скрываются кнопки сохранения и отмены внизу ([62922fe](https://github.com/daisforge/dais-ui/commit/62922fea8bcfd0766e867bb50336caec3f067f21))
+- **TableCanvas:** анимированный показ кнопок фильтрации и сортировки в шапке, название столбца уходит в троеточие с тултипом при нехватке места ([34531a3](https://github.com/daisforge/dais-ui/commit/34531a3adeb3cffb67374ce7dd20e7d89d716ee3))
+- **TableCanvas:** добавлен проп appearance — «чистый» вид таблицы и зебра ([b1c86e5](https://github.com/daisforge/dais-ui/commit/b1c86e56c6703b5d11bfeb172c1fefd6ea339afb))
+
+# [1.23.0](https://github.com/daisforge/dais-ui/compare/v1.22.0...v1.23.0) (2026-10-12)
+
+### Bug Fixes
+
+- **TourWidget:** исправлен градиент ([cbcb277](https://github.com/daisforge/dais-ui/commit/cbcb277dd2d51f090b9bd7cd71ecdfdb910cf695))
+
+### Features
+
+- **AiAgentPopup:** окно AI-помощника ([#94](https://github.com/daisforge/dais-ui/issues/94)) ([3e4b045](https://github.com/daisforge/dais-ui/commit/3e4b0450f76c80e38867bbeaa08b3c4649ca4ca1))
+- **TableCanvas:** tableConfig.stickyColumns и stickyRows — липкие колонки и строки ([#108](https://github.com/daisforge/dais-ui/issues/108)) ([072cc7c](https://github.com/daisforge/dais-ui/commit/072cc7c05fd7c3b32693f8710db29244b1fc0217)), closes [RamK-16/glide#52](https://github.com/RamK-16/glide/issues/52)
+- **TableCanvas:** добавлен левый Sidebar и нижняя панель BottomSheet ([#115](https://github.com/daisforge/dais-ui/issues/115)) ([d2c91e2](https://github.com/daisforge/dais-ui/commit/d2c91e26d4bc4f89a7ecc68701d3211d3fb74a24))
+- **TableCanvas:** добавлено подчеркивание многострочных ссылок ([9dd2f9c](https://github.com/daisforge/dais-ui/commit/9dd2f9cf199ca2225ea575e970c0b1f257ea926d))
+- **TableCanvas:** добавлены цветовые темы таблицы и состояния ячеек ([#114](https://github.com/daisforge/dais-ui/issues/114)) ([5c98ee1](https://github.com/daisforge/dais-ui/commit/5c98ee1bebe074ee073e7f2a85c51b576160c19a))
+
+# [1.22.0](https://github.com/daisforge/dais-ui/compare/v1.21.0...v1.22.0) (2026-10-05)
+
+### Bug Fixes
+
+- **deps:** @tanstack/react-virtual из peerDependencies в dependencies ui-kit ([#107](https://github.com/daisforge/dais-ui/issues/107)) ([c35c194](https://github.com/daisforge/dais-ui/commit/c35c194095846f4d6fb574a5843147d235eccc68))
+- **FiltersActions:** убран лишний отступ шапки поповера без поиска ([#109](https://github.com/daisforge/dais-ui/issues/109)) ([77b3a72](https://github.com/daisforge/dais-ui/commit/77b3a7262661ae9a280d9a9c7c4191eea2b15059))
+- **TableCanvas:** tableConfig.editing. Исправлено отображение длинного текста в select ([#105](https://github.com/daisforge/dais-ui/issues/105)) ([d4dd511](https://github.com/daisforge/dais-ui/commit/d4dd511ec4fb172d127da35234befd9d39cbbe49))
+- **TableCanvas:** tableConfig.selecting — переселект предков при возврате потомка на всех уровнях ([593cbb1](https://github.com/daisforge/dais-ui/commit/593cbb1ce42b517aadc733a461af43f56a4695d1))
+- **TableCanvas:** итоговая строка не перекрывается фоном пустого места под данными ([#106](https://github.com/daisforge/dais-ui/issues/106)) ([614d7dc](https://github.com/daisforge/dais-ui/commit/614d7dc51aeb8313ff409941181c880363625703))
+- **TableCanvas:** корректное редактирование и позиционирование каретки в ячейке при вводе набором символов ([8a13718](https://github.com/daisforge/dais-ui/commit/8a137187cbc8f91396aef812faea17b414bef353))
+
+### Features
+
+- **TableCanvas, Table, MassActions:** summaryCounterMaxCount — ограничение отображаемого числа в счётчике выбранных строк ([f23295b](https://github.com/daisforge/dais-ui/commit/f23295b93f513675eca92177219fa1cd547377cb))
+- **TableCanvas:** tableConfig.headerRowHeight — добавлена возможность настраивать высоту шапки ([883b8d5](https://github.com/daisforge/dais-ui/commit/883b8d5667b8cd4f696430ce8f95174438cb3107))
+- **TableCanvas:** добавлены Canvas.Image, Canvas.Avatar и Canvas.AvatarGroup ([62b1862](https://github.com/daisforge/dais-ui/commit/62b186228b9ef0373f6e2b0b618f3d663c0a5b64))
+- **TourWidget:** добавлена светлая тема ([6c98624](https://github.com/daisforge/dais-ui/commit/6c98624c794941ee61a48d8a26bb2734db7dabb8))
+
+# [1.21.0](https://github.com/daisforge/dais-ui/compare/v1.20.0...v1.21.0) (2026-09-25)
+
+### Bug Fixes
+
+- **deps:** @glideappsfinal/glide-data-grid до 6.5.1 ([08fb999](https://github.com/daisforge/dais-ui/commit/08fb99950e22966ea186e6ea182ee4d3d40aa551))
+- **TableCanvas, Table:** скорректировано поведение и отображение закрытого сайдбара ([7cadb8c](https://github.com/daisforge/dais-ui/commit/7cadb8c4ee8e4333a954eccee69a0d4f0bc58830))
+- **TableCanvas:** Canvas.Text скорректировано центрирование многострочного текста по вертикали ([fb137d7](https://github.com/daisforge/dais-ui/commit/fb137d77017a5e3885a9232f24337a53f052b425))
+
+### Features
+
+- **mcp:** автоматическое обновление данных атомарки и релиз ui-mcp, тулы вместо ресурсов ([#88](https://github.com/daisforge/dais-ui/issues/88)) ([94e52b1](https://github.com/daisforge/dais-ui/commit/94e52b1de7aac94d60980614a598fd62fa504b2c))
+- **TableCanvas, Table:** добавлен колбэк summaryRows.onChange ([#90](https://github.com/daisforge/dais-ui/issues/90)) ([9b7ed8b](https://github.com/daisforge/dais-ui/commit/9b7ed8bd1dc7567786d397874101977f97535915))
+
+# [1.20.0](https://github.com/daisforge/dais-ui/compare/v1.19.0...v1.20.0) (2026-09-21)
+
+### Bug Fixes
+
+- **AnalyticalWidget:** скорректирован цвет при наведении на кнопку троеточия ([9e3a5d0](https://github.com/daisforge/dais-ui/commit/9e3a5d0754fe92118a5f5857604647440755d3fd))
+- **LeftPanel:** отступ справа 24px при ширине экрана больше 1280px ([8392f93](https://github.com/daisforge/dais-ui/commit/8392f9326c102fba74e2b0ae7c1ecc3b452561a2))
+- **PageTitle:** выравнивание кнопки назад и titleSlot по высоте заголовка H2 ([eb1744a](https://github.com/daisforge/dais-ui/commit/eb1744a38424195e0e984aa91f66561a2aa952aa))
+- **TableCanvas:** добавленная после первого рендера колонка встаёт на своё место, а не в конец ([#83](https://github.com/daisforge/dais-ui/issues/83)) ([e189404](https://github.com/daisforge/dais-ui/commit/e18940464d9d2f1d25c416c7bb755104c046ea67))
+
+### Features
+
+- **BlockTitle:** добавлен titleTooltipProps для настройки тултипа заголовка ([#84](https://github.com/daisforge/dais-ui/issues/84)) ([2fbfb2f](https://github.com/daisforge/dais-ui/commit/2fbfb2f28173fd85c3da44ad6030a13aaad71e18))
+- **TableCanvas.Borders:** добавлена возможность контролировать видимость вертикальных и горизонтальных линий внутри таблицы ([#78](https://github.com/daisforge/dais-ui/issues/78)) ([de4b82c](https://github.com/daisforge/dais-ui/commit/de4b82caae320390423e524a5d6626d4f58d7ab8))
+- **TableCanvas:** columnConfig.filtering. Добавлен afterList и экспорты TableFilterSelect и его саб-компонетов, исправлен автоперенос текстов([#79](https://github.com/daisforge/dais-ui/issues/79)) ([c43ed0b](https://github.com/daisforge/dais-ui/commit/c43ed0bf8522da5663bc70495bc5cb950aa507b7))
+- **utils:** для изоляции микрофронт-приложений добавлена функция создания инстанса реакта с identifierPrefix ([#81](https://github.com/daisforge/dais-ui/issues/81)) ([49db6bd](https://github.com/daisforge/dais-ui/commit/49db6bdd007b48d155acd576c386aaa1726d9f16))
+
+# [1.19.0](https://github.com/daisforge/dais-ui/compare/v1.18.0...v1.19.0) (2026-09-15)
+
+### Bug Fixes
+
+- **TableCanvas:** Canvas.Badge иконка без пустого места при пустом text ([32e816a](https://github.com/daisforge/dais-ui/commit/32e816af8559e48b07ca1ca215a19d90135bbf69))
+- **TableCanvas:** выровнены отступы и шевроны вложенных строк subRows ([#71](https://github.com/daisforge/dais-ui/issues/71)) ([e72a867](https://github.com/daisforge/dais-ui/commit/e72a867db79d9fe8117ac65af6fdc4a57dfd5265))
+- **TourWidget:** фикс переноса строк ([#73](https://github.com/daisforge/dais-ui/issues/73)) ([9115433](https://github.com/daisforge/dais-ui/commit/9115433d0af7103eddf754d57bbae62a51071f7f))
+
+### Features
+
+- **TableCanvas:** индикатор скрытых столбцов в шапке ([3e5f195](https://github.com/daisforge/dais-ui/commit/3e5f195122a953d5389489bd8fc2c06582cfb57e))
+- **TableCanvas:** наследование ширины тултипа из tableConfig ([26f317e](https://github.com/daisforge/dais-ui/commit/26f317e8cb42c273ee8c42e4baadfa0b2b6727f3))
+
+# [1.18.0](https://github.com/daisforge/dais-ui/compare/v1.17.0...v1.18.0) (2026-09-08)
+
+### Bug Fixes
+
+- **PopupDF:** скорректированы отступы шапки и футера ([d0580f3](https://github.com/daisforge/dais-ui/commit/d0580f3fae334a9270d36ac8d124a6cb0a062611))
+- **TableCanvas:** шеврон select-ячейки в объединении остаётся высотой в одну строку ([0ddd2d7](https://github.com/daisforge/dais-ui/commit/0ddd2d72585ac1ff7f937ac2104882b1cb8b1908))
+- **TableCanvas:** объявляем spanAlign на ColumnConfigInternal ([ac34718](https://github.com/daisforge/dais-ui/commit/ac34718a050e4cc9b2eb15cd3df2bd3639f9f4be))
+- **TableCanvas:** типизация тестов под noPropertyAccessFromIndexSignature ([d79bb58](https://github.com/daisforge/dais-ui/commit/d79bb58178f188648ec68b1b4251e255d0885f9f))
+- **TableCanvas:** чиним разрешение мержа develop и замечания линтера ([0cdcea6](https://github.com/daisforge/dais-ui/commit/0cdcea62937b7380a81483a0a353894f123b2ccd))
+- **TableCanvas:** чекбокс summary-строки центрируется в последнем уровне сгруппированной шапки ([47a8976](https://github.com/daisforge/dais-ui/commit/47a897654f315f890e6fc34176c0ce8cebf09727))
+- **TableCanvas:** убран устаревший идентификатор из зависимостей useColumns после дедупликации merged-вида ([ee47a7c](https://github.com/daisforge/dais-ui/commit/ee47a7c0dcf680563948954814c137a14f9f3042))
+- **TableCanvas:** выделение расширяется до границ объединённых блоков вне режима редактирования ([456de40](https://github.com/daisforge/dais-ui/commit/456de40a9f55165d9387065b0babbbc57f91a78b))
+- **TableCanvas:** колонка резолвится по glide-порядку при закреплённых колонках ([c151c4f](https://github.com/daisforge/dais-ui/commit/c151c4f21019ebcfcd6383586b8b70c3a94b5747))
+- **TableCanvas:** merged-регионы резолвятся по порядку колонок с закреплёнными в начале ([2b9dc38](https://github.com/daisforge/dais-ui/commit/2b9dc381f508391b045c0fff8295ecfa7e9a3999))
+- **TableGlide:** colSpan <= 0 не создаёт спан, одноколоночные объединения рендерятся ([73350c7](https://github.com/daisforge/dais-ui/commit/73350c7082b24bc39ca28def318769683b369749))
+
+### Features
+
+- **AnalyticalWidget:** добавлен ref для кнопки-троеточия ([76a8d04](https://github.com/daisforge/dais-ui/commit/76a8d04356cad0c4652c360038c74d3315901402))
+- **PopupDF:** добавлен размер l, добавлен пример разворота на весь экран ([ee67fa8](https://github.com/daisforge/dais-ui/commit/ee67fa88810813077a546925e521ee921ea27c6d))
+- **TableCanvas:** mergedCellsAlign колонки функцией по данным строки ([b9ec154](https://github.com/daisforge/dais-ui/commit/b9ec1543133e43ecfdd704c7bb3b65486201a0e1))
+- **TableCanvas:** виртуализация списка колонок в правом сайдбаре. Оптимизирована производительность выделения, редактирования и открытия сайдбара на больших данных ([ba6fd03](https://github.com/daisforge/dais-ui/commit/ba6fd0355f7a46106c1f10d34e1a26e34a601ed3))
+- **TableCanvas:** выравниваем триггер редактируемого select по блоку ([5e46e03](https://github.com/daisforge/dais-ui/commit/5e46e03e706540a2399b4d0859c91c4e45ce2808))
+- **TableCanvas:** переходим на @glideappsfinal/glide-data-grid 6.2.0 ([bad2d68](https://github.com/daisforge/dais-ui/commit/bad2d684e1bb60f3afdbefdd02685f15c255c7c8))
+- **TableCanvas:** пробрасываем mergedCellsAlign в грид через адаптер ([09471a0](https://github.com/daisforge/dais-ui/commit/09471a0989a614ca4d6dec32dc3baf190cb73501))
+- **TableCanvas:** контролируемый список объединений (spanCells.spans) с внешним состоянием ([8dcbbaf](https://github.com/daisforge/dais-ui/commit/8dcbbaf22ae4268fa7287002b1dc43b4df5a6bbc))
+- **TableCanvas:** редактор записывает объединённый блок целиком ([3c1cd16](https://github.com/daisforge/dais-ui/commit/3c1cd1632d76562ce9fac514aff5d6e2cf70ac8a))
+- **TableCanvas:** объединение ячеек тела (rowspan и прямоугольные блоки) с резолвом origin ([069d8f6](https://github.com/daisforge/dais-ui/commit/069d8f69444c19660c3649933b41aba29e76cc4b))
+- **TableCanvas:** copy/paste/fill с учётом объединений для ячеек тела ([eeb84c3](https://github.com/daisforge/dais-ui/commit/eeb84c3af09e298116772a9fd402bb4a76f22a76))
+- **TableCanvas:** mergedCellsAlign — выравнивание контента в объединённых ячейках ([1263f4b](https://github.com/daisforge/dais-ui/commit/1263f4b5baaa3dbc5ed69e6731ba9cfa62bf3602))
+- **TableCanvas:** опциональный disableGroupColumnsSort для merged-группировки ([384b93c](https://github.com/daisforge/dais-ui/commit/384b93cf27a341987ae297e52802f2c57fd45c41))
+- **TableCanvas:** rowsGrouping view=merged рисует группы объединёнными ячейками ([06c630e](https://github.com/daisforge/dais-ui/commit/06c630e048bb520e47b58e82f93210fe11996652))
+- **TableCanvas:** merged-вид subRows — флаттен дерева в листья с объединёнными колонками предков ([763a6fc](https://github.com/daisforge/dais-ui/commit/763a6fc0acd5221d60f8f9883b8abb43690ecd33))
+- **TableCanvas:** tableConfig.spanCells.spanBy — объединение ячеек тела по значению ([fd2daae](https://github.com/daisforge/dais-ui/commit/fd2daaef31f70ec05ef685a9a36af7549b1b7d32))
+- **TableCanvas:** реализовано слияние ячеек шапки колонок и групп, добавлены примеры и документация в storybook ([518159b](https://github.com/daisforge/dais-ui/commit/518159b79758448716a52485bfc3fe6a53b38b89))
+
+# [1.17.0](https://github.com/daisforge/dais-ui/compare/v1.16.0...v1.17.0) (2026-09-08)
+
+### Features
+
+- поднятие версии для синхронизации. Пустой минор-бамп: обновлен комментарий в index.ts ([7de453c](https://github.com/daisforge/dais-ui/commit/7de453c891f1783d4e2839ed181fa11cd581dd7d))
+
+# [1.16.0](https://github.com/daisforge/dais-ui/compare/v1.15.0...v1.16.0) (2026-08-28)
+
+### Features
+
+- **AnalyticalWidget:** редизайн и опциональный absolute у кнопки-троеточия ([1abf469](https://github.com/daisforge/dais-ui/commit/1abf469a5323dfb78b4246276ca3a372e54ed3d2))
+- **AnalyticalWidget:** скелетон для title/subtitle шапки ([aa098b1](https://github.com/daisforge/dais-ui/commit/aa098b1cde3bd3ecb269330de1fef67ba12ede19))
+- **Stories:** Stories.Preview можно оборачивать в Carousel и произвольные контейнеры ([af2218d](https://github.com/daisforge/dais-ui/commit/af2218d5c19fc23a9c60eb03e50e7ce12a154de4))
+- **TableCanvas:** renderGroupCell принимает theme при группировке строк ([b918137](https://github.com/daisforge/dais-ui/commit/b918137c87c5d5ef187a0d8a7e179053f8b697f3))
+- **TableCanvas:** закрытие поповера фильтра по повторному клику и фокус инпута поиска при открытии ([c7f0323](https://github.com/daisforge/dais-ui/commit/c7f03232e64bc11396478e9b4ff32e864705ee83))
+- **TableCanvas:** палитра таблицы под тему sdds_finai_beta_core (light) ([f5c4e64](https://github.com/daisforge/dais-ui/commit/f5c4e64b380fa7aad5dab62e8817be04f907b02d))
+- **theme:** интеграция темы sdds_finai_beta_core в переключатель тем ([9b15c17](https://github.com/daisforge/dais-ui/commit/9b15c17718abdc1b6ce3e383f930c3352309d5b3))
+
+# [1.15.0](https://github.com/daisforge/dais-ui/compare/v1.14.1...v1.15.0) (2026-08-24)
+
+### Features
+
+- **AnalyticalWidget:** редизайн и опциональный absolute у кнопки-троеточия ([71d244b](https://github.com/daisforge/dais-ui/commit/71d244bf142f6eb639afac0baae32c3759feea71))
+
+## [1.14.1](https://github.com/daisforge/dais-ui/compare/v1.14.0...v1.14.1) (2026-08-21)
+
+### Bug Fixes
+
+- **storybook:** исправлен путь до mockServiceWorker.js в MSW-инициализации ([970f844](https://github.com/daisforge/dais-ui/commit/970f844ac70da28b31145d9cc500bf1cbe59b746))
+- **ui-kit:** перевыпуск пакета с корректным mcp-data в тарболе ([1e9dda9](https://github.com/daisforge/dais-ui/commit/1e9dda9701c6dd994f31dc407f2a9053a32b2058))
+
+# [1.14.0](https://github.com/daisforge/dais-ui/compare/v1.13.0...v1.14.0) (2026-08-21)
+
+### Features
+
+- **clickStream:** добавлены типы и утилита для digital trace ([#26](https://github.com/daisforge/dais-ui/issues/26)) ([760aa42](https://github.com/daisforge/dais-ui/commit/760aa426309a0cbede7e9e9966987983707e4240))
+- **mcp:** добавлен mcp для библиотеки компонентов ([23c0c4a](https://github.com/daisforge/dais-ui/commit/23c0c4a26746b94108aa2c7fac1fb7f383754585))
+
+# [1.13.0](https://github.com/daisforge/dais-ui/compare/v1.12.2...v1.13.0) (2026-08-17)
+
+### Bug Fixes
+
+- **ListOfFilters:** исправлен показ стрелок скролла без ручного скролла ([9cc2963](https://github.com/daisforge/dais-ui/commit/9cc29635fffd796f8efebd49e5b5ef756856cba2))
+- **Table,TableCanvas:** служебные колонки (в т.ч. группировка) исключены из order/pinned/hidden при onConfirm ([bb2498a](https://github.com/daisforge/dais-ui/commit/bb2498a6c0868998a0cceeb2d0ab8e2ec2c8ab41))
+- **Table:** поправлено направление иконки сортировки для соответствия между двумя таблицами. Актуально было в TableCanvas ([2c2d573](https://github.com/daisforge/dais-ui/commit/2c2d57353a0669b0fe2f93576410176e867e839e))
+- **TypographyWithAutoTooltip:** корректный детект переполнения авто-тултипа на дробном зуме и HiDPI ([#23](https://github.com/daisforge/dais-ui/issues/23)) ([a0bf1c8](https://github.com/daisforge/dais-ui/commit/a0bf1c891e7a2a424f2d85789950e465dcde1935))
+
+### Features
+
+- **Stories:** адаптивный размер, навигация стрелками по сегментам, hideDisabledArrows, error-state и рендер превью ([ab04640](https://github.com/daisforge/dais-ui/commit/ab04640f5302c6540c9682376c8a48c63674f933))
+- **TableCanvas:** tableConfig.columnsGrouping. Объединение пустых ячеек шапки ([#21](https://github.com/daisforge/dais-ui/issues/21)) ([8866f7e](https://github.com/daisforge/dais-ui/commit/8866f7e3c2a8f004419da4f0ba5d62308b27b6ac))
+
 ## [1.12.2](https://github.com/daisforge/dais-ui/compare/v1.12.1...v1.12.2) (2026-08-13)
 
 **Note:** Version bump only for package @dais-ui/source
