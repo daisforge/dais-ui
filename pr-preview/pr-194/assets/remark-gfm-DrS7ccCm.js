@@ -1,0 +1,1 @@
+import{cQ as i,cR as c,cS as e}from"./vendor-BJXHd15o.js";const k={};function f(s){const t=this,n=s||k,o=t.data(),r=o.micromarkExtensions||(o.micromarkExtensions=[]),a=o.fromMarkdownExtensions||(o.fromMarkdownExtensions=[]),m=o.toMarkdownExtensions||(o.toMarkdownExtensions=[]);r.push(i(n)),a.push(c()),m.push(e(n))}export{f as r};
