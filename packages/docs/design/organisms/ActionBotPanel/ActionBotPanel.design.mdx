@@ -1,0 +1,185 @@
+---
+id: action-bot-panel
+title: Action Bot Panel
+type: organism
+status: Beta
+version: 1.0
+lastUpdated: 2026-11-20
+pixsoLink: "Pixso URL ActionBotPanel"
+storybookLink: "?path=/docs/композиции-action-bot-panel-для-дизайнеров--docs"
+hasDesignDoc: true
+hasDevDoc: false
+hasMechanics: false
+hasCornerCases: false
+related:
+  - button
+  - dropdown
+  - scroll
+  - steps
+  - layout
+  - action-buttons-placement
+tags:
+  - panel
+  - button
+---
+
+import { Meta } from '@storybook/blocks';
+import imgTargetAction from './assets/target-action.png';
+import imgContentUnderPanel from './assets/content-under-panel.png';
+import imgButtonsOnOff from './assets/buttons-on-off.png';
+import imgNonTargetKebab from './assets/non-target-kebab.png';
+import imgWidth360 from './assets/width-360.png';
+import imgScroll from './assets/scroll.png';
+
+<Meta title="Композиции/Action Bot Panel/Для дизайнеров" />
+
+<div className="dsd">
+
+# Action Bot Panel
+
+Action Bot Panel это панель с кнопками действий внизу центральной контентной области страницы. В панели стоят кнопка целевого действия, нецелевые кнопки, кнопка Clear и кебаб для кнопок, которые не поместились. Платформа: Web.
+
+<div style={{ background: "#f4f5f7", borderRadius: 14, padding: 24, margin: "24px 0", textAlign: "center" }}>
+  <img src={imgTargetAction} alt="Action Bot Panel на белом фоне: справа налево синяя кнопка «Целевое действие», серые кнопки «Вторичная 1» и «Вторичная 2»" width={793} style={{ maxWidth: "100%", height: "auto" }} />
+</div>
+
+## Размеры и отступы Action Bot Panel
+
+- Высота Action Bot Panel: 72 px
+- Внутренние отступы панели: 16 px сверху, снизу, слева и справа
+- Отступы 16 px слева и справа включает свойство Padding
+- Кнопки в панели: BasicButton 40 S, высота 40 px. Кебаб: DropdownMenu S с IconButton 40 px
+- Расстояние между кнопками: 8 px
+- Кнопки прижаты к правому краю панели
+- Фон панели белый
+- У компонента две версии: основная и версия для экрана 1280 px
+
+<div style={{ background: "#f4f5f7", borderRadius: 14, padding: 24, margin: "24px 0", textAlign: "center" }}>
+  <img src={imgContentUnderPanel} alt="схема отступов Action Bot Panel: красные метки 16 px сверху, снизу, слева и справа от кнопок «Отменить», «Сохранить», «Далее»; над панелью поля формы As Is и To Be уходят под панель" width={1006} style={{ maxWidth: "100%", height: "auto" }} />
+</div>
+
+## Настройки Action Bot Panel
+
+### Padding: отступы слева и справа
+
+Padding включает и выключает отступы 16 px слева и справа от кнопок. Свойство есть в обеих версиях компонента, в основной и в версии 1280.
+
+### Кнопки: включение и выключение
+
+Каждую кнопку в Action Bot Panel можно включить и выключить. Примеры наборов кнопок:
+
+- Clear, Вторичная 2 и Вторичная 1, без кнопки целевого действия
+- Clear, Вторичная 1 и кнопка целевого действия
+- Вторичная 2, Вторичная 1 и кнопка целевого действия
+
+<div style={{ background: "#f4f5f7", borderRadius: 14, padding: 24, margin: "24px 0", textAlign: "center" }}>
+  <img src={imgButtonsOnOff} alt="три Action Bot Panel одна под другой: 1) Label, Вторичная 2, Вторичная 1; 2) Label, Вторичная 1, синяя «Целевое действие»; 3) Вторичная 2, Вторичная 1, синяя «Целевое действие». Label это кнопка Clear без фона" width={793} style={{ maxWidth: "100%", height: "auto" }} />
+</div>
+
+## Кнопки действий в Action Bot Panel
+
+Порядок кнопок в Action Bot Panel слева направо: Clear, кебаб, Вторичная 2, Вторичная 1, кнопка целевого действия.
+
+### Целевое действие
+
+Кнопка целевого действия синяя и стоит крайней справа. В целевое действие может закладываться:
+
+- перемещение по степперу: кнопка «Далее»
+- сохранение информации на странице: кнопка «Сохранить»
+
+### Нецелевые действия
+
+В Action Bot Panel выводим 2 нецелевые кнопки, на примерах это серые кнопки «Вторичная 1» и «Вторичная 2». Если кнопок нужно больше, они уходят в кебаб (IconButton с тремя точками) вместе с кнопкой Clear.
+
+<div style={{ background: "#f4f5f7", borderRadius: 14, padding: 24, margin: "24px 0", textAlign: "center" }}>
+  <img src={imgNonTargetKebab} alt="Action Bot Panel: кебаб с тремя точками, Вторичная 2, Вторичная 1, синяя «Целевое действие»" width={793} style={{ maxWidth: "100%", height: "auto" }} />
+</div>
+
+### Кнопка Clear
+
+Clear это кнопка без фона левее остальных кнопок. На примере страницы это кнопка «Отменить». Когда нецелевых кнопок больше двух, Clear уходит в кебаб вместе с ними.
+
+### Уменьшение ширины Action Bot Panel до 360 px
+
+При уменьшении ширины панели до 360 px второстепенные кнопки, которые не умещаются, уходят в кебаб. На примере в панели остаются кебаб и кнопка целевого действия.
+
+<div style={{ background: "#f4f5f7", borderRadius: 14, padding: 24, margin: "24px 0", textAlign: "center" }}>
+  <img src={imgWidth360} alt="Action Bot Panel: кебаб с тремя точками и синяя «Целевое действие», вторичные кнопки ушли в кебаб" width={793} style={{ maxWidth: "100%", height: "auto" }} />
+</div>
+
+## Контент страницы и Action Bot Panel
+
+### Контент под Action Bot Panel
+
+Текстовый контент страницы уходит под панель. Для этого используем BlockGradientScroll.
+
+<div style={{ background: "#f4f5f7", borderRadius: 14, padding: 24, margin: "24px 0", textAlign: "center" }}>
+  <img src={imgContentUnderPanel} alt="нижняя часть формы: поля As Is и To Be обрезаны верхним краем Action Bot Panel, в панели кнопки «Отменить», «Сохранить», «Далее»" width={1006} style={{ maxWidth: "100%", height: "auto" }} />
+</div>
+
+### Скролл с Action Bot Panel
+
+Scrollbar стоит внутри центральной контентной области. Снизу Scrollbar упирается в панель с кнопками. При скролле Scrollbar используется вместе с BlockGradientScroll с эффектом затухания контента.
+
+<div style={{ background: "#f4f5f7", borderRadius: 14, padding: 24, margin: "24px 0", textAlign: "center" }}>
+  <img src={imgScroll} alt="страница целиком: сверху Header и заголовок «Название 1234» с кнопкой «Удалить», слева шаги от «Основная информация» до «Маршрут согласования», в центре форма со Scrollbar справа, внизу центральной области Action Bot Panel с кнопками «Отменить», «Сохранить», синей «Далее». Имена в макете шаблонные: «Иван Иванов», «Иванов Иван Иванович»" width={1044} style={{ maxWidth: "100%", height: "auto" }} />
+</div>
+
+## Маппинг: дизайн → код
+
+Компонента Action Bot Panel в коде библиотеки dais-ui нет.
+
+## Связанные компоненты
+
+- **Button**: кнопки панели BasicButton 40 S, кнопка Clear
+- **Dropdown**: кебаб DropdownMenu S с IconButton, в него уходят кнопки, которые не поместились
+- **[BlockGradientScroll](?path=/docs/локальные-компоненты-blockgradientscroll-для-дизайнеров--docs)**: с ним текстовый контент уходит под панель и затухает при скролле
+- **Scroll**: Scrollbar центральной контентной области снизу упирается в панель
+- **Steps**: степпер, по которому перемещает кнопка «Далее» в целевом действии
+- **[Layout](?path=/docs/композиции-layout-для-дизайнеров--docs)**: панель стоит внизу центральной контентной области страницы
+- **Гайд «Расположение кнопок действий»**: какие действия выносить в Action Bot Panel
+
+## FAQ
+
+### Для дизайнеров
+
+**Q: Какое действие поставить на синюю кнопку в Action Bot Panel?**
+A: Целевое действие. В него может закладываться перемещение по степперу (кнопка «Далее») или сохранение информации на странице (кнопка «Сохранить»). Кнопка целевого действия стоит крайней справа.
+
+**Q: Сколько нецелевых кнопок можно вывести в Action Bot Panel?**
+A: Две. Если кнопок нужно больше, они уходят в кебаб (IconButton с тремя точками) вместе с кнопкой Clear.
+
+**Q: Что делать, если кнопки не помещаются в узкую Action Bot Panel?**
+A: При уменьшении ширины до 360 px второстепенные кнопки, которые не умещаются, уходят в кебаб. В панели остаются кебаб и кнопка целевого действия.
+
+**Q: Можно оставить в Action Bot Panel не все кнопки?**
+A: Да, каждую кнопку панели можно включить и выключить. Например, оставить Clear и две вторичные кнопки или Clear, одну вторичную и кнопку целевого действия.
+
+**Q: Как убрать отступы слева и справа у Action Bot Panel?**
+A: Выключите свойство Padding. Оно включает отступы 16 px слева и справа.
+
+**Q: Как контент страницы ведёт себя под Action Bot Panel?**
+A: Текстовый контент уходит под панель с помощью BlockGradientScroll. Scrollbar стоит внутри центральной контентной области и снизу упирается в панель.
+
+### Для разработчиков
+
+**Q: Есть ли Action Bot Panel в библиотеке dais-ui?**
+A: Нет. Верстайте Action Bot Panel по макету и этой странице.
+
+**Q: Какие размеры у Action Bot Panel?**
+A: Высота 72 px, отступы 16 px сверху, снизу, слева и справа. Кнопки BasicButton 40 S, расстояние между кнопками 8 px, кнопки прижаты к правому краю.
+
+**Q: Как Action Bot Panel работает со скроллом страницы?**
+A: Текстовый контент уходит под панель. Scrollbar стоит внутри центральной контентной области и снизу упирается в панель. При скролле используется BlockGradientScroll с эффектом затухания контента.
+
+**Q: Что происходит с кнопками Action Bot Panel при уменьшении ширины?**
+A: При уменьшении ширины до 360 px второстепенные кнопки, которые не умещаются, уходят в кебаб (IconButton с тремя точками).
+
+## Changelog
+
+| Дата | Версия | Изменение |
+|---|---|---|
+| 2026-11-20 | 1.0 | Первая версия в MDX: один файл для агента и страницы в Storybook. |
+| 2026-02-24 | до MDX | Обновление компонента: добавлена версия 1280 для Action Bot Panel. В обе версии добавлено свойство Padding, оно включает отступы справа и слева. |
+
+</div>

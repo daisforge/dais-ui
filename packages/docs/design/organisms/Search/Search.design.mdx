@@ -1,0 +1,274 @@
+---
+id: search
+title: Search
+type: organism
+status: Beta
+version: 1.0
+lastUpdated: 2026-11-20
+pixsoLink: "Pixso URL Search"
+storybookLink: "?path=/docs/локальные-компоненты-textfieldsearch--docs"
+hasDesignDoc: true
+hasDevDoc: true
+hasMechanics: false
+hasCornerCases: true
+related:
+  - text-field
+  - autocomplete
+  - empty-state
+  - list
+  - tree
+  - left-panel
+  - filters-actions
+  - clearing-fields
+  - combobox-autocomplete-select
+tags:
+  - search
+  - input
+  - filter
+---
+
+import { Meta, Canvas, Controls } from '@storybook/blocks';
+import * as Examples from './Search.examples.stories';
+import pixsoContent from './assets/pixso-content.png';
+import paletteDataYellow from './assets/palette-data-yellow.png';
+
+<Meta of={Examples} name="Docs" />
+
+<div className="dsd">
+
+# Search
+
+Search это поле для поиска. Есть два равноправных вида, их выбирают по задаче: Textfield Search на базе текстового поля и Autocomplete Search на базе Autocomplete с выпадающим списком подсказок. Слева в поле иконка лупы, справа крестик очистки. Платформа: Web.
+
+<Canvas of={Examples.Playground} />
+
+<Controls of={Examples.Playground} />
+
+## Textfield Search или Autocomplete Search
+
+### Когда использовать Textfield Search
+
+Textfield Search используем для поиска без подсказок значений в поле. Подходит для компонентов Tree, List или кастомных списочных данных. Поле поиска «прикручивают» к другим элементам на странице: List, Tree или кастомному списку, и результат показывается в самом списке.
+
+Например, нужно найти значение в List и показать результат в этом же List. В таком случае используем Textfield Search.
+
+<Canvas of={Examples.TextfieldWithList} />
+
+### Когда использовать Autocomplete Search
+
+Autocomplete Search используем, когда нужно подсказывать пользователю прямо в поле, какое значение можно выбрать или вписать своё. Подходит для поиска по карточкам и сущностям, обычно с большим набором данных внутри. Autocomplete Search предлагает искать по заданным заранее значениям или вписать своё.
+
+Например, в карточке есть город и нужно искать по городу. При вводе «Мо» поле подсказывает «Москва», «Можайск», «Моздок». В таком случае лучше использовать Autocomplete Search.
+
+<Canvas of={Examples.AutocompleteCities} />
+
+## Размеры и отступы Search
+
+Размер S:
+
+- Высота поля 40 px, скругление 10 px
+- Иконка лупы 24 px, отступ от левого края поля 12 px, от лупы до текста 4 px
+- Текст стилем Body S
+- Крестик очистки 24 × 24 px, отступ от текста до крестика 12 px, от крестика до правого края поля 12 px
+- Строка выпадающего списка 40 px, текст стилем Body S
+
+Размер XS:
+
+- Высота поля 32 px, скругление 8 px
+- Иконка лупы 16 px, отступ от левого края поля 8 px, от лупы до текста 4 px
+- Текст стилем Body XS
+- Крестик очистки 16 × 16 px, отступ от текста до крестика 12 px, от крестика до правого края поля 8 px
+- Строка выпадающего списка 32 px, текст стилем Body XS
+
+Общее:
+
+- По умолчанию размер S
+- Выпадающий список Autocomplete Search открывается под полем, ширина списка равна ширине поля. Максимальная высота списка 400 px, дальше список прокручивается
+- Empty State в списке: Empty State S, отступ сверху и снизу 16 px, скругление 10 px
+
+<Canvas of={Examples.SpacingLive} />
+
+## Общие настройки Search
+
+Настройки группы Content общие для Textfield Search и Autocomplete Search.
+
+### View: подсказка или значение
+
+View переключает поле между подсказкой и значением. Значения: Placeholder и Value.
+
+### NamePlaceholder и NameValue: текст в поле
+
+Свойство Name меняется в зависимости от View и отвечает за текст в поле. При View = Placeholder это NamePlaceholder, текст подсказки. При View = Value это NameValue, введённое значение. Текст подсказки по умолчанию «Поиск».
+
+<Canvas of={Examples.View} />
+
+### Focused: фокус в поле
+
+Focused переводит поле в режим фокуса, в котором можно вводить значение.
+
+<Canvas of={Examples.Focused} />
+
+<img src={pixsoContent} alt="Панель свойств Search в Pixso, группа Content: View, NamePlaceholder, Focused" style={{ maxWidth: '100%', width: 300 }} />
+
+## Настройки Autocomplete Search
+
+### State: состояние поля и списка
+
+State задаёт состояние Autocomplete Search:
+
+- Default: обычное состояние поля
+- Opened: раскрытый список при вводе значения. Список открывается, когда в поле введено 2 символа и больше
+- EmptyState: пустое состояние при вводе значения, когда ничего не нашлось. В списке Empty State S с текстом «Ничего не нашлось»
+
+<Canvas of={Examples.State} />
+
+### Строка «Найдено» над списком
+
+Над подсказками может стоять строка с числом найденного и названием сущности, например «Найдено [сущность]: 8». Строку и название сущности включает разработчик.
+
+<Canvas of={Examples.BeforeListTotal} />
+
+## Состояния Search
+
+- Disabled: поле неактивно, справа иконка замка
+- Read only: значение можно только читать, крестик очистки скрыт
+
+<Canvas of={Examples.States} />
+
+## Краевые сценарии Search
+
+### Очистка поля: крестик
+
+По умолчанию Search используем с очисткой. Крестик стоит справа и появляется, когда в поле есть значение. По клику на крестик поле очищается.
+
+> **⚠️ Важно:** отключать очистку и менять иконку крестика нельзя.
+
+В качестве исключения можно обратиться в поддержку дизайн-системы. Такой кейс уже был: очистку отключили, потому что она была в другом месте.
+
+<Canvas of={Examples.PairClear} />
+
+### Empty State: ничего не нашлось
+
+Для пустого состояния используем Empty State S. Картинку и текст «Ничего не нашлось» используем в предустановленном виде. Если их нужно изменить, напишите в поддержку дизайн-системы.
+
+<Canvas of={Examples.EmptyStateList} />
+
+### Подсветка текста при поиске
+
+Утверждённое решение: найденный текст подсвечиваем цветом Data Default/Solid/dataYellow. Подсветка опциональная. Подсветку делает команда продукта.
+
+> **⚠️ Важно:** в Autocomplete Search подсветку используем в одном месте: либо в выпадающем списке, либо в сущности, по которой ищем, например автор в карточке. Подсветка сразу в двух местах перегружает интерфейс.
+
+<Canvas of={Examples.HighlightList} />
+
+<Canvas of={Examples.PairHighlight} />
+
+<img src={paletteDataYellow} alt="Палитра Data Default/Solid в Pixso, выбран цвет dataYellow" style={{ maxWidth: '100%', width: 300 }} />
+
+### Фильтрация результата в процессе ввода
+
+Способ фильтрации зависит от числа сущностей, по которым идёт поиск.
+
+#### Сущностей меньше 300
+
+Результат можно фильтровать и показывать прямо в процессе ввода. Например, при вводе «Москва» поиск идёт сначала по «М», потом по «Мо», «Мос» и дальше. Поиск каждый раз фильтрует данные, пока пользователь пишет значение. При таком числе сущностей нагрузка на фронт небольшая.
+
+Значение 300 примерное. Если фронт начинает тормозить, используйте решение для больше 300 сущностей.
+
+#### Сущностей больше 300
+
+Чтобы не нагружать фронт, применяйте поиск по Enter: пользователь вводит запрос, нажимает Enter, и только после этого список фильтруется. Второй вариант: Debounce 1-1,5 секунды. Debounce это задержка перед поиском. Она убирает частые запросы на бэк, и список фильтруется по итоговому запросу.
+
+<Canvas of={Examples.Filtering} />
+
+## Маппинг: дизайн → код
+
+Textfield Search в коде это `TextFieldSearch` (импорт из `@ui-kit/components/TextField`), Autocomplete Search это `AutocompleteSearch`.
+
+| Свойство в дизайне | Textfield Search: `TextFieldSearch` | Autocomplete Search: `AutocompleteSearch` | Что важно |
+|---|---|---|---|
+| View: Placeholder и Value | `value` | `value` | При пустом `value` в поле видна подсказка |
+| NamePlaceholder | `placeholder` | `placeholder` | По умолчанию «Поиск» |
+| NameValue | `value` и `onChange` | `value` и `onChange` | |
+| Focused | фокус по клику в поле, `ref` | фокус по клику в поле | `TextFieldSearch` передаёт `ref` в поле ввода, так фокус ставят из кода |
+| State: Default и Opened | | `suggestions`, `threshold`, `filter`, `onSuggestionSelect` | Только Autocomplete Search. Список открывается от 2 символов: `threshold` по умолчанию 2. Подсказка подходит, если её текст содержит запрос без учёта регистра. Свой фильтр передают в `filter` |
+| State: EmptyState | | встроен в компонент | Только Autocomplete Search. Empty State S «Ничего не нашлось» задан внутри компонента |
+| Строка «Найдено» | | `beforeListTotal` и `beforeListTotalEntity` | Только Autocomplete Search. `true` выводит число подсказок, число выводит своё значение, `beforeListTotalEntity` добавляет название сущности |
+| Очистка поля: крестик | `onClear` | `onClear` | Крестик появляется, когда передан `onClear` и в поле есть значение. `handlerClear` устарел |
+| Размер S и XS | `size` | `size` | `s` или `xs`, по умолчанию `s` |
+| Disabled | `disabled` | `disabled` | Справа иконка замка |
+| Read only | `readOnly` | `readOnly` | Крестик скрыт |
+| Подсветка текста | настраивает продукт | настраивает продукт, строки списка через `renderItem` | Цвет: токен `dataYellow` |
+| Поиск по Enter | `onSearch` | `onSearch` | Вызывается по нажатию Enter |
+| Debounce 1-1,5 секунды | настраивает разработчик | настраивает разработчик | В библиотеке есть хук `useDebouncedValue`, задержка по умолчанию 500 мс |
+
+## Использование в коде
+
+Пропсы и примеры кода для Textfield Search: страницы [TextFieldSearch](?path=/docs/локальные-компоненты-textfieldsearch--docs) и [TextFieldSearch API](?path=/docs/локальные-компоненты-textfieldsearch-api--docs).
+
+Пропсы и примеры кода для Autocomplete Search: страницы [AutocompleteSearch](?path=/docs/локальные-компоненты-autocompletesearch--docs) и [AutocompleteSearch API](?path=/docs/локальные-компоненты-autocompletesearch-api--docs).
+
+## Связанные компоненты
+
+- **Text Field**: поле ввода, на базе которого собран Textfield Search
+- **Autocomplete**: поле с выпадающим списком подсказок, на базе которого собран Autocomplete Search
+- **[Empty State](?path=/docs/композиции-emptystate-для-дизайнеров--docs)**: Empty State S в списке Autocomplete Search, когда ничего не нашлось
+- **List** и **Tree**: списки, к которым «прикручивают» Textfield Search
+- **[Left Panel](?path=/docs/композиции-leftpanel-для-дизайнеров--docs)**: строка поиска в Sub-header. На экранах шириной до 1280 px поиск в Left Panel уменьшается с размера S до XS
+- **[Filters Actions](?path=/docs/композиции-filtersactions-для-дизайнеров--docs)**: поиск в Filters Actions собран на Textfield Search
+- **Очистка полей**: гайд о том, когда и как показывать крестик очистки в полях
+- **Combobox, Autocomplete или Select**: гайд с разделом про Search и выбор между Textfield Search и Autocomplete Search
+
+## FAQ
+
+### Для дизайнеров
+
+**Q: Какой Search выбрать: Textfield Search или Autocomplete Search?**
+A: Textfield Search для поиска по List, Tree или кастомному списку, когда результат показывается в самом списке. Autocomplete Search, когда нужно подсказывать значения прямо в поле, например города в карточке.
+
+**Q: Можно отключить крестик очистки в Search?**
+A: Нельзя: по умолчанию Search используем с очисткой, отключать очистку и менять иконку крестика нельзя. В качестве исключения обратитесь в поддержку дизайн-системы.
+
+**Q: Как показать, что поиск ничего не нашёл?**
+A: В Autocomplete Search выберите State = EmptyState. В списке появится Empty State S с текстом «Ничего не нашлось». Картинку и текст используем в предустановленном виде, если их нужно изменить, напишите в поддержку дизайн-системы.
+
+**Q: Каким цветом подсвечивать найденный текст?**
+A: Цветом Data Default/Solid/dataYellow. Подсветка опциональная, её делает команда продукта.
+
+**Q: Где подсвечивать результат в Autocomplete Search?**
+A: В одном месте: либо в выпадающем списке, либо в сущности, по которой ищем. Подсветка сразу в двух местах перегружает интерфейс.
+
+**Q: Когда фильтровать результат прямо во время ввода?**
+A: Когда сущностей меньше 300. Если их больше 300 или фронт начинает тормозить, фильтруйте по Enter или с Debounce 1-1,5 секунды.
+
+**Q: С какого символа открывается список подсказок в Autocomplete Search?**
+A: Со второго введённого символа.
+
+**Q: Как поменять текст подсказки в поле Search?**
+A: Выберите View = Placeholder и впишите текст в NamePlaceholder. По умолчанию подсказка «Поиск».
+
+### Для разработчиков
+
+**Q: Когда брать `TextFieldSearch`, а когда `AutocompleteSearch`?**
+A: `TextFieldSearch` для поиска по List, Tree или кастомному списку на странице: компонент даёт поле, список на странице фильтрует продукт. `AutocompleteSearch` для подсказок прямо в поле: передайте массив в `suggestions`, выпадающий список и пустое состояние компонент покажет сам.
+
+**Q: Как показать крестик очистки в Search?**
+A: Передайте `onClear` и очищайте в нём `value`. Крестик появится, когда в поле есть значение. `handlerClear` устарел, используйте `onClear`.
+
+**Q: Как искать по Enter, если сущностей больше 300?**
+A: Передайте обработчик в `onSearch`, он вызывается по нажатию Enter. Для Debounce в библиотеке есть хук `useDebouncedValue`: задержку в миллисекундах передайте вторым аргументом, по умолчанию 500 мс.
+
+**Q: Как показать число найденных подсказок над списком `AutocompleteSearch`?**
+A: Передайте `beforeListTotal`: `true` выводит число подсказок, число выводит своё значение. Название сущности задайте в `beforeListTotalEntity`, строка будет вида «Найдено [сущность]: 8».
+
+**Q: Как настроить, какие подсказки показывает `AutocompleteSearch`?**
+A: По умолчанию подсказка подходит, если её текст содержит запрос без учёта регистра. Свой фильтр передайте в `filter`, порог открытия списка в `threshold`, по умолчанию 2 символа.
+
+## Changelog
+
+| Дата | Версия | Изменение |
+|---|---|---|
+| 2026-11-20 | 1.0 | Первая версия в MDX: один файл для агента и страницы в Storybook с живыми примерами. |
+| 2026-04-22 | до MDX | Добавлены документация и примеры. |
+
+</div>
