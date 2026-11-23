@@ -121,7 +121,10 @@ import { ComponentName } from '@daisforge/ui';
 import { IconName } from '@daisforge/ui/icons';
 
 // TableCanvas (отдельный путь)
-import { TableCanvas, ColumnConfig } from '@daisforge/ui/components/TableCanvas';
+import {
+  TableCanvas,
+  ColumnConfig,
+} from '@daisforge/ui/components/TableCanvas';
 
 // Table (отдельный путь)
 import { Table, ColumnConfig } from '@daisforge/ui/components/Table';

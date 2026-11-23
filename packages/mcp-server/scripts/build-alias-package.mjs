@@ -39,6 +39,7 @@ import {
   createReplacements,
   findBrandLeftovers,
   formatHits,
+  PRESERVED_PACKAGE_NAMES,
   readEnvName as readBrandEnvName,
   toFlatName,
   walkFiles,
@@ -324,14 +325,19 @@ function stageReadme() {
  * ни в каком виде — включая формы, которых нет в таблице замен (комментарии,
  * ссылки, случайно добавленные позже строки).
  *
- * Единственное исключение — repository.url (см. readRepositoryUrl): он обязан
- * совпадать с репозиторием из provenance. Исключается ровно эта строка URL,
- * а не всё поле и не весь package.json — любой другой след бренда, в том
- * числе рядом с ним, по-прежнему валит сборку.
+ * Исключения: repository.url (см. readRepositoryUrl) — он обязан совпадать с
+ * репозиторием из provenance, и внешние пакеты без зеркала
+ * (PRESERVED_PACKAGE_NAMES в brand.mjs): индекс ссылается на их файлы в
+ * node_modules по настоящему имени. Исключаются ровно эти строки, а не
+ * поля и не файлы целиком — любой другой след бренда, в том числе рядом
+ * с ними, по-прежнему валит сборку.
  */
 function assertNoOriginalBrand() {
   const hits = findBrandLeftovers(STAGING_DIR, {
-    ignore: [readRepositoryUrl(readOriginalPackageJson())],
+    ignore: [
+      readRepositoryUrl(readOriginalPackageJson()),
+      ...PRESERVED_PACKAGE_NAMES,
+    ],
   });
   if (hits.length > 0) {
     fail(

@@ -1,7 +1,7 @@
 import type {
   CustomCell,
   CustomRenderer,
-} from '@glideappsfinal/glide-data-grid';
+} from '@daisforge/glide-data-grid';
 import { useMemo } from 'react';
 
 import {

@@ -13,7 +13,7 @@
 | Категория            | Технология                                                  |
 | -------------------- | ----------------------------------------------------------- |
 | **Фреймворк**        | React 18.3.1 + TypeScript 5.4.2                             |
-| **Стилизация**       | styled-components 5.3.11                                     |
+| **Стилизация**       | styled-components 5.3.11                                    |
 | **UI-основа**        | `@salutejs/sdds-finai` (дизайн-система Plasma)              |
 | **Сборка**           | Vite 5.0 + Nx                                               |
 | **Моно-репо**        | Lerna 8 + Nx 19                                             |
@@ -184,6 +184,12 @@ npm run generate-storybook-docs-utils
 }
 ```
 
+Для `*.md` действует `printWidth: 80` (оверрайд в `.prettierrc`). Код форматирует
+ESLint (`prettier/prettier`), Markdown — pre-commit хук через `lint-staged`
+(`prettier --write` по файлам коммита) и проверка `npm run format:md:check` в CI.
+Исправить всё сразу: `npm run format:md`. Генерируемые файлы (CHANGELOG, отчёт
+генератора цветов таблицы) и `.claude/` исключены в `.prettierignore`.
+
 **Соглашения по именованию**:
 
 - Переменные: `camelCase`, `PascalCase`, `UPPER_CASE`
@@ -254,7 +260,11 @@ const color = getTokenValue('--color-primary');
 ```typescript
 import { FormTextField } from '@ui-kit/formComponents';
 
-<FormTextField name="fieldName" control={control} rules={{ required: 'Поле обязательно для заполнения' }} />;
+<FormTextField
+  name="fieldName"
+  control={control}
+  rules={{ required: 'Поле обязательно для заполнения' }}
+/>;
 ```
 
 **Пропсы**:
@@ -320,8 +330,9 @@ npm run screenshot:update -- TableCanvas # Принять намеренные �
 эталоны; автоматических повторов нет. Правила сравнения, пропуски PNG и устройство
 инфраструктуры описаны в [основной инструкции](packages/storybook/test/screenshot-tests.md).
 Перед изменением тестов прочитай [скилл write-tests](.claude/skills/write-tests/SKILL.md).
-В GitHub Actions предусмотрен ручной необязательный workflow `Screenshots`; порядок
-его активации и выбора ветки описан в основной инструкции.
+В GitHub Actions workflow `Screenshots` запускается сам на PR в `develop` (при
+изменениях ui-kit, Storybook и их зависимостей) и вручную; проверка необязательная —
+слияние не блокирует. Разбор красного статуса и ручной запуск описаны в основной инструкции.
 
 ## Юнит-тесты (Vitest)
 
@@ -359,7 +370,7 @@ vi.mock('./components/DrawerX', () => ({
     <div data-testid="mock-drawer-x" data-props={JSON.stringify(props)}>
       {children}
     </div>
-  ))
+  )),
 }));
 
 import { DrawerDF } from './DrawerDF';
@@ -368,14 +379,31 @@ describe('DrawerDF', () => {
   const baseProps = { opened: true, onClose: vi.fn() };
 
   it('должен устанавливать $multipleContents в false когда main - одиночный элемент', () => {
-    const { container } = render(<DrawerDF {...baseProps} main={<DrawerDF.Content>Контент</DrawerDF.Content>} />);
-    const props = JSON.parse(container.querySelector('[data-testid="mock-drawer-x"]')!.dataset.props);
+    const { container } = render(
+      <DrawerDF
+        {...baseProps}
+        main={<DrawerDF.Content>Контент</DrawerDF.Content>}
+      />,
+    );
+    const props = JSON.parse(
+      container.querySelector('[data-testid="mock-drawer-x"]')!.dataset.props,
+    );
     expect(props.$multipleContents).toBe(false);
   });
 
   it('должен устанавливать $multipleContents в true когда main - массив', () => {
-    const { container } = render(<DrawerDF {...baseProps} main={[<DrawerDF.Content key="1">Контент 1</DrawerDF.Content>, <DrawerDF.Content key="2">Контент 2</DrawerDF.Content>]} />);
-    const props = JSON.parse(container.querySelector('[data-testid="mock-drawer-x"]')!.dataset.props);
+    const { container } = render(
+      <DrawerDF
+        {...baseProps}
+        main={[
+          <DrawerDF.Content key="1">Контент 1</DrawerDF.Content>,
+          <DrawerDF.Content key="2">Контент 2</DrawerDF.Content>,
+        ]}
+      />,
+    );
+    const props = JSON.parse(
+      container.querySelector('[data-testid="mock-drawer-x"]')!.dataset.props,
+    );
     expect(props.$multipleContents).toBe(true);
   });
 });
@@ -545,16 +573,12 @@ npx lerna publish
 
 ## CI/CD
 
-### Пайплайн (pipline.yml)
+Сборки и релизы — в GitHub Actions (`.github/workflows/`):
 
-```yaml
-fp:
-  groupId: CI00752881.KURSMOB.digital_finance_ui
-  artifactId: ci02918303
-  version: D-01.000.000
-  helm:
-    enable: true
-```
+- `ci-build-check.yml` — lint, тесты скриптов, проверка Markdown, сборка ui-kit (PR в `develop` и `main`);
+- `mcp-check.yml`, `screenshots.yml` — проверки MCP и скриншотов (необязательные);
+- `publish-npm.yml` — релиз при пуше в `main`: lerna-версия, публикация `@daisforge/ui`, `@daisforge/ui-storybook`, `@daisforge/ui-mcp` через npm Trusted Publishing (OIDC), релизный коммит и тег в `main` по deploy key;
+- `deploy-storybook.yml` — Storybook на GitHub Pages: https://daisforge.github.io/dais-ui/.
 
 ### Nx плагины
 
@@ -601,19 +625,19 @@ fp:
 
 ### Основные зависимости
 
-| Пакет                             | Версия        | Назначение                   |
-| --------------------------------- | ------------- | ---------------------------- |
-| `@salutejs/sdds-finai`            | 0.369.0      | Базовые атомарные компоненты |
-| `@salutejs/plasma-icons`          | ^1.258.0      | Иконки                       |
-| `@salutejs/plasma-typo`           | ^0.60.0       | Токены типографики           |
-| `@sddsjs/sdds_finai` | 0.2.3 | Темы и токены |
-| `react` / `react-dom`             | 18.3.1        | Core                         |
-| `styled-components`               | 5.3.11        | CSS-in-JS                    |
-| `react-hook-form`                 | ^7.54.2       | Формы                        |
-| `swr`                             | ^2.3.3        | Загрузка данных              |
-| `zod`                             | ^3.24.2       | Валидация                    |
-| `@glideappsfinal/glide-data-grid` | ^6.11.0       | TableCanvas                  |
-| `react-data-grid`                 | 7.0.0-beta.43 | Table (устаревшая)           |
+| Пакет                        | Версия        | Назначение                   |
+| ---------------------------- | ------------- | ---------------------------- |
+| `@salutejs/sdds-finai`       | 0.369.0       | Базовые атомарные компоненты |
+| `@salutejs/plasma-icons`     | ^1.258.0      | Иконки                       |
+| `@salutejs/plasma-typo`      | ^0.60.0       | Токены типографики           |
+| `@sddsjs/sdds_finai`         | 0.2.3         | Темы и токены                |
+| `react` / `react-dom`        | 18.3.1        | Core                         |
+| `styled-components`          | 5.3.11        | CSS-in-JS                    |
+| `react-hook-form`            | ^7.54.2       | Формы                        |
+| `swr`                        | ^2.3.3        | Загрузка данных              |
+| `zod`                        | ^3.24.2       | Валидация                    |
+| `@daisforge/glide-data-grid` | 6.14.0        | TableCanvas                  |
+| `react-data-grid`            | 7.0.0-beta.43 | Table (устаревшая)           |
 
 Подключение тем и глобальных стилей описано в [README ui-kit](packages/ui-kit/README.md#темы).
 
@@ -680,8 +704,8 @@ node ./scripts/clean--root--package-lock.js
 
 ## Внешние ссылки
 
-- **Storybook**: http://df-storybook.sh5.dev-gen1-ds.dddddd.ru/
-- **Документация по установке**: http://df-storybook.sh5.dev-gen1-ds.dddddd.ru/?path=/docs/%D1%83%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0-%D0%B8-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5--docs
+- **Storybook**: https://daisforge.github.io/dais-ui/
+- **Документация по установке**: https://daisforge.github.io/dais-ui/?path=/docs/%D1%83%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0-%D0%B8-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5--docs
 
 ---
 

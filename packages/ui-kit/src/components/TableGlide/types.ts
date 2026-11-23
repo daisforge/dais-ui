@@ -8,7 +8,7 @@ import type {
   ProvideEditorCallbackResult,
   ProvideEditorComponent,
   SpanAlignment,
-} from '@glideappsfinal/glide-data-grid';
+} from '@daisforge/glide-data-grid';
 // THEME
 import type {
   CSSProperties,

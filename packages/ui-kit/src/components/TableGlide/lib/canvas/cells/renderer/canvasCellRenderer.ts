@@ -1,4 +1,4 @@
-import { GridCellKind } from '@glideappsfinal/glide-data-grid';
+import { GridCellKind } from '@daisforge/glide-data-grid';
 
 import type {
   BeginInteractionSessionArgs,

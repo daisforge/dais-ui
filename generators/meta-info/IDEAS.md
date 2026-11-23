@@ -56,7 +56,10 @@
 **Проблема:** В примерах часто используются иконки:
 
 ```tsx
-import { IconPlasma, IconDotsVerticalCenteredOutline } from '@daisforge/ui/icons';
+import {
+  IconPlasma,
+  IconDotsVerticalCenteredOutline,
+} from '@daisforge/ui/icons';
 ```
 
 Но иконки как компоненты **не описаны** в `components`.
@@ -134,7 +137,10 @@ const ScrollableBox = styled.div`
 ## BlockGradientScrollMixin
 
 ```typescript
-type BlockGradientScrollMixin = (options: { padding: number | { top?: number; left?: number }; variant: 'white' | 'gray' }) => string;
+type BlockGradientScrollMixin = (options: {
+  padding: number | { top?: number; left?: number };
+  variant: 'white' | 'gray';
+}) => string;
 ```
 ````
 

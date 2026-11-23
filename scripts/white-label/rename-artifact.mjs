@@ -35,6 +35,7 @@ import {
   createReplacements,
   findBrandLeftovers,
   formatHits,
+  PRESERVED_PACKAGE_NAMES,
   readEnvName,
   walkFiles,
 } from './brand.mjs';
@@ -96,6 +97,9 @@ export const PRESERVED_TOKENS = [
   'DAISY',
   //   - список японских топонимов в одной из зависимостей.
   'kosakadaisenkazuno',
+  // Внешние пакеты без зеркала (glide-data-grid): библиотека импортирует их
+  // по настоящему имени, и зеркальная сборка ставит их из npm как есть.
+  ...PRESERVED_PACKAGE_NAMES,
 ];
 
 /**

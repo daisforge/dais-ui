@@ -23,8 +23,8 @@
 
 ##### С информацией по контрибьюту - можете ознакомиться в файле [Contributing.md](./Contributing.md)
 
-[stend-storybook]: http://df-storybook.sh5.dev-gen1-ds.dddddd.ru/?path=/docs/%D1%83%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0-%D0%B8-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5--docs
-[introStorybookSite]: http://df-storybook.sh5.dev-gen1-ds.dddddd.ru/?path=/docs/%D1%83%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0-%D0%B8-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5--docs
+[stend-storybook]: https://daisforge.github.io/dais-ui/?path=/docs/%D1%83%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0-%D0%B8-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5--docs
+[introStorybookSite]: https://daisforge.github.io/dais-ui/?path=/docs/%D1%83%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0-%D0%B8-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5--docs
 [introStorybook]: ./packages/storybook/src/storybook-intro/intro.mdx
 
 ## 📋 Детальный обзор проекта
@@ -51,7 +51,7 @@
 | **Сборка**       | Vite (v5.0.0) с плагинами                          |
 | **Язык**         | TypeScript 5.4.2                                   |
 | **React**        | 18.3.1                                             |
-| **Стили**        | styled-components 5.3.11                            |
+| **Стили**        | styled-components 5.3.11                           |
 | **UI-фреймворк** | @salutejs/sdds-finai (Plasma Design System)        |
 | **Тестирование** | Vitest + @storybook/test-runner (screenshot tests) |
 | **Линтинг**      | ESLint + Prettier + Husky                          |
@@ -233,9 +233,10 @@ npm run screenshot:update    # Обновление скриншотов
 
 Нужен Docker с Linux-контейнерами; отдельный сервер Storybook не требуется.
 Проверка сохраняет различия для ревью и не обновляет эталоны автоматически.
-Для GitHub Actions добавлен необязательный ручной workflow **Screenshots**. После
-попадания workflow в `main` можно выбрать ветку PR и фильтр story-файлов через
-**Run workflow**. Отчёт и изображения хранятся семь дней.
+В GitHub Actions workflow **Screenshots** запускается сам на PR в `develop`,
+если изменены ui-kit, Storybook или их зависимости, и вручную через **Run workflow**
+с выбором ветки и фильтра story-файлов. Проверка необязательная: красный статус
+виден в PR, но слияние не блокирует. Отчёт и изображения хранятся семь дней.
 
 [Команды, устройство тестов и обновление эталонов](packages/storybook/test/screenshot-tests.md).
 
@@ -352,9 +353,18 @@ dist/packages/ui-kit/
 
 ```typescript
 MANUAL_UIKIT_COMP_CHUNKS = [
-  { chunkName: 'Table', modulePaths: ['packages/ui-kit/src/components/Table/'] },
-  { chunkName: 'TableCanvas', modulePaths: ['packages/ui-kit/src/components/TableCanvas/'] },
-  { chunkName: 'DrawerDF', modulePaths: ['packages/ui-kit/src/components/DrawerDF/'] }
+  {
+    chunkName: 'Table',
+    modulePaths: ['packages/ui-kit/src/components/Table/'],
+  },
+  {
+    chunkName: 'TableCanvas',
+    modulePaths: ['packages/ui-kit/src/components/TableCanvas/'],
+  },
+  {
+    chunkName: 'DrawerDF',
+    modulePaths: ['packages/ui-kit/src/components/DrawerDF/'],
+  },
   // ... 50+ чанков
 ];
 ```
@@ -401,26 +411,17 @@ MANUAL_UIKIT_COMP_CHUNKS = [
 ### Версионирование
 
 - **Lerna** с `conventionalCommits: true`
-- Version format: `0.X.Y`
-- Push: false (ручной push)
+- Релиз — автоматически при пуше в `main` (`.github/workflows/publish-npm.yml`)
 
-### npm registry
+### Публикация в npm
 
-```ini
-registry=https://nexus-ci.dddddd.ru/repository/npm-all/
-access=public
-```
+Пакеты публикуются в публичный npm (registry.npmjs.org) через Trusted Publishing
+(OIDC) из GitHub Actions — без npm-токенов, с provenance. Релизный коммит и тег
+пушатся в защищённый `main` по deploy key.
 
-### Пайплайн (pipline.yml)
+### Storybook
 
-```yaml
-fp:
-  groupId: CI00752881.KURSMOB.digital_finance_ui
-  artifactId: ci02918303
-  version: D-01.000.000
-  helm:
-    enable: true
-```
+Публикуется на GitHub Pages из `develop`: https://daisforge.github.io/dais-ui/.
 
 ---
 
@@ -528,20 +529,20 @@ export type TMutationRegister<TFieldValues extends FieldValues> = {
 
 ### Dependencies
 
-| Пакет                             | Версия        | Назначение                   |
-| --------------------------------- | ------------- | ---------------------------- |
-| `@salutejs/sdds-finai`            | 0.369.0      | Базовые атомарные компоненты |
-| `@salutejs/plasma-icons`          | ^1.258.0      | Иконки                       |
-| `@salutejs/plasma-typo`           | ^0.60.0       | Typo tokens                  |
-| `@sddsjs/sdds_finai` | 0.2.3 | Темы и дизайн-токены FinAI |
-| `react`                           | 18.3.1        | Core                         |
-| `react-dom`                       | 18.3.1        | Core                         |
-| `styled-components`               | 5.3.11         | CSS-in-JS                    |
-| `react-hook-form`                 | ^7.54.2       | Формы                        |
-| `swr`                             | ^2.3.3        | Data fetching                |
-| `zod`                             | ^3.24.2       | Валидация                    |
-| `@glideappsfinal/glide-data-grid` | ^6.11.0       | TableCanvas                  |
-| `react-data-grid`                 | 7.0.0-beta.43 | Table (альтернатива)         |
+| Пакет                        | Версия        | Назначение                   |
+| ---------------------------- | ------------- | ---------------------------- |
+| `@salutejs/sdds-finai`       | 0.369.0       | Базовые атомарные компоненты |
+| `@salutejs/plasma-icons`     | ^1.258.0      | Иконки                       |
+| `@salutejs/plasma-typo`      | ^0.60.0       | Typo tokens                  |
+| `@sddsjs/sdds_finai`         | 0.2.3         | Темы и дизайн-токены FinAI   |
+| `react`                      | 18.3.1        | Core                         |
+| `react-dom`                  | 18.3.1        | Core                         |
+| `styled-components`          | 5.3.11        | CSS-in-JS                    |
+| `react-hook-form`            | ^7.54.2       | Формы                        |
+| `swr`                        | ^2.3.3        | Data fetching                |
+| `zod`                        | ^3.24.2       | Валидация                    |
+| `@daisforge/glide-data-grid` | 6.14.0        | TableCanvas                  |
+| `react-data-grid`            | 7.0.0-beta.43 | Table (альтернатива)         |
 
 ### Peer Dependencies
 
@@ -671,5 +672,5 @@ npm run ui-kit:generate-tokens         # Генерация токенов
 
 1. Lerna version (conventional commits)
 2. Пакет: `@daisforge/ui`
-3. Registry: `https://nexus-ci.dddddd.ru/repository/npm-release/`
+3. Registry: `https://registry.npmjs.org/` (Trusted Publishing из GitHub Actions)
 4. Access: `public`

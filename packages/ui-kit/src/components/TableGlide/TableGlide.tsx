@@ -1,5 +1,5 @@
 /* eslint-disable no-plusplus */
-import '@glideappsfinal/glide-data-grid/dist/index.css';
+import '@daisforge/glide-data-grid/dist/index.css';
 
 import {
   DataEditorRef,
@@ -8,7 +8,7 @@ import {
   GridSelection,
   isReadWriteCell,
   Rectangle,
-} from '@glideappsfinal/glide-data-grid';
+} from '@daisforge/glide-data-grid';
 import type { CSSProperties } from 'react';
 import { SELECT_LIST_PORTAL_ID } from '@ui-kit/components/TableCanvasSharedConstants';
 import { mergeRefs, useActiveTheme } from '@ui-kit/utils';

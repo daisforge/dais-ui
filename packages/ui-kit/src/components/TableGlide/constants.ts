@@ -1,4 +1,4 @@
-import { GridCellKind, type TextCell } from '@glideappsfinal/glide-data-grid';
+import { GridCellKind, type TextCell } from '@daisforge/glide-data-grid';
 import { bodyM, bodyS, bodyXXS } from '@ui-kit/tokens';
 
 import {

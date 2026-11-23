@@ -1,4 +1,4 @@
-export { GridCellKind } from '@glideappsfinal/glide-data-grid';
+export { GridCellKind } from '@daisforge/glide-data-grid';
 export {
   DEFAULT_HEADER_HEIGHT,
   DEFAULT_ROW_HEIGHT,

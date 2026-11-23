@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-11-20T12:46:20.089Z",
-  "libVersion": "1.30.0",
+  "generatedAt": "2026-11-22T14:54:45.830Z",
+  "libVersion": "1.30.1",
   "components": {
     "Accordion": {
       "name": "Accordion",
@@ -36492,7 +36492,7 @@
           "description": ""
         }
       ],
-      "sourceFile": "node_modules/@glideappsfinal/glide-data-grid/dist/dts/internal/growing-entry/growing-entry.d.ts",
+      "sourceFile": "node_modules/@daisforge/glide-data-grid/dist/dts/internal/growing-entry/growing-entry.d.ts",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [
@@ -38248,7 +38248,7 @@
           "description": ""
         }
       ],
-      "sourceFile": "node_modules/@glideappsfinal/glide-data-grid/dist/dts/internal/growing-entry/growing-entry.d.ts",
+      "sourceFile": "node_modules/@daisforge/glide-data-grid/dist/dts/internal/growing-entry/growing-entry.d.ts",
       "type": "standalone",
       "category": "Локальные компоненты",
       "keywords": [

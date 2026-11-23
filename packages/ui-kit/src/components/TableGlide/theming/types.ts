@@ -1,4 +1,4 @@
-import type { Theme as ThemeGlide } from '@glideappsfinal/glide-data-grid';
+import type { Theme as ThemeGlide } from '@daisforge/glide-data-grid';
 import { GlideSizeConfig, SIZE } from '../constants';
 import { ThemeCustoms } from './custom-colors';
 

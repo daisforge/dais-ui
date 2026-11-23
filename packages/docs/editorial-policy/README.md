@@ -6,16 +6,16 @@ UX-writing и редакционные правила дизайн-систем�
 
 ## Состав
 
-| Файл | Тема |
-|---|---|
-| `editorial-policy.mdx` | О редполитике (вводная) |
-| `editorial-policy-tone-of-voice.mdx` | Tone of voice |
-| `editorial-policy-typography.mdx` | Правописание и текст в интерфейсе |
-| `editorial-policy-interface-principles.mdx` | Общие принципы |
-| `editorial-policy-errors.mdx` | Ошибки |
-| `editorial-policy-buttons.mdx` | Кнопки |
-| `editorial-policy-placeholders.mdx` | Плейсхолдеры и тексты для полей |
-| `editorial-policy-statuses.mdx` | Статусы |
-| `editorial-policy-notifications.mdx` | Уведомления и тосты |
+| Файл                                        | Тема                              |
+| ------------------------------------------- | --------------------------------- |
+| `editorial-policy.mdx`                      | О редполитике (вводная)           |
+| `editorial-policy-tone-of-voice.mdx`        | Tone of voice                     |
+| `editorial-policy-typography.mdx`           | Правописание и текст в интерфейсе |
+| `editorial-policy-interface-principles.mdx` | Общие принципы                    |
+| `editorial-policy-errors.mdx`               | Ошибки                            |
+| `editorial-policy-buttons.mdx`              | Кнопки                            |
+| `editorial-policy-placeholders.mdx`         | Плейсхолдеры и тексты для полей   |
+| `editorial-policy-statuses.mdx`             | Статусы                           |
+| `editorial-policy-notifications.mdx`        | Уведомления и тосты               |
 
 Именование — `kebab-case`, `id` в frontmatter совпадает с именем файла (см. [CONVENTIONS.md](../CONVENTIONS.md)).

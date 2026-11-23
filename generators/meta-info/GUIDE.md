@@ -91,7 +91,11 @@ import { TypeSourceViewer } from '@df-storybook/utils/TypeSourceViewer';
 
 ## MyComponentProps
 
-<TypeSourceViewer language="ts" filePath="packages/ui-kit/src/components/MyComponent/MyComponent.types.ts" typeName="MyComponentProps" />
+<TypeSourceViewer
+  language="ts"
+  filePath="packages/ui-kit/src/components/MyComponent/MyComponent.types.ts"
+  typeName="MyComponentProps"
+/>
 ```
 
 ### Правила
@@ -167,7 +171,10 @@ const complexCode = `
 import { MyComponent } from '@daisforge/ui';
 import { useState } from 'react';
 
-${getFuncAsString('packages/storybook/src/stories/MyComponent/MyComponent.stories.tsx', 'ComplexExample')}
+${getFuncAsString(
+  'packages/storybook/src/stories/MyComponent/MyComponent.stories.tsx',
+  'ComplexExample',
+)}
 `;
 
 export const Complex: Story = {

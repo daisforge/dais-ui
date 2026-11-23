@@ -31,6 +31,7 @@ useNativeGridSelection ──selection──┬─► useSelectionGeometry ─�
 ## Состояние (владеют своим стейтом)
 
 ### `useNativeGridSelection`
+
 Стор нативного glide-выделения ячеек. Держит `GridSelection` (internal в
 uncontrolled или отдаёт наружу в controlled) и на каждое изменение ровно один раз
 зовёт `onSelectionEmit` (канал copy/paste и `cellsSelection.onChange`).
@@ -41,6 +42,7 @@ uncontrolled или отдаёт наружу в controlled) и на каждо�
 `rangeSelect`.
 
 ### `useColumnAxisSelection`
+
 Ось выделения колонок (по шапке). Хранит `selectedColumns` (`CompactSelection`),
 флаг `isNativeColumnSelection` (текущее выделение — синтетический вертикальный range
 колонки → гасим focus-ring на якоре), `lastSelectedColumnRef` (якорь Shift-диапазона).
@@ -48,6 +50,7 @@ uncontrolled или отдаёт наружу в controlled) и на каждо�
 `clearColumnSelection`. Логики клика тут нет — она в оркестраторе.
 
 ### `useRowAxisSelection`
+
 Ось выделения строк (по нумерации). Хранит `selectedRows` (`CompactSelection`) и
 жестовые ref'ы: `ctrlGestureRef`, `ctrlBaseRowsRef`, `pointerGestureRef` (снимаются
 на pointerdown ДО изменения glide-выделения — чтобы драг сужался корректно).
@@ -55,6 +58,7 @@ uncontrolled или отдаёт наружу в controlled) и на каждо�
 сеттеры, `clearRowSelection`.
 
 ### `useActiveRowHighlight`
+
 Ось «липкой» подсветки активной строки (`highlightActiveType='row'`), отвязана от
 селектинга. Хранит индекс (internal или controlled по `highlightActiveRow`).
 Возвращает `activeRow` и `commitActiveRow` (зовёт `onChange` всегда — работает и как
@@ -63,8 +67,10 @@ uncontrolled или отдаёт наружу в controlled) и на каждо�
 ## Оркестратор
 
 ### `useTableSelectionSystem`
+
 Единственное место, где сходятся все оси. Композит трёх осей выше + хендлеров
 `useNativeGridSelection`. Содержит всю логику клика/драга:
+
 - `handleGridSelectionWithColumnReset` — разбирает каждое изменение выделения (клик
   по нумерации → строки в свою ось; иначе обычные ячейки + сброс осей);
 - `selectColumnFromHeader` — клик по шапке (одиночный / Shift / Ctrl / select-all по
@@ -77,18 +83,21 @@ uncontrolled или отдаёт наружу в controlled) и на каждо�
 ## Геометрия (чистые вычисления)
 
 ### `useSelectionGeometry`
+
 Из `selection` считает «геометрию рендера»: `firstDataColumnIndex`, `activeDataRange`
 (клампится к data-area), `activeRows` / `activeColumns`, `outlineRange`, и предикаты
 `isActiveDataCell`, `isActiveHeaderColumn`, `isServiceColumn`, `isCheckboxSelectedRow`.
 Без состояния — один `useMemo`.
 
 ### `rectGeometry.ts`
+
 Чистые примитивы над прямоугольником (без React): `rectContainsCell`,
 `clampRectToDataColumns`, `findFirstDataColumnIndex`. Единый источник этих расчётов.
 
 ## Отрисовка (highlightRegions)
 
 ### `useColoringLayers`
+
 Здесь собираются все цветные слои, которые ложатся поверх ячеек: выделение,
 подсветка строк и колонок, рамки. Это же место — карта окрашивания: в
 комментарии в начале файла по порядку расписано, какой слой лежит выше какого.
@@ -99,6 +108,7 @@ uncontrolled или отдаёт наружу в controlled) и на каждо�
 только этот хук, остальные два спрятаны внутри.
 
 ### `useBaseHighlightRegions`
+
 Базовый слой прямоугольников: затемнение сервис-зоны под активным диапазоном, своя
 заливка+обводка **одиночной** ячейки (в `cell`), outline ошибок (cell-level, `1×1`),
 внешние регионы. Диапазоны range-cell обводит сам glide — не дублируем.
@@ -107,6 +117,7 @@ Error-outline добавляется в конец (чтобы active-fill ег�
 рисует — остаётся фон строки и обводка.
 
 ### `useColumnRowHighlightRegions`
+
 Рисует выделение колонок (клик по шапке) и строк (клик по нумерации):
 заливку и общую рамку вокруг соседних выделенных колонок/строк, затемнение
 нумерации.
@@ -122,6 +133,7 @@ Ctrl (`rangeStack`), получают затемнение нумерации, �
 ## Барьер
 
 ### `index.ts`
+
 Экспортит наружу (в `TableGlide.tsx`) то, что нужно движку: `useNativeGridSelection`,
 `useSelectionGeometry`, `useColoringLayers`, `useTableSelectionSystem`,
 `rectContainsCell`. Оси, `rectGeometry` и оба региона-хука — внутренние.

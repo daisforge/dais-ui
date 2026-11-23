@@ -1,4 +1,4 @@
-import type { GridCell } from '@glideappsfinal/glide-data-grid';
+import type { GridCell } from '@daisforge/glide-data-grid';
 import { useCallback } from 'react';
 
 import type { InteractionSessionStore } from '../lib/canvas/interaction/interactionSessionStore';

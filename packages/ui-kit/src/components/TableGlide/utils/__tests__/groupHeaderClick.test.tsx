@@ -1,4 +1,4 @@
-import type { GroupHeaderClickedEventArgs } from '@glideappsfinal/glide-data-grid';
+import type { GroupHeaderClickedEventArgs } from '@daisforge/glide-data-grid';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { CellCanvasRoot } from '../../lib/canvas/cells/CellCanvasRoot';

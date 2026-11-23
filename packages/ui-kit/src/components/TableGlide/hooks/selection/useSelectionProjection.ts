@@ -1,4 +1,4 @@
-import type { GridSelection, Rectangle } from '@glideappsfinal/glide-data-grid';
+import type { GridSelection, Rectangle } from '@daisforge/glide-data-grid';
 import isEqual from 'lodash.isequal';
 import { type MutableRefObject, useLayoutEffect, useRef } from 'react';
 

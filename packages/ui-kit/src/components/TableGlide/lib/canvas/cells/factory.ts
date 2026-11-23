@@ -1,4 +1,4 @@
-import { BaseGridCell, GridCellKind } from '@glideappsfinal/glide-data-grid';
+import { BaseGridCell, GridCellKind } from '@daisforge/glide-data-grid';
 
 import { GlideThemeForRender } from '../../../theming/types';
 import type {
