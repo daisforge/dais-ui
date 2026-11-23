@@ -1,4 +1,4 @@
-import type { GridColumn } from '@glideappsfinal/glide-data-grid';
+import type { GridColumn } from '@daisforge/glide-data-grid';
 
 /** Ширина, полученная от Glide, и ширина из props до начала resize. */
 export type ResizedWidth = {

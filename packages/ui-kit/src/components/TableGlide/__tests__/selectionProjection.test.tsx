@@ -1,4 +1,4 @@
-import { type GridSelection } from '@glideappsfinal/glide-data-grid';
+import { type GridSelection } from '@daisforge/glide-data-grid';
 import { cleanup, render, screen } from '@testing-library/react';
 import React, { useRef, useState } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';

@@ -1,7 +1,7 @@
 import {
   GridCellKind,
   type ImageWindowLoader,
-} from '@glideappsfinal/glide-data-grid';
+} from '@daisforge/glide-data-grid';
 
 import type { GlideThemeForRender } from '../../../../theming/types';
 import type { CanvasCell, RectBounds } from '../types';

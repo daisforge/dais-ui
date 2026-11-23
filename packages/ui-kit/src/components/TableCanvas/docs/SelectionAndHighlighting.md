@@ -295,7 +295,7 @@ hover реализован через штатный glide-паттерн: `onIt
   при каждом изменении (можно открыть детали строки без обработки клика по ячейке).
   Работает и как подписка (без владения), и как полноценный controlled.
 - **Включение/выключение осей** — `selection.enableColumnSelection /
-  enableRowSelection / enableSelectAll` (по умолчанию всё включено).
+enableRowSelection / enableSelectAll` (по умолчанию всё включено).
 - **Режим ячеек** — `selectionMode` (`cell` / `range-cell` / `multi-range-cell` /
   `disabled`).
 

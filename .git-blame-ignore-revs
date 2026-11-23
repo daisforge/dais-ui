@@ -1,0 +1,10 @@
+# Коммиты с чисто механическими правками (форматирование), которые git blame
+# пропускает и показывает автора предыдущей содержательной правки строки.
+# GitHub учитывает этот файл автоматически; локально:
+#   git config blame.ignoreRevsFile .git-blame-ignore-revs
+#
+# SHA должен совпадать с коммитом в истории develop/main: PR с таким коммитом
+# вливается через «Create a merge commit» (squash и rebase меняют SHA).
+
+# nfp-docs: Markdown отформатирован по Prettier
+36a24a92ea041c7c540a576ff1789bc174f82c52

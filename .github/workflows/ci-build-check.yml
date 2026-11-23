@@ -31,6 +31,13 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      # ESLint (с prettier/prettier) проверяет только код; Markdown форматирует
+      # pre-commit через lint-staged. Эта проверка ловит то, что прошло мимо хука:
+      # коммит с --no-verify, правка в веб-интерфейсе GitHub. Исправить:
+      # npm run format:md. Генерируемые файлы исключены в .prettierignore.
+      - name: Check Markdown formatting
+        run: npm run format:md:check
+
       # Node-скрипты white-label и пакета Storybook не входят ни в один
       # nx-проект, поэтому `npm run lint` их не видит. Без этих шагов поломка
       # всплыла бы только на релизе (publish-npm → publish-storybook-package).

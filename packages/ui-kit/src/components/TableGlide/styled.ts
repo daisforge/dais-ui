@@ -1,4 +1,4 @@
-import DataEditor from '@glideappsfinal/glide-data-grid';
+import DataEditor from '@daisforge/glide-data-grid';
 import styled from 'styled-components';
 
 import { classNames } from './classNames';

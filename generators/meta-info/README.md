@@ -230,7 +230,10 @@ MDX — это Markdown с JSX-компонентами. В Storybook-е MDX и�
 В MDX-файле встречается:
 
 ```jsx
-<TypeSourceViewer filePath="packages/ui-kit/src/components/EmptyState/EmptyState.types.ts" typeName="EmptyStateProps" />
+<TypeSourceViewer
+  filePath="packages/ui-kit/src/components/EmptyState/EmptyState.types.ts"
+  typeName="EmptyStateProps"
+/>
 ```
 
 Парсер:
@@ -427,7 +430,10 @@ export const DrawerExample: Story = {
   render: DrawerWithOneMainContent,
 };
 
-const drawerCode = `import { DrawerDF } from '...';\n\n${getFuncAsString('path', 'DrawerWithOneMainContent')}`;
+const drawerCode = `import { DrawerDF } from '...';\n\n${getFuncAsString(
+  'path',
+  'DrawerWithOneMainContent',
+)}`;
 ```
 
 **Признак**: `render: ИмяФункции` (идентификатор с заглавной буквы, не стрелка).
@@ -485,12 +491,16 @@ parameters: {
 Шаблонные строки в preCode и code-переменных могут содержать интерполяции:
 
 ```tsx
-const myCode = `import { Button } from '...';\n\n${getFuncAsString('path/to/file', 'MyFunction')}`;
+const myCode = `import { Button } from '...';\n\n${getFuncAsString(
+  'path/to/file',
+  'MyFunction',
+)}`;
 ```
 
 Функция `resolveInterpolations()` заменяет два типа интерполяций:
 
 1. **`${getFuncAsString('filePath', 'funcName')}`** → реальный код функции из `funcsMap`:
+
    - Формирует ключ `"filePath$$$funcName"`
    - Ищет в `funcsMap` (из functions.string.json)
    - Если не нашёл → `// [meta-info] funcName не найдена (ключ: ...)`
@@ -504,7 +514,10 @@ const myCode = `import { Button } from '...';\n\n${getFuncAsString('path/to/file
 
 ```tsx
 const preCode = `import { PageLayout } from '@daisforge/ui';`;
-const pageLayoutCode = `${preCode}\n\n${getFuncAsString('path', 'PageLayoutExample')}`;
+const pageLayoutCode = `${preCode}\n\n${getFuncAsString(
+  'path',
+  'PageLayoutExample',
+)}`;
 ```
 
 Парсер сначала заменит `${getFuncAsString(...)}` на реальный код, потом `${preCode}` на содержимое переменной.

@@ -1,4 +1,4 @@
-import type { GridSelection } from '@glideappsfinal/glide-data-grid';
+import type { GridSelection } from '@daisforge/glide-data-grid';
 import { describe, expect, it } from 'vitest';
 
 import type { Rectangle, TransferColumnConfig } from '../../types';

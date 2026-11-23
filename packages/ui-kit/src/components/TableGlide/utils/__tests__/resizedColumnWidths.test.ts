@@ -1,4 +1,4 @@
-import type { GridColumn } from '@glideappsfinal/glide-data-grid';
+import type { GridColumn } from '@daisforge/glide-data-grid';
 import { describe, expect, it } from 'vitest';
 
 import {

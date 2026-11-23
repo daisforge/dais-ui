@@ -8,11 +8,11 @@
 
 ### Влияет на:
 
--   отключает закрепление колонок (ReactDataGrid не поддерживает закрепление многоуровневых шапок и в целом логики четкой нет, как закреплять)
+- отключает закрепление колонок (ReactDataGrid не поддерживает закрепление многоуровневых шапок и в целом логики четкой нет, как закреплять)
 
 ### Колонки с специфичной обработкой:
 
--   CHECKBOX_COLUMN_KEY - вставляется без родителей (в getSeparatedColWithAllParents имеется проверка)
--   isRowInstrumentsColumn(сol.key) - вставляется без родителей (в getSeparatedColWithAllParents имеется проверка)
--   keyText-key - вставляется с родителями как у keyText-text (есть доп логика в allColsMap - useGetAllLvlColumnsConfig)
--   KEY_GROUPED_COL - вставляется без родителей (в getSeparatedColWithAllParents имеется проверка)
+- CHECKBOX_COLUMN_KEY - вставляется без родителей (в getSeparatedColWithAllParents имеется проверка)
+- isRowInstrumentsColumn(сol.key) - вставляется без родителей (в getSeparatedColWithAllParents имеется проверка)
+- keyText-key - вставляется с родителями как у keyText-text (есть доп логика в allColsMap - useGetAllLvlColumnsConfig)
+- KEY_GROUPED_COL - вставляется без родителей (в getSeparatedColWithAllParents имеется проверка)

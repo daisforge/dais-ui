@@ -160,7 +160,7 @@ type AdaptedHeaderCellInfo<R, SR> = {
 
 ```typescript
 type UserRenderHeaderCell<R, SR> = (
-  cellInfo: AdaptedHeaderCellInfo<R, SR>
+  cellInfo: AdaptedHeaderCellInfo<R, SR>,
 ) => CanvasEl;
 ```
 

@@ -132,6 +132,40 @@ describe('renameArtifact', () => {
     expect(read(dir, 'index.html')).toContain('#dais--docs');
   });
 
+  it('внешний glide-data-grid без зеркала оставляет как есть, бренд рядом — переименовывает', () => {
+    const dir = makeTmp({
+      'package.json': JSON.stringify({
+        name: '@daisforge/ui',
+        version: '1.30.0',
+        dependencies: { '@daisforge/glide-data-grid': '6.14.0' },
+      }),
+      'index.mjs':
+        "import { DataEditor } from '@daisforge/glide-data-grid';\nimport '@daisforge/glide-data-grid/dist/index.css';\nexport * from '@daisforge/ui/tokens';\n",
+      'TableCanvas/type.d.ts':
+        "export type { GridCell } from '@daisforge/glide-data-grid';\n",
+      'mcp-data/component-index.json': JSON.stringify({
+        sourceFile:
+          'node_modules/@daisforge/glide-data-grid/dist/dts/internal/x.d.ts',
+      }),
+    });
+
+    const result = renameArtifact(dir, names);
+
+    expect(result.leftovers).toEqual([]);
+    expect(JSON.parse(read(dir, 'package.json')).dependencies).toEqual({
+      '@daisforge/glide-data-grid': '6.14.0',
+    });
+    expect(read(dir, 'index.mjs')).toBe(
+      "import { DataEditor } from '@daisforge/glide-data-grid';\nimport '@daisforge/glide-data-grid/dist/index.css';\nexport * from '@acme/ds/tokens';\n",
+    );
+    expect(read(dir, 'TableCanvas/type.d.ts')).toContain(
+      "from '@daisforge/glide-data-grid'",
+    );
+    expect(read(dir, 'mcp-data/component-index.json')).toContain(
+      'node_modules/@daisforge/glide-data-grid/',
+    );
+  });
+
   it('случайный хеш Vite в имени чанка не считается брендом, бренд перед хешем — считается', () => {
     const dir = makeTmp({
       'assets/Table.stories-DaiSi7z1.js': 'export default 1;',

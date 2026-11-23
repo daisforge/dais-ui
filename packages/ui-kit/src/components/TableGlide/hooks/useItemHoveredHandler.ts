@@ -1,4 +1,4 @@
-import type { DataEditorRef } from '@glideappsfinal/glide-data-grid';
+import type { DataEditorRef } from '@daisforge/glide-data-grid';
 import type { Ref, RefObject } from 'react';
 import { useCallback, useRef } from 'react';
 

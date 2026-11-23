@@ -1,4 +1,4 @@
-import type { GroupHeaderClickedEventArgs } from '@glideappsfinal/glide-data-grid';
+import type { GroupHeaderClickedEventArgs } from '@daisforge/glide-data-grid';
 
 import type { ColumnGroupConfig, ObjectForExtending } from '../types';
 import type { GroupHeaderHandler } from '../types/table-config.type';
