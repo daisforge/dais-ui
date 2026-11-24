@@ -1,10 +1,10 @@
-import { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import { expect, fireEvent, userEvent, waitFor, within } from '@storybook/test';
 import { SIZE } from '@ui-kit/components/TableCanvas/styles';
 import { DataEditorRef } from '@ui-kit/components/TableCanvas/TableGlideInstance/type';
 import React, { createRef } from 'react';
 
-import { click, getGridTarget, gridReady } from '../visual-helpers';
+import { click, getGridTarget, gridReady, settle } from '../visual-helpers';
 import { DropdownsExample } from './DropdownsExample';
 
 export default {
@@ -28,6 +28,7 @@ function opened(size: SIZE, menu: Menu): StoryObj {
       const canvas = within(canvasElement);
       const page = within(canvasElement.ownerDocument.body);
       await gridReady(ref);
+      await settle();
       if (menu === 'export' || menu === 'overflow') {
         const name = menu === 'export' ? 'Экспорт' : '';
         const trigger = await canvas.findByRole('combobox', { name });
@@ -60,7 +61,7 @@ function opened(size: SIZE, menu: Menu): StoryObj {
         fireEvent.contextMenu(target, event);
         await expect(await page.findByText('Копировать')).toBeVisible();
       } else {
-        click(target, { x: bounds.x + bounds.width - 16, y });
+        click(target, { x: bounds.x + bounds.width - 22, y });
         await waitFor(() => expect(page.getByRole('textbox')).toBeVisible());
       }
     },

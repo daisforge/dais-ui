@@ -2,7 +2,7 @@ import { ColumnConfig, TableCanvas } from '@ui-kit/components/TableCanvas';
 import { SIZE } from '@ui-kit/components/TableCanvas/styles';
 import { DataEditorRef } from '@ui-kit/components/TableCanvas/TableGlideInstance/type';
 import { IconDownload } from '@ui-kit/icons';
-import React, { useState } from 'react';
+import React, { useId, useState } from 'react';
 
 const priorities = ['Высокий', 'Средний', 'Низкий'];
 const statuses = [
@@ -56,6 +56,7 @@ export function DropdownsExample({
   narrow?: boolean;
   tableRef?: React.RefObject<DataEditorRef>;
 }) {
+  const compactId = useId();
   const filtering = useState({
     priority: priorities[0],
     status: [statuses[0]],
@@ -64,15 +65,16 @@ export function DropdownsExample({
   const [action, setAction] = useState('');
   return (
     <div>
-      <label>
+      <label htmlFor={compactId}>
         <input
+          id={compactId}
           type="checkbox"
           checked={compact}
           onChange={(e) => setCompact(e.target.checked)}
         />
         Узкая панель
       </label>
-      <div style={{ maxWidth: compact ? 220 : 600, marginTop: 16 }}>
+      <div style={{ maxWidth: compact ? 168 : 600, marginTop: 16 }}>
         <TableCanvas
           refTable={tableRef}
           columnConfig={columns}
@@ -91,8 +93,10 @@ export function DropdownsExample({
             controlBlock: {
               rightSideInner: [
                 { text: 'Обновить', onClick: () => setAction('Обновить') },
+                { text: 'Загрузить', onClick: () => setAction('Загрузить') },
                 {
                   text: 'Экспорт',
+                  'aria-label': 'Экспорт',
                   contentLeft: <IconDownload />,
                   dropdown: {
                     items: [
