@@ -1,65 +1,63 @@
 import { isValidElement, ReactElement } from 'react';
 import { renderToString } from 'react-dom/server';
 
-/**
- * Cache for converted React icon components to SVG strings.
- * Key is the component type + props hash, value is the SVG string.
- */
 const iconCache = new Map<string, string>();
+const componentIds = new WeakMap<object, number>();
+let nextComponentId = 0;
 
-/**
- * Extracts SVG string from a rendered React component.
- * Caches the result for performance.
- */
+function getCacheKey({ type, props }: ReactElement<Record<string, unknown>>) {
+  // Native SVG trees and custom rendering props (e.g. children, style) can
+  // contain arbitrary React values. Render those directly.
+  if (
+    (typeof type !== 'function' && typeof type !== 'object') ||
+    !Object.keys(props).every(
+      (key) =>
+        (key === 'size' || key === 'color' || key === 'className') &&
+        typeof props[key] === 'string',
+    )
+  ) {
+    return undefined;
+  }
+
+  // Component names can collide across minified modules and memo wrappers.
+  let id = componentIds.get(type);
+  if (id === undefined) {
+    id = nextComponentId;
+    nextComponentId += 1;
+    componentIds.set(type, id);
+  }
+
+  return JSON.stringify([
+    id,
+    props['size'],
+    props['color'],
+    props['className'],
+  ]);
+}
+
 export function reactIconToSvg(iconElement: ReactElement): string {
-  // Create a cache key based on the component type and key props
-  const cacheKey = createCacheKey(iconElement);
-
-  const cached = iconCache.get(cacheKey);
-  if (cached) {
+  const cacheKey = getCacheKey(iconElement);
+  const cached = cacheKey === undefined ? undefined : iconCache.get(cacheKey);
+  if (cached !== undefined) {
     return cached;
   }
 
   const htmlString = renderToString(iconElement);
-
   const svgMatch = htmlString.match(/<svg[\s\S]*?<\/svg>/);
-
   if (!svgMatch) {
+    // eslint-disable-next-line no-console -- surface invalid icon inputs to consumers
     console.warn(
       'Could not extract SVG from React icon component:',
-      iconElement.type
+      iconElement.type,
     );
     return '';
   }
 
   const svgString = svgMatch[0];
-  iconCache.set(cacheKey, svgString);
-
+  if (cacheKey !== undefined) {
+    iconCache.set(cacheKey, svgString);
+  }
   return svgString;
-}
-
-/**
- * Creates a cache key for a React icon element.
- */
-function createCacheKey(element: ReactElement): string {
-  const type = element.type as { displayName?: string; name?: string } | string;
-  const typeName =
-    typeof type === 'function' || typeof type === 'object'
-      ? (type as { displayName?: string; name?: string }).displayName ||
-        (type as { name?: string }).name ||
-        'Anonymous'
-      : String(type);
-
-  // Include relevant props in the cache key
-  const { size, color, className } = (element.props || {}) as Record<
-    string,
-    unknown
-  >;
-
-  // Simple hash of props that affect rendering
-  const propsHash = JSON.stringify({ size, color, className });
-
-  return `${typeName}:${propsHash}`;
 }
 
 /**
