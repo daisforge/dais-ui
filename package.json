@@ -11,6 +11,9 @@
     "format:md": "prettier --write \"**/*.md\"",
     "format:md:check": "prettier --check \"**/*.md\"",
     "lint:scripts": "eslint \"scripts/**/*.mjs\"",
+    "skills:sync": "node scripts/agent-hooks/sync-skills.mjs",
+    "skills:check": "node scripts/agent-hooks/sync-skills.mjs --check",
+    "agent-hooks:test": "node --test scripts/agent-hooks/",
     "typecheck": "nx run-many --target=typecheck --verbose",
     "test": "nx run-many --target=test --verbose",
     "build": "NODE_OPTIONS=\"--max_old_space_size=4096\" NODE_ENV=production NX_DAEMON=false nx run-many --target=build --parallel=1 --verbose",
@@ -228,6 +231,7 @@
   "lint-staged": {
     "*.md": "prettier --write",
     "packages/{ui-kit,storybook,mcp-server}/**/*.{ts,tsx}": "eslint --fix",
-    "scripts/**/*.mjs": "eslint --fix"
+    "scripts/**/*.mjs": "eslint --fix",
+    ".{agents,claude}/skills/**": "node scripts/agent-hooks/sync-skills.mjs --check"
   }
 }
