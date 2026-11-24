@@ -1,9 +1,9 @@
 import { Box } from '@ui-kit/components/Box';
 import { Button } from '@ui-kit/components/Button';
 import { Collapse } from '@ui-kit/components/Collapse';
-import { COLORS } from '@ui-kit/components/Table';
 import { TabItem, Tabs } from '@ui-kit/components/Tabs';
 import { IconClose } from '@ui-kit/icons';
+import { outlineSolidPrimary } from '@ui-kit/tokens';
 import { useDebouncedValue } from '@ui-kit/utils';
 import React, { memo, ReactNode } from 'react';
 import styled, { CSSObject } from 'styled-components';
@@ -19,7 +19,7 @@ const SIZES = {
 };
 
 const BORDER_WIDTH = 1;
-const BORDER = `${BORDER_WIDTH}px solid ${() => COLORS.border}`;
+const BORDER = `${BORDER_WIDTH}px solid ${outlineSolidPrimary}`;
 
 // const DURATION = 0.5;
 

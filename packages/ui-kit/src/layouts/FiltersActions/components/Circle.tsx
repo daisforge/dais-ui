@@ -1,5 +1,5 @@
 import { Box } from '@ui-kit/components/Box';
-import { DEFAULT_TABLE_TRANSITION } from '@ui-kit/components/Table';
+import { DEFAULT_TABLE_TRANSITION } from '@ui-kit/constants/tableVisuals';
 import { surfaceNegative } from '@ui-kit/tokens';
 import React from 'react';
 

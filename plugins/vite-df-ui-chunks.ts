@@ -15,6 +15,15 @@ export const MANUAL_UIKIT_COMP_CHUNKS = [
     modulePaths: ['packages/ui-kit/src/mixins/'],
   },
   // components chunks
+  // Обе таблицы используют эти контролы. Отдельные чанки не тянут CSS старой Table.
+  {
+    chunkName: 'Combobox',
+    modulePaths: ['packages/ui-kit/src/components/Combobox/'],
+  },
+  {
+    chunkName: 'Switch',
+    modulePaths: ['packages/ui-kit/src/components/Switch/'],
+  },
   {
     chunkName: 'Table',
     modulePaths: ['packages/ui-kit/src/components/Table/'],
