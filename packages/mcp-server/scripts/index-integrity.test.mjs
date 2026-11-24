@@ -123,6 +123,26 @@ test('публичные props SDDS из документации сохраня
   );
 });
 
+test('compound через Object.assign сохраняет дефолты корня и частей', () => {
+  // Корень — отдельная переменная в первом аргументе Object.assign.
+  assert.equal(
+    props('FiltersActions').find((prop) => prop.name === 'mainBlockProps')
+      ?.default,
+    '{}',
+  );
+  assert.equal(
+    props('GridDND').find((prop) => prop.name === 'compactType')?.default,
+    "'horizontal'",
+  );
+  // Часть в сокращённой записи `{ TextFieldSearch }`.
+  assert.equal(
+    props('FiltersActions', 'TextFieldSearch').find(
+      (prop) => prop.name === 'size',
+    )?.default,
+    "'s'",
+  );
+});
+
 test('styled Box сохраняет необязательные CSS-пропсы', () => {
   const fields = props('Box');
   ['background', 'padding', '$css'].forEach((name) =>
