@@ -46,6 +46,7 @@ import { useActiveRowsRedraw } from './hooks/useActiveRowsRedraw';
 import { useAnimatedRowHeight } from './hooks/useAnimatedRowHeight';
 import { useErrorCellRanges } from './hooks/useErrorCellRanges';
 import { useCanvasContextMenuInteraction } from './hooks/useCanvasContextMenuInteraction';
+import { useGridInteractionGuard } from './hooks/selection/useGridInteractionGuard';
 import { useCanvasEditorActivation } from './hooks/useCanvasEditorActivation';
 import { useCanvasInteractionSession } from './hooks/useCanvasInteractionSession';
 import { useCustomRenderers } from './hooks/useCustomRenderers';
@@ -142,6 +143,7 @@ function noop(..._: unknown[]) {
 // utils
 
 const EMPTY_AXIS_INDEXES: number[] = [];
+const EMPTY_COLUMN_KEYS: string[] = [];
 const EMPTY_COLUMN_SET = new Set<number>();
 
 export class CellContentCache {
@@ -539,6 +541,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     selectedColumnSet: ownColumnSet,
     headerSelectedRowIndexes: ownRows,
     activeRow,
+    commitActiveRow,
     numberingColumnIndex,
     drawFocusRing,
     selectColumnFromHeader,
@@ -568,11 +571,6 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   const selectColumnFromHeaderRef = useRef(selectColumnFromHeader);
   selectColumnFromHeaderRef.current = selectColumnFromHeader;
 
-  // Отдаём объединённое выделение колонок (ключи) наверх (контрл-блок). Эффект,
-  // а не вызов в рендере: колбэк потребителя может быть нестабильным.
-  useEffect(() => {
-    onColumnSelectionChange?.(selectedColumnKeysAll);
-  }, [selectedColumnKeysAll, onColumnSelectionChange]);
 
   // После закрепления колонок выделяем те же колонки заново, по ключам.
   // Делаем это один раз, когда порядок колонок устоялся.
@@ -718,6 +716,9 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
     hasAxes: hasAxisSelection,
     selectedRows: ownRows,
     columnsSelected: isNativeColumnSelection,
+    mode: cellsSelectionMode,
+    activeRow,
+    commitActiveRow,
     getBlock(col, row) {
       const [x, y] = findCellBlockOrigin(col, row);
       const column = columnsForRender[x];
@@ -746,6 +747,10 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   }, [gridSelectionExternal, focusOnStateChange, projectedSelection, isProjectedSelection]);
 
   const hideAxes = projectedSelection === EMPTY_SELECTION;
+  const visibleColumnKeys = hideAxes ? EMPTY_COLUMN_KEYS : selectedColumnKeysAll;
+  useEffect(() => {
+    onColumnSelectionChange?.(visibleColumnKeys);
+  }, [visibleColumnKeys, onColumnSelectionChange]);
   const selectedColumnIndexes = hideAxes ? EMPTY_AXIS_INDEXES : ownColumns;
   const selectedColumnSet = hideAxes ? EMPTY_COLUMN_SET : ownColumnSet;
   const headerSelectedRowIndexes = hideAxes ? EMPTY_AXIS_INDEXES : ownRows;
@@ -884,6 +889,10 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   // рамку за блоком при прокрутке. Закрытие узнаём по оверлею в портале: Glide
   // об этом не сообщает.
   const editorCellRef = useRef<readonly [number, number]>();
+  const { staleEditor, staleGesture, staleFill, beginGesture } = useGridInteractionGuard(
+    { rows, columns: columnsLast, data: selectionView },
+    editorCellRef,
+  );
   const editorFrameRef = useRef<EditorFrame>();
   const updateEditorFrameRef = useRef<() => void>();
   // Портал пересоздаётся, когда появляется контейнер таблицы (режим inside),
@@ -898,10 +907,11 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
       if (portal.querySelector("[id^='gdg-overlay-']")) return;
       editorFrameRef.current = undefined;
       editorCellRef.current = undefined;
+      staleEditor.current = false;
     });
     observer.observe(portal, { childList: true });
     portalObserverRef.current = observer;
-  }, []);
+  }, [staleEditor]);
 
   // Подсвеченная строка для отрисовки. В ref по той же причине, что и
   // выделение выше.
@@ -2276,6 +2286,40 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   // Ссылка постоянная: новая функция заставила бы форк пересоздать открытый редактор.
   const provideEditorExternalRef = useRef(restProps.provideEditor);
   provideEditorExternalRef.current = restProps.provideEditor;
+  const guardedSelectionChange = useCallback(
+    (value: GridSelection) => {
+      if (!staleGesture.current) handleGridSelectionWithColumnReset(value);
+    },
+    [handleGridSelectionWithColumnReset, staleGesture],
+  );
+  const guardedSelectionClear = useCallback(() => {
+    if (!staleGesture.current) handleSelectionClearedWithColumns();
+  }, [handleSelectionClearedWithColumns, staleGesture]);
+  const guardedEdit = useCallback<NonNullable<GlideProps['onCellsEdited']>>(
+    (edits) => {
+      if (staleEditor.current || staleFill.current) return true;
+      return restProps.onCellsEdited?.(edits);
+    },
+    [staleEditor, staleFill, restProps.onCellsEdited],
+  );
+  const guardedFill = useCallback<NonNullable<GlideProps['onFillPattern']>>(
+    (event) => {
+      if (staleFill.current) event.preventDefault();
+      else restProps.onFillPattern?.(event);
+    },
+    [staleFill, restProps.onFillPattern],
+  );
+  const finishEditor = useCallback<
+    NonNullable<GlideProps['onFinishedEditing']>
+  >(
+    (value, movement) => {
+      const cancelled = staleEditor.current;
+      editorCellRef.current = undefined;
+      staleEditor.current = false;
+      restProps.onFinishedEditing?.(cancelled ? undefined : value, movement);
+    },
+    [staleEditor, restProps.onFinishedEditing],
+  );
   const hasProvideEditor = restProps.provideEditor !== undefined;
   const provideEditor = useMemo<GlideProps['provideEditor']>(
     () =>
@@ -2287,6 +2331,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
             // Пока оверлей открыт, canvas рамку не рисует (no-editor), поэтому
             // ячейку запоминаем при любом редакторе, даже встроенном у Glide.
             editorCellRef.current = cell.location;
+            staleEditor.current = false;
             if (!provided) return provided;
             // Редактор-функцию оборачиваем, чтобы задать ему те же стили и рамку.
             const editor =
@@ -2303,7 +2348,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
             };
           }
         : undefined,
-    [hasProvideEditor],
+    [hasProvideEditor, staleEditor],
   );
 
   // Нажатие, которое откроет редактор в частично спрятанной редактируемой
@@ -2446,6 +2491,7 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
   return (
     <div
       ref={mergedContainerRef}
+      onPointerDownCapture={beginGesture}
       className={containerClassName}
       style={wrapperStyle}
     >
@@ -2501,8 +2547,8 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
           // Пока открыт редактор, рамку рисует он сам (styled.ts), canvas нет.
           drawFocusRing={drawFocusRing ? 'no-editor' : false}
           gridSelection={selection}
-          onGridSelectionChange={handleGridSelectionWithColumnReset}
-          onSelectionCleared={handleSelectionClearedWithColumns}
+          onGridSelectionChange={guardedSelectionChange}
+          onSelectionCleared={guardedSelectionClear}
           width={width ?? '100%'}
           onColumnMoved={onColumnMoved}
           onColumnResize={resizableColumn ? onColumnResizeInternal : undefined}
@@ -2523,6 +2569,9 @@ export const TableGlide = <R extends ObjectForExtending, SR = unknown>({
           onItemHovered={onItemHovered}
           onVisibleRegionChanged={handleVisibleRegionChanged}
           {...restProps}
+          onCellsEdited={guardedEdit}
+          onFillPattern={guardedFill}
+          onFinishedEditing={finishEditor}
           scrollToActiveCell={projectedSelection ? false : restProps.scrollToActiveCell}
           onColumnResizeStart={
             resizableColumn ? onColumnResizeStartInternal : undefined

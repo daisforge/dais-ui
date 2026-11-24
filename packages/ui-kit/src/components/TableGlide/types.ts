@@ -416,6 +416,8 @@ export interface SelectionView<R> {
 export interface SelectionSnapshot<R> {
   view: SelectionView<R> & { columns: readonly { id?: string; isServiceColumn?: boolean }[] };
   controlled?: GridSelection;
+  mode?: CellsSelectionMode;
+  activeRow?: number;
 }
 
 export type TableGlideCustomProps<
