@@ -58,7 +58,10 @@ export type ColumnsControlConfig = {
    */
   virtualization?: boolean | { minCount?: number };
 
+  /** Порядок для сброса и старта без orderInitial. По умолчанию берётся из columnConfig. */
   orderDefault?: string[];
+  /** Порядок колонок при первом рендере, например сохранённый пользователем. */
+  orderInitial?: string[];
 
   pinnedDefault?: string[];
   disablePinning?: string[];

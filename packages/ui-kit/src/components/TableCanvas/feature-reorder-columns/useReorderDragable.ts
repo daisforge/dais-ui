@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
+import { expandKeyTextKeys } from '../feature-column-control/expandKeyTextKeys';
 import { ColumnsControlConfig } from '../feature-column-control/types';
 import { KeyText, KeyTextMap } from '../feature-key-text/types';
 import { ColumnConfig, ObjectForExtending } from '../types';
@@ -56,24 +57,20 @@ export const useReorderDragable = <
 }) => {
   const tableConfigDefaultOrder = tableConfigColumnsControl?.orderDefault;
 
-  const [columnsOrder, setColumnsOrder] = useState(() =>
-    reorderIsActive
-      ? sortedInOrder({
-          columnConfig,
-          tableConfigDefaultOrder,
-          rowMarkersIsActive,
-          selectingRowsIsActive,
-          rowErrorsIsActive,
-          colsWithKeyTextMap,
-          keyText,
-          rowsGroupingIsActive,
-          showRowInstruments,
-        })
-      : [],
-  );
-
-  const getDefaultColumnsOrder = () =>
-    sortedInOrder({
+  const getDefaultColumnsOrder = useCallback(
+    () =>
+      sortedInOrder({
+        columnConfig,
+        tableConfigDefaultOrder,
+        rowMarkersIsActive,
+        selectingRowsIsActive,
+        rowErrorsIsActive,
+        rowsGroupingIsActive,
+        colsWithKeyTextMap,
+        keyText,
+        showRowInstruments,
+      }),
+    [
       columnConfig,
       tableConfigDefaultOrder,
       rowMarkersIsActive,
@@ -83,8 +80,8 @@ export const useReorderDragable = <
       colsWithKeyTextMap,
       keyText,
       showRowInstruments,
-    });
-
+    ],
+  );
   const getActualOrder = (prev: string[]) => {
     const defaultOrder = getDefaultColumnsOrder();
 
@@ -111,6 +108,15 @@ export const useReorderDragable = <
       orderArrayForChanging: copyOfPrev,
     });
   };
+
+  const [columnsOrder, setColumnsOrder] = useState(() => {
+    if (!reorderIsActive) return [];
+    const initial = tableConfigColumnsControl?.orderInitial;
+    if (!initial) return getDefaultColumnsOrder();
+    return getActualOrder(
+      expandKeyTextKeys(initial, colsWithKeyTextMap, tableConfigKeyTextBoolean),
+    );
+  });
 
   const columnsOrderRef = useRef(columnsOrder);
   columnsOrderRef.current = columnsOrder;

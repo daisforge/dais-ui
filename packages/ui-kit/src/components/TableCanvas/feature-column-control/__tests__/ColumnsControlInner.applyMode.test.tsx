@@ -1,17 +1,26 @@
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import {
+  act,
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+} from '@testing-library/react';
 import React, { useCallback, useState } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-// Список колонок с dnd и виртуализацией в тесте не нужен: достаточно кнопок,
-// которые скрывают колонку «b» и пару key/text через тот же сеттер, что и
-// реальный свитч.
+// Кнопки вызывают те же обработчики скрытия и перестановки, что и список колонок.
 vi.mock('../ColumnsList', () => ({
   ColumnsList: ({
     setHiddenCols,
+    onColumnsReorder,
   }: {
+    onColumnsReorder: (source: string, target: string) => void;
     setHiddenCols: React.Dispatch<React.SetStateAction<string[]>>;
   }) => (
     <>
+      <button type="button" onClick={() => onColumnsReorder('a', 'b')}>
+        переставить a и b
+      </button>
       <button
         type="button"
         onClick={() => setHiddenCols((prev) => [...prev, 'b'])}
@@ -31,6 +40,8 @@ vi.mock('../ColumnsList', () => ({
 // eslint-disable-next-line import/first
 import type { KeyTextMap } from '../../feature-key-text/types';
 // eslint-disable-next-line import/first
+import { useReorderDragable } from '../../feature-reorder-columns/useReorderDragable';
+// eslint-disable-next-line import/first
 import { ColumnsControlInner } from '../ColumnsControlInner';
 // eslint-disable-next-line import/first
 import { ColumnsControlConfig } from '../types';
@@ -39,6 +50,7 @@ import { useColumnsControl } from '../useColumnsControl';
 
 afterEach(() => cleanup());
 
+const noKeyText: KeyTextMap = new Map();
 const columnConfig = [
   { key: 'a', name: 'A' },
   { key: 'b', name: 'B' },
@@ -52,13 +64,31 @@ const columnConfig = [
 const Harness = ({
   config,
   applyHidden,
+  columns = columnConfig,
 }: {
   config: ColumnsControlConfig;
+  columns?: typeof columnConfig;
   /** Сеттер скрытых решает, что записать, как стор с проверками. */
   applyHidden?: (prev: string[], next: string[]) => string[];
 }) => {
-  const [columnsOrder, setColumnsOrder] = useState(['a', 'b', 'c']);
   const [pinnedCols, setPinnedCols] = useState<string[]>([]);
+  const { columnsOrder, setColumnsOrder, getDefaultColumnsOrder } =
+    useReorderDragable({
+      allColumns: columns,
+      columns,
+      columnConfig: columns,
+      tableConfigColumnsControl: config,
+      reorderIsActive: true,
+      selectingRowsIsActive: false,
+      rowMarkersIsActive: false,
+      rowErrorsIsActive: false,
+      rowsGroupingIsActive: false,
+      showRowInstruments: false,
+      tableConfigKeyTextBoolean: false,
+      keyText: 'text',
+      colsWithKeyTextMap: noKeyText,
+      pinnedCols,
+    });
   const [hiddenCols, setHiddenColsState] = useState<string[]>([]);
   const setHiddenCols = useCallback<
     React.Dispatch<React.SetStateAction<string[]>>
@@ -73,6 +103,7 @@ const Harness = ({
 
   return (
     <>
+      <div data-testid="table-order">{columnsOrder.join(',')}</div>
       <div data-testid="table-hidden">{hiddenCols.join(',')}</div>
       {/* Изменение снаружи панели: так потребитель меняет hiddenState. */}
       <button
@@ -85,13 +116,13 @@ const Harness = ({
         opened
         onClose={() => {}}
         columnsOrder={columnsOrder}
-        getDefaultColumnsOrder={() => ['a', 'b', 'c']}
+        getDefaultColumnsOrder={getDefaultColumnsOrder}
         setColumnsOrder={setColumnsOrder}
         pinnedCols={pinnedCols}
         setPinnedCols={setPinnedCols}
         hiddenCols={hiddenCols}
         setHiddenCols={setHiddenCols}
-        columnConfig={columnConfig}
+        columnConfig={columns}
         columnsControlConfig={config}
         colsWithKeyTextMap={new Map()}
         keyText="text"
@@ -150,6 +181,89 @@ const baseConfig: ColumnsControlConfig = {
 };
 
 describe('ColumnsControlInner: режим применения', () => {
+  it.each(['confirm', 'instant'] as const)(
+    'в режиме %s штатная кнопка сбрасывает сохранённый порядок к orderDefault',
+    (applyMode) => {
+      const onConfirm = vi.fn();
+      const config = {
+        ...baseConfig,
+        applyMode,
+        orderInitial: ['c', 'b', 'a'],
+        orderDefault: ['b', 'a', 'c'],
+        onConfirm,
+      };
+      render(<Harness config={config} />);
+      const reset = screen.getByRole<HTMLButtonElement>('button', {
+        name: 'Сбросить порядок',
+      });
+      expect(screen.getByTestId('table-order').textContent).toBe('c,b,a');
+      expect(reset.disabled).toBe(false);
+      fireEvent.click(reset);
+      if (applyMode === 'confirm') {
+        expect(screen.getByTestId('table-order').textContent).toBe('c,b,a');
+        fireEvent.click(screen.getByRole('button', { name: 'Применить' }));
+      }
+      expect(screen.getByTestId('table-order').textContent).toBe('b,a,c');
+      expect(reset.disabled).toBe(true);
+      expect(onConfirm.mock.lastCall?.[0].order).toEqual(config.orderDefault);
+    },
+  );
+
+  it('внешний сброс очищает черновик confirm при внутреннем порядке', () => {
+    const onConfirm = vi.fn();
+    render(<Harness config={{ ...baseConfig, onConfirm }} />);
+    const apply = screen.getByRole('button', { name: 'Применить' });
+    fireEvent.click(apply);
+    const { setColumnsOrder } = onConfirm.mock.calls[0][1];
+
+    fireEvent.click(screen.getByText('переставить a и b'));
+    const reset = screen.getByRole<HTMLButtonElement>('button', {
+      name: 'Сбросить порядок',
+    });
+    expect(reset.disabled).toBe(false);
+    act(() => setColumnsOrder(['a', 'b', 'c']));
+    expect(reset.disabled).toBe(true);
+    fireEvent.click(apply);
+    expect(onConfirm.mock.lastCall?.[0].order).toEqual(['a', 'b', 'c']);
+  });
+
+  it.each(['instant', 'confirm'] as const)(
+    'в режиме %s сброс учитывает новый порядок конфига в открытой панели',
+    (applyMode) => {
+      const config = { ...baseConfig, applyMode };
+      const { rerender } = render(<Harness config={config} />);
+      const reset = screen.getByRole<HTMLButtonElement>('button', {
+        name: 'Сбросить порядок',
+      });
+      expect(reset.disabled).toBe(true);
+
+      rerender(
+        <Harness config={config} columns={[...columnConfig].reverse()} />,
+      );
+      expect(screen.getByTestId('table-order').textContent).toBe('a,b,c');
+      expect(reset.disabled).toBe(false);
+      fireEvent.click(reset);
+      if (applyMode === 'confirm')
+        fireEvent.click(screen.getByRole('button', { name: 'Применить' }));
+      expect(screen.getByTestId('table-order').textContent).toBe('c,b,a');
+      expect(reset.disabled).toBe(true);
+    },
+  );
+
+  it('сохранённый сеттер onConfirm меняет порядок добавленной колонки', () => {
+    const onConfirm = vi.fn();
+    const config = { ...baseConfig, onConfirm };
+    const { rerender } = render(
+      <Harness config={config} columns={columnConfig.slice(0, 2)} />,
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Применить' }));
+    const { setColumnsOrder } = onConfirm.mock.calls[0][1];
+
+    rerender(<Harness config={config} />);
+    act(() => setColumnsOrder(['c', 'b', 'a']));
+    expect(screen.getByTestId('table-order').textContent).toBe('c,b,a');
+  });
+
   it('в режиме confirm изменение попадает в таблицу только по кнопке «Применить»', () => {
     const onConfirm = vi.fn();
     render(<Harness config={{ ...baseConfig, onConfirm }} />);

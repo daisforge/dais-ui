@@ -14,6 +14,7 @@ import React, {
 } from 'react';
 
 import { KeyText, KeyTextMap } from '../feature-key-text/types';
+import { sameOrder } from '../feature-reorder-columns/handlers';
 import { reorderHandler } from '../feature-reorder-columns/reorderHandler';
 import { ROW_ERRORS_COLUMN_KEY } from '../feature-row-errors';
 import { ROW_I_COLUMN_KEY } from '../feature-row-instruments';
@@ -217,17 +218,12 @@ export const ColumnsControlInner = <
   }, []);
 
   const orderIsNotChanged = useMemo(
-    () => {
-      const notCheckingKeysSet = SERVICE_COLS_SET;
-      const global = getDefaultColumnsOrder()
-        .filter((k) => !notCheckingKeysSet.has(k))
-        .join();
-      const local = localOrder.filter((k) => !notCheckingKeysSet.has(k)).join();
-
-      return global === local;
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [localOrder],
+    () =>
+      sameOrder(
+        withoutServiceCols(getDefaultColumnsOrder()),
+        withoutServiceCols(localOrder),
+      ),
+    [getDefaultColumnsOrder, localOrder],
   );
 
   const onColumnsReorderLocal = useCallback(
