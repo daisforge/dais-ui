@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import type { GridSelection } from '@daisforge/glide-data-grid';
 
+import type { CellsSelectionMode } from '../../types';
 import {
   EMPTY_SELECTION,
   useNativeGridSelection,
@@ -84,7 +85,13 @@ describe('выделение после изменения таблицы', () =
       rerender({ ...sorted, rows: [...rows].reverse() });
       expect(result.current.selection.current?.cell).toEqual([1, 2]);
       expect(sync).toHaveBeenLastCalledWith(result.current.selection, false);
-      expect(emit).not.toHaveBeenCalled();
+      expect(emit.mock.calls.map(([s]) => s.current.cell)).toEqual([
+        [1, 1],
+        [1, 2],
+      ]);
+      rerender({ ...sorted, page: 2 });
+      expect(emit).toHaveBeenCalledTimes(3);
+      expect(emit).toHaveBeenLastCalledWith(EMPTY_SELECTION);
     },
   );
 
@@ -103,7 +110,7 @@ describe('выделение после изменения таблицы', () =
     expect(project({ revision: 2 })?.current?.range.width).toBe(1);
   });
 
-  it('без версии распознаёт ту же запись по ключу, без ключа снимает устаревший диапазон', () => {
+  it('удерживает выделение при повторном получении данных с ключом и без ключа', () => {
     const before = { ...view, revision: undefined };
     const after = { ...before, rows: rows.map((row) => ({ ...row })) };
     expect(
@@ -113,6 +120,16 @@ describe('выделение после изменения таблицы', () =
       projectSelection(
         { ...before, rowKey: undefined },
         { ...after, rowKey: undefined },
+        initial,
+        false,
+        singleCell,
+      ),
+    ).toBeUndefined();
+    const unkeyed = { ...before, rowKey: undefined };
+    expect(
+      projectSelection(
+        unkeyed,
+        { ...unkeyed, criteria: { filter: 1 } },
         initial,
         false,
         singleCell,
@@ -328,6 +345,133 @@ describe('выделение после изменения таблицы', () =
         true,
       )?.current?.range.height,
     ).toBe(rows.length + 1);
+  });
+
+  it.each([
+    [1, 1],
+    [0, 3],
+  ])(
+    'сохраняет выбор колонок x=%i шириной %i после сортировки и фильтра',
+    (x, width) => {
+      const full: GridSelection = {
+        ...initial,
+        current: {
+          cell: [x, 0],
+          range: { x, y: 0, width, height: rows.length },
+          rangeStack: [],
+        },
+      };
+      const sorted = {
+        ...view,
+        criteria: { sort: 'desc' },
+        rows: [...rows].reverse(),
+      };
+      expect(
+        projectSelection(view, sorted, full, false, singleCell, [], true),
+      ).toBeUndefined();
+      const filtered = {
+        ...sorted,
+        rows: sorted.rows.slice(0, 2),
+        criteria: { filter: 1 },
+      };
+      expect(
+        projectSelection(sorted, filtered, full, false, singleCell, [], true)
+          ?.current?.range,
+      ).toEqual({ x, y: 0, width, height: 2 });
+      expect(
+        projectSelection(view, filtered, EMPTY_SELECTION, true, singleCell),
+      ).toBeUndefined();
+      expect(
+        projectSelection(view, filtered, EMPTY_SELECTION, true, singleCell, [
+          1,
+        ]),
+      ).toBe(EMPTY_SELECTION);
+    },
+  );
+
+  it('переносит вторую итоговую строку при дозагрузке и фильтрации', () => {
+    const v = { ...view, summaryCount: 2, placeholderCount: 1 };
+    const y = rows.length + 2;
+    const selected: GridSelection = {
+      ...initial,
+      current: { cell: [1, y], range: singleCell(1, y), rangeStack: [] },
+    };
+    for (const records of [rows.slice(1), [...rows, ...rows]]) {
+      const changed = {
+        ...v,
+        rows: records,
+        placeholderCount: 0,
+        criteria: { filter: true },
+      };
+      expect(
+        projectSelection(v, changed, selected, false, singleCell)?.current
+          ?.cell,
+      ).toEqual([1, records.length + 1]);
+    }
+    expect(
+      projectSelection(
+        v,
+        { ...v, summaryCount: 1 },
+        selected,
+        false,
+        singleCell,
+      ),
+    ).toBe(EMPTY_SELECTION);
+  });
+
+  it('при новом режиме сохраняет только допустимое выделение', () => {
+    const multi = {
+      ...initial,
+      current: { ...initial.current!, rangeStack: [singleCell(0, 0)] },
+    };
+    const { result, rerender } = renderHook(
+      ({ mode }: { mode: CellsSelectionMode }) => {
+        const [selection, setSelection] = useState<GridSelection>(multi);
+        useSelectionProjection({
+          view,
+          columns,
+          selection,
+          hasAxes: false,
+          getBlock: singleCell,
+          mode,
+          apply: (value) => setSelection(value),
+        });
+        return selection;
+      },
+      { initialProps: { mode: 'multi-range-cell' as CellsSelectionMode } },
+    );
+    rerender({ mode: 'range-cell' });
+    expect(result.current.current?.rangeStack).toEqual([]);
+    expect(result.current.current?.range.width).toBe(2);
+    rerender({ mode: 'cell' });
+    expect(result.current.current?.range).toEqual(singleCell(1, 1));
+    rerender({ mode: 'disabled' });
+    expect(result.current).toBe(EMPTY_SELECTION);
+  });
+
+  it('подсветка строки следует за записью независимо от положения рамки', () => {
+    const commit = vi.fn();
+    const { rerender } = renderHook(
+      ({ records, activeRow }) => {
+        useSelectionProjection({
+          view: { ...view, rows: records },
+          columns,
+          selection: EMPTY_SELECTION,
+          activeRow,
+          commitActiveRow: commit,
+          hasAxes: false,
+          getBlock: singleCell,
+          apply: vi.fn(),
+        });
+      },
+      { initialProps: { records: rows, activeRow: 0 } },
+    );
+    const reversed = [...rows].reverse();
+    rerender({ records: reversed, activeRow: 0 });
+    expect(commit).toHaveBeenLastCalledWith(3);
+    rerender({ records: reversed, activeRow: 3 });
+    rerender({ records: reversed.slice(0, 3), activeRow: 3 });
+    expect(commit).toHaveBeenLastCalledWith(undefined);
   });
 
   it('при ресайзе и пустом выделении обход строк не нужен', () => {

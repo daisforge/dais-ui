@@ -1309,12 +1309,7 @@ export function TableCanvas<
                           tooltip={tableConfig.tooltip}
                           popover={tableConfig.popover}
                           dropdown={tableConfig.dropdown}
-                          rowKeyGetter={
-                            tableConfig.editing?.rowKeyGetter ??
-                            tableConfig.selecting?.rowKeyGetter ??
-                            tableConfig.subRows?.rowKeyGetter ??
-                            tableConfig.mergeCells?.rowKeyGetter
-                          }
+                          rowKeyGetter={selectionRowKey}
                           massActionPanel={
                             tableConfig?.controlBlock?.massActionPanel
                           }

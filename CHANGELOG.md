@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## Unreleased
+
+- TableCanvas сохраняет активную запись при сортировке и фильтрации и очищает
+  выделение при смене страницы. Копирование, вставка и протяжка учитывают
+  фактический порядок закреплённых колонок.
+- TableCanvas точнее распознаёт строки группировки. Группа с пустым строковым
+  значением получает собственный ключ.
+
 ## [1.30.1](https://github.com/daisforge/dais-ui/compare/v1.30.0...v1.30.1) (2026-11-22)
 
 **Note:** Version bump only for package @dais-ui/source

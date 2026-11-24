@@ -705,6 +705,7 @@ export function useTableSelectionSystem<
     selectedColumnSet,
     headerSelectedRowIndexes,
     activeRow,
+    commitActiveRow,
     numberingColumnIndex,
     drawFocusRing,
     selectColumnFromHeader,

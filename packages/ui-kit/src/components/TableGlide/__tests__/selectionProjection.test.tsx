@@ -1,5 +1,5 @@
 import { type GridSelection } from '@daisforge/glide-data-grid';
-import { cleanup, render, screen } from '@testing-library/react';
+import { act, cleanup, render, screen } from '@testing-library/react';
 import React, { useRef, useState } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -7,16 +7,23 @@ import { EMPTY_SELECTION } from '../hooks/selection/useNativeGridSelection';
 import { TableGlide } from '../TableGlide';
 import type { GlideProps, SelectionSnapshot } from '../types';
 
+const captured = vi.hoisted(() => ({
+  editor: undefined as GlideProps | undefined,
+}));
+
 vi.mock('../styled', async (original) => {
   const { forwardRef } = await import('react');
-  const Editor = forwardRef<HTMLDivElement, GlideProps>((props, _ref) => (
-    <div
-      data-testid="editor"
-      data-regions={props.highlightRegions?.length ?? 0}
-    >
-      {JSON.stringify(props.gridSelection?.current?.cell ?? null)}
-    </div>
-  ));
+  const Editor = forwardRef<HTMLDivElement, GlideProps>((props, _ref) => {
+    captured.editor = props;
+    return (
+      <div
+        data-testid="editor"
+        data-regions={props.highlightRegions?.length ?? 0}
+      >
+        {JSON.stringify(props.gridSelection?.current?.cell ?? null)}
+      </div>
+    );
+  });
   Editor.displayName = 'TestEditor';
   return {
     ...(await original<typeof import('../styled')>()),
@@ -123,6 +130,93 @@ describe('TableGlide при смене представления', () => {
     expect(emit).not.toHaveBeenCalled();
     expect(screen.getByTestId('editor').textContent).toBe('[2,0]');
     expect(sync).toHaveBeenLastCalledWith(target);
+  });
+
+  it('сохраняет клик в controlled-таблице, которая пересоздаёт строки без ключа на каждом рендере', () => {
+    function ControlledTable() {
+      const [selection, setSelection] = useState(EMPTY_SELECTION);
+      const history = useRef<SelectionSnapshot<(typeof rows)[number]>>();
+      const records = rows.map((row) => ({ ...row }));
+      return (
+        <TableGlide
+          rows={records}
+          columns={columns}
+          gridSelection={selection}
+          onGridSelectionChange={setSelection}
+          selectionView={{
+            history,
+            rows: records,
+            loading: false,
+            criteria: {},
+          }}
+        />
+      );
+    }
+    render(<ControlledTable />);
+    act(() => captured.editor!.onGridSelectionChange!(initial));
+    expect(screen.getByTestId('editor').textContent).toBe('[0,1]');
+  });
+
+  it('скрывает выбранные колонки у потребителя на время загрузки и возвращает их после ответа', () => {
+    const notify = vi.fn();
+    const show = (loading: boolean) => (
+      <TableGlide
+        rows={rows}
+        columns={columns}
+        onColumnSelectionChange={notify}
+        selectionView={{ rows, loading, rowKey, criteria: {}, history }}
+      />
+    );
+    const history = { current: undefined };
+    const table = render(show(false));
+    act(() =>
+      captured.editor!.onHeaderClicked!(0, {
+        shiftKey: false,
+        ctrlKey: false,
+        metaKey: false,
+      } as never),
+    );
+    expect(notify).toHaveBeenLastCalledWith(['a']);
+    table.rerender(show(true));
+    expect(notify).toHaveBeenLastCalledWith([]);
+    table.rerender(show(false));
+    expect(notify).toHaveBeenLastCalledWith(['a']);
+  });
+
+  it('не передаёт запись из редактора в строку, занявшую её место после сортировки', () => {
+    const edited = vi.fn();
+    const history = { current: undefined };
+    const show = (records: typeof rows) => (
+      <TableGlide
+        rows={records}
+        columns={columns}
+        provideEditor={() => undefined}
+        onCellsEdited={edited}
+        selectionView={{
+          rows: records,
+          loading: false,
+          rowKey,
+          criteria: {},
+          history,
+        }}
+      />
+    );
+    const table = render(show(rows));
+    const cell = { location: [0, 1] } as never;
+    act(() => {
+      captured.editor!.provideEditor!(cell);
+    });
+    table.rerender(show([...rows].reverse()));
+    expect(
+      captured.editor!.onCellsEdited!([{ location: [0, 1], value: cell }]),
+    ).toBe(true);
+    expect(edited).not.toHaveBeenCalled();
+    act(() => {
+      captured.editor!.onFinishedEditing!(undefined, [0, 0]);
+      captured.editor!.provideEditor!(cell);
+    });
+    captured.editor!.onCellsEdited!([{ location: [0, 1], value: cell }]);
+    expect(edited).toHaveBeenCalledTimes(1);
   });
 
   it('при загрузке скрывает контуры, после ответа переносит запись и колонку ровно один раз', () => {

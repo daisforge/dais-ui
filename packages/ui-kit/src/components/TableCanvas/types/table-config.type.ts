@@ -909,8 +909,9 @@ type TableConfigOverlayRowKey<RowType> = {
   /**
    * Ключ строки. Если после обновления `rows` на месте строки, где открыто
    * окно, стоит строка с тем же ключом, окно остаётся открытым, с другим
-   * ключом закрывается. Не задан: берётся `rowKeyGetter` из `editing`,
-   * `selecting`, `subRows` или `mergeCells`, а без него строки сравниваются
+   * ключом закрывается. По умолчанию берётся `rowKeyGetter` из `cellsSelection`,
+   * `editing`, `selecting`, `subRows`, `mergeCells` или `rowsGrouping`.
+   * Если ключа нет, строки сравниваются
    * по ссылке, и новый массив с теми же данными тоже закроет окно.
    */
   rowKeyGetter?: (row: RowType) => string | number;
@@ -984,9 +985,17 @@ export type { TableCanvasEmptyStateConfig, TableCanvasErrorStateConfig };
  * Это отдельная ось взаимодействия — не зависит от `highlightActiveType`.
  */
 export type CellsSelectionConfig<RowType = ObjectForExtending> = {
-  /** Постоянный ID записи для сохранения активной ячейки при перестановке строк. */
+  /**
+   * Постоянный ID записи для сортировки, фильтрации, редактирования и дозагрузки.
+   * По умолчанию берётся из editing, selecting, subRows, mergeCells или rowsGrouping
+   * в этом порядке. Без ключа обычное обновление rows сохраняет координаты.
+   */
   rowKeyGetter?: (row: RowType) => string | number;
-  /** Версия набора данных. Меняйте вместе с новым набором, сохраняйте при обновлении значений и дозагрузке. */
+  /**
+   * Версия набора данных. Измените её при смене результата внешнего запроса.
+   * Пока версия прежняя, таблица проверяет ключ активной записи и доверяет
+   * порядку остальных строк. Сохраняйте версию при правке и дозагрузке в конец.
+   */
   dataRevision?: string | number;
   /**
    * Режим фактического выделения ячеек (нативный glide selection). По нему
