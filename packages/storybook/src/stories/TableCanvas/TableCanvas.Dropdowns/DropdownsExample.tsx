@@ -76,6 +76,7 @@ export function DropdownsExample({
       </label>
       <div style={{ maxWidth: compact ? 168 : 600, marginTop: 16 }}>
         <TableCanvas
+          key={size}
           refTable={tableRef}
           columnConfig={columns}
           rows={rows}

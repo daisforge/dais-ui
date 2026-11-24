@@ -11,7 +11,7 @@ import {
 /**
  * Якорь поповера: невидимый DOM-элемент на месте canvas-элемента.
  * position: absolute внутри основного контейнера таблицы (не скроллящегося).
- * Фильтр открывается от точки (1×1), Popover на canvas от прямоугольника
+ * Фильтр открывается от прямоугольника иконки, Popover на canvas от прямоугольника
  * элемента или ячейки. С `$passThrough` клики проходят сквозь якорь на canvas.
  */
 export const StyledPopoverContainer = styled.div<{
@@ -41,12 +41,12 @@ export const PopoverContent = styled.div`
 
 /**
  * Скрытый target button для PopoverBeta.
- * PopoverBeta требует видимый target для позиционирования,
- * но мы управляем открытием программно через .click().
+ * Занимает весь прямоугольник иконки и не перехватывает события грида.
  */
 export const HiddenTriggerButton = styled.button`
-  width: 1px;
-  height: 1px;
+  display: block;
+  width: 100%;
+  height: 100%;
   appearance: none;
   border: none;
   outline: none;

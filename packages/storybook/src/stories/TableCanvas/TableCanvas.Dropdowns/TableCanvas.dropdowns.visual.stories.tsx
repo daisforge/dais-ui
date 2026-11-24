@@ -60,9 +60,28 @@ function opened(size: SIZE, menu: Menu): StoryObj {
         fireEvent.pointerUp(target, { ...event, buttons: 0 });
         fireEvent.contextMenu(target, event);
         await expect(await page.findByText('Копировать')).toBeVisible();
+        const list = await page.findByRole('tree');
+        await waitFor(() => {
+          const menuRect = list.parentElement?.getBoundingClientRect();
+          if (!menuRect)
+            throw new Error('Границы контекстного меню недоступны');
+          expect(Math.abs(menuRect.x - event.clientX)).toBeLessThanOrEqual(1);
+          expect(
+            Math.abs(menuRect.y - bounds.y - bounds.height - 4),
+          ).toBeLessThanOrEqual(1);
+        });
       } else {
         click(target, { x: bounds.x + bounds.width - 22, y });
         await waitFor(() => expect(page.getByRole('textbox')).toBeVisible());
+        await waitFor(() => {
+          const anchor = canvasElement
+            .querySelector('[data-popover-trigger]')
+            ?.getBoundingClientRect();
+          const popup = page.getByRole('dialog').getBoundingClientRect();
+          if (!anchor) throw new Error('Якорь фильтра недоступен');
+          const edge = menu === 'lastFilter' ? 'right' : 'left';
+          expect(Math.abs(popup[edge] - anchor[edge])).toBeLessThanOrEqual(1);
+        });
       }
     },
   };

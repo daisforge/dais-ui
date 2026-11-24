@@ -174,7 +174,7 @@ export const useContextMenuValues = <
       const params = { column, refTable, ctxs };
       const position = {
         x: event.bounds.x + event.localEventX,
-        y: event.bounds.y + event.localEventY,
+        y: event.bounds.y + event.bounds.height,
       };
       const context = {
         type: 'header' as const,
@@ -220,7 +220,7 @@ export const useContextMenuValues = <
       const params = { row, column, refTable, ctxs };
       const position = {
         x: event.bounds.x + event.localEventX,
-        y: event.bounds.y + event.localEventY,
+        y: event.bounds.y + event.bounds.height,
       };
       const context = {
         type: 'cell' as const,

@@ -8,12 +8,12 @@ type Row = { id: number };
 
 const ITEMS = [{ value: 'edit', label: 'Редактировать' }];
 
-const createEvent = () =>
+const createEvent = (localEventY = 20) =>
   ({
     preventDefault: vi.fn(),
-    bounds: { x: 0, y: 0 },
+    bounds: { x: 12, y: 40, width: 160, height: 32 },
     localEventX: 10,
-    localEventY: 20,
+    localEventY,
   } as never);
 
 const setup = (tableConfig: object) =>
@@ -52,6 +52,23 @@ const openHeader = (result: ReturnType<typeof setup>['result']) =>
   });
 
 describe('useContextMenuValues', () => {
+  it.each([1, 31])(
+    'открывает меню от низа ячейки при клике на высоте %i',
+    (y) => {
+      const { result } = setup({
+        onCellContextMenuDropdown: { getDropdownItems: () => ITEMS },
+      });
+      act(() =>
+        result.current.openCellContextMenu(
+          [0, 0] as never,
+          createEvent(y),
+          CELL_INFO,
+        ),
+      );
+      expect(result.current.position).toEqual({ x: 22, y: 72 });
+    },
+  );
+
   it('onOpen ячейки вызывается при каждом открытии, даже если пункты уже есть', () => {
     const onOpen = vi.fn();
     const { result } = setup({

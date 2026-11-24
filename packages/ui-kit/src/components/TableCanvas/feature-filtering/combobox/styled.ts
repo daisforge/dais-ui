@@ -55,17 +55,20 @@ export const StyledTotalListItemContainer = styled(Box)<{
 const listStylesMapper = {
   small: () => ({
     ...bodyXS,
-    padding: '10px 12px',
+    minHeight: 24,
+    padding: '4px 8px',
     borderRadius: '6px',
   }),
   medium: () => ({
     ...bodyS,
-    padding: '10px 12px',
+    minHeight: 40,
+    padding: '8px 12px',
     borderRadius: '8px',
   }),
   big: () => ({
     ...bodyM,
-    padding: '10px 12px',
+    minHeight: 48,
+    padding: '12px 14px',
     borderRadius: '10px',
   }),
 };

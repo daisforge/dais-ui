@@ -7,12 +7,46 @@ import {
   useHeaderContext,
   useRefTableGlobalContainerContext,
 } from '../../contexts';
-import { LIST_WIDTH, SIZES } from '../../styles/styles.constants';
+import { getTableDropdownConfig } from '../../styles/dropdown-sizes';
 import { TableDropdownProps } from './types';
 
-const StyledDropdown: typeof Dropdown = styled(Dropdown)<{ $css?: CSSObject }>(
-  ({ $css }) => $css,
-);
+const StyledDropdown: React.ComponentType<TableDropdownProps> = styled(
+  Dropdown,
+)<{ $css?: CSSObject }>(({ $css }) => $css);
+
+function SizedTableDropdown({
+  size,
+  variant,
+  listWidth,
+  $css,
+  ...props
+}: TableDropdownProps) {
+  const { rowSize } = useHeaderContext();
+  const config = getTableDropdownConfig(rowSize, size);
+  // Plasma интерполирует число как CSS-строку без единиц измерения.
+  const width = typeof listWidth === 'number' ? `${listWidth}px` : listWidth;
+  return (
+    <StyledDropdown
+      {...props}
+      size={config.size}
+      variant={variant ?? config.variant}
+      listWidth={width ?? 'max-content'}
+      $css={{
+        '--plasma-dropdown-item-disclosure-icon-size': `${config.iconWidth}px`,
+        // Подменю Plasma портализируется в обёртку родительского списка.
+        '& div:has(> ul[role="tree"]), & div:has(> ul[role="group"])': {
+          minWidth: config.minWidth,
+          maxWidth: config.maxWidth,
+        },
+        '& .cell-textbox-title': {
+          whiteSpace: 'normal',
+          overflowWrap: 'anywhere',
+        },
+        ...$css,
+      }}
+    />
+  );
+}
 
 // Закрываем неуправляемый Plasma-дропдаун его же путём: диспатчим mousedown на
 // document. Его ловит внутренний useOutsideClick Plasma (target=document вне
@@ -33,7 +67,6 @@ export const TableDropdown = (
   },
 ) => {
   const refTableGlobalContainer = useRefTableGlobalContainerContext();
-  const { rowSize } = useHeaderContext();
 
   const {
     onToggle: onToggleProp,
@@ -93,10 +126,8 @@ export const TableDropdown = (
     : onItemSelectProp;
 
   return (
-    <StyledDropdown
+    <SizedTableDropdown
       portal={refTableGlobalContainer}
-      listWidth={LIST_WIDTH[rowSize]}
-      size={SIZES[rowSize].input}
       {...restProps}
       closeOnSelect={manualCloseOnSelect ? false : closeOnSelectProp}
       onItemSelect={handleItemSelect}
@@ -115,7 +146,6 @@ export const TableDropdownWithCustomClickOutside = ({
   ...props
 }: TableDropdownProps & { isOpen?: boolean; onClose?: () => void }) => {
   const refTableGlobalContainer = useRefTableGlobalContainerContext();
-  const { rowSize } = useHeaderContext();
 
   useEffect(() => {
     if (!isOpen) return undefined;
@@ -171,9 +201,7 @@ export const TableDropdownWithCustomClickOutside = ({
   }, [isOpen, onClose, portal, refTableGlobalContainer]);
 
   return (
-    <StyledDropdown
-      listWidth={LIST_WIDTH[rowSize]}
-      size={SIZES[rowSize].input}
+    <SizedTableDropdown
       closeOnOverlayClick={false}
       portal={portal}
       {...props}

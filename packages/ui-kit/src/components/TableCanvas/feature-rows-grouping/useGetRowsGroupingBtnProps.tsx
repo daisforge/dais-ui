@@ -6,6 +6,8 @@ import React, { useMemo } from 'react';
 import styled from 'styled-components';
 
 import { AnimatedCounter } from '../components/AnimatedCounter';
+import type { SIZE } from '../styles';
+import { getTableDropdownConfig } from '../styles/dropdown-sizes';
 import { ColumnConfig, ObjectForExtending, TableConfig } from '../types';
 import { DOM_METADATA_ACTIONS } from '../types/dom-metadata-actions';
 import { ControlBlockButtonProps } from '../widgets/control-block/control-block-button.types';
@@ -26,9 +28,15 @@ const resetOptionStyle = () => ({
     },
   },
 });
-const CheckBoxI = ({ checked }: { checked: boolean }) => (
+const CheckBoxI = ({
+  checked,
+  size,
+}: {
+  checked: boolean;
+  size: 's' | 'm';
+}) => (
   <Checkbox
-    size="m"
+    size={size}
     style={{ pointerEvents: 'none' }}
     checked={checked}
     onChange={() => {}}
@@ -57,6 +65,7 @@ export const useGetRowsGroupingBtnProps = <
   RowIdType extends string | number,
   SummaryRowType,
 >({
+  rowSize,
   isActivatedRowsGrouping,
   columnConfig,
   groupedCols,
@@ -64,6 +73,7 @@ export const useGetRowsGroupingBtnProps = <
   tableConfig,
 }: {
   tableConfig: TableConfig<RowType, SummaryRowType, RowIdType, FilterStateType>;
+  rowSize: SIZE;
   isActivatedRowsGrouping: boolean;
   columnConfig: readonly ColumnConfig<RowType, SummaryRowType>[];
   groupedCols: string[] | undefined;
@@ -79,6 +89,7 @@ export const useGetRowsGroupingBtnProps = <
     if (!isActivatedRowsGrouping || !groupedCols) {
       return { rowsGroupingButtonProps: {} };
     }
+    const { checkboxSize, iconSize } = getTableDropdownConfig(rowSize);
     const columns = {
       visible: [] as string[],
       hidden: [] as string[],
@@ -102,7 +113,7 @@ export const useGetRowsGroupingBtnProps = <
         return {
           value: col.key,
           label,
-          contentLeft: <CheckBoxI checked={checked} />,
+          contentLeft: <CheckBoxI checked={checked} size={checkboxSize} />,
 
           ...(checked && {
             contentRight: <BadgeI text={indexInGrouped + 1} />,
@@ -116,7 +127,7 @@ export const useGetRowsGroupingBtnProps = <
       const indexInGrouped = groupedCols?.findIndex((k) => k === i.value) ?? -1;
       const checked = indexInGrouped > -1;
       return {
-        contentLeft: <CheckBoxI checked={checked} />,
+        contentLeft: <CheckBoxI checked={checked} size={checkboxSize} />,
         ...(checked && {
           contentRight: <BadgeI text={indexInGrouped + 1} />,
         }),
@@ -131,7 +142,7 @@ export const useGetRowsGroupingBtnProps = <
       label: 'Сбросить все',
       value: 'reset',
       className: 'reset-groups-btn',
-      contentLeft: <IconClose color="inherit" />,
+      contentLeft: <IconClose color="inherit" size={iconSize} />,
     });
 
     const groupedCount = getGroupedCountExternal
@@ -211,5 +222,11 @@ export const useGetRowsGroupingBtnProps = <
     return { rowsGroupingButtonProps };
     // не включены getGroupedCountExternal, onItemSelectExternal, defaultCustomItemsExternal - достаточно проверить isActivatedRowsGrouping
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [columnConfig, groupedCols, isActivatedRowsGrouping, setGroupedCols]);
+  }, [
+    columnConfig,
+    groupedCols,
+    isActivatedRowsGrouping,
+    setGroupedCols,
+    rowSize,
+  ]);
 };

@@ -15,6 +15,7 @@ import {
   ITEM_ID_GROUPED_ROWS,
   NAME_TRIGGER_DROPDOWN_GROUPED_ROWS,
 } from '../../feature-rows-grouping/constants';
+import { getTableDropdownConfig } from '../../styles/dropdown-sizes';
 import { ControlBlockButtonProps } from './control-block-button.types';
 import { isFeatureItem } from './typeGuards';
 import {
@@ -29,7 +30,7 @@ import {
 // чтобы наши кнопки (ключ-текст, группировка) задавали тот же размер в
 // своём dropdownIconRender.
 export const getDropdownIconSize = (rowSize: DropdownRenderCtx['rowSize']) =>
-  rowSize === 'small' ? ('xs' as const) : ('s' as const);
+  getTableDropdownConfig(rowSize).iconSize;
 
 // Иконка может быть готовым узлом или функцией от контекста. Функцию
 // вызываем с контекстом (потребитель сам подбирает размер), узел отдаём

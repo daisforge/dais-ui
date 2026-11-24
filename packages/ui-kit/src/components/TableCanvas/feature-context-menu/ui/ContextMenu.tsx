@@ -61,7 +61,6 @@ export const ContextMenu = ({ containerEl }: ContextMenuProps) => {
           portal={containerRef}
           offset={offset ?? HEADER_CTX_MENU_OFFSET}
           onItemSelect={onItemSelect}
-          listWidth={undefined}
           closeOnOverlayClick={false}
           isOpen={isOpen}
           onClose={close}

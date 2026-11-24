@@ -39,10 +39,10 @@ export interface TablePopoverRenderParams {
 export interface TablePopoverState {
   /** Открыт ли поповер */
   isOpen: boolean;
-  /** Координаты якоря во viewport: точка клика для фильтра, левый верхний угол ноды или ячейки для canvas-поповера */
+  /** Координаты якоря во viewport: левый верхний угол иконки фильтра, левый верхний угол ноды или ячейки для canvas-поповера */
   position: { x: number; y: number } | null;
   /**
-   * Размер якоря. Фильтр открывается от точки (1×1), canvas-поповер от
+   * Размер якоря. Фильтр открывается от иконки, canvas-поповер от
    * прямоугольника ноды или ячейки: так placement считается от реальных границ.
    */
   anchorSize: PopoverAnchorSize | null;

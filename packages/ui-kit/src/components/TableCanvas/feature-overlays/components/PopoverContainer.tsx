@@ -1,4 +1,4 @@
-import React, { useEffect, useId, useMemo } from 'react';
+import React, { useLayoutEffect, useMemo, useState } from 'react';
 
 import {
   HeaderContextValueTypeInstance,
@@ -9,12 +9,9 @@ import { FiltersVariables } from '../../feature-filtering/filtering.type';
 import { FilterComponentInPopover } from '../../feature-filtering/header-filter-button/filter-component-in-popover';
 import { ColumnConfig, ObjectForExtending } from '../../types';
 import { viewportToContainerPosition } from '../../utils';
-import {
-  DATA_POPOVER_TRIGGER,
-  POPOVER_OFFSET,
-  POPOVER_Z_INDEX,
-} from '../constants';
+import { POPOVER_Z_INDEX } from '../constants';
 import { getPopoverBehavior, useTablePopover } from '../context';
+import { getFilterPlacement } from '../utils';
 import {
   HiddenTriggerButton,
   PopoverContent,
@@ -99,7 +96,31 @@ export const PopoverInTable = <
   const { isOpen, position, anchorSize, contentType, contentData, render } =
     state;
 
-  const triggerId = useId();
+  const [content, setContent] = useState<HTMLDivElement | null>(null);
+  const [placement, setPlacement] = useState<'bottom-start' | 'bottom-end'>(
+    'bottom-start',
+  );
+  useLayoutEffect(() => {
+    if (!content || !position) return undefined;
+    const updatePlacement = () => {
+      const viewportRight = content.ownerDocument.documentElement.clientWidth;
+      const right = Math.min(
+        containerEl?.getBoundingClientRect().right ?? viewportRight,
+        viewportRight,
+      );
+      setPlacement(
+        getFilterPlacement(
+          position.x,
+          content.getBoundingClientRect().width,
+          right,
+        ),
+      );
+    };
+    updatePlacement();
+    const observer = new ResizeObserver(updatePlacement);
+    observer.observe(content);
+    return () => observer.disconnect();
+  }, [containerEl, content, position]);
 
   const displayPosition = useMemo(() => {
     const result = (() => {
@@ -118,37 +139,6 @@ export const PopoverInTable = <
       close();
     }
   });
-
-  /**
-   * Программный клик на hidden button для открытия PopoverBeta.
-   *
-   * Почему .click() на DOM-элементе, а не через React ref:
-   * PopoverBeta внутренне подписывается на click-события своего target.
-   * При попытке вызвать ref.current.click() клик не доходил до обработчиков
-   * PopoverBeta — вероятно, из-за того что PopoverBeta клонирует target
-   * и вешает свои обработчики при монтировании.
-   * Единственный рабочий способ — найти реальный DOM-элемент и вызвать .click().
-   *
-   * Почему двойной requestAnimationFrame:
-   * Первый RAF откладывает выполнение до следующего кадра отрисовки — к этому моменту
-   * React завершает рендер и коммит (DOM-элементы уже в документе).
-   * Второй RAF нужен, потому что PopoverBeta сам использует RAF/microtask при инициализации
-   * обработчиков после монтирования. Одного кадра недостаточно — клик происходит раньше,
-   * чем PopoverBeta успевает подписаться на события target. Два RAF гарантируют,
-   * что и React-коммит, и внутренняя инициализация PopoverBeta завершены.
-   */
-  useEffect(() => {
-    if (isOpen && contentType === 'filter' && containerEl) {
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          const trigger = containerEl.querySelector<HTMLElement>(
-            `[${DATA_POPOVER_TRIGGER}="${triggerId}"]`,
-          );
-          trigger?.click();
-        });
-      });
-    }
-  }, [isOpen, contentType, triggerId, containerEl]);
 
   if (!isOpen || !position || !contentType || !displayPosition) return null;
 
@@ -190,17 +180,22 @@ export const PopoverInTable = <
   };
 
   return (
-    <StyledPopoverContainer $x={displayPosition.x} $y={displayPosition.y}>
+    <StyledPopoverContainer
+      $x={displayPosition.x}
+      $y={displayPosition.y}
+      $width={anchorSize?.width}
+      $height={anchorSize?.height}
+      $passThrough
+    >
       <StyledPopoverBeta
-        trigger="click"
-        // flip
+        opened
         shift // Важно: без shift поповер может триггерить ресайзы или region-changed контейнера таблицы, что приводит к автозакрытию (заметно при открытии поповера в последнем столбце)
         target={
           <HiddenTriggerButton
             type="button"
-            {...{ [DATA_POPOVER_TRIGGER]: triggerId }}
             aria-hidden="true"
             tabIndex={-1}
+            data-popover-trigger
           />
         }
         outsideClick
@@ -212,12 +207,11 @@ export const PopoverInTable = <
             close({ outsidePress: true });
           }
         }}
-        offset={POPOVER_OFFSET}
         zIndex={POPOVER_Z_INDEX}
-        placement="bottom-start"
+        placement={placement}
         hasTail={false}
       >
-        <PopoverContent>{renderContent()}</PopoverContent>
+        <PopoverContent ref={setContent}>{renderContent()}</PopoverContent>
       </StyledPopoverBeta>
     </StyledPopoverContainer>
   );
