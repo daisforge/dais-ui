@@ -226,6 +226,8 @@
     }
   },
   "lint-staged": {
-    "*.md": "prettier --write"
+    "*.md": "prettier --write",
+    "packages/{ui-kit,storybook,mcp-server}/**/*.{ts,tsx}": "eslint --fix",
+    "scripts/**/*.mjs": "eslint --fix"
   }
 }

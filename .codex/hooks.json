@@ -1,0 +1,17 @@
+{
+  "description": "ESLint и typecheck изменённых TS-файлов в конце хода (общий скрипт с Claude Code)",
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$(git rev-parse --show-toplevel)/scripts/agent-hooks/check-changed.mjs\"",
+            "timeout": 180,
+            "statusMessage": "Проверка изменённых файлов"
+          }
+        ]
+      }
+    ]
+  }
+}
