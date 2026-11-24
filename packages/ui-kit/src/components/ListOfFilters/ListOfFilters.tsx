@@ -19,7 +19,6 @@ const SIZES = {
 };
 
 const BORDER_WIDTH = 1;
-const BORDER = `${BORDER_WIDTH}px solid ${outlineSolidPrimary}`;
 
 // const DURATION = 0.5;
 
@@ -87,6 +86,7 @@ const ListOfFiltersNotMemo = ({
   extraCss = {},
 }: ListOfFiltersProps) => {
   const SIZE = SIZES[size];
+  const border = `${BORDER_WIDTH}px solid ${outlineSolidPrimary}`;
   const curPaddingInline = paddingInline ?? SIZE.paddingInline;
   const curMaxHeight = maxHeight ?? SIZE.height;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -112,8 +112,8 @@ const ListOfFiltersNotMemo = ({
         className={cls.container}
         $css={{
           display: 'flex',
-          borderInline: BORDER,
-          borderTop: BORDER,
+          borderInline: border,
+          borderTop: border,
           paddingInline: curPaddingInline,
           maxHeight: curMaxHeight,
           marginTop: paddingTop,
