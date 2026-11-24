@@ -1,4 +1,4 @@
-name: Agent hooks
+name: Agent check hook
 
 # Хук проверок агентов (scripts/agent-hooks) запускают Claude Code и Codex у
 # разработчиков на macOS, Linux и Windows. Тест гоняет его на настоящем
@@ -10,14 +10,15 @@ on:
       - 'scripts/agent-hooks/**'
       - '.claude/settings.json'
       - '.codex/hooks.json'
-      - '.github/workflows/agent-hooks.yml'
+      - '.github/workflows/agent-check-hook.yml'
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  hooks:
+  self-test:
+    name: self-test on ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
