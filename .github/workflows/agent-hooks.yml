@@ -1,0 +1,41 @@
+name: Agent hooks
+
+# Хук проверок агентов (scripts/agent-hooks) запускают Claude Code и Codex у
+# разработчиков на macOS, Linux и Windows. Тест гоняет его на настоящем
+# репозитории: корректный файл проходит, ошибка типов и удаление импортируемого
+# файла блокируют завершение хода, чужие правки до хода не мешают.
+on:
+  pull_request:
+    paths:
+      - 'scripts/agent-hooks/**'
+      - '.claude/settings.json'
+      - '.codex/hooks.json'
+      - '.github/workflows/agent-hooks.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  hooks:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    env:
+      NX_DAEMON: 'false'
+      NODE_OPTIONS: '--max-old-space-size=4096'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - run: npm ci --ignore-scripts
+      # Stories импортируют сгенерированные *.string.json — без них хук
+      # пропустил бы typecheck Storybook.
+      - run: npm run generate-storybook-docs-utils
+      - run: npm run agent-hooks:test

@@ -1,6 +1,8 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
-  "enabledMcpjsonServers": ["daisforge-ui"],
+  "enabledMcpjsonServers": [
+    "daisforge-ui"
+  ],
   "permissions": {
     "allow": [
       "mcp__daisforge-ui",
@@ -40,6 +42,17 @@
     ]
   },
   "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/scripts/agent-hooks/check-changed.mjs\" start",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
     "Stop": [
       {
         "hooks": [
