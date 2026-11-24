@@ -19,6 +19,7 @@ const SIZES = {
 };
 
 const BORDER_WIDTH = 1;
+const getBorder = () => `${BORDER_WIDTH}px solid ${outlineSolidPrimary}`;
 
 // const DURATION = 0.5;
 
@@ -86,7 +87,7 @@ const ListOfFiltersNotMemo = ({
   extraCss = {},
 }: ListOfFiltersProps) => {
   const SIZE = SIZES[size];
-  const border = `${BORDER_WIDTH}px solid ${outlineSolidPrimary}`;
+  const border = getBorder();
   const curPaddingInline = paddingInline ?? SIZE.paddingInline;
   const curMaxHeight = maxHeight ?? SIZE.height;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
