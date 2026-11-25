@@ -51,6 +51,38 @@ describe('normalizeIcon', () => {
     expect(Icon).toHaveBeenCalledTimes(3);
   });
 
+  it.each(['size', 'color', 'className'] as const)(
+    'кэширует явно переданный %s={undefined} отдельно от пропущенного пропса',
+    (key) => {
+      const Icon = vi.fn(
+        (props: Partial<Record<typeof key, string | undefined>>) => (
+          <svg
+            data-variant={key in props ? props[key] ?? 'explicit' : 'omitted'}
+          />
+        ),
+      );
+
+      const explicit = { [key]: undefined };
+      expect(normalizeIcon(<Icon {...explicit} />)).toContain(
+        'data-variant="explicit"',
+      );
+      expect(normalizeIcon(<Icon {...explicit} />)).toContain(
+        'data-variant="explicit"',
+      );
+      expect(Icon).toHaveBeenCalledTimes(1);
+
+      expect(normalizeIcon(<Icon />)).toContain('data-variant="omitted"');
+      expect(normalizeIcon(<Icon {...{ [key]: 'active' }} />)).toContain(
+        'data-variant="active"',
+      );
+      expect(normalizeIcon(<Icon {...explicit} />)).toContain(
+        'data-variant="explicit"',
+      );
+      expect(Icon).toHaveBeenCalledTimes(3);
+      expect(getIconCacheSize()).toBe(3);
+    },
+  );
+
   it('renders custom props and inline SVG children as supplied', () => {
     const Icon = ({ rotate }: { rotate: number }) => (
       <svg transform={`rotate(${rotate})`} />

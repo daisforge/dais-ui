@@ -1,8 +1,10 @@
 import { isValidElement, ReactElement } from 'react';
 import { renderToString } from 'react-dom/server';
 
+// TODO: оценить размер кэша и подобрать лимит для таблиц, создающих типы иконок при отрисовке.
 const iconCache = new Map<string, string>();
 const componentIds = new WeakMap<object, number>();
+const cacheableProps = ['size', 'color', 'className'];
 let nextComponentId = 0;
 
 function getCacheKey({ type, props }: ReactElement<Record<string, unknown>>) {
@@ -12,8 +14,8 @@ function getCacheKey({ type, props }: ReactElement<Record<string, unknown>>) {
     (typeof type !== 'function' && typeof type !== 'object') ||
     !Object.keys(props).every(
       (key) =>
-        (key === 'size' || key === 'color' || key === 'className') &&
-        typeof props[key] === 'string',
+        cacheableProps.includes(key) &&
+        (props[key] === undefined || typeof props[key] === 'string'),
     )
   ) {
     return undefined;
@@ -28,12 +30,12 @@ function getCacheKey({ type, props }: ReactElement<Record<string, unknown>>) {
     componentIds.set(type, id);
   }
 
-  return JSON.stringify([
-    id,
-    props['size'],
-    props['color'],
-    props['className'],
-  ]);
+  // В массиве JSON явный undefined станет null. Пропущенный пропс помечаем
+  // отдельно: компонент может проверять его наличие через оператор in.
+  const variant = cacheableProps.map((key) =>
+    key in props ? props[key] : false,
+  );
+  return JSON.stringify([id, ...variant]);
 }
 
 export function reactIconToSvg(iconElement: ReactElement): string {
