@@ -1,6 +1,0 @@
-import{j as e}from"./react-UEdzNlUe.js";import{dd as s}from"./vendor-DKFmtNka.js";import{M as o}from"./WithTooltip-KJL26V4Q-NPj_OXam.js";import{T as n}from"./TypeSourceViewer-C_5R8A50.js";import"./_commonjsHelpers-BosuxZz1.js";import"./tslib-DoU9Jm1N.js";import"./_commonjs-dynamic-modules-TDtrdbi3.js";import"./react-is-CJ4CjPIR.js";import"./styled-components-CDfPITHT.js";import"./@tanstack/react-virtual-0hY7ij6n.js";import"./preload-helper-Bxleko46.js";import"./index-Cu4lwwaE.js";import"./index-CLqcrFDJ.js";import"./types.string-CnN-7Q7m.js";function i(a){const t={h1:"h1",h2:"h2",...s(),...a.components};return e.jsxs(e.Fragment,{children:[e.jsx(o,{title:"Локальные компоненты/TableCanvas/CanvasElements/CanvasImage/API"}),`
-`,e.jsx(t.h1,{id:"canvasimage-api",children:"Canvas.Image API"}),`
-`,e.jsx(t.h2,{id:"canvasimageprops",children:"CanvasImageProps"}),`
-`,e.jsx(n,{language:"ts",filePath:"packages/ui-kit/src/components/TableCanvas/TableGlideInstance/reexports-for-external.ts",typeName:"CanvasImageProps"}),`
-`,e.jsx(t.h2,{id:"imagefit",children:"ImageFit"}),`
-`,e.jsx(n,{language:"ts",filePath:"packages/ui-kit/src/components/TableGlide/lib/canvas/primitives/image/image.ts",typeName:"ImageFit"})]})}function I(a={}){const{wrapper:t}={...s(),...a.components};return t?e.jsx(t,{...a,children:e.jsx(i,{...a})}):i(a)}export{I as default};
