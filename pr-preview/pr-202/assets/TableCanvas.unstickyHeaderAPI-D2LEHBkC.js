@@ -1,6 +1,0 @@
-import{j as e}from"./react-UEdzNlUe.js";import{dd as o}from"./vendor-DX-rrd2O.js";import{M as i}from"./WithTooltip-KJL26V4Q-B0rJQ3Lg.js";import"./_commonjsHelpers-BosuxZz1.js";import"./tslib-DoU9Jm1N.js";import"./_commonjs-dynamic-modules-TDtrdbi3.js";import"./react-is-CJ4CjPIR.js";import"./styled-components-BSCswbR3.js";import"./@tanstack/react-virtual-Z5qLdlzb.js";import"./preload-helper-KkJ3rXAN.js";import"./index-Cu4lwwaE.js";import"./index-CTuxd491.js";function r(n){const t={code:"code",h1:"h1",h2:"h2",p:"p",pre:"pre",...o(),...n.components};return e.jsxs(e.Fragment,{children:[e.jsx(i,{title:"Локальные компоненты/TableCanvas/UnstickyHeader/API"}),`
-`,e.jsx(t.h1,{id:"unstickyheader-api",children:"UnstickyHeader API"}),`
-`,e.jsx(t.h2,{id:"tableconfigunstickyheader",children:"tableConfig.unstickyHeader"}),`
-`,e.jsx(t.pre,{children:e.jsx(t.code,{className:"language-ts",children:`unstickyHeader?: boolean; // default: false
-`})}),`
-`,e.jsxs(t.p,{children:["При ",e.jsx(t.code,{children:"true"})," шапка таблицы перестаёт быть закреплённой и уезжает вверх вместе со скроллом контента. Работает со всеми уровнями group headers."]})]})}function y(n={}){const{wrapper:t}={...o(),...n.components};return t?e.jsx(t,{...n,children:e.jsx(r,{...n})}):r(n)}export{y as default};
