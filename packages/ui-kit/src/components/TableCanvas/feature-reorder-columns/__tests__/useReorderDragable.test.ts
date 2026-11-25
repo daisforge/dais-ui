@@ -177,7 +177,7 @@ describe('useReorderDragable: orderForReset', () => {
     expect(result.current.getResetColumnsOrder()).toEqual(['c', 'a', 'b']);
   });
 
-  it('без orderDefault начинает с columnConfig даже при заданном orderForReset', () => {
+  it('без orderDefault начинает с порядка сброса, даже если columnConfig задан в другом порядке', () => {
     const { result } = renderHook(() =>
       useReorderDragable({
         ...props,
@@ -187,7 +187,7 @@ describe('useReorderDragable: orderForReset', () => {
         },
       }),
     );
-    expect(result.current.reorderedColumns).toEqual(columns);
+    expect(result.current.reorderedColumns).toEqual([c, a, b]);
     expect(result.current.getResetColumnsOrder()).toEqual(['c', 'a', 'b']);
   });
 
@@ -234,7 +234,7 @@ describe('useReorderDragable: orderForReset', () => {
         tableConfigColumnsControl: {
           enable: true,
           orderDefault: ['b', 'c', 'a'],
-          orderForReset: ['c', 'b', 'a'],
+          orderForReset: ['c', 'b_code', 'a'],
         },
       }),
     );

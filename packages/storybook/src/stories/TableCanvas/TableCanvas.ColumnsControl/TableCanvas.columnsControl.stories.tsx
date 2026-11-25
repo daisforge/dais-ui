@@ -274,8 +274,8 @@ export const ColumnsControlPersistedOrder: Story = {
     const columnConfig = useMemo<readonly ColumnConfig<ModelRow>[]>(
       () => [
         { key: 'id', name: 'ID', width: 80 },
-        { key: 'model', name: 'Модель', width: 200 },
         { key: 'version', name: 'Версия расчёта', width: 180 },
+        { key: 'model', name: 'Модель', width: 200 },
       ],
       [],
     );
@@ -283,10 +283,7 @@ export const ColumnsControlPersistedOrder: Story = {
       { id: 1, model: 'Прогноз спроса', version: 'Базовая' },
       { id: 2, model: 'План производства', version: 'Сценарий 2' },
     ]);
-    const orderForReset = useMemo(
-      () => columnConfig.map(({ key }) => key),
-      [columnConfig],
-    );
+    const [orderForReset] = useState(() => ['id', 'model', 'version']);
     const orderDefault = useMemo<string[] | undefined>(() => {
       try {
         const saved: unknown = JSON.parse(
@@ -298,7 +295,7 @@ export const ColumnsControlPersistedOrder: Story = {
         )
           return saved;
       } catch {
-        // При недоступном хранилище или старом формате начинаем с порядка из конфига.
+        // При недоступном хранилище или старом формате используется orderForReset.
       }
       return undefined;
     }, []);
@@ -324,7 +321,12 @@ export const ColumnsControlPersistedOrder: Story = {
             onConfirm: ({ order, changed }) => {
               if (changed.order) saveOrder(order);
             },
-            onReorderingHeader: ({ newOrder }) => saveOrder(newOrder),
+            onReorderingHeader: ({ newOrder }) =>
+              saveOrder(
+                newOrder.filter((key) =>
+                  columnConfig.some((column) => column.key === key),
+                ),
+              ),
           },
           sidebarConfig: {
             defaultOpen: true,

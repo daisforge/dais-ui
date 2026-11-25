@@ -58,7 +58,7 @@ export const useReorderDragable = <
   const orderForReset = tableConfigColumnsControl?.orderForReset;
 
   const getDefaultColumnsOrder = useCallback(
-    (order = orderDefault) =>
+    (order = orderDefault ?? orderForReset) =>
       sortedInOrder({
         columnConfig,
         tableConfigDefaultOrder: order,
@@ -73,6 +73,7 @@ export const useReorderDragable = <
     [
       columnConfig,
       orderDefault,
+      orderForReset,
       rowMarkersIsActive,
       selectingRowsIsActive,
       rowErrorsIsActive,

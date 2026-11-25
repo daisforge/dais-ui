@@ -58,9 +58,13 @@ export type ColumnsControlConfig = {
    */
   virtualization?: boolean | { minCount?: number };
 
-  /** Порядок при первом рендере. По умолчанию берётся из columnConfig. */
+  /** Порядок при первом рендере. По умолчанию берётся из orderForReset или columnConfig. */
   orderDefault?: string[];
-  /** Порядок по кнопке «Сбросить порядок». По умолчанию используется orderDefault или порядок из columnConfig. */
+  /**
+   * Порядок по кнопке «Сбросить порядок». Если поле пропущено, сброс использует
+   * orderDefault или порядок из columnConfig. Когда orderDefault отсутствует,
+   * orderForReset задаёт также начальный порядок.
+   */
   orderForReset?: string[];
 
   pinnedDefault?: string[];
