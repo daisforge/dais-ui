@@ -1,0 +1,20 @@
+import{j as r}from"./react-UEdzNlUe.js";import{dd as t}from"./vendor-D2r4jgZf.js";import{M as n,S as s}from"./WithTooltip-KJL26V4Q-BGwBziuD.js";import{T as d}from"./Table.customRenderCell.stories-CyLN85Lk.js";import"./_commonjsHelpers-BosuxZz1.js";import"./tslib-DoU9Jm1N.js";import"./_commonjs-dynamic-modules-TDtrdbi3.js";import"./react-is-CJ4CjPIR.js";import"./styled-components-C6Uw7ovB.js";import"./@tanstack/react-virtual-CK8aghAq.js";import"./preload-helper-ChIeFzsB.js";import"./index-Cu4lwwaE.js";import"./index-Bo2kqA7A.js";import"./tableData-DKA5H0bF.js";import"./DocStoryTemplate-CcIU8uA5.js";import"./storySourceDoc-tVKyHcEN.js";import"./Box-Dwqy9xB3.js";import"./Table-jw45rN7L.js";import"./index-DNoHAM3Q.js";import"./@sddsjs/sdds_finai-CqI1dsZV.js";import"./@salutejs/sdds-finai-mlEHigyJ.js";import"./Collapse-CfxT3MfK.js";import"./utils-DSJLiokB.js";import"./constants-3UB8ZrMK.js";import"./sharedUtilsDebug-BX_KjCjW.js";import"./@salutejs/plasma-icons-CWYH4jgn.js";import"./react-data-grid-CAmlt0FZ.js";import"./TableTabs-sXTgrZFv.js";import"./TableCanvasSharedConstants-CqGDn8zL.js";import"./TableGlide-DkkiUwxX.js";import"./@daisforge/glide-data-grid-CfllPD11.js";import"./canvas-hypertxt-DsokSIOX.js";import"./countWhile-blgVacgU.js";import"./sharedUiSearch-CslEffuB.js";import"./TextField-D1vs_4gQ.js";import"./sharedUtilsInputs-vGW80U8K.js";import"./TypographyWithAutoTooltip-C6LiYAcO.js";import"./Typography-BcqUTUcc.js";import"./ListOfFilters-CoBeRY_R.js";import"./FiltersActions-s4eev9qM.js";import"./IconButton-Dl3DqcX6.js";import"./TooltipList-CeWvqtLg.js";import"./lodash.isequal-mFNAsUE8.js";import"./Combobox-DpIc9uqy.js";import"./NumberFormat--slBuKRg.js";import"./EmptyState-Bl3kaRnp.js";import"./unidentified@3x-DknQZlpI.js";import"./MassActions-CNw3AoTG.js";import"./Autocomplete-BQvgClIG.js";function i(o){const e={a:"a",blockquote:"blockquote",code:"code",h1:"h1",h2:"h2",li:"li",p:"p",ul:"ul",...t(),...o.components};return r.jsxs(r.Fragment,{children:[r.jsx(n,{of:d,name:"Docs"}),`
+`,r.jsx(e.h1,{id:"custom-render",children:"Custom Render"}),`
+`,r.jsx(e.p,{children:"Кастомный рендеринг ячеек таблицы."}),`
+`,r.jsx(e.h2,{id:"ключевые-особенности",children:"Ключевые особенности"}),`
+`,r.jsxs(e.ul,{children:[`
+`,r.jsxs(e.li,{children:[r.jsx(e.code,{children:"renderCell"})," — кастомный рендер ячеек данных (доступны ",r.jsx(e.code,{children:"row"}),", ",r.jsx(e.code,{children:"rowIdx"}),", ",r.jsx(e.code,{children:"column"}),")"]}),`
+`,r.jsxs(e.li,{children:[r.jsx(e.code,{children:"renderHeaderCell"})," — кастомный рендер заголовков (",r.jsx(e.code,{children:"name"})," принимает ",r.jsx(e.code,{children:"string | ReactElement"}),")"]}),`
+`,r.jsxs(e.li,{children:[r.jsx(e.code,{children:"renderSummaryCell"})," — кастомный рендер итоговых строк"]}),`
+`,r.jsxs(e.li,{children:["Контексты: ",r.jsx(e.code,{children:"useRowContext"})," и ",r.jsx(e.code,{children:"useHeaderContext"})," для передачи состояния без лишних ре-рендеров"]}),`
+`]}),`
+`,r.jsx(e.h2,{id:"особенности",children:"Особенности"}),`
+`,r.jsxs(e.ul,{children:[`
+`,r.jsxs(e.li,{children:["Контейнер ячейки должен использовать ",r.jsx(e.code,{children:"width: '100%'"})," и ",r.jsx(e.code,{children:"height: '100%'"})]}),`
+`,r.jsxs(e.li,{children:[r.jsx(e.code,{children:"headerContextValue"})," предоставляет доступ к состоянию фильтров, сортировки и размера строк"]}),`
+`,r.jsxs(e.li,{children:[r.jsx(e.code,{children:"rowContextValue"})," позволяет передавать кастомное состояние в ячейки без перерисовки таблицы"]}),`
+`]}),`
+`,r.jsxs(e.blockquote,{children:[`
+`,r.jsxs(e.p,{children:["Подробнее о типах и пропсах — ",r.jsx(e.a,{href:"?path=/docs/%D0%BB%D0%BE%D0%BA%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D1%8B-table-customrender-api--docs",children:"Custom Render API"})]}),`
+`]}),`
+`,r.jsx(s,{})]})}function ir(o={}){const{wrapper:e}={...t(),...o.components};return e?r.jsx(e,{...o,children:r.jsx(i,{...o})}):i(o)}export{ir as default};
