@@ -4,7 +4,12 @@ import {
   numberFormatter,
 } from '@salutejs/sdds-finai';
 import { getContentRight } from '@ui-kit/shared/utils/inputs';
-import type { ComponentProps } from 'react';
+import type {
+  ComponentProps,
+  ForwardRefExoticComponent,
+  PropsWithoutRef,
+  RefAttributes,
+} from 'react';
 import React, { forwardRef } from 'react';
 
 type NumberFormatBaseProps = ComponentProps<typeof BaseNumberFormat>;
@@ -15,7 +20,9 @@ export type NumberFormatCompProps = NumberFormatBaseProps & {
   onClear?: () => void;
 };
 
-export const NumberFormat = forwardRef<HTMLInputElement, NumberFormatCompProps>(
+export const NumberFormat: ForwardRefExoticComponent<
+  PropsWithoutRef<NumberFormatCompProps> & RefAttributes<HTMLInputElement>
+> = forwardRef<HTMLInputElement, NumberFormatCompProps>(
   (
     { disabled, readOnly, contentRight, size = 'xs', value, onClear, ...rest },
     ref,
