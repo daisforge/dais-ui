@@ -45,16 +45,35 @@ const filterColumn = (
 const columns = [
   filterColumn('priority', 'Приоритет', priorities, false),
   filterColumn('status', 'Статус', statuses, true),
+] satisfies [ColumnConfig<Row>, ColumnConfig<Row>];
+
+const textColumns: ColumnConfig<Row>[] = [
+  {
+    key: 'priority',
+    name: 'Приоритет',
+    width: 280,
+    filtering: {
+      component: 'input',
+      filter: 'includes',
+      keyInFilterState: 'priority',
+      valueInRow: (r) => r.priority,
+    },
+  },
+  columns[1],
 ];
 
 export function DropdownsExample({
   size = 'medium',
   narrow = false,
   tableRef,
+  contextMenuWidth,
+  textFilter = false,
 }: {
   size?: SIZE;
   narrow?: boolean;
   tableRef?: React.RefObject<DataEditorRef>;
+  contextMenuWidth?: React.CSSProperties['width'];
+  textFilter?: boolean;
 }) {
   const compactId = useId();
   const filtering = useState({
@@ -78,7 +97,7 @@ export function DropdownsExample({
         <TableCanvas
           key={size}
           refTable={tableRef}
-          columnConfig={columns}
+          columnConfig={textFilter ? textColumns : columns}
           rows={rows}
           tableConfig={{
             rowSize: { default: size, showInControl: true },
@@ -111,6 +130,7 @@ export function DropdownsExample({
             },
             onCellContextMenuDropdown: {
               type: 'dropdown',
+              listWidth: contextMenuWidth,
               getDropdownItems: () => [
                 { value: 'copy', label: 'Копировать' },
                 {

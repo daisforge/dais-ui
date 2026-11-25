@@ -1,6 +1,6 @@
 import type { SIZE } from './styles.constants';
 
-// min/max относятся к внешней границе списка вместе с padding.
+// Минимум автоматической ширины включает отступы списка.
 const dropdownSizes = {
   small: {
     size: 'xs',
@@ -10,7 +10,6 @@ const dropdownSizes = {
     searchSize: 'xs',
     checkboxSize: 's',
     minWidth: 120,
-    maxWidth: 300,
   },
   medium: {
     size: 's',
@@ -20,7 +19,6 @@ const dropdownSizes = {
     searchSize: 'xs',
     checkboxSize: 's',
     minWidth: 120,
-    maxWidth: 380,
   },
   big: {
     size: 'm',
@@ -30,7 +28,6 @@ const dropdownSizes = {
     searchSize: 's',
     checkboxSize: 'm',
     minWidth: 140,
-    maxWidth: 440,
   },
 } as const;
 

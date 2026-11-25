@@ -1,6 +1,7 @@
 import { DropdownProps } from '@ui-kit/components/Dropdown';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
+import type { ContextMenuPosition } from '../contexts';
 import { ContextMenuDropdownItem } from '../feature-context-menu';
 import { TablePopoverContextValue } from '../feature-overlays';
 import {
@@ -20,7 +21,7 @@ interface ContextMenuState<
 > {
   isOpen: boolean;
   items: DropdownProps['items'] | null;
-  position: { x: number; y: number } | null;
+  position: ContextMenuPosition | null;
   // В async-режиме храним тег header/cell + параметры для соответствующего
   // getDropdownItems. Тег — литеральный дискриминант: по нему TS сужает тип,
   // и getDropdownItems вызывается без приведения.
@@ -126,7 +127,7 @@ export const useContextMenuValues = <
       asyncParams,
       context,
     }: {
-      position: { x: number; y: number };
+      position: ContextMenuPosition;
       items?: DropdownProps['items'] | null;
       asyncParams?: ContextMenuState<RowType, SummaryRowType>['asyncParams'];
       context?: ContextMenuState<RowType, SummaryRowType>['context'];
@@ -174,7 +175,8 @@ export const useContextMenuValues = <
       const params = { column, refTable, ctxs };
       const position = {
         x: event.bounds.x + event.localEventX,
-        y: event.bounds.y + event.bounds.height,
+        y: event.bounds.y,
+        height: event.bounds.height,
       };
       const context = {
         type: 'header' as const,
@@ -220,7 +222,8 @@ export const useContextMenuValues = <
       const params = { row, column, refTable, ctxs };
       const position = {
         x: event.bounds.x + event.localEventX,
-        y: event.bounds.y + event.bounds.height,
+        y: event.bounds.y,
+        height: event.bounds.height,
       };
       const context = {
         type: 'cell' as const,

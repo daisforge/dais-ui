@@ -21,7 +21,7 @@
 ```
 feature-overlays/
 ├── index.ts                          публичный API: PopoverInTable, контекст, хуки, CanvasOverlayListener
-├── constants.ts                      DATA_POPOVER_TRIGGER, POPOVER_OFFSET, POPOVER_Z_INDEX, отступы содержимого
+├── constants.ts                      POPOVER_Z_INDEX, отступы содержимого
 ├── context/
 │   ├── index.ts
 │   └── TablePopoverContext.tsx       TablePopoverState, TablePopoverBehavior, DEFAULT_POPOVER_BEHAVIOR, getPopoverBehavior, useTablePopover

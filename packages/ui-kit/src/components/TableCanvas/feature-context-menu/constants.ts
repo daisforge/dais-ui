@@ -1,1 +1,1 @@
-export const HEADER_CTX_MENU_OFFSET: [number, number] = [0, 4];
+export const CONTEXT_MENU_OFFSET: [number, number] = [0, 4];

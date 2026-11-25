@@ -118,12 +118,14 @@ export const useHeaderContext = <
 
 // ----------------------------------------------------------------
 
+export type ContextMenuPosition = { x: number; y: number; height?: number };
+
 type CommonContextMenuProps = {
   isOpen: boolean;
   items: DropdownProps['items'] | null;
-  position: { x: number; y: number } | null;
+  position: ContextMenuPosition | null;
   open: (params: {
-    position: { x: number; y: number };
+    position: ContextMenuPosition;
     items?: DropdownProps['items'] | null;
   }) => void;
   close: () => void;

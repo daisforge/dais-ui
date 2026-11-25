@@ -3,8 +3,12 @@ import React, { useCallback, useMemo, useRef } from 'react';
 import { TableDropdownWithCustomClickOutside } from '../../components/TableDropdown';
 import { useContextMenu } from '../../contexts';
 import { viewportToContainerPosition } from '../../utils';
-import { HEADER_CTX_MENU_OFFSET } from '../constants';
-import { HiddenTriggerButton, MenuContainer } from './ContextMenu.styled';
+import { CONTEXT_MENU_OFFSET } from '../constants';
+import {
+  HiddenTriggerButton,
+  MenuContainer,
+  MenuPortal,
+} from './ContextMenu.styled';
 
 export interface ContextMenuProps {
   /**
@@ -27,7 +31,7 @@ export const ContextMenu = ({ containerEl }: ContextMenuProps) => {
     ...restDropDownProps
   } = useContextMenu();
 
-  const containerRef = useRef<HTMLDivElement | null>(null);
+  const portalRef = useRef<HTMLDivElement | null>(null);
 
   const displayPosition = useMemo(() => {
     if (!position) return null;
@@ -51,22 +55,30 @@ export const ContextMenu = ({ containerEl }: ContextMenuProps) => {
     items && (
       <MenuContainer
         position={displayPosition}
-        ref={containerRef}
         $isOpen={isOpen}
         data-testid="table-context-menu"
       >
+        <MenuPortal
+          ref={portalRef}
+          style={{ zIndex: restDropDownProps.zIndex ?? 1000 }}
+        />
         <TableDropdownWithCustomClickOutside
           key={`${displayPosition.x}-${displayPosition.y}`}
           items={items}
-          portal={containerRef}
-          offset={offset ?? HEADER_CTX_MENU_OFFSET}
+          portal={portalRef}
+          offset={offset ?? CONTEXT_MENU_OFFSET}
           onItemSelect={onItemSelect}
           closeOnOverlayClick={false}
           isOpen={isOpen}
           onClose={close}
           {...restDropDownProps}
         >
-          <HiddenTriggerButton ref={cbRef} type="button" />
+          <HiddenTriggerButton
+            ref={cbRef}
+            type="button"
+            $height={position.height ?? 0}
+            tabIndex={-1}
+          />
         </TableDropdownWithCustomClickOutside>
       </MenuContainer>
     )

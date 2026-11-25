@@ -1,4 +1,3 @@
-import { visuallyHiddenCss } from '@ui-kit/utils';
 import styled, { css } from 'styled-components';
 
 interface MenuContainerProps {
@@ -8,9 +7,14 @@ interface MenuContainerProps {
   $zIndex?: number;
 }
 
-export const HiddenTriggerButton = styled.button`
-  ${visuallyHiddenCss}
-  position: absolute;
+export const HiddenTriggerButton = styled.button<{ $height: number }>`
+  display: block;
+  width: 0;
+  height: ${({ $height }) => $height}px;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  visibility: hidden;
 `;
 
 export const MenuContainer = styled.div<MenuContainerProps>`
@@ -24,4 +28,11 @@ export const MenuContainer = styled.div<MenuContainerProps>`
     css`
       z-index: ${$zIndex ?? 9001};
     `}
+`;
+
+// Портал остаётся в DOM таблицы, но список может выйти за край её скроллера.
+export const MenuPortal = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
 `;

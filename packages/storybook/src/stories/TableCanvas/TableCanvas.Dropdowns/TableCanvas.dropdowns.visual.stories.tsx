@@ -12,17 +12,39 @@ export default {
   parameters: { screenshot: { keepState: true, capture: 'page' } },
 } satisfies Meta;
 
-type Menu = 'cell' | 'filter' | 'lastFilter' | 'export' | 'overflow';
+type Menu =
+  | 'cellNearBottom'
+  | 'cell'
+  | 'filter'
+  | 'lastFilter'
+  | 'export'
+  | 'overflow';
 
-function opened(size: SIZE, menu: Menu): StoryObj {
+function opened(
+  size: SIZE,
+  menu: Menu,
+  contextMenuWidth?: number | string,
+  textFilter = false,
+): StoryObj {
   const ref = createRef<DataEditorRef>();
+  const isCell = menu === 'cell' || menu === 'cellNearBottom';
   return {
     render: () => (
-      <DropdownsExample
-        tableRef={ref}
-        size={size}
-        narrow={menu === 'overflow'}
-      />
+      <div
+        style={
+          menu === 'cellNearBottom'
+            ? { paddingTop: 'calc(100vh - 220px)' }
+            : undefined
+        }
+      >
+        <DropdownsExample
+          tableRef={ref}
+          contextMenuWidth={contextMenuWidth}
+          textFilter={textFilter}
+          size={size}
+          narrow={menu === 'overflow'}
+        />
+      </div>
     ),
     play: async ({ canvasElement }) => {
       const canvas = within(canvasElement);
@@ -30,7 +52,7 @@ function opened(size: SIZE, menu: Menu): StoryObj {
       await gridReady(ref);
       await settle();
       if (menu === 'export' || menu === 'overflow') {
-        const name = menu === 'export' ? 'Экспорт' : '';
+        const name = menu === 'export' ? 'Экспорт' : 'Дополнительные действия';
         const trigger = await canvas.findByRole('combobox', { name });
         await userEvent.click(trigger);
         if (menu === 'overflow') {
@@ -39,17 +61,21 @@ function opened(size: SIZE, menu: Menu): StoryObj {
           );
         }
         await expect(await page.findByText('CSV')).toBeVisible();
+        const list = page.getByText('CSV').closest('ul');
+        expect(list?.parentElement?.getBoundingClientRect().width).toBe(
+          size === 'big' ? 140 : 120,
+        );
         return;
       }
 
       const target = await getGridTarget(canvasElement);
       const bounds = ref.current?.getBounds(
         menu === 'lastFilter' ? 1 : 0,
-        menu === 'cell' ? 0 : -1,
+        isCell ? 0 : -1,
       );
       if (!bounds) throw new Error('Границы ячейки недоступны');
       const y = bounds.y + bounds.height / 2;
-      if (menu === 'cell') {
+      if (isCell) {
         const event = {
           clientX: bounds.x + 64,
           clientY: y,
@@ -65,9 +91,14 @@ function opened(size: SIZE, menu: Menu): StoryObj {
           const menuRect = list.parentElement?.getBoundingClientRect();
           if (!menuRect)
             throw new Error('Границы контекстного меню недоступны');
+          if (contextMenuWidth !== undefined) {
+            expect(menuRect.width).toBe(parseFloat(String(contextMenuWidth)));
+          }
           expect(Math.abs(menuRect.x - event.clientX)).toBeLessThanOrEqual(1);
           expect(
-            Math.abs(menuRect.y - bounds.y - bounds.height - 4),
+            menu === 'cellNearBottom'
+              ? Math.abs(menuRect.bottom - bounds.y + 4)
+              : Math.abs(menuRect.y - bounds.y - bounds.height - 4),
           ).toBeLessThanOrEqual(1);
         });
       } else {
@@ -79,8 +110,17 @@ function opened(size: SIZE, menu: Menu): StoryObj {
             ?.getBoundingClientRect();
           const popup = page.getByRole('dialog').getBoundingClientRect();
           if (!anchor) throw new Error('Якорь фильтра недоступен');
+          if (textFilter) {
+            expect(popup.width).toBe(size === 'small' ? 200 : 240);
+          } else if (menu === 'filter') {
+            expect(popup.width).toBe(size === 'big' ? 140 : 120);
+          }
           const edge = menu === 'lastFilter' ? 'right' : 'left';
-          expect(Math.abs(popup[edge] - anchor[edge])).toBeLessThanOrEqual(1);
+          const expectedX =
+            edge === 'right'
+              ? Math.max(0, anchor.right - popup.width)
+              : anchor.left;
+          expect(Math.abs(popup.left - expectedX)).toBeLessThanOrEqual(1);
         });
       }
     },
@@ -102,3 +142,9 @@ export const ExportBig = opened('big', 'export');
 export const OverflowSmall = opened('small', 'overflow');
 export const OverflowMedium = opened('medium', 'overflow');
 export const OverflowBig = opened('big', 'overflow');
+
+export const ExplicitWideMenu = opened('medium', 'cell', 600);
+export const ExplicitNarrowMenu = opened('small', 'cell', '96px');
+export const TextFilter = opened('medium', 'filter', undefined, true);
+
+export const CellNearBottom = opened('medium', 'cellNearBottom');

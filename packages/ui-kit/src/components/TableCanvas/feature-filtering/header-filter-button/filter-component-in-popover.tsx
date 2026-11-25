@@ -3,7 +3,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { POPOVER_CONTENT_PADDING } from '../../feature-overlays/constants';
-import { SIZE, SIZES } from '../../styles';
+import { SIZE } from '../../styles';
 import { getTableDropdownConfig } from '../../styles/dropdown-sizes';
 import type { ColumnConfig, ObjectForExtending } from '../../types';
 import type { Option } from '../../types/additional.type';
@@ -21,12 +21,11 @@ const filterDebug = createDebugLogger('TABLE_CANVAS_FILTER');
 const FilterListContainer = styled.div<{
   $size: SIZE;
 }>(({ $size }) => {
-  const { minWidth, maxWidth } = getTableDropdownConfig($size);
+  const { minWidth } = getTableDropdownConfig($size);
   const padding = 2 * POPOVER_CONTENT_PADDING;
   return {
     width: 'max-content',
     minWidth: minWidth - padding,
-    maxWidth: maxWidth - padding,
     // Размер списка задают подписи пунктов. Поле занимает доступную ширину.
     [`${StyledSearchBlockFilter}`]: { contain: 'inline-size' },
   };
@@ -59,7 +58,7 @@ const FreeTextFilterInput = ({
         e.stopPropagation();
       }}
       onKeyDown={inputStopPropagation}
-      width={width}
+      style={{ width }}
     />
   );
 };
@@ -122,10 +121,8 @@ const FilterComponentInPopoverInner = <
 
     return (
       <FreeTextFilterInput
-        size={SIZES[rowSize].input}
-        width={`${
-          getTableDropdownConfig(rowSize).minWidth - 2 * POPOVER_CONTENT_PADDING
-        }px`}
+        size={getTableDropdownConfig(rowSize).searchSize}
+        width={rowSize === 'small' ? '192px' : '232px'}
         value={filters?.[valueKeyInFilters] as string}
         onChange={handleInputChange}
       />

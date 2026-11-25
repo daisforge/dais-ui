@@ -52,22 +52,19 @@ const openHeader = (result: ReturnType<typeof setup>['result']) =>
   });
 
 describe('useContextMenuValues', () => {
-  it.each([1, 31])(
-    'открывает меню от низа ячейки при клике на высоте %i',
-    (y) => {
-      const { result } = setup({
-        onCellContextMenuDropdown: { getDropdownItems: () => ITEMS },
-      });
-      act(() =>
-        result.current.openCellContextMenu(
-          [0, 0] as never,
-          createEvent(y),
-          CELL_INFO,
-        ),
-      );
-      expect(result.current.position).toEqual({ x: 22, y: 72 });
-    },
-  );
+  it.each([1, 31])('сохраняет границы ячейки при клике на высоте %i', (y) => {
+    const { result } = setup({
+      onCellContextMenuDropdown: { getDropdownItems: () => ITEMS },
+    });
+    act(() =>
+      result.current.openCellContextMenu(
+        [0, 0] as never,
+        createEvent(y),
+        CELL_INFO,
+      ),
+    );
+    expect(result.current.position).toEqual({ x: 22, y: 40, height: 32 });
+  });
 
   it('onOpen ячейки вызывается при каждом открытии, даже если пункты уже есть', () => {
     const onOpen = vi.fn();

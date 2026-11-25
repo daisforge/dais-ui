@@ -7,6 +7,8 @@ export default {
   component: DropdownsExample,
   argTypes: {
     size: { control: 'radio', options: ['small', 'medium', 'big'] },
+    contextMenuWidth: { name: 'Ширина меню ПКМ, px', control: 'number' },
+    textFilter: { name: 'Текстовый фильтр', control: 'boolean' },
     tableRef: { table: { disable: true } },
   },
 } satisfies Meta<typeof DropdownsExample>;

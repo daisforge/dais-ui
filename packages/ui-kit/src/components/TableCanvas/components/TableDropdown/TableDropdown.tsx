@@ -28,15 +28,14 @@ function SizedTableDropdown({
   return (
     <StyledDropdown
       {...props}
-      size={config.size}
+      size={size ?? config.size}
       variant={variant ?? config.variant}
       listWidth={width ?? 'max-content'}
       $css={{
         '--plasma-dropdown-item-disclosure-icon-size': `${config.iconWidth}px`,
         // Подменю Plasma портализируется в обёртку родительского списка.
         '& div:has(> ul[role="tree"]), & div:has(> ul[role="group"])': {
-          minWidth: config.minWidth,
-          maxWidth: config.maxWidth,
+          minWidth: listWidth == null ? config.minWidth : undefined,
         },
         '& .cell-textbox-title': {
           whiteSpace: 'normal',
