@@ -1,17 +1,13 @@
+import { resolveSelectionForView } from './resolveSelectionForView';
 import { act, renderHook } from '@testing-library/react';
 import { useState } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import type { GridSelection } from '@daisforge/glide-data-grid';
 
 import type { CellsSelectionMode } from '../../types';
-import {
-  EMPTY_SELECTION,
-  useNativeGridSelection,
-} from './useNativeGridSelection';
-import {
-  projectSelection,
-  useSelectionProjection,
-} from './useSelectionProjection';
+import { EMPTY_SELECTION } from './gridSelection';
+import { useGridSelectionState } from './useGridSelectionState';
+import { useSelectionOnViewChange } from './useSelectionOnViewChange';
 
 const col = (id: string) => ({ id, isServiceColumn: false });
 const [a, b, c] = [col('a'), col('b'), col('c')] as const;
@@ -36,11 +32,8 @@ const initial: GridSelection = {
   },
 };
 const singleCell = (x: number, y: number) => ({ x, y, width: 1, height: 1 });
-const project = (
-  next: Partial<typeof view>,
-  selection = initial,
-  getBlock = singleCell,
-) => projectSelection(view, { ...view, ...next }, selection, false, getBlock);
+const project = (next: Partial<typeof view>, selection = initial) =>
+  resolveSelectionForView(view, { ...view, ...next }, selection, false);
 
 describe('выделение после изменения таблицы', () => {
   it.each([true, false])(
@@ -51,7 +44,7 @@ describe('выделение после изменения таблицы', () =
       const { result, rerender } = renderHook(
         (v: typeof view) => {
           const [external, setExternal] = useState(EMPTY_SELECTION);
-          const native = useNativeGridSelection({
+          const native = useGridSelectionState({
             cellsSelectionMode: 'range-cell',
             columns: v.columns,
             gridSelection: controlled ? external : undefined,
@@ -59,14 +52,14 @@ describe('выделение после изменения таблицы', () =
             onExternalSelectionChange: sync,
             onSelectionEmit: emit,
           });
-          useSelectionProjection({
+          useSelectionOnViewChange({
             view: v,
             columns: v.columns,
             selection: native.selection,
             controlled: controlled ? external : undefined,
             hasAxes: false,
             getBlock: singleCell,
-            apply: native.applyProjectedSelection,
+            apply: native.applyViewSelection,
           });
           return native;
         },
@@ -76,21 +69,11 @@ describe('выделение после изменения таблицы', () =
       emit.mockClear();
       const sorted = { ...view, criteria: { sort: 'desc' } };
       rerender({ ...sorted, loading: true, rows: [] });
-      expect(result.current.selection.current?.range).toEqual({
-        x: 1,
-        y: 1,
-        width: 1,
-        height: 1,
-      });
+      expect(result.current.selection).toEqual(EMPTY_SELECTION);
       rerender({ ...sorted, rows: [...rows].reverse() });
-      expect(result.current.selection.current?.cell).toEqual([1, 2]);
-      expect(sync).toHaveBeenLastCalledWith(result.current.selection, false);
-      expect(emit.mock.calls.map(([s]) => s.current.cell)).toEqual([
-        [1, 1],
-        [1, 2],
-      ]);
-      rerender({ ...sorted, page: 2 });
-      expect(emit).toHaveBeenCalledTimes(3);
+      expect(result.current.selection).toEqual(EMPTY_SELECTION);
+      expect(sync).not.toHaveBeenCalledWith(EMPTY_SELECTION, false);
+      expect(emit).toHaveBeenCalledTimes(1);
       expect(emit).toHaveBeenLastCalledWith(EMPTY_SELECTION);
     },
   );
@@ -107,63 +90,58 @@ describe('выделение после изменения таблицы', () =
     expect(
       project({ rows: [...rows, { id: 50, value: 'новая строка' }] }),
     ).toBeUndefined();
-    expect(project({ revision: 2 })?.current?.range.width).toBe(1);
+    expect(project({ revision: 2 })).toBe(EMPTY_SELECTION);
   });
 
   it('удерживает выделение при повторном получении данных с ключом и без ключа', () => {
     const before = { ...view, revision: undefined };
     const after = { ...before, rows: rows.map((row) => ({ ...row })) };
     expect(
-      projectSelection(before, after, initial, false, singleCell),
+      resolveSelectionForView(before, after, initial, false),
     ).toBeUndefined();
     expect(
-      projectSelection(
+      resolveSelectionForView(
         { ...before, rowKey: undefined },
         { ...after, rowKey: undefined },
         initial,
         false,
-        singleCell,
       ),
     ).toBeUndefined();
     const unkeyed = { ...before, rowKey: undefined };
     expect(
-      projectSelection(
+      resolveSelectionForView(
         unkeyed,
         { ...unkeyed, criteria: { filter: 1 } },
         initial,
         false,
-        singleCell,
       ),
     ).toBe(EMPTY_SELECTION);
   });
 
-  it('переносит смежные колонки и сохраняет только якорь при разрыве диапазона', () => {
-    expect(project({ columns: [c, a, b] })?.current).toEqual({
-      cell: [2, 1],
-      range: { x: 1, y: 1, width: 2, height: 2 },
-      rangeStack: [],
-    });
-    expect(project({ columns: [a, c, b] })?.current).toEqual({
-      cell: [2, 1],
-      range: { x: 2, y: 1, width: 1, height: 1 },
-      rangeStack: [],
-    });
-    expect(project({ columns: [a, c] })).toBe(EMPTY_SELECTION);
+  it('сбрасывает диапазон при перестановке или скрытии колонок', () => {
+    for (const next of [
+      [c, a, b],
+      [a, c, b],
+      [a, c],
+    ]) {
+      expect(project({ columns: next })).toBe(EMPTY_SELECTION);
+    }
   });
 
-  it('использует геометрию блока в новом порядке колонок', () => {
-    const reordered = [b, a, c];
-    const getBlock = vi.fn((x: number, y: number) =>
-      x === 1 ? { x, y: 0, width: 1, height: 2 } : singleCell(x, y),
+  it('при смене критерия полностью снимает диапазон 3×3 без поиска записи', () => {
+    const rowKey = vi.fn(view.rowKey);
+    const range = { x: 0, y: 0, width: 3, height: 3 };
+    const selection = { ...initial, current: { ...initial.current!, range } };
+    const next = {
+      ...view,
+      criteria: { sort: 'desc' },
+      rows: [...rows].reverse(),
+      rowKey,
+    };
+    expect(resolveSelectionForView(view, next, selection, false)).toBe(
+      EMPTY_SELECTION,
     );
-    expect(
-      project({ columns: reordered, revision: 2 }, initial, getBlock)?.current
-        ?.cell,
-    ).toEqual([0, 1]);
-    expect(getBlock).toHaveBeenCalledWith(0, 1);
-    expect(project({ revision: 2 }, initial, getBlock)?.current?.range).toEqual(
-      { x: 1, y: 0, width: 1, height: 2 },
-    );
+    expect(rowKey).not.toHaveBeenCalled();
   });
 
   it('сохраняет диапазон при равнозначной замене условий', () => {
@@ -172,12 +150,11 @@ describe('выделение после изменения таблицы', () =
       filters: [{ key: 'name', value: 'А' }],
     });
     expect(
-      projectSelection(
+      resolveSelectionForView(
         { ...view, criteria: criteria() },
         { ...view, criteria: criteria() },
         initial,
         false,
-        singleCell,
       ),
     ).toBeUndefined();
   });
@@ -194,23 +171,21 @@ describe('выделение после изменения таблицы', () =
     };
     const updated = rows.map((row) => ({ ...row }));
     expect(
-      projectSelection(
+      resolveSelectionForView(
         before,
         { ...before, rows: updated },
         full,
         false,
-        singleCell,
       ),
     ).toBeUndefined();
     expect(
-      projectSelection(
+      resolveSelectionForView(
         before,
         { ...before, summaryCount: 0 },
         full,
         false,
-        singleCell,
-      )?.current?.range.height,
-    ).toBe(1);
+      ),
+    ).toBe(EMPTY_SELECTION);
   });
 
   it('сохраняет Ctrl-выбор при дозагрузке и обнаруживает замену выбранной записи', () => {
@@ -221,24 +196,22 @@ describe('выделение после изменения таблицы', () =
     ];
     for (const selectedRows of [[], [1, 3]]) {
       expect(
-        projectSelection(
+        resolveSelectionForView(
           before,
           { ...before, rows: appended },
           EMPTY_SELECTION,
           true,
-          singleCell,
           selectedRows,
         ),
       ).toBeUndefined();
     }
     appended[1] = { id: 123, value: '' };
     expect(
-      projectSelection(
+      resolveSelectionForView(
         before,
         { ...before, rows: appended },
         EMPTY_SELECTION,
         true,
-        singleCell,
         [1, 3],
       ),
     ).toBe(EMPTY_SELECTION);
@@ -257,18 +230,17 @@ describe('выделение после изменения таблицы', () =
       },
     };
     expect(
-      projectSelection(
+      resolveSelectionForView(
         before,
         { ...before, rows: many.map((row) => ({ ...row })) },
         full,
         false,
-        singleCell,
       ),
     ).toBeUndefined();
     expect(rowKey).toHaveBeenCalledTimes(2);
   });
 
-  it('удаляет только разорванный дополнительный диапазон', () => {
+  it('снимает все диапазоны при скрытии колонки', () => {
     const primary = singleCell(1, 1);
     const keep = singleCell(0, 2);
     const multi: GridSelection = {
@@ -279,12 +251,10 @@ describe('выделение после изменения таблицы', () =
         rangeStack: [keep, singleCell(2, 0)],
       },
     };
-    expect(project({ columns: [a, b] }, multi)?.current?.rangeStack).toEqual([
-      keep,
-    ]);
+    expect(project({ columns: [a, b] }, multi)).toBe(EMPTY_SELECTION);
   });
 
-  it('сохраняет строку, выбранную по номеру, при перестановке колонок данных', () => {
+  it('сбрасывает строку, выбранную по номеру, при перестановке колонок данных', () => {
     const marker = { id: 'row-markers', isServiceColumn: true };
     const selection: GridSelection = {
       ...EMPTY_SELECTION,
@@ -294,14 +264,13 @@ describe('выделение после изменения таблицы', () =
         rangeStack: [],
       },
     };
-    const moved = projectSelection(
+    const moved = resolveSelectionForView(
       { ...view, columns: [marker, a, b] },
       { ...view, columns: [marker, b, a] },
       selection,
       false,
-      singleCell,
     );
-    expect(moved?.current).toEqual(selection.current);
+    expect(moved).toBe(EMPTY_SELECTION);
   });
 
   it('выбор всей колонки сохраняется и растёт при дозагрузке со скелетонами', () => {
@@ -316,12 +285,11 @@ describe('выделение после изменения таблицы', () =
     };
     const refreshed = rows.map((row) => ({ ...row }));
     expect(
-      projectSelection(
+      resolveSelectionForView(
         before,
         { ...before, rows: refreshed },
         selection,
         false,
-        singleCell,
         [],
         true,
       ),
@@ -331,16 +299,15 @@ describe('выделение после изменения таблицы', () =
       rows: [...refreshed, { id: 100, value: 'новая' }],
     };
     expect(
-      projectSelection(before, appended, selection, false, singleCell, [], true)
+      resolveSelectionForView(before, appended, selection, false, [], true)
         ?.current?.range.height,
     ).toBe(rows.length + 6);
     expect(
-      projectSelection(
+      resolveSelectionForView(
         before,
         { ...appended, placeholderCount: 0 },
         selection,
         false,
-        singleCell,
         [],
         true,
       )?.current?.range.height,
@@ -351,7 +318,7 @@ describe('выделение после изменения таблицы', () =
     [1, 1],
     [0, 3],
   ])(
-    'сохраняет выбор колонок x=%i шириной %i после сортировки и фильтра',
+    'сбрасывает выбор колонок x=%i шириной %i после сортировки и фильтра',
     (x, width) => {
       const full: GridSelection = {
         ...initial,
@@ -366,30 +333,16 @@ describe('выделение после изменения таблицы', () =
         criteria: { sort: 'desc' },
         rows: [...rows].reverse(),
       };
-      expect(
-        projectSelection(view, sorted, full, false, singleCell, [], true),
-      ).toBeUndefined();
-      const filtered = {
-        ...sorted,
-        rows: sorted.rows.slice(0, 2),
-        criteria: { filter: 1 },
-      };
-      expect(
-        projectSelection(sorted, filtered, full, false, singleCell, [], true)
-          ?.current?.range,
-      ).toEqual({ x, y: 0, width, height: 2 });
-      expect(
-        projectSelection(view, filtered, EMPTY_SELECTION, true, singleCell),
-      ).toBeUndefined();
-      expect(
-        projectSelection(view, filtered, EMPTY_SELECTION, true, singleCell, [
-          1,
-        ]),
-      ).toBe(EMPTY_SELECTION);
+      expect(resolveSelectionForView(view, sorted, full, false, [], true)).toBe(
+        EMPTY_SELECTION,
+      );
+      expect(resolveSelectionForView(view, sorted, EMPTY_SELECTION, true)).toBe(
+        EMPTY_SELECTION,
+      );
     },
   );
 
-  it('переносит вторую итоговую строку при дозагрузке и фильтрации', () => {
+  it('снимает выбор итоговой строки при дозагрузке и фильтрации', () => {
     const v = { ...view, summaryCount: 2, placeholderCount: 1 };
     const y = rows.length + 2;
     const selected: GridSelection = {
@@ -403,19 +356,12 @@ describe('выделение после изменения таблицы', () =
         placeholderCount: 0,
         criteria: { filter: true },
       };
-      expect(
-        projectSelection(v, changed, selected, false, singleCell)?.current
-          ?.cell,
-      ).toEqual([1, records.length + 1]);
+      expect(resolveSelectionForView(v, changed, selected, false)).toBe(
+        EMPTY_SELECTION,
+      );
     }
     expect(
-      projectSelection(
-        v,
-        { ...v, summaryCount: 1 },
-        selected,
-        false,
-        singleCell,
-      ),
+      resolveSelectionForView(v, { ...v, summaryCount: 1 }, selected, false),
     ).toBe(EMPTY_SELECTION);
   });
 
@@ -427,7 +373,7 @@ describe('выделение после изменения таблицы', () =
     const { result, rerender } = renderHook(
       ({ mode }: { mode: CellsSelectionMode }) => {
         const [selection, setSelection] = useState<GridSelection>(multi);
-        useSelectionProjection({
+        useSelectionOnViewChange({
           view,
           columns,
           selection,
@@ -449,11 +395,11 @@ describe('выделение после изменения таблицы', () =
     expect(result.current).toBe(EMPTY_SELECTION);
   });
 
-  it('подсветка строки следует за записью независимо от положения рамки', () => {
+  it('подсветка строки сбрасывается при замене записи', () => {
     const commit = vi.fn();
     const { rerender } = renderHook(
       ({ records, activeRow }) => {
-        useSelectionProjection({
+        useSelectionOnViewChange({
           view: { ...view, rows: records },
           columns,
           selection: EMPTY_SELECTION,
@@ -468,7 +414,7 @@ describe('выделение после изменения таблицы', () =
     );
     const reversed = [...rows].reverse();
     rerender({ records: reversed, activeRow: 0 });
-    expect(commit).toHaveBeenLastCalledWith(3);
+    expect(commit).toHaveBeenLastCalledWith(undefined);
     rerender({ records: reversed, activeRow: 3 });
     rerender({ records: reversed.slice(0, 3), activeRow: 3 });
     expect(commit).toHaveBeenLastCalledWith(undefined);
@@ -476,19 +422,17 @@ describe('выделение после изменения таблицы', () =
 
   it('при ресайзе и пустом выделении обход строк не нужен', () => {
     const rowKey = vi.fn(view.rowKey);
-    projectSelection(
+    resolveSelectionForView(
       view,
       { ...view, columns: columns.map((col) => ({ ...col })), rowKey },
       initial,
       false,
-      singleCell,
     );
-    projectSelection(
+    resolveSelectionForView(
       view,
       { ...view, rows: [...rows].reverse(), rowKey },
       EMPTY_SELECTION,
       false,
-      singleCell,
     );
     expect(rowKey).not.toHaveBeenCalled();
   });

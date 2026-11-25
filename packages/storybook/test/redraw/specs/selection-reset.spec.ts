@@ -14,10 +14,14 @@ test('активная запись при серверной сортировк
   await grid.press('Shift+ArrowDown');
   await expect(status).toHaveText('ID 20, колонка 2, диапазон 1 × 2');
   await page.getByRole('button', { name: 'Запросить сортировку' }).click();
-  await expect(status).toHaveText('ID 20, колонка 2, диапазон 1 × 1');
+  await expect(status).toHaveText('Выделение пусто');
   await page.getByRole('button', { name: 'Применить ответ' }).click();
+  await expect(status).toHaveText('Выделение пусто');
+  await page.getByRole('button', { name: 'Выделить Бориса' }).click();
   await expect(status).toHaveText('ID 20, колонка 2, диапазон 1 × 1');
   await page.getByRole('button', { name: 'Переместить имя в начало' }).click();
+  await expect(status).toHaveText('Выделение пусто');
+  await page.getByRole('button', { name: 'Выделить Бориса' }).click();
   await expect(status).toHaveText('ID 20, колонка 1, диапазон 1 × 1');
   await page.getByTestId('data-grid-canvas').focus();
   await page.keyboard.press('Control+c');
@@ -28,7 +32,7 @@ test('активная запись при серверной сортировк
 });
 
 for (const replaceOnLoad of [false, true]) {
-  test(`после ответа запись вне экрана копируется без прокрутки, replace=${replaceOnLoad}`, async ({
+  test(`после ответа controlled state выделяет запись вне экрана, replace=${replaceOnLoad}`, async ({
     grid,
     page,
     context,
@@ -47,15 +51,14 @@ for (const replaceOnLoad of [false, true]) {
     if (replaceOnLoad)
       await expect(page.getByTestId('data-grid-canvas')).toHaveCount(0);
     await page.getByRole('button', { name: 'Применить ответ' }).click();
+    await expect(page.locator('output')).toHaveText('Выделение пусто');
+    await grid.settle();
+    const scroller = page.locator('.dvn-scroller').first();
+    expect(await scroller.evaluate((el) => el.scrollTop)).toBe(0);
+    await page.getByRole('button', { name: 'Выделить Бориса' }).click();
     await expect(page.locator('output')).toHaveText(
       'ID 20, колонка 2, диапазон 1 × 1',
     );
-    await grid.settle();
-    const scroller = page.locator('.dvn-scroller').first();
-    expect(
-      await scroller.evaluate((el) => el.scrollHeight - el.clientHeight),
-    ).toBeGreaterThan(1000);
-    expect(await scroller.evaluate((el) => el.scrollTop)).toBe(0);
     await page.getByTestId('data-grid-canvas').focus();
     await page.keyboard.press('Control+c');
     await expect

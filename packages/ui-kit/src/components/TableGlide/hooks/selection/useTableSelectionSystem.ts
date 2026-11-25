@@ -39,14 +39,14 @@ interface UseTableSelectionSystemParams<
   /** Всего строк (данные + summary) — высота нативного range при column-select. */
   dataRowCount: number;
   /**
-   * Базовый обработчик glide-выделения (из useNativeGridSelection). `emitted` — что отдать
+   * Базовый обработчик glide-выделения (из useGridSelectionState). `emitted` — что отдать
    * потребителю, если итог не совпадает с нативным (несмежные колонки/строки — оверлей).
    */
   handleGridSelectionChange: (
     next: GridSelection,
     emitted?: GridSelection
   ) => void;
-  /** Базовый обработчик сброса выделения (из useNativeGridSelection). */
+  /** Базовый обработчик сброса выделения (из useGridSelectionState). */
   handleSelectionCleared: () => void;
   /** Controlled-значение подсвеченной строки (highlightActiveType='row'). */
   highlightActiveRow?: number;

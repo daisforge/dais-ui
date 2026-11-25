@@ -1,7 +1,7 @@
 import { act, renderHook } from '@testing-library/react';
 import { expect, it } from 'vitest';
 
-import { EMPTY_SELECTION } from '../../../TableGlide/hooks/selection/useNativeGridSelection';
+import { EMPTY_SELECTION } from '../../../TableGlide/hooks/selection/gridSelection';
 import { useFillHandle } from './useFillHandle';
 
 it('возвращает маркер после загрузки без повторного выбора ячейки', () => {

@@ -3,7 +3,7 @@ import { act, cleanup, render, screen } from '@testing-library/react';
 import React, { useRef, useState } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { EMPTY_SELECTION } from '../hooks/selection/useNativeGridSelection';
+import { EMPTY_SELECTION } from '../hooks/selection/gridSelection';
 import { TableGlide } from '../TableGlide';
 import type { GlideProps, SelectionSnapshot } from '../types';
 
@@ -105,12 +105,13 @@ describe('TableGlide при смене представления', () => {
 
   it('после замены грида оверлеем очищает выделение и адрес вставки на другой странице', () => {
     const sync = vi.fn();
-    const table = render(<Table sync={sync} />);
+    const emit = vi.fn();
+    const table = render(<Table sync={sync} emit={emit} />);
     expect(screen.getByTestId('editor').textContent).toBe('[0,1]');
-    table.rerender(<Table sync={sync} mounted={false} page={2} />);
-    table.rerender(<Table sync={sync} page={2} />);
+    table.rerender(<Table sync={sync} emit={emit} mounted={false} page={2} />);
+    table.rerender(<Table sync={sync} emit={emit} page={2} />);
     expect(screen.getByTestId('editor').textContent).toBe('null');
-    expect(sync).toHaveBeenLastCalledWith(EMPTY_SELECTION);
+    expect(emit).toHaveBeenLastCalledWith(EMPTY_SELECTION);
   });
 
   it('при возврате грида принимает внешний выбор в новых координатах со служебной колонкой', () => {
@@ -219,17 +220,30 @@ describe('TableGlide при смене представления', () => {
     expect(edited).toHaveBeenCalledTimes(1);
   });
 
-  it('при загрузке скрывает контуры, после ответа переносит запись и колонку ровно один раз', () => {
+  it('после сброса продукт может выделить запись в новых координатах', () => {
     const sync = vi.fn();
-    const table = render(<Table sync={sync} />);
-    expect(
-      Number(screen.getByTestId('editor').dataset['regions']),
-    ).toBeGreaterThan(0);
-    table.rerender(<Table sync={sync} loading service />);
+    const emit = vi.fn();
+    const table = render(<Table sync={sync} emit={emit} />);
+    table.rerender(<Table sync={sync} emit={emit} loading service />);
     expect(screen.getByTestId('editor').textContent).toBe('null');
     expect(screen.getByTestId('editor').dataset['regions']).toBe('0');
-    table.rerender(<Table sync={sync} sorted service />);
+    table.rerender(<Table sync={sync} emit={emit} sorted service />);
+    expect(screen.getByTestId('editor').textContent).toBe('null');
+    expect(emit).toHaveBeenCalledTimes(1);
+    expect(emit).toHaveBeenLastCalledWith(EMPTY_SELECTION);
+    const target: GridSelection = {
+      ...EMPTY_SELECTION,
+      current: {
+        cell: [1, 2],
+        range: { x: 1, y: 2, width: 1, height: 1 },
+        rangeStack: [],
+      },
+    };
+    table.rerender(
+      <Table sync={sync} emit={emit} sorted service external={target} />,
+    );
     expect(screen.getByTestId('editor').textContent).toBe('[1,2]');
-    expect(sync.mock.lastCall?.[0].current?.cell).toEqual([1, 2]);
+    expect(sync).toHaveBeenLastCalledWith(target);
+    expect(emit).toHaveBeenCalledTimes(1);
   });
 });

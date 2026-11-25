@@ -2,7 +2,7 @@
  * Подсистема выделения и подсветки TableGlide.
  *
  * Слои:
- *  - STATE: `useNativeGridSelection` (нативное glide-выделение),
+ *  - STATE: `useGridSelectionState` (нативное glide-выделение),
  *    `useTableSelectionSystem` (оркестратор осей колонок/строк/активной строки,
  *    композит `useColumnAxisSelection` + `useRowAxisSelection` +
  *    `useActiveRowHighlight`).
@@ -13,6 +13,6 @@
  */
 export { rectContainsCell } from './rectGeometry';
 export { useColoringLayers } from './useColoringLayers';
-export { useNativeGridSelection } from './useNativeGridSelection';
+export { useGridSelectionState } from './useGridSelectionState';
 export { useSelectionGeometry } from './useSelectionGeometry';
 export { useTableSelectionSystem } from './useTableSelectionSystem';
