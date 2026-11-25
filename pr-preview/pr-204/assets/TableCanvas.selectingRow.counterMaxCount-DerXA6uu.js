@@ -1,0 +1,32 @@
+import{j as o}from"./react-UEdzNlUe.js";import{df as e}from"./vendor-DTHFTCxs.js";import{M as i,S as m}from"./WithTooltip-KJL26V4Q-C6ebWjDI.js";import{T as s}from"./TableCanvas.selectingRow.counterMaxCount.stories-BTZfq3Uy.js";import"./_commonjsHelpers-BosuxZz1.js";import"./tslib-DoU9Jm1N.js";import"./_commonjs-dynamic-modules-TDtrdbi3.js";import"./react-is-CJ4CjPIR.js";import"./styled-components-BDqbx52B.js";import"./@tanstack/react-virtual-Cc6cMCGC.js";import"./preload-helper-Cro6n4mv.js";import"./index-Cu4lwwaE.js";import"./index-D2sVbA6U.js";import"./tableData-DKA5H0bF.js";import"./DocStoryTemplate-CBeApVWX.js";import"./storySourceDoc-tVKyHcEN.js";import"./TableCanvas-BR7mX7EG.js";import"./@sddsjs/sdds_finai-Bv0LRYjs.js";import"./utils-7MphdwvM.js";import"./constants-YnncqoDz.js";import"./sharedUtilsDebug-BX_KjCjW.js";import"./@salutejs/sdds-finai-B8Iabp4m.js";import"./@salutejs/plasma-icons-BF2rNVOT.js";import"./sharedUtilsCopy-CGH-mx0N.js";import"./Switch-Cpse2u-_.js";import"./Box-CAVr5OBu.js";import"./Collapse-C9SIU-FL.js";import"./TableCanvasSharedConstants-CqGDn8zL.js";import"./TableStateColors-CGhRd5g5.js";import"./TableGlide-Dc19zgYb.js";import"./@daisforge/glide-data-grid-C2Ilpdo3.js";import"./canvas-hypertxt-DsokSIOX.js";import"./sharedUtilsSearch-blgVacgU.js";import"./TableTabs-qleR1gEq.js";import"./sharedUiSearch-8awvCxY9.js";import"./TextField-sq2OfKUb.js";import"./sharedUtilsInputs-BX82Dwrc.js";import"./Typography-iY6IgvJ3.js";import"./ListOfFilters-DcGL39sT.js";import"./FiltersActions-C7Clinjf.js";import"./IconButton-De4CLxay.js";import"./Tooltip-B481aNNP.js";import"./lodash.isequal-mFNAsUE8.js";import"./Combobox-B3DTr_Ly.js";import"./NumberFormat-Bi_dJEOI.js";import"./EmptyState-CXzoECXD.js";import"./unidentified@3x-B3LEnvq5.js";import"./ErrorPage-Dn135nY0.js";import"./Autocomplete-BBCZ5dWD.js";function r(n){const t={a:"a",blockquote:"blockquote",code:"code",h1:"h1",h2:"h2",li:"li",p:"p",pre:"pre",strong:"strong",ul:"ul",...e(),...n.components};return o.jsxs(o.Fragment,{children:[o.jsx(i,{of:s,name:"Docs"}),`
+`,o.jsx(t.h1,{id:"selectingrow--ограничение-счётчика-99",children:"SelectingRow — ограничение счётчика (99+)"}),`
+`,o.jsx(t.p,{children:o.jsx(t.strong,{children:"tableConfig.selecting.summaryCounterMaxCount"})}),`
+`,o.jsx(t.p,{children:`Ограничивает максимальное отображаемое число в счётчике выбранных строк — и в шапке
+таблицы, и в панели массовых действий. Если выбрано больше — счётчик показывает «N+».`}),`
+`,o.jsx(t.p,{children:`Не ограничивает само выделение (выбрать можно сколько угодно), влияет только на
+отображение числа.`}),`
+`,o.jsx(t.h2,{id:"использование",children:"Использование"}),`
+`,o.jsx(t.pre,{children:o.jsx(t.code,{className:"language-tsx",children:`<TableCanvas
+  tableConfig={{
+    selecting: {
+      state: selectingRowState,
+      rowKeyGetter: (r) => r.id,
+      // при > 99 выбранных счётчик покажет «99+»
+      summaryCounterMaxCount: 99,
+    },
+  }}
+  columnConfig={columns}
+  rows={rows}
+/>
+`})}),`
+`,o.jsx(t.h2,{id:"поведение",children:"Поведение"}),`
+`,o.jsxs(t.ul,{children:[`
+`,o.jsxs(t.li,{children:[o.jsx(t.code,{children:"selectedCount <= summaryCounterMaxCount"})," — показывается точное число."]}),`
+`,o.jsxs(t.li,{children:[o.jsx(t.code,{children:"selectedCount > summaryCounterMaxCount"})," — показывается ",o.jsx(t.code,{children:"«summaryCounterMaxCount+»"}),`
+(например, `,o.jsx(t.code,{children:"99+"}),")."]}),`
+`,o.jsx(t.li,{children:"Поле опционально: без него счётчик показывает точное число без ограничения."}),`
+`]}),`
+`,o.jsxs(t.blockquote,{children:[`
+`,o.jsxs(t.p,{children:["Типы SelectingRow — ",o.jsx(t.a,{href:"?path=/docs/%D0%BB%D0%BE%D0%BA%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D1%8B-tablecanvas-selectingrow-api--docs",children:"SelectingRow API"})]}),`
+`]}),`
+`,o.jsx(m,{})]})}function ro(n={}){const{wrapper:t}={...e(),...n.components};return t?o.jsx(t,{...n,children:o.jsx(r,{...n})}):r(n)}export{ro as default};
