@@ -3,7 +3,6 @@ import { Button } from '@ui-kit/components/Button';
 import { Collapse } from '@ui-kit/components/Collapse';
 import { TabItem, Tabs } from '@ui-kit/components/Tabs';
 import { IconClose } from '@ui-kit/icons';
-import { outlineSolidPrimary } from '@ui-kit/tokens';
 import { useDebouncedValue } from '@ui-kit/utils';
 import React, { memo, ReactNode } from 'react';
 import styled, { CSSObject } from 'styled-components';
@@ -19,7 +18,6 @@ const SIZES = {
 };
 
 const BORDER_WIDTH = 1;
-const getBorderColor = () => outlineSolidPrimary;
 
 // const DURATION = 0.5;
 
@@ -87,7 +85,6 @@ const ListOfFiltersNotMemo = ({
   extraCss = {},
 }: ListOfFiltersProps) => {
   const SIZE = SIZES[size];
-  const border = `${BORDER_WIDTH}px solid ${getBorderColor()}`;
   const curPaddingInline = paddingInline ?? SIZE.paddingInline;
   const curMaxHeight = maxHeight ?? SIZE.height;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -113,8 +110,6 @@ const ListOfFiltersNotMemo = ({
         className={cls.container}
         $css={{
           display: 'flex',
-          borderInline: border,
-          borderTop: border,
           paddingInline: curPaddingInline,
           maxHeight: curMaxHeight,
           marginTop: paddingTop,

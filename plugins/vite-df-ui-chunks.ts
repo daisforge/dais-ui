@@ -1,5 +1,8 @@
 import { Plugin } from 'vite';
 
+const TABLE_CANVAS_ENTRY = 'components/TableCanvas/index';
+const LEGACY_TABLE_CSS = 'react-data-grid/lib/styles.css';
+
 /**
  * modulePaths - должен заканчиваться на / чтобы исключить случайный перехват чужих чанков
  * @example modulePaths='packages/ui-kit/src/components/Table' во время
@@ -15,7 +18,9 @@ export const MANUAL_UIKIT_COMP_CHUNKS = [
     modulePaths: ['packages/ui-kit/src/mixins/'],
   },
   // components chunks
-  // Обе таблицы используют эти контролы. Отдельные чанки не тянут CSS старой Table.
+  // Общие контролы в отдельных чанках позволяют TableCanvas обходиться без
+  // CSS старой таблицы. Это работает для ESM с tree shaking и отдельной точки
+  // входа TableCanvas в CJS. Корневой index.cjs загружает также старую Table.
   {
     chunkName: 'Combobox',
     modulePaths: ['packages/ui-kit/src/components/Combobox/'],
@@ -371,6 +376,32 @@ const manualChunks = (id: string) => {
 export function viteDFUIChunks(): Plugin {
   return {
     name: 'vite-df-ui-chunks',
+    generateBundle({ format }, bundle) {
+      const extension = format === 'cjs' ? 'cjs' : 'mjs';
+      const entry = `${TABLE_CANVAS_ENTRY}.${extension}`;
+      const visited = new Set<string>();
+
+      if (!bundle[entry]) {
+        this.error(
+          `Не найдена точка входа ${entry} для проверки изоляции CSS.`,
+        );
+      }
+
+      const checkImports = (fileName: string) => {
+        const chunk = bundle[fileName];
+        if (chunk?.type !== 'chunk' || visited.has(fileName)) return;
+        visited.add(fileName);
+
+        const imports = [...chunk.imports, ...chunk.dynamicImports];
+        if (imports.includes(LEGACY_TABLE_CSS)) {
+          this.error(
+            `${entry} загружает ${LEGACY_TABLE_CSS} через ${fileName}.`,
+          );
+        }
+        imports.forEach(checkImports);
+      };
+      checkImports(entry);
+    },
     config(_config) {
       return {
         build: {
