@@ -1,7 +1,12 @@
 // eslint-disable-next-line no-restricted-imports
 import { TextField as BaseTextField } from '@salutejs/sdds-finai';
 import { getContentRight } from '@ui-kit/shared/utils/inputs';
-import type { ComponentProps } from 'react';
+import type {
+  ComponentProps,
+  ForwardRefExoticComponent,
+  PropsWithoutRef,
+  RefAttributes,
+} from 'react';
 import React, { forwardRef } from 'react';
 
 type TextFieldBaseProps = ComponentProps<typeof BaseTextField>;
@@ -14,7 +19,9 @@ export type TextFieldProps = TextFieldBaseProps & {
   onClear?: () => void;
 };
 
-export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
+export const TextField: ForwardRefExoticComponent<
+  PropsWithoutRef<TextFieldProps> & RefAttributes<HTMLInputElement>
+> = forwardRef<HTMLInputElement, TextFieldProps>(
   (
     { disabled, readOnly, contentRight, size = 's', value, onClear, ...rest },
     ref,

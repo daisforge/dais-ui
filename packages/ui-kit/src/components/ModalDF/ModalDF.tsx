@@ -1,6 +1,11 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import { Modal } from '@ui-kit/components/Modal';
 import { PopupProvider } from '@ui-kit/components/Popup';
+import type {
+  ForwardRefExoticComponent,
+  PropsWithoutRef,
+  RefAttributes,
+} from 'react';
 import { forwardRef } from 'react';
 
 import { cls } from './classNames';
@@ -22,52 +27,66 @@ import {
 } from './styled';
 import type { ModalDFProps } from './types';
 
-const ModalDFWithRef = forwardRef<HTMLDivElement, ModalDFProps>(
-  (props, ref) => {
-    const { fullScreen, contentContainerProps, children, ...rest } = props;
+const ModalDFWithRef: ForwardRefExoticComponent<
+  PropsWithoutRef<ModalDFProps> & RefAttributes<HTMLDivElement>
+> = forwardRef<HTMLDivElement, ModalDFProps>((props, ref) => {
+  const { fullScreen, contentContainerProps, children, ...rest } = props;
 
-    const { fullScreened, toggleFullScreen } = useFullScreened(
-      fullScreen,
-      rest.opened,
-    );
+  const { fullScreened, toggleFullScreen } = useFullScreened(
+    fullScreen,
+    rest.opened,
+  );
 
-    const hasLeftAndMain = hasLeftAndMainHandler(children);
+  const hasLeftAndMain = hasLeftAndMainHandler(children);
 
-    const contProps = hasLeftAndMain
-      ? ({ split: true, view: '30/70' } as const)
-      : { stretch: true };
+  const contProps = hasLeftAndMain
+    ? ({ split: true, view: '30/70' } as const)
+    : { stretch: true };
 
-    // доп обертка <div> - нужна для появления скролла у нужного элемента (Main)
-    const content = hasLeftAndMain ? children : <div>{children}</div>;
+  // доп обертка <div> - нужна для появления скролла у нужного элемента (Main)
+  const content = hasLeftAndMain ? children : <div>{children}</div>;
 
-    return (
-      <PopupProvider>
-        <CtxsProviders
-          {...{
-            onClose: rest.onClose,
-            fullScreened,
-            toggleFullScreen,
-          }}
-        >
-          <Modal ref={ref} {...{ ...defProps(props), ...rest }}>
-            <StyledContainer
-              className={cls.container}
-              $fullScreened={!!fullScreened}
-              roundedInner={false}
-              {...contProps}
-              {...contentContainerProps}
-            >
-              {/* as never - из-за строгой типизации Container */}
-              {content as never}
-            </StyledContainer>
-          </Modal>
-        </CtxsProviders>
-      </PopupProvider>
-    );
-  },
-);
+  return (
+    <PopupProvider>
+      <CtxsProviders
+        {...{
+          onClose: rest.onClose,
+          fullScreened,
+          toggleFullScreen,
+        }}
+      >
+        <Modal ref={ref} {...{ ...defProps(props), ...rest }}>
+          <StyledContainer
+            className={cls.container}
+            $fullScreened={!!fullScreened}
+            roundedInner={false}
+            {...contProps}
+            {...contentContainerProps}
+          >
+            {/* as never - из-за строгой типизации Container */}
+            {content as never}
+          </StyledContainer>
+        </Modal>
+      </CtxsProviders>
+    </PopupProvider>
+  );
+});
 
-export const ModalDF = Object.assign(ModalDFWithRef, {
+// Явный тип с `typeof` частей: без него TypeScript разворачивает тип каждой
+// части прямо в .d.ts компонента.
+type ModalDFComponent = typeof ModalDFWithRef & {
+  Left: typeof StyledLeft;
+  Main: typeof StyledMain;
+  Header: typeof Header;
+  Footer: typeof Footer;
+  Content: typeof StyledContent;
+  Divider: typeof Divider;
+  ServiceButtons: typeof ServiceButtons;
+  DotsIconButton: typeof DotsIconButton;
+  BackIconButton: typeof BackIconButton;
+};
+
+export const ModalDF: ModalDFComponent = Object.assign(ModalDFWithRef, {
   Left: StyledLeft,
   Main: StyledMain,
   Header,
