@@ -1,0 +1,42 @@
+import{j as e}from"./react-UEdzNlUe.js";import{dd as o}from"./vendor-DKFmtNka.js";import{M as d,S as l}from"./WithTooltip-KJL26V4Q-D7QdvFrX.js";import{T as c}from"./TableCanvas.themeOverride.stories-BrXyN8fg.js";import"./_commonjsHelpers-BosuxZz1.js";import"./tslib-DoU9Jm1N.js";import"./_commonjs-dynamic-modules-TDtrdbi3.js";import"./react-is-CJ4CjPIR.js";import"./styled-components-CDfPITHT.js";import"./@tanstack/react-virtual-0hY7ij6n.js";import"./preload-helper-DY3st4ya.js";import"./index-Cu4lwwaE.js";import"./index-CLqcrFDJ.js";import"./tableData-DKA5H0bF.js";import"./DocStoryTemplate-CaG7Oz3D.js";import"./TableCanvas-DnLJatGL.js";import"./@sddsjs/sdds_finai-CqI1dsZV.js";import"./utils-Booj3GAg.js";import"./constants-3UB8ZrMK.js";import"./sharedUtilsDebug-BX_KjCjW.js";import"./@salutejs/sdds-finai-CkM2RoIx.js";import"./@salutejs/plasma-icons-BPl9HMYM.js";import"./sharedUtilsCopy-CGH-mx0N.js";import"./index-By_8dfga.js";import"./Box-CZ_ZQ2uM.js";import"./Collapse-je_wNoe6.js";import"./TableCanvasSharedConstants-CqGDn8zL.js";import"./TableGlide-pqtGUNQR.js";import"./@daisforge/glide-data-grid-DikH8CkI.js";import"./canvas-hypertxt-DsokSIOX.js";import"./countWhile-blgVacgU.js";import"./TableTabs-HvjNq9qy.js";import"./sharedUiSearch-DYvRq6Y1.js";import"./TextField-U5vj9Sk3.js";import"./sharedUtilsInputs-DKhoD9kx.js";import"./TypographyWithAutoTooltip-CJxc4gWE.js";import"./Typography-cf3Xy15z.js";import"./ListOfFilters-BYwMA_M8.js";import"./Table-BfBSImnc.js";import"./react-data-grid-zJbN7yQ-.js";import"./lodash.isequal-mFNAsUE8.js";import"./Combobox-C6JBaB8n.js";import"./NumberFormat-zDalxEv_.js";import"./EmptyState-CsvGoBjj.js";import"./unidentified@3x-BMVrBFut.js";import"./MassActions-WWHYhfyl.js";import"./Autocomplete-BZdAUz1o.js";import"./FiltersActions-BTg1kz4o.js";import"./IconButton-DE-9S934.js";import"./TooltipList--BueJEoS.js";import"./ErrorPage-Bi1jiB48.js";function n(i){const r={a:"a",blockquote:"blockquote",code:"code",h1:"h1",h2:"h2",h3:"h3",li:"li",p:"p",pre:"pre",strong:"strong",ul:"ul",...o(),...i.components};return e.jsxs(e.Fragment,{children:[e.jsx(d,{of:c,name:"Docs"}),`
+`,e.jsx(r.h1,{id:"theme-override",children:"Theme Override"}),`
+`,e.jsx(r.p,{children:e.jsx(r.strong,{children:"columnConfig.themeOverride"})}),`
+`,e.jsxs(r.p,{children:["Переопределение визуальных свойств ячейки на уровне колоночного конфига. Колбэк вызывается для каждой ячейки колонки и возвращает частичный override темы (",e.jsx(r.code,{children:"Partial<Theme>"}),"), либо ",e.jsx(r.code,{children:"undefined"}),", если для ячейки переопределение не нужно."]}),`
+`,e.jsx(r.h2,{id:"ключевые-особенности",children:"Ключевые особенности"}),`
+`,e.jsxs(r.ul,{children:[`
+`,e.jsxs(r.li,{children:[e.jsx(r.code,{children:"bgCell"})," — цвет фона ячейки (рисуется нативно, закрашивает всю площадь ячейки, включая паддинги)"]}),`
+`,e.jsxs(r.li,{children:[e.jsx(r.code,{children:"cellHorizontalPadding"})," — горизонтальные отступы контента ячейки"]}),`
+`,e.jsxs(r.li,{children:[e.jsx(r.code,{children:"cellVerticalPadding"})," — вертикальные отступы контента ячейки"]}),`
+`,e.jsxs(r.li,{children:["Колбэк получает ",e.jsx(r.code,{children:"cellInfo"})," (row, column, ctxs, theme) и ",e.jsx(r.code,{children:"lvl"})," — уровень вложенности subRow (0 для корневых строк, 1+ для дочерних)"]}),`
+`,e.jsx(r.li,{children:"Условное поведение: можно менять стили в зависимости от данных строки или уровня вложенности"}),`
+`]}),`
+`,e.jsx(r.h2,{id:"сигнатура",children:"Сигнатура"}),`
+`,e.jsx(r.pre,{children:e.jsx(r.code,{className:"language-ts",children:`themeOverride?: (
+  cellInfo: CellInfo<Row, SummRow, CustomCtxs>,
+  lvl: number
+) => CellThemeOverrideResult | undefined;
+`})}),`
+`,e.jsx(r.h2,{id:"особенности",children:"Особенности"}),`
+`,e.jsx(r.h3,{id:"обычные-колонки",children:"Обычные колонки"}),`
+`,e.jsxs(r.p,{children:["Для колонок без ",e.jsx(r.code,{children:"subRow.isColumnWithArrow"})," ",e.jsx(r.code,{children:"cellHorizontalPadding"})," через ",e.jsx(r.code,{children:"themeOverride"})," применяется напрямую и одинаково на всех уровнях вложенности (root и subRows). Левый и правый паддинги получают точное значение из override."]}),`
+`,e.jsx(r.h3,{id:"tree-колонки-с-шевроном-раскрытия",children:"Tree-колонки (с шевроном раскрытия)"}),`
+`,e.jsxs(r.p,{children:["Для колонок с ",e.jsx(r.code,{children:"subRow.isColumnWithArrow: true"})," левый край ячейки рассчитывается формулой ",e.jsx(r.code,{children:"cellHorizontalPadding + step * lvl"}),", где шаг зависит от размера строки: ",e.jsx(r.code,{children:"big"})," — 50 (16 → 66 → 116 → 166 px), ",e.jsx(r.code,{children:"medium"})," — 36 (6 → 42 → 78 → 114 px), ",e.jsx(r.code,{children:"small"})," — 28 (4 → 32 → 60 → 88 px). Отступ зависит только от уровня вложенности и не зависит от наличия шеврона, поэтому текст дочерней строки всегда правее текста родителя. Шеврон рисуется иконкой без пустого места слева: раскрытый ",e.jsx(r.code,{children:"∨"})," начинается ровно на линии уровня (там же, где текст соседнего листа), у свёрнутого ",e.jsx(r.code,{children:">"})," небольшой отступ, чтобы при раскрытии не было скачка. Справа от шеврона места столько же, сколько у исходной иконки, поэтому расстояние до текста прежнее. Двойной шеврон в шапке (",e.jsx(r.code,{children:"раскрыть/скрыть все строки"}),") построен так же и стоит на линии свёрнутого шеврона строки, а заголовок колонки — над текстом строк верхнего уровня. Override влияет на левый край, но итоговое значение ",e.jsx(r.code,{children:"= override + offsets"}),", а не ровно значение override. Правый край и ",e.jsx(r.code,{children:"bgCell"})," для tree-колонок работают как обычно."]}),`
+`,e.jsx(r.h3,{id:"кастомный-rendercell",children:"Кастомный renderCell"}),`
+`,e.jsxs(r.p,{children:["Для колонок с ",e.jsx(r.code,{children:"renderCell"})," системная обёртка с паддингом не добавляется. Разработчик сам управляет отступами через ",e.jsx(r.code,{children:"theme.cellHorizontalPadding"})," внутри своего renderCell."]}),`
+`,e.jsx(r.h3,{id:"bgcell",children:"bgCell"}),`
+`,e.jsxs(r.p,{children:[e.jsx(r.code,{children:"bgCell"})," рисуется нативно на уровне самой таблицы. Фон закрашивает всю ячейку целиком, включая области паддингов и любых обёрток."]}),`
+`,e.jsx(r.p,{children:"Цвет задаётся только в этих записях, для них таблица сама считает цвет под курсором и при выделении:"}),`
+`,e.jsxs(r.ul,{children:[`
+`,e.jsxs(r.li,{children:["hex: ",e.jsx(r.code,{children:"#RGB"}),", ",e.jsx(r.code,{children:"#RGBA"}),", ",e.jsx(r.code,{children:"#RRGGBB"}),", ",e.jsx(r.code,{children:"#RRGGBBAA"})]}),`
+`,e.jsxs(r.li,{children:[e.jsx(r.code,{children:"rgb()"})," и ",e.jsx(r.code,{children:"rgba()"})]}),`
+`]}),`
+`,e.jsx(r.p,{children:"Полупрозрачный цвет кладётся на фон ячейки темы и дальше ведёт себя как непрозрачный, поэтому зебра и фон строки сквозь него не видны."}),`
+`,e.jsxs(r.p,{children:[e.jsx(r.code,{children:"hsl()"}),", ",e.jsx(r.code,{children:"var()"}),", названия цветов и другие записи не поддерживаются: в консоли появится предупреждение, а ячейка останется без цвета под курсором и при выделении."]}),`
+`,e.jsx(r.h2,{id:"см-также",children:"См. также"}),`
+`,e.jsxs(r.ul,{children:[`
+`,e.jsxs(r.li,{children:[e.jsx(r.code,{children:"getRowThemeOverride"})," — нативный API таблицы для переопределения темы ",e.jsx(r.strong,{children:"строки целиком"}),' (по индексу строки, без cellInfo). Используется для подсветки summary-строк и selected-строк. Если нужен row-level эффект (например, "выделенная строка целиком") — используйте этот механизм, а не ',e.jsx(r.code,{children:"themeOverride"})," на каждой ячейке."]}),`
+`]}),`
+`,e.jsxs(r.blockquote,{children:[`
+`,e.jsxs(r.p,{children:["Подробнее о типах — ",e.jsx(r.a,{href:"?path=/docs/%D0%BB%D0%BE%D0%BA%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D1%8B-tablecanvas-themeoverride-api--docs",children:"Theme Override API"})]}),`
+`]}),`
+`,e.jsx(l,{})]})}function de(i={}){const{wrapper:r}={...o(),...i.components};return r?e.jsx(r,{...i,children:e.jsx(n,{...i})}):n(i)}export{de as default};

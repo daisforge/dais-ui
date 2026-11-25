@@ -1,6 +1,0 @@
-import{j as e}from"./react-UEdzNlUe.js";import{dd as r}from"./vendor-DKFmtNka.js";import{M as s}from"./WithTooltip-KJL26V4Q-D7QdvFrX.js";import{T as o}from"./TypeSourceViewer-DAkGBjMm.js";import"./_commonjsHelpers-BosuxZz1.js";import"./tslib-DoU9Jm1N.js";import"./_commonjs-dynamic-modules-TDtrdbi3.js";import"./react-is-CJ4CjPIR.js";import"./styled-components-CDfPITHT.js";import"./@tanstack/react-virtual-0hY7ij6n.js";import"./preload-helper-DY3st4ya.js";import"./index-Cu4lwwaE.js";import"./index-CLqcrFDJ.js";import"./types.string-BR8eQOO_.js";function i(t){const n={h1:"h1",h2:"h2",...r(),...t.components};return e.jsxs(e.Fragment,{children:[e.jsx(s,{title:"Локальные компоненты/TableCanvas/KeyText/API"}),`
-`,e.jsx(n.h1,{id:"keytext-api",children:"KeyText API"}),`
-`,e.jsx(n.h2,{id:"keytext",children:"KeyText"}),`
-`,e.jsx(o,{language:"ts",filePath:"packages/ui-kit/src/components/TableCanvas/feature-key-text/types.ts",typeName:"KeyText"}),`
-`,e.jsx(n.h2,{id:"keytextconfig",children:"KeyTextConfig"}),`
-`,e.jsx(o,{language:"ts",filePath:"packages/ui-kit/src/components/TableCanvas/feature-key-text/types.ts",typeName:"KeyTextConfig"})]})}function k(t={}){const{wrapper:n}={...r(),...t.components};return n?e.jsx(n,{...t,children:e.jsx(i,{...t})}):i(t)}export{k as default};
