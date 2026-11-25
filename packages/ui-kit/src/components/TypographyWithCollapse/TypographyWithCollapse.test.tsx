@@ -57,19 +57,15 @@ describe('TypographyWithCollapse', () => {
         disconnect = disconnect;
       },
     );
-    const computedStyle = window.getComputedStyle.bind(window);
-    vi.spyOn(window, 'getComputedStyle').mockImplementation((...args) => {
-      const style = computedStyle(...args);
-      style.setProperty('line-height', '20px');
-      return style;
-    });
     vi.spyOn(Element.prototype, 'scrollHeight', 'get').mockImplementation(
       () => fullHeight,
     );
     vi.spyOn(Element.prototype, 'getBoundingClientRect').mockImplementation(
       function measureRect(this: Element) {
-        const height =
-          this.getAttribute('data-collapsed') === 'true' ? 80 : fullHeight;
+        const clamped =
+          this.getAttribute('data-collapsed') === 'true' ||
+          this.parentElement?.hasAttribute('data-measuring');
+        const height = clamped ? Math.min(80, fullHeight) : fullHeight;
         return {
           x: 0,
           y: 0,
@@ -166,8 +162,10 @@ describe('TypographyWithCollapse', () => {
     expect(animate).not.toHaveBeenCalled();
   });
 
-  it('передаёт атрибуты типографики и ref на корень и использует подписи продукта', () => {
+  it('отделяет заголовок и его обработчики от кнопки раскрытия', () => {
     const ref = createRef<HTMLDivElement>();
+    const onClick = vi.fn();
+    const onKeyDown = vi.fn();
     render(
       <TypographyWithCollapse
         as="h2"
@@ -177,6 +175,8 @@ describe('TypographyWithCollapse', () => {
         data-testid="root"
         className="product"
         style={{ marginTop: 8 }}
+        onClick={onClick}
+        onKeyDown={onKeyDown}
         expandLabel="Подробнее"
         collapseLabel="Скрыть"
       >
@@ -184,12 +184,18 @@ describe('TypographyWithCollapse', () => {
       </TypographyWithCollapse>,
     );
     const root = screen.getByTestId('root');
-    expect(root.tagName).toBe('H2');
+    expect(root.tagName).toBe('DIV');
+    const heading = screen.getByRole('heading', { level: 2, name: 'Описание' });
     expect(ref.current).toBe(root);
     expect(root.classList.contains('product')).toBe(true);
     expect(root.style.marginTop).toBe('8px');
     const button = screen.getByRole('button', { name: 'Подробнее' });
     fireEvent.click(button);
     expect(screen.getByRole('button', { name: 'Скрыть' })).toBe(button);
+    fireEvent.keyDown(button, { key: 'Enter' });
+    expect(onClick).not.toHaveBeenCalled();
+    expect(onKeyDown).not.toHaveBeenCalled();
+    fireEvent.click(heading);
+    expect(onClick).toHaveBeenCalledOnce();
   });
 });

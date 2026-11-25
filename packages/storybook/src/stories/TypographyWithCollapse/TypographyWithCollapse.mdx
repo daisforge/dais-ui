@@ -10,10 +10,10 @@ import * as TypographyWithCollapseStories from './TypographyWithCollapse.stories
 ```tsx
 import { TypographyWithCollapse } from '@daisforge/ui';
 
-<TypographyWithCollapse lines={2}>{description}</TypographyWithCollapse>
+<TypographyWithCollapse lines={2}>{description}</TypographyWithCollapse>;
 ```
 
-Выберите стиль текста через `variant`, а подписи кнопки — через `expandLabel` и `collapseLabel`. Стандартные пропсы типографики, HTML-атрибуты, `className`, `style` и `ref` передаются на корневой элемент.
+Выберите стиль текста через `variant`, а подписи кнопки — через `expandLabel` и `collapseLabel`. Пропсы типографики, `as` и обработчики событий относятся к тексту. `className`, `style`, `ref` и атрибуты `data-*` передаются внешней обёртке. Если задаёте семантический тег через `as`, используйте допустимую для него вложенность. Ссылки в скрытых строках становятся доступны с клавиатуры после раскрытия.
 
 При включённой системной настройке уменьшения движения текст раскрывается и сворачивается сразу.
 

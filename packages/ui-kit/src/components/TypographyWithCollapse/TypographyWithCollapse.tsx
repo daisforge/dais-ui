@@ -18,20 +18,27 @@ import {
 } from 'react';
 
 import { normalizeLines } from './normalizeLines';
-import { Layout, Text, TextViewport } from './TypographyWithCollapse.styled';
+import { Layout, TextViewport } from './TypographyWithCollapse.styled';
 
 export type TypographyWithCollapseProps<T extends TypographyVariant = 'BodyM'> =
   Omit<TypographyProps<T>, 'variant' | 'ref' | 'refTypography'> & {
     children: ReactNode;
     /** Вариант типографики для текста. По умолчанию BodyM. */
     variant?: T;
-    /** Количество видимых строк в свёрнутом виде. По умолчанию 4. */
+    /**
+     * Количество видимых строк в свёрнутом виде.
+     * @default 4
+     */
     lines?: number;
+    /** Подпись кнопки раскрытия текста. */
     expandLabel?: string;
+    /** Подпись кнопки сворачивания текста. */
     collapseLabel?: string;
   };
 
 const useLayout = typeof window === 'undefined' ? useEffect : useLayoutEffect;
+const FOCUSABLE_CONTENT =
+  'a[href], area[href], button, input, select, textarea, iframe, summary, [tabindex], [contenteditable], audio[controls], video[controls]';
 
 function CollapseText<T extends TypographyVariant>(
   {
@@ -40,26 +47,68 @@ function CollapseText<T extends TypographyVariant>(
     lines,
     expandLabel = 'Показать полностью',
     collapseLabel = 'Свернуть',
+    className,
+    style,
     ...typographyProps
   }: TypographyWithCollapseProps<T>,
   ref: ForwardedRef<HTMLDivElement>,
 ) {
   const visibleLines = normalizeLines(lines);
   const viewportId = useId();
-  const viewportRef = useRef<HTMLSpanElement>(null);
-  const [text, setText] = useState<HTMLSpanElement | null>(null);
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const [text, setText] = useState<HTMLDivElement | null>(null);
+  const measureText = useRef<() => void>();
   const startHeight = useRef<number>();
   const [expanded, setExpanded] = useState(false);
   const [overflowing, setOverflowing] = useState(false);
 
   useLayout(() => {
-    if (!text) return undefined;
+    const viewport = viewportRef.current;
+    if (!text || !viewport) return undefined;
+
+    const hiddenControls = new Map<HTMLElement, string | null>();
+    const restoreTabIndex = (element: HTMLElement) => {
+      const previous = hiddenControls.get(element);
+      if (element.getAttribute('tabindex') === '-1') {
+        if (previous == null) element.removeAttribute('tabindex');
+        else element.setAttribute('tabindex', previous);
+      }
+      hiddenControls.delete(element);
+    };
     const measure = () => {
-      const lineHeight = parseFloat(getComputedStyle(text).lineHeight);
-      const overflows = text.scrollHeight > lineHeight * visibleLines + 1;
+      // Замеряем CSS-ограничение напрямую, включая line-height: normal.
+      // В раскрытом состоянии и во время анимации применяем его только на время замера.
+      const collapsed = viewport.getAttribute('data-collapsed') === 'true';
+      viewport.setAttribute('data-measuring', '');
+      const { bottom, height } = text.getBoundingClientRect();
+      const overflows = text.scrollHeight > height + 1;
+
+      hiddenControls.forEach((_tabIndex, element) => {
+        if (!text.contains(element) || !collapsed || !overflows) {
+          restoreTabIndex(element);
+        }
+      });
+      if (collapsed && overflows) {
+        text
+          .querySelectorAll<HTMLElement>(FOCUSABLE_CONTENT)
+          .forEach((element) => {
+            const rects = Array.from(element.getClientRects());
+            const hidden =
+              rects.length > 0 && rects.every(({ top }) => top >= bottom);
+            if (hidden && !hiddenControls.has(element)) {
+              hiddenControls.set(element, element.getAttribute('tabindex'));
+              element.setAttribute('tabindex', '-1');
+            } else if (!hidden && hiddenControls.has(element)) {
+              restoreTabIndex(element);
+            }
+          });
+      }
+
+      viewport.removeAttribute('data-measuring');
       setOverflowing(overflows);
       if (!overflows) setExpanded(false);
     };
+    measureText.current = measure;
     measure();
     const resize =
       typeof ResizeObserver === 'undefined'
@@ -72,11 +121,12 @@ function CollapseText<T extends TypographyVariant>(
       childList: true,
       subtree: true,
       characterData: true,
-      attributes: true,
     });
     return () => {
       resize?.disconnect();
       mutations.disconnect();
+      hiddenControls.forEach((_tabIndex, element) => restoreTabIndex(element));
+      measureText.current = undefined;
     };
   }, [text, visibleLines]);
 
@@ -84,6 +134,7 @@ function CollapseText<T extends TypographyVariant>(
     const viewport = viewportRef.current;
     const from = startHeight.current;
     startHeight.current = undefined;
+    measureText.current?.();
     if (
       !viewport ||
       from === undefined ||
@@ -114,42 +165,53 @@ function CollapseText<T extends TypographyVariant>(
     setExpanded((previous) => !previous);
   };
 
-  const rootProps = {
-    ...typographyProps,
+  const attributes = Object.entries(typographyProps);
+  const dataAttributes = Object.fromEntries(
+    attributes.filter(([name]) => name.startsWith('data-')),
+  );
+  const textProps = {
+    ...Object.fromEntries(
+      attributes.filter(([name]) => !name.startsWith('data-')),
+    ),
     variant: variant ?? 'BodyM',
-    refTypography: ref,
+    refTypography: setText,
+    // Typography задаёт собственный line-height, поэтому применяем явный
+    // пользовательский line-height и к тексту.
+    style:
+      style?.lineHeight === undefined
+        ? undefined
+        : { lineHeight: style.lineHeight },
   } as TypographyProps<T>;
+
   return (
-    <Typography {...rootProps}>
-      <Layout>
-        <TextViewport
-          id={viewportId}
-          ref={viewportRef}
-          $lines={visibleLines}
-          data-collapsed={!expanded}
+    <Layout ref={ref} className={className} style={style} {...dataAttributes}>
+      <TextViewport
+        id={viewportId}
+        ref={viewportRef}
+        $lines={visibleLines}
+        data-collapsed={!expanded}
+      >
+        <Typography {...textProps}>{children}</Typography>
+      </TextViewport>
+      {overflowing && (
+        <LinkButton
+          role="button"
+          size="s"
+          view="accent"
+          aria-expanded={expanded}
+          aria-controls={viewportId}
+          onClick={toggle}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+              event.preventDefault();
+              if (!event.repeat) toggle();
+            }
+          }}
         >
-          <Text ref={setText}>{children}</Text>
-        </TextViewport>
-        {overflowing && (
-          <LinkButton
-            role="button"
-            size="s"
-            view="accent"
-            aria-expanded={expanded}
-            aria-controls={viewportId}
-            onClick={toggle}
-            onKeyDown={(event) => {
-              if (event.key === 'Enter' || event.key === ' ') {
-                event.preventDefault();
-                if (!event.repeat) toggle();
-              }
-            }}
-          >
-            {expanded ? collapseLabel : expandLabel}
-          </LinkButton>
-        )}
-      </Layout>
-    </Typography>
+          {expanded ? collapseLabel : expandLabel}
+        </LinkButton>
+      )}
+    </Layout>
   );
 }
 

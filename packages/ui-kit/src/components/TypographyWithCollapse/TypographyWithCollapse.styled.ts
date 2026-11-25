@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const Layout = styled.span`
+export const Layout = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -8,15 +8,12 @@ export const Layout = styled.span`
   min-width: 0;
 `;
 
-export const Text = styled.span`
-  display: block;
-`;
-
-export const TextViewport = styled.span<{ $lines: number }>`
+export const TextViewport = styled.div<{ $lines: number }>`
   width: 100%;
-  overflow: hidden;
+  overflow: clip;
 
-  &[data-collapsed='true']:not([data-animating]) > ${Text} {
+  &[data-collapsed='true']:not([data-animating]) > :first-child,
+  &[data-measuring] > :first-child {
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: ${({ $lines }) => $lines};

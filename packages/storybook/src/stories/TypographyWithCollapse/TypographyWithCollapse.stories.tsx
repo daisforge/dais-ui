@@ -10,7 +10,7 @@ import { backgroundPrimary, surfaceSolidCard } from '@ui-kit/tokens';
 import type { CSSProperties } from 'react';
 
 const meta: Meta<TypographyWithCollapseProps> = {
-  title: 'Композиции/TypographyWithCollapse',
+  title: 'Локальные компоненты/TypographyWithCollapse',
   component: TypographyWithCollapse,
   parameters: { layout: 'fullscreen' },
   tags: ['!autodocs'],
@@ -150,4 +150,44 @@ export const ShortText: Story = {
       Короткая подпись.
     </TypographyWithCollapse>
   ),
+};
+
+export const HiddenLink: Story = {
+  name: 'Фокус на ссылках и обычная высота строки',
+  render: () => (
+    <div style={{ width: 320 }}>
+      <TypographyWithCollapse
+        as="div"
+        lines={2}
+        style={{ lineHeight: 'normal' }}
+      >
+        {'Длинный текст, который можно свернуть и развернуть. '.repeat(12)}
+        <a href="#hidden-link">Ссылка в конце текста</a>
+      </TypographyWithCollapse>
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const button = await canvas.findByRole('button', {
+      name: 'Показать полностью',
+    });
+    const link = canvas.getByText('Ссылка в конце текста');
+    if (!link.parentElement) throw new Error('Не найден элемент типографики');
+    await expect(getComputedStyle(link.parentElement).lineHeight).toBe(
+      'normal',
+    );
+    await expect(link).toHaveAttribute('tabindex', '-1');
+    await userEvent.tab();
+    await expect(button).toHaveFocus();
+    await userEvent.keyboard('{Enter}');
+    await expect(button).toHaveAttribute('aria-expanded', 'true');
+    await expect(link).not.toHaveAttribute('tabindex', '-1');
+    await userEvent.tab({ shift: true });
+    await expect(link).toHaveFocus();
+    button.focus();
+    await userEvent.keyboard('{Enter}');
+    await expect(link).toHaveAttribute('tabindex', '-1');
+    // Кадр показывает исходное свёрнутое состояние.
+    button.blur();
+  },
 };
