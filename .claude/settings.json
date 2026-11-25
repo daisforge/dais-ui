@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "enabledMcpjsonServers": [
+    "daisforge-ui"
+  ],
+  "permissions": {
+    "allow": [
+      "mcp__daisforge-ui",
+      "Bash(npx nx test ui-kit:*)",
+      "Bash(npx nx run ui-kit:typecheck)",
+      "Bash(npx nx run storybook:typecheck)",
+      "Bash(npx eslint:*)",
+      "Bash(npm run lint)",
+      "Bash(npm run typecheck)",
+      "Bash(npm run test)",
+      "Bash(npm run format:md)",
+      "Bash(npm run format:md:check)",
+      "Bash(npm run ui-kit:circular-check)",
+      "Bash(npm run screenshot:test:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git show:*)",
+      "Bash(gh pr view:*)",
+      "Bash(gh pr diff:*)",
+      "Bash(gh pr checks:*)",
+      "Bash(gh run view:*)",
+      "Bash(gh run list:*)"
+    ],
+    "deny": [
+      "Bash(npm publish:*)",
+      "Bash(npx lerna publish:*)",
+      "Bash(npx lerna version:*)",
+      "Bash(git push --force:*)",
+      "Bash(git push -f:*)",
+      "Bash(git push origin main:*)",
+      "Bash(git push origin develop:*)",
+      "Edit(**/dist/**)",
+      "Write(**/dist/**)",
+      "Edit(CHANGELOG.md)",
+      "Write(CHANGELOG.md)"
+    ]
+  },
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/scripts/agent-hooks/check-changed.mjs\" start",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/scripts/agent-hooks/check-changed.mjs\"",
+            "timeout": 180
+          }
+        ]
+      }
+    ]
+  }
+}
