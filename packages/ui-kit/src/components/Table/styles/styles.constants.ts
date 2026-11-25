@@ -123,5 +123,7 @@ export const FILTER_POPOVER_WIDTH: Record<keyof typeof SIZES, string> = {
   big: '232px',
 };
 
-export const DEFAULT_TABLE_TRANSITION_DELAY = '0.3s';
-export const DEFAULT_TABLE_TRANSITION = `all ${DEFAULT_TABLE_TRANSITION_DELAY} ease-out`;
+export {
+  DEFAULT_TABLE_TRANSITION,
+  DEFAULT_TABLE_TRANSITION_DELAY,
+} from '@ui-kit/constants/tableVisuals';

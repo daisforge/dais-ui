@@ -233,6 +233,14 @@ const playSummaryRowsOnChange: Story['play'] = async ({
     );
     await expect(getSavedValue()).toBe('true');
   });
+
+  await step('Итоговая строка остаётся после закрытия настроек', async () => {
+    await userEvent.click(canvas.getByTitle('Закрыть'));
+    await waitFor(() =>
+      expect(canvas.queryByText('Итоговые строки')).not.toBeInTheDocument(),
+    );
+    await expect(hasSummaryRow(canvasElement)).toBe(true);
+  });
 };
 
 export const SummaryRowsOnChange: Story = {
