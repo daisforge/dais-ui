@@ -35,27 +35,46 @@ type FakeChunk = {
   dynamicImports?: string[];
 };
 
+/**
+ * Поля OutputChunk, которые читают проверки. Типы берутся из Rollup, поэтому
+ * переименование или смена типа поля в Rollup сломает компиляцию тестов
+ * (npm run plugins:typecheck), а не пройдёт молча.
+ */
+type CheckedChunkFields = Pick<
+  Rollup.OutputChunk,
+  | 'type'
+  | 'fileName'
+  | 'name'
+  | 'isEntry'
+  | 'facadeModuleId'
+  | 'imports'
+  | 'dynamicImports'
+> & {
+  modules: Record<string, Pick<Rollup.RenderedModule, 'renderedLength'>>;
+};
+
+const makeChunk = (c: FakeChunk): Rollup.OutputChunk => {
+  const chunk: CheckedChunkFields = {
+    type: 'chunk',
+    fileName: c.fileName,
+    name: c.name,
+    isEntry: c.isEntry ?? false,
+    facadeModuleId: c.facadeModuleId ?? null,
+    imports: c.imports ?? [],
+    dynamicImports: c.dynamicImports ?? [],
+    modules: Object.fromEntries(
+      Object.entries(c.modules ?? {}).map(([id, renderedLength]) => [
+        id,
+        { renderedLength },
+      ]),
+    ),
+  };
+  // Остальные поля OutputChunk проверкам не нужны
+  return chunk as Rollup.OutputChunk;
+};
+
 const makeBundle = (chunks: FakeChunk[]): Rollup.OutputBundle =>
-  Object.fromEntries(
-    chunks.map((c) => [
-      c.fileName,
-      {
-        type: 'chunk',
-        fileName: c.fileName,
-        name: c.name,
-        isEntry: c.isEntry ?? false,
-        facadeModuleId: c.facadeModuleId ?? null,
-        imports: c.imports ?? [],
-        dynamicImports: c.dynamicImports ?? [],
-        modules: Object.fromEntries(
-          Object.entries(c.modules ?? {}).map(([id, renderedLength]) => [
-            id,
-            { renderedLength },
-          ]),
-        ),
-      } as unknown as Rollup.OutputChunk,
-    ]),
-  );
+  Object.fromEntries(chunks.map((c) => [c.fileName, makeChunk(c)]));
 
 /** importers: id модуля → список статических импортёров */
 const makeGetModuleInfo =
@@ -63,11 +82,13 @@ const makeGetModuleInfo =
     importers: Record<string, string[]>,
     dynamic: Record<string, string[]> = {},
   ) =>
-  (id: string) =>
-    ({
+  (id: string): Rollup.ModuleInfo => {
+    const info: Pick<Rollup.ModuleInfo, 'importers' | 'dynamicImporters'> = {
       importers: importers[id] ?? [],
       dynamicImporters: dynamic[id] ?? [],
-    } as unknown as Rollup.ModuleInfo);
+    };
+    return info as Rollup.ModuleInfo;
+  };
 
 const POPUP = `${SRC}components/Popup/Popup.tsx`;
 const HELPER = `${SRC}components/Helper/Helper.tsx`;
@@ -285,6 +306,21 @@ describe('checkRestrictedImports', () => {
     ]);
     expect(errors).toHaveLength(2);
     expect(errors[0]).toContain('components/Combobox');
+  });
+
+  it('код запрещённого чанка прямо внутри чужой точки входа — ошибка', () => {
+    const errors = run([
+      tableChunk,
+      entry('components/Table/index', { imports: ['chunks/Table.mjs'] }),
+      entry('components/Combobox/index', { modules: { [TABLE]: 500 } }),
+    ]);
+    expect(errors).toEqual([
+      expect.stringContaining(
+        'components/Combobox загружает "Table" (старая таблица). ' +
+          'Точки входа: components/Combobox/index. ' +
+          'Путь: components/Combobox/index.',
+      ),
+    ]);
   });
 
   it('цель, которой нет в сборке, — ошибка про устаревший список', () => {

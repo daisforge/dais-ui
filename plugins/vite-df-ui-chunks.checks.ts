@@ -262,6 +262,8 @@ export const checkRestrictedImports = (
       const markReached = (target: string, path: string[]) => {
         if (!reached.has(target)) reached.set(target, path);
       };
+      // Код ручного чанка может оказаться прямо в самой точке входа
+      contentOf.get(entry)?.forEach((name) => markReached(name, [entry.name]));
 
       // Очередь растёт во время обхода, поэтому цикл по индексу
       for (let index = 0; index < queue.length; index += 1) {
