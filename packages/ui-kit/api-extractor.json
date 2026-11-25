@@ -1,0 +1,66 @@
+// Отчёт о публичном API ui-kit: npm run api:update (обновить), npm run api:check (CI).
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/api-extractor/v7/api-extractor.schema.json",
+  "projectFolder": ".",
+  "mainEntryPointFilePath": "<projectFolder>/../../dist/packages/ui-kit/index.d.ts",
+  "compiler": {
+    "overrideTsconfig": {
+      "compilerOptions": {
+        "target": "ES2020",
+        "module": "ESNext",
+        // У @salutejs/sdds-finai типы описаны только в "exports": с "node" они
+        // молча становятся any, и отчёт перестаёт видеть их изменения.
+        "moduleResolution": "bundler",
+        "lib": ["DOM", "DOM.Iterable", "ES2022"],
+        "jsx": "react-jsx",
+        "strict": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "types": []
+      },
+      "files": ["../../dist/packages/ui-kit/index.d.ts"]
+    }
+  },
+  "apiReport": {
+    "enabled": true,
+    "reportFileName": "ui-kit.api.md",
+    "reportFolder": "<projectFolder>/",
+    "reportTempFolder": "<projectFolder>/../../node_modules/.cache/api-extractor/",
+    // Типы, на которые ссылается публичное API, но которые не экспортируются
+    // (например DrawerDFHeaderProps): без этого их содержимого нет в отчёте.
+    "includeForgottenExports": true
+  },
+  "docModel": {
+    "enabled": false
+  },
+  "dtsRollup": {
+    "enabled": false
+  },
+  "tsdocMetadata": {
+    "enabled": false
+  },
+  "messages": {
+    "compilerMessageReporting": {
+      "default": {
+        "logLevel": "warning"
+      }
+    },
+    "extractorMessageReporting": {
+      "default": {
+        "logLevel": "warning"
+      },
+      "ae-missing-release-tag": {
+        "logLevel": "none"
+      },
+      "ae-forgotten-export": {
+        "logLevel": "none",
+        "addToApiReportFile": false
+      }
+    },
+    "tsdocMessageReporting": {
+      "default": {
+        "logLevel": "none"
+      }
+    }
+  }
+}

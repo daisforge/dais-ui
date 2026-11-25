@@ -54,3 +54,13 @@ jobs:
         run: npx nx build ui-kit
         env:
           NODE_OPTIONS: '--max_old_space_size=4096'
+
+      # Отчёт о публичном API (packages/ui-kit/ui-kit.api.md) должен совпадать с
+      # типами только что собранного пакета. Так любое изменение экспортов и
+      # пропсов видно в diff PR отдельным файлом.
+      - name: Check public API report
+        run: |
+          npm run api:check || {
+            echo "::error file=packages/ui-kit/ui-kit.api.md::Публичное API ui-kit изменилось, а отчёт нет. Если изменение намеренное — выполни npm run api:update и закоммить ui-kit.api.md; если нет — найди, что поменяло типы."
+            exit 1
+          }
