@@ -50,6 +50,12 @@ jobs:
       - name: Test Storybook package scripts
         run: npm run storybook-package:test
 
+      # Проверки графа чанков (plugins/vite-df-ui-chunks.checks.ts) тоже вне
+      # nx-проектов. Сборка ui-kit ниже запускает их на настоящем бандле,
+      # а тесты проверяют граничные случаи на поддельном.
+      - name: Test build plugins
+        run: npm run plugins:test
+
       - name: Build ui-kit
         run: npx nx build ui-kit
         env:

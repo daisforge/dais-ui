@@ -19,7 +19,7 @@ type ManualChunk = {
 };
 
 export type RestrictedImport = {
-  /** Имя чанка (chunkName) или внешний модуль, например CSS из node_modules */
+  /** Имя ручного чанка (chunkName) или внешний модуль, например CSS из node_modules */
   readonly target: string;
   /** Префиксы имён точек входа, которым разрешено загружать target */
   readonly allowedEntries: readonly string[];
@@ -58,22 +58,49 @@ const limitList = (items: string[]) => {
 };
 
 /**
- * Папки исходников, которые «принадлежат» чанку:
- * - ручной чанк: его modulePaths;
- * - точка входа components/Button/index: папка components/Button/;
- * - чанк, созданный Rollup автоматически: ничего.
+ * Ручной чанк, которому manualChunks отдаёт модуль. Как и в manualChunks,
+ * выигрывает первое совпадение (TableStateColors стоит раньше TableGlide).
  */
-const getHomePaths = (
+const getOwner = (id: string, manualChunks: readonly ManualChunk[]) =>
+  manualChunks.find((m) => m.modulePaths.some((path) => id.includes(path)));
+
+const getCodeModuleIds = (chunk: Rollup.OutputChunk) =>
+  Object.entries(chunk.modules)
+    .filter(([, { renderedLength }]) => renderedLength > 0)
+    .map(([id]) => id);
+
+/**
+ * Ручные чанки, чей код лежит в этом выходном чанке. Чанк опознаётся по
+ * содержимому, а не по chunk.name: Rollup называет автоматический чанк по
+ * первому модулю, и имя может совпасть с ручным (Tooltip.tsx → "Tooltip").
+ * Ручной чанк, слитый с точкой входа, тоже опознаётся.
+ */
+const getManualChunkNames = (
   chunk: Rollup.OutputChunk,
   manualChunks: readonly ManualChunk[],
-): readonly string[] => {
-  if (chunk.isEntry) {
-    if (chunk.name === ROOT_ENTRY) return [UI_KIT_SRC];
-    return [`${UI_KIT_SRC}${chunk.name.replace(/\/?index$/, '')}/`];
-  }
-  return (
-    manualChunks.find((m) => m.chunkName === chunk.name)?.modulePaths ?? []
+) =>
+  new Set(
+    getCodeModuleIds(chunk)
+      .map((id) => getOwner(id, manualChunks)?.chunkName)
+      .filter((name): name is string => !!name),
   );
+
+/**
+ * Модуль «дома» в чанке:
+ * - в корневой точке входа index — любой;
+ * - в точке входа components/Button/index — из папки components/Button/;
+ * - в остальных чанках — если manualChunks отдаёт его чанку с этим именем.
+ */
+const isAtHome = (
+  id: string,
+  chunk: Rollup.OutputChunk,
+  manualChunks: readonly ManualChunk[],
+) => {
+  if (chunk.isEntry) {
+    if (chunk.name === ROOT_ENTRY) return true;
+    return id.includes(`${UI_KIT_SRC}${chunk.name.replace(/\/?index$/, '')}/`);
+  }
+  return getOwner(id, manualChunks)?.chunkName === chunk.name;
 };
 
 /**
@@ -142,11 +169,9 @@ export const checkChunkPurity = ({
     { chunk: string; dir: string; modules: Set<string>; from: Set<string> }
   >();
   chunks.forEach((chunk) => {
-    const homePaths = getHomePaths(chunk, manualChunks);
-
-    Object.entries(chunk.modules).forEach(([id, { renderedLength }]) => {
-      if (!id.includes(UI_KIT_SRC) || renderedLength === 0) return;
-      if (homePaths.some((path) => id.includes(path))) return;
+    getCodeModuleIds(chunk).forEach((id) => {
+      if (!id.includes(UI_KIT_SRC)) return;
+      if (isAtHome(id, chunk, manualChunks)) return;
 
       const outsideChunks = new Set<string>();
       collectOutsideChunks(id, chunk, outsideChunks);
@@ -180,13 +205,20 @@ export const checkChunkPurity = ({
 /**
  * Тяжёлые чанки и внешний CSS могут загружать только перечисленные точки входа.
  * Корневая точка входа index разрешена всегда: она загружает всю библиотеку.
+ *
+ * Динамический import() учитывается так же, как статический, и намеренно:
+ * ленивая загрузка чужого CSS всё равно добавит его на страницу и продублирует.
  */
 export const checkRestrictedImports = (
-  { bundle }: Pick<CheckContext, 'bundle'>,
+  { bundle, manualChunks }: Pick<CheckContext, 'bundle' | 'manualChunks'>,
   restricted: readonly RestrictedImport[],
 ): string[] => {
   const chunks = getChunks(bundle);
   const byFileName = new Map(chunks.map((c) => [c.fileName, c]));
+  /** Что содержит чанк: имена ручных чанков по его коду */
+  const contentOf = new Map(
+    chunks.map((c) => [c, getManualChunkNames(c, manualChunks)]),
+  );
   const errors: string[] = [];
   // Группируем по паре «цель + компонент»: у компонента бывают десятки
   // вложенных точек входа (components/TableCanvas/styles/index и т.п.)
@@ -204,8 +236,10 @@ export const checkRestrictedImports = (
   // Защита от устаревшего списка: цель должна существовать в сборке
   const knownTargets = new Set<string>();
   chunks.forEach((chunk) => {
-    knownTargets.add(chunk.name);
-    chunk.imports.forEach((id) => knownTargets.add(id));
+    contentOf.get(chunk)?.forEach((name) => knownTargets.add(name));
+    [...chunk.imports, ...chunk.dynamicImports].forEach((id) =>
+      knownTargets.add(id),
+    );
   });
   restricted.forEach(({ target }) => {
     if (!knownTargets.has(target)) {
@@ -225,20 +259,25 @@ export const checkRestrictedImports = (
       const queue = [{ chunk: entry, path: [entry.name] }];
       const reached = new Map<string, string[]>();
 
-      let index = 0;
-      while (index < queue.length) {
-        const { chunk, path } = queue[index];
-        index += 1;
+      const markReached = (target: string, path: string[]) => {
+        if (!reached.has(target)) reached.set(target, path);
+      };
+
+      // Очередь растёт во время обхода, поэтому цикл по индексу
+      for (let index = 0; index < queue.length; index += 1) {
+        const item = queue[index];
+        if (!item) break;
+        const { chunk, path } = item;
         [...chunk.imports, ...chunk.dynamicImports].forEach((id) => {
           const next = byFileName.get(id);
           if (!next) {
-            if (!reached.has(id)) reached.set(id, [...path, id]);
+            markReached(id, [...path, id]);
             return;
           }
           if (visited.has(id)) return;
           visited.add(id);
           const nextPath = [...path, next.name];
-          if (!reached.has(next.name)) reached.set(next.name, nextPath);
+          contentOf.get(next)?.forEach((name) => markReached(name, nextPath));
           queue.push({ chunk: next, path: nextPath });
         });
       }

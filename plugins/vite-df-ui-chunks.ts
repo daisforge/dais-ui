@@ -471,7 +471,10 @@ export function viteDFUIChunks(): Plugin {
           manualChunks: MANUAL_UIKIT_COMP_CHUNKS,
           getModuleInfo: (id) => this.getModuleInfo(id),
         }),
-        ...checkRestrictedImports({ bundle }, RESTRICTED_IMPORTS),
+        ...checkRestrictedImports(
+          { bundle, manualChunks: MANUAL_UIKIT_COMP_CHUNKS },
+          RESTRICTED_IMPORTS,
+        ),
       ];
       if (errors.length) {
         this.error(

@@ -39,6 +39,7 @@
     "table-colors:test": "cd generators/table-token-states && vitest run code",
     "white-label:test": "cd scripts/white-label && vitest run",
     "storybook-package:test": "cd scripts/storybook-package && vitest run",
+    "plugins:test": "cd plugins && vitest run",
     "table-colors:typecheck": "cd generators/table-token-states && tsc -p tsconfig.json",
     "table-colors:palette": "cd generators/table-token-states && tsx emit-table-colors.ts",
     "table-colors:designer-docs": "cd generators/table-token-states && tsx code/generate.ts code/table-token-states.output.json docs/table-token-sources.md docs/table-semantic-tokens.csv docs/table-token-map.csv",
