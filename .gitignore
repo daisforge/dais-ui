@@ -54,7 +54,7 @@ testem.log
 .DS_Store
 Thumbs.db
 
-.nx/cache
+.nx/
 
 storybook-static
 
