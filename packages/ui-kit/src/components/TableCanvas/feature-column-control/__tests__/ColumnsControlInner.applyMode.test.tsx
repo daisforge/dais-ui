@@ -72,7 +72,7 @@ const Harness = ({
   applyHidden?: (prev: string[], next: string[]) => string[];
 }) => {
   const [pinnedCols, setPinnedCols] = useState<string[]>([]);
-  const { columnsOrder, setColumnsOrder, getDefaultColumnsOrder } =
+  const { columnsOrder, setColumnsOrder, getResetColumnsOrder } =
     useReorderDragable({
       allColumns: columns,
       columns,
@@ -116,7 +116,7 @@ const Harness = ({
         opened
         onClose={() => {}}
         columnsOrder={columnsOrder}
-        getDefaultColumnsOrder={getDefaultColumnsOrder}
+        getResetColumnsOrder={getResetColumnsOrder}
         setColumnsOrder={setColumnsOrder}
         pinnedCols={pinnedCols}
         setPinnedCols={setPinnedCols}
@@ -157,7 +157,7 @@ const PairHarness = ({ config }: { config: ColumnsControlConfig }) => {
         opened
         onClose={() => {}}
         columnsOrder={columnsOrder}
-        getDefaultColumnsOrder={() => ['a', 'name_key', 'name']}
+        getResetColumnsOrder={() => ['a', 'name_key', 'name']}
         setColumnsOrder={setColumnsOrder}
         pinnedCols={pinnedCols}
         setPinnedCols={setPinnedCols}
@@ -182,14 +182,14 @@ const baseConfig: ColumnsControlConfig = {
 
 describe('ColumnsControlInner: режим применения', () => {
   it.each(['confirm', 'instant'] as const)(
-    'в режиме %s штатная кнопка сбрасывает сохранённый порядок к orderDefault',
+    'в режиме %s штатная кнопка сбрасывает сохранённый порядок к orderForReset',
     (applyMode) => {
       const onConfirm = vi.fn();
       const config = {
         ...baseConfig,
         applyMode,
-        orderInitial: ['c', 'b', 'a'],
-        orderDefault: ['b', 'a', 'c'],
+        orderDefault: ['c', 'b', 'a'],
+        orderForReset: ['b', 'a', 'c'],
         onConfirm,
       };
       render(<Harness config={config} />);
@@ -205,7 +205,39 @@ describe('ColumnsControlInner: режим применения', () => {
       }
       expect(screen.getByTestId('table-order').textContent).toBe('b,a,c');
       expect(reset.disabled).toBe(true);
-      expect(onConfirm.mock.lastCall?.[0].order).toEqual(config.orderDefault);
+      expect(onConfirm.mock.lastCall?.[0].order).toEqual(config.orderForReset);
+    },
+  );
+
+  it.each(['confirm', 'instant'] as const)(
+    'в режиме %s без orderForReset кнопка возвращает к orderDefault',
+    (applyMode) => {
+      render(
+        <Harness
+          config={{ ...baseConfig, applyMode, orderDefault: ['b', 'a', 'c'] }}
+        />,
+      );
+      const reset = screen.getByRole<HTMLButtonElement>('button', {
+        name: 'Сбросить порядок',
+      });
+      const applyChanges = () => {
+        if (applyMode === 'confirm') {
+          fireEvent.click(screen.getByRole('button', { name: 'Применить' }));
+        }
+      };
+
+      expect(screen.getByTestId('table-order').textContent).toBe('b,a,c');
+      expect(reset.disabled).toBe(true);
+
+      fireEvent.click(screen.getByText('переставить a и b'));
+      applyChanges();
+      expect(screen.getByTestId('table-order').textContent).toBe('a,b,c');
+      expect(reset.disabled).toBe(false);
+
+      fireEvent.click(reset);
+      applyChanges();
+      expect(screen.getByTestId('table-order').textContent).toBe('b,a,c');
+      expect(reset.disabled).toBe(true);
     },
   );
 

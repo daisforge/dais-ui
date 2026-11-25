@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import { expandKeyTextKeys } from '../feature-column-control/expandKeyTextKeys';
 import { ColumnsControlConfig } from '../feature-column-control/types';
 import { KeyText, KeyTextMap } from '../feature-key-text/types';
 import { ColumnConfig, ObjectForExtending } from '../types';
@@ -55,13 +54,14 @@ export const useReorderDragable = <
   colsWithKeyTextMap: KeyTextMap;
   pinnedCols: string[];
 }) => {
-  const tableConfigDefaultOrder = tableConfigColumnsControl?.orderDefault;
+  const orderDefault = tableConfigColumnsControl?.orderDefault;
+  const orderForReset = tableConfigColumnsControl?.orderForReset;
 
   const getDefaultColumnsOrder = useCallback(
-    () =>
+    (order = orderDefault) =>
       sortedInOrder({
         columnConfig,
-        tableConfigDefaultOrder,
+        tableConfigDefaultOrder: order,
         rowMarkersIsActive,
         selectingRowsIsActive,
         rowErrorsIsActive,
@@ -72,7 +72,7 @@ export const useReorderDragable = <
       }),
     [
       columnConfig,
-      tableConfigDefaultOrder,
+      orderDefault,
       rowMarkersIsActive,
       selectingRowsIsActive,
       rowErrorsIsActive,
@@ -82,6 +82,11 @@ export const useReorderDragable = <
       showRowInstruments,
     ],
   );
+  const getResetColumnsOrder = useCallback(
+    () => getDefaultColumnsOrder(orderForReset),
+    [getDefaultColumnsOrder, orderForReset],
+  );
+
   const getActualOrder = (prev: string[]) => {
     const defaultOrder = getDefaultColumnsOrder();
 
@@ -109,14 +114,9 @@ export const useReorderDragable = <
     });
   };
 
-  const [columnsOrder, setColumnsOrder] = useState(() => {
-    if (!reorderIsActive) return [];
-    const initial = tableConfigColumnsControl?.orderInitial;
-    if (!initial) return getDefaultColumnsOrder();
-    return getActualOrder(
-      expandKeyTextKeys(initial, colsWithKeyTextMap, tableConfigKeyTextBoolean),
-    );
-  });
+  const [columnsOrder, setColumnsOrder] = useState(() =>
+    reorderIsActive ? getDefaultColumnsOrder() : [],
+  );
 
   const columnsOrderRef = useRef(columnsOrder);
   columnsOrderRef.current = columnsOrder;
@@ -194,5 +194,6 @@ export const useReorderDragable = <
     setColumnsOrder,
     onColumnsReorder,
     getDefaultColumnsOrder,
+    getResetColumnsOrder,
   };
 };

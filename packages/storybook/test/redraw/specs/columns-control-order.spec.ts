@@ -3,7 +3,7 @@ import { expect, test } from '../fixtures';
 const storyId =
   'локальные-компоненты-tablecanvas-columnscontrol--columns-control-persisted-order';
 
-test('Metallica: сохранение порядка, перезагрузка и сброс первым действием', async ({
+test('Metallica: восстановление orderDefault и сброс к orderForReset', async ({
   page,
 }) => {
   await page.goto(`/iframe.html?id=${storyId}&viewMode=story`);
@@ -17,9 +17,9 @@ test('Metallica: сохранение порядка, перезагрузка �
     page.evaluate(() =>
       localStorage.getItem('storybook.tableCanvas.columnsControl.order.v1'),
     );
-  const defaultOrder = ['ID', 'Модель', 'Версия расчёта'];
+  const resetOrder = ['ID', 'Модель', 'Версия расчёта'];
   const savedOrder = ['ID', 'Версия расчёта', 'Модель'];
-  await expect(headers).toHaveText(defaultOrder);
+  await expect(headers).toHaveText(resetOrder);
 
   await expect(reset).toBeDisabled();
 
@@ -39,7 +39,7 @@ test('Metallica: сохранение порядка, перезагрузка �
     .first()
     .evaluateHandle((node) => node);
   await reset.click();
-  await expect(headers).toHaveText(defaultOrder);
+  await expect(headers).toHaveText(resetOrder);
   await expect(reset).toBeDisabled();
   expect(await canvas.evaluate((node) => node.isConnected)).toBe(true);
   await expect
@@ -47,6 +47,6 @@ test('Metallica: сохранение порядка, перезагрузка �
     .toBe(JSON.stringify(['id', 'model', 'version']));
 
   await page.reload();
-  await expect(headers).toHaveText(defaultOrder);
+  await expect(headers).toHaveText(resetOrder);
   await expect(reset).toBeDisabled();
 });

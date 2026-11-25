@@ -283,7 +283,11 @@ export const ColumnsControlPersistedOrder: Story = {
       { id: 1, model: 'Прогноз спроса', version: 'Базовая' },
       { id: 2, model: 'План производства', version: 'Сценарий 2' },
     ]);
-    const orderInitial = useMemo<string[] | undefined>(() => {
+    const orderForReset = useMemo(
+      () => columnConfig.map(({ key }) => key),
+      [columnConfig],
+    );
+    const orderDefault = useMemo<string[] | undefined>(() => {
       try {
         const saved: unknown = JSON.parse(
           localStorage.getItem(storageKey) ?? 'null',
@@ -315,7 +319,8 @@ export const ColumnsControlPersistedOrder: Story = {
           columnsControl: {
             enable: true,
             applyMode: 'instant',
-            orderInitial,
+            orderDefault,
+            orderForReset,
             onConfirm: ({ order, changed }) => {
               if (changed.order) saveOrder(order);
             },

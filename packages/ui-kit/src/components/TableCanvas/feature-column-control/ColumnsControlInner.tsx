@@ -49,7 +49,7 @@ export const ColumnsControlInner = <
 >({
   onClose,
   columnsOrder,
-  getDefaultColumnsOrder,
+  getResetColumnsOrder,
   setColumnsOrder,
   pinnedCols,
   setPinnedCols,
@@ -64,7 +64,7 @@ export const ColumnsControlInner = <
   opened: boolean;
   onClose: () => void;
   columnsOrder: string[];
-  getDefaultColumnsOrder: () => string[];
+  getResetColumnsOrder: () => string[];
   setColumnsOrder: React.Dispatch<React.SetStateAction<string[]>>;
   pinnedCols: string[];
   setPinnedCols: React.Dispatch<React.SetStateAction<string[]>>;
@@ -220,10 +220,10 @@ export const ColumnsControlInner = <
   const orderIsNotChanged = useMemo(
     () =>
       sameOrder(
-        withoutServiceCols(getDefaultColumnsOrder()),
+        withoutServiceCols(getResetColumnsOrder()),
         withoutServiceCols(localOrder),
       ),
-    [getDefaultColumnsOrder, localOrder],
+    [getResetColumnsOrder, localOrder],
   );
 
   const onColumnsReorderLocal = useCallback(
@@ -393,7 +393,7 @@ export const ColumnsControlInner = <
         disabledClearPinnedButton={disabledUnpinAll}
         columnsControlConfig={columnsControlConfig}
         clearLocalPinned={clearLocalPinned}
-        resetToDefaultOrder={() => setLocalOrder(getDefaultColumnsOrder())}
+        resetToDefaultOrder={() => setLocalOrder(getResetColumnsOrder())}
         disableResetToDefaultOrderButton={orderIsNotChanged}
         {...columnsVisibilityProps}
       />
