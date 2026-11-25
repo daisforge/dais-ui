@@ -17,7 +17,8 @@
 // с `-z`: иначе git экранирует не-ASCII символы (кириллицу в именах файлов).
 //
 // Успешный результат кэшируется по HEAD, хэшам незакоммиченных файлов и
-// конфигов. Чтобы агент не зациклился на ошибке, которую не может исправить,
+// конфигов; если для успеха пришлось вычесть старые ошибки — только в пределах
+// хода. Чтобы агент не зациклился на ошибке, которую не может исправить,
 // после MAX_BLOCKS блокировок подряд хук только предупреждает пользователя.
 import { execFileSync, spawn } from 'node:child_process';
 import { createHash, randomUUID } from 'node:crypto';
@@ -206,7 +207,9 @@ const base = baseIsValid ? snapshot.head : 'HEAD';
 const before = (baseIsValid && snapshot.dirty) || {};
 
 // Незакоммиченные правки, которые были до хода и не менялись, — не наши.
-const turnFiles = dirtyFiles(base)
+// Пути из снимка нужны, чтобы увидеть файлы, которые за ход исчезли из вывода
+// git: удалённый неотслеживаемый файл или правку, откаченную до HEAD.
+const turnFiles = [...new Set([...dirtyFiles(base), ...Object.keys(before)])]
   .sort()
   .filter((file) => before[file]?.hash !== fileHash(file));
 
@@ -233,7 +236,10 @@ const stateHash = createHash('sha256');
   ...tsFiles.map((file) => `turn:${file}`),
 ].forEach((line) => stateHash.update(`${line}\n`));
 const state = stateHash.digest('hex');
-if (readText(passFile) === state) {
+// Успех, при котором ошибки tsc были, но все вычтены как старые, зависит от
+// состояния начала хода. Его ключ — с id снимка, и в другом ходе он не годится.
+const snapshotState = `${state}|${snapshot?.id}`;
+if ([state, snapshotState].includes(readText(passFile))) {
   resetBlocks();
   pass();
 }
@@ -404,7 +410,7 @@ tscFailures.forEach(({ tsconfig, out, errors }) => {
 });
 
 if (failed.length === 0) {
-  write(passFile, state);
+  write(passFile, tscFailures.length === 0 ? state : snapshotState);
   resetBlocks();
   finish({
     json: notices.length > 0 ? { systemMessage: notices.join('\n') } : {},

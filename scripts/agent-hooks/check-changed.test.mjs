@@ -26,9 +26,10 @@ const root = execFileSync('git', ['rev-parse', '--show-toplevel'], {
 const MCP = 'packages/mcp-server/src';
 const TIMEOUT = { timeout: 600_000 };
 
-// Ход агента в отдельном worktree: `before` — правки пользователя до хода,
-// `change` — правки агента за ход. Возвращает результат Stop-хука.
-const turn = ({ before = () => {}, change }) => {
+// Ходы агента в одном worktree с общим кэшем хука: `before` — правки
+// пользователя до хода, `change` — правки агента за ход. Возвращает результаты
+// Stop-хука по ходам.
+const turns = (steps) => {
   const worktree = createWorktree(root);
   const cacheDir = mkdtempSync(path.join(tmpdir(), 'agent-checks-cache-'));
   const runHook = (mode) =>
@@ -40,15 +41,18 @@ const turn = ({ before = () => {}, change }) => {
     });
   const file = (rel) => path.join(worktree.dir, rel);
   try {
-    before(file);
-    runHook('start');
-    change(file);
-    return runHook();
+    return steps.map(({ before = () => {}, change }) => {
+      before(file);
+      runHook('start');
+      change(file);
+      return runHook();
+    });
   } finally {
     worktree.remove();
     rmSync(cacheDir, { recursive: true, force: true });
   }
 };
+const turn = (step) => turns([step])[0];
 
 test('корректный файл в ui-kit проходит', TIMEOUT, () => {
   const result = turn({
@@ -120,6 +124,59 @@ test('новая ошибка в файле с правками пользова
   assert.equal(result.status, 2, result.stderr);
   assert.match(result.stderr, /agentHookUser\.ts/);
 });
+
+test(
+  'успех со старыми ошибками не переносится в следующий ход',
+  TIMEOUT,
+  () => {
+    const broken = "export const agentHookCached: number = 'x';\n";
+    const withComment = `// комментарий агента\n${broken}`;
+    const [first, second] = turns([
+      // Ошибка была до хода, агент только добавил комментарий — успех.
+      {
+        before: (file) =>
+          writeFileSync(file(`${MCP}/agentHookCached.ts`), broken),
+        change: (file) =>
+          writeFileSync(file(`${MCP}/agentHookCached.ts`), withComment),
+      },
+      // Ход начат с исправного файла, а закончен тем же содержимым, что и первый.
+      {
+        before: (file) =>
+          writeFileSync(
+            file(`${MCP}/agentHookCached.ts`),
+            'export const agentHookCached = 1;\n',
+          ),
+        change: (file) =>
+          writeFileSync(file(`${MCP}/agentHookCached.ts`), withComment),
+      },
+    ]);
+    assert.equal(first.status, 0, first.stderr);
+    assert.equal(second.status, 2, second.stderr);
+    assert.match(second.stderr, /agentHookCached\.ts/);
+  },
+);
+
+test(
+  'удаление неотслеживаемого файла, созданного до хода, блокирует',
+  TIMEOUT,
+  () => {
+    const result = turn({
+      before: (file) => {
+        writeFileSync(
+          file(`${MCP}/agentHookHelper.ts`),
+          'export const agentHookHelper = 1;\n',
+        );
+        writeFileSync(
+          file(`${MCP}/agentHookImporter.ts`),
+          "export { agentHookHelper } from './agentHookHelper.js';\n",
+        );
+      },
+      change: (file) => unlinkSync(file(`${MCP}/agentHookHelper.ts`)),
+    });
+    assert.equal(result.status, 2, result.stderr);
+    assert.match(result.stderr, /agentHookImporter\.ts/);
+  },
+);
 
 test('файл с кириллицей в имени проверяется', TIMEOUT, () => {
   const result = turn({
