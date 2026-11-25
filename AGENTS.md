@@ -202,7 +202,9 @@ Codex — `.codex/hooks.json`, работает после доверия про
 - Ветки от `develop`: `feature/<имя>`, `bugfix/<имя>`. PR — в `develop`.
 - Коммит: `<тип>(<контекст>): <описание>`, типы и стиль — скилл
   [commit-message](.agents/skills/commit-message/SKILL.md). Хук
-  `commit-msg` отклоняет неверный формат.
+  `commit-msg` отклоняет неверный формат. В контексте `TableCanvas` и
+  `TableGlide` описание начинается с фичи или Canvas-элемента:
+  `fix(TableCanvas): Canvas.Badge — добавлено многоточие`.
 - Если изменения видны в Storybook, добавь в описание PR ссылки на превью:
   `https://daisforge.github.io/dais-ui/pr-preview/pr-<N>/?path=/story/<story-id>`
   (для `play` — с `&addonPanel=storybook/interactions/panel`). Превью
