@@ -85,11 +85,12 @@ ENTRY_POINTS.forEach(({ report, dts }) => {
     changed.push(config.reportFilePath);
     if (!localBuild) printDiff(config);
   }
-  // Без --local изменившийся отчёт api-extractor считает предупреждением.
+  // Изменившийся отчёт api-extractor считает предупреждением в обоих режимах:
+  // без --local это сигнал CI, с --local — уведомление об обновлении.
   // Остальные ошибки и предупреждения (например, ошибки типов в .d.ts) к
   // изменению API не относятся, и в --local они тоже должны ронять запуск,
   // иначе api:update пройдёт, а CI продолжит падать.
-  const reportWarning = result.apiReportChanged && !localBuild ? 1 : 0;
+  const reportWarning = result.apiReportChanged ? 1 : 0;
   problems += result.errorCount + result.warningCount - reportWarning;
 });
 
