@@ -4,6 +4,8 @@
   "$schema": "https://developer.microsoft.com/json-schemas/api-extractor/v7/api-extractor.schema.json",
   "projectFolder": ".",
   "mainEntryPointFilePath": "<projectFolder>/../../dist/packages/ui-kit/index.d.ts",
+  // По умолчанию api-extractor пишет CRLF, а весь репозиторий — LF.
+  "newlineKind": "lf",
   "compiler": {
     "overrideTsconfig": {
       "compilerOptions": {

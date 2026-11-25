@@ -67,6 +67,6 @@ jobs:
       - name: Check public API report
         run: |
           npm run api:check || {
-            echo "::error::Публичное API ui-kit изменилось, а отчёты в packages/ui-kit/api нет. Если изменение намеренное — выполни npm run api:update и закоммить отчёты; если нет — найди, что поменяло типы."
+            echo "::error::Проверка отчётов о публичном API не прошла. Причина и diff — в логе шага выше, порядок работы — в Contributing.md, раздел «Отчёт о публичном API»."
             exit 1
           }
