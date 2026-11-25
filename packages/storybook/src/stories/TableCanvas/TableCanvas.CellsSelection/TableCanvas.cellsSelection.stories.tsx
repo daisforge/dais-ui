@@ -449,6 +449,26 @@ import { CompactSelection, type GridSelection, type SortColumn } from '@daisforg
           <Button onClick={() => setNameFirst((prev) => !prev)}>
             {nameFirst ? 'Вернуть порядок колонок' : 'Переместить имя в начало'}
           </Button>
+          {sortColumns.length > 0 && !waiting && (
+            <Button
+              onClick={() => {
+                const y = rows.findIndex((row) => row.id === 20);
+                const x = columns.findIndex((column) => column.key === 'name');
+                if (x < 0 || y < 0) return;
+                selection[1]({
+                  rows: CompactSelection.empty(),
+                  columns: CompactSelection.empty(),
+                  current: {
+                    cell: [x, y],
+                    range: { x, y, width: 1, height: 1 },
+                    rangeStack: [],
+                  },
+                });
+              }}
+            >
+              Выделить Бориса
+            </Button>
+          )}
         </div>
         <output>
           {current

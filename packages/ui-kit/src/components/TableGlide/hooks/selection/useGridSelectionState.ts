@@ -1,7 +1,4 @@
-import {
-  CompactSelection,
-  type GridSelection,
-} from '@daisforge/glide-data-grid';
+import type { GridSelection } from '@daisforge/glide-data-grid';
 import {
   useCallback,
   useEffect,
@@ -12,13 +9,8 @@ import {
 } from 'react';
 
 import type { GlideProps, CellsSelectionMode } from '../../types';
+import { EMPTY_SELECTION, sameSelection } from './gridSelection';
 import { findFirstDataColumnIndex } from './rectGeometry';
-
-export const EMPTY_SELECTION: GridSelection = {
-  columns: CompactSelection.empty(),
-  rows: CompactSelection.empty(),
-  current: undefined,
-};
 
 /**
  * Сдвигает индексы колонок в выделении на `delta`. Возвращает исходный объект,
@@ -61,7 +53,7 @@ export const shiftSelectionColumns = (
   };
 };
 
-interface UseNativeGridSelectionParams {
+interface UseGridSelectionStateParams {
   previousLeadingColumns?: number;
   previousControlled?: GridSelection;
   cellsSelectionMode: CellsSelectionMode;
@@ -74,57 +66,18 @@ interface UseNativeGridSelectionParams {
   gridSelection?: GridSelection;
   /** Controlled-сеттер нативного выделения (вызывается только в controlled-режиме). */
   onGridSelectionChange?: (newSelection: GridSelection) => void;
-  /**
-   * Канал для copy/paste (selectionRef потребителя) — вызывается ВСЕГДА на любое
-   * изменение выделения, отдельно от controlled-сеттера. Несёт полную картину
-   * (включая own-state колонок/строк, которые в gridSelection не пишутся).
-   */
+  /** Передаёт итог пользовательского выбора или автоматического сброса. */
   onSelectionEmit?: (selection: GridSelection) => void;
-  /**
-   * Выделение сменили из кода (controlled `state`), а не действием
-   * пользователя. Нужен, чтобы копирование, вставка и протяжка заполнения знали
-   * о новом выделении.
-   *
-   * Подробнее: в `onSelectionEmit` такая смена не идёт, это канал действий
-   * пользователя.
-   */
+  resetSelectionAxes?: () => void;
+  /** Синхронизирует выбор, явно заданный продуктом через controlled state. */
   onExternalSelectionChange?: (
     selection: GridSelection,
     /** Первое значение при монтировании, а не смена */
     initial: boolean,
-    preserveColumnSelection?: boolean,
   ) => void;
 }
 
-/** Одно и то же выделение по содержимому: потребитель мог положить в state копию объекта */
-export const sameSelection = (a: GridSelection, b: GridSelection): boolean => {
-  if (a === b) return true;
-  if (!a.rows.equals(b.rows) || !a.columns.equals(b.columns)) return false;
-  const ca = a.current;
-  const cb = b.current;
-  if (ca === undefined || cb === undefined) return ca === cb;
-  return (
-    ca.cell[0] === cb.cell[0] &&
-    ca.cell[1] === cb.cell[1] &&
-    ca.range.x === cb.range.x &&
-    ca.range.y === cb.range.y &&
-    ca.range.width === cb.range.width &&
-    ca.range.height === cb.range.height &&
-    ca.rangeStack.length === cb.rangeStack.length &&
-    ca.rangeStack.every((r, i) => {
-      const o = cb.rangeStack[i];
-      return (
-        o !== undefined &&
-        r.x === o.x &&
-        r.y === o.y &&
-        r.width === o.width &&
-        r.height === o.height
-      );
-    })
-  );
-};
-
-export function useNativeGridSelection({
+export function useGridSelectionState({
   cellsSelectionMode,
   columns,
   previousLeadingColumns,
@@ -133,7 +86,8 @@ export function useNativeGridSelection({
   onGridSelectionChange: onGridSelectionChangeExternal,
   onSelectionEmit,
   onExternalSelectionChange,
-}: UseNativeGridSelectionParams) {
+  resetSelectionAxes,
+}: UseGridSelectionStateParams) {
   const [gridSelectionInternal, setGridSelectionInternal] =
     useState<GridSelection>(EMPTY_SELECTION);
 
@@ -153,7 +107,7 @@ export function useNativeGridSelection({
   // только первое совпавшее по содержимому значение (это значение, которое
   // вернул потребитель, копия или тот же объект), а дальше сравниваем по
   // тождеству с ним.
-  const projectedSelectionRef = useRef<GridSelection>();
+  const lastViewSelectionRef = useRef<GridSelection>();
   const lastSentRef = useRef<GridSelection | null>(null);
   const lastSentWithAxesRef = useRef(false);
   const axesEchoPendingRef = useRef(false);
@@ -183,7 +137,7 @@ export function useNativeGridSelection({
       axesEchoPendingRef.current = false;
       return;
     }
-    projectedSelectionRef.current = undefined;
+    lastViewSelectionRef.current = undefined;
     const initial = sent === null;
     const before = initial ? mountedControlled.current : sent;
     // Внешнее выделение уже задано в координатах нового набора колонок.
@@ -203,7 +157,7 @@ export function useNativeGridSelection({
   // рисует оверлей, нативное при этом пустое).
   const handleGridSelectionChange = useCallback(
     (next: GridSelection, emitted: GridSelection = next) => {
-      projectedSelectionRef.current = undefined;
+      lastViewSelectionRef.current = undefined;
       if (isControlled) {
         lastSentRef.current = next;
         lastSentWithAxesRef.current = emitted !== next;
@@ -218,10 +172,10 @@ export function useNativeGridSelection({
   );
 
   // Координаты уже приведены к отображаемым колонкам, включая служебные.
-  const applyProjectedSelection = useCallback(
+  const applyViewSelection = useCallback(
     (next: GridSelection, preserveColumnSelection = false) => {
       prevLeadingCountRef.current = leadingServiceColumnsCount;
-      projectedSelectionRef.current = next;
+      lastViewSelectionRef.current = next;
       if (isControlled) {
         lastSentRef.current = next;
         lastSentWithAxesRef.current = false;
@@ -230,14 +184,13 @@ export function useNativeGridSelection({
       } else {
         setGridSelectionInternal(next);
       }
-      if (preserveColumnSelection)
-        onExternalSelectionChangeRef.current?.(next, false, true);
-      else onExternalSelectionChangeRef.current?.(next, false);
+      if (!preserveColumnSelection) resetSelectionAxes?.();
       onSelectionEmit?.(next);
     },
     [
       isControlled,
       onGridSelectionChangeExternal,
+      resetSelectionAxes,
       leadingServiceColumnsCount,
       onSelectionEmit,
     ],
@@ -301,10 +254,10 @@ export function useNativeGridSelection({
     selection,
     handleGridSelectionChange,
     handleSelectionCleared,
-    applyProjectedSelection,
-    isProjectedSelection:
-      projectedSelectionRef.current !== undefined &&
-      sameSelection(selection, projectedSelectionRef.current),
+    applyViewSelection,
+    isViewSelection:
+      lastViewSelectionRef.current !== undefined &&
+      sameSelection(selection, lastViewSelectionRef.current),
     rangeSelect,
     spanRangeBehavior,
   };

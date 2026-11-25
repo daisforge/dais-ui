@@ -7,8 +7,8 @@ import { describe, expect, it, vi } from 'vitest';
 
 import {
   shiftSelectionColumns,
-  useNativeGridSelection,
-} from './useNativeGridSelection';
+  useGridSelectionState,
+} from './useGridSelectionState';
 
 const service = { isServiceColumn: true };
 const data = { isServiceColumn: false };
@@ -66,12 +66,12 @@ describe('shiftSelectionColumns', () => {
   });
 });
 
-describe('useNativeGridSelection: смена числа ведущих служебных колонок', () => {
+describe('useGridSelectionState: смена числа ведущих служебных колонок', () => {
   it('uncontrolled: активная ячейка остаётся на той же колонке данных', () => {
     const onSelectionEmit = vi.fn();
     const { result, rerender } = renderHook(
       (columns: readonly { isServiceColumn?: boolean }[]) =>
-        useNativeGridSelection({
+        useGridSelectionState({
           cellsSelectionMode: 'cell',
           columns,
           onSelectionEmit,
@@ -97,7 +97,7 @@ describe('useNativeGridSelection: смена числа ведущих служ�
     const onGridSelectionChange = vi.fn();
     const { rerender } = renderHook(
       (columns: readonly { isServiceColumn?: boolean }[]) =>
-        useNativeGridSelection({
+        useGridSelectionState({
           cellsSelectionMode: 'cell',
           columns,
           gridSelection: cellSelection(1, 2),
@@ -115,7 +115,7 @@ describe('useNativeGridSelection: смена числа ведущих служ�
     const onSelectionEmit = vi.fn();
     const { rerender } = renderHook(
       (columns: readonly { isServiceColumn?: boolean }[]) =>
-        useNativeGridSelection({
+        useGridSelectionState({
           cellsSelectionMode: 'cell',
           columns,
           onSelectionEmit,
@@ -127,10 +127,10 @@ describe('useNativeGridSelection: смена числа ведущих служ�
   });
 });
 
-describe('useNativeGridSelection: растягивание выбора до объединённого блока', () => {
+describe('useGridSelectionState: растягивание выбора до объединённого блока', () => {
   it('выделение ячеек выключено: блок не растягиваем, как и одиночную ячейку', () => {
     const { result } = renderHook(() =>
-      useNativeGridSelection({
+      useGridSelectionState({
         cellsSelectionMode: 'disabled',
         columns: ONE_SERVICE,
       }),
@@ -142,21 +142,21 @@ describe('useNativeGridSelection: растягивание выбора до о�
     'режим %s: выбор растягивается до блока',
     (cellsSelectionMode) => {
       const { result } = renderHook(() =>
-        useNativeGridSelection({ cellsSelectionMode, columns: ONE_SERVICE }),
+        useGridSelectionState({ cellsSelectionMode, columns: ONE_SERVICE }),
       );
       expect(result.current.spanRangeBehavior).toBe('default');
     },
   );
 });
 
-describe('useNativeGridSelection: программная смена controlled-выделения', () => {
+describe('useGridSelectionState: программная смена controlled-выделения', () => {
   const renderControlled = () => {
     const onSelectionEmit = vi.fn();
     const onExternalSelectionChange = vi.fn();
     const setState = vi.fn();
     const hook = renderHook(
       ({ gridSelection }: { gridSelection: GridSelection }) =>
-        useNativeGridSelection({
+        useGridSelectionState({
           cellsSelectionMode: 'range-cell',
           columns: ONE_SERVICE,
           gridSelection,
