@@ -109,7 +109,6 @@ export * from './components/TableSDDS';
 export * from './components/TableTabs';
 export * from './components/Tabs';
 export * from './components/TextArea';
-export * from './components/TypographyWithCollapse';
 export * from './components/TextField';
 export * from './components/TextFieldGroup';
 export * from './components/TimePicker';
@@ -121,6 +120,7 @@ export * from './components/Tour';
 export * from './components/TourWidget';
 export * from './components/Tree';
 export * from './components/Typography';
+export * from './components/TypographyWithCollapse';
 export * from './components/ViewContainer';
 export * from './components/Widget';
 
