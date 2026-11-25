@@ -1,5 +1,6 @@
 import { Chip } from '@ui-kit/components/Chip';
 import { ChipGroup } from '@ui-kit/components/ChipGroup';
+import { overflowDotsStyle } from '@ui-kit/constants/tableVisuals';
 import {
   bodyS,
   borderRadiusS,
@@ -10,7 +11,6 @@ import React from 'react';
 import styled, { css, CSSObject } from 'styled-components';
 
 import { FiltersActionsTooltip } from '../../layouts/FiltersActions/components/Tooltip';
-import { overflowDotsStyle } from '../Table/utils';
 import { listOfFiltersClassNames as cls } from './classNames';
 import { Group, isGroup, Item, ItemOrGroup } from './types';
 

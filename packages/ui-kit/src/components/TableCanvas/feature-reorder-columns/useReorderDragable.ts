@@ -54,28 +54,26 @@ export const useReorderDragable = <
   colsWithKeyTextMap: KeyTextMap;
   pinnedCols: string[];
 }) => {
-  const tableConfigDefaultOrder = tableConfigColumnsControl?.orderDefault;
+  const orderDefault = tableConfigColumnsControl?.orderDefault;
+  const orderForReset = tableConfigColumnsControl?.orderForReset;
 
-  const [columnsOrder, setColumnsOrder] = useState(() =>
-    reorderIsActive
-      ? sortedInOrder({
-          columnConfig,
-          tableConfigDefaultOrder,
-          rowMarkersIsActive,
-          selectingRowsIsActive,
-          rowErrorsIsActive,
-          colsWithKeyTextMap,
-          keyText,
-          rowsGroupingIsActive,
-          showRowInstruments,
-        })
-      : [],
-  );
-
-  const getDefaultColumnsOrder = () =>
-    sortedInOrder({
+  const getDefaultColumnsOrder = useCallback(
+    (order = orderDefault ?? orderForReset) =>
+      sortedInOrder({
+        columnConfig,
+        tableConfigDefaultOrder: order,
+        rowMarkersIsActive,
+        selectingRowsIsActive,
+        rowErrorsIsActive,
+        rowsGroupingIsActive,
+        colsWithKeyTextMap,
+        keyText,
+        showRowInstruments,
+      }),
+    [
       columnConfig,
-      tableConfigDefaultOrder,
+      orderDefault,
+      orderForReset,
       rowMarkersIsActive,
       selectingRowsIsActive,
       rowErrorsIsActive,
@@ -83,7 +81,12 @@ export const useReorderDragable = <
       colsWithKeyTextMap,
       keyText,
       showRowInstruments,
-    });
+    ],
+  );
+  const getResetColumnsOrder = useCallback(
+    () => getDefaultColumnsOrder(orderForReset),
+    [getDefaultColumnsOrder, orderForReset],
+  );
 
   const getActualOrder = (prev: string[]) => {
     const defaultOrder = getDefaultColumnsOrder();
@@ -111,6 +114,10 @@ export const useReorderDragable = <
       orderArrayForChanging: copyOfPrev,
     });
   };
+
+  const [columnsOrder, setColumnsOrder] = useState(() =>
+    reorderIsActive ? getDefaultColumnsOrder() : [],
+  );
 
   const columnsOrderRef = useRef(columnsOrder);
   columnsOrderRef.current = columnsOrder;
@@ -188,5 +195,6 @@ export const useReorderDragable = <
     setColumnsOrder,
     onColumnsReorder,
     getDefaultColumnsOrder,
+    getResetColumnsOrder,
   };
 };
