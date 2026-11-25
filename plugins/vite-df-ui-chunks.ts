@@ -1,7 +1,10 @@
 import { Plugin } from 'vite';
 
-const TABLE_CANVAS_ENTRY = 'components/TableCanvas/index';
-const LEGACY_TABLE_CSS = 'react-data-grid/lib/styles.css';
+import {
+  checkChunkPurity,
+  checkRestrictedImports,
+  RestrictedImport,
+} from './vite-df-ui-chunks.checks';
 
 /**
  * modulePaths - должен заканчиваться на / чтобы исключить случайный перехват чужих чанков
@@ -366,6 +369,59 @@ export const ALL_MANUAL_UIKIT_CHUNKS = [
   ...VENDOR_CHUNK,
 ] as const;
 
+const LEGACY_TABLE_ENTRIES = [
+  'components/Table/',
+  'components/TableContract/',
+  // TODO: MassActions импортирует TableDropdown и AnimatedCounter из Table,
+  // а Table импортирует MassActions (циклические чанки). Убрать после выноса
+  // общих частей в отдельный модуль
+  'components/MassActions/',
+];
+const GLIDE_TABLE_ENTRIES = [
+  'components/TableGlide/',
+  'components/TableCanvas/',
+];
+const GRID_DND_ENTRIES = ['components/GridDND/'];
+
+/**
+ * Тяжёлые чанки и CSS из node_modules: какие точки входа могут их загружать.
+ * Остальные точки входа получат ошибку сборки с путём, по которому загрузка
+ * произошла. Корневая точка входа index разрешена всегда.
+ */
+export const RESTRICTED_IMPORTS: readonly RestrictedImport[] = [
+  {
+    target: 'Table',
+    allowedEntries: LEGACY_TABLE_ENTRIES,
+    reason: 'старая таблица на react-data-grid',
+  },
+  {
+    target: 'react-data-grid/lib/styles.css',
+    allowedEntries: LEGACY_TABLE_ENTRIES,
+    reason:
+      'CSS старой таблицы, при повторной загрузке дублируется на странице',
+  },
+  {
+    target: 'TableGlide',
+    allowedEntries: GLIDE_TABLE_ENTRIES,
+    reason: 'таблица на glide-data-grid',
+  },
+  {
+    target: '@daisforge/glide-data-grid/dist/index.css',
+    allowedEntries: GLIDE_TABLE_ENTRIES,
+    reason: 'CSS glide-data-grid',
+  },
+  {
+    target: 'GridDND',
+    allowedEntries: GRID_DND_ENTRIES,
+    reason: 'сетка с drag-and-drop',
+  },
+  {
+    target: 'react-grid-layout/css/styles.css',
+    allowedEntries: GRID_DND_ENTRIES,
+    reason: 'CSS react-grid-layout',
+  },
+];
+
 const calledChunks = new Set();
 // const notCalledChunks = () =>
 //   ALL_MANUAL_UIKIT_CHUNKS.filter(
@@ -409,30 +465,21 @@ export function viteDFUIChunks(): Plugin {
   return {
     name: 'vite-df-ui-chunks',
     generateBundle({ format }, bundle) {
-      const extension = format === 'cjs' ? 'cjs' : 'mjs';
-      const entry = `${TABLE_CANVAS_ENTRY}.${extension}`;
-      const visited = new Set<string>();
-
-      if (!bundle[entry]) {
+      const errors = [
+        ...checkChunkPurity({
+          bundle,
+          manualChunks: MANUAL_UIKIT_COMP_CHUNKS,
+          getModuleInfo: (id) => this.getModuleInfo(id),
+        }),
+        ...checkRestrictedImports({ bundle }, RESTRICTED_IMPORTS),
+      ];
+      if (errors.length) {
         this.error(
-          `Не найдена точка входа ${entry} для проверки изоляции CSS.`,
+          `Граф чанков (${format}) нарушает правила изоляции:\n- ${errors.join(
+            '\n- ',
+          )}`,
         );
       }
-
-      const checkImports = (fileName: string) => {
-        const chunk = bundle[fileName];
-        if (chunk?.type !== 'chunk' || visited.has(fileName)) return;
-        visited.add(fileName);
-
-        const imports = [...chunk.imports, ...chunk.dynamicImports];
-        if (imports.includes(LEGACY_TABLE_CSS)) {
-          this.error(
-            `${entry} загружает ${LEGACY_TABLE_CSS} через ${fileName}.`,
-          );
-        }
-        imports.forEach(checkImports);
-      };
-      checkImports(entry);
     },
     config(_config) {
       return {
