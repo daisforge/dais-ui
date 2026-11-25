@@ -42,8 +42,9 @@ jobs:
       - name: Typecheck
         run: npx nx run-many --targets=typecheck,typecheck-tests
 
-      # Тесты Storybook на Playwright вне nx-проектов. Через импорты они
-      # проверяют и plugins/ с noUncheckedIndexedAccess
+      # Остальное в test/ уже проверяет storybook:typecheck. Этот шаг нужен
+      # для файлов, которые он не видит: redraw/specs/*.spec.ts (исключены
+      # как *.spec.ts) и .storybook/test-runner.ts (скрытая папка)
       - name: Typecheck screenshot and redraw tests
         run: npm run screenshot:typecheck && npm run redraw:typecheck
 
