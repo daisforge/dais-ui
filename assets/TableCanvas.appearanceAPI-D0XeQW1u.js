@@ -1,0 +1,6 @@
+import{j as e}from"./react-DYHuXpTF.js";import{dd as p}from"./vendor-DQaMhftP.js";import{M as i}from"./WithTooltip-KJL26V4Q-1FXogNTQ.js";import{T as n}from"./TypeSourceViewer-sGHrDmSQ.js";import"./_commonjsHelpers-BosuxZz1.js";import"./tslib-DoU9Jm1N.js";import"./_commonjs-dynamic-modules-TDtrdbi3.js";import"./react-is-CT-rZfBU.js";import"./styled-components-C3-Vg48S.js";import"./@tanstack/react-virtual-EEUi7wi6.js";import"./preload-helper-DeA7wft2.js";import"./index-Cu4lwwaE.js";import"./index-HOiRhji7.js";import"./types.string-CnN-7Q7m.js";function r(a){const t={h1:"h1",h2:"h2",...p(),...a.components};return e.jsxs(e.Fragment,{children:[e.jsx(i,{title:"Локальные компоненты/TableCanvas/Appearance/API"}),`
+`,e.jsx(t.h1,{id:"appearance-api",children:"Appearance API"}),`
+`,e.jsx(t.h2,{id:"tableconfigappearance",children:"tableConfig.appearance"}),`
+`,e.jsx(n,{language:"ts",filePath:"packages/ui-kit/src/components/TableGlide/types.ts",typeName:"AppearanceConfig"}),`
+`,e.jsx(t.h2,{id:"appearancevariant",children:"AppearanceVariant"}),`
+`,e.jsx(n,{language:"ts",filePath:"packages/ui-kit/src/components/TableGlide/types.ts",typeName:"AppearanceVariant"})]})}function C(a={}){const{wrapper:t}={...p(),...a.components};return t?e.jsx(t,{...a,children:e.jsx(r,{...a})}):r(a)}export{C as default};
