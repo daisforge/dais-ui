@@ -6,8 +6,8 @@ const componentIds = new WeakMap<object, number>();
 let nextComponentId = 0;
 
 function getCacheKey({ type, props }: ReactElement<Record<string, unknown>>) {
-  // Native SVG trees and custom rendering props (e.g. children, style) can
-  // contain arbitrary React values. Render those directly.
+  // Встроенные SVG и иконки с дополнительными пропсами рисуем напрямую:
+  // на результат могут влиять дочерние элементы, стили и другие значения.
   if (
     (typeof type !== 'function' && typeof type !== 'object') ||
     !Object.keys(props).every(
@@ -19,7 +19,8 @@ function getCacheKey({ type, props }: ReactElement<Record<string, unknown>>) {
     return undefined;
   }
 
-  // Component names can collide across minified modules and memo wrappers.
+  // Имена компонентов могут совпадать после минификации или вызова React.memo.
+  // Ссылка на тип компонента позволяет различать такие иконки.
   let id = componentIds.get(type);
   if (id === undefined) {
     id = nextComponentId;
@@ -45,7 +46,7 @@ export function reactIconToSvg(iconElement: ReactElement): string {
   const htmlString = renderToString(iconElement);
   const svgMatch = htmlString.match(/<svg[\s\S]*?<\/svg>/);
   if (!svgMatch) {
-    // eslint-disable-next-line no-console -- surface invalid icon inputs to consumers
+    // eslint-disable-next-line no-console -- предупреждаем разработчика, если компонент иконки не вернул SVG
     console.warn(
       'Could not extract SVG from React icon component:',
       iconElement.type,
@@ -61,15 +62,14 @@ export function reactIconToSvg(iconElement: ReactElement): string {
 }
 
 /**
- * Type guard to check if a value is a React element (icon component).
+ * Проверяет, является ли значение React-элементом.
  */
 export function isReactIcon(value: unknown): value is ReactElement {
   return isValidElement(value);
 }
 
 /**
- * Normalizes icon input - accepts either SVG string or React element.
- * Returns SVG string.
+ * Возвращает готовую строку SVG или получает её из React-элемента.
  */
 export function normalizeIcon(icon: string | ReactElement): string {
   if (typeof icon === 'string') {
@@ -84,14 +84,14 @@ export function normalizeIcon(icon: string | ReactElement): string {
 }
 
 /**
- * Clears the icon cache. Useful for testing or memory management.
+ * Удаляет все сохранённые SVG из кэша.
  */
 export function clearIconCache(): void {
   iconCache.clear();
 }
 
 /**
- * Returns the current size of the icon cache.
+ * Возвращает количество SVG в кэше.
  */
 export function getIconCacheSize(): number {
   return iconCache.size;
