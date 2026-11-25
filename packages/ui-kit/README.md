@@ -6,6 +6,19 @@
 
 Рекомендуется использовать `"typescript": ">=5.0.0"`
 
+В `tsconfig.json` нужен `"moduleResolution": "bundler"` (Vite, webpack и другие
+сборщики). Со старым `"node"` (он же `"node10"`) TypeScript не находит типы
+`@salutejs/sdds-finai` и `@salutejs/plasma-icons`: пропсы компонентов становятся
+`any`, и ошибки в них не ловятся. `"node16"` и `"nodenext"` пока не
+поддерживаются: с ними TypeScript не видит экспорты `@daisforge/ui`.
+
+```json
+"compilerOptions": {
+  "module": "ESNext",
+  "moduleResolution": "bundler"
+}
+```
+
 ## Установка пакета
 
 ```sh

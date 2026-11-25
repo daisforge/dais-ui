@@ -5,7 +5,12 @@ import {
   surfaceTransparentSecondaryHover,
   textSecondary,
 } from '@ui-kit/tokens';
-import type { ComponentProps } from 'react';
+import type {
+  ComponentProps,
+  ForwardRefExoticComponent,
+  PropsWithoutRef,
+  RefAttributes,
+} from 'react';
 import React, { forwardRef } from 'react';
 import styled from 'styled-components';
 
@@ -47,10 +52,9 @@ export const StyledTextField: typeof TextField = styled(TextField)`
   }
 `;
 
-export const TextFieldSearch = forwardRef<
-  HTMLInputElement,
-  TextFieldSearchProps
->(
+export const TextFieldSearch: ForwardRefExoticComponent<
+  PropsWithoutRef<TextFieldSearchProps> & RefAttributes<HTMLInputElement>
+> = forwardRef<HTMLInputElement, TextFieldSearchProps>(
   (
     {
       placeholder = 'Поиск',

@@ -429,7 +429,21 @@ function unwrapToRenderFunction(
     if (!init) return undefined;
     if (isInlineRenderFunction(init)) return init;
     if (Node.isCallExpression(init)) {
-      return init.getArguments().find(isInlineRenderFunction);
+      const inline = init.getArguments().find(isInlineRenderFunction);
+      if (inline) return inline;
+      // `Object.assign(ComponentRoot, { Sub })` — сам компонент лежит в первом
+      // аргументе отдельной переменной; дефолты читаются из её render-функции.
+      const [target] = init.getArguments();
+      if (
+        init.getExpression().getText() === 'Object.assign' &&
+        target &&
+        Node.isIdentifier(target)
+      ) {
+        const targetDecl = resolveIdentifierDeclaration(target);
+        if (targetDecl && targetDecl !== node) {
+          return unwrapToRenderFunction(targetDecl);
+        }
+      }
     }
   }
   return undefined;
@@ -882,13 +896,18 @@ function tryExtractViaComponentProps(
  * возвращает undefined, а часть остаётся без пропсов. Идём от самого
  * идентификатора: снимаем алиас импорта и берём его объявление.
  */
-function resolveIdentifierDeclaration(
-  identifier: Node,
+function resolveSymbolDeclaration(
+  symbol: TsSymbol | undefined,
 ): ExportedDeclarations | undefined {
-  const symbol = identifier.getSymbol();
   if (!symbol) return undefined;
   const target = symbol.getAliasedSymbol() ?? symbol;
   return target.getDeclarations()[0] as ExportedDeclarations | undefined;
+}
+
+function resolveIdentifierDeclaration(
+  identifier: Node,
+): ExportedDeclarations | undefined {
+  return resolveSymbolDeclaration(identifier.getSymbol());
 }
 
 /**
@@ -947,11 +966,12 @@ function findCompoundAssignments(
     for (const prop of parts.getProperties()) {
       // `{ Header }` — сокращённая запись: имя части и локальное имя совпадают.
       if (Node.isShorthandPropertyAssignment(prop)) {
-        const nameNode = prop.getNameNode();
+        // Символ имени в `{ Header }` — это свойство объекта; объявление
+        // переменной `Header` даёт только символ значения.
         assignments.push({
           subName: prop.getName(),
           localName: prop.getName(),
-          localDecl: resolveIdentifierDeclaration(nameNode),
+          localDecl: resolveSymbolDeclaration(prop.getValueSymbol()),
         });
         continue;
       }

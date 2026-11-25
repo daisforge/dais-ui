@@ -73,7 +73,7 @@ export type FiltersActionsProps = {
   onResize?: (dimensions: FiltersActionsResizeDimensions) => void;
 };
 
-export const FiltersActions = ({
+const FiltersActionsRoot = ({
   mainBlock,
   listOfFilters,
   activeButtonsBlock,
@@ -161,24 +161,47 @@ export const FiltersActions = ({
   );
 };
 
-FiltersActions.FiltersButton = FiltersActionsFiltersButton;
-FiltersActions.DotsIconButton = IconButtonDots;
-FiltersActions.ListOfFilters = FiltersActionsListOfFilters;
-FiltersActions.TextFieldSearch = TextFieldSearch;
-FiltersActions.Tabs = FiltersActionsTabs;
-FiltersActions.TabItem = FiltersActionsTabItem;
-FiltersActions.SegmentItem = FiltersActionsSegmentItem;
-// --------------------
-FiltersActions.Tooltip = TooltipList;
-// новое имя, более правильное. второе имя.
-FiltersActions.TooltipList = TooltipList;
-// --------------------
-FiltersActions.FilterPopover = FiltersActionsFiltersButtonWithPopover;
-// новое имя, более правильное. второе имя.
-FiltersActions.FiltersButtonWithPopover =
-  FiltersActionsFiltersButtonWithPopover;
-// --------------------
-FiltersActions.ResetAllFiltersButton = ResetAllFiltersButton;
-FiltersActions.SwitcherFilter = SwitcherFilter;
-// Красная точка-индикатор для кастомного таргета FiltersButtonWithPopover (renderTarget)
-FiltersActions.RedDot = RedDot;
+// Явный тип с `typeof` частей: без него TypeScript разворачивает тип каждой
+// части прямо в .d.ts компонента.
+type FiltersActionsComponent = typeof FiltersActionsRoot & {
+  FiltersButton: typeof FiltersActionsFiltersButton;
+  DotsIconButton: typeof IconButtonDots;
+  ListOfFilters: typeof FiltersActionsListOfFilters;
+  TextFieldSearch: typeof TextFieldSearch;
+  Tabs: typeof FiltersActionsTabs;
+  TabItem: typeof FiltersActionsTabItem;
+  SegmentItem: typeof FiltersActionsSegmentItem;
+  Tooltip: typeof TooltipList;
+  TooltipList: typeof TooltipList;
+  FilterPopover: typeof FiltersActionsFiltersButtonWithPopover;
+  FiltersButtonWithPopover: typeof FiltersActionsFiltersButtonWithPopover;
+  ResetAllFiltersButton: typeof ResetAllFiltersButton;
+  SwitcherFilter: typeof SwitcherFilter;
+  RedDot: typeof RedDot;
+};
+
+export const FiltersActions: FiltersActionsComponent = Object.assign(
+  FiltersActionsRoot,
+  {
+    FiltersButton: FiltersActionsFiltersButton,
+    DotsIconButton: IconButtonDots,
+    ListOfFilters: FiltersActionsListOfFilters,
+    TextFieldSearch,
+    Tabs: FiltersActionsTabs,
+    TabItem: FiltersActionsTabItem,
+    SegmentItem: FiltersActionsSegmentItem,
+    // --------------------
+    Tooltip: TooltipList,
+    // новое имя, более правильное. второе имя.
+    TooltipList,
+    // --------------------
+    FilterPopover: FiltersActionsFiltersButtonWithPopover,
+    // новое имя, более правильное. второе имя.
+    FiltersButtonWithPopover: FiltersActionsFiltersButtonWithPopover,
+    // --------------------
+    ResetAllFiltersButton,
+    SwitcherFilter,
+    // Красная точка-индикатор для кастомного таргета FiltersButtonWithPopover (renderTarget)
+    RedDot,
+  },
+);
