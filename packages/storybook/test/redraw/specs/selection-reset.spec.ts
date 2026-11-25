@@ -7,7 +7,7 @@ test('активная запись при серверной сортировк
 }) => {
   await context.grantPermissions(['clipboard-read', 'clipboard-write']);
   await grid.open(
-    'локальные-компоненты-tablecanvas-cellsselection-смена-данных--server-sort',
+    'локальные-компоненты-tablecanvas-cellsselection--server-sort',
   );
   const status = page.locator('output');
   await grid.click([1, 1]);
@@ -35,7 +35,7 @@ for (const replaceOnLoad of [false, true]) {
   }) => {
     await context.grantPermissions(['clipboard-read', 'clipboard-write']);
     const id =
-      'локальные-компоненты-tablecanvas-cellsselection-смена-данных--server-sort';
+      'локальные-компоненты-tablecanvas-cellsselection--server-sort';
     await grid.open(id, {
       args: `extraRows:100;replaceOnLoad:${replaceOnLoad}`,
     });
