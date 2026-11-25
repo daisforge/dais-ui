@@ -1995,6 +1995,7 @@ type ColumnsControlConfig = {
         minCount?: number;
     };
     orderDefault?: string[];
+    orderForReset?: string[];
     pinnedDefault?: string[];
     disablePinning?: string[];
     hiddenDefault?: string[];
@@ -2179,21 +2180,21 @@ type CtxsType<Customs extends ObjectForExtending | void = {}> = {
 // @public (undocumented)
 export const CUSTOM_TOKENS: {
     readonly zIndexCell: "var(--zIndexCell)";
+    readonly editedSuccessfullyCellColor: "var(--editedSuccessfullyCellColor)";
+    readonly editedSuccessfullyCellHoverColor: "var(--editedSuccessfullyCellHoverColor)";
     readonly headerColor: "var(--headerColor)";
     readonly editableCellColor: "var(--editableCellColor)";
     readonly editableCellHoverColor: "var(--editableCellHoverColor)";
-    readonly editedSuccessfullyCellColor: "var(--editedSuccessfullyCellColor)";
-    readonly editedSuccessfullyCellHoverColor: "var(--editedSuccessfullyCellHoverColor)";
 };
 
 // @public (undocumented)
 export const CUSTOM_TOKENS_KEYS: {
     readonly zIndexCell: "--zIndexCell";
+    readonly editedSuccessfullyCellColor: "--editedSuccessfullyCellColor";
+    readonly editedSuccessfullyCellHoverColor: "--editedSuccessfullyCellHoverColor";
     readonly headerColor: "--headerColor";
     readonly editableCellColor: "--editableCellColor";
     readonly editableCellHoverColor: "--editableCellHoverColor";
-    readonly editedSuccessfullyCellColor: "--editedSuccessfullyCellColor";
-    readonly editedSuccessfullyCellHoverColor: "--editedSuccessfullyCellHoverColor";
 };
 
 // @public (undocumented)
@@ -2216,20 +2217,20 @@ export const customColorGlobalVars: (theme: "light" | "dark" | "highContrastLigh
 
 // @public (undocumented)
 export const customColorTokens: {
+    editedSuccessfullyCellColor: "var(--editedSuccessfullyCellColor)";
+    editedSuccessfullyCellHoverColor: "var(--editedSuccessfullyCellHoverColor)";
     headerColor: "var(--headerColor)";
     editableCellColor: "var(--editableCellColor)";
     editableCellHoverColor: "var(--editableCellHoverColor)";
-    editedSuccessfullyCellColor: "var(--editedSuccessfullyCellColor)";
-    editedSuccessfullyCellHoverColor: "var(--editedSuccessfullyCellHoverColor)";
 };
 
 // @public (undocumented)
 export const customColorTokensKeys: {
+    editedSuccessfullyCellColor: "--editedSuccessfullyCellColor";
+    editedSuccessfullyCellHoverColor: "--editedSuccessfullyCellHoverColor";
     headerColor: "--headerColor";
     editableCellColor: "--editableCellColor";
     editableCellHoverColor: "--editableCellHoverColor";
-    editedSuccessfullyCellColor: "--editedSuccessfullyCellColor";
-    editedSuccessfullyCellHoverColor: "--editedSuccessfullyCellHoverColor";
 };
 
 // @public (undocumented)

@@ -4020,6 +4020,7 @@ type ColumnsControlConfig = {
         minCount?: number;
     };
     orderDefault?: string[];
+    orderForReset?: string[];
     pinnedDefault?: string[];
     disablePinning?: string[];
     hiddenDefault?: string[];
@@ -4484,21 +4485,21 @@ type CtxsType<Customs extends ObjectForExtending_2 | void = {}> = {
 // @public (undocumented)
 export const CUSTOM_TOKENS: {
     readonly zIndexCell: "var(--zIndexCell)";
+    readonly editedSuccessfullyCellColor: "var(--editedSuccessfullyCellColor)";
+    readonly editedSuccessfullyCellHoverColor: "var(--editedSuccessfullyCellHoverColor)";
     readonly headerColor: "var(--headerColor)";
     readonly editableCellColor: "var(--editableCellColor)";
     readonly editableCellHoverColor: "var(--editableCellHoverColor)";
-    readonly editedSuccessfullyCellColor: "var(--editedSuccessfullyCellColor)";
-    readonly editedSuccessfullyCellHoverColor: "var(--editedSuccessfullyCellHoverColor)";
 };
 
 // @public (undocumented)
 export const CUSTOM_TOKENS_KEYS: {
     readonly zIndexCell: "--zIndexCell";
+    readonly editedSuccessfullyCellColor: "--editedSuccessfullyCellColor";
+    readonly editedSuccessfullyCellHoverColor: "--editedSuccessfullyCellHoverColor";
     readonly headerColor: "--headerColor";
     readonly editableCellColor: "--editableCellColor";
     readonly editableCellHoverColor: "--editableCellHoverColor";
-    readonly editedSuccessfullyCellColor: "--editedSuccessfullyCellColor";
-    readonly editedSuccessfullyCellHoverColor: "--editedSuccessfullyCellHoverColor";
 };
 
 // @public (undocumented)
@@ -4521,20 +4522,20 @@ export const customColorGlobalVars: (theme: ActiveTheme) => string;
 
 // @public (undocumented)
 export const customColorTokens: {
+    editedSuccessfullyCellColor: "var(--editedSuccessfullyCellColor)";
+    editedSuccessfullyCellHoverColor: "var(--editedSuccessfullyCellHoverColor)";
     headerColor: "var(--headerColor)";
     editableCellColor: "var(--editableCellColor)";
     editableCellHoverColor: "var(--editableCellHoverColor)";
-    editedSuccessfullyCellColor: "var(--editedSuccessfullyCellColor)";
-    editedSuccessfullyCellHoverColor: "var(--editedSuccessfullyCellHoverColor)";
 };
 
 // @public (undocumented)
 export const customColorTokensKeys: {
+    editedSuccessfullyCellColor: "--editedSuccessfullyCellColor";
+    editedSuccessfullyCellHoverColor: "--editedSuccessfullyCellHoverColor";
     headerColor: "--headerColor";
     editableCellColor: "--editableCellColor";
     editableCellHoverColor: "--editableCellHoverColor";
-    editedSuccessfullyCellColor: "--editedSuccessfullyCellColor";
-    editedSuccessfullyCellHoverColor: "--editedSuccessfullyCellHoverColor";
 };
 
 // @public (undocumented)
@@ -17192,6 +17193,18 @@ export type TypographyWithAutoTooltipProps<T extends TypographyVariant> = {
     tooltipProps?: Omit<TooltipProps, 'text' | 'target' | 'trigger' | 'opened'>;
     lines?: number;
 } & Omit<TypographyProps<T>, 'frame'>;
+
+// @public (undocumented)
+export const TypographyWithCollapse: <T extends "BodyL" | "BodyM" | "BodyS" | "BodyXS" | "BodyXXS" | "DsplL" | "DsplM" | "DsplS" | "H1" | "H2" | "H3" | "H4" | "H5" | "TextL" | "TextM" | "TextS" | "TextXS" = "BodyM">(props: TypographyWithCollapseProps<T> & RefAttributes<HTMLDivElement>) => ReactElement;
+
+// @public (undocumented)
+export type TypographyWithCollapseProps<T extends TypographyVariant = 'BodyM'> = Omit<TypographyProps<T>, 'variant' | 'ref' | 'refTypography'> & {
+    children: ReactNode;
+    variant?: T;
+    lines?: number;
+    expandLabel?: string;
+    collapseLabel?: string;
+};
 
 // @public (undocumented)
 export const UNKNOWN_STATUS_OBJ: {
