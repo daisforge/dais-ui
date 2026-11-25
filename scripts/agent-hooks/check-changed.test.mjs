@@ -6,9 +6,15 @@
 import assert from 'node:assert/strict';
 import { execFileSync, spawnSync } from 'node:child_process';
 import {
+  appendFileSync,
+  copyFileSync,
+  mkdirSync,
   mkdtempSync,
+  readdirSync,
   readFileSync,
+  realpathSync,
   rmSync,
+  symlinkSync,
   unlinkSync,
   writeFileSync,
 } from 'node:fs';
@@ -25,6 +31,15 @@ const root = execFileSync('git', ['rev-parse', '--show-toplevel'], {
 }).trim();
 const MCP = 'packages/mcp-server/src';
 const TIMEOUT = { timeout: 600_000 };
+
+// Каталоги node_modules, отвязанные от настоящего (detachNodeModules).
+const detached = [];
+const reattach = (dir) => {
+  readdirSync(dir, { withFileTypes: true })
+    .filter((entry) => entry.isSymbolicLink())
+    .forEach((entry) => unlinkSync(path.join(dir, entry.name)));
+  rmSync(dir, { recursive: true, force: true });
+};
 
 // Ходы агента в одном worktree с общим кэшем хука: `before` — правки
 // пользователя до хода, `change` — правки агента за ход. Возвращает результаты
@@ -48,6 +63,7 @@ const turns = (steps) => {
       return runHook();
     });
   } finally {
+    detached.splice(0).forEach(reattach);
     worktree.remove();
     rmSync(cacheDir, { recursive: true, force: true });
   }
@@ -198,6 +214,49 @@ test('при изменении lock-файла старые ошибки не �
   assert.match(result.stderr, /Зависимости за ход изменились/);
   assert.match(result.stderr, /agentHookUser\.ts/);
 });
+
+// В worktree node_modules — ссылка на настоящий. Чтобы «обновить» зависимости,
+// не трогая его, ссылка заменяется каталогом со ссылками на содержимое и
+// собственными копиями файлов, в том числе служебного .package-lock.json.
+// Ссылки снимаются до удаления worktree (см. turns), чтобы удаление каталога
+// не ушло в настоящий node_modules.
+const detachNodeModules = (dir) => {
+  const real = realpathSync(dir);
+  unlinkSync(dir);
+  mkdirSync(dir);
+  detached.push(dir);
+  readdirSync(real, { withFileTypes: true }).forEach((entry) => {
+    const from = path.join(real, entry.name);
+    const to = path.join(dir, entry.name);
+    if (entry.isDirectory()) symlinkSync(from, to, 'junction');
+    else copyFileSync(from, to);
+  });
+};
+
+test(
+  'обновление зависимостей mcp-server не вычитает старые ошибки',
+  TIMEOUT,
+  () => {
+    const result = turn({
+      before: (file) => {
+        detachNodeModules(file('packages/mcp-server/node_modules'));
+        writeFileSync(
+          file(`${MCP}/agentHookUser.ts`),
+          "export const agentHookUser: number = 'x';\n",
+        );
+      },
+      // Установка пакета только в mcp-server: в git ничего не меняется.
+      change: (file) =>
+        appendFileSync(
+          file('packages/mcp-server/node_modules/.package-lock.json'),
+          '\n',
+        ),
+    });
+    assert.equal(result.status, 2, result.stderr);
+    assert.match(result.stderr, /Зависимости за ход изменились/);
+    assert.match(result.stderr, /agentHookUser\.ts/);
+  },
+);
 
 test('файл с кириллицей в имени проверяется', TIMEOUT, () => {
   const result = turn({

@@ -63,13 +63,17 @@ const TYPECHECK = {
   storybook: ['packages/storybook/tsconfig.lib.json'],
   'mcp-server': ['packages/mcp-server/tsconfig.lib.json'],
 };
-// Служебный lock-файл npm перезаписывает при каждой установке: по нему видно,
+// Служебные lock-файлы npm перезаписываются при каждой установке: по ним видно,
 // что node_modules изменились, даже если package-lock.json в git прежний.
-const INSTALLED_DEPS = 'node_modules/.package-lock.json';
+// Кроме корневого — свои у пакетов: у mcp-server зависимости ставятся отдельно.
+const INSTALLED_DEPS = [
+  'node_modules',
+  ...PACKAGES.map((pkg) => `packages/${pkg}/node_modules`),
+].map((dir) => `${dir}/.package-lock.json`);
 const DEPS_INPUT_RE = /(^|\/)package(-lock)?\.json$/;
 const CONFIG_FILES = [
   ...ROOT_TS_INPUTS,
-  INSTALLED_DEPS,
+  ...INSTALLED_DEPS,
   '.eslintrc.json',
   '.eslintignore',
   // Есть ли они, решает, запускается ли typecheck Storybook.
@@ -206,7 +210,9 @@ if (mode === 'start') {
       id: randomUUID(),
       head,
       dirty,
-      deps: fileHash(INSTALLED_DEPS),
+      deps: Object.fromEntries(
+        INSTALLED_DEPS.map((file) => [file, fileHash(file)]),
+      ),
     }),
   );
   finish();
@@ -241,7 +247,8 @@ const tsFiles = turnFiles.filter(
 // а tsc проверяет все пакеты.
 const depsChanged =
   turnFiles.some((file) => DEPS_INPUT_RE.test(file)) ||
-  (snapshot?.deps !== undefined && snapshot.deps !== fileHash(INSTALLED_DEPS));
+  (typeof snapshot?.deps === 'object' &&
+    INSTALLED_DEPS.some((file) => snapshot.deps[file] !== fileHash(file)));
 
 if (tsFiles.length === 0 && !depsChanged) {
   resetBlocks();
