@@ -21,15 +21,20 @@ const filterDebug = createDebugLogger('TABLE_CANVAS_FILTER');
 const FilterListContainer = styled.div<{
   $size: SIZE;
 }>(({ $size }) => {
-  const { minWidth } = getTableDropdownConfig($size);
+  const { minWidth, maxWidth } = getTableDropdownConfig($size);
   const padding = 2 * POPOVER_CONTENT_PADDING;
   return {
     width: 'max-content',
     minWidth: minWidth - padding,
+    maxWidth: maxWidth - padding,
     // Размер списка задают подписи пунктов. Поле занимает доступную ширину.
     [`${StyledSearchBlockFilter}`]: { contain: 'inline-size' },
   };
 });
+
+const StyledFreeTextFilter = styled(StyledSearchBlockFilter)<{
+  $width: number;
+}>(({ $width }) => ({ width: $width }));
 
 /**
  * Инпут текстового фильтра. Вынесен в отдельный компонент, чтобы использовать
@@ -42,13 +47,13 @@ const FreeTextFilterInput = ({
   onChange,
 }: {
   size: 'xs' | 's';
-  width: string;
+  width: number;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) => {
   const searchInputRef = useFocusSearchInput();
   return (
-    <StyledSearchBlockFilter
+    <StyledFreeTextFilter
       ref={searchInputRef}
       size={size}
       autoComplete="off"
@@ -58,7 +63,7 @@ const FreeTextFilterInput = ({
         e.stopPropagation();
       }}
       onKeyDown={inputStopPropagation}
-      style={{ width }}
+      $width={width}
     />
   );
 };
@@ -119,10 +124,11 @@ const FilterComponentInPopoverInner = <
       }));
     };
 
+    const { searchSize, textFilterWidth } = getTableDropdownConfig(rowSize);
     return (
       <FreeTextFilterInput
-        size={getTableDropdownConfig(rowSize).searchSize}
-        width={rowSize === 'small' ? '192px' : '232px'}
+        size={searchSize}
+        width={textFilterWidth}
         value={filters?.[valueKeyInFilters] as string}
         onChange={handleInputChange}
       />

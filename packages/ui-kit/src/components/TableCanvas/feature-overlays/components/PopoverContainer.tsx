@@ -119,7 +119,12 @@ export const PopoverInTable = <
     updatePlacement();
     const observer = new ResizeObserver(updatePlacement);
     observer.observe(content);
-    return () => observer.disconnect();
+    const viewport = content.ownerDocument.defaultView;
+    viewport?.addEventListener('resize', updatePlacement);
+    return () => {
+      observer.disconnect();
+      viewport?.removeEventListener('resize', updatePlacement);
+    };
   }, [containerEl, content, position]);
 
   const displayPosition = useMemo(() => {

@@ -26,6 +26,7 @@ function opened(
   contextMenuWidth?: number | string,
   textFilter = false,
 ): StoryObj {
+  const maxWidth = { small: 300, medium: 380, big: 440 }[size];
   const ref = createRef<DataEditorRef>();
   const isCell = menu === 'cell' || menu === 'cellNearBottom';
   return {
@@ -95,6 +96,8 @@ function opened(
             throw new Error('Границы ячейки или контекстного меню недоступны');
           if (contextMenuWidth !== undefined) {
             expect(menuRect.width).toBe(parseFloat(String(contextMenuWidth)));
+          } else {
+            expect(menuRect.width).toBeLessThanOrEqual(maxWidth);
           }
           expect(Math.abs(menuRect.x - event.clientX)).toBeLessThanOrEqual(1);
           expect(
@@ -116,6 +119,17 @@ function opened(
             expect(popup.width).toBe(size === 'small' ? 200 : 240);
           } else if (menu === 'filter') {
             expect(popup.width).toBe(size === 'big' ? 140 : 120);
+          } else {
+            expect(popup.width).toBe(maxWidth);
+            const label = page.getByText(/^На согласовании у ответственного/);
+            const text = Array.from(label.childNodes).find(
+              (node) =>
+                node.nodeType === Node.TEXT_NODE && node.textContent?.trim(),
+            );
+            if (!text) throw new Error('Текст длинного пункта недоступен');
+            const range = canvasElement.ownerDocument.createRange();
+            range.selectNodeContents(text);
+            expect(range.getClientRects().length).toBeGreaterThan(1);
           }
           const edge = menu === 'lastFilter' ? 'right' : 'left';
           const expectedX =

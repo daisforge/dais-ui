@@ -66,6 +66,14 @@ describe('useContextMenuValues', () => {
     expect(result.current.position).toEqual({ x: 22, y: 40, height: 32 });
   });
 
+  it('привязывает меню к границам заголовка', () => {
+    const { result } = setup({
+      onHeaderContextMenuDropdown: { getDropdownItems: () => ITEMS },
+    });
+    openHeader(result);
+    expect(result.current.position).toEqual({ x: 22, y: 40, height: 32 });
+  });
+
   it('onOpen ячейки вызывается при каждом открытии, даже если пункты уже есть', () => {
     const onOpen = vi.fn();
     const { result } = setup({

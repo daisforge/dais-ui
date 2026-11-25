@@ -1,6 +1,8 @@
+import type { DropdownProps } from '@ui-kit/components/Dropdown';
+
 import type { SIZE } from './styles.constants';
 
-// Минимум автоматической ширины включает отступы списка.
+// Диапазоны автоматической ширины включают отступы списка.
 const dropdownSizes = {
   small: {
     size: 'xs',
@@ -10,6 +12,8 @@ const dropdownSizes = {
     searchSize: 'xs',
     checkboxSize: 's',
     minWidth: 120,
+    maxWidth: 300,
+    textFilterWidth: 192,
   },
   medium: {
     size: 's',
@@ -19,6 +23,8 @@ const dropdownSizes = {
     searchSize: 'xs',
     checkboxSize: 's',
     minWidth: 120,
+    maxWidth: 380,
+    textFilterWidth: 232,
   },
   big: {
     size: 'm',
@@ -28,10 +34,15 @@ const dropdownSizes = {
     searchSize: 's',
     checkboxSize: 'm',
     minWidth: 140,
+    maxWidth: 440,
+    textFilterWidth: 232,
   },
 } as const;
 
-export const getTableDropdownConfig = (rowSize: SIZE, size?: string) => {
+export const getTableDropdownConfig = (
+  rowSize: SIZE,
+  size?: DropdownProps['size'],
+) => {
   switch (size) {
     case 'xs':
       return dropdownSizes.small;

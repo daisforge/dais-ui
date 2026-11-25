@@ -35,7 +35,10 @@ function SizedTableDropdown({
         '--plasma-dropdown-item-disclosure-icon-size': `${config.iconWidth}px`,
         // Подменю Plasma портализируется в обёртку родительского списка.
         '& div:has(> ul[role="tree"]), & div:has(> ul[role="group"])': {
-          minWidth: listWidth == null ? config.minWidth : undefined,
+          ...(listWidth == null && {
+            minWidth: config.minWidth,
+            maxWidth: config.maxWidth,
+          }),
         },
         '& .cell-textbox-title': {
           whiteSpace: 'normal',
