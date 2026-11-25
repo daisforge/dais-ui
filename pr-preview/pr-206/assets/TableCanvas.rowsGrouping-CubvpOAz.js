@@ -1,0 +1,23 @@
+import{j as o}from"./react-UEdzNlUe.js";import{dd as t}from"./vendor-DX-rrd2O.js";import{M as e,S as s}from"./WithTooltip-KJL26V4Q-B2TieNaU.js";import{T as p}from"./TableCanvas.rowsGrouping.stories-DA0jeRNQ.js";import"./_commonjsHelpers-BosuxZz1.js";import"./tslib-DoU9Jm1N.js";import"./_commonjs-dynamic-modules-TDtrdbi3.js";import"./react-is-CJ4CjPIR.js";import"./styled-components-BSCswbR3.js";import"./@tanstack/react-virtual-Z5qLdlzb.js";import"./preload-helper-Ba06O5E_.js";import"./index-Cu4lwwaE.js";import"./index-CTuxd491.js";import"./DocStoryTemplate-EeIUZ9My.js";import"./storySourceDoc-tVKyHcEN.js";import"./TableCanvas-cO5pn4pV.js";import"./@sddsjs/sdds_finai-CcsTvjys.js";import"./utils-BfZGf093.js";import"./constants-Des9Datc.js";import"./sharedUtilsDebug-BX_KjCjW.js";import"./@salutejs/sdds-finai-C9AHDOh5.js";import"./@salutejs/plasma-icons-CGioElEJ.js";import"./sharedUtilsCopy-CGH-mx0N.js";import"./Switch-OG9YqfkE.js";import"./Box-3Z-m9LhI.js";import"./Collapse-DxXZ8FX5.js";import"./TableCanvasSharedConstants-CqGDn8zL.js";import"./TableGlide-Dtuovu6B.js";import"./@daisforge/glide-data-grid-CzO07fTg.js";import"./canvas-hypertxt-DsokSIOX.js";import"./countWhile-blgVacgU.js";import"./TableTabs-DfbZiZGK.js";import"./sharedUiSearch-WSVmxtub.js";import"./TextField-tPdr40MJ.js";import"./sharedUtilsInputs-DVbCzzFV.js";import"./TypographyWithAutoTooltip-CeX4wWPk.js";import"./Typography-CyjBKn0V.js";import"./ListOfFilters-C9f_VsLK.js";import"./FiltersActions-oW-AJ4K7.js";import"./IconButton-DZJTAkfX.js";import"./TooltipList-WyihhvAI.js";import"./lodash.isequal-mFNAsUE8.js";import"./Combobox-BJUVgxKS.js";import"./NumberFormat-BTqmTjfQ.js";import"./EmptyState-7g6oF0qk.js";import"./unidentified@3x-Ca_hkon8.js";import"./ErrorPage-CCTUx8Cr.js";import"./Autocomplete-Dh8j0tgJ.js";import"./tableData-DKA5H0bF.js";function n(i){const r={a:"a",blockquote:"blockquote",code:"code",h1:"h1",h2:"h2",li:"li",p:"p",strong:"strong",ul:"ul",...t(),...i.components};return o.jsxs(o.Fragment,{children:[o.jsx(e,{of:p,name:"Docs"}),`
+`,o.jsx(r.h1,{id:"rowsgrouping-tablecanvas",children:"RowsGrouping (TableCanvas)"}),`
+`,o.jsx(r.p,{children:o.jsx(r.strong,{children:"tableConfig.rowsGrouping + columnConfig.rowsGrouping"})}),`
+`,o.jsx(r.p,{children:"Группировка строк таблицы по значениям колонок с поддержкой вложенных группировок."}),`
+`,o.jsx(r.h2,{id:"ключевые-особенности",children:"Ключевые особенности"}),`
+`,o.jsxs(r.ul,{children:[`
+`,o.jsxs(r.li,{children:["Управляемое состояние группировки через ",o.jsx(r.code,{children:"groupByState"})]}),`
+`,o.jsx(r.li,{children:"Кнопка с выпадающим списком для выбора группировок в controlBlock"}),`
+`,o.jsxs(r.li,{children:["Кастомный рендер сгруппированных строк через ",o.jsx(r.code,{children:"renderGroupCell"})]}),`
+`,o.jsxs(r.li,{children:["Кастомные элементы в выпадающем списке через ",o.jsx(r.code,{children:"groupButton.defaultCustomItems"})]}),`
+`,o.jsxs(r.li,{children:["Возможность замены данных группированных строк через ",o.jsx(r.code,{children:"groupRowReplaceTo"})]}),`
+`]}),`
+`,o.jsx(r.h2,{id:"особенности",children:"Особенности"}),`
+`,o.jsxs(r.ul,{children:[`
+`,o.jsxs(r.li,{children:[o.jsx(r.code,{children:"rowKeyGetter"})," должен возвращать уникальный идентификатор строки"]}),`
+`,o.jsxs(r.li,{children:[o.jsx(r.code,{children:"groupedColumnProps"})," позволяет настроить колонку с группировкой (ширину, рендер и т.д.)"]}),`
+`,o.jsxs(r.li,{children:["В ",o.jsx(r.code,{children:"columnConfig.rowsGrouping"})," можно указать ",o.jsx(r.code,{children:"groupByColumn: false"})," для исключения колонки из группировки"]}),`
+`,o.jsxs(r.li,{children:[o.jsx(r.code,{children:"columnGroupLabel"})," переопределяет лейбл в выпадающем списке (default: ",o.jsx(r.code,{children:"columnConfig.key"}),")"]}),`
+`]}),`
+`,o.jsxs(r.blockquote,{children:[`
+`,o.jsxs(r.p,{children:["Подробнее о типах — ",o.jsx(r.a,{href:"?path=/docs/%D0%BB%D0%BE%D0%BA%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D0%BA%D0%BE%D0%BC%D0%BF%D0%BE%D0%BD%D0%B5%D0%BD%D1%82%D1%8B-tablecanvas-rowsgrouping-api--docs",children:"RowsGrouping API"})]}),`
+`]}),`
+`,o.jsx(s,{})]})}function no(i={}){const{wrapper:r}={...t(),...i.components};return r?o.jsx(r,{...i,children:o.jsx(n,{...i})}):n(i)}export{no as default};
