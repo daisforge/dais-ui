@@ -1,4 +1,5 @@
-// Отчёт о публичном API ui-kit: npm run api:update (обновить), npm run api:check (CI).
+// Общие настройки отчётов о публичном API ui-kit. Точки входа и имена отчётов
+// задаёт scripts/api-report.mjs: npm run api:update (обновить), npm run api:check (CI).
 {
   "$schema": "https://developer.microsoft.com/json-schemas/api-extractor/v7/api-extractor.schema.json",
   "projectFolder": ".",
@@ -23,8 +24,8 @@
   },
   "apiReport": {
     "enabled": true,
-    "reportFileName": "ui-kit.api.md",
-    "reportFolder": "<projectFolder>/",
+    "reportFileName": "index.api.md",
+    "reportFolder": "<projectFolder>/api/",
     "reportTempFolder": "<projectFolder>/../../node_modules/.cache/api-extractor/",
     // Типы, на которые ссылается публичное API, но которые не экспортируются
     // (например DrawerDFHeaderProps): без этого их содержимого нет в отчёте.
