@@ -48,6 +48,15 @@ export const MANUAL_UIKIT_COMP_CHUNKS = [
     modulePaths: ['packages/ui-kit/src/components/TableCanvasSharedConstants/'],
   },
   {
+    // Сгенерированные цвета состояний таблицы берёт и старая Table. Без
+    // отдельного чанка Table загружала весь TableGlide вместе с его CSS.
+    // Стоит ДО TableGlide: чанк выбирается по первому совпадению пути
+    chunkName: 'TableStateColors',
+    modulePaths: [
+      'packages/ui-kit/src/components/TableGlide/theming/table-colors.generated.ts',
+    ],
+  },
+  {
     chunkName: 'TableGlide',
     modulePaths: ['packages/ui-kit/src/components/TableGlide/'],
   },
@@ -196,6 +205,16 @@ export const MANUAL_UIKIT_COMP_CHUNKS = [
     chunkName: 'TypographyWithCollapse',
     modulePaths: ['packages/ui-kit/src/components/TypographyWithCollapse/'],
   },
+  // Typography и Tooltip используются почти везде. Без своих чанков Rollup
+  // клал их в AiAgentPopup, и любой импорт Typography загружал AiAgentPopup
+  {
+    chunkName: 'Typography',
+    modulePaths: ['packages/ui-kit/src/components/Typography/'],
+  },
+  {
+    chunkName: 'Tooltip',
+    modulePaths: ['packages/ui-kit/src/components/Tooltip/'],
+  },
   {
     chunkName: 'PageTitle',
     modulePaths: ['packages/ui-kit/src/components/PageTitle/'],
@@ -254,6 +273,10 @@ export const MANUAL_UIKIT_COMP_CHUNKS = [
     modulePaths: ['packages/ui-kit/src/formComponents/utils/'],
   },
   {
+    chunkName: 'FormSegments',
+    modulePaths: ['packages/ui-kit/src/formComponents/FormSegments/'],
+  },
+  {
     chunkName: 'MassActions',
     modulePaths: ['packages/ui-kit/src/components/MassActions/'],
   },
@@ -303,6 +326,11 @@ export const MANUAL_UIKIT_COMP_CHUNKS = [
   {
     chunkName: 'sharedUtilsCopy',
     modulePaths: ['packages/ui-kit/src/shared/utils/copy/'],
+  },
+  {
+    // Используют TableCanvas и TableGlide. Без своего чанка лежал в TableGlide
+    chunkName: 'sharedUtilsSearch',
+    modulePaths: ['packages/ui-kit/src/shared/utils/search/'],
   },
   {
     // Общая сборка resizable-конфига атомарного Popup: используют PopupDF
