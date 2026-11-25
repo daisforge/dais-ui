@@ -6,11 +6,11 @@
 
 Рекомендуется использовать `"typescript": ">=5.0.0"`
 
-В `tsconfig.json` нужен резолвер модулей, который читает поле `exports` в
-`package.json`: `"bundler"` (Vite, webpack и другие сборщики), `"node16"` или
-`"nodenext"`. Со старым `"node"` (он же `"node10"`) TypeScript не находит типы
+В `tsconfig.json` нужен `"moduleResolution": "bundler"` (Vite, webpack и другие
+сборщики). Со старым `"node"` (он же `"node10"`) TypeScript не находит типы
 `@salutejs/sdds-finai` и `@salutejs/plasma-icons`: пропсы компонентов становятся
-`any`, и ошибки в них не ловятся.
+`any`, и ошибки в них не ловятся. `"node16"` и `"nodenext"` пока не
+поддерживаются: с ними TypeScript не видит экспорты `@daisforge/ui`.
 
 ```json
 "compilerOptions": {
