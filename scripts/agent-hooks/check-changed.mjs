@@ -1,38 +1,55 @@
 // Хуки агентов (Claude Code — .claude/settings.json, Codex — .codex/hooks.json).
 //
-// `start` (UserPromptSubmit) — запоминает HEAD и содержимое незакоммиченных
-// файлов на начало хода.
+// `start` (UserPromptSubmit) — запоминает HEAD, хэши незакоммиченных файлов и
+// копии тех из них, что влияют на tsc, — состояние на начало хода.
 //
-// без аргумента (Stop) — проверяет только то, что изменилось за ход: файлы,
-// отличающиеся от HEAD начала хода (в том числе удалённые и закоммиченные за
-// ход), кроме незакоммиченных правок, которые были до хода и не менялись.
-// По изменённым TS-файлам запускает ESLint, по затронутым пакетам — tsc.
-// Файлы не исправляет: `--fix` выполняет только lint-staged при коммите.
+// без аргумента (Stop) — проверяет изменённое за ход: файлы, отличающиеся от
+// HEAD начала хода (в том числе удалённые и закоммиченные за ход), кроме
+// незакоммиченных правок, которые были до хода и не менялись. По изменённым
+// TS-файлам запускает ESLint, по затронутым пакетам — tsc. Блокируют только
+// новые ошибки tsc: если они есть, хук один раз за ход восстанавливает во
+// временном git worktree состояние начала хода и вычитает ошибки, которые были
+// уже тогда. Файлы хук не исправляет: `--fix` выполняет только lint-staged.
 // Ошибки — код 2 и текст в stderr: оба агента возвращают его модели.
 //
 // ESLint и tsc запускаются через `node` (process.execPath), а не через обёртки
-// из node_modules/.bin, — так хук работает и на Windows.
+// из node_modules/.bin, — так хук работает и на Windows. Пути из git читаются
+// с `-z`: иначе git экранирует не-ASCII символы (кириллицу в именах файлов).
 //
-// Успешный результат кэшируется по хэшу проверенных файлов и конфигов. Чтобы
-// агент не зациклился на ошибке, которую не может исправить, после MAX_BLOCKS
-// блокировок подряд хук только показывает предупреждение пользователю.
+// Успешный результат кэшируется по HEAD, хэшам незакоммиченных файлов и
+// конфигов. Чтобы агент не зациклился на ошибке, которую не может исправить,
+// после MAX_BLOCKS блокировок подряд хук только предупреждает пользователя.
 import { execFileSync, spawn } from 'node:child_process';
-import { createHash } from 'node:crypto';
+import { createHash, randomUUID } from 'node:crypto';
 import {
+  copyFileSync,
   existsSync,
   lstatSync,
   mkdirSync,
   readFileSync,
   readlinkSync,
+  rmSync,
+  statSync,
   writeFileSync,
 } from 'node:fs';
 import { createRequire } from 'node:module';
 import path from 'node:path';
 
+import { createWorktree } from './worktree.mjs';
+
 const PACKAGES = ['ui-kit', 'storybook', 'mcp-server'];
 const LINT_RE =
   /^(packages\/(ui-kit|storybook|mcp-server)\/.+\.(ts|tsx)|scripts\/.+\.mjs)$/;
 const TS_RELEVANT_RE = /\.(ts|tsx)$|(^|\/)tsconfig[^/]*\.json$/;
+// Изменение этих файлов влияет на типы во всех пакетах.
+const ROOT_TS_INPUTS = [
+  'tsconfig.base.json',
+  'package.json',
+  'package-lock.json',
+];
+// Что копировать в снимок начала хода для восстановления состояния tsc.
+const SNAPSHOT_INPUT_RE = /\.(ts|tsx|mts|cts|js|mjs|cjs|json)$/;
+const SNAPSHOT_MAX_BYTES = 2 * 1024 * 1024;
 // Какие проекты tsc проверять при изменениях в пакете. Storybook — главный
 // потребитель ui-kit: переименованный проп ломает stories.
 const TYPECHECK = {
@@ -45,10 +62,9 @@ const TYPECHECK = {
   'mcp-server': ['packages/mcp-server/tsconfig.lib.json'],
 };
 const CONFIG_FILES = [
-  'tsconfig.base.json',
+  ...ROOT_TS_INPUTS,
   '.eslintrc.json',
   '.eslintignore',
-  'package-lock.json',
   // Есть ли они, решает, запускается ли typecheck Storybook.
   'packages/storybook/src/types.string.json',
   'packages/storybook/src/functions.string.json',
@@ -59,6 +75,7 @@ const CONFIG_FILES = [
     `packages/${pkg}/tsconfig.spec.json`,
   ]),
 ];
+const STORYBOOK_TSCONFIG = 'packages/storybook/tsconfig.lib.json';
 const MAX_BLOCKS = 3;
 const MAX_OUTPUT = 5000;
 const DELETED = 'deleted';
@@ -84,30 +101,28 @@ const readStdin = async () => {
   }
 };
 
-const git = (cwd, args) =>
-  execFileSync('git', args, {
-    cwd,
-    encoding: 'utf8',
-    stdio: ['ignore', 'pipe', 'ignore'],
-  })
-    .split('\n')
-    .map((line) => line.trim())
-    .filter(Boolean);
-
 const tryGit = (cwd, args) => {
   try {
-    return git(cwd, args);
+    return execFileSync('git', args, {
+      cwd,
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    });
   } catch {
     return undefined;
   }
 };
+const gitLine = (cwd, args) => tryGit(cwd, args)?.trim() || undefined;
+// Списки путей — только с `-z`: без него git экранирует не-ASCII символы.
+const gitPaths = (cwd, args) =>
+  (tryGit(cwd, [...args, '-z']) ?? '').split('\0').filter(Boolean);
 
 const mode = process.argv[2] === 'start' ? 'start' : 'stop';
 const input = await readStdin();
-const root = tryGit(input.cwd || process.cwd(), [
+const root = gitLine(input.cwd || process.cwd(), [
   'rev-parse',
   '--show-toplevel',
-])?.[0];
+]);
 if (!root) finish({ json: mode === 'stop' ? {} : undefined });
 
 const cacheDir =
@@ -115,12 +130,20 @@ const cacheDir =
   path.join(root, 'node_modules/.cache/agent-checks');
 const session = String(input.session_id || 'local').replace(/[^\w-]/g, '_');
 const snapshotFile = path.join(cacheDir, `snapshot-${session}.json`);
+const snapshotFilesDir = path.join(cacheDir, `snapshot-${session}-files`);
 const blocksFile = path.join(cacheDir, `blocks-${session}`);
 const passFile = path.join(cacheDir, 'last-pass');
 
 const readText = (file) => (existsSync(file) ? readFileSync(file, 'utf8') : '');
+const readJson = (file) => {
+  try {
+    return JSON.parse(readText(file));
+  } catch {
+    return undefined;
+  }
+};
 const write = (file, text) => {
-  mkdirSync(cacheDir, { recursive: true });
+  mkdirSync(path.dirname(file), { recursive: true });
   writeFileSync(file, text);
 };
 const fileHash = (file) => {
@@ -139,58 +162,75 @@ const fileHash = (file) => {
 
 const dirtyFiles = (base) => [
   ...new Set([
-    ...(tryGit(root, ['diff', '--name-only', '--no-renames', base]) ?? []),
-    ...(tryGit(root, ['ls-files', '--others', '--exclude-standard']) ?? []),
+    ...gitPaths(root, ['diff', '--name-only', '--no-renames', base]),
+    ...gitPaths(root, ['ls-files', '--others', '--exclude-standard']),
   ]),
 ];
 
 if (mode === 'start') {
-  const head = tryGit(root, ['rev-parse', 'HEAD'])?.[0];
-  const dirty = Object.fromEntries(
-    dirtyFiles('HEAD').map((file) => [file, fileHash(file)]),
-  );
-  write(snapshotFile, JSON.stringify({ head, dirty }));
+  const head = gitLine(root, ['rev-parse', 'HEAD']);
+  rmSync(snapshotFilesDir, { recursive: true, force: true });
+  const dirty = {};
+  dirtyFiles('HEAD').forEach((file) => {
+    const hash = fileHash(file);
+    const full = path.join(root, file);
+    let copied = false;
+    try {
+      const stat = statSync(full);
+      copied =
+        hash !== DELETED &&
+        SNAPSHOT_INPUT_RE.test(file) &&
+        stat.isFile() &&
+        stat.size <= SNAPSHOT_MAX_BYTES;
+    } catch {
+      // битый симлинк и т. п. — не копируем
+    }
+    if (copied) {
+      mkdirSync(path.dirname(path.join(snapshotFilesDir, file)), {
+        recursive: true,
+      });
+      copyFileSync(full, path.join(snapshotFilesDir, file));
+    }
+    dirty[file] = { hash, copied };
+  });
+  write(snapshotFile, JSON.stringify({ id: randomUUID(), head, dirty }));
   finish();
 }
 
 // ---------------------------------------------------------------- Stop
-let snapshot;
-try {
-  snapshot = JSON.parse(readText(snapshotFile));
-} catch {
-  snapshot = undefined;
-}
+const snapshot = readJson(snapshotFile);
 const baseIsValid =
-  snapshot?.head &&
+  Boolean(snapshot?.head) &&
   tryGit(root, ['cat-file', '-e', `${snapshot.head}^{commit}`]) !== undefined;
 const base = baseIsValid ? snapshot.head : 'HEAD';
 const before = (baseIsValid && snapshot.dirty) || {};
 
 // Незакоммиченные правки, которые были до хода и не менялись, — не наши.
-const foreign = new Set();
-const turnFiles = [];
-dirtyFiles(base)
+const turnFiles = dirtyFiles(base)
   .sort()
-  .forEach((file) => {
-    const hash = fileHash(file);
-    if (before[file] === hash) foreign.add(file);
-    else turnFiles.push({ file, hash });
-  });
+  .filter((file) => before[file]?.hash !== fileHash(file));
 
 const resetBlocks = () => write(blocksFile, '0');
 
 const tsFiles = turnFiles.filter(
-  ({ file }) => TS_RELEVANT_RE.test(file) || LINT_RE.test(file),
+  (file) =>
+    TS_RELEVANT_RE.test(file) ||
+    LINT_RE.test(file) ||
+    ROOT_TS_INPUTS.includes(file),
 );
 if (tsFiles.length === 0) {
   resetBlocks();
   pass();
 }
 
+// Кэш: HEAD, все незакоммиченные файлы (в том числе зависимости, изменённые
+// вне хода), конфиги и набор файлов хода, от которого зависят проверки.
 const stateHash = createHash('sha256');
 [
-  ...tsFiles.map(({ file, hash }) => `${file}:${hash}`),
-  ...CONFIG_FILES.map((f) => `${f}:${fileHash(f)}`),
+  `head:${gitLine(root, ['rev-parse', 'HEAD'])}`,
+  ...dirtyFiles('HEAD').map((file) => `dirty:${file}:${fileHash(file)}`),
+  ...CONFIG_FILES.map((file) => `config:${file}:${fileHash(file)}`),
+  ...tsFiles.map((file) => `turn:${file}`),
 ].forEach((line) => stateHash.update(`${line}\n`));
 const state = stateHash.digest('hex');
 if (readText(passFile) === state) {
@@ -208,11 +248,13 @@ const binPath = (pkg, bin) => {
   );
 };
 
-const run = (args) =>
+const run = (args, cwd = root) =>
   new Promise((resolve) => {
     const child = spawn(process.execPath, args, {
-      cwd: root,
-      env: process.env,
+      cwd,
+      // Пресет @nx/eslint-plugin берёт tsconfigRootDir из корня Nx: в worktree
+      // со ссылкой на node_modules он иначе указал бы на основной репозиторий.
+      env: { ...process.env, NX_DAEMON: 'false', NX_WORKSPACE_ROOT_PATH: cwd },
     });
     let out = '';
     child.stdout.on('data', (d) => {
@@ -225,34 +267,85 @@ const run = (args) =>
     child.on('error', (err) => resolve({ code: 1, out: String(err) }));
   });
 
-// Ошибки tsc в чужих незавершённых файлах не блокируют агента.
-const filterTscOutput = (out) => {
-  const groups = [];
+const tscArgs = (tsconfig) => [
+  binPath('typescript', 'tsc'),
+  '-p',
+  tsconfig,
+  '--noEmit',
+  '--pretty',
+  'false',
+];
+
+// Разбивает вывод tsc на ошибки. Ключ — файл, код и текст без позиции: если
+// агент сдвинул строки, старая ошибка не должна считаться новой.
+const parseTsc = (out) => {
+  const errors = [];
   out.split('\n').forEach((line) => {
     const normalized = line.replace(/\\/g, '/');
-    const match = normalized.match(/^(.+?)\(\d+,\d+\): error /);
-    if (match) groups.push({ file: match[1], lines: [normalized] });
-    else if (groups.length > 0 && /^\s/.test(line))
-      groups[groups.length - 1].lines.push(normalized);
-    else groups.push({ file: undefined, lines: [normalized] });
+    const match = normalized.match(/^(.+?)\(\d+,\d+\): error (TS\d+): (.*)$/);
+    if (match) {
+      errors.push({
+        key: `${match[1]}|${match[2]}|${match[3]}`,
+        lines: [normalized],
+      });
+    } else if (errors.length > 0 && /^\s/.test(line)) {
+      errors[errors.length - 1].lines.push(normalized);
+    }
   });
-  return groups
-    .filter(({ file }) => !file || !foreign.has(file))
-    .map(({ lines }) => lines.join('\n'))
-    .join('\n')
-    .trim();
+  return errors;
+};
+const countKeys = (errors) =>
+  errors.reduce(
+    (acc, { key }) => acc.set(key, (acc.get(key) ?? 0) + 1),
+    new Map(),
+  );
+
+// Ошибки tsc на начало хода: HEAD начала хода плюс незакоммиченные файлы из
+// снимка. Считается один раз за ход и кэшируется по id снимка.
+const baselineFile = path.join(cacheDir, `baseline-${session}.json`);
+const baselineErrors = async (tsconfigs) => {
+  const cached = readJson(baselineFile);
+  const known = cached?.snapshotId === snapshot.id ? cached.results : {};
+  const missing = tsconfigs.filter((tsconfig) => !(tsconfig in known));
+  if (missing.length > 0) {
+    const worktree = createWorktree(root, base);
+    try {
+      Object.entries(before).forEach(([file, { hash, copied }]) => {
+        const target = path.join(worktree.dir, file);
+        if (hash === DELETED) rmSync(target, { force: true });
+        else if (copied) {
+          mkdirSync(path.dirname(target), { recursive: true });
+          copyFileSync(path.join(snapshotFilesDir, file), target);
+        }
+      });
+      const outputs = await Promise.all(
+        missing.map((tsconfig) => run(tscArgs(tsconfig), worktree.dir)),
+      );
+      missing.forEach((tsconfig, i) => {
+        known[tsconfig] = parseTsc(outputs[i].out).map(({ key }) => key);
+      });
+    } finally {
+      worktree.remove();
+    }
+    write(
+      baselineFile,
+      JSON.stringify({ snapshotId: snapshot.id, results: known }),
+    );
+  }
+  return known;
 };
 
-const lintFiles = tsFiles
-  .map(({ file }) => file)
-  .filter((file) => LINT_RE.test(file) && existsSync(path.join(root, file)));
-const touchedPackages = PACKAGES.filter((pkg) =>
-  tsFiles.some(({ file }) => file.startsWith(`packages/${pkg}/`)),
+const lintFiles = tsFiles.filter(
+  (file) => LINT_RE.test(file) && existsSync(path.join(root, file)),
 );
+const touchedPackages = tsFiles.some((file) => ROOT_TS_INPUTS.includes(file))
+  ? PACKAGES
+  : PACKAGES.filter((pkg) =>
+      tsFiles.some((file) => file.startsWith(`packages/${pkg}/`)),
+    );
 const notices = [];
 // Stories импортируют сгенерированные (и игнорируемые git) *.string.json: без
 // них tsc Storybook падает по причине, не связанной с изменениями агента.
-const STORYBOOK_TSCONFIG = 'packages/storybook/tsconfig.lib.json';
 const storybookGenerated = ['types.string.json', 'functions.string.json'].every(
   (name) => existsSync(path.join(root, 'packages/storybook/src', name)),
 );
@@ -266,37 +359,49 @@ const tsconfigs = [
   return false;
 });
 
-const checks = [
-  ...(lintFiles.length > 0
-    ? [
-        {
-          title: `ESLint (${lintFiles.length} файл.)`,
-          args: [binPath('eslint', 'eslint'), '--quiet', ...lintFiles],
-        },
-      ]
-    : []),
-  ...tsconfigs.map((tsconfig) => ({
-    title: `tsc -p ${tsconfig}`,
-    args: [
-      binPath('typescript', 'tsc'),
-      '-p',
-      tsconfig,
-      '--noEmit',
-      '--pretty',
-      'false',
-    ],
-    filter: filterTscOutput,
-  })),
-];
+const [lintResult, ...tscResults] = await Promise.all([
+  lintFiles.length > 0
+    ? run([binPath('eslint', 'eslint'), '--quiet', ...lintFiles])
+    : { code: 0, out: '' },
+  ...tsconfigs.map((tsconfig) => run(tscArgs(tsconfig))),
+]);
 
-const results = await Promise.all(
-  checks.map(async (check) => {
-    const { code, out } = await run(check.args);
-    const text = check.filter && code !== 0 ? check.filter(out) : out;
-    return { ...check, failed: code !== 0 && text !== '', text };
-  }),
-);
-const failed = results.filter((result) => result.failed);
+const failed = [];
+if (lintResult.code !== 0) {
+  failed.push({
+    title: `ESLint (${lintFiles.length} файл.)`,
+    text: lintResult.out,
+  });
+}
+
+const tscFailures = tsconfigs
+  .map((tsconfig, i) => ({
+    tsconfig,
+    ...tscResults[i],
+    errors: parseTsc(tscResults[i].out),
+  }))
+  .filter(({ code }) => code !== 0);
+const baseline =
+  baseIsValid && tscFailures.some(({ errors }) => errors.length > 0)
+    ? await baselineErrors(tscFailures.map(({ tsconfig }) => tsconfig))
+    : {};
+tscFailures.forEach(({ tsconfig, out, errors }) => {
+  const title = `tsc -p ${tsconfig}`;
+  // tsc упал, но ошибок в разбираемом формате нет — ошибка конфигурации и т. п.
+  if (errors.length === 0) {
+    failed.push({ title, text: out });
+    return;
+  }
+  const was = countKeys((baseline[tsconfig] ?? []).map((key) => ({ key })));
+  const now = countKeys(errors);
+  const fresh = errors.filter(({ key }) => now.get(key) > (was.get(key) ?? 0));
+  if (fresh.length > 0) {
+    failed.push({
+      title,
+      text: fresh.map(({ lines }) => lines.join('\n')).join('\n'),
+    });
+  }
+});
 
 if (failed.length === 0) {
   write(passFile, state);
@@ -329,5 +434,5 @@ if (blocks > MAX_BLOCKS) {
 
 finish({
   code: 2,
-  stderr: `Проверки файлов, изменённых за ход, не прошли (попытка ${blocks} из ${MAX_BLOCKS}). Исправь причину, не ослабляя правила и не добавляя eslint-disable/@ts-ignore без обоснования.\n\n${report}`,
+  stderr: `Новые ошибки в проверках после хода (попытка ${blocks} из ${MAX_BLOCKS}). Исправь причину, не ослабляя правила и не добавляя eslint-disable/@ts-ignore без обоснования.\n\n${report}`,
 });

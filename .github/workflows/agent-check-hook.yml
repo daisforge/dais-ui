@@ -1,9 +1,9 @@
 name: Agent check hook
 
 # Хук проверок агентов (scripts/agent-hooks) запускают Claude Code и Codex у
-# разработчиков на macOS, Linux и Windows. Тест гоняет его на настоящем
-# репозитории: корректный файл проходит, ошибка типов и удаление импортируемого
-# файла блокируют завершение хода, чужие правки до хода не мешают.
+# разработчиков на macOS, Linux и Windows. Тест разыгрывает ходы агента во
+# временных git worktree: новые ошибки блокируют завершение хода, ошибки,
+# которые были до хода, — нет.
 on:
   pull_request:
     paths:
@@ -36,6 +36,8 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
       - run: npm ci --ignore-scripts
+      # Логику хука тест проверяет на mcp-server: его tsc занимает ~1 с.
+      - run: npm run mcp:ci
       # Stories импортируют сгенерированные *.string.json — без них хук
       # пропустил бы typecheck Storybook.
       - run: npm run generate-storybook-docs-utils
