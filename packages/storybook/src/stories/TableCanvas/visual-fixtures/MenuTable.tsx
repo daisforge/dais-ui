@@ -62,7 +62,8 @@ const textColumns: ColumnConfig<Row>[] = [
   columns[1],
 ];
 
-export function DropdownsExample({
+// Фиксированная ширина воспроизводит привязку к правому краю и сжатие ToolsMenu на PNG.
+export function MenuTable({
   size = 'medium',
   narrow = false,
   tableRef,

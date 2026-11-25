@@ -285,7 +285,7 @@ function ExampleAllFeatures() {
 }
 
 // Кастомные свойства Dropdown: size, listWidth, closeOnSelect
-function ExampleCustomDropdownProps() {
+function ExampleCustomDropdownProps({ listWidth }: { listWidth: number }) {
   const [rows] = useState(createRows);
 
   const columnConfig = useMemo<readonly ColumnConfig<Row>[]>(
@@ -307,7 +307,7 @@ function ExampleCustomDropdownProps() {
         onCellContextMenuDropdown: {
           type: 'dropdown',
           size: 's',
-          listWidth: '580px',
+          listWidth,
           closeOnSelect: true,
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           getDropdownItems: ({ column, row }) => [
@@ -438,7 +438,11 @@ ${getFuncAsString(
 )}
 `;
 
-export const ContextMenuCustomDropdownPropsStory: StoryObj = {
+export const ContextMenuCustomDropdownPropsStory: StoryObj<{
+  listWidth: number;
+}> = {
+  args: { listWidth: 580 },
+  argTypes: { listWidth: { name: 'Ширина меню ПКМ, px', control: 'number' } },
   name: 'Кастомные свойства Dropdown (size, listWidth, closeOnSelect)',
   ...storySourceDoc({
     previewSource: 'shown',
