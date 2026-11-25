@@ -34,8 +34,7 @@ for (const replaceOnLoad of [false, true]) {
     context,
   }) => {
     await context.grantPermissions(['clipboard-read', 'clipboard-write']);
-    const id =
-      'локальные-компоненты-tablecanvas-cellsselection--server-sort';
+    const id = 'локальные-компоненты-tablecanvas-cellsselection--server-sort';
     await grid.open(id, {
       args: `extraRows:100;replaceOnLoad:${replaceOnLoad}`,
     });

@@ -530,7 +530,9 @@ ${taskTableDataCode}`,
     const [page, setPage] = useState(0);
     // Версия меняется при смене страницы или порядка записей.
     const [revision, setRevision] = useState(0);
-    const [rows, setRows] = useState<TaskRow[]>(() => allRows.slice(0, PAGE_SIZE));
+    const [rows, setRows] = useState<TaskRow[]>(() =>
+      allRows.slice(0, PAGE_SIZE),
+    );
     const [selectedRows, setSelectedRows] = useState<ReadonlySet<number>>(
       new Set(),
     );
