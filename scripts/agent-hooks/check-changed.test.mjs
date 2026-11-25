@@ -258,6 +258,83 @@ test(
   },
 );
 
+test(
+  'успех проверки одного пакета не заменяет проверку всех после обновления зависимостей',
+  TIMEOUT,
+  () => {
+    const MCP_MODULES = 'packages/mcp-server/node_modules';
+    const UI_KIT_TSCONFIG = 'packages/ui-kit/tsconfig.lib.json';
+    // Зависимость MCP: в версии 1 значение — number, в версии 2 — string.
+    const installDep = (file, version) => {
+      const dir = file(`${MCP_MODULES}/agent-hook-dep`);
+      mkdirSync(dir, { recursive: true });
+      writeFileSync(
+        path.join(dir, 'package.json'),
+        JSON.stringify({
+          name: 'agent-hook-dep',
+          version,
+          types: 'index.d.ts',
+        }),
+      );
+      writeFileSync(
+        path.join(dir, 'index.d.ts'),
+        `export declare const agentHookDep: ${
+          version === '1.0.0' ? 'number' : 'string'
+        };\n`,
+      );
+    };
+    let lockV1;
+    const setLock = (file, version) =>
+      writeFileSync(
+        file(`${MCP_MODULES}/.package-lock.json`),
+        version === '1.0.0' ? lockV1 : `${lockV1}\n`,
+      );
+    let tsconfigV1;
+    const touchUiKit = (file) =>
+      writeFileSync(file(UI_KIT_TSCONFIG), `${tsconfigV1}\n`);
+
+    const [first, second] = turns([
+      // Ход 1 начинается с версии 2 (ошибка в MCP уже есть). Агент трогает
+      // только ui-kit: проверяется ui-kit, успех кэшируется.
+      {
+        before: (file) => {
+          detachNodeModules(file(MCP_MODULES));
+          lockV1 = readFileSync(
+            file(`${MCP_MODULES}/.package-lock.json`),
+            'utf8',
+          );
+          tsconfigV1 = readFileSync(file(UI_KIT_TSCONFIG), 'utf8');
+          installDep(file, '2.0.0');
+          setLock(file, '2.0.0');
+          writeFileSync(
+            file(`${MCP}/agentHookDepUser.ts`),
+            "import { agentHookDep } from 'agent-hook-dep';\n\nexport const agentHookDepValue: number = agentHookDep;\n",
+          );
+        },
+        change: touchUiKit,
+      },
+      // Между ходами — версия 1 и исходный tsconfig: MCP исправен. За ход та же
+      // правка ui-kit и обновление зависимости до версии 2 — файлы в конце хода
+      // те же, что после первого.
+      {
+        before: (file) => {
+          writeFileSync(file(UI_KIT_TSCONFIG), tsconfigV1);
+          installDep(file, '1.0.0');
+          setLock(file, '1.0.0');
+        },
+        change: (file) => {
+          touchUiKit(file);
+          installDep(file, '2.0.0');
+          setLock(file, '2.0.0');
+        },
+      },
+    ]);
+    assert.equal(first.status, 0, first.stderr);
+    assert.equal(second.status, 2, second.stderr);
+    assert.match(second.stderr, /agentHookDepUser\.ts/);
+  },
+);
+
 test('файл с кириллицей в имени проверяется', TIMEOUT, () => {
   const result = turn({
     change: (file) =>

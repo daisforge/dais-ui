@@ -256,13 +256,16 @@ if (tsFiles.length === 0 && !depsChanged) {
 }
 
 // Кэш: HEAD, все незакоммиченные файлы (в том числе зависимости, изменённые
-// вне хода), конфиги и набор файлов хода, от которого зависят проверки.
+// вне хода), конфиги и всё, от чего зависит объём проверок: набор файлов хода
+// и изменение зависимостей. Иначе успех узкой проверки (только ui-kit) мог бы
+// заменить проверку всех пакетов при тех же файлах.
 const stateHash = createHash('sha256');
 [
   `head:${gitLine(root, ['rev-parse', 'HEAD'])}`,
   ...dirtyFiles('HEAD').map((file) => `dirty:${file}:${fileHash(file)}`),
   ...CONFIG_FILES.map((file) => `config:${file}:${fileHash(file)}`),
   ...tsFiles.map((file) => `turn:${file}`),
+  `deps-changed:${depsChanged}`,
 ].forEach((line) => stateHash.update(`${line}\n`));
 const state = stateHash.digest('hex');
 // Успех, при котором ошибки tsc были, но все вычтены как старые, зависит от
