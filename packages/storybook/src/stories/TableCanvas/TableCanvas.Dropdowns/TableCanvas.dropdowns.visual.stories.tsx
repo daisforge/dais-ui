@@ -49,6 +49,7 @@ function opened(
     play: async ({ canvasElement }) => {
       const canvas = within(canvasElement);
       const page = within(canvasElement.ownerDocument.body);
+      await canvasElement.ownerDocument.fonts.ready;
       await gridReady(ref);
       await settle();
       if (menu === 'export' || menu === 'overflow') {
@@ -89,16 +90,17 @@ function opened(
         const list = await page.findByRole('tree');
         await waitFor(() => {
           const menuRect = list.parentElement?.getBoundingClientRect();
-          if (!menuRect)
-            throw new Error('Границы контекстного меню недоступны');
+          const cellRect = ref.current?.getBounds(0, 0);
+          if (!menuRect || !cellRect)
+            throw new Error('Границы ячейки или контекстного меню недоступны');
           if (contextMenuWidth !== undefined) {
             expect(menuRect.width).toBe(parseFloat(String(contextMenuWidth)));
           }
           expect(Math.abs(menuRect.x - event.clientX)).toBeLessThanOrEqual(1);
           expect(
             menu === 'cellNearBottom'
-              ? Math.abs(menuRect.bottom - bounds.y + 4)
-              : Math.abs(menuRect.y - bounds.y - bounds.height - 4),
+              ? Math.abs(menuRect.bottom - cellRect.y + 4)
+              : Math.abs(menuRect.y - cellRect.y - cellRect.height - 4),
           ).toBeLessThanOrEqual(1);
         });
       } else {
