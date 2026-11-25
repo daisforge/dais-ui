@@ -44,6 +44,11 @@ jobs:
       - name: Lint Node scripts
         run: npm run lint:scripts
 
+      # Claude Code читает скиллы только из .claude/skills, а источник — в
+      # .agents/skills (их читает Codex). Копии должны совпадать.
+      - name: Check agent skills copies
+        run: npm run skills:check
+
       - name: Test white-label scripts
         run: npm run white-label:test
 

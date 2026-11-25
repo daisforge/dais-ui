@@ -1,0 +1,44 @@
+name: Agent check hook
+
+# Хук проверок агентов (scripts/agent-hooks) запускают Claude Code и Codex у
+# разработчиков на macOS, Linux и Windows. Тест разыгрывает ходы агента во
+# временных git worktree: новые ошибки блокируют завершение хода, ошибки,
+# которые были до хода, — нет.
+on:
+  pull_request:
+    paths:
+      - 'scripts/agent-hooks/**'
+      - '.claude/settings.json'
+      - '.codex/hooks.json'
+      - '.github/workflows/agent-check-hook.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  self-test:
+    name: self-test on ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    env:
+      NX_DAEMON: 'false'
+      NODE_OPTIONS: '--max-old-space-size=4096'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - run: npm ci --ignore-scripts
+      # Логику хука тест проверяет на mcp-server: его tsc занимает ~1 с.
+      - run: npm run mcp:ci
+      # Stories импортируют сгенерированные *.string.json — без них хук
+      # пропустил бы typecheck Storybook.
+      - run: npm run generate-storybook-docs-utils
+      - run: npm run agent-hooks:test
