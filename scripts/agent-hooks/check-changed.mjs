@@ -9,7 +9,8 @@
 // TS-файлам запускает ESLint, по затронутым пакетам — tsc. Блокируют только
 // новые ошибки tsc: если они есть, хук один раз за ход восстанавливает во
 // временном git worktree состояние начала хода и вычитает ошибки, которые были
-// уже тогда. Файлы хук не исправляет: `--fix` выполняет только lint-staged.
+// уже тогда. Если за ход изменились зависимости, вычитать нечем: node_modules
+// начала хода не восстановить, и блокируют все ошибки. Файлы хук не исправляет: `--fix` выполняет только lint-staged.
 // Ошибки — код 2 и текст в stderr: оба агента возвращают его модели.
 //
 // ESLint и tsc запускаются через `node` (process.execPath), а не через обёртки
@@ -62,8 +63,13 @@ const TYPECHECK = {
   storybook: ['packages/storybook/tsconfig.lib.json'],
   'mcp-server': ['packages/mcp-server/tsconfig.lib.json'],
 };
+// Служебный lock-файл npm перезаписывает при каждой установке: по нему видно,
+// что node_modules изменились, даже если package-lock.json в git прежний.
+const INSTALLED_DEPS = 'node_modules/.package-lock.json';
+const DEPS_INPUT_RE = /(^|\/)package(-lock)?\.json$/;
 const CONFIG_FILES = [
   ...ROOT_TS_INPUTS,
+  INSTALLED_DEPS,
   '.eslintrc.json',
   '.eslintignore',
   // Есть ли они, решает, запускается ли typecheck Storybook.
@@ -194,7 +200,15 @@ if (mode === 'start') {
     }
     dirty[file] = { hash, copied };
   });
-  write(snapshotFile, JSON.stringify({ id: randomUUID(), head, dirty }));
+  write(
+    snapshotFile,
+    JSON.stringify({
+      id: randomUUID(),
+      head,
+      dirty,
+      deps: fileHash(INSTALLED_DEPS),
+    }),
+  );
   finish();
 }
 
@@ -221,7 +235,15 @@ const tsFiles = turnFiles.filter(
     LINT_RE.test(file) ||
     ROOT_TS_INPUTS.includes(file),
 );
-if (tsFiles.length === 0) {
+// node_modules начала хода во временном worktree не восстановить: там те же
+// ссылки на текущие зависимости. Если они за ход поменялись, базовая линия
+// содержала бы и вызванные ими ошибки, поэтому старые ошибки не вычитаются,
+// а tsc проверяет все пакеты.
+const depsChanged =
+  turnFiles.some((file) => DEPS_INPUT_RE.test(file)) ||
+  (snapshot?.deps !== undefined && snapshot.deps !== fileHash(INSTALLED_DEPS));
+
+if (tsFiles.length === 0 && !depsChanged) {
   resetBlocks();
   pass();
 }
@@ -344,11 +366,12 @@ const baselineErrors = async (tsconfigs) => {
 const lintFiles = tsFiles.filter(
   (file) => LINT_RE.test(file) && existsSync(path.join(root, file)),
 );
-const touchedPackages = tsFiles.some((file) => ROOT_TS_INPUTS.includes(file))
-  ? PACKAGES
-  : PACKAGES.filter((pkg) =>
-      tsFiles.some((file) => file.startsWith(`packages/${pkg}/`)),
-    );
+const touchedPackages =
+  depsChanged || tsFiles.some((file) => ROOT_TS_INPUTS.includes(file))
+    ? PACKAGES
+    : PACKAGES.filter((pkg) =>
+        tsFiles.some((file) => file.startsWith(`packages/${pkg}/`)),
+      );
 const notices = [];
 // Stories импортируют сгенерированные (и игнорируемые git) *.string.json: без
 // них tsc Storybook падает по причине, не связанной с изменениями агента.
@@ -388,7 +411,9 @@ const tscFailures = tsconfigs
   }))
   .filter(({ code }) => code !== 0);
 const baseline =
-  baseIsValid && tscFailures.some(({ errors }) => errors.length > 0)
+  baseIsValid &&
+  !depsChanged &&
+  tscFailures.some(({ errors }) => errors.length > 0)
     ? await baselineErrors(tscFailures.map(({ tsconfig }) => tsconfig))
     : {};
 tscFailures.forEach(({ tsconfig, out, errors }) => {
@@ -427,6 +452,10 @@ const report = failed
   })
   .join('\n\n');
 
+const depsNote = depsChanged
+  ? '\nЗависимости за ход изменились, поэтому показаны и ошибки tsc, которые были до хода: окружение начала хода не восстановить.'
+  : '';
+
 const blocks = Number(readText(blocksFile) || 0) + 1;
 write(blocksFile, String(blocks));
 
@@ -440,5 +469,5 @@ if (blocks > MAX_BLOCKS) {
 
 finish({
   code: 2,
-  stderr: `Новые ошибки в проверках после хода (попытка ${blocks} из ${MAX_BLOCKS}). Исправь причину, не ослабляя правила и не добавляя eslint-disable/@ts-ignore без обоснования.\n\n${report}`,
+  stderr: `Новые ошибки в проверках после хода (попытка ${blocks} из ${MAX_BLOCKS}). Исправь причину, не ослабляя правила и не добавляя eslint-disable/@ts-ignore без обоснования.${depsNote}\n\n${report}`,
 });

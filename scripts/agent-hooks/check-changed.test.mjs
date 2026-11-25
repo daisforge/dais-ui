@@ -178,6 +178,27 @@ test(
   },
 );
 
+test('при изменении lock-файла старые ошибки не вычитаются', TIMEOUT, () => {
+  // Базовая линия считалась бы на текущем node_modules и спрятала бы ошибки
+  // от обновлённой зависимости, поэтому после изменения зависимостей
+  // блокируют все ошибки tsc.
+  const result = turn({
+    before: (file) =>
+      writeFileSync(
+        file(`${MCP}/agentHookUser.ts`),
+        "export const agentHookUser: number = 'x';\n",
+      ),
+    change: (file) =>
+      writeFileSync(
+        file('package-lock.json'),
+        `${readFileSync(file('package-lock.json'), 'utf8')}\n`,
+      ),
+  });
+  assert.equal(result.status, 2, result.stderr);
+  assert.match(result.stderr, /Зависимости за ход изменились/);
+  assert.match(result.stderr, /agentHookUser\.ts/);
+});
+
 test('файл с кириллицей в имени проверяется', TIMEOUT, () => {
   const result = turn({
     change: (file) =>
