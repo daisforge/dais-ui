@@ -1,6 +1,0 @@
-import{j as e}from"./react-UEdzNlUe.js";import{dd as r}from"./vendor-2C5_55Sm.js";import{M as i}from"./WithTooltip-KJL26V4Q-ChrN_QIK.js";import{T as s}from"./TypeSourceViewer-DyUhtLNM.js";import"./_commonjsHelpers-BosuxZz1.js";import"./tslib-DoU9Jm1N.js";import"./_commonjs-dynamic-modules-TDtrdbi3.js";import"./react-is-CJ4CjPIR.js";import"./styled-components-1kmEus0U.js";import"./@tanstack/react-virtual-BrFVuQDq.js";import"./preload-helper-KkJ3rXAN.js";import"./index-Cu4lwwaE.js";import"./index-BnZ2fnE9.js";import"./types.string-CieBX609.js";function n(o){const t={code:"code",h1:"h1",h2:"h2",p:"p",...r(),...o.components};return e.jsxs(e.Fragment,{children:[e.jsx(i,{title:"Локальные компоненты/TableCanvas/HoverEffects/API"}),`
-`,e.jsx(t.h1,{id:"hovereffects-api",children:"HoverEffects API"}),`
-`,e.jsx(t.h2,{id:"hovereffectsconfig",children:"HoverEffectsConfig"}),`
-`,e.jsxs(t.p,{children:[e.jsx(t.code,{children:"tableConfig.hoverEffects"}),` — единый конфиг эффектов при наведении. Значения,
-цвета по зонам строки и приоритет слоёв описаны в комментариях к типу.`]}),`
-`,e.jsx(s,{language:"ts",filePath:"packages/ui-kit/src/components/TableGlide/types.ts",typeName:"HoverEffectsConfig"})]})}function E(o={}){const{wrapper:t}={...r(),...o.components};return t?e.jsx(t,{...o,children:e.jsx(n,{...o})}):n(o)}export{E as default};
