@@ -88,7 +88,10 @@ export const MassActionsContainer = styled.div<{
   transition: padding 0.3s cubic-bezier(0.4, 0, 0.2, 1),
     transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
     max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  will-change: padding, transform, max-width;
+  /* will-change не задаём: постоянный композитный слой не перерастеризуется
+     при смене transform, и текст панели оставался отрисованным с дробным
+     сдвигом из промежуточного кадра. На время перехода браузер сам выносит
+     панель в слой. */
   box-shadow: ${shadowDownHardS};
 `;
 
