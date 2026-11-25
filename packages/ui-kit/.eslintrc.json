@@ -53,6 +53,37 @@
       }
     },
     {
+      "files": ["src/**/*.{ts,tsx}"],
+      "excludedFiles": [
+        "src/index.ts",
+        "src/components/Table/**",
+        "src/components/TableContract/**",
+        "src/components/MassActions/**",
+        "**/*.{test,spec}.{ts,tsx}"
+      ],
+      "rules": {
+        "@typescript-eslint/no-restricted-imports": [
+          "error",
+          {
+            "patterns": [
+              {
+                "group": [
+                  "**/components/Table",
+                  "**/components/Table/**",
+                  "../Table",
+                  "../Table/**",
+                  "../../Table",
+                  "../../Table/**"
+                ],
+                "allowTypeImports": true,
+                "message": "Импорт из старой Table тянет в чанк компонента всю таблицу и CSS react-data-grid. Вынесите общее в отдельный модуль (как src/constants/tableVisuals.ts) или используйте import type. Сборка проверяет это же в plugins/vite-df-ui-chunks.checks.ts"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
       "rules": {}
     },
