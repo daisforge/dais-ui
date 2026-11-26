@@ -54,7 +54,7 @@ testem.log
 .DS_Store
 Thumbs.db
 
-.nx/cache
+.nx/
 
 storybook-static
 
@@ -78,3 +78,6 @@ packages/storybook/__snapshots__/__diff_output__/
 # Результаты скриншот-тестов
 /artifacts/
 packages/storybook/.snapshots-candidate-*/
+
+# Личные настройки Claude Code
+.claude/settings.local.json

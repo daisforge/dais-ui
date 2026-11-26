@@ -120,6 +120,7 @@ export * from './components/Tour';
 export * from './components/TourWidget';
 export * from './components/Tree';
 export * from './components/Typography';
+export * from './components/TypographyWithCollapse';
 export * from './components/ViewContainer';
 export * from './components/Widget';
 

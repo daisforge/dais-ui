@@ -299,10 +299,12 @@ export const sortedInOrder = <T extends ObjectForExtending, V>({
   }
 
   columnConfig.forEach((col) => {
-    const indexInResultOrder = resultOrder.findIndex((el) => el === col.key);
-    const colInResultOrder = indexInResultOrder >= 0;
+    const pair = colsWithKeyTextMap.get(col.key);
+    const isPresent = pair
+      ? resultOrder.includes(pair.keyKey) || resultOrder.includes(pair.textKey)
+      : resultOrder.includes(col.key);
 
-    if (colInResultOrder) {
+    if (isPresent) {
       return;
     }
 

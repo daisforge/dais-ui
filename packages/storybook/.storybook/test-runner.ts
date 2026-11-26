@@ -8,6 +8,12 @@ import {
   captureStory,
   type ScreenshotParameters,
 } from '../test/screenshots/capture';
+import {
+  checkPersistedColumnOrder,
+  persistedOrderStorageKey,
+  persistedOrderStoryId,
+  restoredColumnOrder,
+} from '../test/screenshots/checkPersistedColumnOrder';
 import { checkSnapshot } from '../test/screenshots/compare';
 
 const mode = process.env.SCREENSHOT_MODE;
@@ -34,6 +40,13 @@ const config: TestRunnerConfig = {
   async preVisit(page, context) {
     process.env.SCREENSHOT_CURRENT_STORY = context.id;
     beginVisit(artifacts, context.id);
+    if (context.id === persistedOrderStoryId) {
+      // Снимок показывает сохранённый порядок и доступный сброс.
+      await page.evaluate(
+        ({ key, order }) => localStorage.setItem(key, JSON.stringify(order)),
+        { key: persistedOrderStorageKey, order: restoredColumnOrder },
+      );
+    }
     // Сценарии copy/paste используют настоящий браузерный буфер обмена.
     await page
       .context()
@@ -123,6 +136,24 @@ const config: TestRunnerConfig = {
     const dir = path.join(artifacts, context.id);
     const started = Date.now();
     try {
+      if (context.id === persistedOrderStoryId) {
+        const browser = page.context().browser();
+        if (!browser) throw new Error('Chromium недоступен');
+        // Новый контекст начинает сценарий с пустого localStorage и позволяет
+        // перезагружать страницу без потери состояния Storybook test-runner.
+        const scenario = await browser.newContext({
+          viewport: { width: 1280, height: 720 },
+        });
+        try {
+          await checkPersistedColumnOrder(await scenario.newPage(), page.url());
+        } finally {
+          await scenario.close();
+          await page.evaluate(
+            (key) => localStorage.removeItem(key),
+            persistedOrderStorageKey,
+          );
+        }
+      }
       const image = await captureStory(page, params, dir);
       const captureDurationMs = Date.now() - started;
       const failed = requiredResourceErrors(page, params);

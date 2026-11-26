@@ -746,6 +746,7 @@ export const useColumns = <
     setColumnsOrder,
     columnsOrder,
     getDefaultColumnsOrder,
+    getResetColumnsOrder,
   } = useReorderDragable({
     allColumns,
     columns,
@@ -783,6 +784,7 @@ export const useColumns = <
     renderColKeys,
     columnsOrder,
     getDefaultColumnsOrder,
+    getResetColumnsOrder,
     setColumnsOrder,
     onColumnsReorder,
   };

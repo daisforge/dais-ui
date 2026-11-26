@@ -264,6 +264,81 @@ export const ColumnsControlInstantApply: Story = {
   },
 };
 
+/** Сохранённый порядок можно сбросить первым действием после перезагрузки страницы. */
+export const ColumnsControlPersistedOrder: Story = {
+  name: 'Сохранённый порядок колонок',
+  ...storySourceDoc({ preCode, previewSource: 'shown' }),
+  render: () => {
+    type ModelRow = { id: number; model: string; version: string };
+    const storageKey = 'storybook.tableCanvas.columnsControl.order.v1';
+    const columnConfig = useMemo<readonly ColumnConfig<ModelRow>[]>(
+      () => [
+        { key: 'id', name: 'ID', width: 80 },
+        { key: 'version', name: 'Версия расчёта', width: 180 },
+        { key: 'model', name: 'Модель', width: 200 },
+      ],
+      [],
+    );
+    const [rows] = useState<ModelRow[]>([
+      { id: 1, model: 'Прогноз спроса', version: 'Базовая' },
+      { id: 2, model: 'План производства', version: 'Сценарий 2' },
+    ]);
+    const [orderForReset] = useState(() => ['id', 'model', 'version']);
+    const orderDefault = useMemo<string[] | undefined>(() => {
+      try {
+        const saved: unknown = JSON.parse(
+          localStorage.getItem(storageKey) ?? 'null',
+        );
+        if (
+          Array.isArray(saved) &&
+          saved.every((key) => typeof key === 'string')
+        )
+          return saved;
+      } catch {
+        // При недоступном хранилище или старом формате используется orderForReset.
+      }
+      return undefined;
+    }, []);
+    const saveOrder = (order: string[]) => {
+      try {
+        localStorage.setItem(storageKey, JSON.stringify(order));
+      } catch {
+        // При недоступном хранилище перестановка и сброс работают в текущей сессии.
+      }
+    };
+
+    return (
+      <TableCanvas
+        rows={rows}
+        columnConfig={columnConfig}
+        tableConfig={{
+          containerStyle: { height: 400 },
+          columnsControl: {
+            enable: true,
+            applyMode: 'instant',
+            orderDefault,
+            orderForReset,
+            onConfirm: ({ order, changed }) => {
+              if (changed.order) saveOrder(order);
+            },
+            onReorderingHeader: ({ newOrder }) =>
+              saveOrder(
+                newOrder.filter((key) =>
+                  columnConfig.some((column) => column.key === key),
+                ),
+              ),
+          },
+          sidebarConfig: {
+            defaultOpen: true,
+            defaultActiveTabId: 'tableSettings',
+            defaultTabs: [{ id: 'tableSettings', showInSidebar: false }],
+          },
+        }}
+      />
+    );
+  },
+};
+
 /** Столбцы, которые видны только в режиме редактирования. */
 const EDIT_ONLY_COLUMNS = ['tr', 'loremIpsum'];
 

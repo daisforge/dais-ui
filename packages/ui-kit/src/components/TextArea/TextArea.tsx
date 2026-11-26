@@ -1,10 +1,17 @@
 import { getContentRight } from '@ui-kit/shared/utils/inputs';
+import type {
+  ForwardRefExoticComponent,
+  PropsWithoutRef,
+  RefAttributes,
+} from 'react';
 import React, { forwardRef } from 'react';
 
 import { StyledTextArea } from './TextArea.styled';
 import { TextAreaProps } from './TextArea.types';
 
-export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
+export const TextArea: ForwardRefExoticComponent<
+  PropsWithoutRef<TextAreaProps> & RefAttributes<HTMLTextAreaElement>
+> = forwardRef<HTMLTextAreaElement, TextAreaProps>(
   (
     { disabled, readOnly, contentRight, size = 's', value, onClear, ...rest },
     ref,

@@ -1,5 +1,10 @@
 import { IconCalendarOutline } from '@salutejs/plasma-icons';
 import { DatePicker as BaseDatePicker } from '@salutejs/sdds-finai';
+import type {
+  ForwardRefExoticComponent,
+  PropsWithoutRef,
+  RefAttributes,
+} from 'react';
 import React, { forwardRef, useState } from 'react';
 
 import type { DatePickerCompProps } from './DatePicker.types';
@@ -15,7 +20,9 @@ const DefaultRightIcon = ({
   />
 );
 
-export const DatePicker = forwardRef<HTMLInputElement, DatePickerCompProps>(
+export const DatePicker: ForwardRefExoticComponent<
+  PropsWithoutRef<DatePickerCompProps> & RefAttributes<HTMLInputElement>
+> = forwardRef<HTMLInputElement, DatePickerCompProps>(
   (
     {
       opened: propOpened,

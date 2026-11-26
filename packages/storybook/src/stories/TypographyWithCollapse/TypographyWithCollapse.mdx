@@ -1,0 +1,20 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as TypographyWithCollapseStories from './TypographyWithCollapse.stories';
+
+<Meta of={TypographyWithCollapseStories} name="Docs" />
+
+# TypographyWithCollapse
+
+Показывает начало длинного текста с многоточием. Продукт задаёт число видимых строк через `lines` (по умолчанию 4). Кнопка появляется, когда текст превышает лимит. При изменении ширины блока компонент пересчитывает, помещается ли текст.
+
+```tsx
+import { TypographyWithCollapse } from '@daisforge/ui';
+
+<TypographyWithCollapse lines={2}>{description}</TypographyWithCollapse>;
+```
+
+Выберите стиль текста через `variant`, а подписи кнопки — через `expandLabel` и `collapseLabel`. Пропсы типографики, `as` и обработчики событий относятся к тексту. `className`, `style`, `ref` и атрибуты `data-*` передаются внешней обёртке. Если задаёте семантический тег через `as`, используйте допустимую для него вложенность. Ссылки в скрытых строках становятся доступны с клавиатуры после раскрытия.
+
+При включённой системной настройке уменьшения движения текст раскрывается и сворачивается сразу.
+
+<Stories />

@@ -295,6 +295,7 @@ export function TableCanvas<
     renderColKeys,
     columnsOrder,
     getDefaultColumnsOrder,
+    getResetColumnsOrder,
     setColumnsOrder,
     onColumnsReorder,
   } = useColumns({
@@ -727,7 +728,7 @@ export function TableCanvas<
     setPinnedCols,
     hiddenCols,
     setHiddenCols,
-    getDefaultColumnsOrder,
+    getResetColumnsOrder,
     columnsControlConfig,
     colsWithKeyTextMap,
     tableConfigKeyTextBoolean,
