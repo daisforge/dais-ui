@@ -222,8 +222,6 @@ type TreeIconProps = {
   size?: RowSize;
 };
 
-// displayName обязателен: кэш canvas-иконок различает их по имени компонента
-// и пропу size (см. iconUtils.createCacheKey)
 export const IconTreeExpanded = ({ size = 'big' }: TreeIconProps) => (
   <TreeIconSvg
     glyph={getTreeIconGlyph(size)}
