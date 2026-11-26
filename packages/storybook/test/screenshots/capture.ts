@@ -105,33 +105,48 @@ async function stableCapture(
 }
 
 /** Таймер и отмена RAF находятся в браузере: таймаут в Node оставил бы RAF работающими. */
-async function prepareScreenshotFrame(page: Page, timeoutMs: number) {
+export async function prepareScreenshotFrame(page: Page, timeoutMs: number) {
   const completed = await page.evaluate(async (budgetMs) => {
     const started = performance.now();
+    const filled: Animation[] = [];
     document.getAnimations().forEach((animation) => {
       const timing = animation.effect?.getComputedTiming();
       const endTime = timing?.endTime;
       if (typeof endTime !== 'number' || !Number.isFinite(endTime)) return;
       animation.finish();
+      if (timing?.fill === 'forwards' || timing?.fill === 'both')
+        filled.push(animation);
+    });
+    if (filled.length) {
+      // animationend и finish браузер отправляет при следующем обновлении анимаций,
+      // перед колбэками RAF. Отмена в той же задаче заменила бы animationend на
+      // animationcancel, и компоненты, которые размонтируются по animationend
+      // (например, StoriesViewer при закрытии), остались бы в DOM.
+      await new Promise<void>((resolve) => {
+        requestAnimationFrame(() => resolve());
+      });
       // Завершённая анимация с fill: forwards/both остаётся активной и держит
       // элемент в отдельном композитном слое. Текст в таком слое растеризуется
       // по-разному от перерисовки к перерисовке. Переносим итоговые значения
       // в inline-стиль и снимаем анимацию: кадр тот же, слой не нужен.
       // Псевдоэлементам inline-стиль не задать, их оставляем как есть.
-      const effect = animation.effect as KeyframeEffect | null;
-      if (
-        (timing?.fill === 'forwards' || timing?.fill === 'both') &&
-        effect?.target &&
-        !effect.pseudoElement
-      ) {
+      filled.forEach((animation) => {
+        const effect = animation.effect as KeyframeEffect | null;
+        // Обработчик завершения мог удалить элемент или перезапустить анимацию.
+        if (
+          animation.playState !== 'finished' ||
+          !effect?.target?.isConnected ||
+          effect.pseudoElement
+        )
+          return;
         try {
           animation.commitStyles();
           animation.cancel();
         } catch {
           // Элемент без отрисовки (display: none) не принимает commitStyles.
         }
-      }
-    });
+      });
+    }
     // Перерисовываем видимую область грида, чтобы проверять и повторную отрисовку фото.
     // Выделение, наведение и данные при этом не меняем.
     const repaint = (
