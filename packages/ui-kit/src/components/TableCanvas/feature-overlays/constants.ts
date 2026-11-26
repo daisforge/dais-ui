@@ -7,8 +7,8 @@
  */
 export const POPOVER_Z_INDEX = 9001;
 
-/** Padding контента поповера (px). */
-export const POPOVER_CONTENT_PADDING = 4;
+/** Отступ стандартного фильтра от края поповера (px). */
+export const FILTER_POPOVER_PADDING = 2;
 
 /** Border-radius контента поповера (px). */
 export const POPOVER_CONTENT_BORDER_RADIUS = 8;

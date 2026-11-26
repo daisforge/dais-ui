@@ -155,7 +155,6 @@ export const ComboboxX = ({
                 size={checkboxSize}
                 style={{
                   pointerEvents: 'none',
-                  marginRight: '8px',
                 }}
               />
               Выбрать всё
@@ -196,7 +195,6 @@ export const ComboboxX = ({
                       display: 'inline-flex',
                       justifyContent: 'center',
                       alignItems: 'center',
-                      marginRight: '8px',
                       visibility: itemIsSelected ? 'visible' : 'hidden',
                     }}
                   >
@@ -210,7 +208,6 @@ export const ComboboxX = ({
                     size={checkboxSize}
                     style={{
                       pointerEvents: 'none',
-                      marginRight: '8px',
                     }}
                   />
                 )}

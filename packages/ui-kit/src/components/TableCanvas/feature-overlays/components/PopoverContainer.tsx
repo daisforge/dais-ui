@@ -164,25 +164,14 @@ export const PopoverInTable = <
     );
   }
 
-  // Рендер контента в зависимости от типа
-  const renderContent = () => {
-    switch (contentType) {
-      case 'filter':
-        return (
-          typeof contentData === 'object' &&
-          contentData &&
-          'columnConfig' in contentData && (
-            <FilterContent<FilterStateType, R, SR>
-              columnConfig={contentData?.columnConfig as ColumnConfig<R, SR>}
-              onClose={close}
-              popoverIsOpen={isOpen}
-            />
-          )
-        );
-      default:
-        return null;
-    }
-  };
+  if (
+    !contentData ||
+    typeof contentData !== 'object' ||
+    !('columnConfig' in contentData)
+  ) {
+    return null;
+  }
+  const columnConfig = contentData.columnConfig as ColumnConfig<R, SR>;
 
   return (
     <StyledPopoverContainer
@@ -216,7 +205,16 @@ export const PopoverInTable = <
         placement={placement}
         hasTail={false}
       >
-        <PopoverContent ref={setContent}>{renderContent()}</PopoverContent>
+        <PopoverContent
+          ref={setContent}
+          $customFilter={columnConfig.filtering?.component === 'custom'}
+        >
+          <FilterContent<FilterStateType, R, SR>
+            columnConfig={columnConfig}
+            onClose={close}
+            popoverIsOpen={isOpen}
+          />
+        </PopoverContent>
       </StyledPopoverBeta>
     </StyledPopoverContainer>
   );

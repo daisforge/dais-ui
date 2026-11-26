@@ -2,7 +2,7 @@ import { createDebugLogger } from '@ui-kit/shared/utils/debug';
 import React from 'react';
 import styled from 'styled-components';
 
-import { POPOVER_CONTENT_PADDING } from '../../feature-overlays/constants';
+import { FILTER_POPOVER_PADDING } from '../../feature-overlays/constants';
 import { SIZE } from '../../styles';
 import { getTableDropdownConfig } from '../../styles/dropdown-sizes';
 import type { ColumnConfig, ObjectForExtending } from '../../types';
@@ -22,7 +22,7 @@ const FilterListContainer = styled.div<{
   $size: SIZE;
 }>(({ $size }) => {
   const { minWidth, maxWidth } = getTableDropdownConfig($size);
-  const padding = 2 * POPOVER_CONTENT_PADDING;
+  const padding = 2 * FILTER_POPOVER_PADDING;
   return {
     width: 'max-content',
     minWidth: minWidth - padding,
@@ -124,11 +124,12 @@ const FilterComponentInPopoverInner = <
       }));
     };
 
-    const { searchSize, textFilterWidth } = getTableDropdownConfig(rowSize);
+    const { searchSize, textFilterPopoverWidth } =
+      getTableDropdownConfig(rowSize);
     return (
       <FreeTextFilterInput
         size={searchSize}
-        width={textFilterWidth}
+        width={textFilterPopoverWidth - 2 * FILTER_POPOVER_PADDING}
         value={filters?.[valueKeyInFilters] as string}
         onChange={handleInputChange}
       />

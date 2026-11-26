@@ -4,8 +4,8 @@ import styled from 'styled-components';
 
 import { COLORS } from '../../styles';
 import {
+  FILTER_POPOVER_PADDING,
   POPOVER_CONTENT_BORDER_RADIUS,
-  POPOVER_CONTENT_PADDING,
 } from '../constants';
 
 /**
@@ -32,8 +32,9 @@ export const StyledPopoverContainer = styled.div<{
 /**
  * Контент popover с тенью и скруглением.
  */
-export const PopoverContent = styled.div`
-  padding: ${POPOVER_CONTENT_PADDING}px;
+export const PopoverContent = styled.div<{ $customFilter: boolean }>`
+  padding: ${({ $customFilter }) =>
+    $customFilter ? 4 : FILTER_POPOVER_PADDING}px;
   background-color: ${COLORS.white};
   border-radius: ${POPOVER_CONTENT_BORDER_RADIUS}px;
   box-shadow: ${() => shadowDownSoftS};

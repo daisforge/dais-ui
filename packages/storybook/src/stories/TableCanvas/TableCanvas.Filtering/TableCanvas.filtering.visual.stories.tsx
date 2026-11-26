@@ -56,6 +56,27 @@ function headerFilter(
           range.selectNodeContents(text);
           expect(range.getClientRects().length).toBeGreaterThan(1);
         }
+        const inputX = page.getByRole('textbox').getBoundingClientRect().left;
+        expect(inputX - popup.left).toBe(size === 'big' ? 42 : 34);
+        if (column !== 'text') {
+          const item = page.getByText(
+            column === 'status' ? 'В работе' : 'Высокий',
+            { selector: 'li' },
+          );
+          const range = canvasElement.ownerDocument.createRange();
+          const text = item.lastChild;
+          if (!text || text.nodeType !== Node.TEXT_NODE) {
+            throw new Error('Подпись пункта фильтра недоступна');
+          }
+          range.selectNodeContents(text);
+          const labelX = range.getBoundingClientRect().left;
+          expect(labelX - popup.left).toBe(
+            { small: 32, medium: 36, big: 48 }[size],
+          );
+          expect(getComputedStyle(item).lineHeight).toBe(
+            { small: '16px', medium: '20px', big: '24px' }[size],
+          );
+        }
         const edge = column === 'status' ? 'right' : 'left';
         const expectedX =
           edge === 'right'

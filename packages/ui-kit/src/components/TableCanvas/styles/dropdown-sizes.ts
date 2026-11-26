@@ -13,7 +13,7 @@ const dropdownSizes = {
     checkboxSize: 's',
     minWidth: 120,
     maxWidth: 300,
-    textFilterWidth: 192,
+    textFilterPopoverWidth: 200,
   },
   medium: {
     size: 's',
@@ -24,7 +24,7 @@ const dropdownSizes = {
     checkboxSize: 's',
     minWidth: 120,
     maxWidth: 380,
-    textFilterWidth: 232,
+    textFilterPopoverWidth: 240,
   },
   big: {
     size: 'm',
@@ -35,7 +35,7 @@ const dropdownSizes = {
     checkboxSize: 'm',
     minWidth: 140,
     maxWidth: 440,
-    textFilterWidth: 232,
+    textFilterPopoverWidth: 240,
   },
 } as const;
 
